@@ -82,7 +82,7 @@ REPO = Path(__file__).resolve().parent.parent
 WPI = REPO / "data" / "whats-priced-in.json"
 WASDE = REPO / "data" / "wasde.json"
 PRICES_REL = "data/prices.json"
-PAGE = "https://agsist.com/whats-priced-in?utm_source=report_email&utm_medium=email"
+PAGE = "https://agsist.com/usda-calendar?utm_source=report_email&utm_medium=email#priced-in"
 # Tagged like PAGE, so GA4 splits this email from the Daily (2026-10-19). The
 # site still reads ?ref= for the sign-up source.
 FORWARD_URL = "https://agsist.com/?ref=email-forward&utm_source=report_email&utm_medium=email"

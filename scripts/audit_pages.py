@@ -167,6 +167,7 @@ FUTURE_OK = {
     ("index.html", 2028),
     # "ample supply into 2027" is the 2026/27 marketing year, correctly named
     ("whats-priced-in.html", 2027),
+    ("usda-calendar.html", 2027),   # the same line, since What's priced in moved onto the calendar
 }
 
 

@@ -3449,7 +3449,7 @@ def render_action_block_html(action, bot_call=None):
     if bot_call:
         label = (bot_call.get("label") or "BOT CALL") if isinstance(bot_call, dict) else "BOT CALL"
         src = ('<p class="dv3-action-src">From the AGSIST prediction bot, a fixed statistical rule '
-               'graded by code. Not advice. <a href="/scorecard">Record and method &rarr;</a></p>')
+               'graded by code. Not advice. <a href="/usda-calendar#scorecard">Record and method &rarr;</a></p>')
     return (f'<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\'s action">'
             f'<span class="dv3-takeaway-label">{label}</span>'
             f'<p class="dv3-takeaway-text">{html_esc_preserve_strong(text)}</p>'
@@ -3852,7 +3852,7 @@ def daily_page_jsonld(briefing, date_iso, description, og_image_url):
         "@type": "BreadcrumbList",
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
-            {"@type": "ListItem", "position": 2, "name": "Daily briefing archive", "item": "https://agsist.com/archive"},
+            {"@type": "ListItem", "position": 2, "name": "Daily briefing", "item": "https://agsist.com/daily"},
             {"@type": "ListItem", "position": 3, "name": _short_date(date_iso), "item": url},
         ],
     }
@@ -3867,8 +3867,9 @@ def daily_page_jsonld(briefing, date_iso, description, og_image_url):
 # bake plain <a href> lists between named SEED markers. save_archive() calls
 # refresh_archive_link_lists() after every write (the critic's re-save too),
 # so the lists follow each day's publish; the JS still upgrades them in place.
-ARCHIVE_PAGE = REPO_ROOT / "archive.html"
 DAILY_PAGE = REPO_ROOT / "daily.html"
+# Oct 23, 2026: the archive page folded into /daily#past; both lists are baked into daily.html
+ARCHIVE_PAGE = DAILY_PAGE
 DAILY_RECENT_N = 7  # keep in step with DV3_RECENT_N in daily.html
 
 
@@ -3902,7 +3903,7 @@ def _dow_label(date_iso):
 
 
 def render_archive_static_list(items):
-    """Full list for archive.html, grouped by month, newest first. Each month
+    """Full list for /daily#past (was archive.html), grouped by month, newest first. Each month
     is a <details>; only the newest month is open, so the page opens on this
     month instead of 200 links. Every link stays in the HTML for crawlers."""
     parts, cur = [], None
@@ -3963,8 +3964,8 @@ def _replace_seed(text, tag, body):
 
 
 def refresh_archive_link_lists():
-    """Rewrite the SEED:archivelist block in archive.html, and SEED:dailyrecent
-    and SEED:dailylatest in daily.html. Idempotent; a missing marker is
+    """Rewrite the SEED:archivelist, SEED:dailyrecent and SEED:dailylatest
+    blocks in daily.html (archivelist was in archive.html until Oct 2026). Idempotent; a missing marker is
     reported, never invented."""
     items = _published_briefings()
     for page, tag, body in ((ARCHIVE_PAGE, "archivelist", render_archive_static_list(items)),
@@ -4191,7 +4192,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     nav_parts = []
     if prev_date:
         nav_parts.append(f'<a class="dv3-archnav-a" href="/daily/{prev_date}" rel="prev">&larr; {_nav_date_label(prev_date)} briefing</a>')
-    nav_parts.append('<a class="dv3-archnav-a dv3-archnav-all" href="/archive">All briefings</a>')
+    nav_parts.append('<a class="dv3-archnav-a dv3-archnav-all" href="/daily#past">All briefings</a>')
     if next_date:
         nav_parts.append(f'<a class="dv3-archnav-a" href="/daily/{next_date}" rel="next">{_nav_date_label(next_date)} briefing &rarr;</a>')
     archive_nav_html = ('<nav class="dv3-archnav" aria-label="Briefing archive">'
@@ -5365,7 +5366,7 @@ def insert_bot_call(briefing, today=None, path=None):
         "record": {k: live.get(k) for k in keep},
         "backtest": {k: bt.get(k) for k in keep},
         "source": "data/predictions.json",
-        "url": "/scorecard",
+        "url": "/usda-calendar#scorecard",
     }
     print(f"  [bot] The Action: {text}")
     return briefing

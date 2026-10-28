@@ -34,6 +34,7 @@ import re
 import sys
 from datetime import datetime, timezone
 
+from moved_pages import repoint  # links to the pages merged Oct 22, 2026 go to their new home
 import pricefmt  # grain price text, the twin of components/util.js AG.px
 from contract_calendar import is_expired, _parse as _contract_ym
 try:
@@ -135,7 +136,7 @@ def render_desc(tmpl, **kw):
 # the loop above; these get it too because their content changes daily)
 DATEMOD_ONLY = ["index.html", "markets.html", "daily.html",
                 "cash-bids.html", "spray.html", "urea.html",
-                "cot.html", "whats-priced-in.html", "drought-monitor.html",
+                "cot.html", "drought-monitor.html",
                 "hail-map.html"]
 
 # sitemap <lastmod> bump list — the daily-changing URLs Google should recrawl
@@ -964,59 +965,59 @@ def hero_futures_seeds(q, fetched):
 # --- /news -------------------------------------------------------------------
 NEWS_KIND = {"usda": "USDA", "positioning": "Positioning", "board": "Board",
              "crop": "Crop", "weather": "Weather"}
-NEWS_MAX = 10
+NEWS_MAX = 30    # newest lines baked into /daily (the wire file keeps more)
+NEWS_OPEN = 5    # shown open on /daily; the rest behind "Show older"
 DOW = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 MONFULL = ["January", "February", "March", "April", "May", "June", "July",
            "August", "September", "October", "November", "December"]
 
 
 def seed_news(today):
+    """What just moved, baked into /daily (Oct 22, 2026: /news merged into the Daily page).
+    Every line carries its own date, so an old line is still a true dated fact: the list
+    is never blanked for age. The stamp names the newest line, not the last time the
+    file was written (a quiet wire leaves the file alone)."""
     d = _load_json("data/news.json")
-    upd = _iso_date((d or {}).get("updated"))
     seeds = {}
-    datemod = None
-    if not d or _stale(upd, today, "news"):
-        why = (f"the wire file was last written {_mdy(upd)}" if upd else "the wire file is missing")
+    items = [i for i in ((d or {}).get("items") or []) if isinstance(i, dict)][:NEWS_MAX]
+    if not d:
         seeds["newsupd"] = "-"
-        seeds["newslist"] = ('\n      <div class="nw-empty">No current items: ' + why +
-                             '. The <a href="/daily" style="color:var(--gold)">morning briefing</a> runs every morning regardless.</div>\n    ')
-    else:
-        u = str(d.get("updated"))
-        seeds["newsupd"] = f"Updated {_mdy(upd)}, {u[11:16]} UTC"
-        datemod = upd.isoformat()
-        items = (d.get("items") or [])[:NEWS_MAX]
-        if not items:
-            seeds["newslist"] = ('\n      <div class="nw-empty">Nothing has moved enough to post as of ' + _mdy(upd) +
-                                 '. Quiet markets can go days without one.</div>\n    ')
-        else:
-            out, last = ["\n"], None
-            for i in items:
-                ts = str(i.get("ts") or "")
-                day = _iso_date(ts)
-                if day and day != last:
-                    out.append(f'      <div class="nw-day">{DOW[day.weekday()]}, {MONFULL[day.month - 1]} {day.day}, {day.year}</div>\n')
-                    last = day
-                url = str(i.get("url") or "/")
-                if not url.startswith("/"):
-                    url = "/"                       # the wire links to its own pages only
-                clock = "" if i.get("day_only") or len(ts) < 16 else f'<span class="nw-time">{ts[11:16]} UTC</span>'
-                kind = NEWS_KIND.get(i.get("kind"), i.get("kind") or "")
-                out.append(
-                    f'      <a class="nw-item{" is-high" if i.get("significance") == "high" else ""}" href="{H.escape(url, quote=True)}">'
-                    f'<div class="nw-top"><span class="nw-kind">{_e(kind)}</span>{clock}</div>'
-                    f'<div class="nw-h">{_e(i.get("headline") or "")}</div>'
-                    f'<p class="nw-d">{_e(i.get("detail") or "")}</p>'
-                    + (f'<div class="nw-src">{_e(i["source"])}</div>' if i.get("source") else "")
-                    + "</a>\n")
-            out.append("    ")
-            seeds["newslist"] = "".join(out)
-
-    def stamp(t):
-        if not datemod:
-            return t
-        return re.sub(r'("dateModified":")(\d{4}-\d{2}-\d{2})(")',
-                      lambda m: m.group(1) + datemod + m.group(3), t, count=1)
-    return _write_seeds("news.html", seeds, stamp)
+        seeds["newslist"] = ('\n      <div class="nw-empty">The list could not be read just now. '
+                             'The briefing above is unaffected.</div>\n    ')
+        return _write_seeds("daily.html", seeds)
+    newest = _iso_date(str(items[0].get("ts") or "")) if items else None
+    seeds["newsupd"] = f"Newest line {_mdy(newest)}" if newest else "-"
+    if not items:
+        seeds["newslist"] = ('\n      <div class="nw-empty">Nothing has moved enough to post yet. '
+                             'Quiet markets can go a week or more without one.</div>\n    ')
+        return _write_seeds("daily.html", seeds)
+    out, last = ["\n"], None
+    for n, i in enumerate(items):
+        if n == NEWS_OPEN:
+            out.append(f'      <details class="nw-more"><summary>Show {len(items) - NEWS_OPEN} older</summary>\n')
+            last = None
+        ts = str(i.get("ts") or "")
+        day = _iso_date(ts)
+        if day and day != last:
+            out.append(f'      <div class="nw-day">{DOW[day.weekday()]}, {MONFULL[day.month - 1]} {day.day}, {day.year}</div>\n')
+            last = day
+        url = repoint(str(i.get("url") or "/"))
+        if not url.startswith("/"):
+            url = "/"                       # the wire links to its own pages only
+        clock = "" if i.get("day_only") or len(ts) < 16 else f'<span class="nw-time">{ts[11:16]} UTC</span>'
+        kind = NEWS_KIND.get(i.get("kind"), i.get("kind") or "")
+        out.append(
+            f'      <a class="nw-item{" is-high" if i.get("significance") == "high" else ""}" href="{H.escape(url, quote=True)}">'
+            f'<div class="nw-top"><span class="nw-kind">{_e(kind)}</span>{clock}</div>'
+            f'<div class="nw-h">{_e(i.get("headline") or "")}</div>'
+            f'<p class="nw-d">{_e(i.get("detail") or "")}</p>'
+            + (f'<div class="nw-src">{_e(i["source"])}</div>' if i.get("source") else "")
+            + "</a>\n")
+    if len(items) > NEWS_OPEN:
+        out.append("      </details>\n")
+    out.append("    ")
+    seeds["newslist"] = "".join(out)
+    return _write_seeds("daily.html", seeds)
 
 
 # --- /conditions ---------------------------------------------------------------
@@ -1274,7 +1275,7 @@ def seed_conditions(today):
     return _write_seeds("conditions.html", seeds)
 
 
-# --- /scorecard ----------------------------------------------------------------
+# --- the prediction bot scorecard (/usda-calendar#scorecard; was /scorecard) ------
 PB_VERDICT = {"not_enough": "Not enough calls yet.", "coin_flip": "Coin flip.",
               "held_up": "This one held up.", "worse_than_coin": "Worse than a coin flip."}
 # "crowded" is the COT page's word for its own measure (cot_analysis.py); the
@@ -1336,7 +1337,7 @@ def _pb_verdict(r, label, R):
 
 
 def _pb_why(c):
-    """The Why cell. Same words as why() in scorecard.html. For a trend call
+    """The Why cell. Same words as why() in components/bot-scorecard.js. For a trend call
     the fund rank is said to be what let the trend decide (2026-10-16: "13-week
     trend up (87th percentile ...)" read as if the percentile were the trend)."""
     s = PB_SIGNAL.get(c.get("signal"), c.get("signal") or "")
@@ -1361,7 +1362,7 @@ def _pb_cents(x):
 def _pb_stand(c):
     """Where an open call stands: the bot's latest close of the same contract
     against the entry. Not a grade and never counted. Same words as stand()
-    in scorecard.html."""
+    in components/bot-scorecard.js."""
     if c.get("status") == "graded":
         return "Graded: right" if c.get("outcome") == "hit" else "Graded: wrong"
     if c.get("status") != "open":
@@ -1395,7 +1396,7 @@ PB_PLAIN_COIN = {"coin_flip": "no better than a coin flip", "worse_than_coin": "
 def pb_plain(d):
     """One plain sentence for the top of /scorecard: what the backtest says, why
     the page exists anyway, and when the open calls get graded. The same words
-    as plainLine() in scorecard.html."""
+    as plainLine() in components/bot-scorecard.js."""
     ba = ((d.get("backtest") or {}).get("records") or {}).get("all") or {}
     out = []
     first = _iso_date(ba.get("first"))
@@ -1429,7 +1430,7 @@ def seed_scorecard(today):
         seeds["pb:bycrop"] = f'<tr><td colspan="6">{why}.</td></tr>'
         seeds["pb:pb-updated"] = "-"
         seeds["pb:pb-plain"] = ""
-        return _write_seeds("scorecard.html", seeds)
+        return _write_seeds("usda-calendar.html", seeds)
     labels = {c["key"]: c["label"] for c in d.get("crops") or []}
     R = d.get("rules") or {}
     seeds["pb:pb-plain"] = pb_plain(d)
@@ -1482,7 +1483,7 @@ def seed_scorecard(today):
         rows.append(f"<tr><td>{_e(c['label'])}</td><td class=\"num\">{lv}</td><td class=\"num\">{ls}</td>"
                     f"<td class=\"num\">{bv}</td><td class=\"num\">{bs}</td><td>{bvt}</td></tr>")
     seeds["pb:bycrop"] = "".join(rows) or '<tr><td colspan="6">n/a</td></tr>'
-    return _write_seeds("scorecard.html", seeds)
+    return _write_seeds("usda-calendar.html", seeds)
 
 
 # --- /basis --------------------------------------------------------------------
@@ -1877,7 +1878,7 @@ def _ordinal(n):
     return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
 
 
-# --- /elevators ----------------------------------------------------------------
+# --- elevator coverage (/list-your-elevator#coverage; was /elevators) ----------------------------------------------------------------
 def _ct(iso):
     """'2026-10-05T19:11:21.424Z' -> 'Oct 5, 2026, 2:11 PM CT' (the page's fmtCT)."""
     try:
@@ -1902,7 +1903,7 @@ def seed_elevators(today):
             seeds["elev:cov-n-" + k] = "-"
         seeds["elev:foot"] = f"Counts not shown: {why}."
         seeds["elev:net"] = f"Network counts: {why}."
-        return _write_seeds("elevators.html", seeds)
+        return _write_seeds("list-your-elevator.html", seeds)
     for k in ("read", "quiet", "known"):
         seeds["elev:cov-n-" + k] = _commas(n[k]) if isinstance(n.get(k), int) else "-"
     foot = ""
@@ -1925,7 +1926,7 @@ def seed_elevators(today):
             "<a href=\"#coverage-map\">See the map</a>.")
     seeds["elev:net"] = net
     seeds["elev:bids"] = elevator_bids_line(_load_json("data/elevator-counts.json"), today)
-    return _write_seeds("elevators.html", seeds)
+    return _write_seeds("list-your-elevator.html", seeds)
 
 
 def elevator_bids_line(c, today):

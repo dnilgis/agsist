@@ -271,7 +271,9 @@ const ribbonPages = [...readdirSync(ROOT).filter((f) => f.endsWith(".html")),
 check("every page that ships the ribbon puts it below the H1 and the breadcrumb", () => {
   // 76: /cash-rent, /land-tenure and /storage-crunch retired to stubs (2026-10), taking their ribbons with them
   // 75: /presell-calculator merged into /harvest-price-tracker (2026-10), its slot removed from sponsor-slots.json
-  assert.ok(ribbonPages.length >= 75, "only " + ribbonPages.length + " pages carry the ribbon; the pages have moved");
+  // 72: five pages merged into the page a reader already uses (Oct 22-23, Sig; scripts/moved_pages.py): /archive,
+  //     /conditions-yield, /elevators, /foreign-land, /whats-priced-in; their slots left sponsor-slots.json with them
+  assert.ok(ribbonPages.length >= 72, "only " + ribbonPages.length + " pages carry the ribbon; the pages have moved");
   for (const [f, s] of ribbonPages) {
     const body = s.slice(s.search(/<body[\s>]/));
     const rib = body.search(/<aside class="ag-sponsor-ribbon"(?! idx1)/);

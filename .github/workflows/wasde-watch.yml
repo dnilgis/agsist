@@ -236,7 +236,7 @@ jobs:
           for i in 1 2 3 4 5; do
             git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf data/nowcast-direction.json \
                     data/analyst-scorecard.json data/whats-priced-in.json \
-                    whats-priced-in.html scorecard.html cot.html index.html usda-calendar.html 2>/dev/null || true
+                    cot.html index.html usda-calendar.html 2>/dev/null || true
             # its own line: before the archive is first published the folder does not exist, and
             # one missing path makes git add stage nothing at all
             if [ -d data/wasde-history ]; then git add data/wasde-history; fi

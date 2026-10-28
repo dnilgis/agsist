@@ -224,8 +224,8 @@ def _page_hits(text, cv):
     return pat.findall(text)
 
 
-PAGES = ("crop-tour.html", "whats-priced-in.html", "conditions-yield.html", "scorecard.html", "index.html",
-         "usda-calendar.html", "wasde.html")
+# whats-priced-in, conditions-yield and scorecard folded into usda-calendar and conditions (Oct 2026)
+PAGES = ("crop-tour.html", "conditions.html", "index.html", "usda-calendar.html", "wasde.html")
 
 
 def check(root=ROOT, corrections=None):

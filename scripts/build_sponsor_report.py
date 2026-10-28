@@ -51,6 +51,7 @@ a fork or a PR does not fail on a secret it cannot have.
 """
 import json
 import os
+import re
 import sys
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -345,6 +346,10 @@ def portal_extras(s):
         # their offices are: an agency licensed in a state with no office is
         # exactly the case this exists for.
         "licensedStates": licensed_states(s.get("licensed_states")),
+        # The day Sig took the ad down, as typed in data/sponsors.json. The
+        # portal's status reads "Ended <date>" instead of "Not started". Only a
+        # YYYY-MM-DD day counts; anything else is treated as not ended.
+        "ended": s.get("ended") if isinstance(s.get("ended"), str) and re.match(r"^\d{4}-\d{2}-\d{2}$", s.get("ended")) else None,
     }
 
 

@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 284;  // v284 2026-10-28: fx/geosponsor (284 assigned by the lead). loader.js loads components/geo-sponsor.js?v=1, the state-targeted sponsor (off until Sig switches it on in data/geo-sponsors.json); returning readers need the new loader.js.
+var CACHE_VERSION = 286;  // v286 2026-10-28: fx/merges2 (286 assigned by the lead; was 283 before v284/v285 shipped). Ten pages fold into the page a reader already uses; new section scripts priced-in.js, bot-scorecard.js, coverage-map.js, elevator-claim.js, atlas-foreign.js, daily-archive.js; menu and footer follow (loader CV 102).
+// v284 2026-10-28: fx/geosponsor (284 assigned by the lead). loader.js loads components/geo-sponsor.js?v=1, the state-targeted sponsor (off until Sig switches it on in data/geo-sponsors.json); returning readers need the new loader.js.
 // v282 2026-10-27: fx/amsmore (282 assigned by the lead). Hay prices: a state with several AMS hay reports shows one state choice, each auction by its own name, and an auction's sale day apart from the day USDA published it (hay-ams.js v7).
 // v280 2026-10-27: fx/cwoptin (280 assigned by the lead). A Daily reader can turn on Your county this week from a link in the Daily footer (agsist.com/e?a=daily-cw, subs worker v5.57); the email page takes a ZIP when the reader has none, sent in the request body, never in a link. No shared JS or CSS changed.
 // v278 2026-10-27: fx/nasscorr (278 assigned by the lead). NASS's Oct 23 correction to the September corn yield shown beside the printed figure: whats-priced-in, crop-tour, conditions-yield, changelog; components/wasde-history.js v3.

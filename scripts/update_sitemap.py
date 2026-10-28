@@ -36,13 +36,12 @@ CADENCE = {
     "/markets": 1,
     "/cash-bids": 1,
     "/basis": 1,          # state basis baked in by build_cash_bid_pages.py
-    "/daily": 1,
+    "/daily": 1,  # past briefings (/daily#past) live here since Oct 23, 2026
     "/corn-futures-prices": 1,
     "/soybean-futures-prices": 1,
     "/wheat-futures-prices": 1,
-    "/whats-priced-in": 1,
+    "/usda-calendar": 1,  # What's priced in and the bot scorecard live here since Oct 22, 2026
     "/cattle-futures-prices": 1,
-    "/scorecard": 1,
     "/crop-tour": 1,
     "/drought-monitor": 7,
     "/cot": 7,

@@ -264,7 +264,7 @@ test("crop tour: the state's sample first, then how it has run against USDA's fi
 });
 
 test("pod counts: the state's row matches the page's own table, and USDA's forecast against the band", () => {
-  const html = readFileSync(ROOT + "pod-counts.html", "utf8");
+  const html = readFileSync(ROOT + "crop-tour.html", "utf8");
   const row = (n) => html.slice(html.indexOf("<tr><td>" + n + "</td>"), html.indexOf("</tr>", html.indexOf("<tr><td>" + n + "</td>")));
   const t = text(run("pods", IA, { "crop-tour": tour, "state-stats": stats, "nass/soy-yield": soyY }));
   // Iowa: 1,362.93 - 1,265.38 = +97.55 pods x 0.0227 = +2.21 bu, band -3.8 to +8.2
@@ -293,17 +293,20 @@ test("components: no em dashes, small, read storage only", () => {
 
 const PAGES = [
   ["usda-calendar.html", "calendar", '<section class="cal-hero'],
-  ["conditions-yield.html", "cy", 'id="cy-nowcast"'],
+  ["conditions.html", "cy", 'id="cy-nowcast"'],   // crop size: a section of /conditions since Oct 22, 2026
   ["tariffs.html", "tariffs", 'id="tariff-table"'],
   ["cattle-futures-prices.html", "cattle", 'id="ct-cash"'],
   ["farm-bill.html", "farmbill", 'id="for-you"'],
   ["crop-tour.html", "tour", "<!-- /CT:hero -->"],
-  ["pod-counts.html", "pods", 'class="pc-lede"'],
+  ["crop-tour.html", "pods", 'class="pc-lede"'],   // pod counts: a section of /crop-tour since Oct 22, 2026
 ];
 for (const [f, mode, after] of PAGES) {
-  test(f + ": one box after the main answer, with its script", () => {
+  test(f + ": one box per section after its answer, with its script", () => {
     const h = readFileSync(ROOT + f, "utf8");
-    assert.equal((h.match(/data-your-state=/g) || []).length, 1);
+    // crop-tour.html holds two former pages (the tour and, since Oct 22, 2026, pod counts): one box each
+    const boxes = PAGES.filter((p) => p[0] === f).length;
+    assert.equal((h.match(/data-your-state=/g) || []).length, boxes);
+    assert.equal((h.match(new RegExp('data-your-state="' + mode + '"', "g")) || []).length, 1, "one " + mode + " box");
     // data-v is the ys-<mode>.js cache version; it moves when that file changes
     const m = new RegExp('<aside class="ya" data-your-state="' + mode + '" data-v="\\d+" hidden></aside>').exec(h);
     const at = m ? m.index : -1;
