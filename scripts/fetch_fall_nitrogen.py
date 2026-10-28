@@ -887,7 +887,23 @@ def probe():
     # written against what the service really sends.
     save("wisconet-openapi.json", WCN + "openapi.json")
     save("wisconet-api-page.html.txt", WCN_SITE + "data/api")
-    save("wisconet-terms.html.txt", WCN_SITE + "about/data-use")
+    save("wisconet-fields.json", WCN + "api/v1/fields/?legacy_only=false")
+    save("wisconet-fields-legacy.json", WCN + "api/v1/fields/")
+    save("wisconet-available-fields-ALTN.json", WCN + "api/v1/fields/ALTN/available_fields")
+    save("wisconet-daily-summaries.json", WCN + "api/v1/stations/daily_summaries")
+    # The site is a script-built page: its terms text lives in the page's
+    # script bundle. Keep every passage that names a licence or attribution.
+    try:
+        home = get(WCN_SITE + "data/api")
+        lines = []
+        for js in sorted(set(re.findall(r'src="(/assets/[^"]+\.js)"', home))):
+            body = get(WCN_SITE + js.lstrip("/"))
+            for m in re.finditer(r"(?i)creative commons|cc[ -]by|attribution|commercial|cite|citation|license", body):
+                lines.append("%s @%d: %s" % (js, m.start(), body[max(0, m.start() - 300):m.end() + 300].replace("\n", " ")))
+        (raw / "wisconet-terms-passages.txt").write_text("# %s (script bundle passages)\n%s\n" % (WCN_SITE, "\n\n".join(lines[:80])))
+        summ["wisconet_terms_passages"] = len(lines)
+    except Exception as e:  # noqa: BLE001
+        summ["wisconet_terms_error"] = str(e)
     wst = save("wisconet-stations.json", WCN + "api/v1/stations/")
     try:
         sl = json.loads(wst or "[]")
