@@ -69,7 +69,12 @@ def main():
     ck("waterfall and script SEED written when the model matches",
        '"classIII":16.04' in s["__js"] and "September 2026" in s["milkfallmonth"])
     ck("all-milk cell dated by NASS month", 'data-key="2026-08">$19.80' in s["milkstrip"])
-    ck("illustrative farm follows the all-milk price", "$42,966" in s["milkexample"] and "$1,736" in s["milkexample"])
+    # 2026-10-28 (dairy board): the 100-cow box (August all-milk against an uncited ~$19 ERS cost,
+    # "$1,736 left") is gone; the cost answer is dated and carries no national cost figure
+    ck("cost FAQ: the NASS month and price, down $1.10 from a year earlier, no national cost or leftover",
+       "USDA NASS put the US all-milk price at $19.80 per hundredweight in August 2026, down $1.10 from a year earlier"
+       in s["milkcostfaq"] and "milkexample" not in s and not any(x in s["milkcostfaq"] for x in ("$19/", "ERS", "1,736", "$9.34")),
+       s.get("milkcostfaq"))
     ck("states sorted high to low, a missing value is a dash with the reason",
        s["milkstates"].index("Georgia") < s["milkstates"].index("Iowa") and "A dash means NASS gave no value" in s["milkstates"])
     ck("states seed JSON is the file's", '"month_key":"2026-08"' in s["milkstates"])
@@ -189,6 +194,43 @@ def main():
     bad["byOperation"]["dairy"]["signup"]["close"] = "2026-10-01"
     ck("close before open: nothing seeded", S.milk_dmc_seeds(bad, "2026-10-28") == {})
     ck("no em dash in the DMC copy", "\u2014" not in "".join(d1.values()))
+
+    print("DMC would have paid (data/dairy-dmc.json)")
+    ck("no FSA margins: withheld, saying why, no number",
+       "not shown yet" in S.milk_dmc_paid({}, SEP) and "$" not in S.milk_dmc_paid({}, SEP).split("not shown yet")[0])
+    ck("...and the margin line prints the NASS milk side only",
+       "DMC margin: not shown." in S.milk_dmc_margin({}, SEP, "2026-10-28")
+       and "August 2026, <strong>$19.80/cwt</strong>" in S.milk_dmc_margin({}, SEP, "2026-10-28"))
+    DM = {"source": "FSA DMC page", "read": "2026-11-02",
+          "margins": {"2025-07": {"all_milk": 21.0, "feed": 10.0, "margin": 11.0},
+                      "2025-08": {"all_milk": 20.9, "feed": 12.4, "margin": 8.5},
+                      "2026-08": {"all_milk": 19.8, "feed": 10.46, "margin": 9.34}},
+          "premium_tier1": {"9.50": 0.15}}
+    tb = S.milk_dmc_paid(DM, SEP)
+    ck("FSA rows that check out: a table by level, partial years labeled", "2025, Jul to Aug" in tb and "2026, Aug<" in tb, tb[:300])
+    ck("...$9.50 in 2025 pays (0 + 1.00) / 2 = $0.50, premium beside it",
+       '<tr><th scope="row">$9.50</th><td class="num">$0.50</td><td class="num">$0.16</td><td class="num">$0.1500</td></tr>' in tb, tb)
+    ck("...a level with no premium read says so", "not loaded" in tb)
+    ck("...no level picked out", not any(w in tb.lower() for w in ("best", "recommend", "should")))
+    ck("...the margin line shows FSA's newest month", "DMC margin, August 2026: $9.34/cwt" in S.milk_dmc_margin(DM, SEP, "2026-10-28"))
+    bad = copy.deepcopy(DM)
+    bad["margins"]["2026-08"]["margin"] = 9.0
+    ck("milk minus feed not the margin: the whole table withheld", "not shown yet" in S.milk_dmc_paid(bad, SEP))
+    bad2 = copy.deepcopy(DM)
+    bad2["margins"]["2026-08"].update(all_milk=20.0, margin=9.54)
+    ck("FSA all-milk not the NASS month held: withheld", "not shown yet" in S.milk_dmc_paid(bad2, SEP)
+       and "DMC margin: not shown." in S.milk_dmc_margin(bad2, SEP, "2026-10-28"))
+
+    print("your area first (dairy-mailbox.json areas)")
+    import json as _json
+    MBX = _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures", "milk",
+                                       "mailbox-2026-06.json"), encoding="utf-8"))
+    ar = S.milk_area_seed(MBX, "2026-10-28")
+    ck("June 2026: Wisconsin and Minnesota lead the falls, Florida the rises",
+       "fell most in Wisconsin −$3.02, Minnesota −$2.93, Iowa −$1.81; rose most in Florida +$4.88, Southeast States +$4.49" in ar, ar)
+    ck("...the federal-order average comes after, not before", ar.index("Wisconsin") < ar.index("All federal order areas: $20.18"))
+    ck("five or more months behind: no area summary", S.milk_area_seed(MBX, "2026-11-15") is None)
+    ck("no areas: no summary", S.milk_area_seed(dict(MBX, areas=None), "2026-10-28") is None)
 
     print()
     if fails:

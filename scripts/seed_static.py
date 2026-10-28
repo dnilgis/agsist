@@ -2433,7 +2433,8 @@ def milk_dmc_paid(dmc, d):
     heads = []
     for y in years:
         ms = sorted(int(k[5:]) for k in rows if k[:4] == y)
-        lab = y if len(ms) == 12 else f"{y}, {MON3[ms[0] - 1]} to {MON3[ms[-1] - 1]}"
+        lab = (y if len(ms) == 12 else f"{y}, {MON3[ms[0] - 1]}" if len(ms) == 1
+               else f"{y}, {MON3[ms[0] - 1]} to {MON3[ms[-1] - 1]}")
         heads.append((y, lab, len(ms)))
     th = "".join(f'<th scope="col" class="num">{lab}</th>' for _, lab, _ in heads)
     body = []

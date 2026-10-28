@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-28-milk-your-area",
+   "date": "2026-10-28",
+   "title": "Milk prices: your area first, read my check, DMC signup open to Dec 18",
+   "line": "The milk page now opens with your area's mailbox price, its change from a year earlier and its rank, then a check reader: type your tests, deductions and cost to see what your milk is worth at USDA's component prices. The 2027 DMC signup is open to Dec 18; the old 'enrollment closed' line is gone, and so are typed figures with no source.",
+   "link": "/milk-prices"
+  },
+  {
    "id": "2026-10-27-wasde-2027-dates",
    "date": "2026-10-27",
    "title": "USDA calendar: the 2027 WASDE dates",

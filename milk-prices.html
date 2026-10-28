@@ -56,6 +56,27 @@
   .dp-lede{font-size:clamp(.95rem,2.4vw,1.1rem);line-height:1.6;color:var(--text-dim);max-width:60ch;margin:0;}
   .dp-lede strong{color:var(--text);font-weight:700;}
 
+  /* your area first (components/milk-tools.js fills it) */
+  .dp-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.85rem 1rem;margin:0 0 .9rem;min-height:9rem;}
+  .dp-area-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem .8rem;margin-bottom:.5rem;}
+  .dp-area-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;margin:0;display:flex;align-items:center;gap:.45rem;color:var(--text);}
+  .dp-area-h .ic{width:1.05em;height:1.05em;color:var(--gold);}
+  .dp-area-pick select{min-height:44px;max-width:100%;font:inherit;padding:.4rem .6rem;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);}
+  .dp-area-sum{margin:0;line-height:1.55;color:var(--text);}
+  .dp-area-name{margin:0;font-weight:800;color:var(--text);}
+  .dp-area-name span{font-weight:400;color:var(--text-dim);}
+  .dp-area-big{margin:.15rem 0 .1rem;font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;line-height:1.1;color:var(--text);}
+  .dp-area-big span{font-size:.95rem;font-weight:600;color:var(--text-dim);}
+  .dp-area-chg{margin:0 0 .35rem;font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:700;}
+  .dp-area-line{margin:.2rem 0 0;line-height:1.5;color:var(--text-dim);font-size:.95rem;}
+  /* read my check */
+  .dp-check{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.6rem .8rem;margin:.6rem 0 .4rem;}
+  .dp-check label{display:flex;flex-direction:column;gap:.25rem;font-size:.9rem;color:var(--text-dim);min-width:0;}
+  .dp-in{display:flex;align-items:center;gap:.35rem;}
+  .dp-in input{flex:1;min-width:0;min-height:44px;font:inherit;font-size:1rem;padding:.4rem .6rem;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);}
+  .dp-in em{font-style:normal;font-size:.85rem;color:var(--text-muted);white-space:nowrap;}
+  .dp-check-out .dp-example-line span:last-child{text-align:right;}
+  .dp-check-out .dp-example-line{flex-wrap:wrap;}
   /* DMC signup card (dates from data/farm-bill.json) */
   .dp-dmc{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:var(--r-md);padding:.85rem 1rem;margin:0 0 var(--sp-lg);}
   .dp-dmc-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;margin:0 0 .4rem;display:flex;align-items:center;gap:.45rem;color:var(--text);}
@@ -65,6 +86,8 @@
   .dp-dmc-fb{margin:.5rem 0 0;padding-left:1.1rem;color:var(--text-dim);font-size:.93rem;line-height:1.5;}
   .dp-dmc-fb li{margin:.2rem 0;}
   .dp-dmc-more{margin:.5rem 0 0;font-size:.93rem;}
+  .dp-dmc-paid-none,.dp-dmc-m{margin:.5rem 0 0;font-size:.93rem;line-height:1.5;color:var(--text-dim);}
+  .dp-dmc #dp-dmc-paid{margin-top:.6rem;}
   .dp-dmc-more a,.dp-dmc a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
   /* section frame */
   .dp-sec{margin:var(--sp-2xl) 0 0;}
@@ -1299,7 +1322,12 @@
       if(d&&typeof d!=='object') d=null;
       classBlock(d); spread(); allMilk(d); states(d);
       futures(p);
+      /* components/milk-tools.js (your area, read my check) reads the same files
+         and the same settled futures rows the table shows, not a second copy */
+      window.agsistMilk={d:d,rows:futRows.slice(),classIdx:shown.idx,c3:shown.c3};
+      try{document.dispatchEvent(new CustomEvent('agsist-milk'));}catch(e){}
     });
+    var futRows=[];
 
     // ---- the futures table, from prices.json ----
     function fut(msg,rows,asof){
@@ -1385,6 +1413,7 @@
       txt('dp-fut-kind',allSettle?'CME settles, read from Yahoo Finance':'Yahoo Finance, delayed; a close can sit a tick off the CME settle');
       if(dl.length===1) asof=(allSettle?'Settles from ':'Closes from ')+dayLabel(dl[0])+'.';
       else if(dl.length>1){ rows.forEach(function(r){r.label+=' ('+dayLabel(r.date)+')';}); asof='Contracts closed on different days; each row shows its own.'; }
+      futRows=rows;
       fut('Futures not shown: no current Class III contracts in the price file.',rows,asof);
     }
   })();
@@ -1416,6 +1445,7 @@
   });
 })();
 </script>
+  <script src="/components/milk-tools.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
