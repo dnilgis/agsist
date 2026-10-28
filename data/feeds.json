@@ -638,6 +638,7 @@
   {
    "path": "data/cull-cows.json",
    "pages": [
+    "cattle-auction-prices.html",
     "milk-prices.html"
    ],
    "written_by": [
