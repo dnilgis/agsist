@@ -227,6 +227,59 @@ def confirm(parsed, nass):
     return rows, {"count": len(out), "months": out, "why": "; ".join(reasons)} if out else {"count": 0}
 
 
+# ---------------------------------------------------------------- months read off a screen capture
+# Oct 28, 2026: the runner reaches FSA only through the Internet Archive, whose
+# newest copy (Jun 10) ends at April 2026. Sig captured FSA's live page that day
+# ("2026 Rates" table, May to Aug posted); those four months were typed from the
+# capture into "screenshot" with FSA's own corn, hay and soybean meal, and are
+# kept only while each feed cost is FSA's formula on its own prices (to the cent
+# FSA prints) and milk minus feed is the margin. A later read of FSA's page wins
+# a month only when it is at least as new as the capture: an archive copy counts
+# from its snapshot date, a live read from the day it ran. Older never overwrites
+# newer.
+NOTE = ("Written by scripts/fetch_dmc.py from FSA's own DMC prices and updates page (live, or the Internet Archive copy "
+        "named by archive_url and snapshot) and FSA's DMC fact sheet. A month is kept only when FSA's milk minus feed is "
+        "FSA's margin and its all-milk matches the NASS month held; the rest are in withheld. The months under screenshot "
+        "were read off a screen capture of FSA's live page on the date it names (with FSA's corn, hay and soybean meal, "
+        "each feed cost checked against FSA's formula) and stay until a read of FSA's page at least as new has them. mpp "
+        "holds MPP-Dairy (2014-2018), a different program with a different feed cost, from FSA's MPP calculations table.")
+
+
+def shot_ok(r):
+    """True when a captured row's feed cost is FSA's formula on its own corn, hay
+    and soybean meal (1.0728, 0.0137, 0.00735, to the cent FSA prints) and its
+    all-milk minus feed is its margin."""
+    try:
+        c, h, s, am, fd, mg = (float(r[k]) for k in ("corn", "hay", "sbm", "all_milk", "feed", "margin"))
+    except (KeyError, TypeError, ValueError):
+        return False
+    return (min(c, h, s, am, fd) > 0 and abs(1.0728 * c + 0.0137 * h + 0.00735 * s - fd) <= 0.005
+            and abs(am - fd - mg) <= 0.006)
+
+
+def merge_shot(parsed, shot, vintage):
+    """(parsed with the captured months added, shot block to keep or None).
+    parsed = this run's read of FSA's page; vintage = how new that read is
+    (YYYY-MM-DD). A captured month fills a month the read lacks, and replaces a
+    month the read has only when the read is older than the capture. Months the
+    read has at least as new are dropped from the block; a block left empty is
+    dropped."""
+    shot = shot if isinstance(shot, dict) else {}
+    ms = shot.get("months") if isinstance(shot.get("months"), dict) else {}
+    rd = shot.get("read") or ""
+    if not ms or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", rd):
+        return dict(parsed), None
+    out, keep = dict(parsed), {}
+    for k, r in sorted(ms.items()):
+        if not (re.fullmatch(r"20\d\d-\d\d", k) and shot_ok(r)):
+            continue
+        if k in parsed and (vintage or "") >= rd:
+            continue      # FSA's page as read is at least as new: it wins
+        out[k] = {"all_milk": float(r["all_milk"]), "feed": float(r["feed"]), "margin": float(r["margin"])}
+        keep[k] = r
+    return dict(sorted(out.items())), (dict(shot, months=keep) if keep else None)
+
+
 # ---------------------------------------------------------------- MPP (2014-2018)
 MPP_FIRST, MPP_LAST = "2014-01", "2018-12"     # MPP-Dairy's program years
 MPP_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
@@ -354,6 +407,11 @@ def run(root=ROOT, now=None, get=None, pdf_text=None):
     at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     body, err = get(MARGINS_URL)
     parsed = parse_margins(body.decode("utf-8", "replace")) if body else {}
+    shot = old.get("screenshot")
+    if parsed:
+        v = VIA.get(MARGINS_URL, {"via": "live"})
+        vintage = v.get("snapshot") if v.get("via") == "archive" else now.strftime("%Y-%m-%d")
+        parsed, shot = merge_shot(parsed, shot, vintage)
     rows, held = confirm(parsed, nass)
     if not rows:
         why = err or ("no margins table found on the page" if body else "not read")
@@ -370,6 +428,10 @@ def run(root=ROOT, now=None, get=None, pdf_text=None):
                    read=now.strftime("%Y-%m-%d"), margins=rows, withheld=held, status={"ok": True, "at": at},
                    hay=parse_hay(body.decode("utf-8", "replace")))
         rec.pop("premium_tier1", None)
+        if shot:
+            rec["screenshot"] = shot
+        else:
+            rec.pop("screenshot", None)
         print("[dmc] %d months kept (%s to %s), %d withheld%s" % (
             len(rows), min(rows), max(rows), held["count"], (": " + held["why"]) if held["count"] else ""))
     from fetch_dairy import pdf_to_text
@@ -412,10 +474,7 @@ def run(root=ROOT, now=None, get=None, pdf_text=None):
                                                                   max(blk["months"]), blk["withheld"]["count"]))
         else:
             print("::warning::MPP table not read (%s)" % (merr or ("read" if mt else "not a PDF")))
-    rec["_note"] = ("Written by scripts/fetch_dmc.py from FSA's own DMC prices and updates page (live, or the Internet "
-                    "Archive copy named by archive_url and snapshot) and FSA's DMC fact sheet. A month is kept only when "
-                    "FSA's milk minus feed is FSA's margin and its all-milk matches the NASS month held; the rest are in "
-                    "withheld. Never typed by hand.")
+    rec["_note"] = NOTE
     tmp = p.with_suffix(".tmp")
     tmp.write_text(json.dumps(rec, indent=1, sort_keys=True) + "\n")
     os.replace(tmp, p)
