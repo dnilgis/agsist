@@ -272,7 +272,7 @@ def get_text(url, get=http_get):
     return t, err
 
 
-def build(get_page, get_pdf, now):
+def build(get_page, get_pdf, now, old_hist=None):
     """(record, why). get_page(url) -> (bytes, err); get_pdf(url) -> (text, err)."""
     body, err = get_page(PPD_INDEX)
     mk = newest_ppd(body.decode("utf-8", "replace") if body else "")
@@ -300,8 +300,39 @@ def build(get_page, get_pdf, now):
             nxt.append({x: v for x, v in a.items() if v is not None})
     if nxt:
         out["next_class1"] = nxt
+    hist, hwhy = ppd_history(mk, old_hist, get_pdf)
+    out["ppd_history"] = hist
+    if hwhy:
+        out["ppd_history_why"] = hwhy
     out["read"] = now.strftime("%Y-%m-%d")
     return out, ""
+
+
+HIST_MONTHS = 24       # the PPD history on the page: the 24 months up to the latest
+HIST_KEYS = ("month_key", "ppd", "uniform", "class3", "released_ppd")
+
+
+def ppd_history(latest_mk, old_rows, get_pdf, n=HIST_MONTHS):
+    """(rows, why_by_month): the n months up to latest_mk, each from that month's
+    own class and PPD releases and passing month_record's checks (uniform = Class
+    III + PPD among them). A month already held is kept as it was and not fetched
+    again (a release does not change once out); a month that fails is left out
+    with its reason, never filled."""
+    held = {r["month_key"]: r for r in (old_rows or []) if isinstance(r, dict) and r.get("month_key")}
+    rows, why = [], {}
+    for i in range(n - 1, -1, -1):
+        k = _shift(latest_mk, -i)
+        if k in held and isinstance(held[k].get("ppd"), float):
+            rows.append(held[k])
+            continue
+        ct, e1 = get_pdf(_url(CLASS_URL, k))
+        pt, e2 = get_pdf(_url(PPD_URL, k))
+        r, w = month_record(k, ct, pt)
+        if not r:
+            why[k] = (w or e1 or e2 or "not read")[:160]
+            continue
+        rows.append({x: r[x] for x in HIST_KEYS if r.get(x) is not None})
+    return rows, why
 
 
 def run(root=ROOT, now=None, get_page=None, get_pdf=None):
@@ -313,7 +344,7 @@ def run(root=ROOT, now=None, get_page=None, get_pdf=None):
         old = json.loads(p.read_text())
     except (OSError, ValueError):
         old = {}
-    new, why = build(get_page, get_pdf, now)
+    new, why = build(get_page, get_pdf, now, old.get("ppd_history"))
     if new and old.get("latest", {}).get("month_key", "") > new["latest"]["month_key"]:
         new, why = None, "the newest month read is older than the one held"
     if not new:
@@ -403,6 +434,21 @@ def selftest():
     ck("newest PPD month from the index", newest_ppd('<a href="PPD/2026/PPD0826.pdf"><a href="PPD/2026/PPD0926.pdf"><a href="PPD/2025/PPD1225.pdf">') == "2026-09")
     ck("urls", _url(PPD_URL, "2026-09") == "https://www.fmma30.com/PPD/2026/PPD0926.pdf"
        and _url(CLASS_URL, "2025-09") == "https://www.fmma30.com/ClassPrice/2025/ClassPrice--09-25.pdf")
+
+    asked = []
+
+    def fake(u):
+        asked.append(u)
+        return ({_url(CLASS_URL, "2026-09"): cls, _url(PPD_URL, "2026-09"): ppd}.get(u), "404")
+    held = [{"month_key": "2026-07", "ppd": 0.41, "uniform": 17.0, "class3": 16.59}]
+    hr, hw = ppd_history("2026-09", held, fake, n=3)
+    ck("PPD history: a checked month from its own releases, a held month kept, a missing month left out with why",
+       [r["month_key"] for r in hr] == ["2026-07", "2026-09"] and hr[1]["ppd"] == 0.58 and hr[1]["class3"] == 16.04
+       and list(hw) == ["2026-08"], (hr, hw))
+    ck("...the held month is not fetched again", not any("07-26" in u or "0726" in u for u in asked), asked)
+    hr2, hw2 = ppd_history("2026-09", [], lambda u: ({_url(CLASS_URL, "2026-09"): cls,
+                                                      _url(PPD_URL, "2026-09"): ppd.replace("16.62", "16.72")}.get(u), "404"), n=1)
+    ck("...a month whose uniform is not Class III plus PPD is left out", hr2 == [] and "2026-09" in hw2, hw2)
 
     # the whole build with fake fetches; the year-ago month missing is said, not filled
     import tempfile
