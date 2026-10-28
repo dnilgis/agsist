@@ -107,7 +107,7 @@ test('the Send to AGSIST bookmark: hands the page only to https://agsist.com, af
   assert.match(b, /^javascript:\(function\(\)\{/);
   assert.ok(!/%/.test(b), 'no % in it, so a browser decoding the bookmark cannot change it');
   assert.match(b, /A='https:\/\/agsist\.com'/);
-  assert.match(b, /\/elev-admin\.html\?from='\+encodeURIComponent\(location\.hostname\)\+'#send'/);
+  assert.match(b, /\/desk\/elevators\.html\?from='\+encodeURIComponent\(location\.hostname\)\+'#send'/);
   assert.match(b, /e\.origin!==A\|\|e\.source!==w\|\|!e\.data\|\|e\.data\.type!=='agsist-send-ready'/);
   assert.match(b, /w\.postMessage\(\{type:'agsist-send-page',html:h\},A\)/);
   assert.ok(!/postMessage\([^)]*'\*'/.test(b), 'never to any origin');

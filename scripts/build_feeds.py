@@ -146,6 +146,9 @@ CURATED = {
     # PRF state sponsors (components/prf-sponsor.js): Sig edits it when a state
     # sells or renews; each entry lapses on its own "through" date.
     "data/prf-sponsors.json",
+    # State-targeted sponsors (components/geo-sponsor.js; Sig's desk lists them):
+    # Sig switches an entry on and off by hand with its active flag (Oct 28).
+    "data/geo-sponsors.json",
     # Farm bill program dates and rules (DMC signup window and the rest): edited by
     # hand from USDA notices; seed_static.py reads it for /milk-prices (Oct 28).
     "data/farm-bill.json",
@@ -208,7 +211,7 @@ EXTERNAL = {
     "data/index.json": (
         "published by dnilgis/bids, every reader pass",
         "Every board the bid network reads, with its last read and why it failed. "
-        "Sig's Today list (elev-today.html) and the morning email build the "
+        "Sig's Today list (desk/today.html, a tab of /desk) and the morning email build the "
         "day's hand-paste list from it. Unreachable means the Today list says "
         "so and shows the other items; nothing on the public site reads it."),
 }
@@ -384,7 +387,7 @@ def main():
 
     # ── which pages fetch which feed ─────────────────────────────────────────
     readers = defaultdict(set)
-    for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")):
+    for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")) + sorted(glob.glob("desk/*.html")):   # desk/: the admin tabs of /desk (Oct 28)
         text = read(p)
         # A page also reads what its own page scripts fetch. 2026-10-11: the
         # homepage moved three big inline scripts to components/home-*.js, and

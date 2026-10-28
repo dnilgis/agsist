@@ -1,4 +1,4 @@
-/* The elevator desk (elev-admin.html) and Sig's Today list (elev-today.html)
+/* The elevator desk (desk/elevators.html, was elev-admin.html) and Sig's Today list (desk/today.html, was elev-today.html)
  * in Chromium, at 390 and 1280, the way Sig uses them. The pages are served
  * as https://agsist.com from this checkout, so the browser's own CORS checks
  * run against the real worker: workers/subs-worker.js answers in-process on an
@@ -153,7 +153,7 @@ test.after(async () => { if (browser) await browser.close(); });
 /* Oct 20: Sig saved a 51-board preview and saw nothing. The answer went into
    #p-out, above the preview, a screen or more away from the button. */
 for (const width of WIDTHS) test(`${width}px: after Save on a long preview, the answer is in view next to the button`, { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html?paste=newcoop#paste", { width, token: TOK });
+  const S = await open(await br(), "/desk/elevators.html?paste=newcoop#paste", { width, token: TOK });
   const pg = S.pg;
   await readLong(pg);
   const pv = await pg.locator("#p-prev").innerText();
@@ -180,7 +180,7 @@ for (const width of WIDTHS) test(`${width}px: after Save on a long preview, the 
 });
 
 for (const width of WIDTHS) test(`${width}px: the button says Saving... and is disabled while it works`, { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html?paste=newcoop#paste", { width, token: TOK, worker: "slow" });
+  const S = await open(await br(), "/desk/elevators.html?paste=newcoop#paste", { width, token: TOK, worker: "slow" });
   const pg = S.pg;
   await readLong(pg);
   await clickSave(pg);
@@ -199,7 +199,7 @@ for (const width of WIDTHS) test(`${width}px: the button says Saving... and is d
 
 /* Every way a save fails: the reason is next to the button, the paste stays, and a retry works. */
 for (const width of WIDTHS) test(`${width}px: a failed save says why, keeps the paste, and a retry saves`, { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html?paste=newcoop#paste", { width });
+  const S = await open(await br(), "/desk/elevators.html?paste=newcoop#paste", { width });
   const pg = S.pg;
   await readLong(pg);
   const cases = [
@@ -233,7 +233,7 @@ for (const width of WIDTHS) test(`${width}px: a failed save says why, keeps the 
 });
 
 test("a paste that reads nothing, a bot check page, and another site's page are refused before any save", { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html?paste=newcoop#paste", { width: 390, token: TOK });
+  const S = await open(await br(), "/desk/elevators.html?paste=newcoop#paste", { width: 390, token: TOK });
   const pg = S.pg;
   for (const [txt, re] of [["   ", /Nothing was pasted/], ["<html><title>Just a moment...</title><script>window._cf_chl_opt={}</script></html>", /bot check page/],
     ["<html><body><h1>Cargill Cash Bids</h1><table><tr><td>Corn</td><td>Nov</td><td>4.10</td></tr></table></body></html>", /No bid rows were found/],
@@ -249,7 +249,7 @@ test("a paste that reads nothing, a bot check page, and another site's page are 
 });
 
 test("the bookmark from another site: no reader for it, said plainly; the site list still works", { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html?paste=www.cargill.com#paste", { width: 390, token: TOK });
+  const S = await open(await br(), "/desk/elevators.html?paste=www.cargill.com#paste", { width: 390, token: TOK });
   const pg = S.pg;
   assert.match(await pg.locator("#p-out").innerText(), /There is no paste reader for www\.cargill\.com yet/);
   assert.equal(await pg.inputValue("#p-site"), "newcoop");
@@ -265,7 +265,7 @@ test("the bookmark from another site: no reader for it, said plainly; the site l
 });
 
 test("token: entered once is kept, Forget clears it, and every call sends it in the header only", { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html", { width: 1280 });
+  const S = await open(await br(), "/desk/elevators.html", { width: 1280 });
   const pg = S.pg;
   await pg.fill("#tok", TOK);
   await pg.dispatchEvent("#tok", "change");
@@ -291,7 +291,7 @@ async function seed(env, store) {
     name: "Lee Roe", role: "Owner", phone: "765-555-0101", email: "lee@example.com", crops: "corn", how: "not-sure", note: "" }));
 }
 for (const width of WIDTHS) test(`${width}px: requests load, make a listing from one, dismiss one; the list loads, New link and Turn off work`, { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html#requests", { width, token: TOK, seed });
+  const S = await open(await br(), "/desk/elevators.html#requests", { width, token: TOK, seed });
   const pg = S.pg;
   await pg.waitForFunction(() => /2 waiting/.test(document.getElementById("r-out").textContent));
   await pg.waitForSelector(".req .match");
@@ -326,16 +326,16 @@ for (const width of WIDTHS) test(`${width}px: requests load, make a listing from
 });
 
 test("wrong token and a worker that is down: every section says so", { skip }, async () => {
-  let S = await open(await br(), "/elev-admin.html", { width: 390, token: "wrong" });
+  let S = await open(await br(), "/desk/elevators.html", { width: 390, token: "wrong" });
   await S.pg.waitForFunction(() => /not accepted/.test(document.getElementById("l-out").textContent) && /not accepted/.test(document.getElementById("r-out").textContent));
   await S.ctx.close();
-  S = await open(await br(), "/elev-admin.html", { width: 390, token: TOK, worker: "down" });
+  S = await open(await br(), "/desk/elevators.html", { width: 390, token: TOK, worker: "down" });
   await S.pg.waitForFunction(() => /Could not reach/.test(document.getElementById("l-out").textContent) && /Could not reach/.test(document.getElementById("r-out").textContent));
   await S.ctx.close();
 });
 
 test("the desk names its own icon (no /favicon.ico 404) and opts into the view transition Today starts", () => {
-  const h = read("elev-admin.html");
+  const h = read("desk/elevators.html");
   const icon = h.match(/<link rel="icon"[^>]*href="([^"]+)"/);
   assert.ok(icon && existsSync(join(ROOT, icon[1].replace(/^\//, ""))), "an icon link to a file that exists");
   assert.match(h, /@view-transition\{navigation:auto\}/);
@@ -343,7 +343,7 @@ test("the desk names its own icon (no /favicon.ico 404) and opts into the view t
 });
 
 for (const width of WIDTHS) test(`${width}px: an empty token box is said at the top, at Read, and by Save, before any save is tried`, { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html?paste=newcoop#paste", { width });
+  const S = await open(await br(), "/desk/elevators.html?paste=newcoop#paste", { width });
   const pg = S.pg;
   assert.ok(await pg.isVisible("#tok-miss"), "the top says the token is missing");
   assert.match(await pg.locator("#tok-miss").innerText(), /No token in this browser yet/);
@@ -371,7 +371,7 @@ for (const width of WIDTHS) test(`${width}px: an empty token box is said at the 
 });
 
 test("the desk logs no errors and fetches nothing that is not there", { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html?paste=newcoop#paste", { width: 1280, token: TOK });
+  const S = await open(await br(), "/desk/elevators.html?paste=newcoop#paste", { width: 1280, token: TOK });
   await S.pg.waitForTimeout(300);
   assert.deepEqual(S.missing, []);
   assert.deepEqual(S.errs, []);
@@ -383,14 +383,14 @@ test("the desk logs no errors and fetches nothing that is not there", { skip }, 
    into needs both pages to opt in, or Chrome logs "View Transition opt-in
    disabled" on the way (Sig's console, Oct 20). */
 for (const width of WIDTHS) test(`${width}px: Today lists NEW Cooperative; its Paste button opens the paste box with no console error`, { skip }, async () => {
-  const S = await open(await br(), "/elev-today.html", { width, token: TOK });
+  const S = await open(await br(), "/desk/today.html", { width, token: TOK });
   const pg = S.pg;
-  const paste = pg.locator('a.td-btn[href="/elev-admin.html?paste=newcoop#paste"]');
+  const paste = pg.locator('a.td-btn[href="/desk/elevators.html?paste=newcoop#paste"]');
   await paste.first().waitFor({ timeout: 15000 });
   await shot(pg, `today-${width}`);
   assert.ok(await noSideScroll(pg) <= 0);
   await paste.first().click();
-  await pg.waitForURL(/elev-admin\.html\?paste=newcoop#paste/);
+  await pg.waitForURL(/desk\/elevators\.html\?paste=newcoop#paste/);
   await pg.waitForTimeout(500);
   assert.ok(await inView(pg, "#paste h2"), "the paste box is on screen");
   assert.equal(await pg.evaluate(() => window.__vt), "finished", "the transition Today starts is not skipped (before the fix: none, logged as opt-in disabled)");
@@ -401,12 +401,12 @@ for (const width of WIDTHS) test(`${width}px: Today lists NEW Cooperative; its P
 });
 
 test("Today with a wrong token, and with the worker down, still lists the bid sites and says what did not load", { skip }, async () => {
-  let S = await open(await br(), "/elev-today.html", { width: 390, token: "wrong" });
+  let S = await open(await br(), "/desk/today.html", { width: 390, token: "wrong" });
   await S.pg.waitForSelector(".td-err", { timeout: 15000 });
   assert.match(await S.pg.locator(".td-err").innerText(), /Listing requests did not load \(token\?\)/);
   assert.ok(await S.pg.locator('a.td-btn[href*="paste=newcoop"]').count() >= 1);
   await S.ctx.close();
-  S = await open(await br(), "/elev-today.html", { width: 390, token: TOK, worker: "down" });
+  S = await open(await br(), "/desk/today.html", { width: 390, token: TOK, worker: "down" });
   await S.pg.waitForSelector(".td-err", { timeout: 15000 });
   assert.ok(await S.pg.locator('a.td-btn[href*="paste=newcoop"]').count() >= 1);
   assert.deepEqual(S.errs, []);
@@ -414,7 +414,7 @@ test("Today with a wrong token, and with the worker down, still lists the bid si
 });
 
 test("the Copy for AGSIST bookmark on NEW Cooperative's page: copy, open the desk, Paste from clipboard, Read, Save", { skip }, async () => {
-  const S = await open(await br(), "/elev-today.html", { width: 1280, token: TOK, newcoop: LONG });
+  const S = await open(await br(), "/desk/today.html", { width: 1280, token: TOK, newcoop: LONG });
   const bm = await S.pg.locator("#bmcode").innerText();
   assert.match(bm, /^javascript:/);
   await S.ctx.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "https://www.newcoop.com" }).catch(() => {});
@@ -456,14 +456,14 @@ const posts = (S) => S.calls.filter((c) => c === "POST /elev/admin/paste").lengt
 
 test("Today shows Send to AGSIST beside the copy bookmark, with steps for computer, iPhone and Android, and the bookmark holds no token", { skip }, async () => {
   for (const width of WIDTHS) {
-    const S = await open(await br(), "/elev-today.html", { width, token: TOK });
+    const S = await open(await br(), "/desk/today.html", { width, token: TOK });
     const pg = S.pg;
     assert.equal(await pg.getAttribute("#sbm", "href"), SEND);
     assert.equal(await pg.locator("#sbmcode").innerText(), SEND);
     assert.ok(await pg.isVisible("#bm"), "the old Copy for AGSIST bookmark is still there");
     const t = await pg.locator("#send").innerText();
     for (const re of [/Computer:/, /iPhone \(Safari\):/, /Android \(Chrome\):/, /Select All, Copy/]) assert.match(t, re);
-    assert.equal(await pg.getAttribute('#send a[href="/elev-admin.html#send"]', "href"), "/elev-admin.html#send");
+    assert.equal(await pg.getAttribute('#send a[href="/desk/elevators.html#send"]', "href"), "/desk/elevators.html#send");
     assert.ok(!SEND.includes(TOK));
     assert.ok(!/—/.test(t), "no em dash");
     await pg.click("#scopy");
@@ -477,10 +477,10 @@ test("Today shows Send to AGSIST beside the copy bookmark, with steps for comput
 });
 
 for (const width of WIDTHS) test(`${width}px: Send to AGSIST on NEW Cooperative's whole board: the desk reads it and saves it with no tap`, { skip }, async () => {
-  const S = await open(await br(), "/elev-today.html", { width, token: TOK, newcoop: FULL });
+  const S = await open(await br(), "/desk/today.html", { width, token: TOK, newcoop: FULL });
   const { site, desk } = await tapSend(S, "https://www.newcoop.com/cash-bids");
   const u = new URL(desk.url());
-  assert.equal(u.pathname + u.hash, "/elev-admin.html#send");
+  assert.equal(u.pathname + u.hash, "/desk/elevators.html#send");
   assert.equal(u.searchParams.get("from"), "www.newcoop.com");
   assert.ok(!desk.url().includes(TOK), "no token in the address");
   await desk.waitForFunction(() => /^Saved/.test(document.getElementById("p-res").textContent), null, { timeout: 15000 });
@@ -501,7 +501,7 @@ for (const width of WIDTHS) test(`${width}px: Send to AGSIST on NEW Cooperative'
 });
 
 test("Send to AGSIST on a short page (4 of 66 boards): the desk shows what it read and waits for Save", { skip }, async () => {
-  const S = await open(await br(), "/elev-today.html", { width: 390, token: TOK, newcoop: SRC });
+  const S = await open(await br(), "/desk/today.html", { width: 390, token: TOK, newcoop: SRC });
   const { desk } = await tapSend(S, "https://www.newcoop.com/cash-bids");
   await desk.waitForSelector("#p-save:not([hidden])");
   await desk.waitForTimeout(800);
@@ -519,7 +519,7 @@ test("Send to AGSIST on a short page (4 of 66 boards): the desk shows what it re
 });
 
 test("Send to AGSIST with no token in the desk: the whole board is read, nothing is sent, and it says where the token goes", { skip }, async () => {
-  const S = await open(await br(), "/elev-today.html", { width: 390, newcoop: FULL });
+  const S = await open(await br(), "/desk/today.html", { width: 390, newcoop: FULL });
   const { desk } = await tapSend(S, "https://www.newcoop.com/cash-bids");
   await desk.waitForSelector("#p-save:not([hidden])");
   await desk.waitForTimeout(500);
@@ -532,13 +532,13 @@ test("Send to AGSIST with no token in the desk: the whole board is read, nothing
 const PUSHER = (target) => `<html><body><p>not a bid site</p><script>
   window.got = [];
   addEventListener("message", (e) => window.got.push(e.origin + " " + JSON.stringify(e.data)));
-  window.go = (html) => { window.w = window.open("https://agsist.com/elev-admin.html${target}", "_blank");
+  window.go = (html) => { window.w = window.open("https://agsist.com/desk/elevators.html${target}", "_blank");
     window.t = setInterval(() => { try { window.w.postMessage({ type: "agsist-send-page", html }, "*"); } catch (e) {} }, 100); };
 </script></body></html>`;
 test("a message from any origin but the supported bid site is ignored: other sites, plain http, a lookalike host", { skip }, async () => {
   const bad = ["https://www.cargill.com", "http://www.newcoop.com", "https://newcoop.com.example.net", "https://shop.newcoop.com"];
   const pages = Object.fromEntries(bad.map((o) => [o, PUSHER("#send")]));
-  const S = await open(await br(), "/elev-today.html", { width: 390, token: TOK, pages });
+  const S = await open(await br(), "/desk/today.html", { width: 390, token: TOK, pages });
   for (const o of bad) {
     const site = await S.ctx.newPage();
     await site.goto(o + "/cash-bids");
@@ -566,13 +566,13 @@ test("from NEW Cooperative's own origin, a message from a frame that did not ope
   const page = `<html><body><script>
     window.got = [];
     window.go = () => new Promise((ok) => {
-      window.w = window.open("https://agsist.com/elev-admin.html#send", "_blank");
+      window.w = window.open("https://agsist.com/desk/elevators.html#send", "_blank");
       addEventListener("message", (e) => { if (e.source === window.w && e.data && e.data.type === "agsist-send-ready") { window.got.push("ready"); ok(); } });
     });
     window.fromFrame = (html) => { const f = document.createElement("iframe"); f.srcdoc = "<p>x</p>"; document.body.appendChild(f);
       return new Promise((ok) => { f.onload = () => { f.contentWindow.eval("parent.w.postMessage({ type: 'agsist-send-page', html: parent.H }, 'https://agsist.com')"); ok(); }; }); };
   </script></body></html>`;
-  const S = await open(await br(), "/elev-today.html", { width: 1280, token: TOK, pages: { "https://www.newcoop.com": page } });
+  const S = await open(await br(), "/desk/today.html", { width: 1280, token: TOK, pages: { "https://www.newcoop.com": page } });
   const site = await S.ctx.newPage();
   await site.goto("https://www.newcoop.com/cash-bids");
   const [desk] = await Promise.all([S.ctx.waitForEvent("page"), site.evaluate(() => window.go())]);
@@ -595,7 +595,7 @@ test("from NEW Cooperative's own origin, a message from a frame that did not ope
 });
 
 test("the phone way: the send page opened by itself, Paste from clipboard with the whole board copied, reads and saves the same way", { skip }, async () => {
-  const S = await open(await br(), "/elev-admin.html#send", { width: 390, token: TOK });
+  const S = await open(await br(), "/desk/elevators.html#send", { width: 390, token: TOK });
   const pg = S.pg;
   await pg.waitForFunction(() => /No bid page sent anything/.test(document.getElementById("p-out").textContent));
   const text = P.read("newcoop", FULL).body.locations.length && FULL;
@@ -604,7 +604,7 @@ test("the phone way: the send page opened by itself, Paste from clipboard with t
   await pg.waitForFunction(() => /^Saved/.test(document.getElementById("p-res").textContent), null, { timeout: 15000 });
   assert.equal(JSON.parse(S.store.get("paste:newcoop")).locations.length, 66);
   /* the same page at #paste (the old way) still waits for Save */
-  const T = await open(await br(), "/elev-admin.html?paste=newcoop#paste", { width: 390, token: TOK });
+  const T = await open(await br(), "/desk/elevators.html?paste=newcoop#paste", { width: 390, token: TOK });
   await T.pg.evaluate((t) => navigator.clipboard.writeText(t), FULL);
   await T.pg.click("#p-clip");
   await T.pg.waitForSelector("#p-save:not([hidden])");

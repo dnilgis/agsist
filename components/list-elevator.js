@@ -3,7 +3,7 @@
    An elevator asks to post its own bids on AGSIST. The form posts to the
    subs worker (POST /form, kind elevator-listing, worker v5.21) through
    components/form-post.js; scripts/form_digest.py mails Sig, and the request
-   shows under Requests on elev-admin.html. Nothing is published from a
+   shows under Requests on desk/elevators.html. Nothing is published from a
    request: Sig calls the elevator first, then makes the listing.
 
    Prefill: links from the coverage map and the town pages carry

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Desk | AGSIST</title>
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<!-- Sig's desk (Oct 28, 2026: "a singular place for all things agsist, executive
+     level, KISS"). Not linked from anywhere, noindex, not in a sitemap, the
+     search index, the feeds or the menu. No analytics.
+     Public parts read the site's own public files (data/daily-sent,
+     data/*sponsors*.json, data/sponsors/<portal>.json, data/audience.json,
+     TODO-SIG.md), the bids repo's public directory and GitHub's public run
+     list. Private parts read one answer from the subs worker, GET /desk
+     (v5.59), with LIST_TOKEN in the Authorization header only, never in an
+     address. The token is the one every desk tab reads (agsist-elev-admin-token) in
+     this browser's localStorage, so it is pasted once; "Forget the token"
+     clears it. Without it no worker call is made and the private parts say so.
+     The worker answer holds counts only: no reader's address, name, town or
+     ZIP ever reaches this page. A number that cannot be read says
+     "can't read: <why>", never a blank or a guess.
+     THE CARDS ARE ONE LIST (CARDS below): a new card is one entry, naming the
+     sources it needs (SOURCES), its headline tiles and its body. -->
+<style>
+:root{--bg:#f6f5f1;--panel:#fff;--text:#1E2125;--dim:#5E6475;--line:#d6d9d2;--accent:#2B5C8A;--warn:#A8321E;--ok:#2f6b3a;--amber:#8a5a00}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a;--amber:#e0b860}}
+:root[data-theme="dark"]{--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a;--amber:#e0b860}
+html,body{background:var(--bg)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;overflow-wrap:anywhere}
+main{max-width:1100px;margin:0 auto;padding:16px 12px 60px}
+h1{font-size:1.35rem;margin:0}
+h2{font-size:1.05rem;margin:0}
+h3{font-size:.9rem;margin:.9rem 0 .3rem}
+p{margin:.3rem 0}
+a{color:var(--accent)}
+.dim,.src{color:var(--dim)}
+.src{font-size:.78rem;margin:.15rem 0 0}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+section,.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;margin:12px 0}
+label{display:block;font-size:.85rem;font-weight:600;margin:.4rem 0 .15rem}
+input,select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text)}
+button,.btn{font:inherit;font-weight:600;min-height:44px;padding:0 1rem;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+button.quiet,.btn.quiet{background:none;color:var(--accent)}
+:root[data-theme="dark"] button:not(.quiet){color:#10151a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button:not(.quiet){color:#10151a}}
+.tok-row{display:flex;gap:8px;align-items:center}
+.tok-row input{flex:1;min-width:0}
+#tok-state{font-size:.9rem;margin:12px 0 0}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+@media(min-width:760px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:96px;display:block;color:inherit;text-decoration:none}
+.tile .k{font-size:.78rem;color:var(--dim);font-weight:600}
+.tile .v{font-size:1.25rem;font-weight:700;line-height:1.2;margin:.1rem 0}
+.tile .s{font-size:.78rem;color:var(--dim)}
+.tile.bad{border-color:var(--warn)}.tile.bad .v{color:var(--warn)}
+.tile.good .v{color:var(--ok)}
+.tile.cantv .v{font-size:.95rem;color:var(--amber)}
+.cards{display:grid;grid-template-columns:minmax(0,1fr);gap:0 12px}
+@media(min-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:row dense}.card.wide{grid-column:1/-1}}
+.card .acts{display:flex;gap:6px;flex-wrap:wrap}
+.card .acts a{font-size:.85rem;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
+.cant{color:var(--amber);font-weight:600}
+.red{color:var(--warn);font-weight:600}
+.green{color:var(--ok);font-weight:600}
+.need{color:var(--dim);font-style:italic}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.4rem}
+td,th{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+th{font-size:.75rem;color:var(--dim);font-weight:600}
+td.n,th.n{text-align:right;white-space:nowrap}
+ul.l{margin:.3rem 0;padding-left:1.1rem}
+ul.l li{margin:.15rem 0}
+details{margin:.4rem 0}
+summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.row4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 10px}
+@media(max-width:640px){.row4{grid-template-columns:1fr 1fr}}
+.out{margin-top:.5rem;font-size:.9rem}.out.bad{color:var(--warn)}.out.good{color:var(--ok)}
+.out:empty{display:none}
+#loading{color:var(--dim);margin:12px 0}
+.tabs{display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;border-bottom:1px solid var(--line);margin:12px 0 0;white-space:nowrap}
+.tabs a{flex:0 0 auto;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;color:var(--dim);font-weight:600;text-decoration:none;border-bottom:3px solid transparent}
+.tabs a[aria-current="page"]{color:var(--text);border-bottom-color:var(--accent)}
+#frames iframe{display:block;width:100%;min-height:600px;border:0;margin:0;background:var(--bg)}
+[hidden]{display:none!important}
+@media(max-width:640px){
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack thead{display:none}
+  table.stack tr{border-bottom:1px solid var(--line);padding:.4rem 0}
+  table.stack td{border:0;padding:1px 0}
+  table.stack td[data-h]::before{content:attr(data-h) ": ";color:var(--dim);font-size:.78rem;font-weight:600}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1>Desk</h1><span class="dim" id="now"></span></div>
+
+  <section id="tok-box">
+    <label for="tok">Token (LIST_TOKEN)</label>
+    <div class="tok-row"><input id="tok" type="password" autocomplete="off" spellcheck="false"><button type="button" class="quiet" id="tok-forget">Forget the token</button><button type="button" id="reload">Read</button></div>
+    <p class="dim">Paste it once; this browser keeps it, and every tab uses it. Never put it in a link.</p>
+  </section>
+
+  <!-- THE TABS ARE ONE LIST (TABS in the script; this bar is the same list, written out so
+       nothing moves when the script runs). Every admin page lives here now (Sig, Oct 28):
+       the old addresses forward to /desk#<tab> (scripts/desk_tabs.py). -->
+  <nav class="tabs" id="tabs" aria-label="Desk tabs">
+    <a href="#overview" data-tab="overview" aria-current="page">Overview</a>
+    <a href="#today" data-tab="today">Today list</a>
+    <a href="#elevators" data-tab="elevators">Elevators</a>
+    <a href="#haymow" data-tab="haymow">Haymow</a>
+    <a href="#gifts" data-tab="gifts">Gift cards</a>
+  </nav>
+
+  <div id="desk"><p id="loading">Reading...</p></div>
+  <div id="frames"></div>
+</main>
+<script>
+(function () {
+  'use strict';
+  var API = 'https://agsist-api.dnilgis.workers.dev/';
+  var TOK_KEY = 'agsist-elev-admin-token';
+  var GH = 'https://api.github.com/repos/dnilgis/agsist/actions/';
+  var BIDS = 'https://dnilgis.github.io/bids/data/';
+  var EDIT = 'https://github.com/dnilgis/agsist/edit/main/';
+  var TODO_EDIT = EDIT + 'TODO-SIG.md';
+  var WEEK = 7 * 864e5;
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
+  function num(n) { return Number(n).toLocaleString('en-US'); }
+  function money(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function cant(why) { return '<span class="cant">can’t read: ' + esc(why) + '</span>'; }
+  function need() { return '<span class="need">Paste the token to see this.</span>'; }
+  function src(what, at) { return '<p class="src">' + esc(what) + (at ? ', ' + esc(at) : '') + '</p>'; }
+  function ct(d, withDay) {
+    d = d instanceof Date ? d : new Date(d);
+    if (isNaN(d)) return '';
+    var o = { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' };
+    if (withDay !== false) { o.month = 'short'; o.day = 'numeric'; }
+    return d.toLocaleString('en-US', o) + ' CT';
+  }
+  function day(s) { var d = new Date(s + 'T12:00:00Z'); return isNaN(d) ? s : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }); }
+  function ago(t, now) {
+    var m = Math.round((now - t) / 60000);
+    if (m < 60) return m + ' min ago';
+    var h = Math.round(m / 60);
+    return h < 48 ? h + ' h ago' : Math.round(h / 24) + ' days ago';
+  }
+  function isoDay(t) { return new Date(t).toISOString().slice(0, 10); }
+  /* Central-time calendar day, for sponsor start/end dates (as geo-sponsor.js reads them) */
+  function ctDay(t) { var p = new Date(t).toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); return /^\d{4}-\d{2}-\d{2}$/.test(p) ? p : isoDay(t); }
+
+  /* ---------- the token ---------- */
+  function tok() { return $('tok').value.trim(); }
+  /* One token box for every tab. The Haymow desk kept its own key before Oct 28: read it once
+     as a fallback and keep it under the shared key, so Sig never pastes twice. */
+  var OLD_KEYS = ['agsist-haymow-admin-token'];
+  try {
+    var t0 = localStorage.getItem(TOK_KEY) || '';
+    for (var k = 0; !t0 && k < OLD_KEYS.length; k++) { t0 = localStorage.getItem(OLD_KEYS[k]) || ''; if (t0) localStorage.setItem(TOK_KEY, t0); }
+    $('tok').value = t0;
+  } catch (e) {}
+  function tokSaved() { try { localStorage.setItem(TOK_KEY, tok()); } catch (e) {} reloadFrames(); }
+  $('tok').addEventListener('change', tokSaved);
+  $('tok-forget').addEventListener('click', function () {
+    $('tok').value = '';
+    try { localStorage.removeItem(TOK_KEY); OLD_KEYS.forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {}
+    reloadFrames(); load();
+  });
+  $('reload').addEventListener('click', function () { tokSaved(); load(); });
+
+  /* ---------- the tabs: ONE LIST. A tab is its id, its label (the bar above says the same) and
+     the page that holds it; Overview is this page's own cards. ---------- */
+  var TABS = [['overview', 'Overview', null], ['today', 'Today list', '/desk/today.html'], ['elevators', 'Elevators', '/desk/elevators.html'],
+    ['haymow', 'Haymow', '/desk/haymow.html'], ['gifts', 'Gift cards', '/desk/gifts.html']];
+  var PAGE = {};
+  TABS.forEach(function (t) { PAGE[t[0]] = t[2]; });
+  var FRAMES = {};
+  function parseHash(h) {
+    h = String(h || '').replace(/^#/, '');
+    var i = h.indexOf('/'), tab = i < 0 ? h : h.slice(0, i);
+    return Object.prototype.hasOwnProperty.call(PAGE, tab) ? { tab: tab, sub: i < 0 ? '' : h.slice(i + 1) } : null;
+  }
+  function fit(f) {
+    try { var d = f.contentDocument; if (d && d.documentElement) f.style.height = Math.max(600, d.documentElement.scrollHeight) + 'px'; } catch (e) {}
+  }
+  function frameFor(tab, sub, fresh) {
+    var src = PAGE[tab] + location.search + (sub ? '#' + sub : '');
+    var f = FRAMES[tab];
+    if (f && !fresh) return f;
+    if (f) { f.parentNode.removeChild(f); delete FRAMES[tab]; f = null; }   /* a new address for a tab: load it anew, so its #hash and query are read */
+    {
+      f = document.createElement('iframe');
+      f.title = TABS.filter(function (t) { return t[0] === tab; })[0][1];
+      f.setAttribute('data-tab', tab);
+      f.addEventListener('load', function () {
+        fit(f);
+        try {
+          var w = f.contentWindow, d = f.contentDocument;
+          if (w.ResizeObserver) new w.ResizeObserver(function () { fit(f); }).observe(d.documentElement);
+          /* a link inside a tab to another tab (or to the same one) stays on the desk */
+          d.addEventListener('click', function (e) {
+            var a = e.target.closest && e.target.closest('a[href]');
+            if (!a || a.target === '_blank' || e.defaultPrevented) return;
+            var u; try { u = new URL(a.getAttribute('href'), w.location.href); } catch (er) { return; }
+            if (u.origin !== location.origin) return;
+            var to = null;
+            Object.keys(PAGE).forEach(function (k) { if (PAGE[k] && u.pathname === PAGE[k]) to = k; });
+            if (!to) return;
+            e.preventDefault();
+            history.pushState(null, '', '/desk' + u.search + '#' + to + (u.hash.length > 1 ? '/' + u.hash.slice(1) : ''));
+            show(to, u.hash.slice(1), true);
+          });
+        } catch (e) {}
+      });
+      $('frames').appendChild(f);
+      FRAMES[tab] = f;
+    }
+    f.src = src;
+    return f;
+  }
+  function reloadFrames() { Object.keys(FRAMES).forEach(function (k) { try { FRAMES[k].contentWindow.location.reload(); } catch (e) {} }); }
+  function show(tab, sub, fresh) {
+    /* The Send to AGSIST bookmark talks to the window it opened, so its page cannot sit in a
+       frame: #elevators/send opens the elevator tab's page in this window, opener and all. */
+    if (tab === 'elevators' && sub === 'send') { location.replace(PAGE.elevators + location.search + '#send'); return; }
+    [].forEach.call(document.querySelectorAll('#tabs a'), function (a) {
+      if (a.getAttribute('data-tab') !== tab) { a.removeAttribute('aria-current'); return; }
+      a.setAttribute('aria-current', 'page');
+      var bar = $('tabs');   /* the open tab in view inside its own bar, never by scrolling the page */
+      if (a.offsetLeft < bar.scrollLeft || a.offsetLeft + a.offsetWidth > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = Math.max(0, a.offsetLeft - 12);
+    });
+    $('desk').hidden = tab !== 'overview';
+    Object.keys(FRAMES).forEach(function (k) { FRAMES[k].hidden = k !== tab; });
+    if (tab !== 'overview') { var f = frameFor(tab, sub, fresh); f.hidden = false; }
+  }
+  function route() { var r = parseHash(location.hash); show(r ? r.tab : 'overview', r ? r.sub : '', false); }
+  function onNav() {
+    var r = parseHash(location.hash);
+    if (r) show(r.tab, r.sub, !!r.sub); else show('overview', '', false);   /* #c-<card> anchors stay on Overview */
+  }
+  window.addEventListener('hashchange', onNav);
+  window.addEventListener('popstate', onNav);
+
+  /* ---------- reading, every source fails soft ---------- */
+  function why(e, host) {
+    if (e && e.status === 404) return 'not found at ' + host + ' (404)';
+    if (e && e.status === 403 && /github/.test(host)) return 'GitHub refused (403): its limit for visits without a login is 60 an hour';
+    if (e && e.status === 403) return 'the token was not accepted';
+    if (e && e.status) return host + ' answered ' + e.status;
+    if (e && e.name === 'AbortError') return host + ' did not answer in 20 seconds';
+    if (e && e.parse) return host + ' did not send readable data';
+    return 'no answer from ' + host;
+  }
+  function get(url, opt) {
+    opt = opt || {};
+    var host = /^https?:/.test(url) ? new URL(url).host : 'agsist.com';
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = ctl ? setTimeout(function () { ctl.abort(); }, 20000) : null;
+    var init = { cache: 'no-store', headers: opt.headers || {}, method: opt.method || 'GET', referrerPolicy: 'no-referrer' };
+    if (opt.body) { init.body = JSON.stringify(opt.body); init.headers['Content-Type'] = 'application/json'; }
+    if (ctl) init.signal = ctl.signal;
+    return fetch(url, init).then(function (r) {
+      if (!r.ok) { var e = new Error('http'); e.status = r.status; throw e; }
+      return opt.text ? r.text() : r.json().catch(function () { var e = new Error('parse'); e.parse = true; throw e; });
+    }).then(function (d) { if (timer) clearTimeout(timer); return { ok: true, d: d }; },
+      function (e) { if (timer) clearTimeout(timer); return { ok: false, why: why(e, host) }; });
+  }
+  function worker(path, body) {
+    var t = tok();
+    if (!t) return Promise.resolve({ ok: false, notok: true, why: 'no token in this browser' });
+    return get(API + path, { method: body ? 'POST' : 'GET', body: body, headers: { Authorization: 'Bearer ' + t } });
+  }
+
+  var WORKFLOWS = [['daily.yml', 'The Daily'], ['fetch_bids.yml', 'Cash bids'], ['cattle-auction.yml', 'Cattle auctions'], ['hay-ams.yml', 'Hay reports'], ['sponsor-report.yml', 'Sponsor portals']];
+  var SOURCES = {
+    worker: function () { return worker('desk'); },
+    runs: function () {
+      return Promise.all(WORKFLOWS.map(function (w) {
+        return get(GH + 'workflows/' + w[0] + '/runs?branch=main&per_page=5&exclude_pull_requests=true').then(function (r) {
+          if (!r.ok) return { file: w[0], name: w[1], why: r.why };
+          var runs = (r.d && r.d.workflow_runs) || [];
+          var done = runs.filter(function (x) { return x.status === 'completed'; })[0] || null;
+          var going = runs.filter(function (x) { return x.status !== 'completed'; })[0] || null;
+          var out = { file: w[0], name: w[1], last: done, going: going };
+          /* a red Daily: which step stopped it */
+          if (w[0] === 'daily.yml' && done && done.conclusion === 'failure') {
+            return get(GH + 'runs/' + done.id + '/jobs?per_page=20').then(function (j) {
+              var step = null;
+              ((j.ok && j.d.jobs) || []).forEach(function (job) { (job.steps || []).forEach(function (s) { if (!step && s.conclusion === 'failure') step = s.name; }); });
+              out.step = step; out.stepWhy = j.ok ? '' : j.why;
+              return out;
+            });
+          }
+          return out;
+        });
+      }));
+    },
+    sent: function (now) {
+      var d0 = isoDay(now), d1 = isoDay(now - 864e5);
+      return get('/data/daily-sent/' + d0 + '.json').then(function (r) {
+        if (r.ok) return { day: d0, rec: r.d };
+        return get('/data/daily-sent/' + d1 + '.json').then(function (y) { return y.ok ? { day: d1, rec: y.d, yesterday: true, todayWhy: r.why } : { why: r.why }; });
+      });
+    },
+    sponsors: function () {
+      var files = ['sponsors', 'page-sponsors', 'prf-sponsors', 'geo-sponsors', 'sponsor'];
+      return Promise.all(files.map(function (f) { return get('/data/' + f + '.json'); })).then(function (got) {
+        var out = {};
+        files.forEach(function (f, i) { out[f] = got[i]; });
+        var list = out.sponsors.ok && Array.isArray(out.sponsors.d.sponsors) ? out.sponsors.d.sponsors : [];
+        return Promise.all(list.map(function (s) {
+          if (!/^[a-z0-9-]+$/.test(s.slug || '') || !/^[0-9a-f]{16}$/.test(s.token || '')) return Promise.resolve({ ok: false, why: 'no portal token' });
+          return get('/data/sponsors/' + s.slug + '-' + s.token + '.json');
+        })).then(function (portals) { out.portals = portals; return out; });
+      });
+    },
+    dir: function () { return get(BIDS + 'directory.json'); },
+    ids: function () { return get(BIDS + 'elevator-ids.jsonl', { text: true }); },
+    aud: function () { return get('/data/audience.json'); },
+    todo: function () { return get('/TODO-SIG.md', { text: true }); }
+  };
+
+  /* ---------- Signups: where Daily readers signed up. COPY of SIGNUP_GROUPS in
+     scripts/morning_report.py (test/desk.test.mjs runs both on the same sources). ---------- */
+  var SIGNUP_GROUPS = [
+    ['Sitewide bar', function (s) { return s === 'bar' || s.indexOf('bar-') === 0 || s.indexOf('bar:') === 0; }],
+    ['Daily page', function (s) { return s === 'daily-briefing-subscribe' || s === 'daily' || s.indexOf('page:daily') === 0; }],
+    ['Town pages', function (s) { return s.indexOf('town:') === 0; }],
+    ['Homepage', function (s) { return ['hero', 'homepage-email', 'signup-band', 'watch-optin'].indexOf(s) >= 0; }],
+    ['Menu and footer', function (s) { return s.indexOf('menu') === 0 || s.indexOf('footer') === 0; }],
+    ['Imported or added by hand', function (s) { return s === 'import' || s === 'manual'; }],
+    ['One more', function (s) { return s.indexOf('onemore:') === 0; }],
+    ['Forwarded or not recorded', function (s) { return s === 'email-forward' || s === '(none)' || s === ''; }],
+    ['Page asks', function () { return true; }]
+  ];
+  function signupGroup(s) { s = String(s == null ? '' : s); for (var i = 0; i < SIGNUP_GROUPS.length; i++) if (SIGNUP_GROUPS[i][1](s)) return SIGNUP_GROUPS[i][0]; return 'Page asks'; }
+  /* notice topics by family (the worker sends families only, never a topic with its place) */
+  var FAMILY = { 'rain-gauge': 'Rain gauge waiting list', rent: 'County cash rent notice', arcplc: 'ARC/PLC deadline reminder', prf: 'PRF interval notice',
+    rainyear: 'Full-year rain email', 'rain-month': 'Monthly county rain', landsales: 'Monthly land sales', 'milk-month': 'Milk price day',
+    reports: 'WASDE and report-day emails', cot: 'Funds this week' };
+  var LISTS = [['alerts', 'Hail alerts'], ['ewatch', 'Elevator watch and bid alerts'], ['pwatch', 'Price targets'], ['watch', 'County watch']];
+
+  /* ---------- the cards: ONE LIST. A new card is one entry. ---------- */
+  var CARDS = [
+    { id: 'today', title: 'Today', needs: ['sent', 'runs', 'worker'], acts: [['https://github.com/dnilgis/agsist/actions', 'Actions'], ['/daily', 'The Daily']], tiles: todayTiles, body: todayBody },
+    { id: 'ads', title: 'Ads and sponsors', wide: true, needs: ['sponsors', 'worker'], acts: [['/sponsor-kit', 'Sponsor kit']], tiles: adsTiles, body: adsBody },
+    { id: 'signups', title: 'Signups', needs: ['worker'], private: true, acts: [], tiles: signupTiles, body: signupBody },
+    { id: 'boards', title: 'Elevator boards', needs: ['dir', 'ids', 'worker'], acts: [['#elevators', 'Elevators tab'], ['#today', 'Today list tab']], tiles: boardTiles, body: boardBody },
+    { id: 'money', title: 'Money in', needs: ['worker', 'sponsors'], private: true, acts: [['#gifts', 'Gift cards tab'], ['https://dashboard.stripe.com/payments', 'Stripe']], tiles: moneyTiles, body: moneyBody },
+    { id: 'audience', title: 'Audience', needs: ['aud'], acts: [['https://analytics.google.com/', 'GA4']], tiles: audTiles, body: audBody },
+    { id: 'todo', title: 'To-do', needs: ['todo'], acts: [[TODO_EDIT, 'Edit the list']], tiles: todoTiles, body: todoBody }
+  ];
+
+  /* the worker's answer, or why not; a part of it that failed carries {error} */
+  function part(D, k) {
+    var w = D.worker;
+    if (!w || !w.ok) return { why: w && w.notok ? null : (w ? w.why : 'not asked') };
+    var p = w.d && w.d[k];
+    if (!p || typeof p !== 'object') return { why: 'the worker sent no ' + k + ' part (an older worker? deploy v5.59)' };
+    if (p.error) return { why: 'the worker could not count it: ' + p.error };
+    return { d: p };
+  }
+  function partOr(D, k, fn) { var p = part(D, k); if (p.d) return fn(p.d); return p.why === null ? need() : cant(p.why); }
+  function wAt(D) { return D.worker && D.worker.ok && D.worker.d.at ? ct(D.worker.d.at) : ''; }
+  function tile(k, v, s, kind, href) { return { k: k, v: v, s: s || '', kind: kind || '', href: href || '' }; }
+  function cantTile(k, p) { return p.why === null ? tile(k, 'Token needed', 'paste it above', 'cantv') : tile(k, 'Can’t read', p.why, 'cantv'); }
+
+  /* ---------- 1. Today ---------- */
+  function dailyState(D) {
+    var s = D.sent, runs = D.runs || [], dr = runs.filter(function (r) { return r.file === 'daily.yml'; })[0] || {};
+    var b = part(D, 'briefed'), today = isoDay(D.now);
+    var flag = b.d ? b.d[today] : null;
+    var red = dr.last && dr.last.conclusion === 'failure' && isoDay(Date.parse(dr.last.created_at)) === today;
+    if (s && s.rec && !s.yesterday) return { state: 'sent', rec: s.rec, flag: flag, red: red, run: dr };
+    return { state: red ? 'blocked' : (flag ? 'flag' : 'not yet'), rec: s && s.rec, flag: flag, red: red, run: dr, why: s && (s.why || s.todayWhy) };
+  }
+  function todayTiles(D) {
+    var ds = dailyState(D), t = [];
+    if (ds.state === 'sent') t.push(tile('The Daily today', 'Sent ' + ct(ds.rec.sent_at, false), ds.rec.subject || '', 'good', '#c-today'));
+    else if (ds.state === 'blocked') t.push(tile('The Daily today', 'Blocked', ds.run.step ? 'at ' + ds.run.step : 'the run failed', 'bad', '#c-today'));
+    else if (ds.state === 'flag') t.push(tile('The Daily today', 'Sent', 'the day flag is set; no sent copy in the site yet', 'good', '#c-today'));
+    else t.push(tile('The Daily today', 'Not sent yet', ds.rec ? 'last sent ' + ct(ds.rec.sent_at) : '', '', '#c-today'));
+    var runs = D.runs || [], red = runs.filter(function (r) { return r.last && r.last.conclusion === 'failure'; }), unread = runs.filter(function (r) { return r.why; });
+    if (red.length) t.push(tile('Checks on main', red.length + ' red', red.map(function (r) { return r.name; }).join(', '), 'bad', '#c-today'));
+    else if (!runs.length || unread.length === runs.length) t.push(tile('Checks on main', 'Can’t read', unread[0] ? unread[0].why : 'GitHub not asked', 'cantv'));
+    else if (unread.length) t.push(tile('Checks on main', 'No red seen', unread.length + ' of ' + runs.length + ' can’t read: ' + unread[0].why, 'cantv', '#c-today'));
+    else t.push(tile('Checks on main', 'All green', runs.length + ' jobs', 'good', '#c-today'));
+    return t;
+  }
+  function todayBody(D) {
+    var ds = dailyState(D), h = '<h3>The Daily</h3>';
+    if (ds.rec) {
+      h += '<p>' + (ds.state === 'sent' ? '<span class="green">Sent</span> ' + esc(ct(ds.rec.sent_at)) : 'Last sent copy: ' + esc(ct(ds.rec.sent_at))) +
+        ': <b>' + esc(ds.rec.subject || 'subject not kept') + '</b></p>';
+    } else h += '<p>Sent copy: ' + cant(ds.why || 'none found') + '</p>';
+    if (ds.state === 'blocked') {
+      h += '<p class="red">Blocked today' + (ds.run.step ? ' at the step "' + esc(ds.run.step) + '"' : '') + '.' +
+        ' <a href="' + esc(ds.run.last.html_url) + '">Open the run</a></p>';
+      if (!ds.run.step) h += '<p>Which check: ' + cant(ds.run.stepWhy || 'GitHub listed no failed step') + '</p>';
+    }
+    var b = part(D, 'briefed');
+    h += '<p>Day flag (the worker’s "sent" mark for ' + esc(day(isoDay(D.now))) + '): ' +
+      (b.d ? (b.d[isoDay(D.now)] ? '<span class="green">set</span>' : 'not set') : (b.why === null ? need() : cant(b.why))) + '</p>';
+    h += '<p>To how many: ' + cant('the send count is only in the job log, which GitHub shows to signed-in users') + '.</p>' +
+      '<p>On the list now: ' + partOr(D, 'daily', function (d) { return '<b>' + num(d.n) + '</b>'; }) + '</p>';
+    h += src('Sent copy: data/daily-sent; flag and list: subs worker', wAt(D));
+    h += '<h3>Daily readers</h3><p>' + partOr(D, 'daily', function (d) {
+      var u = d.unsubs || {};
+      return '<b>' + num(d.n) + '</b> now. Last 7 days: <b>' + num(d.new_7d) + '</b> joined, <b>' + num((u.d7 || 0)) + '</b> stopped' +
+        ((u.cleanup_d7 || 0) ? ' and ' + num(u.cleanup_d7) + ' taken off in list cleanup' : '') + '.' +
+        (d.no_join_time ? ' ' + num(d.no_join_time) + ' older records carry no join time and are not in "joined".' : '');
+    }) + '</p>' + src('Subs worker, GET /desk', wAt(D));
+    h += '<h3>Checks on main</h3>';
+    var rows = (D.runs || []).map(function (r) {
+      var st;
+      if (r.why) st = cant(r.why);
+      else if (!r.last) st = cant('no finished run listed');
+      else st = (r.last.conclusion === 'success' ? '<span class="green">green</span>' : r.last.conclusion === 'failure' ? '<span class="red">red</span>' : esc(r.last.conclusion || 'unknown')) +
+        ' <a href="' + esc(r.last.html_url) + '">' + esc(ago(Date.parse(r.last.updated_at), D.now)) + '</a>';
+      if (r.going) st += ' <span class="dim">(one running now)</span>';
+      return '<tr><td>' + esc(r.name) + '</td><td>' + st + '</td></tr>';
+    }).join('');
+    h += '<div class="tw"><table><thead><tr><th>Job</th><th>Last finished run</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    h += src('GitHub Actions, public run list, branch main', ct(D.now));
+    return h;
+  }
+
+  /* ---------- 2. Ads and sponsors ---------- */
+  function liveState(active, start, end, ended, today) {
+    if (ended) return ['ended', 'Ended ' + day(ended)];
+    if (!active) return ['off', 'Off'];
+    if (start && start > today) return ['soon', 'Not started (starts ' + day(start) + ')'];
+    if (end && end < today) return ['ended', 'Ended ' + day(end)];
+    return ['live', 'Live'];
+  }
+  function adRows(D) {
+    var S = D.sponsors, today = ctDay(D.now), rows = [];
+    if (!S) return rows;
+    var geo = S['geo-sponsors'].ok ? (S['geo-sponsors'].d.sponsors || []) : [];
+    var dailySlot = S.sponsor.ok ? S.sponsor.d : null;
+    var list = S.sponsors.ok ? (S.sponsors.d.sponsors || []) : [];
+    var seenGeo = {};
+    list.forEach(function (s, i) {
+      var g = s.geo ? geo.filter(function (x) { return x.id === s.geo; })[0] : null;
+      if (g) seenGeo[g.id] = 1;
+      var portal = S.portals ? S.portals[i] : null;
+      var where = g ? 'Pages about and readers in ' + (g.states || []).join(', ') : (s.placements || []).join(', ').replace(/_/g, ' ');
+      /* the Daily slot draws only while data/sponsor.json is active too (its own switch) */
+      var daily = (s.placements || []).indexOf('daily_email') >= 0;
+      var st = g ? liveState(g.active, g.start, g.end, s.ended, today)
+        : liveState(daily ? !!(dailySlot && dailySlot.active) && !!s.active : !!s.active, s.start, null, s.ended, today);
+      var file = g ? 'data/geo-sponsors.json' : daily ? 'data/sponsor.json' : 'data/sponsors.json';
+      var key = g ? '"id": "' + g.id + '"' : (file === 'data/sponsor.json' ? 'the top of the file' : '"slug": "' + s.slug + '"');
+      rows.push({ slug: s.slug, name: s.name, where: where, st: st, start: g ? (s.count_from || g.start) : s.start, end: g ? g.end : (s.ended || null),
+        free: !!(s.billing && s.billing.free_test), tier: s.billing && s.billing.tier, portal: '/sponsor-report?r=' + encodeURIComponent(s.slug + '-' + s.token),
+        p: portal, file: file, key: key });
+    });
+    geo.forEach(function (g) {
+      if (seenGeo[g.id]) return;
+      rows.push({ slug: g.id, name: g.name, where: 'Pages about and readers in ' + (g.states || []).join(', '), st: liveState(g.active, g.start, g.end, null, today),
+        start: g.start, end: g.end, free: false, p: { ok: false, why: 'no portal (not in data/sponsors.json)' }, file: 'data/geo-sponsors.json', key: '"id": "' + g.id + '"' });
+    });
+    var ps = S['page-sponsors'].ok ? (S['page-sponsors'].d.slots || {}) : {};
+    Object.keys(ps).forEach(function (slot) {
+      var x = ps[slot] || {};
+      rows.push({ slug: x.slug || slot, name: x.name || slot, where: 'Page slot ' + slot, st: liveState(x.active !== false, x.start, x.end, null, today), start: x.start, end: x.end,
+        free: false, p: { ok: false, why: 'no portal file named for a page slot' }, file: 'data/page-sponsors.json', key: '"' + slot + '"' });
+    });
+    var prf = S['prf-sponsors'].ok ? S['prf-sponsors'].d : {};
+    Object.keys(prf).filter(function (k) { return /^[A-Z]{2}$/.test(k); }).forEach(function (stc) {
+      var x = prf[stc] || {};
+      rows.push({ slug: 'prf-' + stc.toLowerCase(), name: x.name || stc, where: 'PRF pages, ' + stc, st: liveState(true, null, x.through, null, today), start: null, end: x.through,
+        free: false, p: { ok: false, why: 'PRF slots have no portal' }, file: 'data/prf-sponsors.json', key: '"' + stc + '"' });
+    });
+    return rows;
+  }
+  function ledgerRows(D) { var p = part(D, 'ledger'); return p.d ? (p.d.rows || []) : null; }
+  function thisMonth(D) { return ctDay(D.now).slice(0, 7); }
+  function paidCell(r, D) {
+    if (r.free) return 'free test';
+    var L = ledgerRows(D);
+    if (!L) { var p = part(D, 'ledger'); return p.why === null ? need() : cant(p.why); }
+    var m = thisMonth(D), hit = L.filter(function (x) { return x.slug === r.slug && x.period === m; })[0];
+    if (hit) return '<span class="green">paid</span> ' + esc(m) + ', ' + esc(money(hit.amount)) + ' on ' + esc(day(hit.paid_on));
+    var last = L.filter(function (x) { return x.slug === r.slug; })[0];
+    return (r.st[0] === 'live' ? '<span class="red">not marked paid</span>' : 'not marked paid') + ' for ' + esc(m) + (last ? ' (last: ' + esc(last.period) + ')' : '');
+  }
+  function views(r) {
+    var p = r.p;
+    if (!p || !p.ok) return cant(p ? p.why : 'no portal');
+    var d = p.d;
+    if (d.withheld) return cant(d.withheld);
+    if (d.pending || !(d.windows || []).length) return 'counter not started' + (d.through ? ' (through ' + esc(day(d.through)) + ')' : '');
+    var w = d.windows.filter(function (x) { return x.days === 7; })[0];
+    if (!w) return cant('the portal has no 7-day window');
+    return num(w.viewable) + ' views, ' + num(w.clicks) + ' clicks <span class="dim">(7 days to ' + esc(day(d.through)) + ')</span>';
+  }
+  function adsTiles(D) {
+    if (!D.sponsors || !D.sponsors.sponsors.ok) return [tile('Ads live', 'Can’t read', D.sponsors ? D.sponsors.sponsors.why : 'not read', 'cantv')];
+    var rows = adRows(D), live = rows.filter(function (r) { return r.st[0] === 'live'; });
+    var free = live.filter(function (r) { return r.free; }).length;
+    return [tile('Ads live', String(live.length), live.length ? live.map(function (r) { return r.name; }).join(', ') + (free ? ' (' + free + ' free test)' : '') : 'none running', '', '#c-ads')];
+  }
+  function adsBody(D) {
+    var S = D.sponsors;
+    if (!S) return cant('not read');
+    var bad = ['sponsors', 'geo-sponsors', 'page-sponsors', 'prf-sponsors', 'sponsor'].filter(function (f) { return !S[f].ok; });
+    var h = bad.length ? '<p>' + bad.map(function (f) { return 'data/' + esc(f) + '.json: ' + cant(S[f].why); }).join('<br>') + '</p>' : '';
+    var rows = adRows(D);
+    if (!rows.length) h += '<p>No sponsors on file.</p>';
+    else {
+      h += '<div class="tw"><table class="stack"><thead><tr><th>Sponsor</th><th>Where</th><th>Now</th><th>Start</th><th>End</th><th>Deal</th><th>Paid</th><th>Last 7 days</th></tr></thead><tbody>' +
+        rows.map(function (r) {
+          return '<tr><td data-h="Sponsor"><b>' + esc(r.name) + '</b>' + (r.portal ? ' <a href="' + esc(r.portal) + '">portal</a>' : '') + '</td><td data-h="Where">' + esc(r.where) +
+            '</td><td data-h="Now">' + (r.st[0] === 'live' ? '<span class="green">Live</span>' : esc(r.st[1])) + '</td><td data-h="Start">' + esc(r.start ? day(r.start) : 'not set') +
+            '</td><td data-h="End">' + esc(r.end ? day(r.end) : 'no end date') + '</td><td data-h="Deal">' + (r.free ? 'free test' : r.tier ? 'paid, ' + esc(r.tier) + ' rate' : 'paid') +
+            '</td><td data-h="Paid">' + paidCell(r, D) + '</td><td data-h="Last 7 days">' + views(r) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+    h += src('data/sponsors.json, geo-sponsors.json, page-sponsors.json, prf-sponsors.json, sponsor.json and each portal file (GA4 through the portal’s date)', ct(D.now));
+    h += '<details><summary>Switch an ad on or off</summary><ol class="l">' +
+      '<li>Open its file on GitHub (links below) and tap the pencil if it does not open in edit.</li>' +
+      '<li>Find its entry (' + rows.map(function (r) { return esc(r.name) + ': ' + esc(r.key); }).join('; ') + ').</li>' +
+      '<li>Change <code>"active": true</code> to <code>false</code> to switch it off, or <code>false</code> to <code>true</code> to switch it on. A PRF slot comes off by setting <code>"through"</code> to yesterday.</li>' +
+      '<li>Tap Commit changes. The site picks it up with the next deploy, a few minutes later.</li></ol><p>' +
+      rows.filter(function (r, i, a) { return a.map(function (x) { return x.file; }).indexOf(r.file) === i; }).map(function (r) {
+        return '<a href="' + esc(EDIT + r.file) + '">Edit ' + esc(r.file) + '</a>'; }).join(' &middot; ') + '</p></details>';
+    h += ledgerBox(D, rows);
+    return h;
+  }
+  function ledgerBox(D, rows) {
+    var h = '<h3>Payment ledger</h3>';
+    var p = part(D, 'ledger');
+    if (!p.d) return h + '<p>' + (p.why === null ? need() : cant(p.why)) + '</p>';
+    var L = p.d.rows || [];
+    h += L.length ? '<div class="tw"><table><thead><tr><th>Sponsor</th><th>For</th><th class="n">Amount</th><th>Paid on</th><th></th></tr></thead><tbody>' + L.map(function (x) {
+      return '<tr><td>' + esc(x.slug) + '</td><td>' + esc(x.period) + '</td><td class="n">' + esc(money(x.amount)) + '</td><td>' + esc(day(x.paid_on)) +
+        '</td><td><button type="button" class="quiet" data-unmark="' + esc(x.slug) + '|' + esc(x.period) + '">Mark unpaid</button></td></tr>';
+    }).join('') + '</tbody></table></div>' : '<p>Nothing marked paid yet.</p>';
+    var rank = { live: 0, soon: 1, off: 2, ended: 3 };
+    var opts = rows.filter(function (r) { return !r.free; }).sort(function (a, b) { return rank[a.st[0]] - rank[b.st[0]]; }).map(function (r) { return '<option value="' + esc(r.slug) + '">' + esc(r.name) + '</option>'; }).join('');
+    h += '<form id="mark" novalidate><div class="row4">' +
+      '<div><label for="m-slug">Sponsor</label><select id="m-slug">' + opts + '<option value="">Other (type below)</option></select></div>' +
+      '<div><label for="m-period">For month</label><input id="m-period" value="' + esc(thisMonth(D)) + '" placeholder="2026-11" inputmode="numeric"></div>' +
+      '<div><label for="m-amt">Amount ($)</label><input id="m-amt" inputmode="decimal" placeholder="29"></div>' +
+      '<div><label for="m-date">Paid on</label><input id="m-date" type="date" value="' + esc(ctDay(D.now)) + '"></div></div>' +
+      '<label for="m-other">Other sponsor (lowercase id)</label><input id="m-other" placeholder="name-of-sponsor" spellcheck="false">' +
+      '<p><button type="submit">Mark paid</button></p></form><div id="m-out" class="out" role="status"></div>';
+    h += src('The ledger lives in the subs worker (private), never in the site repo', wAt(D));
+    return h;
+  }
+
+  /* ---------- 3. Signups ---------- */
+  function signupTiles(D) {
+    var p = part(D, 'daily');
+    if (!p.d) return [cantTile('Daily readers', p)];
+    var u = p.d.unsubs || {};
+    return [tile('Daily readers', num(p.d.n), '+' + num(p.d.new_7d) + ' joined, ' + num((u.d7 || 0) + (u.cleanup_d7 || 0)) + ' left, 7 days', '', '#c-signups')];
+  }
+  function signupBody(D) {
+    var h = '<h3>The Daily, by where they signed up</h3>';
+    h += partOr(D, 'daily', function (d) {
+      var g = {};
+      Object.keys(d.by_source || {}).forEach(function (s) { var k = signupGroup(s); g[k] = (g[k] || 0) + d.by_source[s]; });
+      var rows = SIGNUP_GROUPS.map(function (x) { return x[0]; }).filter(function (k) { return g[k]; });
+      return '<div class="tw"><table><thead><tr><th>Where</th><th class="n">Readers</th></tr></thead><tbody>' +
+        rows.map(function (k) { return '<tr><td>' + esc(k) + '</td><td class="n">' + num(g[k]) + '</td></tr>'; }).join('') +
+        '<tr><td><b>All Daily readers</b></td><td class="n"><b>' + num(d.n) + '</b></td></tr></tbody></table></div>' +
+        '<p>New this week: <b>' + num(d.new_7d) + '</b> (last 24 h: ' + num(d.new_24h) + ').</p>';
+    });
+    h += '<h3>Notices and lists</h3>';
+    h += partOr(D, 'notices', function (n) {
+      var fam = n.by_family || {}, f7 = n.new_7d_by_family || {};
+      var keys = Object.keys(fam).sort(function (a, b) { return a === 'rain-gauge' ? -1 : b === 'rain-gauge' ? 1 : fam[b] - fam[a]; });
+      var t = '<div class="tw"><table><thead><tr><th>List</th><th class="n">Addresses</th><th class="n">New this week</th></tr></thead><tbody>' +
+        keys.map(function (k) { return '<tr><td>' + esc(FAMILY[k] || k) + '</td><td class="n">' + num(fam[k]) + '</td><td class="n">' + num(f7[k] || 0) + '</td></tr>'; }).join('');
+      var l = part(D, 'lists');
+      if (l.d) t += LISTS.map(function (x) { return '<tr><td>' + esc(x[1]) + '</td><td class="n">' + num(l.d[x[0]] || 0) + '</td><td class="n"><span class="cant">can\u2019t read</span></td></tr>'; }).join('');
+      t += '</tbody></table></div><p>' + num(n.addresses) + ' addresses are on at least one notice or list.' +
+        (l.d ? ' New this week for the alert and watch lists: ' + cant('those lists keep no join time') + '.' : '') + '</p>';
+      if (!l.d) t += '<p>Alert and watch lists: ' + cant(l.why || 'not sent') + '</p>';
+      return t;
+    });
+    h += src('Subs worker, GET /desk, counts only', wAt(D));
+    return h;
+  }
+
+  /* ---------- 4. Elevator boards ---------- */
+  function boardCounts(D) {
+    var r = D.dir;
+    if (!r || !r.ok) return { why: r ? r.why : 'not read' };
+    var c = r.d && r.d.counts && r.d.counts.byStatus;
+    if (!c) return { why: 'directory.json has no counts.byStatus' };
+    return { c: c, at: r.d.generated };
+  }
+  function newBoards(D) {
+    var dir = D.dir, ids = D.ids;
+    if (!ids || !ids.ok) return { why: ids ? ids.why : 'not read' };
+    if (!dir || !dir.ok || !Array.isArray(dir.d.elevators)) return { why: 'needs directory.json too' };
+    var status = {};
+    dir.d.elevators.forEach(function (e) { if (e && e.elevId) status[e.elevId] = e.status; });
+    var rows = String(ids.d).split('\n').map(function (l) { try { return JSON.parse(l); } catch (e) { return null; } }).filter(function (x) { return x && x.id && x.since; });
+    if (!rows.length) return { why: 'elevator-ids.jsonl is empty' };
+    var first = rows.reduce(function (m, x) { return x.since < m ? x.since : m; }, rows[0].since), cut = isoDay(D.now - WEEK);
+    if (first > cut) return { why: 'the id ledger only goes back to ' + day(first) };
+    var n = 0, boards = 0;
+    rows.forEach(function (x) { if (x.via === 'minted' && x.since > cut) { n++; if (['read', 'stale', 'down'].indexOf(status[x.id]) >= 0) boards++; } });
+    return { n: n, boards: boards, first: first };
+  }
+  function boardTiles(D) {
+    var b = boardCounts(D);
+    if (!b.c) return [tile('Boards read now', 'Can’t read', b.why, 'cantv')];
+    return [tile('Boards read now', num(b.c.read || 0), num(b.c.stale || 0) + ' late, ' + num(b.c.down || 0) + ' withdrawn', '', '#c-boards')];
+  }
+  function boardBody(D) {
+    var b = boardCounts(D), h = '';
+    if (!b.c) h += '<p>' + cant(b.why) + '</p>';
+    else {
+      var total = (b.c.read || 0) + (b.c.stale || 0) + (b.c.down || 0);
+      h += '<div class="tw"><table><tbody>' +
+        '<tr><td>Read, price current</td><td class="n"><b>' + num(b.c.read || 0) + '</b></td></tr>' +
+        '<tr><td>Late (last good read over 6 h old, price still shown)</td><td class="n">' + num(b.c.stale || 0) + '</td></tr>' +
+        '<tr><td>Withdrawn (over 14 h, price taken off; town pages keep "could not be read" for 7 days)</td><td class="n">' + num(b.c.down || 0) + '</td></tr>' +
+        '<tr><td>Boards we have a way into</td><td class="n">' + num(total) + '</td></tr>' +
+        '<tr><td>Known elevators with no board read yet</td><td class="n">' + num(b.c.known || 0) + '</td></tr></tbody></table></div>';
+      h += src('dnilgis/bids data/directory.json', b.at ? ct(b.at) : '');
+    }
+    var nb = newBoards(D);
+    h += '<p>New this week: ' + (nb.why ? cant(nb.why) : '<b>' + num(nb.n) + '</b> elevators added, <b>' + num(nb.boards) + '</b> of them with a board we read') + '</p>';
+    h += src('dnilgis/bids elevator id ledger (elevator-ids.jsonl), ids made in the last 7 days', '');
+    h += '<h3>Listing requests</h3><p>' + partOr(D, 'requests', function (q) {
+      return (q.pending ? '<span class="red">' + num(q.pending) + ' waiting</span>' : 'None waiting') + ' (' + num(q.created) + ' made, ' + num(q.dismissed) + ' dismissed). <a href="#elevators/requests">Open the requests</a>';
+    }) + '</p>' + src('Subs worker, list-your-elevator requests', wAt(D));
+    return h;
+  }
+
+  /* ---------- 5. Money in ---------- */
+  var PRODUCT = { digital: 'Digital file', print12x18: 'Print', framed12x18: 'Framed' };
+  function moneyTiles(D) {
+    var o = part(D, 'orders');
+    if (!o.d) return [cantTile('Rain Print, 120 days', o)];
+    return [tile('Rain Print, 120 days', money(o.d.revenue), num(o.d.paid) + ' paid; ' + money(o.d.revenue_7d) + ' this week', o.d.stripe === 'ok' ? '' : 'bad', '#c-money')];
+  }
+  function moneyBody(D) {
+    var h = '<h3>Rain Print orders</h3>';
+    h += partOr(D, 'orders', function (o) {
+      var t = '<p><b>' + num(o.paid) + '</b> paid for <b>' + esc(money(o.revenue)) + '</b> (this week ' + num(o.paid_7d) + ' for ' + esc(money(o.revenue_7d)) + '). ' +
+        num(o.pressed - o.paid) + ' more pressed Pay with no payment on record.</p>';
+      var bp = Object.keys(o.by_product || {});
+      if (bp.length) t += '<p>' + bp.map(function (k) { return esc(PRODUCT[k] || k) + ' ' + num(o.by_product[k]); }).join(', ') + (o.gifts_paid ? '; ' + num(o.gifts_paid) + ' bought as gifts' : '') + '.</p>';
+      t += '<p>Waiting on the buyer’s proof answer: ' + num(o.waiting_approval) + (o.overdue ? ', <span class="red">' + num(o.overdue) + ' over 3 business days</span>' : '') + '.</p>';
+      if (o.stripe !== 'ok') t += '<p class="red">Payments are not checked against Stripe (' + esc(o.stripe) + '): the amounts are only what the worker recorded.</p>';
+      return t;
+    });
+    h += src('Subs worker order records (kept 120 days), amounts as Stripe reported them', wAt(D));
+    h += '<h3>Gift cards</h3><p>' + partOr(D, 'gifts', function (g) {
+      return num(g.total) + ' cards: ' + num(g.issued) + ' open, ' + num(g.redeemed) + ' redeemed, ' + num(g.void) + ' void. A card bought on /rain-print is in the paid orders above. <a href="#gifts">Gift cards tab</a>';
+    }) + '</p>';
+    h += '<h3>Sponsors</h3><p>' + partOr(D, 'ledger', function (l) {
+      var rows = l.rows || [], yr = ctDay(D.now).slice(0, 4), m = thisMonth(D), sum = function (a) { return a.reduce(function (s, x) { return s + (Number(x.amount) || 0); }, 0); };
+      return 'Marked paid: ' + esc(money(sum(rows.filter(function (x) { return x.period === m; })))) + ' for ' + esc(m) + ', ' + esc(money(sum(rows.filter(function (x) { return x.period.slice(0, 4) === yr; })))) + ' in ' + esc(yr) + ' (' + num(rows.length) + ' marks). Free tests are not in it.';
+    }) + '</p>' + src('Payment ledger in the subs worker, from the marks in Ads and sponsors', wAt(D));
+    return h;
+  }
+
+  /* ---------- 6. Audience ---------- */
+  function audOk(D) { var a = D.aud; return a && a.ok && a.d && a.d.schema === 'agsist-audience/2' && a.d.totals ? a.d : null; }
+  function rng(a, id) { return (a.ranges || []).filter(function (r) { return r.id === id; })[0] || null; }
+  function audTiles(D) {
+    var a = audOk(D);
+    if (!a || !a.totals['7d']) return [tile('Readers, 7 days', 'Can’t read', D.aud && !D.aud.ok ? D.aud.why : 'data/audience.json has no 7-day totals', 'cantv')];
+    var r = rng(a, '7d');
+    return [tile('Readers, 7 days', num(a.totals['7d'].users), r ? 'to ' + day(r.end) + ', GA4' : 'GA4', '', '#c-audience')];
+  }
+  function audBody(D) {
+    var a = audOk(D);
+    if (!a) return '<p>' + cant(D.aud && !D.aud.ok ? D.aud.why : 'data/audience.json is not the shape this page reads') + '</p>';
+    var h = '<div class="tw"><table><thead><tr><th></th><th class="n">7 days</th><th class="n">28 days</th></tr></thead><tbody>';
+    var ai = function (id) { var c = (a.channels && a.channels[id]) || null; if (!c) return null; var x = c.filter(function (y) { return y.channel === 'AI Assistant'; })[0]; return x ? x.sessions : 0; };
+    var cell = function (v) { return v == null ? cant('not in the file') : num(v); };
+    h += '<tr><td>Readers</td><td class="n">' + cell(a.totals['7d'] && a.totals['7d'].users) + '</td><td class="n">' + cell(a.totals['28d'] && a.totals['28d'].users) + '</td></tr>';
+    h += '<tr><td>Page views</td><td class="n">' + cell(a.totals['7d'] && a.totals['7d'].views) + '</td><td class="n">' + cell(a.totals['28d'] && a.totals['28d'].views) + '</td></tr>';
+    h += '<tr><td>Visits from AI assistants</td><td class="n">' + cell(ai('7d')) + '</td><td class="n">' + cell(ai('28d')) + '</td></tr></tbody></table></div>';
+    var r7 = rng(a, '7d'), r28 = rng(a, '28d');
+    var st = (a.states && a.states['7d']) || [];
+    h += '<h3>Top states, 7 days</h3>' + (st.length ? '<p>' + st.slice().sort(function (x, y) { return y.users - x.users; }).slice(0, 5).map(function (s) { return esc(s.name) + ' ' + num(s.users); }).join(', ') + '</p>' : '<p>' + cant('no state rows in the file') + '</p>');
+    var sv = a.servers;
+    if (sv && Array.isArray(sv.towns) && sv.towns.length && sv.window) {
+      h += '<p class="dim"><b>Data-center traffic left out.</b> Towns whose “readers” averaged under ' + esc(sv.rule && sv.rule.seconds) + ' seconds are servers, not people, and are removed from every figure above. Over ' +
+        esc(day(sv.window.start)) + ' to ' + esc(day(sv.window.end)) + ' they carried ' + num(sv.users || 0) + ': ' +
+        sv.towns.slice(0, 6).map(function (x) { return esc(x.city) + ', ' + esc(x.region) + ' ' + num(x.users); }).join('; ') + (sv.towns.length > 6 ? '; and ' + (sv.towns.length - 6) + ' more' : '') + '.</p>';
+    }
+    h += src('Google Analytics 4 via data/audience.json' + (r7 ? ', 7 days ' + day(r7.start) + ' to ' + day(r7.end) : '') + (r28 ? ', 28 days to ' + day(r28.end) : '') + '; AI assistants = GA4’s "AI Assistant" channel', a.built ? 'built ' + ct(a.built) : '');
+    return h;
+  }
+
+  /* ---------- 7. To-do ---------- */
+  var MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  function dueOf(text, now) {
+    var m = /\b(\d{4})-(\d{2})-(\d{2})\b/.exec(text);
+    if (m) return Date.UTC(+m[1], +m[2] - 1, +m[3]);
+    m = /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.? (\d{1,2})\b/.exec(text);
+    if (!m) return null;
+    var y = new Date(now).getUTCFullYear(), t = Date.UTC(y, MON[m[1].toLowerCase()], +m[2]);
+    if (t < now - 180 * 864e5) t = Date.UTC(y + 1, MON[m[1].toLowerCase()], +m[2]);
+    return t;
+  }
+  function todos(D) {
+    var r = D.todo;
+    if (!r || !r.ok) return { why: r ? r.why : 'not read' };
+    var items = String(r.d).split('\n').map(function (l) { return /^\s*[-*]\s+\[( |x|X)\]\s+(.+?)\s*$/.exec(l); }).filter(function (m) { return m && m[1] === ' '; }).map(function (m) { return m[2]; });
+    return { items: items };
+  }
+  function todoTiles(D) {
+    var t = todos(D);
+    if (!t.items) return [tile('To-dos open', 'Can’t read', t.why, 'cantv')];
+    var dated = t.items.filter(function (x) { return dueOf(x, D.now) !== null; }).length;
+    return [tile('To-dos open', num(t.items.length), dated ? dated + ' with a date' : 'none dated', '', '#c-todo')];
+  }
+  function todoBody(D) {
+    var t = todos(D);
+    if (!t.items) return '<p>TODO-SIG.md: ' + cant(t.why) + '</p>';
+    var now = D.now, dated = [], rest = [];
+    t.items.forEach(function (x) { var d = dueOf(x, now); if (d === null) rest.push(x); else dated.push([d, x]); });
+    dated.sort(function (a, b) { return a[0] - b[0]; });
+    var h = '';
+    if (dated.length) h += '<h3>Dated</h3><ul class="l">' + dated.map(function (x) {
+      var days = Math.round((x[0] - Date.UTC(new Date(now).getUTCFullYear(), new Date(now).getUTCMonth(), new Date(now).getUTCDate())) / 864e5);
+      return '<li>' + (days < 0 ? '<span class="red">' + (-days) + ' days past</span>' : days === 0 ? '<span class="red">today</span>' : 'in ' + days + ' days') + ': ' + esc(x[1]) + '</li>';
+    }).join('') + '</ul>';
+    h += rest.length ? '<h3>Open</h3><ul class="l">' + rest.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : (dated.length ? '' : '<p>Nothing open.</p>');
+    h += '<p class="dim">To add a dated reminder, add a line like <code>- [ ] Nov 10: decide on the Open-Meteo key</code>. Check one off with <code>- [x]</code>. The file is public: no names.</p>';
+    h += src('TODO-SIG.md on agsist.com (the morning email reads the same file)', ct(now));
+    return h;
+  }
+
+  /* ---------- drawing: one pass, after every source answered ---------- */
+  var D = null;
+  function draw() {
+    var hasTok = !!tok();
+    var tiles = [];
+    CARDS.forEach(function (c) { try { tiles = tiles.concat(c.tiles(D)); } catch (e) { tiles.push(tile(c.title, 'Can’t read', 'this card failed to draw', 'cantv')); } });
+    var h = '<div class="tiles">' + tiles.map(function (t) {
+      var inner = '<div class="k">' + esc(t.k) + '</div><div class="v">' + esc(t.v) + '</div><div class="s">' + esc(t.s) + '</div>';
+      return t.href ? '<a class="tile ' + t.kind + '" href="' + esc(t.href) + '">' + inner + '</a>' : '<div class="tile ' + t.kind + '">' + inner + '</div>';
+    }).join('') + '</div><div class="cards">';
+    CARDS.forEach(function (c) {
+      var body;
+      if (c.private && !hasTok) body = '<p>' + need() + '</p>';
+      else { try { body = c.body(D); } catch (e) { body = '<p>' + cant('this card failed to draw (' + (e && e.message || 'error') + ')') + '</p>'; } }
+      h += '<div class="card' + (c.wide ? ' wide' : '') + '" id="c-' + c.id + '"><div class="top"><h2>' + esc(c.title) + '</h2><div class="acts">' +
+        c.acts.map(function (a) { return '<a href="' + esc(a[0]) + '">' + esc(a[1]) + '</a>'; }).join('') + '</div></div>' + body + '</div>';
+    });
+    /* NO LAYOUT SHIFT (CI, Oct 28): nothing above #desk changes size or text when the data lands.
+       The token status line is drawn inside #desk with everything else, in the one pass; the
+       clock in the header was set when the read began and is not rewritten here. */
+    var w = D.worker;
+    var state = !hasTok ? 'No token in this browser: the private parts stay closed and the worker is not asked.'
+      : w && w.ok ? 'Token accepted. Private parts read ' + ct(w.d.at) + '.' : 'Private parts: can’t read: ' + (w ? w.why : 'not asked') + '.';
+    $('desk').innerHTML = '<p id="tok-state" class="dim">' + esc(state) + '</p>' + h + '</div>';
+    wire();
+  }
+  function wire() {
+    var f = $('mark');
+    if (f) f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var slug = $('m-slug').value || $('m-other').value.trim().toLowerCase();
+      var body = { action: 'mark', slug: slug, period: $('m-period').value.trim(), amount: Number($('m-amt').value), paid_on: $('m-date').value };
+      var o = $('m-out'); o.className = 'out'; o.textContent = 'Saving...';
+      worker('desk/ledger', body).then(function (r) {
+        if (!r.ok || !r.d.ok) { o.className = 'out bad'; o.textContent = 'Not saved: ' + (r.ok ? (r.d.error || 'refused') : r.why) + '.'; return; }
+        setLedger(r.d.rows); draw();
+        var o2 = $('m-out'); if (o2) { o2.className = 'out good'; o2.textContent = 'Marked ' + slug + ' paid for ' + body.period + '.'; }
+      });
+    });
+    [].forEach.call(document.querySelectorAll('[data-unmark]'), function (b) {
+      b.addEventListener('click', function () {
+        var p = b.getAttribute('data-unmark').split('|');
+        if (!window.confirm('Mark ' + p[0] + ' unpaid for ' + p[1] + '?')) return;
+        worker('desk/ledger', { action: 'unmark', slug: p[0], period: p[1] }).then(function (r) {
+          if (!r.ok || !r.d.ok) { window.alert('Not changed: ' + (r.ok ? (r.d.error || 'refused') : r.why)); return; }
+          setLedger(r.d.rows); draw();
+        });
+      });
+    });
+  }
+  function setLedger(rows) { if (D.worker && D.worker.ok && D.worker.d) D.worker.d.ledger = { rows: rows || [] }; }
+
+  var gen = 0;
+  function load() {
+    var mine = ++gen, now = Date.now(), want = {};
+    $('now').textContent = ct(now);
+    CARDS.forEach(function (c) { c.needs.forEach(function (n) { want[n] = 1; }); });
+    var names = Object.keys(want);
+    Promise.all(names.map(function (n) { return SOURCES[n](now).catch(function (e) { return { ok: false, why: 'read failed (' + (e && e.message || 'error') + ')' }; }); })).then(function (got) {
+      if (mine !== gen) return;
+      D = { now: now };
+      names.forEach(function (n, i) { D[n] = got[i]; });
+      draw();
+    });
+  }
+  route();
+  load();
+})();
+</script>
+</body>
+</html>

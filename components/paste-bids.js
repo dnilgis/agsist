@@ -1,4 +1,4 @@
-/* Read a bid board Sig pasted by hand (elev-admin.html, Paste bids).
+/* Read a bid board Sig pasted by hand (desk/elevators.html, Paste bids).
  *
  * NEW Cooperative's site puts a Cloudflare bot check in front of the bids
  * reader, and the reader does not try to get past it. So Sig opens
@@ -222,7 +222,7 @@
     return { ok: true, why: 'all ' + boards + ' boards came through, ' + r.rows + ' rows.' };
   }
 
-  /* The Send to AGSIST bookmark (elev-today.html). On the elevator's bid page,
+  /* The Send to AGSIST bookmark (desk/today.html). On the elevator's bid page,
      in Sig's own browser, it copies the page (a spare, in case the new tab is
      cut off from it) and opens the desk at #send. When the desk says it is
      ready, and only to https://agsist.com, it hands over the page's HTML. It
@@ -231,8 +231,8 @@
     return "javascript:(function(){var A='https://agsist.com',h=document.documentElement.outerHTML,w,t=document.createElement('textarea');"
       + "t.value=h;t.setAttribute('readonly','');t.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(t);"
       + "try{t.select();t.setSelectionRange(0,h.length);document.execCommand('copy')}catch(e){}document.body.removeChild(t);"
-      + "w=window.open(A+'/elev-admin.html?from='+encodeURIComponent(location.hostname)+'#send','_blank');"
-      + "if(!w){alert('The page is copied. Open agsist.com/elev-admin.html#send and tap Paste from clipboard.');return}"
+      + "w=window.open(A+'/desk/elevators.html?from='+encodeURIComponent(location.hostname)+'#send','_blank');"
+      + "if(!w){alert('The page is copied. Open agsist.com/desk/elevators.html#send and tap Paste from clipboard.');return}"
       + "function m(e){if(e.origin!==A||e.source!==w||!e.data||e.data.type!=='agsist-send-ready')return;removeEventListener('message',m);"
       + "w.postMessage({type:'agsist-send-page',html:h},A)}addEventListener('message',m);"
       + "setTimeout(function(){removeEventListener('message',m)},120000)})()";

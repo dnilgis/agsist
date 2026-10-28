@@ -1,0 +1,322 @@
+{
+ "schema": "agsist-audience/2",
+ "built": "2026-10-28T14:47:31+00:00",
+ "ranges": [
+  {
+   "id": "7d",
+   "label": "7 days",
+   "start": "2026-10-20",
+   "end": "2026-10-26"
+  },
+  {
+   "id": "28d",
+   "label": "28 days",
+   "start": "2026-09-29",
+   "end": "2026-10-26"
+  },
+  {
+   "id": "90d",
+   "label": "90 days",
+   "start": "2026-07-29",
+   "end": "2026-10-26"
+  },
+  {
+   "id": "ytd",
+   "label": "2026",
+   "start": "2026-01-01",
+   "end": "2026-10-26"
+  }
+ ],
+ "homeState": "WI",
+ "totals": {
+  "7d": {
+   "users": 2878,
+   "engaged": 2216,
+   "sessions": 3557,
+   "views": 5454,
+   "newUsers": 2633,
+   "avgSeconds": 134.1,
+   "engagementRate": 0.623
+  },
+  "28d": {
+   "users": 7760,
+   "engaged": 6532,
+   "sessions": 10613,
+   "views": 17304,
+   "newUsers": 7389,
+   "avgSeconds": 107.6,
+   "engagementRate": 0.615
+  }
+ },
+ "states": {
+  "7d": [
+   {
+    "users": 331,
+    "engaged": 295,
+    "sessions": 448,
+    "views": 733,
+    "newUsers": 296,
+    "avgSeconds": 559.2,
+    "engagementRate": 0.658,
+    "code": "MN",
+    "name": "Minnesota",
+    "rank": 1
+   },
+   {
+    "users": 335,
+    "engaged": 260,
+    "sessions": 421,
+    "views": 525,
+    "newUsers": 291,
+    "avgSeconds": 66.3,
+    "engagementRate": 0.618,
+    "code": "IL",
+    "name": "Illinois",
+    "rank": 2
+   },
+   {
+    "users": 243,
+    "engaged": 185,
+    "sessions": 296,
+    "views": 391,
+    "newUsers": 208,
+    "avgSeconds": 77.7,
+    "engagementRate": 0.625,
+    "code": "TX",
+    "name": "Texas",
+    "rank": 3
+   },
+   {
+    "users": 143,
+    "engaged": 145,
+    "sessions": 205,
+    "views": 472,
+    "newUsers": 121,
+    "avgSeconds": 103.3,
+    "engagementRate": 0.707,
+    "code": "WI",
+    "name": "Wisconsin",
+    "rank": null,
+    "flag": "home"
+   },
+   {
+    "users": 224,
+    "engaged": 102,
+    "sessions": 236,
+    "views": 271,
+    "newUsers": 199,
+    "avgSeconds": 27.1,
+    "engagementRate": 0.432,
+    "code": "CA",
+    "name": "California",
+    "rank": 4
+   },
+   {
+    "users": 111,
+    "engaged": 102,
+    "sessions": 132,
+    "views": 228,
+    "newUsers": 99,
+    "avgSeconds": 87.6,
+    "engagementRate": 0.773,
+    "code": "IN",
+    "name": "Indiana",
+    "rank": 5
+   },
+   {
+    "users": 103,
+    "engaged": 100,
+    "sessions": 127,
+    "views": 212,
+    "newUsers": 89,
+    "avgSeconds": 141.8,
+    "engagementRate": 0.787,
+    "code": "MO",
+    "name": "Missouri",
+    "rank": 6
+   },
+   {
+    "users": 123,
+    "engaged": 84,
+    "sessions": 142,
+    "views": 217,
+    "newUsers": 115,
+    "avgSeconds": 77.6,
+    "engagementRate": 0.592,
+    "code": "CO",
+    "name": "Colorado",
+    "rank": 7
+   }
+  ]
+ },
+ "channels": {
+  "7d": [
+   {
+    "channel": "Organic Search",
+    "sessions": 2746
+   },
+   {
+    "channel": "Direct",
+    "sessions": 564
+   },
+   {
+    "channel": "AI Assistant",
+    "sessions": 60
+   },
+   {
+    "channel": "Email",
+    "sessions": 59
+   },
+   {
+    "channel": "Unassigned",
+    "sessions": 46
+   },
+   {
+    "channel": "Referral",
+    "sessions": 33
+   },
+   {
+    "channel": "Organic Shopping",
+    "sessions": 12
+   },
+   {
+    "channel": "Organic Social",
+    "sessions": 2
+   }
+  ],
+  "28d": [
+   {
+    "channel": "Organic Search",
+    "sessions": 8011
+   },
+   {
+    "channel": "Direct",
+    "sessions": 2056
+   },
+   {
+    "channel": "Unassigned",
+    "sessions": 235
+   },
+   {
+    "channel": "Referral",
+    "sessions": 158
+   },
+   {
+    "channel": "Email",
+    "sessions": 107
+   },
+   {
+    "channel": "AI Assistant",
+    "sessions": 98
+   },
+   {
+    "channel": "Organic Shopping",
+    "sessions": 12
+   },
+   {
+    "channel": "Organic Social",
+    "sessions": 12
+   }
+  ]
+ },
+ "servers": {
+  "rule": {
+   "seconds": 10,
+   "minReaders": 20
+  },
+  "window": {
+   "id": "90d",
+   "label": "90 days",
+   "start": "2026-07-29",
+   "end": "2026-10-26"
+  },
+  "towns": [
+   {
+    "city": "The Dalles",
+    "region": "Oregon",
+    "users": 411,
+    "avgSeconds": 1.5
+   },
+   {
+    "city": "San Jose",
+    "region": "California",
+    "users": 360,
+    "avgSeconds": 6.2
+   },
+   {
+    "city": "Moses Lake",
+    "region": "Washington",
+    "users": 321,
+    "avgSeconds": 3.2
+   },
+   {
+    "city": "Flint Hill",
+    "region": "Virginia",
+    "users": 275,
+    "avgSeconds": 0.7
+   },
+   {
+    "city": "Boydton",
+    "region": "Virginia",
+    "users": 168,
+    "avgSeconds": 1.4
+   },
+   {
+    "city": "Council Bluffs",
+    "region": "Iowa",
+    "users": 113,
+    "avgSeconds": 6.3
+   },
+   {
+    "city": "Cheyenne",
+    "region": "Wyoming",
+    "users": 105,
+    "avgSeconds": 3.0
+   },
+   {
+    "city": "Boardman",
+    "region": "Oregon",
+    "users": 43,
+    "avgSeconds": 7.4
+   },
+   {
+    "city": "North Charleston",
+    "region": "South Carolina",
+    "users": 38,
+    "avgSeconds": 1.4
+   },
+   {
+    "city": "Wayland",
+    "region": "Massachusetts",
+    "users": 32,
+    "avgSeconds": 0.0
+   },
+   {
+    "city": "Hackensack",
+    "region": "New Jersey",
+    "users": 28,
+    "avgSeconds": 0.2
+   },
+   {
+    "city": "Aquia Harbour",
+    "region": "Virginia",
+    "users": 25,
+    "avgSeconds": 0.0
+   },
+   {
+    "city": "Santa Clara",
+    "region": "California",
+    "users": 23,
+    "avgSeconds": 5.4
+   },
+   {
+    "city": "Orem",
+    "region": "Utah",
+    "users": 23,
+    "avgSeconds": 7.9
+   }
+  ],
+  "users": 1965
+ },
+ "_": "Frozen from data/audience.json of 2026-10-28 for test/desk.test.mjs (trimmed to what desk.html reads)."
+}

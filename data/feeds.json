@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 101,
- "with_known_cadence": 101,
+ "count": 102,
+ "with_known_cadence": 102,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -194,6 +194,7 @@
   {
    "path": "data/audience.json",
    "pages": [
+    "desk.html",
     "sponsor-kit.html",
     "sponsor-report.html",
     "sponsor.html"
@@ -779,7 +780,8 @@
   {
    "path": "data/directory.json",
    "pages": [
-    "elev-admin.html"
+    "desk.html",
+    "desk/elevators.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -1075,6 +1077,25 @@
    "why_quiet": null
   },
   {
+   "path": "data/geo-sponsors.json",
+   "pages": [
+    "desk.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/hail/all-grid.json",
    "pages": [
     "hail-map.html"
@@ -1252,7 +1273,7 @@
   {
    "path": "data/index.json",
    "pages": [
-    "elev-today.html"
+    "desk/today.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -1269,7 +1290,7 @@
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
-   "why_quiet": "Every board the bid network reads, with its last read and why it failed. Sig's Today list (elev-today.html) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
+   "why_quiet": "Every board the bid network reads, with its last read and why it failed. Sig's Today list (desk/today.html, a tab of /desk) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
   },
   {
    "path": "data/land/index.json",
@@ -1768,6 +1789,7 @@
   {
    "path": "data/page-sponsors.json",
    "pages": [
+    "desk.html",
     "sponsor.html"
    ],
    "written_by": [],
@@ -1846,6 +1868,7 @@
   {
    "path": "data/prf-sponsors.json",
    "pages": [
+    "desk.html",
     "prf-sponsor.html",
     "prf.html"
    ],
@@ -2310,6 +2333,7 @@
   {
    "path": "data/sponsor.json",
    "pages": [
+    "desk.html",
     "index.html"
    ],
    "written_by": [],
@@ -2330,6 +2354,7 @@
   {
    "path": "data/sponsors.json",
    "pages": [
+    "desk.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
