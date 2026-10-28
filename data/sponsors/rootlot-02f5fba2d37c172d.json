@@ -2,22 +2,44 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Root Lot",
  "slug": "rootlot",
- "through": null,
+ "generated": "2026-10-28T17:26:28+00:00",
+ "through": "2026-10-27",
  "start": null,
- "pending": true,
+ "countFrom": "2026-10-28",
+ "liveSince": null,
  "pages": null,
+ "definitionChanged": "2026-09-05",
  "totals": {
   "viewable": 0,
   "clicks": 0,
   "ctr": null,
   "legacyImpressions": 0
  },
- "windows": [],
+ "windows": [
+  {
+   "days": 7,
+   "viewable": 0,
+   "clicks": 0,
+   "ctr": null
+  },
+  {
+   "days": 30,
+   "viewable": 0,
+   "clicks": 0,
+   "ctr": null
+  },
+  {
+   "days": 90,
+   "viewable": 0,
+   "clicks": 0,
+   "ctr": null
+  }
+ ],
  "series": [],
  "byPage": [],
  "creative": {
   "live": true,
-  "proof_code": "1486daac",
+  "proof_code": "862b2f78",
   "fields": {
    "advertiser": "Root Lot",
    "headline": "Put Your Root Down",
@@ -46,35 +68,6 @@
    "TX"
   ],
   "slot": "geo-rootlot"
- },
- "regionAds": {
-  "pending": true,
-  "start": null,
-  "through": null,
-  "rows": [
-   {
-    "code": "CA",
-    "name": "California",
-    "viewable": 0,
-    "clicks": 0
-   },
-   {
-    "code": "NV",
-    "name": "Nevada",
-    "viewable": 0,
-    "clicks": 0
-   },
-   {
-    "code": "TX",
-    "name": "Texas",
-    "viewable": 0,
-    "clicks": 0
-   }
-  ],
-  "elsewhere": {
-   "viewable": 0,
-   "clicks": 0
-  }
  },
  "rateCard": {
   "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS. These prices are published in three places: sponsor.html (the pitch), about.html, and now each sponsor's own portal. scripts/test_rate_card.py fails if a price here is not present on sponsor.html, so the two cannot drift without somebody being told. Prices are MONTHLY since 2026-10-07 (price_month). Change a price HERE first, then the prose around it.",
@@ -131,5 +124,33 @@
   "geo_readers"
  ],
  "licensedStates": null,
- "creativeRefreshed": "2026-10-28T15:06:47+00:00"
+ "regionAds": {
+  "pending": false,
+  "start": "2026-10-28",
+  "through": "2026-10-27",
+  "rows": [
+   {
+    "code": "CA",
+    "name": "California",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "NV",
+    "name": "Nevada",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "TX",
+    "name": "Texas",
+    "viewable": 0,
+    "clicks": 0
+   }
+  ],
+  "elsewhere": {
+   "viewable": 0,
+   "clicks": 0
+  }
+ }
 }

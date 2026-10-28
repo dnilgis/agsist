@@ -655,16 +655,29 @@ def _flag_file(k):
     return "%s/%s.json" % (FLAG_DIR, re.sub(r"[^\w.-]", "_", k))
 
 
+def _flag_doc_counts(raw):
+    """A saved flag file counts as set unless it says the claim was released
+    (release(): the claim was written, then nothing was delivered). A file that
+    does not parse still counts: never read a flag as unset by accident."""
+    try:
+        doc = json.loads(raw.decode("utf-8") if isinstance(raw, bytes) else raw)
+    except Exception:                                       # noqa: BLE001
+        return True
+    return not (isinstance(doc, dict) and doc.get("state") == RELEASED)
+
+
 def _flag_in_repo(k):
     """True when the private repo (or the copy of the worker's storage, or this
     run) has the flag. Raises Unavailable when the repo cannot be read."""
     if k in STATE["flags"]:
         return True
-    if (FLAG_ROOT / _flag_file(k)).exists() and _env("LIST_BACKUP_FILE"):
+    lf = FLAG_ROOT / _flag_file(k)
+    if lf.exists() and _env("LIST_BACKUP_FILE") and _flag_doc_counts(lf.read_bytes()):
         return True
     if not _env("LIST_BACKUP_FILE"):
         _fetch_private(force=True)
-        if _show(_flag_file(k)) is not None:
+        raw = _show(_flag_file(k))
+        if raw is not None and _flag_doc_counts(raw):
             return True
     try:
         kv = STATE["kv"] if STATE["kv"] is not None else backup()
@@ -675,12 +688,18 @@ def _flag_in_repo(k):
     return False
 
 
+RELEASED = "released"
+
+
 def _flag_save(k, info):
     p = FLAG_ROOT / _flag_file(k)
     p.parent.mkdir(parents=True, exist_ok=True)
     doc = dict({"key": k, "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}, **info)
     p.write_text(json.dumps(doc) + "\n")
-    STATE["flags"][k] = doc
+    if info.get("state") == RELEASED:
+        STATE["flags"].pop(k, None)
+    else:
+        STATE["flags"][k] = doc
     if _env("LIST_BACKUP_FILE"):
         return True                     # a local test run: the file is the flag
     return _push([_flag_file(k)], "send flag")
@@ -723,6 +742,21 @@ def claim(k):
     if not ok:
         print("::error::the day flag %s could not be saved in the private repo; nothing sent "
               "(a send without it could go out twice)" % k)
+    return ok
+
+
+def release(k):
+    """Undo this run's claim(k) when NOTHING was delivered (send_daily: the SMTP
+    connection or login failed, or every mail failed). Without it a backup-mode
+    claim reads as "sent" all day and the next run's retry never fires
+    (2026-10-28 review). Only a claim this run wrote in backup mode, still in
+    state "sending", is released; a flag set after a delivered mail never is.
+    True when released (or there was nothing to release)."""
+    doc = STATE["flags"].get(k)
+    if STATE["mode"] != "backup" or not doc or doc.get("state") != "sending":
+        return True
+    ok = _flag_save(k, {"by": "backup", "state": RELEASED})
+    print("day flag %s: claim released, nothing was delivered%s" % (k, "" if ok else " (NOT saved)"))
     return ok
 
 
@@ -890,6 +924,13 @@ def selftest():
         ck("flag in the copy", flag_is_set("briefed:2026-01-01"))
         ck("flag not set", not flag_is_set("briefed:2099-01-02"))
         ck("claim in backup mode", claim("briefed:2099-01-02") and flag_is_set("briefed:2099-01-02"))
+        # 2026-10-28 review: a claim with nothing delivered (SMTP login refused) is released, so the retry can send
+        ck("release a claim nothing used", release("briefed:2099-01-02") and not flag_is_set("briefed:2099-01-02"))
+        ck("a released file on disk reads unset", (FLAG_ROOT / _flag_file("briefed:2099-01-02")).exists()
+           and not _flag_in_repo("briefed:2099-01-02"))
+        ck("a sent flag is never released", flag_set("briefed:2099-01-06") and release("briefed:2099-01-06")
+           and flag_is_set("briefed:2099-01-06"))
+        ck("claim again after a release", claim("briefed:2099-01-02") and flag_is_set("briefed:2099-01-02"))
         try:
             request("GET", "https://w.dev/form-list?token=tok")
             bad.append("a worker-only route answered from the copy")

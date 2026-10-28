@@ -253,10 +253,28 @@ def flag(day, set_it=False):
         # list a SECOND copy of the briefing. A missed send is recoverable by
         # rerunning; a duplicate blast to every subscriber is not. Report the
         # day as already flagged so the run stops, and say so loudly.
+        if set_it:
+            # Setting it failed: say so (False), so the caller sets it again
+            # after the list. Only an explicit True from flag_set means the
+            # day is flagged (2026-10-28 review).
+            print("::warning::the day flag could not be set (" + type(ex).__name__ + ")")
+            return False
         print("FATAL: cannot reach the duplicate-send flag (" + type(ex).__name__
               + ": " + str(ex)[:120] + ") — refusing to send rather than risk "
               "emailing the list twice. Rerun once the worker is reachable.")
         return True
+
+
+def release_claim(day):
+    """Nothing was delivered (no connection, a refused login, every mail
+    failed): undo a backup-mode claim of the day, so the day does not read as
+    sent and the next run's retry can send it (list_source.release; a no-op in
+    worker mode and for a flag set after a delivered mail)."""
+    try:
+        return list_source.release("briefed:" + day)
+    except Exception as ex:                                  # noqa: BLE001
+        print("::warning::the day's claim was not released (" + type(ex).__name__ + "); the retry will not send today")
+        return False
 
 
 def test_recipients(subs, how):
@@ -677,12 +695,15 @@ def v2_hold_alert(day, built, bad):
     for f in bad:
         lines += ["%s: \"%s\"" % (f["field"], str(f.get("quote") or "")[:300]), "  " + f["why"], ""]
     lines += ["Subject it would have had: " + str(built.get("subject")), "",
-              "Nothing was sent and the day is not marked sent. To fix and rerun:",
+              "Nothing was sent and the day is not marked sent.", "",
+              "The next scheduled run tries again on its own (until 2 p.m. CT): the issue is published but not sent, "
+              "so it writes today's issue again, checks it again, and sends it if it passes. "
+              "To fix and rerun now instead:",
               "1. GitHub, dnilgis/agsist, Actions, Generate Daily Briefing, Run workflow on main: tick send_email, "
               "format v2. It writes today's issue again and checks it again; if it passes it goes to the list.",
               "2. To send today's issue as it is, in the old format (which does not run this check): the same, "
               "with format current.",
-              "3. To skip today: do nothing. Tomorrow's run is not affected."]
+              "Tomorrow's run is not affected."]
     return log_safe.owner_mail("AGSIST Daily %s held: wrong number in the %s" % (day, " and ".join(fields)), lines)
 
 
@@ -912,8 +933,20 @@ def main():
     # N silently got nothing while `sent > 0` still flagged the day delivered
     # and a rerun refused. One reconnect per fatal failure, three at most, so a
     # bad socket costs one email rather than the tail of the list.
-    conn = connect()
+    try:
+        conn = connect()
+    except Exception as ex:
+        print("::error::could not connect or log in to the mail server (%s); nothing sent" % type(ex).__name__)
+        release_claim(day)
+        return 1
     reconnects, MAX_RECONNECTS = 0, 3
+    # THE DAY IS FLAGGED ON THE FIRST DELIVERED MAIL, NOT AFTER THE LOOP
+    # (2026-10-28). A published issue that never went out is now written again
+    # by the next run (scripts/daily_retry.py, the gate asks this flag). A run
+    # killed mid-list (a cancel, a runner lost) used to leave the flag unset, so
+    # that retry would have mailed everyone who already had it. The flag means
+    # "any mail went out", so it can be set the moment one did.
+    flagged = False
     try:
         for i, r in enumerate(recipients):
             try:
@@ -944,6 +977,12 @@ def main():
                         print("::error::could not reconnect (%s) — %d of %d briefings sent"
                               % (type(ex2).__name__, sent, len(recipients)))
                         break
+            if sent == 1 and not flagged:
+                try:
+                    flagged = flag(day, set_it=True) is True
+                except Exception as ex:
+                    print("::warning::day flag not set after the first mail (%s); set again after the list"
+                          % type(ex).__name__)
             if i < len(recipients) - 1:
                 time.sleep(1.2)  # gentle throttle keeps Gmail happy
     finally:
@@ -955,8 +994,10 @@ def main():
     # Set the day flag whenever ANY mail went out. Anyone who received a copy
     # must never get a second one, so the flag is about the day, not about
     # success. Failures are reported for a targeted resend, not a full rerun.
-    if sent > 0:
+    if sent > 0 and not flagged:
         flag(day, set_it=True)
+    if sent == 0:
+        release_claim(day)
     if failed:
         # Full addresses go to Sig by private mail; the public annotation gets
         # the count and masked addresses only.
