@@ -143,6 +143,7 @@ sys.path.insert(0, HERE)
 import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybeans and wheat
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
+import build_ai_answers as AA  # noqa: E402  dated answer blocks (data/ai-answers.json), same bytes as its own bake
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402
 from seo_caps import TITLE_MAX  # noqa: E402  the site title cap (68); ARC/PLC held itself to 60 until 2026-10-20
 
@@ -2149,6 +2150,8 @@ def build_main(D, ch):
   a range of prices and county yields. It does not forecast the price. You set it.</p>
 
   {form_html(D)}
+
+  {AA.block('usda-payments')}
 
   <div class="ap-faq-sections">
   <h2 id="dates">When is the ARC/PLC signup for 2026 and 2027?</h2>
