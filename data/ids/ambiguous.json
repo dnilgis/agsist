@@ -1272,17 +1272,8 @@
    ]
   },
   {
-   "key": "basis:OH|THE ANDERSONS|MAUMEE",
-   "rule": "name+town",
-   "candidates": [
-    "e40qkcgsst",
-    "e6hss3yjd6",
-    "ekw0aj6bxb"
-   ]
-  },
-  {
    "key": "basis:OH|THE ANDERSONS|TOLEDO",
-   "rule": "name+town",
+   "rule": "exact",
    "candidates": [
     "e4d7rggwnn",
     "e808z400aw"
