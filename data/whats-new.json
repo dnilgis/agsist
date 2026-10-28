@@ -5,7 +5,7 @@
    "id": "2026-10-28-daily-retry",
    "date": "2026-10-28",
    "title": "The Daily tries again when a check holds it",
-   "line": "When a number in the Daily fails its check, that draft is never posted. The next run writes the issue again and checks it again, so it goes out a little late rather than wrong.",
+   "line": "A Daily draft that fails a number check is never posted. The next run writes it again and checks it again, so it goes out a little late rather than wrong.",
    "link": "/daily"
   },
   {
