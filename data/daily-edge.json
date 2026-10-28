@@ -1,6 +1,6 @@
 {
  "schema": "agsist-daily-edge/1",
- "generated": "2026-10-28T12:07:03Z",
+ "generated": "2026-10-28T12:35:30Z",
  "label": "Only on AGSIST",
  "note": "Computed by code from the elevator boards AGSIST reads. Not written by the drafting model.",
  "facts": [
@@ -79,15 +79,15 @@
    "id": "over_futures_corn",
    "crop": "corn",
    "kind": "over_futures",
-   "sentence": "Of 1,791 elevators AGSIST reads with a fresh corn bid on Oct 28, 141 were paying over futures, most of them in Kansas (34).",
-   "key": "141 were paying over futures",
-   "detail": "1,623 under futures, 27 even. Each board against the futures month it names.",
-   "value": 141,
+   "sentence": "Of 1,779 elevators AGSIST reads with a fresh corn bid on Oct 28, 140 were paying over futures, most of them in Kansas (34).",
+   "key": "140 were paying over futures",
+   "detail": "1,612 under futures, 27 even. Each board against the futures month it names.",
+   "value": 140,
    "unit": "elevators bidding over futures",
    "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
-   "n": 1791,
-   "over": 141,
-   "under": 1623,
+   "n": 1779,
+   "over": 140,
+   "under": 1612,
    "even": 27,
    "states": [
     {
@@ -113,7 +113,7 @@
     {
      "state": "IL",
      "name": "Illinois",
-     "n": 12
+     "n": 11
     }
    ],
    "as_of": "2026-10-28",
