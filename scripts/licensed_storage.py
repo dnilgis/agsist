@@ -48,7 +48,8 @@ class Refused(Exception):
 
 def op(name, town="", noise=DEFAULT_NOISE):
     from build_cash_bid_pages import op_key
-    return op_key(noise.sub(" ", (name or "").lower()), town)
+    s = re.sub(r"\bco\s?-\s?operative\b", "cooperative", (name or "").lower())   # "Co-Operative"
+    return op_key(noise.sub(" ", s), town)
 
 
 def full(name):
@@ -72,6 +73,9 @@ def join(rows, elevators, states, aliases=None, noise=DEFAULT_NOISE):
     unjoined, ambiguous = [], []
     for i, r in enumerate(rows):
         r.update(id=None, src=[], how=None)
+        if not r.get("city"):
+            unjoined.append({"i": i, "why": "the list names no town for this location"})
+            continue
         lk = {k for n in row_names(r) for k in (op(n, r["city"], noise), op(n, "", noise)) if k}
         alias = {full(n) for n in aliases.get(r["lic"], {}).get("names", [])}
         cands = []
