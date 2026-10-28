@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-28-sale-barns-notes",
+   "date": "2026-10-28",
+   "title": "Sale barn prices: four Kentucky barns back, and weights past page one",
+   "line": "Owensboro, Somerset, Springfield and Stanford in Kentucky read again. About 20 barns now show the weight classes USDA prints after page one.",
+   "link": "/cattle-auction-prices"
+  },
+  {
    "id": "2026-10-28-sale-barns-125",
    "date": "2026-10-28",
    "title": "Sale barn prices: 37 more barns, most in Kentucky and Missouri",
