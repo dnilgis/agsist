@@ -2541,6 +2541,14 @@
     "basis:OH|PETTISVILLE GRAIN|PETTISVILLE"
    ]
   },
+  "e780z66t3h": {
+   "into": "eef2vr1k62",
+   "on": "2026-10-28",
+   "rule": "retired",
+   "keys": [
+    "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MOUNT HOPE"
+   ]
+  },
   "e7a916caka": {
    "into": "evn8e9pngn",
    "on": "2026-10-27",
@@ -3281,6 +3289,14 @@
    "keys": [
     "basis:NE|FIRST RATE TRADE LLC|DUNBAR",
     "dir:84903"
+   ]
+  },
+  "evhnnwahq9": {
+   "into": "ejvw0yf3yr",
+   "on": "2026-10-28",
+   "rule": "retired",
+   "keys": [
+    "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|PATTERSON"
    ]
   },
   "evrpk0cdd0": {
@@ -4817,6 +4833,18 @@
    "retire": "ewsn9qbdjm",
    "into": "ezfe9zqja3",
    "why": "folded into ezfe9zqja3 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "e780z66t3h",
+   "into": "eef2vr1k62",
+   "why": "folded into eef2vr1k62 by the bids repo (mergedFrom, rule retired)"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "evhnnwahq9",
+   "into": "ejvw0yf3yr",
+   "why": "folded into ejvw0yf3yr by the bids repo (mergedFrom, rule retired)"
   }
  ],
  "keys": {
@@ -6504,9 +6532,9 @@
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|BENTLEY": "e311rj7m84",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|BURRTON": "ejvw0yf3yr",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|HALSTEAD": "egz19x9jv6",
-  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MOUNT HOPE": "e780z66t3h",
+  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MOUNT HOPE": "eef2vr1k62",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MT. HOPE": "eef2vr1k62",
-  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|PATTERSON": "evhnnwahq9",
+  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|PATTERSON": "ejvw0yf3yr",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|SEDGWICK": "a00210",
   "basis:KS|FARMERS COOPERATIVE EQUITY COMPANY|ISABEL": "expefsm2zd",
   "basis:KS|FARMERS COOPERATIVE EQUITY COMPANY|NASHVILLE": "ee8jnwg8gk",
