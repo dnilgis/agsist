@@ -40,9 +40,8 @@ CADENCE = {
     "/corn-futures-prices": 1,
     "/soybean-futures-prices": 1,
     "/wheat-futures-prices": 1,
-    "/whats-priced-in": 1,
+    "/usda-calendar": 1,  # What's priced in and the bot scorecard live here since Oct 22, 2026
     "/cattle-futures-prices": 1,
-    "/scorecard": 1,
     "/crop-tour": 1,
     "/drought-monitor": 7,
     "/cot": 7,
