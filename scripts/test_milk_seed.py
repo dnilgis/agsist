@@ -212,8 +212,8 @@ def main():
                       "2026-08": {"all_milk": 19.8, "feed": 10.46, "margin": 9.34}},
           "hay": {"2019": "Blended Alfalfa Hay", "2025": "Premium Alfalfa Hay", "2026": "Premium Alfalfa Hay"},
           "withheld": {"count": 2, "months": ["2026-06", "2026-07"], "why": "not on FSA's page as read"},
-          "premiums": {"year": 2027, "tier1_lb": 6000000, "source_url": "https://www.fsa.usda.gov/x.pdf",
-                       "tier1": {"9.50": 0.15, "8.00": 0.1}, "tier2": {"9.50": None, "8.00": 1.813}}}
+          "premiums": {"as_of": "January 2026", "tier1_lb": 6000000, "source_url": "https://www.fsa.usda.gov/x.pdf",
+                       "tier1": {"9.50": 0.15, "8.00": 0.1, "4.00": 0.0}, "tier2": {"9.50": None, "8.00": 1.813, "4.00": 0.0}}}
     tb = S.milk_dmc_paid(DM, SEP)
     ck("FSA rows that check out: a table by level, partial years labeled, MPP 2018 left out",
        '<th scope="col" class="num">2025*</th>' in tb and '<th scope="col" class="num">2026*</th>' in tb
@@ -222,6 +222,7 @@ def main():
        '<tr><th scope="row">$9.50</th><td class="num">$0.1500</td><td class="num">n/a</td>'
        '<td class="num">$0.16</td><td class="num">$0.50</td><td class="num">$1.79</td></tr>' in tb, tb)
     ck("...newest year first", tb.index(">2026*<") < tb.index(">2025*<") < tb.index(">2019*<"))
+    ck("...$4.00: no premium, in FSA's word", '<tr><th scope="row">$4.00</th><td class="num">none</td><td class="num">none</td>' in tb)
     ck("...$8.00: Tier 2 rate printed", '<tr><th scope="row">$8.00</th><td class="num">$0.1000</td><td class="num">$1.8130</td>' in tb)
     ck("...a level with no premium read is a dash, said so", '<th scope="row">$6.00</th><td class="num">-</td>' in tb
        and "A dash: not in the fact sheet as read." in tb)
@@ -242,9 +243,11 @@ def main():
                        "revision": {"text": "FSA revised 2020 on to premium alfalfa", "source_url": "https://www.fsa.usda.gov/r"}}
     tn = S.milk_dmc_paid(nb, SEP)
     ck("...the blend and the revision only when FSA's notices were read into the file",
-       "(half premium and supreme alfalfa, half other alfalfa," in tn and "; FSA revised 2020 on to premium alfalfa (" in tn
+       "(half premium and supreme alfalfa, half other alfalfa: " in tn and "; FSA revised 2020 on to premium alfalfa (" in tn
+       and ">FSA Notice DMC-53</a>" in tn
        and "half other alfalfa" not in tb)
     ck("...no hay heads in the file: no hay sentence", "alfalfa" not in S.milk_dmc_paid(dict(DM, hay={}), SEP))
+    ck("...premium rates dated by the fact sheet", "rates per cwt covered, from its DMC fact sheet of January 2026" in tb)
     ck("...Tier 1 named at 6 million lb", "Tier 1 is the first 6 million lb of your production history a year" in tb)
     ck("...the margin line shows FSA's newest month", "DMC margin, August 2026: $9.34/cwt" in S.milk_dmc_margin(DM, SEP, "2026-10-28"))
     bad = copy.deepcopy(DM)

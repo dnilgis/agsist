@@ -2436,7 +2436,7 @@ def _cite(blk, name):
     t = f'<a href="{_e(u)}" rel="noopener">{name}</a>' if u.startswith("https://www.fsa.usda.gov/") else name
     au, sn = blk.get("archive_url") or "", blk.get("snapshot") or ""
     if blk.get("via") == "archive" and au.startswith("https://web.archive.org/") and sn:
-        t += f' (read from the <a href="{_e(au)}" rel="noopener">Internet Archive copy</a> of {_e(sn)})'
+        t += f' (<a href="{_e(au)}" rel="noopener">Internet Archive copy</a> of {_e(sn)})'
     return t
 
 
@@ -2447,7 +2447,9 @@ def _prem_cell(tier, lv):
     v = tier[f"{lv:.2f}"]
     if v is None:
         return "n/a"
-    return _money4(v) if _fin(v) and v >= 0 else "-"
+    if _fin(v) and v == 0:
+        return "none"      # FSA's word for the catastrophic level: no premium, the $100 fee only
+    return _money4(v) if _fin(v) and v > 0 else "-"
 
 
 def milk_dmc_paid(dmc, d):
@@ -2468,7 +2470,7 @@ def milk_dmc_paid(dmc, d):
                 if ms[-1] - ms[0] + 1 == len(ms) else f"{len(ms)} months")
         heads.append((y, f"{y}*", len(ms)))
         part.append(f"{y} is {span} only")
-    pyear = _e(str(pr.get("year") or "2027"))
+    asof = f", from its DMC fact sheet of {_e(pr['as_of'])}" if isinstance(pr.get("as_of"), str) and pr.get("as_of") else ""
     th = ((f'<th scope="col" class="num">Tier 1 premium</th><th scope="col" class="num">Tier 2 premium</th>' if has_prem else "")
           + "".join(f'<th scope="col" class="num">{lab}</th>' for _, lab, _ in heads))
     body = []
@@ -2493,7 +2495,7 @@ def milk_dmc_paid(dmc, d):
     t2max = max((lv for lv in DMC_LEVELS if _fin((pr.get("tier2") or {}).get(f"{lv:.2f}"))), default=None) if has_prem else None
     prem_note = ""
     if has_prem:
-        prem_note = (f" Premiums are FSA&rsquo;s rates per cwt covered for {pyear} coverage, beside each level; the payment columns "
+        prem_note = (f" Premiums are FSA&rsquo;s rates per cwt covered{asof}, beside each level; the payment columns "
                      f"do not take them off. Payment works the same in both tiers. {t1w}, Tier 2 the rest"
                      + (f"; FSA offers Tier 2 only up to {_cwt(t2max)} (n/a above)" if t2max is not None and t2max < DMC_LEVELS[-1] else "")
                      + ". A dash: not in the fact sheet as read.")
@@ -2528,11 +2530,11 @@ def _dmc_hay(dmc, years):
     out = " FSA&rsquo;s own tables price the hay in the feed cost as blended alfalfa in 2019"
     bl = notes.get("blend") if isinstance(notes.get("blend"), dict) else {}
     if bl.get("text") and bl.get("source_url", "").startswith("https://www.fsa.usda.gov/"):
-        out += f' ({_e(bl["text"])}, {_cite(bl, "FSA")})'
+        out += f' ({_e(bl["text"])}: {_cite(bl, "FSA, Jul 11, 2019")})'
     out += " and as premium alfalfa from 2020 on"
     rv = notes.get("revision") if isinstance(notes.get("revision"), dict) else {}
     if rv.get("text") and rv.get("source_url", "").startswith("https://www.fsa.usda.gov/"):
-        out += f'; {_e(rv["text"])} ({_cite(rv, "FSA")})'
+        out += f'; {_e(rv["text"])} ({_cite(rv, "FSA Notice DMC-53")})'
     return out + "."
 
 

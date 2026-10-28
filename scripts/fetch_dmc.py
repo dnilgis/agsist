@@ -180,6 +180,8 @@ def parse_hay(page):
 
 MARGINS_URL = STARTS[0]
 FACTS_URL = STARTS[1]
+NEWS_2019 = STARTS[2]
+NOTICE_53 = STARTS[3]
 OUT = "data/dairy-dmc.json"
 FIRST = "2019-01"          # DMC's first month; MPP (2014-2018) is a different program and is not shown
 
@@ -221,12 +223,51 @@ def confirm(parsed, nass):
     return rows, {"count": len(out), "months": out, "why": "; ".join(reasons)} if out else {"count": 0}
 
 
+LEVEL_ROW = re.compile(r"^\s*\$(\d\.\d{2})\s+(None|\$\d\.\d{2,4}|N/A)\s+(None|\$\d\.\d{2,4}|N/A)\s*$", re.M)
+
+
+def _rate(t):
+    return 0.0 if t == "None" else None if t == "N/A" else float(t[1:])
+
+
 def parse_premiums(text):
-    """(premiums, discount) from the fact sheet text; written against the real layout."""
-    return {}, {}
+    """(premiums, discount) from the fact sheet's -layout text. premiums =
+    {tier1: {"4.00": rate}, tier2: {...}, tier1_lb, as_of}; 'None' is no premium
+    (0.0), 'N/A' a level FSA does not offer in that tier (null). discount = FSA's
+    own sentence that carries the 25 percent, word for word, with its condition.
+    Both empty unless all twelve levels $4.00 to $9.50 are in the table."""
+    rows = {m.group(1): (_rate(m.group(2)), _rate(m.group(3))) for m in LEVEL_ROW.finditer(text or "")}
+    want = ["%.2f" % (4 + 0.5 * i) for i in range(12)]
+    prem = {}
+    if all(k in rows for k in want):
+        prem = {"tier1": {k: rows[k][0] for k in want}, "tier2": {k: rows[k][1] for k in want}}
+        m = re.search(r"production history of (\d+) mil lbs\. or less", text)
+        if m:
+            prem["tier1_lb"] = int(m.group(1)) * 1000000
+        m = re.search(r"\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER) (20\d\d)\b", text)
+        if m:
+            prem["as_of"] = "%s %s" % (m.group(1).title(), m.group(2))
+    flat = re.sub(r"\s+", " ", text or "")
+    m = re.search(r"(A dairy operation that makes a one-time election [^.]*? will receive a 25 percent discount on premium rates\.)", flat)
+    disc = {"text": m.group(1)} if m else {}
+    return prem, disc
 
 
-def run(root=ROOT, now=None, get=None):
+def parse_hay_notes(news_html, notice_text):
+    """{blend: {text}, revision: {text}} from FSA's Jul 11, 2019 release and
+    Notice DMC-53, only when their own words say so; the page quotes these."""
+    out = {}
+    if re.search(r"\b50 percent hay blend\b", _text(news_html or "")):
+        out["blend"] = {"text": "a 50 percent hay blend, in FSA's words"}
+    n = re.sub(r"\s+", " ", notice_text or "")
+    if (re.search(r"amended and published in the Federal Register on December 1, 2021, to use premium alfalfa hay rather than "
+                  r"blended alfalfa hay", n) and re.search(r"effective starting in January 2020", n)):
+        out["revision"] = {"text": "FSA changed the feed cost to premium alfalfa in December 2021, back to January 2020, "
+                                   "and recalculated those margins"}
+    return out
+
+
+def run(root=ROOT, now=None, get=None, pdf_text=None):
     import datetime
     import json
     import os
@@ -262,21 +303,32 @@ def run(root=ROOT, now=None, get=None):
         rec.pop("premium_tier1", None)
         print("[dmc] %d months kept (%s to %s), %d withheld%s" % (
             len(rows), min(rows), max(rows), held["count"], (": " + held["why"]) if held["count"] else ""))
-    fb, ferr = get(FACTS_URL)
-    if fb and fb[:5] == b"%PDF-":
-        from fetch_dairy import pdf_to_text
-        t, _e = pdf_to_text(fb)
+    from fetch_dairy import pdf_to_text
+    to_text = pdf_text or (lambda b: pdf_to_text(b)[0])
+    # The fact sheet and the two hay notices do not change month to month: read
+    # once, then again only when the held copy is over 30 days old.
+    stale = (rec.get("premiums") or {}).get("read", "") < (now - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
+    if stale:
+        fb, ferr = get(FACTS_URL)
+        t = to_text(fb) if fb and fb[:5] == b"%PDF-" else None
         prem, disc = parse_premiums(t or "")
+        src = dict(VIA.get(FACTS_URL, {"via": "live"}), source_url=FACTS_URL, read=now.strftime("%Y-%m-%d"))
         if prem:
-            prem.update(VIA.get(FACTS_URL, {"via": "live"}), source_url=FACTS_URL)
-            rec["premiums"] = prem
+            rec["premiums"] = dict(prem, **src)
         if disc:
-            disc.update(VIA.get(FACTS_URL, {"via": "live"}), source_url=FACTS_URL)
-            rec["discount"] = disc
+            rec["discount"] = dict(disc, **src)
         if not prem:
-            print("::warning::DMC fact sheet read but no premium table found")
-    else:
-        print("::warning::DMC fact sheet not read: %s" % (ferr or "not a PDF"))
+            print("::warning::DMC fact sheet: no premium table (%s)" % (ferr or ("read" if t else "not a PDF")))
+    if not (rec.get("hay_notes") or {}).get("revision") or not (rec.get("hay_notes") or {}).get("blend"):
+        nb, _e1 = get(NEWS_2019)
+        pb, _e2 = get(NOTICE_53)
+        nt = to_text(pb) if pb and pb[:5] == b"%PDF-" else ""
+        notes = parse_hay_notes(nb.decode("utf-8", "replace") if nb else "", nt or "")
+        for k, u in (("blend", NEWS_2019), ("revision", NOTICE_53)):
+            if k in notes:
+                notes[k].update(VIA.get(u, {"via": "live"}), source_url=u)
+        if notes:
+            rec["hay_notes"] = dict(rec.get("hay_notes") or {}, **notes)
     rec["_note"] = ("Written by scripts/fetch_dmc.py from FSA's own DMC prices and updates page (live, or the Internet "
                     "Archive copy named by archive_url and snapshot) and FSA's DMC fact sheet. A month is kept only when "
                     "FSA's milk minus feed is FSA's margin and its all-milk matches the NASS month held; the rest are in "
@@ -338,6 +390,50 @@ def selftest():
     hay = parse_hay(fx)
     ck("...hay as FSA heads it: blended alfalfa in 2019, premium alfalfa 2020 to 2026",
        hay.get("2019") == "Blended Alfalfa Hay" and all(hay.get(str(y)) == "Premium Alfalfa Hay" for y in range(2020, 2027)), hay)
+    fs = (ROOT / "test" / "fixtures" / "milk" / "fsa-dmc-factsheet-2026-01.txt").read_text()
+    pr, dc = parse_premiums(fs)
+    ck("fact sheet Jan 2026: Tier 1 $9.50 = 0.150, $4.50 = 0.0025, $4.00 none (0)",
+       pr.get("tier1", {}).get("9.50") == 0.15 and pr["tier1"]["4.50"] == 0.0025 and pr["tier1"]["4.00"] == 0.0, pr)
+    ck("...Tier 2 $8.00 = 1.813, $8.50 to $9.50 not offered (null)",
+       pr.get("tier2", {}).get("8.00") == 1.813 and all(pr["tier2"][k] is None for k in ("8.50", "9.00", "9.50")), pr.get("tier2"))
+    ck("...Tier 1 is 6 million lb; dated January 2026", pr.get("tier1_lb") == 6000000 and pr.get("as_of") == "January 2026", pr)
+    ck("...the discount in FSA's own words, with its condition",
+       dc.get("text") == ("A dairy operation that makes a one-time election of coverage level and coverage percentage that are "
+                          "applicable to each of calendar years 2026 through 2031 will receive a 25 percent discount on premium rates."), dc)
+    ck("...a table missing a level gives nothing", parse_premiums(fs.replace("$9.00", "$9.05")) == ({}, dc))
+    hn = parse_hay_notes((ROOT / "test" / "fixtures" / "milk" / "fsa-dmc-2019-news-blend.html").read_text(),
+                         (ROOT / "test" / "fixtures" / "milk" / "fsa-dmc-53-head.txt").read_text())
+    ck("hay notes: the 2019 blend and the Dec 2021 revision back to Jan 2020, from FSA's own words",
+       set(hn) == {"blend", "revision"} and "50 percent hay blend" in hn["blend"]["text"], hn)
+    ck("...nothing read, no notes", parse_hay_notes("", "") == {})
+    # the whole run on the real reads, as through the archive, into a temp repo
+    import datetime
+    import json
+    import tempfile
+    docs = {MARGINS_URL: fx.encode(), FACTS_URL: b"%PDF-fs", NOTICE_53: b"%PDF-53",
+            NEWS_2019: (ROOT / "test" / "fixtures" / "milk" / "fsa-dmc-2019-news-blend.html").read_bytes()}
+    texts = {b"%PDF-fs": fs, b"%PDF-53": (ROOT / "test" / "fixtures" / "milk" / "fsa-dmc-53-head.txt").read_text()}
+
+    def fget(u):
+        if u in docs:
+            VIA[u] = {"via": "archive", "archive_url": "https://web.archive.org/web/20260610000000/" + u, "snapshot": "2026-06-10"}
+            return docs[u], None
+        return None, "404"
+    with tempfile.TemporaryDirectory() as d:
+        (Path(d) / "data").mkdir()
+        (Path(d) / "data" / "dairy-data.json").write_text(json.dumps({"all_milk": {"month_key": "2026-08", "value": 19.8}}))
+        rec = run(d, now=datetime.datetime(2026, 10, 28, tzinfo=datetime.timezone.utc), get=fget, pdf_text=texts.get)
+        ck("run: 88 months, 4 withheld, cited to the archive copy of Jun 10, 2026",
+           len(rec.get("margins", {})) == 88 and rec["withheld"]["count"] == 4 and rec["via"] == "archive"
+           and rec["snapshot"] == "2026-06-10" and rec["status"]["ok"], {k: rec.get(k) for k in ("withheld", "via", "status")})
+        ck("...premiums, the discount sentence and both hay notes, each with its own source",
+           rec["premiums"]["source_url"] == FACTS_URL and rec["discount"]["source_url"] == FACTS_URL
+           and rec["hay_notes"]["revision"]["source_url"] == NOTICE_53 and rec["hay"]["2019"] == "Blended Alfalfa Hay", rec.get("hay_notes"))
+        rec2 = run(d, now=datetime.datetime(2026, 10, 29, tzinfo=datetime.timezone.utc), get=lambda u: (None, "timeout"))
+        ck("...a failed read keeps the last good file and says why",
+           len(rec2["margins"]) == 88 and rec2["status"]["ok"] is False and "timeout" in rec2["status"]["why"], rec2.get("status"))
+    VIA.clear()
+    LIVE["down"] = False
     ck("probe keeps DMC files", _keep("https://www.fsa.usda.gov/x/DMC-Margin-2026.xlsx"))
     ck("probe skips unrelated files", not _keep("https://www.fsa.usda.gov/x/loan-rates.pdf"))
     ck("probe follows DMC pages only", _follow("https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program/x")
