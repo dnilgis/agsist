@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-27T02:05:58Z",
+ "updated": "2026-10-28T02:17:24Z",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, state hay reports",
  "note": "Confirmed trades as AMS reports them, $ per ton, by grade and bale type. Each report has its own date. Not blended with the NASS monthly prices in hay-prices.json.",
  "reports": [
@@ -149,9 +149,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3183",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3183.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -315,9 +315,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3050",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3050.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -327,7 +327,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -491,9 +491,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2935",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2935.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1512,9 +1512,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2885",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2885.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1524,7 +1524,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1534,7 +1534,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1543,8 +1543,8 @@
    "state_name": "Missouri",
    "status": {
     "ok": false,
-    "note": "no Per Ton hay or straw rows",
-    "checked": "2026-10-27T02:05:58Z"
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1628,9 +1628,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3095",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3095.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1640,7 +1640,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1744,9 +1744,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2905",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2905.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1970,9 +1970,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3236",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3236.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -1982,7 +1982,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2111,9 +2111,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3056",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3056.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2242,9 +2242,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3057",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3057.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2468,9 +2468,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3058",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3058.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2734,9 +2734,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2904",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2904.pdf",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-10-27T02:05:58Z"
+    "ok": false,
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2746,7 +2746,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2756,7 +2756,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2766,7 +2766,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2775,8 +2775,8 @@
    "state_name": "New Mexico",
    "status": {
     "ok": false,
-    "note": "no Per Ton hay or straw rows",
-    "checked": "2026-10-27T02:05:58Z"
+    "note": "fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2786,7 +2786,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2796,7 +2796,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2806,7 +2806,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2816,7 +2816,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2826,7 +2826,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2836,7 +2836,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   },
   {
@@ -2846,7 +2846,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-27T02:05:58Z"
+    "checked": "2026-10-28T02:17:24Z"
    }
   }
  ]
