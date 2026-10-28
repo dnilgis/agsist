@@ -190,7 +190,10 @@ def _selftest():
         ok("—" not in (f or {}).get("text", ""), "no em dash")
         seen.add((f or {}).get("id"))
     ok("ours-rain-day" in seen and "ours-dry-spell" in seen and len(seen) >= 10, "rotates through ours and the pool")
-    r = rain_day(date(2026, 10, 21))
+    # The shipped county files move every day, so the day asked is the newest as_of in them (Oct 28, 2026:
+    # a fixed Oct 21 found nothing once every county's as_of had moved past it).
+    latest = max((str(c.get("as_of") or "") for _st, _f, c, _src in _counties(REPO)), default="")
+    r = rain_day(date.fromisoformat(latest)) if latest else None
     ok(r and re.search(r"\d+\.\d\d inches", r["text"]) and r["file"].startswith("data/rain/"), "our rain day names its file")
     print("daily_fact selftest " + ("FAILED" if bad else "ok"))
     return 1 if bad else 0
