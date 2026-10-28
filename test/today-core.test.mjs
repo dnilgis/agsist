@@ -49,12 +49,12 @@ test('the bookmarklet\'s host finds the paste reader; any other host has none', 
   assert.equal(P.siteFor('centralunitedcoop.com'), null);
 });
 
-test('elev-today.html: the bookmarklet copies and opens the paste box, and carries no token', () => {
-  const h = readFileSync(new URL('../elev-today.html', import.meta.url), 'utf8');
+test('desk/today.html (was elev-today.html): the bookmarklet copies and opens the paste box, and carries no token', () => {
+  const h = readFileSync(new URL('../desk/today.html', import.meta.url), 'utf8');
   const bm = /var BM = "(javascript:[^"]+)";/.exec(h)[1];
   assert.match(bm, /document\.documentElement\.outerHTML/);
   assert.match(bm, /navigator\.clipboard\.writeText/);
-  assert.match(bm, /https:\/\/agsist\.com\/elev-admin\.html\?paste=/);
+  assert.match(bm, /https:\/\/agsist\.com\/desk\/elevators\.html\?paste=/);
   assert.doesNotMatch(bm, /fetch\(|XMLHttpRequest|sendBeacon|token|Bearer|workers\.dev/i, 'it sends nothing anywhere and holds no token');
   assert.doesNotMatch(h, /—/);
   assert.match(h, /localStorage/, 'done ticks are kept in this browser');
