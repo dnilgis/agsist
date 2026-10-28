@@ -1,0 +1,104 @@
+name: North Dakota and Wisconsin licensed storage
+
+# Reads one state's list of licensed grain warehouses into data/licensed-storage/<ST>.json and joins
+# each location to the AGSIST elevator ids (scripts/licensed_storage.py). The cash-bid town pages
+# show a matched elevator's line, and the state page the list's totals, on their next build
+# (cash-bid-pages.yml reads the files).
+#   ND: North Dakota Department of Agriculture, licensed grain entities (PDF; one total capacity per
+#       licensee), through the references copy (references/sources.json id nd-grain-entities-624),
+#       scripts/fetch_nd_storage.py.
+#   WI: Wisconsin DATCP, licensed grain dealers and warehouse keepers (XLS; no capacity column),
+#       downloaded here from datcp.wi.gov (refs.yml keeps PDF and HTML only),
+#       scripts/fetch_wi_storage.py.
+#
+# BY HAND ONLY. A schedule needs Sig's OK first (STANDING-DECISIONS, Oct 21). Run it when the state
+# posts a new list. The run refuses to write anything when the list does not hold together (each
+# reader's docstring says what it checks).
+on:
+  workflow_dispatch:
+    inputs:
+      state:
+        description: "ND or WI"
+        required: true
+        type: choice
+        options: [ND, WI]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nd-wi-storage
+  cancel-in-progress: false
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      IN_STATE: ${{ inputs.state }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - name: Check the input
+        run: |
+          case "$IN_STATE" in ND|WI) ;; *) echo "::error::state must be ND or WI"; exit 1;; esac
+
+      - name: Install poppler (pdftotext, pdfinfo)
+        if: inputs.state == 'ND'
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
+
+      - name: Install xlrd
+        if: inputs.state == 'WI'
+        timeout-minutes: 5
+        run: python3 -m pip install --disable-pip-version-check -q xlrd==2.0.1
+
+      - name: Selftest
+        run: |
+          python3 scripts/fetch_nd_storage.py --selftest
+          python3 scripts/fetch_wi_storage.py --selftest
+
+      - name: North Dakota, read, reconcile and join
+        if: inputs.state == 'ND'
+        timeout-minutes: 5
+        run: |
+          mkdir -p "$RUNNER_TEMP/refs"
+          python3 scripts/fetch_refs.py --out "$RUNNER_TEMP/refs" --ids nd-grain-entities-624
+          f="$RUNNER_TEMP/refs/refs/nd-grain-entities-624.pdf"
+          test -s "$f" || { echo "::error::nd-grain-entities-624 was not fetched (see the summary above)"; exit 1; }
+          python3 scripts/fetch_nd_storage.py --pdf "$f"
+          python3 scripts/fetch_nd_storage.py --check
+
+      - name: Wisconsin, read, reconcile and join
+        if: inputs.state == 'WI'
+        timeout-minutes: 5
+        run: |
+          f="$RUNNER_TEMP/wi.xls"
+          curl -fsSL --max-time 120 --retry 2 -A "Mozilla/5.0 (compatible; AGSIST)" \
+            -o "$f" "https://datcp.wi.gov/Documents/LicensedGrainDealersAndWarehouseKeepers.xls"
+          head -c 8 "$f" | od -An -tx1 | grep -q "d0 cf 11 e0" \
+            || { echo "::error::the download is not an .xls file (a block page?)"; exit 1; }
+          python3 scripts/fetch_wi_storage.py --xls "$f"
+          python3 scripts/fetch_wi_storage.py --check
+
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add "data/licensed-storage/$IN_STATE.json"
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: $IN_STATE licensed storage"
+          for i in 1 2 3 4; do
+            git rebase --abort 2>/dev/null || true
+            if git pull --rebase --autostash origin main && git push; then exit 0; fi
+            sleep $((30 * i))
+          done
+          echo "::error::push failed after 4 attempts"; exit 1

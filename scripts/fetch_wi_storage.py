@@ -155,7 +155,7 @@ def _credit(doc, esc):
 
 
 def storage_line_html(row, doc, esc):
-    """No capacity in the list: the license only, never a number of bushels."""
+    """No capacity in the list: the license only, never a capacity figure."""
     return (f'<p class="cbt-sub cbt-cap" style="margin:8px 0 0">Licensed grain warehouse keeper ({_credit(doc, esc)} '
             f'license {esc(row["lic"])}, list as of {LS.fmt_date(doc["source"]["as_of"])})</p>')
 

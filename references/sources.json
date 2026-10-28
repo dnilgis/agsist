@@ -2400,6 +2400,10 @@
     {"id": "ne-psc-capacity-2026-10-28", "kind": "pdf",
      "url": "https://psc.nebraska.gov/sites/default/files/doc/2026-10-28%20Location%20Capacity%20Report.pdf",
      "title": "Nebraska Public Service Commission, Location Capacity Report, Oct 28, 2026 (licensed grain warehouse locations and bushels)",
-     "why": "Licensed storage per elevator location on Nebraska cash-bid town pages and the state total (scripts/fetch_ne_capacity.py)"}
+     "why": "Licensed storage per elevator location on Nebraska cash-bid town pages and the state total (scripts/fetch_ne_capacity.py)"},
+    {"id": "nd-grain-entities-624", "kind": "pdf",
+     "url": "https://www.ndda.nd.gov/sites/www/files/documents/files/GrainEntities_624.pdf",
+     "title": "North Dakota Department of Agriculture, licensed grain entities (licences, warehouse locations, total capacity), file dated Jun 7, 2024",
+     "why": "Licensed storage on North Dakota cash-bid town pages and the state note (scripts/fetch_nd_storage.py)"}
 ]
 }
