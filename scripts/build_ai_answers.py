@@ -18,6 +18,8 @@ One data file, one block per topic: data/ai-answers.json. Each answer:
   withheld_why    for a withheld answer: what is missing, in words
   text            the sentences, plain text (escaped here, no HTML)
   sources         [{name, url, read}]: read = the date we read that copy
+  fold            true: a <details> the reader opens (long pages); the text is
+                  still in the static HTML
   review_by       the date the answer goes stale (the next report, vote or
                   deadline); scripts/daily_site_check.py lists it after that
 
@@ -116,16 +118,19 @@ def render(a):
         return op + cl
     e = html.escape
     srcs = " &middot; ".join(
-        f'<a href="{e(s["url"], quote=True)}" rel="noopener" style="text-decoration:underline;color:inherit">{e(s["name"])}</a>'
+        f'<a href="{e(s["url"], quote=True)}" rel="noopener" style="text-decoration:underline">{e(s["name"])}</a>'
         for s in a["sources"])
-    return (
-        f'{op}<section class="ai-answer" id="answer-{aid}" aria-labelledby="answer-{aid}-h" data-checked="{checked(a)}" '
-        'style="margin:1.25rem 0;padding:.9rem 1rem;border:1px solid var(--border);border-radius:var(--r-8,8px);'
-        'background:var(--surface);max-width:var(--page-max,72rem)">'
-        f'<h2 id="answer-{aid}-h" style="font-size:var(--fs-lg,1.15rem);margin:0 0 .45rem;line-height:1.3">{e(a["question"])}</h2>'
-        f'<p style="margin:0 0 .55rem;line-height:1.55">{e(" ".join(a["text"]))}</p>'
-        f'<p style="margin:0;font-size:var(--fs-xs,.8rem);color:var(--text-muted);line-height:1.5">'
-        f'Last checked {nice(checked(a))}. Sources: {srcs}</p></section>{cl}')
+    head = (f'<h2 id="answer-{aid}-h" style="font-size:1.1rem;margin:0 0 .4rem">{e(a["question"])}</h2>')
+    body = (f'<p style="margin:0 0 .5rem">{e(" ".join(a["text"]))}</p>'
+            f'<p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked {nice(checked(a))}. Sources: {srcs}</p>')
+    box = 'margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px'
+    if a.get("fold"):
+        # folded: the answer is in the page (crawlers read it), the reader opens it
+        return (f'{op}<details class="ai-answer" id="answer-{aid}" data-checked="{checked(a)}" style="{box.replace("1rem 0;padding:.8rem 1rem", ".5rem 0;padding:.3rem .9rem")}">'
+                f'<summary style="cursor:pointer;padding:.35rem 0">{head.replace("<h2 ", "<h2 class=fold-h ", 1).replace("margin:0 0 .4rem", "display:inline;margin:0", 1)}</summary>'
+                f'{body}</details>{cl}')
+    return (f'{op}<section class="ai-answer" id="answer-{aid}" aria-labelledby="answer-{aid}-h" data-checked="{checked(a)}" '
+            f'style="{box}">{head}{body}</section>{cl}')
 
 
 def by_id(doc):
@@ -206,6 +211,8 @@ def selftest():
     check(problems({"answers": [good]}) == [], "good answer passes")
     h = render(good)
     check(h.startswith("<!-- ai-answer:t --><section") and h.endswith("</section><!-- /ai-answer:t -->"), "markers wrap block")
+    f = render(dict(good, fold=True))
+    check(f.startswith("<!-- ai-answer:t --><details") and "<summary" in f and "One &amp; two. Three." in f, "folded block keeps the answer in the page")
     check("One &amp; two. Three." in h, "text escaped and joined")
     check("USDA &lt;NASS&gt;" in h and "b=1&amp;c=2" in h, "source escaped")
     check("Last checked Oct 16, 2026." in h, "checked = oldest read date")

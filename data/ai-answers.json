@@ -17,8 +17,7 @@
     "It has not passed.",
     "The House passed H.R. 7567, the Farm, Food, and National Security Act of 2026, 224 to 200 on April 30, 2026, and the Senate received it May 19.",
     "The Senate Agriculture Committee reported its own bill, S. 5526, the Agricultural Act of 2026, on September 24, 2026; in the Congress bill record of October 28, its last action is still a place on the Senate calendar, with no floor vote.",
-    "Whether the two become one law, and when, is not decided.",
-    "ARC, PLC and the higher reference prices do not wait on it: the 2025 law (Pub. L. 119-21) already runs them through the 2031 crop year."
+    "Whether the two become one law, and when, is not decided."
    ],
    "sources": [
     {
@@ -30,11 +29,6 @@
      "name": "S. 5526 bill status, all actions (GPO)",
      "url": "https://www.govinfo.gov/bulkdata/BILLSTATUS/119/s/BILLSTATUS-119s5526.xml",
      "read": "2026-10-28"
-    },
-    {
-     "name": "FSA ARC/PLC rule, Federal Register, Jan 12, 2026",
-     "url": "https://www.federalregister.gov/d/2026-00313",
-     "read": "2026-10-16"
     }
    ]
   },
@@ -226,7 +220,7 @@
    "status": "live",
    "review_by": "2026-11-30",
    "text": [
-    "The price effect runs through the border: cattle from Mexico were shut out over New World screwworm from November 22, 2024, and USDA then raised its 2025 forecast for 750 to 800 pound feeder steers by $15 to $272.50 per cwt, a forecast, not a measured effect (ERS, December 16, 2024).",
+    "The price effect runs through the border: cattle from Mexico were shut out over New World screwworm from November 22, 2024, and USDA then raised its 2025 forecast for 750 to 800 pound feeder steers by $15 per cwt, a forecast, not a measured effect (ERS, December 16, 2024).",
     "USDA is now reopening border ports to Mexican cattle in phases: Santa Teresa, NM on September 24, 2026, Columbus, NM on October 26, and Nogales, AZ planned for November 30.",
     "Inside the U.S., APHIS confirmed the first wildlife case on October 21, 2026, an elk on a game ranch in Pecos County, Texas, and Texas is changing its infested zone around it.",
     "APHIS keeps the case count and the zone map on its status page, linked below."
