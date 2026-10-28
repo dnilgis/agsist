@@ -669,7 +669,7 @@
         rows.forEach(function (r, i) {
           if (r.st !== st) return;
           var el = $('h-el-h' + i); if (!el) return;
-          var key = join && join.k && r.elevId ? join.k[r.elevId] : null;
+          var key = join && r.elevId ? (join.s && join.s[r.elevId]) || (join.k && join.k[r.elevId]) || null : null;   // s: own key + folded boards' keys (Oct 27)
           if (!key) { el.textContent = ''; return; }
           if (!map || !net || !net.shard || !r.shard) return;
           net.shard(r.shard).then(function (sh) {

@@ -1,5 +1,5 @@
 {
-  "note": "State hay reports read by scripts/fetch_hay_ams.py. slug = the AMS report number in https://www.ams.usda.gov/mnreports/ams_<slug>.pdf. Numbers filled from the Oct 16, 2026 probe (scan 2800-3300, data/hay-ams-raw/listing.json): every one with a slug was read there. slug null = no report found for that state yet; a later probe can fill it from the listing by title. A report is used only when its own title names the state and the report says hay, so a wrong number shows nothing instead of another state's hay. match narrows the title when a state has more than one hay report. MO 2929 and NM 2939 posted asking prices only on Oct 16 and show nothing until they report trades.",
+  "note": "State hay reports read by scripts/fetch_hay_ams.py. slug = the AMS report number in https://www.ams.usda.gov/mnreports/ams_<slug>.pdf. Numbers filled from the Oct 16, 2026 probe (scan 2800-3300, data/hay-ams-raw/listing.json): every one with a slug was read there. slug null = no report found for that state yet; a later probe can fill it from the listing by title. A report is used only when its own title names the state and the report says hay, so a wrong number shows nothing instead of another state's hay. match narrows the title when a state has more than one hay report. MO 2929 and NM 2939 posted asking prices only on Oct 16 and show nothing until they report trades. hold:true = the probe saves the report's text but nothing from it is published until a saved copy checks the parser (the hay auctions added Oct 27 2026: Pipestone MN 2246, HPL Union IA 3729, Rock Valley IA 2243 and 2244, Dakota Hay Auction Corsica SD 2245, Southwest Missouri Golden City 3723; numbers from the AMS hay report list, not yet read by a probe).",
   "listing_urls": [
     "https://www.ams.usda.gov/market-news/hay-reports",
     "https://www.ams.usda.gov/market-news/livestock-poultry-grain-hay"
@@ -172,6 +172,48 @@
       "state": "IL",
       "slug": null,
       "match": "hay"
+    },
+    {
+      "id": "mn-pipestone-auction",
+      "state": "MN",
+      "slug": "2246",
+      "match": "pipestone",
+      "hold": true
+    },
+    {
+      "id": "ia-union-auction",
+      "state": "IA",
+      "slug": "3729",
+      "match": "hpl|union",
+      "hold": true
+    },
+    {
+      "id": "ia-rock-valley-mon",
+      "state": "IA",
+      "slug": "2243",
+      "match": "rock valley",
+      "hold": true
+    },
+    {
+      "id": "ia-rock-valley-thu",
+      "state": "IA",
+      "slug": "2244",
+      "match": "rock valley",
+      "hold": true
+    },
+    {
+      "id": "sd-corsica-auction",
+      "state": "SD",
+      "slug": "2245",
+      "match": "dakota hay|corsica",
+      "hold": true
+    },
+    {
+      "id": "mo-golden-city-auction",
+      "state": "MO",
+      "slug": "3723",
+      "match": "golden city|southwest missouri",
+      "hold": true
     }
   ]
 }
