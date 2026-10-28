@@ -531,7 +531,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     }
     var nb = newBoards(D);
     h += '<p>New this week: ' + (nb.why ? cant(nb.why) : '<b>' + num(nb.n) + '</b> elevators added, <b>' + num(nb.boards) + '</b> of them with a board we read') + '</p>';
-    h += src('dnilgis/bids data/elevator-ids.jsonl, ids made in the last 7 days', '');
+    h += src('dnilgis/bids elevator id ledger (elevator-ids.jsonl), ids made in the last 7 days', '');
     h += '<h3>Listing requests</h3><p>' + partOr(D, 'requests', function (q) {
       return (q.pending ? '<span class="red">' + num(q.pending) + ' waiting</span>' : 'None waiting') + ' (' + num(q.created) + ' made, ' + num(q.dismissed) + ' dismissed). <a href="/elev-admin.html#requests">Open the requests</a>';
     }) + '</p>' + src('Subs worker, list-your-elevator requests', wAt(D));

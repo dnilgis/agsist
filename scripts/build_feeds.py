@@ -146,6 +146,9 @@ CURATED = {
     # PRF state sponsors (components/prf-sponsor.js): Sig edits it when a state
     # sells or renews; each entry lapses on its own "through" date.
     "data/prf-sponsors.json",
+    # State-targeted sponsors (components/geo-sponsor.js; Sig's desk lists them):
+    # Sig switches an entry on and off by hand with its active flag (Oct 28).
+    "data/geo-sponsors.json",
     # Farm bill program dates and rules (DMC signup window and the rest): edited by
     # hand from USDA notices; seed_static.py reads it for /milk-prices (Oct 28).
     "data/farm-bill.json",

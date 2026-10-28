@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 101,
- "with_known_cadence": 101,
+ "count": 102,
+ "with_known_cadence": 102,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -195,6 +195,7 @@
   {
    "path": "data/audience.json",
    "pages": [
+    "desk.html",
     "sponsor-kit.html",
     "sponsor-report.html",
     "sponsor.html"
@@ -781,6 +782,7 @@
   {
    "path": "data/directory.json",
    "pages": [
+    "desk.html",
     "elev-admin.html"
    ],
    "written_by": [],
@@ -1073,6 +1075,25 @@
     "41 13 * * 1-5"
    ],
    "max_gap_hours": 72.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/geo-sponsors.json",
+   "pages": [
+    "desk.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
   },
@@ -1770,6 +1791,7 @@
   {
    "path": "data/page-sponsors.json",
    "pages": [
+    "desk.html",
     "sponsor.html"
    ],
    "written_by": [],
@@ -1848,6 +1870,7 @@
   {
    "path": "data/prf-sponsors.json",
    "pages": [
+    "desk.html",
     "prf-sponsor.html",
     "prf.html"
    ],
@@ -2312,6 +2335,7 @@
   {
    "path": "data/sponsor.json",
    "pages": [
+    "desk.html",
     "index.html"
    ],
    "written_by": [],
@@ -2332,6 +2356,7 @@
   {
    "path": "data/sponsors.json",
    "pages": [
+    "desk.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
