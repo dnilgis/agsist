@@ -5,10 +5,10 @@
   "all_milk": "https://quickstats.nass.usda.gov/"
  },
  "status": {
-  "class": "failed",
-  "note": "last good kept; AMS fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>; all_milk: NASS fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>; all_milk_states: NASS fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
-  "all_milk": "stale",
-  "all_milk_states": "stale"
+  "class": "ok",
+  "note": "issue date not found",
+  "all_milk": "ok",
+  "all_milk_states": "ok"
  },
  "all_milk": {
   "value": 19.8,

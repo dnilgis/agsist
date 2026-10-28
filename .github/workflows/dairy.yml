@@ -62,7 +62,7 @@ jobs:
       # refuses pypdf's scrambled column order); the Oct 28 probe found no pdftotext on the runner.
       - name: Install pdftotext
         continue-on-error: true
-        run: sudo apt-get install -y -q poppler-utils
+        run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils && pdftotext -v
       - name: Selftest
         run: |
           python scripts/fetch_dairy.py --selftest

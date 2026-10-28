@@ -102,8 +102,10 @@ def released(text):
 
 
 def laid_out(text):
-    """True for pdftotext -layout text: the base zone row holds its numbers on one line."""
-    return bool(re.search(r"^\s*Base Zone\b[^\n]*\d\.\d{2}[^\n]*\d\.\d{2}", text or "", re.M))
+    """True for pdftotext -layout text: the Class I column heads sit on one line,
+    spaced apart. pypdf prints them single-spaced or one a line (the first real
+    run on Oct 28 read pypdf text on the runner and refused it, as it should)."""
+    return bool(re.search(r"Skim Milk\s{2,}Butterfat\s{2,}3\.5% BF", text or ""))
 
 
 def line_val(text, label, unit=r"\(Per [^)]*\)"):
@@ -381,6 +383,8 @@ def selftest():
     ck("a release for another month is refused", month_record("2026-08", cls, ppd)[0] is None)
     ck("a broken Class I row is refused", month_record("2026-09", cls.replace("$20.24", "$20.34", 1), ppd)[0] is None)
     ck("the scrambled pypdf text is refused, never guessed", parse_ppd(pyp)[0] is None and parse_ppd(pyp)[1] == "not -layout text")
+    flat = re.sub(r"[ \t]{2,}", " ", cls)          # the class release as pypdf would space it
+    ck("a class release without its columns is refused", parse_class(flat) == (None, "not -layout text"), parse_class(flat))
     a, why = parse_adv(adv)
     ck("Nov 2026 advance: Class I 23.47, mover 16.03 = Class IV skim, released Oct 21",
        a and a["month_key"] == "2026-11" and a["class1"] == 23.47 and a["mover"] == 16.03 and higher_of(a)
