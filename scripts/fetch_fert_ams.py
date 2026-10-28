@@ -52,6 +52,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fetch_dairy import http_get, pdf_to_text  # noqa: E402  same host, same PDF handling
+import ams_http as AMS  # noqa: E402  www.ams.usda.gov first, then the measured mirror
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = "data/fertilizer-ams.json"
@@ -364,7 +365,7 @@ def run(root, fetched=None, now=None):
 
 # ---------------------------------------------------------------- network
 def fetch(opener=None, sleep=time.sleep):
-    raw, err = http_get(AMS_URL, headers={"User-Agent": UA}, opener=opener, sleep=sleep)
+    raw, err = AMS.get(AMS_URL, headers={"User-Agent": UA}, opener=opener, sleep=sleep)
     if raw is None:
         return None, None, "AMS fetch failed: %s" % err
     if raw[:5] == b"%PDF-":

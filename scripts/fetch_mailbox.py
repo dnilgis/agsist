@@ -52,6 +52,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fetch_dairy as FD  # noqa: E402
+import ams_http as AMS  # noqa: E402  www.ams.usda.gov first, then the measured mirror
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = "data/dairy-mailbox.json"
@@ -269,7 +270,7 @@ def fetch(opener=None, sleep=None):
     kw = {"opener": opener} if opener else {}
     if sleep:
         kw["sleep"] = sleep
-    raw, err = FD.http_get(URL, **kw)
+    raw, err = AMS.get(URL, **kw)
     if raw is None:
         return None, None, "AMS mailbox fetch failed: %s" % err
     if raw[:5] == b"%PDF-":

@@ -72,11 +72,12 @@ def same_report(url, raw, expect=None, to_text=None):
     return None
 
 
-def get(url, headers=None, tries=3, timeout=30, expect=None, mirrors=MIRRORS,
-        http_get=None, to_text=None, log=print, sleep=time.sleep):
+def get(url, headers=None, tries=3, timeout=30, opener=None, sleep=time.sleep, expect=None,
+        mirrors=MIRRORS, http_get=None, to_text=None, log=print):
     """(bytes, None) or (None, error), like fetch_dairy.http_get, trying the mirrors when
     www.ams.usda.gov fails or answers with something that is not the report."""
-    http_get = http_get or (lambda u: FD.http_get(u, headers=headers, tries=tries, timeout=timeout, sleep=sleep))
+    http_get = http_get or (lambda u: FD.http_get(u, headers=headers, tries=tries, timeout=timeout,
+                                                       opener=opener, sleep=sleep))
     LAST["host"], LAST["tried"] = None, []
     urls = candidates(url, mirrors)
     errs, primary_page = [], None
