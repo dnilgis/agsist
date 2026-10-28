@@ -103,8 +103,10 @@ test('your area: a ZIP names the area; split or unreported states ask for the pi
 test('the page: no hand-typed DMC, cost or pool figures, no Class IV futures promise', () => {
   // Hand-typed means outside the baked regions: a SEED block is written from the data files
   // (the Order 30 table's Sep 2025 mover is a real $9.34, FSA's Aug 2026 margin is too).
-  // Only the Order 30 block may hold 9.34 (the real Sep 2025 mover); every other region is checked whole.
-  const typed = page.replace(/<!--SEED:milko30-->[\s\S]*?<!--\/SEED-->/g, '');
+  // Only the Order 30 block (the real Sep 2025 mover) and the DMC margin line, baked from
+  // data/dairy-dmc.json (FSA's Aug 2026 margin, $19.80 - $10.46 = $9.34; pinned to FSA's own
+  // table in test/milk-dmc-margins.test.mjs), may hold 9.34; every other region is checked whole.
+  const typed = page.replace(/<!--SEED:(milko30|milkdmcmargin)-->[\s\S]*?<!--\/SEED-->/g, '');
   for (const bad of ['9.34', '10.46', '57%', '21%', '42,966', '1,736', '$1 to $2', '&minus;$1 to $2', 'ERS avg herd',
     'Class III and IV futures', 'enrollment already closed']) {
     assert.ok(!typed.includes(bad), bad);
