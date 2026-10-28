@@ -40,6 +40,11 @@
   "listed": "2026-10-27T08:40",
   "size": 23118
  },
+ "2026_ADMLivestockLrp_Daily_20261028.zip": {
+  "first_seen": "2026-10-28T15:10:00Z",
+  "listed": "2026-10-28T08:55",
+  "size": 32497
+ },
  "2027_ADMLivestockLrp_Daily_20261015.zip": {
   "first_seen": "2026-10-15T20:07:59Z",
   "listed": "2026-10-15T14:29",
@@ -105,6 +110,12 @@
   "listed": "2026-10-27T14:23",
   "lm": "2026-10-27T19:23:01Z",
   "size": 1446395
+ },
+ "2027_ADMLivestockLrp_Daily_20261028.zip": {
+  "first_seen": "2026-10-28T15:10:00Z",
+  "listed": "2026-10-28T08:55",
+  "lm": "2026-10-28T13:55:37Z",
+  "size": 4690
  }
 },
 "checks":[
@@ -137,5 +148,6 @@
 {"head_size":1439692,"listed":"2026-10-26T14:22","lm":"2026-10-26T19:22:16Z","names":["2027_ADMLivestockLrp_Daily_20261026.zip"],"new":1,"newest":"2027_ADMLivestockLrp_Daily_20261026.zip","size":1439692,"t":"2026-10-26T19:23:41Z"},
 {"head_size":3745,"listed":"2026-10-27T08:40","lm":"2026-10-27T13:40:07Z","names":["2026_ADMLivestockLrp_Daily_20261027.zip","2027_ADMLivestockLrp_Daily_20261027.zip"],"new":2,"newest":"2027_ADMLivestockLrp_Daily_20261027.zip","size":3745,"t":"2026-10-27T15:08:39Z"},
 {"head_size":3745,"listed":"2026-10-27T08:40","lm":"2026-10-27T13:40:07Z","new":0,"newest":"2027_ADMLivestockLrp_Daily_20261027.zip","size":3745,"t":"2026-10-27T19:08:48Z"},
-{"head_size":1446395,"listed":"2026-10-27T14:23","lm":"2026-10-27T19:23:01Z","names":["2027_ADMLivestockLrp_Daily_20261027.zip"],"new":1,"newest":"2027_ADMLivestockLrp_Daily_20261027.zip","size":1446395,"t":"2026-10-27T19:24:03Z"}
+{"head_size":1446395,"listed":"2026-10-27T14:23","lm":"2026-10-27T19:23:01Z","names":["2027_ADMLivestockLrp_Daily_20261027.zip"],"new":1,"newest":"2027_ADMLivestockLrp_Daily_20261027.zip","size":1446395,"t":"2026-10-27T19:24:03Z"},
+{"head_size":4690,"listed":"2026-10-28T08:55","lm":"2026-10-28T13:55:37Z","names":["2026_ADMLivestockLrp_Daily_20261028.zip","2027_ADMLivestockLrp_Daily_20261028.zip"],"new":2,"newest":"2027_ADMLivestockLrp_Daily_20261028.zip","size":4690,"t":"2026-10-28T15:10:00Z"}
 ]}
