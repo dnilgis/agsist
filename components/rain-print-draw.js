@@ -762,7 +762,7 @@
   function prepare(src, opts) {
     opts = opts || {};
     var A = root.AgRainArt, I = Object.assign({}, src.input, { watermark: false, bleed: 0, px: null });
-    return Promise.all([fontCss(), pageFonts(), opts.hail === false ? null : loadHail(src).catch(function () { return null; }), opts.wind ? loadWind(src).catch(function () { return { failed: true }; }) : null]).then(function (r) {
+    return Promise.all([fontCss(), pageFonts(), opts.hail === false ? null : opts.hail && opts.hail.list ? opts.hail : loadHail(src).catch(function () { return null; }), opts.wind ? loadWind(src).catch(function () { return { failed: true }; }) : null]).then(function (r) {
       var css = r[0], hail = r[2], wind = r[3];
       var svg = A.render(Object.assign({}, I, { fontCss: css }));
       var geom = A.lastGeom ? A.lastGeom() : null, unplaced = A.lastUnplaced ? A.lastUnplaced() : [];
@@ -1112,6 +1112,8 @@
     if (me.host) { me.host.classList.remove('rpd-host'); me.host.removeAttribute('data-rpd-done'); }
     if (me.onClose) me.onClose();
   }
+  // loadHail: the hail list for a print, from our own files (scripts/build_rp_hero.mjs bakes the example's); prepare(src, {hail: {list, srcs}}) takes one baked
+  api.loadHail = loadHail;
   api.open = open; api.close = close; api.prepare = prepare; api.frameAt = frameAt; api.record = record; api.canRecord = canRecord; api.stillOf = stillOf; api.encodeFrames = encodeFrames; api.avcCodec = avcCodec;
   api.current = function () { return CUR; };
 
