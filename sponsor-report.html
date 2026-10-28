@@ -23,7 +23,9 @@
    (An earlier version invented --sr-panel and shipped white-on-white.) */
 .cp{--acc:var(--ad-orange,#e8743a);--acc-rgb:var(--ad-orange-rgb,232,116,58);
   --ok:#4ade80;--ok-rgb:74,222,128;
-  max-width:1080px;margin:0 auto;padding:1.6rem 1.1rem 5rem;color:var(--text,#e8ece9)}
+  max-width:1080px;margin:0 auto;padding:1.6rem 1.1rem 5rem;color:var(--text,#e8ece9);
+  /* Held open while the campaign file loads, so the footer is never on screen to be pushed down (CLS 0). */
+  min-height:100vh}
 .cp *{box-sizing:border-box}
 .cp-eyebrow{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.68rem;letter-spacing:.16em;
   text-transform:uppercase;color:var(--text-muted,#7d8782)}
@@ -116,14 +118,47 @@
 .cp-step.is-now{border-color:var(--acc);background:rgba(var(--acc-rgb),.08)}
 .cp-step.is-now .cp-step-n{color:var(--acc)}
 
-/* ── nav ── */
-.cp-nav{position:sticky;top:0;z-index:5;display:flex;gap:.3rem;overflow-x:auto;scrollbar-width:none;
-  margin:1.2rem -1.1rem 0;padding:.6rem 1.1rem;background:linear-gradient(var(--bg,#0d1110) 70%,rgba(0,0,0,0))}
-.cp-nav::-webkit-scrollbar{display:none}
-.cp-nav a{flex:0 0 auto;font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.72rem;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--text-dim,#a9b3ae);text-decoration:none;padding:.45rem .75rem;border-radius:999px;
-  border:1px solid var(--border,#2a3230);min-height:36px;display:inline-flex;align-items:center;background:var(--bg,#0d1110)}
-.cp-nav a:hover{color:var(--text,#e8ece9);border-color:var(--acc)}
+/* ── the first screen (Oct 28, 2026, Sig: "a bit busy"): who, the status, the ad, four numbers ── */
+.cp-pillrow{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0 0}
+.cp-pill{display:inline-flex;align-items:center;gap:.45rem;font-size:.84rem;font-weight:700;padding:.3rem .75rem;border-radius:999px;
+  border:1px solid rgba(var(--acc-rgb),.5);background:rgba(var(--acc-rgb),.08);color:var(--text,#e8ece9)}
+.cp-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--acc);flex:0 0 auto}
+.cp-pill.is-ok{border-color:rgba(var(--ok-rgb),.5);background:rgba(var(--ok-rgb),.08)}
+.cp-pill.is-ok::before{background:var(--ok)}
+.cp-pill.is-off{border-color:var(--border,#2a3230);background:transparent}
+.cp-pill.is-off::before{background:var(--text-muted,#7d8782)}
+.cp-pill.is-tag{border-color:var(--border,#2a3230);background:transparent;font-weight:600;color:var(--text-dim,#a9b3ae)}
+.cp-pill.is-tag::before{display:none}
+.cp-line{color:var(--text-dim,#a9b3ae);font-size:.9rem;line-height:1.5;margin:.55rem 0 0}
+.cp-hero .cp-status{border:0;background:none;padding:0;margin:.8rem 0 0}
+.cp-adnow{margin:1rem 0 0}
+.cp-adnow .cp-eyebrow{display:block;margin:0 0 .45rem}
+.cp-adnow .cp-frame{max-width:520px;margin:0}
+.cp-now{margin:1.4rem 0 0}
+.cp-now .cp-h2{margin:0 0 .6rem}
+.cp-now .cp-h2 h2{font-size:1.1rem}
+.cp-kpi-u{font-size:.8rem;font-weight:600;color:var(--text-muted,#7d8782);margin-left:.3rem;letter-spacing:0}
+.cp-kpi-m{font-size:.78rem;color:var(--text-dim,#a9b3ae);margin-top:.3rem;line-height:1.4}
+.cp-kpi-a{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.64rem;color:var(--text-muted,#7d8782);margin-top:.35rem}
+
+/* ── everything else: one line each, opens on tap ── */
+.cp-folds{margin:1.4rem 0 0}
+.cp-fold{border:1px solid var(--border,#2a3230);border-radius:12px;background:var(--surface,#141918);margin:.5rem 0 0;scroll-margin-top:70px}
+.cp-fold>summary{list-style:none;display:flex;align-items:center;gap:.8rem;min-height:58px;padding:.65rem 1rem;cursor:pointer}
+.cp-fold>summary::-webkit-details-marker{display:none}
+.cp-fold>summary::after{content:"";flex:0 0 auto;width:.5rem;height:.5rem;border-right:2px solid var(--text-muted,#7d8782);
+  border-bottom:2px solid var(--text-muted,#7d8782);transform:rotate(45deg);margin:-.2rem .2rem 0 0;transition:transform .15s}
+.cp-fold[open]>summary::after{transform:rotate(-135deg);margin-top:.2rem}
+.cp-fold>summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:12px}
+.cp-fold-h{flex:1 1 auto;min-width:0}
+.cp-fold-t{display:block;font-weight:800;font-size:1rem;line-height:1.3}
+.cp-fold-s{display:block;font-size:.8rem;color:var(--text-dim,#a9b3ae);line-height:1.4;margin-top:.1rem}
+.cp-fold-b{padding:.2rem 1rem 1.1rem}
+.cp-fold-b>.cp-card,.cp-fold-b .cp-card{background:transparent}
+.cp-fold-b h3.cp-sub3{font-size:.95rem;margin:1.1rem 0 .5rem}
+.cp-fold-b h3.cp-sub3:first-child{margin-top:.3rem}
+.cp-contactline{font-size:.86rem;color:var(--text-dim,#a9b3ae);margin:1.2rem 0 0;line-height:1.7}
+.cp-contactline a{color:var(--text,#e8ece9)}
 
 /* ── sections ── */
 .cp-sec{margin:2.2rem 0 0;scroll-margin-top:60px}
@@ -174,7 +209,7 @@
 .cp-sum{cursor:pointer;min-height:40px;display:flex;align-items:center}
 
 /* ── performance ── */
-.cp-chart{width:100%;height:210px;display:block}
+.cp-chart{width:100%;height:auto;display:block}
 .cp-chart text{font-family:'JetBrains Mono',monospace;font-size:10px;fill:var(--text-muted,#7d8782)}
 .cp-win{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.6rem;margin:.9rem 0 0}
 .cp-win div{border:1px solid var(--border,#2a3230);border-radius:10px;padding:.7rem .8rem}
@@ -323,8 +358,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 .cp-howto{margin-top:.7rem}
 .cp-howto summary{cursor:pointer;font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
   color:var(--text-dim,#a9b3ae);min-height:40px;display:flex;align-items:center}
-.cp-howto ul{margin:.2rem 0 0;padding-left:1.1rem;font-size:.84rem;line-height:1.65;color:var(--text-dim,#a9b3ae)}
-.cp-howto li{margin:.25rem 0}
+.cp-howto ul,.cp-howto-ul{margin:.2rem 0 0;padding-left:1.1rem;font-size:.84rem;line-height:1.65;color:var(--text-dim,#a9b3ae)}
+.cp-howto li,.cp-howto-ul li{margin:.25rem 0}
 
 /* ── requests ── */
 .cp-req-acts{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
@@ -366,7 +401,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   .cp-tl li{grid-template-columns:minmax(0,1fr);gap:.2rem}
   .cp-fields{grid-template-columns:minmax(0,1fr)}
   .cp-links td:first-child{white-space:normal;width:auto}
-  .cp-nav{margin:1rem -.9rem 0;padding:.6rem .9rem}
+  .cp-fold-b{padding:.2rem .85rem 1rem}
+  .cp-fold>summary{padding:.6rem .85rem}
   /* Phone: the two derived columns go; both are in each tile's tooltip. */
   .cp-aud-t th:nth-child(5),.cp-aud-t td:nth-child(5),.cp-aud-t th:nth-child(6),.cp-aud-t td:nth-child(6){display:none}
   .cp-aud-t .cp-tag{display:inline-block;margin:.2rem 0 0 0}
@@ -375,7 +411,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 [data-theme="light"] .cp{--ok:#1f9d55;--ok-rgb:31,157,85}
 [data-theme="light"] .cp-code,[data-theme="light"] .cp-plan-name,[data-theme="light"] .cp-tl li.is-now .cp-tl-d{color:#a8380a}
 [data-theme="light"] .cp-step.is-now .cp-step-n{color:#a8380a}
-@media print{.cp-nav,.cp-tabs,.cp-copy,.cp-more,.cp-tip,.cp-pills{display:none}.cp-aud-t tr.is-more{display:table-row}.cp-sec{break-inside:avoid}}
+@media print{.cp-tabs,.cp-copy,.cp-more,.cp-tip,.cp-pills{display:none}.cp-aud-t tr.is-more{display:table-row}.cp-sec{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -491,6 +527,17 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   fetch('/data/sponsors/' + r + '.json', { cache: 'no-cache' })
     .then(function (x) { if (!x.ok) throw 0; return x.json(); })
     .then(function (d) { return AUDP.then(function (a) { d.__aud = a; return d; }); })
+    /* The ad sits on the first screen now, so its logo is fetched before the
+       page is drawn (at most 1.5 s): an image that arrives later would push
+       the four numbers down under the reader's thumb. */
+    .then(function (d) {
+      var lg = d && d.creative && d.creative.fields && d.creative.fields.logo;
+      if (!lg) return d;
+      return new Promise(function (ok) {
+        var im = new Image(), done = function () { ok(d); };
+        im.onload = im.onerror = done; setTimeout(done, 1500); im.src = lg;
+      });
+    })
     .then(function (d) {
       /* A failure INSIDE the drawing is not a bad link, and saying so sends the
          sponsor chasing the wrong thing. The two are separated here. */
@@ -744,50 +791,64 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     setTimeout(function () { openMailFallback(a.getAttribute('href')); }, 400);
   });
 
-  /* ───────────────────────────── hero ───────────────────────────── */
+  /* ───────────────────────────── hero ─────────────────────────────
+     THE FIRST SCREEN (Sig, Oct 28: "a bit busy"). A busy owner on a phone
+     gets, in order: who this is, one status, the ad as it runs, and four
+     numbers. Everything else is one tap away, below, never gone. */
   function hero(d, s) {
-    var f = (s.c && s.c.fields) || {};
-    var name = f.advertiser || d.sponsor;
-    var logo = f.logo ? '<div class="cp-logo"><img src="' + esc(f.logo) + '" alt="' + esc(name + ' logo') +
-      '" onerror="this.parentNode.className+=\' sa-logo--text\'"><span class="sa-wordmark">' + esc(name) + '</span></div>' : '';
     var h = '<header class="cp-hero">';
-    h += '<div class="cp-hero-top"><div class="cp-brands">' + logo + (logo ? '<span class="cp-x" aria-hidden="true"></span>' : '') +
-         '<span class="cp-agsist">AG<span>SIST</span></span></div><span class="cp-eyebrow">Campaign portal</span></div>';
+    h += '<div class="cp-hero-top"><span class="cp-agsist">AG<span>SIST</span></span><span class="cp-eyebrow">Campaign portal</span></div>';
     h += '<h1>' + esc(d.sponsor) + '</h1>';
-    h += '<p class="cp-sub">' + (d.geo ? '<b>State-targeted sponsor</b> &middot; ' + esc(regionNames(d)) + (d.freeTest ? ' &middot; free test' : '')
+    h += '<p class="cp-sub">' + (d.geo ? '<b>State-targeted sponsor</b> &middot; ' + esc(regionNames(d))
       : (s.tier ? '<b>' + esc(s.tier.name) + '</b> of the AGSIST Daily' : 'Sponsor of the AGSIST Daily')) + '</p>';
 
-    /* ONE STATUS, WITH THE NEXT THING TO DO. */
+    /* ONE STATUS, IN A PILL, WITH ONE LINE AND THE NEXT THING TO DO. */
     var st;
-    if (!s.c) {
-      st = { ok: false, h: 'Your ad is being written', p: 'It will appear here for your approval before anything runs.' };
-    } else if (s.live && s.start) {
-      st = { ok: true, h: 'Live' + (s.dayN > 0 ? ' · day ' + s.dayN : ''),
+    if (d.ended && !s.live) {
+      st = { cls: 'is-off', pill: 'Ended ' + esc(fmt(d.ended, true)), p: 'Your ad is off. The numbers below are what it did while it ran.' };
+    } else if (!s.c) {
+      st = { cls: '', pill: 'Not started', p: 'Your ad is being written. It appears here for your approval before anything runs.' };
+    } else if (s.live && (d.liveSince || s.start)) {
+      st = { cls: 'is-ok', pill: 'Live since ' + esc(fmt(d.liveSince || s.start, true)),
              p: (s.inTrial ? 'Free period: ' + s.trialLeft + ' day' + (s.trialLeft === 1 ? '' : 's') + ' left, through ' + esc(fmt(s.trialEnd, true)) + '. ' : '') +
-                'Results update every morning, through the end of yesterday.' };
-    } else if (s.live && d.geo) {
-      st = { ok: true, h: 'Live', p: 'Your ad is running. The counts below read 0 until the first full day of data, then fill in every morning, through the end of yesterday.' };
+                'Numbers update every morning, through yesterday.' };
     } else if (s.live) {
-      st = { ok: true, h: 'Live', p: 'The start date is being recorded. Your counter begins with it.' };
+      st = { cls: 'is-ok', pill: 'Live', p: 'Your ad is running. No full day counted yet, so the counts read 0 until the first morning after one.' };
     } else if (s.approved) {
-      st = { ok: true, h: 'Approved' + (fmt(s.ap.on, true) ? ' on ' + esc(fmt(s.ap.on, true)) : ''),
-             p: 'Proof ' + esc(s.code) + ' is locked in. ' + (d.geo ? 'Your ad goes live the day Sig switches it on; this page starts counting that day.'
-               : 'Your ad goes into the next morning’s briefing, and your free period starts that day.') };
+      st = { cls: '', pill: 'Not started', p: 'Approved' + (fmt(s.ap.on, true) ? ' on ' + esc(fmt(s.ap.on, true)) : '') + ', proof ' + esc(s.code) + '. ' +
+             (d.geo ? 'It goes live the day Sig switches it on.' : 'It goes into the next morning’s briefing.') };
     } else if (s.stale) {
-      st = { ok: false, h: 'The ad changed after you approved it',
-             p: 'You approved proof ' + esc(s.ap.proof) + '. The ad below is proof ' + esc(s.code) + '. Look it over and approve again, or tell us what to change.', btn: true };
+      st = { cls: '', pill: 'Not started', p: 'The ad changed after you approved proof ' + esc(s.ap.proof) + '. Look over proof ' + esc(s.code) + ' and approve again, or ask for a change.', btn: true };
     } else {
-      st = { ok: false, h: 'Waiting for your approval',
-             p: 'Look over your ad below. When it reads right, press approve: it opens an email with proof code ' + esc(s.code) + ' filled in. Nothing runs until that email arrives.', btn: true };
+      st = { cls: '', pill: 'Not started', p: 'Waiting for your approval. Nothing runs until you approve proof ' + esc(s.code) + '.', btn: true };
     }
-    h += '<div class="cp-status' + (st.ok ? ' is-ok' : '') + '" role="status"><span class="cp-status-dot" aria-hidden="true"></span>' +
-         '<div class="cp-status-txt"><div class="cp-status-h">' + st.h + '</div><p class="cp-status-p">' + st.p + '</p></div>' +
-         (st.btn ? '<button class="cp-btn" type="button" data-mail="' + esc(approveHref(d, s)) + '">Approve proof ' + esc(s.code) + ' &rarr;</button>' : '') + '</div>';
+    h += '<div class="cp-pillrow" role="status"><span class="cp-pill ' + st.cls + '">' + st.pill + '</span>' +
+         (d.freeTest ? '<span class="cp-pill is-tag">' + FREE + '</span>' : '') + '</div>';
+    h += '<p class="cp-line">' + st.p + '</p>';
+    if (st.btn) h += '<div class="cp-status"><button class="cp-btn" type="button" data-mail="' + esc(approveHref(d, s)) + '">Approve proof ' + esc(s.code) + ' &rarr;</button></div>';
+    return h + adNow(d, s) + '</header>';
+  }
 
-    /* THE FIVE STEPS. Each is done, now, or next; none is decoration. */
+  /* The ad, exactly as a reader sees it today, on the surface it runs on most:
+     the same renderer the live pages call, with no measurement slot. */
+  function adFields(s) {
+    var f = (s.c && s.c.fields) || {}, sp = {};
+    for (var k in f) sp[k] = f[k];
+    sp.label = (s.c && s.c.label) || 'SPONSORED'; sp.is_house_ad = false; sp.cta_urls = (s.c && s.c.cta_urls) || {};
+    return sp;
+  }
+  function adNow(d, s) {
+    if (!s.c || !window.AgsistAd) return '';
+    var tab = d.geo ? 'state-page' : 'homepage';
+    return '<div class="cp-adnow"><span class="cp-eyebrow">Your ad, as it runs' + (d.geo ? ' on pages about your states' : ' on the homepage') + '</span>' +
+      '<div class="cp-frame">' + window.AgsistAd.render(adFields(s), tab) + '</div></div>';
+  }
+
+  /* THE FIVE STEPS, now inside "Your ad and approval". Each is done, now, or next. */
+  function steps(d, s) {
     var steps = [
       { t: 'Ad written', d: s.c ? 'Proof ' + s.code : 'In progress', done: !!s.c },
-      { t: 'You approve', d: s.approved ? (fmt(s.ap.on, true) || 'Approved') : (s.stale ? 'Needs a new yes' : 'One email'), done: s.approved || s.live },
+      { t: 'You approve', d: s.approved ? (fmt(s.ap.on, true) || 'Approved') : (s.stale ? 'Needs a new yes' : 'One press'), done: s.approved || s.live },
       { t: 'Goes live', d: s.start ? fmt(s.start, true) : (d.geo ? (s.live ? 'Live now' : 'When Sig switches it on') : 'Next briefing after approval'), done: s.live && (!!s.start || !!d.geo) },
       { t: s.freeLabel, d: s.trialEnd ? 'Through ' + fmt(s.trialEnd, true) : 'From the first day', done: !!(s.trialEnd && TODAY > s.trialEnd), money: true },
       { t: 'Billing starts', d: s.firstBilled ? fmt(s.firstBilled, true) : 'After the free period', done: !!(s.firstBilled && TODAY >= s.firstBilled), money: true }
@@ -796,81 +857,141 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     if (d.freeTest) steps.forEach(function (x) { if (x.money) { x.d = FREE; x.done = false; x.muted = true; } });
     var nowIdx = -1;
     for (var i = 0; i < steps.length; i++) { if (!steps[i].done && !steps[i].muted) { nowIdx = i; break; } }
-    h += '<ol class="cp-steps" aria-label="Campaign steps">';
+    var h = '<ol class="cp-steps" aria-label="Campaign steps">';
     steps.forEach(function (x, i) {
       var cls = x.done ? ' is-done' : (i === nowIdx ? ' is-now' : (x.muted ? ' cp-muted' : ''));
       h += '<li class="cp-step' + cls + '"' + (i === nowIdx ? ' aria-current="step"' : '') + '><div class="cp-step-n">' +
            (x.done ? '✓ ' : '') + '0' + (i + 1) + '</div><div class="cp-step-t">' + esc(x.t) + '</div><div class="cp-step-d">' + esc(x.d) + '</div></li>';
     });
-    return h + '</ol></header>';
+    return h + '</ol>';
   }
 
+  /* The sections below the first screen, in Sig's order. A section with
+     nothing to show is not listed, so no link points at a section that was
+     not drawn. */
   function nav(hasAud, hasReg) {
-    var items = [['#ad', 'Your ad'], ['#results', 'Results']].concat(hasReg ? [['#states', 'Your states']] : []).concat([['#audience', 'Audience'], ['#where', 'Where it runs'], ['#billing', 'Billing'], ['#requests', 'Requests'], ['#links', 'Tracking links'], ['#how', 'How we count']]);
+    var items = [['#where', 'Where it ran']].concat(hasReg ? [['#area', 'Your area’s readers']] : []).concat([['#trend', 'Trend'], ['#ad', 'Your ad and approval'], ['#billing', 'Billing'], ['#audience', 'Who reads AGSIST'], ['#how', 'How we count'], ['#requests', 'Ask for a change']]);
     if (!hasAud) items = items.filter(function (x) { return x[0] !== '#audience'; });
-    return '<nav class="cp-nav" aria-label="Sections">' + items.map(function (x) { return '<a href="' + x[0] + '">' + x[1] + '</a>'; }).join('') + '</nav>';
+    return items;
+  }
+  /* One collapsed section: a title and a one-line summary that opens on tap. */
+  function fold(id, title, sum, body, cls) {
+    return '<details class="cp-fold' + (cls || '') + '" id="' + id + '"><summary><span class="cp-fold-h"><span class="cp-fold-t">' + title + '</span>' +
+      (sum ? '<span class="cp-fold-s">' + sum + '</span>' : '') + '</span></summary><div class="cp-fold-b">' + body + '</div></details>';
+  }
+  /* Any link to a section opens it, so "Request a change" and the undo line
+     land on an open box, never a closed one. */
+  function openTo(id) {
+    var el = document.getElementById(id);
+    var f = el && (el.tagName === 'DETAILS' ? el : el.closest && el.closest('details'));
+    if (f) f.open = true;
+    return el;
   }
 
-  /* ───────────────────────────── results ───────────────────────────── */
+  /* ───────────────────────────── results ─────────────────────────────
+     FOUR NUMBERS, LAST 7 DAYS. Each carries its plain meaning and its as-of
+     date. A zero reads "0 so far" with the reason, never a blank; a rate with
+     nothing under it reads "-" with the reason, never 0%. */
   function kpi(n, k, sub, empty) {
     return '<div class="cp-kpi"><div class="cp-kpi-n' + (empty ? ' is-empty' : '') + '">' + n + '</div><div class="cp-kpi-k">' + k + '</div>' +
            (sub ? '<div class="cp-kpi-s">' + sub + '</div>' : '') + '</div>';
   }
+  function big(n, unit, k, meaning, asof, empty) {
+    return '<div class="cp-kpi"><div><span class="cp-kpi-n' + (empty ? ' is-empty' : '') + '">' + n + '</span>' +
+      (unit ? '<span class="cp-kpi-u">' + unit + '</span>' : '') + '</div><div class="cp-kpi-k"><b>' + k + '</b></div>' +
+      '<div class="cp-kpi-m">' + meaning + '</div>' + (asof ? '<div class="cp-kpi-a">' + asof + '</div>' : '') + '</div>';
+  }
+  /* AGSIST readers who could have seen the ad, last 7 days, from
+     data/audience.json: in the sponsor's states for a state-targeted ad,
+     in the US for a sponsor of the Daily. Never typed into the page. */
+  function areaReaders(d) {
+    var a = d.__aud; if (!a) return null;
+    var R = (a.ranges || []).filter(function (x) { return x.id === '7d'; })[0]; if (!R) return null;
+    if (d.regions && d.regions.length) {
+      var rows = (a.states || {})['7d'] || [], u = 0;
+      rows.forEach(function (r) { if (d.regions.indexOf(r.code) >= 0) u += r.users || 0; });
+      return { n: u, k: 'Readers in your states', m: 'AGSIST readers there, who can see your ad', asof: esc(span(R.start, R.end)) };
+    }
+    var T = (a.totals || {})['7d'] || {};
+    if (T.users == null) return null;
+    return { n: T.users, k: 'AGSIST readers', m: 'US readers of the site, who can see your ad', asof: esc(span(R.start, R.end)) };
+  }
+  function areaKpi(d) {
+    var ar = areaReaders(d);
+    return ar ? big(num(ar.n), '', ar.k, ar.m, ar.asof, !ar.n)
+      : big('-', '', d.regions ? 'Readers in your states' : 'AGSIST readers', 'Not available right now: the reader file did not load.', '', true);
+  }
   function results(d, s) {
     var t = d.totals || {};
-    var h = '<section class="cp-sec" id="results"><div class="cp-h2"><h2>Results</h2><span class="cp-eyebrow">' +
-      (d.pending ? (d.geo && s.live ? 'Live · no full day counted yet' : 'Counting starts with your first ad')
-        : (d.geo ? (d.liveSince ? 'Live since ' + esc(fmt(d.liveSince, true)) + ' · ' : 'Live · no full day counted yet · ') : '') + 'Through ' + esc(fmt(d.through, true)) + ' · from GA4') + '</span></div>';
+    var thru = d.through ? 'through ' + esc(fmt(d.through, true)) : '';
+    var h = '<section class="cp-sec cp-now" id="results"><div class="cp-h2"><h2>Last 7 days</h2><span class="cp-eyebrow">' +
+      (d.pending ? (d.geo && s.live ? 'Live · no full day counted yet' : (d.ended ? 'Ended' : 'Not started'))
+        : (d.geo ? (d.liveSince ? 'Live since ' + esc(fmt(d.liveSince, true)) + ' · ' : 'Live · no full day counted yet · ') : '') + thru) + '</span></div>';
     if (d.pending) {
-      /* A state-targeted sponsor (Sig, Oct 28): before the ad runs its counts read 0 and "not started", never blank. */
-      h += '<div class="cp-kpis">' + (d.geo
-        ? kpi('0', 'Viewable impressions', s.live ? 'live, no full day yet' : 'not started', true) + kpi('0', 'Clicks', s.live ? 'live, no full day yet' : 'not started', true)
-        : kpi('-', 'Viewable impressions', 'MRC standard', true) + kpi('-', 'Clicks', 'button + phone', true)) +
-        kpi('-', 'Click-through rate', 'clicks ÷ viewable', true) +
-        kpi('0', 'Days live', s.start ? 'from ' + esc(fmt(s.start)) : 'starts on day one', true) + '</div>';
-      h += '<div class="cp-wait" style="margin-top:.7rem">' +
-        (d.geo && s.live ? '<div><b>Live, counting.</b><span>Every count reads 0 until the first full day of data. This page fills in on its own from that morning, and says the day it started.</span></div>'
-          : '<div><b>No numbers until your ad runs.</b><span>The alternative is showing you site traffic that was not yours. This page fills in on its own from the first morning.</span></div>') +
-        '<div><b>Every morning, through yesterday.</b><span>GA4 keeps adjusting today for hours, so a number here never changes after you have seen it.</span></div>' +
-        '<div><b>Check us against your own analytics.</b><span>Every placement sends visitors with its own tagged link, listed below, so each click shows up on your side too.</span></div></div>';
+      /* Before the ad runs its counts read 0 and say why (Sig, Oct 28), never blank,
+         and never someone else's traffic shown as theirs. */
+      var why = d.geo && s.live ? 'live, no full day counted yet' : (d.ended ? 'the ad is off' : 'your ad has not run yet');
+      h += '<div class="cp-kpis">' +
+        big('0', 'so far', 'Times seen', why, '', true) +
+        big('0', 'so far', 'Clicks', why, '', true) +
+        big('-', '', 'Click rate', 'Needs views first', '', true) + areaKpi(d) + '</div>';
+      h += '<p class="cp-note">' + (d.geo && s.live ? 'The counts fill in on their own from the first morning after a full day.'
+        : 'This page fills in on its own from the first morning your ad runs.') + '</p>';
       return h + '</section>';
     }
     if (d.withheld) {
       return h + '<div class="cp-card"><p class="cp-note" style="margin:0"><b>Withheld for now.</b> ' + esc(d.withheld) +
-        ' Showing a number that may hold someone else’s ad would be worse than showing none. It comes back on its own once only your ad is running.</p></div></section>';
+        ' Showing a number that may hold someone else’s ad would be worse than showing none. It comes back on its own once only your ad is running.</p></div>' +
+        '<div class="cp-kpis" style="margin-top:.7rem">' + areaKpi(d) + '</div></section>';
     }
+    var w = (d.windows || []).filter(function (x) { return x.days === 7; })[0] || { viewable: t.viewable, clicks: t.clicks, ctr: t.ctr };
+    var asof = d.through ? '7 days to ' + esc(fmt(d.through)) : '';
+    var noDay = d.geo && !d.liveSince;
+    var zeroWhy = noDay ? 'Live, no full day counted yet' : 'None in these 7 days';
+    var v = w.viewable || 0, c = w.clicks || 0;
+    /* IS THAT GOOD? Only against the sponsor's own run, and only when both
+       sides have enough views to mean something. No outside benchmark is
+       quoted that this page cannot show its source for. */
+    var verdict;
+    if (w.ctr == null || !v) verdict = 'Needs views first';
+    else if (v < 100) verdict = 'Clicks per 100 views. Too few views this week to judge.';
+    else if ((t.viewable || 0) - v >= 100 && t.ctr != null) {
+      var r_ = w.ctr / (t.ctr || 1e-9);
+      verdict = (t.ctr === 0 ? 'Higher than' : r_ >= 1.2 ? 'Higher than' : r_ <= 0.8 ? 'Lower than' : 'About the same as') + ' your whole run (' + t.ctr.toFixed(2) + '%)';
+    } else verdict = 'Clicks per 100 views. The first week sets your baseline.';
     h += '<div class="cp-kpis">' +
-      kpi(num(t.viewable), 'Viewable impressions', 'half the ad, one second') +
-      kpi(num(t.clicks), 'Clicks', 'button + phone') +
-      kpi(t.ctr == null ? '-' : t.ctr.toFixed(2) + '%', 'Click-through rate', 'clicks ÷ viewable', t.ctr == null) +
-      kpi(num((d.series || []).length), 'Days reported', s.start ? 'since ' + esc(fmt(s.start)) : '') + '</div>';
-    h += '<div class="cp-card" style="margin-top:.7rem">' + chart(d.series || []);
-    if (d.windows && d.windows.length) {
-      h += '<div class="cp-win">';
-      d.windows.forEach(function (w) {
-        h += '<div><b>' + num(w.viewable) + '</b><span>viewable, last ' + esc(w.days) + ' days &middot; ' + num(w.clicks) + ' click' +
-             (w.clicks === 1 ? '' : 's') + (w.ctr == null ? '' : ' &middot; ' + w.ctr.toFixed(2) + '%') + '</span></div>';
-      });
-      h += '</div>';
+      big(num(w.viewable), v ? '' : 'so far', 'Times seen', v ? 'Half the ad on screen for a second. One reader can count more than once.' : zeroWhy, asof, !v) +
+      big(num(w.clicks), c ? '' : 'so far', 'Clicks', c ? 'Taps on your button or phone number' : (v ? 'No clicks yet in these 7 days' : zeroWhy), asof, !c) +
+      big(w.ctr == null ? '-' : w.ctr.toFixed(2) + '%', '', 'Click rate', verdict, asof, w.ctr == null) +
+      areaKpi(d) + '</div>';
+    if ((d.series || []).length > 7) h += '<p class="cp-note">Since ' + esc(fmt(d.liveSince || s.start, true)) + ': ' + num(t.viewable) + ' times seen, ' + num(t.clicks) + ' click' + (t.clicks === 1 ? '' : 's') + '.</p>';
+    return h + '</section>';
+  }
+
+  /* TREND: the one chart, plus the 7, 30 and 90 day sums. */
+  function trendSection(d) {
+    var ser = d.series || [], h = '';
+    if (d.pending || d.withheld) h = '<p class="cp-note" style="margin:0">' + (d.withheld ? 'Withheld for now, with the numbers above.' : 'Nothing to draw until your ad runs.') + '</p>';
+    else {
+      h = chart(ser);
+      if (d.windows && d.windows.length) {
+        h += '<div class="cp-win">';
+        d.windows.forEach(function (w) {
+          h += '<div><b>' + num(w.viewable) + '</b><span>times seen, last ' + esc(w.days) + ' days &middot; ' + num(w.clicks) + ' click' +
+               (w.clicks === 1 ? '' : 's') + (w.ctr == null ? '' : ' &middot; ' + w.ctr.toFixed(2) + '%') + '</span></div>';
+        });
+        h += '</div>';
+      }
     }
-    if (d.byPage && d.byPage.length) {
-      h += '<table class="cp-t"><thead><tr><th>Page</th><th style="text-align:right">Viewable</th><th style="text-align:right">Clicks</th>' +
-           '<th style="text-align:right">CTR</th></tr></thead><tbody>';
-      d.byPage.forEach(function (p) {
-        var ctr = p.viewable ? (100 * p.clicks / p.viewable) : null;
-        h += '<tr><td>' + esc(p.page) + '</td><td class="n">' + num(p.viewable) + '</td><td class="n">' + num(p.clicks) +
-             '</td><td class="n">' + (ctr == null ? 'n/a' : ctr.toFixed(2) + '%') + '</td></tr>';
-      });
-      h += '</tbody></table>';
-    }
-    return h + '</div></section>';
+    var sum = ser.length ? ser.length + ' day' + (ser.length === 1 ? '' : 's') + ' counted, ' + esc(fmt(ser[0].d)) + ' to ' + esc(fmt(ser[ser.length - 1].d)) : 'No full day counted yet';
+    return fold('trend', 'Trend', sum, h);
   }
 
   /* One scale, the axis labelled at values the chart reaches. Bars are
      viewable impressions; a dot marks a day with a click. */
   function chart(series) {
-    if (!series.length) return '<p class="cp-note" style="margin:0">No complete days yet. The first bar appears the morning after your first full day.</p>';
-    var W = 900, H = 210, L = 38, B = 24, T = 14;
+    if (!series.length) return '<p class="cp-note" style="margin:0">No full day counted yet. The first bar appears the morning after one.</p>';
+    var W = 900, H = 180, L = 38, B = 24, T = 14;
     var max = Math.max(1, Math.max.apply(null, series.map(function (x) { return x.v; })));
     max = Math.ceil(max / 10) * 10;
     var n = series.length, bw = (W - L - 6) / n;
@@ -887,7 +1008,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       if (d.c) s += '<circle cx="' + (x + bw / 2) + '" cy="' + (T - 5) + '" r="3" fill="#4ade80"><title>' + esc(d.d) + ': ' + d.c + ' click' + (d.c === 1 ? '' : 's') + '</title></circle>';
     });
     s += '<text x="' + L + '" y="' + (H - 6) + '">' + esc(series[0].d) + '</text><text x="' + W + '" y="' + (H - 6) + '" text-anchor="end">' + esc(series[n - 1].d) + '</text></svg>';
-    return s + '<p class="cp-note">Orange bars: viewable impressions per day. Green dot: a day with at least one click.</p>';
+    return s + '<p class="cp-note">Bars: times seen each day. Green dot: a day with a click.</p>';
   }
 
   /* ───────────────────────────── the ad ───────────────────────────── */
@@ -907,9 +1028,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       TABS = GEO_TABS.map(function (t) { return t.slice(); });
       TABS.forEach(function (t) { t[2] = t[2].replace('California, Nevada or Texas', regionNames(d).replace(' and ', ' or ')); });
     }
-    var h = '<section class="cp-sec" id="ad"><div class="cp-h2"><h2>Your ad</h2><span class="cp-eyebrow">Exactly as it runs</span></div>';
-    if (!s.c) return h + '<div class="cp-card"><p class="cp-note" style="margin:0">Your ad will appear here for approval before anything runs.</p></div></section>';
-    h += '<div class="cp-card"><div class="cp-tabs"><span role="tablist" aria-label="Where the ad appears" style="display:contents">';
+    var sum = !s.c ? 'Being written' : 'Proof ' + esc(s.code) + ' &middot; ' + (s.approved ? 'approved' : (s.live ? 'running' : (s.stale ? 'changed since you approved' : 'waiting for your approval'))) + ' &middot; every surface it runs on';
+    if (!s.c) return fold('ad', 'Your ad and approval', sum, '<p class="cp-note" style="margin:0">Your ad will appear here for approval before anything runs.</p>' + steps(d, s));
+    var h = '<div class="cp-card"><div class="cp-tabs"><span role="tablist" aria-label="Where the ad appears" style="display:contents">';
     TABS.forEach(function (t, i) {
       h += '<button class="cp-tab" type="button" role="tab" id="tab-' + t[0] + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) +
            '" aria-controls="cp-stage" data-tab="' + t[0] + '">' + t[1] + '</button>';
@@ -932,7 +1053,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       if (v == null || v === '' || (v.join && !v.length)) return;
       h += '<dt>' + k[1] + '</dt><dd>' + esc(v.join ? v.join('  ·  ') : v) + '</dd>';
     });
-    return h + '</dl></details></div></section>';
+    h += '</dl></details></div>';
+    h += '<h3 class="cp-sub3">Where it stands</h3>' + steps(d, s);
+    return fold('ad', 'Your ad and approval', sum, h + linksSection(d, s));
   }
 
   function wireAd(d, s) {
@@ -942,8 +1065,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     /* The fields as the live pages receive them, with the tagged links the
        builder made, so the preview's button points exactly where the live one
        will. No slot is passed: a preview is never measured. */
-    var sp = {}; for (var k in f) sp[k] = f[k];
-    sp.label = s.c.label || 'SPONSORED'; sp.is_house_ad = false; sp.cta_urls = s.c.cta_urls || {};
+    var sp = adFields(s);
     var txt = (s.c.label || 'SPONSORED') + (f.advertiser ? ' - ' + f.advertiser : '') + '\n' + (f.headline || '') + '\n' + (f.body || '') + '\n' +
       (f.facts && f.facts.length ? f.facts.join(' / ') + '\n' : '') +
       (f.cta_text ? f.cta_text + ': ' + ((s.c.links && s.c.links.daily_email) || f.cta_url || '') + '\n' : '') +
@@ -1000,7 +1122,19 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   };
   function whereSection(d, s) {
     var list = (d.placements || ['homepage', 'daily_page', 'archive', 'daily_email']).filter(function (k) { return PLACES[k]; });
-    var h = '<section class="cp-sec" id="where"><div class="cp-h2"><h2>Where it runs</h2><span class="cp-eyebrow">' + list.length + ' placements' + (d.geo ? ' · ' + esc(regionNames(d)) : ' · every issue') + '</span></div><div class="cp-places">';
+    var h = '';
+    if (d.geo) h += '<h3 class="cp-sub3">Your ad, by state</h3><div id="cp-rega-body">' + regAdsBody(d) + '</div>';
+    else if (d.byPage && d.byPage.length && !d.withheld) {
+      h += '<h3 class="cp-sub3">By page</h3><table class="cp-t"><thead><tr><th>Page</th><th style="text-align:right">Seen</th><th style="text-align:right">Clicks</th>' +
+           '<th style="text-align:right">Rate</th></tr></thead><tbody>';
+      d.byPage.forEach(function (p) {
+        var ctr = p.viewable ? (100 * p.clicks / p.viewable) : null;
+        h += '<tr><td>' + esc(p.page) + '</td><td class="n">' + num(p.viewable) + '</td><td class="n">' + num(p.clicks) +
+             '</td><td class="n">' + (ctr == null ? 'n/a' : ctr.toFixed(2) + '%') + '</td></tr>';
+      });
+      h += '</tbody></table>';
+    }
+    h += '<h3 class="cp-sub3">The places it runs</h3><div class="cp-places">';
     list.forEach(function (k) {
       var p = PLACES[k];
       h += '<div class="cp-place"><div class="cp-place-t"><i aria-hidden="true">' + p[0] + '</i>' + esc(p[1]) + '</div><p>' + esc(p[2]) + '</p></div>';
@@ -1008,7 +1142,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '</div>';
     if (d.geo) h += '<p class="cp-note">Never on Rain Print, gift or rain gauge pages, and never on a page that already carries a sold page sponsor.</p>';
     else if (s.tier && s.tier.exclusive) h += '<p class="cp-note"><b>Exclusive.</b> ' + esc(s.tier.note || 'One sponsor per issue.') + '</p>';
-    return h + '</section>';
+    var sum = d.geo ? 'Pages about ' + esc(regionNames(d)) + ', and readers there'
+      : list.length + ' places, every issue' + (d.byPage && d.byPage.length && !d.withheld ? ' &middot; by page' : '');
+    return fold('where', 'Where it ran', sum, h);
   }
 
   /* ───────────────────────────── billing ───────────────────────────── */
@@ -1032,7 +1168,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   ];
   function requestsSection(d, s) {
     var rc = d.rateCard || {}, cur = s.tier ? s.tier.id : null;
-    var h = '<section class="cp-sec" id="requests"><div class="cp-h2"><h2>Requests</h2><span class="cp-eyebrow">Goes straight to Sig</span></div>';
+    var h = '<details class="cp-fold" id="requests"><summary><span class="cp-fold-h"><span class="cp-fold-t">Ask for a change</span><span class="cp-fold-s">' + 'Change the ad, pause, cancel or send a note. Goes straight to Sig.' + '</span></span></summary><div class="cp-fold-b">';
     h += '<form class="cp-card cp-req" id="cp-req" novalidate><div class="cp-req-acts" role="radiogroup" aria-label="What do you need?">';
     ACTS.forEach(function (a, i) {
       var money = d.freeTest && (a[0] === 'plan' || a[0] === 'extend');
@@ -1055,7 +1191,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       '<span class="cp-small" style="margin:0">Nothing changes until Sig confirms it with you.</span></div>';
     h += '<div class="cp-req-out" id="cp-req-out" role="status" aria-live="polite"></div>';
     h += '<p class="cp-small" style="margin-top:.9rem">Rather talk? <a href="tel:+17157972428">715-797-2428</a> or <a href="mailto:' + esc(d.approveTo || 'sig@agsist.com') + '">' + esc(d.approveTo || 'sig@agsist.com') + '</a></p>';
-    return h + '</form></section>';
+    return h + '</form></div></details>';
   }
   function wireApprove(d, s) {
     [].forEach.call(document.querySelectorAll('button.cp-btn[data-mail]'), function (el) {
@@ -1086,7 +1222,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
         e.preventDefault();
         var f = document.getElementById('cp-req'); if (!f) return;
         var b = f.querySelector('[data-act="change"]'); if (b) b.click();
-        var sec = document.getElementById('requests');
+        var sec = openTo('requests');
         if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         var t = f.querySelector('#cp-req-msg');
         if (t) setTimeout(function () { t.focus(); }, 400);
@@ -1157,14 +1293,15 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 
   function billingSection(d, s) {
     var rc = d.rateCard || {}, t = s.tier;
-    var h = '<section class="cp-sec' + (d.freeTest ? ' cp-free' : '') + '" id="billing"><div class="cp-h2"><h2>Billing</h2><span class="cp-eyebrow">' + (d.freeTest ? '' : esc(rc.currency || 'USD')) + '</span></div>';
+    var bsum = d.freeTest ? FREE : (t ? esc(t.name) + ' &middot; $' + esc(t.price_month) + ' a month' + (rc.currency && rc.currency !== 'USD' ? ' ' + esc(rc.currency) : '') : 'Plan not recorded yet');
+    var h = '<details class="cp-fold' + (d.freeTest ? ' cp-free' : '') + '" id="billing"><summary><span class="cp-fold-h"><span class="cp-fold-t">Billing</span><span class="cp-fold-s' + (d.freeTest ? ' cp-muted' : '') + '">' + bsum + '</span></span></summary><div class="cp-fold-b">';
     if (d.freeTest) {
       /* THE SAME LAYOUT, MUTED. Nothing below is charged or offered: it is the
          page a paying sponsor sees, greyed, with one plain label on top. */
-      h += '<p class="cp-free-tag">' + FREE + '</p><p class="cp-note" style="margin:0 0 .6rem">This campaign is a free test. Nothing is billed, nothing renews and there is no contract. The plan and schedule below are shown greyed so you can see what a paid placement looks like.</p>';
-      if (!t) return h + '<div class="cp-card cp-muted"><p class="cp-note" style="margin:0">No plan.</p></div></section>';
+      h += '<p class="cp-free-tag">' + FREE + '</p><p class="cp-note" style="margin:0 0 .6rem">Nothing is billed, nothing renews, no contract. The plan below is greyed to show what a paid placement looks like.</p>';
+      if (!t) return h + '<div class="cp-card cp-muted"><p class="cp-note" style="margin:0">No plan.</p></div></div></details>';
     }
-    if (!t) return h + '<div class="cp-card"><p class="cp-note" style="margin:0">Your plan will appear here once it is recorded.</p></div></section>';
+    if (!t) return h + '<div class="cp-card"><p class="cp-note" style="margin:0">Your plan will appear here once it is recorded.</p></div></div></details>';
     h += '<div class="cp-bill' + (d.freeTest ? ' cp-muted' : '') + '"' + (d.freeTest ? ' aria-hidden="true"' : '') + '><div class="cp-card cp-plan"><div class="cp-plan-name">' + esc(t.name) + '</div>' +
          '<div class="cp-plan-price">$' + esc(t.price_month) + '<small> a month</small></div>' +
          '<ul>' +
@@ -1191,7 +1328,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
            '</div><div class="cp-tl-w"><b>' + esc(x[1]) + '</b><span>' + esc(x[2]) + '</span></div></li>';
     });
     h += '</ol>';
-    return h + '</div></div></section>';
+    return h + '</div></div></div></details>';
   }
 
   /* ───────────────────────────── links ───────────────────────────── */
@@ -1199,42 +1336,45 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     'state-page': 'Pages about your states', 'reader-state': 'Readers in your states' };
   function linksSection(d, s) {
     var L = s.c && s.c.links; if (!L) return '';
-    var h = '<section class="cp-sec" id="links"><div class="cp-h2"><h2>Tracking links</h2><span class="cp-eyebrow">UTM-tagged per placement</span></div>' +
-      '<div class="cp-card"><p class="cp-note" style="margin-top:0">Each placement sends visitors with its own <code>' + (d.geo ? 'utm_content' : 'utm_medium') + '</code>, so every click we count shows up in <b>your</b> analytics under a name you can check, one placement at a time.</p><table class="cp-t cp-links"><tbody>';
+    var h = '<h3 class="cp-sub3" id="links">Tracking links</h3>' +
+      '<div class="cp-card"><p class="cp-note" style="margin-top:0">Each place tags its clicks with its own <code>' + (d.geo ? 'utm_content' : 'utm_medium') + '</code>, so you can check every click we count in <b>your</b> analytics.</p><table class="cp-t cp-links"><tbody>';
     ['homepage', 'daily_page', 'archive', 'daily_email', 'rss', 'state-page', 'reader-state'].forEach(function (k) {
       if (!L[k]) return;
       h += '<tr><td>' + esc(LINK_NAMES[k] || k) + '</td><td><code>' + esc(L[k]) + '</code></td><td class="n"><button class="cp-copy" type="button" data-copy="' +
            esc(L[k]) + '" aria-label="Copy the ' + esc(LINK_NAMES[k] || k) + ' link">Copy</button></td></tr>';
     });
-    return h + '</tbody></table></div></section>';
+    return h + '</tbody></table></div>';
   }
 
   /* ───────────────────────────── definitions ───────────────────────────── */
+  /* EVERY CAVEAT, SAID ONCE, SHORT. The sections above point here instead of
+     repeating it. */
   function howSection(d) {
-    var h = '<section class="cp-sec" id="how"><div class="cp-h2"><h2>How we count</h2><span class="cp-eyebrow">Stated, so you can check it</span></div><div class="cp-card cp-def"><dl>' +
-      '<dt>Viewable impression</dt><dd>At least half of the ad in the browser window for one continuous second: the Media Rating Council and IAB standard for display. An ad scrolled past without stopping is not counted, and neither is a background tab. Each ad counts once per page view.</dd>' +
-      '<dt>Click</dt><dd>A click on your button or your phone number. On the homepage, a click on “Sponsored by” in the collapsed briefing bar counts too.</dd>' +
-      '<dt>Click-through rate</dt><dd>Clicks divided by viewable impressions, not by page views, which would flatter the rate and mean less.</dd>' +
-      '<dt>Source</dt><dd>Google Analytics 4, read once a day through Google’s reporting API. These are the figures in the analytics account; nothing is estimated or modelled.</dd>' +
-      '<dt>Through yesterday</dt><dd>GA4 keeps adjusting the current day for hours. Results end at the last complete day, so a number never changes after you have looked at it.</dd>' +
-      (d.geo ? '<dt>State</dt><dd>For readers and for your ad, the state is Google Analytics’ own region for the visit, where Google places the reader’s connection. The ad itself sends no state, and nothing on our side keeps one.</dd>' +
-        '<dt>Data-center traffic</dt><dd>Towns whose “readers” average under ten seconds are server farms, not people. They are removed from every reader figure here; the towns removed in your states are listed under Your states.</dd>' : '') +
-      '<dt>Not counted</dt><dd>Views of our own “sponsor this slot” pitch, clicks from people asking to buy an ad, and your own visits to this page. The previews here carry no measurement at all.</dd>';
+    var h = '<div class="cp-def"><dl>' +
+      '<dt>Times seen</dt><dd>At least half the ad on screen for one second straight: the Media Rating Council and IAB standard (a viewable impression). Scrolled past or a background tab does not count. Once per page view.</dd>' +
+      '<dt>Click</dt><dd>A tap on your button or phone number. On the homepage, a tap on “Sponsored by” in the closed briefing bar counts too.</dd>' +
+      '<dt>Click rate</dt><dd>Clicks divided by times seen, not by page views, which would flatter it. It is compared only with your own run, never with a number we cannot source.</dd>' +
+      '<dt>Readers</dt><dd>Google Analytics 4 counts browsers, not people: one person on a phone and a laptop is two readers, and cleared cookies count again.</dd>' +
+      '<dt>Source and timing</dt><dd>Google Analytics 4, read once a day. Numbers end at yesterday, because GA4 keeps adjusting today for hours; a number never changes after you have seen it. Nothing is estimated.</dd>' +
+      (d.geo ? '<dt>State</dt><dd>GA4’s own region for the visit, where Google places the connection. The ad sends no state, and we keep none.</dd>' : '') +
+      (d.geo && !(AUD.a && AUD.a.servers) ? '<dt>Data-center towns</dt><dd>Towns whose “readers” average only seconds are servers, not people. They are taken out of every reader figure; the ones in your states are named under Your area’s readers.</dd>' : '') +
+      '<dt>Not counted</dt><dd>Our own “sponsor this slot” pitch, people asking to buy an ad, your visits to this page, and these previews.</dd>';
     if (d.totals && d.totals.legacyImpressions) {
-      h += '<dt>Before the standard</dt><dd>' + num(d.totals.legacyImpressions) + ' impressions recorded on an older, looser rule are left out of the totals above.</dd>';
+      h += '<dt>Before the standard</dt><dd>' + num(d.totals.legacyImpressions) + ' impressions recorded on an older, looser rule are left out of the totals.</dd>';
     }
-    return h + '</dl></div></section>';
+    h += '</dl>';
+    var an = audNotes();
+    if (an.length) h += '<h3 class="cp-sub3">Who reads AGSIST</h3><ul class="cp-howto-ul" id="cp-aud-notes">' + an.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul>';
+    return fold('how', 'How we count', 'Every definition and caveat, in one place', h + '</div>');
   }
 
   function contact(d) {
     var to = d.approveTo || 'sig@agsist.com';
     function when(x) { var t = new Date(x); return isNaN(t) ? '' : t.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); }
-    return '<section class="cp-sec"><div class="cp-card cp-contact"><div class="cp-contact-who"><b>Sig Lindquist</b><span>AGSIST · your contact for this campaign</span></div>' +
-      '<div style="display:flex;gap:.5rem;flex-wrap:wrap"><a class="cp-btn cp-btn--ghost" href="mailto:' + esc(to) + '">' + esc(to) + '</a>' +
-      '<a class="cp-btn cp-btn--ghost" href="tel:+17157972428">715-797-2428</a></div></div>' +
+    return '<p class="cp-contactline">Questions? Sig Lindquist, <a href="mailto:' + esc(to) + '">' + esc(to) + '</a> &middot; <a href="tel:+17157972428">715-797-2428</a></p>' +
       '<p class="cp-foot">' + (when(d.generated) ? 'Results generated ' + esc(when(d.generated)) + '. ' : '') +
       (when(d.creativeRefreshed) ? 'Ad and terms refreshed ' + esc(when(d.creativeRefreshed)) + '. ' : '') +
-      'This page is private to the link you were sent. It is not listed or searchable.</p></section>';
+      'This page is private to the link you were sent. It is not listed or searchable.</p>';
   }
 
   /* ───────────────────────────── audience ─────────────────────────────
@@ -1265,7 +1405,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var a = d.__aud; if (!a) return '';
     var ids = (a.ranges || []).map(function (x) { return x.id; });
     AUD.d = d; AUD.a = a; AUD.r = ids.indexOf('28d') >= 0 ? '28d' : ids[0];
-    return '<section class="cp-sec cp-aud" id="audience"><div id="cp-aud-body">' + audBody() + '</div></section>';
+    var R = rangeOf('7d'), T = R && (a.totals || {})['7d'];
+    var sum = T && T.users != null ? num(T.users) + ' US readers, ' + esc(span(R.start, R.end)) + (a.email ? ' &middot; ' + num(a.email.subscribers) + ' on the morning email' : '') : 'Readers, where they are, what they read';
+    return fold('audience', 'Who reads AGSIST', sum, '<div id="cp-aud-body">' + audBody() + '</div>', ' cp-aud');
   }
   function rangeOf(id) { var r = null; (AUD.a.ranges || []).forEach(function (x) { if (x.id === id) r = x; }); return r; }
 
@@ -1273,7 +1415,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var a = AUD.a, d = AUD.d, rid = AUD.r, R = rangeOf(rid), T = (a.totals || {})[rid] || {};
     var rows = (a.states || {})[rid] || [];
     var live = a.mode !== 'export';
-    var h = '<div class="cp-aud-head"><h2>Who reads AGSIST</h2>';
+    var h = '<div class="cp-aud-head">';
     if ((a.ranges || []).length > 1) {
       h += '<div class="cp-pills" role="group" aria-label="Date range">' + a.ranges.map(function (x) {
         return '<button type="button" data-range="' + esc(x.id) + '" aria-pressed="' + (x.id === rid) + '">' + esc(x.label) + '</button>'; }).join('') + '</div>';
@@ -1409,7 +1551,17 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     }
     if (reach) h += '<div class="cp-grid2">' + reach + '</div>';
 
-    /* how it is counted -- closed by default */
+    return h;
+  }
+
+  /* The audience caveats, said once under How we count. Read from the same
+     file and the same range as the dashboard. */
+  function audNotes() {
+    var a = AUD.a; if (!a) return [];
+    var rid = AUD.r, T = (a.totals || {})[rid] || {}, rows = (a.states || {})[rid] || [], by = {};
+    rows.forEach(function (r) { by[r.code] = r; });
+    var days = (a.series && a.series.days || []), R = rangeOf(rid);
+    var hasS = days.some(function (x) { return x.d >= R.start && x.d <= R.end && (x.gClicks != null || x.bClicks != null); });
     var notes = [];
     notes.push('US readers only, from Google Analytics 4. Engaged visits are GA4’s own measure: ten seconds or more, two or more pages, or a key event.');
     if (a.servers && a.servers.towns) {
@@ -1431,8 +1583,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     if (hasS) notes.push('Search clicks: Google is US searches (Search Console); Bing is worldwide (its API has no country filter). Search figures count clicks, not people, and are not part of the reader totals.');
     if (a.ai) notes.push('AI citations are from Bing Webmaster’s AI report, which has no API; they carry the dates of the last export.');
     if (a.leftOut) notes.push('Outside the US, ' + esc(a.leftOut.country) + ' alone logged ' + num(a.leftOut.users) + ' “users” averaging ' + esc(secs(a.leftOut.avgSeconds)) + ', almost certainly automated. None of it is here.');
-    h += '<details class="cp-card cp-howto"><summary>How these numbers are counted</summary><ul>' + notes.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul></details>';
-    return h;
+    return notes;
   }
 
   /* One line chart. Two series share ONE axis (same unit); hover or tap shows
@@ -1518,6 +1669,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     [].forEach.call(box.querySelectorAll('[data-range]'), function (b) {
       b.addEventListener('click', function () {
         AUD.r = b.getAttribute('data-range'); box.innerHTML = audBody(); wireAudience();
+        var nl = document.getElementById('cp-aud-notes'); if (nl) nl.innerHTML = audNotes().map(function (n) { return '<li>' + n + '</li>'; }).join('');
         var nb = box.querySelector('[data-range="' + AUD.r + '"]'); if (nb) nb.focus();
       });
     });
@@ -1538,33 +1690,14 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     if (!d.regions || !d.regions.length) return '';
     var a = d.__aud, ids = a ? (a.ranges || []).map(function (x) { return x.id; }) : [];
     if (!REG.r) REG.r = ids.indexOf('28d') >= 0 ? '28d' : ids[0];
-    return '<section class="cp-sec" id="states"><div id="cp-reg-body">' + regBody(d) + '</div></section>';
+    var ar = areaReaders(d);
+    var sum = ar ? num(ar.n) + ' readers in ' + esc(regionNames(d)) + ', ' + ar.asof : 'Not available right now';
+    return fold('area', 'Your area’s readers', sum, '<div id="cp-reg-body">' + regBody(d) + '</div>');
   }
+  /* Readers in the sponsor's states, from data/audience.json. */
   function regBody(d) {
-    var a = d.__aud, ra = d.regionAds || {}, names = regionNames(d);
-    var h = '<div class="cp-h2"><h2>Your states</h2><span class="cp-eyebrow">' + esc(names) + '</span></div>';
-    /* the ad, by state */
-    var rows = ra.rows || [], el = ra.elsewhere || {};
-    var on = !!(d.creative && d.creative.live);
-    var adNote = ra.withheld ? 'withheld' : (ra.pending || d.pending) ? (on ? 'live · no full day counted yet' : 'not started')
-      : (ra.start && ra.through ? 'live since ' + esc(span(ra.start, ra.through)) : (on ? 'live · no full day counted yet' : ''));
-    var t = '<table class="cp-t cp-reg-t"><thead><tr><th>Where the reader was</th><th class="n">Viewable impressions</th><th class="n">Clicks</th></tr></thead><tbody>';
-    if (ra.withheld) t += '<tr><td colspan="3">' + esc(d.withheld || 'Withheld for now.') + '</td></tr>';
-    else {
-      var sv = 0, sc = 0;
-      rows.forEach(function (r) { sv += r.viewable || 0; sc += r.clicks || 0;
-        t += '<tr><td>' + esc(r.name) + '</td><td class="n">' + num(r.viewable || 0) + '</td><td class="n">' + num(r.clicks || 0) + '</td></tr>'; });
-      t += '<tr class="is-sum"><td>Your ' + rows.length + ' states</td><td class="n">' + num(sv) + '</td><td class="n">' + num(sc) + '</td></tr>';
-      t += '<tr><td>Everywhere else</td><td class="n">' + num(el.viewable || 0) + '</td><td class="n">' + num(el.clicks || 0) + '</td></tr>';
-    }
-    t += '</tbody></table>';
-    if ((ra.pending || d.pending || !ra.start) && on && !ra.withheld) t += '<p class="cp-note">Your ad is live. Every count reads 0 until the first full day of data, then fills in each morning, through yesterday.</p>';
-    else if (ra.pending || d.pending) t += '<p class="cp-note">Not started: your ad has not run yet, so every count is 0. They fill in from the first morning after it goes live.</p>';
-    else if (!ra.withheld) t += '<p class="cp-note">Everywhere else is readers on a page about your states who were somewhere else, plus visits GA4 could not place.</p>';
-    h += card('Your ad, by state', adNote, t);
-
-    /* readers in those states */
-    if (!a) return h + '<p class="cp-note">Reader figures by state are not available right now.</p>';
+    var a = d.__aud;
+    if (!a) return '<p class="cp-note">Reader figures by state are not available right now.</p>';
     var R_ = (a.ranges || []).filter(function (x) { return x.id === REG.r; })[0] || a.ranges[0];
     var st = (a.states || {})[R_.id] || [], by = {};
     st.forEach(function (r) { by[r.code] = r; });
@@ -1584,14 +1717,35 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     /* the server towns in these states, named, with what they carried */
     var tw = (a.servers && a.servers.towns || []).filter(function (x) {
       return d.regions.some(function (c) { return (ST_NAME[c] || c) === x.region; }); });
-    var note = '<p class="cp-note">US readers from Google Analytics 4, ' + esc(span(R_.start, R_.end)) + '. A reader seen in two of your states counts in both. Engaged: GA4’s engaged visits as a share of visits.</p>';
+    var note = '<p class="cp-note">' + esc(span(R_.start, R_.end)) + '. A reader seen in two of your states counts in both. Engaged: engaged visits as a share of visits.</p>';
     if (tw.length && a.servers.window) {
-      note += '<p class="cp-note"><b>Data-center traffic left out.</b> These towns’ “readers” averaged under ' + esc(a.servers.rule.seconds) + ' seconds each, which is servers, not people, so they are removed from every figure above. Over ' +
-        esc(span(a.servers.window.start, a.servers.window.end)) + ' they carried: ' + tw.map(function (x) { return esc(x.city) + ', ' + esc(x.region) + ' ' + num(x.users) + ' (' + esc(secs(x.avgSeconds)) + ' each)'; }).join('; ') +
-        '. With them, ' + esc(tw.map(function (x) { return x.region; }).filter(function (x, i, l) { return l.indexOf(x) === i; }).join(' and ')) + ' would look bigger than it is.</p>';
+      note += '<p class="cp-note"><b>Data-center traffic left out:</b> ' + tw.map(function (x) { return esc(x.city) + ', ' + esc(x.region) + ' ' + num(x.users) + ' (' + esc(secs(x.avgSeconds)) + ' each)'; }).join('; ') +
+        ', ' + esc(span(a.servers.window.start, a.servers.window.end)) + '. Servers, not people (see How we count).</p>';
     }
-    h += '<div style="margin-top:.7rem">' + card('Readers in your states', esc(span(R_.start, R_.end)), pills + tb + note) + '</div>';
-    return h;
+    return '<div class="cp-ct"><h3>Readers in your states</h3><span>' + esc(span(R_.start, R_.end)) + '</span></div>' + pills + tb + note;
+  }
+  /* The ad's own counts by GA4's region for the visit. Before the ad runs
+     they read 0 and "not started", never blank. */
+  function regAdsBody(d) {
+    var ra = d.regionAds || {};
+    var rows = ra.rows || [], el = ra.elsewhere || {};
+    var on = !!(d.creative && d.creative.live);
+    var adNote = ra.withheld ? 'withheld' : (ra.pending || d.pending) ? (on ? 'live · no full day counted yet' : 'not started')
+      : (ra.start && ra.through && ra.through >= ra.start ? 'live since ' + esc(span(ra.start, ra.through)) : (on ? 'live · no full day counted yet' : ''));
+    var t = '<p class="cp-small" style="margin:0">' + adNote + '</p><table class="cp-t cp-reg-t"><thead><tr><th>Where the reader was</th><th class="n">Times seen</th><th class="n">Clicks</th></tr></thead><tbody>';
+    if (ra.withheld) t += '<tr><td colspan="3">' + esc(d.withheld || 'Withheld for now.') + '</td></tr>';
+    else {
+      var sv = 0, sc = 0;
+      rows.forEach(function (r) { sv += r.viewable || 0; sc += r.clicks || 0;
+        t += '<tr><td>' + esc(r.name) + '</td><td class="n">' + num(r.viewable || 0) + '</td><td class="n">' + num(r.clicks || 0) + '</td></tr>'; });
+      t += '<tr class="is-sum"><td>Your ' + rows.length + ' states</td><td class="n">' + num(sv) + '</td><td class="n">' + num(sc) + '</td></tr>';
+      t += '<tr><td>Everywhere else</td><td class="n">' + num(el.viewable || 0) + '</td><td class="n">' + num(el.clicks || 0) + '</td></tr>';
+    }
+    t += '</tbody></table>';
+    if ((ra.pending || d.pending || !ra.start || ra.through < ra.start) && on && !ra.withheld) t += '<p class="cp-note">Live. The counts read 0 until the first full day, then fill in each morning.</p>';
+    else if (ra.pending || d.pending) t += '<p class="cp-note">Not started: your ad has not run yet, so every count is 0.</p>';
+    else if (!ra.withheld) t += '<p class="cp-note">Everywhere else: readers of a page about your states who were somewhere else, plus visits GA4 could not place.</p>';
+    return t;
   }
   function wireRegions(d) {
     var box = document.getElementById('cp-reg-body'); if (!box) return;
@@ -1606,18 +1760,40 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function draw(d) {
     var s = state(d);
     document.title = (d.sponsor ? d.sponsor + ' · ' : '') + 'Campaign portal · AGSIST';
-    /* The ad comes before the results while there is nothing to report: the
-       first thing a sponsor needs to do here is read and approve it. */
     var aud = audience(d);
     var reg = regionsSection(d);
-    var body = d.pending ? adSection(d, s) + results(d, s) + reg + aud : results(d, s) + reg + aud + adSection(d, s);
-    root.innerHTML = hero(d, s) + nav(!!aud, !!reg) + body + whereSection(d, s) + billingSection(d, s) + requestsSection(d, s) + linksSection(d, s) + howSection(d) + contact(d);
+    var parts = { '#where': whereSection(d, s), '#area': reg, '#trend': trendSection(d), '#ad': adSection(d, s), '#billing': billingSection(d, s),
+      '#audience': aud, '#how': howSection(d), '#requests': requestsSection(d, s) };
+    var body = nav(!!aud, !!reg).map(function (x) { return parts[x[0]]; });
+    /* A state-targeted sponsor: where it ran and the readers there sit together
+       under #states, the block the RootLot browser test reads. */
+    if (reg) body.splice(0, 2, '<div id="states">' + body[0] + body[1] + '</div>');
+    root.innerHTML = hero(d, s) + results(d, s) + '<div class="cp-folds">' + body.join('') + '</div>' + contact(d);
     wireAd(d, s);
     wireAudience();
     wireRegions(d);
     wireApprove(d, s);
     wireUndo(d, s);
     wireRequests(d, s);
+    wireFolds();
+  }
+  /* Links to a section open it; a section named in the address opens on load;
+     printing opens everything; a chart drawn while its section was closed is
+     redrawn at its real width when it opens. */
+  function wireFolds() {
+    root.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a || a.getAttribute('data-goto-request')) return;
+      var id = a.getAttribute('href').slice(1);
+      if (id && openTo(id)) { /* the browser scrolls to it */ }
+    });
+    if (location.hash) { var t = openTo(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+    window.addEventListener('beforeprint', function () { [].forEach.call(root.querySelectorAll('details'), function (x) { x.open = true; }); });
+    var au = document.getElementById('audience');
+    if (au) au.addEventListener('toggle', function () {
+      if (!au.open || !AUD.a) return;
+      var box = document.getElementById('cp-aud-body'); box.innerHTML = audBody(); wireAudience();
+    });
   }
 })();
 </script>
