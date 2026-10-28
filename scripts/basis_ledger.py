@@ -90,7 +90,8 @@ USAGE
   python3 scripts/basis_ledger.py --selftest
   python3 scripts/basis_ledger.py run [--live-day D] [--ref origin/raw | --dir DIR] [--out-dir .] [--replay-max N]
       the workflow step: freeze today's live calls (only for today's CT day),
-      replay any snapshot day through REPLAY_THROUGH not replayed yet, rebuild
+      replay any snapshot day before the first live call day (and before today)
+      not replayed yet, rebuild
       open grades and the summary. Writes only what changed.
   python3 scripts/basis_ledger.py summary [--ref origin/raw | --dir DIR] [--out-dir .]
 """
@@ -146,7 +147,6 @@ RULES = {
     "min_graded_for_rate": 200,
     "min_target_days_for_rate": 20,
 }
-REPLAY_THROUGH = "2026-10-28"     # the last day replay may cover; later days are live only
 SCHEMA_CALLS = "agsist-basis-ledger-calls/1"
 SCHEMA_GRADES = "agsist-basis-ledger-grades/1"
 SCHEMA_MODEL = "agsist-basis-ledger-pmove/1"
@@ -780,9 +780,16 @@ def summarize(pairs):
                     a["series"].add(sk)
                     a["abs"] += abs(actual - fc)
                     a["fb"] += model == "M1" and c[4] is None
+                y = 1.0 if moved else 0.0
+                if hrow[2] is not None:
+                    a = bucket("base", h, cr)
+                    a["n"] += 1
+                    a["days"].add(t)
+                    a["bb"] += (hrow[2] - y) ** 2
+                    a["obs"] += y
+                    a["pb"] += hrow[2]
                 if hrow[2] is not None and hrow[4] is not None:
                     a = bucket("move", h, cr)
-                    y = 1.0 if moved else 0.0
                     a["n"] += 1
                     a["days"].add(t)
                     a["bb"] += (hrow[2] - y) ** 2
@@ -799,7 +806,7 @@ def summarize(pairs):
                         a["n"] += 1
                         a["days"].add(t)
                         a["hit"] += (net > 0) == (c[6] == "up")
-    level, move, dirs = [], [], []
+    level, move, base, dirs = [], [], [], []
     for k in sorted(acc, key=str):
         a = acc[k]
         nd = len(a["days"])
@@ -808,6 +815,11 @@ def summarize(pairs):
             level.append({"model": k[1], "h": k[2], "crop": k[3], "n": a["n"], "series": len(a["series"]),
                           "target_days": nd, "m1_fallback_n": a["fb"] if k[1] == "M1" else None,
                           "mae_cents": None if w else round(100 * a["abs"] / a["n"], 3), "withheld": w})
+        elif k[0] == "base":
+            base.append({"h": k[1], "crop": k[2], "n": a["n"], "target_days": nd,
+                         "brier_base": None if w else round(a["bb"] / a["n"], 4),
+                         "observed_rate": None if w else round(a["obs"] / a["n"], 4),
+                         "mean_p_base": None if w else round(a["pb"] / a["n"], 4), "withheld": w})
         elif k[0] == "move":
             bb, bl = a["bb"] / a["n"], a["bl"] / a["n"]
             move.append({"h": k[1], "crop": k[2], "n": a["n"], "target_days": nd,
@@ -824,7 +836,7 @@ def summarize(pairs):
             "last": max(days_made) if days_made else None,
             "conflict_keys_excluded": conflicts[0], "series_days_used": conflicts[1],
             "status": [{"h": h, "status": s, "n": n} for (h, s), n in sorted(status.items(), key=str)],
-            "level": level, "move": move, "direction": dirs}
+            "level": level, "move": move, "move_base": base, "direction": dirs}
 
 
 # ------------------------------------------------------------------ files
@@ -907,9 +919,16 @@ def model_for(ledger, store, kind, d):
     return m
 
 
-def freeze_calls(ledger, doc):
-    if doc["kind"] == "replay" and doc["day"] > REPLAY_THROUGH:
-        raise ValueError(f"replay covers days through {REPLAY_THROUGH} only, not {doc['day']}")
+def replay_before(ledger, today):
+    """Replay covers only days before the ledger existed: before the first live call day, and
+    before today when there is no live call yet. A live day that was missed is never back-filled."""
+    live = ledger.list("live", "calls")
+    return min([today] + live[:1])
+
+
+def freeze_calls(ledger, doc, today):
+    if doc["kind"] == "replay" and doc["day"] >= replay_before(ledger, today):
+        raise ValueError(f"replay covers days before {replay_before(ledger, today)} only, not {doc['day']}")
     return ledger.write(rel(doc["kind"], "calls", doc["day"]), encode(doc), frozen=True)
 
 
@@ -936,7 +955,7 @@ def write_summary(ledger, blocks, asof):
                     "live and replay are separate records and are never added together. mae_cents is the mean "
                     "absolute error of the basis forecast at the target day, in cents. brier_base is the crop x "
                     "state trailing rate (the benchmark), brier_logit the month's frozen logistic model, on the "
-                    "same rows; skill = 1 - logit/base. hit_rate = direction calls right among those whose net "
+                    "same rows; skill = 1 - logit/base. move_base is the base rate alone on every graded row that has one (more rows, for months before the logistic model could be fitted). hit_rate = direction calls right among those whose net "
                     "change was not zero (flat counted beside it). n and target days beside every number; under "
                     "the minimum sample the value is null with the reason. Rows within one day are correlated: "
                     "target_days is the closer count of independent tries."),
@@ -947,7 +966,7 @@ def write_summary(ledger, blocks, asof):
 
 def run(store, ledger, today, live_day=None, made_at=None, replay=True, replay_max=None, log=print):
     """The workflow step. Frozen live calls for live_day (only today's), replay of
-    missing days through REPLAY_THROUGH, open grades, the summary."""
+    missing days before the first live call day, open grades, the summary."""
     if live_day:
         if live_day != today:
             raise ValueError(f"a live call is made on its own day: {live_day} is not today ({today})")
@@ -959,17 +978,18 @@ def run(store, ledger, today, live_day=None, made_at=None, replay=True, replay_m
             log(f"[basis-ledger] live calls for {live_day} already frozen")
         else:
             doc = make_calls(store, live_day, "live", model=model_for(ledger, store, "live", live_day), made_at=made_at)
-            freeze_calls(ledger, doc)
+            freeze_calls(ledger, doc, today)
             log(f"[basis-ledger] froze {len(doc['calls'])} live calls for {live_day} ({doc['model_version']})")
     if replay:
         done = set(ledger.list("replay", "calls"))
-        todo = [d for d in store.days if d <= REPLAY_THROUGH and d not in done and CC.is_trading_day(d)]
+        limit = replay_before(ledger, today)
+        todo = [d for d in store.days if d < limit and d not in done and CC.is_trading_day(d)]
         if replay_max is not None and len(todo) > replay_max:
             log(f"[basis-ledger] replay: {len(todo)} day(s) to go, {replay_max} this run (oldest first)")
             todo = todo[:replay_max]
         for d in todo:
             doc = make_calls(store, d, "replay", model=model_for(ledger, store, "replay", d), made_at=made_at)
-            freeze_calls(ledger, doc)
+            freeze_calls(ledger, doc, today)
             log(f"[basis-ledger] replay {d}: {len(doc['calls'])} calls, "
                 f"{doc['input']['counts']['conflict_keys']} conflicting keys excluded")
     blocks = {}
@@ -1163,9 +1183,9 @@ def selftest():
 
         out = os.path.join(tmp, "out")
         L = Ledger(out, dir=src)
-        ck("a call file is written once", freeze_calls(L, doc) is True and freeze_calls(L, doc) is False)
+        ck("a call file is written once", freeze_calls(L, doc, days[29]) is True and freeze_calls(L, doc, days[29]) is False)
         ck("a frozen call file is never rewritten with different content",
-           raises(Frozen, lambda: freeze_calls(L, dict(doc, made_at="other"))))
+           raises(Frozen, lambda: freeze_calls(L, dict(doc, made_at="other"), days[29])))
         before = open(os.path.join(out, rel("live", "calls", d21)), "rb").read()
         g = grade(st, doc, days[29])
         gr = {(r[0], r[1]): r for r in g["rows"]}
@@ -1189,14 +1209,19 @@ def selftest():
            lv["n"] == 4 and lv["mae_cents"] is None and lv["withheld"].startswith("withheld: 4 graded over 1"))
         rdoc = make_calls(st, d21, "replay", made_at="t")
         ck("replay and live are the same calls under a different kind", rdoc["calls"] == doc["calls"])
-        freeze_calls(L, rdoc)
-        ck("replay goes to its own folder", os.path.exists(os.path.join(out, rel("replay", "calls", d21)))
-           and rel("replay", "calls", d21) != rel("live", "calls", d21))
-        ck("replay never covers a day after REPLAY_THROUGH",
-           raises(ValueError, lambda: freeze_calls(L, dict(rdoc, day="2026-11-02"))))
-        shutil.copy(os.path.join(out, rel("replay", "calls", d21)), os.path.join(out, rel("live", "calls", days[20])))
+        ck("replay is refused on or after the first live call day",
+           raises(ValueError, lambda: freeze_calls(L, rdoc, days[29])))
+        rdoc = make_calls(st, days[20], "replay", made_at="t")
+        freeze_calls(L, rdoc, days[29])
+        d21r = days[20]
+        ck("replay goes to its own folder", os.path.exists(os.path.join(out, rel("replay", "calls", d21r)))
+           and rel("replay", "calls", d21r) != rel("live", "calls", d21r))
+        ck("replay never covers today or a later day",
+           raises(ValueError, lambda: freeze_calls(Ledger(os.path.join(tmp, "out3"), dir=src),
+                                                   dict(rdoc, day=days[29]), days[29])))
+        shutil.copy(os.path.join(out, rel("replay", "calls", d21r)), os.path.join(out, rel("live", "calls", days[19])))
         ck("a replay file in the live folder is refused", raises(ValueError, lambda: regrade(L, st, "live", days[29])))
-        os.remove(os.path.join(out, rel("live", "calls", days[20])))
+        os.remove(os.path.join(out, rel("live", "calls", days[19])))
         ck("a live call is only made on its own day",
            raises(ValueError, lambda: run(st, L, today=days[29], live_day=days[28], log=lambda *a: None)))
         s = run(st, L, today=days[29], live_day=days[29], made_at="t", replay=False, log=lambda *a: None)
@@ -1210,6 +1235,11 @@ def selftest():
         run(st, L2, today=days[29], replay_max=2, log=lambda *a: None)
         ck("replay goes oldest first, at most replay_max days a run", L2.list("replay", "calls") == days[:2]
            and L2.list("live", "calls") == [])
+        L3 = Ledger(os.path.join(tmp, "out3b"), dir=src)
+        run(st, L3, today=days[5], live_day=days[5], made_at="t", log=lambda *a: None)
+        run(st, L3, today=days[7], log=lambda *a: None)
+        ck("replay stops before the first live call day and never fills a later missed day",
+           L3.list("replay", "calls") == days[:5] and L3.list("live", "calls") == [days[5]])
         # tie rule, Brier and MAE on a hand case
         hz = [[5, "t1", 0.2, 40, 0.3]]
         cd = {"day": "x", "calls": [[k, "IA", -0.4, False, None, "no state median", dr, 0.03, 3, 3, [0, 0, 1, 1], hz]
@@ -1229,6 +1259,9 @@ def selftest():
         ck("direction: a flat target is neither right nor wrong; 1 of 2 right", (dr["flat"], dr["n"], dr["hit_rate"]) == (1, 2, 0.5))
         # base p=0.2 vs outcomes 1,0,1 -> (0.64+0.04+0.64)/3 = 0.44; logit 0.3 -> (0.49+0.09+0.49)/3 = 0.3567
         ck("Brier by hand: base 0.44, logit 0.3567", mv["brier_base"] == 0.44 and mv["brier_logit"] == 0.3567)
+        mb = [x for x in sm["move_base"] if x["crop"] == "ALL"][0]
+        ck("base rate alone: Brier 0.44 on the same 3 rows, observed 0.6667", (mb["n"], mb["brier_base"],
+           mb["observed_rate"]) == (3, 0.44, 0.6667))
         # MAE M0: 3 c + 0 + 2 c over 3 = 1.667 c
         ck("MAE by hand: 1.667 cents; M1 falls back to M0 and counts it",
            lv["mae_cents"] == 1.667 and [x for x in sm["level"] if x["model"] == "M1" and x["crop"] == "ALL"][0]["m1_fallback_n"] == 3)
@@ -1272,7 +1305,11 @@ def main(argv=None):
                 print(f"  {x['model']} h={x['h']}: MAE {x['mae_cents']} c, n={x['n']}, days={x['target_days']}")
         for x in b["move"]:
             if x["crop"] == "ALL":
-                print(f"  P(move) h={x['h']}: Brier base {x['brier_base']} logit {x['brier_logit']}, n={x['n']}")
+                print(f"  P(move) h={x['h']}: Brier base {x['brier_base']} logit {x['brier_logit']}, n={x['n']}, days={x['target_days']}")
+        for x in b["move_base"]:
+            if x["crop"] == "ALL":
+                print(f"  P(move) h={x['h']} base rate alone: Brier {x['brier_base']} observed {x['observed_rate']} "
+                      f"mean p {x['mean_p_base']}, n={x['n']}, days={x['target_days']}")
         for x in b["direction"]:
             if x["crop"] == "ALL":
                 print(f"  direction h={x['h']}: hit {x['hit_rate']} n={x['n']} flat={x['flat']}")
