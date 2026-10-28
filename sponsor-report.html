@@ -131,7 +131,7 @@
 .cp-pill.is-tag::before{display:none}
 .cp-line{color:var(--text-dim,#a9b3ae);font-size:.9rem;line-height:1.5;margin:.55rem 0 0}
 .cp-hero .cp-status{border:0;background:none;padding:0;margin:.8rem 0 0}
-.cp-adnow{margin:1rem 0 0}
+.cp-adnow{margin:1.2rem 0 0}
 .cp-adnow .cp-eyebrow{display:block;margin:0 0 .45rem}
 .cp-adnow .cp-frame{max-width:520px;margin:0}
 .cp-now{margin:1.4rem 0 0}
@@ -157,6 +157,8 @@
 .cp-fold-b>.cp-card,.cp-fold-b .cp-card{background:transparent}
 .cp-fold-b h3.cp-sub3{font-size:.95rem;margin:1.1rem 0 .5rem}
 .cp-fold-b h3.cp-sub3:first-child{margin-top:.3rem}
+.cp-tscroll{overflow-x:auto;max-width:100%}
+.cp-tscroll table.cp-t{min-width:30rem}
 .cp-contactline{font-size:.86rem;color:var(--text-dim,#a9b3ae);margin:1.2rem 0 0;line-height:1.7}
 .cp-contactline a{color:var(--text,#e8ece9)}
 
@@ -391,7 +393,11 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 }
 @media (max-width:560px){
   .cp{padding:1rem .9rem 4rem}
-  .cp-hero{padding:1.2rem 1.05rem 1.1rem;border-radius:14px}
+  .cp-hero{padding:1rem 1.05rem 1rem;border-radius:14px}
+  .cp-hero h1{margin:.7rem 0 .3rem}
+  .cp-now .cp-kpi{padding:.75rem .8rem}
+  .cp-now .cp-kpis{gap:.5rem}
+  .cp-now{margin:1rem 0 0}
   .cp-status .cp-btn{width:100%}
   .cp-proof{grid-template-columns:minmax(0,1fr)}
   .cp-proof-acts{justify-content:stretch}
@@ -793,8 +799,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 
   /* ───────────────────────────── hero ─────────────────────────────
      THE FIRST SCREEN (Sig, Oct 28: "a bit busy"). A busy owner on a phone
-     gets, in order: who this is, one status, the ad as it runs, and four
-     numbers. Everything else is one tap away, below, never gone. */
+     gets, in order: who this is, one status, four numbers, and the ad as it
+     runs (the numbers first, so they are on the first screen even under a
+     tall ad with a logo and a facts row). Everything else is one tap away, below, never gone. */
   function hero(d, s) {
     var h = '<header class="cp-hero">';
     h += '<div class="cp-hero-top"><span class="cp-agsist">AG<span>SIST</span></span><span class="cp-eyebrow">Campaign portal</span></div>';
@@ -826,7 +833,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
          (d.freeTest ? '<span class="cp-pill is-tag">' + FREE + '</span>' : '') + '</div>';
     h += '<p class="cp-line">' + st.p + '</p>';
     if (st.btn) h += '<div class="cp-status"><button class="cp-btn" type="button" data-mail="' + esc(approveHref(d, s)) + '">Approve proof ' + esc(s.code) + ' &rarr;</button></div>';
-    return h + adNow(d, s) + '</header>';
+    return h + '</header>';
   }
 
   /* The ad, exactly as a reader sees it today, on the surface it runs on most:
@@ -932,9 +939,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
          and never someone else's traffic shown as theirs. */
       var why = d.geo && s.live ? 'live, no full day counted yet' : (d.ended ? 'the ad is off' : 'your ad has not run yet');
       h += '<div class="cp-kpis">' +
-        big('0', 'so far', 'Times seen', why, '', true) +
-        big('0', 'so far', 'Clicks', why, '', true) +
-        big('-', '', 'Click rate', 'Needs views first', '', true) + areaKpi(d) + '</div>';
+        big('0', 'so far', 'Times seen', why, thru, true) +
+        big('0', 'so far', 'Clicks', why, thru, true) +
+        big('-', '', 'Click rate', 'Needs views first', thru, true) + areaKpi(d) + '</div>';
       h += '<p class="cp-note">' + (d.geo && s.live ? 'The counts fill in on their own from the first morning after a full day.'
         : 'This page fills in on its own from the first morning your ad runs.') + '</p>';
       return h + '</section>';
@@ -947,7 +954,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var w = (d.windows || []).filter(function (x) { return x.days === 7; })[0] || { viewable: t.viewable, clicks: t.clicks, ctr: t.ctr };
     var asof = d.through ? '7 days to ' + esc(fmt(d.through)) : '';
     var noDay = d.geo && !d.liveSince;
-    var zeroWhy = noDay ? 'Live, no full day counted yet' : 'None in these 7 days';
+    var zeroWhy = noDay ? 'The first full day posts the morning after' : 'None in these 7 days';
     var v = w.viewable || 0, c = w.clicks || 0;
     /* IS THAT GOOD? Only against the sponsor's own run, and only when both
        sides have enough views to mean something. No outside benchmark is
@@ -1722,7 +1729,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       note += '<p class="cp-note"><b>Data-center traffic left out:</b> ' + tw.map(function (x) { return esc(x.city) + ', ' + esc(x.region) + ' ' + num(x.users) + ' (' + esc(secs(x.avgSeconds)) + ' each)'; }).join('; ') +
         ', ' + esc(span(a.servers.window.start, a.servers.window.end)) + '. Servers, not people (see How we count).</p>';
     }
-    return '<div class="cp-ct"><h3>Readers in your states</h3><span>' + esc(span(R_.start, R_.end)) + '</span></div>' + pills + tb + note;
+    return '<div class="cp-ct"><h3>Readers in your states</h3><span>' + esc(span(R_.start, R_.end)) + '</span></div>' + pills + '<div class="cp-tscroll">' + tb + '</div>' + note;
   }
   /* The ad's own counts by GA4's region for the visit. Before the ad runs
      they read 0 and "not started", never blank. */
@@ -1768,7 +1775,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     /* A state-targeted sponsor: where it ran and the readers there sit together
        under #states, the block the RootLot browser test reads. */
     if (reg) body.splice(0, 2, '<div id="states">' + body[0] + body[1] + '</div>');
-    root.innerHTML = hero(d, s) + results(d, s) + '<div class="cp-folds">' + body.join('') + '</div>' + contact(d);
+    root.innerHTML = hero(d, s) + results(d, s) + adNow(d, s) + '<div class="cp-folds">' + body.join('') + '</div>' + contact(d);
     wireAd(d, s);
     wireAudience();
     wireRegions(d);
