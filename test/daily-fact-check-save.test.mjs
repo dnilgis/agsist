@@ -31,8 +31,8 @@ test('the fact check is saved to raw on every run, after the check, never failin
   assert.match(save, /\$RUNNER_TEMP\/fact-check\.json/, 'reads the file the fact check writes');
   // the selftest's fixture findings are not what gets saved
   assert.match(fc, /rm -f "\$RUNNER_TEMP\/fact-check\.json"\n\s+python scripts\/fact_check_briefing\.py/);
-  // unchanged: report mode, and a failing selftest still fails the step
-  assert.match(fc, /FACT_CHECK_MODE: report\n/);
+  // block mode (Sig, Oct 28, after the calibration week), and a failing selftest still fails the step
+  assert.match(fc, /FACT_CHECK_MODE: block\n/);
   assert.match(fc, /python scripts\/test_fact_check\.py > \/tmp\/fc-selftest\.txt 2>&1; then[\s\S]*?exit 1\n\s+fi/);
 });
 

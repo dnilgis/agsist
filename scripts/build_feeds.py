@@ -152,6 +152,10 @@ CURATED = {
     # What's new list (Oct 18): Sig or a session adds a line when something
     # ships; scripts/build_whats_new.py bakes it into index.html and /changelog.
     "data/whats-new.json",
+    # FSA's published DMC margins and premium rates, typed from FSA's own pages
+    # when someone reads them; seed_static.py prints /milk-prices' would-have-paid
+    # table from it only when the rows check out (Oct 28).
+    "data/dairy-dmc.json",
     # Hand-kept quote list; the briefing stopped printing a quote 2026-10-09.
     "data/quote-pool.json",
     # Rain Print prices, payment links and the seasonal promo switch. Edited by
