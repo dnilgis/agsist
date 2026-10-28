@@ -4,27 +4,46 @@
   {
    "id": "farm-bill-status",
    "page": "farm-bill.html",
-   "queries": ["farm bill 2026", "2026 farm bill", "2026 farm bill update", "farm bill 2026 status"],
+   "queries": [
+    "farm bill 2026",
+    "2026 farm bill",
+    "2026 farm bill update",
+    "farm bill 2026 status"
+   ],
    "question": "Where does the 2026 farm bill stand?",
    "status": "live",
    "review_by": "2026-11-09",
    "text": [
     "It has not passed.",
-    "The House passed H.R. 7567, the Farm, Food, and National Security Act of 2026, on April 30, 2026.",
-    "The Senate Agriculture Committee reported its own bill, S. 5526, the Agricultural Act of 2026, on September 24, 2026, and it went on the Senate calendar with no floor vote in the bill record we last read.",
-    "Whether the two get merged into a law, and when, is not decided.",
+    "The House passed H.R. 7567, the Farm, Food, and National Security Act of 2026, 224 to 200 on April 30, 2026, and the Senate received it May 19.",
+    "The Senate Agriculture Committee reported its own bill, S. 5526, the Agricultural Act of 2026, on September 24, 2026; in the Congress bill record of October 28, its last action is still a place on the Senate calendar, with no floor vote.",
+    "Whether the two become one law, and when, is not decided.",
     "ARC, PLC and the higher reference prices do not wait on it: the 2025 law (Pub. L. 119-21) already runs them through the 2031 crop year."
    ],
    "sources": [
-    {"name": "H.R. 7567 as passed by the House (GPO)", "url": "https://www.govinfo.gov/content/pkg/BILLS-119hr7567eh/html/BILLS-119hr7567eh.htm", "read": "2026-10-16"},
-    {"name": "S. 5526 as reported in the Senate (GPO)", "url": "https://www.govinfo.gov/content/pkg/BILLS-119s5526rs/html/BILLS-119s5526rs.htm", "read": "2026-10-16"},
-    {"name": "FSA ARC/PLC rule, Federal Register, Jan 12, 2026", "url": "https://www.federalregister.gov/d/2026-00313", "read": "2026-10-16"}
+    {
+     "name": "H.R. 7567 bill status, all actions (GPO)",
+     "url": "https://www.govinfo.gov/bulkdata/BILLSTATUS/119/hr/BILLSTATUS-119hr7567.xml",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "S. 5526 bill status, all actions (GPO)",
+     "url": "https://www.govinfo.gov/bulkdata/BILLSTATUS/119/s/BILLSTATUS-119s5526.xml",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "FSA ARC/PLC rule, Federal Register, Jan 12, 2026",
+     "url": "https://www.federalregister.gov/d/2026-00313",
+     "read": "2026-10-16"
+    }
    ]
   },
   {
    "id": "crop-report",
    "page": "usda-calendar.html",
-   "queries": ["usda crop report today"],
+   "queries": [
+    "usda crop report today"
+   ],
    "question": "What did the latest USDA crop report say, and when is the next one?",
    "status": "live",
    "review_by": "2026-11-10",
@@ -34,15 +53,30 @@
     "The next Crop Production report is Tuesday, November 10, 2026, at noon Eastern (11 a.m. Central), and the last one of 2026 is Thursday, December 10, at the same time."
    ],
    "sources": [
-    {"name": "NASS Crop Production briefing, Oct 9, 2026", "url": "https://www.nass.usda.gov/Newsroom/Executive_Briefings/2026/10-09-2026.pdf", "read": "2026-10-16"},
-    {"name": "USDA WASDE-676, Oct 9, 2026", "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf", "read": "2026-10-28"},
-    {"name": "NASS 2026 release calendar", "url": "https://www.nass.usda.gov/Publications/Calendar/2026/2026ReleaseCalendar_12Months_11x17_Color.pdf", "read": "2026-10-16"}
+    {
+     "name": "NASS Crop Production briefing, Oct 9, 2026",
+     "url": "https://www.nass.usda.gov/Newsroom/Executive_Briefings/2026/10-09-2026.pdf",
+     "read": "2026-10-16"
+    },
+    {
+     "name": "USDA WASDE-676, Oct 9, 2026",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "NASS 2026 release calendar",
+     "url": "https://www.nass.usda.gov/Publications/Calendar/2026/2026ReleaseCalendar_12Months_11x17_Color.pdf",
+     "read": "2026-10-16"
+    }
    ]
   },
   {
    "id": "tariff-impact",
    "page": "tariffs.html",
-   "queries": ["tariff impact on farmers", "latest agricultural trade tariffs updates"],
+   "queries": [
+    "tariff impact on farmers",
+    "latest agricultural trade tariffs updates"
+   ],
    "question": "How are tariffs hitting farmers' sales?",
    "status": "live",
    "review_by": "2026-11-10",
@@ -53,31 +87,59 @@
     "The tariff rates in force and USDA's weekly count of soybeans sold to China are in the sections below; I have not seen a USDA figure for what tariffs cost a farm, so this page does not print one."
    ],
    "sources": [
-    {"name": "USDA WASDE-676, Oct 9, 2026", "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf", "read": "2026-10-28"}
+    {
+     "name": "USDA WASDE-676, Oct 9, 2026",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
+     "read": "2026-10-28"
+    }
    ]
   },
   {
    "id": "usda-payments",
    "page": "arc-plc.html",
-   "queries": ["usda payments to farmers 2025"],
+   "queries": [
+    "usda payments to farmers 2025"
+   ],
    "question": "What is USDA paying farmers for 2025?",
    "status": "live",
    "review_by": "2026-12-11",
    "text": [
-    "The big one is Farmer Bridge Assistance: about $11 billion in one-time payments figured on 2025 planted acres, at $44.36 an acre for corn, $30.88 for soybeans and $39.35 for wheat (FSA rates of December 31, 2025).",
-    "It pays on acres, not production, with a $155,000 limit per person, and its signup closed April 17, 2026.",
+    "In 2025 the big one was the Emergency Commodity Assistance Program for the 2024 crop: FSA had paid over $8 billion of its $10 billion by September 26, 2025, when a second payment brought it to 99% of the full rate.",
+    "Next is Farmer Bridge Assistance, about $11 billion in one-time payments on 2025 planted acres, at $44.36 an acre for corn, $30.88 for soybeans and $39.35 for wheat (FSA rates of December 31, 2025), paid in 2026.",
+    "Both pay on acres, not production; Bridge Assistance has a $155,000 limit per person, and its signup closed April 17, 2026.",
     "Separately, the 2026 ARC and PLC signup runs through December 11, 2026; a farm with no 2026 election by then gets no 2026 payment."
    ],
    "sources": [
-    {"name": "FSA, FBA payment rates, Dec 31, 2025", "url": "https://www.fsa.usda.gov/print/pdf/node/13533", "read": "2026-10-17"},
-    {"name": "FSA, Farmer Bridge Assistance program", "url": "https://www.fsa.usda.gov/fba", "read": "2026-10-17"},
-    {"name": "FSA, 2026 and 2027 ARC/PLC enrollment, Sep 15, 2026", "url": "https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net", "read": "2026-10-15"}
+    {
+     "name": "FSA, second ECAP payment, Sep 26, 2025",
+     "url": "https://www.fsa.usda.gov/news-events/news/09-26-2025/usda-issues-second-economic-assistance-payment-agricultural-producers",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "FSA, FBA payment rates, Dec 31, 2025",
+     "url": "https://www.fsa.usda.gov/print/pdf/node/13533",
+     "read": "2026-10-17"
+    },
+    {
+     "name": "FSA, Farmer Bridge Assistance program",
+     "url": "https://www.fsa.usda.gov/fba",
+     "read": "2026-10-17"
+    },
+    {
+     "name": "FSA, 2026 and 2027 ARC/PLC enrollment, Sep 15, 2026",
+     "url": "https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net",
+     "read": "2026-10-15"
+    }
    ]
   },
   {
    "id": "cattle-markets",
    "page": "cattle-futures-prices.html",
-   "queries": ["cattle prices", "cattle markets", "cattle prices today"],
+   "queries": [
+    "cattle prices",
+    "cattle markets",
+    "cattle prices today"
+   ],
    "question": "Where do cattle markets stand?",
    "status": "live",
    "review_by": "2026-11-10",
@@ -87,14 +149,24 @@
     "USDA's October 9 WASDE left its cattle price forecasts unchanged and puts the 2026 average 5-area fed steer price at $237.56 per cwt, against $224.37 in 2025; that is a forecast."
    ],
    "sources": [
-    {"name": "NASS Cattle report release, Jul 24, 2026", "url": "https://www.nass.usda.gov/Newsroom/2026/07-24-2026.php", "read": "2026-10-18"},
-    {"name": "USDA WASDE-676, Oct 9, 2026", "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf", "read": "2026-10-28"}
+    {
+     "name": "NASS Cattle report release, Jul 24, 2026",
+     "url": "https://www.nass.usda.gov/Newsroom/2026/07-24-2026.php",
+     "read": "2026-10-18"
+    },
+    {
+     "name": "USDA WASDE-676, Oct 9, 2026",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
+     "read": "2026-10-28"
+    }
    ]
   },
   {
    "id": "beef-supply",
    "page": "cattle-futures-prices.html",
-   "queries": ["beef shortage"],
+   "queries": [
+    "beef shortage"
+   ],
    "question": "Is there a beef shortage?",
    "status": "live",
    "review_by": "2026-11-10",
@@ -104,46 +176,114 @@
     "Beef imports are forecast at 6.35 billion pounds, up 17.8% from 5.39 billion, and beef use per person at 58.9 pounds, against 59.2 in 2025."
    ],
    "sources": [
-    {"name": "USDA WASDE-676, Oct 9, 2026 (U.S. meats supply and use)", "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf", "read": "2026-10-28"}
+    {
+     "name": "USDA WASDE-676, Oct 9, 2026 (U.S. meats supply and use)",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
+     "read": "2026-10-28"
+    }
    ]
   },
   {
    "id": "argentina-beef",
    "page": "cattle-futures-prices.html",
-   "queries": ["argentina beef imports to us"],
+   "queries": [
+    "argentina beef imports to us"
+   ],
    "question": "How much Argentine beef can come into the U.S.?",
-   "status": "withheld",
-   "withheld_why": "The proclamations (Federal Register 2026-03050 and 2026-17842) and the FAS Argentina report are queued in references/sources.json but not yet read from a saved copy.",
-   "review_by": "2026-12-31",
-   "text": [],
-   "sources": []
+   "status": "live",
+   "review_by": "2026-11-30",
+   "text": [
+    "Argentina has its own U.S. beef quota of 20,000 tons a year, at a $44 a ton duty inside it and 26.4% above it, and the U.S. took 42,445 tons of Argentine beef in 2025, the most since 1999 (FAS, March 9, 2026).",
+    "For 2026 only, Proclamation 11010 added 80,000 metric tons for Argentina, limited to lean beef trimmings and opened in four 20,000-ton quarters; the last one runs October 1 to December 31, 2026.",
+    "The 300,000 tons of extra lean trimmings added in August by Proclamation 11059 went to other countries, not Argentina, and its last tranche closes when filled or on November 30, 2026, whichever comes first.",
+    "Whether any of it is extended into 2027 is not decided."
+   ],
+   "sources": [
+    {
+     "name": "FAS GAIN, Argentina Livestock and Products, Mar 9, 2026",
+     "url": "https://apps.fas.usda.gov/newgainapi/api/Report/DownloadReportByFileName?fileName=Livestock+and+Products+Semi-annual_Buenos+Aires_Argentina_AR2026-0004.pdf",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "Proclamation 11010, Federal Register, Feb 13, 2026",
+     "url": "https://www.govinfo.gov/content/pkg/FR-2026-02-13/html/2026-03050.htm",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "Proclamation 11059, Federal Register, Aug 31, 2026",
+     "url": "https://www.govinfo.gov/content/pkg/FR-2026-08-31/pdf/2026-17842.pdf",
+     "read": "2026-10-28"
+    }
+   ]
   },
   {
    "id": "screwworm",
    "page": "cattle-auction-prices.html",
-   "queries": ["new world screwworm impact on beef prices"],
+   "queries": [
+    "new world screwworm impact on beef prices"
+   ],
    "question": "What does New World screwworm mean for cattle prices?",
-   "status": "withheld",
-   "withheld_why": "APHIS status pages and announcements are queued in references/sources.json but not yet read from a saved copy.",
+   "status": "live",
    "review_by": "2026-11-30",
-   "text": [],
-   "sources": []
+   "text": [
+    "The price effect runs through the border: cattle from Mexico were shut out over New World screwworm from November 22, 2024, and USDA then raised its 2025 forecast for 750 to 800 pound feeder steers by $15 to $272.50 per cwt, a forecast, not a measured effect (ERS, December 16, 2024).",
+    "USDA is now reopening border ports to Mexican cattle in phases: Santa Teresa, NM on September 24, 2026, Columbus, NM on October 26, and Nogales, AZ planned for November 30.",
+    "Inside the U.S., APHIS confirmed the first wildlife case on October 21, 2026, an elk on a game ranch in Pecos County, Texas, and Texas is changing its infested zone around it.",
+    "APHIS keeps the case count and the zone map on its status page, linked below."
+   ],
+   "sources": [
+    {
+     "name": "ERS Livestock, Dairy, and Poultry Outlook, Dec 16, 2024",
+     "url": "https://ers.usda.gov/sites/default/files/_laserfiche/outlooks/110630/LDP-M-366.pdf",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "APHIS, current status of New World screwworm",
+     "url": "https://direct.aphis.usda.gov/animals/animal-health/livestock-and-poultry-disease/stop-screwworm/current-status",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "APHIS, first detection in U.S. wildlife, Oct 21, 2026",
+     "url": "https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-first-detection-new-world-screwworm-us-wildlife",
+     "read": "2026-10-28"
+    }
+   ]
   },
   {
    "id": "heifer-retention",
    "page": "lrp.html",
-   "queries": ["usda heifer retention program"],
+   "queries": [
+    "usda heifer retention program"
+   ],
    "question": "Is there a USDA heifer retention program?",
-   "status": "withheld",
-   "withheld_why": "The Aug 31, 2026 USDA release and the FCIC BRAND resolution are queued in references/sources.json but not yet read from a saved copy.",
-   "review_by": "2027-01-31",
-   "text": [],
-   "sources": []
+   "status": "live",
+   "review_by": "2026-12-31",
+   "text": [
+    "Not as a cash program.",
+    "What USDA announced on August 31, 2026 is BRAND (Beef Retention and National Development), a proposed endorsement to Livestock Risk Protection insurance that would insure the value of keeping a heifer for breeding over two years.",
+    "It would set a protected value from the heifer's expected slaughter value at enrollment and pay the difference if her projected or realized slaughter value rises above what she is worth kept as breeding stock.",
+    "It is not on offer yet: on October 13, 2026 the crop insurance board approved an outside expert review of the LRP breeding cattle submission, not the policy itself.",
+    "No premium, payment rate, eligibility rule or signup date is in the USDA and board documents I read."
+   ],
+   "sources": [
+    {
+     "name": "USDA, Ranchers First initiatives, Aug 31, 2026",
+     "url": "https://content.govdelivery.com/accounts/USDAOC/bulletins/427a7b3",
+     "read": "2026-10-28"
+    },
+    {
+     "name": "FCIC Board resolution, Oct 13, 2026",
+     "url": "https://www.rma.usda.gov/sites/default/files/2026-10/Resolution%20Action%201-%20BRAND%20October%2013%202026.pdf",
+     "read": "2026-10-28"
+    }
+   ]
   },
   {
    "id": "fertilizer-supply",
    "page": "fertilizer.html",
-   "queries": ["fertilizer shortage"],
+   "queries": [
+    "fertilizer shortage"
+   ],
    "question": "Is there a fertilizer shortage?",
    "status": "withheld",
    "withheld_why": "No primary source on U.S. fertilizer supply in the references; prices on /fertilizer come only from the co-ops (standing decision), and their posted sheets say nothing about supply.",
