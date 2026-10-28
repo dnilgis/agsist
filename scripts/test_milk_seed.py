@@ -206,9 +206,11 @@ def main():
           "archive_url": "https://web.archive.org/web/20261020000000/https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates",
           "read": "2026-11-02",
           "margins": {"2018-12": {"all_milk": 17.0, "feed": 9.0, "margin": 8.0},
+                      "2019-01": {"all_milk": 16.6, "feed": 8.89, "margin": 7.71},
                       "2025-07": {"all_milk": 21.0, "feed": 10.0, "margin": 11.0},
                       "2025-08": {"all_milk": 20.9, "feed": 12.4, "margin": 8.5},
                       "2026-08": {"all_milk": 19.8, "feed": 10.46, "margin": 9.34}},
+          "hay": {"2019": "Blended Alfalfa Hay", "2025": "Premium Alfalfa Hay", "2026": "Premium Alfalfa Hay"},
           "withheld": {"count": 2, "months": ["2026-06", "2026-07"], "why": "not on FSA's page as read"},
           "premiums": {"year": 2027, "tier1_lb": 6000000, "source_url": "https://www.fsa.usda.gov/x.pdf",
                        "tier1": {"9.50": 0.15, "8.00": 0.1}, "tier2": {"9.50": None, "8.00": 1.813}}}
@@ -217,7 +219,7 @@ def main():
        "Paid 2025, Jul to Aug" in tb and "Paid 2026, Aug<" in tb and "2018" not in tb, tb[:300])
     ck("...$9.50 in 2025 pays (0 + 1.00) / 2 = $0.50, Tier 1 and Tier 2 premium beside it",
        '<tr><th scope="row">$9.50</th><td class="num">$0.1500</td><td class="num">not offered</td>'
-       '<td class="num">$0.50</td><td class="num">$0.16</td></tr>' in tb, tb)
+       '<td class="num">$1.79</td><td class="num">$0.50</td><td class="num">$0.16</td></tr>' in tb, tb)
     ck("...$8.00: Tier 2 rate printed", '<tr><th scope="row">$8.00</th><td class="num">$0.1000</td><td class="num">$1.8130</td>' in tb)
     ck("...a level with no premium read says so", "not loaded" in tb)
     ck("...no level picked out", not any(w in tb.lower() for w in ("best", "recommend", "should")))
@@ -226,7 +228,16 @@ def main():
     ck("...cites FSA and the archive copy with its snapshot date",
        'href="https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates"' in tb
        and "Internet Archive copy</a> of 2026-10-20" in tb)
-    ck("...names the 2019 hay blend and the 2020 revision", "50/50 blend" in tb and "from 2020 on" in tb)
+    ck("...names the hay as FSA's own tables head it: blended alfalfa in 2019, premium from 2020",
+       "price the hay in the feed cost as blended alfalfa in 2019 and as premium alfalfa from 2020 on." in tb, tb[-1200:])
+    nb = copy.deepcopy(DM)
+    nb["hay_notes"] = {"blend": {"text": "half premium and supreme alfalfa, half other alfalfa", "source_url": "https://www.fsa.usda.gov/n"},
+                       "revision": {"text": "FSA revised 2020 on to premium alfalfa", "source_url": "https://www.fsa.usda.gov/r"}}
+    tn = S.milk_dmc_paid(nb, SEP)
+    ck("...the blend and the revision only when FSA's notices were read into the file",
+       "(half premium and supreme alfalfa, half other alfalfa," in tn and "; FSA revised 2020 on to premium alfalfa (" in tn
+       and "half other alfalfa" not in tb)
+    ck("...no hay heads in the file: no hay sentence", "alfalfa" not in S.milk_dmc_paid(dict(DM, hay={}), SEP))
     ck("...Tier 1 named at 6 million lb", "the first 6 million lb a year" in tb)
     ck("...the margin line shows FSA's newest month", "DMC margin, August 2026: $9.34/cwt" in S.milk_dmc_margin(DM, SEP, "2026-10-28"))
     bad = copy.deepcopy(DM)

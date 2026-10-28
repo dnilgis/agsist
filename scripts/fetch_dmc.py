@@ -163,6 +163,21 @@ def parse_margins(page):
     return dict(sorted(out.items()))
 
 
+def parse_hay(page):
+    """{year: FSA's own hay column heading} ('Blended Alfalfa Hay' in 2019,
+    'Premium Alfalfa Hay' from 2020 on the Oct 28 read), so the page names the
+    hay FSA priced in each year's feed cost from FSA's table, not from memory."""
+    out = {}
+    for ctx, rows in tables(page):
+        if not rows or _col(rows[0], r"margin") is None:
+            continue
+        i = _col(rows[0], r"hay|alfalfa")
+        ys = re.findall(r"\b(20[12]\d)\b", ctx)
+        if i is not None and ys:
+            out[ys[-1]] = re.sub(r"\s*\(.*$", "", rows[0][i]).strip()
+    return dict(sorted(out.items()))
+
+
 MARGINS_URL = STARTS[0]
 FACTS_URL = STARTS[1]
 OUT = "data/dairy-dmc.json"
@@ -193,12 +208,14 @@ def confirm(parsed, nass):
             continue
         rows[k] = r
     if rows or why:
-        last = max(list(rows) + list(why))
+        # up to the newest month FSA could have priced: its own newest, or the NASS month held
+        nk = (nass or {}).get("month_key") or ""
+        last = max(list(rows) + list(why) + ([nk] if re.fullmatch(r"20\d\d-\d\d", nk) else []))
         k = FIRST
         while k <= last:
             if k not in rows:
                 out.append(k)
-                why.setdefault(k, "not on FSA's page as read")
+                why.setdefault(k, "not in the copy of FSA's page I read")
             k = _mk_shift(k, 1)
     reasons = sorted(set(why[k] for k in out))
     return rows, {"count": len(out), "months": out, "why": "; ".join(reasons)} if out else {"count": 0}
@@ -240,7 +257,8 @@ def run(root=ROOT, now=None, get=None):
             rec.pop(k, None)
         rec.update(via)
         rec.update(source="USDA Farm Service Agency, Dairy Margin Coverage prices and updates", source_url=MARGINS_URL,
-                   read=now.strftime("%Y-%m-%d"), margins=rows, withheld=held, status={"ok": True, "at": at})
+                   read=now.strftime("%Y-%m-%d"), margins=rows, withheld=held, status={"ok": True, "at": at},
+                   hay=parse_hay(body.decode("utf-8", "replace")))
         rec.pop("premium_tier1", None)
         print("[dmc] %d months kept (%s to %s), %d withheld%s" % (
             len(rows), min(rows), max(rows), held["count"], (": " + held["why"]) if held["count"] else ""))
@@ -303,9 +321,23 @@ def selftest():
                          {"month_key": "2019-04", "value": 17.7})
     ck("confirm: MPP months dropped, a month that does not add up withheld, a gap counted",
        list(rows) == ["2019-01", "2019-04"] and held["count"] == 2 and held["months"] == ["2019-02", "2019-03"]
-       and "milk minus feed" in held["why"] and "not on FSA" in held["why"], (rows, held))
+       and "milk minus feed" in held["why"] and "not in the copy of FSA" in held["why"], (rows, held))
     rows, held = confirm({"2019-04": {"all_milk": 17.8, "feed": 8.88, "margin": 8.92}}, {"month_key": "2019-04", "value": 17.7})
     ck("confirm: FSA all-milk not the NASS month held is withheld", rows == {} and "NASS" in held["why"], held)
+    fx = (ROOT / "test" / "fixtures" / "milk" / "fsa-dmc-prices-2026-04.html").read_text()
+    real = parse_margins(fx)
+    ck("FSA's page as read Oct 28: 88 months, Jan 2019 to Apr 2026", len(real) == 88 and min(real) == "2019-01"
+       and max(real) == "2026-04", (len(real), min(real), max(real)))
+    ck("...Jan 2019 16.60 - 8.89 = 7.71; Apr 2026 20.80 - 10.26 = 10.54",
+       real["2019-01"] == {"all_milk": 16.6, "feed": 8.89, "margin": 7.71}
+       and real["2026-04"] == {"all_milk": 20.8, "feed": 10.26, "margin": 10.54}, (real.get("2019-01"), real.get("2026-04")))
+    ck("...every month's milk minus feed is its margin", all(abs(r["all_milk"] - r["feed"] - r["margin"]) <= 0.006 for r in real.values()))
+    rr, hh = confirm(real, {"month_key": "2026-08", "value": 19.8})
+    ck("...nothing past April is filled in: May to Aug 2026 (NASS has Aug) are counted as withheld",
+       len(rr) == 88 and hh["count"] == 4 and hh["months"] == ["2026-05", "2026-06", "2026-07", "2026-08"], hh)
+    hay = parse_hay(fx)
+    ck("...hay as FSA heads it: blended alfalfa in 2019, premium alfalfa 2020 to 2026",
+       hay.get("2019") == "Blended Alfalfa Hay" and all(hay.get(str(y)) == "Premium Alfalfa Hay" for y in range(2020, 2027)), hay)
     ck("probe keeps DMC files", _keep("https://www.fsa.usda.gov/x/DMC-Margin-2026.xlsx"))
     ck("probe skips unrelated files", not _keep("https://www.fsa.usda.gov/x/loan-rates.pdf"))
     ck("probe follows DMC pages only", _follow("https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program/x")

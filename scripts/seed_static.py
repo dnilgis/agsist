@@ -2499,10 +2499,31 @@ def milk_dmc_paid(dmc, d):
             f'cwt of covered milk. Payment works the same in both tiers; Tier 1 is {t1w}, Tier 2 is the rest, and FSA '
             'offers Tier 2 only up to $8.00. Premium is the rate per cwt covered for '
             f'{pyear} coverage, beside each level; the payment columns do not take it off. No level is a pick for your farm, '
-            'and past margins are not next year&rsquo;s. In 2019 FSA priced the hay in the feed cost as a 50/50 blend of '
-            'premium and ordinary alfalfa; from 2020 on it uses premium alfalfa, and FSA revised its 2020 on margins that way. '
-            f'These are FSA&rsquo;s published margins, as revised.{held} Margins: {_cite(dmc, "FSA, DMC prices and updates")}'
+            f'and past margins are not next year&rsquo;s.{_dmc_hay(dmc, years)} These are the margins as FSA publishes them '
+            f'now.{held} Margins: {_cite(dmc, "FSA, DMC prices and updates")}'
             f'{", read " + rd if rd else ""}. Premiums: {_cite(pr, "FSA DMC fact sheet")}.</p></details>')
+
+
+def _dmc_hay(dmc, years):
+    """The hay in FSA's feed cost, from the column heads of FSA's own yearly tables
+    (data/dairy-dmc.json hay), and the 50/50 blend and the 2020 revision only from
+    the FSA notices read into the file (hay_notes); never typed from memory."""
+    hay = dmc.get("hay") if isinstance(dmc.get("hay"), dict) else {}
+    b19 = re.search(r"blend", hay.get("2019") or "", re.I)
+    later = [y for y in years if y > "2019"]
+    prem = later and all(re.search(r"premium", hay.get(y) or "", re.I) for y in later)
+    if not (b19 and prem and "2019" in years):
+        return ""
+    notes = dmc.get("hay_notes") if isinstance(dmc.get("hay_notes"), dict) else {}
+    out = " FSA&rsquo;s own tables price the hay in the feed cost as blended alfalfa in 2019"
+    bl = notes.get("blend") if isinstance(notes.get("blend"), dict) else {}
+    if bl.get("text") and bl.get("source_url", "").startswith("https://www.fsa.usda.gov/"):
+        out += f' ({_e(bl["text"])}, {_cite(bl, "FSA")})'
+    out += " and as premium alfalfa from 2020 on"
+    rv = notes.get("revision") if isinstance(notes.get("revision"), dict) else {}
+    if rv.get("text") and rv.get("source_url", "").startswith("https://www.fsa.usda.gov/"):
+        out += f'; {_e(rv["text"])} ({_cite(rv, "FSA")})'
+    return out + "."
 
 
 def milk_dmc_margin(dmc, d, today):
