@@ -201,6 +201,54 @@ for script, plural in SENDERS:
           W("a run that sent NOTHING flagged the day anyway — the mail would "
             "never go out at all"))
 
+    # ── a run killed mid-list has already flagged the day (send_daily, Oct 28)
+    # A published issue that never went out is written again by the next run,
+    # and that run asks this flag. A cancel or a lost runner is not an
+    # Exception, so it escapes the loop: the flag must already be set by then,
+    # or the retry mails everyone who already had it.
+    if script == "send_daily.py":
+        def lifted_with_state():
+            st = {"sent": [], "connects": 0, "flagged": None, "printed": [], "owner": [], "_failed": []}
+
+            class FakeSMTP:
+                def __init__(self, *a, **k):
+                    st["connects"] += 1
+                def starttls(self, **k): pass
+                def login(self, *a): pass
+                def quit(self): pass
+                def send_message(self, msg):
+                    if len(st["sent"]) == 3:
+                        raise KeyboardInterrupt("runner cancelled")
+                    st["sent"].append(len(st["sent"]))
+            ns = {
+                "smtplib": type("S", (), {"SMTP": FakeSMTP,
+                                          "SMTPServerDisconnected": smtplib.SMTPServerDisconnected,
+                                          "SMTPConnectError": smtplib.SMTPConnectError,
+                                          "SMTPException": smtplib.SMTPException}),
+                "ssl": type("C", (), {"create_default_context": staticmethod(lambda: None)}),
+                "time": type("T", (), {"sleep": staticmethod(lambda s: None)}),
+                "host": "h", "port": 587, "user": "u", "pw": "p", "day": "2026-10-28",
+                "from_name": "n", "from_addr": "a", "reply_to": "r", "b": {},
+                "recipients": ["w%d@example.com" % k for k in range(6)],
+                "build_email": lambda *a, **k: object(),
+                "flag": lambda day, set_it=False: st.__setitem__("flagged", (day, set_it)) or True,
+                "print": lambda *a, **k: st["printed"].append(" ".join(str(x) for x in a)),
+                "log_safe": type("L", (), {"mask_text": staticmethod(log_safe.mask_text),
+                                           "owner_mail": staticmethod(lambda s, l: True)}),
+            }
+            wrapped = "def _send():\n" + "\n".join("    " + ln for ln in body.splitlines())
+            exec(compile(wrapped, "<lifted from send_daily.py>", "exec"), ns)
+            try:
+                ns["_send"]()
+            except KeyboardInterrupt:
+                pass
+            return st
+        st = lifted_with_state()
+        check(len(st["sent"]) == 3, W("the killed run sent %d before the cut, expected 3" % len(st["sent"])))
+        check(st["flagged"] == ("2026-10-28", True),
+              W("a run killed after 3 mails left the day UNFLAGGED; the next run's retry of a published, "
+                "unsent issue would mail those 3 readers a second copy"))
+
 if fails:
     for f in fails:
         print("FAIL: " + f)
