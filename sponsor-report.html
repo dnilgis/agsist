@@ -1547,7 +1547,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var rows = ra.rows || [], el = ra.elsewhere || {};
     var on = !!(d.creative && d.creative.live);
     var adNote = ra.withheld ? 'withheld' : (ra.pending || d.pending) ? (on ? 'live · no full day counted yet' : 'not started')
-      : (ra.start && ra.through ? 'live since ' + esc(span(ra.start, ra.through)) : (on ? 'live · no full day counted yet' : ''));
+      : (ra.start && ra.through && ra.through >= ra.start ? 'live since ' + esc(span(ra.start, ra.through)) : (on ? 'live · no full day counted yet' : ''));
     var t = '<table class="cp-t cp-reg-t"><thead><tr><th>Where the reader was</th><th class="n">Viewable impressions</th><th class="n">Clicks</th></tr></thead><tbody>';
     if (ra.withheld) t += '<tr><td colspan="3">' + esc(d.withheld || 'Withheld for now.') + '</td></tr>';
     else {
