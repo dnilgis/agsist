@@ -116,7 +116,15 @@ test("main's later work on the old pages came along (redo on Oct 28, 2026)", () 
   assert.equal((j.match(/nass_correction&&\w\.nass_correction\.note/g) || []).length, 2, "both correction notes in priced-in.js");
   assert.match(j, /ws\.textContent='No report data yet\. This page fills in after the next USDA report\.'/);
   // the Bids by state page explained how its counts are made; the section on /basis keeps it
-  assert.match(read("basis.html"), /<!--\/SEED-->\s*<p class="bs-seed"><b>How these counts are made\.<\/b> An elevator counts when its board was read successfully in the last 6 hours and it posted a price within 72 hours/);
+  // (since Oct 28 the builder writes the note inside SEED:statelist; it is said once, not twice)
+  const bs = read("basis.html");
+  assert.match(bs, /<!--SEED:statelist-->[^]*?<p class="bs-seed">How these counts are made: an elevator counts when its board was read in the last 6 hours and it posted a price within 72 hours[^]*?<!--\/SEED-->/);
+  assert.equal((bs.match(/How these counts are made/g) || []).length, 1, "the counts note once");
+  // real case Oct 28: /daily#past at 1280 opened mid-briefing because the briefing fills in after the jump;
+  // a visit on #past or #moved stays on that section until the reader scrolls, taps or types
+  const dly = read("daily.html");
+  assert.match(dly, /var m=\/\^#\(past\|moved\)\$\/\.exec\(location\.hash\)[^]*?new ResizeObserver\(function\(\)\{[^}]*t\.scrollIntoView\(\{block:'start'\}\)/);
+  assert.ok(/\['wheel','touchstart','keydown','mousedown'\]/.test(dly), "the reader's own scroll wins");
   // the town page builder writes the coverage map link to its new home
   const cb = read("scripts/build_cash_bid_pages.py");
   assert.ok(cb.includes('href="/list-your-elevator#coverage">coverage map</a>') && !cb.includes('href="/elevators'), "town pages builder");

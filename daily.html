@@ -1788,6 +1788,16 @@ renderArchive();
   if(/^#(past|arc-[a-z-]+)$/.test(location.hash)){ d.open=true; }
   window.addEventListener('hashchange',function(){ if(/^#(past|arc-[a-z-]+)$/.test(location.hash)&&!d.open){ d.open=true; } });
 })();
+/* A visit on #past or #moved (old /archive and /news links land here) stays on that section while
+   the briefing above it fills in, until the reader scrolls, taps or types, or 8 seconds pass. */
+(function(){
+  var m=/^#(past|moved)$/.exec(location.hash); if(!m||!window.ResizeObserver) return;
+  var t=document.getElementById(m[1]); if(!t) return; var end=Date.now()+8000, ro;
+  function quit(){ if(ro){ ro.disconnect(); ro=null; } }
+  ['wheel','touchstart','keydown','mousedown'].forEach(function(ev){ window.addEventListener(ev,quit,{once:true,passive:true}); });
+  ro=new ResizeObserver(function(){ if(Date.now()>end){ quit(); return; } t.scrollIntoView({block:'start'}); });
+  ro.observe(document.body);
+})();
 </script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
