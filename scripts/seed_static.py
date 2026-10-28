@@ -2483,6 +2483,84 @@ def milk_dmc_margin(dmc, d, today):
             '<a href="https://www.fsa.usda.gov/dairy" rel="noopener">Dairy Margin Coverage page</a>.</p>')
 
 
+# --- Federal Order 30 (Upper Midwest), from data/dairy-order30.json ----------
+# 2026-10-28 (dairy board, build 4; Sig: Order 30 first). The order's own
+# monthly numbers, latest month and a year earlier, read from the Upper Midwest
+# market administrator's releases by scripts/fetch_order30.py. A value the file
+# does not hold prints as a dash with the reason in the source line; nothing is
+# typed here. The depooling line is our own arithmetic on the announced Class III
+# and Class IV prices (data/dairy-data.json), said plainly, never a forecast.
+MILK_O30_DATA = "data/dairy-order30.json"
+O30_ROWS = (("class1", "Class I price, at the order&rsquo;s base zone", "$/cwt"),
+            ("adv_class3", "Advanced Class III price", "$/cwt"),
+            ("adv_class4", "Advanced Class IV price", "$/cwt"),
+            ("uniform", "Statistical uniform price", "$/cwt"),
+            ("ppd", "Producer price differential (PPD)", "$/cwt"),
+            ("scc", "Somatic cell adjustment rate, per 1,000 SCC", "$/cwt"))
+O30_LINK = '<a href="https://www.fmma30.com/" rel="noopener">Upper Midwest Market Administrator</a>'
+DEPOOL_GAP = 1.00     # $/cwt Class IV over Class III before the line is said
+
+
+def milk_depool(d, today):
+    """The plain depooling sentence from our own Class III and IV, or ''."""
+    d = d if isinstance(d, dict) else {}
+    i, c3, c4 = _mkey(d.get("class_month_key")), d.get("class3"), d.get("class4")
+    t = _mkey(str(today)[:7])
+    if i is None or t is None or t - i > 2 or not (_pos(c3) and _pos(c4)):
+        return ""
+    g = _jr(c4 - c3, 2)
+    if g <= DEPOOL_GAP:
+        return ""
+    return (f'<p class="dp-o30-depool" id="dp-o30-depool"><strong>Depooling watch, {_ishort(i)}:</strong> Class IV was '
+            f"{_cwt(g)}/cwt over Class III (USDA AMS, {_cwt(c4)} against {_cwt(c3)}). When Class IV runs this far above "
+            "Class III, a butter and powder plant would owe the pool for its milk, so it can do better by leaving the pool "
+            "for the month (depooling). The higher-valued milk it takes out is value the pool, and so the PPD, does not get. "
+            "Whether any plant did shows up later in the order&rsquo;s pooled volume, not in this line. I say it when Class IV is more than "
+            f"{_cwt(DEPOOL_GAP)} over Class III.</p>")
+
+
+def _o30_cell(r, k):
+    v = (r or {}).get(k)
+    if not _fin(v):
+        return "-"
+    if k == "ppd":
+        return _sg(v, 2)
+    if k == "scc":
+        return "$" + _fixed(v, 5)
+    return _cwt(v)
+
+
+def milk_o30_seed(o30, d, today):
+    o = o30 if isinstance(o30, dict) else {}
+    L, Y = o.get("latest") if isinstance(o.get("latest"), dict) else None, o.get("year_ago") if isinstance(o.get("year_ago"), dict) else None
+    li = _mkey((L or {}).get("month_key"))
+    dep = milk_depool(d, today)
+    if li is None or not any(_fin((L or {}).get(k)) for k, _, _ in O30_ROWS):
+        why = _e(o.get("why") or "the market administrator's releases have not been read yet")
+        return (f'<p class="dp-note-src" id="dp-o30-none" data-why="{why}">Order 30 numbers: not shown yet. I print them only '
+                f"as the {O30_LINK} publishes them, read from its own monthly releases, and those are not loaded here yet. "
+                "I will not type them in by hand.</p>" + dep)
+    yi = _mkey((Y or {}).get("month_key"))
+    yh = _ishort(yi) if yi is not None and yi == li - 12 else None
+    th = f'<th scope="col" class="num">{_ishort(li)}</th>' + (f'<th scope="col" class="num">{yh}</th>' if yh else "")
+    body = []
+    for k, name, _u in O30_ROWS:
+        if not _fin((L or {}).get(k)) and not (yh and _fin((Y or {}).get(k))):
+            continue
+        body.append(f'<tr><th scope="row">{name}</th><td class="num">{_o30_cell(L, k)}</td>'
+                    + (f'<td class="num">{_o30_cell(Y, k)}</td>' if yh else "") + "</tr>")
+    rd = _e(o.get("read") or "")
+    miss = [name for k, name, _u in O30_ROWS if not _fin((L or {}).get(k))]
+    note = (" A dash: " + ", ".join(miss).replace("&rsquo;", "&rsquo;") + " not in the release read for that month." if miss else "")
+    return ('<div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-tbl"><caption class="dp-sr">Federal Order 30 monthly prices, '
+            f'dollars per hundredweight</caption><thead><tr><th scope="col">Order 30</th>{th}</tr></thead><tbody>'
+            + "".join(body) + "</tbody></table></div>"
+            f'<p class="dp-note-src" id="dp-o30-src">Source: {O30_LINK}, monthly price and pool releases'
+            f'{", read " + rd if rd else ""}. Class I, the advanced prices and the PPD are the order&rsquo;s own announced figures, '
+            "before hauling and co-op deductions; the PPD is what this order adds to (or takes from) component value in your check."
+            f"{note}</p>" + dep)
+
+
 # --- the published miss of Read my check, from data/dairy-miss.json -----------
 # 2026-10-28 (dairy board, build 3; BUILD-RULES rule 1). What the check reader
 # said for each Class III month at the standard tests (the futures settle of the
@@ -2789,6 +2867,7 @@ def seed_milk(today):
     seeds["milkdmcpaid"] = milk_dmc_paid(dmc, d)
     seeds["milkdmcmargin"] = milk_dmc_margin(dmc, d, today)
     seeds["milkmiss"] = milk_miss_seed(_load_json(MILK_MISS_DATA), today)
+    seeds["milko30"] = milk_o30_seed(_load_json(MILK_O30_DATA), d, today)
     area = milk_area_seed(_load_json(MILK_MB_DATA), today)
     if area:
         seeds["milkarea"] = area
