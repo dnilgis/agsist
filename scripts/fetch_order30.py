@@ -61,7 +61,11 @@ PPD_INDEX = SITE + "PPD.html"
 MONTHS = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST",
           "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
 NUM = r"\$?\s*(\(?-?\s*\d{1,3}\.\d{2,5}\)?)"
-STARTS = [SITE, "https://www.fmmacentral.com/PDFdata/cp2610.pdf"]
+CENTRAL_SUM = "https://www.fmmacentral.com/PDFdata/sum{y}.pdf"   # every order's monthly prices, one year a file
+STARTS = ([CENTRAL_SUM.format(y=y) for y in (2024, 2025, 2026)]
+          + [PPD_URL.format(y=y, m=m, yy=y % 100) for y, m in ((2024, 10), (2025, 3))]
+          + [CLASS_URL.format(y=y, m=m, yy=y % 100) for y, m in ((2024, 10), (2025, 3))]
+          + [SITE, "https://www.fmmacentral.com/PDFdata/cp2610.pdf"])
 FILE = re.compile(r"\.(pdf|xlsx?|csv|txt)(\?|$)", re.I)
 WORDS = re.compile(r"price|pool|announce|uniform|ppd|differential|statistic|class|advance|component|somatic|market.?admin|dairy", re.I)
 
@@ -343,7 +347,7 @@ def _keep(u):
 
 def probe(root):
     print("Order 30 probe")
-    ix = dairy_probe.crawl(Path(root) / RAW, STARTS, ["fmma30.com", "fmmacentral.com"], _follow, _keep, depth=2, max_files=45)
+    ix = dairy_probe.crawl(Path(root) / RAW, STARTS, ["fmma30.com", "fmmacentral.com"], _follow, _keep, depth=2, max_files=60)
     print("  %d urls, %d saved" % (len(ix), sum(1 for r in ix if r.get("file"))))
     return 0
 
