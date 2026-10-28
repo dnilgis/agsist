@@ -1,0 +1,135 @@
+{
+ "schema": "agsist-sponsor-report/1",
+ "sponsor": "RootLot",
+ "slug": "rootlot",
+ "through": null,
+ "start": null,
+ "pending": true,
+ "pages": null,
+ "totals": {
+  "viewable": 0,
+  "clicks": 0,
+  "ctr": null,
+  "legacyImpressions": 0
+ },
+ "windows": [],
+ "series": [],
+ "byPage": [],
+ "creative": {
+  "live": false,
+  "proof_code": "2b9214d2",
+  "fields": {
+   "advertiser": "RootLot",
+   "headline": "Trees Direct From the Grower",
+   "body": "Browse trees and plants shipped directly from the grower.",
+   "facts": [],
+   "cta_text": "Browse Plants",
+   "cta_url": "https://rootlot.com/shop",
+   "phone": null,
+   "logo": null,
+   "disclosure": null
+  },
+  "label": "Sponsor",
+  "tier": null,
+  "links": {
+   "state-page": "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page",
+   "reader-state": "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=reader-state"
+  },
+  "cta_urls": {
+   "state-page": "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page",
+   "reader-state": "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=reader-state"
+  },
+  "previews": {},
+  "states": [
+   "CA",
+   "NV",
+   "TX"
+  ],
+  "slot": "geo-rootlot"
+ },
+ "regionAds": {
+  "pending": true,
+  "start": null,
+  "through": null,
+  "rows": [
+   {
+    "code": "CA",
+    "name": "California",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "NV",
+    "name": "Nevada",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "TX",
+    "name": "Texas",
+    "viewable": 0,
+    "clicks": 0
+   }
+  ],
+  "elsewhere": {
+   "viewable": 0,
+   "clicks": 0
+  }
+ },
+ "rateCard": {
+  "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS. These prices are published in three places: sponsor.html (the pitch), about.html, and now each sponsor's own portal. scripts/test_rate_card.py fails if a price here is not present on sponsor.html, so the two cannot drift without somebody being told. Prices are MONTHLY since 2026-10-07 (price_month). Change a price HERE first, then the prose around it.",
+  "_updated": "2026-10-07",
+  "currency": "USD",
+  "trial": "First month free on every tier. No card, no commitment.",
+  "terms": "Month-to-month. No minimum, cancel any time, no penalty.",
+  "tiers": [
+   {
+    "id": "daily",
+    "name": "Sponsor",
+    "price_month": 149,
+    "slots": 1,
+    "exclusive": true,
+    "placement": "In every daily briefing, web and email, plus a sponsor strip above the fold on the homepage.",
+    "note": "One ag company per issue. Rate locked for 12 months from start date. Once filled, the next slot opens only on renewal.",
+    "year_equivalent": 1788
+   },
+   {
+    "id": "page",
+    "name": "Own a page",
+    "price_month": 29,
+    "slots": null,
+    "exclusive": true,
+    "placement": "One sponsor ribbon on a single high-traffic page, category-exclusive.",
+    "note": "Any one page: cash bids, the hail map, break-even, a state hail page. The 51 state hail pages can each carry their own ribbon at the same rate."
+   },
+   {
+    "id": "supporter",
+    "name": "Supporter",
+    "price_month": 15,
+    "slots": 6,
+    "exclusive": false,
+    "placement": "Your name or logo in the shared Supporters strip in the footer of every page.",
+    "note": "Non-exclusive and capped at 6 so the strip keeps its value."
+   }
+  ]
+ },
+ "approveTo": "sig@agsist.com",
+ "freeTest": true,
+ "regions": [
+  "CA",
+  "NV",
+  "TX"
+ ],
+ "geo": "rootlot",
+ "approval": null,
+ "billing": {
+  "tier": "page",
+  "free_test": true
+ },
+ "placements": [
+  "geo_pages",
+  "geo_readers"
+ ],
+ "licensedStates": null,
+ "creativeRefreshed": "2026-10-28T14:55:34+00:00"
+}

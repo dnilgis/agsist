@@ -128,12 +128,74 @@ def proof_code(creative):
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:8]
 
 
-def creative_block(slug):
+# ── A STATE-TARGETED SPONSOR (Oct 28, 2026; RootLot, a free test) ─────────
+# Its ad lives in data/geo-sponsors.json (components/geo-sponsor.js draws it),
+# not in data/sponsor.json. The portal is the same page; sponsors.json says
+# "geo": "<id in geo-sponsors.json>". The proof code covers the same fields a
+# reader sees, read from that entry. Every link carries
+# utm_source=agsist&utm_medium=sponsor&utm_campaign=<utm_campaign>&utm_content=<surface>,
+# made the same way components/geo-sponsor.js makes it (test/geo-sponsor.test.mjs
+# and scripts/test_sponsor_portal.py hold the two equal).
+GEO_FILE = ROOT / "data" / "geo-sponsors.json"
+GEO_SURFACES = ("state-page", "reader-state")
+
+
+def geo_entry(geo_id):
+    try:
+        d = json.loads(GEO_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    for e in d.get("sponsors") or []:
+        if e.get("id") == geo_id:
+            return e
+    return None
+
+
+def geo_link(url, campaign, surface):
+    """The same string components/geo-sponsor.js withUtm() builds."""
+    from urllib.parse import quote
+    s, h = str(url), ""
+    if "#" in s:
+        i = s.index("#")
+        s, h = s[:i], s[i:]
+    q = ("utm_source=agsist&utm_medium=sponsor&utm_campaign=" + quote(campaign, safe="-_.!~*'()") +
+         "&utm_content=" + quote(surface, safe="-_.!~*'()"))
+    sep = "?" if "?" not in s else ("" if s.endswith(("?", "&")) else "&")
+    return s + sep + q + h
+
+
+def geo_creative(geo_id):
+    e = geo_entry(geo_id)
+    if not e or not e.get("headline") or not e.get("body") or not str(e.get("url") or "").startswith("https://"):
+        return None
+    c = {"advertiser": e.get("name"), "headline": e.get("headline"), "body": e.get("body"),
+         "facts": [f for f in (e.get("facts") or []) if isinstance(f, str) and f][:4],
+         "cta_text": e.get("cta_text") or "Learn more", "cta_url": e.get("url"),
+         "phone": e.get("phone") or None, "logo": e.get("logo") or None, "disclosure": None}
+    camp = e.get("utm_campaign") or ("geo-" + e["id"])
+    links = {k: geo_link(e["url"], camp, k) for k in GEO_SURFACES}
+    return {
+        "live": e.get("active") is True,
+        "proof_code": proof_code(c),
+        "fields": {k: c.get(k) for k in CREATIVE_FIELDS},
+        "label": "Sponsor",
+        "tier": None,
+        "links": links,
+        "cta_urls": dict(links),
+        "previews": {},
+        "states": list(e.get("states") or []),
+        "slot": "geo-" + e["id"],
+    }
+
+
+def creative_block(slug, geo=None):
     """What this sponsor's ad says, where it points, and the code for it.
 
     Returns None when there is no creative on file -- a sponsor who has not
     been given one yet gets the pending page, not an empty proof.
     """
+    if geo:
+        return geo_creative(geo)
     src = ROOT / "data" / "sponsor.json"
     if not src.exists():
         return None
@@ -263,7 +325,17 @@ def portal_extras(s):
     bill = s.get("billing")
     if isinstance(bill, dict):
         bill = {k: v for k, v in bill.items() if k not in PRIVATE_BILLING_KEYS} or None
+    regions = s.get("regions")
     return {
+        # A FREE TEST (Oct 28, 2026, RootLot): billing.free_test true. The portal
+        # keeps the billing layout and shows every part about money muted, under
+        # "Free test: no charge". Nothing is billed and no price is offered.
+        "freeTest": bool(isinstance(bill, dict) and bill.get("free_test") is True),
+        # The states a state-targeted ad is aimed at; the portal shows readers,
+        # page views and engagement there (from data/audience.json) and the ad's
+        # own numbers by GA4's region for the visit.
+        "regions": licensed_states(regions) if regions is not None else None,
+        "geo": s.get("geo") or None,
         "approval": s.get("approved") or None,
         "billing": bill or None,
         "placements": s.get("placements") or None,
@@ -297,6 +369,73 @@ def licensed_states(v):
         if c not in out:
             out.append(c)
     return sorted(out)
+
+
+STATE_NAMES = {
+    "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California", "CO": "Colorado",
+    "CT": "Connecticut", "DE": "Delaware", "DC": "District of Columbia", "FL": "Florida", "GA": "Georgia",
+    "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas",
+    "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland", "MA": "Massachusetts",
+    "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana",
+    "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico",
+    "NY": "New York", "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma",
+    "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina",
+    "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont",
+    "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming",
+}
+
+
+def region_ads_pending(s):
+    """Before the ad runs: zero in every state, marked not started, never blank."""
+    regs = licensed_states(s.get("regions")) or []
+    return {"pending": True, "start": None, "through": None,
+            "rows": [{"code": c, "name": STATE_NAMES[c], "viewable": 0, "clicks": 0} for c in regs],
+            "elsewhere": {"viewable": 0, "clicks": 0}}
+
+
+def region_ads(s, views_by_region, clicks_by_region, total_views, total_clicks, start, end):
+    """The ad's viewable impressions and clicks in each of the sponsor's states,
+    by GA4's region for the visit (US visits), plus everything else. GA4 rows
+    with no region ("(not set)") and visits outside the US land in elsewhere,
+    so the parts add up to the totals."""
+    regs = licensed_states(s.get("regions")) or []
+    rows, sv, sc = [], 0, 0
+    for c in regs:
+        n = STATE_NAMES[c]
+        v, k = int(views_by_region.get(n, 0)), int(clicks_by_region.get(n, 0))
+        sv += v
+        sc += k
+        rows.append({"code": c, "name": n, "viewable": v, "clicks": k})
+    return {"pending": False, "start": start, "through": end, "rows": rows,
+            "elsewhere": {"viewable": max(0, int(total_views) - sv), "clicks": max(0, int(total_clicks) - sc)}}
+
+
+def other_ads_live(geo_id, today=None):
+    """Every other ad that fires sponsor_viewable or a sponsor click: the daily
+    sponsor, a footer supporter, a sold page ribbon, a PRF state sponsor,
+    another state-targeted entry. Named, so the portal can say why."""
+    day = (today or date.today()).isoformat()
+    out = []
+
+    def load(name):
+        try:
+            return json.loads((ROOT / "data" / name).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return {}
+    if load("sponsor.json").get("active") is True:
+        out.append("the daily briefing sponsor")
+    if any(x.get("active") is True for x in load("supporters.json").get("supporters") or []):
+        out.append("a footer supporter")
+    if any(isinstance(x, dict) and x.get("active") is not False and x.get("company") and str(x.get("start") or "9") <= day
+           for x in (load("page-sponsors.json").get("slots") or {}).values()):
+        out.append("a page sponsor")
+    prf = load("prf-sponsors.json")
+    if any(isinstance(v, dict) and v.get("name") and (not v.get("through") or v["through"] >= day)
+           for k, v in prf.items() if not k.startswith("_")):
+        out.append("a PRF state sponsor")
+    if any(e.get("active") is True and e.get("id") != geo_id for e in load("geo-sponsors.json").get("sponsors") or []):
+        out.append("another state-targeted sponsor")
+    return out
 
 
 def rate_card():
@@ -366,7 +505,9 @@ def main():
             except (OSError, ValueError) as e:
                 print("  [skip] %s: %s" % (slug_, e))
                 continue
-            cur["creative"] = creative_block(slug_)
+            cur["creative"] = creative_block(slug_, s_.get("geo"))
+            if s_.get("geo") and "regionAds" not in cur:
+                cur["regionAds"] = region_ads_pending(s_)
             cur["rateCard"] = rate_card()
             cur["approveTo"] = s_.get("approve_to") or APPROVE_TO
             cur.update(portal_extras(s_))
@@ -426,6 +567,27 @@ def main():
                         [int(r.metric_values[0].value)])
         return rows
 
+    def run_region(events, start, end):
+        """{region name: count} for US visits, GA4's own region for the visit.
+        Never an event parameter: the ad sends no state."""
+        if not events:
+            return {}
+        req = RunReportRequest(
+            property="properties/" + prop,
+            dimensions=[Dimension(name="region")],
+            metrics=[Metric(name="eventCount")],
+            date_ranges=[DateRange(start_date=start, end_date=end)],
+            dimension_filter=FilterExpression(and_group=FilterExpressionList(expressions=[
+                in_list("eventName", events),
+                FilterExpression(filter=Filter(field_name="country",
+                                               string_filter=Filter.StringFilter(value="United States")))])),
+            limit=1000,
+        )
+        out = {}
+        for r_ in client.run_report(req).rows:
+            out[r_.dimension_values[0].value] = out.get(r_.dimension_values[0].value, 0) + int(r_.metric_values[0].value)
+        return out
+
     OUTDIR.mkdir(parents=True, exist_ok=True)
     today = date.today()
     # GA4 keeps refining "today" for hours, so the report ends YESTERDAY and
@@ -464,9 +626,10 @@ def main():
                 # The proof and the rate card do NOT wait for a start date.
                 # Approving the copy is the thing that happens first, and a
                 # sponsor with no numbers yet is exactly who needs to see it.
-                "creative": creative_block(slug),
+                "creative": creative_block(slug, s.get("geo")),
                 "rateCard": rate_card(),
                 "approveTo": s.get("approve_to") or APPROVE_TO,
+                **({"regionAds": region_ads_pending(s)} if s.get("geo") else {}),
                 **portal_extras(s),
             }, indent=1) + "\n", encoding="utf-8")
             written.append("%s: not started -- no start date set, wrote the pending page" % slug)
@@ -532,11 +695,24 @@ def main():
                 [{"page": p, "viewable": v, "clicks": clicks_page.get(p, 0)}
                  for p, v in views_page.items()],
                 key=lambda x: -x["viewable"]),
-            "creative": creative_block(slug),
+            "creative": creative_block(slug, s.get("geo")),
             "rateCard": rate_card(),
             "approveTo": s.get("approve_to") or APPROVE_TO,
             **portal_extras(s),
         }
+        if s.get("geo"):
+            other = other_ads_live(s.get("geo"))
+            if other:
+                # GA4 cannot tell two ads apart until `slot` is registered, so
+                # these counts would hold the other ad's too. Withheld, said so.
+                payload["withheld"] = "Another ad is running on the site (%s), and GA4 cannot yet tell the two apart." % ", ".join(other)
+                payload["totals"] = {"viewable": None, "clicks": None, "ctr": None, "legacyImpressions": 0}
+                payload["windows"], payload["series"], payload["byPage"] = [], [], []
+                payload["regionAds"] = {"withheld": True, "rows": []}
+            else:
+                reg = run_region(VIEWABLE_EVENTS, start, end.isoformat())
+                regc = run_region(CLICK_EVENTS, start, end.isoformat())
+                payload["regionAds"] = region_ads(s, reg, regc, tv, tc, start, end.isoformat())
         f = OUTDIR / ("%s-%s.json" % (slug, token))
         f.write_text(json.dumps(payload, indent=1) + "\n", encoding="utf-8")
         written.append("%s: %d viewable, %d clicks through %s" % (slug, tv, tc, end))

@@ -279,6 +279,97 @@ def main():
     tiers_ = [t["id"] for t in json.loads((ROOT / "data" / "rate-card.json").read_text())["tiers"]]
     check("founding" not in tiers_ and "daily" in tiers_, "the Daily tier is called daily, never founding", tiers_)
 
+    # ---- A STATE-TARGETED SPONSOR ON A FREE TEST (Oct 28, 2026: RootLot) --
+    print("\na state-targeted sponsor on a free test")
+    geo_conf = [sp_ for sp_ in conf.get("sponsors", []) if sp_.get("geo")]
+    check(any(sp_.get("slug") == "rootlot" for sp_ in geo_conf), "RootLot has a portal entry with its geo id")
+    for sp_ in geo_conf:
+        e = bsr.geo_entry(sp_["geo"])
+        check(e is not None, "%s: its geo id is in data/geo-sponsors.json" % sp_["slug"])
+        if not e:
+            continue
+        regs = bsr.licensed_states(sp_.get("regions"))
+        check(regs == sorted(e.get("states") or []), "%s: the portal's states are the ad's states" % sp_["slug"], (regs, e.get("states")))
+        blk = bsr.creative_block(sp_["slug"], sp_["geo"])
+        check(blk is not None, "%s: the geo creative builds" % sp_["slug"])
+        if not blk:
+            continue
+        f = blk["fields"]
+        check(set(f) == set(bsr.CREATIVE_FIELDS), "%s: the geo proof covers the same fields" % sp_["slug"])
+        check(f["advertiser"] == e["name"] and f["headline"] == e["headline"] and f["cta_url"] == e["url"],
+              "%s: the proof is over the words the ad shows" % sp_["slug"])
+        check(blk["proof_code"] == bsr.proof_code(f), "%s: its code is the code for those fields" % sp_["slug"])
+        check(blk["live"] == (e.get("active") is True), "%s: live is the geo entry's active flag" % sp_["slug"])
+        check("utm_" not in (e.get("url") or ""), "%s: the url in geo-sponsors.json is bare" % sp_["slug"])
+        for k in bsr.GEO_SURFACES:
+            check(blk["links"][k].endswith("utm_source=agsist&utm_medium=sponsor&utm_campaign=%s&utm_content=%s"
+                                           % (e.get("utm_campaign") or "geo-" + e["id"], k)),
+                  "%s: the %s link carries its own utm_content" % (sp_["slug"], k), blk["links"][k])
+        check(bsr.creative_block(sp_["slug"]) is None or sp_["slug"] == (json.loads((ROOT / "data" / "sponsor.json").read_text()).get("slug")),
+              "%s: the daily sponsor file is not read as its ad" % sp_["slug"])
+        # the ad that runs is the ad that was approved, and the counter has its start
+        if e.get("active") is True:
+            ap = (sp_.get("approved") or {}).get("proof")
+            check(ap == blk["proof_code"], "%s: a live geo ad carries an approval for its current proof code" % sp_["slug"],
+                  "approved %r, current %r" % (ap, blk["proof_code"]))
+            check(bool(sp_.get("start")), "%s: a live geo ad has its start date in data/sponsors.json (same commit as active)" % sp_["slug"])
+        else:
+            check(sp_.get("start") is None, "%s: the ad is off, so the counter has not started" % sp_["slug"])
+    # the same link string as components/geo-sponsor.js withUtm()
+    for u, want in (("https://r.example", "https://r.example?"), ("https://r.example/a?b=1", "https://r.example/a?b=1&"),
+                    ("https://r.example/a?", "https://r.example/a?"), ("https://r.example/a?b=1&", "https://r.example/a?b=1&")):
+        got = bsr.geo_link(u, "geo-test", "state-page")
+        check(got == want + "utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page",
+              "geo_link appends to %s correctly" % u, got)
+    check(bsr.geo_link("https://r.example/a?b=1#t", "geo-test", "reader-state").endswith("&utm_content=reader-state#t"),
+          "geo_link keeps a #fragment last")
+    gjs = (ROOT / "components" / "geo-sponsor.js").read_text()
+    check("utm_source=agsist&utm_medium=sponsor&utm_campaign=" in gjs and "'&utm_content='" in gjs,
+          "the page builds the same tags as the portal's links")
+
+    print("\nthe free deal is shown muted and charges nothing")
+    free = bsr.portal_extras({"billing": {"tier": "page", "free_test": True}, "regions": ["ca", "TX"], "geo": "x"})
+    check(free["freeTest"] is True and free["billing"] == {"tier": "page", "free_test": True}, "billing.free_test reaches the portal", free)
+    check(free["regions"] == ["CA", "TX"], "regions are checked US codes, like licensed states")
+    paid = bsr.portal_extras({"billing": {"tier": "daily", "trial_months": 1}})
+    check(paid["freeTest"] is False and paid["regions"] is None and paid["geo"] is None, "a paying sponsor is not a free test", paid)
+    check(bsr.portal_extras({"billing": {"tier": "page", "free_test": "yes"}})["freeTest"] is False, "only free_test true counts, never a truthy string")
+    for sp_ in conf.get("sponsors", []):
+        if (sp_.get("billing") or {}).get("free_test"):
+            check(not any(k in sp_["billing"] for k in ("price", "price_month", "rate", "amount", "invoice")),
+                  "%s: a free test carries no price of its own" % sp_["slug"], sp_["billing"])
+    check("var FREE = 'Free test: no charge';" in html, "the portal's one label for a free test is plain words")
+    bill_fn = html[html.index("function billingSection("):html.index("/* ───────────────────────────── links")]
+    check("if (d.freeTest)" in bill_fn and "cp-muted" in bill_fn and "FREE" in bill_fn,
+          "the billing section keeps its layout, muted, under the label")
+    check(bill_fn.index("if (d.freeTest)") < bill_fn.index("if (!t) return h + '<div class=\"cp-card\"><p class=\"cp-note\" style=\"margin:0\">Your plan"),
+          "the free test is handled before the paid plan is drawn")
+    hero_fn = html[html.index("function hero("):html.index("function nav(")]
+    check("if (d.freeTest) steps.forEach" in hero_fn and "x.d = FREE" in hero_fn, "the free-period and billing steps say Free test: no charge")
+    req_fn = html[html.index("function requestsSection("):html.index("function wireApprove(")]
+    check("d.freeTest && (a[0] === 'plan' || a[0] === 'extend')" in req_fn, "switching plan and renewing are muted on a free test")
+    check(".cp-free .cp-muted,.cp-muted{opacity:.5;filter:grayscale(1)}" in html, "muted means greyed, not removed")
+
+    print("\nyour states: readers from the audience file, the ad by GA4 region, never our own state event")
+    reg_fn = html[html.index("function regBody("):html.index("function wireRegions(")]
+    check("a.states" in reg_fn and "views" in reg_fn and "engagementRate" in reg_fn, "readers, page views and engagement come from data/audience.json")
+    check("a.servers" in reg_fn and "Data-center traffic left out" in reg_fn, "the server towns in those states are named with what they carried")
+    check("not started" in reg_fn, "before the ad runs its numbers read 0, not started")
+    pend = bsr.region_ads_pending({"regions": ["CA", "NV", "TX"]})
+    check(pend["pending"] is True and [r["viewable"] for r in pend["rows"]] == [0, 0, 0] and [r["clicks"] for r in pend["rows"]] == [0, 0, 0],
+          "the pending ad rows are zeros, not blanks", pend)
+    ra = bsr.region_ads({"regions": ["CA", "NV", "TX"]}, {"California": 50, "Texas": 20, "Iowa": 7, "(not set)": 3},
+                        {"California": 2}, 85, 3, "2026-11-01", "2026-11-05")
+    check([(r["code"], r["viewable"], r["clicks"]) for r in ra["rows"]] == [("CA", 50, 2), ("NV", 0, 0), ("TX", 20, 0)],
+          "each state is GA4's region count", ra)
+    check(ra["elsewhere"] == {"viewable": 15, "clicks": 1}, "everything else makes the parts add up to the totals", ra["elsewhere"])
+    B = (ROOT / "scripts" / "build_sponsor_report.py").read_text()
+    check('Dimension(name="region")' in B and 'field_name="country"' in B, "the ad's states come from GA4's standard region dimension, US visits")
+    check("customEvent:region" not in B and "customEvent:state" not in B, "never an event parameter carrying a state")
+    check(bsr.other_ads_live("rootlot") == [], "no other ad runs now, so RootLot's counts are its own", bsr.other_ads_live("rootlot"))
+    check("payload[\"withheld\"]" in B, "if another ad runs, the geo numbers are withheld and the portal says why")
+    check("if (d.withheld)" in html, "the portal shows the withheld reason instead of numbers")
+
     print()
     if FAILED:
         print("FAILED (%d): %s" % (len(FAILED), "; ".join(FAILED)))
