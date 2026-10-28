@@ -531,6 +531,31 @@ def promo_section(ga, F, rg):
     return out
 
 
+# ── Your county this week: the holdout's two arms (Oct 27 2026) ─────────
+# scripts/send_daily.py tags every agsist.com link in a ticked reader's Daily with utm_term=cw-block
+# or cw-hold (the arm, never the reader) from the first holdout Thursday. Private like
+# promo_section(): only the morning report calls it, the counts go only into Sig's email.
+CW_ARMS = ("cw-block", "cw-hold")
+CW_FIRST = date(2026, 10, 29)
+
+
+def cw_arms_section(ga, F, today):
+    """{"start", "end", "arms": {arm: {"users", "sessions"}}} from the first holdout Thursday to
+    the last finished day, Daily link visits only; None before the test starts."""
+    end = today - timedelta(days=LAG)
+    if end < CW_FIRST:
+        return None
+    w = {"id": "cw", "start": CW_FIRST.isoformat(), "end": end.isoformat()}
+    out = {"start": w["start"], "end": w["end"], "arms": {a: {"users": 0, "sessions": 0} for a in CW_ARMS}}
+    for r in ga.run(["sessionManualTerm"], ["totalUsers", "sessions"], [w],
+                    filt=f_and(F, f_eq("sessionMedium", "email"), f_in("sessionManualTerm", list(CW_ARMS)))):
+        a = r.get("sessionManualTerm")
+        if a in out["arms"]:
+            out["arms"][a]["users"] += r.get("totalUsers", 0)
+            out["arms"][a]["sessions"] += r.get("sessions", 0)
+    return out
+
+
 # ── Search Console ────────────────────────────────────────────────────────
 def is_ours(u):
     u = (u or "").lower()

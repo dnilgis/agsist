@@ -106,7 +106,8 @@ os.environ.pop("COUNTY_WEEK")
 fb = FakeBids()
 out, c = SD.load_county_week(SUBS, "json", THU, fb, runner)
 check(sorted(out) == ["shelby2@example.com", "shelby@example.com"], "only the Shelby readers get a block: %s" % sorted(out))
-check(c == {"ticked": 5, "ticked_no_zip": 1, "zips": 2, "block": 2, "no_change": 1, "not_placed": 1}, "counts: %s" % c)
+check(c == {"ticked": 5, "ticked_no_zip": 1, "zips": 2, "block": 2, "no_change": 1, "not_placed": 1,
+           "arm_hold": 1, "held_out": 0}, "counts: %s" % c)   # the holdout arm (scripts/test_cw_optin.py): one made-up reader, not a Shelby one
 check(fb.reads == 3, "each ZIP read once (%d)" % fb.reads)
 sent = SEEN[-1]
 blob = json.dumps(sent["places"])

@@ -9,6 +9,15 @@
    "link": "/milk-prices"
   },
   {
+   },
+   {
+   "id": "2026-10-27-county-week-for-readers",
+   "date": "2026-10-27",
+   "title": "Already on the Daily? Add your county",
+   "line": "A link at the bottom of every Daily now turns on what changed in your county on Thursdays. It asks for your ZIP if we do not have it.",
+   "link": "/daily"
+   },
+   {
    "id": "2026-10-27-wasde-2027-dates",
    "date": "2026-10-27",
    "title": "USDA calendar: the 2027 WASDE dates",
