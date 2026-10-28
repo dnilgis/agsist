@@ -28,7 +28,7 @@ test('basis_ledger.py selftest passes, with every rule it pins', () => {
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /selftest: 0 failure\(s\)/);
   const oks = (r.stdout.match(/^ok {3}/gm) || []).length;
-  assert.ok(oks >= 50, `only ${oks} checks ran; the selftest lost cases`);
+  assert.ok(oks >= 60, `only ${oks} checks ran; the selftest lost cases`);
   for (const must of [
     /^ok {3}a frozen call file is never rewritten with different content$/m,
     /^ok {3}a target day with no snapshot stays ungraded$/m,
@@ -37,6 +37,9 @@ test('basis_ledger.py selftest passes, with every rule it pins', () => {
     /^ok {3}a replay file in the live folder is refused$/m,
     /^ok {3}a later snapshot cannot change a call made earlier$/m,
     /^ok {3}a conflicting key is dropped and counted, never picked$/m,
+    /^ok {3}an open grade is not stored; one past the settle window is$/m,
+    /^ok {3}a settled grade file is never rewritten, even when the snapshots read differently later$/m,
+    /^ok {3}a stored grade file that is not settled is an error, never rebuilt$/m,
     /^ok {3}real rows: /m,
   ]) assert.match(r.stdout, must);
 });

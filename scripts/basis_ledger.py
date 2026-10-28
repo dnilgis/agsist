@@ -81,8 +81,12 @@ FILES (raw branch, private; /basis-ledger/ is in .gitignore on main)
 --------------------------------------------------------------------
   basis-ledger/<kind>/calls/YYYY/D.json.gz     frozen calls (kind = live | replay)
   basis-ledger/<kind>/models/pmove-YYYY-MM.json frozen monthly P(move) coefficients
-  basis-ledger/<kind>/grades/YYYY/D.json.gz    grades for that day's calls (rebuilt
-                                               until every target has settled)
+  basis-ledger/<kind>/grades/YYYY/D.json.gz    grades for that day's calls, written ONCE
+                                               when every target has settled (10 trading
+                                               days past the last target), never rewritten.
+                                               Until then the grades are computed on the
+                                               fly for the summary and not stored, so raw's
+                                               history grows only by frozen files.
   basis-ledger/summary.json                    MAE, Brier, direction, n beside each
 
 USAGE
@@ -91,8 +95,8 @@ USAGE
   python3 scripts/basis_ledger.py run [--live-day D] [--ref origin/raw | --dir DIR] [--out-dir .] [--replay-max N]
       the workflow step: freeze today's live calls (only for today's CT day),
       replay any snapshot day before the first live call day (and before today)
-      not replayed yet, rebuild
-      open grades and the summary. Writes only what changed.
+      not replayed yet, freeze the grade files that settled, rebuild the summary.
+      Writes only what is new (and the summary).
   python3 scripts/basis_ledger.py summary [--ref origin/raw | --dir DIR] [--out-dir .]
 """
 import argparse
@@ -933,17 +937,24 @@ def freeze_calls(ledger, doc, today):
 
 
 def regrade(ledger, store, kind, asof):
-    """Rebuild every grade file that is not final yet. -> (written, pairs for the summary)."""
+    """Grades for every call day. A settled grade file is read and never rebuilt; a grade
+    that settled now is frozen to its file once; an open one is computed for the summary
+    and not stored. -> (files written, pairs for the summary)."""
     n, pairs = 0, []
     for d in ledger.list(kind, "calls"):
         calls = decode(ledger.read(rel(kind, "calls", d)))
         if calls.get("kind") != kind:
             raise ValueError(f"{rel(kind, 'calls', d)} says kind={calls.get('kind')}")
         old = ledger.read(rel(kind, "grades", d))
-        g = decode(old) if old else None
-        if not g or not g.get("final") or g.get("calls_sha256") != doc_sha(calls):
+        if old is not None:
+            g = decode(old)
+            if not g.get("final") or g.get("calls_sha256") != doc_sha(calls):
+                raise ValueError(f"{rel(kind, 'grades', d)} is not a settled grade of these calls; "
+                                 "a stored grade file is never rebuilt")
+        else:
             g = grade(store, calls, asof)
-            n += ledger.write(rel(kind, "grades", d), encode(g), frozen=False)
+            if g["final"]:
+                n += ledger.write(rel(kind, "grades", d), encode(g), frozen=True)
         pairs.append((calls, g))
     return n, pairs
 
@@ -996,7 +1007,7 @@ def run(store, ledger, today, live_day=None, made_at=None, replay=True, replay_m
     for kind in KINDS:
         n, pairs = regrade(ledger, store, kind, today)
         blocks[kind] = summarize(pairs)
-        log(f"[basis-ledger] {kind}: {len(pairs)} call day(s), {n} grade file(s) rewritten")
+        log(f"[basis-ledger] {kind}: {len(pairs)} call day(s), {n} settled grade file(s) frozen")
     return write_summary(ledger, blocks, today)
 
 
@@ -1240,6 +1251,32 @@ def selftest():
         run(st, L3, today=days[7], log=lambda *a: None)
         ck("replay stops before the first live call day and never fills a later missed day",
            L3.list("replay", "calls") == days[:5] and L3.list("live", "calls") == [days[5]])
+        # grade files: none while open, written once when settled, never rewritten
+        hmax = max(RULES["horizons"])
+        mid = tday_add(days[0], hmax + SETTLE_DAYS + 1)     # days[0] and days[1] settled, days[11] open
+        far = tday_add(days[11], hmax + SETTLE_DAYS)
+        L4 = Ledger(os.path.join(tmp, "out4"), dir=src)
+        run(st, L4, today=mid, replay_max=12, log=lambda *a: None)
+        gl = L4.list("replay", "grades")
+        ck("an open grade is not stored; one past the settle window is", gl == days[:2])
+        gp = os.path.join(tmp, "out4", rel("replay", "grades", days[0]))
+        g0 = open(gp, "rb").read()
+        ck("a stored grade file is settled", decode(g0)["final"] is True)
+        gone = Store(dir=src)
+        for x in days[1:21]:
+            gone.obs(x)[0].clear()
+        n4, pairs4 = regrade(L4, gone, "replay", far)
+        ck("a settled grade file is never rewritten, even when the snapshots read differently later",
+           open(gp, "rb").read() == g0 and decode(g0) == dict(pairs4[0][1]))
+        ck("the open grades settle into files once, then nothing more is written",
+           n4 > 0 and set(L4.list("replay", "grades")) == set(days[:12]) and regrade(L4, gone, "replay", far)[0] == 0)
+        ck("a settled grade file that would change is refused",
+           raises(Frozen, lambda: L4.write(rel("replay", "grades", days[0]), encode(dict(decode(g0), asof="x")),
+                                           frozen=True)))
+        with open(gp, "wb") as f:
+            f.write(encode(dict(decode(g0), final=False)))
+        ck("a stored grade file that is not settled is an error, never rebuilt",
+           raises(ValueError, lambda: regrade(L4, st, "replay", far)))
         # tie rule, Brier and MAE on a hand case
         hz = [[5, "t1", 0.2, 40, 0.3]]
         cd = {"day": "x", "calls": [[k, "IA", -0.4, False, None, "no state median", dr, 0.03, 3, 3, [0, 0, 1, 1], hz]
