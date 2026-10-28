@@ -219,12 +219,12 @@ def main():
        '<th scope="col" class="num">2025*</th>' in tb and '<th scope="col" class="num">2026*</th>' in tb
        and "(2019 is Jan only; 2025 is Jul to Aug only; 2026 is Aug only)" in tb and "2018" not in tb, tb[:300])
     ck("...$9.50 in 2025 pays (0 + 1.00) / 2 = $0.50, Tier 1 and Tier 2 premium beside it",
-       '<tr><th scope="row">$9.50</th><td class="num">$0.1500</td><td class="num">n/a</td>'
+       '<tr><th scope="row">$9.50<span class="dp-dmc-prem">premium $0.150 / n/a</span></th>'
        '<td class="num">$0.16</td><td class="num">$0.50</td><td class="num">$1.79</td></tr>' in tb, tb)
     ck("...newest year first", tb.index(">2026*<") < tb.index(">2025*<") < tb.index(">2019*<"))
-    ck("...$4.00: no premium, in FSA's word", '<tr><th scope="row">$4.00</th><td class="num">none</td><td class="num">none</td>' in tb)
-    ck("...$8.00: Tier 2 rate printed", '<tr><th scope="row">$8.00</th><td class="num">$0.1000</td><td class="num">$1.8130</td>' in tb)
-    ck("...a level with no premium read is a dash, said so", '<th scope="row">$6.00</th><td class="num">-</td>' in tb
+    ck("...$4.00: no premium, in FSA's word", '<th scope="row">$4.00<span class="dp-dmc-prem">premium none / none</span>' in tb)
+    ck("...$8.00: Tier 2 rate printed as FSA prints it", '<th scope="row">$8.00<span class="dp-dmc-prem">premium $0.100 / $1.813</span>' in tb)
+    ck("...a level with no premium read is a dash, said so", '<th scope="row">$6.00<span class="dp-dmc-prem">premium - / -</span>' in tb
        and "A dash: not in the fact sheet as read." in tb)
     ck("...Tier 2's top level said from the rates, not typed", "FSA offers Tier 2 only up to $8.00 (n/a above)" in tb)
     np_ = S.milk_dmc_paid(dict(DM, premiums={}), SEP)
@@ -247,7 +247,7 @@ def main():
        and ">FSA Notice DMC-53</a>" in tn
        and "half other alfalfa" not in tb)
     ck("...no hay heads in the file: no hay sentence", "alfalfa" not in S.milk_dmc_paid(dict(DM, hay={}), SEP))
-    ck("...premium rates dated by the fact sheet", "rates per cwt covered, from its DMC fact sheet of January 2026" in tb)
+    ck("...premium rates dated by the fact sheet", "premium per cwt covered, from its DMC fact sheet of January 2026, Tier 1 / Tier 2" in tb)
     ck("...Tier 1 named at 6 million lb", "Tier 1 is the first 6 million lb of your production history a year" in tb)
     ck("...the margin line shows FSA's newest month", "DMC margin, August 2026: $9.34/cwt" in S.milk_dmc_margin(DM, SEP, "2026-10-28"))
     bad = copy.deepcopy(DM)

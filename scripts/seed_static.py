@@ -2449,7 +2449,10 @@ def _prem_cell(tier, lv):
         return "n/a"
     if _fin(v) and v == 0:
         return "none"      # FSA's word for the catastrophic level: no premium, the $100 fee only
-    return _money4(v) if _fin(v) and v > 0 else "-"
+    if not (_fin(v) and v > 0):
+        return "-"
+    t = f"{v:.4f}".rstrip("0")
+    return "$" + (t + "0" * (3 - len(t.split(".")[1])) if len(t.split(".")[1]) < 3 else t)   # as FSA prints: $0.150, $0.0025
 
 
 def milk_dmc_paid(dmc, d):
@@ -2471,16 +2474,16 @@ def milk_dmc_paid(dmc, d):
         heads.append((y, f"{y}*", len(ms)))
         part.append(f"{y} is {span} only")
     asof = f", from its DMC fact sheet of {_e(pr['as_of'])}" if isinstance(pr.get("as_of"), str) and pr.get("as_of") else ""
-    th = ((f'<th scope="col" class="num">Tier 1 premium</th><th scope="col" class="num">Tier 2 premium</th>' if has_prem else "")
-          + "".join(f'<th scope="col" class="num">{lab}</th>' for _, lab, _ in heads))
+    th = "".join(f'<th scope="col" class="num">{lab}</th>' for _, lab, _ in heads)
     body = []
     for lv in DMC_LEVELS:
-        cells = ([f'<td class="num">{_prem_cell(pr.get("tier1"), lv)}</td>', f'<td class="num">{_prem_cell(pr.get("tier2"), lv)}</td>']
-                 if has_prem else [])
+        cells = []
+        prem = (f'<span class="dp-dmc-prem">premium {_prem_cell(pr.get("tier1"), lv)} / {_prem_cell(pr.get("tier2"), lv)}</span>'
+                if has_prem else "")
         for y, _, n in heads:
             pay = sum(max(0.0, lv - m) for k, m in rows.items() if k[:4] == y) / n
             cells.append(f'<td class="num">{_cwt(pay)}</td>')
-        body.append(f'<tr><th scope="row">{_cwt(lv)}</th>{"".join(cells)}</tr>')
+        body.append(f'<tr><th scope="row">{_cwt(lv)}{prem}</th>{"".join(cells)}</tr>')
     wh = dmc.get("withheld") if isinstance(dmc.get("withheld"), dict) else {}
     wn = wh.get("count") if isinstance(wh.get("count"), int) and wh.get("count") > 0 else 0
     held = ""
@@ -2495,10 +2498,11 @@ def milk_dmc_paid(dmc, d):
     t2max = max((lv for lv in DMC_LEVELS if _fin((pr.get("tier2") or {}).get(f"{lv:.2f}"))), default=None) if has_prem else None
     prem_note = ""
     if has_prem:
-        prem_note = (f" Premiums are FSA&rsquo;s rates per cwt covered{asof}, beside each level; the payment columns "
+        prem_note = (f" Under each level: FSA&rsquo;s premium per cwt covered{asof}, Tier 1 / Tier 2; the payment columns "
                      f"do not take them off. Payment works the same in both tiers. {t1w}, Tier 2 the rest"
                      + (f"; FSA offers Tier 2 only up to {_cwt(t2max)} (n/a above)" if t2max is not None and t2max < DMC_LEVELS[-1] else "")
-                     + ". A dash: not in the fact sheet as read.")
+                     + "." + (" A dash: not in the fact sheet as read." if any(
+                         _prem_cell(pr.get(t), lv) == "-" for t in ("tier1", "tier2") for lv in DMC_LEVELS) else ""))
     rd = _e(dmc.get("read") or "")
     lo, hi = min(rows), max(rows)
     prem_src = f" Premiums: {_cite(pr, 'FSA DMC fact sheet')}." if has_prem else (
@@ -2506,14 +2510,14 @@ def milk_dmc_paid(dmc, d):
     return ('<details class="dp-states" id="dp-dmc-paid"><summary>What DMC would have paid at these published prices, '
             f'{_ishort(_mkey(lo))} to {_ishort(_mkey(hi))}, before premium</summary><div class="dp-tbl-wrap dp-tbl-scroll"><table class="dp-tbl">'
             '<caption class="dp-sr">DMC premium and what DMC would have paid, dollars per cwt of covered milk, by coverage level and year</caption>'
-            f'<thead><tr><th scope="col">Level</th>{th}</tr></thead>'
+            f'<thead><tr><th scope="col">Level{"<span class=dp-dmc-prem>premium Tier 1 / 2</span>" if has_prem else ""}</th>{th}</tr></thead>'
             f'<tbody>{"".join(body)}</tbody></table></div>'
             '<p class="dp-note-src">Would have paid at these published prices, before premium: for each year, the average over its '
             'months of the coverage level minus FSA&rsquo;s margin when the margin was below it, in dollars per cwt of covered milk'
             + (f" ({'; '.join(reversed(part))})" if part else "") + ". Newest year first." + prem_note +
-            f' No level is a pick for your farm, and past margins are not next year&rsquo;s.{_dmc_hay(dmc, years)} These are the '
-            f'margins as FSA publishes them now.{held} Margins: {_cite(dmc, "FSA, DMC prices and updates")}'
-            f'{", read " + rd if rd else ""}.{prem_src}</p></details>')
+            ' No level is a pick for your farm, and past margins are not next year&rsquo;s.</p>'
+            f'<p class="dp-note-src">These are the margins as FSA publishes them now.{_dmc_hay(dmc, years)}{held} '
+            f'Margins: {_cite(dmc, "FSA, DMC prices and updates")}{", read " + rd if rd else ""}.{prem_src}</p></details>')
 
 
 def _dmc_hay(dmc, years):
