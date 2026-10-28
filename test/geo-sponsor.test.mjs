@@ -414,3 +414,37 @@ test("browser: ?geo-preview=TX shows the shipped inactive entry with copy, count
     await n.ctx.close();
   });
 });
+
+test("browser: RootLot's portal: free test muted under its label, ad counts 0 and not started, its states, no errors", { skip, timeout: 120000 }, async () => {
+  const conf = JSON.parse(read("data/sponsors.json"));
+  const rl = conf.sponsors.find((s) => s.slug === "rootlot");
+  assert.ok(rl && /^[0-9a-f]{16}$/.test(rl.token));
+  assert.ok(existsSync(join(ROOT, "data/sponsors", "rootlot-" + rl.token + ".json")), "the portal file is built");
+  await browserRun(async (browser, port) => {
+    for (const w of [390, 1280]) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, serviceWorkers: "block" });
+      const pg = await ctx.newPage();
+      const errs = []; pg.on("pageerror", (e) => errs.push(String(e)));
+      await pg.route((u) => u.hostname !== "127.0.0.1", (r) => r.abort());
+      await pg.goto(`http://127.0.0.1:${port}/sponsor-report.html?r=rootlot-${rl.token}`, { waitUntil: "load" });
+      await pg.waitForSelector("#states", { timeout: 8000 });
+      const t = await pg.evaluate(() => document.getElementById("cp").innerText);
+      assert.match(t, /State-targeted sponsor/);
+      assert.match(t, /California, Nevada and Texas/);
+      assert.match(t, /Free test: no charge/i);
+      assert.match(t, /Trees Direct From the Grower/);
+      assert.ok(await pg.$("#billing.cp-free .cp-bill.cp-muted"), w + ": billing kept, muted");
+      assert.equal(await pg.evaluate(() => [...document.querySelectorAll("#results .cp-kpi-n")].slice(0, 2).map((e) => e.textContent).join(",")), "0,0");
+      assert.match(await pg.textContent("#results"), /not started/);
+      const reg = await pg.textContent("#states");
+      for (const n of ["California", "Nevada", "Texas", "Everywhere else", "not started", "Readers in your states"]) assert.ok(reg.includes(n), w + ": " + n);
+      const aud = JSON.parse(read("data/audience.json"));
+      const towns = ((aud.servers || {}).towns || []).filter((x) => ["California", "Nevada", "Texas"].includes(x.region));
+      if (towns.length) for (const x of towns) assert.ok(reg.includes(x.city + ", " + x.region), "server town named: " + x.city);
+      else assert.doesNotMatch(reg, /Data-center traffic left out/);
+      assert.equal(await pg.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth) <= 0, true, w + ": no sideways scroll");
+      assert.deepEqual(errs, []);
+      await ctx.close();
+    }
+  });
+});
