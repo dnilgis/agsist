@@ -15,11 +15,10 @@
   function chg(v){return (v>0?'+':v<0?'−':'')+n(Math.abs(v));}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   var st=saved();
-  if(st==='WI') $('dp-hc-wi-f').hidden=false;   // the space is set before the data comes, so nothing jumps
   /* bars: one series, so no legend; the figcaption names it */
   function bars(el,ser,label){
     var ys=Object.keys(ser).sort(); if(ys.length<2){el.innerHTML='';return;}
-    var W=640,H=220,L=46,R=8,T=10,B=24,max=0,i;
+    var W=Math.max(280,el.clientWidth||640),H=Math.max(160,el.clientHeight||200),L=50,R=8,T=10,B=24,max=0,i;
     for(i=0;i<ys.length;i++) max=Math.max(max,ser[ys[i]]);
     var step=Math.pow(10,Math.floor(Math.log10(max))), top=Math.ceil(max/step)*step; if(top/step<=2) {step/=2;}
     var bw=(W-L-R)/ys.length, g='', y, h, v, d;
@@ -29,14 +28,14 @@
       var tip=ys[i]+': '+n(v)+' licensed herds'+(d!==null&&String(+ys[i]-1)===ys[i-1]?', '+chg(d)+' from '+ys[i-1]:'');
       g+='<g class="dp-hc-b" tabindex="0" data-tip="'+esc(tip)+'"><rect class="dp-hc-hit" x="'+(L+i*bw).toFixed(1)+'" y="'+T+'" width="'+bw.toFixed(1)+'" height="'+(H-T-B)+'"/>'+
          '<rect class="dp-hc-bar" x="'+(L+i*bw+1).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+Math.max(1,bw-2).toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2"/><title>'+esc(tip)+'</title></g>';
-      if(i===0||i===ys.length-1||+ys[i]%5===0) g+='<text class="dp-hc-ax" x="'+(L+i*bw+bw/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+ys[i]+'</text>';
+      if(i===ys.length-1||(+ys[i]%5===0&&(ys.length-1-i)*bw>34)||(i===0&&bw*(5-(+ys[0]%5))>34)) g+='<text class="dp-hc-ax" x="'+(i===ys.length-1?W-R:L+i*bw+bw/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="'+(i===ys.length-1?'end':'middle')+'">'+ys[i]+'</text>';
     }
     el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(label)+'">'+g+'</svg><div class="dp-hc-tip" hidden></div>';
     hover(el);
   }
   function line(el,ser,label){
     var ks=Object.keys(ser).sort(); if(ks.length<2){el.innerHTML='';return;}
-    var W=640,H=220,L=46,R=8,T=10,B=24,max=0,min=Infinity,i;
+    var W=Math.max(280,el.clientWidth||640),H=Math.max(160,el.clientHeight||220),L=50,R=8,T=10,B=24,max=0,min=Infinity,i;
     for(i=0;i<ks.length;i++){max=Math.max(max,ser[ks[i]]);min=Math.min(min,ser[ks[i]]);}
     var step=Math.pow(10,Math.floor(Math.log10(max))), top=Math.ceil(max/step)*step; if(top/step<=2) step/=2;
     var x=function(j){return L+(W-L-R)*j/(ks.length-1);}, y=function(v){return T+(H-T-B)*(1-v/top);}, g='', p=[];

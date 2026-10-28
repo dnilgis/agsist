@@ -157,7 +157,7 @@ def http_get(u, timeout=120, tries=3):
     return hg(u, tries=tries, timeout=timeout)
 
 
-def run(root=ROOT, now=None, get=None, pdf_text=None, key=None):
+def run(root=ROOT, now=None, get=None, pdf_text=None, key=None, force=False):
     now = now or datetime.datetime.now(datetime.timezone.utc)
     get = get or http_get
     key = os.environ.get("NASS_API_KEY", "") if key is None else key
@@ -167,6 +167,12 @@ def run(root=ROOT, now=None, get=None, pdf_text=None, key=None):
     except (OSError, ValueError):
         old = {}
     at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    # yearly numbers come once a year and Wisconsin's once a month: a good read
+    # under 7 days old is not asked for again (the dairy job runs most days early in the month)
+    if (old.get("status") or {}).get("ok") and old.get("read", "") > (now - datetime.timedelta(days=7)).strftime("%Y-%m-%d") \
+            and not force:
+        print("[herds] read %s, under a week ago; not asked again" % old["read"])
+        return old
     if pdf_text is None:
         from fetch_dairy import pdf_to_text
         pdf_text = lambda b: pdf_to_text(b)[0]   # noqa: E731
@@ -307,10 +313,13 @@ def selftest():
            and out["wi_monthly"]["months"]["2026-10"] == 4944 and out["wi_monthly"]["last_release_url"].endswith("WI-DairyHerd-10-26.pdf"),
            out.get("status"))
         ck("...the key never lands in the file", "key" not in (Path(d) / OUT).read_text().lower().replace("index_url", "").replace("_key", ""))
-        out2 = run(d, now=now, get=lambda u: (None, "timeout"), pdf_text=texts.get, key="k")
+        seen = []
+        out1 = run(d, now=now + datetime.timedelta(days=3), get=lambda u: (seen.append(u), (None, "x"))[1], pdf_text=texts.get, key="k")
+        ck("...a good read under a week old is not asked again", seen == [] and out1["us"]["2025"] == 23609)
+        out2 = run(d, now=now, get=lambda u: (None, "timeout"), pdf_text=texts.get, key="k", force=True)
         ck("...a failed read keeps the last good numbers and says why", out2["us"]["2025"] == 23609
            and out2["status"]["ok"] is False and "timeout" in out2["status"]["why"], out2.get("status"))
-        out3 = run(d, now=now, get=lambda u: (None, "boom key=k"), pdf_text=texts.get, key="")
+        out3 = run(d, now=now, get=lambda u: (None, "boom key=k"), pdf_text=texts.get, key="", force=True)
         ck("...no key: says so", "no NASS_API_KEY" in out3["status"]["why"])
     print("fetch_dairy_herds selftest: %s" % ("PASS" if not fails else "FAIL (%d)" % len(fails)))
     return 1 if fails else 0
@@ -319,7 +328,7 @@ def selftest():
 def main(argv):
     if "--selftest" in argv:
         return selftest()
-    run(ROOT)
+    run(ROOT, force="--force" in argv)
     return 0
 
 

@@ -2558,7 +2558,7 @@ def milk_mpp_seed(dmc):
         if _mkey(k) is None or not isinstance(r, dict) or not (_pos(r.get("all_milk")) and _pos(r.get("feed")) and _fin(r.get("margin"))) \
                 or abs(r["all_milk"] - r["feed"] - r["margin"]) > 1e-5 or not ("2014" <= k[:4] <= "2018"):
             return ""
-    years = sorted({k[:4] for k in rows})
+    years = sorted({k[:4] for k in rows}, reverse=True)      # newest first, as the DMC table above
     th = "".join(f'<th scope="col" class="num">{y}</th>' for y in years)
     body = []
     for mo in range(12):
