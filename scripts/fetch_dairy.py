@@ -1556,4 +1556,7 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    import ams_http as AMS  # noqa: E402  lazy: ams_http imports this module
+    _argv = sys.argv[1:]
+    _rc = main(_argv)
+    sys.exit(_rc if "--selftest" in _argv else AMS.finish("dairy (AMS class prices)", _rc, probe="--probe" in _argv))

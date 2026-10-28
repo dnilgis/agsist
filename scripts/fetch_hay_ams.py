@@ -807,4 +807,6 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    _argv = sys.argv[1:]
+    _rc = main(_argv)
+    sys.exit(_rc if "--selftest" in _argv else AMS.finish("hay-ams", _rc, probe="--probe" in _argv))

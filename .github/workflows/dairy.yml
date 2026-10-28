@@ -78,10 +78,13 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: |
-          python scripts/fetch_dairy.py --probe
-          python scripts/fetch_mailbox.py --probe
+          # a probe that reached no AMS host exits 1; the others still run, then the step fails
+          rc=0
+          python scripts/fetch_dairy.py --probe || rc=1
+          python scripts/fetch_mailbox.py --probe || rc=1
           python scripts/fetch_dmc.py --probe || echo "::warning::DMC probe failed"
           python scripts/fetch_order30.py --probe || echo "::warning::Order 30 probe failed"
+          exit $rc
       # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
       # Runs even when the probe step failed part way, so what it did capture is kept.
       - name: Save the probe's raw files to the raw branch

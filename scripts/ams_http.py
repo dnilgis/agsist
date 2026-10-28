@@ -38,6 +38,7 @@ AMS_HOSTS = {PRIMARY, "ams.usda.gov"}
 DEFAULT_EXPECT = re.compile(r"Market\s+News|Agricultural\s+Marketing\s+Service", re.I)
 WEB_PAGE_RE = re.compile(rb"<html|<!doctype|captcha|access denied", re.I)
 LAST = {"host": None, "tried": []}
+COUNT = {"asked": 0, "got": 0, "mirror": 0}   # this run's AMS fetches, for finish()
 
 
 def candidates(url, mirrors=MIRRORS):
@@ -79,6 +80,7 @@ def get(url, headers=None, tries=3, timeout=30, opener=None, sleep=time.sleep, e
     http_get = http_get or (lambda u: FD.http_get(u, headers=headers, tries=tries, timeout=timeout,
                                                        opener=opener, sleep=sleep))
     LAST["host"], LAST["tried"] = None, []
+    COUNT["asked"] += 1
     urls = candidates(url, mirrors)
     errs, primary_page = [], None
     for i, u in enumerate(urls):
@@ -96,12 +98,15 @@ def get(url, headers=None, tries=3, timeout=30, opener=None, sleep=time.sleep, e
                 primary_page = raw
                 continue
             LAST["host"] = host
+            COUNT["got"] += 1
             return raw, None
         why = same_report(url, raw, expect, to_text)
         if why:
             errs.append("%s: %s" % (host, why))
             continue
         LAST["host"] = host
+        COUNT["got"] += 1
+        COUNT["mirror"] += 1
         log("[ams] %s from %s (%s)" % (urllib.parse.urlsplit(url).path, host, errs[0] if errs else "primary skipped"))
         return raw, None
     if primary_page is not None:
@@ -109,6 +114,22 @@ def get(url, headers=None, tries=3, timeout=30, opener=None, sleep=time.sleep, e
         LAST["host"] = urllib.parse.urlsplit(url).hostname
         return primary_page, None
     return None, "; ".join(errs) or "no host tried"
+
+
+def finish(label, rc=0, probe=False, count=None, out=print):
+    """End-of-run line. Every AMS fetch failed: a ::warning:: naming the count, and a probe exits 1
+    (a probe that reached nothing is not a success). A scheduled fetch keeps exit 0: its last good
+    copy stays as it was."""
+    c = COUNT if count is None else count
+    if not c["asked"]:
+        return rc
+    if not c["got"]:
+        out("::warning::%s: every USDA AMS fetch failed (%d of %d)%s" % (
+            label, c["asked"], c["asked"], "" if probe else "; the last good copy is kept"))
+        return rc or (1 if probe else 0)
+    out("[ams] %s: %d of %d AMS fetches answered%s" % (
+        label, c["got"], c["asked"], (", %d of them from a mirror" % c["mirror"]) if c["mirror"] else ""))
+    return rc
 
 
 # ---------------------------------------------------------------- selftest
@@ -195,6 +216,23 @@ def selftest():
 
     ck("same_report: the real report passes", same_report(url, pdf, to_text=to_text) is None)
     ck("same_report: a web page fails", "web page" in (same_report(url, page, to_text=to_text) or ""))
+    lines = []
+    ck("finish: a probe that reached nothing exits 1 with a warning naming the count",
+       finish("t", 0, True, {"asked": 7, "got": 0, "mirror": 0}, lines.append) == 1
+       and lines[-1].startswith("::warning::") and "(7 of 7)" in lines[-1], lines)
+    ck("finish: a scheduled fetch that reached nothing warns and keeps exit 0",
+       finish("t", 0, False, {"asked": 3, "got": 0, "mirror": 0}, lines.append) == 0
+       and lines[-1].startswith("::warning::") and "(3 of 3)" in lines[-1] and "last good" in lines[-1], lines)
+    ck("finish: one answer is enough, no warning",
+       finish("t", 0, True, {"asked": 9, "got": 1, "mirror": 1}, lines.append) == 0
+       and not lines[-1].startswith("::warning::") and "1 of 9" in lines[-1] and "mirror" in lines[-1], lines)
+    ck("finish: an earlier failure code is kept", finish("t", 2, True, {"asked": 1, "got": 0, "mirror": 0}, lines.append) == 2)
+    ck("finish: no AMS fetch at all says nothing", finish("t", 0, True, {"asked": 0, "got": 0, "mirror": 0}, lines.append) == 0 and len(lines) == 4)
+    c0 = dict(COUNT)
+    hg, calls = fake({M[0]: (pdf, None)})
+    get_(url, http_get=hg, to_text=to_text, log=logs.append)
+    ck("get counts what it asked and what a mirror served",
+       (COUNT["asked"] - c0["asked"], COUNT["got"] - c0["got"], COUNT["mirror"] - c0["mirror"]) == (1, 1, 1), COUNT)
     print("ams_http selftest: %s" % ("FAIL %d" % len(fails) if fails else "all ok"))
     return 1 if fails else 0
 
