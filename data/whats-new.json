@@ -9,6 +9,13 @@
    "link": "/usda-calendar#priced-in"
   },
   {
+   "id": "2026-10-28-ff-nojs-jump",
+   "date": "2026-10-28",
+   "title": "Fast Facts opens at My place at once",
+   "line": "With JavaScript off, a link to Fast Facts at My place opens right at that section instead of scrolling down to it.",
+   "link": "/fast-facts#place"
+  },
+  {
    "id": "2026-10-28-daily-retry",
    "date": "2026-10-28",
    "title": "The Daily tries again when a check holds it",
