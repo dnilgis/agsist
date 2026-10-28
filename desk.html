@@ -286,8 +286,9 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     else t.push(tile('The Daily today', 'Not sent yet', ds.rec ? 'last sent ' + ct(ds.rec.sent_at) : '', '', '#c-today'));
     var runs = D.runs || [], red = runs.filter(function (r) { return r.last && r.last.conclusion === 'failure'; }), unread = runs.filter(function (r) { return r.why; });
     if (red.length) t.push(tile('Checks on main', red.length + ' red', red.map(function (r) { return r.name; }).join(', '), 'bad', '#c-today'));
-    else if (unread.length === runs.length) t.push(tile('Checks on main', 'Can’t read', unread[0] ? unread[0].why : 'GitHub not asked', 'cantv'));
-    else t.push(tile('Checks on main', 'All green', (runs.length - unread.length) + ' of ' + runs.length + ' read', 'good', '#c-today'));
+    else if (!runs.length || unread.length === runs.length) t.push(tile('Checks on main', 'Can’t read', unread[0] ? unread[0].why : 'GitHub not asked', 'cantv'));
+    else if (unread.length) t.push(tile('Checks on main', 'No red seen', unread.length + ' of ' + runs.length + ' can’t read: ' + unread[0].why, 'cantv', '#c-today'));
+    else t.push(tile('Checks on main', 'All green', runs.length + ' jobs', 'good', '#c-today'));
     return t;
   }
   function todayBody(D) {
@@ -304,8 +305,8 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     var b = part(D, 'briefed');
     h += '<p>Day flag (the worker’s "sent" mark for ' + esc(day(isoDay(D.now))) + '): ' +
       (b.d ? (b.d[isoDay(D.now)] ? '<span class="green">set</span>' : 'not set') : (b.why === null ? need() : cant(b.why))) + '</p>';
-    h += '<p>To how many: ' + cant('the send count is only in the job log, which GitHub shows to signed-in users') +
-      partOr(D, 'daily', function (d) { return '. On the list now: <b>' + num(d.n) + '</b>'; }) + '</p>';
+    h += '<p>To how many: ' + cant('the send count is only in the job log, which GitHub shows to signed-in users') + '.</p>' +
+      '<p>On the list now: ' + partOr(D, 'daily', function (d) { return '<b>' + num(d.n) + '</b>'; }) + '</p>';
     h += src('Sent copy: data/daily-sent; flag and list: subs worker', wAt(D));
     h += '<h3>Daily readers</h3><p>' + partOr(D, 'daily', function (d) {
       var u = d.unsubs || {};

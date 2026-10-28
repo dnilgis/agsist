@@ -259,8 +259,9 @@ async function open(br, width, opts) {
   await p.route("https://api.github.com/**", (r) => {
     const u = r.request().url();
     if (opts.github === "limit") return r.fulfill({ status: 403, contentType: "application/json", body: "{}" });
+    if (opts.github === "some" && /hay-ams/.test(u)) return r.fulfill({ status: 403, contentType: "application/json", body: "{}" });
     const m = /workflows\/([a-z_-]+\.yml)\/runs/.exec(u);
-    if (m) return r.fulfill({ contentType: "application/json", body: JSON.stringify({ workflow_runs: [RUN(m[1] === "daily.yml" ? 11 : 12, m[1] === "cattle-auction.yml" ? "failure" : "success", m[1])] }) });
+    if (m) return r.fulfill({ contentType: "application/json", body: JSON.stringify({ workflow_runs: [RUN(m[1] === "daily.yml" ? 11 : 12, m[1] === "cattle-auction.yml" && !opts.noRed ? "failure" : "success", m[1])] }) });
     return r.fulfill({ status: 404, body: "" });
   });
   await p.route("https://dnilgis.github.io/bids/data/**", (r) => {
@@ -326,6 +327,7 @@ test("in a browser at 390 and 1280: every card, no sideways scroll, no layout sh
       const today = await p.textContent("#c-today");
       assert.match(today, /To how many: can’t read: the send count is only in the job log/);
       assert.match(today, /On the list now: 182/);
+      assert.match(tiles[1], /1 red/);
       assert.match(today, /Day flag .*: set/);
       const ads = await p.textContent("#c-ads");
       assert.match(ads, /Root Lot.*free test.*counter not started/s);
@@ -383,6 +385,16 @@ test("in a browser: a failed source says can't read, never a blank; a refused to
     assert.ok(tiles.some((t) => /^Checks on main Can’t read/.test(t)));
     assert.ok(tiles.some((t) => /^Readers, 7 days Can’t read/.test(t)));
     for (const v of await S.p.$$eval(".tile .v", (els) => els.map((e) => e.textContent.trim()))) assert.ok(v.length, "no blank tile");
+    await S.ctx.close();
+    /* some jobs read, one not: never "all green" */
+    S = await open(br, 390, { origin, token: "tok", github: "some" });
+    const t2 = await S.p.$$eval(".tile", (els) => els.map((e) => e.innerText.replace(/\s+/g, " ").trim()));
+    assert.ok(t2.some((t) => /^Checks on main 1 red Cattle auctions/.test(t)), t2[1]);
+    await S.ctx.close();
+    S = await open(br, 390, { origin, token: "tok", github: "some", noRed: true });
+    const t3 = await S.p.$$eval(".tile", (els) => els.map((e) => e.innerText.replace(/\s+/g, " ").trim()));
+    assert.ok(t3.some((t) => /^Checks on main No red seen 1 of 5 can\u2019t read: GitHub refused/.test(t)), t3[1]);
+    assert.match(await S.p.textContent("#c-today"), /Hay reportscan\u2019t read: GitHub refused/);
     await S.ctx.close();
     S = await open(br, 390, { origin, token: "wrong" });
     assert.match(await S.p.textContent("#tok-state"), /can’t read: the token was not accepted/);
