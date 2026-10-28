@@ -1,6 +1,21 @@
 {
  "note": "Sale barns read by scripts/fetch_cattle_auction.py. slug = the AMS report number in https://www.ams.usda.gov/mnreports/ams_<slug>.pdf; also = other report numbers for the same barn (a second sale day), the newest good sale wins. Slugs marked check:true are NOT confirmed (one source, or two numbers for one barn): the fetch uses a report only when its own title matches `match`, so a wrong slug shows nothing instead of the wrong barn. The rest were seen in a saved report title or in two places (the AMS PDF and a My Market News, eSMIS or Cornell listing), Oct 16 2026. New barns Oct 17 2026 (check:true) are from the AMS feeder auction listing the probe saved Oct 16 (data/cattle-auction-raw/listing.json). slug null = find it with the probe (AMS listing, then a scan of report numbers). lat/lon = the town center, rounded, for the near-you sort only.",
  "listing_url": "https://www.ams.usda.gov/market-news/feeder-and-replacement-cattle-auctions",
+ "pending_numbers": {
+   "note": "AMS report numbers from outside research (Oct 27 2026) NOT added yet: none has been read by the reader. Each goes in only after a probe scan (cattle-auction workflow, probe with scan '1215,1703,1825,1917,2039,2046,2528,2713') shows feeder steer or heifer tables the reader parses. 1860 (Nebraska) and 2167 (Iowa) were already read here.",
+   "on_feeder_listing": {
+     "1917": "Greencastle Livestock Market, Cattle Auction, Greencastle PA (Mon)",
+     "1825": "OKC West Livestock Market, Slaughter/Replacement Cattle, El Reno OK (Mon); would join el-reno-ok as a second sale day",
+     "2039": "Utah Weekly Cattle Auction Summary (state summary)",
+     "1703": "Florida Daily Cattle Auction Summary (state summary; fl-weekly 1704 is already read)"
+   },
+   "not_on_feeder_listing": {
+     "1215": "Springfield MO feeder cattle (JC_LS136, an older report name); springfield-mo 1255 is already read",
+     "2046": "Greenville IL livestock cattle auction; greenville-il 2043 is already read",
+     "2713": "Superior Livestock video and internet auction, Fort Worth TX: a video sale, not a sale barn",
+     "2528": "Kalona IA slaughter cattle auction: slaughter only, no feeder tables expected"
+   }
+ },
  "barns": [
     {"id": "ozark-ar", "name": "I-40 Livestock", "town": "Ozark", "state": "AR", "lat": 35.49, "lon": -93.83, "slug": "2053", "match": "i-40|ozark, ar", "check": true},
     {"id": "searcy-ar", "name": "Arkansas Cattle Auction", "town": "Searcy", "state": "AR", "lat": 35.25, "lon": -91.74, "slug": "2052", "match": "searcy|arkansas cattle auction", "check": true},

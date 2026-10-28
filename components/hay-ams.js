@@ -61,6 +61,10 @@
     };
   }
 
+  /* An auction's own name from its report title: "Rock Valley Hay Auction -
+     Rock Valley, IA" -> "Rock Valley Hay Auction". A state can have several. */
+  function auctionName(t) { return String(t || '').split(/\s+[-\u2013]\s+/)[0].trim(); }
+
   /* data/hay/ams-hay.json -> what the section draws. now = ms. A report is
      "old" after 21 days (35 when AMS says it is bi-weekly): still shown,
      with its date and a flag, never passed off as this week. */
@@ -82,12 +86,16 @@
       });
       return {
         id: r.id, state: r.state, name: r.state_name || r.state, title: r.title, kind: r.kind || 'direct',
+        label: r.kind === 'auction' ? auctionName(r.title) : '', sale: /^\d{4}-\d{2}-\d{2}$/.test(r.sale_date || '') ? r.sale_date : null,
         date: r.date, week: r.week_ending || null, age: a, old: a != null && a > lim, biweekly: !!r.biweekly,
         tons: r.tons || {}, lastReported: r.last_reported || null, comment: r.comment || '',
         url: r.source_url || null, pdf: r.pdf_url || null, groups: groups, sum: summary(r),
         perBale: r.per_bale_tables || 0, skipped: r.skipped || null, ok: !r.status || r.status.ok !== false
       };
-    }).sort(function (x, y) { return x.name < y.name ? -1 : x.name > y.name ? 1 : (x.date < y.date ? 1 : -1); });
+    }).sort(function (x, y) {
+      return x.name < y.name ? -1 : x.name > y.name ? 1 :
+        (x.kind === y.kind ? 0 : x.kind === 'direct' ? -1 : 1) || (x.label < y.label ? -1 : x.label > y.label ? 1 : 0) || (x.date < y.date ? 1 : -1);
+    });
   }
 
   /* NASS's newest month for the state from data/hay/hay-prices.json, labeled
@@ -102,7 +110,7 @@
       released: nass.released ? day(nass.released) : '' };
   }
 
-  var api = { GRADES: GRADES, gradeRank: gradeRank, processed: processed, span: span, summary: summary, view: view, nassFor: nassFor, ageDays: ageDays, day: day, money: money };
+  var api = { auctionName: auctionName, GRADES: GRADES, gradeRank: gradeRank, processed: processed, span: span, summary: summary, view: view, nassFor: nassFor, ageDays: ageDays, day: day, money: money };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.HayAms = api;
 
@@ -138,7 +146,7 @@
     function detail(r) {
       var h = '<div class="hp-ams-rep">';
       h += '<p class="hp-ams-k"><span class="hp-ams-tag">AMS this week</span> ' + esc(r.title) + '</p>';
-      h += '<p class="hp-ams-when">' + (r.week ? 'Week ending ' + esc(day(r.week)) + ', reported ' : 'Reported ') + esc(day(r.date)) +
+      h += '<p class="hp-ams-when">' + (r.sale && r.sale !== r.date ? 'Sale ' + esc(day(r.sale)) + ', reported ' : r.week ? 'Week ending ' + esc(day(r.week)) + ', reported ' : 'Reported ') + esc(day(r.date)) +
         (r.biweekly ? ' (every two weeks)' : '') + (r.old ? ' <span class="hp-ams-old">' + r.age + ' days old; no newer report yet</span>' : '') +
         (r.ok ? '' : ' <span class="hp-ams-old">the latest read failed a check; this is the last good report</span>') + '</p>';
       var t = r.tons.hay;
@@ -169,7 +177,7 @@
     function list() {
       var h = '<div class="hp-tw"><table class="hp-t hp-ams-t"><caption class="sr-only">Latest AMS hay report by state, $ a ton</caption><thead><tr><th scope="col">State</th><th scope="col">Reported</th><th scope="col">Alfalfa</th><th scope="col">Other hay</th></tr></thead><tbody>';
       V.forEach(function (r) {
-        h += '<tr><th scope="row"><button type="button" class="hp-st" data-ams="' + esc(r.state) + '">' + esc(r.name) + '</button>' + (r.kind === 'auction' ? ' <span class="hp-flag">auction</span>' : '') + '</th><td>' + esc(day(r.date, false)) +
+        h += '<tr><th scope="row"><button type="button" class="hp-st" data-ams="' + esc(r.state) + '">' + esc(r.name) + '</button>' + (r.kind === 'auction' ? ' <span class="hp-flag">' + esc(r.label || 'auction') + (r.label && !/auction/i.test(r.label) ? ' auction' : '') + '</span>' : '') + '</th><td>' + esc(day(r.date, false)) +
           (r.old ? ' <span class="hp-ams-old">old</span>' : '') + '</td><td>' + (rng(r.sum.alfalfa) || '<span class="hp-flag">none</span>') + '</td><td>' + (rng(r.sum.other) || '<span class="hp-flag">none</span>') + '</td></tr>';
       });
       return h + '</tbody></table></div><p class="hp-fine">Ranges run from the lowest grade traded to the highest, baled hay only (pellets, cubes and ground hay are in each state&rsquo;s table). Pick a state for each grade and bale type.</p>';
@@ -177,9 +185,9 @@
 
     function render() {
       if (!V) return;
-      var states = V.map(function (r) { return r.state; });
+      var states = V.map(function (r) { return r.state; }).filter(function (s, i, a) { return a.indexOf(s) === i; });
       var st = states.indexOf(PICK) >= 0 ? PICK : 'all';
-      var opts = '<option value="all"' + (st === 'all' ? ' selected' : '') + '>All states with a report</option>' + V.map(function (r) {
+      var opts = '<option value="all"' + (st === 'all' ? ' selected' : '') + '>All states with a report</option>' + V.filter(function (r, i) { return V.findIndex(function (x) { return x.state === r.state; }) === i; }).map(function (r) {
         return '<option value="' + esc(r.state) + '"' + (r.state === st ? ' selected' : '') + '>' + esc(r.name) + '</option>';
       }).join('');
       var h = '<p class="hp-fine"><span class="hp-ams-tag">AMS this week</span> Confirmed trades USDA AMS market reporters saw in each state, in dollars a ton, by quality grade and bale type. Each state reports on its own day, so every report carries its date. A few good loads can set the price, and not every state has a report.</p>' +

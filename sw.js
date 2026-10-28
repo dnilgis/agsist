@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 280;  // v280 2026-10-27: fx/cwoptin (280 assigned by the lead). A Daily reader can turn on Your county this week from a link in the Daily footer (agsist.com/e?a=daily-cw, subs worker v5.57); the email page takes a ZIP when the reader has none, sent in the request body, never in a link. No shared JS or CSS changed.
+var CACHE_VERSION = 282;  // v282 2026-10-27: fx/amsmore (282 assigned by the lead). Hay prices: a state with several AMS hay reports shows one state choice, each auction by its own name, and an auction's sale day apart from the day USDA published it (hay-ams.js v7).
+// v280 2026-10-27: fx/cwoptin (280 assigned by the lead). A Daily reader can turn on Your county this week from a link in the Daily footer (agsist.com/e?a=daily-cw, subs worker v5.57); the email page takes a ZIP when the reader has none, sent in the request body, never in a link. No shared JS or CSS changed.
 // v278 2026-10-27: fx/nasscorr (278 assigned by the lead). NASS's Oct 23 correction to the September corn yield shown beside the printed figure: whats-priced-in, crop-tour, conditions-yield, changelog; components/wasde-history.js v3.
 // v276 2026-10-27: fx/countyweek (276 assigned by the lead). Your county this week: the Thursday Daily block for readers who tick it in the Daily ask and saved a place, mirrored as This week here on the Atlas county home. New components/change-lines.js?v=1 (the line logic, shared with the Fast Facts map), changemap.js v2, here.js v29, signup-ask.js v20, county-home.js by its content hash.
 // v275 2026-10-27: fx/bidkeys (275 assigned by the lead). Company counts beside state basis fold a board listed on another firm's own bid page; changelog. No shared JS or CSS changed.
