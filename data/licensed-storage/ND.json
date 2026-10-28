@@ -1,0 +1,9049 @@
+{
+"schema":1,
+"note":"Grain warehouse and processor locations licensed by the North Dakota Department of Agriculture. The list gives one total capacity per licensee (ent_bu), shared by its ent_n locations; it gives none per location. id: the AGSIST elevator id when exactly one of our facilities matches (scripts/licensed_storage.py); unjoined and ambiguous rows are listed, never guessed.",
+"source":{
+"name":"North Dakota Department of Agriculture, licensed grain entities",
+"short":"ND Dept. of Agriculture",
+"url":"https://www.ndda.nd.gov/sites/www/files/documents/files/GrainEntities_624.pdf",
+"file_date":"2024-06-07",
+"read":"2026-10-28",
+"ref":"nd-grain-entities-624",
+"sha256":"a4963ca33f2056365b7cd2601e47300bbb385a9fcda518fea76e98bef21b8bec"
+},
+"totals":{
+"entities":257,
+"licences":{
+"warehouse":354,
+"processor":37,
+"roving":121,
+"broker":1
+},
+"with_capacity":147,
+"locations":383,
+"bushels":529961407
+},
+"join":{
+"joined":57,
+"of":383,
+"rate":0.1488,
+"by_rule":{
+"name+town":57,
+"alias+town":0
+},
+"with_bids_key":55,
+"unjoined":321,
+"ambiguous":5
+},
+"locations":[
+{
+"lic":"3261",
+"kind":"warehouse",
+"wh":"Hatton",
+"city":"Hatton",
+"st":"ND",
+"name":"Northwood Equity Elevator Company",
+"names":[
+"Northwood Equity Elevator Company"
+],
+"ent":"1050",
+"ent_bu":4074000,
+"ent_n":2,
+"lic_twice":false,
+"id":"ey8kv6ra9r",
+"src":[
+"northwoodequity-hatton"
+],
+"how":"name+town"
+},
+{
+"lic":"53",
+"kind":"warehouse",
+"wh":"Northwood",
+"city":"Northwood",
+"st":"ND",
+"name":"Northwood Equity Elevator Company",
+"names":[
+"Northwood Equity Elevator Company"
+],
+"ent":"1050",
+"ent_bu":4074000,
+"ent_n":2,
+"lic_twice":false,
+"id":"es6ywqvbny",
+"src":[
+"northwoodequity-northwood"
+],
+"how":"name+town"
+},
+{
+"lic":"1255",
+"kind":"warehouse",
+"wh":"Adrian",
+"city":"Adrian",
+"st":"ND",
+"name":"Larson Grain Company",
+"names":[
+"Larson Grain Company"
+],
+"ent":"1068",
+"ent_bu":8286000,
+"ent_n":6,
+"lic_twice":false,
+"id":"e44yqv9anh",
+"src":[
+"known:2375"
+],
+"how":"name+town"
+},
+{
+"lic":"1113",
+"kind":"warehouse",
+"wh":"Englevale",
+"city":"Englevale",
+"st":"ND",
+"name":"Larson Grain Company",
+"names":[
+"Larson Grain Company"
+],
+"ent":"1068",
+"ent_bu":8286000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1292",
+"kind":"warehouse",
+"wh":"Fredonia",
+"city":"Fredonia",
+"st":"ND",
+"name":"Larson Grain Company",
+"names":[
+"Larson Grain Company"
+],
+"ent":"1068",
+"ent_bu":8286000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"213",
+"kind":"warehouse",
+"wh":"LaMoure",
+"city":"LaMoure",
+"st":"ND",
+"name":"Larson Grain Company",
+"names":[
+"Larson Grain Company"
+],
+"ent":"1068",
+"ent_bu":8286000,
+"ent_n":6,
+"lic_twice":false,
+"id":"ev3aq6ak8d",
+"src":[
+"larsongrain-lamoure"
+],
+"how":"name+town"
+},
+{
+"lic":"1293",
+"kind":"warehouse",
+"wh":"Linton",
+"city":"Linton",
+"st":"ND",
+"name":"Larson Grain Company",
+"names":[
+"Larson Grain Company"
+],
+"ent":"1068",
+"ent_bu":8286000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1294",
+"kind":"warehouse",
+"wh":"Wishek",
+"city":"Wishek",
+"st":"ND",
+"name":"Larson Grain Company",
+"names":[
+"Larson Grain Company"
+],
+"ent":"1068",
+"ent_bu":8286000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"13",
+"kind":"warehouse",
+"wh":"Voss",
+"city":"Voss",
+"st":"ND",
+"name":"Voss Grain Company",
+"names":[
+"Voss Grain Company"
+],
+"ent":"1082",
+"ent_bu":258000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"662",
+"kind":"warehouse",
+"wh":"Dickinson Warehouse",
+"city":"Dickinson",
+"st":"ND",
+"name":"Minn-Dak Ag LLC dba Minn-Dak Growers",
+"names":[
+"Minn-Dak Ag LLC dba Minn-Dak Growers",
+"Minn-Dak Ag LLC",
+"Minn-Dak Growers"
+],
+"ent":"1101",
+"ent_bu":2000000,
+"ent_n":2,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"159",
+"kind":"warehouse",
+"wh":"Grand Forks Warehouse",
+"city":"Grand Forks",
+"st":"ND",
+"name":"Minn-Dak Ag LLC dba Minn-Dak Growers",
+"names":[
+"Minn-Dak Ag LLC dba Minn-Dak Growers",
+"Minn-Dak Ag LLC",
+"Minn-Dak Growers"
+],
+"ent":"1101",
+"ent_bu":2000000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"231",
+"kind":"warehouse",
+"wh":"Bowman",
+"city":"Bowman",
+"st":"ND",
+"name":"Bowman Grain, Inc.",
+"names":[
+"Bowman Grain, Inc."
+],
+"ent":"115",
+"ent_bu":440000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"844",
+"kind":"processor",
+"wh":"Fargo",
+"city":"Fargo",
+"st":"ND",
+"name":"Dakota Specialty Milling, Inc.",
+"names":[
+"Dakota Specialty Milling, Inc."
+],
+"ent":"1167",
+"ent_bu":201700,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"996",
+"kind":"warehouse",
+"wh":"Geneseo",
+"city":"Geneseo",
+"st":"ND",
+"name":"Farmers Cooperative Elevator Company of Lidgerwood, North Dakota (The)",
+"names":[
+"Farmers Cooperative Elevator Company of Lidgerwood, North Dakota"
+],
+"ent":"117",
+"ent_bu":5222000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"244",
+"kind":"warehouse",
+"wh":"Lidgerwood",
+"city":"Lidgerwood",
+"st":"ND",
+"name":"Farmers Cooperative Elevator Company of Lidgerwood, North Dakota (The)",
+"names":[
+"Farmers Cooperative Elevator Company of Lidgerwood, North Dakota"
+],
+"ent":"117",
+"ent_bu":5222000,
+"ent_n":2,
+"lic_twice":false,
+"id":"ed53de0zks",
+"src":[
+"fcelidgerwood-lidgerwood"
+],
+"how":"name+town"
+},
+{
+"lic":"113",
+"kind":"warehouse",
+"wh":"TriGen Makoti",
+"city":"Makoti",
+"st":"ND",
+"name":"TriGen Ag Partners",
+"names":[
+"TriGen Ag Partners"
+],
+"ent":"119",
+"ent_bu":5255000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"114",
+"kind":"warehouse",
+"wh":"TriGen Max",
+"city":"Max",
+"st":"ND",
+"name":"TriGen Ag Partners",
+"names":[
+"TriGen Ag Partners"
+],
+"ent":"119",
+"ent_bu":5255000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"115",
+"kind":"warehouse",
+"wh":"TriGen Plaza",
+"city":"Plaza",
+"st":"ND",
+"name":"TriGen Ag Partners",
+"names":[
+"TriGen Ag Partners"
+],
+"ent":"119",
+"ent_bu":5255000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"116",
+"kind":"warehouse",
+"wh":"TriGen Ryder",
+"city":"Ryder",
+"st":"ND",
+"name":"TriGen Ag Partners",
+"names":[
+"TriGen Ag Partners"
+],
+"ent":"119",
+"ent_bu":5255000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"857",
+"kind":"warehouse",
+"wh":"New Leipzig",
+"city":"New Leipzig",
+"st":"ND",
+"name":"Bison Grain Company dba New Leipzig Grain Co.",
+"names":[
+"Bison Grain Company dba New Leipzig Grain Co.",
+"Bison Grain Company",
+"New Leipzig Grain Co."
+],
+"ent":"1218",
+"ent_bu":196000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"864",
+"kind":"warehouse",
+"wh":"Mayville",
+"city":"Mayville",
+"st":"ND",
+"name":"MAYPORT FARMERS CO-OP",
+"names":[
+"MAYPORT FARMERS CO-OP"
+],
+"ent":"1229",
+"ent_bu":4064000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"861",
+"kind":"warehouse",
+"wh":"Portland",
+"city":"Portland",
+"st":"ND",
+"name":"MAYPORT FARMERS CO-OP",
+"names":[
+"MAYPORT FARMERS CO-OP"
+],
+"ent":"1229",
+"ent_bu":4064000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"751",
+"kind":"warehouse",
+"wh":"Regan",
+"city":"Regan",
+"st":"ND",
+"name":"Wilton Farmers Union Elevator Co.",
+"names":[
+"Wilton Farmers Union Elevator Co."
+],
+"ent":"128",
+"ent_bu":2270000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"846",
+"kind":"warehouse",
+"wh":"Washburn",
+"city":"Washburn",
+"st":"ND",
+"name":"Wilton Farmers Union Elevator Co.",
+"names":[
+"Wilton Farmers Union Elevator Co."
+],
+"ent":"128",
+"ent_bu":2270000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"59",
+"kind":"warehouse",
+"wh":"Wilton",
+"city":"Wilton",
+"st":"ND",
+"name":"Wilton Farmers Union Elevator Co.",
+"names":[
+"Wilton Farmers Union Elevator Co."
+],
+"ent":"128",
+"ent_bu":2270000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"883",
+"kind":"warehouse",
+"wh":"Manvel",
+"city":"Manvel",
+"st":"ND",
+"name":"Knudson Farms Co dba Manvel Bean Company",
+"names":[
+"Knudson Farms Co dba Manvel Bean Company",
+"Knudson Farms Co",
+"Manvel Bean Company"
+],
+"ent":"1285",
+"ent_bu":147000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"891",
+"kind":"warehouse",
+"wh":"Wildrose",
+"city":"Wildrose",
+"st":"ND",
+"name":"Arthur Glasoe & Lance Glasoe dba Wildrose C & D",
+"names":[
+"Arthur Glasoe & Lance Glasoe dba Wildrose C & D",
+"Arthur Glasoe & Lance Glasoe",
+"Wildrose C & D"
+],
+"ent":"1303",
+"ent_bu":119000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"39",
+"kind":"warehouse",
+"wh":"Thompson",
+"city":"Thompson",
+"st":"ND",
+"name":"Thompson Farmers Co-Operative Elevator",
+"names":[
+"Thompson Farmers Co-Operative Elevator"
+],
+"ent":"131",
+"ent_bu":2172000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"894",
+"kind":"warehouse",
+"wh":"Kirkeide Legacy Partners Company dba Kirkeides Northland Bean & Seed",
+"city":"Kirkeide Legacy Partners Company dba Kirkeides Northland Bean & Seed",
+"st":"ND",
+"name":"Kirkeide Legacy Partners Company dba Kirkeides Northland Bean & Seed",
+"names":[
+"Kirkeide Legacy Partners Company dba Kirkeides Northland Bean & Seed",
+"Kirkeide Legacy Partners Company",
+"Kirkeides Northland Bean & Seed"
+],
+"ent":"1311",
+"ent_bu":1145600,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"975",
+"kind":"warehouse",
+"wh":"Bordulac",
+"city":"Bordulac",
+"st":"ND",
+"name":"The Kensal Farmers' Elevator Co.",
+"names":[
+"The Kensal Farmers' Elevator Co."
+],
+"ent":"133",
+"ent_bu":3709000,
+"ent_n":2,
+"lic_twice":false,
+"id":"eb5enyedww",
+"src":[
+"known:2619"
+],
+"how":"name+town"
+},
+{
+"lic":"191",
+"kind":"warehouse",
+"wh":"Kensal",
+"city":"Kensal",
+"st":"ND",
+"name":"The Kensal Farmers' Elevator Co.",
+"names":[
+"The Kensal Farmers' Elevator Co."
+],
+"ent":"133",
+"ent_bu":3709000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2156",
+"kind":"warehouse",
+"wh":"Berlin",
+"city":"Berlin",
+"st":"ND",
+"name":"Agtegra Cooperative",
+"names":[
+"Agtegra Cooperative"
+],
+"ent":"1344",
+"ent_bu":1158000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2200",
+"kind":"warehouse",
+"wh":"Hague",
+"city":"Hague",
+"st":"ND",
+"name":"Agtegra Cooperative",
+"names":[
+"Agtegra Cooperative"
+],
+"ent":"1344",
+"ent_bu":1158000,
+"ent_n":2,
+"lic_twice":false,
+"id":"ehv8bt18t6",
+"src":[
+"agtegra-hague"
+],
+"how":"name+town"
+},
+{
+"lic":"1",
+"kind":"warehouse",
+"wh":"Clifford",
+"city":"Clifford",
+"st":"ND",
+"name":"Clifford Farmers Cooperative Elevator Company",
+"names":[
+"Clifford Farmers Cooperative Elevator Company"
+],
+"ent":"142",
+"ent_bu":15188000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1335",
+"kind":"warehouse",
+"wh":"Galesburg",
+"city":"Galesburg",
+"st":"ND",
+"name":"Clifford Farmers Cooperative Elevator Company",
+"names":[
+"Clifford Farmers Cooperative Elevator Company"
+],
+"ent":"142",
+"ent_bu":15188000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1075",
+"kind":"warehouse",
+"wh":"Hope",
+"city":"Hope",
+"st":"ND",
+"name":"Clifford Farmers Cooperative Elevator Company",
+"names":[
+"Clifford Farmers Cooperative Elevator Company"
+],
+"ent":"142",
+"ent_bu":15188000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1169",
+"kind":"warehouse",
+"wh":"Buxton",
+"city":"Buxton",
+"st":"ND",
+"name":"Valley United Co-op",
+"names":[
+"Valley United Co-op"
+],
+"ent":"1432",
+"ent_bu":5147000,
+"ent_n":3,
+"lic_twice":false,
+"id":"e7js8ymc85",
+"src":[
+"valleyunited-buxton"
+],
+"how":"name+town"
+},
+{
+"lic":"923",
+"kind":"warehouse",
+"wh":"Reynolds",
+"city":"Reynolds",
+"st":"ND",
+"name":"Valley United Co-op",
+"names":[
+"Valley United Co-op"
+],
+"ent":"1432",
+"ent_bu":5147000,
+"ent_n":3,
+"lic_twice":false,
+"id":"egktc8kgbv",
+"src":[
+"known:Valley United Co-op|Reynolds-Buxton|Reynolds|ND"
+],
+"how":"name+town"
+},
+{
+"lic":"1170",
+"kind":"warehouse",
+"wh":"Thompson",
+"city":"Thompson",
+"st":"ND",
+"name":"Valley United Co-op",
+"names":[
+"Valley United Co-op"
+],
+"ent":"1432",
+"ent_bu":5147000,
+"ent_n":3,
+"lic_twice":false,
+"id":"e8ydhj7f09",
+"src":[
+"valleyunited-thompson"
+],
+"how":"name+town"
+},
+{
+"lic":"1331",
+"kind":"warehouse",
+"wh":"Cooperstown",
+"city":"Cooperstown",
+"st":"ND",
+"name":"Finley Farmers Grain & Elevator Company",
+"names":[
+"Finley Farmers Grain & Elevator Company"
+],
+"ent":"145",
+"ent_bu":6232000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"289",
+"kind":"warehouse",
+"wh":"Finley",
+"city":"Finley",
+"st":"ND",
+"name":"Finley Farmers Grain & Elevator Company",
+"names":[
+"Finley Farmers Grain & Elevator Company"
+],
+"ent":"145",
+"ent_bu":6232000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"314",
+"kind":"warehouse",
+"wh":"Beach",
+"city":"Beach",
+"st":"ND",
+"name":"Beach Co-operative Grain Co",
+"names":[
+"Beach Co-operative Grain Co"
+],
+"ent":"148",
+"ent_bu":1031000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1150",
+"kind":"warehouse",
+"wh":"Wyndmere",
+"city":"Wyndmere",
+"st":"ND",
+"name":"Direct Grain, Inc.",
+"names":[
+"Direct Grain, Inc."
+],
+"ent":"159",
+"ent_bu":1000000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"946",
+"kind":"warehouse",
+"wh":"Mayville",
+"city":"Mayville",
+"st":"ND",
+"name":"O'Brien Seed, Inc.",
+"names":[
+"O'Brien Seed, Inc."
+],
+"ent":"1632",
+"ent_bu":106000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"555",
+"kind":"warehouse",
+"wh":"Grace City",
+"city":"Grace City",
+"st":"ND",
+"name":"Farmers Elevator Inc of Grace City",
+"names":[
+"Farmers Elevator Inc of Grace City"
+],
+"ent":"165",
+"ent_bu":950000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"177",
+"kind":"warehouse",
+"wh":"Rugby",
+"city":"Rugby",
+"st":"ND",
+"name":"Rugby Farmers Elevator",
+"names":[
+"Rugby Farmers Elevator"
+],
+"ent":"182",
+"ent_bu":4330000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"178",
+"kind":"warehouse",
+"wh":"Willow City",
+"city":"Willow City",
+"st":"ND",
+"name":"Rugby Farmers Elevator",
+"names":[
+"Rugby Farmers Elevator"
+],
+"ent":"182",
+"ent_bu":4330000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1099",
+"kind":"warehouse",
+"wh":"York",
+"city":"York",
+"st":"ND",
+"name":"Rugby Farmers Elevator",
+"names":[
+"Rugby Farmers Elevator"
+],
+"ent":"182",
+"ent_bu":4330000,
+"ent_n":3,
+"lic_twice":false,
+"id":"ey4t90nmtw",
+"src":[
+"rugbyfarmers-york"
+],
+"how":"name+town"
+},
+{
+"lic":"104",
+"kind":"warehouse",
+"wh":"Woodworth",
+"city":"Woodworth",
+"st":"ND",
+"name":"Woodworth Farmers Grain Co.",
+"names":[
+"Woodworth Farmers Grain Co."
+],
+"ent":"1848",
+"ent_bu":943000,
+"ent_n":1,
+"lic_twice":false,
+"id":"e3ms44pp3k",
+"src":[
+"known:2710"
+],
+"how":"name+town"
+},
+{
+"lic":"223",
+"kind":"warehouse",
+"wh":"Steele",
+"city":"Steele",
+"st":"ND",
+"name":"Steele Farmers Elevator",
+"names":[
+"Steele Farmers Elevator"
+],
+"ent":"191",
+"ent_bu":384000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1004",
+"kind":"warehouse",
+"wh":"Walhalla",
+"city":"Walhalla",
+"st":"ND",
+"name":"Walhalla Farmers Grain, LLC",
+"names":[
+"Walhalla Farmers Grain, LLC"
+],
+"ent":"1916",
+"ent_bu":1228000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1298",
+"kind":"warehouse",
+"wh":"Dickinson",
+"city":"Dickinson",
+"st":"ND",
+"name":"Scranton Equity Exchange",
+"names":[
+"Scranton Equity Exchange"
+],
+"ent":"194",
+"ent_bu":2086000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"261",
+"kind":"warehouse",
+"wh":"Scranton",
+"city":"Scranton",
+"st":"ND",
+"name":"Scranton Equity Exchange",
+"names":[
+"Scranton Equity Exchange"
+],
+"ent":"194",
+"ent_bu":2086000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1127",
+"kind":"processor",
+"wh":"Bismarck",
+"city":"Bismarck",
+"st":"ND",
+"name":"Hubbard Feeds, Inc.",
+"names":[
+"Hubbard Feeds, Inc."
+],
+"ent":"1943",
+"ent_bu":477000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"630",
+"kind":"warehouse",
+"wh":"Bisbee",
+"city":"Bisbee",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1354",
+"kind":"warehouse",
+"wh":"Cando",
+"city":"Cando",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1355",
+"kind":"warehouse",
+"wh":"Egeland",
+"city":"Egeland",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1319",
+"kind":"warehouse",
+"wh":"Overly",
+"city":"Overly",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"628",
+"kind":"warehouse",
+"wh":"Perth",
+"city":"Perth",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"25",
+"kind":"warehouse",
+"wh":"Rock Lake",
+"city":"Rock Lake",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"568",
+"kind":"warehouse",
+"wh":"Rolette",
+"city":"Rolette",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1314",
+"kind":"warehouse",
+"wh":"Rolla",
+"city":"Rolla",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3265",
+"kind":"warehouse",
+"wh":"Wales",
+"city":"Wales",
+"st":"ND",
+"name":"Legacy Cooperative",
+"names":[
+"Legacy Cooperative"
+],
+"ent":"196",
+"ent_bu":11850400,
+"ent_n":9,
+"lic_twice":false,
+"id":"eexqfg696x",
+"src":[
+"known:3061"
+],
+"how":"name+town"
+},
+{
+"lic":"1012",
+"kind":"warehouse",
+"wh":"Casselton",
+"city":"Casselton",
+"st":"ND",
+"name":"SB&B Foods, LLC",
+"names":[
+"SB&B Foods, LLC"
+],
+"ent":"1968",
+"ent_bu":277000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1015",
+"kind":"processor",
+"wh":"Minot",
+"city":"Minot",
+"st":"ND",
+"name":"Philadelphia Macaroni Company dba Minot Milling",
+"names":[
+"Philadelphia Macaroni Company dba Minot Milling",
+"Philadelphia Macaroni Company",
+"Minot Milling"
+],
+"ent":"2010",
+"ent_bu":1094000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1017",
+"kind":"warehouse",
+"wh":"Milnor",
+"city":"Milnor",
+"st":"ND",
+"name":"Milnor Grain Company",
+"names":[
+"Milnor Grain Company"
+],
+"ent":"2035",
+"ent_bu":3395000,
+"ent_n":1,
+"lic_twice":false,
+"id":"ebm2d9dwvx",
+"src":[
+"milnorgrain-milnor"
+],
+"how":"name+town"
+},
+{
+"lic":"1336",
+"kind":"warehouse",
+"wh":"Grand Forks",
+"city":"Grand Forks",
+"st":"ND",
+"name":"Viterra USA LLC",
+"names":[
+"Viterra USA LLC"
+],
+"ent":"2045",
+"ent_bu":3709000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1242",
+"kind":"warehouse",
+"wh":"Minot",
+"city":"Minot",
+"st":"ND",
+"name":"Viterra USA LLC",
+"names":[
+"Viterra USA LLC"
+],
+"ent":"2045",
+"ent_bu":3709000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1353",
+"kind":"warehouse",
+"wh":"Northgate",
+"city":"Northgate",
+"st":"ND",
+"name":"Viterra USA LLC",
+"names":[
+"Viterra USA LLC"
+],
+"ent":"2045",
+"ent_bu":3709000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1020",
+"kind":"warehouse",
+"wh":"Ray",
+"city":"Ray",
+"st":"ND",
+"name":"Viterra USA LLC",
+"names":[
+"Viterra USA LLC"
+],
+"ent":"2045",
+"ent_bu":3709000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1077",
+"kind":"warehouse",
+"wh":"Anamoose",
+"city":"Anamoose",
+"st":"ND",
+"name":"The Arthur Companies, Inc.",
+"names":[
+"The Arthur Companies, Inc."
+],
+"ent":"2101",
+"ent_bu":22696000,
+"ent_n":6,
+"lic_twice":false,
+"id":"erk1p858dc",
+"src":[
+"known:Arthur Companies|Anamoose|Anamoose|ND"
+],
+"how":"name+town"
+},
+{
+"lic":"328",
+"kind":"warehouse",
+"wh":"Arthur",
+"city":"Arthur",
+"st":"ND",
+"name":"The Arthur Companies, Inc.",
+"names":[
+"The Arthur Companies, Inc."
+],
+"ent":"2101",
+"ent_bu":22696000,
+"ent_n":6,
+"lic_twice":false,
+"id":"ef66665szm",
+"src":[
+"known:Arthur Companies|Arthur|Arthur|ND"
+],
+"how":"name+town"
+},
+{
+"lic":"331",
+"kind":"warehouse",
+"wh":"Ayr",
+"city":"Ayr",
+"st":"ND",
+"name":"The Arthur Companies, Inc.",
+"names":[
+"The Arthur Companies, Inc."
+],
+"ent":"2101",
+"ent_bu":22696000,
+"ent_n":6,
+"lic_twice":false,
+"id":"etc18kzrr1",
+"src":[
+"known:Arthur Companies|Ayr|Ayr|ND"
+],
+"how":"name+town"
+},
+{
+"lic":"332",
+"kind":"warehouse",
+"wh":"Harvey",
+"city":"Harvey",
+"st":"ND",
+"name":"The Arthur Companies, Inc.",
+"names":[
+"The Arthur Companies, Inc."
+],
+"ent":"2101",
+"ent_bu":22696000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1157",
+"kind":"warehouse",
+"wh":"Page",
+"city":"Page",
+"st":"ND",
+"name":"The Arthur Companies, Inc.",
+"names":[
+"The Arthur Companies, Inc."
+],
+"ent":"2101",
+"ent_bu":22696000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1318",
+"kind":"warehouse",
+"wh":"Pillsbury",
+"city":"Pillsbury",
+"st":"ND",
+"name":"The Arthur Companies, Inc.",
+"names":[
+"The Arthur Companies, Inc."
+],
+"ent":"2101",
+"ent_bu":22696000,
+"ent_n":6,
+"lic_twice":false,
+"id":"e7syp74mf7",
+"src":[
+"known:2255"
+],
+"how":"name+town"
+},
+{
+"lic":"2141",
+"kind":"warehouse",
+"wh":"Hankinson",
+"city":"Hankinson",
+"st":"ND",
+"name":"Wheaton - Dumont Coop Elevator",
+"names":[
+"Wheaton - Dumont Coop Elevator"
+],
+"ent":"2139",
+"ent_bu":4340000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2099",
+"kind":"warehouse",
+"wh":"LaMars",
+"city":"LaMars",
+"st":"ND",
+"name":"Wheaton - Dumont Coop Elevator",
+"names":[
+"Wheaton - Dumont Coop Elevator"
+],
+"ent":"2139",
+"ent_bu":4340000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2142",
+"kind":"warehouse",
+"wh":"Mantador",
+"city":"Mantador",
+"st":"ND",
+"name":"Wheaton - Dumont Coop Elevator",
+"names":[
+"Wheaton - Dumont Coop Elevator"
+],
+"ent":"2139",
+"ent_bu":4340000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2189",
+"kind":"warehouse",
+"wh":"Rutland",
+"city":"Rutland",
+"st":"ND",
+"name":"Wheaton - Dumont Coop Elevator",
+"names":[
+"Wheaton - Dumont Coop Elevator"
+],
+"ent":"2139",
+"ent_bu":4340000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"474",
+"kind":"warehouse",
+"wh":"Ray",
+"city":"Ray",
+"st":"ND",
+"name":"Ray Farmers Union Elevator Co",
+"names":[
+"Ray Farmers Union Elevator Co"
+],
+"ent":"226",
+"ent_bu":1578850,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"475",
+"kind":"warehouse",
+"wh":"Ray Farmers Union West Facility",
+"city":"West Facility",
+"st":"ND",
+"name":"Ray Farmers Union Elevator Co",
+"names":[
+"Ray Farmers Union Elevator Co"
+],
+"ent":"226",
+"ent_bu":1578850,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2129",
+"kind":"warehouse",
+"wh":"Munich NPA",
+"city":"Munich NPA",
+"st":"ND",
+"name":"North Prairie Ag",
+"names":[
+"North Prairie Ag"
+],
+"ent":"2348",
+"ent_bu":2397000,
+"ent_n":3,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2128",
+"kind":"warehouse",
+"wh":"Nekoma",
+"city":"Nekoma",
+"st":"ND",
+"name":"North Prairie Ag",
+"names":[
+"North Prairie Ag"
+],
+"ent":"2348",
+"ent_bu":2397000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2104",
+"kind":"warehouse",
+"wh":"Osnabrock",
+"city":"Osnabrock",
+"st":"ND",
+"name":"North Prairie Ag",
+"names":[
+"North Prairie Ag"
+],
+"ent":"2348",
+"ent_bu":2397000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1063",
+"kind":"warehouse",
+"wh":"Flasher",
+"city":"Flasher",
+"st":"ND",
+"name":"Flasher Farmers Union Grain & Oil",
+"names":[
+"Flasher Farmers Union Grain & Oil"
+],
+"ent":"2460",
+"ent_bu":290000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2117",
+"kind":"warehouse",
+"wh":"Hillsboro",
+"city":"Hillsboro",
+"st":"ND",
+"name":"Alton Grain Terminal, LLC",
+"names":[
+"Alton Grain Terminal, LLC"
+],
+"ent":"2497",
+"ent_bu":4036035,
+"ent_n":1,
+"lic_twice":false,
+"id":"ebb8mp5w5a",
+"src":[
+"reg:ND|altongrainterminalllc|hillsboro"
+],
+"how":"name+town"
+},
+{
+"lic":"1069",
+"kind":"warehouse",
+"wh":"Casselton",
+"city":"Casselton",
+"st":"ND",
+"name":"Unity Seed Company",
+"names":[
+"Unity Seed Company"
+],
+"ent":"2508",
+"ent_bu":100000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1337",
+"kind":"warehouse",
+"wh":"Balfour (Guthrie)",
+"city":"Balfour",
+"st":"ND",
+"name":"Dakota Midland Grain, LLC",
+"names":[
+"Dakota Midland Grain, LLC"
+],
+"ent":"2521",
+"ent_bu":10108000,
+"ent_n":4,
+"lic_twice":false,
+"id":"eeeszwek0h",
+"src":[
+"reg:ND|dakotamidlandgrainllc|balfour"
+],
+"how":"name+town"
+},
+{
+"lic":"1072",
+"kind":"warehouse",
+"wh":"Norwich",
+"city":"Norwich",
+"st":"ND",
+"name":"Dakota Midland Grain, LLC",
+"names":[
+"Dakota Midland Grain, LLC"
+],
+"ent":"2521",
+"ent_bu":10108000,
+"ent_n":4,
+"lic_twice":false,
+"id":"epvxgc4bqq",
+"src":[
+"known:Dakota Midland Grain|Surrey|Norwich|ND"
+],
+"how":"name+town"
+},
+{
+"lic":"1218",
+"kind":"warehouse",
+"wh":"Surrey",
+"city":"Surrey",
+"st":"ND",
+"name":"Dakota Midland Grain, LLC",
+"names":[
+"Dakota Midland Grain, LLC"
+],
+"ent":"2521",
+"ent_bu":10108000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1070",
+"kind":"warehouse",
+"wh":"Voltaire",
+"city":"Voltaire",
+"st":"ND",
+"name":"Dakota Midland Grain, LLC",
+"names":[
+"Dakota Midland Grain, LLC"
+],
+"ent":"2521",
+"ent_bu":10108000,
+"ent_n":4,
+"lic_twice":false,
+"id":"eq5kv3kac7",
+"src":[
+"dakotamidland-voltaire"
+],
+"how":"name+town"
+},
+{
+"lic":"126",
+"kind":"warehouse",
+"wh":"Buxton",
+"city":"Buxton",
+"st":"ND",
+"name":"Central Valley Bean Cooperative",
+"names":[
+"Central Valley Bean Cooperative"
+],
+"ent":"257",
+"ent_bu":4890000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1211",
+"kind":"warehouse",
+"wh":"Devils Lake",
+"city":"Devils Lake",
+"st":"ND",
+"name":"Central Valley Bean Cooperative",
+"names":[
+"Central Valley Bean Cooperative"
+],
+"ent":"257",
+"ent_bu":4890000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1268",
+"kind":"warehouse",
+"wh":"Fairdale",
+"city":"Fairdale",
+"st":"ND",
+"name":"Central Valley Bean Cooperative",
+"names":[
+"Central Valley Bean Cooperative"
+],
+"ent":"257",
+"ent_bu":4890000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1212",
+"kind":"warehouse",
+"wh":"Garske",
+"city":"Garske",
+"st":"ND",
+"name":"Central Valley Bean Cooperative",
+"names":[
+"Central Valley Bean Cooperative"
+],
+"ent":"257",
+"ent_bu":4890000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1210",
+"kind":"warehouse",
+"wh":"Grafton",
+"city":"Grafton",
+"st":"ND",
+"name":"Central Valley Bean Cooperative",
+"names":[
+"Central Valley Bean Cooperative"
+],
+"ent":"257",
+"ent_bu":4890000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1213",
+"kind":"warehouse",
+"wh":"Lankin",
+"city":"Lankin",
+"st":"ND",
+"name":"Central Valley Bean Cooperative",
+"names":[
+"Central Valley Bean Cooperative"
+],
+"ent":"257",
+"ent_bu":4890000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1214",
+"kind":"warehouse",
+"wh":"Pisek",
+"city":"Pisek",
+"st":"ND",
+"name":"Central Valley Bean Cooperative",
+"names":[
+"Central Valley Bean Cooperative"
+],
+"ent":"257",
+"ent_bu":4890000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1076",
+"kind":"warehouse",
+"wh":"Leeds",
+"city":"Leeds",
+"st":"ND",
+"name":"Engstrom Bean and Seed, Inc.",
+"names":[
+"Engstrom Bean and Seed, Inc."
+],
+"ent":"2586",
+"ent_bu":1043000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1081",
+"kind":"warehouse",
+"wh":"Cathay",
+"city":"Cathay",
+"st":"ND",
+"name":"Bollingberg Seeds Company",
+"names":[
+"Bollingberg Seeds Company"
+],
+"ent":"2605",
+"ent_bu":559000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"105",
+"kind":"warehouse",
+"wh":"Casselton",
+"city":"Casselton",
+"st":"ND",
+"name":"ADM Edible Bean Specialties, Inc.",
+"names":[
+"ADM Edible Bean Specialties, Inc."
+],
+"ent":"262",
+"ent_bu":4484000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"942",
+"kind":"warehouse",
+"wh":"Cavalier",
+"city":"Cavalier",
+"st":"ND",
+"name":"ADM Edible Bean Specialties, Inc.",
+"names":[
+"ADM Edible Bean Specialties, Inc."
+],
+"ent":"262",
+"ent_bu":4484000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"927",
+"kind":"warehouse",
+"wh":"Galesburg",
+"city":"Galesburg",
+"st":"ND",
+"name":"ADM Edible Bean Specialties, Inc.",
+"names":[
+"ADM Edible Bean Specialties, Inc."
+],
+"ent":"262",
+"ent_bu":4484000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"940",
+"kind":"warehouse",
+"wh":"Grafton",
+"city":"Grafton",
+"st":"ND",
+"name":"ADM Edible Bean Specialties, Inc.",
+"names":[
+"ADM Edible Bean Specialties, Inc."
+],
+"ent":"262",
+"ent_bu":4484000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"941",
+"kind":"warehouse",
+"wh":"Inkster",
+"city":"Inkster",
+"st":"ND",
+"name":"ADM Edible Bean Specialties, Inc.",
+"names":[
+"ADM Edible Bean Specialties, Inc."
+],
+"ent":"262",
+"ent_bu":4484000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"106",
+"kind":"warehouse",
+"wh":"Northwood",
+"city":"Northwood",
+"st":"ND",
+"name":"ADM Edible Bean Specialties, Inc.",
+"names":[
+"ADM Edible Bean Specialties, Inc."
+],
+"ent":"262",
+"ent_bu":4484000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"107",
+"kind":"warehouse",
+"wh":"St. Thomas",
+"city":"St. Thomas",
+"st":"ND",
+"name":"ADM Edible Bean Specialties, Inc.",
+"names":[
+"ADM Edible Bean Specialties, Inc."
+],
+"ent":"262",
+"ent_bu":4484000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"453",
+"kind":"warehouse",
+"wh":"Johnstown",
+"city":"Johnstown",
+"st":"ND",
+"name":"Johnstown Bean Company",
+"names":[
+"Johnstown Bean Company"
+],
+"ent":"267",
+"ent_bu":676000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"203",
+"kind":"warehouse",
+"wh":"Gardner",
+"city":"Gardner",
+"st":"ND",
+"name":"Hunter Grain Company",
+"names":[
+"Hunter Grain Company"
+],
+"ent":"270",
+"ent_bu":3109000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"201",
+"kind":"warehouse",
+"wh":"Hunter",
+"city":"Hunter",
+"st":"ND",
+"name":"Hunter Grain Company",
+"names":[
+"Hunter Grain Company"
+],
+"ent":"270",
+"ent_bu":3109000,
+"ent_n":2,
+"lic_twice":false,
+"id":"etf1qgaz83",
+"src":[
+"known:Hunter Grain Company|Local|Hunter|ND"
+],
+"how":"name+town"
+},
+{
+"lic":"26",
+"kind":"warehouse",
+"wh":"Emerado",
+"city":"Emerado",
+"st":"ND",
+"name":"Emerado Farmers Elevator",
+"names":[
+"Emerado Farmers Elevator"
+],
+"ent":"271",
+"ent_bu":940000,
+"ent_n":1,
+"lic_twice":false,
+"id":"ewzexpw1t8",
+"src":[
+"emeradofarmerselevator-emerado"
+],
+"how":"name+town"
+},
+{
+"lic":"1249",
+"kind":"warehouse",
+"wh":"Amenia",
+"city":"Amenia",
+"st":"ND",
+"name":"Taft Elevator, A Division of Rahr Malting Co.",
+"names":[
+"Taft Elevator, A Division of Rahr Malting Co."
+],
+"ent":"2710",
+"ent_bu":10615000,
+"ent_n":2,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1089",
+"kind":"warehouse",
+"wh":"Taft",
+"city":"Taft",
+"st":"ND",
+"name":"Taft Elevator, A Division of Rahr Malting Co.",
+"names":[
+"Taft Elevator, A Division of Rahr Malting Co."
+],
+"ent":"2710",
+"ent_bu":10615000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1096",
+"kind":"warehouse",
+"wh":"Berthold",
+"city":"Berthold",
+"st":"ND",
+"name":"Berthold Farmers Elevator LLC",
+"names":[
+"Berthold Farmers Elevator LLC"
+],
+"ent":"2737",
+"ent_bu":3362000,
+"ent_n":2,
+"lic_twice":false,
+"id":"e8swttzymb",
+"src":[
+"bertholdfarmers-berthold"
+],
+"how":"name+town"
+},
+{
+"lic":"1100",
+"kind":"warehouse",
+"wh":"Carpio",
+"city":"Carpio",
+"st":"ND",
+"name":"Berthold Farmers Elevator LLC",
+"names":[
+"Berthold Farmers Elevator LLC"
+],
+"ent":"2737",
+"ent_bu":3362000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1099",
+"kind":"processor",
+"wh":"Ardent Mills",
+"city":"Ardent Mills",
+"st":"ND",
+"name":"Ardent Mills, LLC",
+"names":[
+"Ardent Mills, LLC"
+],
+"ent":"2738",
+"ent_bu":435000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1098",
+"kind":"processor",
+"wh":"Fairmount",
+"city":"Fairmount",
+"st":"ND",
+"name":"Ardent Mills, LLC",
+"names":[
+"Ardent Mills, LLC"
+],
+"ent":"2738",
+"ent_bu":435000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1095",
+"kind":"warehouse",
+"wh":"Crary",
+"city":"Crary",
+"st":"ND",
+"name":"Dakota Dry Bean Inc",
+"names":[
+"Dakota Dry Bean Inc"
+],
+"ent":"2740",
+"ent_bu":194000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1244",
+"kind":"warehouse",
+"wh":"Devils Lake (Lakeview)",
+"city":"Devils Lake",
+"st":"ND",
+"name":"Dakota Dry Bean Inc",
+"names":[
+"Dakota Dry Bean Inc"
+],
+"ent":"2740",
+"ent_bu":194000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1200",
+"kind":"warehouse",
+"wh":"Lansford",
+"city":"Lansford",
+"st":"ND",
+"name":"Dakota Dry Bean Inc",
+"names":[
+"Dakota Dry Bean Inc"
+],
+"ent":"2740",
+"ent_bu":194000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2182",
+"kind":"warehouse",
+"wh":"Colgate",
+"city":"Colgate",
+"st":"ND",
+"name":"Trinidad Benham Corp.",
+"names":[
+"Trinidad Benham Corp."
+],
+"ent":"2742",
+"ent_bu":1031933,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2176",
+"kind":"warehouse",
+"wh":"Courtenay",
+"city":"Courtenay",
+"st":"ND",
+"name":"Trinidad Benham Corp.",
+"names":[
+"Trinidad Benham Corp."
+],
+"ent":"2742",
+"ent_bu":1031933,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2185",
+"kind":"warehouse",
+"wh":"Cummings",
+"city":"Cummings",
+"st":"ND",
+"name":"Trinidad Benham Corp.",
+"names":[
+"Trinidad Benham Corp."
+],
+"ent":"2742",
+"ent_bu":1031933,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2179",
+"kind":"warehouse",
+"wh":"Finley",
+"city":"Finley",
+"st":"ND",
+"name":"Trinidad Benham Corp.",
+"names":[
+"Trinidad Benham Corp."
+],
+"ent":"2742",
+"ent_bu":1031933,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2199",
+"kind":"warehouse",
+"wh":"Grace City",
+"city":"Grace City",
+"st":"ND",
+"name":"Trinidad Benham Corp.",
+"names":[
+"Trinidad Benham Corp."
+],
+"ent":"2742",
+"ent_bu":1031933,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2175",
+"kind":"warehouse",
+"wh":"Pillsbury",
+"city":"Pillsbury",
+"st":"ND",
+"name":"Trinidad Benham Corp.",
+"names":[
+"Trinidad Benham Corp."
+],
+"ent":"2742",
+"ent_bu":1031933,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1102",
+"kind":"warehouse",
+"wh":"Dwight",
+"city":"Dwight",
+"st":"ND",
+"name":"Richland IFC, Inc.",
+"names":[
+"Richland IFC, Inc."
+],
+"ent":"2743",
+"ent_bu":1538000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"84",
+"kind":"warehouse",
+"wh":"Embden",
+"city":"Embden",
+"st":"ND",
+"name":"Embden Grain Co.",
+"names":[
+"Embden Grain Co."
+],
+"ent":"277",
+"ent_bu":1750000,
+"ent_n":1,
+"lic_twice":false,
+"id":"e36fm280es",
+"src":[
+"reg:ND|embdengrainco|embden"
+],
+"how":"name+town"
+},
+{
+"lic":"1111",
+"kind":"processor",
+"wh":"Carrington",
+"city":"Carrington",
+"st":"ND",
+"name":"Dakota Growers Pasta Company, Inc.",
+"names":[
+"Dakota Growers Pasta Company, Inc."
+],
+"ent":"2798",
+"ent_bu":894000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1108",
+"kind":"warehouse",
+"wh":"Enderlin",
+"city":"Enderlin",
+"st":"ND",
+"name":"Plains Grain & Agronomy Cooperative",
+"names":[
+"Plains Grain & Agronomy Cooperative"
+],
+"ent":"2809",
+"ent_bu":7589000,
+"ent_n":4,
+"lic_twice":false,
+"id":"a00324",
+"src":[],
+"how":"name+town"
+},
+{
+"lic":"1124",
+"kind":"warehouse",
+"wh":"Lisbon",
+"city":"Lisbon",
+"st":"ND",
+"name":"Plains Grain & Agronomy Cooperative",
+"names":[
+"Plains Grain & Agronomy Cooperative"
+],
+"ent":"2809",
+"ent_bu":7589000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1114",
+"kind":"warehouse",
+"wh":"Marion",
+"city":"Marion",
+"st":"ND",
+"name":"Plains Grain & Agronomy Cooperative",
+"names":[
+"Plains Grain & Agronomy Cooperative"
+],
+"ent":"2809",
+"ent_bu":7589000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1123",
+"kind":"warehouse",
+"wh":"Sheldon",
+"city":"Sheldon",
+"st":"ND",
+"name":"Plains Grain & Agronomy Cooperative",
+"names":[
+"Plains Grain & Agronomy Cooperative"
+],
+"ent":"2809",
+"ent_bu":7589000,
+"ent_n":4,
+"lic_twice":false,
+"id":"a00326",
+"src":[],
+"how":"name+town"
+},
+{
+"lic":"288",
+"kind":"warehouse",
+"wh":"Fargo",
+"city":"Fargo",
+"st":"ND",
+"name":"Red River Commodities Inc.",
+"names":[
+"Red River Commodities Inc."
+],
+"ent":"283",
+"ent_bu":1544000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1204",
+"kind":"warehouse",
+"wh":"Jamestown",
+"city":"Jamestown",
+"st":"ND",
+"name":"Red River Commodities Inc.",
+"names":[
+"Red River Commodities Inc."
+],
+"ent":"283",
+"ent_bu":1544000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"111",
+"kind":"warehouse",
+"wh":"Turtle Lake",
+"city":"Turtle Lake",
+"st":"ND",
+"name":"Equity Elevator & Trading Co.",
+"names":[
+"Equity Elevator & Trading Co."
+],
+"ent":"292",
+"ent_bu":626000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"361",
+"kind":"warehouse",
+"wh":"James Miller Elevator",
+"city":"Elevator",
+"st":"ND",
+"name":"James Miller",
+"names":[
+"James Miller"
+],
+"ent":"3000",
+"ent_bu":50000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1142",
+"kind":"warehouse",
+"wh":"Casselton",
+"city":"Casselton",
+"st":"ND",
+"name":"Maple River Grain and Agronomy, LLC",
+"names":[
+"Maple River Grain and Agronomy, LLC"
+],
+"ent":"3069",
+"ent_bu":13603000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1144",
+"kind":"warehouse",
+"wh":"Chaffee",
+"city":"Chaffee",
+"st":"ND",
+"name":"Maple River Grain and Agronomy, LLC",
+"names":[
+"Maple River Grain and Agronomy, LLC"
+],
+"ent":"3069",
+"ent_bu":13603000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1145",
+"kind":"warehouse",
+"wh":"Leonard",
+"city":"Leonard",
+"st":"ND",
+"name":"Maple River Grain and Agronomy, LLC",
+"names":[
+"Maple River Grain and Agronomy, LLC"
+],
+"ent":"3069",
+"ent_bu":13603000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1143",
+"kind":"warehouse",
+"wh":"Lynchburg",
+"city":"Lynchburg",
+"st":"ND",
+"name":"Maple River Grain and Agronomy, LLC",
+"names":[
+"Maple River Grain and Agronomy, LLC"
+],
+"ent":"3069",
+"ent_bu":13603000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1243",
+"kind":"warehouse",
+"wh":"Peak",
+"city":"Peak",
+"st":"ND",
+"name":"Maple River Grain and Agronomy, LLC",
+"names":[
+"Maple River Grain and Agronomy, LLC"
+],
+"ent":"3069",
+"ent_bu":13603000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1141",
+"kind":"warehouse",
+"wh":"Prosper",
+"city":"Prosper",
+"st":"ND",
+"name":"Maple River Grain and Agronomy, LLC",
+"names":[
+"Maple River Grain and Agronomy, LLC"
+],
+"ent":"3069",
+"ent_bu":13603000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1135",
+"kind":"warehouse",
+"wh":"Fairmount",
+"city":"Fairmount",
+"st":"ND",
+"name":"Demson Grain Company, Inc.",
+"names":[
+"Demson Grain Company, Inc."
+],
+"ent":"3080",
+"ent_bu":2540000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1332",
+"kind":"warehouse",
+"wh":"Cummings",
+"city":"Cummings",
+"st":"ND",
+"name":"JM Grain Inc",
+"names":[
+"JM Grain Inc"
+],
+"ent":"3081",
+"ent_bu":110000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1146",
+"kind":"warehouse",
+"wh":"Garrison",
+"city":"Garrison",
+"st":"ND",
+"name":"JM Grain Inc",
+"names":[
+"JM Grain Inc"
+],
+"ent":"3081",
+"ent_bu":110000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1139",
+"kind":"warehouse",
+"wh":"Windsor",
+"city":"Windsor",
+"st":"ND",
+"name":"TMT Farms Bean & Seed Co.",
+"names":[
+"TMT Farms Bean & Seed Co."
+],
+"ent":"3097",
+"ent_bu":321000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1302",
+"kind":"warehouse",
+"wh":"Northwood",
+"city":"Northwood",
+"st":"ND",
+"name":"Thompsons USA Limited",
+"names":[
+"Thompsons USA Limited"
+],
+"ent":"3196",
+"ent_bu":123000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2132",
+"kind":"warehouse",
+"wh":"Alamo",
+"city":"Alamo",
+"st":"ND",
+"name":"Horizon Resources",
+"names":[
+"Horizon Resources"
+],
+"ent":"3267",
+"ent_bu":2718000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2134",
+"kind":"warehouse",
+"wh":"Grenora",
+"city":"Grenora",
+"st":"ND",
+"name":"Horizon Resources",
+"names":[
+"Horizon Resources"
+],
+"ent":"3267",
+"ent_bu":2718000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2131",
+"kind":"warehouse",
+"wh":"Watford City",
+"city":"Watford City",
+"st":"ND",
+"name":"Horizon Resources",
+"names":[
+"Horizon Resources"
+],
+"ent":"3267",
+"ent_bu":2718000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2130",
+"kind":"warehouse",
+"wh":"Williston",
+"city":"Williston",
+"st":"ND",
+"name":"Horizon Resources",
+"names":[
+"Horizon Resources"
+],
+"ent":"3267",
+"ent_bu":2718000,
+"ent_n":5,
+"lic_twice":false,
+"id":"eynavww7qv",
+"src":[
+"known:2818"
+],
+"how":"name+town"
+},
+{
+"lic":"2133",
+"kind":"warehouse",
+"wh":"Zahl",
+"city":"Zahl",
+"st":"ND",
+"name":"Horizon Resources",
+"names":[
+"Horizon Resources"
+],
+"ent":"3267",
+"ent_bu":2718000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1320",
+"kind":"warehouse",
+"wh":"Garske",
+"city":"Garske",
+"st":"ND",
+"name":"The Scoular Company",
+"names":[
+"The Scoular Company"
+],
+"ent":"3276",
+"ent_bu":738000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1321",
+"kind":"warehouse",
+"wh":"Grafton",
+"city":"Grafton",
+"st":"ND",
+"name":"The Scoular Company",
+"names":[
+"The Scoular Company"
+],
+"ent":"3276",
+"ent_bu":738000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3287",
+"kind":"warehouse",
+"wh":"3C Land Holdings, LLC",
+"city":"3C Land Holdings, LLC",
+"st":"ND",
+"name":"3C Land Holdings, LLC",
+"names":[
+"3C Land Holdings, LLC"
+],
+"ent":"3287",
+"ent_bu":129000,
+"ent_n":1,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1168",
+"kind":"warehouse",
+"wh":"Jamestown",
+"city":"Jamestown",
+"st":"ND",
+"name":"Legume Matrix, LLC",
+"names":[
+"Legume Matrix, LLC"
+],
+"ent":"3292",
+"ent_bu":329000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2135",
+"kind":"warehouse",
+"wh":"Cavalier",
+"city":"Cavalier",
+"st":"ND",
+"name":"Kelley Bean Co., Inc.",
+"names":[
+"Kelley Bean Co., Inc."
+],
+"ent":"3293",
+"ent_bu":3075000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2136",
+"kind":"warehouse",
+"wh":"Hatton",
+"city":"Hatton",
+"st":"ND",
+"name":"Kelley Bean Co., Inc.",
+"names":[
+"Kelley Bean Co., Inc."
+],
+"ent":"3293",
+"ent_bu":3075000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2137",
+"kind":"warehouse",
+"wh":"Mayville",
+"city":"Mayville",
+"st":"ND",
+"name":"Kelley Bean Co., Inc.",
+"names":[
+"Kelley Bean Co., Inc."
+],
+"ent":"3293",
+"ent_bu":3075000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2138",
+"kind":"warehouse",
+"wh":"Oakes",
+"city":"Oakes",
+"st":"ND",
+"name":"Kelley Bean Co., Inc.",
+"names":[
+"Kelley Bean Co., Inc."
+],
+"ent":"3293",
+"ent_bu":3075000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3298",
+"kind":"warehouse",
+"wh":"Pembina Hefty Seed",
+"city":"Pembina Hefty Seed",
+"st":"ND",
+"name":"Agronomy Sciences, LLC dba Hefty Seed Company",
+"names":[
+"Agronomy Sciences, LLC dba Hefty Seed Company",
+"Agronomy Sciences, LLC",
+"Hefty Seed Company"
+],
+"ent":"3298",
+"ent_bu":300000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3306",
+"kind":"warehouse",
+"wh":"Falcon Grain LLC",
+"city":"Falcon Grain LLC",
+"st":"ND",
+"name":"Falcon Grain LLC",
+"names":[
+"Falcon Grain LLC"
+],
+"ent":"3306",
+"ent_bu":2400000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1174",
+"kind":"processor",
+"wh":"Richardton",
+"city":"Richardton",
+"st":"ND",
+"name":"Red Trail Energy, LLC",
+"names":[
+"Red Trail Energy, LLC"
+],
+"ent":"3319",
+"ent_bu":5000000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"286",
+"kind":"warehouse",
+"wh":"Alsen",
+"city":"Alsen",
+"st":"ND",
+"name":"Alsen Farmers Elevator Company",
+"names":[
+"Alsen Farmers Elevator Company"
+],
+"ent":"3362",
+"ent_bu":217000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"473",
+"kind":"warehouse",
+"wh":"Streeter",
+"city":"Streeter",
+"st":"ND",
+"name":"Farmers Cooperative Elevator Company of Streeter",
+"names":[
+"Farmers Cooperative Elevator Company of Streeter"
+],
+"ent":"3369",
+"ent_bu":817000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1221",
+"kind":"warehouse",
+"wh":"Dickinson",
+"city":"Dickinson",
+"st":"ND",
+"name":"Koppinger Trucking LLC",
+"names":[
+"Koppinger Trucking LLC"
+],
+"ent":"3382",
+"ent_bu":362000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"367",
+"kind":"warehouse",
+"wh":"Pekin",
+"city":"Pekin",
+"st":"ND",
+"name":"Pekin Cooperative Elevator Company",
+"names":[
+"Pekin Cooperative Elevator Company"
+],
+"ent":"3391",
+"ent_bu":679000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1189",
+"kind":"warehouse",
+"wh":"East Fairview",
+"city":"East Fairview",
+"st":"ND",
+"name":"Safflower Technologies International LLC",
+"names":[
+"Safflower Technologies International LLC"
+],
+"ent":"3395",
+"ent_bu":448000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"225",
+"kind":"warehouse",
+"wh":"Fordville",
+"city":"Fordville",
+"st":"ND",
+"name":"Fordville Cooperative Marketing Assn.",
+"names":[
+"Fordville Cooperative Marketing Assn."
+],
+"ent":"3403",
+"ent_bu":1867000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1178",
+"kind":"processor",
+"wh":"Underwood",
+"city":"Underwood",
+"st":"ND",
+"name":"Blue Flint Ethanol, LLC",
+"names":[
+"Blue Flint Ethanol, LLC"
+],
+"ent":"3405",
+"ent_bu":4278000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3019",
+"kind":"warehouse",
+"wh":"McLean",
+"city":"McLean",
+"st":"ND",
+"name":"Richardson Ag Inc.",
+"names":[
+"Richardson Ag Inc."
+],
+"ent":"3412",
+"ent_bu":2874000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3020",
+"kind":"warehouse",
+"wh":"Powers Lake",
+"city":"Powers Lake",
+"st":"ND",
+"name":"Richardson Ag Inc.",
+"names":[
+"Richardson Ag Inc."
+],
+"ent":"3412",
+"ent_bu":2874000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3021",
+"kind":"warehouse",
+"wh":"Renville",
+"city":"Renville",
+"st":"ND",
+"name":"Richardson Ag Inc.",
+"names":[
+"Richardson Ag Inc."
+],
+"ent":"3412",
+"ent_bu":2874000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1186",
+"kind":"warehouse",
+"wh":"Tower City",
+"city":"Tower City",
+"st":"ND",
+"name":"KK Grain Marketing, Inc.",
+"names":[
+"KK Grain Marketing, Inc."
+],
+"ent":"3477",
+"ent_bu":96000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1269",
+"kind":"processor",
+"wh":"Minot",
+"city":"Minot",
+"st":"ND",
+"name":"United Pulse Trading Inc. dba AGT Foods",
+"names":[
+"United Pulse Trading Inc. dba AGT Foods",
+"United Pulse Trading Inc.",
+"AGT Foods"
+],
+"ent":"3482",
+"ent_bu":1444000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1185",
+"kind":"processor",
+"wh":"Williston",
+"city":"Williston",
+"st":"ND",
+"name":"United Pulse Trading Inc. dba AGT Foods",
+"names":[
+"United Pulse Trading Inc. dba AGT Foods",
+"United Pulse Trading Inc.",
+"AGT Foods"
+],
+"ent":"3482",
+"ent_bu":1444000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1249",
+"kind":"warehouse",
+"wh":"Great Northern Ag- Bowman",
+"city":"Great Northern Ag- Bowman",
+"st":"ND",
+"name":"Riverside Communications, Inc. dba Great Northern Ag",
+"names":[
+"Riverside Communications, Inc. dba Great Northern Ag",
+"Riverside Communications, Inc.",
+"Great Northern Ag"
+],
+"ent":"3507",
+"ent_bu":386000,
+"ent_n":2,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1248",
+"kind":"warehouse",
+"wh":"Plaza",
+"city":"Plaza",
+"st":"ND",
+"name":"Riverside Communications, Inc. dba Great Northern Ag",
+"names":[
+"Riverside Communications, Inc. dba Great Northern Ag",
+"Riverside Communications, Inc.",
+"Great Northern Ag"
+],
+"ent":"3507",
+"ent_bu":386000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1197",
+"kind":"processor",
+"wh":"Cando",
+"city":"Cando",
+"st":"ND",
+"name":"Sky Can, Ltd.",
+"names":[
+"Sky Can, Ltd."
+],
+"ent":"3608",
+"ent_bu":40000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1360",
+"kind":"warehouse",
+"wh":"Busch Agricultural Resources LLC",
+"city":"Busch Agricultural Resources LLC",
+"st":"ND",
+"name":"Busch Agricultural Resources LLC",
+"names":[
+"Busch Agricultural Resources LLC"
+],
+"ent":"3620",
+"ent_bu":8182000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1198",
+"kind":"warehouse",
+"wh":"Sutton",
+"city":"Sutton",
+"st":"ND",
+"name":"Busch Agricultural Resources LLC",
+"names":[
+"Busch Agricultural Resources LLC"
+],
+"ent":"3620",
+"ent_bu":8182000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2144",
+"kind":"warehouse",
+"wh":"West Fargo",
+"city":"West Fargo",
+"st":"ND",
+"name":"Busch Agricultural Resources LLC",
+"names":[
+"Busch Agricultural Resources LLC"
+],
+"ent":"3620",
+"ent_bu":8182000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2198",
+"kind":"warehouse",
+"wh":"Berlin",
+"city":"Berlin",
+"st":"ND",
+"name":"James Valley Grain, LLC",
+"names":[
+"James Valley Grain, LLC"
+],
+"ent":"3625",
+"ent_bu":21193000,
+"ent_n":3,
+"lic_twice":false,
+"id":"eqx5kb0d6v",
+"src":[
+"jamesvalleygrain-berlin"
+],
+"how":"name+town"
+},
+{
+"lic":"2154",
+"kind":"warehouse",
+"wh":"Oakes",
+"city":"Oakes",
+"st":"ND",
+"name":"James Valley Grain, LLC",
+"names":[
+"James Valley Grain, LLC"
+],
+"ent":"3625",
+"ent_bu":21193000,
+"ent_n":3,
+"lic_twice":false,
+"id":"e26ny7mv63",
+"src":[
+"jamesvalleygrain-oakes"
+],
+"how":"name+town"
+},
+{
+"lic":"2192",
+"kind":"warehouse",
+"wh":"Verona",
+"city":"Verona",
+"st":"ND",
+"name":"James Valley Grain, LLC",
+"names":[
+"James Valley Grain, LLC"
+],
+"ent":"3625",
+"ent_bu":21193000,
+"ent_n":3,
+"lic_twice":false,
+"id":"eytjxekppw",
+"src":[
+"jamesvalleygrain-verona"
+],
+"how":"name+town"
+},
+{
+"lic":"1203",
+"kind":"processor",
+"wh":"Casselton",
+"city":"Casselton",
+"st":"ND",
+"name":"Tharaldson Ethanol Plant I, LLC",
+"names":[
+"Tharaldson Ethanol Plant I, LLC"
+],
+"ent":"3655",
+"ent_bu":3006000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1207",
+"kind":"warehouse",
+"wh":"Cleveland",
+"city":"Cleveland",
+"st":"ND",
+"name":"Country Grain Cooperative, Inc.",
+"names":[
+"Country Grain Cooperative, Inc."
+],
+"ent":"3670",
+"ent_bu":6005000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1206",
+"kind":"warehouse",
+"wh":"Eldridge",
+"city":"Eldridge",
+"st":"ND",
+"name":"Country Grain Cooperative, Inc.",
+"names":[
+"Country Grain Cooperative, Inc."
+],
+"ent":"3670",
+"ent_bu":6005000,
+"ent_n":3,
+"lic_twice":false,
+"id":"ejgxtnawjv",
+"src":[
+"countrygraincooperative-eldridge"
+],
+"how":"name+town"
+},
+{
+"lic":"1348",
+"kind":"warehouse",
+"wh":"Pingree",
+"city":"Pingree",
+"st":"ND",
+"name":"Country Grain Cooperative, Inc.",
+"names":[
+"Country Grain Cooperative, Inc."
+],
+"ent":"3670",
+"ent_bu":6005000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1216",
+"kind":"processor",
+"wh":"Beulah",
+"city":"Beulah",
+"st":"ND",
+"name":"Valley Grain Milling Inc.",
+"names":[
+"Valley Grain Milling Inc."
+],
+"ent":"3684",
+"ent_bu":676000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1209",
+"kind":"processor",
+"wh":"Casselton",
+"city":"Casselton",
+"st":"ND",
+"name":"Valley Grain Milling Inc.",
+"names":[
+"Valley Grain Milling Inc."
+],
+"ent":"3684",
+"ent_bu":676000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1254",
+"kind":"processor",
+"wh":"Wheatland",
+"city":"Wheatland",
+"st":"ND",
+"name":"Valley Grain Milling Inc.",
+"names":[
+"Valley Grain Milling Inc."
+],
+"ent":"3684",
+"ent_bu":676000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1220",
+"kind":"processor",
+"wh":"Hankinson",
+"city":"Hankinson",
+"st":"ND",
+"name":"Hankinson Renewable Energy, LLC",
+"names":[
+"Hankinson Renewable Energy, LLC"
+],
+"ent":"3747",
+"ent_bu":2398000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1232",
+"kind":"processor",
+"wh":"Glen Ullin",
+"city":"Glen Ullin",
+"st":"ND",
+"name":"Dakotaland Feeds, LLC",
+"names":[
+"Dakotaland Feeds, LLC"
+],
+"ent":"3820",
+"ent_bu":252500,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1341",
+"kind":"processor",
+"wh":"Medina",
+"city":"Medina",
+"st":"ND",
+"name":"Dakotaland Feeds, LLC",
+"names":[
+"Dakotaland Feeds, LLC"
+],
+"ent":"3820",
+"ent_bu":252500,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1245",
+"kind":"warehouse",
+"wh":"Courtenay",
+"city":"Courtenay",
+"st":"ND",
+"name":"Central Plains Ag Services, LLC",
+"names":[
+"Central Plains Ag Services, LLC"
+],
+"ent":"3864",
+"ent_bu":9369000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1259",
+"kind":"warehouse",
+"wh":"Hannaford",
+"city":"Hannaford",
+"st":"ND",
+"name":"Central Plains Ag Services, LLC",
+"names":[
+"Central Plains Ag Services, LLC"
+],
+"ent":"3864",
+"ent_bu":9369000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1333",
+"kind":"warehouse",
+"wh":"Luverne",
+"city":"Luverne",
+"st":"ND",
+"name":"Central Plains Ag Services, LLC",
+"names":[
+"Central Plains Ag Services, LLC"
+],
+"ent":"3864",
+"ent_bu":9369000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1240",
+"kind":"warehouse",
+"wh":"Forman",
+"city":"Forman",
+"st":"ND",
+"name":"Full Circle Ag",
+"names":[
+"Full Circle Ag"
+],
+"ent":"3891",
+"ent_bu":6236000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1239",
+"kind":"warehouse",
+"wh":"Gwinner",
+"city":"Gwinner",
+"st":"ND",
+"name":"Full Circle Ag",
+"names":[
+"Full Circle Ag"
+],
+"ent":"3891",
+"ent_bu":6236000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1264",
+"kind":"warehouse",
+"wh":"Park River",
+"city":"Park River",
+"st":"ND",
+"name":"Walsh Grain Terminal, LLC",
+"names":[
+"Walsh Grain Terminal, LLC"
+],
+"ent":"3954",
+"ent_bu":3055000,
+"ent_n":1,
+"lic_twice":false,
+"id":"eyjbrdp9dy",
+"src":[
+"walshgrainterminal-walshgrainterminal"
+],
+"how":"name+town"
+},
+{
+"lic":"1256",
+"kind":"warehouse",
+"wh":"Doyon",
+"city":"Doyon",
+"st":"ND",
+"name":"Tronson Grain, LLC",
+"names":[
+"Tronson Grain, LLC"
+],
+"ent":"3981",
+"ent_bu":7975690,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1334",
+"kind":"warehouse",
+"wh":"Garske",
+"city":"Garske",
+"st":"ND",
+"name":"Tronson Grain, LLC",
+"names":[
+"Tronson Grain, LLC"
+],
+"ent":"3981",
+"ent_bu":7975690,
+"ent_n":3,
+"lic_twice":false,
+"id":"evrx38m3ba",
+"src":[
+"known:3082"
+],
+"how":"name+town"
+},
+{
+"lic":"1257",
+"kind":"warehouse",
+"wh":"Tolna",
+"city":"Tolna",
+"st":"ND",
+"name":"Tronson Grain, LLC",
+"names":[
+"Tronson Grain, LLC"
+],
+"ent":"3981",
+"ent_bu":7975690,
+"ent_n":3,
+"lic_twice":false,
+"id":"e8n47m4qxn",
+"src":[
+"known:Tronson Grain, LLC|Tolna|Tolna|ND"
+],
+"how":"name+town"
+},
+{
+"lic":"1330",
+"kind":"warehouse",
+"wh":"Fairdale",
+"city":"Fairdale",
+"st":"ND",
+"name":"Alliance Valley Bean, LLC",
+"names":[
+"Alliance Valley Bean, LLC"
+],
+"ent":"4016",
+"ent_bu":792000,
+"ent_n":3,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1262",
+"kind":"warehouse",
+"wh":"Larimore",
+"city":"Larimore",
+"st":"ND",
+"name":"Alliance Valley Bean, LLC",
+"names":[
+"Alliance Valley Bean, LLC"
+],
+"ent":"4016",
+"ent_bu":792000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1263",
+"kind":"warehouse",
+"wh":"Sharon",
+"city":"Sharon",
+"st":"ND",
+"name":"Alliance Valley Bean, LLC",
+"names":[
+"Alliance Valley Bean, LLC"
+],
+"ent":"4016",
+"ent_bu":792000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1282",
+"kind":"warehouse",
+"wh":"Cummings",
+"city":"Cummings",
+"st":"ND",
+"name":"American Bean, LLC",
+"names":[
+"American Bean, LLC"
+],
+"ent":"4106",
+"ent_bu":1955000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1299",
+"kind":"warehouse",
+"wh":"Grand Forks",
+"city":"Grand Forks",
+"st":"ND",
+"name":"American Bean, LLC",
+"names":[
+"American Bean, LLC"
+],
+"ent":"4106",
+"ent_bu":1955000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1326",
+"kind":"warehouse",
+"wh":"Hamilton",
+"city":"Hamilton",
+"st":"ND",
+"name":"American Bean, LLC",
+"names":[
+"American Bean, LLC"
+],
+"ent":"4106",
+"ent_bu":1955000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1278",
+"kind":"warehouse",
+"wh":"Petersburg",
+"city":"Petersburg",
+"st":"ND",
+"name":"American Bean, LLC",
+"names":[
+"American Bean, LLC"
+],
+"ent":"4106",
+"ent_bu":1955000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1281",
+"kind":"warehouse",
+"wh":"Sharon",
+"city":"Sharon",
+"st":"ND",
+"name":"American Bean, LLC",
+"names":[
+"American Bean, LLC"
+],
+"ent":"4106",
+"ent_bu":1955000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1301",
+"kind":"warehouse",
+"wh":"Webster",
+"city":"Webster",
+"st":"ND",
+"name":"American Bean, LLC",
+"names":[
+"American Bean, LLC"
+],
+"ent":"4106",
+"ent_bu":1955000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1274",
+"kind":"processor",
+"wh":"Harvey",
+"city":"Harvey",
+"st":"ND",
+"name":"Feed Mix, LLC",
+"names":[
+"Feed Mix, LLC"
+],
+"ent":"4118",
+"ent_bu":116000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1276",
+"kind":"processor",
+"wh":"Carrington",
+"city":"Carrington",
+"st":"ND",
+"name":"Healthy Oilseeds, LLC",
+"names":[
+"Healthy Oilseeds, LLC"
+],
+"ent":"4131",
+"ent_bu":19000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2183",
+"kind":"warehouse",
+"wh":"Bucyrus",
+"city":"Bucyrus",
+"st":"ND",
+"name":"United Grain Corporation of Oregon",
+"names":[
+"United Grain Corporation of Oregon"
+],
+"ent":"4145",
+"ent_bu":2055000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1279",
+"kind":"warehouse",
+"wh":"Munich",
+"city":"Munich",
+"st":"ND",
+"name":"Dicks' Seed, LLC",
+"names":[
+"Dicks' Seed, LLC"
+],
+"ent":"4152",
+"ent_bu":95000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1283",
+"kind":"warehouse",
+"wh":"Berthold",
+"city":"Berthold",
+"st":"ND",
+"name":"Birdsall Grain & Seed, LLC",
+"names":[
+"Birdsall Grain & Seed, LLC"
+],
+"ent":"4184",
+"ent_bu":28000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1291",
+"kind":"processor",
+"wh":"Spiritwood",
+"city":"Spiritwood",
+"st":"ND",
+"name":"Dakota Spirit AgEnergy, LLC",
+"names":[
+"Dakota Spirit AgEnergy, LLC"
+],
+"ent":"4242",
+"ent_bu":2097000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1288",
+"kind":"warehouse",
+"wh":"Walhalla",
+"city":"Walhalla",
+"st":"ND",
+"name":"S & S Grain, Inc.",
+"names":[
+"S & S Grain, Inc."
+],
+"ent":"4260",
+"ent_bu":828000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1327",
+"kind":"warehouse",
+"wh":"Buffalo",
+"city":"Buffalo",
+"st":"ND",
+"name":"Anchor Ingredients Co., LLC",
+"names":[
+"Anchor Ingredients Co., LLC"
+],
+"ent":"4380",
+"ent_bu":1826000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3310",
+"kind":"warehouse",
+"wh":"Hatton",
+"city":"Hatton",
+"st":"ND",
+"name":"Anchor Ingredients Co., LLC",
+"names":[
+"Anchor Ingredients Co., LLC"
+],
+"ent":"4380",
+"ent_bu":1826000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1303",
+"kind":"warehouse",
+"wh":"Hillsboro",
+"city":"Hillsboro",
+"st":"ND",
+"name":"Anchor Ingredients Co., LLC",
+"names":[
+"Anchor Ingredients Co., LLC"
+],
+"ent":"4380",
+"ent_bu":1826000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1328",
+"kind":"warehouse",
+"wh":"Mohall",
+"city":"Mohall",
+"st":"ND",
+"name":"Anchor Ingredients Co., LLC",
+"names":[
+"Anchor Ingredients Co., LLC"
+],
+"ent":"4380",
+"ent_bu":1826000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1304",
+"kind":"warehouse",
+"wh":"Grand Forks",
+"city":"Grand Forks",
+"st":"ND",
+"name":"North Dakota Bean, LLC",
+"names":[
+"North Dakota Bean, LLC"
+],
+"ent":"4385",
+"ent_bu":176000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1329",
+"kind":"warehouse",
+"wh":"Bottineau",
+"city":"Bottineau",
+"st":"ND",
+"name":"Paterson Grain, LLC",
+"names":[
+"Paterson Grain, LLC"
+],
+"ent":"4427",
+"ent_bu":4152128,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1330",
+"kind":"warehouse",
+"wh":"Bowbells",
+"city":"Bowbells",
+"st":"ND",
+"name":"Paterson Grain, LLC",
+"names":[
+"Paterson Grain, LLC"
+],
+"ent":"4427",
+"ent_bu":4152128,
+"ent_n":2,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1316",
+"kind":"warehouse",
+"wh":"New Town",
+"city":"New Town",
+"st":"ND",
+"name":"United Quality Cooperative",
+"names":[
+"United Quality Cooperative"
+],
+"ent":"4454",
+"ent_bu":7555000,
+"ent_n":3,
+"lic_twice":false,
+"id":"ep3szk7zhk",
+"src":[
+"reg:ND|unitedqualitycooperative|newtown"
+],
+"how":"name+town"
+},
+{
+"lic":"1315",
+"kind":"warehouse",
+"wh":"Parshall",
+"city":"Parshall",
+"st":"ND",
+"name":"United Quality Cooperative",
+"names":[
+"United Quality Cooperative"
+],
+"ent":"4454",
+"ent_bu":7555000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1317",
+"kind":"warehouse",
+"wh":"Ross",
+"city":"Ross",
+"st":"ND",
+"name":"United Quality Cooperative",
+"names":[
+"United Quality Cooperative"
+],
+"ent":"4454",
+"ent_bu":7555000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1322",
+"kind":"warehouse",
+"wh":"Richardton",
+"city":"Richardton",
+"st":"ND",
+"name":"Stone Mill, LLC",
+"names":[
+"Stone Mill, LLC"
+],
+"ent":"4542",
+"ent_bu":552000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2016",
+"kind":"warehouse",
+"wh":"Bottineau",
+"city":"Bottineau",
+"st":"ND",
+"name":"Border Ag & Energy",
+"names":[
+"Border Ag & Energy"
+],
+"ent":"46",
+"ent_bu":9299000,
+"ent_n":7,
+"lic_twice":false,
+"id":"e3qazepq2j",
+"src":[
+"borderag-bottineau"
+],
+"how":"name+town"
+},
+{
+"lic":"2196",
+"kind":"warehouse",
+"wh":"Kramer",
+"city":"Kramer",
+"st":"ND",
+"name":"Border Ag & Energy",
+"names":[
+"Border Ag & Energy"
+],
+"ent":"46",
+"ent_bu":9299000,
+"ent_n":7,
+"lic_twice":false,
+"id":"eh0c9cwa0g",
+"src":[
+"borderag-kramer"
+],
+"how":"name+town"
+},
+{
+"lic":"2195",
+"kind":"warehouse",
+"wh":"Lansford",
+"city":"Lansford",
+"st":"ND",
+"name":"Border Ag & Energy",
+"names":[
+"Border Ag & Energy"
+],
+"ent":"46",
+"ent_bu":9299000,
+"ent_n":7,
+"lic_twice":false,
+"id":"ewprje4gdp",
+"src":[
+"borderag-lansford"
+],
+"how":"name+town"
+},
+{
+"lic":"2193",
+"kind":"warehouse",
+"wh":"Newburg",
+"city":"Newburg",
+"st":"ND",
+"name":"Border Ag & Energy",
+"names":[
+"Border Ag & Energy"
+],
+"ent":"46",
+"ent_bu":9299000,
+"ent_n":7,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2194",
+"kind":"warehouse",
+"wh":"Russell",
+"city":"Russell",
+"st":"ND",
+"name":"Border Ag & Energy",
+"names":[
+"Border Ag & Energy"
+],
+"ent":"46",
+"ent_bu":9299000,
+"ent_n":7,
+"lic_twice":false,
+"id":"efad4mx21z",
+"src":[
+"borderag-russell"
+],
+"how":"name+town"
+},
+{
+"lic":"2017",
+"kind":"warehouse",
+"wh":"Souris",
+"city":"Souris",
+"st":"ND",
+"name":"Border Ag & Energy",
+"names":[
+"Border Ag & Energy"
+],
+"ent":"46",
+"ent_bu":9299000,
+"ent_n":7,
+"lic_twice":false,
+"id":"e11tv6k4rw",
+"src":[
+"borderag-souris"
+],
+"how":"name+town"
+},
+{
+"lic":"2127",
+"kind":"warehouse",
+"wh":"Westhope",
+"city":"Westhope",
+"st":"ND",
+"name":"Border Ag & Energy",
+"names":[
+"Border Ag & Energy"
+],
+"ent":"46",
+"ent_bu":9299000,
+"ent_n":7,
+"lic_twice":false,
+"id":"eajm2vavfx",
+"src":[
+"borderag-westhope"
+],
+"how":"name+town"
+},
+{
+"lic":"256",
+"kind":"warehouse",
+"wh":"Tower City",
+"city":"Tower City",
+"st":"ND",
+"name":"Evergreen Grain Company",
+"names":[
+"Evergreen Grain Company"
+],
+"ent":"461",
+"ent_bu":265000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1346",
+"kind":"warehouse",
+"wh":"Cavalier",
+"city":"Cavalier",
+"st":"ND",
+"name":"Midway Seed, LLC",
+"names":[
+"Midway Seed, LLC"
+],
+"ent":"4638",
+"ent_bu":20000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"896",
+"kind":"warehouse",
+"wh":"Enderlin",
+"city":"Enderlin",
+"st":"ND",
+"name":"Archer Daniels Midland Company",
+"names":[
+"Archer Daniels Midland Company"
+],
+"ent":"493",
+"ent_bu":29155000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1270",
+"kind":"warehouse",
+"wh":"Hebron",
+"city":"Hebron",
+"st":"ND",
+"name":"Archer Daniels Midland Company",
+"names":[
+"Archer Daniels Midland Company"
+],
+"ent":"493",
+"ent_bu":29155000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1158",
+"kind":"warehouse",
+"wh":"Hensler",
+"city":"Hensler",
+"st":"ND",
+"name":"Archer Daniels Midland Company",
+"names":[
+"Archer Daniels Midland Company"
+],
+"ent":"493",
+"ent_bu":29155000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1272",
+"kind":"warehouse",
+"wh":"Leal",
+"city":"Leal",
+"st":"ND",
+"name":"Archer Daniels Midland Company",
+"names":[
+"Archer Daniels Midland Company"
+],
+"ent":"493",
+"ent_bu":29155000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1092",
+"kind":"warehouse",
+"wh":"Rogers",
+"city":"Rogers",
+"st":"ND",
+"name":"Archer Daniels Midland Company",
+"names":[
+"Archer Daniels Midland Company"
+],
+"ent":"493",
+"ent_bu":29155000,
+"ent_n":6,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"662",
+"kind":"warehouse",
+"wh":"Velva",
+"city":"Velva",
+"st":"ND",
+"name":"Archer Daniels Midland Company",
+"names":[
+"Archer Daniels Midland Company"
+],
+"ent":"493",
+"ent_bu":29155000,
+"ent_n":6,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"102",
+"kind":"warehouse",
+"wh":"Fullerton",
+"city":"Fullerton",
+"st":"ND",
+"name":"Fullerton Farmers Elevator",
+"names":[
+"Fullerton Farmers Elevator"
+],
+"ent":"541",
+"ent_bu":8575000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"613",
+"kind":"warehouse",
+"wh":"Hebron",
+"city":"Hebron",
+"st":"ND",
+"name":"Modern Grain Inc.",
+"names":[
+"Modern Grain Inc."
+],
+"ent":"578",
+"ent_bu":191000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1058",
+"kind":"warehouse",
+"wh":"Dalen",
+"city":"Dalen",
+"st":"ND",
+"name":"The Farmers Elevator Company of Honeyford North Dakota",
+"names":[
+"The Farmers Elevator Company of Honeyford North Dakota"
+],
+"ent":"58",
+"ent_bu":3668000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"226",
+"kind":"warehouse",
+"wh":"Honeyford",
+"city":"Honeyford",
+"st":"ND",
+"name":"The Farmers Elevator Company of Honeyford North Dakota",
+"names":[
+"The Farmers Elevator Company of Honeyford North Dakota"
+],
+"ent":"58",
+"ent_bu":3668000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1057",
+"kind":"warehouse",
+"wh":"McCanna",
+"city":"McCanna",
+"st":"ND",
+"name":"The Farmers Elevator Company of Honeyford North Dakota",
+"names":[
+"The Farmers Elevator Company of Honeyford North Dakota"
+],
+"ent":"58",
+"ent_bu":3668000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1056",
+"kind":"warehouse",
+"wh":"Niagara",
+"city":"Niagara",
+"st":"ND",
+"name":"The Farmers Elevator Company of Honeyford North Dakota",
+"names":[
+"The Farmers Elevator Company of Honeyford North Dakota"
+],
+"ent":"58",
+"ent_bu":3668000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1059",
+"kind":"warehouse",
+"wh":"Petersburg",
+"city":"Petersburg",
+"st":"ND",
+"name":"The Farmers Elevator Company of Honeyford North Dakota",
+"names":[
+"The Farmers Elevator Company of Honeyford North Dakota"
+],
+"ent":"58",
+"ent_bu":3668000,
+"ent_n":5,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"303",
+"kind":"warehouse",
+"wh":"Tuttle",
+"city":"Tuttle",
+"st":"ND",
+"name":"Tuttle Farmers Elevator",
+"names":[
+"Tuttle Farmers Elevator"
+],
+"ent":"589",
+"ent_bu":317000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"479",
+"kind":"warehouse",
+"wh":"Hamlet",
+"city":"Hamlet",
+"st":"ND",
+"name":"Nelson Grain, Inc.",
+"names":[
+"Nelson Grain, Inc."
+],
+"ent":"594",
+"ent_bu":179000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"10",
+"kind":"warehouse",
+"wh":"Hoople",
+"city":"Hoople",
+"st":"ND",
+"name":"Hoople Farmers Grain Company",
+"names":[
+"Hoople Farmers Grain Company"
+],
+"ent":"595",
+"ent_bu":1579000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"8",
+"kind":"warehouse",
+"wh":"Edinburg",
+"city":"Edinburg",
+"st":"ND",
+"name":"Edinburg Farmers Elevator Company",
+"names":[
+"Edinburg Farmers Elevator Company"
+],
+"ent":"604",
+"ent_bu":535000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"41",
+"kind":"warehouse",
+"wh":"Forest River",
+"city":"Forest River",
+"st":"ND",
+"name":"Forest River Bean Co Inc",
+"names":[
+"Forest River Bean Co Inc"
+],
+"ent":"611",
+"ent_bu":935000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"333",
+"kind":"warehouse",
+"wh":"Forest River",
+"city":"Forest River",
+"st":"ND",
+"name":"Farmers Elevator Company of Forest River",
+"names":[
+"Farmers Elevator Company of Forest River"
+],
+"ent":"612",
+"ent_bu":1709000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2013",
+"kind":"warehouse",
+"wh":"Fairmount",
+"city":"Fairmount",
+"st":"ND",
+"name":"West Acres Grain, Inc.",
+"names":[
+"West Acres Grain, Inc."
+],
+"ent":"626",
+"ent_bu":666000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2202",
+"kind":"warehouse",
+"wh":"Arvilla",
+"city":"Arvilla",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2211",
+"kind":"warehouse",
+"wh":"Carrington",
+"city":"Carrington",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2203",
+"kind":"warehouse",
+"wh":"Grafton",
+"city":"Grafton",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2212",
+"kind":"warehouse",
+"wh":"Jamestown East",
+"city":"Jamestown East",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2213",
+"kind":"warehouse",
+"wh":"Jamestown West",
+"city":"Jamestown West",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2204",
+"kind":"warehouse",
+"wh":"Larimore",
+"city":"Larimore",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2205",
+"kind":"warehouse",
+"wh":"Merrifield",
+"city":"Merrifield",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2210",
+"kind":"warehouse",
+"wh":"Minto",
+"city":"Minto",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2214",
+"kind":"warehouse",
+"wh":"New Rockford",
+"city":"New Rockford",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2206",
+"kind":"warehouse",
+"wh":"Oakes",
+"city":"Oakes",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2215",
+"kind":"warehouse",
+"wh":"Rogers",
+"city":"Rogers",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2207",
+"kind":"warehouse",
+"wh":"Ross",
+"city":"Ross",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2208",
+"kind":"warehouse",
+"wh":"Valley City",
+"city":"Valley City",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2209",
+"kind":"warehouse",
+"wh":"Walhalla",
+"city":"Walhalla",
+"st":"ND",
+"name":"Columbia Grain International, LLC",
+"names":[
+"Columbia Grain International, LLC"
+],
+"ent":"6266",
+"ent_bu":38794000,
+"ent_n":14,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3280",
+"kind":"warehouse",
+"wh":"Genesis Seed Solutions LLC.",
+"city":"Genesis Seed Solutions LLC.",
+"st":"ND",
+"name":"Genesis seed solutions llc",
+"names":[
+"Genesis seed solutions llc"
+],
+"ent":"6309",
+"ent_bu":350000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3276",
+"kind":"warehouse",
+"wh":"NORAG MINOT",
+"city":"MINOT",
+"st":"ND",
+"name":"NORAG LLC",
+"names":[
+"NORAG LLC"
+],
+"ent":"6310",
+"ent_bu":15000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3286",
+"kind":"warehouse",
+"wh":"Dakota Grain & Livestock Supply, Inc.",
+"city":"Dakota Grain & Livestock Supply, Inc.",
+"st":"ND",
+"name":"Dakota Grain & Livestock Supply, Inc.",
+"names":[
+"Dakota Grain & Livestock Supply, Inc."
+],
+"ent":"6325",
+"ent_bu":41000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3287",
+"kind":"warehouse",
+"wh":"Dakota Grain & Livestock Supply, Inc.",
+"city":"Dakota Grain & Livestock Supply, Inc.",
+"st":"ND",
+"name":"Dakota Grain & Livestock Supply, Inc.",
+"names":[
+"Dakota Grain & Livestock Supply, Inc."
+],
+"ent":"6325",
+"ent_bu":41000,
+"ent_n":2,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3309",
+"kind":"processor",
+"wh":"Sunrich Products LLC",
+"city":"Sunrich Products LLC",
+"st":"ND",
+"name":"Sunrich Products LLC",
+"names":[
+"Sunrich Products LLC"
+],
+"ent":"6334",
+"ent_bu":1927641,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3259",
+"kind":"warehouse",
+"wh":"Everbest Organics, Inc.",
+"city":"Everbest Organics, Inc.",
+"st":"ND",
+"name":"Everbest Organics, Inc.",
+"names":[
+"Everbest Organics, Inc."
+],
+"ent":"6370",
+"ent_bu":713769,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3260",
+"kind":"warehouse",
+"wh":"Pulses America, INC",
+"city":"Pulses America, INC",
+"st":"ND",
+"name":"Pulses America, INC.",
+"names":[
+"Pulses America, INC."
+],
+"ent":"6372",
+"ent_bu":664900,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3274",
+"kind":"warehouse",
+"wh":"Pulses America INC, - Manvel Location",
+"city":"Manvel Location",
+"st":"ND",
+"name":"Pulses America, INC.",
+"names":[
+"Pulses America, INC."
+],
+"ent":"6372",
+"ent_bu":664900,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3267",
+"kind":"processor",
+"wh":"Ashley Feedstore LLC",
+"city":"Ashley Feedstore LLC",
+"st":"ND",
+"name":"Ashley Feedstore LLC",
+"names":[
+"Ashley Feedstore LLC"
+],
+"ent":"6391",
+"ent_bu":8000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3272",
+"kind":"warehouse",
+"wh":"GLINZ GRAIN LLC",
+"city":"GLINZ GRAIN LLC",
+"st":"ND",
+"name":"GLINZ GRAIN LLC",
+"names":[
+"GLINZ GRAIN LLC"
+],
+"ent":"6395",
+"ent_bu":4602000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2191",
+"kind":"warehouse",
+"wh":"Pingree",
+"city":"Pingree",
+"st":"ND",
+"name":"GLINZ GRAIN LLC",
+"names":[
+"GLINZ GRAIN LLC"
+],
+"ent":"6395",
+"ent_bu":4602000,
+"ent_n":2,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3295",
+"kind":"processor",
+"wh":"All day trucking DBA The Mill",
+"city":"DBA The Mill",
+"st":"ND",
+"name":"All Day Trucking Inc dba The Mill",
+"names":[
+"All Day Trucking Inc dba The Mill",
+"All Day Trucking Inc",
+"The Mill"
+],
+"ent":"6400",
+"ent_bu":100000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"189",
+"kind":"warehouse",
+"wh":"Hannaford",
+"city":"Hannaford",
+"st":"ND",
+"name":"Miller Elevator Company",
+"names":[
+"Miller Elevator Company"
+],
+"ent":"665",
+"ent_bu":1009000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"920",
+"kind":"warehouse",
+"wh":"Sykeston",
+"city":"Sykeston",
+"st":"ND",
+"name":"Miller Elevator Company",
+"names":[
+"Miller Elevator Company"
+],
+"ent":"665",
+"ent_bu":1009000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188",
+"kind":"warehouse",
+"wh":"Walum",
+"city":"Walum",
+"st":"ND",
+"name":"Miller Elevator Company",
+"names":[
+"Miller Elevator Company"
+],
+"ent":"665",
+"ent_bu":1009000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3275",
+"kind":"processor",
+"wh":"G & R Grain and Feed",
+"city":"G & R Grain and Feed",
+"st":"ND",
+"name":"G & R Grain and Feed",
+"names":[
+"G & R Grain and Feed"
+],
+"ent":"6999",
+"ent_bu":116000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1066",
+"kind":"warehouse",
+"wh":"Spiritwood",
+"city":"Spiritwood",
+"st":"ND",
+"name":"Cargill, Incorporated",
+"names":[
+"Cargill, Incorporated"
+],
+"ent":"817",
+"ent_bu":6653000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"985",
+"kind":"processor",
+"wh":"Wahpeton",
+"city":"Wahpeton",
+"st":"ND",
+"name":"Cargill, Incorporated",
+"names":[
+"Cargill, Incorporated"
+],
+"ent":"817",
+"ent_bu":6653000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2027",
+"kind":"processor",
+"wh":"West Fargo",
+"city":"West Fargo",
+"st":"ND",
+"name":"Cargill, Incorporated",
+"names":[
+"Cargill, Incorporated"
+],
+"ent":"817",
+"ent_bu":6653000,
+"ent_n":3,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2181",
+"kind":"warehouse",
+"wh":"Adams",
+"city":"Adams",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2028",
+"kind":"warehouse",
+"wh":"Aneta",
+"city":"Aneta",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2085",
+"kind":"warehouse",
+"wh":"Ashley",
+"city":"Ashley",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2030",
+"kind":"warehouse",
+"wh":"Belfield",
+"city":"Belfield",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2031",
+"kind":"warehouse",
+"wh":"Bowbells",
+"city":"Bowbells",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2033",
+"kind":"warehouse",
+"wh":"Calvin",
+"city":"Calvin",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2163",
+"kind":"warehouse",
+"wh":"Cavalier",
+"city":"Cavalier",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2086",
+"kind":"warehouse",
+"wh":"Devils Lake",
+"city":"Devils Lake",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2177",
+"kind":"warehouse",
+"wh":"Dickinson",
+"city":"Dickinson",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"888",
+"kind":"processor",
+"wh":"Dickinson",
+"city":"Dickinson",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2037",
+"kind":"warehouse",
+"wh":"Dickinson (Terminal)",
+"city":"Dickinson",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2038",
+"kind":"warehouse",
+"wh":"Drayton",
+"city":"Drayton",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":"egsv7kw65c",
+"src":[
+"chsdrayton-drayton"
+],
+"how":"name+town"
+},
+{
+"lic":"2101",
+"kind":"warehouse",
+"wh":"Edgeley",
+"city":"Edgeley",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"889",
+"kind":"processor",
+"wh":"Edgeley",
+"city":"Edgeley",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2078",
+"kind":"warehouse",
+"wh":"Edmore",
+"city":"Edmore",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2039",
+"kind":"warehouse",
+"wh":"Elgin",
+"city":"Elgin",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2140",
+"kind":"warehouse",
+"wh":"Fairdale",
+"city":"Fairdale",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2040",
+"kind":"warehouse",
+"wh":"Galchutt",
+"city":"Galchutt",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2120",
+"kind":"warehouse",
+"wh":"Garrison",
+"city":"Garrison",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2041",
+"kind":"warehouse",
+"wh":"Gladstone",
+"city":"Gladstone",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2042",
+"kind":"warehouse",
+"wh":"Gladstone (Terminal)",
+"city":"Gladstone",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2043",
+"kind":"warehouse",
+"wh":"Glasston",
+"city":"Glasston",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1112",
+"kind":"warehouse",
+"wh":"Grandin",
+"city":"Grandin",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2197",
+"kind":"warehouse",
+"wh":"Gwinner",
+"city":"Gwinner",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2079",
+"kind":"warehouse",
+"wh":"Hampden",
+"city":"Hampden",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2045",
+"kind":"warehouse",
+"wh":"Harwood",
+"city":"Harwood",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2080",
+"kind":"warehouse",
+"wh":"Hazelton",
+"city":"Hazelton",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2046",
+"kind":"warehouse",
+"wh":"Hensel",
+"city":"Hensel",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2173",
+"kind":"warehouse",
+"wh":"Hettinger",
+"city":"Hettinger",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2047",
+"kind":"warehouse",
+"wh":"Horace",
+"city":"Horace",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2124",
+"kind":"warehouse",
+"wh":"Joliette",
+"city":"Joliette",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2098",
+"kind":"warehouse",
+"wh":"Kindred",
+"city":"Kindred",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2049",
+"kind":"warehouse",
+"wh":"Kloten",
+"city":"Kloten",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2103",
+"kind":"warehouse",
+"wh":"Kulm",
+"city":"Kulm",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2125",
+"kind":"warehouse",
+"wh":"Lakota",
+"city":"Lakota",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2126",
+"kind":"warehouse",
+"wh":"Langdon",
+"city":"Langdon",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2050",
+"kind":"warehouse",
+"wh":"Lankin",
+"city":"Lankin",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2201",
+"kind":"warehouse",
+"wh":"Lansford",
+"city":"Lansford",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2051",
+"kind":"warehouse",
+"wh":"Lignite",
+"city":"Lignite",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2077",
+"kind":"warehouse",
+"wh":"Manvel",
+"city":"Manvel",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2053",
+"kind":"warehouse",
+"wh":"McVille",
+"city":"McVille",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2054",
+"kind":"warehouse",
+"wh":"Milton",
+"city":"Milton",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2055",
+"kind":"warehouse",
+"wh":"Minot",
+"city":"Minot",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2056",
+"kind":"warehouse",
+"wh":"Mohall",
+"city":"Mohall",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2057",
+"kind":"warehouse",
+"wh":"Mooreton",
+"city":"Mooreton",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2082",
+"kind":"warehouse",
+"wh":"Napoleon",
+"city":"Napoleon",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2059",
+"kind":"warehouse",
+"wh":"New England",
+"city":"New England",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2174",
+"kind":"warehouse",
+"wh":"New Salem",
+"city":"New Salem",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2060",
+"kind":"warehouse",
+"wh":"Niobe",
+"city":"Niobe",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2061",
+"kind":"warehouse",
+"wh":"Norma",
+"city":"Norma",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2062",
+"kind":"warehouse",
+"wh":"Park River",
+"city":"Park River",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2064",
+"kind":"warehouse",
+"wh":"Reeder",
+"city":"Reeder",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2065",
+"kind":"warehouse",
+"wh":"Regent",
+"city":"Regent",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2088",
+"kind":"warehouse",
+"wh":"Rohrville",
+"city":"Rohrville",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2067",
+"kind":"warehouse",
+"wh":"Ryder",
+"city":"Ryder",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2069",
+"kind":"warehouse",
+"wh":"Sarles",
+"city":"Sarles",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2100",
+"kind":"warehouse",
+"wh":"Sterling",
+"city":"Sterling",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2139",
+"kind":"warehouse",
+"wh":"Strasburg",
+"city":"Strasburg",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2072",
+"kind":"warehouse",
+"wh":"Velva",
+"city":"Velva",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2076",
+"kind":"warehouse",
+"wh":"Wishek",
+"city":"Wishek",
+"st":"ND",
+"name":"CHS, Inc.",
+"names":[
+"CHS, Inc."
+],
+"ent":"847",
+"ent_bu":58780261,
+"ent_n":60,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2158",
+"kind":"warehouse",
+"wh":"Ambrose",
+"city":"Ambrose",
+"st":"ND",
+"name":"New Century Ag",
+"names":[
+"New Century Ag"
+],
+"ent":"848",
+"ent_bu":1723000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2159",
+"kind":"warehouse",
+"wh":"Crosby",
+"city":"Crosby",
+"st":"ND",
+"name":"New Century Ag",
+"names":[
+"New Century Ag"
+],
+"ent":"848",
+"ent_bu":1723000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2157",
+"kind":"warehouse",
+"wh":"Fortuna",
+"city":"Fortuna",
+"st":"ND",
+"name":"New Century Ag",
+"names":[
+"New Century Ag"
+],
+"ent":"848",
+"ent_bu":1723000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2160",
+"kind":"warehouse",
+"wh":"Noonan",
+"city":"Noonan",
+"st":"ND",
+"name":"New Century Ag",
+"names":[
+"New Century Ag"
+],
+"ent":"848",
+"ent_bu":1723000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1080",
+"kind":"warehouse",
+"wh":"Carrington",
+"city":"Carrington",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"ej4kw30mh9",
+"src":[
+"cendakcooperative-carrington"
+],
+"how":"name+town"
+},
+{
+"lic":"308",
+"kind":"warehouse",
+"wh":"Esmond",
+"city":"Esmond",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"ey1fdf9907",
+"src":[
+"cendakcooperative-esmondelevator"
+],
+"how":"name+town"
+},
+{
+"lic":"307",
+"kind":"warehouse",
+"wh":"Fessenden",
+"city":"Fessenden",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"e9vksmr060",
+"src":[
+"cendakcooperative-fessenden"
+],
+"how":"name+town"
+},
+{
+"lic":"312",
+"kind":"warehouse",
+"wh":"Hamberg",
+"city":"Hamberg",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"ee6ytjn0an",
+"src":[
+"cendakcooperative-hamberg"
+],
+"how":"name+town"
+},
+{
+"lic":"1352",
+"kind":"warehouse",
+"wh":"Hamberg Bean",
+"city":"Hamberg Bean",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1308",
+"kind":"warehouse",
+"wh":"Harlow",
+"city":"Harlow",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"eag761tq7b",
+"src":[
+"cendakcooperative-harlow"
+],
+"how":"name+town"
+},
+{
+"lic":"311",
+"kind":"warehouse",
+"wh":"Heimdal",
+"city":"Heimdal",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"869",
+"kind":"warehouse",
+"wh":"Leeds",
+"city":"Leeds",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"erehhf8sh4",
+"src":[
+"cendakcooperative-leeds"
+],
+"how":"name+town"
+},
+{
+"lic":"1309",
+"kind":"warehouse",
+"wh":"Maddock",
+"city":"Maddock",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"ev906g83g0",
+"src":[
+"cendakcooperative-maddockelevator"
+],
+"how":"name+town"
+},
+{
+"lic":"1140",
+"kind":"warehouse",
+"wh":"New Rockford",
+"city":"New Rockford",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"en1n3q99fx",
+"src":[
+"cendakcooperative-newrockfordelevator"
+],
+"how":"name+town"
+},
+{
+"lic":"1138",
+"kind":"warehouse",
+"wh":"Niles",
+"city":"Niles",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"3262",
+"kind":"warehouse",
+"wh":"Oberon",
+"city":"Oberon",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"eah7ar7dek",
+"src":[
+"cendakcooperative-oberon"
+],
+"how":"name+town"
+},
+{
+"lic":"3263",
+"kind":"warehouse",
+"wh":"Sheyenne",
+"city":"Sheyenne",
+"st":"ND",
+"name":"CenDak Cooperative",
+"names":[
+"CenDak Cooperative"
+],
+"ent":"851",
+"ent_bu":19079000,
+"ent_n":13,
+"lic_twice":false,
+"id":"encvyx1452",
+"src":[
+"cendakcooperative-sheyenne"
+],
+"how":"name+town"
+},
+{
+"lic":"2211",
+"kind":"warehouse",
+"wh":"Colfax",
+"city":"Colfax",
+"st":"ND",
+"name":"Minn-Kota Ag Products, Inc.",
+"names":[
+"Minn-Kota Ag Products, Inc."
+],
+"ent":"856",
+"ent_bu":7196000,
+"ent_n":4,
+"lic_twice":true,
+"id":"egz0mjkrwm",
+"src":[
+"mkap-colfax"
+],
+"how":"name+town"
+},
+{
+"lic":"2210",
+"kind":"warehouse",
+"wh":"Mooreton (West Terminal)",
+"city":"Mooreton",
+"st":"ND",
+"name":"Minn-Kota Ag Products, Inc.",
+"names":[
+"Minn-Kota Ag Products, Inc."
+],
+"ent":"856",
+"ent_bu":7196000,
+"ent_n":4,
+"lic_twice":true,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2184",
+"kind":"warehouse",
+"wh":"Wahpeton",
+"city":"Wahpeton",
+"st":"ND",
+"name":"Minn-Kota Ag Products, Inc.",
+"names":[
+"Minn-Kota Ag Products, Inc."
+],
+"ent":"856",
+"ent_bu":7196000,
+"ent_n":4,
+"lic_twice":false,
+"id":"ew9rbznkxn",
+"src":[
+"mkap-wahpeton"
+],
+"how":"name+town"
+},
+{
+"lic":"2129",
+"kind":"warehouse",
+"wh":"Wyndmere",
+"city":"Wyndmere",
+"st":"ND",
+"name":"Minn-Kota Ag Products, Inc.",
+"names":[
+"Minn-Kota Ag Products, Inc."
+],
+"ent":"856",
+"ent_bu":7196000,
+"ent_n":4,
+"lic_twice":true,
+"id":"e9kq4tapm2",
+"src":[
+"mkap-wyndmere"
+],
+"how":"name+town"
+},
+{
+"lic":"56",
+"kind":"warehouse",
+"wh":"Fessenden",
+"city":"Fessenden",
+"st":"ND",
+"name":"Klindworth Seed & Bean Company Inc",
+"names":[
+"Klindworth Seed & Bean Company Inc"
+],
+"ent":"894",
+"ent_bu":190000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"12",
+"kind":"warehouse",
+"wh":"McClusky",
+"city":"McClusky",
+"st":"ND",
+"name":"Co-op Elevator of McClusky",
+"names":[
+"Co-op Elevator of McClusky"
+],
+"ent":"913",
+"ent_bu":1155000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"215",
+"kind":"warehouse",
+"wh":"Nash",
+"city":"Nash",
+"st":"ND",
+"name":"Nash Grain & Trading Co",
+"names":[
+"Nash Grain & Trading Co"
+],
+"ent":"927",
+"ent_bu":640000,
+"ent_n":1,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1267",
+"kind":"warehouse",
+"wh":"Falkirk",
+"city":"Falkirk",
+"st":"ND",
+"name":"SRS Commodities Limited",
+"names":[
+"SRS Commodities Limited"
+],
+"ent":"951",
+"ent_bu":2602000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"794",
+"kind":"warehouse",
+"wh":"Mayville",
+"city":"Mayville",
+"st":"ND",
+"name":"SRS Commodities Limited",
+"names":[
+"SRS Commodities Limited"
+],
+"ent":"951",
+"ent_bu":2602000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1305",
+"kind":"warehouse",
+"wh":"Portland",
+"city":"Portland",
+"st":"ND",
+"name":"SRS Commodities Limited",
+"names":[
+"SRS Commodities Limited"
+],
+"ent":"951",
+"ent_bu":2602000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1306",
+"kind":"warehouse",
+"wh":"Portland (Rural)",
+"city":"Portland",
+"st":"ND",
+"name":"SRS Commodities Limited",
+"names":[
+"SRS Commodities Limited"
+],
+"ent":"951",
+"ent_bu":2602000,
+"ent_n":4,
+"lic_twice":false,
+"id":null,
+"src":[],
+"how":null
+}
+],
+"unjoined":[
+{
+"i":3,
+"why":"no facility of this operator in this town in our list",
+"lic":"1113",
+"city":"Englevale"
+},
+{
+"i":4,
+"why":"no facility of this operator in this town in our list",
+"lic":"1292",
+"city":"Fredonia"
+},
+{
+"i":6,
+"why":"no facility of this operator in this town in our list",
+"lic":"1293",
+"city":"Linton"
+},
+{
+"i":7,
+"why":"no facility of this operator in this town in our list",
+"lic":"1294",
+"city":"Wishek"
+},
+{
+"i":8,
+"why":"no facility of this operator in this town in our list",
+"lic":"13",
+"city":"Voss"
+},
+{
+"i":9,
+"why":"no facility of this operator in this town in our list",
+"lic":"662",
+"city":"Dickinson"
+},
+{
+"i":10,
+"why":"no facility of this operator in this town in our list",
+"lic":"159",
+"city":"Grand Forks"
+},
+{
+"i":11,
+"why":"no facility of this operator in this town in our list",
+"lic":"231",
+"city":"Bowman"
+},
+{
+"i":12,
+"why":"no facility of this operator in this town in our list",
+"lic":"844",
+"city":"Fargo"
+},
+{
+"i":15,
+"why":"no facility of this operator in this town in our list",
+"lic":"113",
+"city":"Makoti"
+},
+{
+"i":16,
+"why":"no facility of this operator in this town in our list",
+"lic":"114",
+"city":"Max"
+},
+{
+"i":17,
+"why":"no facility of this operator in this town in our list",
+"lic":"115",
+"city":"Plaza"
+},
+{
+"i":18,
+"why":"no facility of this operator in this town in our list",
+"lic":"116",
+"city":"Ryder"
+},
+{
+"i":19,
+"why":"no facility of this operator in this town in our list",
+"lic":"857",
+"city":"New Leipzig"
+},
+{
+"i":20,
+"why":"no facility of this operator in this town in our list",
+"lic":"864",
+"city":"Mayville"
+},
+{
+"i":21,
+"why":"no facility of this operator in this town in our list",
+"lic":"861",
+"city":"Portland"
+},
+{
+"i":22,
+"why":"no facility of this operator in this town in our list",
+"lic":"751",
+"city":"Regan"
+},
+{
+"i":23,
+"why":"no facility of this operator in this town in our list",
+"lic":"846",
+"city":"Washburn"
+},
+{
+"i":24,
+"why":"no facility of this operator in this town in our list",
+"lic":"59",
+"city":"Wilton"
+},
+{
+"i":25,
+"why":"no facility of this operator in this town in our list",
+"lic":"883",
+"city":"Manvel"
+},
+{
+"i":26,
+"why":"no facility of this operator in this town in our list",
+"lic":"891",
+"city":"Wildrose"
+},
+{
+"i":27,
+"why":"no facility of this operator in this town in our list",
+"lic":"39",
+"city":"Thompson"
+},
+{
+"i":28,
+"why":"no facility of this operator in this town in our list",
+"lic":"894",
+"city":"Kirkeide Legacy Partners Company dba Kirkeides Northland Bean & Seed"
+},
+{
+"i":30,
+"why":"no facility of this operator in this town in our list",
+"lic":"191",
+"city":"Kensal"
+},
+{
+"i":31,
+"why":"no facility of this operator in this town in our list",
+"lic":"2156",
+"city":"Berlin"
+},
+{
+"i":33,
+"why":"no facility of this operator in this town in our list",
+"lic":"1",
+"city":"Clifford"
+},
+{
+"i":34,
+"why":"no facility of this operator in this town in our list",
+"lic":"1335",
+"city":"Galesburg"
+},
+{
+"i":35,
+"why":"no facility of this operator in this town in our list",
+"lic":"1075",
+"city":"Hope"
+},
+{
+"i":39,
+"why":"no facility of this operator in this town in our list",
+"lic":"1331",
+"city":"Cooperstown"
+},
+{
+"i":40,
+"why":"no facility of this operator in this town in our list",
+"lic":"289",
+"city":"Finley"
+},
+{
+"i":41,
+"why":"no facility of this operator in this town in our list",
+"lic":"314",
+"city":"Beach"
+},
+{
+"i":42,
+"why":"no facility of this operator in this town in our list",
+"lic":"1150",
+"city":"Wyndmere"
+},
+{
+"i":43,
+"why":"no facility of this operator in this town in our list",
+"lic":"946",
+"city":"Mayville"
+},
+{
+"i":44,
+"why":"no facility of this operator in this town in our list",
+"lic":"555",
+"city":"Grace City"
+},
+{
+"i":45,
+"why":"no facility of this operator in this town in our list",
+"lic":"177",
+"city":"Rugby"
+},
+{
+"i":46,
+"why":"no facility of this operator in this town in our list",
+"lic":"178",
+"city":"Willow City"
+},
+{
+"i":49,
+"why":"no facility of this operator in this town in our list",
+"lic":"223",
+"city":"Steele"
+},
+{
+"i":50,
+"why":"no facility of this operator in this town in our list",
+"lic":"1004",
+"city":"Walhalla"
+},
+{
+"i":51,
+"why":"no facility of this operator in this town in our list",
+"lic":"1298",
+"city":"Dickinson"
+},
+{
+"i":52,
+"why":"no facility of this operator in this town in our list",
+"lic":"261",
+"city":"Scranton"
+},
+{
+"i":53,
+"why":"no facility of this operator in this town in our list",
+"lic":"1127",
+"city":"Bismarck"
+},
+{
+"i":54,
+"why":"no facility of this operator in this town in our list",
+"lic":"630",
+"city":"Bisbee"
+},
+{
+"i":55,
+"why":"no facility of this operator in this town in our list",
+"lic":"1354",
+"city":"Cando"
+},
+{
+"i":56,
+"why":"no facility of this operator in this town in our list",
+"lic":"1355",
+"city":"Egeland"
+},
+{
+"i":57,
+"why":"no facility of this operator in this town in our list",
+"lic":"1319",
+"city":"Overly"
+},
+{
+"i":58,
+"why":"no facility of this operator in this town in our list",
+"lic":"628",
+"city":"Perth"
+},
+{
+"i":59,
+"why":"no facility of this operator in this town in our list",
+"lic":"25",
+"city":"Rock Lake"
+},
+{
+"i":60,
+"why":"no facility of this operator in this town in our list",
+"lic":"568",
+"city":"Rolette"
+},
+{
+"i":61,
+"why":"no facility of this operator in this town in our list",
+"lic":"1314",
+"city":"Rolla"
+},
+{
+"i":63,
+"why":"no facility of this operator in this town in our list",
+"lic":"1012",
+"city":"Casselton"
+},
+{
+"i":64,
+"why":"no facility of this operator in this town in our list",
+"lic":"1015",
+"city":"Minot"
+},
+{
+"i":66,
+"why":"no facility of this operator in this town in our list",
+"lic":"1336",
+"city":"Grand Forks"
+},
+{
+"i":67,
+"why":"no facility of this operator in this town in our list",
+"lic":"1242",
+"city":"Minot"
+},
+{
+"i":68,
+"why":"no facility of this operator in this town in our list",
+"lic":"1353",
+"city":"Northgate"
+},
+{
+"i":69,
+"why":"no facility of this operator in this town in our list",
+"lic":"1020",
+"city":"Ray"
+},
+{
+"i":73,
+"why":"no facility of this operator in this town in our list",
+"lic":"332",
+"city":"Harvey"
+},
+{
+"i":74,
+"why":"no facility of this operator in this town in our list",
+"lic":"1157",
+"city":"Page"
+},
+{
+"i":76,
+"why":"no facility of this operator in this town in our list",
+"lic":"2141",
+"city":"Hankinson"
+},
+{
+"i":77,
+"why":"no facility of this operator in this town in our list",
+"lic":"2099",
+"city":"LaMars"
+},
+{
+"i":78,
+"why":"no facility of this operator in this town in our list",
+"lic":"2142",
+"city":"Mantador"
+},
+{
+"i":79,
+"why":"no facility of this operator in this town in our list",
+"lic":"2189",
+"city":"Rutland"
+},
+{
+"i":80,
+"why":"no facility of this operator in this town in our list",
+"lic":"474",
+"city":"Ray"
+},
+{
+"i":81,
+"why":"no facility of this operator in this town in our list",
+"lic":"475",
+"city":"West Facility"
+},
+{
+"i":82,
+"why":"no facility of this operator in this town in our list",
+"lic":"2129",
+"city":"Munich NPA"
+},
+{
+"i":83,
+"why":"no facility of this operator in this town in our list",
+"lic":"2128",
+"city":"Nekoma"
+},
+{
+"i":84,
+"why":"no facility of this operator in this town in our list",
+"lic":"2104",
+"city":"Osnabrock"
+},
+{
+"i":85,
+"why":"no facility of this operator in this town in our list",
+"lic":"1063",
+"city":"Flasher"
+},
+{
+"i":87,
+"why":"no facility of this operator in this town in our list",
+"lic":"1069",
+"city":"Casselton"
+},
+{
+"i":90,
+"why":"no facility of this operator in this town in our list",
+"lic":"1218",
+"city":"Surrey"
+},
+{
+"i":92,
+"why":"no facility of this operator in this town in our list",
+"lic":"126",
+"city":"Buxton"
+},
+{
+"i":93,
+"why":"no facility of this operator in this town in our list",
+"lic":"1211",
+"city":"Devils Lake"
+},
+{
+"i":94,
+"why":"no facility of this operator in this town in our list",
+"lic":"1268",
+"city":"Fairdale"
+},
+{
+"i":95,
+"why":"no facility of this operator in this town in our list",
+"lic":"1212",
+"city":"Garske"
+},
+{
+"i":96,
+"why":"no facility of this operator in this town in our list",
+"lic":"1210",
+"city":"Grafton"
+},
+{
+"i":97,
+"why":"no facility of this operator in this town in our list",
+"lic":"1213",
+"city":"Lankin"
+},
+{
+"i":98,
+"why":"no facility of this operator in this town in our list",
+"lic":"1214",
+"city":"Pisek"
+},
+{
+"i":99,
+"why":"no facility of this operator in this town in our list",
+"lic":"1076",
+"city":"Leeds"
+},
+{
+"i":100,
+"why":"no facility of this operator in this town in our list",
+"lic":"1081",
+"city":"Cathay"
+},
+{
+"i":101,
+"why":"no facility of this operator in this town in our list",
+"lic":"105",
+"city":"Casselton"
+},
+{
+"i":102,
+"why":"no facility of this operator in this town in our list",
+"lic":"942",
+"city":"Cavalier"
+},
+{
+"i":103,
+"why":"no facility of this operator in this town in our list",
+"lic":"927",
+"city":"Galesburg"
+},
+{
+"i":104,
+"why":"no facility of this operator in this town in our list",
+"lic":"940",
+"city":"Grafton"
+},
+{
+"i":105,
+"why":"no facility of this operator in this town in our list",
+"lic":"941",
+"city":"Inkster"
+},
+{
+"i":106,
+"why":"no facility of this operator in this town in our list",
+"lic":"106",
+"city":"Northwood"
+},
+{
+"i":107,
+"why":"no facility of this operator in this town in our list",
+"lic":"107",
+"city":"St. Thomas"
+},
+{
+"i":108,
+"why":"no facility of this operator in this town in our list",
+"lic":"453",
+"city":"Johnstown"
+},
+{
+"i":109,
+"why":"no facility of this operator in this town in our list",
+"lic":"203",
+"city":"Gardner"
+},
+{
+"i":112,
+"why":"no facility of this operator in this town in our list",
+"lic":"1249",
+"city":"Amenia"
+},
+{
+"i":113,
+"why":"no facility of this operator in this town in our list",
+"lic":"1089",
+"city":"Taft"
+},
+{
+"i":115,
+"why":"no facility of this operator in this town in our list",
+"lic":"1100",
+"city":"Carpio"
+},
+{
+"i":116,
+"why":"no facility of this operator in this town in our list",
+"lic":"1099",
+"city":"Ardent Mills"
+},
+{
+"i":117,
+"why":"no facility of this operator in this town in our list",
+"lic":"1098",
+"city":"Fairmount"
+},
+{
+"i":118,
+"why":"no facility of this operator in this town in our list",
+"lic":"1095",
+"city":"Crary"
+},
+{
+"i":119,
+"why":"no facility of this operator in this town in our list",
+"lic":"1244",
+"city":"Devils Lake"
+},
+{
+"i":120,
+"why":"no facility of this operator in this town in our list",
+"lic":"1200",
+"city":"Lansford"
+},
+{
+"i":121,
+"why":"no facility of this operator in this town in our list",
+"lic":"2182",
+"city":"Colgate"
+},
+{
+"i":122,
+"why":"no facility of this operator in this town in our list",
+"lic":"2176",
+"city":"Courtenay"
+},
+{
+"i":123,
+"why":"no facility of this operator in this town in our list",
+"lic":"2185",
+"city":"Cummings"
+},
+{
+"i":124,
+"why":"no facility of this operator in this town in our list",
+"lic":"2179",
+"city":"Finley"
+},
+{
+"i":125,
+"why":"no facility of this operator in this town in our list",
+"lic":"2199",
+"city":"Grace City"
+},
+{
+"i":126,
+"why":"no facility of this operator in this town in our list",
+"lic":"2175",
+"city":"Pillsbury"
+},
+{
+"i":127,
+"why":"no facility of this operator in this town in our list",
+"lic":"1102",
+"city":"Dwight"
+},
+{
+"i":129,
+"why":"no facility of this operator in this town in our list",
+"lic":"1111",
+"city":"Carrington"
+},
+{
+"i":132,
+"why":"no facility of this operator in this town in our list",
+"lic":"1114",
+"city":"Marion"
+},
+{
+"i":134,
+"why":"no facility of this operator in this town in our list",
+"lic":"288",
+"city":"Fargo"
+},
+{
+"i":135,
+"why":"no facility of this operator in this town in our list",
+"lic":"1204",
+"city":"Jamestown"
+},
+{
+"i":136,
+"why":"no facility of this operator in this town in our list",
+"lic":"111",
+"city":"Turtle Lake"
+},
+{
+"i":137,
+"why":"no facility of this operator in this town in our list",
+"lic":"361",
+"city":"Elevator"
+},
+{
+"i":138,
+"why":"no facility of this operator in this town in our list",
+"lic":"1142",
+"city":"Casselton"
+},
+{
+"i":139,
+"why":"no facility of this operator in this town in our list",
+"lic":"1144",
+"city":"Chaffee"
+},
+{
+"i":140,
+"why":"no facility of this operator in this town in our list",
+"lic":"1145",
+"city":"Leonard"
+},
+{
+"i":141,
+"why":"no facility of this operator in this town in our list",
+"lic":"1143",
+"city":"Lynchburg"
+},
+{
+"i":142,
+"why":"no facility of this operator in this town in our list",
+"lic":"1243",
+"city":"Peak"
+},
+{
+"i":143,
+"why":"no facility of this operator in this town in our list",
+"lic":"1141",
+"city":"Prosper"
+},
+{
+"i":144,
+"why":"no facility of this operator in this town in our list",
+"lic":"1135",
+"city":"Fairmount"
+},
+{
+"i":145,
+"why":"no facility of this operator in this town in our list",
+"lic":"1332",
+"city":"Cummings"
+},
+{
+"i":146,
+"why":"no facility of this operator in this town in our list",
+"lic":"1146",
+"city":"Garrison"
+},
+{
+"i":147,
+"why":"no facility of this operator in this town in our list",
+"lic":"1139",
+"city":"Windsor"
+},
+{
+"i":148,
+"why":"no facility of this operator in this town in our list",
+"lic":"1302",
+"city":"Northwood"
+},
+{
+"i":149,
+"why":"no facility of this operator in this town in our list",
+"lic":"2132",
+"city":"Alamo"
+},
+{
+"i":150,
+"why":"no facility of this operator in this town in our list",
+"lic":"2134",
+"city":"Grenora"
+},
+{
+"i":151,
+"why":"no facility of this operator in this town in our list",
+"lic":"2131",
+"city":"Watford City"
+},
+{
+"i":153,
+"why":"no facility of this operator in this town in our list",
+"lic":"2133",
+"city":"Zahl"
+},
+{
+"i":154,
+"why":"no facility of this operator in this town in our list",
+"lic":"1320",
+"city":"Garske"
+},
+{
+"i":155,
+"why":"no facility of this operator in this town in our list",
+"lic":"1321",
+"city":"Grafton"
+},
+{
+"i":156,
+"why":"no facility of this operator in this town in our list",
+"lic":"3287",
+"city":"3C Land Holdings, LLC"
+},
+{
+"i":157,
+"why":"no facility of this operator in this town in our list",
+"lic":"1168",
+"city":"Jamestown"
+},
+{
+"i":158,
+"why":"no facility of this operator in this town in our list",
+"lic":"2135",
+"city":"Cavalier"
+},
+{
+"i":159,
+"why":"no facility of this operator in this town in our list",
+"lic":"2136",
+"city":"Hatton"
+},
+{
+"i":160,
+"why":"no facility of this operator in this town in our list",
+"lic":"2137",
+"city":"Mayville"
+},
+{
+"i":161,
+"why":"no facility of this operator in this town in our list",
+"lic":"2138",
+"city":"Oakes"
+},
+{
+"i":162,
+"why":"no facility of this operator in this town in our list",
+"lic":"3298",
+"city":"Pembina Hefty Seed"
+},
+{
+"i":163,
+"why":"no facility of this operator in this town in our list",
+"lic":"3306",
+"city":"Falcon Grain LLC"
+},
+{
+"i":164,
+"why":"no facility of this operator in this town in our list",
+"lic":"1174",
+"city":"Richardton"
+},
+{
+"i":165,
+"why":"no facility of this operator in this town in our list",
+"lic":"286",
+"city":"Alsen"
+},
+{
+"i":166,
+"why":"no facility of this operator in this town in our list",
+"lic":"473",
+"city":"Streeter"
+},
+{
+"i":167,
+"why":"no facility of this operator in this town in our list",
+"lic":"1221",
+"city":"Dickinson"
+},
+{
+"i":168,
+"why":"no facility of this operator in this town in our list",
+"lic":"367",
+"city":"Pekin"
+},
+{
+"i":169,
+"why":"no facility of this operator in this town in our list",
+"lic":"1189",
+"city":"East Fairview"
+},
+{
+"i":170,
+"why":"no facility of this operator in this town in our list",
+"lic":"225",
+"city":"Fordville"
+},
+{
+"i":171,
+"why":"no facility of this operator in this town in our list",
+"lic":"1178",
+"city":"Underwood"
+},
+{
+"i":172,
+"why":"no facility of this operator in this town in our list",
+"lic":"3019",
+"city":"McLean"
+},
+{
+"i":173,
+"why":"no facility of this operator in this town in our list",
+"lic":"3020",
+"city":"Powers Lake"
+},
+{
+"i":174,
+"why":"no facility of this operator in this town in our list",
+"lic":"3021",
+"city":"Renville"
+},
+{
+"i":175,
+"why":"no facility of this operator in this town in our list",
+"lic":"1186",
+"city":"Tower City"
+},
+{
+"i":176,
+"why":"no facility of this operator in this town in our list",
+"lic":"1269",
+"city":"Minot"
+},
+{
+"i":177,
+"why":"no facility of this operator in this town in our list",
+"lic":"1185",
+"city":"Williston"
+},
+{
+"i":178,
+"why":"no facility of this operator in this town in our list",
+"lic":"1249",
+"city":"Great Northern Ag- Bowman"
+},
+{
+"i":179,
+"why":"no facility of this operator in this town in our list",
+"lic":"1248",
+"city":"Plaza"
+},
+{
+"i":180,
+"why":"no facility of this operator in this town in our list",
+"lic":"1197",
+"city":"Cando"
+},
+{
+"i":181,
+"why":"no facility of this operator in this town in our list",
+"lic":"1360",
+"city":"Busch Agricultural Resources LLC"
+},
+{
+"i":182,
+"why":"no facility of this operator in this town in our list",
+"lic":"1198",
+"city":"Sutton"
+},
+{
+"i":183,
+"why":"no facility of this operator in this town in our list",
+"lic":"2144",
+"city":"West Fargo"
+},
+{
+"i":187,
+"why":"no facility of this operator in this town in our list",
+"lic":"1203",
+"city":"Casselton"
+},
+{
+"i":188,
+"why":"no facility of this operator in this town in our list",
+"lic":"1207",
+"city":"Cleveland"
+},
+{
+"i":190,
+"why":"no facility of this operator in this town in our list",
+"lic":"1348",
+"city":"Pingree"
+},
+{
+"i":191,
+"why":"no facility of this operator in this town in our list",
+"lic":"1216",
+"city":"Beulah"
+},
+{
+"i":192,
+"why":"no facility of this operator in this town in our list",
+"lic":"1209",
+"city":"Casselton"
+},
+{
+"i":193,
+"why":"no facility of this operator in this town in our list",
+"lic":"1254",
+"city":"Wheatland"
+},
+{
+"i":194,
+"why":"no facility of this operator in this town in our list",
+"lic":"1220",
+"city":"Hankinson"
+},
+{
+"i":195,
+"why":"no facility of this operator in this town in our list",
+"lic":"1232",
+"city":"Glen Ullin"
+},
+{
+"i":196,
+"why":"no facility of this operator in this town in our list",
+"lic":"1341",
+"city":"Medina"
+},
+{
+"i":197,
+"why":"no facility of this operator in this town in our list",
+"lic":"1245",
+"city":"Courtenay"
+},
+{
+"i":198,
+"why":"no facility of this operator in this town in our list",
+"lic":"1259",
+"city":"Hannaford"
+},
+{
+"i":199,
+"why":"no facility of this operator in this town in our list",
+"lic":"1333",
+"city":"Luverne"
+},
+{
+"i":200,
+"why":"no facility of this operator in this town in our list",
+"lic":"1240",
+"city":"Forman"
+},
+{
+"i":201,
+"why":"no facility of this operator in this town in our list",
+"lic":"1239",
+"city":"Gwinner"
+},
+{
+"i":203,
+"why":"no facility of this operator in this town in our list",
+"lic":"1256",
+"city":"Doyon"
+},
+{
+"i":206,
+"why":"no facility of this operator in this town in our list",
+"lic":"1330",
+"city":"Fairdale"
+},
+{
+"i":207,
+"why":"no facility of this operator in this town in our list",
+"lic":"1262",
+"city":"Larimore"
+},
+{
+"i":208,
+"why":"no facility of this operator in this town in our list",
+"lic":"1263",
+"city":"Sharon"
+},
+{
+"i":209,
+"why":"no facility of this operator in this town in our list",
+"lic":"1282",
+"city":"Cummings"
+},
+{
+"i":210,
+"why":"no facility of this operator in this town in our list",
+"lic":"1299",
+"city":"Grand Forks"
+},
+{
+"i":211,
+"why":"no facility of this operator in this town in our list",
+"lic":"1326",
+"city":"Hamilton"
+},
+{
+"i":212,
+"why":"no facility of this operator in this town in our list",
+"lic":"1278",
+"city":"Petersburg"
+},
+{
+"i":213,
+"why":"no facility of this operator in this town in our list",
+"lic":"1281",
+"city":"Sharon"
+},
+{
+"i":214,
+"why":"no facility of this operator in this town in our list",
+"lic":"1301",
+"city":"Webster"
+},
+{
+"i":215,
+"why":"no facility of this operator in this town in our list",
+"lic":"1274",
+"city":"Harvey"
+},
+{
+"i":216,
+"why":"no facility of this operator in this town in our list",
+"lic":"1276",
+"city":"Carrington"
+},
+{
+"i":217,
+"why":"no facility of this operator in this town in our list",
+"lic":"2183",
+"city":"Bucyrus"
+},
+{
+"i":218,
+"why":"no facility of this operator in this town in our list",
+"lic":"1279",
+"city":"Munich"
+},
+{
+"i":219,
+"why":"no facility of this operator in this town in our list",
+"lic":"1283",
+"city":"Berthold"
+},
+{
+"i":220,
+"why":"no facility of this operator in this town in our list",
+"lic":"1291",
+"city":"Spiritwood"
+},
+{
+"i":221,
+"why":"no facility of this operator in this town in our list",
+"lic":"1288",
+"city":"Walhalla"
+},
+{
+"i":222,
+"why":"no facility of this operator in this town in our list",
+"lic":"1327",
+"city":"Buffalo"
+},
+{
+"i":223,
+"why":"no facility of this operator in this town in our list",
+"lic":"3310",
+"city":"Hatton"
+},
+{
+"i":224,
+"why":"no facility of this operator in this town in our list",
+"lic":"1303",
+"city":"Hillsboro"
+},
+{
+"i":225,
+"why":"no facility of this operator in this town in our list",
+"lic":"1328",
+"city":"Mohall"
+},
+{
+"i":226,
+"why":"no facility of this operator in this town in our list",
+"lic":"1304",
+"city":"Grand Forks"
+},
+{
+"i":227,
+"why":"no facility of this operator in this town in our list",
+"lic":"1329",
+"city":"Bottineau"
+},
+{
+"i":228,
+"why":"no facility of this operator in this town in our list",
+"lic":"1330",
+"city":"Bowbells"
+},
+{
+"i":230,
+"why":"no facility of this operator in this town in our list",
+"lic":"1315",
+"city":"Parshall"
+},
+{
+"i":231,
+"why":"no facility of this operator in this town in our list",
+"lic":"1317",
+"city":"Ross"
+},
+{
+"i":232,
+"why":"no facility of this operator in this town in our list",
+"lic":"1322",
+"city":"Richardton"
+},
+{
+"i":236,
+"why":"no facility of this operator in this town in our list",
+"lic":"2193",
+"city":"Newburg"
+},
+{
+"i":240,
+"why":"no facility of this operator in this town in our list",
+"lic":"256",
+"city":"Tower City"
+},
+{
+"i":241,
+"why":"no facility of this operator in this town in our list",
+"lic":"1346",
+"city":"Cavalier"
+},
+{
+"i":242,
+"why":"no facility of this operator in this town in our list",
+"lic":"896",
+"city":"Enderlin"
+},
+{
+"i":243,
+"why":"no facility of this operator in this town in our list",
+"lic":"1270",
+"city":"Hebron"
+},
+{
+"i":244,
+"why":"no facility of this operator in this town in our list",
+"lic":"1158",
+"city":"Hensler"
+},
+{
+"i":245,
+"why":"no facility of this operator in this town in our list",
+"lic":"1272",
+"city":"Leal"
+},
+{
+"i":246,
+"why":"no facility of this operator in this town in our list",
+"lic":"1092",
+"city":"Rogers"
+},
+{
+"i":247,
+"why":"no facility of this operator in this town in our list",
+"lic":"662",
+"city":"Velva"
+},
+{
+"i":249,
+"why":"no facility of this operator in this town in our list",
+"lic":"613",
+"city":"Hebron"
+},
+{
+"i":250,
+"why":"no facility of this operator in this town in our list",
+"lic":"1058",
+"city":"Dalen"
+},
+{
+"i":251,
+"why":"no facility of this operator in this town in our list",
+"lic":"226",
+"city":"Honeyford"
+},
+{
+"i":252,
+"why":"no facility of this operator in this town in our list",
+"lic":"1057",
+"city":"McCanna"
+},
+{
+"i":253,
+"why":"no facility of this operator in this town in our list",
+"lic":"1056",
+"city":"Niagara"
+},
+{
+"i":254,
+"why":"no facility of this operator in this town in our list",
+"lic":"1059",
+"city":"Petersburg"
+},
+{
+"i":255,
+"why":"no facility of this operator in this town in our list",
+"lic":"303",
+"city":"Tuttle"
+},
+{
+"i":256,
+"why":"no facility of this operator in this town in our list",
+"lic":"479",
+"city":"Hamlet"
+},
+{
+"i":257,
+"why":"no facility of this operator in this town in our list",
+"lic":"10",
+"city":"Hoople"
+},
+{
+"i":258,
+"why":"no facility of this operator in this town in our list",
+"lic":"8",
+"city":"Edinburg"
+},
+{
+"i":259,
+"why":"no facility of this operator in this town in our list",
+"lic":"41",
+"city":"Forest River"
+},
+{
+"i":261,
+"why":"no facility of this operator in this town in our list",
+"lic":"2013",
+"city":"Fairmount"
+},
+{
+"i":262,
+"why":"no facility of this operator in this town in our list",
+"lic":"2202",
+"city":"Arvilla"
+},
+{
+"i":263,
+"why":"no facility of this operator in this town in our list",
+"lic":"2211",
+"city":"Carrington"
+},
+{
+"i":264,
+"why":"no facility of this operator in this town in our list",
+"lic":"2203",
+"city":"Grafton"
+},
+{
+"i":265,
+"why":"no facility of this operator in this town in our list",
+"lic":"2212",
+"city":"Jamestown East"
+},
+{
+"i":266,
+"why":"no facility of this operator in this town in our list",
+"lic":"2213",
+"city":"Jamestown West"
+},
+{
+"i":267,
+"why":"no facility of this operator in this town in our list",
+"lic":"2204",
+"city":"Larimore"
+},
+{
+"i":268,
+"why":"no facility of this operator in this town in our list",
+"lic":"2205",
+"city":"Merrifield"
+},
+{
+"i":269,
+"why":"no facility of this operator in this town in our list",
+"lic":"2210",
+"city":"Minto"
+},
+{
+"i":270,
+"why":"no facility of this operator in this town in our list",
+"lic":"2214",
+"city":"New Rockford"
+},
+{
+"i":271,
+"why":"no facility of this operator in this town in our list",
+"lic":"2206",
+"city":"Oakes"
+},
+{
+"i":272,
+"why":"no facility of this operator in this town in our list",
+"lic":"2215",
+"city":"Rogers"
+},
+{
+"i":273,
+"why":"no facility of this operator in this town in our list",
+"lic":"2207",
+"city":"Ross"
+},
+{
+"i":274,
+"why":"no facility of this operator in this town in our list",
+"lic":"2208",
+"city":"Valley City"
+},
+{
+"i":275,
+"why":"no facility of this operator in this town in our list",
+"lic":"2209",
+"city":"Walhalla"
+},
+{
+"i":276,
+"why":"no facility of this operator in this town in our list",
+"lic":"3280",
+"city":"Genesis Seed Solutions LLC."
+},
+{
+"i":277,
+"why":"no facility of this operator in this town in our list",
+"lic":"3276",
+"city":"MINOT"
+},
+{
+"i":278,
+"why":"no facility of this operator in this town in our list",
+"lic":"3286",
+"city":"Dakota Grain & Livestock Supply, Inc."
+},
+{
+"i":279,
+"why":"no facility of this operator in this town in our list",
+"lic":"3287",
+"city":"Dakota Grain & Livestock Supply, Inc."
+},
+{
+"i":280,
+"why":"no facility of this operator in this town in our list",
+"lic":"3309",
+"city":"Sunrich Products LLC"
+},
+{
+"i":281,
+"why":"no facility of this operator in this town in our list",
+"lic":"3259",
+"city":"Everbest Organics, Inc."
+},
+{
+"i":282,
+"why":"no facility of this operator in this town in our list",
+"lic":"3260",
+"city":"Pulses America, INC"
+},
+{
+"i":283,
+"why":"no facility of this operator in this town in our list",
+"lic":"3274",
+"city":"Manvel Location"
+},
+{
+"i":284,
+"why":"no facility of this operator in this town in our list",
+"lic":"3267",
+"city":"Ashley Feedstore LLC"
+},
+{
+"i":285,
+"why":"no facility of this operator in this town in our list",
+"lic":"3272",
+"city":"GLINZ GRAIN LLC"
+},
+{
+"i":286,
+"why":"no facility of this operator in this town in our list",
+"lic":"2191",
+"city":"Pingree"
+},
+{
+"i":287,
+"why":"no facility of this operator in this town in our list",
+"lic":"3295",
+"city":"DBA The Mill"
+},
+{
+"i":288,
+"why":"no facility of this operator in this town in our list",
+"lic":"189",
+"city":"Hannaford"
+},
+{
+"i":289,
+"why":"no facility of this operator in this town in our list",
+"lic":"920",
+"city":"Sykeston"
+},
+{
+"i":290,
+"why":"no facility of this operator in this town in our list",
+"lic":"188",
+"city":"Walum"
+},
+{
+"i":291,
+"why":"no facility of this operator in this town in our list",
+"lic":"3275",
+"city":"G & R Grain and Feed"
+},
+{
+"i":292,
+"why":"no facility of this operator in this town in our list",
+"lic":"1066",
+"city":"Spiritwood"
+},
+{
+"i":293,
+"why":"no facility of this operator in this town in our list",
+"lic":"985",
+"city":"Wahpeton"
+},
+{
+"i":294,
+"why":"no facility of this operator in this town in our list",
+"lic":"2027",
+"city":"West Fargo"
+},
+{
+"i":295,
+"why":"no facility of this operator in this town in our list",
+"lic":"2181",
+"city":"Adams"
+},
+{
+"i":296,
+"why":"no facility of this operator in this town in our list",
+"lic":"2028",
+"city":"Aneta"
+},
+{
+"i":297,
+"why":"no facility of this operator in this town in our list",
+"lic":"2085",
+"city":"Ashley"
+},
+{
+"i":298,
+"why":"no facility of this operator in this town in our list",
+"lic":"2030",
+"city":"Belfield"
+},
+{
+"i":299,
+"why":"no facility of this operator in this town in our list",
+"lic":"2031",
+"city":"Bowbells"
+},
+{
+"i":300,
+"why":"no facility of this operator in this town in our list",
+"lic":"2033",
+"city":"Calvin"
+},
+{
+"i":301,
+"why":"no facility of this operator in this town in our list",
+"lic":"2163",
+"city":"Cavalier"
+},
+{
+"i":302,
+"why":"no facility of this operator in this town in our list",
+"lic":"2086",
+"city":"Devils Lake"
+},
+{
+"i":303,
+"why":"no facility of this operator in this town in our list",
+"lic":"2177",
+"city":"Dickinson"
+},
+{
+"i":304,
+"why":"no facility of this operator in this town in our list",
+"lic":"888",
+"city":"Dickinson"
+},
+{
+"i":305,
+"why":"no facility of this operator in this town in our list",
+"lic":"2037",
+"city":"Dickinson"
+},
+{
+"i":307,
+"why":"no facility of this operator in this town in our list",
+"lic":"2101",
+"city":"Edgeley"
+},
+{
+"i":308,
+"why":"no facility of this operator in this town in our list",
+"lic":"889",
+"city":"Edgeley"
+},
+{
+"i":309,
+"why":"no facility of this operator in this town in our list",
+"lic":"2078",
+"city":"Edmore"
+},
+{
+"i":310,
+"why":"no facility of this operator in this town in our list",
+"lic":"2039",
+"city":"Elgin"
+},
+{
+"i":311,
+"why":"no facility of this operator in this town in our list",
+"lic":"2140",
+"city":"Fairdale"
+},
+{
+"i":312,
+"why":"no facility of this operator in this town in our list",
+"lic":"2040",
+"city":"Galchutt"
+},
+{
+"i":314,
+"why":"no facility of this operator in this town in our list",
+"lic":"2041",
+"city":"Gladstone"
+},
+{
+"i":315,
+"why":"no facility of this operator in this town in our list",
+"lic":"2042",
+"city":"Gladstone"
+},
+{
+"i":316,
+"why":"no facility of this operator in this town in our list",
+"lic":"2043",
+"city":"Glasston"
+},
+{
+"i":317,
+"why":"no facility of this operator in this town in our list",
+"lic":"1112",
+"city":"Grandin"
+},
+{
+"i":318,
+"why":"no facility of this operator in this town in our list",
+"lic":"2197",
+"city":"Gwinner"
+},
+{
+"i":319,
+"why":"no facility of this operator in this town in our list",
+"lic":"2079",
+"city":"Hampden"
+},
+{
+"i":320,
+"why":"no facility of this operator in this town in our list",
+"lic":"2045",
+"city":"Harwood"
+},
+{
+"i":321,
+"why":"no facility of this operator in this town in our list",
+"lic":"2080",
+"city":"Hazelton"
+},
+{
+"i":322,
+"why":"no facility of this operator in this town in our list",
+"lic":"2046",
+"city":"Hensel"
+},
+{
+"i":323,
+"why":"no facility of this operator in this town in our list",
+"lic":"2173",
+"city":"Hettinger"
+},
+{
+"i":324,
+"why":"no facility of this operator in this town in our list",
+"lic":"2047",
+"city":"Horace"
+},
+{
+"i":325,
+"why":"no facility of this operator in this town in our list",
+"lic":"2124",
+"city":"Joliette"
+},
+{
+"i":326,
+"why":"no facility of this operator in this town in our list",
+"lic":"2098",
+"city":"Kindred"
+},
+{
+"i":327,
+"why":"no facility of this operator in this town in our list",
+"lic":"2049",
+"city":"Kloten"
+},
+{
+"i":328,
+"why":"no facility of this operator in this town in our list",
+"lic":"2103",
+"city":"Kulm"
+},
+{
+"i":329,
+"why":"no facility of this operator in this town in our list",
+"lic":"2125",
+"city":"Lakota"
+},
+{
+"i":330,
+"why":"no facility of this operator in this town in our list",
+"lic":"2126",
+"city":"Langdon"
+},
+{
+"i":331,
+"why":"no facility of this operator in this town in our list",
+"lic":"2050",
+"city":"Lankin"
+},
+{
+"i":332,
+"why":"no facility of this operator in this town in our list",
+"lic":"2201",
+"city":"Lansford"
+},
+{
+"i":333,
+"why":"no facility of this operator in this town in our list",
+"lic":"2051",
+"city":"Lignite"
+},
+{
+"i":334,
+"why":"no facility of this operator in this town in our list",
+"lic":"2077",
+"city":"Manvel"
+},
+{
+"i":335,
+"why":"no facility of this operator in this town in our list",
+"lic":"2053",
+"city":"McVille"
+},
+{
+"i":336,
+"why":"no facility of this operator in this town in our list",
+"lic":"2054",
+"city":"Milton"
+},
+{
+"i":337,
+"why":"no facility of this operator in this town in our list",
+"lic":"2055",
+"city":"Minot"
+},
+{
+"i":338,
+"why":"no facility of this operator in this town in our list",
+"lic":"2056",
+"city":"Mohall"
+},
+{
+"i":339,
+"why":"no facility of this operator in this town in our list",
+"lic":"2057",
+"city":"Mooreton"
+},
+{
+"i":340,
+"why":"no facility of this operator in this town in our list",
+"lic":"2082",
+"city":"Napoleon"
+},
+{
+"i":341,
+"why":"no facility of this operator in this town in our list",
+"lic":"2059",
+"city":"New England"
+},
+{
+"i":342,
+"why":"no facility of this operator in this town in our list",
+"lic":"2174",
+"city":"New Salem"
+},
+{
+"i":343,
+"why":"no facility of this operator in this town in our list",
+"lic":"2060",
+"city":"Niobe"
+},
+{
+"i":344,
+"why":"no facility of this operator in this town in our list",
+"lic":"2061",
+"city":"Norma"
+},
+{
+"i":345,
+"why":"no facility of this operator in this town in our list",
+"lic":"2062",
+"city":"Park River"
+},
+{
+"i":346,
+"why":"no facility of this operator in this town in our list",
+"lic":"2064",
+"city":"Reeder"
+},
+{
+"i":347,
+"why":"no facility of this operator in this town in our list",
+"lic":"2065",
+"city":"Regent"
+},
+{
+"i":348,
+"why":"no facility of this operator in this town in our list",
+"lic":"2088",
+"city":"Rohrville"
+},
+{
+"i":349,
+"why":"no facility of this operator in this town in our list",
+"lic":"2067",
+"city":"Ryder"
+},
+{
+"i":350,
+"why":"no facility of this operator in this town in our list",
+"lic":"2069",
+"city":"Sarles"
+},
+{
+"i":351,
+"why":"no facility of this operator in this town in our list",
+"lic":"2100",
+"city":"Sterling"
+},
+{
+"i":352,
+"why":"no facility of this operator in this town in our list",
+"lic":"2139",
+"city":"Strasburg"
+},
+{
+"i":353,
+"why":"no facility of this operator in this town in our list",
+"lic":"2072",
+"city":"Velva"
+},
+{
+"i":354,
+"why":"no facility of this operator in this town in our list",
+"lic":"2076",
+"city":"Wishek"
+},
+{
+"i":355,
+"why":"no facility of this operator in this town in our list",
+"lic":"2158",
+"city":"Ambrose"
+},
+{
+"i":356,
+"why":"no facility of this operator in this town in our list",
+"lic":"2159",
+"city":"Crosby"
+},
+{
+"i":357,
+"why":"no facility of this operator in this town in our list",
+"lic":"2157",
+"city":"Fortuna"
+},
+{
+"i":358,
+"why":"no facility of this operator in this town in our list",
+"lic":"2160",
+"city":"Noonan"
+},
+{
+"i":363,
+"why":"no facility of this operator in this town in our list",
+"lic":"1352",
+"city":"Hamberg Bean"
+},
+{
+"i":365,
+"why":"no facility of this operator in this town in our list",
+"lic":"311",
+"city":"Heimdal"
+},
+{
+"i":369,
+"why":"no facility of this operator in this town in our list",
+"lic":"1138",
+"city":"Niles"
+},
+{
+"i":373,
+"why":"no facility of this operator in this town in our list",
+"lic":"2210",
+"city":"Mooreton"
+},
+{
+"i":376,
+"why":"no facility of this operator in this town in our list",
+"lic":"56",
+"city":"Fessenden"
+},
+{
+"i":377,
+"why":"no facility of this operator in this town in our list",
+"lic":"12",
+"city":"McClusky"
+},
+{
+"i":378,
+"why":"no facility of this operator in this town in our list",
+"lic":"215",
+"city":"Nash"
+},
+{
+"i":379,
+"why":"no facility of this operator in this town in our list",
+"lic":"1267",
+"city":"Falkirk"
+},
+{
+"i":380,
+"why":"no facility of this operator in this town in our list",
+"lic":"794",
+"city":"Mayville"
+},
+{
+"i":381,
+"why":"no facility of this operator in this town in our list",
+"lic":"1305",
+"city":"Portland"
+},
+{
+"i":382,
+"why":"no facility of this operator in this town in our list",
+"lic":"1306",
+"city":"Portland"
+}
+],
+"ambiguous":[
+{
+"i":13,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00318",
+"ea1nc1v4x0"
+],
+"lic":"996",
+"city":"Geneseo"
+},
+{
+"i":131,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00325",
+"efsyskh5av"
+],
+"lic":"1124",
+"city":"Lisbon"
+},
+{
+"i":248,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00320",
+"ezc9s0wthr"
+],
+"lic":"102",
+"city":"Fullerton"
+},
+{
+"i":260,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"ej3ee5dwsm",
+"ez38f7ngax"
+],
+"lic":"333",
+"city":"Forest River"
+},
+{
+"i":313,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00314",
+"ey3n0m9m7w"
+],
+"lic":"2120",
+"city":"Garrison"
+}
+]
+}
