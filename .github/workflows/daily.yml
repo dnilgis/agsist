@@ -648,17 +648,17 @@ jobs:
       # morning cron regenerates. It never edits daily.json. Its own failure
       # (no key, API error, refusal) is a warning and exit 0, so an outage at
       # Anthropic never stops a briefing the code gates pass.
-      # Sig, Oct 17 2026: Opus 5.5, and report mode (log, never block) for a
-      # calibration week; then switch the default below to 'block'. A repo
-      # variable FACT_CHECK_MODEL / FACT_CHECK_MODE overrides either default.
+      # Sig, Oct 17 2026: Opus 5.5, report mode for a calibration week; Oct 28:
+      # block. A repo variable FACT_CHECK_MODEL overrides the model.
       - name: GATE 2f, fact check against the source data
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL || 'claude-opus-5-5' }}
           # The selftest checks the defaults, so it runs with both overrides cleared (a set model broke it on Oct 18).
-          # Pinned to report (Sig, Oct 17: log only for a calibration week, review Oct 24). A repo variable
-          # can no longer switch it to block by accident; change this line when Sig says block.
-          FACT_CHECK_MODE: report
+          # Block (Sig, Oct 28, after the Oct 18-24 calibration week: 5 high flags, all real errors that
+          # went out, 4 of them an overnight or intraday price called a "close"). Only a high flag whose
+          # quote is really in the draft blocks; pinned here so a repo variable cannot change it.
+          FACT_CHECK_MODE: block
         run: |
           echo "fact check: model=$FACT_CHECK_MODEL mode=$FACT_CHECK_MODE"
           if ! FACT_CHECK_MODE= FACT_CHECK_MODEL= python scripts/test_fact_check.py > /tmp/fc-selftest.txt 2>&1; then
