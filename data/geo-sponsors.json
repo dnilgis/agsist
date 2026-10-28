@@ -1,0 +1,22 @@
+{
+ "_": "STATE-TARGETED SPONSORS. Read by components/geo-sponsor.js (loaded by components/loader.js). An entry draws only when active is true and headline, body and an https url are filled in. It shows on pages about one of its states, and to readers whose visit Cloudflare places in one of its states (the worker's GET /where, asked once per browser session; only the 2-letter state is kept, in this browser's sessionStorage, and it never goes into any count or log). start and end are optional YYYY-MM-DD days in Central time; null means no limit. Never on Rain Print, gift card or rain gauge pages. A page with a sold page sponsor shows that one instead. Preview: add ?geo-preview=CA to any page (draws even an inactive entry, counts nothing).",
+ "sponsors": [
+  {
+   "id": "rootlot",
+   "name": "RootLot",
+   "states": ["CA", "OR", "NV"],
+   "active": false,
+   "start": null,
+   "end": null,
+   "headline": null,
+   "body": null,
+   "facts": null,
+   "cta_text": null,
+   "url": null,
+   "phone": null,
+   "logo": null,
+   "utm_campaign": "geo-test",
+   "_note": "Oct 28 (Sig): an experiment, not a sold slot. Copy, link and logo come from the ChatGPT answer to notes/chatgpt/prompts/2026-10-28-rootlot.md; Sig approves them, then flips active by hand to start and back to end. The owner OK'd logo use."
+  }
+ ]
+}
