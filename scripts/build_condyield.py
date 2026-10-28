@@ -195,7 +195,7 @@ def render_tiles(data, rows):
                  f'<div class="s">the season seals it late &middot; n={ia["peak_n"]} yrs</div></div>')
     if top:
         t.append(f'<div class="cy-stat"><div class="v">{round(top["r2"]*100)}%</div>'
-                 f'<div class="l">{esc(top["name"])}, {"this week" if top["week"] == top.get("latest_week", top["week"]) else f"wk {top['week']}"}</div>'
+                 f'<div class="l">{esc(top["name"])}, {"this week" if top["week"] == top.get("latest_week", top["week"]) else "wk " + str(top["week"])}</div>'
                  f'<div class="s">the clearest read in the country right now &middot; {n_note(top)}</div></div>')
     t.append(f'<div class="cy-stat"><div class="v">n&ge;{data.get("min_n", 15)}</div>'
              f'<div class="l">years per fit, minimum</div>'
