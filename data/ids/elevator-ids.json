@@ -2365,6 +2365,14 @@
     "basis:KS|COMARK EQUITY ALLIANCE LLC|CONWAY SPRINGS"
    ]
   },
+  "e2xhmjwrwm": {
+   "into": "e3vqrhm1zz",
+   "on": "2026-10-28",
+   "rule": "declared",
+   "keys": [
+    "dir:75594"
+   ]
+  },
   "e3129xf26a": {
    "into": "e7fnj8a7m3",
    "on": "2026-10-27",
@@ -4852,6 +4860,12 @@
    "merge": "a00401",
    "into": "ekw0aj6bxb",
    "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "e2xhmjwrwm",
+   "into": "e3vqrhm1zz",
+   "why": "folded into e3vqrhm1zz by the bids repo (mergedFrom, rule declared)"
   }
  ],
  "keys": {
@@ -9187,7 +9201,7 @@
   "dir:75065": "a00500",
   "dir:75565": "e5gfdr3gsm",
   "dir:75567": "ewxrf1jyrv",
-  "dir:75594": "e2xhmjwrwm",
+  "dir:75594": "e3vqrhm1zz",
   "dir:76126": "ev6h5bpy0c",
   "dir:76808": "en60nwypx8",
   "dir:77326": "e9zthe7shq",
