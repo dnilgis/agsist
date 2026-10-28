@@ -1470,7 +1470,7 @@ def board_section(bd, snap_ct):
             + pasted_mark(rows, snap_ct) +
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>'
-            f'{more_html}</section>'), rows, times, holds
+            f'{more_html}{bd.get("storage_html") or ""}</section>'), rows, times, holds
 
 
 WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
@@ -2835,6 +2835,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   <h2 id="towns">{len(live)} town{'s' if len(live) != 1 else ''} with a current bid</h2>
   {lst}
   {quiet_html}
+  {ctx.get("storage_note", {}).get(st) or ""}
   <div class="cbt-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
   boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was read
   successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours, long enough that a board unchanged
@@ -3081,6 +3082,35 @@ def cash_parent(rel, pre=OUT_DIR):
     return [("/basis#states", "cash bids by state")] + hub
 
 
+# LICENSED STORAGE (2026-10-28, fx/necap): a state's own list of licensed grain warehouses and the
+# bushels each may store (Nebraska PSC first, scripts/fetch_ne_capacity.py, data/licensed-storage/).
+# A board shows its location's licensed bushels only when the join there named exactly one of our
+# facilities and that facility holds this board, and the board posts at one place only (a board that
+# posts for several places is never given one place's number). The state page carries the report's
+# own totals. No file, or one that does not add up: nothing is printed.
+def attach_storage(towns, ctx, root="."):
+    import fetch_ne_capacity as NECAP
+    doc = NECAP.load(root)
+    ctx["storage_note"], ctx["storage_shown"] = {}, 0
+    if not doc:
+        return
+    by_src = NECAP.by_source(doc)
+    places = Counter()
+    for t in towns.values():
+        for bd in t["boards"].values():
+            places[bd["source"]] += 1
+    for t in towns.values():
+        for bd in t["boards"].values():
+            r = by_src.get(bd["source"])
+            if r and places[bd["source"]] == 1 and r["st"] == t["state"]:
+                bd["storage_html"] = NECAP.storage_line_html(r, doc, esc)
+                ctx["storage_shown"] += 1
+    for st in ("NE",):
+        note = NECAP.state_note_html(doc, st, esc)
+        if note:
+            ctx["storage_note"][st] = note
+
+
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
               min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None,
               companies_out=None):
@@ -3144,6 +3174,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     import stories_bids as SBX
     ctx["stories"] = {"town": SKX.load(SBX.TOWN, os.path.join(root, SBX.TOWN.STORE)),
                       "company": SKX.load(SBX.COMPANY, os.path.join(root, SBX.COMPANY.STORE))}
+    attach_storage(towns, ctx, root)
     companies = CO.group(towns, {s_["id"]: s_ for s_ in index.get("sources") or [] if s_.get("id")})
     for co in companies.values():
         for _, bd in co["locs"]:
@@ -3278,7 +3309,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(out_dir) for f in fs)
     n_idx = sum(1 for m in metas if m["indexable"])
     print(f"[cash-bid-pages] snapshot {merged.get('generated')} ({age_h:.1f} h old); drops {dict(drops)}; "
-          f"{len(unplaced)} places not placed in a town (listed on the state index); {n_odd} unusual-basis rows flagged")
+          f"{len(unplaced)} places not placed in a town (listed on the state index); {n_odd} unusual-basis rows flagged; "
+          f"licensed storage shown on {ctx.get('storage_shown', 0)} boards")
     if moved:
         print(f"[cash-bid-pages] {len(moved)} boards named for a town their ZIP or pin does not fit, placed by "
               f"ZIP or pin instead: " + ", ".join(f"{k[1]} {k[0]} -> {v[0]}" for k, v in sorted(moved.items())))

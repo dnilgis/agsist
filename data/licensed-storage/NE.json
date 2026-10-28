@@ -1,0 +1,3123 @@
+{
+"schema":1,
+"note":"Grain warehouse locations licensed by the Nebraska Public Service Commission and the bushels each is licensed to store, as the PSC reports them. Warehouses licensed federally instead are not on the state's list. id: the AGSIST elevator id when exactly one of our facilities matches (scripts/fetch_ne_capacity.py); unjoined and ambiguous rows are listed, never guessed.",
+"source":{
+"name":"Nebraska Public Service Commission, Location Capacity Report",
+"short":"Nebraska PSC",
+"as_of":"2026-10-28",
+"ref":"ne-psc-capacity-2026-10-28",
+"sha256":"61b9080feeea5749caa9bbbc47849cf6cb712b8cdaa7390d59ad28e434415c3e",
+"url":"https://psc.nebraska.gov/sites/default/files/doc/2026-10-28%20Location%20Capacity%20Report.pdf"
+},
+"totals":{
+"locations":191,
+"bushels":451999873,
+"by_state":{
+"NE":{
+"locations":179,
+"bushels":421326390
+},
+"KS":{
+"locations":12,
+"bushels":30673483
+}
+}
+},
+"join":{
+"joined":97,
+"of":191,
+"rate":0.5079,
+"by_rule":{
+"name+town":61,
+"alias+town":36
+},
+"with_bids_key":97,
+"unjoined":87,
+"ambiguous":7
+},
+"locations":[
+{
+"lic":"19",
+"name":"J. E. Meuret Grain Co., Inc.",
+"city":"Atkinson",
+"county":"Holt",
+"st":"NE",
+"fips":"31089",
+"bu":2783405,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"19",
+"name":"J. E. Meuret Grain Co., Inc.",
+"city":"Brunswick",
+"county":"Antelope",
+"st":"NE",
+"fips":"31003",
+"bu":6614779,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"19",
+"name":"J. E. Meuret Grain Co., Inc.",
+"city":"Copenhagen",
+"county":"Antelope",
+"st":"NE",
+"fips":"31003",
+"bu":1829269,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"19",
+"name":"J. E. Meuret Grain Co., Inc.",
+"city":"Creighton",
+"county":"Knox",
+"st":"NE",
+"fips":"31107",
+"bu":654188,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"19",
+"name":"J. E. Meuret Grain Co., Inc.",
+"city":"Crofton",
+"county":"Knox",
+"st":"NE",
+"fips":"31107",
+"bu":1556520,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"19",
+"name":"J. E. Meuret Grain Co., Inc.",
+"city":"Dakota City",
+"county":"Dakota",
+"st":"NE",
+"fips":"31043",
+"bu":2575556,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"19",
+"name":"J. E. Meuret Grain Co., Inc.",
+"city":"Orchard",
+"county":"Antelope",
+"st":"NE",
+"fips":"31003",
+"bu":2154613,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"19",
+"name":"J. E. Meuret Grain Co., Inc.",
+"city":"Pierce",
+"county":"Pierce",
+"st":"NE",
+"fips":"31139",
+"bu":1126740,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Arapahoe",
+"county":"Furnas",
+"st":"NE",
+"fips":"31065",
+"bu":650030,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Atlanta",
+"county":"Phelps",
+"st":"NE",
+"fips":"31137",
+"bu":771737,
+"id":"esvgverxq9",
+"src":[
+"agvalley-atlanta"
+],
+"how":"name+town"
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Bartley",
+"county":"Red Willow",
+"st":"NE",
+"fips":"31145",
+"bu":5103646,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Big Springs",
+"county":"Deuel",
+"st":"NE",
+"fips":"31049",
+"bu":4417635,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Edison",
+"county":"Furnas",
+"st":"NE",
+"fips":"31065",
+"bu":11817796,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Eustis",
+"county":"Frontier",
+"st":"NE",
+"fips":"31063",
+"bu":3068357,
+"id":"eyxz40vjkc",
+"src":[
+"agvalley-eustis"
+],
+"how":"name+town"
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Hershey",
+"county":"Lincoln",
+"st":"NE",
+"fips":"31111",
+"bu":1562568,
+"id":"ejawthtveb",
+"src":[
+"agvalley-hershey"
+],
+"how":"name+town"
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Holbrook",
+"county":"Furnas",
+"st":"NE",
+"fips":"31065",
+"bu":1645343,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Jennings",
+"county":"Decatur",
+"st":"KS",
+"fips":"20039",
+"bu":1501327,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Maywood",
+"county":"Frontier",
+"st":"NE",
+"fips":"31063",
+"bu":6247043,
+"id":"etby8qtza8",
+"src":[
+"agvalley-maywood"
+],
+"how":"name+town"
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"North Platte",
+"county":"Lincoln",
+"st":"NE",
+"fips":"31111",
+"bu":3226252,
+"id":"es45arp3yv",
+"src":[
+"agvalley-northplatte"
+],
+"how":"name+town"
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Norton",
+"county":"Norton",
+"st":"KS",
+"fips":"20137",
+"bu":3893441,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Orleans",
+"county":"Harlan",
+"st":"NE",
+"fips":"31083",
+"bu":4907324,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Oxford",
+"county":"Furnas",
+"st":"NE",
+"fips":"31065",
+"bu":299700,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Stapleton",
+"county":"Logan",
+"st":"NE",
+"fips":"31113",
+"bu":1320323,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"22",
+"name":"Ag Valley Cooperative, Non-Stock",
+"city":"Wilsonville",
+"county":"Furnas",
+"st":"NE",
+"fips":"31065",
+"bu":2190853,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"91",
+"name":"Clark Grain Company",
+"city":"Johnson",
+"county":"Nemaha",
+"st":"NE",
+"fips":"31127",
+"bu":1562244,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Adams",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":710008,
+"id":"es3z3wf02r",
+"src":[
+"frontiercooperative-adams"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Avoca",
+"county":"Cass",
+"st":"NE",
+"fips":"31025",
+"bu":211120,
+"id":"eh2077x425",
+"src":[
+"frontiercooperative-avoca"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Belgrade",
+"county":"Nance",
+"st":"NE",
+"fips":"31125",
+"bu":2286759,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Bellwood",
+"county":"Butler",
+"st":"NE",
+"fips":"31023",
+"bu":2316819,
+"id":"e7ns30tmbb",
+"src":[
+"frontiercooperative-bellwood"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Bennet",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":1403917,
+"id":"extm67s02p",
+"src":[
+"frontiercooperative-bennet"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Brainard",
+"county":"Butler",
+"st":"NE",
+"fips":"31023",
+"bu":4484103,
+"id":"etzjzzyvw0",
+"src":[
+"frontiercooperative-brainard"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Bruno",
+"county":"Butler",
+"st":"NE",
+"fips":"31023",
+"bu":445585,
+"id":"e17tt322wv",
+"src":[
+"frontiercooperative-bruno"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Burr",
+"county":"Otoe",
+"st":"NE",
+"fips":"31131",
+"bu":1043042,
+"id":"ea3qs181pb",
+"src":[
+"frontiercooperative-burr"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Cedar Bluffs",
+"county":"Saunders",
+"st":"NE",
+"fips":"31155",
+"bu":1417150,
+"id":"eej2pvxvn0",
+"src":[
+"frontiercooperative-cedarbluffs"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Ceresco",
+"county":"Saunders",
+"st":"NE",
+"fips":"31155",
+"bu":3276953,
+"id":"ebghzzv38k",
+"src":[
+"frontiercooperative-ceresco"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Columbus",
+"county":"Platte",
+"st":"NE",
+"fips":"31141",
+"bu":2383060,
+"id":"e5j7xq0r2y",
+"src":[
+"frontiercooperative-columbus"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Cook",
+"county":"Johnson",
+"st":"NE",
+"fips":"31097",
+"bu":175384,
+"id":"et998d56mm",
+"src":[
+"frontiercooperative-cook"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"David City",
+"county":"Butler",
+"st":"NE",
+"fips":"31023",
+"bu":611881,
+"id":"e6tjbprrv3",
+"src":[
+"frontiercooperative-davidcityelevator"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Duncan",
+"county":"Platte",
+"st":"NE",
+"fips":"31141",
+"bu":582059,
+"id":"e93z4g1333",
+"src":[
+"frontiercooperative-duncan"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Dwight",
+"county":"Butler",
+"st":"NE",
+"fips":"31023",
+"bu":710292,
+"id":"ej9gbta9r4",
+"src":[
+"frontiercooperative-dwight"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Eagle",
+"county":"Cass",
+"st":"NE",
+"fips":"31025",
+"bu":409844,
+"id":"ec056q2nc0",
+"src":[
+"frontiercooperative-eagle"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Elk Creek",
+"county":"Johnson",
+"st":"NE",
+"fips":"31097",
+"bu":1166745,
+"id":"e2f6w8vcgh",
+"src":[
+"frontiercooperative-elkcreek"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Elmwood",
+"county":"Cass",
+"st":"NE",
+"fips":"31025",
+"bu":3222458,
+"id":"e69y7nywnv",
+"src":[
+"frontiercooperative-elmwood"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Garrison",
+"county":"Butler",
+"st":"NE",
+"fips":"31023",
+"bu":2259407,
+"id":"e7d6b91y2j",
+"src":[
+"frontiercooperative-garrison"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Greenwood",
+"county":"Cass",
+"st":"NE",
+"fips":"31025",
+"bu":4298351,
+"id":"ez58fnwjpz",
+"src":[
+"frontiercooperative-greenwood"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Howells",
+"county":"Colfax",
+"st":"NE",
+"fips":"31037",
+"bu":387345,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Lincoln",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":1605974,
+"id":"e45k5hpvkc",
+"src":[
+"frontiercooperative-lincoln"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Manley",
+"county":"Cass",
+"st":"NE",
+"fips":"31025",
+"bu":1029547,
+"id":"exw709ks9s",
+"src":[
+"frontiercooperative-manley"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Martell",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":55422,
+"id":"e6gq7tm8k9",
+"src":[
+"known:Frontier Cooperative|Martell|Martell|NE"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Mead",
+"county":"Saunders",
+"st":"NE",
+"fips":"31155",
+"bu":7888851,
+"id":"egcqw2qk93",
+"src":[
+"frontiercooperative-mead"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Murdock",
+"county":"Cass",
+"st":"NE",
+"fips":"31025",
+"bu":721616,
+"id":"e2zh1k49hn",
+"src":[
+"frontiercooperative-murdock"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Mynard West",
+"county":"Cass",
+"st":"NE",
+"fips":"31025",
+"bu":2367694,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Nebraska City",
+"county":"Otoe",
+"st":"NE",
+"fips":"31131",
+"bu":646035,
+"id":"ec61rjjpjg",
+"src":[
+"frontiercooperative-nebraskacity"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"North Bend",
+"county":"Dodge",
+"st":"NE",
+"fips":"31053",
+"bu":2216240,
+"id":"edjggrk6s4",
+"src":[
+"frontiercooperative-northbend"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Osceola",
+"county":"Polk",
+"st":"NE",
+"fips":"31143",
+"bu":2569498,
+"id":"ej6hrq9g0d",
+"src":[
+"frontiercooperative-osceola"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Otoe",
+"county":"Otoe",
+"st":"NE",
+"fips":"31131",
+"bu":2308551,
+"id":"ekwhmwh8kk",
+"src":[
+"frontiercooperative-otoe"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Palmyra",
+"county":"Otoe",
+"st":"NE",
+"fips":"31131",
+"bu":1758573,
+"id":"e98ttx0ydm",
+"src":[
+"frontiercooperative-palmyra"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Prague",
+"county":"Saunders",
+"st":"NE",
+"fips":"31155",
+"bu":1579303,
+"id":"en5dsdb6mn",
+"src":[
+"frontiercooperative-prague"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Prairie Home",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":178059,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Schuyler",
+"county":"Colfax",
+"st":"NE",
+"fips":"31037",
+"bu":9926102,
+"id":"eedd2xfs2h",
+"src":[
+"frontiercooperative-schuyler"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Silver Creek",
+"county":"Merrick",
+"st":"NE",
+"fips":"31121",
+"bu":3435543,
+"id":"efvgq7dzna",
+"src":[
+"frontiercooperative-silvercreek"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Saint Mary",
+"county":"Johnson",
+"st":"NE",
+"fips":"31097",
+"bu":470571,
+"id":"e46wrryx4f",
+"src":[
+"frontiercooperative-stmary"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Syracuse SE",
+"county":"Otoe",
+"st":"NE",
+"fips":"31131",
+"bu":4152460,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Tarnov",
+"county":"Platte",
+"st":"NE",
+"fips":"31141",
+"bu":1182630,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Tecumseh",
+"county":"Johnson",
+"st":"NE",
+"fips":"31097",
+"bu":1342487,
+"id":"eazv4a08hw",
+"src":[
+"known:Frontier Cooperative|Tecumseh North|Tecumseh|NE"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Tecumseh North",
+"county":"Johnson",
+"st":"NE",
+"fips":"31097",
+"bu":1472192,
+"id":"ey3hhmentf",
+"src":[
+"frontiercooperative-tecumsehnorth"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Wahoo",
+"county":"Saunders",
+"st":"NE",
+"fips":"31155",
+"bu":758737,
+"id":"egrs1dbx9p",
+"src":[
+"frontiercooperative-wahoo"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Walton",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":685332,
+"id":"e2hga2cm3f",
+"src":[
+"frontiercooperative-walton"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Waverly",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":3171046,
+"id":"etzcfzna3z",
+"src":[
+"frontiercooperative-waverly"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Weston",
+"county":"Saunders",
+"st":"NE",
+"fips":"31155",
+"bu":665409,
+"id":"eg7ymnt2kv",
+"src":[
+"frontiercooperative-weston"
+],
+"how":"name+town"
+},
+{
+"lic":"153",
+"name":"Frontier Cooperative Company",
+"city":"Yanka",
+"county":"Butler",
+"st":"NE",
+"fips":"31023",
+"bu":3894711,
+"id":"ev1stqz37h",
+"src":[
+"frontiercooperative-yanka"
+],
+"how":"name+town"
+},
+{
+"lic":"244",
+"name":"Ely's, Incorporated",
+"city":"Guide Rock",
+"county":"Webster",
+"st":"NE",
+"fips":"31181",
+"bu":1484900,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Barnes",
+"county":"Washington",
+"st":"KS",
+"fips":"20201",
+"bu":4803097,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Barneston",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":1358362,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Beatrice",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":3734778,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Beattie",
+"county":"Marshall",
+"st":"KS",
+"fips":"20117",
+"bu":1612393,
+"id":"ejewb979pp",
+"src":[
+"farmerscooperative-beattie"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Blue Rapids",
+"county":"Marshall",
+"st":"KS",
+"fips":"20117",
+"bu":1293250,
+"id":"e7x7v000vz",
+"src":[
+"farmerscooperative-bluerapids"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Blue Springs",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":788731,
+"id":"eq03cwvjsv",
+"src":[
+"farmerscooperative-bluesprings"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Burchard",
+"county":"Pawnee",
+"st":"NE",
+"fips":"31133",
+"bu":2582621,
+"id":"ey0g3zxjff",
+"src":[
+"farmerscooperative-burchard"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Cordova",
+"county":"Seward",
+"st":"NE",
+"fips":"31159",
+"bu":1390486,
+"id":"e2wrs3sd24",
+"src":[
+"farmerscooperative-cordova"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Daykin",
+"county":"Jefferson",
+"st":"NE",
+"fips":"31095",
+"bu":3148104,
+"id":"ehjfzq9h54",
+"src":[
+"farmerscooperative-daykin"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Dorchester",
+"county":"Saline",
+"st":"NE",
+"fips":"31151",
+"bu":6855106,
+"id":"ejmjz841bd",
+"src":[
+"farmerscooperative-dorchester"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Emerald",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":1791121,
+"id":"ek9ve8wvcj",
+"src":[
+"farmerscooperative-emerald"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Exeter",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":3753589,
+"id":"eq73a93j8h",
+"src":[
+"farmerscooperative-exeter"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Fairmont",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":1018772,
+"id":"eaae2zsg3q",
+"src":[
+"farmerscooperative-fairmont"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Filley",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":263732,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Firth",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":540615,
+"id":"e0yt5x31gv",
+"src":[
+"farmerscooperative-firth"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Frankfort",
+"county":"Marshall",
+"st":"KS",
+"fips":"20117",
+"bu":1800837,
+"id":"e1564bmx25",
+"src":[
+"farmerscooperative-frankfort"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Frankfort North",
+"county":"Marshall",
+"st":"KS",
+"fips":"20117",
+"bu":6248529,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Hallam",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":1740597,
+"id":"eg6fbvxqb6",
+"src":[
+"farmerscooperative-hallam"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Hanover",
+"county":"Washington",
+"st":"KS",
+"fips":"20201",
+"bu":5810559,
+"id":"ezkh9xpmb0",
+"src":[
+"farmerscooperative-hanover"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Herkimer",
+"county":"Marshall",
+"st":"KS",
+"fips":"20117",
+"bu":1309581,
+"id":"e1308tcjg2",
+"src":[
+"farmerscooperative-herkimer"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Hoag",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":715618,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Jansen",
+"county":"Jefferson",
+"st":"NE",
+"fips":"31095",
+"bu":6150644,
+"id":"e0fafnpzpd",
+"src":[
+"farmerscooperative-jansen"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Kramer",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":908074,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Lincoln",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":8493739,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Lushton",
+"county":"York",
+"st":"NE",
+"fips":"31185",
+"bu":1748092,
+"id":"ehjbf1kbj5",
+"src":[
+"farmerscooperative-lushton"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Marietta",
+"county":"Marshall",
+"st":"KS",
+"fips":"20117",
+"bu":1592644,
+"id":"ea431amncr",
+"src":[
+"farmerscooperative-marietta"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Marysville",
+"county":"Marshall",
+"st":"KS",
+"fips":"20117",
+"bu":455961,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"McCool Junction",
+"county":"York",
+"st":"NE",
+"fips":"31185",
+"bu":1700546,
+"id":"e52faxg96a",
+"src":[
+"farmerscooperative-mccooljunction"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Milligan",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":3514458,
+"id":"e4z6cnjsjb",
+"src":[
+"farmerscooperative-milligan"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Odell",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":2744767,
+"id":"ewha5gd0h9",
+"src":[
+"farmerscooperative-odell"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Ohiowa",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":2206707,
+"id":"ea6rcmw2vs",
+"src":[
+"farmerscooperative-ohiowa"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Pawnee City",
+"county":"Pawnee",
+"st":"NE",
+"fips":"31133",
+"bu":3877063,
+"id":"enxzefs03v",
+"src":[
+"farmerscooperative-pawneecity"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Pickrell",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":1087258,
+"id":"ejmzaxcber",
+"src":[
+"farmerscooperative-pickrell"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Pleasant Dale",
+"county":"Seward",
+"st":"NE",
+"fips":"31159",
+"bu":779497,
+"id":"esz58cx4qy",
+"src":[
+"farmerscooperative-pleasantdale"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Plymouth",
+"county":"Jefferson",
+"st":"NE",
+"fips":"31095",
+"bu":3660589,
+"id":"e66s72mbab",
+"src":[
+"farmerscooperative-plymouth"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Raymond",
+"county":"Lancaster",
+"st":"NE",
+"fips":"31109",
+"bu":2486098,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Reynolds",
+"county":"Jefferson",
+"st":"NE",
+"fips":"31095",
+"bu":3259758,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Ruby",
+"county":"Seward",
+"st":"NE",
+"fips":"31159",
+"bu":4030364,
+"id":"esrebakghd",
+"src":[
+"farmerscooperative-ruby"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Sterling",
+"county":"Johnson",
+"st":"NE",
+"fips":"31097",
+"bu":1310488,
+"id":"eery4mvtkv",
+"src":[
+"farmerscooperative-sterling"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Swanton",
+"county":"Saline",
+"st":"NE",
+"fips":"31151",
+"bu":1286931,
+"id":"e9f6cedqsv",
+"src":[
+"farmerscooperative-swanton"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Virginia",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":1801612,
+"id":"ewa3bnw8em",
+"src":[
+"farmerscooperative-virginia"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Waterville",
+"county":"Marshall",
+"st":"KS",
+"fips":"20117",
+"bu":351864,
+"id":"e72ajgt7bp",
+"src":[
+"farmerscooperative-waterville"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Wilber",
+"county":"Saline",
+"st":"NE",
+"fips":"31151",
+"bu":2736130,
+"id":"extasr98hc",
+"src":[
+"farmerscooperative-wilber"
+],
+"how":"alias+town"
+},
+{
+"lic":"279",
+"name":"Farmers Cooperative",
+"city":"Wymore",
+"county":"Gage",
+"st":"NE",
+"fips":"31067",
+"bu":255581,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"306",
+"name":"Geneva Milling Co., Inc.",
+"city":"Geneva",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":1641041,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"349",
+"name":"Shickley Grain Company",
+"city":"Shickley",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":2850425,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"371",
+"name":"Prinz Grain & Feed, Inc.",
+"city":"Tekamah",
+"county":"Burt",
+"st":"NE",
+"fips":"31021",
+"bu":607822,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"371",
+"name":"Prinz Grain & Feed, Inc.",
+"city":"West Point",
+"county":"Cuming",
+"st":"NE",
+"fips":"31039",
+"bu":1639452,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"378",
+"name":"Battle Creek Farmers Cooperative, Non-Stock",
+"city":"Battle Creek",
+"county":"Madison",
+"st":"NE",
+"fips":"31119",
+"bu":2322432,
+"id":"ewqn2s83nk",
+"src":[
+"farmerspridecoop-battlecreek"
+],
+"how":"alias+town"
+},
+{
+"lic":"378",
+"name":"Battle Creek Farmers Cooperative, Non-Stock",
+"city":"Bloomfield",
+"county":"Knox",
+"st":"NE",
+"fips":"31107",
+"bu":4870673,
+"id":"exr6ge16r4",
+"src":[
+"farmerspridecoop-bloomfield"
+],
+"how":"alias+town"
+},
+{
+"lic":"378",
+"name":"Battle Creek Farmers Cooperative, Non-Stock",
+"city":"Neligh",
+"county":"Antelope",
+"st":"NE",
+"fips":"31003",
+"bu":3765118,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"378",
+"name":"Battle Creek Farmers Cooperative, Non-Stock",
+"city":"Newman Grove",
+"county":"Madison",
+"st":"NE",
+"fips":"31119",
+"bu":2083989,
+"id":"e894mr6wb3",
+"src":[
+"farmerspridecoop-newmangrove"
+],
+"how":"alias+town"
+},
+{
+"lic":"378",
+"name":"Battle Creek Farmers Cooperative, Non-Stock",
+"city":"Osmond",
+"county":"Pierce",
+"st":"NE",
+"fips":"31139",
+"bu":2933917,
+"id":"ev285d6wjh",
+"src":[
+"farmerspridecoop-osmond"
+],
+"how":"alias+town"
+},
+{
+"lic":"405",
+"name":"Farmers Cooperative",
+"city":"Pilger",
+"county":"Stanton",
+"st":"NE",
+"fips":"31167",
+"bu":1905591,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"405",
+"name":"Farmers Cooperative",
+"city":"Wayne",
+"county":"Wayne",
+"st":"NE",
+"fips":"31179",
+"bu":1286742,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"405",
+"name":"Farmers Cooperative",
+"city":"Winside",
+"county":"Wayne",
+"st":"NE",
+"fips":"31179",
+"bu":826012,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"471",
+"name":"Farmers Union Cooperative Company",
+"city":"Friend",
+"county":"Saline",
+"st":"NE",
+"fips":"31151",
+"bu":3325825,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"535",
+"name":"Farmers Union Coop. Supply Co.",
+"city":"Clarkson",
+"county":"Colfax",
+"st":"NE",
+"fips":"31037",
+"bu":1373570,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"535",
+"name":"Farmers Union Coop. Supply Co.",
+"city":"Howells",
+"county":"Colfax",
+"st":"NE",
+"fips":"31037",
+"bu":1378085,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"535",
+"name":"Farmers Union Coop. Supply Co.",
+"city":"Stanton",
+"county":"Stanton",
+"st":"NE",
+"fips":"31167",
+"bu":1197123,
+"id":"eqvp3cbmbb",
+"src":[
+"known:2606"
+],
+"how":"name+town"
+},
+{
+"lic":"537",
+"name":"Cooperative Supply, Inc.",
+"city":"Dodge",
+"county":"Dodge",
+"st":"NE",
+"fips":"31053",
+"bu":5355687,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"537",
+"name":"Cooperative Supply, Inc.",
+"city":"Howells",
+"county":"Colfax",
+"st":"NE",
+"fips":"31037",
+"bu":636898,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"537",
+"name":"Cooperative Supply, Inc.",
+"city":"Leigh",
+"county":"Colfax",
+"st":"NE",
+"fips":"31037",
+"bu":1652842,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"537",
+"name":"Cooperative Supply, Inc.",
+"city":"Leigh 57",
+"county":"Colfax",
+"st":"NE",
+"fips":"31037",
+"bu":867082,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"537",
+"name":"Cooperative Supply, Inc.",
+"city":"Richland",
+"county":"Colfax",
+"st":"NE",
+"fips":"31037",
+"bu":1645910,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"578",
+"name":"Farmers Cooperative Grain and Supply Company",
+"city":"Stratton",
+"county":"Hitchcock",
+"st":"NE",
+"fips":"31087",
+"bu":965673,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"578",
+"name":"Farmers Cooperative Grain and Supply Company",
+"city":"Trenton",
+"county":"Hitchcock",
+"st":"NE",
+"fips":"31087",
+"bu":1062956,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"697",
+"name":"Ochsner Grain Co., Inc.",
+"city":"Madison",
+"county":"Madison",
+"st":"NE",
+"fips":"31119",
+"bu":1159906,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"852",
+"name":"Country Partners Cooperative",
+"city":"Anselmo",
+"county":"Custer",
+"st":"NE",
+"fips":"31041",
+"bu":5337570,
+"id":"eazg5recek",
+"src":[
+"countrypartnerscooperative-anselmo"
+],
+"how":"name+town"
+},
+{
+"lic":"852",
+"name":"Country Partners Cooperative",
+"city":"Cedar Rapids",
+"county":"Boone",
+"st":"NE",
+"fips":"31011",
+"bu":2511050,
+"id":"e3yrsa7gwz",
+"src":[
+"countrypartnerscooperative-cedarrapids"
+],
+"how":"name+town"
+},
+{
+"lic":"852",
+"name":"Country Partners Cooperative",
+"city":"Farnam",
+"county":"Dawson",
+"st":"NE",
+"fips":"31047",
+"bu":3075703,
+"id":"e0bz8rm0qa",
+"src":[
+"countrypartnerscooperative-farnam"
+],
+"how":"name+town"
+},
+{
+"lic":"852",
+"name":"Country Partners Cooperative",
+"city":"Gothenburg",
+"county":"Dawson",
+"st":"NE",
+"fips":"31047",
+"bu":7116155,
+"id":"e0a3hb8bn9",
+"src":[
+"countrypartnerscooperative-gothenburg"
+],
+"how":"name+town"
+},
+{
+"lic":"852",
+"name":"Country Partners Cooperative",
+"city":"Merna",
+"county":"Custer",
+"st":"NE",
+"fips":"31041",
+"bu":2770162,
+"id":"e6z6ew7127",
+"src":[
+"countrypartnerscooperative-merna"
+],
+"how":"name+town"
+},
+{
+"lic":"852",
+"name":"Country Partners Cooperative",
+"city":"North Loup",
+"county":"Valley",
+"st":"NE",
+"fips":"31175",
+"bu":4164646,
+"id":"e5th09j445",
+"src":[
+"countrypartnerscooperative-northloup"
+],
+"how":"name+town"
+},
+{
+"lic":"852",
+"name":"Country Partners Cooperative",
+"city":"Ord",
+"county":"Valley",
+"st":"NE",
+"fips":"31175",
+"bu":1112539,
+"id":"ernt6q764f",
+"src":[
+"countrypartnerscooperative-ord"
+],
+"how":"name+town"
+},
+{
+"lic":"852",
+"name":"Country Partners Cooperative",
+"city":"Spalding",
+"county":"Greeley",
+"st":"NE",
+"fips":"31077",
+"bu":1241098,
+"id":"efwpd4ab2v",
+"src":[
+"countrypartnerscooperative-spalding"
+],
+"how":"name+town"
+},
+{
+"lic":"926",
+"name":"Farmers Cooperative Company",
+"city":"Talmage",
+"county":"Otoe",
+"st":"NE",
+"fips":"31131",
+"bu":2988935,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1013",
+"name":"Bruning Grain & Feed Co., Inc.",
+"city":"Belvidere",
+"county":"Thayer",
+"st":"NE",
+"fips":"31169",
+"bu":523800,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1013",
+"name":"Bruning Grain & Feed Co., Inc.",
+"city":"Bruning",
+"county":"Thayer",
+"st":"NE",
+"fips":"31169",
+"bu":4091067,
+"id":"eq5mx6d47w",
+"src":[
+"reg:NE|bruninggrainfeedcoinc|bruning"
+],
+"how":"name+town"
+},
+{
+"lic":"1013",
+"name":"Bruning Grain & Feed Co., Inc.",
+"city":"Hebron",
+"county":"Thayer",
+"st":"NE",
+"fips":"31169",
+"bu":945052,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1033",
+"name":"Fordyce Farmers Non-Stock Cooperative",
+"city":"Fordyce",
+"county":"Cedar",
+"st":"NE",
+"fips":"31027",
+"bu":1997118,
+"id":"e5a0decnn0",
+"src":[
+"fordycecoop-fordyce"
+],
+"how":"name+town"
+},
+{
+"lic":"1036",
+"name":"Farmers Co-op Association",
+"city":"Lindsay",
+"county":"Platte",
+"st":"NE",
+"fips":"31141",
+"bu":5967595,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1119",
+"name":"Trotter, Incorporated",
+"city":"Ansley",
+"county":"Custer",
+"st":"NE",
+"fips":"31041",
+"bu":43411,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1119",
+"name":"Trotter, Incorporated",
+"city":"Arcadia",
+"county":"Valley",
+"st":"NE",
+"fips":"31175",
+"bu":959110,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1119",
+"name":"Trotter, Incorporated",
+"city":"Ashton",
+"county":"Sherman",
+"st":"NE",
+"fips":"31163",
+"bu":629177,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1119",
+"name":"Trotter, Incorporated",
+"city":"Litchfield",
+"county":"Sherman",
+"st":"NE",
+"fips":"31163",
+"bu":545230,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1119",
+"name":"Trotter, Incorporated",
+"city":"Loup City",
+"county":"Sherman",
+"st":"NE",
+"fips":"31163",
+"bu":807177,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1119",
+"name":"Trotter, Incorporated",
+"city":"Sargent",
+"county":"Custer",
+"st":"NE",
+"fips":"31041",
+"bu":1959478,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1679",
+"name":"Herbert Feed & Grain Co.",
+"city":"Verdigre",
+"county":"Knox",
+"st":"NE",
+"fips":"31107",
+"bu":1472463,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1766",
+"name":"Grain States Soya, Incorporated",
+"city":"West Point",
+"county":"Cuming",
+"st":"NE",
+"fips":"31039",
+"bu":3637997,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1806",
+"name":"Tysons Inc",
+"city":"Blair",
+"county":"Washington",
+"st":"NE",
+"fips":"31177",
+"bu":979761,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1946",
+"name":"Dixon Elevator Co.",
+"city":"Dixon",
+"county":"Dixon",
+"st":"NE",
+"fips":"31051",
+"bu":1406917,
+"id":"esgjz3vjjm",
+"src":[
+"dixonelevator-dixon"
+],
+"how":"name+town"
+},
+{
+"lic":"1946",
+"name":"Dixon Elevator Co.",
+"city":"Randolph",
+"county":"Pierce",
+"st":"NE",
+"fips":"31139",
+"bu":1070670,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1946",
+"name":"Dixon Elevator Co.",
+"city":"Randolph SE",
+"county":"Wayne",
+"st":"NE",
+"fips":"31179",
+"bu":588624,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"1999",
+"name":"Kassik Milling Company, Inc.",
+"city":"Milligan",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":1325935,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2066",
+"name":"Seven Valleys Grain Company",
+"city":"Callaway",
+"county":"Custer",
+"st":"NE",
+"fips":"31041",
+"bu":2037177,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2107",
+"name":"Mathiesen Grain Company",
+"city":"Blair",
+"county":"Washington",
+"st":"NE",
+"fips":"31177",
+"bu":1149549,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2127",
+"name":"The Scoular Company",
+"city":"Big Springs",
+"county":"Perkins",
+"st":"NE",
+"fips":"31135",
+"bu":481640,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2127",
+"name":"The Scoular Company",
+"city":"Brandon",
+"county":"Perkins",
+"st":"NE",
+"fips":"31135",
+"bu":2070801,
+"id":"ea9zedtzkg",
+"src":[
+"scoularview-brandon"
+],
+"how":"name+town"
+},
+{
+"lic":"2127",
+"name":"The Scoular Company",
+"city":"Lamar",
+"county":"Chase",
+"st":"NE",
+"fips":"31029",
+"bu":6657610,
+"id":"enwny577qa",
+"src":[
+"scoularview-lamar"
+],
+"how":"name+town"
+},
+{
+"lic":"2127",
+"name":"The Scoular Company",
+"city":"Venango",
+"county":"Perkins",
+"st":"NE",
+"fips":"31135",
+"bu":9304079,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2129",
+"name":"The Scoular Company",
+"city":"Grainton",
+"county":"Perkins",
+"st":"NE",
+"fips":"31135",
+"bu":10788008,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2129",
+"name":"The Scoular Company",
+"city":"Madrid",
+"county":"Perkins",
+"st":"NE",
+"fips":"31135",
+"bu":3681396,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2129",
+"name":"The Scoular Company",
+"city":"Wallace",
+"county":"Lincoln",
+"st":"NE",
+"fips":"31111",
+"bu":1231112,
+"id":"egs2ze9ps3",
+"src":[
+"known:The Scoular Company|Wallace, NE|Wallace|NE"
+],
+"how":"name+town"
+},
+{
+"lic":"2132",
+"name":"The Scoular Company",
+"city":"Sidney",
+"county":"Cheyenne",
+"st":"NE",
+"fips":"31033",
+"bu":5035128,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2134",
+"name":"Schaefer Grain & Feed, Inc.",
+"city":"Breslau",
+"county":"Pierce",
+"st":"NE",
+"fips":"31139",
+"bu":133395,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2134",
+"name":"Schaefer Grain & Feed, Inc.",
+"city":"Plainview",
+"county":"Pierce",
+"st":"NE",
+"fips":"31139",
+"bu":1293732,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2148",
+"name":"The Scoular Company",
+"city":"Fremont",
+"county":"Dodge",
+"st":"NE",
+"fips":"31053",
+"bu":4560858,
+"id":"ebecya47yd",
+"src":[
+"scoularview-fremont"
+],
+"how":"name+town"
+},
+{
+"lic":"2174",
+"name":"Pender Grain Elevator, Inc.",
+"city":"Pender",
+"county":"Thurston",
+"st":"NE",
+"fips":"31173",
+"bu":918741,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2174",
+"name":"Pender Grain Elevator, Inc.",
+"city":"Thurston",
+"county":"Thurston",
+"st":"NE",
+"fips":"31173",
+"bu":2171807,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2181",
+"name":"Bancroft Grain, LLC",
+"city":"Bancroft",
+"county":"Cuming",
+"st":"NE",
+"fips":"31039",
+"bu":598243,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2185",
+"name":"Pride Enterprises, Inc.",
+"city":"Long Pine",
+"county":"Rock",
+"st":"NE",
+"fips":"31149",
+"bu":2643921,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2187",
+"name":"Richardson Milling Inc.",
+"city":"South Sioux City",
+"county":"Dakota",
+"st":"NE",
+"fips":"31043",
+"bu":3174867,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2190",
+"name":"Manning Grain Company",
+"city":"Burress",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":7053286,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2190",
+"name":"Manning Grain Company",
+"city":"Fairmont",
+"county":"Fillmore",
+"st":"NE",
+"fips":"31059",
+"bu":674937,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2197",
+"name":"Jelinek Custom Cleaning, Inc.",
+"city":"Alliance",
+"county":"Box Butte",
+"st":"NE",
+"fips":"31013",
+"bu":1586033,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2199",
+"name":"Belden Grain, LLC",
+"city":"Belden",
+"county":"Cedar",
+"st":"NE",
+"fips":"31027",
+"bu":647468,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2203",
+"name":"Carroll Grain, LLC",
+"city":"Carroll",
+"county":"Wayne",
+"st":"NE",
+"fips":"31179",
+"bu":615685,
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"2204",
+"name":"Midwest Grains of Sutherland, LLC",
+"city":"Sutherland",
+"county":"Lincoln",
+"st":"NE",
+"fips":"31111",
+"bu":3017392,
+"id":null,
+"src":[],
+"how":null
+}
+],
+"unjoined":[
+{
+"i":0,
+"why":"no facility of this operator in this town in our list",
+"lic":"19",
+"city":"Atkinson"
+},
+{
+"i":1,
+"why":"no facility of this operator in this town in our list",
+"lic":"19",
+"city":"Brunswick"
+},
+{
+"i":2,
+"why":"no facility of this operator in this town in our list",
+"lic":"19",
+"city":"Copenhagen"
+},
+{
+"i":3,
+"why":"no facility of this operator in this town in our list",
+"lic":"19",
+"city":"Creighton"
+},
+{
+"i":4,
+"why":"no facility of this operator in this town in our list",
+"lic":"19",
+"city":"Crofton"
+},
+{
+"i":5,
+"why":"no facility of this operator in this town in our list",
+"lic":"19",
+"city":"Dakota City"
+},
+{
+"i":6,
+"why":"no facility of this operator in this town in our list",
+"lic":"19",
+"city":"Orchard"
+},
+{
+"i":7,
+"why":"no facility of this operator in this town in our list",
+"lic":"19",
+"city":"Pierce"
+},
+{
+"i":8,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Arapahoe"
+},
+{
+"i":10,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Bartley"
+},
+{
+"i":11,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Big Springs"
+},
+{
+"i":12,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Edison"
+},
+{
+"i":15,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Holbrook"
+},
+{
+"i":16,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Jennings"
+},
+{
+"i":19,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Norton"
+},
+{
+"i":20,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Orleans"
+},
+{
+"i":21,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Oxford"
+},
+{
+"i":22,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Stapleton"
+},
+{
+"i":23,
+"why":"no facility of this operator in this town in our list",
+"lic":"22",
+"city":"Wilsonville"
+},
+{
+"i":24,
+"why":"no facility of this operator in this town in our list",
+"lic":"91",
+"city":"Johnson"
+},
+{
+"i":27,
+"why":"no facility of this operator in this town in our list",
+"lic":"153",
+"city":"Belgrade"
+},
+{
+"i":45,
+"why":"no facility of this operator in this town in our list",
+"lic":"153",
+"city":"Howells"
+},
+{
+"i":51,
+"why":"no facility of this operator in this town in our list",
+"lic":"153",
+"city":"Mynard West"
+},
+{
+"i":58,
+"why":"no facility of this operator in this town in our list",
+"lic":"153",
+"city":"Prairie Home"
+},
+{
+"i":62,
+"why":"no facility of this operator in this town in our list",
+"lic":"153",
+"city":"Syracuse SE"
+},
+{
+"i":63,
+"why":"no facility of this operator in this town in our list",
+"lic":"153",
+"city":"Tarnov"
+},
+{
+"i":71,
+"why":"no facility of this operator in this town in our list",
+"lic":"244",
+"city":"Guide Rock"
+},
+{
+"i":72,
+"why":"no facility of this operator in this town in our list",
+"lic":"279",
+"city":"Barnes"
+},
+{
+"i":85,
+"why":"no facility of this operator in this town in our list",
+"lic":"279",
+"city":"Filley"
+},
+{
+"i":88,
+"why":"no facility of this operator in this town in our list",
+"lic":"279",
+"city":"Frankfort North"
+},
+{
+"i":92,
+"why":"no facility of this operator in this town in our list",
+"lic":"279",
+"city":"Hoag"
+},
+{
+"i":94,
+"why":"our facility there is placed in another county",
+"lic":"279",
+"city":"Kramer"
+},
+{
+"i":98,
+"why":"no facility of this operator in this town in our list",
+"lic":"279",
+"city":"Marysville"
+},
+{
+"i":108,
+"why":"no facility of this operator in this town in our list",
+"lic":"279",
+"city":"Reynolds"
+},
+{
+"i":115,
+"why":"no facility of this operator in this town in our list",
+"lic":"279",
+"city":"Wymore"
+},
+{
+"i":116,
+"why":"no facility of this operator in this town in our list",
+"lic":"306",
+"city":"Geneva"
+},
+{
+"i":117,
+"why":"no facility of this operator in this town in our list",
+"lic":"349",
+"city":"Shickley"
+},
+{
+"i":118,
+"why":"no facility of this operator in this town in our list",
+"lic":"371",
+"city":"Tekamah"
+},
+{
+"i":119,
+"why":"no facility of this operator in this town in our list",
+"lic":"371",
+"city":"West Point"
+},
+{
+"i":122,
+"why":"no facility of this operator in this town in our list",
+"lic":"378",
+"city":"Neligh"
+},
+{
+"i":125,
+"why":"no facility of this operator in this town in our list",
+"lic":"405",
+"city":"Pilger"
+},
+{
+"i":126,
+"why":"no facility of this operator in this town in our list",
+"lic":"405",
+"city":"Wayne"
+},
+{
+"i":127,
+"why":"no facility of this operator in this town in our list",
+"lic":"405",
+"city":"Winside"
+},
+{
+"i":129,
+"why":"no facility of this operator in this town in our list",
+"lic":"535",
+"city":"Clarkson"
+},
+{
+"i":130,
+"why":"no facility of this operator in this town in our list",
+"lic":"535",
+"city":"Howells"
+},
+{
+"i":132,
+"why":"no facility of this operator in this town in our list",
+"lic":"537",
+"city":"Dodge"
+},
+{
+"i":133,
+"why":"no facility of this operator in this town in our list",
+"lic":"537",
+"city":"Howells"
+},
+{
+"i":134,
+"why":"no facility of this operator in this town in our list",
+"lic":"537",
+"city":"Leigh"
+},
+{
+"i":135,
+"why":"no facility of this operator in this town in our list",
+"lic":"537",
+"city":"Leigh 57"
+},
+{
+"i":136,
+"why":"no facility of this operator in this town in our list",
+"lic":"537",
+"city":"Richland"
+},
+{
+"i":137,
+"why":"no facility of this operator in this town in our list",
+"lic":"578",
+"city":"Stratton"
+},
+{
+"i":138,
+"why":"no facility of this operator in this town in our list",
+"lic":"578",
+"city":"Trenton"
+},
+{
+"i":139,
+"why":"no facility of this operator in this town in our list",
+"lic":"697",
+"city":"Madison"
+},
+{
+"i":148,
+"why":"no facility of this operator in this town in our list",
+"lic":"926",
+"city":"Talmage"
+},
+{
+"i":149,
+"why":"no facility of this operator in this town in our list",
+"lic":"1013",
+"city":"Belvidere"
+},
+{
+"i":151,
+"why":"no facility of this operator in this town in our list",
+"lic":"1013",
+"city":"Hebron"
+},
+{
+"i":153,
+"why":"no facility of this operator in this town in our list",
+"lic":"1036",
+"city":"Lindsay"
+},
+{
+"i":154,
+"why":"no facility of this operator in this town in our list",
+"lic":"1119",
+"city":"Ansley"
+},
+{
+"i":155,
+"why":"no facility of this operator in this town in our list",
+"lic":"1119",
+"city":"Arcadia"
+},
+{
+"i":156,
+"why":"no facility of this operator in this town in our list",
+"lic":"1119",
+"city":"Ashton"
+},
+{
+"i":157,
+"why":"no facility of this operator in this town in our list",
+"lic":"1119",
+"city":"Litchfield"
+},
+{
+"i":158,
+"why":"no facility of this operator in this town in our list",
+"lic":"1119",
+"city":"Loup City"
+},
+{
+"i":159,
+"why":"no facility of this operator in this town in our list",
+"lic":"1119",
+"city":"Sargent"
+},
+{
+"i":160,
+"why":"no facility of this operator in this town in our list",
+"lic":"1679",
+"city":"Verdigre"
+},
+{
+"i":161,
+"why":"no facility of this operator in this town in our list",
+"lic":"1766",
+"city":"West Point"
+},
+{
+"i":162,
+"why":"no facility of this operator in this town in our list",
+"lic":"1806",
+"city":"Blair"
+},
+{
+"i":164,
+"why":"our facility there is placed in another county",
+"lic":"1946",
+"city":"Randolph"
+},
+{
+"i":165,
+"why":"no facility of this operator in this town in our list",
+"lic":"1946",
+"city":"Randolph SE"
+},
+{
+"i":166,
+"why":"no facility of this operator in this town in our list",
+"lic":"1999",
+"city":"Milligan"
+},
+{
+"i":167,
+"why":"no facility of this operator in this town in our list",
+"lic":"2066",
+"city":"Callaway"
+},
+{
+"i":168,
+"why":"no facility of this operator in this town in our list",
+"lic":"2107",
+"city":"Blair"
+},
+{
+"i":169,
+"why":"our facility there is placed in another county",
+"lic":"2127",
+"city":"Big Springs"
+},
+{
+"i":172,
+"why":"no facility of this operator in this town in our list",
+"lic":"2127",
+"city":"Venango"
+},
+{
+"i":173,
+"why":"our facility there is placed in another county",
+"lic":"2129",
+"city":"Grainton"
+},
+{
+"i":176,
+"why":"no facility of this operator in this town in our list",
+"lic":"2132",
+"city":"Sidney"
+},
+{
+"i":177,
+"why":"no facility of this operator in this town in our list",
+"lic":"2134",
+"city":"Breslau"
+},
+{
+"i":178,
+"why":"no facility of this operator in this town in our list",
+"lic":"2134",
+"city":"Plainview"
+},
+{
+"i":180,
+"why":"no facility of this operator in this town in our list",
+"lic":"2174",
+"city":"Pender"
+},
+{
+"i":181,
+"why":"no facility of this operator in this town in our list",
+"lic":"2174",
+"city":"Thurston"
+},
+{
+"i":182,
+"why":"no facility of this operator in this town in our list",
+"lic":"2181",
+"city":"Bancroft"
+},
+{
+"i":183,
+"why":"our facility there is placed in another county",
+"lic":"2185",
+"city":"Long Pine"
+},
+{
+"i":184,
+"why":"no facility of this operator in this town in our list",
+"lic":"2187",
+"city":"South Sioux City"
+},
+{
+"i":185,
+"why":"no facility of this operator in this town in our list",
+"lic":"2190",
+"city":"Burress"
+},
+{
+"i":187,
+"why":"no facility of this operator in this town in our list",
+"lic":"2197",
+"city":"Alliance"
+},
+{
+"i":188,
+"why":"no facility of this operator in this town in our list",
+"lic":"2199",
+"city":"Belden"
+},
+{
+"i":189,
+"why":"no facility of this operator in this town in our list",
+"lic":"2203",
+"city":"Carroll"
+},
+{
+"i":190,
+"why":"no facility of this operator in this town in our list",
+"lic":"2204",
+"city":"Sutherland"
+}
+],
+"ambiguous":[
+{
+"i":73,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00341",
+"e8vfr09zac"
+],
+"lic":"279",
+"city":"Barneston"
+},
+{
+"i":74,
+"why":"3 facilities of this operator in this town",
+"ids":[
+"a00342",
+"esvtgcjxv8",
+"etbzjsj9wx"
+],
+"lic":"279",
+"city":"Beatrice"
+},
+{
+"i":95,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00355",
+"emz7105jb6"
+],
+"lic":"279",
+"city":"Lincoln"
+},
+{
+"i":107,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00365",
+"ezgsht4rp8"
+],
+"lic":"279",
+"city":"Raymond"
+},
+{
+"i":128,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00370",
+"eakd3f0f6z"
+],
+"lic":"471",
+"city":"Friend"
+},
+{
+"i":174,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00378",
+"eptvcq27vx"
+],
+"lic":"2129",
+"city":"Madrid"
+},
+{
+"i":186,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00376",
+"ehywxcgpxb"
+],
+"lic":"2190",
+"city":"Fairmont"
+}
+]
+}
