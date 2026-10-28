@@ -216,12 +216,19 @@ def main():
                        "tier1": {"9.50": 0.15, "8.00": 0.1}, "tier2": {"9.50": None, "8.00": 1.813}}}
     tb = S.milk_dmc_paid(DM, SEP)
     ck("FSA rows that check out: a table by level, partial years labeled, MPP 2018 left out",
-       "Paid 2025, Jul to Aug" in tb and "Paid 2026, Aug<" in tb and "2018" not in tb, tb[:300])
+       '<th scope="col" class="num">2025*</th>' in tb and '<th scope="col" class="num">2026*</th>' in tb
+       and "(2019 is Jan only; 2025 is Jul to Aug only; 2026 is Aug only)" in tb and "2018" not in tb, tb[:300])
     ck("...$9.50 in 2025 pays (0 + 1.00) / 2 = $0.50, Tier 1 and Tier 2 premium beside it",
-       '<tr><th scope="row">$9.50</th><td class="num">$0.1500</td><td class="num">not offered</td>'
-       '<td class="num">$1.79</td><td class="num">$0.50</td><td class="num">$0.16</td></tr>' in tb, tb)
+       '<tr><th scope="row">$9.50</th><td class="num">$0.1500</td><td class="num">n/a</td>'
+       '<td class="num">$0.16</td><td class="num">$0.50</td><td class="num">$1.79</td></tr>' in tb, tb)
+    ck("...newest year first", tb.index(">2026*<") < tb.index(">2025*<") < tb.index(">2019*<"))
     ck("...$8.00: Tier 2 rate printed", '<tr><th scope="row">$8.00</th><td class="num">$0.1000</td><td class="num">$1.8130</td>' in tb)
-    ck("...a level with no premium read says so", "not loaded" in tb)
+    ck("...a level with no premium read is a dash, said so", '<th scope="row">$6.00</th><td class="num">-</td>' in tb
+       and "A dash: not in the fact sheet as read." in tb)
+    ck("...Tier 2's top level said from the rates, not typed", "FSA offers Tier 2 only up to $8.00 (n/a above)" in tb)
+    np_ = S.milk_dmc_paid(dict(DM, premiums={}), SEP)
+    ck("...no premium rates read: no premium columns, and it says so",
+       "Tier 1 premium" not in np_ and "Premium rates: not loaded here yet" in np_)
     ck("...no level picked out", not any(w in tb.lower() for w in ("best", "recommend", "should")))
     ck("...says before premium and the months left out, with why", "before premium" in tb
        and "2 months from 2019 on (Jun 2026, Jul 2026) are left out: not on FSA" in tb, tb[-900:])
@@ -238,7 +245,7 @@ def main():
        "(half premium and supreme alfalfa, half other alfalfa," in tn and "; FSA revised 2020 on to premium alfalfa (" in tn
        and "half other alfalfa" not in tb)
     ck("...no hay heads in the file: no hay sentence", "alfalfa" not in S.milk_dmc_paid(dict(DM, hay={}), SEP))
-    ck("...Tier 1 named at 6 million lb", "the first 6 million lb a year" in tb)
+    ck("...Tier 1 named at 6 million lb", "Tier 1 is the first 6 million lb of your production history a year" in tb)
     ck("...the margin line shows FSA's newest month", "DMC margin, August 2026: $9.34/cwt" in S.milk_dmc_margin(DM, SEP, "2026-10-28"))
     bad = copy.deepcopy(DM)
     bad["margins"]["2026-08"]["margin"] = 9.0
