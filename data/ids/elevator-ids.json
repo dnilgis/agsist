@@ -3218,6 +3218,14 @@
     "dir:84088"
    ]
   },
+  "esy30gdzk5": {
+   "into": "etpmxxrj24",
+   "on": "2026-10-28",
+   "rule": "phone",
+   "keys": [
+    "basis:OH|SMITHFIELD GRAIN - EAST|MORRAL"
+   ]
+  },
   "esz3twa0vr": {
    "into": "egz19x9jv6",
    "on": "2026-10-27",
@@ -3305,6 +3313,15 @@
    "rule": "phone",
    "keys": [
     "basis:IA|HEARTLAND COOP|MODAMIN"
+   ]
+  },
+  "ewsn9qbdjm": {
+   "into": "ezfe9zqja3",
+   "on": "2026-10-28",
+   "rule": "phone",
+   "keys": [
+    "basis:OH|SMITHFIELD GRAIN - EAST|HARPSTER",
+    "dir:84451"
    ]
   },
   "ex9h0k6dte": {
@@ -4788,6 +4805,18 @@
    "merge": "a00201",
    "into": "eef2vr1k62",
    "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "esy30gdzk5",
+   "into": "etpmxxrj24",
+   "why": "folded into etpmxxrj24 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "ewsn9qbdjm",
+   "into": "ezfe9zqja3",
+   "why": "folded into ezfe9zqja3 by the bids repo (mergedFrom, rule phone)"
   }
  ],
  "keys": {
@@ -7796,8 +7825,8 @@
   "basis:OH|SCOTT EQUITY EXCHANGE|SCOTT": "ewbc9bnbam",
   "basis:OH|SCOTT EQUITY EXCHANGE|VAN WERT": "emp947de39",
   "basis:OH|SCOULARVIEW|COVINGTON": "ev06b7ffk2",
-  "basis:OH|SMITHFIELD GRAIN - EAST|HARPSTER": "ewsn9qbdjm",
-  "basis:OH|SMITHFIELD GRAIN - EAST|MORRAL": "esy30gdzk5",
+  "basis:OH|SMITHFIELD GRAIN - EAST|HARPSTER": "ezfe9zqja3",
+  "basis:OH|SMITHFIELD GRAIN - EAST|MORRAL": "etpmxxrj24",
   "basis:OH|STAR OF THE WEST MILLING|WILLARD": "eb0t3aj3m7",
   "basis:OH|STRYKER FARMERS EXCHANGE|STRYKER": "ek87qatqw9",
   "basis:OH|SUNRISE COOPERATIVE|BELLEVUE": "a00399",
@@ -8663,6 +8692,7 @@
   "bids:Rooney Grain||Chippewa Falls|WI": "ex2gn12qmh",
   "bids:See-Mor Grain||See-Mor Grain|WI": "ezwx4wsvks",
   "bids:Shell Rock Soy Processing LLC||Shell Rock Soy Origination|IA": "evxyn8k0ye",
+  "bids:Smithfield Grain||Harpster|OH": "ezfe9zqja3",
   "bids:Sorells Farm Supply||Raymond|IL": "etfjn568k3",
   "bids:St. Ansgar Mills||St. Ansgar Mills, Inc|IA": "eyt22nx602",
   "bids:Stafford County Flour Mills||Hudson|KS": "ez6afav0t2",
@@ -9203,7 +9233,7 @@
   "dir:84383": "eyxgavg6y8",
   "dir:84403": "a00071",
   "dir:84411": "ec6jtyhz9v",
-  "dir:84451": "ewsn9qbdjm",
+  "dir:84451": "ezfe9zqja3",
   "dir:84462": "emyxwap147",
   "dir:84544": "a00013",
   "dir:84551": "env893tdbj",
