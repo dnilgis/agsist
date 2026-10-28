@@ -4,7 +4,7 @@ daily_site_check.py: once a day, after the morning data runs, is the site
 telling one story, and is everything it depends on still moving?
 
 Runs from .github/workflows/daily-site-check.yml (Sig approved 2026-10-17).
-Three checks, all of them existing ones, none of them new rules:
+Four checks (the fourth, answers, added Oct 28 for the answer blocks):
   numbers    scripts/check_number_consistency.py --strict (the same number
              everywhere, and its staleness rule: each data file's own date
              against a maximum age)
@@ -13,6 +13,9 @@ Three checks, all of them existing ones, none of them new rules:
              was not served
   freshness  data/daily.json is today's issue (Central time) once the
              morning window has passed
+  answers    an answer block in data/ai-answers.json past its review_by
+             date (the report, vote or deadline it was written against has
+             come), so its facts need a fresh read
 
 Findings become ::warning:: annotations, a table in the run summary, and ONE
 GitHub issue titled "Daily site check": opened when there are findings,
@@ -132,6 +135,21 @@ def freshness_check():
                  "detail": f"{type(e).__name__}: {e}"}]
 
 
+def answers_findings(rows):
+    return [{"check": "answers", "where": aid + " on " + page, "title": "answer past its review date",
+             "detail": f"review by {rb}; re-read its sources and update data/ai-answers.json"} for aid, page, rb in rows]
+
+
+def answers_check():
+    try:
+        sys.path.insert(0, HERE)
+        import build_ai_answers
+        return answers_findings(build_ai_answers.stale())
+    except Exception as e:
+        return [{"check": "answers", "where": "data/ai-answers.json", "title": "unreadable",
+                 "detail": f"{type(e).__name__}: {e}"}]
+
+
 def body_md(findings, run_url=""):
     esc = lambda s: str(s or "").replace("|", "\\|").replace("\n", " ")
     lines = [f"{len(findings)} finding(s) on the run of "
@@ -196,7 +214,7 @@ def apply(action, number, repo, token, body):
 def main(argv):
     if "--selftest" in argv:
         return selftest()
-    findings = numbers_check() + clocks_check() + freshness_check()
+    findings = numbers_check() + clocks_check() + freshness_check() + answers_check()
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     run_url = (f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{repo}/actions/runs/"
                f"{os.environ['GITHUB_RUN_ID']}") if os.environ.get("GITHUB_RUN_ID") and repo else ""
@@ -254,6 +272,9 @@ def selftest():
     ck("plan: clean and no issue does nothing", plan(None, []) == ("none", None))
     b = body_md([{"check": "numbers", "where": "x|y", "title": "t", "detail": "d"}])
     ck("body escapes pipes", "x\\|y" in b)
+    af = answers_findings([("crop-report", "usda-calendar.html", "2026-11-10")])
+    ck("a stale answer is a finding", len(af) == 1 and af[0]["where"] == "crop-report on usda-calendar.html")
+    ck("the answer check runs", isinstance(answers_check(), list))
     ck("no em dashes in what this writes", "\u2014" not in b and "\u2014" not in TITLE)
     print("selftest " + ("ok" if ok else "FAILED"))
     return 0 if ok else 1
