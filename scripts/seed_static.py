@@ -1878,7 +1878,7 @@ def _ordinal(n):
     return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
 
 
-# --- /elevators ----------------------------------------------------------------
+# --- elevator coverage (/list-your-elevator#coverage; was /elevators) ----------------------------------------------------------------
 def _ct(iso):
     """'2026-10-05T19:11:21.424Z' -> 'Oct 5, 2026, 2:11 PM CT' (the page's fmtCT)."""
     try:
@@ -1903,7 +1903,7 @@ def seed_elevators(today):
             seeds["elev:cov-n-" + k] = "-"
         seeds["elev:foot"] = f"Counts not shown: {why}."
         seeds["elev:net"] = f"Network counts: {why}."
-        return _write_seeds("elevators.html", seeds)
+        return _write_seeds("list-your-elevator.html", seeds)
     for k in ("read", "quiet", "known"):
         seeds["elev:cov-n-" + k] = _commas(n[k]) if isinstance(n.get(k), int) else "-"
     foot = ""
@@ -1926,7 +1926,7 @@ def seed_elevators(today):
             "<a href=\"#coverage-map\">See the map</a>.")
     seeds["elev:net"] = net
     seeds["elev:bids"] = elevator_bids_line(_load_json("data/elevator-counts.json"), today)
-    return _write_seeds("elevators.html", seeds)
+    return _write_seeds("list-your-elevator.html", seeds)
 
 
 def elevator_bids_line(c, today):
