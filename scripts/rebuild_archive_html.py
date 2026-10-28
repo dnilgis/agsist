@@ -17,7 +17,13 @@ Usage:
     python scripts/rebuild_archive_html.py --byline-only # only the byline (reply address)
     python scripts/rebuild_archive_html.py --guard-only  # only the inline Google Analytics guard script
     python scripts/rebuild_archive_html.py --text-only 2026-10-16  # only what an archive JSON edit changed
+    python scripts/rebuild_archive_html.py --links-only  # only links to pages merged into another (moved_pages.py)
     python scripts/rebuild_archive_html.py --text-only --base=HEAD~1 2026-10-16  # JSON already committed
+
+--links-only (2026-10-28, page merges) sends every link to a page that was
+merged into another (scripts/moved_pages.py: /archive, /scorecard, ...) to its
+new home, and the breadcrumb's archive step to the Daily page, the same as
+generate_daily.py writes for a new issue. Every other byte stays as published.
 
 --byline-only does the same for the one <div class="dv3-byline"> line (the
 reply address under each issue, changed 2026-10-22 to sig@agsist.com).
@@ -52,6 +58,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from generate_daily import generate_archive_html, archive_neighbor_dates
+from moved_pages import repoint
 
 REPO_ROOT = HERE.parent
 ARCHIVE_JSON_DIR = REPO_ROOT / "data" / "daily-archive"
@@ -206,7 +213,39 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
     return True
 
 
+LINK_RE = re.compile(r'(href=")((?:https://agsist\.com)?/[^"]*)(")')
+CRUMB_OLD = '"name": "Daily briefing archive", "item": "https://agsist.com/archive"'
+CRUMB_NEW = '"name": "Daily briefing", "item": "https://agsist.com/daily"'
+
+
+def repoint_links(page: str) -> str:
+    """--links-only: links to merged pages go to their new home; nothing else changes."""
+    page = page.replace(CRUMB_OLD, CRUMB_NEW)
+    return LINK_RE.sub(lambda m: m.group(1) + repoint(m.group(2)) + m.group(3), page)
+
+
+def links_only_all(targets) -> int:
+    n = 0
+    for date_iso in targets:
+        p = ARCHIVE_HTML_DIR / f"{date_iso}.html"
+        if not p.exists():
+            continue
+        old = p.read_text()
+        new = repoint_links(old)
+        if new != old:
+            p.write_text(new)
+            n += 1
+    print(f"=== links-only: {n} published page(s) repointed ===")
+    return 0
+
+
 def selftest() -> int:
+    lp = ('<a class="dv3-archnav-a dv3-archnav-all" href="/archive">All briefings</a> <a href="/scorecard">x</a> '
+          '<a href="/daily/2026-10-01">y</a> {"@type": "ListItem", "position": 2, ' + CRUMB_OLD + '}')
+    lo = repoint_links(lp)
+    assert 'href="/daily#past">All briefings' in lo and 'href="/usda-calendar#scorecard"' in lo, lo
+    assert 'href="/daily/2026-10-01"' in lo and CRUMB_NEW in lo and "/archive" not in lo, lo
+    assert repoint_links(lo) == lo
     old = '<div class="a">Hogs sat flat at $75.55.</div><p>same</p><aside></aside><nav>x</nav>'
     new = '<div class="a">December hogs settled at $66.925.</div><p>same</p><aside>Correction</aside><nav>x</nav>'
     pub = '<style>new css</style>' + old + '<script>v=2</script>'
@@ -250,6 +289,8 @@ def main():
     if not targets:
         print("  No archive JSONs found.")
         return 0
+    if "--links-only" in sys.argv:
+        return links_only_all(targets)
 
     ok = 0
     for date_iso in targets:
