@@ -65,5 +65,26 @@
     }
    ]
   }
+ ],
+ "pending_note": "Candidates from outside research (Oct 27 2026), NOT read by the normal run. Each moves to coops by hand only after fetch_coop_fert.py --probe (fertilizer-coops workflow, probe ticked) shows its robots.txt allows the page and the table parses per ton. Town is confirmed from the co-op's own page in the probe copy.",
+ "pending": [
+  {
+   "id": "bartlett-ks",
+   "name": "Bartlett Co-op Association",
+   "town": null,
+   "state": "KS",
+   "url": "https://www.bartlettco-op.com/index.php/our-products/current-prices/fertilizer-prices?id=2&view=fronttable",
+   "layout": "html-table",
+   "cash_from": null
+  },
+  {
+   "id": "snyder-ok",
+   "name": "Farmers Cooperative Association of Snyder",
+   "town": null,
+   "state": "OK",
+   "url": "https://www.snyderfarmerscoop.com/fccp-fertilizer-pricing-application-blending-23934",
+   "layout": "html-table",
+   "cash_from": null
+  }
  ]
 }
