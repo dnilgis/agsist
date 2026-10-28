@@ -3,20 +3,20 @@
  "generated": "2026-10-28",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2163,
+  "live_boards": 2157,
   "with_parent": 130,
-  "with_dest": 110,
+  "with_dest": 112,
   "parent_by_rule": {
    "board-page": 1,
    "chs-brand": 129
   },
   "dest_by_brand": {
-   "ADM": 25,
+   "ADM": 26,
    "AGP": 27,
    "Big River": 4,
    "Bunge": 4,
    "CGB": 9,
-   "Cargill": 15,
+   "Cargill": 16,
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
@@ -70,6 +70,16 @@
   "balkgrain-viseriongrain": {
    "elevId": "e30jm2y0nd",
    "dest": "Viserion",
+   "dv": "location"
+  },
+  "cedarcountycoop-admclinton": {
+   "elevId": "eym4ymyfs4",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "cedarcountycoop-cargillcr": {
+   "elevId": "eavzhpjmg7",
+   "dest": "Cargill",
    "dv": "location"
   },
   "chs-texoma-frederick": {
