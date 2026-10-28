@@ -2515,6 +2515,7 @@ def milk_dmc_paid(dmc, d):
             '<p class="dp-note-src">Would have paid at these published prices, before premium: for each year, the average over its '
             'months of the coverage level minus FSA&rsquo;s margin when the margin was below it, in dollars per cwt of covered milk'
             + (f" ({'; '.join(reversed(part))})" if part else "") + ". Newest year first." + prem_note +
+            ' DMC itself pays on the average margin of two consecutive months; this table uses each month alone, so a real payment can differ.' +
             ' No level is a pick for your farm, and past margins are not next year&rsquo;s.</p>'
             f'<p class="dp-note-src">These are the margins as FSA publishes them now.{_dmc_hay(dmc, years)}{held} '
             f'Margins: {_cite(dmc, "FSA, DMC prices and updates")}{", read " + rd if rd else ""}.{prem_src}</p></details>')
