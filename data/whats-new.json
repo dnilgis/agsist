@@ -7,6 +7,13 @@
    "title": "Fewer pages, each one fuller",
    "line": "Ten pages joined the ones you already use, from crop size and what's priced in to the storm log, bids by state and past briefings. Old links still work.",
    "link": "/usda-calendar#priced-in"
+  },
+  {
+   "id": "2026-10-28-daily-retry",
+   "date": "2026-10-28",
+   "title": "The Daily tries again when a check holds it",
+   "line": "A Daily draft that fails a number check is never posted. The next run writes it again and checks it again, so it goes out a little late rather than wrong.",
+   "link": "/daily"
    },
    {
    "id": "2026-10-28-sale-barns-notes",

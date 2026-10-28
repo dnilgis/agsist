@@ -70,15 +70,20 @@ def lift(script):
     return src[i:j + len(END)]
 
 
-def run(body, fail_on=(), fail_with=OSError, n=6):
-    """Run one lifted loop against a fake server. Returns (rc, state)."""
-    state = {"sent": [], "connects": 0, "flagged": None, "printed": [], "owner": []}
+def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises=0):
+    """Run one lifted loop against a fake server. Returns (rc, state).
+    login_fails: the server refuses the login. flag_raises: the first N
+    attempts to set the day flag raise (the worker down mid-send)."""
+    state = {"sent": [], "connects": 0, "flagged": None, "printed": [], "owner": [], "released": [],
+             "flag_calls": 0}
 
     class FakeSMTP:
         def __init__(self, *a, **k):
             state["connects"] += 1
         def starttls(self, **k): pass
-        def login(self, *a): pass
+        def login(self, *a):
+            if login_fails:
+                raise smtplib.SMTPAuthenticationError(535, b"5.7.8 Username and Password not accepted")
         def quit(self): pass
         def send_message(self, msg):
             pos = len(state["sent"]) + len(state.setdefault("_failed", []))
@@ -88,6 +93,9 @@ def run(body, fail_on=(), fail_with=OSError, n=6):
             state["sent"].append(pos)
 
     def flagger(day, set_it=False):
+        state["flag_calls"] += 1
+        if set_it and state["flag_calls"] <= flag_raises:
+            raise OSError("worker unreachable")
         state["flagged"] = (day, set_it)
 
     addresses = ["w%d@example.com" % k for k in range(n)]
@@ -112,6 +120,7 @@ def run(body, fail_on=(), fail_with=OSError, n=6):
         "build_email": lambda *a, **k: object(),
         "day_flag": flagger,
         "flag": flagger,
+        "release_claim": lambda d: state["released"].append(d) or True,
         "print": lambda *a, **k: state["printed"].append(" ".join(str(x) for x in a)),
         # The private mail to Sig is captured, never sent; masking is real.
         "log_safe": type("L", (), {
@@ -200,6 +209,69 @@ for script, plural in SENDERS:
     check(st["flagged"] is None,
           W("a run that sent NOTHING flagged the day anyway — the mail would "
             "never go out at all"))
+
+    # ── a run killed mid-list has already flagged the day (send_daily, Oct 28)
+    # A published issue that never went out is written again by the next run,
+    # and that run asks this flag. A cancel or a lost runner is not an
+    # Exception, so it escapes the loop: the flag must already be set by then,
+    # or the retry mails everyone who already had it.
+    if script == "send_daily.py":
+        # ── 2026-10-28 review: a backup-mode claim with nothing delivered is released
+        rc, st = run(body, login_fails=True)
+        check(rc == 1 and not st["sent"] and st["released"] == ["2026-09-05"],
+              W("a refused SMTP login left the day's claim in place (rc %r, released %r); in backup mode the "
+                "day then reads as sent and the retry never sends it" % (rc, st["released"])))
+        rc, st = run(body, fail_on=tuple(range(6)), fail_with=OSError, n=6)
+        check(st["released"] == ["2026-09-05"], W("a run that delivered nothing did not release the claim"))
+        rc, st = run(body)
+        check(st["released"] == [], W("a run that delivered mail released the day's claim"))
+        # ── a flag set that raises is not "flagged": it is set again after the list
+        rc, st = run(body, flag_raises=1)
+        check(st["flagged"] == ("2026-09-05", True) and st["flag_calls"] == 2,
+              W("the day flag failed after the first mail and was never set again (calls %d)" % st["flag_calls"]))
+
+        def lifted_with_state():
+            st = {"sent": [], "connects": 0, "flagged": None, "printed": [], "owner": [], "_failed": []}
+
+            class FakeSMTP:
+                def __init__(self, *a, **k):
+                    st["connects"] += 1
+                def starttls(self, **k): pass
+                def login(self, *a): pass
+                def quit(self): pass
+                def send_message(self, msg):
+                    if len(st["sent"]) == 3:
+                        raise KeyboardInterrupt("runner cancelled")
+                    st["sent"].append(len(st["sent"]))
+            ns = {
+                "smtplib": type("S", (), {"SMTP": FakeSMTP,
+                                          "SMTPServerDisconnected": smtplib.SMTPServerDisconnected,
+                                          "SMTPConnectError": smtplib.SMTPConnectError,
+                                          "SMTPException": smtplib.SMTPException}),
+                "ssl": type("C", (), {"create_default_context": staticmethod(lambda: None)}),
+                "time": type("T", (), {"sleep": staticmethod(lambda s: None)}),
+                "host": "h", "port": 587, "user": "u", "pw": "p", "day": "2026-10-28",
+                "from_name": "n", "from_addr": "a", "reply_to": "r", "b": {},
+                "recipients": ["w%d@example.com" % k for k in range(6)],
+                "build_email": lambda *a, **k: object(),
+                "flag": lambda day, set_it=False: st.__setitem__("flagged", (day, set_it)) or True,
+                "release_claim": lambda d: True,
+                "print": lambda *a, **k: st["printed"].append(" ".join(str(x) for x in a)),
+                "log_safe": type("L", (), {"mask_text": staticmethod(log_safe.mask_text),
+                                           "owner_mail": staticmethod(lambda s, l: True)}),
+            }
+            wrapped = "def _send():\n" + "\n".join("    " + ln for ln in body.splitlines())
+            exec(compile(wrapped, "<lifted from send_daily.py>", "exec"), ns)
+            try:
+                ns["_send"]()
+            except KeyboardInterrupt:
+                pass
+            return st
+        st = lifted_with_state()
+        check(len(st["sent"]) == 3, W("the killed run sent %d before the cut, expected 3" % len(st["sent"])))
+        check(st["flagged"] == ("2026-10-28", True),
+              W("a run killed after 3 mails left the day UNFLAGGED; the next run's retry of a published, "
+                "unsent issue would mail those 3 readers a second copy"))
 
 if fails:
     for f in fails:
