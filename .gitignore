@@ -16,6 +16,8 @@ barchart-raw.json
 # Daily cash bid snapshots: built in the fetch_bids job and saved to the raw
 # branch (scripts/bid_snapshots.py, scripts/push_raw.sh), never to main.
 /bids-daily/
+# Private basis forecast ledger (scripts/basis_ledger.py): raw branch only, never main.
+/basis-ledger/
 
 # private, never published (Sig, 2026-10-12)
 data/signups.json

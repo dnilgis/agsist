@@ -88,7 +88,7 @@ FILES (raw branch, private; /basis-ledger/ is in .gitignore on main)
 USAGE
 -----
   python3 scripts/basis_ledger.py --selftest
-  python3 scripts/basis_ledger.py run [--live-day D] [--ref origin/raw | --dir DIR] [--out-dir .]
+  python3 scripts/basis_ledger.py run [--live-day D] [--ref origin/raw | --dir DIR] [--out-dir .] [--replay-max N]
       the workflow step: freeze today's live calls (only for today's CT day),
       replay any snapshot day through REPLAY_THROUGH not replayed yet, rebuild
       open grades and the summary. Writes only what changed.
@@ -945,7 +945,7 @@ def write_summary(ledger, blocks, asof):
     return doc
 
 
-def run(store, ledger, today, live_day=None, made_at=None, replay=True, log=print):
+def run(store, ledger, today, live_day=None, made_at=None, replay=True, replay_max=None, log=print):
     """The workflow step. Frozen live calls for live_day (only today's), replay of
     missing days through REPLAY_THROUGH, open grades, the summary."""
     if live_day:
@@ -963,7 +963,11 @@ def run(store, ledger, today, live_day=None, made_at=None, replay=True, log=prin
             log(f"[basis-ledger] froze {len(doc['calls'])} live calls for {live_day} ({doc['model_version']})")
     if replay:
         done = set(ledger.list("replay", "calls"))
-        for d in [d for d in store.days if d <= REPLAY_THROUGH and d not in done and CC.is_trading_day(d)]:
+        todo = [d for d in store.days if d <= REPLAY_THROUGH and d not in done and CC.is_trading_day(d)]
+        if replay_max is not None and len(todo) > replay_max:
+            log(f"[basis-ledger] replay: {len(todo)} day(s) to go, {replay_max} this run (oldest first)")
+            todo = todo[:replay_max]
+        for d in todo:
             doc = make_calls(store, d, "replay", model=model_for(ledger, store, "replay", d), made_at=made_at)
             freeze_calls(ledger, doc)
             log(f"[basis-ledger] replay {d}: {len(doc['calls'])} calls, "
@@ -1202,6 +1206,10 @@ def selftest():
            and open(os.path.join(out, rel("live", "calls", d21)), "rb").read() == before)
         ck("summary keeps live and replay as two records", s["live"]["call_days"] == 2 and s["replay"]["call_days"] == 1
            and s["private"] is True)
+        L2 = Ledger(os.path.join(tmp, "out2"), dir=src)
+        run(st, L2, today=days[29], replay_max=2, log=lambda *a: None)
+        ck("replay goes oldest first, at most replay_max days a run", L2.list("replay", "calls") == days[:2]
+           and L2.list("live", "calls") == [])
         # tie rule, Brier and MAE on a hand case
         hz = [[5, "t1", 0.2, 40, 0.3]]
         cd = {"day": "x", "calls": [[k, "IA", -0.4, False, None, "no state median", dr, 0.03, 3, 3, [0, 0, 1, 1], hz]
@@ -1244,13 +1252,15 @@ def main(argv=None):
         if name == "run":
             s.add_argument("--live-day", default="")
             s.add_argument("--no-replay", action="store_true")
+            s.add_argument("--replay-max", type=int, help="replay at most this many days this run")
     a = ap.parse_args(argv)
     today = a.today or BS.ct_now().date().isoformat()
     store = Store(dir=a.dir, ref=a.ref)
     ledger = Ledger(a.out_dir, ref=None if a.dir else a.ref, dir=a.dir)
     made_at = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     if a.cmd == "run":
-        doc = run(store, ledger, today, live_day=a.live_day or None, made_at=made_at, replay=not a.no_replay)
+        doc = run(store, ledger, today, live_day=a.live_day or None, made_at=made_at, replay=not a.no_replay,
+                  replay_max=a.replay_max)
     else:
         doc = write_summary(ledger, {k: summarize(regrade(ledger, store, k, today)[1]) for k in KINDS}, today)
     for kind in KINDS:
