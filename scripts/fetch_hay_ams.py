@@ -68,12 +68,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fetch_dairy as FD  # noqa: E402
+import ams_http as AMS  # noqa: E402  www.ams.usda.gov first, then the measured mirror
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = "data/hay/ams-hay.json"
 RAW_DIR = "data/hay-ams-raw"
 SOURCES = "scripts/hay_ams_sources.json"
 URL = "https://www.ams.usda.gov/mnreports/ams_%s.pdf"
+LISTING_EXPECT = r"ams_\d{3,5}\.(?:pdf|txt)|viewReport/\d{3,5}"  # a mirror's listing page must link reports
 PAGE = "https://mymarketnews.ams.usda.gov/viewReport/%s"
 
 PRICE_RANGE = (15.0, 1500.0)   # $/ton; small squares of top hay run $400+, utility round bales under $50
@@ -481,7 +483,7 @@ def pick_slug(src, listing):
 
 
 def fetch(slug, tries=3):
-    raw, err = FD.http_get(URL % slug, tries=tries)
+    raw, err = AMS.get(URL % slug, tries=tries)
     if raw is None:
         return None, None, "fetch failed: %s" % err
     if raw[:5] != b"%PDF-":
@@ -566,7 +568,7 @@ def probe(root, scan=None):
     cfg = load_sources(root)
     listing = {}
     for url in cfg.get("listing_urls") or []:
-        raw, err = FD.http_get(url)
+        raw, err = AMS.get(url, expect=LISTING_EXPECT)
         if raw is None:
             print("listing ERROR %s: %s" % (url, err))
             continue
@@ -836,4 +838,6 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    _argv = sys.argv[1:]
+    _rc = main(_argv)
+    sys.exit(_rc if "--selftest" in _argv else AMS.finish("hay-ams", _rc, probe="--probe" in _argv))

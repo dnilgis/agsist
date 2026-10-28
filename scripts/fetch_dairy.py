@@ -124,7 +124,8 @@ def pdf_to_text(raw):
 
 def fetch_ams(opener=None, sleep=time.sleep):
     """Returns (raw_bytes|None, text|None, error|None)."""
-    raw, err = http_get(AMS_URL, opener=opener, sleep=sleep)
+    import ams_http as AMS  # noqa: WPS433  lazy: ams_http imports this module
+    raw, err = AMS.get(AMS_URL, opener=opener, sleep=sleep)
     if raw is None:
         return None, None, "AMS fetch failed: %s" % err
     if raw[:5] == b"%PDF-":
@@ -1555,4 +1556,7 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    import ams_http as AMS  # noqa: E402  lazy: ams_http imports this module
+    _argv = sys.argv[1:]
+    _rc = main(_argv)
+    sys.exit(_rc if "--selftest" in _argv else AMS.finish("dairy (AMS class prices)", _rc, probe="--probe" in _argv))
