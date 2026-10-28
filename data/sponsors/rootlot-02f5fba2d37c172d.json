@@ -17,13 +17,13 @@
  "byPage": [],
  "creative": {
   "live": false,
-  "proof_code": "2b9214d2",
+  "proof_code": "0fc2c460",
   "fields": {
    "advertiser": "RootLot",
-   "headline": "Trees Direct From the Grower",
-   "body": "Browse trees and plants shipped directly from the grower.",
+   "headline": "Check Your Yard. Put Your Root Down.",
+   "body": "Trees and plants shipped direct from the grower. No sleep till planting. Fight for your right to shade.",
    "facts": [],
-   "cta_text": "Browse Plants",
+   "cta_text": "Root Down Now",
    "cta_url": "https://rootlot.com/shop",
    "phone": null,
    "logo": null,
@@ -131,5 +131,5 @@
   "geo_readers"
  ],
  "licensedStates": null,
- "creativeRefreshed": "2026-10-28T14:55:34+00:00"
+ "creativeRefreshed": "2026-10-28T14:59:30+00:00"
 }

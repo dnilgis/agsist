@@ -38,9 +38,9 @@ test("the shipped RootLot entry: CA, NV, TX, off, no dates, Sig's copy, no logo,
   assert.deepEqual(e.states, ["CA", "NV", "TX"]);
   assert.equal(e.active, false);
   assert.equal(e.start, null); assert.equal(e.end, null);
-  assert.equal(e.headline, "Trees Direct From the Grower");
-  assert.equal(e.body, "Browse trees and plants shipped directly from the grower.");
-  assert.equal(e.cta_text, "Browse Plants");
+  assert.equal(e.headline, "Check Your Yard. Put Your Root Down.");
+  assert.equal(e.body, "Trees and plants shipped direct from the grower. No sleep till planting. Fight for your right to shade.");
+  assert.equal(e.cta_text, "Root Down Now");
   assert.equal(e.url, "https://rootlot.com/shop");
   assert.deepEqual(e.facts, []);
   assert.equal(e.logo, null); assert.equal(e.phone, null);
@@ -59,7 +59,7 @@ test("the shipped RootLot entry: CA, NV, TX, off, no dates, Sig's copy, no logo,
   const A = createRequire(import.meta.url)(join(ROOT, "components/sponsor-ad.js"));
   const h = A.render(ad, "state-page", { slot: "geo-rootlot" });
   assert.doesNotMatch(h, /<img|sa-logo|sa-facts|sa-phone|tel:|mailto:/, "text only: no logo, facts, phone or email");
-  assert.match(h, /Trees Direct From the Grower/); assert.match(h, /Browse Plants/);
+  assert.match(h, /Check Your Yard. Put Your Root Down./); assert.match(h, /Root Down Now/);
 });
 
 test("page state comes from the path: CA, OR and NV state and county pages", () => {
@@ -266,7 +266,7 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.ok(a, w + ": drawn");
       assert.equal(a.slot, "geo-rootlot");
       assert.equal(a.href, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
-      assert.match(a.text, /Sponsor/); assert.match(a.text, /Trees Direct From the Grower/); assert.match(a.text, /Browse Plants/);
+      assert.match(a.text, /Sponsor/); assert.match(a.text, /Check Your Yard. Put Your Root Down./); assert.match(a.text, /Root Down Now/);
       assert.equal(await pg.$(".geo-spon img, .geo-spon .sa-logo, .geo-spon .sa-phone"), null, w + ": text only");
       assert.ok(a.belowFold, w + ": below the fold");
       assert.ok(a.sideScroll <= 0, w + ": no sideways scroll");
@@ -432,7 +432,7 @@ test("browser: RootLot's portal: free test muted under its label, ad counts 0 an
       assert.match(t, /State-targeted sponsor/);
       assert.match(t, /California, Nevada and Texas/);
       assert.match(t, /Free test: no charge/i);
-      assert.match(t, /Trees Direct From the Grower/);
+      assert.match(t, /Check Your Yard. Put Your Root Down./);
       assert.ok(await pg.$("#billing.cp-free .cp-bill.cp-muted"), w + ": billing kept, muted");
       assert.equal(await pg.evaluate(() => [...document.querySelectorAll("#results .cp-kpi-n")].slice(0, 2).map((e) => e.textContent).join(",")), "0,0");
       assert.match(await pg.textContent("#results"), /not started/);
