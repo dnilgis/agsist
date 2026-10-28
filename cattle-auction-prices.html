@@ -165,6 +165,7 @@
       <div id="sb-results"></div>
       <p id="sb-asof" class="src"></p>
 
+      <!-- ai-answer:screwworm --><section class="ai-answer" id="answer-screwworm" aria-labelledby="answer-screwworm-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-screwworm-h" style="font-size:1.1rem;margin:0 0 .4rem">What does New World screwworm mean for cattle prices?</h2><p style="margin:0 0 .5rem">The price effect runs through the border: cattle from Mexico were shut out over New World screwworm from November 22, 2024, and USDA then raised its 2025 forecast for 750 to 800 pound feeder steers by $15 per cwt, a forecast, not a measured effect (ERS, December 16, 2024). USDA is now reopening border ports to Mexican cattle in phases: Santa Teresa, NM on September 24, 2026, Columbus, NM on October 26, and Nogales, AZ planned for November 30. Inside the U.S., APHIS confirmed the first wildlife case on October 21, 2026, an elk on a game ranch in Pecos County, Texas, and Texas is changing its infested zone around it. APHIS keeps the case count and the zone map on its status page, linked below.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: <a href="https://ers.usda.gov/sites/default/files/_laserfiche/outlooks/110630/LDP-M-366.pdf" rel="noopener" style="text-decoration:underline">ERS Livestock, Dairy, and Poultry Outlook, Dec 16, 2024</a> &middot; <a href="https://direct.aphis.usda.gov/animals/animal-health/livestock-and-poultry-disease/stop-screwworm/current-status" rel="noopener" style="text-decoration:underline">APHIS, current status of New World screwworm</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-first-detection-new-world-screwworm-us-wildlife" rel="noopener" style="text-decoration:underline">APHIS, first detection in U.S. wildlife, Oct 21, 2026</a></p></section><!-- /ai-answer:screwworm -->
       <section id="vog" class="sb-box sb-vogc" hidden>
         <h2>Background or sell at weaning?</h2>
         <p>Value of gain is what buyers at one sale paid for each pound a calf added: the heavier class&#x27;s dollars a head minus the lighter class&#x27;s, over the pounds between them. Gain pays when the value of gain is above your cost of gain. Steers or heifers and the grade follow the buttons above.</p>
@@ -178,6 +179,12 @@
 
       <section class="fx" data-feeder="table" id="feeder-weekly" hidden aria-label="AGSIST feeder cattle prices, by region and weight"></section>
       <section class="fx" data-feeder="rma" data-compact="1" hidden aria-label="RMA feeder steer value"></section>
+
+      <!-- Cull cows: components/cull-cows.js reads data/cull-cows.json -->
+      <section class="sb-box cc" id="cull-cows" data-cull-cows="cattle" aria-labelledby="cc-h">
+        <h2 id="cc-h">Cull cows this week</h2>
+        <div data-cc="body"><p class="src">Slaughter cow and bull prices from USDA sale barn reports load here, each barn with its own sale day.</p></div>
+      </section>
 
       <h2>How to read it</h2>
       <ul>
@@ -287,6 +294,7 @@
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/cattle-auction.js?v=6" defer></script>
   <script src="/components/feeder-index.js?v=2" defer></script>
+  <script src="/components/cull-cows.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

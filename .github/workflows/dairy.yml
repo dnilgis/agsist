@@ -114,6 +114,20 @@ jobs:
         timeout-minutes: 15
         continue-on-error: true
         run: python scripts/fetch_dmc.py
+      # Licensed dairy herds (scripts/fetch_dairy_herds.py): NASS's yearly US and
+      # state counts (Quick Stats) and Wisconsin by month (NASS Wisconsin), for
+      # the chart on /milk-prices, which loads the file only when the reader gets
+      # to it. Keep-last-good; its own selftest first, and a failure here never
+      # stops the prices.
+      - name: Licensed dairy herds into data/dairy-herds.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        timeout-minutes: 10
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: |
+          python scripts/fetch_dairy_herds.py --selftest
+          python scripts/fetch_dairy_herds.py
       # Upper Midwest Federal Order 30 from the market administrator's own
       # releases (scripts/fetch_order30.py): PPD, statistical uniform price,
       # Class I, advanced prices, SCC rate. Keep-last-good.
@@ -153,7 +167,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json data/dairy-miss.json data/dairy-order30.json data/dairy-dmc.json"
+          FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json data/dairy-miss.json data/dairy-order30.json data/dairy-dmc.json data/dairy-herds.json"
           rm -rf /tmp/dairy && mkdir -p /tmp/dairy
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/dairy/ || true

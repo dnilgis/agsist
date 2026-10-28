@@ -1,7 +1,36 @@
 {
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-28",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/cash-bids/nebraska/",
+     "name": "Licensed storage on Nebraska elevator pages",
+     "text": "Nebraska town pages now show how many bushels a matched elevator is licensed to store, from the Nebraska Public Service Commission's report of Oct 28, 2026, and the state page shows the statewide total. Only elevators we could match one to one get the line."
+    },
+    {
+     "tag": "improved",
+     "page": "/milk-prices",
+     "name": "DMC margins through August 2026",
+     "text": "The Dairy Margin Coverage table and the margin line now run through August 2026 (August: $9.34/cwt), from FSA's own 2026 table, instead of stopping at April."
+    },
+    {
+     "tag": "improved",
+     "page": "/rain",
+     "name": "County rain pages open with the Rain Print",
+     "text": "Each county rain page now shows the year as a Rain Print in the Roots style right under the numbers (Staircase, Up close and Watch it draw are a tap away), in place of the plain running-total chart. The plain chart stays for anyone whose browser does not draw the print."
+    },
+    {
+     "tag": "fixed",
+     "page": "/milk-prices",
+     "name": "Milk prices: Your area no longer jumps the page",
+     "text": "With a saved place, the Your area card used to start short and grow when your area's mailbox price came in, pushing the page down as you read. It now holds its space from the first moment, and the picker shows your area right away."
+    }
+   ]
+  },
   {
    "date": "2026-10-27",
    "items": [

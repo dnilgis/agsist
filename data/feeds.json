@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 102,
- "with_known_cadence": 102,
+ "count": 104,
+ "with_known_cadence": 104,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -636,6 +636,31 @@
    "why_quiet": "USDA Crop Progress is a Monday afternoon release, in season only."
   },
   {
+   "path": "data/cull-cows.json",
+   "pages": [
+    "cattle-auction-prices.html",
+    "milk-prices.html"
+   ],
+   "written_by": [
+    "Cattle auction prices"
+   ],
+   "touched_by": [
+    "Cattle auction prices"
+   ],
+   "cadence": "2 launches on a fixed schedule at about 9am, 8pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 1 * * 2-6",
+    "37 14 * * 1-5"
+   ],
+   "max_gap_hours": 61.2,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/custom-rates/blend.json",
    "pages": [
     "custom-rates.html"
@@ -760,6 +785,37 @@
     "Share images",
     "Build State Stats (USDA NASS)",
     "yield-panel"
+   ],
+   "cadence": "5 launches on a fixed schedule at about 9am, 10am, 11am, 4pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "37 15 1-9 * *",
+    "37 21 1-9 * *",
+    "37 15 28-31 * *",
+    "11 14 * * 2",
+    "23 16 15-27 * *"
+   ],
+   "max_gap_hours": 168.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/dairy-herds.json",
+   "pages": [
+    "milk-prices.html"
+   ],
+   "written_by": [
+    "Dairy prices"
+   ],
+   "touched_by": [
+    "conditions",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices"
    ],
    "cadence": "5 launches on a fixed schedule at about 9am, 10am, 11am, 4pm Central",
    "curated": false,
@@ -2083,6 +2139,7 @@
     "Generate Daily Briefing",
     "Dairy prices",
     "Fertilizer co-op posted prices",
+    "Implied futures shadow test",
     "Fetch Prices"
    ],
    "touched_by": [
@@ -2097,6 +2154,7 @@
     "Dairy prices",
     "Fertilizer co-op posted prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Implied futures shadow test",
     "Morning report",
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",

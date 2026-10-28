@@ -230,9 +230,23 @@
   var mb = null, hist = null, data = null, baked = null, o30 = null;
   function getJSON(u) { return fetch(u, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
 
+  /* The page's before-paint script (agsist-milk-area-early) has already laid out a saved place: the
+     card's final lines as blank bars, or the ask for a split state. Take them out and keep the seed
+     as the no-area copy; returns the height the bars held, so the filled card keeps at least it. */
+  function settle(out) {
+    var sec = doc.getElementById('dp-area'), sk = out.querySelector('.dp-area-skel'), held = 0;
+    if (sk) held = out.getBoundingClientRect().height;
+    [].slice.call(out.querySelectorAll('.dp-area-skel,[data-early]')).forEach(function (e) { e.parentNode.removeChild(e); });
+    if (sec) sec.classList.remove('dp-area-wait');
+    out.removeAttribute('aria-busy');
+    return held;
+  }
   function renderArea() {
     var out = doc.getElementById('dp-area-out'), sel = doc.getElementById('dp-area-sel');
-    if (!out || !sel || !mb || !data) return;
+    if (!out || !sel) return;
+    var held = 0;
+    if (baked == null) { held = settle(out); baked = out.innerHTML; }
+    if (!mb || !data) return;
     var st = '', s = ls();
     try { st = s ? readState(s) : ''; } catch (e) { st = ''; }
     var area = sel.value, ask = '';
@@ -241,10 +255,9 @@
       if (a && a.area) { area = a.area; sel.value = area; }
       else if (a) ask = askHtml(st, a);
     }
-    if (baked == null) baked = out.innerHTML;
     if (!area) { out.innerHTML = ask + baked; return; }
     var h = areaHtml(mb, data.d, data.rows, area, st, new Date());
-    if (h) out.innerHTML = h;
+    if (h) { out.innerHTML = h; if (held) out.style.minHeight = held + 'px'; }
   }
   function renderCheck() {
     var out = doc.getElementById('dp-check-out');
@@ -264,7 +277,7 @@
   }
   function wire() {
     var sel = doc.getElementById('dp-area-sel');
-    if (sel) sel.addEventListener('change', function () { lset(AREA_KEY, sel.value || null); renderArea(); });
+    if (sel) sel.addEventListener('change', function () { var o = doc.getElementById('dp-area-out'); if (o) o.style.minHeight = ''; lset(AREA_KEY, sel.value || null); renderArea(); });
     var f = doc.getElementById('dp-check');
     if (f) {
       f.addEventListener('submit', function (e) { e.preventDefault(); });
@@ -278,7 +291,7 @@
   }
   function start() {
     data = root.agsistMilk || null;
-    if (!data) return;
+    if (!data) { renderArea(); return; }
     Promise.all([getJSON('/data/dairy-mailbox.json'), getJSON('/data/dairy-history.json'), getJSON('/data/dairy-order30.json')]).then(function (r) {
       mb = r[0]; hist = r[1]; o30 = r[2];
       renderArea(); renderCheck();
