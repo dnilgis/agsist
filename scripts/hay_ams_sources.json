@@ -177,43 +177,41 @@
       "id": "mn-pipestone-auction",
       "state": "MN",
       "slug": "2246",
-      "match": "pipestone",
-      "hold": true
+      "match": "pipestone"
     },
     {
       "id": "ia-union-auction",
       "state": "IA",
       "slug": "3729",
       "match": "hpl|union",
-      "hold": true
+      "hold": true,
+      "hold_why": "sells every lot by the bale (Oct 10 2026 report); bale prices are never converted to tons"
     },
     {
       "id": "ia-rock-valley-mon",
       "state": "IA",
       "slug": "2243",
-      "match": "rock valley",
-      "hold": true
+      "match": "rock valley"
     },
     {
       "id": "ia-rock-valley-thu",
       "state": "IA",
       "slug": "2244",
-      "match": "rock valley",
-      "hold": true
+      "match": "rock valley"
     },
     {
       "id": "sd-corsica-auction",
       "state": "SD",
       "slug": "2245",
-      "match": "dakota hay|corsica",
-      "hold": true
+      "match": "dakota hay|corsica"
     },
     {
       "id": "mo-golden-city-auction",
       "state": "MO",
       "slug": "3723",
       "match": "golden city|southwest missouri",
-      "hold": true
+      "hold": true,
+      "hold_why": "sells every lot by the bale (Oct 5 2026 report); bale prices are never converted to tons"
     }
   ]
 }

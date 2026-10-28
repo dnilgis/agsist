@@ -132,6 +132,9 @@ SECTION_RE = re.compile(r"^(hay|straw)\s*\(([^)]*)\)$", re.I)
 # "Alfalfa - Premium (Trade/Per Ton)", "Wheat -  (Ask/Per Bale)",
 # "Alfalfa - Fair/Good (Contract (Trade)/Per Ton)", "(Trade/Per Point/Ton)".
 TABLE_RE = re.compile(r"^(.+?)\s+-\s*(.*?)\s*\((.+?)\s*/\s*per\s+([a-z/ ]+?)\s*\)$", re.I)
+# Auction reports (Oct 28: Pipestone MN, AMS 2246) head their tables "Alfalfa - Good (Per Ton)": every row is a
+# sale at the auction, so it counts as a trade. Read only in a report whose title or heading says auction.
+AUCTION_TABLE_RE = re.compile(r"^(.+?)\s+-\s*(.*?)\s*\(\s*per\s+([a-z/ ]+?)\s*\)$", re.I)
 # The line just above a Hay/Straw heading names the region when there is one.
 REGION_RE = re.compile(r"^(?!.*\d)(?:.*\b(?:north|south|east|west)\w*|.*\b(?:central|valley|basin|county|counties|mountains|plains|panhandle|statewide)\b.*|n/a)$", re.I)
 NUM = r"(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)"
@@ -328,6 +331,7 @@ def parse_report(text):
             comment = trim_comment(" ".join(para))
             break
 
+    auction = bool(re.search(r"\bauction\b", " ".join(head), re.I))
     rows, per_bale, section, organic, table, began, region = [], 0, None, False, None, False, None
     skipped = {"ask": 0, "contract": 0, "other_unit": 0}
     prev = None
@@ -349,9 +353,14 @@ def parse_report(text):
             continue
         prev = ln
         t = TABLE_RE.match(ln)
-        if t:
+        a = None if t else (AUCTION_TABLE_RE.match(ln) if auction else None)
+        if t or a:
             began = True
-            basis, unit = re.sub(r"\s+", " ", t.group(3)).strip().lower(), re.sub(r"\s+", "", t.group(4)).lower()
+            if t:
+                basis, unit = re.sub(r"\s+", " ", t.group(3)).strip().lower(), re.sub(r"\s+", "", t.group(4)).lower()
+            else:
+                basis, unit = "trade", re.sub(r"\s+", "", a.group(3)).lower()
+                t = a
             if basis != "trade" or unit != "ton":
                 # asks are offers, not trades; contracts are not this week's spot
                 # trades; a bale, point or bundle price is not a ton price
@@ -368,7 +377,7 @@ def parse_report(text):
             if section is None:
                 return None, "a table before any Hay or Straw heading: %r" % ln[:60]
             table = {"skip": False, "commodity": t.group(1).strip(), "grade": t.group(2).strip().rstrip("-").strip(),
-                     "basis": t.group(3).strip().lower()}
+                     "basis": "auction" if a else t.group(3).strip().lower()}
             continue
         if not began:
             continue                                            # comment and volume block above the tables
@@ -509,7 +518,7 @@ def run(root, got=None, now=None):
         if src.get("hold"):
             # a report whose layout no saved copy has checked yet (the hay auctions, Oct 27 2026):
             # the probe saves its text; nothing from it is published until a fixture checks the parser
-            b = merge(old.get(src["id"]), src, None, "held: waiting on a checked copy of this report", now_iso, slug)
+            b = merge(old.get(src["id"]), src, None, "held: " + (src.get("hold_why") or "waiting on a checked copy of this report"), now_iso, slug)
             b.pop("rows", None)
             out.append(b)
             continue
@@ -684,6 +693,28 @@ def selftest():
         ck("WY East Alfalfa Good 3x4: 1600 t, $270-300, avg 281.25, F.O.B.-Farm/Ranch",
            (e["region"], e["qty"], e["lo"], e["hi"], e["avg"], e["freight"]) == ("East", 1600, 270, 300, 281.25, "F.O.B.-Farm/Ranch"), e)
         ck("WY row tons add to the report's 2435", sum(r["qty"] for r in wy["rows"] if r["kind"] == "hay") == 2435)
+    # REAL CASE (Oct 28, Sig's copy of AMS 2246): auction tables say "(Per Ton)", not "(Trade/Per Ton)"
+    pip, why = parse_report((FIX / "ams_2246-2026-10-27.txt").read_text())
+    ck("real MN 2246 Pipestone auction parses", pip is not None, why)
+    if pip:
+        ck("Pipestone dated Tue Oct 27, 137 tons hay", pip["date"] == "2026-10-27" and pip["tons"]["hay"]["week"] == 137)
+        g = [r for r in pip["rows"] if r["commodity"] == "Grass" and r["grade"] == "Good"]
+        ck("Pipestone Grass Good large round 39.10 t, $145-175, avg 162.07, auction",
+           len(g) == 1 and g[0]["qty"] == 39.1 and (g[0]["lo"], g[0]["hi"], g[0]["avg"]) == (145.0, 175.0, 162.07)
+           and g[0]["basis"] == "auction")
+        ck("Pipestone per-bale tables left out", pip["per_bale_tables"] == 2 and all(r["basis"] == "auction" for r in pip["rows"]))
+    for fx, want_rows, want_t, st, ttl in (("ams_2245-2026-10-27.txt", 7, 298, "SD", "corsica"),
+                                           ("ams_2244-2026-10-23.txt", 18, 901, "IA", "rock valley"),
+                                           ("ams_2243-2026-09-14.txt", 25, 983, "IA", "rock valley")):
+        rr, why = parse_report((FIX / fx).read_text())
+        ck("real %s parses: %d rows, %d tons" % (fx[:8], want_rows, want_t),
+           rr is not None and len(rr["rows"]) == want_rows and rr["tons"]["hay"]["week"] == want_t
+           and title_ok({"state": st, "match": ttl}, rr["title"], rr.get("heading")), why)
+    for fx in ("ams_3729-2026-10-10.txt", "ams_3723-2026-10-05.txt"):
+        rr, why = parse_report((FIX / fx).read_text())
+        ck("real %s sells by the bale: nothing shown, never converted" % fx[:8], rr is None and "no Per Ton" in why, why)
+    sdx = (FIX / "ams_3183-2026-10-16.txt").read_text().replace("(Trade/Per Ton)", "(Per Ton)")
+    ck("a direct (non-auction) report never reads bare (Per Ton) tables", parse_report(sdx)[0] is None)
     mo, why = parse_report((FIX / "ams_2929-cells.txt").read_text())
     ck("real MO 2929: asking prices only, no trades, so nothing is shown", mo is None and "no Per Ton" in why, why)
     ca, why = parse_report((FIX / "ams_2904-cells.txt").read_text())
