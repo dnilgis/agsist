@@ -162,7 +162,7 @@
         state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
         draw('r1');
         fig.classList.add('rc-print-on');
-        fig.hidden = false;   // county pages ship the print as a hidden shell after the farm content
+        fig.hidden = false;   // a figure shipped hidden (Oct 20 to 27 county pages) shows; since Oct 28 the county one ships shown, the chart in it
         var cap = fig.querySelector('.rc-cap-print'), old = fig.querySelector('.rc-cap-chart');
         if (cap) cap.hidden = false;
         if (old) old.hidden = true;
@@ -222,5 +222,7 @@
   }
 
   var own = doc && doc.getElementById('rc-print');
-  if (own) mount(own);
+  // not drawn (no days file, a mismatch, a failure): the plain chart stays, and the room held for the
+  // print, its picker and its caption is let go (rain-county.css .rc-print-off)
+  if (own) mount(own).then(function (ok) { if (!ok) own.classList.add('rc-print-off'); });
 })(typeof window !== 'undefined' ? window : this);

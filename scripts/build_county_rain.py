@@ -1370,19 +1370,20 @@ def selftest():
         ok('id="rc-print"' in story and 'data-st="ia" data-fips="19169" data-year="2026"' in story and PRINT_JS in story,
            "Story County's days are in the daily file: the page carries the Rain Print placeholder and its script")
         ok(f'data-days="{c["days"]}" data-total="{c["total"]:.2f}"' in story, "the print is checked against the page's own days and total")
-        # 2026-10-20 (panel A, Sig's after-main-content rule): the plain chart stays at the top for
-        # every reader; the print and its style picker are a hidden shell after the farm content
+        # 2026-10-28 (Sig, on Barron County: "move our Rain Print chart up in place of that generic chart"):
+        # the print is the page's chart, right under the figures; the plain chart ships only inside its art
+        # box, the no-JS fallback the script draws over. (Oct 20 to 27 it was a hidden shell after the farm content.)
         pf = story.split('id="rc-print"')[1].split("</figure>")[0]
-        ok('class="rc-us"' in story.split('id="rc-print"')[0] and 'class="rc-us"' not in pf and pf.startswith(' data-st="ia"')
-           and ' hidden ' in pf.split(">")[0] and 'class="rc-print-styles"' in pf,
-           "the plain chart is up top; the print figure, hidden until drawn, carries the style picker")
-        # 2026-10-23 promo audit: the print and its offer come up above the method text (it sat
-        # five phone screens down, under "Why this station"), still after the answer and the farm numbers
-        ok(story.index("<h2>Month by month</h2>") < story.index("so far in Story County</h2>") < story.index('id="rc-print"')
-           < story.index('class="rc-sell"') < story.index("<h2>The station") < story.index("<h2>Questions</h2>")
-           and story.index('data-signup-ask=') < story.index('id="rc-print"')
-           and story.index("<h2>Month by month</h2>") < story.index('class="rc-print-styles"'),
-           "the print and its picker come after the farm content (month table, the year so far) and before the station method")
+        ok('class="rc-us"' not in story.split('id="rc-print"')[0] and 'class="rc-us"' in pf.split('<div class="rc-print-art">')[1]
+           and pf.startswith(' data-st="ia"') and ' hidden' not in pf.split(">")[0] and 'class="rc-print-styles"' in pf
+           and story.count('aria-labelledby="rc-ct"') == 1 and '<span class="rc-cap-chart">' in pf,
+           "the print figure is shown up top, its picker in it, and the plain chart is only inside its art box")
+        ok(story.index('class="rc-figs"') < story.index('id="rc-print"') < story.index('class="rc-sell"')
+           < story.index("<h2>Month by month</h2>") < story.index("so far in Story County</h2>")
+           < story.index("<h2>The station") < story.index("<h2>Questions</h2>")
+           and story.index('id="rc-print"') < story.index('data-signup-ask=')
+           and min(i for i in (story.find("<svg"), story.find("<figure")) if i >= 0) == story.rindex("<figure", 0, story.index('id="rc-print"')),
+           "the print and its sell line come right under the figures, before the month table; no chart comes before it")
         pr = rp_prices()
         ok(pr and f"This is Story County&rsquo;s 2026 so far, drawn as a Rain Print. Put your name and dates on it: framed ${pr[0]}, print ${pr[1]}." in story,
            "the cross-sell line under the print names the county and the prices from data/rain-print.json")
