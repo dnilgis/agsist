@@ -283,10 +283,10 @@ def state_note_html(doc, st, esc):
     if not doc or st != ST:
         return None
     t, s = doc["totals"], doc["source"]
-    return (f'<div class="cbt-note" id="licensed-storage"><b>Licensed grain storage.</b> {t["with_capacity"]} '
-            f'businesses hold a North Dakota grain warehouse or processor license for {t["locations"]} locations, and '
-            f'the capacities the list gives them add to {t["bushels"]:,} bushels ({_credit(doc, esc)}, the list '
-            f'posted when we read it on {LS.fmt_date(s["read"])}). The list gives one capacity per business, not '
+    return (f'<div class="cbt-note" id="licensed-storage"><b>Licensed grain storage.</b> North Dakota&rsquo;s list '
+            f'names {t["locations"]} licensed grain warehouse and processor locations held by {t["with_capacity"]} '
+            f'businesses, and the capacities it gives those businesses add to {t["bushels"]:,} bushels '
+            f'({_credit(doc, esc)}, the list posted when we read it on {LS.fmt_date(s["read"])}). The list gives one capacity per business, not '
             f'per location. Warehouses licensed federally instead are not on the state&rsquo;s list. Where we read '
             f'a licensed location&rsquo;s bids, its town page shows that capacity.</div>')
 
@@ -500,7 +500,7 @@ def selftest():
     two = storage_line_html(bs["nee-northwood"], doc, esc)
     ok("4,074,000 bushels for both of this licensee&rsquo;s North Dakota locations together" in two, two)
     note = state_note_html(doc, "ND", esc)
-    ok("11 businesses" in note and "26 locations" in note and "42,670,600 bushels" in note
+    ok("26 licensed grain warehouse and processor locations held by 11 businesses" in note and "42,670,600 bushels" in note
        and "Oct 28, 2026" in note and "not per location" in note, note)
     ok(state_note_html(doc, "NE", esc) is None, "no line on another state's page")
     ok(chr(0x2014) not in one + many + note, "no em dash in copy")
