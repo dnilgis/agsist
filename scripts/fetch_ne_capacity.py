@@ -406,7 +406,7 @@ def main(argv=None):
     write(doc)
     j = doc["join"]
     print(f"[ne-capacity] {doc['totals']['locations']} locations, {doc['totals']['bushels']:,} bu (as of "
-          f"{doc['source']['as_of']}); joined {j['joined']} of {j['of']} ({j['rate']:.0%}), {j["with_bids_key"]} with a "
+          f"{doc['source']['as_of']}); joined {j['joined']} of {j['of']} ({j['rate']:.0%}), {j['with_bids_key']} with a "
           f"bids-network key; unjoined {j['unjoined']}, ambiguous {j['ambiguous']}")
     return 0
 
