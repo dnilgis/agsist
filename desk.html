@@ -16,7 +16,7 @@
      TODO-SIG.md), the bids repo's public directory and GitHub's public run
      list. Private parts read one answer from the subs worker, GET /desk
      (v5.59), with LIST_TOKEN in the Authorization header only, never in an
-     address. The token is the one elev-admin.html and the Today page keep in
+     address. The token is the one every desk tab reads (agsist-elev-admin-token) in
      this browser's localStorage, so it is pasted once; "Forget the token"
      clears it. Without it no worker call is made and the private parts say so.
      The worker answer holds counts only: no reader's address, name, town or
@@ -82,6 +82,11 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
 .out{margin-top:.5rem;font-size:.9rem}.out.bad{color:var(--warn)}.out.good{color:var(--ok)}
 .out:empty{display:none}
 #loading{color:var(--dim);margin:12px 0}
+.tabs{display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;border-bottom:1px solid var(--line);margin:12px 0 0;white-space:nowrap}
+.tabs a{flex:0 0 auto;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;color:var(--dim);font-weight:600;text-decoration:none;border-bottom:3px solid transparent}
+.tabs a[aria-current="page"]{color:var(--text);border-bottom-color:var(--accent)}
+#frames iframe{display:block;width:100%;min-height:600px;border:0;margin:0;background:var(--bg)}
+[hidden]{display:none!important}
 @media(max-width:640px){
   table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
   table.stack thead{display:none}
@@ -98,10 +103,22 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
   <section id="tok-box">
     <label for="tok">Token (LIST_TOKEN)</label>
     <div class="tok-row"><input id="tok" type="password" autocomplete="off" spellcheck="false"><button type="button" class="quiet" id="tok-forget">Forget the token</button><button type="button" id="reload">Read</button></div>
-    <p class="dim">Paste it once; this browser keeps it (the same one the elevator desk uses). Never put it in a link.</p>
+    <p class="dim">Paste it once; this browser keeps it, and every tab uses it. Never put it in a link.</p>
   </section>
 
+  <!-- THE TABS ARE ONE LIST (TABS in the script; this bar is the same list, written out so
+       nothing moves when the script runs). Every admin page lives here now (Sig, Oct 28):
+       the old addresses forward to /desk#<tab> (scripts/desk_tabs.py). -->
+  <nav class="tabs" id="tabs" aria-label="Desk tabs">
+    <a href="#overview" data-tab="overview" aria-current="page">Overview</a>
+    <a href="#today" data-tab="today">Today list</a>
+    <a href="#elevators" data-tab="elevators">Elevators</a>
+    <a href="#haymow" data-tab="haymow">Haymow</a>
+    <a href="#gifts" data-tab="gifts">Gift cards</a>
+  </nav>
+
   <div id="desk"><p id="loading">Reading...</p></div>
+  <div id="frames"></div>
 </main>
 <script>
 (function () {
@@ -140,10 +157,95 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
 
   /* ---------- the token ---------- */
   function tok() { return $('tok').value.trim(); }
-  try { $('tok').value = localStorage.getItem(TOK_KEY) || ''; } catch (e) {}
-  $('tok').addEventListener('change', function () { try { localStorage.setItem(TOK_KEY, tok()); } catch (e) {} });
-  $('tok-forget').addEventListener('click', function () { $('tok').value = ''; try { localStorage.removeItem(TOK_KEY); } catch (e) {} load(); });
-  $('reload').addEventListener('click', function () { try { localStorage.setItem(TOK_KEY, tok()); } catch (e) {} load(); });
+  /* One token box for every tab. The Haymow desk kept its own key before Oct 28: read it once
+     as a fallback and keep it under the shared key, so Sig never pastes twice. */
+  var OLD_KEYS = ['agsist-haymow-admin-token'];
+  try {
+    var t0 = localStorage.getItem(TOK_KEY) || '';
+    for (var k = 0; !t0 && k < OLD_KEYS.length; k++) { t0 = localStorage.getItem(OLD_KEYS[k]) || ''; if (t0) localStorage.setItem(TOK_KEY, t0); }
+    $('tok').value = t0;
+  } catch (e) {}
+  function tokSaved() { try { localStorage.setItem(TOK_KEY, tok()); } catch (e) {} reloadFrames(); }
+  $('tok').addEventListener('change', tokSaved);
+  $('tok-forget').addEventListener('click', function () {
+    $('tok').value = '';
+    try { localStorage.removeItem(TOK_KEY); OLD_KEYS.forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {}
+    reloadFrames(); load();
+  });
+  $('reload').addEventListener('click', function () { tokSaved(); load(); });
+
+  /* ---------- the tabs: ONE LIST. A tab is its id, its label (the bar above says the same) and
+     the page that holds it; Overview is this page's own cards. ---------- */
+  var TABS = [['overview', 'Overview', null], ['today', 'Today list', '/desk/today.html'], ['elevators', 'Elevators', '/desk/elevators.html'],
+    ['haymow', 'Haymow', '/desk/haymow.html'], ['gifts', 'Gift cards', '/desk/gifts.html']];
+  var PAGE = {};
+  TABS.forEach(function (t) { PAGE[t[0]] = t[2]; });
+  var FRAMES = {};
+  function parseHash(h) {
+    h = String(h || '').replace(/^#/, '');
+    var i = h.indexOf('/'), tab = i < 0 ? h : h.slice(0, i);
+    return Object.prototype.hasOwnProperty.call(PAGE, tab) ? { tab: tab, sub: i < 0 ? '' : h.slice(i + 1) } : null;
+  }
+  function fit(f) {
+    try { var d = f.contentDocument; if (d && d.documentElement) f.style.height = Math.max(600, d.documentElement.scrollHeight) + 'px'; } catch (e) {}
+  }
+  function frameFor(tab, sub, fresh) {
+    var src = PAGE[tab] + location.search + (sub ? '#' + sub : '');
+    var f = FRAMES[tab];
+    if (f && !fresh) return f;
+    if (f) { f.parentNode.removeChild(f); delete FRAMES[tab]; f = null; }   /* a new address for a tab: load it anew, so its #hash and query are read */
+    {
+      f = document.createElement('iframe');
+      f.title = TABS.filter(function (t) { return t[0] === tab; })[0][1];
+      f.setAttribute('data-tab', tab);
+      f.addEventListener('load', function () {
+        fit(f);
+        try {
+          var w = f.contentWindow, d = f.contentDocument;
+          if (w.ResizeObserver) new w.ResizeObserver(function () { fit(f); }).observe(d.documentElement);
+          /* a link inside a tab to another tab (or to the same one) stays on the desk */
+          d.addEventListener('click', function (e) {
+            var a = e.target.closest && e.target.closest('a[href]');
+            if (!a || a.target === '_blank' || e.defaultPrevented) return;
+            var u; try { u = new URL(a.getAttribute('href'), w.location.href); } catch (er) { return; }
+            if (u.origin !== location.origin) return;
+            var to = null;
+            Object.keys(PAGE).forEach(function (k) { if (PAGE[k] && u.pathname === PAGE[k]) to = k; });
+            if (!to) return;
+            e.preventDefault();
+            history.pushState(null, '', '/desk' + u.search + '#' + to + (u.hash.length > 1 ? '/' + u.hash.slice(1) : ''));
+            show(to, u.hash.slice(1), true);
+          });
+        } catch (e) {}
+      });
+      $('frames').appendChild(f);
+      FRAMES[tab] = f;
+    }
+    f.src = src;
+    return f;
+  }
+  function reloadFrames() { Object.keys(FRAMES).forEach(function (k) { try { FRAMES[k].contentWindow.location.reload(); } catch (e) {} }); }
+  function show(tab, sub, fresh) {
+    /* The Send to AGSIST bookmark talks to the window it opened, so its page cannot sit in a
+       frame: #elevators/send opens the elevator tab's page in this window, opener and all. */
+    if (tab === 'elevators' && sub === 'send') { location.replace(PAGE.elevators + location.search + '#send'); return; }
+    [].forEach.call(document.querySelectorAll('#tabs a'), function (a) {
+      if (a.getAttribute('data-tab') !== tab) { a.removeAttribute('aria-current'); return; }
+      a.setAttribute('aria-current', 'page');
+      var bar = $('tabs');   /* the open tab in view inside its own bar, never by scrolling the page */
+      if (a.offsetLeft < bar.scrollLeft || a.offsetLeft + a.offsetWidth > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = Math.max(0, a.offsetLeft - 12);
+    });
+    $('desk').hidden = tab !== 'overview';
+    Object.keys(FRAMES).forEach(function (k) { FRAMES[k].hidden = k !== tab; });
+    if (tab !== 'overview') { var f = frameFor(tab, sub, fresh); f.hidden = false; }
+  }
+  function route() { var r = parseHash(location.hash); show(r ? r.tab : 'overview', r ? r.sub : '', false); }
+  function onNav() {
+    var r = parseHash(location.hash);
+    if (r) show(r.tab, r.sub, !!r.sub); else show('overview', '', false);   /* #c-<card> anchors stay on Overview */
+  }
+  window.addEventListener('hashchange', onNav);
+  window.addEventListener('popstate', onNav);
 
   /* ---------- reading, every source fails soft ---------- */
   function why(e, host) {
@@ -249,8 +351,8 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     { id: 'today', title: 'Today', needs: ['sent', 'runs', 'worker'], acts: [['https://github.com/dnilgis/agsist/actions', 'Actions'], ['/daily', 'The Daily']], tiles: todayTiles, body: todayBody },
     { id: 'ads', title: 'Ads and sponsors', wide: true, needs: ['sponsors', 'worker'], acts: [['/sponsor-kit', 'Sponsor kit']], tiles: adsTiles, body: adsBody },
     { id: 'signups', title: 'Signups', needs: ['worker'], private: true, acts: [], tiles: signupTiles, body: signupBody },
-    { id: 'boards', title: 'Elevator boards', needs: ['dir', 'ids', 'worker'], acts: [['/elev-admin.html', 'Elevator desk'], ['/elev-today.html', 'Today list']], tiles: boardTiles, body: boardBody },
-    { id: 'money', title: 'Money in', needs: ['worker', 'sponsors'], private: true, acts: [['/rp-gift-admin.html', 'Gift card desk'], ['https://dashboard.stripe.com/payments', 'Stripe']], tiles: moneyTiles, body: moneyBody },
+    { id: 'boards', title: 'Elevator boards', needs: ['dir', 'ids', 'worker'], acts: [['#elevators', 'Elevators tab'], ['#today', 'Today list tab']], tiles: boardTiles, body: boardBody },
+    { id: 'money', title: 'Money in', needs: ['worker', 'sponsors'], private: true, acts: [['#gifts', 'Gift cards tab'], ['https://dashboard.stripe.com/payments', 'Stripe']], tiles: moneyTiles, body: moneyBody },
     { id: 'audience', title: 'Audience', needs: ['aud'], acts: [['https://analytics.google.com/', 'GA4']], tiles: audTiles, body: audBody },
     { id: 'todo', title: 'To-do', needs: ['todo'], acts: [[TODO_EDIT, 'Edit the list']], tiles: todoTiles, body: todoBody }
   ];
@@ -533,7 +635,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     h += '<p>New this week: ' + (nb.why ? cant(nb.why) : '<b>' + num(nb.n) + '</b> elevators added, <b>' + num(nb.boards) + '</b> of them with a board we read') + '</p>';
     h += src('dnilgis/bids elevator id ledger (elevator-ids.jsonl), ids made in the last 7 days', '');
     h += '<h3>Listing requests</h3><p>' + partOr(D, 'requests', function (q) {
-      return (q.pending ? '<span class="red">' + num(q.pending) + ' waiting</span>' : 'None waiting') + ' (' + num(q.created) + ' made, ' + num(q.dismissed) + ' dismissed). <a href="/elev-admin.html#requests">Open the requests</a>';
+      return (q.pending ? '<span class="red">' + num(q.pending) + ' waiting</span>' : 'None waiting') + ' (' + num(q.created) + ' made, ' + num(q.dismissed) + ' dismissed). <a href="#elevators/requests">Open the requests</a>';
     }) + '</p>' + src('Subs worker, list-your-elevator requests', wAt(D));
     return h;
   }
@@ -558,7 +660,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     });
     h += src('Subs worker order records (kept 120 days), amounts as Stripe reported them', wAt(D));
     h += '<h3>Gift cards</h3><p>' + partOr(D, 'gifts', function (g) {
-      return num(g.total) + ' cards: ' + num(g.issued) + ' open, ' + num(g.redeemed) + ' redeemed, ' + num(g.void) + ' void. A card bought on /rain-print is in the paid orders above. <a href="/rp-gift-admin.html">Gift card desk</a>';
+      return num(g.total) + ' cards: ' + num(g.issued) + ' open, ' + num(g.redeemed) + ' redeemed, ' + num(g.void) + ' void. A card bought on /rain-print is in the paid orders above. <a href="#gifts">Gift cards tab</a>';
     }) + '</p>';
     h += '<h3>Sponsors</h3><p>' + partOr(D, 'ledger', function (l) {
       var rows = l.rows || [], yr = ctDay(D.now).slice(0, 4), m = thisMonth(D), sum = function (a) { return a.reduce(function (s, x) { return s + (Number(x.amount) || 0); }, 0); };
@@ -703,6 +805,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
       draw();
     });
   }
+  route();
   load();
 })();
 </script>

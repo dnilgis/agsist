@@ -118,7 +118,7 @@ test("the page: indexable, in the sitemap, structured data, and linked from the 
   assert.ok(el.includes("href=\"/list-your-elevator?' + esc(q) + '\""), "the pin's link is escaped");
   assert.ok(el.includes('<a href="/list-your-elevator">'));
   assert.ok(read("cash-bids.html").includes('Run an elevator? <a href="/list-your-elevator"'));
-  assert.match(read("elev-admin.html"), /noindex, nofollow/);
+  assert.match(read("desk/elevators.html"), /noindex, nofollow/);
 });
 
 /* ---------------- in a browser ---------------- */
@@ -263,7 +263,7 @@ test("Sig's desk: requests with the roster match, Make the listing, Dismiss", { 
         if (u.pathname === "/elev/admin/create") return send({ ok: true, id: body.id, link: "https://agsist.com/post?k=abcdefghijklmnopqrstuvwx" });
         return send({ ok: false, error: "not found" }, 404);
       });
-      await p.goto(base + "/elev-admin");
+      await p.goto(base + "/desk/elevators");
       await p.fill("#tok", "tok");
       await p.click("#r-load");
       await p.waitForSelector(".match.hit");

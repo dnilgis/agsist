@@ -59,7 +59,7 @@ test("the token goes only in the Authorization header; one list of cards, each n
   assert.match(script, /Authorization: 'Bearer ' \+ t/);
   assert.equal((script.match(/fetch\(/g) || []).length, 1, "one fetch, through get()");
   assert.match(script, /var TOK_KEY = 'agsist-elev-admin-token';/, "the same key the elevator desk keeps");
-  assert.match(read("elev-admin.html"), /var TOK_KEY = 'agsist-elev-admin-token';/);
+  assert.match(read("desk/elevators.html"), /var TOK_KEY = 'agsist-elev-admin-token';/);
   const list = /var CARDS = \[([\s\S]*?)\n  \];/.exec(script);
   assert.ok(list, "one CARDS list");
   const ids = [...list[1].matchAll(/\{ id: '([a-z]+)'/g)].map((m) => m[1]);
@@ -246,6 +246,7 @@ async function open(br, width, opts) {
       window.__shifts.push(e.value.toFixed(4) + " " + (e.sources || []).map((x) => name(x.node) + " y" + Math.round(x.previousRect.y) + "->" + Math.round(x.currentRect.y)).join(", ")); } }).observe({ type: "layout-shift", buffered: true }); } catch (e) {}
   });
   if (opts.token) await p.addInitScript((t) => { try { localStorage.setItem("agsist-elev-admin-token", t); } catch (e) {} }, opts.token);
+  if (opts.oldToken) await p.addInitScript((t) => { try { if (!sessionStorage.getItem("seeded")) { sessionStorage.setItem("seeded", "1"); localStorage.setItem("agsist-haymow-admin-token", t); } } catch (e) {} }, opts.oldToken);
   await p.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
   const ledger = [];
   await p.route("https://agsist-api.dnilgis.workers.dev/**", async (r) => {
@@ -256,6 +257,7 @@ async function open(br, width, opts) {
     if (u.pathname === "/desk") return send(deskAnswer(ledger));
     if (u.pathname === "/desk/ledger" && body && body.action === "mark") { ledger.unshift({ slug: body.slug, period: body.period, amount: body.amount, paid_on: body.paid_on, at: iso(Date.now()) }); return send({ ok: true, rows: ledger }); }
     if (u.pathname === "/desk/ledger" && body && body.action === "unmark") { ledger.splice(0, ledger.length); return send({ ok: true, rows: [] }); }
+    if (u.pathname === "/hay/admin/list") return send({ ok: true, posts: [] });
     return send({ ok: false }, 404);
   });
   await p.route("https://api.github.com/**", (r) => {
@@ -273,8 +275,8 @@ async function open(br, width, opts) {
     return r.fulfill({ status: 404, body: "" });
   });
   for (const [k, v] of Object.entries(FIX)) await p.route(opts.origin + k, (r) => opts.audDown && /audience/.test(k) ? r.fulfill({ status: 500, body: "" }) : r.fulfill({ contentType: "application/json", body: JSON.stringify(v) }));
-  await p.goto(opts.origin + "/desk");
-  await p.waitForSelector(".tiles");
+  await p.goto(opts.origin + (opts.path || "/desk"));
+  if (!opts.path) await p.waitForSelector(".tiles");
   return { p, ctx, errors, urls, calls };
 }
 async function noAddress(p) {
@@ -405,5 +407,127 @@ test("in a browser: a failed source says can't read, never a blank; a refused to
     assert.match(await S.p.textContent("#c-signups"), /can’t read: the token was not accepted/);
     await noAddress(S.p);
     await S.ctx.close();
+  } finally { await br.close(); srv.close(); }
+});
+
+/* ---------- one admin home: the admin pages are tabs of /desk (Sig, Oct 28) ---------- */
+const TAB_PAGES = { today: "desk/today.html", elevators: "desk/elevators.html", haymow: "desk/haymow.html", gifts: "desk/gifts.html" };
+const OLD = { "elev-admin.html": "elevators", "elev-today.html": "today", "haymow-admin.html": "haymow", "rp-gift-admin.html": "gifts" };
+
+test("tabs: one list, the bar says the same, every tab page is private and hides its own token box inside the desk", () => {
+  const block = /var TABS = \[([\s\S]*?)\];/.exec(script);
+  assert.ok(block, "one TABS list");
+  const tabs = [...block[1].matchAll(/\['([a-z]+)', '([^']+)', (null|'([^']+)')\]/g)].map((m) => [m[1], m[2], m[4] || null]);
+  assert.deepEqual(tabs.map((t) => t[0]), ["overview", "today", "elevators", "haymow", "gifts"]);
+  const bar = [...A.matchAll(/<a href="#([a-z]+)" data-tab="([a-z]+)"[^>]*>([^<]+)<\/a>/g)].map((m) => [m[1], m[3]]);
+  assert.deepEqual(bar, tabs.map((t) => [t[0], t[1]]), "the bar is the TABS list");
+  for (const [id, , page] of tabs.slice(1)) {
+    assert.equal(page, "/" + TAB_PAGES[id]);
+    const h = read(TAB_PAGES[id]);
+    assert.match(h, /<meta name="robots" content="noindex, nofollow">/, id);
+    assert.match(h, /<meta name="referrer" content="no-referrer">/, id);
+    assert.match(h, /<script src="\/components\/desk-frame\.js\?v=\d+"><\/script>/, id + " loads the frame helper");
+    assert.match(h, /data-desk-tok/, id + " marks its token box");
+    assert.doesNotMatch(h, /googletagmanager|gtag\(|components\/loader\.js/, id);
+  }
+  assert.match(read("desk/haymow.html"), /var TOK_KEY = 'agsist-elev-admin-token', OLD_KEY = 'agsist-haymow-admin-token';/);
+  assert.match(read("desk/gifts.html"), /localStorage\.getItem\('agsist-elev-admin-token'\)/);
+  assert.doesNotMatch(read("desk/gifts.html"), /localStorage\.setItem/, "the gift desk never stores the token");
+  for (const f of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(f), /agsist\.com\/desk\b/, f);
+});
+
+test("the old addresses are forward pages to /desk#<tab>, written by scripts/desk_tabs.py", () => {
+  execFileSync("python3", [ROOT + "scripts/desk_tabs.py", "--check"], { encoding: "utf8" });
+  execFileSync("python3", [ROOT + "scripts/desk_tabs.py", "--selftest"], { encoding: "utf8" });
+  for (const [old, tab] of Object.entries(OLD)) {
+    const h = read(old);
+    assert.ok(h.length < 1500, old + " is a forward page only");
+    assert.match(h, /<meta name="robots" content="noindex, nofollow">/, old);
+    assert.ok(h.includes('location.replace("/desk"+location.search+"#' + tab + '"+(location.hash.length>1?"/"+location.hash.slice(1):""));'), old);
+    assert.doesNotMatch(h, /Authorization|LIST_TOKEN|fetch\(/, old + " holds nothing");
+  }
+});
+
+test("in a browser: old links land on their tab with query and hash, the Send bookmark keeps its window, links between tabs stay on the desk", { skip, timeout: 180000 }, async () => {
+  const srv = await serve(), origin = `http://127.0.0.1:${srv.address().port}`;
+  const br = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const [from, url, frame] of [
+      ["/haymow-admin#cccccccccc", "/desk#haymow/cccccccccc", "/desk/haymow.html#cccccccccc"],
+      ["/elev-admin.html?paste=newcoop#paste", "/desk?paste=newcoop#elevators/paste", "/desk/elevators.html?paste=newcoop#paste"],
+      ["/elev-admin.html#requests", "/desk#elevators/requests", "/desk/elevators.html#requests"],
+      ["/elev-today.html", "/desk#today", "/desk/today.html"],
+      ["/rp-gift-admin.html", "/desk#gifts", "/desk/gifts.html"]]) {
+      const S = await open(br, 390, { origin, token: "tok", path: from });
+      await S.p.waitForURL((u) => u.pathname + u.search + u.hash === url, { timeout: 15000 });
+      await S.p.waitForSelector("#frames iframe:not([hidden])");
+      const src = await S.p.$eval("#frames iframe:not([hidden])", (f) => f.getAttribute("src"));
+      assert.equal(src, frame, from);
+      assert.equal(await S.p.getAttribute('#tabs a[aria-current="page"]', "data-tab"), url.split("#")[1].split("/")[0]);
+      assert.equal(await S.p.isHidden("#desk"), true, "Overview is hidden on another tab");
+      await S.ctx.close();
+    }
+    /* an installed Send to AGSIST bookmark still opens the old address; it must end on the elevator page in the SAME window */
+    const S = await open(br, 390, { origin, token: "tok" });
+    const [pop] = await Promise.all([S.p.waitForEvent("popup"), S.p.evaluate((o) => { window.__w = window.open(o + "/elev-admin.html?from=www.newcoop.com#send", "_blank"); }, origin)]);
+    await pop.waitForURL((u) => u.pathname === "/desk/elevators.html", { timeout: 15000 });
+    assert.equal(new URL(pop.url()).search + new URL(pop.url()).hash, "?from=www.newcoop.com#send");
+    assert.equal(await pop.evaluate(() => !!window.opener), true, "the bookmark's window is still the opener");
+    assert.equal(await S.p.evaluate(() => window.__w && window.__w.location.pathname), "/desk/elevators.html", "and it is the window the bookmark holds");
+    /* a link inside a tab to another tab's page switches tabs on the desk */
+    await S.p.click('#tabs a[data-tab="today"]');
+    await S.p.waitForSelector('#frames iframe[data-tab="today"]:not([hidden])');
+    const today = S.p.frameLocator('#frames iframe[data-tab="today"]');
+    await today.locator("body").evaluate((b) => { const a = document.createElement("a"); a.id = "jump"; a.href = "/desk/elevators.html#requests"; a.textContent = "jump"; b.prepend(a); });
+    await today.locator("#jump").click();
+    await S.p.waitForURL((u) => u.pathname + u.hash === "/desk#elevators/requests");
+    assert.equal(await S.p.$eval('#frames iframe[data-tab="elevators"]', (f) => f.getAttribute("src")), "/desk/elevators.html#requests");
+    assert.equal(await S.p.isHidden('#frames iframe[data-tab="today"]'), true);
+    await S.ctx.close();
+  } finally { await br.close(); srv.close(); }
+});
+
+test("in a browser at 390 and 1280: the tab bar scrolls in its own bar, one token box drives every tab, no layout shift", { skip, timeout: 180000 }, async () => {
+  const srv = await serve(), origin = `http://127.0.0.1:${srv.address().port}`;
+  const br = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const width of [390, 1280]) {
+      const S = await open(br, width, { origin, oldToken: "tok", path: "/desk#haymow" });
+      const { p } = S;
+      await p.waitForSelector('#frames iframe[data-tab="haymow"]');
+      /* the Haymow's old key fills the one box and moves under the shared key */
+      assert.equal(await p.inputValue("#tok"), "tok");
+      assert.equal(await p.evaluate(() => localStorage.getItem("agsist-elev-admin-token")), "tok");
+      const hay = p.frameLocator('#frames iframe[data-tab="haymow"]');
+      await hay.locator("#load").waitFor();
+      assert.equal(await hay.locator("[data-desk-tok]").isHidden(), true, "no second token box inside the desk");
+      assert.equal(await hay.locator("#tok").inputValue(), "tok", "the tab reads the desk's token");
+      await hay.locator("#load").click();
+      await hay.locator("#out").filter({ hasText: /0 posts|No posts|nothing/i }).waitFor({ timeout: 10000 }).catch(() => {});
+      assert.ok(S.calls.some((c) => c[1] === "/hay/admin/list" && c[3] === "Bearer tok"), "the Haymow tab called its route with the desk's token");
+      for (const t of ["today", "elevators", "gifts", "overview"]) {
+        await p.click(`#tabs a[data-tab="${t}"]`);
+        if (t !== "overview") await p.waitForSelector(`#frames iframe[data-tab="${t}"]:not([hidden])`);
+        const d = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth }));
+        assert.ok(d.sw <= d.iw, `no sideways page scroll on ${t} at ${width} (${d.sw} > ${d.iw})`);
+      }
+      const bar = await p.$eval("#tabs", (n) => ({ ox: getComputedStyle(n).overflowX, sw: n.scrollWidth, cw: n.clientWidth }));
+      assert.equal(bar.ox, "auto", "the bar scrolls inside itself");
+      if (width === 390) {
+        await p.$eval("#tabs", (n) => { n.scrollLeft = 1000; });
+        const d = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth, sx: window.scrollX }));
+        assert.ok(d.sw <= d.iw && d.sx === 0, "scrolling the bar never scrolls the page");
+      }
+      for (const a of await p.$$eval("#tabs a", (els) => els.map((e) => e.getBoundingClientRect().height))) assert.ok(a >= 44, "44 px tap targets");
+      const cls = await p.evaluate(() => [window.__cls, window.__shifts]);
+      assert.ok(cls[0] < 0.01, `no layout shift at ${width}: ${cls[0].toFixed(4)} from ${cls[1].join("; ")}`);
+      await noAddress(p);
+      if (process.env.DESK_SHOTS) {
+        await p.click('#tabs a[data-tab="haymow"]');
+        await p.screenshot({ path: path.join(process.env.DESK_SHOTS, `desk-haymow-${width}.png`), fullPage: true });
+      }
+      assert.deepEqual(S.errors, []);
+      await S.ctx.close();
+    }
   } finally { await br.close(); srv.close(); }
 });

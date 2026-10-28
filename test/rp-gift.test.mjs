@@ -375,14 +375,14 @@ test("the admin page can read Sig's answers (CORS for agsist.com), and the pages
   assert.equal(r.headers.get("Access-Control-Allow-Origin"), "https://agsist.com");
   const pre = await W.fetch(new Request(H + "/rp-gift/issue", { method: "OPTIONS", headers: { Origin: "https://agsist.com" } }), env);
   assert.match(pre.headers.get("Access-Control-Allow-Headers"), /Authorization/);
-  for (const p of ["rp-gift.html", "rp-gift-admin.html"]) {
+  for (const p of ["rp-gift.html", "desk/gifts.html"]) {
     const h = read(p);
     assert.match(h, /<meta name="robots" content="noindex, nofollow">/, p);
     assert.match(h, /<meta name="referrer" content="no-referrer">/, p);
     assert.doesNotMatch(h, /googletagmanager|gtag\(/, p + ": no analytics");
     assert.doesNotMatch(read("sitemap.xml"), new RegExp("agsist\\.com/" + p.replace(".html", "") + "(<|\\.html)"), p + " not in the sitemap");
   }
-  assert.doesNotMatch(read("rp-gift-admin.html"), /[?&]token=/, "the token never goes in a URL");
+  assert.doesNotMatch(read("desk/gifts.html"), /[?&]token=/, "the token never goes in a URL");
 });
 
 test("rp-gift.js: the same code rules as the worker, and the banner words", () => {
@@ -615,7 +615,7 @@ test("v5.26 issue: order_ref takes Stripe's ids (underscores, up to 80)", async 
 test("the page sends the logo with a redeem; the admin page looks up an RPS- design before locking a card", () => {
   const G = read("components/rp-gift.js");
   assert.match(G, /\['name', 'email', 'address', 'notes', 'design_url', 'design_code', 'choice', 'page', 'logo'\]/);
-  const A = read("rp-gift-admin.html");
+  const A = read("desk/gifts.html");
   assert.match(A, /function fullCode\(dc\)[\s\S]*?\/rp-short\/' \+ encodeURIComponent/);
   assert.match(A, /fullCode\(raw\)\.then/);
   assert.match(read("components/rain-print.js"), /if \(GIFT && GIFT\.lock && GIFT\.lock\.design\) \{\s*var gl = new Error\('NOAA didn\\u2019t send the station on your gift card/, "a gift card's station is never quietly swapped");

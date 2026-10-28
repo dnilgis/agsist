@@ -26,7 +26,7 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
-const A = read("haymow-admin.html");
+const A = read("desk/haymow.html");   // the Haymow desk, a tab on /desk since Oct 28 (was haymow-admin.html)
 const script = A.slice(A.indexOf("<script>"), A.lastIndexOf("</script>"));
 
 test("the page: noindex, no referrer, no analytics, no em dash, not in a sitemap or the menu", () => {
@@ -34,9 +34,9 @@ test("the page: noindex, no referrer, no analytics, no em dash, not in a sitemap
   assert.match(A, /<meta name="referrer" content="no-referrer">/);
   assert.doesNotMatch(A, /googletagmanager|G-6KXCTD5Z9H|gtag\(|components\/loader\.js/, "no analytics, no loader");
   assert.doesNotMatch(A, /—/, "no em dash");
-  for (const f of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(f), /haymow-admin/, f);
+  for (const f of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(f), /haymow-admin|desk\/haymow/, f);
   for (const f of ["components/header.html", "components/footer.html", "components/header-fallback.html", "components/footer-fallback.html", "haymow.html", "llms.txt"]) {
-    if (existsSync(ROOT + f)) assert.doesNotMatch(read(f), /haymow-admin/, `${f} does not link the desk`);
+    if (existsSync(ROOT + f)) assert.doesNotMatch(read(f), /haymow-admin|desk\/haymow/, `${f} does not link the desk`);
   }
 });
 
@@ -111,13 +111,13 @@ test("in a browser: newest first, filters, contacts on demand, Hide / Clear / Ma
       });
 
       /* a wrong token says so */
-      await p.goto(origin + "/haymow-admin");
+      await p.goto(origin + "/desk/haymow");
       await p.fill("#tok", "nope");
       await p.click("#load");
       await p.waitForFunction(() => /not accepted/.test(document.getElementById("out").textContent));
 
       /* from a digest link: #<id> marks that post */
-      await p.goto(origin + "/haymow-admin#cccccccccc");
+      await p.goto(origin + "/desk/haymow#cccccccccc");
       await p.fill("#tok", "tok");
       await p.click("#load");
       await p.waitForSelector(".post");

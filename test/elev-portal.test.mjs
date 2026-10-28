@@ -99,8 +99,8 @@ test("the page checks rows the way the worker does", () => {
   assert.equal(E.checkRows(Array(13).fill(ok)).errors[0].field, "rows");
 });
 
-test("post.html, elev-admin.html and elev-today.html: noindex, no analytics, not in a sitemap", () => {
-  for (const p of ["post.html", "elev-admin.html", "elev-today.html"]) {
+test("post.html, desk/elevators.html and desk/today.html (were elev-admin and elev-today): noindex, no analytics, not in a sitemap", () => {
+  for (const p of ["post.html", "desk/elevators.html", "desk/today.html"]) {
     const h = read(p);
     assert.match(h, /<meta name="robots" content="noindex, nofollow">/, p);
     assert.match(h, /<meta name="referrer" content="no-referrer">/, p);
@@ -114,6 +114,6 @@ test("post.html, elev-admin.html and elev-today.html: noindex, no analytics, not
   assert.match(read("components/elev-post.js"), /sig@agsist\.com/);
   assert.ok(!/—/.test(read("components/elev-post.js")), "elev-post.js has no em dash");
   for (const f of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) {
-    assert.ok(!/agsist\.com\/(post|elev-admin|elev-today)\b/.test(read(f)), f);
+    assert.ok(!/agsist\.com\/(post|elev-admin|elev-today|desk)\b/.test(read(f)), f);
   }
 });
