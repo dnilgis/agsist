@@ -1,6 +1,6 @@
 {
  "schema": "agsist-sponsor-report/1",
- "sponsor": "RootLot",
+ "sponsor": "Root Lot",
  "slug": "rootlot",
  "through": null,
  "start": null,
@@ -19,7 +19,7 @@
   "live": true,
   "proof_code": "1486daac",
   "fields": {
-   "advertiser": "RootLot",
+   "advertiser": "Root Lot",
    "headline": "Put Your Root Down",
    "body": "Trees and plants shipped direct from the grower.",
    "facts": [],
