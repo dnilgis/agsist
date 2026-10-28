@@ -1224,6 +1224,27 @@ def selftest():
     rows = weekly_rows(sp, Fake(ser), reg2)
     ck("a Tuesday value out 4 days later is not known that Friday: the Friday uses the week before",
        all(x == (fri - dt.timedelta(days=10) - dt.date(2020, 1, 7)).days / 7 for fri, _, x, _, _ in rows), rows[:3])
+    # The dates printed in one Grain Transportation Report (AMS, Oct 22, 2026, read 2026-10-27):
+    # a Thursday issue carrying the St. Louis barge rate of Tuesday Oct 20 and the corn
+    # basis of Friday Oct 16. With the registry's own lags, the Friday Oct 23 row must use
+    # that barge change and that spread change as the last known, and score only the
+    # spread change after Oct 23.
+    real_reg = load_registry()
+    ck("registry lags match the Oct 22, 2026 report: barge Tuesday out Thursday, basis Friday out the next Thursday",
+       real_reg["series"]["barge3"]["release_lag_days"] == (dt.date(2026, 10, 22) - dt.date(2026, 10, 20)).days
+       and all(real_reg["series"][k]["release_lag_days"] == (dt.date(2026, 10, 22) - dt.date(2026, 10, 16)).days
+               for k in ("gulf_corn", "interior_corn", "spread_gulf_interior")))
+    gtr = {"barge3": {dt.date(2026, 10, 13): 673.0, dt.date(2026, 10, 20): 592.0},
+           "spread_gulf_interior": {dt.date(2026, 10, 9): 100.0, dt.date(2026, 10, 16): 104.0,
+                                    dt.date(2026, 10, 23): 111.0, dt.date(2026, 10, 30): 120.0}}
+    bsp = next(x for x in real_reg["specs"] if x["id"] == "barge-change-leads-spread-v1")
+    grow = {r[0]: r for r in weekly_rows(bsp, Fake(gtr), real_reg)}
+    r23 = grow.get(dt.date(2026, 10, 23))
+    ck("Friday Oct 23, 2026: x is the Oct 13 to Oct 20 barge change, the benchmark the Oct 9 to Oct 16 spread "
+       "change (both in the Oct 22 report), the target the Oct 23 to Oct 30 spread change",
+       r23 is not None and r23[2] == 592.0 - 673.0 and r23[4] == 104.0 - 100.0 and r23[3] == 120.0 - 111.0, r23)
+    ck("... and no row pairs the Oct 20 barge change with the Oct 16 to Oct 23 spread change",
+       all(not (r[2] == 592.0 - 673.0 and r[3] == 111.0 - 104.0) for r in grow.values()), grow)
     fake_missing = run_weekly(dict(wspec("hold-v1"), holdout={"years": [2007, 2008, 2009]}), Fake(weekly_data(2.0, 1)), reg, today)
     ck("holdout years not on hand: WAIT, naming them", fake_missing["status"] == "wait" and "2007-2009" in fake_missing["why"], fake_missing)
 

@@ -7,7 +7,7 @@ of a date table is how the 2026-08-11 incident happened in the first place —
 the generator's calendar correctly said WASDE = Aug 12 while the model's
 prose said "the WASDE on Tuesday", and nothing compared the two.
 
-Hardcoded for 2026; revisit annually (grep 'revisit annually').
+Hardcoded per year (WASDE_2026, WASDE_2027); revisit annually (grep 'revisit annually').
 """
 from datetime import date, timedelta
 
@@ -16,6 +16,23 @@ WASDE_2026 = {
     date(2026, 5, 12), date(2026, 6, 11), date(2026, 7, 10), date(2026, 8, 12),
     date(2026, 9, 11), date(2026, 10, 9), date(2026, 11, 10), date(2026, 12, 10),
 }
+
+# 2027, read 2026-10-27 from USDA's WASDE page (SCHEDULE_SOURCE below), all at
+# 12:00 p.m. ET. The same twelve dates were read from that page on 2026-10-24
+# as well (two separate reads, notes/chatgpt in the private repo); usda.gov
+# refuses this sandbox and GitHub Actions, so no copy is on the references
+# branch. Each is a weekday between the 8th and the 12th and none is a federal
+# holiday (the selftest checks both). USDA can move a date; recheck in autumn.
+WASDE_2027 = {
+    date(2027, 1, 12), date(2027, 2, 10), date(2027, 3, 10), date(2027, 4, 9),
+    date(2027, 5, 12), date(2027, 6, 11), date(2027, 7, 9), date(2027, 8, 12),
+    date(2027, 9, 10), date(2027, 10, 8), date(2027, 11, 10), date(2027, 12, 10),
+}
+WASDE_2027_READ = "2026-10-27"
+
+# Every WASDE date on file. Code that asks "is this a WASDE day" or "which is
+# next" reads this; WASDE_2026 and WASDE_2027 stay as the per-year tables.
+WASDE_DATES = frozenset(WASDE_2026 | WASDE_2027)
 
 
 # THE OTHER 11:00 a.m. CT REPORTS THE BRIEFING MUST NAME ON THE DAY
@@ -35,7 +52,7 @@ def major_reports(day):
     """The market-moving USDA reports released on `day`, in the order a
     farmer would name them. [] on any other day."""
     out = []
-    if day in WASDE_2026:
+    if day in WASDE_DATES:
         out.append("WASDE")
     if day in CROP_PRODUCTION_2026:
         out.append("Crop Production")
@@ -50,13 +67,13 @@ def major_reports(day):
 
 def next_wasde(today):
     """The next WASDE date >= today, or None past the table's horizon."""
-    future = sorted(d for d in WASDE_2026 if d >= today)
+    future = sorted(d for d in WASDE_DATES if d >= today)
     return future[0] if future else None
 
 
 def prior_wasde(today):
     """The most recent WASDE date < today, or None."""
-    past = sorted(d for d in WASDE_2026 if d < today)
+    past = sorted(d for d in WASDE_DATES if d < today)
     return past[-1] if past else None
 
 
@@ -239,7 +256,9 @@ def wasde_results_are_public(today, generated_at_utc=None):
 
 # ── THE CALENDAR RUNS OUT ON A DATE, AND NOTHING SAYS SO ─────────────────────
 #
-# WASDE_2026 ends 2026-12-10. From 11 December `next_wasde` returns None, and
+# (Written when WASDE_2026 was the only table; WASDE_2027 was added 2026-10-27
+# and the horizon is now 2027-12-10.) WASDE_2026 ended 2026-12-10. From 11
+# December `next_wasde` would have returned None, and
 # every one of the six things that ask it degrades quietly:
 #
 #   build_whats_priced_in.py  the flagship page's top card reads "No upcoming
@@ -281,7 +300,8 @@ def horizon(today):
 
     Returns (level, message) where level is "ok", "warn" or "exhausted".
     """
-    last = max(WASDE_2026)
+    last = max(WASDE_DATES)
+    nxt = "WASDE_%d" % (last.year + 1)
     days = (last - today).days
     if days < 0:
         return ("exhausted",
@@ -289,15 +309,14 @@ def horizon(today):
                 "returning None since, so the What's Priced In card reads \"no upcoming "
                 "report\", the daily brief has stopped mentioning the run-up, and "
                 "fetch_wasde is pinned to the December release and will not grade "
-                "January. Add WASDE_2027 to scripts/usda_dates.py from %s."
-                % (last.isoformat(), _days(-days), SCHEDULE_SOURCE))
+                "January. Add %s to scripts/usda_dates.py from %s."
+                % (last.isoformat(), _days(-days), nxt, SCHEDULE_SOURCE))
     if days <= HORIZON_WARN_DAYS:
         return ("warn",
                 "The WASDE calendar ends on %s, %s away. When it does, six things "
-                "go quiet at once and none of them says why. USDA had not published a "
-                "2027 schedule as of 2026-09-12; it normally appears in the autumn. "
-                "Check %s and add WASDE_2027."
-                % (last.isoformat(), _days(days), SCHEDULE_SOURCE))
+                "go quiet at once and none of them says why. USDA normally posts the "
+                "next year's schedule in the autumn. Check %s and add %s."
+                % (last.isoformat(), _days(days), SCHEDULE_SOURCE, nxt))
     return ("ok", "WASDE calendar runs to %s, %s out." % (last.isoformat(), _days(days)))
 
 
@@ -317,10 +336,24 @@ def _selftest():
                  date(2026, 9, 11), date(2026, 10, 9), date(2026, 11, 10), date(2026, 12, 10)}
     check(WASDE_2026 == published, "all twelve 2026 dates, and no thirteenth",
           str(sorted(WASDE_2026 ^ published)))
+    # Read from the same USDA page on 2026-10-27 (and 2026-10-24): Jan. 12,
+    # Feb. 10, Mar. 10, Apr. 9, May 12, Jun. 11, Jul. 9, Aug. 12, Sep. 10,
+    # Oct. 8, Nov. 10, Dec. 10, 2027, each at 12:00 p.m. ET.
+    pub27 = {date(2027, 1, 12), date(2027, 2, 10), date(2027, 3, 10), date(2027, 4, 9),
+             date(2027, 5, 12), date(2027, 6, 11), date(2027, 7, 9), date(2027, 8, 12),
+             date(2027, 9, 10), date(2027, 10, 8), date(2027, 11, 10), date(2027, 12, 10)}
+    check(WASDE_2027 == pub27, "all twelve 2027 dates, and no thirteenth", str(sorted(WASDE_2027 ^ pub27)))
+    check(WASDE_DATES == WASDE_2026 | WASDE_2027, "WASDE_DATES is every year's table")
+    check(sorted(d.month for d in WASDE_2027) == list(range(1, 13)), "one 2027 WASDE a month")
+    odd = [d for d in WASDE_DATES if d.weekday() >= 5 or federal_holiday_name(d) or not 8 <= d.day <= 12]
+    check(not odd, "every WASDE is a weekday, not a federal holiday, between the 8th and the 12th", str(odd))
+    check(next_wasde(date(2026, 12, 11)) == date(2027, 1, 12), "after Dec 10, 2026 the next WASDE is Jan 12, 2027")
+    check(prior_wasde(date(2027, 1, 13)) == date(2027, 1, 12), "and January 2027 is graded against itself")
+    check(major_reports(date(2027, 7, 9)) == ["WASDE"], "Fri Jul 9, 2027 is a WASDE day")
 
     print()
     print("the horizon is announced before it arrives, not after")
-    last = max(WASDE_2026)
+    last = max(WASDE_DATES)
     check(horizon(last - timedelta(days=HORIZON_WARN_DAYS + 1))[0] == "ok",
           "well before the window it says nothing")
     check(horizon(last - timedelta(days=HORIZON_WARN_DAYS))[0] == "warn",
@@ -331,7 +364,7 @@ def _selftest():
 
     lvl, msg = horizon(last + timedelta(days=1))
     check(SCHEDULE_SOURCE in msg, "and it says where to get the dates")
-    check("WASDE_2027" in msg, "and what to add")
+    check("WASDE_%d" % (last.year + 1) in msg, "and what to add", msg)
     lvl2, msg2 = horizon(last - timedelta(days=30))
     check(str(last) in msg2, "the warning names the date it runs out")
     check("30 days" in msg2, "and how long is left", msg2)

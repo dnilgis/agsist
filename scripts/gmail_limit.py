@@ -61,7 +61,7 @@ def report_kinds(day):
     out = []
     try:
         import usda_dates
-        if day in usda_dates.WASDE_2026:
+        if day in usda_dates.WASDE_DATES:
             # Crop Production often lands the same noon, but no table here
             # says which months, so it is not named.
             out.append("WASDE")

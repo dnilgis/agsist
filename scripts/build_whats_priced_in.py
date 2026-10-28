@@ -962,8 +962,13 @@ def _selftest():
     assert build_upcoming([], "2026-09-12")["report"] == "October WASDE"
 
     # past the calendar's horizon it returns None rather than inventing a date
-    assert calendar_fallback("2027-06-01") is None
-    assert build_upcoming([], "2027-06-01") is None
+    # (the horizon moved to 2027-12-10 when WASDE_2027 was added, 2026-10-27)
+    assert calendar_fallback("2028-06-01") is None
+    assert build_upcoming([], "2028-06-01") is None
+    # inside 2027 it reads the posted 2027 date
+    assert calendar_fallback("2027-06-01") == {"report": "June WASDE", "date": "2027-06-11",
+                                               "time": "12:00 PM ET", "from_calendar": True}
+    assert calendar_fallback("2026-12-11")["date"] == "2027-01-12"
 
     # ── THE WALK-THROUGH SURVIVES THE PRINT ─────────────────────────────────
     #

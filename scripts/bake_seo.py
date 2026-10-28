@@ -330,12 +330,17 @@ def body_usda_calendar(c):
     wasde report" and "wasde report dates 2026" without JavaScript. The
     countdown card beside it is filled by the page script, so a crawler (and a
     reader whose script failed) saw "NEXT USDA REPORT - - -" and no date.
-    Dates come from usda_dates.WASDE_2026, the table the title already uses."""
+    Dates come from usda_dates.WASDE_DATES, the table the title already uses:
+    every year from the next WASDE's year on (2026-10-27: the 2027 dates are
+    posted, so through December both years are listed)."""
     import usda_dates
     w = c["next_wasde"]
-    year = sorted(usda_dates.WASDE_2026)
-    lst = (f"{year[0].year} WASDE dates: " +
-           ", ".join(f"{MONTHS[d.month - 1][:3]} {d.day}" for d in year) + ".")
+    alld = sorted(usda_dates.WASDE_DATES)
+    y0 = w.year if w else alld[-1].year
+    years = sorted({d.year for d in alld if d.year >= y0})
+    lst = " ".join(f"{y} WASDE dates: " +
+                   ", ".join(f"{MONTHS[d.month - 1][:3]} {d.day}" for d in alld if d.year == y) + "."
+                   for y in years)
     if not w:
         return f"{lst} Each one is out at {WASDE_TIME}."
     if w < c["today"]:
@@ -1663,6 +1668,11 @@ def selftest():
        "Next WASDE: Friday, Sep 11, 2026, at noon ET (11 a.m. CT)." in b, b)
     ck("the line lists every WASDE date in the table",
        all(f"{MONTHS[x.month - 1][:3]} {x.day}" in b for x in _ud.WASDE_2026), b)
+    ck("...and, with the 2027 table posted, the 2027 dates too",
+       "2027 WASDE dates: Jan 12, Feb 10, Mar 10, Apr 9, May 12, Jun 11, Jul 9, Aug 12, Sep 10, Oct 8, Nov 10, Dec 10." in b, b)
+    b27 = body_usda_calendar(dict(ctx, today=date(2026, 12, 11), next_wasde=date(2027, 1, 12)))
+    ck("after Dec 10, 2026 the line names Jan 12, 2027 and drops the 2026 list",
+       "Next WASDE: Tuesday, Jan 12, 2027" in b27 and "2026 WASDE dates" not in b27, b27)
     b0 = body_usda_calendar(dict(ctx, next_wasde=None))
     ck("past the table the line claims no next date", "Next" not in b0, b0)
     try:
@@ -1674,11 +1684,11 @@ def selftest():
     ck("usda-calendar.html carries the next-wasde markers",
        bake_body(_cal, "next-wasde", "x")[1])
     _page_w = set(re.findall(r"\{date:'(\d{4}-\d\d-\d\d)',name:'WASDE'", _cal))
-    _tbl = {x.isoformat() for x in _ud.WASDE_2026}
+    _tbl = {x.isoformat() for x in _ud.WASDE_DATES}
     ck("the page's WASDE rows hold every date the line prints", _tbl <= _page_w,
        f"missing on the page: {sorted(_tbl - _page_w)}")
     ck("every page WASDE time is noon ET, as the line says",
-       all("12:00 PM ET" in m for m in re.findall(r"\{date:'2026-[^}]*name:'WASDE'[^}]*\}", _cal)))
+       all("12:00 PM ET" in m for m in re.findall(r"\{date:'202[67]-[^}]*name:'WASDE'[^}]*\}", _cal)))
     _bo, _bf = bake_body("<p><!--BAKE:next-wasde-->old<!--/BAKE--></p>", "next-wasde", "new")
     ck("body bake replaces between the markers", _bf and _bo == "<p><!--BAKE:next-wasde-->new<!--/BAKE--></p>", _bo)
     ck("body bake reports missing markers", bake_body("<p>x</p>", "next-wasde", "y")[1] is False)

@@ -526,10 +526,10 @@ def update_due(index_path, now=None):
     with open(index_path, encoding="utf-8") as f:
         through = (json.load(f).get("through") or "")
     today = now.date()
-    latest = today if (today in U.WASDE_2026 and now.hour >= 16) else U.prior_wasde(today)
+    latest = today if (today in U.WASDE_DATES and now.hour >= 16) else U.prior_wasde(today)
     if latest and latest.isoformat() > through:
         return True, f"the {latest.isoformat()} WASDE is out; the archive runs through {through}"
-    if not any(d.year == today.year and d.month == today.month for d in U.WASDE_2026) and 9 <= today.day \
+    if not any(d.year == today.year and d.month == today.month for d in U.WASDE_DATES) and 9 <= today.day \
             and now.hour >= 16 and through[:7] < today.isoformat()[:7]:
         return True, f"no {today.year} date table; the archive runs through {through}"
     return False, f"the archive runs through {through}; nothing newer is due"
