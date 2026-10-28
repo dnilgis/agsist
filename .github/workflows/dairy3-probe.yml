@@ -1,0 +1,39 @@
+name: dairy3 probe
+
+# Temporary, fx/dairy3 only (removed before the PR): saves what FSA, the archive
+# and NASS return as a run artifact. Commits nothing, sends nothing.
+on:
+  push:
+    branches: [fx/dairy3]
+    paths: ['.github/dairy3-probe/**', '.github/workflows/dairy3-probe.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: pdftotext
+        timeout-minutes: 5
+        continue-on-error: true
+        uses: ./.github/actions/pdftotext
+      - name: Probe
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python3 .github/dairy3-probe/probe.py
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: dairy3-probe
+          path: out/
+          retention-days: 5
