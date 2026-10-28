@@ -271,13 +271,6 @@ jobs:
       contents: read
     outputs:
       skip: ${{ steps.g.outputs.skip }}
-    # Read only: the day flag (briefed:<day>), asked when today's issue is
-    # published but was never sent (scripts/daily_retry.py flag). The worker
-    # first, the private repo when the worker is blocked, as send_daily.py does.
-    env:
-      LIST_URL:           ${{ secrets.LIST_URL }}
-      LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
-      PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -288,6 +281,13 @@ jobs:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
       - id: g
+        # Read only: the day flag (briefed:<day>), asked when today's issue is
+        # published but was never sent (scripts/daily_retry.py flag). The worker
+        # first, the private repo when the worker is blocked, as send_daily.py does.
+        env:
+          LIST_URL:           ${{ secrets.LIST_URL }}
+          LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           # THE GATE WAITS NOW. IT USED TO DECIDE ONCE AND EXIT.
           #

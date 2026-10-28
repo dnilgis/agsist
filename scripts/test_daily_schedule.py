@@ -79,7 +79,7 @@ def check(ok, label, detail=""):
 
 def gate_script(y):
     """The gate's own `run:` block, dedented, exactly as the runner sees it."""
-    a = y.index("      - id: g\n        run: |\n")
+    a = y.index("      - id: g\n")          # its env: (the day flag's read-only keys) may sit before run:
     a = y.index("\n", y.index("run: |", a)) + 1
     b = y.index("\n  generate:", a)
     lines = []
