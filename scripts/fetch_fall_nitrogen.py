@@ -586,20 +586,48 @@ def wcn_url(sid, name, today):
     return WCN + "api/v1/stations/%s/measures?%s" % (urllib.parse.quote(sid), urllib.parse.urlencode(q))
 
 
-def fetch_wisconet(today, log, sleep=time.sleep):
-    fid, name, unit = wcn_field(json.loads(get(WCN + "api/v1/fields/?legacy_only=false")))
-    meta = wcn_station_list(json.loads(get(WCN + "api/v1/stations/")))
+def wcn_names(lists, fid):
+    """Every standard name the API's field lists give field fid. The legacy
+    list (the default) names it '60min_soil_temp_f_avg@4in'; the full list
+    '60min_soil_temp_10cm_f_avg', which the measures call refused on Oct 28
+    ("No valid fields found for request")."""
+    out = []
+    for fl in lists:
+        for f in fl or []:
+            if isinstance(f, dict) and f.get("id") == fid and f.get("standard_name") and f["standard_name"] not in out:
+                out.append(str(f["standard_name"]))
+    return out
+
+
+def fetch_wisconet(today, log, sleep=time.sleep, getter=None):
+    getter = getter or (lambda u, **k: get(u, **k))
+    legacy = json.loads(getter(WCN + "api/v1/fields/"))
+    fid, name, unit = wcn_field(legacy)
+    names = wcn_names([legacy], fid)
+    meta = wcn_station_list(json.loads(getter(WCN + "api/v1/stations/")))
     if not meta:
         raise Refuse("Wisconet lists no stations")
-    out = []
+    out, working = [], None
     for sid, m in sorted(meta.items()):
         try:
-            data = wcn_parse(json.loads(get(wcn_url(sid, name, today), tries=2)), fid, unit)
+            data = None
+            for nm in ([working] if working else names):
+                doc = json.loads(getter(wcn_url(sid, nm, today), tries=2))
+                if isinstance(doc, dict) and doc.get("warnings") and not doc.get("data"):
+                    log("  wisconet %s: %s refused (%s)" % (sid, nm, "; ".join(map(str, doc["warnings"]))[:120]))
+                    continue
+                data = wcn_parse(doc, fid, unit)
+                working = working or nm
+                break
+            if data is None:
+                raise Refuse("no field name the API accepts for field %d" % fid)
             out.append(station("WCN", sid, m["name"] + ", WI", "WI", m["lat"], m["lon"],
                                "10 cm (3.9 in)", "daily mean of hourly readings", data, today))
         except (Refuse, ValueError) as e:
             log("  wisconet %s: left out (%s)" % (sid, e))
         sleep(WCN_PAUSE)
+    if not out:
+        raise Refuse("no Wisconet station passed the checks")
     return out
 
 
@@ -1016,7 +1044,7 @@ def probe():
                     urllib.parse.quote(str(sid)), urllib.parse.urlencode({"start_time": beg, "end_time": end, "frequency": "daily"})))
                 save("wisconet-station-fields.json", WCN + "api/v1/stations/%s/fields" % urllib.parse.quote(str(sid)))
                 save("wisconet-station.json", WCN + "api/v1/stations/%s" % urllib.parse.quote(str(sid)))
-        fl = save("wisconet-fields.json", WCN + "api/v1/fields/?legacy_only=false")
+        fl = save("wisconet-fields-legacy.json", WCN + "api/v1/fields/")
         fid, fname, funit = wcn_field(json.loads(fl or "[]"))
         summ["wisconet_field"] = [fid, fname, funit]
         for sid in ("ALTN", "ANGO"):
