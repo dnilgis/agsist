@@ -5,6 +5,23 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.57 (2026-10-27): A DAILY READER CAN TURN ON "YOUR COUNTY THIS WEEK" (the
+ *   Daily ask hides once a browser is signed up, so readers already on the
+ *   list had no way in). One new emailed route, /daily-cw, signed like
+ *   /daily-elev: ?k=<link id>&t=hmac16(id + "|cw") (old style ?e=&t= with
+ *   the address + "|cw" also checks), through the front door (FD_ROUTES,
+ *   agsist.com/e?a=daily-cw). GET changes nothing: it asks "Add what changed
+ *   in your county on Thursdays?" with one button, never pre-pressed; a
+ *   reader with no ZIP on file gets a ZIP box (the ZIP tells us the county).
+ *   POST with the button sets cw:true on sub:<email>; cw=0 turns it off; a
+ *   5-digit ZIP is stored only when the record has none. Nothing else on the
+ *   record changes: every other field and its order are kept as stored, and
+ *   every other record is untouched. The ZIP rides in the POST body, never a
+ *   link: /fd/daily-cw passes a POST body of up to 256 bytes through to the
+ *   route (no other route gets one), and the JSON it answers carries the
+ *   form's fields ({name, type, value, label}) when the page has any (no
+ *   other route's page has, so their JSON is as before). Rate limited.
+ *   Nothing logged. No new binding or secret.
  * v5.56 (2026-10-27): YOUR COUNTY THIS WEEK (Sig, Oct 27: lines inside the existing
  *   Daily, no new list, sender or cron). POST /subscribe (JSON or form) and /notice
  *   with daily:true take one more optional field, cw, read like reports (a boolean
@@ -1021,6 +1038,7 @@ const LINK_TAILS = {
   "/alert-unsubscribe": () => "",
   "/notice-unsubscribe": () => "",
   "/daily-elev": () => "|de",
+  "/daily-cw": () => "|cw",   // v5.57
   "/watch-confirm": q => "|c|" + (q.get("f") || "").trim(),
   "/watch-unsubscribe": q => { const f = (q.get("f") || "").trim(); return f ? "|w|" + f : "|w"; },
   "/elevator-watch-confirm": q => "|ec|" + (q.get("w") || "").trim().toLowerCase(),
@@ -1274,6 +1292,14 @@ function subBool(v) {
   if (["false", "0", "off", "no"].includes(t)) return false;
   return null;
 }
+// v5.57: /daily-cw. A ZIP for the county lines: 5 digits, not 00000.
+function cwZip(v) { const z = subZip(v); return z && z !== "00000" ? z : ""; }
+const CW_WHAT = "<p>On Thursdays, when something changed in your county that week, your AGSIST Daily gets a few lines on it: " +
+  "drought, the best bid within 30 miles, county basis and recorded land sales. No change, no lines.</p>";
+// the holdout (scripts/send_daily.py CW_HOLDOUT_*): said plainly while it runs, gone after
+const CW_TEST_END = Date.UTC(2026, 11, 24);
+const cwTest = () => Date.now() < CW_TEST_END
+  ? "<p>While we check it is worth your time this fall, about 1 in 5 readers who turn it on get it from Dec 24 instead.</p>" : "";
 function subRecord(email, raw) {
   let r = null;
   if (raw && typeof raw === "object") r = raw;
@@ -1458,7 +1484,7 @@ function stopInvalid(status) {
 // v5.48: the page's parts ride on the Response, so /fd/<route> can answer them as JSON.
 const FD_PAGE = Symbol("fdPage");
 function fdMark(r, msg, extraHtml, status) { r[FD_PAGE] = { msg, extraHtml: extraHtml || "", status: status || 200 }; return r; }
-const FD_ROUTES = new Set(["/unsubscribe", "/alert-unsubscribe", "/notice-unsubscribe", "/daily-elev",
+const FD_ROUTES = new Set(["/unsubscribe", "/alert-unsubscribe", "/notice-unsubscribe", "/daily-elev", "/daily-cw",
   "/watch-confirm", "/watch-unsubscribe", "/elevator-watch-confirm", "/elevator-watch-unsubscribe",
   "/price-watch-confirm", "/price-watch-unsubscribe", "/rp-remind/stop", "/sponsor-confirm", "/sponsor-decide"]);
 function fdText(h) {
@@ -1474,8 +1500,21 @@ function fdJson(p) {
   const b = /<form\b[\s\S]*?<button\b[^>]*>([\s\S]*?)<\/button>/i.exec(x);
   const a = /<a\b[^>]*href="(https:\/\/agsist\.com[^"]*)"[^>]*>([\s\S]*?)<\/a>/i.exec(x);
   const title = fdText(p.msg);
-  return { ok: p.status < 400 && !/isn't valid|has expired|no longer on file|no longer works/i.test(title), title, lines,
+  const out = { ok: p.status < 400 && !/isn't valid|has expired|no longer on file|no longer works/i.test(title), title, lines,
     button: b ? fdText(b[1]) : null, go: a ? { href: a[1].replace(/&amp;/g, "&"), text: fdText(a[2]) } : null };
+  // v5.57: the form's fields (the /daily-cw ZIP box and its hidden cw), only when the page has any
+  const f = /<form\b[\s\S]*?<\/form>/i.exec(x), fields = [];
+  if (f) {
+    const ir = /<input\b([^>]*)>/gi;
+    let im;
+    while ((im = ir.exec(f[0]))) {
+      const at = n => { const v = new RegExp("\\b" + n + "=\"([^\"]*)\"", "i").exec(im[1]); return v ? fdText(v[1]) : ""; };
+      if (!/^[a-z]{1,8}$/.test(at("name"))) continue;
+      fields.push({ name: at("name"), type: at("type") === "hidden" ? "hidden" : "text", value: at("value"), label: at("aria-label") });
+    }
+  }
+  if (fields.length) out.fields = fields;
+  return out;
 }
 // GET or POST /fd/<route>?<params>: the route run as its link would, answered in JSON.
 async function fdRoute(req, env, url) {
@@ -1486,7 +1525,15 @@ async function fdRoute(req, env, url) {
   u.pathname = route;
   const hd = new Headers();
   for (const k of ["CF-Connecting-IP", "Origin", "User-Agent"]) if (req.headers.get(k)) hd.set(k, req.headers.get(k));
-  const r = await handle(new Request(u.href, { method: req.method, headers: hd }), env);
+  // v5.57: /daily-cw takes its ZIP in the POST body (never the link); no other route gets a body
+  let body;
+  if (route === "/daily-cw" && req.method === "POST") {
+    let raw = "";
+    try { raw = await req.text(); } catch (x) { raw = ""; }
+    if (raw.length > 256) return json({ ok: false, error: "too large" }, 413, h);
+    if (raw) { body = raw; hd.set("Content-Type", "application/x-www-form-urlencoded"); }
+  }
+  const r = await handle(new Request(u.href, { method: req.method, headers: hd, body }), env);
   const p = r && r[FD_PAGE];
   if (!p) return json({ ok: false, error: r && r.status === 429 ? "busy" : "error" }, r && r.status >= 400 ? r.status : 500, h);
   return json(fdJson(p), 200, h);
@@ -3314,6 +3361,62 @@ async function handle(req, env) {
       await env.SUBS.put("sub:" + d.e, JSON.stringify(rec), { metadata: rec });
       if (b.forget === true) await env.SUBS.delete("dk:" + k);
       return json({ ok: true, n: ids.length }, 200, c);
+    }
+
+    // ---------- v5.57: "Your county this week" for a reader already on the Daily ----------
+    // The Daily's footer link proves the address (t = hmac16(lid + "|cw"), as
+    // /daily-elev). GET changes nothing. POST sets cw (cw=0 turns it off) and a
+    // ZIP only when the record has none; every other field is kept as stored.
+    if (path === "/daily-cw") {
+      const e = (url.searchParams.get("e") || "").trim().toLowerCase();
+      const t = url.searchParams.get("t") || "";
+      if (!(EMAIL_RE.test(e) && safeEq(t, await hmac16(e + "|cw", env.UNSUB_SECRET)))) return htmlPage("That link isn't valid.", "", 403);
+      if (req.method !== "GET" && req.method !== "POST") return json({ ok: false, error: "method" }, 405);
+      const action = act(e, t);
+      let sub = null;
+      try { const v = await env.SUBS.get("sub:" + e); sub = v ? JSON.parse(v) : null; } catch (x) { sub = null; }
+      if (!sub || typeof sub !== "object" || Array.isArray(sub))
+        return htmlPage("This address is not on AGSIST Daily.", "<p><a href=\"https://agsist.com/daily\">Sign up on agsist.com</a>, then use the link in your next email.</p>");
+      const hasZip = !!cwZip(sub.zip);
+      const btn = (label, fields) => "<form method=\"POST\" action=\"" + action + "\">" + fields +
+        "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">" + label + "</button></form>";
+      const zipBox = "<div style=\"margin:0 0 12px\"><input name=\"zip\" type=\"text\" inputmode=\"numeric\" maxlength=\"5\" aria-label=\"Your ZIP\" placeholder=\"ZIP\" style=\"font:inherit;padding:8px;width:7em\"></div>";
+      const ask = (title, more) => htmlPage(title, (more || "") + CW_WHAT +
+        (hasZip ? "" : "<p>Your ZIP tells us your county. It is kept with your Daily signup and never shown.</p>") +
+        btn("Yes, add it", "<input type=\"hidden\" name=\"cw\" value=\"1\">" + (hasZip ? "" : zipBox)) + cwTest() +
+        "<p style=\"color:#666\">Nothing changes until you press the button.</p>");
+      if (req.method === "GET") {
+        if (sub.cw === true)
+          return htmlPage("Your county this week is on.", "<p>On a Thursday when something changed in your county, your AGSIST Daily has a few lines on it.</p>" +
+            btn("Turn it off", "<input type=\"hidden\" name=\"cw\" value=\"0\">") + "<p style=\"color:#666\">Nothing changes until you press the button.</p>");
+        return ask("Add what changed in your county on Thursdays?");
+      }
+      const slow = await rateLimit(req, env, path);
+      if (slow) return slow;
+      let cwIn = null, zipIn = "";
+      try {
+        const ct = req.headers.get("Content-Type") || "";
+        if (ct.includes("json")) { const b = await req.json(); if (b && typeof b === "object") { cwIn = b.cw; zipIn = b.zip; } }
+        else if (ct.includes("form")) { const f = await req.formData(); cwIn = f.get("cw"); zipIn = f.get("zip"); }
+      } catch (x) { /* a button press with no body: turn it on */ }
+      const on = subBool(cwIn) !== false;
+      const zip = cwZip(zipIn);
+      if (on && !hasZip && !zip) return ask("Add your ZIP to turn it on.", "<p>Five digits, the ZIP where you farm.</p>");
+      // the record as stored, in its own order; only cw changes (and a ZIP where there was none)
+      const addZip = on && !hasZip ? zip : "";
+      const rec = {};
+      for (const k of Object.keys(sub)) {
+        if (k === "cw" || (addZip && k === "zip")) continue;
+        rec[k] = sub[k];
+        if (k === "src" && addZip) rec.zip = addZip;
+      }
+      if (addZip && !("zip" in rec)) rec.zip = addZip;
+      if (on) rec.cw = true;
+      if (addZip || on !== (sub.cw === true)) await env.SUBS.put("sub:" + e, JSON.stringify(rec), { metadata: rec });
+      return on
+        ? htmlPage("Your county this week is on.", "<p>On a Thursday when something changed in your county, your AGSIST Daily has a few lines on it. No change, no lines.</p>" + cwTest() +
+            "<p>To stop it, use the same link in any Daily.</p>")
+        : htmlPage("Your county this week is off.", "<p>Your AGSIST Daily goes on as before.</p>");
     }
 
     // ---------- WATCH A COUNTY ----------

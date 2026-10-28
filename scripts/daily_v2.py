@@ -553,7 +553,7 @@ def _a(url, text, camp=None, content=None, cls="link", color=GOLD):
 
 # ── the email ────────────────────────────────────────────────────────────
 def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_url=None, today=None,
-          rain=None, pod=None, fact=None, loc=None, county=None):
+          rain=None, pod=None, fact=None, loc=None, county=None, county_ask=None, group=None):
     """{"subject", "subject_from", "subject_field", "preheader", "html", "text", "slots"}."""
     camp = BE.campaign_of(daily)
     iso = _iso_day(daily)
@@ -585,10 +585,12 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     offer = BE.rain_print_offer(rain, today)
     cw = county_block(county)
     slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact), "county": bool(cw)}
+    ask = county_ask_link(county_ask)
     html = _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
-                      site_href, unsub_url, forward_url, today, county=cw)
+                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask)
     text = _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
-                      site_href, unsub_url, forward_url, today, county=cw)
+                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask)
+    html, text = tag_group(html, group, True), tag_group(text, group, False)
     return {"subject": subj, "subject_from": sfrom, "subject_field": sfield, "preheader": pre,
             "html": html, "text": text, "slots": slots, "items": items}
 
@@ -618,6 +620,35 @@ def county_block(c):
         return None
     return {"title": "Your county this week: %s, %s" % (name, st), "rows": rows, "url": SITE + url,
             "link": "%s home" % name}
+
+
+# A reader already on the Daily turns it on from the footer (subs worker v5.57, /daily-cw): the
+# reader's own signed front-door link (send_daily.county_ask_url), never pre-set. A reader who
+# has it on gets the same link worded as the way to stop it.
+CW_ASK_WORDS = "Add what changed in your county on Thursdays"
+CW_STOP_WORDS = "Stop the Thursday county lines"
+
+
+def county_ask_link(a):
+    """{"url", "words"} for the footer, or None: an agsist.com/e?a=daily-cw link only."""
+    if not isinstance(a, dict):
+        return None
+    url = str(a.get("url") or "")
+    if not url.startswith("https://agsist.com/e?a=daily-cw&") or shared_host(url):
+        return None
+    return {"url": url, "words": CW_STOP_WORDS if a.get("on") is True else CW_ASK_WORDS}
+
+
+# The holdout for the keep or cut rule (send_daily.cw_group): every agsist.com link in the issue of
+# a reader who ticked the block carries utm_term=cw-block or cw-hold, the arm, never the reader. The
+# signed front-door links carry no utm at all, so they are untouched.
+GROUPS = ("cw-block", "cw-hold")
+
+
+def tag_group(body, group, html):
+    if group not in GROUPS or not body:
+        return body
+    return str(body).replace("utm_medium=email", "utm_medium=email" + ("&amp;" if html else "&") + "utm_term=" + group)
 
 
 def _county_html(cw, camp):
@@ -689,7 +720,7 @@ def _watch(daily):
 
 
 def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
-               site_href, unsub_url, forward_url, today, county=None):
+               site_href, unsub_url, forward_url, today, county=None, county_ask=None):
     date_display = BE.strip_md(daily.get("date")) or iso
     b = ['<div class="mute" style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;'
          'font-size:1px;line-height:1px">%s%s</div>' % (e(pre), PRE_PAD),
@@ -779,6 +810,8 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
     add = BE.elevators_add_url(elevators)
     if add:
         foot += '<br><a class="mute link" href="%s" style="color:%s">%s</a>' % (BE._href(add), MUTE, e(BE.ELEVATOR_ADD_WORDS))
+    if county_ask:
+        foot += '<br><a class="mute link" href="%s" style="color:%s">%s</a>' % (BE._href(county_ask["url"]), MUTE, e(county_ask["words"]))
     if unsub_url:
         foot += '<br><a class="mute link" href="%s" style="color:%s">Unsubscribe</a>' % (BE._href(unsub_url), MUTE)
     else:
@@ -800,7 +833,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
 
 
 def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
-               site_href, unsub_url, forward_url, today, county=None):
+               site_href, unsub_url, forward_url, today, county=None, county_ask=None):
     L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso), "", "TODAY"]
     for x in items:
         L.append("- " + x["text"] + ((" " + BE.utm(x["url"], "today-" + x["kind"], camp)) if x.get("url") else ""))
@@ -843,6 +876,8 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
     L += ["", "AGSIST, free US farm markets, agsist.com"]
     if BE.elevators_add_url(elevators):
         L.append(BE.ELEVATOR_ADD_WORDS + ": " + BE.elevators_add_url(elevators))
+    if county_ask:
+        L.append(county_ask["words"] + ": " + county_ask["url"])
     L.append("Unsubscribe: " + unsub_url if unsub_url else "To unsubscribe, reply with subject line: unsubscribe")
     L.append("PO Box 243, Chetek, WI 54728")
     return "\n".join(L) + "\n"
