@@ -829,7 +829,6 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
-    "basis.html",
     "cash-bids.html",
     "index.html",
     "sponsor-kit.html"

@@ -238,9 +238,10 @@ test("the parser says plainly it has not been checked against a real report yet"
 test("the barn list: unique ids, town and lower-48 coordinates, a title pattern for every source", () => {
   const ids = srcs.barns.map((b) => b.id).concat(srcs.state_reports.map((b) => b.id));
   assert.equal(new Set(ids).size, ids.length);
-  // 47 barns on Oct 16 2026 after the barn fill, 88 on Oct 17 (Sig: more barns, Upper Midwest first);
+  // 47 barns on Oct 16 2026 after the barn fill, 88 on Oct 17 (Sig: more barns, Upper Midwest first), 125 on
+  // Oct 28 (37 more read from USDA's own PDFs; Sig approved raising the cap for real barns);
   // the cap keeps the list a hand-picked set of feeder sales, not every report AMS has
-  assert.ok(srcs.barns.length >= 20 && srcs.barns.length <= 120);
+  assert.ok(srcs.barns.length >= 20 && srcs.barns.length <= 125);
   for (const b of srcs.barns) {
     assert.ok(b.town && /^[A-Z]{2}$/.test(b.state), b.id);
     assert.ok(b.lat > 24 && b.lat < 50 && b.lon > -125 && b.lon < -66, b.id + " coordinates");
