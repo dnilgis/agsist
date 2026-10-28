@@ -223,6 +223,8 @@ test("tabs and hashes in Chromium: each hash opens its tab; old #state, #us, #pr
     const tops = [];
     for (const t of ["place", "tables"]) { assert.ok(await shown(nj.pg, "#" + t), "no JS: " + t); tops.push(await nj.pg.$eval("#" + t, (e) => e.getBoundingClientRect().top)); }
     assert.deepEqual(tops, [...tops].sort((a, b) => a - b));
+    // the jump to #place is instant without JavaScript, so the page is not still scrolling when a reader (or this test) looks
+    assert.equal(await nj.pg.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior), "auto", "no JS: no smooth scroll on the hash jump");
     for (const id of ["#tab-pk", "#tab-manure", "#tab-statestats"]) assert.ok(await shown(nj.pg, id), "no JS: " + id);
     for (const id of ["#h-form", "#h-locate"]) assert.equal(await shown(nj.pg, id), false, "no JS: " + id + " is hidden, not dead");
     await nj.ctx.close();

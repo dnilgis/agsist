@@ -2396,6 +2396,10 @@
     {"id": "uscourts-f2-2026-sep", "kind": "pdf",
      "url": "https://www.uscourts.gov/sites/default/files/document/bf_f2_0930.2026.pdf",
      "title": "U.S. Courts Table F-2, bankruptcy filings by chapter and district, 12 months ending Sep 30, 2026",
-     "why": "Chapter 12 (family farmer) filings by district for data/farm-stress/chapter12.json and the state farm pages"}
+     "why": "Chapter 12 (family farmer) filings by district for data/farm-stress/chapter12.json and the state farm pages"},
+    {"id": "ne-psc-capacity-2026-10-28", "kind": "pdf",
+     "url": "https://psc.nebraska.gov/sites/default/files/doc/2026-10-28%20Location%20Capacity%20Report.pdf",
+     "title": "Nebraska Public Service Commission, Location Capacity Report, Oct 28, 2026 (licensed grain warehouse locations and bushels)",
+     "why": "Licensed storage per elevator location on Nebraska cash-bid town pages and the state total (scripts/fetch_ne_capacity.py)"}
 ]
 }

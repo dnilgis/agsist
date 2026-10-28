@@ -250,6 +250,17 @@ def main():
     ck("...premium rates dated by the fact sheet", "premium per cwt covered, from its DMC fact sheet of January 2026, Tier 1 / Tier 2" in tb)
     ck("...Tier 1 named at 6 million lb", "Tier 1 is the first 6 million lb of your production history a year" in tb)
     ck("...the margin line shows FSA's newest month", "DMC margin, August 2026: $9.34/cwt" in S.milk_dmc_margin(DM, SEP, "2026-10-28"))
+    ck("...no capture in the file: no capture line", "screen capture" not in tb)
+    sh = copy.deepcopy(DM)
+    sh["screenshot"] = {"read": "2026-10-28", "via": "screenshot", "source_url": DM["source_url"],
+                        "months": {"2026-08": {"corn": 4.45, "hay": 243.0, "sbm": 320.3, "all_milk": 19.8, "feed": 10.46, "margin": 9.34}}}
+    ck("a month from the screen capture of FSA's live page is credited as such, in the table and the margin line",
+       "Aug 2026: the same FSA page, read 2026-10-28 from a screen capture" in S.milk_dmc_paid(sh, SEP)
+       and "published it (read 2026-10-28 from a screen capture of FSA&rsquo;s live page)." in S.milk_dmc_margin(sh, SEP, "2026-10-28"))
+    sh2 = copy.deepcopy(sh)
+    sh2["screenshot"]["months"]["2026-08"]["margin"] = 9.43
+    ck("...a capture that is not the row shown is not credited", "screen capture" not in S.milk_dmc_paid(sh2, SEP)
+       + S.milk_dmc_margin(sh2, SEP, "2026-10-28"))
     bad = copy.deepcopy(DM)
     bad["margins"]["2026-08"]["margin"] = 9.0
     ck("milk minus feed not the margin: the whole table withheld", "not shown yet" in S.milk_dmc_paid(bad, SEP))
