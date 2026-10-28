@@ -1,0 +1,144 @@
+                                                                                                                                                                         MARGIN PROTECTION PROGRAM (MPP) CALCULATIONS
+
+
+
+
+                                               Soybean Meal
+                                               Central Ill AMS                  Feed Cost for   Milk Margin     Milk
+               Pay          Corn   Alfalfa Hay (GX_GR 117)     All Milk         MPP‐Dairy       Above Feed Cost Margin/pay
+Month          Period       ($/bu) ($/ton)     ($/ton)         $/cwt            ($/cwt)         ($/cwt)         Period*
+                                                              2018
+July                           3.47      179.00         341.08          15.40      8.68185400        6.71814600       6.71815
+June                           3.58      181.00         355.71          16.30      8.93479250        7.36520750       7.36521
+May                            3.67      189.00         393.55          16.20      9.41906850        6.78093150       6.78093
+April                          3.58      183.00         385.84          15.80      9.18364800        6.61635200       6.61635
+March                          3.51      166.00         379.85          15.60      8.83162550        6.76837450       6.76837
+February                       3.38      155.00          362.85         15.30      8.41651150        6.88348850       6.88349
+January                        3.29      152.00         322.59          16.10      7.98294850        8.11705150       8.11705
+                                                              2017
+December                       3.23      148.00         319.22          17.20      7.83901100        9.36098900
+                   6                                                                                                    9.87485
+November                       3.15      148.00         313.52          18.10      7.71129200       10.38870800
+October                        3.26      152.00         315.23          17.90      7.89666850       10.00333150                      Margin values are final when
+                   5                                                                                                    9.99619      full month data is first
+September                      3.27      149.00         307.70          17.80      7.81095100        9.98904900
+                                                                                                                                     available and will not be
+August                         3.27      147.00         301.05          18.00      7.73467350       10.26532650                      revised with future data
+                   4                                                                                                    9.67123
+                                                                                                                                     revisions.
+July                           3.49      152.00         326.04          17.30      8.22286600        9.07713400
+June                           3.43      152.00         300.72          17.30      7.97239600        9.32760400
+                   3                                                                                                    8.97093      Feed costs and monthly
+May                            3.45      155.00         307.63          16.70      8.08574050        8.61425950                      milk margins are not
+                                                                                                                                     rounded before calculating
+April                          3.43      148.00         305.67          16.50      7.95397850        8.54602150
+                   2                                                                                                    8.94898      the pay period margin.
+March                          3.49      135.00         320.34          17.30      7.94807100        9.35192900
+February                       3.44      129.00         334.42          18.50      7.91571900       10.58428100
+                   1                                                                                                   10.82023
+January                        3.40      128.00         332.34          18.90      7.84381900       11.05618100                    Payment periods 2013 ‐ 2017
+
+                                                              2016                                                                        01 – January/February
+
+December                       3.33      129.00         321.02          18.80      7.69922100       11.10077900                           02 – March/April
+                   6                                                                                                   10.54246
+November                       3.23      130.00          322.41         17.60      7.61585750        9.98414250                           03 – May/June
+
+October                        3.29      135.00         323.27          16.60      7.75504650        8.84495350                           04 – July/August
+                   5                                                                                                    9.16485
+September                      3.22      137.00          337.95         17.30      7.81524850        9.48475150                           05 – Sep/Oct
+
+August                         3.21      138.00         340.80          17.10      7.83916800        9.26083200                           06 – Nov/Dec
+                   4                                                                                                    8.42515
+July                           3.60      140.00          371.49         16.10      8.51053150        7.58946850
+June                           3.82      142.00         408.57          14.80      9.04648550        5.75351450
+                   3                                                                                                    5.76277
+May                            3.68      147.00         376.35          14.50      8.72797650        5.77202350
+April                          3.58      153.00         303.81          15.00      8.16972750        6.83027250
+                   2                                                                                                    7.14868
+March                          3.57      144.00         276.22          15.30      7.83291300        7.46708700
+February                       3.57      142.00         273.61          15.70      7.78632950        7.91367050
+                   1                                                                                                    8.00928
+January                        3.66      147.00         279.56          16.10      7.99511400        8.10488600
+                                                              2015
+December                       3.65      150.00         289.78          17.20      8.10060300        9.09939700
+                   6                                                                                                    9.55705
+November                       3.60      150.00         308.60          18.20      8.18529000       10.01471000
+October                        3.67      156.00         327.97          17.70      8.48495550        9.21504450
+                   5                                                                                                    9.08207
+September                      3.68      157.00         333.62          17.50      8.55091100        8.94908900
+August                         3.68      159.00         357.85          16.70      8.75640150        7.94359850
+                   4                                                                                                    7.69510
+July                           3.80      169.00         375.71          16.60      9.15340850        7.44659150
+June                           3.58      178.00         335.03          16.90      8.74169450        8.15830550
+                   3                                                                                                    7.99534
+May                            3.62      192.00         320.23          16.70      8.86762650        7.83237350
+April                          3.75      184.00         336.61          16.50      9.01788350        7.48211650
+                   2                                                                                                    7.50415
+March                          3.81      172.00         357.83          16.60      9.07381850        7.52618150
+February                       3.79      172.00         370.38          16.80      9.14460500        7.65539500
+                   1                                                                                                    7.99554
+January                        3.81      174.00         380.02          17.60      9.26431500        8.33568500
+                                                              2014
+December                       3.78      183.00         431.73          20.40      9.73549950       10.66450050
+                   6                                                                                                   12.02943
+November                       3.58      184.00         441.39          23.00      9.60564050       13.39435950
+October                        3.56      194.00         381.50          24.90      9.28099300       15.61900700
+                   5                                                                                                   15.51136
+September                      3.48      197.00         525.72          25.70     10.29628600       15.40371400
+August                         3.63      209.00         490.32          24.10     10.36141600       13.73858400
+                   4                                                                                                   13.21062
+July                           4.05      216.00         450.79          23.30     10.61734650       12.68265350
+June                           4.49      222.00         501.72          23.20     11.54591400       11.65408600
+                   3                                                                                                   11.95748
+May                            4.71      224.00         519.38          24.20     11.93913100       12.26086900
+April                          4.71      206.00         514.01          25.30     11.65306150       13.64693850
+                   2                                                                                                   13.87422
+March                          4.51      191.00         495.71          25.20     11.09849650       14.10150350
+February                       4.35      188.00         509.25          24.90     10.98526750       13.91473250
+                   1                                                                                                   13.30692
+January                        4.42      185.00         479.54          23.50     10.80089500       12.69910500
+                                                              2013
+December                       4.41      187.00         498.31          22.00     10.95552650       11.04447350
+                  6                                                                                                    11.04319
+November                       4.35      188.00         451.13          21.60     10.55808550       11.04191450
+October                        4.61      193.00         443.63          20.90     10.85038850       10.04961150
+                  5                                                                                                     9.01041
+September                      5.40      194.00         500.39          20.10     12.12878650        7.97121350
+
+
+               Milk Margin minus Feed Cost Calculation Detail
+
+               The feed cost for each month is calculated by summing three calculated numbers:
+                        1) the corn price per bushel times 1.0728; plus
+                        2) the soybean meal price per ton times 0.00735, plus
+                        3) the alfalfa hay price per ton times 0.0137.
+
+
+               The Milk Margin for each month is then calculated by subtracting the resulting composite feed cost
+               from the all-milk price.
+
+               The paired month milk margin is calculated by taking the simple average of the milk margins that were
+               calculated for the individual months in the pairing.
+               The paired months are specified in the 2014 Farm Bill and are January-February, March-April, May-
+               June, and so on
+
+               An example calculation for January-February 2014:
+
+                             January corn price is 4.42 X 1.0728 = 4.7418
+                             January soybean meal price is 479.54 X 0.00735 = 3.524619
+                             January alfalfa hay price is 185 X 0.0137 = 2.5345
+
+
+               The January feed cost is the sum of these three products above:, which is $10.80 /cwt.
+
+
+               The January Milk Margin is the All-Milk price, $23.50 per cwt., minus the feed cost of $10.80 per cwt. =
+               $12.70 per cwt.
+
+               Performing similar calculations for February yields a $13.91 per cwt. margin.
+
+               * The January-February Milk Margin is the average of the January and February margins ($12.70 plus
+               $13.91, divided by two) and equals $13.30 per cwt.
+*At a milk margin (all‐milk price minus feed cost) of less than $8.00 per cwt, payments are possible depending on the level of coverage chosen by the dairy operation.
+

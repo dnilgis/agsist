@@ -371,6 +371,50 @@ def survey_facts(ss, stn):
     return h
 
 
+CH12_FILE = os.path.join("data", "farm-stress", "chapter12.json")
+NUM_WORDS = {2: "two", 3: "three", 4: "four"}
+
+
+def load_ch12(root="."):
+    """data/farm-stress/chapter12.json (scripts/build_chapter12.py: U.S. Courts Table F-2).
+    {} when absent or not readable: the state page then prints no Chapter 12 line."""
+    try:
+        d = json.load(open(os.path.join(root, CH12_FILE), encoding="utf-8"))
+        if d.get("schema") == "agsist-chapter12/1" and d.get("periods") and d.get("states"):
+            return d
+    except Exception:
+        pass
+    return {}
+
+
+def ch12_fact(W, st, stn):
+    """One small line: Chapter 12 filings in the newest 12-month period, the two calendar
+    years before it, and how many court districts were added together. Filings, not farms;
+    12-month totals only; no rate per farm. '' when the state or the period is missing."""
+    d = getattr(W, "ch12", None) or {}
+    S = (d.get("states") or {}).get(st)
+    if not S:
+        return ""
+    p = d["periods"][-1]
+    n = S["n"].get(p["end"])
+    if n is None or not str(p.get("url") or "").startswith("https://www.uscourts.gov/"):
+        return ""
+    prior = [x for x in d["periods"] if x["end"].endswith("-12-31") and x["end"] < p["end"]][-2:][::-1]
+    back = ", ".join("%d in %s" % (S["n"][x["end"]], x["end"][:4]) for x in prior if x["end"] in S["n"])
+    k = len(S.get("districts") or [])
+    if st == "AR" and k == 1:
+        where = "one court for both Arkansas districts"
+    elif k > 1:
+        where = "%s's %s federal court districts added together" % (stn, NUM_WORDS.get(k, str(k)))
+    else:
+        where = "one federal court district"
+    val = "%d filing%s" % (n, "" if n == 1 else "s")
+    # Chapter 12 also covers family fishermen: say so, once, in plain words
+    small = "family farm and fishing cases filed, %s%s%s \u00b7 %s \u00b7 " % (esc(p["label"]), " \u00b7 " if back else "", esc(back), esc(where))
+    return ('<div class="fact st ch12"><span class="l">Farm bankruptcies (Chapter 12)</span><span class="r">%s<small>%s'
+            '<a href="%s" rel="noopener">U.S. Courts, Table F-2</a></small></span></div>' % (esc(val), small, esc(p["url"])))
+
+
 class World:
     """Everything the pages share. Built once."""
 
@@ -430,6 +474,7 @@ class World:
         self.ytrend = load_yield_trends(root)
         self.svalue = load_state_values(root)
         self.usurvey = load_uni_surveys(root)
+        self.ch12 = load_ch12(root)
         self.thin = set()     # county pages with few figures: noindex, out of the sitemap
         self.by_state = {}
         for f, c in self.C.items():
@@ -2480,6 +2525,7 @@ def state_page(W, st):
     ss = state_survey(W, st, get(W.atlas, "national", "value", "year"))
     if ss:
         facts += survey_facts(ss, stn)
+    facts += ch12_fact(W, st, stn)
     facts += uni_survey_note(W, st)
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), ("By state", f"/{OUT}/states/"), (stn, None)])
     smap, smbr = state_map(W, st, recs)
@@ -2908,6 +2954,23 @@ def selftest():
     check("uni survey line: dated, linked, theirs", "released Dec 9, 2025" in uni_survey_note(_U, "IA") and 'href="https://x/"' in uni_survey_note(_U, "IA")
           and "does not copy them" in uni_survey_note(_U, "IA"))
     check("uni survey line: no date, no line", uni_survey_note(_U, "NE") == "" and uni_survey_note(_U, "IL") == "" and uni_survey_note(_W, "IA") == "")
+    # Chapter 12 line: real Iowa rows (F-2: IA,N 4 + IA,S 7 in the 12 months to Sep 30, 2026; 18 in 2025, 7 in 2024)
+    class _C:
+        ch12 = {"periods": [{"end": "2024-12-31", "label": "calendar 2024", "url": "https://www.uscourts.gov/a.pdf"},
+                            {"end": "2025-12-31", "label": "calendar 2025", "url": "https://www.uscourts.gov/b.pdf"},
+                            {"end": "2026-09-30", "label": "12 months to Sep 30, 2026", "url": "https://www.uscourts.gov/sites/default/files/document/bf_f2_0930.2026.pdf"}],
+                "states": {"IA": {"districts": ["IA,N", "IA,S"], "n": {"2024-12-31": 7, "2025-12-31": 18, "2026-09-30": 11}},
+                           "NE": {"districts": ["NE"], "n": {"2025-12-31": 17, "2026-09-30": 1}},
+                           "AR": {"districts": ["AR"], "n": {"2026-09-30": 34}},
+                           "OH": {"districts": ["OH,N", "OH,S"], "n": {"2025-12-31": 3}}}}
+    c_ = ch12_fact(_C, "IA", "Iowa")
+    check("ch12 Iowa line", "Farm bankruptcies (Chapter 12)" in c_ and "11 filings" in c_
+          and "family farm and fishing cases filed, 12 months to Sep 30, 2026 \u00b7 18 in 2025, 7 in 2024" in c_
+          and "Iowa&#x27;s two federal court districts added together" in c_ and 'href="https://www.uscourts.gov/sites/default/files/document/bf_f2_0930.2026.pdf"' in c_)
+    check("ch12 says filings, never farms or a quarter", " farms" not in c_.lower() and "quarter" not in c_ and "per farm" not in c_)
+    check("ch12 one filing, one district", "1 filing<" in ch12_fact(_C, "NE", "Nebraska") and "one federal court district" in ch12_fact(_C, "NE", "Nebraska"))
+    check("ch12 Arkansas one court", "one court for both Arkansas districts" in ch12_fact(_C, "AR", "Arkansas"))
+    check("ch12 no newest period, no line; no file, no line", ch12_fact(_C, "OH", "Ohio") == "" and ch12_fact(_C, "IL", "Illinois") == "" and ch12_fact(_W, "IA", "Iowa") == "")
     check("recent yield stale", recent_yield({"last_year": 2020, "hist": {str(y): 1 for y in range(2016, 2021)}}, 2026) is None)
     # bars: a gap year is a gap, not a zero
     svg = bars_svg({2000: 5, 2001: 6, 2003: 7}, "t", lambda v: str(v))

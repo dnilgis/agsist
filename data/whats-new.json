@@ -7,6 +7,20 @@
    "title": "Cull cow prices from the sale barns",
    "line": "Boner, Breaker and Lean cow and slaughter bull prices at about 40 sale barns USDA reports, each with its own sale day, plus the middle Boner price.",
    "link": "/cattle-auction-prices#cull-cows"
+   },
+   {
+   "id": "2026-10-28-dairy-herds",
+   "date": "2026-10-28",
+   "title": "Licensed dairy herds, US and your state",
+   "line": "Licensed dairy herds from NASS by year for the US and your state, Wisconsin by month, with each year's net change. Also the 2014 to 2018 MPP margins, apart from DMC.",
+   "link": "/milk-prices#dp-herds-h"
+   },
+   {
+   "id": "2026-10-28-chapter12",
+   "date": "2026-10-28",
+   "title": "Farm bankruptcy filings on each state page",
+   "line": "Each Farmland Atlas state page now gives its Chapter 12 filings for the 12 months to Sep 30, 2026, with 2025 and 2024 beside it, from the U.S. Courts tables.",
+   "link": "/farmland-atlas/states/"
   },
   {
    "id": "2026-10-28-merges",
