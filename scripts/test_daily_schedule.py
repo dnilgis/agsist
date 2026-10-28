@@ -89,8 +89,14 @@ def gate_script(y):
 
 
 def simulate(script, *, event="schedule", start="05:19", dow=1, published=False,
-             heartbeat=False, day="2026-08-31", max_wait_min=600):
+             heartbeat=False, day="2026-08-31", max_wait_min=600,
+             sent=None, dry_run=False, flag_rc=2):
     """Run the gate with a fake clock. Returns (skip, minutes_waited, log).
+
+    sent: is data/daily-sent/<day>.json on the remote (default: same as
+    published, the shape of every day before 2026-10-28). dry_run: is the
+    <day>.dry-run.json mark there. flag_rc: what `python3 scripts/daily_retry.py
+    flag` answers (0 not sent, 1 sent, 2 cannot tell).
 
     `sleep` advances the clock instead of sleeping, so a loop that waits for
     the floor completes in milliseconds and the wait is measurable.
@@ -118,11 +124,24 @@ def simulate(script, *, event="schedule", start="05:19", dow=1, published=False,
             "#!/bin/bash\n"
             f'T=$(cat "{clock}"); echo $(( T + ${{1:-0}} / 60 )) > "{clock}"\n'
             f'[ $(cat "{clock}") -lt {max_wait_min} ] || exit 1\n')
+        sent = published if sent is None else sent
+        rc = lambda b: "0" if b else "1"
         (tmp / "git").write_text(
             "#!/bin/bash\n"
-            'if [ "${1:-}" = "cat-file" ]; then exit ' + ("0" if published else "1") + '; fi\n'
+            'if [ "${1:-}" = "cat-file" ]; then\n'
+            '  case "${3:-}" in\n'
+            '    *daily-sent/*.dry-run.json) exit ' + rc(dry_run) + ' ;;\n'
+            '    *daily-sent/*) exit ' + rc(sent) + ' ;;\n'
+            '    *) exit ' + rc(published) + ' ;;\n'
+            '  esac\n'
+            'fi\n'
             'exit 0\n')
-        for f in ("date", "sleep", "git"):
+        # the day flag (scripts/daily_retry.py flag), the gate's only python
+        (tmp / "python3").write_text(
+            "#!/bin/bash\n"
+            'echo "STUB day flag asked: $*"\n'
+            "exit " + str(flag_rc) + "\n")
+        for f in ("date", "sleep", "git", "python3"):
             (tmp / f).chmod(0o755)
 
         # ── RUN IT SOMEWHERE EMPTY. THIS LINE IS THE WHOLE 2026-09-01 BUG.
@@ -267,6 +286,25 @@ def main():
 
     skip, _, _ = simulate(gate, start="06:41", published=True)
     check(skip == "1", "…and skips when the morning already published")
+
+    print("\npublished means published AND sent (2026-10-28)")
+    # Oct 28: the 6:16 run published, the send refused, every later run skipped
+    skip, _, out = simulate(gate, start="06:46", published=True, sent=False, flag_rc=0)
+    check(skip == "0" and "STUB day flag asked: scripts/daily_retry.py flag 2026-08-31" in out,
+          "a published issue that never went out is written again in the morning, after asking the day flag", out)
+    skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=True, start="06:46",
+                            published=True, sent=False, flag_rc=0)
+    check(skip == "0", "…by the price loop's heartbeat too", out)
+    skip, _, out = simulate(gate, start="06:46", published=True, sent=False, flag_rc=1)
+    check(skip == "1", "but not when the day flag says it went out (only the sent copy is missing)", out)
+    skip, _, out = simulate(gate, start="06:46", published=True, sent=False, flag_rc=2)
+    check(skip == "1", "and not when the day flag cannot be read: never risk a second send", out)
+    skip, _, out = simulate(gate, start="06:46", published=True, sent=False, dry_run=True, flag_rc=0)
+    check(skip == "1", "a manual run without send_email publishes on purpose; the morning does not mail it", out)
+    skip, _, out = simulate(gate, start="14:05", dow=3, published=True, sent=False, flag_rc=0)
+    check(skip == "1", "past the 14:00 morning window an unsent issue is left alone", out)
+    skip, _, out = simulate(gate, start="06:46", published=True, sent=True, flag_rc=0)
+    check(skip == "1" and "STUB day flag asked" not in out, "a day with its sent copy skips without asking the flag", out)
 
     skip, _, _ = simulate(gate, start="04:19", published=True)
     check(skip == "1",

@@ -271,10 +271,22 @@ jobs:
       contents: read
     outputs:
       skip: ${{ steps.g.outputs.skip }}
+    # Read only: the day flag (briefed:<day>), asked when today's issue is
+    # published but was never sent (scripts/daily_retry.py flag). The worker
+    # first, the private repo when the worker is blocked, as send_daily.py does.
+    env:
+      LIST_URL:           ${{ secrets.LIST_URL }}
+      LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
+      PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - id: g
         run: |
           # THE GATE WAITS NOW. IT USED TO DECIDE ONCE AND EXIT.
@@ -327,6 +339,13 @@ jobs:
             git fetch --quiet --depth=1 origin "$BRANCH" 2>/dev/null || true
             git cat-file -e "FETCH_HEAD:data/daily-archive/$1.json" 2>/dev/null && return 0
             [ -f "data/daily-archive/$1.json" ] && return 0
+            return 1
+          }
+
+          # The same remote answer, for any path (published() fetched it).
+          on_remote() {
+            git cat-file -e "FETCH_HEAD:$1" 2>/dev/null && return 0
+            [ -f "$1" ] && return 0
             return 1
           }
 
@@ -402,9 +421,37 @@ jobs:
               decide 1; exit 0
             fi
 
+            # PUBLISHED MEANS PUBLISHED AND SENT (2026-10-28). That morning the
+            # 6:16 run published the issue, the send step's number check refused
+            # it, and every later run skipped on "already published": nobody got
+            # the Daily until a manual run. Now a day is done when its sent copy
+            # (data/daily-sent/<day>.json) is on main, or a manual run without
+            # send_email published it on purpose (<day>.dry-run.json). Otherwise,
+            # still inside the morning window (the 14:00 check above), the issue
+            # is written again and checked again, but ONLY when the day flag
+            # says no mail went out. A flag that is set (the sent copy just did
+            # not get committed) or cannot be read skips: a second copy to the
+            # list is the one thing worse than a late Daily. send_daily.py asks
+            # the same flag again before its first mail.
             if published "$DAY"; then
-              say "SKIPPING: $DAY is already published — a backup launch doing its job"
-              decide 1; exit 0
+              if on_remote "data/daily-sent/$DAY.json"; then
+                say "SKIPPING: $DAY is already published and sent, a backup launch doing its job"
+                decide 1; exit 0
+              fi
+              if on_remote "data/daily-sent/$DAY.dry-run.json"; then
+                say "SKIPPING: $DAY was published by a manual run without send_email, deliberately not sent"
+                decide 1; exit 0
+              fi
+              python3 scripts/daily_retry.py flag "$DAY"; rc=$?
+              if [ "$rc" = "1" ]; then
+                say "SKIPPING: $DAY went to the list (the day flag is set); only its sent copy is missing"
+                decide 1; exit 0
+              fi
+              if [ "$rc" != "0" ]; then
+                say "SKIPPING: $DAY is published, not marked sent, and the day flag cannot be read; never risk a second send"
+                decide 1; exit 0
+              fi
+              say "RETRYING: $DAY is published but never went to the list; writing it again"
             fi
 
             # TOO EARLY, NOT TOO LATE. Publishing before 05:45 Central locks
@@ -573,6 +620,7 @@ jobs:
       # NUMBERS, and a bad number must stop the briefing.
 
       - name: GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)
+        id: g1
         run: python scripts/preflight_prices.py data/prices.json --repair
 
       # 2026-10-17: "Only on AGSIST". Facts counted by code from the elevator
@@ -597,6 +645,7 @@ jobs:
         run: bash scripts/pull_raw.sh private/data/editorial-notes.md
 
       - name: Generate daily briefing
+        id: gen
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BRIEFING_MODEL: ${{ vars.BRIEFING_MODEL }}
@@ -651,6 +700,7 @@ jobs:
       # Sig, Oct 17 2026: Opus 5.5, report mode for a calibration week; Oct 28:
       # block. A repo variable FACT_CHECK_MODEL overrides the model.
       - name: GATE 2f, fact check against the source data
+        id: g2f
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL || 'claude-opus-5-5' }}
@@ -707,6 +757,7 @@ jobs:
       # then a plain headline from the settles, built by code; if even that fails the
       # job stops here (nothing committed or sent) and Sig gets one email.
       - name: GATE 2h, a failing headline is rewritten until it passes
+        id: g2h
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BRIEFING_MODEL: ${{ vars.BRIEFING_MODEL }}
@@ -725,6 +776,7 @@ jobs:
       # real move, calendar errors, fabricated sections. HARD block (no continue-on-error)
       # so a failure stops the job before commit — nothing stale or wrong gets published.
       - name: GATE 2 — pre-publish briefing gate
+        id: g2
         run: python scripts/briefing_gate.py data/daily.json --prices data/prices.json
 
       - name: Notify critic status
@@ -739,6 +791,7 @@ jobs:
         continue-on-error: true
 
       - name: Validate schema
+        id: schema
         # Fails the workflow if daily.json drifts from canonical field
         # names or contains filler content like "Unknown" attributions.
         # On failure, yesterday's briefing stays live until the next
@@ -750,6 +803,20 @@ jobs:
         # (subheadline, the_takeaway, weekly_thread, the_more_you_know,
         # catalyst, vs_yesterday, bottom_line) stay accepted for the archive.
         run: python scripts/daily_schema.py data/daily.json
+
+      # ── GATE 2v ── the email's number check, BEFORE publishing (2026-10-28).
+      # The send step runs daily_v2.check (send_daily.v2_gate) on the subject,
+      # headline and lead. On Oct 28 it refused the 6:16 issue AFTER the commit:
+      # the refused headline sat on agsist.com/daily for about two hours, and the
+      # published issue made every later run skip. This is the same function on
+      # the same issue, here, so a draft the send would refuse is never
+      # published. A block stops the job before the commit, like GATE 2f, and
+      # the next run writes the issue again. The send step keeps its own check.
+      - name: GATE 2v, the email's number check before publishing
+        id: g2v
+        env:
+          DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
+        run: python scripts/daily_retry.py prepublish
 
       - name: Generate RSS feed
         continue-on-error: true        # RSS is an enhancement; a feed error must never block the publish
@@ -803,6 +870,7 @@ jobs:
           fi
 
       - name: Commit and push
+        id: commit
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
@@ -834,6 +902,33 @@ jobs:
             echo "push attempt $i failed; retrying in 20s"; sleep 20
             [ "$i" = "3" ] && { git rebase --abort 2>/dev/null || true; exit 1; }
           done
+
+      # A BLOCK TELLS SIG WHICH CHECK AND THAT THE NEXT RUN TRIES AGAIN
+      # (2026-10-28). Any check above that stops a run meant for the list
+      # leaves nothing published, so the next scheduled run (or price-loop
+      # heartbeat) before 2 p.m. CT writes the issue again from scratch. One
+      # email per blocked run, naming the step. GATE 2h mails its own (with the
+      # rewrites it tried), so it is not mailed twice. Never fails the run.
+      - name: Tell Sig which check held the Daily
+        if: ${{ failure() && steps.commit.outcome != 'success' && (github.event_name == 'schedule' || inputs.send_email == true) }}
+        continue-on-error: true
+        env:
+          FAILED: >-
+            ${{ steps.g1.outcome == 'failure' && 'g1' || '' }}
+            ${{ steps.gen.outcome == 'failure' && 'gen' || '' }}
+            ${{ steps.g2f.outcome == 'failure' && 'g2f' || '' }}
+            ${{ steps.g2h.outcome == 'failure' && 'g2h' || '' }}
+            ${{ steps.g2.outcome == 'failure' && 'g2' || '' }}
+            ${{ steps.schema.outcome == 'failure' && 'schema' || '' }}
+            ${{ steps.g2v.outcome == 'failure' && 'g2v' || '' }}
+            ${{ steps.commit.outcome == 'failure' && 'commit' || '' }}
+          OWNER_TO:     ${{ secrets.SIG_TO }}
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+        run: python scripts/daily_retry.py alert
 
       # Email the finished briefing as a clean, reforwardable copy. Runs only after
       # GATE 2 passed (hard block above stops the job on failure) and the commit
@@ -955,6 +1050,33 @@ jobs:
           git add data/daily-sent/
           git diff --staged --quiet && { echo "sent copy already committed"; exit 0; }
           git commit -m "AGSIST Daily sent copy $(date +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git rebase --abort 2>/dev/null || true
+            if git pull --rebase --autostash origin main && git push; then
+              echo "push ok on attempt $i"; break
+            fi
+            echo "push attempt $i failed; retrying in 20s"; sleep 20
+          done
+
+      # A MANUAL RUN WITHOUT send_email PUBLISHES AND SENDS NOTHING ON PURPOSE
+      # (2026-10-28). The gate now writes a published-but-unsent issue again,
+      # so this run leaves data/daily-sent/<day>.dry-run.json: the day is done,
+      # deliberately not sent, and a later scheduled run does not mail the list
+      # behind the person's back (the old rule: a manual run that generated
+      # today's issue makes the morning skip). The mark holds no address,
+      # count or link. Never fails the run.
+      - name: Mark a dry run as deliberately not sent
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' && github.event_name != 'schedule' && inputs.send_email != true && inputs.test_to_sig != true }}
+        continue-on-error: true
+        run: |
+          d=$(date +%Y-%m-%d)
+          python scripts/daily_retry.py dry-run-mark "$d"
+          [ -f "data/daily-sent/$d.dry-run.json" ] || exit 0
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add "data/daily-sent/$d.dry-run.json"
+          git diff --staged --quiet && { echo "dry run mark already committed"; exit 0; }
+          git commit -m "AGSIST Daily $d published by a dry run, not sent"
           for i in 1 2 3; do
             git rebase --abort 2>/dev/null || true
             if git pull --rebase --autostash origin main && git push; then
