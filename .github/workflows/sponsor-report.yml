@@ -30,6 +30,8 @@ on:
       - 'sponsor.html'
       - 'data/sponsors.json'
       - 'data/sponsor.json'
+      - 'data/geo-sponsors.json'
+      - 'components/geo-sponsor.js'
       - 'data/rate-card.json'
       - 'data/supporters.json'
       - 'components/sponsor-ad.js'

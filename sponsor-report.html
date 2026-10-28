@@ -191,6 +191,17 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 .cp-wait b{display:block;font-size:.95rem;margin-bottom:.25rem}
 .cp-wait span{font-size:.82rem;color:var(--text-dim,#a9b3ae);line-height:1.5}
 
+/* ── a free test (Oct 28, 2026): every part about money stays in place, muted ── */
+.cp-free{position:relative}
+.cp-free .cp-muted,.cp-muted{opacity:.5;filter:grayscale(1)}
+.cp-free-tag{display:inline-block;font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.68rem;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:700;color:var(--text,#e8ece9);border:1px solid var(--border,#2a3230);border-radius:999px;
+  padding:.25rem .6rem;margin:0 0 .6rem;background:var(--surface,#141918)}
+.cp-step.cp-muted{opacity:.5}
+/* ── your states ── */
+.cp-reg-t td.n,.cp-reg-t th.n{text-align:right}
+.cp-reg-t tr.is-sum td{font-weight:800;border-top:2px solid var(--border,#2a3230)}
+
 /* ── placements ── */
 .cp-places{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
 .cp-place{border:1px solid var(--border,#2a3230);border-radius:var(--card-r);padding:.95rem 1rem;background:var(--surface,#141918)}
@@ -428,6 +439,13 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function num(n) { return n == null ? '-' : Number(n).toLocaleString('en-US'); }
+  /* A free test (data/sponsors.json billing.free_test): the one label every muted money part carries. */
+  var FREE = 'Free test: no charge';
+  var ST_NAME = { CA: 'California', NV: 'Nevada', TX: 'Texas', OR: 'Oregon', AZ: 'Arizona', WA: 'Washington', ID: 'Idaho', UT: 'Utah', NM: 'New Mexico', OK: 'Oklahoma' };
+  function regionNames(d) {
+    var r = (d.regions || []).map(function (c) { return ST_NAME[c] || c; });
+    return r.length > 1 ? r.slice(0, -1).join(', ') + ' and ' + r[r.length - 1] : (r[0] || '');
+  }
 
   /* Dates are calendar days, not instants: 'YYYY-MM-DD' in, UTC arithmetic,
      so a reader in another time zone never sees a start date move by a day. */
@@ -736,7 +754,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '<div class="cp-hero-top"><div class="cp-brands">' + logo + (logo ? '<span class="cp-x" aria-hidden="true"></span>' : '') +
          '<span class="cp-agsist">AG<span>SIST</span></span></div><span class="cp-eyebrow">Campaign portal</span></div>';
     h += '<h1>' + esc(d.sponsor) + '</h1>';
-    h += '<p class="cp-sub">' + (s.tier ? '<b>' + esc(s.tier.name) + '</b> of the AGSIST Daily' : 'Sponsor of the AGSIST Daily') + '</p>';
+    h += '<p class="cp-sub">' + (d.geo ? '<b>State-targeted sponsor</b> &middot; ' + esc(regionNames(d)) + (d.freeTest ? ' &middot; free test' : '')
+      : (s.tier ? '<b>' + esc(s.tier.name) + '</b> of the AGSIST Daily' : 'Sponsor of the AGSIST Daily')) + '</p>';
 
     /* ONE STATUS, WITH THE NEXT THING TO DO. */
     var st;
@@ -746,11 +765,14 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       st = { ok: true, h: 'Live' + (s.dayN > 0 ? ' · day ' + s.dayN : ''),
              p: (s.inTrial ? 'Free period: ' + s.trialLeft + ' day' + (s.trialLeft === 1 ? '' : 's') + ' left, through ' + esc(fmt(s.trialEnd, true)) + '. ' : '') +
                 'Results update every morning, through the end of yesterday.' };
+    } else if (s.live && d.geo) {
+      st = { ok: true, h: 'Live', p: 'Your ad is running. The counts below read 0 until the first full day of data, then fill in every morning, through the end of yesterday.' };
     } else if (s.live) {
       st = { ok: true, h: 'Live', p: 'The start date is being recorded. Your counter begins with it.' };
     } else if (s.approved) {
       st = { ok: true, h: 'Approved' + (fmt(s.ap.on, true) ? ' on ' + esc(fmt(s.ap.on, true)) : ''),
-             p: 'Proof ' + esc(s.code) + ' is locked in. Your ad goes into the next morning’s briefing, and your free period starts that day.' };
+             p: 'Proof ' + esc(s.code) + ' is locked in. ' + (d.geo ? 'Your ad goes live the day Sig switches it on; this page starts counting that day.'
+               : 'Your ad goes into the next morning’s briefing, and your free period starts that day.') };
     } else if (s.stale) {
       st = { ok: false, h: 'The ad changed after you approved it',
              p: 'You approved proof ' + esc(s.ap.proof) + '. The ad below is proof ' + esc(s.code) + '. Look it over and approve again, or tell us what to change.', btn: true };
@@ -766,23 +788,25 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var steps = [
       { t: 'Ad written', d: s.c ? 'Proof ' + s.code : 'In progress', done: !!s.c },
       { t: 'You approve', d: s.approved ? (fmt(s.ap.on, true) || 'Approved') : (s.stale ? 'Needs a new yes' : 'One email'), done: s.approved || s.live },
-      { t: 'Goes live', d: s.start ? fmt(s.start, true) : 'Next briefing after approval', done: s.live && !!s.start },
-      { t: s.freeLabel, d: s.trialEnd ? 'Through ' + fmt(s.trialEnd, true) : 'From the first day', done: !!(s.trialEnd && TODAY > s.trialEnd) },
-      { t: 'Billing starts', d: s.firstBilled ? fmt(s.firstBilled, true) : 'After the free period', done: !!(s.firstBilled && TODAY >= s.firstBilled) }
+      { t: 'Goes live', d: s.start ? fmt(s.start, true) : (d.geo ? (s.live ? 'Live now' : 'When Sig switches it on') : 'Next briefing after approval'), done: s.live && (!!s.start || !!d.geo) },
+      { t: s.freeLabel, d: s.trialEnd ? 'Through ' + fmt(s.trialEnd, true) : 'From the first day', done: !!(s.trialEnd && TODAY > s.trialEnd), money: true },
+      { t: 'Billing starts', d: s.firstBilled ? fmt(s.firstBilled, true) : 'After the free period', done: !!(s.firstBilled && TODAY >= s.firstBilled), money: true }
     ];
+    /* A FREE TEST: the money steps keep their places, muted, and say so. */
+    if (d.freeTest) steps.forEach(function (x) { if (x.money) { x.d = FREE; x.done = false; x.muted = true; } });
     var nowIdx = -1;
-    for (var i = 0; i < steps.length; i++) { if (!steps[i].done) { nowIdx = i; break; } }
+    for (var i = 0; i < steps.length; i++) { if (!steps[i].done && !steps[i].muted) { nowIdx = i; break; } }
     h += '<ol class="cp-steps" aria-label="Campaign steps">';
     steps.forEach(function (x, i) {
-      var cls = x.done ? ' is-done' : (i === nowIdx ? ' is-now' : '');
+      var cls = x.done ? ' is-done' : (i === nowIdx ? ' is-now' : (x.muted ? ' cp-muted' : ''));
       h += '<li class="cp-step' + cls + '"' + (i === nowIdx ? ' aria-current="step"' : '') + '><div class="cp-step-n">' +
            (x.done ? '✓ ' : '') + '0' + (i + 1) + '</div><div class="cp-step-t">' + esc(x.t) + '</div><div class="cp-step-d">' + esc(x.d) + '</div></li>';
     });
     return h + '</ol></header>';
   }
 
-  function nav(hasAud) {
-    var items = [['#ad', 'Your ad'], ['#results', 'Results'], ['#audience', 'Audience'], ['#where', 'Where it runs'], ['#billing', 'Billing'], ['#requests', 'Requests'], ['#links', 'Tracking links'], ['#how', 'How we count']];
+  function nav(hasAud, hasReg) {
+    var items = [['#ad', 'Your ad'], ['#results', 'Results']].concat(hasReg ? [['#states', 'Your states']] : []).concat([['#audience', 'Audience'], ['#where', 'Where it runs'], ['#billing', 'Billing'], ['#requests', 'Requests'], ['#links', 'Tracking links'], ['#how', 'How we count']]);
     if (!hasAud) items = items.filter(function (x) { return x[0] !== '#audience'; });
     return '<nav class="cp-nav" aria-label="Sections">' + items.map(function (x) { return '<a href="' + x[0] + '">' + x[1] + '</a>'; }).join('') + '</nav>';
   }
@@ -795,17 +819,25 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function results(d, s) {
     var t = d.totals || {};
     var h = '<section class="cp-sec" id="results"><div class="cp-h2"><h2>Results</h2><span class="cp-eyebrow">' +
-      (d.pending ? 'Counting starts with your first ad' : 'Through ' + esc(fmt(d.through, true)) + ' · from GA4') + '</span></div>';
+      (d.pending ? (d.geo && s.live ? 'Live · no full day counted yet' : 'Counting starts with your first ad')
+        : (d.geo ? (d.liveSince ? 'Live since ' + esc(fmt(d.liveSince, true)) + ' · ' : 'Live · no full day counted yet · ') : '') + 'Through ' + esc(fmt(d.through, true)) + ' · from GA4') + '</span></div>';
     if (d.pending) {
-      h += '<div class="cp-kpis">' +
-        kpi('-', 'Viewable impressions', 'MRC standard', true) + kpi('-', 'Clicks', 'button + phone', true) +
+      /* A state-targeted sponsor (Sig, Oct 28): before the ad runs its counts read 0 and "not started", never blank. */
+      h += '<div class="cp-kpis">' + (d.geo
+        ? kpi('0', 'Viewable impressions', s.live ? 'live, no full day yet' : 'not started', true) + kpi('0', 'Clicks', s.live ? 'live, no full day yet' : 'not started', true)
+        : kpi('-', 'Viewable impressions', 'MRC standard', true) + kpi('-', 'Clicks', 'button + phone', true)) +
         kpi('-', 'Click-through rate', 'clicks ÷ viewable', true) +
         kpi('0', 'Days live', s.start ? 'from ' + esc(fmt(s.start)) : 'starts on day one', true) + '</div>';
       h += '<div class="cp-wait" style="margin-top:.7rem">' +
-        '<div><b>No numbers until your ad runs.</b><span>The alternative is showing you site traffic that was not yours. This page fills in on its own from the first morning.</span></div>' +
+        (d.geo && s.live ? '<div><b>Live, counting.</b><span>Every count reads 0 until the first full day of data. This page fills in on its own from that morning, and says the day it started.</span></div>'
+          : '<div><b>No numbers until your ad runs.</b><span>The alternative is showing you site traffic that was not yours. This page fills in on its own from the first morning.</span></div>') +
         '<div><b>Every morning, through yesterday.</b><span>GA4 keeps adjusting today for hours, so a number here never changes after you have seen it.</span></div>' +
         '<div><b>Check us against your own analytics.</b><span>Every placement sends visitors with its own tagged link, listed below, so each click shows up on your side too.</span></div></div>';
       return h + '</section>';
+    }
+    if (d.withheld) {
+      return h + '<div class="cp-card"><p class="cp-note" style="margin:0"><b>Withheld for now.</b> ' + esc(d.withheld) +
+        ' Showing a number that may hold someone else’s ad would be worse than showing none. It comes back on its own once only your ad is running.</p></div></section>';
     }
     h += '<div class="cp-kpis">' +
       kpi(num(t.viewable), 'Viewable impressions', 'half the ad, one second') +
@@ -866,7 +898,15 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     ['email', 'Email', 'The subscriber email. The name is set in type there: the logo file is .webp, which Outlook does not show.'],
     ['text', 'Plain text', 'The plain-text part of the same email, for mail apps that show text only.']
   ];
+  var GEO_TABS = [
+    ['state-page', 'State pages', 'A page about California, Nevada or Texas: a county rain page, its PRF, ARC/PLC, Atlas, rent, yield, hail map or cash bid pages. Below the main answer, never above it.'],
+    ['reader-state', 'Any page', 'Any other agsist.com page, for a reader whose visit is in one of your states. The same ad, in the same place.']
+  ];
   function adSection(d, s) {
+    if (d.geo) {
+      TABS = GEO_TABS.map(function (t) { return t.slice(); });
+      TABS.forEach(function (t) { t[2] = t[2].replace('California, Nevada or Texas', regionNames(d).replace(' and ', ' or ')); });
+    }
     var h = '<section class="cp-sec" id="ad"><div class="cp-h2"><h2>Your ad</h2><span class="cp-eyebrow">Exactly as it runs</span></div>';
     if (!s.c) return h + '<div class="cp-card"><p class="cp-note" style="margin:0">Your ad will appear here for approval before anything runs.</p></div></section>';
     h += '<div class="cp-card"><div class="cp-tabs"><span role="tablist" aria-label="Where the ad appears" style="display:contents">';
@@ -876,7 +916,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     });
     h += '</span><span class="cp-dev" role="group" aria-label="Screen size"><button type="button" data-dev="desk" aria-pressed="true">Desktop</button>' +
          '<button type="button" data-dev="phone" aria-pressed="false">Phone</button></span></div>';
-    h += '<div class="cp-stage" id="cp-stage" role="tabpanel" aria-labelledby="tab-homepage"><div class="cp-frame" id="cp-frame"></div></div>';
+    h += '<div class="cp-stage" id="cp-stage" role="tabpanel" aria-labelledby="tab-' + TABS[0][0] + '"><div class="cp-frame" id="cp-frame"></div></div>';
     h += '<p class="cp-where" id="cp-where"></p>';
 
     var f = s.c.fields || {};
@@ -910,7 +950,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       (f.phone ? 'Or call ' + f.phone + '\n' : '') + (f.disclosure || '');
     function show(tab) {
       var html = '';
-      if (tab === 'homepage' || tab === 'daily_page') html = window.AgsistAd ? window.AgsistAd.render(sp, tab) : '';
+      if (tab === 'homepage' || tab === 'daily_page' || tab === 'state-page' || tab === 'reader-state') html = window.AgsistAd ? window.AgsistAd.render(sp, tab) : '';
       else if (tab === 'archive') html = pv.archive || (window.AgsistAd ? window.AgsistAd.render(sp, 'archive') : '');
       else if (tab === 'email') html = pv.email_html ? '<div class="cp-mail"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody>' + pv.email_html + '</tbody></table></div>' : '<p class="cp-note">The email preview could not be built on the last run. The wording is exact in the fields below.</p>';
       else html = '<pre class="cp-pre">' + esc(txt) + '</pre>';
@@ -946,7 +986,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       var nx = ids[(i + (e.key === 'ArrowRight' ? 1 : ids.length - 1)) % ids.length];
       show(nx); document.getElementById('tab-' + nx).focus(); e.preventDefault();
     });
-    show('homepage');
+    show(TABS[0][0]);
   }
 
   /* ───────────────────────────── where it runs ───────────────────────────── */
@@ -954,17 +994,20 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     homepage: ['⌂', 'The homepage', 'A labeled sponsor strip with your logo, headline and link near the top of agsist.com, on desktop and phone, and the full ad inside the AGSIST Daily card when a reader opens it.'],
     daily_page: ['≡', 'The daily briefing page', 'agsist.com/daily, the full morning briefing, under the day’s headline and summary.'],
     archive: ['▤', 'The permanent archive', 'Every issue that carries your ad keeps it on its own dated page, agsist.com/daily/YYYY-MM-DD, after the day is over.'],
-    daily_email: ['✉', 'The subscriber email', 'In the HTML email and its plain-text part, sent to every subscriber before the market opens.']
+    daily_email: ['✉', 'The subscriber email', 'In the HTML email and its plain-text part, sent to every subscriber before the market opens.'],
+    geo_pages: ['◎', 'Pages about your states', 'Every agsist.com page about one of your states: county rain pages, PRF, ARC/PLC, Farmland Atlas, cash rent, yield, hail map and cash bid pages. Shown to every reader of those pages.'],
+    geo_readers: ['⌖', 'Readers in your states', 'Any other agsist.com page, when the visit is in one of your states. We ask our own server once per visit, keep only the state for that visit, and store nothing.']
   };
   function whereSection(d, s) {
     var list = (d.placements || ['homepage', 'daily_page', 'archive', 'daily_email']).filter(function (k) { return PLACES[k]; });
-    var h = '<section class="cp-sec" id="where"><div class="cp-h2"><h2>Where it runs</h2><span class="cp-eyebrow">' + list.length + ' placements · every issue</span></div><div class="cp-places">';
+    var h = '<section class="cp-sec" id="where"><div class="cp-h2"><h2>Where it runs</h2><span class="cp-eyebrow">' + list.length + ' placements' + (d.geo ? ' · ' + esc(regionNames(d)) : ' · every issue') + '</span></div><div class="cp-places">';
     list.forEach(function (k) {
       var p = PLACES[k];
       h += '<div class="cp-place"><div class="cp-place-t"><i aria-hidden="true">' + p[0] + '</i>' + esc(p[1]) + '</div><p>' + esc(p[2]) + '</p></div>';
     });
     h += '</div>';
-    if (s.tier && s.tier.exclusive) h += '<p class="cp-note"><b>Exclusive.</b> ' + esc(s.tier.note || 'One sponsor per issue.') + '</p>';
+    if (d.geo) h += '<p class="cp-note">Never on Rain Print, gift or rain gauge pages, and never on a page that already carries a sold page sponsor.</p>';
+    else if (s.tier && s.tier.exclusive) h += '<p class="cp-note"><b>Exclusive.</b> ' + esc(s.tier.note || 'One sponsor per issue.') + '</p>';
     return h + '</section>';
   }
 
@@ -992,15 +1035,20 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var h = '<section class="cp-sec" id="requests"><div class="cp-h2"><h2>Requests</h2><span class="cp-eyebrow">Goes straight to Sig</span></div>';
     h += '<form class="cp-card cp-req" id="cp-req" novalidate><div class="cp-req-acts" role="radiogroup" aria-label="What do you need?">';
     ACTS.forEach(function (a, i) {
-      h += '<button type="button" role="radio" data-act="' + a[0] + '" aria-checked="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '">' + esc(a[1]) + '</button>';
+      var money = d.freeTest && (a[0] === 'plan' || a[0] === 'extend');
+      h += '<button type="button" role="radio" data-act="' + a[0] + '" aria-checked="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '"' +
+        (money ? ' class="cp-muted" title="' + FREE + '"' : '') + '>' + esc(a[1]) + '</button>';
     });
     h += '</div>';
-    h += '<div class="cp-req-f" data-for="plan" hidden><label for="cp-req-plan">New plan</label><select id="cp-req-plan" name="plan">' +
+    h += '<div class="cp-req-f' + (d.freeTest ? ' cp-free' : '') + '" data-for="plan" hidden>' + (d.freeTest ? '<span class="cp-free-tag">' + FREE + '</span>' : '') +
+      '<div' + (d.freeTest ? ' class="cp-muted"' : '') + '><label for="cp-req-plan">New plan</label><select id="cp-req-plan" name="plan">' +
       (rc.tiers || []).filter(function (t) { return t.id !== cur; }).map(function (t) {
         return '<option value="' + esc(t.id) + '">' + esc(t.name) + ' · $' + esc(t.price_month) + ' a month</option>'; }).join('') + '</select>' +
-      '<p class="cp-small" id="cp-req-plan-d"></p></div>';
+      '<p class="cp-small" id="cp-req-plan-d"></p></div></div>';
     h += '<div class="cp-req-f" data-for="pause cancel extend" hidden><label for="cp-req-date" id="cp-req-date-l">From</label><input type="date" id="cp-req-date" name="date"></div>';
-    h += '<p class="cp-small cp-req-terms" data-for="cancel pause" hidden>' + esc(rc.terms || '') + ' Your ad keeps running until Sig confirms the date with you.</p>';
+    h += d.freeTest
+      ? '<p class="cp-small cp-req-terms" data-for="cancel pause extend" hidden><span class="cp-free-tag">' + FREE + '</span> <span class="cp-muted">' + esc(rc.terms || '') + '</span> Your ad keeps running until Sig confirms the date with you.</p>'
+      : '<p class="cp-small cp-req-terms" data-for="cancel pause" hidden>' + esc(rc.terms || '') + ' Your ad keeps running until Sig confirms the date with you.</p>';
     h += '<div class="cp-req-f"><label for="cp-req-msg" id="cp-req-msg-l">' + esc(ACTS[0][2]) + '</label><textarea id="cp-req-msg" name="message" rows="4"></textarea></div>';
     h += '<div class="cp-req-f"><label for="cp-req-email">Your email, for the reply</label><input type="email" id="cp-req-email" name="email" autocomplete="email" placeholder="you@company.com"></div>';
     h += '<div class="cp-req-go"><button class="cp-btn" type="submit" id="cp-req-send">Send to Sig</button>' +
@@ -1082,7 +1130,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { out.innerHTML = '<p class="cp-req-bad">That email address does not look complete.</p>'; f.querySelector('#cp-req-email').focus(); return; }
       var lines = ['Request: ' + A[1], 'Sponsor: ' + (d.sponsor || ''),
         plan ? 'New plan: ' + plan : '', date_ && !f.querySelector('[data-for="pause cancel extend"]').hidden ? f.querySelector('#cp-req-date-l').textContent + ': ' + date_ : '',
-        'Current plan: ' + (s.tier ? s.tier.name : 'not recorded'), 'Ad proof code: ' + (s.code || '-'), '', msg].filter(function (x, i) { return x !== '' || i === 6; });
+        'Current plan: ' + (d.freeTest ? 'free test' : (s.tier ? s.tier.name : 'not recorded')), 'Ad proof code: ' + (s.code || '-'), '', msg].filter(function (x, i) { return x !== '' || i === 6; });
       var body = lines.join('\n');
       var subj = 'AGSIST portal: ' + A[1] + ' (' + (d.sponsor || '') + ')';
       var to = d.approveTo || 'sig@agsist.com';
@@ -1109,9 +1157,15 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 
   function billingSection(d, s) {
     var rc = d.rateCard || {}, t = s.tier;
-    var h = '<section class="cp-sec" id="billing"><div class="cp-h2"><h2>Billing</h2><span class="cp-eyebrow">' + esc(rc.currency || 'USD') + '</span></div>';
+    var h = '<section class="cp-sec' + (d.freeTest ? ' cp-free' : '') + '" id="billing"><div class="cp-h2"><h2>Billing</h2><span class="cp-eyebrow">' + (d.freeTest ? '' : esc(rc.currency || 'USD')) + '</span></div>';
+    if (d.freeTest) {
+      /* THE SAME LAYOUT, MUTED. Nothing below is charged or offered: it is the
+         page a paying sponsor sees, greyed, with one plain label on top. */
+      h += '<p class="cp-free-tag">' + FREE + '</p><p class="cp-note" style="margin:0 0 .6rem">This campaign is a free test. Nothing is billed, nothing renews and there is no contract. The plan and schedule below are shown greyed so you can see what a paid placement looks like.</p>';
+      if (!t) return h + '<div class="cp-card cp-muted"><p class="cp-note" style="margin:0">No plan.</p></div></section>';
+    }
     if (!t) return h + '<div class="cp-card"><p class="cp-note" style="margin:0">Your plan will appear here once it is recorded.</p></div></section>';
-    h += '<div class="cp-bill"><div class="cp-card cp-plan"><div class="cp-plan-name">' + esc(t.name) + '</div>' +
+    h += '<div class="cp-bill' + (d.freeTest ? ' cp-muted' : '') + '"' + (d.freeTest ? ' aria-hidden="true"' : '') + '><div class="cp-card cp-plan"><div class="cp-plan-name">' + esc(t.name) + '</div>' +
          '<div class="cp-plan-price">$' + esc(t.price_month) + '<small> a month</small></div>' +
          '<ul>' +
          (s.free ? '<li>' + s.free.charAt(0).toUpperCase() + s.free.slice(1) + ' free</li>' : '') +
@@ -1141,12 +1195,13 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   }
 
   /* ───────────────────────────── links ───────────────────────────── */
-  var LINK_NAMES = { homepage: 'Homepage', daily_page: '/daily page', archive: 'Archive pages', daily_email: 'Email', rss: 'RSS feed' };
+  var LINK_NAMES = { homepage: 'Homepage', daily_page: '/daily page', archive: 'Archive pages', daily_email: 'Email', rss: 'RSS feed',
+    'state-page': 'Pages about your states', 'reader-state': 'Readers in your states' };
   function linksSection(d, s) {
     var L = s.c && s.c.links; if (!L) return '';
     var h = '<section class="cp-sec" id="links"><div class="cp-h2"><h2>Tracking links</h2><span class="cp-eyebrow">UTM-tagged per placement</span></div>' +
-      '<div class="cp-card"><p class="cp-note" style="margin-top:0">Each placement sends visitors with its own <code>utm_medium</code>, so every click we count shows up in <b>your</b> analytics under a name you can check, one placement at a time.</p><table class="cp-t cp-links"><tbody>';
-    ['homepage', 'daily_page', 'archive', 'daily_email', 'rss'].forEach(function (k) {
+      '<div class="cp-card"><p class="cp-note" style="margin-top:0">Each placement sends visitors with its own <code>' + (d.geo ? 'utm_content' : 'utm_medium') + '</code>, so every click we count shows up in <b>your</b> analytics under a name you can check, one placement at a time.</p><table class="cp-t cp-links"><tbody>';
+    ['homepage', 'daily_page', 'archive', 'daily_email', 'rss', 'state-page', 'reader-state'].forEach(function (k) {
       if (!L[k]) return;
       h += '<tr><td>' + esc(LINK_NAMES[k] || k) + '</td><td><code>' + esc(L[k]) + '</code></td><td class="n"><button class="cp-copy" type="button" data-copy="' +
            esc(L[k]) + '" aria-label="Copy the ' + esc(LINK_NAMES[k] || k) + ' link">Copy</button></td></tr>';
@@ -1162,6 +1217,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       '<dt>Click-through rate</dt><dd>Clicks divided by viewable impressions, not by page views, which would flatter the rate and mean less.</dd>' +
       '<dt>Source</dt><dd>Google Analytics 4, read once a day through Google’s reporting API. These are the figures in the analytics account; nothing is estimated or modelled.</dd>' +
       '<dt>Through yesterday</dt><dd>GA4 keeps adjusting the current day for hours. Results end at the last complete day, so a number never changes after you have looked at it.</dd>' +
+      (d.geo ? '<dt>State</dt><dd>For readers and for your ad, the state is Google Analytics’ own region for the visit, where Google places the reader’s connection. The ad itself sends no state, and nothing on our side keeps one.</dd>' +
+        '<dt>Data-center traffic</dt><dd>Towns whose “readers” average under ten seconds are server farms, not people. They are removed from every reader figure here; the towns removed in your states are listed under Your states.</dd>' : '') +
       '<dt>Not counted</dt><dd>Views of our own “sponsor this slot” pitch, clicks from people asking to buy an ad, and your own visits to this page. The previews here carry no measurement at all.</dd>';
     if (d.totals && d.totals.legacyImpressions) {
       h += '<dt>Before the standard</dt><dd>' + num(d.totals.legacyImpressions) + ' impressions recorded on an older, looser rule are left out of the totals above.</dd>';
@@ -1468,16 +1525,96 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   var _rs; window.addEventListener('resize', function () { clearTimeout(_rs); _rs = setTimeout(function () { if (AUD.a && document.getElementById('cp-aud-body')) { var box = document.getElementById('cp-aud-body'); box.innerHTML = audBody(); wireAudience(); } }, 200); });
 
 
+  /* ───────────────────────────── your states ─────────────────────────────
+     A state-targeted sponsor (d.regions): readers, page views and engagement
+     in those states from data/audience.json (GA4, US, server towns removed,
+     every figure with its window), and the ad's own viewable impressions and
+     clicks by GA4's region for the visit. Before the ad runs those read 0 and
+     "not started". The server towns removed in these states are listed by name
+     with what they carried, so California is never shown only inflated and
+     never quietly trimmed. */
+  var REG = { r: null };
+  function regionsSection(d) {
+    if (!d.regions || !d.regions.length) return '';
+    var a = d.__aud, ids = a ? (a.ranges || []).map(function (x) { return x.id; }) : [];
+    if (!REG.r) REG.r = ids.indexOf('28d') >= 0 ? '28d' : ids[0];
+    return '<section class="cp-sec" id="states"><div id="cp-reg-body">' + regBody(d) + '</div></section>';
+  }
+  function regBody(d) {
+    var a = d.__aud, ra = d.regionAds || {}, names = regionNames(d);
+    var h = '<div class="cp-h2"><h2>Your states</h2><span class="cp-eyebrow">' + esc(names) + '</span></div>';
+    /* the ad, by state */
+    var rows = ra.rows || [], el = ra.elsewhere || {};
+    var on = !!(d.creative && d.creative.live);
+    var adNote = ra.withheld ? 'withheld' : (ra.pending || d.pending) ? (on ? 'live · no full day counted yet' : 'not started')
+      : (ra.start && ra.through ? 'live since ' + esc(span(ra.start, ra.through)) : (on ? 'live · no full day counted yet' : ''));
+    var t = '<table class="cp-t cp-reg-t"><thead><tr><th>Where the reader was</th><th class="n">Viewable impressions</th><th class="n">Clicks</th></tr></thead><tbody>';
+    if (ra.withheld) t += '<tr><td colspan="3">' + esc(d.withheld || 'Withheld for now.') + '</td></tr>';
+    else {
+      var sv = 0, sc = 0;
+      rows.forEach(function (r) { sv += r.viewable || 0; sc += r.clicks || 0;
+        t += '<tr><td>' + esc(r.name) + '</td><td class="n">' + num(r.viewable || 0) + '</td><td class="n">' + num(r.clicks || 0) + '</td></tr>'; });
+      t += '<tr class="is-sum"><td>Your ' + rows.length + ' states</td><td class="n">' + num(sv) + '</td><td class="n">' + num(sc) + '</td></tr>';
+      t += '<tr><td>Everywhere else</td><td class="n">' + num(el.viewable || 0) + '</td><td class="n">' + num(el.clicks || 0) + '</td></tr>';
+    }
+    t += '</tbody></table>';
+    if ((ra.pending || d.pending || !ra.start) && on && !ra.withheld) t += '<p class="cp-note">Your ad is live. Every count reads 0 until the first full day of data, then fills in each morning, through yesterday.</p>';
+    else if (ra.pending || d.pending) t += '<p class="cp-note">Not started: your ad has not run yet, so every count is 0. They fill in from the first morning after it goes live.</p>';
+    else if (!ra.withheld) t += '<p class="cp-note">Everywhere else is readers on a page about your states who were somewhere else, plus visits GA4 could not place.</p>';
+    h += card('Your ad, by state', adNote, t);
+
+    /* readers in those states */
+    if (!a) return h + '<p class="cp-note">Reader figures by state are not available right now.</p>';
+    var R_ = (a.ranges || []).filter(function (x) { return x.id === REG.r; })[0] || a.ranges[0];
+    var st = (a.states || {})[R_.id] || [], by = {};
+    st.forEach(function (r) { by[r.code] = r; });
+    var u = 0, v = 0, en = 0, ss = 0, sec = 0;
+    var tb = '<table class="cp-t cp-reg-t"><thead><tr><th>State</th><th class="n">Readers</th><th class="n">Page views</th><th class="n">Engaged visits</th><th class="n">Engaged</th><th class="n">Time per reader</th></tr></thead><tbody>';
+    d.regions.forEach(function (c) {
+      var r = by[c] || { users: 0, views: 0, engaged: 0, sessions: 0, avgSeconds: null, engagementRate: null };
+      u += r.users || 0; v += r.views || 0; en += r.engaged || 0; ss += r.sessions || 0; sec += (r.avgSeconds || 0) * (r.users || 0);
+      var thin = (r.users || 0) < THIN;
+      tb += '<tr><td>' + esc(ST_NAME[c] || c) + '</td><td class="n">' + num(r.users || 0) + '</td><td class="n">' + num(r.views || 0) + '</td><td class="n">' + num(r.engaged || 0) +
+        '</td><td class="n">' + (thin ? 'n/a' : pct(r.engagementRate)) + '</td><td class="n">' + (thin ? 'n/a' : esc(secs(r.avgSeconds))) + '</td></tr>';
+    });
+    tb += '<tr class="is-sum"><td>Your ' + d.regions.length + ' states</td><td class="n">' + num(u) + '</td><td class="n">' + num(v) + '</td><td class="n">' + num(en) + '</td><td class="n">' +
+      (ss ? pct(en / ss) : '-') + '</td><td class="n">' + (u >= THIN ? esc(secs(sec / u)) : 'n/a') + '</td></tr></tbody></table>';
+    var pills = (a.ranges || []).length > 1 ? '<div class="cp-pills" role="group" aria-label="Date range for your states">' + a.ranges.map(function (x) {
+      return '<button type="button" data-reg-range="' + esc(x.id) + '" aria-pressed="' + (x.id === R_.id) + '">' + esc(x.label) + '</button>'; }).join('') + '</div>' : '';
+    /* the server towns in these states, named, with what they carried */
+    var tw = (a.servers && a.servers.towns || []).filter(function (x) {
+      return d.regions.some(function (c) { return (ST_NAME[c] || c) === x.region; }); });
+    var note = '<p class="cp-note">US readers from Google Analytics 4, ' + esc(span(R_.start, R_.end)) + '. A reader seen in two of your states counts in both. Engaged: GA4’s engaged visits as a share of visits.</p>';
+    if (tw.length && a.servers.window) {
+      note += '<p class="cp-note"><b>Data-center traffic left out.</b> These towns’ “readers” averaged under ' + esc(a.servers.rule.seconds) + ' seconds each, which is servers, not people, so they are removed from every figure above. Over ' +
+        esc(span(a.servers.window.start, a.servers.window.end)) + ' they carried: ' + tw.map(function (x) { return esc(x.city) + ', ' + esc(x.region) + ' ' + num(x.users) + ' (' + esc(secs(x.avgSeconds)) + ' each)'; }).join('; ') +
+        '. With them, ' + esc(tw.map(function (x) { return x.region; }).filter(function (x, i, l) { return l.indexOf(x) === i; }).join(' and ')) + ' would look bigger than it is.</p>';
+    }
+    h += '<div style="margin-top:.7rem">' + card('Readers in your states', esc(span(R_.start, R_.end)), pills + tb + note) + '</div>';
+    return h;
+  }
+  function wireRegions(d) {
+    var box = document.getElementById('cp-reg-body'); if (!box) return;
+    [].forEach.call(box.querySelectorAll('[data-reg-range]'), function (b) {
+      b.addEventListener('click', function () {
+        REG.r = b.getAttribute('data-reg-range'); box.innerHTML = regBody(d); wireRegions(d);
+        var nb = box.querySelector('[data-reg-range="' + REG.r + '"]'); if (nb) nb.focus();
+      });
+    });
+  }
+
   function draw(d) {
     var s = state(d);
     document.title = (d.sponsor ? d.sponsor + ' · ' : '') + 'Campaign portal · AGSIST';
     /* The ad comes before the results while there is nothing to report: the
        first thing a sponsor needs to do here is read and approve it. */
     var aud = audience(d);
-    var body = d.pending ? adSection(d, s) + aud + results(d, s) : results(d, s) + aud + adSection(d, s);
-    root.innerHTML = hero(d, s) + nav(!!aud) + body + whereSection(d, s) + billingSection(d, s) + requestsSection(d, s) + linksSection(d, s) + howSection(d) + contact(d);
+    var reg = regionsSection(d);
+    var body = d.pending ? adSection(d, s) + results(d, s) + reg + aud : results(d, s) + reg + aud + adSection(d, s);
+    root.innerHTML = hero(d, s) + nav(!!aud, !!reg) + body + whereSection(d, s) + billingSection(d, s) + requestsSection(d, s) + linksSection(d, s) + howSection(d) + contact(d);
     wireAd(d, s);
     wireAudience();
+    wireRegions(d);
     wireApprove(d, s);
     wireUndo(d, s);
     wireRequests(d, s);
