@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-27-county-week-for-readers",
+   "date": "2026-10-27",
+   "title": "Already on the Daily? Add your county",
+   "line": "A link at the bottom of every Daily now turns on what changed in your county on Thursdays. It asks for your ZIP if we do not have it.",
+   "link": "/daily"
+   },
+   {
    "id": "2026-10-27-wasde-2027-dates",
    "date": "2026-10-27",
    "title": "USDA calendar: the 2027 WASDE dates",
