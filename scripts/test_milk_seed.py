@@ -152,6 +152,44 @@ def main():
     s0, k0 = S.milk_seeds({}, "2026-10-13")
     ck("an empty file seeds nothing", s0 == {} and k0 is None)
 
+    print("DMC signup (farm-bill.json byOperation.dairy.signup)")
+    # 2026-10-28 dairy board item 1: the page said "2026 enrollment already closed
+    # (Feb 26)" while the 2027 signup was open Oct 5 to Dec 18, 2026 (FSA, Sep 30, 2026).
+    FB = {"byOperation": {"_sources": {"fsa_dmc": "<a href=\"https://www.fsa.usda.gov/x\">FSA, Sep 30, 2026</a>",
+                                       "crs75": "CRS R48775"},
+                          "dairy": {"label": "Dairy",
+                                    "signup": {"year": 2027, "open": "2026-10-05", "close": "2026-12-18", "src": "fsa_dmc"},
+                                    "lines": [{"t": "<b>2027 DMC signup is open Oct 5 to Dec 18, 2026</b>.", "src": "fsa_dmc"},
+                                              {"t": "<b>Jan 1, 2027 is your date.</b>", "src": "crs75", "until": "2027-01-01"},
+                                              {"t": "Forward pricing is paused."}]}}}
+    d1 = S.milk_dmc_seeds(FB, "2026-10-28")
+    ck("Oct 28: open, to Friday Dec 18, 51 days left",
+       "2027 DMC signup is open now, to Friday, Dec 18, 2026, at your FSA office. 51 days left." in d1["milkdmccard"],
+       d1.get("milkdmccard"))
+    ck("...the lever and the FAQ say the same", "51 days left." in d1["milkdmc"] and "51 days left." in d1["milkdmcfaq"])
+    ck("...nothing says closed", "closed" not in d1["milkdmc"] + d1["milkdmccard"] + d1["milkdmcfaq"])
+    ck("...the source rides with the card", "FSA, Sep 30, 2026" in d1["milkdmccard"])
+    ck("...the signup line is not printed twice", d1["milkdmccard"].count("DMC signup") == 1)
+    ck("...Jan 1 and forward pricing lines carried", "Jan 1, 2027 is your date" in d1["milkdmccard"]
+       and "Forward pricing is paused" in d1["milkdmccard"])
+    ck("...dates ride as data- attributes for the page clock",
+       'data-open="2026-10-05" data-close="2026-12-18" data-year="2027"' in d1["milkdmccard"])
+    ck("Oct 1: opens Monday, Oct 5", "2027 DMC signup opens Monday, Oct 5, 2026, and runs to Dec 18, 2026."
+       in S.milk_dmc_seeds(FB, "2026-10-01")["milkdmccard"])
+    ck("Dec 17: 1 day left", "1 day left." in S.milk_dmc_seeds(FB, "2026-12-17")["milkdmccard"])
+    ck("Dec 18: today is the last day", "Today is the last day." in S.milk_dmc_seeds(FB, "2026-12-18")["milkdmccard"])
+    d9 = S.milk_dmc_seeds(FB, "2026-12-19")
+    ck("Dec 19: closed, and no lock-in pitch", "The 2027 DMC signup closed Dec 18, 2026." in d9["milkdmccard"]
+       and "lock-in" not in d9["milkdmc"], d9["milkdmc"])
+    ck("Jan 1, 2027: the Jan 1 line drops on its date",
+       "Jan 1, 2027 is your date" not in S.milk_dmc_seeds(FB, "2027-01-01")["milkdmccard"])
+    ck("no signup in the file: nothing seeded (the page keeps its words)",
+       S.milk_dmc_seeds({"byOperation": {"dairy": {"lines": []}}}, "2026-10-28") == {})
+    bad = copy.deepcopy(FB)
+    bad["byOperation"]["dairy"]["signup"]["close"] = "2026-10-01"
+    ck("close before open: nothing seeded", S.milk_dmc_seeds(bad, "2026-10-28") == {})
+    ck("no em dash in the DMC copy", "\u2014" not in "".join(d1.values()))
+
     print()
     if fails:
         print(f"{len(fails)} FAILED")

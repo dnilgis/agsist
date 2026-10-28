@@ -7,6 +7,20 @@
    "title": "Already on the Daily? Add your county",
    "line": "A link at the bottom of every Daily now turns on what changed in your county on Thursdays. It asks for your ZIP if we do not have it.",
    "link": "/daily"
+   },
+   {
+   "id": "2026-10-27-wasde-2027-dates",
+   "date": "2026-10-27",
+   "title": "USDA calendar: the 2027 WASDE dates",
+   "line": "All twelve 2027 WASDE dates, each at noon Eastern, from USDA's WASDE page. The 2027 NASS report dates are not posted yet and are not guessed.",
+   "link": "/usda-calendar"
+  },
+  {
+   "id": "2026-10-27-cushing-phone",
+   "date": "2026-10-27",
+   "title": "Cushing Cooperative's phone number corrected",
+   "line": "Now 715-648-5215, from the co-op's own bid page (it listed an Oklahoma number). Unconfirmed numbers for Prairie du Chien and Arcadia are no longer shown.",
+   "link": "/cash-bids/wisconsin/cushing"
   },
   {
    "id": "2026-10-27-your-county-this-week",

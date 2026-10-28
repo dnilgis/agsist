@@ -92,6 +92,7 @@ import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reade
 import basis_method as BM  # noqa: E402  (the one state-basis method)
 import board_parents as _board_parents  # noqa: E402  (evidence-only parent per board, for the company count)
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
+import phone_corrections  # noqa: E402  (numbers checked on the buyer's own site: data/phone-corrections.json)
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
 from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of cb-rank.js)
 from build_state_basis_pages import (  # noqa: E402
@@ -480,7 +481,8 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "operator": display_name(b.get("operator") or src.get("operator") or ""),
             "city": clean_place(town_name(b.get("city"))), "branch": branch_name(b, src, tname, towns_by_state.get(st, {})),
             "zip": ovr["zip"] if ovr else zip5(b.get("zip") or src.get("zip")),
-            "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
+            # a checked number replaces the filed one, an unconfirmed one is withheld (2026-10-27)
+            "phone": phone_corrections.for_source(sid, src.get("phone") or ""), "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
             "town": tname, "state": st, "pin": ovr["pin"] if ovr else _pin(b),
             "precision": "street" if ovr else b.get("precision"),
@@ -4260,6 +4262,21 @@ def _selftest_pasted():
     got, _ = boards("2026-10-24T14:05:00Z", row)
     assert len(got) == 1 and got[0]["rows"][0]["cash"] == 4.26, got
     snap = parse_ts("2026-10-24T14:05:00Z").astimezone(CT)
+    # 2026-10-27: a number checked on the buyer's own site replaces the filed
+    # one; an unconfirmed one is withheld (data/phone-corrections.json)
+    for _sid, _raw, _want in (("cushingcoop-cushingcoop", "19182256559", "715-648-5215"),
+                              ("innovativeag-bungepdc", "13194656896", ""),
+                              ("newcoop-afton", "15155550100", "15155550100")):
+        _t, _, _ = select({"generated": "2026-10-24T14:05:00Z", "bids": [dict(row, source=_sid)]},
+                          {"sources": [dict(srcs[0], id=_sid, phone=_raw)]}, known_towns(zt))
+        _b = [bd for t in _t.values() for bd in t["boards"].values() if bd["rows"]]
+        assert len(_b) == 1 and _b[0]["phone"] == _want, (_sid, _b and _b[0]["phone"])
+        _h = board_section(dict(_b[0], operator="X Co-op"), snap)[0]
+        if _want:
+            assert "tel:+1" + re.sub(r"\D", "", _want)[-10:] in _h, _h[:600]
+        else:
+            assert "tel:" not in _h and "call to confirm" in _h, _h[:600]
+        assert "9182256559" not in _h and "4656896" not in _h
     h, _, _, _ = board_section(dict(got[0], phone="", operator="NEW Cooperative"), snap)
     assert ('<p class="cbt-paste">Last updated Oct 20, 9:05 AM CDT, posted from NEW Cooperative&#x27;s public bid page. '
             'Call to confirm before you haul.</p>') in h, h[:900]

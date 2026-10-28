@@ -6,6 +6,24 @@
    "date": "2026-10-27",
    "items": [
     {
+     "tag": "new",
+     "page": "/usda-calendar",
+     "name": "USDA calendar: the 2027 WASDE dates",
+     "text": "All twelve 2027 WASDE dates are on the calendar and in the calendar download, each at noon Eastern, from USDA's own WASDE page. January 2027 says the Crop Production summary and Grain Stocks dates are still to come from NASS."
+    },
+    {
+     "tag": "fixed",
+     "page": "/cash-bids/wisconsin/cushing",
+     "name": "Cushing Cooperative's phone number corrected",
+     "text": "The Cushing page listed an Oklahoma area code. It now gives 715-648-5215, the number on the co-op's own bid page. Two Wisconsin numbers we could not confirm as the local line, Prairie du Chien and Arcadia, are no longer shown."
+    },
+    {
+     "tag": "fixed",
+     "page": "/whats-priced-in",
+     "name": "USDA's corrected September corn yield shown beside the original",
+     "text": "USDA corrected its September 11 corn yield to 178.8 bushels an acre from 178.5 (Kansas 118 from 121, Nebraska 182 from 177). Pages that show or grade September's number now show both, dated, with USDA's notice linked. No grade changed: our model's September call is still a miss and its October call still a hit, and the trade's September guess is still in line."
+    },
+    {
      "tag": "improved",
      "page": "/daily",
      "name": "A Daily headline that fails its fact check is fixed before it goes out",
