@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-28-daily-retry",
+   "date": "2026-10-28",
+   "title": "The Daily tries again when a check holds it",
+   "line": "A Daily draft that fails a number check is never posted. The next run writes it again and checks it again, so it goes out a little late rather than wrong.",
+   "link": "/daily"
+   },
+   {
    "id": "2026-10-28-sale-barns-notes",
    "date": "2026-10-28",
    "title": "Sale barn prices: four Kentucky barns back, and weights past page one",

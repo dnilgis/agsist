@@ -330,8 +330,14 @@ def hold_alert(day, rec):
         lines.append("Try %d: \"%s\" %s" % (t["try"], t.get("headline", ""), ", ".join(t.get("rules") or [t.get("error", "")])))
     fb = rec.get("fallback")
     lines.append("Code fallback: " + ("\"%s\" %s" % (fb["headline"], ", ".join(fb["rules"])) if fb else "none (no settle on the board)"))
-    lines += ["", "Nothing was sent and nothing was published. To fix and rerun: GitHub, dnilgis/agsist, Actions, "
-              "Generate Daily Briefing, Run workflow on main with send_email ticked. To skip today, do nothing."]
+    import daily_retry
+    if daily_retry.can_retry(dt.datetime.now()):
+        nxt = ("The next scheduled run tries again on its own (until 2 p.m. CT): it writes the issue again and "
+               "checks it again. You do not need to do anything. To rerun now instead:")
+    else:
+        nxt = "No scheduled run can start again before 2 p.m. CT, so nothing tries again today. To send it anyway:"
+    lines += ["", "Nothing was sent and nothing was published. " + nxt + " GitHub, dnilgis/agsist, Actions, "
+              "Generate Daily Briefing, Run workflow on main with send_email ticked."]
     return log_safe.owner_mail("AGSIST Daily %s held: headline failed its check" % day, lines)
 
 
@@ -357,7 +363,10 @@ def main(argv=None):
         return 0
     if rec["result"] == "held":
         print("::error title=Daily held, headline::the headline failed its check and no rewrite or fallback passed; not sending")
-        print("alert to Sig: " + ("sent" if hold_alert(today.isoformat(), rec) else "NOT sent (see above)"))
+        # the same cap as daily.yml's block alert (scripts/daily_retry.py: first block, then a changed check 2 h apart, 3 a day)
+        import daily_retry
+        if daily_retry.capped("g2h"):
+            print("alert to Sig: " + ("sent" if hold_alert(today.isoformat(), rec) else "NOT sent (see above)"))
         return 1
     b2["headline_fix"] = {k: rec[k] for k in ("result", "original", "headline", "tries")}
     print("::notice title=Daily headline fixed::%s after %d try(s)" % (rec["result"], len(rec["tries"])))
