@@ -886,6 +886,16 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
 # ── the check that blocks ─────────────────────────────────────────────────
 SETTLE_WORDS = re.compile(r"\b(clos(?:e|ed|es|ing)|settle(?:d|s|ment)?|straight (?:days|sessions|closes)|in a row|"
                           r"(?:lower|higher) close)\b", re.I)
+# A count of past sessions written after the price ("after four lower closes") says nothing about which
+# price this one is; it is taken out before the close/settle words are looked for (Oct 28: "Dec corn at $4.52½
+# overnight after four lower closes" was true and blocked). A price named overnight or this morning is labeled
+# as the last trade, unless the sentence also says closed or settled outright.
+SESSION_COUNT = re.compile(r"\b(?:after|following|its|for|now)?\s*(?:a |an |the )?"
+                           r"(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|\w+th|second|third)\s+"
+                           r"(?:straight |consecutive |more )?(?:lower |higher |down |up )?(?:closes|close|sessions|days)"
+                           r"(?:\s+in a row)?\b", re.I)
+LAST_TRADE_LABEL = re.compile(r"\b(overnight|this morning|early trade|pre-?open|last trade)\b", re.I)
+SAYS_SETTLED = re.compile(r"\b(closed|settled|close of|settle of|settlement)\b", re.I)
 COMMODITIES = (("corn-dec", r"corn"), ("beans-nov", r"soybeans?|beans?"), ("wheat", r"wheat"),
                ("cattle", r"cattle"), ("hogs", r"hogs"), ("crude", r"crude|wti"))
 _PRICE = re.compile(r"\$(\d+(?:\.\d+)?)([¼½¾])?")
@@ -919,7 +929,13 @@ def code_check(daily, fields):
     for fname, text in fields.items():
         for key, v, sent in price_claims(text):
             q = _q(daily, key) or _q(daily, key.split("-")[0])
-            if not q or q.get("kind") != "last" or q.get("prev") is None or not SETTLE_WORDS.search(sent):
+            # a count AFTER the price is history ("at $4.52½ overnight after four lower closes"); a count that leads
+            # to the price labels it ("down 6 straight days to $4.59½", Oct 21, a real error) and stays
+            pm = next((x for x in _PRICE.finditer(sent) if abs(float(x.group(1)) + _FR.get(x.group(2) or "", 0.0) - v) < 1e-9), None)
+            label = sent[:pm.end()] + SESSION_COUNT.sub(" ", sent[pm.end():]) if pm else sent
+            if not q or q.get("kind") != "last" or q.get("prev") is None or not SETTLE_WORDS.search(label):
+                continue
+            if LAST_TRADE_LABEL.search(label) and not SAYS_SETTLED.search(label):
                 continue
             tol = 0.0026 if key in GRAIN else 0.03
             if abs(v - q["last"]) <= tol and abs(v - q["prev"]) > tol:
@@ -984,6 +1000,16 @@ def _selftest():
     ok(len(bad) == 1 and "$4.62" in bad[0]["why"] and "5:46 a.m. CT" in bad[0]["why"], "settle word over a last trade blocks")
     ok(not code_check(d, {"lead": "Corn closed Tuesday at $4.62."}), "the real settle passes")
     ok(not code_check(d, {"lead": "Corn is at $4.59½ overnight."}), "a last trade called overnight passes")
+    # REAL CASES, Oct 28 (last trade 4.525 / 4.515, settle 4.4875): both headlines were true and both were blocked
+    d2 = {"headline": "x", "lead": "x", "locked_prices": {"corn-dec": 4.525, "corn": 4.525},
+          "locked_changes": {"corn-dec": {"prev": 4.4875, "kind": "last", "at": "2026-10-28T12:01:00Z"}}}
+    ok(not code_check(d2, {"headline": "Dec corn at $4.52½ overnight after four lower closes"}), "overnight price after a count of closes passes")
+    d3 = dict(d2, locked_prices={"corn-dec": 4.515, "corn": 4.515})
+    ok(not code_check(d3, {"headline": "Corn is at $4.51½ after four lower closes"}), "a count of closes is not a label")
+    ok(code_check(d2, {"headline": "Corn closed at $4.52½ overnight"}), "closed at stays blocked even with overnight")
+    ok(code_check(d2, {"headline": "Corn settled at $4.52½ after four lower closes"}), "settled at stays blocked")
+    ok(code_check(d2, {"headline": "Corn's $4.52½ close was its fifth lower close"}), "a price called a close stays blocked")
+    ok(code_check(d2, {"headline": "Corn down 4 straight days to $4.52½"}), "a count that leads to the price stays blocked (Oct 21 shape)")
     ok(clip("USDA to pay farmers $8 billion for harvest fuel aid; diesel at a record") == "USDA to pay farmers $8 billion for harvest fuel aid", "clip at a clause")
     ok(len(clip("A" * 80)) <= SUBJECT_HARD, "hard cap")
     ok(shared_host("https://agsist-subs.dnilgis.workers.dev/u?k=1") and shared_host("https://agsist-api.dnilgis.workers.dev/u?k=1") and not shared_host("https://agsist.com/e?k=1"), "shared hosts")
