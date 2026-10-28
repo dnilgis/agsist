@@ -276,7 +276,14 @@ def col_role(h):
         return "cwt"
     if "unit" in h:
         return "per_unit"
-    if re.search(r"change|date|updated|effective", h):
+    # Bartlett Co-op (Oct 28): "Analysis | Name | Price | Per | Price on"
+    if h == "analysis":
+        return "product"
+    if h == "name":
+        return "name"
+    if h == "per":
+        return "unit"
+    if re.search(r"change|date|updated|effective|^price on$", h):
         return "date"
     if re.search(r"ton price|per ton|^price$|^ton$", h):
         return "list"
@@ -330,10 +337,19 @@ def html_rows(page, today):
                         roles[0] = "product"
                 continue
             raw = clean(cells[roles.index("product")]) if roles.index("product") < len(cells) else ""
+            if "name" in roles and roles.index("name") < len(cells):
+                raw = clean(raw + " " + cells[roles.index("name")])
             if not raw or NOT_PRODUCT.search(raw):
                 continue
             row = {"raw": raw, "prices": {}, "per_unit": None, "cwt": None, "date": None, "date_text": None, "notes": []}
+            # A "Per" column names the unit the price is for: only a ton is read.
+            unit = clean(cells[roles.index("unit")]) if "unit" in roles and roles.index("unit") < len(cells) else None
+            per_ton = unit is None or re.fullmatch(r"(?i)tons?|t", unit or "") is not None
+            if not per_ton:
+                row["notes"].append("priced per %s, not per ton" % (unit or "unit not shown"))
             for role, cell in zip(roles, cells):
+                if role in MONEY_COLS and not per_ton:
+                    continue
                 if role in MONEY_COLS:
                     v, note = money(cell)
                     if v is not None:
@@ -1165,6 +1181,30 @@ def selftest():
        "synergy-wi" in c9 and {s["key"]: s for s in d9["summary"]}["urea"]["median"] == 615.95)
     ck("sheets-only: without carry a co-op not read is a failed read",
        {c["id"]: c for c in compose(allc, r9, doc, now)["coops"]}["mccune-ks"]["ok"] is False)
+    # Bartlett Co-op Association (Oct 28): the real page the probe saved.
+    # "Analysis | Name | Price | Per | Price on"; one ton price, no payment terms.
+    bpage = (fx / "bartlett-ks_2026-10-28.html").read_text()
+    bt = datetime.date(2026, 10, 28)
+    brw, btx, bpr = html_rows(bpage, bt)
+    bcfg = {"id": "bartlett-ks", "name": "Bartlett Co-op Association", "state": "KS", "layout": "html-table", "cash_from": None}
+    bc = build_coop(bcfg, {"rows": brw, "page_date": one_date(btx, bt), "problems": bpr}, None, bt)
+    bk = {r["raw"]: r for r in bc["rows"]}
+    ck("bartlett: 9 rows read, no problems", len(bc["rows"]) == 9 and not bpr and not bc["dropped"])
+    ck("bartlett: urea 625, DAP 970, potash 515, NH3 870 as the ton price",
+       bk["46-00-00 Urea"]["prices"] == {"list": 625.0} and bk["18-46-0 DAP"]["prices"] == {"list": 970.0}
+       and bk["0-0-60 Potash"]["prices"] == {"list": 515.0} and bk["82-00-00 Anhydrous Ammonia"]["prices"] == {"list": 870.0})
+    ck("bartlett: grade and name joined, so two 82-00-00 rows stay apart",
+       "82-00-00 Centuro Treated NH3" in bk and bk["82-00-00 Centuro Treated NH3"]["product"] == "anhydrous")
+    ck("bartlett: each row dated 2026-10-09 from its own 'Price on' cell",
+       all(r["date"] == "2026-10-09" and r["date_from"] == "row" for r in bc["rows"]) and bc["posted"] == "2026-10-09")
+    ck("bartlett: no cash price is posted, so none is made up", all(r["cash"] is None for r in bc["rows"]))
+    ck("bartlett: not in any middle cash price",
+       not any("bartlett-ks" in x["coops"] for x in summarize([bc])))
+    gal = bpage.replace('<td  0  class="dtr8 dtc3">Ton</td>', '<td  0  class="dtr8 dtc3">Gal</td>')
+    gr = {r["raw"]: r for r in html_rows(gal, bt)[0]}
+    ck("a 'Per' column that is not a ton keeps the price out", gr["28-00-00 UAN"]["prices"] == {}
+       and gr["28-00-00 UAN"]["notes"] == ["priced per Gal, not per ton"] and gr["46-00-00 Urea"]["prices"] == {"list": 625.0})
+
     # robots.txt reading for --probe (Oct 28): the rules a candidate co-op must pass
     import io
     import urllib.error
