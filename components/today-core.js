@@ -1,4 +1,4 @@
-/* The Today list's arithmetic (elev-today.html), kept apart so it can be tested
+/* The Today list's arithmetic (desk/today.html), kept apart so it can be tested
  * against a real dnilgis/bids index. scripts/morning_report.py does the same
  * sums in Python for the email's Today block; test/today-core.test.mjs checks
  * both against one fixture.
