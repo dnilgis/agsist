@@ -1,0 +1,93 @@
+          WISCONSIN MILK COW HERDS BY TYPE OF MILK PRODUCED
+                     NUMBER AND PERCENT BY COUNTY 1/
+                                October 1, 2026
+  (This report shows milk cow operations only, excluding sheep and goat farms.)
+
+                  Total Grade A               Total Grade B
+County                   Percent of               Herds                  Percent of   Total
+                Herds       Total     Bulk         Can      Total          Total      Herds
+
+ADAMS                 6        75%           0          2           2          25%         8
+ASHLAND               9       100%           0          0           0           0%         9
+BARRON               69        97%           2          0           2           3%        71
+BAYFIELD              7       100%           0          0           0           0%         7
+BROWN                89       100%           0          0           0           0%        89
+BUFFALO              65       100%           0          0           0           0%        65
+BURNETT              11        92%           0          1           1           8%        12
+CALUMET              54       100%           0          0           0           0%        54
+CHIPPEWA            139        99%           1          0           1           1%       140
+
+CLARK               554        91%           13       41            54          9%       608
+COLUMBIA             52        68%            0       25            25         32%        77
+CRAWFORD             35        97%            1        0             1          3%        36
+DANE                153        98%            3        0             3          2%       156
+DODGE               123       100%            0        0             0          0%       123
+DOOR                 32       100%            0        0             0          0%        32
+DOUGLAS               4       100%            0        0             0          0%         4
+DUNN                 65        98%            1        0             1          2%        66
+EAU CLAIRE           44        96%            0        2             2          4%        46
+
+FLORENCE              0         0%            0        0             0          0%         0
+FOND DU LAC         129       100%            0        0             0          0%       129
+FOREST                0         0%            0        0             0          0%         0
+GRANT               220       100%            0        0             0          0%       220
+GREEN               103        90%           11        0            11         10%       114
+GREEN LAKE           21        58%            1       14            15         42%        36
+IOWA                 94        97%            3        0             3          3%        97
+IRON                  2       100%            0        0             0          0%         2
+JACKSON              55        73%            0       20            20         27%        75
+
+JEFFERSON            47       100%           0          0           0           0%        47
+JUNEAU               34        97%           1          0           1           3%        35
+KENOSHA              10       100%           0          0           0           0%        10
+KEWAUNEE             83        99%           1          0           1           1%        84
+LA CROSSE            37       100%           0          0           0           0%        37
+LAFAYETTE           166        99%           2          0           2           1%       168
+LANGLADE             19       100%           0          0           0           0%        19
+LINCOLN              24       100%           0          0           0           0%        24
+MANITOWOC           131       100%           0          0           0           0%       131
+
+MARATHON            309        95%           16         0           16          5%       325
+MARINETTE            39       100%            0         0            0          0%        39
+MARQUETTE            13        76%            0         4            4         24%        17
+MILWAUKEE                   0          0%             0           0           0          0%            0
+MONROE                     75         62%             0          46          46         38%          121
+OCONTO                     70        100%             0           0           0          0%           70
+ONEIDA                      0        100%             0           0           0          0%            0
+OUTAGAMIE                  87         99%             1           0           1          1%           88
+OZAUKEE                    25        100%             0           0           0          0%           25
+
+PEPIN                      27        100%             0           0           0          0%           27
+PIERCE                     57        100%             0           0           0          0%           57
+POLK                       47         98%             1           0           1          2%           48
+PORTAGE                    47         98%             1           0           1          2%           48
+PRICE                      19         95%             1           0           1          5%           20
+RACINE                     15        100%             0           0           0          0%           15
+RICHLAND                   49         91%             1           4           5          9%           54
+ROCK                       50        100%             0           0           0          0%           50
+RUSK                       53        100%             0           0           0          0%           53
+
+ST CROIX                   48        100%             0           0           0          0%           48
+SAUK                       92         98%             2           0           2          2%           94
+SAWYER                      8        100%             0           0           0          0%            8
+SHAWANO                   145         99%             2           0           2          1%          147
+SHEBOYGAN                  77         99%             1           0           1          1%           78
+TAYLOR                    117         96%             5           0           5          4%          122
+TREMPEALEAU                62         94%             2           2           4          6%           66
+VERNON                     82         50%             1          81          82         50%          164
+
+VILAS                       0        100%             0           0           0          0%            0
+WALWORTH                   37         97%             1           0           1          3%           38
+WASHBURN                    7        100%             0           0           0          0%            7
+WASHINGTON                 46        100%             0           0           0          0%           46
+WAUKESHA                   12        100%             0           0           0          0%           12
+WAUPACA                    79         99%             1           0           1          1%           80
+WAUSHARA                   17        100%             0           0           0          0%           17
+WINNEBAGO                  36        100%             0           0           0          0%           36
+WOOD                       91         98%             2           0           2          2%           93
+
+State Total             4,624          94%           78        242          320          6%        4,944
+
+  1/ Based on data from the Dairy Producer License list as of October 1, 2026, Division of Food Safety,
+                Wisconsin Department of Agriculture, Trade and Consumer Protection.
+
