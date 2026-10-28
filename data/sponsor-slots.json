@@ -44,12 +44,6 @@
    "pitch": "Your name beside the crop condition rankings. One category-exclusive slot."
   },
   {
-   "id": "conditions-yield",
-   "page": "/conditions-yield",
-   "name": "Ratings vs Yield",
-   "pitch": "Your name beside the ratings and yield record. One category-exclusive slot."
-  },
-  {
    "id": "corn-futures-prices",
    "page": "/corn-futures-prices",
    "name": "Corn Futures Prices",
@@ -60,12 +54,6 @@
    "page": "/drought-monitor",
    "name": "Drought Monitor",
    "pitch": "Your name beside the drought map. One category-exclusive slot."
-  },
-  {
-   "id": "elevators",
-   "page": "/elevators",
-   "name": "Elevator Coverage Map",
-   "pitch": "Your name beside the elevator map. One category-exclusive slot."
   },
   {
    "id": "fast-facts",
@@ -102,6 +90,12 @@
    "page": "/grain-bin-calculator",
    "name": "Grain Bin Calculator",
    "pitch": "Your name beside the grain bin calculator. One category-exclusive slot."
+  },
+  {
+   "id": "elevators",
+   "page": "/list-your-elevator",
+   "name": "Elevator Coverage Map",
+   "pitch": "Your name beside the elevator map. One category-exclusive slot."
   },
   {
    "id": "markets",
@@ -153,8 +147,8 @@
   },
   {
    "id": "whats-priced-in",
-   "page": "/whats-priced-in",
-   "name": "What's Priced In",
+   "page": "/usda-calendar",
+   "name": "USDA Calendar: What's Priced In",
    "pitch": "Your name beside the trade estimates for each USDA report. One category-exclusive slot."
   },
   {
