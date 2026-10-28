@@ -67,6 +67,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fetch_dairy as FD  # noqa: E402
+import ams_http as AMS  # noqa: E402  www.ams.usda.gov first, then the measured mirror
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = "data/cattle-auction.json"
@@ -333,7 +334,7 @@ def pick_slug(src, listing):
 
 
 def fetch(slug, tries=3):
-    raw, err = FD.http_get(URL % slug, tries=tries)
+    raw, err = AMS.get(URL % slug, tries=tries)
     if raw is None:
         return None, None, "fetch failed: %s" % err
     if raw[:5] != b"%PDF-":
@@ -485,7 +486,7 @@ def probe(root, scan_spec=None):
     rd = root / RAW_DIR
     rd.mkdir(parents=True, exist_ok=True)
     cfg = load_sources(root)
-    raw, err = FD.http_get(cfg["listing_url"], headers=BROWSER_HEADERS)
+    raw, err = AMS.get(cfg["listing_url"], headers=BROWSER_HEADERS, expect=r"ams_\d{3,5}\.(?:pdf|txt)|viewReport/\d{3,5}")
     listing, doc = {}, {"url": cfg["listing_url"]}
     if raw is None:
         print("listing ERROR:", err, "(use --scan to find report numbers from the reports themselves)")
@@ -1266,4 +1267,6 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    _argv = sys.argv[1:]
+    _rc = main(_argv)
+    sys.exit(_rc if "--selftest" in _argv else AMS.finish("cattle-auction", _rc, probe="--probe" in _argv))

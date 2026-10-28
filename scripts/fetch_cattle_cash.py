@@ -47,6 +47,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fetch_dairy as FD  # noqa: E402
+import ams_http as AMS  # noqa: E402  www.ams.usda.gov first, then the measured mirror
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = "data/cattle-cash.json"
@@ -201,7 +202,7 @@ def merge(existing, key, parsed, err, now_iso, date_field, extra_check=None):
 
 
 def fetch(url):
-    raw, err = FD.http_get(url)
+    raw, err = AMS.get(url)
     if raw is None:
         return None, None, "fetch failed: %s" % err
     if raw[:5] != b"%PDF-":
@@ -372,4 +373,6 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    _argv = sys.argv[1:]
+    _rc = main(_argv)
+    sys.exit(_rc if "--selftest" in _argv else AMS.finish("cattle-cash", _rc, probe="--probe" in _argv))
