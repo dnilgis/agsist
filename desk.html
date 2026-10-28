@@ -49,7 +49,7 @@ button.quiet,.btn.quiet{background:none;color:var(--accent)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button:not(.quiet){color:#10151a}}
 .tok-row{display:flex;gap:8px;align-items:center}
 .tok-row input{flex:1;min-width:0}
-#tok-state{font-size:.9rem;margin:.3rem 0 0}
+#tok-state{font-size:.9rem;margin:12px 0 0}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
 @media(min-width:760px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .tile{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:96px;display:block;color:inherit;text-decoration:none}
@@ -98,7 +98,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
   <section id="tok-box">
     <label for="tok">Token (LIST_TOKEN)</label>
     <div class="tok-row"><input id="tok" type="password" autocomplete="off" spellcheck="false"><button type="button" class="quiet" id="tok-forget">Forget the token</button><button type="button" id="reload">Read</button></div>
-    <p id="tok-state" class="dim">Paste it once; this browser keeps it (the same one the elevator desk uses). Never put it in a link.</p>
+    <p class="dim">Paste it once; this browser keeps it (the same one the elevator desk uses). Never put it in a link.</p>
   </section>
 
   <div id="desk"><p id="loading">Reading...</p></div>
@@ -655,11 +655,13 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
       h += '<div class="card' + (c.wide ? ' wide' : '') + '" id="c-' + c.id + '"><div class="top"><h2>' + esc(c.title) + '</h2><div class="acts">' +
         c.acts.map(function (a) { return '<a href="' + esc(a[0]) + '">' + esc(a[1]) + '</a>'; }).join('') + '</div></div>' + body + '</div>';
     });
-    $('desk').innerHTML = h + '</div>';
-    $('now').textContent = ct(D.now);
+    /* NO LAYOUT SHIFT (CI, Oct 28): nothing above #desk changes size or text when the data lands.
+       The token status line is drawn inside #desk with everything else, in the one pass; the
+       clock in the header was set when the read began and is not rewritten here. */
     var w = D.worker;
-    $('tok-state').textContent = !hasTok ? 'No token in this browser: the private parts stay closed and the worker is not asked.'
+    var state = !hasTok ? 'No token in this browser: the private parts stay closed and the worker is not asked.'
       : w && w.ok ? 'Token accepted. Private parts read ' + ct(w.d.at) + '.' : 'Private parts: can’t read: ' + (w ? w.why : 'not asked') + '.';
+    $('desk').innerHTML = '<p id="tok-state" class="dim">' + esc(state) + '</p>' + h + '</div>';
     wire();
   }
   function wire() {
@@ -691,6 +693,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
   var gen = 0;
   function load() {
     var mine = ++gen, now = Date.now(), want = {};
+    $('now').textContent = ct(now);
     CARDS.forEach(function (c) { c.needs.forEach(function (n) { want[n] = 1; }); });
     var names = Object.keys(want);
     Promise.all(names.map(function (n) { return SOURCES[n](now).catch(function (e) { return { ok: false, why: 'read failed (' + (e && e.message || 'error') + ')' }; }); })).then(function (got) {

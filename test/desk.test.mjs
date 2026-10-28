@@ -240,8 +240,10 @@ async function open(br, width, opts) {
   p.on("pageerror", (e) => errors.push(e.message));
   p.on("request", (r) => urls.push(r.url()));
   await p.addInitScript(() => {
-    window.__cls = 0;
-    try { new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: "layout-shift", buffered: true }); } catch (e) {}
+    window.__cls = 0; window.__shifts = [];
+    const name = (n) => !n ? "?" : n.id ? "#" + n.id : (n.nodeName || "?").toLowerCase() + (n.className && typeof n.className === "string" ? "." + n.className.split(" ").join(".") : "");
+    try { new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) { window.__cls += e.value;
+      window.__shifts.push(e.value.toFixed(4) + " " + (e.sources || []).map((x) => name(x.node) + " y" + Math.round(x.previousRect.y) + "->" + Math.round(x.currentRect.y)).join(", ")); } }).observe({ type: "layout-shift", buffered: true }); } catch (e) {}
   });
   if (opts.token) await p.addInitScript((t) => { try { localStorage.setItem("agsist-elev-admin-token", t); } catch (e) {} }, opts.token);
   await p.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
@@ -300,17 +302,19 @@ test("in a browser: without the token the private cards stay closed and the work
   } finally { await br.close(); srv.close(); }
 });
 
-test("in a browser at 390 and 1280: every card, no sideways scroll, no layout shift, mark paid", { skip, timeout: 180000 }, async () => {
+test("in a browser at 360, 390 and 1280: every card, no sideways scroll, no layout shift, mark paid", { skip, timeout: 180000 }, async () => {
   const srv = await serve(), origin = `http://127.0.0.1:${srv.address().port}`;
   const br = await chromium.launch({ executablePath: CHROME });
   try {
-    for (const width of [390, 1280]) {
+    /* 360 too: the old page shifted there (a status line that rewrapped), as it did at 390 on CI's fonts */
+    for (const width of [360, 390, 1280]) {
       const S = await open(br, width, { origin, token: "tok" });
       const { p } = S;
       await p.waitForFunction(() => /Token accepted/.test(document.getElementById("tok-state").textContent));
       const dims = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth }));
       assert.ok(dims.sw <= dims.iw, `no sideways scroll at ${width} (${dims.sw} > ${dims.iw})`);
-      assert.ok(await p.evaluate(() => window.__cls) < 0.01, "no layout shift");
+      const cls = await p.evaluate(() => [window.__cls, window.__shifts]);
+      assert.ok(cls[0] < 0.01, `no layout shift at ${width}: ${cls[0].toFixed(4)} from ${cls[1].join("; ")}`);
       const t = await noAddress(p);
       /* headline tiles */
       const tiles = await p.$$eval(".tile", (els) => els.map((e) => e.innerText.replace(/\s+/g, " ").trim()));
