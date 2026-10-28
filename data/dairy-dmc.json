@@ -1,5 +1,5 @@
 {
- "_note": "Written by scripts/fetch_dmc.py from FSA's own DMC prices and updates page (live, or the Internet Archive copy named by archive_url and snapshot) and FSA's DMC fact sheet. A month is kept only when FSA's milk minus feed is FSA's margin and its all-milk matches the NASS month held; the rest are in withheld. Never typed by hand.",
+ "_note": "Written by scripts/fetch_dmc.py from FSA's own DMC prices and updates page (live, or the Internet Archive copy named by archive_url and snapshot) and FSA's DMC fact sheet. A month is kept only when FSA's milk minus feed is FSA's margin and its all-milk matches the NASS month held; the rest are in withheld. mpp holds MPP-Dairy (2014-2018), a different program with a different feed cost, from FSA's MPP calculations table. Never typed by hand.",
  "archive_url": "https://web.archive.org/web/20260610131502/https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates",
  "discount": {
   "archive_url": "https://web.archive.org/web/20260414193724/https://www.fsa.usda.gov/sites/default/files/2026-01/FSA_DMC_012026.pdf",
@@ -475,6 +475,468 @@
    "all_milk": 20.8,
    "feed": 10.26,
    "margin": 10.54
+  }
+ },
+ "mpp": {
+  "archive_url": "https://web.archive.org/web/20240614163858/https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/MPP-Dairy/MPP-Dairy.pdf",
+  "months": {
+   "2014-01": {
+    "all_milk": 23.5,
+    "corn": 4.42,
+    "feed": 10.800895,
+    "hay": 185.0,
+    "margin": 12.699105,
+    "sbm": 479.54
+   },
+   "2014-02": {
+    "all_milk": 24.9,
+    "corn": 4.35,
+    "feed": 10.9852675,
+    "hay": 188.0,
+    "margin": 13.9147325,
+    "sbm": 509.25
+   },
+   "2014-03": {
+    "all_milk": 25.2,
+    "corn": 4.51,
+    "feed": 11.0984965,
+    "hay": 191.0,
+    "margin": 14.1015035,
+    "sbm": 495.71
+   },
+   "2014-04": {
+    "all_milk": 25.3,
+    "corn": 4.71,
+    "feed": 11.6530615,
+    "hay": 206.0,
+    "margin": 13.6469385,
+    "sbm": 514.01
+   },
+   "2014-05": {
+    "all_milk": 24.2,
+    "corn": 4.71,
+    "feed": 11.939131,
+    "hay": 224.0,
+    "margin": 12.260869,
+    "sbm": 519.38
+   },
+   "2014-06": {
+    "all_milk": 23.2,
+    "corn": 4.49,
+    "feed": 11.545914,
+    "hay": 222.0,
+    "margin": 11.654086,
+    "sbm": 501.72
+   },
+   "2014-07": {
+    "all_milk": 23.3,
+    "corn": 4.05,
+    "feed": 10.6173465,
+    "hay": 216.0,
+    "margin": 12.6826535,
+    "sbm": 450.79
+   },
+   "2014-08": {
+    "all_milk": 24.1,
+    "corn": 3.63,
+    "feed": 10.361416,
+    "hay": 209.0,
+    "margin": 13.738584,
+    "sbm": 490.32
+   },
+   "2014-09": {
+    "all_milk": 25.7,
+    "corn": 3.48,
+    "feed": 10.296286,
+    "hay": 197.0,
+    "margin": 15.403714,
+    "sbm": 525.72
+   },
+   "2014-10": {
+    "all_milk": 24.9,
+    "corn": 3.56,
+    "feed": 9.280993,
+    "hay": 194.0,
+    "margin": 15.619007,
+    "sbm": 381.5
+   },
+   "2014-11": {
+    "all_milk": 23.0,
+    "corn": 3.58,
+    "feed": 9.6056405,
+    "hay": 184.0,
+    "margin": 13.3943595,
+    "sbm": 441.39
+   },
+   "2014-12": {
+    "all_milk": 20.4,
+    "corn": 3.78,
+    "feed": 9.7354995,
+    "hay": 183.0,
+    "margin": 10.6645005,
+    "sbm": 431.73
+   },
+   "2015-01": {
+    "all_milk": 17.6,
+    "corn": 3.81,
+    "feed": 9.264315,
+    "hay": 174.0,
+    "margin": 8.335685,
+    "sbm": 380.02
+   },
+   "2015-02": {
+    "all_milk": 16.8,
+    "corn": 3.79,
+    "feed": 9.144605,
+    "hay": 172.0,
+    "margin": 7.655395,
+    "sbm": 370.38
+   },
+   "2015-03": {
+    "all_milk": 16.6,
+    "corn": 3.81,
+    "feed": 9.0738185,
+    "hay": 172.0,
+    "margin": 7.5261815,
+    "sbm": 357.83
+   },
+   "2015-04": {
+    "all_milk": 16.5,
+    "corn": 3.75,
+    "feed": 9.0178835,
+    "hay": 184.0,
+    "margin": 7.4821165,
+    "sbm": 336.61
+   },
+   "2015-05": {
+    "all_milk": 16.7,
+    "corn": 3.62,
+    "feed": 8.8676265,
+    "hay": 192.0,
+    "margin": 7.8323735,
+    "sbm": 320.23
+   },
+   "2015-06": {
+    "all_milk": 16.9,
+    "corn": 3.58,
+    "feed": 8.7416945,
+    "hay": 178.0,
+    "margin": 8.1583055,
+    "sbm": 335.03
+   },
+   "2015-07": {
+    "all_milk": 16.6,
+    "corn": 3.8,
+    "feed": 9.1534085,
+    "hay": 169.0,
+    "margin": 7.4465915,
+    "sbm": 375.71
+   },
+   "2015-08": {
+    "all_milk": 16.7,
+    "corn": 3.68,
+    "feed": 8.7564015,
+    "hay": 159.0,
+    "margin": 7.9435985,
+    "sbm": 357.85
+   },
+   "2015-09": {
+    "all_milk": 17.5,
+    "corn": 3.68,
+    "feed": 8.550911,
+    "hay": 157.0,
+    "margin": 8.949089,
+    "sbm": 333.62
+   },
+   "2015-10": {
+    "all_milk": 17.7,
+    "corn": 3.67,
+    "feed": 8.4849555,
+    "hay": 156.0,
+    "margin": 9.2150445,
+    "sbm": 327.97
+   },
+   "2015-11": {
+    "all_milk": 18.2,
+    "corn": 3.6,
+    "feed": 8.18529,
+    "hay": 150.0,
+    "margin": 10.01471,
+    "sbm": 308.6
+   },
+   "2015-12": {
+    "all_milk": 17.2,
+    "corn": 3.65,
+    "feed": 8.100603,
+    "hay": 150.0,
+    "margin": 9.099397,
+    "sbm": 289.78
+   },
+   "2016-01": {
+    "all_milk": 16.1,
+    "corn": 3.66,
+    "feed": 7.995114,
+    "hay": 147.0,
+    "margin": 8.104886,
+    "sbm": 279.56
+   },
+   "2016-02": {
+    "all_milk": 15.7,
+    "corn": 3.57,
+    "feed": 7.7863295,
+    "hay": 142.0,
+    "margin": 7.9136705,
+    "sbm": 273.61
+   },
+   "2016-03": {
+    "all_milk": 15.3,
+    "corn": 3.57,
+    "feed": 7.832913,
+    "hay": 144.0,
+    "margin": 7.467087,
+    "sbm": 276.22
+   },
+   "2016-04": {
+    "all_milk": 15.0,
+    "corn": 3.58,
+    "feed": 8.1697275,
+    "hay": 153.0,
+    "margin": 6.8302725,
+    "sbm": 303.81
+   },
+   "2016-05": {
+    "all_milk": 14.5,
+    "corn": 3.68,
+    "feed": 8.7279765,
+    "hay": 147.0,
+    "margin": 5.7720235,
+    "sbm": 376.35
+   },
+   "2016-06": {
+    "all_milk": 14.8,
+    "corn": 3.82,
+    "feed": 9.0464855,
+    "hay": 142.0,
+    "margin": 5.7535145,
+    "sbm": 408.57
+   },
+   "2016-07": {
+    "all_milk": 16.1,
+    "corn": 3.6,
+    "feed": 8.5105315,
+    "hay": 140.0,
+    "margin": 7.5894685,
+    "sbm": 371.49
+   },
+   "2016-08": {
+    "all_milk": 17.1,
+    "corn": 3.21,
+    "feed": 7.839168,
+    "hay": 138.0,
+    "margin": 9.260832,
+    "sbm": 340.8
+   },
+   "2016-09": {
+    "all_milk": 17.3,
+    "corn": 3.22,
+    "feed": 7.8152485,
+    "hay": 137.0,
+    "margin": 9.4847515,
+    "sbm": 337.95
+   },
+   "2016-10": {
+    "all_milk": 16.6,
+    "corn": 3.29,
+    "feed": 7.7550465,
+    "hay": 135.0,
+    "margin": 8.8449535,
+    "sbm": 323.27
+   },
+   "2016-11": {
+    "all_milk": 17.6,
+    "corn": 3.23,
+    "feed": 7.6158575,
+    "hay": 130.0,
+    "margin": 9.9841425,
+    "sbm": 322.41
+   },
+   "2016-12": {
+    "all_milk": 18.8,
+    "corn": 3.33,
+    "feed": 7.699221,
+    "hay": 129.0,
+    "margin": 11.100779,
+    "sbm": 321.02
+   },
+   "2017-01": {
+    "all_milk": 18.9,
+    "corn": 3.4,
+    "feed": 7.843819,
+    "hay": 128.0,
+    "margin": 11.056181,
+    "sbm": 332.34
+   },
+   "2017-02": {
+    "all_milk": 18.5,
+    "corn": 3.44,
+    "feed": 7.915719,
+    "hay": 129.0,
+    "margin": 10.584281,
+    "sbm": 334.42
+   },
+   "2017-03": {
+    "all_milk": 17.3,
+    "corn": 3.49,
+    "feed": 7.948071,
+    "hay": 135.0,
+    "margin": 9.351929,
+    "sbm": 320.34
+   },
+   "2017-04": {
+    "all_milk": 16.5,
+    "corn": 3.43,
+    "feed": 7.9539785,
+    "hay": 148.0,
+    "margin": 8.5460215,
+    "sbm": 305.67
+   },
+   "2017-05": {
+    "all_milk": 16.7,
+    "corn": 3.45,
+    "feed": 8.0857405,
+    "hay": 155.0,
+    "margin": 8.6142595,
+    "sbm": 307.63
+   },
+   "2017-06": {
+    "all_milk": 17.3,
+    "corn": 3.43,
+    "feed": 7.972396,
+    "hay": 152.0,
+    "margin": 9.327604,
+    "sbm": 300.72
+   },
+   "2017-07": {
+    "all_milk": 17.3,
+    "corn": 3.49,
+    "feed": 8.222866,
+    "hay": 152.0,
+    "margin": 9.077134,
+    "sbm": 326.04
+   },
+   "2017-08": {
+    "all_milk": 18.0,
+    "corn": 3.27,
+    "feed": 7.7346735,
+    "hay": 147.0,
+    "margin": 10.2653265,
+    "sbm": 301.05
+   },
+   "2017-09": {
+    "all_milk": 17.8,
+    "corn": 3.27,
+    "feed": 7.810951,
+    "hay": 149.0,
+    "margin": 9.989049,
+    "sbm": 307.7
+   },
+   "2017-10": {
+    "all_milk": 17.9,
+    "corn": 3.26,
+    "feed": 7.8966685,
+    "hay": 152.0,
+    "margin": 10.0033315,
+    "sbm": 315.23
+   },
+   "2017-11": {
+    "all_milk": 18.1,
+    "corn": 3.15,
+    "feed": 7.711292,
+    "hay": 148.0,
+    "margin": 10.388708,
+    "sbm": 313.52
+   },
+   "2017-12": {
+    "all_milk": 17.2,
+    "corn": 3.23,
+    "feed": 7.839011,
+    "hay": 148.0,
+    "margin": 9.360989,
+    "sbm": 319.22
+   },
+   "2018-01": {
+    "all_milk": 16.1,
+    "corn": 3.29,
+    "feed": 7.9829485,
+    "hay": 152.0,
+    "margin": 8.1170515,
+    "sbm": 322.59
+   },
+   "2018-02": {
+    "all_milk": 15.3,
+    "corn": 3.38,
+    "feed": 8.4165115,
+    "hay": 155.0,
+    "margin": 6.8834885,
+    "sbm": 362.85
+   },
+   "2018-03": {
+    "all_milk": 15.6,
+    "corn": 3.51,
+    "feed": 8.8316255,
+    "hay": 166.0,
+    "margin": 6.7683745,
+    "sbm": 379.85
+   },
+   "2018-04": {
+    "all_milk": 15.8,
+    "corn": 3.58,
+    "feed": 9.183648,
+    "hay": 183.0,
+    "margin": 6.616352,
+    "sbm": 385.84
+   },
+   "2018-05": {
+    "all_milk": 16.2,
+    "corn": 3.67,
+    "feed": 9.4190685,
+    "hay": 189.0,
+    "margin": 6.7809315,
+    "sbm": 393.55
+   },
+   "2018-06": {
+    "all_milk": 16.3,
+    "corn": 3.58,
+    "feed": 8.9347925,
+    "hay": 181.0,
+    "margin": 7.3652075,
+    "sbm": 355.71
+   },
+   "2018-07": {
+    "all_milk": 15.4,
+    "corn": 3.47,
+    "feed": 8.681854,
+    "hay": 179.0,
+    "margin": 6.718146,
+    "sbm": 341.08
+   }
+  },
+  "note": "At a milk margin (all-milk price minus feed cost) of less than $8.00 per cwt, payments are possible depending on the level of coverage chosen by the dairy operation.",
+  "read": "2026-10-28",
+  "snapshot": "2024-06-14",
+  "source": "USDA Farm Service Agency, Margin Protection Program (MPP) calculations",
+  "source_url": "https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/MPP-Dairy/MPP-Dairy.pdf",
+  "via": "archive",
+  "withheld": {
+   "count": 5,
+   "months": [
+    "2018-08",
+    "2018-09",
+    "2018-10",
+    "2018-11",
+    "2018-12"
+   ],
+   "why": "FSA's MPP table as read ends at 2018-07"
   }
  },
  "premiums": {
