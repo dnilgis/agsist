@@ -1234,6 +1234,58 @@ def selftest():
     check("stamp has no em dash", "\u2014" not in out and "&mdash;" not in out)
     refuses("stamp needs markers", lambda: stamp("<p>a</p>", d))
 
+    # Wisconet (Oct 28): real answers the probe saved (raw branch,
+    # data/fall-nitrogen-raw/), trimmed. Hand check for Arlington, Oct 20:
+    # the 24 hourly values stamped 06:00Z Oct 20 through 05:00Z Oct 21 (01:00
+    # to midnight CDT) average 51.358 F; the probe's own run printed 51.4.
+    wfl = json.loads(fixture("wisconet-fields-legacy.json"))
+    check("wisconet: the hourly 4 in average, not the 5 min or daily field",
+          wcn_field(wfl) == (37, "60min_soil_temp_f_avg@4in", "fahrenheit"))
+    refuses("wisconet: a field with a unit it cannot name",
+            lambda: wcn_field([dict(f, final_units="kelvin", units_abbrev="k") for f in wfl if f["id"] == 37]))
+    refuses("wisconet: no 4 in hourly field", lambda: wcn_field([f for f in wfl if f["id"] != 37]))
+    wst = wcn_station_list(json.loads(fixture("wisconet-stations.json")))
+    check("wisconet: real station list", sorted(wst) == ["ALTN", "ANGO"] and wst["ALTN"]["name"] == "Arlington"
+          and abs(wst["ALTN"]["lat"] - 43.2966) < 1e-9)
+    alt = wcn_parse(json.loads(fixture("wisconet-hourly-ALTN.json")), 37, "fahrenheit")
+    W = datetime.date(2026, 10, 20)
+    check("wisconet: Arlington Oct 20 is the mean of its 24 Central hours, 51.358 F",
+          abs(alt[W] - 51.358333) < 1e-4)
+    check("wisconet: twelve days, Oct 16 to Oct 27", min(alt) == datetime.date(2026, 10, 16) and max(alt) == datetime.date(2026, 10, 27) and len(alt) == 12)
+    wa = station("WCN", "ALTN", "Arlington, WI", "WI", 43.2966, -89.3843, "10 cm (3.9 in)", "daily mean of hourly readings",
+                 alt, datetime.date(2026, 10, 28))
+    check("wisconet: Arlington's last 10 days match the probe run",
+          wa["last"] == "2026-10-27" and wa["t"] == [51.6, 51.8, 51.4, 51.1, 52.1, 53.0, 53.8, 54.8, 54.3, 53.1])
+    t0 = int(datetime.datetime(2026, 10, 20, 6, tzinfo=datetime.timezone.utc).timestamp())
+    mid = {"data": [{"collection_time": t0 + 3600 * i, "measures": [[37, 40.0 + i], [100, 99.0]]} for i in range(24)]}
+    got = wcn_parse(mid, 37, "fahrenheit")
+    check("wisconet: hours ending 01:00 to midnight CDT are one day; other fields ignored",
+          set(got) == {W} and abs(got[W] - 51.5) < 1e-9)
+    check("wisconet: a day with under 20 hours does not count",
+          wcn_parse({"data": mid["data"][:19]}, 37, "fahrenheit") == {})
+    refuses("wisconet: an answer with no data list", lambda: wcn_parse({"warnings": ["No valid fields found for request."]}, 37, "f"))
+    calls = []
+
+    def fake(u, **k):
+        calls.append(u)
+        if u.endswith("/fields/"):
+            return fixture("wisconet-fields-legacy.json")
+        if u.endswith("/stations/"):
+            return fixture("wisconet-stations.json")
+        return json.dumps({"warnings": ["No valid fields found for request."]})
+    refuses("wisconet: no station passes -> the network refuses (last good file carries)",
+            lambda: fetch_wisconet(datetime.date(2026, 10, 28), lambda m: None, sleep=lambda s: None, getter=fake))
+    check("wisconet: asks for the field by the name the API accepts",
+          any("fields=60min_soil_temp_f_avg%404in" in u for u in calls))
+
+    def fake2(u, **k):
+        if "/ALTN/measures" in u:
+            return fixture("wisconet-hourly-ALTN.json")
+        return fake(u)
+    one = fetch_wisconet(datetime.date(2026, 10, 28), lambda m: None, sleep=lambda s: None, getter=fake2)
+    check("wisconet: one station read, credited to the network", [x["id"] for x in one] == ["WCN:ALTN"]
+          and NET_LABEL["WCN"] == "Wisconet" and NET_URL["WCN"] == "https://wisconet.wisc.edu/")
+
     if fails:
         print("SELFTEST FAILED:", "; ".join(fails))
         return 1
