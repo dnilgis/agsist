@@ -788,7 +788,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var steps = [
       { t: 'Ad written', d: s.c ? 'Proof ' + s.code : 'In progress', done: !!s.c },
       { t: 'You approve', d: s.approved ? (fmt(s.ap.on, true) || 'Approved') : (s.stale ? 'Needs a new yes' : 'One email'), done: s.approved || s.live },
-      { t: 'Goes live', d: s.start ? fmt(s.start, true) : (d.geo ? 'When Sig switches it on' : 'Next briefing after approval'), done: s.live && !!s.start },
+      { t: 'Goes live', d: s.start ? fmt(s.start, true) : (d.geo ? (s.live ? 'Live now' : 'When Sig switches it on') : 'Next briefing after approval'), done: s.live && (!!s.start || !!d.geo) },
       { t: s.freeLabel, d: s.trialEnd ? 'Through ' + fmt(s.trialEnd, true) : 'From the first day', done: !!(s.trialEnd && TODAY > s.trialEnd), money: true },
       { t: 'Billing starts', d: s.firstBilled ? fmt(s.firstBilled, true) : 'After the free period', done: !!(s.firstBilled && TODAY >= s.firstBilled), money: true }
     ];
