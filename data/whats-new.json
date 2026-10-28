@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-28-dairy-herds",
+   "date": "2026-10-28",
+   "title": "Licensed dairy herds, US and your state",
+   "line": "The milk page now charts licensed dairy herds from NASS by year for the US and your state, Wisconsin by month, with the net change each year. It also shows the MPP margins of 2014 to 2018, kept apart from DMC.",
+   "link": "/milk-prices#dp-herds-h"
+  },
+  {
    "id": "2026-10-28-merges",
    "date": "2026-10-28",
    "title": "Fewer pages, each one fuller",
