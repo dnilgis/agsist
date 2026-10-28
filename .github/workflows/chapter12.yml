@@ -1,0 +1,86 @@
+name: Chapter 12 filings
+
+# Adds one new U.S. Courts Table F-2 period (Chapter 12 family farmer and
+# fisherman bankruptcy filings by district) to data/farm-stress/chapter12.json
+# and refreshes the Daily's dated Chapter 12 fact (data/daily-facts.json,
+# id ch12-latest). The Farmland Atlas state pages rebuild after this run
+# (farmland-atlas-pages.yml listens for it).
+#
+# BY HAND ONLY. U.S. Courts posts F-2 each quarter (12 months to Mar 31,
+# Jun 30, Sep 30, Dec 31). A schedule needs Sig's OK first (STANDING-DECISIONS,
+# Oct 21); until then:
+#   1. add the new PDF to references/sources.json as uscourts-f2-<year>-<mar|jun|sep|dec>
+#      (kind pdf, the uscourts.gov URL), merged to main;
+#   2. run this workflow with that id.
+# The run refuses to write anything when the table does not add up: every
+# district must sum to the table's own Total row, and each newer-layout row's
+# Total must equal chapters 9 + 12 + 15 + Other (scripts/build_chapter12.py).
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: "Source id from references/sources.json, e.g. uscourts-f2-2026-dec"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chapter12
+  cancel-in-progress: false
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      IN_ID: ${{ inputs.id }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - name: Install poppler (pdftotext)
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
+
+      - name: Check the input
+        run: |
+          printf '%s\n' "$IN_ID" | grep -Eq '^uscourts-f2-[0-9]{4}-(mar|jun|sep|dec)$' \
+            || { echo "::error::id must look like uscourts-f2-2026-dec"; exit 1; }
+
+      - name: Selftest
+        run: python3 scripts/build_chapter12.py --selftest
+
+      - name: Fetch the table
+        timeout-minutes: 5
+        run: |
+          mkdir -p "$RUNNER_TEMP/refs"
+          python3 scripts/fetch_refs.py --out "$RUNNER_TEMP/refs" --ids "$IN_ID"
+          test -s "$RUNNER_TEMP/refs/refs/$IN_ID.txt" || { echo "::error::$IN_ID was not fetched (see the summary above)"; exit 1; }
+
+      - name: Add the period
+        run: |
+          python3 scripts/build_chapter12.py --add "$RUNNER_TEMP/refs/refs/$IN_ID.txt"
+          python3 scripts/build_chapter12.py --check
+          python3 scripts/daily_fact.py --check
+
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/farm-stress/chapter12.json data/daily-facts.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: Chapter 12 filings, $IN_ID"
+          for i in 1 2 3 4; do
+            git rebase --abort 2>/dev/null || true
+            if git pull --rebase --autostash origin main && git push; then exit 0; fi
+            sleep $((30 * i))
+          done
+          echo "::error::push failed after 4 attempts"; exit 1
