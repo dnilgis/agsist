@@ -139,9 +139,12 @@ def receipts(text):
 # "STEERS - Medium and Large 1 (Per Cwt / Actual Wt)". Medium and Large 1 / 1-2
 # are feeder grades only (slaughter cattle grade Select/Choice), so the grade
 # words pin these to the feeder tables. The older "Feeder steers Medium..." form
-# still matches.
+# still matches. Beef-on-dairy steers ("BEEF/DAIRY STEERS - Medium and Large 1-2",
+# Somerset KY 2194, Oct 2026) are a different kind of calf, and open heifers
+# ("OPEN HEIFERS - Medium and Large 1", Joplin 1797 slaughter/replacement) are
+# replacement cattle: neither is a feeder table.
 SECTION_RE = re.compile(
-    r"\b(?:feeder\s+)?(steers|heifers)\s*-?\s*medium\s+(?:and|&)\s+large\s+(1-2|1)\s*\(\s*per\s+cwt\s*/\s*actual\s+wt\s*\)", re.I)
+    r"(?<!dairy )(?<!open )\b(?:feeder\s+)?(steers|heifers)\s*-?\s*medium\s+(?:and|&)\s+large\s+(1-2|1)\s*\(\s*per\s+cwt\s*/\s*actual\s+wt\s*\)", re.I)
 # any table heading, so a block ends where the next one starts
 HEAD_RE = re.compile(
     r"\b(?:feeder|slaughter|bred|stock|replacement|cow|cows|holstein|dairy|pairs|bulls?|steers|heifers|"
@@ -1017,6 +1020,52 @@ def selftest():
     tx, why = parse_report((fx / "ams_1955-real.txt").read_text())
     ck("real Texas 1955: heifer 1-2 table read past a page break with no repeated header",
        tx is not None and len(tx["tables"].get("heifers|1-2", [])) == 11, why or (tx and len(tx["tables"].get("heifers|1-2", []))))
+
+    # Real AMS reports from USDA's own PDFs downloaded Oct 28, 2026 (text from
+    # FD.pdf_to_text). Each class worked by hand from the report's rows.
+    def real(n):
+        p, w = parse_report((fx / ("ams_%s-real.txt" % n)).read_text())
+        return p, w, (summarize(p) if p else None)
+
+    p, w, s = real("1819")   # Callaway Livestock Center, Kingdom City MO, Mon Oct 26
+    # 65 hd x 5.29 cwt x 439.89 + 38 hd x 5.93 cwt x 415.41 = 244864.67 over 569.19 cwt;
+    # the 15 hd Unweaned row at 591 lb is left out
+    c = s and s["classes"]["steers|1"]["500"]
+    ck("real Callaway 1819: Oct 26, 1,884 head; 500 lb steers M&L 1 430.20 on 103 head, $2,377.33 a head",
+       p and p["date"] == "2026-10-26" and p["receipts"] == 1884 and (c["cwt"], c["head"], c["per_head"]) == (430.2, 103, 2377.33),
+       w or c)
+    p, w, s = real("1968")   # Springville Feeder Cattle Auction, Springville IN, Oct 2
+    # 35 hd x 4.24 cwt x 410.69 + 77 hd x 4.59 cwt x 388.44 = 198232.75 over 501.83 cwt
+    c = s and s["classes"]["heifers|1"]["400"]
+    ck("real Springville 1968: 400 lb heifers M&L 1 395.02 on 112 head, $1,769.94 a head",
+       p and p["date"] == "2026-10-02" and (c["cwt"], c["head"], c["per_head"]) == (395.02, 112, 1769.94), w or c)
+    p, w, s = real("1858")   # Gordon Livestock Market, Gordon NE, Oct 27
+    # 22 hd x 5.12 cwt x 481.51 + 265 hd x 5.77 cwt x 430.98 = 713227.26 over 1641.69 cwt
+    c = s and s["classes"]["steers|1"]["500"]
+    ck("real Gordon 1858: 500 lb steers M&L 1 434.45 on 287 head, avg 572 lb",
+       p and p["date"] == "2026-10-27" and (c["cwt"], c["head"], c["avg_wt"]) == (434.45, 287, 572), w or c)
+    p, w, s = real("2019")   # St. Onge Livestock Auction, St. Onge SD, Sat Oct 24 (the barn's 2nd report is 2012)
+    # 293 hd x 6.14 cwt x 435.13 + 116 hd x 6.57 cwt x 404.43 = 1091031.76 over 2561.14 cwt
+    c = s and s["classes"]["steers|1"]["600"]
+    ck("real St. Onge 2019: Oct 24, 7,030 head; 600 lb steers M&L 1 425.99 on 409 head, $2,667.56 a head",
+       p and p["date"] == "2026-10-24" and p["receipts"] == 7030 and (c["cwt"], c["head"], c["per_head"]) == (425.99, 409, 2667.56),
+       w or c)
+    p, w, s = real("2229")   # Farmers Regional Livestock Market monthly sale, Glasgow KY, Oct 22 (weekly is 2198)
+    # 23 hd x 7.34 cwt x 332.64 + 6 hd x 7.61 cwt x 343.34 = 71833.19 over 214.48 cwt. The
+    # BEEF/DAIRY STEERS - Medium and Large 1-2 row (1 hd, 775 lb, 292.50) is a different kind of calf
+    # and stays out (it was pooled in before Oct 28, giving 30 head at 333.44).
+    c = s and s["classes"]["steers|1-2"]["700"]
+    ck("real Glasgow 2229: 700 lb steers M&L 1-2 334.92 on 29 head; the beef-on-dairy steer is not in it",
+       p and (c["cwt"], c["head"], c["lo"]) == (334.92, 29, 330.0)
+       and all(r["price"] != 292.5 for r in p["tables"]["steers|1-2"]), w or c)
+    p, w, s = real("1825")   # OKC West, El Reno OK, slaughter and replacement only
+    ck("real OKC West 1825 slaughter/replacement report: no feeder table, refused", p is None and "no feeder" in (w or ""), w)
+    p, w, s = real("1797")   # Joplin slaughter/replacement: OPEN HEIFERS - Medium and Large 1 (Per Cwt / Actual Wt)
+    ck("real Joplin 1797: open heifers (replacement) are not read as feeder heifers", p is None, p and sorted(p["tables"]))
+    ck("beef/dairy and open heifer headings never open a feeder table",
+       not SECTION_RE.search("BEEF/DAIRY STEERS - Medium and Large 1-2 (Per Cwt / Actual Wt)")
+       and not SECTION_RE.search("OPEN HEIFERS - Medium and Large 1 (Per Cwt / Actual Wt)")
+       and SECTION_RE.search("HEIFERS - Medium and Large 1 (Per Cwt / Actual Wt)"))
 
     bad = ROW_FIX.replace("  8    410-445     430    400.00-418.00      409.25",
                           "  8    410-445     430    400.00-418.00      419.25")
