@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-28-milk-your-area",
+   "date": "2026-10-28",
+   "title": "Milk prices: your area first, and read your own check",
+   "line": "Your area's mailbox price leads the page, and a check reader values your milk at your own tests. The 2027 DMC signup is open to Dec 18.",
+   "link": "/milk-prices"
+  },
+  {
    "id": "2026-10-27-county-week-for-readers",
    "date": "2026-10-27",
    "title": "Already on the Daily? Add your county",

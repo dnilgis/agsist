@@ -1,0 +1,8 @@
+{
+ "_note": "Dairy Margin Coverage monthly margins as FSA publishes them (all_milk, feed, margin in $/cwt, by month_key), and the 2027 Tier 1 premium per cwt by coverage level (\"9.50\": rate). Typed from FSA's own pages only (references fsa-dmc-program, fsa-dmc-2027-release), never computed here. scripts/seed_static.py (milk_dmc_paid) prints the would-have-paid table on /milk-prices only when every row's milk minus feed is its margin and the all-milk price matches the NASS month in data/dairy-data.json; otherwise the page says the table is withheld. Empty until someone reads FSA's figures.",
+ "source": null,
+ "source_url": "https://www.fsa.usda.gov/dairy",
+ "read": null,
+ "margins": {},
+ "premium_tier1": {}
+}
