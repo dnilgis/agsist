@@ -19,6 +19,11 @@ name: Fertilizer co-op posted prices
 
 on:
   workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: check robots.txt and read every co-op and pending candidate, save the pages to the raw branch; writes no prices"
+        type: boolean
+        default: false
   schedule:
     - cron: '41 13 * * 1-5'    # weekdays, morning Central
 
@@ -57,11 +62,25 @@ jobs:
           python scripts/build_fert_prices.py --selftest
           python scripts/bake_fert_defaults.py --selftest
           python scripts/build_coop_places.py --selftest
+      # Probe (Oct 28): robots.txt and a parse of every co-op and the "pending"
+      # candidates in scripts/coop_fert_sources.json. Writes no prices; the
+      # saved pages go to the raw branch (never deployed) for fixtures.
+      - name: Probe (robots and parse, no prices written)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: python scripts/fetch_coop_fert.py --probe
+      - name: Save the probe's pages to the raw branch
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "fertilizer-coops probe" data/coop-fert-raw
       - name: Fetch and write data/fertilizer-coops.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_coop_fert.py
 
       # Share cards for /fertilizer and /manure-value (scripts/fert_after_prices.sh).
       - name: Install pillow for the share cards
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         continue-on-error: true
         run: pip install --quiet pillow==12.3.0
 
@@ -70,6 +89,7 @@ jobs:
       # breakeven, manure-value, fast-facts) always match both source files on
       # the branch being pushed, whichever fertilizer workflow pushed last.
       - name: Commit if changed (race-tolerant)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: |
           set -e
           git config user.name "AGSIST Bot"

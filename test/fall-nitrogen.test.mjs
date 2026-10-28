@@ -240,3 +240,28 @@ test('browser: empty state, county pick, blank county and ZIP', { skip }, async 
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
+
+// Oct 28 (Sig): Wisconet joins as a fifth network under CC BY 4.0, which asks
+// for credit. Every reading names its network with a link, and the source
+// list quotes Wisconet's own terms. Nebraska and South Dakota mesonets are
+// never read (their terms restrict automated reading or redistribution).
+test('every reading credits its network with a link; Wisconet terms quoted', () => {
+  const fn = /function netCredit\(net\) \{[\s\S]*?\n  \}/.exec(page);
+  assert.ok(fn, 'netCredit on the page');
+  assert.match(fn[0], /DATA\.net_urls/);
+  assert.match(page, /'<p class="fn-fine">Station: ' \+ esc\(s\.name\) \+ ' \(' \+ netCredit\(s\.net\) \+ '\), '/, 'the answer names the network');
+  assert.match(page, /'<tr><th scope="row">' \+ esc\(s\.name\) \+ ' \(' \+ netCredit\(s\.net\) \+ '\)<\/th>/, 'the station table names the network');
+  assert.match(page, /<a href="https:\/\/wisconet\.wisc\.edu\/">Wisconet<\/a>, University of Wisconsin&ndash;Madison \(terms: &ldquo;Wisconet data is publicly available and may be used commercially under the Creative Commons Attribution \(CC BY\) license\.&rdquo; <a href="https:\/\/creativecommons\.org\/licenses\/by\/4\.0\/">CC BY 4\.0<\/a>\)/);
+  const py = JSON.parse(execFileSync('python3', ['-c',
+    'import sys,json;sys.path.insert(0,sys.argv[1]);import fetch_fall_nitrogen as F;' +
+    'print(json.dumps({"nets":[n for n,_ in F.NETWORKS],"labels":F.NET_LABEL,"urls":F.NET_URL}))',
+    path.join(root, 'scripts')], { encoding: 'utf8' }));
+  assert.ok(py.nets.length >= 5 && py.nets.includes('WCN'), 'Wisconet is read');
+  for (const n of py.nets) {
+    assert.ok(py.labels[n], n + ' has a name');
+    assert.match(py.urls[n] || '', /^https:\/\//, n + ' has a link');
+    assert.ok(page.includes('href="' + py.urls[n] + '"'), n + ' is in the source list with the same link');
+  }
+  const src = fs.readFileSync(path.join(root, 'scripts/fetch_fall_nitrogen.py'), 'utf8');
+  assert.doesNotMatch(src, /mesonet\.unl\.edu|nsm\.unl\.edu|sdmesonet|mesonet\.sdstate|climate\.sdstate/i, 'no Nebraska or South Dakota mesonet');
+});

@@ -886,7 +886,9 @@ def run_own(cfg, existing, now_iso, getter=None):
     out = []
     for src in cfg.get("own_reports") or []:
         sale, err, url = None, None, None
-        if not (src.get("parser") in OWN_KINDS and src.get("parser_checked")):
+        if src.get("off"):
+            err = "not read: the barn has posted no report since %s" % (src.get("off_since") or "it was last checked")
+        elif not (src.get("parser") in OWN_KINDS and src.get("parser_checked")):
             err = "needs first read"
         else:
             text, url, _raws, err = (getter or own_fetch)(src)
@@ -1203,6 +1205,17 @@ def selftest():
     own2 = run_own(cfgo, {"own": own}, now, lambda src: (None, None, [], "fetch failed: 403"))
     ck("own: a failed fetch keeps the last good sale and records why",
        own2[2]["sales"][0]["date"] == "2026-10-09" and own2[2]["status"]["note"] == "fetch failed: 403")
+
+    # Oct 28: a barn whose own page has posted nothing for months is "off": not
+    # read even with a checked parser, and its status says since when.
+    calls.clear()
+    offc = {"own_reports": [dict(cfgo["own_reports"][2], off=True, off_since="2024-10-15")]}
+    own3 = run_own(offc, {"own": [own[2]]}, now, og)
+    ck("own: an off barn is not fetched and says since when",
+       calls == [] and own3[0]["status"]["note"] == "not read: the barn has posted no report since 2024-10-15", own3)
+    arl = [x for x in json.loads((ROOT / SOURCES).read_text())["own_reports"] if x["id"] == "arlington-wi"]
+    ck("own: Equity Arlington is off (market page last updated Oct 15 2024, probe copy Oct 27 2026)",
+       arl and arl[0].get("off") is True and arl[0].get("off_since") == "2024-10-15" and not arl[0].get("parser_checked"))
 
     cfg = json.loads((ROOT / SOURCES).read_text())
     ids = [x["id"] for x in cfg["barns"]] + [x["id"] for x in cfg["state_reports"]]

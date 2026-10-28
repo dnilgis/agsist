@@ -42,6 +42,16 @@
    "cash_label": "3% cash pickup"
   },
   {
+   "id": "bartlett-ks",
+   "name": "Bartlett Co-op Association",
+   "town": "Bartlett",
+   "state": "KS",
+   "url": "https://www.bartlettco-op.com/index.php/our-products/current-prices/fertilizer-prices?id=2&view=fronttable",
+   "layout": "html-table",
+   "cash_label": "none posted (one ton price, payment terms not shown), so its prices are listed, not counted",
+   "checked": "2026-10-28: fertilizer-coops probe, robots.txt allows the page; 9 rows dated 10/09/2026 read and checked against the saved page (test/fixtures/coop-fert/bartlett-ks_2026-10-28.html); town from the page's own 'based in Bartlett, KS'"
+  },
+  {
    "id": "synergy-wi",
    "name": "Synergy Cooperative",
    "town": null,
@@ -64,6 +74,19 @@
      "date": "2026-10-01"
     }
    ]
+  }
+ ],
+ "pending_note": "Candidates from outside research (Oct 27 2026), NOT read by the normal run. Each moves to coops by hand only after fetch_coop_fert.py --probe (fertilizer-coops workflow, probe ticked) shows its robots.txt allows the page and the table parses per ton. Town is confirmed from the co-op's own page in the probe copy.",
+ "pending": [
+  {
+   "id": "snyder-ok",
+   "name": "Farmers Cooperative Association of Snyder",
+   "town": null,
+   "state": "OK",
+   "url": "https://www.snyderfarmerscoop.com/fccp-fertilizer-pricing-application-blending-23934",
+   "layout": "html-table",
+   "cash_from": null,
+   "why": "2026-10-28 probe: robots.txt at snyderfarmerscoop.com disallows this page for our reader, so it is not read"
   }
  ]
 }

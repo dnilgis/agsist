@@ -18,6 +18,12 @@
    "state": "KS",
    "lat": 37.1699,
    "lng": -94.8899
+  },
+  "bartlett-ks": {
+   "town": "Bartlett",
+   "state": "KS",
+   "lat": 37.0601,
+   "lng": -95.2115
   }
  },
  "unplaced": [
