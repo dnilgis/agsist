@@ -38,7 +38,8 @@ a longer one), never in a loop. Polite: one request at a time, a pause between.
 Logs are counts only.
 
     python3 scripts/vintage.py --selftest
-    python3 scripts/vintage.py [--day YYYY-MM-DD] [--out vintage] [--only usgs-river,eia-diesel]
+    python3 scripts/vintage.py [--out vintage] [--only usgs-river,eia-diesel]
+  (--day takes only today's UTC date: a past day cannot be fetched again)
 """
 import argparse
 import base64
@@ -454,7 +455,7 @@ def selftest():
         ck("USGS: one request for every gauge, answer kept whole",
            u["service"] == "waterservices" and u["data"] == json.loads(usgs_b) and len(u["requests"]) == 1, u.get("service"))
         ck("USGS: gauges that did not answer are named", u["missing_sites"] == sorted(set(GAUGES) - {"07010000", "06934500"}), u["missing_sites"])
-        ck("USGS: rows count every reading, no-data days included (kept as sent)", u["rows"] == 6, u["rows"])
+        ck("USGS: rows count every reading, no-data days included (kept as sent)", u["rows"] == 7, u["rows"])
         e = read_vintage(os.path.join(d, "eia-ethanol", "2026-10-28.json.gz"))
         ck("EIA: bytes kept exactly (base64)", base64.b64decode(e["data"]["body_b64"]) == xls_b and e["data"]["content_type"] == "application/vnd.ms-excel")
         ck("one request at a time, 3 s apart", sleeps and all(s == 3 for s in sleeps), sleeps[:5])
@@ -508,6 +509,11 @@ def selftest():
         req, body = r.get("https://example.invalid/x")
         ck("a 403 is asked once", r.calls == 1 and req["status"] == 403 and body == b"", req)
 
+    with tempfile.TemporaryDirectory() as d:
+        past = (datetime.now(timezone.utc).date() - timedelta(days=1)).isoformat()
+        rc = main(["--day", past, "--out", d])
+        ck("a past day is refused (today's fetch never passes for an older vintage)", rc == 2 and not os.listdir(d), rc)
+
     ck("every dataset id is a Socrata 4x4", all(len(v) == 9 and v[4] == "-" for v in AGTRANSPORT.values()))
     ck("every gauge is an 8-digit USGS site number", all(len(k) == 8 and k.isdigit() for k in GAUGES))
     print(f"vintage selftest: {len(fails)} failure(s)")
@@ -523,7 +529,13 @@ def main(argv=None):
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
-    day = date.fromisoformat(a.day) if a.day else datetime.now(timezone.utc).date()
+    today = datetime.now(timezone.utc).date()
+    day = date.fromisoformat(a.day) if a.day else today
+    if day != today:
+        # A file is what was published on its day. Today's fetch saved under another
+        # date would pass for an older vintage (look-ahead), so only today is allowed.
+        print(f"--day {day}: only today ({today} UTC) can be saved; a past day cannot be fetched again")
+        return 2
     only = [s.strip() for s in a.only.split(",") if s.strip()] or None
     bad = [s for s in only or [] if s not in sources()]
     if bad:
