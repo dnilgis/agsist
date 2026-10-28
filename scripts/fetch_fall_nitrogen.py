@@ -17,6 +17,14 @@ Networks (each read on its own; one failing never blocks the others):
   isusm   Iowa State Soil Moisture Network through the Iowa Environmental
           Mesonet daily download (4 in soil temperature).
   ksmeso  Kansas Mesonet REST service (10 cm soil temperature, daily).
+  wcn     Wisconet (University of Wisconsin-Madison) API, the hourly 10 cm
+          (4 in) soil temperature field, averaged to a daily mean. Its unit
+          and depth come from the API's own field list. Licence: "Wisconet
+          data is publicly available and may be used commercially under the
+          Creative Commons Attribution (CC BY) license" (wisconet.wisc.edu,
+          read Oct 28 2026), so every reading is credited to Wisconet with a
+          link (Sig, Oct 28: add it). Nebraska and South Dakota mesonets are
+          never read here (Sig, Oct 28).
 The sandbox cannot reach any of these hosts. GitHub runners can.
 
 Modes:
@@ -518,9 +526,94 @@ def fetch_ksmeso(today, log):
     return out
 
 
-NETWORKS = [("USCRN", fetch_uscrn), ("SCAN", fetch_scan), ("ISUSM", fetch_isusm), ("KSMESO", fetch_ksmeso)]
+# ---------------------------------------------------------------- Wisconet
+WCN_TZ = "America/Chicago"   # every Wisconet station lists station_timezone US/Central
+WCN_PAUSE = 0.5              # seconds between station requests
+
+
+def wcn_field(fields):
+    """The hourly 4 in (10 cm) soil temperature average from the API's own
+    field list -> (id, standard_name, unit). The unit is the field's own
+    final_units, never assumed."""
+    for f in fields or []:
+        if not isinstance(f, dict):
+            continue
+        if (str(f.get("measure_type", "")).lower() == "soil temp" and f.get("collection_frequency") == "60min"
+                and str(f.get("qualifier", "")).lower() == "avg@4in"):
+            unit = f.get("final_units") or f.get("units_abbrev")
+            to_f(0.0, unit)          # an unnamed unit refuses here
+            return int(f["id"]), str(f["standard_name"]), unit
+    raise Refuse("Wisconet field list has no hourly 4 in soil temperature average")
+
+
+def wcn_station_list(doc):
+    out = {}
+    for x in doc if isinstance(doc, list) else []:
+        sid = str(x.get("station_id") or "").strip()
+        if sid and str(x.get("state") or "WI") == "WI":
+            out[sid] = {"name": str(x.get("station_name") or sid), "lat": x.get("latitude"), "lon": x.get("longitude")}
+    return out
+
+
+def wcn_parse(doc, fid, unit, tz=None):
+    """measures JSON -> {local date: daily mean degF}. Rows are
+    {collection_time (unix, UTC), measures: [[field id, value], ...]}; a
+    value stamped at the end of an hour belongs to the hour before it
+    (hourly_means). Days are the station's own Central days."""
+    import zoneinfo
+    tz = tz or zoneinfo.ZoneInfo(WCN_TZ)
+    rows = (doc or {}).get("data") if isinstance(doc, dict) else None
+    if rows is None:
+        raise Refuse("Wisconet measures answer has no data list")
+    pts = []
+    for r in rows:
+        t = r.get("collection_time")
+        if not isinstance(t, (int, float)):
+            continue
+        for m in r.get("measures") or []:
+            if isinstance(m, list) and len(m) == 2 and m[0] == fid:
+                v = num(m[1])
+                if v is not None:
+                    local = datetime.datetime.fromtimestamp(t, datetime.timezone.utc).astimezone(tz).replace(tzinfo=None)
+                    pts.append((local, to_f(v, unit)))
+    return hourly_means(pts)
+
+
+def wcn_url(sid, name, today):
+    end = datetime.datetime.combine(today + datetime.timedelta(days=1), datetime.time(6), datetime.timezone.utc)
+    beg = end - datetime.timedelta(days=DAYS + 3)
+    q = {"fields": name, "start_time": int(beg.timestamp()), "end_time": int(end.timestamp())}
+    return WCN + "api/v1/stations/%s/measures?%s" % (urllib.parse.quote(sid), urllib.parse.urlencode(q))
+
+
+def fetch_wisconet(today, log, sleep=time.sleep):
+    fid, name, unit = wcn_field(json.loads(get(WCN + "api/v1/fields/?legacy_only=false")))
+    meta = wcn_station_list(json.loads(get(WCN + "api/v1/stations/")))
+    if not meta:
+        raise Refuse("Wisconet lists no stations")
+    out = []
+    for sid, m in sorted(meta.items()):
+        try:
+            data = wcn_parse(json.loads(get(wcn_url(sid, name, today), tries=2)), fid, unit)
+            out.append(station("WCN", sid, m["name"] + ", WI", "WI", m["lat"], m["lon"],
+                               "10 cm (3.9 in)", "daily mean of hourly readings", data, today))
+        except (Refuse, ValueError) as e:
+            log("  wisconet %s: left out (%s)" % (sid, e))
+        sleep(WCN_PAUSE)
+    return out
+
+
+NETWORKS = [("USCRN", fetch_uscrn), ("SCAN", fetch_scan), ("ISUSM", fetch_isusm), ("KSMESO", fetch_ksmeso),
+            ("WCN", fetch_wisconet)]
 NET_LABEL = {"USCRN": "NOAA Climate Reference Network", "SCAN": "USDA NRCS Soil Climate Analysis Network",
-             "ISUSM": "Iowa State Soil Moisture Network", "KSMESO": "Kansas Mesonet"}
+             "ISUSM": "Iowa State Soil Moisture Network", "KSMESO": "Kansas Mesonet", "WCN": "Wisconet"}
+# Where each network's readings come from, linked beside every reading on the page.
+NET_URL = {"USCRN": "https://www.ncei.noaa.gov/access/crn/",
+           "SCAN": "https://www.nrcs.usda.gov/resources/data-and-reports/soil-climate-analysis-network",
+           "ISUSM": "https://mesonet.agron.iastate.edu/agclimate/", "KSMESO": "https://mesonet.k-state.edu/",
+           "WCN": "https://wisconet.wisc.edu/"}
+NET_TERMS = {"WCN": "Wisconet data is publicly available and may be used commercially under the Creative Commons "
+                    "Attribution (CC BY) license. https://creativecommons.org/licenses/by/4.0/"}
 
 
 # ---------------------------------------------------------------- counties
@@ -674,6 +767,8 @@ def build(results, today, now_utc, prev=None, points=None, log=print):
         "networks": nets,
         "left_out_vs_neighbors": gone,
         "net_labels": NET_LABEL,
+        "net_urls": NET_URL,
+        "net_terms": NET_TERMS,
         "state_names": NAMES,
         "stations": uniq,
     }
@@ -887,7 +982,6 @@ def probe():
     # written against what the service really sends.
     save("wisconet-openapi.json", WCN + "openapi.json")
     save("wisconet-api-page.html.txt", WCN_SITE + "data/api")
-    save("wisconet-fields.json", WCN + "api/v1/fields/?legacy_only=false")
     save("wisconet-fields-legacy.json", WCN + "api/v1/fields/")
     save("wisconet-available-fields-ALTN.json", WCN + "api/v1/fields/ALTN/available_fields")
     save("wisconet-daily-summaries.json", WCN + "api/v1/stations/daily_summaries")
@@ -922,6 +1016,11 @@ def probe():
                     urllib.parse.quote(str(sid)), urllib.parse.urlencode({"start_time": beg, "end_time": end, "frequency": "daily"})))
                 save("wisconet-station-fields.json", WCN + "api/v1/stations/%s/fields" % urllib.parse.quote(str(sid)))
                 save("wisconet-station.json", WCN + "api/v1/stations/%s" % urllib.parse.quote(str(sid)))
+        fl = save("wisconet-fields.json", WCN + "api/v1/fields/?legacy_only=false")
+        fid, fname, funit = wcn_field(json.loads(fl or "[]"))
+        summ["wisconet_field"] = [fid, fname, funit]
+        for sid in ("ALTN", "ANGO"):
+            save("wisconet-hourly-%s.json" % sid, wcn_url(sid, fname, today))
     except Exception as e:  # noqa: BLE001
         summ["wisconet_error"] = str(e)
     # What would parse right now, network by network.
