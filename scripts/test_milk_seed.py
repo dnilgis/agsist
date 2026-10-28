@@ -232,6 +232,39 @@ def main():
     ck("five or more months behind: no area summary", S.milk_area_seed(MBX, "2026-11-15") is None)
     ck("no areas: no summary", S.milk_area_seed(dict(MBX, areas=None), "2026-10-28") is None)
 
+    print("Order 30 panel (data/dairy-order30.json, the Oct 28 run's real file)")
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import fetch_order30 as F30
+    fx = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures", "milk")
+    rd = lambda n: open(os.path.join(fx, n), encoding="utf-8").read()
+    L30, _w = F30.month_record("2026-09", rd("o30-class-2026-09.txt"), rd("o30-ppd-2026-09.txt"))
+    Y30 = dict(L30, month_key="2025-09", class1=21.9, mover=9.34, adv_class3_skim=7.54, adv_class4_skim=9.34,
+               uniform=17.94, ppd=0.35, scc=0.0009)
+    o = {"latest": L30, "year_ago": Y30, "read": "2026-10-28",
+         "next_class1": [{"month_key": "2026-11", "class1": 23.47}]}
+    h = S.milk_o30_seed(o, SEP, "2026-10-28")
+    ck("PPD +$0.58 Sep 2026 beside +$0.35 Sep 2025", ">+$0.58<" in h and ">+$0.35<" in h and "Sep 2025" in h, h)
+    ck("...uniform $16.62 and Class I $20.24, base zone named", ">$16.62<" in h and ">$20.24<" in h and "Cook County, IL" in h)
+    ck("...the mover called the higher of only because it is", "is the higher of the two advanced skim prices" in h)
+    ck("...Class I ahead from the advance release", "Nov 2026 $23.47/cwt" in h)
+    ck("...the market administrator credited", "fmma30.com" in h)
+    h2 = S.milk_o30_seed(dict(o, year_ago=None), SEP, "2026-10-28")
+    ck("no year-ago month: one column and it says why", "Sep 2025 is not shown" in h2 and ">+$0.35<" not in h2)
+    h3 = S.milk_o30_seed({"why": "PPD index unreadable"}, SEP, "2026-10-28")
+    ck("no file month: withheld, no number", "Order 30 numbers: not shown yet" in h3 and "$0.58" not in h3)
+    ck("depooling line: Sep 2026 Class IV $2.90 over III", "Depooling watch, Sep 2026:" in h and "$2.90/cwt over Class III" in h)
+    ck("...not said when IV is within $1.00", S.milk_depool(dict(SEP, class4=SEP["class3"] + 0.99), "2026-10-28") == "")
+    ck("...not said for a stale class month", S.milk_depool(SEP, "2027-02-01") == "")
+    ck("no em dash in the Order 30 copy", "\u2014" not in h + h2 + h3)
+
+    print("the published miss (data/dairy-miss.json)")
+    m0 = S.milk_miss_seed({"started": "2026-10-28", "months": {"2026-11": {"contract": "2026-11"}}}, "2026-10-28")
+    ck("nothing graded yet: says when the first month is", "No month graded yet. The first month it can grade is November 2026" in m0, m0)
+    m1 = S.milk_miss_seed({"started": "2026-10-28", "months": {"2026-11": {"said": 17.86, "said_session": "2026-10-30",
+                                                                          "actual": 17.5, "miss": -0.36}}}, "2026-12-03")
+    ck("a graded month: futures as it began, announced, miss", ">$17.86 <" in m1 and ">$17.50<" in m1 and "−$0.36" in m1 and "Oct 30" in m1, m1)
+    ck("...with the sample size", "1 month graded" in m1)
+
     print()
     if fails:
         print(f"{len(fails)} FAILED")

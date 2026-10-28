@@ -2491,13 +2491,13 @@ def milk_dmc_margin(dmc, d, today):
 # typed here. The depooling line is our own arithmetic on the announced Class III
 # and Class IV prices (data/dairy-data.json), said plainly, never a forecast.
 MILK_O30_DATA = "data/dairy-order30.json"
-O30_ROWS = (("class1", "Class I price, 3.5% butterfat, base zone", "$/cwt"),
+O30_ROWS = (("class1", "Class I price (3.5% fat)", "$/cwt"),
             ("mover", "Class I skim mover", "$/cwt"),
             ("adv_class3_skim", "Advanced Class III skim", "$/cwt"),
             ("adv_class4_skim", "Advanced Class IV skim", "$/cwt"),
             ("uniform", "Statistical uniform price", "$/cwt"),
-            ("ppd", "Producer price differential (PPD), base zone", "$/cwt"),
-            ("scc", "Somatic cell adjustment rate, per 1,000 SCC", "$/cwt"))
+            ("ppd", "Producer price differential (PPD)", "$/cwt"),
+            ("scc", "SCC adjustment, per 1,000 cells", "$/cwt"))
 O30_LINK = '<a href="https://www.fmma30.com/" rel="noopener">Upper Midwest Market Administrator</a>'
 DEPOOL_GAP = 1.00     # $/cwt Class IV over Class III before the line is said
 
@@ -2565,7 +2565,7 @@ def milk_o30_seed(o30, d, today):
             f'dollars per hundredweight</caption><thead><tr><th scope="col">Order 30</th>{th}</tr></thead><tbody>'
             + "".join(body) + "</tbody></table></div>" + nxt +
             f'<p class="dp-note-src" id="dp-o30-src">Source: {O30_LINK}, monthly class price and producer price differential releases'
-            f'{", read " + rd if rd else ""}.{note} The PPD is what the order adds to (or takes from) the component value of your milk, '
+            f'{", read " + rd if rd else ""}. Prices at the order&rsquo;s base zone; your plant&rsquo;s zone adds or takes a little.{note} The PPD is what the order adds to (or takes from) the component value of your milk, '
             "before hauling and co-op deductions. A dash: not in the release read for that month."
             + ("" if yh else f" {_ishort(li - 12)} is not shown: its releases were not read or did not check out.")
             + "</p>" + dep)

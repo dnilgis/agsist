@@ -14,9 +14,9 @@
  "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3357",
  "updated": "2026-10-15T07:09:45Z",
  "status": {
-  "ok": false,
-  "note": "AMS mailbox fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
-  "checked": "2026-10-28T03:10:24Z"
+  "ok": true,
+  "note": "",
+  "checked": "2026-10-25T19:07:09Z"
  },
  "areas": {
   "month_key": "2026-06",
