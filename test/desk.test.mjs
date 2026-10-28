@@ -41,7 +41,7 @@ test("the page: noindex, no referrer, no analytics, no em dash, in no sitemap, s
   assert.match(A, /<meta name="robots" content="noindex, nofollow">/);
   assert.match(A, /<meta name="referrer" content="no-referrer">/);
   assert.doesNotMatch(A, /googletagmanager|G-6KXCTD5Z9H|gtag\(|components\/loader\.js/, "no analytics, no loader");
-  assert.doesNotMatch(A, /[—–]|&mdash;|&ndash;/, "no em dash");
+  assert.doesNotMatch(A, new RegExp("[\\u2014\\u2013]|&mdash;|&ndash;"), "no em dash");
   let maps = 0;
   for (const f of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) { maps++; assert.doesNotMatch(read(f), /\/desk\b/, f); }
   assert.ok(maps >= 5, `only ${maps} sitemaps seen; they have moved`);
