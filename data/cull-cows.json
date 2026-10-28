@@ -20,14 +20,14 @@
   "window_days": 14,
   "from": "2026-10-15",
   "to": "2026-10-28",
-  "barns": 43,
+  "barns": 42,
   "min_barns": 3,
-  "median_cwt": 128.71,
+  "median_cwt": 128.77,
   "low_cwt": 117.85,
   "high_cwt": 141.5,
-  "median_per_head": 1664.34,
-  "median_wt": 1262,
-  "head": 744,
+  "median_per_head": 1665.65,
+  "median_wt": 1264,
+  "head": 690,
   "states": [
    "IA",
    "IN",
@@ -48,7 +48,6 @@
    "campbellsville-ky",
    "cuba-mo",
    "el-reno-ok",
-   "exeter-mo",
    "farmington-mo",
    "flemingsburg-ky",
    "glasgow-ky",
@@ -3956,38 +3955,6 @@
         "rows": 1
        }
       ],
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 54,
-        "avg_wt": 1231,
-        "cwt": 125.46,
-        "per_head": 1544.41,
-        "lo": 115.0,
-        "hi": 135.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 2,
-        "avg_wt": 1225,
-        "cwt": 138.0,
-        "per_head": 1690.5,
-        "lo": 138.0,
-        "hi": 138.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 17,
-        "avg_wt": 1176,
-        "cwt": 104.57,
-        "per_head": 1229.74,
-        "lo": 86.0,
-        "hi": 113.0,
-        "rows": 1
-       }
-      ],
       "lean": [
        {
         "dressing": "Average",
@@ -4043,7 +4010,12 @@
        }
       ]
      },
-     "refused": []
+     "refused": [
+      {
+       "class": "boner",
+       "why": "weight range 126-1390 outside (500, 3000): misprint"
+      }
+     ]
     }
    ],
    "slug": "3916",
@@ -6435,28 +6407,6 @@
      "url": "https://mymarketnews.ams.usda.gov/viewReport/1824",
      "pdf": "https://www.ams.usda.gov/mnreports/ams_1824.pdf",
      "classes": {
-      "breaker": [
-       {
-        "dressing": "Average",
-        "head": 4,
-        "avg_wt": 606,
-        "cwt": 144.91,
-        "per_head": 878.15,
-        "lo": 142.0,
-        "hi": 147.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 42,
-        "avg_wt": 1390,
-        "cwt": 135.44,
-        "per_head": 1882.62,
-        "lo": 131.0,
-        "hi": 136.5,
-        "rows": 1
-       }
-      ],
       "boner": [
        {
         "dressing": "Average",
@@ -6584,7 +6534,12 @@
        }
       ]
      },
-     "refused": []
+     "refused": [
+      {
+       "class": "breaker",
+       "why": "weight range 338-1410 outside (500, 3000): misprint"
+      }
+     ]
     }
    ],
    "slug": "1824",

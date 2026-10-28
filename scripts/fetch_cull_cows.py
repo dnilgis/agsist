@@ -115,8 +115,10 @@ def parse_rows(block):
             return None, "avg price %.2f outside its own range %.2f-%.2f: misread" % (price, plo, phi)
         if not (PRICE_RANGE[0] <= price <= PRICE_RANGE[1]):
             return None, "price %.2f outside %s" % (price, PRICE_RANGE)
-        if not (WT_RANGE[0] <= wt <= WT_RANGE[1]):
-            return None, "avg weight %d outside %s" % (wt, WT_RANGE)
+        if not (WT_RANGE[0] <= lo and hi <= WT_RANGE[1]):
+            # Woodward OK 1824, Oct 28 2026, printed Breakers "4 338-1410 606 ... 144.91": no slaughter
+            # cow weighs 338 lb, so the row (and with it the table) is a misprint we do not read
+            return None, "weight range %d-%d outside %s: misprint" % (lo, hi, WT_RANGE)
         rows.append({"head": head, "wt": wt, "plo": plo, "phi": phi, "price": price,
                      "dressing": _label(m.group(8), m.group(9))})
     tail = block[pos:]
@@ -473,6 +475,8 @@ def selftest():
     ck("rows: avg price outside its range refuses", rows is None)
     rows, why = parse_rows(" 10 1100-1300 1400 120.00-130.00 125.00 Average ")
     ck("rows: avg weight outside its range refuses", rows is None)
+    rows, why = parse_rows(" 4 338-1410 606 142.00-147.00 144.91 Average 42 1210-2050 1390 131.00-136.50 135.44 Low ")
+    ck("rows: Woodward 1824's 338 lb Breaker row refuses the table (misprint)", rows is None and "338" in why, why)
     rows, why = parse_rows(" 10 1100-1300 1200 120.00-130.00 125.00 Average 117.00 ")
     ck("rows: a stray price after the last row refuses", rows is None)
 
