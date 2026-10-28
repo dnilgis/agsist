@@ -609,6 +609,7 @@
       <label><span>Protein test</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-pro" min="2" max="5" step="any" placeholder="3.3"><em>%</em></span></label>
       <label><span>Other solids test</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-os" min="4" max="7" step="any" placeholder="5.9"><em>%</em></span></label>
       <label><span>Your hauling and deductions</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-ded" min="0" max="15" step="any" placeholder="from your stub"><em>$/cwt</em></span></label>
+      <label><span>Your federal order</span><span class="dp-in"><select id="ck-order"><option value="">Leave the PPD out</option><option value="30">Upper Midwest, Order 30</option></select></span></label>
       <label><span>Your cost to make milk</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-cost" min="1" max="80" step="any" placeholder="your own"><em>$/cwt</em></span></label>
     </form>
     <div class="dp-check-out" id="dp-check-out" aria-live="polite"><p class="dp-note-src">Type your butterfat, protein and other solids tests to see what your milk is worth at them.</p></div>
@@ -1447,7 +1448,7 @@
   });
 })();
 </script>
-  <script src="/components/milk-tools.js?v=1" defer></script>
+  <script src="/components/milk-tools.js?v=2" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

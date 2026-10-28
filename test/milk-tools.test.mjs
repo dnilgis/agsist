@@ -92,7 +92,8 @@ test('your area: a ZIP names the area; split or unreported states ask for the pi
   for (const a of Object.values(M.BY_STATE)) assert.ok(names.has(a), a);
   for (const l of Object.values(M.SPLIT)) for (const a of l) assert.ok(names.has(a), a);
   // the picker lists exactly the report's areas
-  const opts = [...page.matchAll(/<option value="([^"]+)">/g)].map((m) => m[1]);
+  const picker = /<select id="dp-area-sel">[\s\S]*?<\/select>/.exec(page)[0];   // the area picker, not the order select
+  const opts = [...picker.matchAll(/<option value="([^"]+)">/g)].map((m) => m[1]);
   assert.deepEqual(opts, mb.areas.rows.map((r) => r.area));
   // ZIP table: the same as components/price-local.js
   const z3 = (s) => /var Z3 = '([^']+)'/.exec(s)[1];
@@ -118,4 +119,38 @@ test('the page: no hand-typed DMC, cost or pool figures, no Class IV futures pro
   assert.match(js, /localStorage/);
   // no em dash in the copy a reader sees (CSS comments aside) or in the component
   assert.ok(!/\u2014/.test(js + page.replace(/<style>[\s\S]*?<\/style>/g, '')), 'no em dash');
+});
+
+// Part 2 (fx/dairy2): the reader's order's PPD, Order 30 first. Only the same month as the
+// component prices; another month's PPD is never added (it swings by dollars month to month).
+test('read my check: Order 30 PPD added for the same month only, labeled', () => {
+  const t = { cwt: 2170, fat: 4.2, pro: 3.3, os: 5.9, ded: 1.4, cost: 19.5, order: '30' };
+  const same = { latest: { month_key: '2026-09', ppd: -0.42, uniform: 15.62 } };
+  const h = M.checkHtml(t, SEP, hist, ROWS, true, same);
+  assert.match(h, /Plus Order 30 PPD, September 2026 \(Upper Midwest market administrator\)<\/span><span class="v">−\$0\.42/);
+  assert.match(h, /With the PPD<\/strong><\/span><span class="v"><strong>\$15\.61\/cwt/);
+  // the gap to the reader's own cost uses the PPD line: 15.61 - 19.50
+  assert.match(h, /Against your cost of \$19\.50\/cwt<\/span><span class="v neg">−\$3\.89\/cwt/);
+  assert.match(h, /leave out the PPD/);
+  const old = { latest: { month_key: '2026-08', ppd: 0.31 } };
+  const h2 = M.checkHtml(t, SEP, hist, ROWS, true, old);
+  assert.doesNotMatch(h2, /Plus Order 30 PPD/);
+  assert.match(h2, /differential for September 2026 is not held here yet/);
+  assert.match(h2, /Against your cost of \$19\.50\/cwt<\/span><span class="v neg">−\$3\.47\/cwt/);
+  // no order picked: no PPD line at all, even when the file has one
+  assert.doesNotMatch(M.checkHtml({ ...t, order: '' }, SEP, hist, ROWS, true, same), /PPD,/);
+  assert.equal(M.ppdFor({ months: { '2026-09': { month_key: '2026-09', ppd: 0.1 } } }, '2026-09').ppd, 0.1);
+  assert.equal(M.ppdFor({ latest: { month_key: '2026-09', ppd: null } }, '2026-09'), null);
+});
+
+test('milk price day ask: the milk-month topic, never pre-ticks the Daily, and a sender reads it', () => {
+  const m = /<div data-signup-ask="[^"]*" data-topic="milk-month"[^>]*>/.exec(page);
+  assert.ok(m, 'the ask is on the page');
+  assert.doesNotMatch(m[0], /data-daily/);
+  assert.ok(read('scripts/send_milk_month.py').includes('TOPIC = "milk-month"'));
+  assert.ok(read('workers/subs-worker.js').includes('const MILK_MONTH = "milk-month";'));
+  const wf = read('.github/workflows/dairy.yml');
+  assert.ok(wf.indexOf('python scripts/send_milk_month.py --selftest') > 0 &&
+    wf.indexOf('python scripts/send_milk_month.py --selftest') < wf.indexOf('python3 scripts/send_milk_month.py\n'), 'selftest before the send');
+  assert.match(wf, /SEND: .*github\.ref_name == 'main'/, 'only main sends to the list');
 });
