@@ -553,6 +553,11 @@ def main():
         # design, so this path is taken on every run.
         if not events:
             return []
+        # A CAMPAIGN THAT STARTED TODAY HAS NO FULL DAY YET (Oct 28, 2026: Root Lot went live the day the
+        # change merged, so start was today and end yesterday). GA4 refuses start > end with a 400, which
+        # stopped every sponsor's report. No day in range is no rows, not a question.
+        if str(start) > str(end):
+            return []
         req = RunReportRequest(
             property="properties/" + prop,
             dimensions=[Dimension(name=d) for d in dimensions],
@@ -570,7 +575,7 @@ def main():
     def run_region(events, start, end):
         """{region name: count} for US visits, GA4's own region for the visit.
         Never an event parameter: the ad sends no state."""
-        if not events:
+        if not events or str(start) > str(end):
             return {}
         req = RunReportRequest(
             property="properties/" + prop,
