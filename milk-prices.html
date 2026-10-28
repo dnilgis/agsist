@@ -73,7 +73,10 @@
   .dp-check{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.6rem .8rem;margin:.6rem 0 .4rem;}
   .dp-check label{display:flex;flex-direction:column;gap:.25rem;font-size:.9rem;color:var(--text-dim);min-width:0;}
   .dp-in{display:flex;align-items:center;gap:.35rem;}
-  .dp-in input{flex:1;min-width:0;min-height:44px;font:inherit;font-size:1rem;padding:.4rem .6rem;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);}
+  .dp-in input,.dp-in select{flex:1;min-width:0;min-height:44px;font:inherit;font-size:1rem;padding:.4rem .6rem;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);}
+  .dp-o30-depool{font-size:.95rem;line-height:1.55;color:var(--text-muted);margin:.8rem 0 0;padding:.6rem .8rem;border-left:3px solid var(--border);}
+  .dp-o30-depool strong{color:var(--text);}
+  #dp-o30 .dp-tbl-wrap{margin-top:.4rem;}
   .dp-in em{font-style:normal;font-size:.85rem;color:var(--text-muted);white-space:nowrap;}
   .dp-check-out .dp-example-line span:last-child{text-align:right;}
   .dp-check-out .dp-example-line{flex-wrap:wrap;}
@@ -615,7 +618,7 @@
       <label><span>Protein test</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-pro" min="2" max="5" step="any" placeholder="3.3"><em>%</em></span></label>
       <label><span>Other solids test</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-os" min="4" max="7" step="any" placeholder="5.9"><em>%</em></span></label>
       <label><span>Your hauling and deductions</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-ded" min="0" max="15" step="any" placeholder="from your stub"><em>$/cwt</em></span></label>
-      <label><span>Your federal order</span><span class="dp-in"><select id="ck-order"><option value="">Leave the PPD out</option><option value="30">Upper Midwest, Order 30</option></select></span></label>
+      <label><span>Your federal order</span><span class="dp-in"><select id="ck-order"><option value="">No PPD</option><option value="30">Order 30</option></select></span></label>
       <label><span>Your cost to make milk</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-cost" min="1" max="80" step="any" placeholder="your own"><em>$/cwt</em></span></label>
     </form>
     <div class="dp-check-out" id="dp-check-out" aria-live="polite"><p class="dp-note-src">Type your butterfat, protein and other solids tests to see what your milk is worth at them.</p></div>
