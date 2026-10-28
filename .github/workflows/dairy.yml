@@ -24,6 +24,11 @@ on:
         description: "Probe only: save the raw AMS text and NASS response to data/dairy-raw/ on the raw branch"
         type: boolean
         default: false
+      email:
+        description: "Milk price day email: dry = render only; preview = Sig's test inbox; send = the list (refused unless this run read and checked the month)"
+        type: choice
+        options: [dry, preview, send]
+        default: dry
   schedule:
     - cron: '37 15 1-9 * *'     # announcement window, days 1-9, morning
     - cron: '37 21 1-9 * *'     # and afternoon
@@ -60,6 +65,8 @@ jobs:
           python scripts/dairy_probe.py --selftest
           python scripts/fetch_dmc.py --selftest
           python scripts/fetch_order30.py --selftest
+          python scripts/milk_miss.py --selftest
+          python scripts/send_milk_month.py --selftest
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
@@ -88,6 +95,11 @@ jobs:
       - name: Fetch the mailbox price into data/dairy-mailbox.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_mailbox.py
+      # What Read my check said for each month as it began, and the miss once
+      # USDA announces it (scripts/milk_miss.py; only grows, never backfilled).
+      - name: Record the futures miss log
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/milk_miss.py
       # The page body, title and description carry the newest month from the
       # file just written (scripts/seed_static.py seed_milk, scripts/bake_seo.py
       # seo_milk). Until 2026-10-13 they were typed by hand and sat on August
@@ -112,7 +124,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json"
+          FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json data/dairy-miss.json"
           rm -rf /tmp/dairy && mkdir -p /tmp/dairy
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/dairy/ || true
@@ -139,3 +151,29 @@ jobs:
             sleep $((RANDOM % 4 + 2))
           done
           echo "Failed to push after 5 attempts."; exit 1
+
+      # Milk price day (subs worker v5.58, topic milk-month): one email to the
+      # readers who asked on /milk-prices, when this run read and checked the
+      # month's AMS Class prices. Sig, Oct 28: on. DAIRY_MONTHLY_LIVE is the repo
+      # variable and counts as 1 unless Sig sets it to 0. The script still refuses
+      # unless status.class is ok from this run, the Class III formula lands on
+      # the announced price, the month is the one due and the file is fresh; a
+      # reader already mailed for the month is never mailed again.
+      - name: Milk price day email
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          SIG_TO: ${{ secrets.SIG_TO }}
+          SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
+          DAIRY_MONTHLY_LIVE: ${{ vars.DAIRY_MONTHLY_LIVE == '0' && '0' || '1' }}
+          PREVIEW: ${{ github.event_name == 'workflow_dispatch' && inputs.email == 'preview' && '1' || '' }}
+          SEND: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.email == 'send')) && github.ref_name == 'main' && '1' || '' }}
+        run: python3 scripts/send_milk_month.py
