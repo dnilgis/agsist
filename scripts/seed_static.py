@@ -2389,23 +2389,28 @@ def milk_dmc_seeds(fb, today):
 
 
 # --- DMC "would have paid", from data/dairy-dmc.json --------------------------
-# 2026-10-28 (dairy board, build 1). What DMC would have paid at FSA's own
-# published monthly margins, 2024 to 2026, by coverage level, before premium,
-# premium beside it, no level picked out. The margins are FSA's, checked into
-# data/dairy-dmc.json by hand from FSA (references fsa-dmc-program); nothing
-# here computes a feed cost. A row whose milk minus feed is not its margin, or
-# whose all-milk price disagrees with the NASS month we hold, withholds the
-# whole table: a struggling farmer takes this number to the lender.
+# 2026-10-28 (dairy board; part 2 finished Oct 28). What DMC would have paid at
+# FSA's own published monthly margins, 2019 (DMC's first year) on, by coverage
+# level, before premium, with the 2027 premium per cwt for Tier 1 and Tier 2
+# beside each level, no level picked out. scripts/fetch_dmc.py reads FSA's
+# margins page (live or the Internet Archive copy, cited with its snapshot date)
+# and writes only months whose milk minus feed is FSA's margin; the months it
+# could not confirm are counted in "withheld" and named here. Nothing here
+# computes a feed cost. A file row that does not add up, or whose all-milk price
+# disagrees with the NASS month we hold, withholds the whole table: a struggling
+# farmer takes this number to the lender.
 MILK_DMC_DATA = "data/dairy-dmc.json"
 DMC_LEVELS = [4.0 + 0.5 * i for i in range(12)]           # $4.00 to $9.50
+DMC_FIRST_YEAR = "2019"
 DMC_WITHHELD = ("What DMC would have paid at past margins: not shown yet. I only print it from FSA's own published "
                 "monthly margins and premium rates, checked against the USDA milk prices held here, and those are not "
                 "loaded yet. I will not guess them. FSA publishes each month's margin on its "
-                '<a href="https://www.fsa.usda.gov/dairy" rel="noopener">Dairy Margin Coverage page</a>.')
+                '<a href="https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates" '
+                'rel="noopener">DMC prices and updates page</a>.')
 
 
 def milk_dmc_rows(dmc, d):
-    """({month_key: margin}, reason) from the file, or ({}, why) when it cannot be used."""
+    """({month_key: margin}, reason) from the file, DMC months only (2019 on), or ({}, why)."""
     rows = (dmc or {}).get("margins") if isinstance(dmc, dict) else None
     if not isinstance(rows, dict) or not rows:
         return {}, "no FSA margins in the file"
@@ -2416,7 +2421,8 @@ def milk_dmc_rows(dmc, d):
         am, fd, mg = r.get("all_milk"), r.get("feed"), r.get("margin")
         if not (_pos(am) and _pos(fd) and _fin(mg)) or abs(am - fd - mg) > 0.006:
             return {}, f"{k}: milk minus feed is not the margin"
-        out[k] = mg
+        if k[:4] >= DMC_FIRST_YEAR:
+            out[k] = mg
     a = (d or {}).get("all_milk") or {}
     k = a.get("month_key")
     if k in rows and _pos(a.get("value")) and abs(rows[k]["all_milk"] - a["value"]) > 0.005:
@@ -2424,40 +2430,118 @@ def milk_dmc_rows(dmc, d):
     return dict(sorted(out.items())), ""
 
 
+def _cite(blk, name):
+    """'<a FSA url>name</a>' plus ', Internet Archive copy of <date>' when that is what was read."""
+    blk = blk if isinstance(blk, dict) else {}
+    u = blk.get("source_url") or ""
+    t = f'<a href="{_e(u)}" rel="noopener">{name}</a>' if u.startswith("https://www.fsa.usda.gov/") else name
+    au, sn = blk.get("archive_url") or "", blk.get("snapshot") or ""
+    if blk.get("via") == "archive" and au.startswith("https://web.archive.org/") and sn:
+        t += f' (<a href="{_e(au)}" rel="noopener">Internet Archive copy</a> of {_e(sn)})'
+    return t
+
+
+def _prem_cell(tier, lv):
+    """A Tier premium for a level: the rate, 'n/a' for a level FSA lists as not offered, or '-' (not read)."""
+    if not isinstance(tier, dict) or f"{lv:.2f}" not in tier:
+        return "-"
+    v = tier[f"{lv:.2f}"]
+    if v is None:
+        return "n/a"
+    if _fin(v) and v == 0:
+        return "none"      # FSA's word for the catastrophic level: no premium, the $100 fee only
+    if not (_fin(v) and v > 0):
+        return "-"
+    t = f"{v:.4f}".rstrip("0")
+    return "$" + (t + "0" * (3 - len(t.split(".")[1])) if len(t.split(".")[1]) < 3 else t)   # as FSA prints: $0.150, $0.0025
+
+
 def milk_dmc_paid(dmc, d):
     """The table html, or the withheld paragraph."""
     rows, why = milk_dmc_rows(dmc, d)
-    years = sorted({k[:4] for k in rows if k[:4] in ("2024", "2025", "2026")})
+    years = sorted({k[:4] for k in rows})
     if not years:
-        return f'<p class="dp-dmc-paid-none" data-why="{_e(why or "no 2024 to 2026 months")}">{DMC_WITHHELD}</p>'
-    prem = (dmc.get("premium_tier1") or {}) if isinstance(dmc.get("premium_tier1"), dict) else {}
-    heads = []
-    for y in years:
+        return f'<p class="dp-dmc-paid-none" data-why="{_e(why or "no DMC months")}">{DMC_WITHHELD}</p>'
+    pr = dmc.get("premiums") if isinstance(dmc.get("premiums"), dict) else {}
+    has_prem = isinstance(pr.get("tier1"), dict) and bool(pr.get("tier1"))
+    heads, part = [], []
+    for y in reversed(years):      # newest first: a phone shows the recent years before it scrolls
         ms = sorted(int(k[5:]) for k in rows if k[:4] == y)
-        lab = (y if len(ms) == 12 else f"{y}, {MON3[ms[0] - 1]}" if len(ms) == 1
-               else f"{y}, {MON3[ms[0] - 1]} to {MON3[ms[-1] - 1]}")
-        heads.append((y, lab, len(ms)))
+        if len(ms) == 12:
+            heads.append((y, y, 12))
+            continue
+        span = (MON3[ms[0] - 1] if len(ms) == 1 else f"{MON3[ms[0] - 1]} to {MON3[ms[-1] - 1]}"
+                if ms[-1] - ms[0] + 1 == len(ms) else f"{len(ms)} months")
+        heads.append((y, f"{y}*", len(ms)))
+        part.append(f"{y} is {span} only")
+    asof = f", from its DMC fact sheet of {_e(pr['as_of'])}" if isinstance(pr.get("as_of"), str) and pr.get("as_of") else ""
     th = "".join(f'<th scope="col" class="num">{lab}</th>' for _, lab, _ in heads)
     body = []
     for lv in DMC_LEVELS:
         cells = []
+        prem = (f'<span class="dp-dmc-prem">premium {_prem_cell(pr.get("tier1"), lv)} / {_prem_cell(pr.get("tier2"), lv)}</span>'
+                if has_prem else "")
         for y, _, n in heads:
             pay = sum(max(0.0, lv - m) for k, m in rows.items() if k[:4] == y) / n
             cells.append(f'<td class="num">{_cwt(pay)}</td>')
-        pr = prem.get(f"{lv:.2f}")
-        cells.append(f'<td class="num">{_money4(pr) if _fin(pr) and pr >= 0 else "not loaded"}</td>')
-        body.append(f'<tr><th scope="row">{_cwt(lv)}</th>{"".join(cells)}</tr>')
-    src = _e(dmc.get("source") or "FSA")
+        body.append(f'<tr><th scope="row">{_cwt(lv)}{prem}</th>{"".join(cells)}</tr>')
+    wh = dmc.get("withheld") if isinstance(dmc.get("withheld"), dict) else {}
+    wn = wh.get("count") if isinstance(wh.get("count"), int) and wh.get("count") > 0 else 0
+    held = ""
+    if wn:
+        ms = [_ishort(_mkey(k)) for k in (wh.get("months") or []) if _mkey(k) is not None]
+        named = f" ({', '.join(ms)})" if ms and len(ms) <= 6 else ""
+        held = (f" {wn} month{'s' if wn != 1 else ''} from 2019 on{named} {'are' if wn != 1 else 'is'} left out: "
+                f"{_e(wh.get('why') or 'not confirmed on FSA&rsquo;s own page')}.")
+    t1 = pr.get("tier1_lb")
+    t1w = (f"Tier 1 is the first {t1 // 1000000} million lb of your production history a year"
+           if isinstance(t1, int) and t1 >= 1000000 and t1 % 1000000 == 0 else "Tier 1 is the first part of your production history")
+    t2max = max((lv for lv in DMC_LEVELS if _fin((pr.get("tier2") or {}).get(f"{lv:.2f}"))), default=None) if has_prem else None
+    prem_note = ""
+    if has_prem:
+        prem_note = (f" Under each level: FSA&rsquo;s premium per cwt covered{asof}, Tier 1 / Tier 2; the payment columns "
+                     f"do not take them off. Payment works the same in both tiers. {t1w}, Tier 2 the rest"
+                     + (f"; FSA offers Tier 2 only up to {_cwt(t2max)} (n/a above)" if t2max is not None and t2max < DMC_LEVELS[-1] else "")
+                     + "." + (" A dash: not in the fact sheet as read." if any(
+                         _prem_cell(pr.get(t), lv) == "-" for t in ("tier1", "tier2") for lv in DMC_LEVELS) else ""))
     rd = _e(dmc.get("read") or "")
-    return ('<details class="dp-states" id="dp-dmc-paid"><summary>What DMC would have paid at these published margins, '
-            f'{years[0]} to {years[-1]}, before premium</summary><div class="dp-tbl-wrap"><table class="dp-tbl">'
-            '<caption class="dp-sr">Average DMC payment per cwt covered, Tier 1, by coverage level and year</caption>'
-            f'<thead><tr><th scope="col">Coverage level</th>{th}<th scope="col" class="num">Premium, $/cwt</th></tr></thead>'
+    lo, hi = min(rows), max(rows)
+    prem_src = f" Premiums: {_cite(pr, 'FSA DMC fact sheet')}." if has_prem else (
+        " Premium rates: not loaded here yet, so they are not shown beside the levels.")
+    return ('<details class="dp-states" id="dp-dmc-paid"><summary>What DMC would have paid at these published prices, '
+            f'{_ishort(_mkey(lo))} to {_ishort(_mkey(hi))}, before premium</summary><div class="dp-tbl-wrap dp-tbl-scroll"><table class="dp-tbl">'
+            '<caption class="dp-sr">DMC premium and what DMC would have paid, dollars per cwt of covered milk, by coverage level and year</caption>'
+            f'<thead><tr><th scope="col">Level{"<span class=dp-dmc-prem>premium Tier 1 / 2</span>" if has_prem else ""}</th>{th}</tr></thead>'
             f'<tbody>{"".join(body)}</tbody></table></div>'
-            '<p class="dp-note-src">Would have paid at these published prices, before premium: the average monthly '
-            'payment per cwt covered, Tier 1 (the first 6 million lb a year), over the months shown. Premium is the '
-            f'rate for 2027 coverage. No level is a pick for your farm, and past margins are not 2027 margins. Margins: {src}'
-            f'{", read " + rd if rd else ""}.</p></details>')
+            '<p class="dp-note-src">Would have paid at these published prices, before premium: for each year, the average over its '
+            'months of the coverage level minus FSA&rsquo;s margin when the margin was below it, in dollars per cwt of covered milk'
+            + (f" ({'; '.join(reversed(part))})" if part else "") + ". Newest year first." + prem_note +
+            ' DMC itself pays on the average margin of two consecutive months; this table uses each month alone, so a real payment can differ.' +
+            ' No level is a pick for your farm, and past margins are not next year&rsquo;s.</p>'
+            f'<p class="dp-note-src">These are the margins as FSA publishes them now.{_dmc_hay(dmc, years)}{held} '
+            f'Margins: {_cite(dmc, "FSA, DMC prices and updates")}{", read " + rd if rd else ""}.{prem_src}</p></details>')
+
+
+def _dmc_hay(dmc, years):
+    """The hay in FSA's feed cost, from the column heads of FSA's own yearly tables
+    (data/dairy-dmc.json hay), and the 50/50 blend and the 2020 revision only from
+    the FSA notices read into the file (hay_notes); never typed from memory."""
+    hay = dmc.get("hay") if isinstance(dmc.get("hay"), dict) else {}
+    b19 = re.search(r"blend", hay.get("2019") or "", re.I)
+    later = [y for y in years if y > "2019"]
+    prem = later and all(re.search(r"premium", hay.get(y) or "", re.I) for y in later)
+    if not (b19 and prem and "2019" in years):
+        return ""
+    notes = dmc.get("hay_notes") if isinstance(dmc.get("hay_notes"), dict) else {}
+    out = " FSA&rsquo;s own tables price the hay in the feed cost as blended alfalfa in 2019"
+    bl = notes.get("blend") if isinstance(notes.get("blend"), dict) else {}
+    if bl.get("text") and bl.get("source_url", "").startswith("https://www.fsa.usda.gov/"):
+        out += f' ({_e(bl["text"])}: {_cite(bl, "FSA, Jul 11, 2019")})'
+    out += " and as premium alfalfa from 2020 on"
+    rv = notes.get("revision") if isinstance(notes.get("revision"), dict) else {}
+    if rv.get("text") and rv.get("source_url", "").startswith("https://www.fsa.usda.gov/"):
+        out += f'; {_e(rv["text"])} ({_cite(rv, "FSA Notice DMC-53")})'
+    return out + "."
 
 
 def milk_dmc_margin(dmc, d, today):
@@ -2482,6 +2566,202 @@ def milk_dmc_margin(dmc, d, today):
             " The feed side, as FSA prices it from corn, premium alfalfa hay and soybean meal, is not held here, "
             "so I do not print a margin. FSA posts each month&rsquo;s margin on its "
             '<a href="https://www.fsa.usda.gov/dairy" rel="noopener">Dairy Margin Coverage page</a>.</p>')
+
+
+# --- Federal Order 30 (Upper Midwest), from data/dairy-order30.json ----------
+# 2026-10-28 (dairy board, build 4; Sig: Order 30 first). The order's own
+# monthly numbers, latest month and a year earlier, read from the Upper Midwest
+# market administrator's releases by scripts/fetch_order30.py. A value the file
+# does not hold prints as a dash with the reason in the source line; nothing is
+# typed here. The depooling line is our own arithmetic on the announced Class III
+# and Class IV prices (data/dairy-data.json), said plainly, never a forecast.
+MILK_O30_DATA = "data/dairy-order30.json"
+O30_ROWS = (("class1", "Class I price (3.5% fat)", "$/cwt"),
+            ("mover", "Class I skim mover", "$/cwt"),
+            ("adv_class3_skim", "Advanced Class III skim", "$/cwt"),
+            ("adv_class4_skim", "Advanced Class IV skim", "$/cwt"),
+            ("uniform", "Statistical uniform price", "$/cwt"),
+            ("ppd", "Producer price differential (PPD)", "$/cwt"),
+            ("scc", "SCC adjustment, per 1,000 cells", "$/cwt"))
+O30_LINK = '<a href="https://www.fmma30.com/" rel="noopener">Upper Midwest Market Administrator</a>'
+DEPOOL_GAP = 1.00     # $/cwt Class IV over Class III before the line is said
+
+
+def milk_depool(d, today):
+    """The plain depooling sentence from our own Class III and IV, or ''."""
+    d = d if isinstance(d, dict) else {}
+    i, c3, c4 = _mkey(d.get("class_month_key")), d.get("class3"), d.get("class4")
+    t = _mkey(str(today)[:7])
+    if i is None or t is None or t - i > 2 or not (_pos(c3) and _pos(c4)):
+        return ""
+    g = _jr(c4 - c3, 2)
+    if g <= DEPOOL_GAP:
+        return ""
+    return (f'<p class="dp-o30-depool" id="dp-o30-depool"><strong>Depooling watch, {_ishort(i)}:</strong> Class IV was '
+            f"{_cwt(g)}/cwt over Class III (USDA AMS, {_cwt(c4)} against {_cwt(c3)}). When Class IV runs this far above "
+            "Class III, a butter and powder plant would owe the pool for its milk, so it can do better by leaving the pool "
+            "for the month (depooling). The higher-valued milk it takes out is value the pool, and so the PPD, does not get. "
+            "Whether any plant did shows up later in the order&rsquo;s pooled volume, not in this line. I say it when Class IV is more than "
+            f"{_cwt(DEPOOL_GAP)} over Class III.</p>")
+
+
+def _o30_cell(r, k):
+    v = (r or {}).get(k)
+    if not _fin(v):
+        return "-"
+    if k == "ppd":
+        return _sg(v, 2)
+    if k == "scc":
+        return "$" + _fixed(v, 5)
+    return _cwt(v)
+
+
+def milk_o30_seed(o30, d, today):
+    o = o30 if isinstance(o30, dict) else {}
+    L, Y = o.get("latest") if isinstance(o.get("latest"), dict) else None, o.get("year_ago") if isinstance(o.get("year_ago"), dict) else None
+    li = _mkey((L or {}).get("month_key"))
+    dep = milk_depool(d, today)
+    if li is None or not any(_fin((L or {}).get(k)) for k, _, _ in O30_ROWS):
+        why = _e(o.get("why") or "the market administrator's releases have not been read yet")
+        return (f'<p class="dp-note-src" id="dp-o30-none" data-why="{why}">Order 30 numbers: not shown yet. I print them only '
+                f"as the {O30_LINK} publishes them, read from its own monthly releases, and those are not loaded here yet. "
+                "I will not type them in by hand.</p>" + dep)
+    yi = _mkey((Y or {}).get("month_key"))
+    yh = _ishort(yi) if yi is not None and yi == li - 12 else None
+    th = f'<th scope="col" class="num">{_ishort(li)}</th>' + (f'<th scope="col" class="num">{yh}</th>' if yh else "")
+    body = []
+    for k, name, _u in O30_ROWS:
+        if not _fin((L or {}).get(k)) and not (yh and _fin((Y or {}).get(k))):
+            continue
+        body.append(f'<tr><th scope="row">{name}</th><td class="num">{_o30_cell(L, k)}</td>'
+                    + (f'<td class="num">{_o30_cell(Y, k)}</td>' if yh else "") + "</tr>")
+    rd = _e(o.get("read") or "")
+    zone = _e((L or {}).get("base_zone") or "")
+    hi = (L or {}).get("mover_higher_of") is True
+    nx = [r for r in (o.get("next_class1") or []) if isinstance(r, dict) and _mkey(r.get("month_key")) is not None and _pos(r.get("class1"))]
+    nxt = ""
+    if nx:
+        nxt = ('<p class="dp-note-src" id="dp-o30-next">Class I ahead, announced in advance: '
+               + "; ".join(f"{_ishort(_mkey(r['month_key']))} {_cwt(r['class1'])}/cwt" for r in nx) + ".</p>")
+    note = (f" Base zone: {zone}." if zone else "") + (
+        " The Class I skim mover is the higher of the two advanced skim prices beside it." if hi else
+        " The Class I skim mover is not the higher of the two advanced skim prices this month; it is printed as released.")
+    return ('<div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-tbl"><caption class="dp-sr">Federal Order 30 monthly prices, '
+            f'dollars per hundredweight</caption><thead><tr><th scope="col">Order 30</th>{th}</tr></thead><tbody>'
+            + "".join(body) + "</tbody></table></div>" + nxt +
+            f'<p class="dp-note-src" id="dp-o30-src">Source: {O30_LINK}, monthly class price and producer price differential releases'
+            f'{", read " + rd if rd else ""}. Prices at the order&rsquo;s base zone; your plant&rsquo;s zone adds or takes a little.{note} The PPD is what the order adds to (or takes from) the component value of your milk, '
+            "before hauling and co-op deductions. A dash: not in the release read for that month."
+            + ("" if yh else f" {_ishort(li - 12)} is not shown: its releases were not read or did not check out.")
+            + "</p>" + milk_o30_hist(o) + dep)
+
+
+# 2026-10-28 (dairy page part 2): Order 30 PPD, the last 24 months, by month and
+# year. Each month comes from the market administrator's own class and PPD
+# releases and passed uniform = Class III + PPD (scripts/fetch_order30.py
+# ppd_history). A year prints only when at least 3 of its months were also
+# found, the same, in the Central Order's yearly all-order summary
+# (fmmacentral.com sum<year>.pdf) and none differed there; the rest of that
+# year's months are named as withheld. Depooled pounds are not published by
+# order and month, so nothing here infers them.
+O30_HIST_MIN_CENTRAL = 3
+
+
+def milk_o30_hist(o30):
+    o = o30 if isinstance(o30, dict) else {}
+    rows = [r for r in (o.get("ppd_history") or []) if isinstance(r, dict) and _mkey(r.get("month_key")) is not None
+            and _fin(r.get("ppd")) and _fin(r.get("uniform")) and _fin(r.get("class3"))
+            and abs(r["class3"] + r["ppd"] - r["uniform"]) <= 0.006]
+    by_year = {}
+    for r in rows:
+        by_year.setdefault(r["month_key"][:4], []).append(r)
+    ok_years = sorted(y for y, rs in by_year.items()
+                      if sum(1 for r in rs if r.get("central") == "agree") >= O30_HIST_MIN_CENTRAL
+                      and not any(r.get("central") == "differ" for r in rs))
+    shown = {r["month_key"]: r["ppd"] for r in rows if r["month_key"][:4] in ok_years}
+    if not shown:
+        return ""
+    held_out = len(rows) - len(shown)
+    keys = sorted(shown)
+    th = "".join(f'<th scope="col" class="num">{y}</th>' for y in ok_years)
+    body = []
+    for m in range(1, 13):
+        cells = []
+        for y in ok_years:
+            v = shown.get(f"{y}-{m:02d}")
+            cells.append(f'<td class="num">{_sg(v, 2) if v is not None else ""}</td>')
+        if any(c != '<td class="num"></td>' for c in cells):
+            body.append(f'<tr><th scope="row">{MON3[m - 1]}</th>{"".join(cells)}</tr>')
+    first, last = _ishort(_mkey(keys[0])), _ishort(_mkey(keys[-1]))
+    n_c = sum(1 for r in rows if r["month_key"] in shown and r.get("central") == "agree")
+    miss = len([k for k in (o.get("ppd_history_why") or {})])
+    more = ""
+    if held_out or miss:
+        more = (f" {held_out + miss} month{'s' if held_out + miss != 1 else ''} in the window "
+                f"{'are' if held_out + miss != 1 else 'is'} left out: "
+                "its releases did not read or did not check out, or its year could not be matched to the summary.")
+    return ('<details class="dp-states" id="dp-o30-hist"><summary>Order 30 PPD by month, '
+            f'{first} to {last}</summary><div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-hist-tbl">'
+            '<caption class="dp-sr">Order 30 producer price differential, dollars per hundredweight, by month and year</caption>'
+            f'<thead><tr><th scope="col">PPD, $/cwt</th>{th}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
+            f'<p class="dp-note-src">Source: {O30_LINK}, each month&rsquo;s producer price differential release, at the base zone, '
+            "checked so the statistical uniform price equals that month&rsquo;s Class III plus the PPD. "
+            f"{n_c} of these months were also checked against the Central Order&rsquo;s yearly summary of all orders "
+            '(<a href="https://www.fmmacentral.com/" rel="noopener">fmmacentral.com</a>) and matched.' + more +
+            " How much milk was left out of the pool is not published by order and month, so I do not show it.</p></details>")
+
+
+# --- the published miss of Read my check, from data/dairy-miss.json -----------
+# 2026-10-28 (dairy board, build 3; BUILD-RULES rule 1). What the check reader
+# said for each Class III month at the standard tests (the futures settle of the
+# last session before the month began, scripts/milk_miss.py) beside what USDA
+# announced. The log only grows and is never backfilled; until a month is
+# graded the page says when the first one will be.
+MILK_MISS_DATA = "data/dairy-miss.json"
+
+
+def _sess(d):
+    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", str(d or ""))
+    return f"{MON3[int(m.group(2)) - 1]} {int(m.group(3))}" if m else ""
+
+
+def milk_miss_seed(log, today):
+    rows = (log or {}).get("months") if isinstance(log, dict) else None
+    rows = rows if isinstance(rows, dict) else {}
+    graded = [(k, r) for k, r in sorted(rows.items()) if _mkey(k) is not None and isinstance(r, dict)
+              and _fin(r.get("said")) and _fin(r.get("actual")) and _fin(r.get("miss"))]
+    started = _e(str((log or {}).get("started") or "") if isinstance(log, dict) else "")
+    head = ('<h3 class="dp-sub dp-sub-tight" id="dp-miss-h">How close the futures came</h3>'
+            '<p class="dp-note-src">Each month I keep what this reader showed at the standard tests (3.5% butterfat, 3.18% '
+            'protein and 5.79% other solids, the Class III standard, where your tests add nothing): the Class III futures settle of the last '
+            'session before the month began. When USDA announces the month I print the miss beside it. '
+            + (f"Started {_e(_sess(started) + ', ' + started[:4]) if started else ''}; " if started else "")
+            + "nothing before that is filled in.</p>")
+    if not graded:
+        nxt = None
+        t = _mkey(str(today)[:7]) or 0
+        for k, r in sorted(rows.items()):
+            i = _mkey(k)
+            if i is not None and isinstance(r, dict) and ("said" in r or i > t) and "actual" not in r:
+                nxt = i
+                break
+        when = (f" The first month it can grade is {_ilong(nxt)}: its price is recorded as {MONL[nxt % 12]} begins, and "
+                f"USDA announces it about the start of {MONL[(nxt + 1) % 12]}." if nxt is not None else "")
+        return f'<div id="dp-miss">{head}<p class="dp-note-src" id="dp-miss-none">No month graded yet.{when}</p></div>'
+    body = []
+    for k, r in graded[-12:][::-1]:
+        i = _mkey(k)
+        mc = "dp-pos" if r["miss"] > 0 else "dp-neg" if r["miss"] < 0 else "dp-flat"
+        body.append(f'<tr><th scope="row">{_ishort(i)}</th><td class="num">{_cwt(r["said"])} <span class="dp-mb-grp">({_e(_sess(r.get("said_session")))})</span></td>'
+                    f'<td class="num">{_cwt(r["actual"])}</td><td class="num {mc}">{_sg(r["miss"], 2)}</td></tr>')
+    n = len(graded)
+    avg = sum(abs(r["miss"]) for _, r in graded) / n
+    return (f'<div id="dp-miss">{head}<div class="dp-tbl-wrap"><table class="dp-tbl"><caption class="dp-sr">Class III futures at the start of '
+            'each month against the announced price</caption><thead><tr><th scope="col">Month</th><th scope="col" class="num">Futures as it began</th>'
+            '<th scope="col" class="num">USDA announced</th><th scope="col" class="num">Miss</th></tr></thead><tbody>'
+            + "".join(body) + '</tbody></table></div>'
+            f'<p class="dp-note-src">{n} month{"s" if n != 1 else ""} graded, and a few months say little about the next one. '
+            f'Average miss, either way: {_cwt(avg)}/cwt. Futures: CME settles. Announced: USDA AMS.</p></div>')
 
 
 # --- your area first, from data/dairy-mailbox.json ----------------------------
@@ -2736,6 +3016,8 @@ def seed_milk(today):
     dmc = _load_json(MILK_DMC_DATA) or {}
     seeds["milkdmcpaid"] = milk_dmc_paid(dmc, d)
     seeds["milkdmcmargin"] = milk_dmc_margin(dmc, d, today)
+    seeds["milkmiss"] = milk_miss_seed(_load_json(MILK_MISS_DATA), today)
+    seeds["milko30"] = milk_o30_seed(_load_json(MILK_O30_DATA), d, today)
     area = milk_area_seed(_load_json(MILK_MB_DATA), today)
     if area:
         seeds["milkarea"] = area

@@ -2,7 +2,8 @@ name: Fall nitrogen soil temperature
 
 # Writes data/fall-nitrogen.json for /fall-nitrogen: measured soil temperature
 # near 4 in from NOAA USCRN, USDA NRCS SCAN, the Iowa State Soil Moisture
-# Network (IEM) and the Kansas Mesonet, read by scripts/fetch_fall_nitrogen.py.
+# Network (IEM), the Kansas Mesonet and Wisconet (CC BY 4.0, credited on the
+# page), read by scripts/fetch_fall_nitrogen.py.
 # The page shows a designed empty state until this file exists.
 #
 # FIRST RUN: dispatch this once with "probe" ticked. It saves what each network
@@ -58,7 +59,11 @@ jobs:
       - name: Fetch and write data/fall-nitrogen.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_fall_nitrogen.py
+      # Not in probe mode: a probe writes no feed, and copying this run's
+      # checkout of the page over a newer branch tip would undo later edits
+      # (it did on Oct 28, fx/oct28adds).
       - name: Commit if changed (race-tolerant)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: |
           set -e
           git config user.name "AGSIST Bot"

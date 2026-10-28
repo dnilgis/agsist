@@ -36,6 +36,7 @@ build/shots/
 !/data/atlas/raw/drought.json
 /data/cattle-auction-raw/*
 !/data/cattle-auction-raw/listing.json
+/data/coop-fert-raw/
 /data/hay-ams-raw/*
 !/data/hay-ams-raw/listing.json
 /data/cattle-cash-raw/

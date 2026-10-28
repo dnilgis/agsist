@@ -5,6 +5,17 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.58 (2026-10-28): MILK PRICE DAY (Sig, Oct 28: dairy board build 5, the
+ *   list, the sender and the switch). /notice takes one more topic, milk-month,
+ *   asked on /milk-prices: one email when USDA announces the month's Class
+ *   prices (scripts/send_milk_month.py, .github/workflows/dairy.yml). One list,
+ *   no place in the topic. It recurs, so it keeps mo like rain-month:
+ *     mo   "YYYY-MM", the class month mailed, written by POST /notice-mark
+ *          {email, topic, month}. A milk-month mark needs month there (a real
+ *          month, 2000 to next year); mo never moves back.
+ *   /notice-unsubscribe with &topic=milk-month asks "Stop the milk price day
+ *   email for this address?" and stops that one list. Every other topic and
+ *   route answers exactly as before. No new binding and no new secret.
  * v5.57 (2026-10-27): A DAILY READER CAN TURN ON "YOUR COUNTY THIS WEEK" (the
  *   Daily ask hides once a browser is signed up, so readers already on the
  *   list had no way in). One new emailed route, /daily-cw, signed like
@@ -1427,9 +1438,14 @@ function rainMonth(v) {
 const RAIN_MONTH_ASK = "Stop the monthly rain email for this county?";
 const RAIN_MONTH_DONE = "Stopped. No more monthly rain emails for this county.";
 const landMonth = rainMonth;   // v5.55: a landsales month follows the same rule
+// v5.58: milk-month, the milk price day email (one list; mo like rain-month)
+const MILK_MONTH = "milk-month";
+const MILK_MONTH_ASK = "Stop the milk price day email for this address?";
+const MILK_MONTH_DONE = "Stopped. No more milk price day emails.";
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
+  if (t === MILK_MONTH) return t;   // v5.58
   // v5.55: landsales:<ZIP>:<10|25|50>
   const ls = /^landsales:(\d{5}):(\d{2})$/.exec(t);
   if (ls) return ls[1] !== "00000" && LAND_MILES.includes(+ls[2]) ? t : null;
@@ -3210,7 +3226,7 @@ async function handle(req, env) {
       if (!valid || one === null) return stopInvalid();
       if (req.method === "GET") {
         const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
-        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : one.startsWith("rain-month:") ? RAIN_MONTH_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
+        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : one.startsWith("rain-month:") ? RAIN_MONTH_ASK : one === MILK_MONTH ? MILK_MONTH_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
           "<p>" + escHtml(e) + "</p>" +
           "<form method=\"POST\" action=\"" + action + "\">" +
           "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
@@ -3233,6 +3249,7 @@ async function handle(req, env) {
         if (one && LIST_DONE[one]) return htmlPage(LIST_DONE[one]);
         if (one === LAND_ALL) return htmlPage(LAND_DONE);
         if (one && one.startsWith("rain-month:")) return htmlPage(RAIN_MONTH_DONE);
+        if (one === MILK_MONTH) return htmlPage(MILK_MONTH_DONE);   // v5.58
         return htmlPage(one ? "Stopped. No email about this one." : "Stopped. No more AGSIST notices.");
       }
     }
@@ -3580,7 +3597,7 @@ async function handle(req, env) {
           if (v && v.note) row.note = v.note;
           if (v && v.after) row.after = v.after;   // v5.29: prf only
           if (v && v.iv) row.iv = v.iv;
-          if (v && v.mo) row.mo = v.mo;            // v5.54 rain-month, v5.55 landsales
+          if (v && v.mo) row.mo = v.mo;            // v5.54 rain-month, v5.55 landsales, v5.58 milk-month
           out.push(row);
         }
       }
@@ -3599,8 +3616,10 @@ async function handle(req, env) {
       const iv = topic.startsWith("prf:") ? prfInterval(b.interval) : null;
       if (topic.startsWith("prf:") && !iv) return json({ ok: false, error: "bad args" }, 400);
       // v5.54: a rain-month topic recurs; the mark carries the month it was for
-      const mo = topic.startsWith("rain-month:") ? rainMonth(b.month) : null;
-      if (topic.startsWith("rain-month:") && !mo) return json({ ok: false, error: "bad args" }, 400);
+      // v5.58: milk-month recurs the same way
+      const monthly = topic.startsWith("rain-month:") || topic === MILK_MONTH;
+      const mo = monthly ? rainMonth(b.month) : null;
+      if (monthly && !mo) return json({ ok: false, error: "bad args" }, 400);
       // v5.55: a landsales topic recurs; the mark carries the month it was for
       const lmo = topic.startsWith(LAND_ALL + ":") ? landMonth(b.month) : null;
       if (topic.startsWith(LAND_ALL + ":") && !lmo) return json({ ok: false, error: "bad args" }, 400);

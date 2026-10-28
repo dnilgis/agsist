@@ -2541,6 +2541,14 @@
     "basis:OH|PETTISVILLE GRAIN|PETTISVILLE"
    ]
   },
+  "e780z66t3h": {
+   "into": "eef2vr1k62",
+   "on": "2026-10-28",
+   "rule": "retired",
+   "keys": [
+    "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MOUNT HOPE"
+   ]
+  },
   "e7a916caka": {
    "into": "evn8e9pngn",
    "on": "2026-10-27",
@@ -3218,6 +3226,14 @@
     "dir:84088"
    ]
   },
+  "esy30gdzk5": {
+   "into": "etpmxxrj24",
+   "on": "2026-10-28",
+   "rule": "phone",
+   "keys": [
+    "basis:OH|SMITHFIELD GRAIN - EAST|MORRAL"
+   ]
+  },
   "esz3twa0vr": {
    "into": "egz19x9jv6",
    "on": "2026-10-27",
@@ -3275,6 +3291,14 @@
     "dir:84903"
    ]
   },
+  "evhnnwahq9": {
+   "into": "ejvw0yf3yr",
+   "on": "2026-10-28",
+   "rule": "retired",
+   "keys": [
+    "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|PATTERSON"
+   ]
+  },
   "evrpk0cdd0": {
    "into": "etarnz8x43",
    "on": "2026-10-27",
@@ -3305,6 +3329,15 @@
    "rule": "phone",
    "keys": [
     "basis:IA|HEARTLAND COOP|MODAMIN"
+   ]
+  },
+  "ewsn9qbdjm": {
+   "into": "ezfe9zqja3",
+   "on": "2026-10-28",
+   "rule": "phone",
+   "keys": [
+    "basis:OH|SMITHFIELD GRAIN - EAST|HARPSTER",
+    "dir:84451"
    ]
   },
   "ex9h0k6dte": {
@@ -4788,6 +4821,30 @@
    "merge": "a00201",
    "into": "eef2vr1k62",
    "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "esy30gdzk5",
+   "into": "etpmxxrj24",
+   "why": "folded into etpmxxrj24 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "ewsn9qbdjm",
+   "into": "ezfe9zqja3",
+   "why": "folded into ezfe9zqja3 by the bids repo (mergedFrom, rule phone)"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "e780z66t3h",
+   "into": "eef2vr1k62",
+   "why": "folded into eef2vr1k62 by the bids repo (mergedFrom, rule retired)"
+  },
+  {
+   "on": "2026-10-28",
+   "retire": "evhnnwahq9",
+   "into": "ejvw0yf3yr",
+   "why": "folded into ejvw0yf3yr by the bids repo (mergedFrom, rule retired)"
   }
  ],
  "keys": {
@@ -6475,9 +6532,9 @@
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|BENTLEY": "e311rj7m84",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|BURRTON": "ejvw0yf3yr",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|HALSTEAD": "egz19x9jv6",
-  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MOUNT HOPE": "e780z66t3h",
+  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MOUNT HOPE": "eef2vr1k62",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|MT. HOPE": "eef2vr1k62",
-  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|PATTERSON": "evhnnwahq9",
+  "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|PATTERSON": "ejvw0yf3yr",
   "basis:KS|FARMERS COOPERATIVE ELEVATOR COMPANY|SEDGWICK": "a00210",
   "basis:KS|FARMERS COOPERATIVE EQUITY COMPANY|ISABEL": "expefsm2zd",
   "basis:KS|FARMERS COOPERATIVE EQUITY COMPANY|NASHVILLE": "ee8jnwg8gk",
@@ -7136,13 +7193,22 @@
   "basis:MO|RAY-CARROLL|SLATER": "a00310",
   "basis:MO|RICKETTS FARM SERVICE|SALISBURY": "a00311",
   "basis:MO|SCOULAR COMPANY - MISSOURI|BUTTERFIELD": "eawdyxe5et",
+  "basis:MO|SCOULARVIEW|ADRIAN": "emjqw32yq9",
   "basis:MO|SCOULARVIEW|BUTTERFIELD": "eawdyxe5et",
   "basis:MO|SCOULARVIEW|HARRISONVILLE": "e9gpt5fpjn",
   "basis:MO|SHOW-ME MFA AGRI SERVICES|CENTRALIA": "eak5ep15wn",
   "basis:MO|SHOW-ME MFA AGRI SERVICES|CLARK": "ecm6xtbks8",
   "basis:MO|SHOW-ME MFA AGRI SERVICES|MOBERLY": "ekx5cv4ep1",
   "basis:MO|SMITHFIELD GRAIN - WEST|NEVADA": "e8bfaahqwf",
+  "basis:MO|SMITHFIELD GRAIN|BETHANY EAST": "e93qkbvejw",
+  "basis:MO|SMITHFIELD GRAIN|BETHANY WEST": "ef6etxcm4j",
+  "basis:MO|SMITHFIELD GRAIN|BLUE RIDGE": "ec9wyvrmp7",
+  "basis:MO|SMITHFIELD GRAIN|COFFEY": "emmcjzz41j",
+  "basis:MO|SMITHFIELD GRAIN|GILMAN CITY": "ek09natkjd",
+  "basis:MO|SMITHFIELD GRAIN|LACLEDE": "ee59djc67e",
   "basis:MO|SMITHFIELD GRAIN|LUCERNE": "e03rwczd3e",
+  "basis:MO|SMITHFIELD GRAIN|NEVADA": "e2j7n7wrcd",
+  "basis:MO|SMITHFIELD GRAIN|TRENTON": "e3vzpr0p6p",
   "basis:MO|SPRING RIVER MFA AGRI SERVICES|LAMAR": "a00312",
   "basis:MT|BUNGE|CHESTER": "e58gzmx70m",
   "basis:MT|BUNGE|KINTYRE FLATS": "enz0m3b9mq",
@@ -7796,8 +7862,10 @@
   "basis:OH|SCOTT EQUITY EXCHANGE|SCOTT": "ewbc9bnbam",
   "basis:OH|SCOTT EQUITY EXCHANGE|VAN WERT": "emp947de39",
   "basis:OH|SCOULARVIEW|COVINGTON": "ev06b7ffk2",
-  "basis:OH|SMITHFIELD GRAIN - EAST|HARPSTER": "ewsn9qbdjm",
-  "basis:OH|SMITHFIELD GRAIN - EAST|MORRAL": "esy30gdzk5",
+  "basis:OH|SMITHFIELD GRAIN - EAST|HARPSTER": "ezfe9zqja3",
+  "basis:OH|SMITHFIELD GRAIN - EAST|MORRAL": "etpmxxrj24",
+  "basis:OH|SMITHFIELD GRAIN|HARPSTER": "ezfe9zqja3",
+  "basis:OH|SMITHFIELD GRAIN|MORRAL": "etpmxxrj24",
   "basis:OH|STAR OF THE WEST MILLING|WILLARD": "eb0t3aj3m7",
   "basis:OH|STRYKER FARMERS EXCHANGE|STRYKER": "ek87qatqw9",
   "basis:OH|SUNRISE COOPERATIVE|BELLEVUE": "a00399",
@@ -8417,6 +8485,7 @@
   "bids:Agassiz Valley Grain||AVG Barnesville|MN": "ejycnm5gka",
   "bids:Agri Trails Coop||Chapman|KS": "ek47a2d24z",
   "bids:Agri Trails Coop||Council Grove|KS": "eazsmdhvfx",
+  "bids:Agri Trails Coop||Durham|KS": "ez5cgx2gg3",
   "bids:Agtegra||AGP Aberdeen|SD": "e3zc92fsa6",
   "bids:Agtegra||AGP West|SD": "e9ftsqe30c",
   "bids:Agtegra||Andover|SD": "ed21fepb3k",
@@ -8444,6 +8513,7 @@
   "bids:Bunge||Morristown|IN": "ejdjvvx6k4",
   "bids:CDR Farms LLC||Bloomer|WI": "eh8h7h57g5",
   "bids:CE Grain Company LLC.||CE Grain Company|MO": "edj79m7qrh",
+  "bids:CHS Ag Services||Ada|MN": "e72fx9vevc",
   "bids:CHS Ag Services||Callaway|MN": "e76ftnv376",
   "bids:CHS Ag Services||Mahnomen|MN": "esv1phzjyx",
   "bids:CHS Brandon (South Dakota/Minnesota)|Worthing Ag Grain|Worthing|SD": "eq462ykmqh",
@@ -8497,6 +8567,7 @@
   "bids:Country Partners Cooperative||Gothenburg|NE": "e0a3hb8bn9",
   "bids:Country Visions Cooperative||READFIELD|WI": "e4f4m7ynge",
   "bids:Dakota Midland Grain||Voltaire|ND": "eq5kv3kac7",
+  "bids:Doon Elevator, Inc||Doon Elevator, Inc.|IA": "e0kv3k22xg",
   "bids:Duffy Grain, Inc.||Columbus|WI": "edb5mw0vvc",
   "bids:Dumas Co-op Elevators||Dumas|TX": "e9bh3vwdyj",
   "bids:Dumas Co-op Elevators||Etter|TX": "e2v18r639c",
@@ -8562,11 +8633,15 @@
   "bids:JBS Live Pork||Smithton, MO Feed Mill|MO": "eh8xr788vb",
   "bids:James Valley Grain, LLC||AGP - Aberdeen, SD|SD": "ex6cpvw8za",
   "bids:Jersey County Grain||White Hall|IL": "e4556xsvtz",
+  "bids:Jorgensen Farm Elevator||Williamston|MI": "e8cy9pe9fr",
   "bids:KBQ Inc.||KBQ Inc.|MN": "eejevng7ey",
   "bids:Kalmbach Feeds||Upper Sandusky|OH": "e9zh9wgrd5",
   "bids:Kansas Ethanol||Lyons|KS": "eb0rsw251p",
   "bids:Kanza Cooperative||Andale|KS": "ebh4ayc65e",
+  "bids:Kanza Cooperative||BELMONT|KS": "eeamhz9m4v",
   "bids:Kanza Cooperative||CCGP|KS": "edrggbhmbn",
+  "bids:Kanza Cooperative||CLONMEL|KS": "e2e1fgxxzr",
+  "bids:Kanza Cooperative||Cheney|KS": "ed3ba4gbd5",
   "bids:Knightstown Elevator||Knightstown|IN": "ee27nsyknx",
   "bids:Kokomo Grain Co.||Adm Fkt|IN": "e9k6qr2f7w",
   "bids:Kokomo Grain Co.||Amboy|IN": "ezen1jckjn",
@@ -8607,6 +8682,7 @@
   "bids:Mid-Iowa Cooperative||LINCOLNWAY|IA": "etj8pts7dh",
   "bids:Mid-Iowa Cooperative||SHELL ROCK SOY PROC|IA": "ec0rqyyggz",
   "bids:Minn-Kota Ag Products, Inc.||Breckenridge|MN": "ef3dvv4qqr",
+  "bids:Minn-Kota Ag Products, Inc.||Colfax|ND": "egz0mjkrwm",
   "bids:Minn-Kota Ag Products, Inc.||West Terminal|ND": "em1catmqyb",
   "bids:Minnesota Valley Grain||Webster|MN": "e9fxqqczvr",
   "bids:NEW Cooperative, Inc.||Blencoe|IA": "ehrebc6a7c",
@@ -8662,7 +8738,11 @@
   "bids:Rooney Grain||Chippewa Falls|WI": "ex2gn12qmh",
   "bids:See-Mor Grain||See-Mor Grain|WI": "ezwx4wsvks",
   "bids:Shell Rock Soy Processing LLC||Shell Rock Soy Origination|IA": "evxyn8k0ye",
+  "bids:Skyland Grain||Cunningham Area|KS": "eahrr1p0dq",
+  "bids:Smithfield Grain||Harpster|OH": "ezfe9zqja3",
+  "bids:Smithfield Grain||Morral|OH": "etpmxxrj24",
   "bids:Sorells Farm Supply||Raymond|IL": "etfjn568k3",
+  "bids:Southwest Iowa Renewable Energy||SIRE|IA": "eym4z7s97t",
   "bids:St. Ansgar Mills||St. Ansgar Mills, Inc|IA": "eyt22nx602",
   "bids:Stafford County Flour Mills||Hudson|KS": "ez6afav0t2",
   "bids:Tama Benton Cooperative||DS-ADM|IA": "ehttvjy7g2",
@@ -8678,6 +8758,8 @@
   "bids:Tri-Cities Grain, LLC.||TCG Bids|WA": "eyhtm9gj9t",
   "bids:United Cooperative||Belmont Grain|WI": "e31pffb41j",
   "bids:United Cooperative||Boscobel Grain|WI": "e46skphmcs",
+  "bids:United Cooperative||Horicon Grain|WI": "exwztx553s",
+  "bids:United Cooperative||Westfield Grain|WI": "evrrasrjvp",
   "bids:United Wisconsin Grain Producers||Friesland|WI": "ec92pry9cv",
   "bids:Valley United Coop||Alton|ND": "e4c63b6g81",
   "bids:Valley United Coop||Halstad|MN": "exzd9bd8m9",
@@ -8686,6 +8768,8 @@
   "bids:Wolf River Grain||Wolf River Grain|WI": "ef1x183z59",
   "bids:Yoder Grain, Inc.||Bluffton|IN": "empjt4mecb",
   "bids:iframe - Pearl City Elevator, Inc.||Adkins Energy|IL": "es6rbep7jr",
+  "bids:zPCE Producers Coop Elevator||Floydada|TX": "eh69nb2dka",
+  "bids:zShawnee Feed Old||Cashion|OK": "ev3yyf8nmr",
   "bids:zShawnee Feed Old||Minco|OK": "enyqqpjcdb",
   "bids:zShawnee Feed Old||Shawnee|OK": "e3cvf0cgb8",
   "bids:zWest-Con||DLVD AGP ABERDEEN|SD": "evn8e9pngn",
@@ -9201,7 +9285,7 @@
   "dir:84383": "eyxgavg6y8",
   "dir:84403": "a00071",
   "dir:84411": "ec6jtyhz9v",
-  "dir:84451": "ewsn9qbdjm",
+  "dir:84451": "ezfe9zqja3",
   "dir:84462": "emyxwap147",
   "dir:84544": "a00013",
   "dir:84551": "env893tdbj",

@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 27 Oct 2026 19:39:42 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 28 Oct 2026 12:36:27 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn bounces 2¾¢ to $4.51½ after four lower closes</title>
+      <link>https://agsist.com/daily/2026-10-28</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-28</guid>
+      <pubDate>Wed, 28 Oct 2026 11:18:02 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Dec corn is at $4.51½ overnight, up 2¾ cents from Tuesday's $4.48¾ settle. That ends a run of lower closes. Soybeans are at $12.33¼ overnight, up 4 cents, after two lower closes. A fast harvest has been the weight on grain, and one overnight bounce does not change that.
+• Grains bounce after a slide
+• Hogs fall, cattle hold
+• Crude firm, gas gains
+Read more: https://agsist.com/daily/2026-10-28</description>
+    </item>
     <item>
       <title>Corn slips ½¢ to $4.54½ after three lower closes</title>
       <link>https://agsist.com/daily/2026-10-27</link>
@@ -353,18 +365,6 @@ Action: Diesel buyers: WTI at **$92.12** is the cheapest print in three sessions
 • Crude Gives Back The Fear Premium
 • Grains Drift On Empty China Wires
 Read more: https://agsist.com/daily/2026-09-29</description>
-    </item>
-    <item>
-      <title>Crude runs to $96 as beans slip again</title>
-      <link>https://agsist.com/daily/2026-09-28</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-28</guid>
-      <pubDate>Mon, 28 Sep 2026 11:11:27 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Crude added 2.3% to $96.13 on Iran war-fear headlines out of the UN General Assembly, the same Hormuz cycle that's flared and cooled twice since April, and diesel-hungry harvest crews are the ones who pay for it.
-Action: Diesel-dependent harvest budgets: crude above $96.13 and running, lock fuel needs now rather than wait for a pullback that may not come.
-• Crude Runs On Iran Fear
-• Beans Slip On Empty China News
-Read more: https://agsist.com/daily/2026-09-28</description>
     </item>
   </channel>
 </rss>

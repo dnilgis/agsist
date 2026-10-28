@@ -138,3 +138,19 @@ test('pellets, cubes and ground hay stay in the table but out of the bale ranges
   assert.equal(A.processed({ bale: 'Ground' }), true);
   assert.equal(A.processed({ bale: 'Large Round' }), false);
 });
+
+test('a state with a direct report and auctions: one state choice, each auction by its own name, sale date kept apart', () => {
+  // shape only (no auction report has been read yet; scripts/hay_ams_sources.json holds them)
+  const IA = { ...SD, id: 'ia-direct', state: 'IA', state_name: 'Iowa', title: 'Iowa Direct Hay Report' };
+  const RV = { ...SD, id: 'ia-rock-valley-thu', state: 'IA', state_name: 'Iowa', kind: 'auction', title: 'Rock Valley Hay Auction - Rock Valley, IA',
+    date: '2026-10-16', sale_date: '2026-10-15' };
+  const v = A.view({ reports: [RV, IA] }, NOW);
+  assert.deepEqual(v.map((r) => r.id), ['ia-direct', 'ia-rock-valley-thu'], 'the state report first, then its auctions');
+  assert.equal(v[1].label, 'Rock Valley Hay Auction');
+  assert.equal(v[1].sale, '2026-10-15', 'the sale day');
+  assert.equal(v[1].date, '2026-10-16', 'the day USDA published it, never replaced by the sale day');
+  assert.equal(v[0].sale, null);
+  assert.equal(A.view({ reports: [{ ...RV, sale_date: 'Oct 15' }] }, NOW)[0].sale, null, 'a sale date that is not a date is dropped');
+  assert.match(js, /\.filter\(function \(s, i, a\) \{ return a\.indexOf\(s\) === i; \}\)/, 'each state once in the picker');
+  assert.match(js, /'Sale ' \+ esc\(day\(r\.sale\)\) \+ ', reported '/);
+});

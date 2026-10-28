@@ -1,5 +1,322 @@
 {
  "url": "https://www.ams.usda.gov/market-news/feeder-and-replacement-cattle-auctions",
+ "scanned": {
+  "1622": {
+   "title": "Windsor Livestock Auction - Windsor, MO",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "1651": {
+   "title": "Ozarks Regional Stockyards Slaughter / Replacement Cattle - West Plains, MO",
+   "date": "2026-10-21",
+   "feeder": false
+  },
+  "1703": {
+   "title": "Florida Daily Livestock Auction Summary",
+   "date": "2026-10-27",
+   "feeder": true
+  },
+  "1788": {
+   "title": "Springfield Livestock Marketing Center Slaughter/Replacement Cattle - Springfield, MO",
+   "date": "2026-10-26",
+   "feeder": false
+  },
+  "1797": {
+   "title": "Joplin Regional Stockyards Slaughter/Replacement Cattle- Carthage, MO",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "1798": {
+   "title": "Joplin Regional Stockyards Replacement Cattle Special - Carthage, MO",
+   "date": "2026-10-08",
+   "feeder": false
+  },
+  "1799": {
+   "title": "Springfield Livestock Marketing Center Replacement Cattle Special - Springfield, MO",
+   "date": "2026-10-17",
+   "feeder": false
+  },
+  "1800": {
+   "title": "Callaway Livestock Center Replacement Cattle Special - Kingdom City, MO",
+   "date": "2026-10-01",
+   "feeder": false
+  },
+  "1810": {
+   "title": "Eastern MO Commission Company - Bowling Green, MO",
+   "date": "2026-10-23",
+   "feeder": true
+  },
+  "1811": {
+   "title": "MO-Kan Livestock Market - Butler, MO",
+   "date": "2026-10-22",
+   "feeder": true
+  },
+  "1812": {
+   "title": "Farmington Regional Stockyards - Farmington, MO",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "1813": {
+   "title": "Lolli Brothers Livestock Market - Macon, MO",
+   "date": "2026-10-13",
+   "feeder": true
+  },
+  "1814": {
+   "title": "Interstate Regional Stockyards - Cuba, MO",
+   "date": "2026-10-20",
+   "feeder": true
+  },
+  "1815": {
+   "title": "Kingsville Livestock Auction - Kingsville, MO",
+   "date": "2026-10-27",
+   "feeder": true
+  },
+  "1816": {
+   "title": "F and T Livestock Market Feeder/Replacement Cattle - Palmyra, MO",
+   "date": "2026-10-28",
+   "feeder": true
+  },
+  "1819": {
+   "title": "Callaway Livestock Center - Kingdom City, MO",
+   "date": "2026-10-26",
+   "feeder": true
+  },
+  "1823": {
+   "title": "Oklahoma National Stockyards Slaughter/Replacement Cattle - Oklahoma City, OK",
+   "date": "2026-10-27",
+   "feeder": false
+  },
+  "1824": {
+   "title": "Woodward Livestock Auction Slaughter/Replacement Cattle - Woodward, OK",
+   "date": "2026-10-20",
+   "feeder": false
+  },
+  "1825": {
+   "title": "OKC West Livestock Auction Slaughter/Replacement Cattle - El Reno, OK",
+   "date": "2026-10-26",
+   "feeder": false
+  },
+  "1843": {
+   "title": "Southern Oklahoma Livestock Auction Slaughter/Replacement Cattle - Ada, OK",
+   "date": "2026-10-22",
+   "feeder": false
+  },
+  "1858": {
+   "title": "Gordon Livestock Market - Gordon, NE",
+   "date": "2026-10-27",
+   "feeder": true
+  },
+  "1893": {
+   "title": "Farmers and Ranchers Livestock Commission Co. Replacement Cattle Special - Salina, KS",
+   "date": "2026-10-20",
+   "feeder": false
+  },
+  "1917": {
+   "title": "Greencastle Livestock Auction (Monday) - Greencastle, PA",
+   "date": "2026-10-27",
+   "feeder": false
+  },
+  "1968": {
+   "title": "Springville Feeder Cattle Auction - Springville, IN",
+   "date": "2026-10-02",
+   "feeder": true
+  },
+  "1970": {
+   "title": "Shipshewana Livestock Auction - Shipshewana, IN",
+   "date": "2026-10-22",
+   "feeder": true
+  },
+  "2012": {
+   "title": "St. Onge Calf Auction (Wed-Seasonal) - St. Onge, SD",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "2019": {
+   "title": "St. Onge Livestock Auction - St. Onge, SD",
+   "date": "2026-10-24",
+   "feeder": true
+  },
+  "2039": {
+   "title": "Utah Weekly Livestock Auction Summary",
+   "date": "2026-10-26",
+   "feeder": true
+  },
+  "2046": {
+   "title": "Greenville Livestock Cattle Auction - Greenville, IL",
+   "date": "2026-10-21",
+   "feeder": false
+  },
+  "2129": {
+   "title": "Blue Grass Stockyards Lexington - Replacement Livestock Sale - Lexington, KY",
+   "date": "2026-09-23",
+   "feeder": false
+  },
+  "2188": {
+   "title": "United Producers Inc. - Bowling Green, KY",
+   "date": "2026-10-27",
+   "feeder": true
+  },
+  "2189": {
+   "title": "Blue Grass Stockyards - Albany, KY",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "2190": {
+   "title": "Blue Grass South Stockyards (Monday) - Stanford, KY",
+   "date": "2026-10-26",
+   "feeder": false
+  },
+  "2191": {
+   "title": "Blue Grass South Stockyards (Thursday) - Stanford, KY",
+   "date": "2026-10-22",
+   "feeder": false
+  },
+  "2192": {
+   "title": "Blue Grass Stockyards (Saturday) - Campbellsville, KY",
+   "date": "2026-10-24",
+   "feeder": true
+  },
+  "2194": {
+   "title": "Lake Cumberland Livestock - Somerset, KY",
+   "date": "2026-10-24",
+   "feeder": false
+  },
+  "2195": {
+   "title": "Farmers Stockyards - Flemingsburg, KY",
+   "date": "2026-10-20",
+   "feeder": true
+  },
+  "2196": {
+   "title": "Livingston Co. Livestock Market - Ledbetter, KY",
+   "date": "2026-10-20",
+   "feeder": true
+  },
+  "2198": {
+   "title": "Farmers Regional Livestock Market - Glasgow, KY",
+   "date": "2026-10-26",
+   "feeder": true
+  },
+  "2199": {
+   "title": "Farmers Regional Livestock Auction of Glasgow Dairy Auction - Smiths Grove, KY",
+   "date": "2026-10-27",
+   "feeder": true
+  },
+  "2200": {
+   "title": "Christian Co. Livestock - Hopkinsville, KY",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "2201": {
+   "title": "Kentuckiana Livestock Market - Owensboro, KY",
+   "date": "2026-10-26",
+   "feeder": false
+  },
+  "2202": {
+   "title": "Bluegrass Stockyard - Mt. Sterling, KY",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "2203": {
+   "title": "United Producers, Inc. - Owenton, KY",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "2206": {
+   "title": "KY-TN Livestock Market - Guthrie, KY",
+   "date": "2026-10-22",
+   "feeder": true
+  },
+  "2207": {
+   "title": "United Producers Inc. - Harned, KY",
+   "date": "2026-10-26",
+   "feeder": true
+  },
+  "2208": {
+   "title": "Russell Co. Stockyard - Russell Springs, KY",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "2209": {
+   "title": "Washington Co. Cattle Sale - Springfield, KY",
+   "date": "2026-10-20",
+   "feeder": false
+  },
+  "2210": {
+   "title": "Blue Grass Stockyards - Richmond, KY",
+   "date": "2026-10-23",
+   "feeder": true
+  },
+  "2211": {
+   "title": "Mid-Kentucky Livestock Market - Upton, KY",
+   "date": "2026-10-20",
+   "feeder": true
+  },
+  "2212": {
+   "title": "Blue Grass Stockyards (Wednesday) - Campbellsville, KY",
+   "date": "2026-10-21",
+   "feeder": true
+  },
+  "2213": {
+   "title": "Cattleman's Livestock - Bowling Green, KY",
+   "date": "2026-10-26",
+   "feeder": true
+  },
+  "2221": {
+   "title": "Livingston Co. Livestock Market - Monthly Feeder Cattle Sale - Ledbetter, KY",
+   "date": "2026-10-16",
+   "feeder": true
+  },
+  "2229": {
+   "title": "Farmers Regional Livestock Market - Monthly Cattle Sale - Glasgow, KY (2nd/4th Thur)",
+   "date": "2026-10-22",
+   "feeder": true
+  },
+  "2528": {
+   "title": "Kalona Livestock Slaughter Cattle Auction - Kalona, IA",
+   "date": "2026-10-22",
+   "feeder": false
+  },
+  "2713": {
+   "title": "Superior Livestock Video/Internet Auction - Fort Worth, TX",
+   "date": "2026-10-15",
+   "feeder": false
+  },
+  "3415": {
+   "title": "Topeka Livestock Auction - Topeka, IN",
+   "date": "2026-10-20",
+   "feeder": true
+  },
+  "3484": {
+   "title": "SEMO Livestock Sales Cattle Auction - Jackson, MO",
+   "date": "2026-10-27",
+   "feeder": true
+  },
+  "3635": {
+   "title": "Tina Livestock Market Cattle Auction - Tina, MO",
+   "date": "2026-10-26",
+   "feeder": true
+  },
+  "3648": {
+   "title": "Tina Livestock Market Replacement Cattle Special - Tina, MO",
+   "date": "2026-10-23",
+   "feeder": false
+  },
+  "3795": {
+   "title": "Beaver Livestock Auction Slaughter/Replacement Cattle - Beaver, OK",
+   "date": "2026-10-26",
+   "feeder": false
+  },
+  "3916": {
+   "title": "Four State Stockyards",
+   "date": "2026-10-27",
+   "feeder": true
+  },
+  "3917": {
+   "title": "Wheeler Livestock Auction - Cattle Auction - Osceola, MO",
+   "date": "2026-10-22",
+   "feeder": true
+  }
+ },
  "reports": {
   "Alabama Daily Cattle Auction Summary (pdf)": "1992",
   "Alabama Weekly Cattle Auction Summary (Fri) (pdf)": "2006",
@@ -453,6 +770,47 @@
   "Torrington Livestock Commission Co. – Feeder Cattle Auction – Torrington, WY (Wed) (pdf)": "2103",
   "Torrington Livestock Commission Co. – Cattle Auction – Torrington, WY (Seasonal-Mon) (pdf)": "2105",
   "Winter Livestock Auction – Cattle Auction – Riverton, WY (Tue) (pdf)": "2104",
-  "Wyoming Weekly Cattle Auction Summary (Mon) (pdf)": "2106"
+  "Wyoming Weekly Cattle Auction Summary (Mon) (pdf)": "2106",
+  "Windsor Livestock Auction - Windsor, MO": "1622",
+  "Florida Daily Livestock Auction Summary": "1703",
+  "Joplin Regional Stockyards Slaughter/Replacement Cattle- Carthage, MO": "1797",
+  "Eastern MO Commission Company - Bowling Green, MO": "1810",
+  "MO-Kan Livestock Market - Butler, MO": "1811",
+  "Farmington Regional Stockyards - Farmington, MO": "1812",
+  "Lolli Brothers Livestock Market - Macon, MO": "1813",
+  "Interstate Regional Stockyards - Cuba, MO": "1814",
+  "Kingsville Livestock Auction - Kingsville, MO": "1815",
+  "F and T Livestock Market Feeder/Replacement Cattle - Palmyra, MO": "1816",
+  "Callaway Livestock Center - Kingdom City, MO": "1819",
+  "Gordon Livestock Market - Gordon, NE": "1858",
+  "Springville Feeder Cattle Auction - Springville, IN": "1968",
+  "Shipshewana Livestock Auction - Shipshewana, IN": "1970",
+  "St. Onge Calf Auction (Wed-Seasonal) - St. Onge, SD": "2012",
+  "St. Onge Livestock Auction - St. Onge, SD": "2019",
+  "Utah Weekly Livestock Auction Summary": "2039",
+  "United Producers Inc. - Bowling Green, KY": "2188",
+  "Blue Grass Stockyards - Albany, KY": "2189",
+  "Blue Grass Stockyards (Saturday) - Campbellsville, KY": "2192",
+  "Farmers Stockyards - Flemingsburg, KY": "2195",
+  "Livingston Co. Livestock Market - Ledbetter, KY": "2196",
+  "Farmers Regional Livestock Market - Glasgow, KY": "2198",
+  "Farmers Regional Livestock Auction of Glasgow Dairy Auction - Smiths Grove, KY": "2199",
+  "Christian Co. Livestock - Hopkinsville, KY": "2200",
+  "Bluegrass Stockyard - Mt. Sterling, KY": "2202",
+  "United Producers, Inc. - Owenton, KY": "2203",
+  "KY-TN Livestock Market - Guthrie, KY": "2206",
+  "United Producers Inc. - Harned, KY": "2207",
+  "Russell Co. Stockyard - Russell Springs, KY": "2208",
+  "Blue Grass Stockyards - Richmond, KY": "2210",
+  "Mid-Kentucky Livestock Market - Upton, KY": "2211",
+  "Blue Grass Stockyards (Wednesday) - Campbellsville, KY": "2212",
+  "Cattleman's Livestock - Bowling Green, KY": "2213",
+  "Livingston Co. Livestock Market - Monthly Feeder Cattle Sale - Ledbetter, KY": "2221",
+  "Farmers Regional Livestock Market - Monthly Cattle Sale - Glasgow, KY (2nd/4th Thur)": "2229",
+  "Topeka Livestock Auction - Topeka, IN": "3415",
+  "SEMO Livestock Sales Cattle Auction - Jackson, MO": "3484",
+  "Tina Livestock Market Cattle Auction - Tina, MO": "3635",
+  "Four State Stockyards": "3916",
+  "Wheeler Livestock Auction - Cattle Auction - Osceola, MO": "3917"
  }
 }

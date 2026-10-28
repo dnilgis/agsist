@@ -1,8 +1,536 @@
 {
- "_note": "Dairy Margin Coverage monthly margins as FSA publishes them (all_milk, feed, margin in $/cwt, by month_key), and the 2027 Tier 1 premium per cwt by coverage level (\"9.50\": rate). Typed from FSA's own pages only (references fsa-dmc-program, fsa-dmc-2027-release), never computed here. scripts/seed_static.py (milk_dmc_paid) prints the would-have-paid table on /milk-prices only when every row's milk minus feed is its margin and the all-milk price matches the NASS month in data/dairy-data.json; otherwise the page says the table is withheld. Empty until someone reads FSA's figures.",
- "source": null,
- "source_url": "https://www.fsa.usda.gov/dairy",
- "read": null,
- "margins": {},
- "premium_tier1": {}
+ "_note": "Written by scripts/fetch_dmc.py from FSA's own DMC prices and updates page (live, or the Internet Archive copy named by archive_url and snapshot) and FSA's DMC fact sheet. A month is kept only when FSA's milk minus feed is FSA's margin and its all-milk matches the NASS month held; the rest are in withheld. Never typed by hand.",
+ "archive_url": "https://web.archive.org/web/20260610131502/https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates",
+ "discount": {
+  "archive_url": "https://web.archive.org/web/20260414193724/https://www.fsa.usda.gov/sites/default/files/2026-01/FSA_DMC_012026.pdf",
+  "read": "2026-10-28",
+  "snapshot": "2026-04-14",
+  "source_url": "https://www.fsa.usda.gov/sites/default/files/2026-01/FSA_DMC_012026.pdf",
+  "text": "A dairy operation that makes a one-time election of coverage level and coverage percentage that are applicable to each of calendar years 2026 through 2031 will receive a 25 percent discount on premium rates.",
+  "via": "archive"
+ },
+ "hay": {
+  "2019": "Blended Alfalfa Hay",
+  "2020": "Premium Alfalfa Hay",
+  "2021": "Premium Alfalfa Hay",
+  "2022": "Premium Alfalfa Hay",
+  "2023": "Premium Alfalfa Hay",
+  "2024": "Premium Alfalfa Hay",
+  "2025": "Premium Alfalfa Hay",
+  "2026": "Premium Alfalfa Hay"
+ },
+ "hay_notes": {
+  "blend": {
+   "archive_url": "https://web.archive.org/web/20260610123518/https://www.fsa.usda.gov/news-events/news/07-11-2019/usda-now-making-payments-new-dairy-margin-coverage-program",
+   "snapshot": "2026-06-10",
+   "source_url": "https://www.fsa.usda.gov/news-events/news/07-11-2019/usda-now-making-payments-new-dairy-margin-coverage-program",
+   "text": "a 50 percent hay blend, in FSA's words",
+   "via": "archive"
+  },
+  "revision": {
+   "archive_url": "https://web.archive.org/web/20250421011957/https://www.fsa.usda.gov/Internet/FSA_Notice/dmc_53.pdf",
+   "snapshot": "2025-04-21",
+   "source_url": "https://www.fsa.usda.gov/Internet/FSA_Notice/dmc_53.pdf",
+   "text": "FSA changed the feed cost to premium alfalfa in December 2021, back to January 2020, and recalculated those margins",
+   "via": "archive"
+  }
+ },
+ "margins": {
+  "2019-01": {
+   "all_milk": 16.6,
+   "feed": 8.89,
+   "margin": 7.71
+  },
+  "2019-02": {
+   "all_milk": 16.8,
+   "feed": 8.89,
+   "margin": 7.91
+  },
+  "2019-03": {
+   "all_milk": 17.5,
+   "feed": 8.84,
+   "margin": 8.66
+  },
+  "2019-04": {
+   "all_milk": 17.7,
+   "feed": 8.88,
+   "margin": 8.82
+  },
+  "2019-05": {
+   "all_milk": 18.0,
+   "feed": 9.0,
+   "margin": 9.0
+  },
+  "2019-06": {
+   "all_milk": 18.1,
+   "feed": 9.47,
+   "margin": 8.63
+  },
+  "2019-07": {
+   "all_milk": 18.7,
+   "feed": 9.43,
+   "margin": 9.27
+  },
+  "2019-08": {
+   "all_milk": 18.9,
+   "feed": 9.05,
+   "margin": 9.85
+  },
+  "2019-09": {
+   "all_milk": 19.3,
+   "feed": 8.89,
+   "margin": 10.41
+  },
+  "2019-10": {
+   "all_milk": 19.9,
+   "feed": 9.02,
+   "margin": 10.88
+  },
+  "2019-11": {
+   "all_milk": 21.0,
+   "feed": 8.79,
+   "margin": 12.21
+  },
+  "2019-12": {
+   "all_milk": 20.7,
+   "feed": 8.75,
+   "margin": 11.95
+  },
+  "2020-01": {
+   "all_milk": 19.6,
+   "feed": 9.15,
+   "margin": 10.45
+  },
+  "2020-02": {
+   "all_milk": 18.9,
+   "feed": 9.1,
+   "margin": 9.8
+  },
+  "2020-03": {
+   "all_milk": 18.0,
+   "feed": 9.05,
+   "margin": 8.95
+  },
+  "2020-04": {
+   "all_milk": 14.4,
+   "feed": 8.56,
+   "margin": 5.84
+  },
+  "2020-05": {
+   "all_milk": 13.6,
+   "feed": 8.44,
+   "margin": 5.16
+  },
+  "2020-06": {
+   "all_milk": 18.1,
+   "feed": 8.27,
+   "margin": 9.83
+  },
+  "2020-07": {
+   "all_milk": 20.5,
+   "feed": 8.21,
+   "margin": 12.29
+  },
+  "2020-08": {
+   "all_milk": 18.8,
+   "feed": 8.11,
+   "margin": 10.69
+  },
+  "2020-09": {
+   "all_milk": 17.9,
+   "feed": 8.64,
+   "margin": 9.26
+  },
+  "2020-10": {
+   "all_milk": 20.2,
+   "feed": 9.23,
+   "margin": 10.97
+  },
+  "2020-11": {
+   "all_milk": 21.3,
+   "feed": 9.66,
+   "margin": 11.64
+  },
+  "2020-12": {
+   "all_milk": 18.5,
+   "feed": 9.96,
+   "margin": 8.54
+  },
+  "2021-01": {
+   "all_milk": 17.5,
+   "feed": 10.6,
+   "margin": 6.9
+  },
+  "2021-02": {
+   "all_milk": 17.1,
+   "feed": 11.13,
+   "margin": 5.97
+  },
+  "2021-03": {
+   "all_milk": 17.4,
+   "feed": 11.14,
+   "margin": 6.26
+  },
+  "2021-04": {
+   "all_milk": 18.4,
+   "feed": 11.63,
+   "margin": 6.77
+  },
+  "2021-05": {
+   "all_milk": 19.2,
+   "feed": 12.53,
+   "margin": 6.67
+  },
+  "2021-06": {
+   "all_milk": 18.4,
+   "feed": 12.37,
+   "margin": 6.03
+  },
+  "2021-07": {
+   "all_milk": 17.9,
+   "feed": 12.43,
+   "margin": 5.47
+  },
+  "2021-08": {
+   "all_milk": 17.7,
+   "feed": 12.67,
+   "margin": 5.03
+  },
+  "2021-09": {
+   "all_milk": 18.4,
+   "feed": 11.71,
+   "margin": 6.69
+  },
+  "2021-10": {
+   "all_milk": 19.7,
+   "feed": 11.16,
+   "margin": 8.54
+  },
+  "2021-11": {
+   "all_milk": 20.8,
+   "feed": 11.66,
+   "margin": 9.14
+  },
+  "2021-12": {
+   "all_milk": 21.8,
+   "feed": 12.27,
+   "margin": 9.53
+  },
+  "2022-01": {
+   "all_milk": 24.2,
+   "feed": 12.66,
+   "margin": 11.54
+  },
+  "2022-02": {
+   "all_milk": 24.7,
+   "feed": 13.72,
+   "margin": 10.98
+  },
+  "2022-03": {
+   "all_milk": 25.9,
+   "feed": 14.35,
+   "margin": 11.55
+  },
+  "2022-04": {
+   "all_milk": 27.1,
+   "feed": 14.81,
+   "margin": 12.29
+  },
+  "2022-05": {
+   "all_milk": 27.3,
+   "feed": 14.79,
+   "margin": 12.51
+  },
+  "2022-06": {
+   "all_milk": 26.9,
+   "feed": 14.98,
+   "margin": 11.92
+  },
+  "2022-07": {
+   "all_milk": 25.7,
+   "feed": 15.78,
+   "margin": 9.92
+  },
+  "2022-08": {
+   "all_milk": 24.3,
+   "feed": 16.22,
+   "margin": 8.08
+  },
+  "2022-09": {
+   "all_milk": 24.4,
+   "feed": 15.78,
+   "margin": 8.62
+  },
+  "2022-10": {
+   "all_milk": 25.9,
+   "feed": 15.19,
+   "margin": 10.71
+  },
+  "2022-11": {
+   "all_milk": 25.6,
+   "feed": 14.71,
+   "margin": 10.89
+  },
+  "2022-12": {
+   "all_milk": 24.7,
+   "feed": 14.94,
+   "margin": 9.76
+  },
+  "2023-01": {
+   "all_milk": 23.1,
+   "feed": 15.16,
+   "margin": 7.94
+  },
+  "2023-02": {
+   "all_milk": 21.6,
+   "feed": 15.41,
+   "margin": 6.19
+  },
+  "2023-03": {
+   "all_milk": 21.1,
+   "feed": 15.02,
+   "margin": 6.08
+  },
+  "2023-04": {
+   "all_milk": 20.7,
+   "feed": 14.86,
+   "margin": 5.84
+  },
+  "2023-05": {
+   "all_milk": 19.3,
+   "feed": 14.47,
+   "margin": 4.83
+  },
+  "2023-06": {
+   "all_milk": 17.9,
+   "feed": 14.25,
+   "margin": 3.65
+  },
+  "2023-07": {
+   "all_milk": 17.4,
+   "feed": 13.88,
+   "margin": 3.52
+  },
+  "2023-08": {
+   "all_milk": 19.7,
+   "feed": 13.24,
+   "margin": 6.46
+  },
+  "2023-09": {
+   "all_milk": 21.0,
+   "feed": 12.56,
+   "margin": 8.44
+  },
+  "2023-10": {
+   "all_milk": 21.6,
+   "feed": 12.16,
+   "margin": 9.44
+  },
+  "2023-11": {
+   "all_milk": 21.7,
+   "feed": 12.12,
+   "margin": 9.58
+  },
+  "2023-12": {
+   "all_milk": 20.6,
+   "feed": 12.16,
+   "margin": 8.44
+  },
+  "2024-01": {
+   "all_milk": 20.1,
+   "feed": 11.62,
+   "margin": 8.48
+  },
+  "2024-02": {
+   "all_milk": 20.6,
+   "feed": 11.16,
+   "margin": 9.44
+  },
+  "2024-03": {
+   "all_milk": 20.7,
+   "feed": 11.05,
+   "margin": 9.65
+  },
+  "2024-04": {
+   "all_milk": 20.5,
+   "feed": 10.9,
+   "margin": 9.6
+  },
+  "2024-05": {
+   "all_milk": 22.0,
+   "feed": 11.48,
+   "margin": 10.52
+  },
+  "2024-06": {
+   "all_milk": 22.8,
+   "feed": 11.14,
+   "margin": 11.66
+  },
+  "2024-07": {
+   "all_milk": 22.8,
+   "feed": 10.47,
+   "margin": 12.33
+  },
+  "2024-08": {
+   "all_milk": 23.6,
+   "feed": 9.88,
+   "margin": 13.72
+  },
+  "2024-09": {
+   "all_milk": 25.5,
+   "feed": 9.93,
+   "margin": 15.57
+  },
+  "2024-10": {
+   "all_milk": 25.2,
+   "feed": 10.03,
+   "margin": 15.17
+  },
+  "2024-11": {
+   "all_milk": 24.2,
+   "feed": 9.91,
+   "margin": 14.29
+  },
+  "2024-12": {
+   "all_milk": 23.3,
+   "feed": 9.92,
+   "margin": 13.38
+  },
+  "2025-01": {
+   "all_milk": 24.1,
+   "feed": 10.25,
+   "margin": 13.85
+  },
+  "2025-02": {
+   "all_milk": 23.6,
+   "feed": 10.48,
+   "margin": 13.12
+  },
+  "2025-03": {
+   "all_milk": 22.0,
+   "feed": 10.45,
+   "margin": 11.55
+  },
+  "2025-04": {
+   "all_milk": 21.0,
+   "feed": 10.58,
+   "margin": 10.42
+  },
+  "2025-05": {
+   "all_milk": 21.3,
+   "feed": 10.9,
+   "margin": 10.4
+  },
+  "2025-06": {
+   "all_milk": 21.3,
+   "feed": 10.2,
+   "margin": 11.1
+  },
+  "2025-07": {
+   "all_milk": 20.8,
+   "feed": 9.86,
+   "margin": 10.94
+  },
+  "2025-08": {
+   "all_milk": 20.9,
+   "feed": 9.38,
+   "margin": 11.52
+  },
+  "2025-09": {
+   "all_milk": 20.4,
+   "feed": 9.53,
+   "margin": 10.87
+  },
+  "2025-10": {
+   "all_milk": 20.0,
+   "feed": 9.48,
+   "margin": 10.52
+  },
+  "2025-11": {
+   "all_milk": 19.7,
+   "feed": 9.66,
+   "margin": 10.04
+  },
+  "2025-12": {
+   "all_milk": 19.0,
+   "feed": 9.58,
+   "margin": 9.42
+  },
+  "2026-01": {
+   "all_milk": 17.5,
+   "feed": 9.69,
+   "margin": 7.81
+  },
+  "2026-02": {
+   "all_milk": 18.3,
+   "feed": 9.84,
+   "margin": 8.46
+  },
+  "2026-03": {
+   "all_milk": 19.7,
+   "feed": 10.13,
+   "margin": 9.57
+  },
+  "2026-04": {
+   "all_milk": 20.8,
+   "feed": 10.26,
+   "margin": 10.54
+  }
+ },
+ "premiums": {
+  "archive_url": "https://web.archive.org/web/20260414193724/https://www.fsa.usda.gov/sites/default/files/2026-01/FSA_DMC_012026.pdf",
+  "as_of": "January 2026",
+  "read": "2026-10-28",
+  "snapshot": "2026-04-14",
+  "source_url": "https://www.fsa.usda.gov/sites/default/files/2026-01/FSA_DMC_012026.pdf",
+  "tier1": {
+   "4.00": 0.0,
+   "4.50": 0.0025,
+   "5.00": 0.005,
+   "5.50": 0.03,
+   "6.00": 0.05,
+   "6.50": 0.07,
+   "7.00": 0.08,
+   "7.50": 0.09,
+   "8.00": 0.1,
+   "8.50": 0.105,
+   "9.00": 0.11,
+   "9.50": 0.15
+  },
+  "tier1_lb": 6000000,
+  "tier2": {
+   "4.00": 0.0,
+   "4.50": 0.0025,
+   "5.00": 0.005,
+   "5.50": 0.1,
+   "6.00": 0.31,
+   "6.50": 0.65,
+   "7.00": 1.107,
+   "7.50": 1.413,
+   "8.00": 1.813,
+   "8.50": null,
+   "9.00": null,
+   "9.50": null
+  },
+  "via": "archive"
+ },
+ "read": "2026-10-28",
+ "snapshot": "2026-06-10",
+ "source": "USDA Farm Service Agency, Dairy Margin Coverage prices and updates",
+ "source_url": "https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates",
+ "status": {
+  "at": "2026-10-28T06:03:57Z",
+  "ok": true
+ },
+ "via": "archive",
+ "withheld": {
+  "count": 4,
+  "months": [
+   "2026-05",
+   "2026-06",
+   "2026-07",
+   "2026-08"
+  ],
+  "why": "not in the copy of FSA's page I read"
+ }
 }

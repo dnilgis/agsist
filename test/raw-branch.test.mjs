@@ -37,7 +37,7 @@ const git = (args, cwd = root) => execFileSync('git', args, { cwd, encoding: 'ut
 
 const MOVED = [
   'data/cattle-auction-raw', 'data/cattle-cash-raw', 'data/ccc-loan-raw', 'data/dairy-raw',
-  'data/fall-nitrogen-raw', 'data/fert-ams-raw', 'data/hay-ams-raw', 'data/hay-raw', 'data/drought/probe',
+  'data/fall-nitrogen-raw', 'data/fert-ams-raw', 'data/coop-fert-raw', 'data/hay-ams-raw', 'data/hay-raw', 'data/drought/probe',
 ];
 const ATLAS_MOVED = ['heat', 'water', 'loss', 'sob', 'value', 'crp', 'energy', 'wells', 'practices',
   'climate', 'storms', 'livestock', 'frost', 'wells_states'];
@@ -48,8 +48,9 @@ const PROBES = {
   'cattle-auction': ['data/cattle-auction-raw', 'FILES="data/cattle-auction.json data/cattle-auction-raw/listing.json data/feeder-index.json"'],   // + the feeder index built from it (fx/feederidx)
   'cattle-cash': ['data/cattle-cash-raw', 'FILES="data/cattle-cash.json"'],
   'ccc-loan': ['data/ccc-loan-raw', 'FILES="data/ccc-loan.json data/ccc-loan"'],
-  'dairy': ['data/dairy-raw', 'FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json"'],
+  'dairy': ['data/dairy-raw', 'FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json data/dairy-miss.json data/dairy-order30.json data/dairy-dmc.json"'],
   'fall-nitrogen': ['data/fall-nitrogen-raw', 'FILES="data/fall-nitrogen.json fall-nitrogen.html"'],
+  'fertilizer-coops': ['data/coop-fert-raw', 'FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json"'],   // probe added Oct 28 (fx/oct28adds)
   'fertilizer-ams': ['data/fert-ams-raw', 'FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json"'],
   'hay-ams': ['data/hay-ams-raw', 'FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json"'],
   'hay-prices': ['data/hay-raw', 'FILES="data/hay"'],

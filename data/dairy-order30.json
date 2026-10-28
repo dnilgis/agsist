@@ -1,0 +1,270 @@
+{
+ "_note": "Written by scripts/fetch_order30.py from the market administrator's own PPD and class releases; every month checked (Class I identity, skim = mover + differential, uniform = Class III + PPD). Never typed by hand.",
+ "latest": {
+  "adv_butterfat": 1.5164,
+  "adv_class3_skim": 11.76,
+  "adv_class4_skim": 12.16,
+  "base_zone": "Cook County, IL",
+  "class1": 20.24,
+  "class1_bf": 1.5484,
+  "class1_diff": 3.2,
+  "class1_skim": 15.36,
+  "class3": 16.04,
+  "class4": 18.94,
+  "month_key": "2026-09",
+  "mover": 12.16,
+  "mover_higher_of": true,
+  "ppd": 0.58,
+  "released_ppd": "2026-10-12",
+  "scc": 0.00078,
+  "uniform": 16.62
+ },
+ "next_class1": [
+  {
+   "adv_butterfat": 1.5024,
+   "adv_class3_skim": 11.18,
+   "adv_class4_skim": 14.12,
+   "class1": 22.08,
+   "class1_bf": 1.5344,
+   "class1_diff": 3.2,
+   "class1_skim": 17.32,
+   "month_key": "2026-10",
+   "mover": 14.12,
+   "mover_higher_of": true,
+   "released": "2026-09-23"
+  },
+  {
+   "adv_butterfat": 1.373,
+   "adv_class3_skim": 10.38,
+   "adv_class4_skim": 16.03,
+   "class1": 23.47,
+   "class1_bf": 1.405,
+   "class1_diff": 3.2,
+   "class1_skim": 19.23,
+   "month_key": "2026-11",
+   "mover": 16.03,
+   "mover_higher_of": true,
+   "released": "2026-10-21"
+  }
+ ],
+ "ppd_history": [
+  {
+   "central": "agree",
+   "class3": 22.85,
+   "month_key": "2024-10",
+   "ppd": -0.47,
+   "released_ppd": "2024-11-11",
+   "uniform": 22.38
+  },
+  {
+   "central": "agree",
+   "class3": 19.95,
+   "month_key": "2024-11",
+   "ppd": 0.38,
+   "released_ppd": "2024-12-11",
+   "uniform": 20.33
+  },
+  {
+   "central": "agree",
+   "class3": 18.62,
+   "month_key": "2024-12",
+   "ppd": 0.36,
+   "released_ppd": "2025-01-11",
+   "uniform": 18.98
+  },
+  {
+   "central": "agree",
+   "class3": 20.34,
+   "month_key": "2025-01",
+   "ppd": 0.13,
+   "released_ppd": "2025-02-12",
+   "uniform": 20.47
+  },
+  {
+   "central": "agree",
+   "class3": 20.18,
+   "month_key": "2025-02",
+   "ppd": 0.13,
+   "released_ppd": "2025-03-12",
+   "uniform": 20.31
+  },
+  {
+   "central": "agree",
+   "class3": 18.62,
+   "month_key": "2025-03",
+   "ppd": 0.2,
+   "released_ppd": "2025-04-11",
+   "uniform": 18.82
+  },
+  {
+   "central": "agree",
+   "class3": 17.48,
+   "month_key": "2025-04",
+   "ppd": 0.27,
+   "released_ppd": "2025-05-12",
+   "uniform": 17.75
+  },
+  {
+   "central": "agree",
+   "class3": 18.57,
+   "month_key": "2025-05",
+   "ppd": 0.07,
+   "released_ppd": "2025-06-11",
+   "uniform": 18.64
+  },
+  {
+   "central": "agree",
+   "class3": 18.82,
+   "month_key": "2025-06",
+   "ppd": 0.28,
+   "released_ppd": "2025-07-11",
+   "uniform": 19.1
+  },
+  {
+   "central": "agree",
+   "class3": 17.32,
+   "month_key": "2025-07",
+   "ppd": 0.63,
+   "released_ppd": "2025-08-12",
+   "uniform": 17.95
+  },
+  {
+   "central": "agree",
+   "class3": 17.24,
+   "month_key": "2025-08",
+   "ppd": 0.58,
+   "released_ppd": "2025-09-11",
+   "uniform": 17.82
+  },
+  {
+   "central": "agree",
+   "class3": 17.59,
+   "month_key": "2025-09",
+   "ppd": 0.35,
+   "released_ppd": "2025-10-11",
+   "uniform": 17.94
+  },
+  {
+   "central": "agree",
+   "class3": 16.91,
+   "month_key": "2025-10",
+   "ppd": 0.14,
+   "released_ppd": "2025-11-12",
+   "uniform": 17.05
+  },
+  {
+   "central": "agree",
+   "class3": 17.18,
+   "month_key": "2025-11",
+   "ppd": -0.56,
+   "released_ppd": "2025-12-11",
+   "uniform": 16.62
+  },
+  {
+   "central": "agree",
+   "class3": 15.86,
+   "month_key": "2025-12",
+   "ppd": 0.35,
+   "released_ppd": "2026-01-12",
+   "uniform": 16.21
+  },
+  {
+   "central": "agree",
+   "class3": 14.59,
+   "month_key": "2026-01",
+   "ppd": 0.46,
+   "released_ppd": "2026-02-11",
+   "uniform": 15.05
+  },
+  {
+   "central": "agree",
+   "class3": 14.94,
+   "month_key": "2026-02",
+   "ppd": 0.58,
+   "released_ppd": "2026-03-11",
+   "uniform": 15.52
+  },
+  {
+   "central": "agree",
+   "class3": 16.16,
+   "month_key": "2026-03",
+   "ppd": 0.5,
+   "released_ppd": "2026-04-11",
+   "uniform": 16.66
+  },
+  {
+   "central": "agree",
+   "class3": 16.82,
+   "month_key": "2026-04",
+   "ppd": 0.61,
+   "released_ppd": "2026-05-12",
+   "uniform": 17.43
+  },
+  {
+   "central": "agree",
+   "class3": 16.92,
+   "month_key": "2026-05",
+   "ppd": 0.69,
+   "released_ppd": "2026-06-11",
+   "uniform": 17.61
+  },
+  {
+   "central": "agree",
+   "class3": 15.98,
+   "month_key": "2026-06",
+   "ppd": 0.87,
+   "released_ppd": "2026-07-11",
+   "uniform": 16.85
+  },
+  {
+   "central": "agree",
+   "class3": 15.52,
+   "month_key": "2026-07",
+   "ppd": 0.88,
+   "released_ppd": "2026-08-12",
+   "uniform": 16.4
+  },
+  {
+   "central": "agree",
+   "class3": 16.64,
+   "month_key": "2026-08",
+   "ppd": 0.6,
+   "released_ppd": "2026-09-11",
+   "uniform": 17.24
+  },
+  {
+   "central": "agree",
+   "class3": 16.04,
+   "month_key": "2026-09",
+   "ppd": 0.58,
+   "released_ppd": "2026-10-12",
+   "uniform": 16.62
+  }
+ ],
+ "read": "2026-10-28",
+ "source": "Upper Midwest Market Administrator (Federal Order 30)",
+ "source_url": "https://www.fmma30.com/",
+ "status": {
+  "at": "2026-10-28T06:04:41Z",
+  "ok": true
+ },
+ "year_ago": {
+  "adv_butterfat": 2.7669,
+  "adv_class3_skim": 7.54,
+  "adv_class4_skim": 9.34,
+  "base_zone": "Cook County, IL",
+  "class1": 21.9,
+  "class1_bf": 2.7989,
+  "class1_diff": 3.2,
+  "class1_skim": 12.54,
+  "class3": 17.59,
+  "class4": 16.17,
+  "month_key": "2025-09",
+  "mover": 9.34,
+  "mover_higher_of": true,
+  "ppd": 0.35,
+  "released_ppd": "2025-10-11",
+  "scc": 0.0009,
+  "uniform": 17.94
+ }
+}

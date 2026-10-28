@@ -39,6 +39,14 @@ Modes:
   --sheets-only  no network: rebuild only the "sheet" co-ops from the config
                and carry every other co-op's last read exactly as it is on
                file (re-aged to today). For a config change to a sheet co-op.
+  --probe      network, writes no feed: for every co-op in "coops" and every
+               candidate in "pending", read robots.txt (a missing robots.txt,
+               404 or 410, allows; any other failure is "unknown", which does not
+               allow), fetch the page only when robots allows it, print what the
+               reader parsed, and save each page to data/coop-fert-raw/ (the
+               workflow moves it to the raw branch). A pending co-op moves to
+               "coops" by hand only after a probe shows robots allows the page
+               and its table parses.
   --selftest   offline tests on test/fixtures/coop-fert/.
 
 WHAT THIS FILE WILL NOT DO
@@ -268,7 +276,14 @@ def col_role(h):
         return "cwt"
     if "unit" in h:
         return "per_unit"
-    if re.search(r"change|date|updated|effective", h):
+    # Bartlett Co-op (Oct 28): "Analysis | Name | Price | Per | Price on"
+    if h == "analysis":
+        return "product"
+    if h == "name":
+        return "name"
+    if h == "per":
+        return "unit"
+    if re.search(r"change|date|updated|effective|^price on$", h):
         return "date"
     if re.search(r"ton price|per ton|^price$|^ton$", h):
         return "list"
@@ -322,10 +337,19 @@ def html_rows(page, today):
                         roles[0] = "product"
                 continue
             raw = clean(cells[roles.index("product")]) if roles.index("product") < len(cells) else ""
+            if "name" in roles and roles.index("name") < len(cells):
+                raw = clean(raw + " " + cells[roles.index("name")])
             if not raw or NOT_PRODUCT.search(raw):
                 continue
             row = {"raw": raw, "prices": {}, "per_unit": None, "cwt": None, "date": None, "date_text": None, "notes": []}
+            # A "Per" column names the unit the price is for: only a ton is read.
+            unit = clean(cells[roles.index("unit")]) if "unit" in roles and roles.index("unit") < len(cells) else None
+            per_ton = unit is None or re.fullmatch(r"(?i)tons?|t", unit or "") is not None
+            if not per_ton:
+                row["notes"].append("priced per %s, not per ton" % (unit or "unit not shown"))
             for role, cell in zip(roles, cells):
+                if role in MONEY_COLS and not per_ton:
+                    continue
                 if role in MONEY_COLS:
                     v, note = money(cell)
                     if v is not None:
@@ -792,6 +816,92 @@ def run(root, now=None, fetcher=None, sheets_only=False):
     return {"wrote": True, "why": None, "results": results, "doc": doc, "hist_ok": hist_ok}
 
 
+# ---------------------------------------------------------------- probe
+RAW_DIR = "data/coop-fert-raw"
+
+
+def robots_status(url, opener=None):
+    """(allowed: True/False/None, note). Reads <site>/robots.txt as this
+    reader's own user agent. 404/410 = no rules = allowed (the robots.txt
+    standard); any other failure = None (unknown, so not allowed)."""
+    import urllib.error
+    import urllib.request
+    import urllib.robotparser
+    u = urllib.parse.urlsplit(url)
+    rurl = "%s://%s/robots.txt" % (u.scheme, u.netloc)
+    opener = opener or urllib.request.urlopen
+    try:
+        req = urllib.request.Request(rurl, headers={"User-Agent": UA, "Accept": "*/*"})
+        with opener(req, timeout=25) as r:
+            body = r.read().decode("utf-8", "replace")
+    except urllib.error.HTTPError as e:
+        if e.code in (404, 410):
+            return True, "%s answered %d: no robots rules" % (rurl, e.code)
+        return None, "%s answered %d" % (rurl, e.code)
+    except Exception as e:  # noqa: BLE001
+        return None, "%s: %s: %s" % (rurl, type(e).__name__, e)
+    if re.search(r"<html|<!doctype", body[:500], re.I):
+        return None, "%s answered with a web page, not robots rules" % rurl
+    rp = urllib.robotparser.RobotFileParser()
+    rp.parse(body.splitlines())
+    ok = rp.can_fetch(UA, url)
+    return ok, "%s %s %s" % (rurl, "allows" if ok else "DISALLOWS", url)
+
+
+def probe(root, now=None, fetcher=None, robots=None, out=print):
+    root = Path(root)
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    conf = read_json(root / CONFIG)
+    fetcher = fetcher or (lambda u: (time.sleep(PAUSE), get(u))[1])
+    robots = robots or robots_status
+    rd = root / RAW_DIR
+    rd.mkdir(parents=True, exist_ok=True)
+    report = {}
+    for group in ("coops", "pending"):
+        for cfg in conf.get(group) or []:
+            if cfg.get("layout") == "sheet" or not cfg.get("url"):
+                continue
+            ok, note = robots(cfg["url"])
+            out("%s [%s] robots: %s" % (cfg["id"], group, note))
+            rec = {"group": group, "robots": ok, "robots_note": note, "rows": [], "error": None}
+            report[cfg["id"]] = rec
+            if ok is not True:
+                rec["error"] = "not fetched: robots.txt does not allow it" if ok is False else "not fetched: robots.txt unknown"
+                out("  " + rec["error"])
+                continue
+            saved = []
+
+            def keep(u, _f=fetcher, _saved=saved):
+                raw, err = _f(u)
+                if raw is not None:
+                    _saved.append(raw)
+                return raw, err
+            try:
+                parsed, err = read_coop(cfg, now.date(), keep)
+            except Exception as e:  # noqa: BLE001
+                parsed, err = None, "%s: %s" % (type(e).__name__, e)
+            for i, raw in enumerate(saved):
+                ext = "pdf" if raw[:5] == b"%PDF-" else "html"
+                (rd / ("%s%s.%s" % (cfg["id"], "" if i == 0 else "-%d" % i, ext))).write_bytes(raw)
+            if parsed is None:
+                rec["error"] = err
+                out("  NOT READ: %s" % err)
+                continue
+            c = build_coop(cfg, parsed, None, now.date())
+            rec["posted"] = c["posted"]
+            rec["problems"] = c["problems"]
+            rec["dropped"] = c["dropped"]
+            rec["rows"] = [{k: r[k] for k in ("product", "raw", "prices", "cash", "cash_basis", "date", "date_from", "flags")} for r in c["rows"]]
+            out("  page date: %s; %d rows; problems: %s; dropped: %s" % (
+                c["posted"], len(c["rows"]), c["problems"] or "none", c["dropped"] or "none"))
+            for r in c["rows"]:
+                out("    %-10s %-34s %s cash=%s (%s) date=%s%s" % (
+                    r["product"], r["raw"][:34], json.dumps(r["prices"]), r["cash"], r["cash_basis"], r["date"],
+                    (" flags=%s" % r["flags"]) if r["flags"] else ""))
+    atomic_write(rd / "probe.json", {"read": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "ua": UA, "coops": report})
+    return report
+
+
 # ---------------------------------------------------------------- fixture feed
 def fixture_doc(now=None, sheets=False):
     """The feed as a run on the saved fixtures would write it (the three co-op
@@ -1071,6 +1181,57 @@ def selftest():
        "synergy-wi" in c9 and {s["key"]: s for s in d9["summary"]}["urea"]["median"] == 615.95)
     ck("sheets-only: without carry a co-op not read is a failed read",
        {c["id"]: c for c in compose(allc, r9, doc, now)["coops"]}["mccune-ks"]["ok"] is False)
+    # Bartlett Co-op Association (Oct 28): the real page the probe saved.
+    # "Analysis | Name | Price | Per | Price on"; one ton price, no payment terms.
+    bpage = (fx / "bartlett-ks_2026-10-28.html").read_text()
+    bt = datetime.date(2026, 10, 28)
+    brw, btx, bpr = html_rows(bpage, bt)
+    bcfg = {"id": "bartlett-ks", "name": "Bartlett Co-op Association", "state": "KS", "layout": "html-table", "cash_from": None}
+    bc = build_coop(bcfg, {"rows": brw, "page_date": one_date(btx, bt), "problems": bpr}, None, bt)
+    bk = {r["raw"]: r for r in bc["rows"]}
+    ck("bartlett: 9 rows read, no problems", len(bc["rows"]) == 9 and not bpr and not bc["dropped"])
+    ck("bartlett: urea 625, DAP 970, potash 515, NH3 870 as the ton price",
+       bk["46-00-00 Urea"]["prices"] == {"list": 625.0} and bk["18-46-0 DAP"]["prices"] == {"list": 970.0}
+       and bk["0-0-60 Potash"]["prices"] == {"list": 515.0} and bk["82-00-00 Anhydrous Ammonia"]["prices"] == {"list": 870.0})
+    ck("bartlett: grade and name joined, so two 82-00-00 rows stay apart",
+       "82-00-00 Centuro Treated NH3" in bk and bk["82-00-00 Centuro Treated NH3"]["product"] == "anhydrous")
+    ck("bartlett: each row dated 2026-10-09 from its own 'Price on' cell",
+       all(r["date"] == "2026-10-09" and r["date_from"] == "row" for r in bc["rows"]) and bc["posted"] == "2026-10-09")
+    ck("bartlett: no cash price is posted, so none is made up", all(r["cash"] is None for r in bc["rows"]))
+    ck("bartlett: not in any middle cash price",
+       not any("bartlett-ks" in x["coops"] for x in summarize([bc])))
+    gal = bpage.replace('<td  0  class="dtr8 dtc3">Ton</td>', '<td  0  class="dtr8 dtc3">Gal</td>')
+    gr = {r["raw"]: r for r in html_rows(gal, bt)[0]}
+    ck("a 'Per' column that is not a ton keeps the price out", gr["28-00-00 UAN"]["prices"] == {}
+       and gr["28-00-00 UAN"]["notes"] == ["priced per Gal, not per ton"] and gr["46-00-00 Urea"]["prices"] == {"list": 625.0})
+
+    # robots.txt reading for --probe (Oct 28): the rules a candidate co-op must pass
+    import io
+    import urllib.error
+
+    class _R(io.BytesIO):
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    def op(body=None, code=None):
+        def f(req, timeout=None):
+            if code:
+                raise urllib.error.HTTPError(req.full_url, code, "x", {}, None)
+            return _R(body.encode())
+        return f
+    page = "https://www.bartlettco-op.com/index.php/our-products/current-prices/fertilizer-prices?id=2&view=fronttable"
+    ck("robots: 404 means no rules, allowed", robots_status(page, op(code=404))[0] is True)
+    ck("robots: 403 is unknown, not allowed", robots_status(page, op(code=403))[0] is None)
+    ck("robots: Disallow /index.php blocks the page",
+       robots_status(page, op("User-agent: *\nDisallow: /index.php\n"))[0] is False)
+    ck("robots: Disallow /administrator/ (Joomla default) allows it",
+       robots_status(page, op("User-agent: *\nDisallow: /administrator/\nDisallow: /tmp/\n"))[0] is True)
+    ck("robots: an HTML page in place of robots.txt is unknown",
+       robots_status(page, op("<!DOCTYPE html><html><body>Not here</body></html>"))[0] is None)
+
     import check_site_budget
     ck("history cap matches scripts/check_site_budget.py FILE_KB", check_site_budget.FILE_KB.get(HIST) == HIST_MAX_KB)
 
@@ -1084,6 +1245,9 @@ def selftest():
 def main(argv):
     if "--selftest" in argv:
         return selftest()
+    if "--probe" in argv:
+        probe(ROOT)
+        return 0
     if "--fixture-feed" in argv:
         print(json.dumps(fixture_doc(sheets="--with-sheets" in argv)))
         return 0

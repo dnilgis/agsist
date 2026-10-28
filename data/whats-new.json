@@ -9,6 +9,20 @@
    "link": "/usda-calendar#priced-in"
   },
   {
+   "id": "2026-10-28-wisconsin-soil-temps",
+   "date": "2026-10-28",
+   "title": "Fall anhydrous: Wisconsin soil temperatures",
+   "line": "Soil temperature at 4 in now comes from Wisconet's stations across Wisconsin too, each reading credited to its network. The fertilizer page adds Bartlett Co-op in Kansas.",
+   "link": "/fall-nitrogen"
+   },
+   {
+   "id": "2026-10-28-milk-order30",
+   "date": "2026-10-28",
+   "title": "Milk prices: the Upper Midwest order, and how close the futures came",
+   "line": "Order 30's PPD for two years, what DMC would have paid since 2019 at FSA's margins, your order's PPD in the check reader, and the futures miss each month.",
+   "link": "/milk-prices"
+  },
+  {
    "id": "2026-10-28-milk-your-area",
    "date": "2026-10-28",
    "title": "Milk prices: your area first, and read your own check",
