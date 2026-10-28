@@ -756,6 +756,39 @@ for (const [p, b] of Object.entries(goodBodies)) {
   A(h.includes('Stopped. No more monthly rain emails for this county.') && !nt('month@example.com').t['rain-month:55005'] && nt('month@example.com').t['rain-month:19169'], 'rain-month stop removes that county only');
 }
 
+// v5.58: milk-month, the milk price day email (one list, mo like rain-month)
+{
+  const F = fresh();
+  const nt = (e) => JSON.parse(F.st.get('note:' + e) || 'null');
+  r = await req(F.env, '/notice', { body: { email: 'Milk@Example.com', topic: 'milk-month', source: 'page:milk-prices', daily: false } });
+  j = await r.json();
+  A(r.status === 200 && j.ok === true && j.topic === 'milk-month' && j.daily === false, 'milk-month: stored');
+  A(nt('milk@example.com').t['milk-month'].src === 'page:milk-prices' && !F.st.has('sub:milk@example.com'), 'milk-month: keeps the page; not on the Daily without the box');
+  for (const tp of ['milk-month:55', 'milkmonth', 'milk-month:2026-10', 'milk']) {
+    r = await req(F.env, '/notice', { body: { email: 'milkbad@example.com', topic: tp } });
+    A(r.status === 400, 'milk-month refuses ' + tp);
+  }
+  A(!F.st.has('note:milkbad@example.com'), 'a refused milk topic stores nothing');
+  for (const mo of [undefined, '2026-13', 'junk']) {
+    r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'milk@example.com', topic: 'milk-month', month: mo } });
+    A(r.status === 400, 'milk-month: /notice-mark refuses month ' + mo);
+  }
+  r = await req(F.env, '/notice-mark?token=tok', { body: { email: 'milk@example.com', topic: 'milk-month', month: '2026-10' } });
+  A((await r.json()).ok === true && nt('milk@example.com').t['milk-month'].mo === '2026-10' && Number.isFinite(nt('milk@example.com').t['milk-month'].sent), 'milk-month: the mark records the month');
+  await req(F.env, '/notice-mark?token=tok', { body: { email: 'milk@example.com', topic: 'milk-month', month: '2026-09' } });
+  A(nt('milk@example.com').t['milk-month'].mo === '2026-10', 'milk-month: mo never moves back');
+  r = await req(F.env, '/notice-list?token=tok&topic=milk-month', { m: 'GET' });
+  const L = await r.json();
+  A(L.length === 1 && L[0].mo === '2026-10' && L[0].lid === lidOf('milk@example.com'), '/notice-list?topic=milk-month with mo and link id');
+  await req(F.env, '/notice', { body: { email: 'milk@example.com', topic: 'rent:wi' } });
+  const lid = lidOf('milk@example.com'), t16 = crypto.createHmac('sha256', 'sec').update(lid).digest('hex').slice(0, 16);
+  const q = '?k=' + lid + '&t=' + t16 + '&topic=milk-month';
+  r = await req(F.env, '/notice-unsubscribe' + q, { m: 'GET' });
+  A((await r.text()).includes('Stop the milk price day email for this address?'), 'milk-month stop link asks about this list');
+  r = await req(F.env, '/notice-unsubscribe' + q, { m: 'POST' });
+  A((await r.text()).includes('Stopped. No more milk price day emails.') && !nt('milk@example.com').t['milk-month'] && nt('milk@example.com').t['rent:wi'], 'milk-month stop removes that list only');
+}
+
 // v5.55: landsales:<ZIP>:<10|25|50>, the monthly land sale email (its own store)
 {
   const F = fresh();
