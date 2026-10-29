@@ -240,6 +240,26 @@ function mktSessionsClosedSince(pricedAt, now) {
   }
   return n;
 }
+/* A POSTED DATE BESIDE THE PRICE (benchmark review, Oct 29, 2026). The card's
+   head says when the board last moved, but a row the board did not move with it
+   (a held row with its own older time) or a whole board past its normal update
+   gets the date right under its own price. Fresh rows stay clean.
+   -> '' or a <span> for the row's grade line. Old: the same line the card head
+   uses (two closed day sessions for a board, 18 hours for a feed, a board not
+   reached on the latest run). */
+function rowPostedMark(bid,elev,nowMs){
+  var t=bid&&bid.asOf?Date.parse(bid.asOf):NaN;
+  if(!isFinite(t)&&elev&&elev.asOfT!=null)t=elev.asOfT;
+  if(!isFinite(t))return '';
+  var now=new Date(nowMs!=null?nowMs:Date.now());
+  var board=!!(elev&&(elev.via==='direct'||elev.fromPortal));
+  var old=!!(elev&&elev.unread)||bid.stale===true||(board?mktSessionsClosedSince(t,now)>=2:(+now-t)>18*3600e3);
+  var behind=elev&&elev.asOfT!=null&&t<elev.asOfT&&mktSessionsClosedSince(t,new Date(elev.asOfT))>=1;
+  if(!old&&!behind)return '';
+  var d=new Date(t),lbl=(+now-t<6*864e5)?d.toLocaleDateString('en-US',{weekday:'short',timeZone:'America/Chicago'})
+                                         :d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/Chicago'});
+  return '<span class="bid-grade bid-posted'+(old?' bid-posted-old':'')+'" title="'+(old?'This price is older than this board normally updates. Call to confirm before hauling':'Posted earlier than the rest of this board')+'">'+(old?'old price, posted ':'posted ')+escH(lbl)+'</span>';
+}
 
 var marketBadge=$('market-badge');
 var geoDot=$('cb-geo-dot');
@@ -1921,6 +1941,7 @@ function renderBids(bids,keepLimit){
         }
         var bhi='';
         if(bhSym(bid)&&bid.deliveryMonth){_bhRows.push({bid:bid,elev:elev});bhi=' data-bh-i="'+(_bhRows.length-1)+'"';}
+        gradeHtml+=rowPostedMark(bid,elev);
         if(bf.odd)gradeHtml+='<span class="bid-grade bid-odd"'+(bid._odd?' title="'+escH(oddTitle(bid._odd))+'"':'')+'>Unusual basis, call before you haul</span>';
         html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"'+bhi+'><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+((!perTon&&_tone&&_tone(bid))||bf.cls)+'">'+bf.str+basisMark(!perTon&&_tone&&_tone(bid))+'</span>'+gradeHtml+'</div>';
       });
