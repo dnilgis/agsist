@@ -79,7 +79,7 @@ function serve() {
 }
 
 // Soil (2026-10-29, Open-Meteo removed): the measured 4 in reading at the nearest station, from data/fall-nitrogen.json
-// (components/soil-near.js). One Wisconet station about 3 miles from the geocoded point; its last 10 daily means end
+// (components/soil-near.js). One Wisconet station about 4 miles from the geocoded point; its last 10 daily means end
 // on o.soilLast (default: the day before the clock) with o.soil (default warming to 52.0 over the last 3 days).
 function soilFeed(o) {
   const day = o.soilLast || new Date(Date.parse(o.clock || "2027-05-05T17:00:00Z") - 864e5).toISOString().slice(0, 10);
@@ -165,9 +165,9 @@ test("ZIP in May: station frost odds, heat units by hand, county dates, soil tre
     const tr = await txt(pg, "#st-trend");
     assert.match(tr, /Measured, last 5 days to 2027-05-04: 48° 49° 50° 52° 54° warming/i);
     assert.match(await txt(pg, "#st-verdict-wrap"), /Acceptable/);
-    assert.match(await txt(pg, "#st-note"), /3-day mean of measured soil at 4 in at Testville Soil \(Wisconet, 3 mi\), not your field/);
+    assert.match(await txt(pg, "#st-note"), /3-day mean of measured soil at 4 in at Testville Soil \(Wisconet, 4 mi\), not your field/);
     const asof = await txt(pg, "#st-asof");
-    assert.match(asof, /Soil: measured at Testville Soil \(Wisconet\), 3 mi, last day 2027-05-04\./);
+    assert.match(asof, /Soil: measured at Testville Soil \(Wisconet\), 4 mi, last day 2027-05-04\./);
     assert.match(asof, /Air: the forecast for this hour, National Weather Service \(NDFD grid, ARX 30,60\), issued May 5/);
     assert.equal(await pg.$eval("#st-asof a", (a) => a.href), "https://wisconet.wisc.edu/");
     // A planned date adds its own row.

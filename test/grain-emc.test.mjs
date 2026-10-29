@@ -346,14 +346,15 @@ test("browser: missing hours say 'no reading', DST hours label right, current fa
       now: Date.parse("2026-10-31T20:30:00-05:00"),
       onForecast: (r, u, h) => {
         assert.match(u, /^https:\/\/api\.weather\.gov\/gridpoints\/ARX\/30,60$/);
-        const f = forecast("America/Chicago", () => 0, "2026-10-31T00:00:00-05:00", { temp: (i) => (i === 21 ? null : 45), rh: (i) => (i === 21 ? null : 50), current: { temperature_2m: null, relative_humidity_2m: null } });
+        const f = forecast("America/Chicago", () => 0, "2026-10-31T00:00:00-05:00", { temp: (i) => (i === 20 || i === 21 ? null : 45), rh: (i) => (i === 20 || i === 21 ? null : 50), current: { temperature_2m: null, relative_humidity_2m: null } });
         return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify(f) });
       },
     });
     await pg.waitForSelector("#emc-results:not([hidden])");
-    assert.match(await pg.textContent("#emc-now"), /Forecast air at tonight 8 pm: 45 F/);
+    // the NWS grid has no separate "current": the hour holding now (8 pm) and the next are empty, so it falls back to 10 pm
+    assert.match(await pg.textContent("#emc-now"), /Forecast air at tonight 10 pm: 45 F/);
     assert.ok(!/0 F, 0%/.test(await pg.textContent("#emc-now")));
-    assert.match(await pg.textContent("#emc-count"), /1 with no forecast reading/);
+    assert.match(await pg.textContent("#emc-count"), /2 with no forecast reading/);
     await pg.focus("#emc-strip");
     await pg.keyboard.press("ArrowRight");
     assert.match(await pg.textContent("#emc-tip"), /^Tonight 9 pm: no forecast reading\./);

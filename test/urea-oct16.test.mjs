@@ -62,7 +62,9 @@ async function open(browser, port, { admin1 = "Iowa", name = "Ames", sums = [0, 
     if (u.startsWith("https://api.weather.gov/points/")) return r.fulfill({ status: 200, headers: CORS, contentType: "application/geo+json", body: JSON.stringify(nwsPoints(42.03, -93.62)) });
     if (u.startsWith("https://api.weather.gov/gridpoints/")) {
       const hrs = [], hp = [];
-      for (let i = 0; i < 120; i++) { hrs.push(new Date(Date.UTC(2026, 9, 15, 0) + i * 3600e3).toISOString().slice(0, 13) + ":00"); hp.push(20); }
+      // the NWS daily chance is the highest of the day's hours, so each hour carries its day's chance
+      const pmaxOf = (i) => { const pm = typeof pmax !== "undefined" ? pmax : [20, 20, 20, 20, 20]; return pm[Math.min(pm.length - 1, Math.floor(i / 24))]; };
+      for (let i = 0; i < 120; i++) { hrs.push(new Date(Date.UTC(2026, 9, 15, 0) + i * 3600e3).toISOString().slice(0, 13) + ":00"); hp.push(pmaxOf(i)); }
       return r.fulfill({ status: 200, headers: CORS, contentType: "application/geo+json", body: JSON.stringify(nwsFromOM({
         current: { time: "2026-10-15T10:00", temperature_2m: 72, relative_humidity_2m: 60, apparent_temperature: 72, precipitation_probability: 20, weather_code: 1, wind_speed_10m: 8 },
         hourly: { time: hrs, precipitation_probability: hp },

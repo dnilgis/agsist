@@ -106,7 +106,7 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
       assert.ok(!asked.some((x) => /open-meteo/.test(x)), "nothing asked of Open-Meteo");
       const model = await pg.$eval("#sp-model", (e) => e.textContent);
       assert.match(model, /^Forecast \(estimate\) for everything on this page: the National Weather Service forecast grid \(NDFD, 2\.5 km cells\), office DMX cell 70,80\. Issued .+\.$/);
-      assert.equal(await pg.evaluate(() => document.body.textContent.split("Issued ").length - 1), 1, "the issue time is named once");
+      assert.equal(await pg.evaluate(() => document.body.innerText.split("Issued ").length - 1), 1, "the issue time is named once (on screen)");
       assert.equal(await pg.$$eval("#sp-model a", (as) => as[0].href), "https://www.weather.gov/documentation/services-web-api");
       // the shared hour is the slider's hour
       assert.equal(+(await pg.$eval("#sw-slider", (e) => e.value)), IDX8, "slider at the shared hour");
