@@ -188,7 +188,7 @@ test('the node test shards fail on a skipped test, not only on a failed one (Sig
   const dir = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'noskip-'));
   fs.writeFileSync(path.join(dir, 'a.test.mjs'), "import { test } from 'node:test'; test('runs', () => {}); test('needs a tool', (t) => t.skip('not here'));\n");
   // run that one line as checks.sh would, with run() reduced to "run the command"
-  const run2 = (env) => spawnSync('bash', ['-c', `NT='${path.join(dir, 'nt.out')}'; SHARD=; DEV='${path.join(root, 'scripts/dev')}'; run(){ shift; "$@"; }\n${line}`], { cwd: dir, encoding: 'utf8', env: { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'NODE_TEST_CONTEXT')), ...env } });
+  const run2 = (env) => spawnSync('bash', ['-c', `NT='${path.join(dir, 'nt.out')}'; SHARD=; DEV='${path.join(root, 'scripts/dev')}'; run(){ shift; "$@"; }\n${line}`], { cwd: dir, encoding: 'utf8', env: { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'NODE_TEST_CONTEXT' && k !== 'AGSIST_TEST_FILES')), ...env } });
   assert.equal(run2({ AGSIST_NO_SKIPS: '' }).status, 0, 'a skip passes locally without the variable');
   const r = run2({ AGSIST_NO_SKIPS: '1' });
   assert.equal(r.status, 1, 'and fails with it');

@@ -16,7 +16,8 @@ if [ -n "${AGSIST_TEST_FILES:-}" ]; then
     exit 0
   fi
   echo "node-tests: ${#F[@]} picked test file(s)${SHARD:+ in shard $SHARD}"
-  node --test "${F[@]}" > "$NT" 2>&1
+  # the tests themselves never see the pick (a test that runs checks.sh's node-test line runs it whole)
+  env -u AGSIST_TEST_FILES node --test "${F[@]}" > "$NT" 2>&1
 else
   node --test ${SHARD:+--test-shard=$SHARD} > "$NT" 2>&1
 fi
