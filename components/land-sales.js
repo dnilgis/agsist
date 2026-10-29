@@ -1,4 +1,5 @@
-/* Farm sales in front of readers (Sig, Oct 27, 2026): Illinois, Wisconsin and Indiana ("Yes turn on Indiana", Oct 27).
+/* Farm sales in front of readers (Sig, Oct 27, 2026): Illinois, Wisconsin and Indiana ("Yes turn on Indiana", Oct 27),
+   and Vermont (Oct 29: next land states, Vermont first).
 
    Data (scripts/build_land_sales.py; no names in any of it):
      /data/land-sales/latest.json     the newest monthly update in brief
@@ -11,8 +12,8 @@
      button.ls-nm                          the names tap (land-sales pages, and every block below)
      section[data-atlas-sales="county"]    Atlas county pages: "Latest farm sales here" near the top,
                                            the monthly land sale email ask beside it (IL and WI)
-     #ch-live[data-st=IN]                  Indiana's Atlas county pages (no sales block of their own)
-     /rent/<illinois|wisconsin|indiana>    the state's latest monthly update, above "Rent for your ground"
+     #ch-live[data-st=IN|VT]               Indiana's and Vermont's Atlas county pages (no sales block of their own)
+     /rent/<illinois|wisconsin|indiana|vermont>  the state's latest monthly update, above "Rent for your ground"
      [data-land-sales="home"]              the homepage Land card
      [data-land-sales="near"]              Fast Facts My place: the latest sales within 25 miles
    A file that does not load leaves its block out and says so where a reader asked for it.
@@ -20,9 +21,9 @@
 (function () {
   'use strict';
   if (window.AgLandSales) { window.AgLandSales.scan(); return; }
-  var STATES = { IL: 'illinois', WI: 'wisconsin', IN: 'indiana' };
-  var NAMES = { IL: 'Illinois', WI: 'Wisconsin', IN: 'Indiana' };
-  var EMAIL = { IL: 1, WI: 1, IN: 1 };   /* the monthly land sale email covers these (Indiana since Oct 27) */
+  var STATES = { IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont' };
+  var NAMES = { IL: 'Illinois', WI: 'Wisconsin', IN: 'Indiana', VT: 'Vermont' };
+  var EMAIL = { IL: 1, WI: 1, IN: 1, VT: 1 };   /* the monthly land sale email covers these (Indiana since Oct 27, Vermont Oct 29) */
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var NEAR_MI = 25;
   var REMOVE_TO = 'sig@agsist.com';
@@ -136,9 +137,9 @@
       + (big ? ' The largest by acres: ' + esc(acres(big.acres)) + ' in ' + esc(big.county) + ' County for ' + esc(money(big.price)) + '.' : '');
   }
   function rent() {
-    var m = /^\/rent\/(illinois|wisconsin|indiana)(?:\.html)?\/?$/.exec(location.pathname);
+    var m = /^\/rent\/(illinois|wisconsin|indiana|vermont)(?:\.html)?\/?$/.exec(location.pathname);
     if (!m || document.querySelector('.ls-rent')) return;
-    var st = { illinois: 'IL', wisconsin: 'WI', indiana: 'IN' }[m[1]];
+    var st = { illinois: 'IL', wisconsin: 'WI', indiana: 'IN', vermont: 'VT' }[m[1]];
     get('/data/land-sales/latest.json').then(function (L) {
       if (!L || document.querySelector('.ls-rent')) return;
       var p = document.createElement('p'); p.className = 'ls-rent no-print';
@@ -173,8 +174,9 @@
     if (el.getAttribute('data-ls-at') === key) return;
     el.setAttribute('data-ls-at', key);
     var lat = +w.lat, lng = +w.lng;
-    /* IL and WI reach: skip the fetch for a place far from both (a rough box with 25 miles to spare) */
-    if (lat < 37.3 || lat > 47.5 || lng < -93.3 || lng > -84.3) { el.hidden = true; el.innerHTML = ''; return; }
+    /* IL, WI and IN reach, and VT's: skip the fetch for a place far from all of them (rough boxes with 25 miles to spare) */
+    var mid = !(lat < 37.3 || lat > 47.5 || lng < -93.3 || lng > -84.3), vt = !(lat < 42.36 || lat > 45.38 || lng < -73.95 || lng > -70.95);
+    if (!mid && !vt) { el.hidden = true; el.innerHTML = ''; return; }
     Promise.all(Object.keys(STATES).map(function (st) { return get('/data/land-sales/' + st.toLowerCase() + '.json'); })).then(function (fs) {
       if (el.getAttribute('data-ls-at') !== key) return;
       var list = [], ok = [];
@@ -260,7 +262,8 @@
   function scan() {
     css();
     Array.prototype.forEach.call(document.querySelectorAll('section[data-atlas-sales="county"]'), atlas);
-    if (/^\/farmland-atlas\/indiana\//.test(location.pathname)) { var cl = document.querySelector('#ch-live[data-st="IN"][data-fips]'); if (cl) atlas(cl); }
+    var am = /^\/farmland-atlas\/(indiana|vermont)\//.exec(location.pathname);
+    if (am) { var cl = document.querySelector('#ch-live[data-st="' + (am[1] === 'indiana' ? 'IN' : 'VT') + '"][data-fips]'); if (cl) atlas(cl); }
     Array.prototype.forEach.call(document.querySelectorAll('.ls-flt[data-ls-list]'), fullList);
     Array.prototype.forEach.call(document.querySelectorAll('[data-land-sales="home"]'), home);
     Array.prototype.forEach.call(document.querySelectorAll('[data-land-sales="near"]'), near);
