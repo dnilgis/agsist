@@ -53,6 +53,8 @@
     if (has) out.push({ id: 'hail', href: '/hail-map?lat=' + lat + '&lon=' + lng, text: 'Hail report for this spot' });
     out.push({ id: 'sheet', href: '/farmland-atlas/sheet#' + place.fips, text: 'Printable county sheet' });
     if (f.indexOf('a') >= 0) out.push({ id: 'atlas', href: '/farmland-atlas/' + s + '/' + place.slug, text: 'Farmland Atlas county page' });
+    /* 'l': the county has its own page on /land-sales/ (scripts/build_place_pct.py checks the file; Oct 29, 2026) */
+    if (f.indexOf('l') >= 0) out.push({ id: 'sales', href: '/land-sales/' + s + '/' + place.slug, text: 'Land sales in this county' });
     if (f.indexOf('c') >= 0) out.push({ id: 'arcplc', href: '/arc-plc/' + s + '/' + place.slug, text: 'ARC or PLC for this county' });
     if (f.indexOf('p') >= 0) out.push({ id: 'prf', href: '/prf/' + s + '/' + place.slug, text: 'PRF pasture insurance' });
     if (f.indexOf('r') >= 0) out.push({ id: 'rain', href: '/rain/' + s + '/' + place.slug, text: 'Rain this year, county page' });
