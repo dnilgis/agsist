@@ -1,0 +1,320 @@
+{
+ "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
+ "items": [
+  {
+   "id": "2026-10-29-ratecard",
+   "date": "2026-10-29",
+   "title": "A new sponsor rate card",
+   "line": "Advertise as the Daily Sponsor, a State Sponsor, the Cash Bids Sponsor or a featured elevator on its own town page; first month free, then a yes or no.",
+   "link": "/sponsor"
+  },
+  {
+   "id": "2026-10-29-home-steady",
+   "date": "2026-10-29",
+   "title": "The homepage holds still while it loads",
+   "line": "The top of the homepage no longer jumps down as it finishes loading, on a first visit or in the evening when the overnight futures line arrives.",
+   "link": "/"
+   },
+   {
+   "id": "2026-10-29-salesnav",
+   "date": "2026-10-29",
+   "title": "Farm sales easier to find",
+   "line": "Every Farmland Atlas county page links its land sales, or says where the state's records stand. Rent pages, Fast Facts and search find county sales too.",
+   "link": "/land-sales/"
+  },
+  {
+   "id": "2026-10-28-farm-credit",
+   "date": "2026-10-28",
+   "title": "Farm loan repayment by Fed district",
+   "line": "Atlas state pages now show what ag bankers in their Fed district reported for 2026 Q2: loan repayment and renewals against a year earlier, charted since 2010.",
+   "link": "/farmland-atlas/states/#farm-credit"
+   },
+  {
+   "id": "2026-10-28-answers",
+   "date": "2026-10-28",
+   "title": "Short answers to what farmers ask",
+   "line": "Seven pages now carry a short dated answer: farm bill, crop report, tariffs, USDA payments, cattle, beef supply, Argentine beef, screwworm, proposed BRAND heifer policy.",
+   "link": "/farm-bill#answer-farm-bill-status"
+  },
+  {
+   "id": "2026-10-28-cull-cows",
+   "date": "2026-10-28",
+   "title": "Cull cow prices from the sale barns",
+   "line": "Boner, Breaker and Lean cow and slaughter bull prices at about 40 sale barns USDA reports, each with its own sale day, plus the middle Boner price.",
+   "link": "/cattle-auction-prices#cull-cows"
+   },
+   {
+   "id": "2026-10-28-dairy-herds",
+   "date": "2026-10-28",
+   "title": "Licensed dairy herds, US and your state",
+   "line": "Licensed dairy herds from NASS by year for the US and your state, Wisconsin by month, with each year's net change. Also the 2014 to 2018 MPP margins, apart from DMC.",
+   "link": "/milk-prices#dp-herds-h"
+   },
+   {
+   "id": "2026-10-28-chapter12",
+   "date": "2026-10-28",
+   "title": "Farm bankruptcy filings on each state page",
+   "line": "Each Farmland Atlas state page now gives its Chapter 12 filings for the 12 months to Sep 30, 2026, with 2025 and 2024 beside it, from the U.S. Courts tables.",
+   "link": "/farmland-atlas/states/"
+  },
+  {
+   "id": "2026-10-28-merges",
+   "date": "2026-10-28",
+   "title": "Fewer pages, each one fuller",
+   "line": "Ten pages joined the ones you already use, from crop size and what's priced in to the storm log, bids by state and past briefings. Old links still work.",
+   "link": "/usda-calendar#priced-in"
+  },
+  {
+   "id": "2026-10-28-ff-nojs-jump",
+   "date": "2026-10-28",
+   "title": "Fast Facts opens at My place at once",
+   "line": "With JavaScript off, a link to Fast Facts at My place opens right at that section instead of scrolling down to it.",
+   "link": "/fast-facts#place"
+  },
+  {
+   "id": "2026-10-28-daily-retry",
+   "date": "2026-10-28",
+   "title": "The Daily tries again when a check holds it",
+   "line": "A Daily draft that fails a number check is never posted. The next run writes it again and checks it again, so it goes out a little late rather than wrong.",
+   "link": "/daily"
+   },
+   {
+   "id": "2026-10-28-sale-barns-notes",
+   "date": "2026-10-28",
+   "title": "Sale barn prices: four Kentucky barns back, and weights past page one",
+   "line": "Owensboro, Somerset, Springfield and Stanford in Kentucky read again. About 20 barns now show the weight classes USDA prints after page one.",
+   "link": "/cattle-auction-prices"
+  },
+  {
+   "id": "2026-10-28-sale-barns-125",
+   "date": "2026-10-28",
+   "title": "Sale barn prices: 37 more barns, most in Kentucky and Missouri",
+   "line": "125 USDA-reported barns, up from 88: 20 more in Kentucky, 13 in Missouri, 3 in Indiana, 1 in South Dakota. Beef-on-dairy steers no longer count in feeder averages.",
+   "link": "/cattle-auction-prices"
+   },
+  {
+   "id": "2026-10-28-wisconsin-soil-temps",
+   "date": "2026-10-28",
+   "title": "Fall anhydrous: Wisconsin soil temperatures",
+   "line": "Soil temperature at 4 in now comes from Wisconet's stations across Wisconsin too, each reading credited to its network. The fertilizer page adds Bartlett Co-op in Kansas.",
+   "link": "/fall-nitrogen"
+   },
+   {
+   "id": "2026-10-28-milk-order30",
+   "date": "2026-10-28",
+   "title": "Milk prices: the Upper Midwest order, and how close the futures came",
+   "line": "Order 30's PPD for two years, what DMC would have paid since 2019 at FSA's margins, your order's PPD in the check reader, and the futures miss each month.",
+   "link": "/milk-prices"
+  },
+  {
+   "id": "2026-10-28-milk-your-area",
+   "date": "2026-10-28",
+   "title": "Milk prices: your area first, and read your own check",
+   "line": "Your area's mailbox price leads the page, and a check reader values your milk at your own tests. The 2027 DMC signup is open to Dec 18.",
+   "link": "/milk-prices"
+  },
+  {
+   "id": "2026-10-27-county-week-for-readers",
+   "date": "2026-10-27",
+   "title": "Already on the Daily? Add your county",
+   "line": "A link at the bottom of every Daily now turns on what changed in your county on Thursdays. It asks for your ZIP if we do not have it.",
+   "link": "/daily"
+   },
+   {
+   "id": "2026-10-27-wasde-2027-dates",
+   "date": "2026-10-27",
+   "title": "USDA calendar: the 2027 WASDE dates",
+   "line": "All twelve 2027 WASDE dates, each at noon Eastern, from USDA's WASDE page. The 2027 NASS report dates are not posted yet and are not guessed.",
+   "link": "/usda-calendar"
+  },
+  {
+   "id": "2026-10-27-cushing-phone",
+   "date": "2026-10-27",
+   "title": "Cushing Cooperative's phone number corrected",
+   "line": "Now 715-648-5215, from the co-op's own bid page (it listed an Oklahoma number). Unconfirmed numbers for Prairie du Chien and Arcadia are no longer shown.",
+   "link": "/cash-bids/wisconsin/cushing"
+  },
+  {
+   "id": "2026-10-27-your-county-this-week",
+   "date": "2026-10-27",
+   "title": "Your county this week, Thursdays in the Daily",
+   "line": "Sign up for the Daily with your ZIP, tick the county box, and Thursday's email adds what changed in your county: drought, nearby corn bids, basis, land sales.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-10-27-company-count-bid-page",
+   "date": "2026-10-27",
+   "title": "State basis: company counts match one more way",
+   "line": "An elevator listed on another company's own bid page now counts with that company beside the state basis. Wisconsin shows one company fewer.",
+   "link": "/cash-bids/wisconsin/"
+  },
+  {
+   "id": "2026-10-27-fast-facts-what-changed",
+   "date": "2026-10-27",
+   "title": "Fast Facts: what changed this week, on a map",
+   "line": "Your place now opens with what changed this week (drought, top corn bid near you, county basis, new farm sales) and a state drought map.",
+   "link": "/fast-facts"
+  },
+  {
+   "id": "2026-10-27-fast-facts-rain-print",
+   "date": "2026-10-27",
+   "title": "Fast Facts: make the county's Rain Print your own",
+   "line": "Under the county's year of rain, one link opens the same print in Rain Print, ready for your name.",
+   "link": "/fast-facts"
+  },
+  {
+   "id": "2026-10-27-field-scout-backup",
+   "date": "2026-10-27",
+   "title": "Field Scout: back up your saved fields",
+   "line": "Save every field, with its notes and photos, to one file and restore it on a cleared or new phone. GeoJSON and KML outlines restore too. Nothing is sent to us.",
+   "link": "/field-scout"
+  },
+  {
+   "id": "2026-10-27-lighter-bid-pages",
+   "date": "2026-10-27",
+   "title": "Cash bid pages load lighter",
+   "line": "Town, state and company bid pages share one style file now, so each town page you open after the first is about a fifth smaller. They look the same.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-10-27-land-sales-pages",
+   "date": "2026-10-27",
+   "title": "Farm sales by county, and a monthly update",
+   "line": "Recorded farm sales for every Illinois, Wisconsin and Indiana county, and a monthly update: biggest buyers and sales, unusual prices. Names show on a tap.",
+   "link": "/land-sales/"
+  },
+  {
+   "id": "2026-10-27-trust-copy",
+   "date": "2026-10-27",
+   "title": "Pages agree on price delay, grading and privacy",
+   "line": "One delay for futures prices (about 10 to 25 minutes), one grading rule on What's Priced In, and plainer privacy, ARC/PLC and cash bid net wording.",
+   "link": "/data-sources"
+  },
+  {
+   "id": "2026-10-27-land-sales-email",
+   "date": "2026-10-27",
+   "title": "New farm sales near you, once a month",
+   "line": "Pick a ZIP and 10, 25 or 50 miles: once a month, the farm sales recorded in it, with acres, price per acre and township. Illinois and Wisconsin; never who bought or sold.",
+   "link": "/field-scout"
+  },
+  {
+   "id": "2026-10-27-basis-history-renamed-elevators",
+   "date": "2026-10-27",
+   "title": "Basis history kept when an elevator's listing was folded",
+   "line": "An elevator whose two listings were folded into one keeps the older listing's basis record as its earlier history in My place.",
+   "link": "/fast-facts"
+  },
+  {
+   "id": "2026-10-23-futures-best-bid",
+   "date": "2026-10-23",
+   "title": "Futures pages: the highest bid is a plain bushel bid",
+   "line": "Organic, non-GMO, white and spring wheat bids no longer set the highest checked bid on the corn, soybean and wheat futures pages, and the bid is named under its own town.",
+   "link": "/corn-futures-prices"
+  },
+  {
+   "id": "2026-10-23-rain-print-layers",
+   "date": "2026-10-23",
+   "title": "Rain Print: a simpler set of layers",
+   "line": "The crop layers (corn and soybean stages and the little plants) are off the Rain Print. An older link with them still opens, drawn without them.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-10-23-county-rain-week",
+   "date": "2026-10-23",
+   "title": "County rain: the last week and month",
+   "line": "Each county rain page now gives the rain its station caught over the last 7 and 30 days it reported, with the dates, next to the year so far.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-10-21-fast-facts",
+   "date": "2026-10-21",
+   "title": "Fast Facts for your place",
+   "line": "Fast Facts has two tabs: your place by ZIP (bids, basis, rain, drought, rent, each dated and sourced) and the reference tables. Print makes a two-page sheet.",
+   "link": "/fast-facts"
+  },
+  {
+   "id": "2026-10-21-feeder-weekly",
+   "date": "2026-10-21",
+   "title": "Feeder prices by region and weight",
+   "line": "Weekly feeder steer and heifer prices at the USDA-reported barns we read, by region and 100 lb class, with the barns and head behind each price.",
+   "link": "/cattle-auction-prices#feeder-weekly"
+  },
+  {
+   "id": "2026-10-18-here",
+   "date": "2026-10-18",
+   "title": "One place, all its numbers",
+   "line": "Type a ZIP, town or county and get one page about it: where it ranks in its state, what sits far from its neighbors, and this week's bids, rain, drought and hail.",
+   "link": "/fast-facts"
+  },
+  {
+   "id": "2026-10-18-haymow",
+   "date": "2026-10-18",
+   "title": "The Haymow: hay for sale and wanted",
+   "line": "Post hay, straw or forage you have or need, free. Buyers and sellers find it by distance and call each other. No fees, no cut.",
+   "link": "/haymow"
+  },
+  {
+   "id": "2026-10-18-menu",
+   "date": "2026-10-18",
+   "title": "New menu and ZIP chip",
+   "line": "The menu is now Prices, Livestock, Field, Money & Land and Daily. Save your ZIP once and the header chip takes you to bids near your town.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-10-18-stories",
+   "date": "2026-10-18",
+   "title": "County stories",
+   "line": "Short written stories on 2,632 county rain pages, 2,876 PRF county pages and 2,902 Farmland Atlas county pages, each dated and checked against our numbers.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-10-18-glossary",
+   "date": "2026-10-18",
+   "title": "Glossary",
+   "line": "27 market and farm program terms in plain words. A dotted underline on a page opens the short meaning.",
+   "link": "/glossary"
+  },
+  {
+   "id": "2026-10-18-photos",
+   "date": "2026-10-18",
+   "title": "Real Rain Print photos",
+   "line": "The Rain Print pages now show photos of real framed prints.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-10-18-states",
+   "date": "2026-10-18",
+   "title": "Bids by state",
+   "line": "Every state with cash bids on one page, with the towns and elevators in each.",
+   "link": "/basis#states"
+  },
+  {
+   "id": "2026-10-18-elevators",
+   "date": "2026-10-18",
+   "title": "More elevators",
+   "line": "Cash bids now come from 1,869 elevator locations, up from 1,763 on Oct 16.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-10-18-prf-email",
+   "date": "2026-10-18",
+   "title": "PRF grid index email",
+   "line": "Pick your PRF grid and get an email when its rainfall index posts.",
+   "link": "/prf"
+  },
+  {
+   "id": "2026-10-17-sale-barns",
+   "date": "2026-10-17",
+   "title": "More sale barns",
+   "line": "88 sale barns from USDA reports plus 20 read from their own reports, including Premier Livestock in Withee, WI.",
+   "link": "/cattle-auction-prices"
+  },
+  {
+   "id": "2026-10-17-rain-year-email",
+   "date": "2026-10-17",
+   "title": "January county rain total email",
+   "line": "On any county rain page, ask for that county's full-year rain total by email in January.",
+   "link": "/rain"
+  }
+ ]
+}
