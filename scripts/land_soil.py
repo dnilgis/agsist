@@ -35,6 +35,9 @@ THE TEST (fixed before the answers were read, Oct 29):
   HOLDS for a state only if, pooled over test years: the median group narrows 5% or more, the
   bootstrap interval of the pooled change stays below zero, and fewer than 5% of placebo draws
   narrow as much. Otherwise it does not hold, and nothing ships on pages.
+  Secondary, reported beside it and never used to pass: the slope fit as percent per point (log
+  $/acre), NCCPI over class 1 to 4 acres only, Illinois' state index where SSURGO carries it, the
+  Theil-Sen slope, and the in-sample change (b applied to its own fit year: the ceiling).
 
   python3 scripts/land_soil.py --selftest
   python3 scripts/land_soil.py --keys                      count the sections needed (offline)
@@ -413,15 +416,16 @@ def groups_of(sales):
     return {k: v for k, v in g.items() if len(v) >= MIN_GROUP}
 
 
-def fit_b(groups):
-    """OLS slope of group-demeaned $/acre on group-demeaned points."""
+def fit_b(groups, log=False):
+    """OLS slope of group-demeaned $/acre (log $/acre when log) on group-demeaned points."""
     sxy = sxx = 0.0
     n = 0
+    y = (lambda s: math.log(s["ppa"])) if log else (lambda s: s["ppa"])
     for v in groups.values():
-        mp = sum(s["ppa"] for s in v) / len(v)
+        mp = sum(y(s) for s in v) / len(v)
         mx = sum(s["pts"] for s in v) / len(v)
         for s in v:
-            sxy += (s["ppa"] - mp) * (s["pts"] - mx)
+            sxy += (y(s) - mp) * (s["pts"] - mx)
             sxx += (s["pts"] - mx) ** 2
             n += 1
     return (sxy / sxx if sxx else None), n
@@ -439,7 +443,7 @@ def theil_sen_b(groups, cap=4000, rng=None):
     return med(sl) if sl else None
 
 
-def spreads(groups, b, shuffle=None):
+def spreads(groups, b, shuffle=None, log=False):
     """[(before, after)] per group with b applied; shuffle (a Random) permutes points inside each group."""
     out = []
     for v in groups.values():
@@ -448,7 +452,10 @@ def spreads(groups, b, shuffle=None):
             shuffle.shuffle(pts)
         mx = med(pts)
         before = iqr([s["ppa"] for s in v])
-        after = iqr([s["ppa"] - b * (p - mx) for s, p in zip(v, pts)])
+        if log:
+            after = iqr([s["ppa"] * math.exp(-b * (p - mx)) for s, p in zip(v, pts)])
+        else:
+            after = iqr([s["ppa"] - b * (p - mx) for s, p in zip(v, pts)])
         out.append((before, after))
     return out
 
@@ -458,7 +465,7 @@ def pooled(sp):
     return (sum(x[1] for x in sp) / b - 1) if b else None
 
 
-def run_test(sales, years, soil_key="pts", seed=7):
+def run_test(sales, years, log=False, seed=7):
     """sales: dicts with fips, year, ppa, pts. Fit on year y, test on y+1, for each y in years."""
     rng = random.Random(seed)
     res = []
@@ -469,13 +476,14 @@ def run_test(sales, years, soil_key="pts", seed=7):
         te = groups_of([s for s in sales if s["year"] == y + 1])
         if len(tr) < 5 or len(te) < 5:
             continue
-        b, n_tr = fit_b(tr)
+        b, n_tr = fit_b(tr, log)
         if b is None:
             continue
-        ts = theil_sen_b(tr)
-        sp = spreads(te, b)
+        ts = None if log else theil_sen_b(tr)
+        sp = spreads(te, b, log=log)
+        ins = pooled(spreads(tr, b, log=log))
         rel = [a / x - 1 for x, a in sp if x > 0]
-        res.append({"fit_year": y, "test_year": y + 1, "b": round(b, 1), "b_theil_sen": None if ts is None else round(ts, 1),
+        res.append({"fit_year": y, "test_year": y + 1, "b": round(b, 5 if log else 1), "in_sample_pooled_change": round(ins, 4), "b_theil_sen": None if ts is None else round(ts, 1),
                     "fit_sales": n_tr, "fit_groups": len(tr), "test_groups": len(te), "test_sales": sum(len(v) for v in te.values()),
                     "median_before": round(med([x for x, _ in sp])), "median_after": round(med([a for _, a in sp])),
                     "median_group_change": round(med(rel), 4) if rel else None,
@@ -497,7 +505,7 @@ def run_test(sales, years, soil_key="pts", seed=7):
     for _ in range(200):
         sp = []
         for r in res:
-            sp += spreads(r["_groups"], r["_b"], shuffle=rng)
+            sp += spreads(r["_groups"], r["_b"], shuffle=rng, log=log)
         placebo.append(pooled(sp))
     p_plc = sum(1 for x in placebo if x <= obs) / len(placebo)
     mg = med(rel_all)
@@ -566,6 +574,7 @@ def test(src_dir=RAW, today=None):
         rep["primary"] = run_test(sales, years[:-1])
         c14 = [dict(s, pts=s["pts_c14"]) for s in sales if s["pts_c14"] is not None]
         rep["class_1_4"] = run_test(c14, years[:-1])
+        rep["percent_per_point"] = run_test(sales, years[:-1], log=True)
         if st == "IL":
             cp = [dict(s, pts=s["cpi"]) for s in sales if s["cpi"] is not None]
             rep["state_index"] = {"sales": len(cp), "test": run_test(cp, years[:-1]) if len(cp) > 50 else "too few"}
