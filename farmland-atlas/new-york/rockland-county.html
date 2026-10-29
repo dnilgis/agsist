@@ -1,129 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Rockland County, NY Farm Facts: Farmland Value and Risk</title>
-  <meta name="description" content="Rockland County, NY: land and buildings $13,052 an acre in the 2022 census, flagged to read with care. County averages from public records.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/new-york/rockland-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Rockland County, NY Farm Facts: Farmland Value and Risk">
-  <meta property="og:description" content="Rockland County, NY: land and buildings $13,052 an acre in the 2022 census, flagged to read with care. County averages from public records.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/new-york/rockland-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/36087.png?v=43e4fd52">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Rockland County, New York: dry cash rent not published, land and buildings read with care, median corn yield not published">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Rockland County, NY Farm Facts: Farmland Value and Risk">
-  <meta name="twitter:description" content="Rockland County, NY: land and buildings $13,052 an acre in the 2022 census, flagged to read with care. County averages from public records.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/36087.png?v=43e4fd52">
-  <meta name="twitter:image:alt" content="Rockland County, New York: dry cash rent not published, land and buildings read with care, median corn yield not published">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "New York",
-     "item": "https://agsist.com/farmland-atlas/new-york/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Rockland County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/new-york/rockland-county#dataset",
-   "name": "Rockland County, New York: farmland rent, land value and risk record",
-   "description": "Rockland County, NY: land and buildings $13,052 an acre in the 2022 census, flagged to read with care.",
-   "url": "https://agsist.com/farmland-atlas/new-york/rockland-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Rockland County, New York, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/ny.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Rockland County, NY Farm Facts: Farmland Value and Risk</title>
+<meta name="description" content="Rockland County, NY: land and buildings $13,052 an acre in the 2022 census, flagged to read with care. County averages from public records.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/new-york/rockland-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Rockland County, NY Farm Facts: Farmland Value and Risk">
+<meta property="og:description" content="Rockland County, NY: land and buildings $13,052 an acre in the 2022 census, flagged to read with care. County averages from public records.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/new-york/rockland-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/36087.png?v=43e4fd52">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Rockland County, New York: dry cash rent not published, land and buildings read with care, median corn yield not published">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Rockland County, NY Farm Facts: Farmland Value and Risk">
+<meta name="twitter:description" content="Rockland County, NY: land and buildings $13,052 an acre in the 2022 census, flagged to read with care. County averages from public records.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/36087.png?v=43e4fd52">
+<meta name="twitter:image:alt" content="Rockland County, New York: dry cash rent not published, land and buildings read with care, median corn yield not published">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"New York","item":"https://agsist.com/farmland-atlas/new-york/"},{"@type":"ListItem","position":4,"name":"Rockland County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/new-york/rockland-county#dataset","name":"Rockland County, New York: farmland rent, land value and risk record","description":"Rockland County, NY: land and buildings $13,052 an acre in the 2022 census, flagged to read with care.","url":"https://agsist.com/farmland-atlas/new-york/rockland-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"Rockland County, New York, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/ny.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/new-york/">New York</a><i>/</i><span aria-current="page">Rockland County</span></nav>
 <div class="kick">County farm facts</div>
@@ -132,13 +46,12 @@
 <div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#36087">Print this sheet</a><a href="/fast-facts?fips=36087">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>
 <p class="warn">Rockland County had 442 acres in farms in the 2022 census. County averages here describe very little farmland; read them with care.</p><div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v"><small>n/a</small></div><div class="s">county not in the NASS cash rents survey frame</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$13,052<small>/ac</small></div><div class="s">2022 census · read with care: fell 55% from 2017 while next door rose a median 51% · NY farm real estate 2026: $4,500 (land and buildings, state survey)</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v"><small>n/a</small></div><div class="s">not shown: NASS published no non-irrigated cash rent for this county in 2022</div></div><div class="k"><div class="t">Corn yield</div><div class="v"><small>n/a</small></div><div class="s">NASS publishes no county corn yield series for this county</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v"><small>n/a</small></div><div class="s">RMA Summary of Business has no rows for this county</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">61%</div><div class="s">2022 census, rented from others<br>NY median 28%</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="Rockland County on the map with the counties that border it" class="loc"><path class="lm" d="M157.7 92.1L160.5 96.0L164.0 104.8L166.3 106.9L167.6 111.4L166.3 122.4L166.3 125.0L167.3 131.9L166.5 140.7L165.0 140.7L163.5 139.8L142.7 127.3L142.7 127.3L134.4 122.4L133.6 122.0L114.9 111.2L111.5 109.3L123.1 97.9L152.4 70.2L152.1 70.8L157.7 92.1Z"/><path class="ln0" d="M114.9 111.2L133.6 122.0L134.4 122.4L142.7 127.3L142.7 127.3L163.5 139.8L165.0 140.7L166.5 140.7L162.6 157.6L162.2 158.7L161.1 162.4L160.1 165.4L160.1 165.4L159.3 166.9L157.7 170.5L151.4 183.4L146.6 177.8L142.0 181.3L125.4 186.0L127.0 183.2L126.7 182.3L127.3 179.1L128.3 178.7L125.4 152.5L125.4 152.5L125.7 151.2L126.5 147.3L121.8 143.5L121.7 145.0L105.5 135.3L114.9 111.2Z"/><path class="ln0" d="M111.5 109.3L114.9 111.2L105.5 135.3L121.7 145.0L121.8 143.5L126.5 147.3L125.7 151.2L125.4 152.5L125.4 152.5L128.3 178.7L109.4 165.6L107.3 164.9L105.5 162.1L100.8 139.4L99.2 140.4L98.4 139.6L95.2 139.2L68.0 121.5L90.2 96.4L90.2 96.4L111.5 109.3Z"/><path class="ln0" d="M156.9 13.2L149.6 35.4L149.3 41.8L152.4 45.7L152.4 70.2L123.1 97.9L111.5 109.3L90.2 96.4L85.9 93.6L75.3 86.7L37.0 63.3L37.8 62.2L37.6 61.2L27.6 48.3L27.1 48.3L27.8 33.9L72.4 31.7L90.0 13.0L106.6 4.0L128.9 14.7L156.9 13.2Z"/><path class="ln0" d="M152.1 70.8L152.4 70.2L152.4 45.7L160.0 35.2L225.3 26.8L224.6 36.9L224.6 37.1L224.6 37.3L224.6 37.5L224.6 37.7L224.6 37.7L224.3 41.8L224.3 42.0L224.3 42.2L224.3 42.7L224.3 43.1L224.2 45.3L224.2 46.3L224.0 46.8L223.0 59.0L222.9 61.4L152.1 70.8Z"/><path class="ln0" d="M187.0 164.5L187.0 164.7L187.0 164.7L187.0 165.2L187.1 165.6L187.0 165.8L186.3 166.0L185.7 165.4L185.7 164.9L186.0 164.7L186.2 164.3L186.3 164.1L186.8 164.1L187.0 164.3L187.0 164.5ZM227.7 97.5L211.7 107.1L208.8 108.9L207.5 109.7L193.3 118.3L198.8 127.3L199.9 129.1L201.0 131.0L202.7 133.6L205.1 137.2L205.1 137.4L204.8 143.2L204.9 144.3L204.3 146.9L204.0 147.3L203.6 147.1L201.4 148.0L200.6 151.0L200.1 151.8L198.1 152.9L194.3 154.6L192.6 156.1L188.6 158.7L184.7 164.7L184.2 165.6L180.8 164.3L180.7 164.3L177.9 163.4L177.9 163.4L177.8 163.7L177.8 163.7L177.8 163.7L162.6 157.6L166.5 140.7L167.3 131.9L166.3 125.0L166.3 122.4L167.6 111.4L166.3 106.9L164.0 104.8L160.5 96.0L157.7 92.1L152.1 70.8L222.9 61.4L221.9 76.6L232.9 94.2L228.7 96.8L227.7 97.5Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#36087">Open on the map</a>
-  <a href="/farmland-atlas/compare#36087">Compare</a>
-  <a href="/rent/new-york">New York cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#36087">Open on the map</a>
+<a href="/farmland-atlas/compare#36087">Compare</a>
+<a href="/rent/new-york">New York cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
-
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
 <div class="chg"><section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2><div class="fact st lv" data-k="corn-bid"><span class="l">Corn bid</span><span class="r"></span></div><div class="fact st lv" data-k="soy-bid"><span class="l">Soybean bid</span><span class="r"></span></div><div class="fact st lv" data-k="corn-basis"><span class="l">Corn basis</span><span class="r"></span></div><div class="fact st lv" data-k="soy-basis"><span class="l">Soybean basis</span><span class="r"></span></div><div class="fact st lv" data-k="corn-fut"><span class="l">Corn futures</span><span class="r"></span></div><div class="fact st lv" data-k="soy-fut"><span class="l">Soybean futures</span><span class="r"></span></div><p class="note">Bids are posted elevator prices within 50 miles of the county middle, or of your own field or saved place in this county when this device has one (each row says which), best and nearest, never a buyer's name. Not a contract; call before you haul. Livestock lines show where the 2022 Census counts 1,000 head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle.</p><p class="note"><a href="/cash-bids/new-york/">New York cash bids by town</a> · <a href="/fast-facts?fips=36087">Bids from your own ZIP or farm, in Fast Facts</a></p></section><section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2><div class="fact st lv" data-k="rain"><span class="l">Rain since Jan 1</span><span class="r"></span></div><div class="fact st lv" data-k="drought"><span class="l">Drought this week</span><span class="r"></span></div><div class="fact st lv" data-k="hail"><span class="l">Hail, last 30 days</span><span class="r"></span></div><p class="note"><a data-xl="rain" href="/rain/new-york/rockland-county">Rain so far this year in Rockland County, New York</a></p><h3>Drought, year by year</h3><svg viewBox="0 0 640 170" role="img" aria-label="Weeks per year with half the county or more in severe drought or worse" class="ch"><path class="bf" d="M10.9 148.0h18.2V148h-18.2zM34.9 136.2h18.2V148h-18.2zM58.9 30.1h18.2V148h-18.2zM82.9 148.0h18.2V148h-18.2zM106.9 148.0h18.2V148h-18.2zM130.9 148.0h18.2V148h-18.2zM154.9 148.0h18.2V148h-18.2zM178.9 148.0h18.2V148h-18.2zM202.9 148.0h18.2V148h-18.2zM226.9 148.0h18.2V148h-18.2zM250.9 148.0h18.2V148h-18.2zM274.9 148.0h18.2V148h-18.2zM298.9 148.0h18.2V148h-18.2zM322.9 148.0h18.2V148h-18.2zM346.9 148.0h18.2V148h-18.2zM370.9 148.0h18.2V148h-18.2zM394.9 71.4h18.2V148h-18.2zM418.9 83.2h18.2V148h-18.2zM442.9 148.0h18.2V148h-18.2zM466.9 148.0h18.2V148h-18.2zM490.9 148.0h18.2V148h-18.2zM514.9 148.0h18.2V148h-18.2zM538.9 136.2h18.2V148h-18.2zM562.9 148.0h18.2V148h-18.2zM586.9 100.9h18.2V148h-18.2zM610.9 112.6h18.2V148h-18.2z"/><text class="ta" x="20.0" y="164">2000</text><text class="ta" x="140.0" y="164">2005</text><text class="ta" x="260.0" y="164">2010</text><text class="ta" x="380.0" y="164">2015</text><text class="ta" x="500.0" y="164">2020</text><text class="ta" x="620.0" y="164">2025</text><text class="tv" x="20.0" y="145.0">0</text><text class="tv" x="68.0" y="27.1">20</text><text class="tv" x="620.0" y="109.6">6</text><path class="ax" d="M8 148H632"/></svg><p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.</p><div class="fact"><span class="l">D2 or worse for half the county, 2000–2025</span><span class="r">62 of 1,357 weeks<small>5% of weeks</small></span></div><div class="fact"><span class="l">Year with the most D2+ weeks</span><span class="r">2002<small>20 weeks</small></span></div><div class="fact"><span class="l">Last five full years, 2021–2025</span><span class="r">16 weeks</span></div><div class="fact st"><span class="l">2026 so far</span><span class="r">0 weeks<small>half the county or more in D2, 40 weekly maps</small></span></div><div class="fact"><span class="l">July average of daily lows, 2017–2026</span><span class="r">66.5 °F<small>1991–2020 normal 64.1 °F</small></span></div><div class="fact"><span class="l">Trend in July lows since 1976</span><span class="r">+1.04 °F a decade<small>warming</small></span></div><div class="fact st"><span class="l">Rain, April to September, usual</span><span class="r">25.8 in<small>1991–2020 county normal, NOAA; the 2017–2026 seasons averaged 27.0 in</small></span></div><div class="fact st"><span class="l">Days with hail 1 inch or larger</span><span class="r">0.8 a year<small>reports, 2010–2025; a zero is no report, not proof of no hail</small></span></div><div class="fact st"><span class="l">Last spring freeze, first fall freeze</span><span class="r">Apr 12, Oct 29<small>middle dates 1996–2025, NOAA county-average daily low of 32 °F or colder</small></span></div><div class="fact"><span class="l">Frost-free days</span><span class="r">198<small>middle of 1996–2025</small></span></div><div class="fact st"><span class="l">Corn growing degree days, May to September</span><span class="r">2,864<small>middle of 1996–2025; 2016–2025 averaged 2,968</small></span></div></section><section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2><div class="fact st lv" data-k="corn-progress"><span class="l">Corn harvested</span><span class="r"></span></div><div class="fact st lv" data-k="soy-progress"><span class="l">Soybeans harvested</span><span class="r"></span></div><h3>Corn yield</h3><div class="fact w"><span class="l">County corn yield</span><span class="r">NASS publishes no county corn yield series for this county</span></div></section><section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2><h3>Cash rent</h3><p class="note">Every published New York county rate, side by side: <a href="/rent/new-york">New York cash rent by county</a>.</p><div class="fact w"><span class="l">Cash rent</span><span class="r">County not in the NASS cash rents survey frame</span></div><h3>Land value</h3><div class="fact st"><span class="l">Land and buildings, 2022</span><span class="r">$13,052/ac<small>operators&#x27; own estimate, not a sale price</small></span></div><div class="fact"><span class="l">Census 2012</span><span class="r">$86,616/ac</span></div><div class="fact"><span class="l">Census 2017</span><span class="r">$28,772/ac</span></div><div class="fact w"><span class="l">Read with care</span><span class="r">The 2022 census value fell 55% from 2017 while the 5 counties next door rose a median 51%. The census counts buildings and small residential farms, so the change since 2017, the rent-to-value ratio and the rank are withheld</span></div><div class="fact st"><span class="l">New York cropland, 2026 state survey</span><span class="r">$4,150/ac<small>+3.5% from 2025 · USDA NASS Land Values, state average</small></span></div><div class="fact st"><span class="l">New York farm real estate, 2026</span><span class="r">$4,500/ac<small>land and buildings, state average</small></span></div><div class="fact"><span class="l">New York pasture, 2026</span><span class="r">$2,040/ac<small>state average</small></span></div><p class="note">The census value is this county's, from 2022. The survey figures are the New York average for 2026, from the USDA NASS Land Values report. NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p><p class="note" data-ls-door="state">Land sales: New York sale records: not checked yet. <a href="/land-sales/#coverage">Where each state stands</a>.</p></section><section class="card" aria-labelledby="c-prog"><h2 id="c-prog">Programs and risk</h2><div class="fact st lv" data-k="arc"><span class="l">ARC or PLC sign-up</span><span class="r"></span></div><p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/new-york">ARC or PLC in New York</a>.</p><p class="note">PRF rainfall insurance for pasture and hay in Rockland County: its grids, county values and record are on <a href="/prf/new-york/rockland-county">the county PRF page</a>.</p><h3>Crop insurance record</h3><div class="fact w"><span class="l">Premium and payouts</span><span class="r">RMA Summary of Business has no rows for this county</span></div><h3>Conservation Reserve Program</h3><p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p><div class="fact"><span class="l">CRP enrolled, 2025</span><span class="r">0 ac</span></div></section><section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2><div class="fact w"><span class="l">Harvested cropland irrigated, 2022</span><span class="r">NASS suppressed the irrigated acres to protect individual farms</span></div><div class="fact"><span class="l">Farmed no-till, 2022</span><span class="r">13% of cropland<small>22 ac</small></span></div><div class="fact"><span class="l">Cover crops, 2022</span><span class="r">16% of cropland<small>28 ac</small></span></div><div class="fact st"><span class="l">Solar and wind operating, 2025</span><span class="r">4 MW solar · 0 MW wind<small>nameplate, EIA Form 860</small></span></div><div class="fact st"><span class="l">Farmland rented from others, 2022</span><span class="r">61%<small>census tenure, owned plus rented acres in farms</small></span></div><p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section></div>
 <div id="watch"><form class="watch" data-fips="36087" aria-label="Watch Rockland County"><b>Watch this county</b><p>Get an email when the published figures for Rockland County, New York change. Usually once or twice a year. You confirm by email first, and every email has a one-tap stop. AGSIST, PO Box 243, Chetek, WI 54728.</p><div class="wr"><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Watch this county</button></div><div class="wm" role="status" aria-live="polite"></div></form><script defer src="/farmland-atlas/watch.js?v=530339ee"></script></div>
@@ -152,37 +65,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/new-york/richmond-county">← Richmond County</a></span><a href="/farmland-atlas/new-york/">All New York counties</a><span><a href="/farmland-atlas/new-york/saratoga-county">Saratoga County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "36087", "state": "NY", "county": "Rockland County", "rent_dry_usd_ac": null, "rent_dry_year": null, "rent_dry_chg10_pct": null, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": null, "value_usd_ac": 13052, "value_year": 2022, "value_flag": {"own_pct": -54.6, "nb_pct": 51.3, "n": 5, "dir": "fell"}, "value_cagr_pct": null, "rent_to_value_pct": null, "corn_yield_median_bu_ac": null, "corn_yield_years": null, "corn_yield_trend_bu_yr": null, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": null, "loss_ratio_last10": null, "loss_ratio_all": null, "years_loss_over_1": null, "d2_week_share_pct": 4.57, "jul_low_recent_f": 66.5, "jul_low_normal_f": 64.1, "jul_low_trend_f_decade": 1.04, "irrigated_share_2022": null, "tile_share_2022": null, "notill_share_2022": 0.127168, "crp_acres": 0, "crp_share_pct": null, "crp_expiring_next3_acres": null, "rented_share_2022": 0.6063, "solar_mw": 4.0, "wind_mw": 0.0, "gs_rain_normal_in": 25.8, "hail_1in_days_yr": 0.8, "cattle_2022": null}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"36087","state":"NY","county":"Rockland County","rent_dry_usd_ac":null,"rent_dry_year":null,"rent_dry_chg10_pct":null,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":null,"value_usd_ac":13052,"value_year":2022,"value_flag":{"own_pct":-54.6,"nb_pct":51.3,"n":5,"dir":"fell"},"value_cagr_pct":null,"rent_to_value_pct":null,"corn_yield_median_bu_ac":null,"corn_yield_years":null,"corn_yield_trend_bu_yr":null,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":null,"loss_ratio_last10":null,"loss_ratio_all":null,"years_loss_over_1":null,"d2_week_share_pct":4.57,"jul_low_recent_f":66.5,"jul_low_normal_f":64.1,"jul_low_trend_f_decade":1.04,"irrigated_share_2022":null,"tile_share_2022":null,"notill_share_2022":0.127168,"crp_acres":0,"crp_share_pct":null,"crp_expiring_next3_acres":null,"rented_share_2022":0.6063,"solar_mw":4.0,"wind_mw":0.0,"gs_rain_normal_in":25.8,"hail_1in_days_yr":0.8,"cattle_2022":null}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>
