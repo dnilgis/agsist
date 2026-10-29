@@ -86,6 +86,13 @@
    "link": "/rain-print"
   },
   {
+   "id": "2026-10-29-prism-gdu",
+   "date": "2026-10-29",
+   "title": "GDUs from the PRISM daily grid",
+   "line": "The GDU calculator and its embed add up heat from the PRISM daily grid (Oregon State), normals too. The Rain Print video no longer offers modeled wind.",
+   "link": "/gdu-calculator"
+  },
+  {
    "id": "2026-10-29-private-raises",
    "date": "2026-10-29",
    "title": "Private ag raises on Ag stocks",
