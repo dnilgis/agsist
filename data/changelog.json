@@ -1,7 +1,18 @@
 {
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-29",
+   "items": [
+    {
+     "tag": "fixed",
+     "page": "/milk-prices",
+     "name": "Milk prices: Your area stays put on a slow connection",
+     "text": "On a slow phone or connection, the Your area card could still nudge the page as it loaded: the area picker started narrow and then wrapped under the heading, and a note for split states pushed the summary down. The picker now has a set width and the card waits for its own note before showing, so nothing moves."
+    }
+   ]
+  },
   {
    "date": "2026-10-28",
    "items": [
