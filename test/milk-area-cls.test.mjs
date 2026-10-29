@@ -271,3 +271,4 @@ test('a slow line that paints half the page: Your area still moves nothing', { s
     }
   } finally { await browser.close(); srv.close(); }
 });
+// replay 164
