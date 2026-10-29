@@ -76,9 +76,12 @@ test('the before-paint script is on the page, after the card, outside the seed',
   // ("51 days left" to "50") slid the rest of that line 3.8px in Inter (seen here Oct 29: 0.0001 at 1280)
   assert.match(page, /#dp-dmc-words,#dp-dmc-lever\{font-variant-numeric:tabular-nums;\}/);
   assert.match(EARLY[0], /\}catch\(_\)\{\}try\{document\.documentElement\.classList\.remove\('dp-area-pend'\);\}catch\(_\)\{\}<\/script>$/, 'let go as soon as it has run, whatever it did');
-  // the crawler nav (static-nav:header) is unseen while scripts run, its space kept, and shown after 3 s regardless
-  assert.match(page, /@media \(scripting:enabled\)\{#site-header>header nav\{animation:snav-wait 3s step-end both;\}\}/);
-  assert.match(page, /@keyframes snav-wait\{from\{visibility:hidden;\}to\{visibility:visible;\}\}/);
+  // the crawler nav (static-nav:header) is unseen while scripts run, its space kept, and shown after 3 s regardless;
+  // the rule lives once, in components/styles.css (test/crawler-nav-cls.test.mjs), not in this page
+  const shell = fs.readFileSync(join(ROOT, 'components/styles.css'), 'utf8');
+  assert.match(shell, /@media \(scripting:enabled\)\{#site-header>header nav\{animation:snav-wait 3s step-end both\}\}/);
+  assert.match(shell, /@keyframes snav-wait\{from\{visibility:hidden\}to\{visibility:visible\}\}/);
+  assert.doesNotMatch(page, /snav-wait/, 'one copy: none left in the page');
   assert.equal(AREAS.length, 20);
   for (const a of AREAS) assert.ok(OPTIONS.includes(a), a);
 });

@@ -344,7 +344,7 @@ def head(title, desc, url, ld, early):
     ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
             '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n'
-            '<meta name="theme-color" content="#0a0c0d">\n<link rel="stylesheet" href="/components/styles.css?v=27">\n' + CSS + "\n"
+            '<meta name="theme-color" content="#0a0c0d">\n<link rel="stylesheet" href="/components/styles.css?v=28">\n' + CSS + "\n"
             '<link rel="icon" href="/img/favicon.ico" sizes="32x32">\n<link rel="icon" type="image/svg+xml" href="/img/icon.svg">\n'
             "<title>%s</title>\n<meta name=\"description\" content=\"%s\">\n"
             '<meta name="robots" content="index, follow, max-snippet:-1">\n<link rel="canonical" href="%s">\n'

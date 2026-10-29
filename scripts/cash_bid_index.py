@@ -723,8 +723,8 @@ def page_html(editions):
   {early}
   <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   {fonts}
-  <link rel="preload" href="/components/styles.css?v=27" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=27">
+  <link rel="preload" href="/components/styles.css?v=28" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=28">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>{CSS}</style>

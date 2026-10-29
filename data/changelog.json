@@ -22,6 +22,12 @@
      "page": "/milk-prices",
      "name": "Milk prices: the top bar no longer flickers as the page loads",
      "text": "The plain row of links at the top, meant for search engines and readers without scripts, could jump sideways for an instant before the menu replaced it. It now stays out of sight until the menu arrives (shown after 3 seconds if the menu never comes)."
+    },
+    {
+     "tag": "fixed",
+     "page": "/",
+     "name": "Every page: the top bar no longer flickers as it loads",
+     "text": "The plain row of links at the top of each page, meant for search engines and readers without scripts, could jump sideways for an instant before the menu replaced it. It now stays out of sight until the menu arrives (shown after 3 seconds if the menu never comes), as on the milk page since this morning."
     }
    ]
   },
