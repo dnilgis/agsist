@@ -11,16 +11,21 @@ thing that changes the site:
   pending, older than 14 days-> dropped (expired), as the privacy page says
   confirmed, Sig not told     -> Sig gets the ad, the contact, the price, and
                                  APPROVE / DECLINE links (only his email has them)
-  approved (page/supporter)   -> the ad is written into the site and pushed:
-                                 data/page-sponsors.json or data/supporters.json,
+  approved (State Sponsor or  -> the ad is written into the site and pushed:
+   Cash Bids Sponsor)            data/page-sponsors.json (a State Sponsor takes
+                                 every ribbon of its state: the cash bids page
+                                 and its town pages, and the cash rent page),
                                  the logo to img/sponsors/. Then marked live with
                                  its start date, and both sides are told.
-  approved (daily, or any tier
-   that is not page/supporter)-> Sig is told it needs setting up by hand (the
-                                 sponsor card has its own approval flow).
+  approved (anything else)    -> Sig is told it needs setting up by hand: the
+                                 Daily Sponsor card has its own approval flow, a
+                                 Featured elevator box is built with them, a
+                                 state that opens soon waits, and a retired tier
+                                 (Own a page, Supporter) is no longer sold.
   declined                    -> one polite note to the applicant.
   live                        -> 3 days before the free month ends, the sponsor
-                                 hears what happens next; on each monthly date
+                                 is asked yes or no (no reply: the ad comes down
+                                 and nothing is owed); on each monthly date
                                  from then on, Sig gets "send the invoice", with
                                  an END link for the day someone stops paying.
   ending (Sig clicked END)    -> the ad comes down, the slot is open again.
@@ -71,11 +76,21 @@ REPO = Path(__file__).resolve().parent.parent
 SITE = "https://agsist.com"
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
 PEND_TTL_MS = 14 * 864e5
-TIER_NAME = {"page": "Own a page", "supporter": "Supporter", "daily": "Sponsor"}
-# Only these two ever go live on their own. Any other tier (the Daily sponsor,
-# or an application stored under an older tier id) is handed to Sig, never
-# written into the site (Oct 19: the Daily tier id became "daily").
-SELF_SERVE = ("page", "supporter")
+# THE RATE CARD OF OCT 29, 2026 (data/rate-card.json). The subs worker stores an
+# application under tier page|supporter|daily (workers/subs-worker.js); the form
+# sends the new tiers as tier "page" with a slot that says which one:
+#   slot "cash-bids"                      Cash Bids Sponsor
+#   slot "cash-bids-<state>" / "rent-xx"  State Sponsor (a state ribbon in data/sponsor-slots.json)
+#   slot "fe-<st>-<town>"                 Featured elevator on /cash-bids/<state>/<town>
+# card_tier() reads it back. Any other page slot, and every Supporter, is a retired tier.
+TIER_NAME = {"daily": "Daily Sponsor", "state": "State Sponsor", "cashbids": "Cash Bids Sponsor",
+             "elevator": "Featured elevator", "page": "Own a page (no longer sold)", "supporter": "Supporter (no longer sold)"}
+# Only these two ever go live on their own. Any other tier (the Daily Sponsor, a
+# Featured elevator, a state that opens soon, or a retired tier) is handed to Sig,
+# never written into the site (Oct 19: the Daily tier id became "daily").
+SELF_SERVE = ("state", "cashbids")
+FE_SLOT = re.compile(r"fe-([a-z]{2})-([a-z0-9][a-z0-9-]{0,50})")
+STATE_SLOT = re.compile(r"cash-bids-[a-z]+(?:-[a-z]+)*|rent-[a-z]{2}")
 
 
 def env(name, default=None):
@@ -105,9 +120,45 @@ def slugify(s):
     return (s or "sponsor")[:40].strip("-")
 
 
-def rate(card, tier):
+def card_tier(a):
+    """The rate-card tier an application is for, or None for a retired one."""
+    t, slot = a.get("tier"), a.get("slot") or ""
+    if t == "daily":
+        return "daily"
+    if t != "page":
+        return None
+    if slot == "cash-bids":
+        return "cashbids"
+    if FE_SLOT.fullmatch(slot):
+        return "elevator"
+    if STATE_SLOT.fullmatch(slot):
+        return "state"
+    return None
+
+
+def state_slots(slot, slots):
+    """Every ribbon one State Sponsor takes: the slots of the same state in data/sponsor-slots.json."""
+    st = next((e.get("state") for e in slots if e.get("id") == slot), None)
+    got = [e["id"] for e in slots if st and e.get("tier") == "state" and e.get("state") == st]
+    return st, (got or [slot])
+
+
+def rate(card, tier, state=None):
     t = next((x for x in (card or {}).get("tiers", []) if x.get("id") == tier), None)
-    return t.get("price_month") if t else None
+    if not t:
+        return None
+    return ((t.get("price_by_state") or {}).get(state) if state else None) or t.get("price_month")
+
+
+def opens_soon(card, state):
+    t = next((x for x in (card or {}).get("tiers", []) if x.get("id") == "state"), None) or {}
+    return bool(state) and state in (t.get("opens_soon") or [])
+
+
+def app_rate(card, a, slots=()):
+    ct = card_tier(a)
+    st = state_slots(a.get("slot"), slots)[0] if ct == "state" else None
+    return rate(card, ct, st) if ct else None
 
 
 def money(n):
@@ -120,7 +171,7 @@ def fmt(d):
 
 # ───────────────────────────── planning ─────────────────────────────
 
-def plan(apps, now_ms, today, sold_pages, supporters):
+def plan(apps, now_ms, today, sold_pages, supporters, card=None, slots=()):
     """Pure: which step each application needs today. Returns a list of
     (action, app). Never touches the network or the disk."""
     out = []
@@ -136,10 +187,12 @@ def plan(apps, now_ms, today, sold_pages, supporters):
         elif st == "confirmed" and not a.get("notified"):
             out.append(("notify", a))
         elif st == "approved":
-            if a.get("tier") not in SELF_SERVE:
+            ct = card_tier(a)
+            state, want = state_slots(a.get("slot"), slots) if ct == "state" else (None, [a.get("slot")])
+            if ct not in SELF_SERVE or (ct == "state" and (not state or opens_soon(card, state))):
                 if (a.get("notified") or 0) < 2:
                     out.append(("daily", a))
-            elif a.get("tier") == "page" and slot_owner(sold_pages, a.get("slot")) not in (None, aid):
+            elif any(slot_owner(sold_pages, x) not in (None, aid) for x in want):
                 if (a.get("notified") or 0) < 2:
                     out.append(("clash", a))          # someone else holds the page: tell Sig, change nothing
             else:
@@ -180,36 +233,35 @@ def write_logo(a, logo, slug, root=REPO):
     return "/" + rel
 
 
-def go_live(a, logo, card, start, root=REPO):
-    """Write the ad into the site. Returns (slug, files changed). Idempotent:
-    an entry already carrying this application id is left as it is."""
+def go_live(a, logo, card, start, root=REPO, slots=None):
+    """Write the ad into the site: a Cash Bids Sponsor on the /cash-bids ribbon, a State
+    Sponsor on every ribbon of its state. Returns (slug, files changed). Idempotent: an entry
+    already carrying this application id is left as it is. Only a SELF_SERVE tier comes here."""
     slug = slugify(a.get("company"))
-    price = rate(card, a["tier"])
-    if a["tier"] == "page":
-        p = root / "data" / "page-sponsors.json"
-        d = json.loads(p.read_text())
-        slots = d.setdefault("slots", {})
-        cur = slots.get(a["slot"])
-        if cur and cur.get("app") == a["id"]:
-            return cur.get("slug", slug), []
-        path = write_logo(a, logo, slug + "-" + a["slot"], root)
-        slots[a["slot"]] = {"company": a["company"], "headline": a.get("headline") or "", "body": a.get("body") or "",
-                            "url": a["url"], "logo": path, "start": start.isoformat(), "active": True,
-                            "slug": slug, "app": a["id"], "price_month": price}
-        # No contact name or email here: this file is public. The job reads
-        # those from the worker when it needs them (invoice reminders).
-        p.write_text(json.dumps(d, indent=1, ensure_ascii=False) + "\n")
-        return slug, ["data/page-sponsors.json"] + ([path.lstrip("/")] if path else [])
-    p = root / "data" / "supporters.json"
+    ct = card_tier(a)
+    if ct not in SELF_SERVE:
+        raise ValueError("%s is not a tier that goes live on its own" % ct)
+    if slots is None:
+        slots = json.loads((root / "data" / "sponsor-slots.json").read_text()).get("slots", [])
+    state, want = state_slots(a["slot"], slots) if ct == "state" else (None, [a["slot"]])
+    price = rate(card, ct, state)
+    p = root / "data" / "page-sponsors.json"
     d = json.loads(p.read_text())
-    lst = d.setdefault("supporters", [])
-    if any(s.get("app") == a["id"] for s in lst):
-        return slug, []
-    path = write_logo(a, logo, slug, root)
-    lst.append({"name": a["company"], "url": a["url"], "logo": path, "active": True,
-                "start": start.isoformat(), "app": a["id"], "price_month": price})
-    p.write_text(json.dumps(d, indent=2, ensure_ascii=False) + "\n")
-    return slug, ["data/supporters.json"] + ([path.lstrip("/")] if path else [])
+    sold = d.setdefault("slots", {})
+    todo = [x for x in want if not (sold.get(x) and sold[x].get("app") == a["id"])]
+    if not todo:
+        return (sold.get(want[0]) or {}).get("slug", slug), []
+    path = write_logo(a, logo, slug + "-" + a["slot"], root)
+    for x in todo:
+        sold[x] = {"company": a["company"], "headline": a.get("headline") or "", "body": a.get("body") or "",
+                   "url": a["url"], "logo": path, "start": start.isoformat(), "active": True,
+                   "slug": slug, "app": a["id"], "tier": ct, "price_month": price}
+        if state:
+            sold[x]["state"] = state
+    # No contact name or email here: this file is public. The job reads
+    # those from the worker when it needs them (invoice reminders).
+    p.write_text(json.dumps(d, indent=1, ensure_ascii=False) + "\n")
+    return slug, ["data/page-sponsors.json"] + ([path.lstrip("/")] if path else [])
 
 
 def take_down(a, root=REPO):
@@ -227,7 +279,8 @@ def take_down(a, root=REPO):
                     changed.append(e["logo"].lstrip("/"))
             del d["slots"][k]
             p.write_text(json.dumps(d, indent=1, ensure_ascii=False) + "\n")
-            changed.append("data/page-sponsors.json")
+            if "data/page-sponsors.json" not in changed:
+                changed.append("data/page-sponsors.json")
     p = root / "data" / "supporters.json"
     d = json.loads(p.read_text())
     keep = []
@@ -293,11 +346,21 @@ def msg(to, subject, paras, button=None, fn="AGSIST", fa="", rt=None, links=None
 
 
 def what(a):
-    if a["tier"] == "page" and a["slot"].startswith("cash-bids-"):
-        # a state's cash bid pages (scripts/build_cash_bid_pages.py sponsor_slot)
-        return "%s (/cash-bids/%s/ and its town pages)" % (TIER_NAME.get("page", "page"), a["slot"][len("cash-bids-"):])
-    return "%s (%s)" % (TIER_NAME.get(a["tier"], a["tier"]), "/" + a["slot"] if a["tier"] == "page" and not a["slot"].startswith("rent-")
-                        else ("rent page " + a["slot"][5:].upper() if a["tier"] == "page" else "footer" if a["tier"] == "supporter" else "briefing"))
+    ct, slot = card_tier(a), a.get("slot") or ""
+    if ct == "daily":
+        return "%s (the Daily briefing and the homepage)" % TIER_NAME["daily"]
+    if ct == "cashbids":
+        return "%s (/cash-bids)" % TIER_NAME["cashbids"]
+    if ct == "state":
+        where = ("/cash-bids/%s/ and its town pages, and the state's cash rent page" % slot[len("cash-bids-"):]
+                 if slot.startswith("cash-bids-") else "the %s cash rent page and the state's cash bids pages" % slot[5:].upper())
+        return "%s (%s)" % (TIER_NAME["state"], where)
+    if ct == "elevator":
+        m = FE_SLOT.fullmatch(slot)
+        return "%s (the %s town page %s)" % (TIER_NAME["elevator"], m.group(1).upper(), m.group(2))
+    if a.get("tier") == "supporter":
+        return "%s (footer)" % TIER_NAME["supporter"]
+    return "%s (/%s)" % (TIER_NAME["page"], slot)
 
 
 def quoted(s, n=60):
@@ -316,9 +379,9 @@ def ad_lines(a):
             "Logo: %s" % ("attached to the application" if a.get("logo_len") else "none, the name is shown as text")]
 
 
-def emails_for(action, a, base, secret, card, today, sig):
+def emails_for(action, a, base, secret, card, today, sig, slots=()):
     """-> [(to, EmailMessage-kwargs)] for one planned action. Pure."""
-    price = money(rate(card, a["tier"]))
+    price = money(app_rate(card, a, slots))
     # Oct 22: the agsist.com front door asks the worker's page from the browser; base only has to be set
     dec = lambda d: email_links.front("sponsor-decide", [("i", a["id"]), ("d", d), ("t", token(secret, a["id"] + "|sd|" + d))])
     if action == "confirm":
@@ -334,8 +397,15 @@ def emails_for(action, a, base, secret, card, today, sig):
         lines = ["New AGSIST sponsor waiting for you: %s." % what(a)] + ad_lines(a) + [
             "Contact: %s, %s%s." % (a.get("contact") or "?", a["email"], (", " + a["phone"]) if a.get("phone") else ""),
             "Price: first month free, then %s a month." % price]
-        if a["tier"] not in SELF_SERVE:
-            lines.append("Sponsor slot: approving tells you to set it up by hand (the briefing card has its own proof and approval).")
+        ct = card_tier(a)
+        if ct is None:
+            lines.append("This slot is no longer sold (rate card of Oct 29, 2026). Decline it, or offer a State or Cash Bids slot.")
+        elif ct == "elevator":
+            lines.append("Featured elevator: approving tells you to set it up by hand (the town page box is built with them).")
+        elif ct == "state" and opens_soon(card, state_slots(a.get("slot"), slots)[0]):
+            lines.append("That state opens soon: approving tells you to set it up by hand when it opens.")
+        elif ct not in SELF_SERVE:
+            lines.append("Daily Sponsor: approving tells you to set it up by hand (the briefing card has its own proof and approval).")
         else:
             lines.append("Approve and it goes live within the hour; the free month starts that day.")
         return [(sig, dict(subject="New sponsor: %s, %s" % (a["company"], what(a)), paras=lines,
@@ -355,7 +425,7 @@ def emails_for(action, a, base, secret, card, today, sig):
                     links=[("End it (frees the slot)", dec("end"))]))]
     if action == "daily":
         return [(sig, dict(subject="Sponsor approved: %s" % a["company"], paras=[
-            "You approved %s for the sponsor slot. That one is set up by hand:" % a["company"]] + ad_lines(a) + [
+            "You approved %s for %s. That one is set up by hand:" % (a["company"], what(a))] + ad_lines(a) + [
             "Contact: %s, %s%s." % (a.get("contact") or "?", a["email"], (", " + a["phone"]) if a.get("phone") else ""),
             "Nothing has gone live and the applicant has not been told anything yet."]))]
     if action == "clash":
@@ -372,8 +442,8 @@ def emails_for(action, a, base, secret, card, today, sig):
         free_end = add_months(start, 1) - timedelta(days=1)
         return [(a["email"], dict(subject="Your free month on AGSIST ends %s" % fmt(free_end), paras=[
             "Hi %s, your free month for %s ends %s." % (a.get("contact") or "there", a["company"], fmt(free_end)),
-            "Staying on? Nothing to do. Sig will email an invoice for %s, once a month." % price,
-            "Want to stop? Reply to this email and the slot comes down. No charge for the free month."]))]
+            "Sig will send your day-30 report. Then one question: keep it, yes or no? Reply yes and it carries on month to month at %s a month, invoiced." % price,
+            "No reply means the ad comes down and nothing is owed. No charge for the free month."]))]
     if action == "invoice":
         start = date.fromisoformat(a["start"])
         k = (a.get("invoiced") or 0) + 1
@@ -382,7 +452,8 @@ def emails_for(action, a, base, secret, card, today, sig):
             "Time to invoice %s for %s: %s, %s to %s (month %d after the free one)." % (
                 a["company"], what(a), price, fmt(p0), fmt(p1), k),
             "Bill to: %s, %s%s." % (a.get("contact") or a["company"], a["email"], (", " + a["phone"]) if a.get("phone") else ""),
-            "If they don't pay, end it and the slot goes back on the market."],
+            ("Only if they said yes on day 30. No yes means end it: nothing is owed." if k == 1 else
+             "If they don't pay, end it and the slot goes back on the market.")],
             links=[("End it (frees the slot)", dec("end"))]))]
     if action == "takedown":
         return [(sig, dict(subject="Ended: %s" % a["company"], paras=[
@@ -413,7 +484,8 @@ def main():
     sig = env("SPONSOR_TO", "sig@agsist.com")
     fn, fa, rt = env("FROM_NAME", "AGSIST"), log_safe.sender_addr(), env("REPLY_TO") or sig
     card = json.loads((REPO / "data" / "rate-card.json").read_text())
-    slots_by_id = {s["id"]: s for s in json.loads((REPO / "data" / "sponsor-slots.json").read_text()).get("slots", [])}
+    slot_list = json.loads((REPO / "data" / "sponsor-slots.json").read_text()).get("slots", [])
+    slots_by_id = {s["id"]: s for s in slot_list}
     try:
         apps = worker(base, "sponsor-apps", tok)
     except Exception as e:                                   # noqa: BLE001
@@ -422,7 +494,7 @@ def main():
     today = today_ct()
     sold = json.loads((REPO / "data" / "page-sponsors.json").read_text())
     sup = json.loads((REPO / "data" / "supporters.json").read_text())
-    todo = plan(apps, time.time() * 1000, today, sold, sup)
+    todo = plan(apps, time.time() * 1000, today, sold, sup, card, slot_list)
     print("applications %d; actions %s" % (len(apps), [(x[0], x[1]["id"]) for x in todo]))
     if dry or not todo:
         return 0
@@ -449,7 +521,7 @@ def main():
             if action == "golive":
                 start = today
                 logo = worker(base, "sponsor-logo", tok, i=a["id"]).get("logo", "") if a.get("logo_len") else ""
-                slug, files = go_live(a, logo, card, start)
+                slug, files = go_live(a, logo, card, start, slots=slot_list)
                 if not push(files, "sponsor live: %s (%s)" % (a["company"], what(a))):
                     print("push failed; %s stays approved for the next run" % a["id"])
                     failed += 1
@@ -461,7 +533,7 @@ def main():
                     failed += 1
                     continue
                 mark(a, status="ended")
-            for to, kw in emails_for(action, a, base, secret, card, today, sig):
+            for to, kw in emails_for(action, a, base, secret, card, today, sig, slot_list):
                 send(to, kw)
             if action == "confirm":
                 mark(a, m=1)
@@ -499,36 +571,61 @@ def selftest():
     now_ms = now.timestamp() * 1000
     today = today_ct(now)
     A = lambda **k: dict({"id": "a1b2c3d4e5f6", "ts": now_ms - 3600e3, "status": "pending", "m": 0, "notified": 0,
-                          "tier": "page", "slot": "spray", "company": "Smith Seed & Supply", "contact": "Al",
+                          "tier": "page", "slot": "cash-bids", "company": "Smith Seed & Supply", "contact": "Al",
                           "email": "al@smith.com", "phone": "", "headline": "Seed", "body": "", "url": "https://smith.com",
                           "logo_len": 0}, **k)
     empty_sold, empty_sup = {"slots": {}}, {"cap": 6, "supporters": []}
-    P = lambda apps, sold=empty_sold: [x[0] for x in plan(apps, now_ms, today, sold, empty_sup)]
+    card = {"tiers": [{"id": "daily", "price_month": 149}, {"id": "cashbids", "price_month": 49},
+                      {"id": "state", "price_month": 29, "price_by_state": {"WI": 49, "TX": 49}, "opens_soon": ["TX"]},
+                      {"id": "elevator", "price_month": 19}]}
+    slots = [{"id": "cash-bids", "tier": "cashbids"}, {"id": "spray", "tier": None},
+             {"id": "cash-bids-wisconsin", "tier": "state", "state": "WI"}, {"id": "rent-wi", "tier": "state", "state": "WI"},
+             {"id": "cash-bids-iowa", "tier": "state", "state": "IA"}, {"id": "rent-ia", "tier": "state", "state": "IA"},
+             {"id": "cash-bids-texas", "tier": "state", "state": "TX"}, {"id": "rent-tx", "tier": "state", "state": "TX"}]
+    P = lambda apps, sold=empty_sold: [x[0] for x in plan(apps, now_ms, today, sold, empty_sup, card, slots)]
 
     print("planning")
     ck("a new application gets a confirmation", P([A()]) == ["confirm"])
     ck("a mailed one is left alone", P([A(m=1)]) == [])
     ck("15 days unconfirmed expires", P([A(ts=now_ms - 15 * 864e5)]) == ["expire"])
     ck("confirmed: Sig is told once", P([A(status="confirmed")]) == ["notify"] and P([A(status="confirmed", notified=1)]) == [])
-    ck("approved page goes live", P([A(status="approved")]) == ["golive"])
+    ck("the form's tiers read back from tier + slot",
+       [card_tier(A(slot=x)) for x in ("cash-bids", "cash-bids-north-dakota", "rent-wi", "fe-wi-cadott", "spray", "rent-hub")]
+       == ["cashbids", "state", "state", "elevator", None, None] and card_tier(A(tier="daily", slot="briefing")) == "daily"
+       and card_tier(A(tier="supporter", slot="footer")) is None)
+    ck("approved Cash Bids goes live", P([A(status="approved")]) == ["golive"])
+    ck("approved State Sponsor goes live", P([A(status="approved", slot="cash-bids-wisconsin")]) == ["golive"])
+    ck("a state that opens soon (TX) is handed to Sig, never auto-live", P([A(status="approved", slot="rent-tx")]) == ["daily"])
     ck("approved daily is handed to Sig, never auto-live", P([A(status="approved", tier="daily")]) == ["daily"])
+    ck("a Featured elevator is handed to Sig, never auto-live", P([A(status="approved", slot="fe-wi-cadott")]) == ["daily"])
+    ck("a retired page slot or Supporter is handed to Sig, never auto-live",
+       P([A(status="approved", slot="spray")]) == ["daily"] and P([A(status="approved", tier="supporter", slot="footer")]) == ["daily"])
     ck("an approved row under an older tier id is handed to Sig too, never auto-live",
        P([A(status="approved", tier="old-id")]) == ["daily"])
-    taken = {"slots": {"spray": {"app": "ffffffffffff", "active": True}}}
+    taken = {"slots": {"cash-bids": {"app": "ffffffffffff", "active": True}}}
     ck("a page someone else holds is a clash, not an overwrite", P([A(status="approved")], taken) == ["clash"])
+    ck("a state is a clash when any one of its ribbons is held",
+       P([A(status="approved", slot="cash-bids-wisconsin")], {"slots": {"rent-wi": {"app": "ffffffffffff"}}}) == ["clash"])
     ck("declined: one note", P([A(status="declined")]) == ["declined"] and P([A(status="declined", m=2)]) == [])
     ck("ending is taken down", P([A(status="ending")]) == ["takedown"])
     ck("a bad id is ignored", P([A(id="../x")]) == [])
+    ck("plan still runs without a card (old callers)", [x[0] for x in plan([A(status="approved")], now_ms, today, empty_sold, empty_sup)] == ["golive"])
 
     print("\nthe money calendar (start Sep 10)")
     live = lambda **k: A(status="live", start="2026-09-10", **k)
     ck("free month: Sep 10 - Oct 9", add_months(date(2026, 9, 10), 1) - timedelta(days=1) == date(2026, 10, 9))
     ck("Oct 7 (2 days before the end): the sponsor is told", P([live()]) == ["freeending"])
     ck("told once", P([live(reminded=1)]) == [])
-    on = lambda d, **k: [x[0] for x in plan([live(reminded=1, **k)], now_ms, d, empty_sold, empty_sup)]
+    on = lambda d, **k: [x[0] for x in plan([live(reminded=1, **k)], now_ms, d, empty_sold, empty_sup, card, slots)]
     ck("Oct 10: first invoice reminder to Sig", on(date(2026, 10, 10)) == ["invoice"])
     ck("after it is sent, nothing until Nov 10", on(date(2026, 11, 9), invoiced=1) == [] and on(date(2026, 11, 10), invoiced=1) == ["invoice"])
     ck("Jan 31 start: month ends clamp (Feb 28)", add_months(date(2026, 1, 31), 1) == date(2026, 2, 28))
+
+    print("\nprices from the card")
+    ck("State Sponsor in WI is $49, in IA $29", app_rate(card, A(slot="rent-wi"), slots) == 49 and app_rate(card, A(slot="cash-bids-iowa"), slots) == 29)
+    ck("Cash Bids $49, Featured elevator $19, Daily $149",
+       (app_rate(card, A(), slots), app_rate(card, A(slot="fe-wi-cadott"), slots), app_rate(card, A(tier="daily"), slots)) == (49, 19, 149))
+    ck("a retired tier has no price", app_rate(card, A(slot="spray"), slots) is None)
 
     print("\nsite writes")
     with tempfile.TemporaryDirectory() as td:
@@ -536,24 +633,37 @@ def selftest():
         (root / "data").mkdir()
         (root / "data" / "page-sponsors.json").write_text(json.dumps(empty_sold))
         (root / "data" / "supporters.json").write_text(json.dumps(empty_sup))
-        card = {"tiers": [{"id": "page", "price_month": 29}, {"id": "supporter", "price_month": 15}]}
+        (root / "data" / "sponsor-slots.json").write_text(json.dumps({"slots": slots}))
         png = "data:image/png;base64," + base64.b64encode(b"\x89PNG fake").decode()
         slug, files = go_live(A(status="approved", logo_len=1), png, card, date(2026, 10, 7), root)
-        e = json.loads((root / "data" / "page-sponsors.json").read_text())["slots"]["spray"]
-        ck("page entry written", e["company"] == "Smith Seed & Supply" and e["start"] == "2026-10-07" and e["price_month"] == 29, e)
+        e = json.loads((root / "data" / "page-sponsors.json").read_text())["slots"]["cash-bids"]
+        ck("Cash Bids entry written", e["company"] == "Smith Seed & Supply" and e["start"] == "2026-10-07" and e["price_month"] == 49 and e["tier"] == "cashbids", e)
         ck("no email or contact name in the public file", "email" not in e and "contact" not in e and "al@smith.com" not in json.dumps(e))
-        ck("logo written under img/sponsors", e["logo"] == "/img/sponsors/smith-seed-supply-spray.png" and (root / e["logo"][1:]).exists())
-        ck("files reported for the commit", "data/page-sponsors.json" in files and "img/sponsors/smith-seed-supply-spray.png" in files)
+        ck("logo written under img/sponsors", e["logo"] == "/img/sponsors/smith-seed-supply-cash-bids.png" and (root / e["logo"][1:]).exists())
+        ck("files reported for the commit", "data/page-sponsors.json" in files and "img/sponsors/smith-seed-supply-cash-bids.png" in files)
         ck("a rerun changes nothing", go_live(A(status="approved"), png, card, date(2026, 10, 8), root)[1] == [])
         ck("an svg/bad logo is not written", write_logo(A(), "data:image/svg+xml;base64,PHN2Zz4=", "x", root) == "")
-        s2, f2 = go_live(A(id="0123456789ab", tier="supporter", slot="footer", company="Barron Co-op"), "", card, date(2026, 10, 7), root)
-        sp = json.loads((root / "data" / "supporters.json").read_text())["supporters"]
-        ck("supporter appended, active, no logo", len(sp) == 1 and sp[0]["active"] is True and sp[0]["logo"] == "" and sp[0]["price_month"] == 15)
+        W = A(id="0123456789ab", slot="cash-bids-wisconsin", company="Barron Co-op")
+        go_live(W, "", card, date(2026, 10, 7), root)
+        sold = json.loads((root / "data" / "page-sponsors.json").read_text())["slots"]
+        ck("a State Sponsor takes every ribbon of its state, at its state's price",
+           sold["cash-bids-wisconsin"]["app"] == sold["rent-wi"]["app"] == "0123456789ab"
+           and sold["rent-wi"]["price_month"] == 49 and sold["rent-wi"]["state"] == "WI" and "rent-ia" not in sold, sold)
+        ck("and the state rerun changes nothing", go_live(W, "", card, date(2026, 10, 8), root)[1] == [])
+        try:
+            go_live(A(slot="spray"), "", card, date(2026, 10, 7), root)
+            ck("a retired slot is never written", False)
+        except ValueError:
+            ck("a retired slot is never written", "spray" not in json.loads((root / "data" / "page-sponsors.json").read_text())["slots"])
         ch = take_down(A(status="ending"), root)
         ck("take-down frees the page and removes the logo",
-           json.loads((root / "data" / "page-sponsors.json").read_text())["slots"] == {} and not (root / e["logo"][1:]).exists() and ch)
-        take_down(A(id="0123456789ab"), root)
-        ck("and the supporter", json.loads((root / "data" / "supporters.json").read_text())["supporters"] == [])
+           "cash-bids" not in json.loads((root / "data" / "page-sponsors.json").read_text())["slots"] and not (root / e["logo"][1:]).exists() and ch)
+        take_down(W, root)
+        ck("a State Sponsor's take-down frees every ribbon of the state",
+           json.loads((root / "data" / "page-sponsors.json").read_text())["slots"] == {})
+        (root / "data" / "supporters.json").write_text(json.dumps({"cap": 6, "supporters": [{"name": "Old", "app": "0123456789ab", "active": True}]}))
+        take_down(W, root)
+        ck("an old Supporter on file still comes down", json.loads((root / "data" / "supporters.json").read_text())["supporters"] == [])
 
     print("\nworker urls")
     seen = []
@@ -571,7 +681,6 @@ def selftest():
     ck("query string is built, not glued", seen == ["https://w.dev/sponsor-logo?i=a1b2c3d4e5f6&token=t+k"], seen)
 
     print("\nemails")
-    card = {"tiers": [{"id": "page", "price_month": 29}]}
     em = emails_for("confirm", A(), "https://w.dev", "sec", card, today, "sig@x.com")
     ck("confirm goes to the applicant with a signed link",
        em[0][0] == "al@smith.com" and ("t=" + token("sec", "a1b2c3d4e5f6|sc")) in em[0][1]["button"][1])
@@ -579,7 +688,16 @@ def selftest():
     ck("Sig's email carries approve and decline, signed for Sig",
        em[0][0] == "sig@x.com" and token("sec", "a1b2c3d4e5f6|sd|approve") in em[0][1]["button"][1]
        and "d=decline" in em[0][1]["links"][0][1])
-    ck("the price comes from the card", any("$29 a month" in p for p in em[0][1]["paras"]))
+    ck("the price comes from the card", any("$49 a month" in p for p in em[0][1]["paras"]))
+    em = emails_for("notify", A(status="confirmed", slot="rent-wi"), "https://w.dev", "sec", card, today, "sig@x.com", slots)
+    ck("a Wisconsin State Sponsor is quoted $49", any("$49 a month" in p for p in em[0][1]["paras"]) and "State Sponsor" in em[0][1]["subject"])
+    em = emails_for("notify", A(status="confirmed", slot="spray"), "https://w.dev", "sec", card, today, "sig@x.com", slots)
+    ck("Sig hears that a retired slot is no longer sold", any("no longer sold" in p for p in em[0][1]["paras"]))
+    em = emails_for("freeending", A(status="live", start="2026-09-10"), "https://w.dev", "sec", card, today, "sig@x.com")
+    ck("the day-30 email asks yes or no, and no reply owes nothing",
+       any("yes or no" in p for p in em[0][1]["paras"]) and any("No reply means the ad comes down and nothing is owed" in p for p in em[0][1]["paras"]))
+    em = emails_for("invoice", A(status="live", start="2026-09-10", invoiced=0), "https://w.dev", "sec", card, today, "sig@x.com")
+    ck("the first invoice only after a yes", any("Only if they said yes" in p for p in em[0][1]["paras"]))
     em = emails_for("invoice", A(status="live", start="2026-09-10", invoiced=0), "https://w.dev", "sec", card, today, "sig@x.com")
     ck("invoice reminder names the month", "Oct 10, 2026 to Nov 9, 2026" in em[0][1]["paras"][0], em[0][1]["paras"][0])
     m = msg("a@b.com", fa="x@agsist.com", **emails_for("confirm", A(company="<b>x</b>"), "https://w.dev", "sec", card, today, "s")[0][1])
