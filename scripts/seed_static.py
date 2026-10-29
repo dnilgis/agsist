@@ -1863,9 +1863,7 @@ def storage_html(d, today, hist=None, basis=None):
             "the 10th to 90th percentile. The usual-pace line subtracts the state&rsquo;s average drop from this "
             "fall&rsquo;s pressure; it is a rule of thumb, tested by leaving each past year out in turn.</p>")
     out += (f"<p>Source: USDA NASS Quick Stats, Grain Stocks and Crop Production"
-            + (f", pulled {_mdy(gen)}" if gen else "") + ". Built by <code>scripts/fetch_storage.py</code>; "
-            "the data: <a href=\"/data/storage/storage.json\">storage.json</a>"
-            + (", <a href=\"/data/storage/history.json\">history.json</a>" if hst else "") + ". "
+            + (f", pulled {_mdy(gen)}" if gen else "") + ". "
             "Reviewed by Sigurd Lindquist, CCA.</p></details>")
     out += ("<script type=\"application/json\" id=\"st-data\">"
             + json.dumps({**meta, "gen": d.get("generated"), "states": blob}, separators=(",", ":")).replace("</", "<\\/")

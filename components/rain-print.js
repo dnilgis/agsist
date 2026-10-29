@@ -1952,7 +1952,7 @@
     "<p>Reading guide: one 8.5 x 11 page, How to read your Rain Print, that goes with a digital file (the files email sends it with the PNG, PDF and JPG the moment the buyer approves the proof). The letter&rsquo;s numbers and key, plus a line for each extra the print draws; no serial and no code line. The note above goes on it too.</p>",
     "<div class=\"rp-acts\">",
     "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"guide\" data-fmt=\"pdf\">Reading guide PDF</button>",
-    ""
+    "</div>"
   ].join('');
   if (MAKER && $('rp-maker')) $('rp-maker').innerHTML = MAKER_PANEL;
   var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
