@@ -14,9 +14,12 @@
 
    WHERE IT COMES FROM. The elevator network's live index and ZIP table
    (dnilgis.github.io/bids, the same files /cash-bids and the homepage read),
-   data/bids-prev/<ST>.json for yesterday's price, and Open-Meteo's hourly
-   precipitation for the rounded location (the same service the site's
-   weather uses). The location is never stored anywhere but this browser and
+   data/bids-prev/<ST>.json for yesterday's price, and rain from our own
+   data/radar-rain/ files: NOAA's radar estimate corrected with rain gauges
+   (MRMS), the same files /rain-radar reads (components/radar-rain.js). A file
+   older than RAIN_STALE_H hours, or no estimate at the spot, leaves the rain
+   line out. (2026-10-29: was Open-Meteo's hourly model precipitation.)
+   The location is never stored anywhere but this browser and
    nothing about the reader is logged.
 
    THE RULE FOR "BEST". Boards within 50 miles whose price was posted in the
@@ -142,17 +145,14 @@
     return { cents: Math.round((row.cash - prev[1]) * 1e6) / 1e4, since: dayName(prev[0]) };
   }
 
-  /* Pure. Open-Meteo hourly answer -> {h24, d7} inches up to the current
-     hour, or null when the hours are not all there. */
-  function rain(om, nowMs) {
-    var h = om && om.hourly, t = h && h.time, p = h && h.precipitation, off = (om && om.utc_offset_seconds) || 0;
-    if (!Array.isArray(t) || !Array.isArray(p) || t.length !== p.length) return null;
-    var end = -1;
-    for (var i = 0; i < t.length; i++) { var ms = Date.parse(t[i] + 'Z') - off * 1000; if (ms <= nowMs) end = i; }
-    if (end < 167) return null;
-    function sum(k) { var s = 0; for (var j = end - k + 1; j <= end; j++) { if (typeof p[j] !== 'number') return null; s += p[j]; } return Math.round(s * 100) / 100; }
-    var a = sum(24), b = sum(168);
-    return a == null || b == null ? null : { h24: a, d7: b };
+  /* Pure. The rain line's numbers from the radar file's readings at the spot
+     ({h24, d7} in hundredths of an inch, end = the newest radar hour, ISO). */
+  var RAIN_STALE_H = 12;
+  function rain(x, nowMs) {
+    if (!x || typeof x.h24 !== 'number' || typeof x.d7 !== 'number' || !x.end) return null;
+    var end = Date.parse(x.end);
+    if (!isFinite(end) || nowMs - end > RAIN_STALE_H * 36e5 || end - nowMs > 36e5) return null;
+    return { h24: Math.round(x.h24) / 100, d7: Math.round(x.d7) / 100, end: x.end };
   }
 
   function where(r) { return esc(r.name) + (r.town ? ', ' + esc(r.town) : '') + ' (' + r.mi + ' mi)'; }
@@ -160,6 +160,10 @@
     if (!c) return '';
     if (Math.abs(c.cents) < 0.125) return ', unchanged since ' + esc(c.since);
     return ', ' + (c.cents < 0 ? 'down ' : 'up ') + qc(c.cents) + '¢ since ' + esc(c.since);
+  }
+  function endWords(iso) {
+    var d = new Date(iso);
+    try { return d.toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }); } catch (e) { return d.toISOString().slice(0, 16).replace('T', ' ') + ' UTC'; }
   }
   function inches(v) { return v < 0.005 ? 'no rain' : v.toFixed(2) + ' inch'; }
 
@@ -182,7 +186,7 @@
     }
     if (o.rain) {
       lines.push('<b>Rain</b>: ' + inches(o.rain.h24) + ' over the last 24 hours, ' + inches(o.rain.d7) + ' over the last 7 days.');
-      src.push('Rain is Open-Meteo’s estimate for your area, not a gauge');
+      src.push('Rain is NOAA’s radar estimate corrected with gauges (MRMS) at your spot' + (o.rain.end ? ', through ' + esc(endWords(o.rain.end)) : '') + ', not a gauge of your own');
     }
     var links = loc.zip ? '<p class="dl-l"><a href="/cash-bids?zip=' + esc(loc.zip) + '">All bids near ' + esc(loc.zip) + ' &rarr;</a></p>' : '<p class="dl-l"><a href="/cash-bids">All bids near you &rarr;</a></p>';
     return '<p class="dl-k">Your local line: ' + esc(place) + '</p>' +
@@ -213,6 +217,34 @@
     'aside.dl button{font:inherit;font-weight:700;min-height:44px;padding:0 1rem;border:1px solid var(--gold);border-radius:6px;background:transparent;color:var(--gold);cursor:pointer}' +
     'aside.dl .dl-err{color:var(--red,#e0685f)}aside.ya.ya-n{display:none}';
   function get(u, opt) { return fetch(u, opt || { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  /* The radar file's 24-hour and 7-day readings at the spot, or null (no file, outside the lower 48, an old
+     browser that cannot inflate it). components/radar-rain.js loads on first use. */
+  var RR_SRC = '/components/radar-rain.js?v=1', rrP = null;
+  function rrReady() {
+    if (root.AgRadarRain) return Promise.resolve(root.AgRadarRain);
+    if (!rrP) rrP = new Promise(function (ok, no) {
+      var s = doc.createElement('script'); s.src = RR_SRC; s.async = true;
+      s.onload = function () { root.AgRadarRain ? ok(root.AgRadarRain) : no(new Error('radar-rain')); };
+      s.onerror = function () { rrP = null; no(new Error('radar-rain did not load')); };
+      doc.head.appendChild(s);
+    });
+    return rrP;
+  }
+  function radarAt(lat, lon) {
+    return rrReady().then(function (R) {
+      return get('/data/radar-rain/index.json').then(function (idx) {
+        var st = idx && R.pickState(idx, lat, lon);
+        if (!st) return null;
+        return fetch('/data/radar-rain/' + st.toLowerCase() + '.bin').then(function (r) { return r.ok ? r.arrayBuffer() : null; }).then(function (b) {
+          if (!b) return null;
+          return R.parse(b).then(function (f) {
+            var h = f.header, g = f.grids;
+            return { h24: R.lookup(h, g['24h'], lat, lon), d7: g['7d'] ? R.lookup(h, g['7d'], lat, lon) : null, end: h.data_end };
+          });
+        });
+      });
+    }).then(null, function () { return null; });
+  }
   function coords(loc) {
     if (loc.lat != null && loc.lon != null) return Promise.resolve({ lat: loc.lat, lon: loc.lon });
     return get(BASE + 'data/zips/' + loc.zip.slice(0, 2) + '.json').then(function (t) {
@@ -225,9 +257,7 @@
     coords(loc).then(function (c) {
       if (!c) { el.innerHTML = build({ loc: loc, status: 'failed' }); return; }
       var now = Date.now();
-      var lat = Math.round(c.lat * 100) / 100, lon = Math.round(c.lon * 100) / 100;
-      var om = get('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
-        '&hourly=precipitation&precipitation_unit=inch&timezone=auto&past_days=7&forecast_days=1');
+      var om = radarAt(c.lat, c.lon);
       get(BASE + 'data/merged-index.json').then(function (idx) {
         if (!idx || !idx.places) { el.innerHTML = build({ loc: loc, status: 'failed' }); return; }
         var picks = pick(idx, c.lat, c.lon, now), states = {};

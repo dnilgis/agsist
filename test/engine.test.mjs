@@ -162,8 +162,12 @@ const sh = (cwd, cmd, env = {}) => spawnSync('bash', ['-c', cmd], { cwd, encodin
 const g = (cwd, ...args) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
 const write = (dir, rel, s) => { fs.mkdirSync(path.dirname(path.join(dir, rel)), { recursive: true }); fs.writeFileSync(path.join(dir, rel), s); };
 
-function publicRepo({ tracked = true } = {}) {
-  const d = tmp();
+// Each repository is built where the test uses it, never copied: newer git (2.56 on the runners in
+// run 40910004159) ends a commit with `git maintenance run --auto --detach`, whose detached child still
+// holds .git/objects/maintenance.lock after the commit returns. A recursive copy of that .git lists
+// the lock, the child removes it, and the copy fails with ENOENT on .git/objects (PR #190, shard 1/4).
+function publicRepo({ tracked = true, dir = tmp() } = {}) {
+  const d = dir;
   g(d, 'init', '-q', '-b', 'main');
   write(d, '.github/engine-paths', 'repo dnilgis/feedbag\nbranch engine-agsist\npath scripts\npath test\npath build\n');
   write(d, '.github/actions/engine/engine.sh', fs.readFileSync(ENGINE, 'utf8'));
@@ -278,8 +282,7 @@ test('engine.sh pull and save: a local session gets the engine and saves its cha
   g(seed, 'add', '-A'); g(seed, 'commit', '-qm', 'seed'); g(seed, 'push', '-q', bare, 'engine-agsist');
   const d = path.join(base, 'agsist');
   fs.mkdirSync(d);
-  const pub = publicRepo({ tracked: false });
-  fs.cpSync(pub, d, { recursive: true });
+  publicRepo({ tracked: false, dir: d });
   fs.appendFileSync(path.join(d, '.gitignore'), PATHS_IGNORE);
   g(d, 'add', '.gitignore'); g(d, 'commit', '-qm', 'ignore the engine paths');
   const env = { ENGINE_REMOTE: bare };

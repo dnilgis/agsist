@@ -2,7 +2,8 @@
 /* 2026-10-01 r7-season. The page changes with the month.
    SEASON below is the only place that decides what leads and what steps
    back. Every figure printed comes from a file in /data, /usda-calendar.ics
-   or the Open-Meteo forecast the page already loads; each says when it was
+   or the National Weather Service forecast the page already loads (components/nws.js,
+   2026-10-29, was Open-Meteo), and soil from the nearest measuring station; each says when it was
    read. Anything that fails prints "Not loaded yet", never a 0. */
 (function(){
   'use strict';
@@ -582,20 +583,18 @@
     for(var i=1;i<t.length;i++){if(v[i]!=null&&v[i]<=36){var dd=dayStart(t[i]);return {day:dd?['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dd.getDay()]:t[i],lo:Math.round(v[i])};}}
     return false;
   }
+  /* Soil (2026-10-29): no free forecast gives soil temperature, so this is the measured 4 in reading at the
+     nearest station (components/soil-near.js, riding on the forecast as f._soil): the last day's mean and
+     the last 3 days. A station more than 50 miles off, or a reading over 3 days old, is no soil number. */
   function soil(f){
-    var h=f&&f.hourly,t=h&&h.time;if(!t)return null;
-    var a=h.soil_temperature_6cm,b=h.soil_temperature_18cm,i0=hourIdx(t,localNowKey(f));
-    if(!a||i0<0||a[i0]==null)return null;
-    var mx=null,mx2=null;for(var i=i0;i<a.length;i++){if(a[i]!=null&&(mx==null||a[i]>mx))mx=a[i];if(b&&b[i]!=null&&(mx2==null||b[i]>mx2))mx2=b[i];}
-    return {now:Math.round(a[i0]),max:mx==null?null:Math.round(mx),deep:(b&&b[i0]!=null)?Math.round(b[i0]):null,deepMax:mx2==null?null:Math.round(mx2)};
+    var x=f&&f._soil;if(!x||x.now==null||!x.last3)return null;
+    return {now:Math.round(x.now),last3:x.last3,trend:x.trend||null,name:x.st&&x.st.name,mi:Math.round(x.mi),day:x.st&&x.st.last};
   }
-  /* Fall anhydrous: wait until soil at 4 in stays below 50F (extension
-     guidance). This page reads Open-Meteo at 6 cm (2.4 in) and 18 cm (7 in);
-     it says so and never calls either reading 4 in. */
+  /* Fall anhydrous: wait until soil at 4 in stays below 50F and is trending cooler (Iowa State, Nebraska,
+     K-State; the rules on /fall-nitrogen). In range when each of the station's last 3 days is under 50F. */
   function fallVerdict(s){
     if(s.now>=50)return {t:'Not yet',c:''};
-    /* In range only when both depths stay below 50F through the forecast. */
-    if(s.max!=null&&s.max<50&&s.deep!=null&&s.deepMax!=null&&s.deepMax<50)return {t:'In range',c:'s7-ok'};
+    if(s.last3.every(function(v){return v<50;})&&s.trend!=='warming')return {t:'In range',c:'s7-ok'};
     return {t:'Getting close',c:''};
   }
   function paintWx(){
@@ -608,7 +607,7 @@
       else if(WX.state!=='wait')lw.innerHTML=NL();
     }
     if(sw){
-      if(s)sw.innerHTML=s.now+'°F'+(s.deep!=null?'<span class="s7-sub">7 in: '+s.deep+'°F</span>':'');
+      if(s)sw.innerHTML=s.now+'°F'+'<span class="s7-sub">4 in, measured at '+esc(s.name)+'</span>';
       else if(WX.state!=='wait')sw.innerHTML=NL();
     }
     /* Strip cells */
@@ -625,12 +624,13 @@
       if(noLoc){needZip('fallN');needZip('soilPlant');if(fb)fb.textContent='Set your ZIP';}
       else if(s){
         var v=fallVerdict(s);
-        var sub=(v.t==='In range'?'Both depths below 50°F through the 5-day forecast.':'5-day high '+Math.max(s.max,s.deepMax!=null?s.deepMax:-99)+'°F.')+' Apply once 4 in soil stays below 50°F. Not on sandy or poorly drained soils.';
-        put('fallN','<span class="s7-line'+(v.c?' '+v.c:'')+'">'+v.t+'</span><span class="s7-line">'+s.now+'°F <small>at 2.4 in, modeled</small></span>',esc(sub));
-        put('soilPlant','<span class="s7-line">'+s.now+'°F <small>at 2.4 in</small></span><span class="s7-line">'+(s.now>=50?'At or above 50°F':'Below 50°F')+'</span>','Soil at 2.4 in (6 cm). Corn is commonly planted once soil holds near 50°F.');
+        var at=s.name+', '+s.mi+' mi, '+s.day;
+        var sub=(v.t==='In range'?'Below 50°F each of the last 3 days at '+at+'.':'Last 3 days at '+at+': '+s.last3.map(function(x){return Math.round(x)+'°F';}).join(', ')+'.')+' Apply once 4 in soil stays below 50°F. Not on sandy or poorly drained soils.';
+        put('fallN','<span class="s7-line'+(v.c?' '+v.c:'')+'">'+v.t+'</span><span class="s7-line">'+s.now+'°F <small>at 4 in, measured</small></span>',esc(sub));
+        put('soilPlant','<span class="s7-line">'+s.now+'°F <small>at 4 in</small></span><span class="s7-line">'+(s.now>=50?'At or above 50°F':'Below 50°F')+'</span>',esc('Measured at 4 in at '+at+'. Corn is commonly planted once soil at 2 in holds near 50°F.'));
         if(fb){fb.textContent=v.t+' · '+s.now+'°F';fb.style.color=v.c?'var(--green)':'var(--text)';}
-        if(fr)fr.textContent='Modeled. '+sub;   /* the cell already says "modelled" beside the reading */
-      } else if(WX.state!=='wait'){put('fallN',NL(),'Soil temperature forecast');put('soilPlant',NL(),'');if(fb)fb.textContent='Not loaded yet';}
+        if(fr)fr.textContent='Measured, not your field. '+sub;
+      } else if(WX.state!=='wait'){put('fallN',NL(),'No current soil station reading within 50 miles');put('soilPlant',NL(),'');if(fb)fb.textContent='Not loaded yet';}
     }
     if(cells.spray){
       var d0=WX.spray&&WX.spray[0];

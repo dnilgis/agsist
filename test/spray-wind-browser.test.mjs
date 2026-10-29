@@ -12,6 +12,7 @@ import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { deflateSync } from "node:zlib";
 import { fieldForecast, gridForecast, pageForecast, pad, addDays } from "./fixtures/spray-wind-forecast.mjs";
+import { nwsPoints, nwsFromOM } from "./fixtures/nws-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -52,7 +53,11 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
-/* fail: a set of "grid", "field", "meta", "tiles" to answer 500 */
+/* fail: a set of "grid" (the eight cells around the field), "field" (the field's own cell, which the page's cards
+   read too), "issued" (no issue time in the answer), "tiles" to answer 500. The NWS answers come from the same
+   made-up forecasts as before (test/fixtures/spray-wind-forecast.mjs), through nwsFromOM. The point's clock is
+   UTC-5 all month (Etc/GMT+5), as the fixtures assume. */
+const TZ = "Etc/GMT+5";
 async function open(browser, port, { width, height, fail = new Set(), reduced = false, path }) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height }, reducedMotion: reduced ? "reduce" : "no-preference" });
   const pg = await ctx.newPage();
@@ -64,13 +69,18 @@ async function open(browser, port, { width, height, fail = new Set(), reduced = 
     const u = new URL(r.request().url());
     if (u.host === `127.0.0.1:${port}`) return r.continue();
     asked.push(u.href);
-    if (u.host === "api.open-meteo.com" && u.pathname.endsWith("/meta.json")) return fail.has("meta") ? bad(r) : json(r, { last_run_initialisation_time: Math.floor(Date.now() / 1000 / 3600) * 3600 - 3 * 3600 });
-    if (u.host === "api.open-meteo.com" && u.pathname === "/v1/forecast") {
-      const lat = u.searchParams.get("latitude") || "";
-      if (lat.includes(",")) return fail.has("grid") ? bad(r) : json(r, gridForecast(YMD));
-      if (!u.searchParams.get("current")) return fail.has("field") ? bad(r) : json(r, fieldForecast(YMD));
-      pageAsked.push(u.searchParams.get("models"));
-      return json(r, pageForecast(YMD, NOWKEY));
+    if (u.host === "api.weather.gov") {
+      const nws = (r2, body) => r2.fulfill({ status: 200, contentType: "application/geo+json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(body) });
+      if (/^\/points\//.test(u.pathname)) return nws(r, nwsPoints(42.03, -93.62, { tz: TZ, office: "DMX", x: 70, y: 80 }));
+      const m = /^\/gridpoints\/DMX\/(\d+),(\d+)$/.exec(u.pathname);
+      if (m) {
+        const col = (+m[1] - 61) / 9, row = (89 - +m[2]) / 9, k = row * 3 + col;
+        const now = Date.now(), updated = fail.has("issued") ? null : new Date(Math.floor(now / 3600e3) * 3600e3 - 2 * 3600e3).toISOString();
+        if (k === 4) { pageAsked.push(u.pathname); if (fail.has("field")) return bad(r); const g = nwsFromOM(pageForecast(YMD, NOWKEY), { now, tz: TZ, updated }); if (!updated) delete g.properties.updateTime; return nws(r, g); }
+        if (fail.has("grid")) return bad(r);
+        return nws(r, nwsFromOM({ ...gridForecast(YMD)[k], timezone: TZ }, { now, tz: TZ }));
+      }
+      return r.fulfill({ status: 404, body: "{}" });
     }
     if (u.host === "basemap.nationalmap.gov") return fail.has("tiles") ? r.fulfill({ status: 500, body: "" }) : r.fulfill({ status: 200, contentType: "image/png", body: TILE });
     if (u.host === "nominatim.openstreetmap.org") return json(r, { address: { town: "Ames", state: "Iowa", state_code: "IA" } });
@@ -90,14 +100,14 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
     for (const [width, height] of [[390, 844], [1280, 900]]) {
       const { ctx, pg, errors, asked, pageAsked } = await open(browser, port, { width, height, path: SHARE });
       await pg.waitForSelector("#sw-list li.sw-li", { timeout: 15000 });
-      // one story: the cards and the 24-hour strip ask for the same model as the wind view, named once for the page
-      await pg.waitForFunction(() => /HRRR run .*GFS run /.test(document.getElementById("sp-model").textContent));
-      assert.deepEqual([...new Set(pageAsked)], ["gfs_seamless"]);
-      assert.ok(asked.filter((x) => x.includes("/v1/forecast")).every((x) => x.includes("models=gfs_seamless")), "every forecast call names gfs_seamless");
+      // one story: the cards, the 24-hour strip and the wind view read the same NWS cell once, named once for the page
+      await pg.waitForFunction(() => /Issued /.test(document.getElementById("sp-model").textContent));
+      assert.equal(pageAsked.length, 1, "the field's cell is read once for the whole page");
+      assert.ok(!asked.some((x) => /open-meteo/.test(x)), "nothing asked of Open-Meteo");
       const model = await pg.$eval("#sp-model", (e) => e.textContent);
-      assert.match(model, /^Forecast \(estimate\) for everything on this page: NOAA HRRR for the first hours, then GFS, blended by Open-Meteo \(model gfs_seamless\)\. HRRR run .+, GFS run .+\.$/);
-      assert.equal(await pg.evaluate(() => document.body.textContent.split("HRRR run").length - 1), 1, "the run time is named once");
-      assert.equal(await pg.$$eval("#sp-model a", (as) => as[0].href), "https://open-meteo.com/");
+      assert.match(model, /^Forecast \(estimate\) for everything on this page: the National Weather Service forecast grid \(NDFD, 2\.5 km cells\), office DMX cell 70,80\. Issued .+\.$/);
+      assert.equal(await pg.evaluate(() => document.body.innerText.split("Issued ").length - 1), 1, "the issue time is named once (on screen)");
+      assert.equal(await pg.$$eval("#sp-model a", (as) => as[0].href), "https://www.weather.gov/documentation/services-web-api");
       // the shared hour is the slider's hour
       assert.equal(+(await pg.$eval("#sw-slider", (e) => e.value)), IDX8, "slider at the shared hour");
       assert.match(await pg.$eval("#sw-read", (e) => e.textContent), /8 AM/);
@@ -111,9 +121,9 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
       assert.ok(list.some((t) => /^Too windy /.test(t)), list.join(" | "));
       // every source on screen, linked
       const src = await pg.$eval("#sw-src", (e) => e.textContent);
-      for (const s of ["Forecast (estimate): the same model and run as the rest of this page (gfs_seamless", "Open-Meteo", "CC BY 4.0", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(src.includes(s), s + " in: " + src);
+      for (const s of ["Forecast (estimate): the same National Weather Service grid as the rest of this page (office DMX, cell 70,80, issued", "National Weather Service", "public domain", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(src.includes(s), s + " in: " + src);
       const links = await pg.$$eval("#sw-src a", (as) => as.map((a) => a.href));
-      for (const h of ["https://open-meteo.com/", "sprayers101.com", "extension.sdstate.edu", "usgs.gov", "fao.org"]) assert.ok(links.some((l) => l.includes(h)), h);
+      for (const h of ["https://www.weather.gov/documentation/services-web-api", "sprayers101.com", "extension.sdstate.edu", "usgs.gov", "fao.org"]) assert.ok(links.some((l) => l.includes(h)), h);
       // nothing asked of anyone with a key, and the map came from USGS
       assert.ok(asked.some((u) => u.includes("basemap.nationalmap.gov")), "USGS tiles asked");
       assert.ok(!asked.some((u) => /key=|token=/i.test(u)));
@@ -173,19 +183,20 @@ test("each source failing on its own gets a plain line, and the rest still works
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     // wind grid down: the map says so, the windows still come from the field forecast
-    let o = await open(browser, port, { width: 390, height: 844, fail: new Set(["grid", "meta"]), path: SHARE });
+    let o = await open(browser, port, { width: 390, height: 844, fail: new Set(["grid", "issued"]), path: SHARE });
     await o.pg.waitForFunction(() => { const d = document.getElementById("sw-down"); return d && !d.hidden; }, null, { timeout: 15000 });
-    assert.match(await o.pg.$eval("#sw-down", (e) => e.textContent), /The wind map forecast is not answering right now \(Open-Meteo/);
+    assert.match(await o.pg.$eval("#sw-down", (e) => e.textContent), /The wind map forecast is not answering right now \(National Weather Service: the grid came back incomplete/);
     await o.pg.waitForSelector("#sw-list li.sw-li");
-    await o.pg.waitForFunction(() => /HRRR run time not given by the source, GFS run time not given by the source/.test(document.getElementById("sp-model").textContent));
+    await o.pg.waitForFunction(() => /Issue time not given by the source\./.test(document.getElementById("sp-model").textContent));
     assert.match(await o.pg.$eval("#sw-src", (e) => e.textContent), /Now: wind map forecast not answering/);
     if (SHOTS) { await o.pg.$eval("#wind", (e) => e.scrollIntoView({ block: "start" })); await o.pg.waitForTimeout(300); await o.pg.locator("#wind").screenshot({ path: join(SHOTS, "wind-390-grid-down.png") }); }
     assert.deepEqual(o.errors, []);
     await o.ctx.close();
-    // field forecast down: no windows, a plain line and a retry; the map still flows
+    // the field's cell down: no windows and no cards, a plain line and a retry; the map still flows from the cells around it
     o = await open(browser, port, { width: 390, height: 844, fail: new Set(["field"]), path: SHARE });
     await o.pg.waitForSelector("#sw-retry-f", { timeout: 15000 });
-    assert.match(await o.pg.$eval("#sw-list", (e) => e.textContent), /The forecast for your field is not answering right now \(Open-Meteo/);
+    assert.match(await o.pg.$eval("#sw-list", (e) => e.textContent), /The forecast for your field is not answering right now \(National Weather Service/);
+    assert.match(await o.pg.$eval("#st-main", (e) => e.textContent), /Couldn.t Load Weather/);
     assert.equal(await o.pg.$eval("#sw-down", (e) => e.hidden), true);
     assert.deepEqual(o.errors, []);
     await o.ctx.close();

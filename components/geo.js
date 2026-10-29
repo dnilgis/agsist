@@ -4,7 +4,7 @@
  * Price sources (all free, no API keys, no trials):
  *   1. data/prices.json  — pre-fetched every 30min by GitHub Actions (yfinance)
  *      Includes all commodities, indices, AND crypto (BTC, XRP, KAS)
- *   2. Open-Meteo         — weather
+ *   2. National Weather Service forecast grid (components/nws.js) — weather
  *   3. Nominatim OSM      — reverse geocoding
  *
  * v18, 2026-10-19 (Sig: never ask for the reader's location on page load)
@@ -414,6 +414,18 @@ function _shareZip(z, typed) {
   } catch (e) {}
 }
 
+// components/nws.js, loaded once when a page asks for weather (pages that load it themselves skip this)
+var _NWS_SRC = '/components/nws.js?v=1', _nwsP = null;
+function _nwsReady() {
+  if (window.AgNWS) return Promise.resolve(window.AgNWS);
+  if (!_nwsP) _nwsP = new Promise(function(ok, no) {
+    var s = document.createElement('script'); s.src = _NWS_SRC; s.async = true;
+    s.onload = function() { window.AgNWS ? ok(window.AgNWS) : no(new Error('nws')); };
+    s.onerror = function() { _nwsP = null; no(new Error('the forecast reader did not load')); };
+    document.head.appendChild(s);
+  });
+  return _nwsP;
+}
 function fetchWeather(lat, lon, label, known) {
   // v16: stamp localStorage save with ts so boot() can detect stale cache.
   // v17 FIX: MERGE into cache instead of replacing it. Previously each
@@ -526,14 +538,12 @@ function fetchWeather(lat, lon, label, known) {
   propagateLocation(lat, lon, label, known);
   loadWxAlerts(lat, lon);
 
-  var url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
-    + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,dew_point_2m'
-    + '&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=1';
-
-  fetch(url)
-    .then(function(r) { return r.json(); })
+  // 2026-10-29: the National Weather Service forecast grid (components/nws.js), was Open-Meteo.
+  // "Now" is the grid's forecast for this hour, not a station reading; the stamp is the NWS issue time.
+  _nwsReady().then(function(N) { return N.forecast(lat, lon, { days: 4 }); })
     .then(function(d) {
       var c = d.current || {};
+      if (!c.time) throw new Error('no forecast for this hour');
       /* A MISSING VALUE IS A DASH. Math.round(null) is 0, so a forecast with no
          temperature printed "0\u00B0F" and then "Do Not Spray \u2014 Frozen";
          an absent one became NaN and rated spraying "good". */
@@ -556,10 +566,9 @@ function fetchWeather(lat, lon, label, known) {
       el = document.getElementById('wx-humid'); if(el) el.textContent = dsh(humid, '%');
       el = document.getElementById('wx-precip');if(el) el.textContent = dsh(precip, '%');
       el = document.getElementById('wx-dew');   if(el) el.textContent = dsh(dew, '\u00B0F');
-      /* "Updated" stamp (components/asof.js) from the forecast's own time:
-         current.time is local wall time, utc_offset_seconds places it. */
+      /* "Updated" stamp (components/asof.js) from the forecast's own time: the hour the NWS issued it. */
       if (window.AgAsOf) {
-        var wt = c.time && d.utc_offset_seconds != null ? Date.parse(c.time + 'Z') - d.utc_offset_seconds * 1000 : NaN;
+        var wt = d._nws && d._nws.updated ? Date.parse(d._nws.updated) : NaN;
         window.AgAsOf.set('wx-asof', isNaN(wt) ? null : new Date(wt), 'weather');
       }
 
@@ -813,12 +822,10 @@ function updateWidgetPreviews(tempF, humid, wind, pop) {
   if (uRc) uRc.textContent = uRecs[u.level];
 }
 
+function _deg(v) { return (v == null || !isFinite(v)) ? '-' : Math.round(v); } // a missing high or low is a dash, never 0
 function renderForecast(lat, lon) {
-  var url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
-    + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max'
-    + '&temperature_unit=fahrenheit&timezone=auto&forecast_days=4';
-  fetch(url)
-    .then(function(r) { return r.json(); })
+  // the same NWS forecast grid as the "now" numbers (components/nws.js reads it once per page)
+  _nwsReady().then(function(N) { return N.forecast(lat, lon, { days: 4 }); })
     .then(function(d) {
       var days = d.daily;
       var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -838,8 +845,8 @@ function renderForecast(lat, lon) {
           var pop = days.precipitation_probability_max[i];
           el.innerHTML = '<div style="font-size:.64rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem">'+dname+'</div>'
             + '<div style="font-size:1.3rem;line-height:1;margin-bottom:.2rem">'+(WX_ICONS[days.weather_code[i]]||'')+'</div>'
-            + '<div style="font-size:.82rem;font-weight:700;color:var(--text)">'+Math.round(days.temperature_2m_max[i])+'\u00B0</div>'
-            + '<div style="font-size:.74rem;color:var(--text-muted)">'+Math.round(days.temperature_2m_min[i])+'\u00B0</div>'
+            + '<div style="font-size:.82rem;font-weight:700;color:var(--text)">'+_deg(days.temperature_2m_max[i])+'\u00B0</div>'
+            + '<div style="font-size:.74rem;color:var(--text-muted)">'+_deg(days.temperature_2m_min[i])+'\u00B0</div>'
             + (pop>20?'<div style="font-size:.68rem;color:var(--blue);margin-top:.15rem">'+pop+'%</div>':'');
           fc.appendChild(el);
         }
@@ -855,8 +862,8 @@ function renderForecast(lat, lon) {
           var popj = days.precipitation_probability_max[j];
           elj.innerHTML = '<div class="wx-day-name">'+dnj+'</div>'
             + '<div class="wx-day-icon">'+(WX_ICONS[days.weather_code[j]]||'')+'</div>'
-            + '<div class="wx-day-hi">'+Math.round(days.temperature_2m_max[j])+'\u00B0</div>'
-            + '<div class="wx-day-lo">'+Math.round(days.temperature_2m_min[j])+'\u00B0</div>'
+            + '<div class="wx-day-hi">'+_deg(days.temperature_2m_max[j])+'\u00B0</div>'
+            + '<div class="wx-day-lo">'+_deg(days.temperature_2m_min[j])+'\u00B0</div>'
             + (popj>15?'<div class="wx-day-pop">'+popj+'%</div>':'');
           fcFull.appendChild(elj);
         }
@@ -1538,7 +1545,7 @@ function loadDailyBriefing() {
         });
       }
 
-      el = document.getElementById('daily-source');  if (el) el.textContent = d.source_summary || d.source || 'USDA \u00B7 CME Group \u00B7 Open-Meteo';
+      el = document.getElementById('daily-source');  if (el) el.textContent = d.source_summary || d.source || 'USDA \u00B7 CME Group \u00B7 National Weather Service';
       el = document.getElementById('daily-loading'); if (el) el.style.display = 'none';
       el = document.getElementById('daily-content'); if (el) el.style.display = 'block';
     })
