@@ -74,9 +74,9 @@ test('the workflow: the shards and --skip-node together run every check, and the
   assert.ok(m, 'node-tests has a shard matrix');
   const shards = m[1].split(',').map((s) => +s.trim());
   const N = shards.length;
-  // four shards (Sig, Oct 21); six from Oct 29 (fx/cifast, "streamline that whole process"): split by
-  // measured time, six shards finish at the slowest single file, so more would only queue behind it
-  assert.equal(N, 6, 'six shards');
+  // four shards (Sig, Oct 21); eight from Oct 29 (fx/cifast, "streamline that whole process"): split by
+  // measured time, eight shards end near the slowest single file (test/accuracy-sets-oct18, about 3 minutes)
+  assert.equal(N, 8, 'eight shards');
   assert.deepEqual(shards, Array.from({ length: N }, (_, i) => i + 1));
   assert.match(jobs['node-tests'], /fail-fast: false/, 'one red shard does not hide the others');
   const runs = steps('node-tests').filter((s) => /checks\.sh/.test(s));

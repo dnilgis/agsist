@@ -114,7 +114,7 @@ class Tree:
         s = lit.strip()
         # the query and fragment do not name a file: "/components/loader.js?v=19" is components/loader.js
         # (before Oct 29 the "=" of "?v=19" threw out every versioned script and style a page loads)
-        if not s or len(s) > 300 or any(c in re.split(r"[?#]", s, 1)[0] for c in " \t\n<>{}|*\\,;=()[]") or s.startswith(("#", "data:", "mailto:", "tel:", "//")):
+        if not s or len(s) > 300 or any(c in s.split("?", 1)[0].split("#", 1)[0] for c in " \t\n<>{}|*\\,;=()[]") or s.startswith(("#", "data:", "mailto:", "tel:", "//")):
             return []
         m = re.match(r'https?://(?:www\.)?agsist\.com(/.*)?$', s)
         if m:
@@ -420,8 +420,9 @@ def present_test_files():
 
 
 DURATIONS = "scripts/dev/test-durations.json"
-# the PR checks' runners have 4 cores and node --test runs (cores - 1) files at a time
-SHARD_PARALLEL = 3
+# the PR checks' runners have 4 cores and node --test runs (cores - 1) = 3 files at a time; measured on
+# Oct 29 a shard's wall time was its files' summed time over about 2.4 (browser tests share the cores)
+SHARD_PARALLEL = 2.4
 _measured = None
 
 
@@ -520,6 +521,10 @@ def main(argv):
         else:
             i = argv.index("--select")
             changed = [a for a in argv[i + 1:] if not a.startswith("--")]
+        # a shared file or a path the map cannot place decides "every test" before the scan (about 15 s)
+        mode, why = select(changed, {"tests": {}}, base_map, base_files=base_files, present_tests=present_test_files())
+        if mode == "all":
+            return emit(mode, why, argv, len(changed))
         try:
             head_map = build()
         except Exception as e:  # the map cannot decide
