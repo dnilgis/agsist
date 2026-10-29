@@ -4,6 +4,8 @@
  *
  * - the workflow is off until the repository variable PAGES_FROM_ACTIONS is 1,
  *   so it can sit on main while Pages still deploys from the branch
+ * - no schedule of its own (a new cron is Sig's call): fetch_bids runs every 15
+ *   minutes all week and its dispatch carries every other bot commit
  * - it stages with pages_publish.py (which stops on a link into a left-out path)
  * - upload-pages-artifact stays on v3 (v4 drops dot files) and the uploaded
  *   tarball is checked for .well-known/security.txt before the deploy
@@ -27,6 +29,8 @@ test('pages.yml is off until PAGES_FROM_ACTIONS is 1', () => {
   const jobs = [...pages.slice(pages.search(/^jobs:\s*$/m)).matchAll(/^  ([A-Za-z0-9_-]+):\s*$/gm)].map((m) => m[1]);
   assert.deepEqual(jobs, ['deploy'], `jobs: ${jobs}`);
   assert.match(pages, /^  deploy:\n    if: \$\{\{ vars\.PAGES_FROM_ACTIONS == '1' \}\}$/m);
+  // a new cron is Sig's call (STANDING-DECISIONS, Oct 21): the fast jobs' dispatches are its clock
+  assert.doesNotMatch(pages, /^\s*schedule:/m, 'pages.yml has no schedule of its own');
 });
 
 test('pages.yml stages the filtered site and checks the uploaded tarball before deploying', () => {

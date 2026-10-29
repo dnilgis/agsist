@@ -14,19 +14,19 @@ name: Pages (site only)
 # rollback is the same two settings back. Steps: the pull request that added
 # this file.
 #
-# Why a schedule and dispatches: data jobs push with GITHUB_TOKEN, and a push
-# made with GITHUB_TOKEN does not start other workflows, so `on: push` alone
-# would only deploy human merges. The fast jobs (prices, markets, fetch_bids,
-# daily) dispatch this workflow after they run (a workflow_dispatch is exempt
-# from that rule), so prices and bids still reach readers in 1 to 3 minutes.
-# The 10-minute schedule picks up every other bot commit. A schedule or
-# dispatch run skips when its commit is deployed already.
+# Why dispatches: data jobs push with GITHUB_TOKEN, and a push made with
+# GITHUB_TOKEN does not start other workflows, so `on: push` alone would only
+# deploy human merges. The fast jobs (prices, markets, fetch_bids, daily)
+# dispatch this workflow after they run (a workflow_dispatch is exempt from
+# that rule), so prices and bids still reach readers in 1 to 3 minutes.
+# NO SCHEDULE OF ITS OWN: a new cron is Sig's call (STANDING-DECISIONS, Oct 21).
+# fetch_bids is started every 15 minutes, all day, every day, so its dispatch
+# also carries every other bot commit to readers within about 15 minutes. A
+# dispatch skips when its commit is deployed already.
 
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '*/10 * * * *'
   workflow_dispatch:
     inputs:
       force:
@@ -64,7 +64,7 @@ jobs:
           SHA: ${{ github.sha }}
         run: |
           go=1
-          if [ "$EVENT" != push ] && [ "$FORCE" != true ]; then
+          if [ "$EVENT" = workflow_dispatch ] && [ "$FORCE" != true ]; then
             ids=$(gh api "repos/$GITHUB_REPOSITORY/deployments?environment=github-pages&sha=$SHA&per_page=10" -q '.[].id' 2>/dev/null || true)
             for id in $ids; do
               state=$(gh api "repos/$GITHUB_REPOSITORY/deployments/$id/statuses?per_page=1" -q '.[0].state' 2>/dev/null || true)

@@ -495,6 +495,24 @@ jobs:
             decide 0; exit 0
           done
 
+  # THE SITE DEPLOY (pages.yml, publish only the site). A push made with
+  # GITHUB_TOKEN starts no other workflow; a workflow_dispatch does. So when
+  # the job it needs ends, start the deploy, so new numbers reach readers in 1 to 3
+  # minutes (pages.yml has no schedule of its own). Off until the repository
+  # variable PAGES_FROM_ACTIONS is 1 (the Pages source switch).
+  pages:
+    needs: generate
+    if: ${{ !cancelled() && (needs.generate.result == 'success' || needs.generate.result == 'failure') && vars.PAGES_FROM_ACTIONS == '1' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      actions: write
+    steps:
+      - name: Start the site deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml -R "$GITHUB_REPOSITORY" --ref main || echo "::warning::could not start pages.yml; the next fast job deploys this commit"
+
   generate:
     needs: gate
     if: needs.gate.outputs.skip != '1'
@@ -1146,21 +1164,3 @@ jobs:
             echo "page not live yet (try $i of 20)"; sleep 30
           done
           echo "page never came up in 10 minutes; no ping sent, the weekly run covers it"
-
-  # THE SITE DEPLOY (pages.yml, publish only the site). A push made with
-  # GITHUB_TOKEN starts no other workflow; a workflow_dispatch does. So after
-  # this job, start the deploy, and the new numbers reach readers in 1 to 3
-  # minutes instead of waiting for pages.yml's 10-minute schedule. Off until
-  # the repository variable PAGES_FROM_ACTIONS is 1 (the Pages source switch).
-  pages:
-    needs: generate
-    if: ${{ !cancelled() && (needs.generate.result == 'success' || needs.generate.result == 'failure') && vars.PAGES_FROM_ACTIONS == '1' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    permissions:
-      actions: write
-    steps:
-      - name: Start the site deploy
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml -R "$GITHUB_REPOSITORY" --ref main || echo "::warning::could not start pages.yml; its 10-minute schedule deploys this commit"
