@@ -1,11 +1,11 @@
 /**
- * AGSIST service worker
+ * AGSIST Service Worker — v4
  * ─────────────────────────────────────────────────────────────────
  * CACHE STRATEGY:
  *   HTML pages      → Network first, cache fallback (always fresh), EXCEPT
  *                     the shells in SHELLS below: a copy cached in the last
  *                     SHELL_MAX_AGE is served at once and refreshed behind it
- *                     (their prices come from /data/ and the workers, fetched
+ *   (2026-10-09)      (their prices come from /data/ and the workers, fetched
  *                     live by the page, so the shell itself holds no price)
  *   JS/CSS/images   → Cache first IF versioned (?v=N), else network first
  *   Data (JSON)     → Network only, no caching (prices must be live), EXCEPT
@@ -18,14 +18,19 @@
  *                     when network and cache both fail: offline.html
  *   External APIs   → Network only (NEVER_CACHE list below)
  *
+ * v4 FIXES:
+ *   - cacheFirst clone race (response consumed before clone) → clone sync
+ *   - Added Cloudflare Workers + Polymarket to NEVER_CACHE
+ *   - Top-level safety net: any SW error falls back to plain fetch()
+ *   - cache.put failures swallowed (quota errors no longer kill fetches)
+ *
  * TO BUST CACHE FOR ALL USERS ON DEPLOY:
  *   Increment CACHE_VERSION below by 1, commit, push.
  *
  * ─────────────────────────────────────────────────────────────────
  * BUMP THIS ON EVERY DEPLOY:
  */
-var CACHE_VERSION = 308;  // v308 2026-10-29: cache refresh (earlier notes are kept in the private notes).
-
+var CACHE_VERSION = 312;  // v312 2026-10-29: cache refresh.
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;

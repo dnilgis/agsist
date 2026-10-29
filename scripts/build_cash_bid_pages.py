@@ -89,6 +89,7 @@ from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
+import html_slim as HS  # noqa: E402  the town, state and company pages are written slim
 import moved_pages as MP  # noqa: E402  /cash-bids/states merged into /basis#states on Oct 22, 2026
 import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reader, one copy)
 import basis_method as BM  # noqa: E402  (the one state-basis method)
@@ -3236,6 +3237,18 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     if companies_out is not None:      # /cash-bids names them (stamp_live_coverage)
         companies_out.extend(cmetas)
     assert not os.path.exists(os.path.join(tmp, "index.html")), "cash-bids/index.html would capture /cash-bids"
+    # every town, state and company page this run wrote goes out slim: compact JSON-LD, no
+    # indentation or comments between tags (scripts/html_slim.py); the same page to readers and crawlers
+    for dp, _, fs in os.walk(tmp):
+        for f in fs:
+            fp = os.path.join(dp, f)
+            if f.endswith(".html") and os.path.relpath(fp, tmp) != STATES_HUB and not PP.is_pointer(fp):
+                with open(fp, encoding="utf-8") as fh:
+                    body = fh.read()
+                slim = HS.slim(body)
+                if slim != body:
+                    with open(fp, "w", encoding="utf-8") as fh:
+                        fh.write(slim)
     if os.environ.get("STORY_FACTS_OUT"):     # the facts each page states, for a stories batch (scripts/stories_bids.py)
         with open(os.environ["STORY_FACTS_OUT"], "w", encoding="utf-8") as f:
             json.dump({"town": {f"{m['state'].lower()}/{m['slug']}": m["story_facts"] for m in metas if m.get("story_facts")},

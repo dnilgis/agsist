@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-28T21:54:19Z",
+  "updated": "2026-10-29T21:44:19Z",
   "corn": {
     "pct": 40,
     "cur": 4.5125,
@@ -297,7 +297,7 @@
   },
   "soybean": {
     "pct": 52,
-    "cur": 12.2325,
+    "cur": 12.205,
     "lo": 9.3875,
     "hi": 17.455,
     "median": 12.075,
@@ -591,14 +591,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "wheat": {
-    "pct": 47,
-    "cur": 5.995,
+    "pct": 49,
+    "cur": 6.0325,
     "lo": 4.985,
     "hi": 13.48,
     "median": 6.0537,
     "n": 262,
     "years": 5,
-    "read": "At the 47th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 49th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       7.7275,
       7.665,
@@ -887,7 +887,7 @@
   },
   "cattle": {
     "pct": 81,
-    "cur": 226.8,
+    "cur": 227.225,
     "lo": 127.375,
     "hi": 257.45,
     "median": 183.8125,
@@ -1182,7 +1182,7 @@
   },
   "feeders": {
     "pct": 87,
-    "cur": 351.525,
+    "cur": 351.1,
     "lo": 153.125,
     "hi": 375.5,
     "median": 248.5375,

@@ -1160,6 +1160,19 @@ def harvest_lead(cp, rd):
             'table</a>. A dash means USDA did not report that crop for that state this week.</p></div></section>')
 
 
+def _cp_released(rd):
+    """', released Mon, Oct 26' for the Crop Progress week ending `rd` (usda_dates), or ''."""
+    try:
+        import usda_dates
+        from datetime import timedelta
+        r = usda_dates.crop_progress_date(rd + timedelta(days=1))
+    except Exception:
+        return ""
+    if not r or r <= rd:
+        return ""
+    return ", released %s, %s" % (r.strftime("%a"), _mdy(r).rsplit(",", 1)[0])
+
+
 def seed_conditions(today):
     cp = _load_json("data/crop-progress.json")
     cj = _load_json("data/conditions/conditions.json")
@@ -1191,7 +1204,9 @@ def seed_conditions(today):
         vsent = (f"US corn is rated <b>{ge:g}% good or better</b> for the week ending {_mdy(rd)} "
                  f"(USDA NASS). Pick a state for its rank against the same week in past years.")
         # first-screen line: the week and the national numbers, before any state
-        wk = f"Week ending {_mdy(rd)} (USDA NASS): US corn <b>{ge:g}%</b> good-to-excellent"
+        # Benchmark review, Oct 29, 2026: the survey week and the day USDA released it, plainly at the
+        # top (Crop Progress is out the Monday after the week ends, or the next business day).
+        wk = f"Week ending {_mdy(rd)}{_cp_released(rd)} (USDA NASS): US corn <b>{ge:g}%</b> good-to-excellent"
         if soy.get("good_excellent") is not None and sd == rd:
             wk += f", soybeans <b>{soy['good_excellent']:g}%</b>"
         bits = []

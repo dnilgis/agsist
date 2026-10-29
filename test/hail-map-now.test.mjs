@@ -200,7 +200,7 @@ const FIX = {
   },
 };
 
-async function open(browser, port, path, fx, width = 390) {
+async function open(browser, port, path, fx, width = 390, slowIndexMs = 0) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 } });
   const pg = await ctx.newPage();
   const errors = []; pg.on("pageerror", (e) => errors.push(String(e)));
@@ -211,6 +211,8 @@ async function open(browser, port, path, fx, width = 390) {
       return r.fulfill({ contentType: "application/json", body: JSON.stringify({ type: "FeatureCollection",
         meta: { date: "2026-10-20", partial: true, as_of: new Date(Date.now() - 30 * 60000).toISOString() }, features: FIX[fx].radar }) });
     }
+    // slowIndexMs: the swath index answers after the manifest (the Oct 29 race)
+    if (slowIndexMs && /\/data\/hail\/mesh\/index\.json/.test(u)) return new Promise((ok) => setTimeout(ok, slowIndexMs)).then(() => r.continue());
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
     ext.push(u);
     if (/api\.weather\.gov\/alerts\/active/.test(u)) return r.fulfill({ contentType: "application/geo+json", body: FIX[fx].nws });
@@ -373,5 +375,21 @@ test("named links open exactly what they name, never now", { skip, timeout: 1200
       assert.deepEqual(errors, [], path);
       await ctx.close();
     }
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("a swath link opens that swath when the swath index answers after the manifest", { skip, timeout: 90000 }, async () => {
+  // Oct 29: the PR checks waited 30 s on ?swath= because the manifest came back first and
+  // the page opened the 5-year map. The index is held back here so the order is forced.
+  const hits = []; const srv = await serve(hits), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const swath = MESH.dates[MESH.dates.length - 2];
+  try {
+    const { pg, ctx, errors } = await open(browser, port, `/hail-map?swath=${swath}`, "active", 390, 1500);
+    await pg.waitForFunction((d) => document.getElementById("hm-mesh-date").textContent === d, swath, { timeout: 30000 });
+    assert.equal(await pg.isHidden("#hm-now"), true, "no now line");
+    assert.equal(await pg.isHidden("#hm-meshnav"), false, "the swath day stepper is up");
+    assert.deepEqual(errors, []);
+    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

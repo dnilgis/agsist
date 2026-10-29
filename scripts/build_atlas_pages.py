@@ -1442,7 +1442,8 @@ def _land_sales_door(W, f, lab, st):
 # /land-sales/<county> page is built with (scripts/build_land_sales.py), so the two cannot
 # disagree; test/atlas-land-first.test.mjs compares the pages. No value estimate, no adjustment,
 # no rent-to-price ratio. Other states keep the page as it was.
-LF_DISCLAIM = "Recorded prices. Not an appraisal. No adjustments."
+LF_DISCLAIM = ("Recorded prices. Not an appraisal. No adjustments. A recorded price is what the state's transfer record says was paid "
+               "once the sale closed, auction or private; never an asking price.")  # benchmark review, Oct 29, 2026
 
 
 def _w24_words(through):
@@ -1481,6 +1482,14 @@ def land_first(W, f, lab, st, rent_html):
         mid = ('<div class="lf-mid" data-lf-mid><div class="lf-k">Sold for</div><div class="lf-v lf-few">Too few sales</div>'
                '<div class="lf-s">%s bare farmland sale%s of 20+ acres, %s. A middle takes 5.</div></div>'
                % (k or "No", "" if k == 1 else "s", span))
+    # Two windows, one county (benchmark review, Oct 29, 2026): this middle is 24 months from the sale
+    # file; the recorded-sales median further down is the last 12 months from the state summary. Said
+    # once here, and the other way round on the sale page (build_land_sales.county_page).
+    sf = sales_facts(W, f, st) if u and u.get("med") is not None else None
+    if sf:
+        mid = mid[:-len("</div></div>")] + (' Two windows: this covers 24 months; the recorded-sales median further down covers the last 12 months, '
+                                            '%s: %d sales, %s an acre. <a href="%s">Every sale behind both</a>.</div></div>'
+                                            % (esc(sf["span"]), sf["n"], money(sf["med"]), esc(href)))
     if st == "IN":
         mid += '<p class="lf-fine">Most Indiana sales are marked not valid for trending by the state.</p>'
     cols = F.get("cols") or []

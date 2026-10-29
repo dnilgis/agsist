@@ -30,7 +30,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back)"
+        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only); soilr-probe, soilr-all or soilr:IL, soilr:IN, soilr:WI (dispatch only: the same from the gridded soil map and the Cropland Data Layer)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -71,6 +71,8 @@ jobs:
           python scripts/wi_retr_browser.py --selftest
           python scripts/probe_field_layers.py --selftest
           python scripts/build_land_summary.py --selftest
+          python scripts/land_soil.py --selftest
+          python scripts/land_soil_raster.py --selftest
           OMP_NUM_THREADS=1 python scripts/build_land_index.py --selftest
       - name: pdftotext for the probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
@@ -126,6 +128,63 @@ jobs:
           "$RUNNER_TEMP/pwc/bin/pip" install -q playwright==1.56.0
           "$RUNNER_TEMP/pwc/bin/python" -m playwright install --with-deps chromium >/dev/null
           "$RUNNER_TEMP/pwc/bin/python" scripts/comp_report_live.py
+      # Dispatch only (never on the schedule): soil for each keyed farm sale's section (property panel
+      # step 6, a test before any page shows it). BLM PLSS sections, USDA SSURGO through Soil Data Access.
+      # The answers go to data/land-raw/soil (raw branch, below); nothing is committed, no page changes.
+      - name: Section soil for the keyed farm sales
+        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil') && !startsWith(inputs.task, 'soilr') && inputs.task != 'soil-attrs' }}
+        timeout-minutes: 140
+        run: |
+          T="${{ inputs.task }}"
+          if [ "$T" = "soil-probe" ]; then
+            for S in IL IN WI; do python scripts/land_soil.py --fetch "$S" --limit 12 --minutes 10 || echo "::warning::$S soil probe failed"; done
+          else
+            S=$(echo "${T#soil:}" | tr -cd 'A-Za-z' | tr a-z A-Z)
+            python scripts/land_soil.py --fetch "$S" --minutes 125 || echo "::warning::$S soil fetch failed"
+          fi
+      # soil-attrs: the corn and soybean NCCPI for every map unit already saved (reads the saved
+      # section answers back from the raw branch, only that folder).
+      - name: Map unit NCCPI for the saved section answers
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'soil-attrs' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          . scripts/private_remote.sh
+          D="$RUNNER_TEMP/rawsoil"
+          git clone -q --depth 1 --filter=blob:none --sparse --branch raw "$REMOTE" "$D" 2>&1 | hide || true
+          git -C "$D" sparse-checkout set data/land-raw/soil 2>&1 | hide || true
+          mkdir -p data/land-raw/soil && cp "$D"/data/land-raw/soil/*-soil.json.gz data/land-raw/soil/ || { echo "::warning::no saved section answers"; exit 0; }
+          python scripts/land_soil.py --attrs || echo "::warning::map unit attributes failed"
+      # soilr-probe or soilr:<ST>: the same sections from the gridded soil map (gNATSGO valu1 corn and
+      # soybean NCCPI, 10 m) and the Cropland Data Layer, read by window from the Planetary Computer
+      # copies (no statewide download). The saved polygon answers are read back for the raster check.
+      - name: Section soil from the gridded soil map
+        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soilr') }}
+        timeout-minutes: 140
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          GDAL_DISABLE_READDIR_ON_OPEN: EMPTY_DIR
+          GDAL_HTTP_MAX_RETRY: '5'
+          GDAL_HTTP_RETRY_DELAY: '2'
+          CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .tif
+        run: |
+          python3 -m venv "$RUNNER_TEMP/soilr"
+          "$RUNNER_TEMP/soilr/bin/pip" install -q numpy==2.2.6 rasterio==1.4.3 pyproj==3.7.1 pystac-client==0.8.6 planetary-computer==1.0.0
+          . scripts/private_remote.sh
+          D="$RUNNER_TEMP/rawsoil"
+          git clone -q --depth 1 --filter=blob:none --sparse --branch raw "$REMOTE" "$D" 2>&1 | hide || true
+          git -C "$D" sparse-checkout set data/land-raw/soil 2>&1 | hide || true
+          mkdir -p data/land-raw/soil && cp "$D"/data/land-raw/soil/*-soil.json.gz data/land-raw/soil/ 2>/dev/null || echo "::warning::no saved polygon answers"
+          T="${{ inputs.task }}"
+          if [ "$T" = "soilr-probe" ]; then
+            for S in IL IN WI; do "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --limit 40 --minutes 10 || echo "::warning::$S raster probe failed"; done
+          elif [ "$T" = "soilr-all" ]; then
+            for S in IL IN WI; do "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --minutes 40 || echo "::warning::$S raster soil failed"; done
+          else
+            S=$(echo "${T#soilr:}" | tr -cd 'A-Za-z' | tr a-z A-Z)
+            "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --minutes 125 || echo "::warning::$S raster soil failed"
+          fi
+          rm -f data/land-raw/soil/*-soil.json.gz
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
@@ -154,18 +213,18 @@ jobs:
       # written, or the committed ones when this run fetched nothing. Offline; refuses a summary
       # that carries a source name. Same command builds them locally.
       - name: Build Atlas sale summaries
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: python scripts/build_land_summary.py
       # The farmland sale index (data/land/index.json; a section of /land-sales/ since Oct 29, 2026) from the same county
       # files. Offline; refuses output that carries a source name.
       - name: Build the farmland sale index
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: OMP_NUM_THREADS=1 python scripts/build_land_index.py
       # The farm sale pages (/land-sales/: one per IL and WI county, the monthly update, the hub and its
       # sitemap) and their data (data/land-sales/, names only under data/land/names/, robots-blocked).
       # Offline; refuses to write a buyer or seller name outside data/land/.
       - name: Build the farm sale pages
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: python scripts/build_land_sales.py
       - name: Save raw answers to the raw branch
         if: ${{ !cancelled() }}
@@ -179,6 +238,7 @@ jobs:
       - name: Site budget
         run: python scripts/check_site_budget.py
       - name: Commit if changed (race-tolerant)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil')) }}
         run: |
           set -e
           git config user.name "AGSIST Bot"

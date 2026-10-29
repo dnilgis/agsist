@@ -719,7 +719,6 @@ details.fa-arith .body a{color:var(--gold)}
   </div>
 
 
-
   <div id="fa-outline-banner" class="fa-notice" role="status" hidden></div>
   <div id="fa-nodata" class="fa-notice" hidden>The Atlas map did not load. For county figures without the map, open the <a href="/farmland-atlas/states/">county directory</a>.</div>
 
@@ -931,7 +930,6 @@ details.fa-arith .body a{color:var(--gold)}
     <p>What this puts on one page for each county: how warm its July nights are and which way they are going; how much of its cropland only works with a pump and where that water comes from; what has destroyed crops there since 1989 and whether the insurance book has paid out more than it took in; what the census says the land is worth and what rent buys of that; how much sits in CRP and when those contracts end; how many weeks of each year since 2000 it spent in drought; how much solar and wind is on the ground and proposed; and, where a state publishes the register, its wells and water rights. Each is its own layer. I never add them together, because a combined score hides which problem the ground has.</p>
   </section>
 
-  
 
   <section class="fa-sec" id="fa-method">
     <h2>How it is measured</h2>
@@ -955,18 +953,6 @@ details.fa-arith .body a{color:var(--gold)}
     <details><summary>Where can I get the raw data?</summary><p>USDA FSA publishes the detailed holdings files annually, linked below. The Atlas adds them up without changing any figure.</p></details>
   </section>
 
-  <section class="fa-sec" id="fa-parcel">
-    <div class="fa-cta">
-      <div class="fa-lbl">Coming: the Parcel Report</div>
-      <p class="lead" style="color:var(--text);margin:0">The same record for one field instead of one county: its soils and water-holding capacity, the hail that has actually hit that ground, the county's night-heat trend, water dependence, loss record and rent, in one document. It isn't built yet, and it will cost something. Leave an address if you'd use it and I'll tell you when it's ready and the price.</p>
-      <form action="https://formspree.io/f/xnjbwepn" method="POST" id="fa-parcel-form">
-        <input type="hidden" name="_subject" value="Parcel Report interest">
-        <input type="hidden" name="source" value="farmland-atlas">
-        <input type="email" name="email" placeholder="you@farm.com" required aria-label="Email address">
-        <button type="submit">Tell me when</button>
-      </form>
-    </div>
-  </section>
 
   <section class="fa-sec">
     <h2>Sources</h2>
@@ -993,35 +979,7 @@ details.fa-arith .body a{color:var(--gold)}
 </div>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/form-post.js?v=8"></script>
-<script>/* Parcel Report waitlist (2026-10-11): goes to AGSIST's subs worker
-   (kind atlas-feedback). If the worker cannot take it (not deployed yet,
-   down) or the script is missing, the form submits itself to Formspree as it
-   always has. Without JavaScript it is still a plain Formspree form. */
-(function(){
-  var f=document.getElementById('fa-parcel-form');
-  if(!f||!window.agsistFormPost||!window.agsistFormPost.worker) return;
-  var busy=false;
-  f.addEventListener('submit',function(e){
-    if(busy) return;
-    var em=f.elements.email, btn=f.querySelector('button[type=submit]');
-    if(!em||!em.value||(em.checkValidity&&!em.checkValidity())) return;
-    e.preventDefault();
-    busy=true; if(btn) btn.disabled=true;
-    var plain=function(){ busy=false; if(btn) btn.disabled=false; HTMLFormElement.prototype.submit.call(f); };
-    window.agsistFormPost.worker('atlas-feedback',{email:em.value.trim(),source:'farmland-atlas',page:'/farmland-atlas'})
-      .then(function(x){
-        if(x==='fallback') return plain();
-        try{ if(window.gaEvent) window.gaEvent('parcel_waitlist',{result:'ok'}); }catch(err){}
-        var p=document.createElement('p');
-        p.className='fa-parcel-ok'; p.setAttribute('role','status'); p.setAttribute('tabindex','-1');
-        p.style.margin='.7rem 0 0'; p.style.color='var(--text)';
-        p.innerHTML='<b>Thanks.</b> You are on the list. I will email you when the Parcel Report exists and what it costs.';
-        f.parentNode.replaceChild(p,f);
-        try{ p.focus(); }catch(err){}
-      },plain);
-  });
-})();
-</script>
+
 <script>
 (function(){
 'use strict';

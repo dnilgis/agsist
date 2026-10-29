@@ -49,7 +49,7 @@ scripts/insight_engine.sh. /private/ is ignored on main: zero bytes on Pages.
 
 INPUTS (missing ones turn their specs to WAIT, never to a guess):
   raw branch     history/agtransport/{barge_rates,grain_basis,inspections}, history/nass-progress/
-                 {condition,progress}
+                 {condition,progress}, history/nass-yield/{corn,soybeans}.csv.gz (final state yields)
   main           data/basis/changes-*.json, data/ids/elevators.json, data/nass/corn-yield.json
   private-data   private/ledger/bid-changes (the change-time ledger; empty until its backfill)
 
@@ -107,6 +107,20 @@ STATES = {
     "RHODE ISLAND": "RI", "SOUTH CAROLINA": "SC", "SOUTH DAKOTA": "SD", "TENNESSEE": "TN", "TEXAS": "TX",
     "UTAH": "UT", "VERMONT": "VT", "VIRGINIA": "VA", "WASHINGTON": "WA", "WEST VIRGINIA": "WV",
     "WISCONSIN": "WI", "WYOMING": "WY",
+}
+
+
+# state-year predictors: series -> (raw folder, statistic, commodity, units summed)
+NASS_WEEK = {
+    "corn_ge": ("history/nass-progress/condition", "CONDITION", "CORN", ("PCT GOOD", "PCT EXCELLENT")),
+    "soy_ge": ("history/nass-progress/condition", "CONDITION", "SOYBEANS", ("PCT GOOD", "PCT EXCELLENT")),
+    "corn_planted": ("history/nass-progress/progress", "PROGRESS", "CORN", ("PCT PLANTED",)),
+}
+# state-year targets: series -> (file under history/nass-yield, short_desc kept); None reads data/nass/corn-yield.json
+YIELDS = {
+    "corn_yield_final": None,
+    "corn_yield_hist": ("corn", "CORN, GRAIN - YIELD, MEASURED IN BU / ACRE"),
+    "soy_yield_hist": ("soybeans", "SOYBEANS - YIELD, MEASURED IN BU / ACRE"),
 }
 
 
@@ -179,8 +193,13 @@ def check_registry(reg):
             if fy & hy:
                 out.append("%s: fit and holdout years overlap" % sid)
         elif k == "state_yield":
-            if (s.get("x") or {}).get("series") not in ("corn_ge", "corn_planted"):
+            if (s.get("x") or {}).get("series") not in NASS_WEEK:
                 out.append("%s: x series unknown" % sid)
+            if (s.get("y") or {}).get("series") not in YIELDS:
+                out.append("%s: y series unknown" % sid)
+            tf = s.get("trend_from_year")
+            if tf is not None and not (isinstance(tf, int) and all(int(y) > tf for y in s["holdout"]["years"])):
+                out.append("%s: trend_from_year is a year before every holdout year" % sid)
         elif k == "contagion":
             if s.get("source") not in ("basis_log_corn", "bid_ledger_corn"):
                 out.append("%s: source unknown" % sid)
@@ -400,14 +419,13 @@ class Inputs:
 
     # state-year
     def nass_week(self, kind, week):
-        """{(state_alpha, year): value} for corn condition (good + excellent) or percent planted."""
+        """{(state_alpha, year): value} for a NASS_WEEK series: condition (good + excellent) or percent planted."""
         def load():
-            rel = "history/nass-progress/condition" if kind == "corn_ge" else "history/nass-progress/progress"
-            want = {"PCT GOOD", "PCT EXCELLENT"} if kind == "corn_ge" else {"PCT PLANTED"}
-            cat = "CONDITION" if kind == "corn_ge" else "PROGRESS"
+            rel, cat, crop, units = NASS_WEEK[kind]
+            want = set(units)
             parts = {}
             for r in self.csv_rows(rel):
-                if (r.get("commodity_desc") != "CORN" or r.get("agg_level_desc") != "STATE"
+                if (r.get("commodity_desc") != crop or r.get("agg_level_desc") != "STATE"
                         or r.get("statisticcat_desc") != cat or r.get("unit_desc") not in want):
                     continue
                 if str(r.get("begin_code")).strip() != str(week) or r.get("prodn_practice_desc") not in (None, "", "ALL PRODUCTION PRACTICES"):
@@ -420,6 +438,32 @@ class Inputs:
                 parts.setdefault((r["state_alpha"], yr), {})[r["unit_desc"]] = v
             return {k: sum(v.values()) for k, v in parts.items() if set(v) == want}
         return self._memo(("nass", kind, week), load)
+
+    def state_yield(self, name):
+        """{(state_alpha, year): bu per acre} for a YIELDS series."""
+        if YIELDS[name] is None:
+            return self.corn_yield()
+        crop, short = YIELDS[name]
+
+        def load():
+            p = os.path.join(self.raw, "history/nass-yield", crop + ".csv.gz")
+            if not os.path.exists(p):
+                raise Missing("history/nass-yield/%s.csv.gz (raw branch)" % crop)
+            out = {}
+            with gzip.open(p, "rt", encoding="utf-8", newline="") as f:
+                for r in csv.DictReader(f):
+                    if (r.get("short_desc") != short or r.get("agg_level_desc") != "STATE"
+                            or r.get("reference_period_desc") != "YEAR"
+                            or r.get("prodn_practice_desc") not in (None, "", "ALL PRODUCTION PRACTICES")):
+                        continue
+                    try:
+                        out[(r["state_alpha"], int(r["year"]))] = float(str(r["Value"]).replace(",", ""))
+                    except (ValueError, KeyError):
+                        continue
+            if not out:
+                raise Missing("history/nass-yield/%s.csv.gz has no %s rows" % (crop, short))
+            return out
+        return self._memo(("yield", name), load)
 
     def corn_yield(self):
         def load():
@@ -665,7 +709,12 @@ def run_weekly(spec, inputs, reg, today):
 # ------------------------------------------------------------------ kind: state_yield
 def run_state_yield(spec, inputs, reg, today):
     xv = inputs.nass_week(spec["x"]["series"], int(spec["x"]["week"]))
-    yv = inputs.corn_yield()
+    ysr = (spec.get("y") or {}).get("series", "corn_yield_final")
+    yv = inputs.corn_yield() if ysr == "corn_yield_final" else inputs.state_yield(ysr)
+    tf = spec.get("trend_from_year")
+    if tf is not None:                   # trends, means and slopes only from this year on (spec field)
+        yv = {k: v for k, v in yv.items() if k[1] >= tf}
+        xv = {k: v for k, v in xv.items() if k[1] >= tf}
     years = [int(y) for y in spec["holdout"]["years"]]
     minfit = int(spec.get("min_fit_years", 4))
     preds = []           # (year, state, y, trend, model)
@@ -1130,6 +1179,14 @@ class fewer_shuffles:
         SHUFFLES, SHUFFLES_NEAR, BOOT = self.was
 
 
+def _raises_missing(fn):
+    try:
+        fn()
+    except Missing:
+        return True
+    return False
+
+
 def selftest():
     import shutil
     import tempfile
@@ -1412,6 +1469,61 @@ def selftest():
            and not is_due(led2, d("2026-11-06"))[0])
         written = sorted(os.path.relpath(os.path.join(dp, fn), tmp) for dp, _, fns in os.walk(tmp) for fn in fns)
         ck("writes only inside the ledger folder", sorted(set(written) - {"reg.json", "data/ids/elevators.json", "ledger2/results/2026/2026-11-04.jsonl"}) == ["ledger/latest.json", "ledger/results/2026/2026-11-01.jsonl"], written)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+    print("state yields from the raw history (history/nass-yield, soybean condition, trend_from_year)")
+    tmp = tempfile.mkdtemp(prefix="insight-y-")
+    try:
+        rnd = random.Random(7)
+        sts = ["IA", "IL", "IN", "MN", "NE", "OH", "SD", "WI", "MO", "KS", "ND", "MI"]
+        ycols = ["year", "reference_period_desc", "agg_level_desc", "state_alpha", "prodn_practice_desc", "short_desc", "Value"]
+        ccols = ["year", "agg_level_desc", "state_alpha", "commodity_desc", "statisticcat_desc", "unit_desc",
+                 "begin_code", "prodn_practice_desc", "Value"]
+        yrows, crows = [], []
+        for yr in range(1975, 2026):
+            for st in sts:
+                ge = 40 + 40 * rnd.random()
+                yld = 30 + 0.4 * (yr - 1975) + 0.5 * (ge - 60) + rnd.gauss(0, 1.0)
+                if yr < 1986:
+                    yld += 400.0                     # before trend_from_year: must never be read
+                yrows.append([yr, "YEAR", "STATE", st, "ALL PRODUCTION PRACTICES", "SOYBEANS - YIELD, MEASURED IN BU / ACRE", "%.1f" % yld])
+                yrows.append([yr, "YEAR - AUG FORECAST", "STATE", st, "ALL PRODUCTION PRACTICES", "SOYBEANS - YIELD, MEASURED IN BU / ACRE", "1.0"])
+                yrows.append([yr, "YEAR", "STATE", st, "IRRIGATED", "SOYBEANS, IRRIGATED - YIELD, MEASURED IN BU / ACRE", "1.0"])
+                g = int(ge * 0.7)
+                crows.append([yr, "STATE", st, "SOYBEANS", "CONDITION", "PCT GOOD", "33", "", str(g)])
+                crows.append([yr, "STATE", st, "SOYBEANS", "CONDITION", "PCT EXCELLENT", "33", "", "%.0f" % (ge - g)])
+                crows.append([yr, "STATE", st, "CORN", "CONDITION", "PCT GOOD", "33", "", "1"])
+                crows.append([yr, "STATE", st, "CORN", "CONDITION", "PCT EXCELLENT", "33", "", "1"])
+
+        def wgz(path, head, rows):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with gzip.open(path, "wt", encoding="utf-8", newline="") as f:
+                w = csv.writer(f)
+                w.writerow(head)
+                w.writerows(rows)
+        wgz(os.path.join(tmp, "history/nass-yield/soybeans.csv.gz"), ycols, yrows)
+        wgz(os.path.join(tmp, "history/nass-progress/condition/all.csv.gz"), ccols, crows)
+        inp = Inputs(root=tmp, raw=tmp)
+        sy = inp.state_yield("soy_yield_hist")
+        ck("yield history: final YEAR rows, all practices only", len(sy) == 51 * len(sts) and sy[("IA", 2000)] > 30, len(sy))
+        ck("soy_ge reads the soybean rows only", all(v > 2 for v in inp.nass_week("soy_ge", 33).values()))
+        yspec = {"id": "t-soy-v1", "kind": "state_yield", "x": {"series": "soy_ge", "week": 33}, "y": {"series": "soy_yield_hist"},
+                 "trend_from_year": 1986, "expected_sign": 1, "holdout": {"years": list(range(2000, 2031))},
+                 "min_fit_years": 10, "min_holdout_n": 200, "benchmark": "trend"}
+        res = run_state_yield(yspec, inp, {}, d("2026-10-29"))
+        ck("scored: 2000 to 2025, years without a final yield left out", res.get("status") == "scored"
+           and res["n"] == 26 * len(sts) and res["n_detail"]["years_left_out"] == "2026-2030", (res.get("n"), res.get("n_detail"), res.get("why")))
+        ck("a real rating effect is found, years before trend_from_year never read", res["estimate"] > 0.5
+           and res["holdout"]["mae_model"] < 2.0 and res["placebo"]["p"] < 0.01, (res.get("estimate"), res.get("holdout")))
+        ck("the registry knows the new series", not [x for x in check_registry({"schema": REGISTRY_SCHEMA, "ledger_prior": {"count": 1},
+           "families": {"f": ""}, "series": {}, "specs": [dict(yspec, id="t-soy-v1", registered="2026-10-29", family="f", title="t",
+           grain="g", placebo="p", bootstrap="b", else_explains=[], sig_yes=None)]}) if "t-soy" in x])
+        bad = dict(yspec, id="t-bad-v1", trend_from_year=2001, registered="2026-10-29", family="f", title="t", grain="g",
+                   placebo="p", bootstrap="b", else_explains=[], sig_yes=None)
+        ck("trend_from_year after a holdout year is refused", any("trend_from_year" in x for x in check_registry(
+            {"schema": REGISTRY_SCHEMA, "ledger_prior": {"count": 1}, "families": {"f": ""}, "series": {}, "specs": [bad]})))
+        ck("a missing yield file is Missing, not a guess", _raises_missing(lambda: Inputs(root=tmp, raw=tmp).state_yield("corn_yield_hist")))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

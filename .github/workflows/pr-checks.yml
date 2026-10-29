@@ -5,9 +5,12 @@ name: pr-checks
 #   guard                    the built-files guard and its inputs (scripts/dev/main_build.py),
 #                            and the test pick: scripts/dev/test_map.py --select-base origin/main
 #                            (the tests that read a changed file, plus a fixed core; every test
-#                            when a shared file changed or the map cannot place a path)
-#   node tests (1/4 .. 4/4)  checks.sh --only=node-test --shard=N/4
-#                            (the pick, or every test file, a quarter each)
+#                            when a shared file changed or the map cannot place a path), for the log
+#   node tests (1/8 .. 8/8)  checks.sh --only=node-test --shard=N/8, started with the guard, not after
+#                            it: each shard makes the same pick itself (AGSIST_PICK_BASE, the merge
+#                            commit's first parent, which is main where the pull request merges) and
+#                            runs its eighth of the pick or of every test file, balanced by each file's
+#                            measured time (scripts/dev/test-durations.json)
 #   other checks             checks.sh --skip-node (every other line of checks.sh)
 #   all checks               green only when every job above is green; the one
 #                            status to require on main
@@ -110,8 +113,7 @@ jobs:
           fi
 
   node-tests:
-    name: node tests (${{ matrix.shard }}/4)
-    needs: guard
+    name: node tests (${{ matrix.shard }}/8)
     # pinned, not ubuntu-latest: pdftotext and the browser fonts are Ubuntu 24.04 builds, and GitHub moves
     # ubuntu-latest to Ubuntu 26 from Oct 19, 2026. Moving is a decision: new pins in both actions, then this.
     runs-on: ubuntu-24.04
@@ -119,12 +121,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
+      # fetch-depth 2: the pull request's merge commit and its first parent, the base the pick diffs against
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:
           persist-credentials: false
           ref: ${{ inputs.ref }}
+          fetch-depth: 2
       - name: Engine checkout
         uses: ./.github/actions/engine
         with:
@@ -139,7 +143,18 @@ jobs:
           python-version: '3.13'
           cache: pip
           cache-dependency-path: .github/workflows/pr-checks.yml
+      # the installed packages, cached by this Python build and this file (the pinned list is in it): a hit
+      # restores them in seconds instead of a 20 second pip install from the wheel cache
+      - name: Cache the Python packages
+        id: pysite
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
+        with:
+          path: |
+            ${{ env.pythonLocation }}/lib/python3.13/site-packages
+            ${{ env.pythonLocation }}/bin
+          key: py-site-${{ runner.os }}-${{ env.pythonLocation }}-${{ hashFiles('.github/workflows/pr-checks.yml') }}
       - name: Python packages
+        if: steps.pysite.outputs.cache-hit != 'true'
         run: pip install --quiet --disable-pip-version-check pillow==12.3.0 numpy==2.5.3 pandas==3.0.5 openpyxl==3.1.5 matplotlib==3.11.2 pypdf==6.17.0 requests==2.34.2 scipy==1.18.1 shapely==2.2.0 pyyaml==6.0.2 lxml==6.1.3 pdfplumber==0.11.10 google-analytics-data==0.23.3 google-auth==2.62.0
       # pdftotext (poppler-utils): the price sheet reader reads its -layout columns
       # (pypdf is only the fallback), and two node tests fail without it:
@@ -230,16 +245,13 @@ jobs:
             const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH });
             console.log("chromium", b.version()); await b.close();'
 
-      - name: FSA files from raw
+      # The FSA files, and the Atlas drought pull (data/atlas/raw/drought.json, on raw since Oct 29;
+      # test/drought-county-week.test.mjs reads it and fails without it), in one fetch of the raw branch:
+      # as two steps the second fetch took 10 s, once 58 s (Oct 29)
+      - name: FSA files and the Atlas drought pull from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: bash scripts/pull_raw.sh data/fsa
-      # The Atlas drought pull (data/atlas/raw/drought.json) moved to raw on Oct 29;
-      # test/drought-county-week.test.mjs reads it and fails without it.
-      - name: Atlas drought pull from raw
-        env:
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: bash scripts/pull_raw.sh data/atlas/raw/drought.json
+        run: bash scripts/pull_raw.sh data/fsa data/atlas/raw/drought.json
       # Tests that compare with origin/main (no new schedule) or read the saved sources
       # (origin/references, in the private repo since Oct 20) skip without them.
       - name: origin/main and the references branch
@@ -248,20 +260,45 @@ jobs:
         run: |
           git fetch -q --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
           bash scripts/fetch_private.sh references
-      - name: node tests, shard ${{ matrix.shard }} of 4
+      # a replay of the pick by hand (workflow_dispatch with pick_base): that branch and enough history
+      - name: the replay's pick base
+        if: github.event_name == 'workflow_dispatch' && inputs.pick_base != ''
+        env:
+          PICK_BASE: ${{ inputs.pick_base }}
+        run: |
+          git fetch -q --no-tags --depth=100 origin "+refs/heads/$PICK_BASE:refs/remotes/origin/$PICK_BASE"
+          git fetch -q --no-tags --deepen=100 origin
+      - name: node tests, shard ${{ matrix.shard }} of 8
         env:
           TMPDIR: ${{ runner.temp }}
           # a skipped test fails the shard (and so "all checks"): a skip is not a pass
           AGSIST_NO_SKIPS: '1'
           AGSIST_PREBUILD: '1'
-          # the guard's pick (empty: every test file)
-          AGSIST_TEST_FILES: ${{ needs.guard.outputs.mode == 'some' && needs.guard.outputs.files || '' }}
-        run: bash scripts/dev/checks.sh --only=node-test --shard=${{ matrix.shard }}/4
+          # the pick against the base, made in this shard the way the guard makes it (empty: every test
+          # file): a pull request diffs against its merge commit's first parent; a replay by hand against
+          # the branch it names; main-checks.yml's call (full) and any other run take every test
+          AGSIST_PICK_BASE: ${{ (github.event_name == 'pull_request' && !inputs.full) && 'HEAD^1' || (github.event_name == 'workflow_dispatch' && inputs.pick_base != '' && !inputs.full) && format('origin/{0}', inputs.pick_base) || '' }}
+        run: bash scripts/dev/checks.sh --only=node-test --shard=${{ matrix.shard }}/8
+      # each test file's wall time (scripts/dev/file-times.mjs, written beside the TAP output), slowest
+      # first: what scripts/dev/test-durations.json is measured from, and where to look when a shard is slow
+      - name: test file times
+        if: always()
+        run: |
+          T=$(ls "$RUNNER_TEMP"/agsist-checks/nt-*.out.times 2>/dev/null | head -1)
+          [ -n "$T" ] || { echo "no times written"; exit 0; }
+          echo "$(wc -l < "$T") test files, $(awk '{s+=$1} END {print int(s/1000)}' "$T") s summed"
+          C=$(grep -hE '^# (tests|suites|pass|fail|cancelled|skipped|todo) [0-9]+$' "${T%.times}" | tr '\n' ' ')
+          echo "$C"
+          echo "::notice title=node test counts, shard ${{ matrix.shard }}::$(wc -l < "$T") files; $C"
+          # the times as one line too (ms<TAB>file, a space between files), readable from the run's annotations
+          # where the log is not: python3 scripts/dev/test_map.py --durations takes them back as lines
+          echo "::notice title=node test times, shard ${{ matrix.shard }}::$(sort -rn "$T" | tr '\t\n' ': ')"
+          sort -rn "$T"
       - name: Upload the test log
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
-          name: node-tests-${{ matrix.shard }}-of-4
+          name: node-tests-${{ matrix.shard }}-of-8
           path: ${{ runner.temp }}/agsist-checks/
           if-no-files-found: ignore
 
@@ -289,7 +326,18 @@ jobs:
           python-version: '3.13'
           cache: pip
           cache-dependency-path: .github/workflows/pr-checks.yml
+      # the installed packages, cached by this Python build and this file (the pinned list is in it): a hit
+      # restores them in seconds instead of a 20 second pip install from the wheel cache
+      - name: Cache the Python packages
+        id: pysite
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
+        with:
+          path: |
+            ${{ env.pythonLocation }}/lib/python3.13/site-packages
+            ${{ env.pythonLocation }}/bin
+          key: py-site-${{ runner.os }}-${{ env.pythonLocation }}-${{ hashFiles('.github/workflows/pr-checks.yml') }}
       - name: Python packages
+        if: steps.pysite.outputs.cache-hit != 'true'
         run: pip install --quiet --disable-pip-version-check pillow==12.3.0 numpy==2.5.3 pandas==3.0.5 openpyxl==3.1.5 matplotlib==3.11.2 pypdf==6.17.0 requests==2.34.2 scipy==1.18.1 shapely==2.2.0 pyyaml==6.0.2 lxml==6.1.3 pdfplumber==0.11.10 google-analytics-data==0.23.3 google-auth==2.62.0
 
       - name: FSA files from raw
