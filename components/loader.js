@@ -960,7 +960,7 @@
     if (window.AgLandAlert || document.querySelector('script[src^="/components/land-alert.js"]')) return;
     if (!document.querySelector('[data-land-alert],section[data-atlas-sales="county"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/land-alert.js?v=2';
+    s.src = '/components/land-alert.js?v=3';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -970,10 +970,10 @@
   function go() {
     if (window.AgLandSales || document.querySelector('script[src^="/components/land-sales.js"]')) return;
     if (!document.querySelector('[data-land-sales],button.ls-nm,section[data-atlas-sales="county"]')
-        && !/^\/rent\/(illinois|wisconsin|indiana)(\.html)?\/?$/.test(location.pathname)
-        && !/^\/farmland-atlas\/indiana\/[a-z0-9-]+/.test(location.pathname)) return;
+        && !/^\/rent\/(illinois|wisconsin|indiana|vermont)(\.html)?\/?$/.test(location.pathname)
+        && !/^\/farmland-atlas\/(indiana|vermont)\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=2';
+    s.src = '/components/land-sales.js?v=3';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
