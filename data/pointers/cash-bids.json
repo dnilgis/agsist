@@ -9,6 +9,10 @@
    "to": "/cash-bids/indiana/",
    "since": "2026-10-16"
   },
+  "cash-bids/iowa/emerson.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-10-29"
+  },
   "cash-bids/iowa/granger.html": {
    "to": "/cash-bids/iowa/cresco",
    "since": "2026-10-20"
@@ -16,6 +20,10 @@
   "cash-bids/iowa/grant.html": {
    "to": "/cash-bids/iowa/paton",
    "since": "2026-10-20"
+  },
+  "cash-bids/iowa/griswold.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-10-29"
   },
   "cash-bids/kansas/dodge-city.html": {
    "to": "/cash-bids/kansas/",
