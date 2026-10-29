@@ -572,8 +572,9 @@ window.__fsRead = function (FSX) {
         if(lvl!=null) cat = droughtLabel(lvl);
       }
       if(cat==null) return false;
-      if(d.approx && window.__fsDr && window.__fsDr.own) return true;   // the worker's own county fallback adds nothing to ours
-      point=true;
+      // the worker's own county fallback adds nothing to ours: it shows only until ours lands
+      if(d.approx){ if(window.__fsDr && window.__fsDr.own) return true; }
+      else point=true;
       var wk = d.mapWeek || d.MapDate || d.mapDate || d.ValidStart || d.validStart || null;
       window.__fsDr={cat:cat, approx:d.approx||null, wk:wk}; FSX.FIELD.drought=window.__fsDr; recomputeInsight(); renderWx();
       return true;
@@ -2411,8 +2412,14 @@ window.__fsRead = function (FSX) {
     var bigMon = mons.filter(function(x){ return (x.sev||0)>=2; }).sort(function(a,b){ return (b.sev||0)-(a.sev||0); })[0];
     // "Nothing needs action" is a claim about the field. Make it only when the field-level
     // layers actually answered; with soil, crop history and satellite all missing, say that.
+    // name what did not answer, so "redraw" is not a guess (2026-10-29)
+    function missingFieldLayers(){
+      var m=[]; if(!FSX.FIELD.soil) m.push('the USDA soil survey'); if(!FSX.FIELD.rotation) m.push('the USDA crop history');
+      if(!(FSX.FIELD.indices&&FSX.FIELD.indices.series&&FSX.FIELD.indices.series.length)) m.push('the satellite passes');
+      return m.length>1 ? m.slice(0,-1).join(', ')+' and '+m[m.length-1] : (m[0]||'part of the field data');
+    }
     var fieldLayers = (FSX.FIELD.soil?1:0) + (FSX.FIELD.rotation?1:0) + (FSX.FIELD.indices&&FSX.FIELD.indices.series&&FSX.FIELD.indices.series.length?1:0);
-    var lead = acts[0] || bigMon || (fieldLayers<2 ? { title:'not enough of this field\u2019s data loaded for a bottom line; redraw in a minute' } : null) || { title: lateSeason
+    var lead = acts[0] || bigMon || (fieldLayers<2 ? { title:'not enough of this field\u2019s data loaded for a bottom line: '+missingFieldLayers()+' did not answer; redraw in a minute' } : null) || { title: lateSeason
         ? 'nothing on this field needs action now; the crop is maturing, so harvest timing and the bid are what move money'
         : 'nothing on this field needs action right now; the items below are worth watching' };
     FSX.FIELD.read = { verdict: lead?lead.title:null,
