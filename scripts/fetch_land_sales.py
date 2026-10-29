@@ -182,10 +182,15 @@ STATES.update({
     },
     "VT": {
         "name": "Vermont", "fips": "50",
-        "probe_only": "Vermont Department of Taxes weekly property transfer tax return data (last five years, new layout since 2020); saved to read the layout first",
-        "source": "Vermont Department of Taxes, property transfer tax returns", "short": "Vermont transfer tax return",
+        # Built (Oct 29): vt_table reads the statewide file of PTT-172 returns that VCGI publishes (VT_FILE).
+        "source": "Vermont Department of Taxes, property transfer tax returns (Form PTT-172), published by the Vermont Center for Geographic Information",
+        "short": "Vermont property transfer tax return",
         "pages": ["https://tax.vermont.gov/data-and-statistics/ptt"],
-        "links": [], "terms": "state public data; the weekly file is linked from the state's page; terms not read yet",
+        "links": [{"t": "Vermont property transfer tax data", "url": "https://tax.vermont.gov/data-and-statistics/ptt"},
+                  {"t": "VCGI open data (property transfers)", "url": "https://geodata.vermont.gov/"}],
+        "since_note": "Vermont's statewide file holds the returns posted since 2019; older returns are with the town clerk.",
+        "terms": "free download, no login; VCGI open geodata policy (maps.vcgi.vermont.gov/opendata/VT_Open_GeoData_Policy_final1.0.pdf); the returns are public under 32 V.S.A. 9606",
+        "max_mb": 4,
     },
     "NJ": {
         "name": "New Jersey", "fips": "34",
@@ -547,7 +552,8 @@ def build(st, recs, gaz, now, prior=None, months=None):
     # Wisconsin rows keep their filed date, so a later newest-only run can tell the latest filing of a return.
     # Illinois rows keep it too (2026-10-23): the monthly land sale email lists sales by the month they
     # were recorded (scripts/land_alert.py), and Field Scout shows it as "Recorded (filed)".
-    rec = st in ("WI", "IL") and any(r.get("rec") for r in recs)
+    # Vermont rows keep the date the town recorded the deed (TownDteRec), the month the land sale email lists by.
+    rec = st in ("WI", "IL", "VT") and any(r.get("rec") for r in recs)
     cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else []) + (["rec"] if rec else [])
     index, total, files = [], 0, []
     for fips, rs in sorted(by.items()):
@@ -1240,6 +1246,206 @@ def fetch_in():
     return out
 
 
+# Vermont property transfer tax returns (Form PTT-172), Vermont Department of Taxes, published by VCGI
+# as one statewide file (Parquet) on the state's open data bucket, every return posted since 2019,
+# refreshed weekly. Free, no login (VCGI open geodata policy; the returns are public under 32 V.S.A.
+# 9606). The file's own description columns carry the form's words, so the codes are read by those
+# words, not by number: the numbers moved when the form changed in 2020 (bUsePr 3 is "Open Land" on one
+# layout and "Non-PR-NotYearRound" on the other). Read only these columns: the file also has each
+# party's street address and a parcel point (Latitude, Longitude, GEOM), and neither is ever read.
+VT_FILE = "https://s3.us-east-2.amazonaws.com/vtopendata-prd/PropertyParcels/vt-property-transfers-wgs84.parquet"
+VT_COLS = ["returnID", "closeDate", "recvdDate", "TownDteRec", "ValPdOrTrn", "landSize", "span", "countyCode", "TOWNGEOID", "TOWNNAME",
+           "sUsePrDesc", "bUsePrDesc", "enrCrntUse", "famMemDesc", "prTxExDesc", "LGTExDesc", "intUDPdesc", "intUDP", "intPrTypOt",
+           "blCn1Desc", "blCn2Desc", "blCn3Desc", "buyrAdjPrp", "sellEntNam", "sellFstNam", "sellLstNam", "buyEntNam", "buyFstNam",
+           "buyLstNam", "addSellNam", "addBuyrNam"]
+# Property use before the transfer (seller) and the buyer's use after it (PTT-172 Section 1): a return is
+# kept when either is an operating farm or timberland, or open land enrolled in current use (Vermont's
+# use value appraisal of farm and forest land). Our classes: farm 4, timber 6, open land 5.
+VT_USE = {"OPERATING FARM": "4", "TIMBERLAND": "6"}
+VT_OPEN = "OPEN LAND"
+# Buildings on the property (PTT-172, up to three boxes): our building classes, so the one land rule reads them
+# (1 a house, 2 a business, 3 a factory, 7 farm or other buildings). "None" adds nothing.
+VT_BLDG = {"FARM BUILDINGS": "7", "OTHER": "7", "SINGLE FAMILY DWELLING": "1", "SEASONAL DWELLING": "1", "MOBILE HOME": "1",
+           "CONDOMINIUM": "1", "MULTI FAMILY": "1", "RESIDENTIAL NEW CONSTRUCTION": "1", "FACTORY": "3"}
+VT_STREET = re.compile(r"\b\d{1,6}\s+[A-Z0-9 .'-]*\b(?:ROAD|RD|STREET|ST|AVENUE|AVE|LANE|LN|DRIVE|DR|HIGHWAY|HWY|ROUTE|RTE|WAY|CIRCLE|BOX|PO BOX)\b", re.I)
+
+
+def vt_yes(v):
+    return str(v or "").strip().upper() in ("TRUE", "T", "Y", "YES", "1")
+
+
+def vt_day(v):
+    """closeDate and the other dates are numbers like 20240315050000 (the day, then a time)."""
+    m = re.match(r"^(\d{4})(\d{2})(\d{2})", str(v or "").strip())
+    return parse_date("%s-%s-%s" % m.groups()) if m else None
+
+
+def vt_word(desc):
+    """'07. Farm Buildings' -> 'FARM BUILDINGS'."""
+    return re.sub(r"^\s*\d+\s*\.\s*", "", str(desc or "")).strip().upper()
+
+
+def vt_names(ent, first, last, more):
+    """One side's names: the entity, or first and last, then any added names (PTT-175, '|' between them).
+    A piece that reads like a street address is never kept."""
+    out = []
+    one = clean(ent) or clean("%s %s" % (first or "", last or ""))
+    if one:
+        out.append(one)
+    for p in re.split(r"\s*\|\s*", str(more or "")):
+        p = clean(p)
+        if p and p.upper() not in (x.upper() for x in out):
+            out.append(p)
+    return "; ".join(p for p in out if not VT_STREET.search(p))
+
+
+def vt_class(r):
+    """Our class codes for a return, or None when it is not farm, forest or enrolled open land."""
+    uses = [vt_word(r.get("sUsePrDesc")), vt_word(r.get("bUsePrDesc"))]
+    cls = [VT_USE[u] for u in uses if u in VT_USE]
+    if VT_OPEN in uses and vt_yes(r.get("enrCrntUse")):
+        cls.append("5")
+    if not cls:
+        return None
+    for k in ("blCn1Desc", "blCn2Desc", "blCn3Desc"):
+        w = vt_word(r.get(k))
+        c = VT_BLDG.get(w) or ("2" if w and w not in ("NONE",) else None)
+        if c:
+            cls.append(c)
+    cls = list(dict.fromkeys(cls))
+    cls.sort(key=lambda c: (c not in ("4", "6", "5"), c))
+    return cls
+
+
+def vt_interest(r):
+    """(deed-type words, flag words) for the interest that passed (PTT-172 Section 1, Interest in property)."""
+    w = str(r.get("intUDPdesc") or "").strip()
+    u = w.upper()
+    if not u or u == "FEE SIMPLE":
+        return [], []
+    if u.startswith("UNDIVIDED"):
+        pct = parse_num(r.get("intUDP"))
+        if pct is not None and pct >= 99.99:
+            return [], []
+        return ["Undivided %s Interest" % ("%g%%" % round(pct, 2) if pct else "Part")], ["less than full interest"]
+    if u == "EASEMENT/ROW":
+        return ["Easement Or Right-Of-Way"], []
+    if u == "LEASE":
+        return ["Lease"], []
+    if u == "OTHER":
+        ot = clean(r.get("intPrTypOt"), 60)
+        return ["Other Interest" + (" (%s)" % ot.title() if ot else "")], ["less than full interest"]
+    return [w.title()], ["less than full interest"]     # life estate, timeshare
+
+
+def vt_lgt(desc):
+    """Land gains tax exemption words that say the transfer was not a sale (PTT-172 Section 3)."""
+    d = str(desc or "").upper()
+    for k, w in (("WITHOUT CONSIDERATION", "Gift, Devise Or Partition"), ("DIVORCE", "Court Order (Divorce)"),
+                 ("FORECLOSURE", "Foreclosure Or Deed In Lieu"), ("LEASES OF LAND", "Lease"), ("PERPETUAL EASEMENT", "Easement"),
+                 ("MINERAL RIGHTS", "Mineral Rights")):
+        if k in d:
+            return w
+    return None
+
+
+def vt_exempt(desc):
+    """1 when the return claims a property transfer tax exemption (Section 2). Exemption 99, the buyer's
+    home financed in part by the housing finance agency, is a lower rate on a sale, not a transfer
+    outside the market, and is not counted."""
+    d = str(desc or "").strip().upper()
+    if not d or d.startswith("NO EXEMPTION") or d.startswith("PLEASE USE THIS EXEMPTION NUMBER FOR THE BUYER"):
+        return ""
+    return "1"
+
+
+def vt_towns(gz_blob):
+    """{county subdivision code: (county fips, Census name)} for Vermont from the gazetteer (TOWNGEOID
+    in the transfer file is the 5-digit county subdivision code, unique in the state)."""
+    z = zipfile.ZipFile(io.BytesIO(gz_blob))
+    rd = csv.reader(io.StringIO(z.read(z.namelist()[0]).decode("latin-1")), delimiter="\t")
+    hdr = [h.strip() for h in next(rd)]
+    ix = {h: i for i, h in enumerate(hdr)}
+    out = {}
+    for r in rd:
+        g = r[ix["GEOID"]].strip()
+        if g.startswith("50") and len(g) == 10:
+            out[g[5:]] = (g[:5], r[ix["NAME"]].strip())
+    return out
+
+
+def vt_read(path):
+    """The rows of the state file (only VT_COLS) as dicts. pyarrow is installed by the workflow."""
+    import pyarrow.parquet as pq
+    have = set(pq.read_schema(path).names)
+    miss = [c for c in VT_COLS if c not in have]
+    if miss:
+        raise ValueError("columns not found by name: %s" % ", ".join(miss))
+    return pq.read_table(path, columns=VT_COLS).to_pylist()
+
+
+def vt_table(rows, towns, rep=None):
+    """rows: vt_read output. One table with our column names, farm and forest returns only. The county
+    is the town's (its Census county subdivision code); the town is the Census name, so the gazetteer
+    places it at the town's internal point, never at the parcel. rep counts what was left out."""
+    rep = rep if rep is not None else {}
+    names = {v["fips"]: v["name"] for v in county_index("VT").values()}
+    yield ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
+           "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "FLAGS"]
+    n = agree = 0
+    for r in rows:
+        cls = vt_class(r)
+        if not cls:
+            rep["not_farm"] = rep.get("not_farm", 0) + 1
+            continue
+        t = towns.get(str(r.get("TOWNGEOID") or "").strip().zfill(5)) if r.get("TOWNGEOID") else None
+        cc = parse_num(r.get("countyCode"))
+        by_code = "50%03d" % (2 * int(cc) - 1) if cc and 1 <= cc <= 14 else None     # 1 Addison to 14 Windsor, alphabetical
+        if t:
+            n += 1
+            agree += t[0] == by_code
+        fips = t[0] if t else by_code
+        county = names.get(fips or "")
+        if not county:
+            rep["dropped county not read"] = rep.get("dropped county not read", 0) + 1
+            continue
+        muni = t[1] if t else clean(r.get("TOWNNAME"), 60)
+        conv = ["Transfer"]      # the return names no deed type
+        ib, iflags = vt_interest(r)
+        conv += ib
+        if clean(r.get("famMemDesc")) and not re.match(r"^0+$", clean(r.get("famMemDesc"))):
+            conv.append("Related Parties")
+        lg = vt_lgt(r.get("LGTExDesc"))
+        if lg:
+            conv.append(lg)
+        flags = list(iflags)
+        if vt_yes(r.get("buyrAdjPrp")):
+            flags.append("adjacent owner")
+        flags.append("with buildings" if any(c in ("1", "2", "3", "7") for c in cls) else "land only")
+        if vt_yes(r.get("enrCrntUse")):
+            flags.append("enrolled in current use")
+        ls = parse_num(r.get("landSize"))
+        price = r.get("ValPdOrTrn")
+        price = float(price) if isinstance(price, (int, float)) else parse_num(price)     # $0 stays $0 (a gift), not unread
+        yield [str(r.get("returnID") or ""), vt_day(r.get("closeDate")) or "", "" if price is None else "%.2f" % price,
+               "" if not ls or ls <= 0 else "%g" % ls, " ".join(cls), ", ".join(conv), clean(r.get("span"), 40), muni.upper(), county, "",
+               vt_names(r.get("sellEntNam"), r.get("sellFstNam"), r.get("sellLstNam"), r.get("addSellNam")),
+               vt_names(r.get("buyEntNam"), r.get("buyFstNam"), r.get("buyLstNam"), r.get("addBuyrNam")),
+               vt_exempt(r.get("prTxExDesc")), "1", vt_day(r.get("TownDteRec")) or vt_day(r.get("recvdDate")) or "", "; ".join(flags)]
+    rep["county check"] = "%d of %d towns agree with the county code" % (agree, n)
+    if n and agree < 0.95 * n:
+        raise ValueError("town and county codes disagree on %d of %d returns" % (n - agree, n))
+
+
+def fetch_vt(dest):
+    """Download the statewide file to dest (the dated copy the raw branch keeps); returns the path."""
+    blob = fetch(VT_FILE, timeout=600)
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    with open(dest, "wb") as f:
+        f.write(blob)
+    return dest
+
+
 WI_COUNTY = dict(enumerate(["Adams", "Ashland", "Barron", "Bayfield", "Brown", "Buffalo", "Burnett", "Calumet", "Chippewa", "Clark",
                             "Columbia", "Crawford", "Dane", "Dodge", "Door", "Douglas", "Dunn", "Eau Claire", "Florence", "Fond du Lac",
                             "Forest", "Grant", "Green", "Green Lake", "Iowa", "Iron", "Jackson", "Jefferson", "Juneau", "Kenosha",
@@ -1580,6 +1786,19 @@ def run(states, from_dir=None, merge=False):
                 print("::warning::%s sales disclosure files not read: %s" % (st, e))
                 bad += 1
                 continue
+        elif st == "VT":
+            try:
+                if from_dir:
+                    path = next(os.path.join(from_dir, n) for n in sorted(os.listdir(from_dir)) if n.lower().endswith(".parquet"))
+                else:
+                    path = fetch_vt(os.path.join(RAW, "vt", "vt-property-transfers-%s.parquet" % now[:10]))
+                vrep = {}
+                tables.append(list(vt_table(vt_read(path), vt_towns(gzblob), vrep)))
+                print("%s: %s; left out: %s" % (st, os.path.basename(path), ", ".join("%s %s" % kv for kv in sorted(vrep.items())) or "none"))
+            except Exception as e:  # noqa: BLE001
+                print("::warning::%s transfer returns not read: %s" % (st, e))
+                bad += 1
+                continue
         elif STATES[st].get("socrata") and not from_dir:
             try:
                 decls, extra, multi = fetch_il()
@@ -1790,8 +2009,44 @@ def selftest():
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
     ck("probe-only states (IA, SD, OH) are never built before their parser exists",
        all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IA", "SD", "OH")))
-    ck("phase 1 statewide sources (FL, NY, MD, VT, NJ, CT) are saved by the probe and never built",
-       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "VT", "NJ", "CT")))
+    ck("phase 1 statewide sources (FL, NY, MD, NJ, CT) are saved by the probe and never built",
+       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "NJ", "CT")))
+    # Vermont (Oct 29): PTT-172 returns from the statewide file, mapped onto the shared rule by the form's words.
+    ck("VT: built, not probe-only, never reads a parcel point or an address",
+       not STATES["VT"].get("probe_only") and not any(re.search(r"(?i)latitude|longitude|geom|addr|street|zip", c) for c in VT_COLS))
+    vb = {"returnID": "1", "closeDate": 20250315000000, "recvdDate": 20250320000000, "TownDteRec": 20250318000000, "ValPdOrTrn": 300000.0,
+          "landSize": 100.0, "span": "123-456-78901", "countyCode": 1, "TOWNGEOID": "75850", "TOWNNAME": "WALTHAM", "sUsePrDesc": "04. Operating Farm",
+          "bUsePrDesc": "04. Operating Farm", "enrCrntUse": "No", "famMemDesc": None, "prTxExDesc": "No exemption.", "LGTExDesc": None,
+          "intUDPdesc": "Fee Simple", "intUDP": None, "intPrTypOt": None, "blCn1Desc": "01. None", "blCn2Desc": None, "blCn3Desc": None,
+          "buyrAdjPrp": "No", "sellEntNam": "TEST FARM LLC", "sellFstNam": None, "sellLstNam": None, "buyEntNam": None, "buyFstNam": "PAT",
+          "buyLstNam": "BUYER", "addSellNam": None, "addBuyrNam": "12 MAIN ST"}
+    def vt1(**kw):
+        r = dict(vb, **kw)
+        return dict(zip(["doc", "date", "price", "acres", "cls", "conv", "pid", "muni", "county", "legal", "grantor", "grantee", "exempt", "np", "rec", "flags"],
+                        (list(vt_table([r], {"75850": ("50001", "Waltham town")}))[1:] or [[None] * 16])[0]))
+    v0 = vt1()
+    ck("VT: a plain farm sale reads by the form's words", v0["cls"] == "4" and v0["conv"] == "Transfer" and v0["exempt"] == "" and v0["date"] == "2025-03-15"
+       and v0["rec"] == "2025-03-18" and v0["county"] == "Addison" and v0["muni"] == "WALTHAM TOWN" and v0["price"] == "300000.00")
+    ck("VT: a street address in the added names is never kept", v0["grantee"] == "PAT BUYER" and v0["grantor"] == "TEST FARM LLC")
+    ck("VT: timberland is class 6; open land counts only when enrolled in current use; a house lot is not farm land",
+       vt1(sUsePrDesc="06. Timberland", bUsePrDesc="06. Timberland")["cls"] == "6"
+       and vt1(sUsePrDesc="03. Open Land", bUsePrDesc="03. Open Land", enrCrntUse="Yes")["cls"] == "5"
+       and vt1(sUsePrDesc="03. Open Land", bUsePrDesc="03. Open Land")["doc"] is None
+       and vt1(sUsePrDesc="01. Primary Residence", bUsePrDesc="01. Primary Residence")["doc"] is None)
+    ck("VT: buildings boxes become building classes (farm buildings 7, a house 1)",
+       vt1(blCn1Desc="07. Farm Buildings", blCn2Desc="02. Single Family Dwelling")["cls"] == "4 1 7")
+    ck("VT: a family sale is related; an exemption is exempt, the housing agency rate is not; a gift by the land gains words",
+       "Related Parties" in vt1(famMemDesc="02. Parent/Child")["conv"] and vt1(famMemDesc="00")["conv"] == "Transfer"
+       and vt1(prTxExDesc="Transfers of property to the United States of America")["exempt"] == "1"
+       and vt1(prTxExDesc="Please use this exemption number for the buyer\u2019s principal residence funded in part with a")["exempt"] == ""
+       and "Gift" in vt1(LGTExDesc="Transfers without consideration")["conv"])
+    ck("VT: a whole undivided interest is whole; a part, a life estate or a conservation easement is not",
+       vt1(intUDPdesc="Undivided Interest", intUDP=100.0)["conv"] == "Transfer"
+       and "less than full interest" in vt1(intUDPdesc="Undivided Interest", intUDP=50.0)["flags"]
+       and "less than full interest" in vt1(intUDPdesc="Life Estate")["flags"]
+       and "less than full interest" in vt1(intUDPdesc="Other", intPrTypOt="conservation easement")["flags"])
+    ck("VT: current use enrollment is a fact on the sale", "enrolled in current use" in vt1(enrCrntUse="Yes")["flags"]
+       and "enrolled in current use" not in v0["flags"])
     # Indiana sales disclosure forms: a synthetic file in the real SDF_<year>.zip shape
     # (test/fixtures/land-sales/make_in_sdf_sample.py writes it with the real column titles)
     sys.path.insert(0, os.path.join(ROOT, "test", "fixtures", "land-sales"))

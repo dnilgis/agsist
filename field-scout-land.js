@@ -170,7 +170,10 @@
     WI: { '1': 'Residential', '2': 'Commercial', '3': 'Manufacturing', '4': 'Agricultural', '5': 'Undeveloped',
       '5M': 'Agricultural forest', '6': 'Productive forest', '7': 'Other (farm buildings)', 'X': 'Exempt' },
     IN: { '1': 'Residential', '2': 'Commercial', '3': 'Industrial', '4': 'Farm land', '6': 'Timber', '7': 'Farm buildings' },
-    IL: { '4': 'Farm' }
+    IL: { '4': 'Farm' },
+    // Vermont: scripts/fetch_land_sales.py vt_class, from the return's property use before and after the
+    // transfer (operating farm 4, timberland 6, open land enrolled in current use 5) and its buildings boxes.
+    VT: { '1': 'House', '2': 'Commercial building', '3': 'Factory', '4': 'Operating farm', '5': 'Open land in current use', '6': 'Timberland', '7': 'Farm or other buildings' }
   };
   FSLand.classLabel = function (c, st) {
     var T = CLASS[String(st || '').toUpperCase()] || CLASS.WI;
@@ -182,23 +185,25 @@
     if (st === 'IL') return 'the declaration marks the current use as farm, Line 8; it does not say whether buildings were included';
     if (st === 'IN') return 'Indiana sales disclosure property class, farm parcel' + (/(^|\s)7(\s|$)/.test(String(c || '')) ? ', improved (buildings)' : '');
     if (st === 'WI') return 'Wisconsin class ' + String(c || '');
+    if (st === 'VT') return 'property use and buildings on the Vermont transfer tax return';
     return 'class ' + String(c || '');
   };
   // Document number in a state's own words.
   FSLand.docLabel = function (st) {
     st = String(st || '').toUpperCase();
-    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : 'doc';
+    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : st === 'VT' ? 'Vermont transfer tax return ID' : 'doc';
   };
   FSLand.FARM_CLASSES = ['4', '5', '5M', '6', '7'];
   FSLand.hasBuildings = function (c) { return /(^|[\s,;/])(1|2|3|7)($|[\s,;/])/.test(String(c || '')); };
   // The one land rule (Sig, Oct 29, 2026), ported in scripts/build_land_summary.py (has_buildings,
-  // is_forest, land_type): buildings from the property class only, never deed text; a Wisconsin sale
-  // of forest classes (5M, 6) with no farm class 4 and no buildings is a forest sale. Every middle
+  // is_forest, land_type): buildings from the property class only, never deed text; a Wisconsin or
+  // Vermont sale of forest classes (5M, 6) with no farm class 4 and no buildings is a forest sale. Every middle
   // counts bare farm land only; with buildings and forest are listed, never in a middle.
   FSLand.MIN_N = 5;          // under this many sales, no middle (the Atlas, the land-sales pages, the comp report)
   FSLand.MIN_ACRES = 20;     // a sale this size or larger may set a county middle
+  FSLand.FOREST_STATES = ['WI', 'VT'];   // states whose records carry a forest class (Vermont: timberland)
   FSLand.isForest = function (c, st) {
-    if (String(st || '').toUpperCase() !== 'WI' || FSLand.hasBuildings(c)) return false;
+    if (FSLand.FOREST_STATES.indexOf(String(st || '').toUpperCase()) < 0 || FSLand.hasBuildings(c)) return false;
     var have = String(c || '').toUpperCase().split(/[\s,;/]+/).filter(Boolean);
     return (have.indexOf('5M') >= 0 || have.indexOf('6') >= 0) && have.indexOf('4') < 0;
   };
@@ -593,7 +598,7 @@
   // file; others: matchTransfers of the same parcel, this sale left out. Plain strings for node.
   FSLand.saleDetailHTML = function (r, file, others) {
     file = file || {}; others = others || [];
-    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI';
+    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI', VT = st === 'VT';
     var form = IL ? 'declaration' : IN ? 'sales disclosure form' : 'return';
     var cols = file.cols || [];
     var has = function (c) { return cols.indexOf(c) >= 0; };
@@ -609,6 +614,7 @@
     row('Price', price > 0 ? fm(price) : price === 0 ? '$0 on the ' + (IL ? 'declaration' : 'return') : NOTIN,
       (IL ? 'Net consideration (Line 13 of Form PTAX-203: full consideration less personal property, Line 12a), or full consideration (Line 11) when Line 13 is blank. Covers the real estate that sold, buildings included.'
         : IN ? 'Sales price (E1) less personal property (E2) on the Indiana sales disclosure form. Covers the real estate that sold, buildings included.'
+        : VT ? 'Value paid or transferred on the Vermont property transfer tax return (Form PTT-172). Covers the real estate that sold, buildings included.'
         : 'Sale price on the transfer return. Covers everything that sold, buildings included.') + (r.grp ? ' ' + esc(FSLand.groupText(r)) + ': ' + r.grpPrices.map(fm).join(' + ') + '.' : ''));
     row('Acres', ac > 0 ? (+ac).toFixed(2).replace(/\.?0+$/, '') : r.acUnsure ? '<span class="fl-warn">uncertain</span>' : NOTIN,
       r.acBig ? 'The record gives ' + esc(r.acBig) + ' acres on one parcel, more than a full section (640), so we treat the acres as uncertain.' :
@@ -620,7 +626,7 @@
     row('Deed or conveyance type', v(r.conv) ? esc(r.conv) : NOTIN);
     row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls, st)) + ' <span class="fl-note">(' + esc(FSLand.classNote(r.cls, st)) + ')</span>' : NOTIN);
     row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
-    row(IL ? 'State transfer tax' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
+    row(IL ? 'State transfer tax' : VT ? 'Property transfer tax' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
     var why = FSLand.notMarketWhy(r);
     row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court, foreclosure, trade and partition deeds, shares of the land and fee-exempt transfers.');
     row('Verified', 'No', 'Taken from public transfer records, not confirmed with a party to the sale.');
