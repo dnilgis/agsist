@@ -49,6 +49,21 @@ VALIDATE = [
 ]
 
 
+def merge_base(root, ref, tries=6):
+    """git merge-base REF HEAD; in a shallow checkout (the CI jobs) fetch deeper history until it is there"""
+    for i in range(tries + 1):
+        mb = subprocess.run(["git", "-C", root, "merge-base", ref, "HEAD"], capture_output=True, text=True)
+        if mb.returncode == 0:
+            return mb.stdout.strip()
+        sh = subprocess.run(["git", "-C", root, "rev-parse", "--is-shallow-repository"], capture_output=True, text=True)
+        if sh.stdout.strip() != "true" or i == tries:
+            return None
+        subprocess.run(["git", "-C", root, "fetch", "-q", "--no-tags", "--deepen=%d" % (100 * 2 ** i), "origin",
+                        "HEAD", "+refs/heads/%s:refs/remotes/%s" % (ref.split("/", 1)[1], ref) if ref.startswith("origin/") else ref],
+                       capture_output=True, text=True)
+    return None
+
+
 def run(cmd):
     r = subprocess.run([sys.executable] + cmd, cwd=ROOT, capture_output=True, text=True)
     return r.returncode, (r.stdout + r.stderr).strip()
@@ -70,11 +85,10 @@ def git_show(ref, path):
 
 
 def guard(base_ref):
-    mb = subprocess.run(["git", "-C", ROOT, "merge-base", base_ref, "HEAD"], capture_output=True, text=True)
-    if mb.returncode != 0:
+    base = merge_base(ROOT, base_ref)
+    if not base:
         print("guard: no merge base with %s (fetch it: git fetch origin main)" % base_ref)
         return 1
-    base = mb.stdout.strip()
     bad = []
     for path in BUILT:
         a, b = blocks(git_show(base, path), path), blocks(git_show("HEAD", path), path)
