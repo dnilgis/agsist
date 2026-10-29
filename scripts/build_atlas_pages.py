@@ -57,6 +57,7 @@ import statistics
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import html_slim as HS  # noqa: E402
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
@@ -1545,6 +1546,38 @@ def watch_form(f, lab, stn):
             f'<div class="wm" role="status" aria-live="polite"></div></form>'
             f'<script defer src="/farmland-atlas/watch.js?v={WATCH_V}"></script>')
 
+# The county page script (rent calculator button, CSV download, copy link) was the same
+# 1.8 KB inline on 3,148 pages; it is one cached file now, loaded where it ran (Oct 29, 2026).
+COUNTY_JS = r"""(function(){
+var rb=document.getElementById('rc-open');
+if(rb)rb.addEventListener('click',function(){
+  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
+  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
+  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
+  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
+  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
+  document.head.appendChild(s);
+});
+var rec=JSON.parse(document.getElementById('rec').textContent);
+document.getElementById('dl').addEventListener('click',function(){
+  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
+  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
+});
+var cp=document.getElementById('cp');
+cp.addEventListener('click',function(){
+  var u=location.origin+location.pathname;
+  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
+  else window.prompt('Copy this link',u);
+  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
+});
+try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
+})();
+"""
+COUNTY_JS_V = hashlib.sha1(COUNTY_JS.encode()).hexdigest()[:8]
+
 CSS_FILE = "atlas-pages.css"
 CSS_V = hashlib.sha1(CSS.encode()).hexdigest()[:8]
 
@@ -2726,35 +2759,7 @@ def county_page(W, f, d, stamp):
 {prev_next}
 </main>
 <script type="application/json" id="{csv_id}">{rec_json}</script>
-<script>
-(function(){{
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){{
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){{window.AgRentCalc.mount(box,{{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')}});}};
-  s.onerror=function(){{box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');}};
-  document.head.appendChild(s);
-}});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){{
-  var k=Object.keys(rec),q=function(v){{v=v==null?'':String(v);return /[",\\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}};
-  var t=k.join(',')+'\\n'+k.map(function(x){{return q(rec[x]);}}).join(',')+'\\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{{type:'text/csv'}}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{{gaEvent('atlas_county_csv',{{fips:rec.fips}});}}catch(e){{}}
-}});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){{
-  var u=location.origin+location.pathname;
-  var done=function(){{cp.textContent='Link copied';setTimeout(function(){{cp.textContent='Copy link';}},1800);}};
-  if(navigator.clipboard&&navigator.clipboard.writeText){{navigator.clipboard.writeText(u).then(done,function(){{window.prompt('Copy this link',u);}});}}
-  else window.prompt('Copy this link',u);
-  try{{gaEvent('atlas_county_share',{{fips:rec.fips}});}}catch(e){{}}
-}});
-try{{gaEvent('atlas_county_page',{{fips:rec.fips}});}}catch(e){{}}
-}})();
-</script>
+<script src="/farmland-atlas/county.js?v={COUNTY_JS_V}"></script>
 """
     ld = [crumb_ld, {
         "@type": "Dataset", "@id": url + "#dataset",
@@ -3026,6 +3031,10 @@ def csv_text(recs):
 
 
 def write(path, text):
+    """Every .html goes through html_slim.slim(): compact JSON-LD, no indentation
+    or comments between tags; what a reader and a crawler see is unchanged."""
+    if path.endswith(".html"):
+        text = HS.slim(text)
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(text)
@@ -3048,6 +3057,7 @@ def build(root=".", out_root=None, only=None, quiet=False):
     stamps = {}
     write(os.path.join(out_root, OUT, CSS_FILE), CSS)
     write(os.path.join(out_root, OUT, "watch.js"), WATCH_JS)
+    write(os.path.join(out_root, OUT, "county.js"), COUNTY_JS)
     for f in sorted(W.C):
         if only and f not in only:
             continue

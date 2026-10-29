@@ -1,292 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Farmland Atlas Data: County CSV and How to Cite | AGSIST</title>
-  <meta name="description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/data">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Farmland Atlas Data: County CSV and How to Cite">
-  <meta property="og:description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/data">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/data.png?v=1">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="AGSIST Farmland Atlas county data: one row per U.S. county, free to download">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Farmland Atlas Data: County CSV and How to Cite">
-  <meta name="twitter:description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/data.png?v=1">
-  <meta name="twitter:image:alt" content="AGSIST Farmland Atlas county data: one row per U.S. county, free to download">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Data"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/data#dataset",
-   "name": "AGSIST Farmland Atlas: county table",
-   "description": "One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.",
-   "url": "https://agsist.com/farmland-atlas/data",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "United States"
-   },
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "rent_dry_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "rent_dry_year",
-     "unitText": "year"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "rent_dry_chg10_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "rent_irr_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "rent_irr_year",
-     "unitText": "year"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "rent_pasture_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_year",
-     "unitText": "year"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_flag",
-     "unitText": ""
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_cagr_pct",
-     "unitText": "% a year"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "rent_to_value_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "corn_yield_median_bu_ac",
-     "unitText": "bu/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "corn_yield_years",
-     "unitText": "years"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "corn_yield_trend_bu_yr",
-     "unitText": "bu/acre/yr"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "corn_trend_bu_ac",
-     "unitText": "bu/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "corn_trend_year",
-     "unitText": "year"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "corn_trend_practice",
-     "unitText": ""
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "claims_per_100_usd",
-     "unitText": "$"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "loss_ratio_last10",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "loss_ratio_all",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "years_loss_over_1",
-     "unitText": "years"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_normal_f",
-     "unitText": "°F"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_trend_f_decade",
-     "unitText": "°F/decade"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "irrigated_share_2022",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "tile_share_2022",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "notill_share_2022",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "crp_acres",
-     "unitText": "acres"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "crp_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "crp_expiring_next3_acres",
-     "unitText": "acres"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "rented_share_2022",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "solar_mw",
-     "unitText": "MW"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "wind_mw",
-     "unitText": "MW"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "gs_rain_normal_in",
-     "unitText": "inches"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "hail_1in_days_yr",
-     "unitText": "days/year"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "cattle_2022",
-     "unitText": "head"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/counties.csv"
-    },
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "application/json",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/counties.json"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Farmland Atlas Data: County CSV and How to Cite | AGSIST</title>
+<meta name="description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/data">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Farmland Atlas Data: County CSV and How to Cite">
+<meta property="og:description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/data">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/data.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="AGSIST Farmland Atlas county data: one row per U.S. county, free to download">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Farmland Atlas Data: County CSV and How to Cite">
+<meta name="twitter:description" content="One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/data.png?v=1">
+<meta name="twitter:image:alt" content="AGSIST Farmland Atlas county data: one row per U.S. county, free to download">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"Data"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/data#dataset","name":"AGSIST Farmland Atlas: county table","description":"One row per U.S. county: cash rent, land value, corn yield, crop insurance loss ratio, drought and more, as a CSV. Every column, its unit and its source.","url":"https://agsist.com/farmland-atlas/data","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","spatialCoverage":{"@type":"Place","name":"United States"},"variableMeasured":[{"@type":"PropertyValue","name":"rent_dry_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"rent_dry_year","unitText":"year"},{"@type":"PropertyValue","name":"rent_dry_chg10_pct","unitText":"%"},{"@type":"PropertyValue","name":"rent_irr_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"rent_irr_year","unitText":"year"},{"@type":"PropertyValue","name":"rent_pasture_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"value_year","unitText":"year"},{"@type":"PropertyValue","name":"value_flag","unitText":""},{"@type":"PropertyValue","name":"value_cagr_pct","unitText":"% a year"},{"@type":"PropertyValue","name":"rent_to_value_pct","unitText":"%"},{"@type":"PropertyValue","name":"corn_yield_median_bu_ac","unitText":"bu/acre"},{"@type":"PropertyValue","name":"corn_yield_years","unitText":"years"},{"@type":"PropertyValue","name":"corn_yield_trend_bu_yr","unitText":"bu/acre/yr"},{"@type":"PropertyValue","name":"corn_trend_bu_ac","unitText":"bu/acre"},{"@type":"PropertyValue","name":"corn_trend_year","unitText":"year"},{"@type":"PropertyValue","name":"corn_trend_practice","unitText":""},{"@type":"PropertyValue","name":"claims_per_100_usd","unitText":"$"},{"@type":"PropertyValue","name":"loss_ratio_last10","unitText":"ratio"},{"@type":"PropertyValue","name":"loss_ratio_all","unitText":"ratio"},{"@type":"PropertyValue","name":"years_loss_over_1","unitText":"years"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"},{"@type":"PropertyValue","name":"jul_low_normal_f","unitText":"°F"},{"@type":"PropertyValue","name":"jul_low_trend_f_decade","unitText":"°F/decade"},{"@type":"PropertyValue","name":"irrigated_share_2022","unitText":"ratio"},{"@type":"PropertyValue","name":"tile_share_2022","unitText":"ratio"},{"@type":"PropertyValue","name":"notill_share_2022","unitText":"ratio"},{"@type":"PropertyValue","name":"crp_acres","unitText":"acres"},{"@type":"PropertyValue","name":"crp_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"crp_expiring_next3_acres","unitText":"acres"},{"@type":"PropertyValue","name":"rented_share_2022","unitText":"ratio"},{"@type":"PropertyValue","name":"solar_mw","unitText":"MW"},{"@type":"PropertyValue","name":"wind_mw","unitText":"MW"},{"@type":"PropertyValue","name":"gs_rain_normal_in","unitText":"inches"},{"@type":"PropertyValue","name":"hail_1in_days_yr","unitText":"days/year"},{"@type":"PropertyValue","name":"cattle_2022","unitText":"head"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/counties.csv"},{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://agsist.com/farmland-atlas/data/counties.json"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><span aria-current="page">Data</span></nav>
 <div class="kick">Farmland Atlas</div>
@@ -307,7 +58,6 @@
 <h2>Not in the file, on purpose</h2>
 <p class="note">No combined score of any kind, no estimate of what a farm is worth, and no owner names. The Atlas shows what the public record says about a county and leaves the judgement to the reader. <a href="/farmland-atlas/methods">Methods</a>.</p>
 </main>
-
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>

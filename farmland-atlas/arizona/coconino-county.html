@@ -1,129 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Coconino County, Arizona Farm Facts: Farmland Value and Risk</title>
-  <meta name="description" content="Coconino County, AZ: land and buildings $344 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/arizona/coconino-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Coconino County, Arizona Farm Facts: Farmland Value and Risk">
-  <meta property="og:description" content="Coconino County, AZ: land and buildings $344 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/arizona/coconino-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/04005.png?v=ee58d051">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Coconino County, Arizona: dry cash rent not published, land and buildings $344, median corn yield not published">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Coconino County, Arizona Farm Facts: Farmland Value and Risk">
-  <meta name="twitter:description" content="Coconino County, AZ: land and buildings $344 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/04005.png?v=ee58d051">
-  <meta name="twitter:image:alt" content="Coconino County, Arizona: dry cash rent not published, land and buildings $344, median corn yield not published">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Arizona",
-     "item": "https://agsist.com/farmland-atlas/arizona/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Coconino County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/arizona/coconino-county#dataset",
-   "name": "Coconino County, Arizona: farmland rent, land value and risk record",
-   "description": "Coconino County, AZ: land and buildings $344 an acre in the 2022 census.",
-   "url": "https://agsist.com/farmland-atlas/arizona/coconino-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Coconino County, Arizona, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/az.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Coconino County, Arizona Farm Facts: Farmland Value and Risk</title>
+<meta name="description" content="Coconino County, AZ: land and buildings $344 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/arizona/coconino-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Coconino County, Arizona Farm Facts: Farmland Value and Risk">
+<meta property="og:description" content="Coconino County, AZ: land and buildings $344 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/arizona/coconino-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/04005.png?v=ee58d051">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Coconino County, Arizona: dry cash rent not published, land and buildings $344, median corn yield not published">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Coconino County, Arizona Farm Facts: Farmland Value and Risk">
+<meta name="twitter:description" content="Coconino County, AZ: land and buildings $344 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/04005.png?v=ee58d051">
+<meta name="twitter:image:alt" content="Coconino County, Arizona: dry cash rent not published, land and buildings $344, median corn yield not published">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"Arizona","item":"https://agsist.com/farmland-atlas/arizona/"},{"@type":"ListItem","position":4,"name":"Coconino County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/arizona/coconino-county#dataset","name":"Coconino County, Arizona: farmland rent, land value and risk record","description":"Coconino County, AZ: land and buildings $344 an acre in the 2022 census.","url":"https://agsist.com/farmland-atlas/arizona/coconino-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"Coconino County, Arizona, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/az.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/arizona/">Arizona</a><i>/</i><span aria-current="page">Coconino County</span></nav>
 <div class="kick">County farm facts</div>
@@ -133,13 +47,12 @@
 <p class="sub ap-story">As of Oct 16, the census value of land and buildings in Coconino County was $344 an acre in 2022, up 62.3% from $212 in 2017. That works out to 10.2% a year. The 2022 value still ranks 3rd lowest of 12 in Arizona, well under the state median of $1,597. Only 1% of farmland here was rented in 2022.</p>
 <div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v"><small>n/a</small></div><div class="s">county not in the NASS cash rents survey frame</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$344<small>/ac</small></div><div class="s">2022: operators&#x27; own estimate of what land and buildings were worth · AZ farm real estate 2026: $4,300 (land and buildings, state survey)<br>AZ median $1,597 · 3rd lowest of 12</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v"><small>n/a</small></div><div class="s">not shown: NASS published no non-irrigated cash rent for this county in 2022</div></div><div class="k"><div class="t">Corn yield</div><div class="v"><small>n/a</small></div><div class="s">NASS publishes no county corn yield series for this county</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v"><small>n/a</small></div><div class="s">RMA Summary of Business has no rows for this county</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">1%</div><div class="s">2022 census, rented from others<br>AZ median 20% · lowest of 13</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="Coconino County on the map with the counties that border it" class="loc"><path class="lm" d="M112.9 53.5L113.0 53.5L117.4 53.5L117.7 53.5L143.0 53.5L143.2 53.5L143.2 53.5L149.0 53.5L160.7 53.4L160.7 73.0L160.7 92.6L160.7 103.0L160.7 143.8L159.8 142.3L158.1 143.7L151.5 139.4L150.1 140.1L147.4 137.5L143.4 138.4L142.6 139.7L142.7 138.1L139.3 138.7L141.4 137.2L140.6 136.0L139.2 136.9L139.3 126.0L133.2 126.0L133.2 120.1L132.4 120.3L118.3 120.4L118.3 114.6L115.5 114.6L115.5 110.9L114.6 111.6L111.8 111.5L108.7 109.2L107.1 109.4L101.8 107.7L101.2 106.5L96.6 103.7L95.9 102.8L92.5 102.0L91.9 102.0L91.7 102.1L91.6 102.1L91.6 93.1L92.2 91.0L92.0 87.8L91.0 85.2L91.9 83.3L94.3 83.5L95.2 81.5L96.8 81.0L100.3 78.6L106.1 77.1L107.9 75.1L109.0 75.2L110.4 73.6L110.0 71.4L110.6 70.5L109.6 68.7L112.9 53.5Z"/><path class="ln0" d="M153.0 170.1L150.0 163.1L148.1 165.6L147.0 164.9L143.7 159.8L144.1 158.3L142.0 155.1L142.5 153.0L140.8 152.5L141.3 147.5L134.8 147.1L136.4 139.7L139.2 136.9L140.6 136.0L141.4 137.2L139.3 138.7L142.7 138.1L142.6 139.7L143.4 138.4L147.4 137.5L150.1 140.1L151.5 139.4L158.1 143.7L159.8 142.3L160.7 143.8L160.7 152.5L180.8 152.5L180.8 166.4L180.8 170.1L171.7 171.4L169.0 172.9L168.6 175.7L170.1 179.0L168.8 179.0L166.8 180.2L162.7 181.8L159.9 186.0L155.5 177.2L154.7 174.2L153.0 170.1Z"/><path class="ln0" d="M72.4 53.5L74.6 53.5L74.6 53.5L101.4 53.5L103.2 53.5L111.0 53.5L112.3 53.5L112.7 53.5L112.8 53.5L112.9 53.5L109.6 68.7L110.6 70.5L110.0 71.4L110.4 73.6L109.0 75.2L107.9 75.1L106.1 77.1L100.3 78.6L96.8 81.0L95.2 81.5L94.3 83.5L91.9 83.3L91.0 85.2L92.0 87.8L92.2 91.0L91.6 93.1L91.6 102.1L91.6 119.5L91.6 142.0L90.6 142.8L86.1 142.4L84.4 144.9L72.9 143.9L70.0 142.5L69.0 141.0L68.4 140.6L66.7 139.2L64.6 137.6L61.6 130.9L61.3 129.6L58.9 127.2L56.8 123.8L56.7 123.6L56.7 123.1L56.8 122.6L56.9 119.9L56.9 119.7L56.8 119.4L56.8 119.0L56.7 118.6L57.1 116.3L57.7 115.5L58.1 115.4L58.2 115.2L58.4 114.9L58.5 114.1L58.5 113.4L57.8 108.8L57.6 107.8L56.9 106.0L56.3 105.3L56.0 104.8L55.6 103.3L55.6 103.0L55.7 102.6L55.8 102.3L56.2 99.7L56.2 99.3L56.1 99.1L55.6 98.3L55.3 98.0L55.0 96.4L54.8 92.7L54.8 91.5L54.9 91.4L54.8 90.5L54.2 88.3L53.8 87.0L53.5 83.6L53.8 83.2L54.0 83.1L56.8 81.8L58.4 81.5L60.0 81.5L63.5 81.8L63.9 82.1L64.9 83.0L65.4 83.7L65.5 83.9L65.6 84.3L65.9 84.8L66.7 85.6L67.0 85.8L67.3 86.0L67.5 86.0L68.0 86.0L69.6 85.7L69.7 85.6L70.0 85.1L70.4 83.9L70.5 83.1L72.0 80.3L72.1 80.3L72.5 80.1L72.5 78.2L72.4 76.9L72.5 74.2L72.5 70.9L72.4 64.8L72.4 60.1L72.4 58.7L72.4 53.5Z"/><path class="ln0" d="M180.8 97.6L185.5 97.6L185.0 102.4L185.0 125.3L184.5 134.0L184.9 136.9L184.9 148.3L184.6 159.8L183.7 159.8L183.7 166.7L180.8 166.4L180.8 152.5L160.7 152.5L160.7 143.8L160.7 103.0L160.7 92.6L160.7 73.0L160.7 53.4L167.6 53.4L172.0 53.6L180.8 53.6L180.9 63.5L180.8 91.6L180.8 97.6Z"/><path class="ln0" d="M131.0 152.0L122.9 150.9L120.4 155.6L120.3 155.6L120.2 155.8L119.9 156.4L118.1 155.8L107.4 152.5L91.6 152.5L91.6 152.4L91.6 142.0L91.6 119.5L91.6 102.1L91.7 102.1L91.9 102.0L92.5 102.0L95.9 102.8L96.6 103.7L101.2 106.5L101.8 107.7L107.1 109.4L108.7 109.2L111.8 111.5L114.6 111.6L115.5 110.9L115.5 114.6L118.3 114.6L118.3 120.4L132.4 120.3L133.2 120.1L133.2 126.0L139.3 126.0L139.2 136.9L136.4 139.7L134.8 147.1L141.3 147.5L140.8 152.5L134.7 152.5L131.0 152.0Z"/><path class="ln0" d="M163.6 35.6L163.7 37.4L161.6 37.6L162.1 39.3L161.1 42.1L160.0 42.8L157.6 42.0L156.8 47.7L155.2 49.4L152.5 50.2L149.3 50.1L147.5 52.8L146.9 51.7L145.6 53.1L143.0 53.5L117.7 53.5L117.4 53.5L113.0 53.5L112.9 53.5L112.8 53.5L112.7 53.5L112.3 53.5L111.0 53.5L103.2 53.5L103.2 37.0L103.2 35.6L109.0 35.6L117.6 35.6L117.6 35.8L131.2 35.8L163.6 35.6Z"/><path class="ln0" d="M206.5 21.4L206.5 24.4L206.5 25.7L206.5 25.9L206.5 30.0L206.5 30.0L206.5 32.9L206.5 33.1L206.5 33.6L206.5 36.0L206.5 36.0L206.5 37.5L206.4 41.1L206.4 49.8L206.4 49.8L206.4 49.9L206.4 50.3L206.4 50.7L206.4 51.0L206.4 51.1L206.4 53.5L202.8 53.5L201.4 53.5L201.0 53.5L200.6 53.5L200.5 53.5L200.4 53.5L197.5 53.5L197.4 53.5L180.8 53.6L172.0 53.6L167.6 53.4L160.7 53.4L149.0 53.5L143.2 53.5L143.2 53.5L143.0 53.5L145.6 53.1L146.9 51.7L147.5 52.8L149.3 50.1L152.5 50.2L155.2 49.4L156.8 47.7L157.6 42.0L160.0 42.8L161.1 42.1L162.1 39.3L161.6 37.6L163.7 37.4L163.6 35.6L167.5 32.0L169.4 27.8L170.0 24.5L172.7 24.1L173.3 24.9L182.8 15.5L183.9 14.2L180.5 8.5L180.2 4.0L206.0 4.0L206.0 11.4L206.5 15.4L206.5 15.4L206.5 20.5L206.5 20.6L206.5 21.4Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#04005">Open on the map</a>
-  <a href="/farmland-atlas/compare#04005">Compare</a>
-  <a href="/rent/arizona">Arizona cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#04005">Open on the map</a>
+<a href="/farmland-atlas/compare#04005">Compare</a>
+<a href="/rent/arizona">Arizona cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
-
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
 <div class="chg"><section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2><div class="fact st lv" data-k="corn-bid"><span class="l">Corn bid</span><span class="r"></span></div><div class="fact st lv" data-k="soy-bid"><span class="l">Soybean bid</span><span class="r"></span></div><div class="fact st lv" data-k="corn-basis"><span class="l">Corn basis</span><span class="r"></span></div><div class="fact st lv" data-k="soy-basis"><span class="l">Soybean basis</span><span class="r"></span></div><div class="fact st lv" data-k="corn-fut"><span class="l">Corn futures</span><span class="r"></span></div><div class="fact st lv" data-k="soy-fut"><span class="l">Soybean futures</span><span class="r"></span></div><div class="fact st lv" data-k="feeders"><span class="l">Feeder cattle futures</span><span class="r"></span></div><div class="fact st lv" data-k="hay"><span class="l">Hay, Arizona price received</span><span class="r"></span></div><p class="note">Bids are posted elevator prices within 50 miles of the county middle, or of your own field or saved place in this county when this device has one (each row says which), best and nearest, never a buyer's name. Not a contract; call before you haul. Livestock lines show where the 2022 Census counts 1,000 head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle.</p><p class="note"><a href="/fast-facts?fips=04005">Bids from your own ZIP or farm, in Fast Facts</a></p></section><section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2><div class="fact st lv" data-k="rain"><span class="l">Rain since Jan 1</span><span class="r"></span></div><div class="fact st lv" data-k="drought"><span class="l">Drought this week</span><span class="r"></span></div><div class="fact st lv" data-k="hail"><span class="l">Hail, last 30 days</span><span class="r"></span></div><p class="note"><a data-xl="rain" href="/rain/arizona/coconino-county">Rain so far this year in Coconino County, Arizona</a></p><h3>Drought, year by year</h3><svg viewBox="0 0 640 170" role="img" aria-label="Weeks per year with half the county or more in severe drought or worse" class="ch"><path class="bf" d="M10.9 148.0h18.2V148h-18.2zM34.9 148.0h18.2V148h-18.2zM58.9 55.1h18.2V148h-18.2zM82.9 30.1h18.2V148h-18.2zM106.9 30.1h18.2V148h-18.2zM130.9 145.7h18.2V148h-18.2zM154.9 73.2h18.2V148h-18.2zM178.9 89.1h18.2V148h-18.2zM202.9 148.0h18.2V148h-18.2zM226.9 120.8h18.2V148h-18.2zM250.9 141.2h18.2V148h-18.2zM274.9 148.0h18.2V148h-18.2zM298.9 116.3h18.2V148h-18.2zM322.9 111.7h18.2V148h-18.2zM346.9 148.0h18.2V148h-18.2zM370.9 134.4h18.2V148h-18.2zM394.9 148.0h18.2V148h-18.2zM418.9 148.0h18.2V148h-18.2zM442.9 66.4h18.2V148h-18.2zM466.9 123.1h18.2V148h-18.2zM490.9 102.7h18.2V148h-18.2zM514.9 57.3h18.2V148h-18.2zM538.9 109.5h18.2V148h-18.2zM562.9 148.0h18.2V148h-18.2zM586.9 148.0h18.2V148h-18.2zM610.9 93.6h18.2V148h-18.2z"/><text class="ta" x="20.0" y="164">2000</text><text class="ta" x="140.0" y="164">2005</text><text class="ta" x="260.0" y="164">2010</text><text class="ta" x="380.0" y="164">2015</text><text class="ta" x="500.0" y="164">2020</text><text class="ta" x="620.0" y="164">2025</text><text class="tv" x="20.0" y="145.0">0</text><text class="tv" x="92.0" y="27.1">52</text><text class="tv" x="620.0" y="90.6">24</text><path class="ax" d="M8 148H632"/></svg><p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.</p><div class="fact"><span class="l">D2 or worse for half the county, 2000–2025</span><span class="r">404 of 1,357 weeks<small>30% of weeks</small></span></div><div class="fact"><span class="l">Year with the most D2+ weeks</span><span class="r">2003 (tied with 2004)<small>52 weeks</small></span></div><div class="fact"><span class="l">Last five full years, 2021–2025</span><span class="r">81 weeks</span></div><div class="fact st"><span class="l">2026 so far</span><span class="r">13 weeks<small>half the county or more in D2, 40 weekly maps</small></span></div><div class="fact"><span class="l">July average of daily lows, 2017–2026</span><span class="r">60.9 °F<small>1991–2020 normal 59.5 °F</small></span></div><div class="fact"><span class="l">Trend in July lows since 1976</span><span class="r">+0.81 °F a decade<small>warming</small></span></div><div class="fact st"><span class="l">Rain, April to September, usual</span><span class="r">6.2 in<small>1991–2020 county normal, NOAA; the 2017–2026 seasons averaged 5.5 in</small></span></div><div class="fact st"><span class="l">Days with hail 1 inch or larger</span><span class="r">2.4 a year<small>reports, 2010–2025; a zero is no report, not proof of no hail</small></span></div><div class="fact st"><span class="l">Last spring freeze, first fall freeze</span><span class="r">Apr 24, Oct 24<small>middle dates 1996–2025, NOAA county-average daily low of 32 °F or colder</small></span></div><div class="fact"><span class="l">Frost-free days</span><span class="r">180<small>middle of 1996–2025</small></span></div><div class="fact st"><span class="l">Corn growing degree days, May to September</span><span class="r">2,848<small>middle of 1996–2025; 2016–2025 averaged 2,901</small></span></div></section><section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2><div class="fact st lv" data-k="corn-progress"><span class="l">Corn harvested</span><span class="r"></span></div><div class="fact st lv" data-k="soy-progress"><span class="l">Soybeans harvested</span><span class="r"></span></div><h3>Corn yield</h3><div class="fact w"><span class="l">County corn yield</span><span class="r">NASS publishes no county corn yield series for this county</span></div></section><section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2><h3>Cash rent</h3><p class="note">Every published Arizona county rate, side by side: <a href="/rent/arizona">Arizona cash rent by county</a>.</p><div class="fact w"><span class="l">Cash rent</span><span class="r">County not in the NASS cash rents survey frame</span></div><h3>Land value</h3><div class="fact st"><span class="l">Land and buildings, 2022</span><span class="r">$344/ac<small>operators&#x27; own estimate, not a sale price</small></span></div><div class="fact"><span class="l">Census 2012</span><span class="r">$209/ac</span></div><div class="fact"><span class="l">Census 2017</span><span class="r">$212/ac</span></div><div class="fact"><span class="l">Change 2017 to 2022</span><span class="r">+62.3%<small>+10.2% a year, nominal</small></span></div><div class="fact w"><span class="l">Dry rent ÷ census value</span><span class="r">NASS published no non-irrigated cash rent for this county in 2022</span></div><div class="fact st"><span class="l">Arizona cropland, 2026 state survey</span><span class="r">$8,300/ac<small>+1.8% from 2025 · USDA NASS Land Values, state average</small></span></div><div class="fact st"><span class="l">Arizona farm real estate, 2026</span><span class="r">$4,300/ac<small>land and buildings, state average</small></span></div><div class="fact"><span class="l">Arizona pasture, 2026</span><span class="r">$980/ac<small>state average</small></span></div><p class="note">The census value is this county's, from 2022. The survey figures are the Arizona average for 2026, from the USDA NASS Land Values report. NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p><p class="note" data-ls-door="state">Land sales: Arizona sale records: not checked yet. <a href="/land-sales/#coverage">Where each state stands</a>.</p></section><section class="card" aria-labelledby="c-prog"><h2 id="c-prog">Programs and risk</h2><div class="fact st lv" data-k="arc"><span class="l">ARC or PLC sign-up</span><span class="r"></span></div><p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/arizona">ARC or PLC in Arizona</a>.</p><p class="note">Insuring pasture or hay? PRF rainfall insurance for pasture and hay in Coconino County: its grids, county values and record are on <a href="/prf/arizona/coconino-county">the county PRF page</a>.</p><h3>Crop insurance record</h3><div class="fact w"><span class="l">Premium and payouts</span><span class="r">RMA Summary of Business has no rows for this county</span></div><h3>Conservation Reserve Program</h3><p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p><div class="fact"><span class="l">CRP enrolled, 2025</span><span class="r">0 ac</span></div></section><section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2><div class="fact"><span class="l">Harvested cropland irrigated, 2022</span><span class="r">98%</span></div><div class="fact"><span class="l">Drained by tile, 2022</span><span class="r">under 1% of cropland<small>62 ac</small></span></div><div class="fact"><span class="l">Farmed no-till, 2022</span><span class="r">12% of cropland<small>1,455 ac</small></span></div><div class="fact"><span class="l">Cover crops, 2022</span><span class="r">under 1% of cropland<small>21 ac</small></span></div><div class="fact st"><span class="l">Irrigation wells on record</span><span class="r">241<small>Arizona DWR well registry (Wells55), not cancelled</small></span></div><div class="fact"><span class="l">Median well depth</span><span class="r">100 ft</span></div><div class="fact st"><span class="l">Solar and wind operating, 2025</span><span class="r">0 MW solar · 716.4 MW wind<small>nameplate, EIA Form 860</small></span></div><div class="fact"><span class="l">Cattle and calves, 2022</span><span class="r">41,999<small>−11.0% since 2017</small></span></div><div class="fact"><span class="l">Milk cows, 2022</span><span class="r">10<small>head, Census of Agriculture</small></span></div><div class="fact"><span class="l">Beef cows, 2022</span><span class="r">27,721<small>head, Census of Agriculture</small></span></div><div class="fact"><span class="l">Hogs and pigs, 2022</span><span class="r">173<small>head, Census of Agriculture</small></span></div><div class="fact st"><span class="l">Farmland rented from others, 2022</span><span class="r">1%<small>census tenure, owned plus rented acres in farms</small></span></div><p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section></div>
 <div id="watch"><form class="watch" data-fips="04005" aria-label="Watch Coconino County"><b>Watch this county</b><p>Get an email when the published figures for Coconino County, Arizona change. Usually once or twice a year. You confirm by email first, and every email has a one-tap stop. AGSIST, PO Box 243, Chetek, WI 54728.</p><div class="wr"><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Watch this county</button></div><div class="wm" role="status" aria-live="polite"></div></form><script defer src="/farmland-atlas/watch.js?v=530339ee"></script></div>
@@ -153,37 +66,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/arizona/cochise-county">← Cochise County</a></span><a href="/farmland-atlas/arizona/">All Arizona counties</a><span><a href="/farmland-atlas/arizona/gila-county">Gila County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "04005", "state": "AZ", "county": "Coconino County", "rent_dry_usd_ac": null, "rent_dry_year": null, "rent_dry_chg10_pct": null, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": null, "value_usd_ac": 344, "value_year": 2022, "value_flag": null, "value_cagr_pct": 10.2, "rent_to_value_pct": null, "corn_yield_median_bu_ac": null, "corn_yield_years": null, "corn_yield_trend_bu_yr": null, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": null, "loss_ratio_last10": null, "loss_ratio_all": null, "years_loss_over_1": null, "d2_week_share_pct": 29.77, "jul_low_recent_f": 60.9, "jul_low_normal_f": 59.5, "jul_low_trend_f_decade": 0.81, "irrigated_share_2022": 0.983, "tile_share_2022": 0.004974, "notill_share_2022": 0.116717, "crp_acres": 0, "crp_share_pct": null, "crp_expiring_next3_acres": null, "rented_share_2022": 0.0079, "solar_mw": 0.0, "wind_mw": 716.4, "gs_rain_normal_in": 6.2, "hail_1in_days_yr": 2.4, "cattle_2022": 41999.0}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"04005","state":"AZ","county":"Coconino County","rent_dry_usd_ac":null,"rent_dry_year":null,"rent_dry_chg10_pct":null,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":null,"value_usd_ac":344,"value_year":2022,"value_flag":null,"value_cagr_pct":10.2,"rent_to_value_pct":null,"corn_yield_median_bu_ac":null,"corn_yield_years":null,"corn_yield_trend_bu_yr":null,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":null,"loss_ratio_last10":null,"loss_ratio_all":null,"years_loss_over_1":null,"d2_week_share_pct":29.77,"jul_low_recent_f":60.9,"jul_low_normal_f":59.5,"jul_low_trend_f_decade":0.81,"irrigated_share_2022":0.983,"tile_share_2022":0.004974,"notill_share_2022":0.116717,"crp_acres":0,"crp_share_pct":null,"crp_expiring_next3_acres":null,"rented_share_2022":0.0079,"solar_mw":0.0,"wind_mw":716.4,"gs_rain_normal_in":6.2,"hail_1in_days_yr":2.4,"cattle_2022":41999.0}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>

@@ -1,129 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Alpine County, CA Farm Facts: Farmland Value and Risk</title>
-  <meta name="description" content="Alpine County, CA: land and buildings $4,950 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/california/alpine-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Alpine County, CA Farm Facts: Farmland Value and Risk">
-  <meta property="og:description" content="Alpine County, CA: land and buildings $4,950 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/california/alpine-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/06003.png?v=9702a0d1">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Alpine County, California: dry cash rent not published, land and buildings $4,950, median corn yield not published">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Alpine County, CA Farm Facts: Farmland Value and Risk">
-  <meta name="twitter:description" content="Alpine County, CA: land and buildings $4,950 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/06003.png?v=9702a0d1">
-  <meta name="twitter:image:alt" content="Alpine County, California: dry cash rent not published, land and buildings $4,950, median corn yield not published">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "California",
-     "item": "https://agsist.com/farmland-atlas/california/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Alpine County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/california/alpine-county#dataset",
-   "name": "Alpine County, California: farmland rent, land value and risk record",
-   "description": "Alpine County, CA: land and buildings $4,950 an acre in the 2022 census.",
-   "url": "https://agsist.com/farmland-atlas/california/alpine-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Alpine County, California, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/ca.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Alpine County, CA Farm Facts: Farmland Value and Risk</title>
+<meta name="description" content="Alpine County, CA: land and buildings $4,950 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/california/alpine-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Alpine County, CA Farm Facts: Farmland Value and Risk">
+<meta property="og:description" content="Alpine County, CA: land and buildings $4,950 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/california/alpine-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/06003.png?v=9702a0d1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Alpine County, California: dry cash rent not published, land and buildings $4,950, median corn yield not published">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Alpine County, CA Farm Facts: Farmland Value and Risk">
+<meta name="twitter:description" content="Alpine County, CA: land and buildings $4,950 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/06003.png?v=9702a0d1">
+<meta name="twitter:image:alt" content="Alpine County, California: dry cash rent not published, land and buildings $4,950, median corn yield not published">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"California","item":"https://agsist.com/farmland-atlas/california/"},{"@type":"ListItem","position":4,"name":"Alpine County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/california/alpine-county#dataset","name":"Alpine County, California: farmland rent, land value and risk record","description":"Alpine County, CA: land and buildings $4,950 an acre in the 2022 census.","url":"https://agsist.com/farmland-atlas/california/alpine-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"Alpine County, California, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/ca.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/california/">California</a><i>/</i><span aria-current="page">Alpine County</span></nav>
 <div class="kick">County farm facts</div>
@@ -133,13 +47,12 @@
 <p class="sub ap-story">As of Oct 16, the census value of land and buildings in Alpine County was $4,950 an acre in 2022. That is up 8.2% from $4,573 in 2017, or 1.6% a year. Back in 2012 it stood at $4,289. The state median across 52 counties is $11,471, so Alpine sits well under it.</p>
 <p class="warn">Alpine County had no acres published in farms in the 2022 census. County averages here describe very little farmland; read them with care.</p><div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v"><small>n/a</small></div><div class="s">county not in the NASS cash rents survey frame</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$4,950<small>/ac</small></div><div class="s">2022: operators&#x27; own estimate of what land and buildings were worth · CA farm real estate 2026: $14,100 (land and buildings, state survey)<br>CA median $11,471</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v"><small>n/a</small></div><div class="s">not shown: NASS published no non-irrigated cash rent for this county in 2022</div></div><div class="k"><div class="t">Corn yield</div><div class="v"><small>n/a</small></div><div class="s">NASS publishes no county corn yield series for this county</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v"><small>n/a</small></div><div class="s">RMA Summary of Business has no rows for this county</div></div><div class="k"><div class="t">Farmland rented</div><div class="v"><small>n/a</small></div><div class="s">suppressed by NASS</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="Alpine County on the map with the counties that border it" class="loc"><path class="lm" d="M85.4 54.8L100.1 39.0L98.2 32.4L122.3 53.6L122.4 53.7L122.5 53.8L119.9 64.4L125.7 74.5L118.4 91.3L109.7 82.5L99.7 88.4L89.4 80.9L85.4 73.5L85.4 54.8Z"/><path class="ln0" d="M15.1 101.2L12.7 93.9L12.6 73.7L28.9 68.5L43.1 74.2L52.0 73.4L67.9 69.7L83.5 54.2L85.4 54.8L85.4 73.5L61.9 78.3L58.7 77.1L22.8 101.6L15.1 101.2Z"/><path class="ln0" d="M41.2 139.4L20.4 115.5L19.4 114.5L15.1 101.2L22.8 101.6L58.7 77.1L61.9 78.3L85.4 73.5L89.4 80.9L77.5 86.7L52.4 123.9L50.2 123.9L51.7 127.6L41.2 139.4Z"/><path class="ln0" d="M4.0 53.9L11.7 34.1L34.1 25.0L42.0 31.4L48.6 34.2L55.0 29.2L57.8 23.2L76.9 22.9L80.0 19.4L90.8 19.4L90.8 25.9L98.2 32.4L100.1 39.0L85.4 54.8L83.5 54.2L67.9 69.7L52.0 73.4L43.1 74.2L28.9 68.5L12.6 73.7L5.7 53.4L4.6 54.6L4.0 53.9Z"/><path class="ln0" d="M155.1 82.7L157.5 84.9L186.4 110.9L210.6 133.1L240.2 160.4L240.2 160.4L256.0 174.9L184.2 175.1L165.4 163.2L157.7 148.8L146.6 148.3L151.8 142.0L151.9 134.1L143.6 128.1L143.9 120.7L140.7 114.9L118.9 103.7L118.4 91.3L125.7 74.5L119.9 64.4L122.5 53.8L129.5 59.9L129.5 59.9L132.7 62.8L132.7 62.8L142.1 71.1L155.1 82.7Z"/><path class="ln0" d="M41.2 139.4L51.7 127.6L50.2 123.9L52.4 123.9L77.5 86.7L89.4 80.9L99.7 88.4L109.7 82.5L118.4 91.3L118.9 103.7L140.7 114.9L143.9 120.7L143.6 128.1L151.9 134.1L151.8 142.0L146.6 148.3L145.2 147.7L144.8 145.5L143.6 144.5L126.3 132.3L117.9 137.9L116.3 142.3L105.5 146.8L98.0 146.5L84.8 139.6L81.2 144.2L64.6 149.7L66.1 157.1L61.1 153.7L61.4 158.5L41.2 139.4Z"/><path class="ln0" d="M125.1 17.6L143.3 17.8L143.4 26.8L136.5 27.6L133.6 37.4L136.3 44.5L136.2 51.9L140.4 52.2L142.1 71.1L132.7 62.8L132.7 62.8L129.5 59.9L129.5 59.9L122.5 53.8L122.4 53.7L122.3 53.6L98.2 32.4L90.8 25.9L90.8 19.4L90.7 15.0L109.1 14.9L109.8 17.7L125.1 17.6Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#06003">Open on the map</a>
-  <a href="/farmland-atlas/compare#06003">Compare</a>
-  <a href="/rent/california">California cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#06003">Open on the map</a>
+<a href="/farmland-atlas/compare#06003">Compare</a>
+<a href="/rent/california">California cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
-
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
 <div class="chg"><section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2><div class="fact st lv" data-k="corn-bid"><span class="l">Corn bid</span><span class="r"></span></div><div class="fact st lv" data-k="soy-bid"><span class="l">Soybean bid</span><span class="r"></span></div><div class="fact st lv" data-k="corn-basis"><span class="l">Corn basis</span><span class="r"></span></div><div class="fact st lv" data-k="soy-basis"><span class="l">Soybean basis</span><span class="r"></span></div><div class="fact st lv" data-k="corn-fut"><span class="l">Corn futures</span><span class="r"></span></div><div class="fact st lv" data-k="soy-fut"><span class="l">Soybean futures</span><span class="r"></span></div><p class="note">Bids are posted elevator prices within 50 miles of the county middle, or of your own field or saved place in this county when this device has one (each row says which), best and nearest, never a buyer's name. Not a contract; call before you haul. Livestock lines show where the 2022 Census counts 1,000 head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle.</p><p class="note"><a href="/fast-facts?fips=06003">Bids from your own ZIP or farm, in Fast Facts</a></p></section><section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2><div class="fact st lv" data-k="rain"><span class="l">Rain since Jan 1</span><span class="r"></span></div><div class="fact st lv" data-k="drought"><span class="l">Drought this week</span><span class="r"></span></div><div class="fact st lv" data-k="hail"><span class="l">Hail, last 30 days</span><span class="r"></span></div><p class="note"><a data-xl="rain" href="/rain/california/alpine-county">Rain so far this year in Alpine County, California</a></p><h3>Drought, year by year</h3><svg viewBox="0 0 640 170" role="img" aria-label="Weeks per year with half the county or more in severe drought or worse" class="ch"><path class="bf" d="M10.9 148.0h18.2V148h-18.2zM34.9 86.8h18.2V148h-18.2zM58.9 145.7h18.2V148h-18.2zM82.9 148.0h18.2V148h-18.2zM106.9 116.3h18.2V148h-18.2zM130.9 148.0h18.2V148h-18.2zM154.9 148.0h18.2V148h-18.2zM178.9 61.9h18.2V148h-18.2zM202.9 145.7h18.2V148h-18.2zM226.9 148.0h18.2V148h-18.2zM250.9 148.0h18.2V148h-18.2zM274.9 148.0h18.2V148h-18.2zM298.9 136.7h18.2V148h-18.2zM322.9 91.3h18.2V148h-18.2zM346.9 30.1h18.2V148h-18.2zM370.9 30.1h18.2V148h-18.2zM394.9 30.1h18.2V148h-18.2zM418.9 145.7h18.2V148h-18.2zM442.9 148.0h18.2V148h-18.2zM466.9 148.0h18.2V148h-18.2zM490.9 138.9h18.2V148h-18.2zM514.9 41.5h18.2V148h-18.2zM538.9 46.0h18.2V148h-18.2zM562.9 148.0h18.2V148h-18.2zM586.9 148.0h18.2V148h-18.2zM610.9 148.0h18.2V148h-18.2z"/><text class="ta" x="20.0" y="164">2000</text><text class="ta" x="140.0" y="164">2005</text><text class="ta" x="260.0" y="164">2010</text><text class="ta" x="380.0" y="164">2015</text><text class="ta" x="500.0" y="164">2020</text><text class="ta" x="620.0" y="164">2025</text><text class="tv" x="20.0" y="145.0">0</text><text class="tv" x="356.0" y="27.1">52</text><text class="tv" x="620.0" y="145.0">0</text><path class="ax" d="M8 148H632"/></svg><p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.</p><div class="fact"><span class="l">D2 or worse for half the county, 2000–2025</span><span class="r">364 of 1,357 weeks<small>27% of weeks</small></span></div><div class="fact st"><span class="l">Year with the most D2+ weeks</span><span class="r">2015 (tied with 2014, 2016)<small>52 weeks</small></span></div><div class="fact"><span class="l">Last five full years, 2021–2025</span><span class="r">92 weeks</span></div><div class="fact st"><span class="l">2026 so far</span><span class="r">0 weeks<small>half the county or more in D2, 40 weekly maps</small></span></div><div class="fact"><span class="l">July average of daily lows, 2017–2026</span><span class="r">50.9 °F<small>1991–2020 normal 48.9 °F</small></span></div><div class="fact"><span class="l">Trend in July lows since 1976</span><span class="r">+0.92 °F a decade<small>warming</small></span></div><div class="fact st"><span class="l">Rain, April to September, usual</span><span class="r">7.1 in<small>1991–2020 county normal, NOAA; the 2017–2026 seasons averaged 6.8 in</small></span></div><div class="fact st"><span class="l">Days with hail 1 inch or larger</span><span class="r">0.1 a year<small>reports, 2010–2025; a zero is no report, not proof of no hail</small></span></div><div class="fact st"><span class="l">Last spring freeze, first fall freeze</span><span class="r">Jun 8, Oct 2<small>middle dates 1996–2025, NOAA county-average daily low of 32 °F or colder</small></span></div><div class="fact"><span class="l">Frost-free days</span><span class="r">120<small>middle of 1996–2025</small></span></div><div class="fact st"><span class="l">Corn growing degree days, May to September</span><span class="r">1,553<small>middle of 1996–2025; 2016–2025 averaged 1,618</small></span></div></section><section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2><div class="fact st lv" data-k="corn-progress"><span class="l">Corn harvested</span><span class="r"></span></div><div class="fact st lv" data-k="soy-progress"><span class="l">Soybeans harvested</span><span class="r"></span></div><h3>Corn yield</h3><div class="fact w"><span class="l">County corn yield</span><span class="r">NASS publishes no county corn yield series for this county</span></div></section><section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2><h3>Cash rent</h3><p class="note">Every published California county rate, side by side: <a href="/rent/california">California cash rent by county</a>.</p><div class="fact w"><span class="l">Cash rent</span><span class="r">County not in the NASS cash rents survey frame</span></div><h3>Land value</h3><div class="fact st"><span class="l">Land and buildings, 2022</span><span class="r">$4,950/ac<small>operators&#x27; own estimate, not a sale price</small></span></div><div class="fact"><span class="l">Census 2012</span><span class="r">$4,289/ac</span></div><div class="fact"><span class="l">Census 2017</span><span class="r">$4,573/ac</span></div><div class="fact"><span class="l">Change 2017 to 2022</span><span class="r">+8.2%<small>+1.6% a year, nominal</small></span></div><div class="fact w"><span class="l">Dry rent ÷ census value</span><span class="r">NASS published no non-irrigated cash rent for this county in 2022</span></div><div class="fact st"><span class="l">California cropland, 2026 state survey</span><span class="r">$18,430/ac<small>+2.7% from 2025 · USDA NASS Land Values, state average</small></span></div><div class="fact st"><span class="l">California farm real estate, 2026</span><span class="r">$14,100/ac<small>land and buildings, state average</small></span></div><div class="fact"><span class="l">California pasture, 2026</span><span class="r">$4,250/ac<small>state average</small></span></div><p class="note">The census value is this county's, from 2022. The survey figures are the California average for 2026, from the USDA NASS Land Values report. NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p><p class="note" data-ls-door="state">Land sales: California sale records: not checked yet. <a href="/land-sales/#coverage">Where each state stands</a>.</p></section><section class="card" aria-labelledby="c-prog"><h2 id="c-prog">Programs and risk</h2><div class="fact st lv" data-k="arc"><span class="l">ARC or PLC sign-up</span><span class="r"></span></div><p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/california">ARC or PLC in California</a>.</p><p class="note">PRF rainfall insurance for pasture and hay in Alpine County: its grids, county values and record are on <a href="/prf/california/alpine-county">the county PRF page</a>.</p><h3>Crop insurance record</h3><div class="fact w"><span class="l">Premium and payouts</span><span class="r">RMA Summary of Business has no rows for this county</span></div><h3>Conservation Reserve Program</h3><p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p><div class="fact"><span class="l">CRP enrolled, 2025</span><span class="r">0 ac</span></div></section><section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2><div class="fact w"><span class="l">Harvested cropland irrigated, 2022</span><span class="r">NASS published no harvested cropland for this county</span></div><div class="fact w"><span class="l">Tile drainage and tillage</span><span class="r">Cropland acres suppressed or not printed in the 2022 census</span></div><div class="fact st"><span class="l">Irrigation wells on record</span><span class="r">6<small>California DWR well completion reports (new wells)</small></span></div><div class="fact"><span class="l">Median well depth</span><span class="r">270 ft</span></div><p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section></div>
 <div id="watch"><form class="watch" data-fips="06003" aria-label="Watch Alpine County"><b>Watch this county</b><p>Get an email when the published figures for Alpine County, California change. Usually once or twice a year. You confirm by email first, and every email has a one-tap stop. AGSIST, PO Box 243, Chetek, WI 54728.</p><div class="wr"><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Watch this county</button></div><div class="wm" role="status" aria-live="polite"></div></form><script defer src="/farmland-atlas/watch.js?v=530339ee"></script></div>
@@ -153,37 +66,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/california/alameda-county">← Alameda County</a></span><a href="/farmland-atlas/california/">All California counties</a><span><a href="/farmland-atlas/california/amador-county">Amador County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "06003", "state": "CA", "county": "Alpine County", "rent_dry_usd_ac": null, "rent_dry_year": null, "rent_dry_chg10_pct": null, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": null, "value_usd_ac": 4950, "value_year": 2022, "value_flag": null, "value_cagr_pct": 1.6, "rent_to_value_pct": null, "corn_yield_median_bu_ac": null, "corn_yield_years": null, "corn_yield_trend_bu_yr": null, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": null, "loss_ratio_last10": null, "loss_ratio_all": null, "years_loss_over_1": null, "d2_week_share_pct": 26.82, "jul_low_recent_f": 50.9, "jul_low_normal_f": 48.9, "jul_low_trend_f_decade": 0.92, "irrigated_share_2022": null, "tile_share_2022": null, "notill_share_2022": null, "crp_acres": 0, "crp_share_pct": null, "crp_expiring_next3_acres": null, "rented_share_2022": null, "solar_mw": 0.0, "wind_mw": 0.0, "gs_rain_normal_in": 7.1, "hail_1in_days_yr": 0.1, "cattle_2022": null}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"06003","state":"CA","county":"Alpine County","rent_dry_usd_ac":null,"rent_dry_year":null,"rent_dry_chg10_pct":null,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":null,"value_usd_ac":4950,"value_year":2022,"value_flag":null,"value_cagr_pct":1.6,"rent_to_value_pct":null,"corn_yield_median_bu_ac":null,"corn_yield_years":null,"corn_yield_trend_bu_yr":null,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":null,"loss_ratio_last10":null,"loss_ratio_all":null,"years_loss_over_1":null,"d2_week_share_pct":26.82,"jul_low_recent_f":50.9,"jul_low_normal_f":48.9,"jul_low_trend_f_decade":0.92,"irrigated_share_2022":null,"tile_share_2022":null,"notill_share_2022":null,"crp_acres":0,"crp_share_pct":null,"crp_expiring_next3_acres":null,"rented_share_2022":null,"solar_mw":0.0,"wind_mw":0.0,"gs_rain_normal_in":7.1,"hail_1in_days_yr":0.1,"cattle_2022":null}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>
