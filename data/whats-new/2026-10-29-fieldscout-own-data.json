@@ -1,0 +1,7 @@
+{
+ "id": "2026-10-29-fieldscout-own-data",
+ "date": "2026-10-29",
+ "title": "Field Scout reads more of our own data",
+ "line": "Field Scout now uses free USGS maps, loads county cards even when a lookup is down, and shows last year's crop, rain vs normal and the nearest bid up top.",
+ "link": "/field-scout"
+}

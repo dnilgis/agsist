@@ -1,1 +1,14 @@
-{"include": {}, "exclude": {}}
+{"include": {
+  "1829883": "Green Grass Acres LLC: a farm by name; checked by the lead Oct 29 from the screen list",
+  "1866774": "Tasty Acres Homestead, LLC: a homestead farm by name; checked by the lead Oct 29",
+  "1943355": "REGEN Industrial Hemp USA, LLC: industrial hemp is a farm crop; checked by the lead Oct 29"
+ },
+ "exclude": {
+  "1767504": "Brooklyn Heights Farm Residences LLC: residential real estate, not farming",
+  "1993713": "Chubby Cattle Philadelphia, LLC: a restaurant, not cattle",
+  "1906102": "Hentze Farm Hospitality Co.: hospitality, not farming",
+  "1841748": "GreenHouse Cannabis Group Inc.: cannabis retail and grow, kept off a farm list",
+  "1810113": "Farm to Bottle Beverages LLC: a beverage brand",
+  "1792254": "Divine Dog Ranch LLC: a dog business, not a ranch",
+  "1799107": "Cooks & Farmers LLC: a restaurant name"
+ }}

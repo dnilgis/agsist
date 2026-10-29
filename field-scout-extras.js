@@ -187,7 +187,7 @@ window.__fsExtras = function (FSX) {
         (vv!=null?'<tr><th>Crop vigor (NDVI)</th><td>'+vv.toFixed(2)+', '+vWord+'</td></tr>':'')+
         nrmCell+
         (vx.ndmi!=null?'<tr><th>Canopy moisture (NDMI)</th><td>'+vx.ndmi.toFixed(2)+'</td></tr>':'')+
-        (vx.ndre!=null?'<tr><th>Nitrogen / chlorophyll (NDRE)</th><td>'+vx.ndre.toFixed(2)+'</td></tr>':'')+
+        (vx.ndre!=null?'<tr><th>Red-edge chlorophyll (NDRE)</th><td>'+vx.ndre.toFixed(2)+'</td></tr>':'')+
         '<tr><th>Latest clear pass</th><td>'+esc(vx.date)+' &middot; '+d.indices.series.length+' this season</td></tr>'+
         '</table>'+reportSpark(d.indices.series)+'<p class="r-note">Sentinel-2 / Copernicus, cloud-masked, averaged over the field.</p>';
     }
@@ -204,8 +204,8 @@ window.__fsExtras = function (FSX) {
     var condRows='';
     if(dr&&dr.cat) condRows+=kv('Drought status', dr.cat==='None'?'No drought':esc(dr.cat)+(dr.approx?' (county-wide)':''));
     if(se){
-      condRows+=kv('Season rainfall', se.pNow.toFixed(1)+'\u2033 vs '+se.pNorm.toFixed(1)+'\u2033 '+se.n+'-yr average ('+(se.pDep>=0?'+':'')+se.pDep.toFixed(1)+'\u2033)');
-      condRows+=kv('Growing degree units', Math.round(se.gNow)+' vs '+Math.round(se.gNorm)+' normal ('+(se.gDep>=0?'+':'')+Math.round(se.gDep)+')');
+      if(se.pNow!=null) condRows+=kv('Season rainfall', se.pNow.toFixed(1)+'\u2033 vs '+se.pNorm.toFixed(1)+'\u2033 normal ('+esc(se.pLbl||'')+', '+esc(se.station||'county gauge')+') ('+(se.pDep>=0?'+':'')+se.pDep.toFixed(1)+'\u2033)');
+      if(se.gNow!=null) condRows+=kv('Growing degree units', Math.round(se.gNow)+' vs '+Math.round(se.gNorm)+' '+se.n+'-yr average ('+(se.gDep>=0?'+':'')+Math.round(se.gDep)+')');
     }
     if(h&&!h.err) condRows+=kv('Hail reports within ~40 mi, '+(h.years||5)+' yr', h.days+' day'+(h.days===1?'':'s')+' with a report'+(h.maxStone?' \u00b7 max '+h.maxStone+'\u2033':''));
 
@@ -237,7 +237,7 @@ window.__fsExtras = function (FSX) {
       var fx=d.indices.latest||d.indices.series[d.indices.series.length-1], fn=d.indices.normal;
       if(fx.ndvi!=null) fcell('Vigor (NDVI)', fx.ndvi.toFixed(2), fn&&fn.ndvi!=null?('normal '+fn.ndvi.toFixed(2)+' for the date'):fx.date);
     }
-    if(se) fcell('Season rain', se.pNow.toFixed(1)+'<span class="r-stu">\u2033</span>', (se.pDep>=0?'+':'\u2212')+Math.abs(se.pDep).toFixed(1)+'\u2033 vs '+se.n+'-yr avg');
+    if(se&&se.pNow!=null) fcell('Season rain', se.pNow.toFixed(1)+'<span class="r-stu">\u2033</span>', (se.pDep>=0?'+':'\u2212')+Math.abs(se.pDep).toFixed(1)+'\u2033 vs normal');
     var fieldBand = '<div class="r-band r-band-f">'+fCells+'</div>';
 
     // The field's outline, drawn to scale, so the page shows which field it is about.

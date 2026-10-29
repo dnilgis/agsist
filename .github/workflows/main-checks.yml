@@ -39,7 +39,7 @@ permissions:
 
 concurrency:
   group: main-checks
-  cancel-in-progress: true
+  cancel-in-progress: false   # a full run on main finishes; GitHub keeps only the newest waiting run, so merges never cancel each other into no result
 
 jobs:
   rebuild:

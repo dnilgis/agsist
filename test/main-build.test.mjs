@@ -206,3 +206,8 @@ test("every built file can be staged on main, even under the engine's info/exclu
   const src = read("scripts/dev/main_build.py");
   assert.match(src, /"add", "-f", "--"\] \+ files/, "-f only with the exact built file list");
 });
+
+test("a full run on main is never cancelled by the next merge (main-checks.yml concurrency, Oct 29)", () => {
+  const wf = fs.readFileSync(path.join(ROOT, ".github/workflows/main-checks.yml"), "utf8");
+  assert.match(wf, /^concurrency:\n  group: main-checks\n  cancel-in-progress: false\b/m);
+});
