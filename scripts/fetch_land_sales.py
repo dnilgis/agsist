@@ -33,6 +33,9 @@ Sources (free and public only; a state is built only once its files read cleanly
   IA  Scott County Assessor's agricultural sales list (Excel), one county.
   SD  County Directors of Equalization that post yearly ag sales lists (Douglas, Gregory).
   OH  County auditor sales reports (Pickaway), one county at a time.
+  Probe only (Oct 29, next land states): South Dakota's statewide sales detail CSVs (sdproptax.info),
+  New Jersey's SR-1A sales and MOD-IV files (nj.gov), downloaded whole by the probe (PROBE_FILES) to read
+  header, acres and row counts; Colorado's parcel service and MassGIS, header and terms only.
   Not free: NE (state sales file, public queries by request for a fee), KS and MO (sale
   prices are not public record). Their notes are in data/land/parcel-services.json salesNote.
 
@@ -217,6 +220,31 @@ PROBE_ONLY_DOCS = {
     "NJ": ["https://nj.gov/treasury/taxation/pdf/lpt/SR1Afilelayout.pdf"],
     "CT": ["https://data.ct.gov/api/catalog/v1?q=real%20estate%20sales&limit=20"],
 }
+# Next land states (Oct 29): the data pages, layouts and terms the sandbox cannot open (its proxy blocks
+# sdproptax.info, nj.gov and gis.colorado.gov), saved here so the header and the terms are read before
+# any parser exists. CO and MA: header and terms only (CO's service forbids resale; MA is last sale only).
+PROBE_ONLY_DOCS["SD"] = ["https://sdproptax.info/DataLink/Data"]
+PROBE_ONLY_DOCS["NJ"] += ["https://www.nj.gov/treasury/taxation/lpt/statdata.shtml",
+                          "https://www.nj.gov/treasury/taxation/pdf/lpt/modivlayout.pdf"]
+CO_PARCELS = "https://gis.colorado.gov/public/rest/services/Address_and_Parcel/Colorado_Public_Parcels/FeatureServer"
+PROBE_ONLY_DOCS["CO"] = [CO_PARCELS + "?f=pjson", CO_PARCELS + "/0?f=pjson",
+                         CO_PARCELS + "/0/query?where=1%3D1&returnCountOnly=true&f=json",
+                         CO_PARCELS + "/0/query?where=salePrice%3E0%20AND%20landAcres%3E0&returnCountOnly=true&f=json",
+                         "https://data.colorado.gov/api/views/5y5i-vg25.json"]
+PROBE_ONLY_DOCS["MA"] = ["https://www.mass.gov/info-details/massgis-data-property-tax-parcels",
+                         "https://www.mass.gov/info-details/learn-about-massgis-data",
+                         "https://www.mass.gov/forms/massgis-request-statewide-parcel-data"]
+# Whole files the probe downloads in full (to a temp folder, never committed): it logs size, zip members,
+# header (or line length for a fixed-width file) and row count, and saves only the head of each to the raw
+# branch. Per-column fill counts and common values go to a side file there, never to the public log,
+# since a column can hold names.
+PROBE_FILES = {
+    "SD": ["https://sdproptax.info/DataLink/3/Download?filename=%d_SD_SALES.csv" % y for y in range(2025, 2020, -1)],
+    "NJ": ["https://www.nj.gov/treasury/taxation/lpt/statdata/Sales%d.zip" % y for y in range(2026, 2019, -1)]
+          + ["https://www.nj.gov/treasury/taxation/pdf/lpt/modiv-2026.zip"],
+}
+PROBE_FILE_MAX = 3 << 30   # stop reading a download past 3 GB
+PROBE_HEAD = 400           # lines of each file kept on the raw branch
 
 # Column names seen on state transfer files, compared with letters and digits only. The first
 # name in a list that a file has wins. The Wisconsin names are the column titles in DOR's
@@ -686,6 +714,107 @@ def file_links(page_url, html, rx=r"\.(zip|csv|xlsx|txt)(\?|$)"):
     return out
 
 
+def probe_stream(url, dest, timeout=300):
+    """Download url to dest in chunks; (bytes, content type, final url). Raises on an HTTP error,
+    which the caller logs as is: a 403, 429 or a bot check is recorded, never worked around."""
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+    n = 0
+    with urllib.request.urlopen(req, timeout=timeout) as r, open(dest, "wb") as f:
+        ctype, final = r.headers.get("Content-Type", ""), r.geturl()
+        while n < PROBE_FILE_MAX:
+            b = r.read(1 << 20)
+            if not b:
+                break
+            f.write(b)
+            n += len(b)
+    return n, ctype, final
+
+
+def probe_lines(fh, name, d, log, stats):
+    """Read one text member line by line: header (or fixed-width line lengths), row count, the head
+    saved to d, and per-column fill counts plus common values into stats (side file only)."""
+    head, n, lens, cols, fill, seen, delim = [], 0, {}, None, None, None, None
+    for raw in fh:
+        line = raw.decode("utf-8-sig" if n == 0 else "utf-8", errors="replace").rstrip("\r\n")
+        if n < PROBE_HEAD:
+            head.append(line)
+        if n == 0:
+            delim = max([",", "\t", "|"], key=line.count)
+            if line.count(delim) >= 3:
+                cols = next(csv.reader([line], delimiter=delim))
+                fill, seen = [0] * len(cols), [dict() for _ in cols]
+        elif cols is not None:
+            try:
+                row = next(csv.reader([line], delimiter=delim))
+            except Exception:  # noqa: BLE001
+                row = []
+            for i, v in enumerate(row[:len(cols)]):
+                v = v.strip()
+                if v:
+                    fill[i] += 1
+                    c = seen[i]
+                    if v in c or len(c) < 2000:
+                        c[v] = c.get(v, 0) + 1
+        if len(lens) < 50 or len(line) in lens:
+            lens[len(line)] = lens.get(len(line), 0) + 1
+        n += 1
+    safe = re.sub(r"[^A-Za-z0-9._-]", "_", name)[-80:]
+    open(os.path.join(d, "head-" + safe + ".txt"), "w").write("\n".join(head) + "\n")
+    if cols is not None:
+        log.append("    %s: %d data rows; header (%d) %s; we read %s" % (name, n - 1, len(cols), cols, sorted(map_columns(cols))))
+        log.append("    filled: " + ", ".join("%s %d" % (c, f) for c, f in zip(cols, fill)))
+        stats[name] = {"rows": n - 1, "cols": [{"name": c, "filled": f, "distinct_seen": len(v),
+                                                "top": sorted(v.items(), key=lambda kv: -kv[1])[:25]}
+                                               for c, f, v in zip(cols, fill, seen)]}
+    else:
+        common = sorted(lens.items(), key=lambda kv: -kv[1])[:5]
+        log.append("    %s: %d lines, no delimited header (fixed width?); line lengths %s" % (name, n, common))
+        stats[name] = {"rows": n, "line_lengths": common}
+
+
+def probe_files(st, d, log):
+    """Every PROBE_FILES download for st, read in full from a temp folder; heads to d."""
+    import shutil
+    import tempfile
+    stats = {}
+    tmp = tempfile.mkdtemp(prefix="landprobe-")
+    try:
+        for i, u in enumerate(PROBE_FILES.get(st, [])):
+            dest = os.path.join(tmp, "f%d" % i)
+            t0 = time.time()
+            try:
+                n, ctype, final = probe_stream(u, dest)
+            except Exception as e:  # noqa: BLE001
+                log.append("%s file %s: %s" % (st, u, e))
+                continue
+            with open(dest, "rb") as f:
+                magic = f.read(4)
+            log.append("%s file %s: %d bytes, %s, %.0fs%s" % (st, u, n, ctype, time.time() - t0, "" if final == u else ", from " + final))
+            base = re.sub(r"[^A-Za-z0-9._-]", "_", urllib.parse.unquote(u.rsplit("/", 1)[-1].split("filename=")[-1]))
+            try:
+                if magic[:2] == b"PK":
+                    z = zipfile.ZipFile(dest)
+                    log.append("  zip members: " + "; ".join("%s %d" % (m.filename, m.file_size) for m in z.infolist()[:80]))
+                    for m in z.infolist():
+                        if m.is_dir() or re.search(r"\.(pdf|docx?|xlsx?)$", m.filename, re.I):
+                            continue
+                        with z.open(m) as fh:
+                            probe_lines(fh, base + "/" + m.filename, d, log, stats)
+                elif magic[:1] == b"<":
+                    txt = open(dest, "rb").read(200000).decode("utf-8", errors="replace")
+                    log.append("  an HTML answer, not a file: " + re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", strip_scripts(txt.encode()).decode()))[:800])
+                else:
+                    with open(dest, "rb") as fh:
+                        probe_lines(fh, base, d, log, stats)
+            except Exception as e:  # noqa: BLE001
+                log.append("  could not read: %s" % e)
+            os.remove(dest)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    if stats:
+        json.dump(stats, open(os.path.join(d, "file-stats.json"), "w"), indent=1)
+
+
 def probe(states):
     os.makedirs(RAW, exist_ok=True)
     log, pdf_text = [], []
@@ -785,6 +914,22 @@ def probe(states):
                 except Exception:  # noqa: BLE001
                     pass
             log.append("%s doc %s: %d bytes -> %s" % (st, u, len(blob), os.path.basename(fn)))
+            if ext == ".json":   # an ArcGIS service or layer: its fields, terms and counts
+                try:
+                    J = json.loads(blob)
+                    if isinstance(J, dict):
+                        if J.get("fields"):
+                            log.append("  fields: " + " ".join("%s(%s)" % (f.get("name"), str(f.get("type", "")).replace("esriFieldType", "")) for f in J["fields"]))
+                        for k in ("copyrightText", "description", "serviceDescription", "licenseInfo", "accessInformation", "license", "attribution", "count", "error"):
+                            if J.get(k) not in (None, ""):
+                                log.append("  %s: %s" % (k, re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", str(J[k])))[:1500]))
+                        md = J.get("metadata") or {}
+                        if isinstance(md, dict) and md.get("license"):
+                            log.append("  license: %s" % md.get("license"))
+                except Exception:  # noqa: BLE001
+                    pass
+        if PROBE_FILES.get(st):
+            probe_files(st, d, log)
     open(os.path.join(RAW, "probe-log.txt"), "w").write("\n".join(log) + "\n")
     print("\n".join(log))
     annotate("probe", "\n".join(log))
@@ -1895,6 +2040,34 @@ def selftest():
     ck("muni keys", muni_key("TOWN OF CHETEK") == ("T", "CHETEK") and muni_key("Chetek city") == ("C", "CHETEK") and muni_key("Chetek town") == ("T", "CHETEK"))
     ck("dates", parse_date("3/5/24") == "2024-03-05" and parse_date("2023-12-01 00:00:00") == "2023-12-01" and parse_date("13/40/2020") is None)
     ck("numbers", parse_num("$1,234.50") == 1234.5 and parse_num("") is None and parse_num("n/a") is None)
+    # the file probe (next land states): a delimited CSV and a zip of a fixed-width file, read whole from file:// URLs
+    import tempfile
+    import shutil
+    pt = tempfile.mkdtemp(prefix="probeself-")
+    keep_pf = dict(PROBE_FILES)
+    try:
+        open(os.path.join(pt, "s.csv"), "w").write("County,Sale Price,Acres,Buyer\nBrown,100000,80,A\nBrown,90000,,A\nMinnehaha,5000,2,B\n")
+        with zipfile.ZipFile(os.path.join(pt, "Sales2026.zip"), "w") as z:
+            z.writestr("Sales2026.txt", "0101" + " " * 20 + "3A\n" + "0102" + " " * 20 + "3B\n")
+        open(os.path.join(pt, "page.html"), "w").write("<html><body>Access denied</body></html>")
+        PROBE_FILES["ZZ"] = ["file://" + os.path.join(pt, n) for n in ("s.csv", "Sales2026.zip", "page.html", "missing.csv")]
+        out = os.path.join(pt, "out")
+        os.makedirs(out)
+        lg = []
+        probe_files("ZZ", out, lg)
+        st_ = json.load(open(os.path.join(out, "file-stats.json")))
+        ck("file probe: CSV header, row count and fill counts",
+           st_["s.csv"]["rows"] == 3 and [c["filled"] for c in st_["s.csv"]["cols"]] == [3, 3, 2, 3])
+        ck("file probe: zip member read as fixed width with its line lengths",
+           st_["Sales2026.zip/Sales2026.txt"]["rows"] == 2 and st_["Sales2026.zip/Sales2026.txt"]["line_lengths"][0][0] == 26)
+        ck("file probe: an HTML answer and a failed download are logged, not read",
+           any("an HTML answer" in x and "Access denied" in x for x in lg) and any("missing.csv" in x and "No such file" in x for x in lg))
+        ck("file probe: column values stay out of the log (they can be names)",
+           not any("Minnehaha" in x for x in lg) and os.path.exists(os.path.join(out, "head-s.csv.txt")))
+    finally:
+        PROBE_FILES.clear()
+        PROBE_FILES.update(keep_pf)
+        shutil.rmtree(pt, ignore_errors=True)
     ck("file links", file_links("https://x.gov/a/b.aspx", '<a href="/d/2024.zip">x</a><a href="c.csv">y</a><a href="z.pdf">') == ["https://x.gov/d/2024.zip", "https://x.gov/a/c.csv"])
     # Wisconsin, a file shaped like DOR's layout (all 89 column titles, A to CK)
     fx2 = os.path.join(ROOT, "test", "fixtures", "land-sales", "wi-retr-layout-sample.csv")
@@ -2229,7 +2402,7 @@ if __name__ == "__main__":
     if "--selftest" in a:
         sys.exit(selftest())
     if "--probe" in a:
-        sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS or x in PROBE_ONLY_DOCS] or sorted(set(STATES) | set(PROBE_DOCS) | set(PROBE_ONLY_DOCS))))
+        sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS or x in PROBE_ONLY_DOCS or x in PROBE_FILES] or sorted(set(STATES) | set(PROBE_DOCS) | set(PROBE_ONLY_DOCS) | set(PROBE_FILES))))
     sts = [x for x in a if x in STATES] or ["WI", "MN", "IL"]
     fd = a[a.index("--from") + 1] if "--from" in a else None
     sys.exit(run(sts, fd, "--merge" in a))

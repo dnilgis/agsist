@@ -23,6 +23,13 @@
    "link": "/land-sales/"
   },
   {
+   "id": "2026-10-29-landsurvey",
+   "date": "2026-10-29",
+   "title": "Land values for North Dakota and Kansas counties",
+   "line": "North Dakota and Kansas county pages show land values: the 2026 state survey of farmers and K-State's 2025 average of reported sales, each labeled.",
+   "link": "/land-sales/#other-evidence"
+  },
+  {
    "id": "2026-10-29-landvt",
    "date": "2026-10-29",
    "title": "Vermont farm sales",
@@ -63,6 +70,27 @@
    "title": "Field Scout reads more of our own data",
    "line": "Field Scout now uses free USGS maps, loads county cards even when a lookup is down, and shows last year's crop, rain vs normal and the nearest bid up top.",
    "link": "/field-scout"
+  },
+  {
+   "id": "2026-10-29-nws-forecast",
+   "date": "2026-10-29",
+   "title": "Forecasts from the National Weather Service",
+   "line": "Home weather, spray, urea, grain drying, harvest or wait and planting date read the National Weather Service forecast. Soil temperature is measured at a station.",
+   "link": "/spray"
+  },
+  {
+   "id": "2026-10-29-own-place-lookup",
+   "date": "2026-10-29",
+   "title": "ZIP and town boxes use our own place list",
+   "line": "Every ZIP and town box now finds your place in a list on our own site. Small Canadian towns are found by the weather station named for them.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-10-29-private-raises",
+   "date": "2026-10-29",
+   "title": "Private ag raises on Ag stocks",
+   "line": "Ag stocks now lists farm companies raising money online, with their SEC filings and how past raises turned out. These are high risk and hard to sell.",
+   "link": "/ag-stocks"
   },
   {
    "id": "2026-10-28-farm-credit",

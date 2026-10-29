@@ -330,3 +330,51 @@ test('no live nav (its script never runs): the crawler nav still shows, after 3 
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
+
+// Oct 29 (CI on PR #196, 1280 light no saved place, 0.0110 dp-dmc-line>#text " " at 317 ms): the DMC signup line
+// had a lone space between </strong> and the source <span>. A paint that landed just after that space, before
+// "Source" arrived, left the space with no place in the line, and its jump into the line when the rest came was a
+// layout shift (pausing the page there gave 0.01098 every time on the old page). The space now sits inside the span.
+const INLINE = 'a|span|b|strong|em|i|svg|code|small|label|abbr|time|button|select|input|img|output|kbd|sup|sub|mark';
+const LONE = new RegExp(`(?:</(?:${INLINE})>|<(?:${INLINE})\\b[^>]*>)\\s+(?=</?(?:${INLINE})\\b)`, 'g');
+test('no lone space between inline tags from the top of the page to the DMC list, nor from the seeder', () => {
+  const top = page.slice(page.indexOf('<main id="main"'), page.indexOf('<ul class="dp-dmc-fb">'));
+  assert.ok(top.length > 1000 && top.includes('<!--SEED:milkdmccard-->'), 'the slice holds the DMC line');
+  assert.deepEqual([...top.matchAll(LONE)].map((m) => top.slice(m.index - 40, m.index + m[0].length + 30)), []);
+  const seeder = fs.readFileSync(join(ROOT, 'scripts/seed_static.py'), 'utf8');
+  assert.match(seeder, /\{words\}<\/strong>\{src\}/);
+  assert.match(seeder, /src = f'<span class="dp-dmc-src"> Source: /, 'the space rides inside the span');
+  assert.match(page, /left\.<\/strong><span class="dp-dmc-src"> Source: /, 'the page as the seeder writes it');
+});
+
+test('a paint while the parser is inside the DMC signup line moves nothing', { skip, timeout: 120000 }, async () => {
+  const s = fs.readFileSync(join(ROOT, 'milk-prices.html')).toString('latin1');
+  const line = s.indexOf('<p class="dp-dmc-line">');
+  assert.ok(line > 0, 'the DMC line is on the page');
+  const end = s.indexOf('</p>', line);
+  // every tag edge in the line: after each ">" and after a space that follows one
+  const stops = [];
+  for (let at = s.indexOf('>', line); at > 0 && at < end; at = s.indexOf('>', at + 1)) { stops.push(at + 1); if (s[at + 1] === ' ') stops.push(at + 2); }
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const w of [390, 1280]) for (const stop of stops) {
+      const srv = await serve(0, stop), port = srv.address().port;
+      const ctx = await browser.newContext({ serviceWorkers: 'block', viewport: { width: w, height: 900 }, colorScheme: 'light' });
+      try {
+        await ctx.route('**/*', (r) => (new URL(r.request().url()).hostname !== '127.0.0.1' ? r.abort() : r.continue()));
+        await ctx.addInitScript(() => {
+          try { localStorage.setItem('agsist-theme', 'light'); } catch (e) {}
+          window.__cls = 0; window.__shifts = [];
+          new PerformanceObserver((l) => { for (const e of l.getEntries()) { if (e.hadRecentInput) continue; window.__cls += e.value;
+            window.__shifts.push(e.value.toFixed(4) + ' ' + (e.sources || []).map((x) => (x.node ? (x.node.parentElement ? x.node.parentElement.className : '') + '>' + x.node.nodeName + ' "' + String(x.node.textContent || '').slice(0, 20) + '"' : '?')).join(',') + ' at ' + Math.round(e.startTime) + 'ms'); } })
+            .observe({ type: 'layout-shift', buffered: true });
+        });
+        const pg = await ctx.newPage();
+        await pg.goto(`http://127.0.0.1:${port}/milk-prices`, { waitUntil: 'load' });
+        await pg.waitForTimeout(500);
+        const r = await pg.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts }));
+        assert.ok(r.cls < 0.001, `${w}, paused at byte ${stop} (${JSON.stringify(s.slice(stop - 20, stop))}): layout shift ${r.cls} (${r.shifts.join(' | ')})`);
+      } finally { await ctx.close(); srv.close(); }
+    }
+  } finally { await browser.close(); }
+});

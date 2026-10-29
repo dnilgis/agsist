@@ -1,0 +1,2106 @@
+{
+ "about": "County land values from an average of reported sales. Not our recorded-sale middle: K-State averages open-market sales reported to the Kansas Property Valuation Department, Oct 2024 to Sep 2025, by land type (a parcel at least 75% one type), and shows a county only with more than three such parcels. Read from the PDF by scripts/build_land_survey.py; each value keeps its PDF page.",
+ "counties": {
+  "20001": {
+   "acres_analyzed": 5893,
+   "acres_sold": 6585,
+   "name": "Allen",
+   "nonirr": {
+    "avg": 3949,
+    "max": 4449,
+    "min": 3114,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 3325,
+    "max": 3867,
+    "min": 2296,
+    "page": 61
+   },
+   "pct_sold": 2.2,
+   "sales_n": 40
+  },
+  "20003": {
+   "acres_analyzed": 5812,
+   "acres_sold": 10288,
+   "name": "Anderson",
+   "nonirr": {
+    "avg": 4737,
+    "max": 6164,
+    "min": 3582,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 3713,
+    "max": 4538,
+    "min": 2035,
+    "page": 57
+   },
+   "pct_sold": 2.9,
+   "sales_n": 39
+  },
+  "20005": {
+   "acres_analyzed": 2233,
+   "acres_sold": 5331,
+   "name": "Atchison",
+   "nonirr": {
+    "avg": 7886,
+    "max": 12262,
+    "min": 4569,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": 4225,
+    "max": 5137,
+    "min": 3217,
+    "page": 52
+   },
+   "pct_sold": 2.1,
+   "sales_n": 19
+  },
+  "20007": {
+   "acres_analyzed": 14476,
+   "acres_sold": 22367,
+   "name": "Barber",
+   "nonirr": {
+    "avg": 2650,
+    "max": 5616,
+    "min": 1489,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 2777,
+    "max": 4696,
+    "min": 1776,
+    "page": 47
+   },
+   "pct_sold": 3.1,
+   "sales_n": 42
+  },
+  "20009": {
+   "acres_analyzed": 8040,
+   "acres_sold": 14578,
+   "irrigated": {
+    "avg": 3896,
+    "max": 5456,
+    "min": 3078,
+    "page": 41
+   },
+   "name": "Barton",
+   "nonirr": {
+    "avg": 2788,
+    "max": 5794,
+    "min": 1298,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2055,
+    "max": 3005,
+    "min": 1488,
+    "page": 41
+   },
+   "pct_sold": 2.8,
+   "sales_n": 51
+  },
+  "20011": {
+   "acres_analyzed": 9002,
+   "acres_sold": 13015,
+   "name": "Bourbon",
+   "nonirr": {
+    "avg": 4178,
+    "max": 5036,
+    "min": 2699,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 4249,
+    "max": 5919,
+    "min": 2219,
+    "page": 61
+   },
+   "pct_sold": 3.4,
+   "sales_n": 56
+  },
+  "20013": {
+   "acres_analyzed": 3135,
+   "acres_sold": 4643,
+   "name": "Brown",
+   "nonirr": {
+    "avg": 10047,
+    "max": 15490,
+    "min": 6554,
+    "page": 52
+   },
+   "page": 51,
+   "pct_sold": 1.5,
+   "sales_n": 28
+  },
+  "20015": {
+   "acres_analyzed": 15909,
+   "acres_sold": 30477,
+   "name": "Butler",
+   "nonirr": {
+    "avg": 5601,
+    "max": 8907,
+    "min": 2726,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 3395,
+    "max": 6111,
+    "min": 1575,
+    "page": 61
+   },
+   "pct_sold": 3.7,
+   "sales_n": 73
+  },
+  "20017": {
+   "acres_analyzed": 8159,
+   "acres_sold": 11550,
+   "name": "Chase",
+   "nonirr": {
+    "avg": 4786,
+    "max": 7061,
+    "min": 3400,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 2804,
+    "max": 3941,
+    "min": 1992,
+    "page": 57
+   },
+   "pct_sold": 2.4,
+   "sales_n": 23
+  },
+  "20019": {
+   "acres_analyzed": 10179,
+   "acres_sold": 17198,
+   "name": "Chautauqua",
+   "page": 60,
+   "pasture": {
+    "avg": 2713,
+    "max": 3802,
+    "min": 1736,
+    "page": 61
+   },
+   "pct_sold": 4.4,
+   "sales_n": 23
+  },
+  "20021": {
+   "acres_analyzed": 4866,
+   "acres_sold": 7397,
+   "name": "Cherokee",
+   "nonirr": {
+    "avg": 5759,
+    "max": 6667,
+    "min": 2887,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 4094,
+    "max": 5558,
+    "min": 1585,
+    "page": 61
+   },
+   "pct_sold": 2.4,
+   "sales_n": 36
+  },
+  "20023": {
+   "acres_analyzed": 14845,
+   "acres_sold": 17938,
+   "irrigated": {
+    "avg": 7095,
+    "max": 7598,
+    "min": 6486,
+    "page": 20
+   },
+   "name": "Cheyenne",
+   "nonirr": {
+    "avg": 2348,
+    "max": 3059,
+    "min": 1227,
+    "page": 20
+   },
+   "page": 19,
+   "pasture": {
+    "avg": 1227,
+    "max": 1458,
+    "min": 1017,
+    "page": 20
+   },
+   "pct_sold": 2.8,
+   "sales_n": 34
+  },
+  "20025": {
+   "acres_analyzed": 5187,
+   "acres_sold": 25544,
+   "name": "Clark",
+   "nonirr": {
+    "avg": 2159,
+    "max": 3300,
+    "min": 1207,
+    "page": 30
+   },
+   "page": 29,
+   "pasture": {
+    "avg": 992,
+    "max": 1533,
+    "min": 713,
+    "page": 30
+   },
+   "pct_sold": 4.2,
+   "sales_n": 17
+  },
+  "20027": {
+   "acres_analyzed": 3102,
+   "acres_sold": 4310,
+   "name": "Clay",
+   "nonirr": {
+    "avg": 4722,
+    "max": 6051,
+    "min": 3733,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 2851,
+    "max": 4456,
+    "min": 2214,
+    "page": 35
+   },
+   "pct_sold": 1.2,
+   "sales_n": 26
+  },
+  "20029": {
+   "acres_analyzed": 5731,
+   "acres_sold": 8358,
+   "name": "Cloud",
+   "nonirr": {
+    "avg": 4361,
+    "max": 6177,
+    "min": 2598,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 2548,
+    "max": 2988,
+    "min": 2177,
+    "page": 35
+   },
+   "pct_sold": 2.0,
+   "sales_n": 46
+  },
+  "20031": {
+   "acres_analyzed": 2494,
+   "acres_sold": 8685,
+   "name": "Coffey",
+   "nonirr": {
+    "avg": 3975,
+    "max": 4456,
+    "min": 3259,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 3204,
+    "max": 5754,
+    "min": 1735,
+    "page": 57
+   },
+   "pct_sold": 2.5,
+   "sales_n": 17
+  },
+  "20033": {
+   "acres_analyzed": 22431,
+   "acres_sold": 25253,
+   "name": "Comanche",
+   "nonirr": {
+    "avg": 2181,
+    "max": 4209,
+    "min": 1349,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 3197,
+    "max": 4829,
+    "min": 1835,
+    "page": 47
+   },
+   "pct_sold": 5.2,
+   "sales_n": 34
+  },
+  "20035": {
+   "acres_analyzed": 9443,
+   "acres_sold": 15318,
+   "name": "Cowley",
+   "nonirr": {
+    "avg": 3145,
+    "max": 4130,
+    "min": 2219,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 3025,
+    "max": 4730,
+    "min": 1694,
+    "page": 61
+   },
+   "pct_sold": 2.3,
+   "sales_n": 58
+  },
+  "20037": {
+   "acres_analyzed": 4045,
+   "acres_sold": 5632,
+   "name": "Crawford",
+   "nonirr": {
+    "avg": 4891,
+    "max": 6023,
+    "min": 4317,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 3937,
+    "max": 5505,
+    "min": 2969,
+    "page": 61
+   },
+   "pct_sold": 1.7,
+   "sales_n": 31
+  },
+  "20039": {
+   "acres_analyzed": 6118,
+   "acres_sold": 7559,
+   "name": "Decatur",
+   "nonirr": {
+    "avg": 2597,
+    "max": 3002,
+    "min": 2161,
+    "page": 20
+   },
+   "page": 19,
+   "pct_sold": 1.4,
+   "sales_n": 25
+  },
+  "20041": {
+   "acres_analyzed": 5960,
+   "acres_sold": 9601,
+   "name": "Dickinson",
+   "nonirr": {
+    "avg": 3090,
+    "max": 4893,
+    "min": 1682,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2846,
+    "max": 4695,
+    "min": 1995,
+    "page": 41
+   },
+   "pct_sold": 1.9,
+   "sales_n": 38
+  },
+  "20043": {
+   "acres_analyzed": 2038,
+   "acres_sold": 3473,
+   "name": "Doniphan",
+   "nonirr": {
+    "avg": 8813,
+    "max": 13720,
+    "min": 4321,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": 4006,
+    "max": 4567,
+    "min": 2991,
+    "page": 52
+   },
+   "pct_sold": 1.8,
+   "sales_n": 20
+  },
+  "20045": {
+   "acres_analyzed": 2494,
+   "acres_sold": 6453,
+   "name": "Douglas",
+   "page": 56,
+   "pasture": {
+    "avg": 5714,
+    "max": 7734,
+    "min": 2174,
+    "page": 57
+   },
+   "pct_sold": 3.3,
+   "sales_n": 16
+  },
+  "20047": {
+   "acres_analyzed": 3482,
+   "acres_sold": 5483,
+   "irrigated": {
+    "avg": 6517,
+    "max": 8215,
+    "min": 4437,
+    "page": 47
+   },
+   "name": "Edwards",
+   "nonirr": {
+    "avg": 1898,
+    "max": 2500,
+    "min": 1454,
+    "page": 47
+   },
+   "page": 46,
+   "pct_sold": 1.4,
+   "sales_n": 19
+  },
+  "20049": {
+   "acres_analyzed": 6185,
+   "acres_sold": 9627,
+   "name": "Elk",
+   "page": 60,
+   "pasture": {
+    "avg": 2991,
+    "max": 4190,
+    "min": 1737,
+    "page": 61
+   },
+   "pct_sold": 2.4,
+   "sales_n": 35
+  },
+  "20051": {
+   "acres_analyzed": 7971,
+   "acres_sold": 11048,
+   "name": "Ellis",
+   "nonirr": {
+    "avg": 2697,
+    "max": 3691,
+    "min": 1820,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2036,
+    "max": 2891,
+    "min": 1378,
+    "page": 41
+   },
+   "pct_sold": 2.0,
+   "sales_n": 35
+  },
+  "20053": {
+   "acres_analyzed": 3527,
+   "acres_sold": 5413,
+   "name": "Ellsworth",
+   "nonirr": {
+    "avg": 2340,
+    "max": 3546,
+    "min": 1530,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2407,
+    "max": 3122,
+    "min": 1438,
+    "page": 41
+   },
+   "pct_sold": 1.3,
+   "sales_n": 22
+  },
+  "20055": {
+   "acres_analyzed": 5158,
+   "acres_sold": 11088,
+   "irrigated": {
+    "avg": 4914,
+    "max": 6542,
+    "min": 3604,
+    "page": 30
+   },
+   "name": "Finney",
+   "nonirr": {
+    "avg": 2780,
+    "max": 4499,
+    "min": 1713,
+    "page": 30
+   },
+   "page": 29,
+   "pasture": {
+    "avg": 1350,
+    "max": 2292,
+    "min": 825,
+    "page": 30
+   },
+   "pct_sold": 1.4,
+   "sales_n": 20
+  },
+  "20057": {
+   "acres_analyzed": 9417,
+   "acres_sold": 13064,
+   "irrigated": {
+    "avg": 4453,
+    "max": 5323,
+    "min": 3473,
+    "page": 30
+   },
+   "name": "Ford",
+   "nonirr": {
+    "avg": 2708,
+    "max": 3532,
+    "min": 2079,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 2.0,
+   "sales_n": 25
+  },
+  "20059": {
+   "acres_analyzed": 4542,
+   "acres_sold": 8678,
+   "name": "Franklin",
+   "nonirr": {
+    "avg": 5503,
+    "max": 6310,
+    "min": 4275,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 3824,
+    "max": 5146,
+    "min": 2751,
+    "page": 57
+   },
+   "pct_sold": 2.8,
+   "sales_n": 42
+  },
+  "20061": {
+   "acres_analyzed": 1730,
+   "acres_sold": 3274,
+   "name": "Geary",
+   "page": 56,
+   "pasture": {
+    "avg": 3809,
+    "max": 4336,
+    "min": 2647,
+    "page": 57
+   },
+   "pct_sold": 1.7,
+   "sales_n": 14
+  },
+  "20063": {
+   "acres_analyzed": 9777,
+   "acres_sold": 18366,
+   "name": "Gove",
+   "nonirr": {
+    "avg": 2695,
+    "max": 4031,
+    "min": 1951,
+    "page": 24
+   },
+   "page": 23,
+   "pasture": {
+    "avg": 1279,
+    "max": 1662,
+    "min": 750,
+    "page": 24
+   },
+   "pct_sold": 2.7,
+   "sales_n": 36
+  },
+  "20065": {
+   "acres_analyzed": 9096,
+   "acres_sold": 14480,
+   "name": "Graham",
+   "nonirr": {
+    "avg": 2302,
+    "max": 4017,
+    "min": 1901,
+    "page": 20
+   },
+   "page": 19,
+   "pasture": {
+    "avg": 1305,
+    "max": 1470,
+    "min": 991,
+    "page": 20
+   },
+   "pct_sold": 2.6,
+   "sales_n": 38
+  },
+  "20067": {
+   "acres_analyzed": 3597,
+   "acres_sold": 10109,
+   "irrigated": {
+    "avg": 4310,
+    "max": 6184,
+    "min": 3207,
+    "page": 30
+   },
+   "name": "Grant",
+   "nonirr": {
+    "avg": 1574,
+    "max": 2388,
+    "min": 1203,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 2.9,
+   "sales_n": 13
+  },
+  "20069": {
+   "acres_analyzed": 7060,
+   "acres_sold": 9497,
+   "irrigated": {
+    "avg": 4967,
+    "max": 6440,
+    "min": 3898,
+    "page": 30
+   },
+   "name": "Gray",
+   "nonirr": {
+    "avg": 2796,
+    "max": 4372,
+    "min": 1745,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 1.8,
+   "sales_n": 27
+  },
+  "20071": {
+   "acres_analyzed": 6125,
+   "acres_sold": 12407,
+   "name": "Greeley",
+   "nonirr": {
+    "avg": 2072,
+    "max": 2467,
+    "min": 1818,
+    "page": 24
+   },
+   "page": 23,
+   "pasture": {
+    "avg": 1349,
+    "max": 1723,
+    "min": 1112,
+    "page": 24
+   },
+   "pct_sold": 2.6,
+   "sales_n": 28
+  },
+  "20073": {
+   "acres_analyzed": 8526,
+   "acres_sold": 12936,
+   "name": "Greenwood",
+   "page": 60,
+   "pasture": {
+    "avg": 2745,
+    "max": 4615,
+    "min": 1348,
+    "page": 61
+   },
+   "pct_sold": 1.9,
+   "sales_n": 43
+  },
+  "20075": {
+   "acres_analyzed": 8577,
+   "acres_sold": 17583,
+   "name": "Hamilton",
+   "nonirr": {
+    "avg": 1537,
+    "max": 1918,
+    "min": 1006,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 2.8,
+   "sales_n": 31
+  },
+  "20077": {
+   "acres_analyzed": 8376,
+   "acres_sold": 12377,
+   "name": "Harper",
+   "nonirr": {
+    "avg": 2379,
+    "max": 3894,
+    "min": 1528,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 2433,
+    "max": 3808,
+    "min": 1703,
+    "page": 47
+   },
+   "pct_sold": 2.5,
+   "sales_n": 55
+  },
+  "20079": {
+   "acres_analyzed": 5235,
+   "acres_sold": 7646,
+   "irrigated": {
+    "avg": 8101,
+    "max": 9548,
+    "min": 7005,
+    "page": 47
+   },
+   "name": "Harvey",
+   "nonirr": {
+    "avg": 5220,
+    "max": 7721,
+    "min": 2133,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 3355,
+    "max": 4229,
+    "min": 2703,
+    "page": 47
+   },
+   "pct_sold": 2.5,
+   "sales_n": 47
+  },
+  "20081": {
+   "acres_analyzed": 5644,
+   "acres_sold": 7346,
+   "irrigated": {
+    "avg": 4287,
+    "max": 7013,
+    "min": 2061,
+    "page": 30
+   },
+   "name": "Haskell",
+   "nonirr": {
+    "avg": 1981,
+    "max": 3152,
+    "min": 1602,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 2.1,
+   "sales_n": 23
+  },
+  "20083": {
+   "acres_analyzed": 7981,
+   "acres_sold": 8888,
+   "name": "Hodgeman",
+   "nonirr": {
+    "avg": 2127,
+    "max": 3144,
+    "min": 1518,
+    "page": 30
+   },
+   "page": 29,
+   "pasture": {
+    "avg": 1498,
+    "max": 1916,
+    "min": 1299,
+    "page": 30
+   },
+   "pct_sold": 1.7,
+   "sales_n": 28
+  },
+  "20085": {
+   "acres_analyzed": 3200,
+   "acres_sold": 5232,
+   "name": "Jackson",
+   "nonirr": {
+    "avg": 4775,
+    "max": 5680,
+    "min": 3501,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": 4883,
+    "max": 6417,
+    "min": 3123,
+    "page": 52
+   },
+   "pct_sold": 1.5,
+   "sales_n": 25
+  },
+  "20087": {
+   "acres_analyzed": 2327,
+   "acres_sold": 5668,
+   "name": "Jefferson",
+   "nonirr": {
+    "avg": 5498,
+    "max": 6934,
+    "min": 4581,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": 5128,
+    "max": 8440,
+    "min": 1923,
+    "page": 52
+   },
+   "pct_sold": 2.0,
+   "sales_n": 30
+  },
+  "20089": {
+   "acres_analyzed": 6640,
+   "acres_sold": 11399,
+   "name": "Jewell",
+   "nonirr": {
+    "avg": 3953,
+    "max": 5124,
+    "min": 2641,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 2729,
+    "max": 3827,
+    "min": 2048,
+    "page": 35
+   },
+   "pct_sold": 2.1,
+   "sales_n": 38
+  },
+  "20091": {
+   "acres_analyzed": 7807,
+   "acres_sold": 10189,
+   "name": "Johnson",
+   "page": 56,
+   "pct_sold": 8.4,
+   "sales_n": 36
+  },
+  "20093": {
+   "acres_analyzed": 6182,
+   "acres_sold": 9970,
+   "irrigated": {
+    "avg": 5913,
+    "max": 7461,
+    "min": 4768,
+    "page": 30
+   },
+   "name": "Kearny",
+   "nonirr": {
+    "avg": 2398,
+    "max": 3270,
+    "min": 1535,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 1.8,
+   "sales_n": 17
+  },
+  "20095": {
+   "acres_analyzed": 9770,
+   "acres_sold": 14147,
+   "irrigated": {
+    "avg": 6232,
+    "max": 7149,
+    "min": 5379,
+    "page": 47
+   },
+   "name": "Kingman",
+   "nonirr": {
+    "avg": 2372,
+    "max": 3946,
+    "min": 1435,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 2501,
+    "max": 4074,
+    "min": 1450,
+    "page": 47
+   },
+   "pct_sold": 2.7,
+   "sales_n": 66
+  },
+  "20097": {
+   "acres_analyzed": 9654,
+   "acres_sold": 19152,
+   "irrigated": {
+    "avg": 5758,
+    "max": 6863,
+    "min": 4599,
+    "page": 47
+   },
+   "name": "Kiowa",
+   "nonirr": {
+    "avg": 2048,
+    "max": 3845,
+    "min": 1394,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 1761,
+    "max": 2294,
+    "min": 1379,
+    "page": 47
+   },
+   "pct_sold": 4.2,
+   "sales_n": 35
+  },
+  "20099": {
+   "acres_analyzed": 5736,
+   "acres_sold": 9318,
+   "name": "Labette",
+   "nonirr": {
+    "avg": 4166,
+    "max": 5099,
+    "min": 2953,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 3413,
+    "max": 5248,
+    "min": 1947,
+    "page": 61
+   },
+   "pct_sold": 2.4,
+   "sales_n": 35
+  },
+  "20101": {
+   "acres_analyzed": 3752,
+   "acres_sold": 5642,
+   "name": "Lane",
+   "nonirr": {
+    "avg": 2183,
+    "max": 2891,
+    "min": 1513,
+    "page": 24
+   },
+   "page": 23,
+   "pct_sold": 1.3,
+   "sales_n": 14
+  },
+  "20103": {
+   "acres_analyzed": 3592,
+   "acres_sold": 6105,
+   "name": "Leavenworth",
+   "nonirr": {
+    "avg": 9384,
+    "max": 13567,
+    "min": 4050,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": 5497,
+    "max": 9956,
+    "min": 3038,
+    "page": 52
+   },
+   "pct_sold": 3.4,
+   "sales_n": 26
+  },
+  "20105": {
+   "acres_analyzed": 7655,
+   "acres_sold": 13611,
+   "name": "Lincoln",
+   "nonirr": {
+    "avg": 2757,
+    "max": 3501,
+    "min": 1927,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2261,
+    "max": 2676,
+    "min": 1873,
+    "page": 41
+   },
+   "pct_sold": 3.1,
+   "sales_n": 35
+  },
+  "20107": {
+   "acres_analyzed": 6045,
+   "acres_sold": 10607,
+   "name": "Linn",
+   "nonirr": {
+    "avg": 5048,
+    "max": 6376,
+    "min": 4042,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 4419,
+    "max": 6516,
+    "min": 2124,
+    "page": 57
+   },
+   "pct_sold": 3.1,
+   "sales_n": 59
+  },
+  "20109": {
+   "acres_analyzed": 10166,
+   "acres_sold": 18240,
+   "name": "Logan",
+   "nonirr": {
+    "avg": 2149,
+    "max": 3040,
+    "min": 1250,
+    "page": 24
+   },
+   "page": 23,
+   "pasture": {
+    "avg": 1164,
+    "max": 1367,
+    "min": 999,
+    "page": 24
+   },
+   "pct_sold": 2.7,
+   "sales_n": 30
+  },
+  "20111": {
+   "acres_analyzed": 4634,
+   "acres_sold": 7721,
+   "name": "Lyon",
+   "nonirr": {
+    "avg": 4719,
+    "max": 6378,
+    "min": 3871,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 3474,
+    "max": 5742,
+    "min": 1798,
+    "page": 57
+   },
+   "pct_sold": 1.6,
+   "sales_n": 41
+  },
+  "20113": {
+   "acres_analyzed": 6943,
+   "acres_sold": 9690,
+   "book_sales_n": 65,
+   "irrigated": {
+    "avg": 6787,
+    "max": 8962,
+    "min": 5237,
+    "page": 41
+   },
+   "name": "McPherson",
+   "nonirr": {
+    "avg": 4645,
+    "max": 7764,
+    "min": 2625,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2589,
+    "max": 3337,
+    "min": 1914,
+    "page": 41
+   },
+   "pct_sold": 1.8,
+   "sales_n": null,
+   "withheld_n": "the book prints the same sales count and acres for McPherson and Rice"
+  },
+  "20115": {
+   "acres_analyzed": 8053,
+   "acres_sold": 13150,
+   "name": "Marion",
+   "nonirr": {
+    "avg": 4341,
+    "max": 7625,
+    "min": 3047,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2614,
+    "max": 3808,
+    "min": 2015,
+    "page": 41
+   },
+   "pct_sold": 2.3,
+   "sales_n": 59
+  },
+  "20117": {
+   "acres_analyzed": 7295,
+   "acres_sold": 9521,
+   "name": "Marshall",
+   "nonirr": {
+    "avg": 6710,
+    "max": 11111,
+    "min": 3816,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": 3468,
+    "max": 4972,
+    "min": 2386,
+    "page": 52
+   },
+   "pct_sold": 1.8,
+   "sales_n": 49
+  },
+  "20119": {
+   "acres_analyzed": 10458,
+   "acres_sold": 12434,
+   "irrigated": {
+    "avg": 7379,
+    "max": 8502,
+    "min": 5923,
+    "page": 30
+   },
+   "name": "Meade",
+   "nonirr": {
+    "avg": 1967,
+    "max": 3163,
+    "min": 1288,
+    "page": 30
+   },
+   "page": 29,
+   "pasture": {
+    "avg": 1084,
+    "max": 1345,
+    "min": 940,
+    "page": 30
+   },
+   "pct_sold": 2.0,
+   "sales_n": 29
+  },
+  "20121": {
+   "acres_analyzed": 3932,
+   "acres_sold": 9623,
+   "name": "Miami",
+   "nonirr": {
+    "avg": 8058,
+    "max": 13540,
+    "min": 5843,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 6901,
+    "max": 12647,
+    "min": 4027,
+    "page": 57
+   },
+   "pct_sold": 3.3,
+   "sales_n": 39
+  },
+  "20123": {
+   "acres_analyzed": 4039,
+   "acres_sold": 5665,
+   "name": "Mitchell",
+   "nonirr": {
+    "avg": 3796,
+    "max": 6029,
+    "min": 2282,
+    "page": 35
+   },
+   "page": 34,
+   "pct_sold": 1.4,
+   "sales_n": 22
+  },
+  "20125": {
+   "acres_analyzed": 5900,
+   "acres_sold": 12203,
+   "name": "Montgomery",
+   "nonirr": {
+    "avg": 3309,
+    "max": 4089,
+    "min": 2277,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 2710,
+    "max": 4368,
+    "min": 1536,
+    "page": 61
+   },
+   "pct_sold": 3.5,
+   "sales_n": 43
+  },
+  "20127": {
+   "acres_analyzed": 7796,
+   "acres_sold": 13427,
+   "name": "Morris",
+   "nonirr": {
+    "avg": 3038,
+    "max": 4006,
+    "min": 2311,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 2994,
+    "max": 4169,
+    "min": 2225,
+    "page": 57
+   },
+   "pct_sold": 3.3,
+   "sales_n": 31
+  },
+  "20129": {
+   "acres_analyzed": 4472,
+   "acres_sold": 7494,
+   "name": "Morton",
+   "nonirr": {
+    "avg": 897,
+    "max": 1172,
+    "min": 755,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 2.2,
+   "sales_n": 20
+  },
+  "20131": {
+   "acres_analyzed": 3287,
+   "acres_sold": 5580,
+   "name": "Nemaha",
+   "nonirr": {
+    "avg": 8763,
+    "max": 11328,
+    "min": 5757,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": 4353,
+    "max": 6092,
+    "min": 2575,
+    "page": 52
+   },
+   "pct_sold": 1.3,
+   "sales_n": 31
+  },
+  "20133": {
+   "acres_analyzed": 3558,
+   "acres_sold": 4612,
+   "name": "Neosho",
+   "nonirr": {
+    "avg": 3954,
+    "max": 5842,
+    "min": 2595,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 3911,
+    "max": 6069,
+    "min": 3000,
+    "page": 61
+   },
+   "pct_sold": 1.4,
+   "sales_n": 29
+  },
+  "20135": {
+   "acres_analyzed": 9017,
+   "acres_sold": 15089,
+   "name": "Ness",
+   "nonirr": {
+    "avg": 1961,
+    "max": 2526,
+    "min": 1544,
+    "page": 24
+   },
+   "page": 23,
+   "pasture": {
+    "avg": 1141,
+    "max": 1262,
+    "min": 960,
+    "page": 24
+   },
+   "pct_sold": 2.2,
+   "sales_n": 35
+  },
+  "20137": {
+   "acres_analyzed": 8722,
+   "acres_sold": 11733,
+   "name": "Norton",
+   "nonirr": {
+    "avg": 2708,
+    "max": 4963,
+    "min": 1640,
+    "page": 20
+   },
+   "page": 19,
+   "pasture": {
+    "avg": 1693,
+    "max": 2658,
+    "min": 946,
+    "page": 20
+   },
+   "pct_sold": 2.2,
+   "sales_n": 39
+  },
+  "20139": {
+   "acres_analyzed": 6013,
+   "acres_sold": 10403,
+   "name": "Osage",
+   "nonirr": {
+    "avg": 4131,
+    "max": 5906,
+    "min": 2684,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 3605,
+    "max": 5301,
+    "min": 2202,
+    "page": 57
+   },
+   "pct_sold": 2.7,
+   "sales_n": 43
+  },
+  "20141": {
+   "acres_analyzed": 10164,
+   "acres_sold": 17383,
+   "name": "Osborne",
+   "nonirr": {
+    "avg": 2790,
+    "max": 4077,
+    "min": 1898,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 1777,
+    "max": 3018,
+    "min": 1264,
+    "page": 35
+   },
+   "pct_sold": 3.1,
+   "sales_n": 40
+  },
+  "20143": {
+   "acres_analyzed": 7275,
+   "acres_sold": 10028,
+   "name": "Ottawa",
+   "nonirr": {
+    "avg": 3692,
+    "max": 4408,
+    "min": 2794,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 2442,
+    "max": 3919,
+    "min": 1562,
+    "page": 35
+   },
+   "pct_sold": 2.3,
+   "sales_n": 39
+  },
+  "20145": {
+   "acres_analyzed": 9955,
+   "acres_sold": 15986,
+   "irrigated": {
+    "avg": 5036,
+    "max": 7955,
+    "min": 2276,
+    "page": 47
+   },
+   "name": "Pawnee",
+   "nonirr": {
+    "avg": 2170,
+    "max": 3563,
+    "min": 1682,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 1890,
+    "max": 2430,
+    "min": 1029,
+    "page": 47
+   },
+   "pct_sold": 3.5,
+   "sales_n": 44
+  },
+  "20147": {
+   "acres_analyzed": 5455,
+   "acres_sold": 9941,
+   "name": "Phillips",
+   "nonirr": {
+    "avg": 3410,
+    "max": 4300,
+    "min": 2314,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 1893,
+    "max": 2500,
+    "min": 1245,
+    "page": 35
+   },
+   "pct_sold": 1.8,
+   "sales_n": 22
+  },
+  "20149": {
+   "acres_analyzed": 5723,
+   "acres_sold": 8592,
+   "irrigated": {
+    "avg": 11957,
+    "max": 14699,
+    "min": 9517,
+    "page": 52
+   },
+   "name": "Pottawatomie",
+   "nonirr": {
+    "avg": 5858,
+    "max": 7450,
+    "min": 2736,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": 4317,
+    "max": 6989,
+    "min": 2249,
+    "page": 52
+   },
+   "pct_sold": 1.8,
+   "sales_n": 32
+  },
+  "20151": {
+   "acres_analyzed": 8890,
+   "acres_sold": 13685,
+   "irrigated": {
+    "avg": 4118,
+    "max": 5325,
+    "min": 2671,
+    "page": 47
+   },
+   "name": "Pratt",
+   "nonirr": {
+    "avg": 2400,
+    "max": 3725,
+    "min": 1480,
+    "page": 47
+   },
+   "page": 46,
+   "pct_sold": 3.1,
+   "sales_n": 48
+  },
+  "20153": {
+   "acres_analyzed": 6939,
+   "acres_sold": 17183,
+   "name": "Rawlins",
+   "nonirr": {
+    "avg": 2895,
+    "max": 3656,
+    "min": 2218,
+    "page": 20
+   },
+   "page": 19,
+   "pasture": {
+    "avg": 1343,
+    "max": 1695,
+    "min": 1163,
+    "page": 20
+   },
+   "pct_sold": 2.6,
+   "sales_n": 29
+  },
+  "20155": {
+   "acres_analyzed": 9492,
+   "acres_sold": 40936,
+   "name": "Reno",
+   "nonirr": {
+    "avg": 2716,
+    "max": 6320,
+    "min": 1508,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 1737,
+    "max": 2756,
+    "min": 1233,
+    "page": 47
+   },
+   "pct_sold": 5.7,
+   "sales_n": 52
+  },
+  "20157": {
+   "acres_analyzed": 2916,
+   "acres_sold": 4346,
+   "name": "Republic",
+   "nonirr": {
+    "avg": 4454,
+    "max": 5452,
+    "min": 2529,
+    "page": 35
+   },
+   "page": 34,
+   "pct_sold": 1.0,
+   "sales_n": 22
+  },
+  "20159": {
+   "acres_analyzed": 6943,
+   "acres_sold": 13464,
+   "book_sales_n": 65,
+   "irrigated": {
+    "avg": 8095,
+    "max": 9775,
+    "min": 6713,
+    "page": 41
+   },
+   "name": "Rice",
+   "nonirr": {
+    "avg": 3081,
+    "max": 4355,
+    "min": 1861,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2231,
+    "max": 2700,
+    "min": 1976,
+    "page": 41
+   },
+   "pct_sold": 3.0,
+   "sales_n": null,
+   "withheld_n": "the book prints the same sales count and acres for McPherson and Rice"
+  },
+  "20161": {
+   "acres_analyzed": 2688,
+   "acres_sold": 7227,
+   "name": "Riley",
+   "nonirr": {
+    "avg": 5900,
+    "max": 9067,
+    "min": 3117,
+    "page": 52
+   },
+   "page": 51,
+   "pasture": {
+    "avg": null,
+    "book_avg": 3327,
+    "max": 3087,
+    "min": 2396,
+    "page": 52,
+    "withheld": "the book's average is outside its own minimum and maximum for this row"
+   },
+   "pct_sold": 2.9,
+   "sales_n": 25
+  },
+  "20163": {
+   "acres_analyzed": 12040,
+   "acres_sold": 20430,
+   "name": "Rooks",
+   "nonirr": {
+    "avg": 2194,
+    "max": 3589,
+    "min": 1604,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 1822,
+    "max": 3180,
+    "min": 1160,
+    "page": 35
+   },
+   "pct_sold": 3.7,
+   "sales_n": 51
+  },
+  "20165": {
+   "acres_analyzed": 5955,
+   "acres_sold": 6922,
+   "name": "Rush",
+   "nonirr": {
+    "avg": 2112,
+    "max": 3054,
+    "min": 1389,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 1651,
+    "max": 2420,
+    "min": 1189,
+    "page": 41
+   },
+   "pct_sold": 1.6,
+   "sales_n": 37
+  },
+  "20167": {
+   "acres_analyzed": 9233,
+   "acres_sold": 11690,
+   "name": "Russell",
+   "nonirr": {
+    "avg": 2358,
+    "max": 3120,
+    "min": 2075,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2238,
+    "max": 3065,
+    "min": 1449,
+    "page": 41
+   },
+   "pct_sold": 2.2,
+   "sales_n": 40
+  },
+  "20169": {
+   "acres_analyzed": 7861,
+   "acres_sold": 14271,
+   "name": "Saline",
+   "nonirr": {
+    "avg": 3787,
+    "max": 6954,
+    "min": 1729,
+    "page": 41
+   },
+   "page": 40,
+   "pasture": {
+    "avg": 2708,
+    "max": 4332,
+    "min": 1428,
+    "page": 41
+   },
+   "pct_sold": 3.8,
+   "sales_n": 51
+  },
+  "20171": {
+   "acres_analyzed": 2706,
+   "acres_sold": 4011,
+   "irrigated": {
+    "avg": 3371,
+    "max": 3572,
+    "min": 3022,
+    "page": 24
+   },
+   "name": "Scott",
+   "nonirr": {
+    "avg": 2588,
+    "max": 3040,
+    "min": 2050,
+    "page": 24
+   },
+   "page": 23,
+   "pct_sold": 0.9,
+   "sales_n": 16
+  },
+  "20173": {
+   "acres_analyzed": 5837,
+   "acres_sold": 10524,
+   "irrigated": {
+    "avg": 9915,
+    "max": 12041,
+    "min": 8785,
+    "page": 47
+   },
+   "name": "Sedgwick",
+   "nonirr": {
+    "avg": 5563,
+    "max": 8832,
+    "min": 2387,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 4289,
+    "max": 5793,
+    "min": 2268,
+    "page": 47
+   },
+   "pct_sold": 2.4,
+   "sales_n": 48
+  },
+  "20175": {
+   "acres_analyzed": 6301,
+   "acres_sold": 9906,
+   "name": "Seward",
+   "nonirr": {
+    "avg": 1628,
+    "max": 2750,
+    "min": 1020,
+    "page": 30
+   },
+   "page": 29,
+   "pasture": {
+    "avg": 1342,
+    "max": 2213,
+    "min": 607,
+    "page": 30
+   },
+   "pct_sold": 2.5,
+   "sales_n": 13
+  },
+  "20177": {
+   "acres_analyzed": 3224,
+   "acres_sold": 8267,
+   "name": "Shawnee",
+   "nonirr": {
+    "avg": 3306,
+    "max": 4998,
+    "min": 1739,
+    "page": 57
+   },
+   "page": 56,
+   "pasture": {
+    "avg": 3278,
+    "max": 5488,
+    "min": 1910,
+    "page": 57
+   },
+   "pct_sold": 3.7,
+   "sales_n": 23
+  },
+  "20179": {
+   "acres_analyzed": 7848,
+   "acres_sold": 10593,
+   "irrigated": {
+    "avg": 5190,
+    "max": 6405,
+    "min": 4213,
+    "page": 20
+   },
+   "name": "Sheridan",
+   "nonirr": {
+    "avg": 2698,
+    "max": 4217,
+    "min": 1870,
+    "page": 20
+   },
+   "page": 19,
+   "pasture": {
+    "avg": 1237,
+    "max": 1495,
+    "min": 1042,
+    "page": 20
+   },
+   "pct_sold": 1.9,
+   "sales_n": 31
+  },
+  "20181": {
+   "acres_analyzed": 7091,
+   "acres_sold": 10046,
+   "irrigated": {
+    "avg": 5033,
+    "max": 5798,
+    "min": 4224,
+    "page": 20
+   },
+   "name": "Sherman",
+   "nonirr": {
+    "avg": 2533,
+    "max": 3341,
+    "min": 1503,
+    "page": 20
+   },
+   "page": 19,
+   "pct_sold": 1.5,
+   "sales_n": 27
+  },
+  "20183": {
+   "acres_analyzed": 9236,
+   "acres_sold": 11311,
+   "name": "Smith",
+   "nonirr": {
+    "avg": 3736,
+    "max": 5556,
+    "min": 2285,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 2468,
+    "max": 3300,
+    "min": 1800,
+    "page": 35
+   },
+   "pct_sold": 2.1,
+   "sales_n": 48
+  },
+  "20185": {
+   "acres_analyzed": 7571,
+   "acres_sold": 11647,
+   "irrigated": {
+    "avg": 6490,
+    "max": 9153,
+    "min": 4805,
+    "page": 47
+   },
+   "name": "Stafford",
+   "nonirr": {
+    "avg": 2413,
+    "max": 4450,
+    "min": 1743,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 2203,
+    "max": 2525,
+    "min": 2013,
+    "page": 47
+   },
+   "pct_sold": 2.5,
+   "sales_n": 49
+  },
+  "20187": {
+   "acres_analyzed": 4114,
+   "acres_sold": 8376,
+   "name": "Stanton",
+   "nonirr": {
+    "avg": 1123,
+    "max": 1655,
+    "min": 748,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 2.0,
+   "sales_n": 14
+  },
+  "20189": {
+   "acres_analyzed": 9145,
+   "acres_sold": 11676,
+   "irrigated": {
+    "avg": 4322,
+    "max": 8326,
+    "min": 2283,
+    "page": 30
+   },
+   "name": "Stevens",
+   "nonirr": {
+    "avg": 1324,
+    "max": 1913,
+    "min": 969,
+    "page": 30
+   },
+   "page": 29,
+   "pct_sold": 2.6,
+   "sales_n": 33
+  },
+  "20191": {
+   "acres_analyzed": 10069,
+   "acres_sold": 15186,
+   "name": "Sumner",
+   "nonirr": {
+    "avg": 2885,
+    "max": 5361,
+    "min": 1676,
+    "page": 47
+   },
+   "page": 46,
+   "pasture": {
+    "avg": 2782,
+    "max": 3096,
+    "min": 2485,
+    "page": 47
+   },
+   "pct_sold": 2.1,
+   "sales_n": 79
+  },
+  "20193": {
+   "acres_analyzed": 12743,
+   "acres_sold": 20483,
+   "irrigated": {
+    "avg": 6151,
+    "max": 7907,
+    "min": 4622,
+    "page": 20
+   },
+   "name": "Thomas",
+   "nonirr": {
+    "avg": 2739,
+    "max": 4155,
+    "min": 1864,
+    "page": 20
+   },
+   "page": 19,
+   "pct_sold": 3.1,
+   "sales_n": 47
+  },
+  "20195": {
+   "acres_analyzed": 6905,
+   "acres_sold": 13243,
+   "name": "Trego",
+   "nonirr": {
+    "avg": 1839,
+    "max": 2401,
+    "min": 1286,
+    "page": 24
+   },
+   "page": 23,
+   "pasture": {
+    "avg": 1480,
+    "max": 1855,
+    "min": 1180,
+    "page": 24
+   },
+   "pct_sold": 2.4,
+   "sales_n": 32
+  },
+  "20197": {
+   "acres_analyzed": 9358,
+   "acres_sold": 14460,
+   "name": "Wabaunsee",
+   "page": 56,
+   "pasture": {
+    "avg": 3602,
+    "max": 6264,
+    "min": 2464,
+    "page": 57
+   },
+   "pct_sold": 3.2,
+   "sales_n": 31
+  },
+  "20199": {
+   "acres_analyzed": 6525,
+   "acres_sold": 8368,
+   "name": "Wallace",
+   "nonirr": {
+    "avg": 1969,
+    "max": 2659,
+    "min": 1615,
+    "page": 24
+   },
+   "page": 23,
+   "pasture": {
+    "avg": 1040,
+    "max": 1097,
+    "min": 1000,
+    "page": 24
+   },
+   "pct_sold": 1.5,
+   "sales_n": 12
+  },
+  "20201": {
+   "acres_analyzed": 4366,
+   "acres_sold": 7346,
+   "name": "Washington",
+   "nonirr": {
+    "avg": 5919,
+    "max": 7446,
+    "min": 4286,
+    "page": 35
+   },
+   "page": 34,
+   "pasture": {
+    "avg": 3466,
+    "max": 5000,
+    "min": 2040,
+    "page": 35
+   },
+   "pct_sold": 1.4,
+   "sales_n": 29
+  },
+  "20203": {
+   "acres_analyzed": 6718,
+   "acres_sold": 11335,
+   "irrigated": {
+    "avg": 4196,
+    "max": 4477,
+    "min": 3987,
+    "page": 24
+   },
+   "name": "Wichita",
+   "nonirr": {
+    "avg": 2620,
+    "max": 3272,
+    "min": 1892,
+    "page": 24
+   },
+   "page": 23,
+   "pct_sold": 2.5,
+   "sales_n": 24
+  },
+  "20205": {
+   "acres_analyzed": 5067,
+   "acres_sold": 8489,
+   "name": "Wilson",
+   "nonirr": {
+    "avg": 4389,
+    "max": 6155,
+    "min": 3520,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 3258,
+    "max": 4125,
+    "min": 2319,
+    "page": 61
+   },
+   "pct_sold": 2.5,
+   "sales_n": 34
+  },
+  "20207": {
+   "acres_analyzed": 4086,
+   "acres_sold": 6280,
+   "name": "Woodson",
+   "nonirr": {
+    "avg": 4044,
+    "max": 5523,
+    "min": 3435,
+    "page": 61
+   },
+   "page": 60,
+   "pasture": {
+    "avg": 2942,
+    "max": 3729,
+    "min": 1696,
+    "page": 61
+   },
+   "pct_sold": 2.1,
+   "sales_n": 33
+  }
+ },
+ "evidence": "average of reported sales, K-State",
+ "kinds": {
+  "irrigated": "irrigated cropland",
+  "nonirr": "non-irrigated cropland",
+  "pasture": "pasture and hay"
+ },
+ "period": "Oct 2024 to Sep 2025",
+ "source": {
+  "authors": "Robin Reid and Megan Hughes",
+  "org": "Kansas State University Agricultural Economics and KSFMRA",
+  "page": "https://www.agmanager.info/land-leasing/land-buying-valuing/2025-kansas-land-values-book",
+  "ref": "ksu-land-values-book-2025-pdf",
+  "released": "January 12, 2026",
+  "sha256": "422a65af2d3eb082727dd05acce1982361d132641f5aa6f1713976cd6953ebf0",
+  "terms": "No reuse terms in the book or on its page: county averages are cited with a link; the book itself is not copied.",
+  "title": "Kansas Agricultural Land Values and Trends 2025 (2025 Kansas Land Values Book)",
+  "url": "https://www.agmanager.info/sites/default/files/pdf/2025%20KS%20Ag%20Land%20Values%20011226%20web.pdf"
+ },
+ "state": "KS",
+ "what": {
+  "avg": "average dollars per parcel acre",
+  "max": "highest, not verified by the authors",
+  "min": "lowest, not verified by the authors",
+  "page": "page of the PDF",
+  "sales_n": "sales analyzed in the county, all land types"
+ },
+ "year": 2025
+}
