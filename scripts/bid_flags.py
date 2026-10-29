@@ -46,6 +46,10 @@ middle of cash - basis over rows with a basis of $1.50 or less either way
   wide_unchecked    a basis over $3 either way on a day with no reference.
 A wide basis that does agree with the reference (Ontario boards in Canadian
 dollars) is not flagged.
+  hand_flagged      checked first: a row in scripts/bid_hand_flags.json (a person
+                    judged it bad, the evidence is written beside it), matched
+                    on facility, town, state, crop, contract, delivery and the
+                    stored basis. The basis history reads the same list.
 
 USAGE
 -----
@@ -57,6 +61,7 @@ In Python: flag_rows(rows), flagged_keys(rows), row_key(row), read_flags(bytes).
 """
 import argparse
 import csv
+import json
 import io
 import os
 import re
@@ -87,9 +92,10 @@ RULES = {
     "price_ref_within": 2.0,
     "price_cash_ratio": 1.7,
 }
-CODES = ("identity", "meal_as_soybeans", "cash_out_of_range", "basis_in_cents", "price_in_basis",
+CODES = ("hand_flagged", "identity", "meal_as_soybeans", "cash_out_of_range", "basis_in_cents", "price_in_basis",
          "implied_off", "wide_unchecked")
 DIR = "bids-daily-flags"
+HAND_PATH = os.path.join(HERE, "bid_hand_flags.json")
 COLS = ["place", "commodity", "delivery", "start", "end", "futures", "locId", "cash", "basis", "ref", "reason", "rules"]
 EPS = 1e-9
 MEAL_SYM = re.compile(r"^(ZM|ZL|@SM|@BO)", re.I)
@@ -142,10 +148,54 @@ def references(rows):
     return out
 
 
+def _n(v):
+    return " ".join(str(v or "").strip().upper().split())
+
+
+_HAND = {}
+
+
+def hand_rows(path=HAND_PATH):
+    """The hand-flag list (scripts/bid_hand_flags.json): rows a person judged bad that the rules miss."""
+    if path not in _HAND:
+        try:
+            with open(path, encoding="utf-8") as f:
+                _HAND[path] = [h for h in (json.load(f).get("rows") or []) if isinstance(h, dict)]
+        except (OSError, ValueError):
+            _HAND[path] = []
+    return _HAND[path]
+
+
+def _hand_key(fac, city, st, crop, fut, delivery):
+    return (_n(fac), _n(city), _n(st), _n(crop), _n(fut), _n(delivery))
+
+
+def hand_index(path=HAND_PATH):
+    """{(FACILITY, CITY, STATE, CROP, CONTRACT, DELIVERY): {basis in cents}}, the same key the basis
+    history (scripts/build_basis_history.py) uses, so both readers match one list one way."""
+    out = {}
+    for h in hand_rows(path):
+        if _num(h.get("basis")):
+            out.setdefault(_hand_key(h.get("facility"), h.get("city"), h.get("state"), h.get("category"),
+                                     h.get("futures"), h.get("delivery")), set()).add(int(round(h["basis"] * 100)))
+    return out
+
+
+def hand_flagged(r, path=HAND_PATH):
+    b = r.get("basis")
+    if not _num(b):
+        return False
+    vals = hand_index(path).get(_hand_key(r.get("facility"), r.get("city"), r.get("state"), r.get("category"),
+                                          r.get("futures"), r.get("delivery")))
+    return bool(vals) and int(round(b * 100)) in vals
+
+
 def reason(r, ref):
     """The flag code for one row, or None. ref: (price, kind) or None."""
     if r.get("category") not in RULES["crops"]:
         return None
+    if hand_flagged(r):
+        return "hand_flagged"
     c, b, f = r.get("cash"), r.get("basis"), r.get("futuresPrice")
     if _num(c) and _num(b) and _num(f) and abs(c - b - f) > RULES["identity_dollars"] + EPS:
         return "identity"
@@ -340,6 +390,16 @@ def selftest():
     wan = _row(0, locId="ewan", commodity="Soybeans", category="soybeans", futures="@S7Q", cash=17.05, basis=4.05,
                futuresPrice=12.995, src="network")
     ck("a wide basis that matches its own quoted futures is not flagged", flag_rows([wan]) == [])
+    # THE HAND LIST. Real rows: H & B Specialties, Inc., Naples IL posted corn Mar27 on ZCH27 at a stored
+    # +$1.00 (a cent read as a dollar) on days the rules had no reference to check it against.
+    hb = _row(0, locId="ehb", facility="H & B Specialties, Inc.", city="Naples", state="IL", key="H & B|Naples|Naples|IL",
+              commodity="Corn", delivery="Mar27", futures="ZCH27", cash=4.66, basis=1.0)
+    ck("the hand list names H & B Naples corn Mar27 at +$1.00 -> hand_flagged",
+       [c for _, c, _ in flag_rows([hb])] == ["hand_flagged"])
+    ck("the same row at another basis is not hand flagged", flag_rows([dict(hb, basis=-0.25)]) == [])
+    ck("the hand list keys match the basis history's key",
+       hand_index().get(("H & B SPECIALTIES, INC.", "NAPLES", "IL", "CORN", "ZCH27", "MAR27")) == {100})
+    ck("every hand row says why and when", all(h.get("why") and h.get("added") for h in hand_rows()))
     print("selftest: %d failure(s)" % len(fails))
     return 1 if fails else 0
 

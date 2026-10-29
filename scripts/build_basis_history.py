@@ -202,7 +202,9 @@ def apply_day(state, rows, date):
 # were real; at -1 dollar most were real (5,654 to 325), at +1 mixed (187 to
 # 257), so a lone -100 or +100 is not dropped. Dropped here, from the shards
 # only (the changes-*.json files are the record and are never rewritten), are
-# rows of the three crops last seen on or before BARCHART_LAST whose basis now
+# rows on the hand-flag list (scripts/bid_hand_flags.json: a person judged them
+# bad, the evidence written beside each), and rows of the three crops last seen
+# on or before BARCHART_LAST whose basis now
 # or before is a round +-200, +-300 or +-400, or whose record holds the error's
 # own step: a move of 90 cents or more between a round quarter-dollar value of
 # at least 100 and a value under 100 (Consolidated Grain & Barge, Sherrill AR,
@@ -233,8 +235,15 @@ def unit_error_rows(state, out_dir):
         for r in doc.get("changes") or []:
             if len(r) >= 8 and unit_error_step(r[6], r[7]):
                 steps[(r[1], r[2], r[0], str(r[3]).upper(), r[4], r[5])] = True
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import bid_flags            # the hand-flag list, read the same way the snapshot flags read it
+    hand = bid_flags.hand_index()
     out = {}
     for k, v in state.items():
+        hv = hand.get(k)
+        if hv and (v.get("cur") in hv or v.get("prev") in hv):
+            out[k] = "hand"
+            continue
         if k[3] not in UNIT_ERROR_CROPS or not v.get("last") or v["last"] > BARCHART_LAST:
             continue
         if any(isinstance(x, int) and abs(x) in UNIT_ERROR_ROUND for x in (v.get("cur"), v.get("prev"))):
@@ -528,6 +537,14 @@ def selftest():
                    ("CONSOLIDATED GRAIN & BARGE", "SHERRILL", "AR", "CORN", "ZCU26", "JUL26"): "round"})
         ck("a lone old -100, a live row and a meal row are kept",
            not any(k[0] in ("CENTRAL FARM SERVICE", "PRAIRIE AG PARTNERS", "LIVE CO", "ADM GRAIN") for k in bad))
+        hb = {("H & B SPECIALTIES, INC.", "NAPLES", "IL", "CORN", "ZCK27", "MAY27"):
+              {"cur": 100, "prev": None, "since": "2026-07-16", "first": "2026-07-16", "last": "2026-09-22"},
+              ("H & B SPECIALTIES, INC.", "NAPLES", "IL", "CORN", "ZCH27", "MAR27"):
+              {"cur": 100, "prev": 75, "since": "2026-08-07", "first": "2026-06-09", "last": "2026-09-22"},
+              ("H & B SPECIALTIES, INC.", "NAPLES", "IL", "CORN", "ZCK27", "MAY27X"):
+              {"cur": 100, "prev": None, "since": "2026-07-16", "first": "2026-07-16", "last": "2026-09-22"}}
+        ck("hand list: H & B Naples IL +100 corn rows (Mar27, May27) are dropped, a key not on it is kept",
+           unit_error_rows(hb, d) == {k: "hand" for k in list(hb)[:2]})
         ck("the step rule: 90 cents or more between a round value of 100+ and one under 100",
            unit_error_step(-300, -7) and unit_error_step(100, -25) and not unit_error_step(-100, -95)
            and not unit_error_step(-130, -40) and not unit_error_step(None, 100))
@@ -593,8 +610,9 @@ def main():
         for k in bad:
             del state[k]
         print("[basis-history] %d old-feed row(s) with a cents basis read as dollars left out of the shards "
-              "(%d round, %d step; the changes files keep the record)"
-              % (len(bad), sum(v == "round" for v in bad.values()), sum(v == "step" for v in bad.values())))
+              "(%d round, %d step, %d hand-flagged; the changes files keep the record)"
+              % (len(bad), sum(v == "round" for v in bad.values()), sum(v == "step" for v in bad.values()),
+                 sum(v == "hand" for v in bad.values())))
     index = write_shards(state, a.out, today)
     tot = sum(v["kb"] for v in index["states"].values())
     big = sorted(index["states"].items(), key=lambda kv: -kv[1]["kb"])[:5]

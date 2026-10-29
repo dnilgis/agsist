@@ -48,7 +48,18 @@ test('bid_flags.py: every reason from a real row, and the clean rows stay clean'
     /^ok {3}no reference: a 1\.0 basis is left alone \(unsure, not flagged\)$/m,
     /^ok {3}same rows, same bytes$/m,
     /^ok {3}two places under one id stay two flagged rows in the file$/m,
-  ], 20);
+    /^ok {3}the hand list names H & B Naples corn Mar27 at \+\$1\.00 -> hand_flagged$/m,
+    /^ok {3}the same row at another basis is not hand flagged$/m,
+    /^ok {3}the hand list keys match the basis history's key$/m,
+  ], 24);
+  const hand = JSON.parse(read('scripts/bid_hand_flags.json')).rows;
+  assert.ok(hand.length >= 3, 'the hand list lost its H & B Naples rows');
+  for (const h of hand) {
+    for (const k of ['facility', 'city', 'state', 'category', 'futures', 'delivery', 'basis', 'why', 'added']) {
+      assert.ok(h[k] !== undefined && h[k] !== '', `hand row ${h.facility} ${h.delivery} has ${k}`);
+    }
+    assert.doesNotMatch(h.why, /\u2014/, 'no em dash');
+  }
 });
 
 test('the snapshot build flags, never drops', () => {
@@ -98,6 +109,7 @@ test('basis shards leave out the old feed\'s unit errors, never a live row', () 
   for (const m of [
     /^ok {3}old-feed unit errors: the -300\/-7 step, the 0\/100 step and the round dollars are dropped$/m,
     /^ok {3}a lone old -100, a live row and a meal row are kept$/m,
+    /^ok {3}hand list: H & B Naples IL \+100 corn rows \(Mar27, May27\) are dropped, a key not on it is kept$/m,
     /^ok {3}the step rule: 90 cents or more between a round value of 100\+ and one under 100$/m,
   ]) assert.match(out.stdout, m);
   const py = read('scripts/build_basis_history.py');
