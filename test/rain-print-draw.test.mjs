@@ -158,18 +158,20 @@ test("hail: our own records within the stated radius, the reported kind only, ne
   assert.deepEqual([...DR.hailCover(2024, idx)], ["nws"]);
 });
 
-test("wind is the modeled gust, aligned to the print's days, labeled modeled", () => {
+/* 2026-10-29: the wind came from Open-Meteo's ERA5 archive, now off (no free source gives a daily gust for any spot
+   and year); the matching code stays for a source Sig picks, so it is still checked on a made-up answer. */
+test("wind: no source, so nothing is asked; the matching code still aligns a gust answer to the print's days", () => {
+  assert.equal(DR.windSource(), null);
+  assert.equal(DR.windUrl, undefined);
+  assert.doesNotMatch(readFileSync(ROOT + "components/rain-print-draw.js", "utf8"), /open-meteo\.com/);
   const days = engineDays(FX.standInYear(1982));
-  const j = FX.windAnswer(new URL(DR.windUrl(45.3141, -91.651, 1982, "1982-12-31")));
+  const j = FX.windAnswer(new URL("https://example.invalid/?start_date=1982-01-01&end_date=1982-12-31"));
   const w = DR.windFrom(j, days);
   assert.equal(w.gust.length, days.length);
   assert.equal(w.top.date, "1982-06-29");
   assert.match(w.src, /modeled/);
   assert.match(DR.windWords(w.top), /^Windiest day: gusts \d+ mph, Jun 29 \(modeled\)$/);
   assert.equal(DR.windFrom({}, days), null);
-  const u = new URL(DR.windUrl(45.3141, -91.651, 1982, "1982-12-31"));
-  assert.equal(u.host, "archive-api.open-meteo.com");
-  assert.equal(u.searchParams.get("wind_speed_unit"), "mph");
 });
 
 // ------------------------------------------------------------ files
@@ -229,7 +231,7 @@ test("weight, copy and the rules: small, lazy on county pages, no sponsor, no em
 
 // ------------------------------------------------------------ in a browser
 const DESIGN = "place=Chetek%2C+WI&year=1982&cmp=normal&style=r1&name=Gustum+Farm&normals=1&records=1&m1=1982-04-01+Moved+in";
-async function withPage(fn, { width = 1280, height = 900, mobile = false, reduced = false, init = null, wind = null, kind = "wet", q = DESIGN } = {}) {
+async function withPage(fn, { width = 1280, height = 900, mobile = false, reduced = false, init = null, wind = null, log = null, kind = "wet", q = DESIGN } = {}) {
   const srv = await FX.serve(ROOT), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -237,7 +239,7 @@ async function withPage(fn, { width = 1280, height = 900, mobile = false, reduce
     await c.clock.setFixedTime(new Date("2026-10-20T17:00:00Z"));
     await c.addInitScript(() => { window.__ga = []; window.gaEvent = (n, p) => window.__ga.push([n, p]); });
     if (init) await c.addInitScript(init);
-    await FX.mocks(c, { kind, wind });
+    await FX.mocks(c, { kind, wind, log });
     const page = await c.newPage(), errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
     await page.goto(`http://127.0.0.1:${port}/rain-print.html?` + q);
@@ -463,28 +465,19 @@ test("reduced motion: four still steps on screen; a browser that can't record of
   }, { reduced: true, init });
 });
 
-test("wind is off until asked; on, it is modeled and says so; hail says what it checked", { skip, timeout: 120000 }, async () => {
+test("no wind chip and no wind asked (no free source); hail says what it checked", { skip, timeout: 120000 }, async () => {
+  const log = [];
   await withPage(async (page, errors) => {
     await page.click("#rp-watch");
     await played(page);
-    let say = await page.textContent(".rpd-say");
+    const say = await page.textContent(".rpd-say");
     assert.match(say, /No hail reported within 10 mi in 1982 \(NOAA NCEI Storm Events\)/);
     assert.ok(!/Wind/.test(say));
     assert.equal(await page.evaluate(() => AgRainDraw.current().S.wind), null);
-    await page.check(".rpd-wind input");
-    await page.waitForFunction(() => AgRainDraw.current().S && AgRainDraw.current().S.wind);
-    await played(page);
-    say = await page.textContent(".rpd-say");
-    assert.match(say, /Wind is modeled \(ERA5 reanalysis via Open-Meteo\), not measured at the station/);
-    const w = await page.evaluate(() => { const S = AgRainDraw.current().S; return { top: S.wind.top.date, ev: S.events.filter((e) => e.kind === "wind").map((e) => e.text), credit: S.creditLine }; });
-    assert.equal(w.top, "1982-06-29");
-    assert.match(w.ev[0], /\(modeled\)$/);
-    assert.match(w.credit, /Wind: ERA5 reanalysis via Open-Meteo, modeled/);
-    // the last frame is still the print: video-only marks are gone by then
-    const r = await lastFrameVsPrint(page);
-    assert.ok(r.off < 0.0005, "wind marks fade before the end");
+    assert.equal(await page.$eval(".rpd-wind", (e) => e.classList.contains("rpd-hide")), true, "the wind chip is not offered");
+    assert.ok(!log.some((x) => /open-meteo/.test(x)), log.join(" "));
     assert.deepEqual(errors, []);
-  }, { wind: FX.windAnswer });
+  }, { log });
 });
 
 test("hail near town shows on its own day, from our records, and is gone from the last frame", { skip, timeout: 120000 }, async () => {

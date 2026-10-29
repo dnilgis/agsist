@@ -52,19 +52,23 @@ async function open(browser, port, { weather = () => [84, 62], state = "Iowa", w
       return r.fulfill({ status: 200, headers: CORS, contentType: "application/json",
         body: JSON.stringify([{ lat: "42.03", lon: "-93.62", display_name: "Ames, Story County, " + state, address: { state } }]) });
     }
-    if (/open-meteo\.com/.test(u)) {
-      calls.push(u);
-      const q = new URL(u).searchParams;
-      const s = new Date(q.get("start_date") + "T00:00:00Z"), e = new Date(q.get("end_date") + "T00:00:00Z");
-      const t = [], mx = [], mn = [];
+    // the PRISM daily grid through RCC-ACIS GridData (2026-10-29, was Open-Meteo's archive): [date, maxt, mint] rows,
+    // "M" for a missing day. `u` below names the asked range the way the old tests read it (start_date=, end_date=).
+    if (/^https:\/\/data\.rcc-acis\.org\/GridData\?params=/.test(u)) {
+      const P = JSON.parse(new URL(u).searchParams.get("params"));
+      assert.equal(P.grid, "21"); assert.equal(P.elems, "maxt,mint");
+      const asked = `start_date=${P.sdate}&end_date=${P.edate}`;
+      calls.push(asked);
+      const s = new Date(P.sdate + "T00:00:00Z"), e = new Date(P.edate + "T00:00:00Z");
+      const rows = [];
       for (let d = new Date(s); d <= e; d.setUTCDate(d.getUTCDate() + 1)) {
-        const iso = d.toISOString().slice(0, 10), w = weather(iso, u);
-        t.push(iso); mx.push(w ? w[0] : null); mn.push(w ? w[1] : null);
+        const iso = d.toISOString().slice(0, 10), w = weather(iso, asked);
+        rows.push([iso, w ? w[0] : "M", w ? w[1] : "M"]);
       }
-      if (/start_date=1991/.test(u) && normals === "fail") return r.fulfill({ status: 500, headers: CORS, body: "" });
-      return r.fulfill({ status: 200, headers: CORS, contentType: "application/json",
-        body: JSON.stringify({ daily: { time: t, temperature_2m_max: mx, temperature_2m_min: mn } }) });
+      if (/start_date=1991/.test(asked) && normals === "fail") return r.fulfill({ status: 500, headers: CORS, body: "" });
+      return r.fulfill({ status: 200, headers: CORS, contentType: "application/json", body: JSON.stringify({ data: rows }) });
     }
+    if (/open-meteo\.com/.test(u)) { calls.push(u); return r.abort(); }
     return r.abort();
   });
   await pg.goto(`http://127.0.0.1:${port}/gdu-calculator`);

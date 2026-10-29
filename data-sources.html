@@ -138,11 +138,21 @@
       <p>Bitcoin, XRP and Kaspa quotes on the dashboard come from the same Yahoo Finance feed.</p>
 
       <h2>Weather</h2>
-      <div class="info-card" id="open-meteo">
-        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-sun"/></svg> Open-Meteo</h3>
-        <p><strong>Used for:</strong> Hourly temperature, wind speed, wind direction, humidity, precipitation probability, and derived spray/urea risk calculations.</p>
-        <p><strong>Update frequency:</strong> Fetched by your browser each time you open a page or tool that shows weather.</p>
-        <p><a href="https://open-meteo.com" target="_blank" rel="noopener">open-meteo.com</a>: open-source weather API.</p>
+      <div class="info-card" id="nws">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-sun"/></svg> National Weather Service forecast grid</h3>
+        <p><strong>Used for:</strong> Hourly and daily forecast temperature, dew point, humidity, wind, gusts, sky cover, precipitation chance and amount for your spot (home weather, spray windows and the wind map, urea loss, grain drying, harvest or wait, planting date air temperature), and the active alerts on the home page. The NWS forecast grid (NDFD) has 2.5 km cells; a page shows the forecast office, the cell and the time the NWS issued it. It is a forecast, not a station reading.</p>
+        <p><strong>Update frequency:</strong> Fetched by your browser when you open a page that shows weather; the NWS updates the grid about every hour.</p>
+        <p><a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noopener">api.weather.gov</a>: National Weather Service, public domain.</p>
+      </div>
+      <div class="info-card" id="prism">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> PRISM daily grids (Oregon State University), through RCC-ACIS</h3>
+        <p><strong>Used for:</strong> Daily high, low and precipitation history at your spot: GDUs since planting and the 1991 to 2020 GDU normal on the <a href="/gdu-calculator">GDU calculator</a>, the home page season charts, and Rain Print where no gauge is near. PRISM spreads station reports onto 4 km cells and posts each day about a day late.</p>
+        <p><a href="https://prism.oregonstate.edu/" target="_blank" rel="noopener">prism.oregonstate.edu</a> &middot; <a href="https://www.rcc-acis.org/" target="_blank" rel="noopener">rcc-acis.org</a> (NOAA Regional Climate Centers).</p>
+      </div>
+      <div class="info-card" id="soil-stations">
+        <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> Measured soil temperature stations</h3>
+        <p><strong>Used for:</strong> Soil temperature at 4 in on <a href="/fall-nitrogen">fall nitrogen</a>, <a href="/planting-date">planting date</a> and the home page, from the nearest station within 50 miles: NOAA&rsquo;s <a href="https://www.ncei.noaa.gov/access/crn/" target="_blank" rel="noopener">Climate Reference Network</a>, USDA NRCS <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-climate-analysis-network" target="_blank" rel="noopener">SCAN</a>, the <a href="https://mesonet.agron.iastate.edu/agclimate/" target="_blank" rel="noopener">Iowa State Soil Moisture Network</a> and <a href="https://wisconet.wisc.edu/" target="_blank" rel="noopener">Wisconet</a> (CC BY). No free forecast gives soil temperature, so there is no soil forecast.</p>
+        <p><strong>Update frequency:</strong> Twice a day, September to December.</p>
       </div>
       <div class="info-card" id="windy">
         <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg> Windy.com</h3>

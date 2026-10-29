@@ -174,7 +174,7 @@ test("the page: one mount, the map code loads only once a place is open, files b
   const page = read("fast-facts.html"), here = read("components/here.js"), cm = read("components/changemap.js");
   assert.match(page, /<p id="h-where" class="h-where"><\/p>\n<div id="h-cm" class="cm" hidden><\/div>/);
   assert.doesNotMatch(page, /changemap\.js/, "not a page script: loaded by here.js");
-  assert.match(page, /\/components\/here\.js\?v=32"/);
+  assert.match(page, /\/components\/here\.js\?v=33"/);
   assert.match(here, /var CM_JS = '\/components\/changemap\.js\?v=\d+';/);
   assert.match(here, /loadCards\(fips\);\n\s+changeMap\(fips\);/);
   for (const f of [cm]) assert.doesNotMatch(f, /—/);
