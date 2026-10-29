@@ -664,3 +664,10 @@
 .fs-by a{ color:var(--brand); }
 .fs-math{ margin-top:2.2rem; }
 .fs-math details p+p{ margin-top:-.35rem; }
+    /* one example button on the first screen (2026-10-29): while the invite card shows its own
+       "See a finished read" button, the panel's copy of it stays hidden; it comes back once the
+       invite is dismissed, so the example is never more than one tap away */
+    html:not(.fs-invite-off):not(.fs-has-field) #fs-demo,html:not(.fs-invite-off):not(.fs-has-field) .fs-demo-hint{display:none}
+    .fs-deck-co{margin-left:.5rem;color:var(--text);letter-spacing:0;text-transform:none;font-weight:600}
+    .fs-peek-co{grid-column:1/-1;margin:-2px 0 2px;font-family:var(--font-mono);font-size:.8rem;color:var(--text-muted)}
+    .fs-peek-k .v small{display:block;font-size:.7rem;font-weight:500;color:var(--text-muted);overflow-wrap:anywhere}
