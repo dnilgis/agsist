@@ -19,12 +19,15 @@ lines, and each was a claim the numbers in the issue could not support:
 Each rule below is one of those, written so the real line fails and the
 corrected line passes (see the selftest). One definition, used three times:
 the generator's prompt (PROMPT_RULES), the generator and the critic after a
-rewrite (strip: the sentence is cut, never reworded), and briefing_gate (a
-data rule left blocks the send, a wording rule left is a warning).
+rewrite (strip: the sentence is cut; since Oct 29 a cause sentence is first
+reworded by code, fix_causes, and scripts/cause_fix.py runs that again right
+before the gate), and briefing_gate (a data rule left blocks the send, a
+wording rule left is a warning).
 
   context(prices, issue_date, quote_strip)  what the rules need to know
   lint(briefing, ctx)   -> [(rule, loc, sentence)]
   strip(briefing, ctx)  -> (briefing, [log lines])
+  fix_causes(briefing, ctx) -> (briefing, [log lines])  the cause rule: reword, else cut, else leave
   from_files(briefing, repo, today)  context from data/prices.json
 
     python3 scripts/daily_claims.py --selftest
@@ -462,11 +465,262 @@ def _cut(text, bad):
     return "\n".join(out).strip()
 
 
-def strip(briefing, ctx):
-    """Cut every sentence lint finds, in the fields that can lose one. A field
-    that would be left empty keeps its text (the gate decides). Returns
-    (briefing, [log lines])."""
+# ── a cause sentence, reworded by code (Oct 29) ────────────────────────────
+#
+# WHY. Oct 29 the so_what "Crude is still pricing in Iran supply risk, and
+# diesel follows it." went out: strip() leaves a field that would be left
+# empty, and the gate only WARNs on this rule (a prose heuristic never blocks),
+# but test/daily-claims.test.mjs needs every archived issue to pass it, so a
+# published issue turned every pull request red until it was reworded by hand.
+# So before the gate a flagged sentence is first reworded here: the fact kept,
+# the causal wording dropped ("diesel follows it" -> "diesel has moved with
+# it"; ", driven by X" and "because X" cut as a clause). Only a result that
+# still reads as a sentence is used; else the sentence is cut when its field
+# keeps other text; else it is left and the gate WARNs. Tests: the Oct 29 line
+# and the 73 option-C lines of Oct 27 (test/fixtures/daily-cause-lines.json).
+
+_ADV = r"(?:likely|typically|largely|mostly|partly|probably|apparently|seemingly|usually|generally|often|in part)"
+_MODAL = {"should": "may", "could": "could", "may": "may", "might": "might", "will": "will", "would": "would",
+          "can": "can", "must": "must"}
+_NEG = re.compile(r"(?:\bnot|n't|\bnever)$", re.I)
+_COND = re.compile(r"\b(if|when|whether|unless|once)\b", re.I)
+_DIR = r"(?:higher|lower|deeper)"
+_LAG = re.compile(r"\bwith an? ((?:\d+-\w+ |\w+ )?lag)\b", re.I)
+_FUNC_END = {"and", "or", "but", "with", "the", "a", "an", "of", "to", "for", "by", "as", "than", "that", "which",
+             "while", "when", "if", "on", "in", "at", "not", "is", "are", "was", "were", "has", "have", "being",
+             "its", "their", "this", "so", "because", "from", "into", "after", "before"}
+_TAIL = re.compile(r"(?:[.!?]+|\*\*|</strong>|[\"')\]])*\s*$")
+_INTRANS_NEXT = {"and", "or", "but", "within", "after", "in", "on", "at", "if", "when", "as", "too", "suit", "behind"}
+
+
+def _title_case(sentence):
+    """Is the line written in Title Case (a section title)?"""
+    words = [w for w in re.findall(r"[A-Za-z][\w'’]*", sentence) if len(w) > 3]
+    return len(words) >= 2 and all(w[0].isupper() for w in words)
+
+
+def _case(text, like, sentence):
+    if like.isupper() and len(like) > 1:
+        return text.upper()
+    if _title_case(sentence) and like[:1].isupper():
+        return " ".join(w[:1].upper() + w[1:] for w in text.split(" "))
+    if like[:1].isupper():
+        return text[:1].upper() + text[1:]
+    return text
+
+
+def _cut_cause_clause(s, m):
+    """'because ...', ', driven by ...', 'due to ...', 'thanks to ...' as a clause, cut."""
+    word = m.group(1).lower()
+    pm = re.match(r"^(\*\*)?(?:(?:This|That|It)(?: \w+)? )?[Mm]atters because (\S)", s)
+    if pm and word == "because" and m.start() <= pm.end():
+        return (pm.group(1) or "") + pm.group(2).upper() + s[pm.end():]
+    if re.search(r"\bnot\s+$", s[:m.start()], re.I):
+        return None                     # "soft not because X, but because Y": two claims, left whole
+    pv = re.search(r"\b(is|are|was|were)(\s+being)?\s+$", s[:m.start()], re.I)
+    if pv and word == "driven by":
+        aux = pv.group(1).lower()
+        verb = {"was": "came with", "were": "came with", "is": "has moved with", "are": "have moved with"}[aux]
+        return s[:pv.start()] + verb + s[m.end():]
+    back = m.start()
+    if word == "driven by":
+        wh = re.search(r"\b(?:when|if|as|while)\s+$", s[:back], re.I)
+        if wh:
+            back = wh.start()
+    adv = re.search(r"\b" + _ADV + r"\s+$", s[:back], re.I)
+    if adv:
+        back = adv.start()
+    wm = re.search(r",\s+with (?:the|this|that) \w+\s+$", s[:back], re.I)
+    if wm:
+        back = wm.start()
+    sep = re.search(r"(\s*(?:,|;|:|—|--|–)\s*|\s+)$", s[:back])
+    had_sep = bool(sep and sep.group(0).strip())
+    head = s[:back - len(sep.group(0))] if sep else s[:back]
+    if word in ("due to", "thanks to") and not had_sep:
+        return None
+    rest = s[m.end():]
+    tail = _TAIL.search(rest)
+    body_end = tail.start() if tail else len(rest)
+    stops = [r";\s", r":\s", r"\s--\s", r"\s—\s", r"(?:\*\*|</strong>)\s", r"[.!?](?:\*\*|</strong>)\s"]
+    if word == "because":
+        stops.append(r",\s+but\s")
+    cut_at = body_end
+    keep = rest[body_end:]
+    for pat in stops:
+        x = re.search(pat, rest[:body_end])
+        if x and x.start() < cut_at:
+            cut_at, keep = x.start(), rest[x.start():]
+    if word != "because" and had_sep and sep.group(0).strip() == ",":
+        x = re.search(r",\s+(?=[a-z]+ing\b)", rest[:body_end])
+        if x and x.start() < cut_at:
+            return head + " " + rest[x.end():]
+    return head + keep
+
+
+def _reword_follow(s, m):
+    """'X follows Y' -> 'X has moved with Y'; 'follow Y higher' -> 'move higher with Y'."""
+    word = m.group(1)
+    low = word.lower()
+    plural = not (low.endswith("follows") or low.startswith("tends"))
+    pre, after = s[:m.start()], s[m.end():]
+    prev = re.search(r"([\w'’]+)\s*$", pre)
+    prev_w = prev.group(1) if prev else ""
+    pl = prev_w.lower()
+    adv = ""
+    if re.fullmatch(_ADV, pl) and not low.startswith("tend"):
+        adv = prev_w + " "
+        pre = pre[:prev.start()]
+        prev = re.search(r"([\w'’]+)\s*$", pre)
+        prev_w = prev.group(1) if prev else ""
+        pl = prev_w.lower()
+    if low.startswith("tend"):
+        adv = ""
+    # an order to the reader: "..., follow the metals."
+    if (not pre.strip() or re.search(r"[,:]\s*$", pre)) and low == "follow":
+        return pre + _case("watch", word, s) + after
+    nxt = re.match(r"\s+([\w'’$]+)", after)
+    nxt_w = nxt.group(1).lower() if nxt else ""
+    dir_m = re.match(r"\s+((?:(?!and\b|or\b|by\b|with\b)[\w'’$.-]+\s+){0,3}?)(" + _DIR + r")\b", after, re.I)
+    transitive = bool(nxt) and nxt_w not in _INTRANS_NEXT and nxt_w != "with" and not re.fullmatch(_DIR, nxt_w)
+    modal = None
+    neg = bool(_NEG.search(pre.rstrip())) or pl == "to"
+    if pl in _MODAL:
+        modal = pl
+    cond = bool(_COND.search(pre))
+    relative = pl in ("that", "which")
+    third = not plural
+
+    def base_or(present3, present, perfect3, perfect, form):
+        if form == "base":
+            return present
+        if form == "present":
+            return present3 if third else present
+        return perfect3 if third else perfect
+
+    form = "base" if (neg or modal) else ("present" if cond else "perfect")
+    if modal:
+        pre = pre[:prev.start(1)] + _case(_MODAL[modal], prev_w, s) + pre[prev.end(1):]
+    if nxt_w == "with" and not transitive:
+        vp = base_or("comes in", "come in", "comes in", "come in", "base" if form == "base" else "present")
+        return pre + _case(vp, word, s) + after
+    if dir_m:
+        obj, d = dir_m.group(1).strip(), dir_m.group(2)
+        rest = after[dir_m.end():]
+        verb = base_or("moves", "move", "moves", "move", "base" if form == "base" else "present")
+        if obj:
+            vp = "%s%s %s with %s" % (adv, verb, d.lower(), obj)
+            return pre + _case(vp, word, s) + rest
+        vp = "%s%s %s too" % (adv, verb, d.lower())
+        return pre + _case(vp, word, s) + rest
+    if transitive:
+        if relative:
+            vp = base_or("comes after", "come after", "comes after", "come after", "present")
+            return pre + _case(vp, word, s) + after
+        if form == "perfect":
+            vp = ("has " if third else "have ") + adv + "moved with"
+        else:
+            vp = adv + base_or("moves with", "move with", "", "", form)
+        after = _LAG.sub(lambda x: "after a " + x.group(1), after)
+        return pre + _case(vp, word, s) + after
+    # intransitive
+    if re.search(r"\b(?:higher|lower)\s+[\w\s]+$", re.split(r"[,;:]", pre)[-1], re.I):
+        return None                     # "and higher prices follow": the follow IS the claim
+    if modal and (not nxt or not nxt_w):
+        return None                     # "a template other states could follow."
+    if neg:
+        vp = "move with it"
+    elif nxt_w in ("within", "after"):
+        vp = adv + base_or("moves the same way", "move the same way", "", "", "present")
+    else:
+        vp = adv + base_or("moves too", "move too", "", "", "present")
+    return pre + _case(vp, word, s) + after
+
+
+def _reads_ok(new, old, ctx=None):
+    """Does the reworded sentence still read as one sentence?"""
+    if not new or new == old:
+        return False
+    plain = new.replace("**", "")
+    if r_cause_without_source(plain, {}):
+        return False
+    if len(re.findall(r"[A-Za-z][\w'’-]*", plain)) < 3:
+        return False
+    if new.count("**") % 2 or new.count("<strong>") != new.count("</strong>") or new.count("(") != new.count(")"):
+        return False
+    if re.search(r"\s[,.;:]|[,;:]\s*[,.;:]|\(\s*\)|\s{2,}|^\s|\s$", new):
+        return False
+    last = re.findall(r"[A-Za-z][\w'’]*", re.sub(r"<[^>]+>", "", plain))
+    if not last or last[-1].lower() in _FUNC_END:
+        return False
+    first_new, first_old = re.sub(r"^[*<>/\w]*?(?=[A-Za-z$\d])", "", new)[:1], re.sub(r"^[*<>/\w]*?(?=[A-Za-z$\d])", "", old)[:1]
+    if first_new.isalpha() and first_old.isupper() and not first_new.isupper():
+        return False
+    end_old, end_new = re.search(r"[.!?]?(?=(?:\*\*|</strong>|[\"')\]])*\s*$)", old), re.search(r"[.!?]?(?=(?:\*\*|</strong>|[\"')\]])*\s*$)", new)
+    if (end_old.group(0) if end_old else "") != (end_new.group(0) if end_new else ""):
+        return False
+    if ctx is not None:
+        before = {n for n, fn in RULES if fn(old.replace("**", ""), ctx)}
+        if any(fn(plain, ctx) and n not in before for n, fn in RULES):
+            return False
+    return True
+
+
+def reword_cause(sent, ctx=None):
+    """The sentence with its unsourced cause reworded away, or None when no
+    rewording by code still reads as a sentence."""
+    s = sent
+    for _ in range(4):
+        if not r_cause_without_source(s.replace("**", ""), {}):
+            break
+        m = _CAUSE.search(s)
+        if not m:
+            return None
+        w = m.group(1).lower()
+        s2 = _reword_follow(s, m) if (w.startswith("follow") or w.startswith("tend")) else _cut_cause_clause(s, m)
+        if not s2 or s2 == s:
+            return None
+        s = s2
+    return s if _reads_ok(s, sent, ctx) else None
+
+
+def fix_causes(briefing, ctx=None):
+    """Every sentence the cause rule flags, in every field: reworded when code
+    can keep it a sentence; else cut, when its field can lose a sentence and
+    keeps other text; else left (the gate WARNs). Nothing outside a flagged
+    sentence changes. Returns (briefing, [log lines])."""
     log = []
+    for loc, text in fields(briefing):
+        new_text, cuts = text, set()
+        for line in text.split("\n"):
+            for s in sentences(re.sub(r"^\s*-\s+", "", line)):
+                if not r_cause_without_source(s.replace("**", ""), {}):
+                    continue
+                new = reword_cause(s, ctx)
+                if new:
+                    new_text = new_text.replace(s, new, 1)
+                    log.append(f"{loc}: reworded [cause-without-source] {s!r} -> {new!r}")
+                    if loc == "headline" and isinstance(briefing.get("subject_line"), str) \
+                            and s in briefing["subject_line"]:
+                        briefing["subject_line"] = briefing["subject_line"].replace(s, new, 1)
+                        log.append("subject_line: reworded with the headline")
+                elif CUTTABLE(loc) and _cut(new_text, cuts | {s}):
+                    cuts.add(s)
+                    log.append(f"{loc}: cut [cause-without-source] {s!r}")
+                else:
+                    log.append(f"{loc}: WARN left [cause-without-source] {s!r} (no rewording reads as a sentence"
+                               + ("" if CUTTABLE(loc) else "; this field cannot lose a sentence") + ")")
+        if cuts:
+            new_text = _cut(new_text, cuts)
+        if new_text != text:
+            _set(briefing, loc, new_text)
+    return briefing, log
+
+
+def strip(briefing, ctx):
+    """Reword (fix_causes) or cut every sentence lint finds, in the fields that
+    can lose one. A field that would be left empty keeps its text (the gate
+    decides). Returns (briefing, [log lines])."""
+    briefing, log = fix_causes(briefing, ctx)
     by_loc = {}
     for name, loc, s in lint(briefing, ctx):
         by_loc.setdefault(loc, []).append((name, s))
