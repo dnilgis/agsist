@@ -313,6 +313,8 @@
       before = h.cur; when = h.last >= today ? 'today' : prevDay.word;
     }
     if (before == null || live === before) return null;
+    /* that day's futures and the old feed's unit error (cash-bids.js bhOk), not the size bound alone */
+    if (A.bhOk && !A.bhOk(b, before, live)) return null;
     return { d: live - before, from: before, to: live, when: when };
   }
   function renderMoved(el, ctx) {
@@ -323,6 +325,7 @@
     var prevDay = { ymd: localYmd(pw), word: localYmd(pw) === localYmd(y) ? 'since yesterday' : 'since ' + ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][pw.getDay()] };
     var rows = (ctx.bids || []).filter(function (b) { return (b.category === 'corn' || b.category === 'soybeans' || b.category === 'wheat') && !A.notPerBushel(b) && A.plausible(b) && !A.basisUnusual(b); });
     var elevs = A.groupElevators(rows), sts = {};
+    if (A.bhSetFutures) A.bhSetFutures(ctx.bids || []);   /* the same rows cash-bids.js checks against */
     elevs.forEach(function (e) { var s = String(e.state || '').trim().toUpperCase(); if (s) sts[s] = 1; });
     var token = {}; el._cbgToken = token;
     el.innerHTML = '';
