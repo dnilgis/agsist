@@ -40,7 +40,7 @@ from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-UA = "AGSIST history collector (+https://agsist.com/data-sources; sig@agsist.com)"
+UA = "AGSIST history collector (+https://agsist.com/editorial-standards#sources; sig@agsist.com)"
 SCHEMA = "agsist-history-manifest/1"
 
 

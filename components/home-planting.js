@@ -229,7 +229,7 @@ function daysUntil(iso){
 function formatCountdown(days){if(days==null)return'-';if(days<0)return'Past';if(days===0)return'Today';return days+' day'+(days===1?'':'s');}
 function waitForGeo(cb,retries){retries=retries||0;if(retries>20)return;var st=window.AGSIST_STATE;if(st&&st.weather&&st.weather.lat!=null){cb(st);}else{setTimeout(function(){waitForGeo(cb,retries+1);},400);}}
 
-// ---------- Monthly aggregation from Open-Meteo archive ----------
+// ---------- Monthly aggregation from the PRISM daily history (RCC-ACIS) ----------
 function aggregateArchive(dailyHist){
   // dailyHist = {time:[], temperature_2m_max:[], temperature_2m_min:[], precipitation_sum:[]}
   // Returns {byYearMonth: {year:{month:{gdu,precip}}}, dailyLookup: {isoDate:{max,min,precip}}}
@@ -357,7 +357,7 @@ function wireHourlyToggle(){
     if(open){var nowCell=panel.querySelector('.wx-hourly-cell.now');if(nowCell&&nowCell.scrollIntoView){try{nowCell.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});}catch(e){}}}
   });
 }
-// ---------- Weather code -> icon (Open-Meteo WMO codes) ----------
+// ---------- Weather code -> icon (WMO-style codes, made from the NWS weather words in components/nws.js) ----------
 function wxIcon(code,isDay){
   if(code==null)return '<svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg>';
   if(code===0)return isDay?'<svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg>':'<svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg>'; // clear
@@ -390,45 +390,27 @@ function loadWeatherEnhancements(state){
   // Extend archive back 5 full years (Jan 1 of year-5) for monthly comparisons
   var fiveYrsAgo=new Date(today.getFullYear()-5,0,1);
   var d_5yr=fiveYrsAgo.toISOString().split('T')[0];
-  var soilUrl='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,windspeed_10m_max,winddirection_10m_dominant,relative_humidity_2m_mean,weathercode,wind_gusts_10m_max&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_direction_10m,weathercode,soil_temperature_6cm,soil_temperature_18cm&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=5';
-  var histUrl='https://archive-api.open-meteo.com/v1/archive?latitude='+lat+'&longitude='+lon+'&start_date='+d_5yr+'&end_date='+d_yest+'&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto';
-  // Fetch independently — archive failure must not kill forecast/soil temp
-  var fcastPromise=fetch(soilUrl).then(function(r){return r.json();}).then(function(d){
-    if(d&&d.error){console.warn('[AGSIST] Open-Meteo forecast error:',d.reason||d.error);return null;}
-    return d;
-  }).catch(function(e){console.warn('[AGSIST] forecast fetch failed',e);return null;});
-  var histPromise=fetch(histUrl).then(function(r){return r.json();}).then(function(d){
-    if(d&&d.error){console.warn('[AGSIST] Open-Meteo archive error:',d.reason||d.error);return null;}
-    return d;
-  }).catch(function(e){console.warn('[AGSIST] archive fetch failed',e);return null;});
+  // 2026-10-29: Open-Meteo removed (its terms count an ad-supported site as commercial use).
+  // Forecast: the National Weather Service grid (components/nws.js), hourly and daily, 7 days.
+  // History: PRISM daily grids at this point (components/prism.js: Oregon State, through RCC-ACIS), five
+  // full years back to yesterday: max and min temperature (F) and precipitation (in). PRISM posts a day
+  // late, so the newest day or two can be missing, which reads as no value, never 0.
+  // Soil: no free forecast gives soil temperature; the measured 4 in reading at the nearest station
+  // (components/soil-near.js over data/fall-nitrogen.json) rides along as forecast._soil.
+  var fcastPromise=(window.AgNWS?window.AgNWS.forecast(lat,lon,{days:7}):Promise.reject(new Error('the forecast reader did not load')))
+    .then(null,function(e){console.warn('[AGSIST] forecast fetch failed',e);return null;});
+  var soilPromise=window.AgSoilNear?window.AgSoilNear.load().then(function(feed){return window.AgSoilNear.near(feed,+lat,+lon,window.AgSoilNear.todayIso());}):Promise.resolve(null);
+  var histPromise=(window.AgPRISM?window.AgPRISM.daily(lat,lon,d_5yr,d_yest):Promise.reject(new Error('the history reader did not load')))
+    .catch(function(e){console.warn('[AGSIST] history fetch failed',e);return null;});
+  fcastPromise=Promise.all([fcastPromise,soilPromise]).then(function(r){if(r[0])r[0]._soil=r[1]||null;return r[0];});
   Promise.all([fcastPromise,histPromise]).then(function(results){
     var forecast=results[0]||{},history=results[1]||{};try{if(window.S7)window.S7.onWx(results[0]);}catch(e){}
     var dailyF=forecast.daily||{},dailyH=history.daily||{};
     // GDU + precip30 scalars removed — computed via aggregateArchive+ytdGDU/ytdPrecip below for 5-yr comparison
     // Soil temp — use current local hour from time array; fall back to nearest non-null, then daily average
-    var soilEstF=null;
-    var hourSoilArr=(forecast.hourly&&forecast.hourly.soil_temperature_6cm)||[];
-    var hourTimeArr=(forecast.hourly&&forecast.hourly.time)||[];
-    if(hourSoilArr.length>0){
-      var nowMs=Date.now();
-      var bestIdx=-1,bestDiff=Infinity;
-      for(var hi=0;hi<hourTimeArr.length;hi++){
-        if(hourSoilArr[hi]==null)continue;
-        var hT=new Date(hourTimeArr[hi]).getTime();
-        if(isNaN(hT))continue;
-        var diff=Math.abs(nowMs-hT);
-        if(diff<bestDiff){bestIdx=hi;bestDiff=diff;}
-      }
-      if(bestIdx>=0){
-        soilEstF=Math.round(hourSoilArr[bestIdx]);
-      } else {
-        // fallback: average today's available hourly values
-        var ss=0,sc=0;
-        for(var si=0;si<Math.min(24,hourSoilArr.length);si++){if(hourSoilArr[si]!=null){ss+=hourSoilArr[si];sc++;}}
-        if(sc>0)soilEstF=Math.round(ss/sc);
-      }
-    }
-    if(soilEstF==null){console.warn('[AGSIST] soil temp unavailable, hourly keys:',Object.keys((forecast&&forecast.hourly)||{}),'arr len:',hourSoilArr.length);}
+    // Soil: the measured 4 in reading (last day's mean) at the nearest station, when it is current
+    var soilEstF=null,_soil=forecast._soil||null;
+    if(_soil&&_soil.now!=null)soilEstF=Math.round(_soil.now);
     var soilClass='warn',soilCtx='';
     if(soilEstF!=null){
       if(soilEstF<32){soilClass='cold';soilCtx='Too cold for field work';}
@@ -438,6 +420,7 @@ function loadWeatherEnhancements(state){
       else if(soilEstF<60){soilClass='good';soilCtx='Good for planting';}
       else{soilClass='good';soilCtx='Excellent planting conditions';}
     }
+    if(soilEstF!=null&&_soil.st)soilCtx+=' (measured at 4 in, '+_soil.st.name+', '+Math.round(_soil.mi)+' mi)';
     var soilDisplay=soilEstF!=null?soilEstF+'\xb0F':'--\xb0F';
     var stv=document.getElementById('soil-temp-val');
     if(stv){stv.textContent=soilDisplay;stv.className='soil-temp-val '+soilClass;}

@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import vm from "node:vm";
 import { fieldForecast, gridForecast } from "./fixtures/spray-wind-forecast.mjs";
+import { nwsAnswer } from "./fixtures/nws-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const HTML = readFileSync(ROOT + "spray.html", "utf8");
@@ -117,7 +118,7 @@ test("the page states the inversion rule as a risk and cites the extension sourc
   assert.match(SRC, /extension\.sdstate\.edu\/use-sd-spray-tool-inversion-detection/);
   const src = JSON.parse(readFileSync(ROOT + "references/sources.json", "utf8"));
   const ids = new Set(src.sources.map((s) => s.id));
-  for (const id of ["ndsu-ae1705-inversions", "open-meteo-terms", "open-meteo-gfs-docs"]) assert.ok(ids.has(id), "source request " + id);
+  for (const id of ["ndsu-ae1705-inversions"]) assert.ok(ids.has(id), "source request " + id);
 });
 
 test("time words: ranges in the field's clock, noon and midnight by name", () => {
@@ -143,29 +144,48 @@ test("rating starts at the field's current hour, from utc_offset_seconds, not th
   } finally { Date.now = realNow; }
 });
 
-test("wind grid: 25 points around the field, keyless request, u/v the way the air moves, blended between points", () => {
+test("wind grid: the 3 x 3 NWS cells around the field's own, keyless, u/v the way the air moves, blended between cells", async () => {
   const g = W.gridPoints(42.03, -93.62);
-  assert.equal(g.pts.length, 25);
-  assert.deepEqual(g.pts[12], { lat: 42.03, lon: -93.62 });
+  assert.equal(g.pts.length, 9);
+  assert.deepEqual(g.pts[4], { lat: 42.03, lon: -93.62 });
   assert.ok(g.north > 42.2 && g.south < 41.9);
-  const u = W.gridUrl(g);
-  assert.equal(new URL(u).searchParams.get("latitude").split(",").length, 25);
-  assert.equal(new URL(u).searchParams.get("models"), "gfs_seamless");
-  assert.doesNotMatch(u, /apikey|key=|token/i);
-  assert.match(W.fieldUrl(42.03, -93.62), /models=gfs_seamless/);
+  // one /points read, then nine cells of the same office's grid, NWS_STEP apart, north row first (the NWS y runs north)
+  const N = createRequire(import.meta.url)(ROOT + "components/nws.js"); N._reset();
+  const seen = [];
+  const get = async (u) => { seen.push(u); const a = nwsAnswer(u, { now: Date.parse("2026-10-20T11:00:00Z") }); return { ok: a.status === 200, status: a.status, json: async () => a.body }; };
+  const arr = await W.gridForecast(g, { get, now: Date.parse("2026-10-20T11:00:00Z") });
+  assert.equal(arr.length, 9);
+  assert.match(seen[0], /\/points\/42\.03,-93\.62$/);
+  const cells = seen.slice(1).map((u) => /\/gridpoints\/ARX\/(\d+),(\d+)$/.exec(u).slice(1).map(Number));
+  assert.deepEqual(cells[0], [30 - W.NWS_STEP, 60 + W.NWS_STEP]);
+  assert.deepEqual(cells[4], [30, 60]);
+  assert.deepEqual(cells[8], [30 + W.NWS_STEP, 60 - W.NWS_STEP]);
+  for (const u of seen) assert.doesNotMatch(u, /apikey|key=|token/i);
+  assert.ok(arr.every((a) => a && a.hourly && a.hourly.wind_speed_10m.length));
+  // a cell past the edge of the office's grid is null; the map skips it
+  N._reset();
+  const edge = async (u) => (/gridpoints\/ARX\/21,69$/.test(u) ? { ok: false, status: 404, json: async () => ({}) } : get(u));
+  const part = await W.gridForecast(g, { get: edge, now: Date.parse("2026-10-20T11:00:00Z") });
+  assert.equal(part[0], null);
+  assert.ok(part[4]);
   // wind from the west moves east: u > 0, v about 0; from the north moves south
   const w = W.uv(10, 270); assert.ok(Math.abs(w.u - 10) < 1e-9 && Math.abs(w.v) < 1e-9);
   const n = W.uv(10, 0); assert.ok(Math.abs(n.v + 10) < 1e-9);
   assert.equal(W.compass(315), "NW");
   const grid = W.parseGrid(gridForecast("2026-10-20"), g, "2026-10-20T06:00");
+  // a missing cell is skipped, not zero: the grid still parses
+  const holed = gridForecast("2026-10-20"); holed[0] = null;
+  assert.ok(W.parseGrid(holed, g, "2026-10-20T06:00"));
+  const mostly = gridForecast("2026-10-20").map((x, i) => (i === 4 ? x : null));
+  assert.equal(W.parseGrid(mostly, g, "2026-10-20T06:00"), null, "one cell of nine is no map");
   assert.equal(grid.times[0], "2026-10-20T06:00");
   assert.equal(grid.times.length, 48);
-  // the grid is stronger to the west (col 0) than the east (col 4): halfway between is the mean
-  const a = W.sample(grid, 2, 0, 2).s, b = W.sample(grid, 2, 4, 2).s, mid = W.sample(grid, 2, 2, 2).s;
+  // the grid is stronger to the west (col 0) than the east (col 2): halfway between is the mean
+  const a = W.sample(grid, 2, 0, 1).s, b = W.sample(grid, 2, 2, 1).s, mid = W.sample(grid, 2, 1, 1).s;
   assert.ok(a > b);
   assert.ok(Math.abs(mid - (a + b) / 2) < 0.2, `${a} ${mid} ${b}`);
   // halfway between 6 AM (3 mph) and 7 AM (8 mph) in time
-  const t0 = W.sample(grid, 0, 2, 2).s, t1 = W.sample(grid, 1, 2, 2).s, th = W.sample(grid, 0.5, 2, 2).s;
+  const t0 = W.sample(grid, 0, 1, 1).s, t1 = W.sample(grid, 1, 1, 1).s, th = W.sample(grid, 0.5, 1, 1).s;
   assert.ok(th > t0 && th < t1);
   // a short or broken answer is no grid, never a made-up one
   assert.equal(W.parseGrid(gridForecast("2026-10-20", 24), g, START), null);
@@ -199,27 +219,27 @@ test("credits: every source named on screen with a link", () => {
   const ids = W.CREDITS.map((c) => c.id);
   for (const id of ["forecast", "map", "boom", "inv", "inv2", "rain"]) assert.ok(ids.includes(id), id);
   const all = W.CREDITS.map((c) => c.t + " " + c.a + " " + c.tail).join(" ");
-  for (const s of ["Open-Meteo", "CC BY 4.0", "NOAA HRRR and GFS", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(all.includes(s), s);
+  for (const s of ["National Weather Service", "NDFD forecast grid", "public domain", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(all.includes(s), s);
+  assert.doesNotMatch(all, /Open-Meteo/);
   for (const c of W.CREDITS) if (c.a) assert.match(c.u, /^https:\/\//, c.id);
-  assert.match(UI, /Forecast \(estimate\): the same model and run as the rest of this page/);
+  assert.match(UI, /Forecast \(estimate\): the same National Weather Service grid as the rest of this page/);
   assert.doesNotMatch(UI, /meta\.json/, "the wind view does not fetch run times itself");
 });
 
-test("one story: the page's own forecast call uses the wind view's model, and the page names model and runs once", () => {
-  const calls = HTML.match(/https:\/\/api\.open-meteo\.com\/v1\/forecast\?[^']*'[^;]*;/g) || [];
-  assert.equal(calls.length, 1, "one forecast call in the page");
-  assert.match(calls[0], /&models=gfs_seamless'/);
-  assert.match(SRC, /var MODEL = 'gfs_seamless'/);
+test("one story: the page reads the same NWS grid as the wind view, and names the office, cell and issue time once", () => {
+  assert.doesNotMatch(HTML, /open-meteo\.com/, "no Open-Meteo call or link left on /spray");
+  assert.match(HTML, /<script src="\/components\/nws\.js\?v=\d+"><\/script>/);
+  assert.match(HTML, /window\.AgNWS\.forecast\(lat,lon,\{days:5\}\)/);
+  assert.match(SRC, /var MODEL = 'NWS NDFD'/);
   assert.match(HTML, /<p class="sp-model" id="sp-model" hidden><\/p>/);
-  assert.match(HTML, /ncep_hrrr_conus\/static\/meta\.json/);
-  assert.match(HTML, /ncep_gfs013\/static\/meta\.json/);
-  assert.match(HTML, /time not given by the source/);
-  assert.match(HTML, /Forecast \(estimate\) for everything on this page/);
+  assert.match(HTML, /Issue time not given by the source/);
+  assert.match(HTML, /Forecast \(estimate\) for everything on this page: the <a href="https:\/\/www\.weather\.gov\/documentation\/services-web-api"/);
+  assert.match(HTML, /', office '\+n\.office\+' cell '\+n\.x\+','\+n\.y/);
 });
 
 test("degraded sources: each one has a plain line and a retry", () => {
-  assert.match(UI, /The forecast for your field is not answering right now \(Open-Meteo/);
-  assert.match(UI, /The wind map forecast is not answering right now \(Open-Meteo/);
+  assert.match(UI, /The forecast for your field is not answering right now \(National Weather Service/);
+  assert.match(UI, /The wind map forecast is not answering right now \(National Weather Service/);
   assert.match(UI, /The map underneath did not load\. The wind still draws; the dot is your field\./);
   assert.match(UI, /sw-retry-f/); assert.match(UI, /sw-retry-g/);
 });

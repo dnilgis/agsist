@@ -6,8 +6,9 @@
  * (components/bids-network.js).
  *
  * Moisture ahead: the published monthly drydown rates, or the reader's own
- * rate. The 14-day forecast (Open-Meteo, as on /gdu-calculator and
- * /grain-emc) is shown as heat per day. It only turns into moisture when
+ * rate. The forecast (the National Weather Service grid through components/nws.js,
+ * as on /grain-emc; 2026-10-29, was Open-Meteo's 14 days) is shown as heat per day for
+ * the 7 days it covers; later days have no forecast heat. It only turns into moisture when
  * AgHarvestWait.GDD_RULE.checked is true (see the header there).
  *
  * Field loss is the reader's number. With none, the page gives the
@@ -135,9 +136,11 @@
     var my = ++st.wseq;
     return coordFor(z).then(function (c) {
       if (!c) throw new Error('no place');
-      var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + c.lat.toFixed(3) + '&longitude=' + c.lon.toFixed(3) +
-        '&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto&forecast_days=' + (MAXD + 1);
-      return getJSON(url, 10000);
+      // the National Weather Service forecast grid (components/nws.js; 2026-10-29, was Open-Meteo)
+      if (!window.AgNWS) throw new Error('the forecast reader did not load');
+      var t, ask = window.AgNWS.forecast(c.lat, c.lon, { days: Math.min(7, MAXD + 1) });
+      return Promise.race([ask, new Promise(function (_, no) { t = setTimeout(function () { no(new Error('timeout')); }, 15000); })])
+        .then(function (j) { clearTimeout(t); return j; }, function (e) { clearTimeout(t); throw e; });
     }).then(function (d) {
       if (my !== st.wseq) return;
       var dd = d && d.daily, out = [];
@@ -243,11 +246,12 @@
     $('hw-drysrc').textContent = (how === 'own' ? 'Moisture at your own ' + n1(own, 1) + ' points a week' + (ser[D].floor != null ? ', stopping at the month\'s equilibrium moisture' : '') + '.' :
       how === 'gdd' ? 'Moisture from the forecast heat, by the growing degree day rule.' :
       'Moisture by the NDSU and Iowa State monthly rates (' + MON[ser[1].date.slice(5, 7) - 1] + ': ' + n1(ser[1].rate, 1) + ' points a week), not by your weather.') +
-      (st.wx ? ' Forecast heat (86/50 GDD) from Open-Meteo for ZIP ' + st.wx.zip + (how === 'gdd' ? '.' : ', shown for reference.') : ' Enter a ZIP for the forecast heat.');
+      (st.wx ? ' Forecast heat (86/50 GDD) from the National Weather Service forecast for ZIP ' + st.wx.zip + (how === 'gdd' ? '.' : ', shown for reference.') : ' Enter a ZIP for the forecast heat.');
 
     var dropTxt = pct(m) + ' today to about ' + pct(pick.m) + ' by ' + when;
     var items = [[pct(m) + ' → ' + pct(pick.m), 'moisture, now → ' + esc(when)]];
-    if (gn) items.push([n1(gsum, 0) + ' GDD', 'forecast heat, next ' + D + ' days']);
+    // the NWS forecast runs 7 days: a longer wait sums only the days it has, and says so
+    if (gn) items.push([n1(gsum, 0) + ' GDD', 'forecast heat, next ' + gn + ' day' + (gn === 1 ? '' : 's') + (gn < D ? ' (the forecast ends there)' : '')]);
 
     if (!cost || !c || c.saved == null) {
       V.textContent = 'Corn at ' + dropTxt + '. Add your drying cost for dollars.';

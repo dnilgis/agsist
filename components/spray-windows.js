@@ -6,17 +6,19 @@
  * inversion rule, dicamba) are not copied here: they are the spray-rules block
  * in spray.html, handed in as `R` (window.AgSprayRules in the browser).
  *
- * Forecast: Open-Meteo, model gfs_seamless (NOAA HRRR for the first hours,
- * then NOAA GFS), keyless. A 5 x 5 grid of points around the field for the
- * wind map (three numbers per point per hour), and the field point itself
- * with everything the spray rules need. Decoding GFS GRIB in the browser
- * would mean megabytes per run for one field; this is a few dozen KB.
+ * Forecast: the National Weather Service forecast grid (NDFD, 2.5 km cells), read through
+ * components/nws.js (2026-10-29: Open-Meteo removed, its terms count an ad-supported site as
+ * commercial use). The field's own cell has everything the spray rules need, hour by hour; the
+ * wind map reads a 3 x 3 block of cells around it, NWS_STEP cells apart (about 14 miles), three
+ * numbers per cell per hour. One /points read names the office and cell; the other cells are
+ * the same office's grid, offset.
  */
 (function (root) {
   'use strict';
 
-  var MODEL = 'gfs_seamless';
-  var GRID_N = 5;          // 5 x 5 points
+  var MODEL = 'NWS NDFD';
+  var GRID_N = 3;          // 3 x 3 cells
+  var NWS_STEP = 9;        // grid cells between map points: 9 x 2.5 km, about 0.2 degrees of latitude
   var GRID_HALF_LAT = 0.2; // degrees north and south of the field (about 14 miles)
   var HOURS = 48;
 
@@ -38,7 +40,7 @@
   var RAINFREE_CHOICES = [1, 2, 4, 6];
 
   var CREDITS = [
-    { id: 'forecast', t: 'Weather data by', a: 'Open-Meteo.com', u: 'https://open-meteo.com/', tail: '(CC BY 4.0), from NOAA HRRR and GFS. An estimate, not a measurement.' },
+    { id: 'forecast', t: 'Forecast:', a: 'National Weather Service', u: 'https://www.weather.gov/documentation/services-web-api', tail: '(NDFD forecast grid, 2.5 km, public domain). An estimate, not a measurement.' },
     { id: 'map', t: 'Map:', a: 'USGS The National Map', u: 'https://www.usgs.gov/programs/national-geospatial-program/national-map', tail: '(public domain).' },
     { id: 'boom', t: 'Boom wind from the 10 m forecast with the', a: 'FAO-56 wind profile', u: 'https://www.fao.org/4/x0490e/x0490e07.htm', tail: '(about 0.75 of the 10 m speed).' },
     { id: 'inv', t: 'Inversion rule after', a: 'Sprayers101, Spraying weather', u: 'https://sprayers101.com/spraying-weather/', tail: '' },
@@ -56,22 +58,34 @@
     for (var r = 0; r < GRID_N; r++) {
       for (var c = 0; c < GRID_N; c++) pts.push({ lat: r3(lat + half - r * step), lon: r3(lon - halfLon + c * stepLon) });
     }
-    return { n: GRID_N, pts: pts, north: lat + half, south: lat - half, west: lon - halfLon, east: lon + halfLon };
+    return { n: GRID_N, lat: lat, lon: lon, pts: pts, north: lat + half, south: lat - half, west: lon - halfLon, east: lon + halfLon };
   }
 
-  var API = 'https://api.open-meteo.com/v1/forecast';
-  function gridUrl(g) {
-    return API + '?latitude=' + g.pts.map(function (p) { return p.lat; }).join(',') +
-      '&longitude=' + g.pts.map(function (p) { return p.lon; }).join(',') +
-      '&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=mph&timezone=auto&forecast_days=3&models=' + MODEL;
+  /* ---------- the forecast (components/nws.js) ---------- */
+  function nws() {
+    var N = root.AgNWS || (typeof require === 'function' ? require('./nws.js') : null);
+    if (!N) throw new Error('the forecast reader did not load');
+    return N;
   }
-  function fieldUrl(lat, lon) {
-    return API + '?latitude=' + r3(lat) + '&longitude=' + r3(lon) +
-      '&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,precipitation_probability,weather_code,cloud_cover,wind_speed_10m,wind_gusts_10m,wind_direction_10m,is_day' +
-      '&daily=sunrise,sunset,temperature_2m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=4&models=' + MODEL;
+  // The field's own cell, hour by hour, 4 days.
+  function fieldForecast(lat, lon, o) { return nws().forecast(lat, lon, Object.assign({ days: 4 }, o || {})); }
+  // The 3 x 3 block, in gridPoints order (north row first, west to east). The NWS grid's y runs
+  // north, so row r is NWS_STEP * (1 - r) cells up. A cell the NWS does not answer (past the edge of
+  // the office's grid) is null; the map skips it.
+  function gridForecast(g, o) {
+    var N = nws(); o = o || {};
+    return N.point(g.lat, g.lon, o).then(function (pt) {
+      var c = (g.n - 1) / 2, asks = [];
+      for (var r = 0; r < g.n; r++) for (var k = 0; k < g.n; k++) {
+        asks.push(N.gridAt(pt.office, pt.x + (k - c) * NWS_STEP, pt.y + (c - r) * NWS_STEP, o).then(function (raw) {
+          return N.build(raw, { office: raw.properties.gridId || pt.office, x: raw.properties.gridX, y: raw.properties.gridY, tz: pt.tz }, { days: 3, units: o.units, now: o.now });
+        }, function () { return null; }));
+      }
+      return Promise.all(asks);
+    });
   }
   /* ---------- time, in the field's own clock ---------- */
-  // Open-Meteo (timezone=auto) gives field-local "YYYY-MM-DDTHH:MM" strings. They are handled as text
+  // The forecast (components/nws.js) gives field-local "YYYY-MM-DDTHH:MM" strings. They are handled as text
   // and as UTC-frame dates (Date.UTC of the same numbers) so the reader's own time zone never shifts them.
   function hourKey(d) { // field-local now, floored to the hour, from utc_offset_seconds
     var off = d && num(d.utc_offset_seconds); if (off == null) off = 0;
@@ -115,7 +129,10 @@
   function parseGrid(json, g, startKey) {
     var arr = Array.isArray(json) ? json : (json ? [json] : []);
     if (arr.length !== g.pts.length) return null;
-    var times = arr[0] && arr[0].hourly && arr[0].hourly.time;
+    var have = arr.filter(function (a) { return a && a.hourly && a.hourly.time; }), first = have[0];
+    // a map needs most of its cells: under half is "the grid came back incomplete", never a made-up field
+    if (have.length * 2 < arr.length) return null;
+    var times = first && first.hourly.time;
     if (!times || !times.length) return null;
     var i0 = 0; while (i0 < times.length && times[i0] < startKey) i0++;
     var nh = Math.min(HOURS, times.length - i0); if (nh <= 0) return null;
@@ -123,7 +140,7 @@
     for (var h = 0; h < nh; h++) {
       var U = [], V = [], S = [], G = [], D = [];
       for (var k = 0; k < arr.length; k++) {
-        var hr = arr[k].hourly || {}, s = num((hr.wind_speed_10m || [])[i0 + h]), d = num((hr.wind_direction_10m || [])[i0 + h]);
+        var hr = (arr[k] && arr[k].hourly) || {}, s = num((hr.wind_speed_10m || [])[i0 + h]), d = num((hr.wind_direction_10m || [])[i0 + h]);
         var w = uv(s, d);
         U.push(w ? w.u : null); V.push(w ? w.v : null); S.push(s); D.push(d); G.push(num((hr.wind_gusts_10m || [])[i0 + h]));
       }
@@ -346,7 +363,7 @@
 
   var API_OUT = {
     MODEL: MODEL, HOURS: HOURS, INV: INV, RAINFREE: RAINFREE, RAINFREE_CHOICES: RAINFREE_CHOICES, CREDITS: CREDITS, WHY_TEXT: WHY_TEXT,
-    gridPoints: gridPoints, gridUrl: gridUrl, fieldUrl: fieldUrl, hourKey: hourKey, fmtRange: fmtRange, clock: clock, dow: dow,
+    NWS_STEP: NWS_STEP, gridPoints: gridPoints, fieldForecast: fieldForecast, gridForecast: gridForecast, hourKey: hourKey, fmtRange: fmtRange, clock: clock, dow: dow,
     uv: uv, compass: compass, parseGrid: parseGrid, sample: sample, band: band, inversionFlag: inversionFlag, isRain: isRain, sunFor: sunFor,
     rateHours: rateHours, summary: summary, runs: runs, shareUrl: shareUrl, parseShare: parseShare
   };

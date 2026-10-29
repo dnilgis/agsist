@@ -32,6 +32,10 @@ run(){ name="$1"; shift; want "$name" || return 0; [ "$LIST" = 1 ] && { echo "$n
 if [ "$LIST" = 0 ] && { picked node-test || picked build_arc_plc; }; then
   ls data/fsa/arcco_*.xls* >/dev/null 2>&1 || bash scripts/pull_raw.sh data/fsa >/dev/null || { echo "FAIL fsa-pull (bash scripts/pull_raw.sh data/fsa)"; fails=$((fails+1)); }
 fi
+# the Atlas drought pull moved to raw too (Oct 29); test/drought-county-week.test.mjs reads it
+if [ "$LIST" = 0 ] && picked node-test; then
+  [ -s data/atlas/raw/drought.json ] || bash scripts/pull_raw.sh data/atlas/raw/drought.json >/dev/null || { echo "FAIL drought-pull (bash scripts/pull_raw.sh data/atlas/raw/drought.json)"; fails=$((fails+1)); }
+fi
 # AGSIST_PREBUILD=1 (the PR checks and main-checks.yml set it): first build the files that are built on
 # main (scripts/dev/main_build.py: What's new, the changelog, the test map) in this copy, so every check
 # sees what main will serve. A pull request never commits them (the built-guard line below).

@@ -70,6 +70,9 @@ import urllib.parse
 import urllib.request
 import zipfile
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import land_keys  # noqa: E402  the section key column (scripts/land_keys.py)
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "land")
 RAW = os.path.join(ROOT, "data", "land-raw", "sales")
@@ -637,6 +640,8 @@ def build(st, recs, gaz, now, prior=None, months=None):
         doc = {"state": st, "county": c["name"], "fips": fips, "source": cfg["source"], "source_short": cfg["short"],
                "links": cfg["links"], "since_note": cfg["since_note"], "fetched_utc": now, "names": names,
                "coverage": cov, "acres_rule": ACRES_RULE, "cols": cols, "munis": munis, "rows": rows}
+        # the section key (scripts/land_keys.py), right after the legal; data/land/ only, robots-blocked
+        land_keys.add_column(doc, GEO)
         s = json.dumps(doc, separators=(",", ":"))
         total += len(s)
         files.append((fips, s))

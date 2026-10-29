@@ -23,6 +23,20 @@
    "link": "/land-sales/"
   },
   {
+   "id": "2026-10-29-land-first",
+   "date": "2026-10-29",
+   "title": "County pages lead with land",
+   "line": "Illinois, Indiana and Wisconsin county pages now open with land sale prices, newest sales, rent, nearest bid and rain, from your saved field if you have one.",
+   "link": "/farmland-atlas/wisconsin/barron-county"
+  },
+  {
+   "id": "2026-10-29-landsurvey",
+   "date": "2026-10-29",
+   "title": "Land values for North Dakota and Kansas counties",
+   "line": "North Dakota and Kansas county pages show land values: the 2026 state survey of farmers and K-State's 2025 average of reported sales, each labeled.",
+   "link": "/land-sales/#other-evidence"
+  },
+  {
    "id": "2026-10-29-landvt",
    "date": "2026-10-29",
    "title": "Vermont farm sales",
@@ -65,11 +79,32 @@
    "link": "/field-scout"
   },
   {
+   "id": "2026-10-29-menutrim",
+   "date": "2026-10-29",
+   "title": "A shorter menu, Ag stocks in it",
+   "line": "The menu lists PRF, LRP and Rain Print once, adds Ag stocks under Prices and puts drought and manure under Field. The Illinois sale index is on the land sales page.",
+   "link": "/land-sales/#illinois-index"
+  },
+  {
+   "id": "2026-10-29-nws-forecast",
+   "date": "2026-10-29",
+   "title": "Forecasts from the National Weather Service",
+   "line": "Home weather, spray, urea, grain drying, harvest or wait and planting date read the National Weather Service forecast. Soil temperature is measured at a station.",
+   "link": "/spray"
+  },
+  {
    "id": "2026-10-29-own-place-lookup",
    "date": "2026-10-29",
    "title": "ZIP and town boxes use our own place list",
    "line": "Every ZIP and town box now finds your place in a list on our own site. Small Canadian towns are found by the weather station named for them.",
    "link": "/rain-print"
+  },
+  {
+   "id": "2026-10-29-prism-gdu",
+   "date": "2026-10-29",
+   "title": "GDUs from the PRISM daily grid",
+   "line": "The GDU calculator and its embed add up heat from the PRISM daily grid (Oregon State), normals too. The Rain Print video no longer offers modeled wind.",
+   "link": "/gdu-calculator"
   },
   {
    "id": "2026-10-29-private-raises",

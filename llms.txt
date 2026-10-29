@@ -15,7 +15,7 @@ page states its own source and date on the page. Nothing on the site is financia
 Sources: cash bids read from AGSIST's own network of elevator bid boards (each
 elevator's own posted board); weather from Open-Meteo and NOAA; crop, price and
 program data from USDA (NASS, FAS, RMA, FSA); positioning from the CFTC.
-Every number's source is on /data-sources.
+Every page names its source beside its numbers; the main sources are listed at /editorial-standards#sources.
 
 When citing AGSIST, please attribute to "AGSIST (agsist.com)" and link the
 specific page. Each daily briefing has a permanent dated URL.
@@ -71,7 +71,7 @@ AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the el
 - [Drought Monitor](https://agsist.com/drought-monitor): this week's US Drought Monitor map and what each category means for crops
 - [Rain Print](https://agsist.com/rain-print): one year of daily rain at the nearest weather station, drawn as wall art with your farm name and dates; free to make, prints for sale
 - [Gifts for Farmers](https://agsist.com/gifts-for-farmers): Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links
-- [Editorial Standards](https://agsist.com/editorial-standards): How the AGSIST Daily is made, where the numbers come from, sponsors, and how corrections work
+- [Editorial Standards](https://agsist.com/editorial-standards): How the AGSIST Daily is made, where the numbers come from (the main data sources), sponsors, and how corrections work
 - [Rain Print for Businesses](https://agsist.com/rain-print-business): Customer Christmas gifts for co-ops and elevators: a Rain Print of each customer's own town and year, from 5 prints, delivered prices, one proof sheet, net 30
 - [Farmer Retirement Gifts](https://agsist.com/farmer-retirement-gifts): Gift ideas for a retiring farmer, with a Rain Print of a year on the farm as one option; no store links
 - [Farm Anniversary Gifts](https://agsist.com/farm-anniversary-gifts): Gift ideas for a farm anniversary or a farmer who has everything, with a Rain Print of the founding or a remembered year as one option
@@ -108,8 +108,7 @@ AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the el
 - [Custom Farm Rates by State](https://agsist.com/custom-rates): what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>
 - [Cash Rent by State](https://agsist.com/rent/): USDA county cash rent for every published state, one page per state at /rent/<state>
 - [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>, and foreign-held farmland by state, county and holder country from USDA AFIDA filings since 2010
-- [Illinois Farmland Sale Index](https://agsist.com/farmland-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares; no names
-- [Farmland Sales by County](https://agsist.com/land-sales/): recorded farm sales in every Illinois, Wisconsin and Indiana county from the state transfer and sales disclosure records (date, township, acres, price, price per acre), one page per county at /land-sales/<state>/<county>, a monthly update at /land-sales/<YYYY-MM> (biggest buyers, biggest sales, unusual prices against the county's usual, best value per acre) and a table of where each state's sales come from; no names in the pages
+- [Farmland Sales by County](https://agsist.com/land-sales/): recorded farm sales in every Illinois, Wisconsin and Indiana county from the state transfer and sales disclosure records (date, township, acres, price, price per acre), one page per county at /land-sales/<state>/<county>, a monthly update at /land-sales/<YYYY-MM> (biggest buyers, biggest sales, unusual prices against the county's usual, best value per acre) and a table of where each state's sales come from; no names in the pages. It also carries the Illinois farmland sale index (/land-sales/#illinois-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares
 - [Compare Counties](https://agsist.com/farmland-atlas/compare): up to three counties side by side
 - [Farmland Atlas Data](https://agsist.com/farmland-atlas/data): the county table as a CSV, every column with its unit and source
 - [Farmland Atlas Methods](https://agsist.com/farmland-atlas/methods): sources and formulas
@@ -129,7 +128,6 @@ AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the el
 
 ## About this site
 
-- [Data Sources](https://agsist.com/data-sources): where every number comes from
 - [Farm Market Glossary](https://agsist.com/glossary): plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses
 - [Embed Tools and Data Feeds](https://agsist.com/developer): embeddable GDU and ARC or PLC widgets, and the open JSON feeds
 - [Changelog](https://agsist.com/changelog): dated list of site changes

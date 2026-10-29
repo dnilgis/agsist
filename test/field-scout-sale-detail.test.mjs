@@ -35,6 +35,8 @@ function expectFor(c, r, f) {
     case "pid": return v ? [esc(v)] : ["not in the record"];
     case "muni": return r.muniName ? [esc(r.muniName)] : ["not in the record"];
     case "legal": return v ? [esc(F.clean(v))] : ["not in the record"];
+    // the section key (scripts/land_keys.py): the panel's "Section, township, range" line reads it
+    case "str": return v ? ["Section, township, range", esc(F.strOf(r.legal) || F.keyText(v))] : ["Section, township, range"];
     case "exempt": return [v ? "Exemption claimed" : "No exemption claimed"];
     case "grantor": case "grantee": return f.names ? (v ? [esc(v)] : ["not in the record"]) : ["not in our copy"];
     case "ac1": return v != null ? [esc(v)] : (+r.np > 1 ? ["not in the record"] : []);
@@ -208,8 +210,8 @@ test("printable report: your filters or 3-year defaults, median with n, the 10 n
   assert.match(js, /Recorded sales in our data, through ' \+ F\.fmtDate\(thru\) \+ '; not an appraisal\./);
   assert.match(js, /middle of ' \+ med\.n \+ ' sales/);
   assert.match(read("field-scout-land.js"), /rep\.setAttribute\('href', base \+ \(cf \? '&cf=' \+ encodeURIComponent\(cf\) : ''\)\)/);
-  assert.match(read("field-report.html"), /field-scout-land\.js\?v=10/);
-  assert.match(read("field-scout-read.js"), /FS_LAND_SRC='\/field-scout-land\.js\?v=10'/);
+  assert.match(read("field-report.html"), /field-scout-land\.js\?v=12/);
+  assert.match(read("field-scout-read.js"), /FS_LAND_SRC='\/field-scout-land\.js\?v=12'/);
   // the same nearest-first list from rows (hand-checked: 2, 6, 10, 14 and 20 mi; the 30 mi sale is out)
   const c = { lat: 45.0, lng: -91.0 };
   const mk = (doc, dLat) => ({ doc, date: "2025-01-01", price: 400000, acres: 80, cls: "4", conv: "Warranty Deed", lat: 45.0 + dLat, lng: -91.0, muniName: "T" });

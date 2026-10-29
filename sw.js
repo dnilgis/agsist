@@ -37,12 +37,18 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 305;  // v305 2026-10-29: fx/landnj (305 assigned by the lead). New Jersey farm sales: county pages on /land-sales/new-jersey, Field Scout comps, the Atlas land door, the monthly land email; land-sales.js?v=4, land-alert.js?v=4, field-scout-land.js?v=10 (also in comp-report.html and field-report.html), field-scout-read.js?v=16, field-scout.js?v=30, change-lines.js?v=3 (from here.js?v=34); search.js rides loader CV unchanged.
+var CACHE_VERSION = 306;  // v306 2026-10-29: fx/landkeys (306 assigned by the lead; was 302, main passed it with 304). Field Scout sold land list puts sales in the field's own section, or one touching it, first and marks them; the sale panel reads Indiana's section shorthand: field-scout-land.js?v=11 (also in comp-report.html and field-report.html), field-scout-read.js?v=17, field-scout.js?v=31.
+// v305 2026-10-29: fx/landnj (305 assigned by the lead; main passed it with 306 before this merged, so the version stays 306 and this branch needs the next slot). New Jersey farm sales: county pages on /land-sales/new-jersey, Field Scout comps, the Atlas land door, the monthly land email; land-sales.js?v=4, land-alert.js?v=4, field-scout-land.js?v=12 (also in comp-report.html and field-report.html), field-scout-read.js?v=18, field-scout.js?v=32, change-lines.js?v=3 (from here.js?v=35); search.js rides loader CV unchanged.
+// v304 2026-10-29: fx/menutrim with fx/landfirst merged in (304 assigned by the lead; one bump for both, landfirst's v303 line below; was 297, which main passed with 299 (nometeo); 300 to 303 are held by other open branches; 289 was its first slot, main passed it with 290 and 292 to 294; 291, 295 and 296 are held by other open branches). Same work as the v289 line below: shorter menu with Ag stocks, menu_click events, /farmland-index and /data-sources folded, loader CV 105.
+// v301 2026-10-29: fx/nometeo3 (301 assigned by the lead; was 296). The last of Open-Meteo: GDUs and their 1991-2020 normal from PRISM via RCC-ACIS (prism.js?v=1 on /gdu-calculator, inline on /embed/gdu), the Rain Print video's modeled wind off (rain-print-draw.js?v=5, rain-county-print.js?v=43, here.js?v=34), data sources credits, no Open-Meteo host anywhere the site serves (scripts/no-open-meteo.mjs).
+// v303 2026-10-29: fx/landfirst (303 assigned by the lead; was 298, which main passed with 299; 300 to 302 and 304 to 305 are held by other open branches). Atlas county homes in states with sale pages open with the land (sale middle, newest sales, rent, nearest bid, rain); county-home.js measures from the reader's own field or saved place in the county; Field Scout ground height in one USGS call (field-scout-land.js?v=10, field-scout-read.js?v=16, field-scout.js?v=30).
+// v300 2026-10-29: fx/nometeo2 (300 assigned by the lead; was 295). Forecasts off Open-Meteo: the National Weather Service grid (components/nws.js?v=1) for home weather, spray and the wind map, urea, grain drying, harvest or wait and planting date; soil from the nearest measuring station (soil-near.js?v=1), home history from PRISM (prism.js?v=1), the Daily's rain from our radar files. geo v34, daily-local v4, grain-emc-ui v6, harvest-wait-ui v4, home-planting v3, home-season v8, planting-date v6, spray-wind v2, spray-windows v2. The NWS forecast is saved for offline like the old weather (points and grid cells, never alerts).
 // v299 2026-10-29: fx/nometeo (299 assigned by the lead; was 291, which main passed: 297 is menu trim #186, 298 land-first #196). Place lookups off Open-Meteo: every ZIP and town box reads our own data/places/ files (components/places.js?v=1, GeoNames towns and the bids ZIP table's points); bids-homepage v43, cattle-auction v7, geo v33, grain-emc-ui v5, harvest-wait-ui v3, haymow v4, here v32, prf v9, radar-rain-page v8, rain-print v86, rp-canada v4, rain-county-print v42, loader.js.
 // v294 2026-10-29: fx/landvt (294 assigned by the lead). Vermont farm sales: county pages on /land-sales/vermont, Field Scout comps, the Atlas land door, the monthly land email; land-sales.js?v=3, land-alert.js?v=3, field-scout-land.js?v=9, field-scout-read.js?v=15, field-scout.js?v=29 (field-scout-land.js?v=9 also in comp-report.html and field-report.html), change-lines.js?v=2 (from here.js?v=32); search.js rides loader CV 104 unchanged.
 // v293 2026-10-29: fx/bidflags (293 assigned by the lead; 289 to 292 are held by other open branches, main still showed 290 at merge). Cash bids: a basis "from" line needs the bid to agree with that day's futures and never narrates the old feed's cents-read-as-dollars step; cash-bids.js?v=15, cb-glance.js?v=4.
 // v292 2026-10-29: fx/allsales (292 assigned by the lead; 289 to 291 are held by menutrim, fx/fsbase and fx/nometeo). Every recorded land sale on the county sales pages with Show more and a type filter, and one land rule (buildings by property class, Wisconsin forest apart, bare-land middles, 5 sales before a middle): land-sales.js?v=2, field-scout-land.js?v=8, comp-report.js?v=4.
 // v290 2026-10-29: fx/fsbase (290 assigned by the lead; 289 is held for fx/menutrim, main still showed 288 at merge). Field Scout on the USGS National Map (no Esri or CARTO), county from our own boundaries, bids from our own network by the field's miles, weather from NWS and the county gauge (off Open-Meteo), first screen: last crop, rain vs normal, nearest bid; field-scout.js?v=28, field-scout-read.js?v=14, field-scout-extras.js?v=4, field-scout.css?v=3. /rain-radar aerial off USGSImageryTopo (retired Nov 16, 2026): radar-rain-page.js?v=7.
+// v289 2026-10-29: fx/menutrim (289 assigned by the lead). Menu 63 lines to 58 (PRF, LRP and Rain Print once, Cash Bid Index and the Illinois index out, one crop report line, drought and manure under Field, Ag stocks under Futures), menu_click events in loader.js, /farmland-index and /data-sources folded, loader CV 105.
 // v288 2026-10-29: fx/ratecard (288 assigned by the lead; 287 goes to the land batch, main still showed 286 at merge). New sponsor rate card: an unsold page ribbon offers itself only when it is still sold (a state's cash bids and rent ribbons, /cash-bids), loader CV 104, sponsor-apply.js?v=7.
 // v287 2026-10-29: land sales findable (Atlas, rent, town, Fast Facts, search) and Land sales in the menu (loader CV 103).
 // v286 2026-10-28: fx/merges2 (286 assigned by the lead; was 283 before v284/v285 shipped). Ten pages fold into the page a reader already uses; new section scripts priced-in.js, bot-scorecard.js, coverage-map.js, elevator-claim.js, atlas-foreign.js, daily-archive.js; menu and footer follow (loader CV 102).
@@ -81,7 +87,6 @@ var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
 var NEVER_CACHE = [
   '/data/',                                  // prices.json, daily.json — must be live
   '/api/',
-  'open-meteo.com',                          // weather
   'nominatim.openstreetmap.org',             // geocoding
   'ondemand.websol.barchart.com',            // (legacy, no longer called from client)
   'farmers1st.com/api',
@@ -388,7 +393,8 @@ function savedDataFeed(url) {
     return '';
   }
   if (u.hostname === 'dnilgis.github.io' && u.pathname.indexOf('/bids/') === 0 && /\.json$/.test(u.pathname)) return 'bids';
-  if (u.hostname === 'api.open-meteo.com' && u.pathname === '/v1/forecast') return 'weather';
+  // the NWS forecast (components/nws.js): the point's office and cell, and the cell's grid; alerts stay network only
+  if (u.hostname === 'api.weather.gov' && (/^\/points\/-?[\d.]+,-?[\d.]+$/.test(u.pathname) || /^\/gridpoints\/[A-Z]{3}\/\d+,\d+$/.test(u.pathname))) return 'weather';
   return '';
 }
 
@@ -402,7 +408,7 @@ function savedDataKey(request) {
 
 // The data's own time, read from the file (never the save time, which would
 // make an 8:46 price file read as "from 9:17"): the first of these top-level
-// fields, or an Open-Meteo forecast's current.time placed by its UTC offset.
+// fields, an NWS grid's updateTime, or a forecast's current.time placed by its UTC offset.
 function dataTimeOf(text) {
   var j;
   try { j = JSON.parse(text); } catch (err) { return ''; }
@@ -412,6 +418,8 @@ function dataTimeOf(text) {
     var v = j[keys[i]];
     if (typeof v === 'string' && !isNaN(Date.parse(v))) return v;
   }
+  // an NWS forecast grid: the time the NWS issued it
+  if (j.properties && typeof j.properties.updateTime === 'string' && !isNaN(Date.parse(j.properties.updateTime))) return j.properties.updateTime;
   if (j.current && typeof j.current.time === 'string' && typeof j.utc_offset_seconds === 'number') {
     var t = Date.parse(j.current.time + 'Z') - j.utc_offset_seconds * 1000;
     if (!isNaN(t)) return new Date(t).toISOString();

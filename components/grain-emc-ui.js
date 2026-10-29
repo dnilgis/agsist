@@ -1,8 +1,9 @@
 /* grain-emc-ui.js: the /grain-emc page. Math lives in grain-emc.js (AgEMC);
  * this file reads the inputs, gets the forecast and draws.
- * Forecast: Open-Meteo hourly temperature, relative humidity and weather code
- * (unix time, labeled in the farm's own time zone), fetched in the reader's
- * browser. ZIP to a point: the bids ZIP table, then Open-Meteo's geocoder.
+ * Forecast: the National Weather Service forecast grid (components/nws.js), hourly
+ * temperature, relative humidity and a weather code made from the NWS weather words
+ * (labeled in the farm's own time zone), fetched in the reader's browser (2026-10-29,
+ * was Open-Meteo). ZIP to a point: our own ZIP table, then the bids repo's copy.
  * Location is kept in localStorage (agsist-wx-loc, shared with /spray and
  * /urea); settings in agsist-emc. The typed-reading box needs no network. */
 (function () {
@@ -231,7 +232,7 @@
     var mins = Math.round(age / 60e3);
     var tzNote = '';
     try { var mine = Intl.DateTimeFormat().resolvedOptions().timeZone; if (S.tz && mine && mine !== S.tz) tzNote = ' Times are ' + S.tz.replace(/_/g, ' ') + ' time.'; } catch (e) {}
-    $('emc-asof').textContent = 'Forecast from Open-Meteo for ' + S.place + ', pulled ' + (mins < 1 ? 'just now' : mins + ' minutes ago') + '. Fan heat: ' + (S.fan > 0 ? S.fan + ' F.' : 'none.') + tzNote + flipNote(rows);
+    $('emc-asof').textContent = 'Forecast from the National Weather Service grid' + (S.nws ? ' (' + S.nws.office + ' ' + S.nws.x + ',' + S.nws.y + ')' : '') + ' for ' + S.place + ', pulled ' + (mins < 1 ? 'just now' : mins + ' minutes ago') + '. Fan heat: ' + (S.fan > 0 ? S.fan + ' F.' : 'none.') + tzNote + flipNote(rows);
     drawStrip(rows);
     if ($('emc-table').open) drawTable(rows);
     renderShare(now, head);
@@ -417,12 +418,12 @@
   function load(lat, lon, label, quiet) {
     var my = ++S.seq;
     if (!quiet) status('Getting the forecast for ' + (label || 'your location') + '…');
-    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + (+lat).toFixed(3) + '&longitude=' + (+lon).toFixed(3) +
-      '&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,weather_code' +
-      '&temperature_unit=fahrenheit&timezone=auto&timeformat=unixtime&forecast_days=4';
-    return getJSON(url, 10000).then(function (d) {
+    // the National Weather Service forecast grid (components/nws.js; 2026-10-29, was Open-Meteo)
+    var to, ask = window.AgNWS ? window.AgNWS.forecast(lat, lon, { days: 4 }) : Promise.reject(new Error('the forecast reader did not load'));
+    return Promise.race([ask, new Promise(function (_, no) { to = setTimeout(function () { no(new Error('timeout')); }, 15000); })]).then(function (d) {
+      clearTimeout(to);
       if (my !== S.seq) return;
-      var hs = d.hourly || {}, times = hs.time || [];
+      var hs = d.hourly || {}, times = hs.time_unix || [];
       var nowMs = Date.now(), hours = [];
       for (var j = 0; j < times.length && hours.length < 72; j++) {
         var t = times[j] * 1000;
@@ -433,6 +434,7 @@
       var c = d.current || {};
       S.raw = { now: { tF: val([c.temperature_2m], 0), rh: val([c.relative_humidity_2m], 0), code: val([c.weather_code], 0) }, hours: hours };
       S.tz = typeof d.timezone === 'string' ? d.timezone : null;
+      S.nws = d._nws || null;
       S.fetchedAt = Date.now();
       S.stale = false;
       S.place = label || 'your location';

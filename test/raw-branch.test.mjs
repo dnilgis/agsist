@@ -13,8 +13,13 @@
  * build_arc_plc.py reads it, and arc-plc-refresh.yml and scripts/dev/checks.sh
  * unpack it with pull_raw.sh first. Its URL list and manifest stay on main.
  *
- * Kept on main on purpose: data/atlas/raw/drought.json (test/drought-county-week.test.mjs
- * reads it) and each probe's listing.json (the normal run reads it).
+ * Kept on main on purpose: each probe's listing.json (the normal run reads it).
+ *
+ * Oct 29 (fx/sizeinputs, the site at 836 of the 900 MB stop): data/atlas/raw/drought.json,
+ * the CRP workbooks in data/atlas/src/ and data/site-inventory.json followed. The Atlas
+ * pulls drought.json with the rest of data/atlas/raw and saves it back; its CRP step
+ * unpacks data/atlas/src first; the PR checks pull drought.json for
+ * test/drought-county-week.test.mjs.
  *
  * Oct 20 (Sig): the raw and references branches moved off the public repo, to
  * the private repo dnilgis/feedbag. Every step that saves or reads them
@@ -41,7 +46,10 @@ const MOVED = [
 ];
 const ATLAS_MOVED = ['heat', 'water', 'loss', 'sob', 'value', 'crp', 'energy', 'wells', 'practices',
   'climate', 'storms', 'livestock', 'frost', 'wells_states'];
-const KEPT = ['data/atlas/raw/drought.json', 'data/cattle-auction-raw/listing.json', 'data/hay-ams-raw/listing.json'];
+const KEPT = ['data/cattle-auction-raw/listing.json', 'data/hay-ams-raw/listing.json'];
+// moved Oct 29 (fx/sizeinputs): no page, component or worker loads them
+const MOVED_OCT29 = ['data/atlas/raw/drought.json', 'data/atlas/src/CRPHistoryCounty86-25.xlsx',
+  'data/atlas/src/EXPIRECOUNTY.xlsx', 'data/atlas/src/a-new-workbook.xlsx', 'data/site-inventory.json'];
 
 // workflow -> [raw folder, main FILES line]
 const PROBES = {
@@ -64,8 +72,9 @@ test('the moved raw inputs are not tracked on main (what is tracked is what Page
     const left = tracked(d).filter((f) => !KEPT.includes(f));
     assert.deepEqual(left, [], `${d} is back on main`);
   }
-  const atlas = tracked('data/atlas/raw');
-  assert.deepEqual(atlas, ['data/atlas/raw/drought.json'], 'only drought.json stays in data/atlas/raw on main');
+  assert.deepEqual(tracked('data/atlas/raw'), [], 'nothing in data/atlas/raw stays on main');
+  assert.deepEqual(tracked('data/atlas/src'), [], 'the CRP workbooks are off main');
+  assert.deepEqual(tracked('data/site-inventory.json'), [], 'the site inventory is off main');
 });
 
 test('.gitignore keeps them off main, and keeps the files main still needs', () => {
@@ -73,6 +82,7 @@ test('.gitignore keeps them off main, and keeps the files main still needs', () 
   for (const n of ATLAS_MOVED) assert.ok(ignored(`data/atlas/raw/${n}.json`), `data/atlas/raw/${n}.json ignored`);
   assert.ok(ignored('data/atlas/raw/some-new-layer.json'), 'a new Atlas pull is ignored too');
   assert.ok(ignored('data/atlas/raw/climate_monthly.json.gz'), 'the monthly climate file never reaches main');
+  for (const m of MOVED_OCT29) assert.ok(ignored(m), `${m} never reaches main again`);
   for (const d of MOVED) assert.ok(ignored(`${d}/x.txt`), `${d}/ ignored`);
   for (const k of KEPT) assert.ok(!ignored(k), `${k} is not ignored`);
   assert.ok(ignored('data/fsa/2026_PLC.xlsx'), 'FSA files are kept off main');
@@ -94,6 +104,8 @@ test('FSA files: every reader unpacks them from raw, every writer saves them the
   }
   const c = read('scripts/dev/checks.sh');
   assert.ok(c.indexOf('pull_raw.sh data/fsa') > 0 && c.indexOf('pull_raw.sh data/fsa') < c.indexOf('run node-test'), 'ship checks unpack them first');
+  const dp = c.indexOf('bash scripts/pull_raw.sh data/atlas/raw/drought.json');
+  assert.ok(dp > 0 && dp < c.indexOf('run node-test'), 'ship checks unpack the Atlas drought pull before the node tests (Oct 29)');
   assert.match(read('scripts/build_arc_plc.py'), /no FSA county files in \{FSA_DIR\}\/\. They live on the raw branch/, 'a build without them stops, never falls back to estimates');
 });
 
@@ -117,13 +129,21 @@ test('the Atlas unpacks its pulls from raw before any fetch and saves them back 
   assert.ok(pull > 0);
   assert.ok(pull < y.indexOf('python scripts/fetch_atlas_heat.py\n'), 'pulled before the first fetch');
   assert.ok(pull < y.indexOf('python scripts/build_farmland_atlas.py --seed'), 'pulled before the build');
-  for (const n of ['heat', 'water', 'loss', 'sob', 'value', 'crp', 'energy']) {
+  for (const n of ['heat', 'water', 'loss', 'sob', 'value', 'crp', 'energy', 'drought']) {
     assert.match(y, new RegExp(`for f in [a-z ]*\\b${n}\\b`), `the run stops if ${n}.json did not come back`);
   }
   const push = y.indexOf('bash scripts/push_raw.sh "farmland atlas raw"');
   assert.ok(push > y.indexOf('python scripts/build_farmland_atlas.py --seed'), 'saved after the build');
-  assert.match(y, /if: \$\{\{ !cancelled\(\) \}\}\n(\s+#.*\n)*\s+env:\n\s+PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n\s+RAW_SOFT: '1'\n\s+run: bash scripts\/push_raw\.sh "farmland atlas raw" \$\(ls data\/atlas\/raw\/\*\.json data\/atlas\/raw\/\*\.json\.gz 2>\/dev\/null \| grep -v '\/drought\\\.json\$'\)/,
-    'saved even when the build fails, the gzipped monthly climate file with them; drought.json stays on main only');
+  assert.match(y, /if: \$\{\{ !cancelled\(\) \}\}\n(\s+#.*\n)*\s+env:\n\s+PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n\s+RAW_SOFT: '1'\n\s+run: bash scripts\/push_raw\.sh "farmland atlas raw" \$\(ls data\/atlas\/raw\/\*\.json data\/atlas\/raw\/\*\.json\.gz 2>\/dev\/null\)\n/,
+    'saved even when the build fails, the gzipped monthly climate file and drought.json with them');
+  assert.doesNotMatch(y, /grep -v '\/drought/, 'drought.json is saved to raw like every other pull (Oct 29)');
+  // the CRP workbooks (Oct 29): unpacked from raw inside the CRP step, before the folder is read
+  const crp = y.slice(y.indexOf('- name: Fetch CRP (FSA)'), y.indexOf('- name: Fetch land value'));
+  assert.ok(crp.length > 0, 'the CRP step');
+  assert.match(crp, /\n\s+PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n/, 'the CRP step has the key');
+  const unpack = crp.indexOf('RAW_SOFT=1 bash scripts/pull_raw.sh data/atlas/src\n');
+  assert.ok(unpack > 0 && unpack < crp.indexOf('H=$(ls data/atlas/src/'), 'the workbooks are unpacked before the folder is read');
+  assert.match(crp, /python scripts\/fetch_atlas_crp\.py\n/, 'without them the fetch is still tried');
   assert.match(y, /git add -A data\/atlas farmland-atlas\.html/, 'main commit unchanged; .gitignore keeps the pulls out');
 });
 

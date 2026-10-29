@@ -2604,6 +2604,22 @@
     {"id": "nj-nonusable-guidelines", "kind": "pdf",
      "url": "https://www.nj.gov/treasury/taxation/pdf/lpt/guidelines36.pdf",
      "title": "NJ Division of Taxation: Guidelines for use of the non-usable deed categories (N.J.A.C. 18:12-1.1)",
-     "why": "New Jersey land sales: the meaning of each SR-1A non-usable code, mapped onto the market-sale rule in fetch_land_sales.py NJ_NU"}
+     "why": "New Jersey land sales: the meaning of each SR-1A non-usable code, mapped onto the market-sale rule in fetch_land_sales.py NJ_NU"},
+    {"id": "ksu-land-values-book-2025", "kind": "html",
+     "url": "https://www.agmanager.info/land-leasing/land-buying-valuing/2025-kansas-land-values-book",
+     "title": "K-State AgManager: 2025 Kansas Land Values Book (landing page)",
+     "why": "Kansas county land values (data/land/ks/survey.json): the PDF link and the publication's terms"},
+    {"id": "ksu-land-values-book-2025-pdf", "kind": "pdf",
+     "url": "https://www.agmanager.info/sites/default/files/pdf/2025%20KS%20Ag%20Land%20Values%20011226%20web.pdf",
+     "title": "K-State: 2025 Kansas Land Values Book (Reid and Hughes, Jan 12, 2026), PDF",
+     "why": "Kansas county land values (data/land/ks/survey.json): county averages of reported sales and the publication's terms"},
+    {"id": "ksu-copyright", "kind": "html",
+     "url": "https://www.k-state.edu/copyright/",
+     "title": "Kansas State University: copyright information",
+     "why": "Kansas county land values: whether the K-State land values book may be reposted or only linked"},
+    {"id": "nd-trust-lands-rents-survey-page", "kind": "html",
+     "url": "https://www.land.nd.gov/resources/north-dakota-county-rents-prices-annual-survey",
+     "title": "ND Department of Trust Lands: county rents and prices annual survey (resources page)",
+     "why": "North Dakota county land values (data/land/nd/survey.json): survey page and any reuse terms"}
 ]
 }
