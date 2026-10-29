@@ -15,6 +15,11 @@
   // (handles CORS, the Sentinel Hub OAuth secret, and the CDL reprojection).
   var FS_WORKER = 'https://agsist-fieldscout.dnilgis.workers.dev';                  // ← deploy & set this
   var METEO_URL = 'https://api.open-meteo.com/v1/forecast';
+  // USGS National Map cached base maps (Web Mercator, /tile/{level}/{row}/{col}, cached to level 16:
+  // 'Max Scale: 9027.977411' in both service directories, read Oct 29, 2026)
+  var USGS_MAX_Z = 16;
+  var USGS_ATTR_SAT = 'Imagery: USGS The National Map, USDA NAIP';
+  var USGS_ATTR_MAP = 'Map: USGS The National Map';
   var BIDS_PROXY= 'https://agsist-barchart.dnilgis.workers.dev';                    // AGSIST cash-bid proxy
   var NOMINATIM = 'https://nominatim.openstreetmap.org/search';
   var NOMINATIM_REV = 'https://nominatim.openstreetmap.org/reverse';
@@ -99,11 +104,26 @@
     map.on('zoomstart', dismissInvite);
     try{ map.getContainer().addEventListener('pointerdown', dismissInvite, { once:true }); }catch(e){}
 
-    satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom:19, attribution:'Imagery &copy; Esri'
+    // THE BASE MAP IS THE USGS NATIONAL MAP (Sig, Oct 29, 2026): public domain, no key, no
+    // account, so it cannot turn into a bill or a watermark (scripts/basemap-checks.mjs). The
+    // satellite view is USGSImageryOnly (NAIP aerial photos, cached to level 16; closer zooms
+    // stretch the level-16 tile), the map view is USGSTopo. Esri World Imagery (no account,
+    // ad-funded sites not covered) and CARTO dark_all (key required since Sep 9) are gone.
+    satLayer = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}', {
+      maxNativeZoom:USGS_MAX_Z, maxZoom:19, attribution:USGS_ATTR_SAT
     }).addTo(map);
-    mapLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom:19, attribution:'&copy; OpenStreetMap, &copy; CARTO'
+    mapLayer = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', {
+      maxNativeZoom:USGS_MAX_Z, maxZoom:19, attribution:USGS_ATTR_MAP
+    });
+    // A base map that does not come through says so once; the outline, the pin and the
+    // readout never depend on it.
+    [satLayer, mapLayer].forEach(function(t){
+      var got=0, waiting=0;
+      t.on('tileload', function(){ got++; });
+      t.on('tileerror', function(){
+        if(got || waiting) return;
+        waiting=setTimeout(function(){ if(!got && map.hasLayer(t)) flashHint('The USGS map tiles did not load. Your field outline and readout still work.'); }, 6000);
+      });
     });
 
     drawnLayer = new L.FeatureGroup().addTo(map);

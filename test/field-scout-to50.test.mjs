@@ -239,7 +239,7 @@ async function openPage(browser, port, width, opts = {}) {
     if (h === "api.open-meteo.com") return J({ current: { time: "2026-10-16T14:15", temperature_2m: 54, relative_humidity_2m: 61, precipitation: 0, wind_speed_10m: 9 }, daily: { precipitation_sum: [0, 0.1, 0, 0.4, 0, 0, 0.2, 0] } });
     if (h === "archive-api.open-meteo.com") return J({});
     if (h === "nominatim.openstreetmap.org") return J(u.pathname.includes("reverse") ? { address: { postcode: "50126", county: "Hardin County", state: "Iowa" } } : [{ lat: "42.345", lon: "-93.39" }]);
-    if (/arcgisonline|cartocdn/.test(h)) return r.fulfill({ body: PNG, contentType: "image/png" });
+    if (h === "basemap.nationalmap.gov") return r.fulfill({ body: PNG, contentType: "image/png" });
     return r.abort();
   });
   await pg.goto(`http://127.0.0.1:${port}/field-scout`);

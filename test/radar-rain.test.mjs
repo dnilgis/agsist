@@ -154,7 +154,9 @@ test("a real map under the rain: USGS National Map only, credited, with a fallba
   const js = fs.readFileSync(path.join(ROOT, "components/radar-rain-page.js"), "utf8");
   // public domain, keyless USGS tiles, both views
   assert.ok(js.includes("https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}"));
-  assert.ok(js.includes("https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}"));
+  assert.ok(js.includes("https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"));
+  // USGS retires USGSImageryTopo after Nov 16, 2026: no page may still ask for it
+  assert.doesNotMatch(js + page, /USGSImageryTopo/);
   assert.doesNotMatch(js + page, /cartocdn|tile\.openstreetmap|api\.mapbox|maptiler|stadiamaps|arcgisonline/i);
   // credited in small type by the map and in the sources line
   assert.match(page, /class="rr-credit">Map: USGS The National Map</);
