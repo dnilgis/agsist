@@ -366,7 +366,7 @@
         var nm = String(s.name).replace(/[<&>]/g, '');
         var soon = s.state && (tier.opens_soon || []).indexOf(s.state) >= 0;
         var price = (s.state && tier.price_by_state && tier.price_by_state[s.state]) || tier.price_month;
-        var what = tier.id === 'state' ? 'The State Sponsor for ' + s.state : 'The ' + String(tier.name).replace(/[<&>]/g, '');
+        var what = tier.id === 'state' ? 'The State Sponsor for ' + nm.replace(/ cash (?:bids|rent)$/, '') : 'The ' + String(tier.name).replace(/[<&>]/g, '');
         bar.innerHTML = taken[s.id]
           ? 'You came from the <strong>' + nm + '</strong> page. That slot is taken right now. <a href="/sponsor-apply">See what is open &rarr;</a>'
           : soon
