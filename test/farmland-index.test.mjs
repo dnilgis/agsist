@@ -1,5 +1,6 @@
-// /farmland-index (scripts/build_land_index.py): the Illinois farmland sale index.
-// No buyer or seller name, legal description, parcel or document number may reach the page or
+// The Illinois farmland sale index (scripts/build_land_index.py): a section of the land sales hub,
+// /land-sales/#illinois-index, since Oct 29, 2026 (it was its own page, /farmland-index, now a moved-page stub).
+// No buyer or seller name, legal description, parcel or document number may reach the hub or
 // data/land/index.json (STANDING-DECISIONS, Oct 17: no names on indexed land pages). Withheld
 // cells say why, a state that does not hold up on its own prints no index number, the latest
 // quarter is provisional, no em dashes, no sponsor slot, and the byline is at the end.
@@ -14,7 +15,9 @@ import { join } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
-const PAGE = read("farmland-index.html");
+const HUB = read("land-sales/index.html");
+const at = HUB.indexOf('<section class="li" id="illinois-index"');
+const PAGE = at < 0 ? "" : HUB.slice(at, HUB.indexOf("</section>", at) + 10);   // the index section
 const RAW = read("data/land/index.json");
 const D = JSON.parse(RAW);
 const norm = (s) => String(s).toUpperCase().replace(/\s+/g, " ").trim();
@@ -48,7 +51,7 @@ test("no buyer or seller name, legal, parcel or document number on the page or i
   for (const st of ["il", "in", "wi"]) {
     const vals = privateValues(st);
     assert.ok(vals.size > 1000, `${st}: the check has names to look for (${vals.size})`);
-    assert.deepEqual(leaks(PAGE, vals).slice(0, 3), [], `${st}: names on the page`);
+    assert.deepEqual(leaks(HUB, vals).slice(0, 3), [], `${st}: names on the hub`);
     assert.deepEqual(leaks(RAW, vals).slice(0, 3), [], `${st}: names in data/land/index.json`);
   }
 });
@@ -104,16 +107,23 @@ test("NASS is its own line, never blended", () => {
   assert.match(PAGE, /class="li-nass"/);
 });
 
-test("page rules: no em dash, byline at the end only, no sponsor slot, Dataset and FAQ, in the sitemap and llms.txt", () => {
-  assert.ok(!/—|&mdash;/.test(PAGE), "em dash");
-  const at = PAGE.indexOf("Sigurd Lindquist, CCA");
-  assert.ok(at > PAGE.indexOf('id="sources"'), "byline only at the end");
+test("section rules: no em dash, no name in it, no sponsor slot, Dataset and FAQ on the hub, the hub in the sitemap and llms.txt", () => {
+  assert.ok(PAGE.length > 5000, "the hub carries the index section");
+  assert.ok(!/—|&mdash;/.test(HUB), "em dash");
+  assert.ok(!PAGE.includes("Sigurd Lindquist"), "no byline inside the section");
   assert.ok(!/data-sponsor|ag-sponsor|sponsor-slot/.test(PAGE), "no sponsor slot");
-  assert.match(PAGE, /"@type":"Dataset"/);
-  assert.match(PAGE, /"@type":"FAQPage"/);
-  assert.match(read("sitemap.xml"), /<loc>https:\/\/agsist\.com\/farmland-index<\/loc>/);
-  assert.match(read("llms.txt"), /\/farmland-index/);
-  assert.ok(PAGE.length < 150 * 1024);
+  assert.match(HUB, /"@type":"Dataset"/);
+  assert.match(HUB, /"@type":"FAQPage"/);
+  // what the old page had: the answer, chart, by year, by county, buyers, every quarter, method, questions, sources
+  for (const id of ["years", "counties", "buyers", "quarters", "method", "faq", "sources", "li-counties"]) assert.ok(PAGE.includes(`id="${id}"`), "#" + id);
+  assert.match(PAGE, /<svg class="li-chart"/);
+  assert.match(HUB, /fetch\('\/data\/land\/index\.json\?v=\d+'\)/, "the county table loads from the data file");
+  assert.match(HUB, /<a href="#illinois-index">Illinois sale index<\/a>/, "the jump row reaches it");
+  assert.match(read("sitemap-land-sales.xml"), /<loc>https:\/\/agsist\.com\/land-sales\/<\/loc>/);
+  assert.doesNotMatch(read("sitemap.xml"), /agsist\.com\/farmland-index/);
+  assert.match(read("llms.txt"), /\/land-sales\/#illinois-index/);
+  assert.match(read("farmland-index.html"), /<link rel="canonical" href="https:\/\/agsist\.com\/land-sales\/">/, "the old address forwards");
+  assert.ok(HUB.length < 150 * 1024, "hub " + HUB.length);
 });
 
 test("the builder's selftest passes (real names-stripped fixture, least squares vs alternating means)", () => {

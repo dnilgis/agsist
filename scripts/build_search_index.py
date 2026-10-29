@@ -118,7 +118,7 @@ PAGES = [
     ("/cattle-auction-prices", "Sale barn prices", "Feeder cattle by weight near you", "sale barn auction feeder cattle steers heifers calves prices cwt weight class stockyards livestock auction market report usda"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
     ("/land-sales/", "Land sales by county", "Recorded farm sales, acres and price per acre", "land sales farmland sales farm sales farm ground sold sale prices land prices price per acre recorded deeds buyers county monthly illinois wisconsin indiana"),
-    ("/farmland-index", "Farmland sale index (Illinois)", "What farm ground sold for, by quarter", "farmland index land sale prices values illinois sold acre county median price to rent buyers"),
+    ("/land-sales/#illinois-index", "Farmland sale index (Illinois)", "What farm ground sold for, by quarter", "farmland index land sale prices values illinois sold acre county median price to rent buyers"),
     ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre tenure rented owned landlord ownership"),
     ("/rent/", "Cash rent by state", "Rent by county", "cash rent rents rental county land acre lease"),
     ("/cash-lease", "Cash farm lease form", "Free printable lease", "cash lease form farm lease printable template contract rent"),
@@ -148,7 +148,7 @@ PAGES = [
     ("/usda-calendar#scorecard", "Prediction bot scorecard", "How the calls did", "scorecard prediction bot calls record"),
     ("/about", "About", "Who runs AGSIST", "about sig sigurd lindquist"),
     ("/contact", "Contact", "Get in touch", "contact email"),
-    ("/data-sources", "Data sources", "Where the numbers come from", "data sources"),
+    ("/editorial-standards#sources", "Data sources", "Where the numbers come from", "data sources where numbers come from"),
     ("/developer#widgets", "Embed widgets", "Put AGSIST on your site", "embed widgets iframe gdu arc plc"),
     ("/developer", "Developer API", "Data feeds", "developer api feeds"),
     ("/sponsor", "Sponsor", "Advertise on AGSIST", "sponsor advertise ads"),
@@ -216,8 +216,10 @@ def build_pages(warn):
     out = []
     listed = set()
     for url, title, sub, kw in PAGES:
-        base = url.split("#")[0].strip("/") or "index"
-        if not (exists(base + ".html") or (url.endswith("/") and exists(base + "/index.html"))):
+        path = url.split("#")[0]
+        base = path.strip("/") or "index"
+        # "/land-sales/" and a section of it, "/land-sales/#illinois-index", are land-sales/index.html
+        if not (exists(base + ".html") or (path.endswith("/") and exists(base + "/index.html"))):
             warn("page listed but missing: %s" % url)
             continue
         listed.add(base + ".html")

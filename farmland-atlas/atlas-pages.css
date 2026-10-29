@@ -104,5 +104,22 @@
 .ap .gaps h2{margin-top:.6rem;border:0}
 .ap .gaps ul{margin:0;padding-left:1.1rem;font-size:.86rem;line-height:1.55;color:var(--text-dim)}.ap .gaps li{margin:.25rem 0}
 .ap .act.rcw button{min-height:44px}
+.ap .lf{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:12px;padding:10px 14px 8px;margin:.3rem 0 1rem;background:var(--surface,#12161a);max-width:760px}
+.ap .lf-thru{margin:0 0 .2rem;font-size:.8rem;color:var(--text-muted)}
+.ap .lf-mid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 .7rem;align-items:baseline}
+.ap .lf-k{font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.ap .lf-v{font-family:var(--font-mono);font-size:1.7rem;font-weight:700;line-height:1.15;color:var(--text)}.ap .lf-v small{font-size:.85rem;font-weight:400;color:var(--text-dim)}
+.ap .lf-v.lf-few{font-size:1.15rem}
+.ap .lf-s{grid-column:1/-1;font-size:.84rem;line-height:1.4;color:var(--text-dim)}
+.ap .lf-h{font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:.55rem 0 .15rem;padding:0;border:0}
+.ap .lf-h small{text-transform:none;letter-spacing:0;font-weight:400}
+.ap .lf-ul{list-style:none;margin:0;padding:0}.ap .lf-ul li{font-size:.84rem;line-height:1.45;padding:.18rem 0;border-top:1px dotted var(--border)}.ap .lf-ul li:first-child{border-top:0}
+.ap .lf-d{color:var(--text-muted)}.ap .lf-n{color:var(--text-dim);font-style:italic}
+.ap .lf-ul .ls-nm{font:inherit;font-size:.76rem;color:var(--gold);background:none;border:1px solid var(--border);border-radius:999px;padding:.05rem .5rem;cursor:pointer;white-space:nowrap}
+.ap .lf-r{display:grid;grid-template-columns:5em minmax(0,1fr);gap:0 .5rem;padding:.3rem 0;border-top:1px dotted var(--border);font-size:.84rem;line-height:1.4}
+.ap .lf-r .l{color:var(--text-dim)}.ap .lf-r .r b{font-family:var(--font-mono)}.ap .lf-r .lc{color:var(--text-dim)}
+.ap .lf .lv{min-height:5.6em}.ap .lf .lv .ls{display:inline;margin:0 0 0 .35em}
+.ap .lf-btns{margin:.45rem 0 .3rem}
+.ap .lf-dis{margin:0;font-size:.82rem;font-weight:600;color:var(--text)}.ap .lf-fine{margin:.1rem 0 0;font-size:.74rem;color:var(--text-muted)}
 @media (max-width:640px){.ap{padding:0 12px 3rem}.ap .card{padding:10px 12px}.ap .ch-btns a{flex:1 1 auto;justify-content:center}}
 @media print{.ap .ch-btns,.ap .gaps{display:none}.ap .card{break-inside:avoid}}

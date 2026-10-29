@@ -11,6 +11,7 @@ import { createRequire } from "node:module";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const L = createRequire(import.meta.url)(join(ROOT, "components/daily-local.js"));
 const NOW = Date.parse("2026-10-16T15:00:00Z");   // Fri Oct 16, 10 am CT
+const SRC = readFileSync(join(ROOT, "components/daily-local.js"), "utf8");
 const HOME = [45.3136, -91.6510];                  // Chetek, WI
 
 const place = (name, lat, lon, now, extra = {}) => ({
@@ -45,16 +46,22 @@ test("change since the trading day before the board last posted", () => {
   assert.equal(L.fnv("Abbyville Farmers Co-op Grain Co.||Abbyville|KS|corn|2026-08/2026-11"), "0dd84803");
 });
 
-test("rain sums the last 24 and 168 hours up to now", () => {
-  const time = [], precipitation = [];
-  const start = Date.parse("2026-10-09T00:00:00Z");
-  for (let i = 0; i < 24 * 9; i++) {
-    time.push(new Date(start + i * 36e5).toISOString().slice(0, 16));
-    precipitation.push(i % 24 === 3 ? 0.1 : 0);   // 0.10 in at 03:00 UTC each day
-  }
-  const r = L.rain({ utc_offset_seconds: 0, hourly: { time, precipitation } }, NOW);
-  assert.deepEqual(r, { h24: 0.1, d7: 0.7 });
-  assert.equal(L.rain({ hourly: { time: time.slice(0, 50), precipitation: precipitation.slice(0, 50) } }, NOW), null);
+test("rain: the radar file's 24-hour and 7-day readings at the spot, only while the file is fresh", () => {
+  // readings in hundredths of an inch, as components/radar-rain.js gives them (2026-10-29: was Open-Meteo's model)
+  const end = new Date(NOW - 3 * 36e5).toISOString();
+  assert.deepEqual(L.rain({ h24: 10, d7: 70, end }, NOW), { h24: 0.1, d7: 0.7, end });
+  assert.deepEqual(L.rain({ h24: 0, d7: 0, end }, NOW), { h24: 0, d7: 0, end }, "a dry week is a zero the file gave");
+  assert.equal(L.rain({ h24: null, d7: 70, end }, NOW), null, "no estimate at the spot: no rain line");
+  assert.equal(L.rain({ h24: 10, d7: 70, end: new Date(NOW - 13 * 36e5).toISOString() }, NOW), null, "a file over 12 hours old: no rain line");
+  assert.equal(L.rain(null, NOW), null);
+});
+
+test("the rain line names NOAA's radar estimate and its last hour, never Open-Meteo", () => {
+  const h = L.build({ loc: { zip: "54728" }, picks: null, rain: { h24: 0.2, d7: 1, end: "2026-10-16T12:00:00Z" } });
+  assert.match(h, /0\.20 inch over the last 24 hours, 1\.00 inch over the last 7 days/);
+  assert.match(h, /NOAA’s radar estimate corrected with gauges \(MRMS\) at your spot, through /);
+  assert.doesNotMatch(SRC, /open-meteo\.com/);
+  assert.match(SRC, /\/data\/radar-rain\/index\.json/);
 });
 
 test("the line reads plainly, and missing pieces stay missing", () => {
@@ -96,8 +103,8 @@ test("a reader with a saved location gets the line above the quote strip; no loc
   assert.deepEqual(L.spot(box, false), { sel: "aside.ya[data-your-area]", before: false, fallback: null });
   assert.deepEqual(L.spot(el({ "data-after": "x" }), true), { sel: "x", before: false, fallback: null }, "old issue pages keep their place");
   const page = readFileSync(join(ROOT, "daily.html"), "utf8");
-  assert.match(page, /<aside class="dl" data-daily-local data-before="#dv3-today \.dv3-quotes" data-after="#dv3-today \.dv3-quote-asof" hidden><\/aside><script src="\/components\/daily-local\.js\?v=3" defer><\/script>/);
+  assert.match(page, /<aside class="dl" data-daily-local data-before="#dv3-today \.dv3-quotes" data-after="#dv3-today \.dv3-quote-asof" hidden><\/aside><script src="\/components\/daily-local\.js\?v=4" defer><\/script>/);
   const gen = readFileSync(join(ROOT, "scripts/generate_daily.py"), "utf8");
   assert.match(gen, /<aside class="dl" data-daily-local data-before="article \.dv3-quotes" data-after="aside\.ya\[data-your-area\]" hidden><\/aside>/);
-  assert.match(gen, /daily-local\.js\?v=3/);
+  assert.match(gen, /daily-local\.js\?v=4/);
 });

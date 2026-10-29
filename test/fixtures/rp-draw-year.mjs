@@ -44,14 +44,13 @@ export function porRows(y0, y1) { let a = []; for (let y = y0; y <= y1; y++) a =
 export const CHETEK = { name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1893-01-01", "2026-10-09"], ["1893-01-01", "2026-10-09"]], state: "WI" };
 export const GEO = [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", admin2: "Barron", country_code: "US" }];
 
-/* opts: {kind: 'wet'|'dry', wind: an Open-Meteo answer or null (refused), log: []} */
+/* opts: {kind: 'wet'|'dry', log: []} (2026-10-29: the wind answer is gone with Open-Meteo; windAnswer stays for the matching code's unit test) */
 export async function mocks(ctx, opts = {}) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   await ctx.route(PLACES_ROUTE, (r) => {
     const u = new URL(r.request().url());
     if (opts.log) opts.log.push(u.host + u.pathname);
     if (isPlaces(u)) return r.fulfill({ headers: h, json: placesBody(u, GEO) });   // the town lookup: our own data/places/ files (2026-10-29)
-    if (u.host === "archive-api.open-meteo.com") return opts.wind ? r.fulfill({ headers: h, json: opts.wind(u) }) : r.fulfill({ status: 503, headers: h, body: "x" });
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ headers: h, json: { meta: [CHETEK] } });
       let sdate = u.searchParams.get("sdate"), normal = false;

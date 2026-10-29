@@ -1172,6 +1172,23 @@ CSS = """
 .ap .gaps h2{margin-top:.6rem;border:0}
 .ap .gaps ul{margin:0;padding-left:1.1rem;font-size:.86rem;line-height:1.55;color:var(--text-dim)}.ap .gaps li{margin:.25rem 0}
 .ap .act.rcw button{min-height:44px}
+.ap .lf{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:12px;padding:10px 14px 8px;margin:.3rem 0 1rem;background:var(--surface,#12161a);max-width:760px}
+.ap .lf-thru{margin:0 0 .2rem;font-size:.8rem;color:var(--text-muted)}
+.ap .lf-mid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 .7rem;align-items:baseline}
+.ap .lf-k{font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.ap .lf-v{font-family:var(--font-mono);font-size:1.7rem;font-weight:700;line-height:1.15;color:var(--text)}.ap .lf-v small{font-size:.85rem;font-weight:400;color:var(--text-dim)}
+.ap .lf-v.lf-few{font-size:1.15rem}
+.ap .lf-s{grid-column:1/-1;font-size:.84rem;line-height:1.4;color:var(--text-dim)}
+.ap .lf-h{font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:.55rem 0 .15rem;padding:0;border:0}
+.ap .lf-h small{text-transform:none;letter-spacing:0;font-weight:400}
+.ap .lf-ul{list-style:none;margin:0;padding:0}.ap .lf-ul li{font-size:.84rem;line-height:1.45;padding:.18rem 0;border-top:1px dotted var(--border)}.ap .lf-ul li:first-child{border-top:0}
+.ap .lf-d{color:var(--text-muted)}.ap .lf-n{color:var(--text-dim);font-style:italic}
+.ap .lf-ul .ls-nm{font:inherit;font-size:.76rem;color:var(--gold);background:none;border:1px solid var(--border);border-radius:999px;padding:.05rem .5rem;cursor:pointer;white-space:nowrap}
+.ap .lf-r{display:grid;grid-template-columns:5em minmax(0,1fr);gap:0 .5rem;padding:.3rem 0;border-top:1px dotted var(--border);font-size:.84rem;line-height:1.4}
+.ap .lf-r .l{color:var(--text-dim)}.ap .lf-r .r b{font-family:var(--font-mono)}.ap .lf-r .lc{color:var(--text-dim)}
+.ap .lf .lv{min-height:5.6em}.ap .lf .lv .ls{display:inline;margin:0 0 0 .35em}
+.ap .lf-btns{margin:.45rem 0 .3rem}
+.ap .lf-dis{margin:0;font-size:.82rem;font-weight:600;color:var(--text)}.ap .lf-fine{margin:.1rem 0 0;font-size:.74rem;color:var(--text-muted)}
 @media (max-width:640px){.ap{padding:0 12px 3rem}.ap .card{padding:10px 12px}.ap .ch-btns a{flex:1 1 auto;justify-content:center}}
 @media print{.ap .ch-btns,.ap .gaps{display:none}.ap .card{break-inside:avoid}}
 """
@@ -1318,14 +1335,16 @@ def sales_key(t):
             % (esc(t["through"]), esc(t["label"]), vv, esc(t["sub"])))
 
 
-def sales_block(W, f, lab, st):
+def sales_block(W, f, lab, st, lf=False):
+    """lf: the page opens with the land (land_first), which already lists the newest sales, so
+    components/land-sales.js is told this block is done and draws no second "Latest farm sales"."""
     if not has_sales(W, st):
         return ""
     src = SALES_SOURCES[st]
-    return ('<section class="as" data-atlas-sales="county" data-st="%s" data-fips="%s" aria-label="Recorded farm sales"><h2>Recorded farm sales</h2>'
+    return ('<section class="as" data-atlas-sales="county" data-st="%s" data-fips="%s"%s aria-label="Recorded farm sales"><h2>Recorded farm sales</h2>'
             '<div class="as-body"><p class="note">Sale counts and the median price buyers paid per acre in %s, from %s (%s), load here.</p>'
             '<noscript><p class="note">This part needs JavaScript. The figures are in <a href="/data/land/%s/summary.json">the county summary file</a>.</p></noscript></div></section>'
-            '<script defer src="/%s?v=%s"></script>' % (st, esc(f), esc(lab), esc(src["record"]), esc(src["who"]), st.lower(), SALES_JS, sales_v(W.root)))
+            '<script defer src="/%s?v=%s"></script>' % (st, esc(f), ' data-ls-done="1"' if lf else "", esc(lab), esc(src["record"]), esc(src["who"]), st.lower(), SALES_JS, sales_v(W.root)))
 
 
 def sales_state(W, st):
@@ -1360,15 +1379,20 @@ def land_sales_cov(W):
     return cache["rows"]
 
 
-def land_sales_county(W, f, st):
-    """'/land-sales/<state>/<county>' for a county with its own sales page on disk, else None."""
+def land_sales_file(W, st):
+    """data/land-sales/<st>.json (no names), read once per state; {} when the state has none."""
     cache = W.__dict__.setdefault("_ls_st", {})
     if st not in cache:
         try:
-            cache[st] = json.load(open(os.path.join(W.root, "data", LS_DIR, st.lower() + ".json"), encoding="utf-8")).get("counties") or {}
+            cache[st] = json.load(open(os.path.join(W.root, "data", LS_DIR, st.lower() + ".json"), encoding="utf-8")) or {}
         except Exception:
             cache[st] = {}
-    c = cache[st].get(f)
+    return cache[st]
+
+
+def land_sales_county(W, f, st):
+    """'/land-sales/<state>/<county>' for a county with its own sales page on disk, else None."""
+    c = (land_sales_file(W, st).get("counties") or {}).get(f)
     if not c or not re.match(r"^[a-z0-9-]+$", str(c.get("slug") or "")):
         return None
     ssl = slugify(STATE_NAMES.get(st, st))
@@ -1405,6 +1429,108 @@ def _land_sales_door(W, f, lab, st):
         return ""
     return ('<p class="note" data-ls-door="state">Land sales: %s <a href="/%s/#coverage">Where each state stands</a>.</p>'
             % (esc(land_sales_words(rows.get(st), stn)), LS_DIR))
+
+
+# Land first (Sig, Oct 29, 2026: the property view is top priority; panel record
+# notes/panels/property-2026-10-29). In a state with sales on /land-sales/, a county that has its
+# own sales page opens with the land: place and how fresh the sales are, what ground sold for (the
+# 24-month market middle, its count and middle half, or "too few sales"), the three newest sales
+# (town, not parcel; names behind a tap), the county rent, the nearest bid and rain against usual
+# (both live, measured from the reader's own field or saved place in this county when this device
+# has one, else from the county middle), the two doors and the plain disclaimer. Everything else
+# sits below. The sale numbers are read from data/land-sales/<st>.json, the file the
+# /land-sales/<county> page is built with (scripts/build_land_sales.py), so the two cannot
+# disagree; test/atlas-land-first.test.mjs compares the pages. No value estimate, no adjustment,
+# no rent-to-price ratio. Other states keep the page as it was.
+LF_DISCLAIM = "Recorded prices. Not an appraisal. No adjustments."
+
+
+def _w24_words(through):
+    """'Oct 2024 to Sep 2026': the 24 months ending with the through month."""
+    y, m = int(through[:4]), int(through[5:7])
+    y0, m0 = (y - 2, m + 1) if m < 12 else (y - 1, 1)
+    return "%s %d to %s %d" % (_MON[m0 - 1], y0, _MON[m - 1], y)
+
+
+def _ac(a):
+    if a is None:
+        return "acres not stated"
+    t = "{:,.1f}".format(round(float(a), 1))
+    return (t[:-2] if t.endswith(".0") else t) + " ac"
+
+
+def land_first(W, f, lab, st, rent_html):
+    """The first screen of a county home in a sales state, or "" (the page keeps its old order)."""
+    href = land_sales_county(W, f, st)
+    if not href:
+        return ""
+    F = land_sales_file(W, st)
+    c = (F.get("counties") or {}).get(f) or {}
+    thr = F.get("through")
+    if not thr or not re.match(r"^\d{4}-\d{2}-\d{2}$", thr):
+        return ""
+    span = _w24_words(thr)
+    u = c.get("usual")
+    if u and u.get("med") is not None:
+        mid = ('<div class="lf-mid" data-lf-mid><div class="lf-k">Sold for</div><div class="lf-v">%s<small>/ac</small></div>'
+               '<div class="lf-s">Middle of %d bare farmland sales of 20+ acres, %s.%s</div></div>'
+               % (money(u["med"]), u["n"], span,
+                  (" Middle half %s to %s." % (money(u["q1"]), money(u["q3"]))) if u.get("q1") is not None and u.get("q3") is not None else ""))
+    else:
+        k = c.get("k24") or 0
+        mid = ('<div class="lf-mid" data-lf-mid><div class="lf-k">Sold for</div><div class="lf-v lf-few">Too few sales</div>'
+               '<div class="lf-s">%s bare farmland sale%s of 20+ acres, %s. A middle takes 5.</div></div>'
+               % (k or "No", "" if k == 1 else "s", span))
+    if st == "IN":
+        mid += '<p class="lf-fine">Most Indiana sales are marked not valid for trending by the state.</p>'
+    cols = F.get("cols") or []
+    ix = {k: i for i, k in enumerate(cols)}
+    nd = F.get("names_dir") or ""
+    li = []
+    for r in (c.get("s") or [])[:3]:
+        g = lambda k: r[ix[k]] if k in ix and ix[k] < len(r) else None
+        if not g("id") or not g("when"):
+            continue
+        note = []
+        if g("flag") == 1:
+            note.append("unusual price, above the county's usual")
+        elif g("flag") == -1:
+            note.append("unusual price, below the county's usual")
+        if g("bldg"):
+            note.append("with buildings")
+        ppa = (money(g("ppa")) + "/ac") if g("ppa") is not None else "$/ac not figured"
+        li.append('<li><span class="lf-d">%s%s</span> <b>%s</b> at %s (%s)%s%s '
+                  '<button type="button" class="ls-nm" data-ls-id="%s" data-ls-f="%s">Show buyer and seller</button></li>'
+                  % (esc(_sday(g("when"))), "" if g("recorded") else " (deed date)", esc(_ac(g("acres"))), esc(ppa), esc(money(g("price")) if g("price") else "price not stated"),
+                     (", " + esc(g("place"))) if g("place") else "", (' <span class="lf-n">%s</span>' % esc("; ".join(note))) if note else "",
+                     esc(g("id")), esc(nd + f + ".json")))
+    # freshness: the end of the middle's window, or the newest listed sale when a state file carries
+    # sales recorded after it (Illinois deeds dated in the month being read)
+    newest = max([thr] + [str(r[ix["when"]]) for r in (c.get("s") or [])[:3] if "when" in ix and r[ix["when"]]])
+    sales = ('<ul class="lf-ul">%s</ul>' % "".join(li)) if li else '<p class="lf-fine">No sales of 10 acres or more recorded here in the last 12 months.</p>'
+    src = F.get("source") or ""
+    return ('<section class="lf" aria-label="Land in %s">'
+            '<p class="lf-thru">Sales through %s</p>%s'
+            '<h2 class="lf-h">Newest sales <small>town, not parcel</small></h2>%s'
+            '%s'
+            '<div class="lf-r lv" data-k="lf-bid"><span class="l">Nearest bid</span><span class="r"></span></div>'
+            '<div class="lf-r lv" data-k="lf-rain"><span class="l">Rain</span><span class="r"></span></div>'
+            '<div class="ch-btns lf-btns"><a class="pri" href="%s">Every sale here</a><a href="/field-scout?fips=%s">Pick my field</a></div>'
+            '<p class="lf-dis">%s</p><p class="lf-fine">Sales: %s. Rent: USDA NASS.</p></section>'
+            % (esc(lab), esc(_sday(newest)), mid, sales, rent_html, esc(href), esc(f), LF_DISCLAIM, esc(src)))
+
+
+def land_first_rent(rv, ri, rv_old, R):
+    """The rent row: the dry county average, else irrigated, else why not."""
+    if rv and not rv_old:
+        v, sub = money(rv["value"]) + "/ac", "NASS %s, county average" % rv["year"]
+    elif ri:
+        v, sub = money(ri["value"]) + "/ac", "irrigated, NASS %s, county average" % ri["year"]
+    elif rv_old:
+        v, sub = "n/a", "last published %s" % rv["year"]
+    else:
+        v, sub = "n/a", why(R) if not ok(R) else "no county rent published"
+    return '<div class="lf-r"><span class="l">Rent</span><span class="r"><b>%s</b> <span class="lc">%s</span></span></div>' % (esc(v), esc(sub))
 
 
 def watch_form(f, lab, stn):
@@ -1997,6 +2123,34 @@ def stands_html(tiles):
             % "".join('<div class="so-t"><div class="big">%s</div><p class="what">%s</p><p class="src">%s</p></div>' % (esc(t["big"]), esc(t["what"]), esc(t["src"])) for t in tiles))
 
 
+RING_MAX = 80   # points kept per county outline on the page (only to tell whether a saved point is inside)
+
+
+def county_ring(W, f):
+    """The county outline for components/county-home.js to test whether the reader's saved field or
+    place lies in this county: 'lng,lat lng,lat;...' (outer rings only, 2 decimals, about half a mile, thinned to
+    RING_MAX points). Nothing is sent anywhere; the test runs in the browser. "" when unmapped."""
+    cache = W.__dict__.setdefault("_rings", {})
+    if f in cache:
+        return cache[f]
+    g = W.geo.get(f) if W.mapped(f) else None
+    out = ""
+    if g:
+        polys = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
+        rings = [p[0] for p in polys if p and p[0]]
+        tot = sum(len(r) for r in rings) or 1
+        parts = []
+        for r in rings:
+            k = max(1, int(math.ceil(tot / RING_MAX)))
+            pts = r[::k]
+            if len(pts) < 3:
+                continue
+            parts.append(" ".join("%s,%s" % (round(x, 2), round(y, 2)) for x, y in pts))
+        out = ";".join(parts)
+    cache[f] = out
+    return out
+
+
 def live_row(k, label):
     """A row county-home.js fills from the shared files. Until it does, the stylesheet says it is
     reading (an empty .r), so a crawler or a reader without JavaScript never sees a stale number."""
@@ -2506,7 +2660,7 @@ def county_page(W, f, d, stamp):
                + live_row("corn-basis", "Corn basis") + live_row("soy-basis", "Soybean basis")
                + live_row("corn-fut", "Corn futures") + live_row("soy-fut", "Soybean futures")
                + "".join(live_row(k, LV_NAMES[k]) for k in lines)
-               + '<p class="note">Bids are posted elevator prices within 50 miles of the county middle, best and nearest, never a buyer\'s name. '
+               + '<p class="note">Bids are posted elevator prices within 50 miles of the county middle, or of your own field or saved place in this county when this device has one (each row says which), best and nearest, never a buyer\'s name. '
                'Not a contract; call before you haul. %s</p>'
                '<p class="note">%s<a href="/fast-facts?fips=%s">Bids from your own ZIP or farm, in Fast Facts</a></p>%s%s</section>'
                % ("Livestock lines show where the 2022 Census counts %s head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle." % fmt(HEAD_MIN, 0),
@@ -2517,8 +2671,12 @@ def county_page(W, f, d, stamp):
             + rain_note + S5 + "</section>")
     C_CROPS = ('<section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2>'
                + live_row("corn-progress", "Corn harvested") + live_row("soy-progress", "Soybeans harvested") + S3 + "</section>")
+    lf_html = land_first(W, f, lab, st, land_first_rent(rv, ri, rv_old, R))
+    # Indiana has no sales block, so land-sales.js drew its "Latest farm sales" box and the monthly
+    # email ask from #ch-live; with the land first the box is not needed, the ask is placed here
+    in_ask = ('<div data-land-alert data-source="%s"></div>' % esc(("page:%s/%s" % (OUT, W.slug[f]))[:60])) if lf_html and st == "IN" else ""
     C_LAND = ('<section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2>'
-              + S1 + S2 + sales_block(W, f, lab, st) + sales_faq_html + land_sales_line(W, f, lab, st) + "</section>")
+              + S1 + S2 + sales_block(W, f, lab, st, bool(lf_html)) + in_ask + sales_faq_html + land_sales_line(W, f, lab, st) + "</section>")
     arc_link = ('<p class="note">Benchmarks, payments and the choice for each crop: <a href="%s">ARC or PLC in %s</a>.</p>' % (arc_url, esc(lab))) if arc_url else (
         ('<p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/%s">ARC or PLC in %s</a>.</p>' % (slugify(stn), esc(stn)))
         if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else "")
@@ -2527,9 +2685,10 @@ def county_page(W, f, d, stamp):
     C_FARMS = ('<section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2>' + S6
                + '<p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section>') if S6 else ""
     heads = "".join(' data-h-%s="%s"' % (k, fmt(head_count(d, col), 0)) for k, col in LIVESTOCK_LINES if k in lines)
-    live_cfg = ('<div id="ch-live" hidden data-fips="%s" data-st="%s" data-name="%s"%s data-lv="%s"%s data-rain="%s" data-arc="%s"></div>'
+    live_cfg = ('<div id="ch-live" hidden data-fips="%s" data-st="%s" data-name="%s"%s%s%s data-lv="%s"%s data-rain="%s" data-arc="%s"></div>'
                 '<script defer src="/%s?v=%s"></script>' % (
-                    esc(f), esc(st), esc(lab), (' data-lat="%s" data-lng="%s"' % (ctr[0], ctr[1])) if ctr else "", ",".join(lines), heads,
+                    esc(f), esc(st), esc(lab), (' data-lat="%s" data-lng="%s"' % (ctr[0], ctr[1])) if ctr else "",
+                    (' data-ring="%s"' % county_ring(W, f)) if county_ring(W, f) else "", ' data-ls-done="1"' if lf_html else "", ",".join(lines), heads,
                     esc(re.search(r'href="([^"]+)"', rain_note).group(1)) if rain_note else "", esc(arc_url or "/arc-plc"), CH_JS, ch_v(W.root)))
     btns = ('<div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#%s">Print this sheet</a>'
             '<a href="/fast-facts?fips=%s">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>' % (esc(f), esc(f)))
@@ -2543,7 +2702,7 @@ def county_page(W, f, d, stamp):
 {crumb_vis}
 <div class="kick">County farm facts</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
-<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}; the rows marked with a date load the newest reading when the page opens.</p>
+{lf_html}<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}; the rows marked with a date load the newest reading when the page opens.</p>
 {btns}
 {stands_html(stands_out(W, f, d))}{story_html}{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 <div class="act">

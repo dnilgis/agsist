@@ -98,7 +98,7 @@ test("no file for those letters is no town; a lookup that does not answer reject
 test("no file on the site still names Open-Meteo's geocoder", () => {
   let files = "";
   try {
-    files = execFileSync("git", ["grep", "-l", "geocoding-api.open-meteo.com", "--", ".", ":!test", ":!data/rain-print-examples", ":!references", ":!data/changelog.json", ":!data/whats-new*", ":!changelog.html"], { cwd: ROOT, encoding: "utf8" }).trim();
+    files = execFileSync("git", ["grep", "-l", "geocoding-api.open-meteo.com", "--", ".", ":!test", ":!data/rain-print-examples", ":!references", ":!data/changelog.json", ":!data/whats-new*", ":!changelog.html", ":!scripts/no-open-meteo.mjs"], { cwd: ROOT, encoding: "utf8" }).trim();
   } catch (e) {
     if (e.status !== 1) throw e;   // git grep: 1 is "nothing found"
   }

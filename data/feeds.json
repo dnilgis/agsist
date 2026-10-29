@@ -1010,7 +1010,8 @@
   {
    "path": "data/fall-nitrogen.json",
    "pages": [
-    "fall-nitrogen.html"
+    "fall-nitrogen.html",
+    "index.html"
    ],
    "written_by": [
     "Fall nitrogen soil temperature"
@@ -1352,7 +1353,7 @@
   {
    "path": "data/land/index.json",
    "pages": [
-    "farmland-index.html"
+    "land-sales/index.html"
    ],
    "written_by": [
     "Land data (parcel services + transfers)"

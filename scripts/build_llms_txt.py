@@ -68,7 +68,7 @@ page states its own source and date on the page. Nothing on the site is financia
 Sources: cash bids read from AGSIST's own network of elevator bid boards (each
 elevator's own posted board); weather from Open-Meteo and NOAA; crop, price and
 program data from USDA (NASS, FAS, RMA, FSA); positioning from the CFTC.
-Every number's source is on /data-sources.
+Every page names its source beside its numbers; the main sources are listed at /editorial-standards#sources.
 
 When citing AGSIST, please attribute to "AGSIST (agsist.com)" and link the
 specific page. Each daily briefing has a permanent dated URL.
@@ -121,7 +121,7 @@ PAGES = [
         ("/drought-monitor", "Drought Monitor", "this week's US Drought Monitor map and what each category means for crops"),
         ("/rain-print", "Rain Print", "one year of daily rain at the nearest weather station, drawn as wall art with your farm name and dates; free to make, prints for sale"),
         ("/gifts-for-farmers", "Gifts for Farmers", "Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links"),
-        ("/editorial-standards", "Editorial Standards", "How the AGSIST Daily is made, where the numbers come from, sponsors, and how corrections work"),
+        ("/editorial-standards", "Editorial Standards", "How the AGSIST Daily is made, where the numbers come from (the main data sources), sponsors, and how corrections work"),
         ("/rain-print-business", "Rain Print for Businesses", "Customer Christmas gifts for co-ops and elevators: a Rain Print of each customer's own town and year, from 5 prints, delivered prices, one proof sheet, net 30"),
         ("/farmer-retirement-gifts", "Farmer Retirement Gifts", "Gift ideas for a retiring farmer, with a Rain Print of a year on the farm as one option; no store links"),
         ("/farm-anniversary-gifts", "Farm Anniversary Gifts", "Gift ideas for a farm anniversary or a farmer who has everything, with a Rain Print of the founding or a remembered year as one option"),
@@ -158,10 +158,8 @@ PAGES = [
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),
         ("/farmland-atlas", "Farmland Atlas",
          "every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>, and foreign-held farmland by state, county and holder country from USDA AFIDA filings since 2010"),
-        ("/farmland-index", "Illinois Farmland Sale Index",
-         "what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares; no names"),
         ("/land-sales/", "Farmland Sales by County",
-         "recorded farm sales in every Illinois, Wisconsin and Indiana county from the state transfer and sales disclosure records (date, township, acres, price, price per acre), one page per county at /land-sales/<state>/<county>, a monthly update at /land-sales/<YYYY-MM> (biggest buyers, biggest sales, unusual prices against the county's usual, best value per acre) and a table of where each state's sales come from; no names in the pages"),
+         "recorded farm sales in every Illinois, Wisconsin and Indiana county from the state transfer and sales disclosure records (date, township, acres, price, price per acre), one page per county at /land-sales/<state>/<county>, a monthly update at /land-sales/<YYYY-MM> (biggest buyers, biggest sales, unusual prices against the county's usual, best value per acre) and a table of where each state's sales come from; no names in the pages. It also carries the Illinois farmland sale index (/land-sales/#illinois-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares"),
         ("/farmland-atlas/compare", "Compare Counties", "up to three counties side by side"),
         ("/farmland-atlas/data", "Farmland Atlas Data", "the county table as a CSV, every column with its unit and source"),
         ("/farmland-atlas/methods", "Farmland Atlas Methods", "sources and formulas"),
@@ -182,7 +180,6 @@ PAGES = [
         ("/", "AGSIST Homepage", "today's prices, the briefing, local bids, weather and the farm and trade odds board"),
     ]),
     ("About this site", [
-        ("/data-sources", "Data Sources", "where every number comes from"),
         ("/glossary", "Farm Market Glossary", "plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses"),
         ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, and the open JSON feeds"),
         ("/changelog", "Changelog", "dated list of site changes"),

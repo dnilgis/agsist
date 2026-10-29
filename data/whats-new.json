@@ -72,11 +72,25 @@
    "link": "/field-scout"
   },
   {
+   "id": "2026-10-29-nws-forecast",
+   "date": "2026-10-29",
+   "title": "Forecasts from the National Weather Service",
+   "line": "Home weather, spray, urea, grain drying, harvest or wait and planting date read the National Weather Service forecast. Soil temperature is measured at a station.",
+   "link": "/spray"
+  },
+  {
    "id": "2026-10-29-own-place-lookup",
    "date": "2026-10-29",
    "title": "ZIP and town boxes use our own place list",
    "line": "Every ZIP and town box now finds your place in a list on our own site. Small Canadian towns are found by the weather station named for them.",
    "link": "/rain-print"
+  },
+  {
+   "id": "2026-10-29-prism-gdu",
+   "date": "2026-10-29",
+   "title": "GDUs from the PRISM daily grid",
+   "line": "The GDU calculator and its embed add up heat from the PRISM daily grid (Oregon State), normals too. The Rain Print video no longer offers modeled wind.",
+   "link": "/gdu-calculator"
   },
   {
    "id": "2026-10-29-private-raises",

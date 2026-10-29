@@ -20,13 +20,17 @@ const MOVED = JSON.parse(execFileSync("python3", ["-c",
   "import sys,json;sys.path.insert(0,'scripts');import moved_pages as m;print(json.dumps({k:list(v) for k,v in m.MOVED.items()}))"],
   { cwd: ROOT, encoding: "utf8" }));
 
-test("the table: ten merges, each into a page that exists", () => {
+// the file a site path is served from ("/land-sales/" is land-sales/index.html)
+const fileOf = (u) => (u.endsWith("/") ? u.slice(1) + "index.html" : u.slice(1) + ".html");
+
+test("the table: twelve merges, each into a page that exists", () => {
+  // Oct 29, 2026 (consolidation round 2): /farmland-index into the land sales hub, /data-sources into the editorial standards
   assert.deepEqual(Object.keys(MOVED).sort(), ["/archive", "/cash-bids/states", "/conditions-yield", "/elevators",
-    "/foreign-land", "/hail/", "/news", "/pod-counts", "/scorecard", "/whats-priced-in"].sort());
+    "/foreign-land", "/hail/", "/news", "/pod-counts", "/scorecard", "/whats-priced-in", "/farmland-index", "/data-sources"].sort());
   for (const [old, [to, anchor, file]] of Object.entries(MOVED)) {
-    assert.ok(existsSync(path.join(ROOT, to.slice(1) + ".html")), old + " -> " + to + " exists");
+    assert.ok(existsSync(path.join(ROOT, fileOf(to))), old + " -> " + to + " exists");
     assert.ok(existsSync(path.join(ROOT, file)), old + " forward page " + file);
-    assert.match(read(to.slice(1) + ".html"), new RegExp(`id="${anchor}"`), `${to} carries #${anchor}`);
+    assert.match(read(fileOf(to)), new RegExp(`id="${anchor}"`), `${to} carries #${anchor}`);
   }
   execFileSync("python3", ["scripts/moved_pages.py", "--check"], { cwd: ROOT });
   assert.match(execFileSync("python3", ["scripts/moved_pages.py", "--selftest"], { cwd: ROOT, encoding: "utf8" }), /passed/);
@@ -73,16 +77,16 @@ test("nothing links to an old address: chrome, sitemaps, llms.txt, search, Next 
     }
   })("");
   assert.deepEqual(bad, [], "pages linking to an old address");
-  assert.match(read("scripts/inject_static_nav.py"), /"\/news", "\/conditions-yield", "\/whats-priced-in", "\/scorecard", "\/pod-counts", "\/hail\/",\s+"\/cash-bids\/states", "\/elevators", "\/foreign-land", "\/archive"\)/);
+  assert.match(read("scripts/inject_static_nav.py"), /"\/news", "\/conditions-yield", "\/whats-priced-in", "\/scorecard", "\/pod-counts", "\/hail\/",\s+"\/cash-bids\/states", "\/elevators", "\/foreign-land", "\/archive",\s+(?:#[^\n]*\s+)?"\/farmland-index", "\/data-sources"\)/);
 });
 
 test("the menu and footer name the merged pages by what they hold now", () => {
   const h = read("components/header.html"), f = read("components/footer.html");
   assert.match(h, /href="\/basis"[^>]*>[\s\S]{0,200}Bids and basis by state/);
   assert.match(h, /USDA calendar and what&rsquo;s priced in/);
-  assert.match(h, /Crop progress and size/);
+  assert.match(h, /Crop progress, size and yield/);   // Oct 29, 2026: Yield by state joined this line
   assert.ok(h.includes('href="/daily#past"') && f.includes('href="/daily#past"'), "Past briefings in the menu and footer");
-  assert.match(read("components/loader.js"), /var CV = '104';/);   // 104: fx/ratecard; 102: fx/merges2 (the redo of fx/merges, which was 86)
+  assert.match(read("components/loader.js"), /var CV = '105';/);   // 105: fx/menutrim; 104: fx/ratecard; 102: fx/merges2 (the redo of fx/merges, which was 86)
 });
 
 test("the sections carry what the old pages had", () => {
