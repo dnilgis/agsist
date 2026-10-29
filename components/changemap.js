@@ -121,7 +121,7 @@
   /* ── the fills, one per signal: {by: {fips: {k, t}}, n: {k: count}, key: [[k, words]], cap} ── */
   function tally(list, fn) {
     var by = {}, n = {};
-    list.forEach(function (f) { var o = fn(f) || { k: 'none' }; by[f] = o; n[o.k] = (n[o.k] || 0) + 1; });
+    list.forEach(function (f) { var o = (fn && fn(f)) || { k: 'none' }; by[f] = o; n[o.k] = (n[o.k] || 0) + 1; });
     return { by: by, n: n };
   }
   function counted(n, key) {
@@ -155,8 +155,16 @@
     if (!prev || !prev.rows) return { by: tally(list, null).by, n: { none: list.length }, key: key, cap: 'The earlier posted prices did not load; counties are gray.', src: src };
     var d1 = null;
     Object.keys(prev.rows).forEach(function (k) { (prev.rows[k] || []).forEach(function (e) { if (e && (!d1 || e[0] > d1)) d1 = e[0]; }); });
-    var lo = d1 && dayAdd(d1, -7), d0 = null;
-    Object.keys(prev.rows).forEach(function (k) { (prev.rows[k] || []).forEach(function (e) { if (e && e[0] >= lo && e[0] < d1 && (!d0 || e[0] < d0)) d0 = e[0]; }); });
+    /* the earlier day: the oldest within a week of d1 that most bids posted on d1 also posted on
+       (at least 80% of the best day's count), so one county is never read over another's span */
+    var lo = d1 && dayAdd(d1, -7), both = {}, d0 = null, top = 0;
+    Object.keys(prev.rows).forEach(function (k) {
+      var h = prev.rows[k] || [];
+      if (!h.some(function (e) { return e && e[0] === d1; })) return;
+      h.forEach(function (e) { if (e && e[0] >= lo && e[0] < d1) both[e[0]] = (both[e[0]] || 0) + 1; });
+    });
+    Object.keys(both).forEach(function (d) { top = Math.max(top, both[d]); });
+    Object.keys(both).sort().forEach(function (d) { if (!d0 && both[d] >= 0.8 * top) d0 = d; });
     if (!d0) return { by: tally(list, null).by, n: { none: list.length }, key: key, cap: 'Only one trading day of posted prices on file; counties are gray.', src: src };
     var BF = bidFilter(), per = {}, seen = {};
     idx.places.forEach(function (p) {
@@ -221,28 +229,28 @@
     return { got: Math.round((b[1] - a[1]) * 100) / 100, usual: Math.round((b[2] - a[2]) * 100) / 100, from: dayAdd(jan1, a[0] + 1), to: dayAdd(jan1, b[0]) };
   }
   function fillRain(file, list, stName) {
-    var key = [['wet', 'Wetter than usual'], ['dry', 'Drier than usual'], ['held', 'Usual'], ['none', 'No county station']];
+    var key = [['wet', 'Wetter than usual'], ['dry', 'Drier than usual'], ['held', 'Usual'], ['none', 'No station or no usual']];
     var src = 'NOAA daily station records, 1991-2020 normals';
     if (!file || !file.counties) return { by: tally(list, null).by, n: { none: list.length }, key: key, cap: 'The county rain file did not load; counties are gray.', src: src };
     var span = null;
     var t = tally(list, function (f) {
       if (file.none && file.none[f]) return { k: 'none', t: 'no station in the county' };
       var w = rainWeek(file.counties[f], file.year);
-      if (!w) return { k: 'none', t: 'no whole week with usual on file' };
+      if (!w) return { k: 'none', t: 'the county station has no usual on file for this week' };
       if (!span || w.to > span.to) span = w;
       return { k: w.got > w.usual ? 'wet' : w.got < w.usual ? 'dry' : 'held', t: w.got.toFixed(2) + ' in. ' + md(w.from) + ' to ' + md(w.to) + ', usual ' + w.usual.toFixed(2) + ' in.' };
     });
     return { by: t.by, n: t.n, key: key, src: src,
       cap: stName + ' counties, rain ' + (span ? md(span.from) + ' to ' + md(span.to) : 'last week') + ' against usual for those days, one station per county: ' + (counted(t.n, key) || 'none on file') + '.' };
   }
-  var SIGNALS = [['drought', 'Drought'], ['bids', 'Corn bids'], ['rent', 'Rent'], ['sales', 'Land sales'], ['rain', 'Rain']];
+  var SIGNALS = [['drought', 'Drought'], ['bids', 'Bids'], ['rent', 'Rent'], ['sales', 'Sales'], ['rain', 'Rain']];
 
   /* ── drawing into the page ───────────────────────────────────────── */
   var CSS = '.cm{margin:0 0 1rem;border:1px solid var(--border);border-top:0;border-radius:0 0 10px 10px;background:var(--surface);overflow:clip}' +
     '.cm-top{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.4rem 0 0;padding:.45rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px 10px 0 0;font-weight:700;font-size:.95rem;color:var(--text)}' +
     '.cm-top:empty{display:none}' +
     '.cm-top span+span::before{content:"\\00b7";margin-right:.4rem;color:var(--text-muted)}' +
-    '#h-cm .cm-lead{grid-area:lead;margin:0;font-size:.95rem;font-weight:600;line-height:1.4;color:var(--text)}' +
+    '#h-cm .cm-lead{grid-area:lead;margin:0;min-height:2.8em;font-size:.95rem;font-weight:600;line-height:1.4;color:var(--text)}' +
     '.cm-grid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"lead" "map" "side";gap:.35rem;padding:.45rem .75rem .7rem}' +
     '.cm-map{grid-area:map;margin:0;min-width:0}.cm-side{grid-area:side}' +
     '.cm-box{position:relative;height:240px;border-radius:8px;overflow:hidden;background:#e9ece6}' +
@@ -260,8 +268,8 @@
     '.cm-svg path.cm-ring{fill:none;stroke:#8a6514;stroke-width:1.8;stroke-dasharray:5 4}' +
     '.cm-pt{fill:#fff;stroke:#222;stroke-width:1;vector-effect:non-scaling-stroke}' +
     '.cm-you{fill:#d4a23f;stroke:#111;stroke-width:2;vector-effect:non-scaling-stroke}' +
-    '.cm-sw{display:flex;flex-wrap:wrap;gap:.3rem;margin:.45rem 0 0;min-height:1.9rem}' +
-    '.cm-sw button{font:inherit;font-size:.82rem;padding:.25rem .6rem;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer}' +
+    '.cm-sw{display:flex;flex-wrap:wrap;gap:.2rem;margin:.45rem 0 0;min-height:1.9rem}' +
+    '.cm-sw button{font:inherit;font-size:.78rem;min-height:32px;padding:.15rem .45rem;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer}' +
     '.cm-sw button[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}' +
     '.cm-key{display:flex;flex-wrap:wrap;gap:.25rem .8rem;margin:.35rem 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--text-dim);min-height:1.2rem}' +
     '.cm-key i{display:inline-block;width:.8rem;height:.8rem;border-radius:2px;margin-right:.3rem;vertical-align:-.1rem}' +
@@ -335,6 +343,7 @@
           map.fitBounds(b, { padding: [2, 2], animate: false });
           svgEl.setAttribute('preserveAspectRatio', 'none');
           Lf.svgOverlay(svgEl, b, { interactive: true }).addTo(map);
+          boxEl.cmMap = map;
           boxEl.setAttribute('data-base', 'usgs');
         } catch (e) { if (div.parentNode) div.parentNode.removeChild(div); if (!svgEl.parentNode) boxEl.appendChild(svgEl); }
       });

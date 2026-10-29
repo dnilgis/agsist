@@ -187,6 +187,99 @@ test("the page: one mount, the map code loads only once a place is open, files b
   assert.ok(gz < 13000, "changemap.js stays small: " + gz + " B gzipped");
 });
 
+const WI_GEO = JSON.parse(read("data/arc-plc/geo/WI.json")), WI_LIST = WI_GEO.c.map((c) => c[0]);
+const RENT = FX("cash-rent-wi.json"), RAIN = FX("rain-wi.json");
+
+test("the switch: drought, posted corn bids, rent, sales, rain, in that order; sales only where the state record is on hand", () => {
+  assert.deepEqual(C.SIGNALS.map((s) => s[0]), ["drought", "bids", "rent", "sales", "rain"]);
+  const cm = read("components/changemap.js");
+  assert.match(cm, /s\[0\] !== 'sales' \|\| SALES_STATES\[ctx\.st\]/);
+  // rent and rain files are read only when picked
+  assert.match(cm, /rent: function \(\) \{ return getJSON\('\/data\/cash-rent\/' \+ ctx\.st \+ '\.json'\)/);
+  assert.match(cm, /rain: function \(\) \{ return getJSON\('\/data\/rain\/' \+ ctx\.st\.toLowerCase\(\) \+ '\.json'\)/);
+});
+
+test("drought fill: every Wisconsin county from the Oct 13 and Oct 20 maps, the tap line in words", () => {
+  const f = C.fillDrought(DR, WI_LIST, "Wisconsin");
+  assert.equal(Object.keys(f.by).length, 72);
+  assert.equal(f.by["55005"].k, "held");
+  assert.equal(f.by["55005"].t, "held at D2 severe drought (Oct 20 map)");
+  assert.match(f.cap, /^Wisconsin counties, drought category Oct 13 to Oct 20: \d+ worse, \d+ eased, \d+ held/);
+  assert.equal(f.src, "U.S. Drought Monitor");
+  const none = C.fillDrought(null, WI_LIST, "Wisconsin");
+  assert.equal(none.cap, "The drought map did not load; counties are gray.");
+});
+
+test("corn bids fill: each posted bid's basis on its two days, by county; gray with no bid on both, never guessed", () => {
+  const il = JSON.parse(read("data/arc-plc/geo/IL.json")).c.map((c) => c[0]);
+  const f = C.fillBids(IDX, PREV.IL, "IL", il, "Illinois");
+  assert.equal(f.cap, "Illinois counties, posted corn basis Oct 22 against Oct 27: 12 stronger, 13 held, 77 no bid both days.");
+  assert.equal(f.src, "Posted elevator bids");
+  // Shelby: every place compared posted on both days; the line counts them, no name
+  assert.match(f.by["17173"].t, /^\d+ posted corn bids? on both days: .*\(Oct 22 to Oct 27\)$/);
+  for (const o of Object.values(f.by)) for (const n of NAMES) assert.ok(!o.t.includes(n), n);
+  const wi = C.fillBids(IDX, PREV.WI, "WI", WI_LIST, "Wisconsin");
+  assert.equal(wi.cap, "Wisconsin counties, posted corn basis Oct 22 against Oct 27: 6 weaker, 8 held, 58 no bid both days.");
+  assert.equal(wi.by["55005"].k, "down");
+  // a county is moved only when a bid's basis differs between the two days: shift one basis a cent
+  const prev = clone(PREV.WI), k = C.fnv(IDX.places.find((p) => p.fips === "55005").place + "|corn|" + IDX.places.find((p) => p.fips === "55005").now.corn.period);
+  for (const e of prev.rows[k]) e[2] = -80;
+  const same = C.fillBids(IDX, prev, "WI", WI_LIST, "Wisconsin").by["55005"];
+  assert.notEqual(same.t, wi.by["55005"].t);
+  // withheld, whole map gray
+  assert.equal(C.fillBids(null, PREV.WI, "WI", WI_LIST, "Wisconsin").cap, "The elevator network did not answer; counties are gray.");
+  assert.equal(C.fillBids(IDX, null, "WI", WI_LIST, "Wisconsin").cap, "The earlier posted prices did not load; counties are gray.");
+  const one = { rows: { a: [["2026-10-27", 4, -70]] } };
+  assert.equal(C.fillBids(IDX, one, "WI", WI_LIST, "Wisconsin").cap, "Only one trading day of posted prices on file; counties are gray.");
+});
+
+test("rent fill: the newest county survey against the one before, from the NASS county rows (Barron, Adams, Green Lake, Forest)", () => {
+  const f = C.fillRent(RENT, WI_LIST, "Wisconsin");
+  assert.deepEqual(["55005", "55001", "55047", "55041"].map((x) => f.by[x].k), ["up", "down", "held", "none"]);
+  assert.equal(f.by["55005"].t, "$103.00 an acre in 2026, up from $93.00 in 2025");
+  assert.equal(f.by["55001"].t, "$74.00 an acre in 2026, down from $82.50 in 2025");
+  assert.equal(f.by["55047"].t, "$195.00 an acre in 2026, the same as in 2025");
+  assert.equal(f.by["55041"].t, "no NASS county estimate for 2025");
+  assert.equal(f.cap, "Wisconsin counties, non-irrigated cropland rent, 2026 survey against 2025: 1 up, 1 down, 1 same, 69 no county estimate. Nothing new between yearly surveys.");
+  assert.equal(C.fillRent(null, WI_LIST, "Wisconsin").cap, "No county cash rents on file for Wisconsin; counties are gray.");
+});
+
+test("sales fill: counties with a recorded farm sale dated in the newest month; other states say so", () => {
+  const ws = FX("land-sales-wi.json");
+  const f = C.fillSales(ws, WI_LIST, "WI", "Wisconsin");
+  assert.equal(f.by["55005"].k, "new");
+  assert.equal(f.by["55005"].t, "3 recorded farm sales of 10 acres or more dated in September");
+  assert.match(f.cap, /^Wisconsin counties with recorded farm sales of 10 acres or more dated in September \(records through Sep 30, read Oct 18\): /);
+  assert.equal(C.fillSales(null, ["09003"], "CT", "Connecticut").cap, "Recorded farm sales are on hand for Illinois, Indiana, Wisconsin and Vermont only.");
+});
+
+test("rain fill: the newest whole week of the county record against usual for the same days; no usual, no guess", () => {
+  assert.deepEqual(C.rainWeek(RAIN.counties["55005"], 2026), { got: 0.78, usual: 0.6, from: "2026-10-22", to: "2026-10-28" });
+  const f = C.fillRain(RAIN, WI_LIST, "Wisconsin");
+  assert.deepEqual(["55005", "55031", "55001", "55041"].map((x) => f.by[x].k), ["wet", "wet", "dry", "none"]);
+  assert.equal(f.by["55005"].t, "0.78 in. Oct 22 to Oct 28, usual 0.60 in.");
+  assert.equal(f.by["55001"].t, "0.02 in. Oct 22 to Oct 28, usual 0.50 in.");
+  assert.equal(f.by["55041"].t, "no station in the county");
+  // a station with no normals (Adams IL's real running total, Oct 2026): gray, never compared
+  const adamsIL = { cum: [[286, 40.58, null], [293, 40.69, null], [300, 40.69, null]] };
+  assert.equal(C.rainWeek(adamsIL, 2026), null);
+  assert.match(f.cap, /^Wisconsin counties, rain Oct 22 to Oct 28 against usual for those days, one station per county: 2 wetter than usual, 1 drier than usual, 69 no station or no usual\.$/);
+});
+
+test("the basemap is Field Scout's: the same USGS tile URL and credit, Leaflet from /vendor, nothing linked in the source line", () => {
+  const fs1 = read("field-scout.js"), cm = read("components/changemap.js");
+  assert.ok(fs1.includes("L.tileLayer('" + C.TILES + "'"), "Field Scout's USGS topo tiles");
+  assert.match(fs1, new RegExp("USGS_ATTR_MAP = '" + C.TILE_ATTR + "'"));
+  assert.match(cm, /var LEAFLET = '\/vendor\/leaflet-1\.9\.4\/';/);
+  assert.ok(fs.existsSync(path.join(ROOT, "vendor/leaflet-1.9.4/leaflet.js")));
+  assert.doesNotMatch(read("fast-facts.html"), /leaflet/i, "Leaflet is not a page script: the map loads it when it is near the screen");
+  assert.doesNotMatch(cm, /google|mapbox\.com|api[_-]?key|access_token/i, "no keyed or Google tiles");
+  assert.doesNotMatch(cm, /cm-cap[^']*'[^;]*<a /, "the source line names the source, it does not link it");
+  // the outlines are Web Mercator, so they sit on the tiles: P.b round-trips the top and bottom edges
+  const P = C.projector(WI_GEO, "WI"), y = (lat) => P.p(-90, lat)[1];
+  assert.ok(Math.abs(y(P.b[1][0])) < 1e-6 && Math.abs(y(P.b[0][0]) - P.H) < 1e-6);
+});
+
 // ---------------------------------------------------------------- in a browser
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
@@ -196,6 +289,7 @@ const skip = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not f
 const FIXED = {
   "/data/drought/county-week.json": "drought.json", "/data/basis-states.json": "basis-states.json", "/data/prices.json": "prices.json",
   "/data/land-sales/wi.json": "land-sales-wi.json", "/data/land-sales/il.json": "land-sales-il.json",
+  "/data/cash-rent/WI.json": "cash-rent-wi.json", "/data/rain/wi.json": "rain-wi.json",
 };
 function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".ics": "text/calendar" };
@@ -262,6 +356,31 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
         await pg.click("#h-cm path.cm-me", { force: true });
         assert.match(await pg.textContent("#h-cm .cm-tap"), /^Shelby: worse, D1 moderate drought from D0 abnormally dry \(Oct 20 map\)\.$|^Barron: held at D2 severe drought \(Oct 20 map\)\.$|^Hartford: the Drought Monitor maps Connecticut/);
       }
+      // the switch: rent on Barron, its line and its county home; then back to drought
+      if (c.saved) {
+        await pg.click('#h-cm .cm-sw button[data-s="rent"]');
+        await pg.waitForFunction(() => /cash rents survey/.test(document.querySelector("#h-cm .cm-cap").textContent));
+        assert.equal(await pg.$$eval("#h-cm path.cm-up", (l) => l.length), 1, at);
+        assert.match(await pg.textContent("#h-cm .cm-key"), /Up\s*Down\s*Same\s*No county estimate/, at);
+        await pg.click("#h-cm path.cm-me", { force: true });
+        assert.equal(await pg.textContent("#h-cm .cm-tap"), "Barron: $103.00 an acre in 2026, up from $93.00 in 2025.", at);
+        assert.equal(await pg.getAttribute("#h-cm .cm-go a", "href"), "/farmland-atlas/wisconsin/barron-county", at);
+        assert.equal(await pg.$$eval("#h-cm .cm-cap a, #h-cm .cm-key a", (l) => l.length), 0, "the source line is not a link " + at);
+        await pg.click('#h-cm .cm-sw button[data-s="drought"]');
+        await pg.waitForFunction(() => /Drought Monitor/.test(document.querySelector("#h-cm .cm-cap").textContent));
+        assert.equal(await pg.$$eval("#h-cm path.cm-up", (l) => l.length), 0, at);
+      }
+      // the basemap: Leaflet mounted and the outlines sit on it (the place's dot where the map puts its point)
+      await pg.waitForSelector('#h-cm .cm-box[data-base="usgs"]', { timeout: 20000 });
+      assert.match(await pg.textContent("#h-cm .leaflet-control-attribution"), /^Map: USGS$/, at);
+      const off = await pg.evaluate(() => {
+        const b = document.querySelector("#h-cm .cm-box"), m = b.cmMap, you = document.querySelector("#h-cm circle.cm-you").getBoundingClientRect();
+        const ll = m.containerPointToLatLng([you.left + you.width / 2 - m.getContainer().getBoundingClientRect().left, you.top + you.height / 2 - m.getContainer().getBoundingClientRect().top]);
+        const pt = m.latLngToContainerPoint(ll), want = m.latLngToContainerPoint(window.__cmPlace || ll);
+        return { lat: ll.lat, lng: ll.lng, dx: pt.x - want.x, dy: pt.y - want.y };
+      });
+      const where = { "/fast-facts?fips=17173": SHELBY, "/fast-facts?fips=09003": HARTFORD }[c.url];
+      if (where) assert.ok(Math.abs(off.lat - where[0]) < 0.05 && Math.abs(off.lng - where[1]) < 0.05, "the place's dot on the basemap " + at + ": " + JSON.stringify(off));
       // sticky under the menu once scrolled
       await pg.evaluate(() => window.scrollTo({ top: document.querySelector("#h-cm .cm-side").getBoundingClientRect().top + scrollY, behavior: "instant" }));
       const pin = await pg.evaluate(() => { const t = document.querySelector("#cm-top").getBoundingClientRect(), n = document.querySelector(".nav"); return { t: t.top, n: n ? n.getBoundingClientRect().bottom : 0 }; });

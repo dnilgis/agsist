@@ -418,12 +418,14 @@
   function changeMap(fips) {
     var box = $('h-cm'), p = S.prof, w = S.where || {};
     if (!box || !p) return;
-    box.hidden = true; box.innerHTML = '';
+    /* shown and held at once (here.css .cm-hold), so nothing under it moves when it fills */
+    box.innerHTML = ''; box.classList.add('cm-hold'); box.hidden = false;
     var top = $('cm-top'); if (top) top.innerHTML = '';
     function mine() { return S.prof && S.prof.fips === fips; }
     loadScript(CL_JS, function () { return !!window.AgChangeLines; }).then(function (ok) {
       return ok && loadScript(CM_JS, function () { return !!window.AgChangeMap; });
     }).then(function (ok) {
+      if (!ok && mine()) { box.hidden = true; box.classList.remove('cm-hold'); }
       if (!ok || !mine()) return;
       /* a tapped county links its Farmland Atlas county home where that page exists */
       var cs = S.pct && S.pct.counties, sl = P.stSlug(p.st);
