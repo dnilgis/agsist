@@ -1954,46 +1954,35 @@ def nj_person(s):
 
 def fetch_nj(dest_dir):
     """The SR-1A yearly files and the MOD-IV list, saved under dest_dir with today's date (the SR-1A zips whole,
-    for the raw branch; MOD-IV, 270 MB, is read from a temporary file and only its farm lines are kept).
-    Returns ([(name, path)] of SR-1A files, MOD-IV path)."""
+    for the raw branch; MOD-IV, 270 MB, goes to a temporary file and only the lines of the lots farm deeds name are
+    kept). Downloaded the way the probe does (probe_stream: one plain request, read in chunks), which nj.gov answered
+    in about a minute for MOD-IV; the cookie-jar fetch() stalled there. Returns ([(name, path)] of SR-1A files, MOD-IV path)."""
     os.makedirs(dest_dir, exist_ok=True)
     day = time.strftime("%Y-%m-%d", time.gmtime())
     got = []
     t0 = time.time()
     for u in NJ_SALES:
         nm = os.path.basename(urllib.parse.urlparse(u).path)
+        p = os.path.join(dest_dir, "%s-%s" % (day, nm))
         try:
-            blob = fetch(u, timeout=600)
+            n, ctype, final = probe_stream(u, p)
+            with open(p, "rb") as f:
+                if f.read(2) != b"PK":
+                    raise ValueError("not a zip file (%s)" % ctype)
         except Exception as e:  # noqa: BLE001
+            if os.path.exists(p):
+                os.remove(p)
             if "YTD" in nm:
                 print("::notice::NJ %s not read (%s); the yearly files are" % (nm, e))
                 continue
             raise
-        p = os.path.join(dest_dir, "%s-%s" % (day, nm))
-        with open(p, "wb") as f:
-            f.write(blob)
         got.append((nm, p))
-        print("NJ: %s %.1f MB at %ds" % (nm, len(blob) / 1e6, time.time() - t0), flush=True)
+        print("NJ: %s %.1f MB at %ds" % (nm, n / 1e6, time.time() - t0), flush=True)
     import tempfile
     tmp = os.path.join(tempfile.gettempdir(), "nj-modiv-%s.zip" % day)
-    req = urllib.request.Request(NJ_MODIV, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=900) as r, open(tmp, "wb") as f:
-        while True:
-            b = r.read(1 << 20)
-            if not b:
-                break
-            f.write(b)
-    print("::notice::NJ: SR-1A files and MOD-IV downloaded in %ds" % (time.time() - t0), flush=True)
+    n, ctype, final = probe_stream(NJ_MODIV, tmp, timeout=600)
+    print("::notice::NJ: SR-1A files and MOD-IV (%.0f MB) downloaded in %ds" % (n / 1e6, time.time() - t0), flush=True)
     return got, tmp
-
-
-def nj_farm_lots(name, blob):
-    """Every lot classed 3A or 3B on the MOD-IV list (first pass)."""
-    out = set()
-    for member, line in nj_lines(name, blob):
-        if len(line) == NJ_MODIV_LEN and line[55:58].strip().upper() in NJ_FARM:
-            out.add(nj_unit(line[0:4], line[4:9], line[9:13], line[13:18], line[18:22]))
-    return out
 
 
 def nj_build_tables(sr_files, modiv_path, gz_blob, rep, keep_dir=None):
