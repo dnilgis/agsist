@@ -61,6 +61,7 @@ import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
+import farm_credit_view as FCV  # noqa: E402  Fed district farm credit sections (data/farm-credit/districts.json)
 import nearest_towns as NT  # noqa: E402  town bid pages nearest a county middle (Oct 23, 2026)
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 from atlas_layers_p1 import FULL_YEAR_MAPS, years_covered, practice_share, irrigated_share  # noqa: E402  one full-year gate, one way to name a gap
@@ -475,6 +476,7 @@ class World:
         self.svalue = load_state_values(root)
         self.usurvey = load_uni_surveys(root)
         self.ch12 = load_ch12(root)
+        self.fcredit = FCV.load(root)
         self.thin = set()     # county pages with few figures: noindex, out of the sitemap
         self.by_state = {}
         for f, c in self.C.items():
@@ -2614,7 +2616,7 @@ def state_page(W, st):
 {('<p class="read"><b>Cash rent:</b> every published ' + esc(stn) + ' county rate side by side, with history back to ' + str(rent_first_year(W, st)) + ', irrigated and pasture shown apart: ' + rent_link + '.</p>') if rent_link and rent_first_year(W, st) else ''}
 <div class="act">{rent_link}{('<a href="/arc-plc/' + slugify(stn) + '">' + esc(stn) + ' ARC or PLC by county</a>') if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else ''}<a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
 <h2>{esc(stn)} at a glance</h2>
-{facts}{sales_state(W, st)}
+{facts}{sales_state(W, st)}{FCV.state_section(W.fcredit, st, stn)}
 <h2>Map: every county is a link</h2>
 <div class="mp"><label for="mm">Color by</label><select id="mm"><option value="r">Dry cash rent</option><option value="v">Land and buildings</option><option value="y">Corn yield</option><option value="c">Claims per $100 of coverage</option><option value="d">Drought weeks</option></select></div>
 {smap}
@@ -2702,6 +2704,7 @@ def hub_page(W):
 <h2>By state</h2>
 <div class="grid">{links}</div>
 <div class="act"><a href="/{OUT}/data">Download every county (CSV)</a><a href="/farmland-atlas">The map</a><a href="/{OUT}/compare">Compare counties</a></div>
+{FCV.hub_section(W.fcredit)}
 </main>
 <script>
 (function(){{
