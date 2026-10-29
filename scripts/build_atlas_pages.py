@@ -3345,7 +3345,9 @@ def selftest():
             check("story trend headline", ("Corn yield, " + CY.label_trend(tr_["ty"])) in st_ and f1(tr_["v"]) in st_)
             check("story rent per bushel on the trend", ("÷ %s bu, %s" % (f1(tr_["v"]), CY.label_trend(tr_["ty"]))) in st_)
         check("story share-of-gross yield named", CY.label_year(W.rrev["19169"]["py"]) in st_ if W.rrev.get("19169", {}).get("p") is not None else True)
-        check("story calculator button", 'id="rc-open"' in st_ and "/components/rent-calc.js" in st_ and "AgRentCalc" not in st_.split("<script>")[0])
+        # the button's script is farmland-atlas/county.js since Oct 29, 2026 (one cached file, not 3,148 inline copies)
+        check("story calculator button", 'id="rc-open"' in st_ and ('/farmland-atlas/county.js?v=' + COUNTY_JS_V) in st_
+              and "/components/rent-calc.js" in COUNTY_JS and "AgRentCalc" not in st_.split("<script>")[0])
         seen_ = 0
         for f in list(W.C)[:600]:
             p_ = os.path.join(tmp, W.path(f))
