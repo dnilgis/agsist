@@ -110,7 +110,8 @@ test("the hub: a jump row to every state list and the source table, and the save
   const row = (html.match(/<p class="ls-jump">(.*?)<\/p>/) || [])[1];
   assert.ok(row, "jump row");
   const jumps = [...row.matchAll(/href="(#[a-z-]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(jumps, ["#illinois", "#wisconsin", "#indiana", "#coverage"]);
+  // Oct 29, 2026: the Illinois farmland sale index is a section of the hub (it was /farmland-index)
+  assert.deepEqual(jumps, ["#illinois", "#wisconsin", "#indiana", "#illinois-index", "#coverage"]);
   for (const j of jumps) assert.ok(resolves("/land-sales/" + j), j);
   assert.ok(html.indexOf('class="ls-jump"') < html.indexOf('<h2 id="illinois">'), "near the top");
   assert.match(html, /<p class="ls-mine" id="ls-mine" hidden><\/p>/);

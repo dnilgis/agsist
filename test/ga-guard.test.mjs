@@ -61,7 +61,7 @@ const GA_SOURCES = [
 const LIFTERS = [
   ["scripts/make_prf_html.py", "store-or-sell.html"],
   ["scripts/build_prf_states.py", "store-or-sell.html"],
-  ["scripts/build_land_index.py", "grain-emc.html"],
+  ["scripts/build_land_sales.py", "grain-emc.html"],   // the land sales hub; it lifted from farmland-index.html until Oct 29, 2026
   ["scripts/cash_bid_index.py", "grain-emc.html"],
 ];
 

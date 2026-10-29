@@ -27,11 +27,11 @@ function hits(re, files = SURFACE) {
   return out;
 }
 
-/* 1. Market timing. /data-sources is the rule: Yahoo lists CBOT and CME at a 10-minute
+/* 1. Market timing. /editorial-standards#sources is the rule (it was /data-sources until Oct 29, 2026): Yahoo lists CBOT and CME at a 10-minute
    exchange delay, AGSIST fetches about every 15 minutes, so a grain or livestock price
    is about 10 to 25 minutes old while markets trade. Not "live", not "at least 15". */
 test("no page calls the futures live or puts the delay at 15 minutes", () => {
-  const ds = read("data-sources.html");
+  const ds = read("editorial-standards.html");
   assert.match(ds, /10-minute exchange delay/);
   assert.match(ds, /about 10 to 25 minutes old while markets trade/);
   const bad = /Live futures across|Prices are not live|delayed (?:a )?minimum of 15|at least 15 minutes old|15[- ]min(?:ute)? delayed|about 15 minutes delayed|delayed about 15 minutes|Delayed 15 min/i;

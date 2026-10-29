@@ -337,7 +337,8 @@ def county_build(d, st, c, rows, through):
 def early_scripts(repo=REPO):
     # lifted from a page scripts/inject_static_nav.py keeps current (farmland-index.html until Oct 29, 2026,
     # when that page became a moved-page stub)
-    src = open(Path(repo) / "grain-emc.html", encoding="utf-8").read()
+    model = (REPO / "grain-emc.html") if Path(repo) == REPO else Path(repo) / "grain-emc.html"
+    src = open(model, encoding="utf-8").read()
     m = re.search(r"<script>/\* agsist-theme-early.*?</script><script>/\* agsist-ga-guard.*?</script>", src, re.S)
     return m.group(0) if m else ""
 
