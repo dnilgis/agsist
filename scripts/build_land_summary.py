@@ -32,7 +32,7 @@ made-up and real, and compares them row for row and the patterns character for c
   - THE ONE LAND RULE (Sig, Oct 29, 2026; property panel synthesis): buildings are read from the
     property class only (FSLand.hasBuildings: class 1, 2, 3 or 7 on the return), never from deed
     text; Illinois declarations carry no class that says so, so an Illinois sale is never marked.
-    A Wisconsin sale whose classes are forest (5M or 6) with no agricultural class 4 is a forest
+    A Wisconsin or Vermont sale whose classes are forest (5M or 6) with no agricultural class 4 is a forest
     sale (FSLand.isForest). Every middle (median, middle half, unusual range) counts bare farm
     land only (farm_comp: a market sale, 20+ known acres, $500+/acre, no buildings, not forest);
     sales with buildings and forest sales are listed and counted, never mixed into a middle.
@@ -220,6 +220,7 @@ def stat_ok(r):
 
 HAS_BLDG_RE = re.compile(r"(^|[\s,;/])(1|2|3|7)($|[\s,;/])")   # FSLand.hasBuildings, character for character
 FOREST_CLS = ("5M", "6")
+FOREST_STATES = ("WI", "VT")      # FSLand.FOREST_STATES: records that carry a forest class (Vermont: timberland)
 
 
 def has_buildings(cls):
@@ -232,9 +233,9 @@ def cls_list(cls):
 
 
 def is_forest(cls, st):
-    """FSLand.isForest: a Wisconsin sale of forest classes (5M agricultural forest, 6 productive forest),
-    no agricultural class 4 and no buildings."""
-    if str(st or "").upper() != "WI" or has_buildings(cls):
+    """FSLand.isForest: a Wisconsin or Vermont sale of forest classes (5M agricultural forest, 6 productive
+    forest or timberland), no agricultural class 4 and no buildings."""
+    if str(st or "").upper() not in FOREST_STATES or has_buildings(cls):
         return False
     c = cls_list(cls)
     return any(x in FOREST_CLS for x in c) and "4" not in c

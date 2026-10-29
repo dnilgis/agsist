@@ -32,7 +32,7 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
-const STATES = { il: "illinois", wi: "wisconsin", in: "indiana" };
+const STATES = { il: "illinois", wi: "wisconsin", in: "indiana", vt: "vermont" };
 const INDEX = J("farmland-atlas/data/counties-index.json");   // [fips, "Story County, IA", url]
 const atlasOf = (fips) => { const r = INDEX.find((x) => x[0] === fips); return r ? r[2].slice(1) + ".html" : null; };
 const unesc = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&amp;/g, "&").replace(/&quot;/g, '"');

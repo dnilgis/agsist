@@ -212,14 +212,31 @@ def build(doc, day, ids=None, partial=None, origin=None):
                  "facility|branch|city|state; fips and fipsSure as the bids feed gives them). Each row "
                  "(rowCols) is one commodity and delivery at that location. cash and basis in dollars per bushel as posted; futuresPrice as the elevator "
                  "quoted it, null when not given (never derived). posted = the board time the bids feed gives (pricedAt); "
-                 "it is often a read or batch time, not when the elevator changed the bid."),
+                 "it is often a read or batch time, not when the elevator changed the bid. flags: how many rows fail "
+                 "scripts/bid_flags.py, kept as posted; the rows are listed in the flags file named there."),
         "locCols": LOC_COLS, "rowCols": ROW_COLS,
         "counts": {"locs": len(locs), "rows": len(rows), "locsWithId": joined, "dupesDropped": dupes},
         "locs": nested,
     }
     if origin:
         snap["origin"] = origin
+    snap["flags"] = flag_summary(snap)
     return snap
+
+
+def flag_summary(snap):
+    """THE BOUND IS A FLAG, NEVER A DROP (Oct 29 data check). Every row stays exactly as posted;
+    scripts/bid_flags.py (one copy of the rules) says which rows fail them, and the list is saved
+    beside the snapshot as bids-daily-flags/YYYY/YYYY-MM-DD.csv for readers to skip. That file has
+    one writer, `bid_flags.py build` (its own step in fetch_bids.yml); this is the count in the file."""
+    import bid_flags as BF      # here, not at the top: bid_flags imports this module
+    by = {}
+    for _, code, _ in BF.flag_rows(rows_of(snap)):
+        by[code] = by.get(code, 0) + 1
+    return {"rules": BF.RULES["version"], "rows": sum(by.values()), "by": dict(sorted(by.items())),
+            "file": BF.path_for(snap["day"])}
+
+
 
 
 def floor_gate(snap, now=None, min_locs=None):
@@ -492,6 +509,24 @@ def selftest():
               "2026-10-16", "2026-10-21")
     ck("gaps: slim, thin and missing weekdays listed, weekend skipped",
        [x[0] for x in gp] == ["2026-10-16", "2026-10-20", "2026-10-21"] and gp[2][1] == "missing")
+    # THE FLAG-ONLY BOUND (Oct 29). Real rows: Consolidated Grain & Barge, Sherrill AR posted corn
+    # Sep26 at $4.29 with a 1 cent basis that the old feed stored as $1.00 (2026-06-09); five clean
+    # rows that day put ZCU26 at $4.28. The row is kept exactly as posted and listed in the flags file.
+    clean = [dict(row, facility=f"Clean {i}", symbol="ZCU26", cashPrice=4.28 - b, basis=-b, _fut=None, source=None)
+             for i, b in enumerate((0.20, 0.25, 0.30, 0.35, 0.40))]
+    cgb = dict(row, facility="Consolidated Grain & Barge", city="Sherrill", state="AR", symbol="ZCU26",
+               cashPrice=4.29, basis=1.0, _fut=None, source=None, _board="")
+    fs = build(dict(doc, bids=clean + [cgb]), "2026-06-09", ids=ids)
+    kept = [r for r in rows_of(fs) if r["facility"] == "Consolidated Grain & Barge"]
+    ck("a flagged row is kept as posted, never dropped or rescaled",
+       len(kept) == 1 and kept[0]["basis"] == 1.0 and kept[0]["cash"] == 4.29 and fs["counts"]["rows"] == 6)
+    ck("the snapshot says how many rows are flagged and why",
+       fs["flags"] == {"rules": "bidflags-v1", "rows": 1, "by": {"basis_in_cents": 1},
+                       "file": "bids-daily-flags/2026/2026-06-09.csv"})
+    ck("a clean day has no flags", snap["flags"]["rows"] == 0)
+    import bid_flags as BF
+    body = BF.flags_csv(rows_of(fs)).decode()
+    ck("the flags file (bid_flags.py) names the row", "Consolidated Grain & Barge" in body and "basis_in_cents" in body)
     print("selftest: %d failure(s)" % len(fails))
     return 1 if fails else 0
 
@@ -554,6 +589,10 @@ def main(argv=None):
                 snap["partial"] = why
                 print(f"::warning::bid snapshot for {day}: {why}")
         p, size = write(snap, a.out_dir)
+        fl = snap["flags"]
+        if fl["rows"]:
+            print(f"::warning::bid snapshot for {day}: {fl['rows']} row(s) flagged ({fl['by']}), kept as posted; "
+                  f"the list is {fl['file']} (scripts/bid_flags.py build)")
         c = snap["counts"]
         print(f"[bid-snapshots] {day}: {c['locs']} locations ({c['locsWithId']} with a permanent id), "
               f"{c['rows']} rows, {size / 1024:.1f} KB gzipped -> {os.path.relpath(p, a.out_dir)}")

@@ -31,7 +31,7 @@ const require = createRequire(import.meta.url);
 const F = require(path.join(ROOT, "field-scout-land.js"));
 const CR = require(path.join(ROOT, "components/comp-report.js"));
 const S = require(path.join(ROOT, "components/atlas-sales.js"));
-const STATES = { il: "illinois", wi: "wisconsin", in: "indiana" };
+const STATES = { il: "illinois", wi: "wisconsin", in: "indiana", vt: "vermont" };
 const CODE = { farm: "f", bldg: "b", forest: "w", small: "s" };
 const money = (x) => "$" + Math.round(x).toLocaleString("en-US");
 const slug = (n) => String(n).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-county";
@@ -82,9 +82,9 @@ test("small parcels, unknown acres, buildings and forest are listed; the page ho
   for (const st of Object.keys(STATES)) for (const fips of Object.keys(json(`data/land-sales/${st}.json`).counties)) {
     for (const g of listFile(st, fips)) { kinds.add(st + g.kind); if (g.acres == null) acresNull.push(g.id); if (g.acres != null && g.acres < 1) kinds.add("tiny"); }
   }
-  for (const k of ["wif", "wib", "wiw", "wis", "ilf", "ils", "inf", "inb", "ins", "tiny"]) assert.ok(kinds.has(k), "listed: " + k);
+  for (const k of ["wif", "wib", "wiw", "wis", "ilf", "ils", "inf", "inb", "ins", "vtf", "vtb", "vtw", "vts", "tiny"]) assert.ok(kinds.has(k), "listed: " + k);
   assert.ok(!kinds.has("ilb"), "Illinois declarations carry no building class: no Illinois sale is marked with buildings");
-  assert.ok(!kinds.has("ilw") && !kinds.has("inw"), "the forest split is Wisconsin's");
+  assert.ok(!kinds.has("ilw") && !kinds.has("inw"), "the forest split is Wisconsin's and Vermont's (timberland)");
   assert.ok(acresNull.length > 100, "sales with acres not stated are listed too: " + acresNull.length);
   const page = read("land-sales/wisconsin/barron-county.html"), all = listFile("wi", "55005");
   const rows = [...page.matchAll(/<tr data-k="([fbws])"><td>([A-Z][a-z]{2} \d+, \d{4}\*?)<\/td>/g)];
@@ -200,13 +200,14 @@ test("5 sales before a middle: the comp report and Field Scout withhold at 4, sh
 test("no names in the indexed pages or the list files; names only from the blocked folder", () => {
   const robots = read("robots.txt");
   assert.match(robots, /^Disallow: \/data\/land\/$/m);
-  for (const [st, fips, s] of [["wi", "55005", "wisconsin/barron-county"], ["il", "17001", "illinois/adams-county"], ["in", "18001", "indiana/adams-county"]]) {
+  for (const [st, fips, s] of [["wi", "55005", "wisconsin/barron-county"], ["il", "17001", "illinois/adams-county"], ["in", "18001", "indiana/adams-county"], ["vt", "50001", "vermont/addison-county"], ["vt", "50023", "vermont/washington-county"]]) {
     const nf = json(`data/land/names/${st}/${fips}.json`), list = listFile(st, fips);
     for (const g of list) assert.ok(g.id in nf.sales, `${st} ${fips}: the tap finds every listed sale (${g.id})`);
     const L = read(`data/land-sales/${st}/${fips}.json`), P = read(`land-sales/${s}.html`);
     assert.deepEqual(Object.keys(JSON.parse(L)).sort(), ["cols", "county", "fips", "kinds", "names", "s", "st", "through"]);
+    assert.deepEqual(JSON.parse(L).cols, ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"].concat(st === "vt" ? ["cu"] : []), `${st}: the list columns`);
     for (const v of Object.values(nf.sales)) for (const n of (Array.isArray(v) ? v : [])) {
-      if (!n || n.length < 8 || /^(?:COUNTY OF [A-Z .']+|[A-Z .']+ COUNTY)(?:,? (?:ILLINOIS|WISCONSIN|INDIANA))?$/i.test(n)) continue;
+      if (!n || n.length < 8 || /^(?:COUNTY OF [A-Z .']+|[A-Z .']+ COUNTY)(?:,? (?:ILLINOIS|WISCONSIN|INDIANA|VERMONT))?$/i.test(n)) continue;
       assert.ok(!L.includes(n) && !P.includes(n), `${st} ${fips}: a name in the list file or the page`);
     }
   }

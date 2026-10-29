@@ -2,42 +2,90 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Root Lot",
  "slug": "rootlot",
- "generated": "2026-10-29T02:59:25+00:00",
- "through": "2026-10-27",
- "start": null,
+ "generated": "2026-10-29T13:58:05+00:00",
+ "through": "2026-10-28",
+ "start": "2026-10-28",
  "countFrom": "2026-10-28",
- "liveSince": null,
+ "liveSince": "2026-10-28",
  "pages": null,
  "definitionChanged": "2026-09-05",
  "slotSince": "2026-10-29",
  "totals": {
-  "viewable": 0,
+  "viewable": 10,
   "clicks": 0,
-  "ctr": null,
+  "ctr": 0.0,
   "legacyImpressions": 0
  },
  "windows": [
   {
    "days": 7,
-   "viewable": 0,
+   "viewable": 10,
    "clicks": 0,
-   "ctr": null
+   "ctr": 0.0
   },
   {
    "days": 30,
-   "viewable": 0,
+   "viewable": 10,
    "clicks": 0,
-   "ctr": null
+   "ctr": 0.0
   },
   {
    "days": 90,
-   "viewable": 0,
+   "viewable": 10,
    "clicks": 0,
-   "ctr": null
+   "ctr": 0.0
   }
  ],
- "series": [],
- "byPage": [],
+ "series": [
+  {
+   "d": "2026-10-28",
+   "v": 10,
+   "l": 0,
+   "c": 0
+  }
+ ],
+ "byPage": [
+  {
+   "page": "/",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/cash-lease",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/about",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/cash-bids",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/california/santa-cruz-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/south-dakota",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/texas",
+   "viewable": 1,
+   "clicks": 0
+  }
+ ],
  "creative": {
   "live": true,
   "proof_code": "862b2f78",
@@ -160,12 +208,12 @@
  "regionAds": {
   "pending": false,
   "start": "2026-10-28",
-  "through": "2026-10-27",
+  "through": "2026-10-28",
   "rows": [
    {
     "code": "CA",
     "name": "California",
-    "viewable": 0,
+    "viewable": 1,
     "clicks": 0
    },
    {
@@ -177,7 +225,7 @@
    {
     "code": "TX",
     "name": "Texas",
-    "viewable": 0,
+    "viewable": 9,
     "clicks": 0
    }
   ],
