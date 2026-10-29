@@ -325,7 +325,7 @@ def render(u, latest, ix, sec, plants, early):
                  'Tap a company for its filing numbers and its plants near you.</p>')
         body += method(u, ix, sec, plants)
     else:
-        body = ('<section class="ags-ix"><h2>AGSIST Ag 20</h2><p class="ags-big">Starts Nov 2</p></section>'
+        body = (index_block(None, None) +
                 '<p>Company closes appear here after the first read following the U.S. close.</p>')
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
