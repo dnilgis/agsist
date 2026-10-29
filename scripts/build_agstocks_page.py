@@ -173,23 +173,23 @@ def table(u, latest, sec, plants):
             t = m["t"]
             x, rec = q.get(t), c.get(t)
             if x:
-                close = f'<td class="n" data-l="Close">{money(x["close"])}</td>'
+                close = f'<td class="n">{money(x["close"])}</td>'
                 if x.get("pct") is None:
-                    dcell = '<td class="n" data-l="Day">&nbsp;</td>'
+                    dcell = '<td class="n">&nbsp;</td>'
                 else:
                     cls = "up" if x["pct"] > 0 else "dn" if x["pct"] < 0 else ""
                     old = f' <small>{esc(day(x["d"]))}</small>' if newest and x["d"] < newest else ""
-                    dcell = f'<td class="n {cls}" data-l="Day">{pct(x["pct"])}{old}</td>'
+                    dcell = f'<td class="n {cls}">{pct(x["pct"])}{old}</td>'
             else:
-                close = '<td class="n ags-muted" data-l="Close">no close</td>'
-                dcell = '<td class="n" data-l="Day">&nbsp;</td>'
+                close = '<td class="n ags-muted">no close</td>'
+                dcell = '<td class="n">&nbsp;</td>'
             rc = rev_change(rec)
             if rc:
                 p, cur, prior = rc
-                tip = f"Quarter ended {day(cur['end'], True)}: {big(cur['val'])} vs {big(prior['val'])} a year before, whole company"
-                rcell = f'<td class="n" data-l="Revenue vs yr ago" title="{esc(tip)}">{pct(p)}</td>'
+                tip = f"Quarter ended {day(cur['end'], True)}: {big(cur['val'])} vs {big(prior['val'])}, whole company"
+                rcell = f'<td class="n" title="{esc(tip)}">{pct(p)}</td>'
             else:
-                rcell = '<td class="n ags-muted" data-l="Revenue vs yr ago">n/a</td>'
+                rcell = '<td class="n ags-muted">n/a</td>'
             lr = last_report(rec)
             sub = []
             if lr:
@@ -200,8 +200,7 @@ def table(u, latest, sec, plants):
             subs = f'<small>{" · ".join(sub)}</small>' if sub else ""
             dattr = f' data-close="{x["close"]}" data-d="{esc(x["d"])}"' if x else ""
             out.append(f'<tr data-t="{esc(t)}"{dattr}><th scope="row"><button type="button" class="ags-co" aria-expanded="false" '
-                       f'aria-controls="d-{esc(t)}"><b>{esc(t)}</b> {esc(m["company"])}</button>{subs}</th>{close}{dcell}{rcell}</tr>'
-                       f'<tr class="ags-d" id="d-{esc(t)}" hidden><td colspan="4"></td></tr>')
+                       f'aria-controls="d-{esc(t)}"><b>{esc(t)}</b> {esc(m["company"])}</button>{subs}</th>{close}{dcell}{rcell}</tr>')
         out.append("</tbody>")
     cap = (f'Closes {esc(day(newest, True))} &middot; {YAHOO}' if newest else "No closes read yet")
     return (f'<div class="ags-tw"><table class="ags-t"><caption>{cap}</caption>'
@@ -231,7 +230,7 @@ def method(u, ix, sec, plants):
     checked = u.get("checked")
     sec_c = (sec or {}).get("checked")
     return f"""<details class="ags-method" id="method"><summary>How these numbers are made, and what they are not</summary>
-<p><b>Not investment advice; not a fund you can buy.</b> No stock here is a forecast of grain, livestock or input prices, and nothing on this page says one predicts local prices.</p>
+<p><b>Not investment advice; not a fund you can buy.</b> No share price here is a forecast of grain, livestock, input or local cash prices.</p>
 <h3>The AGSIST Ag 20</h3>
 <ul>
 <li>Equal weight, price return (dividends not added), base 1,000.00 at the first close on or after Nov 2, 2026 on which every member has a close.</li>

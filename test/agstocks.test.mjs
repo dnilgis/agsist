@@ -35,7 +35,7 @@ test('every baked close is the stored Yahoo row for its date, and prints as stor
   const rows = {};
   const cdir = path.join(ROOT, 'data/agstocks/closes');
   if (fs.existsSync(cdir)) for (const f of fs.readdirSync(cdir)) Object.assign(rows, JSON.parse(fs.readFileSync(path.join(cdir, f), 'utf8')).rows);
-  const re = /<tr data-t="([A-Z.]+)" data-close="([\d.]+)" data-d="(\d{4}-\d\d-\d\d)">.*?<td class="n" data-l="Close">\$([\d,]+\.\d\d)<\/td>/g;
+  const re = /<tr data-t="([A-Z.]+)" data-close="([\d.]+)" data-d="(\d{4}-\d\d-\d\d)">.*?<td class="n">\$([\d,]+\.\d\d)<\/td>/g;
   let n = 0;
   for (const m of PAGE.matchAll(re)) {
     const [, t, close, d, shown] = m;
@@ -69,13 +69,18 @@ test('the index level on the page is the last stored level, with its source and 
 
 test('revenue cells come from sec.json quarter pairs, labeled whole company', () => {
   const sec = js('data/agstocks/sec.json');
-  const re = /<tr data-t="([A-Z.]+)"[^>]*>.*?<td class="n" data-l="Revenue vs yr ago" title="Quarter ended ([^"]+?): [^"]*whole company">([+−]?[\d.]+%)<\/td>/g;
-  for (const m of PAGE.matchAll(re)) {
-    const r = sec.c[m[1]].rev;
+  let n = 0;
+  for (const row of PAGE.matchAll(/<tr data-t="([A-Z.]+)"[^>]*>((?:(?!<\/tr>).)*)<\/tr>/g)) {
+    const t = row[1];
+    const m = row[2].match(/<td class="n" title="Quarter ended ([^"]+?): [^"]*whole company">([+−]?[\d.]+%)<\/td>$/);
+    if (!m) { assert.match(row[2], /<td class="n ags-muted">n\/a<\/td>$/, `${t}: a change or n/a`); continue; }
+    const r = sec.c[t].rev;
     const p = (r.cur.val / r.prior.val - 1) * 100;
     const want = (p > 0 ? '+' : p < 0 ? '−' : '') + Math.abs(p).toFixed(1) + '%';
-    assert.equal(m[3], want, `${m[1]} revenue change`);
+    assert.equal(m[2], want, `${t} revenue change`);
+    n++;
   }
+  if (sec) assert.ok(n > 0, 'some revenue changes shown');
 });
 
 test('plain words, no buy or broker links, no em dash, under the page cap', () => {

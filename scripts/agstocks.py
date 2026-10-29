@@ -364,7 +364,9 @@ def build_latest(rows, tickers, fetched):
         yr = (datetime.fromisoformat(d1) - timedelta(days=365)).strftime("%Y-%m-%d")
         win = [c for d, c in hist if d > yr]
         first = next(d for d, c in hist)
-        if first <= yr:  # a full year on file, or the range is not shown
+        # A full year on file (a week of slack for Yahoo's 1y window starting on a holiday or
+        # weekend), or the range is not shown.
+        if first <= (datetime.fromisoformat(d1) - timedelta(days=358)).strftime("%Y-%m-%d"):
             q.update(hi52=max(win), lo52=min(win))
         out["q"][t] = q
     newest = max((q["d"] for q in out["q"].values()), default=None)

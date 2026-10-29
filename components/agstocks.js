@@ -127,7 +127,14 @@
 
   function open(btn) {
     var row = btn.closest('tr'), t = row.getAttribute('data-t'), det = document.getElementById('d-' + t);
-    if (!det) return;
+    if (!det) {
+      det = document.createElement('tr');
+      det.className = 'ags-d';
+      det.id = 'd-' + t;
+      det.hidden = true;
+      det.innerHTML = '<td colspan="4"></td>';
+      row.parentNode.insertBefore(det, row.nextSibling);
+    }
     var on = btn.getAttribute('aria-expanded') !== 'true';
     btn.setAttribute('aria-expanded', on ? 'true' : 'false');
     det.hidden = !on;
