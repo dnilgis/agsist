@@ -76,6 +76,7 @@ jobs:
         if: inputs.folder == ''
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
           RAW_KEEP: "1"
         run: bash scripts/push_raw.sh "SEC Reg CF quarterly files" "$DIR"
 
@@ -99,6 +100,7 @@ jobs:
         if: always()
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "SEC Reg CF screen" "$DIR/edgar.jsonl.gz" "$DIR/derived"
 
       - name: Rebuild the page and commit
