@@ -122,9 +122,9 @@ test("rain-county-print.js mounts any figure; the county page mounts its own; ve
   const js = read("components/rain-county-print.js");
   assert.match(js, /mount: mount/);
   assert.match(js, /var own = doc && doc\.getElementById\('rc-print'\);\s*if \(own\) mount\(own\);/);
-  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=41'/);
-  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=41/);
-  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=41/);
+  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=42'/);
+  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=42/);
+  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=42/);
 });
 
 test("what's unusual here: own past only, the rule's numbers, nothing when nothing passes", () => {
@@ -245,7 +245,7 @@ test("bids-network exports the index and a checked shard getter; versions bumped
   for (const f of ["fast-facts.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=8/, f);   // v8: shards under data/ (Oct 21)
   assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=8/);
   assert.match(read("fast-facts.html"), /place\.js\?v=10/);   // v10: deeper() links the county's land sales page, flag l (fx/landnav, Oct 29); v9: basisHistory reads a stitched id's folded boards (fx/basisstitch, Oct 27); v8: state basis middle prints locations and companies (fx/companycount, Oct 27); v7: bestBids uses the shared bid filter (fx/bidfilter, Oct 23); v6: factCustom, the custom combining row (fx/customrates, Oct 23); v5: one past main v4 (fx/fastfacts: Fast Facts row builders, two tabs, Oct 21-22)
-  assert.match(read("fast-facts.html"), /here\.js\?v=32/);   // v32: change-lines.js v2 (fx/landvt, Vermont sales); v31: rain-county-print.js v41 (fx/rainswap: the county print leads its page, its picker row ships whole); v30: its own history reads basis-join s before k (fx/basisstitch); v29: loads components/change-lines.js before changemap.js (fx/countyweek); v28: loads components/changemap.js once a place is open (fx/changemap); v27: the buy link under the county Rain Print, engine rain-print.js v85 (fx/promo2); v26: rain-county-print.js v40, engine rain-print.js v84 (fx/batch-oct27: delivery lines follow the picked year; v25 is on fx/promo); v24: the custom combining row reads data/custom-rates/blend.json (fx/customrates, Oct 23); v23: rain-county-print.js v39, engine rain-print.js v80 (fx/ciharden2: the address waits for the typing to stop); v22: rain-county-print.js v38, engine rain-print.js v79 (fx/rpdefaults: every layer on); v21: two tabs and the shared print sheet (fx/fastfacts round 2, Oct 21); v20: Fast Facts My place, State and US tabs (fx/fastfacts, Oct 21);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
+  assert.match(read("fast-facts.html"), /here\.js\?v=33/);   // v33: town and ZIP lookups from our own data/places (fx/nometeo, Oct 29); v32: change-lines.js v2 (fx/landvt, Vermont sales); v31: rain-county-print.js v41 (fx/rainswap: the county print leads its page, its picker row ships whole); v30: its own history reads basis-join s before k (fx/basisstitch); v29: loads components/change-lines.js before changemap.js (fx/countyweek); v28: loads components/changemap.js once a place is open (fx/changemap); v27: the buy link under the county Rain Print, engine rain-print.js v85 (fx/promo2); v26: rain-county-print.js v40, engine rain-print.js v84 (fx/batch-oct27: delivery lines follow the picked year; v25 is on fx/promo); v24: the custom combining row reads data/custom-rates/blend.json (fx/customrates, Oct 23); v23: rain-county-print.js v39, engine rain-print.js v80 (fx/ciharden2: the address waits for the typing to stop); v22: rain-county-print.js v38, engine rain-print.js v79 (fx/rpdefaults: every layer on); v21: two tabs and the shared print sheet (fx/fastfacts round 2, Oct 21); v20: Fast Facts My place, State and US tabs (fx/fastfacts, Oct 21);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
   assert.match(read("components/here.js"), /css\('\/components\/rain-county\.css\?v=5'\)/);   // loaded with the depth only (Oct 21)   // v5: the month table fits a phone (2026-10-19)
 });
 
@@ -255,10 +255,6 @@ const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
 try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
-const GEO = {
-  "54728": [{ name: "Chetek", latitude: 45.31413, longitude: -91.651, admin1: "Wisconsin", admin2: "Barron", postcodes: ["54728"] }],
-  "67530": [{ name: "Great Bend", latitude: 38.36446, longitude: -98.76481, admin1: "Kansas", admin2: "Barton", postcodes: ["67530"] }],
-};
 /* SYNTHETIC earlier years (the sandbox cannot reach RCC-ACIS): a fixed pseudo-random 1932-2025, plus
    this year's real days from data/rain/daily, so the drawn total matches. It tests the wiring only;
    the ranking itself is tested above on a real record. */
@@ -298,7 +294,6 @@ async function openPage(browser, port, url, width, opts = {}) {
   await pg.route("**/*", (r) => {
     const u = r.request().url();
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (u.includes("geocoding-api.open-meteo.com")) return r.fulfill({ contentType: "application/json", body: JSON.stringify({ results: GEO[new URL(u).searchParams.get("name")] || [] }) });
     if (u.includes("data.rcc-acis.org")) return opts.noAcis ? r.abort() : r.fulfill({ contentType: "application/json", body: JSON.stringify(synthPor(new URL(u).searchParams.get("sid"))) });
     if (u.includes("dnilgis.github.io/bids/data/merged-index.json")) return r.fulfill({ contentType: "application/json", body: JSON.stringify(IDX) });
     // the shards live under data/ in the bids repo (merged-index.json shards.dir); Oct 21: this route used to serve the bare

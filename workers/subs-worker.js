@@ -5,6 +5,10 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.60 (2026-10-29): NO OPEN-METEO GEOCODER (Sig, Oct 29: its terms count an
+ *   ad-supported site as commercial use). The hay board's ZIP point comes from the
+ *   bids repo's ZIP table, then the same points on agsist.com/data/places/zip/
+ *   (scripts/build_places.py); a ZIP in neither is no point, as before.
  * v5.59 (2026-10-28): SIG'S DESK (desk.html, Sig Oct 28: "a singular place for
  *   all things agsist"). Two routes, Bearer LIST_TOKEN only (a ?token= in the
  *   address is refused), CORS for agsist.com as the other desks:
@@ -2953,6 +2957,7 @@ const HAY_WHY = ["sold", "spam", "wrong", "scam", "other"];
 const HAY_PUBLIC = ["id", "kind", "zip", "place", "lat", "lng", "product", "cutting", "bale", "count", "price", "unit",
   "weight", "rfv", "rfq", "cp", "delivery", "note", "name", "ts", "updated", "exp"];
 const HAY_ZIPS = "https://dnilgis.github.io/bids/data/zips/";
+const HAY_ZIPS_OWN = "https://agsist.com/data/places/zip/";
 // A link of any kind: a scheme, www., or a word.tld.
 const HAY_LINK_RE = /(https?:|ftp:|www\.|\b[a-z0-9-]+\s?\.\s?(com|net|org|biz|info|io|co|us|xyz|ly|me|site|online|shop|app|link|top)\b)/i;
 const HAY_EMAIL_IN_TEXT = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i;
@@ -3002,20 +3007,16 @@ function hayDist(aLat, aLng, bLat, bLng) {
   return 3958.8 * 2 * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 async function hayZipLL(zip) {
-  try {
-    const r = await fetch(HAY_ZIPS + zip.slice(0, 2) + ".json", { cf: { cacheTtl: 86400 } });
-    if (r.ok) {
-      const t = await r.json(), p = t && t[zip];
-      if (Array.isArray(p) && Number.isFinite(+p[0]) && Number.isFinite(+p[1]) && !(+p[0] === 0 && +p[1] === 0)) return { lat: +p[0], lng: +p[1] };
-    }
-  } catch (e) { /* fall through */ }
-  try {
-    const r = await fetch("https://geocoding-api.open-meteo.com/v1/search?name=" + zip + "&count=1&language=en&format=json&countryCode=US");
-    if (r.ok) {
-      const d = await r.json(), x = d && d.results && d.results[0];
-      if (x && Number.isFinite(+x.latitude) && Number.isFinite(+x.longitude)) return { lat: +x.latitude, lng: +x.longitude };
-    }
-  } catch (e) { /* none */ }
+  // the bids repo's ZIP table, then the same points on our own site (2026-10-29: no outside geocoder)
+  for (const base of [HAY_ZIPS, HAY_ZIPS_OWN]) {
+    try {
+      const r = await fetch(base + zip.slice(0, 2) + ".json", { cf: { cacheTtl: 86400 } });
+      if (r.ok) {
+        const t = await r.json(), p = t && t[zip];
+        if (Array.isArray(p) && Number.isFinite(+p[0]) && Number.isFinite(+p[1]) && !(+p[0] === 0 && +p[1] === 0)) return { lat: +p[0], lng: +p[1] };
+      }
+    } catch (e) { /* the next table */ }
+  }
   return null;
 }
 // Every field a post can carry, checked. `old` is the stored post on an edit:

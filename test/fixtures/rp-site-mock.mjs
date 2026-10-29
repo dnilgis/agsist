@@ -5,6 +5,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { stripePage } from "./rp-checkout.mjs";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./places-mock.mjs";
 
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 function yearDays(y) { const a = []; for (let t = Date.UTC(y, 0, 1); new Date(t).getUTCFullYear() === y; t += 864e5) a.push(new Date(t).toISOString().slice(0, 10)); return a; }
@@ -27,7 +28,7 @@ export const BLOCK_PAGE = "<!DOCTYPE html><html><head><title>Suspected phishing 
 export async function mocks(ctx, opts, log) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   const upto = "2026-10-09";
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
+  await ctx.route(PLACES_ROUTE, async (r) => {
     const req = r.request(), u = new URL(req.url());
     if (u.host === "agsist-api.dnilgis.workers.dev" && opts.worker) {
       (log.worker = log.worker || []).push(req.method() + " " + u.pathname);
@@ -51,7 +52,7 @@ export async function mocks(ctx, opts, log) {
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
     if (u.host === "buy.stripe.com") { log.stripeAt = Date.now(); return stripePage(r, log.stripe); }
-    if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
+    if (isPlaces(u)) return r.fulfill({ json: placesBody(u, [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }]) });   // the town lookup: our own data/places/ files (2026-10-29)
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [{ name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1950-01-01", upto]], state: "WI" }] } });
       let sdate = u.searchParams.get("sdate"), normal = false;

@@ -174,7 +174,7 @@ test("the page: one mount, the map code loads only once a place is open, files b
   const page = read("fast-facts.html"), here = read("components/here.js"), cm = read("components/changemap.js");
   assert.match(page, /<p id="h-where" class="h-where"><\/p>\n<div id="h-cm" class="cm" hidden><\/div>/);
   assert.doesNotMatch(page, /changemap\.js/, "not a page script: loaded by here.js");
-  assert.match(page, /\/components\/here\.js\?v=32"/);
+  assert.match(page, /\/components\/here\.js\?v=33"/);
   assert.match(here, /var CM_JS = '\/components\/changemap\.js\?v=\d+';/);
   assert.match(here, /loadCards\(fips\);\n\s+changeMap\(fips\);/);
   for (const f of [cm]) assert.doesNotMatch(f, /—/);
@@ -212,7 +212,6 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-const GEO = { "54728": [{ name: "Chetek", latitude: 45.31413, longitude: -91.651, admin1: "Wisconsin", admin2: "Barron", postcodes: ["54728"] }] };
 
 test("in a browser: three counties at 390 and 1280; the sentence, the map, the withheld lines, no names, the point stays here", { skip, timeout: 240000 }, async () => {
   const srv = await serve(), port = srv.address().port;
@@ -231,7 +230,6 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
       await pg.route("**/*", (r) => {
         const u = r.request().url(); urls.push(u);
         if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-        if (u.includes("geocoding-api.open-meteo.com")) return r.fulfill({ contentType: "application/json", body: JSON.stringify({ results: GEO[new URL(u).searchParams.get("name")] || [] }) });
         if (u.includes("dnilgis.github.io/bids/data/merged-index.json")) return r.fulfill({ contentType: "application/json", body: JSON.stringify(IDX) });
         return r.abort();
       });
@@ -271,8 +269,8 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
       for (const n of NAMES) assert.ok(!txt.includes(n), at + " names " + n);
       for (const u of urls) {
         assert.doesNotMatch(u, /45\.31|91\.65|39\.39|88\.80|41\.80|72\.73/, "a request carries the point: " + u);
-        // the typed-ZIP lookup (here.js, before this map) is the one outside call that carries a ZIP; nothing from the map does
-        if (!u.startsWith(`http://127.0.0.1:${port}`) && !u.includes("geocoding-api.open-meteo.com")) assert.doesNotMatch(u, /54728/, "a ZIP left the page: " + u);
+        // the typed-ZIP lookup reads our own data/places/zip/ file (2026-10-29), so no outside call carries a ZIP
+        if (!u.startsWith(`http://127.0.0.1:${port}`)) assert.doesNotMatch(u, /54728/, "a ZIP left the page: " + u);
       }
       assert.deepEqual(errs, [], at);
       await ctx.close();

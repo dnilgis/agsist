@@ -134,7 +134,16 @@ test("no buyer or seller name in any published page, sitemap or data file outsid
     for (const l of (r.stdout || "").split("\n").filter(Boolean)) { const k = l.indexOf(":"); hits.push([l.slice(0, k), l.slice(k + 1)]); }
   }
   const biz = elevatorNames();
-  const bad = hits.filter(([f, n]) => !isBiz(biz, n));
+  // Oct 29, 2026: GeoNames towns Bingham Farms (MI) and Brittany Farms-Highlands (PA) matched sale parties by name.
+  // a real town that shares a party's name (GeoNames' "Bingham Farms", Michigan; "Brittany Farms-Highlands",
+  // Pennsylvania) is a place in our own place list (data/places/, 2026-10-29), not the party: allowed only when the
+  // hit is inside one of that file's town names, as whole words
+  const town = (f, n) => {
+    if (!/^data\/places\/(us|ca)\/[^/]+\.json$/.test(f)) return false;
+    const w = new RegExp("(^|[^A-Za-z])" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "([^A-Za-z]|$)");
+    try { return (JSON.parse(read(f)).p || []).some((r) => typeof r[0] === "string" && w.test(r[0])); } catch (e) { return false; }
+  };
+  const bad = hits.filter(([f, n]) => !isBiz(biz, n) && !town(f, n));
   fs.rmSync(tmp, { recursive: true, force: true });
   assert.deepEqual(bad.slice(0, 10), [], `${bad.length} buyer or seller name(s) outside data/land/`);
   // and the generated sale pages carry no name of any kind, elevator or not
