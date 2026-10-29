@@ -203,7 +203,12 @@ def gauntlet(html):
     assert html.count("cl-day") >= 2, "suspiciously few baked entries"
     hrefs = re.findall(r'class="cl-page" href="([^"]*)"', html)
     assert len(hrefs) >= 20, f"only {len(hrefs)} entry links baked"
-    stubbed = sorted({h for h in hrefs if live_href(h) != h})
+    # This builder owns the CHANGELOG:entries block. The WHATSNEW:entries block above it is
+    # scripts/build_whats_new.py's, which runs after this one on main and checks its own links the
+    # same way (a page that became a stub would otherwise stop this build before that block is rebuilt).
+    own = re.search(r"<!-- CHANGELOG:entries -->.*?<!-- /CHANGELOG:entries -->", html, re.S)
+    own_hrefs = re.findall(r'class="cl-page" href="([^"]*)"', own.group(0)) if own else hrefs
+    stubbed = sorted({h for h in own_hrefs if live_href(h) != h})
     assert not stubbed, f"entry links land on redirect stubs: {stubbed}"
 
 

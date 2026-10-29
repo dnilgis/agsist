@@ -137,7 +137,7 @@ test("one tap per layer: the print, the count and the line under it follow; grey
   }, { width });
 });
 
-test("Watch it draw: Replay, Wind (video only), Make a video and Done take the print's buttons' place, under the print", { skip }, async () => {
+test("Watch it draw: Replay, Make a video and Done take the print's buttons' place, under the print (no wind chip: no free source, 2026-10-29)", { skip }, async () => {
   await withPage(async (page, base, errors) => {
     await page.goto(base + LINK);
     await drawn(page);
@@ -145,8 +145,8 @@ test("Watch it draw: Replay, Wind (video only), Make a video and Done take the p
     await page.click("#rp-watch");
     await page.waitForSelector(".rpd-bar");
     const labels = await page.$$eval(".rpd-bar > button:not(.rpd-hide), .rpd-bar > label", (a) => a.filter((x) => x.offsetParent).map((x) => x.textContent.trim()));
-    assert.deepEqual(labels.slice(0, 4), ["Replay", "Wind, video only", "Make a video", "Done"]);
-    assert.match(await page.getAttribute(".rpd-wind", "title"), /In the video only, never on the print\./);
+    assert.deepEqual(labels.slice(0, 3), ["Replay", "Make a video", "Done"]);
+    assert.equal(await page.isVisible(".rpd-wind"), false, "no wind chip");
     assert.equal(await page.isVisible("#rp-zoom"), false, "the print's own buttons step aside");
     assert.ok(await page.evaluate(() => document.getElementById("rp-pv").contains(document.querySelector(".rpd-bar"))), "under the print, in the pinned stage");
     await page.click(".rpd-bar >> text=Done");

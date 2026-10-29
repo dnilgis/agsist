@@ -574,9 +574,9 @@
      "why": "How numbers are checked"
     },
     {
-     "href": "/data-sources",
-     "text": "Data sources",
-     "why": "Where every number comes from"
+     "href": "/editorial-standards#sources",
+     "text": "Where the numbers come from",
+     "why": "Every main data source, in one short list"
     },
     {
      "href": "/contact",
@@ -626,9 +626,9 @@
   "/terms": {
    "links": [
     {
-     "href": "/data-sources",
-     "text": "Data sources",
-     "why": "Where every number comes from"
+     "href": "/editorial-standards#sources",
+     "text": "Where the numbers come from",
+     "why": "Every main data source, in one short list"
     },
     {
      "href": "/tools",
@@ -680,26 +680,12 @@
     }
    ]
   },
-  "/data-sources": {
-   "links": [
-    {
-     "href": "/editorial-standards",
-     "text": "Editorial standards",
-     "why": "How numbers are checked"
-    },
-    {
-     "href": "/about",
-     "text": "About AGSIST",
-     "why": "Who builds this and why"
-    }
-   ]
-  },
   "/developer": {
    "links": [
     {
-     "href": "/data-sources",
-     "text": "Data sources",
-     "why": "Where every number comes from"
+     "href": "/editorial-standards#sources",
+     "text": "Where the numbers come from",
+     "why": "Every main data source, in one short list"
     },
     {
      "href": "/tools",
@@ -739,9 +725,9 @@
      "text": "All tools"
     },
     {
-     "href": "/data-sources",
-     "text": "Data sources",
-     "why": "Where every number comes from"
+     "href": "/editorial-standards#sources",
+     "text": "Where the numbers come from",
+     "why": "Every main data source, in one short list"
     },
     {
      "href": "/contact",
@@ -960,9 +946,9 @@
   "/editorial-standards": {
    "links": [
     {
-     "href": "/data-sources",
-     "text": "Data sources",
-     "why": "Where every number comes from"
+     "href": "/changelog",
+     "text": "What's new",
+     "why": "Every change to the site, dated"
     },
     {
      "href": "/daily#past",

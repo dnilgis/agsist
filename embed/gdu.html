@@ -45,6 +45,7 @@
   .foot{text-align:right;margin-top:10px;}
   .foot a{font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--green);text-decoration:none;}
   .foot a:hover{text-decoration:underline;}
+  .foot .src{float:left;font-size:10px;color:var(--dim);}.foot .src a{font-weight:400;font-family:inherit;color:inherit;text-decoration:underline;}
   @media(prefers-reduced-motion:reduce){*{transition:none!important;}}
 </style>
 </head>
@@ -80,7 +81,7 @@
   <div class="rr"><span class="l" id="mat-l">Est. maturity (black layer)</span><span class="v" id="mat" style="color:var(--green)">-</span></div>
   <div class="rr"><span class="l">Frost risk</span><span class="v" id="frostv">Add frost date</span></div>
 
-  <div class="foot"><a id="pb" href="https://agsist.com/gdu-calculator?utm_source=embed" target="_blank" rel="noopener">Powered by AGSIST →</a></div>
+  <div class="foot"><span class="src">Weather: <a href="https://prism.oregonstate.edu/" target="_blank" rel="noopener">PRISM</a> (Oregon State) via RCC-ACIS</span> <a id="pb" href="https://agsist.com/gdu-calculator?utm_source=embed" target="_blank" rel="noopener">Powered by AGSIST →</a></div>
 </div>
 
 <script>
@@ -136,8 +137,14 @@ $('fetch').addEventListener('click',function(){
       .then(function(r){return r.json();}).then(function(d){if(!d||!d[0])throw new Error('Location not found');lat=parseFloat(d[0].lat);lon=parseFloat(d[0].lon);return{lat:lat,lon:lon};})
     :Promise.reject(new Error('Enter a ZIP code or city')));
   locP.then(function(loc){
-    var u='https://archive-api.open-meteo.com/v1/archive?latitude='+loc.lat+'&longitude='+loc.lon+'&start_date='+plantStr+'&end_date='+todayStr+'&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto';
-    return fetch(u).then(function(r){if(!r.ok)throw new Error('Weather API error');return r.json();});
+    // PRISM daily grid (Oregon State) through RCC-ACIS, grid 21: the same ask as components/prism.js, kept inline so the
+    // embed loads nothing else (2026-10-29, was Open-Meteo's ERA5 archive). A missing day ("M") is no value, never 0.
+    var u='https://data.rcc-acis.org/GridData?params='+encodeURIComponent(JSON.stringify({loc:(+loc.lon).toFixed(3)+','+(+loc.lat).toFixed(3),grid:'21',sdate:plantStr,edate:todayStr,elems:'maxt,mint'}));
+    return fetch(u).then(function(r){if(!r.ok)throw new Error('Weather API error');return r.json();}).then(function(j){
+      if(!j||j.error||!Array.isArray(j.data))throw new Error('Weather API error');
+      var v=function(x){var n=+x;return (x!=='M'&&x!==null&&isFinite(n)&&n>-998)?n:null;};
+      return {daily:{time:j.data.map(function(r){return r[0];}),temperature_2m_max:j.data.map(function(r){return v(r[1]);}),temperature_2m_min:j.data.map(function(r){return v(r[2]);})}};
+    });
   }).then(function(data){
     if(!data.daily||!data.daily.temperature_2m_max)throw new Error('Unexpected data');
     var mx=data.daily.temperature_2m_max,mn=data.daily.temperature_2m_min,tm=data.daily.time||[];

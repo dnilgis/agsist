@@ -223,7 +223,7 @@ async function render(browser, port, page, sc) {
 
   /* Third parties are not what we are testing, and they are blocked in CI. */
   for (const glob of ['**/googletagmanager.com/**', '**/fonts.googleapis.com/**',
-                      '**/fonts.gstatic.com/**', '**/open-meteo.com/**',
+                      '**/fonts.gstatic.com/**', '**/data.rcc-acis.org/**',
                       '**/nominatim.openstreetmap.org/**', '**/*.tile.openstreetmap.org/**',
                       '**/polymarket.com/**', '**/api.weather.gov/**',
                       '**/mesonet.agron.iastate.edu/**']) {

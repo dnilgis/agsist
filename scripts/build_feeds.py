@@ -388,7 +388,8 @@ def main():
 
     # ── which pages fetch which feed ─────────────────────────────────────────
     readers = defaultdict(set)
-    for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")) + sorted(glob.glob("desk/*.html")):   # desk/: the admin tabs of /desk (Oct 28)
+    # land-sales/index.html: the hub carries the Illinois farmland sale index (data/land/index.json) since Oct 29, 2026
+    for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")) + sorted(glob.glob("desk/*.html")) + glob.glob("land-sales/index.html"):   # desk/: the admin tabs of /desk (Oct 28)
         text = read(p)
         # A page also reads what its own page scripts fetch. 2026-10-11: the
         # homepage moved three big inline scripts to components/home-*.js, and
@@ -413,7 +414,7 @@ def main():
         for js in sorted(own):
             if os.path.exists(js):
                 text += "\n" + read(js)
-        for m in set(re.findall(r"(?<!\}/)(?<!atlas/)(?<!open-meteo\.com/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json; "api.open-meteo.com/data/..." is Open-Meteo's run-time file (spray page), not ours
+        for m in set(re.findall(r"(?<!\}/)(?<!atlas/)data/[\w/.-]+\.json", text)):   # "/farmland-atlas/data/x.json" and "/{OUT}/data/x.json" are the Atlas's own files, not data/x.json
             # THE MANIFEST IS NOT ONE OF THE FEEDS IT DESCRIBES. status.html
             # reads it, so a plain grep enrolled it in its own list — with no
             # writer, which failed the "every feed has a cadence" check on the

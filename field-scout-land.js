@@ -1055,19 +1055,28 @@
       return Object.keys(z).map(function (k) { return { type: k, n: z[k] }; });
     });
   };
-  // Ground height at up to 9 points of the field (USGS point elevation service), in feet.
+  // Ground height at up to 9 points of the field, in feet: one USGS 3DEP getSamples call for all of
+  // them (the same elevation service the slope card reads), not one point-elevation call per point
+  // (Oct 29, 2026: nine calls cut to one).
+  var DEP_SAMPLES = 'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples';
   FSLand.reliefAt = function (pts) {
     var g = fieldGrid(pts, 6), step = Math.max(1, Math.floor(g.length / 8)), pick = [FSLand.centroid(pts)];
     for (var i = 0; i < g.length && pick.length < 9; i += step) pick.push(g[i]);
-    return Promise.all(pick.map(function (q) {
-      return getJSON('https://epqs.nationalmap.gov/v1/json?x=' + q.lng.toFixed(6) + '&y=' + q.lat.toFixed(6) + '&wkid=4326&units=Feet&includeDate=false', 12000)
-        .then(function (d) { var v = num(d && d.value); return v != null && v > -1000 ? v : null; }, function () { return null; });
-    })).then(function (v) {
-      v = v.filter(function (x) { return x != null; });
-      if (v.length < 3) return null;
-      var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v);
-      return { lo: Math.round(lo), hi: Math.round(hi), n: v.length };
-    });
+    var body = 'f=json&geometryType=esriGeometryMultipoint&returnFirstValueOnly=true&interpolation=RSP_BilinearInterpolation&geometry=' +
+      encodeURIComponent(JSON.stringify({ points: pick.map(function (q) { return [+q.lng.toFixed(6), +q.lat.toFixed(6)]; }), spatialReference: { wkid: 4326 } }));
+    var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var t = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, 15000) : null;
+    return fetch(DEP_SAMPLES, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body, signal: ctrl ? ctrl.signal : undefined })
+      .then(function (r) { clearTimeout(t); if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(function (d) {
+        // meters; a cell with no data comes back as NoData or a large negative number
+        var v = ((d && d.samples) || []).map(function (sm) { var x = parseFloat(sm && sm.value); return isFinite(x) && x > -500 && x < 9000 ? x * 3.28084 : null; })
+          .filter(function (x) { return x != null; });
+        if (v.length < 3) return null;
+        var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v);
+        return { lo: Math.round(lo), hi: Math.round(hi), n: v.length };
+      }, function () { clearTimeout(t); return null; })
+      .catch(function () { return null; });
   };
   FSLand.floodHTML = function (z) {
     if (!z) return '<p class="fl-note">The FEMA flood map did not answer. <a href="https://msc.fema.gov/portal/search" target="_blank" rel="noopener">FEMA Map Service Center</a> has the official map.</p>';

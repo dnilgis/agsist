@@ -136,7 +136,7 @@ def changelog_html(items):
         cells = "".join(
             '<div class="cl-item" id="%s"><div class="cl-top"><span class="cl-tag cl-tag--new">New</span>'
             '<a class="cl-page" href="%s">%s</a></div><p class="cl-text">%s</p></div>'
-            % (esc(it["id"]), esc(it["link"]), esc(it["title"]), esc(it["line"])) for it in days[d])
+            % (esc(it["id"]), esc(build_changelog_py.live_href(it["link"])), esc(it["title"]), esc(it["line"])) for it in days[d])
         out.append('<section class="cl-day"><h2 class="cl-date">%s</h2><div class="cl-items">%s</div></section>'
                    % (long_date(d), cells))
     return "<!-- WHATSNEW:entries -->" + "".join(out) + "<!-- /WHATSNEW:entries -->"
@@ -174,6 +174,10 @@ def build_index(src, items):
 
 
 def build_changelog(src, items):
+    # an entry that names a page which became a moved-page stub links where the stub sends readers
+    # (build_changelog.live_href); none of this block's links may land on a stub
+    stubbed = sorted({it["link"] for it in items if build_changelog_py.live_href(build_changelog_py.live_href(it["link"])) != build_changelog_py.live_href(it["link"])})
+    assert not stubbed, "what's new links land on redirect stubs: %s" % stubbed
     src = replace_block(src, "<!-- WHATSNEW:entries -->", "<!-- /WHATSNEW:entries -->", changelog_html(items),
                         fallback_before="<!-- CHANGELOG:entries -->")
     src = src.replace(changelog_html(items) + "\n<!-- CHANGELOG:entries -->", changelog_html(items) + "<!-- CHANGELOG:entries -->")
