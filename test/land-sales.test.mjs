@@ -168,7 +168,7 @@ test("the pages: the tap and the remove link, plain words, withheld sections say
     }
     assert.match(t, /\/components\/land-sales\.js\?v=\d+/, `${p}: loads the tap`);
     assert.match(t, /<link rel="canonical" href="https:\/\/agsist\.com\/land-sales\//, `${p}: canonical`);
-    assert.match(t, /Source: .*(Illinois Department of Revenue|Wisconsin Department of Revenue|Indiana Department of Local Government Finance)/, `${p}: the source is credited where the sales show`);
+    assert.match(t, /Source: .*(Illinois Department of Revenue|Wisconsin Department of Revenue|Indiana Department of Local Government Finance|Vermont Department of Taxes)/, `${p}: the source is credited where the sales show`);
   }
   const m = read(month.sort().pop());
   for (const h of ["Biggest buyers", "Biggest sales", "Unusual prices", "Best value per acre"]) assert.ok(m.includes(">" + h + "</h2>"), "month section " + h);

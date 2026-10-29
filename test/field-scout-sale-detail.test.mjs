@@ -208,7 +208,7 @@ test("printable report: your filters or 3-year defaults, median with n, the 10 n
   assert.match(js, /Recorded sales in our data, through ' \+ F\.fmtDate\(thru\) \+ '; not an appraisal\./);
   assert.match(js, /middle of ' \+ med\.n \+ ' sales/);
   assert.match(read("field-scout-land.js"), /rep\.setAttribute\('href', base \+ \(cf \? '&cf=' \+ encodeURIComponent\(cf\) : ''\)\)/);
-  assert.match(read("field-report.html"), /field-scout-land\.js\?v=8/);
+  assert.match(read("field-report.html"), /field-scout-land\.js\?v=9/);
   assert.match(read("field-scout-read.js"), /FS_LAND_SRC='\/field-scout-land\.js\?v=9'/);
   // the same nearest-first list from rows (hand-checked: 2, 6, 10, 14 and 20 mi; the 30 mi sale is out)
   const c = { lat: 45.0, lng: -91.0 };

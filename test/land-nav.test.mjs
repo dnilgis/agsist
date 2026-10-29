@@ -75,7 +75,9 @@ test("rent pages: every land sales link resolves, and the three states with sale
     const st = f.slice(0, -5);
     if (LIVE[st]) {
       assert.ok(html.includes(`href="/land-sales/#${st}"`), `rent/${f}: the state's land sales line`);
-      assert.ok((html.match(/class="rs-ls"/g) || []).length >= 60, `rent/${f}: county sales links`);
+      // Vermont has 14 counties (13 in the rent table): every row links; the bigger states keep 60 or more
+      const need = st === "vermont" ? (html.match(/<tr><td/g) || []).length : 60;
+      assert.ok(need > 0 && (html.match(/class="rs-ls"/g) || []).length >= need, `rent/${f}: county sales links`);
     } else assert.equal(hrefs(html).length, 0, `rent/${f}: no land sales link without sales`);
   }
 });
