@@ -152,8 +152,9 @@ CURATED = {
     # Farm bill program dates and rules (DMC signup window and the rest): edited by
     # hand from USDA notices; seed_static.py reads it for /milk-prices (Oct 28).
     "data/farm-bill.json",
-    # What's new list (Oct 18): Sig or a session adds a line when something
-    # ships; scripts/build_whats_new.py bakes it into index.html and /changelog.
+    # What's new list (Oct 18): a branch adds one entry file in data/whats-new/
+    # when something ships (Oct 29); scripts/build_whats_new.py builds this list,
+    # the homepage line and /changelog from them on main (scripts/dev/main_build.py).
     "data/whats-new.json",
     # Hand-kept quote list; the briefing stopped printing a quote 2026-10-09.
     "data/quote-pool.json",

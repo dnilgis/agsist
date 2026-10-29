@@ -133,7 +133,9 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
   //     this": vintage.yml, weekdays 17:37 UTC (pinned in the test below).
   //   Oct 29 2026: Sig, ag stock tracker (STANDING-DECISIONS: "build /ag-stocks with closes from Yahoo ... use until
   //     told no"; brief: "The new daily workflow is approved by Sig (Oct 29)"): agstocks.yml, weekdays 22:17 UTC.
-  const APPROVED = { 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Sig, Oct 23 2026
+  //   Oct 29 2026: Sig, "yes do all five" (STANDING-DECISIONS: "the full suite runs on every main push and nightly ...
+  //     (schedule approved)"): main-checks.yml, nightly 08:17 UTC.
+  const APPROVED = { 'main-checks.yml': ['17 8 * * *'], 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Sig, Oct 23 2026
   const left = added.filter((a) => !Object.entries(APPROVED).some(([f, cs]) => cs.some((c) => a === `${f}: cron '${c}' (new workflow)` || a === `${f}: cron '${c}'`)));
   assert.deepEqual(left, [], 'a new schedule is Sig\'s decision: list it in the report, do not add it');
 });

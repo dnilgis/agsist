@@ -1,0 +1,58 @@
+name: merge-when-green
+
+# Merges an open pull request labeled "merge-when-green" once every PR check is green on its head
+# and GitHub calls the merge clean (Sig, Oct 29, 2026: auto-merge on green). GitHub's own auto-merge
+# needs required checks on main, which would stop the data jobs that commit straight to main, so
+# this does it: scripts/dev/merge_when_green.py decides (never a fork, a draft, a red, pending or
+# conflicted head), merges with a merge commit through the API, and comments once.
+#
+# A merge by the job token starts no push run on main, so the script then starts main-checks.yml
+# (the full suite) and every workflow that the push would have started (push to main, its paths
+# matching the merged files) by hand.
+#
+# Runs when pr-checks finishes and when a pull request gets the label. pull_request_target runs
+# main's copy of this file and checks out main, never the pull request's code.
+
+on:
+  workflow_run:
+    workflows: [pr-checks]
+    types: [completed]
+  pull_request_target:
+    types: [labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: merge-when-green
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    name: merge when green
+    if: github.event_name != 'pull_request_target' || github.event.label.name == 'merge-when-green'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
+        with:
+          python-version: '3.13'
+      - name: Python packages
+        run: pip install --quiet --disable-pip-version-check pyyaml==6.0.2
+      - name: merge the green ones
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/dev/merge_when_green.py

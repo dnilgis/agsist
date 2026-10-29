@@ -84,8 +84,13 @@ test('the workflow: the shards and --skip-node together run every check, and the
   const other = steps('other-checks').filter((s) => /checks\.sh/.test(s)).join('\n');
   assert.match(other, /^\s+bash scripts\/dev\/checks\.sh --skip-node\s*$/m, 'other-checks runs every other line');
   assert.doesNotMatch(other, /--only=/, 'and does not pick a subset');
-  // no other job runs checks, and no job runs a check by hand beside the list
-  for (const j of Object.keys(jobs)) if (!['node-tests', 'other-checks'].includes(j)) assert.doesNotMatch(jobs[j], /checks\.sh|node --test|python3? scripts\//, j);
+  // no other job runs checks, and no job runs a check by hand beside the list; the guard runs two
+  // named lines of checks.sh (the built-files guard and its inputs) and the test pick, nothing else
+  for (const j of Object.keys(jobs)) if (!['node-tests', 'other-checks', 'guard'].includes(j)) assert.doesNotMatch(jobs[j], /checks\.sh|node --test|python3? scripts\//, j);
+  const g = jobs.guard;
+  assert.deepEqual([...g.matchAll(/checks\.sh[^\n]*/g)].map((m) => m[0]), ['checks.sh --only=built-guard,built-inputs']);
+  assert.deepEqual([...g.matchAll(/python3? scripts\/[^\n]*/g)].map((m) => m[0]), ['python3 scripts/dev/test_map.py --select-base "origin/$PICK_BASE" --github-output --why', 'python3 scripts/dev/test_map.py --select-base origin/main --github-output --why']);
+  assert.doesNotMatch(g, /node --test/);
   for (const j of ['node-tests', 'other-checks']) assert.doesNotMatch(jobs[j], /node --test|python3? scripts\//, `${j} runs checks only through checks.sh`);
   for (const j of ['node-tests', 'other-checks']) assert.match(jobs[j], /node-version: '22'/, `${j}: Node 22`);
 });
@@ -135,11 +140,12 @@ test('"all checks" is red unless every other job is green', () => {
   const needs = a.match(/needs: \[([^\]]+)\]/)[1].split(',').map((s) => s.trim()).sort();
   assert.deepEqual(needs, Object.keys(jobs).filter((j) => j !== 'all-checks').sort(), 'it needs every other job');
   for (const j of needs) assert.ok(a.includes(`\${{ needs.${j}.result }}`), j);
-  assert.match(a, /\[ "\$NODE_TESTS" = success \] && \[ "\$OTHER_CHECKS" = success \]/, 'success only, not skipped or cancelled');
+  assert.match(a, /\[ "\$GUARD" = success \] && \[ "\$NODE_TESTS" = success \] && \[ "\$OTHER_CHECKS" = success \]/, 'success only, not skipped or cancelled');
 });
 
 test('the workflow: pull requests to main and by hand, no schedule, contents: read, superseded runs cancelled, actions pinned', () => {
-  assert.match(code, /^on:\n  pull_request:\n    branches: \[main\]\n  workflow_dispatch:\n\n/m);
+  assert.match(code, /^on:\n  pull_request:\n    branches: \[main\]\n  workflow_dispatch:\n(?:    .*\n)*  workflow_call:\n/m);
+  assert.doesNotMatch(code.slice(code.indexOf('\non:'), code.indexOf('\npermissions:')), /push:|workflow_run:/, 'pull requests, by hand, or called by main-checks.yml');
   assert.doesNotMatch(code, /schedule:|cron:/, 'no new timer without Sig');
   assert.doesNotMatch(code, /pull_request_target/, 'never runs a fork\'s code with secrets');
   assert.match(code, /^permissions:\n  contents: read\n\n/m);
@@ -148,7 +154,8 @@ test('the workflow: pull requests to main and by hand, no schedule, contents: re
   const uses = [...code.matchAll(/uses: (\S+)/g)].map((m) => m[1]).filter((u) => !u.startsWith('./'));
   assert.ok(uses.length >= 8);
   for (const u of uses) assert.match(u, /^[\w-]+\/[\w/-]+@[0-9a-f]{40}$/, `${u} is pinned to a commit`);
-  for (const j of ['node-tests', 'other-checks']) assert.match(steps(j)[0], /persist-credentials: false/, `${j}: no token left in .git/config`);
+  for (const j of ['guard', 'node-tests', 'other-checks']) assert.match(steps(j)[0], /persist-credentials: false/, `${j}: no token left in .git/config`);
+  for (const j of ['guard', 'node-tests', 'other-checks']) assert.match(steps(j)[0], /ref: \$\{\{ inputs\.ref \}\}/, `${j}: checks out the commit main-checks.yml names (empty in a pull request)`);
 });
 
 // scripts/dev/quick.sh: the build-time subset. It picks by rule and says why; it never claims to be a ship check.
@@ -181,7 +188,7 @@ test('the node test shards fail on a skipped test, not only on a failed one (Sig
   const dir = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'noskip-'));
   fs.writeFileSync(path.join(dir, 'a.test.mjs'), "import { test } from 'node:test'; test('runs', () => {}); test('needs a tool', (t) => t.skip('not here'));\n");
   // run that one line as checks.sh would, with run() reduced to "run the command"
-  const run2 = (env) => spawnSync('bash', ['-c', `NT='${path.join(dir, 'nt.out')}'; SHARD=; DEV='${path.join(root, 'scripts/dev')}'; run(){ shift; "$@"; }\n${line}`], { cwd: dir, encoding: 'utf8', env: { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'NODE_TEST_CONTEXT')), ...env } });
+  const run2 = (env) => spawnSync('bash', ['-c', `NT='${path.join(dir, 'nt.out')}'; SHARD=; DEV='${path.join(root, 'scripts/dev')}'; run(){ shift; "$@"; }\n${line}`], { cwd: dir, encoding: 'utf8', env: { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'NODE_TEST_CONTEXT' && k !== 'AGSIST_TEST_FILES')), ...env } });
   assert.equal(run2({ AGSIST_NO_SKIPS: '' }).status, 0, 'a skip passes locally without the variable');
   const r = run2({ AGSIST_NO_SKIPS: '1' });
   assert.equal(r.status, 1, 'and fails with it');
@@ -205,4 +212,69 @@ test('skips the PR checks accept: only the listed halves of an either/or pair, a
   assert.match(r.stdout, /reads the QR # SKIP jsqr is not installed/);
   assert.doesNotMatch(r.stdout, /official file loaded/, 'only the unlisted one is named');
   assert.equal(go('# skipped 1\n').status, 1, 'a count it cannot match to lines fails');
+});
+
+// Oct 29, 2026 (Sig: "yes do all five"): a pull request runs the tests its change can reach, main runs them all.
+test('the pick: the guard picks, the shards run the pick or every test, and every check still runs in full', () => {
+  const g = jobs.guard;
+  assert.match(g, /mode: \$\{\{ steps\.pick\.outputs\.mode \}\}/);
+  assert.match(g, /files: \$\{\{ steps\.pick\.outputs\.files \}\}/);
+  // anything but a pull request (main-checks.yml's call, a run by hand) is every test
+  assert.match(g, /elif \[ "\$FULL" = 1 \] \|\| \[ "\$\{\{ github\.event_name \}\}" != pull_request \]; then[\s\S]*?mode=all/);
+  // a pick by hand only from a run by hand (a replay against a named branch)
+  assert.match(g, /PICK_BASE: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.pick_base \|\| '' \}\}/);
+  assert.match(jobs['node-tests'], /needs: guard\n/);
+  const run = steps('node-tests').find((s) => /checks\.sh --only=node-test/.test(s));
+  assert.match(run, /AGSIST_TEST_FILES: \$\{\{ needs\.guard\.outputs\.mode == 'some' && needs\.guard\.outputs\.files \|\| '' \}\}/, 'the pick only when the guard picked some; empty means every test');
+  for (const [j, re] of [['node-tests', /checks\.sh --only=node-test/], ['other-checks', /checks\.sh --skip-node\s*$/m]]) {
+    const s = steps(j).find((x) => re.test(x));
+    assert.ok(s, j);
+    assert.match(s, /AGSIST_PREBUILD: '1'/, `${j}: the built files are built in this copy first`);
+  }
+  // the other checks are never picked: every line of checks.sh but node-test runs on every pull request
+  assert.doesNotMatch(jobs['other-checks'], /AGSIST_TEST_FILES|--only=/);
+  // checks.sh: the prebuild and the three built-files lines
+  const src = read('scripts/dev/checks.sh');
+  assert.match(src, /AGSIST_PREBUILD:-\}" = 1 \]; then\n\s+pb=\$\(python3 scripts\/dev\/main_build\.py build/);
+  for (const n of ['built-guard', 'built-inputs', 'built-files']) assert.ok(list().includes(n), n);
+});
+
+test('main-checks.yml: rebuilds the built files, then every test on that commit, nightly and on each push; red opens the issue', () => {
+  const m = read('.github/workflows/main-checks.yml');
+  const mc = m.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
+  assert.match(mc, /^on:\n  push:\n    branches: \[main\]\n    paths-ignore:\n/m);
+  assert.match(mc, /^  schedule:\n    - cron: '17 8 \* \* \*'/m, 'the nightly Sig approved (Oct 29)');
+  assert.match(mc, /^  workflow_dispatch:\n/m, 'merge-when-green.yml starts it after a merge');
+  for (const p of mc.match(/paths-ignore:\n((?:      - .*\n)+)/)[1].trim().split('\n')) assert.match(p, /- 'data\//, `only collection data is ignored: ${p}`);
+  assert.match(mc, /uses: \.\/\.github\/workflows\/pr-checks\.yml\n    with:\n      full: true\n      ref: \$\{\{ needs\.rebuild\.outputs\.sha \}\}\n    secrets: inherit/);
+  assert.match(mc, /needs: rebuild\n    uses:/, 'the checks run on the rebuilt commit');
+  assert.match(mc, /for i in 1 2 3 4 5; do\n\s+git fetch -q origin main\n\s+git reset -q --hard origin\/main\n\s+python3 scripts\/dev\/main_build\.py build/, 'rebuild from main as it is on each try');
+  assert.match(mc, /git add -A -- "\$\{BUILT\[@\]\}"/, 'adds only the built files');
+  assert.match(mc, /needs: \[rebuild, checks\]/);
+  assert.match(mc, /if: always\(\)/);
+  assert.match(mc, /run: python3 scripts\/dev\/main_red\.py/);
+  assert.match(mc, /^  issues: write$/m);
+  const uses = [...mc.matchAll(/uses: (\S+)/g)].map((x) => x[1]).filter((u) => !u.startsWith('./'));
+  for (const u of uses) assert.match(u, /^[\w-]+\/[\w/-]+@[0-9a-f]{40}$/, `${u} is pinned to a commit`);
+  const r = spawnSync('python3', ['scripts/dev/main_red.py', '--selftest'], { cwd: root, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+
+test('merge-when-green.yml: green and clean merges; red, pending, conflicted, a fork or no label does not', () => {
+  const m = read('.github/workflows/merge-when-green.yml');
+  const mc = m.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
+  assert.match(mc, /workflow_run:\n    workflows: \[pr-checks\]\n    types: \[completed\]/);
+  assert.match(mc, /pull_request_target:\n    types: \[labeled\]/);
+  // pull_request_target: main's code only, never the pull request's
+  assert.match(mc, /uses: actions\/checkout@[0-9a-f]{40}  # v[\d.]+\n        with:\n          ref: main\n          persist-credentials: false/);
+  assert.doesNotMatch(mc, /github\.event\.pull_request\.head/, 'never checks out or runs the head');
+  assert.match(mc, /run: python3 scripts\/dev\/merge_when_green\.py/);
+  // the jobs it waits for are the jobs pr-checks.yml has
+  const names = Object.values(jobs).map((t) => (t.match(/\n    name: (.+)/) || [])[1]).filter(Boolean)
+    .flatMap((n) => n.includes('${{ matrix.shard }}') ? [1, 2, 3, 4].map((i) => n.replace('${{ matrix.shard }}', i)) : [n]);
+  const req = JSON.parse(spawnSync('python3', ['-c', "import sys; sys.path.insert(0, 'scripts/dev'); import merge_when_green as M, json; print(json.dumps(M.REQUIRED))"], { cwd: root, encoding: 'utf8' }).stdout);
+  assert.deepEqual([...req].sort(), [...names].sort(), 'every pr-checks job, and only those');
+  const r = spawnSync('python3', ['scripts/dev/merge_when_green.py', '--selftest'], { cwd: root, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /selftest passed/);
 });

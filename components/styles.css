@@ -644,6 +644,8 @@ html.sa-subbed [data-signup-ask]:not([data-sa-done]){display:none}
   overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
 #site-header>header nav br{display:none}
 #site-header>header nav::-webkit-scrollbar{display:none}
+@media (scripting:enabled){#site-header>header nav{animation:snav-wait 3s step-end both}}
+@keyframes snav-wait{from{visibility:hidden}to{visibility:visible}}
 .skip-link{position:absolute;left:-9999px;top:0;z-index:1000;background:var(--brand-fill,var(--brand));color:#0a0c0d;font-family:var(--font-mono);font-size:.8rem;font-weight:700;padding:.6rem 1rem;border-radius:0 0 var(--r-sm) 0;text-decoration:none}
 .skip-link:focus{left:0}
 .nav-ic{width:18px;height:18px;flex:0 0 auto;opacity:.78;transition:opacity .15s}

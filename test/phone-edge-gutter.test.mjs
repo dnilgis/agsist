@@ -34,7 +34,7 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 test("styles.css carries the one phone gutter rule for p.by-end and nav.next-links", () => {
   const css = read("components/styles.css");
   assert.ok(css.includes('@media (max-width: 640px) { p.by-end, nav.next-links:not([style*="width"]) { padding-left: max(0px, calc(16px - (100vw - 100%) / 2)); padding-right: max(0px, calc(16px - (100vw - 100%) / 2)) } }'));
-  assert.ok(read("index.html").includes("/components/styles.css?v=27"), "styles.css ?v moved with the rule");
+  assert.ok(read("index.html").includes("/components/styles.css?v=28"), "styles.css ?v moved with the rule");
 });
 
 function serve() {

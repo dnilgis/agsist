@@ -197,8 +197,8 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <link rel="preload" href="/components/styles.css?v=27" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=27">
+  <link rel="preload" href="/components/styles.css?v=28" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=28">
   <link rel="stylesheet" href="/components/prf.css?v=9">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -363,8 +363,8 @@ def guide(meta, facts, states, BOOT):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <link rel="preload" href="/components/styles.css?v=27" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=27">
+  <link rel="preload" href="/components/styles.css?v=28" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=28">
   <link rel="stylesheet" href="/components/prf.css?v=9">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
