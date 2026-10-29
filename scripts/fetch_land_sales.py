@@ -231,8 +231,10 @@ PROBE_ONLY_DOCS = {
 PROBE_ONLY_DOCS["SD"] = ["https://sdproptax.info/DataLink/Data"]
 PROBE_ONLY_DOCS["NJ"] += ["https://www.nj.gov/treasury/taxation/lpt/statdata.shtml",
                           "https://www.nj.gov/treasury/taxation/pdf/lpt/modivlayout.pdf",
-                          # the 33 non-usable deed categories (N.J.A.C. 18:12-1.1) behind the SR-1A codes (Oct 29)
-                          "https://www.nj.gov/treasury/taxation/pdf/lpt/guidelines33.pdf"]
+                          # the non-usable deed categories (N.J.A.C. 18:12-1.1, amended May 19, 2025) behind the SR-1A
+                          # codes (Oct 29): the Division's guidelines and the 2025 rule as proposed
+                          "https://www.nj.gov/treasury/taxation/pdf/lpt/guidelines36.pdf",
+                          "https://nj.gov/treasury/proposed_rules/PRN2025-01157NJR227a.pdf"]
 CO_PARCELS = "https://gis.colorado.gov/public/rest/services/Address_and_Parcel/Colorado_Public_Parcels/FeatureServer"
 PROBE_ONLY_DOCS["CO"] = [CO_PARCELS + "?f=pjson", CO_PARCELS + "/0?f=pjson",
                          CO_PARCELS + "/0/query?where=1%3D1&returnCountOnly=true&f=json",
