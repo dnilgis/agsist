@@ -2014,7 +2014,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   function fmtRunT(d){try{return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch(e){return d.toISOString();}}
   function renderModelLine(d){var el=document.getElementById('sp-model');if(!el)return;var n=d&&d._nws;
     var at=n&&n.updated?new Date(n.updated):null;if(at&&isNaN(at))at=null;
-    el.innerHTML='Forecast (estimate) for everything on this page: the <a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noopener">National Weather Service</a> forecast grid (NDFD, 2.5 km cells)'+(n?', office '+n.office+' cell '+n.x+','+n.y:'')+'. '+(at?'Issued '+fmtRunT(at):'Issue time not given by the source')+'.';el.hidden=false;window.AgSprayModel={name:'NWS NDFD',office:n?n.office:null,issued:at};}
+    el.innerHTML='Forecast (estimate) for everything on this page: the National Weather Service forecast grid (NDFD, 2.5 km cells)'+(n?', office '+n.office+' cell '+n.x+','+n.y:'')+'. '+(at?'Issued '+fmtRunT(at):'Issue time not given by the source')+'.';el.hidden=false;window.AgSprayModel={name:'NWS NDFD',office:n?n.office:null,issued:at};}
   function loadWeather(lat,lon,label){
     document.getElementById('loc-setup').style.display='none';
     document.getElementById('factor-section').style.display='block';

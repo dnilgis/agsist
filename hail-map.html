@@ -564,7 +564,7 @@
 
       <div class="hm-note">
         <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office: a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Reporting follows population and spotters, so this is a map of <em>reported</em> hail, not every stone that fell. The corridors that show up year after year are real.
-        <div class="hm-src">Source: NWS Local Storm Reports via the <a href="https://mesonet.agron.iastate.edu/lsr/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>. Recent reports refresh daily; the full multi-year archive rebuilds monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; <a href="/field-scout">Draw one field in Field Scout &rarr;</a></div>
+        <div class="hm-src">Source: NWS Local Storm Reports via the Iowa Environmental Mesonet. Recent reports refresh daily; the full multi-year archive rebuilds monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; <a href="/field-scout">Draw one field in Field Scout &rarr;</a></div>
       </div>
 
       <section class="hm-cty" aria-labelledby="hm-cty-h">
@@ -771,7 +771,7 @@
         .then(function(g){
           if(!g){ banner('The background map could not load. The hail reports on it are unaffected.'); return; }
           L.geoJSON(g, { interactive:false,
-            attribution:'Boundaries: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (public domain)',
+            attribution:'Boundaries: Natural Earth (public domain)',
             style:function(){ return { color:'#c0cac3', weight:0.8, opacity:1,
                                        fillColor:'#f4f7f4', fillOpacity:1 }; }
           }).addTo(map).bringToBack();
