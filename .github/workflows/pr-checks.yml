@@ -290,7 +290,9 @@ jobs:
           T=$(ls "$RUNNER_TEMP"/agsist-checks/nt-*.out.times 2>/dev/null | head -1)
           [ -n "$T" ] || { echo "no times written"; exit 0; }
           echo "$(wc -l < "$T") test files, $(awk '{s+=$1} END {print int(s/1000)}' "$T") s summed"
-          grep -hE '^# (tests|suites|pass|fail|cancelled|skipped|todo) [0-9]+$' "${T%.times}" | tr '\n' ' '; echo
+          C=$(grep -hE '^# (tests|suites|pass|fail|cancelled|skipped|todo) [0-9]+$' "${T%.times}" | tr '\n' ' ')
+          echo "$C"
+          echo "::notice title=node test counts, shard ${{ matrix.shard }}::$(wc -l < "$T") files; $C"
           sort -rn "$T"
       - name: Upload the test log
         if: failure()
