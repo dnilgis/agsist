@@ -174,7 +174,7 @@ test("the page: one mount, the map code loads only once a place is open, files b
   const page = read("fast-facts.html"), here = read("components/here.js"), cm = read("components/changemap.js");
   assert.match(page, /<p id="h-where" class="h-where"><\/p>\n<div id="h-cm" class="cm" hidden><\/div>/);
   assert.doesNotMatch(page, /changemap\.js/, "not a page script: loaded by here.js");
-  assert.match(page, /\/components\/here\.js\?v=34"/);
+  assert.match(page, /\/components\/here\.js\?v=35"/);
   assert.match(here, /var CM_JS = '\/components\/changemap\.js\?v=\d+';/);
   assert.match(here, /loadCards\(fips\);\n\s+changeMap\(fips\);/);
   for (const f of [cm]) assert.doesNotMatch(f, /—/);
@@ -235,6 +235,8 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
       });
       await pg.goto(`http://127.0.0.1:${port}${c.url}`, { waitUntil: "load" });
       await pg.waitForSelector("#h-cm .cm-svg", { timeout: 30000 });
+      // the shapes come first; the lines, the buyers and the fill are all in once the box says ready
+      await pg.waitForSelector('#h-cm[data-cm="ready"]', { timeout: 30000 });
       const at = c.url + " @" + w;
       assert.match((await pg.textContent("#cm-top")).trim(), c.top, at);
       assert.match((await pg.textContent("#h-cm .cm-lead")).trim(), c.lead, at);
@@ -249,7 +251,7 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
       assert.equal((await pg.$$("#h-cm circle.cm-you")).length, 1, at);
       assert.match(await pg.textContent("#h-cm figcaption"), /U\.S\. Drought Monitor/);
       const box = await pg.evaluate(() => {
-        const m = document.querySelector("#h-cm .cm-svg").getBoundingClientRect(), s = document.querySelector("#h-cm .cm-side").getBoundingClientRect();
+        const m = document.querySelector("#h-cm .cm-box").getBoundingClientRect(), s = document.querySelector("#h-cm .cm-side").getBoundingClientRect();
         return { top: m.top + scrollY, mapRight: m.right, sideLeft: s.left, sw: document.documentElement.scrollWidth };
       });
       assert.ok(box.sw <= w + 1, "no sideways scroll " + at + ": " + box.sw);

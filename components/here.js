@@ -22,7 +22,7 @@
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var SALES_JS = '/components/atlas-sales.js?v=f31b5c18';
   var CL_JS = '/components/change-lines.js?v=2';
-  var CM_JS = '/components/changemap.js?v=2';
+  var CM_JS = '/components/changemap.js?v=3';
   var S = { seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
   var memo = {};
 
@@ -425,7 +425,10 @@
       return ok && loadScript(CM_JS, function () { return !!window.AgChangeMap; });
     }).then(function (ok) {
       if (!ok || !mine()) return;
-      window.AgChangeMap.draw(box, { fips: fips, st: p.st, stName: p.stName, name: p.name, lat: +w.lat, lng: +w.lng, net: window.AGSIST_BIDS_NET, mine: mine });
+      /* a tapped county links its Farmland Atlas county home where that page exists */
+      var cs = S.pct && S.pct.counties, sl = P.stSlug(p.st);
+      function atlas(f) { var c = cs && cs[f]; return c && c.s && String(c.k || '').indexOf('a') >= 0 ? '/farmland-atlas/' + sl + '/' + c.s : null; }
+      window.AgChangeMap.draw(box, { fips: fips, st: p.st, stName: p.stName, name: p.name, lat: +w.lat, lng: +w.lng, net: window.AGSIST_BIDS_NET, mine: mine, atlas: atlas });
     });
   }
   function loadSales(fips, st, href, mine) {
