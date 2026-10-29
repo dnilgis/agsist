@@ -25,7 +25,7 @@ const tmp = (p) => fs.mkdtempSync(path.join(process.env.TMPDIR || "/tmp", p));
 
 test("the What's new migration kept every item: same ids, same fields, same order", () => {
   const before = JSON.parse(read("test/fixtures/whats-new-before-split.json")).items;
-  assert.equal(before.length, 43, "the list as it stood on Oct 29, 2026");
+  assert.equal(before.length, 45, "the list as it stood on main on Oct 29, 2026, when it was split");
   const built = JSON.parse(execFileSync("python3", ["scripts/build_whats_new.py", "--list"], { cwd: ROOT, encoding: "utf8" }));
   const ids = new Set(before.map((i) => i.id));
   assert.deepEqual(built.filter((i) => ids.has(i.id)), before, "the old items come out exactly as they were, in order");
@@ -174,4 +174,18 @@ test("node-tests.sh runs only the picked files when given them, and every test w
   const go = (files) => { const nt = path.join(dir, "nt.out"); const r = spawnSync("bash", [path.join(ROOT, "scripts/dev/node-tests.sh"), nt, ""], { cwd: dir, encoding: "utf8", env: { ...env, AGSIST_TEST_FILES: files } }); assert.equal(r.status, 0, r.stdout + r.stderr); return fs.readFileSync(nt, "utf8"); };
   assert.match(go(""), /^# pass 3$/m, "all");
   assert.match(go("a.test.mjs"), /^# pass 1$/m, "only a");
+});
+
+test("during the move, a line a branch still added to data/whats-new.json gets its entry file on main instead of being dropped", () => {
+  const dir = tmp("adopt-");
+  fs.mkdirSync(path.join(dir, "e"));
+  fs.writeFileSync(path.join(dir, "d.json"), JSON.stringify({ items: [{ id: "2026-10-30-late", date: "2026-10-30", title: "T", line: "L", link: "/" }] }));
+  const code = "import sys, json; sys.path.insert(0, 'scripts'); import build_whats_new as w; w.ENTRIES, w.DATA = sys.argv[1], sys.argv[2]; print(json.dumps([w.adopt('2026-11-08'), w.adopt('2026-10-30'), w.adopt('2026-10-30')]))";
+  const [late, kept, again] = JSON.parse(py(code, [path.join(dir, "e"), path.join(dir, "d.json")]).trim().split("\n").pop());
+  assert.deepEqual(late, [], "after the move window nothing is kept: deleting an entry file takes the entry down");
+  assert.deepEqual(kept, ["2026-10-30-late"]);
+  assert.deepEqual(again, [], "once");
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, "e/2026-10-30-late.json"), "utf8")), { id: "2026-10-30-late", date: "2026-10-30", title: "T", line: "L", link: "/" });
+  const cp = JSON.parse(py("import sys, json; sys.path.insert(0, 'scripts/dev'); import main_build as m; print(json.dumps(m.COMMIT))"));
+  assert.ok(cp.includes("data/whats-new"), "the rebuild on main commits kept entry files");
 });

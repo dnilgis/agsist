@@ -184,7 +184,33 @@ def build_data(src, items):
     return data_json(items)
 
 
+# The move to one file per entry (Oct 29, 2026): a branch made before it may still add its line to
+# data/whats-new.json, and merge after it. Until this date a build on main keeps such a line by
+# writing its entry file (main-checks.yml commits data/whats-new/ with the built files) instead of
+# dropping it. After it, a line with no entry file is gone on the next build, which is how an
+# entry is taken down: delete its file.
+ADOPT_UNTIL = "2026-11-07"
+
+
+def adopt(today=None):
+    today = today or dt.datetime.now(dt.timezone.utc).date().isoformat()
+    if today > ADOPT_UNTIL or not os.path.exists(DATA):
+        return []
+    have = {f[:-5] for f in os.listdir(ENTRIES) if f.endswith(".json")}
+    out = []
+    for it in json.load(open(DATA, encoding="utf-8")).get("items", []):
+        if isinstance(it, dict) and it.get("id") and it["id"] not in have and re.fullmatch(r"[a-z0-9-]+", it["id"]):
+            with open(os.path.join(ENTRIES, it["id"] + ".json"), "w", encoding="utf-8") as fh:
+                json.dump({k: it.get(k) for k in FIELDS}, fh, indent=1, ensure_ascii=False)
+                fh.write("\n")
+            out.append(it["id"])
+            print("kept %s: it was in data/whats-new.json with no entry file, so its entry file is written" % it["id"])
+    return out
+
+
 def main():
+    if not ({"--check", "--validate", "--list"} & set(sys.argv)):
+        adopt()
     items = load()
     if "--validate" in sys.argv:
         print("%d entries in data/whats-new are valid" % len(items))

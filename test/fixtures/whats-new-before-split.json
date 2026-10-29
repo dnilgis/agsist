@@ -2,11 +2,25 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-29-ratecard",
+   "date": "2026-10-29",
+   "title": "A new sponsor rate card",
+   "line": "Advertise as the Daily Sponsor, a State Sponsor, the Cash Bids Sponsor or a featured elevator on its own town page; first month free, then a yes or no.",
+   "link": "/sponsor"
+  },
+  {
    "id": "2026-10-29-home-steady",
    "date": "2026-10-29",
    "title": "The homepage holds still while it loads",
    "line": "The top of the homepage no longer jumps down as it finishes loading, on a first visit or in the evening when the overnight futures line arrives.",
    "link": "/"
+   },
+   {
+   "id": "2026-10-29-salesnav",
+   "date": "2026-10-29",
+   "title": "Farm sales easier to find",
+   "line": "Every Farmland Atlas county page links its land sales, or says where the state's records stand. Rent pages, Fast Facts and search find county sales too.",
+   "link": "/land-sales/"
   },
   {
    "id": "2026-10-28-farm-credit",

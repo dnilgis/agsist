@@ -13,6 +13,7 @@ checks run `build` in their own copy before the tests, so the tests see what mai
                                                        default origin/main; on main itself it passes)
   python3 scripts/dev/main_build.py validate           the inputs are valid (entries, changelog data)
   python3 scripts/dev/main_build.py paths              print the built files
+  python3 scripts/dev/main_build.py commit-paths       print what the rebuild on main commits
 """
 import os
 import re
@@ -39,6 +40,9 @@ BUILT = {
         r'"dateModified":"[^"]*"',
     ],
 }
+# what the rebuild on main commits: the built files, and entry files a build kept for a line that a
+# branch made before the move still added to data/whats-new.json (scripts/build_whats_new.py adopt)
+COMMIT = list(BUILT) + ["data/whats-new"]
 VALIDATE = [
     ["scripts/build_whats_new.py", "--validate"],
     ["scripts/build_changelog.py", "--validate"],
@@ -90,6 +94,9 @@ def main(argv):
     cmd = argv[0] if argv else ""
     if cmd == "paths":
         print("\n".join(BUILT))
+        return 0
+    if cmd == "commit-paths":
+        print("\n".join(COMMIT))
         return 0
     if cmd == "build":
         for b in BUILDERS:

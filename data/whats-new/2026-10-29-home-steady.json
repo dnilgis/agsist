@@ -3,5 +3,6 @@
  "date": "2026-10-29",
  "title": "The homepage holds still while it loads",
  "line": "The top of the homepage no longer jumps down as it finishes loading, on a first visit or in the evening when the overnight futures line arrives.",
- "link": "/"
+ "link": "/",
+ "rank": 2
 }

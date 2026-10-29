@@ -65,7 +65,7 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          mapfile -t BUILT < <(python3 scripts/dev/main_build.py paths)
+          mapfile -t BUILT < <(python3 scripts/dev/main_build.py commit-paths)
           for i in 1 2 3 4 5; do
             git fetch -q origin main
             git reset -q --hard origin/main
