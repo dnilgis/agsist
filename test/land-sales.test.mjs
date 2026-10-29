@@ -134,6 +134,7 @@ test("no buyer or seller name in any published page, sitemap or data file outsid
     for (const l of (r.stdout || "").split("\n").filter(Boolean)) { const k = l.indexOf(":"); hits.push([l.slice(0, k), l.slice(k + 1)]); }
   }
   const biz = elevatorNames();
+  // Oct 29, 2026: GeoNames towns Bingham Farms (MI) and Brittany Farms-Highlands (PA) matched sale parties by name.
   // a real town that shares a party's name (GeoNames' "Bingham Farms", Michigan; "Brittany Farms-Highlands",
   // Pennsylvania) is a place in our own place list (data/places/, 2026-10-29), not the party: allowed only when the
   // hit is inside one of that file's town names, as whole words
