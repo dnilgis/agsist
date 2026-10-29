@@ -36,8 +36,6 @@
   <link rel="preload" href="/components/styles.css?v=28" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=28">
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
-  <!-- 2026-09-30: removed a redundant direct Google Fonts stylesheet link;
-       components/styles.css already self-hosts these same weights. -->
 
   
   <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css">
@@ -115,7 +113,6 @@
               </div>
             </div>
 
-            <!-- empty-state invitation (hidden once a field is active) -->
             <div class="fs-invite" id="fs-invite">
               <div class="fs-invite-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path d="M3 7 L12 12 L21 7 M12 12 V22" opacity=".5"/></svg></div>
               <h1 class="fs-invite-h">Read any field in the country</h1>
@@ -137,7 +134,6 @@
               <button class="fs-btn fs-post" id="fs-clear" type="button" disabled><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Clear</button>
               <button class="fs-btn fs-post fs-jumpread" id="fs-jumpread" type="button">See the read &darr;</button>
             </div>
-            <!-- trace toolbar (visible only while drawing) -->
             <div class="fs-tracebar" id="fs-tracebar" hidden>
               <button id="fs-tr-undo" type="button">Undo point</button>
               <button id="fs-tr-finish" class="fs-tr-primary" type="button">Finish field</button>
@@ -152,7 +148,6 @@
               <button type="button" data-ac="160">160</button>
               <span class="fs-sizer-u">ac</span>
             </div>
-            <!-- layer sheet: legend, season replay, opacity — pinned to the map -->
             <div class="fs-layersheet" id="fs-layersheet" hidden>
               <div class="fs-ls-head">
                 <div class="fs-legend" id="fs-legend" hidden></div>
@@ -193,7 +188,6 @@
 
         <div class="fs-deck" id="fs-deck" hidden></div>
 
-        <!-- UNDERTRAY: saved fields (layer controls now live on the map itself) -->
         <div class="fs-undertray">
           <div class="fs-saved" id="fs-saved" hidden></div>
         </div>
@@ -231,7 +225,6 @@
         <p class="fs-sources-note">Field Scout does not know who owns or farms the ground, what it yielded, or what went on it. Questions or a number that looks wrong: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
       </section>
 
-      <!-- Data sources (E-E-A-T: authoritative attribution) -->
       <section class="fs-sources" aria-labelledby="fs-src-h">
         <h2 id="fs-src-h" class="fs-faq-title">Where the data comes from</h2>
         <p class="fs-sources-lead">Field Scout reads public datasets when you draw a field. Each read is only as good as its source:</p>
@@ -271,7 +264,6 @@
         </ul>
       </nav>
 
-      <!-- FAQ (mirrors the FAQPage schema in <head>) -->
       <section class="fs-faq" aria-labelledby="fs-faq-h">
         <h2 id="fs-faq-h" class="fs-faq-title">Field Scout: common questions</h2>
 
@@ -320,7 +312,6 @@
         <details class="fs-faq-item"><summary>Can I use Field Scout to evaluate land to rent or buy?</summary>
           <p>Yes. That's one of its best uses. Drawing a parcel shows you its soil classes and productivity index, average slope, ten years of what actually grew there from the satellite record (a quick rotation check), drought and hail history, and the nearest cash bids. The printable field report puts it all on one page for the file. It's public survey data, so treat it as due-diligence context alongside a walk of the ground, not an appraisal.</p></details>
       </section>
-      <!-- one quiet promo line (components/rain-print-promo.js); empty and hidden when off -->
 <div data-land-alert data-follow="#fl-comps" data-source="page:field-scout" hidden></div>
 <div style="max-width:none;margin:0 auto;padding:0"><p class="rp-promo" data-rain-print-promo="see" hidden></p></div><script src="/components/rain-print-promo.js?v=6" defer></script>
     </div>

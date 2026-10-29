@@ -191,7 +191,6 @@
 <!-- /static-nav:header -->
 </div>
 
-  <!-- v2: sticky mobile bottom bar -->
   <div class="sticky-bar" id="sticky-bar" role="status" aria-live="polite" aria-label="Quick result summary">
     <div>
       <div class="sticky-bar-label">Total Bushels</div>
@@ -328,7 +327,6 @@
             </div>
           </div>
           <div class="field-hint" id="pack-hint">Pack: grain settles under its own weight. Dealer charts count 6%. Leave at 0 for a conservative number.</div>
-          <!-- v3: editable shrink factor -->
           <div class="input-grid cols-2">
             <div>
               <label for="shrinkFactor">Shrink per point (%)</label>
@@ -338,7 +336,6 @@
           </div>
           <div class="field-hint">Water alone is 1.183% a point drying to 15.5% (Purdue NCH-61). Corn starts at 1.4, the Iowa State figure the <a href="/grain-shrink">grain shrink page</a> uses; other grains start at 1.3. Set it to what your scale ticket shows.</div>
 
-          <!-- v2: reset + copy actions -->
           <div class="action-row">
             <button class="btn-reset" onclick="resetForm()">&#8635; Reset</button>
             <button class="btn-copy" onclick="copyResult()"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Copy Results</button>
@@ -412,7 +409,6 @@
             </div>
           </div>
 
-          <!-- v3: size-a-bin mode -->
           <div style="margin-top:16px">
             <div class="section-label">Sizing new storage</div>
             <div class="input-grid cols-2">
@@ -437,7 +433,6 @@
       <!-- RESULTS PANEL -->
       <div class="panel results-panel">
         <div class="panel-head"><h2>Capacity and value</h2></div>
-        <!-- v2: aria-live so screen readers hear result updates -->
         <div class="panel-body" aria-live="polite" aria-atomic="true">
           <div id="calc-err" class="field-hint" role="alert" style="display:none;color:#e05c5c;font-weight:700;margin-bottom:8px"></div>
 
@@ -505,7 +500,6 @@
     </div>
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="grain-bin-calculator"></aside><!-- /grid-2 -->
 
-    <!-- v2: SEO content section -->
     <div class="content-section">
       <h2>How to use this grain bin calculator</h2>
       <p>Enter your bin diameter and eave height (or length, width, and depth for rectangular storage), choose your crop, and the calculator shows total bushel capacity, weight, and, if you enter a market price, estimated net value after moisture shrink and drying costs. The depth slider lets you model a partially filled bin. Use the Hopper option for bins with an inverted-cone floor; the calculator automatically adds the hopper cone volume to your total.</p>
@@ -604,7 +598,6 @@
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
 
-  <!-- v3: printable record — populated by printRecord()/beforeprint, hidden on screen -->
   <div id="print-record-wrap" style="display:none" aria-hidden="true"></div>
   <style>
   @media print{
