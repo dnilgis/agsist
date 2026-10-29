@@ -74,10 +74,15 @@ function elevatorNames() {
   }
   return s;
 }
-// the basis history names each grain buyer by its business name too
+// the basis history names each grain buyer by its business name, and the ag stocks data each listed
+// company by its own (a public company that bought farm ground is not a private name)
 function basisFiles() {
-  const d = path.join(ROOT, "data", "basis-sparklines");
-  return fs.existsSync(d) ? fs.readdirSync(d).filter((f) => f.endsWith(".json")).map((f) => "data/basis-sparklines/" + f) : [];
+  const out = [];
+  for (const dir of ["basis-sparklines", "agstocks"]) {
+    const d = path.join(ROOT, "data", dir);
+    if (fs.existsSync(d)) out.push(...fs.readdirSync(d).filter((f) => f.endsWith(".json")).map((f) => `data/${dir}/` + f));
+  }
+  return out;
 }
 // a party whose name starts a listed business's name ("X Grain" and "X Grain Co." in the list) is that business
 function isBiz(biz, n) {
