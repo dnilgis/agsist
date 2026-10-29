@@ -33,6 +33,16 @@
  * outline above, so if those tiles stop loading the page is no worse than it
  * was. Any other tile URL template, or any template carrying a key or token,
  * fails here.
+ *
+ * 2026-10-29: Field Scout's satellite view was Esri World Imagery with no account
+ * and its "Map" view was CARTO dark_all, both in the root field-scout.js. This file
+ * never saw them: it read root .html pages and components/*.js only, and Field
+ * Scout's code lives in root .js files. Counted that day: two vendor URLs, one
+ * file, invisible to the check. Now it reads EVERY file the site serves that can
+ * name a tile host (.html, .js, .mjs, .css anywhere in the repository except the
+ * tests and scripts, which name vendors on purpose), and Esri's and CARTO's hosts
+ * are banned anywhere on the site, tile template or not. Field Scout moved to the
+ * USGS National Map the same day (Sig: USGS replaces Esri and CARTO).
  */
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -45,9 +55,11 @@ const OUTLINE = "data/us-states.geo.json";
    meant to be — it is the list of everything this site has ever used plus the
    obvious neighbours, so a future edit that reaches for one gets stopped and
    has to argue for it here first. */
-const TILE_VENDORS = [
-  "basemaps.cartocdn.com", "cartodb-basemaps", "tile.openstreetmap",
-  "server.arcgisonline.com", "basemaps-api.arcgis.com", "api.mapbox.com",
+export const TILE_VENDORS = [
+  "basemaps.cartocdn.com", "cartocdn.com", "cartodb-basemaps", "tile.openstreetmap",
+  "server.arcgisonline.com", "services.arcgisonline.com", "arcgisonline.com",
+  "basemaps-api.arcgis.com", "ibasemaps-api.arcgis.com", "basemaps.arcgis.com",
+  "World_Imagery/MapServer", "api.mapbox.com",
   "tiles.stadiamaps.com", "api.maptiler.com", "tile.thunderforest.com",
   "tiles.openfreemap.org", "tile.opentopomap.org",
 ];
@@ -93,19 +105,48 @@ function pages() {
     .map((f) => [f, readFileSync(join(ROOT, f), "utf8")]);
 }
 
-/* what the browser runs: root pages plus the component scripts they load */
-function served() {
-  const dir = join(ROOT, "components");
-  const js = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".js"))
-    .map((f) => ["components/" + f, readFileSync(join(dir, f), "utf8")]) : [];
-  return pages().concat(js);
+/* EVERY FILE THE SITE SERVES THAT CAN NAME A TILE HOST, not a list of folders somebody
+   remembered. Pages serves the whole repository, so the walk is the whole repository
+   minus what is never code a browser runs (git, the tests and scripts that name vendors
+   on purpose, the reference library) and minus data/, whose JSON never carries a tile
+   URL (its few .js files are read). Root .js files are in: that is where Field Scout's
+   Esri and CARTO URLs sat unseen until 2026-10-29. */
+const SKIP_DIRS = new Set([".git", "node_modules", "test", "scripts", "references", ".github", ".verify"]);
+const CODE = /\.(html?|m?js|css)$/i;
+export function servedFiles(root = ROOT) {
+  const out = [];
+  (function walk(rel) {
+    let ents;
+    try { ents = readdirSync(join(root, rel), { withFileTypes: true }); } catch { return; }
+    for (const e of ents) {
+      const r = rel ? rel + "/" + e.name : e.name;
+      if (e.isDirectory()) { if (!(rel === "" && SKIP_DIRS.has(e.name))) walk(r); }
+      else if (CODE.test(e.name) && (rel.split("/")[0] !== "data" || /\.m?js$/i.test(e.name))) out.push(r);
+    }
+  })("");
+  return out.sort();
 }
+function served(root = ROOT) {
+  return servedFiles(root).map((f) => [f, readFileSync(join(root, f), "utf8")]);
+}
+/* Every vendor host or tile template that is not allowed, in every served file. */
+export function scanSite(root = ROOT) {
+  const vendors = [], templates = [], okTemplates = [];
+  let files = 0;
+  for (const [name, text] of served(root)) {
+    files++;
+    for (const v of TILE_VENDORS) if (text.includes(v)) vendors.push(`${name} -> ${v}`);
+    if (text.includes("{z}")) for (const u of tileTemplates(text)) (tileAllowed(u) ? okTemplates : templates).push(`${name} -> ${u}`);
+  }
+  return { files, vendors, templates, okTemplates };
+}
+
+let SCAN = null;
+function scan() { return SCAN || (SCAN = scanSite()); }
 
 function checkTileTemplates() {
   console.log("\nEVERY TILE URL IS PUBLIC DOMAIN AND KEYLESS");
-  const seen = [], badOnes = [];
-  for (const [name, text] of served())
-    for (const u of tileTemplates(text)) (tileAllowed(u) ? seen : badOnes).push(`${name} -> ${u}`);
+  const { templates: badOnes, okTemplates: seen } = scan();
   if (badOnes.length)
     bad("every tile template is on " + PUBLIC_TILE_HOSTS.join(", ") + " with no key",
         badOnes.join("\n         ") +
@@ -115,18 +156,21 @@ function checkTileTemplates() {
 }
 
 function checkNoVendors() {
-  console.log("\nNO RENTED TILES");
-  const found = [];
-  for (const [name, html] of served())
-    for (const v of TILE_VENDORS)
-      if (html.includes(v)) found.push(`${name} -> ${v}`);
+  console.log("\nNO RENTED TILES, ANYWHERE ON THE SITE");
+  const { files, vendors: found } = scan();
   if (found.length)
     bad("no page fetches tiles from a third party",
         found.join("\n         ") +
         "\n         A rented basemap can be keyed, watermarked or retired without notice." +
         "\n         That happened on 2026-09-09 and nothing in this repository saw it." +
-        "\n         Use data/us-states.geo.json, or change this list and say why.");
-  else ok(`no page fetches tiles from any of ${TILE_VENDORS.length} known vendors`);
+        "\n         Use the USGS National Map or data/us-states.geo.json, or change this list and say why.");
+  else ok(`${files} served files read; none names any of ${TILE_VENDORS.length} rented tile hosts`);
+  /* the walk must reach the files it exists for */
+  const names = new Set(servedFiles());
+  const must = ["field-scout.js", "field-scout-read.js", "field-scout-land.js", "field-scout-layers.js", "components/radar-rain-page.js", "rain-radar.html"];
+  const miss = must.filter((f) => existsSync(join(ROOT, f)) && !names.has(f));
+  if (miss.length) bad("the scan reads every file that draws a map", "not read: " + miss.join(", "));
+  else ok("the scan reads " + must.join(", "));
 }
 
 function checkOutlineUsers() {
@@ -209,16 +253,21 @@ function selftest() {
   eq(tileAllowed("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"), false, "CARTO is not");
   eq(tileAllowed("https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=X"), false, "a keyed vendor is not");
   eq(tileAllowed("https://tile.openstreetmap.org/{z}/{x}/{y}.png"), false, "OSM's tile server is not");
+  eq(tileAllowed("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"), false, "Esri World Imagery is not");
+  eq(tileAllowed("https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"), true, "USGS Imagery Only is");
   console.log("selftest passed");
 }
 
-if (process.argv.includes("--selftest")) { selftest(); process.exit(0); }
+const MAIN = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (MAIN && process.argv.includes("--selftest")) { selftest(); process.exit(0); }
 
-const outline = readOutline();
-checkNoVendors();
-checkTileTemplates();
-checkOutlineUsers();
-checkOutlineFile(outline);
-checkCountries(outline);
-console.log(`\n  ${pass} passed, ${fail} failed\n`);
-process.exit(fail ? 1 : 0);
+if (MAIN) {
+  const outline = readOutline();
+  checkNoVendors();
+  checkTileTemplates();
+  checkOutlineUsers();
+  checkOutlineFile(outline);
+  checkCountries(outline);
+  console.log(`\n  ${pass} passed, ${fail} failed\n`);
+  process.exit(fail ? 1 : 0);
+}

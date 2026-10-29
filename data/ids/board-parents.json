@@ -3,7 +3,7 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2163,
+  "live_boards": 2168,
   "with_parent": 131,
   "with_dest": 112,
   "parent_by_rule": {

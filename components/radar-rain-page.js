@@ -208,11 +208,13 @@
 
   /* ---------- the map underneath ---------- */
   /* USGS The National Map cached basemaps: public domain, no key, Web Mercator,
-     /tile/{level}/{row}/{col}. Topo for roads, towns and creeks; Imagery Topo for
-     the aerial view with the same labels. */
+     /tile/{level}/{row}/{col}. Topo for roads, towns and creeks; Imagery Only for
+     the aerial view. USGS retires the Imagery Topo service (aerial plus labels) after
+     Nov 16, 2026 (its notice of Oct 13, 2026), so the aerial view moved to Imagery Only,
+     the same NAIP photos without the labels, cached to the same level 16. */
   var BASES = {
     topo: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
-    aerial: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}'
+    aerial: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}'
   };
   var BASE_MAX_Z = 16;
   var RAIN_OPACITY = 0.55;      // over the map: towns and roads read through the rain
