@@ -1,0 +1,39 @@
+# actionlint settings (run by the "actionlint" step in pr-checks.yml, over .github/workflows).
+# First run, 1.7.12: 98 findings, none from cron, expressions or action inputs. The 95 shellcheck notes below
+# are shell style in scripts that run fine today; a shellcheck code NOT listed here (a real error such as an
+# undefined variable or a bad test) still fails the check. Each ignore has its one-line reason.
+paths:
+  .github/workflows/**/*.yml:
+    ignore:
+      # SC2086 double quote to prevent globbing: the unquoted values are values the workflows set themselves; style, no failure seen
+      - 'SC2086:'
+      # SC2046 quote this command substitution: file lists from the repo's own folders; style, no failure seen
+      - 'SC2046:'
+      # SC2012 use find instead of ls: ls over the repo's own file names; style
+      - 'SC2012:'
+      # SC2010 ls | grep: same, style
+      - 'SC2010:'
+      # SC2015 A && B || C: the fallback after || is intended; style
+      - 'SC2015:'
+      # SC2034 unused loop variable i: a loop variable that is never read; style
+      - 'SC2034:'
+      # SC1007 VAR= cmd: FOO= cmd clears a variable on purpose; style
+      - 'SC1007:'
+      # SC2129 individual redirects: style only
+      - 'SC2129:'
+      # SC2317 unreachable command: shellcheck cannot see these commands are called indirectly; style
+      - 'SC2317:'
+      # SC2018 and SC2019 tr [a-z] [A-Z]: ASCII-only values; style
+      - 'SC2018:'
+      - 'SC2019:'
+  # probe.yml: the blank "all" choice in a workflow_dispatch list; GitHub accepts it and the workflow has run
+  .github/workflows/probe.yml:
+    ignore:
+      - 'string should not be empty'
+  # two workflows switched off on purpose with "if: false" (each has the note at its top)
+  .github/workflows/rebuild-scorecard.yml:
+    ignore:
+      - 'constant expression "false" in condition'
+  .github/workflows/regrade-archive.yml:
+    ignore:
+      - 'constant expression "false" in condition'

@@ -347,7 +347,6 @@ jobs:
         env:
           AL_VERSION: '1.7.12'
           AL_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
-        continue-on-error: true   # first run only: findings go to the job summary
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/actionlint"; mkdir -p "$d"; cd "$d"
