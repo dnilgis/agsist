@@ -30,7 +30,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back)"
+        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe or soil:IL, soil:IN, soil:WI (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -71,6 +71,7 @@ jobs:
           python scripts/wi_retr_browser.py --selftest
           python scripts/probe_field_layers.py --selftest
           python scripts/build_land_summary.py --selftest
+          python scripts/land_soil.py --selftest
           OMP_NUM_THREADS=1 python scripts/build_land_index.py --selftest
       - name: pdftotext for the probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
@@ -126,6 +127,20 @@ jobs:
           "$RUNNER_TEMP/pwc/bin/pip" install -q playwright==1.56.0
           "$RUNNER_TEMP/pwc/bin/python" -m playwright install --with-deps chromium >/dev/null
           "$RUNNER_TEMP/pwc/bin/python" scripts/comp_report_live.py
+      # Dispatch only (never on the schedule): soil for each keyed farm sale's section (property panel
+      # step 6, a test before any page shows it). BLM PLSS sections, USDA SSURGO through Soil Data Access.
+      # The answers go to data/land-raw/soil (raw branch, below); nothing is committed, no page changes.
+      - name: Section soil for the keyed farm sales
+        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil') }}
+        timeout-minutes: 140
+        run: |
+          T="${{ inputs.task }}"
+          if [ "$T" = "soil-probe" ]; then
+            for S in IL IN WI; do python scripts/land_soil.py --fetch "$S" --limit 12 --minutes 10 || echo "::warning::$S soil probe failed"; done
+          else
+            S=$(echo "${T#soil:}" | tr -cd 'A-Za-z' | tr a-z A-Z)
+            python scripts/land_soil.py --fetch "$S" --minutes 125 || echo "::warning::$S soil fetch failed"
+          fi
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
@@ -154,18 +169,18 @@ jobs:
       # written, or the committed ones when this run fetched nothing. Offline; refuses a summary
       # that carries a source name. Same command builds them locally.
       - name: Build Atlas sale summaries
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: python scripts/build_land_summary.py
       # The farmland sale index (data/land/index.json; a section of /land-sales/ since Oct 29, 2026) from the same county
       # files. Offline; refuses output that carries a source name.
       - name: Build the farmland sale index
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: OMP_NUM_THREADS=1 python scripts/build_land_index.py
       # The farm sale pages (/land-sales/: one per IL and WI county, the monthly update, the hub and its
       # sitemap) and their data (data/land-sales/, names only under data/land/names/, robots-blocked).
       # Offline; refuses to write a buyer or seller name outside data/land/.
       - name: Build the farm sale pages
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: python scripts/build_land_sales.py
       - name: Save raw answers to the raw branch
         if: ${{ !cancelled() }}
@@ -179,6 +194,7 @@ jobs:
       - name: Site budget
         run: python scripts/check_site_budget.py
       - name: Commit if changed (race-tolerant)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil')) }}
         run: |
           set -e
           git config user.name "AGSIST Bot"
