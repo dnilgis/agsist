@@ -154,7 +154,7 @@ test("new recorded farm sales: counts only, exact only when the list reaches bac
   // withheld
   assert.match(C.newSales(null, "55005", "WI").why, /did not load/);
   assert.match(C.newSales(wi, "55999", "WI").why, /no recorded sales list for this county/);
-  assert.match(C.newSales(null, "09003", "CT").why, /^recorded farm sales are on hand for Illinois, Indiana, Wisconsin and Vermont only$/);
+  assert.match(C.newSales(null, "09003", "CT").why, /^recorded farm sales are on hand for Illinois, Indiana, Wisconsin, Vermont and New Jersey only$/);
 });
 
 test("the sentence: changed lines lead; nothing changed says so in one line; nothing known says that", () => {
@@ -174,7 +174,7 @@ test("the page: one mount, the map code loads only once a place is open, files b
   const page = read("fast-facts.html"), here = read("components/here.js"), cm = read("components/changemap.js");
   assert.match(page, /<p id="h-where" class="h-where"><\/p>\n<div id="h-cm" class="cm" hidden><\/div>/);
   assert.doesNotMatch(page, /changemap\.js/, "not a page script: loaded by here.js");
-  assert.match(page, /\/components\/here\.js\?v=33"/);
+  assert.match(page, /\/components\/here\.js\?v=34"/);   // v34: change-lines.js v3 (fx/landnj, New Jersey sales)
   assert.match(here, /var CM_JS = '\/components\/changemap\.js\?v=\d+';/);
   assert.match(here, /loadCards\(fips\);\n\s+changeMap\(fips\);/);
   for (const f of [cm]) assert.doesNotMatch(f, /—/);
@@ -219,7 +219,7 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
   const cases = [
     { url: "/fast-facts?fips=17173", lead: /^Drought worse \(D0 to D1\); top corn bid within 50 mi now at a different place than Oct 22; 2 recorded farm sales dated in September\.$/, top: /^Shelby Co\., IL\s*corn\s*[A-Z][a-z]{2} \d+$/, worse: 20, pts: true },
     { saved: "54728", url: "/fast-facts", lead: /^3 recorded farm sales dated in September\.$/, top: /^Barron Co\., WI\s*corn/, held: /Held\s*Drought at D2; the top posted corn bid within 50 mi \(Oct delivery\) is at the same place as on Oct 22/, worse: 0, pts: true },
-    { url: "/fast-facts?fips=09003", lead: /^Not enough on file here to say what changed this week\.$/, top: /^Hartford Co\., CT/, off: /Not shown\s*Drought: the Drought Monitor maps Connecticut.s nine planning regions[\s\S]*Top corn bid: no posted corn bid within 50 mi in our network; Corn basis: no Connecticut corn basis middle this week; Land sales: recorded farm sales are on hand for Illinois, Indiana, Wisconsin and Vermont only\./, worse: 0, pts: false },
+    { url: "/fast-facts?fips=09003", lead: /^Not enough on file here to say what changed this week\.$/, top: /^Hartford Co\., CT/, off: /Not shown\s*Drought: the Drought Monitor maps Connecticut.s nine planning regions[\s\S]*Top corn bid: no posted corn bid within 50 mi in our network; Corn basis: no Connecticut corn basis middle this week; Land sales: recorded farm sales are on hand for Illinois, Indiana, Wisconsin, Vermont and New Jersey only\./, worse: 0, pts: false },
   ];
   try {
     for (const c of cases) for (const w of [390, 1280]) {

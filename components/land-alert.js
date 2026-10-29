@@ -32,8 +32,8 @@
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   /* ZIP3 in or beside Illinois, Wisconsin, Indiana and Vermont: IL 600-629, WI 530-549, IN 460-479, IA 500-528,
      MN 550-567, MO 630-658, KY 400-427, MI 480-499, OH 430-459; VT 050-059, NH 030-038, eastern NY 120-129,
-     western MA 010-013; NJ 070-089, eastern PA 180-196, DE 197-199, New York City and its north 100-109 */
-  var NEAR = /^(6[0-2]\d|5[34]\d|50\d|51\d|52[0-8]|55\d|56[0-7]|4[67]\d|6[34]\d|65[0-8]|4[01]\d|42[0-7]|4[89]\d|4[345]\d|05\d|03[0-8]|12\d|01[0-3]|0[78]\d|18\d|19\d|10\d)/;
+     western MA 010-013; NJ 070-089, eastern PA 180-196, DE 197-199 */
+  var NEAR = /^(6[0-2]\d|5[34]\d|50\d|51\d|52[0-8]|55\d|56[0-7]|4[67]\d|6[34]\d|65[0-8]|4[01]\d|42[0-7]|4[89]\d|4[345]\d|05\d|03[0-8]|12\d|01[0-3]|0[78]\d|18\d|19\d)/;
   var HEAD = 'Email me new farm sales near me, once a month';
   var SUB = 'The farm sales recorded each month within the miles you pick of your ZIP: the date, acres, price per acre and township. '
     + 'Illinois, Wisconsin, Indiana, Vermont and New Jersey. Never who bought or sold. A month with no sales sends nothing.';

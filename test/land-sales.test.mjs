@@ -264,16 +264,16 @@ test("the component: names load only from the blocked folder; the remove link ca
 
 test("where the sales show: Atlas county pages, IL and WI rent pages, homepage, Fast Facts, search, Daily", () => {
   const loader = read("components/loader.js");
-  assert.match(loader, /\/components\/land-sales\.js\?v=3/);
+  assert.match(loader, /\/components\/land-sales\.js\?v=4/);
   assert.match(loader, /section\[data-atlas-sales="county"\]/);
-  assert.match(loader, /rent\\\/\(illinois\|wisconsin\|indiana\|vermont\)/);
-  assert.match(loader, /farmland-atlas\\\/\(indiana\|vermont\)/, "Indiana's and Vermont's Atlas county pages load it too");
+  assert.match(loader, /rent\\\/\(illinois\|wisconsin\|indiana\|vermont\|new-jersey\)/);
+  assert.match(loader, /farmland-atlas\\\/\(indiana\|vermont\|new-jersey\)/, "Indiana's, Vermont's and New Jersey's Atlas county pages load it too");
   // the card holds its space from the first paint (no hidden-then-shown jump; CLS) and works with no data
   assert.match(read("index.html"), /<a class="land-cell" id="land-sales" href="\/land-sales\/" data-land-sales="home" data-track="land"><span class="land-k">Farm sales<\/span><span class="land-v">[^<]+<\/span>/);
   assert.match(read("fast-facts.html"), /<div class="ls-near" id="h-land-sales" data-land-sales="near" hidden><\/div>/, "Fast Facts host (an h- hash opens My place)");
   const s = read("components/search.js");
   assert.match(s, /'Land sales near here: '/);
-  assert.match(s, /LAND_ST = \{ IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont' \}/, "only where the sales are");
+  assert.match(s, /LAND_ST = \{ IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont', NJ: 'new-jersey' \}/, "only where the sales are");
   const oh = read("scripts/only_here.py");
   assert.match(oh, /import daily_land_line/, "the Daily line rides in Only here");
   const d = py(["scripts/daily_land_line.py", "--selftest"]);
