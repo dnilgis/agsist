@@ -54,6 +54,7 @@ Usage:
     python3 scripts/build_basis_history.py --selftest
 """
 import argparse
+import glob
 import json
 import os
 import subprocess
@@ -185,6 +186,71 @@ def apply_day(state, rows, date):
             s["cur"] = c
             s["since"] = date
     return changed
+
+
+# ------------------------------------------- the old feed's unit errors ---
+# THE OCT 29 DATA CHECK (feedbag notes/audits/bids-dq-2026-10-29.md). The old
+# Barchart feed's rows were read by fetch_bids.py `_norm_basis`, which divided
+# by 100 only when |basis| >= 5: a basis of 1 to 4 CENTS was stored as 1 to 4
+# DOLLARS, so this record holds 100 to 400 where the board meant 1 to 4. The
+# feed is off (no Barchart row after 2026-10-09; nothing it wrote is seen after
+# BARCHART_LAST), so those rows match no live bid; they are still read by the
+# grain-on-the-move weekly basis and by anything that opens a whole shard.
+# Measured on the daily snapshots, where the rows' cash prices let cash - basis
+# be checked against that day's futures: among Barchart corn, soybean and wheat
+# rows with a round +-2, +-3 or +-4 dollar basis, 2,088 were the unit error and 9
+# were real; at -1 dollar most were real (5,654 to 325), at +1 mixed (187 to
+# 257), so a lone -100 or +100 is not dropped. Dropped here, from the shards
+# only (the changes-*.json files are the record and are never rewritten), are
+# rows on the hand-flag list (scripts/bid_hand_flags.json: a person judged them
+# bad, the evidence written beside each), and rows of the three crops last seen
+# on or before BARCHART_LAST whose basis now
+# or before is a round +-200, +-300 or +-400, or whose record holds the error's
+# own step: a move of 90 cents or more between a round quarter-dollar value of
+# at least 100 and a value under 100 (Consolidated Grain & Barge, Sherrill AR,
+# soybeans Dec26: -300 then -7, a 3 cent basis read as dollars and then a 7 cent
+# one read right). A live row is never dropped by this.
+BARCHART_LAST = "2026-10-11"
+UNIT_ERROR_ROUND = (200, 300, 400)
+UNIT_ERROR_CROPS = ("CORN", "SOYBEANS", "WHEAT")
+
+
+def unit_error_step(a, b):
+    """True when a -> b is the old feed's cents-as-dollars step."""
+    if a is None or b is None:
+        return False
+    lo, hi = sorted((abs(a), abs(b)))
+    return hi >= 100 and hi % 25 == 0 and lo < 100 and abs(a - b) >= 90
+
+
+def unit_error_rows(state, out_dir):
+    """{key: reason} for the old feed's rows to drop from the shards (see above)."""
+    steps = {}
+    for p in sorted(glob.glob(os.path.join(out_dir, "changes-*.json"))):
+        try:
+            with open(p) as f:
+                doc = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            continue
+        for r in doc.get("changes") or []:
+            if len(r) >= 8 and unit_error_step(r[6], r[7]):
+                steps[(r[1], r[2], r[0], str(r[3]).upper(), r[4], r[5])] = True
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import bid_flags            # the hand-flag list, read the same way the snapshot flags read it
+    hand = bid_flags.hand_index()
+    out = {}
+    for k, v in state.items():
+        hv = hand.get(k)
+        if hv and (v.get("cur") in hv or v.get("prev") in hv):
+            out[k] = "hand"
+            continue
+        if k[3] not in UNIT_ERROR_CROPS or not v.get("last") or v["last"] > BARCHART_LAST:
+            continue
+        if any(isinstance(x, int) and abs(x) in UNIT_ERROR_ROUND for x in (v.get("cur"), v.get("prev"))):
+            out[k] = "round"
+        elif k in steps or unit_error_step(v.get("prev"), v.get("cur")):
+            out[k] = "step"
+    return out
 
 
 # ------------------------------------------------------------- the write ---
@@ -436,6 +502,52 @@ def selftest():
         p3, _ = write_changes(ch, d, "2026-10-28", None)
         ck("a run without ids writes the old eight columns", json.load(open(p3))["columns"][-1] == "to"
            and "ids" not in json.load(open(p3)))
+    # THE OLD FEED'S UNIT ERRORS (Oct 29). Real shard rows (data/basis on main, 2026-10-29).
+    with tempfile.TemporaryDirectory() as d:
+        st = {
+            # CGB Sherrill AR soybeans Dec26: -300 then -7 (3 cents read as dollars, then 7 cents read right)
+            ("CONSOLIDATED GRAIN & BARGE", "SHERRILL", "AR", "SOYBEANS", "ZSF27", "DEC26"):
+                {"cur": -7, "prev": -300, "since": "2026-09-29", "first": "2026-06-09", "last": "2026-10-11"},
+            # CGB Sherrill AR soybeans Feb27: 0 then 100 (one cent read as a dollar), and its step is in the log
+            ("CONSOLIDATED GRAIN & BARGE", "SHERRILL", "AR", "SOYBEANS", "ZSH27", "FEB27"):
+                {"cur": 100, "prev": 0, "since": "2026-10-05", "first": "2026-06-26", "last": "2026-10-11"},
+            # CGB Sherrill AR corn Jul26: 400 then 200, both round dollars
+            ("CONSOLIDATED GRAIN & BARGE", "SHERRILL", "AR", "CORN", "ZCU26", "JUL26"):
+                {"cur": 200, "prev": 400, "since": "2026-07-30", "first": "2026-06-29", "last": "2026-07-30"},
+            # a lone -100 on an old row is most often real (Central Farm Service beans posted -$1.00 all summer)
+            ("CENTRAL FARM SERVICE", "TRUMAN", "MN", "SOYBEANS", "ZSX26", "NOV26"):
+                {"cur": -100, "prev": None, "since": "2026-06-09", "first": "2026-06-09", "last": "2026-10-09"},
+            # a LIVE row is never dropped: Prairie Ag Partners, Lake Preston SD posted KC wheat 0 then -100 on Oct 1
+            ("PRAIRIE AG PARTNERS", "LAKE PRESTON", "SD", "WHEAT", "KEZ26", "10/01/2026"):
+                {"cur": -100, "prev": 0, "since": "2026-10-01", "first": "2026-10-01", "last": "2026-10-29"},
+            # a live row at 300 is the board's own number; the page's bounds handle it, not this
+            ("LIVE CO", "TOWN", "IA", "CORN", "ZCZ26", "NOV26"):
+                {"cur": 300, "prev": None, "since": "2026-10-20", "first": "2026-10-20", "last": "2026-10-29"},
+            # a meal row ("other") is not one of the three crops
+            ("ADM GRAIN", "FRANKFORT", "IN", "OTHER", "ZMN26", "JUN26"):
+                {"cur": 4000, "prev": 200, "since": "2026-06-10", "first": "2026-06-09", "last": "2026-06-30"},
+        }
+        with open(os.path.join(d, "changes-2026-10-05.json"), "w") as f:
+            json.dump({"date": "2026-10-05", "changes": [["AR", "CONSOLIDATED GRAIN & BARGE", "SHERRILL", "soybeans",
+                                                          "ZSH27", "FEB27", 0, 100]]}, f)
+        bad = unit_error_rows(st, d)
+        ck("old-feed unit errors: the -300/-7 step, the 0/100 step and the round dollars are dropped",
+           bad == {("CONSOLIDATED GRAIN & BARGE", "SHERRILL", "AR", "SOYBEANS", "ZSF27", "DEC26"): "round",
+                   ("CONSOLIDATED GRAIN & BARGE", "SHERRILL", "AR", "SOYBEANS", "ZSH27", "FEB27"): "step",
+                   ("CONSOLIDATED GRAIN & BARGE", "SHERRILL", "AR", "CORN", "ZCU26", "JUL26"): "round"})
+        ck("a lone old -100, a live row and a meal row are kept",
+           not any(k[0] in ("CENTRAL FARM SERVICE", "PRAIRIE AG PARTNERS", "LIVE CO", "ADM GRAIN") for k in bad))
+        hb = {("H & B SPECIALTIES, INC.", "NAPLES", "IL", "CORN", "ZCK27", "MAY27"):
+              {"cur": 100, "prev": None, "since": "2026-07-16", "first": "2026-07-16", "last": "2026-09-22"},
+              ("H & B SPECIALTIES, INC.", "NAPLES", "IL", "CORN", "ZCH27", "MAR27"):
+              {"cur": 100, "prev": 75, "since": "2026-08-07", "first": "2026-06-09", "last": "2026-09-22"},
+              ("H & B SPECIALTIES, INC.", "NAPLES", "IL", "CORN", "ZCK27", "MAY27X"):
+              {"cur": 100, "prev": None, "since": "2026-07-16", "first": "2026-07-16", "last": "2026-09-22"}}
+        ck("hand list: H & B Naples IL +100 corn rows (Mar27, May27) are dropped, a key not on it is kept",
+           unit_error_rows(hb, d) == {k: "hand" for k in list(hb)[:2]})
+        ck("the step rule: 90 cents or more between a round value of 100+ and one under 100",
+           unit_error_step(-300, -7) and unit_error_step(100, -25) and not unit_error_step(-100, -95)
+           and not unit_error_step(-130, -40) and not unit_error_step(None, 100))
     print(f"FAILS={len(fails)}")
     return 1 if fails else 0
 
@@ -493,6 +605,14 @@ def main():
     if a.check:
         print("[basis-history] --check: %d keys, nothing written." % len(state))
         return 0
+    bad = unit_error_rows(state, a.out)
+    if bad:
+        for k in bad:
+            del state[k]
+        print("[basis-history] %d old-feed row(s) with a cents basis read as dollars left out of the shards "
+              "(%d round, %d step, %d hand-flagged; the changes files keep the record)"
+              % (len(bad), sum(v == "round" for v in bad.values()), sum(v == "step" for v in bad.values()),
+                 sum(v == "hand" for v in bad.values())))
     index = write_shards(state, a.out, today)
     tot = sum(v["kb"] for v in index["states"].values())
     big = sorted(index["states"].items(), key=lambda kv: -kv[1]["kb"])[:5]

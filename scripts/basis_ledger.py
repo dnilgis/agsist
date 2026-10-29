@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""Private basis forecast ledger (rule set basis-ledger-v1, registered 2026-10-28).
+"""Private basis forecast ledger (rule set basis-ledger-v2, registered 2026-10-29; v1 2026-10-28).
+
+RULE SET v2 (Oct 29) differs from v1 in one rule: a snapshot row that
+scripts/bid_flags.py flags (rule set bidflags-v1: cents read as dollars, meal
+filed as soybeans, cash 0, a price in the basis column, cash - basis far from
+that day's futures) is skipped and counted, like a gross error. The Oct 29
+data check found 2,678 Barchart rows with a cents basis stored as dollars that
+all passed v1's $5 gross bound. v2 is a NEW record in basis-ledger/v2/ (its own
+live, replay, models and summary); v1's frozen files stay where they are
+(basis-ledger/{live,replay}/, basis-ledger/summary.json) and are never edited.
 
 WHY
 ---
@@ -77,17 +86,18 @@ from the basis at d by at least 0.5 cents. Graded only when the target day
 holds the series. Ties: a direction call whose net change at the target is zero
 is "flat", neither right nor wrong, counted beside the hit rate.
 
-FILES (raw branch, private; /basis-ledger/ is in .gitignore on main)
+FILES (raw branch, private; /basis-ledger/ is in .gitignore on main). This rule set
+writes under basis-ledger/v2/; v1 (Oct 28) holds the same layout one level up, frozen.
 --------------------------------------------------------------------
-  basis-ledger/<kind>/calls/YYYY/D.json.gz     frozen calls (kind = live | replay)
-  basis-ledger/<kind>/models/pmove-YYYY-MM.json frozen monthly P(move) coefficients
-  basis-ledger/<kind>/grades/YYYY/D.json.gz    grades for that day's calls, written ONCE
+  basis-ledger/v2/<kind>/calls/YYYY/D.json.gz     frozen calls (kind = live | replay)
+  basis-ledger/v2/<kind>/models/pmove-YYYY-MM.json frozen monthly P(move) coefficients
+  basis-ledger/v2/<kind>/grades/YYYY/D.json.gz    grades for that day's calls, written ONCE
                                                when every target has settled (10 trading
                                                days past the last target), never rewritten.
                                                Until then the grades are computed on the
                                                fly for the summary and not stored, so raw's
                                                history grows only by frozen files.
-  basis-ledger/summary.json                    MAE, Brier, direction, n beside each
+  basis-ledger/v2/summary.json                    MAE, Brier, direction, n beside each
 
 USAGE
 -----
@@ -117,13 +127,17 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
 import bid_snapshots as BS       # noqa: E402  the snapshot reader (one copy)
+import bid_flags as BF           # noqa: E402  the bad-row rules (one copy)
 import contract_calendar as CC   # noqa: E402  THE trading calendar
 
 # ── THE RULES. Changing any of these is a new rule set with a new version and
 # a new, separate record. Never edit them in place. ─────────────────────────
 RULES = {
-    "version": "basis-ledger-v1",
-    "registered": "2026-10-28",
+    "version": "basis-ledger-v2",
+    "registered": "2026-10-29",
+    "replaces": "basis-ledger-v1 (2026-10-28); its record is kept apart and frozen",
+    "flags_rule": "a row scripts/bid_flags.py flags on its own day's snapshot is skipped and counted (flagged)",
+    "flags_version": "bidflags-v1",
     "horizons": [1, 5, 20],
     "crops": ["corn", "soybeans", "wheat"],
     "series_key": "elevator id (else board facility|branch|city|state) x crop x delivery_start x futures contract",
@@ -156,6 +170,7 @@ SCHEMA_GRADES = "agsist-basis-ledger-grades/1"
 SCHEMA_MODEL = "agsist-basis-ledger-pmove/1"
 SCHEMA_SUMMARY = "agsist-basis-ledger-summary/1"
 OUT = "basis-ledger"
+RECORD = f"{OUT}/v2"              # this rule set's record; v1 stays at basis-ledger/{live,replay}/
 KINDS = ("live", "replay")
 SETTLE_DAYS = 10                  # grades stop being rebuilt this many trading days after the last target
 SCALE = 10000                     # basis held as integer 1/100 cents, so 0.5 c is exactly 50
@@ -241,12 +256,17 @@ def parse_snapshot(snap):
     An exact repeat keeps one row; a key with two different basis values is dropped and counted."""
     series, elevs, conflicted = {}, {}, set()
     c = {"rows": 0, "used": 0, "no_basis": 0, "gross": 0, "other_crop": 0, "no_contract": 0,
-         "repeats": 0, "conflict_keys": 0, "conflict_rows": 0}
-    for r in BS.rows_of(snap):
+         "repeats": 0, "conflict_keys": 0, "conflict_rows": 0, "flagged": 0}
+    rows = BS.rows_of(snap)
+    flagged = BF.flagged_keys(rows)       # from this day's snapshot only: no look-ahead
+    for r in rows:
         c["rows"] += 1
         crop = r.get("category")
         if crop not in RULES["crops"]:
             c["other_crop"] += 1
+            continue
+        if BF.row_key(r) in flagged:
+            c["flagged"] += 1
             continue
         b = r.get("basis")
         if not isinstance(b, (int, float)) or isinstance(b, bool) or b != b:
@@ -864,8 +884,8 @@ def rel(kind, what, day):
     if kind not in KINDS or what not in ("calls", "grades", "models"):
         raise ValueError((kind, what))
     if what == "models":
-        return f"{OUT}/{kind}/models/pmove-{day[:7]}.json"
-    return f"{OUT}/{kind}/{what}/{day[:4]}/{day}.json.gz"
+        return f"{RECORD}/{kind}/models/pmove-{day[:7]}.json"
+    return f"{RECORD}/{kind}/{what}/{day[:4]}/{day}.json.gz"
 
 
 class Ledger:
@@ -887,7 +907,7 @@ class Ledger:
 
     def list(self, kind, what):
         pat = re.compile(r"(\d{4}-\d{2}-\d{2})\.json\.gz$")
-        base = f"{OUT}/{kind}/{what}"
+        base = f"{RECORD}/{kind}/{what}"
         out = set()
         for top in [self.out_dir] + ([self.dir] if self.dir else []):
             for _, _, fs in os.walk(os.path.join(top, base)):
@@ -971,7 +991,7 @@ def write_summary(ledger, blocks, asof):
                     "the minimum sample the value is null with the reason. Rows within one day are correlated: "
                     "target_days is the closer count of independent tries."),
            "live": blocks.get("live"), "replay": blocks.get("replay")}
-    ledger.write(f"{OUT}/summary.json", (json.dumps(doc, indent=1, ensure_ascii=False) + "\n").encode(), frozen=False)
+    ledger.write(f"{RECORD}/summary.json", (json.dumps(doc, indent=1, ensure_ascii=False) + "\n").encode(), frozen=False)
     return doc
 
 
@@ -1097,6 +1117,21 @@ def selftest():
     ck("the same bid under two symbol forms is one series, not a conflict", c["repeats"] == 1)
     ck("real rows: basis held exactly, board group and state kept",
        s["extasr98hc|wheat|2026-11-01|KEZ26"][0] == -6400 and e["extasr98hc"][1:] == ("farmerscooperative", "NE"))
+    # RULE SET v2: FLAGGED ROWS ARE SKIPPED. Real row, raw bids-daily/2026/2026-06-09: Consolidated Grain &
+    # Barge, Sherrill AR, corn Sep26 cash $4.29 with a 1 cent basis the old feed stored as $1.00 (inside
+    # v1's $5 gross bound, so v1 used it); five clean rows that day put ZCU26 at $4.28.
+    ref5 = [{"id": f"eref{i}", "facility": f"Ref {i}", "city": "X", "state": "AR", "lat": 35.0, "lon": -91.0 - i,
+             "board": None, "category": "corn", "start": "2026-09-01", "futures": "ZCU26", "cash": 4.28 - b,
+             "basis": -b} for i, b in enumerate((0.20, 0.25, 0.30, 0.35, 0.40))]
+    cgb = {"id": "eprh140n9t", "facility": "Consolidated Grain & Barge", "city": "Sherrill", "state": "AR",
+           "lat": 34.38, "lon": -91.95, "board": None, "category": "corn", "start": "2026-09-01", "futures": "ZCU26",
+           "cash": 4.29, "basis": 1.0}
+    s2, _, c2 = parse_snapshot(_fake_snap("2026-06-09", ref5 + [cgb]))
+    ck("v2: a flagged row (cents read as dollars) is skipped and counted, the clean rows kept",
+       c2["flagged"] == 1 and len(s2) == 5 and not any(k.startswith("eprh140n9t") for k in s2) and c2["gross"] == 0)
+    ck("v2 is its own record: new version, own folder, v1 left alone",
+       RULES["version"] == "basis-ledger-v2" and rel("replay", "calls", "2026-06-09").startswith("basis-ledger/v2/replay/")
+       and RULES["flags_version"] == BF.RULES["version"])
 
     # logistic fit by hand: one binary feature, 100 rows each; 10% move without it, 50% with it
     cells = {(20, 0, 0, 0): [100, 10], (20, 0, 1, 1): [100, 50]}
