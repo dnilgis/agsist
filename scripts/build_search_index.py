@@ -91,6 +91,7 @@ PAGES = [
     ("/list-your-elevator#coverage", "Elevator coverage map", "Which elevators we read, fix your listing", "elevators coverage map network boards claim board elevator manager"),
     ("/cot", "COT report", "What the funds hold", "cot cftc commitment traders funds managed money positions"),
     ("/#f-kalshi", "Prediction markets", "Odds on the homepage", "odds prediction markets kalshi polymarket bets"),
+    ("/ag-stocks", "Ag stocks and the AGSIST Ag 20", "Farm company share prices and their SEC reports", "ag stocks shares deere nutrien adm tyson equipment fertilizer companies index ag 20 earnings"),
     ("/tariffs", "Tariff tracker", "Trade policy and grain", "tariffs trade china exports policy"),
     ("/farm-bill", "Farm bill", "Status and the money", "farm bill congress policy payments arc plc"),
     ("/usda-calendar", "USDA report calendar", "Next WASDE and reports", "usda calendar wasde reports schedule crop progress acreage stocks"),
