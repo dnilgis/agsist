@@ -215,13 +215,14 @@ test("share link carries the field and the hour, and nothing else", () => {
   assert.match(HTML, /if\(!SPRAY_SHARED\)try\{var _o=\{\};/);
 });
 
-test("credits: every source named on screen with a link", () => {
+test("credits: every source named on screen; methods and the map linked, the forecast data named, not linked", () => {
   const ids = W.CREDITS.map((c) => c.id);
   for (const id of ["forecast", "map", "boom", "inv", "inv2", "rain"]) assert.ok(ids.includes(id), id);
   const all = W.CREDITS.map((c) => c.t + " " + c.a + " " + c.tail).join(" ");
   for (const s of ["National Weather Service", "NDFD forecast grid", "public domain", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(all.includes(s), s);
   assert.doesNotMatch(all, /Open-Meteo/);
-  for (const c of W.CREDITS) if (c.a) assert.match(c.u, /^https:\/\//, c.id);
+  // no direct links to data sources (Sig, Oct 29, 2026): the NWS forecast is named; the rest are reference pages
+  for (const c of W.CREDITS) if (c.a) assert.match(c.u, c.id === "forecast" ? /^$/ : /^https:\/\//, c.id);
   assert.match(UI, /Forecast \(estimate\): the same National Weather Service grid as the rest of this page/);
   assert.doesNotMatch(UI, /meta\.json/, "the wind view does not fetch run times itself");
 });

@@ -374,7 +374,7 @@
     if (S.fieldErr) state.push('field forecast not answering');
     if (S.gridErr) state.push('wind map forecast not answering');
     el.innerHTML = '<b>Forecast (estimate): the same National Weather Service grid as the rest of this page' + (S.F && S.F._nws ? ' (office ' + esc(S.F._nws.office) + ', cell ' + esc(S.F._nws.x) + ',' + esc(S.F._nws.y) + (S.F._nws.updated ? ', issued ' + esc(fmtRun(new Date(S.F._nws.updated))) : '') + ')' : '') + '</b>.' + (S.readAt ? ' Read ' + esc(fmtRun(S.readAt)) + '.' : '') + (state.length ? ' <span class="sw-bad">Now: ' + esc(state.join('; ')) + '.</span>' : '') + ' ' +
-      W.CREDITS.map(function (c) { return '<span data-credit="' + c.id + '">' + esc(c.t) + (c.a ? ' <a href="' + esc(c.u) + '" target="_blank" rel="noopener">' + esc(c.a) + '</a>' : '') + (c.tail ? (c.tail === '.' ? '' : ' ') + esc(c.tail) : '') + '</span>'; }).join(' ');
+      W.CREDITS.map(function (c) { return '<span data-credit="' + c.id + '">' + esc(c.t) + (c.a ? ' ' + (c.u ? '<a href="' + esc(c.u) + '" target="_blank" rel="noopener">' + esc(c.a) + '</a>' : esc(c.a)) : '') + (c.tail ? (c.tail === '.' ? '' : ' ') + esc(c.tail) : '') + '</span>'; }).join(' ');
   }
   function renderHow() {
     var I = W.INV, el = $('sw-how'); if (!el) return;
