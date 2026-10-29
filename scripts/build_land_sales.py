@@ -365,13 +365,16 @@ def county_build(d, st, c, rows, through):
 
 
 # ---------------------------------------------------------------- html
-def early_scripts():
-    src = open(REPO / "farmland-index.html", encoding="utf-8").read()
+def early_scripts(repo=REPO):
+    # lifted from a page scripts/inject_static_nav.py keeps current (farmland-index.html until Oct 29, 2026,
+    # when that page became a moved-page stub)
+    model = (REPO / "grain-emc.html") if Path(repo) == REPO else Path(repo) / "grain-emc.html"
+    src = open(model, encoding="utf-8").read()
     m = re.search(r"<script>/\* agsist-theme-early.*?</script><script>/\* agsist-ga-guard.*?</script>", src, re.S)
     return m.group(0) if m else ""
 
 
-def head(title, desc, url, ld, early):
+def head(title, desc, url, ld, early, style=""):
     ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
             '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n'
@@ -386,9 +389,9 @@ def head(title, desc, url, ld, early):
             '<meta property="og:image:alt" content="AGSIST Farmland Atlas: land values, rent and farm sales by county">\n'
             '<meta name="twitter:card" content="summary_large_image">\n'
             '<meta name="twitter:image" content="https://agsist.com/img/og/farmland-atlas.jpg">\n'
-            "%s\n%s\n</head>\n<body>\n<a href=\"#main\" class=\"skip\">Skip to content</a>\n<div id=\"site-header\"></div>\n"
+            "%s\n%s\n%s</head>\n<body>\n<a href=\"#main\" class=\"skip\">Skip to content</a>\n<div id=\"site-header\"></div>\n"
             '<main id="main" class="main ls" tabindex="-1">\n'
-            % (e(title), e(desc), url, e(title.replace(" | AGSIST", "")), e(desc), url, early, ldh))
+            % (e(title), e(desc), url, e(title.replace(" | AGSIST", "")), e(desc), url, early, ldh, ("<style>%s</style>\n" % style) if style else ""))
 
 
 FOOT = ("</main>\n<div id=\"site-footer\"></div>\n<script src=\"/components/loader.js?v=19\" defer></script>\n" + JS + "\n</body>\n</html>\n")
@@ -759,25 +762,42 @@ JUMP_JS = ("(function(){function go(){try{var w=JSON.parse(localStorage.getItem(
            "if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();")
 
 
-def jump_row(d):
+def jump_row(d, index=False):
     links = " &middot; ".join('<a href="#%s">%s</a>' % (SLUG[st], e(NAME[st])) for st in d.states)
+    if index:
+        links += ' &middot; <a href="#illinois-index">Illinois sale index</a>'
     return ('<p class="ls-jump">Jump to: %s &middot; <a href="#coverage">Other states</a></p>'
             '<p class="ls-mine" id="ls-mine" hidden></p><script>%s</script>' % (links, JUMP_JS))
 
 
-def index_page(d, latest, counties, early, coverage, archive):
+def index_section(repo):
+    """The Illinois farmland sale index (scripts/build_land_index.py writes data/land/index.json; this
+    bakes its section into the hub). None when the file is missing or Illinois is held back."""
+    p = Path(repo) / "data" / "land" / "index.json"
+    if not p.exists():
+        return None
+    data = json.loads(p.read_text(encoding="utf-8"))
+    if not (data.get("states") or {}).get("IL") or data["states"]["IL"].get("held"):
+        return None
+    import build_land_index as LI
+    return LI.hub_section(data)
+
+
+def index_page(d, latest, counties, early, coverage, archive, ix=None):
     url = ORIGIN + "/land-sales/"
     title = "Farmland Sales by County: %s Recorded Sales | AGSIST" % ", ".join(NAME[x] for x in d.states)
     desc = "Recorded farm sales by county with acres, price and price per acre, a monthly update of the biggest buyers and sales, and where every state's sales come from."
-    ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])]
-    b = [head(title, desc, url, ld, early), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
+    if ix:
+        desc = "Recorded farm sales by county with acres, price and price per acre, the Illinois farmland sale index, a monthly update of the biggest buyers and sales, and where every state's sales come from."
+    ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])] + (ix["ld"] if ix else [])
+    b = [head(title, desc, url, ld, early, ix["css"] if ix else ""), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
     if latest:
         big = latest.get("top") or []
         b.append('<p class="ls-ans">The %s update: %d farm sales of %d acres or more in %s.%s <a href="/land-sales/%s">See the biggest buyers, sales and unusual prices</a>.</p>'
                  % (e(latest["label"]), latest["n"], LIST_MIN_ACRES, e(and_list([NAME[s] for s in latest["states"]])),
                     (" The largest by acres: %s acres in %s County, %s, for %s." % (acres(big[0]["acres"]), e(big[0]["county"]), big[0]["st"], money(big[0]["price"]))) if big else "",
                     latest["month"]))
-    b.append(jump_row(d))
+    b.append(jump_row(d, bool(ix)))
     b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales"></div></div>')
     for st in d.states:
         b.append('<h2 id="%s">%s</h2><ul class="ls-cos">' % (SLUG[st], e(NAME[st])))
@@ -785,11 +805,14 @@ def index_page(d, latest, counties, early, coverage, archive):
             b.append('<li><a href="/land-sales/%s/%s">%s County</a> <span>%d</span></li>' % (SLUG[st], slug, e(name), n))
         b.append("</ul>")
     b.append('<p class="ls-fine">The number beside each county: sales of %d acres or more in the last 12 months.</p>' % LIST_MIN_ACRES)
+    if ix:
+        b.append(ix["html"])
     b.append(coverage_html(coverage, d))
     if archive:
         b.append('<h2 id="months">Monthly updates</h2><p>%s</p>' % " &middot; ".join('<a href="/land-sales/%s">%s</a>' % (k, e(v)) for k, v in archive))
     b.append('<p class="ls-fine">%s %s</p></div>' % (e(RULE), e(src_line(d, d.states))))
-    return "\n".join(b) + "\n" + FOOT
+    foot = FOOT.replace("</main>", "</main>\n<script>%s</script>" % ix["js"], 1) if ix else FOOT
+    return "\n".join(b) + "\n" + foot
 
 
 def sitemap(urls):
@@ -810,7 +833,7 @@ def build(repo=REPO):
     if not d.states:
         return out
     coverage = json.load(open(Path(repo) / "data" / "land-sales" / "coverage.json", encoding="utf-8"))
-    early = early_scripts()
+    early = early_scripts(repo)
     year, m0 = latest_month(d)
     M, mnames = month_build(d, year, m0)
     key = M["month"]
@@ -848,7 +871,7 @@ def build(repo=REPO):
             slug = county_slug(c["name"])
             counties[st].append((c["name"], slug, n12))
             sfile["counties"][c["fips"]] = {"name": c["name"], "slug": slug, "ll": [c["lat"], c["lng"]], "n12": n12,
-                                           "usual": {"med": u["med"], "n": u["n"]} if u else None,
+                                           "usual": {"med": u["med"], "n": u["n"], "q1": u["q1"], "q3": u["q3"]} if u else None, "k24": k24,
                                            "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"],
                                                   p["place"], p["pt"][0] if p["pt"] else None, p["pt"][1] if p["pt"] else None,
                                                   p["flag"] or 0, 1 if p["bldg"] else 0] for p in feat]}
@@ -863,7 +886,7 @@ def build(repo=REPO):
             urls.append(("%s/land-sales/%s/%s" % (ORIGIN, SLUG[st], slug), d.fetched[st]))
         sfile["cols"] = ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg"]
         out["data/land-sales/%s.json" % st.lower()] = dump(sfile)
-    out["land-sales/index.html"] = index_page(d, latest, counties, early, coverage, archive)
+    out["land-sales/index.html"] = index_page(d, latest, counties, early, coverage, archive, index_section(repo))
     urls = [(ORIGIN + "/land-sales/", pub)] + [("%s/land-sales/%s" % (ORIGIN, k), pub if k == key else k + "-28") for k, _ in archive] + urls
     out["sitemap-land-sales.xml"] = sitemap(urls)
     return out
@@ -957,7 +980,7 @@ def selftest():
         (t / "data" / "land" / "il").mkdir(parents=True)
         (t / "data" / "land" / "wi").mkdir(parents=True)
         (t / "data" / "land-sales").mkdir(parents=True)
-        (t / "farmland-index.html").write_text("<script>/* agsist-theme-early */</script><script>/* agsist-ga-guard */</script>")
+        (t / "grain-emc.html").write_text("<script>/* agsist-theme-early */</script><script>/* agsist-ga-guard */</script>")
         (t / "data" / "land-sales" / "coverage.json").write_text(json.dumps(
             {"labels": {"live": "Sales on this site", "none": "No public source found"}, "note": "",
              "states": [{"st": "IL", "name": "Illinois", "status": "live", "tile": [7, 3]}, {"st": "WI", "name": "Wisconsin", "status": "live"},

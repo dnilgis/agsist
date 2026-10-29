@@ -91,6 +91,8 @@ STATES = {
     "Tennessee": "TN", "Texas": "TX", "Utah": "UT", "Vermont": "VT", "Virginia": "VA",
     "Washington": "WA", "West Virginia": "WV", "Wisconsin": "WI", "Wyoming": "WY",
 }
+PAGE_LIMIT = 100000     # rows per page-path call: every page with a reader
+PAGES_OUT = ROOT / "data" / "audience-pages.json"
 METRICS = ["activeUsers", "engagedSessions", "userEngagementDuration", "sessions",
            "screenPageViews", "newUsers"]
 
@@ -256,20 +258,30 @@ def ga4_section(ga, rg, today):
         d = r["date"]
         days["%s-%s-%s" % (d[:4], d[4:6], d[6:])] = {"users": r["activeUsers"], "engaged": r["engagedSessions"]}
 
-    # One call per window, so one window's rows can never crowd out the other's
-    # under the row limit. Views only: views add across a page's titles, readers
-    # do not (the same person reading two titles would count twice).
-    pages = {}
+    # One call per window, so one window's rows can never crowd out the other's.
+    # Readers and views per page come from pagePath alone, with no row cap: until
+    # Oct 29, 2026 the top 15 came from pagePath x pageTitle rows cut at 400, so a
+    # page's rows under an old title fell off the longer window first, and
+    # /rain-print showed 742 views over 28 days but 732 over 90 (the audit's
+    # oddity). A page's readers are GA4's own count for that path (a reader is
+    # counted once per page), so they are never added across pages or windows.
+    # The top 15's titles come from a second call, the most-viewed title wins.
+    pages, page_users = {}, {}
     for win in [x for x in rg if x["id"] in ("28d", "90d")]:
-        agg = {}
-        for r in ga.run(["pagePath", "pageTitle"], ["screenPageViews"], [win], filt=F, order="screenPageViews", limit=400):
-            p = r["pagePath"]
-            a = agg.setdefault(p, {"path": p, "title": r["pageTitle"], "views": 0})
-            a["views"] += r["screenPageViews"]
         k = win["id"]
-        pages[k] = sorted(agg.values(), key=lambda x: -x["views"])[:15]
-        for p in pages[k]:
-            p["title"] = re.sub(r"\s*[|—-]\s*AGSIST\s*$", "", p["title"] or "").strip() or p["path"]
+        rows = ga.run(["pagePath"], ["activeUsers", "screenPageViews"], [win], filt=F, order="screenPageViews", limit=PAGE_LIMIT)
+        page_users[k] = {r["pagePath"]: [r.get("activeUsers", 0), r.get("screenPageViews", 0)] for r in rows
+                         if r.get("pagePath") and (r.get("activeUsers", 0) or r.get("screenPageViews", 0))}
+        top = sorted(page_users[k].items(), key=lambda x: (-x[1][1], x[0]))[:15]
+        best = {}
+        if top:
+            for r in ga.run(["pagePath", "pageTitle"], ["screenPageViews"], [win], filt=f_and(F, f_in("pagePath", [p for p, _ in top])),
+                            order="screenPageViews", limit=1000):
+                p = r["pagePath"]
+                if p not in best or r["screenPageViews"] > best[p][1]:
+                    best[p] = (r["pageTitle"], r["screenPageViews"])
+        pages[k] = [{"path": p, "title": re.sub(r"\s*[|—-]\s*AGSIST\s*$", "", (best.get(p) or ("",))[0] or "").strip() or p,
+                     "views": uv[1]} for p, uv in top]
 
     devices = {k: {r["deviceCategory"]: r["activeUsers"] for r in v}
                for k, v in by_range(ga.run(["deviceCategory"], ["activeUsers"], rg, filt=F)).items()}
@@ -277,7 +289,7 @@ def ga4_section(ga, rg, today):
                           key=lambda x: -x["sessions"])
                 for k, v in by_range(ga.run(["sessionDefaultChannelGroup"], ["sessions"], rg, filt=F)).items()}
 
-    return {"totals": totals, "states": st, "gaDays": days, "pages": pages, "devices": devices,
+    return {"totals": totals, "states": st, "gaDays": days, "pages": pages, "pageUsers": page_users, "devices": devices,
             "channels": channels,
             "servers": {"rule": {"seconds": SERVER_SECONDS, "minReaders": SERVER_MIN},
                         "window": r90[0], "towns": servers,
@@ -663,9 +675,12 @@ def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, re
 
     if ga:
         out.update({k: ga[k] for k in ("totals", "states", "pages", "devices", "channels", "servers")})
+        if ga.get("pageUsers"):
+            out["pageUsers"] = {"file": "/data/audience-pages.json", "through": rg[0]["end"],
+                                "pages": {k: len(v) for k, v in ga["pageUsers"].items()}}
         src["ga4"] = {"ok": True, "through": rg[0]["end"], "fetched": now}
     else:
-        for k in ("totals", "states", "pages", "devices", "channels", "servers",
+        for k in ("totals", "states", "pages", "pageUsers", "devices", "channels", "servers",
                   "mode", "stateFlagRule", "stateWindow", "leftOut"):
             if k in prev:
                 out[k] = prev[k]
@@ -822,7 +837,27 @@ def main():
     out = build(today, prev, ga, gsc, bing, email, errors, returns=extra.get("returns"))
     OUT.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
     log("wrote data/audience.json")
+    if ga and ga.get("pageUsers"):
+        pf = pages_file(ga, rg, out["built"])
+        PAGES_OUT.write_text(json.dumps(pf, separators=(",", ":")) + "\n", encoding="utf-8")
+        log("wrote data/audience-pages.json: %d pages (28 days %d, 90 days %d)"
+            % (len(pf["rows"]), out["pageUsers"]["pages"].get("28d", 0), out["pageUsers"]["pages"].get("90d", 0)))
     return 0
+
+
+def pages_file(ga, rg, now):
+    """data/audience-pages.json: readers and views for every page with any traffic, 28 and 90 days.
+    Its own file so the sponsor pages, which read data/audience.json, do not download it."""
+    pu = ga["pageUsers"]
+    win = {x["id"]: {"start": x["start"], "end": x["end"]} for x in rg if x["id"] in pu}
+    paths = sorted(set(pu.get("28d", {})) | set(pu.get("90d", {})),
+                   key=lambda p: (-(pu.get("90d", {}).get(p) or [0])[0], -(pu.get("28d", {}).get(p) or [0])[0], p))
+    rows = [[p] + (pu.get("28d", {}).get(p) or [0, 0]) + (pu.get("90d", {}).get(p) or [0, 0]) for p in paths]
+    return {"schema": "agsist-audience-pages/1", "built": now, "windows": win,
+            "rule": ("GA4 readers (activeUsers) and views per page path, US only, server towns removed: the same filter as "
+                     "data/audience.json. Paths as GA4 records them (query string dropped by GA4). A page's readers are counted "
+                     "once for that page, so they never add across pages or windows. A page missing here had no reader."),
+            "cols": ["path", "users28", "views28", "users90", "views90"], "rows": rows}
 
 
 # ── selftest ──────────────────────────────────────────────────────────────
@@ -882,6 +917,14 @@ def selftest():
                 elif dims == ["pagePath", "pageTitle"]:
                     rows.append(["/cash-bids", "Local Cash Grain Bids Today | AGSIST"] + tag + ["4e1"])
                     rows.append(["/cash-bids", "Old title | AGSIST"] + tag + [5])
+                elif dims == ["pagePath"]:
+                    # the real case: a page's views over 90 days are never under its views over 28
+                    big = r.name == "90d"
+                    rows.append(["/cash-bids"] + tag + [30 if big else 20, 120 if big else 45])
+                    rows.append(["/rain-print"] + tag + [300 if big else 280, 760 if big else 742])
+                    rows.append(["/farmland-index"] + tag + [0, 0])
+                    if big:
+                        rows.append(["/old-page"] + tag + [2, 3])
                 elif dims == ["deviceCategory"]:
                     rows.append(["mobile"] + tag + [7]); rows.append(["desktop"] + tag + [3])
                 elif dims == ["sessionDefaultChannelGroup"]:
@@ -902,9 +945,27 @@ def selftest():
     st = {x["code"]: x for x in g["states"]["28d"]}
     t(set(st) == {"IA", "WI", "TX"}, "only US states become rows")
     t(st["WI"]["rank"] is None and st["IA"]["rank"] == 1 and st["TX"]["rank"] == 2, "home state unranked, others 1..n by engaged")
-    t(g["pages"]["28d"][0]["views"] == 45 and g["pages"]["28d"][0]["title"] == "Local Cash Grain Bids Today"
-      and "users" not in g["pages"]["28d"][0],
-      "a page's views are summed across its titles, and the site suffix is dropped")
+    p28 = {p["path"]: p for p in g["pages"]["28d"]}
+    t(p28["/cash-bids"]["views"] == 45 and p28["/cash-bids"]["title"] == "Local Cash Grain Bids Today"
+      and "users" not in p28["/cash-bids"],
+      "a page's views come from its path alone (not split by title), its most-viewed title is kept, the site suffix dropped")
+    t([p["path"] for p in g["pages"]["28d"]] == ["/rain-print", "/cash-bids"], "top pages by views, a page with nothing left out")
+    pv = {p["path"]: p["views"] for p in g["pages"]["90d"]}
+    t(all(pv[p] >= p28[p]["views"] for p in p28), "90 days never under 28 days for the same page (the /rain-print oddity)")
+    pr = [r for r in seen if [d.name for d in r.dimensions] == ["pagePath"]]
+    t(len(pr) == 2 and all(r.limit == PAGE_LIMIT and len(r.date_ranges) == 1 for r in pr), "one uncapped page-path call per window")
+    tr = [r for r in seen if [d.name for d in r.dimensions] == ["pagePath", "pageTitle"]]
+    t(tr and all("/rain-print" in str(r.dimension_filter) and "Ashburn" in str(r.dimension_filter) for r in tr),
+      "titles asked only for the top pages, under the same reader filter")
+    t(g["pageUsers"]["90d"] == {"/cash-bids": [30, 120], "/rain-print": [300, 760], "/old-page": [2, 3]}
+      and "/farmland-index" not in g["pageUsers"]["28d"], "every page with a reader, users and views; a page with none is left out")
+    pf = pages_file(g, rg, "2026-09-24T00:00:00+00:00")
+    t(pf["cols"] == ["path", "users28", "views28", "users90", "views90"] and pf["rows"][0] == ["/rain-print", 280, 742, 300, 760]
+      and pf["rows"][-1] == ["/old-page", 0, 0, 2, 3], "the pages file: every page, 28 and 90 days side by side, most readers first")
+    t(set(pf["windows"]) == {"28d", "90d"} and pf["windows"]["90d"]["end"] == "2026-09-22", "the pages file says its windows")
+    bo = build(today, {}, dict(g, gaDays={}), None, None, None, {})
+    t(bo["pageUsers"] == {"file": "/data/audience-pages.json", "through": "2026-09-22", "pages": {"28d": 2, "90d": 3}}
+      and "rows" not in json.dumps(bo["pageUsers"]), "data/audience.json points at the file and stays small")
     t(g["devices"]["7d"] == {"mobile": 7, "desktop": 3}, "devices per range")
     t(g["gaDays"] == {"2026-09-22": {"users": 11, "engaged": 7}}, "daily series keyed by ISO date")
 

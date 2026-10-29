@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""build_land_index.py -- the AGSIST farmland sale index (/farmland-index).
+"""build_land_index.py -- the AGSIST farmland sale index (a section of /land-sales/, #illinois-index;
+its own page /farmland-index until Oct 29, 2026, now a moved-page stub from scripts/moved_pages.py).
 
 Reads the committed county transfer files (data/land/<st>/<fips>.json) through the one
 market-sale rule in scripts/build_land_summary.py (imported, never copied) and writes:
 
   data/land/index.json     the index, county medians, price-to-rent and buyer types (small)
-  farmland-index.html      the page (the answer, the chart and the method are baked in;
-                           the county table loads from data/land/index.json)
+  hub_section(data)        the section scripts/build_land_sales.py bakes into the land sales hub
+                           (the answer, the chart and the method; the county table loads from
+                           data/land/index.json)
 
 OFFLINE: committed files only.
 
@@ -69,7 +71,6 @@ import build_land_summary as B  # noqa: E402  the one market-sale rule
 
 ROOT = B.ROOT
 OUT = os.path.join(ROOT, "data", "land", "index.json")
-PAGE = os.path.join(ROOT, "farmland-index.html")
 FIXTURE = os.path.join(ROOT, "test", "fixtures", "land-index.json")
 
 STATES = {"IL": {"name": "Illinois", "start": 2018}, "IN": {"name": "Indiana", "start": 2022},
@@ -420,7 +421,7 @@ def dump(obj):
 
 # ---------------------------------------------------------------- the page
 
-URL = "https://agsist.com/farmland-index"
+URL = "https://agsist.com/land-sales/"   # the index is a section of the hub since Oct 29, 2026 (#illinois-index)
 MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -467,27 +468,6 @@ def money(x):
 
 def comma(n):
     return "{:,}".format(n)
-
-
-def nav_blocks():
-    """The static header and footer exactly as scripts/inject_static_nav.py writes them,
-    copied from a page it maintains (the same way scripts/cash_bid_index.py does)."""
-    src = open(os.path.join(ROOT, "grain-emc.html"), encoding="utf-8").read()
-    h = re.search(r"<!-- static-nav:header.*?<!-- /static-nav:header -->", src, re.S).group(0)
-    f = re.search(r"<!-- static-nav:footer.*?<!-- /static-nav:footer -->", src, re.S).group(0)
-    fonts = re.search(r"<!-- static-nav:fonts.*?<!-- /static-nav:fonts -->", src, re.S).group(0)
-    early = re.search(r"<script>/\* agsist-theme-early.*?</script><script>/\* agsist-ga-guard.*?</script>", src, re.S).group(0)
-    return h, f, fonts, early
-
-
-def share_card():
-    path = os.path.join(ROOT, "img", "og", "farmland-index.jpg")
-    if not os.path.exists(path):
-        return "https://agsist.com/img/og/agsist.jpg", "AGSIST farmland sale index"
-    import hashlib
-    with open(path, "rb") as fh:
-        v = hashlib.sha1(fh.read()).hexdigest()[:8]
-    return "https://agsist.com/img/og/farmland-index.jpg?v=" + v, "AGSIST farmland sale index: Illinois farm sales, county mix held fixed."
 
 
 def chart_svg(s):
@@ -589,7 +569,9 @@ def buyer_table_html(s):
 
 
 CSS = """
-.li{max-width:860px;margin:0 auto;padding:1rem 1rem 3rem}
+.li{max-width:860px;margin:2rem 0 1rem;padding:0;scroll-margin-top:84px}
+.li .li-more-d{margin:.6rem 0}
+.li .li-more-d summary{cursor:pointer;font-weight:600;color:var(--text)}
 .li .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
 .li h1{font-size:clamp(1.4rem,4.3vw,2rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
 .li h2{font-size:1.25rem;line-height:1.3;margin:2rem 0 .5rem;color:var(--text)}
@@ -749,37 +731,32 @@ def faq_items(s, others):
     return items
 
 
-def page_html(data):
+def hub_section(data):
+    """The Illinois index as a section of the land sales hub (/land-sales/#illinois-index; it was its own
+    page, /farmland-index, until Oct 29, 2026). Returns {"css", "html", "js", "ld"}: the page's style
+    block, the section, the county table script and the Dataset and FAQPage for the hub's head.
+    The ids inside (years, counties, buyers, quarters, method, faq, sources) are the old page's, so an
+    old /farmland-index#counties link still lands on its part."""
     s = data["states"]["IL"]
     others = [o for k, o in data["states"].items() if k != "IL" and o.get("held")]
-    head_nav, foot_nav, fonts, early = nav_blocks()
-    og_img, og_alt = share_card()
     big, first, same = answer_bits(s)
     y4 = s["y4"]
     nass_last = [a for a in s["annual"] if a.get("nass")][-1]
-    title = "Illinois farmland sale index: what farm ground sold for"
-    desc = ("What Illinois farm ground sold for, %s: index %s (%d = 100), %s than a year earlier. Bare-land sales, county mix held fixed.") % (
-        span_words(y4["from"], y4["to"]), fmt1(y4["ix"]), s["start"], pct_words(y4["pct"]))
     faqs = faq_items(s, others)
     v = data["built"].replace("-", "")
-    ld = {"@context": "https://schema.org", "@graph": [
-        {"@type": "Dataset", "@id": URL + "#dataset", "name": "AGSIST Illinois farmland sale index",
-         "description": "Quarterly index of Illinois farmland sale prices per acre from PTAX-203 transfer declarations: arm's-length bare-land sales of 20 acres or more, one parcel, county and tract size held fixed by a time-dummy model, %d = 100, with county-cluster bootstrap ranges, annual county medians, price-to-rent multiples and buyer-type shares." % s["start"],
-         "url": URL, "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"},
-         "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
-         "license": "https://agsist.com/terms", "isAccessibleForFree": True, "inLanguage": "en-US",
-         "keywords": ["farmland values", "Illinois farmland", "land sales", "farmland price index", "cash rent"],
-         "spatialCoverage": {"@type": "Place", "name": "Illinois, United States"},
-         "temporalCoverage": "%d-01-01/%s" % (s["start"], s["through"]), "dateModified": data["built"],
-         "isBasedOn": ["https://data.illinois.gov/d/it54-y4c6", "https://quickstats.nass.usda.gov/"],
-         "variableMeasured": ["farmland sale price index", "median sale price per acre", "price to cash rent multiple", "buyer type share"],
-         "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/land/index.json"}]},
-        {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]},
-        {"@type": "BreadcrumbList", "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
-            {"@type": "ListItem", "position": 2, "name": "Farmland Atlas", "item": "https://agsist.com/farmland-atlas"},
-            {"@type": "ListItem", "position": 3, "name": "Farmland sale index", "item": URL}]}]}
-    ld_json = json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    ld = [{"@context": "https://schema.org", "@type": "Dataset", "@id": URL + "#dataset", "name": "AGSIST Illinois farmland sale index",
+           "description": "Quarterly index of Illinois farmland sale prices per acre from PTAX-203 transfer declarations: arm's-length bare-land sales of 20 acres or more, one parcel, county and tract size held fixed by a time-dummy model, %d = 100, with county-cluster bootstrap ranges, annual county medians, price-to-rent multiples and buyer-type shares." % s["start"],
+           "url": URL, "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"},
+           "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
+           "license": "https://agsist.com/terms", "isAccessibleForFree": True, "inLanguage": "en-US",
+           "keywords": ["farmland values", "Illinois farmland", "land sales", "farmland price index", "cash rent"],
+           "spatialCoverage": {"@type": "Place", "name": "Illinois, United States"},
+           "temporalCoverage": "%d-01-01/%s" % (s["start"], s["through"]), "dateModified": data["built"],
+           "isBasedOn": ["https://data.illinois.gov/d/it54-y4c6", "https://quickstats.nass.usda.gov/"],
+           "variableMeasured": ["farmland sale price index", "median sale price per acre", "price to cash rent multiple", "buyer type share"],
+           "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/land/index.json"}]},
+          {"@context": "https://schema.org", "@type": "FAQPage",
+           "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}]
     tiles = "".join('<div class="li-tile"><b>%s</b><span>%s</span></div>' % (a, b) for a, b in [
         (fmt1(y4["ix"]), "index, %s (%d = 100)" % (span_words(y4["from"], y4["to"]), s["start"])),
         (signed(y4["pct"]), "vs the 12 months before (range %s to %s)" % (signed(y4["lo"]), signed(y4["hi"]))),
@@ -792,105 +769,48 @@ def page_html(data):
         esc(o["name"]), o["start"], comma(o["n_sales"]), o["n_counties"], esc(o["held"])) for o in others)
     faq_html = "".join("<dt>%s</dt><dd>%s</dd>" % (esc(q), esc(a)) for q, a in faqs)
     first_html = ('<p>%s</p>' % esc(first)) if first else ""
-    return f"""<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#111a0a">
-  <title>{esc(title)} | AGSIST</title>
-  <meta name="description" content="{esc(desc)}">
-  <meta name="author" content="Sigurd Lindquist">
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-  <link rel="canonical" href="{URL}">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="{esc(title)}">
-  <meta property="og:description" content="{esc(desc)}">
-  <meta property="og:url" content="{URL}">
-  <meta property="og:image" content="{og_img}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="{esc(og_alt)}">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="{og_img}">
-  <meta name="twitter:title" content="{esc(title)}">
-  <meta name="twitter:description" content="{esc(desc)}">
-  {early}
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-  {fonts}
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <style>{CSS}</style>
-  <script type="application/ld+json">{ld_json}</script>
-</head>
-<body>
-  <a href="#main" class="skip">Skip to content</a>
-  <div id="site-header">
-{head_nav}
+    body = f"""<section class="li" id="illinois-index" aria-labelledby="li-h">
+<h2 id="li-h">Illinois farmland sale index</h2>
+<p class="by">What Illinois farm ground sold for, quarter by quarter, with the county mix held fixed. Sales through {esc(day_words(s["through"]))}, from the state's file of {esc(day_words(s["fetched"]))}.</p>
+<div class="li-ans" role="group" aria-label="The answer">
+<p class="li-big">{big}</p>
+{first_html}
+<div class="li-tiles">{tiles}</div>
 </div>
-  <main id="main" tabindex="-1">
-    <article class="li">
-      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/farmland-atlas">Farmland Atlas</a> &rarr; Farmland sale index</nav>
-      <h1>Illinois farmland sale index</h1>
-      <p class="by">Sales through {esc(day_words(s["through"]))}. Built from the state's file of {esc(day_words(s["fetched"]))}.</p>
-      <section class="li-ans" aria-label="The answer">
-        <p class="li-big">{big}</p>
-        {first_html}
-        <div class="li-tiles">{tiles}</div>
-      </section>
-      <figure class="li-fig">
-        {chart_svg(s)}
-        <ul class="li-key"><li><span class="li-sw"></span>Sale index by quarter</li><li><span class="li-sw b"></span>90% range</li><li><span class="li-sw n"></span>USDA NASS cropland value, once a year</li></ul>
-        <figcaption>Illinois, {s["start"]} = 100. The dashed end and hollow dot are provisional. NASS is its own survey, drawn on the same base for comparison only.</figcaption>
-      </figure>
-      <h2 id="years">By year, beside USDA</h2>
-      {annual_table(s)}
-      <p class="li-note">Since {s["start"]} the sales have risen faster than the NASS survey value. The survey asks what ground is worth; the index is what sold, and buyers of bare ground that comes up for sale are not a sample of all cropland.</p>
-      <h2 id="counties">By county</h2>
-      <p>Median price an acre of the same sales, by calendar year, with the number of sales. Under 5 sales, no median. Price to rent is the median sale price over the county's USDA NASS non-irrigated cash rent for the same year.</p>
-      <div id="li-counties"><p class="li-note">Loading the county table from <a href="/data/land/index.json">the data file</a>.</p></div>
-      <h2 id="buyers">Who bought</h2>
-      <p>Share of the index sales by the kind of buyer on the deed. "Companies" includes a family's own farm LLC or corporation, so a rising share is not the same as outside money.</p>
-      {buyer_table_html(s)}
-      <h2 id="quarters">Every quarter</h2>
-      <details><summary>Show the {len(s["quarters"])} quarters</summary>{quarter_table(s)}</details>
-      <h2 id="method">How it is built, and its limits</h2>
-      <ul class="li-method">
-        <li><b>Which sales.</b> Every Illinois transfer declaration for farm parcels that passes the same market-sale rule the Farmland Atlas uses: a deed type that normally carries a market price (no quit claims, gifts, court or sheriff deeds, trades), a whole interest, not between related parties, not exempt. Then: one parcel on the return, known acres, 20 acres or more, no "with buildings" flag, and {money(PPA_LO)} to {money(PPA_HI)} an acre. {comma(s["n_sales"])} sales from {s["start"]} through {esc(day_words(s["through"]))}.</li>
-        <li><b>Why one parcel.</b> Since about October 2025 the state's open data stopped giving acres for returns that cover several parcels, so including them would change what the index measures partway through. Every quarter uses one-parcel sales alike.</li>
-        <li><b>County mix held fixed.</b> The index comes from a model of each sale's log price an acre with a county effect, a quarter effect and a tract-size band (20 to 40, 40 to 80, 80 to 160, 160+ acres). The quarter effects are the index. A county that sells more often in one quarter does not move it.</li>
-        <li><b>Ranges.</b> The index is re-run {BOOT} times on counties drawn at random with replacement; the 90% range is the middle 90% of those runs. Quarters with fewer than {MIN_Q} sales are withheld.</li>
-        <li><b>Filing lag.</b> Deeds are filed after the sale. Market sales on file for the last four quarters against the same quarter a year earlier: {esc(lag_txt)}. The latest quarter is always provisional, and so is any recent quarter under 85% of its year-earlier count.</li>
-        <li><b>What it is not.</b> Not an appraisal of any farm. Quality of the ground (soil productivity, drainage, tillable share) is not in the record, so a quarter when better ground sold reads higher. Auctions, listed and private sales all count alike.</li>
-        <li><b>Other states.</b> {"<ul>" + held_txt + "</ul>" if held_txt else "None this run."}</li>
-      </ul>
-      <p class="li-dl"><a href="/data/land/index.json">Download the data (JSON)</a></p>
-      <h2 id="faq">Questions</h2>
-      <dl class="li-faq">{faq_html}</dl>
-      <h2 id="sources">Sources</h2>
-      <ul class="li-src">
-        <li>Illinois Department of Revenue, MyDec real estate transfer declarations (Form PTAX-203), <a href="https://data.illinois.gov/d/it54-y4c6">Illinois open data portal</a>.</li>
-        <li>USDA NASS, Land Values (state cropland value per acre) and Cash Rents (county non-irrigated rent), <a href="https://quickstats.nass.usda.gov/">Quick Stats</a>.</li>
-        <li>Illinois Society of Professional Farm Managers and Rural Appraisers, <a href="https://www.ispfmra.org/">ISPFMRA</a>, for its own land value survey (not used in these numbers).</li>
-        <li>Built by <code>scripts/build_land_index.py</code>. Recorded sales for one county: the <a href="/farmland-atlas">Farmland Atlas</a> county pages. Questions or corrections: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</li>
-      </ul>
-    </article>
-    <div data-signup-ask="Email me the farm markets and my top local bid every morning" data-source="page:farmland-index"></div>
-    <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
-  </main>
-  <div id="site-footer">
-{foot_nav}
-</div>
-  <script>{COUNTY_JS.replace("__V__", v)}</script>
-  <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
-</body>
-</html>
-"""
+<figure class="li-fig">
+{chart_svg(s)}
+<ul class="li-key"><li><span class="li-sw"></span>Sale index by quarter</li><li><span class="li-sw b"></span>90% range</li><li><span class="li-sw n"></span>USDA NASS cropland value, once a year</li></ul>
+<figcaption>Illinois, {s["start"]} = 100. The dashed end and hollow dot are provisional. NASS is its own survey, drawn on the same base for comparison only.</figcaption>
+</figure>
+<h3 id="years">By year, beside USDA</h3>
+{annual_table(s)}
+<p class="li-note">Since {s["start"]} the sales have risen faster than the NASS survey value. The survey asks what ground is worth; the index is what sold, and buyers of bare ground that comes up for sale are not a sample of all cropland.</p>
+<h3 id="counties">By county</h3>
+<p>Median price an acre of the same sales, by calendar year, with the number of sales. Under 5 sales, no median. Price to rent is the median sale price over the county's USDA NASS non-irrigated cash rent for the same year. Every recorded sale in a county is on its page in the <a href="#illinois">Illinois list</a> above.</p>
+<div id="li-counties"><p class="li-note">Loading the county table from <a href="/data/land/index.json">the data file</a>.</p></div>
+<h3 id="buyers">Who bought</h3>
+<p>Share of the index sales by the kind of buyer on the deed. "Companies" includes a family's own farm LLC or corporation, so a rising share is not the same as outside money.</p>
+{buyer_table_html(s)}
+<h3 id="quarters">Every quarter</h3>
+<details><summary>Show the {len(s["quarters"])} quarters</summary>{quarter_table(s)}</details>
+<details class="li-more-d" id="method"><summary>How the index is built, and its limits</summary>
+<ul class="li-method">
+<li><b>Which sales.</b> Every Illinois transfer declaration for farm parcels that passes the same market-sale rule the Farmland Atlas uses: a deed type that normally carries a market price (no quit claims, gifts, court or sheriff deeds, trades), a whole interest, not between related parties, not exempt. Then: one parcel on the return, known acres, 20 acres or more, no "with buildings" flag, and {money(PPA_LO)} to {money(PPA_HI)} an acre. {comma(s["n_sales"])} sales from {s["start"]} through {esc(day_words(s["through"]))}.</li>
+<li><b>Why one parcel.</b> Since about October 2025 the state's open data stopped giving acres for returns that cover several parcels, so including them would change what the index measures partway through. Every quarter uses one-parcel sales alike.</li>
+<li><b>County mix held fixed.</b> The index comes from a model of each sale's log price an acre with a county effect, a quarter effect and a tract-size band (20 to 40, 40 to 80, 80 to 160, 160+ acres). The quarter effects are the index. A county that sells more often in one quarter does not move it.</li>
+<li><b>Ranges.</b> The index is re-run {BOOT} times on counties drawn at random with replacement; the 90% range is the middle 90% of those runs. Quarters with fewer than {MIN_Q} sales are withheld.</li>
+<li><b>Filing lag.</b> Deeds are filed after the sale. Market sales on file for the last four quarters against the same quarter a year earlier: {esc(lag_txt)}. The latest quarter is always provisional, and so is any recent quarter under 85% of its year-earlier count.</li>
+<li><b>What it is not.</b> Not an appraisal of any farm. Quality of the ground (soil productivity, drainage, tillable share) is not in the record, so a quarter when better ground sold reads higher. Auctions, listed and private sales all count alike.</li>
+<li><b>Other states.</b> {"<ul>" + held_txt + "</ul>" if held_txt else "None this run."}</li>
+</ul>
+<p class="li-dl"><a href="/data/land/index.json">Download the index data (JSON)</a></p>
+</details>
+<details class="li-more-d" id="faq"><summary>Questions about the index</summary>
+<dl class="li-faq">{faq_html}</dl>
+</details>
+<p class="li-note" id="sources">Index sources: Illinois Department of Revenue transfer declarations (PTAX-203), <a href="https://data.illinois.gov/d/it54-y4c6">Illinois open data portal</a>; USDA NASS land values and cash rents, <a href="https://quickstats.nass.usda.gov/">Quick Stats</a>. The Illinois farm managers and appraisers (<a href="https://www.ispfmra.org/">ISPFMRA</a>) run their own land value survey; it is not used here.</p>
+</section>"""
+    return {"css": CSS, "html": body, "js": COUNTY_JS.replace("__V__", v), "ld": ld}
 
 
 def main(argv):
@@ -899,30 +819,30 @@ def main(argv):
     check = "--check" in argv
     data, files = build_all()
     text = dump(data)
-    page = page_html(data)
+    sec = hub_section(data)
     bad = 0
-    lk = B.leaks(text, files) + B.leaks(page, files)
+    lk = B.leaks(text, files) + B.leaks(sec["html"], files)
     if lk:
         print("FAIL: output carries a name, legal description, parcel or document number from the source (%d found); nothing written" % len(lk), file=sys.stderr)
         return 1
-    if "—" in text + page:
+    if "—" in text + sec["html"]:
         print("FAIL: an em dash in the output; nothing written", file=sys.stderr)
         return 1
     if len(text.encode()) > 150 * 1024:
         print("FAIL: data/land/index.json is %.0f KB, over 150 KB" % (len(text.encode()) / 1024), file=sys.stderr)
         return 1
-    for path, body in ((OUT, text), (PAGE, page)):
-        if check:
-            old = open(path, encoding="utf-8").read() if os.path.exists(path) else None
-            if old != body:
-                print("FAIL %s is not current; run python3 scripts/build_land_index.py" % os.path.relpath(path, ROOT), file=sys.stderr)
-                bad += 1
-            else:
-                print("ok   %s current" % os.path.relpath(path, ROOT))
-            continue
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(body)
-        print("wrote %s, %.1f KB" % (os.path.relpath(path, ROOT), len(body.encode()) / 1024))
+    # The section is drawn on the land sales hub by scripts/build_land_sales.py, from this data file.
+    if check:
+        old = open(OUT, encoding="utf-8").read() if os.path.exists(OUT) else None
+        if old != text:
+            print("FAIL %s is not current; run python3 scripts/build_land_index.py" % os.path.relpath(OUT, ROOT), file=sys.stderr)
+            bad += 1
+        else:
+            print("ok   %s current" % os.path.relpath(OUT, ROOT))
+    else:
+        with open(OUT, "w", encoding="utf-8") as fh:
+            fh.write(text)
+        print("wrote %s, %.1f KB" % (os.path.relpath(OUT, ROOT), len(text.encode()) / 1024))
     for st, s in data["states"].items():
         if s.get("held"):
             print("%s held back: %s" % (st, s["held"]))
@@ -1020,12 +940,15 @@ def selftest():
     # the committed page and data
     data = load_json(OUT)
     if data:
-        page = page_html(data)
-        ck("page: no em dash", "\u2014" not in page and "&mdash;" not in page)
-        ck("page: byline only at the end", page.index("Sigurd Lindquist, CCA") > page.index('id="sources"'))
-        ck("page: no sponsor slot", not re.search(r"data-sponsor|ag-sponsor|sponsor-slot", page))
-        ck("page: withheld quarters and held states say why", "withheld" in page or all(r.get("ix") is not None for r in data["states"]["IL"]["quarters"]))
-        ck("page: a Dataset and a FAQPage", '"@type":"Dataset"' in page and '"@type":"FAQPage"' in page)
+        sec = hub_section(data)
+        page = sec["html"]
+        ld = json.dumps(sec["ld"])
+        ck("section: no em dash", "\u2014" not in page and "&mdash;" not in page)
+        ck("section: no byline inside it (the hub has one place for that)", "Sigurd Lindquist, CCA" not in page)
+        ck("section: no sponsor slot", not re.search(r"data-sponsor|ag-sponsor|sponsor-slot", page))
+        ck("section: withheld quarters and held states say why", "withheld" in page or all(r.get("ix") is not None for r in data["states"]["IL"]["quarters"]))
+        ck("section: a Dataset and a FAQPage", '"@type": "Dataset"' in ld and '"@type": "FAQPage"' in ld)
+        ck("section: the old page's anchors", all('id="%s"' % i in page for i in ("illinois-index", "years", "counties", "buyers", "quarters", "method", "faq", "sources")))
         ck("data file under 150 KB", len(dump(data).encode()) < 150 * 1024)
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0

@@ -86,7 +86,9 @@ RETIRED = ("/cash-rent", "/land-tenure", "/storage-crunch", "/cash-bids-national
            "/fastfacts", "/here", "/status",
            # merged Oct 22, 2026 (scripts/moved_pages.py)
            "/news", "/conditions-yield", "/whats-priced-in", "/scorecard", "/pod-counts", "/hail/",
-           "/cash-bids/states", "/elevators", "/foreign-land", "/archive")
+           "/cash-bids/states", "/elevators", "/foreign-land", "/archive",
+           # merged Oct 29, 2026 (consolidation round 2)
+           "/farmland-index", "/data-sources")
 RETIRED_TEXT = ("Analyst Estimates",)
 HREF_RE = re.compile(r'<a\b[^>]*\bhref="(/[^"?#]*)(?:[?#][^"]*)?"', re.I)
 

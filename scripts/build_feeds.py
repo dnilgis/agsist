@@ -388,7 +388,8 @@ def main():
 
     # ── which pages fetch which feed ─────────────────────────────────────────
     readers = defaultdict(set)
-    for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")) + sorted(glob.glob("desk/*.html")):   # desk/: the admin tabs of /desk (Oct 28)
+    # land-sales/index.html: the hub carries the Illinois farmland sale index (data/land/index.json) since Oct 29, 2026
+    for p in sorted(glob.glob("*.html")) + sorted(glob.glob("components/*.html")) + sorted(glob.glob("desk/*.html")) + glob.glob("land-sales/index.html"):   # desk/: the admin tabs of /desk (Oct 28)
         text = read(p)
         # A page also reads what its own page scripts fetch. 2026-10-11: the
         # homepage moved three big inline scripts to components/home-*.js, and
