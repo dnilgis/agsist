@@ -2011,6 +2011,23 @@ function heroOvernight(q){
   if(!h&&/ph-ovn-wait/.test(el.className)){el.innerHTML='';return;}
   el.innerHTML=h;el.hidden=!h;
 }
+/* The line right under the hero price (benchmark review, Oct 29, 2026: the quote's
+   delay and a plain stale state at the price, not only further down the page).
+   The time itself is on the hero line above (exchWhen). Short words only: the box
+   is one line, held in the page CSS (.ph-fresh). */
+function heroFresh(q,data,failed){
+  var el=document.getElementById('ph-fresh');if(!el)return;
+  var t='Quotes delayed 10 to 25 min',stale=false;
+  if(failed){t='Not updating: last price on file';stale=true;}
+  else if(q&&q.close_kind==='settle'){
+    var a=window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(q.settle_date||q.close_date):null;
+    if(a&&a.stale){t='Stale: settle is '+a.note;stale=true;}else t='Exchange settle, not a live trade';
+  }else if(q&&data&&data.fetched&&window.AgAsOf){
+    var st=AgAsOf.staleness(data.fetched,'prices');
+    if(st.stale){t='Stale: prices '+st.note;stale=true;}else t='Delayed 10 to 25 min';
+  }
+  el.textContent=t;el.classList.toggle('is-stale',stale);
+}
 function loadPrices(){
 /* AG.json (util.js): one request for prices.json, shared with geo.js and the
    range/seasonal block below. */
@@ -2027,6 +2044,7 @@ AG.json('/data/prices.json')
     var __when=exchWhen(front,data.fetched);
     CROP.labels(heroLabel,F.nearby,__when);
     setTxt('ph-when',__when);
+    heroFresh(front,data);
     if(front&&front.close!=null){setEl(CROP.heroTile[0],grain$(front.close));var hcT=chgTxt(front.netChange,front.pctChange,front.roll);setEl(CROP.heroTile[1],hcT.t,hcT.c);}
     CROP.tiles.forEach(function(m){var r=m.root?nearbyOf(q,m.root):null,mk=m.nc?newCropKey(m.nc[0],m.nc[1],q):m.key,d=m.root?(r&&r.d):(q[mk]||(m.alt&&q[m.alt]));if(!d||d.close==null)return;if(m.root){var pe=document.getElementById(m.p),le0=pe&&pe.parentNode.querySelector('.cc-lbl');if(le0)le0.textContent=m.name+' '+(r.label||'most-active')+' ('+m.sym+')';}if(m.lbl){var le=document.getElementById(m.lbl),cl=contractLabel(d);if(le&&cl)le.textContent=cl+' new crop';}setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
 
@@ -2136,6 +2154,7 @@ AG.json('/data/prices.json')
     document.querySelectorAll('.sk').forEach(function(el){el.classList.remove('sk');});
     var psd=document.querySelector('.ps-dot');
     if(psd)psd.style.animation='none';
+    heroFresh(null,null,true);
     var st=document.getElementById('status');
     (function(f){f();if(!window.AgStates)(window.AgStatesQ=window.AgStatesQ||[]).push(f);})(function(){if(st){if(window.AgStates)AgStates.error(st,{inline:true,msg:'Live prices didn\u2019t load. Showing the last close below.',retry:loadPrices});else st.textContent='Live update failed, showing last close (see note below).';}});
     /* the market read is built from live prices: say so rather than shimmer */
