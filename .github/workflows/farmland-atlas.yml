@@ -33,9 +33,11 @@ name: farmland-atlas
 # fetchers still find last month's files and the build reads every layer, and
 # saves them back to raw (scripts/push_raw.sh) after the build. The paths are
 # in .gitignore, so `git add -A data/atlas` never puts them back on main.
-# drought.json alone stays on main (test/drought-county-week.test.mjs reads
-# it). If raw cannot be read the run stops before fetching: a build on missing
-# raw files would mark those layers "not yet measured" and commit a dark map.
+# drought.json joined them on Oct 29 (fx/sizeinputs; the PR checks pull it for
+# test/drought-county-week.test.mjs), and so did the CRP workbooks in
+# data/atlas/src/. If raw cannot be read the run stops before fetching: a build
+# on missing raw files would mark those layers "not yet measured" and commit a
+# dark map.
 #
 # Monthly, because none of the sources moves faster: NCEI refreshes the county
 # file around the 8th, RMA reposts the current crop year through the season,
@@ -145,9 +147,9 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           bash scripts/pull_raw.sh data/atlas/raw
-          n=$(ls data/atlas/raw/*.json | grep -vc '/drought\.json$' || true)
+          n=$(ls data/atlas/raw/*.json | wc -l)
           ls -l data/atlas/raw/
-          for f in heat water loss sob value crp energy; do
+          for f in heat water loss sob value crp energy drought; do
             [ -s "data/atlas/raw/$f.json" ] || { echo "::error::data/atlas/raw/$f.json did not come back from the raw branch; not building"; exit 1; }
           done
           echo "raw pulls: $n files"
@@ -208,12 +210,17 @@ jobs:
       - name: Fetch CRP (FSA)
         if: steps.which.outputs.crp == '1'
         continue-on-error: true
-        env:
-          RMA_PROXY_BASE: ${{ vars.RMA_PROXY_BASE }}
         # FSA refuses runners. When the two workbooks have been uploaded to
         # data/atlas/src (downloaded in a browser from the CRP statistics page,
         # names unchanged), they are read from there and nothing is fetched.
+        # Since Oct 29 that folder lives on the private raw branch, not main (no
+        # page reads it): upload a new workbook there, at data/atlas/src/. The
+        # unpack is soft: without the folder the fetch below is tried as before.
+        env:
+          RMA_PROXY_BASE: ${{ vars.RMA_PROXY_BASE }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
+          RAW_SOFT=1 bash scripts/pull_raw.sh data/atlas/src
           # the newest workbook wins if an older one was left in the folder (86-24 vs 86-25)
           H=$(ls data/atlas/src/*[Hh][Ii][Ss][Tt]*.xlsx 2>/dev/null | sort -V | tail -1)
           E=$(ls data/atlas/src/*[Ee][Xx][Pp][Ii][Rr]*.xlsx 2>/dev/null | sort -V | tail -1)
@@ -413,7 +420,7 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'
-        run: bash scripts/push_raw.sh "farmland atlas raw" $(ls data/atlas/raw/*.json data/atlas/raw/*.json.gz 2>/dev/null | grep -v '/drought\.json$')
+        run: bash scripts/push_raw.sh "farmland atlas raw" $(ls data/atlas/raw/*.json data/atlas/raw/*.json.gz 2>/dev/null)
 
       - name: IndexNow ping
         run: |
