@@ -80,7 +80,7 @@ test("the menu and footer name the merged pages by what they hold now", () => {
   const h = read("components/header.html"), f = read("components/footer.html");
   assert.match(h, /href="\/basis"[^>]*>[\s\S]{0,200}Bids and basis by state/);
   assert.match(h, /USDA calendar and what&rsquo;s priced in/);
-  assert.match(h, /Crop progress and size/);
+  assert.match(h, /Crop progress, size and yield/);   // Oct 29, 2026: Yield by state joined this line
   assert.ok(h.includes('href="/daily#past"') && f.includes('href="/daily#past"'), "Past briefings in the menu and footer");
   assert.match(read("components/loader.js"), /var CV = '104';/);   // 104: fx/ratecard; 102: fx/merges2 (the redo of fx/merges, which was 86)
 });

@@ -2,7 +2,7 @@
  *   Desktop: Prices | Livestock | Field | Money & Land | Daily, then the ZIP chip, Search, Free daily email.
  *   Phone: logo, ZIP chip, search, menu. The panel: search, My place, the five groups open, a Rain Print card,
  *   About, Contact, Display mode.
- *   Footer: daily email band and one Rain Print line; Prices | Livestock | Field | Money & Land | Work with us | About.
+ *   Footer: daily email band and one Rain Print line (the band; Oct 29 the Field column dropped its copy); Prices | Livestock | Field | Money & Land | Work with us | About.
  *
  *   node --test test/nav-full-oct18.test.mjs
  */
@@ -31,21 +31,23 @@ const SUBLINES = { "/haymow": "Hay for sale and wanted" };
 // The approved outline, labels exact. Oct 22-23, 2026: the merged pages left it (scripts/moved_pages.py).
 const MENU = {
   markets: ["Prices", {
-    "Near you": [["/cash-bids", "Cash bids near me"], ["/basis", "Bids and basis by state"], ["/grain-transport", "Grain on the move"], ["/cash-bid-index", "Cash Bid Index"], ["/fertilizer", "Fertilizer prices"]],
-    Futures: [["/corn-futures-prices", "Corn"], ["/soybean-futures-prices", "Soybeans"], ["/wheat-futures-prices", "Wheat"], ["/harvest-price-tracker", "Harvest price tracker"], ["/markets", "All markets →"]],
-    Reports: [["/usda-calendar", "USDA calendar and what’s priced in"], ["/conditions", "Crop progress and size"], ["/usda-quick-stats", "Yield by state"], ["/crop-tour", "Crop tour"], ["/cot", "Fund positions (COT)"], ["/tariffs", "Tariffs and trade"]],
+    // Oct 29, 2026 (Sig, consolidation round 2): Cash Bid Index out of the menu (linked from /basis), Ag stocks
+    // under Futures, the two crop report lines in one; drought and manure moved to Field; PRF and LRP once.
+    "Near you": [["/cash-bids", "Cash bids near me"], ["/basis", "Bids and basis by state"], ["/grain-transport", "Grain on the move"], ["/fertilizer", "Fertilizer prices"]],
+    Futures: [["/corn-futures-prices", "Corn"], ["/soybean-futures-prices", "Soybeans"], ["/wheat-futures-prices", "Wheat"], ["/ag-stocks", "Ag stocks"], ["/harvest-price-tracker", "Harvest price tracker"], ["/markets", "All markets →"]],
+    Reports: [["/usda-calendar", "USDA calendar and what’s priced in"], ["/conditions", "Crop progress, size and yield"], ["/crop-tour", "Crop tour"], ["/cot", "Fund positions (COT)"], ["/tariffs", "Tariffs and trade"]],
   }],
   livestock: ["Livestock", {
-    "": [["/cattle-auction-prices", "Sale barn prices"], ["/cattle-futures-prices", "Cattle futures"], ["/milk-prices", "Milk"], ["/hay-prices", "Hay"], ["/haymow", "The Haymow"], ["/lrp", "LRP"], ["/prf", "PRF"], ["/manure-value", "Manure value"], ["/drought-monitor", "Drought monitor"]],
+    "": [["/cattle-auction-prices", "Sale barn prices"], ["/cattle-futures-prices", "Cattle futures"], ["/milk-prices", "Milk"], ["/hay-prices", "Hay"], ["/haymow", "The Haymow"], ["/lrp", "LRP"], ["/prf", "PRF"]],
   }],
   field: ["Field", {
-    Weather: [["/rain-radar", "Rain on your field"], ["/rain", "Rain by county"], ["/hail-map", "Hail map"], ["/spray", "Spray advisory"], ["/fall-nitrogen", "Soil temp (fall anhydrous)"], ["/rain-print", "Rain Print"], ["/rain-gauge", "Rain gauge waitlist"]],
-    Crop: [["/gdu-calculator", "GDU"], ["/planting-date", "Planting date"], ["/urea", "Urea loss"], ["/nutrient-removal", "Nutrient removal"], ["/field-scout", "Field Scout"], ["/yield-estimator", "Yield estimator"]],
+    Weather: [["/rain-radar", "Rain on your field"], ["/rain", "Rain by county"], ["/hail-map", "Hail map"], ["/drought-monitor", "Drought monitor"], ["/spray", "Spray advisory"], ["/fall-nitrogen", "Soil temp (fall anhydrous)"], ["/rain-print", "Rain Print"], ["/rain-gauge", "Rain gauge waitlist"]],
+    Crop: [["/gdu-calculator", "GDU"], ["/planting-date", "Planting date"], ["/urea", "Urea loss"], ["/nutrient-removal", "Nutrient removal"], ["/manure-value", "Manure value"], ["/field-scout", "Field Scout"], ["/yield-estimator", "Yield estimator"]],
     "Harvest and bins": [["/harvest-or-wait", "Harvest now or wait"], ["/grain-emc", "Grain drying (EMC)"], ["/grain-shrink", "Grain shrink"], ["/grain-bin-calculator", "Bin calculator"], ["/combine-loss", "Combine loss"], ["/tools", "All tools →"]],
   }],
   money: ["Money & Land", {
-    Land: [["/rent/", "Cash rent"], ["/farmland-atlas", "Farmland Atlas"], ["/land-sales/", "Land sales"], ["/farmland-index", "Farmland sale index"], ["/custom-rates", "Custom rates"], ["/cash-lease", "Lease form"]],
-    Programs: [["/arc-plc", "ARC or PLC"], ["/prf", "PRF"], ["/lrp", "LRP"], ["/farm-bill", "Farm bill"]],
+    Land: [["/rent/", "Cash rent"], ["/farmland-atlas", "Farmland Atlas"], ["/land-sales/", "Land sales"], ["/custom-rates", "Custom rates"], ["/cash-lease", "Lease form"]],
+    Programs: [["/arc-plc", "ARC or PLC"], ["/farm-bill", "Farm bill"]],
     Selling: [["/store-or-sell", "Sell or store"], ["/breakeven", "Break-even"], ["/commodity-loan", "CCC loan"]],
   }],
   daily: ["Daily", { "": [["/daily", "Today’s briefing"], ["/daily#past", "Past briefings"]] }],
@@ -58,6 +60,8 @@ function deskPanel(id) {
   return header.slice(a, b > 0 ? b : header.indexOf('<div class="nav-actions">'));
 }
 const drawer = header.slice(header.indexOf('<div class="drawer" id="drawer"'));
+// The phone panel names Rain Print once, in its own card after Daily, so its Field list leaves the plain line out (Oct 29, 2026).
+const PHONE_ONLY_CARD = new Set(["/rain-print"]);
 
 test("desktop menu: five groups in order, short noun subheads, every label exact", () => {
   const order = [...header.matchAll(/<div class="nav-dd" id="dd-([a-z]+)">/g)].map((m) => m[1]);
@@ -97,10 +101,15 @@ test("phone panel: search, My place, the five groups open with subheads, a Rain 
     assert.equal(text(sec.slice(sec.indexOf(">") + 1, sec.indexOf("</h2>"))), name);
     const all = [...sec.matchAll(/<a href="([^"]+)" class="draw-item[^"]*">([\s\S]*?)<\/a>/g)];
     const links = all.map((m) => [m[1], linkName(m[2])]);
-    assert.deepEqual(links, Object.values(subs).flat(), `${name} in the phone panel`);
+    assert.deepEqual(links, Object.values(subs).flat().filter(([h]) => !PHONE_ONLY_CARD.has(h)), `${name} in the phone panel`);
     for (const m of all) assert.equal((m[2].match(/<span class="nav-sub">([^<]*)<\/span>/) || [])[1], SUBLINES[m[1]], `${m[1]} short line in the phone panel`);
   }
   assert.match(drawer, /<a href="\/rain-print" class="draw-rp"><span class="draw-rp-k">Rain Print<\/span><span class="draw-rp-t">Your farm&rsquo;s year of rain, framed<\/span>/);
+  assert.equal((drawer.match(/href="\/rain-print"/g) || []).length, 1, "Rain Print once in the phone panel");
+  for (const u of ["/prf", "/lrp"]) assert.equal((drawer.match(new RegExp(`href="${u}"`, "g")) || []).length, 1, `${u} once in the phone panel`);
+  // Oct 29, 2026: 63 lines to 57, plus Ag stocks. Groups, the Rain Print card and About, Advertise, Contact.
+  const lines = (drawer.match(/class="draw-item[^"]*"|class="draw-rp"/g) || []).length;
+  assert.equal(lines, 58, "phone panel lines");
 });
 
 test("moved note: Harvest tools moved to Field, in Money & Land, dismissible, gated to two weeks", () => {
@@ -272,8 +281,8 @@ test("phone: one tap on the menu shows every group's links; desktop panels stay 
     const hidden = await pg.evaluate(() => [...document.querySelectorAll("#drawer .draw-grp a.draw-item")].filter((a) => !a.getClientRects().length).map((a) => a.getAttribute("href")));
     assert.deepEqual(hidden, [], "every group link is shown without another tap");
     const n = await pg.evaluate(() => document.querySelectorAll("#drawer .draw-grp a.draw-item").length);
-    assert.equal(n, 5 + 5 + 6 + 9 + 7 + 6 + 6 + 6 + 4 + 3 + 2,
-      "Near you 5 and Reports 6 since the merges (Oct 22, 2026: Bids by state, What's priced in and Crop size joined the pages beside them), Crop 6 (Pod counts on the crop tour), Daily 2 (The Wire and the archive on the Daily page); Livestock has 9 since The Haymow (2026-10-18); Land 6 with Land sales (/land-sales/, 2026-10-29) beside the Farmland sale index (2026-10-20)");
+    assert.equal(n, 4 + 6 + 5 + 7 + 7 + 7 + 6 + 5 + 2 + 3 + 2,
+      "Oct 29, 2026 (consolidation round 2): Near you 4 (Cash Bid Index linked from /basis), Futures 6 with Ag stocks, Reports 5 (one crop report line), Livestock 7 (drought and manure to Field), Weather 7 (drought in, Rain Print in its card), Crop 7 (manure value), Harvest 6, Land 5 (the Illinois index is a section of Land sales), Programs 2 (PRF and LRP under Livestock), Selling 3, Daily 2");
     assert.ok(await pg.evaluate(() => document.getElementById("drawer").scrollWidth <= 390), "no sideways scroll in the panel");
     // the moved note shows before Nov 1 and stays closed once dismissed
     assert.ok(await pg.isVisible("#drawer .nav-moved"));
