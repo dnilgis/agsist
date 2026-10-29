@@ -745,6 +745,7 @@ def test(src_dir=RAW, today=None):
         rp = os.path.join(src_dir, "%s-raster.json.gz" % st)
         if os.path.exists(rp):
             rep["raster"] = test_raster(st, rp, today, roll, last_full)
+            rep["raster"]["valu1_vs_sda_map_units"] = attr_parity(rp, p, os.path.join(src_dir, "%s-mukey.json.gz" % st))
         report[st] = rep
     return report
 
@@ -804,6 +805,31 @@ def raster_check(d, n_sample=100):
     out = {"sections": len(pairs), "abs_diff_points": {"median": q(diffs, 0.5), "p90": q(diffs, 0.9), "p99": q(diffs, 0.99), "max": round(diffs[-1], 2)},
            "share_within_1_point": round(sum(1 for x in diffs if x <= 1) / len(diffs), 3),
            "stratified_sample": {"n": len(smp), "median": q(smp, 0.5), "p90": q(smp, 0.9), "max": round(smp[-1], 2)}}
+    return out
+
+
+def attr_parity(rp, sp, mp):
+    """valu1 (gridded) against the SDA component interpretations, per map unit, in NCCPI points:
+    nccpi3all vs the overall NCCPI; nccpi3corn and nccpi3soy vs the SDA submodels where filled."""
+    with gzip.open(rp, "rt", encoding="utf-8") as fh:
+        v = json.load(fh).get("mukey_valu1") or {}
+    with gzip.open(sp, "rt", encoding="utf-8") as fh:
+        sda = {str(r[0]): r[3] for rws in json.load(fh)["soil"].values() for r in rws if r[3] is not None}
+    mk = {}
+    if os.path.exists(mp):
+        with gzip.open(mp, "rt", encoding="utf-8") as fh:
+            mk = json.load(fh)["mukeys"]
+    out = {}
+    for name, i, src in (("all_vs_overall", 2, None), ("corn_vs_submodel", 0, 1), ("soy_vs_submodel", 1, 2)):
+        d = []
+        for m, vals in v.items():
+            a = vals[i]
+            b = sda.get(m) if src is None else (mk.get(m) or [None, None, None])[src]
+            if a is not None and b is not None:
+                d.append(abs(a - b) * 100)
+        d.sort()
+        out[name] = {"map_units": len(d), "median": round(B.quantile(d, 0.5), 2), "p90": round(B.quantile(d, 0.9), 2),
+                     "within_1_point": round(sum(1 for x in d if x <= 1) / len(d), 3)} if d else "none to compare"
     return out
 
 
