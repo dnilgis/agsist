@@ -569,7 +569,9 @@ def buyer_table_html(s):
 
 
 CSS = """
-.li{max-width:860px;margin:0 auto;padding:1rem 1rem 3rem}
+.li{max-width:860px;margin:2rem 0 1rem;padding:0;scroll-margin-top:84px}
+.li .li-more-d{margin:.6rem 0}
+.li .li-more-d summary{cursor:pointer;font-weight:600;color:var(--text)}
 .li .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
 .li h1{font-size:clamp(1.4rem,4.3vw,2rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
 .li h2{font-size:1.25rem;line-height:1.3;margin:2rem 0 .5rem;color:var(--text)}
