@@ -36,7 +36,7 @@ await scen('staleCropYear', { routes: [['**/data/prf/g/**', async r => { const r
   await go(page, o.BASE); await page.waitForSelector('#prf-app:not([hidden])'); await page.click('#prf-eg'); await page.waitForTimeout(1500);
   console.log('  answer:', await txt(page, '#prf-answer'), '| chart hidden:', await page.$eval('#prf-chart-fig', e => e.hidden), '| acts hidden:', await page.$eval('#prf-acts', e => e.hidden));
 });
-await scen('geocoderDown', { routes: [['**/geocoding-api.open-meteo.com/**', r => r.abort()]] }, async (page, o) => {
+await scen('geocoderDown', { routes: [['**/data/places/**', r => r.abort()]] }, async (page, o) => {
   await go(page, o.BASE); await page.waitForSelector('#prf-app:not([hidden])'); await page.fill('#prf-q', '54728'); await page.press('#prf-q', 'Enter'); await page.waitForTimeout(1000);
   console.log('  msg:', await txt(page, '#prf-find-msg'));
 });

@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 297;  // v297 2026-10-29: fx/menutrim (297 assigned by the lead; 289 was its first slot, main passed it with 290 and 292 to 294; 291, 295 and 296 are held by other open branches). Same work as the v289 line below: shorter menu with Ag stocks, menu_click events, /farmland-index and /data-sources folded, loader CV 105.
+var CACHE_VERSION = 304;  // v304 2026-10-29: fx/menutrim (304 assigned by the lead; was 297, which main passed with 299 (nometeo); 300 to 303 are held by other open branches; 289 was its first slot, main passed it with 290 and 292 to 294; 291, 295 and 296 are held by other open branches). Same work as the v289 line below: shorter menu with Ag stocks, menu_click events, /farmland-index and /data-sources folded, loader CV 105.
+// v299 2026-10-29: fx/nometeo (299 assigned by the lead; was 291, which main passed: 297 is menu trim #186, 298 land-first #196). Place lookups off Open-Meteo: every ZIP and town box reads our own data/places/ files (components/places.js?v=1, GeoNames towns and the bids ZIP table's points); bids-homepage v43, cattle-auction v7, geo v33, grain-emc-ui v5, harvest-wait-ui v3, haymow v4, here v32, prf v9, radar-rain-page v8, rain-print v86, rp-canada v4, rain-county-print v42, loader.js.
 // v294 2026-10-29: fx/landvt (294 assigned by the lead). Vermont farm sales: county pages on /land-sales/vermont, Field Scout comps, the Atlas land door, the monthly land email; land-sales.js?v=3, land-alert.js?v=3, field-scout-land.js?v=9, field-scout-read.js?v=15, field-scout.js?v=29 (field-scout-land.js?v=9 also in comp-report.html and field-report.html), change-lines.js?v=2 (from here.js?v=32); search.js rides loader CV 104 unchanged.
 // v293 2026-10-29: fx/bidflags (293 assigned by the lead; 289 to 292 are held by other open branches, main still showed 290 at merge). Cash bids: a basis "from" line needs the bid to agree with that day's futures and never narrates the old feed's cents-read-as-dollars step; cash-bids.js?v=15, cb-glance.js?v=4.
 // v292 2026-10-29: fx/allsales (292 assigned by the lead; 289 to 291 are held by menutrim, fx/fsbase and fx/nometeo). Every recorded land sale on the county sales pages with Show more and a type filter, and one land rule (buildings by property class, Wisconsin forest apart, bare-land middles, 5 sales before a middle): land-sales.js?v=2, field-scout-land.js?v=8, comp-report.js?v=4.
@@ -90,7 +91,6 @@ var NEVER_CACHE = [
   'agsist-api.dnilgis.workers.dev',          // the subs worker (new home, Oct 22)
   'agsist-subs.dnilgis.workers.dev',         // the subs worker (old home, blocked Oct 21; kept while both may answer)
   'workers.dev',                             // any Cloudflare Worker
-  'geocoding-api.open-meteo.com',            // ZIP lookup
   'api.weather.gov',                         // live NWS alerts: an expired warning must never come back from cache
   'agsist.com/e?',                           // the email front door: a signed link, never kept
   'data.rcc-acis.org',                       // NOAA daily data for Rain Print: big, dated by the day, never reused

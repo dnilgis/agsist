@@ -365,6 +365,8 @@ async function open(browser, srv, opt = {}) {
       return r.fulfill({ body: JSON.stringify({ "64836": [37.17, -94.31, "Carthage"], "54498": [44.95, -90.6, "Withee"] }), contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" } });
     return r.abort();
   });
+  // our own ZIP table (data/places/zip/, read first since 2026-10-29) answers with the same points as the bids table above
+  await p.route(/\/data\/places\/zip\/\d\d\.json$/, (r) => r.fulfill({ body: JSON.stringify({ "64836": [37.17, -94.31, "Carthage", "MO", "Jasper"], "54498": [44.95, -90.6, "Withee", "WI", "Clark"] }), contentType: "application/json" }));
   await p.goto(`http://127.0.0.1:${srv.address().port}/cattle-auction-prices`, { waitUntil: "load" });
   return { p, errs, ctx };
 }

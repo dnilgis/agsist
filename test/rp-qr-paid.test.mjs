@@ -25,6 +25,7 @@ import { createRequire } from "node:module";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
 import { checkout, stripePage, refOf } from "./fixtures/rp-checkout.mjs";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -106,7 +107,7 @@ async function mocks(ctx, opts, log) {
   const upto = "2026-10-09";
   const SHORT = {};
   log.posts = 0;
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
+  await ctx.route(PLACES_ROUTE, async (r) => {
     const req = r.request(), u = new URL(req.url());
     if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
@@ -123,7 +124,7 @@ async function mocks(ctx, opts, log) {
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
     if (u.host === "buy.stripe.com") return stripePage(r, log.stripe);
-    if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
+    if (isPlaces(u)) return r.fulfill({ json: placesBody(u, [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }]) });   // the town lookup: our own data/places/ files (2026-10-29)
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [{ name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1950-01-01", upto]], state: "WI" }] } });
       let sdate = u.searchParams.get("sdate"), normal = false;

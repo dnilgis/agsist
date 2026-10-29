@@ -5,7 +5,8 @@
  *
  * WHERE THE NUMBERS COME FROM (nothing invented, nothing filled in)
  *   place     a Canadian town ("Regina, SK", "Saint-Hyacinthe QC", "Brandon
- *             Manitoba") through Open-Meteo's geocoder (countryCode=CA), or a
+ *             Manitoba") through our own town list (components/places.js: GeoNames
+ *             towns, CC BY 4.0; a smaller town through a station named for it), or a
  *             postal code's first three characters (the FSA) through
  *             data/rain-print-ca/fsa.json (GeoNames, CC BY 4.0). A rural FSA
  *             (second character 0) covers too much ground to stand for a farm:
@@ -144,7 +145,7 @@
 
   // ---------------------------------------------------------------- the town
   function haversine(a, b, c, d) { var R = 6371, t = function (x) { return x * Math.PI / 180; }, h = Math.pow(Math.sin(t(c - a) / 2), 2) + Math.cos(t(a)) * Math.cos(t(c)) * Math.pow(Math.sin(t(d - b) / 2), 2); return 2 * R * Math.asin(Math.sqrt(h)); }
-  /* The town found, as the engine's town lookup returns it (Open-Meteo's shape)
+  /* The town found, as the engine's town lookup returns it (the geocoder shape)
      plus country_code 'CA' and prov. Errors are Errors with plain words; a
      town name found in more than one place throws {pick: [...]}, as the US path does. */
   function geoPick(P, results, lang) {
@@ -162,7 +163,7 @@
     if (far.length > 1) return { pick: far.slice(0, 6) };
     return { hit: hits[0] };
   }
-  function geoAsk(q, F, lang) {
+  function geoAsk(q, F, lang, PL) {
     var P = parseQuery(q), fr = lang === 'fr';
     if (!P) return Promise.reject(new Error('not Canadian'));
     if (P.fsa) {
@@ -182,13 +183,33 @@
         return { name: town, latitude: r[0], longitude: r[1], admin1: PROV[pv] ? PROV[pv].en : pv, country_code: 'CA', prov: pv, postal: P.fsa };
       });
     }
-    var u = 'https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&countryCode=CA&name=' + encodeURIComponent(P.town);
-    return F(u).then(function (r) { return r.json(); }).then(function (j) {
+    // our own town list (components/places.js, GeoNames towns; 2026-10-29: no outside geocoder)
+    if (!PL || typeof PL.search !== 'function') return Promise.reject(new Error(fr ? 'La recherche de ville n’a pas répondu. Réessayez dans une minute.' : 'The town lookup didn’t answer. Try again in a minute.'));
+    return PL.search(P.town, { country: 'CA', count: 10, get: F }).then(function (j) {
       var r = geoPick(P, j && j.results, lang);
-      if (r.error) throw new Error(r.error);
+      if (r.error) return stationTown(F, P).then(function (hit) { if (hit) return hit; throw new Error(r.error); });
       if (r.pick) { var e = new Error('pick'); e.pick = r.pick; throw e; }
       return r.hit;
     });
+  }
+  /* A small town missing from the town list (the list keeps towns of about 500 people and up) whose
+     name a station in the same province carries ("Qu'Appelle, SK" and the QU'APPELLE 1 gauge): the
+     town is put at that station, which is in it or beside it. One such station, or several within
+     30 km of each other; anything else stays "couldn't find". */
+  function stationTown(F, P) {
+    var want = fold(P.town).replace(/[^a-z]/g, '');
+    if (want.length < 3) return Promise.resolve(null);
+    return stationIndex(F).then(function (ix) {
+      var hits = ix.list.filter(function (s) {
+        if (String(s.p || '').toLowerCase() !== P.prov) return false;
+        var n = fold(String(s.n || '').replace(/ \d+(?:\.\d+)? ?[NSEW]{1,3}$/, '').replace(/ - .*$/, '').replace(/\s+\d+$/, '')).replace(/[^a-z]/g, '');
+        return n === want;
+      });
+      if (!hits.length) return null;
+      var far = hits.some(function (s) { return haversine(hits[0].la, hits[0].lo, s.la, s.lo) > 30; });
+      if (far) return null;
+      return { name: P.town, latitude: hits[0].la, longitude: hits[0].lo, admin1: PROV[P.prov] ? PROV[P.prov].en : P.prov, country_code: 'CA', prov: P.prov, approx: 'station' };
+    }).then(null, function () { return null; });
   }
 
   // ---------------------------------------------------------------- stations

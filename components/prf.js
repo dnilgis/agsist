@@ -26,7 +26,6 @@
   var SRC = root.getAttribute('data-src') || '/data/prf/';
   var KEY = 'agsist_prf';
   var N = M.N, LABELS = M.LABELS;
-  var GEO = 'https://geocoding-api.open-meteo.com/v1/search';
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -365,10 +364,23 @@
     }
     return { name: name.trim(), st: st };
   }
+  /* Our own place lookup (components/places.js, data/places/), loaded the first time a place is typed
+     (2026-10-29: Open-Meteo's geocoder is commercial-use only for an ad-supported site). */
+  var PLACES_JS = '/components/places.js?v=1';
+  function places() {
+    if (window.AGSIST_PLACES) return Promise.resolve(window.AGSIST_PLACES);
+    if (!places.p) places.p = new Promise(function (ok, no) {
+      var s = document.createElement('script');
+      s.src = PLACES_JS; s.async = true;
+      s.onload = function () { if (window.AGSIST_PLACES) ok(window.AGSIST_PLACES); else { places.p = null; no(new Error('places')); } };
+      s.onerror = function () { places.p = null; no(new Error('places')); };
+      document.head.appendChild(s);
+    });
+    return places.p;
+  }
   function lookup(name) {
-    return fetch(GEO + '?name=' + encodeURIComponent(name) + '&count=10&language=en&format=json&countryCode=US')
-      .then(function (r) { if (!r.ok) throw new Error('geo ' + r.status); return r.json(); })
-      .then(function (d) { if (!d || d.error) throw new Error('geo'); return d.results || []; });
+    return places().then(function (P) { return P.search(name, { country: 'US', count: 10 }); })
+      .then(function (d) { return (d && d.results) || []; });
   }
   function find(q) {
     q = String(q || '').trim();

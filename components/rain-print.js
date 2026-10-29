@@ -17,7 +17,8 @@
  * version, with its QR, marker, callout and dry-spell fixes); the art is his design.
  *
  * WHERE THE NUMBERS COME FROM (nothing here is invented or filled in)
- *   place     Open-Meteo geocoding (geocoding-api.open-meteo.com)
+ *   place     our own town and ZIP files (components/places.js, data/places/:
+ *             GeoNames towns, CC BY 4.0, and the zipcodes table the bids repo uses)
  *   stations  RCC-ACIS StnMeta, stations within about 0.6 degrees whose
  *             precipitation record spans the whole year, each marked for
  *             whether its snowfall record does too (pickStation prefers one
@@ -850,11 +851,11 @@
   }
   function toTitle(s) { return String(s).split(' ').map(function (w) { return /\d/.test(w) ? w : (w.length ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w); }).join(' '); }
   function haversine(a, b, c, d) { var R = 6371, t = function (x) { return x * Math.PI / 180; }, h = Math.pow(Math.sin(t(c - a) / 2), 2) + Math.cos(t(a)) * Math.cos(t(c)) * Math.pow(Math.sin(t(d - b) / 2), 2); return 2 * R * Math.asin(Math.sqrt(h)); }
-  /* The town lookup (Open-Meteo, US only). A plain town with no state that
+  /* The town lookup (our own files, US). A plain town with no state that
      matches towns in more than one place comes back as {pick: [...]} so the page
      can ask which one; a town and state that match nothing in that state is an
      error, not the first town of that name somewhere else. Five digits are sent
-     as a ZIP code (Open-Meteo matches postal codes); the town found is what the
+     as a ZIP code (the ZIP table names its town); the town found is what the
      print and the order then name. */
   function placeLabel(x) { return x.name + ', ' + (abbrFor(String(x.admin1 || '').toLowerCase()) || x.admin1 || ''); }
   function geocodeQuery(q) {
@@ -1186,7 +1187,7 @@
   }
   // opts (2026-10-16): a HEAD or a byte range, for the Canadian station files (components/rp-canada.js)
   function safeFetch(url, opts) {
-    var who = /open-meteo/.test(url) ? 'The town lookup' : 'NOAA\u2019s data service';
+    var who = /\/data\/places\//.test(url) ? 'The town lookup' : 'NOAA\u2019s data service';
     var ctl = typeof AbortController === 'function' ? new AbortController() : null, timedOut = false;
     var live = ctl ? { ctl: ctl, url: url, stopped: false } : null;
     if (live) LIVE.push(live);
@@ -1219,16 +1220,36 @@
   }
   /* CANADA (2026-10-16). A town with a province ("Regina, SK"), a postal code or a
      Canadian station id goes to components/rp-canada.js, which answers in the same
-     shapes as Open-Meteo and RCC-ACIS do for a US town; everything after that is
+     shapes as the town lookup and RCC-ACIS do for a US town; everything after that is
      this file's own rules. Without that file loaded, nothing changes. */
   function CA() { return root.AgRpCanada || null; }
   function isCanada(placeOrSid) { var c = CA(); return !!c && (c.isSid(placeOrSid) || c.isCanadian(placeOrSid)); }
   function caEnv(year) { return { currentYear: CURRENT_YEAR, today: TODAY, stale: STALE_DAYS, open: year ? lastYearOpen(year) : false }; }
+  /* THE TOWN LOOKUP (2026-10-29): our own files, components/places.js over data/places/ (GeoNames
+     towns, CC BY 4.0, and the ZIP table the bids repo uses), loaded the first time a town is typed.
+     It replaced Open-Meteo's geocoder, whose terms count an ad-supported site as commercial use.
+     A file that is not there (no town starts with those letters) is an empty answer, not an outage. */
+  var PLACES_JS = '/components/places.js?v=1', PLACES_P = null;
+  function placesLib() {
+    if (root.AGSIST_PLACES) return Promise.resolve(root.AGSIST_PLACES);
+    if (typeof document === 'undefined') {
+      try { return Promise.resolve(require('./places.js')); } catch (e) { return Promise.reject(e); }
+    }
+    if (!PLACES_P) PLACES_P = new Promise(function (ok, no) {
+      var s = document.createElement('script');
+      s.src = PLACES_JS; s.async = true;
+      var fail = function () { PLACES_P = null; var e = new Error('The town lookup couldn\u2019t be reached. Check the connection and try again.'); e.retry = true; no(e); };
+      s.onload = function () { if (root.AGSIST_PLACES) ok(root.AGSIST_PLACES); else fail(); };
+      s.onerror = fail;
+      document.head.appendChild(s);
+    });
+    return PLACES_P;
+  }
+  function placesGet(u) { return safeFetch(u).then(null, function (e) { if (e && e.status === 404) return { ok: false, status: 404 }; throw e; }); }
   function geoAsk(q) {
-    if (CA() && CA().isCanadian(q)) return CA().geoAsk(q, safeFetch, GEO_LANG);
+    if (CA() && CA().isCanadian(q)) return placesLib().then(function (PL) { return CA().geoAsk(q, placesGet, GEO_LANG, PL); });
     var g = geocodeQuery(q);
-    var u = 'https://geocoding-api.open-meteo.com/v1/search?count=10&countryCode=US&name=' + encodeURIComponent(g.town);
-    return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
+    return placesLib().then(function (PL) { return PL.search(g.zip || g.town, { country: 'US', count: 10, get: placesGet }); }).then(function (j) {
       var r = geoPick(q, j && j.results);
       if (r.error) throw new Error(r.error);
       if (r.pick) { var e = new Error('pick'); e.pick = r.pick; throw e; }
@@ -1812,7 +1833,7 @@
   }
 
   /* EMAIL ME WHEN THE YEAR IS FINISHED (2026-10-19, board Bet 1). The county
-     the town lookup put the place in (Open-Meteo's admin2, "Barron County" or
+     the town lookup put the place in (its admin2, "Barron County" or
      "Barron"), matched to one county in that state's data/rain/<st>.json, the
      same file the county rain pages and scripts/send_rain_year.py read. Exactly
      one match gives its FIPS; none, or more than one, gives '' and the page

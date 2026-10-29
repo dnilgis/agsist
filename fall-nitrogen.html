@@ -350,7 +350,7 @@ function fnSpark(t, last, w, h) {
   var live = document.getElementById('fn-live');
   if (!live || !window.fetch) return;
   var DATA = null, PLACE = null, seq = 0;
-  var ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
+  var OWN_ZIPS = '/data/places/zip/', ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
   var $ = function (id) { return document.getElementById(id); };
   // Every reading names its network, linked to it (Wisconet's CC BY terms ask for the credit).
   function netCredit(net) {
@@ -447,15 +447,14 @@ function fnSpark(t, last, w, h) {
     $('fn-zip').value = z; status('Looking up ' + z + '...');
     var my = ++seq;
     var getJSON = function (u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); };
-    getJSON(ZIPS + z.slice(0, 2) + '.json').then(function (t) {
+    [OWN_ZIPS, ZIPS].reduce(function (prev, base) {
+      // our own ZIP table first, then the bids repo's copy of the same points (2026-10-29: no outside geocoder)
+      return prev.catch(function () { return getJSON(base + z.slice(0, 2) + '.json').then(function (t) {
       var p = t && t[z];
       if (Array.isArray(p) && isFinite(+p[0]) && isFinite(+p[1]) && !(+p[0] === 0 && +p[1] === 0)) return {lat: +p[0], lon: +p[1]};
       throw new Error('not in table');
-    }).catch(function () {
-      return getJSON('https://geocoding-api.open-meteo.com/v1/search?name=' + z + '&count=1&language=en&format=json&countryCode=US').then(function (d) {
-        var r = d && d.results && d.results[0]; if (!r) throw new Error('none'); return {lat: r.latitude, lon: r.longitude};
-      });
-    }).then(function (p) {
+      }); });
+    }, Promise.reject()).then(function (p) {
       if (my !== seq) return;
       PLACE = {lat: p.lat, lon: p.lon, label: 'ZIP ' + z, zip: z};
       $('fn-st').value = ''; fillCounties('', null);

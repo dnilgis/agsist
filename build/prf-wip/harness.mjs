@@ -20,11 +20,7 @@ export async function open(opts = {}) {
   await page.route('**/*', (route) => {
     const u = route.request().url();
     if (u.startsWith(BASE)) return route.continue();
-    if (u.includes('geocoding-api.open-meteo.com')) {
-      const q = new URL(u).searchParams.get('name');
-      if (opts.geocode && opts.geocode[q] !== undefined) return route.fulfill({ contentType: 'application/json', body: JSON.stringify(opts.geocode[q]) });
-      return route.fulfill({ contentType: 'application/json', body: '{}' });
-    }
+    // places come from our own data/places/ files on BASE (2026-10-29)
     return route.abort();
   });
   if (opts.routes) for (const [pat, fn] of opts.routes) await page.route(pat, fn);

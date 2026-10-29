@@ -138,7 +138,6 @@ const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
 try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
-const GEO = { "54728": [{ name: "Chetek", latitude: 45.31413, longitude: -91.651, admin1: "Wisconsin", admin2: "Barron", postcodes: ["54728"] }] };
 function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".ics": "text/calendar" };
   const srv = createServer((req, res) => {
@@ -163,8 +162,9 @@ async function openPage(browser, port, url, o = {}) {
   pg.on("pageerror", (e) => errs.push(String(e)));
   await pg.route("**/*", (r) => {
     const u = r.request().url();
+    // the place lookup is our own data/places/ files (2026-10-29): counted, then served from this checkout
+    if (/\/data\/places\//.test(new URL(u).pathname)) { geo.push(u); return r.continue(); }
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (u.includes("geocoding-api.open-meteo.com")) { geo.push(u); return r.fulfill({ contentType: "application/json", body: JSON.stringify({ results: GEO[new URL(u).searchParams.get("name")] || [] }) }); }
     return r.abort();
   });
   await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });

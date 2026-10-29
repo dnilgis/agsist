@@ -77,10 +77,7 @@ async function page(browser, port, init) {
   const pg = await ctx.newPage();
   await pg.route("**/*", (r) => {
     const u = r.request().url();
-    if (u.startsWith("https://geocoding-api.open-meteo.com/")) {
-      return r.fulfill({ contentType: "application/json",
-        body: JSON.stringify({ results: [{ name: "Nevada", admin1: "Iowa", latitude: 42.0228, longitude: -93.4524 }] }) });
-    }
+    // the ZIP lookup is our own data/places/zip/ file, served from this checkout (2026-10-29)
     return u.startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort();
   });
   return { ctx, pg };

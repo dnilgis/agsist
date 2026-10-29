@@ -190,9 +190,6 @@ async function newPage(browser, port, posts, o = {}) {
   await pg.route("**/*", (r) => {
     const u = r.request().url();
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    // the place lookup Fast Facts asks for a ZIP, answered here (the sandbox has no network)
-    if (u.startsWith("https://geocoding-api.open-meteo.com/")) return r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ results: [{ name: "Ames", latitude: 42.0347, longitude: -93.62, admin1: "Iowa", admin2: "Story", postcodes: ["50010"], country_code: "US" }] }) });
     if (u.startsWith("https://agsist-api.dnilgis.workers.dev/") && r.request().method() === "POST") {
       posts.push({ path: new URL(u).pathname, body: JSON.parse(r.request().postData() || "{}") });
       return r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ ok: true }) });
