@@ -88,12 +88,11 @@ HOW = ("Each quarter, ag bankers in the district say whether each item was highe
        "earlier. The index is the percent saying higher, minus the percent saying lower, plus 100. Over 100 means "
        "more said higher; under 100, more said lower; 100 is an even split.")
 WORDS = {
-    "repay": "Under 100: more bankers said farm loans were being repaid at a lower rate than a year earlier than said a higher rate.",
-    "renew": "Over 100: more bankers said they renewed or extended more farm loans than a year earlier than said fewer.",
-    "collat": "Over 100: more bankers said they asked for more collateral than a year earlier than said less.",
+    "repay": "Under 100: more bankers said repayment rates fell than rose.",
+    "renew": "Over 100: more bankers said renewals or extensions rose than fell.",
+    "collat": "Over 100: more bankers asked for more collateral than less.",
 }
-KC_PANEL = ("From the third quarter of 2025 the Kansas City Fed's results include Farm Credit System lenders as well "
-            "as commercial banks; earlier quarters are commercial banks only.")
+KC_PANEL = "From 2025 Q3 the Kansas City Fed's results also count Farm Credit System lenders, not only commercial banks."
 Q = re.compile(r"^(\d{4})Q([1-4])$")
 
 
