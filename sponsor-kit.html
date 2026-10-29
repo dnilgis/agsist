@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://agsist.com/img/og/sponsor.jpg?v=f469d28b">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Put your business in front of the farmers who use AGSIST. A footer spot, your own page, or the daily briefing.">
+<meta property="og:image:alt" content="Put your business in front of the farmers who use AGSIST.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://agsist.com/img/og/sponsor.jpg?v=f469d28b">
 <meta name="description" content="One-page AGSIST sponsor sheet to print or hand out: who reads AGSIST, what a sponsorship includes, prices and how to start.">
@@ -23,7 +23,7 @@
 <!--
   The printable sponsor sheet (Letter, one page). Figures are written in for
   the first paint and refreshed on load from the same files /sponsor reads:
-    numbers  data/audience.json, data/site-usage.json (Google search), data/elevator-counts.json
+    numbers  data/audience.json (written in by scripts/bake_audience.py), data/elevator-counts.json
     prices   data/rate-card.json
   Nothing here is typed from memory. No open-slot counts (Sig, 2026-10-11).
 -->
@@ -50,7 +50,7 @@
   h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--green); margin: 14px 0 6px; }
   ul { margin: 0; padding-left: 18px; }
   li { margin: 2px 0; }
-  .tiers { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 10px; }
+  .tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .tier { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
   .tier.top1 { border: 2px solid var(--gold); }
   .tier .n { font-weight: 700; }
@@ -87,47 +87,47 @@
 <main class="sheet">
   <div class="top">
     <div class="brand">AGSIST<small>Free grain markets, cash bids and farm tools</small></div>
-    <div class="tag">agsist.com<br><span data-k="asof">Figures as of Oct 12, 2026</span></div>
+    <div class="tag">agsist.com<br>Figures for <span data-a="win">Sep 29 to Oct 26, 2026</span></div>
   </div>
-
   <h1>Reach farmers when they are pricing grain and running the numbers.</h1>
-  <p class="lede">AGSIST is a free site farmers use for futures, local cash bids, the morning grain briefing, USDA report days, cash rent and calculators. Readers come from across the Corn Belt and beyond.</p>
-
+  <p class="lede">AGSIST is a free site farmers use for futures, local cash bids, the Daily grain briefing, USDA report days, cash rent and calculators. Readers come from across the Corn Belt and beyond.</p>
   <div class="nums">
-    <div class="num"><b data-k="users90">12,149</b><span>readers in 90 days</span></div>
-    <div class="num"><b data-k="views90">31,842</b><span>page views in 90 days</span></div>
-    <div class="num"><b data-k="gsc">274,671</b><span>times shown in Google search, 90 days</span></div>
-    <div class="num"><b data-k="subs">143</b><span>morning briefing email subscribers</span></div>
+    <div class="num"><b><span data-a="users">7,760</span></b><span>readers in 28 days</span></div>
+    <div class="num"><b><span data-a="views">17,304</span></b><span>page views in 28 days</span></div>
+    <div class="num"><b><span data-a="cash">1,977</span></b><span>views of Cash Bids near me</span></div>
+    <div class="num"><b><span data-a="subs">186</span></b><span>Daily email subscribers (<span data-a="subsAsOf">Oct 28, 2026</span>)</span></div>
   </div>
-  <p class="src">Google Analytics (some traffic is automated), Google Search Console, the AGSIST email list. Top states by readers: <span data-k="states">Illinois, Minnesota, Texas, Iowa, Wisconsin</span>.</p>
-
+  <p class="src">Google Analytics (some traffic is automated) and the AGSIST email list. National numbers; ask Sig for your state&rsquo;s.</p>
   <h2>What farmers use it for</h2>
   <ul>
-    <li><b>Cash bids</b> from <span data-k="elev">1,750</span> elevators, refreshed through the trading day.</li>
-    <li><b>The morning briefing</b>, on the web and by email, before the markets open.</li>
+    <li><b>Cash bids</b> from <span data-a="elev">2,146</span> elevators, refreshed through the trading day.</li>
+    <li><b>The Daily briefing</b>, on the web and by email, before the markets open.</li>
     <li><b>Futures, USDA report days, funds positioning</b>, and tools like the grain bin calculator, yield estimator and cash rent by state.</li>
   </ul>
-
   <h2>Ways to sponsor</h2>
   <div class="tiers">
     <div class="tier top1">
-      <div class="n">Sponsor</div>
+      <div class="n">Daily Sponsor</div>
       <div class="p" data-k="p-daily">$149<small> /month</small></div>
-      <p>Your card in every morning briefing, web and email, plus a strip near the top of the homepage. One sponsor at a time. Rate locked 12 months.</p>
+      <p>Your card in every Daily briefing, web and email, plus a strip near the top of the homepage. One sponsor at a time.</p>
     </div>
     <div class="tier">
-      <div class="n">Own a page</div>
-      <div class="p" data-k="p-page">$29<small> /month</small></div>
-      <p>A ribbon on one page you pick: Cash Bids, a futures page, Fast Facts, Break-Even, Fertilizer, a state&rsquo;s cash bids (the state page and its town pages), or a state cash rent page. One business per page.</p>
+      <div class="n">State Sponsor</div>
+      <div class="p" data-k="p-state">$29<small> /month</small></div>
+      <p>One business per state: the state&rsquo;s cash bids and town pages, its cash rent page and a card for its readers. $49 a month in Illinois, Minnesota, Wisconsin and Texas (Texas opens soon).</p>
     </div>
     <div class="tier">
-      <div class="n">Supporter</div>
-      <div class="p" data-k="p-supporter">$15<small> /month</small></div>
-      <p>Your name or logo in the Supporters strip at the bottom of every page.</p>
+      <div class="n">Cash Bids Sponsor</div>
+      <div class="p" data-k="p-cashbids">$49<small> /month</small></div>
+      <p>Your ribbon on Cash Bids near me. One sponsor only.</p>
+    </div>
+    <div class="tier">
+      <div class="n">Featured elevator</div>
+      <div class="p" data-k="p-elevator">$19<small> /month</small></div>
+      <p>An elevator&rsquo;s logo, phone and &ldquo;call to sell&rdquo; box on its own town page, labeled Sponsored. Never changes bid order or any bid.</p>
     </div>
   </div>
-  <p class="terms"><b>First month free.</b> No card, no contract, cancel any time. Then one invoice a month. Sponsors never change data, rankings or bid order.</p>
-
+  <p class="terms"><b>First month free.</b> No card. On day 30 you get a report and one yes or no email; no reply means the ad comes down and nothing is owed. Then month to month, or 12 months for the price of 10. The first 5 paying sponsors keep their price for 24 months. W-9 and invoice on request. Sponsors never change data, rankings or bid order.</p>
   <div class="foot">
     <div class="who">
       <b>Talk to Sig directly</b><br>
@@ -136,7 +136,7 @@
     </div>
     <div class="qr" id="qr">agsist.com/sponsor</div>
   </div>
-  <p class="fine">Sig also owns Farmers First Agri Service, a licensed crop insurance agency. If you sell insurance, it may compete with you.</p>
+  <p class="fine">Sig also owns Farmers First Agri Service, a licensed crop insurance agency. If you sell insurance, it may compete with you. Farmers First never takes a sponsor slot, and AGSIST never sends readers to an agent.</p>
 </main>
 
 <script src="/components/qr.js?v=11"></script>
@@ -147,25 +147,24 @@
   if (window.AgQR && q) q.innerHTML = window.AgQR.svg('https://agsist.com/sponsor', 'Scan for agsist.com/sponsor') + 'Scan: agsist.com/sponsor';
   function get(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function n(x) { return Number(x).toLocaleString('en-US'); }
-  function set(k, v) { var el = document.querySelector('[data-k="' + k + '"]'); if (el && v != null && v !== '') el.textContent = v; }
+  function set(k, v) { [].forEach.call(document.querySelectorAll('[data-a="' + k + '"]'), function (el) { if (v != null && v !== '') el.textContent = v; }); }
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function d(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0] : ''; }
-  Promise.all([get('/data/audience.json'), get('/data/rate-card.json'), get('/data/elevator-counts.json'), get('/data/site-usage.json')]).then(function (r) {
-    var a = r[0], c = r[1], e = r[2], u = r[3];
-    if (a && a.totals && a.totals['90d']) {
-      set('users90', n(a.totals['90d'].users)); set('views90', n(a.totals['90d'].views));
-      var w = (a.ranges || []).filter(function (x) { return x.id === '90d'; })[0];
-      if (w) set('asof', 'Figures as of ' + d(w.end));
-      var st = (a.states && a.states['90d']) || [];
-      if (st.length) set('states', st.slice().sort(function (x, y) { return y.users - x.users; }).slice(0, 5).map(function (s) { return s.name; }).join(', '));
+  function d(s, y) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) + (y === false ? '' : ', ' + p[0]) : ''; }
+  Promise.all([get('/data/audience.json'), get('/data/rate-card.json'), get('/data/elevator-counts.json')]).then(function (r) {
+    var a = r[0], c = r[1], e = r[2];
+    if (a && a.totals && a.totals['28d']) {
+      set('users', n(a.totals['28d'].users)); set('views', n(a.totals['28d'].views));
+      var w = (a.ranges || []).filter(function (x) { return x.id === '28d'; })[0];
+      if (w) set('win', String(w.start).slice(0, 4) === String(w.end).slice(0, 4) ? d(w.start, false) + ' to ' + d(w.end) : d(w.start) + ' to ' + d(w.end));
+      var pg = ((a.pages && a.pages['28d']) || []).filter(function (x) { return x.path === '/cash-bids'; })[0];
+      if (pg) set('cash', n(pg.views));
     }
-    if (a && a.email && a.email.subscribers) set('subs', n(a.email.subscribers));
+    if (a && a.email && a.email.subscribers) { set('subs', n(a.email.subscribers)); set('subsAsOf', d(a.email.asOf)); }
     if (c && c.tiers) c.tiers.forEach(function (t) {
       var el = document.querySelector('[data-k="p-' + t.id + '"]');
       if (el && t.price_month) el.innerHTML = '$' + t.price_month + '<small> /month</small>';
     });
     if (e && e.bids && e.bids.elevators) set('elev', n(e.bids.elevators));
-    if (u && u.gsc && u.gsc.totals && u.gsc.totals.impressions) set('gsc', n(u.gsc.totals.impressions));
   });
 })();
 </script>
