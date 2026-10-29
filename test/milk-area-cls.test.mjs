@@ -72,6 +72,9 @@ test('the before-paint script is on the page, after the card, outside the seed',
   assert.match(pend[1], /^\/\*[\s\S]*?\*\/try\{/, 'storage blocked: no hold, nothing thrown');
   assert.match(pend[1], /setTimeout\(function\(\)\{d\.classList\.remove\('dp-area-pend'\);\},3000\)/, 'let go after 3 s regardless');
   assert.match(page, /\.dp-area-pend #dp-area-out\{visibility:hidden;\}/, 'unseen, its space kept');
+  // the DMC countdown under the card is recounted on the reader's clock at the end of the page; a day-old bake
+  // ("51 days left" to "50") slid the rest of that line 3.8px in Inter (seen here Oct 29: 0.0001 at 1280)
+  assert.match(page, /#dp-dmc-words,#dp-dmc-lever\{font-variant-numeric:tabular-nums;\}/);
   assert.match(EARLY[0], /\}catch\(_\)\{\}try\{document\.documentElement\.classList\.remove\('dp-area-pend'\);\}catch\(_\)\{\}<\/script>$/, 'let go as soon as it has run, whatever it did');
   assert.equal(AREAS.length, 20);
   for (const a of AREAS) assert.ok(OPTIONS.includes(a), a);

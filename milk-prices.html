@@ -91,6 +91,8 @@
   .dp-dmc-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;margin:0 0 .4rem;display:flex;align-items:center;gap:.45rem;color:var(--text);}
   .dp-dmc-h .ic{width:1.05em;height:1.05em;color:var(--gold);}
   .dp-dmc-line{margin:0;line-height:1.5;color:var(--text);}
+  /* the countdown is recounted on the reader's clock after paint: same-width figures, so "51 days" to "50 days" moves nothing */
+  #dp-dmc-words,#dp-dmc-lever{font-variant-numeric:tabular-nums;}
   .dp-dmc-src{font-size:.85rem;color:var(--text-dim);}
   .dp-dmc-fb{margin:.5rem 0 0;padding-left:1.1rem;color:var(--text-dim);font-size:.93rem;line-height:1.5;}
   .dp-dmc-fb li{margin:.2rem 0;}
