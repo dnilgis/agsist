@@ -31,8 +31,12 @@
  *            Events 1955 to 2020 and NWS storm reports 2022 on (reported hail
  *            within HAIL_MI miles), and NOAA MRMS radar-estimated hail (MESH)
  *            where our archive has that day; nothing for 2021 or before 1955
- *   wind     optional, off by default: each day's highest gust, MODELED
- *            (ERA5 reanalysis through Open-Meteo's archive), labeled so
+ *   wind     each day's highest gust: OFF (2026-10-29). It was ERA5 reanalysis
+ *            through Open-Meteo's archive, whose terms count an ad-supported
+ *            site as commercial use, and no free source gives the same daily
+ *            gust for any spot and year. WIND_SRC is null, so the chip is not
+ *            shown and nothing is asked; the drawing code stays for a source
+ *            Sig picks (NCEI daily summaries WSF2/WSFG at the nearest ASOS).
  *
  * EXPORT. MediaRecorder on a canvas, H.264 MP4 where the browser offers it
  * (Safari, Chrome 126 and later), WebM otherwise; no sound; about 2.5 to 4 Mb/s
@@ -271,8 +275,10 @@
 
   // ---------- wind (optional, modeled) ----------
   function windWords(w, fr) { return (fr ? 'Rafales max. ' : 'Windiest day: gusts ') + Math.round(w.gust) + ' mph, ' + fmtDate(w.date, fr) + (fr ? ' (modèle)' : ' (modeled)'); }
-  /* Open-Meteo archive answer -> {gust[], speed[], top, src}, aligned to the days.
-     j = {daily: {time: [...], wind_gusts_10m_max: [...], wind_speed_10m_max: [...]}} in mph. */
+  /* No wind source (see the header): null. A source sets {name, url(lat, lon, year, lastIso)} and answers
+     {daily: {time: [...], wind_gusts_10m_max: [...], wind_speed_10m_max: [...]}} in mph. */
+  var WIND_SRC = null;
+  /* An answer in that shape -> {gust[], speed[], top, src}, aligned to the days. */
   function windFrom(j, days) {
     var dl = j && j.daily, by = {}, gust = [], speed = [], top = null;
     if (!dl || !dl.time) return null;
@@ -282,11 +288,7 @@
       gust.push(typeof g === 'number' ? g : null); speed.push(typeof s === 'number' ? s : null);
       if (typeof g === 'number' && (!top || g > top.gust)) top = { i: i, date: x.date, gust: g };
     });
-    return gust.some(function (g) { return g !== null; }) ? { gust: gust, speed: speed, top: top, src: 'ERA5 reanalysis via Open-Meteo, modeled' } : null;
-  }
-  function windUrl(lat, lon, year, lastIso) {
-    return 'https://archive-api.open-meteo.com/v1/archive?latitude=' + (+lat).toFixed(3) + '&longitude=' + (+lon).toFixed(3) +
-      '&start_date=' + year + '-01-01&end_date=' + lastIso + '&daily=wind_gusts_10m_max,wind_speed_10m_max&wind_speed_unit=mph&timezone=auto';
+    return gust.some(function (g) { return g !== null; }) ? { gust: gust, speed: speed, top: top, src: (WIND_SRC ? WIND_SRC.name : 'modeled') } : null;
   }
 
   function fileName(o, ext) {
@@ -388,7 +390,7 @@
   var AVC = ['avc1.640028', 'avc1.4d0028', 'avc1.42002a'];
 
   var api = { plan: plan, stepsPlan: stepsPlan, ticker: ticker, events: events, dayIdx: dayIdx, hailCover: hailCover, hailFromNcei: hailFromNcei,
-    hailFromNws: hailFromNws, meshAt: meshAt, meshDays: meshDays, windFrom: windFrom, windUrl: windUrl, hailWords: hailWords, windWords: windWords,
+    hailFromNws: hailFromNws, meshAt: meshAt, meshDays: meshDays, windFrom: windFrom, windSource: function () { return WIND_SRC; }, hailWords: hailWords, windWords: windWords,
     fileName: fileName, pickMime: pickMime, mp4Mux: mp4Mux, AVC: AVC, MIMES: MIMES, webmWithDuration: webmWithDuration, milesBetween: milesBetween, FORMATS: FORMATS, T: T, HOLD: HOLD,
     HAIL_MI: HAIL_MI, GUST_MARK: GUST_MARK, layerOf: layerOf };
   root.AgRainDraw = api;
@@ -825,8 +827,8 @@
   }
   function loadWind(src) {
     var I = src.input, year = +(src.year || I.year), days = I.days;
-    if (!isFinite(+src.lat) || !isFinite(+src.lon) || !days.length) return Promise.resolve({ failed: true });
-    return fetch(windUrl(src.lat, src.lon, year, days[days.length - 1].date)).then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    if (!WIND_SRC || !isFinite(+src.lat) || !isFinite(+src.lon) || !days.length) return Promise.resolve({ failed: true });
+    return fetch(WIND_SRC.url(src.lat, src.lon, year, days[days.length - 1].date)).then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (j) { return windFrom(j, days) || { failed: true }; });
   }
 
@@ -999,7 +1001,7 @@
     /* Wind is the video's alone (2026-10-22, Sig): a labeled on/off chip that says so; the print never draws it */
     var windLab = el('label', { class: 'chip rpd-wind', title: 'Each day\u2019s strongest gust, modeled, not measured. In the video only, never on the print.' }), windBox = el('input', { type: 'checkbox' });
     windLab.appendChild(windBox); windLab.appendChild(doc.createTextNode(' Wind, video only'));
-    if (!isFinite(+src.lat) || !isFinite(+src.lon)) windLab.classList.add('rpd-hide');
+    if (!WIND_SRC || !isFinite(+src.lat) || !isFinite(+src.lon)) windLab.classList.add('rpd-hide');
     var make = el('button', { type: 'button', class: 'chip rpd-make' }, 'Make a video');
     var share = el('button', { type: 'button', class: 'chip rpd-share rpd-hide' }, 'Share video');
     var save = el('button', { type: 'button', class: 'chip rpd-save rpd-hide' }, 'Save video');
@@ -1045,7 +1047,7 @@
         if (S.hail && S.hail.none && !s0.ca) words += ' No hail record for ' + S.year + ' in our data.';
         else if (S.hail && S.hail.list && S.hail.list.length) words += ' Hail near town: ' + S.hail.srcs.join(', ') + '.';
         else if (S.hail && S.hail.srcs && S.hail.srcs.length) words += ' No hail reported within ' + HAIL_MI + ' mi in ' + S.year + ' (' + S.hail.srcs.join(', ') + ').';
-        if (windBox.checked) words += S.wind && !S.wind.failed ? ' Wind is modeled (ERA5 reanalysis via Open-Meteo), not measured at the station.' : ' The wind record didn’t load, so the video has no wind.';
+        if (windBox.checked) words += S.wind && !S.wind.failed ? ' Wind is modeled (' + S.wind.src + '), not measured at the station.' : ' The wind record didn’t load, so the video has no wind.';
         say.textContent = words;
         play(S);
         ga(opts2 && opts2.replay ? 'replay' : 'play', meta());
