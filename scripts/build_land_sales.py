@@ -615,7 +615,7 @@ def county_page(d, st, c, page, u, n12, summ, early, latest):
 # saved elsewhere on the site (localStorage agsist-wx-loc: state and county, written by
 # components/geo.js and Fast Facts), finds that county's link in the list already on this page
 # and offers it; nothing is fetched or sent, and a county not in the list gets its state instead.
-JUMP_JS = ("(function(){try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(!w||!w.state)return;"
+JUMP_JS = ("(function(){function go(){try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(!w||!w.state)return;"
            "var S={IL:'illinois',WI:'wisconsin',IN:'indiana',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana'},"
            "st=S[String(w.state).toUpperCase()],el=document.getElementById('ls-mine');if(!el)return;"
            "var n=function(x){return String(x||'').toLowerCase().replace(/\\s+(county|parish)$/,'').replace(/[^a-z]/g,'')};"
@@ -624,7 +624,8 @@ JUMP_JS = ("(function(){try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc
            "for(var i=0;i<L.length;i++){if(n(L[i].textContent)===c){a=L[i];break;}}}"
            "var h=document.getElementById(st).textContent;"
            "el.innerHTML=a?'Your county: <a href=\"'+a.getAttribute('href')+'\">'+a.textContent+', '+h+'</a>':'Your state: <a href=\"#'+st+'\">'+h+' counties</a>';"
-           "el.hidden=false;}catch(e){}})();")
+           "el.hidden=false;}catch(e){}}"
+           "if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();")
 
 
 def jump_row(d):

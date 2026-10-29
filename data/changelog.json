@@ -1,18 +1,7 @@
 {
- "updated": "2026-10-29",
+ "updated": "2026-10-28",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
-  {
-   "date": "2026-10-29",
-   "items": [
-    {
-     "tag": "improved",
-     "page": "/land-sales/",
-     "name": "Land sales easier to find",
-     "text": "Every Farmland Atlas county page now has a land sales line: in Illinois, Wisconsin and Indiana it opens that county's recorded sales; elsewhere it says where the state's sale records stand. Rent pages and Fast Facts link each county's sales, site search finds them by county or state, and the land sales page has a jump row and your saved county at the top."
-    }
-   ]
-  },
   {
    "date": "2026-10-28",
    "items": [

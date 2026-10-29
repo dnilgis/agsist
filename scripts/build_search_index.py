@@ -505,7 +505,7 @@ def build_land_sales():
             rows.append([3, "Land sales in %s County, %s" % (clean(c["name"]), st), "Recorded farm sales", "/land-sales/%s/%s" % (slug, cs),
                          "farmland sales farm sales land prices sold acre %s %s" % (st.lower(), name.lower())])
         if rows and exists("land-sales/index.html"):
-            out.append([1, "%s land sales" % name, "Recorded farm sales by county", "/land-sales/#%s" % slug,
+            out.append([1, "Land sales in %s" % name, "Recorded farm sales by county", "/land-sales/#%s" % slug,
                         "%s farmland sales farm sales land prices sold acre county" % st.lower()])
             out += rows
     return out
