@@ -17,6 +17,10 @@ Self-validating: refuses to write if the result fails the structure gauntlet.
 Usage:
     python3 scripts/build_changelog.py            # bake in place
     python3 scripts/build_changelog.py --check    # verify only, write nothing (CI-safe)
+    python3 scripts/build_changelog.py --validate # the data and a bake to memory pass; ignores the page on disk
+
+changelog.html is rebuilt on main (scripts/dev/main_build.py, .github/workflows/main-checks.yml):
+a pull request edits data/changelog.json only, never changelog.html's baked blocks.
     python3 scripts/build_changelog.py --html PATH --json PATH
 """
 
@@ -142,9 +146,27 @@ def render_entries(data):
     return "".join(out)
 
 
-def render_stamp(data, n_items):
-    return (f'Log updated {pretty_date(data["updated"])} &middot; '
-            f'{n_items} changes across {len(data["entries"])} days')
+def finish_page(html):
+    """The stamp line and the head dateModified, counted from the page itself: every entry from
+    the What's new block (scripts/build_whats_new.py) through the end of this log. Both bakers
+    call this, so either one can run last and the other's --check still holds."""
+    a = html.find("<!-- WHATSNEW:entries -->")
+    if a < 0:
+        a = html.index("<!-- CHANGELOG:entries -->")
+    lst = html[a:html.index("<!-- /CHANGELOG:entries -->")]
+    n_items = lst.count('class="cl-item"')
+    days = set(re.findall(r'<h[23] class="cl-date">(.*?)</h[23]>', lst, flags=re.S))
+    iso = []
+    for d in days:
+        m = re.fullmatch(r"\s*([A-Z][a-z]+) (\d{1,2}), (\d{4})\s*", d)
+        assert m and m.group(1) in MONTHS, f"day heading {d!r} is not a date"
+        iso.append(date(int(m.group(3)), MONTHS.index(m.group(1)), int(m.group(2))).isoformat())
+    newest = max(iso)
+    stamp = f"Log updated {pretty_date(newest)} &middot; {n_items} changes across {len(days)} days"
+    html = splice(html, "stamp", stamp)
+    html, n = re.subn(r'("dateModified":")\d{4}-\d{2}-\d{2}(")', r'\g<1>' + newest + r'\g<2>', html)
+    assert n == 1, f"expected exactly 1 dateModified in head, found {n}"
+    return html
 
 
 def splice(html, name, body):
@@ -188,6 +210,7 @@ def gauntlet(html):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--validate", action="store_true", help="check data/changelog.json and that the bake works; write nothing")
     ap.add_argument("--html", default=None)
     ap.add_argument("--json", default=None)
     args = ap.parse_args()
@@ -200,22 +223,23 @@ def main():
     n_items = validate(data)
 
     html = html_path.read_text(encoding="utf-8")
-    baked = splice(html, "entries", render_entries(data))
-    baked = splice(baked, "stamp", render_stamp(data, n_items))
-    baked, n = re.subn(r'("dateModified":")\d{4}-\d{2}-\d{2}(")',
-                       r'\g<1>' + data["updated"] + r'\g<2>', baked)
-    assert n == 1, f"expected exactly 1 dateModified in head, found {n}"
+    baked = finish_page(splice(html, "entries", render_entries(data)))
 
     gauntlet(baked)
+
+    if args.validate:
+        print(f"data/changelog.json is valid: {n_items} items, {len(data['entries'])} days; the bake passes.")
+        return 0
 
     if baked == html:
         print("changelog.html already in sync.")
         return 0
     if args.check:
-        print("changelog.html OUT OF SYNC with data/changelog.json — run the baker.")
+        print("changelog.html OUT OF SYNC with data/changelog.json (it is rebuilt on main; "
+              "run python3 scripts/build_changelog.py to see it, and do not commit the result)")
         return 1
     html_path.write_text(baked, encoding="utf-8")
-    print(f"Baked changelog.html — {n_items} items, {len(data['entries'])} days.")
+    print(f"Baked changelog.html: {n_items} items, {len(data['entries'])} days.")
     return 0
 
 

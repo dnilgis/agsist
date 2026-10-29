@@ -4,7 +4,8 @@
 #   --list            print the name of every check that would run, run nothing
 #   --only=a,b        run only the named checks (names as --list prints them)
 #   --skip-node       every check except node-test
-#   --shard=N/M       node-test runs only its share of the test files (node --test --test-shard=N/M)
+#   --shard=N/M       node-test runs only its share of the test files (node --test --test-shard=N/M;
+#                     with AGSIST_TEST_FILES set, its share of those files: scripts/dev/node-tests.sh)
 # This file is the one list of ship checks. .github/workflows/pr-checks.yml runs it the same way
 # (node-test in 4 shards, then --skip-node), so the PR checks and the local checks cannot drift.
 cd "$(git rev-parse --show-toplevel)" || exit 1
@@ -31,11 +32,22 @@ run(){ name="$1"; shift; want "$name" || return 0; [ "$LIST" = 1 ] && { echo "$n
 if [ "$LIST" = 0 ] && { picked node-test || picked build_arc_plc; }; then
   ls data/fsa/arcco_*.xls* >/dev/null 2>&1 || bash scripts/pull_raw.sh data/fsa >/dev/null || { echo "FAIL fsa-pull (bash scripts/pull_raw.sh data/fsa)"; fails=$((fails+1)); }
 fi
+# AGSIST_PREBUILD=1 (the PR checks and main-checks.yml set it): first build the files that are built on
+# main (scripts/dev/main_build.py: What's new, the changelog, the test map) in this copy, so every check
+# sees what main will serve. A pull request never commits them (the built-guard line below).
+if [ "$LIST" = 0 ] && [ "${AGSIST_PREBUILD:-}" = 1 ]; then
+  pb=$(python3 scripts/dev/main_build.py build 2>&1) || { echo "FAIL prebuild (python3 scripts/dev/main_build.py build)"; echo "$pb" | tail -25; fails=$((fails+1)); }
+fi
 NT="$OUT/nt${SHARD:+-${SHARD%/*}of${SHARD#*/}}.out"
 # AGSIST_NO_SKIPS=1 (the PR checks set it): a skipped node test fails node-test too, a skip is not a pass
 # (scripts/dev/check-skips.sh; test/skips-allowed.txt holds the either/or pairs it accepts)
 DEV="$PWD/scripts/dev"
-run node-test bash -c "node --test ${SHARD:+--test-shard=$SHARD} > '$NT' 2>&1; grep -E '^# fail 0$' '$NT' >/dev/null || { grep -E '^# (pass|fail)' '$NT'; grep -B2 -A15 -E '^\s*not ok' '$NT' | head -60; exit 1; }; [ \"\${AGSIST_NO_SKIPS:-}\" != 1 ] || bash '$DEV/check-skips.sh' '$NT'"
+run node-test bash -c "bash '$DEV/node-tests.sh' '$NT' '$SHARD'; grep -E '^# fail 0$' '$NT' >/dev/null || { grep -E '^# (pass|fail)' '$NT'; grep -B2 -A15 -E '^\s*not ok' '$NT' | head -60; exit 1; }; [ \"\${AGSIST_NO_SKIPS:-}\" != 1 ] || bash '$DEV/check-skips.sh' '$NT'"
+# built on main, never by hand in a branch; the inputs (data/whats-new/ entries, data/changelog.json) valid;
+# and the built files fresh (true after the prebuild above, and on main after main-checks.yml commits them)
+run built-guard python3 scripts/dev/main_build.py guard
+run built-inputs python3 scripts/dev/main_build.py validate
+run built-files python3 scripts/dev/main_build.py check
 run seo python3 scripts/check_seo.py
 run budget python3 scripts/check_site_budget.py
 run layers python3 scripts/check_layers.py
