@@ -5,6 +5,10 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.60 (2026-10-29): NO OPEN-METEO GEOCODER (Sig, Oct 29: its terms count an
+ *   ad-supported site as commercial use). The hay board's ZIP point comes from the
+ *   bids repo's ZIP table, then the same points on agsist.com/data/places/zip/
+ *   (scripts/build_places.py); a ZIP in neither is no point, as before.
  * v5.59 (2026-10-28): SIG'S DESK (desk.html, Sig Oct 28: "a singular place for
  *   all things agsist"). Two routes, Bearer LIST_TOKEN only (a ?token= in the
  *   address is refused), CORS for agsist.com as the other desks:
