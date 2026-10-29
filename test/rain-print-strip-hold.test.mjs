@@ -15,6 +15,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -45,9 +46,9 @@ async function withPhone(fn) {
   try {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
     await ctx.clock.setFixedTime(new Date("2026-10-14T17:00:00Z"));
-    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
+    await ctx.route(PLACES_ROUTE, (r) => {
       const u = new URL(r.request().url());
-      if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
+      if (isPlaces(u)) return r.fulfill({ json: placesBody(u, [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }]) });   // the town lookup: our own data/places/ files (2026-10-29)
       if (u.host === "data.rcc-acis.org") {
         if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [STN] } });
         if (u.searchParams.get("params")) return r.fulfill({ json: { data: yearDays(2012).map((d) => [d, "0.08"]) } });

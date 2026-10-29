@@ -28,6 +28,7 @@ import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { checkout, refOf } from "./fixtures/rp-checkout.mjs";
 import { mocks, serve } from "./fixtures/rp-site-mock.mjs";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
@@ -224,7 +225,8 @@ async function canadaRoutes(ctx) {
     if (rg) { const part = csv.subarray(+rg[1], Math.min(+rg[2] + 1, csv.length)); return r.fulfill({ status: 206, headers: Object.assign({}, h, { "Content-Length": String(part.length), "Content-Range": `bytes ${rg[1]}-${+rg[1] + part.length - 1}/${csv.length}` }), body: part }); }
     return r.fulfill({ status: 200, headers: h, body: csv });
   });
-  await ctx.route(/geocoding-api\.open-meteo\.com/, (r) => r.fulfill({ json: { results: [{ name: "Qu'Appelle", latitude: 50.55, longitude: -103.88, admin1: "Saskatchewan", country_code: "CA" }] } }));
+  // the town lookup: our own data/places/ files (2026-10-29)
+  await ctx.route(/\/data\/places\/ca\//, (r) => r.fulfill({ json: placesBody(r.request().url(), [{ name: "Qu'Appelle", latitude: 50.55, longitude: -103.88, admin1: "Saskatchewan", country_code: "CA" }]) }));
 }
 test("worker blocked: a Canadian design (the digital file) goes to the digital link with its code", { skip, timeout: 120000 }, async () => {
   await withPage(async (page, base, errors, log) => {
