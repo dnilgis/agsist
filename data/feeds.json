@@ -2255,6 +2255,7 @@
    "path": "data/rate-card.json",
    "pages": [
     "sponsor-kit.html",
+    "sponsor-report.html",
     "sponsor.html"
    ],
    "written_by": [],
