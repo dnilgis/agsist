@@ -131,7 +131,7 @@ jobs:
       # step 6, a test before any page shows it). BLM PLSS sections, USDA SSURGO through Soil Data Access.
       # The answers go to data/land-raw/soil (raw branch, below); nothing is committed, no page changes.
       - name: Section soil for the keyed farm sales
-        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil') }}
+        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil') && inputs.task != 'soil-attrs' }}
         timeout-minutes: 140
         run: |
           T="${{ inputs.task }}"
