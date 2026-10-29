@@ -2,7 +2,7 @@
  "schema": "agsist-farm-credit/1",
  "about": "Federal Reserve district surveys of agricultural bankers, as compiled by the Federal Reserve Bank of Kansas City. Diffusion indexes, quarterly. Built by scripts/build_farm_credit.py; Chicago and Dallas quarters are checked against those banks' own files and any that disagree are withheld.",
  "source": "Federal Reserve district agricultural credit surveys, compiled by the Federal Reserve Bank of Kansas City",
- "source_url": "https://www.kansascityfed.org/agriculture/ag-credit-survey/",
+ "source_url": "https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/",
  "built": "2026-10-28",
  "latest": "2026Q2",
  "chart_from": "2010Q1",
@@ -30,7 +30,7 @@
   "CHI": {
    "name": "Chicago",
    "num": 7,
-   "url": "https://www.chicagofed.org/",
+   "url": "https://www.chicagofed.org/research/data/ag-conditions/index",
    "current": true,
    "last": "2026Q2",
    "first": {
@@ -76,7 +76,7 @@
   "MIN": {
    "name": "Minneapolis",
    "num": 9,
-   "url": "https://www.minneapolisfed.org/",
+   "url": "https://www.minneapolisfed.org/topic/agriculture-and-farming",
    "current": true,
    "last": "2026Q2",
    "first": {
@@ -99,7 +99,7 @@
   "KC": {
    "name": "Kansas City",
    "num": 10,
-   "url": "https://www.kansascityfed.org/agriculture/ag-credit-survey/",
+   "url": "https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/",
    "current": true,
    "last": "2026Q2",
    "first": {
@@ -125,7 +125,7 @@
   "DAL": {
    "name": "Dallas",
    "num": 11,
-   "url": "https://www.dallasfed.org/",
+   "url": "https://www.dallasfed.org/research/surveys/agsurvey",
    "current": true,
    "last": "2026Q2",
    "first": {

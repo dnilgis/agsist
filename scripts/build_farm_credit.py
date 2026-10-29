@@ -51,16 +51,19 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "farm-credit", "districts.json")
 SCHEMA = "agsist-farm-credit/1"
 CHART_FROM = "2010Q1"
-KC_PAGE = "https://www.kansascityfed.org/agriculture/ag-credit-survey/"
+KC_PAGE = "https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/"
 
+# Each url is the reserve bank's own ag survey page, checked against its saved copy on the
+# references branch (references/sources.json fed-*); St. Louis stays on the home page
+# until its survey page has a saved copy (the fetch timed out Oct 29).
 # The seven districts in the Kansas City Fed's table, plus the five that have no
 # farm credit survey there (named on split-state pages only).
 DISTRICTS = {
-    "CHI": {"name": "Chicago", "num": 7, "url": "https://www.chicagofed.org/"},
+    "CHI": {"name": "Chicago", "num": 7, "url": "https://www.chicagofed.org/research/data/ag-conditions/index"},
     "STL": {"name": "St. Louis", "num": 8, "url": "https://www.stlouisfed.org/"},
-    "MIN": {"name": "Minneapolis", "num": 9, "url": "https://www.minneapolisfed.org/"},
+    "MIN": {"name": "Minneapolis", "num": 9, "url": "https://www.minneapolisfed.org/topic/agriculture-and-farming"},
     "KC": {"name": "Kansas City", "num": 10, "url": KC_PAGE},
-    "DAL": {"name": "Dallas", "num": 11, "url": "https://www.dallasfed.org/"},
+    "DAL": {"name": "Dallas", "num": 11, "url": "https://www.dallasfed.org/research/surveys/agsurvey"},
     "RICH": {"name": "Richmond", "num": 5, "url": "https://www.richmondfed.org/"},
     "SF": {"name": "San Francisco", "num": 12, "url": "https://www.frbsf.org/"},
 }

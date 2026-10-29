@@ -55,6 +55,18 @@ test('a quarter where the two files disagree is withheld, never guessed', () => 
   assert.equal(D.DAL.chart.repay[qi('2025Q4')], 85.71);
 });
 
+test('each card links the reserve bank survey page its saved copy proves (references branch, Oct 29)', () => {
+  assert.equal(D.CHI.url, 'https://www.chicagofed.org/research/data/ag-conditions/index');
+  assert.equal(D.KC.url, 'https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/');
+  assert.equal(D.DAL.url, 'https://www.dallasfed.org/research/surveys/agsurvey');
+  assert.equal(D.MIN.url, 'https://www.minneapolisfed.org/topic/agriculture-and-farming');
+  // St. Louis: the survey page fetch timed out, so the home page stays until a copy is saved
+  assert.equal(D.STL.url, 'https://www.stlouisfed.org/');
+  const ids = JSON.parse(read('references/sources.json')).sources.map((r) => r.url);
+  for (const d of ['CHI', 'KC', 'DAL', 'MIN']) assert.ok(ids.includes(D[d].url), d);
+  assert.match(section(page('iowa')), /<a href="https:\/\/www\.chicagofed\.org\/research\/data\/ag-conditions\/index" rel="noopener">Chicago Fed ag survey<\/a>, 2026 Q2\./);
+});
+
 test('districts that stopped reporting are not shown as current', () => {
   assert.equal(D.RICH.current, false);
   assert.equal(D.RICH.last, '2021Q4');
