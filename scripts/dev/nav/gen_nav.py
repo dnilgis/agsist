@@ -69,7 +69,7 @@ MONEY = [
     ("Land", [("/rent/", "Cash rent", "i-banknote"),
               ("/farmland-atlas", "Farmland Atlas", "i-map"),
               ("/land-sales/", "Land sales", "i-land-plot"),
-              ("/farmland-index", "Illinois sale index", "i-chart-column"),
+              ("/farmland-index", "Farmland sale index", "i-chart-column"),
               ("/custom-rates", "Custom rates", "i-banknote"),
               ("/cash-lease", "Lease form", "i-scroll-text")]),
     ("Programs", [("/arc-plc", "ARC or PLC", "i-calculator"),

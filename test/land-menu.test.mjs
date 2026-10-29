@@ -23,8 +23,8 @@ test("the live header and its fallback list Land sales right after the Farmland 
   assert.match(rd("components/header-fallback.html"), /<a href="\/farmland-atlas">Farmland Atlas<\/a> · <a href="\/land-sales\/">Land sales<\/a>/);
   assert.match(rd("scripts/dev/nav/gen_nav.py"), /\("\/land-sales\/", "Land sales", "i-land-plot"\)/);
   assert.ok(existsSync(join(ROOT, "land-sales/index.html")), "the page is there");
-  // the Illinois-only index keeps its place, named for what it covers
-  assert.match(rd("components/header-fallback.html"), /<a href="\/farmland-index">Illinois sale index<\/a>/);
+  // the Illinois index keeps its place and name (an "Illinois" label would put the state's name on every page)
+  assert.match(rd("components/header-fallback.html"), /<a href="\/farmland-index">Farmland sale index<\/a>/);
 });
 
 test("every page with a baked static header carries the Land sales link", () => {

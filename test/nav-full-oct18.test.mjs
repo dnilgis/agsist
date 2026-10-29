@@ -44,7 +44,7 @@ const MENU = {
     "Harvest and bins": [["/harvest-or-wait", "Harvest now or wait"], ["/grain-emc", "Grain drying (EMC)"], ["/grain-shrink", "Grain shrink"], ["/grain-bin-calculator", "Bin calculator"], ["/combine-loss", "Combine loss"], ["/tools", "All tools →"]],
   }],
   money: ["Money & Land", {
-    Land: [["/rent/", "Cash rent"], ["/farmland-atlas", "Farmland Atlas"], ["/land-sales/", "Land sales"], ["/farmland-index", "Illinois sale index"], ["/custom-rates", "Custom rates"], ["/cash-lease", "Lease form"]],
+    Land: [["/rent/", "Cash rent"], ["/farmland-atlas", "Farmland Atlas"], ["/land-sales/", "Land sales"], ["/farmland-index", "Farmland sale index"], ["/custom-rates", "Custom rates"], ["/cash-lease", "Lease form"]],
     Programs: [["/arc-plc", "ARC or PLC"], ["/prf", "PRF"], ["/lrp", "LRP"], ["/farm-bill", "Farm bill"]],
     Selling: [["/store-or-sell", "Sell or store"], ["/breakeven", "Break-even"], ["/commodity-loan", "CCC loan"]],
   }],
@@ -273,7 +273,7 @@ test("phone: one tap on the menu shows every group's links; desktop panels stay 
     assert.deepEqual(hidden, [], "every group link is shown without another tap");
     const n = await pg.evaluate(() => document.querySelectorAll("#drawer .draw-grp a.draw-item").length);
     assert.equal(n, 5 + 5 + 6 + 9 + 7 + 6 + 6 + 6 + 4 + 3 + 2,
-      "Near you 5 and Reports 6 since the merges (Oct 22, 2026: Bids by state, What's priced in and Crop size joined the pages beside them), Crop 6 (Pod counts on the crop tour), Daily 2 (The Wire and the archive on the Daily page); Livestock has 9 since The Haymow (2026-10-18); Land 6 with Land sales (/land-sales/, 2026-10-29) beside the Illinois sale index (2026-10-20)");
+      "Near you 5 and Reports 6 since the merges (Oct 22, 2026: Bids by state, What's priced in and Crop size joined the pages beside them), Crop 6 (Pod counts on the crop tour), Daily 2 (The Wire and the archive on the Daily page); Livestock has 9 since The Haymow (2026-10-18); Land 6 with Land sales (/land-sales/, 2026-10-29) beside the Farmland sale index (2026-10-20)");
     assert.ok(await pg.evaluate(() => document.getElementById("drawer").scrollWidth <= 390), "no sideways scroll in the panel");
     // the moved note shows before Nov 1 and stays closed once dismissed
     assert.ok(await pg.isVisible("#drawer .nav-moved"));
