@@ -38,13 +38,20 @@ MOVED = {
     "/foreign-land": ("/farmland-atlas", "foreign", "foreign-land.html",
                       "Foreign-held farmland is in the Farmland Atlas now."),
     "/archive": ("/daily", "past", "archive.html", "Past briefings are on the Daily page now."),
+    # Oct 29, 2026 (Sig, consolidation round 2): the Illinois index into the land sales hub, the
+    # data sources list into the editorial standards
+    "/farmland-index": ("/land-sales/", "illinois-index", "farmland-index.html",
+                        "The Illinois farmland sale index is on the land sales page now."),
+    "/data-sources": ("/editorial-standards", "sources", "data-sources.html",
+                      "Where the numbers come from is on the editorial standards page now."),
 }
 # Spellings that reach the same old page.
 ALIASES = {"/news.html": "/news", "/conditions-yield.html": "/conditions-yield",
            "/whats-priced-in.html": "/whats-priced-in", "/scorecard.html": "/scorecard",
            "/pod-counts.html": "/pod-counts", "/hail": "/hail/", "/hail/index.html": "/hail/",
            "/cash-bids/states.html": "/cash-bids/states", "/elevators.html": "/elevators",
-           "/foreign-land.html": "/foreign-land", "/archive.html": "/archive"}
+           "/foreign-land.html": "/foreign-land", "/archive.html": "/archive",
+           "/farmland-index.html": "/farmland-index", "/data-sources.html": "/data-sources"}
 
 _LINK = re.compile(r"^(/[^?#]*)(\?[^#]*)?(#.*)?$")
 
@@ -118,6 +125,10 @@ def selftest():
     eq(repoint("https://agsist.com/elevators"), "https://agsist.com/list-your-elevator#coverage")
     eq(repoint("/newsletter"), "/newsletter")
     eq(repoint("/daily"), "/daily")
+    eq(repoint("/farmland-index"), "/land-sales/#illinois-index")
+    eq(repoint("/farmland-index#counties"), "/land-sales/#counties")
+    eq(repoint("https://agsist.com/data-sources"), "https://agsist.com/editorial-standards#sources")
+    eq(repoint("/data-sources.html#yahoo"), "/editorial-standards#yahoo")
     eq(repoint(None), None)
     s = stub("/news")
     assert len(s.encode()) < 1536 and 'content="noindex,follow"' in s and "location.search" in s
