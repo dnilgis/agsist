@@ -296,20 +296,30 @@ def run(st, limit=None, minutes=120, today=None):
             for yr in sorted(need):
                 cits = [it for it in cdl_by[yr] if it.bbox is None or bbox_hit(it.bbox, tb)] or cdl_by[yr]
                 c_crs, c_res, c_x0, c_y0 = grid_of(cits, "cropland")
-                if str(c_crs) != str(crs):
-                    raise RuntimeError("CDL %d grid %s is not the soil grid %s" % (yr, c_crs, crs))
-                bx0 = math.floor((x0 - c_x0) / c_res) * c_res + c_x0
-                bx1 = math.ceil((x1 - c_x0) / c_res) * c_res + c_x0
-                by1 = c_y0 - math.floor((c_y0 - y1) / c_res) * c_res
-                by0 = c_y0 - math.ceil((c_y0 - y0) / c_res) * c_res
+                # the 10 m cell centres in the CDL's own coordinates (the two Albers grids are
+                # nominally the same projection; transform anyway rather than assume it)
+                gx, gy = np.meshgrid(cx, cy)
+                if c_crs != crs:
+                    tx, ty = Transformer.from_crs(crs, c_crs, always_xy=True).transform(gx.ravel(), gy.ravel())
+                    gx, gy = np.asarray(tx).reshape(gx.shape), np.asarray(ty).reshape(gy.shape)
+                bx0 = math.floor((gx.min() - c_x0) / c_res) * c_res + c_x0 - c_res
+                bx1 = math.ceil((gx.max() - c_x0) / c_res) * c_res + c_x0 + c_res
+                by1 = c_y0 - math.floor((c_y0 - gy.max()) / c_res) * c_res + c_res
+                by0 = c_y0 - math.ceil((c_y0 - gy.min()) / c_res) * c_res - c_res
                 cg = read_mosaic(cits, "cropland", (bx0, by0, bx1, by1), c_res, "int16", 0)
                 if cg is None:
                     continue
-                ci = np.clip(((cx - bx0) // c_res).astype(int), 0, cg.shape[1] - 1)
-                ri = np.clip(((by1 - cy) // c_res).astype(int), 0, cg.shape[0] - 1)
-                sub = cg[np.ix_(ri, ci)]
+                ci = np.clip(((gx - bx0) // c_res).astype(int), 0, cg.shape[1] - 1)
+                ri = np.clip(((by1 - gy) // c_res).astype(int), 0, cg.shape[0] - 1)
+                sub = cg[ri, ci]
+                if not _seen.get("cdl"):
+                    _seen["cdl"] = 1
+                    print("first CDL read %d: %s -> %s, crs equal %s, cultivated share of window %.2f" % (yr, c_crs, crs, c_crs == crs, float(np.isin(sub, list(CULTIVATED)).mean())))
                 crop[yr] = np.isin(sub, list(CULTIVATED))
         z = zonal(sec, vals, crop, sda)
+        if not _seen.get("zonal") and z:
+            _seen["zonal"] = 1
+            print("first township %s: %d sections, cells per section %s, first %s" % (pid, len(z), sorted(r["n"] for r in z.values()), json.dumps(next(iter(z.values())))[:400]))
         res_d = {}
         for idx, (k, c) in enumerate(group, start=1):
             r = z.get(idx)

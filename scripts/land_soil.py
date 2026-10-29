@@ -716,7 +716,9 @@ def test(src_dir=RAW, today=None):
         cells = {}
         for n in (5, 10, 20, 30):
             cells[n] = len(groups_of([s for s in sales if s["q"]], n))
-        prim = "corn" if has_mk else "all"
+        # corn only where the SDA corn submodel is filled for most sales (Indiana); else the overall NCCPI
+        corn_share = sum(1 for s in sales if s.get("corn") is not None) / len(sales) if sales else 0
+        prim = "corn" if has_mk and corn_share >= 0.8 else "all"
         rep = {"counts": cnt, "primary_index": "nccpi3 %s, whole section, quality floor" % prim, "corn_attrs": has_mk,
                "fetch": {k: meta.get(k) for k in ("fetched_utc", "keys", "sections", "distinct", "soil", "sda_failed", "miss")},
                "by_year": {y: sum(1 for s in sales if s["year"] == y) for y in years}, "cells_by_min_sales": cells}
@@ -740,8 +742,89 @@ def test(src_dir=RAW, today=None):
         for s in P:
             same[(s["pid"], s["sec"])] = same.get((s["pid"], s["sec"]), 0) + 1
         rep["sections_with_2plus_sales"] = sum(1 for v in same.values() if v > 1)
+        rp = os.path.join(src_dir, "%s-raster.json.gz" % st)
+        if os.path.exists(rp):
+            rep["raster"] = test_raster(st, rp, today, roll, last_full)
         report[st] = rep
     return report
+
+
+# ── the gridded route (scripts/land_soil_raster.py): primary index, fixed Oct 29 before its answers ──
+# Primary: 100 x valu1 nccpi3corn over the section's cropland (CDL, newest year before the sale).
+# Quality floor: 50%+ of the section's cells rated and 25%+ of it cropland in the mask year.
+# Same test and the same HOLDS rule as above, cells of 20+ sales; 10 and 30 beside it.
+# The share control (M0c, M1c) uses the cropland share, so soil must beat "how much is cropped".
+
+def sale_soil_raster(st, src, today):
+    with gzip.open(src, "rt", encoding="utf-8") as fh:
+        d = json.load(fh)
+    avail = d["meta"].get("cdl_years") or []
+    out, cnt = [], {"sales": 0, "section": 0, "soil": 0, "mask": 0, "quality": 0}
+    for r in comps(st, today):
+        cnt["sales"] += 1
+        k = d["keys"].get(str(r["fips"]) + "|" + r["str"])
+        z = d["sections"].get(k) if k else None
+        if not z:
+            continue
+        cnt["section"] += 1
+        if z.get("nccpi3corn") is None:
+            continue
+        cnt["soil"] += 1
+        y = int(str(r["date"])[:4])
+        prior = [a for a in avail if a < y]
+        my = max(prior) if prior else None
+        m = (z.get("m") or {}).get(str(my)) if my else None
+        share = m[0] / z["n"] if m and z["n"] else None
+        cnt["mask"] += 1 if m else 0
+        q = z["rated"] >= 0.5 and share is not None and share >= 0.25
+        cnt["quality"] += 1 if q else 0
+        pct = lambda v: None if v is None else v * 100  # noqa: E731
+        out.append({"fips": str(r["fips"]), "year": y, "ppa": float(r["ppa"]), "acres": float(r["acres"]),
+                    "logac": math.log(float(r["acres"])), "q": q, "mask_year": my,
+                    "corn_m": pct(m[1]) if m else None, "soy_m": pct(m[2]) if m else None, "all_m": pct(m[3]) if m else None,
+                    "corn_u": pct(z["nccpi3corn"]), "soy_u": pct(z["nccpi3soy"]), "all_u": pct(z["nccpi3all"]),
+                    "sda_p": pct(z.get("sda_p")), "c14": share if share is not None else 0.0, "rated": z["rated"],
+                    "pid": k.split("|")[0], "sec": k.split("|")[1]})
+    return out, cnt, d
+
+
+def raster_check(d, n_sample=100):
+    """Raster versus polygon: the same SDA map unit NCCPI averaged over 10 m cells (sda_r) and over the
+    clipped polygons (sda_p), in NCCPI points; all sections and a stratified sample (deciles of sda_p).
+    Then valu1 nccpi3all against the SDA overall NCCPI per map unit (the attribute, not the geometry)."""
+    pairs = [(k, z["sda_r"] * 100, z["sda_p"] * 100) for k, z in sorted(d["sections"].items())
+             if z.get("sda_r") is not None and z.get("sda_p") is not None]
+    if not pairs:
+        return "no sections with both"
+    diffs = sorted(abs(a - b) for _, a, b in pairs)
+    pairs.sort(key=lambda t: t[2])
+    step = max(1, len(pairs) // n_sample)
+    smp = sorted(abs(a - b) for _, a, b in pairs[::step][:n_sample])
+    q = lambda v, f: round(B.quantile(v, f), 2)  # noqa: E731
+    out = {"sections": len(pairs), "abs_diff_points": {"median": q(diffs, 0.5), "p90": q(diffs, 0.9), "p99": q(diffs, 0.99), "max": round(diffs[-1], 2)},
+           "share_within_1_point": round(sum(1 for x in diffs if x <= 1) / len(diffs), 3),
+           "stratified_sample": {"n": len(smp), "median": q(smp, 0.5), "p90": q(smp, 0.9), "max": round(smp[-1], 2)}}
+    return out
+
+
+def test_raster(st, src, today, roll, last_full):
+    sales, cnt, d = sale_soil_raster(st, src, today)
+    rep = {"counts": cnt, "meta": {k: d["meta"].get(k) for k in ("fetched_utc", "distinct", "done", "township_failed", "cdl_years", "soil_grid")},
+           "primary_index": "100 x valu1 nccpi3corn over cropland (CDL year before the sale), quality floor",
+           "raster_vs_polygon": raster_check(d)}
+    P = with_pts(sales, "corn_m")
+    rep["cells_by_min_sales"] = {n: len(groups_of(P, n)) for n in (5, 10, 20, 30)}
+    rep["primary_20"] = run_test(P, roll, 20)
+    rep["primary_30"] = run_test(P, roll, 30)
+    rep["sens_10"] = run_test(P, roll, 10)
+    rep["final_untouched_%d" % last_full] = run_test(P, [last_full - 1], 10)
+    rep["corn_unmasked_10"] = run_test(with_pts(sales, "corn_u"), roll, 10)
+    rep["soy_masked_10"] = run_test(with_pts(sales, "soy_m"), roll, 10)
+    rep["all_unmasked_10"] = run_test(with_pts(sales, "all_u"), roll, 10)
+    rep["percent_per_point_10"] = run_test(P, roll, 10, log=True)
+    rep["within_corr"] = {"pts_vs_log_acres": within_corr(P, "pts", "logac"), "pts_vs_ppa": within_corr(P, "pts", "ppa"),
+                          "pts_vs_crop_share": within_corr(P, "pts", "c14")}
+    return rep
 
 
 # ── selftest ────────────────────────────────────────────────────────────────
