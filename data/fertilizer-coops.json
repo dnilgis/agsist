@@ -1,6 +1,6 @@
 {
  "source": "Posted retail fertilizer prices on co-op websites",
- "generated": "2026-10-28T19:04:21Z",
+ "generated": "2026-10-29T19:11:05Z",
  "stale_days": 60,
  "min_median": 2,
  "conventions": "Dollars per ton. Cash is each co-op's own cash price (cash, cash discount or cash pickup, as labeled). Rows dated over 60 days ago, rows whose per-unit or cwt figure does not match, and products the reader cannot name are shown but not summarized. One price per co-op per product: the first listed. Middle price from 2 co-ops up (from 2 it is their average); one co-op is named.",
@@ -219,7 +219,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 27,
+     "age_days": 28,
      "stale": false
     },
     {
@@ -238,7 +238,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 27,
+     "age_days": 28,
      "stale": false
     },
     {
@@ -257,7 +257,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 48,
+     "age_days": 49,
      "stale": false
     },
     {
@@ -276,7 +276,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 27,
+     "age_days": 28,
      "stale": false
     },
     {
@@ -296,7 +296,7 @@
      "notes": [],
      "flags": [],
      "first_seen": "2026-10-15",
-     "age_days": 13,
+     "age_days": 14,
      "stale": false
     },
     {
@@ -315,7 +315,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 16,
+     "age_days": 17,
      "stale": false
     },
     {
@@ -334,7 +334,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 23,
+     "age_days": 24,
      "stale": false
     },
     {
@@ -353,7 +353,7 @@
       "cash: priced per gallon or pound, not per ton (5.75/gal)"
      ],
      "flags": [],
-     "age_days": 1610,
+     "age_days": 1611,
      "stale": true
     },
     {
@@ -372,7 +372,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 27,
+     "age_days": 28,
      "stale": false
     },
     {
@@ -391,7 +391,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 1132,
+     "age_days": 1133,
      "stale": true
     },
     {
@@ -410,7 +410,7 @@
       "cash: priced per gallon or pound, not per ton (.60lb)"
      ],
      "flags": [],
-     "age_days": 1618,
+     "age_days": 1619,
      "stale": true
     },
     {
@@ -429,7 +429,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 85,
+     "age_days": 86,
      "stale": true
     },
     {
@@ -448,13 +448,13 @@
       "cash: priced per gallon or pound, not per ton (4.00/gal)"
      ],
      "flags": [],
-     "age_days": 462,
+     "age_days": 463,
      "stale": true
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-28T19:04:21Z",
+   "fetched": "2026-10-29T19:11:05Z",
    "ok": true,
    "note": null
   },
@@ -485,7 +485,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -504,7 +504,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -523,7 +523,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -542,7 +542,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -561,13 +561,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-28T19:04:21Z",
+   "fetched": "2026-10-29T19:11:05Z",
    "ok": true,
    "note": null
   },
@@ -598,7 +598,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -617,7 +617,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -636,7 +636,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -655,7 +655,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -674,7 +674,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false,
      "far_from_others": true
     },
@@ -694,7 +694,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -713,7 +713,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -732,7 +732,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     },
     {
@@ -751,13 +751,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 22,
+     "age_days": 23,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-28T19:04:21Z",
+   "fetched": "2026-10-29T19:11:05Z",
    "ok": true,
    "note": null
   },
@@ -788,7 +788,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -807,7 +807,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -826,7 +826,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -845,7 +845,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -864,7 +864,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -883,7 +883,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -902,7 +902,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -921,7 +921,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -940,7 +940,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -959,7 +959,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -978,7 +978,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     },
     {
@@ -999,13 +999,13 @@
      "flags": [
       "per-unit figure 0.870 does not match any ton price"
      ],
-     "age_days": 14,
+     "age_days": 15,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-28T19:04:21Z",
+   "fetched": "2026-10-29T19:11:05Z",
    "ok": true,
    "note": null
   },
@@ -1035,7 +1035,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     },
     {
@@ -1053,7 +1053,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     },
     {
@@ -1071,7 +1071,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     },
     {
@@ -1089,7 +1089,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     },
     {
@@ -1107,7 +1107,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     },
     {
@@ -1125,7 +1125,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     },
     {
@@ -1143,7 +1143,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     },
     {
@@ -1161,7 +1161,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     },
     {
@@ -1179,13 +1179,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 19,
+     "age_days": 20,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-28T19:04:21Z",
+   "fetched": "2026-10-29T19:11:05Z",
    "ok": true,
    "note": null
   },
@@ -1216,7 +1216,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 27,
+     "age_days": 28,
      "stale": false
     },
     {
@@ -1235,13 +1235,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 27,
+     "age_days": 28,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-10-28T19:04:21Z",
+   "fetched": "2026-10-29T19:11:05Z",
    "ok": true,
    "note": null
   }
