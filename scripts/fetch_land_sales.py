@@ -1727,9 +1727,22 @@ def nj_lines(name, blob):
         yield name, raw.rstrip("\r\n")
 
 
-def nj_sales(files, rep):
+def nj_line_units(line):
+    """The lots a raw SR-1A line names, read before the line is kept (nj_units on the parsed record gives the same)."""
+    cd = line[0:4]
+    out = [nj_unit(cd, line[350:355], line[355:359], line[359:364], line[364:368])]
+    for a, b, c, d, e, f in NJ_ADDL:
+        bl, lt = line[a - 1:b], line[c - 1:d]
+        if bl.strip() or lt.strip():
+            out.append(nj_unit(cd, bl[:5], bl[5:], lt[:5], lt[5:]))
+    return out
+
+
+def nj_sales(files, rep, farm=None):
     """files: [(name, blob)] of SR-1A zips, oldest first. Each deed once: a deed in two files (the yearly files
-    overlap) keeps its copy from the newest file. Returns a list of dicts."""
+    overlap) keeps its copy from the newest file. farm: the lots classed 3A or 3B on today's list; when given, only
+    a deed classed farm on the SR-1A or naming one of those lots is kept (about 1.3 million deeds come in; holding
+    them all is what made the first run slow). Returns a list of dicts."""
     best = {}
     for name, blob in files:
         n = bad = 0
@@ -1740,6 +1753,8 @@ def nj_sales(files, rep):
                 bad += 1
                 continue
             n += 1
+            if farm is not None and line[626:629].strip().upper() not in NJ_FARM and not any(u in farm for u in nj_line_units(line)):
+                continue
             r = {k: nj_cut(line, a, b) for k, (a, b) in NJ_SR.items()}
             r["addl"] = [(nj_cut(line, a, b), nj_cut(line, c, d), nj_cut(line, e, f).strip().upper()) for a, b, c, d, e, f in NJ_ADDL]
             r["cd"] = r["county"] + r["district"]
@@ -1969,14 +1984,30 @@ def fetch_nj(dest_dir):
     return got, tmp
 
 
+def nj_farm_lots(name, blob):
+    """Every lot classed 3A or 3B on the MOD-IV list (first pass)."""
+    out = set()
+    for member, line in nj_lines(name, blob):
+        if len(line) == NJ_MODIV_LEN and line[55:58].strip().upper() in NJ_FARM:
+            out.add(nj_unit(line[0:4], line[4:9], line[9:13], line[13:18], line[18:22]))
+    return out
+
+
 def nj_build_tables(sr_files, modiv_path, gz_blob, rep, keep_dir=None):
-    """Read the SR-1A files and MOD-IV; returns the table rows (header first). keep_dir: where the farm lines of
-    MOD-IV go (gzip, for the raw branch)."""
-    sales = nj_sales([(n, open(p, "rb").read()) for n, p in sr_files], rep)
+    """Read MOD-IV for its farm lots, then the SR-1A files (farm deeds only), then MOD-IV again for every lot those
+    deeds name; returns the table rows (header first). keep_dir: where those MOD-IV lines go (gzip, for the raw branch)."""
+    with open(modiv_path, "rb") as fh:
+        farm = nj_farm_lots("modiv-2026.zip", fh)
+    rep["MOD-IV farm lots (3A, 3B)"] = len(farm)
+    sales = []
+    for n, p in sr_files:
+        with open(p, "rb") as fh:
+            sales.append((n, fh.read()))
+    sales = nj_sales(sales, rep, farm)
+    rep["SR-1A deeds kept for the farm test"] = len(sales)
     want = set()
     for r in sales:
-        if r["cls"].strip().upper() in NJ_FARM:
-            want.update(u for u, q in nj_units(r))
+        want.update(u for u, q in nj_units(r))
     with open(modiv_path, "rb") as fh:
         md = nj_modiv("modiv-2026.zip", fh, want, rep)
     if keep_dir:
@@ -2074,6 +2105,12 @@ def nj_selftest(ck):
        (by.get("1701-8") or {}).get("PROPERTYCLASS") == "4 1")
     ck("NJ: a house lot (class 2 then and now) is not a farm deed", "1701-9" not in by and rep.get("not farm") == 1)
     ck("NJ: the join rate is counted", rep.get("join", "").startswith("7 of 8 farm deeds"))
+    farm = nj_farm_lots("x.txt", modiv.encode())
+    kept = {r["serial"].strip().lstrip("0") for r in nj_sales([("Sales2026.txt", (old + "\n" + new).encode())], {}, farm)}
+    ck("NJ: the early farm filter keeps a farm-class deed and a deed naming a farm lot, and drops the house lot",
+       "8" in kept and "2" in kept and "6" in kept and "9" not in kept)
+    ln = new.split("\n")[1]
+    ck("NJ: the raw-line lots are the parsed deed's lots", set(nj_line_units(ln)) == {u for u, q in nj_units(nj_sales([("y.txt", ln.encode())], {})[0])})
     ck("NJ: every non-usable category 01 to 36 (the May 2025 rule) is mapped, each as out, kept or acres",
        sorted(NJ_NU) == ["%02d" % i for i in range(1, 37)] and all(v[0] in ("out", "kept", "acres") for v in NJ_NU.values()))
     ck("NJ: no party's street, city or ZIP is read", not any(re.search(r"(?i)street|city|zip|addr", k) for k in NJ_SR))

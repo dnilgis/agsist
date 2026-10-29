@@ -180,3 +180,53 @@ test("New Jersey is read on the monthly land run, has its own task, and its date
   assert.match(py, /fetch_nj\(os\.path\.join\(RAW, "nj"\)\)/, "the dated SR-1A copies go under data/land-raw, which the run pushes to the raw branch");
   assert.match(py, /keep_dir=None if from_dir else os\.path\.join\(RAW, "nj"\)/, "and the farm lots of MOD-IV");
 });
+
+const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
+const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
+let chromium = null;
+try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
+const skip = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
+
+test("in Chromium at 390 and 1280: Salem and Hunterdon list their sales, the names tap works, no sideways scroll", { skip }, async () => {
+  const { createServer } = await import("node:http");
+  const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
+  const srv = createServer((req, res) => {
+    let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
+    if (p.endsWith("/")) p += "index.html";
+    if (!path.extname(p)) p += ".html";
+    const f = path.normalize(path.join(ROOT, p));
+    if (!f.startsWith(ROOT) || !fs.existsSync(f)) { res.writeHead(404); res.end(); return; }
+    res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" });
+    res.end(fs.readFileSync(f));
+  });
+  await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
+  const base = `http://127.0.0.1:${srv.address().port}`;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const shots = process.env.LS_SHOTS || null;
+  try {
+    for (const [slug, fips] of [["salem-county", "34033"], ["hunterdon-county", "34019"]]) {
+      const n = json(`data/land-sales/nj/${fips}.json`).s.length;
+      for (const w of [390, 1280]) {
+        const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: w, height: 900 } });
+        const pg = await ctx.newPage();
+        const errors = [];
+        pg.on("pageerror", (e) => errors.push(String(e)));
+        await pg.route("**/*", (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()));
+        await pg.goto(base + "/land-sales/new-jersey/" + slug);
+        await pg.waitForSelector(".ls-flt:not([hidden])", { timeout: 20000 });
+        assert.equal(await pg.locator("#ls-all tbody tr").count(), Math.min(50, n), `${slug} @${w}: the newest rows`);
+        assert.doesNotMatch(await pg.textContent("body"), /SYNTHETIC|undefined|NaN/);
+        if (shots) await pg.screenshot({ path: path.join(shots, `nj-${slug}-${w}.png`), fullPage: false });
+        await pg.click("#ls-all tbody tr button.ls-nm");
+        await pg.waitForSelector("#ls-all tbody tr .ls-nv", { timeout: 20000 });
+        const [sw, iw] = await pg.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+        assert.ok(sw <= iw, `${slug} at ${w}: ${sw}px in ${iw}px`);
+        assert.deepEqual(errors, []);
+        await ctx.close();
+      }
+    }
+  } finally {
+    await browser.close();
+    srv.close();
+  }
+});
