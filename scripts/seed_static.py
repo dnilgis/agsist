@@ -2358,7 +2358,10 @@ def milk_dmc_seeds(fb, today):
     if not st:
         return {}
     words = milk_dmc_words(st)
-    src = f' <span class="dp-dmc-src">Source: {st["src"]}.</span>' if st["src"] else ""
+    # the space before the source sits inside its span: a lone " " between </strong> and <span> is a text node
+    # with no place of its own when a paint lands just after it (parser not yet at "Source"), and Chrome counts
+    # its jump into the line as a layout shift (CI, Oct 29, 1280 light: 0.0110 dp-dmc-line>#text " ")
+    src = f'<span class="dp-dmc-src"> Source: {st["src"]}.</span>' if st["src"] else ""
     attrs = (f' data-open="{st["open"].isoformat()}" data-close="{st["close"].isoformat()}"'
              f' data-year="{st["year"]}"')
     lever = (f'<span class="dp-dmc-now" id="dp-dmc-lever"{attrs}>{words}</span>'
