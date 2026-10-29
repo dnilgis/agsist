@@ -1,134 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>St. Tammany Parish, LA Farm Facts · Cash Rent 2026: $14/Acre</title>
-  <meta name="description" content="St. Tammany Parish, LA: non-irrigated cash rent $14 an acre (2026); land and buildings $10,879 an acre in the 2022 census.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/louisiana/st-tammany-parish">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="St. Tammany Parish, LA Farm Facts · Cash Rent 2026: $14/Acre">
-  <meta property="og:description" content="St. Tammany Parish, LA: non-irrigated cash rent $14 an acre (2026); land and buildings $10,879 an acre in the 2022 census.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/louisiana/st-tammany-parish">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/22103.png?v=18ee5c7e">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="St. Tammany Parish, Louisiana: dry cash rent $14 an acre, land and buildings $10,879, median corn yield not published">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="St. Tammany Parish, LA Farm Facts · Cash Rent 2026: $14/Acre">
-  <meta name="twitter:description" content="St. Tammany Parish, LA: non-irrigated cash rent $14 an acre (2026); land and buildings $10,879 an acre in the 2022 census.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/22103.png?v=18ee5c7e">
-  <meta name="twitter:image:alt" content="St. Tammany Parish, Louisiana: dry cash rent $14 an acre, land and buildings $10,879, median corn yield not published">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Louisiana",
-     "item": "https://agsist.com/farmland-atlas/louisiana/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "St. Tammany Parish"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/louisiana/st-tammany-parish#dataset",
-   "name": "St. Tammany Parish, Louisiana: farmland rent, land value and risk record",
-   "description": "St. Tammany Parish, LA: non-irrigated cash rent $14 an acre (2026); land and buildings $10,879 an acre in the 2022 census.",
-   "url": "https://agsist.com/farmland-atlas/louisiana/st-tammany-parish",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "St. Tammany Parish, Louisiana, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "rent_dry_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/la.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>St. Tammany Parish, LA Farm Facts · Cash Rent 2026: $14/Acre</title>
+<meta name="description" content="St. Tammany Parish, LA: non-irrigated cash rent $14 an acre (2026); land and buildings $10,879 an acre in the 2022 census.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/louisiana/st-tammany-parish">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="St. Tammany Parish, LA Farm Facts · Cash Rent 2026: $14/Acre">
+<meta property="og:description" content="St. Tammany Parish, LA: non-irrigated cash rent $14 an acre (2026); land and buildings $10,879 an acre in the 2022 census.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/louisiana/st-tammany-parish">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/22103.png?v=18ee5c7e">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="St. Tammany Parish, Louisiana: dry cash rent $14 an acre, land and buildings $10,879, median corn yield not published">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="St. Tammany Parish, LA Farm Facts · Cash Rent 2026: $14/Acre">
+<meta name="twitter:description" content="St. Tammany Parish, LA: non-irrigated cash rent $14 an acre (2026); land and buildings $10,879 an acre in the 2022 census.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/22103.png?v=18ee5c7e">
+<meta name="twitter:image:alt" content="St. Tammany Parish, Louisiana: dry cash rent $14 an acre, land and buildings $10,879, median corn yield not published">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"Louisiana","item":"https://agsist.com/farmland-atlas/louisiana/"},{"@type":"ListItem","position":4,"name":"St. Tammany Parish"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/louisiana/st-tammany-parish#dataset","name":"St. Tammany Parish, Louisiana: farmland rent, land value and risk record","description":"St. Tammany Parish, LA: non-irrigated cash rent $14 an acre (2026); land and buildings $10,879 an acre in the 2022 census.","url":"https://agsist.com/farmland-atlas/louisiana/st-tammany-parish","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"St. Tammany Parish, Louisiana, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"rent_dry_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/la.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/louisiana/">Louisiana</a><i>/</i><span aria-current="page">St. Tammany Parish</span></nav>
 <div class="kick">County farm facts</div>
@@ -138,13 +47,12 @@
 <p class="sub ap-story">As of Oct 16, cropland here rents for $14 an acre in 2026, the lowest of 46 in Louisiana, against a state median of $56. The census value of land and buildings runs the other way, at $10,879 an acre in 2022, the highest of 63 and well over the $3,628 state median. That value barely moved from $10,731 in 2017, up 1.4%, or 0.3% a year. 29% of the farmland was rented in 2022.</p>
 <div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v">$14<small>/ac</small></div><div class="s">2026 county average<br>LA median $56 · lowest of 46</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$10,879<small>/ac</small></div><div class="s">2022: operators&#x27; own estimate of what land and buildings were worth · LA farm real estate 2026: $3,950 (land and buildings, state survey)<br>LA median $3,628 · highest of 63</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v"><small>n/a</small></div><div class="s">not shown: NASS published no non-irrigated cash rent for this county in 2022</div></div><div class="k"><div class="t">Corn yield</div><div class="v"><small>n/a</small></div><div class="s">fewer than 8 published county corn yields</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v"><small>n/a</small></div><div class="s">under the premium floor for a figure</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">29%</div><div class="s">2022 census, rented from others<br>LA median 51% · 19th lowest of 63</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="St. Tammany Parish on the map with the counties that border it" class="loc"><path class="lm" d="M155.2 67.8L156.0 68.7L161.3 81.7L161.3 83.7L160.2 86.0L159.9 86.9L160.0 87.5L163.5 95.7L166.1 99.3L166.9 99.8L171.7 99.8L171.1 100.3L170.5 100.9L168.7 101.0L167.9 101.2L167.4 101.8L167.0 102.2L165.5 103.3L164.7 103.4L164.4 103.2L162.5 102.7L162.0 103.2L149.4 100.4L145.0 103.3L136.5 97.8L125.1 103.4L114.0 98.6L100.3 94.9L99.0 38.7L125.1 44.2L140.1 44.0L142.1 50.6L143.7 54.8L148.2 61.3L151.0 63.9L151.8 64.1L155.2 67.8Z"/><path class="ln0" d="M101.8 156.1L107.3 140.4L100.6 136.5L96.6 124.3L96.6 123.8L96.6 121.5L96.6 120.0L96.6 119.2L96.7 115.0L96.8 94.1L100.3 94.9L114.0 98.6L112.7 116.4L112.7 117.2L112.5 118.1L112.1 123.4L111.9 124.1L110.6 126.6L118.6 127.0L123.7 132.6L116.9 146.9L126.5 165.8L128.3 185.9L128.0 185.7L127.2 184.6L125.3 182.3L123.2 182.4L122.6 183.7L122.3 184.5L121.6 186.0L110.8 180.8L106.0 170.9L109.0 157.7L101.8 156.1Z"/><path class="ln0" d="M112.1 123.4L112.5 118.1L112.7 117.2L112.7 116.4L114.0 98.6L125.1 103.4L136.5 97.8L145.0 103.3L149.4 100.4L162.0 103.2L161.8 103.3L160.2 104.7L159.8 105.2L159.3 106.0L158.6 107.1L158.4 107.2L157.5 107.9L157.4 107.9L157.4 107.9L157.4 107.9L157.0 108.0L156.9 108.0L156.8 108.0L156.8 108.0L156.7 108.0L156.7 108.0L156.5 108.2L156.5 108.2L156.5 108.2L156.5 108.3L156.5 108.3L156.3 108.9L156.3 109.0L156.3 109.0L156.3 109.2L156.3 109.3L156.3 109.3L156.2 109.7L156.1 110.0L156.1 110.1L156.1 110.1L156.1 110.1L156.1 110.2L156.1 110.2L156.1 110.3L156.1 110.3L156.1 110.4L156.1 110.4L156.0 110.8L156.0 111.1L156.0 111.2L155.9 111.9L154.5 112.5L154.5 112.5L154.5 112.6L154.4 112.6L154.4 112.6L154.3 112.6L153.1 112.7L153.0 112.7L153.0 112.7L152.9 112.7L152.8 112.8L152.8 112.8L152.7 112.8L152.7 112.8L152.7 112.8L152.6 112.9L152.6 112.9L152.1 113.2L151.9 113.3L151.7 113.4L151.6 113.4L151.5 113.5L151.3 113.8L151.3 113.9L151.3 113.9L151.3 113.9L151.2 114.0L151.2 114.0L151.2 114.3L151.2 114.8L151.2 114.8L151.1 114.9L151.1 114.9L151.1 114.9L152.7 117.4L152.7 117.4L152.7 117.4L152.7 117.5L152.7 117.5L152.7 117.5L152.7 117.7L151.8 118.1L151.8 118.1L151.7 118.1L151.0 118.1L150.9 118.0L150.4 117.5L150.3 117.5L150.2 117.4L149.7 117.0L149.7 117.0L149.6 116.9L149.6 116.9L148.6 116.2L148.0 115.8L146.1 115.5L145.9 115.5L143.0 115.6L142.5 115.7L141.4 116.9L141.4 116.9L141.2 117.1L141.1 117.2L141.0 117.2L140.9 117.3L140.9 117.4L140.4 117.9L140.4 117.9L140.3 118.0L140.2 118.1L138.9 119.7L125.5 121.9L123.3 126.9L132.3 130.3L133.3 135.7L123.7 132.6L118.6 127.0L110.6 126.6L111.9 124.1L112.1 123.4Z"/><path class="ln0" d="M87.8 5.6L90.0 5.6L99.0 38.7L100.3 94.9L96.8 94.1L95.0 86.8L84.6 87.8L70.2 71.2L68.1 45.9L68.2 44.3L68.1 5.6L70.0 5.6L76.1 5.6L76.2 5.6L77.1 5.6L77.2 5.6L77.4 5.6L80.5 5.6L80.5 5.6L81.0 5.6L82.0 5.6L82.5 5.6L87.8 5.6Z"/><path class="ln0" d="M90.0 5.6L90.0 5.6L90.1 5.6L98.6 5.5L108.1 5.5L108.2 5.5L111.5 5.5L111.8 5.5L119.4 5.5L121.5 5.5L122.3 5.5L124.0 5.5L127.0 5.4L127.2 5.5L131.7 5.5L132.1 5.5L134.6 5.4L135.1 5.4L138.7 5.4L140.8 5.4L140.8 5.4L141.9 5.4L142.8 5.4L149.0 5.4L151.0 5.0L151.5 5.4L151.5 5.4L151.5 8.9L149.8 14.9L148.6 17.1L147.2 17.2L147.0 17.3L145.4 22.6L141.8 35.9L140.1 44.0L140.1 44.0L125.1 44.2L99.0 38.7L90.0 5.6Z"/><path class="ln0" d="M190.0 46.1L190.0 77.7L189.2 78.0L188.8 78.2L187.7 79.6L187.5 80.2L189.5 81.1L190.2 81.2L190.8 81.8L191.9 84.0L191.8 84.4L191.1 85.8L189.6 86.9L188.2 87.4L187.5 87.9L186.1 89.6L185.7 89.8L182.2 91.4L181.6 92.5L181.7 93.2L181.1 95.0L179.5 97.1L179.4 99.4L178.1 100.5L177.8 100.6L177.2 100.4L176.6 98.6L176.2 98.3L175.2 99.0L173.9 99.6L171.9 99.6L171.7 99.8L166.9 99.8L166.1 99.3L163.5 95.7L160.0 87.5L159.9 86.9L160.2 86.0L161.3 83.7L161.3 81.7L156.0 68.7L155.2 67.8L169.7 61.2L169.8 46.1L190.0 46.1Z"/><path class="ln0" d="M189.2 4.5L190.0 16.0L190.0 46.1L169.8 46.1L169.7 61.2L155.2 67.8L151.8 64.1L151.0 63.9L148.2 61.3L143.7 54.8L142.1 50.6L140.1 44.0L140.1 44.0L141.8 35.9L145.4 22.6L147.0 17.3L147.2 17.2L148.6 17.1L149.8 14.9L151.5 8.9L151.5 5.4L158.9 5.3L174.1 4.0L176.6 7.6L189.2 4.5Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#22103">Open on the map</a>
-  <a href="/farmland-atlas/compare#22103">Compare</a>
-  <a href="/rent/louisiana">Louisiana cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#22103">Open on the map</a>
+<a href="/farmland-atlas/compare#22103">Compare</a>
+<a href="/rent/louisiana">Louisiana cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
-
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
 <div class="chg"><section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2><div class="fact st lv" data-k="corn-bid"><span class="l">Corn bid</span><span class="r"></span></div><div class="fact st lv" data-k="soy-bid"><span class="l">Soybean bid</span><span class="r"></span></div><div class="fact st lv" data-k="corn-basis"><span class="l">Corn basis</span><span class="r"></span></div><div class="fact st lv" data-k="soy-basis"><span class="l">Soybean basis</span><span class="r"></span></div><div class="fact st lv" data-k="corn-fut"><span class="l">Corn futures</span><span class="r"></span></div><div class="fact st lv" data-k="soy-fut"><span class="l">Soybean futures</span><span class="r"></span></div><div class="fact st lv" data-k="feeders"><span class="l">Feeder cattle futures</span><span class="r"></span></div><p class="note">Bids are posted elevator prices within 50 miles of the county middle, or of your own field or saved place in this county when this device has one (each row says which), best and nearest, never a buyer's name. Not a contract; call before you haul. Livestock lines show where the 2022 Census counts 1,000 head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle.</p><p class="note"><a href="/cash-bids/louisiana/">Louisiana cash bids by town</a> · <a href="/fast-facts?fips=22103">Bids from your own ZIP or farm, in Fast Facts</a></p><details class="buyers" data-buyers="aa273:38,663f1:39"><summary>Nearby buyers within 50 miles: 1 oilseed crusher, 1 export elevator</summary><div><div class="buyers-list" aria-live="polite">Loading the list.</div><p class="note">Straight-line miles from the middle of St. Tammany Parish to each buyer&rsquo;s town point (the middle of its town, not the gate), rounded. Capacity as published. Where the buyers are, not what they pay. Lists from <a href="https://www.nopa.org/about-us/nopa-plant-locations/" rel="noopener">NOPA</a>, port and terminal pages, read Oct 28, 2026.</p></div></details><script src="/components/cb-buyers.js?v=1" defer></script></section><section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2><div class="fact st lv" data-k="rain"><span class="l">Rain since Jan 1</span><span class="r"></span></div><div class="fact st lv" data-k="drought"><span class="l">Drought this week</span><span class="r"></span></div><div class="fact st lv" data-k="hail"><span class="l">Hail, last 30 days</span><span class="r"></span></div><p class="note"><a data-xl="rain" href="/rain/louisiana/st-tammany-parish">Rain so far this year in St. Tammany Parish, Louisiana</a></p><h3>Drought, year by year</h3><svg viewBox="0 0 640 170" role="img" aria-label="Weeks per year with half the county or more in severe drought or worse" class="ch"><path class="bf" d="M10.9 30.1h18.2V148h-18.2zM34.9 148.0h18.2V148h-18.2zM58.9 148.0h18.2V148h-18.2zM82.9 148.0h18.2V148h-18.2zM106.9 148.0h18.2V148h-18.2zM130.9 148.0h18.2V148h-18.2zM154.9 97.5h18.2V148h-18.2zM178.9 148.0h18.2V148h-18.2zM202.9 148.0h18.2V148h-18.2zM226.9 148.0h18.2V148h-18.2zM250.9 148.0h18.2V148h-18.2zM274.9 103.1h18.2V148h-18.2zM298.9 128.4h18.2V148h-18.2zM322.9 148.0h18.2V148h-18.2zM346.9 145.2h18.2V148h-18.2zM370.9 142.4h18.2V148h-18.2zM394.9 142.4h18.2V148h-18.2zM418.9 148.0h18.2V148h-18.2zM442.9 148.0h18.2V148h-18.2zM466.9 148.0h18.2V148h-18.2zM490.9 148.0h18.2V148h-18.2zM514.9 148.0h18.2V148h-18.2zM538.9 148.0h18.2V148h-18.2zM562.9 97.5h18.2V148h-18.2zM586.9 148.0h18.2V148h-18.2zM610.9 148.0h18.2V148h-18.2z"/><text class="ta" x="20.0" y="164">2000</text><text class="ta" x="140.0" y="164">2005</text><text class="ta" x="260.0" y="164">2010</text><text class="ta" x="380.0" y="164">2015</text><text class="ta" x="500.0" y="164">2020</text><text class="ta" x="620.0" y="164">2025</text><text class="tv" x="20.0" y="27.1">42</text><text class="tv" x="620.0" y="145.0">0</text><path class="ax" d="M8 148H632"/></svg><p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.</p><div class="fact"><span class="l">D2 or worse for half the county, 2000–2025</span><span class="r">106 of 1,357 weeks<small>8% of weeks</small></span></div><div class="fact"><span class="l">Year with the most D2+ weeks</span><span class="r">2000<small>42 weeks</small></span></div><div class="fact"><span class="l">Last five full years, 2021–2025</span><span class="r">18 weeks</span></div><div class="fact st"><span class="l">2026 so far</span><span class="r">7 weeks<small>half the county or more in D2, 40 weekly maps</small></span></div><div class="fact"><span class="l">July average of daily lows, 2017–2026</span><span class="r">73.9 °F<small>1991–2020 normal 72.7 °F</small></span></div><div class="fact"><span class="l">Trend in July lows since 1976</span><span class="r">+0.48 °F a decade<small>warming</small></span></div><div class="fact st"><span class="l">Rain, April to September, usual</span><span class="r">35.4 in<small>1991–2020 county normal, NOAA; the 2017–2026 seasons averaged 38.6 in</small></span></div><div class="fact st"><span class="l">Days with hail 1 inch or larger</span><span class="r">1.5 a year<small>reports, 2010–2025; a zero is no report, not proof of no hail</small></span></div><div class="fact st"><span class="l">Corn growing degree days, May to September</span><span class="r">4,212<small>middle of 1996–2025; 2016–2025 averaged 4,314</small></span></div></section><section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2><div class="fact st lv" data-k="corn-progress"><span class="l">Corn harvested</span><span class="r"></span></div><div class="fact st lv" data-k="soy-progress"><span class="l">Soybeans harvested</span><span class="r"></span></div><h3>Corn yield</h3><div class="fact w"><span class="l">County corn yield</span><span class="r">Fewer than 8 published county corn yields</span></div></section><section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2><h3>Cash rent</h3><p class="note">Every published Louisiana county rate, side by side: <a href="/rent/louisiana">Louisiana cash rent by county</a>.</p><div class="fact"><span class="l">Non-irrigated, 2026</span><span class="r">$14/ac</span></div><div class="fact"><span class="l">Pasture, 2026</span><span class="r">$31/ac</span></div><div class="act rcw"><button type="button" id="rc-open" data-st="LA" data-fips="22103" aria-expanded="false">Rent share calculator and history</button></div><div id="rc-box" hidden></div><h3>Land value</h3><div class="fact st"><span class="l">Land and buildings, 2022</span><span class="r">$10,879/ac<small>operators&#x27; own estimate, not a sale price</small></span></div><div class="fact"><span class="l">Census 2012</span><span class="r">$7,315/ac</span></div><div class="fact"><span class="l">Census 2017</span><span class="r">$10,731/ac</span></div><div class="fact"><span class="l">Change 2017 to 2022</span><span class="r">+1.4%<small>+0.3% a year, nominal</small></span></div><div class="fact w"><span class="l">Dry rent ÷ census value</span><span class="r">NASS published no non-irrigated cash rent for this county in 2022</span></div><div class="fact st"><span class="l">Louisiana cropland, 2026 state survey</span><span class="r">$3,660/ac<small>+2.5% from 2025 · USDA NASS Land Values, state average</small></span></div><div class="fact st"><span class="l">Louisiana farm real estate, 2026</span><span class="r">$3,950/ac<small>land and buildings, state average</small></span></div><div class="fact"><span class="l">Louisiana pasture, 2026</span><span class="r">$3,600/ac<small>state average</small></span></div><p class="note">The census value is this county's, from 2022. The survey figures are the Louisiana average for 2026, from the USDA NASS Land Values report. NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p><p class="note" data-ls-door="state">Land sales: Louisiana is commonly listed as a state that does not make farm sale prices public record. <a href="/land-sales/#coverage">Where each state stands</a>.</p></section><section class="card" aria-labelledby="c-prog"><h2 id="c-prog">Programs and risk</h2><div class="fact st lv" data-k="arc"><span class="l">ARC or PLC sign-up</span><span class="r"></span></div><p class="note">Benchmarks, payments and the choice for each crop: <a href="/arc-plc/louisiana/st-tammany-parish">ARC or PLC in St. Tammany Parish</a>.</p><p class="note">Insuring pasture or hay? PRF rainfall insurance for pasture and hay in St. Tammany Parish: its grids, county values and record are on <a href="/prf/louisiana/st-tammany-parish">the county PRF page</a>.</p><h3>Crop insurance record</h3><p class="note">Claims paid divided by total premium (the farmer share plus the federal subsidy), each closed crop year since 1995 with at least $1,000,000 of premium; a year under that has no bar and no ratio. Above the dashed line, the county's insurance book paid out more than it took in.</p><div class="fact st"><span class="l">Largest causes of loss, 1997–2006</span><span class="r">wind 52% · heat and drought 34% · excess moisture 14%<small>share of dollars paid</small></span></div><h3>Conservation Reserve Program</h3><p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p><div class="fact"><span class="l">CRP enrolled, 2025</span><span class="r">0 ac</span></div></section><section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2><div class="fact"><span class="l">Harvested cropland irrigated, 2022</span><span class="r">3%</span></div><div class="fact"><span class="l">Drained by tile, 2022</span><span class="r">1% of cropland<small>203 ac</small></span></div><div class="fact"><span class="l">Farmed no-till, 2022</span><span class="r">3% of cropland<small>400 ac</small></span></div><div class="fact"><span class="l">Cover crops, 2022</span><span class="r">1% of cropland<small>137 ac</small></span></div><div class="fact"><span class="l">Cattle and calves, 2022</span><span class="r">8,730<small>+14.4% since 2017</small></span></div><div class="fact"><span class="l">Beef cows, 2022</span><span class="r">5,362<small>head, Census of Agriculture</small></span></div><div class="fact"><span class="l">Hogs and pigs, 2022</span><span class="r">157<small>head, Census of Agriculture</small></span></div><div class="fact st"><span class="l">Farmland rented from others, 2022</span><span class="r">29%<small>census tenure, owned plus rented acres in farms</small></span></div><p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section></div>
 <div id="watch"><form class="watch" data-fips="22103" aria-label="Watch St. Tammany Parish"><b>Watch this county</b><p>Get an email when the published figures for St. Tammany Parish, Louisiana change. Usually once or twice a year. You confirm by email first, and every email has a one-tap stop. AGSIST, PO Box 243, Chetek, WI 54728.</p><div class="wr"><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Watch this county</button></div><div class="wm" role="status" aria-live="polite"></div></form><script defer src="/farmland-atlas/watch.js?v=530339ee"></script></div>
@@ -158,37 +66,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/louisiana/st-mary-parish">← St. Mary Parish</a></span><a href="/farmland-atlas/louisiana/">All Louisiana counties</a><span><a href="/farmland-atlas/louisiana/tangipahoa-parish">Tangipahoa Parish →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "22103", "state": "LA", "county": "St. Tammany Parish", "rent_dry_usd_ac": 14.0, "rent_dry_year": 2026, "rent_dry_chg10_pct": null, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": 30.5, "value_usd_ac": 10879, "value_year": 2022, "value_flag": null, "value_cagr_pct": 0.3, "rent_to_value_pct": null, "corn_yield_median_bu_ac": null, "corn_yield_years": null, "corn_yield_trend_bu_yr": null, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": null, "loss_ratio_last10": null, "loss_ratio_all": null, "years_loss_over_1": null, "d2_week_share_pct": 7.81, "jul_low_recent_f": 73.9, "jul_low_normal_f": 72.7, "jul_low_trend_f_decade": 0.48, "irrigated_share_2022": 0.028, "tile_share_2022": 0.013518, "notill_share_2022": 0.026636, "crp_acres": 0, "crp_share_pct": null, "crp_expiring_next3_acres": null, "rented_share_2022": 0.2919, "solar_mw": 0.0, "wind_mw": 0.0, "gs_rain_normal_in": 35.4, "hail_1in_days_yr": 1.5, "cattle_2022": 8730.0}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"22103","state":"LA","county":"St. Tammany Parish","rent_dry_usd_ac":14.0,"rent_dry_year":2026,"rent_dry_chg10_pct":null,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":30.5,"value_usd_ac":10879,"value_year":2022,"value_flag":null,"value_cagr_pct":0.3,"rent_to_value_pct":null,"corn_yield_median_bu_ac":null,"corn_yield_years":null,"corn_yield_trend_bu_yr":null,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":null,"loss_ratio_last10":null,"loss_ratio_all":null,"years_loss_over_1":null,"d2_week_share_pct":7.81,"jul_low_recent_f":73.9,"jul_low_normal_f":72.7,"jul_low_trend_f_decade":0.48,"irrigated_share_2022":0.028,"tile_share_2022":0.013518,"notill_share_2022":0.026636,"crp_acres":0,"crp_share_pct":null,"crp_expiring_next3_acres":null,"rented_share_2022":0.2919,"solar_mw":0.0,"wind_mw":0.0,"gs_rain_normal_in":35.4,"hail_1in_days_yr":1.5,"cattle_2022":8730.0}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>

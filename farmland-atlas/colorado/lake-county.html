@@ -1,129 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Lake County, Colorado Farm Facts: Farmland Value and Risk</title>
-  <meta name="description" content="Lake County, CO: land and buildings $2,701 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/colorado/lake-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Lake County, Colorado Farm Facts: Farmland Value and Risk">
-  <meta property="og:description" content="Lake County, CO: land and buildings $2,701 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/colorado/lake-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/08065.png?v=3dd4d9ea">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Lake County, Colorado: dry cash rent not published, land and buildings $2,701, median corn yield not published">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Lake County, Colorado Farm Facts: Farmland Value and Risk">
-  <meta name="twitter:description" content="Lake County, CO: land and buildings $2,701 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/08065.png?v=3dd4d9ea">
-  <meta name="twitter:image:alt" content="Lake County, Colorado: dry cash rent not published, land and buildings $2,701, median corn yield not published">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Colorado",
-     "item": "https://agsist.com/farmland-atlas/colorado/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Lake County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/colorado/lake-county#dataset",
-   "name": "Lake County, Colorado: farmland rent, land value and risk record",
-   "description": "Lake County, CO: land and buildings $2,701 an acre in the 2022 census.",
-   "url": "https://agsist.com/farmland-atlas/colorado/lake-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Lake County, Colorado, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/co.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Lake County, Colorado Farm Facts: Farmland Value and Risk</title>
+<meta name="description" content="Lake County, CO: land and buildings $2,701 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/colorado/lake-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Lake County, Colorado Farm Facts: Farmland Value and Risk">
+<meta property="og:description" content="Lake County, CO: land and buildings $2,701 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/colorado/lake-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/08065.png?v=3dd4d9ea">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Lake County, Colorado: dry cash rent not published, land and buildings $2,701, median corn yield not published">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Lake County, Colorado Farm Facts: Farmland Value and Risk">
+<meta name="twitter:description" content="Lake County, CO: land and buildings $2,701 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/08065.png?v=3dd4d9ea">
+<meta name="twitter:image:alt" content="Lake County, Colorado: dry cash rent not published, land and buildings $2,701, median corn yield not published">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"Colorado","item":"https://agsist.com/farmland-atlas/colorado/"},{"@type":"ListItem","position":4,"name":"Lake County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/colorado/lake-county#dataset","name":"Lake County, Colorado: farmland rent, land value and risk record","description":"Lake County, CO: land and buildings $2,701 an acre in the 2022 census.","url":"https://agsist.com/farmland-atlas/colorado/lake-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"Lake County, Colorado, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/co.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/colorado/">Colorado</a><i>/</i><span aria-current="page">Lake County</span></nav>
 <div class="kick">County farm facts</div>
@@ -133,13 +47,12 @@
 <section class="so" aria-label="What stands out"><h2>Stands out against its own record</h2><div class="so-g"><div class="so-t"><div class="big">40 weeks</div><p class="what">With half the county or more in severe drought (D2) or worse in 2026 so far, the most since 2002 (43 weeks).</p><p class="src">U.S. Drought Monitor weekly maps, 2000 to 2026 (40 maps this year)</p></div></div></section><p class="sub ap-story">As of Oct 16, the census value of land and buildings in Lake County stood at $2,701 an acre in 2022. That is up 31.4% from $2,055 in 2017, or 5.6% a year, though still under the $2,916 operators put down in 2012. It ranks 26th lowest of 58 in Colorado, a little below the state median of $2,765. 23% of the farmland was rented in 2022.</p>
 <div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v"><small>n/a</small></div><div class="s">NASS published no non-irrigated cash rent for this county</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$2,701<small>/ac</small></div><div class="s">2022: operators&#x27; own estimate of what land and buildings were worth · CO farm real estate 2026: $2,360 (land and buildings, state survey)<br>CO median $2,765 · 26th lowest of 58</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v"><small>n/a</small></div><div class="s">not shown: NASS published no non-irrigated cash rent for this county in 2022</div></div><div class="k"><div class="t">Corn yield</div><div class="v"><small>n/a</small></div><div class="s">fewer than 8 published county corn yields</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v"><small>n/a</small></div><div class="s">RMA Summary of Business has no rows for this county</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">23%</div><div class="s">2022 census, rented from others<br>CO median 30% · 14th lowest of 57</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="Lake County on the map with the counties that border it" class="loc"><path class="lm" d="M127.3 72.2L147.9 70.0L154.6 70.0L154.6 70.0L150.1 78.6L149.4 109.3L113.0 109.1L119.5 95.8L121.8 78.2L127.3 72.2Z"/><path class="ln0" d="M113.0 109.1L149.4 109.3L156.9 123.4L164.7 123.0L174.4 131.6L176.1 139.5L170.2 153.2L178.7 163.7L175.9 175.9L166.3 183.1L144.1 186.0L124.9 152.6L136.7 126.9L123.7 127.0L111.1 116.3L111.7 113.1L111.3 110.6L112.8 110.1L113.0 109.1Z"/><path class="ln0" d="M147.9 70.0L127.3 72.2L62.8 71.7L62.7 4.7L70.2 4.7L108.4 4.7L108.4 4.0L126.5 4.0L131.2 23.1L150.6 42.3L143.7 59.7L147.9 70.0Z"/><path class="ln0" d="M223.8 47.5L223.9 72.0L223.9 100.3L230.3 100.3L230.4 152.8L170.2 153.2L176.1 139.5L174.4 131.6L164.7 123.0L156.9 123.4L149.4 109.3L150.1 78.6L154.6 70.0L165.6 71.7L170.4 63.0L184.4 50.9L183.3 47.6L200.9 47.4L206.0 47.3L223.8 47.5Z"/><path class="ln0" d="M36.4 85.1L29.6 77.1L32.9 71.7L62.8 71.7L127.3 72.2L121.8 78.2L119.5 95.8L113.0 109.1L112.8 110.1L111.3 110.6L111.7 113.1L111.1 116.3L102.1 109.3L92.0 118.7L82.2 117.1L73.2 111.0L67.2 101.7L46.9 101.7L38.1 92.1L36.4 85.1Z"/><path class="ln0" d="M126.5 4.0L143.7 5.2L159.4 18.4L165.1 32.7L174.4 31.4L186.8 39.0L183.3 47.6L184.4 50.9L170.4 63.0L165.6 71.7L154.6 70.0L154.6 70.0L147.9 70.0L143.7 59.7L150.6 42.3L131.2 23.1L126.5 4.0Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#08065">Open on the map</a>
-  <a href="/farmland-atlas/compare#08065">Compare</a>
-  <a href="/rent/colorado">Colorado cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#08065">Open on the map</a>
+<a href="/farmland-atlas/compare#08065">Compare</a>
+<a href="/rent/colorado">Colorado cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
-
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
 <div class="chg"><section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2><div class="fact st lv" data-k="corn-bid"><span class="l">Corn bid</span><span class="r"></span></div><div class="fact st lv" data-k="soy-bid"><span class="l">Soybean bid</span><span class="r"></span></div><div class="fact st lv" data-k="corn-basis"><span class="l">Corn basis</span><span class="r"></span></div><div class="fact st lv" data-k="soy-basis"><span class="l">Soybean basis</span><span class="r"></span></div><div class="fact st lv" data-k="corn-fut"><span class="l">Corn futures</span><span class="r"></span></div><div class="fact st lv" data-k="soy-fut"><span class="l">Soybean futures</span><span class="r"></span></div><p class="note">Bids are posted elevator prices within 50 miles of the county middle, or of your own field or saved place in this county when this device has one (each row says which), best and nearest, never a buyer's name. Not a contract; call before you haul. Livestock lines show where the 2022 Census counts 1,000 head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle.</p><p class="note"><a href="/cash-bids/colorado/">Colorado cash bids by town</a> · <a href="/fast-facts?fips=08065">Bids from your own ZIP or farm, in Fast Facts</a></p></section><section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2><div class="fact st lv" data-k="rain"><span class="l">Rain since Jan 1</span><span class="r"></span></div><div class="fact st lv" data-k="drought"><span class="l">Drought this week</span><span class="r"></span></div><div class="fact st lv" data-k="hail"><span class="l">Hail, last 30 days</span><span class="r"></span></div><p class="note"><a data-xl="rain" href="/rain/colorado/lake-county">Rain so far this year in Lake County, Colorado</a></p><h3>Drought, year by year</h3><svg viewBox="0 0 640 170" role="img" aria-label="Weeks per year with half the county or more in severe drought or worse" class="ch"><path class="bf" d="M10.9 148.0h18.2V148h-18.2zM34.9 148.0h18.2V148h-18.2zM58.9 30.1h18.2V148h-18.2zM82.9 52.1h18.2V148h-18.2zM106.9 148.0h18.2V148h-18.2zM130.9 148.0h18.2V148h-18.2zM154.9 148.0h18.2V148h-18.2zM178.9 148.0h18.2V148h-18.2zM202.9 148.0h18.2V148h-18.2zM226.9 148.0h18.2V148h-18.2zM250.9 148.0h18.2V148h-18.2zM274.9 148.0h18.2V148h-18.2zM298.9 90.4h18.2V148h-18.2zM322.9 104.1h18.2V148h-18.2zM346.9 148.0h18.2V148h-18.2zM370.9 148.0h18.2V148h-18.2zM394.9 148.0h18.2V148h-18.2zM418.9 148.0h18.2V148h-18.2zM442.9 93.2h18.2V148h-18.2zM466.9 123.3h18.2V148h-18.2zM490.9 93.2h18.2V148h-18.2zM514.9 106.9h18.2V148h-18.2zM538.9 148.0h18.2V148h-18.2zM562.9 148.0h18.2V148h-18.2zM586.9 148.0h18.2V148h-18.2zM610.9 79.5h18.2V148h-18.2z"/><text class="ta" x="20.0" y="164">2000</text><text class="ta" x="140.0" y="164">2005</text><text class="ta" x="260.0" y="164">2010</text><text class="ta" x="380.0" y="164">2015</text><text class="ta" x="500.0" y="164">2020</text><text class="ta" x="620.0" y="164">2025</text><text class="tv" x="20.0" y="145.0">0</text><text class="tv" x="68.0" y="27.1">43</text><text class="tv" x="620.0" y="76.5">25</text><path class="ax" d="M8 148H632"/></svg><p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.</p><div class="fact"><span class="l">D2 or worse for half the county, 2000–2025</span><span class="r">204 of 1,357 weeks<small>15% of weeks</small></span></div><div class="fact"><span class="l">Year with the most D2+ weeks</span><span class="r">2002<small>43 weeks</small></span></div><div class="fact"><span class="l">Last five full years, 2021–2025</span><span class="r">40 weeks</span></div><div class="fact st"><span class="l">2026 so far</span><span class="r">40 weeks<small>half the county or more in D2, 40 weekly maps</small></span></div><div class="fact"><span class="l">July average of daily lows, 2017–2026</span><span class="r">40.9 °F<small>1991–2020 normal 40.8 °F</small></span></div><div class="fact st"><span class="l">Trend in July lows since 1976</span><span class="r">+0.21 °F a decade<small>no clear direction</small></span></div><div class="fact st"><span class="l">Rain, April to September, usual</span><span class="r">12.0 in<small>1991–2020 county normal, NOAA; the 2017–2026 seasons averaged 11.1 in</small></span></div><div class="fact st"><span class="l">Days with hail 1 inch or larger</span><span class="r">0.0 a year<small>reports, 2010–2025; a zero is no report, not proof of no hail</small></span></div><div class="fact st"><span class="l">Last spring freeze, first fall freeze</span><span class="r">Jun 15, Sep 11<small>middle dates 1996–2025, NOAA county-average daily low of 32 °F or colder</small></span></div><div class="fact"><span class="l">Frost-free days</span><span class="r">89<small>middle of 1996–2025</small></span></div><div class="fact st"><span class="l">Corn growing degree days, May to September</span><span class="r">1,041<small>middle of 1996–2025; 2016–2025 averaged 1,109</small></span></div></section><section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2><div class="fact st lv" data-k="corn-progress"><span class="l">Corn harvested</span><span class="r"></span></div><div class="fact st lv" data-k="soy-progress"><span class="l">Soybeans harvested</span><span class="r"></span></div><h3>Corn yield</h3><div class="fact w"><span class="l">County corn yield</span><span class="r">Fewer than 8 published county corn yields</span></div></section><section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2><h3>Cash rent</h3><p class="note">Every published Colorado county rate, side by side: <a href="/rent/colorado">Colorado cash rent by county</a>.</p><div class="fact w"><span class="l">Cash rent</span><span class="r">NASS published no non-irrigated cash rent for this county</span></div><div class="act rcw"><button type="button" id="rc-open" data-st="CO" data-fips="08065" aria-expanded="false">Rent share calculator and history</button></div><div id="rc-box" hidden></div><h3>Land value</h3><div class="fact st"><span class="l">Land and buildings, 2022</span><span class="r">$2,701/ac<small>operators&#x27; own estimate, not a sale price</small></span></div><div class="fact"><span class="l">Census 2012</span><span class="r">$2,916/ac</span></div><div class="fact"><span class="l">Census 2017</span><span class="r">$2,055/ac</span></div><div class="fact"><span class="l">Change 2017 to 2022</span><span class="r">+31.4%<small>+5.6% a year, nominal</small></span></div><div class="fact w"><span class="l">Dry rent ÷ census value</span><span class="r">NASS published no non-irrigated cash rent for this county in 2022</span></div><div class="fact st"><span class="l">Colorado cropland, 2026 state survey</span><span class="r">$2,960/ac<small>+2.8% from 2025 · USDA NASS Land Values, state average</small></span></div><div class="fact st"><span class="l">Colorado farm real estate, 2026</span><span class="r">$2,360/ac<small>land and buildings, state average</small></span></div><div class="fact"><span class="l">Colorado pasture, 2026</span><span class="r">$1,200/ac<small>state average</small></span></div><p class="note">The census value is this county's, from 2022. The survey figures are the Colorado average for 2026, from the USDA NASS Land Values report. NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p><p class="note" data-ls-door="state">Land sales: Colorado sale records: not checked yet. <a href="/land-sales/#coverage">Where each state stands</a>.</p></section><section class="card" aria-labelledby="c-prog"><h2 id="c-prog">Programs and risk</h2><div class="fact st lv" data-k="arc"><span class="l">ARC or PLC sign-up</span><span class="r"></span></div><p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/colorado">ARC or PLC in Colorado</a>.</p><p class="note">PRF rainfall insurance for pasture and hay in Lake County: its grids, county values and record are on <a href="/prf/colorado/lake-county">the county PRF page</a>.</p><h3>Crop insurance record</h3><div class="fact w"><span class="l">Premium and payouts</span><span class="r">RMA Summary of Business has no rows for this county</span></div><h3>Conservation Reserve Program</h3><p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p><div class="fact"><span class="l">CRP enrolled, 2025</span><span class="r">0 ac</span></div></section><section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2><div class="fact"><span class="l">Harvested cropland irrigated, 2022</span><span class="r">89%</span></div><div class="fact"><span class="l">Drained by tile, 2022</span><span class="r">none reported</span></div><div class="fact"><span class="l">Cover crops, 2022</span><span class="r">none reported</span></div><div class="fact"><span class="l">Cattle and calves, 2022</span><span class="r">745<small>+128.5% since 2017</small></span></div><div class="fact"><span class="l">Beef cows, 2022</span><span class="r">609<small>head, Census of Agriculture</small></span></div><div class="fact st"><span class="l">Farmland rented from others, 2022</span><span class="r">23%<small>census tenure, owned plus rented acres in farms</small></span></div><p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section></div>
 <div id="watch"><form class="watch" data-fips="08065" aria-label="Watch Lake County"><b>Watch this county</b><p>Get an email when the published figures for Lake County, Colorado change. Usually once or twice a year. You confirm by email first, and every email has a one-tap stop. AGSIST, PO Box 243, Chetek, WI 54728.</p><div class="wr"><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Watch this county</button></div><div class="wm" role="status" aria-live="polite"></div></form><script defer src="/farmland-atlas/watch.js?v=530339ee"></script></div>
@@ -153,37 +66,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/colorado/la-plata-county">← La Plata County</a></span><a href="/farmland-atlas/colorado/">All Colorado counties</a><span><a href="/farmland-atlas/colorado/larimer-county">Larimer County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "08065", "state": "CO", "county": "Lake County", "rent_dry_usd_ac": null, "rent_dry_year": null, "rent_dry_chg10_pct": null, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": 5.5, "value_usd_ac": 2701, "value_year": 2022, "value_flag": null, "value_cagr_pct": 5.6, "rent_to_value_pct": null, "corn_yield_median_bu_ac": null, "corn_yield_years": null, "corn_yield_trend_bu_yr": null, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": null, "loss_ratio_last10": null, "loss_ratio_all": null, "years_loss_over_1": null, "d2_week_share_pct": 15.03, "jul_low_recent_f": 40.9, "jul_low_normal_f": 40.8, "jul_low_trend_f_decade": 0.21, "irrigated_share_2022": 0.889, "tile_share_2022": 0.0, "notill_share_2022": null, "crp_acres": 0, "crp_share_pct": null, "crp_expiring_next3_acres": null, "rented_share_2022": 0.2349, "solar_mw": 0.0, "wind_mw": 0.0, "gs_rain_normal_in": 12.0, "hail_1in_days_yr": 0.0, "cattle_2022": 745.0}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"08065","state":"CO","county":"Lake County","rent_dry_usd_ac":null,"rent_dry_year":null,"rent_dry_chg10_pct":null,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":5.5,"value_usd_ac":2701,"value_year":2022,"value_flag":null,"value_cagr_pct":5.6,"rent_to_value_pct":null,"corn_yield_median_bu_ac":null,"corn_yield_years":null,"corn_yield_trend_bu_yr":null,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":null,"loss_ratio_last10":null,"loss_ratio_all":null,"years_loss_over_1":null,"d2_week_share_pct":15.03,"jul_low_recent_f":40.9,"jul_low_normal_f":40.8,"jul_low_trend_f_decade":0.21,"irrigated_share_2022":0.889,"tile_share_2022":0.0,"notill_share_2022":null,"crp_acres":0,"crp_share_pct":null,"crp_expiring_next3_acres":null,"rented_share_2022":0.2349,"solar_mw":0.0,"wind_mw":0.0,"gs_rain_normal_in":12.0,"hail_1in_days_yr":0.0,"cattle_2022":745.0}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>
