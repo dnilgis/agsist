@@ -14,6 +14,13 @@
    "title": "The homepage holds still while it loads",
    "line": "The top of the homepage no longer jumps down as it finishes loading, on a first visit or in the evening when the overnight futures line arrives.",
    "link": "/"
+   },
+   {
+   "id": "2026-10-29-salesnav",
+   "date": "2026-10-29",
+   "title": "Farm sales easier to find",
+   "line": "Every Farmland Atlas county page links its land sales, or says where the state's records stand. Rent pages, Fast Facts and search find county sales too.",
+   "link": "/land-sales/"
   },
   {
    "id": "2026-10-28-farm-credit",

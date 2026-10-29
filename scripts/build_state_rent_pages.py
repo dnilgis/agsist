@@ -263,6 +263,41 @@ def atlas_slugs(root="."):
         return {}
 
 
+_LS = {}
+
+
+def land_sales_hrefs(root="."):
+    """{fips: '/land-sales/<state>/<county>'} for every county with its own page on /land-sales/
+    (scripts/build_land_sales.py writes them; data/land-sales/<st>.json carries each county's slug
+    by FIPS). Only pages on disk, so no link 404s (Sig, Oct 29, 2026: land sales easy to find)."""
+    if root not in _LS:
+        out = {}
+        for p_ in sorted(glob.glob(os.path.join(root, "data", "land-sales", "[a-z][a-z].json"))):
+            try:
+                d_ = json.load(open(p_, encoding="utf-8"))
+            except Exception:
+                continue
+            st_ = d_.get("state")
+            if st_ not in STATE_NAMES:
+                continue
+            ssl = slug(STATE_NAMES[st_])
+            for f, c in (d_.get("counties") or {}).items():
+                cs = str(c.get("slug") or "")
+                if re.match(r"^[a-z0-9-]+$", cs) and os.path.isfile(os.path.join(root, "land-sales", ssl, cs + ".html")):
+                    out[f] = f"/land-sales/{ssl}/{cs}"
+        _LS[root] = out
+    return _LS[root]
+
+
+def land_sales_line(st, root="."):
+    """One line under the Atlas line on a state with county sales pages, to that state's list."""
+    ssl = slug(STATE_NAMES[st])
+    if not any(h.startswith(f"/land-sales/{ssl}/") for h in land_sales_hrefs(root).values()):
+        return ""
+    return (f'\n  <p class="sub">Land sales near here: <a href="/land-sales/#{ssl}" style="color:var(--gold)">'
+            f'recorded farm sales in {STATE_NAMES[st]}, county by county</a>. The county table links each one.</p>')
+
+
 def atlas_state_href(st, root="."):
     """The Farmland Atlas state page when it is on disk, else the Atlas map."""
     try:
@@ -577,6 +612,7 @@ def head(title, desc, path, jsonld):
     .rs-gr .m p{{margin:4px 0}}
     .rs-atlas{{border-left:2px solid var(--gold);padding:.2rem 0 .2rem .9rem;margin:10px 0 4px;font-size:.95rem;line-height:1.6;color:var(--text-dim)}}
     .rs-atlas a{{color:var(--gold);font-weight:700}}
+    .rs-ls{{font-size:.72rem;font-weight:400;color:var(--text-dim);margin-left:4px}}
     :root[data-theme="light"] .rs-atlas a{{color:#6f5209}}
   </style>
 </head>"""
@@ -618,8 +654,10 @@ def county_table(st, s, aslug=None):
     body, seen = [], set()
     for c in sorted(s["counties"], key=lambda c: c["name"]):
         a = (aslug or {}).get(c.get("fips"))
-        cells = [f'<td><a href="/{ATLAS_OUT}/{a}" title="{esc(c["name"])}: Farmland Atlas county record">{esc(c["name"])}</a></td>'
-                 if a else f"<td>{esc(c['name'])}</td>"]
+        ls = land_sales_hrefs().get(c.get("fips"))
+        ls = (f' <a class="rs-ls" href="{ls}" title="Land sales near here: recorded farm sales in {esc(c["name"])}">sales</a>') if ls else ""
+        cells = [f'<td><a href="/{ATLAS_OUT}/{a}" title="{esc(c["name"])}: Farmland Atlas county record">{esc(c["name"])}</a>{ls}</td>'
+                 if a else f"<td>{esc(c['name'])}{ls}</td>"]
         for t, _ in cols:
             r = c["rent"].get(t, {})
             if str(yr) in r:
@@ -988,7 +1026,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     </div>
   </div>
   {rent_ask(st, name, yr)}
-  {atlas_line(atlas_state_href(st))}{arc_line(st)}
+  {atlas_line(atlas_state_href(st))}{land_sales_line(st)}{arc_line(st)}
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">{money(s['median'])}</div><div class="l">median rent /ac &middot; {yr}</div><div class="s">{plabel}, {s['n']} counties</div></div>
     <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'state median vs {yr-1}')}</div>

@@ -211,10 +211,15 @@
     for (var w = 0; w < qt.length; w++) if (PIN[qt[w]]) { raise(hits, items, PIN[qt[w]], 0); break; }
     if (filler && hits.length && GRAIN[hits[0].e.url]) raise(hits, items, '/cash-bids', 1);
     // a town or county on top: the one-place page for it rides second (/fast-facts, was /here)
-    if (hits.length && (hits[0].e.type === 2 || hits[0].e.type === 3 || hits[0].e.type === 6)) hits.splice(1, 0, placeHit(hits[0].e.title, '/fast-facts?q=' + encodeURIComponent(hits[0].e.title)));
-    /* and, in Illinois and Wisconsin, its farm sales third */
+    /* a county's own land sales page (Oct 29) names the place after "Land sales in " */
+    var place0 = hits.length ? String(hits[0].e.title).replace(/^Land sales in /, '') : '';
+    if (hits.length && (hits[0].e.type === 2 || hits[0].e.type === 3 || hits[0].e.type === 6)) hits.splice(1, 0, placeHit(place0, '/fast-facts?q=' + encodeURIComponent(place0)));
+    /* and, in Illinois, Wisconsin and Indiana, its farm sales third, unless that page is already a result */
     var lh = hits.length > 1 ? landHit(hits[0].e) : null;
-    if (lh) hits.splice(2, 0, lh);
+    if (lh) {
+      for (var d = hits.length - 1; d >= 0; d--) if (hits[d].e.url === lh.e.url) hits.splice(d, 1);
+      hits.splice(2, 0, lh);
+    }
     return hits;
   }
 
