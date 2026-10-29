@@ -365,7 +365,8 @@ def run(day, out=OUT, only=None, net=None, log=print):
             man["sources"][src]["missing_sites"] = rec["missing_sites"]
         log(f"  {src}: {'ok' if ok else 'FAILED'}, {doc['rows'] if doc['rows'] is not None else '-'} rows, "
             f"{len(blob)} bytes, {len(statuses)} request(s)"
-            + (f", status {','.join(str(s) for s in man['sources'][src]['statuses'])}" if not ok else "")
+            + ((f", status {','.join(str(s) for s in man['sources'][src]['statuses'])}"
+                if man['sources'][src]['statuses'] else ", no answer from the host") if not ok else "")
             + (f", {len(rec['missing_sites'])} gauge(s) did not answer: {','.join(rec['missing_sites'])}"
                if rec.get("missing_sites") else ""))
     s = man["sources"]
