@@ -128,13 +128,6 @@
    "link": "/ag-stocks"
   },
   {
-   "id": "2026-10-29-quickwins",
-   "date": "2026-10-29",
-   "title": "Every price says how old it is",
-   "line": "Futures show their delay and a stale flag at the price, old cash bids show their posted date, and COT and crop conditions name survey and release days up top.",
-   "link": "/cash-bids"
-  },
-  {
    "id": "2026-10-28-farm-credit",
    "date": "2026-10-28",
    "title": "Farm loan repayment by Fed district",
