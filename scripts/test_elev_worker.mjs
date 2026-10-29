@@ -33,6 +33,9 @@ const admin = (p, b, tok = 'tok', e = env) => w.fetch(new Request(H + p, { metho
   headers: { 'Content-Type': 'application/json', Origin: 'https://agsist.com', Authorization: 'Bearer ' + tok },
   body: b ? JSON.stringify(b) : undefined }), e);
 const get = (p, h = {}) => w.fetch(new Request(H + p, { headers: Object.assign({ Origin: 'https://agsist.com' }, h) }), env);
+// Waits until the clock reads past `ms`. A save made right after another can land in the same millisecond on a
+// fast runner, so a check that one time moved past another first lets the clock move (not a fixed sleep).
+const clockPast = async ms => { while (Date.now() <= ms) await new Promise(res => setTimeout(res, 1)); };
 let n = 0; const A = (c, m) => { if (!c) { console.log('FAIL', m); process.exit(1); } n++; };
 const rec = id => JSON.parse(store.get('elev:' + id));
 const keyOf = link => new URL(link).searchParams.get('k');
@@ -100,7 +103,7 @@ A(R.email === 'wyatt@example.com' && R.active === true && R.id === 'bunge-ladoga
 A(R.bids_updated_at && R.bids_updated_at !== '2000-01-01T00:00:00Z' && R.info_updated_at === before.info_updated_at, 'bids time set, info time unchanged');
 A(!('email' in j.record) && j.record.bids.length === 3, 'save answers the saved record without the email');
 const t1 = R.bids_updated_at;
-await new Promise(res => setTimeout(res, 5));
+await clockPast(Date.parse(t1));
 r = await pub('/elev/save', { k: K1, bids: ROWS }); A(r.status === 200 && rec('bunge-ladoga-in').bids_updated_at === t1, 'same bids again: time not moved');
 r = await pub('/elev/save', { k: K1, no_change: true }); j = await r.json();
 A(r.status === 200 && rec('bunge-ladoga-in').bids_updated_at > t1 && rec('bunge-ladoga-in').bids.length === 3, 'no_change bumps only the bids time');
@@ -137,7 +140,7 @@ r = await pub('/elev/save', { k: K1, bids: [], note: 'n'.repeat(141) }); A(r.sta
 
 // info fields
 const t3 = rec('bunge-ladoga-in').bids_updated_at, i3 = rec('bunge-ladoga-in').info_updated_at;
-await new Promise(res => setTimeout(res, 5));
+await clockPast(Date.parse(i3));
 r = await pub('/elev/save', { k: K1, note: 'Corn dump\nopen till 9 tonight', hours: { text: 'Mon-Fri 7-5', harvest: '' }, contact: { name: 'Wyatt', phone: '(765) 555-0101' } });
 R = rec('bunge-ladoga-in');
 A(r.status === 200 && R.note === 'Corn dump open till 9 tonight' && R.hours.harvest === null && R.contact.phone === '(765) 555-0101', 'note one line, empty harvest is null, phone kept');
@@ -346,6 +349,9 @@ A(/Authorization/.test(r.headers.get('Access-Control-Allow-Headers')), 'prefligh
   // a late save typed after the newest change: stored with the time it was typed, not the time it arrived
   const later = new Date(Math.min(Date.now() - 60e3, Date.parse(live.bids_updated_at) + 1000)).toISOString();
   const typedMs = Math.max(Date.parse(later), Date.parse(live.bids_updated_at) + 1);
+  // the save arrives after it was typed: on a fast runner the live save above and this one can land in the
+  // same millisecond, and the Worker rightly takes a typed time ahead of its clock as now (CI, Oct 28)
+  await clockPast(typedMs);
   r = await pub('/elev/save', { k: K4, bids: ROW3, note: 'late', entered_at: typedMs }); j = await r.json();
   const L = rec('bunge-ladoga-in');
   A(r.status === 200 && L.bids[0].basis === -0.37 && L.note === 'late', 'v5.50: a late save typed after the newest change is stored');

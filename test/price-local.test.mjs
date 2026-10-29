@@ -205,7 +205,8 @@ test("phone and desktop: no sideways scroll, no script errors, short phone pages
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   // phone heights at 390 before this change: corn 11,544, soybean 12,091, wheat 12,961, cattle 7,383
-  const MAXH = { "/corn-futures-prices": 7500, "/soybean-futures-prices": 7500, "/wheat-futures-prices": 8000, "/cattle-futures-prices": 6000 };
+  // cattle: 6,000 until Oct 28; Sig asked for its three answer blocks open, not folded (measured 7,738 at 390), so 8,000
+  const MAXH = { "/corn-futures-prices": 7500, "/soybean-futures-prices": 7500, "/wheat-futures-prices": 8000, "/cattle-futures-prices": 8000 };
   try {
     for (const path of ["/corn-futures-prices", "/soybean-futures-prices", "/wheat-futures-prices", "/cattle-futures-prices", "/markets", "/cash-bid-index"]) {
       for (const [w, scheme, loc] of [[390, "light", ""], [390, "dark", '{"zip":"61761","state":"IL"}'], [1280, "dark", ""], [1280, "light", '{"zip":"61761","state":"IL"}']]) {

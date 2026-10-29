@@ -10,6 +10,12 @@
      "page": "/ag-stocks",
      "name": "Ag stocks and the AGSIST Ag 20",
      "text": "A new page with the daily closing share prices of U.S.-listed farm equipment, fertilizer, grain, livestock and food companies, the date each last reported to the SEC and its revenue against a year ago (whole company). Tap a company for the numbers from its own filings and its ethanol, crush and elevator plants near your ZIP. Our own equal-weight index of 20 of them starts Nov 2. Not investment advice."
+    },
+    {
+     "tag": "fixed",
+     "page": "/milk-prices",
+     "name": "Milk prices: Your area stays put on a slow connection",
+     "text": "On a slow phone or connection, the Your area card could still nudge the page as it loaded: the area picker started narrow and then wrapped under the heading, and a note for split states pushed the summary down. The picker now has a set width and the card waits for its own note before showing, so nothing moves."
     }
    ]
   },
