@@ -361,9 +361,9 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           rc=0
           "$d/actionlint" -version
-          "$d/actionlint" -color .github/workflows/*.yml > "$d/out.txt" 2>&1 || rc=$?
+          "$d/actionlint" -oneline .github/workflows/*.yml > "$d/out.txt" 2>&1 || rc=$?
           { echo '### actionlint'; echo "exit $rc"; echo '```'; head -c 60000 "$d/out.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
-          tail -n 80 "$d/out.txt"
+          cat "$d/out.txt"
           exit $rc
 
       - name: FSA files from raw
