@@ -6,7 +6,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 
 const ROOT = new URL("../", import.meta.url).pathname;
@@ -15,9 +16,11 @@ const RX = new RegExp("[A-Za-z0-9._%+'-]+(?:@|%40)" + DOMAIN + "\\b", "i");
 const ERE = "[A-Za-z0-9._%+'-]+(@|%40)" + DOMAIN;   // the same, for git grep -E
 const ALLOW = new Set([]);
 
-function hitsByGit() {
+function hitsByGit(cwd = ROOT) {
   try {
-    const out = execFileSync("git", ["grep", "-I", "-n", "-i", "-E", ERE], { cwd: ROOT, encoding: "utf8", maxBuffer: 64 << 20 });
+    // "--and" the bare domain name, which every address match holds: the same lines, found in about a second
+    // instead of two minutes (git grep then reads only the lines with the name in them through the pattern)
+    const out = execFileSync("git", ["grep", "-I", "-n", "-i", "-E", "-e", DOMAIN, "--and", "-e", ERE], { cwd, encoding: "utf8", maxBuffer: 64 << 20 });
     return out.split("\n").filter((l) => l && RX.test(l));
   } catch (e) {
     if (e.status === 1) return [];          // git grep: no match
@@ -49,6 +52,15 @@ test("the pattern catches an address and leaves the website link alone", () => {
   assert.ok(RX.test("mailto:sig%40" + dom));
   assert.ok(!RX.test('"sameAs": ["https://' + dom + '"]'));
   assert.ok(!RX.test("sig@agsist.com"));
+});
+
+test("the repo search finds an address in a tracked file, upper case, %40 or two on a line, and not the website link", () => {
+  const d = mkdtempSync(join(process.env.TMPDIR || tmpdir(), "f1st-"));
+  const at = "@", dom = "farmers1st.com";
+  writeFileSync(join(d, "a.txt"), ["x Sig" + at + dom.toUpperCase() + " y", "https://" + dom, "sig%40" + dom, dom + " and bob" + at + dom, "nothing here"].join("\n") + "\n");
+  execFileSync("git", ["init", "-q"], { cwd: d });
+  execFileSync("git", ["add", "a.txt"], { cwd: d });
+  assert.deepEqual(hitsByGit(d).map((h) => h.split(":").slice(0, 2).join(":")), ["a.txt:1", "a.txt:3", "a.txt:4"]);
 });
 
 test("no farmers1st.com email address anywhere in the repo (allow-list: none)", () => {
