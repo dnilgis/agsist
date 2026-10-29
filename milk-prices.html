@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=27" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=27">
+  <link rel="preload" href="/components/styles.css?v=28" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=28">
   <script src="/components/util.js?v=17"></script>
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -71,11 +71,6 @@
   .dp-area-line{margin:.2rem 0 0;line-height:1.5;color:var(--text-dim);font-size:.95rem;}
   /* a saved place: the card's final lines as blank bars until the numbers land (the before-paint script below the card) */
   .dp-area-wait #dp-area-out>:not(.dp-area-skel){display:none;}.dp-area-pend #dp-area-out{visibility:hidden;}
-  /* the crawler nav in #site-header is one long unwrapped line; a paint while the parser sits just past one of
-     its line breaks puts the next group 1500px along it (a shift CI caught, Oct 29). With scripts on, the live
-     nav replaces it in a moment, so keep it unseen (space kept) meanwhile; shown after 3 s if that never comes. */
-  @media (scripting:enabled){#site-header>header nav{animation:snav-wait 3s step-end both;}}
-  @keyframes snav-wait{from{visibility:hidden;}to{visibility:visible;}}
   .dp-area-skel p,.dp-area-skel span{color:transparent;user-select:none;}
   .dp-area-skel p{background:var(--surface2);border-radius:6px;}
   /* read my check */
