@@ -55,6 +55,18 @@ test('a quarter where the two files disagree is withheld, never guessed', () => 
   assert.equal(D.DAL.chart.repay[qi('2025Q4')], 85.71);
 });
 
+test('each card links the reserve bank survey page its saved copy proves (references branch, Oct 29)', () => {
+  assert.equal(D.CHI.url, 'https://www.chicagofed.org/research/data/ag-conditions/index');
+  assert.equal(D.KC.url, 'https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/');
+  assert.equal(D.DAL.url, 'https://www.dallasfed.org/research/surveys/agsurvey');
+  assert.equal(D.MIN.url, 'https://www.minneapolisfed.org/topic/agriculture-and-farming');
+  // St. Louis: the survey page fetch timed out, so the home page stays until a copy is saved
+  assert.equal(D.STL.url, 'https://www.stlouisfed.org/');
+  const ids = JSON.parse(read('references/sources.json')).sources.map((r) => r.url);
+  for (const d of ['CHI', 'KC', 'DAL', 'MIN']) assert.ok(ids.includes(D[d].url), d);
+  assert.match(section(page('iowa')), /<a href="https:\/\/www\.chicagofed\.org\/research\/data\/ag-conditions\/index" rel="noopener">Chicago Fed ag survey<\/a>, 2026 Q2\./);
+});
+
 test('districts that stopped reporting are not shown as current', () => {
   assert.equal(D.RICH.current, false);
   assert.equal(D.RICH.last, '2021Q4');
@@ -81,10 +93,13 @@ const section = (h) => {
 test('state pages: whole state, split state, and a state with no reporting district', () => {
   const ia = section(page('iowa'));
   assert.match(ia, /Iowa is in the Chicago Fed district \(7th\)\./);
-  assert.match(ia, /Tighter for borrowers than a year earlier: more Chicago bankers said loan repayment was lower than said higher/);
-  assert.match(ia, /<span class="r">73<small>index, 2026 Q2 · Under 100: more bankers said farm loans were being repaid at a lower rate than a year earlier than said a higher rate\.<\/small>/);
-  assert.match(ia, /<span class="r">124<small>index, 2026 Q2 · Over 100: more bankers said they renewed or extended more farm loans than a year earlier than said fewer\.<\/small>/);
-  assert.match(ia, /disagree: 2010 Q2, 2022 Q2, 2025 Q3\./);
+  assert.match(ia, /<p class="read">Tighter for borrowers than a year earlier\.<\/p>/);
+  assert.match(ia, /<span class="r">73<small>Under 100: more bankers said repayment rates fell than rose\.<\/small>/);
+  assert.match(ia, /<span class="r">124<small>Over 100: more bankers said renewals or extensions rose than fell\.<\/small>/);
+  assert.match(ia, /<span class="r">116<small>Over 100: more bankers asked for more collateral than less\.<\/small>/);
+  // the quarters left out are named once, in the page's collapsed note, not on the card
+  assert.match(ia, /disagree: Chicago: 2010 Q2, 2022 Q2, 2025 Q3\./);
+  assert.ok(ia.indexOf('2025 Q3') > ia.indexOf('<details><summary>How this works</summary>'));
   const il = section(page('illinois'));
   assert.match(il, /Parts of Illinois are in the Chicago and St\. Louis Fed districts\. Both are shown\./);
   assert.equal((il.match(/class="card"/g) || []).length, 2);
@@ -93,23 +108,32 @@ test('state pages: whole state, split state, and a state with no reporting distr
   const nm = section(page('new-mexico'));
   assert.match(nm, /Parts of New Mexico are in the Kansas City and Dallas Fed districts\. Both are shown\./);
   assert.match(nm, /Farm Credit System lenders/);
+  assert.match(nm, /disagree: Dallas: 2010 Q1, [^.]*2012 Q3,/);
   assert.equal(section(page('california')), '');
   assert.equal(section(page('ohio')), '');
 });
 
-test('source and quarter on every card, a link to the reserve bank', () => {
+test('one short source line per card, linked to the reserve bank; the explanation once, collapsed', () => {
   for (const s of ['iowa', 'illinois', 'kansas', 'texas', 'minnesota', 'arkansas']) {
-    const sec = section(page(s));
+    const h = page(s);
+    const sec = section(h) + '</details>';
     const cards = sec.split('class="card"').length - 1;
     assert.ok(cards >= 1, s);
-    assert.equal((sec.match(/survey of ag bankers, 2026 Q2/g) || []).length, cards, s);
-    assert.match(sec, /<a href="https:\/\/www\.(chicagofed|stlouisfed|minneapolisfed|kansascityfed|dallasfed)\.org\/[^"]*" rel="noopener">Federal Reserve Bank of /, s);
+    assert.equal((sec.match(/<p class="note">Source: <a href="https:\/\/www\.(chicagofed|stlouisfed|minneapolisfed|kansascityfed|dallasfed)\.org\/[^"]*" rel="noopener">(Chicago|St\. Louis|Minneapolis|Kansas City|Dallas) Fed ag survey<\/a>, 2026 Q2\.<\/p>/g) || []).length, cards, s);
+    assert.equal((h.match(/<details><summary>How this works<\/summary>/g) || []).length, 1, s);
+    assert.equal((sec.match(/The index is the percent saying higher/g) || []).length, 1, s);
+    assert.ok(!/survey of ag bankers|as compiled by|Gold solid line|Since 20\d\d Q\d\./.test(sec), s);
     assert.ok(!sec.includes('—'), s);
   }
   const hub = section(read('farmland-atlas/states/index.html'));
   assert.match(hub, /Farm loans by Fed district, 2026 Q2/);
   assert.equal((hub.match(/class="card"/g) || []).length, 5);
   assert.match(hub, /In all 5 districts that report/);
+  assert.equal((hub.match(/Fed ag survey<\/a>, 2026 Q2\./g) || []).length, 5);
+  assert.equal((read('farmland-atlas/states/index.html').match(/<details><summary>How this works<\/summary>/g) || []).length, 1);
+  assert.match(hub, /Tighter for borrowers than a year earlier\.<\/b> Repayment index 73, renewals or extensions index 124\./);
+  // the main Atlas page points at the national view with one line, no card
+  assert.match(read('farmland-atlas.html'), /<p class="fa-note">Farm loans: [^<]*<a href="\/farmland-atlas\/states\/#farm-credit">by-state page<\/a>\.<\/p>/);
   assert.ok(!hub.includes('—'));
 });
 

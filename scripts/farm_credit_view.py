@@ -65,38 +65,30 @@ def qn(q):
 
 
 def side(key, v):
-    """Plain words for one reading: what the bankers said, by its side of 100."""
+    """Plain words for one reading, by its side of 100. Short: the explanation of the
+    index is said once per page, in the collapsed note."""
     if v == 100:
         return "100: as many bankers said higher as said lower."
     up = v > 100
+    o = "Over" if up else "Under"
     if key == "repay":
-        return ("%s 100: more bankers said farm loans were being repaid at a %s rate than a year earlier than said a %s rate."
-                % ("Over" if up else "Under", "higher" if up else "lower", "lower" if up else "higher"))
+        return "%s 100: more bankers said repayment rates %s than %s." % (o, "rose" if up else "fell", "fell" if up else "rose")
     if key == "renew":
-        return ("%s 100: more bankers said they renewed or extended %s farm loans than a year earlier than said %s."
-                % ("Over" if up else "Under", "more" if up else "fewer", "fewer" if up else "more"))
-    return ("%s 100: more bankers said they asked for %s collateral than a year earlier than said %s."
-            % ("Over" if up else "Under", "more" if up else "less", "less" if up else "more"))
+        return "%s 100: more bankers said renewals or extensions %s than %s." % (o, "rose" if up else "fell", "fell" if up else "rose")
+    return "%s 100: more bankers asked for %s collateral than %s." % (o, "more" if up else "less", "less" if up else "more")
 
 
-def verdict(name, repay, renew):
+def verdict(repay, renew):
+    """The one-line reading of a district: which way the two numbers point."""
     if repay is None or renew is None:
         return None
     if repay < 100 and renew > 100:
-        lead = "Tighter for borrowers than a year earlier"
-    elif repay > 100 and renew < 100:
-        lead = "Easier for borrowers than a year earlier"
-    elif repay == 100 and renew == 100:
-        lead = "About the same as a year earlier"
-    else:
-        lead = "Mixed: the two readings point different ways"
-    r = ("more %s bankers said loan repayment was lower than said higher" % name if repay < 100 else
-         "more %s bankers said loan repayment was higher than said lower" % name if repay > 100 else
-         "%s bankers were evenly split on loan repayment" % name)
-    n = ("more said renewals or extensions were up than said down" if renew > 100 else
-         "more said renewals or extensions were down than said up" if renew < 100 else
-         "they were evenly split on renewals or extensions")
-    return "%s: %s, and %s." % (lead, r, n)
+        return "Tighter for borrowers than a year earlier"
+    if repay > 100 and renew < 100:
+        return "Easier for borrowers than a year earlier"
+    if repay == 100 and renew == 100:
+        return "About the same as a year earlier"
+    return "Mixed: the two readings point different ways"
 
 
 def chart_svg(doc, d, w=360, h=210, max_w=560):
@@ -178,16 +170,9 @@ def fact(label, value, small):
 
 
 def source_line(doc, d):
+    """One short linked line per card: the reserve bank's own survey page and the quarter."""
     x = doc["districts"][d]
-    bank = '<a href="%s" rel="noopener">Federal Reserve Bank of %s</a>' % (esc(x["url"]), esc(x["name"]))
-    kc = '<a href="%s" rel="noopener">Kansas City Fed</a>' % esc(doc["source_url"])
-    if d == "KC":
-        t = "Source: %s survey of ag bankers, %s." % (bank, ql(doc["latest"]))
-    else:
-        t = "Source: %s survey of ag bankers, %s, as compiled by the %s." % (bank, ql(doc["latest"]), kc)
-    if x.get("note"):
-        t += " " + esc(x["note"]) + " The dotted line marks that quarter."
-    return t
+    return 'Source: <a href="%s" rel="noopener">%s Fed ag survey</a>, %s.' % (esc(x["url"]), esc(x["name"]), esc(ql(doc["latest"])))
 
 
 def withheld_since(doc, d):
@@ -195,52 +180,47 @@ def withheld_since(doc, d):
 
 
 def district_card(doc, d, compact=False, states_line=""):
-    """One district. compact (the hub): the verdict, the two numbers in one line, the
-    small chart and the source; the plain words for each index are said once above."""
+    """One district: the reading, the numbers, the chart and one source line. The
+    explanation (the index, what is left out and why) is in the page's one note."""
     x = doc["districts"][d]
     lat = x["latest"]
     q = ql(doc["latest"])
-    i0 = min(i for k in ("repay", "renew") for i, v_ in enumerate(x["chart"][k]) if v_ is not None)
-    since = ql(qadd(doc["chart_from"], i0))
-    gaps = withheld_since(doc, d)
-    v = verdict(x["name"], lat["repay"], lat["renew"])
+    v = verdict(lat["repay"], lat["renew"])
     svg = chart_svg(doc, d, *((320, 180, 480) if compact else (360, 210, 560)))
+    mark = ('<p class="note">%s The dotted line marks it.</p>' % esc(x["note"])) if (svg and x.get("note")) else ""
+    src = '<p class="note">%s</p></div>' % source_line(doc, d)
     if compact:
         h = '<div class="card"><h2>%s <small>%s · %s</small></h2>' % (esc(x["name"]), ORD.get(x["num"], str(x["num"])), esc(q))
         h += '<p class="note">%s</p>' % esc(states_line)
         h += ('<p class="note"><b>%s.</b> Repayment index %s, renewals or extensions index %s.</p>'
-              % (esc(v.split(":")[0]), esc(val(lat["repay"])), esc(val(lat["renew"]))))
-        h += svg
-        g = (" %d quarter%s left out where the Kansas City Fed's table and the %s Fed's own file disagree."
-             % (len(gaps), "" if len(gaps) == 1 else "s", x["name"])) if gaps else ""
-        h += '<p class="note">Gold: repayment. Blue dashed: renewals or extensions. Since %s.%s %s</p></div>' % (
-            esc(since), esc(g), source_line(doc, d))
-        return h
+              % (esc(v), esc(val(lat["repay"])), esc(val(lat["renew"]))))
+        return h + svg + mark + src
     h = '<div class="card"><h2>%s Fed district <small>%s · %s</small></h2>' % (esc(x["name"]), ORD.get(x["num"], str(x["num"])), esc(q))
-    h += '<p class="read">%s</p>' % esc(v)
-    h += fact("Loan repayment rate", val(lat["repay"]), "index, %s · %s" % (esc(q), esc(side("repay", lat["repay"]))))
-    h += fact("Renewals or extensions", val(lat["renew"]), "index, %s · %s" % (esc(q), esc(side("renew", lat["renew"]))))
+    h += '<p class="read">%s.</p>' % esc(v)
+    h += fact("Loan repayment rate", val(lat["repay"]), esc(side("repay", lat["repay"])))
+    h += fact("Renewals or extensions", val(lat["renew"]), esc(side("renew", lat["renew"])))
     if lat.get("collat") is not None:
-        h += fact("Collateral required", val(lat["collat"]), "index, %s · %s" % (esc(q), esc(side("collat", lat["collat"]))))
-    if svg:
-        h += svg
-        g = ""
-        if gaps:
-            g = (" Left out where the Kansas City Fed's table and the %s Fed's own file disagree: %s."
-                 % (x["name"], ", ".join(ql(q_) for q_ in gaps)))
-        h += '<p class="note">Since %s. Gold solid line: loan repayment. Blue dashed line: renewals or extensions. The grey line at 100 is an even split. A gap is a quarter not reported or left out.%s</p>' % (
-            esc(since), esc(g))
-    h += '<p class="note">%s</p></div>' % source_line(doc, d)
-    return h
+        h += fact("Collateral required", val(lat["collat"]), esc(side("collat", lat["collat"])))
+    return h + svg + mark + src
 
 
-def how_block(doc):
-    return ('<details><summary>How these numbers work</summary><p>%s</p><p>The Fed districts do not follow state lines. '
-            'A state wholly inside one district shows that district; a state split between districts shows each one that '
-            'reports. The Richmond and San Francisco districts have no reading in the Kansas City Fed\'s table after %s and %s, '
-            'so they are not shown. Chicago and Dallas quarters are checked against those banks\' own files; a quarter where '
-            'the two disagree is left out rather than guessed. Read %s.</p></details>'
-            % (esc(doc["how"]), esc(ql(doc["districts"]["RICH"]["last"])), esc(ql(doc["districts"]["SF"]["last"])), esc(doc["built"])))
+def how_block(doc, shown):
+    """The page's one note on how to read the section, collapsed."""
+    D = doc["districts"]
+    left = []
+    for d in shown:
+        g = withheld_since(doc, d)
+        if g:
+            left.append("%s: %s" % (D[d]["name"], ", ".join(ql(q_) for q_ in g)))
+    p2 = ('The numbers come from the <a href="%s" rel="noopener">Kansas City Fed&#x27;s table</a> of every district survey. '
+          'Chicago and Dallas quarters are checked against those banks&#x27; own files; a quarter where the two disagree is '
+          'left out rather than guessed, and shows as a gap in the chart, as does a quarter not reported.' % esc(doc["source_url"]))
+    if left:
+        p2 += " Left out where the two files disagree: %s." % esc("; ".join(left))
+    p3 = ('Fed districts do not follow state lines: a split state shows each district that reports. Richmond and San Francisco '
+          'have no reading in the table after %s and %s, so they are not shown. Read %s.'
+          % (esc(ql(D["RICH"]["last"])), esc(ql(D["SF"]["last"])), esc(doc["built"])))
+    return '<details><summary>How this works</summary><p>%s</p><p>%s</p><p>%s</p></details>' % (esc(doc["how"]), p2, p3)
 
 
 def state_section(doc, st, stn):
@@ -273,7 +253,7 @@ def state_section(doc, st, stn):
     h = '<h2 id="farm-credit">Farm loans: what ag bankers report</h2>'
     h += '<p class="sub">Is farm credit getting tighter where you farm? Each quarter the Federal Reserve asks ag bankers how repayment and loan renewals compare with a year earlier. %s</p>' % esc(lead)
     h += "".join(district_card(doc, d) for d in live)
-    return h + how_block(doc)
+    return h + how_block(doc, live)
 
 
 def states_of(doc, d):
@@ -302,11 +282,9 @@ def hub_section(doc):
         lead = ("In %d of the %d districts that report, more ag bankers said loan repayment was lower than a year earlier "
                 "and renewals or extensions were up." % (len(tight), len(live)))
     h = '<h2 id="farm-credit">Farm loans by Fed district, %s</h2>' % esc(ql(doc["latest"]))
-    h += ('<p class="sub">%s Repayment under 100 means more bankers said loans were repaid at a lower rate than a year earlier '
-          'than said higher; renewals or extensions over 100 means more said they renewed or extended more loans than said fewer. '
-          'Each state page shows its own district.</p>' % esc(lead))
+    h += '<p class="sub">%s Each state page shows its own district.</p>' % esc(lead)
     h += '<div class="keys">%s</div>' % "".join(district_card(doc, d, compact=True, states_line=states_of(doc, d)) for d in live)
-    return h + how_block(doc)
+    return h + how_block(doc, live)
 
 
 def selftest():
@@ -317,8 +295,11 @@ def selftest():
             fails.append(name)
             print("FAIL", name)
     check("value as printed", val(73) == "73" and val(96.15) == "96.15" and val(85.7) == "85.7" and val(124.0) == "124")
-    check("repayment words", side("repay", 73) == "Under 100: more bankers said farm loans were being repaid at a lower rate than a year earlier than said a higher rate.")
-    check("renewals words", side("renew", 124) == "Over 100: more bankers said they renewed or extended more farm loans than a year earlier than said fewer.")
+    check("repayment words", side("repay", 73) == "Under 100: more bankers said repayment rates fell than rose.")
+    check("renewals words", side("renew", 124) == "Over 100: more bankers said renewals or extensions rose than fell.")
+    check("collateral words", side("collat", 116) == "Over 100: more bankers asked for more collateral than less.")
+    check("verdicts", verdict(73, 124) == "Tighter for borrowers than a year earlier" and verdict(110, 90).startswith("Easier")
+          and verdict(100, 100).startswith("About the same") and verdict(90, 90).startswith("Mixed") and verdict(None, 90) is None)
     check("even split", side("renew", 100).startswith("100: as many"))
     q = ["2010Q1", "2010Q2", "2010Q3", "2010Q4"]
     doc = {"schema": SCHEMA, "latest": "2010Q4", "chart_from": "2010Q1", "built": "2026-10-28", "how": "How.", "source_url": "https://www.kansascityfed.org/agriculture/ag-credit-survey/",
@@ -334,21 +315,32 @@ def selftest():
            "withheld": [{"district": "CHI", "q": "2010Q2", "series": "repay", "kc": 82, "own": 64}]}
     ia = state_section(doc, "IA", "Iowa")
     check("whole state names its district", "Iowa is in the Chicago Fed district (7th)." in ia and ia.count('class="card"') == 1)
-    check("verdict on the page", "Tighter for borrowers than a year earlier: more Chicago bankers said loan repayment was lower than said higher" in ia)
+    check("verdict on the page", '<p class="read">Tighter for borrowers than a year earlier.</p>' in ia)
+    check("numbers with their reading", '<span class="r">73<small>Under 100: more bankers said repayment rates fell than rose.</small>' in ia
+          and '<span class="r">124<small>Over 100: more bankers said renewals or extensions rose than fell.</small>' in ia
+          and '<span class="r">116<small>Over 100: more bankers asked for more collateral than less.</small>' in ia)
     il = state_section(doc, "IL", "Illinois")
     check("split state: both shown", "Parts of Illinois are in the Chicago and St. Louis Fed districts. Both are shown." in il and il.count('class="card"') == 2)
     ky = state_section(doc, "KY", "Kentucky")
     check("split state: one without a survey", "Parts of Kentucky are in the St. Louis and Cleveland Fed districts. The Cleveland district has no farm credit survey in the Kansas City Fed&#x27;s table, so only St. Louis is shown." in ky)
     check("no current district: no section", state_section(doc, "CA", "California") == "" and state_section(doc, "WV", "West Virginia") == "" and state_section({}, "IA", "Iowa") == "")
-    check("withheld quarter named", "disagree: 2010 Q2." in ia)
-    check("chart start is the first quarter drawn", "Since 2010 Q1." in ia and qadd("2010Q1", 9) == "2012Q2")
-    check("source and quarter on every card", ia.count("Federal Reserve Bank of Chicago</a> survey of ag bankers, 2010 Q4") == 1)
+    check("withheld quarter named once, in the note", "disagree: Chicago: 2010 Q2." in ia and ia.count("2010 Q2") == 1
+          and ia.index("2010 Q2") > ia.index("<details>"))
+    check("one short source line per card", ia.count('Source: <a href="https://www.chicagofed.org/" rel="noopener">Chicago Fed ag survey</a>, 2010 Q4.') == 1
+          and il.count("Source: <a ") == 2 and il.count("Fed ag survey</a>, 2010 Q4.") == 2)
+    check("explanation once per page, collapsed", ia.count("<details>") == 1 and ia.count("How.") == 1 and il.count("<details>") == 1
+          and "Kansas City Fed&#x27;s table</a>" in ia and ia.count("kansascityfed") == 1
+          and ia.index("Kansas City Fed&#x27;s table") > ia.index("<details>"))
+    check("no methodology on the card", "Since " not in ia and "Gold" not in ia and "index, 2010" not in ia)
+    check("split state note names only its shown districts", "Chicago: 2010 Q2" in il and "St. Louis:" not in il)
+    check("quarter arithmetic", qadd("2010Q1", 9) == "2012Q2")
     check("chart gap is a gap", "M" in chart_svg(doc, "CHI") and chart_svg(doc, "CHI").count('class="ln s0"') == 1)
     hub = hub_section(doc)
     check("hub: all districts tighter", "In all 2 districts that report" in hub and hub.count('class="card"') == 2)
     check("hub states line", "Iowa; parts of Illinois" in hub)
     check("hub card is short", "Tighter for borrowers than a year earlier.</b> Repayment index 73, renewals or extensions index 124." in hub
-          and "1 quarter left out" in hub and "Federal Reserve Bank of Chicago</a>" in hub)
+          and hub.count("Source: <a ") == 2 and hub.count("<details>") == 1 and "disagree: Chicago: 2010 Q2." in hub
+          and "Repayment under 100 means" not in hub)
     check("no em dash", "—" not in ia + il + ky + hub)
     print("selftest: %d failed" % len(fails) if fails else "selftest: all passed")
     return 1 if fails else 0
