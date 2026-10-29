@@ -43,11 +43,13 @@
     var long = String(r).replace(/<[^>]*>/g, '').length + String(small || '').length > 34 || String(l).length > 44;
     return '<div class="fact' + (cls ? ' ' + cls : '') + (long ? ' st' : '') + '"><span class="l">' + esc(l) + '</span><span class="r">' + r + (small ? '<small>' + esc(small) + '</small>' : '') + '</span></div>';
   }
+  var KIND = { bldg: 'with buildings', forest: 'forest' };
   function saleTable(rows, withDir) {
     var h = '<div class="tw"><table class="as-t"><thead><tr><th scope="col">Date</th><th scope="col">Acres</th><th scope="col">Price</th><th scope="col">$/acre</th><th scope="col" class="as-wide">Township or town</th>'
       + (withDir ? '<th scope="col" class="as-wide">Against the middle range</th>' : '') + '</tr></thead><tbody>';
     rows.forEach(function (r) {
-      var dir = withDir ? (r[5] > 0 ? 'well above' : 'well below') : '';
+      // a largest-sales row carries its kind at [5] (build_land_summary.land_type, the one land rule)
+      var dir = withDir ? (r[5] > 0 ? 'well above' : 'well below') : (KIND[r[5]] || '');
       // on a phone the place (and how far out) go under the date instead of in columns of their own
       h += '<tr><td>' + esc(S.day(r[0])) + '<span class="as-tw">' + esc((r[4] || 'place not given') + (dir ? ', ' + dir : '')) + '</span></td><td>' + esc(S.acres(r[1])) + '</td><td>' + esc(S.money(r[2])) + '</td><td>' + esc(r[3] != null ? S.money(r[3]) : 'n/a') + '</td><td class="as-m as-wide">' + esc(r[4] || 'not given') + '</td>'
         + (withDir ? '<td class="as-m as-wide">' + dir + '</td>' : '') + '</tr>';
@@ -63,15 +65,15 @@
   S.tile = function (sum, f) {
     if (!sum || !sum.windows) return null;
     var c = sum.counties && sum.counties[f], N = sum.min_n || 5, A = sum.min_acres || 20;
-    var t = { label: 'Median sale price, ' + A + '+ acres', val: null, unit: '/ac', through: sum.through };
+    var t = { label: 'Median sale price, bare land, ' + A + '+ acres', val: null, unit: '/ac', through: sum.through };
     var thru = 'sales dated through ' + S.day(sum.through);
     if (!c) { t.sub = 'no ' + sum.record + ' file on hand for this county yet'; return t; }
     if (c.med) {
       t.val = S.money(c.med.med);
-      t.sub = c.med.n + ' recorded market sale' + (c.med.n === 1 ? '' : 's') + ', ' + S.span(sum.windows.cur) + '; ' + thru;
+      t.sub = c.med.n + ' recorded bare farmland sale' + (c.med.n === 1 ? '' : 's') + ', ' + S.span(sum.windows.cur) + '; ' + thru;
     } else {
       var k = c.k12 || 0;
-      t.sub = 'not shown: ' + k + ' recorded market sale' + (k === 1 ? '' : 's') + ' of ' + A + '+ acres in ' + S.span(sum.windows.cur) + ', a median needs ' + N + '; ' + thru;
+      t.sub = 'not shown: ' + k + ' recorded bare farmland sale' + (k === 1 ? '' : 's') + ' of ' + A + '+ acres in ' + S.span(sum.windows.cur) + ', a median needs ' + N + '; ' + thru;
     }
     return t;
   };
@@ -95,10 +97,10 @@
     h += c.n12p != null ? fact('Market farm sales, ' + S.span(W.prev), esc(String(c.n12p)), c.u12p ? 'acres unknown on ' + c.u12p : null)
       : fact('Market farm sales, ' + S.span(W.prev), 'not shown', c.why_p || 'records do not reach back that far', 'w');
     if (c.med) {
-      h += fact('Median price, sales of ' + A + '+ acres, ' + S.span(W.cur), esc(S.money(c.med.med)) + '/ac',
+      h += fact('Median price, bare farmland sales of ' + A + '+ acres, ' + S.span(W.cur), esc(S.money(c.med.med)) + '/ac',
         c.med.n + ' sales with known acres; middle half ' + S.money(c.med.q1) + ' to ' + S.money(c.med.q3));
     } else {
-      h += fact('Median price, sales of ' + A + '+ acres', 'not shown',
+      h += fact('Median price, bare farmland sales of ' + A + '+ acres', 'not shown',
         'only ' + (c.k12 || 0) + ' sale' + (c.k12 === 1 ? '' : 's') + ' of ' + A + '+ acres with known acres in 12 months; a median needs ' + N + ' or more', 'w');
     }
     if (c.chg != null && c.medp) {
@@ -142,7 +144,7 @@
       + 'related-party sales, quit claims, gifts, sheriff, judicial, court and partition deeds are left out. '
       + esc(sum.state === 'WI' ? 'Wisconsin returns here are the ' + sum.kinds + '.' : 'Illinois declarations here are ' + sum.kinds + '.') + ' '
       + 'Acres on a return that covers several parcels count only when every parcel gives them in acres; otherwise acres are unknown and the sale gives no $/acre. '
-      + 'A sale of ' + A + ' acres or more with known acres counts toward the median, sold with or without buildings. '
+      + 'A sale of ' + A + ' acres or more with known acres counts toward the median when it is bare farm land: a sale whose property class shows buildings (a house, farm buildings or a business)' + (sum.state === 'WI' ? ' and a forest sale (forest classes with no farm class)' : '') + ' is left out of every middle and range. ' + (sum.state === 'IL' ? 'Illinois declarations do not say whether buildings were included. ' : '')
       + 'The middle half runs from the 25th to the 75th percentile, linear between ranks. Under ' + N + ' sales nothing is shown. '
       + 'The change is shown only when both years have ' + N + ' or more such sales and acres are known on at least 3 in 4 market sales in each. '
       + 'Dates are sale dates on the return.</p></details>';

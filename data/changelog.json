@@ -7,6 +7,12 @@
    "items": [
     {
      "tag": "new",
+     "page": "/land-sales/",
+     "name": "Land sales: every recorded sale, one land rule",
+     "text": "County sales pages now list every recorded sale of any size, newest first, with a type for each (farmland, with buildings, forest or small parcel) and a filter; Show more loads the rest. The market middle at the top counts bare farmland of 20 acres or more over 24 months and says so. Buildings are read from the property class everywhere, Wisconsin forest sales are kept apart, and the comparable sales report and Field Scout now need 5 sales before showing a middle. The monthly land sale email lists sales of any size."
+    },
+    {
+     "tag": "new",
      "page": "/ag-stocks",
      "name": "Ag stocks and the AGSIST Ag 20",
      "text": "A new page with the daily closing share prices of U.S.-listed farm equipment, fertilizer, grain, livestock and food companies, the date each last reported to the SEC and its revenue against a year ago (whole company). Tap a company for the numbers from its own filings and its ethanol, crush and elevator plants near your ZIP. Our own equal-weight index of 20 of them starts Nov 2. Not investment advice."

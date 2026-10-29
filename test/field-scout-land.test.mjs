@@ -92,9 +92,10 @@ test("comps: market sales only by default, filters, sorting, distance", () => {
   assert.equal(noPlace[noPlace.length - 1].doc, "x");
 });
 
-test("middle price: median, never from fewer than 3 sales", () => {
-  assert.deepEqual(F.medianPpa([{ ppa: 5000 }, { ppa: 7813 }, { ppa: 6000 }]), { ppa: 6000, n: 3 });
-  assert.deepEqual(F.medianPpa([{ ppa: 5000 }, { ppa: 6000 }, { ppa: 7000 }, { ppa: 9000 }]), { ppa: 6500, n: 4 });
+test("middle price: median, never from fewer than 5 sales (the one land rule, Oct 29; it was 3)", () => {
+  assert.deepEqual(F.medianPpa([{ ppa: 5000 }, { ppa: 7813 }, { ppa: 6000 }, { ppa: 6500 }, { ppa: 9000 }]), { ppa: 6500, n: 5 });
+  assert.deepEqual(F.medianPpa([{ ppa: 5000 }, { ppa: 6000 }, { ppa: 7000 }, { ppa: 9000 }, { ppa: 5500 }, { ppa: 8000 }]), { ppa: 6500, n: 6 });
+  assert.equal(F.medianPpa([{ ppa: 5000 }, { ppa: 6000 }, { ppa: 7000 }, { ppa: 9000 }]), null);
   assert.equal(F.medianPpa([{ ppa: 5000 }, { ppa: 6000 }]), null);
 });
 
@@ -232,10 +233,10 @@ test("market sales leave out related parties, court and partition deeds (MyDec L
   for (const c of ["Warranty Deed", "Trustee Deed", "Executor Deed", "Special Warranty Deed", "Deed In Trust", "Administrator'S Deed"]) {
     assert.equal(F.marketSale(Object.assign({ conv: c }, base)), true, c);
   }
-  // and the median follows: 3 market rows give 9,000; the related-party $563/ac row is not in it
-  const rows = [9000, 10000, 8000].map((p, i) => ({ price: p * 100, acres: 100, conv: "Warranty Deed", date: "2026-0" + (i + 1) + "-01" }))
+  // and the median follows: 5 market rows give 9,000; the related-party $563/ac row is not in it
+  const rows = [9000, 10000, 8000, 9500, 7000].map((p, i) => ({ price: p * 100, acres: 100, conv: "Warranty Deed", date: "2026-0" + (i + 1) + "-01" }))
     .concat([{ price: 1010587, acres: 1793.99, conv: "Executor Deed, Related Parties", date: "2026-05-01" }]);
-  assert.deepEqual(F.medianPpa(F.filterComps(rows, {}, null)), { ppa: 9000, n: 3 });
+  assert.deepEqual(F.medianPpa(F.filterComps(rows, {}, null)), { ppa: 9000, n: 5 });
 });
 
 test("coverage: filed dates when the file has them, MyDec's real start otherwise, never a 1999 deed date as the start", () => {
