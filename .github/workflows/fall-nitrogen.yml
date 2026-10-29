@@ -20,8 +20,8 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '23 13 * 9-12 *'   # morning, Central, fall season only
-    - cron: '47 22 * 9-12 *'   # evening refresh
+    - cron: '23 13 * 3-6,9-12 *'   # morning, Central: spring (planting soil temps, Sig Oct 29) and fall
+    - cron: '47 22 * 3-6,9-12 *'   # evening refresh
 
 permissions:
   contents: write
