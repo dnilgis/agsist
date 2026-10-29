@@ -3,7 +3,9 @@
  * I still want to attract advertisers.").
  *   Header: a quiet Advertise link in the bar on wide screens; Advertise with AGSIST beside About in the phone panel.
  *   Footer: an Advertise with AGSIST line in the bottom row, which phones see without opening a folded column.
- *   Unsold page slot: one small "Sponsor this page" link to /sponsor-apply?tier=page&slot=<id>. No price, no box.
+ *   Unsold page slot: one small "Sponsor this page" link to /sponsor-apply?tier=<tier>&slot=<id>. No price, no box.
+ *   Oct 29, 2026 rate card: only the slots still sold get the link (a state's cash bids and cash rent pages:
+ *   tier=state; /cash-bids: tier=cashbids). A retired single page ribbon stays empty.
  *   Rain Print pages: none of it (no sponsor on Rain Print pages).
  *   Cash bid state and town pages: one slot per state (cash-bids-<state>).
  *
@@ -56,7 +58,16 @@ test("open slot: one plain Sponsor this page link with the slot picked, no price
   const a = loader.indexOf("function openSlotLine"), b = loader.indexOf("function fillPageRibbons");
   assert.ok(a > 0 && b > a, "loader.js moved; update this test");
   const fn = loader.slice(a, b);
-  assert.match(fn, /\/sponsor-apply\?tier=page&amp;slot=' \+ encodeURIComponent\(id\)/);
+  assert.match(fn, /\/sponsor-apply\?tier=' \+ tier \+ '&amp;slot=' \+ encodeURIComponent\(id\)/);
+  assert.match(fn, /var tier = openSlotTier\(id\);/);
+  assert.match(fn, /\|\| !tier\) return;/, "a retired slot gets no link");
+  // the loader's rule is the same rule scripts/stamp_rates.py writes into data/sponsor-slots.json
+  const tierOf = new Function("id", loader.slice(loader.indexOf("function openSlotTier"), a) + "return openSlotTier(id);");
+  const slots = JSON.parse(read("data/sponsor-slots.json")).slots;
+  assert.ok(slots.length > 75);
+  for (const e of slots) assert.equal(tierOf(e.id) || null, e.tier, e.id + ": loader and slot list disagree on its tier");
+  assert.equal(tierOf("spray"), "", "a tool page is not sold on its own any more");
+  assert.equal(tierOf("rent-hub"), "");
   assert.match(fn, />Sponsor this page<\/a>/);
   assert.match(fn, /rib\.className !== 'ag-sponsor-ribbon'/, "never the homepage card or a PRF slot");
   assert.doesNotMatch(fn, /\$\d|first month free|price/i, "no price");
@@ -74,10 +85,11 @@ test("cash bid pages: one sponsor slot per state, listed for the sign-up form", 
   ].join("\n")], { cwd: ROOT, encoding: "utf8" }).trim().split("\n");
   const e = JSON.parse(out[0]);
   assert.deepEqual(e, { id: "cash-bids-new-york", page: "/cash-bids/new-york", name: "New York cash bids",
-    pitch: "Your name beside the cash bids on the New York page and every New York town page. One category-exclusive slot." });
+    pitch: "Your name beside the cash bids on the New York page and every New York town page. One category-exclusive slot.", tier: "state", state: "NY" });
   assert.equal(out[1], "True");
   // the form groups them, and the bids job keeps the list in step with the state pages
-  assert.match(read("components/sponsor-apply.js"), /s\.page\.indexOf\('\/cash-bids\/'\) === 0 \? groups\.bids/);
+  // Oct 29, 2026: the form offers each state once, from the slots the list marks tier "state"
+  assert.match(read("components/sponsor-apply.js"), /if \(s\.tier !== 'state' \|\| !s\.state\) return;/);
   const wf = read(".github/workflows/cash-bid-pages.yml");
   assert.match(wf, /run: python scripts\/stamp_rates\.py\n/);
   assert.match(wf, /git add -A cash-bids data\/pointers data\/sponsor-slots\.json /);
@@ -155,10 +167,20 @@ test("in a browser: an unsold slot shows one Sponsor this page link; a sold one 
     await pg.goto(base + "/cash-bids");
     await pg.waitForSelector("aside.ag-sponsor-ribbon--open a.ag-open-slot", { state: "visible", timeout: 15000 });
     const o = await pg.evaluate(() => { const a = document.querySelector("aside.ag-sponsor-ribbon a"); return [a.getAttribute("href"), a.textContent, a.getBoundingClientRect().height, document.querySelector("aside.ag-sponsor-ribbon").textContent]; });
-    assert.equal(o[0], "/sponsor-apply?tier=page&slot=cash-bids");
+    assert.equal(o[0], "/sponsor-apply?tier=cashbids&slot=cash-bids");
     assert.equal(o[1], "Sponsor this page");
     assert.ok(o[2] >= 44, `tap target ${o[2]}px`);
     assert.equal(o[3], "Sponsor this page", "nothing else in the slot: no price");
+    await ctx.close();
+
+    // a retired single page slot (Oct 29, 2026): unsold, and still no link
+    ctx = await context(browser, 390, 844, { slots: {} });
+    pg = await ctx.newPage();
+    await pg.goto(base + "/spray");
+    await pg.waitForSelector("footer.footer", { timeout: 15000 });
+    await pg.waitForTimeout(1200);
+    assert.ok(await pg.locator("aside.ag-sponsor-ribbon[data-slot=spray]").count() === 1, "the ribbon is still on the page");
+    assert.equal(await pg.locator("a.ag-open-slot").count(), 0, "a retired slot offers nothing");
     await ctx.close();
 
     ctx = await context(browser, 1280, 900, { slots: { "cash-bids": { company: "Acme Seed", url: "https://acme.example", start: "2026-01-01", active: true } } });
@@ -189,5 +211,5 @@ test("/sponsor: who reads AGSIST sits in the first screen, from the same audienc
   assert.match(hero, /href="mailto:sig@agsist\.com/);
   // the page refreshes every data-a span from data/audience.json on load
   assert.match(h, /querySelectorAll\('\[data-a="' \+ k \+ '"\]'\)/);
-  assert.match(h, /your state&rsquo;s cash bids \(the state page and every town page in it\)/);
+  assert.match(h, /your state&rsquo;s cash bids page and every town page in it, your state&rsquo;s cash rent page/);
 });
