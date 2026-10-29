@@ -603,12 +603,17 @@
     var unk = a.ns === '?' || a.ew === '?' || b.ns === '?' || b.ew === '?';
     if (unk && !sameCounty) return null;
     if (a.pm && b.pm && a.pm !== b.pm) return null;
-    var dirOK = (a.ns === b.ns || a.ns === '?' || b.ns === '?') && (a.ew === b.ew || a.ew === '?' || b.ew === '?');
-    if (!dirOK) return null;
-    var sameTR = a.twp === b.twp && a.rng === b.rng;
-    if (sameTR && a.sec === b.sec) return 'same';
-    if (unk && !sameTR) return null;
-    var p = secXY(a), q = secXY(unk ? { sec: b.sec, twp: a.twp, rng: a.rng, ns: a.ns, ew: a.ew } : b);
+    var p, q;
+    if (unk) {
+      // one township and range, read the same way on both sides: the directions are the county's own
+      var dirOK = (a.ns === b.ns || a.ns === '?' || b.ns === '?') && (a.ew === b.ew || a.ew === '?' || b.ew === '?');
+      if (!dirOK || a.twp !== b.twp || a.rng !== b.rng) return null;
+      if (a.sec === b.sec) return 'same';
+      p = secXY({ sec: a.sec, twp: 1, rng: 1, ns: 'N', ew: 'E' }); q = secXY({ sec: b.sec, twp: 1, rng: 1, ns: 'N', ew: 'E' });
+    } else {
+      p = secXY(a); q = secXY(b);
+      if (p.x === q.x && p.y === q.y) return 'same';
+    }
     return Math.max(Math.abs(p.x - q.x), Math.abs(p.y - q.y)) === 1 ? 'next' : null;
   };
   FSLand.SEC_TEXT = { same: 'same section', next: 'next section' };
