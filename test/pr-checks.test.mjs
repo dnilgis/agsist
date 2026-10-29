@@ -89,7 +89,7 @@ test('the workflow: the shards and --skip-node together run every check, and the
   for (const j of Object.keys(jobs)) if (!['node-tests', 'other-checks', 'guard'].includes(j)) assert.doesNotMatch(jobs[j], /checks\.sh|node --test|python3? scripts\//, j);
   const g = jobs.guard;
   assert.deepEqual([...g.matchAll(/checks\.sh[^\n]*/g)].map((m) => m[0]), ['checks.sh --only=built-guard,built-inputs']);
-  assert.deepEqual([...g.matchAll(/python3? scripts\/[^\n]*/g)].map((m) => m[0]), ['python3 scripts/dev/test_map.py --select-base origin/main --github-output --why']);
+  assert.deepEqual([...g.matchAll(/python3? scripts\/[^\n]*/g)].map((m) => m[0]), ['python3 scripts/dev/test_map.py --select-base "origin/$PICK_BASE" --github-output --why', 'python3 scripts/dev/test_map.py --select-base origin/main --github-output --why']);
   assert.doesNotMatch(g, /node --test/);
   for (const j of ['node-tests', 'other-checks']) assert.doesNotMatch(jobs[j], /node --test|python3? scripts\//, `${j} runs checks only through checks.sh`);
   for (const j of ['node-tests', 'other-checks']) assert.match(jobs[j], /node-version: '22'/, `${j}: Node 22`);
@@ -144,7 +144,7 @@ test('"all checks" is red unless every other job is green', () => {
 });
 
 test('the workflow: pull requests to main and by hand, no schedule, contents: read, superseded runs cancelled, actions pinned', () => {
-  assert.match(code, /^on:\n  pull_request:\n    branches: \[main\]\n  workflow_dispatch:\n  workflow_call:\n/m);
+  assert.match(code, /^on:\n  pull_request:\n    branches: \[main\]\n  workflow_dispatch:\n(?:    .*\n)*  workflow_call:\n/m);
   assert.doesNotMatch(code.slice(code.indexOf('\non:'), code.indexOf('\npermissions:')), /push:|workflow_run:/, 'pull requests, by hand, or called by main-checks.yml');
   assert.doesNotMatch(code, /schedule:|cron:/, 'no new timer without Sig');
   assert.doesNotMatch(code, /pull_request_target/, 'never runs a fork\'s code with secrets');
@@ -220,7 +220,9 @@ test('the pick: the guard picks, the shards run the pick or every test, and ever
   assert.match(g, /mode: \$\{\{ steps\.pick\.outputs\.mode \}\}/);
   assert.match(g, /files: \$\{\{ steps\.pick\.outputs\.files \}\}/);
   // anything but a pull request (main-checks.yml's call, a run by hand) is every test
-  assert.match(g, /if \[ "\$FULL" = 1 \] \|\| \[ "\$\{\{ github\.event_name \}\}" != pull_request \]; then[\s\S]*?mode=all/);
+  assert.match(g, /elif \[ "\$FULL" = 1 \] \|\| \[ "\$\{\{ github\.event_name \}\}" != pull_request \]; then[\s\S]*?mode=all/);
+  // a pick by hand only from a run by hand (a replay against a named branch)
+  assert.match(g, /PICK_BASE: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.pick_base \|\| '' \}\}/);
   assert.match(jobs['node-tests'], /needs: guard\n/);
   const run = steps('node-tests').find((s) => /checks\.sh --only=node-test/.test(s));
   assert.match(run, /AGSIST_TEST_FILES: \$\{\{ needs\.guard\.outputs\.mode == 'some' && needs\.guard\.outputs\.files \|\| '' \}\}/, 'the pick only when the guard picked some; empty means every test');

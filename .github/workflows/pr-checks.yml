@@ -31,6 +31,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      pick_base:
+        description: 'replay the pick by hand: the ref to diff against (empty: every test)'
+        type: string
+        default: ''
   workflow_call:
     inputs:
       full:
@@ -90,8 +95,13 @@ jobs:
         id: pick
         env:
           FULL: ${{ inputs.full && '1' || '' }}
+          PICK_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.pick_base || '' }}
         run: |
-          if [ "$FULL" = 1 ] || [ "${{ github.event_name }}" != pull_request ]; then
+          if [ -n "$PICK_BASE" ]; then
+            git fetch -q --no-tags --depth=100 origin "+refs/heads/$PICK_BASE:refs/remotes/origin/$PICK_BASE"
+            git fetch -q --no-tags --deepen=100 origin
+            python3 scripts/dev/test_map.py --select-base "origin/$PICK_BASE" --github-output --why
+          elif [ "$FULL" = 1 ] || [ "${{ github.event_name }}" != pull_request ]; then
             echo "select: every test (${{ github.event_name }}, full run)"
             { echo "mode=all"; echo "files="; } >> "$GITHUB_OUTPUT"
           else
