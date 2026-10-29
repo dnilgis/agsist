@@ -164,7 +164,8 @@ test("the method note: acres are today's lot, the join is said, the code mapping
   assert.match(p, /SR-1A deed abstracts/);
   assert.match(p, /today&#x27;s lot, which may not be the lot as it sold/);
   assert.match(p, /A deed whose lot is not on the list has no acres; it is listed and kept out of the middle/);
-  assert.match(p, /farmland assessment \(code 33\) among them/);
+  assert.match(p, /Kept, since they only keep a deed out of the state&#x27;s assessment study: 5, 7, 10 \(estate sales\), 19, 24, 27, 29, 30, 32, 33 \(farmland assessment\), 34 and 36\./);
+  assert.match(p, /out are family \(1\)[^<]*leasebacks \(28\), and any deed exempt from the realty transfer fee/);
   assert.match(p, /Source: .*New Jersey Division of Taxation/);
   assert.match(p, /data-land-alert/, "the monthly email covers New Jersey");
   for (const s of ["salem-county", "hunterdon-county"]) assert.ok(fs.existsSync(path.join(ROOT, "land-sales/new-jersey", s + ".html")), s);

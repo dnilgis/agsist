@@ -77,12 +77,15 @@ NJ_NOTE = ("New Jersey sales come from the SR-1A deed abstracts that county tax 
            "A deed is a farm sale here when its lot is classed farm, 3A (the farmhouse lot) or 3B (farmland-assessed land), when it "
            "sold or on the 2026 assessment list. Acres are the lot's calculated acreage on that 2026 list: today's lot, which may not "
            "be the lot as it sold. A deed whose lot is not on the list has no acres; it is listed and kept out of the middle. "
-           "A 3A lot holds the farmhouse, so the sale is with buildings; 3B alone is bare land. Left out of the market rule, by the "
-           "state's own non-usable codes: family and related companies, gifts, correction deeds, part interests, court, sheriff and "
-           "bankruptcy sales, quit claims, government and charity transfers, foreclosures and the first sale after one, exchanges, "
-           "sale-leasebacks, prices under $100 and deeds the assessor found were not between a willing buyer and seller; also a deed "
-           "exempt from the realty transfer fee. Codes that only keep a deed out of the state's assessment study stay in, farmland "
-           "assessment (code 33) among them. Our New Jersey copy starts with deeds recorded in 2018.")
+           "A 3A lot holds the farmhouse, so the sale is with buildings; 3B alone is bare land. How the state's non-usable codes map "
+           "onto the market rule: out are family (1), love and affection (2), related companies (3), correction deeds (4), part "
+           "interests (8) and less than full rights such as a preservation restriction (35), tax liens (9), partition, sheriff, "
+           "bankruptcy and short sales (11 to 13), quit claims (14), government (15) and charity (17) transfers, deeds in lieu of "
+           "foreclosure (18) and the first sale after one (31), rights of way (20), affordable housing (21), exchanges (22), "
+           "businesses sold with equipment (23), $100 or less (25), not a willing buyer and seller (26) and leasebacks (28), and any "
+           "deed exempt from the realty transfer fee. Part of a lot (6) or a lot in two districts (16): listed, no acres. Kept, since "
+           "they only keep a deed out of the state's assessment study: 5, 7, 10 (estate sales), 19, 24, 27, 29, 30, 32, 33 "
+           "(farmland assessment), 34 and 36. Our New Jersey copy starts with deeds recorded in 2018.")
 MILES = (10, 25, 50)
 DEFAULT_MILES = 25
 EARTH_MI = 3958.8

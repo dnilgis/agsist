@@ -1630,46 +1630,52 @@ NJ_CLS = {"3B": ["4"], "3A": ["4", "1"], "1": ["5"], "2": ["1"], "4A": ["2"], "4
 # MOD-IV qualifiers that are parts of one assessed lot (the farmland-assessed part, a building on its own line);
 # a condominium unit (C....) or any other qualifier is its own parcel and only joins when the deed names it.
 NJ_LOT_PARTS = re.compile(r"^(|QFARM|QF|FARM|BLDG|B)$")
-# The SR-1A non-usable categories (N.J.A.C. 18:12-1.1(a); the Division's "Guidelines for use of 33 Nonusable
-# Categories") mapped onto the one land rule. "out" codes stay listed with their words and never reach a middle:
-# the rule reads the words (RELATED PARTIES, QUIT, SHERIFF, ... or NON-USABLE). "kept" codes make a deed unusable
-# for the state's assessment-ratio study only (the assessment, not the sale, is off), so the sale stays a market
-# sale; 33 is every sale of farmland-assessed land, the very sales these pages are for. "acres" codes are a sale of
-# part of an assessed lot or of a lot in two districts: today's lot acres are not what sold, so acres are not stated.
+# The SR-1A non-usable categories, N.J.A.C. 18:12-1.1(a) as amended May 19, 2025 (36 categories; the Division's
+# "Guidelines for use of 36 Nonusable Categories", saved by the probe as data/land-raw/sales/nj/doc3 on the raw branch),
+# mapped onto the one land rule. "out": listed with its words and never in a middle (the rule reads RELATED PARTIES,
+# GIFT, CORRECT, QUIT, SHERIFF, JUDICIAL, COURT O, FORECLOS, EXCHANGE, LEASE, LESS THAN FULL, UNDIVIDED or NON-USABLE).
+# "kept": the code keeps a deed out of the state's assessment-to-sale ratio study only (the assessment, not the sale,
+# is what is off), so the sale stays a market sale; 33 is every sale of farmland-assessed land, the very sales these
+# pages are for; 10 (executors, trustees) stays as the shared rule keeps estate sales, and a deed to an heir is fee
+# exempt and out on that. "acres": a sale of part of an assessed lot or of a lot in two districts: today's lot is not
+# what sold, so no acres (listed, in no middle).
 NJ_NU = {
     "01": ("out", "Related Parties (immediate family)"),
     "02": ("out", "Gift (love and affection)"),
     "03": ("out", "Related Parties (a company and its owners or affiliates)"),
     "04": ("out", "Correction or convenience deed"),
-    "05": ("kept", "deed outside the year the state studied"),
-    "06": ("acres", "part of the assessed lot (a split or apportionment)"),
+    "05": ("kept", "recorded outside the year the state studied"),
+    "06": ("acres", "part of the assessed lot (a split-off or cut-off)"),
     "07": ("kept", "improved after the assessment"),
     "08": ("out", "Undivided interest"),
-    "09": ("out", "Subject to a life estate, less than full interest"),
-    "10": ("kept", "sale by an executor, administrator, trustee or guardian"),
+    "09": ("out", "Non-usable: subject to a tax sale certificate or government lien"),
+    "10": ("kept", "sale by a guardian, trustee, executor or administrator"),
     "11": ("out", "Judicial sale (partition)"),
     "12": ("out", "Sheriff's sale"),
-    "13": ("out", "Bankruptcy, receivership or liquidation sale (court order)"),
+    "13": ("out", "Bankruptcy, receivership, liquidation or short sale (court order or creditors)"),
     "14": ("out", "Quit claim or doubtful title"),
     "15": ("out", "Non-usable: to or from a government body"),
     "16": ("acres", "lot assessed in more than one district"),
-    "17": ("out", "Non-usable: to or from a charitable or religious body"),
+    "17": ("out", "Non-usable: to or from a charitable, religious or benevolent body"),
     "18": ("out", "Deed in lieu of foreclosure to a lender"),
     "19": ("kept", "assessment affected by damage or contamination"),
-    "20": ("out", "Non-usable: railroad or utility right of way"),
+    "20": ("out", "Non-usable: railroad, pipeline or utility right of way"),
     "21": ("out", "Non-usable: price-restricted affordable housing"),
     "22": ("out", "Exchange for other property"),
     "23": ("out", "Non-usable: business sold with equipment or goodwill"),
     "24": ("kept", "zoning or approvals changed after the assessment"),
-    "25": ("out", "Non-usable: consideration under $100"),
+    "25": ("out", "Non-usable: consideration of $100 or less"),
     "26": ("out", "Non-usable: not between a willing buyer and willing seller"),
     "27": ("kept", "sold before a revaluation took effect"),
     "28": ("out", "Sale and lease back"),
     "29": ("kept", "assessment set on appeal"),
-    "30": ("out", "Non-usable: category 30"),
+    "30": ("kept", "several parcels in one sale that are not one unit"),
     "31": ("out", "First sale after a lender's foreclosure"),
-    "32": ("kept", "a building left out of the assessment"),
-    "33": ("kept", "farmland-assessed or exempt property"),
+    "32": ("kept", "the assessment record differs from the property sold"),
+    "33": ("kept", "farmland-assessed, exempt or abated property"),
+    "34": ("kept", "class on the tax list differs from the use"),
+    "35": ("out", "Less than full rights (an exception, reservation or restriction)"),
+    "36": ("kept", "assessment out of line with the town's other sales"),
 }
 NJ_MUNIS_FILE = os.path.join(ROOT, "scripts", "land_nj_munis.json")
 
@@ -1891,14 +1897,14 @@ def nj_table(sales, md, towns, rep=None):
         kept += 1
         joined += found
         nu = r["nu"].strip().zfill(2) if r["nu"].strip() else ""
-        how, words = NJ_NU.get(nu, ("out", "Non-usable: category %s" % nu)) if nu else ("", "")
+        how, words = NJ_NU.get(nu, ("out", "Non-usable: category %s" % nu)) if nu else ("", "")     # an unknown code is out
         if nu:
             nu_seen[nu] = nu_seen.get(nu, 0) + 1
         conv = ["Deed"]
         flags = []
         if nu and how == "out":
             conv.append(words)
-            if nu in ("08", "09"):
+            if nu in ("08", "35"):
                 flags.append("less than full interest")
         elif nu:
             flags.append("state ratio study code %s: %s" % (nu, words))
@@ -2052,6 +2058,8 @@ def nj_selftest(ck):
     c = by.get("1701-3") or {}
     ck("NJ: code 33 (farmland-assessed) stays a market sale; bare 3B is land only",
        c.get("CONVEYANCETYPE") == "Deed" and c.get("PROPERTYCLASS") == "4" and "land only" in c["FLAGS"] and "code 33" in c["FLAGS"])
+    ck("NJ: code 35 (less than full rights, a preserved farm's restriction among them) is a part interest",
+       NJ_NU["35"][0] == "out" and "LESS THAN FULL" in NJ_NU["35"][1].upper() and NJ_NU["09"][0] == "out" and NJ_NU["30"][0] == "kept")
     d = by.get("1701-4") or {}
     ck("NJ: code 01 is related parties; a realty transfer fee exemption (E) is an exemption",
        "Related Parties" in d.get("CONVEYANCETYPE", "") and d.get("EXEMPTION") == "1")
@@ -2066,8 +2074,8 @@ def nj_selftest(ck):
        (by.get("1701-8") or {}).get("PROPERTYCLASS") == "4 1")
     ck("NJ: a house lot (class 2 then and now) is not a farm deed", "1701-9" not in by and rep.get("not farm") == 1)
     ck("NJ: the join rate is counted", rep.get("join", "").startswith("7 of 8 farm deeds"))
-    ck("NJ: every non-usable category 01 to 33 is mapped, each as out, kept or acres",
-       sorted(NJ_NU) == ["%02d" % i for i in range(1, 34)] and all(v[0] in ("out", "kept", "acres") for v in NJ_NU.values()))
+    ck("NJ: every non-usable category 01 to 36 (the May 2025 rule) is mapped, each as out, kept or acres",
+       sorted(NJ_NU) == ["%02d" % i for i in range(1, 37)] and all(v[0] in ("out", "kept", "acres") for v in NJ_NU.values()))
     ck("NJ: no party's street, city or ZIP is read", not any(re.search(r"(?i)street|city|zip|addr", k) for k in NJ_SR))
     ck("NJ: kept codes carry no word the market rule reads as a non-market deed",
        not any(re.search(r"(?i)QUIT|GIFT|CORRECT|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|JUDICIAL|COURT O|TRADE|EXCHANGE|IN LIEU|NON-USABLE", w)
