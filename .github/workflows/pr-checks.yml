@@ -20,7 +20,8 @@ name: pr-checks
 # main-checks.yml calls this same workflow with full: true (every test, no pick) on
 # every push to main and nightly, after it rebuilds and commits the built files.
 #
-# The FSA files come from the private raw branch with PRIVATE_REPO_TOKEN, so a
+# The FSA files (and, for the node tests, the Atlas drought pull) come from the
+# private raw branch with PRIVATE_REPO_TOKEN, so a
 # pull request from a fork (no secrets) fails at that step. Same-repo branches
 # only; that is by design.
 #
@@ -233,6 +234,12 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/pull_raw.sh data/fsa
+      # The Atlas drought pull (data/atlas/raw/drought.json) moved to raw on Oct 29;
+      # test/drought-county-week.test.mjs reads it and fails without it.
+      - name: Atlas drought pull from raw
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh data/atlas/raw/drought.json
       # Tests that compare with origin/main (no new schedule) or read the saved sources
       # (origin/references, in the private repo since Oct 20) skip without them.
       - name: origin/main and the references branch

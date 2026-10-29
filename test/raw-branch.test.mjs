@@ -104,6 +104,8 @@ test('FSA files: every reader unpacks them from raw, every writer saves them the
   }
   const c = read('scripts/dev/checks.sh');
   assert.ok(c.indexOf('pull_raw.sh data/fsa') > 0 && c.indexOf('pull_raw.sh data/fsa') < c.indexOf('run node-test'), 'ship checks unpack them first');
+  const dp = c.indexOf('bash scripts/pull_raw.sh data/atlas/raw/drought.json');
+  assert.ok(dp > 0 && dp < c.indexOf('run node-test'), 'ship checks unpack the Atlas drought pull before the node tests (Oct 29)');
   assert.match(read('scripts/build_arc_plc.py'), /no FSA county files in \{FSA_DIR\}\/\. They live on the raw branch/, 'a build without them stops, never falls back to estimates');
 });
 

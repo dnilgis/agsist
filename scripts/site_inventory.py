@@ -5,6 +5,12 @@ site_inventory.py - offline inventory of every published HTML page.
 Writes data/site-inventory.json for the site consolidation audit. Nothing is
 fetched; everything comes from the repo and its git history.
 
+The file is never published (Oct 29, fx/sizeinputs): it is in .gitignore and
+no page reads it. Keep a run by saving it to the private raw branch:
+    bash scripts/push_raw.sh "site inventory" data/site-inventory.json
+and read the last saved one back with
+    bash scripts/pull_raw.sh data/site-inventory.json
+
   pages   every page that is not part of a generated set, one row each
   sets    generated page sets (one file per state, county, town, date...),
           summarized by folder pattern with counts
