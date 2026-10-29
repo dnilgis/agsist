@@ -45,7 +45,8 @@ function browserSales(st, fips) {
   const ix = json(`data/land/${st}/index.json`), today = String(ix.fetched_utc).slice(0, 10);
   const f = json(`data/land/${st}/${fips}.json`), rec = (f.cols || []).includes("rec");
   return F.saleRows(F.rowObjs(f), today).filter((r) => F.marketSale(r, today)).map((r) => {
-    const when = rec ? (String(r.rec || "").slice(0, 10) || null) : String(r.date || "").slice(0, 10);
+    // the day a page shows: the recorded (filed) day when the file carries one, else the deed date
+    const when = (rec && String(r.rec || "").slice(0, 10)) || String(r.date || "").slice(0, 10) || null;
     return { r, id: saleId(st.toUpperCase(), r), when, kind: F.landType(r, st.toUpperCase()) };
   }).filter((x) => x.when && x.when <= today);
 }
@@ -259,12 +260,13 @@ test("in Chromium at 390 and 1280: Show more adds 50 rows, the type filter shows
       const nf = all.filter((g) => g.kind === "w").length;
       assert.equal(await pg.locator("#ls-all tbody tr").count(), Math.min(50, nf));
       assert.match(await pg.textContent("#ls-all tbody tr td:nth-child(6)"), /^forest$/);
+      // a screenshot (LS_SHOTS) is taken before any names tap, so it never holds a name
+      if (shots) await pg.screenshot({ path: path.join(shots, `barron-${w}.png`), fullPage: false });
       // the names tap still works on a row drawn from the list file
       await pg.click("#ls-all tbody tr button.ls-nm");
       await pg.waitForSelector("#ls-all tbody tr .ls-nv", { timeout: 20000 });
       const [sw, iw] = await pg.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
       assert.ok(sw <= iw, `Barron at ${w}: ${sw}px in ${iw}px`);
-      if (shots) await pg.screenshot({ path: path.join(shots, `barron-${w}.png`), fullPage: false });
       assert.deepEqual(errors, []);
       await ctx.close();
     }

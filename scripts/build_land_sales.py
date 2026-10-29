@@ -633,8 +633,8 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     b = [head(title, desc[:300], url, ld, early), '<div class="ls-w">',
          '<nav class="ls-bc" aria-label="Breadcrumb"><a href="/land-sales/">Farmland sales</a> / %s</nav>' % e(NAME[st]),
          "<h1>Farmland sales in %s</h1>" % e(cn),
-         '<p class="ls-ans">%d recorded sales in the last 12 months, any size (%d of %d acres or more). %s</p>'
-         % (n12all, n12, LIST_MIN_ACRES, e(mid))]
+         '<p class="ls-ans">%d recorded sales in the last 12 months, any size (%d of %d acres or more).</p>' % (n12all, n12, LIST_MIN_ACRES),
+         '<p class="ls-mid">%s</p>' % e(mid)]
     if st == "IN":
         b.append('<p class="ls-fine">%s</p>' % e(in_trend_words(u)))
     if latest and latest.get("month"):
