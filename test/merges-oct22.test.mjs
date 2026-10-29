@@ -86,7 +86,7 @@ test("the menu and footer name the merged pages by what they hold now", () => {
   assert.match(h, /USDA calendar and what&rsquo;s priced in/);
   assert.match(h, /Crop progress, size and yield/);   // Oct 29, 2026: Yield by state joined this line
   assert.ok(h.includes('href="/daily#past"') && f.includes('href="/daily#past"'), "Past briefings in the menu and footer");
-  assert.match(read("components/loader.js"), /var CV = '104';/);   // 104: fx/ratecard; 102: fx/merges2 (the redo of fx/merges, which was 86)
+  assert.match(read("components/loader.js"), /var CV = '105';/);   // 105: fx/menutrim; 104: fx/ratecard; 102: fx/merges2 (the redo of fx/merges, which was 86)
 });
 
 test("the sections carry what the old pages had", () => {

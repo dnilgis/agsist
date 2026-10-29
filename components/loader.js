@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '104';
+  var CV = '105';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -138,6 +138,36 @@
       })
       .catch(function () {});
   }
+  /* Menu click counts (Oct 29, 2026: so the Nov 15 merges use real numbers). One GA4 event,
+     menu_click {group, label, menu}, for a link in the live menu: menu is desktop or phone, group the
+     menu group (Prices, Livestock, Field, Money & Land, Daily; My place, Rain Print card or More in
+     the phone panel), label the link's name. Nothing else about the reader is sent. */
+  function initMenuClicks() {
+    var txt = function (el) { return el ? String(el.textContent || '').replace(/[\u2192]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : ''; };
+    function send(a, menu, group) {
+      try {
+        if (typeof window.gtag !== 'function') return;
+        var name = a.querySelector('.nav-two > span, .draw-rp-k');
+        window.gtag('event', 'menu_click', { group: group || 'Other', label: txt(name || a), menu: menu, transport_type: 'beacon' });
+      } catch (e) {}
+    }
+    var top = document.querySelector('#topnav .nav-menu');
+    if (top) top.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var dd = a.closest('.nav-dd');
+      send(a, 'desktop', txt(dd && dd.querySelector('.nav-btn')));
+    });
+    var dr = document.getElementById('drawer');
+    if (dr) dr.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var sec = a.closest('.draw-grp');
+      var group = sec ? txt(sec.querySelector('.draw-lbl')) : a.closest('.draw-place') ? 'My place' : a.classList.contains('draw-rp') ? 'Rain Print card' : 'More';
+      send(a, 'phone', group);
+    });
+  }
+
   function initNav() {
     (function () {
       var main = document.querySelector('main, [role="main"], #main, #content, #main-content');
@@ -304,6 +334,7 @@
       var href = (a.getAttribute('href') || '').split(/[?#]/)[0].replace(/\/$/, '') || '/';
       if (href === best) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
     });
+    initMenuClicks();
     initPlace();
     initMoved();
     initEmailButton();
