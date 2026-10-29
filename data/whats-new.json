@@ -16,11 +16,32 @@
    "link": "/"
   },
   {
+   "id": "2026-10-29-allsales",
+   "date": "2026-10-29",
+   "title": "Every recorded land sale",
+   "line": "County land sale pages list every recorded sale of any size with its type, and the middle price counts bare farmland only, labeled.",
+   "link": "/land-sales/"
+  },
+  {
+   "id": "2026-10-29-landvt",
+   "date": "2026-10-29",
+   "title": "Vermont farm sales",
+   "line": "Every recorded Vermont farm and forest sale by county, with price per acre and current use. In Field Scout, the Atlas and the monthly land sale email too.",
+   "link": "/land-sales/#vermont"
+  },
+  {
    "id": "2026-10-29-salesnav",
    "date": "2026-10-29",
    "title": "Farm sales easier to find",
    "line": "Every Farmland Atlas county page links its land sales, or says where the state's records stand. Rent pages, Fast Facts and search find county sales too.",
    "link": "/land-sales/"
+  },
+  {
+   "id": "2026-10-29-basis-history-clean",
+   "date": "2026-10-29",
+   "title": "Cleaner summer basis history",
+   "line": "Summer rows where a few cents of basis were read as dollars are gone. Some summer weeks on Grain on the move shift up to 6 cents.",
+   "link": "/grain-transport"
   },
   {
    "id": "2026-10-29-buyers",

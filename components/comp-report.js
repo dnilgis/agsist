@@ -175,29 +175,36 @@
   function median(v) { var m = v.length >> 1; return v.length % 2 ? v[m] : Math.round((v[m - 1] + v[m]) / 2); }
   CR.quarterOf = function (iso) { var m = /^(\d{4})-(\d{2})/.exec(String(iso || '')); return m ? m[1] + ' Q' + (Math.floor((+m[2] - 1) / 3) + 1) : null; };
   // n, middle, low and high $/acre of the sales with a usable $/acre (F.statOK: known, and not
-  // under the floor). Nothing under 3. By quarter: the count every quarter, a middle only where a
-  // quarter holds 3 or more. No fitted line.
+  // under the floor). Nothing under CR.MIN_N (5, the one land rule, Sig Oct 29, 2026: the Atlas, the
+  // land-sales pages and Field Scout use the same). By quarter: the count every quarter, a middle only
+  // where a quarter holds CR.MIN_N or more. No fitted line.
+  CR.MIN_N = 5;
   CR.stats = function (rows) {
     rows = rows || [];
     var known = rows.filter(F.statOK);
     var v = known.map(function (r) { return r.ppa; }).sort(function (a, b) { return a - b; });
     var unsure = rows.filter(function (r) { return r.ppa == null; }).length, low = rows.filter(F.lowPpa).length;
-    if (v.length < 3) return { n: v.length, unsure: unsure, low: low, withheld: true };
+    if (v.length < CR.MIN_N) return { n: v.length, unsure: unsure, low: low, withheld: true };
     var q = {};
     known.forEach(function (r) { var k = CR.quarterOf(r.date); if (k) (q[k] = q[k] || []).push(r.ppa); });
-    var qs = Object.keys(q).sort().map(function (k) { var a = q[k].sort(function (x, y) { return x - y; }); return { q: k, n: a.length, med: a.length >= 3 ? median(a) : null }; });
+    var qs = Object.keys(q).sort().map(function (k) { var a = q[k].sort(function (x, y) { return x - y; }); return { q: k, n: a.length, med: a.length >= CR.MIN_N ? median(a) : null }; });
     var ac = known.map(function (r) { return +r.acres; }).sort(function (a, b) { return a - b; });
     var ds = known.map(function (r) { return String(r.date || '').slice(0, 10); }).filter(Boolean).sort();
     return { withheld: false, n: v.length, unsure: unsure, low: low, med: median(v), lo: v[0], hi: v[v.length - 1], q: qs, acMed: Math.round(median(ac.map(function (x) { return Math.round(x * 10); })) / 10), d0: ds[0], d1: ds[ds.length - 1] };
   };
-  // The summary of every matched sale: bare land (no buildings on the record) in the tiles,
-  // sales with buildings on a line of their own. Illinois declarations do not say whether
-  // buildings sold, so there every sale is in the tiles and the page says so.
+  // The summary of every matched sale: bare land (no buildings by property class, the one land
+  // rule) in the tiles; sales with buildings and Wisconsin forest sales (forest classes, no farm
+  // class) each on a line of their own. Illinois declarations do not say whether buildings sold,
+  // so there every sale is in the tiles and the page says so.
   CR.summary = function (rows) {
     rows = rows || [];
-    var imp = rows.filter(function (r) { return F.hasBuildings(r.cls); }), bare = rows.filter(function (r) { return !F.hasBuildings(r.cls); });
+    var isF = F.isForest || function () { return false; };   // an older cached field-scout-land.js has no forest rule
+    var imp = rows.filter(function (r) { return F.hasBuildings(r.cls); });
+    var forest = rows.filter(function (r) { return !F.hasBuildings(r.cls) && isF(r.cls, r.st); });
+    var bare = rows.filter(function (r) { return !F.hasBuildings(r.cls) && !isF(r.cls, r.st); });
     var s = CR.stats(bare);
     s.total = rows.length; s.nImp = imp.length; s.imp = imp.length ? CR.stats(imp) : null;
+    s.nForest = forest.length; s.forest = forest.length ? CR.stats(forest) : null;
     s.noBldg = rows.some(function (r) { return !F.buildingsKnown(r.st); });
     s.grp = rows.filter(function (r) { return r.grp; }).length;
     return s;
@@ -386,23 +393,30 @@
     if (s.low) notes.push(s.low + (s.low === 1 ? ' sale is' : ' sales are') + ' under ' + fm(F.PPA_FLOOR) + ' an acre: listed and marked, but left out of the middle, the low and the high.');
     if (s.unsure) notes.push(s.unsure + (s.unsure === 1 ? ' sale has' : ' sales have') + ' no $/acre (acres uncertain, or one sale filed as several deeds that do not add up to one whole) and ' + (s.unsure === 1 ? 'is' : 'are') + ' left out of the figures.');
     if (s.withheld) {
-      return count + '<p class="cr-held"><b>No summary.</b> ' + (s.n ? 'Only ' + s.n + ' matched ' + bare + (s.n === 1 ? 'sale has' : 'sales have') + ' a usable $/acre.' : 'No matched ' + bare + 'sale has a usable $/acre.') + ' A middle, low and high price per acre needs at least 3. Widen the settings.</p>' +
+      return count + '<p class="cr-held"><b>No summary.</b> ' + (s.n ? 'Only ' + s.n + ' matched ' + bare + (s.n === 1 ? 'sale has' : 'sales have') + ' a usable $/acre.' : 'No matched ' + bare + 'sale has a usable $/acre.') + ' A middle, low and high price per acre needs at least ' + CR.MIN_N + '. Widen the settings.</p>' +
         (notes.length ? '<p class="fl-note">' + esc(notes.join(' ')) + '</p>' : '') + CR.impHTML(s);
     }
     var lead = '<p class="cr-lead">Typical ' + bare + 'price paid near you: <b>' + fm(s.med) + '/ac</b>, ' + s.n + ' sales, dated ' + fd(s.d0) + ' to ' + fd(s.d1) + (o.newest ? ', newest sale in our copy ' + fd(o.newest) : '') + '.</p>';
     var tiles = [[s.noBldg ? 'Sales with a $/acre' : 'Bare-land sales with a $/acre', String(s.n)], ['Middle (median) $/acre', fm(s.med)], ['Low $/acre', fm(s.lo)], ['High $/acre', fm(s.hi)], ['Middle size', s.acMed + ' ac']];
     var q = '<table class="cr-q"><thead><tr><th scope="col">Quarter (deed date)</th><th scope="col" class="n">Sales</th><th scope="col" class="n">Middle $/acre</th></tr></thead><tbody>' + s.q.map(function (x) {
-      return '<tr><td>' + esc(x.q) + '</td><td class="n">' + x.n + '</td><td class="n">' + (x.med != null ? fm(x.med) : '<span class="cr-dim">under 3 sales</span>') + '</td></tr>';
+      return '<tr><td>' + esc(x.q) + '</td><td class="n">' + x.n + '</td><td class="n">' + (x.med != null ? fm(x.med) : '<span class="cr-dim">under ' + CR.MIN_N + ' sales</span>') + '</td></tr>';
     }).join('') + '</tbody></table>';
     return lead + count + '<div class="cr-tiles">' + tiles.map(function (t) { return '<div><span>' + esc(t[0]) + '</span><b>' + esc(t[1]) + '</b></div>'; }).join('') + '</div>' + CR.impHTML(s) +
       '<p class="fl-note">' + esc(notes.join(' ')) + (notes.length ? ' ' : '') + 'Prices are as recorded for the whole sale; nothing is adjusted for time, size, soil or improvements.</p>' +
-      '<h3>By quarter</h3>' + q + '<p class="fl-note">A middle is shown only for a quarter with 3 or more sales. No trend line is fitted: ' + s.n + ' sales spread over these quarters cannot carry one.</p>';
+      '<h3>By quarter</h3>' + q + '<p class="fl-note">A middle is shown only for a quarter with ' + CR.MIN_N + ' or more sales. No trend line is fitted: ' + s.n + ' sales spread over these quarters cannot carry one.</p>';
   };
   // Sales with buildings, on a line of their own.
   CR.impHTML = function (s) {
-    if (s.noBldg || !s.nImp) return '';
-    var i = s.imp;
-    return '<p class="cr-imp">Sales with buildings (a house or farm buildings on the record): ' + s.nImp + (i && !i.withheld ? ', middle ' + fm(i.med) + '/ac on ' + i.n + ' with a $/acre.' : ', too few with a $/acre for a middle.') + ' Not in the figures above.</p>';
+    var h = '';
+    if (!s.noBldg && s.nImp) {
+      var i = s.imp;
+      h += '<p class="cr-imp">Sales with buildings (a house, farm buildings or a business by the property class): ' + s.nImp + (i && !i.withheld ? ', middle ' + fm(i.med) + '/ac on ' + i.n + ' with a $/acre.' : ', too few with a $/acre for a middle.') + ' Not in the figures above.</p>';
+    }
+    if (s.nForest) {
+      var w = s.forest;
+      h += '<p class="cr-imp">Forest sales (forest classes, no farm class on the record): ' + s.nForest + (w && !w.withheld ? ', middle ' + fm(w.med) + '/ac on ' + w.n + ' with a $/acre.' : ', too few with a $/acre for a middle.') + ' Not in the figures above.</p>';
+    }
+    return h;
   };
 
   if (NODE) { module.exports = CR; return; }

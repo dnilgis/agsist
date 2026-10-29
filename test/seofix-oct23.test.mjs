@@ -1,8 +1,8 @@
 /* Google and AI-answer fixes, Oct 23, 2026 (panel seat on search). Real cases, worked by hand:
  *
- *   1. Barron County WI (55005): data/land/wi/summary.json has med 5,578 on n 42, middle half 4,781
- *      to 7,307, windows cur Oct 1, 2025 to Sep 30, 2026. The Atlas page's meta description opens
- *      "Barron County, WI: 42 recorded farm sales, Oct 2025 to Sep 2026, median $5,578 an acre."
+ *   1. Barron County WI (55005): data/land/wi/summary.json has med 5,668 on n 22 bare farmland sales (Oct 29 land rule; was 5,578 on 42), middle half 4,293
+ *      to 6,605, windows cur Oct 1, 2025 to Sep 30, 2026. The Atlas page's meta description opens
+ *      "Barron County, WI: 22 recorded bare farmland sales, Oct 2025 to Sep 2026, median $5,668 an acre."
  *      and a visible question + FAQPage markup say the same. Florence WI (55037) has 0 sales in
  *      the window, under the 5-sale minimum: no sales number in its description, FAQ or markup.
  *   2. Barron County's middle is about 6 to 8 miles from Cameron, Almena and Rice Lake, all with
@@ -38,10 +38,10 @@ const money = (n) => "$" + n.toLocaleString("en-US");
 
 test("1. Atlas: sales count, median and dates lead the description, from the page's own summary file", () => {
   const sm = json("data/land/wi/summary.json").counties["55005"];
-  assert.deepEqual([sm.med.n, sm.med.med, sm.med.q1, sm.med.q3], [42, 5578, 4781, 7307]);
+  assert.deepEqual([sm.med.n, sm.med.med, sm.med.q1, sm.med.q3], [22, 5668, 4293, 6605]);
   const t = atlas("wisconsin/barron-county");
   const d = meta(t, "description");
-  assert.ok(d.startsWith("Barron County, WI: 42 recorded farm sales, Oct 2025 to Sep 2026, median $5,578 an acre."), d);
+  assert.ok(d.startsWith("Barron County, WI: 22 recorded bare farmland sales, Oct 2025 to Sep 2026, median $5,668 an acre."), d);
   assert.ok(d.length <= 160, "description cap");
   assert.equal(meta(t, "twitter:description"), d);
   assert.match(t, /<title>Barron County, WI Farm Facts · Cash Rent 2026: \$103\/Acre<\/title>/);
@@ -50,7 +50,7 @@ test("1. Atlas: sales count, median and dates lead the description, from the pag
   const q = "What has farmland sold for in Barron County, Wisconsin?";
   const m = t.match(/<h3 id="sales-faq">([^<]*)<\/h3><p>([^<]*)<\/p>/);
   assert.equal(m[1], q);
-  assert.match(m[2], /^42 recorded market sales of 20 or more acres, Oct 2025 to Sep 2026, with a median of \$5,578 an acre; the middle half of sales fell between \$4,781 and \$7,307 an acre\./);
+  assert.match(m[2], /^22 recorded market sales of bare farmland \(no buildings by the property class, no forest\), 20 or more acres, Oct 2025 to Sep 2026, with a median of \$5,668 an acre; the middle half of sales fell between \$4,293 and \$6,605 an acre\./);
   assert.match(m[2], /not a model or an appraisal, and no buyer or seller is named/);
   const faq = ld(t).find((x) => x["@type"] === "FAQPage");
   assert.equal(faq.mainEntity.length, 1);
@@ -84,7 +84,7 @@ test("1. Atlas: every committed county page that carries sales agrees with its s
       assert.equal(has, !!(c && c.med), `${fips} FAQ present only with a median`);
       if (!has) continue;
       n++;
-      assert.ok(meta(t, "description").includes(`${c.med.n} recorded farm sale`), fips);
+      assert.ok(meta(t, "description").includes(`${c.med.n} recorded bare farmland sale`), fips);
       assert.ok(meta(t, "description").includes(`median ${money(c.med.med)} an acre`), fips);
       assert.ok(meta(t, "description").length <= 160, fips);
       assert.ok(c.med.n >= sm.min_n, fips);

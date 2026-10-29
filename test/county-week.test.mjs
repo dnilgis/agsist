@@ -99,7 +99,7 @@ test("withheld lines never print a number; they go to off with their reason", ()
   const undated = clone(IL); delete undated.fetched;
   assert.match(L.newSales(undated, "17173", "IL", "2026-10-22").why, /does not say when it was read/);
   // a state with no sales record
-  assert.match(L.newSales(null, "09003", "CT", "2026-10-22").why, /Illinois, Indiana and Wisconsin only/);
+  assert.match(L.newSales(null, "09003", "CT", "2026-10-22").why, /Illinois, Indiana, Wisconsin and Vermont only/);
 });
 
 test("new recorded land sales: counted only in the week the state record was read; counts, never names", () => {
@@ -232,7 +232,7 @@ test("the county home: one hidden mount on every county page, filled by county-h
   const ch = read("components/county-home.js");
   assert.match(ch, /var CL_JS = '\/components\/change-lines\.js\?v=1';/);
   assert.match(ch, /L\.weekBlock\(L\.weekLines\(/);
-  assert.match(read("components/here.js"), /var CL_JS = '\/components\/change-lines\.js\?v=1';/);
+  assert.match(read("components/here.js"), /var CL_JS = '\/components\/change-lines\.js\?v=2';/);   // v2: fx/landvt (Vermont sales); county-home.js stays v1 (its hash is on every Atlas page)
   const urls = [...ch.matchAll(/getJSON\(([^,)]+)/g)].map((m) => m[1]);
   for (const u of urls) assert.doesNotMatch(u, /lat|lng|zip/i, u);
 });
