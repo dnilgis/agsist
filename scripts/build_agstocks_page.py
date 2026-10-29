@@ -261,6 +261,69 @@ def method(u, ix, sec, plants):
 </details>"""
 
 
+RAISES_LINE = "Private raises are high risk and hard to sell; many stop reporting."
+CF_SRC = ('<a href="https://www.sec.gov/data-research/sec-markets-data/crowdfunding-offerings-data-sets" rel="noopener">'
+          'SEC Crowdfunding Offerings data sets</a>')
+TRACK_ROWS = [("reached", "Said in a progress update (Form C-U) it reached its target"),
+              ("car", "Filed at least one annual report (Form C-AR)"),
+              ("ctr", "Filed to end its reporting (Form C-TR)"),
+              ("again", "Raised again (a later new Form C)"),
+              ("silent", "Went silent: no annual report for 15 months after one was due, and no C-TR"),
+              ("withdrawn", "Withdrew the offering (Form C-W)")]
+
+
+def share(t, k, gate):
+    n = t.get("n") or 0
+    c = t.get(k) or 0
+    if n < gate:
+        return f"{c:,} of {n:,}"
+    return f"{c:,} of {n:,} ({c / n * 100:.0f}%)"
+
+
+def raises_block(rz):
+    """'Private ag raises' (scripts/agraises.py): open Reg CF raises by ag issuers with their filed
+    numbers and EDGAR link only, and the track record of past raises against every Reg CF raise.
+    Nothing until the first published read."""
+    if not rz or not rz.get("track"):
+        return ""
+    gate = rz.get("share_min") or 20
+    through = esc(day(rz["through"], True))
+    rows = []
+    for r in rz.get("open") or []:
+        place = ", ".join(x for x in (r.get("city", "").title(), r.get("st", "")) if x)
+        tgt = big(r["target"]) if r.get("target") is not None else "not filed"
+        mx = big(r["max"]) if r.get("max") is not None else "not filed"
+        sec = esc(r.get("security") or "security not filed")
+        rows.append(f'<li><b>{esc(r["name"])}</b>{(", " + esc(place)) if place else ""}. Target {tgt}, maximum {mx}, {sec}, '
+                    f'deadline {esc(day(r["deadline"], True))}. <a href="{esc(r["link"])}" rel="noopener">{esc(r["last_form"])} on EDGAR</a>, '
+                    f'filed {esc(day(r["last_filed"], True))}.</li>')
+    if rows:
+        open_html = (f'<p class="ags-note">Deadline today or later, no withdrawal or termination on file. Numbers as last filed, '
+                     f'through {through}.</p><ul class="ags-raises">' + "".join(rows) + '</ul>')
+    else:
+        open_html = f'<p>No open raise by an ag company in the SEC files through {through}.</p>'
+    ag, al = rz["track"]["ag"], rz["track"]["all"]
+    trs = "".join(f'<tr><th scope="row">{esc(lab)}</th><td class="n">{share(ag, k, gate)}</td><td class="n">{share(al, k, gate)}</td></tr>'
+                  for k, lab in TRACK_ROWS)
+    yrs = round((rz.get("past_days") or 941) / 30.4)
+    few = (f'<p class="ags-note">Fewer than {gate} past ag raises: counts only, no share.</p>' if (ag.get("n") or 0) < gate else "")
+    return f"""<details class="ags-method" id="raises"><summary>Private ag raises</summary>
+<p><b>{RAISES_LINE}</b> These are small companies selling shares, notes or SAFEs under Regulation Crowdfunding. Listed so you can read what they filed; not a recommendation.</p>
+<h3>Open now</h3>
+{open_html}
+<h3>How past raises turned out</h3>
+<div class="ags-tw"><table class="ags-t"><caption>Past raises: deadline {yrs} months or more before {through}, so the first annual report and 15 months after it were due. Each line counted on its own.</caption>
+<thead><tr><th>Outcome</th><th class="n">Ag companies</th><th class="n">All Reg CF</th></tr></thead><tbody>
+<tr><th scope="row">Past raises counted</th><td class="n">{ag.get("n", 0):,}</td><td class="n">{al.get("n", 0):,}</td></tr>{trs}</tbody></table></div>
+{few}<ul>
+<li>Ag company: an EDGAR industry code for farming, farm services, farm machinery, fertilizer and ag chemicals, grain milling and feed, or farm product wholesale; or, where EDGAR has no code, a farm word in the company name (farm, ranch, dairy, cattle, grain, crop, orchard, greenhouse and the like). Breweries, restaurants, wineries, real estate and food brands with a farm word are left out. {rz["screen"]["ag_issuers"]:,} ag companies of {rz["screen"]["all_issuers"]:,} Reg CF issuers.</li>
+<li>Reached its target counts only a progress update that says so in words; many raises file none. A company that never filed an annual report counts as silent only when a progress update said it reached its target, because a raise that misses its target owes no annual report.</li>
+<li>No return on money put in is measured here: the filings do not show it.</li>
+</ul>
+<p class="ags-src">Source: {CF_SRC} (every Form C, C/A, C-U, C-AR, C-TR and C-W filed through {through}) and each company&rsquo;s EDGAR record, read {esc(day(rz["read"], True))}.</p>
+</details>"""
+
+
 def css():
     return """<style>
 .ags{max-width:860px;margin:0 auto;padding:1rem 1rem 3rem}
@@ -324,7 +387,7 @@ def share_card():
     return "https://agsist.com/img/og/ag-stocks.jpg?v=" + v, "Ag stocks. Farm company share prices, their SEC reports and the AGSIST Ag 20."
 
 
-def render(u, latest, ix, sec, plants, early):
+def render(u, latest, ix, sec, plants, early, raises=None):
     og_img, og_alt = share_card()
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "WebPage", "@id": URL + "#page", "url": URL, "name": TITLE, "description": DESC,
@@ -337,6 +400,7 @@ def render(u, latest, ix, sec, plants, early):
         body = index_block(ix, latest) + table(u, latest, sec, plants)
         body += (f'<p class="ags-src">Closes: {YAHOO}. Reported dates and revenue: {SEC} filings, whole company. '
                  'Tap a company for its filing numbers and its plants near you.</p>')
+        body += raises_block(raises)
         body += method(u, ix, sec, plants)
     else:
         body = (index_block(None, None) +
@@ -396,7 +460,7 @@ def render(u, latest, ix, sec, plants, early):
 
 def build():
     import inject_static_nav as nav
-    page = render(rd("universe.json"), rd("latest.json"), rd("index.json"), rd("sec.json"), rd("plants.json"), chrome())
+    page = render(rd("universe.json"), rd("latest.json"), rd("index.json"), rd("sec.json"), rd("plants.json"), chrome(), rd("raises.json"))
     return nav.render(page, "ag-stocks.html", nav.block("header"), nav.block("footer"))
 
 
@@ -419,6 +483,20 @@ def selftest():
     hb = index_block(held, {})
     check("held: no close for TSN since Oct 30" in hb and "0.00%" not in hb, "held level says why, never 0%")
     check("not fertilizer or grain prices" in hb, "side basket label")
+    check(raises_block(None) == "" and raises_block({}) == "", "no raises file: no section")
+    import tempfile
+    from datetime import date as _d
+    import agraises
+    with tempfile.TemporaryDirectory() as tmp:
+        agraises._fixture(tmp)
+        pub, _ = agraises.build(tmp, today=_d(2026, 10, 29), ov={"include": {}, "exclude": {}})
+    rb = raises_block(json.loads(json.dumps(pub)))
+    check(RAISES_LINE in rb and '<details class="ags-method" id="raises"><summary>Private ag raises</summary>' in rb, "raises: section and line")
+    check("<b>Lakeside Orchards LLC</b>, Town, IA. Target $20,000, maximum $300,000, Revenue share, deadline Dec 31, 2026." in rb and "C/A on EDGAR</a>, filed Sep 20, 2026." in rb, "raises: open row as last filed")
+    check(">1 of 2</td>" in rb and "counts only, no share" in rb and "(50%)" not in rb, "raises: under the gate, counts only")
+    hrefs = re.findall(r'href="([^"]+)"', rb)
+    check(hrefs and all(h.startswith("https://www.sec.gov/") for h in hrefs), f"raises: SEC links only {hrefs}")
+    check(not re.search(r"\b(invest now|buy|portal)\b", rb, re.I) and "—" not in rb, "raises: no invest words, no em dash")
     for f in fails:
         print("FAIL", f)
     if not fails:
