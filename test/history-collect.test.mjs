@@ -39,6 +39,7 @@ for (const [script, done] of [
   ['scripts/backfill_agtransport.py', /backfill_agtransport selftest: 0 failure\(s\)/],
   ['scripts/backfill_usdm.py', /backfill_usdm selftest: 0 failure\(s\)/],
   ['scripts/backfill_nass_progress.py', /backfill_nass_progress selftest: 0 failure\(s\)/],
+  ['scripts/backfill_nass_yield.py', /backfill_nass_yield selftest: 0 failure\(s\)/],
   ['scripts/backfill_ams_fert.py', /backfill_ams_fert selftest: 0 failure\(s\)/],
   ['scripts/history_append.py', /history_append selftest: 0 failure\(s\)/],
   ['scripts/reader_area_counts.py', /reader_area_counts selftest: 0 failure\(s\)/],
@@ -77,7 +78,7 @@ test('history-backfill.yml is dispatch only: no schedule, no push, no other trig
   const on = y.slice(y.indexOf('\non:'), y.indexOf('\npermissions:'));
   assert.match(on, /^\s+workflow_dispatch:/m);
   assert.doesNotMatch(y, /schedule:|cron:|workflow_run:|\bpush:|pull_request:|repository_dispatch:/);
-  assert.match(on, /options: \[agtransport, usdm, nass, ams-fert\]/);
+  assert.match(on, /options: \[agtransport, usdm, nass, ams-fert, nass-yield\]/);
   assert.match(y, /permissions:\n  contents: read/, 'it never writes to this repo');
 });
 
@@ -89,7 +90,9 @@ test('history-backfill.yml: resumes from the saved manifest, refuses to start bl
   const b = step('history-backfill.yml', 'Backfill');
   assert.match(b, /HISTORY_PUSH: '1'/, 'saves every 30 minutes as it goes');
   for (const k of ['NASS_API_KEY', 'MARS_API_KEY', 'SOCRATA_APP_TOKEN']) {
-    assert.match(b, new RegExp(`${k}: \\$\\{\\{ inputs\\.source == '[a-z-]+' && secrets\\.${k} \\|\\| '' \\}\\}`), `${k} from secrets, only for its own source`);
+    // one source, or a bracketed list of named sources (NASS_API_KEY: nass and nass-yield)
+    const src = `(?:inputs\\.source == '[a-z-]+'|\\(inputs\\.source == '[a-z-]+'(?: \\|\\| inputs\\.source == '[a-z-]+')+\\))`;
+    assert.match(b, new RegExp(`${k}: \\$\\{\\{ ${src} && secrets\\.${k} \\|\\| '' \\}\\}`), `${k} from secrets, only for its own source`);
   }
   assert.doesNotMatch(b, /\$\{\{ inputs\.(from|to|only|max_minutes) \}\}[^\n]*\n?[^\n]*python/, 'inputs reach the script through env, not pasted into the script');
   assert.match(b, /case "\$ONLY" in \*\[!A-Za-z0-9_,\]\*\)/, 'only takes names and commas');
@@ -173,6 +176,17 @@ test('crop progress: the Monday job adds the last three years after its commit, 
   assert.match(s, /bash scripts\/push_raw\.sh "crop progress history" history\/nass-progress/);
   const y = read(`${WF}/crop_progress.yml`);
   assert.ok(y.indexOf('- name: Crop progress history') > y.indexOf('- name: Commit data/crop-progress.json'), 'after the commit');
+});
+
+test('state yields: the monthly NASS series job refreshes the yield history after its commit, never failing the run', () => {
+  const s = step('nass-series.yml', 'State yield history to the raw branch');
+  assert.match(s, /continue-on-error: true/);
+  assert.match(s, /NASS_API_KEY: \$\{\{ secrets\.NASS_API_KEY \}\}/);
+  assert.match(s, /RAW_SOFT: '1'/);
+  assert.match(s, /python scripts\/backfill_nass_yield\.py/);
+  assert.match(s, /bash scripts\/push_raw\.sh "nass yield history" history\/nass-yield/);
+  const y = read(`${WF}/nass-series.yml`);
+  assert.ok(y.indexOf('- name: State yield history') > y.indexOf('- name: Commit if changed'), 'after the commit');
 });
 
 test('cattle auctions: per-barn receipts history after the commit, never failing the run', () => {

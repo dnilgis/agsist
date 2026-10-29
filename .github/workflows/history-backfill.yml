@@ -10,6 +10,7 @@ name: History backfill (dispatch only)
 #                usdm         Drought Monitor county weekly categories, 2000 on
 #                nass         NASS crop progress and condition, every state, as far back as Quick Stats goes
 #                ams-fert     AMS Illinois Production Cost Report (fertilizer), 2010 on
+#                nass-yield   NASS final state yields, corn and soybeans, every year (about 4 calls)
 #   from, to     years (blank = the script's own start, this year)
 #   only         agtransport: dataset names (grain_basis,barge_rates); usdm: states (IA,MN)
 #   probe        ams-fert only: save what the archive and MARS answer, fetch nothing else
@@ -26,7 +27,7 @@ on:
       source:
         description: "What to backfill"
         type: choice
-        options: [agtransport, usdm, nass, ams-fert]
+        options: [agtransport, usdm, nass, ams-fert, nass-yield]
         required: true
       from:
         description: "First year (blank = the script's start)"
@@ -82,6 +83,7 @@ jobs:
             usdm)        echo "dir=history/usdm-county" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_usdm.py" >> "$GITHUB_OUTPUT";;
             nass)        echo "dir=history/nass-progress" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_progress.py" >> "$GITHUB_OUTPUT";;
             ams-fert)    echo "dir=history/ams-fert" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_ams_fert.py" >> "$GITHUB_OUTPUT";;
+            nass-yield)  echo "dir=history/nass-yield" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_yield.py" >> "$GITHUB_OUTPUT";;
             *) echo "::error::unknown source $SOURCE"; exit 1;;
           esac
       - name: Selftests (no network)
@@ -120,7 +122,7 @@ jobs:
           HISTORY_PUSH: '1'
           RAW_SOFT: '1'
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          NASS_API_KEY: ${{ inputs.source == 'nass' && secrets.NASS_API_KEY || '' }}
+          NASS_API_KEY: ${{ (inputs.source == 'nass' || inputs.source == 'nass-yield') && secrets.NASS_API_KEY || '' }}
           MARS_API_KEY: ${{ inputs.source == 'ams-fert' && secrets.MARS_API_KEY || '' }}
           SOCRATA_APP_TOKEN: ${{ inputs.source == 'agtransport' && secrets.SOCRATA_APP_TOKEN || '' }}
         run: |
