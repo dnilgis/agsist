@@ -2,7 +2,7 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Root Lot",
  "slug": "rootlot",
- "generated": "2026-10-29T01:59:31+00:00",
+ "generated": "2026-10-29T02:59:25+00:00",
  "through": "2026-10-27",
  "start": null,
  "countFrom": "2026-10-28",
@@ -71,7 +71,7 @@
   "slot": "geo-rootlot"
  },
  "rateCard": {
-  "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS (pricing panel, Oct 29, 2026). Read by sponsor.html, sponsor-apply.html, sponsor-kit.html, each sponsor's own portal and scripts/sponsor_apply.py. scripts/test_rate_card.py fails if a price or term here is not on sponsor.html. Prices are MONTHLY (price_month). A State Sponsor costs price_month in most states and price_by_state where listed; a state in opens_soon is shown but not taken yet. Change a price HERE first, then run scripts/stamp_rates.py and the prose around it.",
+  "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS (pricing panel, Oct 29, 2026). Read by sponsor.html, sponsor-apply.html, sponsor-kit.html, each sponsor's own portal and scripts/sponsor_apply.py. scripts/test_rate_card.py fails if a price or term here is not on sponsor.html. Prices are MONTHLY (price_month). A State Sponsor costs price_month in most states and price_by_state where listed; a state in opens_soon is shown but not taken yet (Oct 29, 2026: California, Nevada and Texas, held while the Root Lot test runs there; scripts/test_rate_card.py holds this list to every active entry in data/geo-sponsors.json). Change a price HERE first, then run scripts/stamp_rates.py and the prose around it.",
   "_updated": "2026-10-29",
   "currency": "USD",
   "trial": "First month free on every tier. No card, no commitment.",
@@ -105,6 +105,8 @@
      "TX": 49
     },
     "opens_soon": [
+     "CA",
+     "NV",
      "TX"
     ],
     "slots": null,
