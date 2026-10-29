@@ -166,6 +166,11 @@ test("no roles: one go deeper row for everyone, built from what the place suppor
   assert.deepEqual(bare.map((l) => l.id), ["scout", "bids", "hail", "sheet", "rent"]);
   assert.equal(bare.find((l) => l.id === "bids").href, "/cash-bids/kansas/");
   assert.deepEqual(P.deeper(null), []);
+  // Oct 29 (land sales easy to find): flag l = the county has its own /land-sales/ page; the link follows the Atlas one
+  const ls = P.deeper({ ...place, flags: "arpcl" });
+  assert.deepEqual(ls.map((l) => l.id), ["scout", "comps", "bids", "hail", "sheet", "atlas", "sales", "arcplc", "prf", "rain", "rent"]);
+  assert.equal(ls.find((l) => l.id === "sales").href, "/land-sales/wisconsin/barron-county");
+  assert.ok(!bare.some((l) => l.id === "sales"), "no page, no link");
 });
 
 test("print choices: the link form round-trips, defaults stay out of the link", () => {
