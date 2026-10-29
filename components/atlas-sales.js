@@ -65,15 +65,15 @@
   S.tile = function (sum, f) {
     if (!sum || !sum.windows) return null;
     var c = sum.counties && sum.counties[f], N = sum.min_n || 5, A = sum.min_acres || 20;
-    var t = { label: 'Median sale price, ' + A + '+ acres', val: null, unit: '/ac', through: sum.through };
+    var t = { label: 'Median sale price, bare land, ' + A + '+ acres', val: null, unit: '/ac', through: sum.through };
     var thru = 'sales dated through ' + S.day(sum.through);
     if (!c) { t.sub = 'no ' + sum.record + ' file on hand for this county yet'; return t; }
     if (c.med) {
       t.val = S.money(c.med.med);
-      t.sub = c.med.n + ' recorded market sale' + (c.med.n === 1 ? '' : 's') + ', ' + S.span(sum.windows.cur) + '; ' + thru;
+      t.sub = c.med.n + ' recorded bare farmland sale' + (c.med.n === 1 ? '' : 's') + ', ' + S.span(sum.windows.cur) + '; ' + thru;
     } else {
       var k = c.k12 || 0;
-      t.sub = 'not shown: ' + k + ' recorded market sale' + (k === 1 ? '' : 's') + ' of ' + A + '+ acres in ' + S.span(sum.windows.cur) + ', a median needs ' + N + '; ' + thru;
+      t.sub = 'not shown: ' + k + ' recorded bare farmland sale' + (k === 1 ? '' : 's') + ' of ' + A + '+ acres in ' + S.span(sum.windows.cur) + ', a median needs ' + N + '; ' + thru;
     }
     return t;
   };
@@ -97,10 +97,10 @@
     h += c.n12p != null ? fact('Market farm sales, ' + S.span(W.prev), esc(String(c.n12p)), c.u12p ? 'acres unknown on ' + c.u12p : null)
       : fact('Market farm sales, ' + S.span(W.prev), 'not shown', c.why_p || 'records do not reach back that far', 'w');
     if (c.med) {
-      h += fact('Median price, sales of ' + A + '+ acres, ' + S.span(W.cur), esc(S.money(c.med.med)) + '/ac',
+      h += fact('Median price, bare farmland sales of ' + A + '+ acres, ' + S.span(W.cur), esc(S.money(c.med.med)) + '/ac',
         c.med.n + ' sales with known acres; middle half ' + S.money(c.med.q1) + ' to ' + S.money(c.med.q3));
     } else {
-      h += fact('Median price, sales of ' + A + '+ acres', 'not shown',
+      h += fact('Median price, bare farmland sales of ' + A + '+ acres', 'not shown',
         'only ' + (c.k12 || 0) + ' sale' + (c.k12 === 1 ? '' : 's') + ' of ' + A + '+ acres with known acres in 12 months; a median needs ' + N + ' or more', 'w');
     }
     if (c.chg != null && c.medp) {

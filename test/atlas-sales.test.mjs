@@ -91,7 +91,7 @@ test("county block: withholds the median under 5 sales, and calls nothing unusua
   assert.match(h, /only 3 sales of 20\+ acres with known acres in 12 months; a median needs 5 or more/);
   assert.match(h, /No sale is called unusual: 4 sales of 20\+ acres with known acres in 24 months, and it takes 5/);
   assert.match(h, /Not shown: 4 market sales with known acres in 24 months/);
-  assert.doesNotMatch(h, /well above|well below|Median price, sales of 20\+ acres, Oct/);
+  assert.doesNotMatch(h, /well above|well below|Median price, bare farmland sales of 20\+ acres, Oct/);
   assert.doesNotMatch(h, /Census of Agriculture/);   // no median, nothing to set beside the census
   // a change withheld for unknown acres says why
   const s2 = fixtureSummary({ medp: { n: 9, med: 9000, q1: 8000, q3: 10000 }, why_chg: "acres unknown on 10 of 89 market sales in the last 12 months and 45 of 91 in the 12 before" });
@@ -218,7 +218,7 @@ test("in Chromium: the McLean and Dane blocks draw at 390 and 1280 with no sidew
         await pg.waitForSelector("section.as[data-ready]", { timeout: 30000 });
         const t = await pg.textContent("section.as");
         assert.match(t, /market farm sales? (was|were) recorded/);
-        assert.match(t, /Median price, sales of 20\+ acres/);
+        assert.match(t, /Median price, bare farmland sales of 20\+ acres/);
         assert.doesNotMatch(t, /—/);
         const [sw, iw] = await pg.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
         assert.ok(sw <= iw, `${u} at ${w}: page is ${sw}px wide in a ${iw}px window`);
