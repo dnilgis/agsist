@@ -34,7 +34,7 @@
   var CONTRACT_TOL = 0.07;      // $/bu: a county bid's implied futures within this of the state's contract
   var FEATURED = 6;             // sales rows per county in data/land-sales/<st>.json (build_land_sales.py FEATURED)
   var SALES_MIN_ACRES = 10;     // a listed sale (build_land_sales.py LIST_MIN_ACRES)
-  var SALES_STATES = { IL: 'il', IN: 'in', WI: 'wi', VT: 'vt' };   // Vermont since Oct 29, 2026
+  var SALES_STATES = { IL: 'il', IN: 'in', WI: 'wi', VT: 'vt', NJ: 'nj' };   // Vermont and New Jersey since Oct 29, 2026
   var FUT_MON = { F: 'jan', H: 'mar', K: 'may', N: 'jul', U: 'sep', Z: 'dec' };
 
   /* Drought Monitor codes that are not one spine county (data/ids/geo-crosswalk.json, the
@@ -253,7 +253,7 @@
   /* since (YYYY-MM-DD, optional): the weekly line counts a month's sales as new only when the
      state file was read on or after that day; read earlier, nothing new came in this week. */
   function newSales(file, fips, st, since) {
-    if (!SALES_STATES[st]) return no('recorded farm sales are on hand for Illinois, Indiana, Wisconsin and Vermont only');
+    if (!SALES_STATES[st]) return no('recorded farm sales are on hand for Illinois, Indiana, Wisconsin, Vermont and New Jersey only');
     if (!file || !file.counties || !file.through) return no('the recorded sales file did not load');
     var c = file.counties[fips];
     if (!c || !Array.isArray(c.s)) return no('no recorded sales list for this county');

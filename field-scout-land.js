@@ -173,7 +173,11 @@
     IL: { '4': 'Farm' },
     // Vermont: scripts/fetch_land_sales.py vt_class, from the return's property use before and after the
     // transfer (operating farm 4, timberland 6, open land enrolled in current use 5) and its buildings boxes.
-    VT: { '1': 'House', '2': 'Commercial building', '3': 'Factory', '4': 'Operating farm', '5': 'Open land in current use', '6': 'Timberland', '7': 'Farm or other buildings' }
+    VT: { '1': 'House', '2': 'Commercial building', '3': 'Factory', '4': 'Operating farm', '5': 'Open land in current use', '6': 'Timberland', '7': 'Farm or other buildings' },
+    // New Jersey: scripts/fetch_land_sales.py NJ_CLS, from the deed's class on the SR-1A and its lots' classes on the
+    // 2026 assessment list (3B farmland-assessed 4; 3A farm regular, the farmhouse lot, 4 and 1; 1 vacant 5; 2 residential 1;
+    // 4A commercial 2; 4B industrial 3; 15 exempt X).
+    NJ: { '1': 'House (farmhouse lot 3A, or residential 2)', '2': 'Commercial (4A)', '3': 'Industrial (4B)', '4': 'Farm (3A or 3B)', '5': 'Vacant land (1)', 'X': 'Exempt (15)' }
   };
   FSLand.classLabel = function (c, st) {
     var T = CLASS[String(st || '').toUpperCase()] || CLASS.WI;
@@ -186,12 +190,13 @@
     if (st === 'IN') return 'Indiana sales disclosure property class, farm parcel' + (/(^|\s)7(\s|$)/.test(String(c || '')) ? ', improved (buildings)' : '');
     if (st === 'WI') return 'Wisconsin class ' + String(c || '');
     if (st === 'VT') return 'property use and buildings on the Vermont transfer tax return';
+    if (st === 'NJ') return 'New Jersey property class on the deed abstract and on the 2026 assessment list of its lots';
     return 'class ' + String(c || '');
   };
   // Document number in a state's own words.
   FSLand.docLabel = function (st) {
     st = String(st || '').toUpperCase();
-    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : st === 'VT' ? 'Vermont transfer tax return ID' : 'doc';
+    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : st === 'VT' ? 'Vermont transfer tax return ID' : st === 'NJ' ? 'New Jersey SR-1A district and serial number' : 'doc';
   };
   FSLand.FARM_CLASSES = ['4', '5', '5M', '6', '7'];
   FSLand.hasBuildings = function (c) { return /(^|[\s,;/])(1|2|3|7)($|[\s,;/])/.test(String(c || '')); };
@@ -235,7 +240,7 @@
   //     Auctions and sales to a neighbor stay in: those are open-market farm sales.
   //   - it is a whole interest: not "an undivided one-third interest", not "less than full interest"
   //   - it is not dated after today (a typo on a return)
-  FSLand.NON_MARKET = /QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED/;
+  FSLand.NON_MARKET = /QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE/;
   // A sale of a share of the land is not a price for the whole.
   FSLand.PARTIAL = /\bUNDIVIDED\b|LESS THAN (?:FULL|100 ?%|THE WHOLE|ENTIRE)|PARTIAL INTEREST|\b(?:ONE|TWO|THREE)[- ](?:HALF|THIRD|THIRDS|FOURTH|FOURTHS|QUARTER|FIFTH|SIXTH)\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}\s*\/\s*\d{1,2}(?:TH|RD|ND)?\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}(?:\.\d+)?\s*%\s+(?:UNDIVIDED\s+)?INTEREST\b/;
   FSLand.PPA_FLOOR = 500;     // under this $/acre: listed, marked, out of every middle and low figure
@@ -598,8 +603,8 @@
   // file; others: matchTransfers of the same parcel, this sale left out. Plain strings for node.
   FSLand.saleDetailHTML = function (r, file, others) {
     file = file || {}; others = others || [];
-    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI', VT = st === 'VT';
-    var form = IL ? 'declaration' : IN ? 'sales disclosure form' : 'return';
+    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI', VT = st === 'VT', NJ = st === 'NJ';
+    var form = IL ? 'declaration' : IN ? 'sales disclosure form' : NJ ? 'deed' : 'return';
     var cols = file.cols || [];
     var has = function (c) { return cols.indexOf(c) >= 0; };
     var v = function (x) { return x == null || x === '' ? null : x; };
@@ -615,6 +620,7 @@
       (IL ? 'Net consideration (Line 13 of Form PTAX-203: full consideration less personal property, Line 12a), or full consideration (Line 11) when Line 13 is blank. Covers the real estate that sold, buildings included.'
         : IN ? 'Sales price (E1) less personal property (E2) on the Indiana sales disclosure form. Covers the real estate that sold, buildings included.'
         : VT ? 'Value paid or transferred on the Vermont property transfer tax return (Form PTT-172). Covers the real estate that sold, buildings included.'
+        : NJ ? 'Sale price reported on the New Jersey deed abstract (SR-1A). Covers the real estate that sold, buildings included. Acres are the lots on the 2026 assessment list, today\u2019s lots, which may differ from the lots as sold.'
         : 'Sale price on the transfer return. Covers everything that sold, buildings included.') + (r.grp ? ' ' + esc(FSLand.groupText(r)) + ': ' + r.grpPrices.map(fm).join(' + ') + '.' : ''));
     row('Acres', ac > 0 ? (+ac).toFixed(2).replace(/\.?0+$/, '') : r.acUnsure ? '<span class="fl-warn">uncertain</span>' : NOTIN,
       r.acBig ? 'The record gives ' + esc(r.acBig) + ' acres on one parcel, more than a full section (640), so we treat the acres as uncertain.' :
@@ -626,7 +632,7 @@
     row('Deed or conveyance type', v(r.conv) ? esc(r.conv) : NOTIN);
     row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls, st)) + ' <span class="fl-note">(' + esc(FSLand.classNote(r.cls, st)) + ')</span>' : NOTIN);
     row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
-    row(IL ? 'State transfer tax' : VT ? 'Property transfer tax' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
+    row(IL ? 'State transfer tax' : VT ? 'Property transfer tax' : NJ ? 'Realty transfer fee' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : NJ ? ' (the deed abstract marks the fee exempt)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
     var why = FSLand.notMarketWhy(r);
     row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court, foreclosure, trade and partition deeds, shares of the land and fee-exempt transfers.');
     row('Verified', 'No', 'Taken from public transfer records, not confirmed with a party to the sale.');

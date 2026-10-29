@@ -32,7 +32,7 @@ A sale whose id is in data/land-sales/removed.json keeps no names at all.
 WORDS: "unusual price", with plain possible reasons (family sale, part interest, buildings or timber
 included); never "questionable" or any word that accuses anyone.
 
-STATES: Illinois, Wisconsin, Indiana and Vermont (Sig, Oct 27: "Yes turn on Indiana"; it was held to Field Scout
+STATES: Illinois, Wisconsin, Indiana, Vermont and New Jersey (Sig, Oct 27: "Yes turn on Indiana"; it was held to Field Scout
 and the comp report since Oct 18), the monthly land sale email included (land_alert.STATES); the email
 ask shows beside any state the email covers. Indiana's records differ and the pages say so
 (IN_NOTE): the date is the sale date on the disclosure form (no recording date), and the place is the
@@ -74,7 +74,7 @@ import build_land_summary as BLS   # noqa: E402
 import land_alert as LA             # noqa: E402
 
 ORIGIN = "https://agsist.com"
-STATES = ("IL", "WI", "IN", "VT")   # Vermont since Oct 29, 2026 (Sig: next land states, Vermont first)
+STATES = ("IL", "WI", "IN", "VT", "NJ")   # Vermont and New Jersey since Oct 29, 2026 (Sig: next land states)
 SLUG = dict(LA.STATE_SLUGS, IN="indiana")
 NAME = dict(LA.STATE_NAMES, IN="Indiana")
 SOURCES = dict(LA.SOURCES, IN="Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels")
@@ -90,6 +90,9 @@ VT_NOTE = ("Vermont sales come from the property transfer tax return. A return i
            "easement). Buildings come from the return's buildings boxes; timberland with no operating farm and no buildings is forest. "
            "Current use enrollment is shown on each sale; Vermont enrolls both farm and forest land, so open land in current use is counted "
            "as farmland and may include some woods. Our Vermont copy starts with the returns posted in 2019.")
+# New Jersey's deeds, mapped onto the same rule (fetch_land_sales.nj_table, NJ_NU): the method note on every New Jersey
+# page and in any month with a New Jersey sale. The acres are today's lot, said here and on every page.
+NJ_NOTE = LA.NJ_NOTE
 LIST_MIN_ACRES = LA.LIST_MIN_ACRES      # 10: a listed sale
 COMP_MIN_ACRES = BLS.MIN_ACRES          # 20: a sale that sets or is judged against the usual price
 MIN_COMPS = BLS.MIN_N                   # 5 comparable sales before anything is called unusual
@@ -103,7 +106,7 @@ MIN_BUYERS = 5                          # buyers withheld under this many distin
 MIN_JUDGED = 10                         # unusual and best value withheld under this many judged sales
 BEST_MIN_ACRES = 40
 CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=1">'
-JS = '<script src="/components/land-sales.js?v=3" defer></script>'
+JS = '<script src="/components/land-sales.js?v=4" defer></script>'
 KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
 KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
 LIST_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"]
@@ -519,6 +522,8 @@ def month_page(d, M, early, coverage, archive):
         b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
     if "VT" in M["states"]:
         b.append('<p class="ls-fine">%s</p>' % e(VT_NOTE))
+    if "NJ" in M["states"]:
+        b.append('<p class="ls-fine">%s</p>' % e(NJ_NOTE))
     b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-month"></div></div>')
     # buyers
     b.append('<h2 id="buyers">Biggest buyers</h2>')
@@ -661,6 +666,8 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
         b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
     if st == "VT":
         b.append('<p class="ls-fine">%s</p>' % e(VT_NOTE))
+    if st == "NJ":
+        b.append('<p class="ls-fine">%s</p>' % e(NJ_NOTE))
     if st in EMAIL_STATES:
         b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-county"></div></div>')
     b.append('<h2 id="every-sale">Every recorded sale</h2>')
@@ -706,7 +713,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
 # components/geo.js and Fast Facts), finds that county's link in the list already on this page
 # and offers it; nothing is fetched or sent, and a county not in the list gets its state instead.
 JUMP_JS = ("(function(){function go(){try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(!w||!w.state)return;"
-           "var S={IL:'illinois',WI:'wisconsin',IN:'indiana',VT:'vermont',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana',VERMONT:'vermont'},"
+           "var S={IL:'illinois',WI:'wisconsin',IN:'indiana',VT:'vermont',NJ:'new-jersey',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana',VERMONT:'vermont','NEW JERSEY':'new-jersey'},"
            "st=S[String(w.state).toUpperCase()],el=document.getElementById('ls-mine');if(!el)return;"
            "var n=function(x){return String(x||'').toLowerCase().replace(/\\s+(county|parish)$/,'').replace(/[^a-z]/g,'')};"
            "if(!st){el.innerHTML='Your state is not on these pages yet: <a href=\"#coverage\">where each state stands</a>.';el.hidden=false;return;}"
