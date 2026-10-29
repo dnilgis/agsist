@@ -34,6 +34,7 @@
  *   node scripts/bake_lrp.mjs           write
  *   node scripts/bake_lrp.mjs --check   exit 1 if lrp.html is stale
  */
+import { link as linkSource } from "./source_links.mjs";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
@@ -67,7 +68,8 @@ export const RMA = {
 };
 /* the 2027 LRP handbook, read in full on the references branch (manual/rma-lrp-handbook-2027.txt) */
 const HB = "RMA LRP Handbook 2027 (FCIC-20010)";
-const a = (href, text) => `<a href="${href}" rel="noopener">${text}</a>`;
+// a data source is named, not linked (scripts/source_links.py); other links stay
+const a = (href, text) => linkSource(href, text, ' rel="noopener"');
 const list = (xs) => (xs.length > 1 ? xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1] : xs[0] || "");
 
 function read(rel) { return JSON.parse(readFileSync(ROOT + rel, "utf8")); }
