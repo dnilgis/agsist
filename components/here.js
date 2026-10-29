@@ -419,6 +419,8 @@
     var box = $('h-cm'), p = S.prof, w = S.where || {};
     if (!box || !p) return;
     /* shown and held at once (here.css .cm-hold), so nothing under it moves when it fills */
+    var old = box.querySelector('.cm-box');
+    if (old && old.cmMap) { try { old.cmMap.remove(); } catch (e) { /* the old map is gone with its box */ } }
     box.innerHTML = ''; box.classList.add('cm-hold'); box.hidden = false;
     var top = $('cm-top'); if (top) top.innerHTML = '';
     function mine() { return S.prof && S.prof.fips === fips; }

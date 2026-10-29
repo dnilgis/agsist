@@ -209,3 +209,4 @@ html:not([data-fx]) #h-form,html:not([data-fx]) .h-alt,html:not([data-fx]) .h-as
    fills it), so the cards under it do not move when the map and its lines come in */
 .cm.cm-hold{min-height:740px}
 @media (min-width:900px){.cm.cm-hold{min-height:580px}}
+@media print{.cm.cm-hold{min-height:0}}
