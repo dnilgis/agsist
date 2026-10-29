@@ -66,6 +66,13 @@ test('the before-paint script is on the page, after the card, outside the seed',
   assert.match(EARLY[1], /^\/\*[\s\S]*?\*\/try\{/, 'storage blocked: it does nothing and throws nothing');
   assert.match(EARLY[1], /setTimeout\(/, 'gives the summary back if the numbers never come');
   assert.equal(/var Z3 = '([^']+)'/.exec(fs.readFileSync(join(ROOT, 'components/milk-tools.js'), 'utf8'))[1], /Z='([^']+)'/.exec(EARLY[1])[1], 'the same ZIP table');
+  // the card's body is held unseen from the head until that script has run (a slow line paints half pages)
+  const pend = /<script>(\/\* agsist-milk-area-pend[\s\S]*?)<\/script>/.exec(page);
+  assert.ok(pend && page.indexOf(pend[0]) < page.indexOf('</head>'), 'the hold is set in the head');
+  assert.match(pend[1], /^\/\*[\s\S]*?\*\/try\{/, 'storage blocked: no hold, nothing thrown');
+  assert.match(pend[1], /setTimeout\(function\(\)\{d\.classList\.remove\('dp-area-pend'\);\},3000\)/, 'let go after 3 s regardless');
+  assert.match(page, /\.dp-area-pend #dp-area-out\{visibility:hidden;\}/, 'unseen, its space kept');
+  assert.match(EARLY[0], /\}catch\(_\)\{\}try\{document\.documentElement\.classList\.remove\('dp-area-pend'\);\}catch\(_\)\{\}<\/script>$/, 'let go as soon as it has run, whatever it did');
   assert.equal(AREAS.length, 20);
   for (const a of AREAS) assert.ok(OPTIONS.includes(a), a);
 });
@@ -95,6 +102,10 @@ test('the bars carry no number a reader could take for a price', () => {
   assert.match(e.html, /^<div class="dp-area-skel" aria-hidden="true"/);
   assert.match(page, /\.dp-area-skel p,\.dp-area-skel span\{color:transparent;/);
   assert.match(page, /\.dp-area-wait #dp-area-out>:not\(\.dp-area-skel\)\{display:none;\}/);
+  // the picker's width is set, not taken from its options: a slow machine paints while the parser is still
+  // inside the <select> (42px with no options yet), and the later options widened it until it wrapped below
+  // the heading at 390 (CI, Oct 28: 0.0104). 13.5em holds "Western Pennsylvania" in Inter and its fallbacks.
+  assert.match(page, /\.dp-area-pick select\{width:13\.5em;[^}]*max-width:100%;/);
   // the all-milk line only where milk-tools.js can print one (a single-state area)
   assert.match(e.html, /Wisconsin all-milk price/);
   assert.match(early({ 'agsist-wx-loc': JSON.stringify({ state: 'VT' }) }).html, /Vermont all-milk price/);
@@ -108,7 +119,7 @@ let chromium = null;
 try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !fs.existsSync(CHROME) ? 'Playwright or Chromium not found here' : false;
 
-function serve() {
+function serve(chunk = 0) {
   const types = { '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.html': 'text/html', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
@@ -116,7 +127,12 @@ function serve() {
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { 'content-type': types[extname(f)] || 'application/octet-stream' });
-    res.end(fs.readFileSync(f));
+    const buf = fs.readFileSync(f);
+    if (!chunk || extname(f) !== '.html') { res.end(buf); return; }
+    // a slow line: the page comes in pieces, so the browser paints parts of it before the rest arrives
+    let at = 0;
+    const next = () => { res.write(buf.subarray(at, at + chunk)); at += chunk; if (at >= buf.length) res.end(); else setTimeout(next, 40); };
+    next();
   });
   return new Promise((ok) => srv.listen(0, '127.0.0.1', () => ok(srv)));
 }
@@ -208,5 +224,47 @@ test('the mailbox file does not answer: the summary comes back, no bars left beh
     assert.match(await pg.locator('#dp-area-out').innerText(), /Pick your area for its own price first/);
     assert.equal(await pg.locator('#dp-area-sum').isVisible(), true);
     await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+// Oct 29: CI caught 0.0104 at 390 in the split state. Two ways a paint could land before the card's own
+// script ran: the parser still inside the <select> (picker 42px wide, then wider, wrapping under the heading),
+// and the summary painted where the ask then pushed it down (0.0339 when the page comes in 4 KB pieces).
+test('a slow line that paints half the page: Your area still moves nothing', { skip, timeout: 120000 }, async () => {
+  const srv = await serve(4096), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const places = [
+    ['split state', { 'agsist-wx-loc': JSON.stringify({ state: 'PA' }) }],
+    ['unreported state', { 'agsist-wx-loc': JSON.stringify({ state: 'MT' }) }],
+    ['Wisconsin place', { 'agsist-wx-loc': JSON.stringify({ state: 'WI' }) }],
+    ['no saved place', {}],
+  ];
+  try {
+    for (const w of [390, 1280]) for (const [name, store] of places) {
+      const ctx = await browser.newContext({ serviceWorkers: 'block', viewport: { width: w, height: 900 } });
+      await ctx.route('**/*', (r) => (new URL(r.request().url()).hostname !== '127.0.0.1' ? r.abort() : r.continue()));
+      await ctx.addInitScript((s) => {
+        try { for (const k of Object.keys(s)) localStorage.setItem(k, s[k]); } catch (e) {}
+        window.__cls = 0; window.__shifts = [];
+        new PerformanceObserver((l) => {
+          for (const e of l.getEntries()) {
+            if (e.hadRecentInput) continue;
+            window.__cls += e.value;
+            window.__shifts.push(e.value.toFixed(4) + ' ' + (e.sources || []).map((x) => (x.node ? (x.node.id || x.node.nodeName) + ' "' + String(x.node.textContent || '').slice(0, 30) + '" y' + Math.round(x.previousRect.y) + '->' + Math.round(x.currentRect.y) : '?')).join(',') + ' at ' + Math.round(e.startTime) + 'ms');
+          }
+        }).observe({ type: 'layout-shift', buffered: true });
+      }, store);
+      const pg = await ctx.newPage();
+      await pg.goto(`http://127.0.0.1:${port}/milk-prices`, { waitUntil: 'load' });
+      await pg.waitForFunction(() => window.agsistMilk && !document.querySelector('.dp-area-skel'), null, { timeout: 20000 });
+      await pg.waitForTimeout(300);
+      const r = await pg.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts, pend: document.documentElement.classList.contains('dp-area-pend'),
+        vis: getComputedStyle(document.getElementById('dp-area-out')).visibility }));
+      const tag = `${w} ${name} (slow line)`;
+      assert.ok(r.cls < 0.001, `${tag}: layout shift ${r.cls} (${r.shifts.join(' | ')})`);
+      assert.equal(r.pend, false, `${tag}: the card is let go`);
+      assert.equal(r.vis, 'visible', tag);
+      await ctx.close();
+    }
   } finally { await browser.close(); srv.close(); }
 });

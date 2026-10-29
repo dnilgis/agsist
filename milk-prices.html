@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#111a0a">  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+  <meta name="theme-color" content="#111a0a">  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-milk-area-pend: a saved place or area may change "Your area" once the card is read; keep its body unseen (its space kept) until the before-paint script after the card has laid it out, so a slow line that paints half the page moves nothing. Fails soft: shown after 3 s regardless. */try{(function(d,L){if(L.getItem('agsist-milk-area')||L.getItem('agsist-wx-loc')||L.getItem('agsist_user_zip')||L.getItem('agsist_zip')){d.classList.add('dp-area-pend');setTimeout(function(){d.classList.remove('dp-area-pend');},3000);}})(document.documentElement,localStorage);}catch(_){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -70,7 +70,7 @@
   .dp-area-chg{margin:0 0 .35rem;font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:700;}
   .dp-area-line{margin:.2rem 0 0;line-height:1.5;color:var(--text-dim);font-size:.95rem;}
   /* a saved place: the card's final lines as blank bars until the numbers land (the before-paint script below the card) */
-  .dp-area-wait #dp-area-out>:not(.dp-area-skel){display:none;}
+  .dp-area-wait #dp-area-out>:not(.dp-area-skel){display:none;}.dp-area-pend #dp-area-out{visibility:hidden;}
   .dp-area-skel p,.dp-area-skel span{color:transparent;user-select:none;}
   .dp-area-skel p{background:var(--surface2);border-radius:6px;}
   /* read my check */
@@ -550,7 +550,7 @@ h='<div class="dp-area-skel" aria-hidden="true" data-area="'+e(area)+'"><p class
 '<p class="dp-note-src">Mailbox price is net pay after hauling and co-op deductions, as USDA AMS reports it for the area. Source: AMS mailbox report.</p></div>';
 sel.value=area;o.insertAdjacentHTML('beforeend',h);o.setAttribute('aria-busy','true');sec.classList.add('dp-area-wait');
 setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.removeChild(k);sec.classList.remove('dp-area-wait');o.removeAttribute('aria-busy');}},10000);
-})(document,localStorage);}catch(_){}</script>
+})(document,localStorage);}catch(_){}try{document.documentElement.classList.remove('dp-area-pend');}catch(_){}</script>
   </section>
 
   <section class="dp-dmc" id="dp-dmc" aria-labelledby="dp-dmc-h">
