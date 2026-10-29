@@ -200,7 +200,7 @@ test("where the ask shows, and how it loads", () => {
   assert.match(read("farmland-atlas/wisconsin/barron-county.html"), /<section class="as" data-atlas-sales="county" data-st="WI"/, "the Atlas county block the ask follows");
   assert.match(read("components/land-alert.js"), /section\[data-atlas-sales="county"\]/);
   const L = read("components/loader.js");
-  assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=2';/);
+  assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=3';/);   // v3: fx/landvt (Vermont)
   assert.match(L, /document\.querySelector\('\[data-land-alert\],section\[data-atlas-sales="county"\]'\)/);
   assert.match(L, /var CV = '104';/);   // 104: fx/ratecard; 102: fx/merges2; 101: fx/changemap; 100: fx/smallfixes (styles.css?v=27); 99: fx/promo2
   assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 264);

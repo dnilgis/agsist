@@ -14,7 +14,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const require = createRequire(import.meta.url);
 const S = require(join(ROOT, "components/atlas-sales.js"));
-const STATE_DIRS = { il: "illinois", wi: "wisconsin", in: "indiana", mn: "minnesota", ia: "iowa" };
+const STATE_DIRS = { il: "illinois", wi: "wisconsin", in: "indiana", mn: "minnesota", ia: "iowa", vt: "vermont" };
 // every state with county transfer files on disk (land audit Oct 18: Indiana was missed when this listed IL and WI by hand)
 const NAMED = readdirSync(join(ROOT, "data/land"), { withFileTypes: true })
   .filter((d) => d.isDirectory() && readdirSync(join(ROOT, "data/land", d.name)).some((n) => /^\d{5}\.json$/.test(n))).map((d) => d.name);

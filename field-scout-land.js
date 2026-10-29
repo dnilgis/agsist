@@ -598,7 +598,7 @@
   // file; others: matchTransfers of the same parcel, this sale left out. Plain strings for node.
   FSLand.saleDetailHTML = function (r, file, others) {
     file = file || {}; others = others || [];
-    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI';
+    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI', VT = st === 'VT';
     var form = IL ? 'declaration' : IN ? 'sales disclosure form' : 'return';
     var cols = file.cols || [];
     var has = function (c) { return cols.indexOf(c) >= 0; };
@@ -614,6 +614,7 @@
     row('Price', price > 0 ? fm(price) : price === 0 ? '$0 on the ' + (IL ? 'declaration' : 'return') : NOTIN,
       (IL ? 'Net consideration (Line 13 of Form PTAX-203: full consideration less personal property, Line 12a), or full consideration (Line 11) when Line 13 is blank. Covers the real estate that sold, buildings included.'
         : IN ? 'Sales price (E1) less personal property (E2) on the Indiana sales disclosure form. Covers the real estate that sold, buildings included.'
+        : VT ? 'Value paid or transferred on the Vermont property transfer tax return (Form PTT-172). Covers the real estate that sold, buildings included.'
         : 'Sale price on the transfer return. Covers everything that sold, buildings included.') + (r.grp ? ' ' + esc(FSLand.groupText(r)) + ': ' + r.grpPrices.map(fm).join(' + ') + '.' : ''));
     row('Acres', ac > 0 ? (+ac).toFixed(2).replace(/\.?0+$/, '') : r.acUnsure ? '<span class="fl-warn">uncertain</span>' : NOTIN,
       r.acBig ? 'The record gives ' + esc(r.acBig) + ' acres on one parcel, more than a full section (640), so we treat the acres as uncertain.' :
@@ -625,7 +626,7 @@
     row('Deed or conveyance type', v(r.conv) ? esc(r.conv) : NOTIN);
     row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls, st)) + ' <span class="fl-note">(' + esc(FSLand.classNote(r.cls, st)) + ')</span>' : NOTIN);
     row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
-    row(IL ? 'State transfer tax' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
+    row(IL ? 'State transfer tax' : VT ? 'Property transfer tax' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
     var why = FSLand.notMarketWhy(r);
     row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court, foreclosure, trade and partition deeds, shares of the land and fee-exempt transfers.');
     row('Verified', 'No', 'Taken from public transfer records, not confirmed with a party to the sale.');

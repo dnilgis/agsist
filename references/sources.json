@@ -2580,6 +2580,14 @@
     {"id": "aphis-mexico-cattle-import", "kind": "html",
      "url": "https://www.aphis.usda.gov/live-animal-import/cattle-bison-germplasm/mexico",
      "title": "APHIS: importing cattle and bison from Mexico (port status)",
-     "why": "AI answer blocks (data/ai-answers.json): screwworm block (border ports reopened to Mexican cattle)"}
+     "why": "AI answer blocks (data/ai-answers.json): screwworm block (border ports reopened to Mexican cattle)"},
+    {"id": "vcgi-open-geodata-policy", "kind": "pdf",
+     "url": "https://maps.vcgi.vermont.gov/opendata/VT_Open_GeoData_Policy_final1.0.pdf",
+     "title": "VCGI: Vermont Open Geodata Policy 1.0",
+     "why": "Vermont land sales (/land-sales/vermont): the terms of the statewide property transfer file VCGI publishes"},
+    {"id": "statute-vt-32-9606", "kind": "html",
+     "url": "https://legislature.vermont.gov/statutes/section/32/231/09606",
+     "title": "32 V.S.A. 9606: the property transfer return",
+     "why": "Vermont land sales: what the law says about the return and its public use (to read before the terms are quoted)"}
 ]
 }

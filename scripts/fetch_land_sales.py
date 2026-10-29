@@ -2009,8 +2009,44 @@ def selftest():
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
     ck("probe-only states (IA, SD, OH) are never built before their parser exists",
        all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IA", "SD", "OH")))
-    ck("phase 1 statewide sources (FL, NY, MD, VT, NJ, CT) are saved by the probe and never built",
-       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "VT", "NJ", "CT")))
+    ck("phase 1 statewide sources (FL, NY, MD, NJ, CT) are saved by the probe and never built",
+       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "NJ", "CT")))
+    # Vermont (Oct 29): PTT-172 returns from the statewide file, mapped onto the shared rule by the form's words.
+    ck("VT: built, not probe-only, never reads a parcel point or an address",
+       not STATES["VT"].get("probe_only") and not any(re.search(r"(?i)latitude|longitude|geom|addr|street|zip", c) for c in VT_COLS))
+    vb = {"returnID": "1", "closeDate": 20250315000000, "recvdDate": 20250320000000, "TownDteRec": 20250318000000, "ValPdOrTrn": 300000.0,
+          "landSize": 100.0, "span": "123-456-78901", "countyCode": 1, "TOWNGEOID": "75850", "TOWNNAME": "WALTHAM", "sUsePrDesc": "04. Operating Farm",
+          "bUsePrDesc": "04. Operating Farm", "enrCrntUse": "No", "famMemDesc": None, "prTxExDesc": "No exemption.", "LGTExDesc": None,
+          "intUDPdesc": "Fee Simple", "intUDP": None, "intPrTypOt": None, "blCn1Desc": "01. None", "blCn2Desc": None, "blCn3Desc": None,
+          "buyrAdjPrp": "No", "sellEntNam": "TEST FARM LLC", "sellFstNam": None, "sellLstNam": None, "buyEntNam": None, "buyFstNam": "PAT",
+          "buyLstNam": "BUYER", "addSellNam": None, "addBuyrNam": "12 MAIN ST"}
+    def vt1(**kw):
+        r = dict(vb, **kw)
+        return dict(zip(["doc", "date", "price", "acres", "cls", "conv", "pid", "muni", "county", "legal", "grantor", "grantee", "exempt", "np", "rec", "flags"],
+                        (list(vt_table([r], {"75850": ("50001", "Waltham town")}))[1:] or [[None] * 16])[0]))
+    v0 = vt1()
+    ck("VT: a plain farm sale reads by the form's words", v0["cls"] == "4" and v0["conv"] == "Transfer" and v0["exempt"] == "" and v0["date"] == "2025-03-15"
+       and v0["rec"] == "2025-03-18" and v0["county"] == "Addison" and v0["muni"] == "WALTHAM TOWN" and v0["price"] == "300000.00")
+    ck("VT: a street address in the added names is never kept", v0["grantee"] == "PAT BUYER" and v0["grantor"] == "TEST FARM LLC")
+    ck("VT: timberland is class 6; open land counts only when enrolled in current use; a house lot is not farm land",
+       vt1(sUsePrDesc="06. Timberland", bUsePrDesc="06. Timberland")["cls"] == "6"
+       and vt1(sUsePrDesc="03. Open Land", bUsePrDesc="03. Open Land", enrCrntUse="Yes")["cls"] == "5"
+       and vt1(sUsePrDesc="03. Open Land", bUsePrDesc="03. Open Land")["doc"] is None
+       and vt1(sUsePrDesc="01. Primary Residence", bUsePrDesc="01. Primary Residence")["doc"] is None)
+    ck("VT: buildings boxes become building classes (farm buildings 7, a house 1)",
+       vt1(blCn1Desc="07. Farm Buildings", blCn2Desc="02. Single Family Dwelling")["cls"] == "4 1 7")
+    ck("VT: a family sale is related; an exemption is exempt, the housing agency rate is not; a gift by the land gains words",
+       "Related Parties" in vt1(famMemDesc="02. Parent/Child")["conv"] and vt1(famMemDesc="00")["conv"] == "Transfer"
+       and vt1(prTxExDesc="Transfers of property to the United States of America")["exempt"] == "1"
+       and vt1(prTxExDesc="Please use this exemption number for the buyer\u2019s principal residence funded in part with a")["exempt"] == ""
+       and "Gift" in vt1(LGTExDesc="Transfers without consideration")["conv"])
+    ck("VT: a whole undivided interest is whole; a part, a life estate or a conservation easement is not",
+       vt1(intUDPdesc="Undivided Interest", intUDP=100.0)["conv"] == "Transfer"
+       and "less than full interest" in vt1(intUDPdesc="Undivided Interest", intUDP=50.0)["flags"]
+       and "less than full interest" in vt1(intUDPdesc="Life Estate")["flags"]
+       and "less than full interest" in vt1(intUDPdesc="Other", intPrTypOt="conservation easement")["flags"])
+    ck("VT: current use enrollment is a fact on the sale", "enrolled in current use" in vt1(enrCrntUse="Yes")["flags"]
+       and "enrolled in current use" not in v0["flags"])
     # Indiana sales disclosure forms: a synthetic file in the real SDF_<year>.zip shape
     # (test/fixtures/land-sales/make_in_sdf_sample.py writes it with the real column titles)
     sys.path.insert(0, os.path.join(ROOT, "test", "fixtures", "land-sales"))
