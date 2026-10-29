@@ -88,7 +88,8 @@ test("cash bid pages: one sponsor slot per state, listed for the sign-up form", 
     pitch: "Your name beside the cash bids on the New York page and every New York town page. One category-exclusive slot.", tier: "state", state: "NY" });
   assert.equal(out[1], "True");
   // the form groups them, and the bids job keeps the list in step with the state pages
-  assert.match(read("components/sponsor-apply.js"), /s\.page\.indexOf\('\/cash-bids\/'\) === 0 \? groups\.bids/);
+  // Oct 29, 2026: the form offers each state once, from the slots the list marks tier "state"
+  assert.match(read("components/sponsor-apply.js"), /if \(s\.tier !== 'state' \|\| !s\.state\) return;/);
   const wf = read(".github/workflows/cash-bid-pages.yml");
   assert.match(wf, /run: python scripts\/stamp_rates\.py\n/);
   assert.match(wf, /git add -A cash-bids data\/pointers data\/sponsor-slots\.json /);
@@ -210,5 +211,5 @@ test("/sponsor: who reads AGSIST sits in the first screen, from the same audienc
   assert.match(hero, /href="mailto:sig@agsist\.com/);
   // the page refreshes every data-a span from data/audience.json on load
   assert.match(h, /querySelectorAll\('\[data-a="' \+ k \+ '"\]'\)/);
-  assert.match(h, /your state&rsquo;s cash bids \(the state page and every town page in it\)/);
+  assert.match(h, /your state&rsquo;s cash bids page and every town page in it, your state&rsquo;s cash rent page/);
 });
