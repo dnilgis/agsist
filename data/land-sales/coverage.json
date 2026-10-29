@@ -8,7 +8,7 @@
   "nondisclosure": "Sale prices not public record",
   "unchecked": "Not checked yet"
  },
- "note": "Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig). A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
+ "note": "Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig), Vermont Oct 29. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
  "states": [
   {
    "status": "unchecked",
@@ -583,11 +583,11 @@
    ]
   },
   {
-   "status": "unchecked",
-   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
-   "names": "To check",
-   "cadence": "",
-   "terms": "To check",
+   "status": "live",
+   "source": "State property transfer tax returns (Vermont Department of Taxes, Form PTT-172, published free by the Vermont Center for Geographic Information), operating farm, timberland and open land enrolled in current use, from 2019",
+   "names": "Yes",
+   "cadence": "State posts weekly; read here monthly",
+   "terms": "Public record (32 V.S.A. 9606), state open data",
    "st": "VT",
    "name": "Vermont",
    "tile": [

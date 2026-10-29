@@ -32,7 +32,7 @@ A sale whose id is in data/land-sales/removed.json keeps no names at all.
 WORDS: "unusual price", with plain possible reasons (family sale, part interest, buildings or timber
 included); never "questionable" or any word that accuses anyone.
 
-STATES: Illinois, Wisconsin and Indiana (Sig, Oct 27: "Yes turn on Indiana"; it was held to Field Scout
+STATES: Illinois, Wisconsin, Indiana and Vermont (Sig, Oct 27: "Yes turn on Indiana"; it was held to Field Scout
 and the comp report since Oct 18), the monthly land sale email included (land_alert.STATES); the email
 ask shows beside any state the email covers. Indiana's records differ and the pages say so
 (IN_NOTE): the date is the sale date on the disclosure form (no recording date), and the place is the
@@ -42,7 +42,7 @@ per-state source table, kept by hand; this script only draws it and counts the s
 EVERY SALE (Sig, Oct 29, 2026: "people are nosey"): a county page lists every recorded market sale of
 any acreage, newest first, with its date, acres, price, $/acre and type: farmland, with buildings,
 forest or small parcel (build_land_summary.land_type, the one land rule: buildings by property class
-only, never deed text; a Wisconsin forest-class sale with no farm class is forest; a small parcel is
+only, never deed text; a Wisconsin or Vermont forest-class sale with no farm class is forest; a small parcel is
 under 20 known acres). Small parcels, buildings and forest are listed, never mixed into the middle.
 
 HONEST NUMBERS: a section with too few sales is withheld and says why. "Usual", the county page's
@@ -74,13 +74,22 @@ import build_land_summary as BLS   # noqa: E402
 import land_alert as LA             # noqa: E402
 
 ORIGIN = "https://agsist.com"
-STATES = ("IL", "WI", "IN")
+STATES = ("IL", "WI", "IN", "VT")   # Vermont since Oct 29, 2026 (Sig: next land states, Vermont first)
 SLUG = dict(LA.STATE_SLUGS, IN="indiana")
 NAME = dict(LA.STATE_NAMES, IN="Indiana")
 SOURCES = dict(LA.SOURCES, IN="Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels")
 EMAIL_STATES = LA.STATES               # the monthly email covers these; the ask shows only beside them
 IN_NOTE = ("Indiana's sales disclosure forms carry the sale date, not a recording date, and the town is the parcel's mailing town, "
            "placed at the middle of its ZIP code rather than a township. Our Indiana copy starts with 2021 forms.")
+# Vermont's return, mapped onto the shared market-sale rule (fetch_land_sales.vt_table, vt_class): the method note
+# on every Vermont page and in any month with a Vermont sale.
+VT_NOTE = ("Vermont sales come from the property transfer tax return. A return is a farm sale here when the land's use before or "
+           "after the sale is an operating farm or timberland, or open land enrolled in current use. Left out of the market rule: a buyer "
+           "the return marks as related to the seller (family, the seller's own trust or another relation), a return that claims a transfer tax exemption, a transfer the land gains tax return says "
+           "was without pay, by divorce or by foreclosure, and anything less than the whole interest (a share, a life estate, a lease or an "
+           "easement). Buildings come from the return's buildings boxes; timberland with no operating farm and no buildings is forest. "
+           "Current use enrollment is shown on each sale; Vermont enrolls both farm and forest land, so open land in current use is counted "
+           "as farmland and may include some woods. Our Vermont copy starts with the returns posted in 2019.")
 LIST_MIN_ACRES = LA.LIST_MIN_ACRES      # 10: a listed sale
 COMP_MIN_ACRES = BLS.MIN_ACRES          # 20: a sale that sets or is judged against the usual price
 MIN_COMPS = BLS.MIN_N                   # 5 comparable sales before anything is called unusual
@@ -243,7 +252,8 @@ def pub_row(st, r, county, u=None):
             "when": shown_day(r), "basis": "recorded" if rec else "sale date",
             "acres": round(a, 2) if a is not None else None, "price": BLS.js_round(BLS.num(r.get("price")) or 0),
             "ppa": r.get("ppa"), "pt": [round(r["pt"][0], 4), round(r["pt"][1], 4)] if r.get("pt") else None,
-            "bldg": with_bldg(r), "kind": BLS.land_type(r, st), "flag": judge(r, u)}
+            "bldg": with_bldg(r), "kind": BLS.land_type(r, st), "flag": judge(r, u),
+            "cu": st == "VT" and "ENROLLED IN CURRENT USE" in str(r.get("conv") or "").upper()}
 
 
 # ---------------------------------------------------------------- the monthly update
@@ -394,11 +404,16 @@ def names_btn(sid, file, what="buyer and seller"):
 
 
 def flag_words(p):
+    """The note for a sale: an unusual price, and for Vermont whether the return says the land is enrolled in
+    current use (a fact about the sale, not a farm test: Sig's brief, Oct 29)."""
+    w = ""
     if p.get("flag") == 1:
-        return "Unusual price: above the county's usual"
-    if p.get("flag") == -1:
-        return "Unusual price: below the county's usual"
-    return ""
+        w = "Unusual price: above the county's usual"
+    elif p.get("flag") == -1:
+        w = "Unusual price: below the county's usual"
+    if p.get("cu"):
+        w = (w + "; " if w else "") + "Enrolled in current use"
+    return w
 
 
 def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None):
@@ -502,6 +517,8 @@ def month_page(d, M, early, coverage, archive):
                  % and_list([NAME[s] for s in M["states"] if M["per_state"][s]["basis"] == "sale date"]))
     if "IN" in M["states"]:
         b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
+    if "VT" in M["states"]:
+        b.append('<p class="ls-fine">%s</p>' % e(VT_NOTE))
     b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-month"></div></div>')
     # buyers
     b.append('<h2 id="buyers">Biggest buyers</h2>')
@@ -642,6 +659,8 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
                  % (e(and_list([NAME[x] for x in latest["states"]])), latest["month"], e(latest["label"])))
     if st == "IN":
         b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
+    if st == "VT":
+        b.append('<p class="ls-fine">%s</p>' % e(VT_NOTE))
     if st in EMAIL_STATES:
         b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-county"></div></div>')
     b.append('<h2 id="every-sale">Every recorded sale</h2>')
@@ -663,7 +682,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
         if any(p["basis"] == "sale date" for p in allp):
             b.append('<p class="ls-fine">* Dated by the deed; the state file this was read from does not carry the recording date for these rows.</p>')
         b.append('<p class="ls-fine">Type: with buildings means the property class on the record shows a house, farm buildings or a business; '
-                 'forest means forest classes with no farm class (Wisconsin); a small parcel is under %d acres; farmland is the rest. '
+                 'forest means forest classes with no farm class (Wisconsin) or timberland with no operating farm (Vermont); a small parcel is under %d acres; farmland is the rest. '
                  'Acres not stated: a return covering several parcels that does not give them.</p>' % COMP_MIN_ACRES)
         if u:
             b.append("<p>A sale marked unusual is bare farmland whose price per acre sits well outside the market middle half; possible reasons above it: %s; below: %s.</p>"
@@ -687,7 +706,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
 # components/geo.js and Fast Facts), finds that county's link in the list already on this page
 # and offers it; nothing is fetched or sent, and a county not in the list gets its state instead.
 JUMP_JS = ("(function(){function go(){try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(!w||!w.state)return;"
-           "var S={IL:'illinois',WI:'wisconsin',IN:'indiana',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana'},"
+           "var S={IL:'illinois',WI:'wisconsin',IN:'indiana',VT:'vermont',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana',VERMONT:'vermont'},"
            "st=S[String(w.state).toUpperCase()],el=document.getElementById('ls-mine');if(!el)return;"
            "var n=function(x){return String(x||'').toLowerCase().replace(/\\s+(county|parish)$/,'').replace(/[^a-z]/g,'')};"
            "if(!st){el.innerHTML='Your state is not on these pages yet: <a href=\"#coverage\">where each state stands</a>.';el.hidden=false;return;}"
@@ -794,11 +813,12 @@ def build(repo=REPO):
                                                   p["flag"] or 0, 1 if p["bldg"] else 0] for p in feat]}
             out["data/land/names/%s/%s.json" % (st.lower(), c["fips"])] = dump({"fips": c["fips"], "sales": names})
             out["land-sales/%s/%s.html" % (SLUG[st], slug)] = county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all)
+            cu = st == "VT"      # Vermont's list carries current use enrollment as a last column
             out["data/land-sales/%s/%s.json" % (st.lower(), c["fips"])] = dump(
                 {"st": st, "fips": c["fips"], "county": c["name"], "through": through, "names": "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]),
-                 "kinds": {v: KIND_WORDS[k] for k, v in KIND_CODE.items()}, "cols": LIST_COLS,
+                 "kinds": {v: KIND_WORDS[k] for k, v in KIND_CODE.items()}, "cols": LIST_COLS + (["cu"] if cu else []),
                  "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"], p["place"],
-                        KIND_CODE[p["kind"]], p["flag"] or 0] for p in allp]})
+                        KIND_CODE[p["kind"]], p["flag"] or 0] + ([1 if p["cu"] else 0] if cu else []) for p in allp]})
             urls.append(("%s/land-sales/%s/%s" % (ORIGIN, SLUG[st], slug), d.fetched[st]))
         sfile["cols"] = ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg"]
         out["data/land-sales/%s.json" % st.lower()] = dump(sfile)

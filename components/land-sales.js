@@ -220,13 +220,14 @@
   function acresCell(a) { return a == null ? 'not stated' : (Math.round(a * 10) / 10).toLocaleString('en-US'); }
   function listRow(o, f) {
     var flag = o.flag === 1 ? 'Unusual price: above the county’s usual' : o.flag === -1 ? 'Unusual price: below the county’s usual' : '';
+    if (o.cu) flag = (flag ? flag + '; ' : '') + 'Enrolled in current use';   /* Vermont: current use enrollment, a fact per sale */
     var when = o.when ? MON[+o.when.slice(5, 7) - 1] + ' ' + (+o.when.slice(8, 10)) + ', ' + o.when.slice(0, 4) + (o.recorded ? '' : '*') : '';
     return '<tr data-k="' + esc(o.kind) + '"><td>' + esc(when) + '</td><td>' + esc((o.place ? o.place + ', ' : '') + f.county + ' County, ' + f.st) + '</td>'
       + '<td class="n">' + esc(acresCell(o.acres)) + '</td><td class="n">' + esc(money(o.price)) + '</td><td class="n">' + esc(o.ppa != null ? money(o.ppa) : '') + '</td>'
       + '<td>' + esc((f.kinds && f.kinds[o.kind]) || '') + '</td><td>' + esc(flag) + '</td>'
       + '<td><button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button></td></tr>';
   }
-  function listRows(f) { return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < LIST_COLS.length; i++) o[LIST_COLS[i]] = a[i]; return o; }); }
+  function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; return o; }); }
   function fullList(box) {
     if (box.getAttribute('data-ls-done')) return;
     box.setAttribute('data-ls-done', '1');
