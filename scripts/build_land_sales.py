@@ -788,7 +788,7 @@ def build(repo=REPO):
             slug = county_slug(c["name"])
             counties[st].append((c["name"], slug, n12))
             sfile["counties"][c["fips"]] = {"name": c["name"], "slug": slug, "ll": [c["lat"], c["lng"]], "n12": n12,
-                                           "usual": {"med": u["med"], "n": u["n"]} if u else None,
+                                           "usual": {"med": u["med"], "n": u["n"], "q1": u["q1"], "q3": u["q3"]} if u else None, "k24": k24,
                                            "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"],
                                                   p["place"], p["pt"][0] if p["pt"] else None, p["pt"][1] if p["pt"] else None,
                                                   p["flag"] or 0, 1 if p["bldg"] else 0] for p in feat]}

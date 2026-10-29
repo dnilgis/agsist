@@ -19,6 +19,16 @@
    lines are components/change-lines.js (the same code the Daily and Fast Facts run), measured 30 mi
    from the county middle. Nothing changed this week: no block, by the same rule as the email.
 
+   Miles from the reader's point (Oct 29, 2026, property panel): when this device has a Field Scout
+   field (agsist-fs-fields) or a saved place (agsist-wx-loc) inside this county (data-ring, the
+   county outline), bids, the gauge and hail are measured from it and every row says so; else from
+   the county middle. Read in the browser only; nothing is sent. "This week here" stays on the
+   county middle, as the Daily measures it.
+
+   Land first (Oct 29, 2026): on a county that opens with its land (scripts/build_atlas_pages.py
+   land_first) two short rows sit in that block: the nearest posted bid with its town and miles,
+   and rain against usual with its gauge and miles.
+
    Fails soft: a file that does not answer turns its row into "not in right now", never a
    blank or an old number shown as new. Every row names its source and date. */
 (function () {
@@ -26,7 +36,7 @@
   var box = document.getElementById('ch-live');
   if (!box) return;
   var D = box.dataset, fips = D.fips, st = D.st;
-  var lat = D.lat != null ? +D.lat : null, lng = D.lng != null ? +D.lng : null;
+  var cLat = D.lat != null ? +D.lat : null, cLng = D.lng != null ? +D.lng : null, lat = cLat, lng = cLng;
   var lines = (D.lv || '').split(',').filter(Boolean);
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -84,8 +94,51 @@
   function fail(keys, why) { keys.forEach(function (k) { fill(k, { value: null, why: why }); }); }
 
   var P;
-  var ALL = ['corn-bid', 'soy-bid', 'corn-basis', 'soy-basis', 'corn-fut', 'soy-fut', 'rain', 'drought', 'hail', 'corn-progress', 'soy-progress', 'arc'].concat(lines);
+  var ALL = ['lf-bid', 'lf-rain', 'corn-bid', 'soy-bid', 'corn-basis', 'soy-basis', 'corn-fut', 'soy-fut', 'rain', 'drought', 'hail', 'corn-progress', 'soy-progress', 'arc'].concat(lines);
   var FROM = 'the county middle';
+
+  /* ── the reader's own point in this county, if this device has one ── */
+  function ringsOf(t) {
+    return String(t || '').split(';').map(function (r) {
+      return r.split(' ').map(function (p) { var a = p.split(','); return [+a[0], +a[1]]; }).filter(function (p) { return isFinite(p[0]) && isFinite(p[1]); });
+    }).filter(function (r) { return r.length >= 3; });
+  }
+  function inRing(r, x, y) {
+    var c = false;
+    for (var i = 0, j = r.length - 1; i < r.length; j = i++)
+      if ((r[i][1] > y) !== (r[j][1] > y) && x < (r[j][0] - r[i][0]) * (y - r[i][1]) / (r[j][1] - r[i][1]) + r[i][0]) c = !c;
+    return c;
+  }
+  function here(rings, la, ln) { return isFinite(la) && isFinite(ln) && rings.some(function (r) { return inRing(r, ln, la); }); }
+  function readLS(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function ownPoint() {
+    var rings = ringsOf(D.ring);
+    if (!rings.length) return null;
+    var fs = readLS('agsist-fs-fields');
+    if (Array.isArray(fs)) {
+      fs = fs.filter(function (f) { return f && Array.isArray(f.pts) && f.pts.length >= 3; })
+        .sort(function (a, b) { return (+b.editedAt || +b.id || 0) - (+a.editedAt || +a.id || 0); });
+      for (var i = 0; i < fs.length; i++) {
+        var la = 0, ln = 0, n = 0;
+        fs[i].pts.forEach(function (p) { if (p && isFinite(+p[0]) && isFinite(+p[1])) { la += +p[0]; ln += +p[1]; n++; } });
+        if (n >= 3 && here(rings, la / n, ln / n)) {
+          var nm = String(fs[i].name || '').trim().slice(0, 40);
+          return { lat: la / n, lng: ln / n, from: nm && nm !== 'Untitled' ? 'your field \u201c' + nm + '\u201d' : 'your saved field' };
+        }
+      }
+    }
+    var w = readLS('agsist-wx-loc');
+    if (w && here(rings, +w.lat, +w.lon)) return { lat: +w.lat, lng: +w.lon, from: 'your saved place' };
+    return null;
+  }
+  var OWN = ownPoint();
+  if (OWN) { lat = OWN.lat; lng = OWN.lng; FROM = OWN.from; }
+  function milesTo(ll) {   /* ll: [lng, lat] as the rain files carry it */
+    if (!ll || lat == null || lng == null || !isFinite(+ll[0]) || !isFinite(+ll[1])) return null;
+    var R = 3958.8, p = Math.PI / 180, a = Math.sin((+ll[1] - lat) * p / 2), b = Math.sin((+ll[0] - lng) * p / 2);
+    var h = a * a + Math.cos(lat * p) * Math.cos(+ll[1] * p) * b * b;
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
 
   /* ── bids and basis: the same pick as Fast Facts (P.bestBids over the live network, else the committed file) */
   function bids() {
@@ -94,6 +147,7 @@
       var b = P.bestBids(snap, lat, lng, 50), when = snap && snap.fetched ? snap.fetched : '';
       fill('corn-bid', P.factBid(b.corn, 'corn', FROM, when, '/cash-bids'));
       fill('soy-bid', P.factBid(b.soybeans, 'soybeans', FROM, when, '/cash-bids'));
+      fill('lf-bid', nearestBid(b, when));
       b.when = when;
       return b;
     }
@@ -102,6 +156,15 @@
       if (snap && snap.bids && snap.bids.length) return draw(snap);
       return getJSON('/data/bids.json').then(draw);
     }, function () { return getJSON('/data/bids.json').then(draw); });
+  }
+  /* land first: the nearest posted corn bid (else soybeans), its town and miles; never the buyer */
+  function nearestBid(b, when) {
+    var src = ['See the bids near here', '/cash-bids'];
+    var o = (b.corn && b.corn.nearest) ? ['corn', b.corn.nearest] : (b.soybeans && b.soybeans.nearest) ? ['soybeans', b.soybeans.nearest] : null;
+    if (!o) return { label: 'Nearest bid', value: null, why: 'no posted corn or soybean bid within 50 mi of ' + FROM, src: src };
+    var r = o[1], at = r.town ? r.town + (r.st ? ', ' + r.st : '') : 'an elevator';
+    return { label: 'Nearest bid', value: '$' + r.price.toFixed(2), date: String(when || '').slice(0, 10),
+      ctx: cap(o[0]) + ' at ' + at + ', ' + P.milesFrom(r.mi) + ' ' + FROM + '.', src: src };
   }
   function basis(local) {
     Promise.all([getJSON('/data/basis-states.json'), getJSON('/data/transport/basis.json'), local]).then(function (a) {
@@ -181,12 +244,29 @@
   }
   function weather() {
     getJSON('/data/rain/' + st.toLowerCase() + '.json').then(function (f) {
-      fill('rain', P.factRain(P.rainSoFar(f, fips), D.rain || '/rain'));
+      var r = P.rainSoFar(f, fips), c = f && f.counties && f.counties[fips];
+      if (OWN && r && r.station && c && c.station) {
+        var m = milesTo(c.station.ll);
+        if (m == null) r.station = null; else r.station.mi = m;
+      }
+      var row = P.factRain(r, D.rain || '/rain');
+      if (OWN && row.ctx) row.ctx = row.ctx.replace(' the county middle.', ' ' + FROM + '.');
+      fill('rain', row);
+      fill('lf-rain', rainVsUsual(r, D.rain || '/rain'));
     });
     getJSON('/data/drought/county-week.json').then(function (f) { fill('drought', droughtRow(P.droughtNow(f, fips))); });
     getJSON('/data/hail/recent.json').then(function (f) {
-      fill('hail', P.factHail(P.hailNear(f, lat, lng), FROM, lat != null ? '/hail-map?lat=' + lat.toFixed(4) + '&lon=' + lng.toFixed(4) : '/hail-map'));
+      fill('hail', P.factHail(P.hailNear(f, lat, lng), FROM, cLat != null ? '/hail-map?lat=' + cLat.toFixed(4) + '&lon=' + cLng.toFixed(4) : '/hail-map'));
     });
+  }
+  /* land first: rain since Jan 1 against usual, with the gauge and its miles */
+  function rainVsUsual(r, href) {
+    var src = ['NOAA', href];
+    if (!r || r.status !== 'ok') return { label: 'Rain', value: null, why: (r && r.why) || 'no county rain record', src: src };
+    var v = r.pct != null ? r.pct + '% of usual' : r.inches.toFixed(2) + ' in';
+    var g = r.station && r.station.name ? ' at the ' + r.station.name + ' gauge, ' + P.milesFrom(r.station.mi) + ' ' + FROM : '';
+    return { label: 'Rain', value: v, date: r.through,
+      ctx: r.inches.toFixed(2) + ' in since Jan 1' + g + '.', src: src };
   }
   function crops() {
     getJSON('/data/crop-progress.json').then(function (f) {
@@ -198,14 +278,14 @@
   var CL_JS = '/components/change-lines.js?v=1';
   function week() {
     var sec = document.getElementById('c-week'), net = window.AGSIST_BIDS_NET;
-    if (!sec || lat == null || lng == null) return;
+    if (!sec || cLat == null || cLng == null) return;
     loadScript(CL_JS, function () { return !!window.AgChangeLines; }).then(function (ok) {
       if (!ok) return;
       var L = window.AgChangeLines, idxP = net && net.index ? net.index().then(null, function () { return null; }) : Promise.resolve(null);
       var ss = L.SALES_STATES[st];
       var prevP = idxP.then(function (idx) {
         var sts = {};
-        if (idx) L.nearCorn(idx, lat, lng, L.WEEK_MI).forEach(function (r) { if (/^[A-Z]{2}$/.test(r.st)) sts[r.st] = 1; });
+        if (idx) L.nearCorn(idx, cLat, cLng, L.WEEK_MI).forEach(function (r) { if (/^[A-Z]{2}$/.test(r.st)) sts[r.st] = 1; });
         var ks = Object.keys(sts);
         return Promise.all(ks.map(function (k) { return getJSON('/data/bids-prev/' + k + '.json'); })).then(function (fs) {
           var o = {}; ks.forEach(function (k, i) { o[k] = fs[i]; }); return o;
@@ -214,7 +294,7 @@
       return Promise.all([getJSON('/data/drought/county-week.json'), idxP, prevP, getJSON('/data/basis-states.json'), getJSON('/data/prices.json'),
         ss ? getJSON('/data/land-sales/' + ss + '.json') : Promise.resolve(null)]).then(function (a) {
         var name = D.name || 'This county', stName = (P && P.STATES && P.STATES[st]) || st;
-        var blk = L.weekBlock(L.weekLines({ fips: fips, st: st, stName: stName, name: name, lat: lat, lng: lng, today: centralDay() },
+        var blk = L.weekBlock(L.weekLines({ fips: fips, st: st, stName: stName, name: name, lat: cLat, lng: cLng, today: centralDay() },
           { drought: a[0], index: a[1], prev: a[2], states: a[3], prices: a[4], sales: a[5] }));
         if (!blk) return;
         var h = '<h2 id="c-week-h">This week here <small>bids within ' + L.WEEK_MI + ' mi</small></h2>' +
@@ -235,7 +315,7 @@
     loadScript('/components/place.js?v=5', function () { return !!window.AgPlace; }).then(function (ok) {
       if (!ok) { fail(ALL, 'this part did not load; try again in a minute'); return; }
       P = window.AgPlace;
-      if (lat == null || lng == null) fail(['corn-bid', 'soy-bid'], 'no county middle on file to measure from');
+      if (lat == null || lng == null) fail(['corn-bid', 'soy-bid', 'lf-bid'], 'no county middle on file to measure from');
       var b = lat == null ? Promise.resolve(null) : loadScript('/components/bids-network.js?v=8', function () { return !!window.AGSIST_BIDS_NET; }).then(bids);
       basis(b.then(null, function () { return null; }));
       futures(); hay(); weather(); crops(); arc();
