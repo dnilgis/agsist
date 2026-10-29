@@ -129,7 +129,9 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
   //   Oct 28 2026: Sig, yes: the implied-futures shadow test "may run on its own during CBOT day session (every 30 min
   //     8:30-13:20 CT + once after close) for a week or two". No cron line: implied-futures.yml rides Fetch Grain Bids
   //     (pinned in the test below), so its entry lists none.
-  const APPROVED = { 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Sig, Oct 23 2026
+  //   Oct 28 2026: Sig, "YES to a daily point-in-time ("vintage") archive of outside data ... New schedule approved for
+  //     this": vintage.yml, weekdays 17:37 UTC (pinned in the test below).
+  const APPROVED = { 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Sig, Oct 23 2026
   const left = added.filter((a) => !Object.entries(APPROVED).some(([f, cs]) => cs.some((c) => a === `${f}: cron '${c}' (new workflow)` || a === `${f}: cron '${c}'`)));
   assert.deepEqual(left, [], 'a new schedule is Sig\'s decision: list it in the report, do not add it');
 });
@@ -201,4 +203,18 @@ test('history never reaches main', () => {
   for (const p of ['history/usdm-county/2025/IA.csv.gz', 'history/agtransport/manifest.json', 'private/data/reader-area/2026/2026-10-21.json']) {
     assert.ok(ignored(p), `${p} is ignored on main`);
   }
+});
+
+test('vintage archive (Sig, Oct 28 2026): one weekday schedule, private raw branch only, never replaces a saved file', () => {
+  const y = read(`${WF}/vintage.yml`);
+  assert.deepEqual(crons(y), ['37 17 * * 1-5'], 'the one approved schedule');
+  assert.match(y, /^permissions:\n  contents: read$/m, 'reads this repo only; nothing is committed to main');
+  assert.doesNotMatch(noComments(y), /git (commit|push)|contents: write/, 'no commit to main');
+  assert.match(y, /python3 scripts\/vintage\.py --selftest/, 'selftest first');
+  assert.match(y, /RAW_KEEP: '1'\n\s+run: \|\n.*\n\s+bash scripts\/push_raw\.sh "vintage \$DAY" vintage/, 'saved with RAW_KEEP (written once)');
+  assert.match(y, /pull_raw\.sh "vintage\/manifest\/\$DAY\.json"/, 'a day already on raw is not fetched again');
+  assert.doesNotMatch(noComments(y), /--day/, 'today only: a past day is never fetched under its old date');
+  const r = spawnSync('python3', ['scripts/vintage.py', '--selftest'], { cwd: root, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /vintage selftest: 0 failure\(s\)/);
 });
