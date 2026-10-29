@@ -30,7 +30,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only); soilr-probe or soilr:IL, soilr:IN, soilr:WI (dispatch only: the same from the gridded soil map and the Cropland Data Layer)"
+        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only); soilr-probe, soilr-all or soilr:IL, soilr:IN, soilr:WI (dispatch only: the same from the gridded soil map and the Cropland Data Layer)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -178,6 +178,8 @@ jobs:
           T="${{ inputs.task }}"
           if [ "$T" = "soilr-probe" ]; then
             for S in IL IN WI; do "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --limit 40 --minutes 10 || echo "::warning::$S raster probe failed"; done
+          elif [ "$T" = "soilr-all" ]; then
+            for S in IL IN WI; do "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --minutes 40 || echo "::warning::$S raster soil failed"; done
           else
             S=$(echo "${T#soilr:}" | tr -cd 'A-Za-z' | tr a-z A-Z)
             "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --minutes 125 || echo "::warning::$S raster soil failed"
