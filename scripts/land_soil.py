@@ -306,9 +306,9 @@ def sda_section(sec):
     return rows
 
 
-def fetch(st, limit=None, minutes=120, today=None):
+def find_sections(st, limit=None, today=None):
+    """BLM section outlines for each keyed comp in the state -> (rows, secs, twps, sections, miss, layer, fld, probe, cands)."""
     today = today or time.strftime("%Y-%m-%d")
-    os.makedirs(RAW, exist_ok=True)
     rows = comps(st, today)
     secs, twps = needed(rows)
     cos = load_counties((st,))
@@ -346,6 +346,12 @@ def fetch(st, limit=None, minutes=120, today=None):
             continue
         sections[fips + "|" + k] = c
     print("%s: %d sales, %d section keys, %d townships, %d sections found; %s" % (st, len(rows), len(secs), len(twps), len(sections), miss))
+    return rows, secs, twps, sections, miss, layer, fld, probe, cands
+
+
+def fetch(st, limit=None, minutes=120, today=None):
+    os.makedirs(RAW, exist_ok=True)
+    rows, secs, twps, sections, miss, layer, fld, probe, cands = find_sections(st, limit, today)
     # one soil answer per distinct section (two keys can name one section)
     uniq = {}
     for key, c in sections.items():

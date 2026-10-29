@@ -30,7 +30,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only)"
+        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only); soilr-probe or soilr:IL, soilr:IN, soilr:WI (dispatch only: the same from the gridded soil map and the Cropland Data Layer)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -72,6 +72,7 @@ jobs:
           python scripts/probe_field_layers.py --selftest
           python scripts/build_land_summary.py --selftest
           python scripts/land_soil.py --selftest
+          python scripts/land_soil_raster.py --selftest
           OMP_NUM_THREADS=1 python scripts/build_land_index.py --selftest
       - name: pdftotext for the probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
@@ -131,7 +132,7 @@ jobs:
       # step 6, a test before any page shows it). BLM PLSS sections, USDA SSURGO through Soil Data Access.
       # The answers go to data/land-raw/soil (raw branch, below); nothing is committed, no page changes.
       - name: Section soil for the keyed farm sales
-        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil') && inputs.task != 'soil-attrs' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil') && !startsWith(inputs.task, 'soilr') && inputs.task != 'soil-attrs' }}
         timeout-minutes: 140
         run: |
           T="${{ inputs.task }}"
@@ -154,6 +155,34 @@ jobs:
           git -C "$D" sparse-checkout set data/land-raw/soil 2>&1 | hide || true
           mkdir -p data/land-raw/soil && cp "$D"/data/land-raw/soil/*-soil.json.gz data/land-raw/soil/ || { echo "::warning::no saved section answers"; exit 0; }
           python scripts/land_soil.py --attrs || echo "::warning::map unit attributes failed"
+      # soilr-probe or soilr:<ST>: the same sections from the gridded soil map (gNATSGO valu1 corn and
+      # soybean NCCPI, 10 m) and the Cropland Data Layer, read by window from the Planetary Computer
+      # copies (no statewide download). The saved polygon answers are read back for the raster check.
+      - name: Section soil from the gridded soil map
+        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soilr') }}
+        timeout-minutes: 140
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          GDAL_DISABLE_READDIR_ON_OPEN: EMPTY_DIR
+          GDAL_HTTP_MAX_RETRY: '5'
+          GDAL_HTTP_RETRY_DELAY: '2'
+          CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .tif
+        run: |
+          python3 -m venv "$RUNNER_TEMP/soilr"
+          "$RUNNER_TEMP/soilr/bin/pip" install -q numpy==2.2.6 rasterio==1.4.3 pyproj==3.7.1 pystac-client==0.8.6 planetary-computer==1.0.0
+          . scripts/private_remote.sh
+          D="$RUNNER_TEMP/rawsoil"
+          git clone -q --depth 1 --filter=blob:none --sparse --branch raw "$REMOTE" "$D" 2>&1 | hide || true
+          git -C "$D" sparse-checkout set data/land-raw/soil 2>&1 | hide || true
+          mkdir -p data/land-raw/soil && cp "$D"/data/land-raw/soil/*-soil.json.gz data/land-raw/soil/ 2>/dev/null || echo "::warning::no saved polygon answers"
+          T="${{ inputs.task }}"
+          if [ "$T" = "soilr-probe" ]; then
+            for S in IL IN WI; do "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --limit 40 --minutes 10 || echo "::warning::$S raster probe failed"; done
+          else
+            S=$(echo "${T#soilr:}" | tr -cd 'A-Za-z' | tr a-z A-Z)
+            "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --minutes 125 || echo "::warning::$S raster soil failed"
+          fi
+          rm -f data/land-raw/soil/*-soil.json.gz
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
