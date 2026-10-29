@@ -662,6 +662,112 @@
      null
     ]
    ]
+  },
+  {
+   "state": "NJ",
+   "county": "Rule NJ",
+   "fips": "34999",
+   "names": true,
+   "acres_rule": 2,
+   "cols": [
+    "doc",
+    "date",
+    "price",
+    "acres",
+    "tac",
+    "np",
+    "cls",
+    "conv",
+    "pid",
+    "muni",
+    "legal",
+    "exempt",
+    "grantor",
+    "grantee",
+    "rec",
+    "acx"
+   ],
+   "munis": {
+    "0": [
+     "Alloway township",
+     39.56,
+     -75.36
+    ]
+   },
+   "rows": [
+    [
+     "N01",
+     "2026-03-01",
+     500000,
+     null,
+     null,
+     1,
+     "4",
+     "Deed; not on the 2026 assessment list; land only",
+     "1701 B 77 L 1",
+     "0",
+     "",
+     0,
+     "SYNTHETIC SELLER N01",
+     "SYNTHETIC BUYER",
+     "2026-03-20",
+     1
+    ],
+    [
+     "N02",
+     "2026-03-02",
+     400000,
+     40,
+     null,
+     1,
+     "4",
+     "Deed, Non-usable: not between a willing buyer and willing seller; land only",
+     "1701 B 5 L 2",
+     "0",
+     "",
+     0,
+     "SYNTHETIC SELLER N02",
+     "SYNTHETIC BUYER",
+     "2026-03-20",
+     null
+    ],
+    [
+     "N03",
+     "2026-03-03",
+     400000,
+     40,
+     null,
+     1,
+     "4",
+     "Deed; state ratio study code 33: farmland-assessed or exempt property; land only",
+     "1701 B 5 L 8",
+     "0",
+     "",
+     0,
+     "SYNTHETIC SELLER N03",
+     "SYNTHETIC BUYER",
+     "2026-03-20",
+     null
+    ],
+    [
+     "N04",
+     "2026-03-04",
+     400000,
+     40,
+     null,
+     1,
+     "4",
+     "Deed",
+     "1701 B 5 L 9",
+     "0",
+     "",
+     0,
+     "SYNTHETIC SELLER N04",
+     "SYNTHETIC BUYER",
+     "2026-03-20",
+     1
+    ]
+   ]
   }
  ]
 }

@@ -155,6 +155,9 @@
       else o.muniName = o.muni;
       if ((+o.np || 1) > 1 && (!checked || !(num(o.acres) > 0))) { o.acres = null; o.acUnsure = true; }
       else if ((+o.np || 1) <= 1 && num(o.acres) > FSLand.ONE_PARCEL_MAX_AC) { o.acBig = num(o.acres); o.acres = null; o.acUnsure = true; }
+      // acx 1: the record names land whose acres the state file cannot give (New Jersey: a lot not on today's
+      // assessment list, part of a lot, a lot in two districts); the sale is listed, acres uncertain, in no middle
+      else if (+o.acx === 1 && !(num(o.acres) > 0)) { o.acres = null; o.acUnsure = true; o.acGone = true; }
       o.ppa = FSLand.perAcre(o.price, o.acres);
       o.county = file.county; o.st = file.state; o.fips = file.fips; o.src = file.source_short;
       return o;

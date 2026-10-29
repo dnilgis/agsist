@@ -289,6 +289,8 @@ COLS = {
     # Wisconsin's CSV: J Property Type (1 Land Only, 2 Land & Buildings), BJ Split Parcel (1 Yes),
     # Q Owner Interest Transferred (1 Full, 2 Partial); read only beside Predominate Use (RETRmlist.pdf)
     "ptype": ["PROPERTYTYPE"], "split": ["SPLITPARCEL"], "interest": ["OWNERINTERESTTRANSFERRED"],
+    # New Jersey: 1 when the deed names land whose acres the files cannot give (nj_table); read as acres uncertain
+    "acx": ["ACRESUNKNOWN"],
     "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION", "TRANSFEREXEMPTIONNUMBER"],
 }
 WI_CONVEYANCE = {"1": "Warranty Deed", "2": "Land Contract", "3": "Quit Claim Deed", "4": "Other"}
@@ -492,6 +494,7 @@ def parse_rows(tables):
                 "acany": parse_num(g("acany")) if "acany" in m else None,
                 "exempt": 1 if ex and not re.match(r"^(0|N|NO|NONE|FALSE)$", ex, re.I) else 0,
                 "zip": g("zip", 5) if "zip" in m else None,
+                "acx": 1 if "acx" in m and g("acx") == "1" else None,
             })
     return recs, rep
 
@@ -586,12 +589,13 @@ def build(st, recs, gaz, now, prior=None, months=None):
         by.setdefault(c["fips"], []).append(r)
     names = any(r.get("grantor") for r in recs)
     ac1 = any(r.get("ac1") for r in recs)
+    acx = any(r.get("acx") for r in recs)
     # Wisconsin rows keep their filed date, so a later newest-only run can tell the latest filing of a return.
     # Illinois rows keep it too (2026-10-23): the monthly land sale email lists sales by the month they
     # were recorded (scripts/land_alert.py), and Field Scout shows it as "Recorded (filed)".
     # Vermont rows keep the date the town recorded the deed (TownDteRec), the month the land sale email lists by.
     rec = st in ("WI", "IL", "VT", "NJ") and any(r.get("rec") for r in recs)
-    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else []) + (["rec"] if rec else [])
+    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else []) + (["rec"] if rec else []) + (["acx"] if acx else [])
     index, total, files = [], 0, []
     for fips, rs in sorted(by.items()):
         # several parcels on one return: the price is for all of them
@@ -622,7 +626,7 @@ def build(st, recs, gaz, now, prior=None, months=None):
             a = r["acres"]
             rows.append([r["doc"], r["date"], r["price"], round(a, 2) if a else None, r.get("tac"), r.get("np") or 1, r["cls"], r["conv"],
                          r["pid"], mcode.get(r["muni"], ""), r["legal"], r["exempt"]] + ([r["grantor"], r["grantee"]] if names else [])
-                        + ([r.get("ac1")] if ac1 else []) + ([r.get("rec")] if rec else []))
+                        + ([r.get("ac1")] if ac1 else []) + ([r.get("rec")] if rec else []) + ([r.get("acx")] if acx else []))
         c = next(v for v in cix.values() if v["fips"] == fips)
         cov = coverage(rs)
         p = (prior or {}).get(fips) or {}
@@ -1868,7 +1872,8 @@ def nj_table(sales, md, towns, rep=None):
     munis = json.load(open(NJ_MUNIS_FILE))["munis"]
     names = {v["fips"]: v["name"] for v in county_index("NJ").values()}
     yield ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
-           "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "FLAGS"]
+           "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "FLAGS",
+           "ACRESUNKNOWN"]
     kept = joined = 0
     nu_seen, untown = {}, set()
     for r in sales:
@@ -1912,7 +1917,7 @@ def nj_table(sales, md, towns, rep=None):
         yield [doc, nj_day(r["deed"]) or "", "" if price is None else "%d" % price, "" if not acres else "%g" % round(acres, 4),
                " ".join(cls), ", ".join(conv), "%s B %s L %s" % (r["cd"], b, lt), (town or (njname or "")).upper(), county, "",
                nj_person(r["grantor"]), nj_person(r["grantee"]), "1" if r["rtf_exempt"].strip().upper() == "E" else "",
-               str(nlots), nj_day(r["recorded"]) or "", "; ".join(flags)]
+               str(nlots), nj_day(r["recorded"]) or "", "; ".join(flags), "" if acres else "1"]
     rep["farm deeds"] = kept
     rep["join"] = "%d of %d farm deeds found every lot on the 2026 assessment list (%.1f%%)" % (joined, kept, 100.0 * joined / kept if kept else 0)
     rep["non-usable codes"] = ", ".join("%s %d" % kv for kv in sorted(nu_seen.items())) or "none"
@@ -2050,7 +2055,7 @@ def nj_selftest(ck):
     d = by.get("1701-4") or {}
     ck("NJ: code 01 is related parties; a realty transfer fee exemption (E) is an exemption",
        "Related Parties" in d.get("CONVEYANCETYPE", "") and d.get("EXEMPTION") == "1")
-    ck("NJ: code 06 (part of the assessed lot): acres not stated", (by.get("1701-5") or {}).get("ACRES") == "")
+    ck("NJ: code 06 (part of the assessed lot): acres not stated, marked unknown", (by.get("1701-5") or {}).get("ACRES") == "" and by["1701-5"]["ACRESUNKNOWN"] == "1")
     e = by.get("1701-6") or {}
     ck("NJ: a deed whose lot is not on today's list is kept, acres not stated, and said so",
        e.get("ACRES") == "" and "not on the 2026 assessment list" in e.get("FLAGS", ""))
@@ -2317,7 +2322,7 @@ def held(st, out=None):
                          "np": o.get("np"), "cls": o.get("cls") or "", "conv": o.get("conv") or "", "pid": o.get("pid") or "",
                          "muni": m[0] if m else "", "county": f["county"], "legal": o.get("legal") or "",
                          "grantor": o.get("grantor"), "grantee": o.get("grantee"), "exempt": o.get("exempt") or 0,
-                         "ac1": o.get("ac1"), "rec": o.get("rec"), "acany": None})
+                         "ac1": o.get("ac1"), "rec": o.get("rec"), "acany": None, "acx": o.get("acx")})
     months = set(ix.get("months") or [])
     if not months and lo:
         y, m = int(lo[:4]), int(lo[5:7])

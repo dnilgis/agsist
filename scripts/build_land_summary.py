@@ -148,6 +148,11 @@ def row_objs(f):
             o["acBig"] = num(o.get("acres"))
             o["acres"] = None
             o["acUnsure"] = True
+        elif num(o.get("acx")) == 1 and not ((num(o.get("acres")) or 0) > 0):
+            # FSLand.rowObjs acx: acres the state file cannot give (New Jersey); listed, acres uncertain, in no middle
+            o["acres"] = None
+            o["acUnsure"] = True
+            o["acGone"] = True
         o["ppa"] = per_acre(o.get("price"), o.get("acres"))
         o["fips"], o["county"] = f.get("fips"), f.get("county")
         o["st"] = o.get("st") or f.get("state")

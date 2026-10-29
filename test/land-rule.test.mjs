@@ -70,6 +70,12 @@ test("fixture rows, worked by hand", () => {
   const other = jsRule(FX.files[1], FX.today);
   assert.equal(other.length, 1, "the same parcel number in another county is another sale");
   assert.match(F.groupText(F.saleRows(F.rowObjs(FX.files[0]), FX.today).find((r) => r.doc === "R15")), /^filed as 3 deeds from Aug 26, 2025 to Aug 28, 2025, \$800,000 in all$/);
+  // New Jersey (Oct 29): acx 1 is a lot whose acres the state files cannot give; the state's own non-usable words are caught
+  const nj = Object.fromEntries(jsRule(FX.files.find((f) => f.state === "NJ"), FX.today).map((x) => [x[0], x]));
+  assert.deepEqual(nj.N01.slice(3, 7), [null, null, true, false], "a lot not on today's list: listed, acres uncertain, no $/acre, in no middle");
+  assert.equal(nj.N02[5], false, "a deed the state marks non-usable (not a willing buyer and seller) is out");
+  assert.deepEqual(nj.N03.slice(3, 7), [40, 10000, true, true], "code 33 (farmland-assessed) only keeps a deed out of the state's ratio study: a market sale");
+  assert.deepEqual(nj.N04.slice(3, 7), [40, 10000, true, true], "acx never hides acres the record does give");
 });
 
 test("deed types cut short in the state file still read, and the flag words the fetch adds are caught", () => {
