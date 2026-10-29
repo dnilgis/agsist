@@ -1,3 +1,4 @@
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Rain Print orders through an outage and a burst (subs worker v5.47, BUILD-RULES 14).
 // Runs workers/subs-worker.js against an in-memory KV that answers slowly and in
 // any order (so two requests at once really interleave, as on Cloudflare) and

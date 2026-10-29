@@ -56,6 +56,8 @@ BUYER TYPE: a pattern on the buyer field, run in memory, one word per sale (indi
 NASS: USDA NASS state cropland value per acre (data/atlas/state-value.json), put on the same
   base year as a separate line. Never blended into the index.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import html
 import json

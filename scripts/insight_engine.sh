@@ -16,6 +16,7 @@
 # 4. The run: one result row per spec, appended as a new day file; latest.json for the report.
 # 5. Saves private/ledger/tests to private-data (RAW_SOFT=1: a failed save is a warning).
 # Never touches main or Pages; nothing it writes is published.
+. "$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
 set -u
 set -o pipefail
 ROOT=$(git rev-parse --show-toplevel) || exit 1

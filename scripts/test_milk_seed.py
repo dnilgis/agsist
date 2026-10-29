@@ -7,6 +7,8 @@ all-milk month for two months; the baked copy has to follow the same clock, so
 a crawler never reads a number the page itself would withhold. Run:
     python3 scripts/test_milk_seed.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import copy
 import os
 import sys

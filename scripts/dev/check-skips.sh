@@ -3,6 +3,7 @@
 # unless test/skips-allowed.txt names it exactly. That list is only for one half of an either/or pair
 # whose other half runs (e.g. "without the file" vs "with the file"). A skip is not a pass.
 # Usage: check-skips.sh <node --test output>. Exit 1 on any other skip, or when the skips cannot be read.
+. "$(dirname "${BASH_SOURCE[0]}")/../_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
 NT="$1"; ALLOW="$(cd "$(dirname "$0")/../.." && pwd)/test/skips-allowed.txt"
 n=$(sed -n 's/^# skipped \([0-9][0-9]*\)$/\1/p' "$NT" | tail -1)
 [ "${n:-0}" -eq 0 ] && exit 0

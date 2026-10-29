@@ -12,6 +12,8 @@ Store as GitHub secret: NASS_API_KEY
 Runs Mondays 4:30 PM CT via GitHub Actions (after 4:00 PM ET NASS release).
 Off-season (Dec–Mar) still runs but writes in_season: false.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

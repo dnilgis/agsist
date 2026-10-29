@@ -20,6 +20,8 @@ they write it. It only does what is the same page to a browser and a crawler:
 
     python3 scripts/html_slim.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import sys

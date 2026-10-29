@@ -27,6 +27,8 @@ Usage: python3 scripts/join_report.py            print the report; exit 1 when a
        python3 scripts/join_report.py --json     the same as JSON
        python3 scripts/join_report.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

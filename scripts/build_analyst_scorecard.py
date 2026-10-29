@@ -40,6 +40,8 @@ between two three-call averages is not a finish order. No backtest is fabricated
 
 Stdlib only. No secrets, no network.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

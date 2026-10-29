@@ -19,6 +19,8 @@ the same check before it uploads, so a broken link stops the deploy instead of
 reaching readers. The plan and the workflow are in feedbag
 notes/panels/godseye-2026-10-26/size-trim-plan.md.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import re
 import shutil

@@ -37,6 +37,8 @@ Idempotent: re-running overwrites the price fields cleanly. Safe in CI.
 
 Requires: pip install yfinance pandas   (you already use yfinance)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

@@ -15,6 +15,8 @@ written or printed: the file and the log carry counts only.
   python3 scripts/build_signups.py             fetch and write
   python3 scripts/build_signups.py --selftest  fixtures, no network
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

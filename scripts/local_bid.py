@@ -43,6 +43,8 @@ data/zips/54.json, geocodes/zip-towns.json) works too, for tests.
     python3 scripts/local_bid.py --zip 54728 --json     the hero-shaped entries
     python3 scripts/local_bid.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import math
 import os

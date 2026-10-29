@@ -1,3 +1,4 @@
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.30 hay board routes of workers/subs-worker.js (/hay/post,
 // /hay/feed, /hay/contact, /hay/mine, /hay/edit, /hay/renew, /hay/delete,
 // /hay/report, /hay/admin/*) against an in-memory KV. No network: the ZIP

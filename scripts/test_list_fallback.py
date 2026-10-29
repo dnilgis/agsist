@@ -23,6 +23,8 @@ No network, no real mail. Counts only.
 
     python3 scripts/test_list_fallback.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import contextlib
 import gzip
 import io

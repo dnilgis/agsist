@@ -33,6 +33,8 @@ SIZE (CLAUDE.md): 3,070 pages. The page carries the answer and the tables a
   python3 scripts/build_prf_counties.py           write prf/<state>/<county>.html and sitemap-prf.xml
   python3 scripts/build_prf_counties.py --check   exit 1 if any page or the sitemap differs from what this would write
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

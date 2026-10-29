@@ -19,6 +19,8 @@ Run by test/daily-email-v2.test.mjs; no network, nothing is sent.
 
     python3 scripts/test_daily_v2.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

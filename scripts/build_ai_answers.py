@@ -34,6 +34,8 @@ render() from here, so both scripts write the same bytes.
     python3 scripts/build_ai_answers.py --stale    # answers past review_by (today, UTC)
     python3 scripts/build_ai_answers.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import os

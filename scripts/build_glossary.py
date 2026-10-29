@@ -8,6 +8,8 @@ page and the tap-to-explain marks on other pages always say the same thing.
 
 Stdlib only. Offline.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import os

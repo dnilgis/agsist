@@ -27,6 +27,8 @@ v1.2 — 2026-07-03 (hail-map added to both lists)
 v1.1 — 2026-07-03 (added the weekly-changing pages to DATEMOD_ONLY: urea,
          ag-odds, cot, whats-priced-in, drought-monitor)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import html as H
 import json

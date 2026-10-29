@@ -9,6 +9,7 @@
 #                                     shard N/M balanced by test_map.py --split (measured times)
 #   neither, no shard:                every test (node --test, its own file discovery)
 # Beside the TAP output, each test file's wall time goes to <tap output>.times (scripts/dev/file-times.mjs).
+. "$(dirname "${BASH_SOURCE[0]}")/../_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
 NT="$1"; SHARD="${2:-}"
 DEV="$(cd "$(dirname "$0")" && pwd)"
 REP=(--test-reporter=tap --test-reporter-destination=stdout --test-reporter="$DEV/file-times.mjs" --test-reporter-destination="$NT.times")

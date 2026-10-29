@@ -1,3 +1,4 @@
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.36 to v5.40 Rain Print order-record routes of workers/subs-worker.js
 // (POST /rp-order, GET /rp-order/list, POST /rp-order/serial) against an
 // in-memory KV and a stand-in for Stripe's Checkout Sessions list. No network.

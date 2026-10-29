@@ -8,6 +8,8 @@ Daily and notice records go through /subscribe and /notice, which add at once.
 An elevator alert is asked with /elevator-watch-subscribe and then confirmed
 with the same signed link the confirm email would carry, so no email is sent.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import base64, hashlib, hmac, json, os, sys, urllib.parse, urllib.request
 
 UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com)"}

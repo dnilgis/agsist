@@ -5,6 +5,8 @@ and fetch_prices.unit_guard() (2026-10-03, wave1-C).
 Synthetic quotes, frozen clock, hand-worked answers. Run:
     python3 scripts/test_class_spreads.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 from datetime import datetime, timezone
 

@@ -25,6 +25,8 @@ names gives no parent; an abbreviation nobody can check ("SF Ia Fall") gives no 
 
   python3 scripts/board_parents.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import collections
 import json
 import re

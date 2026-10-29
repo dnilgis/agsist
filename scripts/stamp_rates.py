@@ -31,6 +31,8 @@ state code, "cashbids", or null for a retired single page slot).
 
 Change a price in data/rate-card.json, run this, commit both.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import sys

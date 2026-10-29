@@ -35,6 +35,8 @@ not released. None, never a guess.
     python3 scripts/harvest_clock.py             print today's block
     python3 scripts/harvest_clock.py --selftest  hand-worked cases, no network
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

@@ -41,6 +41,8 @@ data/ccc-loan-raw/ against the parsers, then run for real.
 
 Stdlib only, plus pdftotext or pypdf through fetch_dairy for any PDF text.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import datetime
 import html as htmlmod

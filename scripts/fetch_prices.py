@@ -99,6 +99,8 @@ v3 — 2026-04-26
 v2 — 2026-03-24
   Added wk52_hi / wk52_lo from fast_info.year_high / year_low.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import math

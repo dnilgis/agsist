@@ -25,6 +25,8 @@ What is here:
 
     python3 scripts/history_lib.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import gzip
 import io

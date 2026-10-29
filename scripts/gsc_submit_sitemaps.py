@@ -24,6 +24,8 @@ worked.
     python3 scripts/gsc_submit_sitemaps.py             # submit + status
     python3 scripts/gsc_submit_sitemaps.py --selftest  # offline, fake transport
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

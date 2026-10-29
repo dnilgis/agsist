@@ -51,6 +51,8 @@ Otherwise the reason is printed in place of the number. Each median prints its c
 
     python3 scripts/land_alert.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import glob
 import json

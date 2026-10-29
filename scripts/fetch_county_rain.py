@@ -36,6 +36,8 @@ WHAT IT WILL NOT DO
   python3 scripts/fetch_county_rain.py --check            validate data/rain/*.json
   python3 scripts/fetch_county_rain.py --selftest         offline tests on test/fixtures/rain
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime as dt
 import glob
 import json

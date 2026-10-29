@@ -25,6 +25,8 @@ context file only when its "fetched" equals the state file's, so a stale one pri
   python3 scripts/fetch_rain_context.py --states WI  some states
   python3 scripts/fetch_rain_context.py --selftest   offline, on the saved answers
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

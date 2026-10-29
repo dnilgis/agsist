@@ -24,6 +24,8 @@ same function the generator and critic use (briefing_cut.over_ceiling):
 this step is a hard stop in daily.yml, so a briefing over 450 words cannot
 reach the commit even if the earlier steps let it through.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 import json

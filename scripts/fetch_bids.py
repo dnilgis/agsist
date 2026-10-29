@@ -15,6 +15,8 @@ ground-truth reader of the live response shape.
 Environment:
   BARCHART_API_KEY — OnDemand API key (GitHub Secret)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import calendar as _cal
 import json

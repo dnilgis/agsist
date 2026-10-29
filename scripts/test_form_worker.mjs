@@ -1,3 +1,4 @@
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.8/v5.9/v5.10/v5.12 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
 // the v5.22 PRF sponsor inquiries (kind prf-sponsor)
 // and the v5.14 Rain Print short links (POST /rp-short, GET /rp-short/<id>)

@@ -17,6 +17,7 @@
 # actions/checkout leaves its own token in http.https://github.com/.extraheader,
 # and git would send that one instead of ours (the private repo then answers
 # "not found"). An empty value resets that list for these git calls only.
+. "$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
 PRIVATE_REPO=dnilgis/feedbag
 if [ -n "${RAW_REMOTE:-}" ]; then
   REMOTE="$RAW_REMOTE"; WHERE="$RAW_REMOTE"

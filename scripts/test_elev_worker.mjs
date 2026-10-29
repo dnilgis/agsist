@@ -1,3 +1,4 @@
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.20 elevator portal routes of workers/subs-worker.js
 // (/elev/admin/create, /elev/admin/rekey, /elev/admin/active, /elev/admin/list,
 // /elev/me, /elev/save, /elev/feed), the v5.34 hand paste (/elev/admin/paste,

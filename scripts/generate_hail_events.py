@@ -27,6 +27,8 @@ v2 — 2026-10-06  The day's figures are baked into the static HTML (these pages
   zero reports for days the monthly events file has not reached yet.
   `--selftest` runs hand-worked checks and exits.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

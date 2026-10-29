@@ -24,6 +24,8 @@ What it does:
 
 Run `python scripts/briefing_cut.py --selftest`.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 

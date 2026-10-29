@@ -54,6 +54,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import os from 'node:os';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 /* ───────────────────────────── arguments ───────────────────────────── */
 

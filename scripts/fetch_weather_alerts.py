@@ -30,6 +30,8 @@ commit a false "no alerts active" over a real one. A genuinely empty response
 (the ordinary case most of the year) is written as an empty list -- that is
 not a failure, it is the honest state most days.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

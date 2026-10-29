@@ -1,3 +1,4 @@
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.43 "Email me this design" routes of workers/subs-worker.js
 // (POST /rp-remind, GET /rp-remind/list, POST /rp-remind/mark, /rp-remind/stop)
 // against an in-memory KV and a stand-in for GitHub's dispatch API. No network.
