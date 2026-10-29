@@ -47,3 +47,15 @@ test("every sale page with the line has its Atlas page saying the same counts ba
   }
   assert.ok(n > 50, "lines found: " + n);
 });
+
+/* Recorded sale vs auction result vs asking price (same review): every price on the sale pages and the
+ * Atlas land panel is a recorded transfer; the pages say so where the prices are. */
+test("where a land price shows, it says it is a recorded sale, never an asking price", () => {
+  const ls = read("land-sales/wisconsin/barron-county.html");
+  assert.match(ls, /<th scope="col" class="n">Recorded price<\/th>/);
+  assert.match(ls, /<p class="ls-fine ls-kind">Every price here is a recorded sale: what the state(&#x27;|')s transfer record says was paid once the sale closed\. Auction sales count once recorded\. Asking prices and auction bids that did not close are never shown\.<\/p>/);
+  assert.match(read("land-sales/2026-09.html"), /<th scope="col" class="n">Recorded price<\/th>/);
+  const at = read("farmland-atlas/wisconsin/barron-county.html");
+  assert.match(at, /Recorded prices\. Not an appraisal\. No adjustments\. A recorded price is what the state(&#x27;|')s transfer record says was paid once the sale closed, auction or private; never an asking price\./);
+  for (const h of [ls, at]) assert.doesNotMatch(h, /—/);
+});

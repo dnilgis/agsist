@@ -1442,7 +1442,8 @@ def _land_sales_door(W, f, lab, st):
 # /land-sales/<county> page is built with (scripts/build_land_sales.py), so the two cannot
 # disagree; test/atlas-land-first.test.mjs compares the pages. No value estimate, no adjustment,
 # no rent-to-price ratio. Other states keep the page as it was.
-LF_DISCLAIM = "Recorded prices. Not an appraisal. No adjustments."
+LF_DISCLAIM = ("Recorded prices. Not an appraisal. No adjustments. A recorded price is what the state's transfer record says was paid "
+               "once the sale closed, auction or private; never an asking price.")  # benchmark review, Oct 29, 2026
 
 
 def _w24_words(through):

@@ -419,8 +419,15 @@ def flag_words(p):
     return w
 
 
+# What every price on these pages is (benchmark review, Oct 29, 2026: recorded sale vs auction result vs
+# asking price, unmistakable wherever a price shows). Transfer records only: an auction counts once it
+# is recorded, at the recorded price; a listing or a bid that did not close is never here.
+PRICE_KIND = ("Every price here is a recorded sale: what the state's transfer record says was paid once the sale closed. "
+              "Auction sales count once recorded. Asking prices and auction bids that did not close are never shown.")
+
+
 def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None):
-    th = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Price", "ppa": "$/acre", "note": "Note", "usual": "County usual $/acre",
+    th = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Recorded price", "ppa": "$/acre", "note": "Note", "usual": "County usual $/acre",
           "kind": "Type"}
     num = {"acres", "price", "ppa", "usual"}
     h = ['<div class="ls-tw"><table class="ls-t"%s>' % (' id="%s"' % e(tid) if tid else "")]
@@ -725,6 +732,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
         b.append('<p>%d sales on file, %s to %s: %s.%s</p>'
                  % (len(allp), e(day(days[0])), e(day(days[-1])), e(", ".join(parts)),
                     " Illinois declarations do not say whether buildings were included, so no Illinois sale is marked with buildings." if st == "IL" else ""))
+        b.append('<p class="ls-fine ls-kind">%s</p>' % e(PRICE_KIND))
         opts = "".join('<option value="%s">%s</option>' % (KIND_CODE[k], e(w[0].upper() + w[1:])) for k, w in KIND_WORDS.items() if kc[k])
         b.append('<div class="ls-flt" hidden data-ls-list="%s" data-ls-names="%s" data-ls-n="%d"><label>Type <select class="ls-fk">'
                  '<option value="">All types</option>%s</select></label></div>' % (e(lf), e(nf), len(allp), opts))
