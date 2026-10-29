@@ -945,7 +945,7 @@
         && !/^\/rent\/(illinois|wisconsin|indiana)(\.html)?\/?$/.test(location.pathname)
         && !/^\/farmland-atlas\/indiana\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=1';
+    s.src = '/components/land-sales.js?v=2';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }

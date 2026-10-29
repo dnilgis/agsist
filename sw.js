@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 288;  // v288 2026-10-29: fx/ratecard (288 assigned by the lead; 287 goes to the land batch, main still showed 286 at merge). New sponsor rate card: an unsold page ribbon offers itself only when it is still sold (a state's cash bids and rent ribbons, /cash-bids), loader CV 104, sponsor-apply.js?v=7.
+var CACHE_VERSION = 292;  // v292 2026-10-29: fx/allsales (292 assigned by the lead; 289 to 291 are held by menutrim, fx/fsbase and fx/nometeo). Every recorded land sale on the county sales pages with Show more and a type filter, and one land rule (buildings by property class, Wisconsin forest apart, bare-land middles, 5 sales before a middle): land-sales.js?v=2, field-scout-land.js?v=8, comp-report.js?v=4.
+// v288 2026-10-29: fx/ratecard (288 assigned by the lead; 287 goes to the land batch, main still showed 286 at merge). New sponsor rate card: an unsold page ribbon offers itself only when it is still sold (a state's cash bids and rent ribbons, /cash-bids), loader CV 104, sponsor-apply.js?v=7.
 // v287 2026-10-29: land sales findable (Atlas, rent, town, Fast Facts, search) and Land sales in the menu (loader CV 103).
 // v286 2026-10-28: fx/merges2 (286 assigned by the lead; was 283 before v284/v285 shipped). Ten pages fold into the page a reader already uses; new section scripts priced-in.js, bot-scorecard.js, coverage-map.js, elevator-claim.js, atlas-foreign.js, daily-archive.js; menu and footer follow (loader CV 102).
 // v284 2026-10-28: fx/geosponsor (284 assigned by the lead). loader.js loads components/geo-sponsor.js?v=1, the state-targeted sponsor (off until Sig switches it on in data/geo-sponsors.json); returning readers need the new loader.js.
