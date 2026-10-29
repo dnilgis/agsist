@@ -18,7 +18,6 @@
   'use strict';
   var P = window.AgPlace, L = window.AGLayers;
   if (!P) return;
-  var GEO_API = 'https://geocoding-api.open-meteo.com/v1/search';
   var LS_ZIP = 'agsist_user_zip';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var SALES_JS = '/components/atlas-sales.js?v=c3fa7673';
@@ -131,9 +130,22 @@
   function daily(id) { getJSON('/data/daily.json').then(function (f) { fill(id, P.factDaily(f)); }); }
 
   /* ── finding the place ───────────────────────────────────────────── */
+  /* Our own place lookup (components/places.js, data/places/), loaded the first time a place is typed
+     (2026-10-29: Open-Meteo's geocoder is commercial-use only for an ad-supported site). */
+  var PLACES_JS = '/components/places.js?v=1';
+  function places() {
+    if (window.AGSIST_PLACES) return Promise.resolve(window.AGSIST_PLACES);
+    if (!places.p) places.p = new Promise(function (ok, no) {
+      var s = document.createElement('script');
+      s.src = PLACES_JS; s.async = true;
+      s.onload = function () { if (window.AGSIST_PLACES) ok(window.AGSIST_PLACES); else { places.p = null; no(new Error('places')); } };
+      s.onerror = function () { places.p = null; no(new Error('places')); };
+      document.head.appendChild(s);
+    });
+    return places.p;
+  }
   function geocode(name) {
-    return fetch(GEO_API + '?name=' + encodeURIComponent(name) + '&count=10&language=en&format=json&countryCode=US')
-      .then(function (r) { if (!r.ok) throw new Error('geo ' + r.status); return r.json(); })
+    return places().then(function (PL) { return PL.search(name, { country: 'US', count: 10 }); })
       .then(function (d) { return (d && d.results) || []; });
   }
   function stFile(st) { return getJSON('/data/atlas/pct/' + st + '.json'); }
@@ -523,7 +535,7 @@
 
   /* The county station's year of rain, drawn by the county rain page's own Rain Print, and
      ranked against the same days of every earlier year the station kept in full (NOAA). */
-  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=41';
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=42';
   var porMemo = {};
   function porRows(sid) {
     if (porMemo[sid]) return porMemo[sid];

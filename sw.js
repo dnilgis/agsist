@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 288;  // v288 2026-10-29: fx/ratecard (288 assigned by the lead; 287 goes to the land batch, main still showed 286 at merge). New sponsor rate card: an unsold page ribbon offers itself only when it is still sold (a state's cash bids and rent ribbons, /cash-bids), loader CV 104, sponsor-apply.js?v=7.
+var CACHE_VERSION = 291;  // v291 2026-10-29: fx/nometeo (291 assigned by the lead). Place lookups off Open-Meteo: every ZIP and town box reads our own data/places/ files (components/places.js?v=1, GeoNames towns and the bids ZIP table's points); bids-homepage v43, cattle-auction v7, geo v33, grain-emc-ui v5, harvest-wait-ui v3, haymow v4, here v32, prf v9, radar-rain-page v8, rain-print v86, rp-canada v4, rain-county-print v42, loader.js.
+// v288 2026-10-29: fx/ratecard (288 assigned by the lead; 287 goes to the land batch, main still showed 286 at merge). New sponsor rate card: an unsold page ribbon offers itself only when it is still sold (a state's cash bids and rent ribbons, /cash-bids), loader CV 104, sponsor-apply.js?v=7.
 // v287 2026-10-29: land sales findable (Atlas, rent, town, Fast Facts, search) and Land sales in the menu (loader CV 103).
 // v286 2026-10-28: fx/merges2 (286 assigned by the lead; was 283 before v284/v285 shipped). Ten pages fold into the page a reader already uses; new section scripts priced-in.js, bot-scorecard.js, coverage-map.js, elevator-claim.js, atlas-foreign.js, daily-archive.js; menu and footer follow (loader CV 102).
 // v284 2026-10-28: fx/geosponsor (284 assigned by the lead). loader.js loads components/geo-sponsor.js?v=1, the state-targeted sponsor (off until Sig switches it on in data/geo-sponsors.json); returning readers need the new loader.js.
@@ -84,7 +85,6 @@ var NEVER_CACHE = [
   'agsist-api.dnilgis.workers.dev',          // the subs worker (new home, Oct 22)
   'agsist-subs.dnilgis.workers.dev',         // the subs worker (old home, blocked Oct 21; kept while both may answer)
   'workers.dev',                             // any Cloudflare Worker
-  'geocoding-api.open-meteo.com',            // ZIP lookup
   'api.weather.gov',                         // live NWS alerts: an expired warning must never come back from cache
   'agsist.com/e?',                           // the email front door: a signed link, never kept
   'data.rcc-acis.org',                       // NOAA daily data for Rain Print: big, dated by the day, never reused

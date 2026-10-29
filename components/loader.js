@@ -359,15 +359,15 @@
   function saveZip(z, done) {
     var prior = null;
     try { prior = JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) { prior = null; }
-    fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + z + '&count=1&language=en&format=json&countryCode=US')
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (d) {
-        var r = d && d.results && d.results[0];
-        if (!r || typeof r.latitude !== 'number' || typeof r.longitude !== 'number') { done(false, 'none'); return; }
-        var isZip = /^\d+$/.test(String(r.name || '').trim());
-        var st = ST_CODE[String(r.admin1 || '').trim().toLowerCase()] || '';
-        var city = isZip ? '' : String(r.name || '');
-        var rec = { lat: r.latitude, lon: r.longitude, label: city ? city + (st ? ', ' + st : '') : z, ts: Date.now(),
+    // our own ZIP table, [lat, lon, town, state code, county] (2026-10-29: no outside geocoder)
+    fetch('/data/places/zip/' + z.slice(0, 2) + '.json')
+      .then(function (r) { if (r.status === 404) return null; if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (t) {
+        var r = t && t[z];
+        if (!Array.isArray(r) || !isFinite(+r[0]) || !isFinite(+r[1])) { done(false, 'none'); return; }
+        var st = /^[A-Z]{2}$/.test(r[3] || '') ? r[3] : '';
+        var city = String(r[2] || '');
+        var rec = { lat: +r[0], lon: +r[1], label: city ? city + (st ? ', ' + st : '') : z, ts: Date.now(),
                     zip: z, state: st, county: prior && prior.zip === z ? (prior.county || '') : '', zipTyped: true };
         lsSet('agsist-wx-loc', JSON.stringify(rec));
         lsSet('agsist_zip', z); lsSet('agsist_user_zip', z);

@@ -8,7 +8,6 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');window.gaEvent=function(n,p){try{gtag('event',n,p||{});}catch(e){}};</script>
 <link rel="preconnect" href="https://api.open-meteo.com">
 <link rel="preconnect" href="https://nominatim.openstreetmap.org">
-<link rel="preconnect" href="https://geocoding-api.open-meteo.com">
 <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -1825,7 +1824,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 </div>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/rain-print-promo.js?v=6" defer></script>
-<script src="/components/geo.js?v=32" defer></script>
+<script src="/components/geo.js?v=33" defer></script>
 <script>
 (function(){
   'use strict';
@@ -2091,53 +2090,19 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     var zip=document.getElementById('spray-zip').value.trim();
     if(zip.length!==5||isNaN(zip)){zipErr('Enter a valid 5-digit ZIP code.');return;}
     zipErr('');
-    // Try Nominatim first
-    fetch('https://nominatim.openstreetmap.org/search?postalcode='+zip+'&country=US&format=json&limit=1',{headers:{'User-Agent':'AGSIST/1.0'}})
-      .then(function(r){return r.json();})
-      .then(function(results){
-        if(results&&results.length){
-          var r=results[0];
-          // FIX: Nominatim postal code search returns display_name like
-          // "61801, Champaign County, Illinois, United States"
-          // parts[0]=ZIP, parts[1]=County, parts[2]=State \u2014 not city, Ch
-          // Detect postal code name and build a clean label
-          var parts=(r.display_name||'').split(',');
-          var p0=(parts[0]||'').trim();
-          var isZipName=/^\d{4,5}$/.test(p0);
-          var lbl;
-          if(isZipName){
-            // Use ZIP + state abbreviation (parts[2] is usually state name)
-            var stateName=(parts[2]||'').trim();
-            lbl=p0+(stateName?', '+stateName.substring(0,2).toUpperCase():'');
-          } else {
-            // City name in parts[0], state code in parts[2]
-            var statePart=(parts[2]||'').trim();
-            lbl=p0+(statePart?', '+statePart.substring(0,2).toUpperCase():'');
-          }
-          setStateFromName(r.display_name);
-          loadWeather(parseFloat(r.lat),parseFloat(r.lon),lbl);
-        } else {
-          // Fallback to Open-Meteo geocoding
-          fetch('https://geocoding-api.open-meteo.com/v1/search?name='+zip+'&count=1&language=en&format=json&countryCode=US')
-            .then(function(r2){return r2.json();})
-            .then(function(d){
-              if(d.results&&d.results.length){
-                var r2=d.results[0];
-                // FIX: Open-Meteo may return postal code as r2.name with city as r2.admin1
-                // e.g. name="61801", admin1="Urbana" -> was showing "61801, Ur"
-                var _isZip=/^\d+$/.test((r2.name||'').trim());
-                var _city=_isZip?(r2.admin1||r2.name):r2.name;
-                var _state=_isZip?'':(r2.admin1?r2.admin1.substring(0,2).toUpperCase():'');
-                var lbl2=_city+(_state?', '+_state:'');
-                setStateFromName(r2.admin1);
-                loadWeather(r2.latitude,r2.longitude,lbl2);
-              } else {
-                zipErr('Couldn’t find that ZIP, double-check it and try again.');
-              }
-            }).catch(function(){zipErr('Couldn’t look up that ZIP, check your connection and try again.');});
-        }
-      }).catch(function(e){console.warn('[AGSIST] ZIP geocode error:',e);zipErr('Couldn’t look up that ZIP, check your connection and try again.');});
+    // our own ZIP table, [lat, lon, town, state code, county] (2026-10-29: no outside geocoder)
+    fetch('/data/places/zip/'+zip.slice(0,2)+'.json')
+      .then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error(r.status);return r.json();})
+      .then(function(t){
+        var r=t&&t[zip];
+        if(!Array.isArray(r)||!isFinite(+r[0])||!isFinite(+r[1])){zipErr('Couldn’t find that ZIP, double-check it and try again.');return;}
+        var st=/^[A-Z]{2}$/.test(r[3]||'')?r[3]:'';
+        var lbl=(r[2]||('ZIP '+zip))+(r[2]&&st?', '+st:'');
+        setStateFromName(SP_ST_NAME[st]||'');
+        loadWeather(+r[0],+r[1],lbl);
+      }).catch(function(e){console.warn('[AGSIST] ZIP lookup error:',e);zipErr('Couldn’t look up that ZIP, check your connection and try again.');});
   }
+  var SP_ST_NAME={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'District of Columbia',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
   document.getElementById('btn-geo').addEventListener('click',requestGeo);
   document.getElementById('btn-show-zip').addEventListener('click',function(){document.getElementById('spray-zip-row').style.display='flex';});
   document.getElementById('btn-zip-go').addEventListener('click',loadZip);

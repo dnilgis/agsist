@@ -124,9 +124,10 @@
     var p = NET && NET.zipCoord ? NET.zipCoord(z).catch(function () { return null; }) : Promise.resolve(null);
     return p.then(function (c) {
       if (c && isFinite(+c.lat) && isFinite(+c.lon)) return { lat: +c.lat, lon: +c.lon };
-      return getJSON('https://geocoding-api.open-meteo.com/v1/search?name=' + z + '&count=1&language=en&format=json&countryCode=US', 6000).then(function (d) {
-        var r = d && d.results && d.results[0];
-        return r ? { lat: r.latitude, lon: r.longitude } : null;
+      // our own ZIP table (2026-10-29: no outside geocoder)
+      return getJSON('/data/places/zip/' + z.slice(0, 2) + '.json', 6000).then(function (t) {
+        var r = t && t[z];
+        return Array.isArray(r) && isFinite(+r[0]) && isFinite(+r[1]) ? { lat: +r[0], lon: +r[1] } : null;
       });
     });
   }

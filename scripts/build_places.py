@@ -212,7 +212,7 @@ def build(zips, towns, county_at):
         county = county_at(t["lat"], t["lon"], t["st"]) if t["cc"] == "US" else ""
         if t["cc"] == "US" and not county and zs:
             county = zips[zs[0]][4]
-        places.append([t["name"], t["st"], round(t["lat"], 4), round(t["lon"], 4), county or "", t["pop"],
+        places.append([t["name"], t["st"], round(t["lat"], 5), round(t["lon"], 5), county or "", t["pop"],
                        " ".join(zs[:12]), "g", t["cc"]])
     nz = 0
     for k, lst in ztown.items():
