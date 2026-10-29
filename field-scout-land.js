@@ -617,6 +617,13 @@
     return Math.max(Math.abs(p.x - q.x), Math.abs(p.y - q.y)) === 1 ? 'next' : null;
   };
   FSLand.SEC_TEXT = { same: 'same section', next: 'next section' };
+  // A key in words, for the sale panel when strOf cannot read the legal (Indiana's "17-11-5").
+  FSLand.keyText = function (k) {
+    var p = FSLand.parseKey(k);
+    if (!p) return null;
+    return 'Section ' + p.sec + ', T' + p.twp + (p.ns === '?' ? '' : p.ns) + ', R' + p.rng + (p.ew === '?' ? '' : p.ew) +
+      (p.ns === '?' || p.ew === '?' ? ' (the legal leaves out ' + (p.ns === '?' && p.ew === '?' ? 'north or south and east or west' : p.ns === '?' ? 'north or south' : 'east or west') + ')' : '');
+  };
   FSLand.secNote = function (n, first) {
     return n + (n === 1 ? ' sale is' : ' sales are') + ' in the section your parcel\u2019s record names or one touching it' + (first ? ', listed first' : '') +
       '. Read from the legal descriptions; a sale whose legal gives no section is not marked.';
@@ -737,7 +744,7 @@
     row('Parcels in this sale', String(np));
     var leg = clean(r.legal);
     row('Legal description', leg ? esc(leg) : NOTIN, leg.length >= FSLand.LEGAL_MAX - 2 ? 'May be cut short: our copy keeps the first ' + FSLand.LEGAL_MAX + ' characters.' : null);
-    var str = FSLand.strOf(leg);
+    var str = FSLand.strOf(leg) || (r.str ? FSLand.keyText(r.str) : null);
     row('Section, township, range', str ? esc(str) : (leg ? '<span class="fl-miss">not readable from the legal description</span>' : NOTIN));
     row('Street address', NOTKEPT);
     row('Distance from your field', r.mi != null ? 'About ' + (r.mi < 0.5 ? 'less than 1 mile' : Math.round(r.mi) + (Math.round(r.mi) === 1 ? ' mile' : ' miles')) + ' to the center of ' + esc(r.muniName || 'the town') : '<span class="fl-miss">not figured</span>',

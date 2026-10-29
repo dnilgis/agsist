@@ -169,3 +169,10 @@ test("the section key column lives only in data/land/ (robots-blocked) and the c
   assert.ok(lc, "LIST_COLS found");
   assert.doesNotMatch(lc[1], /"str"/);
 });
+
+test("the sale panel shows an Indiana shorthand key and says which directions the legal leaves out", () => {
+  const f = { state: "IN", county: "Adams", fips: "18001", cols: ["doc", "date", "price", "acres", "np", "cls", "conv", "pid", "muni", "legal", "str", "exempt"],
+    munis: {}, acres_rule: 2, rows: [["X1", "2026-01-05", 400000, 40, 1, "4", "Sale", "010804401003002008", "", "NW SW 32-12-6 40A", "32-12?-6?", 0]] };
+  const h = F.saleDetailHTML(F.rowObjs(f)[0], f, []);
+  assert.match(h, /Section 32, T12, R6 \(the legal leaves out north or south and east or west\)/);
+});

@@ -35,6 +35,8 @@ function expectFor(c, r, f) {
     case "pid": return v ? [esc(v)] : ["not in the record"];
     case "muni": return r.muniName ? [esc(r.muniName)] : ["not in the record"];
     case "legal": return v ? [esc(F.clean(v))] : ["not in the record"];
+    // the section key (scripts/land_keys.py): the panel's "Section, township, range" line reads it
+    case "str": return v ? ["Section, township, range", esc(F.strOf(r.legal) || F.keyText(v))] : ["Section, township, range"];
     case "exempt": return [v ? "Exemption claimed" : "No exemption claimed"];
     case "grantor": case "grantee": return f.names ? (v ? [esc(v)] : ["not in the record"]) : ["not in our copy"];
     case "ac1": return v != null ? [esc(v)] : (+r.np > 1 ? ["not in the record"] : []);
