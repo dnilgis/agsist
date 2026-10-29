@@ -3,16 +3,16 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2185,
+  "live_boards": 2139,
   "with_parent": 130,
-  "with_dest": 117,
+  "with_dest": 111,
   "parent_by_rule": {
    "board-page": 1,
    "chs-brand": 129
   },
   "dest_by_brand": {
    "ADM": 26,
-   "AGP": 28,
+   "AGP": 26,
    "Big River": 4,
    "Bunge": 4,
    "CGB": 9,
@@ -20,9 +20,9 @@
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 11,
-   "Valero": 4,
-   "Viserion": 6
+   "POET": 9,
+   "Valero": 3,
+   "Viserion": 5
   },
   "board_pages_with_other_firms": 1
  },
@@ -912,31 +912,6 @@
    "dest": "Green Plains",
    "dv": "location"
   },
-  "farmerswin-agpmasoncity": {
-   "elevId": "e8jam8a9cw",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerswin-poetfairbank": {
-   "elevId": "ez7yaq8md0",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "farmerswin-poetshellrock": {
-   "elevId": "ek6gke6bgx",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "farmerswin-valero": {
-   "elevId": "ebsf77fnha",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "farmerswin-viserion": {
-   "elevId": "ey734h2jkj",
-   "dest": "Viserion",
-   "dv": "location"
-  },
   "fsgrain-admclintoncorn": {
    "elevId": "ekz8tqgy53",
    "dest": "ADM",
@@ -975,11 +950,6 @@
   "fsgrain-viserionsavanna": {
    "elevId": "eq4pgrxk46",
    "dest": "Viserion",
-   "dv": "location"
-  },
-  "fullcircleag-agpaberdeen": {
-   "elevId": "ebn7vhdmrb",
-   "dest": "AGP",
    "dv": "location"
   },
   "hovenequity-agpdirectship": {
