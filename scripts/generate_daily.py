@@ -5690,8 +5690,9 @@ def main():
     # 2026-10-27: claims a futures quote cannot carry (expired contract, a last
     # trade called a close, a future date stated as past, a cash value from a
     # futures move, a planting call from this year's contracts, a cause nobody
-    # is named as saying). scripts/daily_claims.py cuts the sentence, never
-    # rewords it; briefing_gate blocks any left.
+    # is named as saying). scripts/daily_claims.py cuts the sentence (a cause
+    # sentence is first reworded by code, Oct 29); briefing_gate blocks any
+    # data claim left and warns on a wording one.
     try:
         import daily_claims as _dc
         briefing, _dcl = _dc.strip(briefing, _dc.from_files(briefing, str(REPO_ROOT)))

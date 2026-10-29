@@ -19,12 +19,15 @@ lines, and each was a claim the numbers in the issue could not support:
 Each rule below is one of those, written so the real line fails and the
 corrected line passes (see the selftest). One definition, used three times:
 the generator's prompt (PROMPT_RULES), the generator and the critic after a
-rewrite (strip: the sentence is cut, never reworded), and briefing_gate (a
-data rule left blocks the send, a wording rule left is a warning).
+rewrite (strip: the sentence is cut; since Oct 29 a cause sentence is first
+reworded by code, fix_causes, and scripts/cause_fix.py runs that again right
+before the gate), and briefing_gate (a data rule left blocks the send, a
+wording rule left is a warning).
 
   context(prices, issue_date, quote_strip)  what the rules need to know
   lint(briefing, ctx)   -> [(rule, loc, sentence)]
   strip(briefing, ctx)  -> (briefing, [log lines])
+  fix_causes(briefing, ctx) -> (briefing, [log lines])  the cause rule: reword, else cut, else leave
   from_files(briefing, repo, today)  context from data/prices.json
 
     python3 scripts/daily_claims.py --selftest
