@@ -189,3 +189,20 @@ test("during the move, a line a branch still added to data/whats-new.json gets i
   const cp = JSON.parse(py("import sys, json; sys.path.insert(0, 'scripts/dev'); import main_build as m; print(json.dumps(m.COMMIT))"));
   assert.ok(cp.includes("data/whats-new"), "the rebuild on main commits kept entry files");
 });
+
+test("every built file can be staged on main, even under the engine's info/exclude (main-checks.yml, Oct 29: scripts/ is excluded there)", () => {
+  const dir = tmp("stage-");
+  const git = (...a) => execFileSync("git", ["-C", dir, ...a], { encoding: "utf8", env: { ...process.env, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@t", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@t" } });
+  git("init", "-q", "-b", "main");
+  const built = JSON.parse(py("import sys, json; sys.path.insert(0, 'scripts/dev'); import main_build as m; print(json.dumps(list(m.BUILT)))"));
+  for (const f of [...built, "data/whats-new/2026-11-01-a.json"]) { fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true }); fs.writeFileSync(path.join(dir, f), "x\n"); }
+  fs.writeFileSync(path.join(dir, "other.txt"), "not built\n");
+  // what the Engine checkout writes in Actions (.github/actions/engine/engine.sh exclude_paths)
+  fs.appendFileSync(path.join(dir, ".git/info/exclude"), "/.engine-src/\n/scripts\n/test\n/build\n");
+  assert.ok(execFileSync("git", ["-C", dir, "check-ignore", "scripts/dev/test-map.json"], { encoding: "utf8" }).trim(), "the map is ignored there, as in the Oct 29 red run");
+  const staged = JSON.parse(py("import sys, json; sys.path.insert(0, 'scripts/dev'); import main_build as m; print(json.dumps(m.stage(sys.argv[1])))", [dir]));
+  assert.deepEqual([...staged].sort(), [...built, "data/whats-new/2026-11-01-a.json"].sort(), "every built file and the entry files, and nothing else");
+  // each built path is either not ignored at all, or staged on purpose with -f (main_build.py stage)
+  const src = read("scripts/dev/main_build.py");
+  assert.match(src, /"add", "-f", "--"\] \+ files/, "-f only with the exact built file list");
+});
