@@ -72,6 +72,13 @@
    "link": "/field-scout"
   },
   {
+   "id": "2026-10-29-nws-forecast",
+   "date": "2026-10-29",
+   "title": "Forecasts from the National Weather Service",
+   "line": "Home weather, spray, urea, grain drying, harvest or wait and planting date read the National Weather Service forecast. Soil temperature is measured at a station.",
+   "link": "/spray"
+  },
+  {
    "id": "2026-10-29-own-place-lookup",
    "date": "2026-10-29",
    "title": "ZIP and town boxes use our own place list",
