@@ -1,0 +1,544 @@
+{
+ "schema": "agsist-farm-credit/1",
+ "about": "Federal Reserve district surveys of agricultural bankers, as compiled by the Federal Reserve Bank of Kansas City. Diffusion indexes, quarterly. Built by scripts/build_farm_credit.py; Chicago and Dallas quarters are checked against those banks' own files and any that disagree are withheld.",
+ "source": "Federal Reserve district agricultural credit surveys, compiled by the Federal Reserve Bank of Kansas City",
+ "source_url": "https://www.kansascityfed.org/agriculture/ag-credit-survey/",
+ "built": "2026-10-28",
+ "latest": "2026Q2",
+ "chart_from": "2010Q1",
+ "how": "Each quarter, ag bankers in the district say whether each item was higher, lower or the same as a year earlier. The index is the percent saying higher, minus the percent saying lower, plus 100. Over 100 means more said higher; under 100, more said lower; 100 is an even split.",
+ "words": {
+  "repay": "Under 100: more bankers said farm loans were being repaid at a lower rate than a year earlier than said a higher rate.",
+  "renew": "Over 100: more bankers said they renewed or extended more farm loans than a year earlier than said fewer.",
+  "collat": "Over 100: more bankers said they asked for more collateral than a year earlier than said less."
+ },
+ "series": {
+  "repay": {
+   "id": "003",
+   "name": "Loan Repayment Rate"
+  },
+  "renew": {
+   "id": "004",
+   "name": "Renewals or Extensions"
+  },
+  "collat": {
+   "id": "005",
+   "name": "Collateral Requirements"
+  }
+ },
+ "districts": {
+  "CHI": {
+   "name": "Chicago",
+   "num": 7,
+   "url": "https://www.chicagofed.org/",
+   "current": true,
+   "last": "2026Q2",
+   "first": {
+    "repay": "1991Q1",
+    "renew": "1991Q1"
+   },
+   "latest": {
+    "repay": 73,
+    "renew": 124,
+    "collat": 116
+   },
+   "chart": {
+    "repay": [79,null,114,142,146,133,133,150,154,139,128,135,143,129,115,91,96,93,85,69,57,64,60,43,32,48,48,65,57,68,60,53,53,64,63,59,52,74,70,79,59,64,93,133,146,146,143,153,159,133,121,131,123,105,100,92,78,85,76,64,61,71,null,69,63,73],
+    "renew": [122,null,92,77,69,77,73,66,67,77,80,76,70,78,95,107,107,107,113,124,139,132,133,142,154,151,148,136,143,135,139,141,138,132,142,138,141,137,129,123,148,148,122,85,70,69,73,73,71,null,88,87,86,96,102,111,125,123,128,130,133,135,134,134,136,124]
+   },
+   "checked_against_own_file": true,
+   "note": "",
+   "mark": null
+  },
+  "STL": {
+   "name": "St. Louis",
+   "num": 8,
+   "url": "https://www.stlouisfed.org/",
+   "current": true,
+   "last": "2026Q2",
+   "first": {
+    "repay": "2012Q2",
+    "renew": "2012Q2"
+   },
+   "latest": {
+    "repay": 66.67,
+    "renew": 126.19,
+    "collat": 138.1
+   },
+   "chart": {
+    "repay": [null,null,null,null,null,null,null,null,null,121.17,102.9,113.5,112.5,108.3,104.65,108.89,111.11,102.5,89.2,100,78,84.37,82,78,53.33,70,84,80,86,76,92,76.19,96.77,86.96,95.66,57.14,80,66.67,73.69,82.35,82.76,72.22,100,113.04,133.33,130.77,120,133.33,133.33,113.63,100,100,91.31,112,104.77,91.67,77.78,77.78,65.39,52.17,42.86,50,59.65,69.81,64.71,66.67],
+    "renew": [null,null,null,null,null,null,null,null,null,98.81,97.2,98.3,96,95.7,95.24,104.44,100,97.6,110.8,102.7,129.3,124.24,115,128,148.28,143,126,122.58,136,127,111,136.36,126.63,104.35,117.39,147.62,128,133.33,126.32,111.77,120.69,131.58,116.13,108.7,85.19,80.77,85,71.43,87.5,100,94.74,113.64,108.69,100,104.54,116.67,129.63,125.93,138.46,139.13,161.9,152,138.6,128.3,135.29,126.19]
+   },
+   "checked_against_own_file": false,
+   "note": "",
+   "mark": null
+  },
+  "MIN": {
+   "name": "Minneapolis",
+   "num": 9,
+   "url": "https://www.minneapolisfed.org/",
+   "current": true,
+   "last": "2026Q2",
+   "first": {
+    "repay": "2001Q1",
+    "renew": "2001Q1"
+   },
+   "latest": {
+    "repay": 75.93,
+    "renew": 142.59,
+    "collat": 116.67
+   },
+   "chart": {
+    "repay": [83.48,113,113,146,147.5,136.67,136.44,136.66,143,126.47,129.2,140.6,140.62,132.6,113.97,95.33,98.11,90,112.41,83.9,80,69.57,67,57,47.5,64,58,46.48,60,68,61,70,80,79.22,63.38,67.15,67.65,58.97,59.73,67.14,50,66.21,83.87,143.55,156.71,146.03,143.39,164.15,168.52,149.02,138.78,148.98,135.85,115.38,105.77,88.89,78.33,83.63,64.81,55.55,52.18,57.14,54.23,73.91,69.49,75.93],
+    "renew": [117.39,91,100,78,84.6,82.35,87.28,84.17,113,85.29,90.6,88.5,94.11,96.7,95.7,103.73,116.98,112.2,95.89,123.6,128.2,129.35,131,140,150.63,141,142,143.66,153,141,137,138.57,131.65,126.32,132.39,131.43,146.38,142.31,145.83,140.84,150,145.95,127.42,95.17,85.08,90.48,83.02,76.93,83.33,90.19,97.96,89.79,88.47,94.23,109.61,104.45,121.66,129.09,135.19,144.44,126.09,135.71,145.77,136.95,138.98,142.59]
+   },
+   "checked_against_own_file": false,
+   "note": "",
+   "mark": null
+  },
+  "KC": {
+   "name": "Kansas City",
+   "num": 10,
+   "url": "https://www.kansascityfed.org/agriculture/ag-credit-survey/",
+   "current": true,
+   "last": "2026Q2",
+   "first": {
+    "repay": "1991Q1",
+    "renew": "1991Q1"
+   },
+   "latest": {
+    "repay": 85.21,
+    "renew": 118.31,
+    "collat": 123.24
+   },
+   "chart": {
+    "repay": [90,89,106,128,129,117,116,124,135,125,113,122,122,105,105,99,96,93,94,93,83,90,79.14,59.9,56.44,54.5,51.05,52.11,58.64,66.48,64.02,77.38,79.45,75.65,77.3,79.55,70.84,76.57,76.3,87.57,70.97,68.75,84.34,123.17,138,146.06,141.17,144.07,142,123.81,116.04,117.85,112.24,100,96.33,92.91,85.15,86.37,78.19,71.2,67.61,70.87,73.08,90.57,79.69,85.21],
+    "renew": [117,115,106,93,94,99,95,93,89,87,97,94,95,99,102,107,109,110,113,113,121,120,120.32,136.46,140.8,141.5,147.37,147.59,144.56,139.24,134.56,130.15,130.22,126.42,128.84,129.22,126.22,127.75,122.42,119.64,137.42,137.5,125.46,107.31,92.67,84.77,88.89,89.54,93.34,94.4,100,107.86,104.31,104.44,107.41,115.08,121.1,117.43,121.37,131.2,126.92,129.13,129.54,127.36,128.91,118.31]
+   },
+   "checked_against_own_file": false,
+   "note": "From the third quarter of 2025 the Kansas City Fed's results include Farm Credit System lenders as well as commercial banks; earlier quarters are commercial banks only.",
+   "mark": {
+    "q": "2025Q3",
+    "label": "Farm Credit lenders added"
+   }
+  },
+  "DAL": {
+   "name": "Dallas",
+   "num": 11,
+   "url": "https://www.dallasfed.org/",
+   "current": true,
+   "last": "2026Q2",
+   "first": {
+    "repay": "1991Q1",
+    "renew": "1991Q1"
+   },
+   "latest": {
+    "repay": 96.15,
+    "renew": 103.85,
+    "collat": 119.2
+   },
+   "chart": {
+    "repay": [null,84,null,null,null,104.11,109.46,111.68,109,117.01,null,112,113.7,106.5,null,106.08,101.9,111.92,112.41,102.19,96.8,93.65,null,null,66.12,72,75,null,null,99.2,96,99.18,89.38,90.27,99.22,93.86,84.82,87.72,null,89.7,null,71.84,90.1,92.86,107.6,105.7,115.56,116.25,112.5,108.86,111.6,111,97.6,98.7,98.58,87.67,89.19,84.13,82.86,80.28,81.97,86.44,98.38,85.71,86.2,96.15],
+    "renew": [null,null,null,null,null,94.05,96.6,91.92,93,87.67,86.9,null,89.2,89.8,93.9,93.88,99.4,95.4,95.89,95.59,100.8,107.93,100,117,123.96,125,123,115.1,null,103.93,107,102.44,115.32,105.26,107.08,104.42,114.41,113.16,111.1,null,110.3,128.16,120.39,109.09,97.8,93.3,93.33,91.25,87.65,93.67,94.1,94.6,97.6,103.9,98.55,108.33,109.59,111.12,113.04,115.49,109.83,113.56,108.07,110.91,113.8,103.85]
+   },
+   "checked_against_own_file": true,
+   "note": "",
+   "mark": null
+  },
+  "RICH": {
+   "name": "Richmond",
+   "num": 5,
+   "url": "https://www.richmondfed.org/",
+   "current": false,
+   "last": "2021Q4",
+   "first": {
+    "repay": "1992Q2",
+    "renew": "1992Q2"
+   },
+   "latest": null,
+   "chart": {
+    "repay": [89,87,89,90,77,94,92,107,100,100,125,113,106,106,93,94,94,100,94,93,88,93,93,80,50,94,106,100,100,90,100,90,100,89,null,22,100,89,100,100,92,100,113,100,114,100,100,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+    "renew": [128,113,116,137,123,106,134,100,108,86,65,83,72,88,106,110,100,106,112,119,118,106,120,140,150,124,93,109,136,120,109,100,110,111,null,100,129,122,129,140,150,143,112,100,114,100,120,120,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
+   },
+   "checked_against_own_file": false,
+   "note": "",
+   "mark": null
+  },
+  "SF": {
+   "name": "San Francisco",
+   "num": 12,
+   "url": "https://www.frbsf.org/",
+   "current": false,
+   "last": "2020Q2",
+   "first": {
+    "repay": "2003Q1",
+    "renew": "2003Q1"
+   },
+   "latest": null,
+   "chart": {
+    "repay": [68.42,78,94,139,158,133.33,158.82,159.09,158,111.77,142.1,133.4,142.86,133.3,107.14,118.75,121.43,130.8,120,106.7,100,92.86,70,78,76.92,67,75,50,37,90,100,128.57,81.82,100,87.5,77.78,71.43,100,100,100,83.33,75,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+    "renew": [136.84,116,124,111,89,72.22,94.12,118.18,110,106.25,110.6,106.7,114.29,100,100,118.75,107.15,107.7,113.33,100,120,128.57,120,129,130.77,142,125,141.67,163,110,130,128.57,109.09,111.11,112.5,133.33,128.57,116.67,111.11,85.72,150,137.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
+   },
+   "checked_against_own_file": false,
+   "note": "",
+   "mark": null
+  }
+ },
+ "no_survey": {
+  "BOS": "Boston",
+  "NY": "New York",
+  "PHI": "Philadelphia",
+  "CLE": "Cleveland",
+  "ATL": "Atlanta"
+ },
+ "states": {
+  "IA": [
+   "CHI"
+  ],
+  "AR": [
+   "STL"
+  ],
+  "MN": [
+   "MIN"
+  ],
+  "MT": [
+   "MIN"
+  ],
+  "ND": [
+   "MIN"
+  ],
+  "SD": [
+   "MIN"
+  ],
+  "CO": [
+   "KC"
+  ],
+  "KS": [
+   "KC"
+  ],
+  "NE": [
+   "KC"
+  ],
+  "OK": [
+   "KC"
+  ],
+  "WY": [
+   "KC"
+  ],
+  "TX": [
+   "DAL"
+  ],
+  "MD": [
+   "RICH"
+  ],
+  "NC": [
+   "RICH"
+  ],
+  "SC": [
+   "RICH"
+  ],
+  "VA": [
+   "RICH"
+  ],
+  "DC": [
+   "RICH"
+  ],
+  "AK": [
+   "SF"
+  ],
+  "AZ": [
+   "SF"
+  ],
+  "CA": [
+   "SF"
+  ],
+  "HI": [
+   "SF"
+  ],
+  "ID": [
+   "SF"
+  ],
+  "NV": [
+   "SF"
+  ],
+  "OR": [
+   "SF"
+  ],
+  "UT": [
+   "SF"
+  ],
+  "WA": [
+   "SF"
+  ],
+  "ME": [
+   "BOS"
+  ],
+  "MA": [
+   "BOS"
+  ],
+  "NH": [
+   "BOS"
+  ],
+  "RI": [
+   "BOS"
+  ],
+  "VT": [
+   "BOS"
+  ],
+  "NY": [
+   "NY"
+  ],
+  "DE": [
+   "PHI"
+  ],
+  "OH": [
+   "CLE"
+  ],
+  "AL": [
+   "ATL"
+  ],
+  "FL": [
+   "ATL"
+  ],
+  "GA": [
+   "ATL"
+  ],
+  "IL": [
+   "CHI",
+   "STL"
+  ],
+  "IN": [
+   "CHI",
+   "STL"
+  ],
+  "MI": [
+   "CHI",
+   "MIN"
+  ],
+  "WI": [
+   "CHI",
+   "MIN"
+  ],
+  "MO": [
+   "KC",
+   "STL"
+  ],
+  "NM": [
+   "KC",
+   "DAL"
+  ],
+  "KY": [
+   "STL",
+   "CLE"
+  ],
+  "TN": [
+   "STL",
+   "ATL"
+  ],
+  "MS": [
+   "STL",
+   "ATL"
+  ],
+  "LA": [
+   "DAL",
+   "ATL"
+  ],
+  "WV": [
+   "RICH",
+   "CLE"
+  ],
+  "PA": [
+   "CLE",
+   "PHI"
+  ],
+  "NJ": [
+   "NY",
+   "PHI"
+  ],
+  "CT": [
+   "NY",
+   "BOS"
+  ]
+ },
+ "withheld": [
+  {"district": "CHI", "q": "1991Q3", "series": "repay", "kc": 82, "own": 81},
+  {"district": "CHI", "q": "1992Q3", "series": "repay", "kc": 89, "own": 90},
+  {"district": "CHI", "q": "1993Q4", "series": "repay", "kc": 96, "own": 95},
+  {"district": "CHI", "q": "1994Q2", "series": "repay", "kc": 91, "own": 90},
+  {"district": "CHI", "q": "1995Q4", "series": "repay", "kc": 117, "own": 119},
+  {"district": "CHI", "q": "1997Q1", "series": "repay", "kc": 104, "own": 105},
+  {"district": "CHI", "q": "1998Q1", "series": "repay", "kc": 82, "own": 84},
+  {"district": "CHI", "q": "1998Q2", "series": "repay", "kc": 73, "own": 74},
+  {"district": "CHI", "q": "1998Q4", "series": "repay", "kc": 56, "own": 57},
+  {"district": "CHI", "q": "1999Q1", "series": "repay", "kc": 39, "own": 40},
+  {"district": "CHI", "q": "1999Q2", "series": "repay", "kc": 51, "own": 50},
+  {"district": "CHI", "q": "1999Q4", "series": "repay", "kc": 71, "own": 72},
+  {"district": "CHI", "q": "2001Q1", "series": "repay", "kc": 68, "own": 67},
+  {"district": "CHI", "q": "2002Q4", "series": "repay", "kc": 87, "own": 88},
+  {"district": "CHI", "q": "2003Q1", "series": "repay", "kc": 78, "own": 79},
+  {"district": "CHI", "q": "2004Q4", "series": "repay", "kc": 126, "own": 127},
+  {"district": "CHI", "q": "2005Q2", "series": "repay", "kc": 102, "own": 103},
+  {"district": "CHI", "q": "2005Q3", "series": "repay", "kc": 88, "own": 87},
+  {"district": "CHI", "q": "2006Q1", "series": "repay", "kc": 86, "own": 87},
+  {"district": "CHI", "q": "2006Q4", "series": "repay", "kc": 131, "own": 130},
+  {"district": "CHI", "q": "2007Q2", "series": "repay", "kc": 118, "own": 117},
+  {"district": "CHI", "q": "2007Q3", "series": "repay", "kc": 121, "own": 122},
+  {"district": "CHI", "q": "2007Q4", "series": "repay", "kc": 148, "own": 149},
+  {"district": "CHI", "q": "2010Q2", "series": "repay", "kc": 91, "own": 85},
+  {"district": "CHI", "q": "2025Q3", "series": "repay", "kc": 82, "own": 64},
+  {"district": "CHI", "q": "1991Q1", "series": "renew", "kc": 106, "own": null},
+  {"district": "CHI", "q": "1991Q2", "series": "renew", "kc": 121, "own": null},
+  {"district": "CHI", "q": "1991Q3", "series": "renew", "kc": 117, "own": null},
+  {"district": "CHI", "q": "1991Q4", "series": "renew", "kc": 134, "own": null},
+  {"district": "CHI", "q": "1992Q1", "series": "renew", "kc": 127, "own": null},
+  {"district": "CHI", "q": "1992Q2", "series": "renew", "kc": 120, "own": null},
+  {"district": "CHI", "q": "1992Q3", "series": "renew", "kc": 113, "own": null},
+  {"district": "CHI", "q": "1992Q4", "series": "renew", "kc": 105, "own": null},
+  {"district": "CHI", "q": "1993Q1", "series": "renew", "kc": 102, "own": null},
+  {"district": "CHI", "q": "1993Q2", "series": "renew", "kc": 109, "own": null},
+  {"district": "CHI", "q": "1993Q3", "series": "renew", "kc": 110, "own": null},
+  {"district": "CHI", "q": "1993Q4", "series": "renew", "kc": 109, "own": null},
+  {"district": "CHI", "q": "1994Q1", "series": "renew", "kc": 114, "own": null},
+  {"district": "CHI", "q": "1994Q2", "series": "renew", "kc": 115, "own": null},
+  {"district": "CHI", "q": "1994Q3", "series": "renew", "kc": 106, "own": null},
+  {"district": "CHI", "q": "1994Q4", "series": "renew", "kc": 93, "own": null},
+  {"district": "CHI", "q": "1995Q1", "series": "renew", "kc": 103, "own": null},
+  {"district": "CHI", "q": "1995Q2", "series": "renew", "kc": 103, "own": null},
+  {"district": "CHI", "q": "1995Q3", "series": "renew", "kc": 103, "own": null},
+  {"district": "CHI", "q": "1995Q4", "series": "renew", "kc": 85, "own": null},
+  {"district": "CHI", "q": "1996Q1", "series": "renew", "kc": 86, "own": null},
+  {"district": "CHI", "q": "1996Q2", "series": "renew", "kc": 93, "own": null},
+  {"district": "CHI", "q": "1996Q3", "series": "renew", "kc": 85, "own": null},
+  {"district": "CHI", "q": "1996Q4", "series": "renew", "kc": 102, "own": null},
+  {"district": "CHI", "q": "1997Q1", "series": "renew", "kc": 103, "own": null},
+  {"district": "CHI", "q": "1997Q2", "series": "renew", "kc": 105, "own": null},
+  {"district": "CHI", "q": "1997Q3", "series": "renew", "kc": 103, "own": null},
+  {"district": "CHI", "q": "1997Q4", "series": "renew", "kc": 100, "own": null},
+  {"district": "CHI", "q": "1998Q1", "series": "renew", "kc": 121, "own": null},
+  {"district": "CHI", "q": "1998Q2", "series": "renew", "kc": 130, "own": null},
+  {"district": "CHI", "q": "1998Q3", "series": "renew", "kc": 138, "own": null},
+  {"district": "CHI", "q": "1998Q4", "series": "renew", "kc": 141, "own": null},
+  {"district": "CHI", "q": "1999Q1", "series": "renew", "kc": 153, "own": null},
+  {"district": "CHI", "q": "1999Q2", "series": "renew", "kc": 150, "own": null},
+  {"district": "CHI", "q": "1999Q3", "series": "renew", "kc": 141, "own": null},
+  {"district": "CHI", "q": "1999Q4", "series": "renew", "kc": 132, "own": null},
+  {"district": "CHI", "q": "2000Q1", "series": "renew", "kc": 126, "own": null},
+  {"district": "CHI", "q": "2000Q2", "series": "renew", "kc": 130, "own": null},
+  {"district": "CHI", "q": "2000Q3", "series": "renew", "kc": 123, "own": null},
+  {"district": "CHI", "q": "2000Q4", "series": "renew", "kc": 118, "own": null},
+  {"district": "CHI", "q": "2010Q2", "series": "renew", "kc": 115, "own": 116},
+  {"district": "CHI", "q": "2022Q2", "series": "renew", "kc": 78, "own": 72},
+  {"district": "DAL", "q": "2000Q1", "series": "repay", "kc": 102.8, "own": 102.23},
+  {"district": "DAL", "q": "2000Q2", "series": "repay", "kc": 104.84, "own": 105.42},
+  {"district": "DAL", "q": "2000Q3", "series": "repay", "kc": 91.27, "own": 88.89},
+  {"district": "DAL", "q": "2000Q4", "series": "repay", "kc": 83.4, "own": 86.99},
+  {"district": "DAL", "q": "2001Q1", "series": "repay", "kc": 77.96, "own": 80.29},
+  {"district": "DAL", "q": "2001Q2", "series": "repay", "kc": 80.82, "own": 84.08},
+  {"district": "DAL", "q": "2001Q3", "series": "repay", "kc": 87.82, "own": 88.99},
+  {"district": "DAL", "q": "2001Q4", "series": "repay", "kc": 82.39, "own": 84.69},
+  {"district": "DAL", "q": "2002Q1", "series": "repay", "kc": 82.33, "own": 84.92},
+  {"district": "DAL", "q": "2002Q2", "series": "repay", "kc": 79.57, "own": 80.83},
+  {"district": "DAL", "q": "2002Q3", "series": "repay", "kc": 84.94, "own": 85.84},
+  {"district": "DAL", "q": "2002Q4", "series": "repay", "kc": 88.93, "own": 89.53},
+  {"district": "DAL", "q": "2003Q1", "series": "repay", "kc": 89.58, "own": 95.04},
+  {"district": "DAL", "q": "2003Q2", "series": "repay", "kc": 95.34, "own": 98.17},
+  {"district": "DAL", "q": "2003Q3", "series": "repay", "kc": 97.63, "own": 100},
+  {"district": "DAL", "q": "2003Q4", "series": "repay", "kc": 109.86, "own": 109.85},
+  {"district": "DAL", "q": "2004Q1", "series": "repay", "kc": 115.22, "own": 116.44},
+  {"district": "DAL", "q": "2004Q2", "series": "repay", "kc": 108.09, "own": 108.47},
+  {"district": "DAL", "q": "2004Q3", "series": "repay", "kc": 105.28, "own": 109.19},
+  {"district": "DAL", "q": "2004Q4", "series": "repay", "kc": 109.29, "own": 111.71},
+  {"district": "DAL", "q": "2005Q1", "series": "repay", "kc": 108.38, "own": 109.54},
+  {"district": "DAL", "q": "2005Q2", "series": "repay", "kc": 109.68, "own": 112.5},
+  {"district": "DAL", "q": "2005Q3", "series": "repay", "kc": 101.88, "own": 103.21},
+  {"district": "DAL", "q": "2005Q4", "series": "repay", "kc": 103.73, "own": 106.08},
+  {"district": "DAL", "q": "2006Q2", "series": "repay", "kc": 97.13, "own": 98.83},
+  {"district": "DAL", "q": "2006Q3", "series": "repay", "kc": 89.27, "own": 94.19},
+  {"district": "DAL", "q": "2006Q4", "series": "repay", "kc": 90.65, "own": 90.2},
+  {"district": "DAL", "q": "2007Q1", "series": "repay", "kc": 89.34, "own": 91.12},
+  {"district": "DAL", "q": "2007Q2", "series": "repay", "kc": 103.08, "own": 102.68},
+  {"district": "DAL", "q": "2007Q3", "series": "repay", "kc": 109.09, "own": 108.12},
+  {"district": "DAL", "q": "2007Q4", "series": "repay", "kc": 112.06, "own": 113.9},
+  {"district": "DAL", "q": "2008Q1", "series": "repay", "kc": 115.91, "own": 116.46},
+  {"district": "DAL", "q": "2008Q2", "series": "repay", "kc": 107.3, "own": 107.74},
+  {"district": "DAL", "q": "2008Q3", "series": "repay", "kc": 94.35, "own": 93.66},
+  {"district": "DAL", "q": "2008Q4", "series": "repay", "kc": 73.81, "own": 75.49},
+  {"district": "DAL", "q": "2009Q1", "series": "repay", "kc": 79.22, "own": 78.58},
+  {"district": "DAL", "q": "2009Q2", "series": "repay", "kc": 80.55, "own": 77.71},
+  {"district": "DAL", "q": "2009Q3", "series": "repay", "kc": 76.64, "own": 76.26},
+  {"district": "DAL", "q": "2009Q4", "series": "repay", "kc": 82.64, "own": 82.05},
+  {"district": "DAL", "q": "2010Q1", "series": "repay", "kc": 89, "own": 86.72},
+  {"district": "DAL", "q": "2010Q3", "series": "repay", "kc": 98, "own": 96.13},
+  {"district": "DAL", "q": "2010Q4", "series": "repay", "kc": 110, "own": 108.27},
+  {"district": "DAL", "q": "2011Q1", "series": "repay", "kc": 113, "own": 115.04},
+  {"district": "DAL", "q": "2012Q3", "series": "repay", "kc": 105.7, "own": 115.68},
+  {"district": "DAL", "q": "2013Q3", "series": "repay", "kc": 106.1, "own": 107.48},
+  {"district": "DAL", "q": "2015Q3", "series": "repay", "kc": 96, "own": 95.27},
+  {"district": "DAL", "q": "2015Q4", "series": "repay", "kc": 77, "own": 77.69},
+  {"district": "DAL", "q": "2016Q4", "series": "repay", "kc": 79.8, "own": 80.16},
+  {"district": "DAL", "q": "2017Q1", "series": "repay", "kc": 92, "own": 92.86},
+  {"district": "DAL", "q": "2019Q3", "series": "repay", "kc": 83.4, "own": 83.34},
+  {"district": "DAL", "q": "2020Q1", "series": "repay", "kc": 84.6, "own": 84.69},
+  {"district": "DAL", "q": "2000Q1", "series": "renew", "kc": 98.96, "own": 99.25},
+  {"district": "DAL", "q": "2000Q2", "series": "renew", "kc": 100.03, "own": 98.45},
+  {"district": "DAL", "q": "2000Q3", "series": "renew", "kc": 111.84, "own": 113.07},
+  {"district": "DAL", "q": "2000Q4", "series": "renew", "kc": 115.41, "own": 113.11},
+  {"district": "DAL", "q": "2001Q1", "series": "renew", "kc": 124.85, "own": 123.27},
+  {"district": "DAL", "q": "2001Q2", "series": "renew", "kc": 123.32, "own": 119.5},
+  {"district": "DAL", "q": "2001Q3", "series": "renew", "kc": 108.79, "own": 107.18},
+  {"district": "DAL", "q": "2001Q4", "series": "renew", "kc": 117.6, "own": 113.99},
+  {"district": "DAL", "q": "2002Q1", "series": "renew", "kc": 116.98, "own": 113.56},
+  {"district": "DAL", "q": "2002Q2", "series": "renew", "kc": 115.23, "own": 112.5},
+  {"district": "DAL", "q": "2002Q3", "series": "renew", "kc": 110.18, "own": 109.17},
+  {"district": "DAL", "q": "2002Q4", "series": "renew", "kc": 112.57, "own": 110.95},
+  {"district": "DAL", "q": "2003Q1", "series": "renew", "kc": 110.22, "own": 106.76},
+  {"district": "DAL", "q": "2003Q2", "series": "renew", "kc": 106.7, "own": 105.48},
+  {"district": "DAL", "q": "2003Q3", "series": "renew", "kc": 105.25, "own": 104.76},
+  {"district": "DAL", "q": "2003Q4", "series": "renew", "kc": 97.18, "own": 95.56},
+  {"district": "DAL", "q": "2004Q1", "series": "renew", "kc": 89.95, "own": 88.26},
+  {"district": "DAL", "q": "2004Q2", "series": "renew", "kc": 92.82, "own": 92.65},
+  {"district": "DAL", "q": "2004Q4", "series": "renew", "kc": 88.66, "own": 89.89},
+  {"district": "DAL", "q": "2005Q1", "series": "renew", "kc": 91.88, "own": 90.87},
+  {"district": "DAL", "q": "2005Q2", "series": "renew", "kc": 95, "own": 92.71},
+  {"district": "DAL", "q": "2005Q3", "series": "renew", "kc": 98.61, "own": 97.32},
+  {"district": "DAL", "q": "2005Q4", "series": "renew", "kc": 100.19, "own": 97.24},
+  {"district": "DAL", "q": "2006Q1", "series": "renew", "kc": 93.38, "own": 90.64},
+  {"district": "DAL", "q": "2006Q2", "series": "renew", "kc": 100.81, "own": 99.42},
+  {"district": "DAL", "q": "2006Q3", "series": "renew", "kc": 110.65, "own": 104.65},
+  {"district": "DAL", "q": "2006Q4", "series": "renew", "kc": 109.19, "own": 109.8},
+  {"district": "DAL", "q": "2007Q1", "series": "renew", "kc": 103.9, "own": 105.96},
+  {"district": "DAL", "q": "2007Q2", "series": "renew", "kc": 101.32, "own": 96.64},
+  {"district": "DAL", "q": "2007Q3", "series": "renew", "kc": 93.6, "own": 93.75},
+  {"district": "DAL", "q": "2007Q4", "series": "renew", "kc": 96.58, "own": 96.69},
+  {"district": "DAL", "q": "2008Q1", "series": "renew", "kc": 81.81, "own": 82.72},
+  {"district": "DAL", "q": "2008Q2", "series": "renew", "kc": 94.03, "own": 94.84},
+  {"district": "DAL", "q": "2008Q3", "series": "renew", "kc": 104.82, "own": 104.23},
+  {"district": "DAL", "q": "2008Q4", "series": "renew", "kc": 117.06, "own": 117.42},
+  {"district": "DAL", "q": "2009Q1", "series": "renew", "kc": 120.82, "own": 120.78},
+  {"district": "DAL", "q": "2009Q2", "series": "renew", "kc": 113.98, "own": 117.34},
+  {"district": "DAL", "q": "2009Q3", "series": "renew", "kc": 112.39, "own": 115.61},
+  {"district": "DAL", "q": "2009Q4", "series": "renew", "kc": 108.56, "own": 113.67},
+  {"district": "DAL", "q": "2010Q1", "series": "renew", "kc": 115, "own": 113.28},
+  {"district": "DAL", "q": "2010Q2", "series": "renew", "kc": 114, "own": 113.25},
+  {"district": "DAL", "q": "2010Q3", "series": "renew", "kc": 101, "own": 102.6},
+  {"district": "DAL", "q": "2010Q4", "series": "renew", "kc": 92, "own": 93.05},
+  {"district": "DAL", "q": "2011Q1", "series": "renew", "kc": 81, "own": 81.96},
+  {"district": "DAL", "q": "2012Q4", "series": "renew", "kc": 88.5, "own": 88.59},
+  {"district": "DAL", "q": "2017Q1", "series": "renew", "kc": 107, "own": 106.3},
+  {"district": "DAL", "q": "2019Q4", "series": "renew", "kc": 115.8, "own": 115.24}
+ ],
+ "files": [
+  {
+   "name": "FederalReserveDistrictSurveysofAgCreditConditionsHistoricalDataQ22026.xlsx",
+   "sha256": "6f4e711e55590943cfefb2b9e23522d5a22ec5bb40fa9cc0ca53b740bfd23093"
+  },
+  {
+   "name": "01-chicagofed-credit-conditions-7th-district-xls.xls",
+   "sha256": "058e487da9e34ae48bc2d03e10e3600eafd042cbf3a763e268ccd3cda887f64c"
+  },
+  {
+   "name": "10-dallasfed-aglending.xlsx",
+   "sha256": "5756c85941fa4707c8edb37d1659ec0c25b6ac7b94bc7b01281556f81d28faa8"
+  }
+ ]
+}

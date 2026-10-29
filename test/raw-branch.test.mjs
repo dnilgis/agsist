@@ -37,7 +37,7 @@ const git = (args, cwd = root) => execFileSync('git', args, { cwd, encoding: 'ut
 
 const MOVED = [
   'data/cattle-auction-raw', 'data/cattle-cash-raw', 'data/ccc-loan-raw', 'data/dairy-raw',
-  'data/fall-nitrogen-raw', 'data/fert-ams-raw', 'data/coop-fert-raw', 'data/hay-ams-raw', 'data/hay-raw', 'data/drought/probe',
+  'data/fall-nitrogen-raw', 'data/fert-ams-raw', 'data/coop-fert-raw', 'data/hay-ams-raw', 'data/hay-raw', 'data/drought/probe', 'vintage',
 ];
 const ATLAS_MOVED = ['heat', 'water', 'loss', 'sob', 'value', 'crp', 'energy', 'wells', 'practices',
   'climate', 'storms', 'livestock', 'frost', 'wells_states'];
@@ -152,7 +152,7 @@ function seedRaw({ t, g }, files) {
   g(['push', '-q', path.join(t, 'origin.git'), 'HEAD:raw'], s);
 }
 // The sandbox's own origin: never the real private repo, whatever this shell has set.
-const baseEnv = () => { const e = { ...process.env }; for (const k of ['PRIVATE_REPO_TOKEN', 'RAW_REMOTE', 'RAW_SOFT', 'RAW_BRANCH', 'GITHUB_STEP_SUMMARY']) delete e[k]; return e; };
+const baseEnv = () => { const e = { ...process.env }; for (const k of ['PRIVATE_REPO_TOKEN', 'RAW_REMOTE', 'RAW_SOFT', 'RAW_BRANCH', 'RAW_KEEP', 'GITHUB_STEP_SUMMARY']) delete e[k]; return e; };
 const run = (sb, script, args, extra = {}) => spawnSync('bash', [`scripts/${script}`, ...args], {
   cwd: sb.w, encoding: 'utf8', env: { ...baseEnv(), RAW_WT: path.join(sb.t, 'rawwt'), RAW_SLEEP: '0', ...extra },
 });
@@ -176,6 +176,26 @@ test('push_raw.sh copies over raw, never deletes there, and leaves main alone', 
     assert.equal(git(['rev-parse', 'main'], path.join(sb.t, 'origin.git')).trim(), mainBefore, 'main untouched');
     assert.equal(git(['status', '--porcelain'], sb.w), '', 'nothing staged or left on main');
     const again = run(sb, 'push_raw.sh', ['x probe', 'data/x-raw']);
+    assert.equal(again.status, 0);
+    assert.match(again.stdout, /raw: no change/);
+  } finally { fs.rmSync(sb.t, { recursive: true, force: true }); }
+});
+
+test('push_raw.sh with RAW_KEEP=1 adds new files and never replaces one already on raw (vintage, written once)', () => {
+  const sb = sandbox();
+  try {
+    seedRaw(sb, { 'data/x-raw/a/2026-10-27.json': 'day1\n', 'data/x-raw/a/2026-10-28.json': 'first\n' });
+    fs.mkdirSync(path.join(sb.w, 'data/x-raw/a'), { recursive: true });
+    fs.writeFileSync(path.join(sb.w, 'data/x-raw/a/2026-10-28.json'), 'second run\n');
+    fs.mkdirSync(path.join(sb.w, 'data/x-raw/b'), { recursive: true });
+    fs.writeFileSync(path.join(sb.w, 'data/x-raw/b/2026-10-28.json'), 'new\n');
+    const r = run(sb, 'push_raw.sh', ['x vintage', 'data/x-raw'], { RAW_KEEP: '1' });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.match(r.stdout, /raw: 1 file\(s\) already on raw left as they were \(RAW_KEEP\)/);
+    assert.equal(rawFile(sb, 'data/x-raw/a/2026-10-28.json'), 'first\n', 'the saved day is not replaced');
+    assert.equal(rawFile(sb, 'data/x-raw/b/2026-10-28.json'), 'new\n', 'a new file lands');
+    assert.deepEqual(onRaw(sb), ['README.md', 'data/x-raw/a/2026-10-27.json', 'data/x-raw/a/2026-10-28.json', 'data/x-raw/b/2026-10-28.json']);
+    const again = run(sb, 'push_raw.sh', ['x vintage', 'data/x-raw'], { RAW_KEEP: '1' });
     assert.equal(again.status, 0);
     assert.match(again.stdout, /raw: no change/);
   } finally { fs.rmSync(sb.t, { recursive: true, force: true }); }

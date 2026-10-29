@@ -20,7 +20,8 @@ locations must equal the report's own "N LOCATIONS"; the bushels must add to its
 each licence's rows must add to the subtotal printed on its last row; every county must be a county
 of its state (Nebraska, or "<name> KS"). Any miss and nothing is written (exit 1).
 
-THE JOIN (the ids' own rules, scripts/build_ids.py; never guessed):
+THE JOIN (the ids' own rules, scripts/build_ids.py; never guessed; the code is shared with the other
+states in scripts/licensed_storage.py):
   1. Operator: the licensee's legal name and our facility's names (name, company, aliases) are
      compared with the cash-bid pages' operator key (build_cash_bid_pages.op_key: legal and trade
      words and the town taken out), after also taking out "Non-Stock" and "Incorporated". A legal
@@ -49,11 +50,12 @@ import os
 import re
 import subprocess
 import sys
-from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+
+import licensed_storage as LS  # noqa: E402
 
 OUT = os.path.join("data", "licensed-storage", "NE.json")
 REF_ID = "ne-psc-capacity-2026-10-28"
@@ -81,8 +83,7 @@ FOOT = re.compile(r"^\s*([\d,]+)\s+LOCATIONS\s+TOTAL CAPACITY:\s*([\d,]+)\s*$")
 ASOF = re.compile(r"As of\s+([A-Z][a-z]+ \d{1,2}, \d{4})")
 
 
-class Refused(Exception):
-    pass
+Refused = LS.Refused
 
 
 def _num(s):
@@ -182,61 +183,10 @@ def parse(text, cmap):
 
 # ---------------------------------------------------------------- join
 
-def _op(name, town=""):
-    from build_cash_bid_pages import op_key
-    return op_key(EXTRA_NOISE.sub(" ", (name or "").lower()), town)
-
-
-def _full(name):
-    return re.sub(r"[^a-z0-9]", "", (name or "").lower())
-
-
 def join(rows, elevators):
-    """Fills id/src/how per row; returns (unjoined, ambiguous) lists. elevators: the
-    data/ids/elevators.json records."""
-    from build_cash_bid_pages import town_key
-    by_town = defaultdict(list)
-    for e in elevators:
-        if e.get("st") in ("NE", "KS"):
-            by_town[(e["st"], town_key(e.get("city") or ""))].append(e)
-    claims = defaultdict(list)
-    unjoined, ambiguous = [], []
-    for i, r in enumerate(rows):
-        r.update(id=None, src=[], how=None)
-        lk = {k for k in (_op(r["name"], r["city"]), _op(r["name"])) if k}
-        alias = {_full(n) for n in ALIASES.get(r["lic"], {}).get("names", [])}
-        cands = []
-        for e in by_town.get((r["st"], town_key(r["city"])), []):
-            names = {e.get("name"), e.get("company"), *(e.get("aliases") or [])} - {None, ""}
-            how = None
-            if lk & {k for n in names for k in (_op(n, e.get("city") or ""), _op(n)) if k}:
-                how = "name+town"
-            elif alias & {_full(n) for n in names}:
-                how = "alias+town"
-            if how:
-                cands.append((e, how))
-        if not cands:
-            unjoined.append({"i": i, "why": "no facility of this operator in this town in our list"})
-            continue
-        ok = [(e, h) for e, h in cands if not e.get("fips") or e["fips"] == r["fips"]]
-        if not ok:
-            unjoined.append({"i": i, "why": "our facility there is placed in another county"})
-            continue
-        if len(ok) > 1:
-            ambiguous.append({"i": i, "why": f"{len(ok)} facilities of this operator in this town",
-                              "ids": sorted(e["id"] for e, _ in ok)})
-            continue
-        claims[ok[0][0]["id"]].append((i, ok[0]))
-    for eid, cl in claims.items():
-        if len(cl) > 1:
-            for i, _ in cl:
-                ambiguous.append({"i": i, "why": f"{len(cl)} licensed locations point at one facility", "ids": [eid]})
-            continue
-        i, (e, how) = cl[0]
-        rows[i].update(id=eid, src=sorted((e.get("sources") or {}).get("bids_repo") or []), how=how)
-    unjoined.sort(key=lambda u: u["i"])
-    ambiguous.sort(key=lambda u: u["i"])
-    return unjoined, ambiguous
+    """Fills id/src/how per row; returns (unjoined, ambiguous) lists. The rules are the shared ones
+    (scripts/licensed_storage.py, the docstring above): NE and KS facilities, this file's ALIASES."""
+    return LS.join(rows, elevators, ("NE", "KS"), ALIASES, EXTRA_NOISE)
 
 
 def build(text, elevators, cmap, ref=REF_ID, sha=None, url=None):
@@ -292,30 +242,8 @@ def _holds(doc):
         return False
 
 
-def by_source(doc, elevators=None):
-    """{bids source id: location row} for joined rows whose facility holds that board. A board id that
-    two rows would claim is left out. elevators (data/ids/elevators.json records, when given): the
-    boards each id holds TODAY, so a board the ids later moved to another facility loses the line
-    (an id no longer there: no line)."""
-    now = None
-    if elevators is not None:
-        now = {e["id"]: sorted((e.get("sources") or {}).get("bids_repo") or []) for e in elevators}
-    out, dup = {}, set()
-    for r in (doc or {}).get("locations") or []:
-        if not r.get("id"):
-            continue
-        for s in (r.get("src") or []) if now is None else now.get(r["id"], []):
-            if s in out:
-                dup.add(s)
-            out[s] = r
-    for s in dup:
-        del out[s]
-    return out
-
-
-def fmt_date(iso):
-    d = dt.date.fromisoformat(iso)
-    return f"{d.strftime('%b')} {d.day}, {d.year}"
+by_source = LS.by_source
+fmt_date = LS.fmt_date
 
 
 def storage_line_html(row, doc, esc):

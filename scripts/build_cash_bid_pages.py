@@ -3083,38 +3083,40 @@ def cash_parent(rel, pre=OUT_DIR):
     return [("/basis#states", "cash bids by state")] + hub
 
 
-# LICENSED STORAGE (2026-10-28, fx/necap): a state's own list of licensed grain warehouses and the
-# bushels each may store (Nebraska PSC first, scripts/fetch_ne_capacity.py, data/licensed-storage/).
-# A board shows its location's licensed bushels only when the join there named exactly one of our
-# facilities and that facility holds this board, and the board posts at one place only (a board that
-# posts for several places is never given one place's number). The state page carries the report's
-# own totals. No file, or one that does not add up: nothing is printed.
+# LICENSED STORAGE (2026-10-28, fx/necap; ND and WI fx/ndwicap): each state's own list of licensed
+# grain warehouses (scripts/licensed_storage.py and one reader per state, data/licensed-storage/).
+# A board shows its location's line only when the join there named exactly one of our facilities and
+# that facility holds this board, the board posts at one place only (a board that posts for several
+# places is never given one place's line), and the row is in the town's own state. The state page
+# carries the list's own totals. No file, or one that does not add up: nothing is printed.
 def attach_storage(towns, ctx, root="."):
-    import fetch_ne_capacity as NECAP
-    doc = NECAP.load(root)
+    import licensed_storage as LSTO
     ctx["storage_note"], ctx["storage_shown"] = {}, 0
-    if not doc:
+    docs = [(R, R.load(root)) for R in LSTO.readers()]
+    docs = [(R, d) for R, d in docs if d]
+    if not docs:
         return
     try:
         with open(os.path.join(root, "data", "ids", "elevators.json"), encoding="utf-8") as f:
             els = json.load(f)["elevators"]
     except (OSError, ValueError, KeyError):
         els = None   # the boards each id held at the join
-    by_src = NECAP.by_source(doc, els)
     places = Counter()
     for t in towns.values():
         for bd in t["boards"].values():
             places[bd["source"]] += 1
-    for t in towns.values():
-        for bd in t["boards"].values():
-            r = by_src.get(bd["source"])
-            if r and places[bd["source"]] == 1 and r["st"] == t["state"]:
-                bd["storage_html"] = NECAP.storage_line_html(r, doc, esc)
-                ctx["storage_shown"] += 1
-    for st in ("NE",):
-        note = NECAP.state_note_html(doc, st, esc)
-        if note:
-            ctx["storage_note"][st] = note
+    for R, doc in docs:
+        by_src = R.by_source(doc, els)
+        for t in towns.values():
+            for bd in t["boards"].values():
+                r = by_src.get(bd["source"])
+                if r and places[bd["source"]] == 1 and r["st"] == t["state"] and not bd.get("storage_html"):
+                    bd["storage_html"] = R.storage_line_html(r, doc, esc)
+                    ctx["storage_shown"] += 1
+        for st in sorted(STATE_NAMES):
+            note = R.state_note_html(doc, st, esc)
+            if note and st not in ctx["storage_note"]:
+                ctx["storage_note"][st] = note
 
 
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
@@ -4013,7 +4015,7 @@ def _selftest_delivery_year():
 
 
 def _selftest_storage():
-    """Licensed storage (fx/necap): a board gets its location's licensed bushels only through the join,
+    """Licensed storage (fx/necap, fx/ndwicap): a board gets its location's line only through the join,
     only when it posts at one place, only on its own state's page; the Nebraska state page carries the
     report's totals; no file, nothing printed. Rows are the PSC's own (Oct 28, 2026 report)."""
     import tempfile
@@ -4046,6 +4048,35 @@ def _selftest_storage():
         assert "TOTAL" not in ctx["storage_note"]["NE"] and "34,323,109 bushels in all" in ctx["storage_note"]["NE"]
         assert 'bd.get("storage_html")' in inspect.getsource(board_section), "board_section prints the line"
         assert 'ctx.get("storage_note", {}).get(st)' in inspect.getsource(build_state_index), "the state page prints it"
+        # North Dakota (a licensee's total capacity, said as a total) and Wisconsin (a license, no capacity)
+        import fetch_nd_storage as NDS
+        import fetch_wi_storage as WIS
+        nd_els = [{"id": "n1", "name": "Voss Grain", "company": "Voss Grain", "city": "Voss", "st": "ND",
+                   "fips": None, "aliases": [], "sources": {"bids_repo": ["voss"]}},
+                  {"id": "n2", "name": "Clifford Farmers Coop", "company": "Clifford Farmers Coop", "city": "Hope",
+                   "st": "ND", "fips": None, "aliases": [], "sources": {"bids_repo": ["cfc-hope"]}}]
+        wi_els = [{"id": "w1", "name": "121 Farms", "company": "121 Farms", "city": "Independence", "st": "WI",
+                   "fips": None, "aliases": [], "sources": {"bids_repo": ["121farms"]}}]
+        LSTO = sys.modules["licensed_storage"]
+        LSTO.write(NDS.build(NDS.SAMPLE, nd_els, "2024-06-07", read="2026-10-28"), "ND", root)
+        LSTO.write(WIS.build(WIS.SHEET, WIS.SAMPLE, wi_els), "WI", root)
+        towns[("ND", "voss")] = {"state": "ND", "boards": {"e": {"source": "voss"}}}
+        towns[("ND", "hope")] = {"state": "ND", "boards": {"f": {"source": "cfc-hope"}}}
+        towns[("WI", "independence")] = {"state": "WI", "boards": {"g": {"source": "121farms"}}}
+        towns[("MN", "voss")] = {"state": "MN", "boards": {"h": {"source": "voss-mn"}}}
+        for t in towns.values():
+            for bd in t["boards"].values():
+                bd.pop("storage_html", None)
+        attach_storage(towns, ctx, root)
+        got = {k: bd.get("storage_html") for t in towns.values() for k, bd in t["boards"].items()}
+        assert "Licensed storage: 258,000 bushels (" in got["e"] and "ND Dept. of Agriculture" in got["e"], got["e"]
+        assert "15,188,000 bushels for all 3 of this licensee&rsquo;s North Dakota locations together" in got["f"], got["f"]
+        assert "Licensed grain warehouse keeper (" in got["g"] and "license 559335" in got["g"] \
+            and "bushel" not in got["g"], got["g"]
+        assert got["h"] is None and got["a"] and got["b"] is None, "own state only; Nebraska unchanged"
+        assert ctx["storage_shown"] == 4, ctx["storage_shown"]
+        assert set(ctx["storage_note"]) == {"NE", "ND", "WI"}, sorted(ctx["storage_note"])
+        assert "no storage capacity" in ctx["storage_note"]["WI"] and "not per location" in ctx["storage_note"]["ND"]
 
 
 def _selftest_place():
