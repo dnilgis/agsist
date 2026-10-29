@@ -610,7 +610,7 @@ def selftest():
                 'data-source="company:acme-co-op" data-crops="corn soybeans wheat"></div>') in p
         assert p.count("/components/cb-signup.js?v=") == 1 and p.count("/components/cb-signup.css?v=") == 1
         assert p.index('id="bid-email"') > p.index('id="iowa"'), "the box comes after the bids"
-        ld = [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">\n(.*?)\n  </script>', p, re.S)]
+        ld = [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">\s*(.*?)\s*</script>', p, re.S)]
         types = [g["@type"] for g in ld[0]["@graph"]]
         assert types == ["BreadcrumbList", "WebPage", "FAQPage"], types
         faqs = {q["name"]: q["acceptedAnswer"]["text"] for q in ld[0]["@graph"][2]["mainEntity"]}
