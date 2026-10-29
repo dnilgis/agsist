@@ -3452,6 +3452,9 @@ def _selftest_off_feed():
 
 
 def selftest():
+    # hermetic: the fixture towns get no nearby-buyers line from the real data/buyers.json
+    # (_selftest_buyers sets its own fixture plants)
+    BUY.load = lambda root=".": []
     import tempfile as _tf
     snap = parse_ts("2026-10-07T18:00:00Z").astimezone(CT)
     assert delivery_month("2026-09", "corn", snap) is None
@@ -3873,6 +3876,7 @@ def selftest():
     _selftest_pasted()
     _selftest_off_feed()
     _selftest_storage()
+    _selftest_buyers()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -4418,6 +4422,44 @@ def _selftest_pasted():
     plain = {k: v for k, v in row.items() if k not in ("pasted", "pastedAt", "postedFrom")}
     got, drops = boards("2026-10-24T14:05:00Z", plain)
     assert not got and drops["price_older_than_cutoff"] == 1, drops
+
+
+def _selftest_buyers():
+    """The nearby-buyers line (scripts/build_buyers.py) on a fixture town: the
+    count, the script once, the source credit, and no line (and no script) when
+    no buyer is within 50 miles. Hermetic: data/buyers.json is not read."""
+    import tempfile as _tf
+    merged, index = _fixture()
+    for b in merged["bids"]:
+        if b["city"] in ("FREMONT", "Fremont"):
+            b["lat"], b["lon"] = 41.433, -96.498
+    ZT = {"zips": {"68025": ["Fremont", "NE"], "68031": ["Hooper", "NE"], "50001": ["Ackworth", "IA"]}}
+    fix = [{"id": "aaaaa", "k": "crush", "n": "Op Crush", "op": "Op Crush", "town": "Fremont", "st": "NE",
+            "ll": [41.433, -96.498], "src": "nopa", "rows": ["04:2"]},
+           {"id": "bbbbb", "k": "ethanol", "n": "Op Ethanol", "op": "Op Ethanol", "town": "Blair", "st": "NE",
+            "ll": [41.544, -96.125], "src": "rfa", "cap": "200 million gal a year", "rows": ["03:2"]},
+           {"id": "ccccc", "k": "ethanol", "n": "Far Ethanol", "op": "Far Ethanol", "town": "Far", "st": "NE",
+            "ll": [41.433, -95.4], "src": "rfa", "rows": ["03:3"]}]
+    keep = BUY.load
+    try:
+        for plants, want in ((fix, True), ([], False)):
+            BUY.load = lambda root=".", _p=plants: _p
+            with _tf.TemporaryDirectory() as td:
+                out = os.path.join(td, "cash-bids")
+                build_all(merged, index, ZT, out_dir=out, root=".", sitemap=os.path.join(td, "sm.xml"), min_towns=0,
+                          now=parse_ts("2026-10-07T19:00:00Z"))
+                fr = open(os.path.join(out, "nebraska", "fremont.html")).read()
+            if want:
+                assert ('<details class="cbt-hist buyers" data-buyers="aaaaa:0,bbbbb:21"><summary>Nearby buyers within '
+                        '50 miles: 1 ethanol plant, 1 oilseed crusher</summary>') in fr, fr[fr.find("buyers") - 200:][:600]
+                assert "ccccc" not in fr, "57 miles out is not within 50"
+                assert fr.count("/components/cb-buyers.js?v=1") == 1
+                assert ">Renewable Fuels Association</a>" in fr and ">NOPA</a>" in fr and "Straight-line miles" in fr
+                assert fr.index('data-buyers=') > fr.index('id="bid-email"'), "under the bids, not above them"
+            else:
+                assert "data-buyers" not in fr and "cb-buyers.js" not in fr, "no buyer: no line and no script"
+    finally:
+        BUY.load = keep
 
 
 def _selftest_known():

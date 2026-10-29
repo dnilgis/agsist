@@ -27,7 +27,7 @@
     var bits = [esc((kinds[p.k] || [p.k])[0]), d < 1 ? 'under 1 mi' : esc(d) + ' mi'];
     if (p.rr && p.rr.length) bits.push(esc(p.rr.join(' and ')));
     bits.push(p.cap ? esc(p.cap) + (p.eia && p.eia !== p.cap ? ' (EIA: ' + esc(p.eia) + ')' : '') : 'capacity not published');
-    return '<li><b>' + esc(p.n) + '</b>, ' + esc(p.town) + ', ' + esc(p.st) + '<br><span class="cbt-mut">' +
+    return '<li style="padding:6px 0"><b>' + esc(p.n) + '</b>, ' + esc(p.town) + ', ' + esc(p.st) + '<br><span class="cbt-mut" style="white-space:normal">' +
       bits.join(' &middot; ') + '</span></li>';
   }
   function draw(el) {
@@ -39,7 +39,7 @@
         var a = x.split(':'), p = P[a[0]];
         if (p) out.push(item(p, +a[1], kinds));
       });
-      box.innerHTML = out.length ? '<ul class="cbt-nl">' + out.join('') + '</ul>'
+      box.innerHTML = out.length ? '<ul class="cbt-nl" style="list-style:none;padding:0;margin:6px 0 0">' + out.join('') + '</ul>'
         : 'The buyer list changed since this page was built. Reload the page to see it.';
       el.setAttribute('data-drawn', '1');
     }).catch(function () {
