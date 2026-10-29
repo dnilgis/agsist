@@ -138,10 +138,7 @@
       })
       .catch(function () {});
   }
-  /* Menu click counts (Oct 29, 2026: so the Nov 15 merges use real numbers). One GA4 event,
-     menu_click {group, label, menu}, for a link in the live menu: menu is desktop or phone, group the
-     menu group (Prices, Livestock, Field, Money & Land, Daily; My place, Rain Print card or More in
-     the phone panel), label the link's name. Nothing else about the reader is sent. */
+  /* menu_click {group, label, menu} for a live menu link (Oct 29, 2026); nothing else is sent */
   function initMenuClicks() {
     var txt = function (el) { return el ? String(el.textContent || '').replace(/[\u2192]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : ''; };
     function send(a, menu, group) {
