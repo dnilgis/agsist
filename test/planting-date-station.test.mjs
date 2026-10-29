@@ -18,6 +18,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
+import { nwsPoints, nwsFromOM } from "./fixtures/nws-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -77,18 +78,15 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
-// Open-Meteo answer: 52 F every hour up to "now", then each forecast day 2 F warmer (or cooler).
-function meteo(nowIso, step) {
-  const now = new Date(nowIso + ":00Z");
-  const start = new Date(now.getTime() - 3 * 864e5); start.setUTCHours(0);
-  const time = [], soil = [];
-  for (let t = start.getTime(); t < now.getTime() + 6 * 864e5; t += 36e5) {
-    const iso = new Date(t).toISOString().slice(0, 16);
-    time.push(iso);
-    const dayAhead = Math.floor((Date.parse(iso.slice(0, 10)) - Date.parse(nowIso.slice(0, 10))) / 864e5);
-    soil.push(iso <= nowIso ? 52 : 52 + step * dayAhead);
-  }
-  return { current: { time: nowIso, temperature_2m: 61.3 }, hourly: { time, soil_temperature_6cm: soil } };
+// Soil (2026-10-29, Open-Meteo removed): the measured 4 in reading at the nearest station, from data/fall-nitrogen.json
+// (components/soil-near.js). One Wisconet station about 3 miles from the geocoded point; its last 10 daily means end
+// on o.soilLast (default: the day before the clock) with o.soil (default warming to 52.0 over the last 3 days).
+function soilFeed(o) {
+  const day = o.soilLast || new Date(Date.parse(o.clock || "2027-05-05T17:00:00Z") - 864e5).toISOString().slice(0, 10);
+  const t = o.soil || [44, 45, 46, 47, 47, 48, 49, 50, 52, 54];
+  return { updated_utc: day + "T13:00:00Z", max_miles: 50, max_age_days: 3,
+    net_labels: { WCN: "Wisconet" }, net_urls: { WCN: "https://wisconet.wisc.edu/" },
+    stations: [{ id: "WCN:TEST", net: "WCN", name: o.soilName || "Testville Soil", st: "WI", lat: o.soilLat || 45.35, lon: -91.70, depth: "4 in", stat: "daily mean", last: day, t }], counties: {} };
 }
 
 async function open(browser, port, o = {}) {
@@ -99,7 +97,13 @@ async function open(browser, port, o = {}) {
   if (o.clock) await pg.clock.setFixedTime(new Date(o.clock));
   await pg.route("**/*", (r) => {
     const u = r.request().url();
-    if (u.includes("api.open-meteo.com")) return r.fulfill({ contentType: "application/json", body: JSON.stringify(meteo(o.now || "2027-05-05T12:00", o.step ?? 2)) });
+    if (u.includes("open-meteo.com")) return r.abort();
+    if (u.endsWith("/data/fall-nitrogen.json")) return o.noSoil ? r.fulfill({ status: 404, body: "" }) : r.fulfill({ contentType: "application/json", body: JSON.stringify(soilFeed(o)) });
+    if (u.startsWith("https://api.weather.gov/")) {
+      const now = Date.parse(o.clock || "2027-05-05T17:00:00Z");
+      const body = /\/points\//.test(u) ? nwsPoints(45.31, -91.65) : nwsFromOM({ current: { temperature_2m: 61.3 }, hourly: {} }, { now, updated: "2027-05-05T15:00:00Z" });
+      return r.fulfill({ contentType: "application/geo+json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(body) });
+    }
     if (u.includes("nominatim.openstreetmap.org")) return r.fulfill({ contentType: "application/json", body: JSON.stringify([o.place || { lat: "45.31", lon: "-91.65", display_name: "Chetek, Barron County, Wisconsin, 54728, United States", address: { county: "Barron County", state: "Wisconsin", "ISO3166-2-lvl4": "US-WI" } }]) });
     if (u.endsWith("/data/planting/wi.json")) return o.noStations ? r.fulfill({ status: 404, body: "" }) : r.fulfill({ contentType: "application/json", body: FIX });
     if (u.endsWith("/data/planting/mn.json")) return r.fulfill({ status: 404, body: "" });
@@ -154,12 +158,18 @@ test("ZIP in May: station frost odds, heat units by hand, county dates, soil tre
     const rma = await txt(pg, "#pd-rma");
     assert.match(rma, /Corn May 31 Soybeans Jun 10/i);
     assert.match(rma, /Barron County, WI\. USDA RMA Revenue Protection final planting dates, 2026 crop year; RMA sets the 2027 dates in its own file/);
-    // Soil: 72 hourly values of 52 F, then forecast days at 54, 56, 58, 60, 62.
+    // Soil: the station's last 3 days 50, 52, 54 (mean 52.0), the last 5 rising 48 to 54; air 61 F from the NWS hour
     assert.equal(await txt(pg, "#st-2in"), "52.0°F");
+    assert.equal(await txt(pg, "#st-2in-sub"), "3-day mean, measured");
+    assert.equal(await txt(pg, "#st-air"), "61°F");
     const tr = await txt(pg, "#st-trend");
-    assert.match(tr, /Next 5 days \(model, daily mean\): 54° May 6 56° May 7 58° May 8 60° May 9 62° May 10 warming/i);
+    assert.match(tr, /Measured, last 5 days to 2027-05-04: 48° 49° 50° 52° 54° warming/i);
     assert.match(await txt(pg, "#st-verdict-wrap"), /Acceptable/);
-    assert.match(await txt(pg, "#st-asof"), /May 5, 12 pm local time/);
+    assert.match(await txt(pg, "#st-note"), /3-day mean of measured soil at 4 in at Testville Soil \(Wisconet, 3 mi\), not your field/);
+    const asof = await txt(pg, "#st-asof");
+    assert.match(asof, /Soil: measured at Testville Soil \(Wisconet\), 3 mi, last day 2027-05-04\./);
+    assert.match(asof, /Air: the forecast for this hour, National Weather Service \(NDFD grid, ARX 30,60\), issued May 5/);
+    assert.equal(await pg.$eval("#st-asof a", (a) => a.href), "https://wisconet.wisc.edu/");
     // A planned date adds its own row.
     await pg.click("#pd-local"); // no-op focus
     await pg.$eval("details.pd-more", (d) => (d.open = true));
@@ -171,14 +181,33 @@ test("ZIP in May: station frost odds, heat units by hand, county dates, soil tre
   } finally { await browser.close(); srv.close(); }
 });
 
-test("a cooling soil forecast says the warming-trend part of the rule is not met", { skip }, async () => {
+test("a station cooling over its last days says the warming-trend part of the rule is not met", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { pg } = await open(browser, port, { clock: "2027-05-05T17:00:00Z", step: -1 });
+    const { pg } = await open(browser, port, { clock: "2027-05-05T17:00:00Z", soil: [60, 60, 60, 60, 60, 60, 58, 56, 54, 52] });
     await loadZip(pg);
     assert.match(await txt(pg, "#st-trend"), /cooling/i);
-    assert.match(await txt(pg, "#st-note"), /forecast cools/);
+    assert.match(await txt(pg, "#st-note"), /soil cooled over its last days, so the "warming trend" part of the 50°F rule is not met/);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("no current soil reading: an old station reading or none near gives no soil number and no verdict", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    let { pg, ctx } = await open(browser, port, { clock: "2027-05-05T17:00:00Z", soilLast: "2026-12-20" });
+    await loadZip(pg);
+    assert.equal(await txt(pg, "#st-2in"), "-");
+    assert.match(await txt(pg, "#st-verdict-wrap"), /No soil verdict/);
+    assert.match(await txt(pg, "#st-note"), /last reported 2026-12-20\. Its readings are gathered September to December, so there is no current reading\. Read a probe at 2 in/);
+    assert.equal(await pg.$eval("#st-badge", (e) => e.style.display), "none");
+    await ctx.close();
+    ({ pg, ctx } = await open(browser, port, { clock: "2027-05-05T17:00:00Z", soilLat: 47.5 }));
+    await loadZip(pg);
+    assert.match(await txt(pg, "#st-note"), /No soil station reports within 50 miles of this spot\./);
+    assert.match(await txt(pg, "#st-verdict-wrap"), /No soil verdict/);
+    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
 

@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
 import { bake } from "../scripts/build_grain_emc.mjs";
+import { nwsPoints, nwsFromOM } from "./fixtures/nws-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ctx = {};
@@ -285,7 +286,17 @@ async function open(browser, port, { now, onForecast, settings, loc = true, widt
   if (now) await pg.clock.install({ time: now });
   await pg.route("**/*", async (r) => {
     const u = r.request().url(), h = { "access-control-allow-origin": "*" };
-    if (u.includes("api.open-meteo.com/v1/forecast")) return onForecast(r, u, h);
+    // the National Weather Service grid (2026-10-29, was Open-Meteo): /points names the office (Wisconsin ARX, Texas
+    // EWX); the grid answer is the test's Open-Meteo-shaped forecast through nwsFromOM, at the page's clock
+    if (u.startsWith("https://api.weather.gov/points/")) {
+      const tx = /\/points\/30\.27/.test(u);
+      return r.fulfill({ headers: h, contentType: "application/geo+json", body: JSON.stringify(nwsPoints(0, 0, tx ? { office: "EWX", x: 156, y: 91 } : {})) });
+    }
+    if (u.startsWith("https://api.weather.gov/gridpoints/")) {
+      const asNws = { fulfill: (o) => r.fulfill({ ...o, contentType: "application/geo+json", body: JSON.stringify(nwsFromOM(JSON.parse(o.body), { now: now || Date.now(), tz: "America/Chicago" })) }), abort: () => r.abort() };
+      return onForecast(asNws, u, h);
+    }
+    if (u.includes("open-meteo.com")) return r.abort();
     // our own ZIP table (read first since 2026-10-29) and the bids repo's copy answer with the same two points
     if (u.includes("/bids/data/zips/") || /\/data\/places\/zip\/\d\d\.json$/.test(u)) return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify({ 54728: [45.31, -91.65, "Chetek", "WI", "Barron"], 78701: [30.27, -97.74, "Austin", "TX", "Travis"] }) });
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
@@ -307,7 +318,7 @@ test("browser: a slow first answer never overwrites a newer location (B2), and t
     const { pg, errors } = await open(browser, srv.address().port, {
       loc: false, now: Date.parse("2026-10-15T20:00:00-05:00"),
       onForecast: async (r, u, h) => {
-        const tx = u.includes("latitude=30.270");
+        const tx = u.includes("/gridpoints/EWX/");
         if (tx) await new Promise((ok) => setTimeout(ok, 1500));
         return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify(forecast("America/Chicago", () => 0, "2026-10-15T00:00:00-05:00", { temp: () => (tx ? 90 : 45), rh: () => 50, current: { temperature_2m: tx ? 90 : 45, relative_humidity_2m: 50, weather_code: 1 } })) });
       },
@@ -330,11 +341,11 @@ test("browser: a slow first answer never overwrites a newer location (B2), and t
 test("browser: missing hours say 'no reading', DST hours label right, current falls back (B6, B8)", { skip }, async () => {
   const srv = await serve(), browser = await chromium.launch({ executablePath: CHROME });
   try {
-    // Nov 1 2026 is the fall-back night in Chicago; Open-Meteo unix times step one hour each.
+    // Nov 1 2026 is the fall-back night in Chicago; the grid's hours step one hour each in UTC.
     const { pg, errors } = await open(browser, srv.address().port, {
       now: Date.parse("2026-10-31T20:30:00-05:00"),
       onForecast: (r, u, h) => {
-        assert.match(u, /timeformat=unixtime/);
+        assert.match(u, /^https:\/\/api\.weather\.gov\/gridpoints\/ARX\/30,60$/);
         const f = forecast("America/Chicago", () => 0, "2026-10-31T00:00:00-05:00", { temp: (i) => (i === 21 ? null : 45), rh: (i) => (i === 21 ? null : 50), current: { temperature_2m: null, relative_humidity_2m: null } });
         return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify(f) });
       },

@@ -4485,7 +4485,7 @@ a.dv3-quote{{color:inherit;text-decoration:none}}a.dv3-quote:hover .dv3-quote-na
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/your-area.js?v=3" defer></script>
-<script src="/components/daily-local.js?v=3" defer></script>
+<script src="/components/daily-local.js?v=4" defer></script>
 <script>
 (function(){{
   var permalink='{js_permalink}';

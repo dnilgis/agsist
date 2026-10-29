@@ -22,6 +22,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
+import { nwsPoints, nwsFromOM } from "./fixtures/nws-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -44,26 +45,30 @@ function serve() {
 }
 
 const CORS = { "access-control-allow-origin": "*" };
+const NOW = Date.parse("2026-10-15T15:00:00Z");
 async function open(browser, port, { admin1 = "Iowa", name = "Ames", sums = [0, 0, 0, 0, 0], width = 1280 } = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
   const pg = await ctx.newPage();
   const errors = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
+  await pg.clock.setFixedTime(NOW);   // the forecast's own day, Thu Oct 15 2026, 10 am in Iowa
   await pg.route("**/*", (r) => {
     const u = r.request().url();
     // the ZIP lookup: our own data/places/zip/ file (2026-10-29), answered with this test's town and state
     if (isPlaces(u)) return r.fulfill({ status: 200, headers: CORS, contentType: "application/json",
       body: JSON.stringify(placesBody(u, [{ name, admin1, latitude: 42.03, longitude: -93.62, postcodes: ["50010"] }])) });
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (/api\.open-meteo\.com\/v1\/forecast/.test(u)) {
+    // the National Weather Service grid (2026-10-29, was Open-Meteo): the same numbers through nwsFromOM, at the page's clock
+    if (u.startsWith("https://api.weather.gov/points/")) return r.fulfill({ status: 200, headers: CORS, contentType: "application/geo+json", body: JSON.stringify(nwsPoints(42.03, -93.62)) });
+    if (u.startsWith("https://api.weather.gov/gridpoints/")) {
       const hrs = [], hp = [];
       for (let i = 0; i < 120; i++) { hrs.push(new Date(Date.UTC(2026, 9, 15, 0) + i * 3600e3).toISOString().slice(0, 13) + ":00"); hp.push(20); }
-      return r.fulfill({ status: 200, headers: CORS, contentType: "application/json", body: JSON.stringify({
+      return r.fulfill({ status: 200, headers: CORS, contentType: "application/geo+json", body: JSON.stringify(nwsFromOM({
         current: { time: "2026-10-15T10:00", temperature_2m: 72, relative_humidity_2m: 60, apparent_temperature: 72, precipitation_probability: 20, weather_code: 1, wind_speed_10m: 8 },
         hourly: { time: hrs, precipitation_probability: hp },
         daily: { time: ["2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19"], weather_code: [1, 61, 1, 1, 1],
           temperature_2m_max: [75, 75, 75, 75, 75], temperature_2m_min: [55, 55, 55, 55, 55],
-          precipitation_probability_max: [20, 20, 20, 20, 20], precipitation_sum: sums } }) });
+          precipitation_probability_max: [20, 20, 20, 20, 20], precipitation_sum: sums } }, { now: NOW })) });
     }
     return r.abort();
   });

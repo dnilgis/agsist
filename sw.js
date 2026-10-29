@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 291;  // v291 2026-10-29: fx/nometeo (291 assigned by the lead). Place lookups off Open-Meteo: every ZIP and town box reads our own data/places/ files (components/places.js?v=1, GeoNames towns and the bids ZIP table's points); bids-homepage v43, cattle-auction v7, geo v33, grain-emc-ui v5, harvest-wait-ui v3, haymow v4, here v32, prf v9, radar-rain-page v8, rain-print v86, rp-canada v4, rain-county-print v42, loader.js.
+var CACHE_VERSION = 295;  // v295 2026-10-29: fx/nometeo2 (295 assigned by the lead). Forecasts off Open-Meteo: the National Weather Service grid (components/nws.js?v=1) for home weather, spray and the wind map, urea, grain drying, harvest or wait and planting date; soil from the nearest measuring station (soil-near.js?v=1), home history from PRISM (prism.js?v=1), the Daily's rain from our radar files. geo v34, daily-local v4, grain-emc-ui v6, harvest-wait-ui v4, home-planting v3, home-season v8, planting-date v6, spray-wind v2, spray-windows v2. The NWS forecast is saved for offline like the old weather (points and grid cells, never alerts).
+// v291 2026-10-29: fx/nometeo (291 assigned by the lead). Place lookups off Open-Meteo: every ZIP and town box reads our own data/places/ files (components/places.js?v=1, GeoNames towns and the bids ZIP table's points); bids-homepage v43, cattle-auction v7, geo v33, grain-emc-ui v5, harvest-wait-ui v3, haymow v4, here v32, prf v9, radar-rain-page v8, rain-print v86, rp-canada v4, rain-county-print v42, loader.js.
 // v290 2026-10-29: fx/fsbase (290 assigned by the lead; 289 is held for fx/menutrim, main still showed 288 at merge). Field Scout on the USGS National Map (no Esri or CARTO), county from our own boundaries, bids from our own network by the field's miles, weather from NWS and the county gauge (off Open-Meteo), first screen: last crop, rain vs normal, nearest bid; field-scout.js?v=28, field-scout-read.js?v=14, field-scout-extras.js?v=4, field-scout.css?v=3. /rain-radar aerial off USGSImageryTopo (retired Nov 16, 2026): radar-rain-page.js?v=7.
 // v288 2026-10-29: fx/ratecard (288 assigned by the lead; 287 goes to the land batch, main still showed 286 at merge). New sponsor rate card: an unsold page ribbon offers itself only when it is still sold (a state's cash bids and rent ribbons, /cash-bids), loader CV 104, sponsor-apply.js?v=7.
 // v287 2026-10-29: land sales findable (Atlas, rent, town, Fast Facts, search) and Land sales in the menu (loader CV 103).
@@ -384,7 +385,8 @@ function savedDataFeed(url) {
     return '';
   }
   if (u.hostname === 'dnilgis.github.io' && u.pathname.indexOf('/bids/') === 0 && /\.json$/.test(u.pathname)) return 'bids';
-  if (u.hostname === 'api.open-meteo.com' && u.pathname === '/v1/forecast') return 'weather';
+  // the NWS forecast (components/nws.js): the point's office and cell, and the cell's grid; alerts stay network only
+  if (u.hostname === 'api.weather.gov' && (/^\/points\/-?[\d.]+,-?[\d.]+$/.test(u.pathname) || /^\/gridpoints\/[A-Z]{3}\/\d+,\d+$/.test(u.pathname))) return 'weather';
   return '';
 }
 
@@ -408,6 +410,8 @@ function dataTimeOf(text) {
     var v = j[keys[i]];
     if (typeof v === 'string' && !isNaN(Date.parse(v))) return v;
   }
+  // an NWS forecast grid: the time the NWS issued it
+  if (j.properties && typeof j.properties.updateTime === 'string' && !isNaN(Date.parse(j.properties.updateTime))) return j.properties.updateTime;
   if (j.current && typeof j.current.time === 'string' && typeof j.utc_offset_seconds === 'number') {
     var t = Date.parse(j.current.time + 'Z') - j.utc_offset_seconds * 1000;
     if (!isNaN(t)) return new Date(t).toISOString();

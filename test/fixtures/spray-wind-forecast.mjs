@@ -43,16 +43,16 @@ export function fieldForecast(ymd, days = 4, opts = {}) {
   return { latitude: 42.03, longitude: -93.62, utc_offset_seconds: -18000, timezone: "America/Chicago", hourly: H, daily: D };
 }
 /* The grid answer: one entry per point, wind a little stronger to the west, same pattern. */
-export function gridForecast(ymd, nPts = 25, days = 3) {
+export function gridForecast(ymd, nPts = 9, days = 3) {   // the 3 x 3 NWS cells (2026-10-29: was 25 Open-Meteo points)
   const out = [];
   for (let k = 0; k < nPts; k++) {
-    const col = k % 5, H = { time: [], wind_speed_10m: [], wind_direction_10m: [], wind_gusts_10m: [] };
+    const col = k % 3, H = { time: [], wind_speed_10m: [], wind_direction_10m: [], wind_gusts_10m: [] };
     for (let d = 0; d < days; d++) {
       const ds = addDays(ymd, d);
       for (let h = 0; h < 24; h++) {
         const w = hourWx(h, d);
         H.time.push(ds + "T" + pad(h) + ":00");
-        H.wind_speed_10m.push(w.wind + (4 - col) * 0.5); H.wind_direction_10m.push(w.dir + (col - 2) * 4); H.wind_gusts_10m.push(w.gust);
+        H.wind_speed_10m.push(w.wind + (2 - col) * 1); H.wind_direction_10m.push(w.dir + (col - 1) * 8); H.wind_gusts_10m.push(w.gust);
       }
     }
     out.push({ utc_offset_seconds: -18000, hourly: H });
