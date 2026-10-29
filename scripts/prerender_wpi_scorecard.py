@@ -942,7 +942,17 @@ def cot_summary(d):
         rows.append(f'<b>{lbl}</b> {side_txt}{chg}')
     if not rows:
         return ""
-    return (f'Managed-money positioning as of the <b>{esc(d.get("report_date", ""))}</b> CFTC report: '
+    # Benchmark review, Oct 29, 2026: the Tuesday the positions were held and the day CFTC released
+    # them, plainly (cot_calendar.release_date, the rule the release watcher uses).
+    rel = ""
+    try:
+        import cot_calendar
+        rd = datetime.strptime(d.get("report_date", ""), "%B %d, %Y").date()
+        r = cot_calendar.release_date(rd)
+        rel = ", released %s, %s %d" % (r.strftime("%A"), r.strftime("%B"), r.day)
+    except Exception:
+        rel = ""
+    return (f'Managed-money positioning on <b>Tuesday, {esc(d.get("report_date", ""))}</b>{rel}: '
             + "; ".join(rows[:6]) + ". Full 52-week context, price overlay, and every market below.")
 
 
