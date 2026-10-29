@@ -261,13 +261,66 @@ def go_live(a, logo, card, start, root=REPO, slots=None):
     # No contact name or email here: this file is public. The job reads
     # those from the worker when it needs them (invoice reminders).
     p.write_text(json.dumps(d, indent=1, ensure_ascii=False) + "\n")
-    return slug, ["data/page-sponsors.json"] + ([path.lstrip("/")] if path else [])
+    files = ["data/page-sponsors.json"] + ([path.lstrip("/")] if path else [])
+    if report_entry(a, ct, state, want, start, root):
+        files.append("data/sponsors.json")
+    return slug, files
 
 
-def take_down(a, root=REPO):
+def report_entry(a, ct, state, want, start, root=REPO):
+    """THE DAY-30 REPORT (rate card, Oct 29, 2026). A sponsor who goes live gets a
+    portal like every other: an entry in data/sponsors.json with its own token and
+    "page_slots", the ribbons it holds. scripts/build_sponsor_report.py reads GA4
+    filtered to page:<id> for exactly those ribbons, so the report is this sponsor's
+    events and nobody else's. No contact here: the file is public. Returns True when
+    the file changed. A rerun finds the entry by the application id and leaves it."""
+    import secrets
+    p = root / "data" / "sponsors.json"
+    d = json.loads(p.read_text(encoding="utf-8"))
+    lst = d.setdefault("sponsors", [])
+    if any(x.get("app") == a["id"] for x in lst):
+        return False
+    base = slugify(a.get("company"))[:30].strip("-") + "-" + (state.lower() if state else ct)
+    slugs = {x.get("slug") for x in lst}
+    slug = base if base not in slugs else base + "-" + a["id"][:4]
+    e = {"slug": slug, "name": a["company"], "active": True, "start": start.isoformat(),
+         "token": secrets.token_hex(8), "page_slots": list(want), "app": a["id"],
+         "billing": {"tier": ct, "trial_months": 1}}
+    if state:
+        e["billing"]["state"] = state
+        e["regions"] = [state]
+    lst.append(e)
+    p.write_text(json.dumps(d, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    return True
+
+
+def portal_link(app_id, root=REPO):
+    """The private report page for a live application, or None. An opaque token, no personal data."""
+    try:
+        d = json.loads((root / "data" / "sponsors.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    e = next((x for x in d.get("sponsors") or [] if x.get("app") == app_id), None)
+    return "%s/sponsor-report?r=%s-%s" % (SITE, e["slug"], e["token"]) if e and e.get("token") else None
+
+
+def take_down(a, root=REPO, today=None):
     """Free the slot. The entry is removed, not just hidden, so the page sells
-    it again; the logo file goes with it."""
+    it again; the logo file goes with it. Its report entry stays, ended, so the
+    sponsor can still read the numbers."""
     changed = []
+    p = root / "data" / "sponsors.json"
+    if p.exists():
+        d = json.loads(p.read_text(encoding="utf-8"))
+        hit = False
+        for x in d.get("sponsors") or []:
+            if x.get("app") == a["id"] and x.get("active") is not False:
+                x["active"] = False
+                x["ended"] = (today or today_ct()).isoformat()
+                hit = True
+        if hit:
+            p.write_text(json.dumps(d, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+            changed.append("data/sponsors.json")
     p = root / "data" / "page-sponsors.json"
     d = json.loads(p.read_text())
     for k, e in list((d.get("slots") or {}).items()):
@@ -415,13 +468,16 @@ def emails_for(action, a, base, secret, card, today, sig, slots=()):
         free_end = add_months(start, 1) - timedelta(days=1)
         where = (SITE + "/" + a["_page"].lstrip("/")) if a.get("_page") else SITE
         return [(a["email"], dict(subject="You're live on AGSIST", paras=[
-            "%s is now on AGSIST: %s. See it: %s" % (a["company"], what(a), where),
-            "Your free month runs %s to %s. Sig will email an invoice for %s around %s, then one a month after that." % (
+            "%s is now on AGSIST: %s. See it: %s" % (a["company"], what(a), where)] + (
+            ["Your own report page, updated every morning, with the views and clicks on your ad. It is the day-30 report: %s" % a["_portal"]]
+            if a.get("_portal") else []) + [
+            "Your free month runs %s to %s. Then one email asks yes or no. Say yes and it is %s a month from %s, invoiced, month to month. No reply means the ad comes down and nothing is owed." % (
                 fmt(start), fmt(free_end), price, fmt(free_end + timedelta(days=1))),
             "Want the copy changed, or to stop? Just reply to this email."])),
                 (sig, dict(subject="Live: %s, %s" % (a["company"], what(a)), paras=[
-                    "%s went live today. Free through %s; first invoice (%s) due %s." % (
-                        a["company"], fmt(free_end), price, fmt(free_end + timedelta(days=1)))],
+                    "%s went live today. Free through %s; first invoice (%s) due %s, only after a yes." % (
+                        a["company"], fmt(free_end), price, fmt(free_end + timedelta(days=1)))] + (
+                    ["Their report page: %s" % a["_portal"]] if a.get("_portal") else []),
                     links=[("End it (frees the slot)", dec("end"))]))]
     if action == "daily":
         return [(sig, dict(subject="Sponsor approved: %s" % a["company"], paras=[
@@ -526,7 +582,8 @@ def main():
                     print("push failed; %s stays approved for the next run" % a["id"])
                     failed += 1
                     continue
-                a = dict(a, start=start.isoformat(), _page=(slots_by_id.get(a.get("slot")) or {}).get("page"))
+                a = dict(a, start=start.isoformat(), _page=(slots_by_id.get(a.get("slot")) or {}).get("page"),
+                         _portal=portal_link(a["id"]))
                 mark(a, status="live", start=a["start"], slug=slug)
             if action == "takedown":
                 if not push(take_down(a), "sponsor ended: %s" % a["company"]):
@@ -634,6 +691,7 @@ def selftest():
         (root / "data" / "page-sponsors.json").write_text(json.dumps(empty_sold))
         (root / "data" / "supporters.json").write_text(json.dumps(empty_sup))
         (root / "data" / "sponsor-slots.json").write_text(json.dumps({"slots": slots}))
+        (root / "data" / "sponsors.json").write_text(json.dumps({"sponsors": [{"slug": "rootlot", "geo": "rootlot", "active": True}]}))
         png = "data:image/png;base64," + base64.b64encode(b"\x89PNG fake").decode()
         slug, files = go_live(A(status="approved", logo_len=1), png, card, date(2026, 10, 7), root)
         e = json.loads((root / "data" / "page-sponsors.json").read_text())["slots"]["cash-bids"]
@@ -642,6 +700,13 @@ def selftest():
         ck("logo written under img/sponsors", e["logo"] == "/img/sponsors/smith-seed-supply-cash-bids.png" and (root / e["logo"][1:]).exists())
         ck("files reported for the commit", "data/page-sponsors.json" in files and "img/sponsors/smith-seed-supply-cash-bids.png" in files)
         ck("a rerun changes nothing", go_live(A(status="approved"), png, card, date(2026, 10, 8), root)[1] == [])
+        rep_ = [x for x in json.loads((root / "data" / "sponsors.json").read_text())["sponsors"] if x.get("app") == "a1b2c3d4e5f6"]
+        ck("going live writes one report entry: its own token and its ribbon, no contact",
+           len(rep_) == 1 and re.fullmatch(r"[0-9a-f]{16}", rep_[0]["token"]) and rep_[0]["page_slots"] == ["cash-bids"]
+           and rep_[0]["billing"]["tier"] == "cashbids" and rep_[0]["start"] == "2026-10-07"
+           and "al@smith.com" not in json.dumps(rep_) and "data/sponsors.json" in files, rep_)
+        ck("the report link is the agsist.com portal with an opaque token",
+           portal_link("a1b2c3d4e5f6", root) == "%s/sponsor-report?r=%s-%s" % (SITE, rep_[0]["slug"], rep_[0]["token"]))
         ck("an svg/bad logo is not written", write_logo(A(), "data:image/svg+xml;base64,PHN2Zz4=", "x", root) == "")
         W = A(id="0123456789ab", slot="cash-bids-wisconsin", company="Barron Co-op")
         go_live(W, "", card, date(2026, 10, 7), root)
@@ -650,19 +715,26 @@ def selftest():
            sold["cash-bids-wisconsin"]["app"] == sold["rent-wi"]["app"] == "0123456789ab"
            and sold["rent-wi"]["price_month"] == 49 and sold["rent-wi"]["state"] == "WI" and "rent-ia" not in sold, sold)
         ck("and the state rerun changes nothing", go_live(W, "", card, date(2026, 10, 8), root)[1] == [])
+        we = [x for x in json.loads((root / "data" / "sponsors.json").read_text())["sponsors"] if x.get("app") == "0123456789ab"]
+        ck("a State Sponsor's report entry holds every ribbon of its state, and its state",
+           len(we) == 1 and we[0]["page_slots"] == ["cash-bids-wisconsin", "rent-wi"] and we[0]["billing"]["state"] == "WI"
+           and we[0]["regions"] == ["WI"], we)
         try:
             go_live(A(slot="spray"), "", card, date(2026, 10, 7), root)
             ck("a retired slot is never written", False)
         except ValueError:
             ck("a retired slot is never written", "spray" not in json.loads((root / "data" / "page-sponsors.json").read_text())["slots"])
-        ch = take_down(A(status="ending"), root)
+        ch = take_down(A(status="ending"), root, date(2026, 11, 20))
+        ended = [x for x in json.loads((root / "data" / "sponsors.json").read_text())["sponsors"] if x.get("app") == "a1b2c3d4e5f6"]
+        ck("take-down ends the report entry, keeps it readable", ended[0]["active"] is False and ended[0]["ended"] == "2026-11-20"
+           and "data/sponsors.json" in ch)
         ck("take-down frees the page and removes the logo",
            "cash-bids" not in json.loads((root / "data" / "page-sponsors.json").read_text())["slots"] and not (root / e["logo"][1:]).exists() and ch)
-        take_down(W, root)
+        take_down(W, root, date(2026, 11, 20))
         ck("a State Sponsor's take-down frees every ribbon of the state",
            json.loads((root / "data" / "page-sponsors.json").read_text())["slots"] == {})
         (root / "data" / "supporters.json").write_text(json.dumps({"cap": 6, "supporters": [{"name": "Old", "app": "0123456789ab", "active": True}]}))
-        take_down(W, root)
+        take_down(W, root, date(2026, 11, 20))
         ck("an old Supporter on file still comes down", json.loads((root / "data" / "supporters.json").read_text())["supporters"] == [])
 
     print("\nworker urls")
@@ -698,6 +770,15 @@ def selftest():
        any("yes or no" in p for p in em[0][1]["paras"]) and any("No reply means the ad comes down and nothing is owed" in p for p in em[0][1]["paras"]))
     em = emails_for("invoice", A(status="live", start="2026-09-10", invoiced=0), "https://w.dev", "sec", card, today, "sig@x.com")
     ck("the first invoice only after a yes", any("Only if they said yes" in p for p in em[0][1]["paras"]))
+    link = SITE + "/sponsor-report?r=smith-cashbids-" + "0" * 16
+    em = emails_for("golive", A(status="live", start="2026-10-07", _page="/cash-bids", _portal=link), "https://w.dev", "sec", card, today, "sig@x.com")
+    ck("the go-live email gives the sponsor its own report page", any(link in p for p in em[0][1]["paras"]) and any(link in p for p in em[1][1]["paras"]))
+    ck("and says no reply on day 30 owes nothing", any("No reply means the ad comes down and nothing is owed" in p for p in em[0][1]["paras"]))
+    try:
+        email_links.check_hosts(msg("al@smith.com", fa="x@agsist.com", **em[0][1]))
+        ck("the report link passes the link host check", True)
+    except email_links.LinkError:
+        ck("the report link passes the link host check", False)
     em = emails_for("invoice", A(status="live", start="2026-09-10", invoiced=0), "https://w.dev", "sec", card, today, "sig@x.com")
     ck("invoice reminder names the month", "Oct 10, 2026 to Nov 9, 2026" in em[0][1]["paras"][0], em[0][1]["paras"][0])
     m = msg("a@b.com", fa="x@agsist.com", **emails_for("confirm", A(company="<b>x</b>"), "https://w.dev", "sec", card, today, "s")[0][1])

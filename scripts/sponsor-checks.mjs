@@ -143,7 +143,8 @@ console.log("\nTHE CONFIG");
    The old guard allowed one active sponsor because the report could not tell two apart. Once the
    report splits by GA4 slot (build_sponsor_report.py sponsor_slots / check_slots, PR #166) the true
    rule is: no two active sponsors share a slot, and every slot an active sponsor claims is one the
-   report knows (the Daily slots, or geo-<id> for an entry in data/geo-sponsors.json). Before the
+   report knows (the Daily slots, geo-<id> for an entry in data/geo-sponsors.json, or page:<id> for a
+   ribbon still sold under the rate card, data/sponsor-slots.json tier set). Before the
    split exists, the old rule still holds: at most one. A demo (demo: true) never runs an ad and is
    never asked of GA4 (test/sponsor-demo.test.mjs). slotRule is pure so both cases are tested below. */
 function slotRule(on, slotsOf, known) {
@@ -166,6 +167,10 @@ check("the slot rule: two sponsors may never share a slot", () => {
   assert.equal(slotRule([{ slug: "x" }, { slug: "y" }], { x: ["geo-a"], y: ["geo-a"] }, known), 'x and y both claim the slot "geo-a"');
   assert.equal(slotRule([{ slug: "d" }, { slug: "g" }], { d: ["daily-briefing", "homepage-top"], g: ["geo-b"] }, known), null,
     "a Daily Sponsor and a state-targeted sponsor run side by side");
+  assert.equal(slotRule([{ slug: "w" }, { slug: "i" }], { w: ["page:cash-bids-wisconsin", "page:rent-wi"], i: ["page:rent-ia"] },
+    ["page:cash-bids-wisconsin", "page:rent-wi", "page:rent-ia"]), null, "two State Sponsors, each on its own state's ribbons");
+  assert.match(slotRule([{ slug: "w" }, { slug: "x" }], { w: ["page:rent-wi"], x: ["page:rent-wi"] }, ["page:rent-wi"]) || "", /both claim/);
+  assert.match(slotRule([{ slug: "s" }], { s: ["page:spray"] }, ["page:rent-wi"]) || "", /does not know/, "a retired ribbon is not sold, so not known");
 });
 check("the slot rule: every slot an active sponsor claims is one the report knows", () => {
   assert.match(slotRule([{ slug: "z" }], { z: ["geo-nobody"] }, ["geo-a"]) || "", /does not know/);
@@ -182,8 +187,10 @@ check(SPLIT ? "the active sponsors: no shared slot, every slot known to the repo
       "import json, sys; sys.path.insert(0, 'scripts'); import build_sponsor_report as b",
       "conf = json.load(open('data/sponsors.json'))",
       "geo = [e.get('id') for e in json.load(open('data/geo-sponsors.json')).get('sponsors') or []]",
+      "sold = [e['id'] for e in json.load(open('data/sponsor-slots.json')).get('slots') or [] if e.get('tier')]",
       "print(json.dumps({'slots': {s['slug']: b.sponsor_slots(s) for s in conf.get('sponsors') or []},",
-      "                  'known': list(b.DAILY_SLOTS) + [b.GEO_SLOT_PREFIX + str(g) for g in geo]}))",
+      "                  'known': list(b.DAILY_SLOTS) + [b.GEO_SLOT_PREFIX + str(g) for g in geo]",
+      "                           + [b.PAGE_SLOT_PREFIX + x for x in sold]}))",
     ].join("\n")], { cwd: fileURLToPath(new URL("../", import.meta.url)), encoding: "utf8" });
     const j = JSON.parse(out.trim().split("\n").pop());
     slotsOf = j.slots; known = j.known;
