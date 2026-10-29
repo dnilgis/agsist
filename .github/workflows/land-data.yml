@@ -30,7 +30,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe or soil:IL, soil:IN, soil:WI (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only)"
+        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -141,6 +141,19 @@ jobs:
             S=$(echo "${T#soil:}" | tr -cd 'A-Za-z' | tr a-z A-Z)
             python scripts/land_soil.py --fetch "$S" --minutes 125 || echo "::warning::$S soil fetch failed"
           fi
+      # soil-attrs: the corn and soybean NCCPI for every map unit already saved (reads the saved
+      # section answers back from the raw branch, only that folder).
+      - name: Map unit NCCPI for the saved section answers
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'soil-attrs' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          . scripts/private_remote.sh
+          D="$RUNNER_TEMP/rawsoil"
+          git clone -q --depth 1 --filter=blob:none --sparse --branch raw "$REMOTE" "$D" 2>&1 | hide || true
+          git -C "$D" sparse-checkout set data/land-raw/soil 2>&1 | hide || true
+          mkdir -p data/land-raw/soil && cp "$D"/data/land-raw/soil/*-soil.json.gz data/land-raw/soil/ || { echo "::warning::no saved section answers"; exit 0; }
+          python scripts/land_soil.py --attrs || echo "::warning::map unit attributes failed"
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)

@@ -63,7 +63,10 @@ import build_land_summary as B  # noqa: E402
 GEO = os.path.join(ROOT, "data", "atlas", "counties.geo.json")
 RAW = os.path.join(ROOT, "data", "land-raw", "soil")
 STATES = ("IL", "IN", "WI")
-BLM = "https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer"
+# BLM moved the national PLSS service on Oct 14, 2026; the old address answers until Feb 1, 2027.
+BLM_URLS = ("https://gis.blm.gov/natlplss/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer",
+            "https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer")
+BLM = BLM_URLS[0]
 SDA = "https://sdmdataaccess.nrcs.usda.gov/Tabular/post.rest"
 UA = "agsist.com land research (contact via agsist.com)"
 NCCPI_RULE = "NCCPI - National Commodity Crop Productivity Index (Ver 3.0)"
@@ -203,7 +206,19 @@ def http(url, data=None, timeout=90, tries=3):
 
 def blm_layer():
     """The section layer (named "PLSS Section" or "First Division") and its field names."""
-    d = json.loads(http(BLM + "?f=json"))
+    global BLM
+    d = None
+    for u in BLM_URLS:
+        try:
+            d = json.loads(http(u + "?f=json", tries=2))
+            if d.get("layers"):
+                BLM = u
+                break
+        except Exception as e:  # noqa: BLE001
+            print("::warning::BLM PLSS at %s: %s" % (u, str(e)[:200]))
+    if not d:
+        raise SystemExit("BLM PLSS: no answer at either address")
+    print("BLM PLSS: " + BLM)
     for L in d.get("layers", []):
         if re.search(r"first\s*division|\bsection\b", L.get("name", ""), re.I) and not re.search(r"intersect", L.get("name", ""), re.I):
             info = json.loads(http(BLM + "/%d?f=json" % L["id"]))
@@ -364,7 +379,7 @@ def fetch(st, limit=None, minutes=120, today=None):
     secmap = {k: {"pid": c["pid"], "sec": c["sec"], "cx": c["cx"], "cy": c["cy"]} for k, c in sections.items()}
     meta = {"state": st, "fetched_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "sales": len(rows), "keys": len(secs),
             "townships": len(twps), "sections": len(sections), "distinct": len(uniq), "soil": len(soil), "sda_failed": fails, "sda_errors": errs,
-            "miss": miss, "blm_layer": layer, "blm_fields": fld, "candidates": len(cands), "blm_probe": probe[:1], "sources": [BLM, SDA]}
+            "miss": miss, "blm_layer": layer, "blm_url": BLM, "blm_fields": fld, "candidates": len(cands), "blm_probe": probe[:1], "sources": [BLM, SDA]}
     with gzip.open(os.path.join(RAW, "%s-soil.json.gz" % st), "wt", encoding="utf-8") as fh:
         json.dump({"meta": meta, "sections": secmap, "soil": soil}, fh, separators=(",", ":"))
     with open(os.path.join(RAW, "%s-meta.json" % st), "w", encoding="utf-8") as fh:
@@ -373,35 +388,86 @@ def fetch(st, limit=None, minutes=120, today=None):
     return meta
 
 
+def attrs_sql(mukeys):
+    """NCCPI 3.0 overall, corn and soybean submodels per map unit (component-weighted over rated
+    components), the same reading as the Field Scout worker; prefix match takes "(I)" or "(II)"."""
+    ks = ",".join("'%s'" % int(k) for k in mukeys)
+
+    def sub(rule, like):
+        cond = ("ci.mrulename LIKE '" + rule + "%'") if like else ("ci.mrulename='" + rule + "'")
+        return ("(SELECT SUM(ci.interphr*c.comppct_r)/NULLIF(SUM(c.comppct_r),0) FROM component c JOIN cointerp ci ON ci.cokey=c.cokey"
+                " WHERE c.mukey=mu.mukey AND ci.ruledepth=0 AND " + cond + " AND ci.interphr IS NOT NULL)")
+    return ("SELECT mu.mukey, " + sub(NCCPI_RULE, False) + ", " + sub("NCCPI - NCCPI Corn Submodel", True) + ", "
+            + sub("NCCPI - NCCPI Soybeans Submodel", True) + " FROM mapunit mu WHERE mu.mukey IN (" + ks + ")")
+
+
+def attrs(st):
+    """Corn and soybean NCCPI for every map unit in the saved section answers -> <ST>-mukey.json.gz."""
+    with gzip.open(os.path.join(RAW, "%s-soil.json.gz" % st), "rt", encoding="utf-8") as fh:
+        d = json.load(fh)
+    keys = sorted({r[0] for rows in d["soil"].values() for r in rows if str(r[0]).isdigit()})
+    out, fails = {}, 0
+    for i in range(0, len(keys), 400):
+        try:
+            a = json.loads(http(SDA, data=json.dumps({"format": "JSON", "query": attrs_sql(keys[i:i + 400])}).encode(), timeout=120))
+            for t in a.get("Table") or []:
+                out[str(t[0])] = [None if v in (None, "") else round(float(v), 4) for v in t[1:4]]
+        except Exception as e:  # noqa: BLE001
+            fails += 1
+            print("::warning::SDA attrs batch %d failed: %s" % (i, str(e)[:200]))
+    with gzip.open(os.path.join(RAW, "%s-mukey.json.gz" % st), "wt", encoding="utf-8") as fh:
+        json.dump({"fetched_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "cols": ["nccpi", "corn", "soy"], "mukeys": out}, fh, separators=(",", ":"))
+    print("%s: %d map units, %d with attributes, %d batches failed" % (st, len(keys), len(out), fails))
+
+
 # ── per-section numbers ─────────────────────────────────────────────────────
 
-def summarize(rows):
-    """rows [[mukey, ac, cls, nccpi, cpi]] -> {nccpi, nccpi_c14, cpi, c14, ac}."""
+C14 = ("1", "2", "3", "4")
+
+
+def summarize(rows, mk=None):
+    """rows [[mukey, ac, cls, nccpi, cpi]], mk {mukey: [nccpi, corn, soy]} ->
+    {ac, nccpi, nccpi_c14, corn, corn_c14, soy, cpi, cpi_ac, c14, rated}. Means are area-weighted over
+    the acres that carry the rating; a missing rating is missing, never 0."""
     tot = sum(r[1] for r in rows if r[1])
     if not tot:
         return None
+    mk = mk or {}
 
-    def w(sel, i):
+    def val(r, what):
+        if what == "nccpi":
+            return r[3]
+        if what == "cpi":
+            return r[4]
+        a = mk.get(str(r[0]))
+        return None if not a else a[{"corn": 1, "soy": 2}[what]]
+
+    def w(what, only14=False):
         num = den = 0.0
         for r in rows:
-            if sel(r) and r[i] is not None and r[1]:
-                num += r[i] * r[1]
+            v = val(r, what)
+            if v is not None and r[1] and (not only14 or r[2] in C14):
+                num += v * r[1]
                 den += r[1]
-        return (num / den, den) if den else (None, 0)
+        return (num / den if den else None), den
 
-    c14 = lambda r: r[2] in ("1", "2", "3", "4")  # noqa: E731
-    n_all, d_all = w(lambda r: True, 3)
-    n_c, d_c = w(c14, 3)
-    cp, d_cp = w(lambda r: True, 4)
-    return {"ac": round(tot, 1), "nccpi": n_all, "nccpi_c14": n_c, "cpi": cp, "cpi_ac": round(d_cp, 1),
-            "c14": sum(r[1] for r in rows if c14(r) and r[1]) / tot, "rated": d_all / tot}
+    out = {"ac": round(tot, 1), "c14": sum(r[1] for r in rows if r[2] in C14 and r[1]) / tot}
+    out["nccpi"], d_all = w("nccpi")
+    out["rated"] = d_all / tot
+    out["nccpi_c14"], _ = w("nccpi", True)
+    out["corn"], d_corn = w("corn")
+    out["rated_corn"] = d_corn / tot
+    out["corn_c14"], _ = w("corn", True)
+    out["soy"], _ = w("soy")
+    out["cpi"], d_cp = w("cpi")
+    out["cpi_ac"] = round(d_cp, 1)
+    return out
 
 
-# ── the test ────────────────────────────────────────────────────────────────
+# ── the test (scripts/land_soil.py docstring; test_design.md, Oct 29) ─────────
 
 def med(v):
-    v = sorted(v)
-    return B.quantile(v, 0.5)
+    return B.quantile(sorted(v), 0.5)
 
 
 def iqr(v):
@@ -409,120 +475,175 @@ def iqr(v):
     return B.quantile(v, 0.75) - B.quantile(v, 0.25)
 
 
-def groups_of(sales):
+def groups_of(sales, min_n):
     g = {}
     for s in sales:
         g.setdefault((s["fips"], s["year"]), []).append(s)
-    return {k: v for k, v in g.items() if len(v) >= MIN_GROUP}
+    return {k: v for k, v in g.items() if len(v) >= min_n}
 
 
-def fit_b(groups, log=False):
-    """OLS slope of group-demeaned $/acre (log $/acre when log) on group-demeaned points."""
-    sxy = sxx = 0.0
-    n = 0
-    y = (lambda s: math.log(s["ppa"])) if log else (lambda s: s["ppa"])
+def fit(groups, cols, log=False):
+    """OLS on cell-demeaned data: $/acre (or log) on the named columns. Returns {col: slope} or None."""
+    X, Y = [], []
     for v in groups.values():
-        mp = sum(y(s) for s in v) / len(v)
-        mx = sum(s["pts"] for s in v) / len(v)
-        for s in v:
-            sxy += (y(s) - mp) * (s["pts"] - mx)
-            sxx += (s["pts"] - mx) ** 2
-            n += 1
-    return (sxy / sxx if sxx else None), n
+        ys = [math.log(s["ppa"]) if log else s["ppa"] for s in v]
+        my = sum(ys) / len(v)
+        mx = [sum(s[c] for s in v) / len(v) for c in cols]
+        for s, y in zip(v, ys):
+            X.append([s[c] - m for c, m in zip(cols, mx)])
+            Y.append(y - my)
+    k = len(cols)
+    if len(Y) < 10 * k:
+        return None
+    A = [[sum(x[i] * x[j] for x in X) for j in range(k)] for i in range(k)]
+    bvec = [sum(x[i] * y for x, y in zip(X, Y)) for i in range(k)]
+    # Gauss-Jordan on a k x k system (k is 1 or 2)
+    M = [row[:] + [bv] for row, bv in zip(A, bvec)]
+    for i in range(k):
+        piv = M[i][i]
+        if abs(piv) < 1e-12:
+            return None
+        M[i] = [m / piv for m in M[i]]
+        for j in range(k):
+            if j != i:
+                f = M[j][i]
+                M[j] = [a - f * b for a, b in zip(M[j], M[i])]
+    return {c: M[i][k] for i, c in enumerate(cols)}
 
 
-def theil_sen_b(groups, cap=4000, rng=None):
-    """Median of within-group pairwise slopes (robust check on the OLS slope)."""
-    sl = []
-    for v in groups.values():
-        for i in range(len(v)):
-            for j in range(i + 1, len(v)):
-                dx = v[j]["pts"] - v[i]["pts"]
-                if abs(dx) >= 1:
-                    sl.append((v[j]["ppa"] - v[i]["ppa"]) / dx)
-    return med(sl) if sl else None
+def adj_price(s, b, x0, log=False, pts=None):
+    p = s["pts"] if pts is None else pts
+    return s["ppa"] * math.exp(-b * (p - x0)) if log else s["ppa"] - b * (p - x0)
 
 
-def spreads(groups, b, shuffle=None, log=False):
-    """[(before, after)] per group with b applied; shuffle (a Random) permutes points inside each group."""
+def cell_spreads(groups, b, x0s, shuffle=None, log=False):
+    """[(key, n, raw IQR, adjusted IQR)]: the frozen slope b applied in each held-out cell;
+    x0s {fips: training-year county median points} (an IQR does not move with this constant)."""
     out = []
-    for v in groups.values():
+    for k, v in groups.items():
         pts = [s["pts"] for s in v]
         if shuffle is not None:
             shuffle.shuffle(pts)
-        mx = med(pts)
-        before = iqr([s["ppa"] for s in v])
-        if log:
-            after = iqr([s["ppa"] * math.exp(-b * (p - mx)) for s, p in zip(v, pts)])
-        else:
-            after = iqr([s["ppa"] - b * (p - mx) for s, p in zip(v, pts)])
-        out.append((before, after))
+        x0 = x0s.get(k[0], med(pts))
+        raw = iqr([s["ppa"] for s in v])
+        adj = iqr([adj_price(s, b, x0, log, p) for s, p in zip(v, pts)])
+        out.append((k, len(v), raw, adj))
     return out
 
 
-def pooled(sp):
-    b = sum(x[0] for x in sp)
-    return (sum(x[1] for x in sp) / b - 1) if b else None
+def gains(sp):
+    """IQR gain per cell, 1 - adjusted/raw."""
+    return [1 - a / r for _, _, r, a in sp if r > 0]
 
 
-def run_test(sales, years, log=False, seed=7):
-    """sales: dicts with fips, year, ppa, pts. Fit on year y, test on y+1, for each y in years."""
+def agg_gain(sp):
+    r = sum(x[2] for x in sp)
+    return 1 - sum(x[3] for x in sp) / r if r else None
+
+
+def micro_gain(sp):
+    r = sum(x[1] * x[2] for x in sp)
+    return 1 - sum(x[1] * x[3] for x in sp) / r if r else None
+
+
+def m0_m1(train, test):
+    """Dispersion test: within-cell residuals after slopes fit on the training year.
+    M0 log(acres) only, M1 log(acres) + soil points. MAE and IQR of cell-centred residuals."""
+    f0, f1 = fit(train, ["logac"]), fit(train, ["logac", "pts"])
+    if not f0 or not f1:
+        return None
+    res = {"M0": [], "M1": []}
+    for v in test.values():
+        for name, f in (("M0", f0), ("M1", f1)):
+            r = [s["ppa"] - sum(f[c] * s[c] for c in f) for s in v]
+            m = med(r)
+            res[name] += [x - m for x in r]
+    out = {}
+    for name in res:
+        out[name] = {"mae": round(sum(abs(x) for x in res[name]) / len(res[name])), "iqr": round(iqr(res[name]))}
+    out["soil_slope_with_acres"] = round(f1["pts"], 1)
+    return out
+
+
+def county_boot(sp, reps, rng):
+    by = {}
+    for x in sp:
+        by.setdefault(x[0][0], []).append(x)
+    cs = sorted(by)
+    vals = []
+    for _ in range(reps):
+        smp = []
+        for _ in cs:
+            smp += by[cs[rng.randrange(len(cs))]]
+        g = agg_gain(smp)
+        if g is not None:
+            vals.append(g)
+    vals.sort()
+    return [vals[int(0.025 * len(vals))], vals[int(0.975 * len(vals)) - 1]] if vals else None
+
+
+def run_test(sales, years, min_n=20, log=False, seed=7, placebo_n=200):
+    """Rolling origin: the slope is fit on year y alone and frozen; the cells of year y+1 are scored.
+    sales: dicts with fips, year, ppa, pts, logac."""
     rng = random.Random(seed)
-    res = []
-    allsp = []
-    plc_all = None
+    tests, allsp, frozen = [], [], []
     for y in years:
-        tr = groups_of([s for s in sales if s["year"] == y])
-        te = groups_of([s for s in sales if s["year"] == y + 1])
-        if len(tr) < 5 or len(te) < 5:
+        tr_all = [s for s in sales if s["year"] == y]
+        tr = groups_of(tr_all, 3)          # the slope fits on every cell of 3+ sales in the training year
+        te = groups_of([s for s in sales if s["year"] == y + 1], min_n)
+        if len(tr) < 5 or not te:
             continue
-        b, n_tr = fit_b(tr, log)
-        if b is None:
+        f = fit(tr, ["pts"], log)
+        if not f:
             continue
-        ts = None if log else theil_sen_b(tr)
-        sp = spreads(te, b, log=log)
-        ins = pooled(spreads(tr, b, log=log))
-        rel = [a / x - 1 for x, a in sp if x > 0]
-        res.append({"fit_year": y, "test_year": y + 1, "b": round(b, 5 if log else 1), "in_sample_pooled_change": round(ins, 4), "b_theil_sen": None if ts is None else round(ts, 1),
-                    "fit_sales": n_tr, "fit_groups": len(tr), "test_groups": len(te), "test_sales": sum(len(v) for v in te.values()),
-                    "median_before": round(med([x for x, _ in sp])), "median_after": round(med([a for _, a in sp])),
-                    "median_group_change": round(med(rel), 4) if rel else None,
-                    "narrowed_share": round(sum(1 for x, a in sp if a < x) / len(sp), 3), "pooled_change": round(pooled(sp), 4),
-                    "_groups": te, "_b": b})
+        b = f["pts"]
+        x0s = {}
+        for s in tr_all:
+            x0s.setdefault(s["fips"], []).append(s["pts"])
+        x0s = {k: med(v) for k, v in x0s.items()}
+        sp = cell_spreads(te, b, x0s, log=log)
+        g = gains(sp)
+        t = {"fit_year": y, "test_year": y + 1, "b": round(b, 5 if log else 1), "fit_sales": sum(len(v) for v in tr.values()),
+             "test_cells": len(te), "test_sales": sum(len(v) for v in te.values()),
+             "median_raw_iqr": round(med([x[2] for x in sp])), "median_adj_iqr": round(med([x[3] for x in sp])),
+             "median_gain": round(med(g), 4) if g else None, "positive_share": round(sum(1 for x in g if x > 0) / len(g), 3) if g else None,
+             "agg_gain": round(agg_gain(sp), 4)}
+        if not log:
+            t["m0_m1"] = m0_m1(tr, te)
+        tests.append(t)
         allsp += sp
-    if not res:
-        return {"tests": [], "verdict": "no test: too few county-years"}
-    # pooled over test years: bootstrap over groups, and a placebo with the same b per year
-    boots = []
-    for _ in range(1000):
-        smp = [allsp[rng.randrange(len(allsp))] for _ in allsp]
-        boots.append(pooled(smp))
-    boots.sort()
-    lo, hi = boots[int(0.05 * len(boots))], boots[int(0.95 * len(boots)) - 1]
-    obs = pooled(allsp)
-    rel_all = [a / x - 1 for x, a in allsp if x > 0]
-    placebo = []
-    for _ in range(200):
+        frozen.append((te, b, x0s))
+    if not allsp:
+        return {"tests": [], "cells": 0, "verdict": "no held-out county-year with %d+ sales" % min_n}
+    g = gains(allsp)
+    obs = agg_gain(allsp)
+    ci = county_boot(allsp, 1000, rng)
+    plc = []
+    for _ in range(placebo_n):
         sp = []
-        for r in res:
-            sp += spreads(r["_groups"], r["_b"], shuffle=rng, log=log)
-        placebo.append(pooled(sp))
-    p_plc = sum(1 for x in placebo if x <= obs) / len(placebo)
-    mg = med(rel_all)
-    holds = mg <= -0.05 and hi < 0 and p_plc < 0.05
-    for r in res:
-        r.pop("_groups")
-        r.pop("_b")
-    return {"tests": res, "groups": len(allsp), "pooled_change": round(obs, 4), "pooled_90": [round(lo, 4), round(hi, 4)],
-            "median_group_change": round(mg, 4), "narrowed_share": round(sum(1 for x, a in allsp if a < x) / len(allsp), 3),
-            "placebo_share_as_narrow": round(p_plc, 3), "placebo_median": round(med(placebo), 4), "holds": holds}
+        for te, b, x0s in frozen:
+            sp += cell_spreads(te, b, x0s, shuffle=rng, log=log)
+        plc.append(agg_gain(sp))
+    p_plc = sum(1 for x in plc if x >= obs) / len(plc)
+    mae_ok = all(t["m0_m1"]["M1"]["mae"] <= t["m0_m1"]["M0"]["mae"] for t in tests if t.get("m0_m1")) if not log else None
+    mg, pos = med(g), sum(1 for x in g if x > 0) / len(g)
+    holds = bool(mg >= 0.05 and pos >= 0.60 and ci and ci[0] > 0 and p_plc < 0.05 and (log or mae_ok))
+    return {"tests": tests, "cells": len(allsp), "sales": sum(x[1] for x in allsp), "counties": len({x[0][0] for x in allsp}),
+            "median_gain": round(mg, 4), "positive_share": round(pos, 3), "agg_gain": round(obs, 4),
+            "micro_gain": round(micro_gain(allsp), 4), "agg_gain_95_county_boot": [round(ci[0], 4), round(ci[1], 4)] if ci else None,
+            "placebo_share_as_good": round(p_plc, 3), "placebo_median": round(med(plc), 4), "m1_mae_not_worse": mae_ok,
+            "gain_pctiles": [round(B.quantile(sorted(g), q), 3) for q in (0.1, 0.25, 0.5, 0.75, 0.9)], "holds": holds}
 
 
-def sale_soil(st, src, today):
-    """Join the sales to their section's soil -> (dicts, counts)."""
+def sale_soil(st, src, today, mk_src=None):
+    """Join the sales to their section's soil -> (dicts, counts, fetch meta)."""
     with gzip.open(src, "rt", encoding="utf-8") as fh:
         d = json.load(fh)
-    out, cnt = [], {"sales": 0, "section": 0, "soil": 0}
+    mk = {}
+    if mk_src and os.path.exists(mk_src):
+        with gzip.open(mk_src, "rt", encoding="utf-8") as fh:
+            mk = json.load(fh)["mukeys"]
+    out, cnt = [], {"sales": 0, "section": 0, "soil": 0, "quality": 0}
     for r in comps(st, today):
         cnt["sales"] += 1
         c = d["sections"].get(str(r["fips"]) + "|" + r["str"])
@@ -530,20 +651,24 @@ def sale_soil(st, src, today):
             continue
         cnt["section"] += 1
         rows = d["soil"].get(c["pid"] + "|" + str(c["sec"]))
-        s = summarize(rows) if rows else None
+        s = summarize(rows, mk) if rows else None
         if not s or s["nccpi"] is None:
             continue
         cnt["soil"] += 1
+        q = s["rated"] >= 0.5 and s["c14"] >= 0.25        # quality floor (test_design.md)
+        cnt["quality"] += 1 if q else 0
+        pct = lambda v: None if v is None else v * 100  # noqa: E731
         out.append({"fips": str(r["fips"]), "year": int(str(r["date"])[:4]), "ppa": float(r["ppa"]), "acres": float(r["acres"]),
-                    "pts": s["nccpi"] * 100, "pts_c14": None if s["nccpi_c14"] is None else s["nccpi_c14"] * 100,
-                    "cpi": s["cpi"], "c14": s["c14"], "sec_ac": s["ac"], "pid": c["pid"], "sec": c["sec"]})
-    return out, cnt, d["meta"]
+                    "logac": math.log(float(r["acres"])), "q": q, "all": pct(s["nccpi"]), "all_c14": pct(s["nccpi_c14"]),
+                    "corn": pct(s["corn"]), "corn_c14": pct(s["corn_c14"]), "soy": pct(s["soy"]), "cpi": s["cpi"],
+                    "c14": s["c14"], "rated": s["rated"], "pid": c["pid"], "sec": c["sec"]})
+    return out, cnt, d["meta"], bool(mk)
 
 
 def within_corr(sales, a, b):
-    """Pearson correlation of a and b after removing county-year means."""
+    """Pearson correlation of a and b after removing county-year means (cells of 3+)."""
     xs, ys = [], []
-    for v in groups_of(sales).values():
+    for v in groups_of(sales, 3).values():
         ma = sum(s[a] for s in v) / len(v)
         mb = sum(s[b] for s in v) / len(v)
         for s in v:
@@ -557,6 +682,10 @@ def within_corr(sales, a, b):
     return round(sxy / math.sqrt(sxx * syy), 3) if sxx and syy else None
 
 
+def with_pts(sales, col, quality=True):
+    return [dict(s, pts=s[col]) for s in sales if s.get(col) is not None and (s["q"] or not quality)]
+
+
 def test(src_dir=RAW, today=None):
     today = today or time.strftime("%Y-%m-%d")
     report = {}
@@ -565,25 +694,36 @@ def test(src_dir=RAW, today=None):
         if not os.path.exists(p):
             report[st] = "no saved answers"
             continue
-        sales, cnt, meta = sale_soil(st, p, today)
+        sales, cnt, meta, has_mk = sale_soil(st, p, today, os.path.join(src_dir, "%s-mukey.json.gz" % st))
         years = sorted({s["year"] for s in sales})
-        rep = {"counts": cnt, "fetch": {k: meta.get(k) for k in ("fetched_utc", "keys", "sections", "distinct", "soil", "sda_failed", "miss")},
-               "by_year": {y: sum(1 for s in sales if s["year"] == y) for y in years}}
-        for s in sales:
-            s["logac"] = math.log(s["acres"])
-        rep["primary"] = run_test(sales, years[:-1])
-        c14 = [dict(s, pts=s["pts_c14"]) for s in sales if s["pts_c14"] is not None]
-        rep["class_1_4"] = run_test(c14, years[:-1])
-        rep["percent_per_point"] = run_test(sales, years[:-1], log=True)
+        last_full = max([y for y in years if y < int(today[:4])] or [0])
+        roll = [y for y in years if y + 1 <= int(today[:4])]
+        cells = {}
+        for n in (5, 10, 20, 30):
+            cells[n] = len(groups_of([s for s in sales if s["q"]], n))
+        prim = "corn" if has_mk else "all"
+        rep = {"counts": cnt, "primary_index": "nccpi3 %s, whole section, quality floor" % prim, "corn_attrs": has_mk,
+               "fetch": {k: meta.get(k) for k in ("fetched_utc", "keys", "sections", "distinct", "soil", "sda_failed", "miss")},
+               "by_year": {y: sum(1 for s in sales if s["year"] == y) for y in years}, "cells_by_min_sales": cells}
+        P = with_pts(sales, prim)
+        rep["primary_20"] = run_test(P, roll, 20)
+        rep["primary_30"] = run_test(P, roll, 30)
+        rep["sens_10"] = run_test(P, roll, 10)
+        rep["sens_5"] = run_test(P, roll, 5)
+        rep["final_untouched_%d" % last_full] = run_test(P, [last_full - 1], 10)
+        rep["class_1_4_10"] = run_test(with_pts(sales, prim + "_c14"), roll, 10)
+        rep["no_quality_floor_10"] = run_test(with_pts(sales, prim, False), roll, 10)
+        if has_mk:
+            rep["nccpi_all_10"] = run_test(with_pts(sales, "all"), roll, 10)
+        rep["percent_per_point_10"] = run_test(P, roll, 10, log=True)
         if st == "IL":
-            cp = [dict(s, pts=s["cpi"]) for s in sales if s["cpi"] is not None]
-            rep["state_index"] = {"sales": len(cp), "test": run_test(cp, years[:-1]) if len(cp) > 50 else "too few"}
-        rep["within_corr"] = {"pts_vs_log_acres": within_corr(sales, "pts", "logac"), "pts_vs_ppa": within_corr(sales, "pts", "ppa"),
-                              "pts_vs_class14_share": within_corr(sales, "pts", "c14")}
+            cp = with_pts(sales, "cpi")
+            rep["state_index"] = {"sales": len(cp), "test": run_test(cp, roll, 10) if len(cp) > 100 else "too few: SSURGO carries no state index here"}
+        rep["within_corr"] = {"pts_vs_log_acres": within_corr(P, "pts", "logac"), "pts_vs_ppa": within_corr(P, "pts", "ppa"),
+                              "pts_vs_class14_share": within_corr(P, "pts", "c14")}
         same = {}
-        for s in sales:
-            same.setdefault((s["pid"], s["sec"]), 0)
-            same[(s["pid"], s["sec"])] += 1
+        for s in P:
+            same[(s["pid"], s["sec"])] = same.get((s["pid"], s["sec"]), 0) + 1
         rep["sections_with_2plus_sales"] = sum(1 for v in same.values() if v > 1)
         report[st] = rep
     return report
@@ -624,20 +764,27 @@ def selftest():
     ck("acres from square degrees at the equator", abs(deg2_to_ac(1, 0) - 111320 ** 2 * 0.000247105) < 1e-6)
     sql = soil_sql([sq])
     ck("SDA query clips the outline", "GetClippedMapunits(@aoi,polygon,geo,@clip)" in sql and "POLYGON((0.00000 0.00000," in sql)
-    # the test on made-up sales: price = 100 * points + noise, so the soil adjustment must narrow the spread
+    s2 = summarize([["1", 300, "1", 0.8, None], ["2", 100, "6", 0.2, None]], {"1": [0.8, 0.9, 0.7], "2": [0.2, 0.1, 0.3]})
+    ck("corn NCCPI from the map unit table", abs(s2["corn"] - 0.7) < 1e-9 and abs(s2["corn_c14"] - 0.9) < 1e-9)
+    ck("a map unit without the table is missing, not 0", summarize([["1", 100, "1", 0.5, None]], {})["corn"] is None)
+    # the test on made-up sales: price = 100 * points + noise, so the frozen slope must narrow the spread
     rng = random.Random(1)
     sales = []
     for y in (2021, 2022, 2023):
-        for c in range(20):
-            for i in range(8):
-                p = rng.uniform(40, 90)
-                sales.append({"fips": str(c), "year": y, "ppa": 3000 + c * 50 + 100 * p + rng.gauss(0, 300), "pts": p})
-    r = run_test(sales, [2021, 2022])
+        for c in range(12):
+            for i in range(25):
+                p, ac = rng.uniform(40, 90), rng.uniform(20, 160)
+                sales.append({"fips": str(c), "year": y, "ppa": 3000 + c * 50 + 100 * p + rng.gauss(0, 300), "pts": p, "logac": math.log(ac)})
+    r = run_test(sales, [2021, 2022], placebo_n=40)
     ck("made-up soil effect: holds", r["holds"] and abs(r["tests"][0]["b"] - 100) < 15)
+    ck("made-up soil effect: M1 beats M0", r["tests"][0]["m0_m1"]["M1"]["mae"] < r["tests"][0]["m0_m1"]["M0"]["mae"])
     noise = [dict(s, ppa=3000 + rng.gauss(0, 2000)) for s in sales]
-    r2 = run_test(noise, [2021, 2022])
+    r2 = run_test(noise, [2021, 2022], placebo_n=40)
     ck("made-up no effect: does not hold", not r2["holds"])
     ck("fit on one year, tested on the next only", [t["test_year"] - t["fit_year"] for t in r["tests"]] == [1, 1])
+    ck("cells under the minimum are not scored", run_test(sales, [2021], min_n=30)["cells"] == 0)
+    f2 = fit({("a", 1): [{"ppa": 2 * x + 3 * z, "x": x, "z": z} for x, z in [(1, 0), (0, 1), (1, 1), (2, 1), (3, 5), (1, 4), (2, 2), (5, 1), (4, 4), (0, 3), (6, 2), (3, 3), (2, 7), (7, 1), (1, 6), (5, 5), (4, 0), (0, 6), (6, 6), (3, 1)]]}, ["x", "z"])
+    ck("two-column fit", abs(f2["x"] - 2) < 1e-6 and abs(f2["z"] - 3) < 1e-6)
     with open(__file__, encoding="utf-8") as fh:
         ck("no em dash in this file", chr(0x2014) not in fh.read())
     print("FAILS=%d" % fails)
@@ -660,6 +807,12 @@ def main(argv):
         if st not in STATES:
             raise SystemExit("state must be one of " + ", ".join(STATES))
         fetch(st, lim, mins, today)
+        attrs(st)
+        return 0
+    if "--attrs" in argv:
+        for st in STATES:
+            if os.path.exists(os.path.join(RAW, "%s-soil.json.gz" % st)):
+                attrs(st)
         return 0
     if "--test" in argv:
         i = argv.index("--test")
