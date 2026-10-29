@@ -579,7 +579,7 @@ class GA4Reader:
             and_group=T.FilterExpressionList(expressions=exprs))
         return T.RunReportRequest(
             property="properties/" + self.prop,
-            dimensions=[T.Dimension(name=d) for d in dims],
+            dimensions=[T.Dimension(name=d) if isinstance(d, str) else d for d in dims],
             metrics=[T.Metric(name="eventCount")],
             date_ranges=[T.DateRange(start_date=str(start), end_date=str(end))],
             dimension_filter=filt,
@@ -620,7 +620,8 @@ class GA4Reader:
         """{region name: count} for US visits, GA4's own region for the visit.
         Never an event parameter: the ad sends no state."""
         out = {}
-        for r in self.rows(["region"], events, start, end, slots, country="United States", limit=1000):
+        for r in self.rows([self.T.Dimension(name="region")], events, start, end, slots,
+                           country="United States", limit=1000):
             out[r[0]] = out.get(r[0], 0) + r[-1]
         return out
 
