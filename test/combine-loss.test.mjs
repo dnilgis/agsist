@@ -125,8 +125,10 @@ test("page: head, canonical, byline, JSON-LD FAQ matches the visible FAQ, source
     .map((m) => [m[1], m[2]].map((s) => s.replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&")));
   assert.ok(faq.length >= 5);
   assert.deepEqual(faq.map((q) => [q.name, q.acceptedAnswer.text]), seen);
-  for (const u of ["cropwatch.unl.edu/2023/how-estimate-harvest-losses-soybeans-and-corn-fields", "crops.extension.iastate.edu/cropnews/2010/09/", "waupaca.extension.wisc.edu", "ndsu.edu/agriculture/extension"])
+  for (const u of ["cropwatch.unl.edu/2023/how-estimate-harvest-losses-soybeans-and-corn-fields", "crops.extension.iastate.edu/cropnews/2010/09/", "ndsu.edu/agriculture/extension"])
     assert.ok(page.includes(u), u);
+  // a PDF source is named, not linked (no direct links to data sources, Oct 29, 2026)
+  assert.ok(page.includes("Fall and winter ag newsletter, 2017-18") && !page.includes("waupaca.extension.wisc.edu"), "the Waupaca County newsletter named");
   assert.match(page, /<script src="\/components\/bids-network\.js\?v=\d+" defer><\/script>/);
   assert.match(page, /<script src="\/components\/grain-shrink\.js\?v=\d+" defer><\/script>/, "reuses the shrink page's bid pickers");
   assert.match(ui, /NET\.snapshotForZip\(/);

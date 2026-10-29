@@ -217,7 +217,7 @@
     }
     h += body + WORDS + mathBlock(doc, today) +
       '<p class="cc-src">Source: USDA AMS Livestock, Poultry and Grain ' +
-      'Market News auction reports, as reported by USDA, not the barns. Barn names link to each USDA report.</p>';
+      'Market News auction reports, as reported by USDA, not the barns.</p>';
     var box = el.querySelector('[data-cc="body"]') || el;
     box.innerHTML = h;
     var s = box.querySelector('[data-cc="state"]');

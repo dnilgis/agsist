@@ -115,7 +115,8 @@ test("both pages carry the section and the script once; the component credits US
     const sec = h.slice(h.indexOf("data-cull-cows") - 600, h.indexOf("data-cull-cows") + 900);
     assert.doesNotMatch(sec, /—/, name + " em dash");
   }
-  assert.match(js, /USDA AMS Livestock, Poultry and Grain ' \+\s*'Market News<\/a> auction reports, as reported by USDA, not the barns/);
+  // the source is named, not linked (no direct links to data sources, Oct 29, 2026)
+  assert.match(js, /USDA AMS Livestock, Poultry and Grain ' \+\s*'Market News auction reports, as reported by USDA, not the barns/);
   assert.doesNotMatch(js, /—/);
   assert.match(js, /<b>Breakers<\/b> \(75 to 80% lean\)/);
   assert.match(js, /<b>Boners<\/b> \(80 to 85%\)/);
