@@ -17,7 +17,10 @@ It errs toward more: a path written in a comment counts too.
   python3 scripts/dev/test_map.py --check          fail if the file is not what the scan gives
   python3 scripts/dev/test_map.py --select F ...   print the tests to run for changed files F
   python3 scripts/dev/test_map.py --select-base REF  the same for git diff REF...HEAD
-  python3 scripts/dev/test_map.py --split N/M F ...  shard N of M of the files F, balanced by a rough cost
+  python3 scripts/dev/test_map.py --split N/M F ...  shard N of M of the files F, balanced by each file's
+      measured time (scripts/dev/test-durations.json; a rough cost for a file not measured yet)
+  python3 scripts/dev/test_map.py --durations T ...  write scripts/dev/test-durations.json from the
+      "<ms>\t<file>" lines scripts/dev/file-times.mjs writes beside the TAP (several runs: the slowest)
       --github-output   also write mode=all|some and files=<space separated> to $GITHUB_OUTPUT
       --why             print the reason beside each test
 
@@ -416,8 +419,29 @@ def present_test_files():
     return ["test/" + f for f in os.listdir(d) if f.endswith(".test.mjs")] if os.path.isdir(d) else []
 
 
+DURATIONS = "scripts/dev/test-durations.json"
+# the PR checks' runners have 4 cores and node --test runs (cores - 1) files at a time
+SHARD_PARALLEL = 3
+_measured = None
+
+
+def measured():
+    """{test file: seconds} from scripts/dev/test-durations.json (empty when it is missing or unreadable)"""
+    global _measured
+    if _measured is None:
+        try:
+            _measured = {k: float(v) for k, v in json.load(open(os.path.join(ROOT, DURATIONS), encoding="utf-8"))["seconds"].items()}
+        except (OSError, ValueError, KeyError, TypeError, AttributeError):
+            _measured = {}
+    return _measured
+
+
 def weight(path):
-    """a rough cost: browser tests are slow, big files have more tests"""
+    """seconds: the measured time of the file in the PR checks, else a rough guess (browser tests are slow,
+    big files have more tests)"""
+    m = measured()
+    if path in m:
+        return m[path]
     try:
         text = open(os.path.join(ROOT, path), encoding="utf-8", errors="replace").read()
     except OSError:
@@ -425,15 +449,36 @@ def weight(path):
     return 1.0 + len(text) / 10000.0 + (20.0 if "CHROMIUM_PATH" in text else 0.0)
 
 
-def split(files, n, m):
-    """shard n of m (1-based) of files, balanced by weight (largest first onto the lightest shard)"""
-    load = [0.0] * m
+def split(files, n, m, par=SHARD_PARALLEL):
+    """shard n of m (1-based) of files, balanced by weight: longest first, each onto the shard that would
+    finish soonest with it, where a shard's time is the longer of its longest file and its total over the
+    files it runs at once"""
+    tot, top = [0.0] * m, [0.0] * m
     out = [[] for _ in range(m)]
     for w, f in sorted(((weight(f), f) for f in sorted(set(files))), key=lambda x: (-x[0], x[1])):
-        i = min(range(m), key=lambda k: (load[k], k))
-        load[i] += w
+        i = min(range(m), key=lambda k: (max(top[k], w, (tot[k] + w) / par), tot[k], k))
+        tot[i] += w
+        top[i] = max(top[i], w)
         out[i].append(f)
     return sorted(out[n - 1])
+
+
+def write_durations(paths):
+    secs = {}
+    for p in paths:
+        for line in open(p, encoding="utf-8"):
+            parts = line.rstrip("\n").split("\t")
+            if len(parts) != 2 or not parts[0].isdigit():
+                continue
+            secs[parts[1]] = max(secs.get(parts[1], 0.0), round(int(parts[0]) / 1000.0, 1))
+    doc = {"note": "Wall time in seconds of each node test file in the PR checks (scripts/dev/file-times.mjs, the "
+                   "'test file times' step of pr-checks.yml); the slowest of the runs read. test_map.py --split "
+                   "balances the shards by it. Refresh: python3 scripts/dev/test_map.py --durations <times files>.",
+           "seconds": dict(sorted(secs.items()))}
+    with open(os.path.join(ROOT, DURATIONS), "w", encoding="utf-8") as fh:
+        fh.write(json.dumps(doc, indent=0, sort_keys=False) + "\n")
+    print("wrote %s (%d files)" % (DURATIONS, len(secs)))
+    return 0
 
 
 def main(argv):
@@ -446,6 +491,8 @@ def main(argv):
         for f in split(argv[i + 2:], int(mm.group(1)), int(mm.group(2))):
             print(f)
         return 0
+    if "--durations" in argv:
+        return write_durations(argv[argv.index("--durations") + 1:])
     if "--check" in argv:
         want = dump(build())
         have = open(os.path.join(ROOT, OUT), encoding="utf-8").read() if os.path.exists(os.path.join(ROOT, OUT)) else ""

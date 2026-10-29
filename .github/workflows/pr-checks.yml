@@ -257,8 +257,8 @@ jobs:
           # the guard's pick (empty: every test file)
           AGSIST_TEST_FILES: ${{ needs.guard.outputs.mode == 'some' && needs.guard.outputs.files || '' }}
         run: bash scripts/dev/checks.sh --only=node-test --shard=${{ matrix.shard }}/4
-      # each test file's wall time (scripts/dev/test-times.mjs, written beside the TAP output), slowest
-      # first: what scripts/dev/test-times.json is measured from, and where to look when a shard is slow
+      # each test file's wall time (scripts/dev/file-times.mjs, written beside the TAP output), slowest
+      # first: what scripts/dev/test-durations.json is measured from, and where to look when a shard is slow
       - name: test file times
         if: always()
         run: |

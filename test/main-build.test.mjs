@@ -177,6 +177,22 @@ test("the shard split puts every picked file in exactly one shard", () => {
   for (let n = 1; n <= 4; n++) got.push(...execFileSync("python3", ["scripts/dev/test_map.py", "--split", `${n}/4`, ...files], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean));
   assert.deepEqual([...got].sort(), [...files].sort());
   assert.equal(spawnSync("python3", ["scripts/dev/test_map.py", "--split", "5/4", "a"], { cwd: ROOT }).status, 2);
+  // balanced by measured time: the slowest file gets a shard to itself when it is longer than the rest together
+  const m = JSON.parse(read("scripts/dev/test-durations.json")).seconds;
+  const all = Object.keys(m).filter((f) => fs.existsSync(path.join(ROOT, f)));
+  assert.ok(all.length > 400, `${all.length} measured files`);
+  const slow = all.reduce((a, b) => (m[a] >= m[b] ? a : b));
+  const r = JSON.parse(py(`import sys, json; sys.path.insert(0, 'scripts/dev'); import test_map as T; f = json.loads(sys.argv[1]); print(json.dumps([T.split(f, n, 6) for n in range(1, 7)]))`, [JSON.stringify(all)]));
+  assert.deepEqual(r.flat().sort(), [...all].sort(), "each measured file in one of six shards");
+  const wall = (sh) => Math.max(...sh.map((f) => m[f]), sh.reduce((t, f) => t + m[f], 0) / 3);
+  assert.ok(r.some((sh) => sh.includes(slow)));
+  assert.ok(Math.max(...r.map(wall)) <= Math.max(m[slow], all.reduce((t, f) => t + m[f], 0) / 18) * 1.1, "no shard runs much past the slowest file or an even share");
+  // the durations file is written from the times lines, the slowest run of each file kept
+  const d = tmp("dur-"), a = path.join(d, "a.times"), b = path.join(d, "b.times");
+  fs.writeFileSync(a, "1500\ttest/x.test.mjs\n200\ttest/y.test.mjs\nnot a line\n");
+  fs.writeFileSync(b, "2500\ttest/x.test.mjs\n");
+  const w = JSON.parse(py(`import sys, json, os; sys.path.insert(0, 'scripts/dev'); import test_map as T; T.ROOT = sys.argv[1]; os.makedirs(os.path.join(T.ROOT, 'scripts/dev')); T.write_durations(sys.argv[2:]); print(open(os.path.join(T.ROOT, T.DURATIONS)).read())`, [path.join(d, "root"), a, b]).split("\n").slice(1).join("\n"));
+  assert.deepEqual(w.seconds, { "test/x.test.mjs": 2.5, "test/y.test.mjs": 0.2 });
 });
 
 test("node-tests.sh runs only the picked files when given them, and every test when not", () => {
@@ -187,6 +203,74 @@ test("node-tests.sh runs only the picked files when given them, and every test w
   const go = (files) => { const nt = path.join(dir, "nt.out"); const r = spawnSync("bash", [path.join(ROOT, "scripts/dev/node-tests.sh"), nt, ""], { cwd: dir, encoding: "utf8", env: { ...env, AGSIST_TEST_FILES: files } }); assert.equal(r.status, 0, r.stdout + r.stderr); return fs.readFileSync(nt, "utf8"); };
   assert.match(go(""), /^# pass 3$/m, "all");
   assert.match(go("a.test.mjs"), /^# pass 1$/m, "only a");
+  // beside the TAP: one wall time per file that ran (scripts/dev/file-times.mjs), the TAP itself unchanged
+  go("");
+  const times = fs.readFileSync(path.join(dir, "nt.out.times"), "utf8").trim().split("\n").map((l) => l.split("\t"));
+  assert.deepEqual(times.map((t) => t[1]).sort(), ["a.test.mjs", "b.test.mjs"]);
+  for (const [ms] of times) assert.match(ms, /^\d+$/);
+});
+
+// Oct 29 (fx/cifast): the shards of a full run split node's own discovery by measured time instead of
+// node --test-shard by count, and the shards make the guard's pick themselves instead of waiting for it.
+test("a full run's shards run exactly the files node's own discovery runs, each in one shard", () => {
+  const dir = tmp("ntd-");
+  const files = { "a.test.mjs": 1, "sub/b.test.mjs": 2, "test/fixtures/helper.mjs": 0, "test-c.mjs": 1, "d_test.cjs": 1, "e.mjs": 0, "node_modules/x/y.test.mjs": 1 };
+  for (const [f, n] of Object.entries(files)) {
+    fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true });
+    const body = f.endsWith(".cjs") ? "const { test } = require('node:test');" : "import { test } from 'node:test';";
+    fs.writeFileSync(path.join(dir, f), body + Array.from({ length: n }, (_, i) => ` test('t${i}', () => {});`).join("") + "\n");
+  }
+  const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !["NODE_TEST_CONTEXT", "AGSIST_TEST_FILES", "AGSIST_PICK_BASE"].includes(k))) };
+  const listed = execFileSync("node", [path.join(ROOT, "scripts/dev/list-tests.mjs")], { cwd: dir, encoding: "utf8" }).trim().split("\n");
+  // node's own discovery, read back from the times it writes for each file it ran
+  const nt = path.join(dir, "all.out");
+  assert.equal(spawnSync("bash", [path.join(ROOT, "scripts/dev/node-tests.sh"), nt, ""], { cwd: dir, env }).status, 0);
+  const ran = fs.readFileSync(nt + ".times", "utf8").trim().split("\n").map((l) => l.split("\t")[1]).sort();
+  assert.deepEqual(listed, ran, "scripts/dev/list-tests.mjs lists what a bare node --test runs");
+  assert.ok(!listed.some((f) => f.startsWith("node_modules/")) && !listed.includes("e.mjs") && listed.includes("test/fixtures/helper.mjs"));
+  const got = [];
+  let pass = 0;
+  for (let n = 1; n <= 3; n++) {
+    const out = path.join(dir, `s${n}.out`);
+    const r = spawnSync("bash", [path.join(ROOT, "scripts/dev/node-tests.sh"), out, `${n}/3`], { cwd: dir, encoding: "utf8", env });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    got.push(...fs.readFileSync(out + ".times", "utf8").split("\n").filter(Boolean).map((l) => l.split("\t")[1]));
+    pass += +fs.readFileSync(out, "utf8").match(/^# pass (\d+)$/m)[1];
+  }
+  assert.deepEqual(got.sort(), ran, "every discovered file in exactly one shard");
+  assert.equal(pass, +fs.readFileSync(nt, "utf8").match(/^# pass (\d+)$/m)[1], "the same tests pass, shards or not");
+});
+
+test("node-tests.sh with AGSIST_PICK_BASE makes the pick itself: some runs the pick, all runs everything, a failure stops", () => {
+  const dir = tmp("ntp-"), dev = path.join(dir, "dev"), work = path.join(dir, "w");
+  fs.mkdirSync(dev); fs.mkdirSync(work);
+  for (const f of ["node-tests.sh", "file-times.mjs", "list-tests.mjs"]) fs.copyFileSync(path.join(ROOT, "scripts/dev", f), path.join(dev, f));
+  // a stand-in test_map.py: the answer comes from PICK_ANSWER, the arguments are checked; --split is a passthrough
+  fs.writeFileSync(path.join(dev, "test_map.py"), [
+    "import os, sys",
+    "a = sys.argv[1:]",
+    "if a[0] == '--split':",
+    "    print('\\n'.join(a[2:])); sys.exit(0)",
+    "assert a[:2] == ['--select-base', 'HEAD^1'] and '--github-output' in a, a",
+    "ans = os.environ['PICK_ANSWER']",
+    "if ans == 'fail': sys.exit(1)",
+    "open(os.environ['GITHUB_OUTPUT'], 'a').write('mode=%s\\nfiles=%s\\ncount=1\\n' % ((ans, 'a.test.mjs') if ans == 'some' else (ans, '')))",
+  ].join("\n") + "\n");
+  fs.writeFileSync(path.join(work, "a.test.mjs"), "import { test } from 'node:test'; test('a', () => {});\n");
+  // b checks that the tests themselves never see the pick
+  fs.writeFileSync(path.join(work, "b.test.mjs"), "import { test } from 'node:test'; import assert from 'node:assert'; test('b', () => { assert.equal(process.env.AGSIST_PICK_BASE, undefined); assert.equal(process.env.AGSIST_TEST_FILES, undefined); });\n");
+  const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !["NODE_TEST_CONTEXT", "AGSIST_TEST_FILES"].includes(k))), AGSIST_PICK_BASE: "HEAD^1" };
+  const go = (ans) => { const nt = path.join(dir, ans + ".out"); const r = spawnSync("bash", [path.join(dev, "node-tests.sh"), nt, "1/1"], { cwd: work, encoding: "utf8", env: { ...env, PICK_ANSWER: ans } }); return { r, tap: fs.existsSync(nt) ? fs.readFileSync(nt, "utf8") : "" }; };
+  let g = go("some");
+  assert.equal(g.r.status, 0, g.r.stdout + g.r.stderr);
+  assert.match(g.tap, /^# pass 1$/m, "only the picked file");
+  g = go("all");
+  assert.equal(g.r.status, 0, g.r.stdout + g.r.stderr);
+  assert.match(g.tap, /^# pass 2$/m, "every file");
+  assert.match(g.tap, /^# fail 0$/m);
+  g = go("fail");
+  assert.equal(g.r.status, 2, "a pick that fails stops the shard");
+  assert.equal(g.tap, "", "and runs nothing");
 });
 
 test("during the move, a line a branch still added to data/whats-new.json gets its entry file on main instead of being dropped", () => {

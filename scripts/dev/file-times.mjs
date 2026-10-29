@@ -1,7 +1,7 @@
 // A node --test reporter beside TAP (scripts/dev/node-tests.sh): one line per test file,
 // "<milliseconds>\t<path from the repo root>", from the file's own complete event (its wall time:
 // start of the child process to its end). It changes nothing about what runs or what passes;
-// the PR checks print the slowest files and scripts/dev/test-times.json comes from these lines.
+// the PR checks print the slowest files and scripts/dev/test-durations.json comes from these lines.
 import path from 'node:path';
 
 export default async function* times(source) {
