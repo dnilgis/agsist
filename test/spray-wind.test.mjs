@@ -233,7 +233,7 @@ test("one story: the page reads the same NWS grid as the wind view, and names th
   assert.match(SRC, /var MODEL = 'NWS NDFD'/);
   assert.match(HTML, /<p class="sp-model" id="sp-model" hidden><\/p>/);
   assert.match(HTML, /Issue time not given by the source/);
-  assert.match(HTML, /Forecast \(estimate\) for everything on this page: the <a href="https:\/\/www\.weather\.gov\/documentation\/services-web-api"/);
+  assert.match(HTML, /Forecast \(estimate\) for everything on this page: the National Weather Service forecast grid/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   assert.match(HTML, /', office '\+n\.office\+' cell '\+n\.x\+','\+n\.y/);
 });
 

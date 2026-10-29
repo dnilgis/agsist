@@ -1605,7 +1605,6 @@ def storage_basis(j, today):
 
 FARMDOC = ("farmdoc daily (Dhakal and Janzen, &ldquo;Enough Room for the Harvest? Grain Storage Pressure in the "
            "Corn Belt,&rdquo; Oct 7, 2026)")
-FARMDOC_URL = "https://farmdocdaily.illinois.edu/wp-content/uploads/2026/10/fdd100726.pdf"
 ST_NAME = {"AL": "Alabama", "AR": "Arkansas", "CO": "Colorado", "GA": "Georgia", "ID": "Idaho", "IL": "Illinois",
            "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "MI": "Michigan", "MN": "Minnesota",
            "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NY": "New York",
@@ -2433,13 +2432,13 @@ def milk_dmc_rows(dmc, d):
 
 
 def _cite(blk, name):
-    """'<a FSA url>name</a>' plus ', Internet Archive copy of <date>' when that is what was read."""
+    """The source named, plus ' (Internet Archive copy of <date>)' when that is what was read; not linked
+    (no direct links to data sources, Oct 29, 2026)."""
     blk = blk if isinstance(blk, dict) else {}
-    u = blk.get("source_url") or ""
-    t = f'<a href="{_e(u)}" rel="noopener">{name}</a>' if u.startswith("https://www.fsa.usda.gov/") else name
+    t = name
     au, sn = blk.get("archive_url") or "", blk.get("snapshot") or ""
     if blk.get("via") == "archive" and au.startswith("https://web.archive.org/") and sn:
-        t += f' (<a href="{_e(au)}" rel="noopener">Internet Archive copy</a> of {_e(sn)})'
+        t += f' (Internet Archive copy of {_e(sn)})'
     return t
 
 

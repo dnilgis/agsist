@@ -71,7 +71,8 @@ test('your area: Wisconsin first, with its month, rank, state all-milk and the n
   assert.match(h, /19th of 20 areas \(1st is the highest\)/);
   assert.match(h, /Wisconsin all-milk price, August 2026: \$18\.90, −\$1\.10 vs a year earlier \(US \$19\.80, −\$1\.10\)/);
   assert.match(h, /Class III futures, Oct 2026: \$15\.25 \(CME settle Oct 26\)\. A market price, not your check\./);
-  assert.match(h, /viewReport\/3357/);
+  assert.match(h, /AMS/);
+  assert.doesNotMatch(h, /viewReport\/3357/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   const mn = M.areaHtml(mb, SEP, ROWS, 'Minnesota', 'MN', new Date(2026, 9, 28));
   assert.match(mn, /20th of 20 areas/);
   assert.match(mn, /−\$2\.93 vs Jun 2025/);

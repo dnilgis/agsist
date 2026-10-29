@@ -48,9 +48,10 @@ test('the page bakes the lead line, the net-licence caveat and the NASS credit f
   assert.ok(s.includes('<strong>23,609 licensed dairy herds in the US in 2025</strong>, &minus;1,036 from 2024'), s.slice(0, 200));
   assert.ok(s.includes('Wisconsin, October 1, 2026: 4,944, &minus;229 from a year earlier'));
   assert.ok(s.includes('A drop is net licences, not the exact number of farms that quit'));
-  assert.match(s, /Source: <a href="https:\/\/quickstats\.nass\.usda\.gov\/" rel="noopener">USDA NASS<\/a>/);
+  assert.match(s, /Source: USDA NASS/);
+  assert.doesNotMatch(s, /href="https:\/\/quickstats/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   assert.match(s, /newest year released Feb 20, 2026/);
-  assert.match(s, /USDA NASS Wisconsin<\/a>, herds on the state&rsquo;s Dairy Producer License list/);
+  assert.match(s, /USDA NASS Wisconsin, herds on the state&rsquo;s Dairy Producer License list/);
   assert.match(page, /<h2 class="dp-sec-label" id="dp-herds-h">[\s\S]*?Licensed dairy herds \(NASS\)<\/h2>/);
 });
 
@@ -79,7 +80,7 @@ test('MPP years sit apart from the DMC table and say they are a different progra
   assert.match(s, /<th scope="row">Jan<\/th><td class="num">\$8\.12<\/td><td class="num">\$11\.06<\/td><td class="num">\$8\.10<\/td><td class="num">\$8\.34<\/td><td class="num">\$12\.70<\/td>/);
   assert.match(s, /Lowest month here: Jun 2016, \$5\.75/);
   assert.match(s, /Aug 2018 to Dec 2018 are left out: FSA's MPP table as read ends at July 2018/);
-  assert.match(s, /FSA, MPP calculations<\/a> \(<a href="https:\/\/web\.archive\.org\/web\/20240614163858\//);
+  assert.match(s, /FSA, MPP calculations \(Internet Archive copy of 2024-06-14\)/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   assert.doesNotMatch(s + seedOf('milkherds'), /—/, 'no em dash');
 });
 
