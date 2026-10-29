@@ -246,30 +246,122 @@ def _float(val):
         return None
 
 
-def _norm_cash(raw):
+def _norm_cash(raw, per_ton=False):
     """Normalize cash price to dollars/bu.
     Barchart sometimes returns cents (e.g. 370) — mirror cash-bids.html ppu():
-    values >30 are treated as cents."""
+    values >30 are treated as cents. NOT for a per-ton product (meal, hulls,
+    oil): $341.10 a ton of soybean meal is not 341 cents a bushel, and this
+    used to turn it into "$3.41/bu" (Oct 29 data check: ADM Grain, Frankfort IN)."""
     v = _float(raw)
     if v is None:
         return None
-    if v > 30:
+    if v > 30 and not per_ton:
         v = v / 100.0
     return round(v, 4)
 
 
 def _norm_basis(raw):
-    """Normalize basis to dollars/bu.
-    Mirror cash-bids.html basisCents() inverted: the feed may send basis in
-    cents (e.g. -56) or dollars (e.g. -0.56). basisCents() treats |b|>=5 as
-    already-cents, so anything with |b|>=5 is cents → divide by 100. The
-    basis map (build_basis_map.py) and fmtB() both expect DOLLARS."""
+    """Normalize basis to dollars/bu, or None while the unit is unclear.
+    The feed sends basis in cents (e.g. -56) or dollars (e.g. -0.56). A value
+    of 5 or more either way is cents (no grain basis is $5). Under 1 it is
+    dollars (nobody posts a fraction of a cent). Between 1 and 5 it can be
+    either: this used to call it dollars, and the Oct 29 data check found
+    2,678 snapshot rows where a 1 to 4.75 CENT basis was stored as $1 to $4.75
+    (Consolidated Grain & Barge, Sherrill AR: corn at $4.29 with a "+$1.00"
+    basis against $4.28 futures). Those come back None here and
+    settle_basis_units() picks the unit from the row's own cash against that
+    day's futures. The basis map and fmtB() both expect DOLLARS."""
     v = _float(raw)
     if v is None:
         return None
     if abs(v) >= 5:
-        v = v / 100.0
-    return round(v, 4)
+        return round(v / 100.0, 4)
+    if abs(v) < 1:
+        return round(v, 4)
+    return None
+
+
+SETTLE_TOLERANCE = 0.25      # dollars: cash - basis within this of the day's futures
+SETTLE_MIN_ROWS = 3
+
+
+def settle_basis_units(rows):
+    """Pick the unit of every basis _norm_basis() left unclear (1 to 5 either way).
+    That day's futures for a crop and contract = the middle of cash - basis over
+    the rows whose unit is not in doubt (3 or more). The unit is the one that puts
+    cash - basis within 25 cents of it; when neither does, or there is no such
+    middle, the basis stays None (withheld, never guessed). -> counts."""
+    import statistics
+    implied = {}
+    for b in rows:
+        if b.get("_basisRaw") is None and b.get("basis") is not None and b.get("cashPrice") is not None \
+                and b.get("category") in ("corn", "soybeans", "wheat", "oats", "sorghum"):
+            implied.setdefault((b["category"], str(b.get("symbol") or "").upper()), []).append(b["cashPrice"] - b["basis"])
+    ref = {k: statistics.median(v) for k, v in implied.items() if len(v) >= SETTLE_MIN_ROWS}
+    n = {"cents": 0, "dollars": 0, "withheld": 0}
+    for b in rows:
+        raw = b.pop("_basisRaw", None)
+        if raw is None:
+            continue
+        f = ref.get((b.get("category"), str(b.get("symbol") or "").upper()))
+        c = b.get("cashPrice")
+        if f is None or c is None:
+            n["withheld"] += 1
+            continue
+        as_d, as_c = abs(c - raw - f), abs(c - raw / 100.0 - f)
+        if min(as_d, as_c) > SETTLE_TOLERANCE:
+            n["withheld"] += 1
+        elif as_c < as_d:
+            b["basis"] = round(raw / 100.0, 4)
+            n["cents"] += 1
+        else:
+            b["basis"] = round(raw, 4)
+            n["dollars"] += 1
+    return n
+
+
+_PER_TON = _re_mod.compile(r"\b(meal|hulls?|pellets?|oil)\b", _re_mod.I)
+
+
+def _barchart_category(name, symbol):
+    """classify_commodity(), except that soybean meal, hulls and oil are "meal", not soybeans
+    (the Oct 29 data check found 414 meal rows filed as soybeans, ADM and AGP). Read from the
+    name or the contract (ZM meal, ZL oil; @SM and @BO in Barchart's own form). The network
+    rows keep classify_commodity() exactly as it is."""
+    if _PER_TON.search(name or "") or _re_mod.match(r"^(ZM|ZL|@SM|@BO)", str(symbol or ""), _re_mod.I):
+        return "meal"
+    return classify_commodity(name)
+
+
+def _barchart_row(fac, branch, src_obj, bid, source_zip):
+    """One flattened Barchart bid. src_obj carries the location fields, bid the price fields."""
+    cname = _commodity_name(bid)
+    sym = bid.get("symbol") or bid.get("basisSymbol") or ""
+    cat = _barchart_category(cname, sym)
+    raw_basis = _float(bid.get("basis"))
+    basis = _norm_basis(bid.get("basis"))
+    row = {
+        "facility": fac,
+        "branch": branch,
+        "city": src_obj.get("city") or bid.get("city") or "",
+        "state": (src_obj.get("state") or bid.get("state") or "").upper(),
+        "zip": src_obj.get("zip") or bid.get("zip") or "",
+        "distance": _float(src_obj.get("distance") if src_obj.get("distance") is not None else bid.get("distance")),
+        "phone": clean_phone(src_obj.get("phone") or bid.get("phone") or ""),
+        "commodity": cname,
+        "symbol": sym,
+        "cashPrice": _norm_cash(bid.get("cashprice", bid.get("cashPrice")), per_ton=(cat == "meal")),
+        "basis": basis,
+        "notes": bid.get("notes", ""),
+        "deliveryMonth": bid.get("deliveryMonth") or bid.get("delivery_month") or "",
+        "deliveryStart": bid.get("deliveryStart") or bid.get("delivery_start") or "",
+        "deliveryEnd": bid.get("deliveryEnd") or bid.get("delivery_end") or "",
+        "category": cat,
+        "sourceZip": source_zip,
+    }
+    if basis is None and raw_basis is not None:
+        row["_basisRaw"] = raw_basis          # settle_basis_units() decides, then drops this
+    return row
 
 
 def classify_commodity(name):
@@ -322,53 +414,17 @@ def flatten(data, source_zip):
             for bid in nested:
                 if not isinstance(bid, dict):
                     continue
-                cname = _commodity_name(bid)
-                flat.append({
-                    "facility": fac,
-                    "branch": branch,
-                    "city": item.get("city") or bid.get("city") or "",
-                    "state": (item.get("state") or bid.get("state") or "").upper(),
-                    "zip": item.get("zip") or bid.get("zip") or "",
-                    "distance": _float(item.get("distance") if item.get("distance") is not None else bid.get("distance")),
-                    "phone": clean_phone(item.get("phone") or bid.get("phone") or ""),
-                    "commodity": cname,
-                    "symbol": bid.get("symbol") or bid.get("basisSymbol") or "",
-                    "cashPrice": _norm_cash(bid.get("cashprice", bid.get("cashPrice"))),
-                    "basis": _norm_basis(bid.get("basis")),
-                    "notes": bid.get("notes", ""),
-                    "deliveryMonth": bid.get("deliveryMonth") or bid.get("delivery_month") or "",
-                    "deliveryStart": bid.get("deliveryStart") or bid.get("delivery_start") or "",
-                    "deliveryEnd": bid.get("deliveryEnd") or bid.get("delivery_end") or "",
-                    "category": classify_commodity(cname),
-                    "sourceZip": source_zip,
-                })
+                flat.append(_barchart_row(fac, branch, item, bid, source_zip))
         elif (item.get("commodity") or item.get("commodityName")
               or item.get("cashprice") is not None or item.get("cashPrice") is not None):
-            cname = _commodity_name(item)
             loc = item.get("location")
             branch = loc if isinstance(loc, str) else ""
-            flat.append({
-                "facility": item.get("company") or item.get("name") or item.get("facility") or item.get("locationName") or "Unknown",
-                "branch": branch,
-                "city": item.get("city") or "",
-                "state": (item.get("state") or "").upper(),
-                "zip": item.get("zip") or "",
-                "distance": _float(item.get("distance")),
-                "phone": clean_phone(item.get("phone") or ""),
-                "commodity": cname,
-                "symbol": item.get("symbol") or item.get("basisSymbol") or "",
-                "cashPrice": _norm_cash(item.get("cashprice", item.get("cashPrice"))),
-                "basis": _norm_basis(item.get("basis")),
-                "notes": item.get("notes", ""),
-                "deliveryMonth": item.get("deliveryMonth") or item.get("delivery_month") or "",
-                "deliveryStart": item.get("deliveryStart") or item.get("delivery_start") or "",
-                "deliveryEnd": item.get("deliveryEnd") or item.get("delivery_end") or "",
-                "category": classify_commodity(cname),
-                "sourceZip": source_zip,
-            })
+            fac = item.get("company") or item.get("name") or item.get("facility") or item.get("locationName") or "Unknown"
+            flat.append(_barchart_row(fac, branch, item, item, source_zip))
 
-    # keep filter — identical to cash-bids.html fetchBids()
-    return [b for b in flat if b["cashPrice"] is not None or b["basis"] is not None]
+    # keep filter — identical to cash-bids.html fetchBids() (a basis whose unit is still to be
+    # settled counts as a basis)
+    return [b for b in flat if b["cashPrice"] is not None or b["basis"] is not None or b.get("_basisRaw") is not None]
 
 
 def _page_crop(name):
@@ -1870,6 +1926,11 @@ def main():
               f"ceiling did not bind, so this grid saw everything Barchart "
               f"has within {MAX_DISTANCE} miles of each point.")
 
+    if all_bids:
+        su = settle_basis_units(all_bids)
+        if any(su.values()):
+            print(f"[fetch_bids] basis unit read from cash against the day's futures: {su['cents']} cents, "
+                  f"{su['dollars']} dollars, {su['withheld']} withheld (unit unclear)")
     barchart_live = bool(all_bids)
     if barchart_on and not barchart_live:
         # A dead or expired key, or a Barchart outage. This used to exit 1 and
@@ -3192,6 +3253,50 @@ def selftest():
        code == 3 and out is None)
     ck("...and leaves the withheld list alone too", run_main.withheld is None)
     shutil.rmtree(tmp, ignore_errors=True)
+
+    print("THE BASIS UNIT FROM CASH AGAINST THE DAY'S FUTURES (Oct 29 data check, real rows of 2026-06-09)")
+    def bc(company, city, st, comm, sym, cash, basis):
+        return {"company": company, "city": city, "state": st, "zip": "1", "commodity": comm, "symbol": sym,
+                "cashprice": cash, "basis": basis}
+    day = {"results": [
+        # four clean ZCU26 corn rows that day (cents as the feed sends them): cash - basis = 4.28
+        bc("Ref A", "A", "AR", "Corn", "ZCU26", 4.08, -20), bc("Ref B", "B", "AR", "Corn", "ZCU26", 4.03, -25),
+        bc("Ref C", "C", "AR", "Corn", "ZCU26", 3.98, -30), bc("Ref D", "D", "AR", "Corn", "ZCU26", 3.93, -35),
+        # Consolidated Grain & Barge, Sherrill AR: corn Sep26 $4.29 with a 1 cent basis (stored as $1.00 before)
+        bc("Consolidated Grain & Barge", "Sherrill", "AR", "Corn", "ZCU26", 4.29, 1),
+        bc("Ref E", "E", "IN", "#2 US Yellow Corn", "ZCN26", 4.00, -0.20), bc("Ref F", "F", "IN", "Corn", "ZCN26", 3.95, -0.25),
+        bc("Ref G", "G", "IN", "Corn", "ZCN26", 3.90, -0.30),
+        # ADM Grain, Attica IN: corn Jul26 $4.19 with a -1 cent basis against $4.20 (stored as -$1.00 before)
+        bc("ADM Grain", "Attica", "IN", "#2 US Yellow Corn", "ZCN26", 4.19, -1),
+        bc("Ref H", "H", "MN", "Beans", "ZSF27", 10.96, -50), bc("Ref I", "I", "MN", "Beans", "ZSF27", 10.86, -60),
+        bc("Ref J", "J", "MN", "Beans", "ZSF27", 10.76, -70),
+        # Central Farm Service, Hayfield MN: beans Dec26 $10.46 at -$1.00 against $11.46: a real dollar basis
+        bc("Central Farm Service", "Hayfield", "MN", "BEANS", "ZSF27", 10.46, -1.0),
+        # alone on its contract: no day futures to read the unit from, so the basis is withheld
+        bc("Lone Co", "L", "AR", "Corn", "ZCH27", 4.50, 2),
+        # ADM Grain, Frankfort IN: Soybean Meal Jun26 at $341.10 a TON (was "$3.41" filed as soybeans)
+        bc("ADM Grain", "Frankfort", "IN", "Soybean Meal", "ZMN26", 341.1, 4000),
+    ]}
+    fl = flatten(day, "00000")
+    n = settle_basis_units(fl)
+    by = {(b["facility"], b["city"]): b for b in fl}
+    ck("CGB Sherrill: 1 is a cent, read from $4.29 cash against $4.28 futures",
+       by[("Consolidated Grain & Barge", "Sherrill")]["basis"] == 0.01)
+    ck("ADM Attica: -1 is a cent below $4.20", by[("ADM Grain", "Attica")]["basis"] == -0.01)
+    ck("Central Farm Service Hayfield: -1.00 is a real dollar under", by[("Central Farm Service", "Hayfield")]["basis"] == -1.0)
+    ck("no day futures to read it from: withheld, never guessed", by[("Lone Co", "L")]["basis"] is None
+       and by[("Lone Co", "L")]["cashPrice"] == 4.5)
+    ck("unambiguous units unchanged: -20 is -$0.20, -0.20 stays -$0.20",
+       by[("Ref A", "A")]["basis"] == -0.2 and by[("Ref E", "E")]["basis"] == -0.2)
+    ck("the settle counts what it did", n == {"cents": 2, "dollars": 1, "withheld": 1})
+    meal = by[("ADM Grain", "Frankfort")]
+    ck("soybean meal is meal, not soybeans, and its $/ton price is not rescaled",
+       meal["category"] == "meal" and meal["cashPrice"] == 341.1)
+    ck("hull pellets and ZL oil are meal too; plain beans stay soybeans",
+       _barchart_category("Soybean Hull Pellets", "HSBN26-84134-15139.CM") == "meal"
+       and _barchart_category("Soybean Oil", "ZLN26") == "meal" and _barchart_category("Beans", "ZSX26") == "soybeans")
+    ck("no helper field is left on a row", not any("_basisRaw" in b for b in fl))
+    ck("the network's classify_commodity() is unchanged", classify_commodity("Soybean Meal") == "soybeans")
 
     _AS_OF_OVERRIDE = _prev_as_of
     _AS_OF_CACHE = _prev_cache

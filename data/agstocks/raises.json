@@ -1,0 +1,104 @@
+{
+ "edgar_read": 9166,
+ "expected": 42,
+ "files": 42,
+ "open": [
+  {
+   "city": "Chicago",
+   "deadline": "2026-11-13",
+   "employees": 18.0,
+   "filed": "2026-06-17",
+   "last_filed": "2026-09-10",
+   "last_form": "C/A",
+   "link": "https://www.sec.gov/Archives/edgar/data/2140173/000214017326000006/0002140173-26-000006-index.htm",
+   "max": 1235000.0,
+   "name": "Farm To Pet, Inc.",
+   "price": 4.0,
+   "revenue": 5186500.0,
+   "security": "Common Stock",
+   "st": "IL",
+   "target": 20000.0
+  },
+  {
+   "city": "Charleston",
+   "deadline": "2026-12-15",
+   "employees": 7.0,
+   "filed": "2026-06-18",
+   "last_filed": "2026-09-11",
+   "last_form": "C/A",
+   "link": "https://www.sec.gov/Archives/edgar/data/2033917/000203391726000011/0002033917-26-000011-index.htm",
+   "max": 617994.0,
+   "name": "Heartstone Farm, Inc.",
+   "price": 18.0,
+   "revenue": 6460385.0,
+   "security": "Common Stock",
+   "st": "ME",
+   "target": 19998.0
+  },
+  {
+   "city": "DOVER",
+   "deadline": "2027-03-31",
+   "employees": 0.0,
+   "filed": "2026-03-24",
+   "last_filed": "2026-09-25",
+   "last_form": "C/A",
+   "link": "https://www.sec.gov/Archives/edgar/data/2115229/000187285626000324/0001872856-26-000324-index.htm",
+   "max": 5000000.0,
+   "name": "DIT AgTech (US) Ltd.",
+   "price": 1.0,
+   "revenue": 0.0,
+   "security": "Class C Preferred Non-Voting Stock",
+   "st": "DE",
+   "target": 10000.0
+  },
+  {
+   "city": "MINNEAPOLIS",
+   "deadline": "2027-04-29",
+   "employees": 0.0,
+   "filed": "2026-04-30",
+   "last_filed": "2026-05-01",
+   "last_form": "C/A",
+   "link": "https://www.sec.gov/Archives/edgar/data/2126700/000212670026000004/0002126700-26-000004-index.htm",
+   "max": 5000000.0,
+   "name": "Farmland Reit LLC",
+   "price": 100.0,
+   "revenue": 0.0,
+   "security": "Membership Interests denominated as Class B Units",
+   "st": "MN",
+   "target": 250000.0
+  }
+ ],
+ "past_days": 941,
+ "read": "2026-10-29",
+ "screen": {
+  "ag_issuers": 77,
+  "ag_offerings": 89,
+  "all_issuers": 9166,
+  "all_offerings": 11122,
+  "borderline_left_out": 308
+ },
+ "share_min": 20,
+ "source": "https://www.sec.gov/data-research/sec-markets-data/crowdfunding-offerings-data-sets",
+ "through": "2026-09-30",
+ "track": {
+  "ag": {
+   "again": 8,
+   "car": 16,
+   "ctr": 4,
+   "n": 52,
+   "reached": 0,
+   "silent": 9,
+   "withdrawn": 9
+  },
+  "all": {
+   "again": 1476,
+   "car": 3028,
+   "ctr": 1015,
+   "n": 7439,
+   "reached": 58,
+   "silent": 1437,
+   "withdrawn": 878
+  }
+ },
+ "v": 1
+}

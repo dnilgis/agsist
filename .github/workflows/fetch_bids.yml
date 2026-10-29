@@ -368,6 +368,35 @@ jobs:
           bash scripts/push_raw.sh "bid snapshot $day" "$f" \
             || echo "::warning::bid snapshot for $day not saved to raw; the next run today retries (the bids update is unaffected)"
 
+      # 2026-10-29: FLAGS FOR BAD SNAPSHOT ROWS, ON RAW. The snapshots are never
+      # rewritten; scripts/bid_flags.py writes bids-daily-flags/YYYY/YYYY-MM-DD.csv
+      # beside each day (which rows fail the bidflags rules and why; header only
+      # when none do) for every snapshot day whose file is missing or differs, so
+      # the first run fills the history and later runs add the day. Readers skip
+      # a flagged row. Once a day (skips when the day's file is on raw), AFTER the
+      # snapshot, and every failure is a warning: never costs the bids.
+      - name: Bid flags to the raw branch
+        if: github.event.inputs.dry_run != 'true'
+        continue-on-error: true
+        timeout-minutes: 8
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          day=$(python3 scripts/bid_snapshots.py due) || { echo "::warning::bid flags: due check failed"; exit 0; }
+          [ -n "$day" ] || { echo "bid flags: not in the window (weekdays from 15:00 CT)"; exit 0; }
+          snap="bids-daily/${day:0:4}/${day}.json.gz"
+          f="bids-daily-flags/${day:0:4}/${day}.csv"
+          have() { GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -X GET "repos/dnilgis/feedbag/contents/$1?ref=raw" --silent >/dev/null 2>&1; }
+          have "$f" && { echo "bid flags: $f is already on raw"; exit 0; }
+          have "$snap" || { echo "bid flags: no snapshot for $day on raw yet; the next run tries"; exit 0; }
+          bash scripts/fetch_private.sh raw || { echo "::warning::bid flags: raw not readable, no flags for $day"; exit 0; }
+          python3 scripts/bid_flags.py build --ref origin/raw --out-dir . \
+            || { echo "::warning::bid flags for $day not built (the bids update is unaffected)"; exit 0; }
+          [ -d bids-daily-flags ] || { echo "bid flags: nothing new"; exit 0; }
+          bash scripts/push_raw.sh "bid flags $day" bids-daily-flags \
+            || echo "::warning::bid flags for $day not saved to raw; the next run today retries (the bids update is unaffected)"
+
       # 2026-10-28: PRIVATE BASIS FORECAST LEDGER, ON RAW (never main, never the site;
       # Sig decides when the record is shown). Once the day's snapshot is on raw,
       # scripts/basis_ledger.py freezes that day's forecasts for every series (no
@@ -389,7 +418,7 @@ jobs:
           day=$(python3 scripts/bid_snapshots.py due) || { echo "::warning::basis ledger: due check failed"; exit 0; }
           [ -n "$day" ] || { echo "basis ledger: not in the window (weekdays from 15:00 CT)"; exit 0; }
           snap="bids-daily/${day:0:4}/${day}.json.gz"
-          f="basis-ledger/live/calls/${day:0:4}/${day}.json.gz"
+          f="basis-ledger/v2/live/calls/${day:0:4}/${day}.json.gz"
           have() { GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -X GET "repos/dnilgis/feedbag/contents/$1?ref=raw" --silent >/dev/null 2>&1; }
           have "$f" && { echo "basis ledger: $f is already on raw"; exit 0; }
           have "$snap" || { echo "basis ledger: no snapshot for $day on raw yet; the next run tries"; exit 0; }

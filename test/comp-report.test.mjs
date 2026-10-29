@@ -133,22 +133,23 @@ test("the one-sale rule, the location line, future dates and the summary of ever
     row({ doc: "noloc", lat: null, lng: null }),
     row({ doc: "future", date: "2027-02-01" }),
     row({ doc: "low", price: 20000, acres: 80 }),
-    row({ doc: "b1", price: 480000 }), row({ doc: "b2", price: 560000 }), row({ doc: "b3", price: 640000 }),
+    row({ doc: "b1", price: 480000 }), row({ doc: "b2", price: 560000 }), row({ doc: "b3", price: 640000 }), row({ doc: "b4", price: 720000 }),
     row({ doc: "house", price: 900000, cls: "4 1" }),
   ];
   const sel = CR.selectComps(rows, P, { lat: 45.3, lng: -91.7 }, [], TODAY);
   const t = sel.funnel.map((x) => x.n + " " + x.t).join("\n");
-  assert.match(t, /^8 one row per sale.*\(1 sale was filed as several deeds\)$/m);
-  assert.match(t, /^6 with a location to measure from: 1 left out, no location in the record/m);
-  assert.match(t, /^7 not dated after today/m);
+  assert.match(t, /^9 one row per sale.*\(1 sale was filed as several deeds\)$/m);
+  assert.match(t, /^7 with a location to measure from: 1 left out, no location in the record/m);
+  assert.match(t, /^8 not dated after today/m);
   const g = sel.all.find((r) => r.grp);
   assert.deepEqual([g.grp, g.price, g.ppa], [2, 500000, 6250]);
-  // the summary is every match: bare land 6250, 6000, 7000, 8000 (the $250 sale is listed, never figured), the house on its own line
+  // the summary is every match: bare land 6250, 6000, 7000, 8000, 9000 (the $250 sale is listed, never figured; 5 is the
+  // minimum since Oct 29), the house on its own line
   const s = CR.summary(sel.all);
-  assert.deepEqual([s.n, s.med, s.lo, s.hi, s.low, s.nImp], [4, 6625, 6000, 8000, 1, 1]);
+  assert.deepEqual([s.n, s.med, s.lo, s.hi, s.low, s.nImp], [5, 7000, 6000, 9000, 1, 1]);
   const h = CR.summaryHTML(s, { matched: sel.matched, listed: 3, newest: "2026-09-30" });
-  assert.match(h, /Typical bare-land price paid near you: <b>\$6,625\/ac<\/b>, 4 sales, dated May 1, 2025 to Aug 26, 2025, newest sale in our copy Sep 30, 2026\./);
-  assert.match(h, /6 sales matched; the 3 nearest are listed below\./);
+  assert.match(h, /Typical bare-land price paid near you: <b>\$7,000\/ac<\/b>, 5 sales, dated May 1, 2025 to Aug 26, 2025, newest sale in our copy Sep 30, 2026\./);
+  assert.match(h, /7 sales matched; the 3 nearest are listed below\./);
   assert.match(h, /Sales with buildings[^<]*: 1, too few/);
   assert.match(h, /1 sale is under \$500 an acre/);
   // Illinois: no bare-land claim
@@ -186,25 +187,29 @@ test("newest-first listing and the n cap", () => {
 });
 
 // ---------------------------------------------------------------- summary
-test("summary: nothing under 3 comps with known acres; median, low, high by hand", () => {
+test("summary: nothing under 5 comps with known acres (the one land rule, Oct 29); median, low, high by hand", () => {
   assert.equal(CR.summary([]).withheld, true);
   const two = [{ ppa: 5000, acres: 40, date: "2025-01-02" }, { ppa: 6000, acres: 80, date: "2025-02-02" }, { ppa: null, acUnsure: true, date: "2025-02-03" }];
   const s2 = CR.summary(two);
   assert.equal(s2.withheld, true);
-  assert.match(CR.summaryHTML(s2, 3), /No summary\..*at least 3/);
+  assert.match(CR.summaryHTML(s2, 3), /No summary\..*at least 5/);
   assert.doesNotMatch(CR.summaryHTML(s2, 3), /\$5,000|\$6,000|\$5,500/, "no figure leaks out when withheld");
-  // 4 sales: 4000, 5000, 7000, 9000 -> median (5000+7000)/2 = 6000; low 4000; high 9000
+  // 4 sales with a $/acre: withheld now (it was enough under the old 3-sale rule)
   const four = [
     { ppa: 7000, acres: 40, date: "2025-04-10" }, { ppa: 4000, acres: 160, date: "2025-05-10" },
     { ppa: 9000, acres: 35, date: "2025-06-10" }, { ppa: 5000, acres: 80, date: "2026-01-10" }, { ppa: null, acUnsure: true, date: "2026-01-11" },
   ];
-  const s = CR.summary(four);
-  assert.deepEqual([s.n, s.med, s.lo, s.hi, s.unsure, s.acMed], [4, 6000, 4000, 9000, 1, 60]);
-  // quarters: 2025 Q2 holds 3 (4000, 7000, 9000 -> 7000); 2026 Q1 holds 1 (no middle)
-  assert.deepEqual(s.q, [{ q: "2025 Q2", n: 3, med: 7000 }, { q: "2026 Q1", n: 1, med: null }]);
-  const h = CR.summaryHTML(s, 5);
-  assert.match(h, /\$6,000/);
-  assert.match(h, /under 3 sales/);
+  assert.equal(CR.summary(four).withheld, true);
+  // 6 sales: 4000, 5000, 6000, 7000, 8000, 9000 -> median (6000+7000)/2 = 6500; low 4000; high 9000;
+  // acres 35, 40, 60, 80, 100, 160 -> middle size 70
+  const six = four.concat([{ ppa: 6000, acres: 100, date: "2025-04-20" }, { ppa: 8000, acres: 60, date: "2025-06-20" }]);
+  const s = CR.summary(six);
+  assert.deepEqual([s.n, s.med, s.lo, s.hi, s.unsure, s.acMed], [6, 6500, 4000, 9000, 1, 70]);
+  // quarters: 2025 Q2 holds 5 (4000, 6000, 7000, 8000, 9000 -> 7000); 2026 Q1 holds 1 (no middle)
+  assert.deepEqual(s.q, [{ q: "2025 Q2", n: 5, med: 7000 }, { q: "2026 Q1", n: 1, med: null }]);
+  const h = CR.summaryHTML(s, 7);
+  assert.match(h, /\$6,500/);
+  assert.match(h, /under 5 sales/);
   assert.match(h, /No trend line is fitted/);
   assert.doesNotMatch(h, /per year|trend of|rising|falling|slope of/i, "no fitted trend claims");
 });
@@ -275,7 +280,7 @@ test("one shared noindex page, not in a sitemap, no per-parcel files, no em dash
   assert.match(h, /Recorded sales from public records\. Not an appraisal; no adjustments made\./);
   assert.match(h, /Made with AGSIST \(free\)/);
   assert.match(h, /@page\{size:letter/);
-  assert.match(h, /components\/comp-report\.js\?v=3/);
+  assert.match(h, /components\/comp-report\.js\?v=4/);
   for (const sm of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(sm), /comp-report/);
   assert.ok(!existsSync(join(ROOT, "comp-report")), "no folder of per-parcel report files");
   for (const f of ["comp-report.html", "components/comp-report.js"]) assert.ok(!read(f).includes("—"), f + " has an em dash");

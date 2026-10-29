@@ -16,7 +16,9 @@ STATES: Illinois, Wisconsin and Indiana (STATES). Indiana was held from Oct 18 u
 Oct 27 2026 ("Yes turn on Indiana": the land sale pages and this email). Indiana's records differ
 (IN_NOTE): the sales disclosure form carries the sale date, not a recording date, and places the sale
 at the parcel's mailing town, whose point is that ZIP's Census centroid, not a township; the email
-says so whenever an Indiana sale is in it. Minnesota (eCRV) is not in the data at all.
+says so whenever an Indiana sale is in it. Vermont on Oct 29, 2026 (Sig: next land states, Vermont first):
+the town clerk's recording date is on every return, and the place is the town's Census point, as in
+Illinois and Wisconsin. Minnesota (eCRV) is not in the data at all.
 
 WHERE A SALE IS. A transfer file places each sale at its township, town, village or city (the
 "muni" code), whose point is the Census county subdivision gazetteer's internal point
@@ -33,13 +35,15 @@ without a rec column is listed by its sale (deed) date instead, and the email sa
 for those rows. A state's sales are read for month M only when its files were fetched after M
 ended (fresh); otherwise the reader waits (a late land run is followed by a send dispatched by hand).
 
-WHAT IS LISTED: market sales recorded in the month, 10 acres or more with the acres known,
-nearest first, at most MAX_ROWS. Market sales with the acres not stated and those under 10
-acres are counted in one line, never listed. No buyer or seller name, legal description, parcel
+WHAT IS LISTED (Sig, Oct 29, 2026: every recorded sale of any acreage): market sales recorded in
+the month with the acres known, any acreage, small parcels included, nearest first, at most
+MAX_ROWS (the rest are counted). Market sales with the acres not stated (a return of several
+parcels that does not give them) are counted in one line, never listed. A sale is marked "with
+buildings" by its property class only (build_land_summary.has_buildings, the one land rule). No buyer or seller name, legal description, parcel
 number or document number ever leaves this module (row() is the only shape that does).
 
-THE MIDDLE PRICE (honest-numbers rules): market sales of 20 acres or more with known acres and
-a $/acre of $500 or more (stat_ok), within the radius, dated in the 12 months ending with the
+THE MIDDLE PRICE (honest-numbers rules): bare farm land sales of 20 acres or more with known acres
+and a $/acre of $500 or more (build_land_summary.farm_comp: no buildings, not forest), within the radius, dated in the 12 months ending with the
 month (by sale date, as the Atlas county pages count them) against the 12 months before.
 Printed only with 10 or more such sales in EACH window, middle halves that overlap, acres known
 on 3 in 4 market sales in both windows, and county records that reach back over both windows.
@@ -61,15 +65,15 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import build_land_summary as BLS   # noqa: E402  the shared market-sale rule
 
-STATES = ("IL", "WI", "IN")         # Indiana on since Oct 27, 2026 (see above); MN not in the data
-STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana"}
-STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana"}
+STATES = ("IL", "WI", "IN", "VT")   # Indiana on since Oct 27, 2026, Vermont since Oct 29 (see above); MN not in the data
+STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana", "VT": "Vermont"}
+STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana", "VT": "vermont"}
 IN_NOTE = ("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "
            "the parcel's mailing town, placed at the middle of its ZIP code rather than a township, so distances to them are rougher.")
 MILES = (10, 25, 50)
 DEFAULT_MILES = 25
 EARTH_MI = 3958.8
-LIST_MIN_ACRES = 10                 # listed sales: this many acres or more, acres known
+LIST_MIN_ACRES = 10                 # the land-sales pages' featured rows and monthly update; the email lists any acreage
 MAX_ROWS = 20                       # rows in one email; the rest are counted
 MED_MIN_ACRES = BLS.MIN_ACRES       # 20, as the Atlas
 MED_MIN_N = BLS.MIN_N_CHG           # 10 in each window, as the Atlas change
@@ -82,6 +86,7 @@ SOURCES = {
     "IL": "Illinois Department of Revenue, MyDec transfer declarations (PTAX-203), farm parcels",
     "WI": "Wisconsin Department of Revenue, electronic real estate transfer returns, farm and forest classes",
     "IN": "Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels",
+    "VT": "Vermont Department of Taxes, property transfer tax returns (published by VCGI), farm, forest and current use land",
 }
 
 
@@ -186,7 +191,7 @@ def row(r, d):
     """The only shape a sale leaves this module in: no names, no parcel, no legal, no document.
     pt is the township's or town's public point (the gazetteer's), never a parcel's."""
     a = BLS.num(r.get("acres"))
-    with_bldg = "with buildings" in str(r.get("conv") or "").lower()
+    with_bldg = BLS.has_buildings(r.get("cls"))   # the property class, never the deed text (the one land rule)
     return {"when": r["when"], "basis": "recorded" if r["has_rec"] else "sale date", "acres": a,
             "price": BLS.js_round(BLS.num(r.get("price")) or 0), "ppa": r.get("ppa"),
             "place": r.get("muniName") or None, "county": r.get("county"), "fips": r.get("fips"), "st": r["st"], "mi": d,
@@ -203,7 +208,7 @@ def median_line(near, W, starts):
       {"n": n, "cur": stats or None, "why": words when cur is withheld,
        "prev": stats, "chg": pct  (only when the two years compare), "why_cmp": words otherwise}
     near: market sales in the radius (any date); starts: each touched county's first filed date."""
-    big = lambda rs: [r for r in rs if BLS.stat_ok(r) and (BLS.num(r.get("acres")) or 0) >= MED_MIN_ACRES]
+    big = lambda rs: [r for r in rs if BLS.farm_comp(r)]
     cur = [r for r in near if BLS.inw(r, W["cur"])]
     prev = [r for r in near if BLS.inw(r, W["prev"])]
     b1, b0 = big(cur), big(prev)
@@ -264,13 +269,12 @@ def month_report(land, ll, radius, year, m0, today, need_fresh=True):
         if touched:
             cov = f.get("coverage") or {}
             starts.append(cov.get("filed_from") or cov.get("from"))
-    listed = [(r, d) for r, d in rows_in if (BLS.num(r.get("acres")) or 0) >= LIST_MIN_ACRES]
+    listed = [(r, d) for r, d in rows_in if (BLS.num(r.get("acres")) or 0) > 0]
     no_ac = sum(1 for r, d in rows_in if not (BLS.num(r.get("acres")) or 0) > 0)
-    small = sum(1 for r, d in rows_in if 0 < (BLS.num(r.get("acres")) or 0) < LIST_MIN_ACRES)
     listed.sort(key=lambda x: (round(x[1], 3), x[0]["when"], -(BLS.num(x[0].get("acres")) or 0)))
     out = [row(r, d) for r, d in listed]
     W = windows(year, m0)
-    return {"rows": out[:MAX_ROWS], "more": max(0, len(out) - MAX_ROWS), "n": len(out), "no_acres": no_ac, "small": small,
+    return {"rows": out[:MAX_ROWS], "more": max(0, len(out) - MAX_ROWS), "n": len(out), "no_acres": no_ac,
             "unplaced": unplaced, "median": median_line(inside, W, starts), "W": W, "month": (year, m0),
             "states": sorted({r["st"] for r in inside} | {st for st, c in near_c if miles(ll, (c["lat"], c["lng"])) <= radius}),
             "read": reads, "counties": sorted({(r["st"], r["county"]) for r, d in listed})}
@@ -302,8 +306,8 @@ def selftest():
     cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt", "grantor", "grantee", "ac1", "rec"]
     R = []
 
-    def sale(i, date, rec, price, acres, muni, conv="Warranty Deed; land only", np_=1):
-        R.append(["D%04d" % i, date, price, acres, None, np_, "4", conv, "P-%04d" % i, muni, "SECRET LEGAL %d" % i, 0,
+    def sale(i, date, rec, price, acres, muni, conv="Warranty Deed; land only", np_=1, cls="4"):
+        R.append(["D%04d" % i, date, price, acres, None, np_, cls, conv, "P-%04d" % i, muni, "SECRET LEGAL %d" % i, 0,
                   "SELLERNAME%04d" % i, "BUYERNAME%04d" % i, None, rec])
     # September 2026, recorded
     sale(1, "2026-09-02", "2026-09-10", 400000, 80, "0")                       # 7 mi, $5,000
@@ -311,10 +315,11 @@ def selftest():
     sale(3, "2026-09-20", "2026-10-02", 250000, 40, "0")                       # recorded in October: not September's
     sale(4, "2026-09-05", "2026-09-12", 900000, 150, "3")                      # 26 mi: outside 25
     sale(5, "2026-09-06", "2026-09-14", 120000, 20, "2", "Quit Claim Deed")    # not a market sale
-    sale(6, "2026-09-07", "2026-09-15", 60000, 5, "0")                         # under 10 acres: counted
+    sale(6, "2026-09-07", "2026-09-15", 60000, 5, "0")                         # 5 acres, 7 mi: listed (any acreage)
     sale(7, "2026-09-08", "2026-09-16", 500000, None, "1", np_=3)              # acres not stated: counted
     sale(8, "2026-09-09", "2026-09-17", 200000, 30, "4")                       # no point: not placed
-    sale(9, "2026-09-11", "2026-09-18", 350000, 50, "2", "Warranty Deed; with buildings")   # 24 mi, with buildings
+    sale(9, "2026-09-11", "2026-09-18", 350000, 50, "2", "Warranty Deed", cls="4 7")   # 24 mi, with buildings by class 7
+    sale(10, "2026-09-12", "2026-09-19", 330000, 50, "2", "Warranty Deed; with buildings")  # 24 mi, deed text only: not marked
     # the median windows for September 2026: Oct 2025 to Sep 2026 and Oct 2024 to Sep 2025.
     # 12 more 40-acre sales in each, $/acre 5,000 to 6,100 and 4,800 to 5,900 by 100.
     ym = lambda y, mo: "%d-%02d-15" % (y + (mo - 1) // 12, (mo - 1) % 12 + 1)
@@ -330,21 +335,23 @@ def selftest():
     today = "2026-10-03"
     rep = month_report(land, zipll, 25, 2026, 8, today)
     docs = [(r["when"], r["acres"]) for r in rep["rows"]]
-    ck("listed: recorded in September, 10+ acres, inside 25 mi, market sales, nearest first",
-       docs == [("2026-09-10", 80), ("2026-09-03", 40), ("2026-09-18", 50)], docs)
-    ck("distances: about 7, 14 and 24 miles", [round(r["mi"]) for r in rep["rows"]] == [7, 14, 24], [r["mi"] for r in rep["rows"]])
+    ck("listed: recorded in September, any acreage, inside 25 mi, market sales, nearest first",
+       docs == [("2026-09-10", 80), ("2026-09-15", 5), ("2026-09-03", 40), ("2026-09-18", 50), ("2026-09-19", 50)], docs)
+    ck("distances: about 7, 7, 14, 24 and 24 miles", [round(r["mi"]) for r in rep["rows"]] == [7, 7, 14, 24, 24], [r["mi"] for r in rep["rows"]])
     ck("the 26-mile sale is outside 25 and inside 50",
        "2026-09-12" not in [r["when"] for r in rep["rows"]] and "2026-09-12" in [r["when"] for r in month_report(land, zipll, 50, 2026, 8, today)["rows"]])
-    ck("10 miles keeps only the 7-mile sale", [r["when"] for r in month_report(land, zipll, 10, 2026, 8, today)["rows"]] == ["2026-09-10"])
-    ck("counted, not listed: one under 10 acres, one without acres, one not placed", rep["small"] == 1 and rep["no_acres"] == 1 and rep["unplaced"] == 1,
-       (rep["small"], rep["no_acres"], rep["unplaced"]))
-    ck("with buildings marked; $/acre from the shared rule", rep["rows"][2]["bldg"] is True and rep["rows"][0]["ppa"] == 5000)
+    ck("10 miles keeps only the two 7-mile sales", [r["when"] for r in month_report(land, zipll, 10, 2026, 8, today)["rows"]] == ["2026-09-10", "2026-09-15"])
+    ck("counted, not listed: one without acres, one not placed; nothing held back for its size", rep["no_acres"] == 1 and rep["unplaced"] == 1 and "small" not in rep,
+       (rep["no_acres"], rep["unplaced"]))
+    ck("with buildings by property class, not by deed text; $/acre from the shared rule",
+       rep["rows"][3]["bldg"] is True and rep["rows"][4]["bldg"] is False and rep["rows"][0]["ppa"] == 5000, rep["rows"][3:])
     ck("a row carries no name, parcel, legal or document", all(set(r) == {"when", "basis", "acres", "price", "ppa", "place", "county", "fips", "st", "mi", "pt", "bldg"} for r in rep["rows"])
        and not re.search(r"SELLERNAME|BUYERNAME|SECRET LEGAL|P-0|D0", json.dumps(rep)))
     med = rep["median"]
     ck("median: both windows have 10+ sales and compare, so both print with their counts", med["cur"] and med["cur"]["n"] >= 10 and med["prev"]["n"] >= 10, med)
-    # by hand: the 12 above plus September's 80 ac at 5,000, 40 ac at 7,500, 50 ac at 7,000 and the
-    # 40 ac at 6,250 recorded in October (its deed date is in the window): 16 sales, middle 5,600 and 5,700
+    # by hand: the 12 above plus September's 80 ac at 5,000, 40 ac at 7,500, 50 ac at 6,600 (deed text says
+    # buildings, the class does not) and the 40 ac at 6,250 recorded in October (its deed date is in the
+    # window); the 50 ac at 7,000 with class 7 buildings is not bare land: 16 sales, middle 5,600 and 5,700
     ck("median by hand: 16 sales, $5,650; the year before 12 sales, $5,350; up 5.6%",
        med.get("cur", {}).get("n") == 16 and med["cur"]["med"] == 5650 and med["prev"]["n"] == 12 and med["prev"]["med"] == 5350 and med["chg"] == 5.6, med)
     # an empty month: no rows, not a skip
@@ -357,7 +364,7 @@ def selftest():
     f2 = dict(f, rows=R[:9])
     json.dump(f2, open(os.path.join(tmp, "data", "land", "wi", "55999.json"), "w"))
     m2 = month_report(Land(tmp), zipll, 25, 2026, 8, today)["median"]
-    ck("median withheld under 10 sales, the count and the reason in words", m2["cur"] is None and m2["why"] == "only 4 sales of 20 acres or more in the last 12 months; I want 10 before I give a middle price", m2)
+    ck("median withheld under 10 sales, the count and the reason in words", m2["cur"] is None and m2["why"] == "only 3 sales of 20 acres or more in the last 12 months; I want 10 before I give a middle price", m2)   # the class 7 sale is not bare land
     # records that start inside the year before: withheld
     f3 = dict(f, coverage={"from": "2025-06-01", "filed_from": "2025-06-01"})
     json.dump(f3, open(os.path.join(tmp, "data", "land", "wi", "55999.json"), "w"))
@@ -369,14 +376,15 @@ def selftest():
     json.dump(f5, open(os.path.join(tmp, "data", "land", "wi", "55999.json"), "w"))
     m5 = month_report(Land(tmp), zipll, 25, 2026, 8, today)["median"]
     ck("acres left off too many returns the year before: no comparison, the reason with its counts",
-       m5["cur"]["med"] == 5650 and "chg" not in m5 and m5["why_cmp"].startswith("the acres were left off 1 of 18 returns in the last 12 months and 8 of 20 the year before"), m5)
+       m5["cur"]["med"] == 5650 and "chg" not in m5 and m5["why_cmp"].startswith("the acres were left off 1 of 19 returns in the last 12 months and 8 of 20 the year before"), m5)
     # a file with no filed date: listed by sale date, and says so
     f4 = dict(f, cols=cols[:-1], rows=[x[:-1] for x in R])
     json.dump(f4, open(os.path.join(tmp, "data", "land", "wi", "55999.json"), "w"))
     r4 = month_report(Land(tmp), zipll, 25, 2026, 8, today)
     ck("no filed date in the file: listed by sale date, marked sale date",
-       [r["when"] for r in r4["rows"]] == ["2026-09-02", "2026-09-20", "2026-09-11"] and all(r["basis"] == "sale date" for r in r4["rows"]), r4["rows"])
-    ck("Indiana is a state this email reads (Sig, Oct 27)", "IN" in STATES and Land().states == ("IL", "WI", "IN"))
+       [r["when"] for r in r4["rows"]] == ["2026-09-02", "2026-09-07", "2026-09-20", "2026-09-11", "2026-09-12"] and all(r["basis"] == "sale date" for r in r4["rows"]), r4["rows"])
+    ck("Indiana is a state this email reads (Sig, Oct 27)", "IN" in STATES and Land().states[:3] == ("IL", "WI", "IN"))
+    ck("Vermont is a state this email reads (Sig, Oct 29)", Land().states == ("IL", "WI", "IN", "VT") and STATE_SLUGS["VT"] == "vermont")
     print("\n%s: %d failure(s)" % ("FAIL" if fails else "OK", len(fails)))
     return 1 if fails else 0
 

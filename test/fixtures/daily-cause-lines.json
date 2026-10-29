@@ -1,0 +1,431 @@
+{
+ "note": "Every reader-facing field the cause rule (scripts/daily_claims.py r_cause_without_source) flagged: the 73 lines of 56 issues as they stood before the Oct 27 option-C rewording (data/daily-archive at git 5ee1db4f79d) and the Oct 29 so_what as it went out (git ab0a98247f5). 'after' is daily_claims.fix_causes on 'before', read by eye.",
+ "fields": [
+  {
+   "date": "2026-03-10",
+   "loc": "headline",
+   "before": "CRUDE OIL CRASHES 24% — GRAINS FOLLOW DEEPER",
+   "after": "CRUDE OIL CRASHES 24% — GRAINS MOVE DEEPER TOO"
+  },
+  {
+   "date": "2026-03-11",
+   "loc": "subheadline",
+   "before": "Corn and beans follow with modest gains while milk crashes on oversupply concerns.",
+   "after": "Corn and beans come in with modest gains while milk crashes on oversupply concerns."
+  },
+  {
+   "date": "2026-03-12",
+   "loc": "watch_list[2].desc",
+   "before": "<strong>Diesel rack prices</strong> — should follow crude higher by 15-20¢/gallon",
+   "after": "<strong>Diesel rack prices</strong> — may move higher with crude by 15-20¢/gallon"
+  },
+  {
+   "date": "2026-03-17",
+   "loc": "one_number.context",
+   "before": "This is the biggest single-session hog rally in 14 months, driven by technical buying after funds covered massive short positions. The move completely reverses the feed cost advantage producers had built up through February. Margin calculations just got turned upside down.",
+   "after": "This is the biggest single-session hog rally in 14 months. The move completely reverses the feed cost advantage producers had built up through February. Margin calculations just got turned upside down."
+  },
+  {
+   "date": "2026-03-18",
+   "loc": "one_number.context",
+   "before": "This is the largest single-session hog rally since March 2024, driven by ASF concerns hitting major production regions. <strong>Feed demand implications are massive</strong> — if hog numbers contract sharply, corn consumption could drop 200-300 million bushels. But higher hog prices also mean better margins for livestock producers buying your corn.",
+   "after": "This is the largest single-session hog rally since March 2024. <strong>Feed demand implications are massive</strong> — if hog numbers contract sharply, corn consumption could drop 200-300 million bushels. But higher hog prices also mean better margins for livestock producers buying your corn."
+  },
+  {
+   "date": "2026-03-20",
+   "loc": "subheadline",
+   "before": "Soybeans follow meal higher while precious metals crater on dollar strength.",
+   "after": "Soybeans move higher with meal while precious metals crater on dollar strength."
+  },
+  {
+   "date": "2026-03-20",
+   "loc": "sections[2].body",
+   "before": "Crude oil tumbled 2.5% to $94 as recession fears trumped geopolitical risk. Natural gas followed suit, down 2.5% as mild weather forecasts reduced heating demand. The energy selloff should <strong>ease some input cost pressure</strong> — diesel and fertilizer pricing typically follow crude with a 2-week lag. But transportation costs remain elevated compared to pre-2024 levels. Natgas weakness is especially welcome for nitrogen producers, though ammonia plants won't pass savings through immediately.",
+   "after": "Crude oil tumbled 2.5% to $94 as recession fears trumped geopolitical risk. Natural gas followed suit, down 2.5% as mild weather forecasts reduced heating demand. The energy selloff should <strong>ease some input cost pressure</strong> — diesel and fertilizer pricing have typically moved with crude after a 2-week lag. But transportation costs remain elevated compared to pre-2024 levels. Natgas weakness is especially welcome for nitrogen producers, though ammonia plants won't pass savings through immediately."
+  },
+  {
+   "date": "2026-03-23",
+   "loc": "one_number.context",
+   "before": "First time above $98 since late 2025, driven by overnight Middle East escalation. This translates directly to diesel and fertilizer costs just as spring fieldwork ramps up. Every $10 move in crude adds roughly 25¢/gallon to diesel — plan accordingly.",
+   "after": "First time above $98 since late 2025. This translates directly to diesel and fertilizer costs just as spring fieldwork ramps up. Every $10 move in crude adds roughly 25¢/gallon to diesel — plan accordingly."
+  },
+  {
+   "date": "2026-03-24",
+   "loc": "headline",
+   "before": "CRUDE OIL CRATERS 10% — GRAIN COMPLEX FOLLOWS",
+   "after": "CRUDE OIL CRATERS 10% — GRAIN COMPLEX MOVES TOO"
+  },
+  {
+   "date": "2026-03-24",
+   "loc": "watch_list[4].desc",
+   "before": "Local diesel rack prices — should follow crude lower by $0.20-0.30/gallon if fundamentals hold",
+   "after": "Local diesel rack prices — may move lower with crude by $0.20-0.30/gallon if fundamentals hold"
+  },
+  {
+   "date": "2026-03-25",
+   "loc": "one_number.context",
+   "before": "This 7.1% overnight spike signals serious money fleeing to safety — typically driven by currency concerns, geopolitical risk, or inflation fears. For farmers, precious metals moves this large often precede broader commodity rallies as the same forces (weak dollar, supply concerns) eventually lift agricultural prices. Watch for spillover effects into grains within 2-4 weeks.",
+   "after": "This 7.1% overnight spike signals serious money fleeing to safety. For farmers, precious metals moves this large often precede broader commodity rallies as the same forces (weak dollar, supply concerns) eventually lift agricultural prices. Watch for spillover effects into grains within 2-4 weeks."
+  },
+  {
+   "date": "2026-03-25",
+   "loc": "sections[3].body",
+   "before": "Gold's 3.2% rally to $4,487 and silver's explosive 7.1% jump to $71.75 scream flight-to-safety. <strong>Metals moves this large typically precede broader commodity strength</strong> as the same forces — currency instability, supply chain concerns, geopolitical risk — eventually lift agricultural prices. The dollar index barely budged at 100.00, so this isn't purely currency-driven. Bitcoin fell 1.0% to $70,219, showing traditional safe havens outperforming crypto. For agriculture, precious metals surges often lead grains by 2-4 weeks when driven by inflation or supply concerns.",
+   "after": "Gold's 3.2% rally to $4,487 and silver's explosive 7.1% jump to $71.75 scream flight-to-safety. <strong>Metals moves this large typically precede broader commodity strength</strong> as the same forces — currency instability, supply chain concerns, geopolitical risk — eventually lift agricultural prices. The dollar index barely budged at 100.00, so this isn't purely currency-driven. Bitcoin fell 1.0% to $70,219, showing traditional safe havens outperforming crypto. For agriculture, precious metals surges often lead grains by 2-4 weeks."
+  },
+  {
+   "date": "2026-03-26",
+   "loc": "one_number.context",
+   "before": "Wheat led the charge with a 12¾¢ jump to $6.00 — the strongest performer in today's grain complex. This matters because wheat often leads broader grain rallies, and with spring planting decisions still fluid, strong wheat prices could pull acres away from corn and soybeans in your rotation planning.",
+   "after": "Wheat led the charge with a 12¾¢ jump to $6.00 — the strongest performer in today's grain complex. Wheat often leads broader grain rallies, and with spring planting decisions still fluid, strong wheat prices could pull acres away from corn and soybeans in your rotation planning."
+  },
+  {
+   "date": "2026-04-01",
+   "loc": "sections[1].body",
+   "before": "Live cattle's 4.2% explosion to $243.30 was the day's defining move, driven by tight supplies and strong protein demand fundamentals. Feeder cattle joined the party with a 1.3% gain to $366.42, while <strong>hogs bucked the trend</strong>, falling 1.0% to $104.85 on seasonal pressure. Class III milk barely budged at $17.38, up just 0.1%. The cattle move creates interesting dynamics for integrated operations — higher protein prices can justify higher feed costs.",
+   "after": "Live cattle's 4.2% explosion to $243.30 was the day's defining move. Feeder cattle joined the party with a 1.3% gain to $366.42, while <strong>hogs bucked the trend</strong>, falling 1.0% to $104.85 on seasonal pressure. Class III milk barely budged at $17.38, up just 0.1%. The cattle move creates interesting dynamics for integrated operations — higher protein prices can justify higher feed costs."
+  },
+  {
+   "date": "2026-04-02",
+   "loc": "one_number.context",
+   "before": "This 22% overnight surge represents the largest single-day hog move in years, likely driven by disease concerns limiting supply. For livestock producers, this validates recent expansion decisions and suggests strong margins ahead. For grain farmers, it means feed demand remains robust even as grain prices ease.",
+   "after": "This 22% overnight surge represents the largest single-day hog move in years. For livestock producers, this validates recent expansion decisions and suggests strong margins ahead. For grain farmers, it means feed demand remains robust even as grain prices ease."
+  },
+  {
+   "date": "2026-04-20",
+   "loc": "sections[0].body",
+   "before": "Corn nearby futures jumped 8.5 cents to $4.58 in the biggest one-day move in two weeks, driven by planting window anxiety and energy cost spikes. December corn barely budged at $4.78, creating an unusual inversion that suggests short-term tightness rather than lasting bullishness. Soybeans moved the opposite direction, falling 14 cents to $11.68 as <strong>managed money (hedge funds) continued liquidating long positions</strong>. November beans stayed steady at $11.58, showing the same calendar spread tension as corn.",
+   "after": "Corn nearby futures jumped 8.5 cents to $4.58 in the biggest one-day move in two weeks. December corn barely budged at $4.78, creating an unusual inversion that suggests short-term tightness rather than lasting bullishness. Soybeans moved the opposite direction, falling 14 cents to $11.68 as <strong>managed money (hedge funds) continued liquidating long positions</strong>. November beans stayed steady at $11.58, showing the same calendar spread tension as corn."
+  },
+  {
+   "date": "2026-04-23",
+   "loc": "one_number.context",
+   "before": "Gas jumped 5.5% in its biggest single-day move since March, driven by revised cooling degree day forecasts and storage concerns. The spike reminds producers that energy costs can turn volatile fast. Diesel and propane often follow gas moves with a lag during peak planting and application season.",
+   "after": "Gas jumped 5.5% in its biggest single-day move since March. The spike reminds producers that energy costs can turn volatile fast. Diesel and propane have often moved with gas moves after a lag during peak planting and application season."
+  },
+  {
+   "date": "2026-05-12",
+   "loc": "one_number.context",
+   "before": "Biggest single-session hog move since March, driven by short covering after Friday's close below $100. Managed money was net short 18,000 contracts heading into the weekend. The squeeze is real and the fundamentals are tightening into summer demand.",
+   "after": "Biggest single-session hog move since March. Managed money was net short 18,000 contracts heading into the weekend. The squeeze is real and the fundamentals are tightening into summer demand."
+  },
+  {
+   "date": "2026-05-13",
+   "loc": "lead",
+   "before": "Cattle fell through $241 to close at $240.85 while corn held flat at $4.79 for a fifth straight session, and the divergence is getting loud. Feeder cattle dropped 1.8% to $356, dragging live cattle down 1.1% in a coordinated livestock selloff that has no weather excuse, no disease catalyst, just technical damage feeding on itself. The grain complex refuses to follow, wheat up six cents, beans gaining a penny, acting like the planting calendar still matters more than fund flows.",
+   "after": "Cattle fell through $241 to close at $240.85 while corn held flat at $4.79 for a fifth straight session, and the divergence is getting loud. Feeder cattle dropped 1.8% to $356, dragging live cattle down 1.1% in a coordinated livestock selloff that has no weather excuse, no disease catalyst, just technical damage feeding on itself. The grain complex refuses to move with it, wheat up six cents, beans gaining a penny, acting like the planting calendar still matters more than fund flows."
+  },
+  {
+   "date": "2026-05-24",
+   "loc": "outside_the_pit[0].body",
+   "before": "Domestic phosphate producer Itafos warns global supply chain disruptions will reduce grain supply next year. The math is simple: less fertilizer means lower yields, and higher commodity prices follow. USDA's accelerated permitting won't solve 2027's problem.",
+   "after": "Domestic phosphate producer Itafos warns global supply chain disruptions will reduce grain supply next year. USDA's accelerated permitting won't solve 2027's problem."
+  },
+  {
+   "date": "2026-05-28",
+   "loc": "one_number.context",
+   "before": "The biggest single-session jump since early April came with no specific dairy catalyst, suggesting the move was driven by broader dollar weakness as gold and silver both spiked over 2%. When milk moves this hard without dairy-specific news, it's usually the currency trade talking.",
+   "after": "The biggest single-session jump since early April came with no specific dairy catalyst, suggesting the move came with broader dollar weakness as gold and silver both spiked over 2%. When milk moves this hard without dairy-specific news, it's usually the currency trade talking."
+  },
+  {
+   "date": "2026-05-28",
+   "loc": "sections[0].body",
+   "before": "Class III milk spiked 2.2% to $16.77, the sharpest gain in six weeks, with no dairy-specific catalyst driving the move. The rally coincided with **gold up 2% and silver up 3.1%**, classic dollar weakness signals despite the DXY holding flat at 100.00. Cheese block and barrel spreads widened another 2 cents, suggesting the underlying dairy fundamentals aren't arguing with the currency-driven rally. When milk moves this hard without dairy news, follow the metals.",
+   "after": "Class III milk spiked 2.2% to $16.77, the sharpest gain in six weeks, with no dairy-specific catalyst driving the move. The rally coincided with **gold up 2% and silver up 3.1%**, classic dollar weakness signals despite the DXY holding flat at 100.00. Cheese block and barrel spreads widened another 2 cents, suggesting the underlying dairy fundamentals aren't arguing with the currency-driven rally. When milk moves this hard without dairy news, watch the metals."
+  },
+  {
+   "date": "2026-05-30",
+   "loc": "sections[0].body",
+   "before": "Corn closed the week at $4.47, giving back all of Tuesday's weather premium and then some. Soybeans held $11.87, still up 12% for the month but off the highs. **The story isn't Friday's selling, it's that nobody defended the levels.** When funds rotate out of agriculture ahead of summer, the specs follow and the commercials wait. December corn at $4.75 is pricing 85% normal yields with no weather premium, which means June planting delays could matter if they show up.",
+   "after": "Corn closed the week at $4.47, giving back all of Tuesday's weather premium and then some. Soybeans held $11.87, still up 12% for the month but off the highs. **The story isn't Friday's selling, it's that nobody defended the levels.** When funds rotate out of agriculture ahead of summer, the specs move too and the commercials wait. December corn at $4.75 is pricing 85% normal yields with no weather premium, which means June planting delays could matter if they show up."
+  },
+  {
+   "date": "2026-05-31",
+   "loc": "sections[0].body",
+   "before": "Corn finished $4.47, down 9 cents Friday and the worst May close since 2020. **Memorial liquidation drove the action**, not fundamentals, as managed money shed 18,000 contracts across the grain complex. December corn at $4.75 says the market's pricing normal weather through summer. The University of Nebraska wheat tour adjustments due to drought damage didn't translate to corn premium, confirming this was fund flow, not crop concern. Next week's USDA planting progress will test whether the $4.40 low holds.",
+   "after": "Corn finished $4.47, down 9 cents Friday and the worst May close since 2020. **Memorial liquidation drove the action**, not fundamentals, as managed money shed 18,000 contracts across the grain complex. December corn at $4.75 says the market's pricing normal weather through summer. Next week's USDA planting progress will test whether the $4.40 low holds."
+  },
+  {
+   "date": "2026-06-08",
+   "loc": "sections[1].body",
+   "before": "Class III milk fell sharply 3.7% to $16.15, the biggest single-day drop since April and the complex's first real crack since the Cargill processing disruption began. **Cash dairy prices fell Friday** across blocks and whey, confirming the processing bottleneck is spreading beyond meat into dairy logistics. Live cattle held $241.10, down just 0.2%, but feeders stayed flat at $353.95. The cattle-milk spread is telling the story: when processing capacity gets constrained, liquid products break first because they can't wait for trucks.",
+   "after": "Class III milk fell sharply 3.7% to $16.15, the biggest single-day drop since April and the complex's first real crack since the Cargill processing disruption began. **Cash dairy prices fell Friday** across blocks and whey, confirming the processing bottleneck is spreading beyond meat into dairy logistics. Live cattle held $241.10, down just 0.2%, but feeders stayed flat at $353.95. The cattle-milk spread is telling the story: when processing capacity gets constrained, liquid products break first."
+  },
+  {
+   "date": "2026-06-10",
+   "loc": "outside_the_pit[0].body",
+   "before": "New analysis shows Natural Resources Conservation Service and Farm Service Agency took the biggest personnel hits in USDA-wide cuts. **Matters because these are the agencies that process conservation payments and disaster assistance** when weather turns against producers.",
+   "after": "New analysis shows Natural Resources Conservation Service and Farm Service Agency took the biggest personnel hits in USDA-wide cuts. **These are the agencies that process conservation payments and disaster assistance** when weather turns against producers."
+  },
+  {
+   "date": "2026-06-16",
+   "loc": "outside_the_pit[1].body",
+   "before": "A farmdoc daily analysis finds USDA projecting continued record Brazilian corn and soybean production in 2027 despite low prices, tight credit, and looming El Nino pressure, driven by area expansion and yield gains. For U.S. producers competing for export market share, the structural competition from South America isn't slowing; it's compounding.",
+   "after": "A farmdoc daily analysis finds USDA projecting continued record Brazilian corn and soybean production in 2027 despite low prices, tight credit, and looming El Nino pressure. For U.S. producers competing for export market share, the structural competition from South America isn't slowing; it's compounding."
+  },
+  {
+   "date": "2026-06-18",
+   "loc": "lead",
+   "before": "Soybean oil fell hard Thursday, losing 6.7% to close at $66.08, its biggest single-session drop in months, splitting the oilseed complex right before the USDA weekly export sales hit at 7:30 AM CT. Soybeans nearby followed only modestly lower at $11.41, off 6½ cents, because Wednesday's USDA flash sale of 13.7 million bushels to unknown destinations is still sitting in the market's memory. The export number this morning decides whether that flash sale was a one-off or the front edge of something bigger. Watch the 7:30 print.",
+   "after": "Soybean oil fell hard Thursday, losing 6.7% to close at $66.08, its biggest single-session drop in months, splitting the oilseed complex right before the USDA weekly export sales hit at 7:30 AM CT. Soybeans nearby followed only modestly lower at $11.41, off 6½ cents. The export number this morning decides whether that flash sale was a one-off or the front edge of something bigger. Watch the 7:30 print."
+  },
+  {
+   "date": "2026-06-19",
+   "loc": "sections[1].title",
+   "before": "BEANS BREAK, WHEAT FOLLOWS",
+   "after": "BEANS BREAK, WHEAT MOVES TOO"
+  },
+  {
+   "date": "2026-06-20",
+   "loc": "lead",
+   "before": "Soybeans gave back $0.24¾ Friday to close at $11.23, wheat dropped 14 cents to $6.06, and corn slipped to $4.17 into a three-day Juneteenth weekend with nobody left to defend them. The grains went out soft not because a fresh bear catalyst showed up, but because the calendar did: traders don't want to carry risk over a long weekend with corn pollination approaching and the weather pattern turning cooler and wetter across the Belt. Cattle told a different story. Live cattle ran to $254.80, up 2.3% on Friday, off the Cattle on Feed data delivered Thursday, while feeders barely moved at $366.60. Two markets, two entirely different reads on the same week.",
+   "after": "Soybeans gave back $0.24¾ Friday to close at $11.23, wheat dropped 14 cents to $6.06, and corn slipped to $4.17 into a three-day Juneteenth weekend with nobody left to defend them. Cattle told a different story. Live cattle ran to $254.80, up 2.3% on Friday, off the Cattle on Feed data delivered Thursday, while feeders barely moved at $366.60. Two markets, two entirely different reads on the same week."
+  },
+  {
+   "date": "2026-06-21",
+   "loc": "sections[1].body",
+   "before": "Live cattle at $254.80 finished Friday up 2.3%, the best single-session performance in the complex in weeks, driven by the ongoing Cargill Fort Morgan/Schuyler lockout that began May 19 and has pulled roughly 2% of weekly US slaughter capacity off the board. **Processing-constrained markets behave differently than supply-constrained markets**: the problem isn't too many cattle, it's not enough plant throughput, and that keeps fed cattle bids firm even as the calendar says placements will catch up. Feeder cattle at $366.60 barely moved, off 0.2%, which is a signal the market isn't yet crowding the back end with next year's placements. The Cargill situation has no announced resolution as of Friday. **Until that changes, live cattle have a structural floor that the futures are respecting.** The week ahead has no fresh cattle-specific USDA data until Thursday's export sales at 7:30 AM CT. Watch whether Friday's strength carries into Monday's reopening or fades as the box-beef cutout resets.",
+   "after": "Live cattle at $254.80 finished Friday up 2.3%, the best single-session performance in the complex in weeks. **Processing-constrained markets behave differently than supply-constrained markets**: the problem isn't too many cattle, it's not enough plant throughput, and that keeps fed cattle bids firm even as the calendar says placements will catch up. Feeder cattle at $366.60 barely moved, off 0.2%, which is a signal the market isn't yet crowding the back end with next year's placements. The Cargill situation has no announced resolution as of Friday. **Until that changes, live cattle have a structural floor that the futures are respecting.** The week ahead has no fresh cattle-specific USDA data until Thursday's export sales at 7:30 AM CT. Watch whether Friday's strength carries into Monday's reopening or fades as the box-beef cutout resets."
+  },
+  {
+   "date": "2026-06-22",
+   "loc": "sections[1].body",
+   "before": "Live cattle added a quarter to **$248.05** and feeders ran higher, up 1.1% to **$370.90**, which is a resilient session given how far live cattle has backed off its post-Cattle on Feed high. The ongoing Cargill Fort Morgan and Schuyler plant lockout that began May 19 is still removing roughly 6,000 head of daily processing capacity, and a piece out of Beef Magazine this morning makes the case that packer concentration has not been the driver of rising beef prices, it is consumer demand. That framing matters because it suggests the processing constraint at Cargill is a temporary disruption against a fundamentally strong demand backdrop, not a structural problem. Cash trade last week printed $256 live, about a dollar higher than the prior week per Brownfield, which gives the futures some support even as the nearby contract sits $8 below that cash level. The feeder recovery today, after getting hit hard in late May, says the market is pricing processing normalization rather than a prolonged lockout.",
+   "after": "Live cattle added a quarter to **$248.05** and feeders ran higher, up 1.1% to **$370.90**, which is a resilient session given how far live cattle has backed off its post-Cattle on Feed high. The ongoing Cargill Fort Morgan and Schuyler plant lockout that began May 19 is still removing roughly 6,000 head of daily processing capacity, and a piece out of Beef Magazine this morning makes the case that packer concentration has not been the driver of rising beef prices, it is consumer demand. It suggests the processing constraint at Cargill is a temporary disruption against a fundamentally strong demand backdrop, not a structural problem. Cash trade last week printed $256 live, about a dollar higher than the prior week per Brownfield, which gives the futures some support even as the nearby contract sits $8 below that cash level. The feeder recovery today, after getting hit hard in late May, says the market is pricing processing normalization rather than a prolonged lockout."
+  },
+  {
+   "date": "2026-06-24",
+   "loc": "sections[0].body",
+   "before": "Nearby corn fell **27¼ cents to $4.11**, a 6.2% single-session drop that ranks as the second hard break in three sessions. This is the overnight surprise of the day, magnitude 4.1x the threshold, and it needs a clear-eyed read. Dec '26 closed at $4.38, up less than a penny. That divergence is the story: the nearby is pricing the reality of a well-supplied old-crop pipeline while new crop holds because the Heartland weather outlook shifted overnight. The 6-to-10 day forecast now calls for above-normal heat and humidity along and east of a line from southwestern New Mexico to the Red River Valley of the North. Pollination is approaching. **The nearby broke because storage is not being rewarded; the new crop held because heat is on the calendar.** Producers still holding old-crop bushels on farm need to look at local basis today. If basis is firm in your area, the futures board just gave you a closing window.",
+   "after": "Nearby corn fell **27¼ cents to $4.11**, a 6.2% single-session drop that ranks as the second hard break in three sessions. This is the overnight surprise of the day, magnitude 4.1x the threshold, and it needs a clear-eyed read. Dec '26 closed at $4.38, up less than a penny. That divergence is the story: the nearby is pricing the reality of a well-supplied old-crop pipeline while new crop holds. The 6-to-10 day forecast now calls for above-normal heat and humidity along and east of a line from southwestern New Mexico to the Red River Valley of the North. Pollination is approaching. **The nearby broke; the new crop held.** Producers still holding old-crop bushels on farm need to look at local basis today. If basis is firm in your area, the futures board just gave you a closing window."
+  },
+  {
+   "date": "2026-06-24",
+   "loc": "sections[1].body",
+   "before": "Soybeans nearby added 2¾ cents to $11.19 and Nov '26 matched at $11.45, both up 0.2%. Chicago wheat added the same 2¾ cents to $5.88. These markets did not follow corn lower, which is itself information. The American Soybean Association's CEO told Brownfield this morning he is encouraged by the Senate farm bill framework, calling it a necessary step toward a full five-year bill. That policy backdrop is supportive but not a futures driver today. **The separation between corn's break and beans' flat-to-firm close tells you this was a corn-specific event, not a broad grain selloff.** Soybean meal gained 1.1% to $304.60, which kept the complex supported. The nearby-to-November bean spread is flat, carry is not widening, and there is no urgency signal from the board on new crop. Watch the heat forecast: if it extends into the primary soybean belt, that story changes.",
+   "after": "Soybeans nearby added 2¾ cents to $11.19 and Nov '26 matched at $11.45, both up 0.2%. Chicago wheat added the same 2¾ cents to $5.88. These markets did not move lower with corn, which is itself information. The American Soybean Association's CEO told Brownfield this morning he is encouraged by the Senate farm bill framework, calling it a necessary step toward a full five-year bill. That policy backdrop is supportive but not a futures driver today. **The separation between corn's break and beans' flat-to-firm close tells you this was a corn-specific event, not a broad grain selloff.** Soybean meal gained 1.1% to $304.60, which kept the complex supported. The nearby-to-November bean spread is flat, carry is not widening, and there is no urgency signal from the board on new crop. Watch the heat forecast: if it extends into the primary soybean belt, that story changes."
+  },
+  {
+   "date": "2026-06-28",
+   "loc": "sections[3].body",
+   "before": "Lean hogs tumbled 3.9% on Friday to $92.92, the week's sharpest livestock move. No clean catalyst in the hog-specific bucket; this looks like fund liquidation into the Friday close ahead of a data-heavy week. Class III milk dropped 2.5% to $16.01, consistent with the mid-summer softness that follows spring flush. WTI crude eased 1.9% to $69.23. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, have unwound roughly 19% of crude's value in May and June combined. Five oil and gas carriers cleared the Strait the week of May 25, and U.S.-Iran diplomatic channels remain open via Swiss intermediaries. Natural gas slipped 1.6% to $3.23. **With crude holding above $69 and the geopolitical premium still partially in the price, diesel input costs for producers are elevated but not at the peaks.** Watch whether summer heat demand for natural gas power generation gives nat gas a floor next week.",
+   "after": "Lean hogs tumbled 3.9% on Friday to $92.92, the week's sharpest livestock move. No clean catalyst in the hog-specific bucket; this looks like fund liquidation into the Friday close ahead of a data-heavy week. Class III milk dropped 2.5% to $16.01, consistent with the mid-summer softness that comes after spring flush. WTI crude eased 1.9% to $69.23. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, have unwound roughly 19% of crude's value in May and June combined. Five oil and gas carriers cleared the Strait the week of May 25, and U.S.-Iran diplomatic channels remain open via Swiss intermediaries. Natural gas slipped 1.6% to $3.23. **With crude holding above $69 and the geopolitical premium still partially in the price, diesel input costs for producers are elevated but not at the peaks.** Watch whether summer heat demand for natural gas power generation gives nat gas a floor next week."
+  },
+  {
+   "date": "2026-06-29",
+   "loc": "one_number.context",
+   "before": "Three or four years ago, more than 60% of US soybeans were exported. That share has now flipped, with domestic crush, driven by biofuel demand under the EPA's finalized RFS Set 2 rule, absorbing the majority. That structural shift is what is behind soybean oil's 6.9% run today: the RVO volumes locked in for 2026-2027 are unprecedented, and the market is pricing the feedstock demand accordingly. Meal and oil splitting apart is not noise, it is the biofuel trade repricing in real time.",
+   "after": "Three or four years ago, more than 60% of US soybeans were exported. That share has now flipped, with domestic crush absorbing the majority. That structural shift is what is behind soybean oil's 6.9% run today: the RVO volumes locked in for 2026-2027 are unprecedented, and the market is pricing the feedstock demand accordingly. Meal and oil splitting apart is not noise, it is the biofuel trade repricing in real time."
+  },
+  {
+   "date": "2026-06-29",
+   "loc": "watch_list[3].desc",
+   "before": "Strait of Hormuz tanker traffic: if vessel slowdowns persist past 48 hours, the crude premium that deflated through May starts rebuilding, and diesel input costs follow.",
+   "after": "Strait of Hormuz tanker traffic: if vessel slowdowns persist past 48 hours, the crude premium that deflated through May starts rebuilding, and diesel input costs move too."
+  },
+  {
+   "date": "2026-07-04",
+   "loc": "sections[0].body",
+   "before": "Nearby corn at **$4.25** closed Friday down 17¾ cents, a 4% session move driven by fund liquidation ahead of the July 4 holiday. There was no single fresh catalyst, just holders who did not want to carry pollination risk and post-acreage uncertainty over a three-day weekend. The USDA acreage report released June 30 came in without major surprises per analysts, corn and soybean acres largely confirmed March estimates, which stripped out one potential bull thesis and left the market leaning on weather alone. December corn at **$4.42** held almost unchanged, down just 1¼ cents, making this a nearby-contract story, not a new-crop breakdown. Pollination is peak-risk right now; the 2026 planting season, behind the average through May before catching up between rain systems, produced a crop that hits tassel in the first two weeks of July. If next Monday's Crop Progress report shows condition ratings holding or improving, that 17¾-cent drop does not come back fast. If ratings slip under heat stress, December follows nearby lower and the spread narrows for the wrong reason.",
+   "after": "Nearby corn at **$4.25** closed Friday down 17¾ cents, a 4% session move. There was no single fresh catalyst, just holders who did not want to carry pollination risk and post-acreage uncertainty over a three-day weekend. The USDA acreage report released June 30 came in without major surprises per analysts, corn and soybean acres largely confirmed March estimates, which stripped out one potential bull thesis and left the market leaning on weather alone. December corn at **$4.42** held almost unchanged, down just 1¼ cents, making this a nearby-contract story, not a new-crop breakdown. Pollination is peak-risk right now; the 2026 planting season, behind the average through May before catching up between rain systems, produced a crop that hits tassel in the first two weeks of July. If next Monday's Crop Progress report shows condition ratings holding or improving, that 17¾-cent drop does not come back fast. If ratings slip under heat stress, December moves lower with nearby and the spread narrows for the wrong reason."
+  },
+  {
+   "date": "2026-07-06",
+   "loc": "one_number.context",
+   "before": "Nearby corn gave back 17¾ cents today while December gave back only 1¼ cents. That 16½-cent gap between the two contracts in a single session is the spread talking: fund liquidation is concentrated in the nearby, not in the new-crop. When the spread between old-crop and new-crop widens this fast without a weather catalyst, it says the funds are stepping out of front-month exposure, not repositioning for a crop failure. Watch whether December follows or holds.",
+   "after": "Nearby corn gave back 17¾ cents today while December gave back only 1¼ cents. That 16½-cent gap between the two contracts in a single session is the spread talking: fund liquidation is concentrated in the nearby, not in the new-crop. When the spread between old-crop and new-crop widens this fast without a weather catalyst, it says the funds are stepping out of front-month exposure, not repositioning for a crop failure. Watch whether December moves too or holds."
+  },
+  {
+   "date": "2026-07-07",
+   "loc": "lead",
+   "before": "Soybeans had their biggest single-session gain in weeks, nearby up 30¾ cents to $11.81, after USDA confirmed 85.4 million soybean acres Tuesday morning, matching March's estimate and removing the fear of a surprise acreage add. That matters for the weekly thread: Monday's question was whether Crop Progress would confirm pollination-week crop health or add a weather premium, and today's answer is both, corn conditions look solid per field reports out of Michigan and Minnesota, but an approaching Plains heat dome just enough uncertainty to keep a modest weather premium alive in December corn at $4.59. The complex is no longer in Monday's defensive crouch. The question now is whether the funds follow soybeans higher or treat today's move as a one-day cover.",
+   "after": "Soybeans had their biggest single-session gain in weeks, nearby up 30¾ cents to $11.81, after USDA confirmed 85.4 million soybean acres Tuesday morning, matching March's estimate and removing the fear of a surprise acreage add. That matters for the weekly thread: Monday's question was whether Crop Progress would confirm pollination-week crop health or add a weather premium, and today's answer is both, corn conditions look solid per field reports out of Michigan and Minnesota, but an approaching Plains heat dome just enough uncertainty to keep a modest weather premium alive in December corn at $4.59. The complex is no longer in Monday's defensive crouch. The question now is whether the funds move higher with soybeans or treat today's move as a one-day cover."
+  },
+  {
+   "date": "2026-07-07",
+   "loc": "sections[2].title",
+   "before": "Wheat Follows, Does Not Lead",
+   "after": "Wheat Moves Too, Does Not Lead"
+  },
+  {
+   "date": "2026-07-07",
+   "loc": "outside_the_pit[2].body",
+   "before": "The Illinois FSA director told Brownfield that the state has seen damaging tornadoes, hail, and multiple severe weather events this growing season, with crop conditions impacted across multiple districts. While today's complex-wide grain rally was driven by acreage confirmation rather than weather fear, Illinois damage adds to the patchwork of localized yield drag that aggregate condition scores can understate.",
+   "after": "The Illinois FSA director told Brownfield that the state has seen damaging tornadoes, hail, and multiple severe weather events this growing season, with crop conditions impacted across multiple districts. While today's complex-wide grain rally came with acreage confirmation rather than weather fear, Illinois damage adds to the patchwork of localized yield drag that aggregate condition scores can understate."
+  },
+  {
+   "date": "2026-07-09",
+   "loc": "sections[3].title",
+   "before": "Energy: Hormuz Reignites, Price Doesn't Follow",
+   "after": "Energy: Hormuz Reignites, Price Doesn't Move With It"
+  },
+  {
+   "date": "2026-07-10",
+   "loc": "sections[2].body",
+   "before": "WTI crude settled at **$71.52**, off 1.2% on the session despite a headline from oilprice.com this morning that renewed US-Iran strikes have revived the Middle Eastern risk premium and lifted Brent above $76. The spread between Brent and WTI is doing the work here: US domestic supply, which the EIA confirmed is the world's largest for 2025, is creating a price ceiling on the domestic contract even as the Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, show signs of reigniting. Kazakhstan extending its petroleum export ban six months as Hormuz tensions flare adds another supply-chain wrinkle. The practical input-cost read for US producers: diesel prices are not gaining with crude today because the domestic supply buffer is large, but the Hormuz story is not over and the USDA's own $500 million domestic fertilizer funding announcement signals the agency sees input-cost pressure as durable.",
+   "after": "WTI crude settled at **$71.52**, off 1.2% on the session despite a headline from oilprice.com this morning that renewed US-Iran strikes have revived the Middle Eastern risk premium and lifted Brent above $76. The spread between Brent and WTI is doing the work here: US domestic supply, which the EIA confirmed is the world's largest for 2025, is creating a price ceiling on the domestic contract even as the Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, show signs of reigniting. Kazakhstan extending its petroleum export ban six months as Hormuz tensions flare adds another supply-chain wrinkle. The practical input-cost read for US producers: diesel prices are not gaining with crude today, but the Hormuz story is not over and the USDA's own $500 million domestic fertilizer funding announcement signals the agency sees input-cost pressure as durable."
+  },
+  {
+   "date": "2026-07-11",
+   "loc": "watch_list[2].desc",
+   "before": "Hormuz re-escalation: renewed U.S.-Iran strikes per OilPrice.com did not push WTI higher Friday. If Brent holds above $76 into Monday open and WTI follows, input cost pressure rebuilds for fall applications. Watch diesel crack spread.",
+   "after": "Hormuz re-escalation: renewed U.S.-Iran strikes per OilPrice.com did not push WTI higher Friday. If Brent holds above $76 into Monday open and WTI moves too, input cost pressure rebuilds for fall applications. Watch diesel crack spread."
+  },
+  {
+   "date": "2026-07-13",
+   "loc": "sections[0].body",
+   "before": "Nearby corn fell sharply to **$4.38**, off 14.5 cents, while December added 8.5 cents to **$4.61** -- a 23-cent gap that is not noise. The funds are rotating out of old-crop long positions on evidence the early-July crop is in better shape than a wet May suggested, and the USDA WASDE two days ago raised U.S. production on the back of the June acreage update. Old-crop pipeline is full enough that nobody needs to bid for nearby bushels. December is holding because pollination weather is the known unknown: the crop is good now, not necessarily at tassel. USDA Crop Progress at 3 PM CT today is the make-or-break for whether this nearby weakness deepens or stabilizes. **Above 65% good/excellent, nearby corn stays under pressure. Below 60%, the weather premium migrates back into the December contract and the gap narrows.**",
+   "after": "Nearby corn fell sharply to **$4.38**, off 14.5 cents, while December added 8.5 cents to **$4.61** -- a 23-cent gap that is not noise. The funds are rotating out of old-crop long positions on evidence the early-July crop is in better shape than a wet May suggested, and the USDA WASDE two days ago raised U.S. production on the back of the June acreage update. Old-crop pipeline is full enough that nobody needs to bid for nearby bushels. December is holding: the crop is good now, not necessarily at tassel. USDA Crop Progress at 3 PM CT today is the make-or-break for whether this nearby weakness deepens or stabilizes. **Above 65% good/excellent, nearby corn stays under pressure. Below 60%, the weather premium migrates back into the December contract and the gap narrows.**"
+  },
+  {
+   "date": "2026-07-13",
+   "loc": "sections[2].body",
+   "before": "Live cattle firmed 1.6% to **$235.20** while feeder cattle eased 0.5% to **$354.60**, a split that has been the persistent story of this complex since the ongoing Cargill Fort Morgan/Schuyler plant lockout began May 19. Live cattle can firm when processing is constrained and box-beef cutouts hold; feeders soften because producers know the pipeline is backed up and placement economics get murkier when slaughter capacity is uncertain. CME Group's announcement of two new beef trim futures contracts is a structural positive for risk management across the supply chain, but that is a multi-month story, not today's. **Class III Milk dropped 8.0% to $15.67**, the day's sharpest percentage move among the livestock complex outside of hogs, and at the 34th percentile of its 52-week range it is yelling structural oversupply. No clean catalyst in the milk bucket beyond the broader dairy complex adjusting to summer flush.",
+   "after": "Live cattle firmed 1.6% to **$235.20** while feeder cattle eased 0.5% to **$354.60**, a split that has been the persistent story of this complex since the ongoing Cargill Fort Morgan/Schuyler plant lockout began May 19. Live cattle can firm when processing is constrained and box-beef cutouts hold; feeders soften. CME Group's announcement of two new beef trim futures contracts is a structural positive for risk management across the supply chain, but that is a multi-month story, not today's. **Class III Milk dropped 8.0% to $15.67**, the day's sharpest percentage move among the livestock complex outside of hogs, and at the 34th percentile of its 52-week range it is yelling structural oversupply. No clean catalyst in the milk bucket beyond the broader dairy complex adjusting to summer flush."
+  },
+  {
+   "date": "2026-07-13",
+   "loc": "sections[3].body",
+   "before": "Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now re-starting after a weekend of U.S. strikes on Iran and Iranian claims that the Strait is closed to traffic, sent Asian crude up 4% overnight. WTI opened hard and then gave most of it back, settling at **$71.41**, down 1.4% on the day. That reversal is the market saying: the Strait is not actually closed, tanker operators are running dark (switching off transponders) but moving, and Nigeria hitting a six-year production high at 1.5 million barrels per day is a supply offset. Natural gas eased to **$2.94**, down 2.3%, even as European TTF opened 3% higher on Hormuz LNG fears -- the U.S. market is partially insulated because U.S. domestic supply is not Hormuz-dependent. **For crop producers, the key number is diesel.** A sustained Hormuz closure would move diesel inputs meaningfully; one weekend of escalation followed by a partial reversal does not yet change fall harvest input cost math.",
+   "after": "Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now re-starting after a weekend of U.S. strikes on Iran and Iranian claims that the Strait is closed to traffic, sent Asian crude up 4% overnight. WTI opened hard and then gave most of it back, settling at **$71.41**, down 1.4% on the day. That reversal is the market saying: the Strait is not actually closed, tanker operators are running dark (switching off transponders) but moving, and Nigeria hitting a six-year production high at 1.5 million barrels per day is a supply offset. Natural gas eased to **$2.94**, down 2.3%, even as European TTF opened 3% higher on Hormuz LNG fears -- the U.S. market is partially insulated. **For crop producers, the key number is diesel.** A sustained Hormuz closure would move diesel inputs meaningfully; one weekend of escalation followed by a partial reversal does not yet change fall harvest input cost math."
+  },
+  {
+   "date": "2026-07-14",
+   "loc": "outside_the_pit[2].body",
+   "before": "A new settlement in the long-running Oklahoma poultry watershed pollution case requires integrators to pay $41.7 million into a state environmental fund and help contract growers install riparian buffers. The buffer-strip requirement is a cost-shift onto contract operations and a template that other states with concentrated poultry production could follow.",
+   "after": "A new settlement in the long-running Oklahoma poultry watershed pollution case requires integrators to pay $41.7 million into a state environmental fund and help contract growers install riparian buffers."
+  },
+  {
+   "date": "2026-07-15",
+   "loc": "one_number.context",
+   "before": "Lean hogs closing at $84.33 after a 14.1% drop is a magnitude-7x overnight surprise with no routine explanation. For context, hogs were at $94.78 as recently as Monday. A move of this size in a liquid contract typically involves either a structural demand shock, a disease headline, or forced fund liquidation at scale. Check your exposure before the open tomorrow because moves this size rarely close cleanly in one session.",
+   "after": "Lean hogs closing at $84.33 after a 14.1% drop is a magnitude-7x overnight surprise with no routine explanation. For context, hogs were at $94.78 as recently as Monday. A move of this size in a liquid contract typically involves either a structural demand shock, a disease headline, or forced fund liquidation at scale. Check your exposure before the open tomorrow."
+  },
+  {
+   "date": "2026-07-15",
+   "loc": "sections[1].body",
+   "before": "Chicago wheat closed $6.63, up 18 cents, a 2.8% session that earns its place as the day's clearest directional grain story. The Brent futures curve flipping into backwardation this week, noted in oilprice.com reporting, is the tell: the Strait of Hormuz premium, which had been deflating since late April on diplomatic progress, is rebuilding fast after the U.S.-Iran ceasefire broke down. Japan's trade chief publicly declared Hormuz transits off-limits today. **That kind of headline moves wheat faster than corn or beans because Black Sea and Middle Eastern origin wheat depends on the same shipping arteries.** The IMO warning to shippers not to risk Hormuz passage, published this morning, puts a floor under the geopolitical premium. Next real resistance is $6.85. Below $6.45, the run stalls.",
+   "after": "Chicago wheat closed $6.63, up 18 cents, a 2.8% session that earns its place as the day's clearest directional grain story. The Brent futures curve flipping into backwardation this week, noted in oilprice.com reporting, is the tell: the Strait of Hormuz premium, which had been deflating since late April on diplomatic progress, is rebuilding fast after the U.S.-Iran ceasefire broke down. Japan's trade chief publicly declared Hormuz transits off-limits today. **That kind of headline moves wheat faster than corn or beans.** The IMO warning to shippers not to risk Hormuz passage, published this morning, puts a floor under the geopolitical premium. Next real resistance is $6.85. Below $6.45, the run stalls."
+  },
+  {
+   "date": "2026-07-16",
+   "loc": "one_number.context",
+   "before": "Pakistan LNG paid the highest spot price in four years after Hormuz disruptions cut off Qatar term supply. That is not a grain story in isolation, but it is a demand-destruction warning for fertilizer and energy inputs headed into U.S. harvest season. When LNG spot prices run this hard, nitrogen feedstock costs follow within weeks.",
+   "after": "Pakistan LNG paid the highest spot price in four years after Hormuz disruptions cut off Qatar term supply. That is not a grain story in isolation, but it is a demand-destruction warning for fertilizer and energy inputs headed into U.S. harvest season. When LNG spot prices run this hard, nitrogen feedstock costs move the same way within weeks."
+  },
+  {
+   "date": "2026-07-19",
+   "loc": "one_number.context",
+   "before": "The U.S. Trade Representative formalized 25% retaliatory tariffs on Brazilian goods, including ethanol, following a Section 301 investigation. That is structurally bullish for U.S. corn ethanol demand: Brazilian product gets priced out of the U.S. market at the margin. Watch how the corn crush spread responds early in the week, because this tariff did not get priced into Friday's close in any obvious way.",
+   "after": "The U.S. Trade Representative formalized 25% retaliatory tariffs on Brazilian goods, including ethanol, following a Section 301 investigation. That is structurally bullish for U.S. corn ethanol demand: Brazilian product gets priced out of the U.S. market at the margin. Watch how the corn crush spread responds early in the week."
+  },
+  {
+   "date": "2026-07-19",
+   "loc": "sections[2].body",
+   "before": "Wheat finished at $6.83, up 12 cents Friday and sitting at 92% of its 52-week range. This is not a weather story domestically. The Hormuz premium in energy markets, the broader geopolitical bid across commodities, and reciprocal tariff noise globally are giving wheat a floor that its own supply fundamentals might not justify alone. The 52-week positioning tells you the funds are not fighting this market. **At $6.83, the question next week is whether wheat can hold this level without a new geopolitical catalyst**, because the domestic crop is not in distress. Winter wheat harvest is underway in the southern Belt; pressure from harvest-season cash sales will be real. Watch Thursday's export sales at 7:30 AM CT for confirmation that foreign demand is absorbing what harvest is delivering.",
+   "after": "Wheat finished at $6.83, up 12 cents Friday and sitting at 92% of its 52-week range. This is not a weather story domestically. The Hormuz premium in energy markets, the broader geopolitical bid across commodities, and reciprocal tariff noise globally are giving wheat a floor that its own supply fundamentals might not justify alone. The 52-week positioning tells you the funds are not fighting this market. **At $6.83, the question next week is whether wheat can hold this level without a new geopolitical catalyst**. Winter wheat harvest is underway in the southern Belt; pressure from harvest-season cash sales will be real. Watch Thursday's export sales at 7:30 AM CT for confirmation that foreign demand is absorbing what harvest is delivering."
+  },
+  {
+   "date": "2026-07-23",
+   "loc": "one_number.context",
+   "before": "Brent topped $98 in early Asian trade after the 12th straight night of U.S. strikes on Iranian targets. WTI settled at $90.00, up 1.7%, still below the headline benchmark because U.S. production buffers the domestic price. Twelve consecutive nights without a ceasefire signal is not a diplomatic channel opening; it's a grinding escalation that keeps a floor under diesel exactly when harvest-season fuel decisions need to be locked.",
+   "after": "Brent topped $98 in early Asian trade after the 12th straight night of U.S. strikes on Iranian targets. WTI settled at $90.00, up 1.7%, still below the headline benchmark. Twelve consecutive nights without a ceasefire signal is not a diplomatic channel opening; it's a grinding escalation that keeps a floor under diesel exactly when harvest-season fuel decisions need to be locked."
+  },
+  {
+   "date": "2026-07-23",
+   "loc": "outside_the_pit[1].body",
+   "before": "Feedstuffs ran the numbers on the ongoing New World Screwworm-related border shutdown between the U.S. and Mexico, which periodically halts the feeder cattle trade and sends economic shock from ranches through feedlots to packing plants. With feeders already down 2.5% today on domestic demand weakness, any continued interruption of lighter Mexican feeder supply removes the price-competition buffer the market normally gets from that flow. The story keeps returning because the pest isn't eradicated, just managed.",
+   "after": "Feedstuffs ran the numbers on the ongoing New World Screwworm-related border shutdown between the U.S. and Mexico, which periodically halts the feeder cattle trade and sends economic shock from ranches through feedlots to packing plants. With feeders already down 2.5% today on domestic demand weakness, any continued interruption of lighter Mexican feeder supply removes the price-competition buffer the market normally gets from that flow. The story keeps returning."
+  },
+  {
+   "date": "2026-07-23",
+   "loc": "watch_list[1].desc",
+   "before": "Cash cattle trade settlement: if the fed cattle trade clears above $223, live cattle stabilize; below $220, the breakdown accelerates and feeders follow.",
+   "after": "Cash cattle trade settlement: if the fed cattle trade clears above $223, live cattle stabilize; below $220, the breakdown accelerates and feeders move too."
+  },
+  {
+   "date": "2026-07-24",
+   "loc": "sections[3].body",
+   "before": "WTI crude fell 1.7% to **$90.37**, giving back a piece of the week's gains but staying above $90, the line the last three briefings have flagged. The story underneath the price is getting more complex: Russia's largest Black Sea oil export terminal went offline as drone threats followed the Caspian Pipeline Consortium attack days earlier, per OilPrice, pulling another artery out of global supply. Saudi Yanbu Red Sea exports have fallen 41% from their March peak, today's number that puts the structural tightness in context. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, created the Saudi Red Sea redirect in the first place; now that backup route is under pressure too. Diesel prices follow crude with a lag; harvest-season exposure is not a small consideration with these supply routes in play.",
+   "after": "WTI crude fell 1.7% to **$90.37**, giving back a piece of the week's gains but staying above $90, the line the last three briefings have flagged. The story underneath the price is getting more complex: Russia's largest Black Sea oil export terminal went offline as drone threats followed the Caspian Pipeline Consortium attack days earlier, per OilPrice, pulling another artery out of global supply. Saudi Yanbu Red Sea exports have fallen 41% from their March peak, today's number that puts the structural tightness in context. The Iran-Hormuz tensions, with the Strait of Hormuz premium that built since early April now deflating on diplomatic progress, created the Saudi Red Sea redirect in the first place; now that backup route is under pressure too. Diesel prices have moved with crude after a lag; harvest-season exposure is not a small consideration with these supply routes in play."
+  },
+  {
+   "date": "2026-07-30",
+   "loc": "sections[1].title",
+   "before": "Corn and Beans Follow",
+   "after": "Corn and Beans Move Too"
+  },
+  {
+   "date": "2026-08-02",
+   "loc": "sections[1].body",
+   "before": "- Live cattle closed Friday at **$231.75**, up 1.9%, feeders added 1.6% to $348.02; Brownfield attributes the firmness to fund repositioning as cash trade remained elusive heading into the weekend.\n- Lean hogs closed at $98.85, up 18.7% on the session, the biggest single-day move in the complex this year; no clean domestic catalyst, though Finland's first-ever African Swine Fever detection near the Russian border adds a geopolitical disease premium worth watching.\n- The Cargill Fort Morgan/Schuyler lockout, ongoing since May 19, continues to constrain processing capacity; live cattle held despite the pressure because the supply side, not the demand side, is the binding constraint.",
+   "after": "- Live cattle closed Friday at **$231.75**, up 1.9%, feeders added 1.6% to $348.02; Brownfield attributes the firmness to fund repositioning as cash trade remained elusive heading into the weekend.\n- Lean hogs closed at $98.85, up 18.7% on the session, the biggest single-day move in the complex this year; no clean domestic catalyst, though Finland's first-ever African Swine Fever detection near the Russian border adds a geopolitical disease premium worth watching.\n- The Cargill Fort Morgan/Schuyler lockout, ongoing since May 19, continues to constrain processing capacity; live cattle held despite the pressure."
+  },
+  {
+   "date": "2026-08-28",
+   "loc": "teaser",
+   "before": "Heatwave bids wheat 21 cents higher. Corn didn't follow. That gap matters.",
+   "after": "Heatwave bids wheat 21 cents higher. Corn didn't move with it. That gap matters."
+  },
+  {
+   "date": "2026-08-30",
+   "loc": "sections[0].title",
+   "before": "GRAINS: WHEAT LEADS, BEANS FOLLOW",
+   "after": "GRAINS: WHEAT LEADS, BEANS MOVE TOO"
+  },
+  {
+   "date": "2026-09-02",
+   "loc": "sections[1].body",
+   "before": "- Nearby beans at **$12.94**, up 1.5%, with the move driven by soybean oil gaining 3% as diesel crack spreads hit record highs on Hormuz tanker disruption and Russian refinery damage.\n- The crush math is working: oil's 3% run against meal's 0.9% slip means the oil-share of crush value widened sharply today, which pulls beans along.\n- Nov beans at $13.04 are quieter at up 0.2%, telling you nearby old-crop is doing the work; new-crop isn't getting the same selling pressure bid.",
+   "after": "- Nearby beans at **$12.94**, up 1.5%.\n- The crush math is working: oil's 3% run against meal's 0.9% slip means the oil-share of crush value widened sharply today, which pulls beans along.\n- Nov beans at $13.04 are quieter at up 0.2%, telling you nearby old-crop is doing the work; new-crop isn't getting the same selling pressure bid."
+  },
+  {
+   "date": "2026-09-03",
+   "loc": "sections[3].body",
+   "before": "- WTI crude at **$92.72**, up 1.8%, driven by the Iran-Hormuz cycle re-escalating: the US resumed strikes and Asian LNG prices ran to $25.91/mmBtu, pulling all energy complex higher.\n- Chinese refiners paying record premiums for Russian ESPO crude to replace Iranian barrels, and Dubai crude pushing toward $100, tells you the Asian demand bid is real and adding to the Brent/WTI structure.\n- Diesel for fall fieldwork is the input-cost story here; the global refining crunch could keep fuel prices elevated into 2027 per energy analysts, which is a direct 2027 crop budget line item.",
+   "after": "- WTI crude at **$92.72**, up 1.8%: the US resumed strikes and Asian LNG prices ran to $25.91/mmBtu, pulling all energy complex higher.\n- Chinese refiners paying record premiums for Russian ESPO crude to replace Iranian barrels, and Dubai crude pushing toward $100, tells you the Asian demand bid is real and adding to the Brent/WTI structure.\n- Diesel for fall fieldwork is the input-cost story here; the global refining crunch could keep fuel prices elevated into 2027 per energy analysts, which is a direct 2027 crop budget line item."
+  },
+  {
+   "date": "2026-09-05",
+   "loc": "one_number.context",
+   "before": "Meal settled at $345.30, the top of its full-year range, while soy oil dropped 3.3% to $68.74. Crush margins are being driven by protein demand, not fat. That split matters to anyone merchandising beans or evaluating crush capacity heading into harvest.",
+   "after": "Meal settled at $345.30, the top of its full-year range, while soy oil dropped 3.3% to $68.74. Crush margins have moved with protein demand, not fat. That split matters to anyone merchandising beans or evaluating crush capacity heading into harvest."
+  },
+  {
+   "date": "2026-09-09",
+   "loc": "headline",
+   "before": "BRENT HITS $100; GRAINS AND CATTLE FOLLOW",
+   "after": "BRENT HITS $100; GRAINS AND CATTLE MOVE TOO"
+  },
+  {
+   "date": "2026-10-13",
+   "loc": "lead",
+   "before": "Corn settled Monday at $4.83 and sits at $4.81¼ overnight, down less than two cents, while beans are off almost a nickel at $12.83. Both markets are flat because USDA's record crop numbers are already priced in, not because anyone expects news today.",
+   "after": "Corn settled Monday at $4.83 and sits at $4.81¼ overnight, down less than two cents, while beans are off almost a nickel at $12.83. Both markets are flat."
+  },
+  {
+   "date": "2026-10-20",
+   "loc": "one_number.context",
+   "before": "USDA will pay it as one-time payments to eligible farmers for this harvest. It follows crude's drop on the Trump-Putin diesel deal.",
+   "after": "USDA will pay it as one-time payments to eligible farmers for this harvest. It has moved with crude's drop on the Trump-Putin diesel deal."
+  },
+  {
+   "date": "2026-10-23",
+   "loc": "sections[2].body",
+   "before": "- WTI crude is at **$103.13**, up 3.7% from Thursday's $99.47 settle, and natural gas is up 8.6% to $3.04.\n- Oilprice reports Brent nearing $120 as Saudi-Houthi tensions fuel another weekly rally.\n- Diesel and fertilizer costs tend to follow crude, so fall input bills are worth watching.",
+   "after": "- WTI crude is at **$103.13**, up 3.7% from Thursday's $99.47 settle, and natural gas is up 8.6% to $3.04.\n- Oilprice reports Brent nearing $120 as Saudi-Houthi tensions fuel another weekly rally.\n- Diesel and fertilizer costs have moved with crude, so fall input bills are worth watching."
+  },
+  {
+   "date": "2026-10-24",
+   "loc": "sections[2].so_what",
+   "before": "Crude is the one market moving hard, and farm fuel costs follow it.",
+   "after": "Crude is the one market moving hard, and farm fuel costs have moved with it."
+  },
+  {
+   "date": "2026-10-29",
+   "loc": "sections[2].so_what",
+   "before": "Crude is still pricing in Iran supply risk, and diesel follows it.",
+   "after": "Crude is still pricing in Iran supply risk, and diesel has moved with it."
+  }
+ ]
+}

@@ -156,7 +156,7 @@
   }
   /* Farm sales (2026-10-27): Illinois, Wisconsin and Indiana, where the recorded sales are. A county opens
      its "Farmland sales in <County>" page; a town or ZIP opens Fast Facts at its sales within 25 miles. */
-  var LAND_ST = { IL: 'illinois', WI: 'wisconsin', IN: 'indiana' };
+  var LAND_ST = { IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont' };
   var LAND_ZIP = /^(6[0-2]\d|5[34]\d|4[67]\d)/;
   function landHit(e) {
     if (!e) return null;
