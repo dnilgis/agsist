@@ -23,6 +23,13 @@
    "link": "/land-sales/"
   },
   {
+   "id": "2026-10-29-land-first",
+   "date": "2026-10-29",
+   "title": "County pages lead with land",
+   "line": "Illinois, Indiana and Wisconsin county pages now open with land sale prices, newest sales, rent, nearest bid and rain, from your saved field if you have one.",
+   "link": "/farmland-atlas/wisconsin/barron-county"
+  },
+  {
    "id": "2026-10-29-landsurvey",
    "date": "2026-10-29",
    "title": "Land values for North Dakota and Kansas counties",
@@ -70,6 +77,13 @@
    "title": "Field Scout reads more of our own data",
    "line": "Field Scout now uses free USGS maps, loads county cards even when a lookup is down, and shows last year's crop, rain vs normal and the nearest bid up top.",
    "link": "/field-scout"
+  },
+  {
+   "id": "2026-10-29-menutrim",
+   "date": "2026-10-29",
+   "title": "A shorter menu, Ag stocks in it",
+   "line": "The menu lists PRF, LRP and Rain Print once, adds Ag stocks under Prices and puts drought and manure under Field. The Illinois sale index is on the land sales page.",
+   "link": "/land-sales/#illinois-index"
   },
   {
    "id": "2026-10-29-nws-forecast",
