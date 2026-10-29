@@ -3,25 +3,25 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2111,
-  "with_parent": 118,
-  "with_dest": 106,
+  "live_boards": 2163,
+  "with_parent": 130,
+  "with_dest": 112,
   "parent_by_rule": {
    "board-page": 1,
-   "chs-brand": 117
+   "chs-brand": 129
   },
   "dest_by_brand": {
    "ADM": 26,
-   "AGP": 24,
+   "AGP": 27,
    "Big River": 4,
    "Bunge": 4,
    "CGB": 9,
-   "Cargill": 15,
+   "Cargill": 16,
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 8,
-   "Valero": 2,
+   "POET": 9,
+   "Valero": 3,
    "Viserion": 5
   },
   "board_pages_with_other_firms": 1
@@ -592,6 +592,66 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
+  "chsriverplains-ashley": {
+   "elevId": "e41zb1vf15",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-blunt": {
+   "elevId": "e8a6cj4rw9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-dupree": {
+   "elevId": "er0rpbq0hh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-fairfax": {
+   "elevId": "ensmxhsnk3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-gettysburg": {
+   "elevId": "ep60fxjsw6",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-isabel": {
+   "elevId": "e9kbeq5mrp",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-onida": {
+   "elevId": "edqmpmqmk7",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-philip": {
+   "elevId": "e63nyxk8kt",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-pierre": {
+   "elevId": "ejmgasz6xt",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-selby": {
+   "elevId": "e5e8t4f70y",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-strasburg": {
+   "elevId": "enyzafcd2h",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-winner": {
+   "elevId": "e1tx9wjye8",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
   "chssouthcentral-napoleon": {
    "elevId": "e2ecnf3cdd",
    "parent": "CHS Inc.",
@@ -1055,6 +1115,36 @@
   "newvision-poetashton": {
    "elevId": "e5anxv6rn6",
    "dest": "POET",
+   "dv": "location"
+  },
+  "nexus-agpeaglegroveia": {
+   "elevId": "e3yxz3j8hg",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-agpmanningia": {
+   "elevId": "emr4kpq80q",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-agpmasoncityia": {
+   "elevId": "exe7f4q1hd",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-cargilliowafallsia": {
+   "elevId": "efdggq02m7",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "nexus-poetfairbankia": {
+   "elevId": "ekr2jj8was",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "nexus-valerocharlescityia": {
+   "elevId": "ev4rkxwapd",
+   "dest": "Valero",
    "dv": "location"
   },
   "premiercooperative-valerocc": {
