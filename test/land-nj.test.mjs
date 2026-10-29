@@ -145,10 +145,10 @@ test("every New Jersey sale in a county file is on its county page's list, any a
     assert.ok(slug[fips], fips + ": a county page");
     const L = json(`data/land-sales/nj/${fips}.json`);
     const today = String(f.fetched_utc).slice(0, 10);
-    const sales = F.saleRows(F.rowObjs(f), today).filter((r) => F.marketSale(r, today) || true);
-    // the list file holds the market sales of any acreage; count them against the rule's market sales
-    const want = sales.filter((r) => F.marketSale(r, today)).length;
-    assert.ok(L.s.length >= want * 0.99 && L.s.length > 0, `${fips}: listed ${L.s.length}, market sales ${want}`);
+    // every market sale by the shared rule (any acreage, acres known or not) is listed: the same count, exactly
+    const want = F.saleRows(F.rowObjs(f), today).filter((r) => F.marketSale(r, today))
+      .filter((r) => { const w = String(r.rec || r.date || "").slice(0, 10); return w && w <= today; }).length;
+    assert.equal(L.s.length, want, `${fips}: listed ${L.s.length}, market sales ${want}`);
     n += L.s.length;
   }
   assert.ok(n > 200, "listed: " + n);

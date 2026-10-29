@@ -59,7 +59,13 @@ test("every Atlas county home has one land sales line, to a real county page or 
         if (row && row.status === "nondisclosure") assert.match(body, /public record|public file/, `${dir}/${f}`);
         if (row && row.status === "county") assert.match(body, /county by county; not on this site yet/, `${dir}/${f}`);
         if (row && row.status === "request") assert.match(body, /on request or for a fee/, `${dir}/${f}`);
-        assert.ok(!(row && LIVE[st]), `${dir}/${f}: a state with sales links the county`);
+        if (row && LIVE[st]) {
+          // a county with no farm sale in a state with sales (Hudson County, NJ): only when the state's sales file has
+          // no row for it, and the line says so
+          const S = JSON.parse(rd(`data/land-sales/${LIVE[st].toLowerCase()}.json`));
+          assert.ok(!Object.values(S.counties).some((c) => c.slug === f.slice(0, -5)), `${dir}/${f}: a state with sales links the county`);
+          assert.match(body, /sales are on file; none for this county/, `${dir}/${f}`);
+        }
       }
     }
   }
