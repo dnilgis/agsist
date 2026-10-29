@@ -1,6 +1,8 @@
 /* /planting-date: corn and soybean planting dates for Wisconsin and Minnesota.
  * Static answer in the HTML; this script adds the season line, the reader's own
- * numbers (soil now and 5-day soil forecast from Open-Meteo, nearest NOAA
+ * numbers (measured 4 in soil at the nearest station from data/fall-nitrogen.json
+ * and air now from the National Weather Service grid; 2026-10-29, was Open-Meteo's
+ * model soil, which no free forecast replaces), nearest NOAA
  * normals station's frost odds and heat units from data/planting/<st>.json,
  * the county's RMA final planting dates from data/rma-planting-dates.json),
  * and the zone-average fallback cards.
@@ -128,7 +130,7 @@ function seasonLine(now){
   var mo = now.getMonth()+1, y = now.getFullYear();
   if(mo >= 7) return 'Planting is done for '+y+'. Your ZIP gives next spring\u2019s numbers: your nearest NOAA station\u2019s frost odds and heat units, and your county\u2019s final planting dates.';
   if(mo <= 3) return 'Planting has not started. Put in your ZIP to see your nearest NOAA station’s frost odds and heat units and your county’s final planting dates. Soil temperature means something once fields start to work in April.';
-  return 'Planting season. Put in your ZIP for soil temperature now, a 5-day soil forecast, your station’s frost odds and your county’s final planting date.';
+  return 'Planting season. Put in your ZIP for measured soil temperature at the nearest station, your station’s frost odds and your county’s final planting date.';
 }
 
 /* ─── INIT ──────────────────────────────────────────────────────────── */
@@ -535,8 +537,8 @@ function loadCountyDates(){
   });
 }
 
-/* ─── SOIL TEMPERATURE (Open-Meteo) ──────────────────────────────────── */
-var lastSoil = null, lastTrend = null;
+/* ─── SOIL TEMPERATURE (measured, nearest station) ─────────────────────── */
+var lastSoil = null, lastTrend = null, lastSoilSrc = '';
 function runVerdict(){
   if(lastSoil == null) return;
   var soilNum = parseFloat(lastSoil);
@@ -570,72 +572,54 @@ function runVerdict(){
   }
   var _inFinalWeek = _md > (_isBeans?610:525) && !_pastFinal && !_tooLate && !_tooEarly;
   if(_inFinalWeek) noteText += ' Final planting dates in WI and MN are '+(_isBeans?'Jun 10 or Jun 15':'May 25 or May 31')+' (RMA): check your county.';
-  if(!_tooLate && !_tooEarly && lastTrend === 'cooling' && cls === 'go') noteText += ' The 5-day model forecast cools, so the "warming trend" part of the 50°F rule is not met.';
-  if(!_tooEarly) noteText += ' The verdict uses the 3-day mean of the weather model’s hourly soil temperature at 6 cm (~2 in), not a probe reading.';
+  if(!_tooLate && !_tooEarly && lastTrend === 'cooling' && cls === 'go') noteText += ' The station’s soil cooled over its last days, so the "warming trend" part of the 50°F rule is not met.';
+  if(!_tooEarly && lastSoilSrc) noteText += ' The verdict uses the 3-day mean of measured soil at 4 in at '+lastSoilSrc+', not your field. The rule is written for 2 in, which warms sooner in spring.';
   $('st-verdict-wrap').innerHTML = '<div class="st-verdict '+cls+'">'+verdict+'</div>';
   $('st-note').textContent = noteText;
 }
 
+/* No free forecast gives soil temperature (the NWS grid has none), so the soil number is measured: the
+   nearest station within 50 miles in data/fall-nitrogen.json (NOAA USCRN, USDA SCAN, Iowa State's soil
+   network and Wisconet, 4 in daily means, scripts/fetch_fall_nitrogen.py), and only while its last reading is
+   3 days old or newer (components/soil-near.js). Air now is the NWS forecast grid's hour. No station, or an old reading, is no
+   soil number and no verdict. */
+// the nearest station's reading: components/soil-near.js (shared with the home page)
 function fetchSoilTemp(){
-  // Open-Meteo forecast-model soil temperature at 6 cm (~2 in): hourly, the past 3 days and
-  // 6 forecast days, in Fahrenheit (temperature_unit applies to soil temperature too), local
-  // time. The page's rule is 50°F for 3 days with a warming trend, so the verdict uses the mean
-  // of the last 72 hourly values up to the current hour, and the trend line the forecast days.
-  var url = 'https://api.open-meteo.com/v1/forecast'
-    +'?latitude='+userLat+'&longitude='+userLon
-    +'&current=temperature_2m'
-    +'&hourly=soil_temperature_6cm&past_days=3&forecast_days=6'
-    +'&temperature_unit=fahrenheit&timezone=auto';
-  return fetch(url).then(function(r){ return r.ok ? r.json() : null; }).then(function(data){
-    if(!data || !data.current) throw new Error('Weather data unavailable');
-    var cur = data.current;
-    var air = cur.temperature_2m!=null ? cur.temperature_2m.toFixed(1) : null;
-    var hr = data.hourly || {}, ht = hr.time || [], hv = hr.soil_temperature_6cm || [];
-    var curHour = String(cur.time||'').slice(0,13); // "YYYY-MM-DDTHH"
-    var win = [];
-    for(var i=0;i<ht.length;i++){ if(curHour && String(ht[i]).slice(0,13) <= curHour) win.push(hv[i]); }
-    win = win.slice(-72);
-    var vals = win.filter(function(v){ return v!=null && isFinite(v); });
-    var soil2in = null, soilWhy = '';
-    if(!curHour) soilWhy = 'The weather model did not say what hour it is at this location, so the last 3 days cannot be picked out.';
-    else if(vals.length < 60) soilWhy = 'Only '+vals.length+' of the last 72 hourly soil readings came back (60 needed for a 3-day mean).';
-    else soil2in = (vals.reduce(function(a,b){ return a+b; },0)/vals.length).toFixed(1);
-    $('st-2in').textContent = soil2in!=null ? soil2in+'°F' : '-';
-    $('st-2in-sub').textContent = soil2in!=null ? '3-day mean ('+vals.length+' h)' : '3-day mean unavailable';
+  var SN = window.AgSoilNear;
+  var soilP = SN ? SN.load() : Promise.resolve(null);
+  var airP = window.AgNWS ? window.AgNWS.forecast(userLat, userLon, {days:2}).then(null, function(){ return null; }) : Promise.resolve(null);
+  return Promise.all([soilP, airP]).then(function(res){
+    var feed = res[0], wx = res[1], cur = wx && wx.current;
+    var air = cur && cur.temperature_2m != null ? cur.temperature_2m.toFixed(0) : null;
     $('st-air').textContent = air ? air+'°F' : '-';
+    var S = SN ? SN.near(feed, userLat, userLon, SN.todayIso()) : {why:'The soil reader did not load.'};
+    var net = S.net || '', url = S.url || '';
+    var src = S.st ? esc(S.st.name)+' ('+(url ? '<a href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(net)+'</a>' : esc(net))+'), '+Math.round(S.mi)+' mi' : '';
     var asof = $('st-asof');
-    if(asof && curHour){ var h = +curHour.slice(11,13); asof.textContent = 'Model run read '+MONTHS[+curHour.slice(5,7)-1]+' '+(+curHour.slice(8,10))+', '+((h%12)||12)+' '+(h<12?'am':'pm')+' local time'; }
-    // Forecast: daily means of the hours after the current hour, local days, 20+ hours each.
-    var days = {}, order = [];
-    for(var j=0;j<ht.length;j++){
-      var t = String(ht[j]); if(!curHour || t.slice(0,13) <= curHour) continue;
-      var v = hv[j]; if(v==null || !isFinite(v)) continue;
-      var dk = t.slice(0,10); if(!days[dk]){ days[dk] = []; order.push(dk); } days[dk].push(v);
-    }
-    var fc = order.filter(function(k){ return days[k].length >= 20; }).slice(0,5).map(function(k){
-      return {k:k, v: days[k].reduce(function(a,b){ return a+b; },0)/days[k].length};
-    });
+    if(asof) asof.innerHTML = (S.st ? 'Soil: measured at '+src+', last day '+esc(S.st.last)+'. ' : '')+(wx && wx._nws ? 'Air: '+esc(window.AgNWS.sourceLine(wx).replace(/^Forecast: /,'the forecast for this hour, ')) : 'Air: the National Weather Service forecast did not answer.');
     var tr = $('st-trend');
-    lastTrend = null;
+    lastTrend = S.trend || null;
     if(tr){
-      if(fc.length >= 3 && soil2in != null){
-        var diff = fc[fc.length-1].v - parseFloat(soil2in);
-        lastTrend = diff >= 2 ? 'warming' : diff <= -2 ? 'cooling' : 'steady';
-        tr.innerHTML = '<span class="tr-l">Next '+fc.length+' days (model, daily mean):</span> '
-          + fc.map(function(f){ return '<span class="tr-d"><b>'+Math.round(f.v)+'°</b><i>'+MONTHS[+f.k.slice(5,7)-1]+' '+(+f.k.slice(8,10))+'</i></span>'; }).join('')
-          + ' <span class="tr-w tr-'+lastTrend+'">'+lastTrend+'</span>';
-      } else tr.textContent = 'No 5-day soil forecast came back for this location.';
+      if(S.last5 && S.trend){
+        tr.innerHTML = '<span class="tr-l">Measured, last 5 days to '+esc(S.st.last)+':</span> '
+          + S.last5.map(function(v){ return '<span class="tr-d"><b>'+Math.round(v)+'°</b></span>'; }).join('')
+          + ' <span class="tr-w tr-'+S.trend+'">'+S.trend+'</span>';
+      } else tr.textContent = 'No free forecast gives soil temperature, so there is no soil forecast here.';
     }
-    var badge = $('st-badge'); if(badge) badge.style.display = 'inline-flex';
-    // Verdict only from a real 3-day mean. No data, no verdict: a missing value must never
+    var badge = $('st-badge'); if(badge) badge.style.display = S.mean != null ? 'inline-flex' : 'none';
+    // Verdict only from a measured 3-day mean. No reading, no verdict: a missing value must never
     // become 0°F and print "Do Not Plant" under a display showing a dash.
-    if(soil2in == null){
-      lastSoil = null;
+    if(S.mean == null){
+      lastSoil = null; lastSoilSrc = '';
+      $('st-2in').textContent = '-';
+      $('st-2in-sub').textContent = 'no current station reading';
       $('st-verdict-wrap').innerHTML = '<div class="st-verdict wait">No soil verdict</div>';
-      $('st-note').textContent = soilWhy+' No 3-day mean, no verdict. Try again in an hour or check a nearby ZIP.';
+      $('st-note').textContent = S.why+' Read a probe at 2 in, mid-morning: the rule is 50°F for 3 days with a warming trend.';
       return;
     }
-    lastSoil = soil2in;
+    $('st-2in').textContent = S.mean.toFixed(1)+'°F';
+    $('st-2in-sub').textContent = '3-day mean, measured';
+    lastSoil = S.mean.toFixed(1); lastSoilSrc = S.st.name+' ('+net+', '+Math.round(S.mi)+' mi)';
     runVerdict();
   }).catch(function(e){
     $('st-note').textContent = 'Soil temperature did not load ('+e.message+'). Try again in a minute.';

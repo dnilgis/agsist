@@ -147,7 +147,8 @@ test("a ZIP saved hours ago works at once and asks nothing", { skip }, async () 
       const { pg, seen, ctx } = await open(browser, port, path, { saved });
       await pg.waitForTimeout(4500);
       assert.equal(await pg.evaluate(() => window.__geo), 0, `${path}: no geolocation call with a saved ZIP`);
-      assert.ok(seen.some((u) => /open-meteo\.com/.test(u) && /latitude=41\.59/.test(u)), `${path}: weather asked for the saved place`);
+      assert.ok(seen.some((u) => /^https:\/\/api\.weather\.gov\/points\/41\.59/.test(u)), `${path}: weather asked for the saved place (NWS, 2026-10-29)`);
+      assert.ok(!seen.some((u) => /open-meteo\.com/.test(u)), `${path}: nothing asked of Open-Meteo`);
       await ctx.close();
     }
   } finally { await browser.close(); srv.close(); }

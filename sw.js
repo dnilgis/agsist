@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 299;  // v299 2026-10-29: fx/nometeo (299 assigned by the lead; was 291, which main passed: 297 is menu trim #186, 298 land-first #196). Place lookups off Open-Meteo: every ZIP and town box reads our own data/places/ files (components/places.js?v=1, GeoNames towns and the bids ZIP table's points); bids-homepage v43, cattle-auction v7, geo v33, grain-emc-ui v5, harvest-wait-ui v3, haymow v4, here v32, prf v9, radar-rain-page v8, rain-print v86, rp-canada v4, rain-county-print v42, loader.js.
+var CACHE_VERSION = 300;  // v300 2026-10-29: fx/nometeo2 (300 assigned by the lead; was 295). Forecasts off Open-Meteo: the National Weather Service grid (components/nws.js?v=1) for home weather, spray and the wind map, urea, grain drying, harvest or wait and planting date; soil from the nearest measuring station (soil-near.js?v=1), home history from PRISM (prism.js?v=1), the Daily's rain from our radar files. geo v34, daily-local v4, grain-emc-ui v6, harvest-wait-ui v4, home-planting v3, home-season v8, planting-date v6, spray-wind v2, spray-windows v2. The NWS forecast is saved for offline like the old weather (points and grid cells, never alerts).
+// v299 2026-10-29: fx/nometeo (299 assigned by the lead; was 291, which main passed: 297 is menu trim #186, 298 land-first #196). Place lookups off Open-Meteo: every ZIP and town box reads our own data/places/ files (components/places.js?v=1, GeoNames towns and the bids ZIP table's points); bids-homepage v43, cattle-auction v7, geo v33, grain-emc-ui v5, harvest-wait-ui v3, haymow v4, here v32, prf v9, radar-rain-page v8, rain-print v86, rp-canada v4, rain-county-print v42, loader.js.
 // v294 2026-10-29: fx/landvt (294 assigned by the lead). Vermont farm sales: county pages on /land-sales/vermont, Field Scout comps, the Atlas land door, the monthly land email; land-sales.js?v=3, land-alert.js?v=3, field-scout-land.js?v=9, field-scout-read.js?v=15, field-scout.js?v=29 (field-scout-land.js?v=9 also in comp-report.html and field-report.html), change-lines.js?v=2 (from here.js?v=32); search.js rides loader CV 104 unchanged.
 // v293 2026-10-29: fx/bidflags (293 assigned by the lead; 289 to 292 are held by other open branches, main still showed 290 at merge). Cash bids: a basis "from" line needs the bid to agree with that day's futures and never narrates the old feed's cents-read-as-dollars step; cash-bids.js?v=15, cb-glance.js?v=4.
 // v292 2026-10-29: fx/allsales (292 assigned by the lead; 289 to 291 are held by menutrim, fx/fsbase and fx/nometeo). Every recorded land sale on the county sales pages with Show more and a type filter, and one land rule (buildings by property class, Wisconsin forest apart, bare-land middles, 5 sales before a middle): land-sales.js?v=2, field-scout-land.js?v=8, comp-report.js?v=4.
@@ -387,7 +388,8 @@ function savedDataFeed(url) {
     return '';
   }
   if (u.hostname === 'dnilgis.github.io' && u.pathname.indexOf('/bids/') === 0 && /\.json$/.test(u.pathname)) return 'bids';
-  if (u.hostname === 'api.open-meteo.com' && u.pathname === '/v1/forecast') return 'weather';
+  // the NWS forecast (components/nws.js): the point's office and cell, and the cell's grid; alerts stay network only
+  if (u.hostname === 'api.weather.gov' && (/^\/points\/-?[\d.]+,-?[\d.]+$/.test(u.pathname) || /^\/gridpoints\/[A-Z]{3}\/\d+,\d+$/.test(u.pathname))) return 'weather';
   return '';
 }
 
@@ -411,6 +413,8 @@ function dataTimeOf(text) {
     var v = j[keys[i]];
     if (typeof v === 'string' && !isNaN(Date.parse(v))) return v;
   }
+  // an NWS forecast grid: the time the NWS issued it
+  if (j.properties && typeof j.properties.updateTime === 'string' && !isNaN(Date.parse(j.properties.updateTime))) return j.properties.updateTime;
   if (j.current && typeof j.current.time === 'string' && typeof j.utc_offset_seconds === 'number') {
     var t = Date.parse(j.current.time + 'Z') - j.utc_offset_seconds * 1000;
     if (!isNaN(t)) return new Date(t).toISOString();

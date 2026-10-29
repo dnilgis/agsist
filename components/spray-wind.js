@@ -17,12 +17,12 @@
   'use strict';
   if (window.AgSprayWind) return;
 
-  var V = { win: 1, css: 1 };
+  var V = { win: 2, css: 1, nws: 1 };
   var LEAFLET = '/vendor/leaflet-1.9.4/';
   var TILES = 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}';
   var COLORS = { calm: '#6b3fc4', band: '#13803b', high: '#c27400', over: '#c4281c', na: '#777' };
   var CELL = { good: 'var(--green,#2e7d4f)', fair: 'var(--gold-fill,var(--gold,#d4a23f))', no: 'var(--red,#c0492f)' };
-  var FETCH_MS = 12000;
+  var FETCH_MS = 20000;   // the wind map is ten NWS reads (one /points, nine grid cells)
 
   var S = { hour: 0, mode: null, playing: null, raf: 0, parts: [], nPart: 0, visible: true, frames: 0, ftAvg: 16, rainfree: null };
   var W, R;
@@ -32,16 +32,11 @@
   function loadScript(src) { return new Promise(function (ok, no) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = function () { no(new Error('load ' + src)); }; document.head.appendChild(s); }); }
   // resolves when the sheet is in (or failed): the map box needs its height before the map is drawn
   function loadCss(href) { return new Promise(function (ok) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = href; l.onload = l.onerror = function () { ok(); }; document.head.appendChild(l); setTimeout(ok, 4000); }); }
-  function getJson(u) {
-    var ac = ('AbortController' in window) ? new AbortController() : null, t = ac ? setTimeout(function () { ac.abort(); }, FETCH_MS) : 0;
-    return fetch(u, ac ? { signal: ac.signal } : {}).then(function (r) { clearTimeout(t); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (j) { if (j && j.error) throw new Error(j.reason || 'error'); return j; }, function (e) { clearTimeout(t); throw e; });
-  }
-  // A single-model answer may name a variable with the model as a suffix; read it under its plain name too.
-  function norm(o) {
-    if (!o) return o;
-    ['hourly', 'daily'].forEach(function (k) { var h = o[k]; if (!h) return; Object.keys(h).forEach(function (n) { var m = /^(.*)_gfs_seamless$/.exec(n); if (m && !(m[1] in h)) h[m[1]] = h[n]; }); });
-    return o;
+  // the forecast promise, or a timeout: a forecast that never answers must not leave the box waiting
+  function timed(p) {
+    var t;
+    return Promise.race([p, new Promise(function (_, no) { t = setTimeout(function () { var e = new Error('timeout'); e.name = 'AbortError'; no(e); }, FETCH_MS); })])
+      .then(function (j) { clearTimeout(t); return j; }, function (e) { clearTimeout(t); throw e; });
   }
   var reduced = (function () { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
 
@@ -93,21 +88,20 @@
   }
   function loadField() {
     $('sw-list').innerHTML = '<li class="sw-wait">Reading the forecast for your field.</li>';
-    getJson(W.fieldUrl(S.field.lat, S.field.lon)).then(function (j) {
+    timed(W.fieldForecast(S.field.lat, S.field.lon)).then(function (j) {
       if (!j || !j.hourly || !j.hourly.time) throw new Error('no hourly forecast');
-      S.F = norm(j); S.fieldErr = null; S.readAt = new Date();
+      S.F = j; S.fieldErr = null; S.readAt = new Date();
       rate();
     }).catch(function (e) {
       S.F = null; S.fieldErr = e; S.hours = [];
-      $('sw-list').innerHTML = '<li class="sw-down-li">The forecast for your field is not answering right now (Open-Meteo: ' + esc(msg(e)) + '). No spray windows until it does. <button type="button" class="sw-btn sw-retry" id="sw-retry-f">Try again</button></li>';
+      $('sw-list').innerHTML = '<li class="sw-down-li">The forecast for your field is not answering right now (National Weather Service: ' + esc(msg(e)) + '). No spray windows until it does. <button type="button" class="sw-btn sw-retry" id="sw-retry-f">Try again</button></li>';
       $('sw-retry-f').addEventListener('click', loadField);
       afterData();
     });
   }
   function loadGrid() {
     down('');
-    getJson(W.gridUrl(S.grid)).then(function (j) {
-      var arr = (Array.isArray(j) ? j : [j]).map(norm);
+    timed(W.gridForecast(S.grid)).then(function (arr) {
       var start = S.F ? W.hourKey(S.F) : W.hourKey(arr[0]);
       var g = W.parseGrid(arr, S.grid, start);
       if (!g) throw new Error('the grid came back incomplete');
@@ -116,7 +110,7 @@
       afterData();
     }).catch(function (e) {
       S.W = null; S.gridErr = e;
-      down('The wind map forecast is not answering right now (Open-Meteo: ' + esc(msg(e)) + '). The spray windows below use the forecast at your field. <button type="button" class="sw-btn sw-retry" id="sw-retry-g">Try again</button>');
+      down('The wind map forecast is not answering right now (National Weather Service: ' + esc(msg(e)) + '). The spray windows below use the forecast at your field. <button type="button" class="sw-btn sw-retry" id="sw-retry-g">Try again</button>');
       var b = $('sw-retry-g'); if (b) b.addEventListener('click', loadGrid);
       afterData();
     });
@@ -163,7 +157,7 @@
         el.innerHTML = '';
         S.map = L.map(el, { dragging: false, touchZoom: false, scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false, zoomControl: false, attributionControl: true, zoomSnap: 0.1 });
         S.map.attributionControl.setPrefix(false);
-        S.map.attributionControl.addAttribution('Map: USGS | Wind: NOAA via Open-Meteo');
+        S.map.attributionControl.addAttribution('Map: USGS | Wind: National Weather Service');
         var loaded = 0, waiting = 0, t = L.tileLayer(TILES, { maxNativeZoom: 16, maxZoom: 16 });
         t.on('tileload', function () { loaded++; S.tilesOk = true; if (S.tileNote) { S.tileNote = false; note(''); } });
         t.on('tileerror', function () {
@@ -379,12 +373,12 @@
     var state = [];
     if (S.fieldErr) state.push('field forecast not answering');
     if (S.gridErr) state.push('wind map forecast not answering');
-    el.innerHTML = '<b>Forecast (estimate): the same model and run as the rest of this page (' + esc(W.MODEL) + ', named under the 24-hour strip)</b>.' + (S.readAt ? ' Read ' + esc(fmtRun(S.readAt)) + '.' : '') + (state.length ? ' <span class="sw-bad">Now: ' + esc(state.join('; ')) + '.</span>' : '') + ' ' +
+    el.innerHTML = '<b>Forecast (estimate): the same National Weather Service grid as the rest of this page' + (S.F && S.F._nws ? ' (office ' + esc(S.F._nws.office) + ', cell ' + esc(S.F._nws.x) + ',' + esc(S.F._nws.y) + (S.F._nws.updated ? ', issued ' + esc(fmtRun(new Date(S.F._nws.updated))) : '') + ')' : '') + '</b>.' + (S.readAt ? ' Read ' + esc(fmtRun(S.readAt)) + '.' : '') + (state.length ? ' <span class="sw-bad">Now: ' + esc(state.join('; ')) + '.</span>' : '') + ' ' +
       W.CREDITS.map(function (c) { return '<span data-credit="' + c.id + '">' + esc(c.t) + (c.a ? ' <a href="' + esc(c.u) + '" target="_blank" rel="noopener">' + esc(c.a) + '</a>' : '') + (c.tail ? (c.tail === '.' ? '' : ' ') + esc(c.tail) : '') + '</span>'; }).join(' ');
   }
   function renderHow() {
     var I = W.INV, el = $('sw-how'); if (!el) return;
-    el.innerHTML = '<p>The wind comes from the forecast at 25 points around your field, about 7 miles apart, read once when you open this. Between points and hours it is blended in a straight line, so small valleys, tree lines and storms the model does not see are not in it.</p>' +
+    el.innerHTML = '<p>The wind comes from the National Weather Service forecast grid: your field\u2019s 2.5 km cell and the eight cells around it, about 14 miles apart, read once when you open this. Between cells and hours it is blended in a straight line, so small valleys, tree lines and storms the forecast does not see are not in it.</p>' +
       '<p>Boom wind is the 10 m forecast times about 0.75 (the FAO-56 wind profile over short grass). Colours and the band use your product from the box above.</p>' +
       '<p><b>Inversion risk</b> is flagged when the air is calm (under ' + I.calmBoom + ' mph at the boom) from ' + (I.beforeSunsetMin / 60) + ' hours before sunset to ' + (I.afterSunriseMin / 60) + ' hour after sunrise under a mostly clear sky (' + I.clearCloud + '% cloud or less), and wherever the inversion card above rates the risk high. It is a risk read from a forecast, not a measurement: inversions can start hours before sunset and depend on low spots and windbreaks. Smoke that hangs or ground fog means one is there.</p>' +
       '<p>An hour is <b>good</b> when every card above would rate it good and there is no rain in it or the rain-free hours after it. <b>Fair</b> is one factor near a limit. <b>No</b> is any factor past a limit, rain too soon, or inversion risk.</p>';
@@ -424,6 +418,7 @@
     loadCss('/components/spray-wind.css?v=' + V.css),
     needL ? loadCss(LEAFLET + 'leaflet.css') : Promise.resolve(),
     window.AgSprayWin ? Promise.resolve() : loadScript('/components/spray-windows.js?v=' + V.win),
+    window.AgNWS ? Promise.resolve() : loadScript('/components/nws.js?v=' + V.nws),
     needL ? loadScript(LEAFLET + 'leaflet.js').catch(function () { S.mapFailed = true; }) : Promise.resolve()
   ]).then(init, function () { var r = $('sw-root'); if (r) r.innerHTML = '<p class="sw-ph">The wind view did not load. Check your signal and reload the page.</p>'; });
 })();
