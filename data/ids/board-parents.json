@@ -3,12 +3,12 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2164,
-  "with_parent": 128,
+  "live_boards": 2167,
+  "with_parent": 131,
   "with_dest": 112,
   "parent_by_rule": {
    "board-page": 1,
-   "chs-brand": 127
+   "chs-brand": 130
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -592,6 +592,11 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
+  "chsprimeland-chsprimeland": {
+   "elevId": "ekj0yxn1y2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
   "chsriverplains-ashley": {
    "elevId": "e41zb1vf15",
    "parent": "CHS Inc.",
@@ -649,6 +654,16 @@
   },
   "chsriverplains-winner": {
    "elevId": "e1tx9wjye8",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssouthcentral-napoleon": {
+   "elevId": "e2ecnf3cdd",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chssouthcentral-sterling": {
+   "elevId": "ernytrhb1d",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
