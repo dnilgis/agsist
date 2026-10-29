@@ -34,6 +34,9 @@ jobs:
         run: python scripts/fetch_markets.py
 
       - name: Commit and push
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
@@ -41,21 +44,4 @@ jobs:
           git diff --staged --quiet || git commit -m "🎯 Markets — $(date -u +%Y-%m-%d)"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
-
-  # THE SITE DEPLOY (pages.yml, publish only the site). A push made with
-  # GITHUB_TOKEN starts no other workflow; a workflow_dispatch does. So when
-  # the job it needs ends, start the deploy, so new numbers reach readers in 1 to 3
-  # minutes (pages.yml has no schedule of its own). Off until the repository
-  # variable PAGES_FROM_ACTIONS is 1 (the Pages source switch).
-  pages:
-    needs: fetch
-    if: ${{ !cancelled() && needs.fetch.result == 'success' && vars.PAGES_FROM_ACTIONS == '1' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    permissions:
-      actions: write
-    steps:
-      - name: Start the site deploy
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml -R "$GITHUB_REPOSITORY" --ref main || echo "::warning::could not start pages.yml; the next fast job deploys this commit"
+          bash .github/pages-kick.sh

@@ -111,6 +111,7 @@ jobs:
           # enough: a workflow_dispatch is one of the two events GitHub creates
           # runs for even when GITHUB_TOKEN sends it.
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
         run: |
           set -uo pipefail
           git config user.name  "AGSIST Bot"
@@ -147,6 +148,7 @@ jobs:
               echo "push attempt $i lost a race; retrying…"; sleep $((RANDOM % 5 + 2))
             done
             [ "$pushed" = "0" ] && echo "::warning::could not push this cycle; will retry next cycle"
+            [ "$pushed" = "1" ] && bash .github/pages-kick.sh
 
             # ── THE BRIEFING HEARTBEAT ──────────────────────────────────
             #
@@ -196,21 +198,3 @@ jobs:
           # the 19:00 UTC window opens, so after 2026-10-07 it never fired.
           # cot-release-watch.yml now runs on workflow_run after this workflow
           # and after Fetch Grain Bids, whether or not the market is open.
-
-  # THE SITE DEPLOY (pages.yml, publish only the site). A push made with
-  # GITHUB_TOKEN starts no other workflow; a workflow_dispatch does. So when
-  # the job it needs ends, start the deploy, so new numbers reach readers in 1 to 3
-  # minutes (pages.yml has no schedule of its own). Off until the repository
-  # variable PAGES_FROM_ACTIONS is 1 (the Pages source switch).
-  pages:
-    needs: fetch
-    if: ${{ !cancelled() && needs.fetch.result == 'success' && vars.PAGES_FROM_ACTIONS == '1' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    permissions:
-      actions: write
-    steps:
-      - name: Start the site deploy
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml -R "$GITHUB_REPOSITORY" --ref main || echo "::warning::could not start pages.yml; the next fast job deploys this commit"
