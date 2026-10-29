@@ -14,10 +14,11 @@ name: farmland-atlas-pages
 # The land-data run (new deeds, data/land/<st>/summary.json) triggers it too: the IL and WI
 # county pages bake a recorded-sales tile from that file (Oct 19, 2026), and atlas-sales.js
 # redraws the tile from the live file in between. The "Chapter 12 filings" run (a new U.S. Courts
-# F-2 period) triggers it too: each state page carries a Chapter 12 line (Oct 28, 2026).
+# F-2 period) triggers it too: each state page carries a Chapter 12 line (Oct 28, 2026). So does
+# "Farm credit by Fed district" (data/farm-credit/districts.json: the state pages and the hub show it).
 on:
   workflow_run:
-    workflows: ["farmland-atlas", "Land data (parcel services + transfers)", "Chapter 12 filings"]
+    workflows: ["farmland-atlas", "Land data (parcel services + transfers)", "Chapter 12 filings", "Farm credit by Fed district"]
     types: [completed]
   schedule:
     - cron: "41 11 * * 3"      # Wednesdays 11:41 UTC, backstop

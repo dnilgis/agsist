@@ -1,0 +1,1398 @@
+{
+"schema":1,
+"note":"Grain warehouse keepers licensed by Wisconsin DATCP, one row per warehouse keeper license, at the city of the license's mailing address. The list gives no storage capacity. id: the AGSIST elevator id when exactly one of our facilities matches (scripts/licensed_storage.py); unjoined and ambiguous rows are listed, never guessed.",
+"source":{
+"name":"Wisconsin Department of Agriculture, Trade and Consumer Protection, licensed grain dealers and warehouse keepers",
+"short":"WI DATCP",
+"url":"https://datcp.wi.gov/Documents/LicensedGrainDealersAndWarehouseKeepers.xls",
+"as_of":"2026-05-04",
+"read":"2026-10-28",
+"sha256":"3a49582f7d4397fba226a28e5bc54ab910da2e0ebce1030818816948ecead860"
+},
+"totals":{
+"dealer_licences":205,
+"warehouse_keepers":83,
+"locations":83,
+"in_state":81
+},
+"join":{
+"joined":16,
+"of":83,
+"rate":0.1928,
+"by_rule":{
+"name+town":16,
+"alias+town":0
+},
+"with_bids_key":15,
+"unjoined":63,
+"ambiguous":4
+},
+"locations":[
+{
+"lic":"559335",
+"dealer":"560300",
+"status":"Warehouse & Dealer",
+"name":"121 Farms LLC",
+"city":"Independence",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"264124",
+"dealer":null,
+"status":"Warehouse Only",
+"name":"24/7 Grain Services LLC",
+"city":"Almena",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"331321",
+"dealer":"187964",
+"status":"Warehouse & Dealer",
+"name":"Ace Ethanol, LLC",
+"city":"Stanley",
+"st":"WI",
+"id":"ey2x42y9rr",
+"src":[
+"known:ACE Ethanol|Ace Ethanol LLC|Stanley|WI"
+],
+"how":"name+town"
+},
+{
+"lic":"283119",
+"dealer":"255391",
+"status":"Warehouse & Dealer",
+"name":"Albion Grain LLC",
+"city":"Eleva",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"310017",
+"dealer":"310018",
+"status":"Warehouse & Dealer",
+"name":"Appell Grain Inc.",
+"city":"Shullsburg",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"198549",
+"dealer":"187897",
+"status":"Warehouse & Dealer",
+"name":"Atlas Cooperative",
+"city":"Luck",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"206997",
+"dealer":"206996",
+"status":"Warehouse & Dealer",
+"name":"Aurora Grains, LLC",
+"city":"Berlin",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"302162",
+"dealer":"302165",
+"status":"Warehouse & Dealer",
+"name":"Badger Grain Supply, LLC",
+"city":"Wheeler",
+"st":"WI",
+"id":"ephwex6d49",
+"src":[
+"badgergrain-wheeler"
+],
+"how":"name+town"
+},
+{
+"lic":"188127",
+"dealer":"187883",
+"status":"Warehouse & Dealer",
+"name":"Burnett Dairy Cooperative",
+"city":"Grantsburg",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188142",
+"dealer":"187913",
+"status":"Warehouse & Dealer",
+"name":"Cadott Grain Service, LLC",
+"city":"Cadott",
+"st":"WI",
+"id":"ex020t2gjp",
+"src":[
+"reg:WI|cadottgrainservicellc|cadott"
+],
+"how":"name+town"
+},
+{
+"lic":"188185",
+"dealer":"188033",
+"status":"Warehouse & Dealer",
+"name":"Carrousel Grain Service Inc.",
+"city":"Monroe",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"330132",
+"dealer":"281740",
+"status":"Warehouse & Dealer",
+"name":"CDR Farms, LLC",
+"city":"Bloomer",
+"st":"WI",
+"id":"eh8h7h57g5",
+"src":[
+"cdrfarmsllc-bloomer"
+],
+"how":"name+town"
+},
+{
+"lic":"188210",
+"dealer":"188080",
+"status":"Warehouse & Dealer",
+"name":"CFS Specialties, Inc.",
+"city":"Cashton",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"196963",
+"dealer":"187970",
+"status":"Warehouse & Dealer",
+"name":"Chaseburg Farmers Union Cooperative Service",
+"city":"Chaseburg",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188188",
+"dealer":"188040",
+"status":"Warehouse & Dealer",
+"name":"Clintonville Elevator Company",
+"city":"Clintonville",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188167",
+"dealer":"187988",
+"status":"Warehouse & Dealer",
+"name":"Community AG Service, Inc.",
+"city":"Van Dyne",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188113",
+"dealer":"187840",
+"status":"Warehouse & Dealer",
+"name":"Cushing Cooperative Society",
+"city":"Cushing",
+"st":"WI",
+"id":"ezsvwq42aq",
+"src":[
+"cushingcoop-cushingcoop"
+],
+"how":"name+town"
+},
+{
+"lic":"188205",
+"dealer":"188058",
+"status":"Warehouse & Dealer",
+"name":"Daybreak Foods, Inc.",
+"city":"Lake Mills",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"209657",
+"dealer":"187822",
+"status":"Warehouse & Dealer",
+"name":"Door County Cooperative",
+"city":"Sturgeon Bay",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"322669",
+"dealer":"187983",
+"status":"Warehouse & Dealer",
+"name":"Eastland Feed and Grain, Inc.",
+"city":"Shannon",
+"st":"IL",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188147",
+"dealer":"187920",
+"status":"Warehouse & Dealer",
+"name":"Edward Reinemann & Son, Inc.",
+"city":"Reedsville",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188148",
+"dealer":"187922",
+"status":"Warehouse & Dealer",
+"name":"Fairwater Feed & Supply, LLC",
+"city":"Fairwater",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"251981",
+"dealer":"331696",
+"status":"Warehouse & Dealer",
+"name":"Fan-Agra Corp.",
+"city":"Mazomanie",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188109",
+"dealer":"187827",
+"status":"Warehouse & Dealer",
+"name":"Farmers Elevator Company (Limited) of Waupun",
+"city":"Waupun",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"197477",
+"dealer":"197471",
+"status":"Warehouse & Dealer",
+"name":"Farmers' Grain & Feed, LLC",
+"city":"Allenton",
+"st":"WI",
+"id":"ettd1jt742",
+"src":[
+"known:2329"
+],
+"how":"name+town"
+},
+{
+"lic":"283108",
+"dealer":"283111",
+"status":"Warehouse & Dealer",
+"name":"Flash Grain LLC",
+"city":"Thorp",
+"st":"WI",
+"id":"e8kfz2zf51",
+"src":[
+"flashgrain-thorp"
+],
+"how":"name+town"
+},
+{
+"lic":"296329",
+"dealer":"296336",
+"status":"Warehouse & Dealer",
+"name":"Furseth Farms, Inc.",
+"city":"Stoughton",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"521943",
+"dealer":"521939",
+"status":"Warehouse & Dealer",
+"name":"Furst-McNess Company",
+"city":"Rockford",
+"st":"IL",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"559829",
+"dealer":"548481",
+"status":"Warehouse & Dealer",
+"name":"Grain X Milling LLC",
+"city":"Sturgeon Bay",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"514925",
+"dealer":"331135",
+"status":"Warehouse & Dealer",
+"name":"Grantland Grain, LLC",
+"city":"Potosi",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"310905",
+"dealer":"310907",
+"status":"Warehouse & Dealer",
+"name":"Great Lakes Agri-Services, Inc.",
+"city":"Adell",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"270412",
+"dealer":"228725",
+"status":"Warehouse & Dealer",
+"name":"Hartmann Farms, LLC",
+"city":"Lodi",
+"st":"WI",
+"id":"ea0ysjzj7b",
+"src":[
+"reg:WI|hartmannfarmsllc|lodi"
+],
+"how":"name+town"
+},
+{
+"lic":"262955",
+"dealer":"264110",
+"status":"Warehouse & Dealer",
+"name":"Harvey Creek Grain, LLC",
+"city":"Mondovi",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"523543",
+"dealer":"525436",
+"status":"Warehouse & Dealer",
+"name":"Hay River Grain, LLC",
+"city":"Almena",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"228960",
+"dealer":"228961",
+"status":"Warehouse & Dealer",
+"name":"Hegg Mill, LLC",
+"city":"Ettrick",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"560377",
+"dealer":"537306",
+"status":"Warehouse & Dealer",
+"name":"Holtz Farms Grain LLC",
+"city":"Lake Delton",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"511550",
+"dealer":null,
+"status":"Warehouse Only",
+"name":"Key Grains LLC",
+"city":"Viroqua",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"541454",
+"dealer":"541453",
+"status":"Warehouse & Dealer",
+"name":"Kruger, Inc.",
+"city":"Eleva",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"558960",
+"dealer":null,
+"status":"Warehouse Only",
+"name":"Legacy Grain Solutions LLC",
+"city":"Cambria",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188212",
+"dealer":"188085",
+"status":"Warehouse & Dealer",
+"name":"Lime Ridge Ag Supply, Inc.",
+"city":"Lime Ridge",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188175",
+"dealer":"188011",
+"status":"Warehouse & Dealer",
+"name":"Linden Milling Co., Inc.",
+"city":"Linden",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188162",
+"dealer":"187973",
+"status":"Warehouse & Dealer",
+"name":"Luther Grain Sales & Service, LLC",
+"city":"Baraboo",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188194",
+"dealer":"187884",
+"status":"Warehouse & Dealer",
+"name":"Luxemburg Milling Co. Ltd.",
+"city":"Luxemburg",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"193987",
+"dealer":"187993",
+"status":"Warehouse & Dealer",
+"name":"Main Grain L.L.C.",
+"city":"Conrath",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"204116",
+"dealer":"187882",
+"status":"Warehouse & Dealer",
+"name":"Medford Co-operative, Inc.",
+"city":"Medford",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188135",
+"dealer":"187873",
+"status":"Warehouse & Dealer",
+"name":"Melrose Farm Service, Inc.",
+"city":"Melrose",
+"st":"WI",
+"id":"ezvwgta5fp",
+"src":[
+"melrosefarmservice-melrosefarmservice"
+],
+"how":"name+town"
+},
+{
+"lic":"188132",
+"dealer":"187899",
+"status":"Warehouse & Dealer",
+"name":"Meyer Brothers Grain, Inc.",
+"city":"Elk Mound",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"331907",
+"dealer":"331897",
+"status":"Warehouse & Dealer",
+"name":"Michaelson, Larry D",
+"city":"Balsam Lake",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"286621",
+"dealer":"252525",
+"status":"Warehouse & Dealer",
+"name":"Midwest Commodity Service, Inc.",
+"city":"Baldwin",
+"st":"WI",
+"id":"ecbd1eskdj",
+"src":[
+"midwestcommodity-baldwin"
+],
+"how":"name+town"
+},
+{
+"lic":"525825",
+"dealer":"525849",
+"status":"Warehouse & Dealer",
+"name":"Mt. Tabor Mill, LLC",
+"city":"Kendall",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"329222",
+"dealer":"321879",
+"status":"Warehouse & Dealer",
+"name":"New Age Grain, LLC",
+"city":"Prairie Du Sac",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188122",
+"dealer":"187887",
+"status":"Warehouse & Dealer",
+"name":"Northside Elevator, Inc.",
+"city":"Loyal",
+"st":"WI",
+"id":"epnx2w7k99",
+"src":[
+"northsideelevator-loyal"
+],
+"how":"name+town"
+},
+{
+"lic":"188189",
+"dealer":"188044",
+"status":"Warehouse & Dealer",
+"name":"Nutrition Service Company, LLC",
+"city":"Pulaski",
+"st":"WI",
+"id":"e9k7f5pxe8",
+"src":[
+"nutritionservice-pulaski"
+],
+"how":"name+town"
+},
+{
+"lic":"188117",
+"dealer":"187875",
+"status":"Warehouse & Dealer",
+"name":"Oakfield Elevator Company, Inc.",
+"city":"Oakfield",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"282583",
+"dealer":"188029",
+"status":"Warehouse & Dealer",
+"name":"Olson Feed Service, Inc.",
+"city":"Gays Mills",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"536002",
+"dealer":"187892",
+"status":"Warehouse & Dealer",
+"name":"Oregon Farm Center, Inc.",
+"city":"Oregon",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188154",
+"dealer":"187933",
+"status":"Warehouse & Dealer",
+"name":"Peachey Brothers Elevator, Inc.",
+"city":"Burnett",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188163",
+"dealer":"187976",
+"status":"Warehouse & Dealer",
+"name":"Pleasant Grain, LLC",
+"city":"Monticello",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188174",
+"dealer":"187855",
+"status":"Warehouse & Dealer",
+"name":"Plum City Feed Mill, Inc.",
+"city":"Plum City",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"262530",
+"dealer":"187991",
+"status":"Warehouse & Dealer",
+"name":"Prairie Ag Supply, LLC",
+"city":"Menomonie",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"548122",
+"dealer":"548173",
+"status":"Warehouse & Dealer",
+"name":"Reddy Feed & Grain LLC",
+"city":"Stitzer",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"310263",
+"dealer":"211450",
+"status":"Warehouse & Dealer",
+"name":"Reynolds Feed and Supply LLC",
+"city":"Cobb",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188126",
+"dealer":"187846",
+"status":"Warehouse & Dealer",
+"name":"Riverdale Ag Service, Inc.",
+"city":"Muscoda",
+"st":"WI",
+"id":"erv67tqxqz",
+"src":[
+"known:2702"
+],
+"how":"name+town"
+},
+{
+"lic":"328705",
+"dealer":"328704",
+"status":"Warehouse & Dealer",
+"name":"Rooney Grain, LLC",
+"city":"Chippewa Falls",
+"st":"WI",
+"id":"ex2gn12qmh",
+"src":[
+"rooneygrain-rooneygrain"
+],
+"how":"name+town"
+},
+{
+"lic":"287717",
+"dealer":null,
+"status":"Warehouse Only",
+"name":"Rusk Prairie Grain Service",
+"city":"Menomonie",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"536201",
+"dealer":"531085",
+"status":"Warehouse & Dealer",
+"name":"Schroeder Family Farms, Inc.",
+"city":"Ellsworth",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188197",
+"dealer":"188057",
+"status":"Warehouse & Dealer",
+"name":"See-Mor Grain, Inc.",
+"city":"Darlington",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188116",
+"dealer":"187869",
+"status":"Warehouse & Dealer",
+"name":"Seymour Flour Mill, Inc.",
+"city":"Seymour",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188138",
+"dealer":"187906",
+"status":"Warehouse & Dealer",
+"name":"Sparta Cooperative Services",
+"city":"Sparta",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"289573",
+"dealer":"187978",
+"status":"Warehouse & Dealer",
+"name":"Star Blends, LLC",
+"city":"Sparta",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"321881",
+"dealer":"330865",
+"status":"Warehouse & Dealer",
+"name":"Stello Storage, LLC",
+"city":"Mindoro",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188206",
+"dealer":"188041",
+"status":"Warehouse & Dealer",
+"name":"Synergy Community Cooperative",
+"city":"Ridgeland",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"214844",
+"dealer":"199297",
+"status":"Warehouse & Dealer",
+"name":"Tarkowski Grain & Roasting, LLC",
+"city":"Denmark",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188182",
+"dealer":"188027",
+"status":"Warehouse & Dealer",
+"name":"Tisch Mills Farm Center, Inc.",
+"city":"Tisch Mills",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188157",
+"dealer":"187931",
+"status":"Warehouse & Dealer",
+"name":"Total Grain Services, LLC",
+"city":"Wrightstown",
+"st":"WI",
+"id":"a00488",
+"src":[],
+"how":"name+town"
+},
+{
+"lic":"188156",
+"dealer":"187936",
+"status":"Warehouse & Dealer",
+"name":"Universal Co-operative Association",
+"city":"Lebanon",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188115",
+"dealer":"187847",
+"status":"Warehouse & Dealer",
+"name":"Van Groll, Inc.",
+"city":"Kaukauna",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188121",
+"dealer":"187836",
+"status":"Warehouse & Dealer",
+"name":"Walsh Grain Farms, Inc.",
+"city":"Mauston",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"188173",
+"dealer":"187819",
+"status":"Warehouse & Dealer",
+"name":"West Bend Elevator, Inc.",
+"city":"West Bend",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"271639",
+"dealer":"271766",
+"status":"Warehouse & Dealer",
+"name":"Westdale Farm, LLC",
+"city":"Centuria",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"296355",
+"dealer":"296357",
+"status":"Warehouse & Dealer",
+"name":"Wheaton Grain, Inc.",
+"city":"Chippewa Falls",
+"st":"WI",
+"id":"ewxf7ap08q",
+"src":[
+"wheatongrain-chippewafalls"
+],
+"how":"name+town"
+},
+{
+"lic":"248090",
+"dealer":null,
+"status":"Warehouse Only",
+"name":"Wiese Brothers Farms",
+"city":"Greenleaf",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+},
+{
+"lic":"222552",
+"dealer":"187953",
+"status":"Warehouse & Dealer",
+"name":"Wisco Frozen Foods, Inc.",
+"city":"Abbotsford",
+"st":"WI",
+"id":null,
+"src":[],
+"how":null
+}
+],
+"unjoined":[
+{
+"i":0,
+"why":"no facility of this operator in this town in our list",
+"lic":"559335",
+"city":"Independence"
+},
+{
+"i":1,
+"why":"no facility of this operator in this town in our list",
+"lic":"264124",
+"city":"Almena"
+},
+{
+"i":3,
+"why":"no facility of this operator in this town in our list",
+"lic":"283119",
+"city":"Eleva"
+},
+{
+"i":4,
+"why":"no facility of this operator in this town in our list",
+"lic":"310017",
+"city":"Shullsburg"
+},
+{
+"i":5,
+"why":"no facility of this operator in this town in our list",
+"lic":"198549",
+"city":"Luck"
+},
+{
+"i":6,
+"why":"no facility of this operator in this town in our list",
+"lic":"206997",
+"city":"Berlin"
+},
+{
+"i":8,
+"why":"no facility of this operator in this town in our list",
+"lic":"188127",
+"city":"Grantsburg"
+},
+{
+"i":10,
+"why":"no facility of this operator in this town in our list",
+"lic":"188185",
+"city":"Monroe"
+},
+{
+"i":12,
+"why":"no facility of this operator in this town in our list",
+"lic":"188210",
+"city":"Cashton"
+},
+{
+"i":13,
+"why":"no facility of this operator in this town in our list",
+"lic":"196963",
+"city":"Chaseburg"
+},
+{
+"i":14,
+"why":"no facility of this operator in this town in our list",
+"lic":"188188",
+"city":"Clintonville"
+},
+{
+"i":15,
+"why":"no facility of this operator in this town in our list",
+"lic":"188167",
+"city":"Van Dyne"
+},
+{
+"i":17,
+"why":"no facility of this operator in this town in our list",
+"lic":"188205",
+"city":"Lake Mills"
+},
+{
+"i":18,
+"why":"no facility of this operator in this town in our list",
+"lic":"209657",
+"city":"Sturgeon Bay"
+},
+{
+"i":19,
+"why":"no facility of this operator in this town in our list",
+"lic":"322669",
+"city":"Shannon"
+},
+{
+"i":20,
+"why":"no facility of this operator in this town in our list",
+"lic":"188147",
+"city":"Reedsville"
+},
+{
+"i":21,
+"why":"no facility of this operator in this town in our list",
+"lic":"188148",
+"city":"Fairwater"
+},
+{
+"i":22,
+"why":"no facility of this operator in this town in our list",
+"lic":"251981",
+"city":"Mazomanie"
+},
+{
+"i":23,
+"why":"no facility of this operator in this town in our list",
+"lic":"188109",
+"city":"Waupun"
+},
+{
+"i":26,
+"why":"no facility of this operator in this town in our list",
+"lic":"296329",
+"city":"Stoughton"
+},
+{
+"i":27,
+"why":"no facility of this operator in this town in our list",
+"lic":"521943",
+"city":"Rockford"
+},
+{
+"i":28,
+"why":"no facility of this operator in this town in our list",
+"lic":"559829",
+"city":"Sturgeon Bay"
+},
+{
+"i":29,
+"why":"no facility of this operator in this town in our list",
+"lic":"514925",
+"city":"Potosi"
+},
+{
+"i":30,
+"why":"no facility of this operator in this town in our list",
+"lic":"310905",
+"city":"Adell"
+},
+{
+"i":32,
+"why":"no facility of this operator in this town in our list",
+"lic":"262955",
+"city":"Mondovi"
+},
+{
+"i":33,
+"why":"no facility of this operator in this town in our list",
+"lic":"523543",
+"city":"Almena"
+},
+{
+"i":34,
+"why":"no facility of this operator in this town in our list",
+"lic":"228960",
+"city":"Ettrick"
+},
+{
+"i":35,
+"why":"no facility of this operator in this town in our list",
+"lic":"560377",
+"city":"Lake Delton"
+},
+{
+"i":36,
+"why":"no facility of this operator in this town in our list",
+"lic":"511550",
+"city":"Viroqua"
+},
+{
+"i":37,
+"why":"no facility of this operator in this town in our list",
+"lic":"541454",
+"city":"Eleva"
+},
+{
+"i":38,
+"why":"no facility of this operator in this town in our list",
+"lic":"558960",
+"city":"Cambria"
+},
+{
+"i":39,
+"why":"no facility of this operator in this town in our list",
+"lic":"188212",
+"city":"Lime Ridge"
+},
+{
+"i":40,
+"why":"no facility of this operator in this town in our list",
+"lic":"188175",
+"city":"Linden"
+},
+{
+"i":41,
+"why":"no facility of this operator in this town in our list",
+"lic":"188162",
+"city":"Baraboo"
+},
+{
+"i":42,
+"why":"no facility of this operator in this town in our list",
+"lic":"188194",
+"city":"Luxemburg"
+},
+{
+"i":43,
+"why":"no facility of this operator in this town in our list",
+"lic":"193987",
+"city":"Conrath"
+},
+{
+"i":47,
+"why":"no facility of this operator in this town in our list",
+"lic":"331907",
+"city":"Balsam Lake"
+},
+{
+"i":49,
+"why":"no facility of this operator in this town in our list",
+"lic":"525825",
+"city":"Kendall"
+},
+{
+"i":50,
+"why":"no facility of this operator in this town in our list",
+"lic":"329222",
+"city":"Prairie Du Sac"
+},
+{
+"i":53,
+"why":"no facility of this operator in this town in our list",
+"lic":"188117",
+"city":"Oakfield"
+},
+{
+"i":54,
+"why":"no facility of this operator in this town in our list",
+"lic":"282583",
+"city":"Gays Mills"
+},
+{
+"i":55,
+"why":"no facility of this operator in this town in our list",
+"lic":"536002",
+"city":"Oregon"
+},
+{
+"i":56,
+"why":"no facility of this operator in this town in our list",
+"lic":"188154",
+"city":"Burnett"
+},
+{
+"i":57,
+"why":"no facility of this operator in this town in our list",
+"lic":"188163",
+"city":"Monticello"
+},
+{
+"i":58,
+"why":"no facility of this operator in this town in our list",
+"lic":"188174",
+"city":"Plum City"
+},
+{
+"i":59,
+"why":"no facility of this operator in this town in our list",
+"lic":"262530",
+"city":"Menomonie"
+},
+{
+"i":60,
+"why":"no facility of this operator in this town in our list",
+"lic":"548122",
+"city":"Stitzer"
+},
+{
+"i":61,
+"why":"no facility of this operator in this town in our list",
+"lic":"310263",
+"city":"Cobb"
+},
+{
+"i":64,
+"why":"no facility of this operator in this town in our list",
+"lic":"287717",
+"city":"Menomonie"
+},
+{
+"i":65,
+"why":"no facility of this operator in this town in our list",
+"lic":"536201",
+"city":"Ellsworth"
+},
+{
+"i":67,
+"why":"no facility of this operator in this town in our list",
+"lic":"188116",
+"city":"Seymour"
+},
+{
+"i":68,
+"why":"no facility of this operator in this town in our list",
+"lic":"188138",
+"city":"Sparta"
+},
+{
+"i":69,
+"why":"no facility of this operator in this town in our list",
+"lic":"289573",
+"city":"Sparta"
+},
+{
+"i":70,
+"why":"no facility of this operator in this town in our list",
+"lic":"321881",
+"city":"Mindoro"
+},
+{
+"i":71,
+"why":"no facility of this operator in this town in our list",
+"lic":"188206",
+"city":"Ridgeland"
+},
+{
+"i":72,
+"why":"no facility of this operator in this town in our list",
+"lic":"214844",
+"city":"Denmark"
+},
+{
+"i":73,
+"why":"no facility of this operator in this town in our list",
+"lic":"188182",
+"city":"Tisch Mills"
+},
+{
+"i":75,
+"why":"no facility of this operator in this town in our list",
+"lic":"188156",
+"city":"Lebanon"
+},
+{
+"i":76,
+"why":"no facility of this operator in this town in our list",
+"lic":"188115",
+"city":"Kaukauna"
+},
+{
+"i":78,
+"why":"no facility of this operator in this town in our list",
+"lic":"188173",
+"city":"West Bend"
+},
+{
+"i":79,
+"why":"no facility of this operator in this town in our list",
+"lic":"271639",
+"city":"Centuria"
+},
+{
+"i":81,
+"why":"no facility of this operator in this town in our list",
+"lic":"248090",
+"city":"Greenleaf"
+},
+{
+"i":82,
+"why":"no facility of this operator in this town in our list",
+"lic":"222552",
+"city":"Abbotsford"
+}
+],
+"ambiguous":[
+{
+"i":44,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00441",
+"ew7m06c83v"
+],
+"lic":"204116",
+"city":"Medford"
+},
+{
+"i":46,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00478",
+"egj4h0chb1"
+],
+"lic":"188132",
+"city":"Elk Mound"
+},
+{
+"i":66,
+"why":"3 facilities of this operator in this town",
+"ids":[
+"a00451",
+"efertg0pdn",
+"ezwx4wsvks"
+],
+"lic":"188197",
+"city":"Darlington"
+},
+{
+"i":77,
+"why":"2 facilities of this operator in this town",
+"ids":[
+"a00452",
+"ean2gdbbep"
+],
+"lic":"188121",
+"city":"Mauston"
+}
+]
+}

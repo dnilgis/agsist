@@ -76,6 +76,9 @@ build/shots/
 # scripts/backfill_*.py and scripts/history_append.py, saved to the private raw
 # branch with scripts/push_raw.sh, never to main.
 /history/
+# Daily point-in-time copies of outside data (Oct 28): written in the runner by
+# scripts/vintage.py, saved to the private raw branch by vintage.yml, never main.
+/vintage/
 
 # scripts/dev/verify.sh writes its last test run here for the Stop hook (Oct 22); per checkout, never committed
 /.verify/
