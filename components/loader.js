@@ -544,8 +544,12 @@
   }
   window.AgsistSlots = { ribbon: function (sp, id) { return ribbonInner(sp, id, false); }, supporter: supporterInner };
   var OPEN_SLOT_LINE = true;
+  /* Oct 29, 2026 rate card: a state's cash bids and cash rent ribbons sell as the State Sponsor, /cash-bids
+     as the Cash Bids Sponsor. Every other page ribbon is retired: it stays empty, with no link. */
+  function openSlotTier(id) { return id === 'cash-bids' ? 'cashbids' : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? 'state' : ''; }
   function openSlotLine(rib, id) {
-    if (!OPEN_SLOT_LINE || !rib || rib.className !== 'ag-sponsor-ribbon' || !/^[a-z0-9-]+$/.test(id)) return;
+    var tier = openSlotTier(id);
+    if (!OPEN_SLOT_LINE || !rib || rib.className !== 'ag-sponsor-ribbon' || !tier) return;
     if (!document.getElementById('ag-open-slot-css')) {
       var st = document.createElement('style');
       st.id = 'ag-open-slot-css';
@@ -557,7 +561,7 @@
     }
     rib.classList.add('ag-sponsor-ribbon--open');
     rib.setAttribute('aria-label', 'Sponsor this page');
-    rib.innerHTML = '<a class="ag-open-slot" href="' + BASE + '/sponsor-apply?tier=page&amp;slot=' + encodeURIComponent(id) +
+    rib.innerHTML = '<a class="ag-open-slot" href="' + BASE + '/sponsor-apply?tier=' + tier + '&amp;slot=' + encodeURIComponent(id) +
       '" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'open_slot\'})">Sponsor this page</a>';
   }
   var GEO_SKIP = /^\/(rain-print|rp-gift|rain-gauge|gifts-for-farmers|birth-year-weather-gift|wedding-year-weather-gift|farm-anniversary-gifts|farmer-retirement-gifts)(?:[.\/-]|$)/;

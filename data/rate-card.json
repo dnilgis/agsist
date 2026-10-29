@@ -1,37 +1,59 @@
 {
-  "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS. These prices are published in three places: sponsor.html (the pitch), about.html, and now each sponsor's own portal. scripts/test_rate_card.py fails if a price here is not present on sponsor.html, so the two cannot drift without somebody being told. Prices are MONTHLY since 2026-10-07 (price_month). Change a price HERE first, then the prose around it.",
-  "_updated": "2026-10-07",
+  "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS (pricing panel, Oct 29, 2026). Read by sponsor.html, sponsor-apply.html, sponsor-kit.html, each sponsor's own portal and scripts/sponsor_apply.py. scripts/test_rate_card.py fails if a price or term here is not on sponsor.html. Prices are MONTHLY (price_month). A State Sponsor costs price_month in most states and price_by_state where listed; a state in opens_soon is shown but not taken yet. Change a price HERE first, then run scripts/stamp_rates.py and the prose around it.",
+  "_updated": "2026-10-29",
   "currency": "USD",
   "trial": "First month free on every tier. No card, no commitment.",
-  "terms": "Month-to-month. No minimum, cancel any time, no penalty.",
+  "day30": "On day 30 you get a report and one email asking yes or no. No reply means the ad comes down and nothing is owed.",
+  "terms": "Month to month after that. No minimum, cancel any time, no penalty.",
+  "prepay": "Pay 12 months up front for the price of 10.",
+  "paperwork": "W-9 and invoice on request.",
+  "founding": {
+    "sponsors": 5,
+    "months": 24,
+    "text": "Founding sponsor rate: the first 5 paying sponsors keep their price for 24 months."
+  },
+  "insurance": "Farmers First never takes a sponsor slot, and AGSIST never sends readers to an agent.",
   "tiers": [
     {
       "id": "daily",
-      "name": "Sponsor",
+      "name": "Daily Sponsor",
       "price_month": 149,
       "slots": 1,
       "exclusive": true,
-      "placement": "In every daily briefing, web and email, plus a sponsor strip above the fold on the homepage.",
-      "note": "One ag company per issue. Rate locked for 12 months from start date. Once filled, the next slot opens only on renewal.",
-      "year_equivalent": 1788
+      "placement": "Your card in every Daily briefing, on the web and in the email, plus a sponsor strip near the top of the homepage. One sponsor only."
     },
     {
-      "id": "page",
-      "name": "Own a page",
+      "id": "state",
+      "name": "State Sponsor",
       "price_month": 29,
+      "price_by_state": {"IL": 49, "MN": 49, "WI": 49, "TX": 49},
+      "opens_soon": ["TX"],
       "slots": null,
+      "one_per_state": true,
       "exclusive": true,
-      "placement": "One sponsor ribbon on a single high-traffic page, category-exclusive.",
-      "note": "Any one page: cash bids, the hail map, break-even, a state hail page. The 51 state hail pages can each carry their own ribbon at the same rate."
+      "placement": "One business per state: the state's cash bids page and every town page in it, the state's cash rent page, and a card shown to readers in that state."
     },
     {
-      "id": "supporter",
-      "name": "Supporter",
-      "price_month": 15,
-      "slots": 6,
+      "id": "cashbids",
+      "name": "Cash Bids Sponsor",
+      "price_month": 49,
+      "slots": 1,
+      "exclusive": true,
+      "slot": "cash-bids",
+      "placement": "The sponsor ribbon on Cash Bids near me (agsist.com/cash-bids). One sponsor only."
+    },
+    {
+      "id": "elevator",
+      "name": "Featured elevator",
+      "price_month": 19,
+      "slots": null,
       "exclusive": false,
-      "placement": "Your name or logo in the shared Supporters strip in the footer of every page.",
-      "note": "Non-exclusive and capped at 6 so the strip keeps its value."
+      "placement": "An elevator's own logo, phone and a call to sell box on its own town page, labeled Sponsored. It never changes bid order or any bid."
     }
-  ]
+  ],
+  "retired": {
+    "_": "Tier ids that older records may still carry. Not sold since Oct 29, 2026. A state's cash bids and cash rent ribbons are now the State Sponsor, /cash-bids is the Cash Bids Sponsor, and the other single page ribbons are not sold.",
+    "page": "Own a page",
+    "supporter": "Supporter"
+  }
 }
