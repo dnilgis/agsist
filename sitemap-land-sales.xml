@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Farmland sales. Written by scripts/build_land_sales.py; lastmod is the day the state files were read. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://agsist.com/land-sales/</loc><lastmod>2026-10-18</lastmod></url>
-  <url><loc>https://agsist.com/land-sales/2026-09</loc><lastmod>2026-10-18</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/2026-09</loc><lastmod>2026-10-29</lastmod></url>
   <url><loc>https://agsist.com/land-sales/illinois/adams-county</loc><lastmod>2026-10-18</lastmod></url>
   <url><loc>https://agsist.com/land-sales/illinois/alexander-county</loc><lastmod>2026-10-18</lastmod></url>
   <url><loc>https://agsist.com/land-sales/illinois/bond-county</loc><lastmod>2026-10-18</lastmod></url>
@@ -269,4 +269,18 @@
   <url><loc>https://agsist.com/land-sales/indiana/wells-county</loc><lastmod>2026-10-18</lastmod></url>
   <url><loc>https://agsist.com/land-sales/indiana/white-county</loc><lastmod>2026-10-18</lastmod></url>
   <url><loc>https://agsist.com/land-sales/indiana/whitley-county</loc><lastmod>2026-10-18</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/addison-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/bennington-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/caledonia-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/chittenden-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/essex-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/franklin-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/grand-isle-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/lamoille-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/orange-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/orleans-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/rutland-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/washington-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/windham-county</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://agsist.com/land-sales/vermont/windsor-county</loc><lastmod>2026-10-29</lastmod></url>
 </urlset>

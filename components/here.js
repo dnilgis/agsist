@@ -20,8 +20,8 @@
   if (!P) return;
   var LS_ZIP = 'agsist_user_zip';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var SALES_JS = '/components/atlas-sales.js?v=c3fa7673';
-  var CL_JS = '/components/change-lines.js?v=1';
+  var SALES_JS = '/components/atlas-sales.js?v=f31b5c18';
+  var CL_JS = '/components/change-lines.js?v=2';
   var CM_JS = '/components/changemap.js?v=2';
   var S = { seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
   var memo = {};

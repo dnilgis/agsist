@@ -6,8 +6,8 @@
    "Email me new farm sales near me, once a month": an email, a ZIP and a radius (10, 25 or 50
    miles, 25 picked). It posts the worker's /notice with topic landsales:<ZIP>:<miles>
    (subs worker v5.55); scripts/send_land_alert.py mails it on the 3rd of each month with the
-   farm sales recorded the month before within that radius, Illinois, Wisconsin and Indiana (Indiana on
-   since Oct 27, 2026). A month with
+   farm sales recorded the month before within that radius, Illinois, Wisconsin, Indiana and Vermont
+   (Indiana on since Oct 27, 2026, Vermont since Oct 29). A month with
    no sales sends nothing. After it goes through, the site's "One more?" panel
    (AgsistSignup.oneMore) offers the Daily, never ticked.
 
@@ -30,12 +30,13 @@
   var EP = 'https://agsist-api.dnilgis.workers.dev/notice';
   var MILES = [10, 25, 50], DEF = 25;
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  /* ZIP3 in or beside Illinois, Wisconsin and Indiana: IL 600-629, WI 530-549, IN 460-479, IA 500-528,
-     MN 550-567, MO 630-658, KY 400-427, MI 480-499, OH 430-459 */
-  var NEAR = /^(6[0-2]\d|5[34]\d|50\d|51\d|52[0-8]|55\d|56[0-7]|4[67]\d|6[34]\d|65[0-8]|4[01]\d|42[0-7]|4[89]\d|4[345]\d)/;
+  /* ZIP3 in or beside Illinois, Wisconsin, Indiana and Vermont: IL 600-629, WI 530-549, IN 460-479, IA 500-528,
+     MN 550-567, MO 630-658, KY 400-427, MI 480-499, OH 430-459; VT 050-059, NH 030-038, eastern NY 120-129,
+     western MA 010-013 */
+  var NEAR = /^(6[0-2]\d|5[34]\d|50\d|51\d|52[0-8]|55\d|56[0-7]|4[67]\d|6[34]\d|65[0-8]|4[01]\d|42[0-7]|4[89]\d|4[345]\d|05\d|03[0-8]|12\d|01[0-3])/;
   var HEAD = 'Email me new farm sales near me, once a month';
   var SUB = 'The farm sales recorded each month within the miles you pick of your ZIP: the date, acres, price per acre and township. '
-    + 'Illinois, Wisconsin and Indiana. Never who bought or sold. A month with no sales sends nothing.';
+    + 'Illinois, Wisconsin, Indiana and Vermont. Never who bought or sold. A month with no sales sends nothing.';
   var IN_DONE = ' Indiana sales carry the sale date and the parcel\u2019s mailing town (placed at its ZIP), not a recording date or township.';
   var seq = 0;
 

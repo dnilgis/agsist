@@ -29,6 +29,13 @@ made-up and real, and compares them row for row and the patterns character for c
     partition, trade, exchange and the like, read even when the state file cuts the type short),
     a whole interest, and not dated after the fetch.
   - statOK: a $/acre of $500 or more. A sale under it never feeds a median or a range.
+  - THE ONE LAND RULE (Sig, Oct 29, 2026; property panel synthesis): buildings are read from the
+    property class only (FSLand.hasBuildings: class 1, 2, 3 or 7 on the return), never from deed
+    text; Illinois declarations carry no class that says so, so an Illinois sale is never marked.
+    A Wisconsin or Vermont sale whose classes are forest (5M or 6) with no agricultural class 4 is a forest
+    sale (FSLand.isForest). Every middle (median, middle half, unusual range) counts bare farm
+    land only (farm_comp: a market sale, 20+ known acres, $500+/acre, no buildings, not forest);
+    sales with buildings and forest sales are listed and counted, never mixed into a middle.
   - $/acre: price over acres, whole dollars, half up (Math.round).
 
 WINDOWS. Everything is dated by the sale date on the return. "Through" is the last day
@@ -143,6 +150,7 @@ def row_objs(f):
             o["acUnsure"] = True
         o["ppa"] = per_acre(o.get("price"), o.get("acres"))
         o["fips"], o["county"] = f.get("fips"), f.get("county")
+        o["st"] = o.get("st") or f.get("state")
         out.append(o)
     return out
 
@@ -208,6 +216,48 @@ def market_sale(r, today):
 def stat_ok(r):
     """FSLand.statOK: a $/acre that may feed a median, a range or a low."""
     return r.get("ppa") is not None and r["ppa"] >= PPA_FLOOR
+
+
+HAS_BLDG_RE = re.compile(r"(^|[\s,;/])(1|2|3|7)($|[\s,;/])")   # FSLand.hasBuildings, character for character
+FOREST_CLS = ("5M", "6")
+FOREST_STATES = ("WI", "VT")      # FSLand.FOREST_STATES: records that carry a forest class (Vermont: timberland)
+
+
+def has_buildings(cls):
+    """FSLand.hasBuildings: a building class (1 residential, 2 commercial, 3 manufacturing, 7 farm buildings)."""
+    return bool(HAS_BLDG_RE.search("" if cls is None else str(cls)))
+
+
+def cls_list(cls):
+    return [x for x in re.split(r"[\s,;/]+", str(cls or "").upper()) if x]
+
+
+def is_forest(cls, st):
+    """FSLand.isForest: a Wisconsin or Vermont sale of forest classes (5M agricultural forest, 6 productive
+    forest or timberland), no agricultural class 4 and no buildings."""
+    if str(st or "").upper() not in FOREST_STATES or has_buildings(cls):
+        return False
+    c = cls_list(cls)
+    return any(x in FOREST_CLS for x in c) and "4" not in c
+
+
+def land_type(r, st=None):
+    """FSLand.landType: 'bldg' (with buildings), 'forest', 'small' (known acres under MIN_ACRES) or 'farm'.
+    One answer per sale, in that order."""
+    st = st or r.get("st") or r.get("state")
+    if has_buildings(r.get("cls")):
+        return "bldg"
+    if is_forest(r.get("cls"), st):
+        return "forest"
+    a = num(r.get("acres"))
+    if a is not None and a < MIN_ACRES:
+        return "small"
+    return "farm"            # acres not stated (several parcels on one return) stays farm land: listed, no $/acre, in no middle
+
+
+def farm_comp(r, st=None):
+    """A sale that may feed a middle: bare farm land of MIN_ACRES or more with a $/acre of PPA_FLOOR or more."""
+    return stat_ok(r) and land_type(r, st) == "farm"
 
 
 def day_no(iso):
@@ -374,7 +424,7 @@ def county_summary(f, W, today):
     cur = [r for r in rows if inw(r, W["cur"])]
     prev = [r for r in rows if inw(r, W["prev"])]
     w24 = [r for r in rows if inw(r, W["w24"])]
-    big = lambda rs: [r for r in rs if stat_ok(r) and (num(r.get("acres")) or 0) >= MIN_ACRES]
+    big = lambda rs: [r for r in rs if farm_comp(r)]
     cov = f.get("coverage") or {}
     ff = cov.get("filed_from") or cov.get("from")
     out = {"name": f.get("county"), "from": ff, "to": cov.get("filed_to") or cov.get("to"),
@@ -419,7 +469,9 @@ def county_summary(f, W, today):
     out["a24"] = len(known)
     if len(known) >= MIN_N:
         known.sort(key=lambda r: (-num(r["acres"]), str(r["date"])))
-        out["large"] = [sale_row(r) for r in known[:LARGEST]]
+        # the largest can be any kind of sale: each carries its kind (land_type) so the Atlas marks it the
+        # way the land-sales pages and Field Scout do
+        out["large"] = [sale_row(r) + [land_type(r)] for r in known[:LARGEST]]
     return out
 
 
@@ -434,7 +486,7 @@ def build_state(st, files, fetched=None):
     allcur = []
     for f in sorted(files, key=lambda x: x.get("fips") or ""):
         counties[f["fips"]] = county_summary(f, W, today)
-        allcur += [r["ppa"] for r in county_rows(f, today) if inw(r, W["cur"]) and stat_ok(r) and (num(r.get("acres")) or 0) >= MIN_ACRES]
+        allcur += [r["ppa"] for r in county_rows(f, today) if inw(r, W["cur"]) and farm_comp(r)]
     src = SOURCES.get(st, {})
     one = files[0] if files else {}
     return {
@@ -588,6 +640,16 @@ def selftest():
        and windows(datetime.date(2026, 9, 30))["prev"] == ["2024-10-01", "2025-09-30"])
     ck("month end before", month_end_before("2026-10-17T06:00:00Z").isoformat() == "2026-09-30"
        and month_end_before("2026-03-01").isoformat() == "2026-02-28")
+    # the one land rule (Oct 29): buildings by class only, the Wisconsin forest split, bare-land middles
+    ck("buildings by class 1, 2, 3 or 7, never by deed text", has_buildings("4 7") and has_buildings("6 1") and not has_buildings("4")
+       and not has_buildings("5M") and land_type({"cls": "4", "acres": 80, "conv": "Warranty Deed; with buildings"}, "IL") == "farm")
+    ck("a Wisconsin forest sale: forest class, no class 4, no buildings", is_forest("6", "WI") and is_forest("5M 5", "WI")
+       and not is_forest("4 6", "WI") and not is_forest("6 1", "WI") and not is_forest("6", "IN"))
+    ck("one kind per sale", [land_type({"cls": c, "acres": a}, "WI") for c, a in (("4 1", 5), ("6", 80), ("4", 12), ("4", None), ("4", 40))]
+       == ["bldg", "forest", "small", "farm", "farm"])
+    ck("a middle counts bare farm land only", not farm_comp({"cls": "4 7", "acres": 80, "ppa": 9000}, "WI")
+       and not farm_comp({"cls": "6", "acres": 80, "ppa": 9000}, "WI") and farm_comp({"cls": "4", "acres": 80, "ppa": 9000}, "WI")
+       and not farm_comp({"cls": "4", "acres": 80, "ppa": 400}, "WI"))
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 

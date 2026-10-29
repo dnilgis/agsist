@@ -188,3 +188,88 @@ test("reworded cause lines: the old wording is gone from the page and the new is
     assert.ok(html.includes(now) || html.includes(now.replace("&#x27;", "'")) || html.includes(now.replace("&#x27;", "&#39;")), `${d}: new wording missing`);
   }
 });
+
+// Oct 29: "Crude is still pricing in Iran supply risk, and diesel follows it." went out (the gate
+// only WARNs on the cause rule, the cut leaves a lone sentence) and turned every PR red here.
+// Since then scripts/cause_fix.py rewords (or cuts) such a sentence by code before the gate.
+test("cause fix: the Oct 29 line and the 73 option-C lines come out passing, read as sentences, nothing else changed", () => {
+  const out = py(["-c", `
+import json, re, sys
+sys.path.insert(0, "scripts")
+import daily_claims as dc
+fx = json.load(open("test/fixtures/daily-cause-lines.json"))["fields"]
+def brief(loc, text):
+    b = {}
+    m = re.match(r"^(\\w+)\\[(\\d+)\\]\\.(\\w+)$", loc)
+    if m:
+        b[m.group(1)] = [{} for _ in range(int(m.group(2)) + 1)]
+    elif "." in loc:
+        b[loc.split(".")[0]] = {}
+    dc._set(b, loc, text)
+    return b
+def sents(text):
+    return [s for line in text.split("\\n") for s in dc.sentences(re.sub(r"^\\s*-\\s+", "", line))]
+bad, flagged, reworded = [], 0, 0
+for r in fx:
+    b, log = dc.fix_causes(brief(r["loc"], r["before"]))
+    got = dc._get(b, r["loc"])
+    if got != r["after"]:
+        bad.append(("not the reviewed text", r["date"], r["loc"], got))
+    left = [s for s in sents(got) if dc.r_cause_without_source(s.replace("**", ""), {})]
+    if left:
+        bad.append(("still flagged", r["date"], r["loc"], left))
+    # every sentence the rule did not flag is there, unchanged and in order
+    keep = [s for s in sents(r["before"]) if not dc.r_cause_without_source(s.replace("**", ""), {})]
+    it = iter(sents(got))
+    if not all(any(k == g for g in it) for k in keep):
+        bad.append(("an unflagged sentence changed", r["date"], r["loc"]))
+    for s in sents(r["before"]):
+        if dc.r_cause_without_source(s.replace("**", ""), {}):
+            flagged += 1
+            new = dc.reword_cause(s)
+            if new:
+                reworded += 1
+                if not dc._reads_ok(new, s) or new not in got:
+                    bad.append(("reworded line does not read", r["date"], s, new))
+            elif not dc.CUTTABLE(r["loc"]) or not got.strip() or s in got:
+                bad.append(("neither reworded nor cut", r["date"], s))
+print(len(fx), flagged, reworded, len(bad), bad[:5])
+`]);
+  const [fields, flagged, reworded, nbad] = out.trim().split(" ").map(Number);
+  assert.equal(fields, 71, out);
+  assert.equal(flagged, 74, out);
+  assert.ok(reworded >= 68, out);
+  assert.equal(nbad, 0, out);
+});
+
+test("cause fix: the Oct 29 so_what as it went out, and the rewordings named in the brief", () => {
+  const out = py(["-c", `
+import sys; sys.path.insert(0, "scripts")
+import daily_claims as dc
+for s in ("Crude is still pricing in Iran supply risk, and diesel follows it.",
+          "Live cattle's 4.2% explosion to $243.30 was the day's defining move, driven by tight supplies and strong protein demand fundamentals.",
+          "Both markets are flat because USDA's record crop numbers are already priced in, not because anyone expects news today.",
+          "The grains went out soft not because a fresh bear catalyst showed up, but because the calendar did."):
+    print(repr(dc.reword_cause(s)))
+`]);
+  assert.equal(out.trim().split("\n").join("|"), [
+    "'Crude is still pricing in Iran supply risk, and diesel has moved with it.'",
+    "\"Live cattle's 4.2% explosion to $243.30 was the day's defining move.\"",
+    "'Both markets are flat.'",
+    "None",
+  ].join("|"));
+  assert.match(py(["scripts/cause_fix.py", "--selftest"]), /cause_fix selftest: ok/);
+});
+
+test("cause fix runs in the Daily after the headline fix and before the gate, never blocking, and the cut goes through it", () => {
+  const wf = read(".github/workflows/daily.yml");
+  const at = wf.indexOf("- name: GATE 2c, unsourced cause lines reworded before the gate");
+  assert.ok(at > wf.indexOf("- name: GATE 2h,") && at < wf.indexOf("- name: GATE 2 — pre-publish briefing gate"), "step order");
+  const st = wf.slice(at, wf.indexOf("- name:", at + 10));
+  assert.match(st, /continue-on-error: true/);
+  assert.match(st, /python scripts\/cause_fix\.py --selftest\n\s+python scripts\/cause_fix\.py data\/daily\.json/);
+  assert.ok(at < wf.indexOf("- name: Commit and push") && at < wf.indexOf("- name: Send daily email"), "fixed before the archive commit and the send");
+  const dc = read("scripts/daily_claims.py"), cf = read("scripts/cause_fix.py");
+  assert.match(dc, /def strip\(briefing, ctx\):[\s\S]{0,400}fix_causes\(briefing, ctx\)/, "strip does not reword first");
+  assert.ok(cf.includes("critique_briefing.re_archive(b)"), "the archive is not written from the fixed text");
+});

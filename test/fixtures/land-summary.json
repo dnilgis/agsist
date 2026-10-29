@@ -429,21 +429,24 @@
      400,
      3200000,
      8000,
-     "Beta township"
+     "Beta township",
+     "farm"
     ],
     [
      "2025-11-20",
      150,
      2100000,
      14000,
-     "Beta township"
+     "Beta township",
+     "farm"
     ],
     [
      "2025-05-05",
      120,
      1440000,
      12000,
-     "Alpha township"
+     "Alpha township",
+     "farm"
     ]
    ],
    "u12": 1,
