@@ -199,19 +199,30 @@ def http(url, data=None, timeout=90, tries=3):
 
 
 def blm_layer():
+    """The section layer (named "PLSS Section" or "First Division") and its field names."""
     d = json.loads(http(BLM + "?f=json"))
     for L in d.get("layers", []):
-        if re.search(r"first\s*division", L.get("name", ""), re.I):
-            return L["id"], d
-    raise SystemExit("BLM PLSS: no first division layer in " + ", ".join(L.get("name", "") for L in d.get("layers", [])))
+        if re.search(r"first\s*division|\bsection\b", L.get("name", ""), re.I) and not re.search(r"intersect", L.get("name", ""), re.I):
+            info = json.loads(http(BLM + "/%d?f=json" % L["id"]))
+            names = [f.get("name") for f in info.get("fields") or []]
+            print("BLM layer %d %s, fields: %s" % (L["id"], L.get("name"), ", ".join(map(str, names))))
+            fld = {}
+            for want, pat in (("pid", r"^PLSSID$"), ("no", r"^(FRSTDIVNO|SECNO|SECTION|SEC)$"), ("typ", r"^FRSTDIVTYP$")):
+                hit = [n for n in names if n and re.match(pat, n, re.I)]
+                fld[want] = hit[0] if hit else None
+            if not fld["pid"] or not fld["no"]:
+                raise SystemExit("BLM PLSS: section layer fields not found by name: " + ", ".join(map(str, names)))
+            return L["id"], fld
+    raise SystemExit("BLM PLSS: no section layer in " + ", ".join(L.get("name", "") for L in d.get("layers", [])))
 
 
-def blm_sections(layer, pats, out_raw=None):
+def blm_sections(layer, pats, out_raw=None, fld=None):
     """Section polygons for a batch of township patterns -> list of dicts."""
-    where = "(" + " OR ".join("PLSSID LIKE '%s'" % p for p in pats) + ")"
+    fld = fld or {"pid": "PLSSID", "no": "FRSTDIVNO", "typ": "FRSTDIVTYP"}
+    where = "(" + " OR ".join("%s LIKE '%s'" % (fld["pid"], p) for p in pats) + ")"
     got, off = [], 0
     while True:
-        q = {"where": where, "outFields": "PLSSID,FRSTDIVNO,FRSTDIVTYP", "returnGeometry": "true",
+        q = {"where": where, "outFields": ",".join(v for v in fld.values() if v), "returnGeometry": "true",
              "outSR": "4326", "geometryPrecision": "5", "resultOffset": str(off), "resultRecordCount": "1000", "f": "json"}
         d = json.loads(http(BLM + "/%d/query?" % layer + urllib.parse.urlencode(q), timeout=120))
         if "error" in d:
@@ -222,15 +233,15 @@ def blm_sections(layer, pats, out_raw=None):
         for f in feats:
             a, g = f.get("attributes") or {}, f.get("geometry") or {}
             rings = g.get("rings") or []
-            if not rings or str(a.get("FRSTDIVTYP") or "").upper() not in ("SN", ""):
+            if not rings or (fld.get("typ") and str(a.get(fld["typ"]) or "").upper() not in ("SN", "")):
                 continue
             try:
-                no = int(str(a.get("FRSTDIVNO")).lstrip("0") or 0)
+                no = int(str(a.get(fld["no"])).lstrip("0") or 0)
             except ValueError:
                 continue
             ring = max(rings, key=len)
             cx, cy = centroid(ring)
-            pid = str(a.get("PLSSID") or "")
+            pid = str(a.get(fld["pid"]) or "")
             got.append({"pid": pid, "mer": pid[2:4], "sec": no, "cx": round(cx, 5), "cy": round(cy, 5), "rings": rings})
         if not d.get("exceededTransferLimit") or not feats:
             return got
@@ -283,7 +294,7 @@ def fetch(st, limit=None, minutes=120, today=None):
     rows = comps(st, today)
     secs, twps = needed(rows)
     cos = load_counties((st,))
-    layer, info = blm_layer()
+    layer, fld = blm_layer()
     twps = sorted(twps)
     if limit:
         keep = sorted(secs)[:limit]
@@ -293,7 +304,7 @@ def fetch(st, limit=None, minutes=120, today=None):
     cands = []
     for i in range(0, len(twps), 20):
         try:
-            cands += blm_sections(layer, twps[i:i + 20], probe)
+            cands += blm_sections(layer, twps[i:i + 20], probe, fld)
         except Exception as e:  # noqa: BLE001
             print("::warning::BLM batch %d failed: %s" % (i, str(e)[:200]))
     by = {}
@@ -321,7 +332,7 @@ def fetch(st, limit=None, minutes=120, today=None):
     uniq = {}
     for key, c in sections.items():
         uniq.setdefault(c["pid"] + "|" + str(c["sec"]), c)
-    soil, fails, t0 = {}, 0, time.time()
+    soil, fails, t0, errs = {}, 0, time.time(), []
     todo = sorted(uniq.items())
 
     def one(item):
@@ -342,14 +353,15 @@ def fetch(st, limit=None, minutes=120, today=None):
                 soil[k] = rws
             except Exception as e:  # noqa: BLE001
                 fails += 1
+                errs.append(str(e)[:300]) if len(errs) < 3 else None
                 if fails <= 5:
                     print("::warning::SDA failed: %s" % str(e)[:200])
             if n % 500 == 0:
                 print("%s soil %d/%d (%d failed), %.0f s" % (st, n, len(todo), fails, time.time() - t0))
     secmap = {k: {"pid": c["pid"], "sec": c["sec"], "cx": c["cx"], "cy": c["cy"]} for k, c in sections.items()}
     meta = {"state": st, "fetched_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "sales": len(rows), "keys": len(secs),
-            "townships": len(twps), "sections": len(sections), "distinct": len(uniq), "soil": len(soil), "sda_failed": fails,
-            "miss": miss, "blm_layer": layer, "blm_probe": probe[:1], "sources": [BLM, SDA]}
+            "townships": len(twps), "sections": len(sections), "distinct": len(uniq), "soil": len(soil), "sda_failed": fails, "sda_errors": errs,
+            "miss": miss, "blm_layer": layer, "blm_fields": fld, "candidates": len(cands), "blm_probe": probe[:1], "sources": [BLM, SDA]}
     with gzip.open(os.path.join(RAW, "%s-soil.json.gz" % st), "wt", encoding="utf-8") as fh:
         json.dump({"meta": meta, "sections": secmap, "soil": soil}, fh, separators=(",", ":"))
     with open(os.path.join(RAW, "%s-meta.json" % st), "w", encoding="utf-8") as fh:
