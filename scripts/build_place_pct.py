@@ -323,7 +323,7 @@ def build(root=REPO):
         label = r["name"] + (" " + (u if u is not None else "County") if u != "" else "")
         slug = norm_name(label)
         flags = ""
-        for k, d in (("a", "farmland-atlas"), ("r", "rain"), ("p", "prf"), ("c", "arc-plc")):
+        for k, d in (("a", "farmland-atlas"), ("r", "rain"), ("p", "prf"), ("c", "arc-plc"), ("l", "land-sales")):
             if os.path.exists(os.path.join(root, d, slug_st, slug + ".html")):
                 flags += k
         pages[f] = (label, slug, flags)

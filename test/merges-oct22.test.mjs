@@ -82,7 +82,7 @@ test("the menu and footer name the merged pages by what they hold now", () => {
   assert.match(h, /USDA calendar and what&rsquo;s priced in/);
   assert.match(h, /Crop progress and size/);
   assert.ok(h.includes('href="/daily#past"') && f.includes('href="/daily#past"'), "Past briefings in the menu and footer");
-  assert.match(read("components/loader.js"), /var CV = '102';/);   // 102: fx/merges2 (the redo of fx/merges, which was 86)
+  assert.match(read("components/loader.js"), /var CV = '103';/);   // 103: fx/landnav+menu; 102: fx/merges2 (the redo of fx/merges, which was 86)
 });
 
 test("the sections carry what the old pages had", () => {
