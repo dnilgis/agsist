@@ -137,6 +137,65 @@ def _fake_rows():
     return rows
 
 
+def page_slot_tests():
+    """THE RATE CARD OF OCT 29, 2026: a State Sponsor and the Cash Bids Sponsor are
+    sold through /sponsor-apply and draw on page ribbons. Their day-30 report must be
+    their own: a State Sponsor gets its state's ribbon events (the state page, its town
+    pages, its cash rent page) and nobody else's."""
+    from datetime import date as _d
+    print("\na page ribbon sponsor's report is its own ribbons only (rate card, Oct 29, 2026)")
+    A = {"slug": "acme", "name": "Acme", "token": "x" * 16, "start": "2026-10-30"}
+    B = {"slug": "bee", "name": "Bee", "token": "y" * 16, "start": "2026-10-30", "geo": "bee", "regions": ["TX"]}
+    W = {"slug": "wico", "name": "Wi Co", "token": "w" * 16, "start": "2026-10-30",
+         "page_slots": ["cash-bids-wisconsin", "rent-wi"], "billing": {"tier": "state", "state": "WI"}}
+    I = {"slug": "iaco", "name": "Ia Co", "token": "i" * 16, "start": "2026-10-30",
+         "page_slots": ["cash-bids-iowa", "rent-ia"], "billing": {"tier": "state", "state": "IA"}}
+    C = {"slug": "cbco", "name": "Cb Co", "token": "c" * 16, "start": "2026-10-30",
+         "page_slots": ["cash-bids"], "billing": {"tier": "cashbids"}}
+    check(bsr.sponsor_slots(W) == ["page:cash-bids-wisconsin", "page:rent-wi"], "a State Sponsor's slots are its state's ribbons", bsr.sponsor_slots(W))
+    check(bsr.sponsor_slots(C) == ["page:cash-bids"], "the Cash Bids Sponsor's slot is the /cash-bids ribbon")
+    check(bsr.sponsor_slots(dict(W, page_slots=["../x", "rent-wi"])) == ["page:rent-wi"], "only well-formed ribbon ids count")
+    check(bsr.check_slots([A, B, W, I, C]) and True, "a Daily, a geo, two State and a Cash Bids sponsor share no slot")
+    rows = []
+    for d in ("2026-10-30", "2026-10-31"):
+        rows += [
+            {"date": d, "page": "/cash-bids/wisconsin", "slot": "page:cash-bids-wisconsin", "event": "sponsor_viewable", "region": "Wisconsin", "n": 40},
+            {"date": d, "page": "/cash-bids/wisconsin/cadott", "slot": "page:cash-bids-wisconsin", "event": "sponsor_viewable", "region": "Wisconsin", "n": 20},
+            {"date": d, "page": "/cash-bids/wisconsin/cadott", "slot": "page:cash-bids-wisconsin", "event": "sponsor_click", "region": "Wisconsin", "n": 2},
+            {"date": d, "page": "/rent/wisconsin", "slot": "page:rent-wi", "event": "sponsor_viewable", "region": "Wisconsin", "n": 5},
+            {"date": d, "page": "/cash-bids/iowa", "slot": "page:cash-bids-iowa", "event": "sponsor_viewable", "region": "Iowa", "n": 300},
+            {"date": d, "page": "/cash-bids", "slot": "page:cash-bids", "event": "sponsor_viewable", "region": "Iowa", "n": 900},
+            {"date": d, "page": "/spray", "slot": "page:spray", "event": "sponsor_viewable", "region": "Ohio", "n": 4000},
+            {"date": d, "page": "/", "slot": "homepage-top", "event": "sponsor_viewable", "region": "Wisconsin", "n": 10},
+            {"date": d, "page": "/rain/texas", "slot": "geo-bee", "event": "sponsor_viewable", "region": "Texas", "n": 100},
+            {"date": d, "page": "/cash-bids/wisconsin", "slot": bsr.NOT_SET, "event": "sponsor_viewable", "region": "Wisconsin", "n": 7},
+        ]
+    saved = bsr.other_ads_live
+    bsr.other_ads_live = lambda geo_id, today=None, slug=None: []
+    try:
+        fake = FakeGA4(rows)
+        ga = bsr.GA4Reader(fake, FakeTypes, "1")
+        end, today = _d(2026, 10, 31), _d(2026, 11, 1)
+        allx = [A, B, W, I, C]
+        pw, _ = bsr.sponsor_payload(W, ga, end, allx, today)
+        pi, _ = bsr.sponsor_payload(I, ga, end, allx, today)
+        pc, _ = bsr.sponsor_payload(C, ga, end, allx, today)
+        check(pw["totals"]["viewable"] == 130 and pw["totals"]["clicks"] == 4,
+              "the Wisconsin State Sponsor gets its state page, its town pages and its rent page, nothing else", pw["totals"])
+        check({x["page"] for x in pw["byPage"]} == {"/cash-bids/wisconsin", "/cash-bids/wisconsin/cadott", "/rent/wisconsin"},
+              "its pages are Wisconsin's own", pw["byPage"])
+        check(pi["totals"]["viewable"] == 600 and pc["totals"]["viewable"] == 1800,
+              "Iowa's sponsor and the Cash Bids Sponsor get only theirs", (pi["totals"], pc["totals"]))
+        check(all(bsr.SLOT_DIMENSION in [n for n, _ in _leaves(q.dimension_filter)] for q in fake.asked),
+              "every question carried the sponsor's slots")
+        check("4000" not in json.dumps([pw, pi, pc]) and "8000" not in json.dumps([pw, pi, pc]),
+              "a retired ribbon's events (page:spray) are nobody's")
+    finally:
+        bsr.other_ads_live = saved
+    pend, _ = bsr.sponsor_payload(dict(W, start=None), None, _d(2026, 10, 31), [W], _d(2026, 11, 1))
+    check(pend["pending"] is True and pend["totals"]["viewable"] == 0, "before it starts, the page says so with zeros")
+
+
 def slot_tests():
     from datetime import date as _d
     A = {"slug": "acme", "name": "Acme", "token": "x" * 20, "start": "2026-10-30"}
@@ -163,7 +222,8 @@ def slot_tests():
                 found.setdefault(m.group(1), set()).add(f)
     for slot, where in sorted(found.items()):
         ok = (slot in bsr.DAILY_SLOTS or slot in bsr.UNREPORTED_SLOTS
-              or slot.startswith(bsr.UNREPORTED_PREFIXES) or slot.startswith(bsr.GEO_SLOT_PREFIX))
+              or slot.startswith(bsr.UNREPORTED_PREFIXES) or slot.startswith(bsr.GEO_SLOT_PREFIX)
+              or slot.startswith(bsr.PAGE_SLOT_PREFIX))
         check(ok, "slot %r (from %s) is accounted for in build_sponsor_report.py" % (slot, ", ".join(sorted(where))))
     for slot in bsr.DAILY_SLOTS:
         check(slot in found, "the daily slot %r is really sent by some page" % slot, sorted(found))
@@ -629,6 +689,7 @@ def main():
 
     print("\nsplit by slot: each sponsor gets only its own rows (Oct 29, 2026)")
     slot_tests()
+    page_slot_tests()
 
 
     print()

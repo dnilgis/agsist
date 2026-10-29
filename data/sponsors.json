@@ -35,7 +35,7 @@
    "token": "02f5fba2d37c172d",
    "approved": null,
    "billing": {
-    "tier": "page",
+    "tier": "state",
     "free_test": true
    },
    "placements": [

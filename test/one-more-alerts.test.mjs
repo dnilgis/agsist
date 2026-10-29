@@ -52,7 +52,7 @@ test("every extra the panel offers has a sender; versions bumped where they load
   assert.ok(read("scripts/send_report_day.py").includes("reports !== false"));
   assert.ok(!DASH.test(block) && !/type="checkbox"[^>]*checked/.test(block));
   assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=20';"));
-  assert.ok(read("components/loader.js").includes("var CV = '103';"));   // 103: fx/landnav+menu; 102: fx/merges2; 101: fx/changemap; 100: fx/smallfixes (styles.css?v=27); 99: fx/promo2 (signup-ask.js?v=20); 98: fx/shelldiet (signup-ask.js on first interaction or idle); 97: fx/fsbackup (Field Scout backup); 96: fx/landsales; 95: fx/landalert (loads land-alert.js); 94: fx/pageasks (signup-ask.js?v=20); 93: fx/gauge (signup-ask.js?v=17, oneMore only); 92 was fx/rainmonthly; 85 was fx/advertise
+  assert.ok(read("components/loader.js").includes("var CV = '104';"));   // 104: fx/ratecard; 102: fx/merges2; 101: fx/changemap; 100: fx/smallfixes (styles.css?v=27); 99: fx/promo2 (signup-ask.js?v=20); 98: fx/shelldiet (signup-ask.js on first interaction or idle); 97: fx/fsbackup (Field Scout backup); 96: fx/landsales; 95: fx/landalert (loads land-alert.js); 94: fx/pageasks (signup-ask.js?v=20); 93: fx/gauge (signup-ask.js?v=17, oneMore only); 92 was fx/rainmonthly; 85 was fx/advertise
   assert.ok(idx.includes('<script src="/components/signup-ask.js?v=20"></script>'));
   assert.ok(read("cash-bids.html").includes("/components/cb-alerts.js?v=5") && read("components/cb-myelev.js").includes("/components/cb-alerts.js?v=5"));
   assert.ok(read("hail-map.html").includes("S.oneMore(box,{gave:'hail'"));
