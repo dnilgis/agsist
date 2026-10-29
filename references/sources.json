@@ -2528,6 +2528,14 @@
     {"id": "fed-dal-ag-survey", "kind": "html",
      "url": "https://www.dallasfed.org/research/surveys/agsurvey",
      "title": "Federal Reserve Bank of Dallas, Texas Agricultural Survey (11th District)",
+     "why": "Atlas state pages and the by-state hub, farm loans section: link to the reserve bank's own ag survey page (scripts/build_farm_credit.py)"},
+    {"id": "fed-kc-ag-credit-2", "kind": "html",
+     "url": "https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/",
+     "title": "Federal Reserve Bank of Kansas City, Ag Credit Survey (address linked from the Chicago Fed's ag conditions page)",
+     "why": "Atlas state pages and the by-state hub, farm loans section: link to the reserve bank's own ag survey page (scripts/build_farm_credit.py)"},
+    {"id": "fed-min-agriculture", "kind": "html",
+     "url": "https://www.minneapolisfed.org/topic/agriculture-and-farming",
+     "title": "Federal Reserve Bank of Minneapolis, agriculture and farming (linked as its ag survey from the Chicago Fed's ag conditions page)",
      "why": "Atlas state pages and the by-state hub, farm loans section: link to the reserve bank's own ag survey page (scripts/build_farm_credit.py)"}
 ]
 }
