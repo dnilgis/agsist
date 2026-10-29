@@ -25,6 +25,10 @@ on:
         description: 'git ref to compare against (default HEAD~1)'
         required: false
         default: 'HEAD~1'
+      head:
+        description: 'commit to check (default: main as it is); merge-when-green.yml passes the merge commit'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -34,9 +38,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      # A hand start from merge-when-green.yml names the merge commit (head) and main before it (base):
+      # a collection job may have pushed to main in between, and that is not this merge's doing.
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.head || '' }}
           fetch-depth: 2          # HEAD and HEAD~1; the baseline is fetched on its own below
       - name: Engine checkout
         uses: ./.github/actions/engine
