@@ -1255,6 +1255,73 @@ def sales_state(W, st):
             '<script defer src="/%s?v=%s"></script>' % (st, esc(src["record"]), urls, SALES_JS, sales_v(W.root)))
 
 
+# The land sales door (Sig, Oct 29, 2026: "the farmland sale page should be easy to find"). One
+# line in every county's Land card. A state with sales on /land-sales/ links the county's own page
+# there, only when that page is on disk (scripts/build_land_sales.py writes one per county with
+# sales; the county comes from data/land-sales/<st>.json by FIPS, never guessed from the name). Any
+# other state says where it stands, in the words of data/land-sales/coverage.json (kept by hand),
+# and links the state table on /land-sales/#coverage. test/land-nav.test.mjs checks every page.
+LS_DIR = "land-sales"
+
+
+def land_sales_cov(W):
+    cache = W.__dict__.setdefault("_ls_cov", {})
+    if "rows" not in cache:
+        try:
+            cov = json.load(open(os.path.join(W.root, "data", LS_DIR, "coverage.json"), encoding="utf-8"))
+            cache["rows"] = {r["st"]: r for r in cov.get("states") or [] if r.get("st")}
+        except Exception:
+            cache["rows"] = None
+    return cache["rows"]
+
+
+def land_sales_county(W, f, st):
+    """'/land-sales/<state>/<county>' for a county with its own sales page on disk, else None."""
+    cache = W.__dict__.setdefault("_ls_st", {})
+    if st not in cache:
+        try:
+            cache[st] = json.load(open(os.path.join(W.root, "data", LS_DIR, st.lower() + ".json"), encoding="utf-8")).get("counties") or {}
+        except Exception:
+            cache[st] = {}
+    c = cache[st].get(f)
+    if not c or not re.match(r"^[a-z0-9-]+$", str(c.get("slug") or "")):
+        return None
+    ssl = slugify(STATE_NAMES.get(st, st))
+    if not os.path.isfile(os.path.join(W.root, LS_DIR, ssl, c["slug"] + ".html")):
+        return None
+    return "/%s/%s/%s" % (LS_DIR, ssl, c["slug"])
+
+
+def land_sales_words(row, stn):
+    """Plain words for a state without sales on the site, from its coverage row. The common lists
+    are not our own reading of the state law, so those states say "commonly listed"."""
+    s = (row or {}).get("status") or "unchecked"
+    src = (row or {}).get("source") or ""
+    if s == "nondisclosure":
+        if src.startswith("Commonly listed"):
+            return "%s is commonly listed as a state that does not make farm sale prices public record." % stn
+        return "No free public file of %s farm sale prices found." % stn
+    if s == "county":
+        return "%s sale records are public county by county; not on this site yet." % stn
+    if s == "request":
+        return "%s sale records come on request or for a fee; not on this site yet." % stn
+    if s in ("live", "held"):
+        return "%s sales are on file; none for this county yet." % stn
+    return "%s sale records: not checked yet." % stn
+
+
+def land_sales_line(W, f, lab, st):
+    stn = STATE_NAMES.get(st, st)
+    href = land_sales_county(W, f, st)
+    if href:
+        return '<p class="note" data-ls-door="county">Land sales: <a href="%s">Recorded sales in %s</a>, sale by sale.</p>' % (href, esc(lab))
+    rows = land_sales_cov(W)
+    if rows is None or not os.path.isfile(os.path.join(W.root, LS_DIR, "index.html")):
+        return ""
+    return ('<p class="note" data-ls-door="state">Land sales: %s <a href="/%s/#coverage">Where each state stands</a>.</p>'
+            % (esc(land_sales_words(rows.get(st), stn)), LS_DIR))
+
+
 def watch_form(f, lab, stn):
     """Watch-a-county signup. The worker stores it as pending; a confirmation email comes first."""
     return (f'<form class="watch" data-fips="{esc(f)}" aria-label="Watch {esc(lab)}">'
@@ -2363,7 +2430,7 @@ def county_page(W, f, d, stamp):
     C_CROPS = ('<section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2>'
                + live_row("corn-progress", "Corn harvested") + live_row("soy-progress", "Soybeans harvested") + S3 + "</section>")
     C_LAND = ('<section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2>'
-              + S1 + S2 + sales_block(W, f, lab, st) + sales_faq_html + "</section>")
+              + S1 + S2 + sales_block(W, f, lab, st) + sales_faq_html + land_sales_line(W, f, lab, st) + "</section>")
     arc_link = ('<p class="note">Benchmarks, payments and the choice for each crop: <a href="%s">ARC or PLC in %s</a>.</p>' % (arc_url, esc(lab))) if arc_url else (
         ('<p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/%s">ARC or PLC in %s</a>.</p>' % (slugify(stn), esc(stn)))
         if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else "")
