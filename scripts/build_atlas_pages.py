@@ -1101,10 +1101,10 @@ CSS = """
 .ap .lf-h small{text-transform:none;letter-spacing:0;font-weight:400}
 .ap .lf-ul{list-style:none;margin:0;padding:0}.ap .lf-ul li{font-size:.84rem;line-height:1.45;padding:.18rem 0;border-top:1px dotted var(--border)}.ap .lf-ul li:first-child{border-top:0}
 .ap .lf-d{color:var(--text-muted)}.ap .lf-n{color:var(--text-dim);font-style:italic}
-.ap .lf-ul .ls-nm{font:inherit;font-size:.76rem;color:var(--gold);background:none;border:1px solid var(--border);border-radius:999px;padding:.05rem .5rem;cursor:pointer}
-.ap .lf-r{display:grid;grid-template-columns:5.6em minmax(0,1fr);gap:0 .5rem;padding:.3rem 0;border-top:1px dotted var(--border);font-size:.84rem;line-height:1.4}
+.ap .lf-ul .ls-nm{font:inherit;font-size:.76rem;color:var(--gold);background:none;border:1px solid var(--border);border-radius:999px;padding:.05rem .5rem;cursor:pointer;white-space:nowrap}
+.ap .lf-r{display:grid;grid-template-columns:5em minmax(0,1fr);gap:0 .5rem;padding:.3rem 0;border-top:1px dotted var(--border);font-size:.84rem;line-height:1.4}
 .ap .lf-r .l{color:var(--text-dim)}.ap .lf-r .r b{font-family:var(--font-mono)}.ap .lf-r .lc{color:var(--text-dim)}
-.ap .lf .lv{min-height:2.8em}.ap .lf .lv .ls{display:inline;margin:0 0 0 .35em}
+.ap .lf .lv{min-height:5.6em}.ap .lf .lv .ls{display:inline;margin:0 0 0 .35em}
 .ap .lf-btns{margin:.45rem 0 .3rem}
 .ap .lf-dis{margin:0;font-size:.82rem;font-weight:600;color:var(--text)}.ap .lf-fine{margin:.1rem 0 0;font-size:.74rem;color:var(--text-muted)}
 @media (max-width:640px){.ap{padding:0 12px 3rem}.ap .card{padding:10px 12px}.ap .ch-btns a{flex:1 1 auto;justify-content:center}}

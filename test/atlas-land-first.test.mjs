@@ -166,10 +166,10 @@ test("at 390 wide: the middle above the fold on IL, IN and WI; miles from the re
       return o;
     };
     const mid = await rain(null);
-    assert.match(mid.lf, /Cumberland gauge, 11 miles from the county middle\./, mid.lf);
+    assert.match(mid.lf, /Cumberland gauge, 11 mi from the county middle\./, mid.lf);
     assert.match(mid.rain, /11 miles from the county middle\./, mid.rain);
     const own = await rain({ "agsist-fs-fields": CHETEK_40 });
-    assert.match(own.lf, /Cumberland gauge, 22 miles from your field “Chetek 40”\./, own.lf);
+    assert.match(own.lf, /Cumberland gauge, 22 mi from your field “Chetek 40”\./, own.lf);
     assert.match(own.rain, /22 miles from your field “Chetek 40”\./, own.rain);
     assert.match(own.bid, /Not in right now|from your field “Chetek 40”\./, own.bid);
     assert.match(own.hail, /your field “Chetek 40”/, own.hail);
@@ -178,6 +178,6 @@ test("at 390 wide: the middle above the fold on IL, IN and WI; miles from the re
     const away = await rain({ "agsist-wx-loc": JSON.stringify({ lat: 44.5, lon: -89.6 }) });
     assert.match(away.lf, /from the county middle\./, away.lf);
     const near = await rain({ "agsist-wx-loc": JSON.stringify({ lat: 45.378, lon: -91.626 }) });
-    assert.match(near.lf, /22 miles from your saved place\./, near.lf);
+    assert.match(near.lf, /22 mi from your saved place\./, near.lf);
   } finally { await browser.close(); srv.close(); }
 });

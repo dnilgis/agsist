@@ -159,12 +159,12 @@
   }
   /* land first: the nearest posted corn bid (else soybeans), its town and miles; never the buyer */
   function nearestBid(b, when) {
-    var src = ['See the bids near here', '/cash-bids'];
+    var src = ['Bids', '/cash-bids'];
     var o = (b.corn && b.corn.nearest) ? ['corn', b.corn.nearest] : (b.soybeans && b.soybeans.nearest) ? ['soybeans', b.soybeans.nearest] : null;
     if (!o) return { label: 'Nearest bid', value: null, why: 'no posted corn or soybean bid within 50 mi of ' + FROM, src: src };
     var r = o[1], at = r.town ? r.town + (r.st ? ', ' + r.st : '') : 'an elevator';
-    return { label: 'Nearest bid', value: '$' + r.price.toFixed(2), date: String(when || '').slice(0, 10),
-      ctx: cap(o[0]) + ' at ' + at + ', ' + P.milesFrom(r.mi) + ' ' + FROM + '.', src: src };
+    return { label: 'Nearest bid', value: '$' + r.price.toFixed(2) + ' ' + o[0], date: String(when || '').slice(0, 10),
+      ctx: 'at ' + at + ', ' + mi(r.mi) + ' ' + FROM + '.', src: src };
   }
   function basis(local) {
     Promise.all([getJSON('/data/basis-states.json'), getJSON('/data/transport/basis.json'), local]).then(function (a) {
@@ -264,10 +264,10 @@
     var src = ['NOAA', href];
     if (!r || r.status !== 'ok') return { label: 'Rain', value: null, why: (r && r.why) || 'no county rain record', src: src };
     var v = r.pct != null ? r.pct + '% of usual' : r.inches.toFixed(2) + ' in';
-    var g = r.station && r.station.name ? ' at the ' + r.station.name + ' gauge, ' + P.milesFrom(r.station.mi) + ' ' + FROM : '';
-    return { label: 'Rain', value: v, date: r.through,
-      ctx: r.inches.toFixed(2) + ' in since Jan 1' + g + '.', src: src };
+    var g = r.station && r.station.name ? r.station.name + ' gauge, ' + mi(r.station.mi) + ' ' + FROM : 'since Jan 1';
+    return { label: 'Rain', value: v, date: r.through, ctx: (r.pct != null ? 'since Jan 1, ' : '') + g + '.', src: src };
   }
+  function mi(x) { var n = Math.round(x); return n < 1 ? 'under a mile from' : n + ' mi from'; }
   function crops() {
     getJSON('/data/crop-progress.json').then(function (f) {
       fill('corn-progress', P.factProgress(f, st, 'corn'));
