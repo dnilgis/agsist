@@ -1629,7 +1629,7 @@ NJ_FARM = ("3A", "3B")       # 3A farm (regular): the farmhouse and its lot; 3B 
 NJ_CLS = {"3B": ["4"], "3A": ["4", "1"], "1": ["5"], "2": ["1"], "4A": ["2"], "4B": ["3"], "4C": ["1"]}
 # MOD-IV qualifiers that are parts of one assessed lot (the farmland-assessed part, a building on its own line);
 # a condominium unit (C....) or any other qualifier is its own parcel and only joins when the deed names it.
-NJ_LOT_PARTS = re.compile(r"^(|QFARM|QF|FARM|BLDG|B)$")
+NJ_LOT_PARTS = re.compile(r"^(|QFARM|QF|FARM|BLDG|B|Q\d{1,4})$")     # Q0038: a numbered farmland-assessed part (10,000 such lines are 3B)
 # The SR-1A non-usable categories, N.J.A.C. 18:12-1.1(a) as amended May 19, 2025 (36 categories; the Division's
 # "Guidelines for use of 36 Nonusable Categories", saved by the probe as data/land-raw/sales/nj/doc3 on the raw branch),
 # mapped onto the one land rule. "out": listed with its words and never in a middle (the rule reads RELATED PARTIES,
@@ -1727,13 +1727,18 @@ def nj_lines(name, blob):
         yield name, raw.rstrip("\r\n")
 
 
+def nj_empty_lot(bl, lt):
+    """An unused added-lot slot: blank, or block and lot written as zeros ('00000    ')."""
+    return nj_part(bl) in ("", "0") and nj_part(lt) in ("", "0")
+
+
 def nj_line_units(line):
     """The lots a raw SR-1A line names, read before the line is kept (nj_units on the parsed record gives the same)."""
     cd = line[0:4]
     out = [nj_unit(cd, line[350:355], line[355:359], line[359:364], line[364:368])]
     for a, b, c, d, e, f in NJ_ADDL:
         bl, lt = line[a - 1:b], line[c - 1:d]
-        if bl.strip() or lt.strip():
+        if not nj_empty_lot(bl, lt):
             out.append(nj_unit(cd, bl[:5], bl[5:], lt[:5], lt[5:]))
     return out
 
@@ -1771,7 +1776,7 @@ def nj_units(r):
     """The assessed lots one deed names: the main lot, then up to five more (block, lot, qualifier)."""
     out = [(nj_unit(r["cd"], r["block"], r["bsuf"], r["lot"], r["lsuf"]), "")]
     for b, l, q in r["addl"]:
-        if not b.strip() and not l.strip():
+        if nj_empty_lot(b, l):
             continue
         # an added block or lot is 9 characters: 5 for the number, 4 for the suffix, as on the main lot
         out.append((nj_unit(r["cd"], b[:5], b[5:], l[:5], l[5:]), q))
@@ -1868,6 +1873,10 @@ def nj_name_key(name):
     return typ, re.sub(r"[^A-Z]", "", "".join(w))
 
 
+# Districts whose Division name and Census name differ past what nj_name_key evens out (the Oct 29 run left these two).
+NJ_TOWN_FIX = {"1705": "Lower Alloways Creek township", "1815": "Peapack and Gladstone borough"}
+
+
 def nj_town(fips, code, towns, munis):
     """The Census name of a district, or None. Exact type and letters first, then the letters alone when one town
     in the county has them, then a unique Census name the Division's cut-short name starts (UPPER SADDLE RIV)."""
@@ -1875,6 +1884,8 @@ def nj_town(fips, code, towns, munis):
     T = towns.get(fips) or {}
     if not nm or not T:
         return None, nm
+    if code in NJ_TOWN_FIX and NJ_TOWN_FIX[code] in T.values():
+        return NJ_TOWN_FIX[code], nm
     typ, base = nj_name_key(nm)
     if (typ, base) in T:
         return T[(typ, base)], nm
@@ -1923,8 +1934,11 @@ def nj_table(sales, md, towns, rep=None):
                 flags.append("less than full interest")
         elif nu:
             flags.append("state ratio study code %s: %s" % (nu, words))
-        if how == "acres" or r["etc"].strip():
-            acres = None          # part of a lot, a lot in two districts, or more lots than the file lists
+        # part of a lot, a lot in two districts, or all five added-lot slots used (the deed may name more lots than
+        # the file has room for). The ETC column is not read: it is X on 4 in 10 older deeds of one lot, and its
+        # meaning is not in the layout.
+        if how == "acres" or all(not nj_empty_lot(b, l) for b, l, q in r["addl"]):
+            acres = None
         flags.append("with buildings" if any(c in ("1", "2", "3", "7") for c in cls) else "land only")
         if not found:
             flags.append("not on the 2026 assessment list")
@@ -2079,11 +2093,12 @@ def nj_selftest(ck):
         sr(serial=5, block="00005", lot="00011", nu="06 "),
         sr(serial=6, block="00077", lot="00001"),                          # not on today's list
         sr(serial=7, block="00002", lot="00016", lsuf="02  ", nu="8  "),
-        sr(serial=8, block="00004", lot="00007", cls="2  "),               # class 2 at the sale, farmland today
+        sr(serial=8, block="00004", lot="00007", cls="2  ", addl=[("00000    ", "00000    ", "")]),   # class 2 then, farmland today; an unused slot of zeros
     ])
     modiv = "\n".join([
         md("1701", "00003", "00036", "QFARM", "3B", 80.33), md("1701", "00003", "00036", "BLDG", "3A", 0, 26600),
         md("1701", "00003", "00041", "", "3A", 1.5, 98900), md("1701", "00003", "00041", "QFARM", "3B", 11.76),
+        md("1701", "00005", "00002", "Q0038", "3B", 2.0),
         md("1701", "00005", "00002", "QFARM", "3B", 39.76), md("1701", "00005", "00008", "QFARM", "3B", 67.18),
         md("1701", "00005", "00011", "QFARM", "3B", 26.96), md("1701", "00002", "00016  02", "QFARM", "3B", 6.0),
         md("1701", "00004", "00007", "QFARM", "3B", 11.49), md("1701", "00009", "00001", "", "2", 0.25, 150000),
@@ -2110,6 +2125,7 @@ def nj_selftest(ck):
     ck("NJ: the farmhouse lot and its QFARM part named again on the deed count once: 1.5 + 11.76 acres, one lot",
        b.get("ACRES") == "13.26" and b.get("TOTALPARCELS") == "1" and b.get("PROPERTYCLASS") == "4 1")
     c = by.get("1701-3") or {}
+    ck("NJ: a numbered farmland part (Q0038) is part of its lot: 39.76 + 2 acres", c.get("ACRES") == "41.76")
     ck("NJ: code 33 (farmland-assessed) stays a market sale; bare 3B is land only",
        c.get("CONVEYANCETYPE") == "Deed" and c.get("PROPERTYCLASS") == "4" and "land only" in c["FLAGS"] and "code 33" in c["FLAGS"])
     ck("NJ: code 35 (less than full rights, a preserved farm's restriction among them) is a part interest",
@@ -2124,8 +2140,8 @@ def nj_selftest(ck):
     f = by.get("1701-7") or {}
     ck("NJ: code 8 (one digit) is an undivided interest, less than full interest; a lot suffix joins",
        "Undivided interest" in f.get("CONVEYANCETYPE", "") and "less than full interest" in f.get("FLAGS", "") and f.get("ACRES") == "6")
-    ck("NJ: a deed classed 2 when it sold whose lot is farmland today is kept, both classes shown",
-       (by.get("1701-8") or {}).get("PROPERTYCLASS") == "4 1")
+    ck("NJ: a deed classed 2 when it sold whose lot is farmland today is kept, both classes shown; a slot of zeros is no lot",
+       (by.get("1701-8") or {}).get("PROPERTYCLASS") == "4 1" and by["1701-8"]["TOTALPARCELS"] == "1" and by["1701-8"]["ACRES"] == "11.49")
     ck("NJ: a house lot (class 2 then and now) is not a farm deed", "1701-9" not in by and rep.get("not farm") == 1)
     ck("NJ: the join rate is counted", rep.get("join", "").startswith("7 of 8 farm deeds"))
     farm = nj_farm_lots("x.txt", modiv.encode())
@@ -2153,6 +2169,8 @@ def nj_selftest(ck):
     T = {"34019": {nj_name_key("Clinton town"): "Clinton town", nj_name_key("Clinton township"): "Clinton township"}}
     ck("NJ: Clinton town and Clinton township stay apart", nj_town("34019", "x", T, {"x": "CLINTON TOWN"})[0] == "Clinton town"
        and nj_town("34019", "x", T, {"x": "CLINTON TWP"})[0] == "Clinton township")
+    T = {"34033": {nj_name_key("Lower Alloways Creek township"): "Lower Alloways Creek township"}}
+    ck("NJ: LOWER ALLOWAY CREEK TWP is the Census Lower Alloways Creek township", nj_town("34033", "1705", T, {"1705": "LOWER ALLOWAY CREEK TWP"})[0] == "Lower Alloways Creek township")
     ck("NJ: 566 district codes, 21 counties", len(json.load(open(NJ_MUNIS_FILE))["munis"]) == 566
        and {k[:2] for k in json.load(open(NJ_MUNIS_FILE))["munis"]} == {"%02d" % i for i in range(1, 22)})
 

@@ -85,7 +85,8 @@ NJ_NOTE = ("New Jersey sales come from the SR-1A deed abstracts that county tax 
            "businesses sold with equipment (23), $100 or less (25), not a willing buyer and seller (26) and leasebacks (28), and any "
            "deed exempt from the realty transfer fee. Part of a lot (6) or a lot in two districts (16): listed, no acres. Kept, since "
            "they only keep a deed out of the state's assessment study: 5, 7, 10 (estate sales), 19, 24, 27, 29, 30, 32, 33 "
-           "(farmland assessment), 34 and 36. Our New Jersey copy starts with deeds recorded in 2018.")
+           "(farmland assessment), 34 and 36. The state's public deed file leaves the buyer and seller blank, so no names show "
+           "here; the deed at the county clerk has them. Our New Jersey copy starts with deeds recorded in 2018.")
 MILES = (10, 25, 50)
 DEFAULT_MILES = 25
 EARTH_MI = 3958.8

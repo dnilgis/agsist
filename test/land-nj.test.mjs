@@ -121,25 +121,20 @@ test("no parcel point anywhere: each sale sits at its municipality, and the fetc
   }
 });
 
-test("no New Jersey buyer or seller name in an indexed page, a list file or the Atlas", () => {
+test("no New Jersey buyer or seller name anywhere: the state's public file leaves them blank, and the pages say so", () => {
   assert.match(read("robots.txt"), /^Disallow: \/data\/land\/$/m);
-  const pages = fs.readdirSync(path.join(ROOT, "land-sales/new-jersey")).map((n) => read(`land-sales/new-jersey/${n}`))
-    .concat(fs.readdirSync(path.join(ROOT, "farmland-atlas/new-jersey")).map((n) => read(`farmland-atlas/new-jersey/${n}`)))
-    .concat([read("land-sales/index.html"), read("rent/new-jersey.html")], fs.readdirSync(path.join(ROOT, "land-sales")).filter((n) => /^\d{4}-\d{2}\.html$/.test(n)).map((n) => read(`land-sales/${n}`)))
-    .concat(fs.readdirSync(path.join(ROOT, "data/land-sales/nj")).map((n) => read(`data/land-sales/nj/${n}`)), [read("data/land-sales/nj.json"), read("data/land-sales/latest.json")]);
-  const big = pages.join("\n").toUpperCase();
+  const py = read("scripts/fetch_land_sales.py");
+  assert.match(py, /"grantor": \(110, 144\)/, "the name columns are read where the layout puts them, so a name the state adds later is kept in the blocked folder");
   let n = 0;
   for (const nm of FILES) {
-    const f = json(`${NJ}/${nm}`), gi = f.cols.indexOf("grantor"), ge = f.cols.indexOf("grantee");
-    assert.ok(gi >= 0 && ge >= 0 && f.names === true, nm + ": names kept in the blocked folder only");
-    for (const r of f.rows) for (const side of [r[gi], r[ge]]) {
-      const s = String(side || "").trim().toUpperCase();
-      if (s.length < 8 || /^(STATE OF NEW JERSEY|STATE OF N\.?J|TOWNSHIP OF |TWP OF |BOROUGH OF |BORO OF |CITY OF |COUNTY OF |UNITED STATES|USA\b|NEW JERSEY |NJ )/.test(s)) continue;
-      assert.ok(!big.includes(s), `${nm}: a name in an indexed page or a list file`);
-      n++;
-    }
+    const f = json(`${NJ}/${nm}`);
+    assert.equal(f.names, false, nm + ": the SR-1A file carries no names");
+    assert.ok(!f.cols.includes("grantor") && !f.cols.includes("grantee"), nm + ": no name columns");
+    const nf = json(`data/land/names/nj/${nm}`);
+    for (const v of Object.values(nf.sales)) { assert.ok(v === 0 || (Array.isArray(v) && !v[0] && !v[1]), nm + ": a name in the names file"); n++; }
   }
-  assert.ok(n > 1000, "names checked: " + n);
+  assert.ok(n > 1000, "sales checked: " + n);
+  assert.match(read("land-sales/new-jersey/salem-county.html"), /The state&#x27;s public deed file leaves the buyer and seller blank, so no names show here; the deed at the county clerk has them\./);
 });
 
 test("every New Jersey sale in a county file is on its county page's list, any acreage", () => {
