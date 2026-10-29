@@ -1257,7 +1257,7 @@ function fetchKalshiMarkets() {
           + '<div style="margin-top:.75rem;font-size:.78rem">'
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Browse Kalshi \u2192</a>'
           + '<span style="color:var(--text-muted);margin:0 .5rem">\u00B7</span>'
-          + '<a href="https://polymarket.com" target="_blank" rel="noopener" style="color:var(--gold)">Browse Polymarket \u2192</a></div></div>';
+          + 'Browse Polymarket \u2192</div></div>';
         return;
       }
 
@@ -1319,7 +1319,7 @@ function fetchKalshiMarkets() {
         loading.innerHTML = ''
           + 'The prediction markets did not load. '
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Kalshi \u2192</a> \u00B7 '
-          + '<a href="https://polymarket.com" target="_blank" rel="noopener" style="color:var(--gold)">Polymarket \u2192</a>';
+          + 'Polymarket \u2192';
       }
     });
 }

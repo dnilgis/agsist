@@ -34,6 +34,7 @@ import json
 import os
 import re
 import subprocess
+import source_links  # noqa: E402  no direct links to data sources
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -698,7 +699,8 @@ def state_page(d, idx):
     me = next(s for s in idx["states"] if s["st"] == st)
     nb = ", ".join('<a href="%s">%s (%s)</a>' % (state_href(s), esc(s["name"]), year_label(s)) for s in idx["states"] if s["st"] in me["neighbors"])
     others = " &middot; ".join('<a href="%s">%s</a>' % (state_href(s), esc(s["name"])) for s in idx["states"] if s["st"] != st)
-    srcl = " and ".join('<a href="%s" rel="nofollow">%s</a>' % (esc(s["url"]), "the survey" if i == 0 else "the second part") for i, s in enumerate(d["sources"]))
+    # the survey is named in words with its year; a survey file is not linked (no direct links to data sources)
+    srcl = " and ".join(source_links.link(s["url"], ("%s survey" % yr) if i == 0 else "its second part", ' rel="nofollow"') for i, s in enumerate(d["sources"]))
     faq_html = "".join('<details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in faq)
     withheld = ('<p class="fine">%s</p>' % esc(d["withheld"])) if d.get("withheld") else ""
     return """<!DOCTYPE html>
@@ -903,8 +905,9 @@ def month_year(ym):
 def how_block(b, docs):
     r = b["rule"]
     inb = [s for s in b["states"].values() if s.get("in_blend")]
-    li = "".join('<li><a href="%s">%s</a>, %s: %s, %s. <a href="%s" rel="nofollow">The survey</a>.%s</li>\n' % (
-        state_href(dict(s, st=st)), esc(s["name"]), ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"], esc(s["survey"]), esc(s["publisher"]), esc(s["url"]),
+    li = "".join('<li><a href="%s">%s</a>, %s: %s, %s.%s%s</li>\n' % (
+        state_href(dict(s, st=st)), esc(s["name"]), ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"], esc(s["survey"]), esc(s["publisher"]),
+        "" if source_links.is_data_source(s["url"]) else ' <a href="%s" rel="nofollow">The survey</a>.' % esc(s["url"]),
         "" if s["in_blend"] else " Too old for the middle; shown with its year.") for st, s in b["states"].items() if not s.get("same_as"))
     return ('<p>For each job I take each state survey\'s own average, as the survey printed it, and show the middle one. Half the states sit at or above it, half at or below. Under it you get the lowest and highest of the state averages and how many surveys priced the job. Tap a job and every state\'s number is there with its year, how many answered, and the lowest and highest answer that survey printed.</p>\n'
             '<p>Each state counts once, however many people answered. I don\'t inflate older surveys or adjust anything. A survey of rates from before %d is shown with its year but kept out of the middle. A job needs %d surveys before I give a middle; with fewer, each number stands on its own. Surveys word jobs their own way (combine only, or combine, cart and haul), so I only line up jobs that read the same, and each state\'s wording is under its number.</p>\n'

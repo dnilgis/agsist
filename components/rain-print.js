@@ -3151,8 +3151,8 @@
   // the data line under the print: a station's NOAA record, or the spot's PRISM estimate
   function spotCredit(m) {
     return m && isSpot(m.sid)
-      ? 'Rain for this spot is a daily PRISM estimate (PRISM Climate Group, Oregon State University, 4 km grid) made from nearby gauges, through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>; the usual year is NOAA&rsquo;s 1991-2020 gridded normal. It is not a gauge reading, it has no snowfall, and its record starts in ' + SPOT_FIRST + '. '
-      : 'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ';
+      ? 'Rain for this spot is a daily PRISM estimate (PRISM Climate Group, Oregon State University, 4 km grid) made from nearby gauges, through RCC-ACIS; the usual year is NOAA&rsquo;s 1991-2020 gridded normal. It is not a gauge reading, it has no snowfall, and its record starts in ' + SPOT_FIRST + '. '
+      : 'Daily NOAA records through RCC-ACIS. ';
   }
   function renderNoArt() {
     var m = META;

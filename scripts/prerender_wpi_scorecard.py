@@ -40,6 +40,7 @@ import html as htmlmod
 import json
 import re
 import sys
+import source_links  # noqa: E402  no direct links to data sources
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -206,11 +207,10 @@ def numbers_el(rows):
     src = srcs[0] if srcs else None
     if len(srcs) > 1:
         links = "Survey sources: " + ", ".join(
-            '<a href="' + _esc4(s) + '" rel="nofollow noopener" target="_blank">'
-            + _esc4(re.sub(r"^https?://(www\.)?", "", s).split("/")[0]) + "</a>" for s in srcs)
+            source_links.link(s, _esc4(re.sub(r"^https?://(www\.)?", "", s).split("/")[0]), ' rel="nofollow noopener" target="_blank"')
+            for s in srcs)
     else:
-        links = ('<a href="' + _esc4(src) + '" rel="nofollow noopener" target="_blank">'
-                 'Survey source</a>')
+        links = source_links.link(src or "", "Survey source", ' rel="nofollow noopener" target="_blank"')
     note = ('<div class="src">Trade estimates come from a published pre-report survey, entered '
             'as published. ' + links + '. Graded on the distance '
             'from the trade average: within 0.5% for a yield, 1% for production and 2% for '
@@ -244,7 +244,7 @@ def to_beat_el(tb, next_report):
             + "<table><thead><tr><th>Number</th><th>USDA now</th></tr></thead><tbody>" + body + "</tbody></table>"
             + '<div class="src">USDA\u2019s own figures' + ((" (" + _esc4(tb["wasde_no"]) + ")") if tb.get("wasde_no") else "")
             + ". A survey average, high and low go beside them once a pre-report survey posts, with the source and time. "
-            + '<a href="' + _esc4(tb.get("source")) + '" rel="noopener" target="_blank">USDA WASDE</a></div></div>')
+            + source_links.link(tb.get("source") or "", "USDA WASDE", ' rel="noopener" target="_blank"') + '</div></div>')
 
 
 def next_card(n, skip_nums=False):
@@ -454,8 +454,8 @@ def history_el(h):
             # dated correction and the grade against it, from the builder.
             if (r.get("nass_correction") or {}).get("note"):
                 gap_line += f'<div class="wp-hr-gap wp-hr-corr">{esc(r["nass_correction"]["note"])}</div>'
-            src_link = (f' <a href="{esc(r["reaction_source"])}" rel="nofollow noopener" target="_blank">Source</a>'
-                        if r.get("reaction_source") else "")
+            src_link = (" " + source_links.link(r["reaction_source"], "Source", ' rel="nofollow noopener" target="_blank"')
+                        if r.get("reaction_source") and not source_links.is_data_source(r["reaction_source"]) else "")
             reaction = (f'<div class="wp-hr-reaction">{esc(r["reaction"])}{src_link}</div>' if r.get("reaction")
                         else f'<div class="wp-hr-gap">{esc(r.get("reaction_why") or "No note written on how the market took it.")}</div>')
             body.append(

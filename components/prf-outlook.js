@@ -285,7 +285,7 @@
     h += '<ul class="prfo-links">'
       + '<li><a href="' + esc((d.seasonal && d.seasonal.link) || 'https://www.cpc.ncep.noaa.gov/products/predictions/long_range/') + '" rel="noopener" target="_blank">CPC seasonal outlooks</a></li>'
       + '<li><a href="' + esc((d.enso && d.enso.link) || 'https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml') + '" rel="noopener" target="_blank">CPC ENSO discussion</a></li>'
-      + '<li><a href="https://droughtmonitor.unl.edu/" rel="noopener" target="_blank">US Drought Monitor</a></li>'
+      + '<li>US Drought Monitor</li>'
       + '<li><a href="/drought-monitor">AGSIST drought map</a></li></ul>';
 
     h += '<details><summary>Where these figures come from</summary>' + sources(d) + '</details>';

@@ -31,8 +31,8 @@ JS_V = "1"
 TITLE = "Ag stocks today: farm company share prices and the AGSIST Ag 20"
 DESC = ("Closing share prices for U.S.-listed farm equipment, fertilizer, grain, livestock and food companies, "
         "their latest SEC reports and revenue against a year ago, and the AGSIST Ag 20 index. Not investment advice.")
-YAHOO = '<a href="https://finance.yahoo.com/" rel="noopener">Yahoo Finance</a>, delayed'
-SEC = '<a href="https://www.sec.gov/edgar/search/" rel="noopener">SEC EDGAR</a>'
+YAHOO = 'Yahoo Finance, delayed'
+SEC = 'SEC EDGAR'
 MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 GROUP_IDS = {"Equipment": "equipment", "Crop inputs": "inputs", "Grain and processing": "grain",
              "Livestock and animal health": "livestock", "Food and produce": "food",
@@ -257,14 +257,14 @@ def method(u, ix, sec, plants):
 <li>Plants: only plants whose operator name is the company&rsquo;s own in the plant lists AGSIST keeps (ethanol plants from the Renewable Fuels Association list, soybean crush plants from NOPA, export elevators from port pages, rail shuttle elevators from the Kansas grain elevator guide), read Oct 28, 2026. Joint ventures are marked. Plants a company owns under another name are not counted.</li>
 <li>Every listed company was checked against SEC&rsquo;s ticker list{(" on " + esc(day(checked[:10], True))) if checked else ""}. Not listed here: {dropped}.</li>
 </ul>
-<p class="ags-src">Closes: {YAHOO}. Filings and revenue: {SEC}{(", read " + esc(day(sec_c[:10], True))) if sec_c else ""}. Ticker check: <a href="https://www.sec.gov/files/company_tickers_exchange.json" rel="noopener">SEC company tickers</a>.</p>
+<p class="ags-src">Closes: {YAHOO}. Filings and revenue: {SEC}{(", read " + esc(day(sec_c[:10], True))) if sec_c else ""}. Ticker check: SEC company tickers.</p>
 </details>"""
 
 
 OPEN_MAX = 25
 RAISES_LINE = "Private raises are high risk and hard to sell; many stop reporting."
-CF_SRC = ('<a href="https://www.sec.gov/data-research/sec-markets-data/crowdfunding-offerings-data-sets" rel="noopener">'
-          'SEC Crowdfunding Offerings data sets</a>')
+CF_SRC = (''
+          'SEC Crowdfunding Offerings data sets')
 TRACK_ROWS = [("reached", "Said in a progress update (Form C-U) it reached its target"),
               ("car", "Filed at least one annual report (Form C-AR)"),
               ("ctr", "Filed to end its reporting (Form C-TR)"),

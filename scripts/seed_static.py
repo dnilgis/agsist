@@ -1711,7 +1711,7 @@ def storage_html(d, today, hist=None, basis=None):
     if not cr or int(cr.get("year") or 0) != yr:
         return (lead + f"<p>{FARMDOC} found that the United States as a whole has room for this year&rsquo;s "
                 f"carry-in stocks and the fall harvest, but that carry-in plus this year&rsquo;s crop is more than "
-                f"storage capacity in most Corn Belt states. <a href=\"{FARMDOC_URL}\">Read their study</a>.</p>"
+                f"storage capacity in most Corn Belt states.</p>"
                 f"<p>Our own state-by-state version of that math (USDA NASS September 1 stocks plus the latest {yr} "
                 f"crop forecast, over on-farm plus off-farm capacity) fills in here once our next NASS pull "
                 f"lands. Until then this section shows no state numbers of its own.</p>")
@@ -1830,7 +1830,7 @@ def storage_html(d, today, hist=None, basis=None):
         out += (f"<p>That does not mean the bins run out. {FARMDOC} looked at how fast each state has cleared the "
                 f"pressure from September to December in past years and concluded that, on current production "
                 f"expectations, a storage crunch is unlikely in 2026. It can still pinch in some places, because bins, "
-                f"stocks and crops are spread unevenly. <a href=\"{FARMDOC_URL}\">Read their study</a>.</p>")
+                f"stocks and crops are spread unevenly.</p>")
     ush = (hst or {}).get("us", {}).get("stats") if hst else None
     if ush and ush.get("drop_avg") is not None:
         out += (f"<p>Our own count of the same history, USDA NASS December 1 stocks: in {ush['first']} to "
@@ -2247,7 +2247,7 @@ def milk_seeds(d, today):
 
 
 MILK_MB_DATA = "data/dairy-mailbox.json"
-MILK_MB_LINK = '<a href="https://mymarketnews.ams.usda.gov/viewReport/3357" rel="noopener">AMS mailbox report</a>'
+MILK_MB_LINK = 'AMS mailbox report'
 
 
 def milk_mailbox_seeds(mb, today):
@@ -2408,8 +2408,7 @@ DMC_FIRST_YEAR = "2019"
 DMC_WITHHELD = ("What DMC would have paid at past margins: not shown yet. I only print it from FSA's own published "
                 "monthly margins and premium rates, checked against the USDA milk prices held here, and those are not "
                 "loaded yet. I will not guess them. FSA publishes each month's margin on its "
-                '<a href="https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates" '
-                'rel="noopener">DMC prices and updates page</a>.')
+                'DMC prices and updates page.')
 
 
 def milk_dmc_rows(dmc, d):
@@ -2661,11 +2660,10 @@ def milk_herds_seed(h):
         i = _mkey(ld[:7])
         rel = f", newest year released {MON3[i % 12]} {int(ld[8:])}, {i // 12}"
     note = f" {_e(h['us_note'])}." if h.get("us_note") else ""
-    src = ('Source: <a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS</a>, licensed dairy herds, the yearly '
+    src = ('Source: USDA NASS, licensed dairy herds, the yearly '
            f'average of farms licensed to sell milk (Milk Production report{rel}), as NASS has the years now.{note}')
     if wm:
-        src += (' Wisconsin by month: <a href="https://www.nass.usda.gov/Statistics_by_State/Wisconsin/Publications/Dairy/" '
-                'rel="noopener">USDA NASS Wisconsin</a>, herds on the state&rsquo;s Dairy Producer License list on the first of each month.')
+        src += (' Wisconsin by month: USDA NASS Wisconsin, herds on the state&rsquo;s Dairy Producer License list on the first of each month.')
     rd = _e(h.get("read") or "")
     if rd:
         src += f" Read {rd}."
@@ -2715,7 +2713,7 @@ O30_ROWS = (("class1", "Class I price (3.5% fat)", "$/cwt"),
             ("uniform", "Statistical uniform price", "$/cwt"),
             ("ppd", "Producer price differential (PPD)", "$/cwt"),
             ("scc", "SCC adjustment, per 1,000 cells", "$/cwt"))
-O30_LINK = '<a href="https://www.fmma30.com/" rel="noopener">Upper Midwest Market Administrator</a>'
+O30_LINK = 'Upper Midwest Market Administrator'
 DEPOOL_GAP = 1.00     # $/cwt Class IV over Class III before the line is said
 
 
@@ -2839,7 +2837,7 @@ def milk_o30_hist(o30):
             f'<p class="dp-note-src">Source: {O30_LINK}, each month&rsquo;s producer price differential release, at the base zone, '
             "checked so the statistical uniform price equals that month&rsquo;s Class III plus the PPD. "
             f"{n_c} of these months were also checked against the Central Order&rsquo;s yearly summary of all orders "
-            '(<a href="https://www.fmmacentral.com/" rel="noopener">fmmacentral.com</a>) and matched.' + more +
+            '(the Central Market Administrator) and matched.' + more +
             " How much milk was left out of the pool is not published by order and month, so I do not show it.</p></details>")
 
 

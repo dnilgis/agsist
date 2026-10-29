@@ -513,7 +513,7 @@ function loadCountyDates(){
   rmaPromise = rmaPromise || fetch('/data/rma-planting-dates.json').then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
   return rmaPromise.then(function(d){
     var head = '<h3>Your county’s final planting dates</h3>';
-    if(!d || !d.counties){ box.innerHTML = head+'<div class="pd-empty">The final planting date file could not be read. RMA’s own lookup: <a href="https://public-rma.fpac.usda.gov/apps/mapviewer/dates" target="_blank" rel="noopener">USDA RMA dates</a>.</div>'; return; }
+    if(!d || !d.counties){ box.innerHTML = head+'<div class="pd-empty">The final planting date file could not be read. RMA’s own lookup: USDA RMA dates.</div>'; return; }
     var want = normalizeCountyName(userCounty), hit = null;
     if(want && userState){
       for(var f in d.counties){
@@ -522,7 +522,7 @@ function loadCountyDates(){
       }
     }
     if(!hit){
-      box.innerHTML = head+'<div class="pd-empty">'+(userCounty ? esc(userCounty)+(userState?', '+esc(userState):'')+' is not in the RMA file this page reads.' : 'Your county did not come back from the location lookup.')+' In Wisconsin and Minnesota the final planting date is May 25 or May 31 for corn and Jun 10 or Jun 15 for soybeans. <a href="https://public-rma.fpac.usda.gov/apps/mapviewer/dates" target="_blank" rel="noopener">Look up your county at USDA RMA</a>.</div>';
+      box.innerHTML = head+'<div class="pd-empty">'+(userCounty ? esc(userCounty)+(userState?', '+esc(userState):'')+' is not in the RMA file this page reads.' : 'Your county did not come back from the location lookup.')+' In Wisconsin and Minnesota the final planting date is May 25 or May 31 for corn and Jun 10 or Jun 15 for soybeans. Look up your county at USDA RMA.</div>';
       return;
     }
     var cy = d.crop_year, now = new Date(), y = now.getFullYear();
