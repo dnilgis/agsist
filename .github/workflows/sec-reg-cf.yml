@@ -1,0 +1,126 @@
+name: SEC Reg CF (private ag raises)
+
+# The "Private ag raises" section of /ag-stocks (Sig approved Oct 29, 2026).
+# BY HAND ONLY (no schedule). One run:
+#   1. downloads the 42 quarterly SEC Crowdfunding Offerings zips (2016q2 to 2026q3) byte for
+#      byte to the private raw branch, history/sec-reg-cf/<YYYY-MM-DD>/, with SHA256SUMS
+#      (files already there are never replaced);
+#   2. reads each issuer's EDGAR submissions record once (SIC code and description, recent
+#      Form C filings) and saves it beside the zips (resumable: a second run with the same
+#      folder reads only what is missing);
+#   3. screens ag issuers and scores every past raise, saving derived/ (every ag offering, every
+#      borderline case left out, the counts) to the same raw folder;
+#   4. only with publish = true: writes data/agstocks/raises.json and rebuilds ag-stocks.html.
+# Read derived/borderline_excluded.csv before the first publish; hand calls go in
+# scripts/agraises_overrides.json.
+on:
+  workflow_dispatch:
+    inputs:
+      folder:
+        description: "Reuse a raw folder (history/sec-reg-cf/YYYY-MM-DD) instead of downloading; empty = download today"
+        required: false
+        default: ""
+      publish:
+        description: "Write data/agstocks/raises.json and rebuild /ag-stocks"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sec-reg-cf
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    env:
+      IN_FOLDER: ${{ inputs.folder }}
+      PUBLISH: ${{ inputs.publish }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Selftest
+        run: python scripts/agraises.py --selftest
+
+      - name: Pick the folder
+        run: |
+          if [ -n "$IN_FOLDER" ]; then
+            printf '%s\n' "$IN_FOLDER" | grep -Eq '^history/sec-reg-cf/[0-9]{4}-[0-9]{2}-[0-9]{2}$' \
+              || { echo "::error::folder must look like history/sec-reg-cf/2026-10-29"; exit 1; }
+            echo "DIR=$IN_FOLDER" >> "$GITHUB_ENV"
+          else
+            echo "DIR=history/sec-reg-cf/$(date -u +%Y-%m-%d)" >> "$GITHUB_ENV"
+          fi
+
+      - name: Download the quarterly files
+        if: inputs.folder == ''
+        run: python scripts/agraises.py download --out "$DIR"
+
+      - name: Save the originals to the raw branch
+        if: inputs.folder == ''
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+          RAW_KEEP: "1"
+        run: bash scripts/push_raw.sh "SEC Reg CF quarterly files" "$DIR"
+
+      - name: Pull the saved folder
+        if: inputs.folder != ''
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh "$DIR"
+
+      - name: EDGAR issuer records
+        timeout-minutes: 120
+        continue-on-error: true
+        run: python scripts/agraises.py edgar --raw "$DIR"
+
+      - name: Screen and score
+        run: |
+          if [ "$PUBLISH" = "true" ]; then python scripts/agraises.py screen --raw "$DIR" --publish
+          else python scripts/agraises.py screen --raw "$DIR"; fi
+
+      - name: Save the EDGAR records and the screen to the raw branch
+        if: always()
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "SEC Reg CF screen" "$DIR/edgar.jsonl.gz" "$DIR/derived"
+
+      - name: Rebuild the page and commit
+        if: inputs.publish
+        run: |
+          set -e
+          python scripts/build_agstocks_page.py
+          python scripts/build_agstocks_page.py --check
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          rm -rf /tmp/agr && mkdir -p /tmp/agr && cp data/agstocks/raises.json /tmp/agr/
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/agr/raises.json data/agstocks/raises.json
+            python scripts/build_agstocks_page.py
+            git add data/agstocks/raises.json ag-stocks.html
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "data: private ag raises from SEC Reg CF, ${DIR##*/}"
+            if git push origin HEAD:main; then echo "Pushed on attempt $i."; exit 0; fi
+            sleep $((RANDOM % 6 + 3))
+          done
+          echo "::error::push failed after 5 attempts"; exit 1
