@@ -446,6 +446,10 @@ test("browser: RootLot's portal: free test muted under its label, live with coun
       assert.match(t, /Free test: no charge/i);
       assert.match(t, /Put Your Root Down/);
       assert.ok(await pg.$("#billing.cp-free .cp-bill.cp-muted"), w + ": billing kept, muted");
+      // the rate card of Oct 29, 2026: the free test greys the State Sponsor plan, never a retired one
+      const bill = await pg.textContent("#billing");
+      assert.match(bill, /State Sponsor/, w + ": the greyed plan is the State Sponsor");
+      assert.doesNotMatch(bill, /Own a page|Supporter/, w + ": no retired tier");
       assert.equal(await pg.evaluate(() => [...document.querySelectorAll("#results .cp-kpi-n")].slice(0, 2).map((e) => e.textContent).join(",")), "0,0");
       // live since Oct 28, no full day counted yet in the shipped file: zeros, said so, never blank
       assert.match(await pg.textContent("#results"), /no full day/);

@@ -18,6 +18,7 @@ is the only failure worth failing for.
 """
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -25,6 +26,12 @@ ROOT = Path(__file__).resolve().parent.parent
 CARD = ROOT / "data" / "rate-card.json"
 SUPPORTERS = ROOT / "data" / "supporters.json"
 PITCH = ROOT / "sponsor.html"
+# Every page that sells a slot or quotes the card (Oct 29, 2026).
+SELLING = ("sponsor.html", "sponsor-apply.html", "sponsor-kit.html")
+STATE_NAMES = {"IL": "Illinois", "MN": "Minnesota", "WI": "Wisconsin", "TX": "Texas", "CA": "California", "NV": "Nevada"}
+# Plain numbers the pages may print that are not audience figures: terms (5 sponsors, 24 months,
+# 12 for 10, day 30, 28 days, 50 words, 250 KB), never a count of readers or views.
+TERMS = {"5", "10", "12", "24", "28", "30", "50", "250"}
 
 FAILED = []
 
@@ -42,6 +49,22 @@ def _text(p):
     s = re.sub(r"<style.*?</style>", " ", s, flags=re.S)
     s = re.sub(r"<[^>]+>", " ", s)
     return re.sub(r"\s+", " ", s)
+
+
+def stray_numbers(src, prices):
+    """Numbers left in a page's text (and its JSON-LD) once the data-a spans, the card's prices,
+    the phone number, the og:image hash and the terms are taken out. A stale typed figure such as
+    "14,928 page views" or "1,615 citations" is what this finds."""
+    s = re.sub(r'<span data-a="[A-Za-z0-9]+">[^<]*</span>', " ", src)
+    s = re.sub(r"<style.*?</style>", " ", s, flags=re.S)
+    s = re.sub(r"<script(?![^>]*ld\+json)[^>]*>.*?</script>", " ", s, flags=re.S)
+    s = re.sub(r'(?:href|src|content|style|class|id|width|height|viewBox|d)="[^"]*"', " ", s)
+    s = re.sub(r'"(?:url|item|@id|position|price)":\s*"?[^",}]*"?', " ", s)
+    s = re.sub(r"<[^>]+>", " ", s)
+    s = re.sub(r"&#?[a-z0-9]+;", " ", s)
+    s = re.sub(r"\$(\d+)", lambda m: " " if int(m.group(1)) in prices else m.group(0), s)
+    s = re.sub(r"\b\d{3}-\d{3}-\d{4}\b|\bW-9\b", " ", s)
+    return [x for x in re.findall(r"\$?\d[\d,.]*", s) if x.rstrip(".,") not in TERMS]
 
 
 def main():
@@ -65,6 +88,7 @@ def main():
 
     print("\nevery price in the card is still on the page that sells it")
     pitch = _text(PITCH)
+    prices = {t["price_month"] for t in tiers} | {p for t in tiers for p in (t.get("price_by_state") or {}).values()}
     for t in tiers:
         p = t["price_month"]
         # "$149 / month", "$149/month", "$149/mo", "$149 a month" all count.
@@ -73,23 +97,77 @@ def main():
               "$%d (%s) appears on sponsor.html" % (p, t["id"]),
               "not found — the card and the pitch have drifted")
 
-    fnd = next((t for t in tiers if t["id"] == "daily"), None)
-    if fnd and fnd.get("year_equivalent"):
-        yr = fnd["year_equivalent"]
-        check(yr == fnd["price_month"] * 12,
-              "the annual figure is 12 months of the monthly one", "%s vs %s" % (yr, fnd["price_month"] * 12))
-        check(("$%s" % f"{yr:,}") in pitch or ("$%d" % yr) in pitch,
-              "and it is the figure the page quotes", yr)
+    print("\nthe State Sponsor's state prices and the opening note are on the page (Oct 29, 2026)")
+    st = next((t for t in tiers if t["id"] == "state"), None)
+    check(st is not None, "the card has a State Sponsor")
+    if st:
+        for code, p in sorted((st.get("price_by_state") or {}).items()):
+            check(isinstance(p, int) and p > st["price_month"], "%s pays more than the base state price" % code, p)
+            check(bool(re.search(r"\$%d\s*(?:/\s*mo|\s*(?:per|a)\s+month)" % p, pitch)), "$%d (%s) appears on sponsor.html" % (p, code))
+            check(STATE_NAMES[code] in pitch, "%s is named on sponsor.html" % STATE_NAMES[code])
+        soon = st.get("opens_soon") or []
+        m_ = re.search(r"([A-Z][a-z]+(?: [A-Z][a-z]+)*(?:, [A-Z][a-z]+(?: [A-Z][a-z]+)*)*(?: and [A-Z][a-z]+(?: [A-Z][a-z]+)*)?) opens? soon", pitch)
+        said = set(re.split(r", | and ", m_.group(1))) if m_ else set()
+        check(said == {STATE_NAMES.get(c, c) for c in soon}, "sponsor.html names exactly the states that open soon", (said, soon))
+        # Oct 29, 2026 (Sig, option A): a state a state-targeted test runs in is held, not sold.
+        geo_ = json.loads((ROOT / "data" / "geo-sponsors.json").read_text())
+        held = {c for e in geo_.get("sponsors") or [] if e.get("active") is True for c in e.get("states") or []}
+        check(held <= set(soon), "every state an active geo test runs in is held on the card (opens_soon)", (sorted(held), soon))
+
+    print("\nthe terms on the card are the terms on the page")
+    for k in ("trial", "day30", "terms", "prepay", "paperwork", "insurance"):
+        check(bool(card.get(k)), "the card states its %s" % k)
+    check(card.get("paperwork", "x") in pitch, "W-9 line on sponsor.html", card.get("paperwork"))
+    check(re.search(r"12 months for the price of 10|Pay 12 months up front and you pay for 10", pitch) is not None,
+          "the 12-for-10 prepay is on sponsor.html")
+    check("12" in card.get("prepay", "") and "10" in card.get("prepay", ""), "and on the card")
+    f_ = card.get("founding") or {}
+    check(("the first %d paying sponsors keep their price for %d months" % (f_.get("sponsors", 0), f_.get("months", 0))) in pitch,
+          "the founding rate on sponsor.html matches the card", f_)
+    check("No reply means the ad comes down and nothing is owed" in pitch and "day 30" in pitch.lower(),
+          "the day-30 yes or no is on sponsor.html")
+    for page in ("sponsor.html", "sponsor-kit.html", "about.html", "prf-sponsor.html", "prf-sponsor-kit.html"):
+        check(card.get("insurance", "x") in _text(ROOT / page), "the insurance line is on %s" % page)
+
+    print("\nretired tiers are gone from every page that sells (Oct 29, 2026)")
+    retired = [k for k in (card.get("retired") or {}) if not k.startswith("_")]
+    check(set(retired) == {"page", "supporter"} and not (set(retired) & set(ids)),
+          "Supporter and Own a page are retired, and no live tier reuses their ids", retired)
+    raw_card = CARD.read_text().lower()
+    check("rate locked" not in raw_card and "hail" not in raw_card, "no rate lock and no hail-page note on the card")
+    for page in SELLING:
+        t_ = _text(ROOT / page)
+        check(re.search(r"\bSupporters?\b", t_) is None, "%s never offers a Supporter spot" % page)
+        check("Own a page" not in t_ and "own page $29" not in t_, "%s never offers Own a page" % page)
+        check(re.search(r"\$15\b", t_) is None, "%s carries no $15 price" % page)
+        check(re.search(r"rate (?:is )?locked", t_, re.I) is None, "%s promises no 12-month rate lock" % page)
+        check("1,615" not in t_ and "citations a day" not in t_, "%s has no undated Bing citation line" % page)
+        for t in tiers:
+            check(t["name"] in t_, "%s names the %s" % (page, t["name"]))
+    check("<title>Advertise on AGSIST</title>" in PITCH.read_text(), "the page title is Advertise on AGSIST")
+
+    print("\nevery number on the sponsor pages is a price, a term, or a figure written in from data/audience.json")
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import bake_audience
+    r_ = subprocess.run([sys.executable, str(ROOT / "scripts" / "bake_audience.py"), "--check"], capture_output=True, text=True)
+    check(r_.returncode == 0, "no audience figure on the pages is behind data/audience.json (bake_audience.py --check)",
+          (r_.stdout + r_.stderr).strip()[-300:])
+    vals = bake_audience.load()
+    for page in bake_audience.PAGES:
+        src = (ROOT / page).read_text()
+        keys = [m.group(2) for m in bake_audience.SPAN.finditer(src)]
+        check(len(keys) >= 4, "%s carries its figures in data-a spans" % page, keys)
+        check(all(k in vals for k in keys), "%s: every span has a source" % page, [k for k in keys if k not in vals])
+        stray = stray_numbers(src, prices)
+        check(not stray, "%s: no number typed outside a span" % page, stray[:8])
 
     print("\nevery slot price on the site is the card's price")
-    import subprocess
     r = subprocess.run([sys.executable, str(ROOT / "scripts" / "stamp_rates.py"), "--check"],
                        capture_output=True, text=True)
     check(r.returncode == 0, "every ribbon's price matches the card (scripts/stamp_rates.py --check)",
           (r.stdout + r.stderr).strip()[-300:])
 
     print("\nan unsold page ribbon carries no price and no text, only its slot id (Sig, 2026-10-19)")
-    sys.path.insert(0, str(ROOT / "scripts"))
     import stamp_rates
     ribbons, bad = 0, []
     for p in stamp_rates.pages():
@@ -109,14 +187,6 @@ def main():
     loader = (ROOT / "components" / "loader.js").read_text()
     fill = loader[loader.index("function fillPageRibbons"):loader.index("function loadSponsorMetrics")]
     check("getAttribute('data-slot')" in fill, "loader.js reads the slot from data-slot, so a sold slot still fills")
-
-    print("\nthe supporter cap is the one the strip renders")
-    sup = next((t for t in tiers if t["id"] == "supporter"), None)
-    if sup and SUPPORTERS.exists():
-        s = json.loads(SUPPORTERS.read_text())
-        check(sup.get("slots") == s.get("cap"),
-              "rate-card supporter slots == supporters.json cap",
-              "%s vs %s" % (sup.get("slots"), s.get("cap")))
 
 
     print("\na free test quotes no price the card does not, and says it is free (Oct 28, 2026)")

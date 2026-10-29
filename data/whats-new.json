@@ -2,6 +2,20 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-29-farm-credit-cards",
+   "date": "2026-10-29",
+   "title": "Farm loan cards, shorter",
+   "line": "The farm loan cards on Atlas state pages now carry one short source line, linked to the reserve bank's ag survey page; how the numbers work is in one note per page.",
+   "link": "/farmland-atlas/states/#farm-credit"
+   },
+   {
+   "id": "2026-10-29-ratecard",
+   "date": "2026-10-29",
+   "title": "A new sponsor rate card",
+   "line": "Advertise as the Daily Sponsor, a State Sponsor, the Cash Bids Sponsor or a featured elevator on its own town page; first month free, then a yes or no.",
+   "link": "/sponsor"
+  },
+  {
    "id": "2026-10-29-home-steady",
    "date": "2026-10-29",
    "title": "The homepage holds still while it loads",

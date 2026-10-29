@@ -88,3 +88,32 @@ for (const width of [390, 1280]) {
     } finally { await browser.close(); srv.close(); }
   });
 }
+
+/* Oct 29, 2026 (Sig, option A): California, Nevada and Texas are held while the Root Lot
+ * test runs there. The form lists them, disabled, as "opens soon"; every other state is open
+ * at the card's price. scripts/sponsor_apply.py refuses them too (its --selftest). */
+test("the State Sponsor picker holds the states the card holds, and prices the rest from the card", { skip }, async () => {
+  const card = JSON.parse(read("data/rate-card.json")).tiers.find((t) => t.id === "state");
+  assert.deepEqual([...card.opens_soon].sort(), ["CA", "NV", "TX"]);
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 900 }, serviceWorkers: "block" });
+    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 503, headers: { "Access-Control-Allow-Origin": "*" }, body: "" }));
+    const page = await ctx.newPage();
+    await page.goto(`http://127.0.0.1:${port}/sponsor-apply.html?tier=state&slot=rent-ca`, { waitUntil: "load" });
+    await page.waitForFunction(() => document.querySelectorAll("#spa-state option").length > 20, null, { timeout: 15000 });
+    const opts = await page.$$eval("#spa-state option", (o) => o.map((x) => ({ v: x.value, off: x.disabled, t: x.textContent })));
+    for (const c of ["CA", "NV", "TX"]) {
+      const o = opts.find((x) => x.v === c);
+      assert.ok(o && o.off && /opens soon/.test(o.t), c + " is held: " + JSON.stringify(o));
+    }
+    for (const o of opts.filter((x) => !card.opens_soon.includes(x.v))) {
+      assert.equal(o.off, false, o.v + " is open");
+      assert.ok(o.t.includes("$" + ((card.price_by_state || {})[o.v] || card.price_month) + "/mo"), o.v + " price: " + o.t);
+    }
+    const chosen = await page.$eval("#spa-state", (s) => s.value);
+    assert.ok(!card.opens_soon.includes(chosen), "a link to a held state does not pick it: " + chosen);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});

@@ -2,15 +2,15 @@
  "schema": "agsist-farm-credit/1",
  "about": "Federal Reserve district surveys of agricultural bankers, as compiled by the Federal Reserve Bank of Kansas City. Diffusion indexes, quarterly. Built by scripts/build_farm_credit.py; Chicago and Dallas quarters are checked against those banks' own files and any that disagree are withheld.",
  "source": "Federal Reserve district agricultural credit surveys, compiled by the Federal Reserve Bank of Kansas City",
- "source_url": "https://www.kansascityfed.org/agriculture/ag-credit-survey/",
+ "source_url": "https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/",
  "built": "2026-10-28",
  "latest": "2026Q2",
  "chart_from": "2010Q1",
  "how": "Each quarter, ag bankers in the district say whether each item was higher, lower or the same as a year earlier. The index is the percent saying higher, minus the percent saying lower, plus 100. Over 100 means more said higher; under 100, more said lower; 100 is an even split.",
  "words": {
-  "repay": "Under 100: more bankers said farm loans were being repaid at a lower rate than a year earlier than said a higher rate.",
-  "renew": "Over 100: more bankers said they renewed or extended more farm loans than a year earlier than said fewer.",
-  "collat": "Over 100: more bankers said they asked for more collateral than a year earlier than said less."
+  "repay": "Under 100: more bankers said repayment rates fell than rose.",
+  "renew": "Over 100: more bankers said renewals or extensions rose than fell.",
+  "collat": "Over 100: more bankers asked for more collateral than less."
  },
  "series": {
   "repay": {
@@ -30,7 +30,7 @@
   "CHI": {
    "name": "Chicago",
    "num": 7,
-   "url": "https://www.chicagofed.org/",
+   "url": "https://www.chicagofed.org/research/data/ag-conditions/index",
    "current": true,
    "last": "2026Q2",
    "first": {
@@ -76,7 +76,7 @@
   "MIN": {
    "name": "Minneapolis",
    "num": 9,
-   "url": "https://www.minneapolisfed.org/",
+   "url": "https://www.minneapolisfed.org/topic/agriculture-and-farming",
    "current": true,
    "last": "2026Q2",
    "first": {
@@ -99,7 +99,7 @@
   "KC": {
    "name": "Kansas City",
    "num": 10,
-   "url": "https://www.kansascityfed.org/agriculture/ag-credit-survey/",
+   "url": "https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/",
    "current": true,
    "last": "2026Q2",
    "first": {
@@ -116,7 +116,7 @@
     "renew": [117,115,106,93,94,99,95,93,89,87,97,94,95,99,102,107,109,110,113,113,121,120,120.32,136.46,140.8,141.5,147.37,147.59,144.56,139.24,134.56,130.15,130.22,126.42,128.84,129.22,126.22,127.75,122.42,119.64,137.42,137.5,125.46,107.31,92.67,84.77,88.89,89.54,93.34,94.4,100,107.86,104.31,104.44,107.41,115.08,121.1,117.43,121.37,131.2,126.92,129.13,129.54,127.36,128.91,118.31]
    },
    "checked_against_own_file": false,
-   "note": "From the third quarter of 2025 the Kansas City Fed's results include Farm Credit System lenders as well as commercial banks; earlier quarters are commercial banks only.",
+   "note": "From 2025 Q3 the Kansas City Fed's results also count Farm Credit System lenders, not only commercial banks.",
    "mark": {
     "q": "2025Q3",
     "label": "Farm Credit lenders added"
@@ -125,7 +125,7 @@
   "DAL": {
    "name": "Dallas",
    "num": 11,
-   "url": "https://www.dallasfed.org/",
+   "url": "https://www.dallasfed.org/research/surveys/agsurvey",
    "current": true,
    "last": "2026Q2",
    "first": {

@@ -51,16 +51,19 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "farm-credit", "districts.json")
 SCHEMA = "agsist-farm-credit/1"
 CHART_FROM = "2010Q1"
-KC_PAGE = "https://www.kansascityfed.org/agriculture/ag-credit-survey/"
+KC_PAGE = "https://www.kansascityfed.org/center-for-agriculture-and-the-economy/ag-credit-survey/"
 
+# Each url is the reserve bank's own ag survey page, checked against its saved copy on the
+# references branch (references/sources.json fed-*); St. Louis stays on the home page
+# until its survey page has a saved copy (the fetch timed out Oct 29).
 # The seven districts in the Kansas City Fed's table, plus the five that have no
 # farm credit survey there (named on split-state pages only).
 DISTRICTS = {
-    "CHI": {"name": "Chicago", "num": 7, "url": "https://www.chicagofed.org/"},
+    "CHI": {"name": "Chicago", "num": 7, "url": "https://www.chicagofed.org/research/data/ag-conditions/index"},
     "STL": {"name": "St. Louis", "num": 8, "url": "https://www.stlouisfed.org/"},
-    "MIN": {"name": "Minneapolis", "num": 9, "url": "https://www.minneapolisfed.org/"},
+    "MIN": {"name": "Minneapolis", "num": 9, "url": "https://www.minneapolisfed.org/topic/agriculture-and-farming"},
     "KC": {"name": "Kansas City", "num": 10, "url": KC_PAGE},
-    "DAL": {"name": "Dallas", "num": 11, "url": "https://www.dallasfed.org/"},
+    "DAL": {"name": "Dallas", "num": 11, "url": "https://www.dallasfed.org/research/surveys/agsurvey"},
     "RICH": {"name": "Richmond", "num": 5, "url": "https://www.richmondfed.org/"},
     "SF": {"name": "San Francisco", "num": 12, "url": "https://www.frbsf.org/"},
 }
@@ -88,12 +91,11 @@ HOW = ("Each quarter, ag bankers in the district say whether each item was highe
        "earlier. The index is the percent saying higher, minus the percent saying lower, plus 100. Over 100 means "
        "more said higher; under 100, more said lower; 100 is an even split.")
 WORDS = {
-    "repay": "Under 100: more bankers said farm loans were being repaid at a lower rate than a year earlier than said a higher rate.",
-    "renew": "Over 100: more bankers said they renewed or extended more farm loans than a year earlier than said fewer.",
-    "collat": "Over 100: more bankers said they asked for more collateral than a year earlier than said less.",
+    "repay": "Under 100: more bankers said repayment rates fell than rose.",
+    "renew": "Over 100: more bankers said renewals or extensions rose than fell.",
+    "collat": "Over 100: more bankers asked for more collateral than less.",
 }
-KC_PANEL = ("From the third quarter of 2025 the Kansas City Fed's results include Farm Credit System lenders as well "
-            "as commercial banks; earlier quarters are commercial banks only.")
+KC_PANEL = "From 2025 Q3 the Kansas City Fed's results also count Farm Credit System lenders, not only commercial banks."
 Q = re.compile(r"^(\d{4})Q([1-4])$")
 
 
