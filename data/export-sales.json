@@ -1,82 +1,82 @@
 {
-  "updated": "2026-10-23",
+  "updated": "2026-10-29",
   "marketing_year": "2026/27",
   "note": "USDA FAS ESR API \u2014 api.fas.usda.gov/api/esr",
   "corn": {
-    "weekly_net_mt": 1527122,
-    "cumulative_mt": 22192670,
+    "weekly_net_mt": 1303940,
+    "cumulative_mt": 23496610,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-15",
+    "report_date": "2026-10-22",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 33560303,
-    "prev_year_week": "2025-10-16",
-    "vs_prev_year_pct": -33.9,
-    "unknown_outstanding_mt": 2548093
+    "prev_year_cumulative_mt": 35365562,
+    "prev_year_week": "2025-10-23",
+    "vs_prev_year_pct": -33.6,
+    "unknown_outstanding_mt": 2959893
   },
   "soybeans": {
-    "weekly_net_mt": 2841199,
-    "cumulative_mt": 26201306,
+    "weekly_net_mt": 2576396,
+    "cumulative_mt": 28777702,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-15",
+    "report_date": "2026-10-22",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 14498089,
-    "prev_year_week": "2025-10-16",
-    "vs_prev_year_pct": 80.7,
+    "prev_year_cumulative_mt": 15947886,
+    "prev_year_week": "2025-10-23",
+    "vs_prev_year_pct": 80.4,
     "china": {
-      "commitments_mt": 13447228,
-      "shipped_mt": 4321228,
-      "outstanding_mt": 9126000,
-      "weekly_net_mt": 2178641,
-      "week_ending": "2026-10-15",
+      "commitments_mt": 15074187,
+      "shipped_mt": 5978187,
+      "outstanding_mt": 9096000,
+      "weekly_net_mt": 1626959,
+      "week_ending": "2026-10-22",
       "marketing_year": "2026/27"
     },
-    "unknown_outstanding_mt": 5661100
+    "unknown_outstanding_mt": 5814350
   },
   "wheat": {
-    "weekly_net_mt": 239627,
-    "cumulative_mt": 10668793,
+    "weekly_net_mt": 849770,
+    "cumulative_mt": 11518563,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-15",
+    "report_date": "2026-10-22",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 15799333,
-    "prev_year_week": "2025-10-16",
-    "vs_prev_year_pct": -32.5,
-    "unknown_outstanding_mt": 337280,
+    "prev_year_cumulative_mt": 16299111,
+    "prev_year_week": "2025-10-23",
+    "vs_prev_year_pct": -29.3,
+    "unknown_outstanding_mt": 261280,
     "classes": {
       "hrw": {
         "label": "HRW",
-        "weekly_net_mt": 27369,
-        "cumulative_mt": 2277285,
-        "prev_year_cumulative_mt": 6117207
+        "weekly_net_mt": 77985,
+        "cumulative_mt": 2355270,
+        "prev_year_cumulative_mt": 6292340
       },
       "srw": {
         "label": "SRW",
-        "weekly_net_mt": 109919,
-        "cumulative_mt": 1655502,
-        "prev_year_cumulative_mt": 2108871
+        "weekly_net_mt": 31760,
+        "cumulative_mt": 1687262,
+        "prev_year_cumulative_mt": 2201918
       },
       "hrs": {
         "label": "HRS",
-        "weekly_net_mt": 39828,
-        "cumulative_mt": 3153390,
-        "prev_year_cumulative_mt": 3918006
+        "weekly_net_mt": 321233,
+        "cumulative_mt": 3474623,
+        "prev_year_cumulative_mt": 4059569
       },
       "white": {
         "label": "White",
-        "weekly_net_mt": 51031,
-        "cumulative_mt": 3246594,
-        "prev_year_cumulative_mt": 3399189
+        "weekly_net_mt": 396092,
+        "cumulative_mt": 3642686,
+        "prev_year_cumulative_mt": 3434174
       },
       "durum": {
         "label": "Durum",
-        "weekly_net_mt": 11480,
-        "cumulative_mt": 336022,
-        "prev_year_cumulative_mt": 256060
+        "weekly_net_mt": 22700,
+        "cumulative_mt": 358722,
+        "prev_year_cumulative_mt": 311110
       }
     }
   },
-  "report_date": "2026-10-15"
+  "report_date": "2026-10-22"
 }
