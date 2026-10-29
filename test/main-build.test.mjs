@@ -158,6 +158,19 @@ test("the shared list covers the brief's shared files, and the map reads what a 
   }
 });
 
+// Oct 29 (fx/cifast): the "=" of "?v=19" made the scan throw out every versioned script and style a page
+// loads, so a change to components/bids-network.js did not pick the combine-loss tests that load it.
+test("the map reads a page's versioned scripts and styles: the query string does not hide the file", () => {
+  const r = JSON.parse(py("import sys, json; sys.path.insert(0,'scripts/dev'); import test_map as T; t = T.Tree(T.git_files()); print(json.dumps([t.resolve(s, 'combine-loss.html') for s in ['/components/loader.js?v=19', '/components/styles.css?v=28#x', 'components/bids-network.js?v=8&b=1', '?v=1']]))"));
+  assert.deepEqual(r, [[["f", "components/loader.js"]], [["f", "components/styles.css"]], [["f", "components/bids-network.js"]], []]);
+  const page = read("combine-loss.html");
+  const srcs = [...page.matchAll(/<script src="\/(components\/[\w.-]+\.js)\?v=\d+"/g)].map((m) => m[1]);
+  assert.ok(srcs.length >= 4, `combine-loss.html loads ${srcs}`);
+  const m = JSON.parse(py("import sys, json; sys.path.insert(0,'scripts/dev'); import test_map as T; print(json.dumps(T.build()['tests']['test/combine-loss.test.mjs']))"));
+  const reads = (f) => m.files.includes(f) || m.dirs.some((d) => d === "" || (d === "./" ? !f.includes("/") : f.startsWith(d)));
+  for (const f of srcs) assert.ok(reads(f), `test/combine-loss.test.mjs reads ${f} (the page loads it)`);
+});
+
 test("the shard split puts every picked file in exactly one shard", () => {
   const files = fs.readdirSync(path.join(ROOT, "test")).filter((f) => f.endsWith(".test.mjs")).slice(0, 60).map((f) => "test/" + f);
   const got = [];

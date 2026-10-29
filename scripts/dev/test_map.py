@@ -109,7 +109,9 @@ class Tree:
     def resolve(self, lit, src, bare_dirs=False):
         """repo paths a literal written in src can mean: ('f', path) or ('d', 'prefix/')"""
         s = lit.strip()
-        if not s or len(s) > 300 or any(c in s for c in " \t\n<>{}|*\\,;=()[]") or s.startswith(("#", "data:", "mailto:", "tel:", "//")):
+        # the query and fragment do not name a file: "/components/loader.js?v=19" is components/loader.js
+        # (before Oct 29 the "=" of "?v=19" threw out every versioned script and style a page loads)
+        if not s or len(s) > 300 or any(c in re.split(r"[?#]", s, 1)[0] for c in " \t\n<>{}|*\\,;=()[]") or s.startswith(("#", "data:", "mailto:", "tel:", "//")):
             return []
         m = re.match(r'https?://(?:www\.)?agsist\.com(/.*)?$', s)
         if m:
