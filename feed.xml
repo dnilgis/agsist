@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 28 Oct 2026 12:36:27 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 29 Oct 2026 10:48:48 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Hogs fall 5.5% to $58.60 while corn holds $4.51</title>
+      <link>https://agsist.com/daily/2026-10-29</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-29</guid>
+      <pubDate>Thu, 29 Oct 2026 10:47:52 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Lean hogs settled Wednesday at $58.60, down 5.5% and the biggest drop on the board, only 1% off their 52-week low. Every hog sold this week brought less than it would have Tuesday.
+• Hogs lead the board lower
+• Grains drift on harvest
+• Crude eases on Iran talk
+Read more: https://agsist.com/daily/2026-10-29</description>
+    </item>
     <item>
       <title>Corn bounces 2¾¢ to $4.51½ after four lower closes</title>
       <link>https://agsist.com/daily/2026-10-28</link>
@@ -353,18 +365,6 @@ Action: Nothing to do at $5.25 corn ahead of Grain Stocks; a settle above $5.29 
 • Cattle Cycle Turns, Slowly
 • Crude Holds The Iran Bid
 Read more: https://agsist.com/daily/2026-09-30</description>
-    </item>
-    <item>
-      <title>Crude pulls back 2.1% as Yanbu reopens</title>
-      <link>https://agsist.com/daily/2026-09-29</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-29</guid>
-      <pubDate>Tue, 29 Sep 2026 10:56:47 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>WTI settled $92.12, down 2.1%, the first real give-back after two days running toward $96 on Iran-Hormuz fear. Saudi Arabia just restarted loadings at Yanbu on the Red Sea after the East-West pipeline came back partial, and that's a supply story beating a fear story today.
-Action: Diesel buyers: WTI at **$92.12** is the cheapest print in three sessions; lock the next fuel load now before any bounce back to $94.
-• Crude Gives Back The Fear Premium
-• Grains Drift On Empty China Wires
-Read more: https://agsist.com/daily/2026-09-29</description>
     </item>
   </channel>
 </rss>
