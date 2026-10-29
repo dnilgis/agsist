@@ -157,7 +157,7 @@
       if (!a) return;
       var dd = a.closest('.nav-dd');
       send(a, 'desktop', txt(dd && dd.querySelector('.nav-btn')));
-    });
+    }, true);   // capture: each panel keeps its own clicks from bubbling (it stays open on a click inside)
     var dr = document.getElementById('drawer');
     if (dr) dr.addEventListener('click', function (e) {
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
@@ -165,7 +165,7 @@
       var sec = a.closest('.draw-grp');
       var group = sec ? txt(sec.querySelector('.draw-lbl')) : a.closest('.draw-place') ? 'My place' : a.classList.contains('draw-rp') ? 'Rain Print card' : 'More';
       send(a, 'phone', group);
-    });
+    }, true);
   }
 
   function initNav() {
