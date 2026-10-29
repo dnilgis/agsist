@@ -3,12 +3,12 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2157,
-  "with_parent": 127,
+  "live_boards": 2176,
+  "with_parent": 130,
   "with_dest": 112,
   "parent_by_rule": {
    "board-page": 1,
-   "chs-brand": 126
+   "chs-brand": 129
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -81,6 +81,26 @@
    "elevId": "eavzhpjmg7",
    "dest": "Cargill",
    "dv": "location"
+  },
+  "chs-texoma-frederick": {
+   "elevId": "ej6cyj834z",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chs-texoma-hinton": {
+   "elevId": "e5gwfjsa59",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chs-texoma-kingfisher": {
+   "elevId": "e5f5ry83qn",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chs-texoma-okarche": {
+   "elevId": "exqf57q6nm",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
   },
   "chsag-absoluteenergy": {
    "elevId": "e3704ztyzk",
@@ -569,11 +589,6 @@
   },
   "chsillinois-steward": {
    "elevId": "e5tdnjsnhz",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsprimeland-chsprimeland": {
-   "elevId": "ekj0yxn1y2",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
