@@ -98,7 +98,7 @@ def tkey(name):
 
 
 def pid(kind, op, town, st):
-    return hashlib.sha1(f"{kind}|{op.lower()}|{tkey(town)}|{st}".encode()).hexdigest()[:8]
+    return hashlib.sha1(f"{kind}|{op.lower()}|{tkey(town)}|{st}".encode()).hexdigest()[:5]
 
 
 def short_cap(kind, cap):
@@ -215,7 +215,7 @@ def CB_key(town):
 
 
 def build(rows, find, eia=None):
-    plants, unplaced, log = {}, [], []
+    plants, unplaced, log, seen = {}, [], [], {}
     for kind, fname, line, r in rows:
         op = (r.get("operator") or "").strip()
         town = (r.get("city") or "").strip()
@@ -225,6 +225,9 @@ def build(rows, find, eia=None):
             log.append(f"skipped {fname}:{line} (no operator, town or state): {name}")
             continue
         i = pid(kind, op, town, st)
+        key = (kind, op.lower(), tkey(town), st)
+        if seen.setdefault(i, key) != key:
+            raise SystemExit(f"[buyers] id {i} names two plants: {seen[i]} and {key}; lengthen pid()")
         if kind == "rail":
             m = re.search(r" - (\w+) shuttle elevator$", name)
             rr = m.group(1) if m else ""
@@ -336,23 +339,19 @@ def fmt_read(iso):
 BUYERS_JS = '<script src="/components/cb-buyers.js?v=1" defer></script>\n'
 
 
-def line_html(hits, frm, cls="cbt-sub"):
+def line_html(hits, frm, note="cbt-sub", box="", body=""):
     """One closed <details>: the count line, and inside it the list (drawn on
     open by components/cb-buyers.js from data/buyers.json) and the one note.
-    '' when no buyer is within the radius."""
+    '' when no buyer is within the radius. box and body are the page's own
+    classes for a closed box and its inside (the town page: cbt-hist)."""
     if not hits:
         return ""
     ids = ",".join(f'{p["id"]}:{d}' for d, p in hits)
-    return (f'<details class="buyers" data-buyers="{ids}"><summary>Nearby buyers within {RADIUS_MI} miles: '
-            f'{counts_text(hits)}</summary><div class="buyers-list" aria-live="polite">The list loads when this '
-            f'opens.</div><p class="{cls}">Straight-line (great-circle) miles from {html.escape(frm)} to each buyer&rsquo;s '
-            f'town point, rounded to the mile; a town point is the middle of the town, not the plant&rsquo;s gate. '
-            f'Capacity is as each list publishes it. This shows where the buyers are, not what they pay. '
-            f'{source_line(hits)}</p></details>')
-
-
-BUYERS_CSS = ("details.buyers{margin:.6rem 0;font-size:.9rem}details.buyers>summary{cursor:pointer;color:var(--text)}"
-              ".buyers-list{margin:.4rem 0}.buyers-list ul{margin:.2rem 0;padding-left:1.1rem}")
+    return (f'<details class="{(box + " buyers").strip()}" data-buyers="{ids}"><summary>Nearby buyers within '
+            f'{RADIUS_MI} miles: {counts_text(hits)}</summary><div{f' class="{body}"' if body else ""}>'
+            f'<div class="buyers-list" aria-live="polite">Loading the list.</div><p class="{note}">Straight-line miles '
+            f'from {html.escape(frm)} to each buyer&rsquo;s town point (the middle of its town, not the gate), rounded. '
+            f'Capacity as published. Where the buyers are, not what they pay. {source_line(hits)}</p></div></details>')
 
 
 # ----------------------------------------------------------------- selftest
@@ -396,7 +395,7 @@ def selftest():
     hits = near(43.1, -93.25, plants)
     assert counts_text(hits) == "1 ethanol plant, 1 oilseed crusher", counts_text(hits)
     h = line_html(hits, "the center of ZIP 50401")
-    assert "Nearby buyers within 50 miles: 1 ethanol plant, 1 oilseed crusher" in h
+    assert "Nearby buyers within 50 miles: 1 ethanol plant, 1 oilseed crusher</summary>" in h
     assert "Renewable Fuels Association" in h and "NOPA" in h and "EIA" in h
     assert "&mdash;" not in h and "—" not in h
     assert line_html(near(30.0, -85.0, plants), "x") == "", "no line when none"

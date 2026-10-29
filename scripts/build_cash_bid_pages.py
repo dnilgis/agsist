@@ -96,6 +96,7 @@ import board_parents as _board_parents  # noqa: E402  (evidence-only parent per 
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
 import phone_corrections  # noqa: E402  (numbers checked on the buyer's own site: data/phone-corrections.json)
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
+import build_buyers as BUY  # noqa: E402  (where the big buyers are: data/buyers.json)
 from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of cb-rank.js)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
@@ -1191,12 +1192,12 @@ def sponsor_slot(ssl):
     return f'<aside class="ag-sponsor-ribbon" data-slot="cash-bids-{ssl}"></aside>'
 
 
-def page_end(ftr, table=False, signup=False, hist=False, promo=False):
+def page_end(ftr, table=False, signup=False, hist=False, promo=False, buyers=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}{RP_PROMO_JS if promo else ''}</body>
+{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}{RP_PROMO_JS if promo else ''}{BUY.BUYERS_JS if buyers else ''}</body>
 </html>
 """
 
@@ -2114,6 +2115,9 @@ def build_town_page(t, ctx):
     top_html = "" if only_first else top_holds(held_all, ss)
     center = town_center(t, z, ctx.get("zip_coord"))
     near_html = nearby_section(t, center, ctx.get("live_all"), snap_ct, indexable)
+    # where the big buyers are (scripts/build_buyers.py): one closed line, the list loads on open
+    buyers_html = (BUY.line_html(BUY.near(center[0], center[1], BUY.load(ctx.get("root") or ".")), center[2],
+                                 box="cbt-hist", body="cbt-hist-body") if center else "")
     cmp_lines, cmp_text = state_compare(picks, (ctx.get("summaries") or {}).get(st), sname)
     cmp_html = ""
     if cmp_text:
@@ -2179,6 +2183,7 @@ def build_town_page(t, ctx):
   <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
   {box}
   {''.join(secs[1:])}
+  {buyers_html}
   {hist_html}
   {near_html if indexable else ''}
   {faq_html(qs, t['name'])}
@@ -2204,7 +2209,8 @@ def build_town_page(t, ctx):
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
         assert sheet in h, "head() changed shape; update build_town_page()"
         h = h.replace(sheet, sheet + SIGNUP_CSS, 1)
-    return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html), promo=bool(promo_html)), meta
+    return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html), promo=bool(promo_html),
+                               buyers=bool(buyers_html)), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
