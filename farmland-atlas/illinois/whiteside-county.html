@@ -1,157 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Whiteside County, IL Farm Facts · Cash Rent 2026: $270/Acre</title>
-  <meta name="description" content="Whiteside County, IL: 9 recorded bare farmland sales, Oct 2025 to Sep 2026, median $10,500 an acre. Cash rent $270 an acre (2026).">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/illinois/whiteside-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Whiteside County, IL Farm Facts · Cash Rent 2026: $270/Acre">
-  <meta property="og:description" content="Whiteside County, IL: 9 recorded bare farmland sales, Oct 2025 to Sep 2026, median $10,500 an acre. Cash rent $270 an acre (2026).">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/illinois/whiteside-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/17195.png?v=fde2faaa">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Whiteside County, Illinois: dry cash rent $270 an acre, land and buildings $8,976, median corn yield 188.8 bu/ac">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Whiteside County, IL Farm Facts · Cash Rent 2026: $270/Acre">
-  <meta name="twitter:description" content="Whiteside County, IL: 9 recorded bare farmland sales, Oct 2025 to Sep 2026, median $10,500 an acre. Cash rent $270 an acre (2026).">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/17195.png?v=fde2faaa">
-  <meta name="twitter:image:alt" content="Whiteside County, Illinois: dry cash rent $270 an acre, land and buildings $8,976, median corn yield 188.8 bu/ac">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Illinois",
-     "item": "https://agsist.com/farmland-atlas/illinois/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Whiteside County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/illinois/whiteside-county#dataset",
-   "name": "Whiteside County, Illinois: farmland rent, land value and risk record",
-   "description": "Whiteside County, IL: non-irrigated cash rent $270 an acre (2026); land and buildings $8,976 an acre in the 2022 census.",
-   "url": "https://agsist.com/farmland-atlas/illinois/whiteside-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Whiteside County, Illinois, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "rent_dry_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "corn_yield_median_bu_ac",
-     "unitText": "bu/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "loss_ratio_all",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/il.csv"
-    }
-   ]
-  },
-  {
-   "@type": "FAQPage",
-   "mainEntity": [
-    {
-     "@type": "Question",
-     "name": "What has farmland sold for in Whiteside County, Illinois?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "9 recorded market sales of bare farmland (no buildings by the property class, no forest), 20 or more acres, Oct 2025 to Sep 2026, with a median of $10,500 an acre; the middle half of sales fell between $8,748 and $12,750 an acre. Sales are dated through Sep 30, 2026. These are counted deed records from Illinois PTAX-203 (MyDec) transfer declarations, not a model or an appraisal, and no buyer or seller is named."
-     }
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Whiteside County, IL Farm Facts · Cash Rent 2026: $270/Acre</title>
+<meta name="description" content="Whiteside County, IL: 9 recorded bare farmland sales, Oct 2025 to Sep 2026, median $10,500 an acre. Cash rent $270 an acre (2026).">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/illinois/whiteside-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Whiteside County, IL Farm Facts · Cash Rent 2026: $270/Acre">
+<meta property="og:description" content="Whiteside County, IL: 9 recorded bare farmland sales, Oct 2025 to Sep 2026, median $10,500 an acre. Cash rent $270 an acre (2026).">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/illinois/whiteside-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/17195.png?v=fde2faaa">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Whiteside County, Illinois: dry cash rent $270 an acre, land and buildings $8,976, median corn yield 188.8 bu/ac">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Whiteside County, IL Farm Facts · Cash Rent 2026: $270/Acre">
+<meta name="twitter:description" content="Whiteside County, IL: 9 recorded bare farmland sales, Oct 2025 to Sep 2026, median $10,500 an acre. Cash rent $270 an acre (2026).">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/17195.png?v=fde2faaa">
+<meta name="twitter:image:alt" content="Whiteside County, Illinois: dry cash rent $270 an acre, land and buildings $8,976, median corn yield 188.8 bu/ac">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"Illinois","item":"https://agsist.com/farmland-atlas/illinois/"},{"@type":"ListItem","position":4,"name":"Whiteside County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/illinois/whiteside-county#dataset","name":"Whiteside County, Illinois: farmland rent, land value and risk record","description":"Whiteside County, IL: non-irrigated cash rent $270 an acre (2026); land and buildings $8,976 an acre in the 2022 census.","url":"https://agsist.com/farmland-atlas/illinois/whiteside-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"Whiteside County, Illinois, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"rent_dry_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"corn_yield_median_bu_ac","unitText":"bu/acre"},{"@type":"PropertyValue","name":"loss_ratio_all","unitText":"ratio"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/il.csv"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What has farmland sold for in Whiteside County, Illinois?","acceptedAnswer":{"@type":"Answer","text":"9 recorded market sales of bare farmland (no buildings by the property class, no forest), 20 or more acres, Oct 2025 to Sep 2026, with a median of $10,500 an acre; the middle half of sales fell between $8,748 and $12,750 an acre. Sales are dated through Sep 30, 2026. These are counted deed records from Illinois PTAX-203 (MyDec) transfer declarations, not a model or an appraisal, and no buyer or seller is named."}}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/illinois/">Illinois</a><i>/</i><span aria-current="page">Whiteside County</span></nav>
 <div class="kick">County farm facts</div>
@@ -161,13 +47,12 @@
 <p class="sub ap-story">As of Oct 16, cash rent in Whiteside County was $270 an acre in 2026, up 15.4% from $234 in 2016 and 35th highest of 86 in Illinois against a state median of $254. The census value of land and buildings was $8,976 an acre in 2022, up 13.7% from $7,892 in 2017. Corn made 229.8 bu in 2025, above the 217.4 bu average for 2021 through 2025. In 2022, 55% of the farmland was rented.</p>
 <div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v">$270<small>/ac</small></div><div class="s">2026 county average<br>IL median $254 · 35th highest of 86</div></div><div class="k"><div class="t">Cash rent, irrigated</div><div class="v">$303<small>/ac</small></div><div class="s">2026 county average<br>IL median $275 · 3rd highest of 9</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$8,976<small>/ac</small></div><div class="s">2022: operators&#x27; own estimate of what land and buildings were worth · IL farm real estate 2026: $9,250 (land and buildings, state survey)<br>IL median $8,638 · 38th highest of 91</div></div><div class="k"><div class="t">Corn yield, 2021-25 average</div><div class="v">217.4<small> bu/ac</small></div><div class="s">high and low dropped · 2025 county yield 229.8 · irrigated and dryland combined · rent-per-bushel trend withheld: county yield mixes irrigated and dryland acres</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v">$1.88</div><div class="s">2016–2025, closed crop years<br>IL median $2.04 · 48th lowest of 101</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">55%</div><div class="s">2022 census, rented from others<br>IL median 55% · 50th highest of 101</div></div><div class="k" style="grid-column:1/-1" data-as-tile="2026-09-30"><div class="t">Median sale price, bare land, 20+ acres</div><div class="v">$10,500<small>/ac</small></div><div class="s">9 recorded bare farmland sales, Oct 2025 to Sep 2026; sales dated through Sep 30, 2026</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="Whiteside County on the map with the counties that border it" class="loc"><path class="lm" d="M106.6 76.0L108.9 75.1L109.6 74.4L113.2 55.2L168.2 55.0L174.7 55.0L174.7 59.4L174.5 80.1L174.5 109.4L147.3 109.6L109.2 109.4L109.7 108.5L111.0 108.3L111.6 107.5L111.6 106.6L104.0 95.2L102.4 78.1L104.9 76.6L106.6 76.0Z"/><path class="ln0" d="M147.8 164.8L147.8 164.6L147.9 151.0L147.9 137.2L147.3 109.6L174.5 109.4L174.9 109.4L229.2 109.4L229.5 152.8L209.4 154.2L206.8 164.9L193.8 164.8L193.9 178.2L173.7 178.2L173.6 178.0L173.6 164.8L147.8 164.8Z"/><path class="ln0" d="M113.2 55.2L113.2 54.9L114.5 44.6L114.5 42.6L113.3 39.4L112.9 38.8L111.6 36.9L111.5 35.3L111.3 32.0L111.9 30.1L112.1 27.6L112.0 25.9L111.3 24.8L106.2 19.7L103.4 18.0L94.9 14.0L93.8 13.4L95.1 13.4L140.5 13.1L167.8 12.6L167.9 53.9L168.2 55.0L113.2 55.2Z"/><path class="ln0" d="M147.9 137.2L147.9 151.0L147.8 164.6L147.8 164.8L146.6 178.2L132.8 178.2L93.0 177.8L79.5 177.8L80.0 150.1L80.2 129.8L91.8 120.6L107.9 116.5L109.2 109.4L147.3 109.6L147.9 137.2Z"/><path class="ln0" d="M174.9 109.4L174.5 109.4L174.5 80.1L174.7 59.4L206.3 61.7L255.8 61.0L256.0 102.6L229.2 102.5L229.2 109.4L174.9 109.4Z"/><path class="ln0" d="M255.9 20.0L255.8 61.0L206.3 61.7L174.7 59.4L174.7 55.0L168.2 55.0L167.9 53.9L167.8 12.6L202.2 12.2L228.4 11.8L228.4 20.3L255.9 20.0Z"/><path class="ln0" d="M98.2 80.7L102.4 78.1L104.0 95.2L111.6 106.6L111.6 107.5L111.0 108.3L109.7 108.5L109.2 109.4L107.9 116.5L91.8 120.6L80.2 129.8L80.0 150.1L4.0 148.7L7.7 136.9L8.6 135.6L10.0 134.8L14.5 133.5L31.3 129.9L38.5 130.2L40.2 130.6L44.2 130.7L53.8 128.8L59.7 123.8L72.3 120.0L75.2 119.7L76.8 119.0L84.2 111.5L90.8 103.8L90.7 99.5L91.6 94.4L93.7 86.7L94.0 85.9L94.6 84.5L95.4 83.4L98.2 80.7Z"/><path class="ln0" d="M113.2 55.2L109.6 74.4L108.9 75.1L106.6 76.0L104.9 76.6L102.4 78.1L98.2 80.7L95.4 83.4L94.6 84.5L94.0 85.9L93.7 86.7L75.2 79.8L25.3 80.1L25.3 52.5L25.3 38.6L112.9 38.8L113.3 39.4L114.5 42.6L114.5 44.6L113.2 54.9L113.2 55.2Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#17195">Open on the map</a>
-  <a href="/farmland-atlas/compare#17195">Compare</a>
-  <a href="/rent/illinois">Illinois cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#17195">Open on the map</a>
+<a href="/farmland-atlas/compare#17195">Compare</a>
+<a href="/rent/illinois">Illinois cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
-
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
 <div class="chg"><section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2><div class="fact st lv" data-k="corn-bid"><span class="l">Corn bid</span><span class="r"></span></div><div class="fact st lv" data-k="soy-bid"><span class="l">Soybean bid</span><span class="r"></span></div><div class="fact st lv" data-k="corn-basis"><span class="l">Corn basis</span><span class="r"></span></div><div class="fact st lv" data-k="soy-basis"><span class="l">Soybean basis</span><span class="r"></span></div><div class="fact st lv" data-k="corn-fut"><span class="l">Corn futures</span><span class="r"></span></div><div class="fact st lv" data-k="soy-fut"><span class="l">Soybean futures</span><span class="r"></span></div><div class="fact st lv" data-k="milk"><span class="l">Class III milk futures</span><span class="r"></span></div><div class="fact st lv" data-k="feeders"><span class="l">Feeder cattle futures</span><span class="r"></span></div><div class="fact st lv" data-k="cattle"><span class="l">Live cattle futures</span><span class="r"></span></div><div class="fact st lv" data-k="hogs"><span class="l">Lean hog futures</span><span class="r"></span></div><div class="fact st lv" data-k="hay"><span class="l">Hay, Illinois price received</span><span class="r"></span></div><p class="note">Bids are posted elevator prices within 50 miles of the county middle, or of your own field or saved place in this county when this device has one (each row says which), best and nearest, never a buyer's name. Not a contract; call before you haul. Livestock lines show where the 2022 Census counts 1,000 head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle.</p><p class="note"><a href="/cash-bids/illinois/">Illinois cash bids by town</a> · <a href="/fast-facts?fips=17195">Bids from your own ZIP or farm, in Fast Facts</a></p><p class="note">Cash bids by town near the middle of Whiteside County: <a href="/cash-bids/illinois/galt">Galt</a> (8 mi), <a href="/cash-bids/illinois/sterling">Sterling</a> (11 mi), <a href="/cash-bids/illinois/albany">Albany</a> (15 mi).</p><details class="buyers" data-buyers="08190:16,2d533:25,d2903:41,47dd6:43,38de4:45,5ef6b:47"><summary>Nearby buyers within 50 miles: 6 ethanol plants</summary><div><div class="buyers-list" aria-live="polite">Loading the list.</div><p class="note">Straight-line miles from the middle of Whiteside County to each buyer&rsquo;s town point (the middle of its town, not the gate), rounded. Capacity as published. Where the buyers are, not what they pay. Lists from <a href="https://ethanolrfa.org/resources/us-ethanol-and-alcohol-to-jet-biorefineries" rel="noopener">Renewable Fuels Association</a>, <a href="https://www.eia.gov/petroleum/ethanolcapacity/" rel="noopener">EIA</a>, read Oct 28, 2026.</p></div></details><script src="/components/cb-buyers.js?v=1" defer></script></section><section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2><div class="fact st lv" data-k="rain"><span class="l">Rain since Jan 1</span><span class="r"></span></div><div class="fact st lv" data-k="drought"><span class="l">Drought this week</span><span class="r"></span></div><div class="fact st lv" data-k="hail"><span class="l">Hail, last 30 days</span><span class="r"></span></div><p class="note"><a data-xl="rain" href="/rain/illinois/whiteside-county">Rain so far this year in Whiteside County, Illinois</a></p><h3>Drought, year by year</h3><svg viewBox="0 0 640 170" role="img" aria-label="Weeks per year with half the county or more in severe drought or worse" class="ch"><path class="bf" d="M10.9 143.6h18.2V148h-18.2zM34.9 148.0h18.2V148h-18.2zM58.9 148.0h18.2V148h-18.2zM82.9 91.3h18.2V148h-18.2zM106.9 148.0h18.2V148h-18.2zM130.9 30.1h18.2V148h-18.2zM154.9 91.3h18.2V148h-18.2zM178.9 148.0h18.2V148h-18.2zM202.9 148.0h18.2V148h-18.2zM226.9 148.0h18.2V148h-18.2zM250.9 148.0h18.2V148h-18.2zM274.9 148.0h18.2V148h-18.2zM298.9 47.6h18.2V148h-18.2zM322.9 113.1h18.2V148h-18.2zM346.9 148.0h18.2V148h-18.2zM370.9 148.0h18.2V148h-18.2zM394.9 148.0h18.2V148h-18.2zM418.9 148.0h18.2V148h-18.2zM442.9 148.0h18.2V148h-18.2zM466.9 148.0h18.2V148h-18.2zM490.9 148.0h18.2V148h-18.2zM514.9 134.9h18.2V148h-18.2zM538.9 148.0h18.2V148h-18.2zM562.9 148.0h18.2V148h-18.2zM586.9 143.6h18.2V148h-18.2zM610.9 117.4h18.2V148h-18.2z"/><text class="ta" x="20.0" y="164">2000</text><text class="ta" x="140.0" y="164">2005</text><text class="ta" x="260.0" y="164">2010</text><text class="ta" x="380.0" y="164">2015</text><text class="ta" x="500.0" y="164">2020</text><text class="ta" x="620.0" y="164">2025</text><text class="tv" x="20.0" y="140.6">1</text><text class="tv" x="140.0" y="27.1">27</text><text class="tv" x="620.0" y="114.4">7</text><path class="ax" d="M8 148H632"/></svg><p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.</p><div class="fact"><span class="l">D2 or worse for half the county, 2000–2025</span><span class="r">96 of 1,357 weeks<small>7% of weeks</small></span></div><div class="fact"><span class="l">Year with the most D2+ weeks</span><span class="r">2005<small>27 weeks</small></span></div><div class="fact"><span class="l">Last five full years, 2021–2025</span><span class="r">11 weeks</span></div><div class="fact st"><span class="l">2026 so far</span><span class="r">0 weeks<small>half the county or more in D2, 40 weekly maps</small></span></div><div class="fact"><span class="l">July average of daily lows, 2017–2026</span><span class="r">64.5 °F<small>1991–2020 normal 63.3 °F</small></span></div><div class="fact st"><span class="l">Trend in July lows since 1976</span><span class="r">+0.26 °F a decade<small>no clear direction</small></span></div><div class="fact st"><span class="l">Rain, April to September, usual</span><span class="r">25.3 in<small>1991–2020 county normal, NOAA; the 2017–2026 seasons averaged 25.0 in</small></span></div><div class="fact st"><span class="l">Days with hail 1 inch or larger</span><span class="r">1.4 a year<small>reports, 2010–2025; a zero is no report, not proof of no hail</small></span></div><div class="fact st"><span class="l">Last spring freeze, first fall freeze</span><span class="r">Apr 16, Oct 18<small>middle dates 1996–2025, NOAA county-average daily low of 32 °F or colder</small></span></div><div class="fact"><span class="l">Frost-free days</span><span class="r">180<small>middle of 1996–2025</small></span></div><div class="fact st"><span class="l">Corn growing degree days, May to September</span><span class="r">2,885<small>middle of 1996–2025; 2016–2025 averaged 2,983</small></span></div></section><section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2><div class="fact st lv" data-k="corn-progress"><span class="l">Corn harvested</span><span class="r"></span></div><div class="fact st lv" data-k="soy-progress"><span class="l">Soybeans harvested</span><span class="r"></span></div><h3>Corn yield</h3><svg viewBox="0 0 640 170" role="img" aria-label="County corn yield by year, bushels per acre" class="ch"><path class="bf" d="M12.2 55.3h26.3V148h-26.3zM46.8 56.4h26.3V148h-26.3zM81.5 63.8h26.3V148h-26.3zM116.2 64.8h26.3V148h-26.3zM150.8 76.4h26.3V148h-26.3zM185.5 55.9h26.3V148h-26.3zM220.2 53.5h26.3V148h-26.3zM254.8 53.8h26.3V148h-26.3zM289.5 46.1h26.3V148h-26.3zM324.2 40.8h26.3V148h-26.3zM358.8 37.5h26.3V148h-26.3zM393.5 49.7h26.3V148h-26.3zM428.2 52.9h26.3V148h-26.3zM462.8 44.3h26.3V148h-26.3zM497.5 35.5h26.3V148h-26.3zM532.2 44.9h26.3V148h-26.3zM566.8 30.1h26.3V148h-26.3zM601.5 30.3h26.3V148h-26.3z"/><text class="ta" x="25.3" y="164">2008</text><text class="ta" x="94.7" y="164">2010</text><text class="ta" x="164.0" y="164">2012</text><text class="ta" x="233.3" y="164">2014</text><text class="ta" x="302.7" y="164">2016</text><text class="ta" x="372.0" y="164">2018</text><text class="ta" x="441.3" y="164">2020</text><text class="ta" x="510.7" y="164">2022</text><text class="ta" x="580.0" y="164">2024</text><text class="tv" x="25.3" y="52.3">181.0</text><text class="tv" x="580.0" y="27.1">230.2</text><text class="tv" x="614.7" y="27.3">229.8</text><path class="rf" d="M8 51.3H632"/><text class="tr" x="10" y="48.3">median 188.8</text><path class="ax" d="M8 148H632"/></svg><p class="note">Bushels per acre, USDA NASS county yields, all practices. The dashed line is the median of the published years.</p><div class="fact w"><span class="l">Trend for rent per bushel</span><span class="r">County yield mixes irrigated and dryland acres</span></div><div class="fact"><span class="l">2025 county yield</span><span class="r">229.8 bu/ac<small>all practices</small></span></div><div class="fact st"><span class="l">2021-25 average</span><span class="r">217.4 bu/ac<small>5 published years, high and low dropped</small></span></div><div class="fact st"><span class="l">Median, 2008–2025</span><span class="r">188.8 bu/ac<small>18 published years, irrigated and dryland combined</small></span></div><div class="fact"><span class="l">Lowest published year</span><span class="r">2012: 139.8 bu/ac<small>74% of median</small></span></div><div class="fact st"><span class="l">Trend, 2008–2025</span><span class="r">+3.6 bu/ac a year<small>±1.4 (95% interval)</small></span></div></section><section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2><h3>Cash rent</h3><svg viewBox="0 0 640 170" role="img" aria-label="Cash rent by survey year, dollars per acre" class="ch"><path class="gr" d="M34 148.0H542M34 129.0H542M34 110.1H542M34 91.1H542M34 72.1H542M34 53.1H542M34 34.2H542M34 15.2H542"/><text class="ta tay" x="30" y="151.0">$0</text><text class="ta tay" x="30" y="132.0">$50</text><text class="ta tay" x="30" y="113.1">$100</text><text class="ta tay" x="30" y="94.1">$150</text><text class="ta tay" x="30" y="75.1">$200</text><text class="ta tay" x="30" y="56.1">$250</text><text class="ta tay" x="30" y="37.2">$300</text><text class="ta tay" x="30" y="18.2">$350</text><text class="ta" x="90.4" y="164">2010</text><text class="ta" x="231.6" y="164">2015</text><text class="ta" x="372.7" y="164">2020</text><text class="ta" x="513.8" y="164">2025</text><path class="ln s0" d="M34.0 80.8L62.2 82.7L90.4 78.9L118.7 66.0L146.9 63.8L175.1 47.8L203.3 54.6M259.8 59.2L288.0 58.8M344.4 55.4L372.7 57.7L400.9 61.9L429.1 43.3L457.3 42.5L485.6 41.4L513.8 39.1L542.0 45.5"/><path class="dt s0" d="M34.0 80.8h.01M62.2 82.7h.01M90.4 78.9h.01M118.7 66.0h.01M146.9 63.8h.01M175.1 47.8h.01M203.3 54.6h.01M259.8 59.2h.01M288.0 58.8h.01M344.4 55.4h.01M372.7 57.7h.01M400.9 61.9h.01M429.1 43.3h.01M457.3 42.5h.01M485.6 41.4h.01M513.8 39.1h.01M542.0 45.5h.01"/><text class="tl s0" x="36.0" y="74.8">$177</text><text class="tl s0" x="547.0" y="48.5">$270 dry</text><path class="ln s1" d="M34.0 62.6L62.2 75.1L90.4 71.0L118.7 59.2L146.9 50.5L175.1 52.4L203.3 39.5M259.8 53.9L288.0 54.3M344.4 53.9L372.7 52.0L400.9 55.8L429.1 48.6L457.3 26.2L485.6 30.7L513.8 39.5L542.0 33.0"/><path class="dt s1" d="M34.0 62.6h.01M62.2 75.1h.01M90.4 71.0h.01M118.7 59.2h.01M146.9 50.5h.01M175.1 52.4h.01M203.3 39.5h.01M259.8 53.9h.01M288.0 54.3h.01M344.4 53.9h.01M372.7 52.0h.01M400.9 55.8h.01M429.1 48.6h.01M457.3 26.2h.01M485.6 30.7h.01M513.8 39.5h.01M542.0 33.0h.01"/><text class="tl s1" x="36.0" y="56.6">$225</text><text class="tl s1" x="547.0" y="36.0">$303 irrigated</text></svg><p class="note">Dollars per acre, USDA NASS county survey. A break in a line is a year with no published survey.</p><p class="note">Every published Illinois county rate, side by side: <a href="/rent/illinois">Illinois cash rent by county</a>.</p><div class="fact"><span class="l">Non-irrigated, 2026</span><span class="r">$270/ac</span></div><div class="fact"><span class="l">Change 2016 to 2026</span><span class="r">+15.4%<small>nominal, $234 to $270</small></span></div><div class="fact"><span class="l">Irrigated, 2026</span><span class="r">$303/ac</span></div><div class="fact"><span class="l">Pasture, 2026</span><span class="r">$70/ac</span></div><div class="fact w"><span class="l">Rent as a share of corn gross</span><span class="r">County yield mixes irrigated and dryland acres (2025)</span></div><p class="note">Share of gross is a past year, all observed: that year's rent, that year's county corn yield of the same practice and the state price received, USDA NASS. Rent per bushel is withheld here: it needs the county trend, and the trend is withheld (see the corn yield section). The calculator below takes your own yield and price.</p><div class="act rcw"><button type="button" id="rc-open" data-st="IL" data-fips="17195" aria-expanded="false">Rent share calculator and history</button></div><div id="rc-box" hidden></div><h3>Land value</h3><div class="fact st"><span class="l">Land and buildings, 2022</span><span class="r">$8,976/ac<small>operators&#x27; own estimate, not a sale price</small></span></div><div class="fact"><span class="l">Census 2012</span><span class="r">$6,841/ac</span></div><div class="fact"><span class="l">Census 2017</span><span class="r">$7,892/ac</span></div><div class="fact"><span class="l">Change 2017 to 2022</span><span class="r">+13.7%<small>+2.6% a year, nominal</small></span></div><div class="fact w"><span class="l">Dry rent ÷ census value</span><span class="r">About 24% of cropland is irrigated (USGS 2015 irrigated acres over 2022 harvested cropland), so dry rent over the all-land census value is not a yield on anything</span></div><div class="fact st"><span class="l">Illinois cropland, 2026 state survey</span><span class="r">$10,200/ac<small>+3.6% from 2025 · USDA NASS Land Values, state average</small></span></div><div class="fact st"><span class="l">Illinois farm real estate, 2026</span><span class="r">$9,250/ac<small>land and buildings, state average</small></span></div><div class="fact"><span class="l">Illinois pasture, 2026</span><span class="r">$4,300/ac<small>state average</small></span></div><p class="note">The census value is this county's, from 2022. The survey figures are the Illinois average for 2026, from the USDA NASS Land Values report. NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p><section class="as" data-atlas-sales="county" data-st="IL" data-fips="17195" data-ls-done="1" aria-label="Recorded farm sales"><h2>Recorded farm sales</h2><div class="as-body"><p class="note">Sale counts and the median price buyers paid per acre in Whiteside County, from Illinois PTAX-203 (MyDec) transfer declarations (Illinois Department of Revenue), load here.</p><noscript><p class="note">This part needs JavaScript. The figures are in <a href="/data/land/il/summary.json">the county summary file</a>.</p></noscript></div></section><script defer src="/components/atlas-sales.js?v=f31b5c18"></script><h3 id="sales-faq">What has farmland sold for in Whiteside County, Illinois?</h3><p>9 recorded market sales of bare farmland (no buildings by the property class, no forest), 20 or more acres, Oct 2025 to Sep 2026, with a median of $10,500 an acre; the middle half of sales fell between $8,748 and $12,750 an acre. Sales are dated through Sep 30, 2026. These are counted deed records from Illinois PTAX-203 (MyDec) transfer declarations, not a model or an appraisal, and no buyer or seller is named.</p><p class="note" data-ls-door="county">Land sales: <a href="/land-sales/illinois/whiteside-county">Recorded sales in Whiteside County</a>, sale by sale.</p></section><section class="card" aria-labelledby="c-prog"><h2 id="c-prog">Programs and risk</h2><div class="fact st lv" data-k="arc"><span class="l">ARC or PLC sign-up</span><span class="r"></span></div><p class="note">Benchmarks, payments and the choice for each crop: <a href="/arc-plc/illinois/whiteside-county">ARC or PLC in Whiteside County</a>.</p><p class="note">Insuring pasture or hay? PRF rainfall insurance for pasture and hay in Whiteside County: its grids, county values and record are on <a href="/prf/illinois/whiteside-county">the county PRF page</a>.</p><h3>Crop insurance record</h3><svg viewBox="0 0 640 170" role="img" aria-label="Loss ratio by crop year: claims paid over total premium" class="ch"><path class="bf" d="M10.0 139.8h12.8V148h-12.8zM26.9 94.2h12.8V148h-12.8zM111.2 133.7h12.8V148h-12.8zM128.1 122.9h12.8V148h-12.8zM144.9 143.9h12.8V148h-12.8zM161.8 143.4h12.8V148h-12.8zM178.7 133.1h12.8V148h-12.8zM195.5 103.9h12.8V148h-12.8zM212.4 140.8h12.8V148h-12.8zM229.3 122.9h12.8V148h-12.8zM246.1 123.9h12.8V148h-12.8zM263.0 137.8h12.8V148h-12.8zM279.9 58.3h12.8V148h-12.8zM296.7 146.5h12.8V148h-12.8zM313.6 146.5h12.8V148h-12.8zM330.5 118.8h12.8V148h-12.8zM347.3 137.2h12.8V148h-12.8zM364.2 137.8h12.8V148h-12.8zM381.1 143.9h12.8V148h-12.8zM397.9 69.1h12.8V148h-12.8zM414.8 103.9h12.8V148h-12.8zM431.6 104.4h12.8V148h-12.8zM448.5 140.3h12.8V148h-12.8zM465.4 145.4h12.8V148h-12.8zM482.2 137.2h12.8V148h-12.8zM499.1 143.4h12.8V148h-12.8zM516.0 30.1h12.8V148h-12.8zM532.8 129.6h12.8V148h-12.8zM549.7 144.9h12.8V148h-12.8zM566.6 146.0h12.8V148h-12.8zM583.4 121.9h12.8V148h-12.8zM600.3 144.4h12.8V148h-12.8zM617.2 143.4h12.8V148h-12.8z"/><text class="ta" x="16.4" y="164">1989</text><text class="ta" x="100.8" y="164">1994</text><text class="ta" x="185.1" y="164">1999</text><text class="ta" x="269.4" y="164">2004</text><text class="ta" x="353.7" y="164">2009</text><text class="ta" x="438.1" y="164">2014</text><text class="ta" x="522.4" y="164">2019</text><text class="ta" x="606.7" y="164">2024</text><text class="tv" x="16.4" y="136.8">0.16</text><text class="tv" x="522.4" y="27.1">2.30</text><text class="tv" x="623.6" y="140.4">0.09</text><path class="rf" d="M8 96.8H632"/><text class="tr" x="10" y="93.8">1.00: claims equal premium</text><path class="ax" d="M8 148H632"/></svg><p class="note">Claims paid divided by total premium (the farmer share plus the federal subsidy), each closed crop year since 1989 with at least $1,000,000 of premium; a year under that has no bar and no ratio. Above the dashed line, the county's insurance book paid out more than it took in. 2026, still open, is left out.</p><div class="fact"><span class="l">Claims paid per $100 of coverage, 2016–2025</span><span class="r">$1.88</span></div><div class="fact"><span class="l">Loss ratio, 2016–2025</span><span class="r">0.33<small>claims ÷ total premium</small></span></div><div class="fact"><span class="l">Loss ratio, 1989–2025</span><span class="r">0.43<small>$106.4 million paid</small></span></div><div class="fact st"><span class="l">Years claims exceeded premium</span><span class="r">4 of 33<small>crop years with at least $1,000,000 of premium</small></span></div><div class="fact st"><span class="l">Worst year</span><span class="r">2019<small>ratio 2.30, of the 33 crop years with at least $1,000,000 of premium</small></span></div><div class="fact st"><span class="l">Largest causes of loss, 1989–2025</span><span class="r">excess moisture 34% · heat and drought 30% · price decline (revenue policies) 19%<small>share of dollars paid</small></span></div><h3>Conservation Reserve Program</h3><svg viewBox="0 0 640 170" role="img" aria-label="CRP acres enrolled by year" class="ch"><path class="bf" d="M9.9 148.0h11.9V148h-11.9zM25.5 132.3h11.9V148h-11.9zM41.1 129.9h11.9V148h-11.9zM56.7 116.1h11.9V148h-11.9zM72.3 103.1h11.9V148h-11.9zM87.9 101.1h11.9V148h-11.9zM103.5 97.5h11.9V148h-11.9zM119.1 88.3h11.9V148h-11.9zM134.7 88.3h11.9V148h-11.9zM150.3 88.4h11.9V148h-11.9zM165.9 87.3h11.9V148h-11.9zM181.5 94.8h11.9V148h-11.9zM197.1 92.6h11.9V148h-11.9zM212.7 88.4h11.9V148h-11.9zM228.3 79.6h11.9V148h-11.9zM243.9 63.2h11.9V148h-11.9zM259.5 56.4h11.9V148h-11.9zM275.1 56.1h11.9V148h-11.9zM290.7 48.8h11.9V148h-11.9zM306.3 49.0h11.9V148h-11.9zM321.9 46.7h11.9V148h-11.9zM337.5 44.7h11.9V148h-11.9zM353.1 47.2h11.9V148h-11.9zM368.7 49.8h11.9V148h-11.9zM384.3 47.3h11.9V148h-11.9zM399.9 47.7h11.9V148h-11.9zM415.5 46.2h11.9V148h-11.9zM431.1 47.5h11.9V148h-11.9zM446.7 49.2h11.9V148h-11.9zM462.3 48.4h11.9V148h-11.9zM477.9 38.2h11.9V148h-11.9zM493.5 34.5h11.9V148h-11.9zM509.1 33.0h11.9V148h-11.9zM524.7 37.1h11.9V148h-11.9zM540.3 35.3h11.9V148h-11.9zM555.9 31.0h11.9V148h-11.9zM571.5 30.1h11.9V148h-11.9zM587.1 32.1h11.9V148h-11.9zM602.7 35.7h11.9V148h-11.9zM618.3 37.3h11.9V148h-11.9z"/><text class="ta" x="15.8" y="164">1986</text><text class="ta" x="93.8" y="164">1991</text><text class="ta" x="171.8" y="164">1996</text><text class="ta" x="249.8" y="164">2001</text><text class="ta" x="327.8" y="164">2006</text><text class="ta" x="405.8" y="164">2011</text><text class="ta" x="483.8" y="164">2016</text><text class="ta" x="561.8" y="164">2021</text><text class="tv" x="15.8" y="145.0">2</text><text class="tv" x="577.4" y="27.1">17,558</text><text class="tv" x="624.2" y="34.3">16,496</text><path class="ax" d="M8 148H632"/></svg><p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p><div class="fact st"><span class="l">CRP enrolled, 2025</span><span class="r">16,496 ac<small>5.4% of harvested cropland + CRP</small></span></div><div class="fact"><span class="l">CRP expiring FY2027–2029</span><span class="r">2,958 ac<small>18% of enrolled acres</small></span></div><div class="fact st"><span class="l">CRP average rental payment, FY2025</span><span class="r">$249/ac<small>all contracts in force, old ones included; not today&#x27;s offer</small></span></div></section><section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2><div class="fact w"><span class="l">Harvested cropland irrigated, 2022</span><span class="r">NASS suppressed the irrigated acres to protect individual farms</span></div><div class="fact"><span class="l">Drained by tile, 2022</span><span class="r">35% of cropland<small>108,883 ac</small></span></div><div class="fact"><span class="l">Farmed no-till, 2022</span><span class="r">20% of cropland<small>62,727 ac</small></span></div><div class="fact"><span class="l">Cover crops, 2022</span><span class="r">6% of cropland<small>18,084 ac</small></span></div><div class="fact st"><span class="l">Solar and wind operating, 2025</span><span class="r">39.6 MW solar · 0 MW wind<small>nameplate, EIA Form 860</small></span></div><div class="fact"><span class="l">Cattle and calves, 2022</span><span class="r">20,292<small>−21.7% since 2017</small></span></div><div class="fact"><span class="l">Milk cows, 2022</span><span class="r">1,375<small>head, Census of Agriculture</small></span></div><div class="fact"><span class="l">Beef cows, 2022</span><span class="r">2,803<small>head, Census of Agriculture</small></span></div><div class="fact"><span class="l">Cattle on feed, 2022</span><span class="r">10,700<small>head, Census of Agriculture</small></span></div><div class="fact"><span class="l">Hogs and pigs, 2022</span><span class="r">83,395<small>head, Census of Agriculture</small></span></div><div class="fact st"><span class="l">Farmland rented from others, 2022</span><span class="r">55%<small>census tenure, owned plus rented acres in farms</small></span></div><p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section></div>
 <div id="watch"><form class="watch" data-fips="17195" aria-label="Watch Whiteside County"><b>Watch this county</b><p>Get an email when the published figures for Whiteside County, Illinois change. Usually once or twice a year. You confirm by email first, and every email has a one-tap stop. AGSIST, PO Box 243, Chetek, WI 54728.</p><div class="wr"><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Watch this county</button></div><div class="wm" role="status" aria-live="polite"></div></form><script defer src="/farmland-atlas/watch.js?v=530339ee"></script></div>
@@ -181,37 +66,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/illinois/white-county">← White County</a></span><a href="/farmland-atlas/illinois/">All Illinois counties</a><span><a href="/farmland-atlas/illinois/will-county">Will County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "17195", "state": "IL", "county": "Whiteside County", "rent_dry_usd_ac": 270.0, "rent_dry_year": 2026, "rent_dry_chg10_pct": 15.4, "rent_irr_usd_ac": 303.0, "rent_irr_year": 2026, "rent_pasture_usd_ac": 69.5, "value_usd_ac": 8976, "value_year": 2022, "value_flag": null, "value_cagr_pct": 2.6, "rent_to_value_pct": null, "corn_yield_median_bu_ac": 188.8, "corn_yield_years": 18, "corn_yield_trend_bu_yr": 3.567, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": 1.88, "loss_ratio_last10": 0.33, "loss_ratio_all": 0.43, "years_loss_over_1": 4, "d2_week_share_pct": 7.07, "jul_low_recent_f": 64.5, "jul_low_normal_f": 63.3, "jul_low_trend_f_decade": 0.26, "irrigated_share_2022": null, "tile_share_2022": 0.351412, "notill_share_2022": 0.202447, "crp_acres": 16496, "crp_share_pct": 5.4, "crp_expiring_next3_acres": 2958, "rented_share_2022": 0.5484, "solar_mw": 39.6, "wind_mw": 0.0, "gs_rain_normal_in": 25.3, "hail_1in_days_yr": 1.4, "cattle_2022": 20292.0}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"17195","state":"IL","county":"Whiteside County","rent_dry_usd_ac":270.0,"rent_dry_year":2026,"rent_dry_chg10_pct":15.4,"rent_irr_usd_ac":303.0,"rent_irr_year":2026,"rent_pasture_usd_ac":69.5,"value_usd_ac":8976,"value_year":2022,"value_flag":null,"value_cagr_pct":2.6,"rent_to_value_pct":null,"corn_yield_median_bu_ac":188.8,"corn_yield_years":18,"corn_yield_trend_bu_yr":3.567,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":1.88,"loss_ratio_last10":0.33,"loss_ratio_all":0.43,"years_loss_over_1":4,"d2_week_share_pct":7.07,"jul_low_recent_f":64.5,"jul_low_normal_f":63.3,"jul_low_trend_f_decade":0.26,"irrigated_share_2022":null,"tile_share_2022":0.351412,"notill_share_2022":0.202447,"crp_acres":16496,"crp_share_pct":5.4,"crp_expiring_next3_acres":2958,"rented_share_2022":0.5484,"solar_mw":39.6,"wind_mw":0.0,"gs_rain_normal_in":25.3,"hail_1in_days_yr":1.4,"cattle_2022":20292.0}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>

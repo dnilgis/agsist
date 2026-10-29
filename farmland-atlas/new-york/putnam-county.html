@@ -1,129 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Putnam County, New York Farm Facts: Farmland Value and Risk</title>
-  <meta name="description" content="Putnam County, NY: land and buildings $11,485 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/new-york/putnam-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Putnam County, New York Farm Facts: Farmland Value and Risk">
-  <meta property="og:description" content="Putnam County, NY: land and buildings $11,485 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/new-york/putnam-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/36079.png?v=b8456556">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Putnam County, New York: dry cash rent not published, land and buildings $11,485, median corn yield not published">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Putnam County, New York Farm Facts: Farmland Value and Risk">
-  <meta name="twitter:description" content="Putnam County, NY: land and buildings $11,485 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/36079.png?v=b8456556">
-  <meta name="twitter:image:alt" content="Putnam County, New York: dry cash rent not published, land and buildings $11,485, median corn yield not published">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "New York",
-     "item": "https://agsist.com/farmland-atlas/new-york/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Putnam County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/new-york/putnam-county#dataset",
-   "name": "Putnam County, New York: farmland rent, land value and risk record",
-   "description": "Putnam County, NY: land and buildings $11,485 an acre in the 2022 census.",
-   "url": "https://agsist.com/farmland-atlas/new-york/putnam-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Putnam County, New York, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/ny.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Putnam County, New York Farm Facts: Farmland Value and Risk</title>
+<meta name="description" content="Putnam County, NY: land and buildings $11,485 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/new-york/putnam-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Putnam County, New York Farm Facts: Farmland Value and Risk">
+<meta property="og:description" content="Putnam County, NY: land and buildings $11,485 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/new-york/putnam-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/36079.png?v=b8456556">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Putnam County, New York: dry cash rent not published, land and buildings $11,485, median corn yield not published">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Putnam County, New York Farm Facts: Farmland Value and Risk">
+<meta name="twitter:description" content="Putnam County, NY: land and buildings $11,485 an acre in the 2022 census. County averages from public records, not an appraisal of any farm.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/36079.png?v=b8456556">
+<meta name="twitter:image:alt" content="Putnam County, New York: dry cash rent not published, land and buildings $11,485, median corn yield not published">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"New York","item":"https://agsist.com/farmland-atlas/new-york/"},{"@type":"ListItem","position":4,"name":"Putnam County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/new-york/putnam-county#dataset","name":"Putnam County, New York: farmland rent, land value and risk record","description":"Putnam County, NY: land and buildings $11,485 an acre in the 2022 census.","url":"https://agsist.com/farmland-atlas/new-york/putnam-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"Putnam County, New York, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/ny.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/new-york/">New York</a><i>/</i><span aria-current="page">Putnam County</span></nav>
 <div class="kick">County farm facts</div>
@@ -132,11 +46,11 @@
 <div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#36079">Print this sheet</a><a href="/fast-facts?fips=36079">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>
 <p class="warn">Putnam County had 3,992 acres in farms in the 2022 census. County averages here describe very little farmland; read them with care.</p><div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v"><small>n/a</small></div><div class="s">county not in the NASS cash rents survey frame</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$11,485<small>/ac</small></div><div class="s">2022: operators&#x27; own estimate of what land and buildings were worth · NY farm real estate 2026: $4,500 (land and buildings, state survey)<br>NY median $3,819</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v"><small>n/a</small></div><div class="s">not shown: NASS published no non-irrigated cash rent for this county in 2022</div></div><div class="k"><div class="t">Corn yield</div><div class="v"><small>n/a</small></div><div class="s">NASS publishes no county corn yield series for this county</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v"><small>n/a</small></div><div class="s">RMA Summary of Business has no rows for this county</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">27%</div><div class="s">2022 census, rented from others<br>NY median 28%</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="Putnam County on the map with the counties that border it" class="loc"><path class="lm" d="M117.2 118.8L117.4 118.4L117.4 101.1L122.8 93.6L168.7 87.7L168.2 94.8L168.2 95.0L168.2 95.2L168.2 95.3L168.2 95.5L168.2 95.5L168.0 98.3L168.0 98.5L168.0 98.6L168.0 98.9L168.0 99.2L167.9 100.8L167.9 101.5L167.8 101.8L167.1 110.5L167.0 112.1L117.2 118.8Z"/><path class="ln0" d="M170.2 66.5L170.3 66.6L170.4 66.6L170.8 66.6L171.0 66.6L171.3 66.6L178.8 93.2L191.2 95.9L191.8 96.4L193.3 96.8L193.7 96.5L205.3 103.8L207.9 106.1L207.6 107.4L208.1 108.2L209.3 109.4L210.6 109.4L212.1 111.8L213.5 114.4L215.7 117.3L218.6 119.3L219.0 120.0L219.9 120.3L220.1 120.9L220.4 121.2L221.2 122.0L230.6 132.2L230.5 132.3L229.1 133.8L228.5 135.0L228.0 135.8L227.4 136.6L227.3 136.6L227.2 136.7L226.6 136.7L226.6 136.7L226.6 136.7L226.6 136.6L226.6 136.6L226.6 136.4L226.3 136.3L226.1 136.3L223.7 135.8L223.1 135.8L222.7 136.1L222.2 136.3L220.1 138.1L219.9 138.2L218.6 139.7L218.5 139.7L218.5 139.9L217.1 141.4L217.0 141.6L217.0 141.6L216.6 142.0L216.4 143.4L216.4 143.8L216.6 144.3L216.3 144.7L214.1 145.4L210.3 143.5L209.6 143.2L209.5 142.6L208.7 142.3L205.8 143.7L203.0 146.0L202.2 145.8L200.7 148.5L199.1 149.9L196.3 148.2L195.3 148.5L193.5 150.1L191.3 151.0L186.6 151.9L184.4 154.3L183.5 154.6L181.9 156.6L179.5 159.0L177.8 159.0L175.7 159.9L174.7 162.2L172.9 160.4L170.2 161.7L170.2 163.2L169.5 164.8L168.8 165.2L168.6 164.3L168.7 163.2L168.3 162.8L168.1 162.8L166.3 164.0L165.1 165.1L164.4 166.0L164.1 167.3L162.6 167.5L162.4 166.0L161.2 165.2L160.3 165.4L155.9 167.3L154.9 168.4L154.3 169.9L154.5 165.8L154.5 165.7L152.8 163.1L151.6 161.3L150.9 159.9L150.1 158.7L146.2 152.3L156.2 146.3L157.1 145.7L159.1 144.4L170.4 137.6L171.1 137.2L174.0 135.3L166.3 122.9L167.0 112.1L167.1 110.5L167.8 101.8L167.9 101.5L167.9 100.8L168.0 99.2L168.0 98.9L168.0 98.6L168.0 98.5L168.0 98.3L168.2 95.5L168.2 95.5L168.2 95.3L168.2 95.2L168.2 95.0L168.2 94.8L168.7 87.7L169.7 74.2L170.2 66.5Z"/><path class="ln0" d="M120.6 78.2L121.3 66.5L121.9 63.9L121.8 63.0L121.4 62.1L121.3 61.6L121.6 59.2L122.0 56.5L122.0 56.0L119.6 31.0L123.2 4.0L148.1 15.2L169.0 19.3L172.4 8.4L173.6 8.4L171.5 42.7L171.5 42.7L171.0 52.5L170.2 66.5L169.7 74.2L168.7 87.7L122.8 93.6L117.4 101.1L115.3 98.3L115.5 93.8L120.6 78.2Z"/><path class="ln0" d="M120.6 78.2L115.5 93.8L115.3 98.3L117.4 101.1L117.4 118.4L96.9 137.9L88.7 146.0L73.7 136.9L70.7 134.9L63.2 130.0L36.3 113.5L36.9 112.7L36.8 112.0L29.7 102.9L29.4 102.9L29.8 92.7L61.2 91.2L73.6 78.0L85.3 71.6L101.0 79.2L120.6 78.2Z"/><path class="ln0" d="M121.2 133.8L123.1 136.6L125.6 142.8L127.2 144.3L128.1 147.5L127.2 155.2L127.2 157.0L127.9 161.9L127.3 168.1L126.3 168.1L125.3 167.5L110.6 158.7L110.6 158.7L104.8 155.2L104.3 154.9L91.1 147.3L88.7 146.0L96.9 137.9L117.4 118.4L117.2 118.8L121.2 133.8Z"/><path class="ln0" d="M141.8 184.9L141.8 185.1L141.8 185.1L141.8 185.4L141.9 185.7L141.8 185.8L141.3 186.0L140.9 185.5L140.9 185.2L141.1 185.1L141.2 184.8L141.3 184.6L141.6 184.6L141.8 184.8L141.8 184.9ZM170.4 137.6L159.1 144.4L157.1 145.7L156.2 146.3L146.2 152.3L150.1 158.7L150.9 159.9L151.6 161.3L152.8 163.1L154.5 165.7L154.5 165.8L154.3 169.9L154.4 170.7L153.9 172.5L153.7 172.8L153.5 172.7L151.9 173.3L151.3 175.4L151.0 176.0L149.6 176.7L146.9 178.0L145.7 179.0L142.9 180.8L140.2 185.1L139.8 185.7L137.4 184.8L137.3 184.8L135.4 184.2L135.4 184.2L135.3 184.3L135.3 184.3L135.3 184.3L124.6 180.1L127.3 168.1L127.9 161.9L127.2 157.0L127.2 155.2L128.1 147.5L127.2 144.3L125.6 142.8L123.1 136.6L121.2 133.8L117.2 118.8L167.0 112.1L166.3 122.9L174.0 135.3L171.1 137.2L170.4 137.6Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#36079">Open on the map</a>
-  <a href="/farmland-atlas/compare#36079">Compare</a>
-  <a href="/rent/new-york">New York cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#36079">Open on the map</a>
+<a href="/farmland-atlas/compare#36079">Compare</a>
+<a href="/rent/new-york">New York cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
 <div class="read"><p style="margin:0">Putnam County sits in the Hudson Valley where land value has climbed fast. Census value reached $11,485 per acre in 2022, up 91.4 percent from 2017. July nights have warmed since 1976, rising 1.14 F per decade, and the recent ten years averaged 65.2 F compared to the 1991-2020 normal of 62.5 F. Small solar operations are in place; no wind or CRP ground here.</p></div>
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
@@ -152,37 +66,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/new-york/otsego-county">← Otsego County</a></span><a href="/farmland-atlas/new-york/">All New York counties</a><span><a href="/farmland-atlas/new-york/queens-county">Queens County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "36079", "state": "NY", "county": "Putnam County", "rent_dry_usd_ac": null, "rent_dry_year": null, "rent_dry_chg10_pct": null, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": null, "value_usd_ac": 11485, "value_year": 2022, "value_flag": null, "value_cagr_pct": 13.9, "rent_to_value_pct": null, "corn_yield_median_bu_ac": null, "corn_yield_years": null, "corn_yield_trend_bu_yr": null, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": null, "loss_ratio_last10": null, "loss_ratio_all": null, "years_loss_over_1": null, "d2_week_share_pct": 5.82, "jul_low_recent_f": 65.2, "jul_low_normal_f": 62.5, "jul_low_trend_f_decade": 1.14, "irrigated_share_2022": null, "tile_share_2022": 0.070111, "notill_share_2022": 0.120295, "crp_acres": 0, "crp_share_pct": null, "crp_expiring_next3_acres": null, "rented_share_2022": 0.273, "solar_mw": 2.3, "wind_mw": 0.0, "gs_rain_normal_in": 25.5, "hail_1in_days_yr": 0.4, "cattle_2022": 122.0}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"36079","state":"NY","county":"Putnam County","rent_dry_usd_ac":null,"rent_dry_year":null,"rent_dry_chg10_pct":null,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":null,"value_usd_ac":11485,"value_year":2022,"value_flag":null,"value_cagr_pct":13.9,"rent_to_value_pct":null,"corn_yield_median_bu_ac":null,"corn_yield_years":null,"corn_yield_trend_bu_yr":null,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":null,"loss_ratio_last10":null,"loss_ratio_all":null,"years_loss_over_1":null,"d2_week_share_pct":5.82,"jul_low_recent_f":65.2,"jul_low_normal_f":62.5,"jul_low_trend_f_decade":1.14,"irrigated_share_2022":null,"tile_share_2022":0.070111,"notill_share_2022":0.120295,"crp_acres":0,"crp_share_pct":null,"crp_expiring_next3_acres":null,"rented_share_2022":0.273,"solar_mw":2.3,"wind_mw":0.0,"gs_rain_normal_in":25.5,"hail_1in_days_yr":0.4,"cattle_2022":122.0}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>
