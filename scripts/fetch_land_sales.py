@@ -1952,6 +1952,24 @@ def nj_person(s):
     return "" if not s or VT_STREET.search(s) else s
 
 
+def nj_get(url, dest, deadline=480):
+    """probe_stream with a wall clock: one plain request read in 1 MB chunks, 60 s per read, and the whole file
+    within deadline seconds, or it raises (a slow trickle is not waited on for ever). Returns (bytes, content type)."""
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+    t0, n = time.time(), 0
+    with urllib.request.urlopen(req, timeout=60) as r, open(dest, "wb") as f:
+        ctype = r.headers.get("Content-Type", "")
+        while True:
+            if time.time() - t0 > deadline:
+                raise TimeoutError("%s: %d bytes in %ds, past the %ds limit" % (url, n, time.time() - t0, deadline))
+            b = r.read(1 << 20)
+            if not b:
+                break
+            f.write(b)
+            n += len(b)
+    return n, ctype
+
+
 def fetch_nj(dest_dir):
     """The SR-1A yearly files and the MOD-IV list, saved under dest_dir with today's date (the SR-1A zips whole,
     for the raw branch; MOD-IV, 270 MB, goes to a temporary file and only the lines of the lots farm deeds name are
@@ -1965,7 +1983,7 @@ def fetch_nj(dest_dir):
         nm = os.path.basename(urllib.parse.urlparse(u).path)
         p = os.path.join(dest_dir, "%s-%s" % (day, nm))
         try:
-            n, ctype, final = probe_stream(u, p)
+            n, ctype = nj_get(u, p, deadline=120 if "YTD" in nm else 480)
             with open(p, "rb") as f:
                 if f.read(2) != b"PK":
                     raise ValueError("not a zip file (%s)" % ctype)
@@ -1980,7 +1998,7 @@ def fetch_nj(dest_dir):
         print("NJ: %s %.1f MB at %ds" % (nm, n / 1e6, time.time() - t0), flush=True)
     import tempfile
     tmp = os.path.join(tempfile.gettempdir(), "nj-modiv-%s.zip" % day)
-    n, ctype, final = probe_stream(NJ_MODIV, tmp, timeout=600)
+    n, ctype = nj_get(NJ_MODIV, tmp, deadline=900)
     print("::notice::NJ: SR-1A files and MOD-IV (%.0f MB) downloaded in %ds" % (n / 1e6, time.time() - t0), flush=True)
     return got, tmp
 
