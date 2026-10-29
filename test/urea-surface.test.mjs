@@ -20,6 +20,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -49,11 +50,10 @@ async function open(browser, port, { admin1 = "Iowa", name = "Ames", sums = [0, 
   pg.on("pageerror", (e) => errors.push(String(e)));
   await pg.route("**/*", (r) => {
     const u = r.request().url();
+    // the ZIP lookup: our own data/places/zip/ file (2026-10-29), answered with this test's town and state
+    if (isPlaces(u)) return r.fulfill({ status: 200, headers: CORS, contentType: "application/json",
+      body: JSON.stringify(placesBody(u, [{ name, admin1, latitude: 42.03, longitude: -93.62, postcodes: ["50010"] }])) });
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (/geocoding-api\.open-meteo\.com/.test(u)) {
-      return r.fulfill({ status: 200, headers: CORS, contentType: "application/json",
-        body: JSON.stringify({ results: [{ name, admin1, latitude: 42.03, longitude: -93.62 }] }) });
-    }
     if (/api\.open-meteo\.com\/v1\/forecast/.test(u)) {
       const hrs = [], hp = [];
       for (let i = 0; i < 120; i++) { hrs.push(new Date(Date.UTC(2026, 9, 15, 0) + i * 3600e3).toISOString().slice(0, 13) + ":00"); hp.push(20); }

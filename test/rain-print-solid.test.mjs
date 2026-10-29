@@ -110,7 +110,7 @@ async function mocks(ctx, opts, log) {
     }
     // Stripe, in the same tab: a stand-in page, and the address it was sent to
     if (u.host === "buy.stripe.com") return stripePage(r, log.stripe);
-    if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
+    // the town lookup is our own data/places/ files, served from this checkout (2026-10-29): Chetek and Rice Lake as they are
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [{ name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1950-01-01", stnEnd]], state: "WI" }] } });
       let sdate = u.searchParams.get("sdate"), normal = false;
@@ -522,7 +522,6 @@ test("D8: the gift card's preview carries no QR of its own and makes no short li
   const code = RP.encodeCode({ place: "Chetek, WI", station: "471667 2", year: 2026, cmp: "none", name: "For Dad", markers: [] });
   const c = engine((u) => {
     const url = new URL(u);
-    if (url.host === "geocoding-api.open-meteo.com") return jsonRes({ results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] });
     if (url.pathname === "/StnData") return jsonRes({ meta: { name: "CHETEK", state: "WI", ll: [-91.65, 45.32] }, data: series(2026, "2026-10-09") });
     return jsonRes({});
   });

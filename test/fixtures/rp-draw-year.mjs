@@ -8,6 +8,7 @@
 import { createServer } from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./places-mock.mjs";
 
 const MON_IN = [0.95, 0.85, 1.7, 3.0, 3.8, 4.6, 4.2, 4.3, 3.6, 2.4, 1.6, 1.0];   // a Chetek-like usual year, made up
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
@@ -46,10 +47,10 @@ export const GEO = [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, adm
 /* opts: {kind: 'wet'|'dry', wind: an Open-Meteo answer or null (refused), log: []} */
 export async function mocks(ctx, opts = {}) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
+  await ctx.route(PLACES_ROUTE, (r) => {
     const u = new URL(r.request().url());
     if (opts.log) opts.log.push(u.host + u.pathname);
-    if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ headers: h, json: { results: GEO } });
+    if (isPlaces(u)) return r.fulfill({ headers: h, json: placesBody(u, GEO) });   // the town lookup: our own data/places/ files (2026-10-29)
     if (u.host === "archive-api.open-meteo.com") return opts.wind ? r.fulfill({ headers: h, json: opts.wind(u) }) : r.fulfill({ status: 503, headers: h, body: "x" });
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ headers: h, json: { meta: [CHETEK] } });

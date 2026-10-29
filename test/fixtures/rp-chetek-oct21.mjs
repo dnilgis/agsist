@@ -7,6 +7,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
+import { PLACES_ROUTE, isPlaces, placesBody } from "./places-mock.mjs";
 export const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 export const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 function yearDays(y) { const a = []; for (let t = Date.UTC(y, 0, 1); new Date(t).getUTCFullYear() === y; t += 864e5) a.push(new Date(t).toISOString().slice(0, 10)); return a; }
@@ -44,7 +45,7 @@ export function serve(ROOT) {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 export async function mocks(context, { meta = META, worker = "blocked", delay = 0, log = { acis: [], worker: [] } } = {}) {
-  await context.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
+  await context.route(PLACES_ROUTE, async (r) => {
     if (delay && /rcc-acis/.test(r.request().url())) await new Promise((ok) => setTimeout(ok, delay));
     const req = r.request(), u = new URL(req.url());
     if (u.host === "agsist-api.dnilgis.workers.dev") {
@@ -56,7 +57,8 @@ export async function mocks(context, { meta = META, worker = "blocked", delay = 
       if (u.pathname === "/rp-short") return r.fulfill({ headers: h, json: { ok: true, id: "K7Q2M" } });
       return r.fulfill({ headers: h, json: { ok: true } });
     }
-    if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: TOWN.lat, longitude: TOWN.lon, admin1: "Wisconsin", admin2: "Barron", country_code: "US", postcodes: ["54728"] }] } });
+    // the town lookup: our own data/places/ files (2026-10-29), answered with the town as the live case had it
+    if (isPlaces(u)) return r.fulfill({ json: placesBody(u, [{ name: "Chetek", latitude: TOWN.lat, longitude: TOWN.lon, admin1: "Wisconsin", admin2: "Barron", country_code: "US", postcodes: ["54728"] }]) });
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") {
         const snow = u.searchParams.get("elems") === "snow";

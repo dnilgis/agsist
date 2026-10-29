@@ -286,7 +286,8 @@ async function open(browser, port, { now, onForecast, settings, loc = true, widt
   await pg.route("**/*", async (r) => {
     const u = r.request().url(), h = { "access-control-allow-origin": "*" };
     if (u.includes("api.open-meteo.com/v1/forecast")) return onForecast(r, u, h);
-    if (u.includes("/bids/data/zips/")) return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify({ 54728: [45.31, -91.65], 78701: [30.27, -97.74] }) });
+    // our own ZIP table (read first since 2026-10-29) and the bids repo's copy answer with the same two points
+    if (u.includes("/bids/data/zips/") || /\/data\/places\/zip\/\d\d\.json$/.test(u)) return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify({ 54728: [45.31, -91.65, "Chetek", "WI", "Barron"], 78701: [30.27, -97.74, "Austin", "TX", "Travis"] }) });
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
     return r.abort();
   });

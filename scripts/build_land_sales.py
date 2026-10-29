@@ -590,6 +590,7 @@ def coverage_html(cov, d):
                      % (e(r["status"]), r["tile"][0], r["tile"][1], e(r["name"] + ": " + cov["labels"].get(r["status"], r["status"])), e(r["st"])))
     h.append("</div>")
     h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-st-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
+    h.append(survey_html(d))
     h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t"><thead><tr>'
              '<th scope="col">State</th><th scope="col">On this site</th><th scope="col">Source</th><th scope="col">Names in the source</th>'
              '<th scope="col">How often</th><th scope="col">Terms</th></tr></thead><tbody>')
@@ -599,6 +600,46 @@ def coverage_html(cov, d):
                     e(r.get("cadence") or ""), e(r.get("terms") or "")))
     h.append("</tbody></table></div><p class=\"ls-fine\">%s</p></details>" % e(cov.get("note") or ""))
     return "\n".join(h)
+
+
+# Where sale prices are not public record, the county land values two other sources publish
+# (data/land/<st>/survey.json, scripts/build_land_survey.py): named by evidence type and year,
+# counted by county, linked to the Atlas county pages that show them. Never a recorded sale and
+# never in the middles above. test/land-survey.test.mjs checks the counts against the files.
+SURVEY_STATES = (("ND", "North Dakota", "north-dakota"), ("KS", "Kansas", "kansas"))
+
+
+def survey_counts(S):
+    """(counties with at least one dollar value, counties in the file)."""
+    vals = 0
+    for c in (S.get("counties") or {}).values():
+        if any(isinstance(v, dict) and (v.get("value") is not None or v.get("avg") is not None) for v in c.values()):
+            vals += 1
+    return vals, len(S.get("counties") or {})
+
+
+def survey_html(d):
+    rows = []
+    for st, name, slug in SURVEY_STATES:
+        try:
+            S = json.load(open(d.repo / "data" / "land" / st.lower() / "survey.json", encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        src = S.get("source") or {}
+        n, _ = survey_counts(S)
+        if not n:
+            continue
+        if st == "ND":
+            what = "price of rented land and cash rent, %s, %d" % (S.get("evidence"), S.get("year"))
+        else:
+            what = "%s, %d (sales %s)" % (S.get("evidence"), S.get("year"), S.get("period"))
+        rows.append('<li><b>%s:</b> %s, %d counties, from <a href="%s" rel="noopener">%s</a>. On each <a href="/farmland-atlas/%s/">%s county page</a> in the Farmland Atlas.</li>'
+                    % (e(name), e(what), n, e(src.get("page") or src.get("url") or ""), e(src.get("org") or ""), slug, e(name)))
+    if not rows:
+        return ""
+    return ('<div class="ls-surv" id="other-evidence"><p><b>Where sale prices are private: other county land values</b></p><ul>%s</ul>'
+            '<p class="ls-fine">Not recorded sales. These are labeled by where they come from and never mixed into the sale middles on these pages.</p></div>'
+            % "".join(rows))
 
 
 def span_words(w):

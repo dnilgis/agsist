@@ -54,7 +54,7 @@ try {
     const missed = [];
     await context.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
       const url = r.request().url(), host = new URL(url).host;
-      if (host === "data.rcc-acis.org" || host === "geocoding-api.open-meteo.com") {
+      if (host === "data.rcc-acis.org") {   // the town lookup is our own data/places/ files, served from this checkout
         if (answers.has(url)) return r.fulfill({ json: answers.get(url), headers: { "Access-Control-Allow-Origin": "*" } });
         missed.push(url);
         return r.fulfill({ json: { error: "not saved" }, headers: { "Access-Control-Allow-Origin": "*" } });

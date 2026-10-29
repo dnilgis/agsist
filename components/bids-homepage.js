@@ -2006,16 +2006,15 @@
     try { if (typeof window.gtag === 'function') gtag('event', 'bids_search', { page: 'home', method: 'zip' }); } catch(e) {}
 
     // Geocode ZIP for label, then load bids
-    fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + zip + '&count=1&language=en&format=json&countryCode=US')
-      .then(function(r){ return r.json(); })
-      .then(function(d){
-        if(d.results && d.results.length){
-          var r = d.results[0];
-          /* WAVE3-I: the code from the full name ("Minnesota" is MN, not MI). */
-          var stc = '', an = String(r.admin1 || '').trim().toLowerCase();
-          Object.keys(STATE_NAME).forEach(function(k){ if(STATE_NAME[k].toLowerCase() === an) stc = k; });
-          var label = r.name + (stc ? ', ' + stc : '');
-          loadHomepageBids(r.latitude, r.longitude, label, zip);
+    // our own ZIP table: [lat, lon, town, state code, county] (2026-10-29: no outside geocoder)
+    fetch('/data/places/zip/' + zip.slice(0, 2) + '.json')
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(t){
+        var r = t && t[zip];
+        if(Array.isArray(r) && isFinite(+r[0]) && isFinite(+r[1])){
+          var stc = /^[A-Z]{2}$/.test(r[3] || '') ? r[3] : '';
+          var label = r[2] ? r[2] + (stc ? ', ' + stc : '') : 'ZIP ' + zip;
+          loadHomepageBids(+r[0], +r[1], label, zip);
         } else {
           loadHomepageBids(null, null, 'ZIP ' + zip, zip);
         }

@@ -10,7 +10,7 @@
  *
  * Nothing here asks NOAA on its own. It loads components/rain-print.js, the
  * shipped engine, and runs its previewArt() chain on each example: the
- * Open-Meteo town lookup, the two StnMeta station lists (rain, snowfall),
+ * town lookup (our own data/places/ files), the two StnMeta station lists (rain, snowfall),
  * pickStation() with the snow-aware rule reading StnData for each station it
  * tries, and the 30-year normal ("91", then the older code only when "91" has
  * nothing), then the station's full period of record (StnData por) through
@@ -104,6 +104,18 @@ function engine(log) {
   const ctx = { TextEncoder, TextDecoder, URLSearchParams, URL, btoa, atob, fetch: recFetch, Response,
     AbortController, setTimeout: slowTimeout, clearTimeout, console, Intl };
   ctx.window = ctx;
+  // the town lookup is our own files (components/places.js over data/places/, 2026-10-29), read from this
+  // checkout; each answer is kept in the log as "places:<what was asked>" so a failed run can say what it found
+  vm.runInNewContext(readFileSync(ROOT + "components/places.js", "utf8"), ctx);
+  const localGet = async (url) => {
+    const f = ROOT + String(url).replace(/^\//, "");
+    if (!existsSync(f)) return new Response("not found", { status: 404 });
+    return new Response(readFileSync(f, "utf8"), { status: 200, headers: { "content-type": "application/json" } });
+  };
+  const places = ctx.AGSIST_PLACES.make({ get: localGet });
+  ctx.AGSIST_PLACES = Object.assign({}, places, {
+    search: (q, o) => places.search(q, Object.assign({}, o, { get: localGet })).then((body) => { log.push({ url: "places:" + q, status: 200, body }); return body; }),
+  });
   vm.runInNewContext(readFileSync(ROOT + "components/rain-print.js", "utf8"), ctx);
   if (!ctx.RainPrint || typeof ctx.RainPrint.previewArt !== "function") throw new Error("components/rain-print.js loaded without RainPrint.previewArt");
   // previewArt only checks the drawing script is there; no art is made here.
@@ -111,7 +123,7 @@ function engine(log) {
   return ctx.RainPrint;
 }
 
-const isGeo = (u) => u.startsWith("https://geocoding-api.open-meteo.com/");
+const isGeo = (u) => u.startsWith("places:");
 const isPor = (u) => u.startsWith("https://data.rcc-acis.org/StnData?") && new URL(u).searchParams.get("sdate") === "por";
 function reqLine(q) {
   let s = q.status + " " + q.url;
@@ -162,7 +174,7 @@ async function tryOne(ex) {
     return { ok: true, log, j: {
       slug: ex.slug, link: ex.link, place: ex.place, year: ex.year, cmp: ex.cmp,
       fetched: now.toISOString().slice(0, 10), fetched_at: now.toISOString(),
-      source: "NOAA RCC-ACIS (data.rcc-acis.org) and Open-Meteo geocoding, asked by components/rain-print.js previewArt()",
+      source: "NOAA RCC-ACIS (data.rcc-acis.org) and our own place files (data/places/), asked by components/rain-print.js previewArt()",
       station: got.station, days: got.days, por_days: ext.rows.length,
       requests: log.map((q) => {
         const p = isPor(q.url) ? pack(q.body) : null;

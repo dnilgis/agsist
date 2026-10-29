@@ -11,7 +11,7 @@
   if (!E) return;
   var $ = function (id) { return document.getElementById(id); };
   var LS_LOC = 'agsist-wx-loc', LS_SET = 'agsist-emc';
-  var ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
+  var OWN_ZIPS = '/data/places/zip/', ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
   var STALE_MS = 30 * 60e3, OLD_MS = 2 * 3600e3;
   var MODES = { dry: 'Drying wet grain', cool: 'Cooling it down', hold: 'Holding dry grain' };
   var S = { mode: 'hold', grain: 'corn', targets: {}, current: null, fan: 0, grainF: null, grainDry: true, cfm: null,
@@ -462,18 +462,14 @@
     $('emc-zip').value = z;
     status('Looking up ' + z + '…');
     var my = ++S.seq;
-    getJSON(ZIPS + z.slice(0, 2) + '.json', 6000).then(function (t) {
+    [OWN_ZIPS, ZIPS].reduce(function (prev, base) {
+      // our own ZIP table first, then the bids repo's copy of the same points (2026-10-29: no outside geocoder)
+      return prev.catch(function () { return getJSON(base + z.slice(0, 2) + '.json', 6000).then(function (t) {
       var p = t && t[z];
       if (Array.isArray(p) && isFinite(+p[0]) && isFinite(+p[1]) && !(+p[0] === 0 && +p[1] === 0)) return { lat: +p[0], lon: +p[1], town: typeof p[2] === 'string' ? p[2] : null };
       throw new Error('not in table');
-    }).catch(function () {
-      return getJSON('https://geocoding-api.open-meteo.com/v1/search?name=' + z + '&count=1&language=en&format=json&countryCode=US', 6000).then(function (d) {
-        var r = d && d.results && d.results[0];
-        if (!r) throw new Error('none');
-        var town = r.name && !/^\d+$/.test(r.name) ? r.name : null;
-        return { lat: r.latitude, lon: r.longitude, town: town };
-      });
-    }).then(function (p) { if (my === S.seq) load(p.lat, p.lon, 'ZIP ' + z + (p.town ? ' (' + p.town + ')' : '')); })
+      }); });
+    }, Promise.reject()).then(function (p) { if (my === S.seq) load(p.lat, p.lon, 'ZIP ' + z + (p.town ? ' (' + p.town + ')' : '')); })
       .catch(function () { if (my === S.seq) status('Could not find ZIP ' + z + '. Check it and try again.', true); });
   }
   function byDevice() {

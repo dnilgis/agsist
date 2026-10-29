@@ -25,6 +25,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ctx = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob };
@@ -198,14 +199,14 @@ const META = [
   { name: "CAMERON 2 NE", sids: ["471205 2"], ll: [-91.651, TOWN.lat - 10.5 / 69], state: "WI", elev: 1100, valid_daterange: [["1950-01-01", "2026-10-10"]], snow: ["1950-01-01", "2026-10-10"], data: { snow: "full" } },
 ];
 async function mocks(context, meta, log) {
-  await context.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
+  await context.route(PLACES_ROUTE, (r) => {
     const u = new URL(r.request().url());
     if (u.host === "agsist-api.dnilgis.workers.dev") {
       const m = /^\/rp-short\/([0-9A-Z]+)$/.exec(u.pathname);
       if (m && m[1] === "SN0W1") return r.fulfill({ headers: { "Access-Control-Allow-Origin": "*" }, json: { ok: true, code: RP.encodeCode({ place: "Chetek, WI", year: 2025, station: "US1WIBR0002 6", style: "r2" }) } });
       return r.fulfill({ status: 503, headers: { "Access-Control-Allow-Origin": "*" }, body: "x" });
     }
-    if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: TOWN.lat, longitude: TOWN.lon, admin1: "Wisconsin", country_code: "US" }] } });
+    if (isPlaces(u)) return r.fulfill({ json: placesBody(u, [{ name: "Chetek", latitude: TOWN.lat, longitude: TOWN.lon, admin1: "Wisconsin", country_code: "US" }]) });   // the town lookup: our own data/places/ files (2026-10-29)
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") {
         const snow = u.searchParams.get("elems") === "snow";
