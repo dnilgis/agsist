@@ -118,12 +118,14 @@ test("the headline middle: 24 months, bare farm land of 20+ acres at $500+/acre,
       const page = read(`land-sales/${STATES[st]}/${c.slug}.html`);
       if (v.length >= 5) {
         const med = jsr(quant(v, 0.5));
-        assert.deepEqual(c.usual, { med, n: v.length }, `${st} ${fips}: the middle by the rule`);
+        assert.deepEqual(c.usual, { med, n: v.length, q1: jsr(quant(v, 0.25)), q3: jsr(quant(v, 0.75)) }, `${st} ${fips}: the middle and middle half by the rule`);
+        assert.equal(c.k24, v.length, `${st} ${fips}: the count behind the middle`);
         assert.ok(page.includes(`Market middle: ${money(med)} an acre, the middle of ${v.length} bare farmland sales of 20 acres or more at $500 an acre or more, `), `${st} ${fips}: the headline says the rule`);
         if (W) assert.deepEqual([W.counties[fips].r24.med, W.counties[fips].r24.n], [med, v.length], `${st} ${fips}: the Atlas range is the same middle`);
         shown++;
       } else {
         assert.equal(c.usual, null, `${st} ${fips}: withheld under 5`);
+        assert.equal(c.k24, v.length, `${st} ${fips}: the count a withheld middle names`);
         assert.ok(page.includes(`No market middle: ${v.length || "no"} bare farmland sale${v.length === 1 ? "" : "s"} of 20 acres or more`), `${st} ${fips}: withheld, with the count`);
         held++;
       }
