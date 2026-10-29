@@ -3,12 +3,12 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2158,
-  "with_parent": 120,
+  "live_boards": 2162,
+  "with_parent": 130,
   "with_dest": 112,
   "parent_by_rule": {
    "board-page": 1,
-   "chs-brand": 119
+   "chs-brand": 129
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -219,6 +219,56 @@
   },
   "chsbigsky-shelby": {
    "elevId": "e18n6wq65w",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-brandon": {
+   "elevId": "e9611kmgx2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-canton": {
+   "elevId": "eqbn9er4j9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-elkton": {
+   "elevId": "ed55bzy6k5",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-luverne": {
+   "elevId": "e0p9ew21mh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-magnolia": {
+   "elevId": "eb06f4xdfr",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-marshall": {
+   "elevId": "ec2607y9k3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-pipestone": {
+   "elevId": "e5vt2mweqy",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-ruthton": {
+   "elevId": "e9hrv5f8t9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-tracy": {
+   "elevId": "e55tneze7g",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsbrandon-worthingaggrain": {
+   "elevId": "eq462ykmqh",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
