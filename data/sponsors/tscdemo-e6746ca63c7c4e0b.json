@@ -1,0 +1,188 @@
+{
+ "schema": "agsist-sponsor-report/1",
+ "sponsor": "Tractor Supply (demo)",
+ "slug": "tscdemo",
+ "demo": true,
+ "demoFor": "Tractor Supply",
+ "expires": "2026-11-28",
+ "regionsNote": "Picked for this demo: AGSIST's ten states with the most engaged visits, Sep 29 to Oct 26, 2026.",
+ "generated": "2026-10-29T00:08:27+00:00",
+ "through": null,
+ "start": null,
+ "pending": true,
+ "pages": null,
+ "totals": {
+  "viewable": 0,
+  "clicks": 0,
+  "ctr": null,
+  "legacyImpressions": 0
+ },
+ "windows": [],
+ "series": [],
+ "byPage": [],
+ "creative": {
+  "live": false,
+  "demo": true,
+  "proof_code": "c42718a8",
+  "fields": {
+   "advertiser": "Your business",
+   "headline": "Your ad here",
+   "body": "Shown only to readers in the states you pick, on the pages they use every week.",
+   "facts": [],
+   "cta_text": "Learn more",
+   "cta_url": "#",
+   "phone": null,
+   "logo": null,
+   "disclosure": null
+  },
+  "label": "Sponsor",
+  "tier": null,
+  "links": {},
+  "cta_urls": {},
+  "previews": {},
+  "states": [
+   "IA",
+   "IL",
+   "IN",
+   "KS",
+   "MN",
+   "MO",
+   "NE",
+   "OH",
+   "TX",
+   "WI"
+  ],
+  "slot": null
+ },
+ "rateCard": {
+  "_": "THE ONE DEFINITION OF WHAT A PLACEMENT COSTS. These prices are published in three places: sponsor.html (the pitch), about.html, and now each sponsor's own portal. scripts/test_rate_card.py fails if a price here is not present on sponsor.html, so the two cannot drift without somebody being told. Prices are MONTHLY since 2026-10-07 (price_month). Change a price HERE first, then the prose around it.",
+  "_updated": "2026-10-07",
+  "currency": "USD",
+  "trial": "First month free on every tier. No card, no commitment.",
+  "terms": "Month-to-month. No minimum, cancel any time, no penalty.",
+  "tiers": [
+   {
+    "id": "daily",
+    "name": "Sponsor",
+    "price_month": 149,
+    "slots": 1,
+    "exclusive": true,
+    "placement": "In every daily briefing, web and email, plus a sponsor strip above the fold on the homepage.",
+    "note": "One ag company per issue. Rate locked for 12 months from start date. Once filled, the next slot opens only on renewal.",
+    "year_equivalent": 1788
+   },
+   {
+    "id": "page",
+    "name": "Own a page",
+    "price_month": 29,
+    "slots": null,
+    "exclusive": true,
+    "placement": "One sponsor ribbon on a single high-traffic page, category-exclusive.",
+    "note": "Any one page: cash bids, the hail map, break-even, a state hail page. The 51 state hail pages can each carry their own ribbon at the same rate."
+   },
+   {
+    "id": "supporter",
+    "name": "Supporter",
+    "price_month": 15,
+    "slots": 6,
+    "exclusive": false,
+    "placement": "Your name or logo in the shared Supporters strip in the footer of every page.",
+    "note": "Non-exclusive and capped at 6 so the strip keeps its value."
+   }
+  ]
+ },
+ "approveTo": "sig@agsist.com",
+ "regionAds": {
+  "pending": true,
+  "start": null,
+  "through": null,
+  "rows": [
+   {
+    "code": "IA",
+    "name": "Iowa",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "IL",
+    "name": "Illinois",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "IN",
+    "name": "Indiana",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "KS",
+    "name": "Kansas",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "MN",
+    "name": "Minnesota",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "MO",
+    "name": "Missouri",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "NE",
+    "name": "Nebraska",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "OH",
+    "name": "Ohio",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "TX",
+    "name": "Texas",
+    "viewable": 0,
+    "clicks": 0
+   },
+   {
+    "code": "WI",
+    "name": "Wisconsin",
+    "viewable": 0,
+    "clicks": 0
+   }
+  ],
+  "elsewhere": {
+   "viewable": 0,
+   "clicks": 0
+  }
+ },
+ "freeTest": false,
+ "regions": [
+  "IA",
+  "IL",
+  "IN",
+  "KS",
+  "MN",
+  "MO",
+  "NE",
+  "OH",
+  "TX",
+  "WI"
+ ],
+ "geo": null,
+ "approval": null,
+ "billing": null,
+ "placements": [
+  "geo_pages",
+  "geo_readers"
+ ],
+ "licensedStates": null,
+ "ended": null
+}
