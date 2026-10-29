@@ -261,6 +261,7 @@ def method(u, ix, sec, plants):
 </details>"""
 
 
+OPEN_MAX = 25
 RAISES_LINE = "Private raises are high risk and hard to sell; many stop reporting."
 CF_SRC = ('<a href="https://www.sec.gov/data-research/sec-markets-data/crowdfunding-offerings-data-sets" rel="noopener">'
           'SEC Crowdfunding Offerings data sets</a>')
@@ -289,7 +290,8 @@ def raises_block(rz):
     gate = rz.get("share_min") or 20
     through = esc(day(rz["through"], True))
     rows = []
-    for r in rz.get("open") or []:
+    allopen = rz.get("open") or []
+    for r in allopen[:OPEN_MAX]:
         place = ", ".join(x for x in (r.get("city", "").title(), r.get("st", "")) if x)
         tgt = big(r["target"]) if r.get("target") is not None else "not filed"
         mx = big(r["max"]) if r.get("max") is not None else "not filed"
@@ -300,6 +302,9 @@ def raises_block(rz):
     if rows:
         open_html = (f'<p class="ags-note">Deadline today or later, no withdrawal or termination on file. Numbers as last filed, '
                      f'through {through}.</p><ul class="ags-raises">' + "".join(rows) + '</ul>')
+        if len(allopen) > OPEN_MAX:
+            open_html += (f'<p class="ags-note">{len(allopen) - OPEN_MAX:,} more open; the {OPEN_MAX} with the nearest '
+                          'deadlines are shown.</p>')
     else:
         open_html = f'<p>No open raise by an ag company in the SEC files through {through}.</p>'
     ag, al = rz["track"]["ag"], rz["track"]["all"]
