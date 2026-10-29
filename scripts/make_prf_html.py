@@ -159,6 +159,7 @@ HTML = f"""<!DOCTYPE html>
             <p class="prf-policy" id="prf-printsum"></p>
             <div class="prf-answer" id="prf-answer"></div>
             <p class="prf-pm" id="prf-pm"></p>
+            <p class="prf-fine prf-basis">Paid on the grid&rsquo;s rain, not your ranch&rsquo;s: a dry pasture can go unpaid and a wet one can be paid. What past years would have paid is history, not a promise for next year. <a href="#prf-not">What PRF does not do</a></p>
             <fieldset class="prf-win"><legend class="prf-lab">Years counted</legend><div class="prf-win-b">{WIN}</div></fieldset>
             <figure class="prf-fig" id="prf-chart-fig" hidden>
               <figcaption id="prf-chart-cap">What it would have paid, year by year</figcaption>

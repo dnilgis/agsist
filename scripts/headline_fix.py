@@ -53,8 +53,8 @@ FOLLOW = ("teaser", "subheadline", "subject_line")   # fields that may copy the 
 MAX_LEN = 110
 _LOC = re.compile(r"^(headline|teaser|subheadline|subject_line)\b")
 
-# the prompt's own line for each claim rule (PROMPT_RULES lists them in RULES order)
-RULE_TEXT = dict(zip([n for n, _ in daily_claims.RULES],
+# the prompt's own line for each claim rule (PROMPT_RULES lists them in RULES, then HEAD_RULES, order)
+RULE_TEXT = dict(zip([n for n, _ in daily_claims.RULES + daily_claims.HEAD_RULES],
                      [ln[2:] for ln in daily_claims.PROMPT_RULES.splitlines() if ln.startswith("- ")]))
 RULE_TEXT["close-before-settle"] += (" A run of lower or higher sessions is a run of settles, so it ends at a settle"
                                      " price with its date, never at an overnight or morning trade.")
