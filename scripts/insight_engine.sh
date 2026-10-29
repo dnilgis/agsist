@@ -39,7 +39,7 @@ if [ "$due" -eq 3 ]; then exit 0; fi
 [ "$due" -eq 0 ] || { echo "::error::insight_engine.py due failed"; exit 1; }
 
 for p in history/agtransport/barge_rates history/agtransport/grain_basis history/agtransport/inspections \
-         history/nass-progress/condition history/nass-progress/progress; do
+         history/nass-progress/condition history/nass-progress/progress history/nass-yield; do
   RAW_BRANCH=raw RAW_SOFT=1 bash scripts/pull_raw.sh "$p" || true
 done
 RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/pull_raw.sh private/ledger/bid-changes || true
