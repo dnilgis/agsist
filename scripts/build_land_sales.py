@@ -610,6 +610,29 @@ def county_page(d, st, c, page, u, n12, summ, early, latest):
     return "\n".join(b) + "\n" + FOOT
 
 
+# "Your county" on the hub (Sig, Oct 29, 2026: the land sale page should be easy to find). The jump
+# row is plain links to the state lists and the source table. The script reads the place the reader
+# saved elsewhere on the site (localStorage agsist-wx-loc: state and county, written by
+# components/geo.js and Fast Facts), finds that county's link in the list already on this page
+# and offers it; nothing is fetched or sent, and a county not in the list gets its state instead.
+JUMP_JS = ("(function(){try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(!w||!w.state)return;"
+           "var S={IL:'illinois',WI:'wisconsin',IN:'indiana',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana'},"
+           "st=S[String(w.state).toUpperCase()],el=document.getElementById('ls-mine');if(!el)return;"
+           "var n=function(x){return String(x||'').toLowerCase().replace(/\\s+(county|parish)$/,'').replace(/[^a-z]/g,'')};"
+           "if(!st){el.innerHTML='Your state is not on these pages yet: <a href=\"#coverage\">where each state stands</a>.';el.hidden=false;return;}"
+           "var a=null,c=n(w.county);if(c){var L=document.querySelectorAll('#'+st+' + ul a');"
+           "for(var i=0;i<L.length;i++){if(n(L[i].textContent)===c){a=L[i];break;}}}"
+           "var h=document.getElementById(st).textContent;"
+           "el.innerHTML=a?'Your county: <a href=\"'+a.getAttribute('href')+'\">'+a.textContent+', '+h+'</a>':'Your state: <a href=\"#'+st+'\">'+h+' counties</a>';"
+           "el.hidden=false;}catch(e){}})();")
+
+
+def jump_row(d):
+    links = " &middot; ".join('<a href="#%s">%s</a>' % (SLUG[st], e(NAME[st])) for st in d.states)
+    return ('<p class="ls-jump">Jump to: %s &middot; <a href="#coverage">Other states</a></p>'
+            '<p class="ls-mine" id="ls-mine" hidden></p><script>%s</script>' % (links, JUMP_JS))
+
+
 def index_page(d, latest, counties, early, coverage, archive):
     url = ORIGIN + "/land-sales/"
     title = "Farmland Sales by County: %s Recorded Sales | AGSIST" % ", ".join(NAME[x] for x in d.states)
@@ -622,6 +645,7 @@ def index_page(d, latest, counties, early, coverage, archive):
                  % (e(latest["label"]), latest["n"], LIST_MIN_ACRES, e(and_list([NAME[s] for s in latest["states"]])),
                     (" The largest by acres: %s acres in %s County, %s, for %s." % (acres(big[0]["acres"]), e(big[0]["county"]), big[0]["st"], money(big[0]["price"]))) if big else "",
                     latest["month"]))
+    b.append(jump_row(d))
     b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales"></div></div>')
     for st in d.states:
         b.append('<h2 id="%s">%s</h2><ul class="ls-cos">' % (SLUG[st], e(NAME[st])))
