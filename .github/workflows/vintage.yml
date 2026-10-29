@@ -1,0 +1,101 @@
+name: Vintage archive (daily)
+
+# A daily point-in-time copy of outside data, saved exactly as published with
+# the time we fetched it (Sig, Oct 28 2026, STANDING-DECISIONS: "YES to a daily
+# point-in-time archive ... New schedule approved for this"). Later forecast
+# tests then use only what was knowable on each date; nobody can rebuild a past
+# day's numbers once USDA, USGS or EIA revise them.
+#
+#   sources  USDA AgTransport (8 datasets, last 60 days with Socrata's own
+#            created/updated stamps), USGS daily river stage and flow (8 grain
+#            river gauges, last 30 days), EIA weekly ethanol and diesel tables
+#   where    vintage/<source>/<YYYY-MM-DD>.json.gz and vintage/manifest/<day>.json
+#            on the PRIVATE raw branch (dnilgis/feedbag), never main, never a page
+#   script   scripts/vintage.py (python3 scripts/vintage.py --selftest)
+#
+# Written once. If today's manifest is already on raw, nothing is fetched; the
+# save runs with RAW_KEEP=1, so a file already on the branch is never replaced.
+# A failed source is recorded in the manifest and the day's file; it is not
+# tried again later. Logs are counts only.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 17 * * 1-5'   # weekdays 17:37 UTC (Sig, Oct 28 2026: new schedule approved)
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vintage
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest (no network)
+        run: python3 scripts/vintage.py --selftest
+      # Today already saved (a second run the same day): fetch nothing. A branch that
+      # cannot be read does not stop the run; RAW_KEEP at the save still protects it.
+      - name: Already saved today?
+        id: have
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          DAY=$(date -u +%Y-%m-%d)
+          echo "day=$DAY" >> "$GITHUB_OUTPUT"
+          if out=$(bash scripts/pull_raw.sh "vintage/manifest/$DAY.json" 2>&1); then
+            echo "vintage $DAY is already on raw; nothing to fetch"
+            echo "done=1" >> "$GITHUB_OUTPUT"
+          elif printf '%s' "$out" | grep -q "is not on the raw branch"; then
+            echo "vintage $DAY: not saved yet"
+          else
+            echo "::warning::could not read the raw branch; fetching anyway (the save never replaces a file)"
+          fi
+      - name: Fetch
+        if: ${{ steps.have.outputs.done != '1' }}
+        env:
+          SOCRATA_APP_TOKEN: ${{ secrets.SOCRATA_APP_TOKEN }}
+        run: python3 scripts/vintage.py --out vintage
+      - name: Save to the raw branch
+        if: ${{ !cancelled() && steps.have.outputs.done != '1' }}
+        env:
+          DAY: ${{ steps.have.outputs.day }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+          RAW_KEEP: '1'
+        run: |
+          [ -d vintage ] || { echo "nothing written"; exit 0; }
+          bash scripts/push_raw.sh "vintage $DAY" vintage
+      - name: Summary
+        if: ${{ !cancelled() }}
+        env:
+          DAY: ${{ steps.have.outputs.day }}
+        run: |
+          python3 - "vintage/manifest/$DAY.json" >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          import json, sys
+          try:
+              m = json.load(open(sys.argv[1]))
+          except (OSError, ValueError):
+              print("No manifest here (already saved earlier today, or nothing written)."); sys.exit(0)
+          c = m.get("counts") or {}
+          print(f"### Vintage {m['day']}\n\n{c.get('ok')} of {c.get('sources')} sources ok, {c.get('failed')} failed, "
+                f"{c.get('kept')} kept; {c.get('rows')} rows, {c.get('bytes')} bytes, {c.get('requests')} requests.\n")
+          print("| source | ok | rows | bytes | statuses |\n|---|---|---|---|---|")
+          for k, v in sorted(m["sources"].items()):
+              print(f"| {k} | {'kept' if v.get('kept') else ('yes' if v.get('ok') else 'FAILED')} | {v.get('rows', '')} | "
+                    f"{v.get('bytes', '')} | {','.join(str(s) for s in v.get('statuses') or [])} |")
+          EOF
