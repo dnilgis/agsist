@@ -28,7 +28,7 @@ generate_daily.py writes for a new issue. Every other byte stays as published.
 
 --cta-only (2026-10-29, layout shift) does the same for the one cash-bids link
 under the byline: its space before the arrow moved inside the arrow's span, so
-no lone space sits between two inline tags (test/stray-space-cls.test.mjs).
+no lone space sits between two inline tags (test/stray-space.test.mjs).
 
 --byline-only does the same for the one <div class="dv3-byline"> line (the
 reply address under each issue, changed 2026-10-22 to sig@agsist.com).
