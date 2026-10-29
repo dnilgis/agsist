@@ -544,8 +544,7 @@
   }
   window.AgsistSlots = { ribbon: function (sp, id) { return ribbonInner(sp, id, false); }, supporter: supporterInner };
   var OPEN_SLOT_LINE = true;
-  /* Oct 29, 2026 rate card: a state's cash bids and cash rent ribbons sell as the State Sponsor, /cash-bids
-     as the Cash Bids Sponsor. Every other page ribbon is retired: it stays empty, with no link. */
+  // Oct 29 rate card: state cash bids and rent ribbons are the State Sponsor; others are retired, no link.
   function openSlotTier(id) { return id === 'cash-bids' ? 'cashbids' : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? 'state' : ''; }
   function openSlotLine(rib, id) {
     var tier = openSlotTier(id);
