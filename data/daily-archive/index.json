@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-29",
+      "date_display": "Thursday, October 29, 2026",
+      "headline": "Hogs fall 5.5% to $58.60 while corn holds $4.51",
+      "teaser": "Hogs drop 5.5% to $58.60 while corn holds near $4.51 and beans slip 7¾ cents.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 3,
+      "url": "/daily/2026-10-29",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-28",
       "date_display": "Wednesday, October 28, 2026",
       "headline": "Corn bounces 2¾¢ to $4.51½ after four lower closes",
@@ -2624,6 +2635,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-28T12:35:54.682087+00:00",
-  "count": 229
+  "updated": "2026-10-29T10:47:58.981452+00:00",
+  "count": 230
 }
