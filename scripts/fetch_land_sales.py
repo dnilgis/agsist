@@ -237,6 +237,81 @@ PROBE_ONLY_DOCS["CO"] = [CO_PARCELS + "?f=pjson", CO_PARCELS + "/0?f=pjson",
 PROBE_ONLY_DOCS["MA"] = ["https://www.mass.gov/info-details/massgis-data-property-tax-parcels",
                          "https://www.mass.gov/info-details/learn-about-massgis-data",
                          "https://www.mass.gov/forms/massgis-request-statewide-parcel-data"]
+# Connecticut, Massachusetts and Florida (Oct 29, second round): the statewide parcel/CAMA layers, the CT
+# sales CSV and the Florida roll directory, saved to read each header, row count and terms text first.
+# mass.gov answers a script with 403 (the Oct 18 probe); that is recorded as is, never worked around.
+ARCGIS_Q = "https://www.arcgis.com/sharing/rest/search?f=json&num=12&q="
+CT_CAMA = "https://services3.arcgis.com/3FL1kr7L4LvwA2Kb/arcgis/rest/services/Connecticut_CAMA_and_Parcel_Layer_2025/FeatureServer"
+PROBE_ONLY_DOCS["CT"] = [
+    "https://data.ct.gov/api/views/5mzw-sjtu.json",
+    "https://data.ct.gov/api/views/metadata/v1/5mzw-sjtu",
+    "https://geodata.ct.gov/datasets/ctmaps::connecticut-cama-and-parcel-layer-2025",
+    ARCGIS_Q + "title:%22Connecticut%20CAMA%22",
+    ARCGIS_Q + "title:%22CAMA%20and%20Parcel%22%20owner:CT_DEEP_GIS",
+    "https://geodata.ct.gov/api/search/v1/collections/dataset/items?q=CAMA%20parcel&limit=10",
+    CT_CAMA + "?f=pjson", CT_CAMA + "/0?f=pjson",
+    CT_CAMA + "/0/query?where=1%3D1&returnCountOnly=true&f=json",
+    CT_CAMA + "/0/query?where=Sale_Price%3E0%20AND%20Land_Acres%3E0&returnCountOnly=true&f=json",
+    CT_CAMA + "/0/query?where=Sale_Price%3E0%20AND%20Land_Acres%3E0&groupByFieldsForStatistics=State_Use&outStatistics=%5B%7B%22statisticType%22%3A%22count%22%2C%22onStatisticField%22%3A%22OBJECTID%22%2C%22outStatisticFieldName%22%3A%22n%22%7D%5D&orderByFields=n%20DESC&resultRecordCount=40&f=json",
+]
+MA_PARCELS = "https://services1.arcgis.com/hGdibHYSPO59RG1h/arcgis/rest/services/Massachusetts_Property_Tax_Parcels/FeatureServer"
+PROBE_ONLY_DOCS["MA"] += [
+    "https://www.mass.gov/doc/la3-submissions-step-by-step/download",
+    "https://www.mass.gov/info-details/certification-of-real-and-personal-property-values",
+    "https://dlsgateway.dor.state.ma.us/",
+    ARCGIS_Q + "title:%22Property%20Tax%20Parcels%22%20owner:MassGIS",
+    ARCGIS_Q + "title:%22Massachusetts%20Property%20Tax%20Parcels%22",
+    MA_PARCELS + "?f=pjson", MA_PARCELS + "/0?f=pjson",
+    MA_PARCELS + "/0/query?where=1%3D1&returnCountOnly=true&f=json",
+    MA_PARCELS + "/0/query?where=LS_PRICE%3E0%20AND%20LOT_SIZE%3E0&returnCountOnly=true&f=json",
+    "https://s3.us-east-1.amazonaws.com/download.massgis.digital.mass.gov/gdbs/l3parcels/",
+]
+FL_ROLL = "https://floridarevenue.com/property/_api/web/GetFolderByServerRelativeUrl('/property/dataportal/Documents/PTO%20Data%20Portal/Tax%20Roll%20Data%20Files"
+def arcgis_stats(svc, where, by, extra=""):
+    """A grouped count over one ArcGIS layer (names and addresses are never selected)."""
+    st = '[{"statisticType":"count","onStatisticField":"OBJECTID","outStatisticFieldName":"n"}]'
+    return (svc + "/0/query?where=" + urllib.parse.quote(where) + "&groupByFieldsForStatistics=" + by + "&outStatistics=" + urllib.parse.quote(st)
+            + "&orderByFields=n%20DESC&resultRecordCount=60&f=json" + extra)
+
+
+def arcgis_rows(svc, where, fields, n=6):
+    return svc + "/0/query?where=" + urllib.parse.quote(where) + "&outFields=" + fields + "&returnGeometry=false&resultRecordCount=%d&f=json" % n
+
+
+PROBE_ONLY_DOCS["CT"] += [
+    arcgis_stats(CT_CAMA, "Sale_Price>0 AND Land_Acres>=20", "State_Use_Description"),
+    arcgis_stats(CT_CAMA, "Sale_Price>0 AND Land_Acres>0", "Collection_year"),
+    arcgis_rows(CT_CAMA, "Sale_Price>0 AND Land_Acres>=20", "Town_Name,Collection_year,Land_Acres,State_Use,State_Use_Description,Sale_Price,Sale_Date,Prior_Sale_Date,Prior_Sale_Price,Parcel_Type,Unit_Type"),
+]
+PROBE_ONLY_DOCS["MA"] += [
+    "https://www.arcgis.com/sharing/rest/content/items/73d4c766167848b795f1048cad3919c7?f=json",
+    "https://www.arcgis.com/sharing/rest/content/items/73d4c766167848b795f1048cad3919c7/info/metadata/metadata.xml",
+    arcgis_stats(MA_PARCELS, "LS_PRICE>0 AND LOT_SIZE>0", "USE_CODE"),
+    arcgis_stats(MA_PARCELS, "LS_PRICE>0 AND LOT_SIZE>0", "FY"),
+    arcgis_stats(MA_PARCELS, "LS_PRICE>0 AND LOT_SIZE>=20", "LOT_UNITS"),
+    arcgis_rows(MA_PARCELS, "LS_PRICE>0 AND LOT_SIZE>=20", "TOWN_ID,FY,LOT_SIZE,LOT_UNITS,LS_DATE,LS_PRICE,USE_CODE,USE_DESC,LS_BOOK,POLY_TYPE"),
+]
+PROBE_ONLY_DOCS["FL"] += [
+    "https://floridarevenue.com/property/dataportal/Resources/Scripts/fileBrowser.js",
+    "https://floridarevenue.com/Pages/privacy.aspx",
+    "https://floridarevenue.com/property/Pages/DataPortal.aspx",
+    "https://floridarevenue.com/property/Pages/Public_Record_Request.aspx",
+    FL_ROLL + "')/Files?$select=Name,Length,ServerRelativeUrl&$format=json",
+    "https://floridarevenue.com/property/_api/web/GetFolderByServerRelativeUrl('/property/dataportal/Documents')/Folders?$select=Name,ServerRelativeUrl&$format=json",
+]
+PROBE_ONLY_DOCS["FL"] += [
+    "https://floridarevenue.com/property/dataportal/Pages/default.aspx?path=/property/dataportal/Documents/PTO%20Data%20Portal/Tax%20Roll%20Data%20Files",
+    FL_ROLL + "')/Folders?$select=Name,ServerRelativeUrl&$format=json",
+    FL_ROLL + "/SDF')/Folders?$select=Name,ServerRelativeUrl&$format=json",
+    FL_ROLL + "/SDF')/Files?$select=Name,Length,ServerRelativeUrl&$format=json",
+    "https://floridarevenue.com/property/dataportal/Documents/PTO%20Data%20Portal/Tax%20Roll%20Data%20Files/NAL/",
+    "https://www.floridarevenue.com/property/Documents/2026SDFSummaryTable.pdf",
+    "https://www.floridarevenue.com/property/Documents/2026NALSummaryTable.pdf",
+    "https://www.floridarevenue.com/property/Documents/salequalcodes_aft01012026.pdf",
+    "https://www.floridarevenue.com/property/Pages/Cofficial_CompleteSubRollEval.aspx",
+    "https://floridarevenue.com/Pages/Disclaimer.aspx",
+]
+
 # Whole files the probe downloads in full (to a temp folder, never committed): it logs size, zip members,
 # header (or line length for a fixed-width file) and row count, and saves only the head of each to the raw
 # branch. Per-column fill counts and common values go to a side file there, never to the public log,
@@ -245,6 +320,11 @@ PROBE_FILES = {
     "SD": ["https://sdproptax.info/DataLink/3/Download?filename=%d_SD_SALES.csv" % y for y in range(2025, 2020, -1)],
     "NJ": ["https://www.nj.gov/treasury/taxation/lpt/statdata/Sales%d.zip" % y for y in range(2026, 2019, -1)]
           + ["https://www.nj.gov/treasury/taxation/pdf/lpt/modiv-2026.zip"],
+    "CT": ["https://data.ct.gov/api/v3/views/5mzw-sjtu/export.csv?accessType=DOWNLOAD"],
+    # Florida county 11 (Alachua), SDF and NAL: the folder and file names are guesses until the roll
+    # directory listing is read; a 404 here is logged and the listing in the probe log names the real ones.
+    "FL": ["https://floridarevenue.com/property/dataportal/Documents/PTO%%20Data%%20Portal/Tax%%20Roll%%20Data%%20Files/%s/%s/Alachua%%2011%%20%s%%20%s%%202025.zip" % (k, v, f, k)
+           for k in ("SDF", "NAL") for v, f in (("2025F", "Final"), ("2025P", "Preliminary"))],
 }
 PROBE_FILE_MAX = 3 << 30   # stop reading a download past 3 GB
 PROBE_HEAD = 400           # lines of each file kept on the raw branch
@@ -719,6 +799,38 @@ def file_links(page_url, html, rx=r"\.(zip|csv|xlsx|txt)(\?|$)"):
     return out
 
 
+TERMS_RX = re.compile(r"(?i)terms of use|terms and conditions|license|licence|public domain|disclaimer|resale|redistribut|attribution|commercial|reuse|re-use|copyright|may not be used|use constraints|confidential")
+
+
+def terms_lines(blob, ext):
+    """Up to 8 sentences that state terms of use, verbatim, from a saved page, PDF text or JSON
+    (ArcGIS licenseInfo and Socrata license), plus one line per ArcGIS item found by a search."""
+    out = []
+    try:
+        if ext == ".json":
+            J = json.loads(blob)
+            for r in (J.get("results") or [])[:12] if isinstance(J, dict) else []:
+                if isinstance(r, dict) and r.get("title") and (r.get("url") or r.get("id")):
+                    out.append("  item %s | %s | %s | %s" % (r.get("id"), r.get("type"), r.get("title"), r.get("url")))
+            txt = json.dumps(J)[:400000]
+            txt = re.sub(r"\\[nrt]", " ", txt)
+        elif ext == ".pdf":
+            return out
+        else:
+            txt = re.sub(r"(?s)<[^>]+>", " ", blob.decode("utf-8", errors="replace"))
+        txt = re.sub(r"\s+", " ", txt)
+        seen = set()
+        for sent in re.split(r"(?<=[.!?]) ", txt):
+            if 25 < len(sent) < 700 and TERMS_RX.search(sent) and sent[:80] not in seen:
+                seen.add(sent[:80])
+                out.append("  [terms] " + sent.strip())
+                if len(seen) >= 8:
+                    break
+    except Exception:  # noqa: BLE001
+        pass
+    return out
+
+
 def probe_stream(url, dest, timeout=300):
     """Download url to dest in chunks; (bytes, content type, final url). Raises on an HTTP error,
     which the caller logs as is: a 403, 429 or a bot check is recorded, never worked around."""
@@ -842,6 +954,7 @@ def probe(states):
             if len(every) < 15:      # a thin page (a sign-in or cookie wall): say what it says
                 log.append("  text: " + re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", strip_scripts(html.encode()).decode()))[:1500])
             log.append("%s page %s: %d file links" % (st, pg, len(links)))
+            log.extend(terms_lines(html.encode(), ".html"))
             for j, u in enumerate(links[:3]):
                 try:
                     blob = fetch(u)
@@ -919,12 +1032,15 @@ def probe(states):
                 except Exception:  # noqa: BLE001
                     pass
             log.append("%s doc %s: %d bytes -> %s" % (st, u, len(blob), os.path.basename(fn)))
+            log.extend(terms_lines(blob, ext))
             if ext == ".json":   # an ArcGIS service or layer: its fields, terms and counts
                 try:
                     J = json.loads(blob)
                     if isinstance(J, dict):
                         if J.get("fields"):
                             log.append("  fields: " + " ".join("%s(%s)" % (f.get("name"), str(f.get("type", "")).replace("esriFieldType", "")) for f in J["fields"]))
+                        if isinstance(J.get("features"), list) and J["features"] and all(isinstance(x, dict) and "attributes" in x for x in J["features"]):
+                            log.append("  features: " + json.dumps([x["attributes"] for x in J["features"][:60]])[:4500])
                         for k in ("copyrightText", "description", "serviceDescription", "licenseInfo", "accessInformation", "license", "attribution", "count", "error"):
                             if J.get(k) not in (None, ""):
                                 log.append("  %s: %s" % (k, re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", str(J[k])))[:1500]))
@@ -2067,8 +2183,15 @@ def selftest():
            st_["Sales2026.zip/Sales2026.txt"]["rows"] == 2 and st_["Sales2026.zip/Sales2026.txt"]["line_lengths"][0][0] == 26)
         ck("file probe: an HTML answer and a failed download are logged, not read",
            any("an HTML answer" in x and "Access denied" in x for x in lg) and any("missing.csv" in x and "No such file" in x for x in lg))
+        ck("terms lines: licenseInfo sentence kept verbatim, an ArcGIS search item listed",
+           any("[terms] Resale of this data is strictly forbidden." in x for x in terms_lines(b'{"licenseInfo":"Data are public. Resale of this data is strictly forbidden.","results":[{"id":"ab","type":"Feature Service","title":"T","url":"https://x/FeatureServer"}]}', ".json"))
+           and any(x.startswith("  item ab | Feature Service | T | https://x/FeatureServer") for x in terms_lines(b'{"results":[{"id":"ab","type":"Feature Service","title":"T","url":"https://x/FeatureServer"}]}', ".json"))
+           and any("[terms]" in x and "Public domain" in x for x in terms_lines(b"<p>Hello there.</p><p>Public domain data from the state, free for any use.</p>", ".html")))
+        ck("CT, MA and FL are probed (docs, and the CT sales file) and none is built",
+           all(STATES[x].get("probe_only") for x in ("CT", "FL")) and len(PROBE_ONLY_DOCS["CT"]) > 8 and len(PROBE_ONLY_DOCS["MA"]) > 8
+           and len(PROBE_ONLY_DOCS["FL"]) > 8 and any("5mzw-sjtu" in u for u in PROBE_FILES["CT"]))
         ck("file probe: column values stay out of the log (they can be names)",
-           not any("Minnehaha" in x for x in lg) and os.path.exists(os.path.join(out, "head-s.csv.txt")))
+               not any("Minnehaha" in x for x in lg) and os.path.exists(os.path.join(out, "head-s.csv.txt")))
     finally:
         PROBE_FILES.clear()
         PROBE_FILES.update(keep_pf)
