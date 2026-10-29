@@ -65,6 +65,20 @@
    "link": "/field-scout"
   },
   {
+   "id": "2026-10-29-own-place-lookup",
+   "date": "2026-10-29",
+   "title": "ZIP and town boxes use our own place list",
+   "line": "Every ZIP and town box now finds your place in a list on our own site. Small Canadian towns are found by the weather station named for them.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-10-29-private-raises",
+   "date": "2026-10-29",
+   "title": "Private ag raises on Ag stocks",
+   "line": "Ag stocks now lists farm companies raising money online, with their SEC filings and how past raises turned out. These are high risk and hard to sell.",
+   "link": "/ag-stocks"
+  },
+  {
    "id": "2026-10-28-farm-credit",
    "date": "2026-10-28",
    "title": "Farm loan repayment by Fed district",
