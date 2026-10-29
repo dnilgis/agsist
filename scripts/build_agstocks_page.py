@@ -13,6 +13,7 @@ components/agstocks.js from sec.json, latest.json and plants.json; nothing bulky
     python3 scripts/build_agstocks_page.py --check    # exit 1 if the page is stale
     python3 scripts/build_agstocks_page.py --selftest # formatting and the pending / held states
 """
+import hashlib
 import html
 import json
 import os
@@ -312,7 +313,19 @@ def chrome():
     return re.search(r"<script>/\* agsist-theme-early.*?</script><script>/\* agsist-ga-guard.*?</script>", src, re.S).group(0)
 
 
+def share_card():
+    """The page's own card (scripts/build_share_images.py draws it), with the same ?v=<hash>
+    that script stamps; the site card until it exists."""
+    path = os.path.join(ROOT, "img", "og", "ag-stocks.jpg")
+    if not os.path.exists(path):
+        return "https://agsist.com/img/og/agsist.jpg", "AGSIST: ag stocks and the AGSIST Ag 20"
+    with open(path, "rb") as f:
+        v = hashlib.sha1(f.read()).hexdigest()[:8]
+    return "https://agsist.com/img/og/ag-stocks.jpg?v=" + v, "Ag stocks. Farm company share prices, their SEC reports and the AGSIST Ag 20."
+
+
 def render(u, latest, ix, sec, plants, early):
+    og_img, og_alt = share_card()
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "WebPage", "@id": URL + "#page", "url": URL, "name": TITLE, "description": DESC,
          "author": {"@type": "Person", "name": "Sigurd Lindquist"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}},
@@ -345,7 +358,12 @@ def render(u, latest, ix, sec, plants, early):
   <meta property="og:title" content="{esc(TITLE)}">
   <meta property="og:description" content="{esc(DESC)}">
   <meta property="og:url" content="{URL}">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="{og_img}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{esc(og_alt)}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{og_img}">
   <meta name="twitter:title" content="{esc(TITLE)}">
   <meta name="twitter:description" content="{esc(DESC)}">
   {early}
