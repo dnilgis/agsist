@@ -957,9 +957,11 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function results(d, s) {
     var t = d.totals || {};
     var thru = d.through ? 'through ' + esc(fmt(d.through, true)) : '';
+    /* The hero pill already says "Live since <date>"; the eyebrow says only how far the counts go,
+       so it fits beside the heading and the four numbers stay on a phone's first screen. */
     var h = '<section class="cp-sec cp-now" id="results"><div class="cp-h2"><h2>Last 7 days</h2><span class="cp-eyebrow">' +
       (d.pending ? (d.geo && s.live ? 'Live · no full day counted yet' : (d.ended ? 'Ended' : 'Not started'))
-        : (d.geo ? (d.liveSince ? 'Live since ' + esc(fmt(d.liveSince, true)) + ' · ' : 'Live · no full day counted yet · ') : '') + thru) + '</span></div>';
+        : (d.geo && !d.liveSince ? 'Live · no full day counted yet · ' : '') + thru) + '</span></div>';
     if (d.pending) {
       /* Before the ad runs its counts read 0 and say why (Sig, Oct 28), never blank,
          and never someone else's traffic shown as theirs. */
