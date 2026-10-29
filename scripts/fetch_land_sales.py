@@ -225,7 +225,9 @@ PROBE_ONLY_DOCS = {
 # any parser exists. CO and MA: header and terms only (CO's service forbids resale; MA is last sale only).
 PROBE_ONLY_DOCS["SD"] = ["https://sdproptax.info/DataLink/Data"]
 PROBE_ONLY_DOCS["NJ"] += ["https://www.nj.gov/treasury/taxation/lpt/statdata.shtml",
-                          "https://www.nj.gov/treasury/taxation/pdf/lpt/modivlayout.pdf"]
+                          "https://www.nj.gov/treasury/taxation/pdf/lpt/modivlayout.pdf",
+                          # the 33 non-usable deed categories (N.J.A.C. 18:12-1.1) behind the SR-1A codes (Oct 29)
+                          "https://www.nj.gov/treasury/taxation/pdf/lpt/guidelines33.pdf"]
 CO_PARCELS = "https://gis.colorado.gov/public/rest/services/Address_and_Parcel/Colorado_Public_Parcels/FeatureServer"
 PROBE_ONLY_DOCS["CO"] = [CO_PARCELS + "?f=pjson", CO_PARCELS + "/0?f=pjson",
                          CO_PARCELS + "/0/query?where=1%3D1&returnCountOnly=true&f=json",
