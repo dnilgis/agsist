@@ -1959,6 +1959,7 @@ def fetch_nj(dest_dir):
     os.makedirs(dest_dir, exist_ok=True)
     day = time.strftime("%Y-%m-%d", time.gmtime())
     got = []
+    t0 = time.time()
     for u in NJ_SALES:
         nm = os.path.basename(urllib.parse.urlparse(u).path)
         try:
@@ -1972,6 +1973,7 @@ def fetch_nj(dest_dir):
         with open(p, "wb") as f:
             f.write(blob)
         got.append((nm, p))
+        print("NJ: %s %.1f MB at %ds" % (nm, len(blob) / 1e6, time.time() - t0), flush=True)
     import tempfile
     tmp = os.path.join(tempfile.gettempdir(), "nj-modiv-%s.zip" % day)
     req = urllib.request.Request(NJ_MODIV, headers={"User-Agent": UA})
@@ -1981,6 +1983,7 @@ def fetch_nj(dest_dir):
             if not b:
                 break
             f.write(b)
+    print("::notice::NJ: SR-1A files and MOD-IV downloaded in %ds" % (time.time() - t0), flush=True)
     return got, tmp
 
 
@@ -1996,20 +1999,24 @@ def nj_farm_lots(name, blob):
 def nj_build_tables(sr_files, modiv_path, gz_blob, rep, keep_dir=None):
     """Read MOD-IV for its farm lots, then the SR-1A files (farm deeds only), then MOD-IV again for every lot those
     deeds name; returns the table rows (header first). keep_dir: where those MOD-IV lines go (gzip, for the raw branch)."""
+    t0 = time.time()
     with open(modiv_path, "rb") as fh:
         farm = nj_farm_lots("modiv-2026.zip", fh)
     rep["MOD-IV farm lots (3A, 3B)"] = len(farm)
+    print("NJ: %d farm lots on MOD-IV in %ds" % (len(farm), time.time() - t0), flush=True)
     sales = []
     for n, p in sr_files:
         with open(p, "rb") as fh:
             sales.append((n, fh.read()))
     sales = nj_sales(sales, rep, farm)
     rep["SR-1A deeds kept for the farm test"] = len(sales)
+    print("NJ: %d SR-1A deeds kept in %ds" % (len(sales), time.time() - t0), flush=True)
     want = set()
     for r in sales:
         want.update(u for u, q in nj_units(r))
     with open(modiv_path, "rb") as fh:
         md = nj_modiv("modiv-2026.zip", fh, want, rep)
+    rep["seconds to read"] = round(time.time() - t0)
     if keep_dir:
         import gzip
         os.makedirs(keep_dir, exist_ok=True)
