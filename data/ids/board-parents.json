@@ -3,16 +3,16 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2162,
-  "with_parent": 128,
-  "with_dest": 110,
+  "live_boards": 2159,
+  "with_parent": 131,
+  "with_dest": 112,
   "parent_by_rule": {
    "board-page": 1,
-   "chs-brand": 127
+   "chs-brand": 130
   },
   "dest_by_brand": {
    "ADM": 26,
-   "AGP": 25,
+   "AGP": 27,
    "Big River": 4,
    "Bunge": 4,
    "CGB": 9,
@@ -347,6 +347,16 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
+  "chsfarmerselevator-glendive": {
+   "elevId": "eckd74z6ks",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsfarmerselevator-macon": {
+   "elevId": "e06fn31718",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
   "chsherman-chokio": {
    "elevId": "ergmssm8vv",
    "parent": "CHS Inc.",
@@ -582,6 +592,11 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
+  "chsprimeland-chsprimeland": {
+   "elevId": "ekj0yxn1y2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
   "chsriverplains-ashley": {
    "elevId": "e41zb1vf15",
    "parent": "CHS Inc.",
@@ -716,6 +731,16 @@
    "elevId": "eev8k4xsz2",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
+  },
+  "countrypartnerscooperative-agpdavidcity": {
+   "elevId": "ex2c36pry4",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "countrypartnerscooperative-agphastings": {
+   "elevId": "eex5kgz70p",
+   "dest": "AGP",
+   "dv": "location"
   },
   "cvacoop365-admcolumbus": {
    "elevId": "ejtjhb7qmd",
