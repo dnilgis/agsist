@@ -497,8 +497,8 @@ def head(title, desc, path, jsonld):
        Same files as scripts/inject_static_nav.py FONTS. -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/components/styles.css?v=27" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=27">
+  <link rel="preload" href="/components/styles.css?v=28" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=28">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
