@@ -141,7 +141,9 @@ console.log("\nTHE CONFIG");
 check("at most one sponsor is active", () => {
   /* The builder refuses two or more without a slot dimension, and with none it
      prints "no active sponsors" and exits cleanly (the slot is open). */
-  const on = (CONF.sponsors || []).filter((s) => s.active !== false);
+  /* A demo portal (demo: true) never runs an ad and is never asked of GA4,
+     so it cannot be mixed into anyone's counts (test/sponsor-demo.test.mjs). */
+  const on = (CONF.sponsors || []).filter((s) => s.active !== false && s.demo !== true);
   assert.ok(on.length <= 1, on.length + " active sponsors; the builder will refuse");
 });
 check("no active sponsor carries a start date nobody has confirmed", () => {
@@ -160,7 +162,7 @@ check("no active sponsor carries a start date nobody has confirmed", () => {
 check("no footer supporter is live while a daily sponsor is being reported", () => {
   const sup = JSON.parse(R("data/supporters.json"));
   const liveSup = (sup.supporters || []).filter((x) => x.active === true);
-  const liveSponsor = (CONF.sponsors || []).some((s) => s.active !== false);
+  const liveSponsor = (CONF.sponsors || []).some((s) => s.active !== false && s.demo !== true);
   const slotDim = /^\s*SLOT_DIMENSION\s*=\s*None\b/m.test(BUILDER);
   assert.ok(!(liveSup.length && liveSponsor && slotDim),
     liveSup.length + " active footer supporter(s) and a sponsor being reported, with SLOT_DIMENSION unset: " +

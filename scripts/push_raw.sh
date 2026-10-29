@@ -35,10 +35,14 @@
 # (the private branches go stale) or the key fails, and the morning email shows
 # it. Without RAW_SOFT every failure exits 1, as before.
 #
+# RAW_KEEP=1 (vintage.yml): a file already on the branch is never replaced;
+# only new paths land, and each one left alone is counted. A point-in-time copy
+# is written once, so a second run the same day cannot change what was saved.
+#
 # Knobs (test/raw-branch.test.mjs): RAW_REMOTE (see above), RAW_BRANCH
 # (default raw), RAW_WT (where the branch worktree goes; default
 # ../<branch>-branch, outside the checkout, so the site budget never counts
-# it), RAW_SLEEP (seconds per retry step, default 10), RAW_SOFT.
+# it), RAW_SLEEP (seconds per retry step, default 10), RAW_SOFT, RAW_KEEP.
 set -u
 set -o pipefail
 MSG="${1:-}"
@@ -99,7 +103,17 @@ for i in 1 2 3 4 5; do
   g fetch -q --depth 1 "$REMOTE" "$BR" || { sleep $((STEP * i)); continue; }
   g reset -q --hard FETCH_HEAD || fail "could not reset to the $BR tip"
   test -f README.md || fail "README.md missing on $BR after reset; not committing"
-  cp -r "$STAGE/." . || fail "could not copy the files in"
+  if [ "${RAW_KEEP:-}" = 1 ]; then
+    KEPT=0
+    while IFS= read -r -d '' f; do
+      rel="${f#"$STAGE"/}"
+      if [ -e "$rel" ]; then KEPT=$((KEPT + 1)); continue; fi
+      mkdir -p "$(dirname "$rel")" && cp "$f" "$rel" || fail "could not copy the files in"
+    done < <(find "$STAGE" -type f -print0)
+    [ "$KEPT" -gt 0 ] && echo "raw: $KEPT file(s) already on $BR left as they were (RAW_KEEP)"
+  else
+    cp -r "$STAGE/." . || fail "could not copy the files in"
+  fi
   g add -A -- "${HAVE[@]}" || fail "git add refused the files"
   if git diff --cached --quiet; then echo "raw: no change"; exit 0; fi
   N=$(git diff --cached --name-only | wc -l)
