@@ -267,6 +267,38 @@ PROBE_ONLY_DOCS["MA"] += [
     "https://s3.us-east-1.amazonaws.com/download.massgis.digital.mass.gov/gdbs/l3parcels/",
 ]
 FL_ROLL = "https://floridarevenue.com/property/_api/web/GetFolderByServerRelativeUrl('/property/dataportal/Documents/PTO%20Data%20Portal/Tax%20Roll%20Data%20Files"
+def arcgis_stats(svc, where, by, extra=""):
+    """A grouped count over one ArcGIS layer (names and addresses are never selected)."""
+    st = '[{"statisticType":"count","onStatisticField":"OBJECTID","outStatisticFieldName":"n"}]'
+    return (svc + "/0/query?where=" + urllib.parse.quote(where) + "&groupByFieldsForStatistics=" + by + "&outStatistics=" + urllib.parse.quote(st)
+            + "&orderByFields=n%20DESC&resultRecordCount=60&f=json" + extra)
+
+
+def arcgis_rows(svc, where, fields, n=6):
+    return svc + "/0/query?where=" + urllib.parse.quote(where) + "&outFields=" + fields + "&returnGeometry=false&resultRecordCount=%d&f=json" % n
+
+
+PROBE_ONLY_DOCS["CT"] += [
+    arcgis_stats(CT_CAMA, "Sale_Price>0 AND Land_Acres>=20", "State_Use_Description"),
+    arcgis_stats(CT_CAMA, "Sale_Price>0 AND Land_Acres>0", "Collection_year"),
+    arcgis_rows(CT_CAMA, "Sale_Price>0 AND Land_Acres>=20", "Town_Name,Collection_year,Land_Acres,State_Use,State_Use_Description,Sale_Price,Sale_Date,Prior_Sale_Date,Prior_Sale_Price,Parcel_Type,Unit_Type"),
+]
+PROBE_ONLY_DOCS["MA"] += [
+    "https://www.arcgis.com/sharing/rest/content/items/73d4c766167848b795f1048cad3919c7?f=json",
+    "https://www.arcgis.com/sharing/rest/content/items/73d4c766167848b795f1048cad3919c7/info/metadata/metadata.xml",
+    arcgis_stats(MA_PARCELS, "LS_PRICE>0 AND LOT_SIZE>0", "USE_CODE"),
+    arcgis_stats(MA_PARCELS, "LS_PRICE>0 AND LOT_SIZE>0", "FY"),
+    arcgis_stats(MA_PARCELS, "LS_PRICE>0 AND LOT_SIZE>=20", "LOT_UNITS"),
+    arcgis_rows(MA_PARCELS, "LS_PRICE>0 AND LOT_SIZE>=20", "TOWN_ID,FY,LOT_SIZE,LOT_UNITS,LS_DATE,LS_PRICE,USE_CODE,USE_DESC,LS_BOOK,POLY_TYPE"),
+]
+PROBE_ONLY_DOCS["FL"] += [
+    "https://floridarevenue.com/property/dataportal/Resources/Scripts/fileBrowser.js",
+    "https://floridarevenue.com/Pages/privacy.aspx",
+    "https://floridarevenue.com/property/Pages/DataPortal.aspx",
+    "https://floridarevenue.com/property/Pages/Public_Record_Request.aspx",
+    FL_ROLL + "')/Files?$select=Name,Length,ServerRelativeUrl&$format=json",
+    "https://floridarevenue.com/property/_api/web/GetFolderByServerRelativeUrl('/property/dataportal/Documents')/Folders?$select=Name,ServerRelativeUrl&$format=json",
+]
 PROBE_ONLY_DOCS["FL"] += [
     "https://floridarevenue.com/property/dataportal/Pages/default.aspx?path=/property/dataportal/Documents/PTO%20Data%20Portal/Tax%20Roll%20Data%20Files",
     FL_ROLL + "')/Folders?$select=Name,ServerRelativeUrl&$format=json",
@@ -922,6 +954,7 @@ def probe(states):
             if len(every) < 15:      # a thin page (a sign-in or cookie wall): say what it says
                 log.append("  text: " + re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", strip_scripts(html.encode()).decode()))[:1500])
             log.append("%s page %s: %d file links" % (st, pg, len(links)))
+            log.extend(terms_lines(html.encode(), ".html"))
             for j, u in enumerate(links[:3]):
                 try:
                     blob = fetch(u)
@@ -1006,6 +1039,8 @@ def probe(states):
                     if isinstance(J, dict):
                         if J.get("fields"):
                             log.append("  fields: " + " ".join("%s(%s)" % (f.get("name"), str(f.get("type", "")).replace("esriFieldType", "")) for f in J["fields"]))
+                        if isinstance(J.get("features"), list) and J["features"] and all(isinstance(x, dict) and "attributes" in x for x in J["features"]):
+                            log.append("  features: " + json.dumps([x["attributes"] for x in J["features"][:60]])[:4500])
                         for k in ("copyrightText", "description", "serviceDescription", "licenseInfo", "accessInformation", "license", "attribution", "count", "error"):
                             if J.get(k) not in (None, ""):
                                 log.append("  %s: %s" % (k, re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", str(J[k])))[:1500]))
