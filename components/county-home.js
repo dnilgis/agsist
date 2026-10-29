@@ -77,7 +77,7 @@
   function rows(k) { return document.querySelectorAll('.lv[data-k="' + k + '"]'); }
   function html(f) {
     var d = /^\d{4}-\d{2}-\d{2}$/.test(f.date || '') ? mdy(f.date) : (f.date || '');
-    var a = f.src ? esc(f.src[0]) : '';  // the source is named, not linked
+    var a = f.src ? (f.src[1] ? '<a href="' + esc(f.src[1]) + '">' + esc(f.src[0]) + '</a>' : esc(f.src[0])) : '';
     var s = (d || a) ? '<span class="ls">' + [esc(d), a].filter(Boolean).join(' &middot; ') + '</span>' : '';
     if (f.value == null) return '<span class="lvv na">Not in right now.</span> <span class="lc">' + esc(cap(f.why || 'the file did not load')) + '.</span>' + s;
     return '<span class="lvv">' + esc(f.value) + '</span>' + (f.ctx ? ' <span class="lc">' + esc(f.ctx) + '</span>' : '') + s;

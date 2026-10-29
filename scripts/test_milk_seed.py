@@ -113,9 +113,9 @@ def main():
                               "2026-10-15")
     ck("seven months back: the cell is a dash with the month held",
        'data-mb="none">-</span>' in m2["milkmbcell"] and 'id="mb-val"' not in m2["milkmbcell"] and "Newest loaded: March 2026." in m2["milkmbcell"], m2["milkmbcell"])
-    ck("...the list keeps the figure, labeled older, dated, with the AMS link",
+    ck("...the list keeps the figure, labeled older, dated, with the AMS report named (not linked, Oct 29, 2026)",
        m2["milkmbli"].count("March 2026") == 1 and "Older figure" in m2["milkmbli"] and "$18.84" in m2["milkmbli"]
-       and "viewReport/3357" in m2["milkmbli"], m2["milkmbli"])
+       and "AMS mailbox report" in m2["milkmbli"] and "viewReport/3357" not in m2["milkmbli"], m2["milkmbli"])
     ck("...the check section says it is an older month",
        "In March 2026 the federal-order mailbox average was $18.84/cwt, down $2.62 from a year earlier (an older month"
        in m2["milkmbrow"], m2["milkmbrow"])
@@ -233,9 +233,9 @@ def main():
     ck("...no level picked out", not any(w in tb.lower() for w in ("best", "recommend", "should")))
     ck("...says before premium and the months left out, with why", "before premium" in tb
        and "2 months from 2019 on (Jun 2026, Jul 2026) are left out: not on FSA" in tb, tb[-900:])
-    ck("...cites FSA and the archive copy with its snapshot date",
-       'href="https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates"' in tb
-       and "Internet Archive copy</a> of 2026-10-20" in tb)
+    ck("...cites FSA and the archive copy with its snapshot date, named, not linked (Oct 29, 2026)",
+       "FSA" in tb and "(Internet Archive copy of 2026-10-20)" in tb
+       and "fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates" not in tb, tb[-1500:])
     ck("...names the hay as FSA's own tables head it: blended alfalfa in 2019, premium from 2020",
        "price the hay in the feed cost as blended alfalfa in 2019 and as premium alfalfa from 2020 on." in tb, tb[-1200:])
     nb = copy.deepcopy(DM)
@@ -244,7 +244,7 @@ def main():
     tn = S.milk_dmc_paid(nb, SEP)
     ck("...the blend and the revision only when FSA's notices were read into the file",
        "(half premium and supreme alfalfa, half other alfalfa: " in tn and "; FSA revised 2020 on to premium alfalfa (" in tn
-       and ">FSA Notice DMC-53</a>" in tn
+       and "FSA Notice DMC-53" in tn and 'href="https://www.fsa.usda.gov/r"' not in tn
        and "half other alfalfa" not in tb)
     ck("...no hay heads in the file: no hay sentence", "alfalfa" not in S.milk_dmc_paid(dict(DM, hay={}), SEP))
     ck("...premium rates dated by the fact sheet", "premium per cwt covered, from its DMC fact sheet of January 2026, Tier 1 / Tier 2" in tb)
@@ -295,7 +295,7 @@ def main():
     ck("...uniform $16.62 and Class I $20.24, base zone named", ">$16.62<" in h and ">$20.24<" in h and "Cook County, IL" in h)
     ck("...the mover called the higher of only because it is", "is the higher of the two advanced skim prices" in h)
     ck("...Class I ahead from the advance release", "Nov 2026 $23.47/cwt" in h)
-    ck("...the market administrator credited", "fmma30.com" in h)
+    ck("...the market administrator credited, named, not linked (Oct 29, 2026)", "Upper Midwest Market Administrator" in h and "fmma30.com" not in h)
     h2 = S.milk_o30_seed(dict(o, year_ago=None), SEP, "2026-10-28")
     ck("no year-ago month: one column and it says why", "Sep 2025 is not shown" in h2 and ">+$0.35<" not in h2)
     h3 = S.milk_o30_seed({"why": "PPD index unreadable"}, SEP, "2026-10-28")
