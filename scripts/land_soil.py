@@ -39,6 +39,11 @@ THE TEST (fixed before the answers were read, Oct 29):
   $/acre), NCCPI over class 1 to 4 acres only, Illinois' state index where SSURGO carries it, the
   Theil-Sen slope, and the in-sample change (b applied to its own fit year: the ceiling).
 
+  The gridded route (scripts/land_soil_raster.py, valu1 nccpi3corn over CDL cropland) is the
+  primary since Oct 29: SDA fills the corn submodel for Indiana only. Result, Oct 29: Illinois
+  passes at 20+ sale cells only narrowly, Indiana fails, Wisconsin is too thin; nothing ships on
+  pages (feedbag notes/audits/soil-comps-2026-10-29.md).
+
   python3 scripts/land_soil.py --selftest
   python3 scripts/land_soil.py --keys                      count the sections needed (offline)
   python3 scripts/land_soil.py --fetch IL [--limit N] [--minutes M]   (Actions)
