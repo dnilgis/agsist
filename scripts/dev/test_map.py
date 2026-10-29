@@ -17,6 +17,7 @@ It errs toward more: a path written in a comment counts too.
   python3 scripts/dev/test_map.py --check          fail if the file is not what the scan gives
   python3 scripts/dev/test_map.py --select F ...   print the tests to run for changed files F
   python3 scripts/dev/test_map.py --select-base REF  the same for git diff REF...HEAD
+  python3 scripts/dev/test_map.py --split N/M F ...  shard N of M of the files F, balanced by a rough cost
       --github-output   also write mode=all|some and files=<space separated> to $GITHUB_OUTPUT
       --why             print the reason beside each test
 
@@ -398,7 +399,36 @@ def present_test_files():
     return ["test/" + f for f in os.listdir(d) if f.endswith(".test.mjs")] if os.path.isdir(d) else []
 
 
+def weight(path):
+    """a rough cost: browser tests are slow, big files have more tests"""
+    try:
+        text = open(os.path.join(ROOT, path), encoding="utf-8", errors="replace").read()
+    except OSError:
+        return 1.0
+    return 1.0 + len(text) / 10000.0 + (20.0 if "CHROMIUM_PATH" in text else 0.0)
+
+
+def split(files, n, m):
+    """shard n of m (1-based) of files, balanced by weight (largest first onto the lightest shard)"""
+    load = [0.0] * m
+    out = [[] for _ in range(m)]
+    for w, f in sorted(((weight(f), f) for f in sorted(set(files))), key=lambda x: (-x[0], x[1])):
+        i = min(range(m), key=lambda k: (load[k], k))
+        load[i] += w
+        out[i].append(f)
+    return sorted(out[n - 1])
+
+
 def main(argv):
+    if "--split" in argv:
+        i = argv.index("--split")
+        mm = re.fullmatch(r"([1-9]\d*)/([1-9]\d*)", argv[i + 1] if len(argv) > i + 1 else "")
+        if not mm or int(mm.group(1)) > int(mm.group(2)):
+            print("test_map.py: --split wants N/M with 1<=N<=M", file=sys.stderr)
+            return 2
+        for f in split(argv[i + 2:], int(mm.group(1)), int(mm.group(2))):
+            print(f)
+        return 0
     if "--check" in argv:
         want = dump(build())
         have = open(os.path.join(ROOT, OUT), encoding="utf-8").read() if os.path.exists(os.path.join(ROOT, OUT)) else ""

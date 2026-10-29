@@ -5,7 +5,8 @@
  *   3. A glossary mark never lets touching punctuation wrap onto its own line (/tariffs at 390).
  *   4. Page fixes: one homepage email ask, USDA calendar "What I grow or raise", scorecard state
  *      cash line, milk 2025 changes folded, the Oct 17 Daily grammar slip.
- *   5. What's new: data/whats-new.json drives the homepage card and the top of /changelog.
+ *   5. What's new: the entry files in data/whats-new/ build data/whats-new.json, the homepage line and the
+ *      top of /changelog (on main; scripts/build_whats_new.py).
  *   node --test test/r8fix.test.mjs
  */
 import { test } from "node:test";
@@ -136,18 +137,31 @@ test("Oct 17 Daily: grammar slip fixed in the issue and its archive", () => {
 });
 
 /* ---------- 5. what's new ---------- */
-test("whats-new.json: real pages, newest first, plain words, baked into home and changelog", () => {
-  const items = WN.items;
+test("whats-new entries (data/whats-new/, one file each): real pages, newest first, plain words, baked into home and changelog", () => {
+  // the rules run on the entry files a pull request adds; the built list must be exactly those, in order
+  const dir = join(ROOT, "data/whats-new");
+  const entries = readdirSync(dir).filter((f) => !f.startsWith(".")).map((f) => {
+    assert.match(f, /^\d{4}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*\.json$/, f + ": <YYYY-MM-DD>-<slug>.json");
+    const e = JSON.parse(readFileSync(join(dir, f), "utf8"));
+    assert.equal(e.id + ".json", f, f + ": the file name is the id");
+    assert.ok(e.id.startsWith(e.date + "-"), f + ": the id starts with its date");
+    assert.ok(!Number.isNaN(Date.parse(e.date + "T00:00:00Z")), f + ": a real date");
+    return e;
+  });
+  assert.equal(new Set(entries.map((e) => e.id)).size, entries.length, "ids unique");
+  const items = JSON.parse(execFileSync("python3", [join(ROOT, "scripts/build_whats_new.py"), "--list"], { cwd: ROOT, encoding: "utf8" }));
+  assert.deepEqual(items.map((i) => i.id).sort(), entries.map((e) => e.id).sort(), "every entry file is in the list, once");
+  assert.deepEqual(WN.items, items, "data/whats-new.json is the built list");
   assert.ok(items.length >= 4);
   const dates = items.map((i) => i.date);
   assert.deepEqual(dates, [...dates].sort().reverse(), "newest first");
-  for (const it of items) {
+  for (const it of entries) {
     assert.ok(fileFor(it.link), it.id + " links a real page " + it.link);
     assert.doesNotMatch(it.title + it.line, /—/, it.id + " no em dash");
     assert.doesNotMatch(it.title + it.line, /\b(revolutionary|seamless|game.chang|unlock|supercharg|exciting)/i, it.id + " no hype");
     assert.ok(it.line.length <= 170, it.id + " one line");
   }
-  assert.deepEqual(items.filter((i) => /saledetail|tap-a-sale|land sales/i.test(i.id + i.title)), [], "nothing from branches not on main");
+  assert.deepEqual(entries.filter((i) => /saledetail|tap-a-sale|land sales/i.test(i.id + i.title)), [], "nothing from branches not on main");
   execFileSync("python3", [join(ROOT, "scripts/build_whats_new.py"), "--check"], { cwd: ROOT });
   const h = read("index.html");
   // Oct 20 (panel A and G, Sig's after-main-content rule): no card near the top; one small line at

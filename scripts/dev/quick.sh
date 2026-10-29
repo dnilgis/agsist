@@ -52,6 +52,17 @@ for k in "${order[@]}"; do printf '  %-48s %s\n' "${k#*:}" "${why[$k]}"; done
 [ "$DRY" = 1 ] && exit 0
 
 fails=0; t0=$SECONDS
+# a What's new entry or the changelog data changed: build the What's new and changelog files in this copy
+# for the tests (as the PR checks and main do), then put back the ones that had no edits of their own
+# (they are built on main; scripts/dev/main_build.py guard fails a branch that commits them)
+if printf '%s\n' "${files[@]}" | grep -qE '^data/whats-new/|^data/changelog\.json$'; then
+  restore=()
+  for f in data/whats-new.json index.html changelog.html; do git diff --quiet HEAD -- "$f" 2>/dev/null && restore+=("$f"); done
+  [ ${#restore[@]} -gt 0 ] && trap 'git checkout -q HEAD -- "${restore[@]}"' EXIT
+  python3 scripts/build_changelog.py >/dev/null && python3 scripts/build_whats_new.py >/dev/null \
+    && echo "quick: built What's new and the changelog for the tests (put back afterward: ${restore[*]:-none})" \
+    || { echo "FAIL What's new / changelog build"; fails=$((fails+1)); }
+fi
 OUT="${TMPDIR:-/tmp}/agsist-quick"; mkdir -p "$OUT"
 # Chromium keeps a socket in its profile under TMPDIR; a long TMPDIR path makes the launch hang until the test times out
 [ ${#OUT} -gt 60 ] && echo "quick: warning: TMPDIR is long (${#OUT} chars); browser tests may hang. Use a short one, e.g. TMPDIR=/tmp/x/q"
