@@ -97,10 +97,10 @@ const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
 try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
-const GEO = {
-  "54728": [{ name: "Chetek", latitude: 45.31413, longitude: -91.651, admin1: "Wisconsin", admin2: "Barron", postcodes: ["54728"] }],
-  "67530": [{ name: "Great Bend", latitude: 38.36446, longitude: -98.76481, admin1: "Kansas", admin2: "Barton", postcodes: ["67530"] }],
-  "Springfield": [{ name: "Springfield", latitude: 39.8, longitude: -89.64, admin1: "Illinois", admin2: "Sangamon" }, { name: "Springfield", latitude: 37.21, longitude: -93.29, admin1: "Missouri", admin2: "Greene" }],
+/* The town and ZIP lookup is our own data/places/ files (components/places.js, 2026-10-29), served from
+   this checkout. One shard is swapped for a two-town list so "two Springfields ask" stays two. */
+const PLACE_SHARDS = {
+  "us/sp": { p: [["Springfield", "IL", 39.8, -89.64, "Sangamon", 116565, "", "g"], ["Springfield", "MO", 37.21, -93.29, "Greene", 166810, "", "g"]] },
 };
 function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".ics": "text/calendar" };
@@ -125,11 +125,9 @@ async function openPage(browser, port, url, width = 390, ctxIn = null) {
   pg.on("pageerror", (e) => errs.push(String(e)));
   await pg.route("**/*", (r) => {
     const u = r.request().url();
+    const shard = /\/data\/places\/((?:us|ca)\/[a-z_]{2})\.json$/.exec(new URL(u).pathname);
+    if (shard && PLACE_SHARDS[shard[1]]) return r.fulfill({ contentType: "application/json", body: JSON.stringify(PLACE_SHARDS[shard[1]]) });
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (u.includes("geocoding-api.open-meteo.com")) {
-      const n = new URL(u).searchParams.get("name");
-      return r.fulfill({ contentType: "application/json", body: JSON.stringify({ results: GEO[n] || [] }) });
-    }
     return r.abort();
   });
   await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });

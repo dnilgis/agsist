@@ -26,6 +26,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
@@ -490,10 +491,10 @@ function series(y) {
 const STN = { name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_daterange: [["1950-01-01", "2026-10-09"]], state: "WI", elev: 1050 };
 async function mocks(c) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
-  await c.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
+  await c.route(PLACES_ROUTE, (r) => {
     const u = new URL(r.request().url());
     if (u.host === "agsist-api.dnilgis.workers.dev") return r.request().method() === "OPTIONS" ? r.fulfill({ status: 204, headers: h }) : r.fulfill({ status: 503, headers: h, body: "x" });
-    if (u.host === "geocoding-api.open-meteo.com") return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] } });
+    if (isPlaces(u)) return r.fulfill({ json: placesBody(u, [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }]) });   // the town lookup: our own data/places/ files (2026-10-29)
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [STN] } });
       let sdate = u.searchParams.get("sdate");

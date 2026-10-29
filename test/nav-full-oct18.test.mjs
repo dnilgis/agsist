@@ -164,18 +164,13 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-const GEO = { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin" }] };
-async function context(browser, width, height, { geo = GEO, init } = {}) {
+// the ZIP lookup is our own data/places/zip/ files (2026-10-29), served from this checkout; geo: null
+// makes them fail to answer
+async function context(browser, width, height, { geo = true, init } = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height } });
   const calls = [];
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
-    const u = r.request().url();
-    if (u.includes("geocoding-api.open-meteo.com")) {
-      calls.push(u);
-      return geo ? r.fulfill({ contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify(geo) }) : r.abort();
-    }
-    return r.abort();
-  });
+  await ctx.route(/\/data\/places\//, (r) => { calls.push(r.request().url()); return geo ? r.continue() : r.abort(); });
+  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
   if (init) await ctx.addInitScript(init);
   return { ctx, calls };
 }

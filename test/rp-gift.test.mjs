@@ -12,6 +12,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import os from "node:os";
 import path from "node:path";
 import vm from "node:vm";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
@@ -515,10 +516,11 @@ function fakeNoaa(opts = {}) {
   for (let t = Date.UTC(2026, 0, 1); t <= Date.UTC(2026, 9, 9); t += 864e5) days.push(new Date(t).toISOString().slice(0, 10));
   const row = (d, i) => [d, i % 17 === 3 ? "M" : i % 5 === 0 ? (0.1 + (i % 7) * 0.12).toFixed(2) : "0.00", "50", "0.0", "60", "40"];
   return (url) => {
-    const u = new URL(url);
     const json = (j) => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(j) });
     if (opts.down) return Promise.reject(new TypeError("Failed to fetch"));
-    if (u.hostname.startsWith("geocoding-api")) return json({ results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }] });
+    // the town lookup: our own data/places/ files (components/places.js, 2026-10-29)
+    if (isPlaces(url)) return json(placesBody(url, [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" }]));
+    const u = new URL(url);
     if (u.searchParams.get("params")) return json({ data: days.concat(["2026-12-31"]).map((d) => [d, "0.08"]) });
     // NOAA sends what has come in up to the end date asked for (the engine asks through today)
     if (u.pathname === "/StnData") return json({ meta: { name: "CHETEK", state: "WI", ll: [-91.65, 45.32] }, data: days.map(row).filter((x) => x[0] <= (u.searchParams.get("edate") || "9999")) });
@@ -530,7 +532,7 @@ function engineAt(todayIso, fetchFn) {
   class FixedDate extends Date { constructor(...a) { super(...(a.length ? a : [fixed])); } static now() { return fixed; } }
   const c = { TextEncoder, TextDecoder, URLSearchParams, URL, btoa, atob, Intl, Promise, setTimeout, clearTimeout, AbortController, Map, fetch: fetchFn, Date: FixedDate };
   c.window = c;
-  for (const f of ["components/qr.js", "components/rain-print-art.js", "components/rain-print.js"]) vm.runInNewContext(read(f), c);
+  for (const f of ["components/places.js", "components/qr.js", "components/rain-print-art.js", "components/rain-print.js"]) vm.runInNewContext(read(f), c);
   return c;
 }
 const GIFT_DESIGN = { place: "Chetek, WI", station: "471667 2", year: 2026, style: "r1", name: "The Johnson Farm", cmp: "normal",
