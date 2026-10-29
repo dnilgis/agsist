@@ -257,6 +257,15 @@ jobs:
           # the guard's pick (empty: every test file)
           AGSIST_TEST_FILES: ${{ needs.guard.outputs.mode == 'some' && needs.guard.outputs.files || '' }}
         run: bash scripts/dev/checks.sh --only=node-test --shard=${{ matrix.shard }}/4
+      # each test file's wall time (scripts/dev/test-times.mjs, written beside the TAP output), slowest
+      # first: what scripts/dev/test-times.json is measured from, and where to look when a shard is slow
+      - name: test file times
+        if: always()
+        run: |
+          T=$(ls "$RUNNER_TEMP"/agsist-checks/nt-*.out.times 2>/dev/null | head -1)
+          [ -n "$T" ] || { echo "no times written"; exit 0; }
+          echo "$(wc -l < "$T") test files, $(awk '{s+=$1} END {print int(s/1000)}' "$T") s summed"
+          sort -rn "$T"
       - name: Upload the test log
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2

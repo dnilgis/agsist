@@ -5,6 +5,8 @@
 #   AGSIST_TEST_FILES="a b c":        only those files (the PR checks' pick, scripts/dev/test_map.py
 #                                     --select-base), shard N/M balanced by test_map.py --split
 NT="$1"; SHARD="${2:-}"
+# beside the TAP output: each test file's wall time (scripts/dev/test-times.mjs), in <tap output>.times
+REP=(--test-reporter=tap --test-reporter-destination=stdout --test-reporter="$(cd "$(dirname "$0")" && pwd)/test-times.mjs" --test-reporter-destination="$NT.times")
 if [ -n "${AGSIST_TEST_FILES:-}" ]; then
   read -ra F <<< "$AGSIST_TEST_FILES"
   if [ -n "$SHARD" ]; then
@@ -17,7 +19,7 @@ if [ -n "${AGSIST_TEST_FILES:-}" ]; then
   fi
   echo "node-tests: ${#F[@]} picked test file(s)${SHARD:+ in shard $SHARD}"
   # the tests themselves never see the pick (a test that runs checks.sh's node-test line runs it whole)
-  env -u AGSIST_TEST_FILES node --test "${F[@]}" > "$NT" 2>&1
+  env -u AGSIST_TEST_FILES node --test "${REP[@]}" "${F[@]}" > "$NT" 2>&1
 else
-  node --test ${SHARD:+--test-shard=$SHARD} > "$NT" 2>&1
+  node --test "${REP[@]}" ${SHARD:+--test-shard=$SHARD} > "$NT" 2>&1
 fi
