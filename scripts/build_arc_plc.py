@@ -140,6 +140,7 @@ from decimal import Decimal, ROUND_HALF_UP
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+import html_slim as HS  # noqa: E402  the generated set is written slim
 import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybeans and wheat
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
@@ -3725,6 +3726,12 @@ def render_all(D):
     t = XC.llms_merge(llms_text(D), D, (LLMS_PREFIX, LLMS_PREFIX2))
     if t:
         out["llms.txt"] = t
+    # the generated set (arc-plc/**.html): no indentation or comments between tags, the
+    # same page to a reader and a crawler (scripts/html_slim.py). arc-plc.html and the
+    # embed are root pages inject_static_nav.py keeps; they are left as written.
+    for rel in out:
+        if rel.startswith(OUT_DIR + "/") and rel.endswith(".html"):
+            out[rel] = HS.slim(out[rel])
     return out, stats
 
 

@@ -46,6 +46,7 @@ import urllib.parse
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import county_rain as R  # noqa: E402
+import html_slim as HS  # noqa: E402  the county set is written slim
 import build_prf_states as S  # noqa: E402  boot() and text_of()
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap (was 165 for descriptions here)
@@ -1218,6 +1219,11 @@ def build(data_dir, C=None, NB=None, img_root=None):
         urls.insert(0, (f"{ORIGIN}/rain", max(m for _u, m in urls)))
     urls = [urls[0]] + sorted(urls[1:]) if pages else []
     want["sitemap-rain.xml"] = sitemap(urls)
+    # the county and state pages (rain/**.html) are written slim: compact JSON-LD, no indentation
+    # or comments between tags (scripts/html_slim.py); rain.html, a root page, is left as written
+    for rel in want:
+        if rel.startswith("rain/") and rel.endswith(".html"):
+            want[rel] = HS.slim(want[rel])
     return want
 
 

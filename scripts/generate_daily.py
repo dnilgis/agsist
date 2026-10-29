@@ -3481,8 +3481,8 @@ def render_cashbids_footer_html(market_closed):
     return ('<a class="dv3-cashbids-cta" href="/cash-bids" '
             'aria-label="View your local cash bids">'
             '<span class="dv3-cashbids-icon">$</span>'
-            '<span class="dv3-cashbids-text"><strong>Your local elevator bids</strong> '
-            '<span class="dv3-cashbids-arrow">&rarr;</span></span>'
+            '<span class="dv3-cashbids-text"><strong>Your local elevator bids</strong>'
+            '<span class="dv3-cashbids-arrow"> &rarr;</span></span>'
             '</a>')
 
 

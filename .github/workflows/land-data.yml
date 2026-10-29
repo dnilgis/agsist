@@ -29,6 +29,10 @@ on:
         description: "Probe only: save the raw transfer pages and files to the raw branch"
         type: boolean
         default: false
+      probe_states:
+        description: "Probe only: state codes to probe, space separated (CT MA FL); empty probes every state"
+        type: string
+        default: ""
       task:
         description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only); soilr-probe, soilr-all or soilr:IL, soilr:IN, soilr:WI (dispatch only: the same from the gridded soil map and the Cropland Data Layer)"
         type: string
@@ -83,7 +87,9 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: |
           command -v pdftotext >/dev/null || echo "no pdftotext; layouts saved as PDF only"
-          python scripts/fetch_land_sales.py --probe
+          # state codes only (letters), never passed to a shell as anything else
+          S="$(echo "${{ inputs.probe_states }}" | tr -cd 'A-Za-z ')"
+          python scripts/fetch_land_sales.py --probe $S
       - name: Wisconsin RETR screens in a browser (explore only)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'wi-explore' }}
         run: |
