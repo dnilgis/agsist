@@ -114,6 +114,14 @@ test("the data sources section on the editorial standards keeps what readers nee
 });
 
 test("readers per page: every page with traffic, 28 and 90 days, in its own file (selftest)", () => {
+  // the selftest builds real GA4 request objects, so the PR test job installs the same GA4 client
+  // as the sponsor-report job (it failed on #186 with no google package there)
+  const pin = (read(".github/workflows/sponsor-report.yml").match(/google-analytics-data==[\d.]+ google-auth==[\d.]+/) || [])[0];
+  assert.ok(pin, "sponsor-report pins the GA4 client");
+  for (const job of ["node-tests:", "other-checks:"]) {
+    const y = read(".github/workflows/pr-checks.yml"), s = y.slice(y.indexOf("\n  " + job));
+    assert.ok(s.slice(0, s.indexOf("checks.sh")).includes(pin), job + " installs " + pin);
+  }
   const out = execFileSync("python3", ["scripts/build_audience.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.match(out, /selftest passed/);
   for (const s of ["90 days never under 28 days for the same page", "every page with a reader, users and views", "data/audience.json points at the file and stays small"])
