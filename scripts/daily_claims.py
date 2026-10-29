@@ -48,9 +48,10 @@ PROMPT_RULES = """CLAIM LIMITS (a machine checks every sentence after you finish
 - Quote only live contracts. A contract past its last trading day is not a price. When a month expires, name the new front month ("December hogs").
 - "Close", "closed", "settle" and "settled" belong only to a settlement. An overnight or morning price is a trade: "Dec corn is at $4.64 overnight, 3/4 cent above Wednesday's settle", never "a higher close".
 - A date after today's issue is in the future. Never attach a close, a settle or a result to it.
-- A futures move is not a cash price. Never say what a bushel in the bin, a farmer's corn or a cash bid is worth, gained or lost from futures alone; that needs a posted bid.
+- A futures move is not a cash price. Never say what a bushel in the bin, a farmer's corn, a hog or steer sold, or a cash bid is worth, brought, gained or lost from futures alone; that needs a posted bid or a cash trade report.
 - No planting or acreage advice from this year's contracts or the nearby ratio. "Favors beans" needs next year's contracts (Nov and Dec of next year) and costs, or it is left out.
-- No cause sentence ("because", "follows", "driven by", "due to") unless the same sentence says who reported it ("USDA said", "Reuters reported"). Otherwise give the two facts side by side and let the reader judge."""
+- No cause sentence ("because", "follows", "driven by", "due to") unless the same sentence says who reported it ("USDA said", "Reuters reported"). Otherwise give the two facts side by side and let the reader judge.
+- In the headline and teaser, a futures move says futures: "Hog futures fall 5.5% to $58.60", "December hogs settled at $58.60", never "Hogs fall 5.5% to $58.60", which reads as what hogs sold for."""
 
 # commodity words -> family (the prefix of the dated keys in prices.json), grain?
 FAMILY = [
@@ -377,10 +378,54 @@ _CASH_DATA = re.compile(r"\b(elevators?|posted|co-?ops?|locations|our (?:bid )?p
 _HEDGED = re.compile(r"\b(depends|check (?:your|the)|local bid|your bid|basis decides)\b", re.I)
 
 
+# Oct 29 (outside review): "Every hog sold this week brought less than it would have Tuesday." under a
+# 5.5% lean hog futures drop. Hogs and cattle are sold on cash trades, formulas and contracts, not at the
+# futures price; the same claim as a bushel in the bin.
+_ANIMAL = re.compile(r"\b(?:every|each|your|a) (?:hogs?|pigs?|steers?|heifers?|calf|calves|head|animals?|loads?|pens?|fat cattle|feeder calf|feeder calves)\b"
+                     r"|\b(?:hogs|pigs|cattle|calves|steers|heifers|animals) (?:sold|marketed|going to market|you sell)\b", re.I)
+_ANIMAL_VALUE = re.compile(r"\b(brought|fetched|sold for|worth|lost|gained|cost(?:s|ing)? you|made you|"
+                           r"(?:less|more|lower|higher) than)\b", re.I)
+_LIVE_CASH = re.compile(r"\b(auctions?|sale barns?|barns?|cash (?:trade|hogs|cattle|market|prices?)|negotiated|"
+                        r"packers? (?:bids?|paid)|formula|USDA AMS|AMS|National Daily|5-area|five-area)\b", re.I)
+
+
 def r_cash_from_futures(sent, ctx):
-    """A cash or per-bushel value for a farmer's grain, with no posted bid in sight."""
-    return bool(_HELD.search(sent) and _VALUE.search(sent)
-                and not _CASH_DATA.search(sent) and not _HEDGED.search(sent))
+    """A cash or per-bushel value for a farmer's grain, or what his hogs or cattle sold for, with no
+    posted bid or cash trade in sight."""
+    grain = bool(_HELD.search(sent) and _VALUE.search(sent)
+                 and not _CASH_DATA.search(sent) and not _HEDGED.search(sent))
+    stock = bool(_ANIMAL.search(sent) and _ANIMAL_VALUE.search(sent)
+                 and not _LIVE_CASH.search(sent) and not _HEDGED.search(sent))
+    return grain or stock
+
+
+# Oct 29: the headline "Hogs fall 5.5% to $58.60 while corn holds $4.51" and the teaser "Hogs drop 5.5% to
+# $58.60 ..." named a futures move as if it were the price of hogs. A headline or teaser that moves a
+# price says futures (or names the contract month, or calls it a settle; only futures settle), unless it
+# is about a cash price, a bid or an auction. Headline-type fields only (HEAD_LOCS); it WARNs at the gate
+# like every wording rule, and headline_fix's code fallback ("Corn settled at ...") passes it.
+HEAD_LOCS = ("headline", "subheadline", "teaser", "subject_line")
+_MOVE = re.compile(r"\b(fall|falls|fell|drop|drops|dropped|slip|slips|slipped|sink|sinks|sank|slide|slides|slid|tumbles?|plunges?|"
+                   r"rise|rises|rose|gain|gains|gained|jump|jumps|jumped|climb|climbs|climbed|rall(?:y|ies|ied)|firm|firms|"
+                   r"hold|holds|held|steady|ease|eases|eased|up|down|higher|lower)\b|%", re.I)
+_FUT_SAID = re.compile(r"\bfutures?\b|\bsettle(?:s|d|ment)?\b|\bcontracts?\b|\b(?:CBOT|CME)\b|"
+                       r"\b(?-i:Jan|Feb|Mar|Apr|May|June?|July?|Aug|Sept?|Oct|Nov|Dec)[a-z]*\.?\s+(?:(?:'|’)\d{2}\s+)?(?:lean\s+|live\s+|feeder\s+)?[a-z]+", re.I)
+_CASH_SAID = re.compile(r"\b(cash|bids?|elevators?|basis|auctions?|sale barns?|barns?|negotiated|packers?)\b", re.I)
+
+
+# From the Oct 29, 2026 issue on: older headlines were written before the rule and are not reworded
+# (56 headline-type lines from Mar 19 to Oct 17 would read as hits; the lead decides on those).
+FUTURES_NAMED_FROM = date(2026, 10, 29)
+
+
+def r_futures_unnamed(sent, ctx):
+    """A headline or teaser that moves a commodity's price without saying it is futures."""
+    day = ctx.get("day")
+    if isinstance(day, date) and day < FUTURES_NAMED_FROM:
+        return False
+    if not (PRICE.search(sent) and _FAM_RE.search(sent) and _MOVE.search(sent)):
+        return False
+    return not _FUT_SAID.search(sent) and not _CASH_SAID.search(sent)
 
 
 _PLANT = re.compile(r"\b(plant(?:ed|ing|s)?|acres?|acreage|next (?:spring|year|season)|next year's|rotation|"
@@ -431,6 +476,10 @@ RULES = [
     ("planting-from-nearby", r_planting_from_nearby),
     ("cause-without-source", r_cause_without_source),
 ]
+# read only on the headline-type fields (HEAD_LOCS); a wording rule, so it WARNs
+HEAD_RULES = [
+    ("futures-unnamed", r_futures_unnamed),
+]
 
 
 # read against the data, so briefing_gate blocks on them; the rest WARN there
@@ -448,6 +497,10 @@ def lint(briefing, ctx):
                 for name, fn in RULES:
                     if fn(plain, ctx):
                         hits.append((name, loc, s))
+                if loc in HEAD_LOCS:
+                    for name, fn in HEAD_RULES:
+                        if fn(plain, ctx):
+                            hits.append((name, loc, s))
     return hits
 
 
@@ -835,6 +888,29 @@ def _selftest():
     expect("cause-without-source", "Corn fell 4 cents driven by harvest pressure, Reuters reported.", c25, False)
     expect("cause-without-source", "Watch feeder cash trade for follow-through above $340.50.", c25, False)
     expect("cause-without-source", "WTI crude gained 3.8% to $103.27.", c25, False)
+
+    # Oct 29: a 5.5% lean hog futures drop read as what every hog sold brought, in the lead, and the
+    # headline and teaser named the move as hogs, not hog futures (outside review, Oct 29)
+    c29 = context({}, date(2026, 10, 29))
+    expect("cash-from-futures", "Every hog sold this week brought less than it would have Tuesday.", c29, True)
+    expect("cash-from-futures", "December lean hog futures settled 5.5% lower; what hogs sold this week brought depends on "
+           "the cash trade and your contract.", c29, False)
+    expect("cash-from-futures", "Your steers are worth $40 a head less than Monday.", c29, True)
+    expect("cash-from-futures", "Negotiated cash hogs averaged $61.20 in the USDA AMS report, less than Tuesday.", c29, False)
+    expect("cash-from-futures", "Live cattle futures settled at $227.375, down 1.1%.", c29, False)
+    for loc, line, hit in (("headline", "Hogs fall 5.5% to $58.60 while corn holds $4.51", True),
+                           ("teaser", "Hogs drop 5.5% to $58.60 while corn holds near $4.51 and beans slip 7¾ cents.", True),
+                           ("headline", "Hog futures fall 5.5% to $58.60 while corn holds $4.51", False),
+                           ("headline", "December hogs drop 5.5% to $58.60; corn holds $4.51", False),
+                           ("headline", "Corn settled at $4.51 on Oct 28; beans at $12.20½", False),
+                           ("teaser", "Cash corn bids slip 3 cents to $4.02 at Iowa elevators.", False),
+                           ("headline", "Hogs may fall further after a 5.5% drop to $58.60", True),
+                           ("lead", "Hogs fall 5.5% to $58.60.", False)):
+        got = [r for r, _, _ in lint({loc: line}, c29) if r == "futures-unnamed"]
+        if bool(got) != hit:
+            fails.append(f"futures-unnamed on {loc} {line!r}: expected {hit}")
+    if [r for r, _, _ in lint({"headline": "Hogs fall 5.5% to $58.60"}, context({}, date(2026, 10, 17)))]:
+        fails.append("futures-unnamed: an issue before Oct 29 is not read")
 
     # strip cuts the sentence and keeps the bullets
     b = {"sections": [{"title": "Cattle firm", "body": "- Live cattle gained 0.7% to **$227.52**.\n"
