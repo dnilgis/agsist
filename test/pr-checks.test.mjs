@@ -6,7 +6,7 @@
  *
  * - checks.sh --list / --only / --skip-node / --shard behave, and an unknown name fails
  * - the shards plus --skip-node cover every line of checks.sh, exactly once
- * - the shard matrix and the --shard=N/M total agree; Node 22 (it has --test-shard)
+ * - the shard matrix and the --shard=N/M total agree; Node 22
  * - the browser tests find Playwright and Chromium under the names they read, and the
  *   job fails if Chromium cannot launch (a skipped browser test is not a pass)
  * - FSA files (and, for the node tests, the Atlas drought pull) are pulled before the checks, the key at step level only
@@ -74,7 +74,9 @@ test('the workflow: the shards and --skip-node together run every check, and the
   assert.ok(m, 'node-tests has a shard matrix');
   const shards = m[1].split(',').map((s) => +s.trim());
   const N = shards.length;
-  assert.equal(N, 4, 'four shards (Sig, Oct 21)');
+  // four shards (Sig, Oct 21); eight from Oct 29 (fx/cifast, "streamline that whole process"): split by
+  // measured time, eight shards end near the slowest single file (test/accuracy-sets-oct18, about 3 minutes)
+  assert.equal(N, 8, 'eight shards');
   assert.deepEqual(shards, Array.from({ length: N }, (_, i) => i + 1));
   assert.match(jobs['node-tests'], /fail-fast: false/, 'one red shard does not hide the others');
   const runs = steps('node-tests').filter((s) => /checks\.sh/.test(s));
@@ -120,21 +122,22 @@ test('the browser tests find Playwright and Chromium under the names they read, 
 test('the FSA files are pulled before the checks in every job that runs them, with the key at step level', () => {
   for (const j of ['node-tests', 'other-checks']) {
     const s = steps(j);
-    const pull = s.findIndex((x) => /run: bash scripts\/pull_raw\.sh data\/fsa\s*$/.test(x));
+    // node tests: the FSA files and the Atlas drought pull in one fetch of raw (Oct 29, fx/cifast)
+    const pull = s.findIndex((x) => (j === 'node-tests' ? /run: bash scripts\/pull_raw\.sh data\/fsa data\/atlas\/raw\/drought\.json\s*$/ : /run: bash scripts\/pull_raw\.sh data\/fsa\s*$/).test(x));
     const run = s.findIndex((x) => /checks\.sh/.test(x));
     assert.ok(pull >= 0 && pull < run, `${j}: pull before the checks`);
     assert.match(s[pull], /\n        env:\n          PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n/);
     // the key reaches only the steps that read the private repo: the FSA pull, and (node tests) the drought pull and the references fetch
     const keyed = s.filter((x) => /PRIVATE_REPO_TOKEN: /.test(x));
     // node tests (Oct 29): the Atlas drought pull, which test/drought-county-week.test.mjs reads, keyed the same way
-    const drought = s.findIndex((x) => /run: bash scripts\/pull_raw\.sh data\/atlas\/raw\/drought\.json\s*$/.test(x));
+    const drought = s.findIndex((x) => /run: bash scripts\/pull_raw\.sh (?:data\/fsa )?data\/atlas\/raw\/drought\.json\s*$/.test(x));
     if (j === 'node-tests') {
       assert.ok(drought >= 0 && drought < run, 'node-tests: the drought pull before the checks');
       assert.match(s[drought], /\n        env:\n          PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n/);
       assert.doesNotMatch(s[drought], /RAW_SOFT/, 'a test input is pulled hard');
     } else assert.equal(drought, -1, `${j}: no drought pull (no check there reads it)`);
     const refs = s.filter((x) => /run: \|\n\s+git fetch -q --no-tags --depth=1 origin \+refs\/heads\/main:refs\/remotes\/origin\/main\n\s+bash scripts\/fetch_private\.sh references\s*$/.test(x));
-    assert.equal(keyed.length, j === 'node-tests' ? 3 : 1, `${j}: the key reaches the private-repo steps only`);
+    assert.equal(keyed.length, j === 'node-tests' ? 2 : 1, `${j}: the key reaches the private-repo steps only`);
     if (j === 'node-tests') { assert.equal(refs.length, 1, 'the references step runs only the two fetches'); assert.ok(keyed.includes(refs[0])); assert.ok(s.indexOf(refs[0]) < run, 'before the tests'); }
   }
 });
@@ -230,9 +233,22 @@ test('the pick: the guard picks, the shards run the pick or every test, and ever
   assert.match(g, /elif \[ "\$FULL" = 1 \] \|\| \[ "\$\{\{ github\.event_name \}\}" != pull_request \]; then[\s\S]*?mode=all/);
   // a pick by hand only from a run by hand (a replay against a named branch)
   assert.match(g, /PICK_BASE: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.pick_base \|\| '' \}\}/);
-  assert.match(jobs['node-tests'], /needs: guard\n/);
+  // the shards start with the guard and make the same pick themselves (Oct 29, fx/cifast): a pull request
+  // against its merge commit's first parent (main where it merges, what the guard's merge base is), a
+  // replay by hand against its branch, anything else (main-checks.yml's full call) every test
+  assert.doesNotMatch(jobs['node-tests'], /needs:/, 'the shards do not wait for the guard');
+  assert.match(steps('node-tests')[0], /^\s+fetch-depth: 2\s*$/m, 'the merge commit and its first parent are in the checkout');
   const run = steps('node-tests').find((s) => /checks\.sh --only=node-test/.test(s));
-  assert.match(run, /AGSIST_TEST_FILES: \$\{\{ needs\.guard\.outputs\.mode == 'some' && needs\.guard\.outputs\.files \|\| '' \}\}/, 'the pick only when the guard picked some; empty means every test');
+  assert.match(run, /AGSIST_PICK_BASE: \$\{\{ \(github\.event_name == 'pull_request' && !inputs\.full\) && 'HEAD\^1' \|\| \(github\.event_name == 'workflow_dispatch' && inputs\.pick_base != '' && !inputs\.full\) && format\('origin\/\{0\}', inputs\.pick_base\) \|\| '' \}\}/, 'the pick only in a pull request or a replay; empty means every test');
+  assert.doesNotMatch(run, /AGSIST_TEST_FILES/, 'no pick handed in from another job');
+  const replay = steps('node-tests').find((s) => /name: the replay's pick base/.test(s));
+  assert.ok(replay, 'a replay fetches its base');
+  assert.match(replay, /if: github\.event_name == 'workflow_dispatch' && inputs\.pick_base != ''/);
+  assert.ok(steps('node-tests').indexOf(replay) < steps('node-tests').indexOf(run), 'before the tests');
+  // node-tests.sh makes the pick with the guard's own command
+  const nts = read('scripts/dev/node-tests.sh');
+  assert.match(nts, /python3 "\$DEV\/test_map\.py" --select-base "\$AGSIST_PICK_BASE" --github-output --why/);
+  assert.match(nts, /env -u AGSIST_TEST_FILES -u AGSIST_PICK_BASE node --test/, 'the tests never see the pick');
   for (const [j, re] of [['node-tests', /checks\.sh --only=node-test/], ['other-checks', /checks\.sh --skip-node\s*$/m]]) {
     const s = steps(j).find((x) => re.test(x));
     assert.ok(s, j);
@@ -279,7 +295,7 @@ test('merge-when-green.yml: green and clean merges; red, pending, conflicted, a 
   assert.match(mc, /run: python3 scripts\/dev\/merge_when_green\.py/);
   // the jobs it waits for are the jobs pr-checks.yml has
   const names = Object.values(jobs).map((t) => (t.match(/\n    name: (.+)/) || [])[1]).filter(Boolean)
-    .flatMap((n) => n.includes('${{ matrix.shard }}') ? [1, 2, 3, 4].map((i) => n.replace('${{ matrix.shard }}', i)) : [n]);
+    .flatMap((n) => n.includes('${{ matrix.shard }}') ? jobs['node-tests'].match(/shard: \[([\d, ]+)\]/)[1].split(',').map((i) => n.replace('${{ matrix.shard }}', i.trim())) : [n]);
   const req = JSON.parse(spawnSync('python3', ['-c', "import sys; sys.path.insert(0, 'scripts/dev'); import merge_when_green as M, json; print(json.dumps(M.REQUIRED))"], { cwd: root, encoding: 'utf8' }).stdout);
   assert.deepEqual([...req].sort(), [...names].sort(), 'every pr-checks job, and only those');
   const r = spawnSync('python3', ['scripts/dev/merge_when_green.py', '--selftest'], { cwd: root, encoding: 'utf8' });

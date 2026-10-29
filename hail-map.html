@@ -817,7 +817,7 @@
 
       loadCounties();
 
-      fetch(DATA+'mesh/index.json', {cache:'no-cache'})
+      var meshIdxP=fetch(DATA+'mesh/index.json', {cache:'no-cache'})
         .then(function(r){ return r.ok ? r.json() : null; })
         .then(function(ix){
           if(ix && ix.dates && ix.dates.length){ meshIdx=ix; if(manifest) buildControls(); }
@@ -839,9 +839,16 @@
           /* Two vintages, both stated: the archive (monthly) and the 30-day layer (daily). */
           var gen=document.getElementById('hm-gen'); if(gen && m.generated) gen.textContent='Archive through '+fmtDate(String(m.generated).slice(0,10))+(m.recent_generated?'; recent reports through '+fmtDate(String(m.recent_generated).slice(0,10)):'')+'.';
           if(gen && window.AgAsOf && m.recent_generated) gen.insertAdjacentHTML('beforeend',' '+AgAsOf.html(m.recent_generated,'daily'));
+          /* A ?swath= link opens that swath, so it waits for the swath index: when the
+             manifest came back first, the link opened the 5-year map (Oct 29, the
+             PR checks caught it as a 30 s wait in test/hail-map-now.test.mjs). */
           var qpw=new URLSearchParams(location.search); var wantSwath=qpw.get('swath')||qpw.get('swaths');
-          if(wantSwath && meshIdx && meshIdx.dates.indexOf(wantSwath)>=0){ setView('mesh'); }
-          else setView(openingView(qpw));
+          function opening(){
+            if(wantSwath && meshIdx && meshIdx.dates.indexOf(wantSwath)>=0){ setView('mesh'); }
+            else setView(openingView(qpw));
+          }
+          if(wantSwath && !meshIdx) return meshIdxP.then(opening);
+          opening();
         })
         .catch(function(){ mapFail('The hail reports did not load. Try again.'); });
     }
