@@ -40,6 +40,250 @@ def check(ok, name, detail=""):
     return ok
 
 
+# ── SPLIT BY SLOT: a fake GA4 that honours the filters it is sent ─────────
+# The fake answers like GA4: it keeps only the rows each filter in the request
+# allows, and a row before Oct 29, 2026 has slot "(not set)". A builder that
+# forgot the slot filter would get every row on the site back from it, so
+# these checks would see the other sponsor's numbers and fail.
+class _O:
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
+
+
+class FakeTypes:
+    class Filter(_O):
+        class InListFilter(_O):
+            pass
+
+        class StringFilter(_O):
+            pass
+
+    class FilterExpression(_O):
+        pass
+
+    class FilterExpressionList(_O):
+        pass
+
+    class Dimension(_O):
+        pass
+
+    class Metric(_O):
+        pass
+
+    class DateRange(_O):
+        pass
+
+    class RunReportRequest(_O):
+        pass
+
+
+def _leaves(fe):
+    if getattr(fe, "and_group", None) is not None:
+        out = []
+        for e in fe.and_group.expressions:
+            out += _leaves(e)
+        return out
+    f = fe.filter
+    if getattr(f, "in_list_filter", None) is not None:
+        return [(f.field_name, set(f.in_list_filter.values))]
+    return [(f.field_name, {f.string_filter.value})]
+
+
+class FakeGA4:
+    """rows: dicts with date (YYYY-MM-DD), page, slot, event, region, n."""
+
+    def __init__(self, rows):
+        self.data, self.asked = rows, []
+
+    def run_report(self, req):
+        self.asked.append(req)
+        leaves = _leaves(req.dimension_filter)
+        a, b = req.date_ranges[0].start_date, req.date_ranges[0].end_date
+        field = {"eventName": "event", "pagePath": "page", "region": "region", "country": "country",
+                 bsr.SLOT_DIMENSION: "slot", "date": "date"}
+        groups = {}
+        for r in self.data:
+            if not (a <= r["date"] <= b):
+                continue
+            r = dict(r, country="United States")
+            if r["date"] < bsr.SLOT_SINCE:
+                r["slot"] = bsr.NOT_SET      # GA4 has no slot before it was registered
+            if not all(r[field[k]] in vals for k, vals in leaves):
+                continue
+            key = tuple(r[field[d.name]].replace("-", "") if d.name == "date" else r[field[d.name]]
+                        for d in req.dimensions)
+            groups[key] = groups.get(key, 0) + r["n"]
+        return _O(rows=[_O(dimension_values=[_O(value=v) for v in k], metric_values=[_O(value=str(n))])
+                        for k, n in groups.items()])
+
+
+def _day(d):
+    from datetime import date as _d
+    return _d.fromisoformat(d)
+
+
+def _fake_rows():
+    rows = []
+    for d in ("2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-10-31"):
+        rows += [
+            {"date": d, "page": "/", "slot": "homepage-top", "event": "sponsor_viewable", "region": "Iowa", "n": 10},
+            {"date": d, "page": "/daily", "slot": "daily-page", "event": "sponsor_viewable", "region": "Iowa", "n": 5},
+            {"date": d, "page": "/", "slot": "daily-briefing", "event": "sponsor_click", "region": "Iowa", "n": 1},
+            {"date": d, "page": "/rain/texas", "slot": "geo-bee", "event": "sponsor_viewable", "region": "Texas", "n": 100},
+            {"date": d, "page": "/rain/texas", "slot": "geo-bee", "event": "sponsor_click", "region": "Texas", "n": 3},
+            {"date": d, "page": "/basis", "slot": "footer-strip", "event": "sponsor_viewable", "region": "Ohio", "n": 1000},
+            {"date": d, "page": "/basis", "slot": bsr.NOT_SET, "event": "sponsor_viewable", "region": "Ohio", "n": 7},
+        ]
+    return rows
+
+
+def slot_tests():
+    from datetime import date as _d
+    A = {"slug": "acme", "name": "Acme", "token": "x" * 20, "start": "2026-10-30"}
+    B = {"slug": "bee", "name": "Bee", "token": "y" * 20, "start": "2026-10-30", "geo": "bee", "regions": ["TX", "IA"]}
+    end, today = _d(2026, 10, 31), _d(2026, 11, 1)
+
+    check(bsr.SLOT_DIMENSION == "customEvent:slot" and bsr.SLOT_SINCE == "2026-10-29",
+          "the slot is the registered custom dimension, filled from Oct 29, 2026")
+    check(bsr.sponsor_slots(B) == ["geo-bee"], "a state-targeted sponsor's slot is geo-<id>", bsr.sponsor_slots(B))
+    check(bsr.sponsor_slots(A) == ["daily-briefing", "homepage-top", "daily-page", "daily-archive"],
+          "the daily sponsor's slots are the four surfaces its ad is drawn on", bsr.sponsor_slots(A))
+
+    # COUNT THE COPIES: every slot name the site sends, read from the files
+    # that send it, is either one of a sponsor's or named as nobody's report.
+    found = {}
+    pats = [r'data-sponsor-(?:slot|click)="([a-z][a-z0-9:-]*)"', r"data-sponsor-(?:slot|click)'\s*,\s*'([a-z][a-z0-9:-]*)'",
+            r"\{\s*(?:slot|click)\s*:\s*'([a-z][a-z0-9:-]*)'\s*\}", r'slot="(daily-[a-z-]+)"\)']
+    files = ["index.html", "daily.html", "scripts/generate_daily.py"] + sorted(
+        str(p.relative_to(ROOT)) for p in (ROOT / "components").glob("*.js"))
+    for f in files:
+        t = (ROOT / f).read_text(encoding="utf-8")
+        for pat in pats:
+            for m in re.finditer(pat, t):
+                found.setdefault(m.group(1), set()).add(f)
+    for slot, where in sorted(found.items()):
+        ok = (slot in bsr.DAILY_SLOTS or slot in bsr.UNREPORTED_SLOTS
+              or slot.startswith(bsr.UNREPORTED_PREFIXES) or slot.startswith(bsr.GEO_SLOT_PREFIX))
+        check(ok, "slot %r (from %s) is accounted for in build_sponsor_report.py" % (slot, ", ".join(sorted(where))))
+    for slot in bsr.DAILY_SLOTS:
+        check(slot in found, "the daily slot %r is really sent by some page" % slot, sorted(found))
+    gjs = (ROOT / "components" / "geo-sponsor.js").read_text()
+    check("{ slot: 'geo-' + e.id }" in gjs, "the state-targeted ad sends geo-<id>, the name the report filters on")
+    lj = (ROOT / "components" / "loader.js").read_text()
+    check("'page:' + id" in lj and "'footer-strip'" in lj, "page ribbons and the footer send page:<id> and footer-strip")
+    pj = (ROOT / "components" / "prf-sponsor.js").read_text()
+    check("'prf-' + kind + ':' + sp.st" in pj, "PRF state sponsors send prf-<kind>:<st>")
+    mj = (ROOT / "components" / "sponsor-metrics.js").read_text()
+    check(mj.count("slot: slot") == 1 and "slot: a.getAttribute('data-sponsor-click')" in mj,
+          "both events carry the slot parameter the dimension reads")
+
+    # a query with no slot filter is refused, so the refusal can lift only because the filter exists
+    ga = bsr.GA4Reader(FakeGA4([]), FakeTypes, "1")
+    for bad in (None, [], [""]):
+        try:
+            ga.request(["date"], ["sponsor_viewable"], "2026-10-30", "2026-10-31", bad)
+            refused = False
+        except ValueError:
+            refused = True
+        check(refused, "a sponsor's query with slots=%r is refused" % (bad,))
+    try:
+        ga.request(["date"], ["sponsor_viewable"], "2026-10-28", "2026-10-31", ["geo-bee"])
+        refused = False
+    except ValueError:
+        refused = True
+    check(refused, "a slot-filtered query reaching before Oct 29, 2026 is refused (GA4 has no slot then)")
+    req = ga.request(["date", "pagePath"], ["sponsor_viewable"], "2026-10-30", "2026-10-31", ["geo-bee"])
+    check(("customEvent:slot", {"geo-bee"}) in _leaves(req.dimension_filter), "the request filters on the sponsor's slot")
+    check([d.name for d in req.dimensions][-1] == "customEvent:slot", "and asks for the slot back, to check every row")
+    check("len(sponsors) > 1 and not SLOT_DIMENSION" in (ROOT / "scripts" / "build_sponsor_report.py").read_text(),
+          "the old refusal is still there for an unset dimension")
+
+    # two sponsors at once, both after Oct 29: each gets only its own rows
+    saved = bsr.other_ads_live
+    bsr.other_ads_live = lambda geo_id, today=None, slug=None: []
+    try:
+        fake = FakeGA4(_fake_rows())
+        ga = bsr.GA4Reader(fake, FakeTypes, "1")
+        pa, _ = bsr.sponsor_payload(A, ga, end, [A, B], today)
+        pb, _ = bsr.sponsor_payload(B, ga, end, [A, B], today)
+        check(pa["totals"]["viewable"] == 30 and pa["totals"]["clicks"] == 2,
+              "the daily sponsor gets its homepage and /daily views and its clicks, nothing else", pa["totals"])
+        check(pb["totals"]["viewable"] == 200 and pb["totals"]["clicks"] == 6,
+              "the state-targeted sponsor gets only geo-bee", pb["totals"])
+        check({x["page"] for x in pa["byPage"]} == {"/", "/daily"} and {x["page"] for x in pb["byPage"]} == {"/rain/texas"},
+              "by page holds only each one's own pages", (pa["byPage"], pb["byPage"]))
+        check([r["viewable"] for r in pb["regionAds"]["rows"]] == [0, 200] and pb["regionAds"]["elsewhere"]["viewable"] == 0,
+              "the state rows are the sponsor's own too (Iowa's views are the other ad's)", pb["regionAds"])
+        check("split" not in pa and "withheld" not in pa, "no day was withheld: both started after the slot")
+        check(all(bsr.SLOT_DIMENSION in [n for n, _ in _leaves(q.dimension_filter)] for q in fake.asked),
+              "every question asked for the two sponsors carried a slot filter", len(fake.asked))
+        log = ga.slot_log(bsr.VIEWABLE_EVENTS + bsr.CLICK_EVENTS, bsr.SLOT_SINCE, "2026-10-31")
+        check(log.get(bsr.NOT_SET) == 21 and log.get("footer-strip") == 3000,
+              "(not set) and footer rows are counted for the log", log)
+        check(bsr.NOT_SET not in json.dumps([pa, pb]), "and given to nobody")
+
+        # both started before Oct 29: the days before are withheld, never the site total
+        A2, B2 = dict(A, start="2026-10-26"), dict(B, start="2026-10-27")
+        fake = FakeGA4(_fake_rows())
+        ga = bsr.GA4Reader(fake, FakeTypes, "1")
+        pa, _ = bsr.sponsor_payload(A2, ga, end, [A2, B2], today)
+        pb, _ = bsr.sponsor_payload(B2, ga, end, [A2, B2], today)
+        check(pa["totals"]["viewable"] == 45 and pb["totals"]["viewable"] == 300,
+              "only Oct 29 on is counted, each its own", (pa["totals"], pb["totals"]))
+        check(min(x["d"] for x in pa["series"]) == "2026-10-29" and min(x["d"] for x in pb["series"]) == "2026-10-29",
+              "no day before Oct 29 is in either series")
+        check(pa["split"]["withheldFrom"] == "2026-10-26" and pa["split"]["withheldThrough"] == "2026-10-28"
+              and pb["split"]["withheldFrom"] == "2026-10-27", "the withheld days are named", (pa.get("split"), pb.get("split")))
+        check(pa["split"]["note"].startswith("Split by slot from Oct 29, 2026.") and "Bee" in pa["split"]["note"]
+              and "Acme" in pb["split"]["note"], "the report says split by slot from Oct 29, 2026, and why", pa["split"]["note"])
+        check(pb["regionAds"]["start"] == "2026-10-29" and [r["viewable"] for r in pb["regionAds"]["rows"]] == [0, 300],
+              "the state rows start Oct 29 too", pb["regionAds"])
+        check(all(w.get("countedFrom") == "2026-10-29" for w in pa["windows"]), "a 7, 30 or 90 day window says it is counted from Oct 29")
+        check(not any(q.date_ranges[0].start_date < bsr.SLOT_SINCE for q in fake.asked),
+              "GA4 was never asked about a withheld day")
+
+        # only days before Oct 29, two sponsors: everything withheld, said so
+        fake = FakeGA4(_fake_rows())
+        ga = bsr.GA4Reader(fake, FakeTypes, "1")
+        pw, _ = bsr.sponsor_payload(B2, ga, _d(2026, 10, 28), [A2, B2], _d(2026, 10, 29))
+        check(pw["totals"]["viewable"] is None and pw["series"] == [] and pw["regionAds"]["withheld"] is True,
+              "with no day after the split, the numbers are withheld, not the site's", pw["totals"])
+        check(pw["withheld"].startswith("Split by slot from Oct 29, 2026."), "and the page says why", pw.get("withheld"))
+        check(fake.asked == [], "and GA4 is never asked")
+
+        # the only ad running before Oct 29: today's rule, the site's sponsor count is its own
+        fake = FakeGA4([r for r in _fake_rows() if r["slot"] in ("geo-bee",) or r["date"] >= "2026-10-29"])
+        ga = bsr.GA4Reader(fake, FakeTypes, "1")
+        ps, _ = bsr.sponsor_payload(B2, ga, end, [B2], today)
+        check(ps["totals"]["viewable"] == 300 + 2 * 100 and "split" not in ps,
+              "a sole sponsor keeps its days before Oct 29, read as before", ps["totals"])
+
+        # an ad that ended before the days in question does not withhold them
+        apex = {"slug": "old", "name": "Old", "active": False, "ended": "2026-10-08", "start": None}
+        check(bsr.others_before(B2, [B2, apex], "2026-10-27", "2026-10-28") == [], "an ad that ended earlier is not another ad")
+        check(bsr.others_before(B2, [B2, dict(apex, ended=None, start="2026-10-01")], "2026-10-27", "2026-10-28") == ["Old"],
+              "an ad switched off with no end date might still have run: withheld")
+        check(bsr.others_before(B2, [B2, dict(apex, ended=None)], "2026-10-27", "2026-10-28") == [],
+              "an ad that never started is not another ad")
+    finally:
+        bsr.other_ads_live = saved
+    check(bsr.others_before(B2, [B2], "2026-10-27", "2026-10-28", today) == bsr.other_ads_live("bee", today, slug="bee"),
+          "ads outside sponsors.json that run now also withhold the days before (nothing records when they started)")
+
+    # two sponsors may never share a slot
+    try:
+        bsr.check_slots([A, dict(A, slug="acme2")])
+        shared = False
+    except SystemExit:
+        shared = True
+    check(shared, "two daily sponsors at once fail the build: they would share every slot")
+    check(bsr.check_slots([A, B]) and True, "a daily and a state-targeted sponsor do not share one")
+    html = (ROOT / "sponsor-report.html").read_text()
+    res_fn = html[html.index("function results("):html.index("function trendSection(")]
+    check("d.split" in res_fn and "d.split.note" in res_fn, "the portal prints the split note beside the numbers")
+    check("w.countedFrom" in html, "a window counted from Oct 29 says so on the portal")
+
+
 def main():
     print("the proof code tracks the words a reader sees")
     base = {"advertiser": "A Co", "headline": "Head", "body": "Body",
@@ -382,6 +626,10 @@ def main():
     check(bsr.other_ads_live("rootlot") == [], "no other ad runs now, so RootLot's counts are its own", bsr.other_ads_live("rootlot"))
     check("payload[\"withheld\"]" in B, "if another ad runs, the geo numbers are withheld and the portal says why")
     check("if (d.withheld)" in html, "the portal shows the withheld reason instead of numbers")
+
+    print("\nsplit by slot: each sponsor gets only its own rows (Oct 29, 2026)")
+    slot_tests()
+
 
     print()
     if FAILED:
