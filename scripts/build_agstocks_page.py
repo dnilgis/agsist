@@ -205,7 +205,7 @@ def table(u, latest, sec, plants):
     cap = (f'Closes {esc(day(newest, True))} &middot; {YAHOO}' if newest else "No closes read yet")
     return (f'<div class="ags-tw"><table class="ags-t"><caption>{cap}</caption>'
             '<thead><tr><th scope="col">Company</th><th scope="col" class="n">Close</th><th scope="col" class="n">Day</th>'
-            '<th scope="col" class="n">Revenue vs yr ago</th></tr></thead>' + "".join(out) + "</table></div>")
+            '<th scope="col" class="n rv">Revenue vs a year ago</th></tr></thead>' + "".join(out) + "</table></div>")
 
 
 def member_list(u, key):
@@ -285,11 +285,13 @@ def css():
 .ags-t caption{text-align:left;font-size:.78rem;color:var(--text-muted);padding:0 0 .4rem}
 .ags-t th,.ags-t td{padding:.38rem .35rem;border-top:1px solid var(--border);vertical-align:top;color:var(--text-dim)}
 .ags-t thead th{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.03em;color:var(--text-muted);text-align:left}
+.ags-t thead th.n{white-space:normal;text-align:right;line-height:1.25}
+.ags-t th.rv{width:5.2rem}
 .ags-t .n{text-align:right;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.82rem}
 .ags-t th[scope=row]{text-align:left;font-weight:400}
 .ags-t th[scope=row] small{display:block;font-size:.72rem;color:var(--text-muted);padding-left:.1rem}
 .ags-t td small{display:block;font-size:.68rem;color:var(--text-muted)}
-.ags-g th{font-size:.8rem;font-weight:700;color:var(--text);padding-top:.8rem;border-top:2px solid var(--border)}
+.ags-g th{text-align:left!important;font-size:.8rem;font-weight:700;color:var(--text);padding-top:.8rem;border-top:2px solid var(--border)}
 .ags-co{background:none;border:0;padding:0;margin:0;font:inherit;color:var(--text);text-align:left;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
 .ags-co b{font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-right:.15rem}
 .ags-d td{background:var(--surface);padding:.6rem .7rem}

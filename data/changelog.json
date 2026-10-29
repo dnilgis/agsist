@@ -1,7 +1,18 @@
 {
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "note": "Curated by hand each work session. Dates are the day the change was built; uploads usually land the same day or the next. Machine-refreshed data (prices, bids, weather, briefings) is not logged here. That updates continuously.",
  "entries": [
+  {
+   "date": "2026-10-29",
+   "items": [
+    {
+     "tag": "new",
+     "page": "/ag-stocks",
+     "name": "Ag stocks and the AGSIST Ag 20",
+     "text": "A new page with the daily closing share prices of U.S.-listed farm equipment, fertilizer, grain, livestock and food companies, the date each last reported to the SEC and its revenue against a year ago (whole company). Tap a company for the numbers from its own filings and its ethanol, crush and elevator plants near your ZIP. Our own equal-weight index of 20 of them starts Nov 2. Not investment advice."
+    }
+   ]
+  },
   {
    "date": "2026-10-28",
    "items": [

@@ -130,8 +130,8 @@ SEED = [
 SEED_DROPPED = [
     ("PEIX", "Pacific Ethanol", "historical ticker, renamed Alto Ingredients (ALTO)"),
     ("CVGW", "Calavo Growers", "historical: acquired by Mission Produce (AVO), May 2026"),
-    ("LOCL", "Local Bounti", "unresolved: current listing not verified in the research note"),
-    ("ORIS", "Oriental Rise Holdings", "unresolved: Nasdaq listing not verified in the research note"),
+    ("LOCL", "Local Bounti", "current listing not verified"),
+    ("ORIS", "Oriental Rise Holdings", "Nasdaq listing not verified"),
 ]
 # Design A (equal weight 20) and design C (two side baskets), from index_designs.md.
 INDEXES = [
@@ -572,7 +572,7 @@ def selftest():
     dr = {d["t"]: d["why"] for d in u["dropped"]}
     check("not in SEC" in dr.get("CNH", ""), "missing ticker dropped")
     check("OTC" in dr.get("VFF", ""), "OTC dropped")
-    check("historical" in dr.get("CVGW", "") and "unresolved" in dr.get("LOCL", ""), "research-note drops kept")
+    check("historical" in dr.get("CVGW", "") and "not verified" in dr.get("LOCL", ""), "research-note drops kept")
     check(any("TITN" in n and "0000000999" in n for n in u["notes"]), "CIK mismatch noted, SEC used")
     ag20 = next(i for i in u["indexes"] if i["key"] == "ag20")
     check(ag20["tickers"] == ["DE", "AGCO", "TITN", "ADM"] and "CNH" in ag20["left_out"], "index lists follow the check")

@@ -19,12 +19,12 @@
   {
    "company": "Local Bounti",
    "t": "LOCL",
-   "why": "unresolved: current listing not verified in the research note"
+   "why": "current listing not verified"
   },
   {
    "company": "Oriental Rise Holdings",
    "t": "ORIS",
-   "why": "unresolved: Nasdaq listing not verified in the research note"
+   "why": "Nasdaq listing not verified"
   }
  ],
  "groups": [

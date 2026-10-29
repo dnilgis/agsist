@@ -140,5 +140,6 @@ test('the page is findable: sitemap, search, llms.txt, the markets index; the wo
   const wf = rd('.github/workflows/agstocks.yml');
   assert.match(wf, /cron: '17 22 \* \* 1-5'/);
   assert.match(wf, /pip install yfinance==1\.7\.0/);
+  assert.doesNotMatch(wf, /^\s+push:/m, 'no push trigger: the branch test run is gone');
   assert.match(rd('.github/workflows/prices.yml'), /pip install yfinance==1\.7\.0/, 'same Yahoo client version as prices.yml');
 });

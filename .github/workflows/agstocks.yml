@@ -9,10 +9,6 @@ on:
   schedule:
     - cron: '17 22 * * 1-5'
   workflow_dispatch:
-  # TEMPORARY (branch test run, removed before merge): fills data/agstocks on fx/agstocks
-  push:
-    branches: [fx/agstocks]
-    paths: ['.github/workflows/agstocks.yml', 'scripts/agstocks*.py', 'scripts/build_agstocks_page.py']
 
 permissions:
   contents: write
