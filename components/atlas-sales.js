@@ -87,7 +87,7 @@
   S.countyHTML = function (sum, f, census) {
     var c = sum && sum.counties && sum.counties[f];
     var W = sum && sum.windows, N = (sum && sum.min_n) || 5, A = (sum && sum.min_acres) || 20;
-    var src = sum ? esc(sum.record) + ', ' + esc(sum.who) : '';
+    var src = sum ? '<a href="' + esc(sum.url) + '" target="_blank" rel="noopener">' + esc(sum.record) + '</a>, ' + esc(sum.who) : '';
     if (!c) return '<p class="note">No ' + esc(sum ? sum.record : 'transfer') + ' file is on hand for this county yet.</p>';
     var h = '';
     var lead = c.n12 + ' market farm sale' + (c.n12 === 1 ? ' was' : 's were') + ' recorded in ' + c.name + ' County from ' + S.span(W.cur);
@@ -193,7 +193,7 @@
         : '<td>not shown</td><td class="as-wide">under ' + N + ' sales</td><td>' + (c.k12 || 0) + '</td>') + '</tr>';
     });
     h += '</tbody></table></div>';
-    h += '<p class="note">Market farm sales of ' + A + '+ acres with known acres, dated ' + esc(S.span(W.cur)) + ', from ' + esc(sum.record) + '. '
+    h += '<p class="note">Market farm sales of ' + A + '+ acres with known acres, dated ' + esc(S.span(W.cur)) + ', from <a href="' + esc(sum.url) + '" target="_blank" rel="noopener">' + esc(sum.record) + '</a>. '
       + 'Prices buyers paid, not the USDA survey or census estimates elsewhere on this page. Under ' + N + ' sales, no median.</p>';
     return h;
   };
