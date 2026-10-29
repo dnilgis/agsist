@@ -109,13 +109,13 @@
   <!-- Info -->
   <url><loc>https://agsist.com/about</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/privacy</loc><lastmod>2026-10-29</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://agsist.com/terms</loc><lastmod>2026-10-28</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://agsist.com/terms</loc><lastmod>2026-10-29</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 
 
   <!-- Added 2026-06-12: audit fixes -->
   <url><loc>https://agsist.com/cattle-futures-prices</loc><lastmod>2026-10-29</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/sponsor</loc><lastmod>2026-10-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://agsist.com/developer</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/developer</loc><lastmod>2026-10-29</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/contact</loc><lastmod>2026-10-22</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/accessibility</loc><lastmod>2026-10-22</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 
@@ -561,7 +561,7 @@
   <url><loc>https://agsist.com/basis</loc><lastmod>2026-10-29</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/grain-transport</loc><lastmod>2026-10-23</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-lease</loc><lastmod>2026-10-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/conditions</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://agsist.com/conditions</loc><lastmod>2026-10-29</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/crop-tour</loc><lastmod>2026-10-29</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/farmland-atlas</loc><lastmod>2026-10-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/daily/2026-08-11</loc><lastmod>2026-08-11</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
@@ -695,7 +695,7 @@
   <url><loc>https://agsist.com/custom-rates/wisconsin</loc><lastmod>2026-10-17</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/fall-nitrogen</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/harvest-or-wait</loc><lastmod>2026-10-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/editorial-standards</loc><lastmod>2026-10-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/editorial-standards</loc><lastmod>2026-10-29</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/glossary</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-17</loc><lastmod>2026-10-17</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-18</loc><lastmod>2026-10-18</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
