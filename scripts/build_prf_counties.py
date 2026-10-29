@@ -43,6 +43,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_prf_states as S  # noqa: E402  shared helpers: long_date, money2, slug, boot, text_of
 import inject_static_nav as nav  # noqa: E402
+import html_slim as HS  # noqa: E402  the county set is written slim
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
@@ -446,7 +447,7 @@ def main():
                 story = SP.story_html(STORIES, st["st"], fips, SP.county_facts(meta, cf, st, sd, code, c, cf["counties"][fips], n), meta["built"][:10])
             body = page({"meta": meta, "cf": cf, "st": st, "sd": sd, "code": code, "c": c, "fx": cf["counties"][fips], "name": n,
                          "slug": sl, "st_slug": st_slug, "nbrs": nbrs, "links": links, "BOOT": BOOT, "story": story})
-            body = nav.fill_fonts(body)
+            body = HS.slim(nav.fill_fonts(body))   # no indentation between tags; the same page to readers and crawlers
             size = len(body.encode())
             if size > MAX_KB * 1024:
                 raise SystemExit(f"prf/{st_slug}/{sl}.html would be {size // 1024} KB, over {MAX_KB} KB")
