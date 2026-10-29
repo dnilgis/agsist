@@ -1,6 +1,27 @@
 {
- "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
+ "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ by scripts/build_whats_new.py on main (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
+  {
+   "id": "2026-10-29-ratecard",
+   "date": "2026-10-29",
+   "title": "A new sponsor rate card",
+   "line": "Advertise as the Daily Sponsor, a State Sponsor, the Cash Bids Sponsor or a featured elevator on its own town page; first month free, then a yes or no.",
+   "link": "/sponsor"
+  },
+  {
+   "id": "2026-10-29-home-steady",
+   "date": "2026-10-29",
+   "title": "The homepage holds still while it loads",
+   "line": "The top of the homepage no longer jumps down as it finishes loading, on a first visit or in the evening when the overnight futures line arrives.",
+   "link": "/"
+  },
+  {
+   "id": "2026-10-29-salesnav",
+   "date": "2026-10-29",
+   "title": "Farm sales easier to find",
+   "line": "Every Farmland Atlas county page links its land sales, or says where the state's records stand. Rent pages, Fast Facts and search find county sales too.",
+   "link": "/land-sales/"
+  },
   {
    "id": "2026-10-29-buyers",
    "date": "2026-10-29",
@@ -14,27 +35,6 @@
    "title": "Farm loan cards, shorter",
    "line": "The farm loan cards on Atlas state pages now carry one short source line, linked to the reserve bank's ag survey page; how the numbers work is in one note per page.",
    "link": "/farmland-atlas/states/#farm-credit"
-   },
-   {
-   "id": "2026-10-29-ratecard",
-   "date": "2026-10-29",
-   "title": "A new sponsor rate card",
-   "line": "Advertise as the Daily Sponsor, a State Sponsor, the Cash Bids Sponsor or a featured elevator on its own town page; first month free, then a yes or no.",
-   "link": "/sponsor"
-  },
-  {
-   "id": "2026-10-29-home-steady",
-   "date": "2026-10-29",
-   "title": "The homepage holds still while it loads",
-   "line": "The top of the homepage no longer jumps down as it finishes loading, on a first visit or in the evening when the overnight futures line arrives.",
-   "link": "/"
-   },
-   {
-   "id": "2026-10-29-salesnav",
-   "date": "2026-10-29",
-   "title": "Farm sales easier to find",
-   "line": "Every Farmland Atlas county page links its land sales, or says where the state's records stand. Rent pages, Fast Facts and search find county sales too.",
-   "link": "/land-sales/"
   },
   {
    "id": "2026-10-28-farm-credit",
@@ -42,7 +42,7 @@
    "title": "Farm loan repayment by Fed district",
    "line": "Atlas state pages now show what ag bankers in their Fed district reported for 2026 Q2: loan repayment and renewals against a year earlier, charted since 2010.",
    "link": "/farmland-atlas/states/#farm-credit"
-   },
+  },
   {
    "id": "2026-10-28-answers",
    "date": "2026-10-28",
@@ -56,15 +56,15 @@
    "title": "Cull cow prices from the sale barns",
    "line": "Boner, Breaker and Lean cow and slaughter bull prices at about 40 sale barns USDA reports, each with its own sale day, plus the middle Boner price.",
    "link": "/cattle-auction-prices#cull-cows"
-   },
-   {
+  },
+  {
    "id": "2026-10-28-dairy-herds",
    "date": "2026-10-28",
    "title": "Licensed dairy herds, US and your state",
    "line": "Licensed dairy herds from NASS by year for the US and your state, Wisconsin by month, with each year's net change. Also the 2014 to 2018 MPP margins, apart from DMC.",
    "link": "/milk-prices#dp-herds-h"
-   },
-   {
+  },
+  {
    "id": "2026-10-28-chapter12",
    "date": "2026-10-28",
    "title": "Farm bankruptcy filings on each state page",
@@ -91,8 +91,8 @@
    "title": "The Daily tries again when a check holds it",
    "line": "A Daily draft that fails a number check is never posted. The next run writes it again and checks it again, so it goes out a little late rather than wrong.",
    "link": "/daily"
-   },
-   {
+  },
+  {
    "id": "2026-10-28-sale-barns-notes",
    "date": "2026-10-28",
    "title": "Sale barn prices: four Kentucky barns back, and weights past page one",
@@ -105,15 +105,15 @@
    "title": "Sale barn prices: 37 more barns, most in Kentucky and Missouri",
    "line": "125 USDA-reported barns, up from 88: 20 more in Kentucky, 13 in Missouri, 3 in Indiana, 1 in South Dakota. Beef-on-dairy steers no longer count in feeder averages.",
    "link": "/cattle-auction-prices"
-   },
+  },
   {
    "id": "2026-10-28-wisconsin-soil-temps",
    "date": "2026-10-28",
    "title": "Fall anhydrous: Wisconsin soil temperatures",
    "line": "Soil temperature at 4 in now comes from Wisconet's stations across Wisconsin too, each reading credited to its network. The fertilizer page adds Bartlett Co-op in Kansas.",
    "link": "/fall-nitrogen"
-   },
-   {
+  },
+  {
    "id": "2026-10-28-milk-order30",
    "date": "2026-10-28",
    "title": "Milk prices: the Upper Midwest order, and how close the futures came",
@@ -133,8 +133,8 @@
    "title": "Already on the Daily? Add your county",
    "line": "A link at the bottom of every Daily now turns on what changed in your county on Thursdays. It asks for your ZIP if we do not have it.",
    "link": "/daily"
-   },
-   {
+  },
+  {
    "id": "2026-10-27-wasde-2027-dates",
    "date": "2026-10-27",
    "title": "USDA calendar: the 2027 WASDE dates",

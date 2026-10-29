@@ -5,7 +5,7 @@
    bottom line. Variables that live in field-scout.js are read through FSX. */
 window.__fsRead = function (FSX) {
   'use strict';
-  var FS_WORKER=FSX.FS_WORKER, METEO_URL=FSX.METEO_URL, BIDS_PROXY=FSX.BIDS_PROXY, NOMINATIM_REV=FSX.NOMINATIM_REV, N2A=FSX.N2A, CDL_CROPS=FSX.CDL_CROPS, crop=FSX.crop, resetField=FSX.resetField, openSheetFor=FSX.openSheetFor, syncSheet=FSX.syncSheet, flashHint=FSX.flashHint, saveCurrentField=FSX.saveCurrentField, notesSectionHTML=FSX.notesSectionHTML, wireNotesSection=FSX.wireNotesSection, setMapHeadline=FSX.setMapHeadline, setFieldChrome=FSX.setFieldChrome, runFieldScan=FSX.runFieldScan, countUp=FSX.countUp, scheduleSettle=FSX.scheduleSettle, writeHash=FSX.writeHash, shareField=FSX.shareField, exportGeoJSON=FSX.exportGeoJSON, exportKML=FSX.exportKML, latlngs=FSX.latlngs, polyAcres=FSX.polyAcres, polyCentroid=FSX.polyCentroid, wktPolygon=FSX.wktPolygon, ICONS=FSX.ICONS, generateReport=FSX.generateReport, postJSON=FSX.postJSON, esc=FSX.esc, hexA=FSX.hexA, ga=FSX.ga;
+  var FS_WORKER=FSX.FS_WORKER, NOMINATIM_REV=FSX.NOMINATIM_REV, N2A=FSX.N2A, CDL_CROPS=FSX.CDL_CROPS, crop=FSX.crop, resetField=FSX.resetField, openSheetFor=FSX.openSheetFor, syncSheet=FSX.syncSheet, flashHint=FSX.flashHint, saveCurrentField=FSX.saveCurrentField, notesSectionHTML=FSX.notesSectionHTML, wireNotesSection=FSX.wireNotesSection, setMapHeadline=FSX.setMapHeadline, setFieldChrome=FSX.setFieldChrome, runFieldScan=FSX.runFieldScan, countUp=FSX.countUp, scheduleSettle=FSX.scheduleSettle, writeHash=FSX.writeHash, shareField=FSX.shareField, exportGeoJSON=FSX.exportGeoJSON, exportKML=FSX.exportKML, latlngs=FSX.latlngs, polyAcres=FSX.polyAcres, polyCentroid=FSX.polyCentroid, wktPolygon=FSX.wktPolygon, ICONS=FSX.ICONS, generateReport=FSX.generateReport, postJSON=FSX.postJSON, esc=FSX.esc, hexA=FSX.hexA, ga=FSX.ga;
 
 
   // ── Season replay: one tappable chip per real clear satellite pass ──
@@ -117,7 +117,7 @@ window.__fsRead = function (FSX) {
     if(D){
       D.hidden=false;
       D.innerHTML =
-        '<div class="fs-deck-label">Field readout</div>'+
+        '<div class="fs-deck-label">Field readout <span id="fs-deck-co" class="fs-deck-co"></span></div>'+
         '<div class="fs-vitals" id="fs-vitals"></div>' +
         '<div class="fs-deck-grid">' +
           section('soil',ICONS.soil,'Soil & Productivity','fs-soil') +
@@ -488,7 +488,6 @@ window.__fsRead = function (FSX) {
     });
   }
 
-  // ── 3. WEATHER (Open-Meteo) ─────────────────────────────────────────
   // fetch with a hard timeout — a stalled (never-responding) connection otherwise
   // leaves a panel spinning forever, since fetch() has no built-in timeout and
   // .catch only fires on rejection, not on a hang.
@@ -498,206 +497,250 @@ window.__fsRead = function (FSX) {
     return fetch(url,{signal:ctrl.signal}).then(function(r){ clearTimeout(id); return r; }, function(e){ clearTimeout(id); throw e; });
   }
 
+  // ── 3. WEATHER NOW: the National Weather Service's nearest observing station ──
+  // 2026-10-29 (Sig: no paid Open-Meteo key; its free tier is for sites without ads or
+  // subscriptions, and AGSIST runs sponsor slots). api.weather.gov is public domain, free for
+  // any purpose, no key. Three small reads: the point, its stations, the newest observation.
+  // The 7-day rain number is no longer a weather model's: it is the county gauge's own days
+  // (data/rain/daily, NOAA daily records), filled in by loadSeason once the county is known.
+  var NWS='https://api.weather.gov';
+  function nwsJSON(url, ms){ return fetchT(url, ms||10000).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }); }
+  function cToF(v){ return v==null||!isFinite(v)?null:Math.round(v*9/5+32); }
+  function toMph(q){ if(!q||q.value==null||!isFinite(q.value)) return null; var u=String(q.unitCode||''); return Math.round(/m_s-1/.test(u)?q.value*2.23694:/km_h-1/.test(u)?q.value*0.621371:q.value); }
   function loadWeather(c){
     var gen = FSX.fieldGen;
-    var url=METEO_URL+'?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+
-      '&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m'+
-      '&daily=precipitation_sum,temperature_2m_max,temperature_2m_min'+
-      '&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&past_days=7&forecast_days=1';
-    fetchT(url).then(function(r){return r.json();}).then(function(d){
-      if(gen !== FSX.fieldGen) return;
-      if(!d || !d.current){ window.__fsWx={err:1}; renderWx(); return; }
-      var cur=d.current;
-      var wk=0; if(d.daily&&d.daily.precipitation_sum){ var ps=d.daily.precipitation_sum; for(var pi=0;pi<ps.length-1;pi++){ wk+=(ps[pi]||0); } }  // last entry is today's FORECAST — not observed rain
-      window.__fsWx = {
-        temp:Math.round(cur.temperature_2m), hum:Math.round(cur.relative_humidity_2m),
-        wind:Math.round(cur.wind_speed_10m), wk:wk.toFixed(2), at:(cur.time||null)
-      };
-      FSX.FIELD.weather = window.__fsWx; recomputeInsight();
-      renderWx();
-    }).catch(function(){ if(gen!==FSX.fieldGen) return; window.__fsWx={err:1}; renderWx(); });
+    nwsJSON(NWS+'/points/'+c.lat.toFixed(4)+','+c.lng.toFixed(4))
+      .then(function(pt){ var u=pt&&pt.properties&&pt.properties.observationStations; if(!u) throw new Error('no stations'); return nwsJSON(u); })
+      .then(function(st){
+        var f=st&&st.features&&st.features[0], sp=f&&f.properties; if(!sp||!sp.stationIdentifier) throw new Error('no station');
+        var g=f.geometry&&f.geometry.coordinates;
+        return nwsJSON(NWS+'/stations/'+encodeURIComponent(sp.stationIdentifier)+'/observations/latest').then(function(ob){
+          return { ob:ob&&ob.properties, id:sp.stationIdentifier, name:sp.name||sp.stationIdentifier, mi:(g&&isFinite(g[1])&&isFinite(g[0]))?_hvsMi(c.lat,c.lng,g[1],g[0]):null };
+        });
+      })
+      .then(function(x){
+        if(gen !== FSX.fieldGen) return;
+        var o=x.ob||{}, t=cToF(o.temperature&&o.temperature.value);
+        if(t==null){ window.__fsWx={err:1, wk:(window.__fsWx&&window.__fsWx.wk)}; renderWx(); return; }
+        var prev=window.__fsWx||{};
+        window.__fsWx = {
+          temp:t, hum:(o.relativeHumidity&&o.relativeHumidity.value!=null)?Math.round(o.relativeHumidity.value):null,
+          wind:toMph(o.windSpeed), at:o.timestamp||null, stn:x.name, stnId:x.id, stnMi:x.mi,
+          wk:prev.wk, wkAt:prev.wkAt, wkStn:prev.wkStn
+        };
+        FSX.FIELD.weather = window.__fsWx; recomputeInsight();
+        renderWx();
+      })
+      .catch(function(){ if(gen!==FSX.fieldGen) return; var prev=window.__fsWx||{}; window.__fsWx={err:1, wk:prev.wk, wkAt:prev.wkAt, wkStn:prev.wkStn}; renderWx(); });
   }
+  // ── DROUGHT: our own copy of the US Drought Monitor county statistics first ──
+  // 2026-10-29: /data/drought/county-week.json (the weekly USDM county statistics, saved by our
+  // own run) answers as soon as the county is known: the worst category covering at least half
+  // the county, labelled county-wide, with its map week. The worker's point read for the field
+  // itself (USDM map at the center) then sharpens it when it answers; when it does not, the
+  // county answer stands. Honesty rule: 'None' is a real answer; a failed read is UNKNOWN (null).
+  var _dwk=null;
+  // FS-DROUGHTCOUNTY-BEGIN
+  function droughtFromCounty(d, fips){
+    if(!d || !d.c || !fips) return null;
+    var row=d.c[fips];
+    if(!row){ return (d.zero||[]).indexOf(fips)>=0 ? { lvl:-1, share:0, wk:d.valid } : null; }
+    var now=row[0]; if(!now || now.length<5 || now[0]==null) return null;
+    var lvl=-1; for(var k=4;k>=0;k--){ if(now[k]!=null && now[k]>=50){ lvl=k; break; } }
+    return { lvl:lvl, share:lvl>=0?now[lvl]:now[0], d0:now[0], wk:d.valid };
+  }
+  // FS-DROUGHTCOUNTY-END
   function loadDrought(c){
-    var gen = FSX.fieldGen;
-    // US Drought Monitor point service, proxied through the worker (the USDM
-    // endpoint sends no CORS headers, so a direct browser call is blocked).
-    // If unreachable, the panel omits the drought chip rather than blocking weather.
+    var gen = FSX.fieldGen, point=false;
+    if(!_dwk) _dwk=getJSON('/data/drought/county-week.json', 20000).catch(function(){ _dwk=null; return null; });
+    var localP = waitCountyFips(20000).then(function(cy){
+      if(!cy) return null;
+      return _dwk.then(function(d){ return droughtFromCounty(d, String(cy.fips)); });
+    }).catch(function(){ return null; });
+    localP.then(function(h){
+      if(gen !== FSX.fieldGen || point || !h) return;
+      var cat=droughtLabel(h.lvl);
+      window.__fsDr={cat:cat, approx:'county', wk:h.wk, share:h.share, d0:h.d0, own:true}; FSX.FIELD.drought=window.__fsDr; recomputeInsight(); renderWx();
+    });
+    // USDM point service for the field itself, through the worker (no CORS on the USDM endpoint).
     var url=FS_WORKER+'/drought?lat='+c.lat.toFixed(4)+'&lon='+c.lng.toFixed(4);
-    // 20 s: the worker's worst case is a 4 s point try, then the county lookup (5 s) and
-    // the county statistics (7 s).
-    fetchT(url, 20000).then(function(r){return r.ok?r.json():null;}).then(function(d){
-      if(gen !== FSX.fieldGen) return;
-      // Honesty rule: 'None' is a real answer from the service; a failed or
-      // unrecognized response is UNKNOWN (null) — never assert no-drought on error.
+    var workerP = fetchT(url, 20000).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(gen !== FSX.fieldGen) return false;
       var cat=null;
       if(d && !d.error){
         var lvl = d.DroughtClass!=null ? d.DroughtClass : (d.dm!=null?d.dm:(Array.isArray(d)&&d[0]&&d[0].DroughtClass!=null?d[0].DroughtClass:null));
         if(lvl!=null) cat = droughtLabel(lvl);
       }
-      var ap = d && d.approx ? d.approx : null;     // the worker fell back to the county's dominant category
-      var wk = d ? (d.mapWeek || d.MapDate || d.mapDate || d.ValidStart || d.validStart || null) : null;   // the USDM map week, when the service says
-      window.__fsDr={cat:cat, approx:ap, wk:wk}; FSX.FIELD.drought={cat:cat, approx:ap, wk:wk}; recomputeInsight(); renderWx();
-    }).catch(function(){ if(gen!==FSX.fieldGen) return; window.__fsDr={cat:null}; if(FSX.FIELD)FSX.FIELD.drought={cat:null}; recomputeInsight(); renderWx(); });
+      if(cat==null) return false;
+      // the worker's own county fallback adds nothing to ours: it shows only until ours lands
+      if(d.approx){ if(window.__fsDr && window.__fsDr.own) return true; }
+      else point=true;
+      var wk = d.mapWeek || d.MapDate || d.mapDate || d.ValidStart || d.validStart || null;
+      window.__fsDr={cat:cat, approx:d.approx||null, wk:wk}; FSX.FIELD.drought=window.__fsDr; recomputeInsight(); renderWx();
+      return true;
+    }).catch(function(){ return false; });
+    Promise.all([localP, workerP]).then(function(x){
+      if(gen!==FSX.fieldGen) return;
+      if(!x[0] && !x[1] && !(window.__fsDr&&window.__fsDr.cat!=null)){ window.__fsDr={cat:null}; if(FSX.FIELD)FSX.FIELD.drought={cat:null}; recomputeInsight(); renderWx(); }
+    });
   }
   function droughtLabel(lvl){
     if(lvl==null||lvl<0) return 'None';
     return ['Abnormally Dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'][lvl] || 'None';
   }
 
-  // ── 3b. SEASON vs NORMAL — year-to-date rain & GDUs against the 5-yr avg ──
-  // One Open-Meteo archive call returns ~5 yrs of daily precip + temps at the
-  // field center. We accumulate Jan 1 → the latest available date for each year
-  // (same calendar window every year = a fair compare), then cross this season
-  // against the average of the prior years. GDUs use corn base 50°F, 86° cap.
+  // ── 3b. SEASON vs NORMAL: our own county gauge for rain, a NOAA grid for heat units ──
+  // 2026-10-29: off Open-Meteo (see loadWeather).
+  //   Rain: the county's gauge from /data/rain/<st>.json (NOAA daily records through RCC-ACIS,
+  //   the same record the county rain pages print), Jan 1 to its last report, against that
+  //   gauge's 1991-2020 normal. A real 30-year normal, and the gauge and its miles are named.
+  //   GDUs: RCC-ACIS GridData, grid 21 (PRISM daily, an estimate on a 4 km grid), this year and
+  //   the five before, Jan 1 to the same calendar day each year; base 50°F, 86° cap. The GDU
+  //   comparison stays a 5-year average and says so.
+  // Either half can fail alone; the card shows what came back and says what did not.
+  var ACIS_GRID='https://data.rcc-acis.org/GridData';
+  function waitCountyFips(ms){
+    var gen=FSX.fieldGen, t0=Date.now();
+    return new Promise(function(ok){ (function tick(){
+      var cy=FSX.FIELD&&FSX.FIELD.county;
+      if(gen!==FSX.fieldGen) return ok(null);
+      if(cy&&cy.fips&&cy.abbr) return ok(cy);
+      if(Date.now()-t0>ms) return ok(null);
+      setTimeout(tick, 250);
+    })(); });
+  }
+  // data/rain/daily packing (scripts/county_rain.py pack_days): tok or tok*count; hundredths,
+  // M missing, T trace, S part of a later multi-day total (A).
+  function unpackDays(str){
+    var out=[]; String(str||'').split(',').forEach(function(t){
+      if(!t) return; var k=1, i=t.indexOf('*'); if(i>0){ k=+t.slice(i+1); t=t.slice(0,i); }
+      for(var n=0;n<k;n++) out.push(t);
+    }); return out;
+  }
+  // FS-WEEKRAIN-BEGIN
+  // The last 7 reported days at the gauge: null when two or more of them are missing.
+  function weekRain(p, year){
+    var d=unpackDays(p); if(d.length<7) return null;
+    var w=d.slice(-7), miss=0, sum=0;
+    w.forEach(function(t){ if(t==='M') miss++; else if(t!=='T'&&t!=='S') sum+=parseInt(t,10)/100||0; });
+    if(miss>=2) return null;
+    var last=new Date(Date.UTC(year,0,d.length)).toISOString().slice(0,10);
+    return { inches:Math.round(sum*100)/100, through:last, missing:miss };
+  }
+  // FS-WEEKRAIN-END
+  function gaugeRain(cy){
+    var st=String(cy.abbr).toLowerCase();
+    return Promise.all([getJSON('/data/rain/'+st+'.json'), getJSON('/data/rain/daily/'+st+'.json').catch(function(){ return null; })]).then(function(x){
+      var R=x[0], D=x[1], f=String(cy.fips), rec=R&&R.counties&&R.counties[f], via=null;
+      if(!rec && R && R.none && R.none[f] && R.none[f].near && R.counties[R.none[f].near]){ via=R.none[f].near; rec=R.counties[via]; }
+      if(!rec || rec.total==null || rec.usual==null || !rec.station) return null;
+      var ll=rec.station.ll, mi=(ll&&isFinite(ll[0]))?_hvsMi(FSX.FIELD.lat, FSX.FIELD.lng, ll[1], ll[0]):null;
+      var dd=D&&D.counties&&D.counties[via||f], wk=dd?weekRain(dd.p, +(D.year||R.year)):null;
+      return { total:+rec.total, usual:+rec.usual, pct:rec.pct, thru:rec.as_of||R.edate, year:+R.year, cum:rec.cum||null,
+        station:rec.station.name, mi:mi, borrowed:via?(rec.name||'a neighboring county'):null, normals:R.normals||'1991-2020', wk:wk };
+    });
+  }
+  function gridGdu(c){
+    var yNow=new Date().getFullYear();
+    var end=new Date(Date.now()-2*864e5).toISOString().slice(0,10);   // the PRISM day lands a day or two late
+    var params=JSON.stringify({ loc:c.lng.toFixed(3)+','+c.lat.toFixed(3), grid:'21', sdate:(yNow-5)+'-01-01', edate:end, elems:'maxt,mint' });
+    return fetchT(ACIS_GRID+'?params='+encodeURIComponent(params), 15000).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }).then(function(j){
+      if(!j || !Array.isArray(j.data) || !j.data.length) return null;
+      var rows=j.data.filter(function(r){ return r && +r[1]>-998 && +r[2]>-998; });
+      if(!rows.length) return null;
+      var cutoffIso=rows[rows.length-1][0], cutoff=cutoffIso.slice(5);
+      var plantMD = c.lat>=44 ? '05-05' : c.lat>=41 ? '04-28' : c.lat>=38 ? '04-18' : '04-08';
+      var acc={}, gCum={};
+      rows.forEach(function(r){
+        var md=String(r[0]).slice(5), yr=+String(r[0]).slice(0,4); if(md>cutoff) return;
+        var hi=Math.min(+r[1],86), lo=Math.max(+r[2],50), g=Math.max(0,(hi+lo)/2-50);
+        if(!acc[yr]){ acc[yr]={gdu:0,gduP:0}; gCum[yr]={}; }
+        acc[yr].gdu+=g; if(md>=plantMD){ acc[yr].gduP+=g; gCum[yr][md]=acc[yr].gduP; }
+      });
+      var ys=Object.keys(acc).map(Number).sort(function(a,b){return a-b;}), cur=ys[ys.length-1];
+      var prior=ys.filter(function(y){ return y<cur; });
+      if(cur!==yNow || prior.length<3) return null;
+      var gNorm=prior.reduce(function(a,y){ return a+acc[y].gdu; },0)/prior.length;
+      return { gNow:acc[cur].gdu, gNorm:gNorm, gDep:acc[cur].gdu-gNorm, gPlant:acc[cur].gduP, plantMD:plantMD, gCumMap:gCum[cur]||null, n:prior.length, gThru:cutoffIso };
+    });
+  }
   function loadSeason(c){
     var gen = FSX.fieldGen;
-    var yNow = new Date().getFullYear();
-    var start = (yNow-5)+'-01-01';
-    // ERA5 archive lags a few days; clamp the end back so we never ask past coverage.
-    var end = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
-    var url = 'https://archive-api.open-meteo.com/v1/archive?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+
-      '&start_date='+start+'&end_date='+end+
-      '&daily=precipitation_sum,temperature_2m_max,temperature_2m_min'+
-      '&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto';
-    fetchT(url, 15000).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    var rainP = waitCountyFips(20000).then(function(cy){ return cy ? gaugeRain(cy) : null; }).catch(function(){ return null; });
+    var gduP = gridGdu(c).catch(function(){ return null; });
+    rainP.then(function(r){
+      if(gen!==FSX.fieldGen || !r || !r.wk) return;
+      var w=window.__fsWx||{}; w.wk=r.wk.inches.toFixed(2); w.wkAt=r.wk.through; w.wkStn=r.station; w.wkMi=r.mi; window.__fsWx=w;
+      if(!w.err) FSX.FIELD.weather=w; renderWx();
+    });
+    Promise.all([rainP, gduP]).then(function(x){
       if(gen !== FSX.fieldGen) return;
-      if(!d || !d.daily || !d.daily.time || !d.daily.time.length){
-        setBody('fs-season','<div class="fs-src">Season-to-date history isn\u2019t available for this spot.</div>'); return;
-      }
-      var t=d.daily.time, pr=d.daily.precipitation_sum||[], tx=d.daily.temperature_2m_max||[], tn=d.daily.temperature_2m_min||[];
-      var cutoff = t[t.length-1].slice(5); // MM-DD: only count Jan 1 → this MM-DD each year
-      // Planting proxy for crop-stage math: published corn-stage GDU tables count
-      // from PLANTING, not Jan 1 (Jan-1 accumulation reads 1-3+ weeks ahead,
-      // worse going south). Latitude-banded typical planting date, stated in copy.
-      var plantMD = c.lat>=44 ? '05-05' : c.lat>=41 ? '04-28' : c.lat>=38 ? '04-18' : '04-08';
-      var acc={};        // year → {precip, gdu, gduP (from planting proxy)}
-      var cumMap={};     // year → { 'MM-DD': cumulativePrecip }
-      // year → { 'MM-DD': cumulative GDU from planting } — lets stageAtDate() (hail
-      // swath tie-in) answer "what stage was the crop at" for any past date this
-      // season, not just gPlant's single as-of-today total.
-      var gCumMap={};
-      for(var i=0;i<t.length;i++){
-        var md=t[i].slice(5); if(md>cutoff) continue;       // MM-DD sorts chronologically
-        var yr=+t[i].slice(0,4);
-        var p=(pr[i]==null?0:pr[i]);
-        var g=0;
-        if(tx[i]!=null && tn[i]!=null){ var hi=Math.min(tx[i],86), lo=Math.max(tn[i],50); g=Math.max(0,(hi+lo)/2-50); }
-        if(!acc[yr]){ acc[yr]={precip:0,gdu:0,gduP:0}; cumMap[yr]={}; gCumMap[yr]={}; }
-        acc[yr].precip+=p; acc[yr].gdu+=g;
-        if(md>=plantMD){ acc[yr].gduP+=g; gCumMap[yr][md]=acc[yr].gduP; }
-        cumMap[yr][md]=acc[yr].precip;
-      }
-      var ys=Object.keys(acc).map(Number).sort(function(a,b){return a-b;});
-      var cur=ys[ys.length-1], prior=ys.filter(function(y){return y<cur;});
-      if(!prior.length){ setBody('fs-season','<div class="fs-src">Not enough archive history here to compare.</div>'); return; }
-      var avg=function(a){ return a.reduce(function(s,x){return s+x;},0)/a.length; };
-      var pNorm=avg(prior.map(function(y){return acc[y].precip;}));
-      var gNorm=avg(prior.map(function(y){return acc[y].gdu;}));
-      FSX.FIELD.season = { thru:t[t.length-1], year:cur, n:prior.length,
-        pNow:acc[cur].precip, pNorm:pNorm, pDep:acc[cur].precip-pNorm,
-        gNow:acc[cur].gdu, gNorm:gNorm, gDep:acc[cur].gdu-gNorm,
-        gPlant:acc[cur].gduP, plantMD:plantMD, gCumMap:gCumMap[cur]||null };
+      var r=x[0], g=x[1];
+      if(!r && !g){ FSX.FIELD.season=null; recomputeInsight(); renderRisk(); setErr('fs-season','The county rain gauge record and the heat-unit grid did not answer just now.'); return; }
+      var se={ year:new Date().getFullYear(), n:g?g.n:null, gauge:!!r, pLbl: r ? r.normals+' normal' : null };
+      if(r){ se.pNow=r.total; se.pNorm=r.usual; se.pDep=r.total-r.usual; se.pct=r.pct; se.thru=r.thru; se.station=r.station; se.mi=r.mi; se.borrowed=r.borrowed; se.cum=r.cum; }
+      else { se.pNow=null; se.pNorm=null; se.pDep=null; }
+      if(g){ se.gNow=g.gNow; se.gNorm=g.gNorm; se.gDep=g.gDep; se.gPlant=g.gPlant; se.plantMD=g.plantMD; se.gCumMap=g.gCumMap; se.gThru=g.gThru; if(!se.thru) se.thru=g.gThru; }
+      else { se.gNow=null; se.gNorm=null; se.gDep=null; se.gPlant=null; se.gCumMap=null; }
+      FSX.FIELD.season=se;
       recomputeInsight(); renderRisk();
-      setBody('fs-season', seasonHtml(FSX.FIELD.season, cumMap, cur, prior));
-    }).catch(function(){ if(gen!==FSX.fieldGen) return; setErr('fs-season','Couldn\u2019t reach the weather archive just now.'); });
+      setBody('fs-season', seasonHtml(se));
+    });
   }
+  // "the 1991-2020 normal" for gauge rain; the GDU line keeps its own "N-year average"
+  function pLbl(se){ return se&&se.pLbl ? 'the '+se.pLbl : 'normal'; }
 
-  function seasonHtml(s, cumMap, cur, prior){
+  function seasonHtml(s){
     var fmtDate=function(iso){ var d=new Date(iso+'T00:00'); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); };
-    var depTxt=function(v,unit){ var a=Math.abs(v).toFixed(unit==='in'?1:0);
-      if(Math.abs(v) < (unit==='in'?0.25:15)) return '<span style="color:#9aa">≈ '+s.n+'-yr avg</span>';
-      var up=v>0, col=(unit==='in')?(up?'#4aab4c':'#d9534f'):(up?'#4aab4c':'#e0a32e');
-      return '<span style="color:'+col+'">'+(up?'+':'−')+a+(unit==='in'?'″':'')+' vs '+s.n+'-yr avg</span>'; };
-    var rainBlock='<div class="fs-stat"><div class="fs-stat-v">'+s.pNow.toFixed(1)+'″</div>'+
-      '<div class="fs-stat-l">Rain YTD &nbsp;·&nbsp; '+depTxt(s.pDep,'in')+'</div></div>';
-    var gduBlock='<div class="fs-stat"><div class="fs-stat-v">'+Math.round(s.gNow)+'</div>'+
-      '<div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; '+depTxt(s.gDep,'gdu')+'</div></div>';
-    var spark = precipSparkline(cumMap, cur, prior);
-    // one-sentence synthesis of the two numbers above — the "so what"
-    var wet=s.pDep>=1, dry=s.pDep<=-1, hot=s.gDep>=75, cool=s.gDep<=-75, seasonSay;
-    if(hot&&dry) seasonSay='A hot, dry season so far: the crop is developing fast into a moisture deficit, the combination to watch closest.';
-    else if(hot&&wet) seasonSay='Warm and well-watered, fast development with moisture to back it. About the best combination there is.';
-    else if(cool&&wet) seasonSay='A cool, wet season: development is running behind, and low ground may be struggling with the surplus.';
-    else if(cool&&dry) seasonSay='Cool and dry: slow development, but the moisture deficit bites less at this pace.';
-    else if(hot) seasonSay='Heat is running ahead of the last '+s.n+' years on about average rain; development is ahead of the calendar.';
-    else if(cool) seasonSay='Heat units are lagging the last '+s.n+' years on about average rain. Expect development a few days behind.';
-    else if(wet) seasonSay='Rain is running ahead of the last '+s.n+' years at an average heat pace: moisture is banked, not a limiting factor so far.';
-    else if(dry) seasonSay='Rain is running behind the last '+s.n+' years at an average heat pace, not acute yet, but the deficit is the number to watch.';
-    else seasonSay='Both rain and heat are tracking close to this spot\u2019s last '+s.n+' years, an unremarkable season in the best sense.';
-    return '<div class="fs-stats" style="grid-template-columns:1fr 1fr">'+rainBlock+gduBlock+'</div>'+
-      '<div class="fs-vigor-say" style="margin:.55rem 0 .2rem">'+seasonSay+'</div>'+
-      spark +
-      '<div class="fs-src" style="margin-top:.55rem">Open-Meteo ERA5 · this season vs '+s.n+'-yr average, Jan 1 through '+fmtDate(s.thru)+' · GDU base 50°F</div>';
+    var depIn=function(v){ if(Math.abs(v)<0.25) return '<span style="color:#9aa">about normal</span>';
+      var up=v>0; return '<span style="color:'+(up?'#4aab4c':'#d9534f')+'">'+(up?'+':'−')+Math.abs(v).toFixed(1)+'″ vs normal</span>'; };
+    var depG=function(v){ if(Math.abs(v)<15) return '<span style="color:#9aa">≈ '+s.n+'-yr avg</span>';
+      var up=v>0; return '<span style="color:'+(up?'#4aab4c':'#e0a32e')+'">'+(up?'+':'−')+Math.abs(v).toFixed(0)+' vs '+s.n+'-yr avg</span>'; };
+    var blocks=[];
+    if(s.pNow!=null) blocks.push('<div class="fs-stat"><div class="fs-stat-v">'+s.pNow.toFixed(1)+'″</div><div class="fs-stat-l">Rain since Jan 1 &nbsp;·&nbsp; '+depIn(s.pDep)+(s.pct!=null?' ('+Math.round(s.pct)+'%)':'')+'</div></div>');
+    else blocks.push('<div class="fs-stat"><div class="fs-stat-v">-</div><div class="fs-stat-l">Rain since Jan 1 &nbsp;·&nbsp; no county gauge record</div></div>');
+    if(s.gNow!=null) blocks.push('<div class="fs-stat"><div class="fs-stat-v">'+Math.round(s.gNow)+'</div><div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; '+depG(s.gDep)+'</div></div>');
+    else blocks.push('<div class="fs-stat"><div class="fs-stat-v">-</div><div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; the grid did not answer</div></div>');
+    var wet=s.pDep!=null&&s.pDep>=1, dry=s.pDep!=null&&s.pDep<=-1, hot=s.gDep!=null&&s.gDep>=75, cool=s.gDep!=null&&s.gDep<=-75, say;
+    if(hot&&dry) say='A hot, dry season so far: the crop is developing fast into a moisture deficit, the combination to watch closest.';
+    else if(hot&&wet) say='Warm and well-watered, fast development with moisture to back it. About the best combination there is.';
+    else if(cool&&wet) say='A cool, wet season: development is running behind, and low ground may be struggling with the surplus.';
+    else if(cool&&dry) say='Cool and dry: slow development, but the moisture deficit bites less at this pace.';
+    else if(hot) say='Heat is running ahead of the last '+s.n+' years; development is ahead of the calendar.';
+    else if(cool) say='Heat units are lagging the last '+s.n+' years. Expect development a few days behind.';
+    else if(wet) say='Rain is running ahead of '+pLbl(s)+' at the county gauge: moisture is banked, not a limiting factor so far.';
+    else if(dry) say='Rain is running behind '+pLbl(s)+' at the county gauge, not acute yet, but the deficit is the number to watch.';
+    else if(s.pDep!=null&&s.gDep!=null) say='Rain is close to normal and heat close to the last '+s.n+' years, an unremarkable season in the best sense.';
+    else say='';
+    var src=[];
+    if(s.pNow!=null) src.push('Rain: the '+esc(s.station)+' gauge'+(s.mi!=null?', '+Math.round(s.mi)+' mi from this field':'')+(s.borrowed?' (no gauge reports in this county; this is '+esc(s.borrowed)+'’s)':'')+', Jan 1 through '+fmtDate(s.thru)+', against its '+esc(s.pLbl)+' (NOAA daily records via RCC-ACIS)');
+    if(s.gNow!=null) src.push('GDUs: PRISM daily grid via RCC-ACIS, an estimate, this year vs the '+s.n+' before, Jan 1 through '+fmtDate(s.gThru)+', base 50°F');
+    return '<div class="fs-stats" style="grid-template-columns:1fr 1fr">'+blocks.join('')+'</div>'+
+      (say?'<div class="fs-vigor-say" style="margin:.55rem 0 .2rem">'+say+'</div>':'')+
+      gaugeSpark(s)+
+      '<div class="fs-src" style="margin-top:.55rem">'+src.join(' · ')+'</div>';
   }
-
-  // Cumulative-precip sparkline: this year's curve riding inside the prior-years
-  // min/max band — the at-a-glance "ahead of / behind normal" read.
-  function precipSparkline(cumMap, cur, prior){
-    var mds=Object.keys(cumMap[cur]).sort();           // Jan 1 → cutoff, this year
-    if(mds.length<8) return '';
-    // v: uniform-scale chart with axes — inch gridlines, month ticks, endpoint value.
-    var W=360, H=126, padL=32, padR=40, padT=10, padB=18;
-    var iw=W-padL-padR, ih=H-padT-padB;
-    var lo=[], hi=[], now=[], avg=[], maxV=0;
-    mds.forEach(function(md){
-      var nv=cumMap[cur][md]; now.push(nv);
-      var pv=prior.map(function(y){ return cumMap[y][md]; }).filter(function(v){ return v!=null; });
-      var mn=pv.length?Math.min.apply(null,pv):nv, mx=pv.length?Math.max.apply(null,pv):nv;
-      lo.push(mn); hi.push(mx); avg.push(pv.length?pv.reduce(function(a,b){return a+b;},0)/pv.length:nv);
-      maxV=Math.max(maxV,nv,mx);
-    });
-    if(maxV<=0) maxV=1;
-    // whole-inch ticks, so the axis reads 0, 10, 20, 30 and not 18.3
-    var step = maxV>40?20:maxV>16?10:maxV>8?5:maxV>4?2:1;
-    maxV = Math.ceil(maxV/step)*step;
-    var X=function(i){ return padL + iw*(i/(mds.length-1)); };
-    var Y=function(v){ return padT + ih*(1 - v/maxV); };
-    var lineOf=function(arr){ return arr.map(function(v,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' '); };
-    // y-axis: hairlines + inch labels at 0 / half / max
-    var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var grid='';
-    for(var tv=0; tv<=maxV+1e-9; tv+=step){
-      var gy=Y(tv);
-      grid+='<line x1="'+padL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(132,160,168,'+(tv===0?'.28':'.12')+'" stroke-width="1"/>'+
-        '<text x="'+(padL-5)+'" y="'+(gy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a948f" font-family="JetBrains Mono,monospace">'+(tv===0?'0':tv+'\u2033')+'</text>';
-    }
-    // x-axis: first-of-month ticks; label alternate months when crowded
-    var ticks=[];
-    mds.forEach(function(md,i){ if(i>0 && md.slice(3)==='01') ticks.push({i:i,m:+md.slice(0,2)-1}); });
-    var every=ticks.length>8?2:1;
-    ticks.forEach(function(t,k){
-      var tx=X(t.i);
-      grid+='<line x1="'+tx.toFixed(1)+'" y1="'+padT+'" x2="'+tx.toFixed(1)+'" y2="'+(H-padB).toFixed(1)+'" stroke="rgba(132,160,168,.1)" stroke-width="1"/>';
-      if(k%every===0) grid+='<text x="'+tx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="#8a948f" font-family="JetBrains Mono,monospace">'+MONTHS[t.m]+'</text>';
-    });
-    // band polygon: hi forward, lo backward
-    var band='M'+X(0).toFixed(1)+' '+Y(hi[0]).toFixed(1)+' '+
-      hi.map(function(v,i){ return 'L'+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ')+' '+
-      lo.slice().reverse().map(function(v,i){ var idx=lo.length-1-i; return 'L'+X(idx).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ')+' Z';
-    var endV=now[now.length-1];
-    // colour by distance from the average the headline quotes, not only by leaving the range
-    var dev = endV - avg[avg.length-1];
-    var lineCol = dev <= -2 ? '#d98a1f' : (dev >= 2 ? '#3f9a45' : 'var(--fs-rain,#4f8fc0)');
-    // endpoint dot + value, clamped inside the frame
-    var ex=X(now.length-1), ey=Math.max(padT+7, Math.min(H-padB-3, Y(endV)));
-    var endLbl='<circle cx="'+ex.toFixed(1)+'" cy="'+Y(endV).toFixed(1)+'" r="3.2" fill="'+lineCol+'"/>'+
-      '<text x="'+(ex+6).toFixed(1)+'" y="'+(ey+3).toFixed(1)+'" font-size="10" font-weight="700" fill="'+lineCol+'" font-family="JetBrains Mono,monospace">'+endV.toFixed(1)+'\u2033</text>';
-    return '<div class="fs-chart-title">Cumulative rainfall: Jan 1 to date</div>'+
-      '<svg viewBox="0 0 '+W+' '+H+'" '+
-      'role="img" aria-label="Cumulative rainfall this season versus the prior-years range" style="display:block;width:100%;height:auto;margin-top:.35rem">'+
-      grid+
-      '<path d="'+band+'" fill="rgba(159,210,255,.14)" stroke="none"></path>'+
-      '<path d="'+lineOf(hi)+'" fill="none" stroke="rgba(159,210,255,.35)" stroke-width="1"></path>'+
-      '<path d="'+lineOf(lo)+'" fill="none" stroke="rgba(159,210,255,.35)" stroke-width="1"></path>'+
-      '<path d="'+lineOf(avg)+'" fill="none" stroke="#8a948f" stroke-width="1.2" stroke-dasharray="4 3"></path>'+
-      '<path d="'+lineOf(now)+'" fill="none" stroke="'+lineCol+'" stroke-width="2.4" stroke-linejoin="round"></path>'+
-      endLbl+
-      '</svg>'+
-      '<div class="fs-src" style="margin-top:.15rem;display:flex;gap:1rem;flex-wrap:wrap">'+
-        '<span style="color:'+lineCol+'">&#9644; This season&rsquo;s rain</span>'+
-        '<span style="color:#8a948f">- - '+(prior.length)+'-yr average</span>'+
-        '<span style="color:#6f9fc4">&#9636; Range of the prior '+(prior.length)+' yrs</span>'+
-      '</div>';
+  // The gauge's running total against its normal running total, week by week, Jan 1 to date.
+  function gaugeSpark(s){
+    var cum=(s.cum||[]).filter(function(r){ return r && r[1]!=null && r[2]!=null; });
+    if(cum.length<4) return '';
+    var W=360, H=120, pl=32, pr=40, pt=10, pb=18, iw=W-pl-pr, ih=H-pt-pb;
+    var maxV=Math.max.apply(null, cum.map(function(r){ return Math.max(r[1], r[2]); }))||1;
+    var step=maxV>40?20:maxV>16?10:maxV>8?5:maxV>4?2:1; maxV=Math.ceil(maxV/step)*step;
+    var d0=cum[0][0], d1=cum[cum.length-1][0]||1;
+    var X=function(d){ return pl+iw*((d-d0)/Math.max(1,d1-d0)); }, Y=function(v){ return pt+ih*(1-v/maxV); };
+    var line=function(k){ return cum.map(function(r,i){ return (i?'L':'M')+X(r[0]).toFixed(1)+' '+Y(r[k]).toFixed(1); }).join(' '); };
+    var grid=''; for(var tv=0; tv<=maxV+1e-9; tv+=step){ var gy=Y(tv);
+      grid+='<line x1="'+pl+'" y1="'+gy.toFixed(1)+'" x2="'+(W-pr)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(132,160,168,'+(tv===0?'.28':'.12')+'" stroke-width="1"/><text x="'+(pl-5)+'" y="'+(gy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a948f" font-family="JetBrains Mono,monospace">'+(tv===0?'0':tv+'″')+'</text>'; }
+    var last=cum[cum.length-1], dev=last[1]-last[2];
+    var col = dev<=-2 ? '#d98a1f' : dev>=2 ? '#3f9a45' : 'var(--fs-rain,#4f8fc0)';
+    return '<div class="fs-chart-title">Rain at the county gauge: Jan 1 to date</div>'+
+      '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Rain this year at the county gauge against its normal" style="display:block;width:100%;height:auto;margin-top:.35rem">'+grid+
+      '<path d="'+line(2)+'" fill="none" stroke="#8a948f" stroke-width="1.2" stroke-dasharray="4 3"></path>'+
+      '<path d="'+line(1)+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round"></path>'+
+      '<circle cx="'+X(last[0]).toFixed(1)+'" cy="'+Y(last[1]).toFixed(1)+'" r="3.2" fill="'+col+'"/>'+
+      '<text x="'+(X(last[0])+6).toFixed(1)+'" y="'+(Math.max(pt+7,Y(last[1]))+3).toFixed(1)+'" font-size="10" font-weight="700" fill="'+col+'" font-family="JetBrains Mono,monospace">'+(+last[1]).toFixed(1)+'″</text></svg>'+
+      '<div class="fs-src" style="margin-top:.15rem;display:flex;gap:1rem;flex-wrap:wrap"><span style="color:'+col+'">&#9644; This year</span><span style="color:#8a948f">- - '+esc(s.pLbl||'normal')+'</span></div>';
   }
 
   function droughtColor(cat){
@@ -714,25 +757,26 @@ window.__fsRead = function (FSX) {
     if(!wx && !dr) return;
     var html='';
     if(wx && !wx.err){
+      var wkTxt = wx.wk!=null ? wx.wk+'"' : '-';
       html += '<div class="fs-stats">'+
-        stat(wx.temp+'°','Air temp')+ stat(wx.hum+'%','Humidity')+
-        stat(wx.wind+' mph','Wind')+ stat(wx.wk+'"','Rain, 7 days')+'</div>';
+        stat(wx.temp+'°','Air temp')+ stat(wx.hum!=null?wx.hum+'%':'-','Humidity')+
+        stat(wx.wind!=null?wx.wind+' mph':'-','Wind')+ stat(wkTxt,'Rain, 7 days')+'</div>';
       // one plain-language read of the numbers above — what they mean for work today
       var wkN=parseFloat(wx.wk)||0, wxSay;
-      if(wx.wind>15) wxSay='Too windy to spray right now: drift risk at '+wx.wind+' mph.';
-      else if(wkN>=1.5) wxSay='A wet week ('+wx.wk+'\u2033 in 7 days); low ground is likely soft underfoot.';
-      else if(wx.hum>85 && wx.temp>=70) wxSay='Warm and humid, prime conditions for foliar disease; slow herbicide drydown too.';
+      if(wx.wind!=null && wx.wind>15) wxSay='Too windy to spray right now: drift risk at '+wx.wind+' mph.';
+      else if(wkN>=1.5) wxSay='A wet week ('+wx.wk+'″ in 7 days at the county gauge); low ground is likely soft underfoot.';
+      else if(wx.hum!=null && wx.hum>85 && wx.temp>=70) wxSay='Warm and humid, prime conditions for foliar disease; slow herbicide drydown too.';
       else if(wx.temp>90) wxSay='Hot: crop water demand is peaking; spray early if you spray.';
-      else if(wx.wind<=10 && wx.hum<=85) wxSay='A decent working window: light wind, workable humidity.';
+      else if(wx.wind!=null && wx.wind<=10 && wx.hum!=null && wx.hum<=85) wxSay='A decent working window: light wind, workable humidity.';
       // hand off to the full spray tool for the forward window
       if(wxSay) wxSay+=' <a href="/spray" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">Full spray forecast &rarr;</a>';
       else wxSay='Middling conditions. Nothing blocking field work, nothing ideal.';
       html += '<div class="fs-vigor-say" style="margin-top:.55rem">'+wxSay+'</div>';
-      // the 7-day number above is a weather model's; NOAA's radar and gauge estimate for the field is on /rain-radar
+      // NOAA's radar and gauge estimate for the field itself is on /rain-radar
       if(FSX.FIELD && isFinite(FSX.FIELD.lat) && isFinite(FSX.FIELD.lng))
         html += '<div class="fs-vigor-say" style="margin-top:.35rem"><a href="/rain-radar?lat='+FSX.FIELD.lat.toFixed(4)+'&lon='+FSX.FIELD.lng.toFixed(4)+'&label=this%20field" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">Rain on this field from NOAA radar and gauges, 24 hours to this month &rarr;</a></div>';
     } else if(wx && wx.err){
-      html += '<div class="fs-err" style="margin-bottom:.6rem">Weather unavailable right now.</div>';
+      html += '<div class="fs-err" style="margin-bottom:.6rem">National Weather Service observations not answering right now.'+(wx.wk!=null?' Rain at the county gauge, last 7 reported days: '+esc(wx.wk)+'″.':'')+'</div>';
     } else {
       html += '<div class="fs-loading"><span class="fs-spin"></span>weather</div>';
     }
@@ -747,13 +791,18 @@ window.__fsRead = function (FSX) {
       }
     }
     var srcs=[];
-    if(wx && !wx.err) srcs.push('Open-Meteo, now'+(wx.at?' ('+esc(wxTime(wx.at))+' local)':''));
-    if(dr && dr.cat!=null) srcs.push('US Drought Monitor'+(usdmWeek(dr.wk)?', map of '+esc(usdmWeek(dr.wk)):', this week\u2019s map'));
+    if(wx && !wx.err) srcs.push('National Weather Service, '+esc(wx.stn||'nearest station')+(wx.stnMi!=null?' ('+Math.round(wx.stnMi)+' mi)':'')+(wx.at?', observed '+esc(wxTime(wx.at)):''));
+    if(wx && wx.wk!=null && wx.wkStn) srcs.push('7-day rain: '+esc(wx.wkStn)+' gauge, through '+esc(usdmWeek(wx.wkAt)));
+    if(dr && dr.cat!=null) srcs.push('US Drought Monitor'+(dr.own?' county statistics':'')+(usdmWeek(dr.wk)?', map of '+esc(usdmWeek(dr.wk)):', this week\u2019s map'));
     if(srcs.length) html += '<div class="fs-src" style="margin-top:.5rem">'+srcs.join(' &middot; ')+'</div>';
     setBody('fs-wx', html);
   }
-  // Open-Meteo's current.time is local to the field ("2026-10-16T14:15"): print "2:15 PM".
-  function wxTime(t){ var m=/T(\d{2}):(\d{2})/.exec(String(t||'')); if(!m) return ''; var h=+m[1]; return (h%12||12)+':'+m[2]+' '+(h<12?'AM':'PM'); }
+  // NWS timestamps carry their offset ("2026-10-16T19:15:00+00:00"): print the reader's own
+  // clock time, "2:15 PM". A bare local time ("2026-10-16T14:15") prints as written.
+  function wxTime(t){
+    var sx=String(t||''), m=/T(\d{2}):(\d{2})/.exec(sx); if(!m) return '';
+    if(/(Z|[+-]\d{2}:?\d{2})$/.test(sx)){ var d=new Date(sx); if(!isNaN(d)) try{ return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }catch(e){} }
+    var h=+m[1]; return (h%12||12)+':'+m[2]+' '+(h<12?'AM':'PM'); }
   // USDM dates come as "2026-10-06", "2026-10-06T00:00:00" or "20261006": print "Oct 6".
   function usdmWeek(v){
     var s=String(v||''), m=/^(\d{4})-?(\d{2})-?(\d{2})/.exec(s); if(!m) return '';
@@ -1066,7 +1115,7 @@ window.__fsRead = function (FSX) {
     // a field can be tracking dry before it shows up as a drought category).
     if(se && se.pDep <= -2){
       var md = se.pDep<=-5, mv = md?'High':'Elevated', mc = md?'#d9534f':'#ff9326';
-      rows.push(riskRow('Moisture deficit', mv, mc, Math.abs(se.pDep).toFixed(1)+'″ below the '+se.n+'-year average season-to-date'));
+      rows.push(riskRow('Moisture deficit', mv, mc, Math.abs(se.pDep).toFixed(1)+'″ below '+pLbl(se)+' at the county gauge, season to date'));
     }
     if(!rows.length){
       var resolved = (FSX.FIELD.soil!==null) && (FSX.FIELD.hail!==null);
@@ -1078,7 +1127,9 @@ window.__fsRead = function (FSX) {
       return;
     }
     setBody('fs-risk', rows.join('') + hailSwathHtml() +
-      '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data, not an underwriting decision. Questions? <a href="mailto:sig@agsist.com" style="color:var(--brand,var(--gold))">Sigurd Lindquist &rarr;</a></div>');
+      '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data, not an underwriting decision.</div>'+
+      // Sig, Oct 29, 2026: his contact stays, but quiet: one small plain line, no button or arrow
+      '<p class="fs-risk-ask" style="margin:.35rem 0 0;font-size:.78rem;color:var(--text-muted)">Questions about this read: <a href="mailto:sig@agsist.com" style="color:inherit">sig@agsist.com</a></p>');
   }
   function riskRow(label, level, color, detail, link){
     // Colorblind-safe: a symbol carries severity independent of color.
@@ -1091,15 +1142,14 @@ window.__fsRead = function (FSX) {
     '</div>';
   }
 
-  // ── 5. CASH BIDS (AGSIST elevator network first, licensed feed to fill) ──
-  // 2026-09-25: the Barchart subscription is being cancelled. The network
-  // (dnilgis/bids, read in the browser by components/bids-network.js) is the
-  // primary source and wins on price where both name the same elevator. The
-  // licensed feed, through the proxy so the key is never in the page, fills
-  // what the network does not cover. Neither failing empties the card. Set
-  // FS_LICENSED_FEED = false the day the subscription ends and the proxy is
-  // never called.
-  var FS_LICENSED_FEED = false;   // Barchart turned off 2026-10-11 (Sig cancelling the subscription)
+  // ── 5. CASH BIDS (our own elevator network, measured from the field) ──
+  // 2026-10-29: our own data only, from the field's own point. The network (dnilgis/bids, read
+  // in the browser by components/bids-network.js) is searched from the field center, so every
+  // mile on the card is from this field, and no ZIP (no reverse geocode) is needed. If the
+  // network does not answer, the committed /data/bids.json (the same network, this morning's
+  // copy) fills in. The licensed Barchart feed and its proxy are gone: the feed is off
+  // (STANDING-DECISIONS: "The Barchart feed is off"), and the call was already switched off
+  // here on 2026-10-11.
   var FS_LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
   function fsKey(name, city, state){
     var t = String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/co op/g,'coop').replace(/co operative/g,'cooperative').split(' ').filter(Boolean);
@@ -1127,92 +1177,70 @@ window.__fsRead = function (FSX) {
       setTimeout(fin, 3000);
     });
   }
-  // Each feed resolves to {rows, ok}: ok false = could not be read at all,
-  // null = not asked. An empty answer from a feed that answered is ok.
+  function fsEnsureNet(){
+    return new Promise(function(resolve){
+      if(window.AGSIST_BIDS_NET) return resolve(window.AGSIST_BIDS_NET);
+      var done=false; function fin(){ if(!done){ done=true; resolve(window.AGSIST_BIDS_NET||null); } }
+      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=8'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
+      setTimeout(fin, 3000);
+    });
+  }
+  // Each source resolves to {rows, ok}: ok false = could not be read at all. An empty answer
+  // from a source that answered is ok.
   var FS_CROP_NAME={corn:'Corn',soybeans:'Soybeans',wheat:'Wheat'};
-  function fsFromNetwork(zip){
+  var BID_MILES=75;
+  function fsGroup(list){
+    var by={}, order=[];
+    list.forEach(function(r){
+      var k = fsKey(r.facility, r.city, r.state);
+      if(!by[k]){ by[k]={ company:r.facility, location:r.branch||'', city:r.town||r.city, state:r.state, distance:r.distance, _net:true, bids:[] }; order.push(k); }
+      var pa=r.pricedAt||r.checkedAt||null;   // when this board's prices last changed (else last read)
+      if(pa && (!by[k].posted || pa>by[k].posted)) by[k].posted=pa;
+      var d = r.period ? fsPeriodDates(r.period) : { start:r.deliveryStart||'', end:r.deliveryEnd||'' };
+      // The board's own label can be a code ("Yc", "Sww"); the crop key is what the network knows.
+      var crop=r.crop||r.category, nm = r.commodity||'';
+      if(FS_CROP_NAME[crop] && !/corn|soy|bean|wheat/i.test(nm)) nm = FS_CROP_NAME[crop];
+      by[k].bids.push({ commodity:nm, cashprice:r.cashPrice,
+        basis:(r.basisCents!=null ? r.basisCents : (r.basis!=null&&isFinite(r.basis) ? Math.round(r.basis*1000)/10 : null)),   // cents
+        currency:'USD', delivery:r.delivery||'', delivery_start:d.start, delivery_end:d.end });
+    });
+    return order.map(function(k){ return by[k]; });
+  }
+  function fsFromNetwork(c){
     return fsEnsureNet().then(function(NET){
-      if(!NET || typeof NET.snapshotForZip!=='function') return {rows:[], ok:false};
-      return NET.snapshotForZip(zip, { radiusMi: 75 }).then(function(snap){
+      if(!NET || typeof NET.snapshot!=='function') return {rows:[], ok:false};
+      return NET.snapshot(c.lat, c.lng, { radiusMi: BID_MILES }).then(function(snap){
         if(!snap || !snap.bids){
           return (typeof NET.reachable==='function' ? NET.reachable() : Promise.resolve(true))
             .then(function(up){ return {rows:[], ok:!!up}; });
         }
-        var by={}, order=[];
-        snap.bids.forEach(function(r){
-          var k = fsKey(r.facility, r.city, r.state);
-          if(!by[k]){ by[k]={ company:r.facility, location:r.branch||'', city:r.town||r.city, state:r.state, distance:r.distance, _net:true, bids:[] }; order.push(k); }
-          var pa=r.pricedAt||r.checkedAt||null;   // when this board's prices last changed (else last read)
-          if(pa && (!by[k].posted || pa>by[k].posted)) by[k].posted=pa;
-          var d = fsPeriodDates(r.period);
-          // The board's own label can be a code ("Yc", "Sww"); the crop key is what the network knows.
-          var nm = r.commodity||'';
-          if(FS_CROP_NAME[r.crop] && !/corn|soy|bean|wheat/i.test(nm)) nm = FS_CROP_NAME[r.crop];
-          by[k].bids.push({ commodity:nm, cashprice:r.cashPrice,
-            basis:(r.basisCents!=null ? r.basisCents : null),   // cents, like the licensed feed
-            currency:'USD', delivery:r.delivery||'', delivery_start:d.start, delivery_end:d.end });
-        });
-        return {rows: order.map(function(k){ return by[k]; }), ok:true};
+        return {rows: fsGroup(snap.bids), ok:true, at:snap.fetched||null};
       });
     }).catch(function(){ return {rows:[], ok:false}; });
   }
-  function fsFromLicensed(zip){
-    if(!FS_LICENSED_FEED) return Promise.resolve({rows:[], ok:null});
-    return fetchT(BIDS_PROXY+'/barchart/getGrainBids?zipCode='+encodeURIComponent(zip)+'&maxDistance=75&getAllBids=1', 15000)
-      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function(d){ var raw=(d&&(d.results||d.bids||d.data))||[]; return {rows:(Array.isArray(raw)?raw:[]), ok:true}; })
-      .catch(function(){ return {rows:[], ok:false}; });
-  }
-  function fsCrop(n){ n=String(n||''); return /corn/i.test(n)?'corn':(/soy|bean/i.test(n)?'soybeans':(/wheat|hrw|srw|hrs/i.test(n)?'wheat':'other')); }
-  // Ours wins on price where the network prices the same crop at the same
-  // elevator. A crop the network lacks there is kept from the licensed feed.
-  function fsMerge(net, lic){
-    var mine={};
-    net.forEach(function(x){
-      var k=fsKey(x.company, x.city, x.state); mine[k]=mine[k]||{};
-      (x.bids||[]).forEach(function(b){ mine[k][fsCrop(b.commodity)]=true; });
-    });
-    // Barchart's unit is decided over ITS rows alone, then everything is cents.
-    var lb=[]; lic.forEach(function(x){
-      if(x.bids && Array.isArray(x.bids)) x.bids.forEach(function(b){ if(b.basis!=null&&b.basis!==''&&!isNaN(parseFloat(b.basis))) lb.push(parseFloat(b.basis)); });
-      else if(x.basis!=null&&x.basis!==''&&!isNaN(parseFloat(x.basis))) lb.push(parseFloat(x.basis));
-    });
-    var licDollars = lb.length>0 && lb.every(function(v){ return Math.abs(v)<2; }) && lb.some(function(v){ return v!==Math.round(v); });
-    if(licDollars) lic = lic.map(function(x){
-      var y={}; for(var q in x) y[q]=x[q];
-      var cv=function(b){ var c={}; for(var q in b) c[q]=b[q]; if(c.basis!=null&&c.basis!==''&&!isNaN(parseFloat(c.basis))) c.basis=Math.round(parseFloat(c.basis)*1000)/10; return c; };
-      if(x.bids && Array.isArray(x.bids)) y.bids=x.bids.map(cv); else y=cv(y);
-      return y;
-    });
-    var extra=[];
-    lic.forEach(function(x){
-      var k=fsKey(x.company||x.name||x.locationName, x.city, x.state);
-      if(!mine[k]){ extra.push(x); return; }
-      if(x.bids && Array.isArray(x.bids)){
-        var keep=x.bids.filter(function(b){ return !mine[k][fsCrop(b.commodity||b.commodity_display_name||b.commodityName)]; });
-        if(keep.length){ var y={}; for(var q in x) y[q]=x[q]; y.bids=keep; extra.push(y); }
-      } else if(!mine[k][fsCrop(x.commodity||x.commodityName)]) extra.push(x);
-    });
-    return { results: net.concat(extra), unitsResolved: true };
+  function fsMiles(a,b,c2,d){ var R=3958.8,p=Math.PI/180,x=(c2-a)*p,y=(d-b)*p,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*p)*Math.cos(c2*p)*Math.sin(y/2)*Math.sin(y/2); return 2*R*Math.asin(Math.min(1,Math.sqrt(h))); }
+  // The committed copy: its rows carry their own lat/lon, so the miles are still from the field.
+  function fsFromLocal(c){
+    return getJSON('/data/bids.json', 20000).then(function(d){
+      var rows=(d&&d.bids||[]).filter(function(r){ return r && isFinite(r.lat) && isFinite(r.lon) && r.verified!==false && (r.currency||'USD')==='USD'; })
+        .map(function(r){ var o={}; for(var q in r) o[q]=r[q]; o.distance=Math.round(fsMiles(c.lat,c.lng,r.lat,r.lon)*10)/10; o.town=r.city||r.town; return o; })
+        .filter(function(r){ return r.distance<=BID_MILES; })
+        .sort(function(a,b){ return a.distance-b.distance; });
+      return {rows: fsGroup(rows), ok:true, at:d&&d.fetched||null, local:true};
+    }).catch(function(){ return {rows:[], ok:false}; });
   }
   function loadBids(c){
     var gen = FSX.fieldGen;
-    // Reverse-geocode to a ZIP, then the same call cash-bids.html uses.
-    geoRev(c)
-      .then(function(g){
-        if(gen !== FSX.fieldGen) return;
-        var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
-        if(!zip){ if(FSX.FIELD){ FSX.FIELD.bids={corn:null,bean:null,zip:'',count:0,noZip:1}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it, common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
-        return Promise.all([fsFromNetwork(zip), fsFromLicensed(zip)])
-          .then(function(x){
-            if(gen!==FSX.fieldGen) return;
-            if(x[0].ok===false && x[1].ok!==true) throw new Error('no bid feed reachable');   // say so; do not report "no elevators"
-            renderBids(fsMerge(x[0].rows, x[1].rows), zip, gen);
-          });
+    fsFromNetwork(c)
+      .then(function(x){ return (x.ok===false) ? fsFromLocal(c) : x; })
+      .then(function(x){
+        if(gen!==FSX.fieldGen) return;
+        if(x.ok===false) throw new Error('no bid source reachable');   // say so; do not report "no elevators"
+        renderBids({ results:x.rows, unitsResolved:true, local:!!x.local, at:x.at }, '', gen);
       })
       .catch(function(){ if(gen!==FSX.fieldGen) return; if(FSX.FIELD){ FSX.FIELD.bids={corn:null,bean:null,zip:'',count:0,err:1}; recomputeInsight(); } setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
   }
-  window.__fsBidsInternals = { fsKey:fsKey, fsPeriodDates:fsPeriodDates, fsMerge:fsMerge, loadBids:loadBids };
+  window.__fsBidsInternals = { fsKey:fsKey, fsPeriodDates:fsPeriodDates, fsGroup:fsGroup, fsFromLocal:fsFromLocal, loadBids:loadBids };
   function bidDate(v){ if(!v) return null; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(v)); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
   function monthIdx(t){ var d=new Date(t); return d.getFullYear()*12+d.getMonth(); }
   var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1263,7 +1291,7 @@ window.__fsRead = function (FSX) {
     // Border ZIPs pull Ontario/Manitoba elevators quoting CAD. This page prints "$" and
     // multiplies by US county yields, so a CAD price would read as a US price. Leave them out.
     flat = flat.filter(function(x){ return !isNaN(x.cash) && x.cur==='USD'; }).sort(function(a,b){ return (a.dist||999)-(b.dist||999); });
-    if(!flat.length){ if(FSX.FIELD){ FSX.FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevators are reporting cash bids near ZIP '+esc(zip)+' right now. Bid coverage is densest across the Corn Belt and thins out elsewhere.</div>'); return; }
+    if(!flat.length){ if(FSX.FIELD){ FSX.FIELD.bids={corn:null,bean:null,zip:zip,count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">No elevator in our network posts a cash bid within '+BID_MILES+' miles of this field right now. Coverage is densest across the Corn Belt and thins out elsewhere. <a href="/cash-bids" style="color:var(--brand,var(--gold))">Cash bids &rarr;</a></div>'); return; }
     // record best CONVENTIONAL corn & bean bid for the insight engine — specialty
     // bids (organic, food-grade, white, popcorn, seed, non-GMO) trade $2–8/bu over
     // conventional and must never headline as "cash corn". The full list below
@@ -1302,7 +1330,13 @@ window.__fsRead = function (FSX) {
     }
     var corn=bestConv(/corn/i);
     var bean=bestConv(/bean|soy/i);
-    if(FSX.FIELD) { FSX.FIELD.bids = { corn:corn, bean:bean, zip:zip, count:flat.length }; recomputeInsight(); if(FSX.FIELD._rentRedraw) FSX.FIELD._rentRedraw(); }   // the rent card's gross line needs the bid
+    // the NEAREST elevator's own bid for each crop (its nearest delivery month): the first screen
+    // shows this one, with its miles; the headline-best above still feeds the rent and gross lines
+    function nearestConv(re){
+      var near=nearestPerElev(flat.filter(function(x){ return re.test(x.commodity) && !SPECIALTY.test(x.commodity) && x.dist!=null; }));
+      return near.sort(function(a,b){ return a.dist-b.dist; })[0] || null;
+    }
+    if(FSX.FIELD) { FSX.FIELD.bids = { corn:corn, bean:bean, nearCorn:nearestConv(/corn/i), nearBean:nearestConv(/bean|soy/i), zip:zip, count:flat.length }; recomputeInsight(); if(FSX.FIELD._rentRedraw) FSX.FIELD._rentRedraw(); }   // the rent card's gross line needs the bid
     var shown=(function(){
       var groups={}; flat.forEach(function(x){ var g=x.commodity.toLowerCase(); (groups[g]=groups[g]||[]).push(x); });
       var out=[]; Object.keys(groups).forEach(function(g){ out=out.concat(nearestPerElev(groups[g])); });
@@ -1324,7 +1358,7 @@ window.__fsRead = function (FSX) {
     }).join('');
     setBody('fs-bids', html +
       '<div class="fs-src" style="margin-top:.45rem">Each elevator\u2019s nearest delivery month. Later months usually pay more for storage; see them all on Cash Bids. Basis = cents vs the futures board. A less-negative basis than your area\u2019s usual means local demand is paying up; the strongest bid isn\u2019t always the highest cash number if hauling eats the spread.</div>'+
-      '<div class="fs-src" style="margin-top:.4rem"><a href="/cash-bids" style="color:var(--brand,var(--gold))">All bids near ZIP '+esc(zip)+' →</a></div>');
+      '<div class="fs-src" style="margin-top:.4rem">Miles are from the middle of this field. AGSIST elevator network'+(d&&d.local?' (the copy saved '+esc(postedDay(d.at)||'today')+'; the live read did not answer)':'')+' · <a href="/cash-bids" style="color:var(--brand,var(--gold))">All cash bids &rarr;</a></div>');
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1500,7 +1534,7 @@ window.__fsRead = function (FSX) {
     soil:{t:'Soil & productivity',b:'The dominant USDA soil map units under your field, ranked by share of acreage. Soil sets what the ground can yield and how it drains.'},
     nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index, a 0\u20131 index for row-crop ground (shown \u00d7100 in the vitals strip). Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
     ndvi:{t:'NDVI \u00b7 crop vigor',b:'How much living, green canopy the satellite sees. Runs about 0 (bare or dead) to 0.9 (dense, healthy crop). The best single at-a-glance crop-health number.'},
-    ndre:{t:'NDRE \u00b7 nitrogen',b:'A red-edge index tied to chlorophyll and nitrogen status. Most useful after canopy close, when NDVI flattens out.'},
+    ndre:{t:'NDRE \u00b7 red-edge',b:'A red-edge index tied to leaf chlorophyll. Most useful after canopy close, when NDVI flattens out. A satellite greenness reading, not a nitrogen test: low chlorophyll has many causes, and only tissue or soil tests measure nitrogen.'},
     ndmi:{t:'NDMI \u00b7 canopy moisture',b:'Water held in the crop canopy. Higher means more moisture in the leaves; a drop can flag stress before you can see it.'},
     nmdi:{t:'NMDI \u00b7 moisture',b:'A drought index combining canopy and soil-water signals.'},
     msi:{t:'MSI \u00b7 moisture stress',b:'Moisture Stress Index. Higher means more water stress. It runs opposite to NDMI.'},
@@ -1509,7 +1543,8 @@ window.__fsRead = function (FSX) {
     rotation:{t:'Crop rotation',b:'What grew here each year on record (up to a decade), from USDA\u2019s satellite-classified Cropland Data Layer. Continuous corn raises rootworm and disease pressure.'},
     drought:{t:'Drought',b:'US Drought Monitor category for this field, None through D4 (exceptional). D2 and worse means real moisture stress.'},
     slope:{t:'Slope',b:'Average ground slope across the field. Steeper ground carries more water-erosion exposure.'},
-    basis:{t:'Cash bid',b:'What a nearby elevator would pay for grain today, futures plus or minus local basis. The number you\u2019d actually get, not the board price.'},
+    basis:{t:'Nearest bid',b:'The nearest elevator in our network that posts a bid for this crop, its nearest delivery month, and how far it is from the middle of this field. Futures plus or minus local basis: the number you\u2019d actually get, not the board price.'},
+    rain:{t:'Rain vs normal',b:'Rain since January 1 at this county\u2019s NOAA gauge, as a share of that gauge\u2019s 1991\u20132020 normal for the same days. The gauge and its miles from your field are on the Season card.'},
     patchy:{t:'Field uniformity',b:'How evenly vigor is spread across the field. A wide spread means part of the field is lagging, a zone worth walking.'},
     normal:{t:'Field normal',b:'This field\u2019s own NDVI averaged over the same window in prior years, the baseline that says whether this season is ahead or behind.'}
   };
@@ -1569,23 +1604,38 @@ window.__fsRead = function (FSX) {
     var slV = (s&&s.slope!=null) ? s.slope+'%' : null;
     // the bid that matters is the crop in the field this year
     var beansNow = thisYearBeans();
-    var bid = b ? (beansNow ? (b.bean||b.corn) : (b.corn||b.bean)) : null;
+    var bid = b ? (beansNow ? (b.nearBean||b.nearCorn) : (b.nearCorn||b.nearBean)) : null;
     var bidV, bidSub;
     if(!b){ bidV=null; bidSub=null; }                                    // still loading -> ...
-    else if(bid && bid.cash!=null){ bidV='$'+(+bid.cash).toFixed(2); bidSub = (bid===b.bean?'cash beans':'cash corn')+(bid.mon?' \u00b7 '+bid.mon:''); }
+    else if(bid && bid.cash!=null){ bidV='$'+(+bid.cash).toFixed(2); bidSub = (bid===b.nearBean?'beans':'corn')+' \u00b7 '+esc(bid.elev)+' \u00b7 '+Math.round(bid.dist)+' mi'; }
     else if(b.err){ bidV='-'; bidSub='feed didn\u2019t answer'; }     // a failed read is not "no elevator"
     else if(b.noZip){ bidV='-'; bidSub='no ZIP here'; }
     else { bidV='-'; bidSub='none nearby'; }                       // loaded, no elevator
-    renderPeek({acres:acres, nccpi:nccpiV, vig:vigSub, dr:(d?(d.cat==null?'no answer':(d.cat==='None'?'None':d.cat)):null), bid:bidV!=='-'?bidV:null, bidSub:bidSub});
+    // FIRST SCREEN (2026-10-29): what a farmer checks first. Last year's crop, rain against
+    // normal at the county gauge, the nearest elevator's bid with its miles; the county name
+    // heads the readout.
+    var lastY=null, lastV=null, lastSub=null;
+    if(r && r.codes && r.codes.length){
+      lastY=r.years[r.years.length-1]; var lc=r.codes[r.codes.length-1], lm=lc&&CDL_CROPS[lc];
+      lastV = lm ? esc(lm.l) : 'Not a crop';
+      lastSub = rotSub ? rotSub+' \u00b7 '+rotV : rotV;
+    } else if(r===false || (r && !r.codes)) { lastV='-'; }
+    var se=FSX.FIELD.season, rainV=null, rainSub=null;
+    if(se===null || (se && se.pNow==null)){ rainV='-'; rainSub='no gauge record'; }
+    else if(se){ rainV=(se.pct!=null?Math.round(se.pct)+'%':se.pNow.toFixed(1)+'\u2033'); rainSub='of normal since Jan 1'+(se.mi!=null?' \u00b7 gauge '+Math.round(se.mi)+' mi':''); }
+    var cy=FSX.FIELD.county;
+    var co=document.getElementById('fs-deck-co'); if(co) co.textContent = cy&&cy.name ? cy.name+' County, '+cy.abbr : '';
+    renderPeek({acres:acres, nccpi:nccpiV, vig:vigSub, dr:(d?(d.cat==null?'no answer':(d.cat==='None'?'None':d.cat)):null), bid:bidV!=='-'?bidV:null, bidSub:bidSub,
+      county:cy&&cy.name?cy.name+' County, '+cy.abbr:null, last:lastV, lastY:lastY, rain:rainV, rainSub:rainSub});
     el.innerHTML =
-      vCell('ACRES', acres, null, 'acres') +
-      vCell('SOIL', soilV, soilSub, 'soil') +
+      vCell(lastY?lastY+' CROP':'LAST CROP', lastV, lastSub, 'rotation') +
+      vCell('RAIN', rainV, rainSub, 'rain') +
+      vCell('NEAREST BID', bidV, bidSub, 'basis') +
+      vCell('DROUGHT', drV, (d&&d.cat==null?'no answer':(d&&d.approx?'county-wide':null)), 'drought', drCls) +
       vCell('PRODUCTIVITY', nccpiV, (nccpiV!=null?'/100 NCCPI':null), 'nccpi') +
       vCell('VIGOR', vigV, vigSub, 'ndvi', vigCls) +
-      vCell('ROTATION', rotV, rotSub||(r&&r.codes?r.codes.length+'-yr':'10-yr'), 'rotation') +
-      vCell('DROUGHT', drV, (d&&d.cat==null?'no answer':(d&&d.approx?'county-wide':null)), 'drought', drCls) +
-      vCell('SLOPE', slV, null, 'slope') +
-      vCell('CASH', bidV, bidSub, 'basis');
+      vCell('SOIL', soilV, soilSub, 'soil') +
+      vCell('SLOPE', slV, null, 'slope');
   }
   function renderPeek(k){
     if(k) FSX._peek=k;
@@ -1595,9 +1645,10 @@ window.__fsRead = function (FSX) {
     var v=rd.verdict ? '<b>Bottom line:</b> '+esc(rd.verdict.charAt(0).toUpperCase()+rd.verdict.slice(1))+'.' : 'Reading this field&hellip;';
     var waiting = FSX.FIELD.t0 && (Date.now()-FSX.FIELD.t0)<12000;   // after the hold, a gap is a gap, not "loading"
     function kv(k,val){ return '<div class="fs-peek-k"><span class="k">'+k+'</span><span class="v">'+(val!=null&&val!==''?val:(waiting?'&hellip;':'-'))+'</span></div>'; }
-    var fourth = P.bid ? kv('Cash '+(P.bidSub&&/beans/.test(P.bidSub)?'beans':'corn'), P.bid) : kv('Drought', P.dr!=null?esc(P.dr):null);
+    var bidK = P.bid ? kv('Nearest bid', P.bid+(P.bidSub?' <small>'+P.bidSub.replace(/^(corn|beans) \u00b7 /,'')+'</small>':'')) : kv('Nearest bid', P.bidSub==='feed didn\u2019t answer'?'no answer':(P.bidSub?'-':null));
     el.innerHTML='<p class="fs-peek-v">'+v+'</p>'+
-      kv('Acres', P.acres)+kv('Productivity', P.nccpi!=null?P.nccpi+'/100':null)+kv('Vigor', P.vig!=null?esc(P.vig):null)+fourth+
+      (P.county?'<p class="fs-peek-co">'+esc(P.county)+'</p>':'')+
+      kv(P.lastY?P.lastY+' crop':'Last crop', P.last)+kv('Rain vs normal', P.rain!=null?P.rain:null)+bidK+kv('Productivity', P.nccpi!=null?P.nccpi+'/100':null)+
       '<a class="fs-peek-go" href="#fs-results">Read the whole field &darr;</a>';
     el.hidden=false;
     document.documentElement.classList.add('fs-has-peek');
@@ -1639,7 +1690,7 @@ window.__fsRead = function (FSX) {
     var ndreT=idxTrend(series,'ndre');
     if(ndreT && v!=null && v>=0.55 && last.ndre!=null){
       var nWord=ndreT.dir==='easing'?'easing':(ndreT.dir==='rising'?'building':'steady');
-      nLine='Nitrogen signal (NDRE '+(+last.ndre).toFixed(2)+') is <b>'+nWord+'</b>'+(ndreT.dir==='easing'?' while the canopy holds, the classic pattern worth a nitrogen check.':', chlorophyll is tracking with the canopy.');
+      nLine='Red-edge chlorophyll signal (NDRE '+(+last.ndre).toFixed(2)+') is <b>'+nWord+'</b>'+(ndreT.dir==='easing'?' while the canopy holds, a pattern worth a tissue test for nitrogen.':', chlorophyll is tracking with the canopy.');
     }
     // Off-season (Nov–Mar) with a low canopy: the story is winter cover, not vigor.
     var winterHead=null;
@@ -1681,7 +1732,7 @@ window.__fsRead = function (FSX) {
       (series.length>=2?'<a href="#" class="fs-god-link fs-replay-btn" data-god="ndvi"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Replay '+series.length+' passes on the map: watch the season</a>':'')+
       '<details class="fs-vigor-more"><summary>Show all indices for the latest pass</summary>'+
         '<div class="fs-vigor-grid">'+
-          idxChip('NDVI',last.ndvi,'vigor')+idxChip('NDRE',last.ndre,'nitrogen')+idxChip('NDMI',last.ndmi,'moisture')+
+          idxChip('NDVI',last.ndvi,'vigor')+idxChip('NDRE',last.ndre,'red-edge')+idxChip('NDMI',last.ndmi,'moisture')+
           idxChip('MSI',last.msi,'stress')+idxChip('NDWI',last.ndwi,'water')+idxChip('BSI',last.bsi,'bare soil')+
         '</div>'+
         '<div class="fs-src">Verdict words are rough guides; the right value shifts with crop and growth stage. Tap ? on any index for what it measures.</div>'+
@@ -1757,7 +1808,7 @@ window.__fsRead = function (FSX) {
   // Only fetched when needed (it is the Atlas's own boundary file, 2 MB; cached after).
   var _geoCo=null;
   function fipsByPoint(c, abbr){
-    if(!_geoCo) _geoCo=getJSON('/data/atlas/counties.geo.json', 30000).catch(function(){ _geoCo=null; return null; });
+    if(!_geoCo){ _geoCo=getJSON('/data/atlas/counties.geo.json', 30000); _geoCo.catch(function(){ _geoCo=null; }); }
     return _geoCo.then(function(g){
       if(!g||!g.features) return null;
       function inRing(r){ var x=c.lng,y=c.lat,ins=false; for(var i=0,j=r.length-1;i<r.length;j=i++){ var xi=r[i][0],yi=r[i][1],xj=r[j][0],yj=r[j][1]; if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi)) ins=!ins; } return ins; }
@@ -1767,15 +1818,43 @@ window.__fsRead = function (FSX) {
         if(abbr && f.properties && f.properties.st && f.properties.st!==abbr) return false;
         var gm=f.geometry; if(!gm) return false;
         var polys=gm.type==='Polygon'?[gm.coordinates]:gm.type==='MultiPolygon'?gm.coordinates:[];
-        if(polys.some(inPoly)){ hit={fips:String(f.id), name:f.properties&&f.properties.name}; return true; }
+        if(polys.some(inPoly)){ hit={fips:String(f.id), name:f.properties&&f.properties.name, st:f.properties&&f.properties.st}; return true; }
         return false;
       });
       return hit;
     });
   }
+  // THE COUNTY COMES FROM OUR OWN BOUNDARIES FIRST (2026-10-29). It used to wait on a Nominatim
+  // reverse geocode, so when that one outside service was slow or blocked, six cards (rent,
+  // parcel and sales, the county record, selling, who farms, statewide) all failed together,
+  // even though the point-in-county code below was already here. Now the county is the
+  // polygon in the Atlas's own boundary file (/data/atlas/counties.geo.json, the file the land
+  // card reads too) that holds the field center; Nominatim is asked only if that file does
+  // not load or the point falls in no county (offshore, Canada, a sliver the simplified lines
+  // miss).
+  var A2N={}; Object.keys(N2A).forEach(function(n){ A2N[N2A[n]]=n; });
+  function countyStart(gen, c, cty, abbr, stFull, fips, via){
+    FSX.FIELD.county = { name:cty, st:stFull, abbr:abbr, fips:fips||null, via:via };
+    var co=document.querySelector('#fs-results .coords');
+    if(co) co.textContent='center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+' · '+cty+' County, '+stFull;
+    try{ if(typeof FSX.onCounty==='function') FSX.onCounty(FSX.FIELD.county); }catch(e){}
+    loadRentCard(gen, abbr, cty, stFull);
+    loadMarketCard(gen, abbr, stFull);
+    loadHoodCard(gen, abbr, cty, stFull);
+    loadCondCard(gen, abbr, stFull);
+    recomputeInsight();
+  }
   function loadCounty(c){
     var gen = FSX.fieldGen;
-    var ERR_ALL = 'Couldn’t pin down the county for this spot right now (reverse-geocode didn’t answer). The county numbers need it; redraw in a minute and they usually load.';
+    fipsByPoint(c, null).then(function(h){
+      if(gen!==FSX.fieldGen) return;
+      var abbr=h&&h.st, stFull=abbr&&A2N[abbr];
+      if(h&&h.name&&stFull){ countyStart(gen, c, h.name, abbr, stFull, h.fips, 'boundary'); return; }
+      countyByNominatim(c, gen);
+    }, function(){ if(gen===FSX.fieldGen) countyByNominatim(c, gen); });
+  }
+  function countyByNominatim(c, gen){
+    var ERR_ALL = 'Couldn’t pin down the county for this spot right now: the county boundary file did not load and the place lookup did not answer. Redraw in a minute and they usually load.';
     geoRev(c, 8)
       .then(function(d){
         if(gen!==FSX.fieldGen) return;
@@ -1785,29 +1864,24 @@ window.__fsRead = function (FSX) {
         // Virginia's independent cities carry no county in OSM; NASS lists them as "X City".
         var cty=(ad.county||(abbr==='VA'&&ad.city?ad.city+' City':'')).replace(/\s+(County|Parish|Borough|Census Area)$/i,'');
         if(!abbr||!cty){ ['fs-rent','fs-market','fs-hood','fs-cond','fs-atlas'].forEach(function(id){ setErr(id, 'This spot didn’t resolve to a US county; the county and state layers only cover the fifty states.'); }); return; }
-        FSX.FIELD.county = { name:cty, st:stFull, abbr:abbr, fips:null };
-        var co=document.querySelector('#fs-results .coords');
-        if(co) co.textContent='center '+c.lat.toFixed(4)+', '+c.lng.toFixed(4)+' · '+cty+' County, '+stFull;
-        loadRentCard(gen, abbr, cty, stFull);
-        loadMarketCard(gen, abbr, stFull);
-        loadHoodCard(gen, abbr, cty, stFull);
-        loadCondCard(gen, abbr, stFull);
+        countyStart(gen, c, cty, abbr, stFull, null, 'nominatim');
       })
       .catch(function(){ if(gen!==FSX.fieldGen) return; ['fs-rent','fs-market','fs-hood','fs-cond','fs-atlas'].forEach(function(id){ setErr(id, ERR_ALL); }); });
   }
   function loadRentCard(gen, abbr, cty, stFull){
     getJSON('/data/cash-rent/'+abbr+'.json').then(function(d){
       if(gen!==FSX.fieldGen) return;
-      var want=normCty(cty);
-      var rec=(d.counties||[]).find(function(x){ return normCty(x.name)===want; });
+      var want=normCty(cty), wantF=FSX.FIELD&&FSX.FIELD.county&&FSX.FIELD.county.fips;
+      var rec=(wantF&&(d.counties||[]).find(function(x){ return String(x.fips)===String(wantF); }))||(d.counties||[]).find(function(x){ return normCty(x.name)===want; });
       if(!rec){
         setErr('fs-rent','NASS publishes no county rent survey for '+esc(cty)+', small samples get suppressed rather than guessed.');
         // The Atlas card doesn't need rent; find the county by its boundary instead.
+        if(wantF){ atlasCard(gen, wantF); return; }
         if(FSX.FIELD&&FSX.FIELD.lat!=null) fipsByPoint({lat:FSX.FIELD.lat,lng:FSX.FIELD.lng}, abbr).then(function(h){
           if(gen!==FSX.fieldGen) return;
           if(h){ if(FSX.FIELD.county) FSX.FIELD.county.fips=h.fips; atlasCard(gen, h.fips); }
           else setErr('fs-atlas','Couldn’t place this point in a county boundary.');
-        });
+        }, function(){ if(gen===FSX.fieldGen) setErr('fs-atlas','The county boundary file did not load, so the county record can’t be shown. Redraw in a minute.'); });
         return;
       }
       if(FSX.FIELD.county) FSX.FIELD.county.fips = rec.fips;
@@ -2155,23 +2229,23 @@ window.__fsRead = function (FSX) {
 
     // ── Season rain × GDU (skip a second moisture stressor if already in drought) ──
     if(se && lateSeason && se.pDep<=-2){
-      lines.push('The season ran '+Math.abs(se.pDep).toFixed(1)+'\u2033 drier than its '+se.n+'-year average; this late, rain no longer changes this year\u2019s crop, but it sets the soil profile for next spring.');
+      lines.push('The season ran '+Math.abs(se.pDep).toFixed(1)+'\u2033 drier than '+pLbl(se)+' at the county gauge; this late, rain no longer changes this year\u2019s crop, but it sets the soil profile for next spring.');
     } else if(se){
       var dryEnough=se.pDep<=-2, wetEnough=se.pDep>=2, hot=se.gDep>=100, cool=se.gDep<=-100;
       if(dryEnough && hot && !inDrought){
         push({ sev:4, act:true, topic:'moisture', tag:'a widening rain deficit',
           title:'the crop is developing fast into a moisture deficit. Watch it closely',
-          detail:'Rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> the '+se.n+'-year average while GDUs run '+Math.round(se.gDep)+' ahead: fast development into a drying profile.',
+          detail:'Rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> '+pLbl(se)+' while GDUs run '+Math.round(se.gDep)+' ahead of the '+se.n+'-year average: fast development into a drying profile.',
           watch: pollenWindow()!=null ? 'The next 2–3 weeks toward pollination (~'+pollenWindow()+' days out) are when a deficit bites hardest.' : 'A timely rain over the next two weeks matters most.' });
       } else if(dryEnough && !inDrought){
         push({ sev:3, act:false, topic:'moisture', tag:'a dry start',
           title:'the field is starting dry: keep an eye on moisture',
-          detail:'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> its '+se.n+'-year average.',
+          detail:'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> '+pLbl(se)+'.',
           watch:'Watch the forecast; a return to normal rainfall still recovers this.' });
       } else if(wetEnough && cool){
-        lines.push('A wet, cool start: rain '+se.pDep.toFixed(1)+'″ above the '+se.n+'-year average and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
+        lines.push('A wet, cool start: rain '+se.pDep.toFixed(1)+'″ above '+pLbl(se)+' and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
       } else if(wetEnough){
-        lines.push('Rain is running '+se.pDep.toFixed(1)+'″ above its '+se.n+'-year average so far this season.');
+        lines.push('Rain is running '+se.pDep.toFixed(1)+'″ above '+pLbl(se)+' so far this season.');
       }
     }
 
@@ -2219,9 +2293,9 @@ window.__fsRead = function (FSX) {
       if(enoughPasses && isCorn && cropStage && !cropStage.pastPollen && ixV!=null && ixV>=0.55){
         var nT=idxTrend(ix.series,'ndre');
         if(nT && nT.dir==='easing' && ixTr && ixTr.dir!=='easing'){
-          push({ sev:3, act:true, topic:'nitrogen', tag:'a fading nitrogen signal under a full canopy',
-            title:'the nitrogen signal is fading while the canopy holds. Check N before the window closes',
-            detail:'The canopy itself is holding (NDVI '+ixV.toFixed(2)+'), but the red-edge nitrogen signal (NDRE) has been <strong>easing on recent passes</strong>: the pattern that shows up when chlorophyll thins under a closed canopy. It is a satellite pattern, not a tissue test, but it matches what a nitrogen shortfall looks like from above.'+' <span class="fs-src">source: Sentinel-2 red-edge (NDRE), cloud-masked</span>',
+          push({ sev:3, act:true, topic:'nitrogen', tag:'a fading red-edge signal under a full canopy',
+            title:'the red-edge chlorophyll signal is fading while the canopy holds. A tissue test for N before the window closes would tell',
+            detail:'The canopy itself is holding (NDVI '+ixV.toFixed(2)+'), but the red-edge chlorophyll signal (NDRE) has been <strong>easing on recent passes</strong>: the pattern that shows up when chlorophyll thins under a closed canopy. It is a satellite pattern, not a tissue test, but it matches what a nitrogen shortfall looks like from above.'+' <span class="fs-src">source: Sentinel-2 red-edge (NDRE), cloud-masked</span>',
             watch: pollenWindow()!=null ? 'Pollination (~'+pollenWindow()+' days out) sets kernel count; a tissue or soil nitrate check before then still leaves time to sidedress or Y-drop.' : 'A tissue or soil nitrate check confirms it either way; the satellite can only point.' });
         }
       }
@@ -2264,7 +2338,7 @@ window.__fsRead = function (FSX) {
       if(ixLast.ndwi!=null && ixLast.ndwi>=0.2 && ixPatchy && se && se.pDep!=null && se.pDep>=2){
         push({ sev:2, act:true, topic:'wet', tag:'saturated ground in the weak zones',
           title:'the wet spots are likely drowning the weak zones; walk the low ground',
-          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above the '+se.n+'-year average on rain, and vigor is uneven across the field: the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
+          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above '+pLbl(se)+' on rain, and vigor is uneven across the field: the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
           watch:'Check the low corners; <a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor layer</a> shows which zones are lagging.' });
       }
     }
@@ -2338,8 +2412,14 @@ window.__fsRead = function (FSX) {
     var bigMon = mons.filter(function(x){ return (x.sev||0)>=2; }).sort(function(a,b){ return (b.sev||0)-(a.sev||0); })[0];
     // "Nothing needs action" is a claim about the field. Make it only when the field-level
     // layers actually answered; with soil, crop history and satellite all missing, say that.
+    // name what did not answer, so "redraw" is not a guess (2026-10-29)
+    function missingFieldLayers(){
+      var m=[]; if(!FSX.FIELD.soil) m.push('the USDA soil survey'); if(!FSX.FIELD.rotation) m.push('the USDA crop history');
+      if(!(FSX.FIELD.indices&&FSX.FIELD.indices.series&&FSX.FIELD.indices.series.length)) m.push('the satellite passes');
+      return m.length>1 ? m.slice(0,-1).join(', ')+' and '+m[m.length-1] : (m[0]||'part of the field data');
+    }
     var fieldLayers = (FSX.FIELD.soil?1:0) + (FSX.FIELD.rotation?1:0) + (FSX.FIELD.indices&&FSX.FIELD.indices.series&&FSX.FIELD.indices.series.length?1:0);
-    var lead = acts[0] || bigMon || (fieldLayers<2 ? { title:'not enough of this field\u2019s data loaded for a bottom line; redraw in a minute' } : null) || { title: lateSeason
+    var lead = acts[0] || bigMon || (fieldLayers<2 ? { title:'not enough of this field\u2019s data loaded for a bottom line: '+missingFieldLayers()+' did not answer; redraw in a minute' } : null) || { title: lateSeason
         ? 'nothing on this field needs action now; the crop is maturing, so harvest timing and the bid are what move money'
         : 'nothing on this field needs action right now; the items below are worth watching' };
     FSX.FIELD.read = { verdict: lead?lead.title:null,

@@ -39,7 +39,7 @@ permissions:
 
 concurrency:
   group: main-checks
-  cancel-in-progress: true
+  cancel-in-progress: false   # a full run on main finishes; GitHub keeps only the newest waiting run, so merges never cancel each other into no result
 
 jobs:
   rebuild:
@@ -65,12 +65,12 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          mapfile -t BUILT < <(python3 scripts/dev/main_build.py commit-paths)
           for i in 1 2 3 4 5; do
             git fetch -q origin main
             git reset -q --hard origin/main
             python3 scripts/dev/main_build.py build
-            git add -A -- "${BUILT[@]}"
+            # exact paths, -f past the engine's .git/info/exclude (scripts/dev/test-map.json is under scripts/)
+            python3 scripts/dev/main_build.py stage
             if git diff --staged --quiet; then
               echo "No change."; echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"; exit 0
             fi

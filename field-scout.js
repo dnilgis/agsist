@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════════
    AGSIST Field Scout — field-scout.js
    Draw a polygon → query soil (SSURGO), crop rotation (CDL), weather
-   (Open-Meteo), drought (USDM), and nearby cash bids (AGSIST proxy).
+   (NWS, the county gauge, a NOAA grid), drought (USDM), and nearby cash
+   bids (the AGSIST elevator network).
 
    Every source is a public endpoint hit from the user's browser. Each
    query is independent and fails soft — one source being down never
@@ -14,8 +15,11 @@
   // Soil, CDL, NDVI, moisture & hail all flow through the Field Scout Worker
   // (handles CORS, the Sentinel Hub OAuth secret, and the CDL reprojection).
   var FS_WORKER = 'https://agsist-fieldscout.dnilgis.workers.dev';                  // ← deploy & set this
-  var METEO_URL = 'https://api.open-meteo.com/v1/forecast';
-  var BIDS_PROXY= 'https://agsist-barchart.dnilgis.workers.dev';                    // AGSIST cash-bid proxy
+  // USGS National Map cached base maps (Web Mercator, /tile/{level}/{row}/{col}, cached to level 16:
+  // 'Max Scale: 9027.977411' in both service directories, read Oct 29, 2026)
+  var USGS_MAX_Z = 16;
+  var USGS_ATTR_SAT = 'Imagery: USGS, USDA NAIP';
+  var USGS_ATTR_MAP = 'Map: USGS';
   var NOMINATIM = 'https://nominatim.openstreetmap.org/search';
   var NOMINATIM_REV = 'https://nominatim.openstreetmap.org/reverse';
   // full state name ↔ postal abbr (nominatim returns full names; data files key by abbr or FIPS)
@@ -49,7 +53,7 @@
   // God-layer overlays
   var godLayer = null;          // current Leaflet tileLayer overlay
   var godActive = '';           // '', 'ndvi', 'ndre', 'moisture'
-  var GOD_LABEL = { ndvi: 'crop vigor', ndre: 'nitrogen status', moisture: 'soil moisture' };
+  var GOD_LABEL = { ndvi: 'crop vigor', ndre: 'red-edge (NDRE)', moisture: 'soil moisture' };
   var GOD_ATTR  = { ndvi: 'NDVI: Sentinel-2 / Copernicus', ndre: 'NDRE: Sentinel-2 / Copernicus', moisture: 'Moisture: Sentinel-1 / Copernicus' };
   var godOpacity = 0.75;
   var godDate = null;           // YYYY-MM-DD for the time-scrubber
@@ -99,11 +103,26 @@
     map.on('zoomstart', dismissInvite);
     try{ map.getContainer().addEventListener('pointerdown', dismissInvite, { once:true }); }catch(e){}
 
-    satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom:19, attribution:'Imagery &copy; Esri'
+    // THE BASE MAP IS THE USGS NATIONAL MAP (Sig, Oct 29, 2026): public domain, no key, no
+    // account, so it cannot turn into a bill or a watermark (scripts/basemap-checks.mjs). The
+    // satellite view is USGSImageryOnly (NAIP aerial photos, cached to level 16; closer zooms
+    // stretch the level-16 tile), the map view is USGSTopo. Esri World Imagery (no account,
+    // ad-funded sites not covered) and CARTO dark_all (key required since Sep 9) are gone.
+    satLayer = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}', {
+      maxNativeZoom:USGS_MAX_Z, maxZoom:19, attribution:USGS_ATTR_SAT
     }).addTo(map);
-    mapLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom:19, attribution:'&copy; OpenStreetMap, &copy; CARTO'
+    mapLayer = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', {
+      maxNativeZoom:USGS_MAX_Z, maxZoom:19, attribution:USGS_ATTR_MAP
+    });
+    // A base map that does not come through says so once; the outline, the pin and the
+    // readout never depend on it.
+    [satLayer, mapLayer].forEach(function(t){
+      var got=0, waiting=0;
+      t.on('tileload', function(){ got++; });
+      t.on('tileerror', function(){
+        if(got || waiting) return;
+        waiting=setTimeout(function(){ if(!got && map.hasLayer(t)) flashHint('The USGS map tiles did not load. Your field outline and readout still work.'); }, 6000);
+      });
     });
 
     drawnLayer = new L.FeatureGroup().addTo(map);
@@ -255,10 +274,10 @@
         '<div class="fs-leg-say">Greener means more living crop. Brown and tan are bare soil, residue, or a struggling stand. Those are the spots worth walking.</div>';
     } else if(which==='ndre'){
       el.hidden=false;
-      el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Nitrogen (NDRE)</span><span class="fs-leg-tag">red-edge, most useful after canopy closes</span></div>'+
+      el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Red-edge (NDRE)</span><span class="fs-leg-tag">red-edge, most useful after canopy closes</span></div>'+
         '<div class="fs-leg-bar" style="background:linear-gradient(90deg,#e0685f,#d4a23f,#5fc28a)"></div>'+
         '<div class="fs-leg-ends"><span>Low</span><span>Strong</span></div>'+
-        '<div class="fs-leg-say">Once the canopy closes, NDVI flattens out and stops showing variation; NDRE keeps reading chlorophyll and nitrogen status underneath it. Red/gold patches are where nitrogen is most likely limiting, worth a soil or tissue test before you trust it.</div>';
+        '<div class="fs-leg-say">Once the canopy closes, NDVI flattens out and stops showing variation; NDRE keeps reading leaf chlorophyll underneath it. Red/gold patches have less chlorophyll than the rest; that can be nitrogen, but also water, disease or soil, so it is a place to walk and test, not a nitrogen reading.</div>';
     } else if(which==='moisture'){
       el.hidden=false;
       el.innerHTML='<div class="fs-leg-top"><span class="fs-leg-ttl">Soil moisture</span><span class="fs-leg-tag">radar surface wetness</span></div>'+
@@ -1081,7 +1100,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=13', FS_EXTRAS_SRC='/field-scout-extras.js?v=3';
+  var FS_READ_SRC='/field-scout-read.js?v=14', FS_EXTRAS_SRC='/field-scout-extras.js?v=4';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},
@@ -1095,11 +1114,9 @@
     fieldGen:{get:function(){ return fieldGen; }, set:function(v){ fieldGen=v; }},
     _peek:{get:function(){ return _peek; }, set:function(v){ _peek=v; }},
     _activeFieldId:{get:function(){ return _activeFieldId; }, set:function(v){ _activeFieldId=v; }},
-    BIDS_PROXY:{get:function(){ return BIDS_PROXY; }},
     CDL_CROPS:{get:function(){ return CDL_CROPS; }},
     FS_WORKER:{get:function(){ return FS_WORKER; }},
     ICONS:{get:function(){ return ICONS; }},
-    METEO_URL:{get:function(){ return METEO_URL; }},
     N2A:{get:function(){ return N2A; }},
     NOMINATIM_REV:{get:function(){ return NOMINATIM_REV; }},
     PHOTO_CAP:{get:function(){ return PHOTO_CAP; }},

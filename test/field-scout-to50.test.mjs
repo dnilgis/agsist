@@ -213,22 +213,37 @@ function cdlFor(lon) {   // a corn-soybean field whose east side was grass in 20
   return { rotation: h.slice(0, 5), history: h };
 }
 
+// PRISM through RCC-ACIS: [date, maxt, mint], this year and the five before, to two days ago (10 GDUs a day)
+function acisRows() {
+  const out = [], y0 = new Date().getUTCFullYear() - 5, end = Date.now() - 2 * 864e5;
+  for (let t = Date.UTC(y0, 0, 1); t <= end; t += 864e5) out.push([new Date(t).toISOString().slice(0, 10), 70, 50]);
+  return out;
+}
+
 async function openPage(browser, port, width, opts = {}) {
-  const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 }, isMobile: width < 500, hasTouch: width < 500 });
+  const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 }, isMobile: width < 500, hasTouch: width < 500, timezoneId: "America/Chicago" });
   const pg = await ctx.newPage();
   const errors = [], requests = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
   pg.on("request", (r) => requests.push(r.url()));
   if (opts.saved) await pg.addInitScript((s) => { try { localStorage.setItem("agsist-fs-fields", JSON.stringify(s)); } catch (e) {} }, opts.saved);
   await pg.addInitScript((bidsDown) => {
+    // Field Scout searches the network from the field's own point (snapshot), not a ZIP
+    const snap = { bids: [{ facility: "Test Co-op", branch: "", town: "Eldora", state: "IA", distance: 6.2, commodity: "Corn", crop: "corn", cashPrice: 3.86, basisCents: -34, period: "2099-12", delivery: "Dec", pricedAt: "2026-10-15T15:00:00Z" }] };
     window.AGSIST_BIDS_NET = bidsDown
-      ? { snapshotForZip: () => Promise.reject(new Error("down")), reachable: () => Promise.resolve(false) }
-      : { snapshotForZip: () => Promise.resolve({ bids: [{ facility: "Test Co-op", branch: "", town: "Eldora", state: "IA", distance: 6.2, commodity: "Corn", crop: "corn", cashPrice: 3.86, basisCents: -34, period: "2099-12", delivery: "Dec", pricedAt: "2026-10-15T15:00:00Z" }] }), reachable: () => Promise.resolve(true) };
+      ? { snapshot: () => Promise.reject(new Error("down")), snapshotForZip: () => Promise.reject(new Error("down")), reachable: () => Promise.resolve(false) }
+      : { snapshot: () => Promise.resolve(snap), snapshotForZip: () => Promise.resolve(snap), reachable: () => Promise.resolve(true) };
   }, !!opts.bidsDown);
   await pg.route("**/*", (r) => {
     const u = new URL(r.request().url()), h = u.hostname;
     const J = (o) => r.fulfill({ body: JSON.stringify(o), contentType: "application/json", headers: { "access-control-allow-origin": "*" } });
-    if (h === "127.0.0.1") return (opts.noDraw && u.pathname.includes("leaflet-draw")) ? r.abort() : r.continue();
+    if (h === "127.0.0.1") {
+      if (opts.noDraw && u.pathname.includes("leaflet-draw")) return r.abort();
+      // "the bid feed is down" means our network AND its committed copy, or the card would rightly fall back
+      if (opts.bidsDown && u.pathname === "/data/bids.json") return r.abort();
+      if (opts.blockLocal && opts.blockLocal.some((x) => u.pathname.startsWith(x))) return r.abort();
+      return r.continue();
+    }
     if (h.includes("fieldscout")) {
       if (u.pathname.startsWith("/soil")) return J(SOIL);
       if (u.pathname.startsWith("/cdl")) return J(cdlFor(+u.searchParams.get("lon")));
@@ -236,10 +251,17 @@ async function openPage(browser, port, width, opts = {}) {
       if (u.pathname.startsWith("/indices")) return J({ series: [] });
       return r.fulfill({ body: PNG, contentType: "image/png" });
     }
-    if (h === "api.open-meteo.com") return J({ current: { time: "2026-10-16T14:15", temperature_2m: 54, relative_humidity_2m: 61, precipitation: 0, wind_speed_10m: 9 }, daily: { precipitation_sum: [0, 0.1, 0, 0.4, 0, 0, 0.2, 0] } });
-    if (h === "archive-api.open-meteo.com") return J({});
-    if (h === "nominatim.openstreetmap.org") return J(u.pathname.includes("reverse") ? { address: { postcode: "50126", county: "Hardin County", state: "Iowa" } } : [{ lat: "42.345", lon: "-93.39" }]);
-    if (/arcgisonline|cartocdn/.test(h)) return r.fulfill({ body: PNG, contentType: "image/png" });
+    if (h === "api.weather.gov") {
+      if (opts.nwsDown) return r.abort();
+      if (u.pathname.startsWith("/points/")) return J({ properties: { observationStations: "https://api.weather.gov/gridpoints/DMX/50,90/stations" } });
+      if (u.pathname.endsWith("/stations")) return J({ features: [{ properties: { stationIdentifier: "KIFA", name: "Iowa Falls Municipal Airport" }, geometry: { type: "Point", coordinates: [-93.27, 42.47] } }] });
+      if (u.pathname.endsWith("/observations/latest")) return J({ properties: { timestamp: "2026-10-16T19:15:00+00:00", temperature: { value: 12.2, unitCode: "wmoUnit:degC" }, relativeHumidity: { value: 61 }, windSpeed: { value: 14.5, unitCode: "wmoUnit:km_h-1" } } });
+      return r.abort();
+    }
+    if (h === "data.rcc-acis.org" && u.pathname === "/GridData") return opts.acisDown ? r.abort() : J({ data: acisRows() });
+    if (h === "nominatim.openstreetmap.org") { if (opts.nominatimDown) return r.abort(); return J(u.pathname.includes("reverse") ? { address: { postcode: "50126", county: "Hardin County", state: "Iowa" } } : [{ lat: "42.345", lon: "-93.39" }]); }
+    if (h === "api.open-meteo.com" || h === "archive-api.open-meteo.com") { if (opts.meteoSeen) opts.meteoSeen.push(u.href); return r.abort(); }
+    if (h === "basemap.nationalmap.gov") return r.fulfill({ body: PNG, contentType: "image/png" });
     return r.abort();
   });
   await pg.goto(`http://127.0.0.1:${port}/field-scout`);
@@ -275,7 +297,11 @@ test("phone: a finished read is one tap from the first screen and its bottom lin
     // Bids carry the day they were posted; weather and drought carry their read dates.
     await pg.waitForFunction(() => /posted/.test(document.getElementById("fs-bids").textContent), null, { timeout: 20000 });
     assert.match(await pg.textContent("#fs-bids"), /posted Oct 15/);
-    assert.match(await pg.textContent("#fs-wx"), /Open-Meteo, now \(2:15 PM local\) · US Drought Monitor, map of Oct 13/);
+    // weather now from the National Weather Service (Open-Meteo's free tier excludes ad-supported sites)
+    await pg.waitForFunction(() => /National Weather Service/.test(document.getElementById("fs-wx").textContent), null, { timeout: 20000 });
+    assert.match(await pg.textContent("#fs-wx"), /National Weather Service, Iowa Falls Municipal Airport \(\d+ mi\), observed 2:15 PM/);
+    assert.match(await pg.textContent("#fs-wx"), /54°/, "12.2 C reads 54 F");
+    assert.match(await pg.textContent("#fs-wx"), /US Drought Monitor( county statistics)?, map of [A-Z][a-z]{2} \d{1,2}/);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
