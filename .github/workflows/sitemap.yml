@@ -8,6 +8,15 @@ on:
   schedule:
     - cron: "17 9 * * *"   # 09:17 UTC daily — refreshes data-driven pages on their cadence
   workflow_dispatch:
+    inputs:
+      base:
+        description: 'with head: bump the pages changed from base to head (merge-when-green.yml passes the merged range); empty: the daily refresh'
+        required: false
+        default: ''
+      head:
+        description: 'the commit the range ends at (the merge commit)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -34,8 +43,25 @@ jobs:
           python-version: "3.12"
 
       - name: Bump lastmod
+        env:
+          IN_BASE: ${{ github.event.inputs.base }}
+          IN_HEAD: ${{ github.event.inputs.head }}
         run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "$IN_BASE" ]; then
+            # a hand start after a merge by the job token: the merge's own range, not HEAD~1 (a
+            # collection job may have pushed since)
+            for r in "$IN_BASE" "$IN_HEAD"; do
+              printf '%s' "$r" | grep -Eq '^[0-9a-f]{40}$' || { echo "::error::base and head must be commit shas"; exit 1; }
+              git cat-file -e "$r^{commit}" 2>/dev/null || git fetch -q --no-tags --depth=1 origin "$r"
+            done
+            files=$(git diff --name-only "$IN_BASE" "$IN_HEAD" -- '*.html' | tr '\n' ' ')
+            echo "changed HTML in $IN_BASE..$IN_HEAD: ${files:-<none>}"
+            if [ -n "$files" ]; then
+              python scripts/update_sitemap.py --changed $files --base "$IN_BASE" --out /tmp/bumped.txt
+            else
+              echo "[sitemap] no HTML changes to map"; : > /tmp/bumped.txt
+            fi
+          elif [ "${{ github.event_name }}" = "push" ]; then
             base="${{ github.event.before }}"
             if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then base="HEAD~1"; fi
             files=$(git diff --name-only "$base" HEAD -- '*.html' | tr '\n' ' ')
