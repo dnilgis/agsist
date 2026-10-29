@@ -1,0 +1,259 @@
+{
+ "schema": "agsist-ownership-changes/1",
+ "source": "notes/chatgpt/2026-10-27-answers/elevator-ownership-changes-2025-2026.md in the private repo dnilgis/feedbag (ChatGPT research read 2026-10-27)",
+ "note": "Hand-curated change log applied to data/ids/elevators.json (parent, status) and data/ids/board-parents.json (rule ownership-change) by scripts/build_ids.py. Rules: a parent is set only for a completed change that names a date; a board's own posted name is never changed; a lease changes the operator, not the owner; pending and closing changes are marked, never applied; facility ids are never reused (every id here is a live record of data/ids/elevators.json). The research file lists each change with its date but not the page it came from, so the source of every row is that file; a row with no facility has no matching record to mark.",
+ "events": [
+  {
+   "id": "oc01",
+   "kind": "parent",
+   "text": "Stephenson Service Co merged Pearl City Elevator (Pearl City, Lena IL). The boards keep their own posted name; the firm behind them is Stephenson.",
+   "effective": "2026-09-01",
+   "parent": "Stephenson Service Company",
+   "facilities": [
+    "e3j64zn749",
+    "ef7wxjzrp7",
+    "e6m8m33m3v",
+    "ejsyrhbe3m",
+    "es6rbep7jr",
+    "ev9sdqr7qt"
+   ],
+   "source": "research file above"
+  },
+  {
+   "id": "oc02",
+   "kind": "parent",
+   "text": "CHS acquired West Central Ag Services (Ulen, Beltrami MN and others).",
+   "effective": "2025-01-02",
+   "parent": "CHS Inc.",
+   "facilities": [
+    "etzgyj9bd6"
+   ],
+   "source": "research file above"
+  },
+  {
+   "id": "oc03",
+   "kind": "closing",
+   "text": "CHS Kasson MN ceases grain after the 2026 harvest (announced).",
+   "after": "2026 harvest",
+   "facilities": [
+    "e8t3a0vh09",
+    "a00239"
+   ],
+   "source": "research file above"
+  },
+  {
+   "id": "oc04",
+   "kind": "closing",
+   "text": "CHS Ostrander MN ceases grain after the 2026 harvest (announced).",
+   "after": "2026 harvest",
+   "facilities": [
+    "ez1tmay9bf",
+    "a00241"
+   ],
+   "source": "research file above"
+  },
+  {
+   "id": "oc05",
+   "kind": "closing",
+   "text": "CHS Wykoff MN ceases grain after the 2026 harvest (announced).",
+   "after": "2026 harvest",
+   "facilities": [
+    "e806y84kf7",
+    "a00244"
+   ],
+   "source": "research file above"
+  },
+  {
+   "id": "oc06",
+   "kind": "pending",
+   "text": "ADM Montgomery City MO elevator, sale to MFA announced (Apr 2026). Not complete until the research says so.",
+   "effective": "2026-04",
+   "to": "MFA Inc",
+   "facilities": [
+    "a00298"
+   ],
+   "source": "research file above"
+  },
+  {
+   "id": "oc07",
+   "kind": "pending",
+   "text": "Mennel C&O elevator Upper Sandusky OH, sale to Kalmbach Feeds announced (Aug 2026).",
+   "effective": "2026-08",
+   "to": "Kalmbach Feeds",
+   "facilities": [
+    "a00403"
+   ],
+   "source": "research file above"
+  },
+  {
+   "id": "oc08",
+   "kind": "lease",
+   "text": "Scoular leases Oakley, Monument and Winona KS to Scott Coop; Scott Coop is the operator from Sep 1 2026, the owner is unchanged (a lease changes operator, not owner).",
+   "effective": "2026-09-01",
+   "to": "Scott Coop",
+   "facilities": [
+    "e2zrhacsts",
+    "e3rg0jt373",
+    "ewb20jy83s"
+   ],
+   "note": "owner stays Scoular",
+   "source": "research file above"
+  },
+  {
+   "id": "oc09",
+   "kind": "closed",
+   "text": "CHS Superior WI terminal closed Aug 31 2025.",
+   "effective": "2025-08-31",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc10",
+   "kind": "closed",
+   "text": "CHS Claremont MN closed, for sale.",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc11",
+   "kind": "for-sale",
+   "text": "CHS Dodge Center MN for sale (Oct 2026).",
+   "effective": "2026-10",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc12",
+   "kind": "parent",
+   "text": "Bunge-Viterra merger completed Jul 2 2025 (parent change only).",
+   "effective": "2025-07-02",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc13",
+   "kind": "parent",
+   "text": "Central Valley Ag merged Randall Farmers Co-op Union.",
+   "effective": "2026-06-01",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc14",
+   "kind": "parent",
+   "text": "Midway Coop bought Lucas KS.",
+   "effective": "2026-05-01",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc15",
+   "kind": "parent",
+   "text": "Farmward merged Ag Plus Coop MN.",
+   "effective": "2026-03-01",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc16",
+   "kind": "parent",
+   "text": "Centerra acquired Coshocton Grain OH.",
+   "effective": "2025-09",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc17",
+   "kind": "parent",
+   "text": "Trinity Ag acquired Frieling Grain, Gaylord KS.",
+   "effective": "2025-09",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc18",
+   "kind": "parent",
+   "text": "Arthur Companies acquired Beach Coop Grain, Beach ND.",
+   "effective": "2026-07-01",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc19",
+   "kind": "parent",
+   "text": "Northwest Grain Growers merged Mid Columbia Producers (OR/WA).",
+   "effective": "2025-06-01",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc20",
+   "kind": "parent",
+   "text": "Aurora Coop merged FU Coop Kearney NE.",
+   "effective": "2025-09-02",
+   "facilities": [],
+   "note": "no matching facility record in the directory, so nothing is marked",
+   "source": "research file above"
+  },
+  {
+   "id": "oc21",
+   "kind": "parent",
+   "text": "CVA bought ADM's 50% of 81-20 Grain, Randolph NE; the record already reads Central Valley Ag.",
+   "effective": "2025-09-01",
+   "facilities": [
+    "e7gev8azn7"
+   ],
+   "note": "record already under the new name; no change",
+   "source": "research file above",
+   "noop": true
+  },
+  {
+   "id": "oc22",
+   "kind": "parent",
+   "text": "Scoular Atlanta NE to Ag Valley; the record already reads Ag Valley Co-op.",
+   "effective": "2025-09-26",
+   "facilities": [
+    "esvgverxq9"
+   ],
+   "note": "record already under the new name; no change",
+   "source": "research file above",
+   "noop": true
+  },
+  {
+   "id": "oc23",
+   "kind": "pending",
+   "text": "CHS Roseland and Bladen NE to Cooperative Producers Inc; both records already read Cooperative Producers, Inc.",
+   "effective": "2025-08",
+   "facilities": [
+    "ejbxt6bm20",
+    "ehkyh64m40"
+   ],
+   "note": "record already under the new name; no change",
+   "source": "research file above",
+   "noop": true
+  },
+  {
+   "id": "oc24",
+   "kind": "pending",
+   "text": "ALCIVIA Markesan WI to United Cooperative; the record already reads United Cooperative.",
+   "effective": "2026-02",
+   "facilities": [
+    "esqmq138rx"
+   ],
+   "note": "record already under the new name; no change",
+   "source": "research file above",
+   "noop": true
+  }
+ ]
+}
