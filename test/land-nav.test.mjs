@@ -17,7 +17,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const rd = (p) => readFileSync(ROOT + p, "utf8");
 const cov = JSON.parse(rd("data/land-sales/coverage.json"));
 const COV = Object.fromEntries(cov.states.map((r) => [r.name, r]));
-const LIVE = { illinois: "IL", wisconsin: "WI", indiana: "IN", vermont: "VT" };
+const LIVE = { illinois: "IL", wisconsin: "WI", indiana: "IN", vermont: "VT", "new-jersey": "NJ" };
 
 /* '/land-sales/x/y#z' -> true when the file exists and, with a #z, the page carries id="z" */
 const ids = {};
@@ -75,8 +75,8 @@ test("rent pages: every land sales link resolves, and the three states with sale
     const st = f.slice(0, -5);
     if (LIVE[st]) {
       assert.ok(html.includes(`href="/land-sales/#${st}"`), `rent/${f}: the state's land sales line`);
-      // Vermont has 14 counties (13 in the rent table): every row links; the bigger states keep 60 or more
-      const need = st === "vermont" ? (html.match(/<tr><td/g) || []).length : 60;
+      // Vermont (14 counties) and New Jersey (21): every row of the rent table links; the bigger states keep 60 or more
+      const need = st === "vermont" || st === "new-jersey" ? (html.match(/<tr><td/g) || []).length : 60;
       assert.ok(need > 0 && (html.match(/class="rs-ls"/g) || []).length >= need, `rent/${f}: county sales links`);
     } else assert.equal(hrefs(html).length, 0, `rent/${f}: no land sales link without sales`);
   }
@@ -112,7 +112,7 @@ test("the hub: a jump row to every state list and the source table, and the save
   const row = (html.match(/<p class="ls-jump">(.*?)<\/p>/) || [])[1];
   assert.ok(row, "jump row");
   const jumps = [...row.matchAll(/href="(#[a-z-]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(jumps, ["#illinois", "#wisconsin", "#indiana", "#vermont", "#coverage"]);
+  assert.deepEqual(jumps, ["#illinois", "#wisconsin", "#indiana", "#vermont", "#new-jersey", "#coverage"]);
   for (const j of jumps) assert.ok(resolves("/land-sales/" + j), j);
   assert.ok(html.indexOf('class="ls-jump"') < html.indexOf('<h2 id="illinois">'), "near the top");
   assert.match(html, /<p class="ls-mine" id="ls-mine" hidden><\/p>/);

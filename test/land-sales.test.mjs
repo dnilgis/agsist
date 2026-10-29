@@ -196,7 +196,7 @@ test("the coverage table: every state, honest statuses, the live count matches t
   const cov = JSON.parse(read("data/land-sales/coverage.json"));
   assert.equal(cov.states.length, 50, "50 states");
   const live = cov.states.filter((s) => s.status === "live").map((s) => s.st).sort();
-  assert.deepEqual(live, ["IL", "IN", "VT", "WI"], "Indiana turned on (Sig, Oct 27), Vermont Oct 29");
+  assert.deepEqual(live, ["IL", "IN", "NJ", "VT", "WI"], "Indiana turned on (Sig, Oct 27), Vermont and New Jersey Oct 29");
   for (const s of cov.states) {
     assert.ok(cov.labels[s.status], `${s.st}: a status with a label`);
     assert.ok(s.tile && s.tile.length === 2, `${s.st}: a map tile`);
@@ -206,7 +206,8 @@ test("the coverage table: every state, honest statuses, the live count matches t
     assert.equal(cov.states.find((s) => s.st === st).status, "nondisclosure", st + " is listed as not public record");
   for (const st of ["illinois", "wisconsin", "indiana"]) assert.ok(fs.readdirSync(path.join(ROOT, "land-sales", st)).length > 70, "pages for " + st);
   assert.equal(fs.readdirSync(path.join(ROOT, "land-sales", "vermont")).length, 14, "a page for each of Vermont's 14 counties");
-  assert.match(read("land-sales/index.html"), /Sales reported for 4 states: Illinois, Indiana, Vermont and Wisconsin\./);
+  assert.equal(fs.readdirSync(path.join(ROOT, "land-sales", "new-jersey")).length >= 15, true, "a page for each New Jersey county with farm sales");
+  assert.match(read("land-sales/index.html"), /Sales reported for 5 states: Illinois, Indiana, New Jersey, Vermont and Wisconsin\./);
   // Vermont (Oct 29): the method note maps the return onto the shared rule; current use is a fact per sale; the ask shows
   const vtPage = read("land-sales/vermont/addison-county.html");
   assert.match(vtPage, /Vermont sales come from the property transfer tax return\. A return is a farm sale here when the land&#x27;s use before or after the sale is an operating farm or timberland, or open land enrolled in current use\./);
