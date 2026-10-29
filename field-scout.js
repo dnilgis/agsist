@@ -18,8 +18,8 @@
   // USGS National Map cached base maps (Web Mercator, /tile/{level}/{row}/{col}, cached to level 16:
   // 'Max Scale: 9027.977411' in both service directories, read Oct 29, 2026)
   var USGS_MAX_Z = 16;
-  var USGS_ATTR_SAT = 'Imagery: USGS The National Map, USDA NAIP';
-  var USGS_ATTR_MAP = 'Map: USGS The National Map';
+  var USGS_ATTR_SAT = 'Imagery: USGS, USDA NAIP';
+  var USGS_ATTR_MAP = 'Map: USGS';
   var NOMINATIM = 'https://nominatim.openstreetmap.org/search';
   var NOMINATIM_REV = 'https://nominatim.openstreetmap.org/reverse';
   // full state name ↔ postal abbr (nominatim returns full names; data files key by abbr or FIPS)

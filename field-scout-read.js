@@ -740,7 +740,7 @@ window.__fsRead = function (FSX) {
       '<path d="'+line(1)+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round"></path>'+
       '<circle cx="'+X(last[0]).toFixed(1)+'" cy="'+Y(last[1]).toFixed(1)+'" r="3.2" fill="'+col+'"/>'+
       '<text x="'+(X(last[0])+6).toFixed(1)+'" y="'+(Math.max(pt+7,Y(last[1]))+3).toFixed(1)+'" font-size="10" font-weight="700" fill="'+col+'" font-family="JetBrains Mono,monospace">'+(+last[1]).toFixed(1)+'″</text></svg>'+
-      '<div class="fs-src" style="margin-top:.15rem;display:flex;gap:1rem;flex-wrap:wrap"><span style="color:'+col+'">&#9644; This year</span><span style="color:#8a948f">- - Normal ('+esc(s.pLbl||'')+')</span></div>';
+      '<div class="fs-src" style="margin-top:.15rem;display:flex;gap:1rem;flex-wrap:wrap"><span style="color:'+col+'">&#9644; This year</span><span style="color:#8a948f">- - '+esc(s.pLbl||'normal')+'</span></div>';
   }
 
   function droughtColor(cat){
