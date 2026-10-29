@@ -975,8 +975,11 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       return h + '</section>';
     }
     if (d.withheld) {
+      /* d.split: the days are before GA4 could tell ads apart (Oct 29, 2026), so they stay withheld; the
+         counts from that day on fill in by themselves. */
       return h + '<div class="cp-card"><p class="cp-note" style="margin:0"><b>Withheld for now.</b> ' + esc(d.withheld) +
-        ' Showing a number that may hold someone else’s ad would be worse than showing none. It comes back on its own once only your ad is running.</p></div>' +
+        ' Showing a number that may hold someone else’s ad would be worse than showing none.' +
+        (d.split ? ' Your own counts fill in from ' + esc(fmt(d.split.from, true)) + ' on.' : ' It comes back on its own once only your ad is running.') + '</p></div>' +
         '<div class="cp-kpis" style="margin-top:.7rem">' + areaKpi(d) + '</div></section>';
     }
     var w = (d.windows || []).filter(function (x) { return x.days === 7; })[0] || { viewable: t.viewable, clicks: t.clicks, ctr: t.ctr };
@@ -1000,6 +1003,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       big(w.ctr == null ? '-' : w.ctr.toFixed(2) + '%', '', 'Click rate', verdict, asof, w.ctr == null) +
       areaKpi(d) + '</div>';
     if ((d.series || []).length > 7) h += '<p class="cp-note">Since ' + esc(fmt(d.liveSince || s.start, true)) + ': ' + num(t.viewable) + ' times seen, ' + num(t.clicks) + ' click' + (t.clicks === 1 ? '' : 's') + '.</p>';
+    /* Days before GA4 could tell two ads apart are left out, never filled with the site's total. */
+    if (d.split && d.split.note) h += '<p class="cp-note">' + esc(d.split.note) + '</p>';
     return h + '</section>';
   }
 
@@ -1012,7 +1017,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       if (d.windows && d.windows.length) {
         h += '<div class="cp-win">';
         d.windows.forEach(function (w) {
-          h += '<div><b>' + num(w.viewable) + '</b><span>times seen, last ' + esc(w.days) + ' days &middot; ' + num(w.clicks) + ' click' +
+          h += '<div><b>' + num(w.viewable) + '</b><span>times seen, last ' + esc(w.days) + ' days' +
+               (w.countedFrom ? ' (counted from ' + esc(fmt(w.countedFrom)) + ')' : '') + ' &middot; ' + num(w.clicks) + ' click' +
                (w.clicks === 1 ? '' : 's') + (w.ctr == null ? '' : ' &middot; ' + w.ctr.toFixed(2) + '%') + '</span></div>';
         });
         h += '</div>';
