@@ -3,12 +3,12 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2167,
-  "with_parent": 130,
-  "with_dest": 112,
+  "live_boards": 2141,
+  "with_parent": 131,
+  "with_dest": 110,
   "parent_by_rule": {
    "board-page": 1,
-   "chs-brand": 129
+   "chs-brand": 130
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -21,8 +21,8 @@
    "Ingredion": 1,
    "Marquis": 5,
    "POET": 9,
-   "Valero": 3,
-   "Viserion": 5
+   "Valero": 2,
+   "Viserion": 4
   },
   "board_pages_with_other_firms": 1
  },
@@ -592,6 +592,11 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
+  "chsprimeland-chsprimeland": {
+   "elevId": "ekj0yxn1y2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
   "chsriverplains-ashley": {
    "elevId": "e41zb1vf15",
    "parent": "CHS Inc.",
@@ -1145,16 +1150,6 @@
   "nexus-valerocharlescityia": {
    "elevId": "ev4rkxwapd",
    "dest": "Valero",
-   "dv": "location"
-  },
-  "premiercooperative-valerocc": {
-   "elevId": "ehysxd2cqp",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "premiercooperative-viserionmcgregor": {
-   "elevId": "e67nm42geg",
-   "dest": "Viserion",
    "dv": "location"
   },
   "procooperative-agpeaglegrove": {
