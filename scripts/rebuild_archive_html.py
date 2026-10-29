@@ -16,6 +16,7 @@ Usage:
     python scripts/rebuild_archive_html.py --stamp-only  # only the line under the quote strip
     python scripts/rebuild_archive_html.py --byline-only # only the byline (reply address)
     python scripts/rebuild_archive_html.py --guard-only  # only the inline Google Analytics guard script
+    python scripts/rebuild_archive_html.py --cta-only    # only the cash-bids line under the byline
     python scripts/rebuild_archive_html.py --text-only 2026-10-16  # only what an archive JSON edit changed
     python scripts/rebuild_archive_html.py --links-only  # only links to pages merged into another (moved_pages.py)
     python scripts/rebuild_archive_html.py --text-only --base=HEAD~1 2026-10-16  # JSON already committed
@@ -24,6 +25,10 @@ Usage:
 merged into another (scripts/moved_pages.py: /archive, /scorecard, ...) to its
 new home, and the breadcrumb's archive step to the Daily page, the same as
 generate_daily.py writes for a new issue. Every other byte stays as published.
+
+--cta-only (2026-10-29, layout shift) does the same for the one cash-bids link
+under the byline: its space before the arrow moved inside the arrow's span, so
+no lone space sits between two inline tags (test/stray-space-cls.test.mjs).
 
 --byline-only does the same for the one <div class="dv3-byline"> line (the
 reply address under each issue, changed 2026-10-22 to sig@agsist.com).
@@ -81,6 +86,7 @@ def _no_em_dashes(obj):
 STAMP_RE = re.compile(r'<div class="dv3-quote-asof">[^<]*</div>')
 BYLINE_RE = re.compile(r'<div class="dv3-byline">(?:(?!</?div)[\s\S])*</div>')
 GUARD_RE = re.compile(r'<script>/\* agsist-ga-guard [^<]*</script>')
+CTA_RE = re.compile(r'<a class="dv3-cashbids-cta"[^>]*>(?:(?!</a>)[\s\S])*</a>')
 
 
 def swap_stamp(old_html: str, new_html: str, rx=STAMP_RE):
@@ -145,7 +151,7 @@ def _committed_json(json_path: Path, base: str = "HEAD"):
 
 def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
                 byline_only: bool = False, text_only: bool = False,
-                base: str = "HEAD", guard_only: bool = False) -> bool:
+                base: str = "HEAD", guard_only: bool = False, cta_only: bool = False) -> bool:
     json_path = ARCHIVE_JSON_DIR / f"{date_iso}.json"
     html_path = ARCHIVE_HTML_DIR / f"{date_iso}.html"
 
@@ -190,9 +196,9 @@ def rebuild_one(date_iso: str, dry_run: bool = False, stamp_only: bool = False,
         html_path.write_text(out)
         print(f"  [ok]   {date_iso}  changed text written into the published page")
         return True
-    if stamp_only or byline_only or guard_only:
+    if stamp_only or byline_only or guard_only or cta_only:
         rx, what = ((STAMP_RE, "stamp") if stamp_only else (BYLINE_RE, "byline") if byline_only
-                    else (GUARD_RE, "ga guard"))
+                    else (CTA_RE, "cash-bids") if cta_only else (GUARD_RE, "ga guard"))
         if not html_path.exists():
             print(f"  [skip] {date_iso} — no published page")
             return False
@@ -275,6 +281,7 @@ def main():
     stamp_only = "--stamp-only" in sys.argv
     byline_only = "--byline-only" in sys.argv
     guard_only = "--guard-only" in sys.argv
+    cta_only = "--cta-only" in sys.argv
     text_only = "--text-only" in sys.argv
     # --base=<ref>: the commit whose JSON the published page was made from (default HEAD)
     base = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--base=")), "HEAD")
@@ -299,7 +306,7 @@ def main():
     ok = 0
     for date_iso in targets:
         if rebuild_one(date_iso, dry_run=dry_run, stamp_only=stamp_only, byline_only=byline_only,
-                       text_only=text_only, base=base, guard_only=guard_only):
+                       text_only=text_only, base=base, guard_only=guard_only, cta_only=cta_only):
             ok += 1
 
     print(f"=== Done: {ok}/{len(targets)} {'would be rebuilt' if dry_run else 'rebuilt'} ===")
