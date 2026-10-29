@@ -31,12 +31,15 @@ build/shots/
 # write them here and save them with scripts/push_raw.sh; farmland-atlas.yml
 # unpacks data/atlas/raw with scripts/pull_raw.sh and then runs
 # `git add -A data/atlas`, which would put 71 MB back on main without these.
-# Kept on main on purpose: data/atlas/raw/drought.json (a test reads it) and
-# each probe's listing.json (the normal run reads it).
+# Kept on main on purpose: each probe's listing.json (the normal run reads it).
+# Oct 29 (fx/sizeinputs): data/atlas/raw/drought.json moved to raw too (the
+# Atlas pulls it with the folder; the PR checks pull it for the drought test),
+# and so did the two CRP workbooks in data/atlas/src/ and data/site-inventory.json.
 /data/atlas/raw/*
+/data/atlas/src/
+/data/site-inventory.json
 # daily.yml saves each run's fact check to raw (daily-fact-check/), never main
 /daily-fact-check/
-!/data/atlas/raw/drought.json
 /data/cattle-auction-raw/*
 !/data/cattle-auction-raw/listing.json
 /data/coop-fert-raw/

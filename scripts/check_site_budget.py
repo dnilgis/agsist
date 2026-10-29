@@ -54,6 +54,10 @@ FAIL_MB = 900
 # to 141 MB: math built on open, one shared counter sheet); its build reads this
 # number and refuses to write past it.
 FOLDER_MB = {
+    # data: 300. Oct 29 (fx/sizeinputs): build inputs no reader loads moved to
+    # the private raw branch (data/atlas/src CRP workbooks 3.4 MB,
+    # data/atlas/raw/drought.json 2.7 MB, data/site-inventory.json 0.2 MB); the
+    # workflows unpack them with scripts/pull_raw.sh.
     "data": 300,
     "arc-plc": 150,
     "farmland-atlas": 200,
@@ -102,9 +106,16 @@ NOT_READER_FACING = (
     "scripts/", "test/", "build/", "references/", "workers/",
     "CLAUDE.md", "TODO-SIG.md", ".gitignore",
     # workflow inputs and outputs read only by scripts/ (Oct 27 grep of every
-    # page, component and worker)
+    # page, component and worker). Oct 29 (fx/sizeinputs) moved
+    # data/site-inventory.json to the private raw branch; the rest stay on main
+    # for now: the story stores are read by the page builders in six workflows
+    # and a missing store drops the stories silently; wasde-pdf is how
+    # wasde-watch.yml spots a new release and hands it to arc-plc-refresh.yml;
+    # elevator-directory.json is rewritten by every fetch_bids run and read by
+    # several scripts and tests; the rain print examples, the crosswalk and the board
+    # parents are read by tests and --check lines in the PR checks.
     "data/prf-stories/", "data/atlas-stories/", "data/cash-bids-stories/",
-    "data/wasde-pdf/", "data/site-inventory.json", "data/rain-print-examples/",
+    "data/wasde-pdf/", "data/rain-print-examples/",
     "data/elevator-directory.json",
     "data/ids/geo-crosswalk.json",   # read by scripts/join_report.py and builds only (Oct 27)
     "data/ids/board-parents.json",   # read by scripts/build_cash_bid_pages.py only (Oct 27, fx/bidkeys)
