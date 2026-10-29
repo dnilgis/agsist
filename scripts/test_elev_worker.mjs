@@ -1,4 +1,3 @@
-import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.20 elevator portal routes of workers/subs-worker.js
 // (/elev/admin/create, /elev/admin/rekey, /elev/admin/active, /elev/admin/list,
 // /elev/me, /elev/save, /elev/feed), the v5.34 hand paste (/elev/admin/paste,
@@ -8,6 +7,7 @@ import { guard } from './_argguard.mjs'; guard(import.meta.url);
 //     node scripts/test_elev_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import crypto from 'node:crypto';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 const src = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-elev-test-' + process.pid + '.mjs');
 fs.copyFileSync(src, tmp);

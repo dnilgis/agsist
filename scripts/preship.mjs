@@ -48,13 +48,13 @@
  * Exit 0 = ship it. Exit 1 = do not.
  */
 
-import { chromium } from 'playwright';
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import os from 'node:os';
 import { guard } from './_argguard.mjs'; guard(import.meta.url);
+const { chromium } = await import('playwright'); // after the guard: --help works without the package
 
 /* ───────────────────────────── arguments ───────────────────────────── */
 

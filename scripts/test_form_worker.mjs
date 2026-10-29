@@ -1,4 +1,3 @@
-import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.8/v5.9/v5.10/v5.12 form routes of workers/subs-worker.js (/form, /form-list, /form-mark, /count forms)
 // the v5.22 PRF sponsor inquiries (kind prf-sponsor)
 // and the v5.14 Rain Print short links (POST /rp-short, GET /rp-short/<id>)
@@ -7,6 +6,7 @@ import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // against an in-memory KV. No network.   node scripts/test_form_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import crypto from 'node:crypto';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 const src = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-form-test-' + process.pid + '.mjs');
 fs.copyFileSync(src, tmp);

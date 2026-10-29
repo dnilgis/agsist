@@ -1,4 +1,3 @@
-import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.43 "Email me this design" routes of workers/subs-worker.js
 // (POST /rp-remind, GET /rp-remind/list, POST /rp-remind/mark, /rp-remind/stop)
 // against an in-memory KV and a stand-in for GitHub's dispatch API. No network.
@@ -6,6 +5,7 @@ import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // The design codes are the page's own (components/rain-print.js encodeCode).
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import vm from 'node:vm';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 const here = path.dirname(new URL(import.meta.url).pathname);
 const src = path.resolve(here, '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-rpr-test-' + process.pid + '.mjs');

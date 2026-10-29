@@ -1,4 +1,3 @@
-import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Rain Print orders through an outage and a burst (subs worker v5.47, BUILD-RULES 14).
 // Runs workers/subs-worker.js against an in-memory KV that answers slowly and in
 // any order (so two requests at once really interleave, as on Cloudflare) and
@@ -9,6 +8,7 @@ import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // retrying the webhook; nothing was on record for the payments made meanwhile.
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import vm from 'node:vm'; import cryptoN from 'node:crypto';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 const here = path.dirname(new URL(import.meta.url).pathname);
 const src = path.resolve(here, '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-burst-test-' + process.pid + '.mjs');

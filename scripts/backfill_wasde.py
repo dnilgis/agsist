@@ -43,6 +43,8 @@ The sandbox cannot reach usda.gov; history-backfill.yml / wasde-archive.yml
 run this in GitHub Actions. Stdlib only, plus the pdftotext binary for
 the reports ESMIS carries only as PDF.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import csv
 import gzip

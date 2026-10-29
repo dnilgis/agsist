@@ -53,7 +53,7 @@ function diff(a, b) {
 
 function run(cmd, args, cwd, home) {
   return new Promise((resolve) => {
-    const env = { PATH: process.env.PATH, HOME: home, TMPDIR: home, LANG: "C.UTF-8" };
+    const env = { PATH: process.env.PATH, HOME: home, TMPDIR: home, LANG: "C.UTF-8", PYTHONDONTWRITEBYTECODE: "1" };
     const p = spawn(cmd, args, { cwd, env, stdio: ["ignore", "pipe", "pipe"], detached: true });
     let out = "", err = "";
     p.stdout.on("data", (b) => { out += b; });

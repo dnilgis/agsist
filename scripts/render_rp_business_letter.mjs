@@ -20,6 +20,7 @@ import { extname, join, normalize } from "node:path";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -99,6 +100,5 @@ for q in (82, 76, 70, 64, 58, 52):
     if os.path.getsize(out) <= cap * 1024: break
 print(round(os.path.getsize(out) / 1024, 1))
 `, png, OUT, String(MAX_KB)]).toString().trim();
-import { guard } from './_argguard.mjs'; guard(import.meta.url);
 console.log(JSON.stringify({ out: OUT.slice(ROOT.length), kb: Number(kb), ...info }));
 if (Number(kb) > MAX_KB) throw new Error("over " + MAX_KB + " KB");

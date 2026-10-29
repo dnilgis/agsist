@@ -1,4 +1,3 @@
-import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // Runs the v5.36 to v5.40 Rain Print order-record routes of workers/subs-worker.js
 // (POST /rp-order, GET /rp-order/list, POST /rp-order/serial) against an
 // in-memory KV and a stand-in for Stripe's Checkout Sessions list. No network.
@@ -8,6 +7,7 @@ import { guard } from './_argguard.mjs'; guard(import.meta.url);
 // a design code, GIFT-<code>, RPS-<id> and GIFT-RPS-<id>.
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import vm from 'node:vm';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 const here = path.dirname(new URL(import.meta.url).pathname);
 const src = path.resolve(here, '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-rpo-test-' + process.pid + '.mjs');
