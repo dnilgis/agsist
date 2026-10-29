@@ -21,6 +21,8 @@ that exists in this checkout)
   companies cash-bids/company/<slug>.html (title "X Cash Bids Today"), with the elevators
   counties  farmland-atlas/data/counties-index.json, kept only where the page
             exists and is not noindex
+  land      /land-sales/ county pages by FIPS from data/land-sales/<st>.json, and
+            each state's county list on /land-sales/
   futures   data/prices.json quote keys with a contract month (corn-dec26),
             linked to the page that shows that contract
   elevators names on the town pages (bid boards and "no current bid" lists),
@@ -91,6 +93,7 @@ PAGES = [
     ("/list-your-elevator#coverage", "Elevator coverage map", "Which elevators we read, fix your listing", "elevators coverage map network boards claim board elevator manager"),
     ("/cot", "COT report", "What the funds hold", "cot cftc commitment traders funds managed money positions"),
     ("/#f-kalshi", "Prediction markets", "Odds on the homepage", "odds prediction markets kalshi polymarket bets"),
+    ("/ag-stocks", "Ag stocks and the AGSIST Ag 20", "Farm company share prices and their SEC reports", "ag stocks shares deere nutrien adm tyson equipment fertilizer companies index ag 20 earnings"),
     ("/tariffs", "Tariff tracker", "Trade policy and grain", "tariffs trade china exports policy"),
     ("/farm-bill", "Farm bill", "Status and the money", "farm bill congress policy payments arc plc"),
     ("/usda-calendar", "USDA report calendar", "Next WASDE and reports", "usda calendar wasde reports schedule crop progress acreage stocks"),
@@ -114,6 +117,7 @@ PAGES = [
     ("/hay-prices", "Hay prices by state", "Alfalfa and other hay, $/ton", "hay prices alfalfa grass hay bale ton price per ton state usda nass forage"),
     ("/cattle-auction-prices", "Sale barn prices", "Feeder cattle by weight near you", "sale barn auction feeder cattle steers heifers calves prices cwt weight class stockyards livestock auction market report usda"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
+    ("/land-sales/", "Land sales by county", "Recorded farm sales, acres and price per acre", "land sales farmland sales farm sales farm ground sold sale prices land prices price per acre recorded deeds buyers county monthly illinois wisconsin indiana"),
     ("/farmland-index", "Farmland sale index (Illinois)", "What farm ground sold for, by quarter", "farmland index land sale prices values illinois sold acre county median price to rent buyers"),
     ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre tenure rented owned landlord ownership"),
     ("/rent/", "Cash rent by state", "Rent by county", "cash rent rents rental county land acre lease"),
@@ -478,13 +482,43 @@ def build_places(by_town):
     return out
 
 
+def build_land_sales():
+    """The farm sale pages (scripts/build_land_sales.py, Oct 27, 2026; added to search Oct 29): each state's
+    county list on /land-sales/ and every county page that is on disk and indexable, by FIPS from
+    data/land-sales/<st>.json. Titles carry no number."""
+    out = []
+    for f in sorted(glob.glob(os.path.join(ROOT, "data", "land-sales", "[a-z][a-z].json"))):
+        try:
+            d = json.load(open(f, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        st = d.get("state")
+        if st not in STATES:
+            continue
+        name = STATES[st]
+        slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+        rows = []
+        for c in sorted((d.get("counties") or {}).values(), key=lambda c: str(c.get("name"))):
+            cs = str(c.get("slug") or "")
+            p = "land-sales/%s/%s.html" % (slug, cs)
+            if not re.match(r"^[a-z0-9-]+$", cs) or not exists(p) or noindex(rd(p)):
+                continue
+            rows.append([3, "Land sales in %s County, %s" % (clean(c["name"]), st), "Recorded farm sales", "/land-sales/%s/%s" % (slug, cs),
+                         "farmland sales farm sales land prices sold acre %s %s" % (st.lower(), name.lower())])
+        if rows and exists("land-sales/index.html"):
+            out.append([1, "Land sales in %s" % name, "Recorded farm sales by county", "/land-sales/#%s" % slug,
+                        "%s farmland sales farm sales land prices sold acre county" % st.lower()])
+            out += rows
+    return out
+
+
 def dumps(obj):
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":"), sort_keys=False)
 
 
 def build(warn):
     towns, by_town, boards = build_towns()
-    items = build_pages(warn) + build_states() + towns + build_counties() + build_futures()
+    items = build_pages(warn) + build_states() + towns + build_counties() + build_land_sales() + build_futures()
     elev = build_elevators(by_town, boards)
     main = {"note": "Built by scripts/build_search_index.py. Do not edit.", "v": 1, "items": items}
     el = {"note": "Built by scripts/build_search_index.py. Do not edit.", "v": 1, "items": elev}

@@ -39,6 +39,7 @@ on:
       - 'scripts/brief_email.py'
       - 'scripts/audience_from_exports.py'
       - 'scripts/build_audience.py'
+      - 'scripts/bake_audience.py'
       - 'data/audience.json'
       - 'scripts/build_rp_sealed.mjs'
 
@@ -111,6 +112,13 @@ jobs:
           LIST_TOKEN:          ${{ secrets.LIST_TOKEN }}
         run: python3 scripts/build_audience.py
 
+      # The audience figures on /sponsor and /sponsor-kit are written into the HTML
+      # from the file just refreshed (Oct 29, 2026), so crawlers, link previews and
+      # readers without JavaScript see the same dated numbers. Never stops the reports.
+      - name: Write the audience figures into the sponsor pages
+        continue-on-error: true
+        run: python3 scripts/bake_audience.py
+
       # Email signups by page ask, ZIPs given, one-time notices: counts only, for
       # /seo-report. Same token, same rule: no address reaches the file or the log.
       - name: Count signups by source
@@ -149,7 +157,7 @@ jobs:
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
-          git add data/sponsors data/audience.json 2>/dev/null || true
+          git add data/sponsors data/audience.json sponsor.html sponsor-kit.html 2>/dev/null || true
           git add -A data/rp-sealed 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no change"

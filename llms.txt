@@ -50,6 +50,7 @@ AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the el
 - [USDA Crop Data by State](https://agsist.com/usda-quick-stats): yields, acres, production and prices by state for corn, soybeans and wheat, from USDA NASS
 - [Yield by Year, by State](https://agsist.com/yield/iowa): each state's corn and soybean yield by year since 2010, at /yield/<state>
 - [Fund Positioning (COT)](https://agsist.com/cot): weekly CFTC managed-money positioning for 11 ag markets, and whether positioning has predicted price
+- [Ag Stocks and the AGSIST Ag 20](https://agsist.com/ag-stocks): daily closes of U.S.-listed farm equipment, input, grain, livestock and food companies, their latest SEC reports, and an equal-weight index of 20 of them; not investment advice
 - [Tariff Tracker](https://agsist.com/tariffs): current tariff rates on US corn, soybean, wheat and pork exports
 
 ## How big is this crop?

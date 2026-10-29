@@ -2536,6 +2536,14 @@
     {"id": "fed-min-agriculture", "kind": "html",
      "url": "https://www.minneapolisfed.org/topic/agriculture-and-farming",
      "title": "Federal Reserve Bank of Minneapolis, agriculture and farming (linked as its ag survey from the Chicago Fed's ag conditions page)",
-     "why": "Atlas state pages and the by-state hub, farm loans section: link to the reserve bank's own ag survey page (scripts/build_farm_credit.py)"}
+     "why": "Atlas state pages and the by-state hub, farm loans section: link to the reserve bank's own ag survey page (scripts/build_farm_credit.py)"},
+    {"id": "aphis-nws-arizona-2026-10", "kind": "html",
+     "url": "https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-new-world-screwworm-arizona",
+     "title": "APHIS Oct 28, 2026: USDA confirms New World screwworm in Arizona (direct host)",
+     "why": "AI answer blocks (data/ai-answers.json): screwworm block (Arizona detection)"},
+    {"id": "aphis-mexico-cattle-import", "kind": "html",
+     "url": "https://www.aphis.usda.gov/live-animal-import/cattle-bison-germplasm/mexico",
+     "title": "APHIS: importing cattle and bison from Mexico (port status)",
+     "why": "AI answer blocks (data/ai-answers.json): screwworm block (border ports reopened to Mexican cattle)"}
 ]
 }

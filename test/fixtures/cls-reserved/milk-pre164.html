@@ -1,0 +1,102 @@
+<!doctype html>
+<!-- Verbatim pieces of milk-prices.html before #164 (git 0415db28c58^1): the Your area card with its before-paint
+     script, the DMC countdown line and the script that recounts it, and the page's own CSS for both. Each of the three
+     caused a layout shift (picker width, the ask pushed in above the summary, "51 days" to "50"); the reserved-space
+     check must flag all three here. -->
+<html><head><meta charset="utf-8"><title>fixture</title><style>
+.dp-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.85rem 1rem;margin:0 0 .9rem;min-height:9rem;}
+.dp-area-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem .8rem;margin-bottom:.5rem;}
+.dp-area-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;margin:0;display:flex;align-items:center;gap:.45rem;color:var(--text);}
+.dp-area-h .ic{width:1.05em;height:1.05em;color:var(--gold);}
+.dp-area-pick select{min-height:44px;max-width:100%;font:inherit;padding:.4rem .6rem;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);}
+.dp-area-sum{margin:0;line-height:1.55;color:var(--text);}
+.dp-area-name{margin:0;font-weight:800;color:var(--text);}
+.dp-area-name span{font-weight:400;color:var(--text-dim);}
+.dp-area-big{margin:.15rem 0 .1rem;font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;line-height:1.1;color:var(--text);}
+.dp-area-big span{font-size:.95rem;font-weight:600;color:var(--text-dim);}
+.dp-area-chg{margin:0 0 .35rem;font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:700;}
+.dp-area-line{margin:.2rem 0 0;line-height:1.5;color:var(--text-dim);font-size:.95rem;}
+.dp-area-wait #dp-area-out>:not(.dp-area-skel){display:none;}
+.dp-area-skel p,.dp-area-skel span{color:transparent;user-select:none;}
+.dp-area-skel p{background:var(--surface2);border-radius:6px;}
+.dp-dmc{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:var(--r-md);padding:.85rem 1rem;margin:0 0 var(--sp-lg);}
+.dp-dmc-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;margin:0 0 .4rem;display:flex;align-items:center;gap:.45rem;color:var(--text);}
+.dp-dmc-h .ic{width:1.05em;height:1.05em;color:var(--gold);}
+.dp-dmc-line{margin:0;line-height:1.5;color:var(--text);}
+.dp-dmc-src{font-size:.85rem;color:var(--text-dim);}
+.dp-dmc-fb{margin:.5rem 0 0;padding-left:1.1rem;color:var(--text-dim);font-size:.93rem;line-height:1.5;}
+.dp-dmc-fb li{margin:.2rem 0;}
+.dp-dmc-more{margin:.5rem 0 0;font-size:.93rem;}
+.dp-dmc-paid-none,.dp-dmc-m{margin:.5rem 0 0;font-size:.93rem;line-height:1.5;color:var(--text-dim);}
+.dp-dmc #dp-dmc-paid{margin-top:.6rem;}
+#dp-dmc-paid .dp-tbl{font-size:.9rem;}
+#dp-dmc-paid .dp-tbl th,#dp-dmc-paid .dp-tbl td{padding:.45rem .55rem;white-space:nowrap;}
+#dp-dmc-paid .dp-tbl thead th{text-transform:none;letter-spacing:0;font-size:.78rem;}
+#dp-dmc-paid .dp-tbl tbody th{position:sticky;left:0;background:var(--surface);z-index:1;}
+#dp-dmc-paid .dp-dmc-prem{display:block;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:400;color:var(--text-dim);text-transform:none;letter-spacing:0;}
+.dp-dmc-more a,.dp-dmc a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
+</style></head><body>
+  <section class="dp-area" id="dp-area" aria-labelledby="dp-area-h">
+    <div class="dp-area-top"><h2 class="dp-area-h" id="dp-area-h"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg> Your area</h2>
+      <label class="dp-area-pick"><span class="dp-sr">Mailbox price area</span><select id="dp-area-sel"><option value="">Pick your area</option><option value="New England States">New England States</option><option value="New York">New York</option><option value="Eastern Pennsylvania">Eastern Pennsylvania</option><option value="Appalachian States">Appalachian States</option><option value="Southeast States">Southeast States</option><option value="Southern Missouri">Southern Missouri</option><option value="Florida">Florida</option><option value="Western Pennsylvania">Western Pennsylvania</option><option value="Ohio">Ohio</option><option value="Indiana">Indiana</option><option value="Michigan">Michigan</option><option value="Wisconsin">Wisconsin</option><option value="Minnesota">Minnesota</option><option value="Iowa">Iowa</option><option value="Illinois">Illinois</option><option value="Corn Belt States">Corn Belt States</option><option value="Western Texas">Western Texas</option><option value="New Mexico">New Mexico</option><option value="Northwest States">Northwest States</option><option value="California">California</option></select></label></div>
+    <div id="dp-area-out" aria-live="polite"><!--SEED:milkarea--><p class="dp-area-sum" id="dp-area-sum">Mailbox price, June 2026, against Jun 2025: fell most in Wisconsin −$3.02, Minnesota −$2.93, Iowa −$1.81; rose most in Florida +$4.88, Southeast States +$4.49. All federal order areas: $20.18 (−$0.37).</p><p class="dp-note-src">Pick your area for its own price first. Source: <a href="https://mymarketnews.ams.usda.gov/viewReport/3357" rel="noopener">AMS mailbox report</a>.</p><!--/SEED--></div>
+    <script>/* before paint (agsist-milk-area-early): a saved place or area gets its final "Your area" layout now, so nothing moves when components/milk-tools.js fills it. The same tables as that file (test/milk-area-cls.test.mjs checks). Fails soft: no storage, nothing changes; no fill in 10 s, the summary comes back. */try{(function(d,L){var N={},Z='005NY006--010MA028RI030NH039ME050VT055MA056VT060CT070NJ090--100NY150PA197DE200DC201VA202DC206MD220VA247WV270NC290SC300GA320FL340--341FL350AL370TN386MS398GA400KY430OH460IN480MI500IA530WI550MN569DC570SD580ND590MT600IL630MO660KS680NE700LA716AR730OK733TX734OK750TX800CO820WY832ID840UT850AZ870NM885TX889NV900CA962--967HI969--970OR980WA995AK',
+B={CT:'New England States',ME:'New England States',MA:'New England States',NH:'New England States',RI:'New England States',VT:'New England States',NY:'New York',KY:'Appalachian States',NC:'Appalachian States',SC:'Appalachian States',TN:'Appalachian States',VA:'Appalachian States',AL:'Southeast States',AR:'Southeast States',GA:'Southeast States',LA:'Southeast States',MS:'Southeast States',FL:'Florida',OH:'Ohio',IN:'Indiana',MI:'Michigan',WI:'Wisconsin',MN:'Minnesota',IA:'Iowa',IL:'Illinois',KS:'Corn Belt States',NE:'Corn Belt States',NM:'New Mexico',OR:'Northwest States',WA:'Northwest States',CA:'California'},
+S={PA:['Eastern Pennsylvania','Western Pennsylvania'],MO:['Southern Missouri','Corn Belt States'],TX:['Western Texas']},
+A={'New York':'NY','Florida':'FL','Ohio':'OH','Indiana':'IN','Michigan':'MI','Wisconsin':'WI','Minnesota':'MN','Iowa':'IA','Illinois':'IL','New Mexico':'NM','California':'CA','Eastern Pennsylvania':'PA','Western Pennsylvania':'PA','Southern Missouri':'MO','Western Texas':'TX'},
+M='January February March April May June July August September October November December'.split(' '),
+o=d.getElementById('dp-area-out'),sel=d.getElementById('dp-area-sel'),sec=d.getElementById('dp-area'),a=L.getItem('agsist-milk-area')||'',area='',st='',w=null,z='',i,p,x,h;
+'AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming'.split('|').forEach(function(s){N[s.slice(0,2)]=s.slice(3);});
+function zs(v){var q='',k;if(!/^\d{5}$/.test(v||''))return '';for(k=0;k<Z.length;k+=5){if(+Z.substr(k,3)>+v.slice(0,3))break;q=Z.substr(k+3,2);}return N[q]?q:'';}
+function e(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+if(!o||!sel)return;
+for(i=0;i<sel.options.length;i++)if(a&&sel.options[i].value===a)area=a;
+try{w=JSON.parse(L.getItem('agsist-wx-loc')||'null');}catch(_){w=null;}
+if(w&&typeof w==='object'){if(N[w.state])st=w.state;else if(/^\d{5}$/.test(w.zip||''))st=zs(w.zip);}
+if(!st&&!(w&&typeof w==='object'&&(N[w.state]||/^\d{5}$/.test(w.zip||''))))st=zs(String(L.getItem('agsist_user_zip')||L.getItem('agsist_zip')||''));
+if(!area&&st&&B[st])area=B[st];
+if(!area){
+  if(!st)return;
+  h=S[st]?e(N[st])+' is split between AMS mailbox areas ('+e(S[st].join(', '))+'). Pick yours above.':'AMS does not report a mailbox price for '+e(N[st])+'. Pick the nearest area above, or see the state all-milk table below.';
+  p=d.createElement('p');p.className='dp-area-sum';p.setAttribute('data-early','');p.innerHTML=h;o.insertBefore(p,o.firstChild);return;
+}
+x=/(January|February|March|April|May|June|July|August|September|October|November|December) (\d{4})/.exec((d.getElementById('dp-area-sum')||{}).textContent||'');
+var mo=x?x[0]:'September 2026',n=new Date(),old=x&&(n.getFullYear()*12+n.getMonth())-(+x[2]*12+M.indexOf(x[1]))>=5,sc=A[area]||(st&&B[st]===area?st:'');
+h='<div class="dp-area-skel" aria-hidden="true" data-area="'+e(area)+'"><p class="dp-area-name">'+e(area)+' <span>mailbox price, '+mo+(old?' (an older month; newer AMS months are not loaded yet)':'')+'</span></p>'+
+'<p class="dp-area-big">$88.88<span>/cwt</span></p><p class="dp-area-chg"><span>▼ −$8.88 vs Sep 2025</span> &middot; <span>▼ −$8.88 vs Sep</span></p>'+
+'<p class="dp-area-line">20th of 20 areas (1st is the highest). All federal order areas: $88.88 (−$8.88 vs Sep 2025).</p>'+
+(sc?'<p class="dp-area-line">'+e(N[sc])+' all-milk price, September 2026: $88.88, −$8.88 vs a year earlier (US $88.88, −$8.88). Before hauling, USDA NASS.</p>':'')+
+'<p class="dp-area-line">Class III futures, Sep 2026: $88.88 (CME settle Sep 28). A market price, not your check.</p>'+
+'<p class="dp-note-src">Mailbox price is net pay after hauling and co-op deductions, as USDA AMS reports it for the area. Source: AMS mailbox report.</p></div>';
+sel.value=area;o.insertAdjacentHTML('beforeend',h);o.setAttribute('aria-busy','true');sec.classList.add('dp-area-wait');
+setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.removeChild(k);sec.classList.remove('dp-area-wait');o.removeAttribute('aria-busy');}},10000);
+})(document,localStorage);}catch(_){}</script>
+  </section>
+  <p class="dp-dmc-line"><strong id="dp-dmc-words" data-open="2026-10-05" data-close="2026-12-18" data-year="2027">2027 DMC signup is open now, to Friday, Dec 18, 2026, at your FSA office. 51 days left.</strong> <span class="dp-dmc-src">Source: <a href="https://www.fsa.usda.gov/news-events/news/09-30-2026/usda-announces-2027-dairy-margin-coverage-enrollment" rel="noopener">FSA, Sep 30, 2026</a>.</span></p>
+<script>
+/* DMC signup countdown: the same words seed_static.milk_dmc_words() bakes, recounted
+   from the card's data- dates on the reader's own clock, so a day-old bake never
+   shows yesterday's count. */
+(function(){
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var WK=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  function day(s){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||''); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+  function md(d){ return MON[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear(); }
+  function words(el,now){
+    var o=day(el.getAttribute('data-open')), c=day(el.getAttribute('data-close')), y=el.getAttribute('data-year');
+    if(!o||!c||!y) return null;
+    var t=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    if(t<o) return y+' DMC signup opens '+WK[o.getDay()]+', '+md(o)+', and runs to '+md(c)+'.';
+    if(t>c) return 'The '+y+' DMC signup closed '+md(c)+'.';
+    var n=Math.round((c-t)/864e5);
+    return y+' DMC signup is open now, to '+WK[c.getDay()]+', '+md(c)+', at your FSA office. '+
+      (n===0?'Today is the last day.':n===1?'1 day left.':n+' days left.');
+  }
+  window.agsistDmcWords=words;
+  ['dp-dmc-words','dp-dmc-lever'].forEach(function(id){
+    var el=document.getElementById(id); if(!el) return;
+    var w=words(el,new Date()); if(w&&el.textContent!==w) el.textContent=w;
+  });
+})();
+</script>
+</body></html>

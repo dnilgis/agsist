@@ -438,7 +438,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
         <b>Prices:</b> Near you: <a href="/cash-bids">Cash bids near me</a> · <a href="/basis">Bids and basis by state</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/cash-bid-index">Cash Bid Index</a> · <a href="/fertilizer">Fertilizer prices</a> · Futures: <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · Reports: <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a> · <a href="/conditions">Crop progress and size</a> · <a href="/usda-quick-stats">Yield by state</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a><br>
         <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a> · <a href="/manure-value">Manure value</a> · <a href="/drought-monitor">Drought monitor</a><br>
         <b>Field:</b> Weather: <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-print">Rain Print</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · Crop: <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · Harvest and bins: <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a><br>
-        <b>Money &amp; Land:</b> Land: <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
+        <b>Money &amp; Land:</b> Land: <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/land-sales/">Land sales</a> · <a href="/farmland-index">Farmland sale index</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
         <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a><br>
         <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
         <b>More:</b> <a href="/about">About</a> · <a href="/sponsor">Advertise with AGSIST</a> · <a href="/contact">Contact</a>
@@ -975,8 +975,11 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       return h + '</section>';
     }
     if (d.withheld) {
+      /* d.split: the days are before GA4 could tell ads apart (Oct 29, 2026), so they stay withheld; the
+         counts from that day on fill in by themselves. */
       return h + '<div class="cp-card"><p class="cp-note" style="margin:0"><b>Withheld for now.</b> ' + esc(d.withheld) +
-        ' Showing a number that may hold someone else’s ad would be worse than showing none. It comes back on its own once only your ad is running.</p></div>' +
+        ' Showing a number that may hold someone else’s ad would be worse than showing none.' +
+        (d.split ? ' Your own counts fill in from ' + esc(fmt(d.split.from, true)) + ' on.' : ' It comes back on its own once only your ad is running.') + '</p></div>' +
         '<div class="cp-kpis" style="margin-top:.7rem">' + areaKpi(d) + '</div></section>';
     }
     var w = (d.windows || []).filter(function (x) { return x.days === 7; })[0] || { viewable: t.viewable, clicks: t.clicks, ctr: t.ctr };
@@ -1000,6 +1003,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       big(w.ctr == null ? '-' : w.ctr.toFixed(2) + '%', '', 'Click rate', verdict, asof, w.ctr == null) +
       areaKpi(d) + '</div>';
     if ((d.series || []).length > 7) h += '<p class="cp-note">Since ' + esc(fmt(d.liveSince || s.start, true)) + ': ' + num(t.viewable) + ' times seen, ' + num(t.clicks) + ' click' + (t.clicks === 1 ? '' : 's') + '.</p>';
+    /* Days before GA4 could tell two ads apart are left out, never filled with the site's total. */
+    if (d.split && d.split.note) h += '<p class="cp-note">' + esc(d.split.note) + '</p>';
     return h + '</section>';
   }
 
@@ -1012,7 +1017,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       if (d.windows && d.windows.length) {
         h += '<div class="cp-win">';
         d.windows.forEach(function (w) {
-          h += '<div><b>' + num(w.viewable) + '</b><span>times seen, last ' + esc(w.days) + ' days &middot; ' + num(w.clicks) + ' click' +
+          h += '<div><b>' + num(w.viewable) + '</b><span>times seen, last ' + esc(w.days) + ' days' +
+               (w.countedFrom ? ' (counted from ' + esc(fmt(w.countedFrom)) + ')' : '') + ' &middot; ' + num(w.clicks) + ' click' +
                (w.clicks === 1 ? '' : 's') + (w.ctr == null ? '' : ' &middot; ' + w.ctr.toFixed(2) + '%') + '</span></div>';
         });
         h += '</div>';
@@ -1220,7 +1226,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     h += '<div class="cp-req-f' + (d.freeTest ? ' cp-free' : '') + '" data-for="plan" hidden>' + (d.freeTest ? '<span class="cp-free-tag">' + FREE + '</span>' : '') +
       '<div' + (d.freeTest ? ' class="cp-muted"' : '') + '><label for="cp-req-plan">New plan</label><select id="cp-req-plan" name="plan">' +
       (rc.tiers || []).filter(function (t) { return t.id !== cur; }).map(function (t) {
-        return '<option value="' + esc(t.id) + '">' + esc(t.name) + ' · $' + esc(t.price_month) + ' a month</option>'; }).join('') + '</select>' +
+        return '<option value="' + esc(t.id) + '">' + esc(t.name) + ' · $' + esc(t.price_month) + ' a month' + (t.price_by_state ? ' (' + esc(stateNote(t)) + ')' : '') + '</option>'; }).join('') + '</select>' +
       '<p class="cp-small" id="cp-req-plan-d"></p></div></div>';
     h += '<div class="cp-req-f" data-for="pause cancel extend" hidden><label for="cp-req-date" id="cp-req-date-l">From</label><input type="date" id="cp-req-date" name="date"></div>';
     h += d.freeTest
@@ -1332,6 +1338,16 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     pick(act);
   }
 
+  /* A tier's monthly price for one state (a State Sponsor costs more in a few states), and the
+     plain note that says which (data/rate-card.json price_by_state, opens_soon). */
+  function tierPrice(t, st) { return (st && t.price_by_state && t.price_by_state[st]) || t.price_month; }
+  function stateNote(t) {
+    var by = t.price_by_state || {}, hi = {};
+    Object.keys(by).forEach(function (k) { (hi[by[k]] = hi[by[k]] || []).push(k); });
+    var out = Object.keys(hi).map(function (p) { return '$' + p + ' a month in ' + hi[p].join(', '); });
+    if ((t.opens_soon || []).length) out.push(t.opens_soon.join(', ') + (t.opens_soon.length > 1 ? ' open soon' : ' opens soon'));
+    return out.join('; ');
+  }
   function billingSection(d, s) {
     var rc = d.rateCard || {}, t = s.tier;
     if (d.demo) {
@@ -1342,14 +1358,14 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       if (!tiers.length) return b + '<div class="cp-card cp-muted"><p class="cp-note" style="margin:0">The rate card did not load.</p></div></div></details>';
       b += '<div class="cp-rc cp-muted">';
       tiers.forEach(function (x) {
-        b += '<div class="cp-card cp-plan"><div class="cp-plan-name">' + esc(x.name) + '</div><div class="cp-plan-price">$' + esc(x.price_month) + '<small> a month</small></div>' +
-          '<ul><li>' + esc(x.placement || '') + '</li>' + (x.note ? '<li>' + esc(x.note) + '</li>' : '') + '</ul></div>';
+        b += '<div class="cp-card cp-plan"><div class="cp-plan-name">' + esc(x.name) + '</div><div class="cp-plan-price">$' + esc(x.price_month) + '<small> a month' + (x.price_by_state ? ' in most states' : '') + '</small></div>' +
+          '<ul><li>' + esc(x.placement || '') + '</li>' + (x.price_by_state ? '<li>' + esc(stateNote(x)) + '</li>' : '') + (x.note ? '<li>' + esc(x.note) + '</li>' : '') + '</ul></div>';
       });
       b += '</div>';
-      if (rc.trial || rc.terms) b += '<p class="cp-small cp-muted" style="margin:.6rem 0 0">' + esc([rc.trial, rc.terms].filter(Boolean).join(' ')) + '</p>';
+      if (rc.trial || rc.terms) b += '<p class="cp-small cp-muted" style="margin:.6rem 0 0">' + esc([rc.trial, rc.day30, rc.terms, rc.prepay, rc.founding && rc.founding.text, rc.paperwork].filter(Boolean).join(' ')) + '</p>';
       return b + '</div></details>';
     }
-    var bsum = d.freeTest ? FREE : (t ? esc(t.name) + ' &middot; $' + esc(t.price_month) + ' a month' + (rc.currency && rc.currency !== 'USD' ? ' ' + esc(rc.currency) : '') : 'Plan not recorded yet');
+    var bsum = d.freeTest ? FREE : (t ? esc(t.name) + ' &middot; $' + esc(tierPrice(t, s.bill.state)) + ' a month' + (rc.currency && rc.currency !== 'USD' ? ' ' + esc(rc.currency) : '') : 'Plan not recorded yet');
     var h = '<details class="cp-fold' + (d.freeTest ? ' cp-free' : '') + '" id="billing"><summary><span class="cp-fold-h"><span class="cp-fold-t">Billing</span><span class="cp-fold-s' + (d.freeTest ? ' cp-muted' : '') + '">' + bsum + '</span></span></summary><div class="cp-fold-b">';
     if (d.freeTest) {
       /* THE SAME LAYOUT, MUTED. Nothing below is charged or offered: it is the
@@ -1359,7 +1375,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     }
     if (!t) return h + '<div class="cp-card"><p class="cp-note" style="margin:0">Your plan will appear here once it is recorded.</p></div></div></details>';
     h += '<div class="cp-bill' + (d.freeTest ? ' cp-muted' : '') + '"' + (d.freeTest ? ' aria-hidden="true"' : '') + '><div class="cp-card cp-plan"><div class="cp-plan-name">' + esc(t.name) + '</div>' +
-         '<div class="cp-plan-price">$' + esc(t.price_month) + '<small> a month</small></div>' +
+         '<div class="cp-plan-price">$' + esc(tierPrice(t, s.bill.state)) + '<small> a month</small></div>' +
+         (t.price_by_state && !s.bill.state ? '<p class="cp-small">' + esc(stateNote(t)) + '</p>' : '') +
          '<ul>' +
          (s.free ? '<li>' + s.free.charAt(0).toUpperCase() + s.free.slice(1) + ' free</li>' : '') +
          (s.lockM ? '<li>Rate locked for ' + esc(s.lockM) + ' months from your start date</li>' : '') +
@@ -1370,12 +1387,12 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     if (s.start) {
       tl.push([s.start, 'Your ad goes live', 'The first briefing with your ad. The results counter starts here.', TODAY === s.start]);
       if (s.trialEnd) tl.push([s.trialEnd, 'Last free day', s.freeSpan + ' at no charge, ' + fmt(s.start) + ' to ' + fmt(s.trialEnd) + '.', s.inTrial]);
-      tl.push([s.firstBilled, 'First billed month', '$' + t.price_month + ' a month from here, month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
-      if (s.lockEnd) tl.push([s.lockEnd, 'Rate lock ends', 'Your $' + t.price_month + '-a-month ' + t.name.toLowerCase() + ' rate holds through this date.', false]);
+      tl.push([s.firstBilled, 'First billed month', '$' + tierPrice(t, s.bill.state) + ' a month from here, month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
+      if (s.lockEnd) tl.push([s.lockEnd, 'Rate lock ends', 'Your $' + tierPrice(t, s.bill.state) + '-a-month ' + t.name.toLowerCase() + ' rate holds through this date.', false]);
     } else {
       tl.push([null, 'Your ad goes live', 'The morning after you approve. That date sets everything below.', false]);
       if (s.trialM || s.trialW) tl.push([null, s.freeLabel, 'From the first day your ad runs.', false]);
-      tl.push([null, 'First billed month', 'The day after the free period ends, at $' + t.price_month + ' a month.', false]);
+      tl.push([null, 'First billed month', 'The day after the free period ends, at $' + tierPrice(t, s.bill.state) + ' a month.', false]);
       if (s.lockM) tl.push([null, 'Rate lock', 'Your rate holds for ' + s.lockM + ' months from the start date.', false]);
     }
     h += '<div class="cp-card"><div class="cp-eyebrow" style="margin-bottom:.3rem">Schedule</div><ol class="cp-tl">';

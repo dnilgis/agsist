@@ -1940,7 +1940,7 @@ def _in_ring(x, y, ring):
 def county_finder(root="."):
     """find(lat, lon, ST) -> {"name", "links": [(href, text)]} for the county a
     point is in, from the Atlas's county shapes (data/atlas/counties.geo.json),
-    with the county's own rain, Atlas and ARC/PLC pages that are real pages on
+    with the county's own rain, Atlas, land sales and ARC/PLC pages that are real pages on
     disk (a pointer or a missing file is left out). None when the files are
     missing (the line is then left off every page) or the point is in no
     county of that state."""
@@ -1984,6 +1984,7 @@ def county_finder(root="."):
                 links = []
                 for rel, href, text in ((f"rain/{ssl}/{slug}.html", f"/rain/{ssl}/{slug}", "rain this year"),
                                         (atlas.strip("/") + ".html", atlas, "farmland and cash rent"),
+                                        (f"land-sales/{ssl}/{slug}.html", f"/land-sales/{ssl}/{slug}", "land sales near here"),
                                         (f"arc-plc/{ssl}/{slug}.html", f"/arc-plc/{ssl}/{slug}", "ARC or PLC")):
                     if real(rel):
                         links.append((href, text))
@@ -4210,7 +4211,7 @@ def _selftest_lead():
 
 
 def _selftest_county():
-    """A town page links its county's rain, Atlas and ARC/PLC pages, only those that are real pages."""
+    """A town page links its county's rain, Atlas, land sales and ARC/PLC pages, only those that are real pages."""
     import tempfile as _tf
     with _tf.TemporaryDirectory() as d:
         sq = lambda x0, y0, x1, y1: [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]  # noqa: E731
@@ -4225,7 +4226,8 @@ def _selftest_county():
                           ("rain/iowa/story-county.html", "<html>rain</html>"),
                           ("farmland-atlas/iowa/story-county.html", "<html>atlas</html>"),
                           ("arc-plc/iowa/story-county.html", PP.page("/arc-plc/iowa/", "Story", "Iowa")),
-                          ("rain/iowa/hamilton-county.html", "<html>rain</html>")):
+                          ("rain/iowa/hamilton-county.html", "<html>rain</html>"),
+                          ("land-sales/iowa/hamilton-county.html", "<html>sales</html>")):
             os.makedirs(os.path.dirname(os.path.join(d, rel)), exist_ok=True)
             with open(os.path.join(d, rel), "w") as f:
                 f.write(body)
@@ -4238,6 +4240,8 @@ def _selftest_county():
         t["boards"]["a"] = {"pin": None, "how": "name"}
         assert county_line(t, None, ctx) == ln, "no pin: the town's own ZIP"
         assert "Hamilton County" in county_line(t, (42.4, -93.6, "x"), ctx)
+        # Oct 29: a county with its own land sales page gets the link; Story has none, so none above
+        assert '<a href="/land-sales/iowa/hamilton-county">land sales near here</a>' in county_line(t, (42.4, -93.6, "x"), ctx)
         assert county_line(t, (40.0, -90.0, "x"), {"county": ctx["county"]}) == ""
         assert county_line(t, None, {}) == "" and county_finder(os.path.join(d, "nope")) is None
 

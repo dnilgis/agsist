@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 104,
- "with_known_cadence": 104,
+ "count": 103,
+ "with_known_cadence": 103,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1139,7 +1139,8 @@
    ],
    "written_by": [],
    "touched_by": [
-    "Rebuild Feed Manifest"
+    "Rebuild Feed Manifest",
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
@@ -2342,7 +2343,6 @@
   {
    "path": "data/site-usage.json",
    "pages": [
-    "sponsor-kit.html",
     "tools.html"
    ],
    "written_by": [
@@ -2375,7 +2375,8 @@
    ],
    "touched_by": [
     "cash-bid-pages",
-    "Rebuild Feed Manifest"
+    "Rebuild Feed Manifest",
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": true,
@@ -2420,6 +2421,7 @@
    "written_by": [],
    "touched_by": [
     "Rebuild Feed Manifest",
+    "Sponsor sign-ups",
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "maintained by hand, not on a schedule",
@@ -2526,27 +2528,6 @@
     "35 7 1,14 10 *",
     "35 7 14 11 *"
    ],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/supporters.json",
-   "pages": [
-    "sponsor.html"
-   ],
-   "written_by": [],
-   "touched_by": [
-    "Rebuild Feed Manifest",
-    "Sponsor sign-ups",
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "cadence": "maintained by hand, not on a schedule",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [],
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null

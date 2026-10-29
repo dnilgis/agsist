@@ -8,7 +8,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
@@ -119,4 +119,24 @@ test("zero-result searches are counted without the words", () => {
   assert.match(fn, /gtag\('event', 'search_no_match'/);
   assert.doesNotMatch(fn, /localStorage|sessionStorage|search_term|\bq:|query:/, "no query text sent or stored");
   assert.match(fn, /query_length: qn\.length, query_words/);
+});
+
+test("land sales are findable by county and state (Oct 29, 2026)", () => {
+  const all = (q, local = "") => S._search(items, q, local).map((h) => h.e.url);
+  assert.equal(top("barron county land sales"), "/land-sales/wisconsin/barron-county");
+  assert.equal(top("champaign county farmland sales"), "/land-sales/illinois/champaign-county");
+  assert.equal(top("land sales wisconsin"), "/land-sales/#wisconsin");
+  assert.equal(top("land sales"), "/land-sales/");
+  // the county name alone still opens the Atlas county home; its sales page is in the first few, once
+  assert.equal(top("barron county", "WI"), "/farmland-atlas/wisconsin/barron-county");
+  const b = all("barron county", "WI").slice(0, 4);
+  assert.equal(b.filter((u) => u === "/land-sales/wisconsin/barron-county").length, 1, b.join(" "));
+  // a land sales page on top: the Fast Facts row names the county, not "Land sales in ..."
+  assert.equal(all("barron county land sales")[1], "/fast-facts?q=" + encodeURIComponent("Barron County, WI"));
+  // every IL, WI and IN county page on disk is in the index
+  const want = ["illinois", "wisconsin", "indiana"].flatMap((st) =>
+    readdirSync(ROOT + "land-sales/" + st).filter((f) => f.endsWith(".html")).map((f) => "/land-sales/" + st + "/" + f.slice(0, -5)));
+  const have = new Set(items.map((e) => e.url));
+  assert.ok(want.length >= 260, "county pages on disk: " + want.length);
+  for (const u of want) assert.ok(have.has(u), u);
 });

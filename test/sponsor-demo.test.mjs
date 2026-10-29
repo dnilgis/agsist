@@ -181,6 +181,10 @@ test("browser: the demo says what it is, shows real readers and zero ad counts, 
       const bill = await pg.textContent("#billing");
       assert.match(bill, /Not active/i);
       for (const t of rc.tiers) assert.ok(bill.includes("$" + t.price_month), "rate card: " + t.name);
+      // Oct 29, 2026: every tier by name, the State Sponsor's state prices, and nothing retired
+      for (const t of rc.tiers) assert.ok(bill.includes(t.name), "rate card names: " + t.name);
+      for (const [st, p] of Object.entries(rc.tiers.find((t) => t.id === "state").price_by_state)) assert.ok(bill.includes("$" + p) && bill.includes(st), "state price: " + st);
+      assert.doesNotMatch(bill, /Own a page|Supporter|[Rr]ate locked/);
       assert.ok(await pg.$("#billing .cp-rc.cp-muted"), "greyed");
       // states table names every demo state
       await pg.click("#area > summary");

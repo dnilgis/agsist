@@ -20,12 +20,15 @@ WHAT IT REPORTS, AND WHAT EACH THING MEANS
     by day                a 90-day series
     by page               where it was seen
 
-STANDARD DIMENSIONS ONLY. Event parameters like `slot` can be queried as
-`customEvent:slot`, but ONLY after being registered as a custom dimension in
-the GA4 admin — and an unregistered one returns nothing rather than an error,
-which is the quietest possible way to ship an empty report. So this uses
-`eventName`, `date` and `pagePath`, which always exist. If `slot` is registered
-later, SLOT_DIMENSION below turns it on.
+SPLIT BY SLOT (Oct 29, 2026). Every ad tags its events with the parameter
+`slot` (components/sponsor-metrics.js), and Sig registered it in GA4 as the
+event-scoped custom dimension `customEvent:slot` on Oct 29, 2026. Every
+per-sponsor query filters on that sponsor's own slot names (sponsor_slots
+below), so two sponsors each get only their own rows. GA4 fills the dimension
+only from that day: a day before it is counted the old way (every sponsor
+event on the site) only when this sponsor was the only ad running, and is
+withheld otherwise. Rows GA4 could not give a slot ("(not set)") are counted
+in the log and given to nobody.
 
 WHAT IS DELIBERATELY NOT COUNTED, AND WHY THAT MATTERS MORE THAN WHAT IS
 
@@ -63,8 +66,36 @@ OUTDIR = ROOT / "data" / "sponsors"
 # The day the viewable rule became the MRC one.
 DEFINITION_CHANGED = "2026-09-05"
 
-# Registered custom dimension for the slot, if it ever is. `None` = do not ask.
-SLOT_DIMENSION = None       # e.g. "customEvent:slot"
+# The registered custom dimension for the slot (Sig, Oct 29, 2026), and the
+# first day GA4 fills it. Before SLOT_SINCE every slot reads "(not set)".
+SLOT_DIMENSION = "customEvent:slot"
+SLOT_SINCE = "2026-10-29"
+SPLIT_NOTE = "Split by slot from Oct 29, 2026."
+NOT_SET = "(not set)"
+
+# EVERY SLOT NAME THE SITE SENDS, and whose it is. Counted from the code that
+# draws each ad (scripts/test_sponsor_portal.py reads those files and fails on
+# a slot name that is not accounted for here):
+#   daily-briefing  index.html #dsp-filled, components/home.js teaser click
+#   homepage-top    components/home.js homepage strip, its click too
+#   daily-page      daily.html (AgsistAd.render ... {slot:'daily-page'})
+#   daily-archive   scripts/generate_daily.py archive pages
+#   geo-<id>        components/geo-sponsor.js, one per data/geo-sponsors.json entry
+#   footer-strip    components/loader.js footer supporter (data/supporters.json)
+#   page:<id>       components/loader.js page ribbon (data/page-sponsors.json)
+#   prf-<kind>:<st> components/prf-sponsor.js PRF state sponsor (data/prf-sponsors.json)
+# The daily briefing sponsor (data/sponsor.json) is drawn on the first four.
+# A page ribbon sold through /sponsor-apply (rate card of Oct 29, 2026: a State
+# Sponsor's state ribbons, the Cash Bids Sponsor's /cash-bids ribbon) is that
+# sponsor's: scripts/sponsor_apply.py writes "page_slots" into its entry in
+# data/sponsors.json, and sponsor_slots() gives it page:<id> for each. A state's
+# town pages carry the state page's slot id, so their events are the state's.
+# A page ribbon nobody holds, the footer strip and PRF go to nobody.
+DAILY_SLOTS = ("daily-briefing", "homepage-top", "daily-page", "daily-archive")
+GEO_SLOT_PREFIX = "geo-"
+PAGE_SLOT_PREFIX = "page:"
+UNREPORTED_SLOTS = ("footer-strip",)
+UNREPORTED_PREFIXES = ("prf-",)
 
 VIEWABLE_EVENTS = ["sponsor_viewable"]
 
@@ -189,12 +220,38 @@ def geo_creative(geo_id):
     }
 
 
-def creative_block(slug, geo=None):
+def page_creative(slot_ids):
+    """A sold page ribbon's ad, from data/page-sponsors.json: the copy the
+    applicant typed and Sig approved. The same fields the ribbon draws."""
+    try:
+        d = json.loads((ROOT / "data" / "page-sponsors.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    e = next(((d.get("slots") or {}).get(x) for x in slot_ids if (d.get("slots") or {}).get(x)), None)
+    if not e or not e.get("company") or not str(e.get("url") or "").startswith(("https://", "http://")):
+        return None
+    c = {"advertiser": e.get("company"), "headline": e.get("headline") or "", "body": e.get("body") or "",
+         "facts": [], "cta_text": "Visit", "cta_url": e.get("url"), "phone": None,
+         "logo": e.get("logo") or None, "disclosure": None}
+    return {
+        "live": e.get("active") is not False and bool(e.get("start")),
+        "proof_code": proof_code(c),
+        "fields": {k: c.get(k) for k in CREATIVE_FIELDS},
+        "label": "Sponsor",
+        "tier": e.get("tier"),
+        "links": {}, "cta_urls": {}, "previews": {},
+        "slots": [PAGE_SLOT_PREFIX + x for x in slot_ids],
+    }
+
+
+def creative_block(slug, geo=None, page_slots=None):
     """What this sponsor's ad says, where it points, and the code for it.
 
     Returns None when there is no creative on file -- a sponsor who has not
     been given one yet gets the pending page, not an empty proof.
     """
+    if page_slots is not None:
+        return page_creative(page_slots)
     if geo:
         return geo_creative(geo)
     src = ROOT / "data" / "sponsor.json"
@@ -415,10 +472,11 @@ def region_ads(s, views_by_region, clicks_by_region, total_views, total_clicks, 
             "elsewhere": {"viewable": max(0, int(total_views) - sv), "clicks": max(0, int(total_clicks) - sc)}}
 
 
-def other_ads_live(geo_id, today=None):
+def other_ads_live(geo_id, today=None, slug=None):
     """Every other ad that fires sponsor_viewable or a sponsor click: the daily
     sponsor, a footer supporter, a sold page ribbon, a PRF state sponsor,
-    another state-targeted entry. Named, so the portal can say why."""
+    another state-targeted entry. Named, so the portal can say why. `slug`
+    is the sponsor asking, so the daily sponsor is not "another ad" to itself."""
     day = (today or date.today()).isoformat()
     out = []
 
@@ -427,7 +485,8 @@ def other_ads_live(geo_id, today=None):
             return json.loads((ROOT / "data" / name).read_text(encoding="utf-8"))
         except (OSError, ValueError):
             return {}
-    if load("sponsor.json").get("active") is True:
+    daily = load("sponsor.json")
+    if daily.get("active") is True and not (slug and daily.get("slug") == slug and not geo_id):
         out.append("the daily briefing sponsor")
     if any(x.get("active") is True for x in load("supporters.json").get("supporters") or []):
         out.append("a footer supporter")
@@ -441,6 +500,206 @@ def other_ads_live(geo_id, today=None):
     if any(e.get("active") is True and e.get("id") != geo_id for e in load("geo-sponsors.json").get("sponsors") or []):
         out.append("another state-targeted sponsor")
     return out
+
+
+# ── SPLIT BY SLOT (Oct 29, 2026) ─────────────────────────────────────────
+
+def page_slot_ids(s):
+    """The page ribbons a sponsor holds (State or Cash Bids Sponsor), as typed by
+    scripts/sponsor_apply.py. Only well-formed ribbon ids."""
+    v = s.get("page_slots")
+    if not isinstance(v, list):
+        return []
+    return [str(x) for x in v if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,59}", str(x))]
+
+
+def sponsor_slots(s):
+    """The slot names that are this sponsor's ad, and nothing else."""
+    if s.get("page_slots") is not None:
+        return [PAGE_SLOT_PREFIX + x for x in page_slot_ids(s)]
+    if s.get("geo"):
+        return [GEO_SLOT_PREFIX + str(s["geo"])]
+    return list(DAILY_SLOTS)
+
+
+def check_slots(sponsors):
+    """Two sponsors may never claim one slot: each would be handed the other's
+    rows as its own. Fails the build instead."""
+    seen = {}
+    for s in sponsors:
+        for x in sponsor_slots(s):
+            if x in seen:
+                fail("%s and %s both claim the slot %r; each would be shown the other's "
+                     "numbers as its own" % (seen[x], s.get("slug"), x))
+            seen[x] = s.get("slug")
+    return seen
+
+
+def split_range(start, end):
+    """(before, after): the part of [start, end] before GA4 had the slot, and
+    the part from SLOT_SINCE on. Either is None when empty."""
+    start, end = str(start), str(end)
+    if start > end:
+        return None, None
+    eve = (date.fromisoformat(SLOT_SINCE) - timedelta(days=1)).isoformat()
+    pre = (start, min(end, eve)) if start < SLOT_SINCE else None
+    post = (max(start, SLOT_SINCE), end) if end >= SLOT_SINCE else None
+    return pre, post
+
+
+def _ran_between(o, a, b):
+    """Could this sponsors.json entry's ad have run on any day in [a, b]?
+    Unsure counts as yes."""
+    first = o.get("start") or o.get("count_from")
+    ended = o.get("ended") if isinstance(o.get("ended"), str) and re.match(r"^\d{4}-\d{2}-\d{2}$", o.get("ended")) else None
+    if first and str(first) > b:
+        return False
+    if ended:
+        return ended >= a
+    if o.get("active", True) is False:
+        # Off with no end date: it ran only if it ever started, and then we
+        # cannot say when it stopped.
+        return bool(first)
+    return True
+
+
+def others_before(s, conf_sponsors, a, b, today=None):
+    """Every other ad that may have run on a day in [a, b], a day GA4 has no
+    slot for. Empty means this sponsor was the only one, so the site's whole
+    sponsor count on those days is its own (the rule before Oct 29, 2026).
+    Ads outside data/sponsors.json are judged by whether they run now, since
+    nothing records when they started: unsure means withheld."""
+    out = []
+    for o in conf_sponsors:
+        if o is s or o.get("slug") == s.get("slug") or is_demo(o):
+            continue
+        if _ran_between(o, a, b):
+            out.append(o.get("name") or o.get("slug") or "another sponsor")
+    for x in other_ads_live(s.get("geo"), today, slug=s.get("slug")):
+        if x not in out:
+            out.append(x)
+    return out
+
+
+SITE_WIDE = "site-wide"     # a query with no slot filter; only the two uses below
+
+
+class GA4Reader:
+    """Every GA4 question this builder asks, in one place.
+
+    A per-sponsor question MUST carry that sponsor's slots: request() raises
+    without them, so no code path can hand a sponsor the site-wide total.
+    SITE_WIDE is allowed for exactly two things: a day before SLOT_SINCE when
+    the sponsor was the only ad (others_before), and the "(not set)" count in
+    the log, which goes to nobody."""
+
+    def __init__(self, client, types, prop):
+        self.client, self.T, self.prop = client, types, prop
+        self.dropped = {}
+
+    def _in_list(self, field, values):
+        T = self.T
+        return T.FilterExpression(filter=T.Filter(
+            field_name=field, in_list_filter=T.Filter.InListFilter(values=list(values))))
+
+    def request(self, dimensions, events, start, end, slots, country=None, limit=100000):
+        T = self.T
+        if slots != SITE_WIDE:
+            if not slots or not all(isinstance(x, str) and x for x in slots):
+                raise ValueError("a sponsor's GA4 query must filter on its slot; got %r" % (slots,))
+            if str(start) < SLOT_SINCE:
+                raise ValueError("GA4 has no slot before %s; asked from %s" % (SLOT_SINCE, start))
+        dims = list(dimensions)
+        exprs = [self._in_list("eventName", events)]
+        if slots != SITE_WIDE:
+            exprs.append(self._in_list(SLOT_DIMENSION, slots))
+            if SLOT_DIMENSION not in dims:
+                dims.append(SLOT_DIMENSION)
+        if country:
+            exprs.append(T.FilterExpression(filter=T.Filter(
+                field_name="country", string_filter=T.Filter.StringFilter(value=country))))
+        filt = exprs[0] if len(exprs) == 1 else T.FilterExpression(
+            and_group=T.FilterExpressionList(expressions=exprs))
+        return T.RunReportRequest(
+            property="properties/" + self.prop,
+            dimensions=[T.Dimension(name=d) if isinstance(d, str) else d for d in dims],
+            metrics=[T.Metric(name="eventCount")],
+            date_ranges=[T.DateRange(start_date=str(start), end_date=str(end))],
+            dimension_filter=filt,
+            limit=limit,
+        )
+
+    def rows(self, dimensions, events, start, end, slots, country=None, limit=100000):
+        """[[dim values..., count]] in the order of `dimensions`. With slots,
+        a row whose slot is not one of them (GA4 should never send one) is
+        dropped and counted in self.dropped, never kept."""
+        # AN EMPTY LIST ASKS FOR NOTHING, AND MUST NOT ASK AT ALL.
+        # `inListFilter` with no values is not "match none" to GA4 -- it is a
+        # malformed filter, and the quietest outcome is a report that silently
+        # matches every event on the property. LEGACY_VIEW_EVENTS is empty by
+        # design, so this path is taken on every run.
+        if not events:
+            return []
+        # A CAMPAIGN THAT STARTED TODAY HAS NO FULL DAY YET (Oct 28, 2026: Root Lot went live the day the
+        # change merged, so start was today and end yesterday). GA4 refuses start > end with a 400, which
+        # stopped every sponsor's report. No day in range is no rows, not a question.
+        if str(start) > str(end):
+            return []
+        req = self.request(dimensions, events, start, end, slots, country, limit)
+        n = len(dimensions)
+        out = []
+        for r in self.client.run_report(req).rows:
+            vals = [d.value for d in r.dimension_values]
+            cnt = int(r.metric_values[0].value)
+            if slots != SITE_WIDE:
+                sl = vals[-1] if SLOT_DIMENSION not in dimensions else vals[list(dimensions).index(SLOT_DIMENSION)]
+                if sl not in slots:
+                    self.dropped[sl] = self.dropped.get(sl, 0) + cnt
+                    continue
+            out.append(vals[:n] + [cnt])
+        return out
+
+    def region(self, events, start, end, slots):
+        """{region name: count} for US visits, GA4's own region for the visit.
+        Never an event parameter: the ad sends no state."""
+        out = {}
+        for r in self.rows([self.T.Dimension(name="region")], events, start, end, slots,
+                           country="United States", limit=1000):
+            out[r[0]] = out.get(r[0], 0) + r[-1]
+        return out
+
+    def slot_log(self, events, start, end):
+        """{slot: count} over the whole site from `start`, for the log only."""
+        out = {}
+        for r in self.rows([SLOT_DIMENSION], events, start, end, SITE_WIDE, limit=10000):
+            out[r[0]] = out.get(r[0], 0) + r[-1]
+        return out
+
+
+def counted_parts(s, start, end, conf_sponsors, today=None):
+    """The date ranges this sponsor's numbers are read over, each with the
+    slot filter it is read with, plus what was withheld.
+
+    Returns (parts, withheld): parts is [(a, b, slots)], withheld is None or
+    {"from", "through", "others"}: days before SLOT_SINCE while another ad ran."""
+    pre, post = split_range(start, end)
+    parts, withheld = [], None
+    if pre:
+        others = others_before(s, conf_sponsors, pre[0], pre[1], today)
+        if others:
+            withheld = {"from": pre[0], "through": pre[1], "others": others}
+        else:
+            parts.append((pre[0], pre[1], SITE_WIDE))
+    if post:
+        parts.append((post[0], post[1], sponsor_slots(s)))
+    return parts, withheld
+
+
+def split_text(withheld):
+    """What the portal says about withheld days, in plain words."""
+    return ("%s Before that, GA4 could not tell your ad from %s, so %s withheld." % (
+        SPLIT_NOTE, ", ".join(withheld["others"]),
+        "that day is" if withheld["from"] == withheld["through"] else "those days are"))
 
 
 # ── A DEMO PORTAL (Oct 29, 2026; Tractor Supply) ─────────────────────────
@@ -533,6 +792,164 @@ def rate_card():
         return None
 
 
+def sponsor_payload(s, ga, end, conf_sponsors, today=None):
+    """One sponsor's report file and the line for the log. `ga` is a
+    GA4Reader; every number in the payload comes through it, filtered on this
+    sponsor's slots from SLOT_SINCE (counted_parts)."""
+    slug = s["slug"]
+    pages = s.get("pages")          # None = every page
+    start = s.get("start")
+    # A STATE-TARGETED AD SWITCHED ON BY HAND (Oct 28, 2026: Sig said start
+    # for RootLot; it goes live the day the change merges). Nobody types the
+    # day it first ran, so 'count_from' (the day Sig said start; nothing of
+    # it could run before) is where GA4 is asked from, and the portal's
+    # "live since" is the FIRST DAY WITH DATA, found below. Until a day has
+    # data the counts are 0, never blank and never another ad's.
+    count_from = None
+    if not start and s.get("geo") and s.get("count_from"):
+        ge = geo_entry(s["geo"])
+        if ge and ge.get("active") is True:
+            count_from = start = s["count_from"]
+
+    # ══════════════════════════════════════════════════════════════════
+    #  NO START DATE MEANS NO NUMBERS, NOT A DEFAULT WINDOW
+    # ══════════════════════════════════════════════════════════════════
+    #  This used to fall back to "the last 90 days", which for a sponsor
+    #  who has not run yet means handing them ninety days of somebody
+    #  else's traffic as their own performance. Rule 1: do not invent a
+    #  number. A report is still written -- and it is a real page the
+    #  sponsor can be sent today -- it just says the counter starts when
+    #  their first ad runs.
+    if not start:
+        return {
+            "schema": "agsist-sponsor-report/1",
+            "sponsor": s.get("name", slug),
+            "slug": slug,
+            "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "through": end.isoformat(),
+            "start": None,
+            "pending": True,
+            "pages": pages,
+            "totals": {"viewable": 0, "clicks": 0, "ctr": None, "legacyImpressions": 0},
+            "windows": [], "series": [], "byPage": [],
+            # The proof and the rate card do NOT wait for a start date.
+            # Approving the copy is the thing that happens first, and a
+            # sponsor with no numbers yet is exactly who needs to see it.
+            "creative": creative_block(slug, s.get("geo"), page_slot_ids(s) if s.get("page_slots") is not None else None),
+            "rateCard": rate_card(),
+            "approveTo": s.get("approve_to") or APPROVE_TO,
+            **({"regionAds": region_ads_pending(s)} if s.get("geo") else {}),
+            **portal_extras(s),
+        }, "%s: not started -- no start date set, wrote the pending page" % slug
+
+    # Each range with the slot filter it is read with. Days before
+    # SLOT_SINCE while another ad ran are in `withheld`, not in any part.
+    parts, withheld = counted_parts(s, start, end.isoformat(), conf_sponsors, today)
+
+    def tally(events, dims):
+        rows = []
+        for a, b, slots in parts:
+            rows += ga.rows(dims, events, a, b, slots)
+        if pages and "pagePath" in dims:
+            i = dims.index("pagePath")
+            rows = [r for r in rows if r[i] in pages]
+        return rows
+
+    by_day = tally(VIEWABLE_EVENTS, ["date", "pagePath"])
+    by_day_legacy = tally(LEGACY_VIEW_EVENTS, ["date", "pagePath"])
+    clicks = tally(CLICK_EVENTS, ["date", "pagePath"])
+
+    def fold(rows, key_idx):
+        out = {}
+        for r in rows:
+            out[r[key_idx]] = out.get(r[key_idx], 0) + r[-1]
+        return out
+
+    views_day = fold(by_day, 0)
+    legacy_day = fold(by_day_legacy, 0)
+    clicks_day = fold(clicks, 0)
+    views_page = fold(by_day, 1)
+    clicks_page = fold(clicks, 1)
+
+    days = sorted(set(list(views_day) + list(legacy_day) + list(clicks_day)))
+    series = [{
+        "d": d[:4] + "-" + d[4:6] + "-" + d[6:],
+        "v": views_day.get(d, 0),
+        "l": legacy_day.get(d, 0),
+        "c": clicks_day.get(d, 0),
+    } for d in days]
+
+    tv, tl, tc = sum(views_day.values()), sum(legacy_day.values()), sum(clicks_day.values())
+
+    def window(n):
+        cut = (end - timedelta(days=n - 1)).isoformat()
+        w = [x for x in series if x["d"] >= cut]
+        v, c = sum(x["v"] for x in w), sum(x["c"] for x in w)
+        out = {"days": n, "viewable": v, "clicks": c,
+               "ctr": round(100.0 * c / v, 2) if v else None}
+        # A window reaching back into withheld days holds only the counted
+        # ones, and says from when.
+        if withheld and cut <= withheld["through"]:
+            out["countedFrom"] = SLOT_SINCE
+        return out
+
+    live_since = None
+    if count_from:
+        live_since = next((x["d"] for x in series if x["v"] or x["c"]), None)
+    payload = {
+        "schema": "agsist-sponsor-report/1",
+        "sponsor": s.get("name", slug),
+        "slug": slug,
+        "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "through": end.isoformat(),
+        "start": live_since if count_from else start,
+        "countFrom": count_from,
+        "liveSince": live_since if count_from else start,
+        "pages": pages,
+        "definitionChanged": DEFINITION_CHANGED,
+        "slotSince": SLOT_SINCE,
+        "totals": {
+            "viewable": tv, "clicks": tc,
+            "ctr": round(100.0 * tc / tv, 2) if tv else None,
+            "legacyImpressions": tl,
+        },
+        "windows": [window(7), window(30), window(90)],
+        "series": series,
+        "byPage": sorted(
+            [{"page": p, "viewable": v, "clicks": clicks_page.get(p, 0)}
+             for p, v in views_page.items()],
+            key=lambda x: -x["viewable"]),
+        "creative": creative_block(slug, s.get("geo"), page_slot_ids(s) if s.get("page_slots") is not None else None),
+        "rateCard": rate_card(),
+        "approveTo": s.get("approve_to") or APPROVE_TO,
+        **portal_extras(s),
+    }
+    if withheld:
+        payload["split"] = {"from": SLOT_SINCE, "withheldFrom": withheld["from"],
+                            "withheldThrough": withheld["through"], "note": split_text(withheld)}
+    if withheld and not parts:
+        # Every day in range is before the slot and another ad ran: nothing
+        # here is this sponsor's alone. Withheld, said so.
+        payload["withheld"] = split_text(withheld)
+        payload["totals"] = {"viewable": None, "clicks": None, "ctr": None, "legacyImpressions": 0}
+        payload["windows"], payload["series"], payload["byPage"] = [], [], []
+        if s.get("geo"):
+            payload["regionAds"] = {"withheld": True, "rows": []}
+        return payload, "%s: withheld, %s to %s are before the slot and another ad ran" % (
+            slug, withheld["from"], withheld["through"])
+    if s.get("geo"):
+        reg, regc = {}, {}
+        for a, b, slots in parts:
+            for k, v in ga.region(VIEWABLE_EVENTS, a, b, slots).items():
+                reg[k] = reg.get(k, 0) + v
+            for k, v in ga.region(CLICK_EVENTS, a, b, slots).items():
+                regc[k] = regc.get(k, 0) + v
+        rstart = SLOT_SINCE if withheld else (payload["liveSince"] or start)
+        payload["regionAds"] = region_ads(s, reg, regc, tv, tc, rstart, end.isoformat())
+    return payload, "%s: %d viewable, %d clicks through %s%s" % (
+        slug, tv, tc, end, " (withheld %s to %s)" % (withheld["from"], withheld["through"]) if withheld else "")
+
+
 def main():
     if not CONF.exists():
         print("no data/sponsors.json — nothing to build")
@@ -555,14 +972,19 @@ def main():
     #  is both of their numbers, handed to each of them as their own, and
     #  neither would have any way to notice.
     #
-    #  So this refuses rather than guesses. Register `slot` as a custom
-    #  dimension in the GA4 admin, set SLOT_DIMENSION above, and the refusal
-    #  lifts.
+    #  So this refuses rather than guesses. Sig registered `slot` on Oct 29,
+    #  2026 and SLOT_DIMENSION is set, so this no longer fires. That is safe
+    #  only because every per-sponsor query now filters on the sponsor's
+    #  slots: GA4Reader.request raises on a query without them (tested in
+    #  scripts/test_sponsor_portal.py).
     if len(sponsors) > 1 and not SLOT_DIMENSION:
         fail("%d active sponsors but SLOT_DIMENSION is not set, so every report "
              "would carry the site-wide total and call it that sponsor's. "
              "Register `slot` as a custom dimension in GA4, set SLOT_DIMENSION "
              "in this file, or leave one sponsor active." % len(sponsors))
+    # With the slot set, two sponsors are told apart by their slot names, so
+    # no two may share one.
+    check_slots(sponsors)
 
     prop = os.environ.get("GA4_PROPERTY_ID", "").strip()
     cred = os.environ.get("GA4_SERVICE_ACCOUNT", "").strip()
@@ -595,7 +1017,7 @@ def main():
             except (OSError, ValueError) as e:
                 print("  [skip] %s: %s" % (slug_, e))
                 continue
-            cur["creative"] = creative_block(slug_, s_.get("geo"))
+            cur["creative"] = creative_block(slug_, s_.get("geo"), page_slot_ids(s_) if s_.get("page_slots") is not None else None)
             if s_.get("geo") and "regionAds" not in cur:
                 cur["regionAds"] = region_ads_pending(s_)
             cur["rateCard"] = rate_card()
@@ -613,9 +1035,7 @@ def main():
 
     try:
         from google.analytics.data_v1beta import BetaAnalyticsDataClient
-        from google.analytics.data_v1beta.types import (
-            DateRange, Dimension, Filter, FilterExpression, FilterExpressionList,
-            Metric, RunReportRequest)
+        from google.analytics.data_v1beta import types as ga_types
         from google.oauth2 import service_account
     except ImportError:
         fail("google-analytics-data is not installed — the workflow's pip step "
@@ -628,60 +1048,7 @@ def main():
              "including the braces")
     creds = service_account.Credentials.from_service_account_info(
         info, scopes=["https://www.googleapis.com/auth/analytics.readonly"])
-    client = BetaAnalyticsDataClient(credentials=creds)
-
-    def in_list(field, values):
-        return FilterExpression(filter=Filter(
-            field_name=field,
-            in_list_filter=Filter.InListFilter(values=list(values))))
-
-    def run(dimensions, events, start, end):
-        # AN EMPTY LIST ASKS FOR NOTHING, AND MUST NOT ASK AT ALL.
-        # `inListFilter` with no values is not "match none" to GA4 -- it is a
-        # malformed filter, and the quietest outcome is a report that silently
-        # matches every event on the property. LEGACY_VIEW_EVENTS is empty by
-        # design, so this path is taken on every run.
-        if not events:
-            return []
-        # A CAMPAIGN THAT STARTED TODAY HAS NO FULL DAY YET (Oct 28, 2026: Root Lot went live the day the
-        # change merged, so start was today and end yesterday). GA4 refuses start > end with a 400, which
-        # stopped every sponsor's report. No day in range is no rows, not a question.
-        if str(start) > str(end):
-            return []
-        req = RunReportRequest(
-            property="properties/" + prop,
-            dimensions=[Dimension(name=d) for d in dimensions],
-            metrics=[Metric(name="eventCount")],
-            date_ranges=[DateRange(start_date=start, end_date=end)],
-            dimension_filter=in_list("eventName", events),
-            limit=100000,
-        )
-        rows = []
-        for r in client.run_report(req).rows:
-            rows.append([d.value for d in r.dimension_values] +
-                        [int(r.metric_values[0].value)])
-        return rows
-
-    def run_region(events, start, end):
-        """{region name: count} for US visits, GA4's own region for the visit.
-        Never an event parameter: the ad sends no state."""
-        if not events or str(start) > str(end):
-            return {}
-        req = RunReportRequest(
-            property="properties/" + prop,
-            dimensions=[Dimension(name="region")],
-            metrics=[Metric(name="eventCount")],
-            date_ranges=[DateRange(start_date=start, end_date=end)],
-            dimension_filter=FilterExpression(and_group=FilterExpressionList(expressions=[
-                in_list("eventName", events),
-                FilterExpression(filter=Filter(field_name="country",
-                                               string_filter=Filter.StringFilter(value="United States")))])),
-            limit=1000,
-        )
-        out = {}
-        for r_ in client.run_report(req).rows:
-            out[r_.dimension_values[0].value] = out.get(r_.dimension_values[0].value, 0) + int(r_.metric_values[0].value)
-        return out
+    ga = GA4Reader(BetaAnalyticsDataClient(credentials=creds), ga_types, prop)
 
     OUTDIR.mkdir(parents=True, exist_ok=True)
     today = date.today()
@@ -690,143 +1057,25 @@ def main():
     # than one that is a day old.
     end = today - timedelta(days=1)
     written = []
+    all_sponsors = [x for x in conf.get("sponsors", []) if not is_demo(x)]
 
     for s in sponsors:
         slug, token = s["slug"], s["token"]
-        pages = s.get("pages")          # None = every page
-        start = s.get("start")
-        # A STATE-TARGETED AD SWITCHED ON BY HAND (Oct 28, 2026: Sig said start
-        # for RootLot; it goes live the day the change merges). Nobody types the
-        # day it first ran, so 'count_from' (the day Sig said start; nothing of
-        # it could run before) is where GA4 is asked from, and the portal's
-        # "live since" is the FIRST DAY WITH DATA, found below. Until a day has
-        # data the counts are 0, never blank and never another ad's.
-        count_from = None
-        if not start and s.get("geo") and s.get("count_from"):
-            ge = geo_entry(s["geo"])
-            if ge and ge.get("active") is True:
-                count_from = start = s["count_from"]
-
-        # ══════════════════════════════════════════════════════════════════
-        #  NO START DATE MEANS NO NUMBERS, NOT A DEFAULT WINDOW
-        # ══════════════════════════════════════════════════════════════════
-        #  This used to fall back to "the last 90 days", which for a sponsor
-        #  who has not run yet means handing them ninety days of somebody
-        #  else's traffic as their own performance. Rule 1: do not invent a
-        #  number. A report is still written -- and it is a real page the
-        #  sponsor can be sent today -- it just says the counter starts when
-        #  their first ad runs.
-        if not start:
-            f = OUTDIR / ("%s-%s.json" % (slug, token))
-            f.write_text(json.dumps({
-                "schema": "agsist-sponsor-report/1",
-                "sponsor": s.get("name", slug),
-                "slug": slug,
-                "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                "through": end.isoformat(),
-                "start": None,
-                "pending": True,
-                "pages": pages,
-                "totals": {"viewable": 0, "clicks": 0, "ctr": None, "legacyImpressions": 0},
-                "windows": [], "series": [], "byPage": [],
-                # The proof and the rate card do NOT wait for a start date.
-                # Approving the copy is the thing that happens first, and a
-                # sponsor with no numbers yet is exactly who needs to see it.
-                "creative": creative_block(slug, s.get("geo")),
-                "rateCard": rate_card(),
-                "approveTo": s.get("approve_to") or APPROVE_TO,
-                **({"regionAds": region_ads_pending(s)} if s.get("geo") else {}),
-                **portal_extras(s),
-            }, indent=1) + "\n", encoding="utf-8")
-            written.append("%s: not started -- no start date set, wrote the pending page" % slug)
-            continue
-
-        def tally(events, dims):
-            rows = run(dims, events, start, end.isoformat())
-            if pages and "pagePath" in dims:
-                i = dims.index("pagePath")
-                rows = [r for r in rows if r[i] in pages]
-            return rows
-
-        by_day = tally(VIEWABLE_EVENTS, ["date", "pagePath"])
-        by_day_legacy = tally(LEGACY_VIEW_EVENTS, ["date", "pagePath"])
-        clicks = tally(CLICK_EVENTS, ["date", "pagePath"])
-
-        def fold(rows, key_idx):
-            out = {}
-            for r in rows:
-                out[r[key_idx]] = out.get(r[key_idx], 0) + r[-1]
-            return out
-
-        views_day = fold(by_day, 0)
-        legacy_day = fold(by_day_legacy, 0)
-        clicks_day = fold(clicks, 0)
-        views_page = fold(by_day, 1)
-        clicks_page = fold(clicks, 1)
-
-        days = sorted(set(list(views_day) + list(legacy_day) + list(clicks_day)))
-        series = [{
-            "d": d[:4] + "-" + d[4:6] + "-" + d[6:],
-            "v": views_day.get(d, 0),
-            "l": legacy_day.get(d, 0),
-            "c": clicks_day.get(d, 0),
-        } for d in days]
-
-        tv, tl, tc = sum(views_day.values()), sum(legacy_day.values()), sum(clicks_day.values())
-
-        def window(n):
-            cut = (end - timedelta(days=n - 1)).isoformat()
-            w = [x for x in series if x["d"] >= cut]
-            v, c = sum(x["v"] for x in w), sum(x["c"] for x in w)
-            return {"days": n, "viewable": v, "clicks": c,
-                    "ctr": round(100.0 * c / v, 2) if v else None}
-
-        live_since = None
-        if count_from:
-            live_since = next((x["d"] for x in series if x["v"] or x["c"]), None)
-        payload = {
-            "schema": "agsist-sponsor-report/1",
-            "sponsor": s.get("name", slug),
-            "slug": slug,
-            "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "through": end.isoformat(),
-            "start": live_since if count_from else start,
-            "countFrom": count_from,
-            "liveSince": live_since if count_from else start,
-            "pages": pages,
-            "definitionChanged": DEFINITION_CHANGED,
-            "totals": {
-                "viewable": tv, "clicks": tc,
-                "ctr": round(100.0 * tc / tv, 2) if tv else None,
-                "legacyImpressions": tl,
-            },
-            "windows": [window(7), window(30), window(90)],
-            "series": series,
-            "byPage": sorted(
-                [{"page": p, "viewable": v, "clicks": clicks_page.get(p, 0)}
-                 for p, v in views_page.items()],
-                key=lambda x: -x["viewable"]),
-            "creative": creative_block(slug, s.get("geo")),
-            "rateCard": rate_card(),
-            "approveTo": s.get("approve_to") or APPROVE_TO,
-            **portal_extras(s),
-        }
-        if s.get("geo"):
-            other = other_ads_live(s.get("geo"))
-            if other:
-                # GA4 cannot tell two ads apart until `slot` is registered, so
-                # these counts would hold the other ad's too. Withheld, said so.
-                payload["withheld"] = "Another ad is running on the site (%s), and GA4 cannot yet tell the two apart." % ", ".join(other)
-                payload["totals"] = {"viewable": None, "clicks": None, "ctr": None, "legacyImpressions": 0}
-                payload["windows"], payload["series"], payload["byPage"] = [], [], []
-                payload["regionAds"] = {"withheld": True, "rows": []}
-            else:
-                reg = run_region(VIEWABLE_EVENTS, start, end.isoformat())
-                regc = run_region(CLICK_EVENTS, start, end.isoformat())
-                payload["regionAds"] = region_ads(s, reg, regc, tv, tc, payload["liveSince"] or start, end.isoformat())
+        payload, line = sponsor_payload(s, ga, end, all_sponsors, today)
         f = OUTDIR / ("%s-%s.json" % (slug, token))
         f.write_text(json.dumps(payload, indent=1) + "\n", encoding="utf-8")
-        written.append("%s: %d viewable, %d clicks through %s" % (slug, tv, tc, end))
+        written.append(line)
+
+    # "(not set)" and slots that are nobody's: counted here, given to no one.
+    if end.isoformat() >= SLOT_SINCE:
+        log = ga.slot_log(VIEWABLE_EVENTS + CLICK_EVENTS, SLOT_SINCE, end.isoformat())
+        mine = set(x for s in sponsors for x in sponsor_slots(s))
+        print("  slot %s: %d events from %s to %s, given to no sponsor" % (
+            NOT_SET, log.get(NOT_SET, 0), SLOT_SINCE, end.isoformat()))
+        for k in sorted(k for k in log if k != NOT_SET and k not in mine):
+            print("  slot %s: %d events, no report of its own" % (k, log[k]))
+    for k, n in sorted(ga.dropped.items()):
+        print("  [warn] GA4 sent %d events for slot %r to a query that did not ask for it; dropped" % (n, k))
 
     for line in written:
         print("  " + line)
