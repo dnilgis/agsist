@@ -67,12 +67,25 @@ function tapNames() {
 // the elevator list) is not a private name: "LANDMARK SERVICES COOPERATIVE" is on the bid pages anyway.
 function elevatorNames() {
   const s = new Set();
-  for (const f of ["data/ids/elevators.json", "data/elevator-coverage.json", "data/elevator-directory.json"]) {
+  for (const f of ["data/ids/elevators.json", "data/elevator-coverage.json", "data/elevator-directory.json", ...basisFiles()]) {
     if (!fs.existsSync(path.join(ROOT, f))) continue;
     const t = read(f);
     for (const m of t.matchAll(/"((?:[^"\\]|\\.){6,90})"/g)) s.add(bizKey(m[1]));
   }
   return s;
+}
+// the basis history names each grain buyer by its business name too
+function basisFiles() {
+  const d = path.join(ROOT, "data", "basis-sparklines");
+  return fs.existsSync(d) ? fs.readdirSync(d).filter((f) => f.endsWith(".json")).map((f) => "data/basis-sparklines/" + f) : [];
+}
+// a party whose name starts a listed business's name ("X Grain" and "X Grain Co." in the list) is that business
+function isBiz(biz, n) {
+  const k = bizKey(n);
+  if (biz.has(k)) return true;
+  if (k.length < 8) return false;
+  for (const b of biz) if (b.startsWith(k)) return true;
+  return false;
 }
 // letters and digits only, so "Rose Acre Farms, Inc" on a return and "Rose Acre Farms, Inc." in the list are one business
 function bizKey(v) { return String(v).toUpperCase().replace(/[^A-Z0-9]+/g, ""); }
@@ -109,12 +122,14 @@ test("no buyer or seller name in any published page, sitemap or data file outsid
     assert.ok(files.includes(must), "searched " + must);
   const hits = [];
   for (let i = 0; i < files.length; i += 2000) {
-    const r = spawnSync("grep", ["-F", "-o", "-H", "-f", list, "--", ...files.slice(i, i + 2000)], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 28 });
+    // whole words (-w): a party "X Cooper" is not printed by a page that says "X Cooperative" (every sale's names
+    // are in the tap files since Oct 29, so partial-word matches with town and company names are common)
+    const r = spawnSync("grep", ["-F", "-w", "-o", "-H", "-f", list, "--", ...files.slice(i, i + 2000)], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 28 });
     assert.ok(r.status === 0 || r.status === 1, "grep ran: " + r.stderr);
     for (const l of (r.stdout || "").split("\n").filter(Boolean)) { const k = l.indexOf(":"); hits.push([l.slice(0, k), l.slice(k + 1)]); }
   }
   const biz = elevatorNames();
-  const bad = hits.filter(([f, n]) => !biz.has(bizKey(n)));
+  const bad = hits.filter(([f, n]) => !isBiz(biz, n));
   fs.rmSync(tmp, { recursive: true, force: true });
   assert.deepEqual(bad.slice(0, 10), [], `${bad.length} buyer or seller name(s) outside data/land/`);
   // and the generated sale pages carry no name of any kind, elevator or not

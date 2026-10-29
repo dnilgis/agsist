@@ -84,7 +84,7 @@ test("1. Atlas: every committed county page that carries sales agrees with its s
       assert.equal(has, !!(c && c.med), `${fips} FAQ present only with a median`);
       if (!has) continue;
       n++;
-      assert.ok(meta(t, "description").includes(`${c.med.n} recorded farm sale`), fips);
+      assert.ok(meta(t, "description").includes(`${c.med.n} recorded bare farmland sale`), fips);
       assert.ok(meta(t, "description").includes(`median ${money(c.med.med)} an acre`), fips);
       assert.ok(meta(t, "description").length <= 160, fips);
       assert.ok(c.med.n >= sm.min_n, fips);

@@ -210,13 +210,14 @@ test("printable report: your filters or 3-year defaults, median with n, the 10 n
   assert.match(read("field-scout-land.js"), /rep\.setAttribute\('href', base \+ \(cf \? '&cf=' \+ encodeURIComponent\(cf\) : ''\)\)/);
   assert.match(read("field-report.html"), /field-scout-land\.js\?v=7/);
   assert.match(read("field-scout-read.js"), /FS_LAND_SRC='\/field-scout-land\.js\?v=7'/);
-  // the same nearest-first list from rows (hand-checked: 2 mi, 6 mi, 14 mi; the 30 mi sale is out)
+  // the same nearest-first list from rows (hand-checked: 2, 6, 10, 14 and 20 mi; the 30 mi sale is out)
   const c = { lat: 45.0, lng: -91.0 };
   const mk = (doc, dLat) => ({ doc, date: "2025-01-01", price: 400000, acres: 80, cls: "4", conv: "Warranty Deed", lat: 45.0 + dLat, lng: -91.0, muniName: "T" });
-  const list = F.filterComps([mk("c", 14 / 69.09), mk("a", 2 / 69.09), mk("d", 30 / 69.09), mk("b", 6 / 69.09)], { maxMi: 25, minAc: 10, since: "2023-01-01", sort: "mi", dir: "asc" }, c);
-  assert.deepEqual(list.map((r) => r.doc), ["a", "b", "c"]);
-  assert.deepEqual(list.map((r) => Math.round(r.mi)), [2, 6, 14]);
-  assert.deepEqual(F.medianPpa(list), { ppa: 5000, n: 3 });
+  const list = F.filterComps([mk("c", 14 / 69.09), mk("a", 2 / 69.09), mk("d", 30 / 69.09), mk("b", 6 / 69.09), mk("f", 20 / 69.09), mk("e", 10 / 69.09)], { maxMi: 25, minAc: 10, since: "2023-01-01", sort: "mi", dir: "asc" }, c);
+  assert.deepEqual(list.map((r) => r.doc), ["a", "b", "e", "c", "f"]);
+  assert.deepEqual(list.map((r) => Math.round(r.mi)), [2, 6, 10, 14, 20]);
+  assert.deepEqual(F.medianPpa(list), { ppa: 5000, n: 5 });
+  assert.equal(F.medianPpa(list.slice(0, 4)), null, "4 sales: no middle (5 since Oct 29)");
 });
 
 test("no em dashes in the sale panel copy", () => {

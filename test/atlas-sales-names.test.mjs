@@ -77,7 +77,8 @@ test("summary files hold only counts, acres, prices, dates and place names: no f
         assert.match(r[0], ISO, `${s} ${fips}: a sale row starts with its date`);
         for (const x of r.slice(1, 4)) assert.ok(x == null || typeof x === "number", `${s} ${fips}: acres, price and $/acre are numbers`);
         assert.ok(r[4] == null || places.has(r[4]), `${s} ${fips}: "${r[4]}" is not a township or town from the county file`);
-        if (r.length > 5) assert.ok(r[5] === 1 || r[5] === -1, `${s} ${fips}: direction flag`);
+        // an outlier row ends with its direction; a largest-sales row with its kind (the one land rule, Oct 29)
+        if (r.length > 5) assert.ok(r[5] === 1 || r[5] === -1 || (c.large || []).includes(r) && ["farm", "bldg", "forest", "small"].includes(r[5]), `${s} ${fips}: direction flag or kind`);
         assert.ok(r.length <= 6, `${s} ${fips}: a sale row has extra fields`);
       }
       for (const k of ["why_chg", "why_p"]) if (c[k] != null) assert.match(c[k], /^(acres unknown on \d+ of \d+ market sales in the last 12 months and \d+ of \d+ in the 12 before|records start [\w ,-]+|\d+ and \d+ sales of \d+\+ acres with known acres; a change needs \d+ or more in each year|the middle half of prices in one year does not overlap the other's; the two sets of sales are too different to compare)$/, `${s} ${fips} ${k}`);

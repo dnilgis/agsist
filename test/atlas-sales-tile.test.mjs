@@ -45,7 +45,7 @@ test("AtlasSales.tile on the real Dane, Alexander and Florence entries", () => {
   const alex = S.tile(FX.IL, "17003");
   assert.equal(alex.val, null);
   assert.equal(alex.sub, "not shown: 4 recorded bare farmland sales of 20+ acres in Oct 2025 to Sep 2026, a median needs 5; sales dated through Sep 30, 2026");
-  assert.equal(S.tile(FX.WI, "55037").sub.slice(0, 41), "not shown: 0 recorded bare farmland sales of 20+");
+  assert.equal(S.tile(FX.WI, "55037").sub.slice(0, 48), "not shown: 0 recorded bare farmland sales of 20+");
   assert.equal(S.tile(null, "20169"), null);
   assert.match(S.tile(FX.WI, "55999").sub, /^no Wisconsin DOR Real Estate Transfer Returns \(RETR\) file on hand/);
   assert.match(S.tileHTML(alex), /<div class="v"><small>n\/a<\/small><\/div>/);
@@ -65,7 +65,8 @@ test("the builder: real counties get the tiles Sig asked for, and KS gets no sal
     assert.deepEqual([m[1], unesc(m[2]), unesc(m[3].replace(/<small>(.*?)<\/small>/, "|$1")), unesc(m[4])],
       [t.through, t.label, t.val == null ? "|n/a" : t.val + "|" + t.unit, t.sub], p);
   }
-  assert.match(SALES.exec(pg("wisconsin/dane-county"))[3], /^\$14,399<small>\/ac<\/small>$/);
+  // the committed Dane summary since the one land rule (Oct 29): bare farm land, $11,974 on 28 (was $14,399 on 42 with buildings and forest in)
+  assert.match(SALES.exec(pg("wisconsin/dane-county"))[3], /^\$11,974<small>\/ac<\/small>$/);
   assert.equal(SALES.exec(pg("illinois/alexander-county"))[3], "<small>n/a</small>");
   assert.doesNotMatch(pg("kansas/saline-county"), /data-as-tile|Median sale price/);
   // the dry rent rule: Iroquois 2022 and Gallatin 2017 are n/a with their year; Marathon's 2026 prints
@@ -165,14 +166,14 @@ test("in Chromium: Dane's tile and sheet, a newer summary redraws the tile, Gall
         pg.on("pageerror", (e) => errors.push(String(e)));
         await pg.route("**/*", (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()));
         await pg.goto(base + "/farmland-atlas/wisconsin/dane-county");
-        assert.match(await pg.textContent("[data-as-tile]"), /\$14,399\/ac42 recorded bare farmland sales/);
+        assert.match(await pg.textContent("[data-as-tile]"), /\$11,974\/ac28 recorded bare farmland sales/);
         await pg.locator("section.as").scrollIntoViewIfNeeded();
         await pg.waitForSelector("section.as[data-ready]", { timeout: 30000 });
         const tile = await pg.textContent("[data-as-tile]"), block = await pg.textContent("section.as");
         if (nw) {
           assert.match(tile, /\$15,001\/ac43 recorded bare farmland sales.*through Oct 31, 2026/);
           assert.match(block, /\$15,001\/ac/);
-        } else assert.match(tile, /\$14,399\/ac42 recorded bare farmland sales.*through Sep 30, 2026/);
+        } else assert.match(tile, /\$11,974\/ac28 recorded bare farmland sales.*through Sep 30, 2026/);
         const [sw, iw] = await pg.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
         assert.ok(sw <= iw, `Dane at ${w}: ${sw}px in ${iw}px`);
         assert.deepEqual(errors, []);
@@ -186,7 +187,7 @@ test("in Chromium: Dane's tile and sheet, a newer summary redraws the tile, Gall
     await pg.goto(base + "/farmland-atlas/sheet#55025");
     await pg.waitForSelector("section.keys.k7", { timeout: 30000 });
     const keys = await pg.textContent("section.keys");
-    assert.match(keys, /Median sale price, bare land, 20\+ acres\$14,399\/ac42 recorded bare farmland sales, Oct 2025 to Sep 2026; sales dated through Sep 30, 2026/);
+    assert.match(keys, /Median sale price, bare land, 20\+ acres\$11,974\/ac28 recorded bare farmland sales, Oct 2025 to Sep 2026; sales dated through Sep 30, 2026/);
     await pg.goto(base + "/farmland-atlas/sheet#21077");
     await pg.waitForFunction(() => /Gallatin/.test(document.title), null, { timeout: 30000 });
     await pg.waitForSelector("section.keys", { timeout: 30000 });
