@@ -358,8 +358,90 @@ def uni_survey_note(W, st):
     if not u or not all(u.get(k) for k in ("name", "org", "date", "url")):
         return ""
     return ('<p class="note">Newer local survey: <a href="%s" rel="noopener">%s</a>, %s, released %s%s. '
-            'Their numbers, on their page; this page does not copy them.</p>'
-            % (esc(u["url"]), esc(u["name"]), esc(u["org"]), esc(u["date"]), (": " + esc(u["what"])) if u.get("what") else ""))
+            '%s</p>'
+            % (esc(u["url"]), esc(u["name"]), esc(u["org"]), esc(u["date"]), (": " + esc(u["what"])) if u.get("what") else "",
+               "Each county page shows its own figures from it, labeled as a survey." if land_survey(W, st) else
+               "Their numbers, on their page; this page does not copy them."))
+
+
+# County land values where sale prices are not public record (Sig, Oct 29, 2026 priority queue: ND Trust
+# Lands, the K-State Kansas book). data/land/<st>/survey.json, written by scripts/build_land_survey.py
+# from the PDFs. Neither is a recorded sale: every line names its evidence ("state survey of farmers",
+# "average of reported sales, K-State") and year, sits on the county's land line under the land
+# sales door, and never feeds the recorded-sale middles. A kind the source withheld says so; a county
+# the source has no value for shows no dollar figure. test/land-survey.test.mjs checks every page.
+LAND_SURVEY_STATES = ("ND", "KS")
+
+
+def land_survey(W, st):
+    """data/land/<st>/survey.json, read once; None for other states or when absent."""
+    if st not in LAND_SURVEY_STATES:
+        return None
+    cache = W.__dict__.setdefault("_lsurvey", {})
+    if st not in cache:
+        try:
+            cache[st] = json.load(open(os.path.join(W.root, "data", "land", st.lower(), "survey.json"), encoding="utf-8"))
+        except Exception:
+            cache[st] = None
+    return cache[st]
+
+
+def _rent2(v):
+    return "$%.2f" % v
+
+
+def land_survey_line(W, f, st):
+    """One labeled line for the county's Land card, or ""."""
+    S = land_survey(W, st)
+    if not S:
+        return ""
+    src = S.get("source") or {}
+    c = (S.get("counties") or {}).get(f)
+    link = '<a href="%s" rel="noopener">%s</a>' % (esc(src.get("url") or ""), esc(src.get("title") or ""))
+    if st == "ND":
+        head = "Land values, state survey of farmers, %d (not recorded sales): " % S["year"]
+        if not c:
+            return '<p class="note" data-land-survey="%s">%sno figures for this county. %s, %s.</p>' % (st, head, esc(src.get("org") or ""), link)
+        parts, few = [], False
+        for k, word in (("cropland", "cropland"), ("pasture", "pasture"), ("hay", "tame hay")):
+            r = c.get(k)
+            if not r:
+                continue
+            if r.get("withheld") or r.get("value") is None:
+                parts.append("%s withheld by the survey%s" % (word, (" (%d reports)" % r["n"]) if r.get("n") else ""))
+                continue
+            few = few or (r.get("n") or 0) < S.get("few_reports", 15)
+            parts.append("%s %s an acre, rent %s (%d report%s)" % (word, money(r["value"]), _rent2(r["rent"]), r["n"], "" if r["n"] == 1 else "s"))
+        return ('<p class="note" data-land-survey="%s">%s%s. The price of rented land as farmers reported it for their area.%s %s, %s.</p>'
+                % (st, head, esc("; ".join(parts)), " Under %d reports, the survey says to use a figure with care." % S.get("few_reports", 15) if few else "",
+                   esc(src.get("org") or ""), link))
+    head = "Land values, average of reported sales, K-State, %d (sales %s; not recorded sales on this site): " % (S["year"], esc(S.get("period") or ""))
+    link = '<a href="%s" rel="noopener">K-State, 2025 Kansas Land Values Book</a>' % esc(src.get("page") or src.get("url") or "")
+    if not c:
+        return '<p class="note" data-land-survey="%s">%sthis county is not in the book. %s.</p>' % (st, head, link)
+    parts, held = [], []
+    for k, word in (("nonirr", "non-irrigated cropland"), ("pasture", "pasture and hay"), ("irrigated", "irrigated cropland")):
+        r = c.get(k)
+        if not r:
+            continue
+        if r.get("avg") is None:
+            held.append("%s not shown: %s" % (word, r.get("withheld") or "withheld"))
+            continue
+        parts.append("%s %s%s" % (word, money(r["avg"]), " an acre" if not parts else ""))
+    if c.get("sales_n"):
+        nline = " From %d sales analyzed in the county, all land types." % c["sales_n"]
+    elif c.get("withheld_n"):
+        nline = " Sales count not shown: %s." % c["withheld_n"]
+    else:
+        nline = ""
+    body = ("; ".join(parts) + ".") if parts else "too few sales of any one land type here for the book to show an average."
+    return ('<p class="note" data-land-survey="%s">%s%s%s%s A county shows a land type only with more than three sales of it. %s.</p>'
+            % (st, head, esc(body), "".join(" " + esc(h[0].upper() + h[1:]) + "." for h in held), nline, link))
+
+
+def land_sales_line(W, f, lab, st):
+    """The Land card's closing lines: the land sales door, then the county's survey line where one exists."""
+    return _land_sales_door(W, f, lab, st) + land_survey_line(W, f, st)
 
 
 def survey_facts(ss, stn):
@@ -1313,7 +1395,7 @@ def land_sales_words(row, stn):
     return "%s sale records: not checked yet." % stn
 
 
-def land_sales_line(W, f, lab, st):
+def _land_sales_door(W, f, lab, st):
     stn = STATE_NAMES.get(st, st)
     href = land_sales_county(W, f, st)
     if href:
@@ -2163,7 +2245,7 @@ def county_page(W, f, d, stamp):
                    "The census value is this county\'s, from %s." % V.get("latest_year"),
                    ("The census value is this county\'s, from %s." % V.get("latest_year")) if ok(V) and V.get("latest") is not None else
                    ("NASS withheld this county\'s %s census value; the census figures shown are this county\'s own." % V.get("latest_year") if ok(V) else "This county has no census value here."))
-    S2 += uni_survey_note(W, st)
+    S2 += "" if land_survey(W, st) else uni_survey_note(W, st)     # the survey line below names the same report, with numbers
 
     S3 = "<h3>Corn yield</h3>"
     if ok(Y):
