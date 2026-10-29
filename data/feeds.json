@@ -2375,7 +2375,8 @@
    ],
    "touched_by": [
     "cash-bid-pages",
-    "Rebuild Feed Manifest"
+    "Rebuild Feed Manifest",
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": true,
@@ -2420,6 +2421,7 @@
    "written_by": [],
    "touched_by": [
     "Rebuild Feed Manifest",
+    "Sponsor sign-ups",
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "maintained by hand, not on a schedule",
