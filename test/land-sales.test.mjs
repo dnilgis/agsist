@@ -37,6 +37,13 @@ const NAME_FILES = walk("data/land/names").filter((p) => p.endsWith(".json"));
 // Every name the tap can show, the way test/atlas-sales-names.test.mjs reads them: 6 characters or more,
 // not a plain place ("CONDIT TOWNSHIP"), not one plain word ("FARMLAND").
 const PLACE_WORDS = new Set(["TOWNSHIP", "TOWN", "COUNTY", "VILLAGE", "CITY", "OF", "THE", "STATE", "ILLINOIS", "WISCONSIN", "INDIANA"]);
+// A county government as a party ("Monroe County", "County of Dane") carries the county's own name, which every
+// page prints anyway: not a private name (build_land_sales.public_body, the same rule).
+const COUNTIES = new Set(["il", "wi", "in"].flatMap((st) => JSON.parse(read(`data/land/${st}/index.json`)).counties.map((c) => String(c.name).toUpperCase())));
+function publicBody(v) {
+  const m = /^(?:COUNTY OF ([A-Z .']+)|([A-Z .']+) COUNTY)$/.exec(String(v).toUpperCase().replace(/\s+/g, " ").trim().replace(/,? (?:ILLINOIS|WISCONSIN|INDIANA)$/, ""));
+  return !!m && COUNTIES.has((m[1] || m[2]).trim());
+}
 function tapNames() {
   const out = new Set();
   for (const p of NAME_FILES) {
@@ -50,6 +57,7 @@ function tapNames() {
       const ws = v.toUpperCase().split(/[^A-Z0-9&']+/).filter((w) => w.length >= 3);
       if (ws.length && ws.every((w) => PLACE_WORDS.has(w))) continue;
       if (ws.length < 2 && !/\d/.test(v)) continue;
+      if (publicBody(v)) continue;
       out.add(v);
     }
   }

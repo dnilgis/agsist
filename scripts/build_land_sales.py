@@ -11,12 +11,16 @@ the month and place logic of the land sale email (land_alert: Land.sales, window
   land-sales/<YYYY-MM>.html             the monthly update (biggest buyers by acres and by dollars,
                                         biggest sales, unusual prices, best value per acre); only the
                                         newest month is written, older ones stay as they were
-  land-sales/<state>/<county>.html      "Farmland sales in <County>, <State>": the latest sales
+  land-sales/<state>/<county>.html      "Farmland sales in <County>, <State>": every recorded sale, newest
+                                        first; the newest COUNTY_ROWS are in the page, the rest load on
+                                        "Show more" (or a type filter) from the county's list file
   sitemap-land-sales.xml
   data/land-sales/latest.json           the newest update in brief (homepage card, rent pages, Daily)
   data/land-sales/<st>.json             each county's latest few sales with the township point
                                         (Atlas county pages, Fast Facts within 25 miles)
-  data/land/names/<st>/<fips>.json      buyer and seller for the sales on the county page
+  data/land-sales/<st>/<fips>.json      every recorded sale of the county, any acreage, no names
+                                        (the county page's "Show more" and type filter)
+  data/land/names/<st>/<fips>.json      buyer and seller for every sale on the county's list
   data/land/names/<YYYY-MM>.json        buyer and seller for the sales and buyers in the update
 
 NAMES (STANDING-DECISIONS, Oct 27): pages show the sale without names plus "Show buyer and seller";
@@ -35,11 +39,20 @@ ask shows beside any state the email covers. Indiana's records differ and the pa
 parcel's postal town, placed at its ZIP's middle, not a township. data/land-sales/coverage.json is the
 per-state source table, kept by hand; this script only draws it and counts the states with sales.
 
-HONEST NUMBERS: a section with too few sales is withheld and says why. "Usual" is the county's
-middle half of $/acre over the 24 months ending with the month (market sales of 20+ acres, known
-acres, $500 an acre or more), n shown; a sale is unusual when it is more than 1.5 middle-halves past
-either end (the Atlas rule), judged only with 5 or more such sales. A month is written only when
-every state's files were fetched after it ended.
+EVERY SALE (Sig, Oct 29, 2026: "people are nosey"): a county page lists every recorded market sale of
+any acreage, newest first, with its date, acres, price, $/acre and type: farmland, with buildings,
+forest or small parcel (build_land_summary.land_type, the one land rule: buildings by property class
+only, never deed text; a Wisconsin forest-class sale with no farm class is forest; a small parcel is
+under 20 known acres). Small parcels, buildings and forest are listed, never mixed into the middle.
+
+HONEST NUMBERS: a section with too few sales is withheld and says why. "Usual", the county page's
+headline middle, is the middle half of $/acre over the 24 months ending with the month of bare farm
+land sales (market sales of 20+ known acres, $500 an acre or more, no buildings, not forest:
+build_land_summary.farm_comp, the same sales the Atlas range uses), n shown, under 5 withheld; a
+sale is unusual when it is more than 1.5 middle-halves past either end (the Atlas rule), judged only
+for bare farm land with 5 or more such sales. Indiana's middle stays, labeled: most Indiana sales
+carry the state's "not valid for trending" mark, and the page counts them. A month is written only
+when every state's files were fetched after it ended.
 
   python3 scripts/build_land_sales.py           write everything
   python3 scripts/build_land_sales.py --check   build to memory, compare with the committed files
@@ -71,7 +84,7 @@ IN_NOTE = ("Indiana's sales disclosure forms carry the sale date, not a recordin
 LIST_MIN_ACRES = LA.LIST_MIN_ACRES      # 10: a listed sale
 COMP_MIN_ACRES = BLS.MIN_ACRES          # 20: a sale that sets or is judged against the usual price
 MIN_COMPS = BLS.MIN_N                   # 5 comparable sales before anything is called unusual
-COUNTY_ROWS = 25                        # rows on a county page
+COUNTY_ROWS = 50                        # rows in a county page; the rest load from its list file on "Show more"
 FEATURED = 6                            # rows per county in data/land-sales/<st>.json
 TOP = 10                                # rows in a monthly table
 TOP_BUYERS = 8
@@ -82,6 +95,10 @@ MIN_JUDGED = 10                         # unusual and best value withheld under 
 BEST_MIN_ACRES = 40
 CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=1">'
 JS = '<script src="/components/land-sales.js?v=1" defer></script>'
+KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
+KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
+LIST_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"]
+NVT = "not valid for trending"          # Indiana's sales disclosure mark, carried in the deed-type text
 REMOVE_TO = "sig@agsist.com"            # the site's own contact address (contact.html)
 
 UP_WHY = "a house or buildings, timber or hunting ground, a building site or development land, or a neighbor paying more for the piece next door"
@@ -141,11 +158,11 @@ def stats(v):
 
 def usual(rows, w24, skip_id=None):
     """The county's usual $/acre: the middle half of comparable sales in the 24-month window."""
-    comp = [r for r in rows if BLS.inw(r, w24) and BLS.stat_ok(r) and (BLS.num(r.get("acres")) or 0) >= COMP_MIN_ACRES
-            and r.get("_id") != skip_id]
+    comp = [r for r in rows if BLS.inw(r, w24) and BLS.farm_comp(r) and r.get("_id") != skip_id]
     s = stats([r["ppa"] for r in comp])
     if not s or s["n"] < MIN_COMPS:
         return None
+    s["nvt"] = sum(1 for r in comp if NVT in str(r.get("conv") or "").lower())
     iqr = s["q3"] - s["q1"]
     s["lo"], s["hi"] = BLS.js_round(s["q1"] - 1.5 * iqr), BLS.js_round(s["q3"] + 1.5 * iqr)
     return s
@@ -153,7 +170,7 @@ def usual(rows, w24, skip_id=None):
 
 def judge(r, u):
     """+1 above the usual range, -1 below, 0 inside, None when it cannot be judged."""
-    if not u or not BLS.stat_ok(r) or (BLS.num(r.get("acres")) or 0) < COMP_MIN_ACRES:
+    if not u or not BLS.farm_comp(r):
         return None
     if r["ppa"] > u["hi"]:
         return 1
@@ -163,7 +180,8 @@ def judge(r, u):
 
 
 def with_bldg(r):
-    return "with buildings" in str(r.get("conv") or "").lower()
+    """Buildings by property class only (the one land rule; FSLand.hasBuildings), never the deed text."""
+    return BLS.has_buildings(r.get("cls"))
 
 
 # ---------------------------------------------------------------- read the county files
@@ -225,7 +243,7 @@ def pub_row(st, r, county, u=None):
             "when": shown_day(r), "basis": "recorded" if rec else "sale date",
             "acres": round(a, 2) if a is not None else None, "price": BLS.js_round(BLS.num(r.get("price")) or 0),
             "ppa": r.get("ppa"), "pt": [round(r["pt"][0], 4), round(r["pt"][1], 4)] if r.get("pt") else None,
-            "bldg": with_bldg(r), "flag": judge(r, u)}
+            "bldg": with_bldg(r), "kind": BLS.land_type(r, st), "flag": judge(r, u)}
 
 
 # ---------------------------------------------------------------- the monthly update
@@ -318,19 +336,22 @@ def month_build(d, year, m0):
 
 # ---------------------------------------------------------------- per county
 def county_build(d, st, c, rows, through):
-    """(featured rows, county page rows, names) for one county."""
+    """(featured rows, every listed row, names, usual, n12) for one county. Every market sale of any
+    acreage is listed, newest first; the page carries the first COUNTY_ROWS and the list file all."""
     W = BLS.windows(datetime.date.fromisoformat(through))
     u = usual(rows, W["w24"])
-    lst = [r for r in rows if shown_day(r) and shown_day(r) <= d.today[st] and (BLS.num(r.get("acres")) or 0) >= LIST_MIN_ACRES]
+    lst = [r for r in rows if shown_day(r) and shown_day(r) <= d.today[st]]
     # newest first by the date the page shows (recorded, else the deed date)
     lst.sort(key=lambda r: (shown_day(r), r["_id"]), reverse=True)
-    page = [pub_row(st, r, c["name"], u) for r in lst[:COUNTY_ROWS]]
+    allp = [pub_row(st, r, c["name"], u) for r in lst]
     w12 = W["cur"]
-    names = {}
-    for p, r in zip(page, lst[:COUNTY_ROWS]):
-        names[p["id"]] = d.names(r)
-    feat = [p for p in page if p["when"] >= w12[0]][:FEATURED]
-    return feat, page, names, u, len([r for r in rows if BLS.inw({"date": shown_day(r)}, w12) and (BLS.num(r.get("acres")) or 0) >= LIST_MIN_ACRES])
+    names = {p["id"]: d.names(r) for p, r in zip(allp, lst)}
+    big = [p for p in allp if (p["acres"] or 0) >= LIST_MIN_ACRES]
+    feat = [p for p in big if p["when"] >= w12[0]][:FEATURED]
+    n12 = len([r for r in rows if BLS.inw({"date": shown_day(r)}, w12) and (BLS.num(r.get("acres")) or 0) >= LIST_MIN_ACRES])
+    n12all = len([p for p in allp if w12[0] <= p["when"] <= w12[1]])
+    k24 = u["n"] if u else len([r for r in rows if BLS.inw(r, W["w24"]) and BLS.farm_comp(r)])
+    return feat, allp, names, u, n12, W, k24, n12all
 
 
 # ---------------------------------------------------------------- html
@@ -380,10 +401,11 @@ def flag_words(p):
     return ""
 
 
-def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None):
-    th = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Price", "ppa": "$/acre", "note": "Note", "usual": "County usual $/acre"}
+def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None):
+    th = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Price", "ppa": "$/acre", "note": "Note", "usual": "County usual $/acre",
+          "kind": "Type"}
     num = {"acres", "price", "ppa", "usual"}
-    h = ['<div class="ls-tw"><table class="ls-t">']
+    h = ['<div class="ls-tw"><table class="ls-t"%s>' % (' id="%s"' % e(tid) if tid else "")]
     if caption:
         h.append("<caption>%s</caption>" % e(caption))
     h.append("<thead><tr>" + "".join('<th scope="col"%s>%s</th>' % (' class="n"' if c in num else "", th[c]) for c in cols)
@@ -405,14 +427,18 @@ def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa",
                 v = money(p["price"])
             elif c == "ppa":
                 v = money(p["ppa"]) if p.get("ppa") is not None else ""
+            elif c == "kind":
+                v = KIND_WORDS.get(p.get("kind"), "")
             elif c == "usual":
                 u = p.get("usual")
                 v = ("%s (%s to %s, %d sales)" % (money(u["med"]), money(u["q1"]), money(u["q3"]), u["n"])) if u else ""
+            elif "kind" in cols:
+                v = flag_words(p)
             else:
                 v = "; ".join(x for x in (flag_words(p), "with buildings" if p.get("bldg") else "") if x)
             tds.append('<td%s>%s</td>' % (' class="n"' if c in num else "", e(v)))
         tds.append("<td>%s</td>" % names_btn(p["id"], names_file))
-        h.append("<tr>" + "".join(tds) + "</tr>")
+        h.append(('<tr data-k="%s">' % KIND_CODE.get(p.get("kind"), "f") if "kind" in cols else "<tr>") + "".join(tds) + "</tr>")
     h.append("</tbody></table></div>")
     return "".join(h)
 
@@ -558,29 +584,59 @@ def coverage_html(cov, d):
     return "\n".join(h)
 
 
-def county_page(d, st, c, page, u, n12, summ, early, latest):
+def span_words(w):
+    return "%s to %s" % (LA.short_day(w[0]) + ", " + w[0][:4], LA.short_day(w[1]) + ", " + w[1][:4])
+
+
+def middle_words(st, u, k24, w24):
+    """The headline middle in words: the market-sale rule, labeled as such; withheld under MIN_COMPS."""
+    if u:
+        t = ("Market middle: %s an acre, the middle of %d bare farmland sales of %d acres or more at %s an acre or more, %s "
+             "(middle half %s to %s). Sales with buildings, forest and small parcels are listed below but kept out of this middle."
+             % (money(u["med"]), u["n"], COMP_MIN_ACRES, money(BLS.PPA_FLOOR), span_words(w24), money(u["q1"]), money(u["q3"])))
+    else:
+        t = ("No market middle: %s bare farmland sale%s of %d acres or more at %s an acre or more, %s, and it takes %d."
+             % (k24 or "no", "" if k24 == 1 else "s", COMP_MIN_ACRES, money(BLS.PPA_FLOOR), span_words(w24), MIN_COMPS))
+    return t
+
+
+def in_trend_words(u):
+    """Indiana: the middle stays, labeled (Sig, Oct 29, 2026)."""
+    if not u:
+        return "Most Indiana sales are marked not valid for trending by the state."
+    return ("Most Indiana sales are marked not valid for trending by the state: %d of the %d sales behind this middle carry that mark. "
+            "The state's form does not say why for each sale." % (u.get("nvt") or 0, u["n"]))
+
+
+def kind_counts(rows):
+    n = {k: 0 for k in KIND_WORDS}
+    for p in rows:
+        n[p.get("kind") or "farm"] = n.get(p.get("kind") or "farm", 0) + 1
+    return n
+
+
+def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     s = SLUG[st]
     slug = county_slug(c["name"])
     url = "%s/land-sales/%s/%s" % (ORIGIN, s, slug)
     nf = "/data/land/names/%s/%s.json" % (st.lower(), c["fips"])
+    lf = "/data/land-sales/%s/%s.json" % (st.lower(), c["fips"])
     cn = "%s County, %s" % (c["name"], NAME[st])
-    title = "Farmland Sales in %s: Recent Sales and Price per Acre | AGSIST" % cn
-    cs = (summ or {}).get("counties", {}).get(c["fips"]) or {}
-    med = cs.get("med")
-    if med:
-        mid = "The middle price of %d sales of %d acres or more over the last 12 months was %s an acre (middle half %s to %s)." % (
-            med["n"], COMP_MIN_ACRES, money(med["med"]), money(med["q1"]), money(med["q3"]))
-    else:
-        mid = "Too few sales of %d acres or more in the last 12 months for a middle price." % COMP_MIN_ACRES
-    desc = "Recorded farm sales in %s: date, township, acres, price and price per acre. %d sales of %d acres or more in the last 12 months. %s" % (
-        cn, n12, LIST_MIN_ACRES, mid)
+    title = "Farmland Sales in %s: Every Recorded Sale and Price per Acre | AGSIST" % cn
+    mid = middle_words(st, u, k24, W["w24"])
+    desc = ("Every recorded farm sale in %s: date, township, acres, price, price per acre and type. %d sales in the last 12 months. %s"
+            % (cn, n12all, ("Market middle %s an acre on %d bare farmland sales of %d+ acres over 24 months." % (money(u["med"]), u["n"], COMP_MIN_ACRES)) if u else ""))
     ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", ORIGIN + "/land-sales/"), (NAME[st], ORIGIN + "/land-sales/#" + s), (cn, url)])]
     atlas = "/farmland-atlas/%s/%s" % (s, slug)
     has_atlas = (d.repo / "farmland-atlas" / s / (slug + ".html")).exists()
+    page = allp[:COUNTY_ROWS]
     b = [head(title, desc[:300], url, ld, early), '<div class="ls-w">',
          '<nav class="ls-bc" aria-label="Breadcrumb"><a href="/land-sales/">Farmland sales</a> / %s</nav>' % e(NAME[st]),
          "<h1>Farmland sales in %s</h1>" % e(cn),
-         '<p class="ls-ans">%d farm sales of %d acres or more in the last 12 months. %s</p>' % (n12, LIST_MIN_ACRES, e(mid))]
+         '<p class="ls-ans">%d recorded sales in the last 12 months, any size (%d of %d acres or more). %s</p>'
+         % (n12all, n12, LIST_MIN_ACRES, e(mid))]
+    if st == "IN":
+        b.append('<p class="ls-fine">%s</p>' % e(in_trend_words(u)))
     if latest and latest.get("month"):
         b.append('<p>All of %s together: <a href="/land-sales/%s">the %s update</a>, with the biggest buyers and unusual prices.</p>'
                  % (e(and_list([NAME[x] for x in latest["states"]])), latest["month"], e(latest["label"])))
@@ -588,17 +644,32 @@ def county_page(d, st, c, page, u, n12, summ, early, latest):
         b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
     if st in EMAIL_STATES:
         b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-county"></div></div>')
-    b.append("<h2>The latest sales</h2>")
-    if page:
-        b.append(sale_table(page, nf, caption="Newest first, %s" % cn))
-        if any(p["basis"] == "sale date" for p in page):
+    b.append('<h2 id="every-sale">Every recorded sale</h2>')
+    if allp:
+        kc = kind_counts(allp)
+        days = sorted(p["when"] for p in allp)
+        parts = ["%d %s" % (kc[k], {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcels" if kc[k] != 1 else "small parcel"}[k])
+                 for k in ("farm", "bldg", "forest", "small") if kc[k]]
+        b.append('<p>%d sales on file, %s to %s: %s.%s</p>'
+                 % (len(allp), e(day(days[0])), e(day(days[-1])), e(", ".join(parts)),
+                    " Illinois declarations do not say whether buildings were included, so no Illinois sale is marked with buildings." if st == "IL" else ""))
+        opts = "".join('<option value="%s">%s</option>' % (KIND_CODE[k], e(w[0].upper() + w[1:])) for k, w in KIND_WORDS.items() if kc[k])
+        b.append('<div class="ls-flt" hidden data-ls-list="%s" data-ls-names="%s" data-ls-n="%d"><label>Type <select class="ls-fk">'
+                 '<option value="">All types</option>%s</select></label></div>' % (e(lf), e(nf), len(allp), opts))
+        b.append(sale_table(page, nf, cols=("when", "where", "acres", "price", "ppa", "kind", "note"), caption="Newest first, %s" % cn, tid="ls-all"))
+        if len(allp) > len(page):
+            b.append('<p class="ls-more" data-ls-shown="%d">Showing the newest %d of %d sales. '
+                     '<button type="button" class="ls-mo" hidden>Show %d more</button></p>' % (len(page), len(page), len(allp), COUNTY_ROWS))
+        if any(p["basis"] == "sale date" for p in allp):
             b.append('<p class="ls-fine">* Dated by the deed; the state file this was read from does not carry the recording date for these rows.</p>')
+        b.append('<p class="ls-fine">Type: with buildings means the property class on the record shows a house, farm buildings or a business; '
+                 'forest means forest classes with no farm class (Wisconsin); a small parcel is under %d acres; farmland is the rest. '
+                 'Acres not stated: a return covering several parcels that does not give them.</p>' % COMP_MIN_ACRES)
         if u:
-            b.append("<p>Usual here: %s an acre, the middle of %d sales of %d acres or more over the last 24 months (middle half %s to %s). "
-                     "A sale marked unusual sits well outside that; possible reasons above the usual: %s; below: %s.</p>"
-                     % (money(u["med"]), u["n"], COMP_MIN_ACRES, money(u["q1"]), money(u["q3"]), e(UP_WHY), e(DOWN_WHY)))
+            b.append("<p>A sale marked unusual is bare farmland whose price per acre sits well outside the market middle half; possible reasons above it: %s; below: %s.</p>"
+                     % (e(UP_WHY), e(DOWN_WHY)))
     else:
-        b.append('<p class="ls-held">No sales of %d acres or more on file for this county yet.</p>' % LIST_MIN_ACRES)
+        b.append('<p class="ls-held">No recorded sales on file for this county yet.</p>')
     b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(NAMES_NOTE), e(RULE), e(src_line(d, [st]))))
     links = []
     if has_atlas:
@@ -713,7 +784,7 @@ def build(repo=REPO):
                  "names_dir": "/data/land/names/%s/" % st.lower(), "counties": {}}
         counties[st] = []
         for c, rows in d.counties[st]:
-            feat, page, names, u, n12 = county_build(d, st, c, rows, through)
+            feat, allp, names, u, n12, W, k24, n12all = county_build(d, st, c, rows, through)
             slug = county_slug(c["name"])
             counties[st].append((c["name"], slug, n12))
             sfile["counties"][c["fips"]] = {"name": c["name"], "slug": slug, "ll": [c["lat"], c["lng"]], "n12": n12,
@@ -722,7 +793,12 @@ def build(repo=REPO):
                                                   p["place"], p["pt"][0] if p["pt"] else None, p["pt"][1] if p["pt"] else None,
                                                   p["flag"] or 0, 1 if p["bldg"] else 0] for p in feat]}
             out["data/land/names/%s/%s.json" % (st.lower(), c["fips"])] = dump({"fips": c["fips"], "sales": names})
-            out["land-sales/%s/%s.html" % (SLUG[st], slug)] = county_page(d, st, c, page, u, n12, summ, early, latest)
+            out["land-sales/%s/%s.html" % (SLUG[st], slug)] = county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all)
+            out["data/land-sales/%s/%s.json" % (st.lower(), c["fips"])] = dump(
+                {"st": st, "fips": c["fips"], "county": c["name"], "through": through, "names": "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]),
+                 "kinds": {v: KIND_WORDS[k] for k, v in KIND_CODE.items()}, "cols": LIST_COLS,
+                 "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"], p["place"],
+                        KIND_CODE[p["kind"]], p["flag"] or 0] for p in allp]})
             urls.append(("%s/land-sales/%s/%s" % (ORIGIN, SLUG[st], slug), d.fetched[st]))
         sfile["cols"] = ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg"]
         out["data/land-sales/%s.json" % st.lower()] = dump(sfile)
@@ -745,16 +821,37 @@ def names_in(texts):
     return out
 
 
-def leaks(texts):
+def public_body(n, counties):
+    """A county government as a party ("Monroe County", "County of Dane"): its name is the county's,
+    printed on every page anyway, not a private name. counties: upper-case county names of the build."""
+    u = re.sub(r",? (?:ILLINOIS|WISCONSIN|INDIANA)$", "", re.sub(r"\s+", " ", str(n or "").upper()).strip())
+    m = re.fullmatch(r"(?:COUNTY OF ([A-Z .']+))|(?:([A-Z .']+) COUNTY)", u)
+    return bool(m) and (m.group(1) or m.group(2)).strip() in counties
+
+
+def leaks(texts, counties=None):
     """[(path, name)] for a name found in a file this build writes outside data/land/."""
-    names = [n for n in names_in(texts) if len(n) >= 8]
+    if counties is None:
+        counties = set()
+        for p, t in texts.items():
+            if re.fullmatch(r"data/land-sales/[a-z]{2}\.json", p):
+                counties.update(str(c.get("name") or "").upper() for c in (json.loads(t).get("counties") or {}).values())
+    names = [n for n in names_in(texts) if len(n) >= 8 and not public_body(n, counties)]
+    # every name is 8 characters or more: index them by their first 8, then walk each text once
+    # (every county's full list made the name-by-file search too slow, Oct 29)
+    by8 = {}
+    for n in names:
+        by8.setdefault(n[:8], []).append(n)
     bad = []
     for p, t in texts.items():
         if p.startswith("data/land/"):
             continue
-        for n in names:
-            if n in t:
-                bad.append((p, n))
+        hit = set()
+        for i in range(len(t) - 7):
+            lst = by8.get(t[i:i + 8])
+            if lst:
+                hit.update(n for n in lst if t.startswith(n, i))
+        bad.extend((p, n) for n in sorted(hit))
     return bad
 
 
@@ -825,6 +922,8 @@ def selftest():
         ck("month page written for September 2026", "land-sales/2026-09.html" in texts)
         ck("county page written", "land-sales/wisconsin/testa-county.html" in texts)
         ck("no name outside data/land/", not leaks(texts))
+        ck("a county government as a party is not a private name", public_body("Testa County", {"TESTA"}) and public_body("COUNTY OF TESTA", {"TESTA"}) and public_body("Testa County, Wisconsin", {"TESTA"})
+           and not public_body("Testa County Farms LLC", {"TESTA"}) and not public_body("Smith County", {"TESTA"}))
         allnames = names_in(texts)
         ck("names files hold the buyer and seller", "BIGBUYER LLC" in allnames and "HIGHSELLER ONE" in allnames)
         ck("a quit claim is never listed", "QUIT BUYERX" not in allnames)

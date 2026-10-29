@@ -206,7 +206,8 @@
     st = st || (r && r.st);
     if (FSLand.hasBuildings(r && r.cls)) return 'bldg';
     if (FSLand.isForest(r && r.cls, st)) return 'forest';
-    if (!(num(r && r.acres) >= FSLand.MIN_ACRES)) return 'small';
+    var a = num(r && r.acres);
+    if (a != null && a < FSLand.MIN_ACRES) return 'small';   // acres not stated stays farm land: listed, no $/acre, in no middle
     return 'farm';
   };
   // Bare land for a middle: no building class and not a forest sale (acres are the caller's filter).

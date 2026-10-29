@@ -138,7 +138,7 @@ test("committed summaries: current rules, no names, small", () => {
           assert.ok(o[1] >= 20, f);
         }
       }
-      if (c.large) { assert.ok(c.a24 >= 5, f); assert.ok(c.large.every((r) => r.length === 5)); }
+      if (c.large) { assert.ok(c.a24 >= 5, f); assert.ok(c.large.every((r) => r.length === 6 && ["farm", "bldg", "forest", "small"].includes(r[5])), f + " a largest row carries its kind"); }
       for (const r of [...(c.large || []), ...(c.out || [])]) assert.ok(r[0] <= sum.through, `${f} sale dated ${r[0]} after ${sum.through}`);
     }
   }

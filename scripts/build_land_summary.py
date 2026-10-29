@@ -241,16 +241,17 @@ def is_forest(cls, st):
 
 
 def land_type(r, st=None):
-    """FSLand.landType: 'bldg' (with buildings), 'forest', 'small' (under MIN_ACRES or acres not known)
-    or 'farm'. One answer per sale, in that order."""
+    """FSLand.landType: 'bldg' (with buildings), 'forest', 'small' (known acres under MIN_ACRES) or 'farm'.
+    One answer per sale, in that order."""
     st = st or r.get("st") or r.get("state")
     if has_buildings(r.get("cls")):
         return "bldg"
     if is_forest(r.get("cls"), st):
         return "forest"
-    if not ((num(r.get("acres")) or 0) >= MIN_ACRES):
+    a = num(r.get("acres"))
+    if a is not None and a < MIN_ACRES:
         return "small"
-    return "farm"
+    return "farm"            # acres not stated (several parcels on one return) stays farm land: listed, no $/acre, in no middle
 
 
 def farm_comp(r, st=None):
@@ -638,6 +639,16 @@ def selftest():
        and windows(datetime.date(2026, 9, 30))["prev"] == ["2024-10-01", "2025-09-30"])
     ck("month end before", month_end_before("2026-10-17T06:00:00Z").isoformat() == "2026-09-30"
        and month_end_before("2026-03-01").isoformat() == "2026-02-28")
+    # the one land rule (Oct 29): buildings by class only, the Wisconsin forest split, bare-land middles
+    ck("buildings by class 1, 2, 3 or 7, never by deed text", has_buildings("4 7") and has_buildings("6 1") and not has_buildings("4")
+       and not has_buildings("5M") and land_type({"cls": "4", "acres": 80, "conv": "Warranty Deed; with buildings"}, "IL") == "farm")
+    ck("a Wisconsin forest sale: forest class, no class 4, no buildings", is_forest("6", "WI") and is_forest("5M 5", "WI")
+       and not is_forest("4 6", "WI") and not is_forest("6 1", "WI") and not is_forest("6", "IN"))
+    ck("one kind per sale", [land_type({"cls": c, "acres": a}, "WI") for c, a in (("4 1", 5), ("6", 80), ("4", 12), ("4", None), ("4", 40))]
+       == ["bldg", "forest", "small", "farm", "farm"])
+    ck("a middle counts bare farm land only", not farm_comp({"cls": "4 7", "acres": 80, "ppa": 9000}, "WI")
+       and not farm_comp({"cls": "6", "acres": 80, "ppa": 9000}, "WI") and farm_comp({"cls": "4", "acres": 80, "ppa": 9000}, "WI")
+       and not farm_comp({"cls": "4", "acres": 80, "ppa": 400}, "WI"))
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 

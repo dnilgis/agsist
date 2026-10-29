@@ -200,8 +200,6 @@ def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True):
     extra = []
     if rep["more"]:
         extra.append("%d more %s within %d miles" % (rep["more"], "sale" if rep["more"] == 1 else "sales", radius))
-    if rep["small"]:
-        extra.append("%d under %d acres" % (rep["small"], LA.LIST_MIN_ACRES))
     if rep["no_acres"]:
         extra.append("%d with the acres left off the return" % rep["no_acres"])
     if extra:
@@ -541,11 +539,11 @@ def _fixture(tmp):
     munis = {"0": ["Near town", 45.1013, -91.0], "1": ["Mid town", 45.2026, -91.0], "2": ["Out town", 45.3763, -91.0]}
     R = []
 
-    def sale(i, d, rec, price, acres, muni, conv="Warranty Deed; land only"):
-        R.append(["DOC%04d" % i, d, price, acres, None, 1, "4", conv, "PIN-%04d" % i, muni, "LEGALTEXT %d SW1/4" % i, 0,
+    def sale(i, d, rec, price, acres, muni, conv="Warranty Deed; land only", cls="4"):
+        R.append(["DOC%04d" % i, d, price, acres, None, 1, cls, conv, "PIN-%04d" % i, muni, "LEGALTEXT %d SW1/4" % i, 0,
                   "SELLER JOHNSON%d" % i, "BUYER OLSON%d" % i, None, rec])
     sale(1, "2026-09-02", "2026-09-10", 400000, 80, "0")
-    sale(2, "2026-08-28", "2026-09-03", 300000, 40, "1", "Warranty Deed; with buildings")
+    sale(2, "2026-08-28", "2026-09-03", 300000, 40, "1", "Warranty Deed", cls="4 1")   # buildings by class 1 (a house)
     sale(3, "2026-09-05", "2026-09-12", 900000, 150, "2")      # 26 mi
     sale(4, "2026-07-02", "2026-07-10", 200000, 40, "0")      # July
     f = {"state": "WI", "county": "Testing", "fips": "55999", "fetched_utc": "2026-10-03T11:00:00Z",
@@ -615,7 +613,7 @@ def selftest():
     ck("the HTML table has the same two rows and its headings", htm.count("<tr>") == 3 and "Recorded</th>" in htm and "Miles</th>" in htm)
     ck("no names, parcel numbers, legal descriptions or document numbers, anywhere",
        not [x for x in names if x.lower() in (txt + htm + str(m)).lower()] and not re.search(r"SELLER|BUYER|JOHNSON|OLSON|LEGALTEXT|PIN-|DOC0", txt + htm + str(m), re.I))
-    ck("the middle price withheld with the reason and count (2 sales)", "No middle price for the area this month: only 3 sales of 20 acres or more in the last 12 months; I want 10" in txt, txt)
+    ck("the middle price withheld with the reason and count (bare land only: the sale with a house is listed, not counted)", "No middle price for the area this month: only 2 sales of 20 acres or more in the last 12 months; I want 10" in txt, txt)
     ck("first person, signed Sig, plain words", "I show the acres, the price and where each one is. I never show who bought or sold." in txt and "\n\nSig\n\n" in txt)
     ck("links: Field Scout on the nearest sale's township and the county's Atlas page, tagged",
        SITE + "/field-scout?at=45.101,-91.000&fips=55999&" + UTM in txt and SITE + "/farmland-atlas/wisconsin/testing-county?" + UTM in txt, txt)
