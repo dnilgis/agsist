@@ -1,0 +1,118 @@
+name: main-checks
+
+# Main is where the whole suite runs (Sig, Oct 29, 2026: "yes do all five"; the nightly
+# schedule is his). Pull requests run only the tests their changes can reach
+# (pr-checks.yml, scripts/dev/test_map.py); every test still runs in full here:
+#   rebuild      the files built on main (scripts/dev/main_build.py: What's new, the
+#                changelog, the test map) from main as it is, committed with the same
+#                fetch, reset, build, push retry the data jobs use
+#   checks       pr-checks.yml with full: true on the rebuilt commit: guard, every node
+#                test in 4 shards, every other check
+#   report       red: opens one issue "main is red: <test>" (or updates the open one) with
+#                the run link; green again: closes it with a note
+#
+# Runs on every push to main that changes more than the data the collection jobs
+# write (their pushes use the job token and start no workflow anyway), nightly, and
+# when merge-when-green.yml merges a pull request (a merge by the job token starts no
+# push run, so that workflow starts this one by hand).
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'data/basis-sparklines/**'
+      - 'data/bids-prev/**'
+      - 'data/basis/**'
+      - 'data/state-basis/**'
+      - 'data/radar-rain/**'
+      - 'data/bids.json'
+      - 'data/bids-stats.json'
+      - 'data/prices.json'
+      - 'data/weather-alerts.json'
+  schedule:
+    - cron: '17 8 * * *'     # nightly, 08:17 UTC (3:17 AM CT), outside the morning email window
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: main-checks
+  cancel-in-progress: true
+
+jobs:
+  rebuild:
+    name: rebuild the built files
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      sha: ${{ steps.push.outputs.sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
+        with:
+          python-version: '3.13'
+      - name: build and commit
+        id: push
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          mapfile -t BUILT < <(python3 scripts/dev/main_build.py paths)
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            python3 scripts/dev/main_build.py build
+            git add -A -- "${BUILT[@]}"
+            if git diff --staged --quiet; then
+              echo "No change."; echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            git commit -q -m "Built files rebuilt on main (What's new, changelog, test map)"
+            if git push -q origin HEAD:main; then
+              echo "Pushed on attempt $i."; echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            echo "Push race on attempt $i; re-syncing to origin/main..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "::error::could not push the rebuilt files after 5 attempts"; exit 1
+
+  checks:
+    needs: rebuild
+    uses: ./.github/workflows/pr-checks.yml
+    with:
+      full: true
+      ref: ${{ needs.rebuild.outputs.sha }}
+    secrets: inherit
+
+  report:
+    name: main is red issue
+    if: always()
+    needs: [rebuild, checks]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
+        with:
+          python-version: '3.13'
+      - name: open, update or close the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REBUILD: ${{ needs.rebuild.result }}
+          CHECKS: ${{ needs.checks.result }}
+          SHA: ${{ needs.rebuild.outputs.sha }}
+        run: python3 scripts/dev/main_red.py

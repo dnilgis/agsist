@@ -2,24 +2,45 @@ name: pr-checks
 
 # The ship checks (scripts/dev/checks.sh) on every pull request to main, split
 # so they finish in minutes instead of the better part of an hour:
+#   guard                    the built-files guard and its inputs (scripts/dev/main_build.py),
+#                            and the test pick: scripts/dev/test_map.py --select-base origin/main
+#                            (the tests that read a changed file, plus a fixed core; every test
+#                            when a shared file changed or the map cannot place a path)
 #   node tests (1/4 .. 4/4)  checks.sh --only=node-test --shard=N/4
-#                            (node --test --test-shard=N/4, a quarter of the files each)
+#                            (the pick, or every test file, a quarter each)
 #   other checks             checks.sh --skip-node (every other line of checks.sh)
 #   all checks               green only when every job above is green; the one
 #                            status to require on main
 # checks.sh is the only list of checks: a line added there runs here with no
 # change to this file (test/pr-checks.test.mjs holds the two together).
+# AGSIST_PREBUILD=1: checks.sh first builds the files that are built on main
+# (What's new, the changelog, the test map) in this copy, so the checks see what
+# main will serve; a pull request never commits them (built-guard).
+#
+# main-checks.yml calls this same workflow with full: true (every test, no pick) on
+# every push to main and nightly, after it rebuilds and commits the built files.
 #
 # The FSA files come from the private raw branch with PRIVATE_REPO_TOKEN, so a
 # pull request from a fork (no secrets) fails at that step. Same-repo branches
 # only; that is by design.
 #
-# No schedule: it runs when a pull request opens or moves, or by hand.
+# No schedule: it runs when a pull request opens or moves, or by hand, or when
+# main-checks.yml calls it.
 
 on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      full:
+        description: every test, no pick (main-checks.yml)
+        type: boolean
+        default: false
+      ref:
+        description: the commit to check out (main-checks.yml passes the rebuilt one)
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -38,8 +59,48 @@ env:
   OMP_NUM_THREADS: '1'
 
 jobs:
+  guard:
+    name: guard
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      mode: ${{ steps.pick.outputs.mode }}
+      files: ${{ steps.pick.outputs.files }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.ref }}
+          fetch-depth: 2
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
+        with:
+          python-version: '3.13'
+      # the pull request's merge commit and its first parent (main where it was merged) are in the
+      # checkout (fetch-depth 2); main's recent history finds the merge base the guard and pick diff against
+      - name: origin/main
+        run: git fetch -q --no-tags --depth=100 origin +refs/heads/main:refs/remotes/origin/main
+      - name: the built files are not edited by hand, and their inputs are valid
+        run: bash scripts/dev/checks.sh --only=built-guard,built-inputs
+      - name: the test pick
+        id: pick
+        env:
+          FULL: ${{ inputs.full && '1' || '' }}
+        run: |
+          if [ "$FULL" = 1 ] || [ "${{ github.event_name }}" != pull_request ]; then
+            echo "select: every test (${{ github.event_name }}, full run)"
+            { echo "mode=all"; echo "files="; } >> "$GITHUB_OUTPUT"
+          else
+            python3 scripts/dev/test_map.py --select-base origin/main --github-output --why
+          fi
+
   node-tests:
     name: node tests (${{ matrix.shard }}/4)
+    needs: guard
     # pinned, not ubuntu-latest: pdftotext and the browser fonts are Ubuntu 24.04 builds, and GitHub moves
     # ubuntu-latest to Ubuntu 26 from Oct 19, 2026. Moving is a decision: new pins in both actions, then this.
     runs-on: ubuntu-24.04
@@ -52,6 +113,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:
           persist-credentials: false
+          ref: ${{ inputs.ref }}
       - name: Engine checkout
         uses: ./.github/actions/engine
         with:
@@ -174,6 +236,9 @@ jobs:
           TMPDIR: ${{ runner.temp }}
           # a skipped test fails the shard (and so "all checks"): a skip is not a pass
           AGSIST_NO_SKIPS: '1'
+          AGSIST_PREBUILD: '1'
+          # the guard's pick (empty: every test file)
+          AGSIST_TEST_FILES: ${{ needs.guard.outputs.mode == 'some' && needs.guard.outputs.files || '' }}
         run: bash scripts/dev/checks.sh --only=node-test --shard=${{ matrix.shard }}/4
       - name: Upload the test log
         if: failure()
@@ -191,6 +256,8 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:
           persist-credentials: false
+          ref: ${{ inputs.ref }}
+          fetch-depth: 2
       - name: Engine checkout
         uses: ./.github/actions/engine
         with:
@@ -212,9 +279,12 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/pull_raw.sh data/fsa
+      - name: origin/main
+        run: git fetch -q --no-tags --depth=100 origin +refs/heads/main:refs/remotes/origin/main
       - name: every check but the node tests
         env:
           TMPDIR: ${{ runner.temp }}
+          AGSIST_PREBUILD: '1'
         run: |
           bash scripts/dev/checks.sh --list --skip-node
           bash scripts/dev/checks.sh --skip-node
@@ -222,14 +292,16 @@ jobs:
   all-checks:
     name: all checks
     if: always()
-    needs: [node-tests, other-checks]
+    needs: [guard, node-tests, other-checks]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: every job passed
         env:
+          GUARD: ${{ needs.guard.result }}
           NODE_TESTS: ${{ needs.node-tests.result }}
           OTHER_CHECKS: ${{ needs.other-checks.result }}
+          PICK: ${{ needs.guard.outputs.mode }}
         run: |
-          echo "node tests: $NODE_TESTS, other checks: $OTHER_CHECKS"
-          [ "$NODE_TESTS" = success ] && [ "$OTHER_CHECKS" = success ]
+          echo "guard: $GUARD, node tests ($PICK): $NODE_TESTS, other checks: $OTHER_CHECKS"
+          [ "$GUARD" = success ] && [ "$NODE_TESTS" = success ] && [ "$OTHER_CHECKS" = success ]
