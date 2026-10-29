@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
 import { bake, FAQ } from "../scripts/build_harvest_wait.mjs";
+import { nwsPoints, nwsFromOM } from "./fixtures/nws-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ctx = {};
@@ -228,7 +229,14 @@ async function open(browser, port, opts = {}) {
     const u = r.request().url(), h = { "access-control-allow-origin": "*" };
     if (u.includes("/bids/data/zips/")) return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify({ 54728: [45.31, -91.65] }) });
     if (u.includes("/bids/data/merged-index.json")) return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify(INDEX) });
-    if (u.startsWith("https://api.open-meteo.com/v1/forecast")) { hits.push(u); return r.fulfill({ headers: h, contentType: "application/json", body: JSON.stringify(FORECAST) }); }
+    // the National Weather Service grid (2026-10-29, was Open-Meteo): FORECAST's days through nwsFromOM, at the page's clock
+    if (u.startsWith("https://api.weather.gov/")) {
+      hits.push(u);
+      const pm = /\/points\/(-?[\d.]+),(-?[\d.]+)$/.exec(u);
+      const body = pm ? nwsPoints(+pm[1], +pm[2]) : nwsFromOM(FORECAST, { now: Date.parse("2026-10-16T10:00:00") });
+      return r.fulfill({ headers: h, contentType: "application/geo+json", body: JSON.stringify(body) });
+    }
+    if (u.includes("open-meteo.com")) { hits.push(u); return r.abort(); }
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
     return r.abort();
   });
@@ -255,10 +263,14 @@ test("browser: moisture first, then dollars, break-even, and a yes or no only wi
     // 23.37 / 4.14 = 5.64 bu
     await verdict(pg, /It pays only if the field loses less than 5\.6 bushels an acre by Oct 26\./);
     assert.equal((await pg.getAttribute("#hw-answer", "class")).trim(), "hw-answer v-even");
-    // Forecast: 10 days x 5 GDD = 50, shown, not used for moisture
-    await pg.waitForFunction(() => /50 GDD/.test(document.getElementById("hw-kv").textContent));
-    assert.equal(hits.length, 1);
-    assert.match(hits[0], /forecast_days=15/);
+    // Forecast: the NWS grid runs 7 days (Oct 16 to 22), so a 10-day wait has 6 days of forecast heat, 6 x 5 GDD = 30,
+    // shown for the days it covers and said so, not used for moisture
+    await pg.waitForFunction(() => /30 GDD/.test(document.getElementById("hw-kv").textContent));
+    assert.match(await pg.textContent("#hw-kv"), /forecast heat, next 6 days \(the forecast ends there\)/);
+    assert.equal(hits.filter((x) => /\/points\//.test(x)).length, 1);
+    assert.equal(hits.filter((x) => /\/gridpoints\//.test(x)).length, 1);
+    assert.ok(!hits.some((x) => /open-meteo/.test(x)), "nothing asked of Open-Meteo");
+    assert.match(await pg.textContent("#hw-drysrc"), /National Weather Service forecast for ZIP 54728/);
     assert.match(await pg.textContent("#hw-drysrc"), /not by your weather.*shown for reference/);
     if (shots) await pg.screenshot({ path: shots + "/hw-mobile-breakeven.png", fullPage: true });
     // 1 bu a week: 1.43 bu x 4.14 = $5.91. 23.37 - 5.91 = $17.45 ahead.

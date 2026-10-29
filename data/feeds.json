@@ -1010,7 +1010,8 @@
   {
    "path": "data/fall-nitrogen.json",
    "pages": [
-    "fall-nitrogen.html"
+    "fall-nitrogen.html",
+    "index.html"
    ],
    "written_by": [
     "Fall nitrogen soil temperature"

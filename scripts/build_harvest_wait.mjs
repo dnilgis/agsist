@@ -40,7 +40,7 @@ export const FAQ = [
   ["What field loss should I put in?",
    "Yours. Stalk strength, lodging, ear drop, deer and the weather decide it, and they differ field to field. Leave it blank and the page shows the loss that would eat the drying savings. Purdue's GQ-3 example: drying 28% corn to 15% instead of 22% corn cost $7.02 an acre more in fuel and electricity at 130 bushels, so a field loss of 3.5 bushels an acre at $2 corn would pay for drying the wetter corn."],
   ["Does the weather forecast change the estimate?",
-   "Not yet. The page shows the forecast heat for each of the next 14 days, but the moisture estimate uses the published monthly rates or your own rate. Some guides predict drydown from growing degree days; the page will use that once we have read the rule in the original publication."],
+   "Not yet. The page shows the forecast heat for each of the next 7 days (as far as the National Weather Service forecast runs), but the moisture estimate uses the published monthly rates or your own rate. Some guides predict drydown from growing degree days; the page will use that once we have read the rule in the original publication."],
   ["Where does the bid come from?",
    "Type your own, or enter your ZIP and the page uses the nearest elevator's posted corn bid from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest corn futures settle less that state's median basis, labeled as such."],
   ["Can I just leave my corn standing over winter?",

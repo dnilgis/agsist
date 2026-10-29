@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark" data-look="bands">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><link rel="preconnect" href="https://api.open-meteo.com">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><link rel="preconnect" href="https://api.weather.gov">
 <script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
@@ -395,7 +395,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <div class="hero-sidebar">
           <div class="s-card s-card--gold" style="display:none"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num"></div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
           <div class="s-card" style="display:none"><div class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> <span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"></ul></div>
-          <div style="font-size:.765rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; Open-Meteo</span></div>
+          <div style="font-size:.765rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; National Weather Service</span></div>
         </div>
       </div>
       <div id="daily-otp" class="daily-otp" aria-label="Outside the pit">
@@ -1661,7 +1661,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 </main>
 <div class="main" style="padding:0 1rem 1rem;max-width:1400px;margin:0 auto">
   <div style="font-size:.824rem;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:.75rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center">
-    <span>Prices from Yahoo Finance, delayed about 10 to 25 minutes &middot; Cash bids via the AGSIST elevator network &middot; Weather via Open-Meteo &middot; USDA NASS &middot; NOAA CPC</span>
+    <span>Prices from Yahoo Finance, delayed about 10 to 25 minutes &middot; Cash bids via the AGSIST elevator network &middot; Weather: National Weather Service forecast grid, PRISM daily history (RCC-ACIS), soil at the nearest USCRN, SCAN, Iowa State or Wisconet station &middot; USDA NASS &middot; NOAA CPC</span>
     <span>Not financial or trading advice. Verify all prices with your elevator or broker before marketing decisions. Questions? <a href="tel:+17157972428" style="color:var(--gold);text-decoration:underline;">715-797-2428</a> &middot; <a href="mailto:sig@agsist.com" style="color:var(--gold);text-decoration:underline;">sig@agsist.com</a></span>
     <a href="/privacy" style="color:var(--gold);text-decoration:underline;">Privacy Policy</a>
   </div>
@@ -1703,15 +1703,18 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   })();
   </script>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=33" defer></script>
+<script src="/components/nws.js?v=1" defer></script>
+<script src="/components/soil-near.js?v=1" defer></script>
+<script src="/components/prism.js?v=1" defer></script>
+<script src="/components/geo.js?v=34" defer></script>
 <script src="/components/bids-homepage.js?v=43" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=2">
 <script src="/components/cb-myelev.js?v=6" defer></script>
 <script src="/components/homepage-extras.js?v=18" defer></script>
 <script src="/components/home-yield.js?v=10" defer></script>
 <script src="/components/home.js?v=17"></script>
-<script src="/components/home-planting.js?v=2" defer></script>
-<script src="/components/home-season.js?v=7" defer></script>
+<script src="/components/home-planting.js?v=3" defer></script>
+<script src="/components/home-season.js?v=8" defer></script>
 <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
