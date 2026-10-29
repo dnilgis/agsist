@@ -122,21 +122,22 @@ test('the browser tests find Playwright and Chromium under the names they read, 
 test('the FSA files are pulled before the checks in every job that runs them, with the key at step level', () => {
   for (const j of ['node-tests', 'other-checks']) {
     const s = steps(j);
-    const pull = s.findIndex((x) => /run: bash scripts\/pull_raw\.sh data\/fsa\s*$/.test(x));
+    // node tests: the FSA files and the Atlas drought pull in one fetch of raw (Oct 29, fx/cifast)
+    const pull = s.findIndex((x) => (j === 'node-tests' ? /run: bash scripts\/pull_raw\.sh data\/fsa data\/atlas\/raw\/drought\.json\s*$/ : /run: bash scripts\/pull_raw\.sh data\/fsa\s*$/).test(x));
     const run = s.findIndex((x) => /checks\.sh/.test(x));
     assert.ok(pull >= 0 && pull < run, `${j}: pull before the checks`);
     assert.match(s[pull], /\n        env:\n          PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n/);
     // the key reaches only the steps that read the private repo: the FSA pull, and (node tests) the drought pull and the references fetch
     const keyed = s.filter((x) => /PRIVATE_REPO_TOKEN: /.test(x));
     // node tests (Oct 29): the Atlas drought pull, which test/drought-county-week.test.mjs reads, keyed the same way
-    const drought = s.findIndex((x) => /run: bash scripts\/pull_raw\.sh data\/atlas\/raw\/drought\.json\s*$/.test(x));
+    const drought = s.findIndex((x) => /run: bash scripts\/pull_raw\.sh (?:data\/fsa )?data\/atlas\/raw\/drought\.json\s*$/.test(x));
     if (j === 'node-tests') {
       assert.ok(drought >= 0 && drought < run, 'node-tests: the drought pull before the checks');
       assert.match(s[drought], /\n        env:\n          PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n/);
       assert.doesNotMatch(s[drought], /RAW_SOFT/, 'a test input is pulled hard');
     } else assert.equal(drought, -1, `${j}: no drought pull (no check there reads it)`);
     const refs = s.filter((x) => /run: \|\n\s+git fetch -q --no-tags --depth=1 origin \+refs\/heads\/main:refs\/remotes\/origin\/main\n\s+bash scripts\/fetch_private\.sh references\s*$/.test(x));
-    assert.equal(keyed.length, j === 'node-tests' ? 3 : 1, `${j}: the key reaches the private-repo steps only`);
+    assert.equal(keyed.length, j === 'node-tests' ? 2 : 1, `${j}: the key reaches the private-repo steps only`);
     if (j === 'node-tests') { assert.equal(refs.length, 1, 'the references step runs only the two fetches'); assert.ok(keyed.includes(refs[0])); assert.ok(s.indexOf(refs[0]) < run, 'before the tests'); }
   }
 });

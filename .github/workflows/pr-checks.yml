@@ -245,16 +245,13 @@ jobs:
             const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH });
             console.log("chromium", b.version()); await b.close();'
 
-      - name: FSA files from raw
+      # The FSA files, and the Atlas drought pull (data/atlas/raw/drought.json, on raw since Oct 29;
+      # test/drought-county-week.test.mjs reads it and fails without it), in one fetch of the raw branch:
+      # as two steps the second fetch took 10 s, once 58 s (Oct 29)
+      - name: FSA files and the Atlas drought pull from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: bash scripts/pull_raw.sh data/fsa
-      # The Atlas drought pull (data/atlas/raw/drought.json) moved to raw on Oct 29;
-      # test/drought-county-week.test.mjs reads it and fails without it.
-      - name: Atlas drought pull from raw
-        env:
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: bash scripts/pull_raw.sh data/atlas/raw/drought.json
+        run: bash scripts/pull_raw.sh data/fsa data/atlas/raw/drought.json
       # Tests that compare with origin/main (no new schedule) or read the saved sources
       # (origin/references, in the private repo since Oct 20) skip without them.
       - name: origin/main and the references branch
@@ -293,6 +290,9 @@ jobs:
           C=$(grep -hE '^# (tests|suites|pass|fail|cancelled|skipped|todo) [0-9]+$' "${T%.times}" | tr '\n' ' ')
           echo "$C"
           echo "::notice title=node test counts, shard ${{ matrix.shard }}::$(wc -l < "$T") files; $C"
+          # the times as one line too (ms<TAB>file, a space between files), readable from the run's annotations
+          # where the log is not: python3 scripts/dev/test_map.py --durations takes them back as lines
+          echo "::notice title=node test times, shard ${{ matrix.shard }}::$(sort -rn "$T" | tr '\t\n' ': ')"
           sort -rn "$T"
       - name: Upload the test log
         if: failure()
