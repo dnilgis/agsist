@@ -601,9 +601,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
     <div class="cb-hero">
       <h1>Grain prices at local elevators near you</h1>
       <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.15rem 0 .4rem">Free cash bids by ZIP: corn, soybeans and wheat. Bids are read from what each elevator posts, and every bid shows when it was read or posted. Futures: CME Group via Yahoo Finance.</p>
-      <!-- The companies line and the "my elevator" answer below are baked by
-           scripts/build_cash_bid_pages.py (stamp_live_coverage) from the run's
-           company pages and data/elevator-counts.json. Edit the script, not the text. -->
+      
       <p class="cb-cos" id="cb-cos"><!--CO-LINE-->Bids from <a href="/cash-bids/company/new-cooperative">NEW Cooperative</a>, <a href="/cash-bids/company/agtegra">Agtegra</a>, <a href="/cash-bids/company/adm">ADM</a>, <a href="/cash-bids/company/alcivia">ALCIVIA</a>, <a href="/cash-bids/company/innovative-ag-services">Innovative Ag Services</a> and 130 more elevator companies. <a href="/cash-bids/company/">Bids by company &rarr;</a><!--/CO-LINE--></p>
     </div>
     <!-- My elevators: the ones this phone saved, drawn by components/cb-myelev.js. Hidden when none. -->
@@ -770,10 +768,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
       </div>
     </div>
     <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="cash-bids"></aside>
-    <!-- Always shown: plain links a crawler can follow. The search code still
-         sets this block's display on each search; the !important rule keeps it
-         visible without touching that code. Town pages: scripts/build_cash_bid_pages.py.
-         The related-tools pills that sat here are in the site footer. -->
+    
     <style>#internal-links-block{display:block!important}.il-states-h{margin:.4rem 0 .2rem;font-size:.85rem;color:var(--text-dim)}.il-states{list-style:none;margin:0;padding:0;columns:4 11rem;column-gap:1.25rem;font-size:.85rem;line-height:1.9;color:var(--text-dim)}.il-states li{break-inside:avoid;display:flex;align-items:center;gap:.45rem}.il-states a{color:var(--text-dim)}.il-states a:hover{color:var(--gold)}.il-states .il-b{font-size:.78rem;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}@media(max-width:600px){.il-states{columns:2;column-gap:.75rem;font-size:.9rem}.il-states li{min-height:40px}.il-states a{display:inline-flex;align-items:center;min-height:40px}.il-states li>a:first-child{flex:0 1 auto;min-width:0}}</style>
     <div class="internal-links" id="internal-links-block">
       <p class="il-one"><a href="/basis">Basis: your state, vs normal &#8594;</a> <span aria-hidden="true">&#183;</span> <a href="/basis#by-state">Basis in every state &#8594;</a></p>

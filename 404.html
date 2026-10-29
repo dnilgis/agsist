@@ -3,10 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Short links from the QR on a printed report (HTTPS://AGSIST.COM/C/..., /F/, /S/, /H/): no
-       such page exists, so GitHub Pages serves this one. components/report-link.js reads the path;
-       a match stops this page before anything below runs (no analytics of the path, no flash)
-       and opens the full report link. Anything else is an ordinary 404. -->
+  
   <script src="/components/report-link.js?v=3"></script>
   <script>(function(){try{var u=window.AgReportLink&&window.AgReportLink.full(location.pathname);if(u&&u.indexOf('https://agsist.com/')===0){if(window.stop)window.stop();location.replace(u.slice(18));}}catch(e){}})();</script>
   <!-- Old ARC/PLC counter sheet URLs (/arc-plc/<state>/<county>-sheet, live Oct 9 to 10, 2026) have no

@@ -8,22 +8,7 @@
 <title>Desk | AGSIST</title>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-<!-- Sig's desk (Oct 28, 2026: "a singular place for all things agsist, executive
-     level, KISS"). Not linked from anywhere, noindex, not in a sitemap, the
-     search index, the feeds or the menu. No analytics.
-     Public parts read the site's own public files (data/daily-sent,
-     data/*sponsors*.json, data/sponsors/<portal>.json, data/audience.json,
-     TODO-SIG.md), the bids repo's public directory and GitHub's public run
-     list. Private parts read one answer from the subs worker, GET /desk
-     (v5.59), with LIST_TOKEN in the Authorization header only, never in an
-     address. The token is the one every desk tab reads (agsist-elev-admin-token) in
-     this browser's localStorage, so it is pasted once; "Forget the token"
-     clears it. Without it no worker call is made and the private parts say so.
-     The worker answer holds counts only: no reader's address, name, town or
-     ZIP ever reaches this page. A number that cannot be read says
-     "can't read: <why>", never a blank or a guess.
-     THE CARDS ARE ONE LIST (CARDS below): a new card is one entry, naming the
-     sources it needs (SOURCES), its headline tiles and its body. -->
+
 <style>
 :root{--bg:#f6f5f1;--panel:#fff;--text:#1E2125;--dim:#5E6475;--line:#d6d9d2;--accent:#2B5C8A;--warn:#A8321E;--ok:#2f6b3a;--amber:#8a5a00}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a;--amber:#e0b860}}
@@ -106,9 +91,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     <p class="dim">Paste it once; this browser keeps it, and every tab uses it. Never put it in a link.</p>
   </section>
 
-  <!-- THE TABS ARE ONE LIST (TABS in the script; this bar is the same list, written out so
-       nothing moves when the script runs). Every admin page lives here now (Sig, Oct 28):
-       the old addresses forward to /desk#<tab> (scripts/desk_tabs.py). -->
+  
   <nav class="tabs" id="tabs" aria-label="Desk tabs">
     <a href="#overview" data-tab="overview" aria-current="page">Overview</a>
     <a href="#today" data-tab="today">Today list</a>
