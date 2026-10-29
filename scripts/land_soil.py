@@ -497,7 +497,7 @@ def fit(groups, cols, log=False):
         return None
     A = [[sum(x[i] * x[j] for x in X) for j in range(k)] for i in range(k)]
     bvec = [sum(x[i] * y for x, y in zip(X, Y)) for i in range(k)]
-    # Gauss-Jordan on a k x k system (k is 1 or 2)
+    # Gauss-Jordan on a small k x k system
     M = [row[:] + [bv] for row, bv in zip(A, bvec)]
     for i in range(k):
         piv = M[i][i]
@@ -548,20 +548,24 @@ def micro_gain(sp):
 
 def m0_m1(train, test):
     """Dispersion test: within-cell residuals after slopes fit on the training year.
-    M0 log(acres) only, M1 log(acres) + soil points. MAE and IQR of cell-centred residuals."""
-    f0, f1 = fit(train, ["logac"]), fit(train, ["logac", "pts"])
-    if not f0 or not f1:
+    M0 log(acres), M1 log(acres) + soil points; M0c and M1c add the section's class 1 to 4 share to
+    both, so soil has to beat the share of tillable-looking ground, not stand in for it.
+    MAE and IQR of cell-centred residuals."""
+    specs = {"M0": ["logac"], "M1": ["logac", "pts"], "M0c": ["logac", "c14"], "M1c": ["logac", "c14", "pts"]}
+    fits = {k: fit(train, v) for k, v in specs.items()}
+    if not all(fits.values()):
         return None
-    res = {"M0": [], "M1": []}
+    res = {k: [] for k in specs}
     for v in test.values():
-        for name, f in (("M0", f0), ("M1", f1)):
+        for name, f in fits.items():
             r = [s["ppa"] - sum(f[c] * s[c] for c in f) for s in v]
             m = med(r)
             res[name] += [x - m for x in r]
     out = {}
     for name in res:
         out[name] = {"mae": round(sum(abs(x) for x in res[name]) / len(res[name])), "iqr": round(iqr(res[name]))}
-    out["soil_slope_with_acres"] = round(f1["pts"], 1)
+    out["soil_slope_with_acres"] = round(fits["M1"]["pts"], 1)
+    out["soil_slope_with_acres_and_share"] = round(fits["M1c"]["pts"], 1)
     return out
 
 
@@ -626,12 +630,17 @@ def run_test(sales, years, min_n=20, log=False, seed=7, placebo_n=200):
         plc.append(agg_gain(sp))
     p_plc = sum(1 for x in plc if x >= obs) / len(plc)
     mae_ok = all(t["m0_m1"]["M1"]["mae"] <= t["m0_m1"]["M0"]["mae"] for t in tests if t.get("m0_m1")) if not log else None
+    mae_c = None
+    if not log and any(t.get("m0_m1") for t in tests):
+        w = [t for t in tests if t.get("m0_m1")]
+        mae_c = {"years_M1c_better": sum(1 for t in w if t["m0_m1"]["M1c"]["mae"] < t["m0_m1"]["M0c"]["mae"]), "years": len(w),
+                 "mae_M0c_mean": round(sum(t["m0_m1"]["M0c"]["mae"] for t in w) / len(w)), "mae_M1c_mean": round(sum(t["m0_m1"]["M1c"]["mae"] for t in w) / len(w))}
     mg, pos = med(g), sum(1 for x in g if x > 0) / len(g)
     holds = bool(mg >= 0.05 and pos >= 0.60 and ci and ci[0] > 0 and p_plc < 0.05 and (log or mae_ok))
     return {"tests": tests, "cells": len(allsp), "sales": sum(x[1] for x in allsp), "counties": len({x[0][0] for x in allsp}),
             "median_gain": round(mg, 4), "positive_share": round(pos, 3), "agg_gain": round(obs, 4),
             "micro_gain": round(micro_gain(allsp), 4), "agg_gain_95_county_boot": [round(ci[0], 4), round(ci[1], 4)] if ci else None,
-            "placebo_share_as_good": round(p_plc, 3), "placebo_median": round(med(plc), 4), "m1_mae_not_worse": mae_ok,
+            "placebo_share_as_good": round(p_plc, 3), "placebo_median": round(med(plc), 4), "m1_mae_not_worse": mae_ok, "with_share_control": mae_c,
             "gain_pctiles": [round(B.quantile(sorted(g), q), 3) for q in (0.1, 0.25, 0.5, 0.75, 0.9)], "holds": holds}
 
 
@@ -774,7 +783,7 @@ def selftest():
         for c in range(12):
             for i in range(25):
                 p, ac = rng.uniform(40, 90), rng.uniform(20, 160)
-                sales.append({"fips": str(c), "year": y, "ppa": 3000 + c * 50 + 100 * p + rng.gauss(0, 300), "pts": p, "logac": math.log(ac)})
+                sales.append({"fips": str(c), "year": y, "ppa": 3000 + c * 50 + 100 * p + rng.gauss(0, 300), "pts": p, "logac": math.log(ac), "c14": rng.uniform(0.3, 1)})
     r = run_test(sales, [2021, 2022], placebo_n=40)
     ck("made-up soil effect: holds", r["holds"] and abs(r["tests"][0]["b"] - 100) < 15)
     ck("made-up soil effect: M1 beats M0", r["tests"][0]["m0_m1"]["M1"]["mae"] < r["tests"][0]["m0_m1"]["M0"]["mae"])
