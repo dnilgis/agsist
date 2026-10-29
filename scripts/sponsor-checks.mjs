@@ -11,6 +11,7 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 
 const R = (p) => readFileSync(fileURLToPath(new URL("../" + p, import.meta.url)), "utf8");
 let pass = 0, fail = 0;
@@ -138,13 +139,57 @@ check("the report page is noindex", () =>
   assert.match(R("sponsor-report.html"), /name="robots"[^>]*noindex/i));
 
 console.log("\nTHE CONFIG");
-check("at most one sponsor is active", () => {
-  /* The builder refuses two or more without a slot dimension, and with none it
-     prints "no active sponsors" and exits cleanly (the slot is open). */
-  /* A demo portal (demo: true) never runs an ad and is never asked of GA4,
-     so it cannot be mixed into anyone's counts (test/sponsor-demo.test.mjs). */
-  const on = (CONF.sponsors || []).filter((s) => s.active !== false && s.demo !== true);
-  assert.ok(on.length <= 1, on.length + " active sponsors; the builder will refuse");
+/* SEVERAL SPONSORS AT ONCE (rate card, Oct 29, 2026: a Daily Sponsor beside a state-targeted one).
+   The old guard allowed one active sponsor because the report could not tell two apart. Once the
+   report splits by GA4 slot (build_sponsor_report.py sponsor_slots / check_slots, PR #166) the true
+   rule is: no two active sponsors share a slot, and every slot an active sponsor claims is one the
+   report knows (the Daily slots, or geo-<id> for an entry in data/geo-sponsors.json). Before the
+   split exists, the old rule still holds: at most one. A demo (demo: true) never runs an ad and is
+   never asked of GA4 (test/sponsor-demo.test.mjs). slotRule is pure so both cases are tested below. */
+function slotRule(on, slotsOf, known) {
+  if (!slotsOf) return on.length <= 1 ? null : on.length + " active sponsors and the report cannot split by slot; the builder will refuse";
+  const seen = {};
+  for (const s of on) {
+    for (const x of slotsOf[s.slug] || []) {
+      if (!known.includes(x)) return s.slug + " claims the slot " + JSON.stringify(x) + ", which the report does not know";
+      if (seen[x]) return seen[x] + " and " + s.slug + " both claim the slot " + JSON.stringify(x);
+      seen[x] = s.slug;
+    }
+    if (!(slotsOf[s.slug] || []).length) return s.slug + " has no slot, so nothing could be reported for it";
+  }
+  return null;
+}
+const ACTIVE = (CONF.sponsors || []).filter((s) => s.active !== false && s.demo !== true);
+const SPLIT = /^def sponsor_slots\(/m.test(BUILDER) && /^def check_slots\(/m.test(BUILDER);
+check("the slot rule: two sponsors may never share a slot", () => {
+  const known = ["daily-briefing", "homepage-top", "geo-a", "geo-b"];
+  assert.equal(slotRule([{ slug: "x" }, { slug: "y" }], { x: ["geo-a"], y: ["geo-a"] }, known), 'x and y both claim the slot "geo-a"');
+  assert.equal(slotRule([{ slug: "d" }, { slug: "g" }], { d: ["daily-briefing", "homepage-top"], g: ["geo-b"] }, known), null,
+    "a Daily Sponsor and a state-targeted sponsor run side by side");
+});
+check("the slot rule: every slot an active sponsor claims is one the report knows", () => {
+  assert.match(slotRule([{ slug: "z" }], { z: ["geo-nobody"] }, ["geo-a"]) || "", /does not know/);
+  assert.match(slotRule([{ slug: "z" }], { z: [] }, ["geo-a"]) || "", /has no slot/);
+});
+check("the slot rule: before the report splits by slot, at most one sponsor is active", () => {
+  assert.equal(slotRule([{ slug: "a" }], null, []), null);
+  assert.match(slotRule([{ slug: "a" }, { slug: "b" }], null, []) || "", /cannot split by slot/);
+});
+check(SPLIT ? "the active sponsors: no shared slot, every slot known to the report" : "the active sponsors: at most one (no slot split yet)", () => {
+  let slotsOf = null, known = [];
+  if (SPLIT) {
+    const out = execFileSync("python3", ["-c", [
+      "import json, sys; sys.path.insert(0, 'scripts'); import build_sponsor_report as b",
+      "conf = json.load(open('data/sponsors.json'))",
+      "geo = [e.get('id') for e in json.load(open('data/geo-sponsors.json')).get('sponsors') or []]",
+      "print(json.dumps({'slots': {s['slug']: b.sponsor_slots(s) for s in conf.get('sponsors') or []},",
+      "                  'known': list(b.DAILY_SLOTS) + [b.GEO_SLOT_PREFIX + str(g) for g in geo]}))",
+    ].join("\n")], { cwd: fileURLToPath(new URL("../", import.meta.url)), encoding: "utf8" });
+    const j = JSON.parse(out.trim().split("\n").pop());
+    slotsOf = j.slots; known = j.known;
+  }
+  const bad = slotRule(ACTIVE, slotsOf, known);
+  assert.equal(bad, null, bad);
 });
 check("no active sponsor carries a start date nobody has confirmed", () => {
   for (const s of (CONF.sponsors || []).filter((x) => x.active !== false))
