@@ -104,10 +104,11 @@ test("the data sources section on the editorial standards keeps what readers nee
   const sec = part(h, '<h2 id="sources">', '<h2 id="independence">');
   assert.match(sec, /10-minute exchange delay/);
   assert.match(sec, /about 10 to 25 minutes old while markets trade/);
-  for (const s of ["Yahoo Finance", "bid board", "Open-Meteo", "Windy", "Drought Monitor", "MRMS", "Iowa Environmental Mesonet", "CFTC",
+  for (const s of ["Yahoo Finance", "bid board", "National Weather Service", "PRISM", "Windy", "Drought Monitor", "MRMS", "Iowa Environmental Mesonet", "CFTC",
     "AgTransport", "NASS", "RMA", "FSA", "FAS", "NCEI", "Climate Prediction Center", "EIA", "Sentinel", "Polymarket", "OpenStreetMap", "Google Analytics"])
     assert.ok(sec.includes(s), s);
-  // the old page's anchors land on their line
+  // the old page's anchors land on their line (#open-meteo is the weather line; Oct 29, 2026 it names the
+  // National Weather Service and PRISM, which replaced Open-Meteo in #188 to #193)
   for (const id of ["yahoo", "cash-bids", "open-meteo", "cftc", "nass", "polymarket"]) assert.ok(sec.includes(`id="${id}"`), "#" + id);
   assert.ok((sec.match(/<li/g) || []).length <= 16, "one short list, not the inner workings");
   assert.doesNotMatch(sec, /yfinance|Cloudflare Worker|Gamma API|cron|\.py\b|—|&mdash;/, "no recipe, no em dash");
