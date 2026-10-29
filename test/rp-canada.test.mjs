@@ -227,6 +227,37 @@ test("town and postal code: provinces, French names, rural postal areas ask for 
   assert.equal(C.niceName("QU'APPELLE 1", "C"), "Qu'Appelle 1");
 });
 
+test("a town: our own town list first, then a station named for a small town; never Open-Meteo (2026-10-29)", async () => {
+  const ctx = makeCtx(FILES), C = ctx.AgRpCanada, asked = [];
+  vm.runInNewContext(read("components/places.js"), ctx);
+  // the place files as the site serves them; the station list as the page reads it
+  const F = (u) => {
+    asked.push(u);
+    const m = /^\/data\/places\/(.+)$/.exec(u);
+    if (m) {
+      let body = null;
+      try { body = read("data/places/" + m[1]); } catch (e) { body = null; }
+      return Promise.resolve(body == null ? { ok: false, status: 404, json: async () => ({}) } : { ok: true, status: 200, json: async () => JSON.parse(body) });
+    }
+    return ctx.fetch(u);
+  };
+  const PL = ctx.AGSIST_PLACES;
+  const reg = await C.geoAsk("Regina, SK", F, "en", PL);
+  assert.equal(reg.name, "Regina"); assert.equal(reg.prov, "sk"); assert.equal(reg.country_code, "CA");
+  assert.ok(Math.abs(reg.latitude - 50.45) < 0.05 && Math.abs(reg.longitude + 104.62) < 0.05, JSON.stringify(reg));
+  // Qu'Appelle (about 600 people) is not in the town list; the QU'APPELLE 1 station is, in Saskatchewan
+  const qa = await C.geoAsk("Qu'Appelle, SK", F, "en", PL);
+  assert.equal(qa.name, "Qu'Appelle");
+  assert.equal(qa.approx, "station");
+  assert.ok(Math.abs(qa.latitude - 50.5667) < 0.001 && Math.abs(qa.longitude + 103.9833) < 0.001, JSON.stringify(qa));
+  // a name in another province is still "couldn't find", in words
+  await assert.rejects(C.geoAsk("Qu'Appelle, MB", F, "en", PL), /Couldn.t find .Qu'Appelle. in Manitoba/);
+  await assert.rejects(C.geoAsk("Zzyzx, SK", F, "fr", PL), /Impossible de trouver/);
+  // no town lookup at all: says so, asks nothing else
+  await assert.rejects(C.geoAsk("Regina, SK", F, "en"), /town lookup didn.t answer/);
+  assert.ok(!asked.some((u) => /open-meteo/.test(u)), asked.join(" "));
+});
+
 test("the station list: whole years first, nearest first; snow known from the list; defaults by province", async () => {
   const ctx = makeCtx(FILES);
   const C = ctx.AgRpCanada;

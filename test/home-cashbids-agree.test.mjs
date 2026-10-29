@@ -169,8 +169,6 @@ async function routed(browser, port) {
     }
     /* The ZIP's town name, as the geocoders would give it (stand-ins; the sandbox has no outside network). */
     const J = (b) => r.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(b) });
-    if (u.hostname === "geocoding-api.open-meteo.com")
-      return J({ results: [{ name: "Ames", latitude: LAT, longitude: LON, admin1: "Iowa", admin2: "Story", postcodes: [ZIP], country_code: "US" }] });
     if (u.hostname === "nominatim.openstreetmap.org")
       return u.pathname.includes("search")
         ? J([{ lat: String(LAT), lon: String(LON), display_name: `Ames, Story County, Iowa, ${ZIP}, United States` }])

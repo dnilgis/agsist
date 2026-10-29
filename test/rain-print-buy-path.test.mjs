@@ -14,6 +14,7 @@
  *   node --test test/rain-print-buy-path.test.mjs
  */
 import { makerFlag } from "./fixtures/rp-maker.mjs";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -56,7 +57,7 @@ const GEO = {
 
 async function mocks(ctx, opts) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
+  await ctx.route(PLACES_ROUTE, (r) => {
     const u = new URL(r.request().url());
     if (opts.log) opts.log.push(u.host + u.pathname + "?" + u.search.slice(0, 160));
     if (u.host === "agsist-api.dnilgis.workers.dev") {
@@ -66,10 +67,8 @@ async function mocks(ctx, opts) {
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
     if (u.host === "buy.stripe.com") return r.fulfill({ status: 200, contentType: "text/html", body: "<!doctype html><p>stripe</p>" });
-    if (u.host === "geocoding-api.open-meteo.com") {
-      const name = (u.searchParams.get("name") || "").toLowerCase();
-      return r.fulfill({ json: { results: name === "rathbun" ? GEO[opts.rathbun || "rathbun-far"] : GEO.chetek } });
-    }
+    // the town lookup: our own data/places/ files (2026-10-29), answered with the same rows
+    if (isPlaces(u)) return r.fulfill({ json: placesBody(u, placesKey(u) === "us/ra" ? GEO[opts.rathbun || "rathbun-far"] : GEO.chetek) });
     if (u.host === "data.rcc-acis.org") {
       const stn = opts.stn || CHETEK;
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [stn] } });

@@ -19,7 +19,7 @@
 (function (root) {
   'use strict';
   var DATA = '/data/cattle-auction.json';
-  var ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
+  var OWN_ZIPS = '/data/places/zip/', ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
   var KEY = 'agsist-salebarn';
   var CLASSES = [300, 400, 500, 600, 700, 800];
   var NEAR_MILES = 400;
@@ -325,17 +325,14 @@
     $('sb-zip').value = z; S.state = ''; $('sb-state').value = ''; save();
     status('Looking up ' + z + '...');
     var my = ++S.seq;
-    getJSON(ZIPS + z.slice(0, 2) + '.json', 6000).then(function (t) {
+    [OWN_ZIPS, ZIPS].reduce(function (prev, base) {
+      // our own ZIP table first, then the bids repo's copy of the same points (2026-10-29: no outside geocoder)
+      return prev.catch(function () { return getJSON(base + z.slice(0, 2) + '.json', 6000).then(function (t) {
       var p = t && t[z];
       if (Array.isArray(p) && isFinite(+p[0]) && isFinite(+p[1]) && !(+p[0] === 0 && +p[1] === 0)) return { lat: +p[0], lon: +p[1] };
       throw new Error('not in table');
-    }).catch(function () {
-      return getJSON('https://geocoding-api.open-meteo.com/v1/search?name=' + z + '&count=1&language=en&format=json&countryCode=US', 6000).then(function (d) {
-        var r = d && d.results && d.results[0];
-        if (!r) throw new Error('none');
-        return { lat: r.latitude, lon: r.longitude };
-      });
-    }).then(function (p) { if (my !== S.seq) return; S.here = p; S.label = 'ZIP ' + z; status(''); render(); })
+      }); });
+    }, Promise.reject()).then(function (p) { if (my !== S.seq) return; S.here = p; S.label = 'ZIP ' + z; status(''); render(); })
       .catch(function () { if (my === S.seq) status('Could not find ZIP ' + z + '. Check it and try again.', true); });
   }
   function seg(attr, set) {

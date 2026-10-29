@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = process.env.RP_ROOT || fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -74,7 +75,7 @@ function series(y) {
 }
 async function mocks(ctx, opts) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
+  await ctx.route(PLACES_ROUTE, (r) => {
     const u = new URL(r.request().url());
     if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
@@ -82,10 +83,11 @@ async function mocks(ctx, opts) {
       if (u.pathname === "/rp-short") return r.fulfill({ status: 200, headers: h, json: { ok: true, id: "K7Q2M" } });
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
-    if (u.host === "geocoding-api.open-meteo.com") {
+    // the town lookup: our own data/places/ files (2026-10-29)
+    if (isPlaces(u)) {
       const hit = { name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", country_code: "US" };
       if (!opts.noCounty) hit.admin2 = "Barron County";
-      return r.fulfill({ json: { results: [hit] } });
+      return r.fulfill({ json: placesBody(u, [hit]) });
     }
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [CHETEK] } });

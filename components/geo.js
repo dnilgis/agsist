@@ -252,7 +252,7 @@ window.agsistFillZip = function() {
   return zip;
 };
 
-/* WAVE3-I: full state name to postal code, for Open-Meteo's admin1. */
+/* WAVE3-I: full state name to postal code (a code passes through when it is a state). */
 var _ST_CODE = {'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA','colorado':'CO','connecticut':'CT','delaware':'DE','district of columbia':'DC','florida':'FL','georgia':'GA','hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA','kansas':'KS','kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD','massachusetts':'MA','michigan':'MI','minnesota':'MN','mississippi':'MS','missouri':'MO','montana':'MT','nebraska':'NE','nevada':'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND','ohio':'OH','oklahoma':'OK','oregon':'OR','pennsylvania':'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD','tennessee':'TN','texas':'TX','utah':'UT','vermont':'VT','virginia':'VA','washington':'WA','west virginia':'WV','wisconsin':'WI','wyoming':'WY'};
 function _stateCode(name) {
   var n = String(name || '').trim();
@@ -264,27 +264,20 @@ window.agsistStateCode = _stateCode;
 function loadWeatherZip() {
   var zip = (document.getElementById('wx-zip') || {}).value;
   if (!zip || zip.length !== 5 || isNaN(zip)) return;
-  fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + zip + '&count=1&language=en&format=json&countryCode=US')
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d.results && d.results.length) {
-        var r = d.results[0];
-        // FIX v14: Open-Meteo may return the ZIP code as r.name (e.g. "61801")
-        // with the city name as r.admin1 (e.g. "Urbana"), causing "61801, Ur"
-        // (admin1.substring(0,2) was being treated as a state abbreviation).
-        // Detect postal-code name and use admin1 as city label instead.
-        var _isZip = /^\d+$/.test((r.name || '').trim());
-        var _city = _isZip ? (r.admin1 || r.name) : r.name;
-        /* WAVE3-I: the state code comes from the full name. The first two
-           letters of "Minnesota" are "MI". A name not in the table prints no
-           state rather than a wrong one. */
-        var _state = _isZip ? '' : _stateCode(r.admin1);
-        var _label = _city + (_state ? ', ' + _state : '');
+  // our own ZIP table, [lat, lon, town, state code, county] (2026-10-29: no outside geocoder)
+  fetch('/data/places/zip/' + zip.slice(0, 2) + '.json')
+    .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(t) {
+      var r = t && t[zip];
+      if (Array.isArray(r) && isFinite(+r[0]) && isFinite(+r[1])) {
+        /* WAVE3-I: a state code not in the table prints no state rather than a wrong one. */
+        var _state = _stateCode(r[3]);
+        var _label = (r[2] || ('ZIP ' + zip)) + (r[2] && _state ? ', ' + _state : '');
         // v17: User-entered ZIP — clear guard so bids reload with new ZIP
         _bidsLoadedThisSession = false;
         /* WAVE3-I: the typed ZIP goes through to the bids and the saved
            location. Nominatim is asked only for the county. */
-        fetchWeather(r.latitude, r.longitude, _label, { zip: zip, state: _state });
+        fetchWeather(+r[0], +r[1], _label, { zip: zip, state: _state });
       }
     }).catch(function() {});
 }

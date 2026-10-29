@@ -48,8 +48,9 @@ async function page(browser, port, path, width, geo) {
   pg.on("pageerror", (e) => errors.push(String(e)));
   await pg.route("**/*", (r) => {
     const u = r.request().url();
+    // the town lookup is our own data/places/ files (2026-10-29); geo stands in for them when given
+    if (geo && /\/data\/places\//.test(u)) return geo(r);
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-    if (u.includes("geocoding-api.open-meteo.com") && geo) return geo(r);
     return r.abort();
   });
   await pg.goto(`http://127.0.0.1:${port}${path}`);

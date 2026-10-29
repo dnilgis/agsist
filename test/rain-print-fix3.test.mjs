@@ -16,6 +16,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const HTML = readFileSync(ROOT + "rain-print.html", "utf8");
@@ -43,16 +44,17 @@ function series(y, upto) {
 async function mocks(ctx, st) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   const upto = "2026-10-09";
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
+  await ctx.route(PLACES_ROUTE, async (r) => {
     const req = r.request(), u = new URL(req.url());
     if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (req.method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
-    if (u.host === "geocoding-api.open-meteo.com") {
+    // the town lookup: our own data/places/ files (2026-10-29)
+    if (isPlaces(u)) {
       st.geoAsks++;
       if (st.geoFail > 0) { st.geoFail--; return r.fulfill({ status: 504, body: "gateway" }); }
-      return r.fulfill({ json: { results: [{ name: "Ames", latitude: 42.0308, longitude: -93.6319, admin1: "Iowa", country_code: "US" }] } });
+      return r.fulfill({ json: placesBody(u, [{ name: "Ames", latitude: 42.0308, longitude: -93.6319, admin1: "Iowa", country_code: "US" }]) });
     }
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [{ name: "AMES 2 NNW", sids: ["130200 2"], ll: [-93.6431, 42.0597], valid_daterange: [["1950-01-01", upto]], state: "IA" }] } });

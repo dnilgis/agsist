@@ -89,8 +89,6 @@ async function open(browser, port, theme, width) {
       const j = bidsFile(u.pathname.slice(6));
       return r.fulfill({ status: j ? 200 : 404, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: j ? JSON.stringify(j) : "{}" });
     }
-    if (u.hostname === "geocoding-api.open-meteo.com")
-      return J({ results: [{ name: "Waterloo", latitude: LAT, longitude: LON, admin1: "Iowa", admin2: "Black Hawk", postcodes: [ZIP], country_code: "US" }] });
     if (u.hostname === "nominatim.openstreetmap.org")
       return u.pathname.includes("search") ? J([{ lat: String(LAT), lon: String(LON), display_name: `Waterloo, Iowa, ${ZIP}, United States` }])
         : J({ address: { city: "Waterloo", state: "Iowa", postcode: ZIP } });

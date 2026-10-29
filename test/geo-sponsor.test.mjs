@@ -432,6 +432,17 @@ test("browser: RootLot's portal: free test muted under its label, live with coun
   const rl = conf.sponsors.find((s) => s.slug === "rootlot");
   assert.ok(rl && /^[0-9a-f]{16}$/.test(rl.token));
   assert.ok(existsSync(join(ROOT, "data/sponsors", "rootlot-" + rl.token + ".json")), "the portal file is built");
+  // The shipped file decides what the page must say: before the first full day (pending, or no
+  // liveSince) the counts read 0 and say "no full day"; once a day is counted (the morning report
+  // of Oct 29 counted Oct 28) the page shows the file's own 7-day counts, "Live since" in the hero
+  // and how far the counts go above them.
+  const rep = JSON.parse(read("data/sponsors/rootlot-" + rl.token + ".json"));
+  const noDay = !!rep.pending || !rep.liveSince;
+  const w7 = (rep.windows || []).find((x) => x.days === 7) || rep.totals || {};
+  const n = (v) => Number(v || 0).toLocaleString("en-US");
+  const wantKpi = noDay ? "0,0" : n(w7.viewable) + "," + n(w7.clicks);
+  const ra = rep.regionAds || {};
+  const regDay = !ra.pending && !ra.withheld && ra.start && ra.through && ra.through >= ra.start;
   await browserRun(async (browser, port) => {
     for (const w of [390, 1280]) {
       const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, serviceWorkers: "block" });
@@ -450,12 +461,28 @@ test("browser: RootLot's portal: free test muted under its label, live with coun
       const bill = await pg.textContent("#billing");
       assert.match(bill, /State Sponsor/, w + ": the greyed plan is the State Sponsor");
       assert.doesNotMatch(bill, /Own a page|Supporter/, w + ": no retired tier");
-      assert.equal(await pg.evaluate(() => [...document.querySelectorAll("#results .cp-kpi-n")].slice(0, 2).map((e) => e.textContent).join(",")), "0,0");
-      // live since Oct 28, no full day counted yet in the shipped file: zeros, said so, never blank
-      assert.match(await pg.textContent("#results"), /no full day/);
+      // times seen and clicks: the file's own 7-day counts, or zeros (never blank) before a full day
+      assert.equal(await pg.evaluate(() => [...document.querySelectorAll("#results .cp-kpi-n")].slice(0, 2).map((e) => e.textContent).join(",")), wantKpi, w + ": counts from the shipped file");
+      const res = await pg.textContent("#results");
+      if (noDay) assert.match(res, /no full day/, w + ": no full day counted yet, said so");
+      else {
+        assert.doesNotMatch(res, /no full day/, w + ": a counted day is never called missing");
+        const since = new Date(rep.liveSince + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+        assert.equal((await pg.textContent(".cp-hero .cp-pill")).trim(), "Live since " + since, w + ": the hero says Live since " + since);
+        assert.match(res, new RegExp("through " + new Date(rep.through + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })), w + ": the counts say how far they go");
+      }
       assert.match(t, /Live/);
       const reg = await pg.textContent("#states");
-      for (const n of ["California", "Nevada", "Texas", "Everywhere else", "no full day counted yet", "Readers in your states"]) assert.ok(reg.includes(n), w + ": " + n);
+      for (const s of ["California", "Nevada", "Texas", "Everywhere else", "Readers in your states"]) assert.ok(reg.includes(s), w + ": " + s);
+      if (!regDay) assert.ok(reg.includes("no full day counted yet"), w + ": the state table says no full day yet");
+      else {
+        assert.ok(!reg.includes("no full day counted yet"), w + ": the state table has a counted day");
+        // every state row shows its own count from the file, and the sum row adds them
+        const rows = await pg.$$eval("#states .cp-reg-t tbody tr", (els) => els.map((e) => [...e.cells].map((c) => c.textContent.trim())));
+        for (const r of ra.rows) assert.ok(rows.some((x) => x[0] === r.name && x[1] === n(r.viewable) && x[2] === n(r.clicks)), w + ": " + r.name + " " + r.viewable);
+        const sum = ra.rows.reduce((a, r) => a + (r.viewable || 0), 0);
+        assert.ok(rows.some((x) => /^Your \d+ states$/.test(x[0]) && x[1] === n(sum)), w + ": the sum row " + sum);
+      }
       const aud = JSON.parse(read("data/audience.json"));
       const towns = ((aud.servers || {}).towns || []).filter((x) => ["California", "Nevada", "Texas"].includes(x.region));
       if (towns.length) for (const x of towns) assert.ok(reg.includes(x.city + ", " + x.region), "server town named: " + x.city);

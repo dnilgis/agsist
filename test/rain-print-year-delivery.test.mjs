@@ -23,6 +23,7 @@ import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { tmpdir } from "node:os";
 import vm from "node:vm";
+import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -50,16 +51,17 @@ const STN = { name: "CHETEK", sids: ["471667 2"], ll: [-91.65, 45.32], valid_dat
 /* geo: "hang" (the lookup never answers), "fail" (500), "ok". hang2026: ACIS never answers for 2026. */
 async function mocks(ctx, mode) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (r) => {
+  await ctx.route(PLACES_ROUTE, async (r) => {
     const u = new URL(r.request().url());
     if (u.host === "agsist-api.dnilgis.workers.dev") {
       if (r.request().method() === "OPTIONS") return r.fulfill({ status: 204, headers: h });
       return r.fulfill({ status: 503, headers: h, body: "x" });
     }
-    if (u.host === "geocoding-api.open-meteo.com") {
+    // the town lookup: our own data/places/ files (2026-10-29)
+    if (isPlaces(u)) {
       if (mode.geo === "hang") return new Promise(() => {});
       if (mode.geo === "fail") return r.fulfill({ status: 500, body: "x" });
-      return r.fulfill({ json: { results: [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", admin2: "Barron", country_code: "US" }] } });
+      return r.fulfill({ json: placesBody(u, [{ name: "Chetek", latitude: 45.3141, longitude: -91.651, admin1: "Wisconsin", admin2: "Barron", country_code: "US" }]) });
     }
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") return r.fulfill({ json: { meta: [STN] } });
