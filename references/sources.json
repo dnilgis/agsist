@@ -2588,6 +2588,22 @@
     {"id": "statute-vt-32-9606", "kind": "html",
      "url": "https://legislature.vermont.gov/statutes/section/32/231/09606",
      "title": "32 V.S.A. 9606: the property transfer return",
-     "why": "Vermont land sales: what the law says about the return and its public use (to read before the terms are quoted)"}
+     "why": "Vermont land sales: what the law says about the return and its public use (to read before the terms are quoted)"},
+    {"id": "nj-taxation-statdata", "kind": "html",
+     "url": "https://www.nj.gov/treasury/taxation/lpt/statdata.shtml",
+     "title": "NJ Division of Taxation: Statistical Information (SR-1A sales files, MOD-IV assessment lists)",
+     "why": "New Jersey land sales (/land-sales/new-jersey): where the SR-1A deed files and the MOD-IV list are posted, and any terms on the page"},
+    {"id": "nj-sr1a-layout", "kind": "pdf",
+     "url": "https://www.nj.gov/treasury/taxation/pdf/lpt/SR1Afilelayout.pdf",
+     "title": "NJ Division of Taxation: SR-1A file layout",
+     "why": "New Jersey land sales: the columns fetch_land_sales.py NJ_SR reads"},
+    {"id": "nj-modiv-layout", "kind": "pdf",
+     "url": "https://www.nj.gov/treasury/taxation/pdf/lpt/modivlayout.pdf",
+     "title": "NJ Division of Taxation: MOD-IV file layout and district codes",
+     "why": "New Jersey land sales: the MOD-IV columns (class, calculated acreage) and the district code list"},
+    {"id": "nj-nonusable-guidelines", "kind": "pdf",
+     "url": "https://www.nj.gov/treasury/taxation/pdf/lpt/guidelines36.pdf",
+     "title": "NJ Division of Taxation: Guidelines for use of the non-usable deed categories (N.J.A.C. 18:12-1.1)",
+     "why": "New Jersey land sales: the meaning of each SR-1A non-usable code, mapped onto the market-sale rule in fetch_land_sales.py NJ_NU"}
 ]
 }
