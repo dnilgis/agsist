@@ -279,3 +279,28 @@ test('merge-when-green.yml: green and clean merges; red, pending, conflicted, a 
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /selftest passed/);
 });
+
+// Oct 29 follow-up: a hand start after a merge by the job token checks the merge's own range, never
+// HEAD~1 or main's newest commit (a collection job may have pushed in between).
+test('merge-when-green hands preship and sitemap the merged range, and both use it', () => {
+  const py = (c) => spawnSync('python3', ['-c', `import sys, json; sys.path.insert(0, 'scripts/dev'); import merge_when_green as M; ${c}`], { cwd: root, encoding: 'utf8' });
+  const r = py("print(json.dumps(sorted(M.RANGE_INPUTS)))");
+  assert.equal(r.status, 0, r.stderr);
+  const range = JSON.parse(r.stdout);
+  assert.deepEqual(range, ['preship.yml', 'sitemap.yml']);
+  // every push workflow that diffs event.before / HEAD~1 is in the list
+  for (const f of fs.readdirSync(path.join(root, '.github/workflows'))) {
+    const y = read(`.github/workflows/${f}`);
+    if (/^  push:/m.test(y) && /github\.event\.before/.test(y) && f !== 'indexnow.yml') assert.ok(range.includes(f), `${f} diffs the push: it needs the merged range`);
+  }
+  const y = (f) => read(`.github/workflows/${f}`);
+  for (const f of range) {
+    assert.match(y(f), /workflow_dispatch:\n    inputs:\n(?:      .*\n)*?      base:\n/, `${f} takes base`);
+    assert.match(y(f), /\n      head:\n        description:/, `${f} takes head`);
+  }
+  assert.match(y('preship.yml'), /ref: \$\{\{ github\.event_name == 'workflow_dispatch' && github\.event\.inputs\.head \|\| '' \}\}/, 'preship checks out the merge commit');
+  const s = y('sitemap.yml');
+  assert.match(s, /git diff --name-only "\$IN_BASE" "\$IN_HEAD" -- '\*\.html'/, 'sitemap bumps the pages of the merged range');
+  assert.match(s, /grep -Eq '\^\[0-9a-f\]\{40\}\$'/, 'only commit shas');
+  assert.match(s, /IN_BASE: \$\{\{ github\.event\.inputs\.base \}\}/, 'through the environment, not pasted into the script');
+});

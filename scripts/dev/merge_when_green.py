@@ -34,10 +34,13 @@ REQUIRED = ["guard", "other checks", "all checks"] + ["node tests (%d/%d)" % (i,
 FULL_SUITE = "main-checks.yml"
 
 
-def decide(pr, repo, jobs):
+WORKFLOW_DIR = ".github/workflows/"
+
+
+def decide(pr, repo, jobs, files=()):
     """-> (action, reason): action 'merge', 'wait' (say nothing yet) or 'no' (say why, once).
     pr: the pull request object from the API; jobs: the jobs of the newest pr-checks run for its
-    head commit ([] when there is none)."""
+    head commit ([] when there is none); files: the paths the pull request changes."""
     labels = {l.get("name") for l in pr.get("labels", [])}
     if pr.get("state") != "open":
         return "wait", "not open"
@@ -67,6 +70,11 @@ def decide(pr, repo, jobs):
         return "no", "it conflicts with main; merge main into the branch and push"
     if state != "clean" or pr.get("mergeable") is False:
         return "no", "GitHub does not call the merge clean (%s)" % state
+    # The job token has no "workflows" permission, and GitHub refuses a push or merge by a token
+    # without it that adds or changes a file under .github/workflows/; so those are merged by hand.
+    wf = [f for f in files if f.startswith(WORKFLOW_DIR)]
+    if wf:
+        return "no", "merge by hand: touches workflows (%s); the job token cannot merge a change to .github/workflows" % ", ".join(wf[:3])
     return "merge", "every PR check green and the merge is clean"
 
 
@@ -123,11 +131,21 @@ def push_followups(workflows, files):
 INDEXNOW_MAX = 50
 
 
-def inputs_for(wf, files):
+# workflows that diff the push (event.before or HEAD~1 against HEAD): a hand start gets the merged
+# range instead, since a collection job may have pushed to main between the merge and the start
+RANGE_INPUTS = {"preship.yml", "sitemap.yml"}
+
+
+def inputs_for(wf, files, base=None, head=None):
     """the inputs a hand start needs to do what the push would have done (None: do not start it).
-    indexnow.yml by hand with no URLs sends every sitemap (14,000 pages), so it gets the changed
-    pages, as its push run sends them; a change to more pages is a template change and the weekly
-    run covers it, as the push run says."""
+    preship.yml and sitemap.yml compare the merge's own range, base (main before the merge) to head
+    (the merge commit). indexnow.yml by hand with no URLs sends every sitemap (14,000 pages), so it
+    gets the changed pages, as its push run sends them; a change to more pages is a template change
+    and the weekly run covers it, as the push run says."""
+    if wf in RANGE_INPUTS:
+        if not (base and head and re.fullmatch(r"[0-9a-f]{40}", base) and re.fullmatch(r"[0-9a-f]{40}", head)):
+            return None
+        return {"base": base, "head": head}
     if wf != "indexnow.yml":
         return {}
     pages = [f for f in files if f.endswith(".html") and not f.startswith(("components/", "test/", "embed/"))]
@@ -217,7 +235,8 @@ def main():
         runs = gh.call("GET", "/repos/%s/actions/workflows/pr-checks.yml/runs?event=pull_request&head_sha=%s&per_page=10" % (repo, sha)) or {}
         runs = sorted(runs.get("workflow_runs", []), key=lambda r: r.get("run_number", 0), reverse=True)
         jobs = gh.all("/repos/%s/actions/runs/%d/jobs" % (repo, runs[0]["id"])) if runs else []
-        action, why = decide(pr, repo, jobs)
+        files = [f["filename"] for f in gh.all("/repos/%s/pulls/%d/files" % (repo, pr["number"]))]
+        action, why = decide(pr, repo, jobs, files)
         print("#%d %s: %s (%s)" % (pr["number"], sha[:12], action, why))
         if action == "wait":
             continue
@@ -226,7 +245,7 @@ def main():
             comment_once(gh, repo, pr, key, "Not merged (merge-when-green): %s." % why)
             continue
         try:
-            gh.call("PUT", "/repos/%s/pulls/%d/merge" % (repo, pr["number"]),
+            merged = gh.call("PUT", "/repos/%s/pulls/%d/merge" % (repo, pr["number"]),
                     {"merge_method": "merge", "sha": sha,
                      "commit_title": "Merge pull request #%d from %s" % (pr["number"], pr["head"]["label"])})
         except urllib.error.HTTPError as e:
@@ -235,8 +254,12 @@ def main():
         gh.call("POST", "/repos/%s/issues/%d/comments" % (repo, pr["number"]),
                 {"body": "Merged by merge-when-green: every PR check green on %s and the merge clean." % sha[:12]})
         print("merged #%d" % pr["number"])
-        # the push by the job token starts nothing on main: start what it would have
-        files = [f["filename"] for f in gh.all("/repos/%s/pulls/%d/files" % (repo, pr["number"]))]
+        # the push by the job token starts nothing on main: start what it would have, on the merged range
+        head = (merged or {}).get("sha")
+        base = None
+        if head:
+            parents = (gh.call("GET", "/repos/%s/commits/%s" % (repo, head)) or {}).get("parents") or []
+            base = parents[0]["sha"] if parents else None
         if workflows is None:
             workflows = load_workflows(root)
         for wf in [FULL_SUITE] + push_followups(workflows, files):
@@ -244,9 +267,13 @@ def main():
             if not ok:
                 print("::warning::%s would have run on this push but cannot be started by hand (%s)" % (wf, why))
                 continue
-            inputs = inputs_for(wf, files)
+            inputs = inputs_for(wf, files, base, head)
             if inputs is None:
-                print("%s: not started (no pages to send, or a template change the weekly run covers)" % wf)
+                print("%s: not started (no pages to send, a template change the weekly run covers, or no merged range)" % wf)
+                continue
+            declared = set(((workflows.get(wf) or {}).get("workflow_dispatch") or {}).get("inputs") or {})
+            if set(inputs) - declared:
+                print("::warning::%s does not take the input(s) %s; not started" % (wf, ", ".join(sorted(set(inputs) - declared))))
                 continue
             try:
                 gh.call("POST", "/repos/%s/actions/workflows/%s/dispatches" % (repo, wf), dict({"ref": "main"}, **({"inputs": inputs} if inputs else {})))
@@ -290,10 +317,20 @@ def selftest():
     assert dispatchable({"workflow_dispatch": {"inputs": {"x": {"required": True}}}})[0] is False
     assert dispatchable({"workflow_dispatch": {"inputs": {"x": {"required": True, "default": ""}}}})[0] is True
     assert dispatchable({"push": {}})[0] is False
-    assert inputs_for("sitemap.yml", ["a.html"]) == {}
+    assert inputs_for("feeds-guard.yml", ["a.html"]) == {}
     assert inputs_for("indexnow.yml", ["milk-prices.html", "rain/iowa/index.html", "data/x.json"]) == {"urls": "https://agsist.com/milk-prices,https://agsist.com/rain/iowa/"}
     assert inputs_for("indexnow.yml", ["data/x.json"]) is None
     assert inputs_for("indexnow.yml", ["p%d.html" % i for i in range(INDEXNOW_MAX + 1)]) is None
+    assert decide(pr, repo, green, ["milk-prices.html"])[0] == "merge"
+    act, why = decide(pr, repo, green, ["milk-prices.html", ".github/workflows/x.yml"])
+    assert act == "no" and why.startswith("merge by hand: touches workflows"), why
+    assert decide(pr, repo, red, [".github/workflows/x.yml"])[1].startswith("not green"), "red says red first"
+    assert decide(pr, repo, green, [".github/actions/engine/action.yml"])[0] == "merge", "only workflow files"
+    b, h = "b" * 40, "c" * 40
+    assert inputs_for("preship.yml", ["a.html"], b, h) == {"base": b, "head": h}
+    assert inputs_for("sitemap.yml", ["a.html"], b, h) == {"base": b, "head": h}
+    assert inputs_for("sitemap.yml", ["a.html"]) is None, "no merged range: not started on a wrong one"
+    assert inputs_for("preship.yml", ["a.html"], "HEAD~1", h) is None
     print("merge_when_green selftest passed")
     return 0
 

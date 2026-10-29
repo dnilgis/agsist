@@ -2,9 +2,12 @@
 """The "main is red" issue for main-checks.yml: seen, not silent.
 
 A red full-suite run on main opens one issue titled "main is red: <first failing test>" (with
-"and N more" when there are more), or, when one is open already, retitles it and adds a comment.
-The body and comment name the failing checks and tests and link the run. A green run closes the
-open issue with a note. A cancelled run (a newer push took over) changes nothing.
+"and N more" when there are more). When one is open already (found by its label, or by its title
+if the label was taken off), a run with a different set of failures retitles it and comments with
+the new list; a run with the same failures comments at most once a day ("still red"), so a red
+nightly plus every merge does not bury the issue. The body and comments name the failing checks
+and tests and link the run. A green run closes the open issue with a note. A cancelled run (a newer
+push took over) changes nothing.
 
 Environment: GH_TOKEN, GITHUB_REPOSITORY, GITHUB_RUN_ID, GITHUB_SERVER_URL (Actions sets the last
 three), REBUILD and CHECKS (the needs.<job>.result values), SHA (the commit checked).
@@ -12,6 +15,8 @@ three), REBUILD and CHECKS (the needs.<job>.result values), SHA (the commit chec
   python3 scripts/dev/main_red.py              (in main-checks.yml)
   python3 scripts/dev/main_red.py --selftest
 """
+import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -57,6 +62,38 @@ def decide(rebuild, checks, open_issue):
     return "none"   # cancelled or skipped: a newer run took over
 
 
+SET_MARK = "<!-- main-red:set=%s:%s -->"      # failure-set fingerprint, UTC date
+STILL_MARK = "<!-- main-red:still=%s:%s -->"
+MARK_RE = re.compile(r"<!-- main-red:(set|still)=([0-9a-f]{12}):(\d{4}-\d\d-\d\d) -->")
+
+
+def fingerprint(names):
+    return hashlib.sha1("\n".join(sorted(set(names))).encode("utf-8")).hexdigest()[:12]
+
+
+def comment_plan(texts, fp, today):
+    """texts: the issue body, then its comments, oldest first. -> 'new' (the failures changed: retitle and
+    list them), 'still' (the same failures, nothing said yet today) or None (the same, already said today)"""
+    last, said_today = None, False
+    for t in texts:
+        for kind, f, day in MARK_RE.findall(t or ""):
+            if kind == "set":
+                last = f
+            if day == today:
+                said_today = True
+    if last != fp:
+        return "new"
+    return None if said_today else "still"
+
+
+def find_issue(issues):
+    """the open "main is red" issue: the labeled one first, else one with the title (a label taken off)"""
+    mine = [i for i in issues if "pull_request" not in i and (i.get("title") or "").startswith("main is red")]
+    labeled = [i for i in mine if LABEL in {l.get("name") for l in i.get("labels", [])}]
+    pick = sorted(labeled or mine, key=lambda i: i.get("number", 0))
+    return pick[0] if pick else None
+
+
 class GH:
     def __init__(self, token, repo):
         self.token, self.repo = token, repo
@@ -97,8 +134,13 @@ def main():
     run_url = "%s/%s/actions/runs/%s" % (os.environ.get("GITHUB_SERVER_URL", "https://github.com"), repo, run_id)
     rebuild, checks, sha = os.environ.get("REBUILD", ""), os.environ.get("CHECKS", ""), os.environ.get("SHA", "")[:12]
     gh = GH(token, repo)
-    issues = gh.call("GET", "/repos/%s/issues?state=open&labels=%s&per_page=20" % (repo, LABEL)) or []
-    issue = next((i for i in issues if i.get("title", "").startswith("main is red") and "pull_request" not in i), None)
+    issues = []
+    for page in range(1, 6):
+        got = gh.call("GET", "/repos/%s/issues?state=open&per_page=100&page=%d" % (repo, page)) or []
+        issues += got
+        if len(got) < 100:
+            break
+    issue = find_issue(issues)
     what = decide(rebuild, checks, issue)
     print("rebuild: %s, checks: %s, open issue: %s -> %s" % (rebuild, checks, issue and issue["number"], what))
     if what == "none":
@@ -137,16 +179,36 @@ def main():
     if failed_tests:
         lines.append("Failed tests:")
         lines += ["- " + t for t in failed_tests[:30]]
-    body = "\n".join(lines)
+    today = dt.datetime.now(dt.timezone.utc).date().isoformat()
+    fp = fingerprint(names)
+    body = "\n".join(lines) + "\n\n" + SET_MARK % (fp, today)
     try:
         gh.call("POST", "/repos/%s/labels" % repo, {"name": LABEL, "color": "b60205", "description": "the full suite on main failed"})
     except urllib.error.HTTPError as e:
         if e.code != 422:   # 422: the label is there already
             raise
     if issue:
-        gh.call("PATCH", "/repos/%s/issues/%d" % (repo, issue["number"]), {"title": title})
-        gh.call("POST", "/repos/%s/issues/%d/comments" % (repo, issue["number"]), {"body": body})
-        print("updated issue #%d: %s" % (issue["number"], title))
+        n = issue["number"]
+        if LABEL not in {l.get("name") for l in issue.get("labels", [])}:
+            gh.call("POST", "/repos/%s/issues/%d/labels" % (repo, n), {"labels": [LABEL]})
+        comments = []
+        for page in range(1, 11):
+            got = gh.call("GET", "/repos/%s/issues/%d/comments?per_page=100&page=%d" % (repo, n, page)) or []
+            comments += got
+            if len(got) < 100:
+                break
+        plan = comment_plan([issue.get("body") or ""] + [c.get("body") or "" for c in comments], fp, today)
+        if plan == "new":
+            if issue.get("title") != title:
+                gh.call("PATCH", "/repos/%s/issues/%d" % (repo, n), {"title": title})
+            gh.call("POST", "/repos/%s/issues/%d/comments" % (repo, n), {"body": body})
+            print("updated issue #%d, the failures changed: %s" % (n, title))
+        elif plan == "still":
+            gh.call("POST", "/repos/%s/issues/%d/comments" % (repo, n),
+                    {"body": "Still red on %s with the same failures: %s\n\n%s" % (sha or "(none)", run_url, STILL_MARK % (fp, today))})
+            print("issue #%d: still red, same failures (one note a day)" % n)
+        else:
+            print("issue #%d: same failures, already noted today; nothing posted" % n)
     else:
         r = gh.call("POST", "/repos/%s/issues" % repo, {"title": title, "body": body, "labels": [LABEL]})
         print("opened issue #%d: %s" % (r["number"], title))
@@ -168,6 +230,22 @@ def selftest():
     assert decide("success", "success", {"number": 1}) == "close"
     assert decide("success", "success", None) == "none"
     assert decide("success", "cancelled", {"number": 1}) == "none"
+    fp = fingerprint(["b", "a", "a"])
+    assert fp == fingerprint(["a", "b"]) and fp != fingerprint(["a"])
+    first = "body " + SET_MARK % (fp, "2026-10-29")
+    assert comment_plan([first], fp, "2026-10-29") is None, "the same set, already said today"
+    assert comment_plan([first], fp, "2026-10-30") == "still", "the same set, a new day: one note"
+    assert comment_plan([first, "x " + STILL_MARK % (fp, "2026-10-30")], fp, "2026-10-30") is None, "one a day"
+    assert comment_plan([first], fingerprint(["c"]), "2026-10-29") == "new", "a different set"
+    other = fingerprint(["c"])
+    assert comment_plan([first, SET_MARK % (other, "2026-10-29")], fp, "2026-10-29") == "new", "back to an earlier set is a change"
+    assert comment_plan(["an issue opened by hand"], fp, "2026-10-29") == "new"
+    lab = {"name": LABEL}
+    iss = [{"number": 9, "title": "main is red: x", "labels": []}, {"number": 12, "title": "main is red: y", "labels": [lab]},
+           {"number": 3, "title": "main is red: pr", "pull_request": {}, "labels": [lab]}, {"number": 4, "title": "other", "labels": [lab]}]
+    assert find_issue(iss)["number"] == 12, "the labeled one first"
+    assert find_issue(iss[:1])["number"] == 9, "by title when the label was taken off"
+    assert find_issue(iss[2:]) is None, "never a pull request or another title"
     print("main_red selftest passed")
     return 0
 
