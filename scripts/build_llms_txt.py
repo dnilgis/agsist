@@ -101,6 +101,7 @@ PAGES = [
         ("/usda-quick-stats", "USDA Crop Data by State", "yields, acres, production and prices by state for corn, soybeans and wheat, from USDA NASS"),
         ("/yield/iowa", "Yield by Year, by State", "each state's corn and soybean yield by year since 2010, at /yield/<state>"),
         ("/cot", "Fund Positioning (COT)", "weekly CFTC managed-money positioning for 11 ag markets, and whether positioning has predicted price"),
+        ("/ag-stocks", "Ag Stocks and the AGSIST Ag 20", "daily closes of U.S.-listed farm equipment, input, grain, livestock and food companies, their latest SEC reports, and an equal-weight index of 20 of them; not investment advice"),
         ("/tariffs", "Tariff Tracker", "current tariff rates on US corn, soybean, wheat and pork exports"),
     ]),
     ("How big is this crop?", [

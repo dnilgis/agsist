@@ -23,9 +23,11 @@ ribbon's pitch is read once, as it is emptied, and kept there after.
                                               slot id; write data/sponsor-slots.json
     python3 scripts/stamp_rates.py --check    exit 1 on drift, write nothing (scripts/test_rate_card.py runs this)
 
-data/sponsor-slots.json is the list the sign-up form offers (2026-10-07): one
+data/sponsor-slots.json is the list the sign-up form reads (2026-10-07): one
 entry per ribbon, read off the pages themselves, so a page that gains or
-loses a ribbon is offered or withdrawn without anyone editing a list.
+loses a ribbon is offered or withdrawn without anyone editing a list. Since
+Oct 29, 2026 each entry carries the tier it is sold under ("state" with its
+state code, "cashbids", or null for a retired single page slot).
 
 Change a price in data/rate-card.json, run this, commit both.
 """
@@ -88,6 +90,33 @@ def ribbon_slot(inner, attrs):
     return m.group(1), (__import__("html").unescape(pitch) or None)
 
 
+# State slug -> postal code, for the State Sponsor (rate card, Oct 29, 2026).
+STATE_CODES = {
+    "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA", "colorado": "CO",
+    "connecticut": "CT", "delaware": "DE", "florida": "FL", "georgia": "GA", "hawaii": "HI", "idaho": "ID",
+    "illinois": "IL", "indiana": "IN", "iowa": "IA", "kansas": "KS", "kentucky": "KY", "louisiana": "LA",
+    "maine": "ME", "maryland": "MD", "massachusetts": "MA", "michigan": "MI", "minnesota": "MN",
+    "mississippi": "MS", "missouri": "MO", "montana": "MT", "nebraska": "NE", "nevada": "NV",
+    "new-hampshire": "NH", "new-jersey": "NJ", "new-mexico": "NM", "new-york": "NY", "north-carolina": "NC",
+    "north-dakota": "ND", "ohio": "OH", "oklahoma": "OK", "oregon": "OR", "pennsylvania": "PA",
+    "rhode-island": "RI", "south-carolina": "SC", "south-dakota": "SD", "tennessee": "TN", "texas": "TX",
+    "utah": "UT", "vermont": "VT", "virginia": "VA", "washington": "WA", "west-virginia": "WV",
+    "wisconsin": "WI", "wyoming": "WY"}
+
+
+def slot_tier(sid, url):
+    """(tier id, state code) a ribbon is sold under (Oct 29, 2026). A state's cash bids page (and
+    its town pages) and its cash rent page are the State Sponsor; /cash-bids is the Cash Bids
+    Sponsor. Every other single page ribbon is retired: (None, None). It stays on its page,
+    empty, so a state card for that reader still has a place to draw."""
+    parts = [x for x in (url or "").split("/") if x]
+    if sid == "cash-bids" and parts == ["cash-bids"]:
+        return "cashbids", None
+    if len(parts) == 2 and parts[0] in ("cash-bids", "rent") and parts[1] in STATE_CODES:
+        return "state", STATE_CODES[parts[1]]
+    return None, None
+
+
 def slot_entry(rel, text, known):
     m = RIBBON.search(text)
     if not m:
@@ -115,7 +144,11 @@ def slot_entry(rel, text, known):
     # The pitch: off an old ribbon that still carries one, else as kept in
     # data/sponsor-slots.json, else a plain line from the page name.
     pitch = pitch or (known.get(sid) or {}).get("pitch") or ("Your name on the %s page. One category-exclusive slot." % name)
-    return {"id": sid, "page": url or "/", "name": name, "pitch": pitch}
+    tier, st = slot_tier(sid, url)
+    e = {"id": sid, "page": url or "/", "name": name, "pitch": pitch, "tier": tier}
+    if st:
+        e["state"] = st
+    return e
 
 
 def stamp(text, card):
