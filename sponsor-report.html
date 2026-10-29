@@ -1345,7 +1345,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var by = t.price_by_state || {}, hi = {};
     Object.keys(by).forEach(function (k) { (hi[by[k]] = hi[by[k]] || []).push(k); });
     var out = Object.keys(hi).map(function (p) { return '$' + p + ' a month in ' + hi[p].join(', '); });
-    if ((t.opens_soon || []).length) out.push(t.opens_soon.join(', ') + ' opens soon');
+    if ((t.opens_soon || []).length) out.push(t.opens_soon.join(', ') + (t.opens_soon.length > 1 ? ' open soon' : ' opens soon'));
     return out.join('; ');
   }
   function billingSection(d, s) {

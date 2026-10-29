@@ -67,7 +67,8 @@
     var se = S.slots.filter(function (s) { return s.id === slot; })[0];
     /* an older link (tier=page or tier=supporter) lands on the tier its slot is sold under now */
     if (!card(want)) want = se && se.tier ? se.tier : 'state';
-    if (want === 'state' && se && se.state) $('spa-state').value = se.state;
+    /* a link to a held or taken state does not pick it: the first open state stays chosen */
+    if (want === 'state' && se && se.state && stateOf(se.state) && !soon(se.state) && !stateTaken(stateOf(se.state))) $('spa-state').value = se.state;
     var radio = form.querySelector('input[name=tier][value="' + want + '"]');
     if (radio) radio.checked = true;
     loadTowns();

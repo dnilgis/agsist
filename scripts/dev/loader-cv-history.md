@@ -4,6 +4,7 @@ Moved out of the `var CV` comment in components/loader.js on 2026-10-27 (fx/shel
 downloading it on every page. CV is appended as ?v= to header.html, footer.html and analytics.html; bump it
 for any menu or footer change. Newest first. Add a line here with each bump.
 
+- v104 2026-10-29: fx/ratecard (104 assigned by the lead; 103 goes to the land batch, main still showed 102 at merge). Retired page ribbons no longer show Sponsor this page; no menu or footer change
 - v102 2026-10-28: fx/merges2 (Sig approved Oct 22 and 23). Ten pages merged into the page a reader already uses; the menu and footer stop listing them
 - v101 2026-10-27: fx/changemap. Fast Facts What changed this week map (components/changemap.js?v=1, here.js?v=28); no menu or footer change
 - v100 2026-10-27: fx/smallfixes. styles.css?v=27 (phone side gutter for the Made by line and the Next block); no menu or footer change

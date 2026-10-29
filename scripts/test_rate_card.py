@@ -28,7 +28,7 @@ SUPPORTERS = ROOT / "data" / "supporters.json"
 PITCH = ROOT / "sponsor.html"
 # Every page that sells a slot or quotes the card (Oct 29, 2026).
 SELLING = ("sponsor.html", "sponsor-apply.html", "sponsor-kit.html")
-STATE_NAMES = {"IL": "Illinois", "MN": "Minnesota", "WI": "Wisconsin", "TX": "Texas"}
+STATE_NAMES = {"IL": "Illinois", "MN": "Minnesota", "WI": "Wisconsin", "TX": "Texas", "CA": "California", "NV": "Nevada"}
 # Plain numbers the pages may print that are not audience figures: terms (5 sponsors, 24 months,
 # 12 for 10, day 30, 28 days, 50 words, 250 KB), never a count of readers or views.
 TERMS = {"5", "10", "12", "24", "28", "30", "50", "250"}
@@ -105,10 +105,14 @@ def main():
             check(isinstance(p, int) and p > st["price_month"], "%s pays more than the base state price" % code, p)
             check(bool(re.search(r"\$%d\s*(?:/\s*mo|\s*(?:per|a)\s+month)" % p, pitch)), "$%d (%s) appears on sponsor.html" % (p, code))
             check(STATE_NAMES[code] in pitch, "%s is named on sponsor.html" % STATE_NAMES[code])
-        for code in st.get("opens_soon") or []:
-            check(code in (st.get("price_by_state") or {}), "%s, opening soon, has its price on the card" % code)
-            check(re.search(r"%s opens soon" % STATE_NAMES[code], pitch) is not None,
-                  "sponsor.html says %s opens soon" % STATE_NAMES[code])
+        soon = st.get("opens_soon") or []
+        m_ = re.search(r"([A-Z][a-z]+(?: [A-Z][a-z]+)*(?:, [A-Z][a-z]+(?: [A-Z][a-z]+)*)*(?: and [A-Z][a-z]+(?: [A-Z][a-z]+)*)?) opens? soon", pitch)
+        said = set(re.split(r", | and ", m_.group(1))) if m_ else set()
+        check(said == {STATE_NAMES.get(c, c) for c in soon}, "sponsor.html names exactly the states that open soon", (said, soon))
+        # Oct 29, 2026 (Sig, option A): a state a state-targeted test runs in is held, not sold.
+        geo_ = json.loads((ROOT / "data" / "geo-sponsors.json").read_text())
+        held = {c for e in geo_.get("sponsors") or [] if e.get("active") is True for c in e.get("states") or []}
+        check(held <= set(soon), "every state an active geo test runs in is held on the card (opens_soon)", (sorted(held), soon))
 
     print("\nthe terms on the card are the terms on the page")
     for k in ("trial", "day30", "terms", "prepay", "paperwork", "insurance"):

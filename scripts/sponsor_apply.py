@@ -189,7 +189,12 @@ def plan(apps, now_ms, today, sold_pages, supporters, card=None, slots=()):
         elif st == "approved":
             ct = card_tier(a)
             state, want = state_slots(a.get("slot"), slots) if ct == "state" else (None, [a.get("slot")])
-            if ct not in SELF_SERVE or (ct == "state" and (not state or opens_soon(card, state))):
+            if ct == "state" and opens_soon(card, state):
+                # HELD (Oct 29, 2026, Sig option A): California, Nevada and Texas are not sold
+                # while the Root Lot test runs there. Refused here, told to Sig, nothing written.
+                if (a.get("notified") or 0) < 2:
+                    out.append(("held", a))
+            elif ct not in SELF_SERVE or (ct == "state" and not state):
                 if (a.get("notified") or 0) < 2:
                     out.append(("daily", a))
             elif any(slot_owner(sold_pages, x) not in (None, aid) for x in want):
@@ -244,6 +249,8 @@ def go_live(a, logo, card, start, root=REPO, slots=None):
     if slots is None:
         slots = json.loads((root / "data" / "sponsor-slots.json").read_text()).get("slots", [])
     state, want = state_slots(a["slot"], slots) if ct == "state" else (None, [a["slot"]])
+    if ct == "state" and opens_soon(card, state):
+        raise ValueError("%s is held (opens soon); nothing is written" % state)
     price = rate(card, ct, state)
     p = root / "data" / "page-sponsors.json"
     d = json.loads(p.read_text())
@@ -484,6 +491,12 @@ def emails_for(action, a, base, secret, card, today, sig, slots=()):
             "You approved %s for %s. That one is set up by hand:" % (a["company"], what(a))] + ad_lines(a) + [
             "Contact: %s, %s%s." % (a.get("contact") or "?", a["email"], (", " + a["phone"]) if a.get("phone") else ""),
             "Nothing has gone live and the applicant has not been told anything yet."]))]
+    if action == "held":
+        st = state_slots(a.get("slot"), slots)[0]
+        return [(sig, dict(subject="Held: %s, %s is not sold yet" % (a["company"], st), paras=[
+            "You approved %s for the State Sponsor in %s, but %s is held while the state-targeted test runs there. Nothing went live and the applicant has not been told anything." % (a["company"], st, st),
+            "Decline it, or keep it for the day %s opens. Contact: %s." % (st, a["email"])],
+            links=[("Decline", dec("decline"))]))]
     if action == "clash":
         return [(sig, dict(subject="Can't put %s live: %s is taken" % (a["company"], a["slot"]), paras=[
             "You approved %s for /%s, but another sponsor already holds that page. Nothing changed." % (a["company"], a["slot"]),
@@ -596,7 +609,7 @@ def main():
                 mark(a, m=1)
             elif action == "notify":
                 mark(a, notified=1)
-            elif action in ("daily", "clash"):
+            elif action in ("daily", "clash", "held"):
                 mark(a, notified=2)
             elif action == "declined":
                 mark(a, m=2)
@@ -633,12 +646,13 @@ def selftest():
                           "logo_len": 0}, **k)
     empty_sold, empty_sup = {"slots": {}}, {"cap": 6, "supporters": []}
     card = {"tiers": [{"id": "daily", "price_month": 149}, {"id": "cashbids", "price_month": 49},
-                      {"id": "state", "price_month": 29, "price_by_state": {"WI": 49, "TX": 49}, "opens_soon": ["TX"]},
+                      {"id": "state", "price_month": 29, "price_by_state": {"WI": 49, "TX": 49}, "opens_soon": ["CA", "NV", "TX"]},
                       {"id": "elevator", "price_month": 19}]}
     slots = [{"id": "cash-bids", "tier": "cashbids"}, {"id": "spray", "tier": None},
              {"id": "cash-bids-wisconsin", "tier": "state", "state": "WI"}, {"id": "rent-wi", "tier": "state", "state": "WI"},
              {"id": "cash-bids-iowa", "tier": "state", "state": "IA"}, {"id": "rent-ia", "tier": "state", "state": "IA"},
-             {"id": "cash-bids-texas", "tier": "state", "state": "TX"}, {"id": "rent-tx", "tier": "state", "state": "TX"}]
+             {"id": "cash-bids-texas", "tier": "state", "state": "TX"}, {"id": "rent-tx", "tier": "state", "state": "TX"},
+             {"id": "rent-ca", "tier": "state", "state": "CA"}, {"id": "rent-nv", "tier": "state", "state": "NV"}]
     P = lambda apps, sold=empty_sold: [x[0] for x in plan(apps, now_ms, today, sold, empty_sup, card, slots)]
 
     print("planning")
@@ -652,7 +666,9 @@ def selftest():
        and card_tier(A(tier="supporter", slot="footer")) is None)
     ck("approved Cash Bids goes live", P([A(status="approved")]) == ["golive"])
     ck("approved State Sponsor goes live", P([A(status="approved", slot="cash-bids-wisconsin")]) == ["golive"])
-    ck("a state that opens soon (TX) is handed to Sig, never auto-live", P([A(status="approved", slot="rent-tx")]) == ["daily"])
+    ck("California, Nevada and Texas are held: refused, told to Sig, never auto-live",
+       [P([A(status="approved", slot=x)]) for x in ("rent-ca", "rent-nv", "rent-tx", "cash-bids-texas")] == [["held"]] * 4)
+    ck("held is said once", P([A(status="approved", slot="rent-ca", notified=2)]) == [])
     ck("approved daily is handed to Sig, never auto-live", P([A(status="approved", tier="daily")]) == ["daily"])
     ck("a Featured elevator is handed to Sig, never auto-live", P([A(status="approved", slot="fe-wi-cadott")]) == ["daily"])
     ck("a retired page slot or Supporter is handed to Sig, never auto-live",
@@ -719,6 +735,13 @@ def selftest():
         ck("a State Sponsor's report entry holds every ribbon of its state, and its state",
            len(we) == 1 and we[0]["page_slots"] == ["cash-bids-wisconsin", "rent-wi"] and we[0]["billing"]["state"] == "WI"
            and we[0]["regions"] == ["WI"], we)
+        for x in ("rent-ca", "rent-nv", "cash-bids-texas"):
+            try:
+                go_live(A(id="0000000000aa", slot=x), "", card, date(2026, 10, 7), root)
+                ck("a held state is never written (%s)" % x, False)
+            except ValueError:
+                ck("a held state is never written (%s)" % x, x not in json.loads((root / "data" / "page-sponsors.json").read_text())["slots"]
+                   and not any(e.get("app") == "0000000000aa" for e in json.loads((root / "data" / "sponsors.json").read_text())["sponsors"]))
         try:
             go_live(A(slot="spray"), "", card, date(2026, 10, 7), root)
             ck("a retired slot is never written", False)
@@ -765,6 +788,9 @@ def selftest():
     ck("a Wisconsin State Sponsor is quoted $49", any("$49 a month" in p for p in em[0][1]["paras"]) and "State Sponsor" in em[0][1]["subject"])
     em = emails_for("notify", A(status="confirmed", slot="spray"), "https://w.dev", "sec", card, today, "sig@x.com", slots)
     ck("Sig hears that a retired slot is no longer sold", any("no longer sold" in p for p in em[0][1]["paras"]))
+    em = emails_for("held", A(status="approved", slot="rent-nv"), "https://w.dev", "sec", card, today, "sig@x.com", slots)
+    ck("a held state's email goes to Sig only and says nothing went live",
+       len(em) == 1 and em[0][0] == "sig@x.com" and "NV" in em[0][1]["subject"] and any("Nothing went live" in p for p in em[0][1]["paras"]))
     em = emails_for("freeending", A(status="live", start="2026-09-10"), "https://w.dev", "sec", card, today, "sig@x.com")
     ck("the day-30 email asks yes or no, and no reply owes nothing",
        any("yes or no" in p for p in em[0][1]["paras"]) and any("No reply means the ad comes down and nothing is owed" in p for p in em[0][1]["paras"]))
