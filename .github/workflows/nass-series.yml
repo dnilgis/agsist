@@ -55,3 +55,21 @@ jobs:
             sleep $((RANDOM % 4 + 2))
           done
           echo "Failed to push after 5 attempts."; exit 1
+
+      # Oct 29 (god's-eye bet 5): final state yields, corn and soybeans, every year Quick Stats
+      # has, to the private raw branch at history/nass-yield/ for the re-test engine's
+      # ratings-to-yield specs (scripts/backfill_nass_yield.py: about four calls; the first
+      # pull is history-backfill.yml source=nass-yield). The 16th of each month catches
+      # January's final yields with no new schedule. After the commit, and it never fails the run.
+      - name: State yield history to the raw branch
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          bash scripts/pull_raw.sh history/nass-yield/manifest.json || true
+          python scripts/backfill_nass_yield.py || { echo "::warning::state yield history not fetched"; exit 0; }
+          if ls history/nass-yield/*.csv.gz >/dev/null 2>&1; then
+            bash scripts/push_raw.sh "nass yield history" history/nass-yield
+          fi
