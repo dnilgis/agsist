@@ -197,10 +197,15 @@ STATES.update({
     },
     "NJ": {
         "name": "New Jersey", "fips": "34",
-        "probe_only": "Division of Taxation SR-1A sales file (fixed width, layout published); saved to find the file and read the layout first",
-        "source": "New Jersey Division of Taxation, SR-1A sales data", "short": "New Jersey SR-1A sale",
-        "pages": [],
-        "links": [], "terms": "layout public; where the data file is posted not confirmed; terms not read yet",
+        # Built (Oct 29): nj_table reads the SR-1A deed files and joins each deed's lots to the MOD-IV 2026
+        # assessment list for acres and property class (fetch_nj, nj_join).
+        "source": "New Jersey Division of Taxation, SR-1A deed abstracts and the MOD-IV 2026 assessment list",
+        "short": "New Jersey SR-1A deed",
+        "pages": [],     # the probe saves the page itself (PROBE_ONLY_DOCS); the files are named in NJ_SALES and NJ_MODIV
+        "links": [{"t": "New Jersey Division of Taxation statistical data (SR-1A sales, MOD-IV)", "url": "https://www.nj.gov/treasury/taxation/lpt/statdata.shtml"}],
+        "since_note": "New Jersey's SR-1A files on the Division's page start with the deeds for the 2020 table (recorded from mid-2018); older deeds are with the county clerk.",
+        "terms": "free download, no login, posted by the NJ Division of Taxation on its public Statistical Information page; deeds and the assessment list are public records (N.J.S.A. 47:1A, the Open Public Records Act); no written reuse terms on the page",
+        "max_mb": 4,
     },
     "CT": {
         "name": "Connecticut", "fips": "09",
@@ -583,7 +588,7 @@ def build(st, recs, gaz, now, prior=None, months=None):
     # Illinois rows keep it too (2026-10-23): the monthly land sale email lists sales by the month they
     # were recorded (scripts/land_alert.py), and Field Scout shows it as "Recorded (filed)".
     # Vermont rows keep the date the town recorded the deed (TownDteRec), the month the land sale email lists by.
-    rec = st in ("WI", "IL", "VT") and any(r.get("rec") for r in recs)
+    rec = st in ("WI", "IL", "VT", "NJ") and any(r.get("rec") for r in recs)
     cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else []) + (["rec"] if rec else [])
     index, total, files = [], 0, []
     for fips, rs in sorted(by.items()):
@@ -1593,6 +1598,490 @@ def fetch_vt(dest):
     return dest
 
 
+# ---------------------------------------------------------------- New Jersey (Oct 29, 2026)
+# SR-1A: every deed the county boards of taxation send the Division of Taxation, one fixed-width line of 663
+# characters (SR1Afilelayout.pdf). Files by the year of the equalization table they feed (Sales2026 holds deeds
+# recorded from mid-2025); YTD is the current year so far. MOD-IV: the 2026 assessment list, one file per county,
+# 700 characters a line (modivlayout.pdf). Both are on the Division's Statistical Information page. The sandbox
+# cannot open nj.gov; the land-data run downloads them and keeps the dated copies on the raw branch.
+NJ_SALES = ["https://www.nj.gov/treasury/taxation/lpt/statdata/Sales%d.zip" % y for y in range(2020, 2027)] + \
+           ["https://www.nj.gov/treasury/taxation/lpt/statdata/YTDSR1A2026.zip"]
+NJ_MODIV = "https://www.nj.gov/treasury/taxation/pdf/lpt/modiv-2026.zip"
+NJ_SR1A_LEN, NJ_MODIV_LEN = 663, 700
+# SR1A layout, 1-based start and end (inclusive). Names and addresses are read only where named here: the
+# street, city and ZIP of either party never are.
+NJ_SR = {"county": (1, 2), "district": (3, 4), "untype": (34, 34), "nu": (35, 37), "price": (38, 46), "verified": (47, 55),
+         "rtf_exempt": (98, 98), "serial": (99, 105), "grantor": (110, 144), "grantee": (204, 238), "book": (329, 333),
+         "page": (334, 338), "deed": (339, 344), "recorded": (345, 350), "block": (351, 355), "bsuf": (356, 359),
+         "lot": (360, 364), "lsuf": (365, 368), "etc": (369, 369), "qual_codes": (620, 624), "cls": (627, 629)}
+NJ_ADDL = [(370 + 50 * i, 378 + 50 * i, 379 + 50 * i, 387 + 50 * i, 388 + 50 * i, 392 + 50 * i) for i in range(5)]   # block, lot, qualifier
+# MOD-IV layout: county-district, block, lot, qualifier, class, calculated acreage (5.4 digits), improvement value
+NJ_MD = {"cd": (1, 4), "block": (5, 13), "lot": (14, 22), "qual": (23, 33), "cls": (56, 58), "acres": (119, 127), "imp": (430, 438)}
+NJ_FARM = ("3A", "3B")       # 3A farm (regular): the farmhouse and its lot; 3B farm (qualified): farmland-assessed land
+# Our class codes, so the one land rule reads NJ's classes: 3B farmland 4; 3A farm regular, the farmhouse, 4 and 1;
+# 1 vacant land 5; 2 residential 1; 4A commercial 2; 4B industrial 3; 4C apartments 1; 15 exempt X.
+NJ_CLS = {"3B": ["4"], "3A": ["4", "1"], "1": ["5"], "2": ["1"], "4A": ["2"], "4B": ["3"], "4C": ["1"]}
+# MOD-IV qualifiers that are parts of one assessed lot (the farmland-assessed part, a building on its own line);
+# a condominium unit (C....) or any other qualifier is its own parcel and only joins when the deed names it.
+NJ_LOT_PARTS = re.compile(r"^(|QFARM|QF|FARM|BLDG|B)$")
+# The SR-1A non-usable categories (N.J.A.C. 18:12-1.1(a); the Division's "Guidelines for use of 33 Nonusable
+# Categories") mapped onto the one land rule. "out" codes stay listed with their words and never reach a middle:
+# the rule reads the words (RELATED PARTIES, QUIT, SHERIFF, ... or NON-USABLE). "kept" codes make a deed unusable
+# for the state's assessment-ratio study only (the assessment, not the sale, is off), so the sale stays a market
+# sale; 33 is every sale of farmland-assessed land, the very sales these pages are for. "acres" codes are a sale of
+# part of an assessed lot or of a lot in two districts: today's lot acres are not what sold, so acres are not stated.
+NJ_NU = {
+    "01": ("out", "Related Parties (immediate family)"),
+    "02": ("out", "Gift (love and affection)"),
+    "03": ("out", "Related Parties (a company and its owners or affiliates)"),
+    "04": ("out", "Correction or convenience deed"),
+    "05": ("kept", "deed outside the year the state studied"),
+    "06": ("acres", "part of the assessed lot (a split or apportionment)"),
+    "07": ("kept", "improved after the assessment"),
+    "08": ("out", "Undivided interest"),
+    "09": ("out", "Subject to a life estate, less than full interest"),
+    "10": ("kept", "sale by an executor, administrator, trustee or guardian"),
+    "11": ("out", "Judicial sale (partition)"),
+    "12": ("out", "Sheriff's sale"),
+    "13": ("out", "Bankruptcy, receivership or liquidation sale (court order)"),
+    "14": ("out", "Quit claim or doubtful title"),
+    "15": ("out", "Non-usable: to or from a government body"),
+    "16": ("acres", "lot assessed in more than one district"),
+    "17": ("out", "Non-usable: to or from a charitable or religious body"),
+    "18": ("out", "Deed in lieu of foreclosure to a lender"),
+    "19": ("kept", "assessment affected by damage or contamination"),
+    "20": ("out", "Non-usable: railroad or utility right of way"),
+    "21": ("out", "Non-usable: price-restricted affordable housing"),
+    "22": ("out", "Exchange for other property"),
+    "23": ("out", "Non-usable: business sold with equipment or goodwill"),
+    "24": ("kept", "zoning or approvals changed after the assessment"),
+    "25": ("out", "Non-usable: consideration under $100"),
+    "26": ("out", "Non-usable: not between a willing buyer and willing seller"),
+    "27": ("kept", "sold before a revaluation took effect"),
+    "28": ("out", "Sale and lease back"),
+    "29": ("kept", "assessment set on appeal"),
+    "30": ("out", "Non-usable: category 30"),
+    "31": ("out", "First sale after a lender's foreclosure"),
+    "32": ("kept", "a building left out of the assessment"),
+    "33": ("kept", "farmland-assessed or exempt property"),
+}
+NJ_MUNIS_FILE = os.path.join(ROOT, "scripts", "land_nj_munis.json")
+
+
+def nj_cut(line, a, b):
+    return line[a - 1:b]
+
+
+def nj_part(s):
+    """A block or lot piece as both files write it: '00034', '34 ' and '34' are one; '  01' and '01  ' one suffix."""
+    s = str(s or "").strip().upper()
+    return s.lstrip("0") or ("0" if s else "")
+
+
+def nj_unit(cd, block, bsuf, lot, lsuf):
+    """One assessed lot: county-district, block and lot with their suffixes."""
+    return (cd, nj_part(block), nj_part(bsuf), nj_part(lot), nj_part(lsuf))
+
+
+def nj_day(s):
+    """SR-1A dates are YYMMDD."""
+    m = re.match(r"^(\d{2})(\d{2})(\d{2})$", str(s or "").strip())
+    if not m or m[0] == "000000":
+        return None
+    return parse_date("%d-%s-%s" % (2000 + int(m[1]) if int(m[1]) < 70 else 1900 + int(m[1]), m[2], m[3]))
+
+
+def nj_county_fips(cc):
+    """County code 01 Atlantic to 21 Warren, alphabetical, as the odd FIPS codes 34001 to 34041."""
+    try:
+        n = int(cc)
+    except ValueError:
+        return None
+    return "34%03d" % (2 * n - 1) if 1 <= n <= 21 else None
+
+
+def nj_lines(name, blob):
+    """(member, line) for every line of a zip of fixed-width text files, or of one text file."""
+    if name.lower().endswith(".zip"):
+        z = zipfile.ZipFile(io.BytesIO(blob) if isinstance(blob, (bytes, bytearray)) else blob)
+        for n in z.namelist():
+            if not n.lower().endswith(".txt"):
+                continue
+            with z.open(n) as fh:
+                for raw in fh:
+                    yield n, raw.decode("latin-1").rstrip("\r\n")
+        return
+    for raw in (blob.decode("latin-1") if isinstance(blob, (bytes, bytearray)) else blob).splitlines():
+        yield name, raw.rstrip("\r\n")
+
+
+def nj_sales(files, rep):
+    """files: [(name, blob)] of SR-1A zips, oldest first. Each deed once: a deed in two files (the yearly files
+    overlap) keeps its copy from the newest file. Returns a list of dicts."""
+    best = {}
+    for name, blob in files:
+        n = bad = 0
+        for member, line in nj_lines(name, blob):
+            if not line.strip():
+                continue
+            if len(line) != NJ_SR1A_LEN:
+                bad += 1
+                continue
+            n += 1
+            r = {k: nj_cut(line, a, b) for k, (a, b) in NJ_SR.items()}
+            r["addl"] = [(nj_cut(line, a, b), nj_cut(line, c, d), nj_cut(line, e, f).strip().upper()) for a, b, c, d, e, f in NJ_ADDL]
+            r["cd"] = r["county"] + r["district"]
+            r["file"] = name
+            k = (r["cd"], r["serial"].strip(), r["book"].strip(), r["page"].strip(), r["block"].strip(), r["lot"].strip(), r["deed"])
+            best[k] = r
+        rep["SR-1A %s" % name] = "%d deeds" % n + (", %d lines not %d characters" % (bad, NJ_SR1A_LEN) if bad else "")
+        if n and bad > 0.01 * n:
+            raise ValueError("%s: %d of %d lines are not the SR-1A layout" % (name, bad, n + bad))
+    return list(best.values())
+
+
+def nj_units(r):
+    """The assessed lots one deed names: the main lot, then up to five more (block, lot, qualifier)."""
+    out = [(nj_unit(r["cd"], r["block"], r["bsuf"], r["lot"], r["lsuf"]), "")]
+    for b, l, q in r["addl"]:
+        if not b.strip() and not l.strip():
+            continue
+        # an added block or lot is 9 characters: 5 for the number, 4 for the suffix, as on the main lot
+        out.append((nj_unit(r["cd"], b[:5], b[5:], l[:5], l[5:]), q))
+    # a qualifier that is a part of one lot (QFARM, BLDG) names the lot again, not another parcel
+    out = [(u, "" if NJ_LOT_PARTS.match(q) else q) for u, q in out]
+    seen, uniq = set(), []
+    for u in out:
+        if u not in seen:
+            seen.add(u)
+            uniq.append(u)
+    return uniq
+
+
+def nj_modiv(name, blob, want, rep):
+    """{unit: [(qualifier, class, acres, improvement value)]} for every MOD-IV line whose lot a kept deed names
+    (want) or whose class is a farm class."""
+    out, n, bad = {}, 0, 0
+    for member, line in nj_lines(name, blob):
+        if not line.strip():
+            continue
+        if len(line) != NJ_MODIV_LEN:
+            bad += 1
+            continue
+        n += 1
+        g = {k: nj_cut(line, a, b) for k, (a, b) in NJ_MD.items()}
+        u = nj_unit(g["cd"], g["block"][:5], g["block"][5:], g["lot"][:5], g["lot"][5:])
+        cls = g["cls"].strip().upper()
+        if u not in want and cls not in NJ_FARM:
+            continue
+        ac = parse_num(g["acres"])
+        imp = parse_num(g["imp"])
+        out.setdefault(u, []).append((g["qual"].strip().upper(), cls, ac / 10000.0 if ac else 0.0, imp or 0))
+    rep["MOD-IV lines"] = n
+    if bad:
+        rep["MOD-IV lines not %d characters" % NJ_MODIV_LEN] = bad
+    if n and bad > 0.01 * n:
+        raise ValueError("MOD-IV: %d of %d lines are not the layout" % (bad, n + bad))
+    return out
+
+
+def nj_join(r, md):
+    """(acres or None, our class codes, how many lots, every lot found). The acres are today's lots (MOD-IV 2026),
+    summed over every lot the deed names; the farmland-assessed part (QFARM) and a building line of a named lot
+    are parts of it. None when any lot is not on today's list or has no acreage."""
+    units = nj_units(r)
+    cls = list(NJ_CLS.get(r["cls"].strip().upper(), []))
+    total, found = 0.0, True
+    for u, q in units:
+        recs = md.get(u) or []
+        parts = [x for x in recs if x[0] == q] if q and not NJ_LOT_PARTS.match(q) else [x for x in recs if NJ_LOT_PARTS.match(x[0])]
+        if not parts:
+            found = False
+            continue
+        a = sum(x[2] for x in parts)
+        if a <= 0:
+            found = False
+        total += a
+        for x in parts:
+            cls += NJ_CLS.get(x[1], ["X"] if x[1].startswith("15") else [])
+    cls = list(dict.fromkeys(cls))
+    cls.sort(key=lambda c: (c != "4", c))
+    return (round(total, 4) if found and total > 0 else None), cls, len(units), found
+
+
+def nj_towns(gz_blob):
+    """{county fips: {(type, letters): Census name}} for New Jersey's county subdivisions (its 564 municipalities)."""
+    z = zipfile.ZipFile(io.BytesIO(gz_blob))
+    rd = csv.reader(io.StringIO(z.read(z.namelist()[0]).decode("latin-1")), delimiter="\t")
+    hdr = [h.strip() for h in next(rd)]
+    ix = {h: i for i, h in enumerate(hdr)}
+    out = {}
+    for r in rd:
+        g = r[ix["GEOID"]].strip()
+        if g.startswith("34") and len(g) == 10:
+            nm = r[ix["NAME"]].strip()
+            out.setdefault(g[:5], {})[nj_name_key(nm)] = nm
+    return out
+
+
+NJ_ABBR = {"E": "EAST", "W": "WEST", "N": "NORTH", "NO": "NORTH", "S": "SOUTH", "SO": "SOUTH", "MT": "MOUNT", "PT": "POINT",
+           "HGHTS": "HEIGHTS", "HTS": "HEIGHTS", "RIV": "RIVER", "TWNSHP": "", "ST": "SAINT"}
+NJ_TYPES = {"TWP": "township", "TWNSHP": "township", "TOWNSHIP": "township", "TW": "township", "BORO": "borough", "BOR": "borough",
+            "BOROUGH": "borough", "CITY": "city", "TOWN": "town", "VILLAGE": "village"}
+
+
+def nj_name_key(name):
+    """(type, letters) of a municipality name, the Census way ('Woodstown borough') or the Division's ('WOODSTOWN BORO')."""
+    w = [x for x in re.split(r"[\s.'-]+", str(name or "").upper()) if x]
+    typ = ""
+    while w and w[-1] in NJ_TYPES and len(w) > 1:
+        typ = typ or NJ_TYPES[w[-1]]
+        w.pop()
+    w = [NJ_ABBR.get(x, x) for x in w]
+    return typ, re.sub(r"[^A-Z]", "", "".join(w))
+
+
+def nj_town(fips, code, towns, munis):
+    """The Census name of a district, or None. Exact type and letters first, then the letters alone when one town
+    in the county has them, then a unique Census name the Division's cut-short name starts (UPPER SADDLE RIV)."""
+    nm = munis.get(code)
+    T = towns.get(fips) or {}
+    if not nm or not T:
+        return None, nm
+    typ, base = nj_name_key(nm)
+    if (typ, base) in T:
+        return T[(typ, base)], nm
+    hit = [v for (t, b), v in T.items() if b == base]
+    if len(hit) == 1:
+        return hit[0], nm
+    hit = [v for (t, b), v in T.items() if b.startswith(base) and len(base) >= 6 and (not typ or t == typ)]
+    return (hit[0], nm) if len(hit) == 1 else (None, nm)
+
+
+def nj_table(sales, md, towns, rep=None):
+    """sales: nj_sales; md: nj_modiv. One table with our column names, farm deeds only: a deed whose class on the
+    SR-1A (the class when it sold) or any lot it names on today's list is 3A or 3B. rep counts the join and what
+    was left out."""
+    rep = rep if rep is not None else {}
+    munis = json.load(open(NJ_MUNIS_FILE))["munis"]
+    names = {v["fips"]: v["name"] for v in county_index("NJ").values()}
+    yield ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
+           "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "FLAGS"]
+    kept = joined = 0
+    nu_seen, untown = {}, set()
+    for r in sales:
+        acres, cls, nlots, found = nj_join(r, md)
+        sr_cls = r["cls"].strip().upper()
+        lot_cls = {x[1] for u, q in nj_units(r) for x in md.get(u) or []}
+        if sr_cls not in NJ_FARM and not (lot_cls & set(NJ_FARM)):
+            rep["not farm"] = rep.get("not farm", 0) + 1
+            continue
+        fips = nj_county_fips(r["county"])
+        county = names.get(fips or "")
+        if not county:
+            rep["dropped county not read"] = rep.get("dropped county not read", 0) + 1
+            continue
+        kept += 1
+        joined += found
+        nu = r["nu"].strip().zfill(2) if r["nu"].strip() else ""
+        how, words = NJ_NU.get(nu, ("out", "Non-usable: category %s" % nu)) if nu else ("", "")
+        if nu:
+            nu_seen[nu] = nu_seen.get(nu, 0) + 1
+        conv = ["Deed"]
+        flags = []
+        if nu and how == "out":
+            conv.append(words)
+            if nu in ("08", "09"):
+                flags.append("less than full interest")
+        elif nu:
+            flags.append("state ratio study code %s: %s" % (nu, words))
+        if how == "acres" or r["etc"].strip():
+            acres = None          # part of a lot, a lot in two districts, or more lots than the file lists
+        flags.append("with buildings" if any(c in ("1", "2", "3", "7") for c in cls) else "land only")
+        if not found:
+            flags.append("not on the 2026 assessment list")
+        town, njname = nj_town(fips, r["cd"], towns, munis)
+        if not town:
+            untown.add(r["cd"])
+        price = parse_num(r["price"])
+        b = nj_part(r["block"]) + ("." + nj_part(r["bsuf"]) if nj_part(r["bsuf"]) else "")
+        lt = nj_part(r["lot"]) + ("." + nj_part(r["lsuf"]) if nj_part(r["lsuf"]) else "")
+        doc = "%s-%s" % (r["cd"], r["serial"].strip().lstrip("0") or "%s-%s" % (r["book"].strip(), r["page"].strip()))
+        yield [doc, nj_day(r["deed"]) or "", "" if price is None else "%d" % price, "" if not acres else "%g" % round(acres, 4),
+               " ".join(cls), ", ".join(conv), "%s B %s L %s" % (r["cd"], b, lt), (town or (njname or "")).upper(), county, "",
+               nj_person(r["grantor"]), nj_person(r["grantee"]), "1" if r["rtf_exempt"].strip().upper() == "E" else "",
+               str(nlots), nj_day(r["recorded"]) or "", "; ".join(flags)]
+    rep["farm deeds"] = kept
+    rep["join"] = "%d of %d farm deeds found every lot on the 2026 assessment list (%.1f%%)" % (joined, kept, 100.0 * joined / kept if kept else 0)
+    rep["non-usable codes"] = ", ".join("%s %d" % kv for kv in sorted(nu_seen.items())) or "none"
+    if untown:
+        rep["districts not matched to a Census town"] = ", ".join(sorted(untown))
+
+
+def nj_person(s):
+    """A party's name as written, never a piece that reads like a street address."""
+    s = clean(s, 80)
+    return "" if not s or VT_STREET.search(s) else s
+
+
+def fetch_nj(dest_dir):
+    """The SR-1A yearly files and the MOD-IV list, saved under dest_dir with today's date (the SR-1A zips whole,
+    for the raw branch; MOD-IV, 270 MB, is read from a temporary file and only its farm lines are kept).
+    Returns ([(name, path)] of SR-1A files, MOD-IV path)."""
+    os.makedirs(dest_dir, exist_ok=True)
+    day = time.strftime("%Y-%m-%d", time.gmtime())
+    got = []
+    for u in NJ_SALES:
+        nm = os.path.basename(urllib.parse.urlparse(u).path)
+        try:
+            blob = fetch(u, timeout=600)
+        except Exception as e:  # noqa: BLE001
+            if "YTD" in nm:
+                print("::notice::NJ %s not read (%s); the yearly files are" % (nm, e))
+                continue
+            raise
+        p = os.path.join(dest_dir, "%s-%s" % (day, nm))
+        with open(p, "wb") as f:
+            f.write(blob)
+        got.append((nm, p))
+    import tempfile
+    tmp = os.path.join(tempfile.gettempdir(), "nj-modiv-%s.zip" % day)
+    req = urllib.request.Request(NJ_MODIV, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=900) as r, open(tmp, "wb") as f:
+        while True:
+            b = r.read(1 << 20)
+            if not b:
+                break
+            f.write(b)
+    return got, tmp
+
+
+def nj_build_tables(sr_files, modiv_path, gz_blob, rep, keep_dir=None):
+    """Read the SR-1A files and MOD-IV; returns the table rows (header first). keep_dir: where the farm lines of
+    MOD-IV go (gzip, for the raw branch)."""
+    sales = nj_sales([(n, open(p, "rb").read()) for n, p in sr_files], rep)
+    want = set()
+    for r in sales:
+        if r["cls"].strip().upper() in NJ_FARM:
+            want.update(u for u, q in nj_units(r))
+    with open(modiv_path, "rb") as fh:
+        md = nj_modiv("modiv-2026.zip", fh, want, rep)
+    if keep_dir:
+        import gzip
+        os.makedirs(keep_dir, exist_ok=True)
+        with gzip.open(os.path.join(keep_dir, "%s-modiv-2026-farm-lots.json.gz" % time.strftime("%Y-%m-%d", time.gmtime())), "wt") as f:
+            json.dump([[list(u), v] for u, v in md.items()], f, separators=(",", ":"))
+    return list(nj_table(sales, md, nj_towns(gz_blob), rep))
+
+
+def nj_line(fields, n, layout):
+    """A made-up fixed-width line: fields {name: text} placed at the layout's columns (selftest only)."""
+    b = [" "] * n
+    for k, v in fields.items():
+        a, e = layout[k] if isinstance(k, str) else k
+        v = str(v)
+        assert len(v) <= e - a + 1, (k, v)
+        b[a - 1:a - 1 + len(v)] = list(v)
+    return "".join(b)
+
+
+def nj_selftest(ck):
+    """New Jersey (Oct 29): SR-1A deeds joined to MOD-IV lots, made-up lines in the published layouts."""
+    def sr(**kw):
+        f = {"county": "17", "district": "01", "untype": "U", "price": "%09d" % kw.pop("price", 400000), "rtf_exempt": " ",
+             "serial": "%07d" % kw.pop("serial", 1), "grantor": "TEST SELLER A", "grantee": "TEST BUYER B", "book": "00123",
+             "page": "00045", "deed": kw.pop("deed", "250314"), "recorded": kw.pop("recorded", "250402"), "block": "00003",
+             "lot": "00036", "cls": "3B "}
+        addl = kw.pop("addl", [])
+        f.update(kw)
+        line = nj_line(f, NJ_SR1A_LEN, NJ_SR)
+        for i, (bl, lt, q) in enumerate(addl):
+            a, b, c, d, e, g = NJ_ADDL[i]
+            line = line[:a - 1] + bl.ljust(9) + lt.ljust(9) + q.ljust(5) + line[g:]
+        return line
+
+    def md(cd, bl, lt, q, cls, ac, imp=0):
+        return nj_line({"cd": cd, "block": bl.ljust(9), "lot": lt.ljust(9), "qual": q.center(11), "cls": cls.ljust(3),
+                        "acres": "%09d" % round(ac * 10000), "imp": "%09d" % imp}, NJ_MODIV_LEN, NJ_MD)
+    old = "\n".join([sr(serial=1, price=300000), sr(serial=9, block="00009", lot="00001", cls="2  ")])
+    new = "\n".join([
+        sr(serial=1),                                                       # the same deed again: the newer file wins
+        sr(serial=2, block="00003", lot="00041", cls="3A ", addl=[("00003", "00041", "QFARM")]),
+        sr(serial=3, block="00005", lot="00002", nu="33 "),
+        sr(serial=4, block="00005", lot="00008", nu="01 ", rtf_exempt="E"),
+        sr(serial=5, block="00005", lot="00011", nu="06 "),
+        sr(serial=6, block="00077", lot="00001"),                          # not on today's list
+        sr(serial=7, block="00002", lot="00016", lsuf="02  ", nu="8  "),
+        sr(serial=8, block="00004", lot="00007", cls="2  "),               # class 2 at the sale, farmland today
+    ])
+    modiv = "\n".join([
+        md("1701", "00003", "00036", "QFARM", "3B", 80.33), md("1701", "00003", "00036", "BLDG", "3A", 0, 26600),
+        md("1701", "00003", "00041", "", "3A", 1.5, 98900), md("1701", "00003", "00041", "QFARM", "3B", 11.76),
+        md("1701", "00005", "00002", "QFARM", "3B", 39.76), md("1701", "00005", "00008", "QFARM", "3B", 67.18),
+        md("1701", "00005", "00011", "QFARM", "3B", 26.96), md("1701", "00002", "00016  02", "QFARM", "3B", 6.0),
+        md("1701", "00004", "00007", "QFARM", "3B", 11.49), md("1701", "00009", "00001", "", "2", 0.25, 150000),
+        md("1701", "00009", "00001", "C0001", "2", 0.1, 90000),
+    ])
+    rep = {}
+    sales = nj_sales([("Sales2025.txt", old.encode()), ("Sales2026.txt", new.encode())], rep)
+    ck("NJ: a deed in two yearly files is read once, from the newer file",
+       sum(1 for r in sales if r["serial"].strip() == "0000001") == 1 and next(r for r in sales if r["serial"].strip() == "0000001")["file"] == "Sales2026.txt")
+    want = {u for r in sales if r["cls"].strip() in NJ_FARM for u, q in nj_units(r)}
+    m = nj_modiv("x.txt", modiv.encode(), want, rep)
+    towns = {"34033": {nj_name_key("Alloway township"): "Alloway township"}}
+    rows = list(nj_table(sales, m, towns, rep))
+    H = rows[0]
+    by = {r[0]: dict(zip(H, r)) for r in rows[1:]}
+    a = by.get("1701-1") or {}
+    ck("NJ: a 3B lot's farmland part and its building line are one lot: 80.33 acres, with buildings (3A)",
+       a.get("ACRES") == "80.33" and a.get("PROPERTYCLASS") == "4 1" and "with buildings" in a.get("FLAGS", "") and a.get("TOTALVALUE") == "400000")
+    ck("NJ: dates are YYMMDD, the sale on the deed and the day it was recorded",
+       a.get("DATEOFCONVEYANCE") == "2025-03-14" and a.get("DATERECORDED") == "2025-04-02")
+    ck("NJ: the town is the Census municipality (no parcel point), the county from the code (17 Salem)",
+       a.get("MUNICIPALITY") == "ALLOWAY TOWNSHIP" and a.get("COUNTY") == "Salem")
+    b = by.get("1701-2") or {}
+    ck("NJ: the farmhouse lot and its QFARM part named again on the deed count once: 1.5 + 11.76 acres, one lot",
+       b.get("ACRES") == "13.26" and b.get("TOTALPARCELS") == "1" and b.get("PROPERTYCLASS") == "4 1")
+    c = by.get("1701-3") or {}
+    ck("NJ: code 33 (farmland-assessed) stays a market sale; bare 3B is land only",
+       c.get("CONVEYANCETYPE") == "Deed" and c.get("PROPERTYCLASS") == "4" and "land only" in c["FLAGS"] and "code 33" in c["FLAGS"])
+    d = by.get("1701-4") or {}
+    ck("NJ: code 01 is related parties; a realty transfer fee exemption (E) is an exemption",
+       "Related Parties" in d.get("CONVEYANCETYPE", "") and d.get("EXEMPTION") == "1")
+    ck("NJ: code 06 (part of the assessed lot): acres not stated", (by.get("1701-5") or {}).get("ACRES") == "")
+    e = by.get("1701-6") or {}
+    ck("NJ: a deed whose lot is not on today's list is kept, acres not stated, and said so",
+       e.get("ACRES") == "" and "not on the 2026 assessment list" in e.get("FLAGS", ""))
+    f = by.get("1701-7") or {}
+    ck("NJ: code 8 (one digit) is an undivided interest, less than full interest; a lot suffix joins",
+       "Undivided interest" in f.get("CONVEYANCETYPE", "") and "less than full interest" in f.get("FLAGS", "") and f.get("ACRES") == "6")
+    ck("NJ: a deed classed 2 when it sold whose lot is farmland today is kept, both classes shown",
+       (by.get("1701-8") or {}).get("PROPERTYCLASS") == "4 1")
+    ck("NJ: a house lot (class 2 then and now) is not a farm deed", "1701-9" not in by and rep.get("not farm") == 1)
+    ck("NJ: the join rate is counted", rep.get("join", "").startswith("7 of 8 farm deeds"))
+    ck("NJ: every non-usable category 01 to 33 is mapped, each as out, kept or acres",
+       sorted(NJ_NU) == ["%02d" % i for i in range(1, 34)] and all(v[0] in ("out", "kept", "acres") for v in NJ_NU.values()))
+    ck("NJ: no party's street, city or ZIP is read", not any(re.search(r"(?i)street|city|zip|addr", k) for k in NJ_SR))
+    ck("NJ: kept codes carry no word the market rule reads as a non-market deed",
+       not any(re.search(r"(?i)QUIT|GIFT|CORRECT|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|JUDICIAL|COURT O|TRADE|EXCHANGE|IN LIEU|NON-USABLE", w)
+               for how, w in NJ_NU.values() if how != "out"))
+    ck("NJ: every out code carries a word the market rule reads (or less than full interest)",
+       all(re.search(r"QUIT|GIFT|CORRECT|SHERIFF|FORECLOS|LEASE|RELATED PART|PARTITION|JUDICIAL|COURT O|EXCHANGE|NON-USABLE|UNDIVIDED|LESS THAN FULL", w.upper())
+           for how, w in NJ_NU.values() if how == "out"))
+    for nm, census in (("ALLOWAY TOWNSHIP", "Alloway township"), ("SO HACKENSACK TWP", "South Hackensack township"),
+                       ("E RUTHERFORD BORO", "East Rutherford borough"), ("ATLANTIC CITY CITY", "Atlantic City city"),
+                       ("MT HOLLY TWP", "Mount Holly township"), ("CALDWELL BORO TWP", "Caldwell borough")):
+        T = {"34000": {nj_name_key(census): census, nj_name_key("Other township"): "Other township"}}
+        ck("NJ: %s is %s" % (nm, census), nj_town("34000", "x", T, {"x": nm})[0] == census)
+    T = {"34003": {nj_name_key("Upper Saddle River borough"): "Upper Saddle River borough", nj_name_key("Saddle River borough"): "Saddle River borough"}}
+    ck("NJ: a cut-short name (UPPER SADDLE RIV BORO) finds its one town", nj_town("34003", "x", T, {"x": "UPPER SADDLE RIV BORO"})[0] == "Upper Saddle River borough")
+    T = {"34019": {nj_name_key("Clinton town"): "Clinton town", nj_name_key("Clinton township"): "Clinton township"}}
+    ck("NJ: Clinton town and Clinton township stay apart", nj_town("34019", "x", T, {"x": "CLINTON TOWN"})[0] == "Clinton town"
+       and nj_town("34019", "x", T, {"x": "CLINTON TWP"})[0] == "Clinton township")
+    ck("NJ: 566 district codes, 21 counties", len(json.load(open(NJ_MUNIS_FILE))["munis"]) == 566
+       and {k[:2] for k in json.load(open(NJ_MUNIS_FILE))["munis"]} == {"%02d" % i for i in range(1, 22)})
+
+
 WI_COUNTY = dict(enumerate(["Adams", "Ashland", "Barron", "Bayfield", "Brown", "Buffalo", "Burnett", "Calumet", "Chippewa", "Clark",
                             "Columbia", "Crawford", "Dane", "Dodge", "Door", "Douglas", "Dunn", "Eau Claire", "Florence", "Fond du Lac",
                             "Forest", "Grant", "Green", "Green Lake", "Iowa", "Iron", "Jackson", "Jefferson", "Juneau", "Kenosha",
@@ -1946,6 +2435,23 @@ def run(states, from_dir=None, merge=False):
                 print("::warning::%s transfer returns not read: %s" % (st, e))
                 bad += 1
                 continue
+        elif st == "NJ":
+            try:
+                if from_dir:
+                    sr = [(n, os.path.join(from_dir, n)) for n in sorted(os.listdir(from_dir)) if re.search(r"(Sales\d{4}|YTDSR1A\d{4})\.zip$", n)]
+                    mp = next(os.path.join(from_dir, n) for n in sorted(os.listdir(from_dir)) if re.search(r"modiv-\d{4}\.zip$", n, re.I))
+                else:
+                    sr, mp = fetch_nj(os.path.join(RAW, "nj"))
+                sr.sort(key=lambda x: (1 if "YTD" in x[0] else 0, x[0]))      # the year-to-date file last: its copy wins
+                jrep = {}
+                tables.append(nj_build_tables(sr, mp, gzblob, jrep, keep_dir=None if from_dir else os.path.join(RAW, "nj")))
+                print("::notice::%s: %s" % (st, "; ".join("%s: %s" % kv for kv in jrep.items())))
+                if not from_dir:
+                    os.remove(mp)
+            except Exception as e:  # noqa: BLE001
+                print("::warning::%s deed files not read: %s" % (st, e))
+                bad += 1
+                continue
         elif STATES[st].get("socrata") and not from_dir:
             try:
                 decls, extra, multi = fetch_il()
@@ -2184,8 +2690,9 @@ def selftest():
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
     ck("probe-only states (IA, SD, OH) are never built before their parser exists",
        all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IA", "SD", "OH")))
-    ck("phase 1 statewide sources (FL, NY, MD, NJ, CT) are saved by the probe and never built",
-       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "NJ", "CT")))
+    ck("phase 1 statewide sources (FL, NY, MD, CT) are saved by the probe and never built",
+       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "CT")))
+    nj_selftest(ck)
     # Vermont (Oct 29): PTT-172 returns from the statewide file, mapped onto the shared rule by the form's words.
     ck("VT: built, not probe-only, never reads a parcel point or an address",
        not STATES["VT"].get("probe_only") and not any(re.search(r"(?i)latitude|longitude|geom|addr|street|zip", c) for c in VT_COLS))

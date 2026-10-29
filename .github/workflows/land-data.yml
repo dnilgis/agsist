@@ -7,7 +7,8 @@ name: Land data (parcel services + transfers)
 #    Only this marks a service verified. Coverage counts print as annotations.
 #  - transfers: scripts/fetch_land_sales.py builds data/land/<st>/<county fips>.json from
 #    the state's own public transfer data (IL MyDec open data; WI eRETR monthly reports; VT property
-#    transfer tax returns, the statewide file VCGI publishes, since Oct 29, 2026; MN eCRV
+#    transfer tax returns, the statewide file VCGI publishes, since Oct 29, 2026; NJ SR-1A deed files joined
+#    to the MOD-IV assessment list for acres and class, since Oct 29, 2026; MN eCRV
 #    once a free file is reachable). Probe also saves sources not built yet (Oct 18: Indiana sales
 #    disclosure files, Scott County IA ag sales, South Dakota and Ohio county sales lists, Nebraska's
 #    sales file rules); each gets a parser only after its saved columns are read. It refuses a state whose columns it cannot find by name.
@@ -30,7 +31,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "vt (Vermont transfers only, then the summaries and sale pages), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back)"
+        description: "vt (Vermont transfers only, then the summaries and sale pages), nj (New Jersey only, the same way), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -129,10 +130,15 @@ jobs:
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
         # VT: the statewide transfer return file (Parquet, about 85 MB); the dated copy goes to the raw branch below
-        run: python scripts/fetch_land_sales.py MN IL IN VT || echo "::warning::no state's transfers were written"
+        # NJ: the SR-1A yearly deed files (about 12 MB each, dated copies to the raw branch) and the MOD-IV 2026 list
+        # (270 MB, read from a temporary file; its farm lots go to the raw branch)
+        run: python scripts/fetch_land_sales.py MN IL IN VT NJ || echo "::warning::no state's transfers were written"
       - name: Vermont transfers only
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.probe && inputs.task == 'vt' }}
         run: python scripts/fetch_land_sales.py VT || echo "::warning::Vermont transfers were not written"
+      - name: New Jersey deeds only
+        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.probe && inputs.task == 'nj' }}
+        run: python scripts/fetch_land_sales.py NJ || echo "::warning::New Jersey deeds were not written"
       - name: Wisconsin transfer returns (browser)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-newest' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
         run: |
