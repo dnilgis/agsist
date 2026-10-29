@@ -7,6 +7,13 @@
    "title": "Farm loan cards, shorter",
    "line": "The farm loan cards on Atlas state pages now carry one short source line, linked to the reserve bank's ag survey page; how the numbers work is in one note per page.",
    "link": "/farmland-atlas/states/#farm-credit"
+   },
+   {
+   "id": "2026-10-29-home-steady",
+   "date": "2026-10-29",
+   "title": "The homepage holds still while it loads",
+   "line": "The top of the homepage no longer jumps down as it finishes loading, on a first visit or in the evening when the overnight futures line arrives.",
+   "link": "/"
   },
   {
    "id": "2026-10-28-farm-credit",
