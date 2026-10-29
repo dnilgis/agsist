@@ -117,11 +117,18 @@ test('the live nav never comes (loader.js blocked): the crawler nav shows after 
       await ctx.route('**/*', (r) => { const u = new URL(r.request().url()); return u.hostname !== '127.0.0.1' || u.pathname === '/components/loader.js' ? r.abort() : r.continue(); });
       const pg = await ctx.newPage();
       await pg.goto(`http://127.0.0.1:${srv.address().port}${url}`, { waitUntil: 'load' });
-      const vis = () => pg.evaluate(() => { const n = document.querySelector('#site-header > header nav'); return { v: n ? getComputedStyle(n).visibility : 'gone', t: performance.now() }; });
+      // read the hold's own clock (it starts when the nav gets its style, which a busy machine can delay)
+      const vis = () => pg.evaluate(() => {
+        const n = document.querySelector('#site-header > header nav'), a = n && n.getAnimations().find((x) => x.animationName === 'snav-wait');
+        return { v: n ? getComputedStyle(n).visibility : 'gone', ct: a ? a.currentTime : null };
+      });
       const first = await vis();
-      if (first.t < 2500) assert.equal(first.v, 'hidden', `${file}: unseen at first`); // a slow machine can pass 3 s before load
-      await pg.waitForTimeout(Math.max(0, 3300 - first.t));
-      assert.equal((await vis()).v, 'visible', `${file}: shown once the 3 s are up`);
+      assert.notEqual(first.ct, null, `${file}: the hold runs`);
+      if (first.ct < 2800) assert.equal(first.v, 'hidden', `${file}: unseen while the hold runs (${first.ct} ms in)`);
+      await pg.waitForTimeout(Math.max(0, 3000 - first.ct) + 300);
+      const then = await vis();
+      assert.ok(then.ct >= 3000, `${file}: 3 s of the hold have passed (${then.ct} ms)`);
+      assert.equal(then.v, 'visible', `${file}: shown once the 3 s are up`);
       await ctx.close();
     }
   } finally { await browser.close(); srv.close(); }
