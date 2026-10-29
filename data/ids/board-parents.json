@@ -3,25 +3,25 @@
  "generated": "2026-10-29",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2097,
-  "with_parent": 105,
-  "with_dest": 100,
+  "live_boards": 2180,
+  "with_parent": 130,
+  "with_dest": 112,
   "parent_by_rule": {
    "board-page": 1,
-   "chs-brand": 104
+   "chs-brand": 129
   },
   "dest_by_brand": {
-   "ADM": 23,
-   "AGP": 24,
-   "Big River": 3,
+   "ADM": 26,
+   "AGP": 27,
+   "Big River": 4,
    "Bunge": 4,
-   "CGB": 8,
-   "Cargill": 15,
+   "CGB": 9,
+   "Cargill": 16,
    "Green Plains": 3,
    "Ingredion": 1,
-   "Marquis": 4,
-   "POET": 8,
-   "Valero": 2,
+   "Marquis": 5,
+   "POET": 9,
+   "Valero": 3,
    "Viserion": 5
   },
   "board_pages_with_other_firms": 1
@@ -407,6 +407,101 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
+  "chshighplains-akron": {
+   "elevId": "evdr7en3h1",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-amherst": {
+   "elevId": "e1ab47v7dj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-brule": {
+   "elevId": "e24jjqke3d",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-brush": {
+   "elevId": "ezkangj84w",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-byers": {
+   "elevId": "eq6kcw9tbf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-fleming": {
+   "elevId": "ekfgs372nq",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-haxtun": {
+   "elevId": "ekgzh6ta5t",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-holyoke": {
+   "elevId": "eppbkcfd01",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-holyokeshuttle": {
+   "elevId": "enen7k77yz",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-hyde": {
+   "elevId": "ewms1cyfjf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-idalia": {
+   "elevId": "er665q1zk5",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-idaliawest": {
+   "elevId": "erfvwzws2r",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-julesburg": {
+   "elevId": "exjrv2p36n",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-merrittbunker": {
+   "elevId": "ek60bc4gkj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-newhaven": {
+   "elevId": "eydq1sjn3h",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-otis": {
+   "elevId": "ewwvkxfwkj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-stateline": {
+   "elevId": "efj42jw2z9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-yuma": {
+   "elevId": "eyk2anbaxr",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-yumashuttle": {
+   "elevId": "e44nd7xnqd",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
   "chsholdrege-alma": {
    "elevId": "e7mwcb8zsz",
    "parent": "CHS Inc.",
@@ -494,11 +589,6 @@
   },
   "chsillinois-steward": {
    "elevId": "e5tdnjsnhz",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsprimeland-chsprimeland": {
-   "elevId": "ekj0yxn1y2",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
@@ -599,6 +689,41 @@
   },
   "chssunbasingrowers-wheelerelevatorml": {
    "elevId": "e0xdw63jsm",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-cheyennewells": {
+   "elevId": "ecza11m4k4",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-kanco": {
+   "elevId": "enh36pe1vm",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-selkirk": {
+   "elevId": "et4vjtndjg",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-sharonsprings": {
+   "elevId": "edq0997yx2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-tribune": {
+   "elevId": "e9eyt6bb9x",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-wallace": {
+   "elevId": "esmztkahhe",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-weskan": {
+   "elevId": "eev8k4xsz2",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
@@ -992,6 +1117,36 @@
    "dest": "POET",
    "dv": "location"
   },
+  "nexus-agpeaglegroveia": {
+   "elevId": "e3yxz3j8hg",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-agpmanningia": {
+   "elevId": "emr4kpq80q",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-agpmasoncityia": {
+   "elevId": "exe7f4q1hd",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-cargilliowafallsia": {
+   "elevId": "efdggq02m7",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "nexus-poetfairbankia": {
+   "elevId": "ekr2jj8was",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "nexus-valerocharlescityia": {
+   "elevId": "ev4rkxwapd",
+   "dest": "Valero",
+   "dv": "location"
+  },
   "premiercooperative-valerocc": {
    "elevId": "ehysxd2cqp",
    "dest": "Valero",
@@ -1010,6 +1165,36 @@
   "procooperative-agpemmetsburg": {
    "elevId": "e9szq11v3x",
    "dest": "AGP",
+   "dv": "location"
+  },
+  "rivervalleycoop-admclinton": {
+   "elevId": "e2z63q24mt",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "rivervalleycoop-admclintongrain": {
+   "elevId": "e1kq5xbrmq",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "rivervalleycoop-admcrevecoeur": {
+   "elevId": "e6paazzke9",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "rivervalleycoop-bigriverdyersville": {
+   "elevId": "ernfzav5bw",
+   "dest": "Big River",
+   "dv": "location"
+  },
+  "rivervalleycoop-cgbhennepin": {
+   "elevId": "e8qwdx4r8v",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "rivervalleycoop-marquisenergy": {
+   "elevId": "em86kw2svr",
+   "dest": "Marquis",
    "dv": "location"
   },
   "seatonvilleelevator-marquis": {
