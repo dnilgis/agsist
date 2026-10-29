@@ -614,11 +614,57 @@ function bhDate(iso){
    itself is still shown, exactly as the board posts it; what is withheld is a
    sentence about how it moved. */
 function bhSane(c){return c!=null&&Math.abs(c)<=300;}
+/* AND NOT THE SIZE BOUND ALONE (2026-10-29 data check). The old feed stored a
+   1 to 4 CENT basis as 1 to 4 DOLLARS, so the record holds +100 and -300 where
+   the board meant +1 and -3, and both pass the bound. Two checks before a
+   sentence about a move:
+   1. The bid on the board agrees with that day's futures: its cash minus its
+      basis is within 25 cents of the middle of what the other elevators in this
+      search imply for the same contract (3 or more of them, one value each,
+      only where an elevator's own rows agree to the cent). With fewer than 3
+      there is no middle to check against, and the row's own price band
+      (futuresOf) is the check.
+   2. The move is not the old feed's unit error itself: 90 cents or more
+      between a round quarter-dollar value of 100 or more and one under 100
+      (-300 to -7). The same rule as scripts/build_basis_history.py
+      unit_error_step, which leaves those rows out of the shards; this is the
+      second guard for a row the shard rule cannot see.
+   The bid itself is still shown exactly as posted; what is withheld is the
+   line about how it moved. */
+var _bhFut={};
+function bhSetFutures(bids){
+  var per={};
+  (bids||[]).forEach(function(b){
+    var sym=normSym(b.symbol),f=futuresOf(b);if(!sym||f==null)return;
+    var ek=(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||'');
+    var k=sym+'##'+ek,c=Math.round(f*100);
+    if(!per[k])per[k]={sym:sym,c:c,ok:true};else if(per[k].c!==c)per[k].ok=false;
+  });
+  var by={};
+  Object.keys(per).forEach(function(k){var e=per[k];if(!e.ok)return;(by[e.sym]=by[e.sym]||[]).push(e.c);});
+  _bhFut={};
+  Object.keys(by).forEach(function(sym){
+    var v=by[sym].sort(function(a,b){return a-b;}),n=v.length,m=n%2?v[(n-1)/2]:(v[n/2-1]+v[n/2])/2;
+    _bhFut[sym]={c:m,n:n};
+  });
+  return _bhFut;
+}
+function bhLiveOk(b){
+  var f=futuresOf(b);if(f==null)return false;
+  var r=_bhFut[normSym(b.symbol)];
+  return !(r&&r.n>=3&&Math.abs(f*100-r.c)>25);
+}
+function bhUnitStep(a,b){
+  if(a==null||b==null)return false;
+  var lo=Math.min(Math.abs(a),Math.abs(b)),hi=Math.max(Math.abs(a),Math.abs(b));
+  return hi>=100&&hi%25===0&&lo<100&&Math.abs(a-b)>=90;
+}
+function bhOk(b,from,live){return bhSane(live)&&bhSane(from)&&!bhUnitStep(from,live)&&bhLiveOk(b);}
 function bhLine(b,elev){
   var h=bhLook(b,elev);if(!h)return'';
   var live=basisCents(b.basis,b);if(live==null)return'';
   live=Math.round(live);
-  if(!bhSane(live)||!bhSane(h.cur))return'';
+  if(!bhSane(live)||!bhSane(h.cur)||!bhLiveOk(b))return'';
   var from,when,bounded=false;
   if(h.cur===live){
     if(h.prev==null){
@@ -632,7 +678,7 @@ function bhLine(b,elev){
        why lastSeen is in the shard. Bounded, not guessed. */
     from=h.cur;when=bhDate(h.last);bounded=true;
   }
-  if(!bhSane(from)||!when)return'';
+  if(!when||!bhOk(b,from,live))return'';
   /* A basis that rises is a basis that got STRONGER for the person selling. */
   var up=live>from,arrow=up?'\u25b2':'\u25bc',cls=up?'bh-up':'bh-dn';
   var prev=(from>=0?'+':'\u2212')+Math.abs(from).toFixed(0)+'&#162;';
@@ -642,6 +688,7 @@ function bhLine(b,elev){
 function applyBasisHistory(){
   var sts={};currentElevators.forEach(function(e){var s=bhNorm(e.state);if(s)sts[s]=1;});
   var list=Object.keys(sts);if(!list.length)return;
+  bhSetFutures(cbLastBids||currentBids);   /* the rows this render drew (cb-glance passes the same) */
   Promise.all(list.map(bhLoadState)).then(function(){
     if(!results)return;
     results.querySelectorAll('.bid-row[data-bh-i]').forEach(function(row){
@@ -1909,7 +1956,7 @@ function syncGlanceBox(){
 function glanceCrop(){return(currentFilter==='corn'||currentFilter==='soybeans'||currentFilter==='wheat')?currentFilter:wtdComm;}
 if(window.CBGlance)CBGlance.init({delKey:delKey,bidPeriodPast:bidPeriodPast,isSpotDelivery:isSpotDelivery,monthFloorKey:monthFloorKey,harvestYear:harvestYear,
   ppu:ppu,plausible:plausible,notPerBushel:notPerBushel,isSpecialGrade:isSpecialGrade,basisUnusual:basisUnusual,basisUnclear:basisUnclear,basisCents:basisCents,
-  groupElevators:groupElevators,townOf:townOf,bhLoadState:bhLoadState,bhLook:bhLook,bhSane:bhSane,
+  groupElevators:groupElevators,townOf:townOf,bhLoadState:bhLoadState,bhLook:bhLook,bhSane:bhSane,bhOk:bhOk,bhSetFutures:bhSetFutures,
   rerender:function(){renderBids(cbLastBids);}});
 
 /* ═══════════════════════════════════════════════════════════════════════════

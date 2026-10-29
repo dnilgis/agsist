@@ -1,0 +1,14 @@
+{
+ "note": "Rows a person judged bad that the bidflags rules miss (scripts/bid_flags.py reads this; reason hand_flagged). Each entry names one row key: facility, city, state, crop, contract and delivery as the board posted them, and the basis in dollars as stored. A snapshot row matches when all of these match; a basis history row (data/basis) when its key matches and its basis now or before is that basis in cents. Add a row only with the evidence written in why.",
+ "rows": [
+  {"facility": "H & B Specialties, Inc.", "city": "Naples", "state": "IL", "category": "corn", "futures": "ZCH27",
+   "delivery": "Mar27", "basis": 1.0, "added": "2026-10-29",
+   "why": "+$1.00 corn basis in Illinois from the old feed, last seen 2026-09-22; the board's other corn rows those days were a cents basis read as dollars (basis_in_cents), so this is a 1 cent basis read as a dollar"},
+  {"facility": "H & B Specialties, Inc.", "city": "Naples", "state": "IL", "category": "corn", "futures": "ZCK27",
+   "delivery": "May27", "basis": 1.0, "added": "2026-10-29",
+   "why": "same board and error as the Mar27 row"},
+  {"facility": "H & B Specialties, Inc.", "city": "Naples", "state": "IL", "category": "corn", "futures": "ZCN27",
+   "delivery": "Jul27", "basis": 1.0, "added": "2026-10-29",
+   "why": "same board and error as the Mar27 row (first seen 2026-09-16)"}
+ ]
+}
