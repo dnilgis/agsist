@@ -283,8 +283,8 @@
     h += '<p class="prfo-note"><b>How much an outlook says.</b> CPC’s seasonal outlooks shift the odds only a little. Most of the map, most months, is “equal chances”: no tilt from the usual one-in-three. A 40 to 50% lean toward dry still leaves a 50 to 60% chance of near or above normal. Each figure is for a 3-month total over a wide area, not for two months at this grid. The outlook is not the PRF index, and does not predict whether an interval will pay.</p>';
 
     h += '<ul class="prfo-links">'
-      + '<li><a href="' + esc((d.seasonal && d.seasonal.link) || 'https://www.cpc.ncep.noaa.gov/products/predictions/long_range/') + '" rel="noopener" target="_blank">CPC seasonal outlooks</a></li>'
-      + '<li><a href="' + esc((d.enso && d.enso.link) || 'https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml') + '" rel="noopener" target="_blank">CPC ENSO discussion</a></li>'
+      + '<li>CPC seasonal outlooks</li>'
+      + '<li>CPC ENSO discussion</li>'
       + '<li>US Drought Monitor</li>'
       + '<li><a href="/drought-monitor">AGSIST drought map</a></li></ul>';
 

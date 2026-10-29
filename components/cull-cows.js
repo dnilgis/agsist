@@ -159,7 +159,7 @@
     h += '</tr></thead><tbody>';
     barns.forEach(function (b) {
       var s = b.sales[0];
-      h += '<tr><td><a href="' + esc(s.url || b.source_url) + '" rel="noopener">' + esc(b.name) + '</a><small>' +
+      h += '<tr><td>' + esc(b.name) + '<small>' +
         esc(b.town) + ', ' + esc(b.state) + '</small><small>Sale of ' + fmtDate(s.date, today) + '</small>' + dairyNote(s) + '</td>';
       COLS.forEach(function (c) { h += cell(s, c[0]); });
       h += '</tr>';

@@ -1397,12 +1397,7 @@ function buildMarketCard(m, showExtras) {
       + 'padding-top:.35rem;border-top:1px solid var(--border);margin-top:.1rem">'
       + '<span style="font-size:.66rem;color:var(--text-muted)">NO: '
         + (m.no || (100 - yes)) + '%' + (volStr ? ' \u00B7 ' + volStr : '') + '</span>'
-      + '<a href="' + m.url + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" '
-        + 'style="font-size:.64rem;color:' + color + ';text-decoration:none;font-weight:600;'
-        + 'border:1px solid currentColor;border-radius:4px;padding:.12rem .4rem;'
-        + 'white-space:nowrap;transition:opacity .15s"'
-        + ' onmouseenter="this.style.opacity=\'.8\'" onmouseleave="this.style.opacity=\'1\'">'
-        + 'View Market \u2192</a>'
+      + '<span style="font-size:.64rem;color:var(--text-muted);white-space:nowrap">Polymarket</span>'
     + '</div>';
 
   return div;

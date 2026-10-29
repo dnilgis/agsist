@@ -449,7 +449,7 @@
         else if (st === 'na') v = '<div class="fsl-v fsl-off">' + FSX.esc(s.na || 'No public layer for this state yet.') + '</div>';
         else if (st === 'fail') v = '<div class="fsl-v fsl-off">The service didn&rsquo;t answer. Tap the field again in a few minutes.</div>';
         else v = '<div class="fsl-v fsl-off">Not enough came back to say. Left blank rather than guessed.</div>';
-        var srcl = s.t ? '<div class="fsl-s">' + (s.u ? '<a href="' + s.u + '" target="_blank" rel="noopener">' + FSX.esc(s.t) + '</a>' : FSX.esc(s.t)) + ' &middot; read ' + when + (s.asof ? ' &middot; ' + FSX.esc(s.asof) : '') + '</div>' : '';
+        var srcl = s.t ? '<div class="fsl-s">' + FSX.esc(s.t) + ' &middot; read ' + when + (s.asof ? ' &middot; ' + FSX.esc(s.asof) : '') + '</div>' : '';
         el.innerHTML = '<div class="fsl-k">' + it[1] + '</div>' + v + m + srcl;
       });
       var sum = document.getElementById('fsl-sum'), line = L.summary(o);
