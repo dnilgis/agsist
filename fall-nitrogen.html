@@ -354,8 +354,7 @@ function fnSpark(t, last, w, h) {
   var $ = function (id) { return document.getElementById(id); };
   // Every reading names its network, linked to it (Wisconet's CC BY terms ask for the credit).
   function netCredit(net) {
-    var l = (DATA.net_labels && DATA.net_labels[net]) || net, u = DATA.net_urls && DATA.net_urls[net];
-    return u && /^https:\/\//.test(u) ? '<a href="' + esc(u) + '" rel="noopener">' + esc(l) + '</a>' : esc(l);
+    return esc((DATA.net_labels && DATA.net_labels[net]) || net);  // named, not linked
   }
   var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
   var RULE = {IA: 'rule-IA', IL: 'rule-IL', MN: 'rule-MN', KS: 'rule-KS', NE: 'rule-NE'};

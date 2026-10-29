@@ -28,7 +28,7 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 const body = page.slice(page.indexOf("<main"), page.indexOf("</main>"));
 const srcKeys = [...py.matchAll(/^    "([a-z_]+)": \{"ds": /gm)].map((m) => m[1]);
 
-test("every source the fetcher reads is credited on the page with a link", () => {
+test("every source the fetcher reads is credited on the page by name (not linked, Oct 29, 2026)", () => {
   assert.ok(srcKeys.length >= 12, `SRC keys found: ${srcKeys}`);
   const credits = /<ul class="gt-src" id="gt-credits">([\s\S]*?)<\/ul>/.exec(page)[1];
   const covered = new Set([...credits.matchAll(/data-src="([^"]+)"/g)].flatMap((m) => m[1].split(",")));
@@ -37,9 +37,9 @@ test("every source the fetcher reads is credited on the page with a link", () =>
     "Association of American Railroads", "Federal Grain Inspection Service", "U.S. Geological Survey", "AGSIST elevator network"]) {
     assert.ok(credits.includes(who), `credit missing: ${who}`);
   }
-  for (const li of credits.split("</li>").filter((x) => x.includes("<li"))) assert.match(li, /<a href="https?:\/\/|<a href="\//, li.slice(0, 80));
-  // every dataset id that has its own credit line links to it
-  for (const id of ["n4pw-9ygw", "57pa-stwn", "2wy9-nmz4", "tb7q-kn5i", "sruw-w49i", "v85y-3hep"]) assert.ok(credits.includes(`/d/${id}`), id);
+  // no credit line links straight at a dataset (no direct links to data sources)
+  for (const id of ["n4pw-9ygw", "57pa-stwn", "2wy9-nmz4", "tb7q-kn5i", "sruw-w49i", "v85y-3hep"]) assert.ok(!credits.includes(`/d/${id}`), id);
+  assert.doesNotMatch(credits, /href="https:\/\/(agtransport\.usda\.gov|waterdata\.usgs\.gov)/);
 });
 
 test("correlation only: the page and the pipeline never say freight caused a basis move", () => {
