@@ -786,6 +786,18 @@ jobs:
           ANTHROPIC_API_KEY= python scripts/headline_fix.py --selftest
           python scripts/headline_fix.py data/daily.json --prices data/prices.json
 
+      # GATE 2c (Oct 29 2026): a cause sentence nobody is named as saying
+      # ("diesel follows it") is reworded by code, the fact kept, or cut when its
+      # field keeps other text, before the gate; else left and the gate WARNs.
+      # The archive and the sent copy then carry the fixed text, so a published
+      # issue can never fail the archive's cause test. Never blocks the send.
+      - name: GATE 2c, unsourced cause lines reworded before the gate
+        continue-on-error: true
+        run: |
+          [ -f scripts/cause_fix.py ] || { echo "cause_fix.py not in this checkout yet"; exit 0; }
+          python scripts/cause_fix.py --selftest
+          python scripts/cause_fix.py data/daily.json
+
       # ── GATE 2 ── deterministic pre-publish gate. Prose vs locked_prices vs the
       # clean feed: blocks locked-price drift, level contradictions, drama without a
       # real move, calendar errors, fabricated sections. HARD block (no continue-on-error)

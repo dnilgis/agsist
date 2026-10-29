@@ -99,7 +99,14 @@ test("browser: every sponsor's first screen, every section reachable, short, sti
           if (x.n.trim() === "0") assert.equal(x.u.trim(), "so far", tag + x.k + ": a zero reads 0 so far");
           if (x.n.trim() === "-") assert.ok(x.m.trim(), tag + x.k + ": a dash says why");
         }
-        assert.notEqual(k[2].n.trim(), "0.00%", tag + "no rate shown over zero views");
+        // the click rate: never a rate over zero views; over real views it is the file's own
+        // clicks / times seen for the 7 days shown, and under 100 views it says too few to judge
+        const w7 = d.pending || d.withheld ? null : (d.windows || []).find((x) => x.days === 7) || d.totals || {};
+        if (!w7 || !w7.viewable) assert.equal(k[2].n.trim(), "-", tag + "no rate shown over zero views");
+        else {
+          assert.equal(k[2].n.trim(), (100 * (w7.clicks || 0) / w7.viewable).toFixed(2) + "%", tag + "the rate is clicks over times seen");
+          if (w7.viewable < 100) assert.match(k[2].m, /Too few views this week to judge/, tag + "a rate over few views says so");
+        }
         if (w === 390) assert.ok(Math.max(...k.map((x) => x.bottom)) <= 844, tag + "the four numbers are on the first screen");
 
         // the ad itself, as it runs, right under the numbers

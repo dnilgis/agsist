@@ -142,14 +142,14 @@ test("the unsubscribe link: front door, link id, UNSUB_SECRET hmac, topic=landsa
   assert.match(w, /\* v5\.55 \(2026-10-23\): MONTHLY LAND SALE EMAIL/);
 });
 
-test("Illinois, Wisconsin and Indiana (Sig, Oct 27: \"Yes turn on Indiana\"); Indiana's records said plainly", () => {
+test("Illinois, Wisconsin, Indiana (Sig, Oct 27: \"Yes turn on Indiana\") and Vermont (Oct 29); Indiana's records said plainly", () => {
   const la = read("scripts/land_alert.py");
-  assert.match(la, /^STATES = \("IL", "WI", "IN"\)/m);
+  assert.match(la, /^STATES = \("IL", "WI", "IN", "VT"\)/m);
   assert.match(la, /IN_NOTE = \("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "/);
   const js = read("components/land-alert.js");
-  assert.match(js, /Illinois, Wisconsin and Indiana\./, "the ask names the three states");
+  assert.match(js, /Illinois, Wisconsin, Indiana and Vermont\./, "the ask names the four states");
   assert.match(js, /Indiana sales carry the sale date and the parcel/, "the thank-you says what Indiana's records carry");
-  assert.match(read("scripts/fetch_land_sales.py"), /rec = st in \("WI", "IL"\) and any\(r\.get\("rec"\) for r in recs\)/, "Illinois keeps the recorded date");
+  assert.match(read("scripts/fetch_land_sales.py"), /rec = st in \("WI", "IL", "VT"\) and any\(r\.get\("rec"\) for r in recs\)/, "Illinois and Vermont keep the recorded date");
 });
 
 test("the ask: email, ZIP, 10/25/50 with 25 picked, the topic, One more? with the Daily unticked", () => {
@@ -166,7 +166,7 @@ test("the ask: email, ZIP, 10/25/50 with 25 picked, the topic, One more? with th
   const ctx = { window: {}, document: { readyState: "loading", addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; } }, location: { search: "", pathname: "/" }, setTimeout() {} };
   vm.runInNewContext(js, ctx);
   const A = ctx.window.AgLandAlert;
-  for (const z of ["54728", "61920", "60601", "53201", "50010", "55401", "46201", "46072", "47906", "63101", "40202", "49503", "45801", "43001"]) assert.ok(A.NEAR.test(z), z + " is near");
+  for (const z of ["54728", "61920", "60601", "53201", "50010", "55401", "46201", "46072", "47906", "63101", "40202", "49503", "45801", "43001", "05401", "05753", "05819", "03766", "12801", "01201"]) assert.ok(A.NEAR.test(z), z + " is near");
   assert.match(A.doneText(25, "46072", new Date("2026-10-27T18:00:00Z")), /A month with no sales sends nothing\. Indiana sales carry the sale date and the parcel/);
   for (const z of ["75001", "90210", "10001", "83301", "68508", "58102"]) assert.ok(!A.NEAR.test(z), z + " is not near");
   assert.equal(A.topicOf("54728", 25), "landsales:54728:25");
@@ -200,7 +200,7 @@ test("where the ask shows, and how it loads", () => {
   assert.match(read("farmland-atlas/wisconsin/barron-county.html"), /<section class="as" data-atlas-sales="county" data-st="WI"/, "the Atlas county block the ask follows");
   assert.match(read("components/land-alert.js"), /section\[data-atlas-sales="county"\]/);
   const L = read("components/loader.js");
-  assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=2';/);
+  assert.match(L, /s\.src = '\/components\/land-alert\.js\?v=3';/);   // v3: fx/landvt (Vermont)
   assert.match(L, /document\.querySelector\('\[data-land-alert\],section\[data-atlas-sales="county"\]'\)/);
   assert.match(L, /var CV = '104';/);   // 104: fx/ratecard; 102: fx/merges2; 101: fx/changemap; 100: fx/smallfixes (styles.css?v=27); 99: fx/promo2
   assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 264);

@@ -23,6 +23,13 @@
    "link": "/land-sales/"
   },
   {
+   "id": "2026-10-29-landvt",
+   "date": "2026-10-29",
+   "title": "Vermont farm sales",
+   "line": "Every recorded Vermont farm and forest sale by county, with price per acre and current use. In Field Scout, the Atlas and the monthly land sale email too.",
+   "link": "/land-sales/#vermont"
+  },
+  {
    "id": "2026-10-29-salesnav",
    "date": "2026-10-29",
    "title": "Farm sales easier to find",

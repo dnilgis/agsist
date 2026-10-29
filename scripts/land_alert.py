@@ -16,7 +16,9 @@ STATES: Illinois, Wisconsin and Indiana (STATES). Indiana was held from Oct 18 u
 Oct 27 2026 ("Yes turn on Indiana": the land sale pages and this email). Indiana's records differ
 (IN_NOTE): the sales disclosure form carries the sale date, not a recording date, and places the sale
 at the parcel's mailing town, whose point is that ZIP's Census centroid, not a township; the email
-says so whenever an Indiana sale is in it. Minnesota (eCRV) is not in the data at all.
+says so whenever an Indiana sale is in it. Vermont on Oct 29, 2026 (Sig: next land states, Vermont first):
+the town clerk's recording date is on every return, and the place is the town's Census point, as in
+Illinois and Wisconsin. Minnesota (eCRV) is not in the data at all.
 
 WHERE A SALE IS. A transfer file places each sale at its township, town, village or city (the
 "muni" code), whose point is the Census county subdivision gazetteer's internal point
@@ -63,9 +65,9 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import build_land_summary as BLS   # noqa: E402  the shared market-sale rule
 
-STATES = ("IL", "WI", "IN")         # Indiana on since Oct 27, 2026 (see above); MN not in the data
-STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana"}
-STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana"}
+STATES = ("IL", "WI", "IN", "VT")   # Indiana on since Oct 27, 2026, Vermont since Oct 29 (see above); MN not in the data
+STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana", "VT": "Vermont"}
+STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana", "VT": "vermont"}
 IN_NOTE = ("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "
            "the parcel's mailing town, placed at the middle of its ZIP code rather than a township, so distances to them are rougher.")
 MILES = (10, 25, 50)
@@ -84,6 +86,7 @@ SOURCES = {
     "IL": "Illinois Department of Revenue, MyDec transfer declarations (PTAX-203), farm parcels",
     "WI": "Wisconsin Department of Revenue, electronic real estate transfer returns, farm and forest classes",
     "IN": "Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels",
+    "VT": "Vermont Department of Taxes, property transfer tax returns (published by VCGI), farm, forest and current use land",
 }
 
 
@@ -380,7 +383,8 @@ def selftest():
     r4 = month_report(Land(tmp), zipll, 25, 2026, 8, today)
     ck("no filed date in the file: listed by sale date, marked sale date",
        [r["when"] for r in r4["rows"]] == ["2026-09-02", "2026-09-07", "2026-09-20", "2026-09-11", "2026-09-12"] and all(r["basis"] == "sale date" for r in r4["rows"]), r4["rows"])
-    ck("Indiana is a state this email reads (Sig, Oct 27)", "IN" in STATES and Land().states == ("IL", "WI", "IN"))
+    ck("Indiana is a state this email reads (Sig, Oct 27)", "IN" in STATES and Land().states[:3] == ("IL", "WI", "IN"))
+    ck("Vermont is a state this email reads (Sig, Oct 29)", Land().states == ("IL", "WI", "IN", "VT") and STATE_SLUGS["VT"] == "vermont")
     print("\n%s: %d failure(s)" % ("FAIL" if fails else "OK", len(fails)))
     return 1 if fails else 0
 
