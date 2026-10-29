@@ -249,7 +249,8 @@ test('main-checks.yml: rebuilds the built files, then every test on that commit,
   assert.match(mc, /uses: \.\/\.github\/workflows\/pr-checks\.yml\n    with:\n      full: true\n      ref: \$\{\{ needs\.rebuild\.outputs\.sha \}\}\n    secrets: inherit/);
   assert.match(mc, /needs: rebuild\n    uses:/, 'the checks run on the rebuilt commit');
   assert.match(mc, /for i in 1 2 3 4 5; do\n\s+git fetch -q origin main\n\s+git reset -q --hard origin\/main\n\s+python3 scripts\/dev\/main_build\.py build/, 'rebuild from main as it is on each try');
-  assert.match(mc, /git add -A -- "\$\{BUILT\[@\]\}"/, 'adds only the built files');
+  assert.match(mc, /python3 scripts\/dev\/main_build\.py build\n(?:\s+#.*\n)*\s+python3 scripts\/dev\/main_build\.py stage\n/, 'stages only the built files (main_build.py stage)');
+  assert.doesNotMatch(mc, /git add/, 'no bare git add in the rebuild');
   assert.match(mc, /needs: \[rebuild, checks\]/);
   assert.match(mc, /if: always\(\)/);
   assert.match(mc, /run: python3 scripts\/dev\/main_red\.py/);

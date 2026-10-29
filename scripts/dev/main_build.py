@@ -14,6 +14,7 @@ checks run `build` in their own copy before the tests, so the tests see what mai
   python3 scripts/dev/main_build.py validate           the inputs are valid (entries, changelog data)
   python3 scripts/dev/main_build.py paths              print the built files
   python3 scripts/dev/main_build.py commit-paths       print what the rebuild on main commits
+  python3 scripts/dev/main_build.py stage              git add exactly those (main-checks.yml)
 """
 import os
 import re
@@ -43,6 +44,24 @@ BUILT = {
 # what the rebuild on main commits: the built files, and entry files a build kept for a line that a
 # branch made before the move still added to data/whats-new.json (scripts/build_whats_new.py adopt)
 COMMIT = list(BUILT) + ["data/whats-new"]
+# In Actions the Engine checkout lists every engine path (scripts/, test/, build/) in .git/info/exclude so a
+# bare `git add -A` can never commit private code; scripts/dev/test-map.json sits under scripts/, so the
+# built files are staged by exact path with -f (only these files), and the entry folder without it.
+# (When the code leaves this repository, the map moves out of scripts/ with it.)
+
+
+def stage(root=None):
+    """git add the built files (exact paths, -f past the engine's info/exclude) and data/whats-new; -> staged paths"""
+    root = root or ROOT
+    files = [p for p in BUILT if os.path.isfile(os.path.join(root, p))]
+    if files:
+        subprocess.run(["git", "-C", root, "add", "-f", "--"] + files, check=True)
+    if os.path.isdir(os.path.join(root, "data/whats-new")):
+        subprocess.run(["git", "-C", root, "add", "--", "data/whats-new"], check=True)
+    out = subprocess.run(["git", "-C", root, "diff", "--staged", "--name-only"], capture_output=True, text=True, check=True)
+    return [l for l in out.stdout.split("\n") if l]
+
+
 VALIDATE = [
     ["scripts/build_whats_new.py", "--validate"],
     ["scripts/build_changelog.py", "--validate"],
@@ -108,6 +127,10 @@ def main(argv):
     cmd = argv[0] if argv else ""
     if cmd == "paths":
         print("\n".join(BUILT))
+        return 0
+    if cmd == "stage":
+        staged = stage()
+        print("staged: " + (", ".join(staged) if staged else "nothing"))
         return 0
     if cmd == "commit-paths":
         print("\n".join(COMMIT))
