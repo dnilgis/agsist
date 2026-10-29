@@ -443,6 +443,88 @@ def other_ads_live(geo_id, today=None):
     return out
 
 
+# ── A DEMO PORTAL (Oct 29, 2026; Tractor Supply) ─────────────────────────
+# 'demo': true in data/sponsors.json. A prospect is shown the portal they would
+# get, on a private link, with AGSIST's real readers in the states picked for
+# the demo. NO AD RUNS: a demo has no 'geo' id and no entry in any file that
+# serves an ad, so its viewable and click counts are the not-started 0, and GA4
+# is never asked for them (a demo's own numbers would be somebody else's).
+# 'expires' is the demo's last day; after it the builder drops the data and
+# writes only enough for the page to say the demo has ended. A demo with no
+# valid expires date is treated as ended, never as open-ended.
+DEMO_CREATIVE_DEFAULTS = {"headline": "Your ad here", "cta_text": "Learn more"}
+
+
+def is_demo(s):
+    return isinstance(s, dict) and s.get("demo") is True
+
+
+def demo_ended(s, today=None):
+    exp = s.get("expires")
+    if not (isinstance(exp, str) and re.match(r"^\d{4}-\d{2}-\d{2}$", exp)):
+        return True
+    try:
+        last = date.fromisoformat(exp)
+    except ValueError:
+        return True
+    return (today or date.today()) > last or s.get("active") is False
+
+
+def demo_creative(s):
+    """The placeholder ad, plain text: no logo, no phone, no facts, and a
+    button that goes nowhere off this page. Never live."""
+    a = s.get("demo_ad") or {}
+    c = {"advertiser": a.get("advertiser") or "Your business",
+         "headline": a.get("headline") or DEMO_CREATIVE_DEFAULTS["headline"],
+         "body": a.get("body") or "",
+         "facts": [], "cta_text": a.get("cta_text") or DEMO_CREATIVE_DEFAULTS["cta_text"],
+         "cta_url": "#", "phone": None, "logo": None, "disclosure": None}
+    return {"live": False, "demo": True, "proof_code": proof_code(c),
+            "fields": {k: c.get(k) for k in CREATIVE_FIELDS}, "label": "Sponsor", "tier": None,
+            "links": {}, "cta_urls": {}, "previews": {}, "states": licensed_states(s.get("regions")) or [],
+            "slot": None}
+
+
+def demo_payload(s, today=None):
+    """The whole portal file for a demo. After its last day: the ended stub
+    only, with no creative, no states and no numbers."""
+    slug = s.get("slug")
+    if demo_ended(s, today):
+        return {"schema": "agsist-sponsor-report/1", "slug": slug, "demo": True,
+                "demoEnded": True, "expires": s.get("expires") if isinstance(s.get("expires"), str) else None}
+    ex = portal_extras(s)
+    ex.update({"freeTest": False, "approval": None, "billing": None, "geo": None, "ended": None})
+    return {
+        "schema": "agsist-sponsor-report/1",
+        "sponsor": s.get("name", slug), "slug": slug,
+        "demo": True, "demoFor": s.get("demo_for") or None, "expires": s["expires"],
+        "regionsNote": s.get("regions_note") or None,
+        "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "through": None, "start": None, "pending": True, "pages": None,
+        "totals": {"viewable": 0, "clicks": 0, "ctr": None, "legacyImpressions": 0},
+        "windows": [], "series": [], "byPage": [],
+        "creative": demo_creative(s),
+        "rateCard": rate_card(),
+        "approveTo": APPROVE_TO,
+        "regionAds": region_ads_pending(s),
+        **ex,
+    }
+
+
+def write_demos(conf, today=None):
+    """Every demo's portal file. Returns the lines to print."""
+    out = []
+    OUTDIR.mkdir(parents=True, exist_ok=True)
+    for s in conf.get("sponsors", []):
+        if not is_demo(s) or not s.get("slug") or not s.get("token"):
+            continue
+        p = demo_payload(s, today)
+        f = OUTDIR / ("%s-%s.json" % (s["slug"], s["token"]))
+        f.write_text(json.dumps(p, indent=1) + "\n", encoding="utf-8")
+        out.append("%s: demo %s" % (s["slug"], "ended, data dropped" if p.get("demoEnded") else "through " + str(s.get("expires"))))
+    return out
+
+
 def rate_card():
     f = ROOT / "data" / "rate-card.json"
     try:
@@ -456,7 +538,10 @@ def main():
         print("no data/sponsors.json — nothing to build")
         return 0
     conf = json.loads(CONF.read_text(encoding="utf-8"))
-    sponsors = [s for s in conf.get("sponsors", []) if s.get("active", True)]
+    # Demos first, and never in the GA4 run: no ad of theirs exists to count.
+    for line in write_demos(conf):
+        print("  " + line)
+    sponsors = [s for s in conf.get("sponsors", []) if s.get("active", True) and not is_demo(s)]
     if not sponsors:
         print("no active sponsors")
         return 0
