@@ -37,6 +37,13 @@ const NAME_FILES = walk("data/land/names").filter((p) => p.endsWith(".json"));
 // Every name the tap can show, the way test/atlas-sales-names.test.mjs reads them: 6 characters or more,
 // not a plain place ("CONDIT TOWNSHIP"), not one plain word ("FARMLAND").
 const PLACE_WORDS = new Set(["TOWNSHIP", "TOWN", "COUNTY", "VILLAGE", "CITY", "OF", "THE", "STATE", "ILLINOIS", "WISCONSIN", "INDIANA"]);
+// A county government as a party ("Monroe County", "County of Dane") carries the county's own name, which every
+// page prints anyway: not a private name (build_land_sales.public_body, the same rule).
+const COUNTIES = new Set(["il", "wi", "in"].flatMap((st) => JSON.parse(read(`data/land/${st}/index.json`)).counties.map((c) => String(c.name).toUpperCase())));
+function publicBody(v) {
+  const m = /^(?:COUNTY OF ([A-Z .']+)|([A-Z .']+) COUNTY)$/.exec(String(v).toUpperCase().replace(/\s+/g, " ").trim().replace(/,? (?:ILLINOIS|WISCONSIN|INDIANA)$/, ""));
+  return !!m && COUNTIES.has((m[1] || m[2]).trim());
+}
 function tapNames() {
   const out = new Set();
   for (const p of NAME_FILES) {
@@ -50,6 +57,7 @@ function tapNames() {
       const ws = v.toUpperCase().split(/[^A-Z0-9&']+/).filter((w) => w.length >= 3);
       if (ws.length && ws.every((w) => PLACE_WORDS.has(w))) continue;
       if (ws.length < 2 && !/\d/.test(v)) continue;
+      if (publicBody(v)) continue;
       out.add(v);
     }
   }
@@ -59,12 +67,30 @@ function tapNames() {
 // the elevator list) is not a private name: "LANDMARK SERVICES COOPERATIVE" is on the bid pages anyway.
 function elevatorNames() {
   const s = new Set();
-  for (const f of ["data/ids/elevators.json", "data/elevator-coverage.json", "data/elevator-directory.json"]) {
+  for (const f of ["data/ids/elevators.json", "data/elevator-coverage.json", "data/elevator-directory.json", ...basisFiles()]) {
     if (!fs.existsSync(path.join(ROOT, f))) continue;
     const t = read(f);
     for (const m of t.matchAll(/"((?:[^"\\]|\\.){6,90})"/g)) s.add(bizKey(m[1]));
   }
   return s;
+}
+// the basis history names each grain buyer by its business name, and the ag stocks data each listed
+// company by its own (a public company that bought farm ground is not a private name)
+function basisFiles() {
+  const out = [];
+  for (const dir of ["basis-sparklines", "agstocks"]) {
+    const d = path.join(ROOT, "data", dir);
+    if (fs.existsSync(d)) out.push(...fs.readdirSync(d).filter((f) => f.endsWith(".json")).map((f) => `data/${dir}/` + f));
+  }
+  return out;
+}
+// a party whose name starts a listed business's name ("X Grain" and "X Grain Co." in the list) is that business
+function isBiz(biz, n) {
+  const k = bizKey(n);
+  if (biz.has(k)) return true;
+  if (k.length < 8) return false;
+  for (const b of biz) if (b.startsWith(k)) return true;
+  return false;
 }
 // letters and digits only, so "Rose Acre Farms, Inc" on a return and "Rose Acre Farms, Inc." in the list are one business
 function bizKey(v) { return String(v).toUpperCase().replace(/[^A-Z0-9]+/g, ""); }
@@ -101,12 +127,14 @@ test("no buyer or seller name in any published page, sitemap or data file outsid
     assert.ok(files.includes(must), "searched " + must);
   const hits = [];
   for (let i = 0; i < files.length; i += 2000) {
-    const r = spawnSync("grep", ["-F", "-o", "-H", "-f", list, "--", ...files.slice(i, i + 2000)], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 28 });
+    // whole words (-w): a party "X Cooper" is not printed by a page that says "X Cooperative" (every sale's names
+    // are in the tap files since Oct 29, so partial-word matches with town and company names are common)
+    const r = spawnSync("grep", ["-F", "-w", "-o", "-H", "-f", list, "--", ...files.slice(i, i + 2000)], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 28 });
     assert.ok(r.status === 0 || r.status === 1, "grep ran: " + r.stderr);
     for (const l of (r.stdout || "").split("\n").filter(Boolean)) { const k = l.indexOf(":"); hits.push([l.slice(0, k), l.slice(k + 1)]); }
   }
   const biz = elevatorNames();
-  const bad = hits.filter(([f, n]) => !biz.has(bizKey(n)));
+  const bad = hits.filter(([f, n]) => !isBiz(biz, n));
   fs.rmSync(tmp, { recursive: true, force: true });
   assert.deepEqual(bad.slice(0, 10), [], `${bad.length} buyer or seller name(s) outside data/land/`);
   // and the generated sale pages carry no name of any kind, elevator or not
@@ -220,7 +248,7 @@ test("the component: names load only from the blocked folder; the remove link ca
 
 test("where the sales show: Atlas county pages, IL and WI rent pages, homepage, Fast Facts, search, Daily", () => {
   const loader = read("components/loader.js");
-  assert.match(loader, /\/components\/land-sales\.js\?v=1/);
+  assert.match(loader, /\/components\/land-sales\.js\?v=2/);
   assert.match(loader, /section\[data-atlas-sales="county"\]/);
   assert.match(loader, /rent\\\/\(illinois\|wisconsin\|indiana\)/);
   assert.match(loader, /farmland-atlas\\\/indiana/, "Indiana's Atlas county pages load it too");

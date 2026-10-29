@@ -31,7 +31,9 @@ const WF = read(".github/workflows/land-alert.yml");
 test("the selftests: the radius, the list, the gate, the route, the stop link the worker takes", () => {
   const la = py(["scripts/land_alert.py", "--selftest"]);
   assert.match(la, /OK: 0 failure\(s\)/);
-  for (const name of ["one degree of latitude is 69.1 miles", "the 26-mile sale is outside 25 and inside 50", "10 miles keeps only the 7-mile sale",
+  for (const name of ["one degree of latitude is 69.1 miles", "the 26-mile sale is outside 25 and inside 50", "10 miles keeps only the two 7-mile sales",
+    "listed: recorded in September, any acreage, inside 25 mi, market sales, nearest first",
+    "with buildings by property class, not by deed text; $/acre from the shared rule",
     "a row carries no name, parcel, legal or document", "an empty month is an answer with no rows, not a skip",
     "median by hand: 16 sales, $5,650; the year before 12 sales, $5,350; up 5.6%", "Indiana is a state this email reads (Sig, Oct 27)"]) {
     assert.ok(la.includes("ok   " + name), "land_alert selftest ran: " + name);

@@ -68,12 +68,13 @@
           if (!f) { var since = new Date(); since.setFullYear(since.getFullYear() - 3); f = { maxMi: 25, minAc: 10, since: since.toISOString().slice(0, 10) }; }
           f.sort = 'mi'; f.dir = 'asc';
           var list = F.filterComps(sales.rows, f, c);
-          var med = F.medianPpa(list);
+          // an older cached field-scout-land.js has no middleAll or leftOutText: fall back to its own middle
+          var all = F.middleAll ? F.middleAll(f) : false, med = F.medianPpa(list, { all: all });
           var thru = sales.files.map(function (x) { var v = x.coverage || {}; return v.filed_to || v.to || ''; }).sort().pop();
           var srcs = {}; sales.files.forEach(function (x) { srcs[x.source] = x.links || []; });
           var srcHTML = Object.keys(srcs).map(function (k) { return esc(k) + (srcs[k].length ? ': ' + srcs[k].map(function (l) { return '<a href="' + esc(l.url) + '">' + esc(l.t) + '</a> (' + esc(l.url.replace(/^https?:\/\//, '')) + ')'; }).join(', ') : ''); }).join('. ');
           set('frp-comps', '<p class="fl-note"><b>Recorded sales in our data, through ' + F.fmtDate(thru) + '; not an appraisal.</b> ' + (mine ? 'Your Field Scout filters: ' : 'Defaults: ') + esc(F.filterText(f)) + '.</p>' +
-            (med ? '<p><span class="fl-big">' + F.fmtMoney(med.ppa) + '/ac</span> middle of ' + med.n + ' sales with known acres that match.</p>' : miss('Fewer than 3 matching sales with known acres; no middle price shown.')) +
+            (med ? '<p><span class="fl-big">' + F.fmtMoney(med.ppa) + '/ac</span> middle of ' + med.n + ' sales with known acres that match' + (all ? '' : ', bare land') + '.' + esc(F.leftOutText ? F.leftOutText(list, all) : '') + '</p>' : miss(F.FEW_TEXT || 'Too few matching sales with known acres; no middle price shown.')) +
             (list.length ? '<p class="fl-note">The ' + Math.min(10, list.length) + ' nearest of ' + list.length + ' matching sales:</p>' : '') +
             F.compsTable(list, 10, { src: true }) +
             miss('Price covers the whole sale, buildings included unless the class is bare land. Miles run to the center of the town where the sale was filed, not to the parcel. Sales on several parcels whose acres are uncertain are listed without $/acre and left out of the middle. Sources: ' + srcHTML + '.'));
