@@ -12,10 +12,28 @@
      "text": "County sales pages now list every recorded sale of any size, newest first, with a type for each (farmland, with buildings, forest or small parcel) and a filter; Show more loads the rest. The market middle at the top counts bare farmland of 20 acres or more over 24 months and says so. Buildings are read from the property class everywhere, Wisconsin forest sales are kept apart, and the comparable sales report and Field Scout now need 5 sales before showing a middle. The monthly land sale email lists sales of any size."
     },
     {
+     "tag": "new",
+     "page": "/ag-stocks",
+     "name": "Ag stocks and the AGSIST Ag 20",
+     "text": "A new page with the daily closing share prices of U.S.-listed farm equipment, fertilizer, grain, livestock and food companies, the date each last reported to the SEC and its revenue against a year ago (whole company). Tap a company for the numbers from its own filings and its ethanol, crush and elevator plants near your ZIP. Our own equal-weight index of 20 of them starts Nov 2. Not investment advice."
+    },
+    {
      "tag": "fixed",
      "page": "/milk-prices",
      "name": "Milk prices: Your area stays put on a slow connection",
      "text": "On a slow phone or connection, the Your area card could still nudge the page as it loaded: the area picker started narrow and then wrapped under the heading, and a note for split states pushed the summary down. The picker now has a set width and the card waits for its own note before showing, so nothing moves."
+    },
+    {
+     "tag": "fixed",
+     "page": "/milk-prices",
+     "name": "Milk prices: the top bar no longer flickers as the page loads",
+     "text": "The plain row of links at the top, meant for search engines and readers without scripts, could jump sideways for an instant before the menu replaced it. It now stays out of sight until the menu arrives (shown after 3 seconds if the menu never comes)."
+    },
+    {
+     "tag": "fixed",
+     "page": "/",
+     "name": "Every page: the top bar no longer flickers as it loads",
+     "text": "The plain row of links at the top of each page, meant for search engines and readers without scripts, could jump sideways for an instant before the menu replaced it. It now stays out of sight until the menu arrives (shown after 3 seconds if the menu never comes), as on the milk page since this morning."
     }
    ]
   },

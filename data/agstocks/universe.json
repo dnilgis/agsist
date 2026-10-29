@@ -1,0 +1,718 @@
+{
+ "checked": "2026-10-29T01:50:40Z",
+ "dropped": [
+  {
+   "company": "Fresh Del Monte Produce",
+   "t": "FDP",
+   "why": "ticker not in SEC's company ticker list"
+  },
+  {
+   "company": "Pacific Ethanol",
+   "t": "PEIX",
+   "why": "historical ticker, renamed Alto Ingredients (ALTO)"
+  },
+  {
+   "company": "Calavo Growers",
+   "t": "CVGW",
+   "why": "historical: acquired by Mission Produce (AVO), May 2026"
+  },
+  {
+   "company": "Local Bounti",
+   "t": "LOCL",
+   "why": "current listing not verified"
+  },
+  {
+   "company": "Oriental Rise Holdings",
+   "t": "ORIS",
+   "why": "Nasdaq listing not verified"
+  }
+ ],
+ "groups": [
+  "Equipment",
+  "Crop inputs",
+  "Grain and processing",
+  "Livestock and animal health",
+  "Food and produce",
+  "Farmland and lenders",
+  "Farm retail"
+ ],
+ "indexes": [
+  {
+   "key": "ag20",
+   "left_out": [],
+   "min_members": 13,
+   "name": "AGSIST Ag 20",
+   "tickers": [
+    "DE",
+    "CNH",
+    "AGCO",
+    "TITN",
+    "LNN",
+    "NTR",
+    "CF",
+    "MOS",
+    "CTVA",
+    "FMC",
+    "ADM",
+    "BG",
+    "ANDE",
+    "GPRE",
+    "INGR",
+    "TSN",
+    "HRL",
+    "PPC",
+    "ZTS",
+    "ELAN"
+   ]
+  },
+  {
+   "key": "input",
+   "left_out": [],
+   "min_members": 5,
+   "name": "Input suppliers",
+   "tickers": [
+    "DE",
+    "AGCO",
+    "CNH",
+    "NTR",
+    "CF",
+    "MOS",
+    "FMC",
+    "CTVA"
+   ]
+  },
+  {
+   "key": "demand",
+   "left_out": [],
+   "min_members": 5,
+   "name": "Demand chain",
+   "tickers": [
+    "ADM",
+    "BG",
+    "ANDE",
+    "GPRE",
+    "TSN",
+    "PPC",
+    "CALM",
+    "VITL"
+   ]
+  }
+ ],
+ "members": [
+  {
+   "cik": "0000315189",
+   "company": "Deere & Company",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "DEERE & CO",
+   "status": "listed",
+   "t": "DE"
+  },
+  {
+   "cik": "0001567094",
+   "company": "CNH Industrial",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "CNH Industrial N.V.",
+   "status": "listed",
+   "t": "CNH"
+  },
+  {
+   "cik": "0000880266",
+   "company": "AGCO",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "AGCO CORP /DE",
+   "status": "listed",
+   "t": "AGCO"
+  },
+  {
+   "cik": "0000836157",
+   "company": "Lindsay",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "LINDSAY CORP",
+   "status": "listed",
+   "t": "LNN"
+  },
+  {
+   "cik": "0000102729",
+   "company": "Valmont Industries",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "VALMONT INDUSTRIES INC",
+   "status": "listed",
+   "t": "VMI"
+  },
+  {
+   "cik": "0001409171",
+   "company": "Titan Machinery",
+   "exchange": "Nasdaq",
+   "group": "Equipment",
+   "sec_name": "Titan Machinery Inc.",
+   "status": "listed",
+   "t": "TITN"
+  },
+  {
+   "cik": "0000737758",
+   "company": "Toro",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "TORO CO",
+   "status": "listed",
+   "t": "TTC"
+  },
+  {
+   "cik": "0000897077",
+   "company": "Alamo Group",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "ALAMO GROUP INC",
+   "status": "listed",
+   "t": "ALG"
+  },
+  {
+   "cik": "0000899751",
+   "company": "Titan International",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "TITAN INTERNATIONAL INC",
+   "status": "listed",
+   "t": "TWI"
+  },
+  {
+   "cik": "0000792987",
+   "company": "Astec Industries",
+   "exchange": "Nasdaq",
+   "group": "Equipment",
+   "sec_name": "ASTEC INDUSTRIES INC",
+   "status": "listed",
+   "t": "ASTE"
+  },
+  {
+   "cik": "0000864749",
+   "company": "Trimble",
+   "exchange": "Nasdaq",
+   "group": "Equipment",
+   "sec_name": "TRIMBLE INC.",
+   "status": "listed",
+   "t": "TRMB"
+  },
+  {
+   "cik": "0000008504",
+   "company": "AgEagle Aerial Systems",
+   "exchange": "NYSE",
+   "group": "Equipment",
+   "sec_name": "AgEagle Aerial Systems Inc.",
+   "status": "listed",
+   "t": "UAVS"
+  },
+  {
+   "cik": "0002032755",
+   "company": "Pinnacle Food Group",
+   "exchange": "Nasdaq",
+   "group": "Equipment",
+   "sec_name": "Pinnacle Food Group Ltd",
+   "status": "listed",
+   "t": "PFAI"
+  },
+  {
+   "cik": "0001725964",
+   "company": "Nutrien",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "Nutrien Ltd.",
+   "status": "listed",
+   "t": "NTR"
+  },
+  {
+   "cik": "0001324404",
+   "company": "CF Industries",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "CF Industries Holdings, Inc.",
+   "status": "listed",
+   "t": "CF"
+  },
+  {
+   "cik": "0001285785",
+   "company": "Mosaic",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "MOSAIC CO",
+   "status": "listed",
+   "t": "MOS"
+  },
+  {
+   "cik": "0001755672",
+   "company": "Corteva",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "Corteva, Inc.",
+   "status": "listed",
+   "t": "CTVA"
+  },
+  {
+   "cik": "0002128626",
+   "company": "Vylor",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "Vylor Inc.",
+   "status": "listed",
+   "t": "VYLR"
+  },
+  {
+   "cik": "0000037785",
+   "company": "FMC",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "FMC CORP",
+   "status": "listed",
+   "t": "FMC"
+  },
+  {
+   "cik": "0000941221",
+   "company": "ICL Group",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "ICL Group Ltd.",
+   "status": "listed",
+   "t": "ICL"
+  },
+  {
+   "cik": "0001421461",
+   "company": "Intrepid Potash",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "Intrepid Potash, Inc.",
+   "status": "listed",
+   "t": "IPI"
+  },
+  {
+   "cik": "0000005981",
+   "company": "American Vanguard",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "AMERICAN VANGUARD CORP",
+   "status": "listed",
+   "t": "AVD"
+  },
+  {
+   "cik": "0001769484",
+   "company": "Bioceres Crop Solutions",
+   "exchange": "Nasdaq",
+   "group": "Crop inputs",
+   "sec_name": "Bioceres Crop Solutions Corp.",
+   "status": "listed",
+   "t": "BIOX"
+  },
+  {
+   "cik": "0001425292",
+   "company": "CVR Partners",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "CVR PARTNERS, LP",
+   "status": "listed",
+   "t": "UAN"
+  },
+  {
+   "cik": "0000825542",
+   "company": "Scotts Miracle-Gro",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "SCOTTS MIRACLE-GRO CO",
+   "status": "listed",
+   "t": "SMG"
+  },
+  {
+   "cik": "0000909037",
+   "company": "SQM",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "CHEMICAL & MINING CO OF CHILE INC",
+   "status": "listed",
+   "t": "SQM"
+  },
+  {
+   "cik": "0001069394",
+   "company": "Flexible Solutions International",
+   "exchange": "NYSE",
+   "group": "Crop inputs",
+   "sec_name": "FLEXIBLE SOLUTIONS INTERNATIONAL INC",
+   "status": "listed",
+   "t": "FSI"
+  },
+  {
+   "cik": "0001321851",
+   "company": "Origin Agritech",
+   "exchange": "Nasdaq",
+   "group": "Crop inputs",
+   "sec_name": "Origin Agritech LTD",
+   "status": "listed",
+   "t": "SEED"
+  },
+  {
+   "cik": "0000007084",
+   "company": "Archer-Daniels-Midland",
+   "exchange": "NYSE",
+   "group": "Grain and processing",
+   "sec_name": "Archer-Daniels-Midland Co",
+   "status": "listed",
+   "t": "ADM"
+  },
+  {
+   "cik": "0001996862",
+   "company": "Bunge Global",
+   "exchange": "NYSE",
+   "group": "Grain and processing",
+   "sec_name": "Bunge Global SA",
+   "status": "listed",
+   "t": "BG"
+  },
+  {
+   "cik": "0000821026",
+   "company": "The Andersons",
+   "exchange": "Nasdaq",
+   "group": "Grain and processing",
+   "sec_name": "Andersons, Inc.",
+   "status": "listed",
+   "t": "ANDE"
+  },
+  {
+   "cik": "0001046257",
+   "company": "Ingredion",
+   "exchange": "NYSE",
+   "group": "Grain and processing",
+   "sec_name": "Ingredion Inc",
+   "status": "listed",
+   "t": "INGR"
+  },
+  {
+   "cik": "0000916540",
+   "company": "Darling Ingredients",
+   "exchange": "NYSE",
+   "group": "Grain and processing",
+   "sec_name": "DARLING INGREDIENTS INC.",
+   "status": "listed",
+   "t": "DAR"
+  },
+  {
+   "cik": "0001309402",
+   "company": "Green Plains",
+   "exchange": "Nasdaq",
+   "group": "Grain and processing",
+   "sec_name": "Green Plains Inc.",
+   "status": "listed",
+   "t": "GPRE"
+  },
+  {
+   "cik": "0000744187",
+   "company": "REX American Resources",
+   "exchange": "NYSE",
+   "group": "Grain and processing",
+   "sec_name": "REX AMERICAN RESOURCES Corp",
+   "status": "listed",
+   "t": "REX"
+  },
+  {
+   "cik": "0000778164",
+   "company": "Alto Ingredients",
+   "exchange": "Nasdaq",
+   "group": "Grain and processing",
+   "sec_name": "Alto Ingredients, Inc.",
+   "status": "listed",
+   "t": "ALTO"
+  },
+  {
+   "cik": "0000738214",
+   "company": "Aemetis",
+   "exchange": "Nasdaq",
+   "group": "Grain and processing",
+   "sec_name": "AEMETIS, INC",
+   "status": "listed",
+   "t": "AMTX"
+  },
+  {
+   "cik": "0002013745",
+   "company": "Calumet",
+   "exchange": "Nasdaq",
+   "group": "Grain and processing",
+   "sec_name": "Calumet, Inc. /DE",
+   "status": "listed",
+   "t": "CLMT"
+  },
+  {
+   "cik": "0000880117",
+   "company": "John B. Sanfilippo & Son",
+   "exchange": "Nasdaq",
+   "group": "Grain and processing",
+   "sec_name": "SANFILIPPO JOHN B & SON INC",
+   "status": "listed",
+   "t": "JBSS"
+  },
+  {
+   "cik": "0000100493",
+   "company": "Tyson Foods",
+   "exchange": "NYSE",
+   "group": "Livestock and animal health",
+   "sec_name": "TYSON FOODS, INC.",
+   "status": "listed",
+   "t": "TSN"
+  },
+  {
+   "cik": "0000048465",
+   "company": "Hormel Foods",
+   "exchange": "NYSE",
+   "group": "Livestock and animal health",
+   "sec_name": "HORMEL FOODS CORP /DE/",
+   "status": "listed",
+   "t": "HRL"
+  },
+  {
+   "cik": "0000802481",
+   "company": "Pilgrim's Pride",
+   "exchange": "Nasdaq",
+   "group": "Livestock and animal health",
+   "sec_name": "PILGRIMS PRIDE CORP",
+   "status": "listed",
+   "t": "PPC"
+  },
+  {
+   "cik": "0000016160",
+   "company": "Cal-Maine Foods",
+   "exchange": "Nasdaq",
+   "group": "Livestock and animal health",
+   "sec_name": "CAL-MAINE FOODS INC",
+   "status": "listed",
+   "t": "CALM"
+  },
+  {
+   "cik": "0001579733",
+   "company": "Vital Farms",
+   "exchange": "Nasdaq",
+   "group": "Livestock and animal health",
+   "sec_name": "Vital Farms, Inc.",
+   "status": "listed",
+   "t": "VITL"
+  },
+  {
+   "cik": "0001791942",
+   "company": "JBS",
+   "exchange": "NYSE",
+   "group": "Livestock and animal health",
+   "sec_name": "JBS N.V.",
+   "status": "listed",
+   "t": "JBS"
+  },
+  {
+   "cik": "0000091388",
+   "company": "Smithfield Foods",
+   "exchange": "Nasdaq",
+   "group": "Livestock and animal health",
+   "sec_name": "SMITHFIELD FOODS INC",
+   "status": "listed",
+   "t": "SFD"
+  },
+  {
+   "cik": "0001555280",
+   "company": "Zoetis",
+   "exchange": "NYSE",
+   "group": "Livestock and animal health",
+   "sec_name": "Zoetis Inc.",
+   "status": "listed",
+   "t": "ZTS"
+  },
+  {
+   "cik": "0001739104",
+   "company": "Elanco Animal Health",
+   "exchange": "NYSE",
+   "group": "Livestock and animal health",
+   "sec_name": "Elanco Animal Health Inc",
+   "status": "listed",
+   "t": "ELAN"
+  },
+  {
+   "cik": "0001069899",
+   "company": "Phibro Animal Health",
+   "exchange": "Nasdaq",
+   "group": "Livestock and animal health",
+   "sec_name": "PHIBRO ANIMAL HEALTH CORP",
+   "status": "listed",
+   "t": "PAHC"
+  },
+  {
+   "cik": "0000711377",
+   "company": "Neogen",
+   "exchange": "Nasdaq",
+   "group": "Livestock and animal health",
+   "sec_name": "NEOGEN CORP",
+   "status": "listed",
+   "t": "NEOG"
+  },
+  {
+   "cik": "0000874716",
+   "company": "IDEXX Laboratories",
+   "exchange": "Nasdaq",
+   "group": "Livestock and animal health",
+   "sec_name": "IDEXX LABORATORIES INC /DE",
+   "status": "listed",
+   "t": "IDXX"
+  },
+  {
+   "cik": "0000814586",
+   "company": "Lifeway Foods",
+   "exchange": "Nasdaq",
+   "group": "Livestock and animal health",
+   "sec_name": "Lifeway Foods, Inc.",
+   "status": "listed",
+   "t": "LWAY"
+  },
+  {
+   "cik": "0001857475",
+   "company": "Dole",
+   "exchange": "NYSE",
+   "group": "Food and produce",
+   "sec_name": "Dole plc",
+   "status": "listed",
+   "t": "DOLE"
+  },
+  {
+   "cik": "0001802974",
+   "company": "Mission Produce",
+   "exchange": "Nasdaq",
+   "group": "Food and produce",
+   "sec_name": "Mission Produce, Inc.",
+   "status": "listed",
+   "t": "AVO"
+  },
+  {
+   "cik": "0001342423",
+   "company": "Limoneira",
+   "exchange": "Nasdaq",
+   "group": "Food and produce",
+   "sec_name": "Limoneira CO",
+   "status": "listed",
+   "t": "LMNR"
+  },
+  {
+   "cik": "0000003545",
+   "company": "Alico",
+   "exchange": "Nasdaq",
+   "group": "Food and produce",
+   "sec_name": "ALICO, INC.",
+   "status": "listed",
+   "t": "ALCO"
+  },
+  {
+   "cik": "0001584549",
+   "company": "Village Farms International",
+   "exchange": "Nasdaq",
+   "group": "Food and produce",
+   "sec_name": "Village Farms International, Inc.",
+   "status": "listed",
+   "t": "VFF"
+  },
+  {
+   "cik": "0000088948",
+   "company": "Seneca Foods",
+   "exchange": "Nasdaq",
+   "group": "Food and produce",
+   "sec_name": "Seneca Foods Corp",
+   "status": "listed",
+   "t": "SENEA"
+  },
+  {
+   "cik": "0001809750",
+   "company": "Edible Garden",
+   "exchange": "Nasdaq",
+   "group": "Food and produce",
+   "sec_name": "Edible Garden AG Inc",
+   "status": "listed",
+   "t": "EDBL"
+  },
+  {
+   "cik": "0002009233",
+   "company": "Agroz",
+   "exchange": "Nasdaq",
+   "group": "Food and produce",
+   "sec_name": "Agroz Inc.",
+   "status": "listed",
+   "t": "AGRZ"
+  },
+  {
+   "cik": "0001499505",
+   "company": "Adecoagro",
+   "exchange": "NYSE",
+   "group": "Farmland and lenders",
+   "sec_name": "Adecoagro S.A.",
+   "status": "listed",
+   "t": "AGRO"
+  },
+  {
+   "cik": "0001499849",
+   "company": "BrasilAgro",
+   "exchange": "NYSE",
+   "group": "Farmland and lenders",
+   "sec_name": "BrasilAgro - Brazilian Agricultural Real Estate Co",
+   "status": "listed",
+   "t": "LND"
+  },
+  {
+   "cik": "0001034957",
+   "company": "Cresud",
+   "exchange": "Nasdaq",
+   "group": "Farmland and lenders",
+   "sec_name": "CRESUD INC",
+   "status": "listed",
+   "t": "CRESY"
+  },
+  {
+   "cik": "0001495240",
+   "company": "Gladstone Land",
+   "exchange": "Nasdaq",
+   "group": "Farmland and lenders",
+   "sec_name": "GLADSTONE LAND Corp",
+   "status": "listed",
+   "t": "LAND"
+  },
+  {
+   "cik": "0001591670",
+   "company": "Farmland Partners",
+   "exchange": "NYSE",
+   "group": "Farmland and lenders",
+   "sec_name": "Farmland Partners Inc.",
+   "status": "listed",
+   "t": "FPI"
+  },
+  {
+   "cik": "0000845877",
+   "company": "Farmer Mac",
+   "exchange": "NYSE",
+   "group": "Farmland and lenders",
+   "sec_name": "FEDERAL AGRICULTURAL MORTGAGE CORP",
+   "status": "listed",
+   "t": "AGM"
+  },
+  {
+   "cik": "0001042046",
+   "company": "American Financial Group",
+   "exchange": "NYSE",
+   "group": "Farmland and lenders",
+   "sec_name": "AMERICAN FINANCIAL GROUP INC",
+   "status": "listed",
+   "t": "AFG"
+  },
+  {
+   "cik": "0000916365",
+   "company": "Tractor Supply",
+   "exchange": "Nasdaq",
+   "group": "Farm retail",
+   "sec_name": "TRACTOR SUPPLY CO /DE/",
+   "status": "listed",
+   "t": "TSCO"
+  }
+ ],
+ "notes": [],
+ "source": "https://www.sec.gov/files/company_tickers_exchange.json",
+ "v": 1
+}

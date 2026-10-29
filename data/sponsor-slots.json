@@ -5,613 +5,792 @@
    "id": "basis",
    "page": "/basis",
    "name": "Basis vs Normal",
-   "pitch": "Your name beside regional basis and barge rates. One category-exclusive slot."
+   "pitch": "Your name beside regional basis and barge rates. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "breakeven",
    "page": "/breakeven",
    "name": "Break-Even Calculator",
-   "pitch": "Your name beside the break-even calculator. One category-exclusive slot."
+   "pitch": "Your name beside the break-even calculator. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "cash-bids",
    "page": "/cash-bids",
    "name": "Cash Bids",
-   "pitch": "Your name beside local cash bids. One category-exclusive slot."
+   "pitch": "Your name beside local cash bids. One category-exclusive slot.",
+   "tier": "cashbids"
   },
   {
    "id": "cash-lease",
    "page": "/cash-lease",
    "name": "Cash Farm Lease",
-   "pitch": "Your name beside the cash lease tool. One category-exclusive slot."
+   "pitch": "Your name beside the cash lease tool. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "cattle-futures-prices",
    "page": "/cattle-futures-prices",
    "name": "Cattle Futures Prices",
-   "pitch": "Your name beside the cattle futures. One category-exclusive slot."
+   "pitch": "Your name beside the cattle futures. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "conditions",
    "page": "/conditions",
    "name": "Crop Conditions",
-   "pitch": "Your name beside the crop condition rankings. One category-exclusive slot."
+   "pitch": "Your name beside the crop condition rankings. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "corn-futures-prices",
    "page": "/corn-futures-prices",
    "name": "Corn Futures Prices",
-   "pitch": "Your name beside the corn futures price. One category-exclusive slot."
+   "pitch": "Your name beside the corn futures price. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "drought",
    "page": "/drought-monitor",
    "name": "Drought Monitor",
-   "pitch": "Your name beside the drought map. One category-exclusive slot."
+   "pitch": "Your name beside the drought map. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "fast-facts",
    "page": "/fast-facts",
    "name": "Fast Facts",
-   "pitch": "Your name beside the reference tables. One category-exclusive slot."
+   "pitch": "Your name beside the reference tables. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "fertilizer",
    "page": "/fertilizer",
    "name": "Fertilizer",
-   "pitch": "Your name beside the fertilizer prices. One category-exclusive slot."
+   "pitch": "Your name beside the fertilizer prices. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "field-scout",
    "page": "/field-scout",
    "name": "Field Scout",
-   "pitch": "Your name beside Field Scout. One category-exclusive slot."
+   "pitch": "Your name beside Field Scout. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "gdu",
    "page": "/gdu-calculator",
    "name": "GDU Calculator",
-   "pitch": "Your name beside the GDU calculator. One category-exclusive slot."
+   "pitch": "Your name beside the GDU calculator. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "grain-bin-calculator",
    "page": "/grain-bin-calculator",
    "name": "Grain Bin Calculator",
-   "pitch": "Your name beside the grain bin calculator. One category-exclusive slot."
+   "pitch": "Your name beside the grain bin calculator. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "elevators",
    "page": "/list-your-elevator",
    "name": "Elevator Coverage Map",
-   "pitch": "Your name beside the elevator map. One category-exclusive slot."
+   "pitch": "Your name beside the elevator map. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "markets",
    "page": "/markets",
    "name": "Markets",
-   "pitch": "Your name beside every futures price on the site. One category-exclusive slot."
+   "pitch": "Your name beside every futures price on the site. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "milk",
    "page": "/milk-prices",
    "name": "Milk Prices",
-   "pitch": "Your name beside the milk prices. One category-exclusive slot."
+   "pitch": "Your name beside the milk prices. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "planting-date",
    "page": "/planting-date",
    "name": "Planting Date",
-   "pitch": "Your name beside the planting date guide. One category-exclusive slot."
+   "pitch": "Your name beside the planting date guide. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "rent-hub",
    "page": "/rent",
    "name": "Cash rent by state",
-   "pitch": "Your name on the cash rent page for every state. One category-exclusive slot."
+   "pitch": "Your name on the cash rent page for every state. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "soybean-futures-prices",
    "page": "/soybean-futures-prices",
    "name": "Soybean Futures Prices",
-   "pitch": "Your name beside the soybean futures price. One category-exclusive slot."
+   "pitch": "Your name beside the soybean futures price. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "spray",
    "page": "/spray",
    "name": "Spray Advisory",
-   "pitch": "Your name beside the spray forecast. One category-exclusive slot."
+   "pitch": "Your name beside the spray forecast. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "tools",
    "page": "/tools",
    "name": "All Tools",
-   "pitch": "Your name on the page that lists every tool. One category-exclusive slot."
+   "pitch": "Your name on the page that lists every tool. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "urea",
    "page": "/urea",
    "name": "Urea Volatilization Risk",
-   "pitch": "Your name beside the urea loss risk. One category-exclusive slot."
+   "pitch": "Your name beside the urea loss risk. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "whats-priced-in",
    "page": "/usda-calendar",
    "name": "USDA Calendar: What's Priced In",
-   "pitch": "Your name beside the trade estimates for each USDA report. One category-exclusive slot."
+   "pitch": "Your name beside the trade estimates for each USDA report. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "wheat-futures-prices",
    "page": "/wheat-futures-prices",
    "name": "Wheat Futures Prices",
-   "pitch": "Your name beside the wheat futures price. One category-exclusive slot."
+   "pitch": "Your name beside the wheat futures price. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "yield-estimator",
    "page": "/yield-estimator",
    "name": "Yield Estimator",
-   "pitch": "Your name beside the yield estimator. One category-exclusive slot."
+   "pitch": "Your name beside the yield estimator. One category-exclusive slot.",
+   "tier": null
   },
   {
    "id": "cash-bids-alabama",
    "page": "/cash-bids/alabama",
    "name": "Alabama cash bids",
-   "pitch": "Your name beside the cash bids on the Alabama page and every Alabama town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Alabama page and every Alabama town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "AL"
   },
   {
    "id": "cash-bids-arkansas",
    "page": "/cash-bids/arkansas",
    "name": "Arkansas cash bids",
-   "pitch": "Your name beside the cash bids on the Arkansas page and every Arkansas town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Arkansas page and every Arkansas town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "AR"
   },
   {
    "id": "cash-bids-colorado",
    "page": "/cash-bids/colorado",
    "name": "Colorado cash bids",
-   "pitch": "Your name beside the cash bids on the Colorado page and every Colorado town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Colorado page and every Colorado town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "CO"
   },
   {
    "id": "cash-bids-florida",
    "page": "/cash-bids/florida",
    "name": "Florida cash bids",
-   "pitch": "Your name beside the cash bids on the Florida page and every Florida town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Florida page and every Florida town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "FL"
   },
   {
    "id": "cash-bids-georgia",
    "page": "/cash-bids/georgia",
    "name": "Georgia cash bids",
-   "pitch": "Your name beside the cash bids on the Georgia page and every Georgia town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Georgia page and every Georgia town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "GA"
   },
   {
    "id": "cash-bids-idaho",
    "page": "/cash-bids/idaho",
    "name": "Idaho cash bids",
-   "pitch": "Your name beside the cash bids on the Idaho page and every Idaho town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Idaho page and every Idaho town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "ID"
   },
   {
    "id": "cash-bids-illinois",
    "page": "/cash-bids/illinois",
    "name": "Illinois cash bids",
-   "pitch": "Your name beside the cash bids on the Illinois page and every Illinois town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Illinois page and every Illinois town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "IL"
   },
   {
    "id": "cash-bids-indiana",
    "page": "/cash-bids/indiana",
    "name": "Indiana cash bids",
-   "pitch": "Your name beside the cash bids on the Indiana page and every Indiana town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Indiana page and every Indiana town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "IN"
   },
   {
    "id": "cash-bids-iowa",
    "page": "/cash-bids/iowa",
    "name": "Iowa cash bids",
-   "pitch": "Your name beside the cash bids on the Iowa page and every Iowa town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Iowa page and every Iowa town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "IA"
   },
   {
    "id": "cash-bids-kansas",
    "page": "/cash-bids/kansas",
    "name": "Kansas cash bids",
-   "pitch": "Your name beside the cash bids on the Kansas page and every Kansas town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Kansas page and every Kansas town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "KS"
   },
   {
    "id": "cash-bids-kentucky",
    "page": "/cash-bids/kentucky",
    "name": "Kentucky cash bids",
-   "pitch": "Your name beside the cash bids on the Kentucky page and every Kentucky town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Kentucky page and every Kentucky town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "KY"
   },
   {
    "id": "cash-bids-louisiana",
    "page": "/cash-bids/louisiana",
    "name": "Louisiana cash bids",
-   "pitch": "Your name beside the cash bids on the Louisiana page and every Louisiana town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Louisiana page and every Louisiana town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "LA"
   },
   {
    "id": "cash-bids-michigan",
    "page": "/cash-bids/michigan",
    "name": "Michigan cash bids",
-   "pitch": "Your name beside the cash bids on the Michigan page and every Michigan town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Michigan page and every Michigan town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MI"
   },
   {
    "id": "cash-bids-minnesota",
    "page": "/cash-bids/minnesota",
    "name": "Minnesota cash bids",
-   "pitch": "Your name beside the cash bids on the Minnesota page and every Minnesota town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Minnesota page and every Minnesota town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MN"
   },
   {
    "id": "cash-bids-missouri",
    "page": "/cash-bids/missouri",
    "name": "Missouri cash bids",
-   "pitch": "Your name beside the cash bids on the Missouri page and every Missouri town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Missouri page and every Missouri town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MO"
   },
   {
    "id": "cash-bids-montana",
    "page": "/cash-bids/montana",
    "name": "Montana cash bids",
-   "pitch": "Your name beside the cash bids on the Montana page and every Montana town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Montana page and every Montana town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MT"
   },
   {
    "id": "cash-bids-nebraska",
    "page": "/cash-bids/nebraska",
    "name": "Nebraska cash bids",
-   "pitch": "Your name beside the cash bids on the Nebraska page and every Nebraska town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Nebraska page and every Nebraska town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NE"
   },
   {
    "id": "cash-bids-new-york",
    "page": "/cash-bids/new-york",
    "name": "New York cash bids",
-   "pitch": "Your name beside the cash bids on the New York page and every New York town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the New York page and every New York town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NY"
   },
   {
    "id": "cash-bids-north-dakota",
    "page": "/cash-bids/north-dakota",
    "name": "North Dakota cash bids",
-   "pitch": "Your name beside the cash bids on the North Dakota page and every North Dakota town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the North Dakota page and every North Dakota town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "ND"
   },
   {
    "id": "cash-bids-ohio",
    "page": "/cash-bids/ohio",
    "name": "Ohio cash bids",
-   "pitch": "Your name beside the cash bids on the Ohio page and every Ohio town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Ohio page and every Ohio town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "OH"
   },
   {
    "id": "cash-bids-oklahoma",
    "page": "/cash-bids/oklahoma",
    "name": "Oklahoma cash bids",
-   "pitch": "Your name beside the cash bids on the Oklahoma page and every Oklahoma town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Oklahoma page and every Oklahoma town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "OK"
   },
   {
    "id": "cash-bids-oregon",
    "page": "/cash-bids/oregon",
    "name": "Oregon cash bids",
-   "pitch": "Your name beside the cash bids on the Oregon page and every Oregon town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Oregon page and every Oregon town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "OR"
   },
   {
    "id": "cash-bids-pennsylvania",
    "page": "/cash-bids/pennsylvania",
    "name": "Pennsylvania cash bids",
-   "pitch": "Your name beside the cash bids on the Pennsylvania page and every Pennsylvania town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Pennsylvania page and every Pennsylvania town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "PA"
   },
   {
    "id": "cash-bids-south-carolina",
    "page": "/cash-bids/south-carolina",
    "name": "South Carolina cash bids",
-   "pitch": "Your name beside the cash bids on the South Carolina page and every South Carolina town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the South Carolina page and every South Carolina town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "SC"
   },
   {
    "id": "cash-bids-south-dakota",
    "page": "/cash-bids/south-dakota",
    "name": "South Dakota cash bids",
-   "pitch": "Your name beside the cash bids on the South Dakota page and every South Dakota town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the South Dakota page and every South Dakota town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "SD"
   },
   {
    "id": "cash-bids-tennessee",
    "page": "/cash-bids/tennessee",
    "name": "Tennessee cash bids",
-   "pitch": "Your name beside the cash bids on the Tennessee page and every Tennessee town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Tennessee page and every Tennessee town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "TN"
   },
   {
    "id": "cash-bids-texas",
    "page": "/cash-bids/texas",
    "name": "Texas cash bids",
-   "pitch": "Your name beside the cash bids on the Texas page and every Texas town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Texas page and every Texas town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "TX"
   },
   {
    "id": "cash-bids-washington",
    "page": "/cash-bids/washington",
    "name": "Washington cash bids",
-   "pitch": "Your name beside the cash bids on the Washington page and every Washington town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Washington page and every Washington town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "WA"
   },
   {
    "id": "cash-bids-wisconsin",
    "page": "/cash-bids/wisconsin",
    "name": "Wisconsin cash bids",
-   "pitch": "Your name beside the cash bids on the Wisconsin page and every Wisconsin town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Wisconsin page and every Wisconsin town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "WI"
   },
   {
    "id": "cash-bids-wyoming",
    "page": "/cash-bids/wyoming",
    "name": "Wyoming cash bids",
-   "pitch": "Your name beside the cash bids on the Wyoming page and every Wyoming town page. One category-exclusive slot."
+   "pitch": "Your name beside the cash bids on the Wyoming page and every Wyoming town page. One category-exclusive slot.",
+   "tier": "state",
+   "state": "WY"
   },
   {
    "id": "rent-al",
    "page": "/rent/alabama",
    "name": "Alabama cash rent",
-   "pitch": "Your name beside Alabama county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Alabama county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "AL"
   },
   {
    "id": "rent-az",
    "page": "/rent/arizona",
    "name": "Arizona cash rent",
-   "pitch": "Your name beside Arizona county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Arizona county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "AZ"
   },
   {
    "id": "rent-ar",
    "page": "/rent/arkansas",
    "name": "Arkansas cash rent",
-   "pitch": "Your name beside Arkansas county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Arkansas county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "AR"
   },
   {
    "id": "rent-ca",
    "page": "/rent/california",
    "name": "California cash rent",
-   "pitch": "Your name beside California county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside California county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "CA"
   },
   {
    "id": "rent-co",
    "page": "/rent/colorado",
    "name": "Colorado cash rent",
-   "pitch": "Your name beside Colorado county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Colorado county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "CO"
   },
   {
    "id": "rent-ct",
    "page": "/rent/connecticut",
    "name": "Connecticut cash rent",
-   "pitch": "Your name beside Connecticut county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Connecticut county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "CT"
   },
   {
    "id": "rent-de",
    "page": "/rent/delaware",
    "name": "Delaware cash rent",
-   "pitch": "Your name beside Delaware county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Delaware county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "DE"
   },
   {
    "id": "rent-fl",
    "page": "/rent/florida",
    "name": "Florida cash rent",
-   "pitch": "Your name beside Florida county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Florida county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "FL"
   },
   {
    "id": "rent-ga",
    "page": "/rent/georgia",
    "name": "Georgia cash rent",
-   "pitch": "Your name beside Georgia county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Georgia county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "GA"
   },
   {
    "id": "rent-id",
    "page": "/rent/idaho",
    "name": "Idaho cash rent",
-   "pitch": "Your name beside Idaho county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Idaho county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "ID"
   },
   {
    "id": "rent-il",
    "page": "/rent/illinois",
    "name": "Illinois cash rent",
-   "pitch": "Your name beside Illinois county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Illinois county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "IL"
   },
   {
    "id": "rent-in",
    "page": "/rent/indiana",
    "name": "Indiana cash rent",
-   "pitch": "Your name beside Indiana county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Indiana county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "IN"
   },
   {
    "id": "rent-ia",
    "page": "/rent/iowa",
    "name": "Iowa cash rent",
-   "pitch": "Your name beside Iowa county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Iowa county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "IA"
   },
   {
    "id": "rent-ks",
    "page": "/rent/kansas",
    "name": "Kansas cash rent",
-   "pitch": "Your name beside Kansas county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Kansas county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "KS"
   },
   {
    "id": "rent-ky",
    "page": "/rent/kentucky",
    "name": "Kentucky cash rent",
-   "pitch": "Your name beside Kentucky county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Kentucky county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "KY"
   },
   {
    "id": "rent-la",
    "page": "/rent/louisiana",
    "name": "Louisiana cash rent",
-   "pitch": "Your name beside Louisiana county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Louisiana county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "LA"
   },
   {
    "id": "rent-me",
    "page": "/rent/maine",
    "name": "Maine cash rent",
-   "pitch": "Your name beside Maine county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Maine county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "ME"
   },
   {
    "id": "rent-md",
    "page": "/rent/maryland",
    "name": "Maryland cash rent",
-   "pitch": "Your name beside Maryland county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Maryland county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MD"
   },
   {
    "id": "rent-ma",
    "page": "/rent/massachusetts",
    "name": "Massachusetts cash rent",
-   "pitch": "Your name beside Massachusetts county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Massachusetts county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MA"
   },
   {
    "id": "rent-mi",
    "page": "/rent/michigan",
    "name": "Michigan cash rent",
-   "pitch": "Your name beside Michigan county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Michigan county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MI"
   },
   {
    "id": "rent-mn",
    "page": "/rent/minnesota",
    "name": "Minnesota cash rent",
-   "pitch": "Your name beside Minnesota county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Minnesota county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MN"
   },
   {
    "id": "rent-ms",
    "page": "/rent/mississippi",
    "name": "Mississippi cash rent",
-   "pitch": "Your name beside Mississippi county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Mississippi county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MS"
   },
   {
    "id": "rent-mo",
    "page": "/rent/missouri",
    "name": "Missouri cash rent",
-   "pitch": "Your name beside Missouri county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Missouri county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MO"
   },
   {
    "id": "rent-mt",
    "page": "/rent/montana",
    "name": "Montana cash rent",
-   "pitch": "Your name beside Montana county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Montana county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "MT"
   },
   {
    "id": "rent-ne",
    "page": "/rent/nebraska",
    "name": "Nebraska cash rent",
-   "pitch": "Your name beside Nebraska county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Nebraska county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NE"
   },
   {
    "id": "rent-nv",
    "page": "/rent/nevada",
    "name": "Nevada cash rent",
-   "pitch": "Your name beside Nevada county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Nevada county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NV"
   },
   {
    "id": "rent-nh",
    "page": "/rent/new-hampshire",
    "name": "New Hampshire cash rent",
-   "pitch": "Your name beside New Hampshire county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside New Hampshire county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NH"
   },
   {
    "id": "rent-nj",
    "page": "/rent/new-jersey",
    "name": "New Jersey cash rent",
-   "pitch": "Your name beside New Jersey county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside New Jersey county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NJ"
   },
   {
    "id": "rent-nm",
    "page": "/rent/new-mexico",
    "name": "New Mexico cash rent",
-   "pitch": "Your name beside New Mexico county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside New Mexico county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NM"
   },
   {
    "id": "rent-ny",
    "page": "/rent/new-york",
    "name": "New York cash rent",
-   "pitch": "Your name beside New York county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside New York county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NY"
   },
   {
    "id": "rent-nc",
    "page": "/rent/north-carolina",
    "name": "North Carolina cash rent",
-   "pitch": "Your name beside North Carolina county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside North Carolina county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "NC"
   },
   {
    "id": "rent-nd",
    "page": "/rent/north-dakota",
    "name": "North Dakota cash rent",
-   "pitch": "Your name beside North Dakota county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside North Dakota county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "ND"
   },
   {
    "id": "rent-oh",
    "page": "/rent/ohio",
    "name": "Ohio cash rent",
-   "pitch": "Your name beside Ohio county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Ohio county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "OH"
   },
   {
    "id": "rent-ok",
    "page": "/rent/oklahoma",
    "name": "Oklahoma cash rent",
-   "pitch": "Your name beside Oklahoma county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Oklahoma county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "OK"
   },
   {
    "id": "rent-or",
    "page": "/rent/oregon",
    "name": "Oregon cash rent",
-   "pitch": "Your name beside Oregon county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Oregon county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "OR"
   },
   {
    "id": "rent-pa",
    "page": "/rent/pennsylvania",
    "name": "Pennsylvania cash rent",
-   "pitch": "Your name beside Pennsylvania county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Pennsylvania county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "PA"
   },
   {
    "id": "rent-sc",
    "page": "/rent/south-carolina",
    "name": "South Carolina cash rent",
-   "pitch": "Your name beside South Carolina county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside South Carolina county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "SC"
   },
   {
    "id": "rent-sd",
    "page": "/rent/south-dakota",
    "name": "South Dakota cash rent",
-   "pitch": "Your name beside South Dakota county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside South Dakota county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "SD"
   },
   {
    "id": "rent-tn",
    "page": "/rent/tennessee",
    "name": "Tennessee cash rent",
-   "pitch": "Your name beside Tennessee county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Tennessee county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "TN"
   },
   {
    "id": "rent-tx",
    "page": "/rent/texas",
    "name": "Texas cash rent",
-   "pitch": "Your name beside Texas county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Texas county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "TX"
   },
   {
    "id": "rent-ut",
    "page": "/rent/utah",
    "name": "Utah cash rent",
-   "pitch": "Your name beside Utah county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Utah county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "UT"
   },
   {
    "id": "rent-vt",
    "page": "/rent/vermont",
    "name": "Vermont cash rent",
-   "pitch": "Your name beside Vermont county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Vermont county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "VT"
   },
   {
    "id": "rent-va",
    "page": "/rent/virginia",
    "name": "Virginia cash rent",
-   "pitch": "Your name beside Virginia county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Virginia county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "VA"
   },
   {
    "id": "rent-wa",
    "page": "/rent/washington",
    "name": "Washington cash rent",
-   "pitch": "Your name beside Washington county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Washington county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "WA"
   },
   {
    "id": "rent-wv",
    "page": "/rent/west-virginia",
    "name": "West Virginia cash rent",
-   "pitch": "Your name beside West Virginia county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside West Virginia county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "WV"
   },
   {
    "id": "rent-wi",
    "page": "/rent/wisconsin",
    "name": "Wisconsin cash rent",
-   "pitch": "Your name beside Wisconsin county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Wisconsin county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "WI"
   },
   {
    "id": "rent-wy",
    "page": "/rent/wyoming",
    "name": "Wyoming cash rent",
-   "pitch": "Your name beside Wyoming county cash rents. One category-exclusive slot."
+   "pitch": "Your name beside Wyoming county cash rents. One category-exclusive slot.",
+   "tier": "state",
+   "state": "WY"
   }
  ]
 }

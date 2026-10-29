@@ -1,0 +1,66 @@
+name: Ag stocks
+
+# /ag-stocks: ag company closes, SEC filings and the AGSIST Ag 20 (scripts/agstocks.py,
+# page scripts/build_agstocks_page.py). Approved by Sig Oct 29, 2026.
+# Weekdays after the U.S. close: 22:17 UTC is 5:17 p.m. New York in winter, 6:17 p.m. in
+# summer, so the day's bar is the close either way. Each step fails soft and keeps the
+# last good file; the page says how old its numbers are.
+on:
+  schedule:
+    - cron: '17 22 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agstocks
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install yfinance==1.7.0
+      - name: Selftest
+        run: |
+          python scripts/agstocks_index.py --selftest
+          python scripts/agstocks.py --selftest
+          python scripts/agstocks_plants.py --selftest
+          python scripts/build_agstocks_page.py --selftest
+      - name: Fetch and rebuild
+        run: |
+          python scripts/agstocks.py all || echo "a step failed; the last good files were kept"
+          python scripts/build_agstocks_page.py
+          python scripts/build_agstocks_page.py --check
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          rm -rf /tmp/ags && mkdir -p /tmp/ags
+          cp -r --parents data/agstocks ag-stocks.html /tmp/ags/
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/ags/data/. data/ && cp /tmp/ags/ag-stocks.html .
+            git add -A data/agstocks ag-stocks.html
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Ag stocks $(date -u +%Y-%m-%d) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1

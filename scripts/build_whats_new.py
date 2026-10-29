@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""What's new: data/whats-new.json drives two places.
+"""What's new: one file per entry in data/whats-new/, built into three places.
+
+  data/whats-new/<YYYY-MM-DD>-<slug>.json   one entry: id (the file name without .json), date,
+                 title, line, link, and an optional rank (within one day, higher shows first;
+                 left out, the day's entries without one follow, by id). A pull request adds
+                 only its entry file; the three built files below are rebuilt on main
+                 (.github/workflows/main-checks.yml, scripts/dev/main_build.py) and never edited
+                 in a pull request (the built-files guard fails it).
+
+  data/whats-new.json   every entry, newest first (the combined list the site and feeds read)
 
   index.html     one small line at the end of the page, above the byline:
                  a link to /changelog and the newest entry. Until Oct 20 this
@@ -10,8 +19,10 @@
   changelog.html every entry, as day sections above the older hand-written
                  log, which is kept as it is; the stamp line is recounted.
 
-  python3 scripts/build_whats_new.py          write both pages
-  python3 scripts/build_whats_new.py --check  fail if either page is stale
+  python3 scripts/build_whats_new.py            write all three
+  python3 scripts/build_whats_new.py --check    fail if any of the three is stale
+  python3 scripts/build_whats_new.py --validate check the entry files only, write nothing
+  python3 scripts/build_whats_new.py --list     print the entries, in order, as JSON
 """
 import datetime as dt
 import html
@@ -20,8 +31,17 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import build_changelog as build_changelog_py  # noqa: E402  (the shared stamp line)
+
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ENTRIES = os.path.join(REPO, "data", "whats-new")
 DATA = os.path.join(REPO, "data", "whats-new.json")
+FIELDS = ("id", "date", "title", "line", "link")
+NOTE = ("What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ by "
+        "scripts/build_whats_new.py on main (never edited by hand): the newest entry goes into the "
+        "homepage line and every entry into /changelog (above the older hand-written log). Only things "
+        "that are live on the site. Plain words, no em dashes.")
 INDEX = os.path.join(REPO, "index.html")
 CHANGELOG = os.path.join(REPO, "changelog.html")
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",
@@ -32,22 +52,66 @@ def esc(s):
     return html.escape(s, quote=True)
 
 
-def load():
-    d = json.load(open(DATA, encoding="utf-8"))
-    items = d["items"]
-    for it in items:
-        dt.date.fromisoformat(it["date"])
-        for k in ("id", "title", "line", "link"):
-            if not it.get(k):
-                raise SystemExit("whats-new item missing %s: %r" % (k, it))
-        if "—" in it["title"] + it["line"]:
-            raise SystemExit("em dash in whats-new item " + it["id"])
-    dates = [it["date"] for it in items]
-    if dates != sorted(dates, reverse=True):
-        raise SystemExit("data/whats-new.json must be newest first")
+def load(folder=ENTRIES):
+    items, bad = [], []
+    names = sorted(f for f in os.listdir(folder) if not f.startswith("."))
+    for f in names:
+        path = os.path.join(folder, f)
+        if not f.endswith(".json"):
+            bad.append("%s: not a .json entry" % f)
+            continue
+        try:
+            it = json.load(open(path, encoding="utf-8"))
+        except ValueError as e:
+            bad.append("%s: not JSON (%s)" % (f, e))
+            continue
+        if not isinstance(it, dict):
+            bad.append("%s: not an object" % f)
+            continue
+        extra = set(it) - set(FIELDS) - {"rank"}
+        if extra:
+            bad.append("%s: unknown field(s) %s" % (f, ", ".join(sorted(extra))))
+        for k in FIELDS:
+            if not isinstance(it.get(k), str) or not it.get(k).strip():
+                bad.append("%s: missing %s" % (f, k))
+        if bad and bad[-1].startswith(f + ":"):
+            continue
+        try:
+            dt.date.fromisoformat(it["date"])
+        except ValueError:
+            bad.append("%s: bad date %r" % (f, it["date"]))
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*", it["id"]):
+            bad.append("%s: id %r is not <YYYY-MM-DD>-<slug> (lowercase, digits, dashes)" % (f, it["id"]))
+        if f != it["id"] + ".json":
+            bad.append("%s: the file name must be the id plus .json (%s.json)" % (f, it["id"]))
+        if not it["id"].startswith(it["date"] + "-"):
+            bad.append("%s: the id must start with its date %s" % (f, it["date"]))
+        if "rank" in it and (not isinstance(it["rank"], int) or isinstance(it["rank"], bool)):
+            bad.append("%s: rank must be a whole number" % f)
+        if "\u2014" in it["title"] + it["line"]:
+            bad.append("%s: em dash" % f)
+        if not it["link"].startswith("/"):
+            bad.append("%s: link must be a site path starting with /" % f)
+        items.append(it)
+    if bad:
+        raise SystemExit("data/whats-new entries:\n  " + "\n  ".join(bad))
+    if not items:
+        raise SystemExit("data/whats-new has no entries")
     if len({it["id"] for it in items}) != len(items):
-        raise SystemExit("data/whats-new.json ids must be unique")
-    return items
+        raise SystemExit("data/whats-new ids must be unique")
+    items.sort(key=lambda it: it["id"])
+    items.sort(key=lambda it: it.get("rank", 0), reverse=True)
+    items.sort(key=lambda it: it["date"], reverse=True)
+    return [{k: it[k] for k in FIELDS} for it in items]
+
+
+def data_json(items):
+    lines = ['{', ' "note": %s,' % json.dumps(NOTE, ensure_ascii=False), ' "items": [']
+    for i, it in enumerate(items):
+        body = json.dumps(it, indent=1, ensure_ascii=False).replace("\n", "\n  ")
+        lines.append("  " + body + ("," if i < len(items) - 1 else ""))
+    lines += [' ]', '}', '']
+    return "\n".join(lines)
 
 
 def short_date(iso):
@@ -113,19 +177,51 @@ def build_changelog(src, items):
     src = replace_block(src, "<!-- WHATSNEW:entries -->", "<!-- /WHATSNEW:entries -->", changelog_html(items),
                         fallback_before="<!-- CHANGELOG:entries -->")
     src = src.replace(changelog_html(items) + "\n<!-- CHANGELOG:entries -->", changelog_html(items) + "<!-- CHANGELOG:entries -->")
-    lst = src[src.index("<!-- WHATSNEW:entries -->"):src.index("<!-- /CHANGELOG:entries -->")]
-    n_items = lst.count('class="cl-item"')
-    n_days = len(set(re.findall(r'<h[23] class="cl-date">(.*?)</h[23]>', lst, flags=re.S)))
-    stamp = "Log updated %s &middot; %d changes across %d days" % (long_date(items[0]["date"]), n_items, n_days)
-    return re.sub(r"(<!-- CHANGELOG:stamp -->).*?(<!-- /CHANGELOG:stamp -->)", lambda m: m.group(1) + stamp + m.group(2), src, flags=re.S)
+    return build_changelog_py.finish_page(src)
+
+
+def build_data(src, items):
+    return data_json(items)
+
+
+# The move to one file per entry (Oct 29, 2026): a branch made before it may still add its line to
+# data/whats-new.json, and merge after it. Until this date a build on main keeps such a line by
+# writing its entry file (main-checks.yml commits data/whats-new/ with the built files) instead of
+# dropping it. After it, a line with no entry file is gone on the next build, which is how an
+# entry is taken down: delete its file.
+ADOPT_UNTIL = "2026-11-07"
+
+
+def adopt(today=None):
+    today = today or dt.datetime.now(dt.timezone.utc).date().isoformat()
+    if today > ADOPT_UNTIL or not os.path.exists(DATA):
+        return []
+    have = {f[:-5] for f in os.listdir(ENTRIES) if f.endswith(".json")}
+    out = []
+    for it in json.load(open(DATA, encoding="utf-8")).get("items", []):
+        if isinstance(it, dict) and it.get("id") and it["id"] not in have and re.fullmatch(r"[a-z0-9-]+", it["id"]):
+            with open(os.path.join(ENTRIES, it["id"] + ".json"), "w", encoding="utf-8") as fh:
+                json.dump({k: it.get(k) for k in FIELDS}, fh, indent=1, ensure_ascii=False)
+                fh.write("\n")
+            out.append(it["id"])
+            print("kept %s: it was in data/whats-new.json with no entry file, so its entry file is written" % it["id"])
+    return out
 
 
 def main():
+    if not ({"--check", "--validate", "--list"} & set(sys.argv)):
+        adopt()
     items = load()
-    jobs = [(INDEX, build_index), (CHANGELOG, build_changelog)]
+    if "--validate" in sys.argv:
+        print("%d entries in data/whats-new are valid" % len(items))
+        return
+    if "--list" in sys.argv:
+        print(json.dumps(items, indent=1, ensure_ascii=False))
+        return
+    jobs = [(DATA, build_data), (INDEX, build_index), (CHANGELOG, build_changelog)]
     stale = []
     for path, fn in jobs:
-        src = open(path, encoding="utf-8").read()
+        src = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
         new = fn(src, items)
         if new != src:
             if "--check" in sys.argv:
@@ -135,10 +231,11 @@ def main():
                     fh.write(new)
                 print("wrote " + os.path.relpath(path, REPO))
     if stale:
-        print("stale (run scripts/build_whats_new.py): " + ", ".join(stale))
+        print("stale: " + ", ".join(stale) + " (built on main from data/whats-new/; to see them as main will, "
+              "run python3 scripts/build_whats_new.py and do not commit the result)")
         sys.exit(1)
     if "--check" in sys.argv:
-        print("index.html and changelog.html match data/whats-new.json")
+        print("data/whats-new.json, index.html and changelog.html match data/whats-new/")
 
 
 if __name__ == "__main__":

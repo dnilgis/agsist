@@ -126,6 +126,9 @@ CHECKS = [
     # late (3 h and 6 h on Oct 18 and 19, nothing on Oct 17), so 8 h is the limit.
     ("daily-site-check.yml", ["37 11 * * *"], 480, False, "the morning site check and its issue, GitHub cron 11:37 UTC"),
     ("cron-health.yml", None, 60, False, "this check, after every Fetch Grain Bids, gated to every half hour"),
+    # The full suite on main (Oct 29, 2026): a red run opens the "main is red" issue itself; this row
+    # catches the nightly not running at all. GitHub cron, so the same 8 h slack as the site check.
+    ("main-checks.yml", ["17 8 * * *"], 480, False, "every test on main, nightly at 08:17 UTC and after each merge"),
 ]
 
 # The saved private/data/cron-health.json is rewritten at least every RECOMMIT_HOURS while

@@ -76,6 +76,12 @@ test('the before-paint script is on the page, after the card, outside the seed',
   // ("51 days left" to "50") slid the rest of that line 3.8px in Inter (seen here Oct 29: 0.0001 at 1280)
   assert.match(page, /#dp-dmc-words,#dp-dmc-lever\{font-variant-numeric:tabular-nums;\}/);
   assert.match(EARLY[0], /\}catch\(_\)\{\}try\{document\.documentElement\.classList\.remove\('dp-area-pend'\);\}catch\(_\)\{\}<\/script>$/, 'let go as soon as it has run, whatever it did');
+  // the crawler nav (static-nav:header) is unseen while scripts run, its space kept, and shown after 3 s regardless;
+  // the rule lives once, in components/styles.css (test/crawler-nav-cls.test.mjs), not in this page
+  const shell = fs.readFileSync(join(ROOT, 'components/styles.css'), 'utf8');
+  assert.match(shell, /@media \(scripting:enabled\)\{#site-header>header nav\{animation:snav-wait 3s step-end both\}\}/);
+  assert.match(shell, /@keyframes snav-wait\{from\{visibility:hidden\}to\{visibility:visible\}\}/);
+  assert.doesNotMatch(page, /snav-wait/, 'one copy: none left in the page');
   assert.equal(AREAS.length, 20);
   for (const a of AREAS) assert.ok(OPTIONS.includes(a), a);
 });
@@ -122,7 +128,7 @@ let chromium = null;
 try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !fs.existsSync(CHROME) ? 'Playwright or Chromium not found here' : false;
 
-function serve(chunk = 0) {
+function serve(chunk = 0, pauseAt = -1) {
   const types = { '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.html': 'text/html', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
@@ -131,6 +137,8 @@ function serve(chunk = 0) {
     if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { 'content-type': types[extname(f)] || 'application/octet-stream' });
     const buf = fs.readFileSync(f);
+    // the parser stopped at one byte: the page up to it, a pause long enough to paint, then the rest
+    if (pauseAt >= 0 && extname(f) === '.html') { res.write(buf.subarray(0, pauseAt)); setTimeout(() => res.end(buf.subarray(pauseAt)), 400); return; }
     if (!chunk || extname(f) !== '.html') { res.end(buf); return; }
     // a slow line: the page comes in pieces, so the browser paints parts of it before the rest arrives
     let at = 0;
@@ -269,5 +277,56 @@ test('a slow line that paints half the page: Your area still moves nothing', { s
       assert.equal(r.vis, 'visible', tag);
       await ctx.close();
     }
+  } finally { await browser.close(); srv.close(); }
+});
+
+// Oct 29 (CI, 390 dark unreported state, 0.0129 at 217 ms): the shift was in the crawler nav, not the card. That
+// nav is one unwrapped line with its <br>s hidden; a paint while the parser sat just past "<br>" and its
+// newline left that whitespace with no place yet, and the next group put it 1500px along the line (clipped,
+// so the box Chrome reports did not move). Pausing the page there does it every time on the old page.
+test('a paint while the parser is inside the crawler nav moves nothing', { skip, timeout: 120000 }, async () => {
+  const buf = fs.readFileSync(join(ROOT, 'milk-prices.html'));
+  const s = buf.toString('latin1'), nav = s.indexOf('<nav aria-label="AGSIST main navigation"');
+  assert.ok(nav > 0, 'the crawler nav is on the page');
+  const stops = [];
+  for (let at = s.indexOf('<br>\n', nav); at > 0 && at < s.indexOf('</nav>', nav); at = s.indexOf('<br>\n', at + 1)) stops.push(at + '<br>\n        '.length);
+  assert.ok(stops.length >= 3, 'its groups are split by <br>');
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const w of [390, 1280]) for (const stop of [stops[0], stops[2]]) {
+      const srv = await serve(0, stop), port = srv.address().port;
+      const ctx = await browser.newContext({ serviceWorkers: 'block', viewport: { width: w, height: 900 } });
+      try {
+      await ctx.route('**/*', (r) => (new URL(r.request().url()).hostname !== '127.0.0.1' ? r.abort() : r.continue()));
+      await ctx.addInitScript(() => {
+        window.__cls = 0; window.__shifts = [];
+        new PerformanceObserver((l) => { for (const e of l.getEntries()) { if (e.hadRecentInput) continue; window.__cls += e.value;
+          window.__shifts.push(e.value.toFixed(4) + ' ' + (e.sources || []).map((x) => (x.node ? (x.node.parentElement ? x.node.parentElement.tagName : '') + '>' + x.node.nodeName : '?')).join(',') + ' at ' + Math.round(e.startTime) + 'ms'); } })
+          .observe({ type: 'layout-shift', buffered: true });
+      });
+      const pg = await ctx.newPage();
+      await pg.goto(`http://127.0.0.1:${port}/milk-prices`, { waitUntil: 'load' });
+      await pg.waitForTimeout(500);
+      const r = await pg.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts }));
+      assert.ok(r.cls < 0.001, `${w}, paused at byte ${stop}: layout shift ${r.cls} (${r.shifts.join(' | ')})`);
+      } finally { await ctx.close(); srv.close(); }
+    }
+  } finally { await browser.close(); }
+});
+
+test('no live nav (its script never runs): the crawler nav still shows, after 3 s', { skip, timeout: 60000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const ctx = await browser.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 900 } });
+    await ctx.route('**/*', (r) => { const u = new URL(r.request().url()); return u.hostname !== '127.0.0.1' || u.pathname === '/components/loader.js' ? r.abort() : r.continue(); });
+    const pg = await ctx.newPage();
+    await pg.goto(`http://127.0.0.1:${port}/milk-prices`, { waitUntil: 'load' });
+    const vis = () => pg.evaluate(() => { const n = document.querySelector('#site-header>header nav'); return { v: n ? getComputedStyle(n).visibility : 'gone', t: performance.now() }; });
+    const first = await vis();
+    if (first.t < 2500) assert.equal(first.v, 'hidden', 'unseen at first');  // a slow machine can reach 3 s before load
+    await pg.waitForTimeout(3300);
+    assert.equal((await vis()).v, 'visible', 'shown once the wait is up');
+    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

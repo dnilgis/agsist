@@ -205,6 +205,7 @@ LINES = {
     "farm-bill": ("Farm bill", "Where the farm bill stands, House against Senate."),
     "cash-bids": ("Cash bids", "Corn, soybean and wheat bids at the elevators near your ZIP."),
     "cash-bid-index": ("Cash Bid Index", "Corn and soybean basis by state, each month."),
+    "ag-stocks": ("Ag stocks", "Farm company share prices, their SEC reports and the AGSIST Ag 20."),
     "farmer-retirement-gifts": ("Gifts for farmers", "Their first and last crop year on the wall, a binder of stories, the farm from the air."),
     "farm-anniversary-gifts": ("Gifts for farmers", "For a farm couple or a century farm: the year it started, on the wall."),
     "rain-print-business": ("Rain Print for businesses", "Each customer's own year of rain, printed and framed. From 5 prints, shipping included."),

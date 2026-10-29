@@ -85,11 +85,17 @@ NOT_SET = "(not set)"
 #   page:<id>       components/loader.js page ribbon (data/page-sponsors.json)
 #   prf-<kind>:<st> components/prf-sponsor.js PRF state sponsor (data/prf-sponsors.json)
 # The daily briefing sponsor (data/sponsor.json) is drawn on the first four.
-# The last three belong to ads that have no report here, so they go to nobody.
+# A page ribbon sold through /sponsor-apply (rate card of Oct 29, 2026: a State
+# Sponsor's state ribbons, the Cash Bids Sponsor's /cash-bids ribbon) is that
+# sponsor's: scripts/sponsor_apply.py writes "page_slots" into its entry in
+# data/sponsors.json, and sponsor_slots() gives it page:<id> for each. A state's
+# town pages carry the state page's slot id, so their events are the state's.
+# A page ribbon nobody holds, the footer strip and PRF go to nobody.
 DAILY_SLOTS = ("daily-briefing", "homepage-top", "daily-page", "daily-archive")
 GEO_SLOT_PREFIX = "geo-"
+PAGE_SLOT_PREFIX = "page:"
 UNREPORTED_SLOTS = ("footer-strip",)
-UNREPORTED_PREFIXES = ("page:", "prf-")
+UNREPORTED_PREFIXES = ("prf-",)
 
 VIEWABLE_EVENTS = ["sponsor_viewable"]
 
@@ -214,12 +220,38 @@ def geo_creative(geo_id):
     }
 
 
-def creative_block(slug, geo=None):
+def page_creative(slot_ids):
+    """A sold page ribbon's ad, from data/page-sponsors.json: the copy the
+    applicant typed and Sig approved. The same fields the ribbon draws."""
+    try:
+        d = json.loads((ROOT / "data" / "page-sponsors.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    e = next(((d.get("slots") or {}).get(x) for x in slot_ids if (d.get("slots") or {}).get(x)), None)
+    if not e or not e.get("company") or not str(e.get("url") or "").startswith(("https://", "http://")):
+        return None
+    c = {"advertiser": e.get("company"), "headline": e.get("headline") or "", "body": e.get("body") or "",
+         "facts": [], "cta_text": "Visit", "cta_url": e.get("url"), "phone": None,
+         "logo": e.get("logo") or None, "disclosure": None}
+    return {
+        "live": e.get("active") is not False and bool(e.get("start")),
+        "proof_code": proof_code(c),
+        "fields": {k: c.get(k) for k in CREATIVE_FIELDS},
+        "label": "Sponsor",
+        "tier": e.get("tier"),
+        "links": {}, "cta_urls": {}, "previews": {},
+        "slots": [PAGE_SLOT_PREFIX + x for x in slot_ids],
+    }
+
+
+def creative_block(slug, geo=None, page_slots=None):
     """What this sponsor's ad says, where it points, and the code for it.
 
     Returns None when there is no creative on file -- a sponsor who has not
     been given one yet gets the pending page, not an empty proof.
     """
+    if page_slots is not None:
+        return page_creative(page_slots)
     if geo:
         return geo_creative(geo)
     src = ROOT / "data" / "sponsor.json"
@@ -472,8 +504,19 @@ def other_ads_live(geo_id, today=None, slug=None):
 
 # ── SPLIT BY SLOT (Oct 29, 2026) ─────────────────────────────────────────
 
+def page_slot_ids(s):
+    """The page ribbons a sponsor holds (State or Cash Bids Sponsor), as typed by
+    scripts/sponsor_apply.py. Only well-formed ribbon ids."""
+    v = s.get("page_slots")
+    if not isinstance(v, list):
+        return []
+    return [str(x) for x in v if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,59}", str(x))]
+
+
 def sponsor_slots(s):
     """The slot names that are this sponsor's ad, and nothing else."""
+    if s.get("page_slots") is not None:
+        return [PAGE_SLOT_PREFIX + x for x in page_slot_ids(s)]
     if s.get("geo"):
         return [GEO_SLOT_PREFIX + str(s["geo"])]
     return list(DAILY_SLOTS)
@@ -792,7 +835,7 @@ def sponsor_payload(s, ga, end, conf_sponsors, today=None):
             # The proof and the rate card do NOT wait for a start date.
             # Approving the copy is the thing that happens first, and a
             # sponsor with no numbers yet is exactly who needs to see it.
-            "creative": creative_block(slug, s.get("geo")),
+            "creative": creative_block(slug, s.get("geo"), page_slot_ids(s) if s.get("page_slots") is not None else None),
             "rateCard": rate_card(),
             "approveTo": s.get("approve_to") or APPROVE_TO,
             **({"regionAds": region_ads_pending(s)} if s.get("geo") else {}),
@@ -876,7 +919,7 @@ def sponsor_payload(s, ga, end, conf_sponsors, today=None):
             [{"page": p, "viewable": v, "clicks": clicks_page.get(p, 0)}
              for p, v in views_page.items()],
             key=lambda x: -x["viewable"]),
-        "creative": creative_block(slug, s.get("geo")),
+        "creative": creative_block(slug, s.get("geo"), page_slot_ids(s) if s.get("page_slots") is not None else None),
         "rateCard": rate_card(),
         "approveTo": s.get("approve_to") or APPROVE_TO,
         **portal_extras(s),
@@ -974,7 +1017,7 @@ def main():
             except (OSError, ValueError) as e:
                 print("  [skip] %s: %s" % (slug_, e))
                 continue
-            cur["creative"] = creative_block(slug_, s_.get("geo"))
+            cur["creative"] = creative_block(slug_, s_.get("geo"), page_slot_ids(s_) if s_.get("page_slots") is not None else None)
             if s_.get("geo") and "regionAds" not in cur:
                 cur["regionAds"] = region_ads_pending(s_)
             cur["rateCard"] = rate_card()

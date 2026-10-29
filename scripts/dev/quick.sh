@@ -52,6 +52,29 @@ for k in "${order[@]}"; do printf '  %-48s %s\n' "${k#*:}" "${why[$k]}"; done
 [ "$DRY" = 1 ] && exit 0
 
 fails=0; t0=$SECONDS
+# build the files that are built on main (What's new, the changelog, the test map: scripts/dev/main_build.py)
+# in this copy for the tests, as the PR checks and main do, then put back each one that had no edits of its
+# own (a branch never commits them; the built-guard check fails one that does)
+mapfile -t BUILT < <(python3 scripts/dev/main_build.py paths 2>/dev/null)
+# (a file with edits of its own is copied aside and copied back, edits and all)
+KEEP=$(mktemp -d "${TMPDIR:-/tmp}/quick-built.XXXXXX")
+restore=(); remove=(); kept=()
+for f in "${BUILT[@]}"; do
+  if [ ! -e "$f" ]; then remove+=("$f")
+  elif git diff --quiet HEAD -- "$f" 2>/dev/null; then restore+=("$f")
+  else mkdir -p "$KEEP/$(dirname "$f")" && cp -p "$f" "$KEEP/$f" && kept+=("$f"); fi
+done
+put_back(){
+  [ ${#restore[@]} -gt 0 ] && git checkout -q HEAD -- "${restore[@]}"
+  [ ${#remove[@]} -gt 0 ] && rm -f -- "${remove[@]}"
+  for f in "${kept[@]}"; do cp -p "$KEEP/$f" "$f"; done
+  rm -rf "$KEEP"; true; }
+trap put_back EXIT
+if pb=$(AGSIST_PREBUILD=1 python3 scripts/dev/main_build.py build 2>&1); then
+  echo "quick: built ${BUILT[*]} for the tests (put back afterward)"
+else
+  echo "FAIL prebuild (python3 scripts/dev/main_build.py build)"; echo "$pb" | tail -20; fails=$((fails+1))
+fi
 OUT="${TMPDIR:-/tmp}/agsist-quick"; mkdir -p "$OUT"
 # Chromium keeps a socket in its profile under TMPDIR; a long TMPDIR path makes the launch hang until the test times out
 [ ${#OUT} -gt 60 ] && echo "quick: warning: TMPDIR is long (${#OUT} chars); browser tests may hang. Use a short one, e.g. TMPDIR=/tmp/x/q"

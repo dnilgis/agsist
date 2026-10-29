@@ -62,6 +62,7 @@ import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 4
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
 import farm_credit_view as FCV  # noqa: E402  Fed district farm credit sections (data/farm-credit/districts.json)
+import build_buyers as BUY  # noqa: E402  where the big buyers are (data/buyers.json)
 import nearest_towns as NT  # noqa: E402  town bid pages nearest a county middle (Oct 23, 2026)
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 from atlas_layers_p1 import FULL_YEAR_MAPS, years_covered, practice_share, irrigated_share  # noqa: E402  one full-year gate, one way to name a gap
@@ -1356,8 +1357,8 @@ def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None, f
   <meta name="theme-color" content="#0a0c0d">
   <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
   {GA}
-  <link rel="preload" href="/components/styles.css?v=27" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=27">
+  <link rel="preload" href="/components/styles.css?v=28" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=28">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -2414,6 +2415,9 @@ def county_page(W, f, d, stamp):
     if sfacts:
         q_, a_ = sales_faq("%s, %s" % (lab, stn), sfacts)
         sales_faq_html = '<h3 id="sales-faq">%s</h3><p>%s</p>' % (esc(q_), esc(a_))
+    # where the big buyers are (scripts/build_buyers.py), from the same county middle
+    buyers_html = BUY.line_html(BUY.near(ctr[0], ctr[1], BUY.load(W.root)), "the middle of %s" % lab, note="note") if ctr else ""
+    buyers_html += BUY.BUYERS_JS.strip() if buyers_html else ""
     town_links = NT.links_html(W.root, ctr[0], ctr[1], st, "Cash bids by town near the middle of %s:" % esc(lab), "note") if ctr else ""
     C_GRAIN = ('<section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2>'
                + live_row("corn-bid", "Corn bid") + live_row("soy-bid", "Soybean bid")
@@ -2422,10 +2426,10 @@ def county_page(W, f, d, stamp):
                + "".join(live_row(k, LV_NAMES[k]) for k in lines)
                + '<p class="note">Bids are posted elevator prices within 50 miles of the county middle, best and nearest, never a buyer\'s name. '
                'Not a contract; call before you haul. %s</p>'
-               '<p class="note">%s<a href="/fast-facts?fips=%s">Bids from your own ZIP or farm, in Fast Facts</a></p>%s</section>'
+               '<p class="note">%s<a href="/fast-facts?fips=%s">Bids from your own ZIP or farm, in Fast Facts</a></p>%s%s</section>'
                % ("Livestock lines show where the 2022 Census counts %s head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle." % fmt(HEAD_MIN, 0),
                   ('<a href="/cash-bids/%s/">%s cash bids by town</a> · ' % (slugify(stn), esc(stn))) if os.path.isdir(os.path.join(W.root, "cash-bids", slugify(stn))) else "",
-                  esc(f), town_links))
+                  esc(f), town_links, buyers_html))
     C_WX = ('<section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2>'
             + live_row("rain", "Rain since Jan 1") + live_row("drought", "Drought this week") + live_row("hail", "Hail, last 30 days")
             + rain_note + S5 + "</section>")
