@@ -21,10 +21,6 @@
    "to": "/rain/arkansas",
    "since": "2026-10-14"
   },
-  "rain/arkansas/crawford-county.html": {
-   "to": "/rain/arkansas",
-   "since": "2026-10-28"
-  },
   "rain/arkansas/desha-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -36,10 +32,6 @@
   "rain/arkansas/poinsett-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-15"
-  },
-  "rain/florida/hendry-county.html": {
-   "to": "/rain/florida",
-   "since": "2026-10-28"
   },
   "rain/georgia/bacon-county.html": {
    "to": "/rain/georgia",
@@ -109,10 +101,6 @@
    "to": "/rain/mississippi",
    "since": "2026-10-15"
   },
-  "rain/mississippi/panola-county.html": {
-   "to": "/rain/mississippi",
-   "since": "2026-10-19"
-  },
   "rain/mississippi/pontotoc-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-10-24"
@@ -148,10 +136,6 @@
   "rain/new-york/schoharie-county.html": {
    "to": "/rain/new-york",
    "since": "2026-10-15"
-  },
-  "rain/north-dakota/nelson-county.html": {
-   "to": "/rain/north-dakota",
-   "since": "2026-10-26"
   },
   "rain/north-dakota/sheridan-county.html": {
    "to": "/rain/north-dakota",
@@ -220,6 +204,10 @@
   "rain/texas/delta-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
+  },
+  "rain/texas/franklin-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-10-29"
   },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
