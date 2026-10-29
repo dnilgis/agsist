@@ -65,6 +65,7 @@ jobs:
         run: |
           python scripts/probe_land_services.py --selftest
           python scripts/fetch_land_sales.py --selftest
+          python scripts/land_keys.py --selftest
           python scripts/land_keep_stamp_only.py --selftest
           python scripts/comp_report_live.py --selftest
           python scripts/wi_retr_browser.py --selftest
