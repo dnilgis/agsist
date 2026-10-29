@@ -696,6 +696,15 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
          "<h1>Farmland sales in %s</h1>" % e(cn),
          '<p class="ls-ans">%d recorded sales in the last 12 months, any size (%d of %d acres or more).</p>' % (n12all, n12, LIST_MIN_ACRES),
          '<p class="ls-mid">%s</p>' % e(mid)]
+    # Two windows, one county (benchmark review, Oct 29, 2026: a 24-month middle here and a 12-month
+    # median on the Atlas page read like a conflict). Both from data/land/<st>/summary.json and the
+    # sale file; the Atlas page says the same the other way round (build_atlas_pages.land_first).
+    m12 = (((summ or {}).get("counties") or {}).get(c["fips"]) or {}).get("med") if u else None
+    w12 = ((summ or {}).get("windows") or {}).get("cur")
+    if m12 and w12 and has_atlas:
+        b.append('<p class="ls-fine ls-two">Two windows: this middle covers 24 months (%d sales). The <a href="%s">Farmland Atlas page</a> '
+                 'also shows the last 12 months, %s: %d sales, median %s an acre. Different windows, different numbers.</p>'
+                 % (u["n"], atlas, e(span_words(w12)), m12["n"], money(m12["med"])))
     if st == "IN":
         b.append('<p class="ls-fine">%s</p>' % e(in_trend_words(u)))
     if latest and latest.get("month"):
