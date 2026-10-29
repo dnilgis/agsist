@@ -8,13 +8,13 @@
 <link rel="stylesheet" href="/components/land-sales.css?v=1">
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-<title>Farmland Sales by County: Illinois, Wisconsin, Indiana, Vermont Recorded Sales | AGSIST</title>
+<title>Farmland Sales by County: Illinois, Wisconsin, Indiana, Vermont, New Jersey Recorded Sales | AGSIST</title>
 <meta name="description" content="Recorded farm sales by county with acres, price and price per acre, a monthly update of the biggest buyers and sales, and where every state&#x27;s sales come from.">
 <meta name="robots" content="index, follow, max-snippet:-1">
 <link rel="canonical" href="https://agsist.com/land-sales/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="AGSIST">
-<meta property="og:title" content="Farmland Sales by County: Illinois, Wisconsin, Indiana, Vermont Recorded Sales">
+<meta property="og:title" content="Farmland Sales by County: Illinois, Wisconsin, Indiana, Vermont, New Jersey Recorded Sales">
 <meta property="og:description" content="Recorded farm sales by county with acres, price and price per acre, a monthly update of the biggest buyers and sales, and where every state&#x27;s sales come from.">
 <meta property="og:url" content="https://agsist.com/land-sales/">
 <meta property="og:image" content="https://agsist.com/img/og/farmland-atlas.jpg">
@@ -33,8 +33,8 @@
 
 <div class="ls-w">
 <h1>Farmland sales</h1>
-<p class="ls-ans">The September 2026 update: 450 farm sales of 10 acres or more in Illinois, Wisconsin, Indiana and Vermont. The largest by acres: 2,280 acres in Sawyer County, WI, for $4,141,800. <a href="/land-sales/2026-09">See the biggest buyers, sales and unusual prices</a>.</p>
-<p class="ls-jump">Jump to: <a href="#illinois">Illinois</a> &middot; <a href="#wisconsin">Wisconsin</a> &middot; <a href="#indiana">Indiana</a> &middot; <a href="#vermont">Vermont</a> &middot; <a href="#coverage">Other states</a></p><p class="ls-mine" id="ls-mine" hidden></p><script>(function(){function go(){try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(!w||!w.state)return;var S={IL:'illinois',WI:'wisconsin',IN:'indiana',VT:'vermont',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana',VERMONT:'vermont'},st=S[String(w.state).toUpperCase()],el=document.getElementById('ls-mine');if(!el)return;var n=function(x){return String(x||'').toLowerCase().replace(/\s+(county|parish)$/,'').replace(/[^a-z]/g,'')};if(!st){el.innerHTML='Your state is not on these pages yet: <a href="#coverage">where each state stands</a>.';el.hidden=false;return;}var a=null,c=n(w.county);if(c){var L=document.querySelectorAll('#'+st+' + ul a');for(var i=0;i<L.length;i++){if(n(L[i].textContent)===c){a=L[i];break;}}}var h=document.getElementById(st).textContent;el.innerHTML=a?'Your county: <a href="'+a.getAttribute('href')+'">'+a.textContent+', '+h+'</a>':'Your state: <a href="#'+st+'">'+h+' counties</a>';el.hidden=false;}catch(e){}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
+<p class="ls-ans">The September 2026 update: 450 farm sales of 10 acres or more in Illinois, Wisconsin, Indiana, Vermont and New Jersey. The largest by acres: 2,280 acres in Sawyer County, WI, for $4,141,800. <a href="/land-sales/2026-09">See the biggest buyers, sales and unusual prices</a>.</p>
+<p class="ls-jump">Jump to: <a href="#illinois">Illinois</a> &middot; <a href="#wisconsin">Wisconsin</a> &middot; <a href="#indiana">Indiana</a> &middot; <a href="#vermont">Vermont</a> &middot; <a href="#new-jersey">New Jersey</a> &middot; <a href="#coverage">Other states</a></p><p class="ls-mine" id="ls-mine" hidden></p><script>(function(){function go(){try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(!w||!w.state)return;var S={IL:'illinois',WI:'wisconsin',IN:'indiana',VT:'vermont',NJ:'new-jersey',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana',VERMONT:'vermont','NEW JERSEY':'new-jersey'},st=S[String(w.state).toUpperCase()],el=document.getElementById('ls-mine');if(!el)return;var n=function(x){return String(x||'').toLowerCase().replace(/\s+(county|parish)$/,'').replace(/[^a-z]/g,'')};if(!st){el.innerHTML='Your state is not on these pages yet: <a href="#coverage">where each state stands</a>.';el.hidden=false;return;}var a=null,c=n(w.county);if(c){var L=document.querySelectorAll('#'+st+' + ul a');for(var i=0;i<L.length;i++){if(n(L[i].textContent)===c){a=L[i];break;}}}var h=document.getElementById(st).textContent;el.innerHTML=a?'Your county: <a href="'+a.getAttribute('href')+'">'+a.textContent+', '+h+'</a>':'Your state: <a href="#'+st+'">'+h+' counties</a>';el.hidden=false;}catch(e){}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
 <div class="ls-ask"><div data-land-alert data-source="page:land-sales"></div></div>
 <h2 id="illinois">Illinois</h2><ul class="ls-cos">
 <li><a href="/land-sales/illinois/adams-county">Adams County</a> <span>16</span></li>
@@ -324,9 +324,31 @@
 <li><a href="/land-sales/vermont/windham-county">Windham County</a> <span>22</span></li>
 <li><a href="/land-sales/vermont/windsor-county">Windsor County</a> <span>22</span></li>
 </ul>
+<h2 id="new-jersey">New Jersey</h2><ul class="ls-cos">
+<li><a href="/land-sales/new-jersey/atlantic-county">Atlantic County</a> <span>17</span></li>
+<li><a href="/land-sales/new-jersey/bergen-county">Bergen County</a> <span>0</span></li>
+<li><a href="/land-sales/new-jersey/burlington-county">Burlington County</a> <span>39</span></li>
+<li><a href="/land-sales/new-jersey/camden-county">Camden County</a> <span>4</span></li>
+<li><a href="/land-sales/new-jersey/cape-may-county">Cape May County</a> <span>3</span></li>
+<li><a href="/land-sales/new-jersey/cumberland-county">Cumberland County</a> <span>37</span></li>
+<li><a href="/land-sales/new-jersey/essex-county">Essex County</a> <span>0</span></li>
+<li><a href="/land-sales/new-jersey/gloucester-county">Gloucester County</a> <span>33</span></li>
+<li><a href="/land-sales/new-jersey/hunterdon-county">Hunterdon County</a> <span>35</span></li>
+<li><a href="/land-sales/new-jersey/mercer-county">Mercer County</a> <span>6</span></li>
+<li><a href="/land-sales/new-jersey/middlesex-county">Middlesex County</a> <span>18</span></li>
+<li><a href="/land-sales/new-jersey/monmouth-county">Monmouth County</a> <span>27</span></li>
+<li><a href="/land-sales/new-jersey/morris-county">Morris County</a> <span>15</span></li>
+<li><a href="/land-sales/new-jersey/ocean-county">Ocean County</a> <span>4</span></li>
+<li><a href="/land-sales/new-jersey/passaic-county">Passaic County</a> <span>3</span></li>
+<li><a href="/land-sales/new-jersey/salem-county">Salem County</a> <span>39</span></li>
+<li><a href="/land-sales/new-jersey/somerset-county">Somerset County</a> <span>11</span></li>
+<li><a href="/land-sales/new-jersey/sussex-county">Sussex County</a> <span>31</span></li>
+<li><a href="/land-sales/new-jersey/union-county">Union County</a> <span>0</span></li>
+<li><a href="/land-sales/new-jersey/warren-county">Warren County</a> <span>26</span></li>
+</ul>
 <p class="ls-fine">The number beside each county: sales of 10 acres or more in the last 12 months.</p>
 <h2 id="coverage">Where the sales come from</h2>
-<p class="ls-cov-n">Sales reported for 4 states: Illinois, Indiana, Vermont and Wisconsin. The goal is every state; below is where each one stands.</p>
+<p class="ls-cov-n">Sales reported for 5 states: Illinois, Indiana, New Jersey, Vermont and Wisconsin. The goal is every state; below is where each one stands.</p>
 <div class="ls-map" role="img" aria-label="Map of states by whether their farm sales are on this site">
 <span class="ls-s ls-st-unchecked" style="grid-column:8;grid-row:7" title="Alabama: Not checked yet">AL</span>
 <span class="ls-s ls-st-nondisclosure" style="grid-column:1;grid-row:1" title="Alaska: Sale prices not public record">AK</span>
@@ -357,7 +379,7 @@
 <span class="ls-s ls-st-request" style="grid-column:5;grid-row:5" title="Nebraska: State file on request or for a fee">NE</span>
 <span class="ls-s ls-st-unchecked" style="grid-column:3;grid-row:4" title="Nevada: Not checked yet">NV</span>
 <span class="ls-s ls-st-unchecked" style="grid-column:12;grid-row:2" title="New Hampshire: Not checked yet">NH</span>
-<span class="ls-s ls-st-unchecked" style="grid-column:10;grid-row:4" title="New Jersey: Not checked yet">NJ</span>
+<span class="ls-s ls-st-live" style="grid-column:10;grid-row:4" title="New Jersey: Sales on these pages">NJ</span>
 <span class="ls-s ls-st-nondisclosure" style="grid-column:4;grid-row:6" title="New Mexico: Sale prices not public record">NM</span>
 <span class="ls-s ls-st-unchecked" style="grid-column:10;grid-row:3" title="New York: Not checked yet">NY</span>
 <span class="ls-s ls-st-unchecked" style="grid-column:8;grid-row:6" title="North Carolina: Not checked yet">NC</span>
@@ -410,7 +432,7 @@
 <tr><td>Nebraska</td><td>State file on request or for a fee</td><td>Real estate transfer statement (Form 521) and the state sales file, queried for the public on request for a fee</td><td>To check</td><td>By request</td><td>Fee</td></tr>
 <tr><td>Nevada</td><td>Not checked yet</td><td>Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.</td><td>To check</td><td></td><td>To check</td></tr>
 <tr><td>New Hampshire</td><td>Not checked yet</td><td>Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.</td><td>To check</td><td></td><td>To check</td></tr>
-<tr><td>New Jersey</td><td>Not checked yet</td><td>Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.</td><td>To check</td><td></td><td>To check</td></tr>
+<tr><td>New Jersey</td><td>Sales on these pages</td><td>Deed abstracts (SR-1A) from the New Jersey Division of Taxation, acres and class from the state&#x27;s 2026 assessment list (MOD-IV), farm lots (classes 3A and 3B), deeds recorded from 2018</td><td>Yes</td><td>State posts yearly files and a year-to-date file; read here monthly</td><td>Public record, free state download</td></tr>
 <tr><td>New Mexico</td><td>Sale prices not public record</td><td>Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.</td><td>To check</td><td></td><td>To check</td></tr>
 <tr><td>New York</td><td>Not checked yet</td><td>Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.</td><td>To check</td><td></td><td>To check</td></tr>
 <tr><td>North Carolina</td><td>Not checked yet</td><td>Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.</td><td>To check</td><td></td><td>To check</td></tr>
@@ -431,12 +453,12 @@
 <tr><td>West Virginia</td><td>Not checked yet</td><td>Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.</td><td>To check</td><td></td><td>To check</td></tr>
 <tr><td>Wisconsin</td><td>Sales on these pages</td><td>State transfer returns (Wisconsin Department of Revenue, electronic real estate transfer returns), farm and forest classes</td><td>Yes</td><td>State posts monthly; read here monthly</td><td>Public record, free state download</td></tr>
 <tr><td>Wyoming</td><td>Sale prices not public record</td><td>Commonly listed as a state where sale prices are not public record; our own check of the state law is still to do. Auction results would be the public source.</td><td>To check</td><td></td><td>To check</td></tr>
-</tbody></table></div><p class="ls-fine">Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig), Vermont Oct 29. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.</p></details>
+</tbody></table></div><p class="ls-fine">Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig), Vermont and New Jersey Oct 29. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.</p></details>
 <h2 id="months">Monthly updates</h2><p><a href="/land-sales/2026-09">September 2026</a></p>
-<p class="ls-fine">A sale is listed when it carries a price and acres and a whole interest changed hands in a normal sale: gifts, family and related-party sales, quit claims, foreclosures and the like are left out, the same rule as Field Scout and the Farmland Atlas. Township and town are where the state places the sale; no parcel is pinned. None of this is an appraisal. Source: Illinois Department of Revenue, MyDec transfer declarations (PTAX-203), farm parcels, read Oct 18, 2026; Wisconsin Department of Revenue, electronic real estate transfer returns, farm and forest classes, read Oct 18, 2026; Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels, read Oct 18, 2026; Vermont Department of Taxes, property transfer tax returns (published by VCGI), farm, forest and current use land, read Oct 29, 2026.</p></div>
+<p class="ls-fine">A sale is listed when it carries a price and acres and a whole interest changed hands in a normal sale: gifts, family and related-party sales, quit claims, foreclosures and the like are left out, the same rule as Field Scout and the Farmland Atlas. Township and town are where the state places the sale; no parcel is pinned. None of this is an appraisal. Source: Illinois Department of Revenue, MyDec transfer declarations (PTAX-203), farm parcels, read Oct 18, 2026; Wisconsin Department of Revenue, electronic real estate transfer returns, farm and forest classes, read Oct 18, 2026; Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels, read Oct 18, 2026; Vermont Department of Taxes, property transfer tax returns (published by VCGI), farm, forest and current use land, read Oct 29, 2026; New Jersey Division of Taxation, SR-1A deed abstracts with acres from the MOD-IV 2026 assessment list, farm lots (classes 3A and 3B), read Oct 29, 2026.</p></div>
 </main>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/land-sales.js?v=3" defer></script>
+<script src="/components/land-sales.js?v=4" defer></script>
 </body>
 </html>
