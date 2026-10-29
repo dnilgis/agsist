@@ -1168,17 +1168,17 @@ def sales_tile(W, f, st):
         return None
     c = (sm.get("counties") or {}).get(f)
     N, A = sm.get("min_n") or 5, sm.get("min_acres") or 20
-    t = {"label": "Median sale price, %d+ acres" % A, "val": None, "unit": "/ac", "through": sm["through"]}
+    t = {"label": "Median sale price, bare land, %d+ acres" % A, "val": None, "unit": "/ac", "through": sm["through"]}
     thru = "sales dated through " + _sday(sm["through"])
     if not c:
         t["sub"] = "no %s file on hand for this county yet" % sm["record"]
     elif c.get("med"):
         n = c["med"]["n"]
         t["val"] = money(c["med"]["med"])
-        t["sub"] = "%d recorded market sale%s, %s; %s" % (n, "" if n == 1 else "s", _sspan(sm["windows"]["cur"]), thru)
+        t["sub"] = "%d recorded bare farmland sale%s, %s; %s" % (n, "" if n == 1 else "s", _sspan(sm["windows"]["cur"]), thru)
     else:
         k = c.get("k12") or 0
-        t["sub"] = "not shown: %d recorded market sale%s of %d+ acres in %s, a median needs %d; %s" % (
+        t["sub"] = "not shown: %d recorded bare farmland sale%s of %d+ acres in %s, a median needs %d; %s" % (
             k, "" if k == 1 else "s", A, _sspan(sm["windows"]["cur"]), N, thru)
     return t
 
@@ -1200,13 +1200,13 @@ def sales_facts(W, f, st):
 
 
 def sales_sentence(lab, sf):
-    """'Barron County, WI: 42 recorded farm sales, Oct 2025 to Sep 2026, median $5,578 an acre.'"""
-    return "%s: %d recorded farm sale%s, %s, median %s an acre." % (lab, sf["n"], "" if sf["n"] == 1 else "s", sf["span"], money(sf["med"]))
+    """'Barron County, WI: 22 recorded bare farmland sales, Oct 2025 to Sep 2026, median $5,668 an acre.'"""
+    return "%s: %d recorded bare farmland sale%s, %s, median %s an acre." % (lab, sf["n"], "" if sf["n"] == 1 else "s", sf["span"], money(sf["med"]))
 
 
 def sales_faq(lab, sf):
     """(question, answer) for the visible Q&A and the FAQPage markup. Counted deeds, not modeled."""
-    a = ("%d recorded market sales of %d or more acres, %s, with a median of %s an acre" % (sf["n"], sf["min_acres"], sf["span"], money(sf["med"])))
+    a = ("%d recorded market sales of bare farmland (no buildings by the property class, no forest), %d or more acres, %s, with a median of %s an acre" % (sf["n"], sf["min_acres"], sf["span"], money(sf["med"])))
     if sf.get("q1") and sf.get("q3"):
         a += "; the middle half of sales fell between %s and %s an acre" % (money(sf["q1"]), money(sf["q3"]))
     a += (". Sales are dated through %s. These are counted deed records from %s, not a model or an appraisal, and no buyer or seller is named."

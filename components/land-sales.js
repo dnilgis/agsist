@@ -208,10 +208,60 @@
     });
   }
 
+  /* ── a county page's full list (Sig, Oct 29, 2026: every recorded sale) ─────────────
+     The page carries the newest 50 rows; "Show more" and the type filter read the county's list
+     file (data/land-sales/<st>/<fips>.json, no names; cols id, when, recorded, acres, price, ppa,
+     place, kind, flag). Both controls stay hidden until this runs, so a page without the script
+     still shows its 50 rows and no dead button. */
+  var STEP = 50;
+  var LIST_COLS = ['id', 'when', 'recorded', 'acres', 'price', 'ppa', 'place', 'kind', 'flag'];
+  function acresCell(a) { return a == null ? 'not stated' : (Math.round(a * 10) / 10).toLocaleString('en-US'); }
+  function listRow(o, f) {
+    var flag = o.flag === 1 ? 'Unusual price: above the county’s usual' : o.flag === -1 ? 'Unusual price: below the county’s usual' : '';
+    var when = o.when ? MON[+o.when.slice(5, 7) - 1] + ' ' + (+o.when.slice(8, 10)) + ', ' + o.when.slice(0, 4) + (o.recorded ? '' : '*') : '';
+    return '<tr data-k="' + esc(o.kind) + '"><td>' + esc(when) + '</td><td>' + esc((o.place ? o.place + ', ' : '') + f.county + ' County, ' + f.st) + '</td>'
+      + '<td class="n">' + esc(acresCell(o.acres)) + '</td><td class="n">' + esc(money(o.price)) + '</td><td class="n">' + esc(o.ppa != null ? money(o.ppa) : '') + '</td>'
+      + '<td>' + esc((f.kinds && f.kinds[o.kind]) || '') + '</td><td>' + esc(flag) + '</td>'
+      + '<td><button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button></td></tr>';
+  }
+  function listRows(f) { return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < LIST_COLS.length; i++) o[LIST_COLS[i]] = a[i]; return o; }); }
+  function fullList(box) {
+    if (box.getAttribute('data-ls-done')) return;
+    box.setAttribute('data-ls-done', '1');
+    var url = box.getAttribute('data-ls-list'), total = +box.getAttribute('data-ls-n') || 0;
+    var tb = document.querySelector('#ls-all tbody'), more = document.querySelector('.ls-more'), sel = box.querySelector('select.ls-fk');
+    if (!tb || !/^\/data\/land-sales\/[a-z]{2}\/\d{5}\.json$/.test(url || '')) return;
+    var btn = more ? more.querySelector('button.ls-mo') : null, shown = more ? +more.getAttribute('data-ls-shown') || STEP : total, kind = '';
+    box.hidden = false;
+    if (btn) btn.hidden = false;
+    function words(n, of) { return 'Showing the newest ' + n + ' of ' + of + (kind ? ' ' + ((sel && sel.options[sel.selectedIndex].text.toLowerCase()) || '') : '') + ' sales. '; }
+    function draw(f) {
+      var all = listRows(f).filter(function (o) { return !kind || o.kind === kind; });
+      tb.innerHTML = all.slice(0, shown).map(function (o) { return listRow(o, f); }).join('');
+      if (!more) return;
+      var n = Math.min(shown, all.length);
+      var t = more.firstChild;
+      if (t && t.nodeType === 3) t.nodeValue = n < all.length ? words(n, all.length) : 'All ' + all.length + (kind ? ' of this type' : '') + ' shown. ';
+      if (btn) btn.hidden = n >= all.length;
+    }
+    function load() {
+      if (btn) { btn.setAttribute('aria-busy', 'true'); }
+      return get(url).then(function (f) {
+        if (btn) btn.removeAttribute('aria-busy');
+        if (!f || !f.s) { if (btn) btn.textContent = 'The full list did not load. Tap to try again'; return null; }
+        if (btn) btn.textContent = 'Show ' + STEP + ' more';
+        return f;
+      });
+    }
+    if (btn) btn.addEventListener('click', function () { load().then(function (f) { if (f) { shown += STEP; draw(f); } }); });
+    if (sel) sel.addEventListener('change', function () { kind = sel.value; load().then(function (f) { if (f) { shown = STEP; draw(f); } }); });
+  }
+
   function scan() {
     css();
     Array.prototype.forEach.call(document.querySelectorAll('section[data-atlas-sales="county"]'), atlas);
     if (/^\/farmland-atlas\/indiana\//.test(location.pathname)) { var cl = document.querySelector('#ch-live[data-st="IN"][data-fips]'); if (cl) atlas(cl); }
+    Array.prototype.forEach.call(document.querySelectorAll('.ls-flt[data-ls-list]'), fullList);
     Array.prototype.forEach.call(document.querySelectorAll('[data-land-sales="home"]'), home);
     Array.prototype.forEach.call(document.querySelectorAll('[data-land-sales="near"]'), near);
     rent();
@@ -228,7 +278,7 @@
   }
 
   document.addEventListener('click', onTap);
-  window.AgLandSales = { scan: scan, namesHtml: namesHtml, removeHref: removeHref, miles: miles, latestLine: latestLine };
+  window.AgLandSales = { scan: scan, namesHtml: namesHtml, removeHref: removeHref, miles: miles, latestLine: latestLine, listRow: listRow, listRows: listRows };
   function ready() { scan(); watchNear(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
 })();
