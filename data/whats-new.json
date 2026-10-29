@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. scripts/build_whats_new.py bakes the newest 4 into the homepage card and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-29-home-steady",
+   "date": "2026-10-29",
+   "title": "The homepage holds still while it loads",
+   "line": "The top of the homepage no longer jumps down as it finishes loading, on a first visit or in the evening when the overnight futures line arrives.",
+   "link": "/"
+  },
+  {
    "id": "2026-10-28-answers",
    "date": "2026-10-28",
    "title": "Short answers to what farmers ask",
