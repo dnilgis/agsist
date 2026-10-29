@@ -1985,6 +1985,15 @@ def fetch_nj(dest_dir):
     return got, tmp
 
 
+def nj_farm_lots(name, blob):
+    """Every lot classed 3A or 3B on the MOD-IV list (first pass)."""
+    out = set()
+    for member, line in nj_lines(name, blob):
+        if len(line) == NJ_MODIV_LEN and line[55:58].strip().upper() in NJ_FARM:
+            out.add(nj_unit(line[0:4], line[4:9], line[9:13], line[13:18], line[18:22]))
+    return out
+
+
 def nj_build_tables(sr_files, modiv_path, gz_blob, rep, keep_dir=None):
     """Read MOD-IV for its farm lots, then the SR-1A files (farm deeds only), then MOD-IV again for every lot those
     deeds name; returns the table rows (header first). keep_dir: where those MOD-IV lines go (gzip, for the raw branch)."""
