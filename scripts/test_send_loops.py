@@ -28,6 +28,8 @@ against a fake server that fails on demand. Nothing is copied here, so this
 cannot pass against a loop a script no longer has -- and it needs neither
 shapely nor a network.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import smtplib
 import sys
 from pathlib import Path

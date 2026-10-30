@@ -23,6 +23,8 @@ saved under data/land-raw/ (the workflow moves that to the raw branch), so a
 person can check what was accepted and why. Coverage counts print at the end
 and go into the file as coverage.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

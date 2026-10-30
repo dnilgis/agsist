@@ -31,6 +31,8 @@ USAGE
   python scripts/fetch_atlas_water.py                # needs NASS_API_KEY; downloads the USGS workbook
   python scripts/fetch_atlas_water.py --usgs path/to/usco2015v2.0.xlsx
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import io
 import json

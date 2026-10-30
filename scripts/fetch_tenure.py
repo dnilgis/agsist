@@ -25,6 +25,8 @@ Fail-loud: zero counties exits 1. (D)/(Z) values skipped per cell (kept as
 absent — honesty over interpolation). NASS throttle backoff as learned live.
 --selftest offline, gates the workflow.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

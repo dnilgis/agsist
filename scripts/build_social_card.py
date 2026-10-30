@@ -26,6 +26,8 @@ minimum sample, the card prints no record rather than inventing one.
   python3 scripts/build_social_card.py --date 2026-09-15  # one archive day's card
   python3 scripts/build_social_card.py --backfill         # redraw every dated card that exists
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

@@ -28,6 +28,8 @@ data/land-raw/soil/<ST>-raster.json.gz, saved to the raw branch, never deployed.
   python3 scripts/land_soil_raster.py --selftest
   python3 scripts/land_soil_raster.py --fetch IL [--limit N] [--minutes M]     (Actions)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import concurrent.futures as cf
 import gzip
 import json

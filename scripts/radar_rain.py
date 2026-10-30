@@ -46,6 +46,8 @@ THE FILE  data/radar-rain/<st>.bin  (one per state, all windows)
                                                  radar vs county gauges, one day at a time
   python3 scripts/radar_rain.py --check          validate data/radar-rain/*.bin
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime as dt
 import gzip
 import io

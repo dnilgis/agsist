@@ -59,6 +59,8 @@ USAGE
   python scripts/fetch_drought_county_week.py --probe   # save raw answers to data/drought/probe/ first
   python scripts/fetch_drought_county_week.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import concurrent.futures
 import json

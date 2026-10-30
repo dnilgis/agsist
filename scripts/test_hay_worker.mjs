@@ -5,6 +5,7 @@
 //     node scripts/test_hay_worker.mjs
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { pathToFileURL } from 'node:url'; import crypto from 'node:crypto';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 const src = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-hay-test-' + process.pid + '.mjs');
 fs.copyFileSync(src, tmp);

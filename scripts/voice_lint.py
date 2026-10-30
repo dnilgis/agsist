@@ -36,6 +36,8 @@ scanned: neither is written by the model in Sig's voice.
     python3 scripts/voice_lint.py --selftest
     python3 scripts/voice_lint.py data/daily.json
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import sys

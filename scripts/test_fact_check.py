@@ -2,6 +2,8 @@
 """Fixtures for fact_check_briefing.py and the model request shapes. No API key,
 no network: the reviewer is a stand-in that reads the same payload the real one
 would get. Run: python3 scripts/test_fact_check.py"""
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import copy
 import datetime as dt

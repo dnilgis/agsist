@@ -23,6 +23,8 @@ BUNDLE: the facts come from a full build, so the bundle needs the live network:
   STORY_FACTS_OUT=/tmp/cb-facts.json python3 scripts/build_cash_bid_pages.py --out /tmp/cb --sitemap /tmp/cb.xml
   STORY_FACTS=/tmp/cb-facts.json python3 scripts/stories_core.py bundle town OUT.json   (or company)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

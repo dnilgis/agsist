@@ -36,6 +36,8 @@ not a pass, and the check prints them every run.
   python3 scripts/check_seo.py --json     # machine-readable report
   python3 scripts/check_seo.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import os

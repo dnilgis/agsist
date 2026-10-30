@@ -45,6 +45,8 @@ The log carries counts only: no address and no reader's ZIP is ever printed, err
 Reply-To is news@agsist.com. The stop link carries no ZIP (BUILD-RULES 10): topic=landsales stops
 every land sale email of that address and nothing else.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import html as H
 import json

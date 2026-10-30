@@ -59,6 +59,8 @@ number stays missing, never a guess. Buyer and seller names are kept only when
 the state's public file carries them (the page shows them for the one parcel a
 reader picked, and links the official record when they are not there).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import io
 import json

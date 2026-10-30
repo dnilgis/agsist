@@ -45,6 +45,8 @@ Usage: python3 scripts/build_basis_join.py            write data/ids/basis-join/
        python3 scripts/build_basis_join.py --check    exit 1 when the committed file is not what this builds
        python3 scripts/build_basis_join.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

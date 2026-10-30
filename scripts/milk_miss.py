@@ -29,6 +29,8 @@ row carries the session date and the page prints it).
     python3 scripts/milk_miss.py            # update data/dairy-miss.json
     python3 scripts/milk_miss.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import os

@@ -32,6 +32,8 @@ wording rule left is a warning).
 
     python3 scripts/daily_claims.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

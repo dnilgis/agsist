@@ -43,6 +43,7 @@
 # (default raw), RAW_WT (where the branch worktree goes; default
 # ../<branch>-branch, outside the checkout, so the site budget never counts
 # it), RAW_SLEEP (seconds per retry step, default 10), RAW_SOFT, RAW_KEEP.
+_g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 set -u
 set -o pipefail
 MSG="${1:-}"

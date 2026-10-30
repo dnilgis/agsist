@@ -24,6 +24,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 /* Resolved from THIS FILE's own location, not from wherever you happened to be
    standing when you ran it. The first version hardcoded a sandbox path and
    would have thrown ENOENT on any other machine, which is a check that cannot

@@ -22,6 +22,8 @@ prerender_wpi_scorecard.py --check runs the same comparison in CI.
 
     python3 scripts/test_wpi_verdicts.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

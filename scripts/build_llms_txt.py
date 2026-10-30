@@ -27,6 +27,8 @@ llms.txt, in their place, so the two builders never fight over them.
 
 Stdlib only. Offline.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

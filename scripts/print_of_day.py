@@ -28,6 +28,8 @@ the email. The email never waits on it and never fails for it.
     python3 scripts/print_of_day.py --compress daily/img/print-2026-10-21.png
     python3 scripts/print_of_day.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import html
 import json

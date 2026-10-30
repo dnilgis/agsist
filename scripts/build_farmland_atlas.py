@@ -42,6 +42,8 @@ USAGE
   python scripts/build_farmland_atlas.py
   python scripts/build_farmland_atlas.py --seed farmland-atlas.html   # also refresh the page's static block
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import glob
 import json

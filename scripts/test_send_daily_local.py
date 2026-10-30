@@ -22,6 +22,8 @@ The bid numbers in the mirror are made up for the test and say so in the
 place names; the rule itself is checked against the homepage's JS by
 scripts/daily-local-bid-checks.mjs.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import contextlib
 import io
 import json

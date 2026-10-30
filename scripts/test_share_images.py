@@ -10,6 +10,8 @@
 
   python3 scripts/test_share_images.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import io
 import os
 import sys

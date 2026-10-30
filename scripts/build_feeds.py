@@ -36,6 +36,8 @@ of the week. Anything whose cadence cannot be established comes out as
 "unknown" and the status page says so. A made-up cadence would turn this page
 into the thing it exists to prevent -- a reassuring number nobody checked.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

@@ -45,6 +45,8 @@ build fails if any company page passes MAX_PAGE_KB.
 
   python3 scripts/build_company_pages.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

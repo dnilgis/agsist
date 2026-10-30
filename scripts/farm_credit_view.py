@@ -9,6 +9,8 @@ value from the file; the page computes nothing but which side of 100 it sits.
 
     python3 scripts/farm_credit_view.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import os

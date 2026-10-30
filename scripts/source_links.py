@@ -13,6 +13,8 @@ bank survey pages.
 
 Builders and the test import is_data_source() / unlink(); there is one definition.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html as _html
 import re
 import sys

@@ -12,6 +12,8 @@ seven merges from the Oct 21 pages board, then /foreign-land and /archive), in o
   python3 scripts/moved_pages.py --check      exit 1 if a forward page differs from what --write makes
   python3 scripts/moved_pages.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html as H
 import os
 import re

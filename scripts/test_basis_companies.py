@@ -15,6 +15,8 @@ host (scripts/basis_method.py site_key) and how many locations post under them.
       (one co-op); CHS High Plains and CHS Holdrege are both CHS.
   ND: six CHS-branded businesses, each on its own site, count as one (CHS).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import re
 import sys

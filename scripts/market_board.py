@@ -38,6 +38,8 @@ WHY THIS FILE EXISTS
   CLOSES an issue holds -- what the call grader needs -- is answered from the
   calendar by grade_calls.board_session, because prices cannot answer it.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import glob
 import json
