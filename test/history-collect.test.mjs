@@ -140,7 +140,9 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
   //     (schedule approved)"): main-checks.yml, nightly 08:17 UTC.
   //   Oct 29 2026: Sig, "yes soil" (STANDING-DECISIONS: run the fall-nitrogen soil station readings March to June too):
   //     fall-nitrogen.yml, the same two times, months 3-6 added to 9-12.
-  const APPROVED = { 'fall-nitrogen.yml': ['23 13 * 3-6,9-12 *', '47 22 * 3-6,9-12 *'], 'main-checks.yml': ['17 8 * * *'], 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Sig, Oct 23 2026
+  //   Oct 30 2026: Sig, "yes add the 06:50 title refresh" (STANDING-DECISIONS): freshness.yml, Tue-Sat 06:50 UTC,
+  //     a second night run for a late settle.
+  const APPROVED = { 'freshness.yml': ['50 6 * * 2-6'], 'fall-nitrogen.yml': ['23 13 * 3-6,9-12 *', '47 22 * 3-6,9-12 *'], 'main-checks.yml': ['17 8 * * *'], 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Sig, Oct 23 2026
   const left = added.filter((a) => !Object.entries(APPROVED).some(([f, cs]) => cs.some((c) => a === `${f}: cron '${c}' (new workflow)` || a === `${f}: cron '${c}'`)));
   assert.deepEqual(left, [], 'a new schedule is Sig\'s decision: list it in the report, do not add it');
 });
