@@ -627,11 +627,10 @@ details.fold[hidden]{display:none}
         <div class="cot-pct" id="cot-pct">-</div>
       </div>
       <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
-      <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a> · <a href="/cot">Full positioning history →</a></div>
+      <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · CFTC ↗ · <a href="/cot">Full positioning history →</a></div>
     </div>
     </div>
   </details>
-  <!-- 2026-10-21 (Sig): Funds this week, its own list (subs worker v5.44, notice topic cot), mailed by scripts/send_cot_weekly.py from cot-release-watch.yml. It replaces this page's Daily ask: one ask a page. -->
   <div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:wheat-futures-prices" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>
   <details class="fold" id="fold-crop" data-wide-open>
     <summary class="fold-sum"><span class="fold-t">USDA crop progress and export pace</span><span class="fold-d">Planting, harvest and condition vs last year and the 5-year average; export sales pace</span></summary>
@@ -643,12 +642,12 @@ details.fold[hidden]{display:none}
       </div>
       <div id="cp-rows"></div>
       <div class="crop-src" id="cp-avg-note" style="display:none">5-year average: AGSIST's arithmetic on the NASS weekly series, so it can differ from the NASS printed average by a point.</div>
-      <div class="crop-src">Source: USDA NASS Crop Progress, released Mondays 4:00 PM ET · <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">NASS ↗</a></div>
+      <div class="crop-src">Source: USDA NASS Crop Progress, released Mondays 4:00 PM ET · NASS ↗</div>
     </div>
     <div class="export-card" id="export-card">
       <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US wheat export pace</h4>
       <div class="export-line" id="export-line">-</div>
-      <div class="export-src">Source: USDA FAS weekly export sales · <a href="https://apps.fas.usda.gov/export-sales/esrd1.html" target="_blank" rel="noopener">FAS ↗</a></div>
+      <div class="export-src">Source: USDA FAS weekly export sales · FAS ↗</div>
     </div>
     </div>
   </details>
@@ -672,13 +671,13 @@ details.fold[hidden]{display:none}
     <div class="cp">
       <div class="cp-head">
         <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Wheat: interactive chart (most-active ZW)</h2>
-        <span class="cp-src">Wheat CFD tracking CBOT · <a href="https://www.tradingview.com/symbols/CBOT-ZW1!/" target="_blank" rel="noopener">View CBOT:ZW1! on TradingView ↗</a></span>
+        <span class="cp-src">Wheat CFD tracking CBOT · View CBOT:ZW1! on TradingView ↗</span>
       </div>
       <div id="tv-chart" style="height:480px"><div class="tv-ph"><span>The interactive wheat chart from TradingView loads when you scroll to it.</span><button type="button" class="tv-load" id="tv-load">Load chart now</button></div></div>
       <div class="tv-fallback" id="tv-fallback">
         <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
         <span>Interactive chart unavailable in this environment.</span>
-        <a href="https://www.tradingview.com/symbols/CBOT-ZW1!/" target="_blank" rel="noopener">View the wheat chart on TradingView →</a>
+        View the wheat chart on TradingView →
       </div>
     </div>
     </div>
@@ -823,11 +822,8 @@ details.fold[hidden]{display:none}
       </div>
   </div>
 
-  <!-- Rain Print gift line (components/rain-print-promo.js): the one cross-promo on this page, after the main content; shows only while data/rain-print.json promote is on and inside promote_from..promote_until. Empty and hidden otherwise. -->
   <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
 
-  <!-- 2026-10-06: the signup card that sat here is replaced by the one-line
-       ask under the local cash bid (components/signup-ask.js). -->
 
   <div class="rl">Related Tools</div>
   <div class="rg">
@@ -856,7 +852,7 @@ details.fold[hidden]{display:none}
       <div class="author-meta">Questions, corrections, partnership? <a href="mailto:sig@agsist.com">sig@agsist.com</a> · <a href="/about">About AGSIST</a></div>
     </div>
   </div>
-  <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min). Chart shows Capital.com WHEAT CFD which tracks CBOT wheat futures; for exact ZW1! data use the TradingView link. Not financial advice. Verify with your elevator or broker before making marketing decisions.</div>
+  <div class="disc">Prices from Yahoo Finance (delayed about 15 min). Chart shows Capital.com WHEAT CFD which tracks CBOT wheat futures; for exact ZW1! data use the TradingView link. Not financial advice. Verify with your elevator or broker before making marketing decisions.</div>
 <script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
 
@@ -878,7 +874,7 @@ details.fold[hidden]{display:none}
 </div>
 <script src="/components/bids-network.js?v=8" defer></script>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=34" defer></script>
+<script src="/components/geo.js?v=35" defer></script>
 <script>window.AGSIST_FUTURES='wheat'</script>
 <script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=8"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=28"></script>
 

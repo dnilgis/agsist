@@ -513,7 +513,7 @@ function loadCountyDates(){
   rmaPromise = rmaPromise || fetch('/data/rma-planting-dates.json').then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
   return rmaPromise.then(function(d){
     var head = '<h3>Your county’s final planting dates</h3>';
-    if(!d || !d.counties){ box.innerHTML = head+'<div class="pd-empty">The final planting date file could not be read. RMA’s own lookup: <a href="https://public-rma.fpac.usda.gov/apps/mapviewer/dates" target="_blank" rel="noopener">USDA RMA dates</a>.</div>'; return; }
+    if(!d || !d.counties){ box.innerHTML = head+'<div class="pd-empty">The final planting date file could not be read. RMA’s own lookup: USDA RMA dates.</div>'; return; }
     var want = normalizeCountyName(userCounty), hit = null;
     if(want && userState){
       for(var f in d.counties){
@@ -522,7 +522,7 @@ function loadCountyDates(){
       }
     }
     if(!hit){
-      box.innerHTML = head+'<div class="pd-empty">'+(userCounty ? esc(userCounty)+(userState?', '+esc(userState):'')+' is not in the RMA file this page reads.' : 'Your county did not come back from the location lookup.')+' In Wisconsin and Minnesota the final planting date is May 25 or May 31 for corn and Jun 10 or Jun 15 for soybeans. <a href="https://public-rma.fpac.usda.gov/apps/mapviewer/dates" target="_blank" rel="noopener">Look up your county at USDA RMA</a>.</div>';
+      box.innerHTML = head+'<div class="pd-empty">'+(userCounty ? esc(userCounty)+(userState?', '+esc(userState):'')+' is not in the RMA file this page reads.' : 'Your county did not come back from the location lookup.')+' In Wisconsin and Minnesota the final planting date is May 25 or May 31 for corn and Jun 10 or Jun 15 for soybeans. Look up your county at USDA RMA.</div>';
       return;
     }
     var cy = d.crop_year, now = new Date(), y = now.getFullYear();
@@ -532,7 +532,7 @@ function loadCountyDates(){
       +'<div class="rma-grid"><div class="rma-c"><div class="rma-l">Corn</div><div class="rma-v">'+esc(hit.corn)+'</div></div>'
       +'<div class="rma-c"><div class="rma-l">Soybeans</div><div class="rma-v">'+esc(hit.soybeans)+(interp?'*':'')+'</div></div></div>'
       +'<p class="f-hint">'+esc(hit.county)+' County, '+esc(hit.state)+'. USDA RMA Revenue Protection final planting dates, '+esc(cy)+' crop year'+(past?'; RMA sets the '+(cy+1)+' dates in its own file':'')+'. '
-      +(interp?'*The soybean date in this file was filled from neighboring counties, not read for this county: <a href="'+esc(d.source_url)+'" target="_blank" rel="noopener">check it at RMA</a>. ':'<a href="'+esc(d.source_url)+'" target="_blank" rel="noopener">RMA date lookup</a>. ')
+      +(interp?'*The soybean date in this file was filled from neighboring counties, not read for this county: check it with your crop insurance agent. ':'')
       +'Planting after it cuts the guarantee; the late planting period runs after it.</p>';
   });
 }
@@ -594,7 +594,7 @@ function fetchSoilTemp(){
     $('st-air').textContent = air ? air+'°F' : '-';
     var S = SN ? SN.near(feed, userLat, userLon, SN.todayIso()) : {why:'The soil reader did not load.'};
     var net = S.net || '', url = S.url || '';
-    var src = S.st ? esc(S.st.name)+' ('+(url ? '<a href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(net)+'</a>' : esc(net))+'), '+Math.round(S.mi)+' mi' : '';
+    var src = S.st ? esc(S.st.name)+' ('+esc(net)+'), '+Math.round(S.mi)+' mi' : '';
     var asof = $('st-asof');
     if(asof) asof.innerHTML = (S.st ? 'Soil: measured at '+src+', last day '+esc(S.st.last)+'. ' : '')+(wx && wx._nws ? 'Air: '+esc(window.AgNWS.sourceLine(wx).replace(/^Forecast: /,'the forecast for this hour, ')) : 'Air: the National Weather Service forecast did not answer.');
     var tr = $('st-trend');

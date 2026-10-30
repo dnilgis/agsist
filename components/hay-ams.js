@@ -169,8 +169,8 @@
       if (sk.contract) left.push(sk.contract + ' contract table' + (sk.contract > 1 ? 's' : ''));
       if (sk.other_unit || (!r.skipped && r.perBale)) { var n = sk.other_unit || r.perBale; left.push(n + ' table' + (n > 1 ? 's' : '') + ' priced by the bale or point'); }
       if (left.length) h += '<p class="hp-fine">Left out of this report: ' + left.join(', ') + '. This page shows sales by the ton only.</p>';
-      h += '<p class="hp-fine">F.O.B. means at the seller&rsquo;s farm, before trucking. Grades are AMS&rsquo;s (<a href="https://www.ams.usda.gov/sites/default/files/media/HayQualityGuidelines.pdf">Hay Quality Guidelines</a>). Source: ' +
-        (r.url ? '<a href="' + esc(r.url) + '">USDA AMS, ' + esc(r.title) + '</a>' : 'USDA AMS') + '.</p>';
+      h += '<p class="hp-fine">F.O.B. means at the seller&rsquo;s farm, before trucking. Grades are AMS&rsquo;s (Hay Quality Guidelines). Source: ' +
+        (r.title ? 'USDA AMS, ' + esc(r.title) : 'USDA AMS') + '.</p>';
       return h + '</div>';
     }
 

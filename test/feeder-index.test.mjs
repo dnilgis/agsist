@@ -49,7 +49,7 @@ test('RMA box: value with its date, futures for the same day, and the difference
   const v = V.rmaView(D, NOW);
   assert.equal(v.val, '$341.47');
   assert.equal(v.date, 'Oct 12, 2026');
-  assert.match(v.meta, /^Ending value, steers 6 to 10 cwt, <a href="https:\/\/pubfs-rma\.fpac\.usda\.gov\/pub\/References\/adm_livestock\/" rel="noopener">USDA RMA<\/a>\.$/);
+  assert.match(v.meta, /^Ending value, steers 6 to 10 cwt, USDA RMA\.$/);
   assert.equal(v.fut, 'RMA minus GFV26 settle $340.00');
   assert.equal(v.diff, '+$1.47');
   assert.match(v.range, /^Since Sep 1, 2026: low \$330\.00 on Sep 1, 2026, high \$359\.00 on Sep 30, 2026 \(30 days with a value\)\.$/);
@@ -121,9 +121,11 @@ test('each page carries its box and the component; credits and the not-the-index
     const i = html.indexOf('data-feeder=');
     assert.doesNotMatch(html.slice(i, html.indexOf('</section>', i)), /\$\d/, p + ': no number baked into the box');
   }
-  assert.match(comp, /<a href="https:\/\/pubfs-rma\.fpac\.usda\.gov\/pub\/References\/adm_livestock\/" rel="noopener">USDA RMA<\/a>/);
-  assert.match(comp, /<a href="https:\/\/mymarketnews\.ams\.usda\.gov\/" rel="noopener">USDA AMS<\/a>/);
-  assert.match(comp, /RMA LRP Handbook FCIC-20010<\/a>, section 23C/);
+  // the sources are named, not linked (no direct links to data sources, Oct 29, 2026)
+  assert.match(comp, /Source: USDA RMA, Livestock Risk Protection actual ending values\./);
+  assert.match(comp, /USDA AMS/);
+  assert.doesNotMatch(comp, /href="https:\/\/(pubfs-rma\.fpac\.usda\.gov|mymarketnews\.ams\.usda\.gov)/);
+  assert.match(comp, /RMA LRP Handbook FCIC-20010, section 23C/);
   assert.match(comp, /Our own figure, not the CME Feeder Cattle Index\./);
   assert.doesNotMatch(comp, /—/, 'no em dashes');
 });

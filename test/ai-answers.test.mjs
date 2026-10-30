@@ -1,7 +1,8 @@
 /* Answer blocks for the questions farmers ask search assistants (Bing AI export, Oct 28, 2026).
  * data/ai-answers.json holds one block per topic; scripts/build_ai_answers.py bakes each into
  * the page that owns the topic (arc-plc.html through scripts/build_arc_plc.py).
- * Holds: every live block is on its page as baked, with a primary-source link and a
+ * Holds: every live block is on its page as baked, with its primary source named (linked unless
+ * it is a data source, scripts/source_links.py) and a
  * "Last checked" date equal to its oldest source read; no em dash; 2 to 5 sentences;
  * a withheld block shows nothing and says why in the data file.
  *
@@ -11,6 +12,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
+import { isDataSource } from "../scripts/source_links.mjs";
 import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -51,7 +53,10 @@ for (const a of doc.answers) {
     for (const s of a.sources) {
       assert.match(s.url, /^https:\/\//);
       assert.match(s.read, /^\d{4}-\d{2}-\d{2}$/);
-      assert.ok(inner.includes(`href="${s.url.replace(/&/g, "&amp;")}"`), `links ${s.name}`);
+      // a data source is named with its date, not linked (Sig, Oct 29, 2026); anything else is linked
+      if (isDataSource(s.url)) {
+        assert.ok(inner.includes(s.name.replace(/&/g, "&amp;")) && !inner.includes(`href="${s.url.replace(/&/g, "&amp;")}"`), `names ${s.name}, no link`);
+      } else assert.ok(inner.includes(`href="${s.url.replace(/&/g, "&amp;")}"`), `links ${s.name}`);
     }
     const oldest = a.sources.map((s) => s.read).sort()[0];
     assert.ok(inner.includes(`Last checked ${nice(oldest)}.`), "last checked = oldest source read");

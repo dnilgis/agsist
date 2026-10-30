@@ -296,7 +296,7 @@
       box.innerHTML = head(rows.length) + (shown.length ?
         '<div class="cr-tw"><table class="cr-t cr-full"><caption>' + esc(d.name) + ', ' + (d.rate_year ? d.rate_year + ' rates' : d.survey_year) + ', as the survey printed it: average' + (d.rows.some(function (r) { return r.md != null; }) ? ', median' : '') + ' and ' + esc(d.spread_label) + '.' + (d.counts === false ? ' This survey does not print how many answered each job.' : ' Answers = how many reported that job.') + '</caption>' +
         '<thead><tr><th scope="col">Job</th><th scope="col">Average</th><th scope="col" class="rg">Range</th><th scope="col">Answers</th></tr></thead><tbody>' + lineRows(d, shown) + '</tbody></table></div>' +
-        (d.page === false ? '<p class="fine">' + esc(d.range_note) + ' <a href="' + esc(d.sources[0].url) + '" rel="nofollow">The survey</a>.</p>' : '<p class="fine"><a href="/custom-rates/' + esc(d.slug) + '">' + esc(d.name) + '\'s whole survey on one page</a></p>')
+        (d.page === false ? '<p class="fine">' + esc(d.range_note) + '</p>' : '<p class="fine"><a href="/custom-rates/' + esc(d.slug) + '">' + esc(d.name) + '\'s whole survey on one page</a></p>')
         : '<p class="fine">No ' + esc(d.name) + ' job matches "' + esc(S.q) + '" in this category.</p>');
     });
   }

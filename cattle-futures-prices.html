@@ -214,11 +214,6 @@ details.fold[hidden]{display:none}
       <h1><!--BAKE:cattle-h1-->Feeder and live cattle futures prices today<!--/BAKE--></h1>
       <div class="ph-exch">CME Group feeder and live cattle futures · $ per cwt (100 lb) · Updated every 15 min</div>
     </div>
-    <!-- 2026-10-17 search-terms check: feeder searches carry about 19,700 of this page's
-         ~19,900 search weight ("feeder cattle futures" 10,117, "cme feeder cattle futures"
-         3,149, "cme feeder cattle" 1,949), and feeders sat in small type under live cattle,
-         off the phone's first screen. Both are headline prices now, same size, each with its
-         own settle / last-trade stamp (AgPxStamp.html, as the status line). -->
     <div class="ph-price ph-two">
       <div class="ph-q" id="hero-gf">
         <div class="ph-name">Feeder cattle <span id="hero-gf-ct"><!--SEED:gfct-->Oct '26<!--/SEED--></span></div>
@@ -312,9 +307,8 @@ details.fold[hidden]{display:none}
     </div>
   </section>
 
-  <!-- ai-answer:cattle-markets --><section class="ai-answer" id="answer-cattle-markets" aria-labelledby="answer-cattle-markets-h" data-checked="2026-10-18" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-cattle-markets-h" style="font-size:1.1rem;margin:0 0 .4rem">Where do cattle markets stand?</h2><p style="margin:0 0 .5rem">Today&#x27;s futures prices are at the top of this page; behind them is a small herd. NASS counted 94.2 million cattle and calves on U.S. farms on July 1, 2026, with 28.5 million beef cows, down 1% from a year earlier, and a 2026 calf crop of 32.5 million head, down 2%. USDA&#x27;s October 9 WASDE left its cattle price forecasts unchanged and puts the 2026 average 5-area fed steer price at $237.56 per cwt, against $224.37 in 2025; that is a forecast.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 18, 2026. Sources: <a href="https://www.nass.usda.gov/Newsroom/2026/07-24-2026.php" rel="noopener" style="text-decoration:underline">NASS Cattle report release, Jul 24, 2026</a> &middot; <a href="https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf" rel="noopener" style="text-decoration:underline">USDA WASDE-676, Oct 9, 2026</a></p></section><!-- /ai-answer:cattle-markets -->
+  <!-- ai-answer:cattle-markets --><section class="ai-answer" id="answer-cattle-markets" aria-labelledby="answer-cattle-markets-h" data-checked="2026-10-18" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-cattle-markets-h" style="font-size:1.1rem;margin:0 0 .4rem">Where do cattle markets stand?</h2><p style="margin:0 0 .5rem">Today&#x27;s futures prices are at the top of this page; behind them is a small herd. NASS counted 94.2 million cattle and calves on U.S. farms on July 1, 2026, with 28.5 million beef cows, down 1% from a year earlier, and a 2026 calf crop of 32.5 million head, down 2%. USDA&#x27;s October 9 WASDE left its cattle price forecasts unchanged and puts the 2026 average 5-area fed steer price at $237.56 per cwt, against $224.37 in 2025; that is a forecast.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 18, 2026. Sources: <a href="https://www.nass.usda.gov/Newsroom/2026/07-24-2026.php" rel="noopener" style="text-decoration:underline">NASS Cattle report release, Jul 24, 2026</a> &middot; USDA WASDE-676, Oct 9, 2026</p></section><!-- /ai-answer:cattle-markets -->
 
-  <!-- ░░ cash side · USDA AMS, data/cattle-cash.json (scripts/fetch_cattle_cash.py) ░░ -->
   <section class="fwd-card" id="ct-cash" hidden aria-label="Cash cattle and boxed beef">
     <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Cash side · USDA reports</span><span class="fwd-shape">$/cwt</span></div>
     <div class="ct-grid">
@@ -496,7 +490,7 @@ details.fold[hidden]{display:none}
         </div>
       </div>
       <div class="ctcot-interp" id="cot-interp"></div>
-      <div class="ctcot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a></div>
+      <div class="ctcot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · CFTC ↗</div>
     </section>
     </div>
   </details>
@@ -532,7 +526,6 @@ details.fold[hidden]{display:none}
   })();
   </script>
 
-  <!-- ░░ cost-of-gain / breakeven calculator ░░ -->
   <details class="fold" id="fold-cog" data-wide-open>
     <summary class="fold-sum"><span class="fold-t">Cost-of-gain calculator</span><span class="fold-d">What sale price covers your feeder, feed and yardage</span></summary>
     <div class="fold-body">
@@ -590,8 +583,8 @@ details.fold[hidden]{display:none}
   </details>
 
   <!-- ░░ FAQ ░░ -->
-  <!-- ai-answer:beef-supply --><section class="ai-answer" id="answer-beef-supply" aria-labelledby="answer-beef-supply-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-beef-supply-h" style="font-size:1.1rem;margin:0 0 .4rem">Is there a beef shortage?</h2><p style="margin:0 0 .5rem">There is less U.S. beef, and imports are filling part of the gap. USDA&#x27;s October 9 WASDE forecasts 2026 U.S. beef production at 24.87 billion pounds, down 4.6% from 26.07 billion in 2025, and cut it from September on fewer steers and heifers going to slaughter and lighter carcasses. Beef imports are forecast at 6.35 billion pounds, up 17.8% from 5.39 billion, and beef use per person at 58.9 pounds, against 59.2 in 2025.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: <a href="https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf" rel="noopener" style="text-decoration:underline">USDA WASDE-676, Oct 9, 2026 (U.S. meats supply and use)</a></p></section><!-- /ai-answer:beef-supply -->
-  <!-- ai-answer:argentina-beef --><section class="ai-answer" id="answer-argentina-beef" aria-labelledby="answer-argentina-beef-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-argentina-beef-h" style="font-size:1.1rem;margin:0 0 .4rem">How much Argentine beef can come into the U.S.?</h2><p style="margin:0 0 .5rem">Argentina has its own U.S. beef quota of 20,000 tons a year, at a $44 a ton duty inside it and 26.4% above it, and the U.S. took 42,445 tons of Argentine beef in 2025, the most since 1999 (FAS, March 9, 2026). For 2026 only, Proclamation 11010 added 80,000 metric tons for Argentina, limited to lean beef trimmings and opened in four 20,000-ton quarters; the last one runs October 1 to December 31, 2026. The 300,000 tons of extra lean trimmings added in August by Proclamation 11059 went to other countries, not Argentina, and its last tranche closes when filled or on November 30, 2026, whichever comes first. Whether any of it is extended into 2027 is not decided.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: <a href="https://apps.fas.usda.gov/newgainapi/api/Report/DownloadReportByFileName?fileName=Livestock+and+Products+Semi-annual_Buenos+Aires_Argentina_AR2026-0004.pdf" rel="noopener" style="text-decoration:underline">FAS GAIN, Argentina Livestock and Products, Mar 9, 2026</a> &middot; <a href="https://www.govinfo.gov/content/pkg/FR-2026-02-13/html/2026-03050.htm" rel="noopener" style="text-decoration:underline">Proclamation 11010, Federal Register, Feb 13, 2026</a> &middot; <a href="https://www.govinfo.gov/content/pkg/FR-2026-08-31/pdf/2026-17842.pdf" rel="noopener" style="text-decoration:underline">Proclamation 11059, Federal Register, Aug 31, 2026</a></p></section><!-- /ai-answer:argentina-beef -->
+  <!-- ai-answer:beef-supply --><section class="ai-answer" id="answer-beef-supply" aria-labelledby="answer-beef-supply-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-beef-supply-h" style="font-size:1.1rem;margin:0 0 .4rem">Is there a beef shortage?</h2><p style="margin:0 0 .5rem">There is less U.S. beef, and imports are filling part of the gap. USDA&#x27;s October 9 WASDE forecasts 2026 U.S. beef production at 24.87 billion pounds, down 4.6% from 26.07 billion in 2025, and cut it from September on fewer steers and heifers going to slaughter and lighter carcasses. Beef imports are forecast at 6.35 billion pounds, up 17.8% from 5.39 billion, and beef use per person at 58.9 pounds, against 59.2 in 2025.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: USDA WASDE-676, Oct 9, 2026 (U.S. meats supply and use)</p></section><!-- /ai-answer:beef-supply -->
+  <!-- ai-answer:argentina-beef --><section class="ai-answer" id="answer-argentina-beef" aria-labelledby="answer-argentina-beef-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-argentina-beef-h" style="font-size:1.1rem;margin:0 0 .4rem">How much Argentine beef can come into the U.S.?</h2><p style="margin:0 0 .5rem">Argentina has its own U.S. beef quota of 20,000 tons a year, at a $44 a ton duty inside it and 26.4% above it, and the U.S. took 42,445 tons of Argentine beef in 2025, the most since 1999 (FAS, March 9, 2026). For 2026 only, Proclamation 11010 added 80,000 metric tons for Argentina, limited to lean beef trimmings and opened in four 20,000-ton quarters; the last one runs October 1 to December 31, 2026. The 300,000 tons of extra lean trimmings added in August by Proclamation 11059 went to other countries, not Argentina, and its last tranche closes when filled or on November 30, 2026, whichever comes first. Whether any of it is extended into 2027 is not decided.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: FAS GAIN, Argentina Livestock and Products, Mar 9, 2026 &middot; <a href="https://www.govinfo.gov/content/pkg/FR-2026-02-13/html/2026-03050.htm" rel="noopener" style="text-decoration:underline">Proclamation 11010, Federal Register, Feb 13, 2026</a> &middot; Proclamation 11059, Federal Register, Aug 31, 2026</p></section><!-- /ai-answer:argentina-beef -->
   <div class="faq-wrap">
     <div class="faq-head"><svg class="ic" aria-hidden="true"><use href="#i-circle-question-mark"/></svg> Cattle futures: common questions</div>
     <div class="faq-list" id="faq-list">
@@ -604,7 +597,6 @@ details.fold[hidden]{display:none}
     </div>
   </div>
 
-  <!-- 2026-10-21 (Sig): Funds this week, its own list (subs worker v5.44, notice topic cot), mailed by scripts/send_cot_weekly.py from cot-release-watch.yml. It replaces this page's Daily ask: one ask a page. -->
   <div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:cattle-futures-prices" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>
 
   <div class="rl">Related Tools</div>
@@ -626,10 +618,9 @@ details.fold[hidden]{display:none}
       <div class="author-meta">CCA · cattle, dairy &amp; grain producers nationwide. Questions, corrections, partnership? <a href="mailto:sig@agsist.com">sig@agsist.com</a> · <a href="/about">About AGSIST</a></div>
     </div>
   </div>
-  <!-- Rain Print gift line (components/rain-print-promo.js): the one cross-promo on this page, after the main content; shows only while data/rain-print.json promote is on and inside promote_from..promote_until. Empty and hidden otherwise. -->
   <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
 
-  <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min): the exchange settle after the close, the latest delayed trade in session. 5-year percentile from Yahoo weekly closes of the continuous front-month LE=F and GF=F series (not roll-adjusted). Quoted in $/cwt. Decision-support only, not financial advice. Verify with your broker before making marketing decisions.</div>
+  <div class="disc">Prices from Yahoo Finance (delayed about 15 min): the exchange settle after the close, the latest delayed trade in session. 5-year percentile from Yahoo weekly closes of the continuous front-month LE=F and GF=F series (not roll-adjusted). Quoted in $/cwt. Decision-support only, not financial advice. Verify with your broker before making marketing decisions.</div>
 <script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
 <div id="site-footer">
@@ -649,8 +640,8 @@ details.fold[hidden]{display:none}
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=34" defer></script>
-<script src="/components/feeder-index.js?v=2" defer></script>
+<script src="/components/geo.js?v=35" defer></script>
+<script src="/components/feeder-index.js?v=3" defer></script>
 
 <script>
 /* ===== cattle dashboard: prices.json + price-stats.json ===== */

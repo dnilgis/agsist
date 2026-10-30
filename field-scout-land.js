@@ -1018,7 +1018,7 @@
       kv('Property class', p.cls ? esc(FSLand.classLabel(p.cls)) : '') +
       kv('Municipality', p.muni ? esc(p.muni) : '') +
       kv('Share of your field', p.share != null ? Math.round(p.share * 100) + '%' : '') +
-      '</table><div class="fs-src">' + src + (p.svc.about ? ' &middot; <a href="' + esc(p.svc.about) + '" target="_blank" rel="noopener">about this data</a>' : '') + '</div>';
+      '</table><div class="fs-src">' + src + '</div>';
   };
   // ── layers (map images from the agencies; images need no permission to read) ──
   if (G.L && G.L.TileLayer) {

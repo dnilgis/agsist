@@ -66,7 +66,7 @@ official CME feed. The AGSIST Daily briefing publishes each morning. Every other
 page states its own source and date on the page. Nothing on the site is financial or trading advice.
 
 Sources: cash bids read from AGSIST's own network of elevator bid boards (each
-elevator's own posted board); weather from Open-Meteo and NOAA; crop, price and
+elevator's own posted board); weather from the National Weather Service and NOAA; crop, price and
 program data from USDA (NASS, FAS, RMA, FSA); positioning from the CFTC.
 Every page names its source beside its numbers; the main sources are listed at /editorial-standards#sources.
 
