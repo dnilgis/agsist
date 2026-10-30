@@ -963,7 +963,7 @@ def do_build(m, partial_ok=False, now=None):
     eds = [e for e in eds if e["month"] != m] + [ed]
     eds.sort(key=lambda e: e["month"], reverse=True)
     dump(EDITIONS, {"schema": SCHEMA_ED, "url": URL,
-                    "note": "One entry per month, built by scripts/cash_bid_index.py from the elevator boards AGSIST reads.",
+                    "note": "One entry per month, built from the elevator boards AGSIST reads.",
                     "editions": eds})
     with open(os.path.join(DIR, f"{m}.csv"), "w", encoding="utf-8") as f:
         f.write(csv_text(ed))

@@ -1,5 +1,5 @@
 {
- "note": "Built by scripts/build_fert_prices.py from data/fertilizer-coops.json only: the middle cash price of the co-ops that post each product (two co-ops: their average; one: that co-op, named). Nothing typed by hand, no other source blended in.",
+ "note": "From the co-op posted prices only: the middle cash price of the co-ops that post each product (two co-ops: their average; one: that co-op, named). Nothing typed by hand, no other source blended in.",
  "updated": "2026-10-14",
  "prices": [
   {

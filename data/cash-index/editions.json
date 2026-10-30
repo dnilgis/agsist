@@ -1,7 +1,7 @@
 {
  "schema": "agsist-cash-index/1",
  "url": "https://agsist.com/cash-bid-index",
- "note": "One entry per month, built by scripts/cash_bid_index.py from the elevator boards AGSIST reads.",
+ "note": "One entry per month, built from the elevator boards AGSIST reads.",
  "editions": [
   {
    "month": "2026-10",

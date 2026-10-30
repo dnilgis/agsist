@@ -357,7 +357,7 @@ def run(root, fetched=None, now=None):
     if existing and existing.get("report_date") == doc["report_date"] and existing.get("products") == doc["products"]:
         doc["fetched"] = existing.get("fetched", doc["fetched"])
     atomic_write(root / OUT, doc)
-    hist = read_json(root / HIST) or {"note": "one row per USDA AMS report 3195 date, appended by scripts/fetch_fert_ams.py", "reports": []}
+    hist = read_json(root / HIST) or {"note": "one row per USDA AMS report 3195 date, added as each report is read", "reports": []}
     row = {"date": doc["report_date"], "avg": {p["key"]: p["avg"] for p in doc["products"]}}
     hist["reports"] = sorted([r for r in hist["reports"] if r["date"] != row["date"]] + [row], key=lambda r: r["date"])
     atomic_write(root / HIST, hist)

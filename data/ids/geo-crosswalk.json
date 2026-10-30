@@ -1,6 +1,6 @@
 {
  "schema": "agsist-geo-crosswalk/1",
- "note": "County code table. Join every county file on the spine FIPS (data/atlas/counties.geo.json). asd: NASS Agricultural Statistics District, two digits; the NASS district id is the state FIPS plus these two digits. codes: every code a federal file publishes that is not a spine county, with what it is (rename, part, office, merger, split, reshape) and where it goes; a part, office, split or reshape is a lossy join. A spine county not in codes is written the same by FSA, RMA and the Drought Monitor in every file we read. Rules and sources: scripts/build_geo_crosswalk.py; match rates: scripts/join_report.py.",
+ "note": "County code table. Join every county file on the spine FIPS (data/atlas/counties.geo.json). asd: NASS Agricultural Statistics District, two digits; the NASS district id is the state FIPS plus these two digits. codes: every code a federal file publishes that is not a spine county, with what it is (rename, part, office, merger, split, reshape) and where it goes; a part, office, split or reshape is a lossy join. A spine county not in codes is written the same by FSA, RMA and the Drought Monitor in every file we read.",
  "spine": {
   "file": "data/atlas/counties.geo.json",
   "counties": 3141,

@@ -160,19 +160,25 @@ class Live:
         return rows
 
     def usgs(self, site, start, end):
-        u = ("https://waterservices.usgs.gov/nwis/dv/?" + urllib.parse.urlencode(
-            {"format": "json", "sites": site, "parameterCd": "00065", "statCd": "00003",
-             "startDT": start, "endDT": end}))
-        try:
-            return parse_usgs_legacy(http_json(u))
-        except Exception as e:  # noqa: BLE001 -- the newer USGS API, same numbers
-            u2 = ("https://api.waterdata.usgs.gov/ogcapi/v0/collections/daily/items?" + urllib.parse.urlencode(
-                {"f": "json", "monitoring_location_id": f"USGS-{site}", "parameter_code": "00065",
-                 "statistic_id": "00003", "time": f"{start}/{end}", "limit": 10000}))
+        errs = []
+        for name, u, parse in usgs_attempts(site, start, end):
             try:
-                return parse_usgs_ogc(http_json(u2))
-            except Exception as e2:  # noqa: BLE001
-                raise RuntimeError(f"USGS legacy: {e}; USGS OGC: {e2}")
+                return parse(http_json(u))
+            except Exception as e:  # noqa: BLE001 -- the other USGS service, same numbers
+                errs.append(f"USGS {name}: {e}")
+        raise RuntimeError("; ".join(errs))
+
+
+def usgs_attempts(site, start, end):
+    """The USGS services to try, in order: the new api.waterdata.usgs.gov first, the legacy
+    waterservices.usgs.gov (retired Q1 2027) as the fallback. [(name, url, parser)]"""
+    new = ("https://api.waterdata.usgs.gov/ogcapi/v0/collections/daily/items?" + urllib.parse.urlencode(
+        {"f": "json", "monitoring_location_id": f"USGS-{site}", "parameter_code": "00065",
+         "statistic_id": "00003", "time": f"{start}/{end}", "limit": 10000}))
+    legacy = ("https://waterservices.usgs.gov/nwis/dv/?" + urllib.parse.urlencode(
+        {"format": "json", "sites": site, "parameterCd": "00065", "statCd": "00003",
+         "startDT": start, "endDT": end}))
+    return [("OGC", new, parse_usgs_ogc), ("legacy", legacy, parse_usgs_legacy)]
 
 
 def make_fixtures(out):
@@ -1351,6 +1357,28 @@ def selftest():
         {"value": "4.9", "dateTime": "2026-10-03T00:00:00.000"}]}]}]}}
     assert parse_usgs_legacy(leg) == [("2026-10-01", 5.21), ("2026-10-03", 4.9)]
     assert parse_usgs_ogc({"features": [{"properties": {"time": "2026-10-01", "value": "3.0"}}]}) == [("2026-10-01", 3.0)]
+    # USGS retires waterservices in Q1 2027: the new API is asked first, the legacy service only as the fallback
+    at = usgs_attempts("07010000", "2026-10-01", "2026-10-03")
+    assert [n for n, _, _ in at] == ["OGC", "legacy"] and at[0][1].startswith("https://api.waterdata.usgs.gov/")
+    assert at[1][1].startswith("https://waterservices.usgs.gov/")
+    seen, real = [], globals()["http_json"]
+    ogc_doc = {"features": [{"properties": {"time": "2026-10-01", "value": "3.0"}}]}
+    try:
+        globals()["http_json"] = lambda u, *a, **k: (seen.append(u), ogc_doc)[1]
+        assert Live().usgs("07010000", "2026-10-01", "2026-10-03") == [("2026-10-01", 3.0)]
+        assert len(seen) == 1 and "api.waterdata" in seen[0], seen
+        seen.clear()
+
+        def new_down(u, *a, **k):
+            seen.append(u)
+            if "api.waterdata" in u:
+                raise RuntimeError("down")
+            return leg
+        globals()["http_json"] = new_down
+        assert Live().usgs("07010000", "2026-10-01", "2026-10-03") == [("2026-10-01", 5.21), ("2026-10-03", 4.9)]
+        assert ["api.waterdata" in u for u in seen] == [True, False], seen
+    finally:
+        globals()["http_json"] = real
     cols = columns({"columns": [{"fieldName": ":id"}, {"fieldName": "report_date", "name": "Report Date", "dataTypeName": "calendar_date"},
                                 {"fieldName": "bid_offer", "name": "Bid/Offer", "dataTypeName": "text"},
                                 {"fieldName": "average_bid", "name": "Average", "dataTypeName": "number"}]})

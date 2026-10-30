@@ -97,7 +97,7 @@ def build(src, points):
                 plants.setdefault(t, []).append(p)
     for t in plants:
         plants[t].sort(key=lambda p: (p["st"], p["town"], p["k"]))
-    return {"v": 1, "note": "Built by scripts/agstocks_plants.py from the Oct 28, 2026 plant lists. Matched by operator name only.",
+    return {"v": 1, "note": "From the Oct 28, 2026 plant lists. Matched by operator name only.",
             "read": "2026-10-28", "plants": plants,
             "unmatched": dict(sorted(unmatched.items(), key=lambda kv: (-kv[1], kv[0]))),
             "no_point": no_point}

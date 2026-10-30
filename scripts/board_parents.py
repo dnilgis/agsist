@@ -146,7 +146,7 @@ def build(directory, index, today, changes=None):
                      "`source`), from evidence on the board itself, never a name alone. parent: the firm that runs the "
                      "board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded "
                      "unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a "
-                     "company join. No entry = no evidence. Rules: scripts/board_parents.py."),
+                     "company join. No entry = no evidence."),
             "counts": counts, "boards": dict(sorted(boards.items()))}
 
 

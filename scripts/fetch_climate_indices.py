@@ -205,7 +205,7 @@ def main():
         return 1
     d = {"v": 1, "written_by": "scripts/fetch_climate_indices.py",
          "built": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-         "note": "Monthly values; null where the source has none. Read by scripts/prf_opt_backtest.mjs.",
+         "note": "Monthly values; null where the source has none.",
          "series": {k: series[k] for k in sorted(series)}}
     # an unchanged payload keeps the old timestamps, so a quiet month does not commit
     if old and old.get("series") and all(

@@ -140,7 +140,7 @@ def build(coops, today=None):
     prices = [rows[k] for k in NAMES if k in rows]
     per_lb = nutrient_prices(rows)
     return {
-        "note": "Built by scripts/build_fert_prices.py from data/fertilizer-coops.json only: the middle cash price of "
+        "note": "From the co-op posted prices only: the middle cash price of "
                 "the co-ops that post each product (two co-ops: their average; one: that co-op, named). "
                 "Nothing typed by hand, no other source blended in.",
         "updated": max((r["as_of"] for r in prices), default=None),
