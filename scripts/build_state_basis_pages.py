@@ -81,6 +81,7 @@ except Exception:  # pragma: no cover
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_bids import _net_get_json, BIDS_NETWORK_BASE  # noqa: E402  (network reader only)
 from fetch_bids import held_skip_row, HELD_SKIP_HOURS as _FB_HELD_SKIP_HOURS  # noqa: E402  (one rule)
+import source_links as SL  # noqa: E402  no direct links to data sources
 import pricefmt  # noqa: E402  (cash as posted, basis in cents, "Dec '26": twin of components/util.js AG.px)
 from basis_method import (  # noqa: E402  (the one state-basis method)
     CROP_ORDER, MIN_STAT, SANITY, match_key, median, state_basis)
@@ -1018,7 +1019,7 @@ def build_all(merged, index, prev_doc=None, out_dir=OUT_DIR, root=".", now=None,
         summ = summarise_state(srows, prev_map)
         page, meta = build_state_page(st, srows, summ, ctx)
         with open(os.path.join(out_dir, f"{meta['slug']}.html"), "w", encoding="utf-8") as f:
-            f.write(page)
+            f.write(SL.unlink(page))
         metas.append(meta)
     idx = [f"{SITE}/basis/{m['slug']}" for m in metas if m["indexable"]]
     with open(os.path.join(out_dir, "_indexable.txt"), "w") as f:
