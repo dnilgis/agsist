@@ -51,12 +51,12 @@ function lift(name) {
 }
 
 const NAMES = ["classify", "netZipCoord", "netDistanceMi", "netPlacesWithin",
-               "netRowsFrom", "netContract", "netKey", "netMerge", "fetchNetwork",
+               "netRowsFrom", "netContract", "fetchNetwork",
                "_fetchNetworkInner", "netGet",
                /* netRowsFrom drops non-US rows through usScope() (added with the
                   US-only scope); without it every row threw "usScope is not
                   defined" here, and only here: the page defines it. */
-               "usScope", "netNormOperator", "netPlain", "netIsTwin", "netOlder",
+               "usScope",
                /* netPlacesWithin spends its budget through netRankPlaces
                   (2026-10-07): best bids per crop first, then the nearest. */
                "netRankPlaces",
@@ -101,11 +101,7 @@ const body = NAMES.map((n) => sources[n]).join("\n") +
      changed value is a changed test rather than a stale one. */
   `\nvar NET_ON=${constOf("NET_ON")};` +
   `\nvar NET_DEADLINE_MS=${constOf("NET_DEADLINE_MS")};` +
-  /* The list of fields ours inherits when it displaces a Barchart row. Read
-     off the page so adding one is a changed test, not a stale one. */
-  `\nvar NET_INHERIT=${constOf("NET_INHERIT")};` +
   `\nvar US_STATES_OK=${constOf("US_STATES_OK")};` +
-  `\nvar NET_LEGAL=${constOf("NET_LEGAL")};` +
   `\nvar HELD_SKIP_H=${constOf("HELD_SKIP_H")};` +
   `\nvar NET_DEBUG=false;function netLog(){}` +
   `\nreturn {${NAMES.join(",")}};`;
@@ -219,79 +215,6 @@ eq(constOf("HELD_SKIP_H"), "6", "the held-skip window is 6 hours, as in scripts/
 eq(N.netRowsFrom(null, 1).length, 0, "a missing shard threw instead of returning nothing");
 eq(N.netRowsFrom({ bids: null }, 1).length, 0, "a malformed shard threw instead of returning nothing");
 
-/* ── the duplicate rule, which is the point ────────────────────────────── */
-const mine = [{ facility: "CDR Farms LLC", city: "Bloomer", state: "WI", commodity: "Corn", cashPrice: 3.94, via: "direct" }];
-const theirs = [
-  { facility: "CDR FARMS, LLC.", city: "bloomer", state: "WI", commodity: "Corn", cashPrice: 3.91 },
-  { facility: "Somebody Else",   city: "Menomonie", state: "WI", commodity: "Corn", cashPrice: 3.88 },
-];
-const merged = N.netMerge(theirs, mine);
-eq(merged.duplicatesResolved, 1, "the duplicate was not resolved");
-eq(merged.rows.length, 2, "the merge lost or duplicated a row");
-ok(merged.rows.some((r) => r.via === "direct" && r.cashPrice === 3.94),
-   "ours did not win the duplicate — Barchart's copy of the board beat the board");
-ok(!merged.rows.some((r) => r.cashPrice === 3.91),
-   "Barchart's copy of an elevator we read directly is still on the page");
-ok(merged.rows.some((r) => r.facility === "Somebody Else"),
-   "an elevator only Barchart has was dropped — the network must add, never subtract");
-/* Punctuation and case are spelling, not identity. */
-eq(N.netKey({ facility: "CDR Farms, LLC.", city: "Bloomer", state: "WI" }),
-   N.netKey({ facility: "cdr farms llc", city: "bloomer", state: "wi" }),
-   "two spellings of one elevator did not key the same");
-ok(N.netKey({ facility: "A", city: "Bloomer", state: "WI" }) !==
-   N.netKey({ facility: "A", city: "Menomonie", state: "WI" }),
-   "two towns keyed the same, which would drop a real elevator");
-/* ── WINNING A DUPLICATE MUST NOT COST THE FARMER THE PHONE ────────────
- *
- * Found by rendering the page, not by any check that came before it. The
- * merged feed carries no phone number at all, so when our row displaced
- * Barchart's the card lost its Call button — an elevator a farmer wants to
- * sell to, with no way to ring it. Every guard here passed while that was
- * true.
- *
- * Ours wins on PRICE. It does not follow that ours knows more about the
- * business. */
-const withPhone = [
-  { facility: "CDR FARMS, LLC.", city: "bloomer", state: "WI", commodity: "Corn", cashPrice: 3.91, phone: "7155551212" },
-];
-const merged2 = N.netMerge(withPhone, [
-  { facility: "CDR Farms LLC", city: "Bloomer", state: "WI", commodity: "Corn", cashPrice: 3.94, phone: "", via: "direct" },
-]);
-eq(merged2.rows.length, 1, "the duplicate was not resolved");
-eq(merged2.rows[0].phone, "7155551212",
-   "our row won the duplicate and threw away Barchart's phone number — the card " +
-   "loses its Call button and a farmer cannot ring the elevator");
-eq(merged2.rows[0].cashPrice, 3.94,
-   "inheriting the phone also took the price; ours must still win on price");
-/* AND THE INHERIT LIST MUST HOLD NOTHING ABOUT THE BID ITSELF.
-   `if(!ours[f]&&r[f])` only fills a gap, so adding "cashPrice" to the list
-   looks harmless — until our row is a basis-only board with a null price, and
-   then Barchart's price appears on a card badged "direct from the elevator".
-   That is a lie about provenance, which is the one thing this feature cannot
-   afford. These are facts about the BUSINESS, not about the bid. */
-const bidFields = ["cashprice", "basis", "commodity", "deliverymonth", "deliverystart",
-                   "symbol", "basismonth", "asof", "category", "via", "distance"];
-const inherit = JSON.parse(String(constOf("NET_INHERIT")).replace(/'/g, '"'));
-for (const f of inherit)
-  ok(!bidFields.includes(String(f).toLowerCase()),
-     `NET_INHERIT carries "${f}" — that is part of the bid, and a direct row ` +
-     `must never show a number that came from Barchart`);
-/* The gap case that makes it concrete. */
-const nullPrice = N.netMerge(
-  [{ facility: "X Co", city: "Bloomer", state: "WI", cashPrice: 3.91, basis: -0.45, phone: "7155551212" }],
-  [{ facility: "X Co", city: "Bloomer", state: "WI", cashPrice: null, basis: -0.5, phone: "", via: "direct" }]);
-eq(nullPrice.rows[0].cashPrice, null,
-   "a direct row with no cash price inherited Barchart's — the card would show " +
-   "a Barchart number under a badge saying it came from the elevator");
-eq(nullPrice.rows[0].phone, "7155551212", "the phone was not inherited in the null-price case");
-/* AND NEVER THE OTHER WAY. If our own source ever gives us a phone, it came
-   from the elevator and Barchart's copy does not overwrite it. */
-const merged3 = N.netMerge(withPhone, [
-  { facility: "CDR Farms LLC", city: "Bloomer", state: "WI", commodity: "Corn", cashPrice: 3.94, phone: "7155559999", via: "direct" },
-]);
-eq(merged3.rows[0].phone, "7155559999",
-   "Barchart's phone overwrote one we already had from the elevator itself");
-
 /* ── AND THE COUNTER IS ACTUALLY ON THE PAGE ───────────────────────────── */
 ok(/function renderNetStats\(\)/.test(PAGE),
    "cbNetStats is computed and rendered nowhere — it was dead from the day it " +
@@ -309,8 +232,6 @@ ok(/renderNetStats\(\);/.test(_code),
    "would be dead again, exactly as it was before a browser looked at it");
 ok(/id="cb-net-stats"/.test(PAGE), "the counter has no element to render into");
 
-eq(N.netMerge(theirs, []).rows.length, 2, "with no network rows the page is not what it was");
-eq(N.netMerge([], mine).rows.length, 1, "with no Barchart rows ours were dropped");
 
 /* ── it must never break the page ──────────────────────────────────────── */
 async function failsSoftly(label, impl) {
@@ -337,8 +258,10 @@ eq(fetchLog.length, 0, "a malformed ZIP still fired a request");
 /* The third argument (2026-10-07) is the holder the late answer lands on. */
 ok(/var net=fetchNetwork\(zip,radius\|\|50(,late)?\);/.test(PAGE),
    "fetchBids() no longer asks the network — the block is present and unused");
-ok(/netMerge\(bids,n\.rows\)/.test(PAGE),
-   "the two feeds are no longer merged in fetchBids()");
+ok(/var rows=n\.rows\.slice\(\);/.test(PAGE),
+   "fetchBids() no longer draws the network's rows");
+ok(!/getGrainBids|agsist-barchart|LICENSED_FEED/.test(PAGE),
+   "the licensed feed's proxy is back on the page");
 ok(/if\(b\.via==='direct'\)map\[key\]\.via='direct';/.test(PAGE),
    "groupElevators() drops `via`, so no card can ever show the badge");
 ok(/elev\.via==='direct'.*elev-direct/.test(PAGE),
@@ -376,7 +299,7 @@ function report() {
     for (const f of fails) console.log("FAIL: " + f);
     console.log(`\n${pass} passed, ${fails.length} failed`);
   } else {
-    console.log(`network checks: ${pass} passed — the elevator's own board wins a duplicate, and nothing here can break the page`);
+    console.log(`network checks: ${pass} passed — nothing here can break the page`);
   }
 }
 report();
