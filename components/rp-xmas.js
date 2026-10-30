@@ -47,13 +47,14 @@
       '<a href="' + TEL + '" class="rpx-tel" data-placement="xmas-banner-call">' + PHONE + '</a>.</p>' +
       '<button type="button" class="rpx-x" aria-label="Hide this for 30 days">×</button>';
   }
-  var CSS = '.rpx{display:flex;align-items:flex-start;gap:.5rem;margin:.6rem 0 .9rem;padding:7px 8px 7px 12px;' +
+  var CSS = '.rpx{display:flex;align-items:flex-start;gap:.4rem;margin:.6rem 0 .9rem;padding:6px 6px 6px 11px;' +
     'border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:6px;background:var(--surface);' +
-    'font-size:.88rem;line-height:1.45;color:var(--text-dim);max-width:100%;box-sizing:border-box}' +
-    '.rpx-t{flex:1;min-width:0;margin:0}' +
-    '.rpx a{color:var(--brand);text-decoration:underline;text-underline-offset:2px}' +
+    'font-size:.86rem;line-height:1.45;color:var(--text-dim);max-width:100%;box-sizing:border-box}' +
+    '@media (max-width:520px){.rpx{font-size:.8rem;line-height:1.4;padding:5px 4px 5px 10px}}' +
+    'aside.rpx p.rpx-t{flex:1;min-width:0;margin:0;font-size:inherit;line-height:inherit;color:inherit;max-width:none}' +
+    'aside.rpx a{color:var(--brand);text-decoration:underline;text-underline-offset:2px}' +
     '.rpx-tel{white-space:nowrap}' +
-    '.rpx-x{flex:none;width:32px;height:32px;margin:-4px -2px -4px 0;padding:0;border:0;border-radius:4px;background:none;' +
+    '.rpx-x{flex:none;width:30px;height:30px;margin:-3px 0 -3px 0;padding:0;border:0;border-radius:4px;background:none;' +
     'color:var(--text-muted);font-size:1.25rem;line-height:1;cursor:pointer}' +
     '.rpx-x:hover,.rpx-x:focus-visible{color:var(--text)}' +
     '.rpx-x:focus-visible{outline:2px solid var(--brand);outline-offset:1px}' +
