@@ -92,6 +92,7 @@ import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 4
 import html_slim as HS  # noqa: E402  the town, state and company pages are written slim
 import moved_pages as MP  # noqa: E402  /cash-bids/states merged into /basis#states on Oct 22, 2026
 import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reader, one copy)
+import source_links as SL  # noqa: E402  no direct links to data sources
 import basis_method as BM  # noqa: E402  (the one state-basis method)
 import board_parents as _board_parents  # noqa: E402  (evidence-only parent per board, for the company count)
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
@@ -3214,7 +3215,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         d = os.path.join(tmp, url_slug(STATE_NAMES[t["state"]]))
         os.makedirs(d, exist_ok=True)
         with open(os.path.join(d, f"{t['slug']}.html"), "w", encoding="utf-8") as f:
-            f.write(page)
+            f.write(SL.unlink(page))
         metas.append(meta)
     smetas = []
     for st in states:

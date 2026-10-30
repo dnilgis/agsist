@@ -92,7 +92,9 @@ test("every ND and KS county page has one labeled line; every dollar on it is th
       const body = m[0][1];
       assert.ok(body.includes(S.evidence) && body.includes(String(S.year)), `${slug}/${f}: evidence and year`);
       assert.ok(body.includes("not recorded sales"), `${slug}/${f}: says not recorded sales`);
-      assert.ok(body.includes('href="' + (st === "ND" ? S.source.url : S.source.page) + '"'), `${slug}/${f}: links the source`);
+      // Oct 29: no direct link to a data source. The Kansas land values book link stays on purpose; ND names its source in text.
+      if (st === "ND") assert.ok(!body.includes("href=") || !body.includes(S.source.url), `${slug}/${f}: ND does not link the survey page`);
+      else assert.ok(body.includes('href="' + S.source.page + '"'), `${slug}/${f}: links the source`);
       assert.doesNotMatch(html, /does not copy them/, `${slug}/${f}: no "does not copy" line beside the numbers`);
       const c = byName[f.replace(/-county\.html$/, "").replace(/[^a-z]/g, "")];
       const own = new Set();

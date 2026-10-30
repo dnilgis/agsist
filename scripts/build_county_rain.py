@@ -49,6 +49,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import county_rain as R  # noqa: E402
 import html_slim as HS  # noqa: E402  the county set is written slim
+import source_links as SL  # noqa: E402  no direct links to data sources
 import build_prf_states as S  # noqa: E402  boot() and text_of()
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap (was 165 for descriptions here)
@@ -1230,6 +1231,8 @@ def build(data_dir, C=None, NB=None, img_root=None):
     # the county and state pages (rain/**.html) are written slim: compact JSON-LD, no indentation
     # or comments between tags (scripts/html_slim.py); rain.html, a root page, is left as written
     for rel in want:
+        if rel.endswith(".html"):  # no direct links to data sources; the source is named in text (Sig, Oct 29, 2026)
+            want[rel] = SL.unlink(want[rel])
         if rel.startswith("rain/") and rel.endswith(".html"):
             want[rel] = HS.slim(want[rel])
     return want
@@ -1581,9 +1584,9 @@ def selftest():
         ok("the NOAA station in" not in want["rain.html"] and "One NOAA station per county" not in want["rain.html"], "hub does not call every gauge NOAA's")
         # the prose never names CoCoRaHS (Sig, Oct 15: weather station, volunteer rain gauge); the byline credits it
         # on a gauge's page and nowhere else (CC BY 4.0, Sig Oct 23)
-        bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace('Volunteer gauge data: <a href="https://www.cocorahs.org/" rel="noopener">CoCoRaHS</a>.', "")]
+        bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace("Volunteer gauge data: CoCoRaHS.", "")]
         ok(not bad, f"no page names CoCoRaHS outside its credit line: {bad[:3]}")
-        ok("Volunteer gauge data: <a href=\"https://www.cocorahs.org/\"" in jef, "a CoCoRaHS gauge's page credits CoCoRaHS")
+        ok("Volunteer gauge data: CoCoRaHS." in jef, "a CoCoRaHS gauge's page credits CoCoRaHS")
         ok("cocorahs.org" not in story, "a weather station's page does not")
         ks = want.get("rain/kansas/riley-county.html", "")
         ok(ks and "1991 to 2020" not in ks and "current 30-year" in ks, "normals period not claimed when ACIS did not confirm it")

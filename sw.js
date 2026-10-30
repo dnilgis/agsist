@@ -37,8 +37,10 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 316;  // v316 2026-10-30: fx/nobarchart (316 assigned by the lead). The dead Barchart feed is removed from the homepage cash bids card and the cash bids page (bids-homepage.js?v=44, cash-bids.js?v=17) and the futures pages' bid source line (futures.js?v=29); the proxy hosts leave the never-cache list.
+var CACHE_VERSION = 317;  // v317 2026-10-30: fx/unlinkgen (317 assigned by the lead). Generated pages name their data sources in text and no longer link them; atlas-sales.js and county-home.js changed (the Atlas pages load them by content hash).
+// CACHE_VERSION = 316;  // v316 2026-10-30: fx/nobarchart (316 assigned by the lead). The dead Barchart feed is removed from the homepage cash bids card and the cash bids page (bids-homepage.js?v=44, cash-bids.js?v=17) and the futures pages' bid source line (futures.js?v=29); the proxy hosts leave the never-cache list.
 // v315 2026-10-30: fx/curtain (315 assigned by the lead; was 313, main passed it with 314). Merge of main; built pages rebuilt to match the builders.
+// CACHE_VERSION = 315;  // v315 2026-10-30: fx/curtain (315 assigned by the lead; was 313, main passed it with 314). Merge of main; built pages rebuilt to match the builders.
 // v315 (shared) 2026-10-30: fx/rpxmas (315 assigned by the lead, then taken by fx/curtain on main; no extra bump needed: rp-xmas.js and rp-forme.js are new files). The Christmas Rain Print line on the field and weather pages (rp-xmas.js?v=1, Nov 1 to Dec 10), and "Rather not fiddle with it?" on /rain-print (rp-forme.js?v=1): Sig makes two or three versions, free.
 // v314 2026-10-30: fx/strayspace2 (314 assigned by the lead). The space after a bold label moves inside the following span: Farmland Atlas rent rows (build_atlas_pages.py) and the Comparable sales report no-subject note (comp-report.js?v=5).
 // v315 2026-10-30: fx/curtain (315 assigned by the lead; was 313, main passed it with 314). Merge of main; built pages rebuilt to match the builders.

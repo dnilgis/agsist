@@ -58,6 +58,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import html_slim as HS  # noqa: E402
+import source_links as SL  # noqa: E402  no direct links to data sources
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
@@ -3047,7 +3048,7 @@ def write(path, text):
     """Every .html goes through html_slim.slim(): compact JSON-LD, no indentation
     or comments between tags; what a reader and a crawler see is unchanged."""
     if path.endswith(".html"):
-        text = HS.slim(text)
+        text = HS.slim(SL.unlink(text))
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(text)

@@ -56,6 +56,7 @@ from urllib.parse import urlparse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_cash_bid_pages as CB  # noqa: E402
+import source_links as SL  # noqa: E402  no direct links to data sources
 from build_state_basis_pages import CT, MONTH_ABBR, SITE, STATE_NAMES, esc, money_basis  # noqa: E402
 
 COMPANY_MIN = 3           # boards placed in a town before a company gets a page
@@ -524,11 +525,11 @@ def write_all(companies, ctx, out_dir):
             raise SystemExit(f"[cash-bid-pages] company page {slug} is {kb:.0f} KB (> {MAX_PAGE_KB}); refusing")
         m["kb"] = kb
         with open(os.path.join(d, f"{slug}.html"), "w", encoding="utf-8") as f:
-            f.write(page)
+            f.write(SL.unlink(page))
         metas.append(m)
     page, im = build_index(metas, ctx)
     with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
-        f.write(page)
+        f.write(SL.unlink(page))
     return metas, im
 
 
