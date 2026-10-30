@@ -1578,9 +1578,9 @@ def selftest():
         ok("the NOAA station in" not in want["rain.html"] and "One NOAA station per county" not in want["rain.html"], "hub does not call every gauge NOAA's")
         # the prose never names CoCoRaHS (Sig, Oct 15: weather station, volunteer rain gauge); the byline credits it
         # on a gauge's page and nowhere else (CC BY 4.0, Sig Oct 23)
-        bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace('Volunteer gauge data: <a href="https://www.cocorahs.org/" rel="noopener">CoCoRaHS</a>.', "")]
+        bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace("Volunteer gauge data: CoCoRaHS.", "")]
         ok(not bad, f"no page names CoCoRaHS outside its credit line: {bad[:3]}")
-        ok("Volunteer gauge data: <a href=\"https://www.cocorahs.org/\"" in jef, "a CoCoRaHS gauge's page credits CoCoRaHS")
+        ok("Volunteer gauge data: CoCoRaHS." in jef, "a CoCoRaHS gauge's page credits CoCoRaHS")
         ok("cocorahs.org" not in story, "a weather station's page does not")
         ks = want.get("rain/kansas/riley-county.html", "")
         ok(ks and "1991 to 2020" not in ks and "current 30-year" in ks, "normals period not claimed when ACIS did not confirm it")
