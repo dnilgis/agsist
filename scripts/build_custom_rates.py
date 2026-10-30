@@ -447,7 +447,7 @@ def index_doc(docs):
             if "k" in r:
                 c = [r["a"], r["u"], r.get("lo"), r.get("hi"), r.get("n"), r["o"]]
                 common.setdefault(r["k"], {})[st] = c
-    return {"note": "Custom farm work rates as each state survey published them. Built by scripts/build_custom_rates.py from scripts/custom_rates/*.tsv; every number is from the survey named in its state file.",
+    return {"note": "Custom farm work rates as each state survey published them. Every number is from the survey named in its state file.",
             "built": STAMP, "states": states, "keys": KEYS, "common": common,
             "borders": {st: [x for x in BORDERS.get(st, "").split()] for st in sorted(BORDERS)},
             "names": STATE_NAMES,
@@ -579,7 +579,7 @@ def blend_doc(docs, idx):
         keep = {k: v for k, v in rows.items() if k in ops and ops[k]["u"] == v[1]}
         diy.append({"name": meta["name"], "what": meta["what"], "publisher": meta["publisher"], "published": meta["published"],
                     "basis": meta["basis"], "ops": keep})
-    return {"note": "The going rate for custom farm work: for each job, the middle of the state surveys' own averages, with the lowest and highest of them and the number of surveys. Built by scripts/build_custom_rates.py from the same survey rows as each state file (data/custom-rates/<st>.json). Each state counts once; nothing is inflated or adjusted.",
+    return {"note": "The going rate for custom farm work: for each job, the middle of the state surveys' own averages, with the lowest and highest of them and the number of surveys. From the same survey rows as each state file (data/custom-rates/<st>.json). Each state counts once; nothing is inflated or adjusted.",
             "built": STAMP,
             "rule": {"middle": "median of the state survey averages", "min_surveys": MIN_BLEND, "age_max": AGE_MAX,
                      "newest": newest, "oldest_in_middle": cutoff,

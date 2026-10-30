@@ -1,7 +1,7 @@
 {
  "schema": "agsist-ownership-changes/1",
  "source": "notes/chatgpt/2026-10-27-answers/elevator-ownership-changes-2025-2026.md in the private repo dnilgis/feedbag (ChatGPT research read 2026-10-27)",
- "note": "Hand-curated change log applied to data/ids/elevators.json (parent, status) and data/ids/board-parents.json (rule ownership-change) by scripts/build_ids.py. Rules: a parent is set only for a completed change that names a date; a board's own posted name is never changed; a lease changes the operator, not the owner; pending and closing changes are marked, never applied; facility ids are never reused (every id here is a live record of data/ids/elevators.json). The research file lists each change with its date but not the page it came from, so the source of every row is that file; a row with no facility has no matching record to mark.",
+ "note": "Hand-curated change log applied to data/ids/elevators.json (parent, status) and data/ids/board-parents.json (rule ownership-change). Rules: a parent is set only for a completed change that names a date; a board's own posted name is never changed; a lease changes the operator, not the owner; pending and closing changes are marked, never applied; facility ids are never reused (every id here is a live record of data/ids/elevators.json). The research file lists each change with its date but not the page it came from, so the source of every row is that file; a row with no facility has no matching record to mark.",
  "events": [
   {
    "id": "oc01",

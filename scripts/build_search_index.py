@@ -522,9 +522,9 @@ def build(warn):
     towns, by_town, boards = build_towns()
     items = build_pages(warn) + build_states() + towns + build_counties() + build_land_sales() + build_futures()
     elev = build_elevators(by_town, boards)
-    main = {"note": "Built by scripts/build_search_index.py. Do not edit.", "v": 1, "items": items}
-    el = {"note": "Built by scripts/build_search_index.py. Do not edit.", "v": 1, "items": elev}
-    pl = {"note": "Built by scripts/build_search_index.py. Do not edit.", "v": 1, "items": build_places(by_town)}
+    main = {"note": "Search index for the site search box. Built from the site's own pages.", "v": 1, "items": items}
+    el = {"note": "Elevator names and towns for the site search box. Built from the site's own cash bid data.", "v": 1, "items": elev}
+    pl = {"note": "Town and county names for the site search box. Built from the site's own cash bid data.", "v": 1, "items": build_places(by_town)}
     return dumps(main) + "\n", dumps(el) + "\n", dumps(pl) + "\n"
 
 

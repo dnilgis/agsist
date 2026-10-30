@@ -136,8 +136,8 @@ def run(root=ROOT, now=None):
     new = update(old, _read(Path(root) / PRICES), _read(Path(root) / DAIRY), now)
     if new != old:
         new["_note"] = ("What Read my check said for each Class III month at the standard tests (the futures settle of the "
-                        "last session before the month), and USDA's announced price once it is out. Written by "
-                        "scripts/milk_miss.py; only grows; never backfilled.")
+                        "last session before the month), and USDA's announced price once it is out. It only grows "
+                        "and is never backfilled.")
         tmp = p.with_suffix(".tmp")
         tmp.write_text(json.dumps(new, indent=1, sort_keys=True) + "\n")
         os.replace(tmp, p)

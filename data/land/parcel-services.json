@@ -1050,7 +1050,7 @@
    "MO",
    "MI"
   ],
-  "note": "probe_land_services.py --discover searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first. Candidates are services found by hand; each is checked the same way and added only when it passes. Iowa counties are also looked up in the Big Ten Academic Alliance geoportal's record of each county's parcel service. Oct 18: also searched in ND, SD, NE, IN, OH, KS, MO and MI; Minnesota counties are also looked up in MnGeo's per-county folders (us_mn_co_<county>) and the gisdata.mn.gov catalog; refused lists services whose own terms forbid public reuse, which are never checked or added.",
+  "note": "A discovery pass searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first. Candidates are services found by hand; each is checked the same way and added only when it passes. Iowa counties are also looked up in the Big Ten Academic Alliance geoportal's record of each county's parcel service. Oct 18: also searched in ND, SD, NE, IN, OH, KS, MO and MI; Minnesota counties are also looked up in MnGeo's per-county folders (us_mn_co_<county>) and the gisdata.mn.gov catalog; refused lists services whose own terms forbid public reuse, which are never checked or added.",
   "statewide_candidates": {
    "MN": [
     {
