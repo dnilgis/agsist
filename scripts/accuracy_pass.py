@@ -39,6 +39,8 @@ Modes (run by .github/workflows/accuracy-pass.yml, dispatch only):
 Every output lands in accuracy-pass/ and goes to the raw branch through
 scripts/push_raw.sh. Nothing here touches a page.
 """
+try: import _argguard; _argguard.guard(__file__, also=('accuracy_sets.py',))  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

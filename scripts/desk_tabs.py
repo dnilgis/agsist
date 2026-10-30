@@ -12,6 +12,8 @@ the elevator page and create a singular dashboard?"), in one table.
   python3 scripts/desk_tabs.py --check      exit 1 if a forward page differs from what --write makes
   python3 scripts/desk_tabs.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import sys
 

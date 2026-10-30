@@ -21,6 +21,8 @@ the existing 52-Week Range. Grain futures quote in cents on Yahoo; divided to $/
 Run in GitHub Actions (yfinance reaches Yahoo there). Exits non-zero on total
 failure so a bad run never overwrites a good price-stats.json with junk.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json, sys, datetime as dt
 
 TICKERS = {        # page-key : (yahoo continuous front-month, scale to display units)

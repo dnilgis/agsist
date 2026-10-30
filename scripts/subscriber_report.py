@@ -12,6 +12,8 @@ the email is the only place the list goes.
   python3 scripts/subscriber_report.py             build and send
   python3 scripts/subscriber_report.py --selftest  fixtures, no network, no mail
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv, io, json, os, smtplib, sys, urllib.request
 from datetime import datetime, timezone
 from email.message import EmailMessage

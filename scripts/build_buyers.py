@@ -36,6 +36,8 @@ placed. No capacity is ever made up: a row with no published capacity has none.
     python3 scripts/build_buyers.py --src <dir of the csv files> --eia <xlsx> --bids-dir <bids clone>
     python3 scripts/build_buyers.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import hashlib
 import html

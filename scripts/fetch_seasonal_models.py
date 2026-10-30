@@ -49,6 +49,8 @@ did come back is written.
 Fetching needs numpy, xarray, netCDF4 and (for C3S) cdsapi; the workflow
 installs pinned versions. The selftest needs only the standard library.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import calendar
 import datetime as dt
 import glob

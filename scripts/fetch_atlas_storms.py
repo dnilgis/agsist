@@ -32,6 +32,8 @@ USAGE
   python scripts/fetch_atlas_storms.py --selftest
   python scripts/fetch_atlas_storms.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import csv
 import gzip

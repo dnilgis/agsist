@@ -7,6 +7,8 @@ monthly margins (all-milk price, feed cost, margin) and the 2027 premium rates.
           (raw branch), so the parser is written against the real layout.
 --selftest offline tests.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 from pathlib import Path

@@ -22,6 +22,8 @@ The old unsourced quote pool (data/quote-pool.json) stays off.
     python3 scripts/daily_fact.py --check        every pool entry has its source (exit 1 if not)
     python3 scripts/daily_fact.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

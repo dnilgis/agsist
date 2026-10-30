@@ -10,6 +10,8 @@ flat at $75.55", which was Oct '26 hogs, dead since Oct 14.
 
 Run: python3 scripts/test_settle_words.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import sys
 

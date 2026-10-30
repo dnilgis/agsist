@@ -2,6 +2,8 @@
 """Build prf.html's first draft. Boilerplate scripts (theme, analytics guard)
 are lifted byte for byte from store-or-sell.html so they cannot drift by
 retyping. After this: scripts/inject_static_nav.py, then scripts/stamp_prf.py."""
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re, sys, pathlib
 REPO = pathlib.Path(sys.argv[1])
 model = (REPO / "store-or-sell.html").read_text(encoding="utf-8")

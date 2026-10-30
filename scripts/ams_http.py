@@ -16,6 +16,8 @@ printed ("[ams] <path> from <host>") and kept in LAST["host"].
 
     python3 scripts/ams_http.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 import time

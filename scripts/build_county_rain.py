@@ -35,6 +35,8 @@ SIZE (CLAUDE.md)
   python3 scripts/build_county_rain.py --selftest   build from test/fixtures/rain into a temp folder and test it
   python3 scripts/build_county_rain.py --data DIR --root DIR   read data from DIR, write the site under DIR
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime as dt
 import glob
 import json

@@ -50,6 +50,8 @@ WHAT THIS FILE WILL NOT DO
   * Fill a county from a model or from a station farther than 50 miles.
   * Call any reading "go". The page says where the soil is; the farmer decides.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import html
 import json

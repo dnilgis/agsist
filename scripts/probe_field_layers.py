@@ -24,6 +24,8 @@ that still answers, so the next step is a name to check, not a guess.
 The summary goes to data/land/field-layers-check.json (small; committed by the
 workflow). It never marks anything "used"; it only says what answered.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

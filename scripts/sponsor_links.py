@@ -32,6 +32,8 @@ RULES THAT MATTER
 
 python3 scripts/sponsor_links.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 

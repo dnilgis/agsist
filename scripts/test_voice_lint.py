@@ -18,6 +18,8 @@ each caller does what it says:
 
 No network, no API key, about a second.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import copy
 import json
 import os

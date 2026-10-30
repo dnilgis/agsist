@@ -47,6 +47,7 @@ import { gunzipSync } from "node:zlib";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const subtle = wc.subtle;
 export const SALT = "agsist.com/r sealed v1";

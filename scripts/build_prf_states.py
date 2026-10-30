@@ -22,6 +22,8 @@ SIZE (CLAUDE.md): 48 pages; the largest, Texas, has 254 county rows. The
   python3 scripts/build_prf_states.py           write prf/<state>.html
   python3 scripts/build_prf_states.py --check   exit 1 if any page differs from what this would write
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import os

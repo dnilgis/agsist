@@ -21,6 +21,8 @@ filed somewhere nobody can open.
 The function is LIFTED out of build_basis_history.py, so this cannot pass
 against a version the script no longer has.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 from pathlib import Path
 

@@ -57,6 +57,8 @@ The Actions log gets counts only, never a name, address or phone.
 Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, FORMS_TO (else
 SPONSOR_TO, else sig@agsist.com).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html as H
 import json
 import os

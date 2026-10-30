@@ -5,6 +5,8 @@ Synthetic quotes, frozen clock. Run: python3 scripts/test_nearby.py
 Guards the 2026-07-28 fix: continuous ZC=F tracked most-active Dec while
 true nearby Sep sat 22c lower, so "Front Month" pages quoted December.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 from datetime import datetime, timezone
 

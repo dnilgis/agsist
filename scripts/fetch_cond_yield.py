@@ -33,6 +33,8 @@ Output data/cond-yield/fit.json:
 
 Fail-loud: zero condition rows exits 1. --selftest offline, gates workflow.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

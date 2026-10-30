@@ -79,6 +79,8 @@ USAGE
   python scripts/fetch_prf_outlook.py --check        # the published file is well formed
   python scripts/fetch_prf_outlook.py --fixture-doc  # rebuild the page tests' sample file from the fixtures
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import datetime as dt
 import glob

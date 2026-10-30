@@ -7,6 +7,8 @@ reads only its own 2 or 3 links instead of the whole map
   python3 scripts/build_next_links.py          write the files
   python3 scripts/build_next_links.py --check  fail if any file is stale
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

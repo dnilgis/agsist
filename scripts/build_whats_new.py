@@ -24,6 +24,8 @@
   python3 scripts/build_whats_new.py --validate check the entry files only, write nothing
   python3 scripts/build_whats_new.py --list     print the entries, in order, as JSON
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime as dt
 import html
 import json

@@ -25,6 +25,8 @@ What this writes (always relative to repo root):
 
 Idempotent: if upstream bytes haven't changed, the file isn't rewritten.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import email.utils
 import hashlib

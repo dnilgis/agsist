@@ -8,6 +8,8 @@ Run: python3 scripts/test_wasde_claims.py   (exit 0 pass / 1 fail)
 Control: run against the pre-fix briefing_gate.py — every 'blocks' case
 passes there (no check existed), proving these tests bite.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 from datetime import date
 from pathlib import Path

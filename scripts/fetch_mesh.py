@@ -37,6 +37,8 @@ Usage:
 
 v1 — 2026-07-03
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import gzip
 import io

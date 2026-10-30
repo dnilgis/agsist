@@ -33,6 +33,8 @@ Output: data/scorecard.json
 
 Runs in daily.yml after the briefing publishes. Exit 0 ok, 2 nothing to build.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import sys

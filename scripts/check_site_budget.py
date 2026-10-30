@@ -37,6 +37,8 @@ tests, fixtures, workflow-only data). It counts toward the total because Pages
 publishes it; the report prints it so a publish-only-the-site deploy can be
 weighed (notes/panels/godseye-2026-10-26/size-trim-plan.md in feedbag).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

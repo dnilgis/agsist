@@ -17,6 +17,8 @@ so a year can differ from the first printed report).
 Keep-last-good: a failed read keeps the file and records why in status.
 --selftest offline tests on the real reads (test/fixtures/milk/).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import os

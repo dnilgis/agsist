@@ -14,6 +14,8 @@ For outreach and the email: a list a reporter or reader can check against the co
   python3 scripts/rain_records.py --json out.json   the same rows as JSON
   python3 scripts/rain_records.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

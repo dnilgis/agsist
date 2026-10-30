@@ -55,6 +55,8 @@ April 1 snowpack (NRCS SNOTEL basin indices, wcc.sc.egov.usda.gov report
 generator): not fetched. April 1 is four months after the Dec 1 sales closing,
 so no buyer can know it when choosing; it cannot be an honest predictor.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import math
 import os

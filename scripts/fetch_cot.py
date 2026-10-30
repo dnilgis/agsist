@@ -18,6 +18,8 @@ so we disambiguate on the CLASS TOKEN (srw/hrw/hrspring), which is stable even
 if the exchange is renamed (MGEX -> MIAX Futures). We also use startswith() for
 corn/soybeans so MINI-SIZED CORN / MINI SOYBEANS don't get mis-bucketed.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import csv
 import io

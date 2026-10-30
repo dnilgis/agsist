@@ -25,6 +25,8 @@ AM CT), no network:
     email carries the block in both parts, and nothing it prints holds an
     address.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import contextlib
 import hashlib
 import hmac

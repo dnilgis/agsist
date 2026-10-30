@@ -458,7 +458,8 @@
   },
   "a00109": {
    "first": "basis:IA|VERBIO NORTH AMERICA LLC|NEVADA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "emknz275z3"
   },
   "a00110": {
    "first": "basis:IA|VERSOVA GRAIN|SIOUX CENTER",
@@ -4866,6 +4867,12 @@
    "retire": "e2xhmjwrwm",
    "into": "e3vqrhm1zz",
    "why": "folded into e3vqrhm1zz by the bids repo (mergedFrom, rule declared)"
+  },
+  {
+   "on": "2026-10-30",
+   "merge": "a00109",
+   "into": "emknz275z3",
+   "why": "every key now matches that bids-repo row"
   }
  ],
  "keys": {
@@ -5707,7 +5714,7 @@
   "basis:IA|UNKNOWN|INWOOD": "a00106",
   "basis:IA|UNKNOWN|LARCHWOOD": "a00107",
   "basis:IA|UNKNOWN|LESTER": "a00108",
-  "basis:IA|VERBIO NORTH AMERICA LLC|NEVADA": "a00109",
+  "basis:IA|VERBIO NORTH AMERICA LLC|NEVADA": "emknz275z3",
   "basis:IA|VERSOVA GRAIN|SIOUX CENTER": "a00110",
   "basis:IA|VERSOVA GRAIN|THOMPSON": "espa49n8rz",
   "basis:IA|VISERION GRAIN COMPANY|MCGREGOR": "e0evykxx8s",
@@ -8543,6 +8550,7 @@
   "bids:Baring Elevator||Baring Elevator|MO": "ew8bxp55cw",
   "bids:Beachner Grain||Afton|OK": "eedpfw6eme",
   "bids:Berthold Farmers||Berthold|ND": "e8swttzymb",
+  "bids:Border Ag & Energy||Russell|ND": "efad4mx21z",
   "bids:Bunge||Bellevue|OH": "enzf5pg1n3",
   "bids:Bunge||Council Bluffs|IA": "eh26qgn9vx",
   "bids:Bunge||Delphos|OH": "eqq3wpee3g",
@@ -8783,6 +8791,7 @@
   "bids:Rooney Grain||Chippewa Falls|WI": "ex2gn12qmh",
   "bids:See-Mor Grain||See-Mor Grain|WI": "ezwx4wsvks",
   "bids:Shell Rock Soy Processing LLC||Shell Rock Soy Origination|IA": "evxyn8k0ye",
+  "bids:Siouxland Energy Cooperative||Siouxland Energy|IA": "epe4sbs64r",
   "bids:Skyland Grain||Cunningham Area|KS": "eahrr1p0dq",
   "bids:Smithfield Grain||Harpster|OH": "ezfe9zqja3",
   "bids:Smithfield Grain||Morral|OH": "etpmxxrj24",

@@ -31,6 +31,8 @@ WHY (2026-09-13)
   prose, which is why the two guards below exist. Both were findable only once
   the number was right.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import sys

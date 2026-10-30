@@ -21,6 +21,8 @@ estimates — official prices are RMA's alone.
 Data: data/harvest-prices.json (existing schema, series now populated).
 Page: harvest-price-tracker.html between <!--SEED:hpcards--> markers.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import calendar
 import json
 import re

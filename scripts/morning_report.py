@@ -65,6 +65,8 @@ SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, REPORT_TO (else FORMS_TO, else
 SPONSOR_TO, else sig@agsist.com), SNAPSHOT (the counts file the workflow
 keeps in the Actions cache between mornings; counts only).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html as H
 import json
 import os

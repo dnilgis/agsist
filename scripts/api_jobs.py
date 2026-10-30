@@ -47,6 +47,8 @@ APIJOBS_RUN names the run folder (default r1). A record is written the moment
 the batch is accepted, and submit refuses when one exists, so a run is never
 submitted twice. Nothing here touches a page.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

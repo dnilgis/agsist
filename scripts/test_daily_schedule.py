@@ -50,6 +50,8 @@ only kind of check that could have caught this.
 
 Run: python scripts/test_daily_schedule.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import re
 import shutil
