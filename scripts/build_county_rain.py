@@ -158,6 +158,11 @@ RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
 PRINT_JS = '<script src="/components/rain-county-print.js?v=44" defer></script>'
+# the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30): county pages and the hub, not the state pages.
+# On a county page it sits right under the Rain Print sell block, below the print, so the print stays on a phone's
+# first screen and still draws (it waits until it is near the screen).
+# A plain script tag on purpose: it writes the line before the first paint, so nothing moves.
+XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 
 
 def rp_prices():
@@ -803,7 +808,7 @@ def county_page(ctx):
         sell_btns = f' <a class="btn btn-primary" href="{e(rp)}">Make yours</a></p>'
     sell = (f'<div class="rc-sell"><p>{lead_print}{lead_plain}{sell_btns}'
             + (f'<p class="rc-fine">{(ship + " " + miss_note).strip()}</p>' if (ship or miss_note) else "")
-            + f'<p class="rc-fine">{RP_ANY_YEAR}</p>' + "</div>"
+            + f'<p class="rc-fine">{RP_ANY_YEAR}</p>' + "</div>" + XMAS_JS
             + (PRINT_JS if ready else ""))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""),
@@ -1049,6 +1054,7 @@ def hub_page(files, built, recs=None):
   <main id="main" class="main" tabindex="-1">
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
+    {XMAS_JS}
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.{" The counties having a record year are below the states." if recs else ""}</p>
     <ul class="rc-states">{''.join(rows)}</ul>
