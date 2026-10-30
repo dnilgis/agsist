@@ -141,6 +141,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import html_slim as HS  # noqa: E402  the generated set is written slim
+import source_links as SL  # noqa: E402  no direct links to data sources
 import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybeans and wheat
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
@@ -3687,7 +3688,7 @@ def render_all(D):
     for rel, obj in geo_json(D).items():
         out[rel] = json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n"
     main, meta = build_main(D, ch)
-    import source_links as SL  # the two root pages name their sources without linking the data (Oct 29, 2026)
+    import source_links as SL  # no direct links to data sources; the pages name the source in text (Oct 29, 2026)
     out[OUT_MAIN] = SL.unlink(main)
     out[OUT_EMBED] = SL.unlink(embed_page(D))
     lm = D["updated"][:10]
@@ -3731,7 +3732,7 @@ def render_all(D):
     # embed are root pages inject_static_nav.py keeps; they are left as written.
     for rel in out:
         if rel.startswith(OUT_DIR + "/") and rel.endswith(".html"):
-            out[rel] = HS.slim(out[rel])
+            out[rel] = HS.slim(SL.unlink(out[rel]))  # no direct links to data sources (Oct 29, 2026)
     return out, stats
 
 
