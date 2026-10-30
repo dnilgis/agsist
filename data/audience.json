@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-10-29T17:25:09+00:00",
+ "built": "2026-10-30T02:00:47+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -2533,7 +2533,7 @@
    {
     "path": "/cash-bids",
     "title": "Local Cash Grain Bids Today \u2014 Elevator Prices Near You",
-    "views": 1958
+    "views": 2783
    },
    {
     "path": "/",
@@ -2543,7 +2543,7 @@
    {
     "path": "/rain-print",
     "title": "Rain Print: custom rainfall art of any US town and year",
-    "views": 775
+    "views": 781
    },
    {
     "path": "/prf",
@@ -2558,7 +2558,17 @@
    {
     "path": "/corn-futures-prices",
     "title": "CBOT Corn Futures: Dec '26 $5.00, Live Prices",
-    "views": 223
+    "views": 251
+   },
+   {
+    "path": "/markets",
+    "title": "Ag Markets Today \u2014 Grain, Livestock & Energy Prices",
+    "views": 240
+   },
+   {
+    "path": "/cattle-futures-prices",
+    "title": "CME Feeder Cattle Futures $334.27 & Live Cattle $218.95",
+    "views": 231
    },
    {
     "path": "/grain-bin-calculator",
@@ -2566,24 +2576,14 @@
     "views": 214
    },
    {
-    "path": "/cattle-futures-prices",
-    "title": "CME Feeder Cattle Futures $334.27 & Live Cattle $218.95",
-    "views": 207
-   },
-   {
     "path": "/usda-quick-stats",
     "title": "Corn & Soybean Yield by State: USDA October 2026 Forecast",
-    "views": 202
+    "views": 203
    },
    {
     "path": "/usda-calendar",
     "title": "WASDE & USDA Report Dates 2026: Next WASDE Nov 10",
-    "views": 197
-   },
-   {
-    "path": "/markets",
-    "title": "Ag Markets Today \u2014 Grain, Livestock & Energy Prices",
-    "views": 194
+    "views": 202
    },
    {
     "path": "/hail-map",
@@ -2610,7 +2610,7 @@
    {
     "path": "/cash-bids",
     "title": "Local Cash Grain Bids Today \u2014 Elevator Prices Near You",
-    "views": 5486
+    "views": 8252
    },
    {
     "path": "/",
@@ -2620,27 +2620,32 @@
    {
     "path": "/crop-tour",
     "title": "Pro Farmer Crop Tour 2026 \u2014 Night 3 Results",
-    "views": 1317
+    "views": 1323
    },
    {
     "path": "/usda-calendar",
     "title": "Next WASDE: Sep 11, 2026 \u2014 USDA Report Calendar",
-    "views": 1100
+    "views": 1105
    },
    {
-    "path": "/hail-map",
-    "title": "Live Hail Map & Tracker \u2014 US Swaths, Warnings & History",
-    "views": 892
-   },
-   {
-    "path": "/rain-print",
-    "title": "Rain Print: custom rainfall art of any US town and year",
-    "views": 765
+    "path": "/cattle-futures-prices",
+    "title": "Live Cattle & Feeder Cattle Futures Prices Today",
+    "views": 959
    },
    {
     "path": "/corn-futures-prices",
     "title": "Corn Futures Prices Today \u2014 Live CBOT Chart",
-    "views": 764
+    "views": 951
+   },
+   {
+    "path": "/hail-map",
+    "title": "Live Hail Map & Tracker \u2014 US Swaths, Warnings & History",
+    "views": 894
+   },
+   {
+    "path": "/rain-print",
+    "title": "Rain Print: custom rainfall art of any US town and year",
+    "views": 781
    },
    {
     "path": "/usda-quick-stats",
@@ -2648,19 +2653,19 @@
     "views": 762
    },
    {
-    "path": "/cattle-futures-prices",
-    "title": "Live Cattle & Feeder Cattle Futures Prices Today",
-    "views": 647
+    "path": "/markets",
+    "title": "Ag Markets Today \u2014 Grain, Livestock & Energy Prices",
+    "views": 677
+   },
+   {
+    "path": "/soybean-futures-prices",
+    "title": "Soybean Futures Prices Today \u2014 Live CBOT ZS Chart & Cash Bids",
+    "views": 675
    },
    {
     "path": "/yield-estimator",
     "title": "Corn Yield Estimator \u2014 Ear Count Method (Free)",
-    "views": 591
-   },
-   {
-    "path": "/markets",
-    "title": "Ag Markets Today \u2014 Grain, Livestock & Energy Prices",
-    "views": 574
+    "views": 599
    },
    {
     "path": "/rent/illinois",
@@ -2673,14 +2678,9 @@
     "views": 514
    },
    {
-    "path": "/rent/minnesota",
-    "title": "Minnesota Cash Rent by County 2026",
-    "views": 451
-   },
-   {
-    "path": "/prf",
-    "title": "PRF Insurance Calculator 2027: Every Year Since 1951",
-    "views": 450
+    "path": "/grain-bin-calculator",
+    "title": "Grain Bin Calculator \u2014 Bushels & Moisture Shrink",
+    "views": 454
    }
   ]
  },
@@ -2946,6 +2946,14 @@
    }
   ],
   "users": 1962
+ },
+ "pageUsers": {
+  "file": "/data/audience-pages.json",
+  "through": "2026-10-27",
+  "pages": {
+   "28d": 2632,
+   "90d": 2762
+  }
  },
  "series": {
   "start": "2026-01-01",
@@ -5890,7 +5898,7 @@
   }
  },
  "email": {
-  "subscribers": 191,
+  "subscribers": 192,
   "asOf": "2026-10-29"
  },
  "returns": {
@@ -6401,26 +6409,26 @@
   "ga4": {
    "ok": true,
    "through": "2026-10-27",
-   "fetched": "2026-10-29T17:25:09+00:00"
+   "fetched": "2026-10-30T02:00:47+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-10-29T17:25:09+00:00"
+   "fetched": "2026-10-30T02:00:47+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-10-29T17:25:09+00:00"
+   "fetched": "2026-10-30T02:00:47+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-10-29T17:25:09+00:00"
+   "fetched": "2026-10-30T02:00:47+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-10-27",
-   "fetched": "2026-10-29T17:25:09+00:00"
+   "fetched": "2026-10-30T02:00:47+00:00"
   }
  }
 }
