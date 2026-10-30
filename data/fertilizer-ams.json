@@ -3,17 +3,17 @@
  "report_id": "3195",
  "url": "https://www.ams.usda.gov/mnreports/ams_3195.pdf",
  "page": "https://mymarketnews.ams.usda.gov/viewReport/3195",
- "report_date": "2026-10-16",
+ "report_date": "2026-10-30",
  "terms": "Distributor (Dollars Per Ton)",
- "fetched": "2026-10-16T22:54:25Z",
+ "fetched": "2026-10-30T23:54:01Z",
  "products": [
   {
    "key": "anhydrous",
    "name": "Anhydrous ammonia",
    "symbol": "82-0-0",
-   "low": 835.0,
-   "high": 1040.0,
-   "avg": 947.5,
+   "low": 850.0,
+   "high": 1060.0,
+   "avg": 981.11,
    "unit": "$/ton",
    "freight": "F.O.B."
   },
@@ -53,24 +53,24 @@
    "symbol": "18-46-0",
    "low": 840.0,
    "high": 995.0,
-   "avg": 929.29,
+   "avg": 932.14,
    "unit": "$/ton",
    "freight": "F.O.B."
   },
   {
    "key": "potash",
    "name": "Potash",
-   "symbol": "0-0-62",
+   "symbol": "0-0-60",
    "low": 480.0,
    "high": 550.0,
-   "avg": 515.0,
+   "avg": 517.73,
    "unit": "$/ton",
    "freight": "F.O.B."
   }
  ],
  "status": {
-  "ok": false,
-  "checked": "2026-10-26T20:33:08Z",
-  "note": "report dated 2026-10-12 is older than the one on file (2026-10-16)"
+  "ok": true,
+  "checked": "2026-10-30T23:54:01Z",
+  "note": null
  }
 }
