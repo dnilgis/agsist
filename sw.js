@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 314;  // v314 2026-10-30: fx/strayspace2 (314 assigned by the lead). The space after a bold label moves inside the following span: Farmland Atlas rent rows (build_atlas_pages.py) and the Comparable sales report no-subject note (comp-report.js?v=5).
+var CACHE_VERSION = 316;  // v316 2026-10-30: fx/nobarchart (316 assigned by the lead). The dead Barchart feed is removed from the homepage cash bids card and the cash bids page (bids-homepage.js?v=44, cash-bids.js?v=17); the proxy host leaves the never-cache list.
+// v314 2026-10-30: fx/strayspace2 (314 assigned by the lead). The space after a bold label moves inside the following span: Farmland Atlas rent rows (build_atlas_pages.py) and the Comparable sales report no-subject note (comp-report.js?v=5).
 // v312 2026-10-29: fx/quickwins (312 assigned by the lead; was 309, main passed it with 310). Futures pages say the delay and a stale state right under the price (futures.js?v=28), cash bid rows carry a posted date or an old-price flag (cash-bids.js?v=16), COT says the Tuesday and the release day at the top (cot-page.js?v=4).
 // v310 2026-10-29: fx/changemap (310 assigned by the lead). Fast Facts change map on the USGS National Map basemap (Leaflet 1.9.4 from /vendor, loaded when the map is near the screen) with a switch: drought, posted corn bids, rent, land sales, rain; tap a county for its line and its county home; the box is held so nothing shifts: changemap.js?v=3, here.js?v=35, here.css?v=7.
 // v306 2026-10-29: fx/landkeys (306 assigned by the lead; was 302, main passed it with 304). Field Scout sold land list puts sales in the field's own section, or one touching it, first and marks them; the sale panel reads Indiana's section shorthand: field-scout-land.js?v=11 (also in comp-report.html and field-report.html), field-scout-read.js?v=17, field-scout.js?v=31.
@@ -90,9 +91,7 @@ var NEVER_CACHE = [
   '/data/',                                  // prices.json, daily.json — must be live
   '/api/',
   'nominatim.openstreetmap.org',             // geocoding
-  'ondemand.websol.barchart.com',            // (legacy, no longer called from client)
   'farmers1st.com/api',
-  'agsist-barchart.dnilgis.workers.dev',     // cash bids proxy (Cloudflare Worker)
   'gamma-api.polymarket.com',                // ag-odds source (CORS-restricted)
   'agsist-api.dnilgis.workers.dev',          // the subs worker (new home, Oct 22)
   'agsist-subs.dnilgis.workers.dev',         // the subs worker (old home, blocked Oct 21; kept while both may answer)
