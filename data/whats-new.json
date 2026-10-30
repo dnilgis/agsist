@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-30-tapsize",
+   "date": "2026-10-30",
+   "title": "Easier to tap on a phone",
+   "line": "The grain bin depth slider and the hail map zoom buttons are bigger, so a thumb hits them the first time.",
+   "link": "/hail-map"
+  },
+  {
    "id": "2026-10-30-rpxmas",
    "date": "2026-10-30",
    "title": "A Rain Print, made for you",
