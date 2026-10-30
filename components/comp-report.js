@@ -464,7 +464,7 @@
     var P = CR.parseParams(location.search, today());
     $('cr-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     $('cr-print').addEventListener('click', function () { window.print(); });
-    if (!P.ok) { $('cr-none').hidden = false; $('cr-print').hidden = true; $('cr-csv').hidden = true; if (P.notes.length) set('cr-none-why', esc(P.notes.join(' '))); return; }
+    if (!P.ok) { $('cr-none').hidden = false; $('cr-print').hidden = true; $('cr-csv').hidden = true; if (P.notes.length) set('cr-none-why', ' ' + esc(P.notes.join(' '))); return; }
     $('cr-body').hidden = false;
     $('cr-csv').hidden = true;   // shown once there are comps to download
     var S = { P: P, subj: P.subject, parcels: [], list: [] };

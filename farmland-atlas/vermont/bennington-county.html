@@ -1,152 +1,56 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Bennington County, VT Farm Facts · Cash Rent 2026: $60/Acre</title>
-  <meta name="description" content="Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/vermont/bennington-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Bennington County, VT Farm Facts · Cash Rent 2026: $60/Acre">
-  <meta property="og:description" content="Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/vermont/bennington-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/50003.png?v=eff2e7fb">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Bennington County, Vermont: dry cash rent $60 an acre, land and buildings read with care, median corn yield not published">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Bennington County, VT Farm Facts · Cash Rent 2026: $60/Acre">
-  <meta name="twitter:description" content="Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/50003.png?v=eff2e7fb">
-  <meta name="twitter:image:alt" content="Bennington County, Vermont: dry cash rent $60 an acre, land and buildings read with care, median corn yield not published">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Vermont",
-     "item": "https://agsist.com/farmland-atlas/vermont/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Bennington County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/vermont/bennington-county#dataset",
-   "name": "Bennington County, Vermont: farmland rent, land value and risk record",
-   "description": "Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care.",
-   "url": "https://agsist.com/farmland-atlas/vermont/bennington-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Bennington County, Vermont, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "rent_dry_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "loss_ratio_all",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/vt.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Bennington County, VT Farm Facts · Cash Rent 2026: $60/Acre</title>
+<meta name="description" content="Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/vermont/bennington-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Bennington County, VT Farm Facts · Cash Rent 2026: $60/Acre">
+<meta property="og:description" content="Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/vermont/bennington-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/50003.png?v=eff2e7fb">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Bennington County, Vermont: dry cash rent $60 an acre, land and buildings read with care, median corn yield not published">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Bennington County, VT Farm Facts · Cash Rent 2026: $60/Acre">
+<meta name="twitter:description" content="Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/50003.png?v=eff2e7fb">
+<meta name="twitter:image:alt" content="Bennington County, Vermont: dry cash rent $60 an acre, land and buildings read with care, median corn yield not published">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"Vermont","item":"https://agsist.com/farmland-atlas/vermont/"},{"@type":"ListItem","position":4,"name":"Bennington County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/vermont/bennington-county#dataset","name":"Bennington County, Vermont: farmland rent, land value and risk record","description":"Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care.","url":"https://agsist.com/farmland-atlas/vermont/bennington-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"Bennington County, Vermont, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"rent_dry_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"loss_ratio_all","unitText":"ratio"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/vt.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/vermont/">Vermont</a><i>/</i><span aria-current="page">Bennington County</span></nav>
 <div class="kick">County farm facts</div>
 <h1>Bennington County, Vermont</h1>
-<section class="lf" aria-label="Land in Bennington County"><p class="lf-thru">Sales through Sep 30, 2026</p><div class="lf-mid" data-lf-mid><div class="lf-k">Sold for</div><div class="lf-v">$3,766<small>/ac</small></div><div class="lf-s">Middle of 9 bare farmland sales of 20+ acres, Oct 2024 to Sep 2026. Middle half $1,988 to $7,799.</div></div><h2 class="lf-h">Newest sales <small>town, not parcel</small></h2><ul class="lf-ul"><li><span class="lf-d">Aug 14, 2026</span> <b>544.4 ac</b> at $3,766/ac ($2,050,000), Dorset town <button type="button" class="ls-nm" data-ls-id="3daa659331" data-ls-f="/data/land/names/vt/50003.json">Show buyer and seller</button></li><li><span class="lf-d">Jul 1, 2026</span> <b>30.5 ac</b> at $55,793/ac ($1,700,000), Sandgate town <span class="lf-n">with buildings</span> <button type="button" class="ls-nm" data-ls-id="b73cb16ed0" data-ls-f="/data/land/names/vt/50003.json">Show buyer and seller</button></li><li><span class="lf-d">Apr 7, 2026</span> <b>170 ac</b> at $3,529/ac ($600,000), Rupert town <button type="button" class="ls-nm" data-ls-id="f5d74f9d4c" data-ls-f="/data/land/names/vt/50003.json">Show buyer and seller</button></li></ul><div class="lf-r"><span class="l">Rent</span><span class="r"><b>$60/ac</b> <span class="lc">NASS 2026, county average</span></span></div><div class="lf-r lv" data-k="lf-bid"><span class="l">Nearest bid</span><span class="r"></span></div><div class="lf-r lv" data-k="lf-rain"><span class="l">Rain</span><span class="r"></span></div><div class="ch-btns lf-btns"><a class="pri" href="/land-sales/vermont/bennington-county">Every sale here</a><a href="/field-scout?fips=50003">Pick my field</a></div><p class="lf-dis">Recorded prices. Not an appraisal. No adjustments. A recorded price is what the state's transfer record says was paid once the sale closed, auction or private; never an asking price.</p><p class="lf-fine">Sales: Vermont Department of Taxes, property transfer tax returns (published by VCGI), farm, forest and current use land. Rent: USDA NASS.</p></section><p class="sub">Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care. Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS 50003. Figures as of 2026-10-19; the rows marked with a date load the newest reading when the page opens.</p>
+<section class="lf" aria-label="Land in Bennington County"><p class="lf-thru">Sales through Sep 30, 2026</p><div class="lf-mid" data-lf-mid><div class="lf-k">Sold for</div><div class="lf-v">$3,766<small>/ac</small></div><div class="lf-s">Middle of 9 bare farmland sales of 20+ acres, Oct 2024 to Sep 2026. Middle half $1,988 to $7,799.</div></div><h2 class="lf-h">Newest sales <small>town, not parcel</small></h2><ul class="lf-ul"><li><span class="lf-d">Aug 14, 2026</span> <b>544.4 ac</b> at $3,766/ac ($2,050,000), Dorset town <button type="button" class="ls-nm" data-ls-id="3daa659331" data-ls-f="/data/land/names/vt/50003.json">Show buyer and seller</button></li><li><span class="lf-d">Jul 1, 2026</span> <b>30.5 ac</b> at $55,793/ac ($1,700,000), Sandgate town <span class="lf-n">with buildings</span> <button type="button" class="ls-nm" data-ls-id="b73cb16ed0" data-ls-f="/data/land/names/vt/50003.json">Show buyer and seller</button></li><li><span class="lf-d">Apr 7, 2026</span> <b>170 ac</b> at $3,529/ac ($600,000), Rupert town <button type="button" class="ls-nm" data-ls-id="f5d74f9d4c" data-ls-f="/data/land/names/vt/50003.json">Show buyer and seller</button></li></ul><div class="lf-r"><span class="l">Rent</span><span class="r"><b>$60/ac</b><span class="lc"> NASS 2026, county average</span></span></div><div class="lf-r lv" data-k="lf-bid"><span class="l">Nearest bid</span><span class="r"></span></div><div class="lf-r lv" data-k="lf-rain"><span class="l">Rain</span><span class="r"></span></div><div class="ch-btns lf-btns"><a class="pri" href="/land-sales/vermont/bennington-county">Every sale here</a><a href="/field-scout?fips=50003">Pick my field</a></div><p class="lf-dis">Recorded prices. Not an appraisal. No adjustments. A recorded price is what the state's transfer record says was paid once the sale closed, auction or private; never an asking price.</p><p class="lf-fine">Sales: Vermont Department of Taxes, property transfer tax returns (published by VCGI), farm, forest and current use land. Rent: USDA NASS.</p></section><p class="sub">Bennington County, VT: non-irrigated cash rent $60 an acre (2026); land and buildings $4,177 an acre in the 2022 census, flagged to read with care. Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS 50003. Figures as of 2026-10-19; the rows marked with a date load the newest reading when the page opens.</p>
 <div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#50003">Print this sheet</a><a href="/fast-facts?fips=50003">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>
 <div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v">$60<small>/ac</small></div><div class="s">2026 county average<br>VT median $59 · 5th highest of 10</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$4,177<small>/ac</small></div><div class="s">2022 census · read with care: fell 12% from 2017 while next door rose a median 23% · VT farm real estate 2026: $4,490 (land and buildings, state survey)</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v"><small>n/a</small></div><div class="s">not shown: NASS published no non-irrigated cash rent for this county in 2022</div></div><div class="k"><div class="t">Corn yield</div><div class="v"><small>n/a</small></div><div class="s">fewer than 8 published county corn yields</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v">$22.93</div><div class="s">2016–2025, closed crop years<br>VT median $10.76 · highest of 8</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">11%</div><div class="s">2022 census, rented from others<br>VT median 18% · lowest of 14</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="Bennington County on the map with the counties that border it" class="loc"><path class="lm" d="M110.7 100.4L111.1 92.2L111.8 74.5L112.0 65.3L138.8 66.6L142.2 66.8L142.2 70.9L138.8 84.4L129.9 83.8L129.5 92.9L129.1 101.7L135.2 102.0L134.9 108.7L128.6 111.0L128.4 119.6L128.1 119.6L119.9 119.3L111.3 119.1L110.6 119.1L109.5 113.8L110.0 110.8L110.4 110.9L110.7 100.8L110.7 100.6L110.7 100.4Z"/><path class="ln0" d="M129.7 160.1L129.5 166.0L129.1 167.3L124.8 175.8L126.0 186.0L120.9 185.8L113.8 185.5L113.7 185.5L109.4 185.3L109.3 185.3L96.0 185.1L95.3 185.1L94.5 181.6L101.2 156.5L105.2 141.5L108.4 129.8L111.3 119.1L119.9 119.3L128.1 119.6L133.2 123.0L133.1 129.1L131.4 137.1L129.7 160.1Z"/><path class="ln0" d="M138.2 138.6L131.4 137.1L133.1 129.1L133.2 123.0L128.1 119.6L128.4 119.6L134.5 119.8L134.7 119.8L139.1 120.0L167.2 120.9L167.7 120.9L170.4 121.0L179.3 121.4L183.4 129.3L182.0 141.1L177.1 157.2L174.2 161.1L174.4 157.5L173.0 149.9L161.3 149.4L158.7 149.7L150.2 151.3L146.0 145.9L138.6 144.0L138.2 138.6Z"/><path class="ln0" d="M84.0 112.2L82.3 105.3L85.7 100.7L110.7 100.4L110.7 100.6L110.7 100.8L110.4 110.9L110.0 110.8L109.5 113.8L110.6 119.1L111.3 119.1L108.4 129.8L105.2 141.5L75.4 145.9L75.3 143.4L76.2 141.6L77.0 132.0L82.8 115.6L83.1 115.0L83.2 114.4L83.9 113.7L84.0 112.2Z"/><path class="ln0" d="M111.1 92.2L110.7 100.4L85.7 100.7L90.0 85.5L88.5 66.1L86.1 49.1L95.5 32.9L99.4 19.0L99.5 19.0L99.7 19.0L103.4 18.6L103.4 18.6L104.9 20.7L105.4 22.1L104.7 23.8L104.0 25.4L101.7 30.2L101.4 31.3L100.5 33.8L99.8 39.4L100.0 39.8L102.0 41.2L103.6 37.0L104.3 36.1L108.5 35.6L108.7 35.8L112.7 44.0L112.9 44.4L112.6 46.3L112.2 60.0L112.2 60.1L112.2 60.7L112.2 61.5L112.0 65.3L111.8 74.5L111.1 92.2Z"/><path class="ln0" d="M145.5 49.8L148.6 50.7L146.3 61.6L139.9 60.0L138.8 66.6L112.0 65.3L112.2 61.5L112.2 60.7L112.2 60.1L112.2 60.0L112.6 46.3L112.9 44.4L112.7 44.0L108.7 35.8L108.5 35.6L104.3 36.1L103.6 37.0L102.0 41.2L100.0 39.8L99.8 39.4L100.5 33.8L101.4 31.3L101.7 30.2L104.0 25.4L104.7 23.8L113.7 22.7L118.9 15.6L118.9 15.4L127.6 14.9L127.5 15.1L127.8 15.4L128.5 18.9L130.5 17.9L132.5 16.8L138.3 13.8L141.0 26.9L150.4 30.4L144.2 48.2L145.5 49.8Z"/><path class="ln0" d="M139.1 120.0L134.7 119.8L134.5 119.8L128.4 119.6L128.6 111.0L134.9 108.7L135.2 102.0L129.1 101.7L129.5 92.9L129.9 83.8L138.8 84.4L142.2 70.9L151.4 74.1L169.1 73.1L168.5 75.1L167.6 79.8L168.3 82.1L169.0 83.7L169.0 84.3L168.2 94.5L160.4 107.7L160.4 107.8L160.4 108.5L160.4 108.7L161.3 113.3L163.6 115.8L164.9 116.7L165.8 117.6L167.1 120.5L167.2 120.9L139.1 120.0Z"/><path class="ln0" d="M145.5 49.8L144.2 48.2L150.4 30.4L141.0 26.9L138.3 13.8L132.5 16.8L131.1 11.5L144.2 4.0L144.7 7.1L159.2 12.4L164.4 14.6L164.4 14.6L167.1 15.7L184.6 22.0L184.7 22.1L182.8 24.3L180.7 25.6L180.2 25.6L178.0 28.5L176.1 35.0L175.8 36.5L175.7 36.9L176.1 38.3L171.5 45.8L172.1 47.6L172.1 50.4L171.4 54.5L171.4 54.5L170.9 58.2L171.0 61.2L171.2 63.2L171.4 65.1L169.1 73.1L151.4 74.1L142.2 70.9L142.2 66.8L138.8 66.6L139.9 60.0L146.3 61.6L148.6 50.7L145.5 49.8Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#50003">Open on the map</a>
-  <a href="/farmland-atlas/compare#50003">Compare</a>
-  <a href="/rent/vermont">Vermont cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#50003">Open on the map</a>
+<a href="/farmland-atlas/compare#50003">Compare</a>
+<a href="/rent/vermont">Vermont cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
 <div class="read"><p style="margin:0">Bennington County farmland has paid out $5.3 million in crop insurance since 1993, with hail driving 58 percent of those claims. The loss ratio ran 1.25 over the full period 1993-2025 and 1.45 in the most recent decade 2016-2025. July nights have warmed 0.93 F per decade since 1976, now averaging 56.4 F compared to the 1991-2020 normal of 54.5 F, though the county hasn&#x27;t seen a July with an average low at or above 70 F since 1900. Non-irrigated cash rent is $60 per acre.</p></div>
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
@@ -162,37 +66,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/vermont/addison-county">← Addison County</a></span><a href="/farmland-atlas/vermont/">All Vermont counties</a><span><a href="/farmland-atlas/vermont/caledonia-county">Caledonia County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "50003", "state": "VT", "county": "Bennington County", "rent_dry_usd_ac": 59.5, "rent_dry_year": 2026, "rent_dry_chg10_pct": null, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": null, "value_usd_ac": 4177, "value_year": 2022, "value_flag": {"own_pct": -12.4, "nb_pct": 22.9, "n": 7, "dir": "fell"}, "value_cagr_pct": null, "rent_to_value_pct": null, "corn_yield_median_bu_ac": null, "corn_yield_years": null, "corn_yield_trend_bu_yr": null, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": 22.93, "loss_ratio_last10": 1.45, "loss_ratio_all": 1.25, "years_loss_over_1": null, "d2_week_share_pct": 0.44, "jul_low_recent_f": 56.4, "jul_low_normal_f": 54.5, "jul_low_trend_f_decade": 0.93, "irrigated_share_2022": 0.092, "tile_share_2022": 0.018274, "notill_share_2022": 0.068597, "crp_acres": 18, "crp_share_pct": null, "crp_expiring_next3_acres": 0, "rented_share_2022": 0.1052, "solar_mw": 4.2, "wind_mw": 36.0, "gs_rain_normal_in": 26.5, "hail_1in_days_yr": 0.6, "cattle_2022": 2425.0}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"50003","state":"VT","county":"Bennington County","rent_dry_usd_ac":59.5,"rent_dry_year":2026,"rent_dry_chg10_pct":null,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":null,"value_usd_ac":4177,"value_year":2022,"value_flag":{"own_pct":-12.4,"nb_pct":22.9,"n":7,"dir":"fell"},"value_cagr_pct":null,"rent_to_value_pct":null,"corn_yield_median_bu_ac":null,"corn_yield_years":null,"corn_yield_trend_bu_yr":null,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":22.93,"loss_ratio_last10":1.45,"loss_ratio_all":1.25,"years_loss_over_1":null,"d2_week_share_pct":0.44,"jul_low_recent_f":56.4,"jul_low_normal_f":54.5,"jul_low_trend_f_decade":0.93,"irrigated_share_2022":0.092,"tile_share_2022":0.018274,"notill_share_2022":0.068597,"crp_acres":18,"crp_share_pct":null,"crp_expiring_next3_acres":0,"rented_share_2022":0.1052,"solar_mw":4.2,"wind_mw":36.0,"gs_rain_normal_in":26.5,"hail_1in_days_yr":0.6,"cattle_2022":2425.0}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>

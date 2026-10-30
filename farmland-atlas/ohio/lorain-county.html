@@ -1,144 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Lorain County, Ohio Farm Facts · Cash Rent 2026: $137/Acre</title>
-  <meta name="description" content="Lorain County, OH: non-irrigated cash rent $137 an acre (2026); land and buildings $8,788 an acre in the 2022 census; corn 14-yr trend 197.7 bu/ac.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/ohio/lorain-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Lorain County, Ohio Farm Facts · Cash Rent 2026: $137/Acre">
-  <meta property="og:description" content="Lorain County, OH: non-irrigated cash rent $137 an acre (2026); land and buildings $8,788 an acre in the 2022 census; corn 14-yr trend 197.7 bu/ac.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/ohio/lorain-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/39093.png?v=fa8e4eea">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Lorain County, Ohio: dry cash rent $137 an acre, land and buildings $8,788, median corn yield 158.1 bu/ac">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Lorain County, Ohio Farm Facts · Cash Rent 2026: $137/Acre">
-  <meta name="twitter:description" content="Lorain County, OH: non-irrigated cash rent $137 an acre (2026); land and buildings $8,788 an acre in the 2022 census; corn 14-yr trend 197.7 bu/ac.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/39093.png?v=fa8e4eea">
-  <meta name="twitter:image:alt" content="Lorain County, Ohio: dry cash rent $137 an acre, land and buildings $8,788, median corn yield 158.1 bu/ac">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Ohio",
-     "item": "https://agsist.com/farmland-atlas/ohio/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Lorain County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/ohio/lorain-county#dataset",
-   "name": "Lorain County, Ohio: farmland rent, land value and risk record",
-   "description": "Lorain County, OH: non-irrigated cash rent $137 an acre (2026); land and buildings $8,788 an acre in the 2022 census; corn 14-yr trend 197.7 bu/ac.",
-   "url": "https://agsist.com/farmland-atlas/ohio/lorain-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Lorain County, Ohio, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "rent_dry_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "corn_yield_median_bu_ac",
-     "unitText": "bu/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "loss_ratio_all",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/oh.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Lorain County, Ohio Farm Facts · Cash Rent 2026: $137/Acre</title>
+<meta name="description" content="Lorain County, OH: non-irrigated cash rent $137 an acre (2026); land and buildings $8,788 an acre in the 2022 census; corn 14-yr trend 197.7 bu/ac.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/ohio/lorain-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Lorain County, Ohio Farm Facts · Cash Rent 2026: $137/Acre">
+<meta property="og:description" content="Lorain County, OH: non-irrigated cash rent $137 an acre (2026); land and buildings $8,788 an acre in the 2022 census; corn 14-yr trend 197.7 bu/ac.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/ohio/lorain-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/39093.png?v=fa8e4eea">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Lorain County, Ohio: dry cash rent $137 an acre, land and buildings $8,788, median corn yield 158.1 bu/ac">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Lorain County, Ohio Farm Facts · Cash Rent 2026: $137/Acre">
+<meta name="twitter:description" content="Lorain County, OH: non-irrigated cash rent $137 an acre (2026); land and buildings $8,788 an acre in the 2022 census; corn 14-yr trend 197.7 bu/ac.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/39093.png?v=fa8e4eea">
+<meta name="twitter:image:alt" content="Lorain County, Ohio: dry cash rent $137 an acre, land and buildings $8,788, median corn yield 158.1 bu/ac">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"Ohio","item":"https://agsist.com/farmland-atlas/ohio/"},{"@type":"ListItem","position":4,"name":"Lorain County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/ohio/lorain-county#dataset","name":"Lorain County, Ohio: farmland rent, land value and risk record","description":"Lorain County, OH: non-irrigated cash rent $137 an acre (2026); land and buildings $8,788 an acre in the 2022 census; corn 14-yr trend 197.7 bu/ac.","url":"https://agsist.com/farmland-atlas/ohio/lorain-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"Lorain County, Ohio, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"rent_dry_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"corn_yield_median_bu_ac","unitText":"bu/acre"},{"@type":"PropertyValue","name":"loss_ratio_all","unitText":"ratio"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/oh.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/ohio/">Ohio</a><i>/</i><span aria-current="page">Lorain County</span></nav>
 <div class="kick">County farm facts</div>
@@ -147,11 +46,11 @@
 <div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#39093">Print this sheet</a><a href="/fast-facts?fips=39093">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>
 <section class="so" aria-label="What stands out"><h2>Stands out against its own record</h2><div class="so-g"><div class="so-t"><div class="big">192.7 bu</div><p class="what">Corn yield, all practices, 2023: the highest of 13 published years since 2008.</p><p class="src">USDA NASS county yields, 2023</p></div></div></section><div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v">$137<small>/ac</small></div><div class="s">2026 county average<br>OH median $168 · 31st lowest of 76</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$8,788<small>/ac</small></div><div class="s">2022: operators&#x27; own estimate of what land and buildings were worth · OH farm real estate 2026: $9,650 (land and buildings, state survey)<br>OH median $7,956 · 29th highest of 87</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v">1.45%</div><div class="s">$127 dry rent ÷ $8,788 land and buildings, both 2022</div></div><div class="k"><div class="t">Corn yield, 14-yr trend (projected 2026)</div><div class="v">197.7<small> bu/ac</small></div><div class="s">all practices trend · 2023 county yield 192.7 · 2019-23 average 180.5 (all practices)<br>OH median 192.3 · 27th highest of 81</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v">$5.52</div><div class="s">2016–2025, closed crop years<br>OH median $4.69 · 27th highest of 83</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">43%</div><div class="s">2022 census, rented from others<br>OH median 37% · 40th highest of 87</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="Lorain County on the map with the counties that border it" class="loc"><path class="lm" d="M155.9 25.1L155.6 51.4L167.5 52.5L167.4 64.2L164.9 64.2L163.8 64.2L162.7 64.2L161.9 64.2L161.2 64.2L155.4 64.2L155.2 76.9L142.7 76.9L142.4 87.7L130.2 87.6L130.1 99.9L109.0 99.6L108.3 62.7L107.5 38.3L109.3 38.0L114.6 38.3L115.8 38.2L117.7 37.8L119.4 37.3L127.3 32.1L127.8 31.6L128.2 30.7L128.3 30.6L128.7 30.9L130.8 30.6L139.9 27.0L150.3 23.5L152.5 23.8L155.9 25.1Z"/><path class="ln0" d="M98.8 127.3L98.6 111.9L96.7 111.9L96.2 99.7L109.0 99.6L130.1 99.9L129.8 112.1L135.4 112.1L135.5 121.4L135.4 122.6L135.5 127.5L135.9 130.0L135.8 166.9L123.7 166.9L123.8 183.8L108.9 186.0L108.6 156.9L103.7 156.9L98.8 127.3Z"/><path class="ln0" d="M167.4 64.2L167.5 52.5L155.6 51.4L155.9 25.1L156.3 25.3L156.6 26.0L157.2 26.3L159.8 27.7L160.8 27.8L160.9 27.8L167.5 29.0L169.7 28.9L171.0 28.5L172.6 28.0L172.8 27.8L176.0 26.8L176.0 26.8L177.2 26.8L177.4 26.8L177.4 26.8L178.1 26.7L178.1 26.7L179.7 26.8L181.3 27.5L181.3 27.5L182.2 27.8L182.6 27.8L184.2 28.4L184.2 28.4L184.4 28.4L184.5 28.4L184.8 28.2L185.1 28.0L185.9 27.7L186.5 27.2L186.8 27.2L186.8 27.0L187.7 26.5L187.9 26.3L188.1 26.2L188.7 25.8L188.7 25.8L189.1 25.3L189.2 25.1L191.0 23.8L191.3 23.6L191.6 23.3L194.6 20.9L194.6 20.9L196.5 20.1L196.7 20.1L197.6 19.7L198.5 19.4L199.4 18.7L200.7 17.7L200.7 17.5L200.8 17.5L201.6 17.0L201.6 16.9L202.9 15.8L203.7 15.2L203.7 15.0L203.9 15.0L204.0 14.8L205.4 13.5L205.4 13.5L205.4 13.5L205.5 13.3L205.5 13.3L205.8 13.1L205.9 13.0L205.9 13.0L207.6 11.3L211.5 7.0L211.5 7.0L211.8 6.9L211.8 6.7L212.2 6.7L212.9 6.4L214.5 5.7L215.6 5.4L217.0 4.0L217.0 4.5L217.1 9.4L217.1 13.1L217.1 14.3L225.8 14.3L226.1 14.3L227.2 14.3L229.5 14.3L229.4 51.9L228.3 51.7L222.0 51.7L203.7 51.4L203.1 51.4L204.0 63.7L192.0 63.9L167.4 64.2Z"/><path class="ln0" d="M62.6 7.2L63.8 7.4L65.2 6.0L65.4 6.2L65.1 10.1L64.4 11.4L64.0 11.6L62.4 11.8L59.3 10.1L58.0 9.1L58.0 8.7L60.2 5.9L61.7 5.9L62.2 6.2L62.6 7.2ZM30.5 33.3L34.6 33.3L36.2 32.9L42.7 30.9L46.3 29.2L63.3 27.2L64.2 27.5L68.0 32.6L73.1 37.7L73.2 38.3L80.7 43.1L86.3 45.8L88.3 46.1L90.5 46.3L93.1 45.4L96.9 43.6L101.1 40.7L105.7 38.5L107.5 38.3L108.3 62.7L44.7 61.7L43.8 38.0L30.5 33.3Z"/><path class="ln0" d="M46.1 111.2L44.8 67.6L44.7 61.7L108.3 62.7L109.0 99.6L96.2 99.7L96.7 111.9L59.4 111.4L46.1 111.2Z"/><path class="ln0" d="M155.2 76.9L155.4 64.2L161.2 64.2L161.9 64.2L162.7 64.2L163.8 64.2L164.9 64.2L167.4 64.2L192.0 63.9L191.9 76.6L191.6 112.6L135.4 112.1L129.8 112.1L130.1 99.9L130.2 87.6L142.4 87.7L142.7 76.9L155.2 76.9Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#39093">Open on the map</a>
-  <a href="/farmland-atlas/compare#39093">Compare</a>
-  <a href="/rent/ohio">Ohio cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#39093">Open on the map</a>
+<a href="/farmland-atlas/compare#39093">Compare</a>
+<a href="/rent/ohio">Ohio cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
 <div class="read"><p style="margin:0">Excess moisture and flood is the story here. Insurance payouts went to that cause 69 percent of the time from 1989 to 2025, totaling $52.7 million. Corn yields have climbed 3 bushels per acre a year from 2008 to 2023, with a median of 158.1 bushels per acre across those years. Heat and drought claims fell from 32 percent of indemnities in 1989-1999 to 20 percent in 2020-2025. Cash rent is $137 per acre in 2026, up 45 percent from 2016.</p></div>
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
@@ -167,37 +66,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/ohio/logan-county">← Logan County</a></span><a href="/farmland-atlas/ohio/">All Ohio counties</a><span><a href="/farmland-atlas/ohio/lucas-county">Lucas County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "39093", "state": "OH", "county": "Lorain County", "rent_dry_usd_ac": 137.0, "rent_dry_year": 2026, "rent_dry_chg10_pct": 45.0, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": 30.0, "value_usd_ac": 8788, "value_year": 2022, "value_flag": null, "value_cagr_pct": 3.3, "rent_to_value_pct": 1.45, "corn_yield_median_bu_ac": 158.1, "corn_yield_years": 13, "corn_yield_trend_bu_yr": 2.975, "corn_trend_bu_ac": 197.7, "corn_trend_year": 2026, "corn_trend_practice": "all practices", "claims_per_100_usd": 5.52, "loss_ratio_last10": 0.52, "loss_ratio_all": 0.72, "years_loss_over_1": 5, "d2_week_share_pct": 0.07, "jul_low_recent_f": 64.5, "jul_low_normal_f": 63.5, "jul_low_trend_f_decade": 0.45, "irrigated_share_2022": 0.011, "tile_share_2022": 0.47689, "notill_share_2022": 0.268625, "crp_acres": 708, "crp_share_pct": 0.8, "crp_expiring_next3_acres": 30, "rented_share_2022": 0.4317, "solar_mw": 2.0, "wind_mw": 0.0, "gs_rain_normal_in": 22.5, "hail_1in_days_yr": 1.6, "cattle_2022": 5476.0}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"39093","state":"OH","county":"Lorain County","rent_dry_usd_ac":137.0,"rent_dry_year":2026,"rent_dry_chg10_pct":45.0,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":30.0,"value_usd_ac":8788,"value_year":2022,"value_flag":null,"value_cagr_pct":3.3,"rent_to_value_pct":1.45,"corn_yield_median_bu_ac":158.1,"corn_yield_years":13,"corn_yield_trend_bu_yr":2.975,"corn_trend_bu_ac":197.7,"corn_trend_year":2026,"corn_trend_practice":"all practices","claims_per_100_usd":5.52,"loss_ratio_last10":0.52,"loss_ratio_all":0.72,"years_loss_over_1":5,"d2_week_share_pct":0.07,"jul_low_recent_f":64.5,"jul_low_normal_f":63.5,"jul_low_trend_f_decade":0.45,"irrigated_share_2022":0.011,"tile_share_2022":0.47689,"notill_share_2022":0.268625,"crp_acres":708,"crp_share_pct":0.8,"crp_expiring_next3_acres":30,"rented_share_2022":0.4317,"solar_mw":2.0,"wind_mw":0.0,"gs_rain_normal_in":22.5,"hail_1in_days_yr":1.6,"cattle_2022":5476.0}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>

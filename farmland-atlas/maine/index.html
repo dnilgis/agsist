@@ -1,106 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>Maine Farmland Values by County: Land Value, Yield &amp; Risk</title>
-  <meta name="description" content="Maine: 16 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/maine/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Maine Farmland Values by County: Land Value, Yield &amp; Risk">
-  <meta property="og:description" content="Maine: 16 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/maine/">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/state-me.png?v=26c0a396">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="Maine farmland values by county: median dry cash rent $51 an acre across 16 counties">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="Maine Farmland Values by County: Land Value, Yield &amp; Risk">
-  <meta name="twitter:description" content="Maine: 16 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/state-me.png?v=26c0a396">
-  <meta name="twitter:image:alt" content="Maine farmland values by county: median dry cash rent $51 an acre across 16 counties">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "By state",
-     "item": "https://agsist.com/farmland-atlas/states/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "Maine"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/maine/#dataset",
-   "name": "Maine county farmland record",
-   "description": "Maine: 16 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly.",
-   "url": "https://agsist.com/farmland-atlas/maine/",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "Maine, United States"
-   },
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/me.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Maine Farmland Values by County: Land Value, Yield &amp; Risk</title>
+<meta name="description" content="Maine: 16 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/maine/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Maine Farmland Values by County: Land Value, Yield &amp; Risk">
+<meta property="og:description" content="Maine: 16 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/maine/">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/state-me.png?v=26c0a396">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Maine farmland values by county: median dry cash rent $51 an acre across 16 counties">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="Maine Farmland Values by County: Land Value, Yield &amp; Risk">
+<meta name="twitter:description" content="Maine: 16 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/state-me.png?v=26c0a396">
+<meta name="twitter:image:alt" content="Maine farmland values by county: median dry cash rent $51 an acre across 16 counties">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"By state","item":"https://agsist.com/farmland-atlas/states/"},{"@type":"ListItem","position":4,"name":"Maine"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/maine/#dataset","name":"Maine county farmland record","description":"Maine: 16 counties, each with census land value, USDA cash rent, corn yield, crop insurance claims and drought weeks, from public records updated monthly.","url":"https://agsist.com/farmland-atlas/maine/","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","spatialCoverage":{"@type":"Place","name":"Maine, United States"},"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/me.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/states/">By state</a><i>/</i><span aria-current="page">Maine</span></nav>
 <div class="kick">Farmland Atlas · state</div>
@@ -166,7 +103,6 @@ var t=document.getElementById('t'),b=t.tBodies[0],dir={};
 });});
 })();
 </script>
-
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>
