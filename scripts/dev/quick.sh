@@ -15,7 +15,7 @@
 #   selftest   python3 scripts/X.py --selftest for each changed scripts/*.py that has --selftest
 #   check      a checks.sh line whose command names a changed script (checks.sh --only=<name>)
 #   worker     node scripts/test_form_worker.mjs when workers/subs-worker.js changes
-. "$(dirname "${BASH_SOURCE[0]}")/../_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
+_g="$(dirname "${BASH_SOURCE[0]}")/../_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 cd "$(git rev-parse --show-toplevel)" || exit 1
 DRY=0; files=()
 for a in "$@"; do case "$a" in --dry-run) DRY=1 ;; -h|--help) sed -n '2,18p' "$0"; exit 0 ;; *) files+=("$a") ;; esac; done

@@ -6,7 +6,7 @@
 # the last run had a failure or a skipped test. A skip is not a pass.
 # Usage: scripts/dev/verify.sh [quick.sh arguments]. Exit: quick.sh's status, or 3 when it
 # passed but skipped tests.
-ARGGUARD_ALSO=quick.sh; . "$(dirname "${BASH_SOURCE[0]}")/../_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
+ARGGUARD_ALSO=quick.sh; _g="$(dirname "${BASH_SOURCE[0]}")/../_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 cd "$(git rev-parse --show-toplevel)" || exit 1
 OUT="${TMPDIR:-/tmp}/agsist-quick"; mkdir -p "$OUT" .verify
 rm -f "$OUT/nt.out"

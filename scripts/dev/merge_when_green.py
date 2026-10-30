@@ -26,8 +26,8 @@ import time
 import urllib.error
 import urllib.request
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-import _argguard  # scripts/_argguard.py: --help and bad flags exit before any work
-_argguard.guard(__file__)
+try: import _argguard; _argguard.guard(__file__)  # scripts/_argguard.py: --help and bad flags exit before any work
+except ImportError: pass
 sys.path.pop(0)
 
 LABEL = "merge-when-green"

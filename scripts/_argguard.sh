@@ -1,6 +1,6 @@
 # Shared guard so a script never does work when asked for --help.
-# A script runs:  . "$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
-# right after its leading comment. When the script is the one being run (not sourced):
+# A script runs, right after its leading comment (fail soft when this file is not beside it):
+#   _g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 #   -h / --help   print the leading comment block and exit 0.
 #   unknown flag  a dash argument that does not appear quoted or after a case label in the
 #                 script's own source exits 2 with one short line.

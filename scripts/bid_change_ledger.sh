@@ -17,7 +17,7 @@
 # 4. Saves: the ledger and state to private-data, the rebuilt snapshots to raw (where
 #    scripts/bid_snapshots.py reads them). RAW_SOFT=1: a failed save is a warning.
 # Never touches main or Pages.
-. "$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
+_g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 set -u
 set -o pipefail
 ROOT=$(git rev-parse --show-toplevel) || exit 1

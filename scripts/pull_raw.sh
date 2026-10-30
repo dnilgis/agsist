@@ -22,7 +22,7 @@
 # raw). RAW_SOFT=1 is only for inputs a job can run without (the Daily's
 # editorial notes, the last job health file): a miss is then a ::warning:: and
 # exit 0. Build inputs (the Atlas pulls, the FSA files) never set it.
-. "$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
+_g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 set -u
 set -o pipefail
 [ $# -gt 0 ] || { echo "::error::pull_raw.sh: no paths given"; exit 1; }

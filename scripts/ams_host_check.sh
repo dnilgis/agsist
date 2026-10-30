@@ -3,7 +3,7 @@
 # resolver and with public resolvers, then an HTTPS GET of one known report
 # (AMS_2162, a weekly feeder cattle auction PDF). Prints one block per host.
 # Read-only; never fails the job (the numbers are the point).
-. "$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
+_g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 set -u
 UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
 PATH_REPORT="${AMS_CHECK_PATH:-/mnreports/AMS_2162.pdf}"

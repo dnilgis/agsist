@@ -4,7 +4,7 @@
 # fertilizer number in its HTML. Run by .github/workflows/fertilizer-coops.yml
 # inside its commit loop, so the list and the baked pages always match the
 # co-op file on the branch being pushed. No network.
-. "$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; argguard "${BASH_SOURCE[0]}" "$@"
+_g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 scripts/build_fert_prices.py
