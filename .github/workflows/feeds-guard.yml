@@ -55,10 +55,8 @@ jobs:
 
       # THE BID NETWORK, AND WHY IT IS CHECKED HERE.
       #
-      # cash-bids.html now merges two feeds: Barchart, and the boards this
-      # project reads itself at dnilgis.github.io/bids. On a duplicate OURS
-      # wins, because ours is the elevator's own posting and Barchart's is a
-      # copy of it. That rule is worth exactly as much as the guard on it.
+      # cash-bids.html draws the boards this project reads itself at
+      # dnilgis.github.io/bids, and nothing else.
       #
       # network-checks.mjs LIFTS the functions out of cash-bids.html rather
       # than keeping a copy, so it cannot pass against code the page no longer
@@ -82,11 +80,10 @@ jobs:
       - name: The market clock matches CME's published grain hours
         run: node scripts/market-clock-checks.mjs
 
-      # THE QUESTION A NERVOUS DEPLOY ASKS. Drive the page's own merge with a
-      # fixed Barchart response against every way the feed can fail — offline,
-      # 404, 500, malformed, empty, hung — and require byte-identical rows
-      # every time. If this ever goes red, the network has stopped being
-      # additive and the page can be made worse by something outside it.
+      # THE QUESTION A NERVOUS DEPLOY ASKS. Drive the page's own network fetch with a
+      # network read against every way the feed can fail — offline, 404, 500,
+      # malformed, empty, hung — and require an empty set that never throws,
+      # and no request at all when the off switch is set.
       - name: A broken bid network leaves the page exactly as it is today
         run: node scripts/network-safety-checks.mjs
 

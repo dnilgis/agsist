@@ -37,9 +37,11 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 315;  // v315 2026-10-30: fx/curtain (315 assigned by the lead; was 313, main passed it with 314). Merge of main; built pages rebuilt to match the builders.
+var CACHE_VERSION = 316;  // v316 2026-10-30: fx/nobarchart (316 assigned by the lead). The dead Barchart feed is removed from the homepage cash bids card and the cash bids page (bids-homepage.js?v=44, cash-bids.js?v=17) and the futures pages' bid source line (futures.js?v=29); the proxy hosts leave the never-cache list.
+// v315 2026-10-30: fx/curtain (315 assigned by the lead; was 313, main passed it with 314). Merge of main; built pages rebuilt to match the builders.
 // v315 (shared) 2026-10-30: fx/rpxmas (315 assigned by the lead, then taken by fx/curtain on main; no extra bump needed: rp-xmas.js and rp-forme.js are new files). The Christmas Rain Print line on the field and weather pages (rp-xmas.js?v=1, Nov 1 to Dec 10), and "Rather not fiddle with it?" on /rain-print (rp-forme.js?v=1): Sig makes two or three versions, free.
 // v314 2026-10-30: fx/strayspace2 (314 assigned by the lead). The space after a bold label moves inside the following span: Farmland Atlas rent rows (build_atlas_pages.py) and the Comparable sales report no-subject note (comp-report.js?v=5).
+// v315 2026-10-30: fx/curtain (315 assigned by the lead; was 313, main passed it with 314). Merge of main; built pages rebuilt to match the builders.
 // v313 2026-10-29: fx/curtain (313 assigned by the lead). ?v= bumped for the 22 changed served files and the loader chain; prf, rain county and ag-stocks pages regenerated.
 // v312 2026-10-29: fx/quickwins (312 assigned by the lead; was 309, main passed it with 310). Futures pages say the delay and a stale state right under the price (futures.js?v=28), cash bid rows carry a posted date or an old-price flag (cash-bids.js?v=16), COT says the Tuesday and the release day at the top (cot-page.js?v=4).
 // v310 2026-10-29: fx/changemap (310 assigned by the lead). Fast Facts change map on the USGS National Map basemap (Leaflet 1.9.4 from /vendor, loaded when the map is near the screen) with a switch: drought, posted corn bids, rent, land sales, rain; tap a county for its line and its county home; the box is held so nothing shifts: changemap.js?v=3, here.js?v=35, here.css?v=7.
@@ -93,9 +95,7 @@ var NEVER_CACHE = [
   '/data/',                                  // prices.json, daily.json — must be live
   '/api/',
   'nominatim.openstreetmap.org',             // geocoding
-  'ondemand.websol.barchart.com',            // (legacy, no longer called from client)
   'farmers1st.com/api',
-  'agsist-barchart.dnilgis.workers.dev',     // cash bids proxy (Cloudflare Worker)
   'gamma-api.polymarket.com',                // ag-odds source (CORS-restricted)
   'agsist-api.dnilgis.workers.dev',          // the subs worker (new home, Oct 22)
   'agsist-subs.dnilgis.workers.dev',         // the subs worker (old home, blocked Oct 21; kept while both may answer)

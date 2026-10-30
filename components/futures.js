@@ -1201,7 +1201,7 @@ function maybeFlagWasdeImminence(daysUntil){
 
 
 // ============ LOCAL CASH BID + BASIS (v14) ============
-// Reads /data/bids.json containing zip_grid + bids[] from Barchart proxy.
+// Reads /data/bids.json containing zip_grid + bids[] (the elevator network's rows).
 // Finds nearest grid ZIP to user location, matches bids by commodity,
 // renders best matching bid with basis interpretation. Falls back gracefully
 // when bids[] is empty (currently true at most fetch times) or when user
@@ -1689,11 +1689,9 @@ function renderBasisCard(data){
       if(bidSt)srcLine+=' \u00b7 '+bidSt;
       else if(b.timestamp||b.cashPriceTimestamp)srcLine+=' \u00b7 updated '+fmtBidTime(b.timestamp||b.cashPriceTimestamp);
       else if(data.fetched)srcLine+=' \u00b7 polled '+fmtBidTime(data.fetched);
-      // Credit the source of THIS bid: a network elevator's own board, or
-      // Barchart. The merged feed marks network rows source=='network'.
-      srcLine+= (b.source==='network')
-        ? ' \u00b7 AGSIST elevator network'
-        : ' \u00b7 a licensed cash-bid feed';
+      // Credit the source of THIS bid: a network elevator's own board. The
+      // feed marks network rows source=='network'.
+      if(b.source==='network')srcLine+=' \u00b7 AGSIST elevator network';
       srcEl.innerHTML=srcLine;
     }
 
