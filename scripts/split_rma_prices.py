@@ -79,7 +79,7 @@ def split(doc):
         by.setdefault(FIPS.get(str(r["st"]), str(r["st"])), []).append(r)
     head = {"updated": doc.get("updated"), "crop_year": doc.get("crop_year"),
             "source": doc.get("source"), "app": doc.get("app"),
-            "_note": ("Split from data/rma-prices.json by scripts/split_rma_prices.py. Rows are "
+            "_note": ("Harvest and projected prices by state. Rows are "
                       "RMA's own, copied verbatim. " + str(doc.get("_note") or ""))}
     disc = []
     seen = set()
