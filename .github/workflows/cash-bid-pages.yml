@@ -4,7 +4,7 @@ name: cash-bid-pages
 # script-free pages of today's AGSIST network bids -- plus
 # sitemap-cash-bids.xml. Network data ONLY (dnilgis/bids merged-all.json,
 # index.json and geocodes/zip-towns.json, read from the same Pages URL
-# scripts/fetch_bids.py reads). No Barchart key is passed to this job, the
+# scripts/fetch_bids.py reads). No key is passed to this job, the
 # script never opens data/bids.json, and no futures price is printed.
 #
 # Since 2026-10-10 the state index is also the state's basis page (/basis/<state>
@@ -28,8 +28,7 @@ name: cash-bid-pages
 # by hand with force. A run whose pages did not change commits nothing.
 #
 # The Fetch Grain Bids conclusion is NOT required to be success: these pages
-# read the network directly, not that run's files, and that run turns red on
-# purpose when Barchart answers nothing while the network data shipped fine.
+# read the network directly, not that run's files.
 on:
   workflow_run:
     workflows: ["Fetch Grain Bids"]

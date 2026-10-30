@@ -37,7 +37,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 316;  // v316 2026-10-30: fx/nobarchart (316 assigned by the lead). The dead Barchart feed is removed from the homepage cash bids card and the cash bids page (bids-homepage.js?v=44, cash-bids.js?v=17); the proxy host leaves the never-cache list.
+var CACHE_VERSION = 316;  // v316 2026-10-30: fx/nobarchart (316 assigned by the lead). The dead Barchart feed is removed from the homepage cash bids card and the cash bids page (bids-homepage.js?v=44, cash-bids.js?v=17) and the futures pages' bid source line (futures.js?v=29); the proxy hosts leave the never-cache list.
 // v314 2026-10-30: fx/strayspace2 (314 assigned by the lead). The space after a bold label moves inside the following span: Farmland Atlas rent rows (build_atlas_pages.py) and the Comparable sales report no-subject note (comp-report.js?v=5).
 // v312 2026-10-29: fx/quickwins (312 assigned by the lead; was 309, main passed it with 310). Futures pages say the delay and a stale state right under the price (futures.js?v=28), cash bid rows carry a posted date or an old-price flag (cash-bids.js?v=16), COT says the Tuesday and the release day at the top (cot-page.js?v=4).
 // v310 2026-10-29: fx/changemap (310 assigned by the lead). Fast Facts change map on the USGS National Map basemap (Leaflet 1.9.4 from /vendor, loaded when the map is near the screen) with a switch: drought, posted corn bids, rent, land sales, rain; tap a county for its line and its county home; the box is held so nothing shifts: changemap.js?v=3, here.js?v=35, here.css?v=7.
