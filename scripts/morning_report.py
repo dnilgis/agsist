@@ -111,7 +111,7 @@ CRONS = ("40 11 * * *", "40 12 * * *")
 # Orders and requests: the digest's kinds plus sponsor applications (/sponsor-apps).
 ORDER_KINDS = FD.TALLY + (("sponsor-apply", "sponsor application", "sponsor applications"),)
 # Kinds that wait on Sig when one comes in (a reply, a call, a yes or no).
-WAITING = ("rain-print-order", "gift-card", "rain-print-business", "elevator-listing", "prf-sponsor", "claim",
+WAITING = ("rain-print-order", "gift-card", "rain-print-business", "rain-print-help", "elevator-listing", "prf-sponsor", "claim",
            "sponsor-feedback")
 # Lists on the worker's /count, in the order they print.
 LISTS = (("daily", "Daily briefing"), ("alerts", "Hail alerts"), ("ewatch", "Elevator watch and bid alerts"),
@@ -1968,7 +1968,7 @@ def selftest():
     print("\norders and requests")
     ck("last 24 hours by kind", "Last 24 hours: 1 Rain Print order request, 1 gift card redemption, 0 business quote requests, "
        "2 rain gauge waitlist, 0 elevator listing, 0 PRF sponsor, 0 elevator claims, 0 sponsor requests, "
-       "0 Parcel Report waitlist, 1 sponsor application." in t, t)
+       "0 Parcel Report waitlist, 0 Rain Print help requests, 1 sponsor application." in t, t)
     ck("month to date counts this month only", "Month to date: 1 Rain Print order request, 1 gift card redemption, "
        "0 business quote requests, 2 rain gauge waitlist, 0 elevator listing, 0 PRF sponsor, 1 elevator claim," in t, t)
     ck("pending elevator requests", "Elevator listing requests still pending on elev-admin: 1." in t, t)

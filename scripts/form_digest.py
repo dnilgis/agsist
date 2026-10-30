@@ -12,6 +12,9 @@ own forms (the first three used to go to Formspree).
   list-your-elevator  an elevator asks to post bids  kind elevator-listing (worker v5.21)
   prf-sponsor         a business asks about PRF      kind prf-sponsor (worker v5.22)
                       state sponsor slots
+  rain-print.html     "Rather not fiddle with it?"   kind rain-print-help (2026-10-30): Sig makes the
+                                                     print for them (components/rp-forme.js). Until
+                                                     the worker knows the kind, these go to Formspree.
 
 A gift order (this year's print, ordered before the year is over) says so in
 the subject, "Rain print order (2026 gift, January): ...", and its body tells
@@ -81,10 +84,11 @@ except Exception:                                          # noqa: BLE001
 
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
 KINDS = ("claim", "sponsor-feedback", "atlas-feedback", "rain-print-order", "rain-print-business", "elevator-listing",
-         "prf-sponsor")
+         "prf-sponsor", "rain-print-help")
 KIND_NAME = {"claim": "Elevator claim", "sponsor-feedback": "Sponsor request", "atlas-feedback": "Parcel Report waitlist",
              "rain-print-order": "Rain print order", "rain-print-business": "Rain Print business quote",
-             "elevator-listing": "Elevator listing request", "prf-sponsor": "PRF sponsor inquiry"}
+             "elevator-listing": "Elevator listing request", "prf-sponsor": "PRF sponsor inquiry",
+             "rain-print-help": "Rain Print help request"}
 # How an elevator asking to post its bids would like to do it (worker v5.21).
 EL_HOW = {"email": "Add bids@agsist.com to the morning bid email or text", "phone": "A private phone link",
           "not-sure": "Not sure yet"}
@@ -95,6 +99,10 @@ PRF_NEXT = ("Reply with your price for these states (Reply goes to them). Terms:
             "placement through Dec 31, first say on renewing. Once paid, add one entry per state to data/prf-sponsors.json "
             "(name, url, line, phone, logo in img/sponsors/ under 50 KB, through YYYY-12-31) and commit. It shows on the state "
             "page, every county page and the /prf result for that state on that commit. Farmers First never goes in a slot.")
+# What Sig does with a "make it for me" request (rain-print-help, 2026-10-30). How-to: feedbag notes/howto/rain-print-design-for-them.md.
+RPH_NEXT = ("Call or write them and ask a few things (the year, the name for the print, any dates to mark). Make two or three "
+            "versions on agsist.com/rain-print, press Copy link on each, and email the links. They open one and order it the "
+            "usual way; the proof email is where they approve it. No charge for the help.")
 # What a rain print order's choice means, in the subject and the body.
 RP_CHOICE = {"digital": "Digital file", "print12x18": "13 x 19 print", "framed12x18": "13 x 19 framed print"}
 DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
@@ -141,6 +149,8 @@ FIELDS = {
     "elevator-listing": [("elevator", "Elevator"), ("town", "Town"), ("state", "State"), ("zip", "ZIP"), ("name", "Contact"),
                          ("role", "Role"), ("phone", "Phone"), ("email", "Email"), ("crops", "Crops"), ("how", "How to post"),
                          ("note", "Note"), ("dir_id", "Directory id")],
+    "rain-print-help": [("name", "Name"), ("contact", "Phone or email"), ("place", "Farm or town"), ("for_whom", "For"),
+                        ("note", "Note")],
     "prf-sponsor": [("business", "Business"), ("states", "States"), ("name", "Contact"), ("email", "Email"), ("phone", "Phone"),
                     ("website", "Website"), ("line", "Their line"), ("message", "Message")],
 }
@@ -157,7 +167,8 @@ TALLY = (("rain-print-order", "Rain Print order request", "Rain Print order requ
          ("prf-sponsor", "PRF sponsor", "PRF sponsor"),
          ("claim", "elevator claim", "elevator claims"),
          ("sponsor-feedback", "sponsor request", "sponsor requests"),
-         ("atlas-feedback", "Parcel Report waitlist", "Parcel Report waitlist"))
+         ("atlas-feedback", "Parcel Report waitlist", "Parcel Report waitlist"),
+         ("rain-print-help", "Rain Print help request", "Rain Print help requests"))
 DAY_MS = 24 * 3600 * 1000
 
 
@@ -256,6 +267,8 @@ def subject(posts):
                                                                    RPB_PRODUCT.get(p.get("product"), p.get("product", "")).lower())
         if p["kind"] == "prf-sponsor":
             return "PRF sponsor inquiry: %s (%s)" % (p.get("business", ""), p.get("states", ""))
+        if p["kind"] == "rain-print-help":
+            return "Rain Print: make it for me, %s, %s" % (p.get("name", ""), p.get("place", ""))
         if p["kind"] == "elevator-listing":
             return "Elevator wants to post bids: %s, %s %s" % (p.get("elevator", ""), p.get("town", ""), p.get("state", ""))
         return "Parcel Report interest"
@@ -368,6 +381,8 @@ def blocks(posts):
             rows.append(("Next", EL_NEXT))
         if p["kind"] == "prf-sponsor":
             rows.append(("Next", PRF_NEXT))
+        if p["kind"] == "rain-print-help":
+            rows.append(("Next", RPH_NEXT))
         if p["kind"] == "rain-print-order" and rp_options(p.get("design_url")):
             rows.append(("Options", rp_options(p.get("design_url"))))
         if p["kind"] == "rain-print-order" and p.get("choice") == "digital":
@@ -384,8 +399,10 @@ def build(posts, to, fn="AGSIST", fa="", top=""):
     m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
     # One post with an address: Reply goes straight to that person, the way
     # Formspree's emails did. With several, Sig picks from the links.
-    if len(posts) == 1 and re.fullmatch(r"[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", str(posts[0].get("email") or "")):
-        m["Reply-To"] = posts[0]["email"]
+    # A help request (rain-print-help) has one "phone or email" box: Reply-To only when it is an address.
+    one = posts[0].get("email") or (posts[0].get("contact") if posts[0].get("kind") == "rain-print-help" else "") if len(posts) == 1 else ""
+    if len(posts) == 1 and re.fullmatch(r"[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", str(one or "")):
+        m["Reply-To"] = one
     bl = blocks(posts)
     text = [top, ""] if top else []
     for head, rows in bl:
@@ -845,6 +862,22 @@ def selftest():
     ck("prf sponsor counted", "1 prf sponsor inquiry" in subject([ps, rb]) and "2 prf sponsor inquiries" in subject([ps, dict(ps, key="x")]),
        subject([ps, dict(ps, key="x")]))
 
+    print("\nRain Print help requests (make it for me, 2026-10-30)")
+    hp = {"key": "form:rain-print-help:%d:0a1b2c70" % (ts + 7), "kind": "rain-print-help", "ts": ts + 7, "n": 0,
+          "name": "Ann <Berg>", "contact": "ann@farm.example", "place": "Chetek, WI", "for_whom": "My dad",
+          "note": "His 1988 drought year.\nCall after 5.", "page": "rain-print"}
+    ck("help: the subject names the person and the place", subject([hp]) == "Rain Print: make it for me, Ann <Berg>, Chetek, WI", subject([hp]))
+    m = build([hp], "s")
+    ck("help: an email in the box is the Reply-To", m["Reply-To"] == "ann@farm.example", m["Reply-To"])
+    ck("help: a phone in the box is no Reply-To", build([dict(hp, contact="715-555-0101")], "s")["Reply-To"] is None)
+    t = m.get_body(("plain",)).get_content()
+    ck("help: every field and the next step", all(x in t for x in (
+        "Rain Print help request, Oct 11", "Name: Ann <Berg>", "Phone or email: ann@farm.example", "Farm or town: Chetek, WI",
+        "For: My dad", "Note: His 1988 drought year.\nCall after 5.", "Next: Call or write them", "press Copy link on each")), t)
+    ck("help: no page field printed", "rain-print\n" not in t.replace("agsist.com/rain-print", ""), t)
+    ck("help: html escaped", "Ann &lt;Berg&gt;" in m.get_body(("html",)).get_content())
+    ck("help: counted", "2 rain print help requests" in subject([hp, dict(hp, key="x")]), subject([hp, dict(hp, key="x")]))
+
     print("\nthe run (fake worker, fake mail)")
     calls, sent = [], []
 
@@ -863,7 +896,7 @@ def selftest():
     ck("marks exactly what it sent", calls[-1][0] == "form-mark" and calls[-1][1]["keys"] == [claim["key"], fb["key"], atlas["key"]])
     ck("log has counts only, no addresses or names",
        not any("@" in x or "Chetek" in x or "Apex" in x or "715" in x for x in log) and
-       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1, rain-print-order 0, rain-print-business 0, elevator-listing 0, prf-sponsor 0" in log, log)
+       "new form posts: claim 1, sponsor-feedback 1, atlas-feedback 1, rain-print-order 0, rain-print-business 0, elevator-listing 0, prf-sponsor 0, rain-print-help 0" in log, log)
     calls.clear(); sent.clear()
     code, log = run("https://w.dev", "t", "s", False, sent.append, fake([]))
     ck("nothing new: no mail, no mark", code == 0 and not sent and [c[0] for c in calls] == ["form-list"])
@@ -906,13 +939,14 @@ def selftest():
     old = now - 25 * 3600 * 1000
     stored = [dict(rp, ts=now - 1000, n=1), dict(rp, key="form:rain-print-order:2:00000002", ts=now - 2000),
               dict(card, ts=now - 3000), dict(rb, ts=now - 4000), dict(claim, ts=old), dict(claim, ts=now - 5000),
-              dict(el, ts=old), {"kind": "x", "ts": now}, "junk", dict(ps, ts="soon")]
+              dict(el, ts=old), {"kind": "x", "ts": now}, "junk", dict(ps, ts="soon"),
+              {"key": "form:rain-print-help:1:00000003", "kind": "rain-print-help", "ts": now - 6000, "name": "Al", "contact": "715-555-0101"}]
     gauge = [{"email": "g1@x.com", "topic": "rain-gauge", "ts": now - 10}, {"email": "g2@x.com", "topic": "rain-gauge", "ts": now - 20},
              {"email": "g3@x.com", "topic": "rain-gauge", "ts": old}, {"email": "g4@x.com", "topic": "rent:wi", "ts": now - 5}]
     c = tally(stored, gauge, now - DAY_MS, now)
     ck("counted by kind inside the window, mailed or not",
        c == {"rain-print-order": 2, "gift-card": 1, "rain-print-business": 1, "rain-gauge": 2, "elevator-listing": 0,
-             "prf-sponsor": 0, "claim": 1, "sponsor-feedback": 0, "atlas-feedback": 0}, c)
+             "prf-sponsor": 0, "claim": 1, "sponsor-feedback": 0, "atlas-feedback": 0, "rain-print-help": 1}, c)
     asked = []
 
     def lf(base, path, tok, body=None, **q):
@@ -921,7 +955,8 @@ def selftest():
     line = last24("https://w.dev", "t", lf, now)
     ck("the line reads like Sig's example",
        line == "Last 24 hours: 2 Rain Print order requests, 1 gift card redemption, 1 business quote request, 2 rain gauge "
-               "waitlist, 0 elevator listing, 0 PRF sponsor, 1 elevator claim, 0 sponsor requests, 0 Parcel Report waitlist.", line)
+               "waitlist, 0 elevator listing, 0 PRF sponsor, 1 elevator claim, 0 sponsor requests, 0 Parcel Report waitlist, "
+               "1 Rain Print help request.", line)
     ck("reads every stored post and the rain gauge list", asked == [("form-list", {}), ("notice-list", {"topic": "rain-gauge"})], asked)
     ck("the line carries no address or name", "@" not in line and "Olson" not in line and "Chetek" not in line, line)
 
