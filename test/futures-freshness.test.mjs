@@ -66,7 +66,8 @@ test('the freshness workflow retries a rejected push and has a run after the set
   assert.match(y, /cron: '50 4 \* \* 2-6'/);
   assert.match(y, /--cron "50 4 \* \* 2-6"/);
   assert.doesNotMatch(y, /35 23 \* \* 1-5/);
-  for (const c of ['35 13 * * 1-5', '35 20 * * 1-5']) {
+  // Sig, Oct 30: a second night run for a late settle (Oct 29's landed at 06:16 UTC); every schedule tick is gated too
+  for (const c of ['35 13 * * 1-5', '35 20 * * 1-5', '50 6 * * 2-6']) {
     assert.ok(y.includes(`cron: '${c}'`) && y.includes(`--cron "${c}"`), c);
   }
 });
