@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-30T17:57:46Z",
+ "generated": "2026-10-30T20:07:41Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in. coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 2078,
-  "towns": 1638
+  "elevators": 794,
+  "towns": 673
  },
  "states": {
   "AL": {
@@ -12,126 +12,110 @@
    "towns": 1
   },
   "AR": {
-   "elevators": 13,
-   "towns": 13
+   "elevators": 12,
+   "towns": 12
   },
   "CO": {
-   "elevators": 26,
-   "towns": 20
-  },
-  "FL": {
-   "elevators": 1,
-   "towns": 1
+   "elevators": 22,
+   "towns": 17
   },
   "GA": {
-   "elevators": 8,
-   "towns": 8
-  },
-  "IA": {
-   "elevators": 429,
-   "towns": 313
-  },
-  "ID": {
    "elevators": 1,
    "towns": 1
   },
+  "IA": {
+   "elevators": 125,
+   "towns": 100
+  },
   "IL": {
-   "elevators": 244,
-   "towns": 178
+   "elevators": 87,
+   "towns": 68
   },
   "IN": {
-   "elevators": 85,
-   "towns": 66
+   "elevators": 48,
+   "towns": 36
   },
   "KS": {
-   "elevators": 261,
-   "towns": 186
+   "elevators": 61,
+   "towns": 44
   },
   "KY": {
-   "elevators": 11,
-   "towns": 11
+   "elevators": 8,
+   "towns": 8
   },
   "LA": {
    "elevators": 1,
    "towns": 1
   },
   "MI": {
-   "elevators": 25,
-   "towns": 25
+   "elevators": 23,
+   "towns": 23
   },
   "MN": {
-   "elevators": 162,
-   "towns": 135
+   "elevators": 102,
+   "towns": 90
   },
   "MO": {
-   "elevators": 41,
-   "towns": 36
+   "elevators": 22,
+   "towns": 18
   },
   "MT": {
-   "elevators": 9,
-   "towns": 9
+   "elevators": 8,
+   "towns": 8
   },
   "ND": {
-   "elevators": 68,
-   "towns": 62
+   "elevators": 52,
+   "towns": 48
   },
   "NE": {
-   "elevators": 260,
-   "towns": 199
+   "elevators": 90,
+   "towns": 75
   },
   "NY": {
    "elevators": 2,
    "towns": 2
   },
   "OH": {
-   "elevators": 88,
-   "towns": 77
+   "elevators": 28,
+   "towns": 24
   },
   "OK": {
-   "elevators": 81,
-   "towns": 69
+   "elevators": 6,
+   "towns": 6
   },
   "OR": {
    "elevators": 1,
    "towns": 1
   },
   "PA": {
-   "elevators": 3,
-   "towns": 3
-  },
-  "SC": {
-   "elevators": 3,
-   "towns": 3
+   "elevators": 1,
+   "towns": 1
   },
   "SD": {
-   "elevators": 116,
-   "towns": 99
+   "elevators": 29,
+   "towns": 28
   },
   "TN": {
-   "elevators": 4,
-   "towns": 4
-  },
-  "TX": {
-   "elevators": 18,
-   "towns": 11
+   "elevators": 3,
+   "towns": 3
   },
   "WA": {
-   "elevators": 9,
-   "towns": 8
+   "elevators": 7,
+   "towns": 6
   },
   "WI": {
-   "elevators": 104,
-   "towns": 94
+   "elevators": 53,
+   "towns": 51
   },
   "WY": {
-   "elevators": 3,
-   "towns": 2
+   "elevators": 1,
+   "towns": 1
   }
  },
  "coverage": {
-  "generated": "2026-10-30T01:59:37.603Z",
-  "read": 2118,
-  "quiet": 211,
+  "generated": "2026-10-30T18:10:21.100Z",
+  "read": 2130,
+  "quiet": 199,
   "known": 5872,
   "elevators": 8201
  }

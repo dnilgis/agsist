@@ -5,49 +5,9 @@
    "to": "/cash-bids/company/",
    "since": "2026-10-28"
   },
-  "cash-bids/company/gateway-fs.html": {
-   "to": "/cash-bids/company/",
-   "since": "2026-10-30"
-  },
   "cash-bids/company/new-cooperative.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-29"
-  },
-  "cash-bids/illinois/carlyle.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
-  },
-  "cash-bids/illinois/evansville.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
-  },
-  "cash-bids/illinois/nashville.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
-  },
-  "cash-bids/illinois/oakdale.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
-  },
-  "cash-bids/illinois/percy.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
-  },
-  "cash-bids/illinois/prairie-du-rocher.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
-  },
-  "cash-bids/illinois/red-bud.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
-  },
-  "cash-bids/illinois/waltonville.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
-  },
-  "cash-bids/illinois/waterloo.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-10-30"
   },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
@@ -133,10 +93,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-10-29"
   },
-  "cash-bids/iowa/emerson.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-10-29"
-  },
   "cash-bids/iowa/essex.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-10-29"
@@ -166,10 +122,6 @@
    "since": "2026-10-20"
   },
   "cash-bids/iowa/greenville.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-10-29"
-  },
-  "cash-bids/iowa/griswold.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-10-29"
   },
@@ -308,10 +260,6 @@
   "cash-bids/kansas/dodge-city.html": {
    "to": "/cash-bids/kansas/",
    "since": "2026-10-28"
-  },
-  "cash-bids/missouri/sainte-genevieve.html": {
-   "to": "/cash-bids/missouri/",
-   "since": "2026-10-30"
   },
   "cash-bids/montana/circle.html": {
    "to": "/cash-bids/montana/",
