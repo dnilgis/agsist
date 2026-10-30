@@ -17,7 +17,7 @@
   'use strict';
   if (window.AgSprayWind) return;
 
-  var V = { win: 2, css: 1, nws: 1 };
+  var V = { win: 3, css: 1, nws: 1 };
   var LEAFLET = '/vendor/leaflet-1.9.4/';
   var TILES = 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}';
   var COLORS = { calm: '#6b3fc4', band: '#13803b', high: '#c27400', over: '#c4281c', na: '#777' };

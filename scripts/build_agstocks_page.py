@@ -27,7 +27,7 @@ sys.path.insert(0, HERE)
 DIR = os.path.join(ROOT, "data", "agstocks")
 PAGE = os.path.join(ROOT, "ag-stocks.html")
 URL = "https://agsist.com/ag-stocks"
-JS_V = "1"
+JS_V = "2"
 TITLE = "Ag stocks today: farm company share prices and the AGSIST Ag 20"
 DESC = ("Closing share prices for U.S.-listed farm equipment, fertilizer, grain, livestock and food companies, "
         "their latest SEC reports and revenue against a year ago, and the AGSIST Ag 20 index. Not investment advice.")

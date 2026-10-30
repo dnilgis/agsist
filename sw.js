@@ -30,7 +30,7 @@
  * ─────────────────────────────────────────────────────────────────
  * BUMP THIS ON EVERY DEPLOY:
  */
-var CACHE_VERSION = 312;  // v312 2026-10-29: cache refresh.
+var CACHE_VERSION = 313;  // v313 2026-10-29: fx/curtain (313 assigned by the lead)
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;

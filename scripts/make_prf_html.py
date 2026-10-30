@@ -330,8 +330,8 @@ payment              = interval protection
   <script src="/components/prf-math.js?v=3" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/prf.js?v=9" defer></script>
-  <script src="/components/prf-outlook.js?v=3" defer></script>
-  <script src="/components/prf-now.js?v=3" defer></script>
+  <script src="/components/prf-outlook.js?v=4" defer></script>
+  <script src="/components/prf-now.js?v=4" defer></script>
   <script src="/components/prf-notice.js?v=2" defer></script>
   <script src="/components/prf-optimize.js?v=5" defer></script>
   <script src="/components/prf-optimize-ui.js?v=7" defer></script>
