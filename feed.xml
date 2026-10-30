@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 29 Oct 2026 12:46:24 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 30 Oct 2026 11:18:24 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Crude up 2.2% to $104.27 as Houthis hit Saudi sites</title>
+      <link>https://agsist.com/daily/2026-10-30</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-30</guid>
+      <pubDate>Fri, 30 Oct 2026 11:17:36 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Crude is up 2.2% to $104.27 after new Houthi strikes on Saudi oil sites, while corn and beans barely moved. Diesel is the cost that is climbing for harvest hauling, and grain prices are not paying you for it.
+• Energy runs higher again
+• Grains hold harvest lows
+• Hogs bounce, cattle flat
+Read more: https://agsist.com/daily/2026-10-30</description>
+    </item>
     <item>
       <title>Hogs fall 5.5% to $58.60 while corn holds $4.51</title>
       <link>https://agsist.com/daily/2026-10-29</link>
@@ -352,19 +364,6 @@ Action: Unpriced corn in the bin: a close above $5.09 says the Stocks positionin
 • Grains Run Ahead Of Stocks
 • Crude Runs On Gulf Flow Reports
 Read more: https://agsist.com/daily/2026-10-01</description>
-    </item>
-    <item>
-      <title>Grains tick higher ahead of stocks data at 11 CT</title>
-      <link>https://agsist.com/daily/2026-09-30</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-30</guid>
-      <pubDate>Wed, 30 Sep 2026 11:00:20 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn's up a quarter-cent shy of $5.25, beans up a nickel-plus to $13.03, and none of it means much with Quarterly Grain Stocks landing at 11 CT. Nobody's positioning hard into a report that could move old-crop supply pictures either way. Every bushel priced this morning got priced without knowing what USDA knows.
-Action: Nothing to do at $5.25 corn ahead of Grain Stocks; a settle above $5.29 on the data is the first reason to move.
-• Grains Wait On Stocks
-• Cattle Cycle Turns, Slowly
-• Crude Holds The Iran Bid
-Read more: https://agsist.com/daily/2026-09-30</description>
     </item>
   </channel>
 </rss>

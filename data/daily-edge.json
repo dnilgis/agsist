@@ -1,6 +1,6 @@
 {
  "schema": "agsist-daily-edge/1",
- "generated": "2026-10-29T10:47:34Z",
+ "generated": "2026-10-30T11:17:20Z",
  "label": "Only on AGSIST",
  "note": "Computed by code from the elevator boards AGSIST reads. Not written by the drafting model.",
  "facts": [
@@ -8,60 +8,60 @@
    "id": "cash_change_corn",
    "crop": "corn",
    "kind": "cash_change",
-   "sentence": "On Wednesday, Oct 28, 1,744 of the 1,843 elevators AGSIST reads posted a higher cash corn bid than Tuesday, 24 a lower one; 229 changed their basis, 60 weaker and 169 stronger.",
-   "key": "1,744 of the 1,843 elevators",
-   "detail": "75 unchanged; median change 3¢ higher. Biggest state move: Colorado, 4¢ higher (23 elevators). 4 outliers left out.",
-   "value": 3.0,
+   "sentence": "On Thursday, Oct 29, 1,676 of the 1,818 elevators AGSIST reads posted a lower cash corn bid than Wednesday, 72 a higher one; 171 changed their basis, 33 weaker and 138 stronger.",
+   "key": "1,676 of the 1,818 elevators",
+   "detail": "70 unchanged; median change 2½¢ lower. Biggest state move: Iowa, 3¢ lower (394 elevators). 1 outlier left out.",
+   "value": -2.5,
    "unit": "cents per bushel, median change in cash bid",
-   "comparison": "last posted bid on 2026-10-28 vs 2026-10-27, same board, crop and delivery period",
-   "n": 1843,
-   "down": 24,
-   "up": 1744,
-   "unchanged": 75,
-   "basis_changed": 229,
-   "basis_weaker": 60,
-   "basis_stronger": 169,
-   "outliers": 4,
+   "comparison": "last posted bid on 2026-10-29 vs 2026-10-28, same board, crop and delivery period",
+   "n": 1818,
+   "down": 1676,
+   "up": 72,
+   "unchanged": 70,
+   "basis_changed": 171,
+   "basis_weaker": 33,
+   "basis_stronger": 138,
+   "outliers": 1,
    "states": [
     {
-     "state": "CO",
-     "name": "Colorado",
-     "n": 23,
-     "median_cents": 4.0
+     "state": "IA",
+     "name": "Iowa",
+     "n": 394,
+     "median_cents": -3.0
     },
     {
      "state": "MN",
      "name": "Minnesota",
-     "n": 142,
-     "median_cents": 3.25
+     "n": 145,
+     "median_cents": -3.0
     },
     {
-     "state": "OK",
-     "name": "Oklahoma",
-     "n": 46,
-     "median_cents": 3.25
+     "state": "SD",
+     "name": "South Dakota",
+     "n": 99,
+     "median_cents": -3.0
     },
     {
-     "state": "TX",
-     "name": "Texas",
-     "n": 17,
-     "median_cents": 3.25
+     "state": "ND",
+     "name": "North Dakota",
+     "n": 47,
+     "median_cents": -3.0
     },
     {
-     "state": "IA",
-     "name": "Iowa",
-     "n": 448,
-     "median_cents": 3.0
+     "state": "MO",
+     "name": "Missouri",
+     "n": 35,
+     "median_cents": -3.0
     },
     {
-     "state": "NE",
-     "name": "Nebraska",
-     "n": 242,
-     "median_cents": 3.0
+     "state": "CO",
+     "name": "Colorado",
+     "n": 26,
+     "median_cents": -3.0
     }
    ],
-   "as_of": "2026-10-28",
-   "from": "2026-10-27",
+   "as_of": "2026-10-29",
+   "from": "2026-10-28",
    "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"
@@ -70,60 +70,60 @@
    "id": "cash_change_soybeans",
    "crop": "soybeans",
    "kind": "cash_change",
-   "sentence": "On Wednesday, Oct 28, 1,545 of the 1,617 elevators AGSIST reads posted a lower cash soybean bid than Tuesday, 1 a higher one; 187 changed their basis, 121 weaker and 66 stronger.",
-   "key": "1,545 of the 1,617 elevators",
-   "detail": "71 unchanged; median change 15¢ lower. Biggest state move: Iowa, 15¢ lower (402 elevators).",
-   "value": -15.0,
+   "sentence": "On Thursday, Oct 29, 1,465 of the 1,572 elevators AGSIST reads posted a higher cash soybean bid than Wednesday, 94 a lower one; 390 changed their basis, 347 weaker and 43 stronger.",
+   "key": "1,465 of the 1,572 elevators",
+   "detail": "13 unchanged; median change 4½¢ higher. Biggest state move: Iowa, 5¢ higher (346 elevators).",
+   "value": 4.5,
    "unit": "cents per bushel, median change in cash bid",
-   "comparison": "last posted bid on 2026-10-28 vs 2026-10-27, same board, crop and delivery period",
-   "n": 1617,
-   "down": 1545,
-   "up": 1,
-   "unchanged": 71,
-   "basis_changed": 187,
-   "basis_weaker": 121,
-   "basis_stronger": 66,
+   "comparison": "last posted bid on 2026-10-29 vs 2026-10-28, same board, crop and delivery period",
+   "n": 1572,
+   "down": 94,
+   "up": 1465,
+   "unchanged": 13,
+   "basis_changed": 390,
+   "basis_weaker": 347,
+   "basis_stronger": 43,
    "outliers": 0,
    "states": [
     {
      "state": "IA",
      "name": "Iowa",
-     "n": 402,
-     "median_cents": -15.0
-    },
-    {
-     "state": "KS",
-     "name": "Kansas",
-     "n": 199,
-     "median_cents": -15.0
-    },
-    {
-     "state": "NE",
-     "name": "Nebraska",
-     "n": 195,
-     "median_cents": -15.0
+     "n": 346,
+     "median_cents": 5.0
     },
     {
      "state": "IL",
      "name": "Illinois",
-     "n": 188,
-     "median_cents": -15.0
-    },
-    {
-     "state": "MN",
-     "name": "Minnesota",
-     "n": 143,
-     "median_cents": -15.0
+     "n": 192,
+     "median_cents": 5.0
     },
     {
      "state": "WI",
      "name": "Wisconsin",
      "n": 92,
-     "median_cents": -15.0
+     "median_cents": 5.0
+    },
+    {
+     "state": "SD",
+     "name": "South Dakota",
+     "n": 82,
+     "median_cents": 5.0
+    },
+    {
+     "state": "OH",
+     "name": "Ohio",
+     "n": 79,
+     "median_cents": 5.0
+    },
+    {
+     "state": "ND",
+     "name": "North Dakota",
+     "n": 58,
+     "median_cents": 5.0
     }
    ],
-   "as_of": "2026-10-28",
-   "from": "2026-10-27",
+   "as_of": "2026-10-29",
+   "from": "2026-10-28",
    "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"
@@ -132,13 +132,13 @@
    "id": "basis_spread_corn",
    "crop": "corn",
    "kind": "basis_spread",
-   "sentence": "Corn basis on Oct 29 ran from 55¢ over December futures in Texas to 88½¢ under in North Dakota, state medians of the elevators AGSIST read at 4:36 a.m. CT.",
+   "sentence": "Corn basis on Oct 30 ran from 55¢ over December futures in Texas to 89¢ under in North Dakota, state medians of the elevators AGSIST read at 4:36 a.m. CT.",
    "key": "55¢ over December futures",
-   "detail": "Elevators behind each median: Texas 17, North Dakota 46. 15 states with 15 or more.",
-   "value": 143.5,
+   "detail": "Elevators behind each median: Texas 17, North Dakota 48. 15 states with 15 or more.",
+   "value": 144.0,
    "unit": "cents per bushel between the strongest and weakest state median",
    "comparison": "state median basis against ZCZ26, states with 15+ elevators",
-   "n": 1633,
+   "n": 1646,
    "states_n": 15,
    "high": [
     {
@@ -152,13 +152,13 @@
     {
      "state": "ND",
      "name": "North Dakota",
-     "median": -0.885,
-     "n": 46
+     "median": -0.89,
+     "n": 48
     }
    ],
    "contract": "ZCZ26",
-   "as_of": "2026-10-29",
-   "snapshot": "2026-10-29T09:36:07Z",
+   "as_of": "2026-10-30",
+   "snapshot": "2026-10-30T09:36:29Z",
    "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
    "url": "/basis",
    "link_text": "Basis by state"
@@ -167,16 +167,16 @@
    "id": "over_futures_corn",
    "crop": "corn",
    "kind": "over_futures",
-   "sentence": "Of 1,807 elevators AGSIST reads with a fresh corn bid on Oct 29, 143 were paying over futures, most of them in Kansas (34).",
-   "key": "143 were paying over futures",
-   "detail": "1,641 under futures, 23 even. Each board against the futures month it names.",
-   "value": 143,
+   "sentence": "Of 1,835 elevators AGSIST reads with a fresh corn bid on Oct 30, 146 were paying over futures, most of them in Kansas (34).",
+   "key": "146 were paying over futures",
+   "detail": "1,665 under futures, 24 even. Each board against the futures month it names.",
+   "value": 146,
    "unit": "elevators bidding over futures",
    "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
-   "n": 1807,
-   "over": 143,
-   "under": 1641,
-   "even": 23,
+   "n": 1835,
+   "over": 146,
+   "under": 1665,
+   "even": 24,
    "states": [
     {
      "state": "KS",
@@ -191,7 +191,7 @@
     {
      "state": "NE",
      "name": "Nebraska",
-     "n": 17
+     "n": 21
     },
     {
      "state": "TX",
@@ -201,10 +201,10 @@
     {
      "state": "IL",
      "name": "Illinois",
-     "n": 12
+     "n": 11
     }
    ],
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "source": "AGSIST elevator network, live board basis (merged-index.json)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"
@@ -213,33 +213,33 @@
    "id": "basis_spread_soybeans",
    "crop": "soybeans",
    "kind": "basis_spread",
-   "sentence": "Soybean basis on Oct 29 ran from 33¢ under November futures in Illinois to 85¢ under in Wisconsin, state medians of the elevators AGSIST read at 4:36 a.m. CT.",
-   "key": "33¢ under November futures",
-   "detail": "Elevators behind each median: Illinois 151, Wisconsin 49. 12 states with 15 or more.",
-   "value": 52.0,
+   "sentence": "Soybean basis on Oct 30 ran from 32¢ under November futures in Illinois to 87¢ under in Wisconsin, state medians of the elevators AGSIST read at 4:36 a.m. CT.",
+   "key": "32¢ under November futures",
+   "detail": "Elevators behind each median: Illinois 142, Wisconsin 47. 8 states with 15 or more.",
+   "value": 55.0,
    "unit": "cents per bushel between the strongest and weakest state median",
    "comparison": "state median basis against ZSX26, states with 15+ elevators",
-   "n": 1211,
-   "states_n": 12,
+   "n": 777,
+   "states_n": 8,
    "high": [
     {
      "state": "IL",
      "name": "Illinois",
-     "median": -0.33,
-     "n": 151
+     "median": -0.32,
+     "n": 142
     }
    ],
    "low": [
     {
      "state": "WI",
      "name": "Wisconsin",
-     "median": -0.85,
-     "n": 49
+     "median": -0.87,
+     "n": 47
     }
    ],
    "contract": "ZSX26",
-   "as_of": "2026-10-29",
-   "snapshot": "2026-10-29T09:36:07Z",
+   "as_of": "2026-10-30",
+   "snapshot": "2026-10-30T09:36:29Z",
    "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
    "url": "/basis",
    "link_text": "Basis by state"

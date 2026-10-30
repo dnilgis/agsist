@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-30",
+      "date_display": "Friday, October 30, 2026",
+      "headline": "Crude up 2.2% to $104.27 as Houthis hit Saudi sites",
+      "teaser": "Crude runs 2.2% higher on new Houthi strikes while corn and beans hold flat overnight.",
+      "market_mood": "mixed",
+      "surprise_count": 2,
+      "sections": 3,
+      "url": "/daily/2026-10-30",
+      "market_closed": false
+    },
+    {
       "date": "2026-10-29",
       "date_display": "Thursday, October 29, 2026",
       "headline": "Hogs fall 5.5% to $58.60 while corn holds $4.51",
@@ -2635,6 +2646,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-29T10:47:58.981452+00:00",
-  "count": 230
+  "updated": "2026-10-30T11:17:45.802955+00:00",
+  "count": 231
 }
