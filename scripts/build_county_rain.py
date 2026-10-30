@@ -155,7 +155,7 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=43" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=44" defer></script>'
 # the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30): county pages and the hub, not the state pages.
 # A plain script tag on purpose: it writes the line before the first paint, so nothing moves.
 XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
@@ -1063,7 +1063,7 @@ def hub_page(files, built, recs=None):
       <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, so the pages are updated every day and each one says the day its numbers run through.</li>
     </ul>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
-    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
+    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through RCC-ACIS.</p>
   </div>
 {FOOT_NAT}"""
     return nav.render(page, "rain.html", nav.block("header"), nav.block("footer"))

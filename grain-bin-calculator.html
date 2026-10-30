@@ -191,7 +191,6 @@
 <!-- /static-nav:header -->
 </div>
 
-  <!-- v2: sticky mobile bottom bar -->
   <div class="sticky-bar" id="sticky-bar" role="status" aria-live="polite" aria-label="Quick result summary">
     <div>
       <div class="sticky-bar-label">Total Bushels</div>
@@ -328,7 +327,6 @@
             </div>
           </div>
           <div class="field-hint" id="pack-hint">Pack: grain settles under its own weight. Dealer charts count 6%. Leave at 0 for a conservative number.</div>
-          <!-- v3: editable shrink factor -->
           <div class="input-grid cols-2">
             <div>
               <label for="shrinkFactor">Shrink per point (%)</label>
@@ -338,7 +336,6 @@
           </div>
           <div class="field-hint">Water alone is 1.183% a point drying to 15.5% (Purdue NCH-61). Corn starts at 1.4, the Iowa State figure the <a href="/grain-shrink">grain shrink page</a> uses; other grains start at 1.3. Set it to what your scale ticket shows.</div>
 
-          <!-- v2: reset + copy actions -->
           <div class="action-row">
             <button class="btn-reset" onclick="resetForm()">&#8635; Reset</button>
             <button class="btn-copy" onclick="copyResult()"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Copy Results</button>
@@ -412,7 +409,6 @@
             </div>
           </div>
 
-          <!-- v3: size-a-bin mode -->
           <div style="margin-top:16px">
             <div class="section-label">Sizing new storage</div>
             <div class="input-grid cols-2">
@@ -437,7 +433,6 @@
       <!-- RESULTS PANEL -->
       <div class="panel results-panel">
         <div class="panel-head"><h2>Capacity and value</h2></div>
-        <!-- v2: aria-live so screen readers hear result updates -->
         <div class="panel-body" aria-live="polite" aria-atomic="true">
           <div id="calc-err" class="field-hint" role="alert" style="display:none;color:#e05c5c;font-weight:700;margin-bottom:8px"></div>
 
@@ -449,10 +444,8 @@
           <div class="field-hint" id="room-note"></div>
           <div class="result-row"><span class="result-label" id="rMktLabel">Market bushels (56 lb)</span><span class="result-value" id="rMktBu">-</span></div>
           <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">-</span></div>
-          <!-- 2026-10-23 (Sig): the page's one signup ask, right under the answer. aria-live off: the results above read out as they change, this does not. -->
           <div class="gb-ask" aria-live="off" aria-atomic="false"><div data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:grain-bin-calculator"></div></div>
 
-          <!-- v2: volume details collapsed by default — engineering internals hidden -->
           <button class="vol-toggle" onclick="toggleVol(this)" aria-expanded="false">&#9654; Show volume breakdown</button>
           <div class="vol-detail" id="vol-detail">
             <div class="result-row"><span class="result-label" id="rShapeLabel">Cylinder Volume</span><span class="result-value" id="rCylVol">-</span></div>
@@ -505,7 +498,6 @@
     </div>
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="grain-bin-calculator"></aside><!-- /grid-2 -->
 
-    <!-- v2: SEO content section -->
     <div class="content-section">
       <h2>How to use this grain bin calculator</h2>
       <p>Enter your bin diameter and eave height (or length, width, and depth for rectangular storage), choose your crop, and the calculator shows total bushel capacity, weight, and, if you enter a market price, estimated net value after moisture shrink and drying costs. The depth slider lets you model a partially filled bin. Use the Hopper option for bins with an inverted-cone floor; the calculator automatically adds the hopper cone volume to your total.</p>
@@ -591,7 +583,7 @@
 
       <h2>Sources</h2>
       <ul class="gb-sources">
-        <li>Dealer basis: GSI 40-Series bin capacity chart, &ldquo;based on 28 degree angle of repose and 6% compaction factor,&rdquo; capacities with a 12 in plenum. <a href="https://www.grainsystems.com/na/wp-content/uploads/sites/grainsystems/2015/06/gs401_40SeriesBins-Producer.pdf" rel="noopener">GSI 40-Series producer brochure (PDF)</a>, model 4002 table: 30 ft, 9 rings, 15,337 bu at 24 ft 2 in; 36 ft, 12 rings, 29,404 bu at 32 ft 2 in. Brock: <a href="https://www.brockgrain.com/wp-content/uploads/2022/02/BR-2286-202201-Brock-On-Farm-Storage-Capacities-EM.pdf" rel="noopener">BR-2286 on-farm storage capacities (PDF, Jan 2022)</a>, narrow corrugation bins: 48 ft, 8 rings (7-04808), 39,053 bu at 21 ft 6 in; 48 ft, 11 rings (7-04811), 51,241 bu at 29 ft 6 in. Its footnote: &ldquo;28&deg; angle of repose, starting one inch (25 mm) below the eave,&rdquo; ASAE S413.1, &ldquo;compaction factor of 6%.&rdquo;</li>
+        <li>Dealer basis: GSI 40-Series bin capacity chart, &ldquo;based on 28 degree angle of repose and 6% compaction factor,&rdquo; capacities with a 12 in plenum. GSI 40-Series producer brochure, model 4002 table: 30 ft, 9 rings, 15,337 bu at 24 ft 2 in; 36 ft, 12 rings, 29,404 bu at 32 ft 2 in. Brock: BR-2286 on-farm storage capacities (Jan 2022), narrow corrugation bins: 48 ft, 8 rings (7-04808), 39,053 bu at 21 ft 6 in; 48 ft, 11 rings (7-04811), 51,241 bu at 29 ft 6 in. Its footnote: &ldquo;28&deg; angle of repose, starting one inch (25 mm) below the eave,&rdquo; ASAE S413.1, &ldquo;compaction factor of 6%.&rdquo;</li>
         <li>Pack: ASABE EP413.2, the WPACKING method. Bhadra, Turner, Casada and others, &ldquo;Pack factor measurements for corn in grain storage bins,&rdquo; Transactions of the ASABE 58(3), 2015, 51 bins, 0.90% average absolute difference. <a href="https://doi.org/10.13031/trans.58.11033" rel="noopener">doi:10.13031/trans.58.11033</a>. Same authors, soybeans, sorghum, oats, barley and wheat, Transactions of the ASABE 61(2), 2018 (names EP413.2 as the home of WPACKING). <a href="https://doi.org/10.13031/trans.12645" rel="noopener">doi:10.13031/trans.12645</a></li>
         <li>Water shrink and handling loss: <a href="https://www.extension.purdue.edu/extmedia/NCH/NCH-61.html" rel="noopener">Purdue Extension NCH-61</a>, National Corn Handbook, Hicks and Cloud (University of Minnesota): Table 1 water shrink factors, Table 2 handling loss by shrink factor.</li>
         <li>Drying charged per point per wet bushel: <a href="https://crops.extension.iastate.edu/cropnews/2019/09/grain-drying-considerations-fall" rel="noopener">Iowa State Extension, Grain drying considerations this fall</a>.</li>
@@ -604,7 +596,6 @@
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
 
-  <!-- v3: printable record — populated by printRecord()/beforeprint, hidden on screen -->
   <div id="print-record-wrap" style="display:none" aria-hidden="true"></div>
   <style>
   @media print{

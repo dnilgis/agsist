@@ -1543,7 +1543,7 @@ def land_first_rent(rv, ri, rv_old, R):
         v, sub = "n/a", "last published %s" % rv["year"]
     else:
         v, sub = "n/a", why(R) if not ok(R) else "no county rent published"
-    return '<div class="lf-r"><span class="l">Rent</span><span class="r"><b>%s</b> <span class="lc">%s</span></span></div>' % (esc(v), esc(sub))
+    return '<div class="lf-r"><span class="l">Rent</span><span class="r"><b>%s</b><span class="lc"> %s</span></span></div>' % (esc(v), esc(sub))
 
 
 def watch_form(f, lab, stn):

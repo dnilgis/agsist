@@ -5,6 +5,7 @@ Writes, under data/ids/:
   elevators.json     one record per physical facility, with every key and spelling it was seen under
   elevator-ids.json  the id ledger: which key holds which id, AGSIST-minted ids, merges and splits
   ambiguous.json     keys that matched more than one facility; listed, never guessed
+  ownership-changes.json  (input, by hand) dated ownership changes; marks parent/status on elevators.json
   board-parents.json parent company and destination buyer per bids board, from evidence (board_parents.py)
   parcel-rules.json  the parcel key rule per state, in words, and the repeat-sale counts
   parcel-key-fixtures.json  pid -> key pairs from this file; test/ids.test.mjs checks parcel-key.js agrees
@@ -754,6 +755,59 @@ def write_json(path, doc, compact=False):
             f.write("\n")
 
 
+CHANGES_PATH = os.path.join("data", "ids", "ownership-changes.json")
+STATUS_KINDS = ("closing", "closed", "for-sale", "pending", "lease")
+
+
+def load_changes(root):
+    """The hand-curated ownership change log (data/ids/ownership-changes.json), or an empty one."""
+    try:
+        return read_json(os.path.join(root, CHANGES_PATH))
+    except (OSError, ValueError):
+        return {"events": []}
+
+
+def apply_changes(recs, changes, today):
+    """Mark facilities from the ownership change log. parent: a completed change that names a date on or
+    before today (never a pending one); status: closing, closed, for sale, pending or lease. Only the two
+    optional fields are written; name, company and id are never touched (a board's own posted name wins),
+    and an event naming an id that is not a record is skipped, never minted. Returns the number marked."""
+    by_id = {r["id"]: r for r in recs}
+    for r in recs:
+        r.pop("parent", None)
+        r.pop("status", None)
+    marked = set()
+    for e in changes.get("events") or []:
+        if e.get("noop"):
+            continue
+        for fid in e.get("facilities") or []:
+            r = by_id.get(fid)
+            if not r:
+                continue
+            if e.get("parent") and e.get("kind") == "parent" and (e.get("effective") or "9999") <= today:
+                r["parent"] = {"name": e["parent"], "since": e["effective"], "event": e["id"]}
+                marked.add(fid)
+            elif e.get("kind") in STATUS_KINDS:
+                st = {"kind": e["kind"], "event": e["id"]}
+                for k in ("effective", "after", "to"):
+                    if e.get(k):
+                        st[k] = e[k]
+                r["status"] = st
+                marked.add(fid)
+    return len(marked)
+
+
+def changes_only(root, out_dir, today, log=print):
+    """Apply the change log to the elevators.json already on disk, without a full rebuild (the full rebuild
+    does the same inside build()). Idempotent."""
+    path = os.path.join(out_dir, "elevators.json")
+    doc = read_json(path)
+    n = apply_changes(doc["elevators"], load_changes(root), today)
+    doc["counts"]["with_ownership_change"] = n
+    write_json(path, doc, compact=True)
+    log(f"[ids] ownership changes: {n} facilities marked")
+
+
 def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=print):
     directory = bids_repo_doc(bids_dir, "data/directory.json")
     mindex = bids_repo_doc(bids_dir, "data/merged-index.json")
@@ -768,6 +822,8 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     groups, ambiguous, rules = assign(anchors, keys, ledger, today, folded_ids(directory))
     counties = Counties(os.path.join(root, "data", "atlas", "counties.geo.json"))
     recs = build_records(anchors, keys, sched, groups, counties, ambiguous)
+    changes = load_changes(root)
+    marked = apply_changes(recs, changes, today)
     kinds = Counter()
     multi = 0
     for r in recs:
@@ -785,6 +841,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
               "fips_differs_from_bids_repo": sum(1 for r in recs if r.get("fips_bids_repo")),
               "retired_ids": len(ledger.get("retired") or {}),
               "stale_ids": sum(1 for r in recs if not re.fullmatch(r"a\d{5}", r["id"]) and r["id"] not in anchors),
+              "with_ownership_change": marked,
               "by_source": dict(sorted(kinds.items())), "keys_by_rule": dict(sorted(rules.items()))}
     doc = {"schema": "agsist-elevators/1", "generated": today,
            "note": "One record per physical facility. id: the bids repo's permanent elevId when the facility is one of its "
@@ -815,7 +872,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
         log(f"[ids] board parents not rebuilt: data/index.json not readable ({type(e).__name__})")
     if index:
         import board_parents
-        bp = board_parents.build(directory, index, today)
+        bp = board_parents.build(directory, index, today, changes)
         write_json(os.path.join(out_dir, "board-parents.json"), bp)
         log(f"[ids] board parents: {bp['counts']['with_parent']} of {bp['counts']['live_boards']} live boards with a "
             f"parent {bp['counts']['parent_by_rule']}, {bp['counts']['with_dest']} with a destination")
@@ -1013,11 +1070,15 @@ def main():
     ap.add_argument("--bids-dir", default=os.environ.get("BIDS_DIR"), help="local clone of dnilgis/bids")
     ap.add_argument("--schedules", help="schedules.json (default: the raw branch copy via git show)")
     ap.add_argument("--no-parcels", action="store_true")
+    ap.add_argument("--changes-only", action="store_true", help="apply data/ids/ownership-changes.json to the files on disk")
     ap.add_argument("--today", default=dt.date.today().isoformat())
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args()
     if a.selftest:
         return selftest()
+    if a.changes_only:
+        changes_only(ROOT, OUT, a.today)
+        return 0
     build(ROOT, a.bids_dir, a.schedules, OUT, a.today, do_parcels=not a.no_parcels)
     return 0
 

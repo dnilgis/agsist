@@ -606,7 +606,7 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   const picks = [...HTML.matchAll(/name="rp-product" value="([a-z0-9]+)"( checked)?/g)].map((m) => m[1] + (m[2] ? "*" : ""));
   assert.deepEqual(picks, ["framed12x18*", "print12x18", "digital"]);
   // 2026-10-20 (Sig, "do all"): under Pay, the date line, then the promise: numbered, and Sig's guarantee (test/rain-print-conv.test.mjs)
-  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<!--[\s\S]*?-->\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>/);
+  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>/);
   assert.match(S2, /'You see a proof first\. ' \+ GUARANTEE/, "the file gets the proof email too (2026-10-20)");
   // 2026-10-22: the comparison is the Usual year switch in the Layers card (Off, 30-yr normal, This station); what each
   // means is in Questions

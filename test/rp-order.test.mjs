@@ -19,7 +19,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { execFileSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import vm from "node:vm";
 import { checkout, refOf } from "./fixtures/rp-checkout.mjs";
 import { mocks, serve } from "./fixtures/rp-site-mock.mjs";
@@ -70,8 +70,11 @@ test("long designs and gifts: RPS-<id> and GIFT-RPS-<id> refs, and the record st
 });
 
 test("the worker routes (scripts/test_rp_order_worker.mjs)", () => {
-  const out = execFileSync(process.execPath, [ROOT + "scripts/test_rp_order_worker.mjs"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
-  assert.match(out, /rp-order worker checks: \d+ passed/);
+  // spawnSync, not execFileSync: the script says which check failed on stdout ("FAIL ..."), and
+  // execFileSync's error carries only stderr, so a red run said nothing (PR #221, Oct 29)
+  const r = spawnSync(process.execPath, [ROOT + "scripts/test_rp_order_worker.mjs"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  assert.equal(r.status, 0, `exit ${r.status} ${r.signal || ""}\n${(r.stdout || "").slice(-2000)}\n${(r.stderr || "").slice(-2000)}`);
+  assert.match(r.stdout, /rp-order worker checks: \d+ passed/);
 });
 
 test("the page posts the record on the Stripe path only, waits at most 2 s, and never sends an email", () => {
@@ -88,7 +91,7 @@ test("the page posts the record on the Stripe path only, waits at most 2 s, and 
   const W = read("workers/subs-worker.js");
   assert.match(W, /PUBLIC_POSTS\.add\("\/rp-order"\)/);
   assert.match(W, /"\/rp-order": \[30, 100, 2000\]/);
-  for (const p of ["rain-print.html", "rain-print-business.html", "rp-gift.html"]) assert.match(read(p), /\/components\/rain-print\.js\?v=86"/, p);
+  for (const p of ["rain-print.html", "rain-print-business.html", "rp-gift.html"]) assert.match(read(p), /\/components\/rain-print\.js\?v=87"/, p);
 });
 
 // ---------- in a browser ----------

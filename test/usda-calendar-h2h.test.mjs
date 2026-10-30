@@ -50,7 +50,8 @@ test("a Livestock & Dairy filter, tag, legend and source", () => {
   assert.match(CAL, /filterReports\('livestock',this\)">Livestock &amp; Dairy<\/button>/);
   assert.match(CAL, /\.tag-livestock\{/);
   assert.match(CAL, /livestock:'Livestock'\}/);
-  assert.match(CAL, /esmis\.nal\.usda\.gov\/release-calendar/);
+  assert.match(CAL, /USDA ESMIS release calendar/);
+  assert.doesNotMatch(CAL, /esmis\.nal\.usda\.gov\/release-calendar/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   // livestock rows never borrow the ARC/PLC link text
   assert.match(CAL, /\$\{r\.link&&r\.type==='fsa'\?/);
 });

@@ -39,7 +39,6 @@
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=17"></script>
 
-  <!-- Leaflet (map engine) + Leaflet.heat (density heatmap) -->
   <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css">
 
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
@@ -446,7 +445,6 @@
         <button type="button" id="hm-go">Check</button>
         <button type="button" id="hm-gps" title="Use my location" aria-label="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg></button>
       </div>
-      <!-- Recent storm days: baked by scripts/generate_hail_events.py from the storm-day pages it writes. -->
       <!--SEED:stormdays--><nav class="hm-days" aria-labelledby="hm-days-h"><h2 id="hm-days-h" class="hm-days-h">Recent storm days</h2><ul><li><a href="/hail/2026-10-28"><b>Oct 28</b> 17 reports</a></li><li><a href="/hail/2026-10-27"><b>Oct 27</b> 1 report</a></li><li><a href="/hail/2026-10-26"><b>Oct 26</b> radar swath</a></li><li><a href="/hail/2026-10-25"><b>Oct 25</b> 2 reports</a></li><li><a href="/hail/2026-10-24"><b>Oct 24</b> 8 reports</a></li></ul><a class="hm-days-all" href="#history">Every storm day &rarr;</a></nav><!--/SEED:stormdays-->
 
       <div class="hm-now" id="hm-now" role="status" aria-live="polite" hidden></div>
@@ -552,7 +550,6 @@
           </div>
           <div class="hm-alerts-status" id="hm-alert-status" aria-live="polite"></div>
         </div>
-      <!-- 2026-10-11 (Sig, "tone it down"): an unsold slot shows nothing. The ribbon stays in the markup, hidden, for whoever wires up a sold version. -->
       <aside class="hm-sponsor hm-sponsor--ribbon" id="hm-sponsor" hidden><span class="hm-sponsor-tag">Sponsor this map</span> 573 people pulled a county hail lookup here last month. One category-exclusive slot on this page, and your name on the alert emails it sends. Prefer just your state? Any of the 51 state hail pages can carry its own exclusive ribbon. <a href="/sponsor?slot=hail-map&amp;utm_source=hail-map&amp;utm_medium=slot" id="hm-sponsor-cta">Put your name here &rarr;</a></aside>
 
 
@@ -565,7 +562,7 @@
 
       <div class="hm-note">
         <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office: a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Reporting follows population and spotters, so this is a map of <em>reported</em> hail, not every stone that fell. The corridors that show up year after year are real.
-        <div class="hm-src">Source: NWS Local Storm Reports via the <a href="https://mesonet.agron.iastate.edu/lsr/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>. Recent reports refresh daily; the full multi-year archive rebuilds monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; <a href="/field-scout">Draw one field in Field Scout &rarr;</a></div>
+        <div class="hm-src">Source: NWS Local Storm Reports via the Iowa Environmental Mesonet. Recent reports refresh daily; the full multi-year archive rebuilds monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; <a href="/field-scout">Draw one field in Field Scout &rarr;</a></div>
       </div>
 
       <section class="hm-cty" aria-labelledby="hm-cty-h">
@@ -772,7 +769,7 @@
         .then(function(g){
           if(!g){ banner('The background map could not load. The hail reports on it are unaffected.'); return; }
           L.geoJSON(g, { interactive:false,
-            attribution:'Boundaries: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (public domain)',
+            attribution:'Boundaries: Natural Earth (public domain)',
             style:function(){ return { color:'#c0cac3', weight:0.8, opacity:1,
                                        fillColor:'#f4f7f4', fillOpacity:1 }; }
           }).addTo(map).bringToBack();
@@ -2645,7 +2642,7 @@
 (function(){var p=null;function ld(s){return new Promise(function(ok,no){var e=document.createElement('script');e.src=s;e.onload=ok;e.onerror=no;document.head.appendChild(e);});}
 window.agsistStormReplay=function(o,note){if(!window.L){if(note)note.textContent='The map did not load, so the replay cannot open. Try again in a minute.';return;}
 if(note)note.textContent='Opening the replay\u2026';
-p=p||ld('/components/storm-replay-core.js?v=2').then(function(){return window.AgRadarRain?0:ld('/components/radar-rain.js?v=1');}).then(function(){return ld('/components/storm-replay.js?v=2');});
+p=p||ld('/components/storm-replay-core.js?v=2').then(function(){return window.AgRadarRain?0:ld('/components/radar-rain.js?v=1');}).then(function(){return ld('/components/storm-replay.js?v=3');});
 p.then(function(){if(note)note.textContent='';window.AgStormReplay.open(o||{});},function(){p=null;if(note)note.textContent='The replay did not load. Check your signal and try again.';});};
 if(/[?&]sr=1(&|$)/.test(location.search))window.addEventListener('load',function(){window.agsistStormReplay({});});})();</script>
 <script>document.getElementById('hm-replay').addEventListener('click',function(){var p=window.agsistHailPin;if(p)window.agsistStormReplay({lat:p.lat,lon:p.lon,label:p.label},document.getElementById('hm-replay-note'));});</script>

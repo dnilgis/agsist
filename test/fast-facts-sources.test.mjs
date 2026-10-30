@@ -35,7 +35,8 @@ test("corn rootworm adult threshold is the silking one, with 0.75 kept as next y
   // threshold table in the HTML is the one copy, so the script carries none.
   assert.ok(!/beetles\/plant|cut plants|egg mass|defoliation|stippling/.test(js), "a threshold copy in fast-facts.js");
   assert.ok(html.includes("https://extension.sdstate.edu/monitor-your-corn-corn-rootworm-adults-inform-management-next-year-and-avoid-substantial-silk"));
-  assert.ok(html.includes("https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf"));
+  // a PDF source is named, not linked (no direct links to data sources, Oct 29, 2026)
+  assert.ok(html.includes("Corn IPM insect scouting sheet L023") && !html.includes("https://corn.aae.wisc.edu/Management/pdfs/L023_CornIPM_insect.pdf"));
 });
 
 test("Japanese beetle in corn: silks clipped under 1 inch (Iowa State)", () => {
@@ -67,5 +68,5 @@ test("K-Mag is 0-0-22 with 22% S and 10.8% Mg where it is printed, and is never 
   const fert = JSON.parse(readFileSync(join(ROOT, "data/fertilizer-prices.json"), "utf8"));
   assert.ok(!fert.prices.some((p) => /k-?mag/i.test(p.name)), "a K-Mag price in the shared file");
   assert.ok(html.includes('<td class="tl">K-Mag (0-0-22)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">22</td><td>22% S, 10.8% Mg</td>'));
-  assert.ok(html.includes("https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf"));
+  assert.ok(html.includes("K-Mag Granular data sheet") && !html.includes("https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf"));
 });

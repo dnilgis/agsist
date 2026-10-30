@@ -152,7 +152,11 @@ test("1: stationSaid in the code: every status line that names the drawn station
 // ---------- (i) maker mode, gated ----------
 test("(i) the maker gate: only the hash is in the code, honest comment, serial still behind it", () => {
   assert.match(S, /var MAKER_HASH = '[0-9a-f]{64}'/);
-  assert.match(S, /It is not DRM/);
+  // the public page carries no maker box text, and the served script does not explain the gate (Oct 29, 2026)
+  const H = readFileSync(ROOT + "rain-print.html", "utf8");
+  assert.match(H, /<div class="rp-maker" id="rp-maker" hidden><\/div>/);
+  for (const t of ["Print files for fulfillment", "Insert letter", "Reading guide PDF", "serial=N", "Sig&rsquo;s key", "rp-ins-gift"]) assert.ok(!H.includes(t), "not on the public page: " + t);
+  assert.ok(!/MAKER MODE|It is not DRM|localStorage, and reloads/.test(S), "no comment that explains the gate");
   assert.match(S, /return MAKER && m \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) : '';/, "serial=N and serial=0 still need maker mode");
   assert.ok(!/maker-key|MAKER_KEY\s*=/.test(S), "no key in the code");
 });
@@ -176,6 +180,7 @@ test("(i) ?maker=1 alone is the public page; the right key once opens it on that
     await idle(page);
     assert.ok(!page.url().includes(TEST_KEY), "the key leaves the address bar");
     assert.equal(await page.isVisible("#rp-maker"), true, "the maker box opens");
+    assert.equal(await page.isVisible('#rp-maker button[data-size="insert"]'), true, "with its buttons, written in by the script");
     await page.goto(base + "/rain-print.html?maker=1");
     await idle(page);
     assert.equal(await page.isVisible("#rp-maker"), true, "and ?maker=1 works on this browser from then on");

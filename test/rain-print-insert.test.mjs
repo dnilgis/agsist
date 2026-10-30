@@ -17,6 +17,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { MAKER_PANEL } from "./fixtures/rp-maker.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
@@ -151,8 +152,8 @@ test("plain words: no em dashes, never archival, no prices or store names", () =
 
 test("the maker page has the button and the note box; the engine makes the letter like the order files", () => {
   const html = read("rain-print.html"), js = read("components/rain-print.js");
-  const maker = html.match(/<div class="rp-maker" id="rp-maker" hidden>([\s\S]*?)\n          <\/div>\n        <\/section>/);
-  assert.ok(maker, "the maker box");
+  assert.match(html, /<div class="rp-maker" id="rp-maker" hidden><\/div>/, "the empty maker box on the public page");
+  const maker = [null, MAKER_PANEL];
   assert.match(maker[1], /<button class="btn btn-secondary" type="button" data-size="insert" data-fmt="pdf">Insert letter PDF<\/button>/);
   assert.match(maker[1], /<textarea id="rp-ins-gift" maxlength="300"/, "room for the longest note: a gift note (240) or a business's note for every print (300)");
   assert.match(html, /id="ro-gift-msg" maxlength="240"/);
@@ -365,9 +366,9 @@ test("the guide fits one page with the longest note, five marked days and every 
 
 test("the maker page has the digital PDF, JPG and the guide; the engine makes them", () => {
   const html = read("rain-print.html"), js = read("components/rain-print.js");
-  assert.match(html, /data-size="digital" data-fmt="pdf">Digital file PDF</);
-  assert.match(html, /data-size="digital" data-fmt="jpg">Digital file JPG</);
-  assert.match(html, /data-size="guide" data-fmt="pdf">Reading guide PDF</);
+  assert.match(MAKER_PANEL, /data-size="digital" data-fmt="pdf">Digital file PDF</);
+  assert.match(MAKER_PANEL, /data-size="digital" data-fmt="jpg">Digital file JPG</);
+  assert.match(MAKER_PANEL, /data-size="guide" data-fmt="pdf">Reading guide PDF</);
   for (const [k, re] of Object.entries(DRAWN_RE)) assert.ok(js.includes(k + ": " + re.toString() + ".test(mini)"), "the engine reads " + k + " the same way");
   assert.match(js, /var page = kind === 'digital' \? PRINT\[ST\.size\] : SHEET;/, "the digital PDF is the art alone");
   assert.match(js, /var PRINT = \{ '12x18': \{ w: 18, h: 12/);

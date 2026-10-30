@@ -62,6 +62,9 @@ from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import source_links  # noqa: E402  (no direct links to data sources)
+
 # The tour lives on Central time. Every nightly meeting, every "about 8pm
 # Central", every phase boundary is a Central-time fact.
 TOUR_TZ = "America/Chicago"
@@ -1484,7 +1487,7 @@ def render_sources(data, st=None):
         name = s["name"]
         if st and name.startswith("Pro Farmer national estimates"):
             name = re.sub(r"\(\d{4}-\d{4}\)", f"({st['first']}-{st['last']})", name)
-        out.append(f'<li><a href="{esc(s["url"])}" target="_blank" rel="noopener">{esc(name)}</a></li>')
+        out.append("<li>" + source_links.link(s["url"], esc(name), ' target="_blank" rel="noopener"') + "</li>")
     return "".join(out)
 
 

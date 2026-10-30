@@ -1221,7 +1221,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <p class="sw-lede">The forecast wind around your field, hour by hour, coloured by the spray band at the boom, with the best spray windows below it. Check your product label.</p>
           <div id="sw-root" class="sw-root" aria-busy="true"><p class="sw-ph">The wind map loads when you get here.</p></div>
         </section>
-        <script>/* The wind view's code (components/spray-wind.js, Leaflet, the map) loads only once a field is set and the reader nears this section, or at once for a shared ?f= link. */(function(){var done=false;function go(){if(done||!window.AgSprayField)return;done=true;var s=document.createElement('script');s.src='/components/spray-wind.js?v=2';s.defer=true;document.head.appendChild(s);}function arm(){if(done)return;if(/[?&]f=/.test(location.search)||location.hash==='#wind'){go();return;}var el=document.getElementById('wind');if(!el||!('IntersectionObserver' in window)){go();return;}var io=new IntersectionObserver(function(es){if(es.some(function(x){return x.isIntersecting;})){io.disconnect();go();}},{rootMargin:'400px 0px'});io.observe(el);}document.addEventListener('agsist:spray-field',arm);if(window.AgSprayField)arm();})();</script>
+        <script>/* The wind view's code (components/spray-wind.js, Leaflet, the map) loads only once a field is set and the reader nears this section, or at once for a shared ?f= link. */(function(){var done=false;function go(){if(done||!window.AgSprayField)return;done=true;var s=document.createElement('script');s.src='/components/spray-wind.js?v=3';s.defer=true;document.head.appendChild(s);}function arm(){if(done)return;if(/[?&]f=/.test(location.search)||location.hash==='#wind'){go();return;}var el=document.getElementById('wind');if(!el||!('IntersectionObserver' in window)){go();return;}var io=new IntersectionObserver(function(es){if(es.some(function(x){return x.isIntersecting;})){io.disconnect();go();}},{rootMargin:'400px 0px'});io.observe(el);}document.addEventListener('agsist:spray-field',arm);if(window.AgSprayField)arm();})();</script>
       </div>
       <div class="edu has-fold fade-up" id="section-factors">
         <details class="fold">
@@ -1409,7 +1409,6 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 </section>
 <!-- ░░░░░░░░░░ /MIX ░░░░░░░░░░ -->
 
-<!-- ░░░░░░░░░░ DROP-IN: SPRAYER CALIBRATION CALCULATOR ░░░░░░░░░░ -->
 <section class="scal" id="sprayer-calibration-calculator" aria-labelledby="scal-h">
   <h2 class="scal-h" id="scal-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg></span> Sprayer calibration calculator</h2>
   <p class="scal-sub">Are you really applying the rate you think? Check your actual gallons per acre from ground speed, nozzle spacing, and measured output, or work backward to the nozzle output a target rate needs. Uses the standard broadcast formula: <b style="color:var(--c-txt)">GPA = 5940 × GPM ÷ (MPH × spacing)</b>.</p>
@@ -1826,7 +1825,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 </div>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/rain-print-promo.js?v=6" defer></script>
-<script src="/components/geo.js?v=34" defer></script>
+<script src="/components/geo.js?v=35" defer></script>
 <script>
 (function(){
   'use strict';
@@ -2015,7 +2014,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   function fmtRunT(d){try{return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch(e){return d.toISOString();}}
   function renderModelLine(d){var el=document.getElementById('sp-model');if(!el)return;var n=d&&d._nws;
     var at=n&&n.updated?new Date(n.updated):null;if(at&&isNaN(at))at=null;
-    el.innerHTML='Forecast (estimate) for everything on this page: the <a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noopener">National Weather Service</a> forecast grid (NDFD, 2.5 km cells)'+(n?', office '+n.office+' cell '+n.x+','+n.y:'')+'. '+(at?'Issued '+fmtRunT(at):'Issue time not given by the source')+'.';el.hidden=false;window.AgSprayModel={name:'NWS NDFD',office:n?n.office:null,issued:at};}
+    el.innerHTML='Forecast (estimate) for everything on this page: the National Weather Service forecast grid (NDFD, 2.5 km cells)'+(n?', office '+n.office+' cell '+n.x+','+n.y:'')+'. '+(at?'Issued '+fmtRunT(at):'Issue time not given by the source')+'.';el.hidden=false;window.AgSprayModel={name:'NWS NDFD',office:n?n.office:null,issued:at};}
   function loadWeather(lat,lon,label){
     document.getElementById('loc-setup').style.display='none';
     document.getElementById('factor-section').style.display='block';

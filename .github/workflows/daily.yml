@@ -179,6 +179,9 @@ jobs:
         if: ${{ steps.draw.outcome == 'success' }}
         continue-on-error: true
         timeout-minutes: 15
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
         run: |
           d="${{ steps.draw.outputs.date }}"; f="daily/img/print-$d.png"
           cp "$f" "$RUNNER_TEMP/print.png"
@@ -190,6 +193,7 @@ jobs:
               && git push -q origin HEAD:main && break
             echo "push attempt $i failed; retrying"; sleep 15
           done
+          bash .github/pages-kick.sh
           url="https://agsist.com/$f"
           for i in $(seq 1 40); do
             if curl -fsS -o "$RUNNER_TEMP/live.png" "$url" && cmp -s "$RUNNER_TEMP/live.png" "$RUNNER_TEMP/print.png"; then
@@ -534,6 +538,9 @@ jobs:
         if: ${{ (github.event_name == 'schedule' || inputs.send_email == true) && (inputs.format || vars.DAILY_FORMAT || 'v2') == 'v2' }}
         continue-on-error: true
         timeout-minutes: 7
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
         run: |
           npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
           "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
@@ -547,6 +554,7 @@ jobs:
           git add "$f"
           git diff --cached --quiet || git commit -q -m "Daily print of the day $d"
           for i in 1 2 3; do git pull -q --rebase --autostash origin main && git push -q && break; sleep 10; done
+          bash .github/pages-kick.sh
           echo "file=$f" >> "$GITHUB_OUTPUT"
 
       # The gate's own selftest runs first. It regression-locks the two holes that
@@ -898,6 +906,9 @@ jobs:
 
       - name: Commit and push
         id: commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
@@ -929,6 +940,7 @@ jobs:
             echo "push attempt $i failed; retrying in 20s"; sleep 20
             [ "$i" = "3" ] && { git rebase --abort 2>/dev/null || true; exit 1; }
           done
+          bash .github/pages-kick.sh
 
       # A BLOCK TELLS SIG WHICH CHECK AND THAT THE NEXT RUN TRIES AGAIN
       # (2026-10-28). Any check above that stops a run meant for the list

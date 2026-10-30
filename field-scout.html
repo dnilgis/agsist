@@ -36,10 +36,7 @@
   <link rel="preload" href="/components/styles.css?v=28" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=28">
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
-  <!-- 2026-09-30: removed a redundant direct Google Fonts stylesheet link;
-       components/styles.css already self-hosts these same weights. -->
 
-  <!-- Leaflet (map engine), served from agsist.com. The tracing tool (Leaflet.draw) loads on the first Trace tap. -->
   <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css">
 
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
@@ -116,7 +113,6 @@
               </div>
             </div>
 
-            <!-- empty-state invitation (hidden once a field is active) -->
             <div class="fs-invite" id="fs-invite">
               <div class="fs-invite-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path d="M3 7 L12 12 L21 7 M12 12 V22" opacity=".5"/></svg></div>
               <h1 class="fs-invite-h">Read any field in the country</h1>
@@ -138,7 +134,6 @@
               <button class="fs-btn fs-post" id="fs-clear" type="button" disabled><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Clear</button>
               <button class="fs-btn fs-post fs-jumpread" id="fs-jumpread" type="button">See the read &darr;</button>
             </div>
-            <!-- trace toolbar (visible only while drawing) -->
             <div class="fs-tracebar" id="fs-tracebar" hidden>
               <button id="fs-tr-undo" type="button">Undo point</button>
               <button id="fs-tr-finish" class="fs-tr-primary" type="button">Finish field</button>
@@ -153,7 +148,6 @@
               <button type="button" data-ac="160">160</button>
               <span class="fs-sizer-u">ac</span>
             </div>
-            <!-- layer sheet: legend, season replay, opacity — pinned to the map -->
             <div class="fs-layersheet" id="fs-layersheet" hidden>
               <div class="fs-ls-head">
                 <div class="fs-legend" id="fs-legend" hidden></div>
@@ -194,7 +188,6 @@
 
         <div class="fs-deck" id="fs-deck" hidden></div>
 
-        <!-- UNDERTRAY: saved fields (layer controls now live on the map itself) -->
         <div class="fs-undertray">
           <div class="fs-saved" id="fs-saved" hidden></div>
         </div>
@@ -232,31 +225,30 @@
         <p class="fs-sources-note">Field Scout does not know who owns or farms the ground, what it yielded, or what went on it. Questions or a number that looks wrong: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
       </section>
 
-      <!-- Data sources (E-E-A-T: authoritative attribution) -->
       <section class="fs-sources" aria-labelledby="fs-src-h">
         <h2 id="fs-src-h" class="fs-faq-title">Where the data comes from</h2>
         <p class="fs-sources-lead">Field Scout reads public datasets when you draw a field. Each read is only as good as its source:</p>
         <ul class="fs-sources-list">
           <li><strong>Base map</strong>: the <a href="https://www.usgs.gov/faqs/what-are-terms-uselicensing-map-services-and-data-national-map" target="_blank" rel="noopener">USGS National Map</a> (public domain): Imagery Only (USDA NAIP aerial photos) for the satellite view, US Topo for the map view. Map services and data available from U.S. Geological Survey, National Geospatial Program.</li>
-          <li><strong>Soil types, capability class &amp; slope</strong>: <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-survey-geographic-database-ssurgo" target="_blank" rel="noopener">USDA NRCS SSURGO</a> soil survey, queried for every map unit inside your field.</li>
+          <li><strong>Soil types, capability class &amp; slope</strong>: USDA NRCS SSURGO soil survey, queried for every map unit inside your field.</li>
           <li><strong>Soil productivity (NCCPI)</strong>: USDA's National Commodity Crop Productivity Index, a national 0&ndash;1 scale derived from SSURGO.</li>
-          <li><strong>10-year crop rotation</strong>: <a href="https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php" target="_blank" rel="noopener">USDA NASS Cropland Data Layer</a>, satellite-classified at roughly 85&ndash;90% per-pixel accuracy.</li>
-          <li><strong>Weather now</strong>: the <a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noopener">National Weather Service</a>, the newest observation at the nearest station.</li>
-          <li><strong>Season rain and 7-day rain</strong>: the county&rsquo;s NOAA daily gauge record through <a href="https://www.rcc-acis.org/" target="_blank" rel="noopener">RCC-ACIS</a>, against its 1991&ndash;2020 normal.</li>
-          <li><strong>Growing-degree units</strong>: the <a href="https://prism.oregonstate.edu/" target="_blank" rel="noopener">PRISM</a> daily grid through RCC-ACIS, against the five years before.</li>
-          <li><strong>Drought status</strong>: the <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener">US Drought Monitor</a>, the weekly D0&ndash;D4 drought scale.</li>
-          <li><strong>Hail history</strong>: severe-storm reports via the <a href="https://mesonet.agron.iastate.edu/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a>, sourced from NOAA.</li>
+          <li><strong>10-year crop rotation</strong>: USDA NASS Cropland Data Layer, satellite-classified at roughly 85&ndash;90% per-pixel accuracy.</li>
+          <li><strong>Weather now</strong>: the National Weather Service, the newest observation at the nearest station.</li>
+          <li><strong>Season rain and 7-day rain</strong>: the county&rsquo;s NOAA daily gauge record through RCC-ACIS, against its 1991&ndash;2020 normal.</li>
+          <li><strong>Growing-degree units</strong>: the PRISM daily grid through RCC-ACIS, against the five years before.</li>
+          <li><strong>Drought status</strong>: the US Drought Monitor, the weekly D0&ndash;D4 drought scale.</li>
+          <li><strong>Hail history</strong>: severe-storm reports via the Iowa Environmental Mesonet, sourced from NOAA.</li>
           <li><strong>Cash grain bids</strong>: AGSIST's own elevator network, the nearest posting elevators by miles from your field.</li>
-          <li><strong>Crop vigor map layer (NDVI)</strong>: <a href="https://dataspace.copernicus.eu/" target="_blank" rel="noopener">Sentinel-2 / Copernicus</a> imagery, cloud-masked and averaged over your field for each pass.</li>
+          <li><strong>Crop vigor map layer (NDVI)</strong>: Sentinel-2 / Copernicus imagery, cloud-masked and averaged over your field for each pass.</li>
           <li><strong>Moisture map layer</strong>: Sentinel-1 radar backscatter, a soil-wetness proxy independent of cloud cover.</li>
           <li><strong>Red-edge &amp; canopy-moisture trend (NDRE, NDMI)</strong>: Sentinel-2 red-edge and shortwave-infrared bands, cloud-masked and tracked pass to pass. These feed the numeric trend read in "The Read," not a separate map layer.</li>
-          <li><strong>State crop condition</strong>: <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">USDA NASS Crop Progress</a>, the weekly good-to-excellent rating for your state, set against past seasons.</li>
-          <li><strong>Owned vs rented ground</strong>: <a href="https://www.nass.usda.gov/AgCensus/" target="_blank" rel="noopener">USDA Census of Agriculture</a> land tenure for your county.</li>
+          <li><strong>State crop condition</strong>: USDA NASS Crop Progress, the weekly good-to-excellent rating for your state, set against past seasons.</li>
+          <li><strong>Owned vs rented ground</strong>: USDA Census of Agriculture land tenure for your county.</li>
           <li><strong>Foreign-held acres</strong>: USDA AFIDA filings (Agricultural Foreign Investment Disclosure Act), county totals.</li>
           <li><strong>County land record</strong>: the <a href="/farmland-atlas">AGSIST Farmland Atlas</a> county sheet: land value from the Census of Agriculture, the county's corn yield record and crop-insurance claims.</li>
-          <li><strong>Parcel lines and owner of record</strong>: free public government parcel services only, read for the field you pick. Wisconsin: the <a href="https://www.sco.wisc.edu/parcels/data/" target="_blank" rel="noopener">Wisconsin Statewide Parcel Map</a>. Other states as each county or state service is checked. Where there is none, the card says where to look.</li>
-          <li><strong>Recorded transfers and sold land</strong>: Illinois, from the Illinois Department of Revenue <a href="https://data.illinois.gov/d/it54-y4c6" target="_blank" rel="noopener">MyDec transfer declarations (PTAX-203)</a>, and Wisconsin, from the Wisconsin Department of Revenue's monthly electronic transfer return files (the last five years, farm and forest land only). Other states are added once their free public data is read and checked.</li>
-          <li><strong>Flood zones, wetlands, terrain</strong>: <a href="https://www.fema.gov/flood-maps/national-flood-hazard-layer" target="_blank" rel="noopener">FEMA National Flood Hazard Layer</a>, <a href="https://www.fws.gov/program/national-wetlands-inventory" target="_blank" rel="noopener">USFWS National Wetlands Inventory</a>, <a href="https://www.usgs.gov/3d-elevation-program" target="_blank" rel="noopener">USGS 3DEP</a>.</li>
+          <li><strong>Parcel lines and owner of record</strong>: free public government parcel services only, read for the field you pick. Wisconsin: the Wisconsin Statewide Parcel Map. Other states as each county or state service is checked. Where there is none, the card says where to look.</li>
+          <li><strong>Recorded transfers and sold land</strong>: Illinois, from the Illinois Department of Revenue MyDec transfer declarations (PTAX-203), and Wisconsin, from the Wisconsin Department of Revenue's monthly electronic transfer return files (the last five years, farm and forest land only). Other states are added once their free public data is read and checked.</li>
+          <li><strong>Flood zones, wetlands, terrain</strong>: FEMA National Flood Hazard Layer, USFWS National Wetlands Inventory, USGS 3DEP.</li>
         </ul>
         <p class="fs-sources-note">Field Scout reads public survey and forecast data. It can't see what's actually happening in your field, your inputs, or your agronomist's plan. It's decision support, not a substitute for boots on the ground.</p>
       </section>
@@ -272,7 +264,6 @@
         </ul>
       </nav>
 
-      <!-- FAQ (mirrors the FAQPage schema in <head>) -->
       <section class="fs-faq" aria-labelledby="fs-faq-h">
         <h2 id="fs-faq-h" class="fs-faq-title">Field Scout: common questions</h2>
 
@@ -321,7 +312,6 @@
         <details class="fs-faq-item"><summary>Can I use Field Scout to evaluate land to rent or buy?</summary>
           <p>Yes. That's one of its best uses. Drawing a parcel shows you its soil classes and productivity index, average slope, ten years of what actually grew there from the satellite record (a quick rotation check), drought and hail history, and the nearest cash bids. The printable field report puts it all on one page for the file. It's public survey data, so treat it as due-diligence context alongside a walk of the ground, not an appraisal.</p></details>
       </section>
-      <!-- one quiet promo line (components/rain-print-promo.js); empty and hidden when off -->
 <div data-land-alert data-follow="#fl-comps" data-source="page:field-scout" hidden></div>
 <div style="max-width:none;margin:0 auto;padding:0"><p class="rp-promo" data-rain-print-promo="see" hidden></p></div><script src="/components/rain-print-promo.js?v=6" defer></script>
     </div>
@@ -347,7 +337,7 @@
 
   <script defer src="/vendor/leaflet-1.9.4/leaflet.js"></script>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/field-scout.js?v=31" defer></script>
+  <script src="/field-scout.js?v=32" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

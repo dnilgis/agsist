@@ -79,7 +79,7 @@
   /* A fact from place.js into its row: the value, one line of context, the date and its source. */
   function factHtml(f) {
     var d = /^\d{4}-\d{2}-\d{2}$/.test(f.date || '') ? mdy(f.date) : (f.date || '');
-    var a = f.src ? (f.src[1] ? '<a href="' + esc(f.src[1]) + '">' + esc(f.src[0]) + '</a>' : esc(f.src[0])) : '';
+    var a = f.src ? (f.src[1] && /^\/(?!\/)/.test(f.src[1]) ? '<a href="' + esc(f.src[1]) + '">' + esc(f.src[0]) + '</a>' : esc(f.src[0])) : '';  // our own pages stay linked; an outside source is named, not linked
     var s = (d || a) ? '<span class="fx-s">' + [esc(d), a].filter(Boolean).join(' &middot; ') + '</span>' : '';
     if (f.value == null) return '<p class="fx-b"><span class="fx-v fx-na">Not available</span>. <span class="fx-c">' + esc(cap(f.why)) + '.</span></p>' + s;
     return '<p class="fx-b"><span class="fx-v' + (f.long ? ' fx-vl' : '') + '">' + esc(f.value) + '</span>' + (f.ctx ? (f.join || '. ') + '<span class="fx-c">' + esc(f.ctx) + '</span>' : '') + '</p>' + s;
@@ -542,7 +542,7 @@
 
   /* The county station's year of rain, drawn by the county rain page's own Rain Print, and
      ranked against the same days of every earlier year the station kept in full (NOAA). */
-  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=43';
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=44';
   var porMemo = {};
   function porRows(sid) {
     if (porMemo[sid]) return porMemo[sid];
