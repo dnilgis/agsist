@@ -47,6 +47,8 @@ ZIPS_DIR (a folder of zips/<nn>.json), WATCH_LIST_FILE (the worker's
 /elevator-watch-list answer as JSON). With WATCH_LIST_FILE and DRY_RUN=1 no
 worker, no SMTP and no secret is needed.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html as H
 import json
 import math

@@ -7,6 +7,8 @@ Every check here fails on the obvious wrong implementation:
   - window math that uses calendar containment loosely fails the boundary cases;
   - a pager that trusts the server fails the repeated-page control.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 from datetime import date
 from pathlib import Path

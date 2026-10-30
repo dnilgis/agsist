@@ -40,6 +40,8 @@ least one check to be kept: a misread digit must never reach the page.
 
 Stdlib only.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import os
 import re

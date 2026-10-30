@@ -36,6 +36,8 @@ Rules a day must pass to count (the same rules rp-canada.js applies):
   python3 scripts/build_rp_canada.py --selftest   # offline checks of the day rules
   python3 scripts/build_rp_canada.py --fixture ID YEAR OUT.csv   # save one station-year
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import datetime as dt
 import gzip

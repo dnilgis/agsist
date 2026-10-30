@@ -46,6 +46,8 @@ Env: LIST_URL, LIST_TOKEN, UNSUB_SECRET, SMTP_*, FROM_ADDR, DAIRY_MONTHLY_LIVE,
 SIG_TEST_EMAILS / SIG_TO (preview), MAX_PER_RUN (default 300).
 The log carries counts only. No address is ever printed.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import html as H
 import json

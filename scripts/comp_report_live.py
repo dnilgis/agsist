@@ -9,6 +9,8 @@ says only whether an owner was named.
   python scripts/comp_report_live.py            (needs playwright)
   python scripts/comp_report_live.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import sys

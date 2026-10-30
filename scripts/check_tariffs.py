@@ -18,6 +18,8 @@ is the one who should know which they just armed.
 
 Run: python3 scripts/check_tariffs.py     (exit 1 on any failure)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json, sys, datetime, re
 d = json.load(open("data/tariffs.json"))
 fail = []

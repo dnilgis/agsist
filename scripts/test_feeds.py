@@ -11,6 +11,8 @@ rather than leaving a feed nobody is watching.
 
 No network. Under a second.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import subprocess

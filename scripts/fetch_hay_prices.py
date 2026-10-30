@@ -33,6 +33,8 @@ WHAT THIS FILE WILL NOT DO
 The probe is the first run. Its summary must show the three series names
 above, unit "$ / TON" and freq MONTHLY before a default run is trusted.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import html
 import json

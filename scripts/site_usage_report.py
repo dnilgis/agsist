@@ -32,6 +32,8 @@ alone so a bad run never wipes good numbers. Keys and tokens are never printed.
     python3 scripts/site_usage_report.py             # fetch and write
     python3 scripts/site_usage_report.py --selftest  # offline, fake transports
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

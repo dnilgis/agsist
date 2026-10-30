@@ -52,6 +52,8 @@ GA4_SERVICE_ACCOUNT (the service account JSON, whole). The service account
 needs Viewer on the property. Without them this exits 0 and writes nothing, so
 a fork or a PR does not fail on a secret it cannot have.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

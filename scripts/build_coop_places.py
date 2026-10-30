@@ -13,6 +13,8 @@ it. Nothing is guessed. No network.
   python3 scripts/build_coop_places.py --check   exit 1 if the file is out of date
   python3 scripts/build_coop_places.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import sys
 from pathlib import Path

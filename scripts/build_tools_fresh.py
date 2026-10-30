@@ -12,6 +12,8 @@ or does not parse as a date is left out, and the card shows no date.
 
 No network.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

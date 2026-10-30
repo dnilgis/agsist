@@ -50,6 +50,8 @@ Usage: python3 scripts/build_geo_crosswalk.py                 rebuild (district 
        python3 scripts/build_geo_crosswalk.py --check         exit 1 when the committed file is not what this builds
        python3 scripts/build_geo_crosswalk.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

@@ -15,6 +15,8 @@ Planted failure modes, per doctrine:
 
 Run:  python3 scripts/test_mark_rolls.py   (exit 1 on any failure)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 import types
 from datetime import datetime, timezone

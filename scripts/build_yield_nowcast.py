@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # math is used for the nearest-rank percentile in run_crop().
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import math
 """build_yield_nowcast.py — the AGSIST Yield Nowcast.
 

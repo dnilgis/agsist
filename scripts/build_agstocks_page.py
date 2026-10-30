@@ -13,6 +13,8 @@ components/agstocks.js from sec.json, latest.json and plants.json; nothing bulky
     python3 scripts/build_agstocks_page.py --check    # exit 1 if the page is stale
     python3 scripts/build_agstocks_page.py --selftest # formatting and the pending / held states
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import hashlib
 import html
 import json

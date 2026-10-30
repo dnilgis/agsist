@@ -143,6 +143,8 @@ critic. Both must run for the full quality gate.
 Env vars required:
   ANTHROPIC_API_KEY
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

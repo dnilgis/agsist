@@ -23,6 +23,7 @@
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { guard } from '../_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";

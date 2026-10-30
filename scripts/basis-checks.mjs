@@ -19,6 +19,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PAGE = [join(HERE, "cash-bids.html"), join(HERE, "..", "cash-bids.html")]

@@ -14,6 +14,8 @@ list), with the network, the worker and SMTP all replaced:
      and the elevator-watch sender never touches the same records.
 No real email is ever sent and no real address is used.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import contextlib
 import io
 import json

@@ -24,6 +24,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 /* The page script moved out of cash-bids.html into components/cash-bids.js

@@ -21,6 +21,8 @@ has no age limit; any figure that moves takes it off.
   python3 scripts/stories_core.py selftest atlas
   python3 scripts/stories_core.py bundle atlas OUT.json
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

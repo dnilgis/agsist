@@ -33,6 +33,8 @@ Writes (nothing here is new data, only the same records cut smaller):
   python3 scripts/build_field_scout_data.py --check   # exit 1 if the slices
                                                       # no longer match the sources
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import math

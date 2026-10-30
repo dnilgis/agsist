@@ -58,6 +58,8 @@ USAGE
   python scripts/fetch_atlas_loss.py --years 2020,2024
   python scripts/fetch_atlas_loss.py --dir /path/with/colsom_YYYY.zip   # already downloaded
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import io
 import json

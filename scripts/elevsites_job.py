@@ -21,6 +21,8 @@ The model call itself goes through scripts/api_jobs.py (job kind "elevsite").
 Nothing here writes a manifest or touches a page: the to-do is a finding for a
 person to act on in the bids repo.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

@@ -20,6 +20,8 @@ except which rows go where, so every price is still RMA's own.
                                                  do not match the mirror
   python3 scripts/split_rma_prices.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import sys
 from pathlib import Path

@@ -31,6 +31,8 @@ THE DEFECT THIS PINS (found 2026-09-13)
 Everything here runs against a SYNTHETIC archive. The live archive is written
 by a workflow; a suite that asserts over it goes red on its own schedule.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import sys
 import tempfile

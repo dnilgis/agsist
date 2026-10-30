@@ -10,6 +10,8 @@ already links /arc-plc inside its article, comes back unchanged. Idempotent.
 
     python3 scripts/arc_plc_link.py daily/*.html   # link existing pages in place
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 

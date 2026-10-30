@@ -19,6 +19,8 @@ state keeps its own number and year, unranked, with the reason.
 
 Built only from files already in the repo; no network.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import collections
 import json
 import math

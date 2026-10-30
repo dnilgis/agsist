@@ -38,6 +38,8 @@ impressions. The file says how much (queryShare).
     python3 scripts/seo_opportunities.py --print     # write and print a summary
     python3 scripts/seo_opportunities.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

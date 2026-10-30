@@ -124,6 +124,8 @@ and saved to the raw branch (not main); locally: bash scripts/pull_raw.sh data/f
 
 Source URLs: SRC below, printed on the page. Stdlib + openpyxl.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import datetime as dt
 import glob

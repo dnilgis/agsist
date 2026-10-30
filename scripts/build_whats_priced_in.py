@@ -31,6 +31,8 @@ What it does beyond pass-through:
 
 Stdlib only. No secrets, no network. Safe to run on every push + daily cron.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import os
