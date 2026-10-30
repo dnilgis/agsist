@@ -200,6 +200,13 @@ const FIX = {
   },
 };
 
+/* The Christmas Rain Print line (components/rp-xmas.js) shows Nov 1 to the print cutoff. The first-screen tests run
+   once outside those dates and once inside (window.AGSIST_TODAY), so the line can never push the 5 years down. */
+const RPX_DAYS = [["2026-10-15", 0], ["2026-11-15", 1]];
+let RPX_DAY = "";
+async function rpxCheck(pg, want, at) {
+  assert.equal(await pg.locator(".rpx").count(), want, at + (want ? ": the Christmas line is on the page" : ": no Christmas line outside its dates"));
+}
 async function open(browser, port, path, fx, width = 390, slowIndexMs = 0) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 } });
   const pg = await ctx.newPage();
@@ -219,6 +226,7 @@ async function open(browser, port, path, fx, width = 390, slowIndexMs = 0) {
     if (/mesonet\.agron\.iastate\.edu\/geojson\/lsr/.test(u)) return r.fulfill({ contentType: "application/json", body: FIX[fx].lsr });
     return r.abort();
   });
+  if (RPX_DAY) await pg.addInitScript((d) => { window.AGSIST_TODAY = d; }, RPX_DAY);
   await pg.goto(`http://127.0.0.1:${port}${path}`);
   return { pg, ctx, errors, ext };
 }
@@ -280,9 +288,11 @@ test("a state link opens on now zoomed to the state, says that state's 24 hours,
   const hits = []; const srv = await serve(hits), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    for (const width of [390, 1280]) {
+    for (const [day, line] of RPX_DAYS) for (const width of [390, 1280]) {
+      RPX_DAY = day;
       hits.length = 0; // the last width asked for the 5 years; this one has not yet
       const { pg, ctx, errors } = await open(browser, port, "/hail-map?state=IA", "quiet", width);
+      RPX_DAY = "";
       await pg.waitForFunction(() => /Latest radar hail in Iowa:|days of radar on file/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
       const t = await pg.evaluate(nowText);
       assert.match(t, /^No hail warnings or radar hail in Iowa in the last 24 hours\. No ground reports of hail either\./, width + ": " + t);
@@ -291,12 +301,13 @@ test("a state link opens on now zoomed to the state, says that state's 24 hours,
       // zoomed to Iowa: the county table follows the map's centre
       await pg.waitForFunction(() => document.getElementById("hm-cty-select").value === "IA", null, { timeout: 15000 });
       assert.equal(new URL(pg.url()).search, "?state=IA");
+      await rpxCheck(pg, line, day + " " + width);
       assert.ok(!hits.some((p) => p === "/data/hail/all-grid.json" || /^\/data\/hail\/\d{4}\.json$/.test(p)), "no 5-year data until asked");
       if (width === 390) {
         // the 5-year button and the All 5 years chip are on the first screen of a phone
         for (const sel of ['#hm-now [data-now="all"]', '#hm-controls [data-key="all"]']) {
           const b = await pg.locator(sel).boundingBox();
-          assert.ok(b && b.y >= 0 && b.y + b.height <= 844, sel + " on the first screen: " + JSON.stringify(b));
+          assert.ok(b && b.y >= 0 && b.y + b.height <= 844, day + ": " + sel + " on the first screen: " + JSON.stringify(b));
         }
       }
       await pg.click('#hm-now [data-now="all"]');
@@ -339,16 +350,21 @@ test("the plain now view keeps the 5 years on a phone's first screen", { skip, t
   const hits = []; const srv = await serve(hits), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { pg, ctx, errors } = await open(browser, port, "/hail-map", "quiet", 390);
-    await pg.waitForFunction(() => /Latest radar hail:/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
-    for (const sel of ['#hm-now [data-now="all"]', '#hm-controls [data-key="all"]']) {
-      const b = await pg.locator(sel).boundingBox();
-      assert.ok(b && b.y >= 0 && b.y + b.height <= 844, sel + " on the first screen: " + JSON.stringify(b));
+    for (const [day, line] of RPX_DAYS) {
+      RPX_DAY = day;
+      const { pg, ctx, errors } = await open(browser, port, "/hail-map", "quiet", 390);
+      RPX_DAY = "";
+      await pg.waitForFunction(() => /Latest radar hail:/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
+      await rpxCheck(pg, line, day);
+      for (const sel of ['#hm-now [data-now="all"]', '#hm-controls [data-key="all"]']) {
+        const b = await pg.locator(sel).boundingBox();
+        assert.ok(b && b.y >= 0 && b.y + b.height <= 844, day + ": " + sel + " on the first screen: " + JSON.stringify(b));
+      }
+      assert.equal(await pg.textContent('#hm-now [data-now="all"]'), "5-year map");
+      assert.equal(new URL(pg.url()).search, "");
+      assert.deepEqual(errors, []);
+      await ctx.close();
     }
-    assert.equal(await pg.textContent('#hm-now [data-now="all"]'), "5-year map");
-    assert.equal(new URL(pg.url()).search, "");
-    assert.deepEqual(errors, []);
-    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
 

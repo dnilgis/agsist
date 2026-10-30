@@ -407,6 +407,14 @@
   .rp-ogrid .rp-ogrid{gap:.7rem}
   .rp-isgift .rp-note{margin:0 0 .2rem}
   .rp-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  /* "Rather not fiddle with it?" (Sig, 2026-10-30): Sig makes the print for them; components/rp-forme.js posts it */
+  .rp-fm{margin:.8rem 0 0;padding:10px 12px;border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:var(--r-md);background:var(--surface)}
+  .rp-fm-t{margin:0;font-size:var(--fs-sm);line-height:1.5;color:var(--text-dim)}
+  .rp-fm-t b{color:var(--text)}
+  .rp-fm-t .rp-linkbtn{min-height:24px;font-weight:600;text-align:left}
+  .rp-fm-f{margin:.7rem 0 0}
+  .rp-fm-go{margin:.7rem 0 0}
+  .rp-fm .rp-msg{margin:.7rem 0 0}
   .rp-msg{border-radius:var(--r-8);padding:10px 12px;margin:.6rem 0;line-height:1.55}
   .rp-msg p{margin:0 0 .4rem}
   .rp-msg.rp-ok{border:1px solid var(--green);color:var(--text)}
@@ -770,6 +778,21 @@
       <p class="rp-xmas-top" id="rp-xmas-top" hidden></p>
       <p class="rp-xmas-alt" id="rp-xmas-alt" hidden><button type="button" class="rp-linkbtn" id="rp-xmas-last">Make it last year, by Christmas</button></p>
       <p class="rp-start"><a class="btn btn-primary" id="rp-start" href="#rp-place">Make yours, free</a></p>
+      <div class="rp-fm" id="rp-fm">
+        <p class="rp-fm-t"><b>Rather not fiddle with it?</b> Call or text me at <a href="tel:+17157972428">(715) 797-2428</a>, or <button type="button" class="rp-linkbtn" id="rp-fm-open" aria-expanded="false" aria-controls="rp-fm-form">leave your number and the place</button>. I&rsquo;ll make two or three versions and email them to you to pick one. No charge for the design help; you only pay if you order.</p>
+        <form class="rp-fm-f" id="rp-fm-form" novalidate hidden>
+          <div class="rp-ogrid">
+            <label class="field"><span>Your name</span><input id="rp-fm-name" type="text" maxlength="80" autocomplete="name" required></label>
+            <label class="field"><span>Phone or email</span><input id="rp-fm-contact" type="text" maxlength="254" autocomplete="email" required></label>
+            <label class="field"><span>The farm or town, and state</span><input id="rp-fm-place" type="text" maxlength="120" placeholder="Chetek, WI" required></label>
+            <label class="field"><span>Who it is for</span><input id="rp-fm-for" type="text" maxlength="120" placeholder="My dad, for Christmas" required></label>
+            <label class="field rp-wide"><span>Anything else (optional)</span><textarea id="rp-fm-note" maxlength="1000" rows="2" placeholder="A year you want, words for the print, a good time to call"></textarea></label>
+            <label class="rp-hp" aria-hidden="true">Leave empty<input id="rp-fm-hp" name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <p class="rp-fm-go"><button class="btn btn-primary" id="rp-fm-submit" type="submit">Send it to Sig</button></p>
+        </form>
+        <div id="rp-fm-out" aria-live="polite"></div>
+      </div>
       <figure class="rp-photo" id="rp-photo"><picture><source type="image/webp" srcset="/img/photos/rain-print-photo-chetek-2025-800.webp 800w, /img/photos/rain-print-photo-chetek-2025-1600.webp 1348w" sizes="(min-width: 900px) 360px, 100vw"><img src="/img/photos/rain-print-photo-chetek-2025-800.jpg" srcset="/img/photos/rain-print-photo-chetek-2025-800.jpg 800w, /img/photos/rain-print-photo-chetek-2025-1600.jpg 1348w" sizes="(min-width: 900px) 360px, 100vw" width="1348" height="1011" loading="eager" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: daily rain below the line, snow above, 32.27 in."></picture><figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek. This test print is shown without its white mat.</figcaption></figure>
     </div>
 
@@ -1222,6 +1245,7 @@
   <script src="/components/rain-print-draw.js?v=5" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=9" defer></script>
+  <script src="/components/rp-forme.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

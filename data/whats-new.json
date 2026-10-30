@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ by scripts/build_whats_new.py on main (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-10-30-rpxmas",
+   "date": "2026-10-30",
+   "title": "A Rain Print, made for you",
+   "line": "Rather not make the print yourself? Call or text Sig, or leave your number. He makes two or three versions to pick from; you pay only if you order.",
+   "link": "/rain-print"
+  },
+  {
    "id": "2026-10-29-ratecard",
    "date": "2026-10-29",
    "title": "A new sponsor rate card",

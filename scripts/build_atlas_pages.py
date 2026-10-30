@@ -75,6 +75,9 @@ OUT = "farmland-atlas"
 CARD_V = "1"          # bump when the share-card design changes; every card URL changes with it
 LICENSE_URL = "https://creativecommons.org/licenses/by/4.0/"
 CREDIT = "AGSIST Farmland Atlas, agsist.com/farmland-atlas"
+# the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30), county pages only. A plain script tag on
+# purpose: it writes the line before the first paint, so nothing moves.
+XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 
 STATE_NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -2743,6 +2746,7 @@ def county_page(W, f, d, stamp):
     body = f"""
 <main class="ap ch">
 {crumb_vis}
+{XMAS_JS}
 <div class="kick">County farm facts</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
 {lf_html}<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}; the rows marked with a date load the newest reading when the page opens.</p>

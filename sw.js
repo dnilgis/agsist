@@ -38,6 +38,8 @@
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
 var CACHE_VERSION = 317;  // v317 2026-10-30: fx/unlinkgen (317 assigned by the lead). Generated pages name their data sources in text and no longer link them; atlas-sales.js and county-home.js changed (the Atlas pages load them by content hash).
+// CACHE_VERSION = 315;  // v315 2026-10-30: fx/curtain (315 assigned by the lead; was 313, main passed it with 314). Merge of main; built pages rebuilt to match the builders.
+// v315 (shared) 2026-10-30: fx/rpxmas (315 assigned by the lead, then taken by fx/curtain on main; no extra bump needed: rp-xmas.js and rp-forme.js are new files). The Christmas Rain Print line on the field and weather pages (rp-xmas.js?v=1, Nov 1 to Dec 10), and "Rather not fiddle with it?" on /rain-print (rp-forme.js?v=1): Sig makes two or three versions, free.
 // v314 2026-10-30: fx/strayspace2 (314 assigned by the lead). The space after a bold label moves inside the following span: Farmland Atlas rent rows (build_atlas_pages.py) and the Comparable sales report no-subject note (comp-report.js?v=5).
 // v313 2026-10-29: fx/curtain (313 assigned by the lead). ?v= bumped for the 22 changed served files and the loader chain; prf, rain county and ag-stocks pages regenerated.
 // v312 2026-10-29: fx/quickwins (312 assigned by the lead; was 309, main passed it with 310). Futures pages say the delay and a stale state right under the price (futures.js?v=28), cash bid rows carry a posted date or an old-price flag (cash-bids.js?v=16), COT says the Tuesday and the release day at the top (cot-page.js?v=4).
