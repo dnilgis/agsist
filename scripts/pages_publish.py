@@ -163,12 +163,17 @@ def selftest():
     ok(not publishes(".github/workflows/a.yml") and not publishes(".claude/settings.json"), "dot tooling left out")
     ok(not publishes("data/prf-stories/a.json") and publishes("data/prf-storiesx.json"), "data folders match by prefix")
     pat = re.compile(link_pattern())
-    for bad in ('<script src="/scripts/x.js">', "fetch('/data/prf-stories/a.json')", '<a href="https://agsist.com/test/x.html">',
+    for bad in ('<script src="/scripts/x.js">', "fetch('/data/prf-stories/a.json')", '<a href="https://agsist' '.com/test/x.html">',
                 "fetch(`/workers/a.js`)", '<link href="CLAUDE.md">'):
         ok(pat.search(bad), f"link into a left-out path caught: {bad}")
     for good in ('<script src="/components/x.js">', "<!-- written by scripts/build.py -->", "fetch('/data/prf/a.json')",
                  '<a href="/rain/scripts-of-rain.html">', "(scripts/inject_static_nav.py)"):
         ok(not pat.search(good), f"not a link into a left-out path: {good}")
+    # this file is scanned in every dry run too: its own examples must not trip
+    # the absolute-URL check (Oct 29: one did, and the deploy would have stopped)
+    with open(os.path.abspath(__file__), encoding="utf-8") as f:
+        own = [ln for ln in f if re.search(absolute_pattern(), ln)]
+    ok(not own, f"pages_publish.py trips its own scan: {own[:1]}")
     with tempfile.TemporaryDirectory() as d:
         def w(rel, text):
             os.makedirs(os.path.dirname(os.path.join(d, rel)) or d, exist_ok=True)

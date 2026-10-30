@@ -2845,8 +2845,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   {lst}
   {quiet_html}
   {ctx.get("storage_note", {}).get(st) or ""}
-  <div class="cbt-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
-  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was read
+  <div class="cbt-note"><b>How these numbers are made.</b> Source: each elevator&rsquo;s own posted bid board,
+  read by AGSIST; no third-party bid feed is used on this page. A bid counts only if its board was read
   successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours, long enough that a board unchanged
   over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved)
   are left out of the basis. A middle number needs at least {BM.MIN_STAT} elevators on the same futures month.{wow_note}

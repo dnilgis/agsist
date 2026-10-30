@@ -86,7 +86,8 @@ test("8, 11, 14, 15, 17: loss box, source line, reviewer at the end, history tab
   assert.match(loss, /Common Crop Insurance Policy Basic Provisions/);
   assert.doesNotMatch(loss, /\bagent\b/i);
   assert.equal((PAGE.match(/prices\.rma\.usda\.gov/g) || []).length, 0);
-  assert.match(PAGE, /href="https:\/\/public-rma\.fpac\.usda\.gov\/apps\/PriceDiscovery"/);
+  assert.match(PAGE, /RMA Price Discovery/);
+  assert.doesNotMatch(PAGE, /href="https:\/\/public-rma\.fpac\.usda\.gov\/apps\/PriceDiscovery"/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   const hist = /<table class="hp-hist">[\s\S]*?<\/table>/.exec(PAGE)[0];
   assert.equal((hist.match(/<th scope="row">\d{4}<\/th>/g) || []).length, (hist.match(/<tr>/g) || []).length - 1);
   assert.equal((hist.match(/&#9650;|&#9660;/g) || []).length, (hist.match(/<span class="sr-only">(above|below) projected,<\/span>/g) || []).length);

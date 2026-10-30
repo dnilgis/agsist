@@ -232,9 +232,6 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
       <p id="tf-none" class="tf-none" hidden>No tool on this page matches. <button type="button" id="tf-clear">Show every tool</button></p>
     </div>
 
-    <!-- Groups and cards in order of 90-day page views (data/site-usage.json, Oct 10, 2026).
-         The homepage is left out of the Markets total (its views are arrivals, not tool use).
-         Pages too new to have a count go last in their group. -->
     <!-- Money -->
     <div class="cat-label">Selling, costs and programs</div>
     <div class="tools-grid">
@@ -290,8 +287,6 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
     </div>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="tools"></aside>
 
-    <!-- Your state: every state page we have for it, from the files on disk
-         (test/tools-hub.test.mjs checks this table against the folders). -->
     <section class="mystate" id="mystate" aria-labelledby="ms-h">
       <h2 id="ms-h" class="ms-h"><label for="ms-st">Your state</label></h2>
       <select id="ms-st"><option value="">Pick a state</option></select>
@@ -491,9 +486,6 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
 <span class="tag">Drying</span>
       </a>
     </div>
-    <!-- Oct and Nov: the grain storage cards come before crop tracking (2026-10-16
-         audit: in harvest the page led with hail, GDU, scouting and planting).
-         The markup keeps the view-count order; this moves the group on the page. -->
     <script>(function(){var m=new Date().getMonth();if(m!==9&&m!==10)return;var ls=document.querySelectorAll('.cat-label'),st=null,ct=null;for(var i=0;i<ls.length;i++){var t=ls[i].textContent.trim();if(t==='Grain storage')st=ls[i];if(t==='Crop tracking')ct=ls[i];}if(!st||!ct)return;var g=st.nextElementSibling;ct.parentNode.insertBefore(st,ct);ct.parentNode.insertBefore(g,ct);})();</script>
 
     <details class="more-fold" id="more-fold" open>

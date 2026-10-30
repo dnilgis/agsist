@@ -53,6 +53,7 @@ import json
 import math
 import os
 import re
+import source_links  # noqa: E402  no direct links to data sources
 import statistics
 import sys
 import time
@@ -1160,7 +1161,7 @@ def tile_html(sid, label, doc, status):
             f'<p class="gt-tv">{esc(fmt_val(doc))} <span class="gt-tu">{esc(unit)}</span></p>'
             f'<p class="gt-tc">{esc(c)}{esc(n)}</p>'
             f'<p class="gt-tm">Week of {esc(fmt_day(doc["latest"]["date"]))}{stale}. '
-            f'<a href="{esc(doc["source"]["url"])}">{esc(doc["source"]["agency"])}</a></p></div>')
+            + source_links.link(doc["source"]["url"], esc(doc["source"]["agency"])) + '</p></div>')
 
 
 NOT_BUILT = ("The long record has not been built yet: it needs the USDA regional basis and the barge and "

@@ -15,6 +15,7 @@ import json
 import os
 import re
 import sys
+import source_links  # noqa: E402  no direct links to data sources
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGE = os.path.join(REPO, "glossary.html")
@@ -42,7 +43,7 @@ def body(terms):
             line += "On AGSIST: " + " &middot; ".join(links) + "."
         if t.get("source"):
             s = t["source"]
-            line += (" " if line else "") + f'Source: <a href="{e(s["href"])}" rel="noopener">{e(s["text"])}</a>.'
+            line += (" " if line else "") + "Source: " + source_links.link(s["href"], e(s["text"]), ' rel="noopener"') + "."
         if line:
             out.append(f'        <p class="more">{line}</p>')
         out.append("      </section>")

@@ -7,11 +7,14 @@ data/index.json) that has evidence, keyed by the board id (the row `source`):
 
   parent  the company that runs the board when the board itself says so. Evidence, never a
           name alone (the Oct 19 fold rule; the skeptic showed a name normalizer merges unrelated
-          co-ops). Two rules:
+          co-ops). Three rules:
             board-page  the board is read from another company's own cash bid page: the page's
                         host is the website of every other board on it, and those boards all
                         print one name. Real case: ALCIVIA's page (alciviacoop.agricharts.com)
                         lists Landmark Services Cooperative's Burlington WI board.
+            change      a completed ownership change (data/ids/ownership-changes.json, dated, from the
+                        Oct 27 2026 research) names the parent of the facility the board is. The board keeps
+                        its own posted name; chs-brand and board-page win over it.
             chs-brand   CHS Inc. runs its owned units as "CHS <place>", each on its own site
                         (scripts/basis_method.py PARENT_BRANDS, the standing rule).
   dest    the buyer the board's bids deliver to, when the board's own location names a buyer
@@ -79,7 +82,7 @@ def dest_brands(directory):
     return out
 
 
-def build(directory, index, today):
+def build(directory, index, today, changes=None):
     eid_of = {r.get("id"): r.get("elevId") for r in directory.get("elevators") or [] if r.get("id")}
     live = [s for s in index.get("sources") or [] if s.get("health") == "live" and s.get("id")]
     boards = {}
@@ -111,6 +114,16 @@ def build(directory, index, today):
         if s["id"] not in boards or "parent" not in boards[s["id"]]:
             if any(pat.search(op) for pat, _b in BM.PARENT_BRANDS):
                 put(s["id"], parent="CHS Inc.", pv="chs-brand")
+    # ownership-change: a completed change in data/ids/ownership-changes.json names a parent for the facility the
+    # board is. Only a parent is added; the board's own posted name is never touched, and chs-brand/board-page win.
+    for e in (changes or {}).get("events") or []:
+        if e.get("noop") or e.get("kind") != "parent" or not e.get("parent") or (e.get("effective") or "9999") > today:
+            continue
+        fac = set(e.get("facilities") or [])
+        for s in live:
+            if eid_of.get(s["id"]) in fac and ("parent" not in boards.get(s["id"], {})) \
+                    and BM.name_key(display_name(s.get("operator"))) != BM.name_key(e["parent"]):
+                put(s["id"], parent=e["parent"], pv="change:" + e["id"])
     # dest
     brands = dest_brands(directory)
     for s in live:
@@ -132,7 +145,7 @@ def build(directory, index, today):
             "note": ("Parent company and destination buyer per live bids board (key: the board id, the bid row's "
                      "`source`), from evidence on the board itself, never a name alone. parent: the firm that runs the "
                      "board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded "
-                     "unit). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a "
+                     "unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a "
                      "company join. No entry = no evidence. Rules: scripts/board_parents.py."),
             "counts": counts, "boards": dict(sorted(boards.items()))}
 

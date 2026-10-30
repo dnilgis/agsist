@@ -248,9 +248,9 @@ HTML = f"""<!DOCTYPE html>
 
     <details class="prf-fold" id="new-d"><summary><h2 id="new" data-prf-written-for="2027">New for 2027</h2><span class="prf-fold-x">A new precipitation record, a 25% cap on January to February, and livestock required on grazing acres. Open for the details and RMA&rsquo;s wording.</span></summary>
     <ul>
-      <li><b>A new precipitation record.</b> The index now comes from NOAA&rsquo;s National Centers for Environmental Information (NCEI), in place of the Climate Prediction Center (CPC) data used through 2026 (<a href="https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source" rel="noopener">USDA RMA, April 30, 2026</a>). The record starts in {mk("y0")}, not 1948, and each interval is measured against its {mk("y0")} to {mk("y1")} average (<a href="https://www.rma.usda.gov/sites/default/files/2026-06/Rainfall%20Indexa%20Data%202027%20and%20Beyond%20Rainfall%20Index%20Processing.pdf" rel="noopener">RMA&rsquo;s processing note</a>). The grids did not move. Every past year on this page is the figure from that new record.</li>
+      <li><b>A new precipitation record.</b> The index now comes from NOAA&rsquo;s National Centers for Environmental Information (NCEI), in place of the Climate Prediction Center (CPC) data used through 2026 (<a href="https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source" rel="noopener">USDA RMA, April 30, 2026</a>). The record starts in {mk("y0")}, not 1948, and each interval is measured against its {mk("y0")} to {mk("y1")} average (RMA&rsquo;s processing note). The grids did not move. Every past year on this page is the figure from that new record.</li>
       <li><b>January to February is capped at 25%.</b> In USDA&rsquo;s {mk("crop_year")} files, {mk("jf_capped")} of the {mk("counties")} counties with PRF limit that interval to 25% of a policy&rsquo;s value. Every interval needs at least 10%, and the others allow up to 50%, 60% or 70%, by county. The calculator applies your county&rsquo;s limits.</li>
-      <li><b>Grazing land needs livestock on it.</b> The 2027 Crop Provisions, section 4(j): &ldquo;For the intended use of grazing, you must have an insurable interest in enough livestock grazing the acres that would equate to at least 25% of the stocking rate for the insured acres.&rdquo; RMA&rsquo;s question-and-answer sheet on the rule says: &ldquo;Failure means no indemnity is due and full premium is owed.&rdquo; The livestock can graze the acres at any time in the crop year. Records are asked for on request, not filed, and kept three years. Only natural causes excuse a shortfall. Hay ground is not under this rule. The producer works out the number with the agent, from the FSA National Crop Table or a state or federal lease (<a href="https://www.rma.usda.gov/sites/default/files/2026-10/Pasture%20Rangeland%20Forage%20Stocking%20Rate%20FAQs.pdf" rel="noopener">RMA stocking rate questions</a>).</li>
+      <li><b>Grazing land needs livestock on it.</b> The 2027 Crop Provisions, section 4(j): &ldquo;For the intended use of grazing, you must have an insurable interest in enough livestock grazing the acres that would equate to at least 25% of the stocking rate for the insured acres.&rdquo; RMA&rsquo;s question-and-answer sheet on the rule says: &ldquo;Failure means no indemnity is due and full premium is owed.&rdquo; The livestock can graze the acres at any time in the crop year. Records are asked for on request, not filed, and kept three years. Only natural causes excuse a shortfall. Hay ground is not under this rule. The producer works out the number with the agent, from the FSA National Crop Table or a state or federal lease (RMA stocking rate questions).</li>
     </ul>
     </details>
 
@@ -332,8 +332,8 @@ payment              = interval protection
   <script src="/components/prf-math.js?v=3" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/prf.js?v=9" defer></script>
-  <script src="/components/prf-outlook.js?v=3" defer></script>
-  <script src="/components/prf-now.js?v=3" defer></script>
+  <script src="/components/prf-outlook.js?v=4" defer></script>
+  <script src="/components/prf-now.js?v=4" defer></script>
   <script src="/components/prf-notice.js?v=2" defer></script>
   <script src="/components/prf-optimize.js?v=5" defer></script>
   <script src="/components/prf-optimize-ui.js?v=7" defer></script>

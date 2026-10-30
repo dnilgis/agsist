@@ -118,7 +118,8 @@ test("gdu-calculator: the 86/50 FAQ, its worked day matches the page's own math,
   assert.equal(gduDay(95, 70), 28, "the page's own function");
   assert.match(a, /\(86 \+ 70\) ÷ 2 − 50 = 28 GDU/);
   assert.match(a, /MP437/);
-  assert.match(h, /uaex\.uada\.edu\/publications\/pdf\/mp437\/MP437\.pdf/, "source linked");
+  assert.match(h, /Arkansas MP437/, "source named");
+  assert.doesNotMatch(h, /uaex\.uada\.edu\/publications\/pdf\/mp437\/MP437\.pdf/, "named, not linked (Oct 29, 2026)");
   assert.ok(!/—/.test(a));
   const brands = /pioneer|corteva|dekalb|bayer|golden harvest|syngenta|beck'?s hybrids|stine|asgrow|wyffels|agrigold|brevant|\bNK\b/i;
   assert.ok(!brands.test(visible(h) + title(h) + desc(h)), "no seed brand on the page");

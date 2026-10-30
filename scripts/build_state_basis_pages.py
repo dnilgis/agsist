@@ -958,8 +958,8 @@ def build_state_page(st, rows_all, summ, ctx):
   <p class="bs-sub">One row per elevator and crop (its nearest open delivery). The elevator name opens
   <a href="/cash-bids">/cash-bids</a> at that ZIP for every delivery month. {wow_note}</p>
   {table}
-  <div class="bs-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
-  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was read
+  <div class="bs-note"><b>How these numbers are made.</b> Source: each elevator&rsquo;s own posted bid board,
+  read by AGSIST; no third-party bid feed is used on this page. A bid counts only if its board was read
   successfully in the last {HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours of the snapshot, long enough
   that a board unchanged over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic,
   identity-preserved) are excluded. Medians and ranges are printed only with at least {MIN_STAT} elevators on the

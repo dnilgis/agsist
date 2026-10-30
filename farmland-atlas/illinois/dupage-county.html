@@ -1,154 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <!-- 2026-09-30: fonts are self-hosted in styles.css now, no preconnect needed -->
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <title>DuPage County, IL Farm Facts · Cash Rent 2024: $150/Acre</title>
-  <meta name="description" content="DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care.">
-  <link rel="canonical" href="https://agsist.com/farmland-atlas/illinois/dupage-county">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0d">
 
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="DuPage County, IL Farm Facts · Cash Rent 2024: $150/Acre">
-  <meta property="og:description" content="DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care.">
-  <meta property="og:url" content="https://agsist.com/farmland-atlas/illinois/dupage-county">
-  <meta property="og:image" content="https://agsist.com/farmland-atlas/og/17043.png?v=98e253c9">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="DuPage County, Illinois: dry cash rent $150 an acre, land and buildings read with care, median corn yield not published">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@agsist">
-  <meta name="twitter:title" content="DuPage County, IL Farm Facts · Cash Rent 2024: $150/Acre">
-  <meta name="twitter:description" content="DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care.">
-  <meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/17043.png?v=98e253c9">
-  <meta name="twitter:image:alt" content="DuPage County, Illinois: dry cash rent $150 an acre, land and buildings read with care, median corn yield not published">
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "AGSIST",
-     "item": "https://agsist.com/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Farmland Atlas",
-     "item": "https://agsist.com/farmland-atlas"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Illinois",
-     "item": "https://agsist.com/farmland-atlas/illinois/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 4,
-     "name": "DuPage County"
-    }
-   ]
-  },
-  {
-   "@type": "Dataset",
-   "@id": "https://agsist.com/farmland-atlas/illinois/dupage-county#dataset",
-   "name": "DuPage County, Illinois: farmland rent, land value and risk record",
-   "description": "DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care.",
-   "url": "https://agsist.com/farmland-atlas/illinois/dupage-county",
-   "isAccessibleForFree": true,
-   "license": "https://creativecommons.org/licenses/by/4.0/",
-   "creditText": "AGSIST Farmland Atlas, agsist.com/farmland-atlas",
-   "creator": {
-    "@type": "Organization",
-    "name": "AGSIST",
-    "url": "https://agsist.com"
-   },
-   "dateModified": "2026-10-19",
-   "temporalCoverage": "1989/..",
-   "spatialCoverage": {
-    "@type": "Place",
-    "name": "DuPage County, Illinois, United States"
-   },
-   "isBasedOn": [
-    "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
-    "https://www.rma.usda.gov/tools-reports/reports/summary-of-business",
-    "https://droughtmonitor.unl.edu/"
-   ],
-   "variableMeasured": [
-    {
-     "@type": "PropertyValue",
-     "name": "rent_dry_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "value_usd_ac",
-     "unitText": "$/acre"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "loss_ratio_all",
-     "unitText": "ratio"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "d2_week_share_pct",
-     "unitText": "%"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "jul_low_recent_f",
-     "unitText": "°F"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "text/csv",
-     "contentUrl": "https://agsist.com/farmland-atlas/data/il.csv"
-    }
-   ]
-  }
- ]
-}
-  </script>
-  <link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+<link rel="preload" href="/components/styles.css?v=28" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=28">
+<link rel="icon" href="/img/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<title>DuPage County, IL Farm Facts · Cash Rent 2024: $150/Acre</title>
+<meta name="description" content="DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care.">
+<link rel="canonical" href="https://agsist.com/farmland-atlas/illinois/dupage-county">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AGSIST">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="DuPage County, IL Farm Facts · Cash Rent 2024: $150/Acre">
+<meta property="og:description" content="DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care.">
+<meta property="og:url" content="https://agsist.com/farmland-atlas/illinois/dupage-county">
+<meta property="og:image" content="https://agsist.com/farmland-atlas/og/17043.png?v=98e253c9">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="DuPage County, Illinois: dry cash rent $150 an acre, land and buildings read with care, median corn yield not published">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agsist">
+<meta name="twitter:title" content="DuPage County, IL Farm Facts · Cash Rent 2024: $150/Acre">
+<meta name="twitter:description" content="DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care.">
+<meta name="twitter:image" content="https://agsist.com/farmland-atlas/og/17043.png?v=98e253c9">
+<meta name="twitter:image:alt" content="DuPage County, Illinois: dry cash rent $150 an acre, land and buildings read with care, median corn yield not published">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Farmland Atlas","item":"https://agsist.com/farmland-atlas"},{"@type":"ListItem","position":3,"name":"Illinois","item":"https://agsist.com/farmland-atlas/illinois/"},{"@type":"ListItem","position":4,"name":"DuPage County"}]},{"@type":"Dataset","@id":"https://agsist.com/farmland-atlas/illinois/dupage-county#dataset","name":"DuPage County, Illinois: farmland rent, land value and risk record","description":"DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care.","url":"https://agsist.com/farmland-atlas/illinois/dupage-county","isAccessibleForFree":true,"license":"https://creativecommons.org/licenses/by/4.0/","creditText":"AGSIST Farmland Atlas, agsist.com/farmland-atlas","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"dateModified":"2026-10-19","temporalCoverage":"1989/..","spatialCoverage":{"@type":"Place","name":"DuPage County, Illinois, United States"},"isBasedOn":["https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/","https://www.rma.usda.gov/tools-reports/reports/summary-of-business","https://droughtmonitor.unl.edu/"],"variableMeasured":[{"@type":"PropertyValue","name":"rent_dry_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"value_usd_ac","unitText":"$/acre"},{"@type":"PropertyValue","name":"loss_ratio_all","unitText":"ratio"},{"@type":"PropertyValue","name":"d2_week_share_pct","unitText":"%"},{"@type":"PropertyValue","name":"jul_low_recent_f","unitText":"°F"}],"distribution":[{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://agsist.com/farmland-atlas/data/il.csv"}]}]}</script>
+<link rel="stylesheet" href="/farmland-atlas/atlas-pages.css?v=05563273">
 </head>
 <body>
 <div id="site-header"></div>
-
 <main class="ap ch">
 <nav class="bc" aria-label="Breadcrumb"><a href="/">AGSIST</a><i>/</i><a href="/farmland-atlas">Farmland Atlas</a><i>/</i><a href="/farmland-atlas/illinois/">Illinois</a><i>/</i><span aria-current="page">DuPage County</span></nav>
 <div class="kick">County farm facts</div>
 <h1>DuPage County, Illinois</h1>
-<section class="lf" aria-label="Land in DuPage County"><p class="lf-thru">Sales through Sep 30, 2026</p><div class="lf-mid" data-lf-mid><div class="lf-k">Sold for</div><div class="lf-v lf-few">Too few sales</div><div class="lf-s">No bare farmland sales of 20+ acres, Oct 2024 to Sep 2026. A middle takes 5.</div></div><h2 class="lf-h">Newest sales <small>town, not parcel</small></h2><p class="lf-fine">No sales of 10 acres or more recorded here in the last 12 months.</p><div class="lf-r"><span class="l">Rent</span><span class="r"><b>$150/ac</b> <span class="lc">NASS 2024, county average</span></span></div><div class="lf-r lv" data-k="lf-bid"><span class="l">Nearest bid</span><span class="r"></span></div><div class="lf-r lv" data-k="lf-rain"><span class="l">Rain</span><span class="r"></span></div><div class="ch-btns lf-btns"><a class="pri" href="/land-sales/illinois/dupage-county">Every sale here</a><a href="/field-scout?fips=17043">Pick my field</a></div><p class="lf-dis">Recorded prices. Not an appraisal. No adjustments. A recorded price is what the state's transfer record says was paid once the sale closed, auction or private; never an asking price.</p><p class="lf-fine">Sales: Illinois Department of Revenue, MyDec transfer declarations (PTAX-203), farm parcels. Rent: USDA NASS.</p></section><p class="sub">DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care. Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS 17043. Figures as of 2026-10-19; the rows marked with a date load the newest reading when the page opens.</p>
+<section class="lf" aria-label="Land in DuPage County"><p class="lf-thru">Sales through Sep 30, 2026</p><div class="lf-mid" data-lf-mid><div class="lf-k">Sold for</div><div class="lf-v lf-few">Too few sales</div><div class="lf-s">No bare farmland sales of 20+ acres, Oct 2024 to Sep 2026. A middle takes 5.</div></div><h2 class="lf-h">Newest sales <small>town, not parcel</small></h2><p class="lf-fine">No sales of 10 acres or more recorded here in the last 12 months.</p><div class="lf-r"><span class="l">Rent</span><span class="r"><b>$150/ac</b><span class="lc"> NASS 2024, county average</span></span></div><div class="lf-r lv" data-k="lf-bid"><span class="l">Nearest bid</span><span class="r"></span></div><div class="lf-r lv" data-k="lf-rain"><span class="l">Rain</span><span class="r"></span></div><div class="ch-btns lf-btns"><a class="pri" href="/land-sales/illinois/dupage-county">Every sale here</a><a href="/field-scout?fips=17043">Pick my field</a></div><p class="lf-dis">Recorded prices. Not an appraisal. No adjustments. A recorded price is what the state's transfer record says was paid once the sale closed, auction or private; never an asking price.</p><p class="lf-fine">Sales: Illinois Department of Revenue, MyDec transfer declarations (PTAX-203), farm parcels. Rent: USDA NASS.</p></section><p class="sub">DuPage County, IL: non-irrigated cash rent $150 an acre (2024); land and buildings $57,683 an acre in the 2022 census, flagged to read with care. Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS 17043. Figures as of 2026-10-19; the rows marked with a date load the newest reading when the page opens.</p>
 <div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#17043">Print this sheet</a><a href="/fast-facts?fips=17043">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>
 <p class="warn">DuPage County had 819 acres in farms in the 2022 census. County averages here describe very little farmland; read them with care.</p><div class="two"><div><section class="keys" aria-label="Key figures"><div class="k"><div class="t">Cash rent, non-irrigated</div><div class="v">$150<small>/ac</small></div><div class="s">2024 county average<br>too few 2024 county surveys in the state to compare</div></div><div class="k"><div class="t">Land and buildings</div><div class="v">$57,683<small>/ac</small></div><div class="s">2022 census · read with care: rose 243% from 2017 while next door rose a median 16% · IL farm real estate 2026: $9,250 (land and buildings, state survey)</div></div><div class="k"><div class="t">Rent as % of land value</div><div class="v"><small>n/a</small></div><div class="s">not shown: NASS published no non-irrigated cash rent for this county in 2022</div></div><div class="k"><div class="t">Corn yield</div><div class="v"><small>n/a</small></div><div class="s">fewer than 8 published county corn yields</div></div><div class="k"><div class="t">Claims paid per $100 of coverage</div><div class="v">$4.72</div><div class="s">2016–2025, closed crop years<br>IL median $2.04</div></div><div class="k"><div class="t">Farmland rented</div><div class="v">8%</div><div class="s">2022 census, rented from others<br>IL median 55%</div></div><div class="k" style="grid-column:1/-1" data-as-tile="2026-09-30"><div class="t">Median sale price, bare land, 20+ acres</div><div class="v"><small>n/a</small></div><div class="s">not shown: 0 recorded bare farmland sales of 20+ acres in Oct 2025 to Sep 2026, a median needs 5; sales dated through Sep 30, 2026</div></div></section></div><div><svg viewBox="0 0 260 190" role="img" aria-label="DuPage County on the map with the counties that border it" class="loc"><path class="lm" d="M127.7 35.2L150.4 34.6L150.6 41.5L150.6 51.2L150.6 59.8L150.6 60.2L150.6 61.5L150.6 61.7L150.7 62.5L151.4 87.5L135.0 93.5L134.7 85.3L101.9 86.0L101.7 86.0L101.7 76.1L101.6 75.5L101.6 71.9L101.6 69.4L101.6 36.1L105.9 35.9L106.0 35.9L108.0 35.9L108.2 35.9L109.0 35.9L109.6 35.9L127.7 35.2Z"/><path class="ln0" d="M207.1 89.3L207.0 90.2L207.0 92.3L207.0 103.2L207.0 103.8L207.0 105.5L207.0 117.0L206.8 134.8L188.7 134.8L180.1 134.8L179.4 134.8L169.1 134.8L169.1 123.7L169.0 121.4L168.8 121.6L168.7 117.8L152.1 118.1L151.7 101.5L135.1 101.9L135.0 93.5L151.4 87.5L150.7 62.5L150.6 61.7L150.6 61.5L150.6 60.2L150.6 59.8L150.6 51.2L150.6 41.5L150.4 34.6L127.7 35.2L109.6 35.9L109.0 35.9L108.2 35.9L108.0 35.9L106.0 35.9L105.9 35.9L101.6 36.1L105.2 4.0L105.3 4.0L110.6 4.0L121.7 4.0L138.6 4.0L173.6 4.4L174.0 5.1L174.0 5.1L174.1 5.5L174.3 5.5L174.3 5.5L174.8 6.7L175.1 7.1L175.4 7.6L176.0 9.0L176.1 9.0L176.1 9.2L176.1 9.2L176.3 9.4L176.3 9.4L177.1 10.7L177.7 11.5L177.8 11.8L177.8 11.8L178.0 12.0L178.0 12.0L178.1 12.2L178.1 12.2L178.4 12.8L178.4 12.8L178.4 12.8L178.5 13.0L178.8 13.2L178.8 13.2L178.8 13.4L179.1 13.6L179.1 13.6L179.4 13.9L179.4 14.1L179.5 14.1L179.5 14.1L180.3 15.1L180.4 15.3L181.1 15.9L181.3 16.0L181.4 16.2L181.7 16.4L184.5 18.9L184.5 19.1L184.7 19.5L184.8 19.7L186.1 22.4L186.1 23.3L186.1 23.5L186.1 23.7L186.1 23.7L186.0 24.3L186.1 25.2L186.4 27.9L191.8 46.3L191.8 46.3L192.4 49.3L192.7 51.2L192.8 51.6L192.8 51.8L193.0 52.2L193.4 52.4L193.8 52.9L194.3 53.9L194.5 53.9L194.5 54.1L194.5 54.3L194.4 54.7L194.3 54.9L194.3 55.6L194.3 55.6L194.0 55.8L193.8 56.0L194.0 58.5L195.0 63.1L196.1 66.5L198.1 69.6L198.1 69.6L199.0 70.9L199.0 70.9L199.0 71.1L199.7 74.4L201.8 78.2L204.4 80.9L206.1 81.6L207.1 86.2L207.1 89.3Z"/><path class="ln0" d="M101.6 69.4L101.6 71.9L101.6 75.5L101.7 76.1L101.7 86.0L53.2 87.0L53.3 37.1L55.0 4.0L105.2 4.0L101.6 36.1L101.6 69.4Z"/><path class="ln0" d="M101.9 86.0L102.4 111.2L103.2 136.1L102.7 136.1L54.0 137.2L53.2 104.0L52.9 87.0L53.2 87.0L101.7 86.0L101.9 86.0Z"/><path class="ln0" d="M206.8 134.8L206.8 134.8L206.8 137.8L206.7 167.6L206.7 167.6L137.1 168.8L137.4 185.2L104.3 186.0L103.2 136.1L102.4 111.2L101.9 86.0L134.7 85.3L135.0 93.5L135.1 101.9L151.7 101.5L152.1 118.1L168.7 117.8L168.8 121.6L169.0 121.4L169.1 123.7L169.1 134.8L179.4 134.8L180.1 134.8L188.7 134.8L206.8 134.8Z"/></svg></div></div>
 <div class="act">
-  <a href="/farmland-atlas#17043">Open on the map</a>
-  <a href="/farmland-atlas/compare#17043">Compare</a>
-  <a href="/rent/illinois">Illinois cash rent by county</a>
-  <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
+<a href="/farmland-atlas#17043">Open on the map</a>
+<a href="/farmland-atlas/compare#17043">Compare</a>
+<a href="/rent/illinois">Illinois cash rent by county</a>
+<button type="button" id="dl">Download CSV</button>
+<button type="button" id="cp">Copy link</button>
 </div>
-
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
 <div class="chg"><section class="card" aria-labelledby="c-grain"><h2 id="c-grain">Grain and prices <small>within 50 miles</small></h2><div class="fact st lv" data-k="corn-bid"><span class="l">Corn bid</span><span class="r"></span></div><div class="fact st lv" data-k="soy-bid"><span class="l">Soybean bid</span><span class="r"></span></div><div class="fact st lv" data-k="corn-basis"><span class="l">Corn basis</span><span class="r"></span></div><div class="fact st lv" data-k="soy-basis"><span class="l">Soybean basis</span><span class="r"></span></div><div class="fact st lv" data-k="corn-fut"><span class="l">Corn futures</span><span class="r"></span></div><div class="fact st lv" data-k="soy-fut"><span class="l">Soybean futures</span><span class="r"></span></div><p class="note">Bids are posted elevator prices within 50 miles of the county middle, or of your own field or saved place in this county when this device has one (each row says which), best and nearest, never a buyer's name. Not a contract; call before you haul. Livestock lines show where the 2022 Census counts 1,000 head or more: milk for milk cows, feeder cattle for beef cows, live cattle for cattle on feed, hogs for hogs, hay for all cattle.</p><p class="note"><a href="/cash-bids/illinois/">Illinois cash bids by town</a> · <a href="/fast-facts?fips=17043">Bids from your own ZIP or farm, in Fast Facts</a></p><p class="note">Cash bids by town near the middle of DuPage County: <a href="/cash-bids/illinois/newark">Newark</a> (32 mi), <a href="/cash-bids/illinois/morris">Morris</a> (38 mi), <a href="/cash-bids/illinois/serena">Serena</a> (42 mi).</p></section><section class="card" aria-labelledby="c-wx"><h2 id="c-wx">Weather and the season</h2><div class="fact st lv" data-k="rain"><span class="l">Rain since Jan 1</span><span class="r"></span></div><div class="fact st lv" data-k="drought"><span class="l">Drought this week</span><span class="r"></span></div><div class="fact st lv" data-k="hail"><span class="l">Hail, last 30 days</span><span class="r"></span></div><p class="note"><a data-xl="rain" href="/rain/illinois/dupage-county">Rain so far this year in DuPage County, Illinois</a></p><h3>Drought, year by year</h3><svg viewBox="0 0 640 170" role="img" aria-label="Weeks per year with half the county or more in severe drought or worse" class="ch"><path class="bf" d="M10.9 148.0h18.2V148h-18.2zM34.9 148.0h18.2V148h-18.2zM58.9 148.0h18.2V148h-18.2zM82.9 91.3h18.2V148h-18.2zM106.9 148.0h18.2V148h-18.2zM130.9 30.1h18.2V148h-18.2zM154.9 91.3h18.2V148h-18.2zM178.9 148.0h18.2V148h-18.2zM202.9 148.0h18.2V148h-18.2zM226.9 148.0h18.2V148h-18.2zM250.9 148.0h18.2V148h-18.2zM274.9 148.0h18.2V148h-18.2zM298.9 148.0h18.2V148h-18.2zM322.9 148.0h18.2V148h-18.2zM346.9 148.0h18.2V148h-18.2zM370.9 148.0h18.2V148h-18.2zM394.9 148.0h18.2V148h-18.2zM418.9 148.0h18.2V148h-18.2zM442.9 148.0h18.2V148h-18.2zM466.9 148.0h18.2V148h-18.2zM490.9 148.0h18.2V148h-18.2zM514.9 148.0h18.2V148h-18.2zM538.9 148.0h18.2V148h-18.2zM562.9 126.2h18.2V148h-18.2zM586.9 134.9h18.2V148h-18.2zM610.9 148.0h18.2V148h-18.2z"/><text class="ta" x="20.0" y="164">2000</text><text class="ta" x="140.0" y="164">2005</text><text class="ta" x="260.0" y="164">2010</text><text class="ta" x="380.0" y="164">2015</text><text class="ta" x="500.0" y="164">2020</text><text class="ta" x="620.0" y="164">2025</text><text class="tv" x="20.0" y="145.0">0</text><text class="tv" x="140.0" y="27.1">27</text><text class="tv" x="620.0" y="145.0">0</text><path class="ax" d="M8 148H632"/></svg><p class="note">Weeks per year, U.S. Drought Monitor, with half the county or more in D2 (severe) drought or worse.</p><div class="fact"><span class="l">D2 or worse for half the county, 2000–2025</span><span class="r">61 of 1,357 weeks<small>4% of weeks</small></span></div><div class="fact"><span class="l">Year with the most D2+ weeks</span><span class="r">2005<small>27 weeks</small></span></div><div class="fact"><span class="l">Last five full years, 2021–2025</span><span class="r">8 weeks</span></div><div class="fact st"><span class="l">2026 so far</span><span class="r">0 weeks<small>half the county or more in D2, 40 weekly maps</small></span></div><div class="fact"><span class="l">July average of daily lows, 2017–2026</span><span class="r">64.7 °F<small>1991–2020 normal 63.5 °F</small></span></div><div class="fact st"><span class="l">Trend in July lows since 1976</span><span class="r">+0.34 °F a decade<small>no clear direction</small></span></div><div class="fact st"><span class="l">Rain, April to September, usual</span><span class="r">24.2 in<small>1991–2020 county normal, NOAA; the 2017–2026 seasons averaged 24.3 in</small></span></div><div class="fact st"><span class="l">Days with hail 1 inch or larger</span><span class="r">1.8 a year<small>reports, 2010–2025; a zero is no report, not proof of no hail</small></span></div><div class="fact st"><span class="l">Last spring freeze, first fall freeze</span><span class="r">Apr 23, Oct 23<small>middle dates 1996–2025, NOAA county-average daily low of 32 °F or colder</small></span></div><div class="fact"><span class="l">Frost-free days</span><span class="r">179<small>middle of 1996–2025</small></span></div><div class="fact st"><span class="l">Corn growing degree days, May to September</span><span class="r">2,830<small>middle of 1996–2025; 2016–2025 averaged 2,932</small></span></div></section><section class="card" aria-labelledby="c-crops"><h2 id="c-crops">Crops</h2><div class="fact st lv" data-k="corn-progress"><span class="l">Corn harvested</span><span class="r"></span></div><div class="fact st lv" data-k="soy-progress"><span class="l">Soybeans harvested</span><span class="r"></span></div><h3>Corn yield</h3><div class="fact w"><span class="l">County corn yield</span><span class="r">Fewer than 8 published county corn yields</span></div></section><section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2><h3>Cash rent</h3><p class="note">Every published Illinois county rate, side by side: <a href="/rent/illinois">Illinois cash rent by county</a>.</p><div class="fact"><span class="l">Non-irrigated, 2024</span><span class="r">$150/ac</span></div><div class="act rcw"><button type="button" id="rc-open" data-st="IL" data-fips="17043" aria-expanded="false">Rent share calculator and history</button></div><div id="rc-box" hidden></div><h3>Land value</h3><div class="fact st"><span class="l">Land and buildings, 2022</span><span class="r">$57,683/ac<small>operators&#x27; own estimate, not a sale price</small></span></div><div class="fact"><span class="l">Census 2012</span><span class="r">$6,948/ac</span></div><div class="fact"><span class="l">Census 2017</span><span class="r">$16,807/ac</span></div><div class="fact w"><span class="l">Read with care</span><span class="r">The 2022 census value rose 243% from 2017 while the 4 counties next door rose a median 16%. The census counts buildings and small residential farms, so the change since 2017, the rent-to-value ratio and the rank are withheld</span></div><div class="fact st"><span class="l">Illinois cropland, 2026 state survey</span><span class="r">$10,200/ac<small>+3.6% from 2025 · USDA NASS Land Values, state average</small></span></div><div class="fact st"><span class="l">Illinois farm real estate, 2026</span><span class="r">$9,250/ac<small>land and buildings, state average</small></span></div><div class="fact"><span class="l">Illinois pasture, 2026</span><span class="r">$4,300/ac<small>state average</small></span></div><p class="note">The census value is this county's, from 2022. The survey figures are the Illinois average for 2026, from the USDA NASS Land Values report. NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p><section class="as" data-atlas-sales="county" data-st="IL" data-fips="17043" data-ls-done="1" aria-label="Recorded farm sales"><h2>Recorded farm sales</h2><div class="as-body"><p class="note">Sale counts and the median price buyers paid per acre in DuPage County, from Illinois PTAX-203 (MyDec) transfer declarations (Illinois Department of Revenue), load here.</p><noscript><p class="note">This part needs JavaScript. The figures are in <a href="/data/land/il/summary.json">the county summary file</a>.</p></noscript></div></section><script defer src="/components/atlas-sales.js?v=f31b5c18"></script><p class="note" data-ls-door="county">Land sales: <a href="/land-sales/illinois/dupage-county">Recorded sales in DuPage County</a>, sale by sale.</p></section><section class="card" aria-labelledby="c-prog"><h2 id="c-prog">Programs and risk</h2><div class="fact st lv" data-k="arc"><span class="l">ARC or PLC sign-up</span><span class="r"></span></div><p class="note">Benchmarks, payments and the choice for each crop: <a href="/arc-plc/illinois/dupage-county">ARC or PLC in DuPage County</a>.</p><p class="note">PRF rainfall insurance for pasture and hay in DuPage County: its grids, county values and record are on <a href="/prf/illinois/dupage-county">the county PRF page</a>.</p><h3>Crop insurance record</h3><p class="note">Claims paid divided by total premium (the farmer share plus the federal subsidy), each closed crop year since 1989 with at least $1,000,000 of premium; a year under that has no bar and no ratio. Above the dashed line, the county's insurance book paid out more than it took in. 2026, still open, is left out.</p><div class="fact"><span class="l">Claims paid per $100 of coverage, 2016–2025</span><span class="r">$4.72</span></div><div class="fact"><span class="l">Loss ratio, 2016–2025</span><span class="r">0.77<small>claims ÷ total premium</small></span></div><div class="fact"><span class="l">Loss ratio, 1989–2025</span><span class="r">0.76<small>$2.8 million paid</small></span></div><div class="fact st"><span class="l">Largest causes of loss, 1990–2025</span><span class="r">heat and drought 31% · excess moisture 30% · price decline (revenue policies) 28%<small>share of dollars paid</small></span></div><h3>Conservation Reserve Program</h3><p class="note">Acres enrolled in the Conservation Reserve Program, USDA FSA, by fiscal year.</p><div class="fact"><span class="l">CRP enrolled, 2025</span><span class="r">0 ac</span></div></section><section class="card" aria-labelledby="c-farms"><h2 id="c-farms">What farms here look like</h2><div class="fact"><span class="l">Harvested cropland irrigated, 2022</span><span class="r">24%</span></div><div class="fact"><span class="l">Drained by tile, 2022</span><span class="r">39% of cropland<small>82 ac</small></span></div><div class="fact"><span class="l">Farmed no-till, 2022</span><span class="r">43% of cropland<small>90 ac</small></span></div><div class="fact st"><span class="l">Solar and wind operating, 2025</span><span class="r">2.8 MW solar · 0 MW wind<small>nameplate, EIA Form 860</small></span></div><div class="fact"><span class="l">Cattle and calves, 2022</span><span class="r">16</span></div><div class="fact"><span class="l">Hogs and pigs, 2022</span><span class="r">11<small>head, Census of Agriculture</small></span></div><div class="fact st"><span class="l">Farmland rented from others, 2022</span><span class="r">8%<small>census tenure, owned plus rented acres in farms</small></span></div><p class="note">USDA Census of Agriculture 2022, except wells (state well register) and power (EIA Form 860).</p></section></div>
 <div id="watch"><form class="watch" data-fips="17043" aria-label="Watch DuPage County"><b>Watch this county</b><p>Get an email when the published figures for DuPage County, Illinois change. Usually once or twice a year. You confirm by email first, and every email has a one-tap stop. AGSIST, PO Box 243, Chetek, WI 54728.</p><div class="wr"><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Watch this county</button></div><div class="wm" role="status" aria-live="polite"></div></form><script defer src="/farmland-atlas/watch.js?v=530339ee"></script></div>
@@ -162,37 +65,8 @@
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 <div class="nav2"><span><a href="/farmland-atlas/illinois/douglas-county">← Douglas County</a></span><a href="/farmland-atlas/illinois/">All Illinois counties</a><span><a href="/farmland-atlas/illinois/edgar-county">Edgar County →</a></span></div>
 </main>
-<script type="application/json" id="rec">{"fips": "17043", "state": "IL", "county": "DuPage County", "rent_dry_usd_ac": 150.0, "rent_dry_year": 2024, "rent_dry_chg10_pct": null, "rent_irr_usd_ac": null, "rent_irr_year": null, "rent_pasture_usd_ac": null, "value_usd_ac": 57683, "value_year": 2022, "value_flag": {"own_pct": 243.2, "nb_pct": 15.8, "n": 4, "dir": "rose"}, "value_cagr_pct": null, "rent_to_value_pct": null, "corn_yield_median_bu_ac": null, "corn_yield_years": null, "corn_yield_trend_bu_yr": null, "corn_trend_bu_ac": null, "corn_trend_year": null, "corn_trend_practice": null, "claims_per_100_usd": 4.72, "loss_ratio_last10": 0.77, "loss_ratio_all": 0.76, "years_loss_over_1": null, "d2_week_share_pct": 4.5, "jul_low_recent_f": 64.7, "jul_low_normal_f": 63.5, "jul_low_trend_f_decade": 0.34, "irrigated_share_2022": 0.24, "tile_share_2022": 0.392344, "notill_share_2022": 0.430622, "crp_acres": 0, "crp_share_pct": null, "crp_expiring_next3_acres": null, "rented_share_2022": 0.0781, "solar_mw": 2.8, "wind_mw": 0.0, "gs_rain_normal_in": 24.2, "hail_1in_days_yr": 1.8, "cattle_2022": 16.0}</script>
-<script>
-(function(){
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
-  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
-  document.head.appendChild(s);
-});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
-  var u=location.origin+location.pathname;
-  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
-  else window.prompt('Copy this link',u);
-  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
-});
-try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
-})();
-</script>
-
+<script type="application/json" id="rec">{"fips":"17043","state":"IL","county":"DuPage County","rent_dry_usd_ac":150.0,"rent_dry_year":2024,"rent_dry_chg10_pct":null,"rent_irr_usd_ac":null,"rent_irr_year":null,"rent_pasture_usd_ac":null,"value_usd_ac":57683,"value_year":2022,"value_flag":{"own_pct":243.2,"nb_pct":15.8,"n":4,"dir":"rose"},"value_cagr_pct":null,"rent_to_value_pct":null,"corn_yield_median_bu_ac":null,"corn_yield_years":null,"corn_yield_trend_bu_yr":null,"corn_trend_bu_ac":null,"corn_trend_year":null,"corn_trend_practice":null,"claims_per_100_usd":4.72,"loss_ratio_last10":0.77,"loss_ratio_all":0.76,"years_loss_over_1":null,"d2_week_share_pct":4.5,"jul_low_recent_f":64.7,"jul_low_normal_f":63.5,"jul_low_trend_f_decade":0.34,"irrigated_share_2022":0.24,"tile_share_2022":0.392344,"notill_share_2022":0.430622,"crp_acres":0,"crp_share_pct":null,"crp_expiring_next3_acres":null,"rented_share_2022":0.0781,"solar_mw":2.8,"wind_mw":0.0,"gs_rain_normal_in":24.2,"hail_1in_days_yr":1.8,"cattle_2022":16.0}</script>
+<script src="/farmland-atlas/county.js?v=7ec2da9d"></script>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19"></script>
 </body>

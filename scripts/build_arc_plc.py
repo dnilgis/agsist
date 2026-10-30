@@ -3689,8 +3689,9 @@ def render_all(D):
     for rel, obj in geo_json(D).items():
         out[rel] = json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n"
     main, meta = build_main(D, ch)
-    out[OUT_MAIN] = main
-    out[OUT_EMBED] = embed_page(D)
+    import source_links as SL  # the two root pages name their sources without linking the data (Oct 29, 2026)
+    out[OUT_MAIN] = SL.unlink(main)
+    out[OUT_EMBED] = SL.unlink(embed_page(D))
     lm = D["updated"][:10]
     urls = []   # /arc-plc itself is listed in sitemap.xml only
     for k in D.get("_hubs", []):

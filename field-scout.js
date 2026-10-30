@@ -1100,7 +1100,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=17', FS_EXTRAS_SRC='/field-scout-extras.js?v=4';
+  var FS_READ_SRC='/field-scout-read.js?v=18', FS_EXTRAS_SRC='/field-scout-extras.js?v=4';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},
@@ -1188,7 +1188,7 @@
   function scrubTo(){ if(RM) return RM.scrubTo.apply(null, arguments); return fsLate(loadRead, 'scrubTo', arguments); }
   function toggleHail(){ if(RM) return RM.toggleHail.apply(null, arguments); return fsLate(loadRead, 'toggleHail', arguments); }
   // What's on and around this field (flood, wetlands, slope, energy, feedlots, easements): its own file
-  var FS_LAYERS_SRC='/field-scout-layers.js?v=2', _lyP=null, LY=null;
+  var FS_LAYERS_SRC='/field-scout-layers.js?v=3', _lyP=null, LY=null;
   function loadLayers(poly){
     var g=fieldGen;
     if(!_lyP) _lyP=fsScript(FS_LAYERS_SRC, '__fsLayers').then(function(f){ LY=LY||f(FSX); return LY; }, function(e){ _lyP=null; throw e; });

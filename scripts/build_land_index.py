@@ -810,7 +810,7 @@ def hub_section(data):
 <details class="li-more-d" id="faq"><summary>Questions about the index</summary>
 <dl class="li-faq">{faq_html}</dl>
 </details>
-<p class="li-note" id="sources">Index sources: Illinois Department of Revenue transfer declarations (PTAX-203), <a href="https://data.illinois.gov/d/it54-y4c6">Illinois open data portal</a>; USDA NASS land values and cash rents, <a href="https://quickstats.nass.usda.gov/">Quick Stats</a>. The Illinois farm managers and appraisers (<a href="https://www.ispfmra.org/">ISPFMRA</a>) run their own land value survey; it is not used here.</p>
+<p class="li-note" id="sources">Index sources: Illinois Department of Revenue transfer declarations (PTAX-203), Illinois open data portal; USDA NASS land values and cash rents, Quick Stats. The Illinois farm managers and appraisers (<a href="https://www.ispfmra.org/">ISPFMRA</a>) run their own land value survey; it is not used here.</p>
 </section>"""
     return {"css": CSS, "html": body, "js": COUNTY_JS.replace("__V__", v), "ld": ld}
 

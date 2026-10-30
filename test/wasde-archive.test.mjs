@@ -147,7 +147,7 @@ test('whats-priced-in: the section is hidden until history exists, credits USDA,
   assert.ok(at > 0, 'hidden by default');
   const sec = h.slice(at, h.indexOf('</details>', at));
   assert.match(sec, /<h3 class="wp-h">How this estimate moved<\/h3>/, 'a heading of its own (h3 inside the section)');
-  assert.match(sec, /Source: <a href="https:\/\/esmis\.nal\.usda\.gov\/publication\/world-agricultural-supply-and-demand-estimates"[^>]*>USDA World Agricultural Outlook Board, monthly WASDE reports<\/a> \(USDA ESMIS archive\)/,
+  assert.match(sec, /Source: USDA World Agricultural Outlook Board, monthly WASDE reports \(USDA ESMIS archive\)/,
     'the credit names the archive the figures are read from');
   assert.match(sec, /data-wh-body/);
   assert.doesNotMatch(sec, /—/, 'no em dash');
