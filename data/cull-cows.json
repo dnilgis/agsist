@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-30T07:20:27Z",
+ "updated": "2026-10-30T19:38:49Z",
  "as_of": "2026-10-30",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, auction reports",
  "classes": {
@@ -20,14 +20,14 @@
   "window_days": 14,
   "from": "2026-10-17",
   "to": "2026-10-30",
-  "barns": 71,
+  "barns": 72,
   "min_barns": 3,
-  "median_cwt": 129.42,
+  "median_cwt": 129.5,
   "low_cwt": 112.85,
   "high_cwt": 143.9,
-  "median_per_head": 1619.23,
-  "median_wt": 1265,
-  "head": 1787,
+  "median_per_head": 1615.72,
+  "median_wt": 1264,
+  "head": 1831,
   "states": [
    "AR",
    "CO",
@@ -47,7 +47,7 @@
    "WY"
   ],
   "first_sale": "2026-10-20",
-  "last_sale": "2026-10-29",
+  "last_sale": "2026-10-30",
   "barn_ids": [
    "ada-ok",
    "albany-ky",
@@ -63,6 +63,7 @@
    "brush-co",
    "butler-mo",
    "campbellsville-ky",
+   "clovis-nm",
    "cuba-mo",
    "dodge-city-ks",
    "el-reno-ok",
@@ -383,7 +384,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -548,7 +549,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -1046,7 +1047,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -1263,7 +1264,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -1324,7 +1325,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -1385,7 +1386,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -1618,7 +1619,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -1631,7 +1632,7 @@
    "status": {
     "ok": false,
     "note": "no slaughter cow table in this run's reports",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -1842,7 +1843,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -2003,7 +2004,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -2148,7 +2149,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -2381,7 +2382,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -2394,7 +2395,7 @@
    "status": {
     "ok": false,
     "note": "no slaughter cow table in this run's reports",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -2645,7 +2646,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -2790,7 +2791,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -2915,7 +2916,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -3128,7 +3129,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -3253,7 +3254,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -3398,7 +3399,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -3694,7 +3695,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -3802,7 +3803,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -3897,7 +3898,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -4200,7 +4201,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -4213,7 +4214,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    },
    "sales": [
     {
@@ -4558,7 +4559,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -4703,7 +4704,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -4966,7 +4967,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -5269,7 +5270,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -5280,6 +5281,104 @@
    "lon": -84.3,
    "id": "richmond-ky",
    "sales": [
+    {
+     "date": "2026-10-30",
+     "receipts": 681,
+     "report": "2210",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/2210",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_2210.pdf",
+     "classes": {
+      "breaker": [
+       {
+        "dressing": "Average",
+        "head": 4,
+        "avg_wt": 1644,
+        "cwt": 116.53,
+        "per_head": 1915.75,
+        "lo": 113.0,
+        "hi": 119.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 1,
+        "avg_wt": 1325,
+        "cwt": 125.0,
+        "per_head": 1656.25,
+        "lo": 125.0,
+        "hi": 125.0,
+        "rows": 1
+       }
+      ],
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 3,
+        "avg_wt": 1413,
+        "cwt": 116.73,
+        "per_head": 1649.39,
+        "lo": 111.0,
+        "hi": 123.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 2,
+        "avg_wt": 1385,
+        "cwt": 131.0,
+        "per_head": 1814.35,
+        "lo": 130.0,
+        "hi": 132.0,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 4,
+        "avg_wt": 1143,
+        "cwt": 105.29,
+        "per_head": 1203.46,
+        "lo": 104.0,
+        "hi": 106.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 6,
+        "avg_wt": 1118,
+        "cwt": 91.04,
+        "per_head": 1017.83,
+        "lo": 84.0,
+        "hi": 94.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 3,
+        "avg_wt": 947,
+        "cwt": 64.31,
+        "per_head": 609.02,
+        "lo": 57.0,
+        "hi": 76.0,
+        "rows": 1
+       }
+      ],
+      "bulls": [
+       {
+        "dressing": "High",
+        "head": 1,
+        "avg_wt": 2455,
+        "cwt": 175.0,
+        "per_head": 4296.25,
+        "lo": 175.0,
+        "hi": 175.0,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": []
+    },
     {
      "date": "2026-10-23",
      "receipts": 701,
@@ -5404,7 +5503,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -5667,7 +5766,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -5822,7 +5921,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -5997,7 +6096,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -6280,7 +6379,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -6563,7 +6662,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -6688,7 +6787,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -6875,7 +6974,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -7108,7 +7207,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -7431,7 +7530,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -7546,7 +7645,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -7691,7 +7790,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -7934,7 +8033,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -7997,7 +8096,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -8142,7 +8241,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -8319,7 +8418,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -8424,7 +8523,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -8601,7 +8700,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -8774,7 +8873,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -9017,7 +9116,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -9099,6 +9198,48 @@
         "rows": 1
        }
       ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 14,
+        "avg_wt": 1110,
+        "cwt": 112.87,
+        "per_head": 1252.86,
+        "lo": 108.0,
+        "hi": 120.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 1,
+        "avg_wt": 1070,
+        "cwt": 127.0,
+        "per_head": 1358.9,
+        "lo": 127.0,
+        "hi": 127.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 18,
+        "avg_wt": 1038,
+        "cwt": 94.75,
+        "per_head": 983.5,
+        "lo": 84.0,
+        "hi": 104.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 16,
+        "avg_wt": 994,
+        "cwt": 70.44,
+        "per_head": 700.17,
+        "lo": 60.0,
+        "hi": 80.0,
+        "rows": 1
+       }
+      ],
       "bulls": [
        {
         "dressing": "Average",
@@ -9132,12 +9273,7 @@
        }
       ]
      },
-     "refused": [
-      {
-       "class": "lean",
-       "why": "weight range 105-1230 outside (500, 3000): misprint"
-      }
-     ]
+     "refused": []
     },
     {
      "date": "2026-10-22",
@@ -9293,7 +9429,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -9448,7 +9584,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -9625,7 +9761,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -9730,7 +9866,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -9845,7 +9981,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -10158,7 +10294,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -10371,7 +10507,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -10680,7 +10816,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -11007,7 +11143,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -11292,7 +11428,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -11477,7 +11613,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -11495,15 +11631,15 @@
      "url": "https://mymarketnews.ams.usda.gov/viewReport/1781",
      "pdf": "https://www.ams.usda.gov/mnreports/ams_1781.pdf",
      "classes": {
-      "breaker": [
+      "boner": [
        {
-        "dressing": "Average Return to Feed",
-        "head": 3,
-        "avg_wt": 1003,
-        "cwt": 182.52,
-        "per_head": 1830.68,
-        "lo": 173.0,
-        "hi": 195.0,
+        "dressing": "Average",
+        "head": 45,
+        "avg_wt": 1138,
+        "cwt": 135.04,
+        "per_head": 1536.76,
+        "lo": 130.0,
+        "hi": 149.0,
         "rows": 1
        }
       ],
@@ -11532,10 +11668,10 @@
       "bulls": [
        {
         "dressing": "Average",
-        "head": 14,
-        "avg_wt": 1468,
-        "cwt": 161.2,
-        "per_head": 2366.42,
+        "head": 16,
+        "avg_wt": 1440,
+        "cwt": 160.38,
+        "per_head": 2309.47,
         "lo": 150.0,
         "hi": 168.0,
         "rows": 1
@@ -11552,22 +11688,17 @@
        },
        {
         "dressing": "Low",
-        "head": 7,
-        "avg_wt": 1485,
-        "cwt": 138.57,
-        "per_head": 2057.76,
+        "head": 8,
+        "avg_wt": 1468,
+        "cwt": 138.16,
+        "per_head": 2028.19,
         "lo": 122.0,
         "hi": 148.5,
         "rows": 1
        }
       ]
      },
-     "refused": [
-      {
-       "class": "boner",
-       "why": "weight range 945-4437 outside (500, 3000): misprint"
-      }
-     ]
+     "refused": []
     },
     {
      "date": "2026-10-22",
@@ -11673,7 +11804,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -11806,7 +11937,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -11837,21 +11968,21 @@
        },
        {
         "dressing": "High",
-        "head": 7,
-        "avg_wt": 1713,
-        "cwt": 137.51,
-        "per_head": 2355.55,
-        "lo": 120.0,
+        "head": 6,
+        "avg_wt": 1669,
+        "cwt": 140.96,
+        "per_head": 2352.62,
+        "lo": 139.0,
         "hi": 143.0,
         "rows": 1
        },
        {
         "dressing": "Low",
-        "head": 9,
-        "avg_wt": 1563,
-        "cwt": 126.89,
-        "per_head": 1983.29,
-        "lo": 125.0,
+        "head": 10,
+        "avg_wt": 1604,
+        "cwt": 126.04,
+        "per_head": 2021.68,
+        "lo": 120.0,
         "hi": 129.0,
         "rows": 1
        }
@@ -11908,14 +12039,126 @@
         "rows": 1
        }
       ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 7,
+        "avg_wt": 1121,
+        "cwt": 115.13,
+        "per_head": 1290.61,
+        "lo": 115.0,
+        "hi": 116.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Average Light Weight",
+        "head": 1,
+        "avg_wt": 910,
+        "cwt": 115.0,
+        "per_head": 1046.5,
+        "lo": 115.0,
+        "hi": 115.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Average Return to Feed",
+        "head": 22,
+        "avg_wt": 1092,
+        "cwt": 120.55,
+        "per_head": 1316.41,
+        "lo": 118.0,
+        "hi": 123.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 12,
+        "avg_wt": 1230,
+        "cwt": 121.76,
+        "per_head": 1497.65,
+        "lo": 117.0,
+        "hi": 123.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High Return to Feed",
+        "head": 4,
+        "avg_wt": 1106,
+        "cwt": 124.85,
+        "per_head": 1380.84,
+        "lo": 124.0,
+        "hi": 127.5,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 4,
+        "avg_wt": 1086,
+        "cwt": 109.93,
+        "per_head": 1193.84,
+        "lo": 106.0,
+        "hi": 114.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low Light Weight",
+        "head": 1,
+        "avg_wt": 890,
+        "cwt": 110.0,
+        "per_head": 979.0,
+        "lo": 110.0,
+        "hi": 110.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low Return to Feed",
+        "head": 12,
+        "avg_wt": 1064,
+        "cwt": 111.47,
+        "per_head": 1186.04,
+        "lo": 109.0,
+        "hi": 115.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 1,
+        "avg_wt": 1125,
+        "cwt": 101.0,
+        "per_head": 1136.25,
+        "lo": 101.0,
+        "hi": 101.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low Light Weight",
+        "head": 2,
+        "avg_wt": 973,
+        "cwt": 91.95,
+        "per_head": 894.67,
+        "lo": 89.0,
+        "hi": 95.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low Return to Feed",
+        "head": 10,
+        "avg_wt": 990,
+        "cwt": 96.28,
+        "per_head": 953.17,
+        "lo": 80.0,
+        "hi": 105.0,
+        "rows": 1
+       }
+      ],
       "bulls": [
        {
         "dressing": "Average",
-        "head": 12,
-        "avg_wt": 1726,
-        "cwt": 163.77,
-        "per_head": 2826.67,
-        "lo": 131.0,
+        "head": 11,
+        "avg_wt": 1743,
+        "cwt": 166.4,
+        "per_head": 2900.35,
+        "lo": 163.0,
         "hi": 169.0,
         "rows": 1
        },
@@ -11951,22 +12194,17 @@
        },
        {
         "dressing": "Low Light Weight",
-        "head": 8,
-        "avg_wt": 1283,
-        "cwt": 143.21,
-        "per_head": 1837.38,
-        "lo": 120.0,
+        "head": 6,
+        "avg_wt": 1308,
+        "cwt": 149.53,
+        "per_head": 1955.85,
+        "lo": 145.0,
         "hi": 156.0,
         "rows": 1
        }
       ]
      },
-     "refused": [
-      {
-       "class": "lean",
-       "why": "text between rows that is not a row: '2 955-990 973 89.00-95.00 91.95'"
-      }
-     ]
+     "refused": []
     },
     {
      "date": "2026-10-22",
@@ -12252,7 +12490,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -12595,7 +12833,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -12790,7 +13028,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -13015,7 +13253,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -13170,7 +13408,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -13375,7 +13613,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -13540,7 +13778,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -13715,7 +13953,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -13808,7 +14046,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -14045,7 +14283,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -14260,7 +14498,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -14563,7 +14801,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -14714,7 +14952,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -14819,7 +15057,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -15008,7 +15246,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -15229,7 +15467,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   },
   {
@@ -15322,7 +15560,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-30T07:20:27Z"
+    "checked": "2026-10-30T19:38:49Z"
    }
   }
  ]
