@@ -24,6 +24,7 @@ import html as H
 import json
 import re
 import sys
+import source_links  # noqa: E402  no direct links to data sources
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -69,7 +70,7 @@ def panel(d):
                     else '<span style="color:#8a948f">no date published</span>')
             col = "#d4a23f" if r.get("ours") else ("#b9c2bd" if r.get("official") else "#e6ebe9")
             name = (f'<a href="{esc(r["source"])}" style="color:{col};text-decoration:underline;'
-                    f'text-underline-offset:2px">{esc(r["name"])}</a>' if r.get("source")
+                    f'text-underline-offset:2px">{esc(r["name"])}</a>' if r.get("source") and not source_links.is_data_source(r["source"])
                     else f'<span style="color:{col}">{esc(r["name"])}</span>')
             out.append('<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;'
                        "font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:5px 0;"

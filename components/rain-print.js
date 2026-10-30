@@ -10,9 +10,7 @@
  * The QR on every preview is the standard code to the Rain Print page; only
  * the files Sig makes after payment carry the print's own short link
  * (components/rp-short.js), made at the moment of export (2026-10-14).
- * The serial "No. 0001" goes under it on Sig's print files only; Sig initials each
- * physical print by hand in pencil beside it (Oct 15), so no printed initials
- * (?maker=1&serial=1), never on the digital file or the public page.
+ * A serial goes under it on physical prints only.
  * Ported from Sig's standalone Rain Print Studio (the October last-pass
  * version, with its QR, marker, callout and dry-spell fixes); the art is his design.
  *
@@ -41,11 +39,7 @@
  * Stripe's client_reference_id and the order form all carry. Open
  * /rain-print?d=<code> and the same print draws again.
  *
- * DOWNLOADS. The public button gives a watermarked preview PNG. /rain-print?maker=1
- * shows Sig's clean 300 dpi print files (the 13 x 19 in sheet, untrimmed, the art
- * 16.5 x 11 in in the middle: SHEET, 2026-10-17),
- * a PDF of the same and the SVG. That switch is a convenience, not security:
- * the art is drawn in the reader's browser and anyone can save it.
+ * DOWNLOADS. The public button gives a watermarked preview PNG.
  *
  * THIS YEAR, AS A GIFT (2026-10-11). The year list starts with the current
  * year (America/Chicago), offered as a gift delivered in January. It draws a
@@ -1910,16 +1904,6 @@
   var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
   var DPI = 300;
   var SHEET_WORDS = SHEET.h + ' x ' + SHEET.w + ' in sheet, the art ' + SHEET.art.w + ' x ' + SHEET.art.h + ' in in the middle, untrimmed';
-  /* MAKER MODE, GATED (2026-10-17, art panel: ?maker=1 alone showed anyone the
-     print and digital file buttons, which gave away the $19 file). Sig opens
-     ?maker=<his key> once on a browser: the page compares the key's SHA-256
-     with MAKER_HASH, keeps a flag in this browser's localStorage, and reloads
-     as ?maker=1, so the key leaves the address bar. From then on ?maker=1
-     (with &serial=N or &serial=0) works on that browser; anywhere else
-     ?maker=1 is the public page. Only the hash is in this file, never the key.
-     This stops casual use. It is not DRM: the hash and the flag are both in
-     this public file, and anyone who reads it can set the flag and draw the
-     files themselves. */
   var MAKER_HASH = 'c48c7a7a1b467a7488ba147a5d790c31e533b0d2dbd27a0f4be7114ad9b54504', MAKER_FLAG = 'rp-maker';
   var MAKER_ASK = /(?:^|[?&])maker=([^&#]+)/.exec(root.location.search);
   var MAKER = (function () {
@@ -1946,6 +1930,31 @@
       });
     }
   }
+  var MAKER_PANEL = [
+    "<p><b>Print files for fulfillment.</b> The 13 x 19 in sheet at 300 dpi, landscape, untrimmed: the picture 16.5 x 11 in in the middle, white all round, every word inside the mat&rsquo;s window. Add &amp;serial=N to this page&rsquo;s link and the print files carry \"No. 000N\" under the QR (initial each physical print beside it in pencil); &amp;serial=0 gives \"No. 0000\" for your own test prints, with the real QR; the digital file and the SVG never do. The SVG is for viewing in a browser; print from the PNG or PDF. Test print PDF (standard code) is for your own test prints and samples: its QR opens the Rain Print page, not this design, and it needs no short link. Never send it as an order.</p>",
+    "<p class=\"rp-count\" id=\"rp-maker-logo\" hidden></p>",
+    "<p class=\"rp-msg rp-bad\" id=\"rp-maker-msg\" role=\"alert\" hidden></p>",
+    "<div class=\"rp-acts\">",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"12x18\" data-fmt=\"png\">13 x 19 print PNG</button>",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"12x18\" data-fmt=\"pdf\">13 x 19 print PDF</button>",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"digital\" data-fmt=\"png\">Digital file PNG</button>",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"digital\" data-fmt=\"pdf\">Digital file PDF</button>",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"digital\" data-fmt=\"jpg\">Digital file JPG</button>",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"vector\" data-fmt=\"svg\">SVG</button>",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"12x18\" data-fmt=\"pdf\" data-qr=\"standard\">Test print PDF (standard code)</button>",
+    "</div>",
+    "<p>Insert letter: one 8.5 x 11 page that goes on top in the box of every print and framed print (not the digital file). It lies flat on the print. Its numbers are the print&rsquo;s own, it carries the serial from &amp;serial=N (a blank to fill in by hand without it) and the standard code. Paste the gift note or the business&rsquo;s message from the order below; leave it empty and the letter has no note.</p>",
+    "<label class=\"field rp-wide\"><span>Note for the letter (from the order)</span><textarea id=\"rp-ins-gift\" maxlength=\"300\" rows=\"2\"></textarea></label>",
+    "<label class=\"field rp-wide\"><span>Note from (a business name, optional; the box then reads A note from &hellip;)</span><input id=\"rp-ins-from\" type=\"text\" maxlength=\"40\"></label>",
+    "<div class=\"rp-acts\">",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"insert\" data-fmt=\"pdf\">Insert letter PDF</button>",
+    "</div>",
+    "<p>Reading guide: one 8.5 x 11 page, How to read your Rain Print, that goes with a digital file (the files email sends it with the PNG, PDF and JPG the moment the buyer approves the proof). The letter&rsquo;s numbers and key, plus a line for each extra the print draws; no serial and no code line. The note above goes on it too.</p>",
+    "<div class=\"rp-acts\">",
+    "<button class=\"btn btn-secondary\" type=\"button\" data-size=\"guide\" data-fmt=\"pdf\">Reading guide PDF</button>",
+    "</div>"
+  ].join('');
+  if (MAKER && $('rp-maker')) $('rp-maker').innerHTML = MAKER_PANEL;
   var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
   var ORDER_TO = 'sig@agsist.com';
@@ -2118,9 +2127,7 @@
     if (!m) try { m = standardMatrix(); } catch (e) { m = null; }
     return m ? { matrix: m, serial: serial || '' } : null;
   }
-  /* The serial goes under the QR on a physical print only: Sig's print files
-     with ?maker=1&serial=N. Never on the digital file, never on the public page.
-     serial=0 is "No. 0000", Sig's own test prints (Oct 17, 2026); orders start at 1. */
+  /* The serial goes under the QR on a physical print only. */
   var SERIAL = (function () {
     var m = /(?:^|[?&])serial=(\d{1,6})(?:&|$)/.exec(root.location.search);
     return MAKER && m ? 'No. ' + String(+m[1]).padStart(4, '0') : '';
@@ -2395,7 +2402,7 @@
   }
   /* AN ORDER'S CROP (2026-10-23). The crop layers are gone (Sig: no plant outlines or any of that on the prints).
      A print paid for before that day with a crop on it can still be drawn as it was bought, only in Sig's order
-     view (MAKER, the gated ?maker= key) and only when the link also says oldcrop=1; nothing sets that by itself,
+     view and only when the link also says oldcrop=1; nothing sets that by itself,
      so a new order's proof and files are drawn as the buyer saw them. The crop stays out of the design (ST): it is
      never in a code, a short link, a gift card or the address bar's design, only here. */
   var ORDER_CROP = MAKER && /(?:^|[?&])oldcrop=1(?:&|$)/.test(root.location.search) ? orderCrop(root.location.search) : null;
@@ -2481,7 +2488,7 @@
     $('rp-logo-inks').hidden = !(LOGO && LOGO.color);
     radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (ST.logoInk ? '1' : '0'); });
     if (art) { if (th.getAttribute('src') !== art.href) th.src = art.href; th.hidden = false; } else { th.hidden = true; th.removeAttribute('src'); }
-    // Sig's print files page (?maker=1): a link to the file the buyer uploaded (a Stripe order carries only the design)
+    // the order view: a link to the file the buyer uploaded
     var mk = $('rp-maker-logo');
     if (MAKER && mk) { mk.hidden = !ST.logo; if (ST.logo) mk.innerHTML = 'Logo file: <a href="' + LOGO_LINK + ST.logo + '" rel="noopener">' + LOGO_LINK + ST.logo + '</a> (' + (ST.logoInk ? 'printed in the ink color' : 'printed in its own colors') + '); save this file with the order'; }
     if (!LOGO) return;
@@ -3151,8 +3158,8 @@
   // the data line under the print: a station's NOAA record, or the spot's PRISM estimate
   function spotCredit(m) {
     return m && isSpot(m.sid)
-      ? 'Rain for this spot is a daily PRISM estimate (PRISM Climate Group, Oregon State University, 4 km grid) made from nearby gauges, through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>; the usual year is NOAA&rsquo;s 1991-2020 gridded normal. It is not a gauge reading, it has no snowfall, and its record starts in ' + SPOT_FIRST + '. '
-      : 'Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>. ';
+      ? 'Rain for this spot is a daily PRISM estimate (PRISM Climate Group, Oregon State University, 4 km grid) made from nearby gauges, through RCC-ACIS; the usual year is NOAA&rsquo;s 1991-2020 gridded normal. It is not a gauge reading, it has no snowfall, and its record starts in ' + SPOT_FIRST + '. '
+      : 'Daily NOAA records through RCC-ACIS. ';
   }
   function renderNoArt() {
     var m = META;
@@ -3531,7 +3538,7 @@
       // Only a link that names its station (a county rain page) gets the shorter tries.
       var tries = ST.station ? shorterPlaces(ST.place) : [];
       /* A design that names its station but carries no ?ll= (a shared code,
-         Sig's ?d=...&maker=1 view of a county-link order): the station's own
+         or an order's view of a county-link design): the station's own
          place from NOAA checks the town, the way ll does on the link itself.
          A town the lookup can't find, or one more than 60 km from the station,
          is another town of that name: the print says "near" the town at the

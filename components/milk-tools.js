@@ -26,7 +26,7 @@
   var MONL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   var MINUS = '−';
   var AREA_KEY = 'agsist-milk-area', CHECK_KEY = 'agsist-milk-check';
-  var MB_LINK = '<a href="https://mymarketnews.ams.usda.gov/viewReport/3357" rel="noopener">AMS mailbox report</a>';
+  var MB_LINK = 'AMS mailbox report';
 
   /* AMS mailbox reporting areas (MMPR footnote) by state. A state split between areas, or only part
      covered, is withheld rather than guessed: the reader picks. */

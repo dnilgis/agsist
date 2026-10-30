@@ -599,7 +599,6 @@ details.fold[hidden]{display:none}
     </div>
     <div class="basis-src" id="basis-src">Cash bids from the AGSIST elevator network</div>
   </div>
-  <!-- 2026-10-21 (Sig): Funds this week, its own list (subs worker v5.44, notice topic cot), mailed by scripts/send_cot_weekly.py from cot-release-watch.yml. It replaces this page's Daily ask: one ask a page. -->
   <div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:soybean-futures-prices" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>
   <details class="fold" id="fold-crop" data-wide-open>
     <summary class="fold-sum"><span class="fold-t">USDA crop progress</span><span class="fold-d">Planting, harvest and condition vs last year and the 5-year average</span></summary>
@@ -622,7 +621,7 @@ details.fold[hidden]{display:none}
         <div class="crop-row"><span id="crop-ge-prev-week"></span></div>
         <div class="crop-row"><span id="crop-ge-prev-yr"></span></div>
       </div>
-      <div class="crop-src">Source: USDA NASS Weekly Crop Progress &middot; national aggregate &middot; reported Mondays after market close &middot; <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">NASS &#8599;</a></div>
+      <div class="crop-src">Source: USDA NASS Weekly Crop Progress &middot; national aggregate &middot; reported Mondays after market close &middot; NASS &#8599;</div>
     </div>
     </div>
   </details>
@@ -643,7 +642,7 @@ details.fold[hidden]{display:none}
       </div>
       <div class="cot-chg" id="cot-chg">-</div>
       <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
-      <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET &middot; <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC &#8599;</a> &middot; <a href="/cot">Full positioning history &rarr;</a></div>
+      <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET &middot; CFTC &#8599; &middot; <a href="/cot">Full positioning history &rarr;</a></div>
     </div>
     </div>
   </details>
@@ -667,13 +666,13 @@ details.fold[hidden]{display:none}
     <div class="cp">
       <div class="cp-head">
         <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Soybean front month: interactive chart</h2>
-        <span class="cp-src">Soybean CFD tracking CBOT &middot; <a href="https://www.tradingview.com/symbols/CBOT-ZS1!/" target="_blank" rel="noopener">View CBOT:ZS1! on TradingView &#8599;</a></span>
+        <span class="cp-src">Soybean CFD tracking CBOT &middot; View CBOT:ZS1! on TradingView &#8599;</span>
       </div>
       <div id="tv-chart" style="height:480px"><div class="tv-ph"><span>The interactive soybean chart from TradingView loads when you scroll to it.</span><button type="button" class="tv-load" id="tv-load">Load chart now</button></div></div>
       <div class="tv-fallback" id="tv-fallback">
         <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
         <span>Interactive chart unavailable in this environment.</span>
-        <a href="https://www.tradingview.com/symbols/CBOT-ZS1!/" target="_blank" rel="noopener">View the soybean chart on TradingView →</a>
+        View the soybean chart on TradingView →
       </div>
     </div>
     </div>
@@ -798,11 +797,8 @@ details.fold[hidden]{display:none}
     </div>
   </div>
 
-  <!-- Rain Print gift line (components/rain-print-promo.js): the one cross-promo on this page, after the main content; shows only while data/rain-print.json promote is on and inside promote_from..promote_until. Empty and hidden otherwise. -->
   <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
 
-  <!-- 2026-10-06: the signup card that sat here is replaced by the one-line
-       ask under the local cash bid (components/signup-ask.js). -->
 
   <div class="rl">Related Tools</div>
   <div class="rg">
@@ -831,7 +827,7 @@ details.fold[hidden]{display:none}
       <div class="author-meta">Questions, corrections, partnership? <a href="mailto:sig@agsist.com">sig@agsist.com</a> &middot; <a href="/about">About AGSIST</a></div>
     </div>
   </div>
-  <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min). Chart shows Capital.com SOYBEAN CFD which tracks CBOT soybean futures; for exact ZS1! data use the TradingView link. Not financial advice. Verify with your elevator or broker before making marketing decisions.</div>
+  <div class="disc">Prices from Yahoo Finance (delayed about 15 min). Chart shows Capital.com SOYBEAN CFD which tracks CBOT soybean futures; for exact ZS1! data use the TradingView link. Not financial advice. Verify with your elevator or broker before making marketing decisions.</div>
 <script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
 
@@ -853,7 +849,7 @@ details.fold[hidden]{display:none}
 </div>
 <script src="/components/bids-network.js?v=8" defer></script>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=34" defer></script>
+<script src="/components/geo.js?v=35" defer></script>
 <script>window.AGSIST_FUTURES='soybean'</script>
 <script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=8"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=29"></script>
 

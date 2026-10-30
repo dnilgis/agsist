@@ -55,12 +55,10 @@ var _rmaWatching=false;
   }
 
   function rmaSourceLine(data,extra){
-    var url=(data&&data.source_url)||'https://public-rma.fpac.usda.gov/apps/mapviewer/dates';
     var up=(data&&data.updated)||'';
     return (extra?extra+' ':'')+
       'USDA RMA Revenue Protection final planting dates, '+((data&&data.crop_year)||'')+' crop year'+
-      (up?', updated '+up:'')+'. <a href="'+url+'" target="_blank" rel="noopener">Check the RMA map viewer</a> '+
-      'and confirm with your crop insurance agent before you plant.';
+      (up?', updated '+up:'')+'. Confirm them with your crop insurance agent before you plant.';
   }
 
   function showRmaBroken(data){

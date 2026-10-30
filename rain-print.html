@@ -801,7 +801,6 @@
             <label class="field rp-year"><span>Year</span><select id="rp-year" name="year"><option value="2025">2025</option></select></label>
             <button class="btn btn-primary" id="rp-go" type="submit">Draw my year</button>
           </form>
-          <!-- Canada (2026-10-16, components/rp-canada.js): shows once a Canadian town is drawn -->
           <div class="rp-ca" id="rp-ca" hidden>
             <span class="rp-seg" role="radiogroup" aria-label="Units" id="rp-units-g"><label><input type="radio" name="rp-units" value="mm"><span id="rp-units-mm">mm and cm</span></label><label><input type="radio" name="rp-units" value="in"><span id="rp-units-in">Inches</span></label></span>
             <span class="rp-seg" role="radiogroup" aria-label="Language" id="rp-lang-g"><label><input type="radio" name="rp-lang" value="en"><span lang="en">English</span></label><label><input type="radio" name="rp-lang" value="fr"><span lang="fr">Français</span></label></span>
@@ -819,35 +818,9 @@
           <p class="rp-preview-line" id="rp-preview-line" hidden></p>
           <p class="rp-source" id="rp-source"></p>
           <label class="field rp-stn"><span>Weather station</span><select id="rp-station" disabled><option value="">Nearest with a good record</option></select></label>
-          <div class="rp-maker" id="rp-maker" hidden>
-            <p><b>Print files for fulfillment.</b> The 13 x 19 in sheet at 300 dpi, landscape, untrimmed: the picture 16.5 x 11 in in the middle, white all round, every word inside the mat&rsquo;s window. Add &amp;serial=N to this page&rsquo;s link and the print files carry "No. 000N" under the QR (initial each physical print beside it in pencil); &amp;serial=0 gives "No. 0000" for your own test prints, with the real QR; the digital file and the SVG never do. The SVG is for viewing in a browser; print from the PNG or PDF. Test print PDF (standard code) is for your own test prints and samples: its QR opens the Rain Print page, not this design, and it needs no short link. Never send it as an order. This box opens only on a browser that has opened this page once with ?maker= and Sig&rsquo;s key; ?maker=1 anywhere else shows the public page. It keeps casual visitors out. It does not protect the files from anyone who reads the page&rsquo;s code.</p>
-            <p class="rp-count" id="rp-maker-logo" hidden></p>
-            <p class="rp-msg rp-bad" id="rp-maker-msg" role="alert" hidden></p>
-            <div class="rp-acts">
-              <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="png">13 x 19 print PNG</button>
-              <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="pdf">13 x 19 print PDF</button>
-              <button class="btn btn-secondary" type="button" data-size="digital" data-fmt="png">Digital file PNG</button>
-              <button class="btn btn-secondary" type="button" data-size="digital" data-fmt="pdf">Digital file PDF</button>
-              <button class="btn btn-secondary" type="button" data-size="digital" data-fmt="jpg">Digital file JPG</button>
-              <button class="btn btn-secondary" type="button" data-size="vector" data-fmt="svg">SVG</button>
-              <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="pdf" data-qr="standard">Test print PDF (standard code)</button>
-            </div>
-            <p>Insert letter: one 8.5 x 11 page that goes on top in the box of every print and framed print (not the digital file). It lies flat on the print. Its numbers are the print&rsquo;s own, it carries the serial from &amp;serial=N (a blank to fill in by hand without it) and the standard code. Paste the gift note or the business&rsquo;s message from the order below; leave it empty and the letter has no note.</p>
-            <label class="field rp-wide"><span>Note for the letter (from the order)</span><textarea id="rp-ins-gift" maxlength="300" rows="2"></textarea></label>
-            <label class="field rp-wide"><span>Note from (a business name, optional; the box then reads A note from &hellip;)</span><input id="rp-ins-from" type="text" maxlength="40"></label>
-            <div class="rp-acts">
-              <button class="btn btn-secondary" type="button" data-size="insert" data-fmt="pdf">Insert letter PDF</button>
-            </div>
-            <p>Reading guide: one 8.5 x 11 page, How to read your Rain Print, that goes with a digital file (the files email sends it with the PNG, PDF and JPG the moment the buyer approves the proof). The letter&rsquo;s numbers and key, plus a line for each extra the print draws; no serial and no code line. The note above goes on it too.</p>
-            <div class="rp-acts">
-              <button class="btn btn-secondary" type="button" data-size="guide" data-fmt="pdf">Reading guide PDF</button>
-            </div>
-          </div>
+          <div class="rp-maker" id="rp-maker" hidden></div>
         </section>
 
-        <!-- 2026-10-22 (Sig, yes to all six): one Layers card. Every layer is one tap, on or off, several at once, and the
-             print redraws at once; a layer that can't change the print right now is greyed with its reason in one line;
-             the line under the print says what the last tap did and where to look. Help that ran long is in Questions. -->
         <section class="rp-step rp-layers" id="rp-layers" aria-labelledby="rp-layers-h">
           <div class="rp-lh"><h2 class="rp-layers-h" id="rp-layers-h">Layers</h2><span class="rp-lcount" id="rp-lcount">7 in all</span><button type="button" class="rp-linkbtn rp-alloff" id="rp-alloff">All off</button></div>
           <div class="rp-lrow" role="group" aria-labelledby="rp-lg-usual"><span class="rp-lg" id="rp-lg-usual">Usual year</span>
@@ -913,8 +886,6 @@
               <p class="rp-note rp-wide2" id="rp-dl-note" aria-live="polite"></p>
             </div>
           </details>
-          <!-- 2026-10-20 (Sig): "Email me this design": the link now, one reminder the next day unless it's ordered, then nothing
-               (worker v5.43 POST /rp-remind; scripts/rp_design_email.py). Nothing is ticked for the reader. -->
           <div class="rp-mailme" id="rp-mailme" hidden>
             <p class="rp-mailme-q"><button type="button" class="rp-linkbtn" id="rp-mailme-open" aria-expanded="false" aria-controls="rp-mailme-form">Email me this design</button></p>
             <form class="rp-mailme-f" id="rp-mailme-form" novalidate hidden>
@@ -929,7 +900,6 @@
         </section>
 
         <section class="rp-step rp-buy" id="rp-buy" aria-labelledby="rp-buy-h">
-          <!-- prices, payment links, Christmas dates and shipping words come from data/rain-print.json (components/rain-print.js reads it) -->
           <h2 class="sec-h rp-step-h" id="rp-buy-h" tabindex="-1"><span class="rp-n" aria-hidden="true">3</span>How do you want it?</h2>
           <div class="rp-gift" id="rp-gift" hidden>
             <h3>A <span class="rp-cy">2026</span> print for Christmas</h3>
@@ -958,8 +928,6 @@
           <div class="rp-pay-wrap" id="rp-pay-wrap">
             <p class="rp-note rp-gift-pre" id="rp-gift-pre">A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note; Stripe asks where to ship it. I print your note at the top of the letter in the box, free, and no prices go in the box.</p>
             <button class="btn btn-primary rp-pay" id="rp-pay" type="button">Check it and pay $89</button>
-            <!-- 2026-10-20 (Sig, "do all"): two short lines under Pay, then the share. When it comes (the Christmas
-                 order-by date from data/rain-print.json while it holds), then the guarantee. Everything else goes lower. -->
             <p class="rp-arrive" id="rp-arrive" hidden></p>
             <p class="rp-promise" id="rp-promise">Numbered and initialed by hand. If it&rsquo;s not right, I&rsquo;ll redo it or refund it.</p>
             <p class="rp-fam" id="rp-fam-wrap" hidden><button type="button" class="rp-linkbtn" id="rp-fam" aria-expanded="false" aria-controls="rp-fam-more">Send this to your family</button></p>
@@ -969,10 +937,7 @@
             <p class="rp-another" id="rp-another-wrap" hidden><button type="button" class="rp-linkbtn" id="rp-another">Make another: same town, a different year</button></p>
             <p class="rp-note" id="rp-buy-note" aria-live="polite"></p>
           </div>
-          <!-- 2026-10-19: a print of this year, drawn: "Email me when <year> is finished" (rainyear notice, components/rain-print.js syncYearAsk). Under Pay, so Pay never moves. -->
           <div class="rp-yearask" id="rp-yearask" hidden></div>
-          <!-- 2026-10-16: the framed picture sits open under Pay (it used to hide inside What you get), so a phone's Pay
-               button stays where it was. It is a render, labeled so, until Sig sends photos of real prints. -->
           <figure class="rp-onwall" id="rp-onwall"><div class="rp-onwall-i"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="eager" fetchpriority="low" decoding="async" alt="Mockup: a framed Rain Print in a black frame on the painted steel wall of a farm shop."></picture><span class="rp-ex-tag" aria-hidden="true">Mockup</span></div><figcaption>Mockup of a framed print. Photos with the white mat coming soon.</figcaption></figure>
           <p class="rp-note rp-gift-line" id="rp-gift-line" hidden>It&rsquo;s a gift? Say so on the order form, with their name and your note.</p>
           <p class="rp-note" id="rp-arrive-est" hidden></p>
@@ -1172,7 +1137,6 @@
       <a href="/gdu-calculator">GDU calculator</a>
       <a href="/editorial-standards#sources">Where the numbers come from</a>
     </nav>
-    <!-- the rain gauge hook: gauge_hook in data/rain-print.json, word for word (test/gauge-hook.test.mjs) -->
     <p class="rp-also" style="margin:1rem 0 0;font-size:.9rem;color:var(--text-dim)">Also from me: I'm building a rain gauge that keeps a log for each field. <a href="/rain-gauge" style="color:var(--brand)">Join the waitlist</a>.</p>
     <div class="rp-strip" id="rp-strip" hidden>
       <div class="rp-mini" id="rp-mini" aria-hidden="true"></div>
@@ -1217,9 +1181,6 @@
           <label><input type="radio" name="rp-pproduct" value="digital"><span>Digital file <b data-price="digital">$19</b></span></label>
         </div></div>
         <div><h3>Check the details</h3><dl class="rp-proof-sum" id="rp-proof-sum"></dl><dl class="rp-proof-sum" id="rp-pg-sum" hidden></dl></div>
-        <!-- 2026-10-17: the gift, before Stripe. Mirrors the order form's fields (#ro-isgift, #ro-gift-to, #ro-gift-msg,
-             #ro-deliver, #ro-address, #ro-name, #ro-email) and goes to Sig as a rain-print-order post (gift: yes), so the
-             note reaches the letter the same way an order request's does. -->
         <div class="rp-pgift" id="rp-pgift" hidden>
           <label class="rp-check"><input type="checkbox" id="rp-pg-on"><span>This is a gift</span></label>
           <div class="rp-pg-box" id="rp-pg-box" hidden>
@@ -1250,9 +1211,6 @@
       </div>
     </div>
   </dialog>
-  <!-- 2026-10-17 (speed panel): every script deferred, in the order they ran before (loader.js after the page's
-       own, as when the page's ran during parsing). rp-logo.js, gdu-stages.js and rain-print-extras.js load
-       when a logo or a temperature option is first wanted (components/rain-print.js logoReady, extrasReady). -->
   <script src="/components/util.js?v=19" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/form-post.js?v=8" defer></script>
@@ -1260,7 +1218,7 @@
   <script src="/components/rp-short.js?v=7" defer></script>
   <script src="/components/rp-canada.js?v=4" defer></script>
   <script src="/components/rain-print-art.js?v=23" defer></script>
-  <script src="/components/rain-print.js?v=86" defer></script>
+  <script src="/components/rain-print.js?v=87" defer></script>
   <script src="/components/rain-print-draw.js?v=5" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=9" defer></script>

@@ -72,7 +72,7 @@ test("print-qr.js: 0.85 in up to version 15, grows to keep 0.01 in squares up to
   assert.doesNotMatch(PQ.html("x".repeat(998), "agsist.com/x"), /<svg/, "too long: no code, the address in words");
   assert.match(PQ.CSS, /^\.agpq\{display:none;/, "hidden on screen");
   assert.match(PQ.CSS, /@media print\{\.agpq\{display:block\}\}/, "shown in print");
-  assert.doesNotMatch(read("components/print-qr.js") + read("components/qr.js") + read("components/report-link.js") + read("404.html").split("<!-- Short links")[1].split("</script>\n")[1], /—/, "no em dashes");
+  assert.doesNotMatch(read("components/print-qr.js") + read("components/qr.js") + read("components/report-link.js") + /<script>\(function\(\)\{try\{var u=window\.AgReportLink[\s\S]*?<\/script>/.exec(read("404.html"))[0], /—/, "no em dashes");
 });
 
 test("one QR encoder: the three report pages load components/qr.js (v=11) before print-qr.js and their own script", () => {

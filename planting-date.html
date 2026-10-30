@@ -358,9 +358,9 @@ html[data-theme="light"]{--pd-red:#b3432c}
 <details class="pd-card pd-det" id="pd-method">
   <summary><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> How the numbers are made, and sources</summary>
   <ul class="pd-src">
-    <li><b>Soil temperature:</b> measured at 4 in at the nearest station within 50 miles: NOAA&rsquo;s <a href="https://www.ncei.noaa.gov/access/crn/" target="_blank" rel="noopener">Climate Reference Network</a>, USDA NRCS <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-climate-analysis-network" target="_blank" rel="noopener">SCAN</a>, the <a href="https://mesonet.agron.iastate.edu/agclimate/" target="_blank" rel="noopener">Iowa State Soil Moisture Network</a> and UW&rsquo;s <a href="https://wisconet.wisc.edu/" target="_blank" rel="noopener">Wisconet</a> (CC BY). The reading is the mean of the station&rsquo;s last 3 daily means; there is no soil forecast, because no free forecast gives one. The station is not your field. Air now: the <a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noopener">National Weather Service</a> forecast grid.</li>
-    <li><b>Station frost dates and heat units:</b> <a href="https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals" target="_blank" rel="noopener">NOAA NCEI U.S. Climate Normals, 1991-2020</a>: freeze probability dates (32&deg;F and 28&deg;F at the 10, 50 and 90% levels) and daily growing degree days (base 50&deg;F, cap 86&deg;F), nearest station within 75 miles.</li>
-    <li><b>Final planting dates:</b> <a href="https://public-rma.fpac.usda.gov/apps/mapviewer/dates" target="_blank" rel="noopener">USDA RMA</a> Revenue Protection final planting dates, 2026 crop year.</li>
+    <li><b>Soil temperature:</b> measured at 4 in at the nearest station within 50 miles: NOAA&rsquo;s Climate Reference Network, USDA NRCS SCAN, the Iowa State Soil Moisture Network and UW&rsquo;s Wisconet (CC BY). The reading is the mean of the station&rsquo;s last 3 daily means; there is no soil forecast, because no free forecast gives one. The station is not your field. Air now: the National Weather Service forecast grid.</li>
+    <li><b>Station frost dates and heat units:</b> NOAA NCEI U.S. Climate Normals, 1991-2020: freeze probability dates (32&deg;F and 28&deg;F at the 10, 50 and 90% levels) and daily growing degree days (base 50&deg;F, cap 86&deg;F), nearest station within 75 miles.</li>
+    <li><b>Final planting dates:</b> USDA RMA Revenue Protection final planting dates, 2026 crop year.</li>
     <li><b>Corn yield by planting date:</b> <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn" target="_blank" rel="noopener">UMN Extension</a>&rsquo;s table of two planting date studies, Lamberton 1988-2003 and Lamberton, Morris and Waseca 2009-2011, % of maximum yield. Each row shows both as a range.</li>
     <li><b>Soybean yield by planting date:</b> UW-Madison&rsquo;s southern Wisconsin figure, about 2.1 bu/a lost per week of delay past roughly Apr 10 (<a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">Conley, 2026</a>), drawn as a straight line; the June rows extend it. Not a rule for every field or for the north.</li>
     <li><b>GDU ratings:</b> corn uses a reference line of 22 GDUs per day of RM, set on K-State&rsquo;s 110-day figure (about 2,670; Purdue&rsquo;s 112-day figure, about 2,700, sits 14 under it); soybeans use <a href="https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model" target="_blank" rel="noopener">NDSU&rsquo;s soybean GDD model</a> for MG 1.1 and earlier only. Your seed company&rsquo;s rating beats both.</li>
@@ -428,7 +428,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/nws.js?v=1" defer></script>
 <script src="/components/soil-near.js?v=1" defer></script>
-<script src="/components/planting-date.js?v=6" defer></script>
+<script src="/components/planting-date.js?v=7" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
