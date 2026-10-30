@@ -157,6 +157,8 @@ RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer 
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
 PRINT_JS = '<script src="/components/rain-county-print.js?v=44" defer></script>'
 # the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30): county pages and the hub, not the state pages.
+# On a county page it sits right under the Rain Print sell block, below the print, so the print stays on a phone's
+# first screen and still draws (it waits until it is near the screen).
 # A plain script tag on purpose: it writes the line before the first paint, so nothing moves.
 XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 
@@ -804,7 +806,7 @@ def county_page(ctx):
         sell_btns = f' <a class="btn btn-primary" href="{e(rp)}">Make yours</a></p>'
     sell = (f'<div class="rc-sell"><p>{lead_print}{lead_plain}{sell_btns}'
             + (f'<p class="rc-fine">{(ship + " " + miss_note).strip()}</p>' if (ship or miss_note) else "")
-            + f'<p class="rc-fine">{RP_ANY_YEAR}</p>' + "</div>"
+            + f'<p class="rc-fine">{RP_ANY_YEAR}</p>' + "</div>" + XMAS_JS
             + (PRINT_JS if ready else ""))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""),
@@ -848,7 +850,6 @@ def county_page(ctx):
   <main id="main" class="main" tabindex="-1">
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/rain">Rain by county</a> &rsaquo; <a href="/rain/{st_slug}">{e(stn)}</a> &rsaquo; <span aria-current="page">{e(name)}</span></nav>
-    {XMAS_JS}
     <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) + ', the last day reported' if done else 'As of ' + long_date(asof) + ', the latest day this ' + noun + ' has reported')}</p>
     <h1>{h1}</h1>
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>{gap_note(c, ctx.get("ctx"), noun)}

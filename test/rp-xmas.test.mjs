@@ -9,6 +9,10 @@
  *   - end on data/rain-print.json print_christmas_cutoff, start Nov 1;
  *   - be written before the first paint (a plain script tag inside <main>), so
  *     nothing moves: in the browser no layout shift ever names the line;
+ *   - never push a page's first-screen promise down: on /hail-map it sits under
+ *     the map and its 5-year controls, on county rain pages under the print
+ *     and its sell block (test/hail-map-now and test/rain-print-top run in and
+ *     out of the dates through window.AGSIST_TODAY);
  *   - fit at 390 with no sideways scroll, cover nothing, hide for 30 days on x,
  *     and keep the page to one Rain Print line (the after-content one hides).
  *
@@ -165,7 +169,9 @@ test("browser: shown Nov 15 at 390 and 1280, written before paint, never moves, 
         assert.ok(r, at + ": the line shows");
         assert.equal(r.n, 1, at + ": once");
         assert.ok(r.firstInMain, at + ": inside <main>");
-        assert.ok(r.atDcl !== null && Math.abs(r.atDcl - r.top) < 1, `${at}: it was there when the page was read (${r.atDcl}) and has not moved since (${r.top})`);
+        assert.ok(r.atDcl !== null, `${at}: it was there when the page was read`);
+        // on the first screen it never moves; lower down (/hail-map, under the map) the page's own boxes above it may still fill
+        if (r.atDcl < (width < 600 ? 844 : 900)) assert.ok(Math.abs(r.atDcl - r.top) < 1, `${at}: on the first screen at ${r.atDcl} and has not moved since (${r.top})`);
         assert.deepEqual(r.shifts, [], at + ": no layout shift names the line");
         assert.ok(r.sw <= r.vw, `${at}: no sideways scroll (${r.sw} > ${r.vw})`);
         assert.ok(r.left >= 8 && r.right <= r.vw - 8, `${at}: inside the page's margins (${r.left}, ${r.right} of ${r.vw})`);

@@ -3,7 +3,9 @@
    the top of the page, with his phone number for people who would rather he
    made the print for them (/rain-print has the "I'll make it for you" form).
 
-   WIRING: one plain (not deferred) script tag, the first thing inside <main>:
+   WIRING: one plain (not deferred) script tag inside <main>, near the top (on
+   /hail-map under the map and its 5-year controls, on county rain pages under
+   the print and its sell block, so a phone's first screen keeps those):
      <script src="/components/rp-xmas.js?v=1"></script>
    It writes the line just before itself while the page is still being read,
    so the line is there at the first paint and nothing below it ever moves
@@ -65,7 +67,9 @@
   root.AgsistRpXmas = api;
 
   var doc = root.document, me = doc && doc.currentScript;
-  if (!me || !me.parentNode || !inWindow(chicagoToday())) return;
+  // window.AGSIST_TODAY ("YYYY-MM-DD"): set only by tests (an init script), to run a page in and out of the dates
+  var today = typeof root.AGSIST_TODAY === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(root.AGSIST_TODAY) ? root.AGSIST_TODAY : chicagoToday();
+  if (!me || !me.parentNode || !inWindow(today)) return;
   var hid = null;
   try { hid = root.localStorage.getItem(KEY); } catch (e) { hid = null; }
   if (dismissed(hid, Date.now())) return;
