@@ -129,9 +129,17 @@
    "to": "/rain/missouri",
    "since": "2026-10-14"
   },
+  "rain/missouri/warren-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-10-30"
+  },
   "rain/missouri/worth-county.html": {
    "to": "/rain/missouri",
    "since": "2026-10-15"
+  },
+  "rain/montana/petroleum-county.html": {
+   "to": "/rain/montana",
+   "since": "2026-10-30"
   },
   "rain/new-york/schoharie-county.html": {
    "to": "/rain/new-york",
@@ -181,10 +189,6 @@
    "to": "/rain/tennessee",
    "since": "2026-10-19"
   },
-  "rain/tennessee/unicoi-county.html": {
-   "to": "/rain/tennessee",
-   "since": "2026-10-19"
-  },
   "rain/texas/anderson-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
@@ -220,6 +224,10 @@
   "rain/virginia/richmond-county.html": {
    "to": "/rain/virginia",
    "since": "2026-10-19"
+  },
+  "rain/west-virginia/pendleton-county.html": {
+   "to": "/rain/west-virginia",
+   "since": "2026-10-30"
   }
  }
 }
