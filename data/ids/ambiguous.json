@@ -327,14 +327,6 @@
    ]
   },
   {
-   "key": "basis:IA|VERBIO NORTH AMERICA LLC|NEVADA",
-   "rule": "name+town",
-   "candidates": [
-    "emknz275z3",
-    "ez28g17wz3"
-   ]
-  },
-  {
    "key": "basis:IL|ADM|DECATUR",
    "rule": "exact",
    "candidates": [
