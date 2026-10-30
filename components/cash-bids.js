@@ -2273,6 +2273,8 @@ function netRowsFrom(shard,distanceMi){
   return rows;
 }
 
+function netPlain(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+
 /* Never rejects. Resolves to an empty result on any failure at all.
    `late` (optional) is a holder: the inner chain records its own answer on it
    (late.done, late.result) and calls late.onSettle(result) if that is set. */

@@ -126,5 +126,5 @@ test("cash bids net is limited to the hauling cost the reader entered", () => {
   assert.match(h, />Net after hauling<\/th>/);
   assert.match(js, /after round-trip hauling at the \$'\+fpm\.toFixed\(2\)\+' a mile you entered/);
   assert.match(js, /Discounts, shrink and delivery terms are not counted: call to confirm before you haul\./);
-  assert.match(h, /components\/cash-bids\.js\?v=16/);   // 16: fx/quickwins (posted date beside an old price); 15: fx/bidflags; 14 was fx/smallfixes
+  assert.match(h, /components\/cash-bids\.js\?v=17/);   // 16: fx/quickwins (posted date beside an old price); 15: fx/bidflags; 14 was fx/smallfixes
 });

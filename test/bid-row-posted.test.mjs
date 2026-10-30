@@ -64,5 +64,5 @@ test("every bid row calls it, and the page styles it and loads the new script", 
   assert.match(CB, /gradeHtml\+=rowPostedMark\(bid,elev\);\n        if\(bf\.odd\)/);
   const h = read("cash-bids.html");
   assert.match(h, /\.bid-posted-old\{color:var\(--gold\);font-weight:600\}/);
-  assert.match(h, /cash-bids\.js\?v=16/);
+  assert.match(h, /cash-bids\.js\?v=17/);
 });
