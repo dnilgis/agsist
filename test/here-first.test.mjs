@@ -342,7 +342,14 @@ test("in a browser: ranked line, the Rain Print, unusual lines only when unusual
         const tabText = await pg.textContent("#place");
         for (const n of new Set(IDX.places.map((p) => String(p.operator || "").trim()).filter((n) => n.length > 3))) assert.ok(!tabText.includes(n), url + " names " + n);
         assert.match(await pg.textContent("#h-elev-b"), /Basis history starts June 2026/);
-        assert.match(await pg.textContent("#h-el-thin"), /^Against its own history: too new to compare yet\.$/);
+        // the history note follows the data: all six too new at first (June 2026 start), then "for N of these" as
+        // each elevator's own series grows long enough, then hidden once none is too new (Oct 30: 2 of 6 still new)
+        const thin = await pg.$eval("#h-el-thin", (e) => ({ hidden: e.hidden, text: e.textContent }));
+        if (!thin.hidden) {
+          const m = thin.text.match(/^Against its own history: too new to compare yet(?: for (\d+) of these)?\.$/);
+          assert.ok(m, "history note: " + thin.text);
+          if (m[1]) assert.ok(+m[1] >= 1 && +m[1] < els.length, `history note counts ${m[1]} of ${els.length}`);
+        }
         const sw = await pg.evaluate(() => document.documentElement.scrollWidth);
         assert.ok(sw <= w + 1, "no sideways scroll at " + w + ": " + sw);
         assert.deepEqual(errs, []);
