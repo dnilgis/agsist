@@ -3,13 +3,13 @@
  "generated": "2026-10-30",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2176,
-  "with_parent": 109,
+  "live_boards": 2210,
+  "with_parent": 135,
   "with_dest": 117,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
-   "chs-brand": 104
+   "chs-brand": 130
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -408,6 +408,101 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
+  "chshighplains-akron": {
+   "elevId": "evdr7en3h1",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-amherst": {
+   "elevId": "e1ab47v7dj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-brule": {
+   "elevId": "e24jjqke3d",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-brush": {
+   "elevId": "ezkangj84w",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-byers": {
+   "elevId": "eq6kcw9tbf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-fleming": {
+   "elevId": "ekfgs372nq",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-haxtun": {
+   "elevId": "ekgzh6ta5t",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-holyoke": {
+   "elevId": "eppbkcfd01",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-holyokeshuttle": {
+   "elevId": "enen7k77yz",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-hyde": {
+   "elevId": "ewms1cyfjf",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-idalia": {
+   "elevId": "er665q1zk5",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-idaliawest": {
+   "elevId": "erfvwzws2r",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-julesburg": {
+   "elevId": "exjrv2p36n",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-merrittbunker": {
+   "elevId": "ek60bc4gkj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-newhaven": {
+   "elevId": "eydq1sjn3h",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-otis": {
+   "elevId": "ewwvkxfwkj",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-stateline": {
+   "elevId": "efj42jw2z9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-yuma": {
+   "elevId": "eyk2anbaxr",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chshighplains-yumashuttle": {
+   "elevId": "e44nd7xnqd",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
   "chsholdrege-alma": {
    "elevId": "e7mwcb8zsz",
    "parent": "CHS Inc.",
@@ -600,6 +695,41 @@
   },
   "chssunbasingrowers-wheelerelevatorml": {
    "elevId": "e0xdw63jsm",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-cheyennewells": {
+   "elevId": "ecza11m4k4",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-kanco": {
+   "elevId": "enh36pe1vm",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-selkirk": {
+   "elevId": "et4vjtndjg",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-sharonsprings": {
+   "elevId": "edq0997yx2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-tribune": {
+   "elevId": "e9eyt6bb9x",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-wallace": {
+   "elevId": "esmztkahhe",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsunitedplainsag-weskan": {
+   "elevId": "eev8k4xsz2",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
