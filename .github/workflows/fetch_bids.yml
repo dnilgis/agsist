@@ -323,6 +323,19 @@ jobs:
           git pull --rebase origin main
           git push
 
+      # THE SITE DEPLOY CLOCK (pages.yml, publish only the site). Every run,
+      # changed or not: this workflow is started every 15 minutes all week, and
+      # a push made with GITHUB_TOKEN by any other job starts no deploy, so this
+      # start is what carries every other bot commit to readers. pages.yml skips
+      # a commit that is deployed already. Off until PAGES_FROM_ACTIONS is 1.
+      - name: Start the site deploy
+        if: ${{ !cancelled() && github.event.inputs.dry_run != 'true' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
+        run: bash .github/pages-kick.sh
+
       # The withheld-rows report (which rows were held back and why) is read by
       # no page, so since Oct 20 it goes to the private repo (branch
       # private-data), not main. fetch_bids.py writes it inside a try/except,
