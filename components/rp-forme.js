@@ -74,6 +74,11 @@
       if (errs[k]) { el.setAttribute('aria-invalid', 'true'); el.title = errs[k]; } else { el.removeAttribute('aria-invalid'); el.removeAttribute('title'); }
     });
   }
+  // a fix typed in takes the old "what is missing" line away
+  f.addEventListener('input', function (ev) {
+    if (!busy && out.querySelector('.rp-bad')) out.innerHTML = '';
+    if (ev.target && ev.target.removeAttribute) { ev.target.removeAttribute('aria-invalid'); ev.target.removeAttribute('title'); }
+  });
   var busy = false;
   f.addEventListener('submit', function (ev) {
     ev.preventDefault();
