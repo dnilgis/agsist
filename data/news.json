@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-15T00:23:22+00:00",
- "count": 21,
- "added": 0,
+ "updated": "2026-10-30T19:39:51+00:00",
+ "count": 22,
+ "added": 1,
  "state": {
   "px": {
    "corn": {
@@ -29,6 +29,17 @@
   }
  },
  "items": [
+  {
+   "id": "cot:October 27, 2026:kcwheat:flip",
+   "kind": "positioning",
+   "headline": "Managed money flipped net short in kc wheat",
+   "detail": "Net +7,490 to -517 contracts in a week, as of October 27, 2026.",
+   "significance": "notable",
+   "url": "/cot",
+   "source": "CFTC Commitments of Traders",
+   "day_only": true,
+   "ts": "2026-10-30T12:00:00+00:00"
+  },
   {
    "id": "px:2026-10-09:corn-dec:move",
    "kind": "board",
