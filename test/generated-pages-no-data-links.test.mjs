@@ -11,7 +11,7 @@ const walk = (d) => readdirSync(ROOT + d).flatMap((n) => {
   const p = d + "/" + n;
   return statSync(ROOT + p).isDirectory() ? walk(p) : p.endsWith(".html") ? [p] : [];
 });
-const SETS = ["rain", "arc-plc", "cash-bids", "farmland-atlas", "land-sales"];
+const SETS = ["rain", "arc-plc", "cash-bids", "farmland-atlas", "land-sales", "prf", "yield", "basis", "daily", "embed"];
 
 for (const set of SETS) {
   test(`${set}: no page links straight at a data source`, () => {

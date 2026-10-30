@@ -1,5 +1,5 @@
 {
- "note": "one row per USDA AMS report 3195 date, appended by scripts/fetch_fert_ams.py",
+ "note": "one row per USDA AMS report 3195 date, added as each report is read",
  "reports": [
   {
    "date": "2026-10-02",

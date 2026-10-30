@@ -849,7 +849,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
                    "sources holds every key the facility is known by (bids: data/bids.json place, basis: ST|FACILITY|CITY "
                    "in data/basis/<ST>.json, directory: data/elevator-directory.json locationId, bids_repo: dnilgis/bids "
                    "data/directory.json id, schedules: company on the raw-branch schedules job). fips: point in "
-                   "data/atlas/counties.geo.json, null without a point. Rules: scripts/build_ids.py.",
+                   "data/atlas/counties.geo.json, null without a point.",
            "counts": counts, "elevators": recs}
     write_json(os.path.join(out_dir, "elevators.json"), doc, compact=True)
     ledger["keys"] = dict(sorted(ledger["keys"].items()))
@@ -857,7 +857,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
                       "(a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every "
                       "merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; "
                       "their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements "
-                      "filled from this ledger as it stood before them, commit 3dd4c29b39d). Rules: scripts/build_ids.py.")
+                      "filled from this ledger as it stood before them, commit 3dd4c29b39d).")
     ledger["retired"] = dict(sorted((ledger.get("retired") or {}).items()))
     write_json(lpath, {k: ledger[k] for k in ("schema", "note", "next", "minted", "retired", "events", "keys")})
     write_json(os.path.join(out_dir, "ambiguous.json"),
@@ -880,7 +880,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
         prules, fixtures = parcel_outputs(root)
         write_json(os.path.join(out_dir, "parcel-rules.json"), prules)
         write_json(os.path.join(out_dir, "parcel-key-fixtures.json"),
-                   {"note": "[fips, pid, key] from scripts/build_ids.py parcel_key(); parcel-key.js must give the same.",
+                   {"note": "[fips, pid, key] parcel key examples; the page's key function must give the same key.",
                     "cases": fixtures})
         counts["repeat_sales"] = prules["repeat_sales"]["by_state"]
     log(f"[ids] facilities {counts['facilities']}, with fips {counts['with_fips']}, matched across 2+ sources "

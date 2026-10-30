@@ -201,8 +201,8 @@ def build(text, elevators, cmap, ref=REF_ID, sha=None, url=None):
         "schema": SCHEMA,
         "note": ("Grain warehouse locations licensed by the Nebraska Public Service Commission and the bushels "
                  "each is licensed to store, as the PSC reports them. Warehouses licensed federally instead are "
-                 "not on the state's list. id: the AGSIST elevator id when exactly one of our facilities matches "
-                 "(scripts/fetch_ne_capacity.py); unjoined and ambiguous rows are listed, never guessed."),
+                 "not on the state's list. id: the AGSIST elevator id when exactly one of our facilities matches; "
+                 "unjoined and ambiguous rows are listed, never guessed."),
         "source": {"name": SOURCE_LONG, "short": SOURCE_NAME, "as_of": as_of, "ref": ref, "sha256": sha,
                    "url": url or ("https://psc.nebraska.gov/sites/default/files/doc/"
                                   f"{as_of}%20Location%20Capacity%20Report.pdf")},

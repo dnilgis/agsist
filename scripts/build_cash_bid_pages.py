@@ -2588,7 +2588,7 @@ def counts_doc(counts, ctx, root="."):
         pass
     return {"schema": "agsist-elevator-counts/1", "generated": ctx["snap_iso"],
             "note": ("bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they "
-                     "are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest "
+                     "are in. coverage: boards read on the latest "
                      "full coverage pass out of every elevator tracked (copied from "
                      "data/elevator-coverage-counts.json). Different questions: a board can be read and have no "
                      "current bid."),
@@ -3225,7 +3225,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
                                      town_paths=town_paths)
         os.makedirs(os.path.join(tmp, url_slug(STATE_NAMES[st])), exist_ok=True)
         with open(os.path.join(tmp, url_slug(STATE_NAMES[st]), "index.html"), "w", encoding="utf-8") as f:
-            f.write(page)
+            f.write(SL.unlink(page))
         smetas.append(sm)
     # /cash-bids/states forwards to /basis#states (Oct 22, 2026); the list is baked there
     # (stamp_basis_hub) from the same counts the state pages print

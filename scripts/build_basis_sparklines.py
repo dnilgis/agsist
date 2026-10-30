@@ -136,8 +136,8 @@ def build():
         out[state] = {
             "generated": None,  # filled by caller at write time
             "units": "integer cents per bushel",
-            "note": "Real basis change-points only, replayed from data/basis/changes-*.json. A gap in the line is a gap in what changed, not missing data. "
-                    "Points the cash-bid pages would call a misread (scripts/basis_method.py relative_outlier against the other elevators, same crop and contract, "
+            "note": "Real basis change-points only, replayed from the daily cash-bid basis change logs. A gap in the line is a gap in what changed, not missing data. "
+                    "Points the cash-bid pages would call a misread (far from the other elevators, same crop and contract, "
                     "latest basis in the 14 days before) are left out; screened counts them.",
             "screened": len(dropped),
             "series": state_out,

@@ -223,8 +223,8 @@ def build(text, elevators, file_date, read="2026-10-28", ref=REF_ID, sha=None, u
         "schema": SCHEMA,
         "note": ("Grain warehouse and processor locations licensed by the North Dakota Department of Agriculture. "
                  "The list gives one total capacity per licensee (ent_bu), shared by its ent_n locations; it gives "
-                 "none per location. id: the AGSIST elevator id when exactly one of our facilities matches "
-                 "(scripts/licensed_storage.py); unjoined and ambiguous rows are listed, never guessed."),
+                 "none per location. id: the AGSIST elevator id when exactly one of our facilities matches; "
+                 "unjoined and ambiguous rows are listed, never guessed."),
         "source": {"name": SOURCE_LONG, "short": SOURCE_NAME, "url": url, "file_date": file_date, "read": read,
                    "ref": ref, "sha256": sha},
         "totals": {"entities": len(ents), "licences": {k: lic.get(k, 0) for k in KINDS.values()},

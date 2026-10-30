@@ -1606,7 +1606,7 @@ def main():
         "where cash minus basis does not agree with what every other facility "
         "quoting the same contract implies; such a row keeps its numbers, "
         "carries `unverifiedWhy`, and is never SELECTED. The complete set is "
-        "not committed - see scripts/fetch_bids.py."
+        "not kept here."
     )
     os.makedirs(os.path.dirname(OUTPUT_PATH) or ".", exist_ok=True)
     with open(OUTPUT_PATH, "w") as f:
@@ -1656,7 +1656,7 @@ def bids_stats_doc(output):
     nothing else (the homepage reads this instead of the whole file)."""
     st = output.get("stats") or {}
     return {"schema": "agsist-bids-stats/1", "fetched": output.get("fetched"),
-            "note": "Counts from data/bids.json, written by scripts/fetch_bids.py on the same run.",
+            "note": "Counts from the cash bids file, taken on the same run.",
             "stats": {k: st.get(k) for k in ("total_bids", "facilities", "locations", "states")}}
 
 

@@ -1,6 +1,6 @@
 {
  "schema": "agsist-elevator-ids/1",
- "note": "Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids (a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements filled from this ledger as it stood before them, commit 3dd4c29b39d). Rules: scripts/build_ids.py.",
+ "note": "Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids (a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements filled from this ledger as it stood before them, commit 3dd4c29b39d).",
  "next": 538,
  "minted": {
   "a00001": {

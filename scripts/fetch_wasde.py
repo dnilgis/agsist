@@ -564,8 +564,8 @@ def main(argv=None):
                       + read_wasde_pdf.URLS[0].format(mmyy=release.strftime("%m%y"))),
            "note": ("What USDA actually printed. Yields are read from the NASS series the WASDE "
                     "yield figures come from; ending stocks, production and the season-average "
-                    "farm price are read from the WASDE PDF's U.S. supply and use tables "
-                    "(scripts/read_wasde_pdf.py). Written only after the release is public. "
+                    "farm price are read from the WASDE PDF's U.S. supply and use tables. "
+                    "Written only after the release is public. "
                     "`wasde_pdf` carries the whole U.S. corn, soybean and wheat block as printed, "
                     "in the PDF's own units, with last month's column beside it."),
            "metrics": list(metrics.values()),

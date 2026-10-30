@@ -850,7 +850,7 @@ def merge(prev, new, failed):
 def assemble(sections, cy, now):
     doc = {"v": 1, "built": now, "crop_year": cy,
            "grid": {"lat0": LAT0, "lon0": LON0, "step": STEP, "cols": COLS, "point": "centre"},
-           "note": "Read at each PRF grid's center. Codes: B/A/N + CPC band floor/10 (B4 = below normal favored, 40 to 50%), E = equal chances, - = no data; drought N = none, 0-4 = D0-D4. Written by scripts/fetch_prf_outlook.py."}
+           "note": "Read at each PRF grid's center. Codes: B/A/N + CPC band floor/10 (B4 = below normal favored, 40 to 50%), E = equal chances, - = no data; drought N = none, 0-4 = D0-D4."}
     doc.update(sections)
     return doc
 

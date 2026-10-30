@@ -1,5 +1,5 @@
 {
- "_comment": "AGSIST farm-bill page data. Edit this, then run scripts/build_farmbill.py --json data/farm-bill.json (or push; the GitHub Action bakes it). pills, tldr, next90, compare and tracker are baked into static HTML so crawlers see them. byOperation, detailNote, titles and ledger are NOT baked: components/farm-bill.js fetches this file and renders them only when a reader clicks, so they add nothing to the page weight. HTML entities allowed in text fields. Keep <b> for emphasis.",
+ "_comment": "AGSIST farm-bill page data. pills, tldr, next90, compare and tracker are baked into static HTML so crawlers see them. byOperation, detailNote, titles and ledger are NOT baked: components/farm-bill.js fetches this file and renders them only when a reader clicks, so they add nothing to the page weight. HTML entities allowed in text fields. Keep <b> for emphasis.",
  "updated": "2026-10-16",
  "updated_display": "Oct 16, 2026",
  "pills": [
@@ -276,7 +276,7 @@
     "open": "2026-10-05",
     "close": "2026-12-18",
     "src": "fsa_dmc",
-    "_note": "Read by scripts/seed_static.py for the /milk-prices DMC card and countdown. Keep these dates and the signup line below saying the same thing (test/milk-dmc.test.mjs)."
+    "_note": "Feeds the /milk-prices DMC card and countdown. Keep these dates and the signup line below saying the same thing."
    },
    "lines": [
     {
