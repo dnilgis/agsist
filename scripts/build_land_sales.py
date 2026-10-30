@@ -72,6 +72,7 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import build_land_summary as BLS   # noqa: E402
 import land_alert as LA             # noqa: E402
+import source_links as SL           # noqa: E402  no direct links to data sources
 
 ORIGIN = "https://agsist.com"
 STATES = ("IL", "WI", "IN", "VT")   # Vermont since Oct 29, 2026 (Sig: next land states, Vermont first)
@@ -643,8 +644,8 @@ def survey_html(d):
             what = "price of rented land and cash rent, %s, %d" % (S.get("evidence"), S.get("year"))
         else:
             what = "%s, %d (sales %s)" % (S.get("evidence"), S.get("year"), S.get("period"))
-        rows.append('<li><b>%s:</b> %s, %d counties, from <a href="%s" rel="noopener">%s</a>. On each <a href="/farmland-atlas/%s/">%s county page</a> in the Farmland Atlas.</li>'
-                    % (e(name), e(what), n, e(src.get("page") or src.get("url") or ""), e(src.get("org") or ""), slug, e(name)))
+        rows.append('<li><b>%s:</b> %s, %d counties, from %s. On each <a href="/farmland-atlas/%s/">%s county page</a> in the Farmland Atlas.</li>'
+                    % (e(name), e(what), n, SL.link(src.get("page") or src.get("url") or "", e(src.get("org") or ""), ' rel="noopener"'), slug, e(name)))
     if not rows:
         return ""
     return ('<div class="ls-surv" id="other-evidence"><p><b>Where sale prices are private: other county land values</b></p><ul>%s</ul>'
