@@ -53,6 +53,8 @@ Pre-v3.6 archive JSONs don't have chart_series or locked_prices,
 so their rebuilt pages show no sparkline row. That's expected.
 New briefings written by v3.6 will have sparklines from day one.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import re
 import sys

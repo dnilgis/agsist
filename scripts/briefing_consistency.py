@@ -29,6 +29,8 @@ What it does about it, deterministically, after the editor has had its turn:
     python3 scripts/briefing_consistency.py --selftest
     python3 scripts/briefing_consistency.py data/daily-archive/2026-10-16.json
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import copy
 import json
 import re

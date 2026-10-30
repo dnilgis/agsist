@@ -50,6 +50,7 @@ import { readFileSync, writeFileSync, writeSync, mkdirSync, existsSync } from "n
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { pack, answerOf } from "./rain_print_examples_pack.mjs";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const OUT_DIR = ROOT + "data/rain-print-examples/";

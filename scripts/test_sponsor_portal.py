@@ -18,6 +18,8 @@ actually reads.
 
 No network. Reads data/sponsor.json, data/rate-card.json and the page itself.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import sys

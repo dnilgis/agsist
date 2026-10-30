@@ -39,6 +39,8 @@ writes why. A month never replaces a newer one.
   python3 scripts/fetch_order30.py --probe     raw captures to data/dairy-raw/order30/
   python3 scripts/fetch_order30.py --selftest  offline tests on the real releases
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import os

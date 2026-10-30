@@ -39,6 +39,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { subsidy as btSubsidy, BANDS } from "./lrp_backtest.mjs";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PAGE = "lrp.html";

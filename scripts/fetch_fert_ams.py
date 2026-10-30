@@ -42,6 +42,8 @@ CHECKED AGAINST THE LIVE REPORT
 
 Stdlib only, plus pdftotext (poppler) or pypdf for the PDF text.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import os

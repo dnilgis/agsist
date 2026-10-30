@@ -11,6 +11,8 @@ AGSIST — build the /data/nass/*.json multi-year series for the USDA Quick Stat
 Source: USDA NASS Quick Stats API. Requires env NASS_API_KEY. Stdlib only.
 Run with --selftest to validate parsing/shaping offline.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os, sys, json, time, datetime, urllib.request, urllib.parse
 
 API = "https://quickstats.nass.usda.gov/api/api_GET/"

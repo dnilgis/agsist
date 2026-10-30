@@ -20,6 +20,8 @@ CS:record. Idempotent; --check exits 1 when the page is out of date.
 
     python3 scripts/bake_crop_size.py [--check | --selftest]
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html as H
 import json
 import re

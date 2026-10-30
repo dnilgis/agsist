@@ -49,6 +49,8 @@ THE TEST (fixed before the answers were read, Oct 29):
   python3 scripts/land_soil.py --fetch IL [--limit N] [--minutes M]   (Actions)
   python3 scripts/land_soil.py --test [dir]                the test, from the saved answers (offline)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import concurrent.futures as cf
 import gzip
 import json

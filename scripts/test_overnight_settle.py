@@ -23,6 +23,8 @@ bar turned into overnight, and the settle. Every case on file says the same:
 No network: yfinance is replaced by a stub for the fetch_quote cases. Run:
     python3 scripts/test_overnight_settle.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 from datetime import datetime, timezone
 

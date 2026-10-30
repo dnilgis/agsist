@@ -17,6 +17,8 @@ with no point ("no_point") and is left out of "near you", never placed by guess.
     python3 scripts/agstocks_plants.py --src <dir with the csv files>   # writes data/agstocks/plants.json
     python3 scripts/agstocks_plants.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import json
 import os

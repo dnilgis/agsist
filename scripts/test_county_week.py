@@ -17,6 +17,8 @@ test/fixtures/changemap, the same ones test/changemap.test.mjs pins):
     the briefing as it was.
 Counts only are printed. Run by test/county-week.test.mjs.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

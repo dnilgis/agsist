@@ -74,6 +74,8 @@ after that message is sent, so a rerun cannot re-mail anyone; a send failure
 never marks. Transport env, worker env, DRY_RUN and MAX_SENDS: identical to
 send_watch.py.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import hashlib
 import hmac
 import html as H

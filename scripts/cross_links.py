@@ -30,6 +30,8 @@ a live page; those sets change about once a year, with their own rebuilds.
 
 Stdlib only.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import re
 import sys

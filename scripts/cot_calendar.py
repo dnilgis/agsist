@@ -28,6 +28,8 @@ cot_calendar.py — the two calendars /cot's forward returns depend on.
    it means the roll a price series is repaired for is the same roll the cash
    pages mark against.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import calendar as _cal
 import os

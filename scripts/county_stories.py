@@ -37,6 +37,8 @@ HOW IT STAYS TRUE
                  data/rain/stories for the site), print the reject count
   python3 scripts/county_stories.py stale [DATA_DIR]   how many stored stories still match the data
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import hashlib
 import json
 import os

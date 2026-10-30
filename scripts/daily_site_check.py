@@ -27,6 +27,8 @@ and no model is called.
     python3 scripts/daily_site_check.py --dry      # checks and summary, no issue
     python3 scripts/daily_site_check.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

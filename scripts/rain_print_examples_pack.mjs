@@ -15,6 +15,7 @@
  * answer either way.
  */
 import { gzipSync, gunzipSync } from "node:zlib";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const DAY = 86400000;
 const iso = (t) => new Date(t).toISOString().slice(0, 10);

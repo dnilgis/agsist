@@ -58,6 +58,8 @@ when every state's files were fetched after it ended.
   python3 scripts/build_land_sales.py --check   build to memory, compare with the committed files
   python3 scripts/build_land_sales.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import hashlib
 import html

@@ -27,6 +27,8 @@ gets no key (count_misses() reports how many).
   python3 scripts/land_keys.py --write [data/land]   rewrite the county files with the column
   python3 scripts/land_keys.py --report [data/land]  per-state reads, misses, cut legals (JSON)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

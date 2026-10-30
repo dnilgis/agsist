@@ -45,6 +45,8 @@ only: the wording never says one caused the other.
     python3 scripts/fetch_grain_moves.py --selftest    # offline, fixtures
     python3 scripts/fetch_grain_moves.py --fixtures DIR  # whole build from fixtures into DIR
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import html
 import json

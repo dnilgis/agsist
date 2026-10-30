@@ -58,6 +58,8 @@ card and a loud line in the log (--strict makes that an error, for tests).
   python3 scripts/build_share_images.py --check         # every indexable page has a good og:image
   python3 scripts/build_share_images.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import hashlib
 import html as htmlmod
 import json

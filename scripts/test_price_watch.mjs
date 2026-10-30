@@ -1,6 +1,7 @@
 // Runs the price-watch routes of workers/subs-worker.js against an in-memory KV. No network.
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 const src = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'workers', 'subs-worker.js');
 const tmp = path.join(os.tmpdir(), 'subs-worker-under-test-pwatch.mjs');
 fs.copyFileSync(src, tmp);

@@ -46,6 +46,8 @@ Modes:
   --selftest     offline tests on test/fixtures/planting-normals/
 Stdlib only.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import datetime
 import io

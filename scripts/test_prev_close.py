@@ -5,6 +5,8 @@ and fetch_prices.harvest_crosscheck() (2026-10-03, wave3-J).
 Hand-worked bars, no network. Run:
     python3 scripts/test_prev_close.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import sys
 
 sys.path.insert(0, "scripts")

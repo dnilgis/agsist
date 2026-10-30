@@ -24,6 +24,8 @@ script refuses to write a file in which anything looks like one.
     python3 scripts/reader_area_counts.py              (LIST_URL, LIST_TOKEN)
     python3 scripts/reader_area_counts.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

@@ -37,6 +37,8 @@ USAGE
   python scripts/fetch_atlas_energy.py --year 2024
   python scripts/fetch_atlas_energy.py --zip eia8602025.zip
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import io
 import json

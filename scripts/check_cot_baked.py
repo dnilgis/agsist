@@ -16,6 +16,8 @@ either would change cot.html. It writes nothing.
     python3 scripts/check_cot_baked.py            # check the repository
     python3 scripts/check_cot_baked.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import os
 import sys

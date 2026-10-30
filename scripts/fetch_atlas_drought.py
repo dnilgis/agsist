@@ -29,6 +29,8 @@ USAGE
   python scripts/fetch_atlas_drought.py --all
   python scripts/fetch_atlas_drought.py --years 2024   # refetch whole years, every county
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import concurrent.futures
 import csv

@@ -37,6 +37,8 @@ REAL-WORLD ASSUMPTIONS ONLY A LIVE RUN CAN CONFIRM
 
 Stdlib only. Optional: pdftotext (poppler) or pypdf for the PDF text.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import copy
 import datetime
 import itertools

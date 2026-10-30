@@ -36,6 +36,8 @@ Usage:
     python3 scripts/bake_discovery_now.py           # bake in place
     python3 scripts/bake_discovery_now.py --check   # verify only, write nothing
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import re

@@ -10,6 +10,8 @@ call differs, and every value more than 0.2 C apart.
   python3 scripts/check_prf_oni.py            # report; exit 1 if any phase differs
   python3 scripts/check_prf_oni.py --selftest # parser checks, no network
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 from pathlib import Path

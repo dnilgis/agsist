@@ -29,6 +29,8 @@ Writes:
         # survey printed as a median alone is printed=median-only (no average,
         # range or count, never in the comparison)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import os

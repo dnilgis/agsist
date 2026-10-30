@@ -8,6 +8,8 @@ dnilgis.github.io/bids/), picks the bids the pages can select and writes
 (build_basis_map.py reads the full file). The licensed second feed was
 cancelled on 2026-10-11 and its code is gone.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import calendar as _cal
 import json
