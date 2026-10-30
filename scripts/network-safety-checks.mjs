@@ -1,9 +1,10 @@
 /* THE ONE QUESTION THAT MATTERS BEFORE DEPLOYING:
-   when the bid network goes wrong, is the page exactly what it is today?
+   when the bid network goes wrong, does the page fail soft?
 
    Not argued — run. The functions are lifted out of cash-bids.html and driven
-   with a Barchart response that never changes, against every way the network
-   can fail. The answer must be byte-identical rows every time. */
+   against every way the network can fail. fetchNetwork must resolve (never
+   reject) to an empty set, inside its deadline, and with the off switch set it
+   must make no request at all. */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -29,11 +30,11 @@ function lift(name) {
   }
 }
 const NAMES = ["classify", "netGet", "netZipCoord", "netDistanceMi", "netPlacesWithin",
-               "netRowsFrom", "netContract", "netKey", "netMerge", "fetchNetwork",
-               /* The helpers netRowsFrom and netKey call. Missing, every row
+               "netRowsFrom", "netContract", "fetchNetwork",
+               /* The helpers netRowsFrom calls. Missing, every row
                   threw a ReferenceError here that the page never throws (the
                   same gap as network-checks.mjs). */
-               "usScope", "netNormOperator", "netPlain", "netIsTwin", "netOlder", "netRankPlaces",
+               "usScope", "netRankPlaces",
                "readTimeOnly"];
 /* Their tables, read off the page so a changed list is a changed test. */
 const pageVar = (name) => { const m = new RegExp(`var ${name}=([^;]+);`).exec(PAGE);
@@ -43,20 +44,12 @@ const mk = (netOn) => new Function(
   "fetch", "setTimeout", "clearTimeout", "Promise", "Math", "Number", "String",
   "Array", "JSON", "isFinite", "location",
   `var NET_ON=${netOn};\nvar NET_BASE='https://dnilgis.github.io/bids/';\n` +
-  `var NET_MAX_PLACES=60;var NET_TIMEOUT_MS=2500;var NET_DEADLINE_MS=3500;var NET_INHERIT=['phone'];var NET_DEBUG=false;function netLog(){}\n` +
-  pageVar("US_STATES_OK") + pageVar("NET_LEGAL") + pageVar("NET_LATE_TIMEOUT_MS") + pageVar("NET_TOP_PER_CROP") +
-  NAMES.map(lift).join("\n")+"\n"+lift("_fetchNetworkInner") + `\nreturn {fetchNetwork,netMerge};`
+  `var NET_MAX_PLACES=60;var NET_TIMEOUT_MS=2500;var NET_DEADLINE_MS=3500;var NET_DEBUG=false;function netLog(){}\n` +
+  pageVar("US_STATES_OK") + pageVar("NET_LATE_TIMEOUT_MS") + pageVar("NET_TOP_PER_CROP") +
+  NAMES.map(lift).join("\n")+"\n"+lift("_fetchNetworkInner") + `\nreturn {fetchNetwork};`
 )((...a) => { calls++; return fetchImpl(...a); },
   setTimeout, clearTimeout, Promise, Math, Number, String, Array, JSON, isFinite,
   { search: "" });
-
-/* A Barchart response, fixed, exactly as flatten() would leave it. */
-const BARCHART = [
-  { facility: "CDR Farms LLC", city: "Bloomer", state: "WI", commodity: "Corn", cashPrice: 3.91, basis: -0.45 },
-  { facility: "Meyer Brothers Grain", city: "Elk Mound", state: "WI", commodity: "Soybeans", cashPrice: 9.7, basis: 0 },
-  { facility: "Somebody Else Co", city: "Menomonie", state: "WI", commodity: "Corn", cashPrice: 3.88, basis: -0.48 },
-];
-const baseline = JSON.stringify(BARCHART);
 
 const FAILURES = [
   ["the whole feed is offline", async () => { throw new Error("network down"); }],
@@ -76,11 +69,10 @@ for (const [label, impl] of FAILURES) {
   const M = mk(true);
   const t0 = Date.now();
   const n = await M.fetchNetwork("54728", 50);
-  const merged = M.netMerge(BARCHART, n.rows);
-  const same = JSON.stringify(merged.rows) === baseline;
+  const same = Array.isArray(n.rows) && n.rows.length === 0;
   const took = Date.now() - t0;
   if (!same) bad++;
-  console.log("  " + (same ? "identical" : "CHANGED  ") + "   " +
+  console.log("  " + (same ? "empty    " : "CHANGED  ") + "   " +
     String(took).padStart(5) + "ms  " + String(calls).padStart(2) + " req  " + label);
 }
 
@@ -89,22 +81,10 @@ fetchImpl = async () => { throw new Error("should never be called"); };
 calls = 0;
 const off = mk(false);
 const n2 = await off.fetchNetwork("54728", 50);
-const merged2 = off.netMerge(BARCHART, n2.rows);
-const sameOff = JSON.stringify(merged2.rows) === baseline;
+const sameOff = Array.isArray(n2.rows) && n2.rows.length === 0;
 if (!sameOff || calls !== 0) bad++;
-console.log("  " + (sameOff ? "identical" : "CHANGED  ") + "   requests made: " + calls +
+console.log("  " + (sameOff ? "empty    " : "CHANGED  ") + "   requests made: " + calls +
   "  (must be 0 — off means no request at all)");
 
-console.log("\nAND WHEN IT WORKS, IT ONLY EVER ADDS OR REPLACES A DUPLICATE");
-const ours = [{ facility: "CDR Farms LLC", city: "Bloomer", state: "WI", commodity: "Corn", cashPrice: 4.47, basis: -0.89, via: "direct" }];
-const good = mk(true).netMerge(BARCHART, ours);
-const kept = good.rows.filter((r) => !r.via).length;
-const lost = BARCHART.filter((b) => !good.rows.some((r) => r.facility === b.facility && r.city === b.city && !r.via)).length;
-console.log("  Barchart rows in:  " + BARCHART.length);
-console.log("  Barchart rows out: " + kept + "  (1 replaced by the elevator's own board)");
-console.log("  dropped for any reason other than being our duplicate: " +
-  (lost - good.duplicatesResolved));
-if (lost - good.duplicatesResolved !== 0) bad++;
-
-console.log(bad ? "\n" + bad + " PROBLEM(S)" : "\nEVERY FAILURE MODE LEAVES THE PAGE EXACTLY AS IT IS TODAY");
+console.log(bad ? "\n" + bad + " PROBLEM(S)" : "\nEVERY FAILURE MODE FAILS SOFT");
 process.exit(bad ? 1 : 0);

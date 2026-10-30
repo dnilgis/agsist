@@ -1,19 +1,12 @@
 #!/usr/bin/env python3
 """
-fetch_bids.py — Barchart OnDemand getGrainBids fetcher for AGSIST
+fetch_bids.py -- the cash bid feed for AGSIST
 Runs via GitHub Actions every 15 min during market hours.
-Fetches cash grain bids for a national grid of ZIP codes,
-deduplicates, and writes /data/bids.json for the homepage preview card
-and the National Basis map (build_basis_map.py reads this file).
-
-The full cash-bids.html page calls Barchart directly (client-side)
-for any ZIP — this file only powers the homepage preview widget and
-the basis map. Its parsing MUST stay in lockstep with cash-bids.html's
-flatten()/classify()/unit-normalization, because that page is the
-ground-truth reader of the live response shape.
-
-Environment:
-  BARCHART_API_KEY — OnDemand API key (GitHub Secret)
+Reads the AGSIST elevator network (dnilgis/bids, published at
+dnilgis.github.io/bids/), picks the bids the pages can select and writes
+/data/bids.json for the homepage preview card and the National Basis map
+(build_basis_map.py reads the full file). The licensed second feed was
+cancelled on 2026-10-11 and its code is gone.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -23,69 +16,19 @@ import json
 import os
 import re as _re_mod
 import sys
-import time
 from datetime import datetime, timedelta, timezone
 from urllib.request import urlopen, Request
-from urllib.error import URLError, HTTPError
-from urllib.parse import urlencode
 
 import basis_method as _bm      # the one basis outlier rule (scripts/basis_method.py)
 import local_bid as _lb         # the one best-bid eligibility test (can_set_best)
 
-API_KEY = os.environ.get("BARCHART_API_KEY", "")
-BASE_URL = "https://ondemand.websol.barchart.com/getGrainBids.json"
-MAX_DISTANCE = 60  # miles from each ZIP
-
-# ── The cap that was never lifted ────────────────────────────────
-# getGrainBids takes a `totalLocations` parameter. This file never sent one,
-# so every ZIP came back with Barchart's DEFAULT of 30 locations — and the
-# per-ZIP log printed kept BIDS, not locations, so a ZIP that hit the ceiling
-# looked exactly like one that did not. Fifty ZIPs times a silent 30-location
-# ceiling is why "this elevator is absent from Barchart" has been an unsafe
-# claim: absent from the first 30 within 60 miles is not absent.
-#
-# 200 is a starting point, not a finding. The run reports saturation per ZIP,
-# so the first live run says whether 200 binds. If it does, raise it and run
-# again. Measure, do not reason.
-
-def clean_phone(p):
-    """The licensed feed sends some numbers with '?' where a dash was lost to
-    an encoding step ('509?659?0130', Ritzville WA). A '?' between digits is
-    always that dash; nothing else is touched."""
-    return _re_mod.sub(r"(?<=\d)\?(?=\d)", "-", p) if p else p
-
-def _env_int(name, default):
-    """An env var that is set-but-empty means UNSET, not zero and not a crash.
-
-    GitHub Actions passes an unfilled workflow_dispatch input as the empty
-    string, and it passes it on SCHEDULED runs too. int("") raises, so a blank
-    box in the Run-workflow dialog would have taken down every scheduled fetch
-    as well as the manual one. Caught before shipping; kept honest by a test.
-    """
-    raw = (os.environ.get(name) or "").strip()
-    if not raw:
-        return default
-    try:
-        v = int(raw)
-    except ValueError:
-        print(f"[fetch_bids] {name}={raw!r} is not a number — using {default}",
-              file=sys.stderr)
-        return default
-    if v <= 0:
-        print(f"[fetch_bids] {name}={v} is not a usable ceiling — using {default}",
-              file=sys.stderr)
-        return default
-    return v
-
-
-TOTAL_LOCATIONS = _env_int("BARCHART_TOTAL_LOCATIONS", 200)
 OUTPUT_PATH = "data/bids.json"        # SLIM. Browsers fetch this one.
 # The homepage's "All feeds: N bids from M locations" line needs four numbers
 # and a time, not the 230 KB slim file. Written beside OUTPUT_PATH on the same
 # run, from the same dict, so the two never disagree (bids_stats_doc).
 STATS_PATH = "data/bids-stats.json"
 FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")  # never committed
-DIRECTORY_PATH = "data/elevator-directory.json"  # the Barchart roster: who and where
+DIRECTORY_PATH = "data/elevator-directory.json"  # the roster: who and where
 
 # ── Why there are two files now ──────────────────────────────────
 # data/bids.json is fetched CLIENT-SIDE by /corn-futures-prices,
@@ -167,205 +110,6 @@ ZIP_GRID = [
 ]
 
 
-def _get(zip_code, max_distance, total_locations):
-    """One request. Returns the decoded body, or raises."""
-    q = {
-        "apikey": API_KEY,
-        "zipCode": zip_code,
-        "maxDistance": max_distance,
-        "getAllBids": 1,
-    }
-    if total_locations:
-        q["totalLocations"] = total_locations
-    req = Request(f"{BASE_URL}?{urlencode(q)}", headers={"User-Agent": "AGSIST/1.0"})
-    with urlopen(req, timeout=20) as resp:
-        return json.loads(resp.read().decode("utf-8"))
-
-
-def fetch_bids_for_zip(zip_code, max_distance=MAX_DISTANCE,
-                       total_locations=TOTAL_LOCATIONS):
-    """Fetch grain bids for a single ZIP code.
-
-    Mirrors cash-bids.html: passes getAllBids=1 so Barchart returns the
-    full per-elevator payload (without it the response shape is thinner).
-    Now also passes totalLocations — see the constant for why.
-
-    Returns (data, degraded). `degraded` is True when the request had to fall
-    back to the old no-totalLocations form because Barchart rejected the
-    parameter. That fallback is DELIBERATELY LOUD: silently reverting to a
-    30-location ceiling is the same class of failure as the green-but-empty
-    run this file already carries two guards against.
-    """
-    try:
-        return _get(zip_code, max_distance, total_locations), False
-    except (URLError, HTTPError, json.JSONDecodeError) as e:
-        if not total_locations:
-            print(f"  ⚠ Error fetching ZIP {zip_code}: {e}", file=sys.stderr)
-            return None, False
-        print(f"  ⚠ ZIP {zip_code}: totalLocations={total_locations} rejected "
-              f"({e}) — retrying WITHOUT it, coverage falls back to Barchart's "
-              f"default 30 locations", file=sys.stderr)
-    try:
-        return _get(zip_code, max_distance, None), True
-    except (URLError, HTTPError, json.JSONDecodeError) as e:
-        print(f"  ⚠ Error fetching ZIP {zip_code}: {e}", file=sys.stderr)
-        return None, True
-
-
-def location_count(data):
-    """How many distinct LOCATIONS the response carried.
-
-    Not bids. The two differ by an order of magnitude and only the location
-    count can be compared against totalLocations to see whether the ceiling
-    bound. Handles both response shapes flatten() handles.
-    """
-    raw = (data.get("results") or data.get("bids") or data.get("data") or [])
-    if not isinstance(raw, list):
-        return 0
-    if any(isinstance(i, dict) and isinstance(i.get("bids"), list) for i in raw):
-        return sum(1 for i in raw
-                   if isinstance(i, dict) and isinstance(i.get("bids"), list))
-    seen = set()
-    for i in raw:
-        if not isinstance(i, dict):
-            continue
-        loc = i.get("location")
-        seen.add((
-            i.get("company") or i.get("name") or i.get("facility")
-            or i.get("locationName") or "",
-            loc if isinstance(loc, str) else "",
-            i.get("city") or "", i.get("zip") or "",
-        ))
-    return len(seen)
-
-
-def _float(val):
-    if val is None:
-        return None
-    try:
-        return float(val)
-    except (ValueError, TypeError):
-        return None
-
-
-def _norm_cash(raw, per_ton=False):
-    """Normalize cash price to dollars/bu.
-    Barchart sometimes returns cents (e.g. 370) — mirror cash-bids.html ppu():
-    values >30 are treated as cents. NOT for a per-ton product (meal, hulls,
-    oil): $341.10 a ton of soybean meal is not 341 cents a bushel, and this
-    used to turn it into "$3.41/bu" (Oct 29 data check: ADM Grain, Frankfort IN)."""
-    v = _float(raw)
-    if v is None:
-        return None
-    if v > 30 and not per_ton:
-        v = v / 100.0
-    return round(v, 4)
-
-
-def _norm_basis(raw):
-    """Normalize basis to dollars/bu, or None while the unit is unclear.
-    The feed sends basis in cents (e.g. -56) or dollars (e.g. -0.56). A value
-    of 5 or more either way is cents (no grain basis is $5). Under 1 it is
-    dollars (nobody posts a fraction of a cent). Between 1 and 5 it can be
-    either: this used to call it dollars, and the Oct 29 data check found
-    2,678 snapshot rows where a 1 to 4.75 CENT basis was stored as $1 to $4.75
-    (Consolidated Grain & Barge, Sherrill AR: corn at $4.29 with a "+$1.00"
-    basis against $4.28 futures). Those come back None here and
-    settle_basis_units() picks the unit from the row's own cash against that
-    day's futures. The basis map and fmtB() both expect DOLLARS."""
-    v = _float(raw)
-    if v is None:
-        return None
-    if abs(v) >= 5:
-        return round(v / 100.0, 4)
-    if abs(v) < 1:
-        return round(v, 4)
-    return None
-
-
-SETTLE_TOLERANCE = 0.25      # dollars: cash - basis within this of the day's futures
-SETTLE_MIN_ROWS = 3
-
-
-def settle_basis_units(rows):
-    """Pick the unit of every basis _norm_basis() left unclear (1 to 5 either way).
-    That day's futures for a crop and contract = the middle of cash - basis over
-    the rows whose unit is not in doubt (3 or more). The unit is the one that puts
-    cash - basis within 25 cents of it; when neither does, or there is no such
-    middle, the basis stays None (withheld, never guessed). -> counts."""
-    import statistics
-    implied = {}
-    for b in rows:
-        if b.get("_basisRaw") is None and b.get("basis") is not None and b.get("cashPrice") is not None \
-                and b.get("category") in ("corn", "soybeans", "wheat", "oats", "sorghum"):
-            implied.setdefault((b["category"], str(b.get("symbol") or "").upper()), []).append(b["cashPrice"] - b["basis"])
-    ref = {k: statistics.median(v) for k, v in implied.items() if len(v) >= SETTLE_MIN_ROWS}
-    n = {"cents": 0, "dollars": 0, "withheld": 0}
-    for b in rows:
-        raw = b.pop("_basisRaw", None)
-        if raw is None:
-            continue
-        f = ref.get((b.get("category"), str(b.get("symbol") or "").upper()))
-        c = b.get("cashPrice")
-        if f is None or c is None:
-            n["withheld"] += 1
-            continue
-        as_d, as_c = abs(c - raw - f), abs(c - raw / 100.0 - f)
-        if min(as_d, as_c) > SETTLE_TOLERANCE:
-            n["withheld"] += 1
-        elif as_c < as_d:
-            b["basis"] = round(raw / 100.0, 4)
-            n["cents"] += 1
-        else:
-            b["basis"] = round(raw, 4)
-            n["dollars"] += 1
-    return n
-
-
-_PER_TON = _re_mod.compile(r"\b(meal|hulls?|pellets?|oil)\b", _re_mod.I)
-
-
-def _barchart_category(name, symbol):
-    """classify_commodity(), except that soybean meal, hulls and oil are "meal", not soybeans
-    (the Oct 29 data check found 414 meal rows filed as soybeans, ADM and AGP). Read from the
-    name or the contract (ZM meal, ZL oil; @SM and @BO in Barchart's own form). The network
-    rows keep classify_commodity() exactly as it is."""
-    if _PER_TON.search(name or "") or _re_mod.match(r"^(ZM|ZL|@SM|@BO)", str(symbol or ""), _re_mod.I):
-        return "meal"
-    return classify_commodity(name)
-
-
-def _barchart_row(fac, branch, src_obj, bid, source_zip):
-    """One flattened Barchart bid. src_obj carries the location fields, bid the price fields."""
-    cname = _commodity_name(bid)
-    sym = bid.get("symbol") or bid.get("basisSymbol") or ""
-    cat = _barchart_category(cname, sym)
-    raw_basis = _float(bid.get("basis"))
-    basis = _norm_basis(bid.get("basis"))
-    row = {
-        "facility": fac,
-        "branch": branch,
-        "city": src_obj.get("city") or bid.get("city") or "",
-        "state": (src_obj.get("state") or bid.get("state") or "").upper(),
-        "zip": src_obj.get("zip") or bid.get("zip") or "",
-        "distance": _float(src_obj.get("distance") if src_obj.get("distance") is not None else bid.get("distance")),
-        "phone": clean_phone(src_obj.get("phone") or bid.get("phone") or ""),
-        "commodity": cname,
-        "symbol": sym,
-        "cashPrice": _norm_cash(bid.get("cashprice", bid.get("cashPrice")), per_ton=(cat == "meal")),
-        "basis": basis,
-        "notes": bid.get("notes", ""),
-        "deliveryMonth": bid.get("deliveryMonth") or bid.get("delivery_month") or "",
-        "deliveryStart": bid.get("deliveryStart") or bid.get("delivery_start") or "",
-        "deliveryEnd": bid.get("deliveryEnd") or bid.get("delivery_end") or "",
-        "category": cat,
-        "sourceZip": source_zip,
-    }
-    if basis is None and raw_basis is not None:
-        row["_basisRaw"] = raw_basis          # settle_basis_units() decides, then drops this
-    return row
-
-
 def classify_commodity(name):
     """Identical logic to cash-bids.html classify()."""
     n = (name or "").lower()
@@ -380,53 +124,6 @@ def classify_commodity(name):
     if "sorghum" in n or "milo" in n:
         return "sorghum"
     return "other"
-
-
-def _commodity_name(obj):
-    return (obj.get("commodity")
-            or obj.get("commodity_display_name")
-            or obj.get("commodityName")
-            or "")
-
-
-def flatten(data, source_zip):
-    """Flatten the Barchart response into per-bid records.
-
-    Ground-truth port of cash-bids.html flatten(): handles BOTH shapes —
-    (1) per-elevator objects carrying a `bids` array, and
-    (2) already-flat bid objects — using the exact same field fallbacks.
-    Keeps a bid only if it has a cash price OR a basis (matching the page).
-    """
-    flat = []
-    raw = (data.get("results")
-           or data.get("bids")
-           or data.get("data")
-           or [])
-    if not isinstance(raw, list):
-        return flat
-
-    for item in raw:
-        if not isinstance(item, dict):
-            continue
-        nested = item.get("bids")
-        if isinstance(nested, list):
-            fac = item.get("company") or item.get("name") or item.get("locationName") or "Unknown"
-            loc = item.get("location")
-            branch = loc if isinstance(loc, str) else ""
-            for bid in nested:
-                if not isinstance(bid, dict):
-                    continue
-                flat.append(_barchart_row(fac, branch, item, bid, source_zip))
-        elif (item.get("commodity") or item.get("commodityName")
-              or item.get("cashprice") is not None or item.get("cashPrice") is not None):
-            loc = item.get("location")
-            branch = loc if isinstance(loc, str) else ""
-            fac = item.get("company") or item.get("name") or item.get("facility") or item.get("locationName") or "Unknown"
-            flat.append(_barchart_row(fac, branch, item, item, source_zip))
-
-    # keep filter — identical to cash-bids.html fetchBids() (a basis whose unit is still to be
-    # settled counts as a basis)
-    return [b for b in flat if b["cashPrice"] is not None or b["basis"] is not None or b.get("_basisRaw") is not None]
 
 
 def _page_crop(name):
@@ -546,23 +243,13 @@ def _implied_futures(b):
 
 # ── THE AGSIST ELEVATOR NETWORK ───────────────────────────────────────────
 # dnilgis/bids reads ~1,050 elevator boards directly and publishes a merged
-# index plus one shard per elevator to dnilgis.github.io/bids. This folds that
-# network into the same feed Barchart fills, so every AGSIST surface that shows
-# a cash bid -- the futures-page cards, the homepage card, and the national
-# basis map -- presents both sources, not Barchart alone. cash-bids.html already
-# merges the two live in the browser; this brings the same merge to the files
-# the other surfaces read.
+# index plus one shard per elevator to dnilgis.github.io/bids. This is the
+# feed: every AGSIST surface that shows a cash bid -- the futures-page cards,
+# the homepage card, and the national basis map -- reads what this file writes
+# from it.
 #
-# The dedup rule is the one cash-bids.html already uses (netMerge): same
-# facility, same town, same state is the same elevator however the two feeds
-# spell it, and OURS wins on price because ours is the board the elevator
-# posted and Barchart's is a copy. Barchart's phone crosses over, because the
-# network feed carries none.
-#
-# NEVER LOAD-BEARING. If the network cannot be read, this returns the Barchart
-# rows untouched and says so. A network outage must not empty or fail the feed
-# that Barchart fills -- same contract as the browser merge, which resolves to
-# "nothing added" on any failure.
+# If the network cannot be read, network_feed() returns nothing and main()
+# refuses to publish an empty file (exit 3), so the last good file stays.
 import math as _math
 
 BIDS_NETWORK_BASE = os.environ.get(
@@ -666,8 +353,6 @@ def _norm_operator(name):
     that differ by a real word ("ADM Grain" against "ADM"): a duplicate pin is
     visible and fixable, a wrong merge hides a real elevator.
 
-    cash-bids.html carries the same rule in netKey(). If one changes, change
-    both -- they are the same decision made in two places.
     """
     import re as _re
     s = _re.sub(r"[^a-z0-9]+", " ", str(name or "").lower())
@@ -678,11 +363,6 @@ def _norm_operator(name):
     toks = ["coop" if t in ("cooperative", "coops") else t for t in toks]
     toks = [t[:-1] if (len(t) > 3 and t.endswith("s")) else t for t in toks]
     return "".join(toks)
-
-def _net_key(facility, city, state):
-    import re as _re
-    plain = lambda x: _re.sub(r"[^a-z0-9]", "", str(x or "").lower())
-    return f"{_norm_operator(facility)}|{plain(city)}|{plain(state)}"
 
 # ── A ROW WITHOUT A STATE CANNOT BE FILED ────────────────────────
 # build_basis_history.py writes one shard per state and the page can only
@@ -957,13 +637,13 @@ def network_rows(grid, base=None):
         doc = _net_get_json(base, "data/merged-all.json")
     except Exception as e:
         print(f"[fetch_bids] network feed unreachable ({type(e).__name__}: {e}); "
-              f"Barchart only this run", file=sys.stderr)
+              f"nothing to publish this run", file=sys.stderr)
         return []
     global _NET_GENERATED
     _NET_GENERATED = str(doc.get("generated") or "") if isinstance(doc, dict) else ""
     bids = (doc.get("bids") if isinstance(doc, dict) else None) or []
     if not bids:
-        print("[fetch_bids] network feed carried no bids; Barchart only this run",
+        print("[fetch_bids] network feed carried no bids",
               file=sys.stderr)
         return []
     rows = []
@@ -1079,38 +759,20 @@ def network_rows(grid, base=None):
     return rows
 
 
-def merge_network(barchart_rows, grid, base=None, roster=None):
-    """Barchart rows plus the network, deduped. Ours wins on price; Barchart's
-    phone crosses to the network row that displaced it. Barchart-only on any
-    network failure."""
+def network_feed(grid, base=None, roster=None):
+    """The network's rows, with a state filled in wherever the roster can say
+    one. [] on any network failure."""
     net = network_rows(grid, base=base)
     if not net:
-        return barchart_rows
+        return []
     if roster:
-        # Same states on both sides before keying, or one place becomes two.
         try:
             fill_states(net, roster)
         except Exception as e:
             print(f"[fetch_bids] state fill on network rows skipped: {type(e).__name__}: {e}",
                   file=sys.stderr)
-    by_key = {}
-    for r in net:
-        by_key.setdefault(_net_key(r["facility"], r["city"], r["state"]), []).append(r)
-    kept = list(net)
-    dropped = 0
-    for r in barchart_rows:
-        k = _net_key(r.get("facility"), r.get("city"), r.get("state"))
-        mates = by_key.get(k)
-        if mates:
-            dropped += 1
-            for ours in mates:
-                if not ours.get("phone") and r.get("phone"):
-                    ours["phone"] = r["phone"]
-            continue
-        kept.append(r)
-    print(f"[fetch_bids] merged: {len(barchart_rows)} Barchart + {len(net)} network "
-          f"-> {len(kept)} rows ({dropped} Barchart rows were the same elevator)")
-    return kept
+    print(f"[fetch_bids] network: {len(net)} rows")
+    return list(net)
 
 
 def network_basis_outliers(bids):
@@ -1816,172 +1478,24 @@ def slim_for_browser(bids, grid):
     return sorted(keep.values(), key=_bid_order)
 
 
-def deduplicate(bids):
-    """Deduplicate by facility + branch + commodity + delivery. Keep closest."""
-    seen = {}
-    for b in bids:
-        key = "|".join([
-            b.get("facility", ""), b.get("branch", ""), b.get("commodity", ""),
-            b.get("deliveryStart", ""), b.get("deliveryEnd", ""), b.get("deliveryMonth", ""),
-        ])
-        if key not in seen or (b.get("distance") or 999) < (seen[key].get("distance") or 999):
-            seen[key] = b
-    return list(seen.values())
-
-
-def _barchart_wanted():
-    """True when this run should ask Barchart at all.
-
-    The subscription is being cancelled (Sig, 2026-09-25). A missing key used
-    to be a hard error here, which meant the day it lapsed data/bids.json, the
-    basis map and the basis history would all have stopped -- an outage, when
-    the AGSIST network already covers most of it. Now a missing key, or
-    BARCHART_MODE=off, is a normal way to run: the feed is the network alone.
-    """
-    if os.environ.get("BARCHART_MODE", "auto").strip().lower() == "off":
-        return False, "BARCHART_MODE=off"
-    if not API_KEY:
-        return False, "no BARCHART_API_KEY"
-    return True, ""
-
-
 _NET_GENERATED = ""   # `generated` of the network file this run read
 
 
-def _say_barchart_live(live, asked=False):
-    """Tell the workflow whether this run had Barchart rows (so the directory
-    harvest can skip) and whether Barchart was ASKED. asked and not live is a
-    dead key: the workflow's last step turns that red, because a green run
-    that quietly stopped using the paid feed is the failure nobody sees."""
-    out = os.environ.get("GITHUB_OUTPUT")
-    if out:
-        with open(out, "a") as f:
-            f.write(f"barchart_live={'true' if live else 'false'}\n")
-            f.write(f"barchart_asked={'true' if asked else 'false'}\n")
-
-
 def main():
-    barchart_on, off_why = _barchart_wanted()
-    if barchart_on:
-        print(f"[fetch_bids] Starting — {len(ZIP_GRID)} ZIP codes, "
-              f"max {MAX_DISTANCE}mi radius, up to {TOTAL_LOCATIONS} locations each")
-    else:
-        print(f"[fetch_bids] NETWORK-ONLY ({off_why}): Barchart is not asked. "
-              f"The feed is the AGSIST elevator network alone.")
-
+    print("[fetch_bids] Starting: the feed is the AGSIST elevator network.")
     all_bids = []
-    errors = 0
-    raw_total = 0  # bids Barchart returned (kept), for sanity vs. drops
-    loc_total = 0
-    saturated = []   # ZIPs that came back at the ceiling — the ceiling bound
-    degraded = []    # ZIPs that fell back to the 30-location default
-
-    for entry in (ZIP_GRID if barchart_on else []):
-        z = entry["zip"]
-        print(f"  📍 {entry['label']} ({z})…", end=" ")
-        data, fell_back = fetch_bids_for_zip(z)
-        if fell_back:
-            degraded.append(z)
-
-        if data is None:
-            errors += 1
-            print("FAIL")
-            continue
-
-        locs = location_count(data)
-        loc_total += locs
-        kept = flatten(data, z)
-        raw_total += len(kept)
-        all_bids.extend(kept)
-        # LOCATIONS as well as kept bids. The bid count alone cannot show a
-        # ZIP sitting on the ceiling, which is the whole thing this run is
-        # meant to measure.
-        ceiling = TOTAL_LOCATIONS if not fell_back else 30
-        hit = locs >= ceiling
-        if hit:
-            saturated.append((z, entry["label"], locs))
-        print(f"{locs} locations, {len(kept)} bids{'  ← AT CEILING' if hit else ''}")
-        time.sleep(0.3)
-
-    # Report the ceiling BEFORE the dedup summary, because it is the finding
-    # that decides whether this grid is complete or merely full.
-    if barchart_on:
-        print(f"\n[fetch_bids] {loc_total} locations across {len(ZIP_GRID)} ZIPs")
-    if barchart_on and degraded:
-        print(f"[fetch_bids] ⚠ {len(degraded)} ZIP(s) fell back to Barchart's "
-              f"default 30-location cap: {', '.join(degraded)}")
-        if len(degraded) == len(ZIP_GRID):
-            print("[fetch_bids] ⚠ EVERY ZIP fell back — Barchart is rejecting "
-                  "totalLocations outright. Coverage is exactly what it was "
-                  "before this parameter was added; do not read this run as "
-                  "evidence of anything.")
-    if saturated:
-        print(f"[fetch_bids] ⚠ {len(saturated)} ZIP(s) returned at the ceiling — "
-              f"there are more locations than we asked for. Raise "
-              f"BARCHART_TOTAL_LOCATIONS above {TOTAL_LOCATIONS} and run again:")
-        for z, label, n in saturated:
-            print(f"[fetch_bids]     {label} ({z}): {n}")
-        print("[fetch_bids] Until that is clear, 'absent from Barchart' is "
-              "NOT a safe claim for anything near these ZIPs.")
-    elif barchart_on:
-        print(f"[fetch_bids] No ZIP reached {TOTAL_LOCATIONS} locations — the "
-              f"ceiling did not bind, so this grid saw everything Barchart "
-              f"has within {MAX_DISTANCE} miles of each point.")
-
-    if all_bids:
-        su = settle_basis_units(all_bids)
-        if any(su.values()):
-            print(f"[fetch_bids] basis unit read from cash against the day's futures: {su['cents']} cents, "
-                  f"{su['dollars']} dollars, {su['withheld']} withheld (unit unclear)")
-    barchart_live = bool(all_bids)
-    if barchart_on and not barchart_live:
-        # A dead or expired key, or a Barchart outage. This used to exit 1 and
-        # stop the whole feed. The network can carry it, so say so as a
-        # workflow annotation (visible on the run) and carry on; the guard
-        # that refuses to publish an EMPTY file still runs after the merge.
-        print("::warning::Barchart returned 0 bids across every ZIP (dead key, "
-              "expired subscription or outage). Publishing the AGSIST network alone.",
-              flush=True)
-    elif barchart_on and errors > len(ZIP_GRID) // 4:
-        print(f"::warning::Barchart failed for {errors} of {len(ZIP_GRID)} ZIPs "
-              f"(rate limit or plan change?). Its rows are partial this run.",
-              flush=True)
-    before = len(all_bids)
-    all_bids = deduplicate(all_bids)
-    print(f"\n[fetch_bids] {before} kept → {len(all_bids)} after dedup")
-
-    # BARCHART'S ROWS ALONE, BEFORE THE NETWORK GOES IN. The directory step
-    # (extract_directory.py --from-bids) needs to know which elevators
-    # Barchart sells. bids-full.json cannot say: since 2026-09-23 it is the
-    # merged feed, and reading it filed 964 of our own places under
-    # source=barchart, which inflated the roster the cancellation is measured
-    # against. The merge also drops a Barchart row whenever the network wins
-    # it, so even the genuine rows went missing from the merged file.
-    raw_path = os.environ.get("BARCHART_RAW_PATH", "barchart-raw.json")
-    if barchart_live:
-        with open(raw_path, "w") as f:
-            json.dump({"bids": all_bids}, f, separators=(",", ":"))
-    elif os.path.exists(raw_path):
-        os.remove(raw_path)
-
-    # Fold in the AGSIST elevator network so every surface reading these
-    # files shows both sources. Barchart-only if the network is unreachable.
-    # States first, so a Barchart row and the network's copy of it share a key.
     try:
         roster = load_roster()
-        _say_states(fill_states(all_bids, roster), "on Barchart rows")
     except Exception as e:
         roster = None
         print(f"[fetch_bids] state fill skipped: {type(e).__name__}: {e}", file=sys.stderr)
     grid_for_merge = [{"zip": e["zip"], "lat": e["lat"], "lng": e["lng"]} for e in ZIP_GRID]
-    all_bids = merge_network(all_bids, grid_for_merge, roster=roster)
+    all_bids = network_feed(grid_for_merge, roster=roster)
     if roster:
         try:
             _say_states(fill_states(all_bids, roster), "after the merge")
         except Exception as e:
             print(f"[fetch_bids] state fill skipped: {type(e).__name__}: {e}", file=sys.stderr)
-    if barchart_on:
-        print(f"[fetch_bids] Errors: {errors}/{len(ZIP_GRID)} ZIPs")
 
     all_bids.sort(key=lambda b: (b.get("state") or "", b.get("city") or "", b.get("commodity") or ""))
 
@@ -2036,10 +1550,9 @@ def main():
     # empty one. Exit non-zero so the Action fails loudly instead of
     # going green-while-empty (the bug that hid for weeks).
     if not all_bids:
-        # Neither feed produced a row: Barchart is off or dead AND the network
-        # is unreachable or empty. Publishing that would blank three pages.
-        print(f"ERROR: no bids from Barchart ({errors}/{len(ZIP_GRID)} ZIPs "
-              f"failed) and none from the network — not overwriting "
+        # The network is unreachable or empty. Publishing that would blank
+        # three pages.
+        print(f"ERROR: no bids from the network — not overwriting "
               f"{OUTPUT_PATH}", file=sys.stderr)
         sys.exit(3)
 
@@ -2061,14 +1574,8 @@ def main():
 
     output = {
         "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": ("AGSIST elevator network (dnilgis/bids) + a licensed cash-bid feed"
-                   if barchart_live else "AGSIST elevator network (dnilgis/bids)"),
-        "barchart": {"live": barchart_live,
-                     "mode": ("on" if barchart_on else "off"),
-                     "zips_failed": errors if barchart_on else None,
-                     "network_generated": _NET_GENERATED,
-                     "note": ("" if barchart_live else
-                              (off_why if not barchart_on else "asked, returned nothing"))},
+        "source": "AGSIST elevator network (dnilgis/bids)",
+        "network_generated": _NET_GENERATED,
         "zip_grid": zip_index,
         "stats": {
             "total_bids": len(all_bids),
@@ -2136,7 +1643,6 @@ def main():
           f"— not committed; build_basis_map.py reads it in this job")
     print(f"[fetch_bids] {len(all_bids)} bids, {len(facilities)} facilities, {len(states)} states")
     print(f"[fetch_bids] Commodities: {commodities}")
-    _say_barchart_live(barchart_live, asked=barchart_on)
 
 
 def location_key(b):
@@ -2198,114 +1704,6 @@ def selftest():
         print(f"  {'ok  ' if cond else 'FAIL'} {name}")
         if not cond:
             fails.append(name)
-
-    print("location_count counts LOCATIONS, not bids")
-    nested = {"results": [
-        {"company": "A", "location": "x", "bids": [{"cashprice": 4.0}, {"cashprice": 4.1}]},
-        {"company": "B", "location": "y", "bids": [{"cashprice": 4.2}]},
-    ]}
-    ck("nested shape: one per elevator, not per bid", location_count(nested) == 2)
-    ck("...and flatten sees more bids than there are locations",
-       len(flatten(nested, "00000")) == 3)
-    flat = {"results": [
-        {"company": "A", "city": "Loyal", "zip": "1", "commodity": "Corn", "cashprice": 4.0},
-        {"company": "A", "city": "Loyal", "zip": "1", "commodity": "Beans", "cashprice": 9.0},
-        {"company": "B", "city": "Thorp", "zip": "2", "commodity": "Corn", "cashprice": 4.1},
-    ]}
-    ck("flat shape: two commodities at one elevator is ONE location",
-       location_count(flat) == 2)
-    ck("a response with no list is zero, not a crash",
-       location_count({"results": "nope"}) == 0 and location_count({}) == 0)
-
-    print()
-    print("the request carries totalLocations, and only when it is set")
-    seen = {}
-
-    class FakeResp:
-        def __init__(self, body):
-            self.body = body
-        def read(self):
-            return json.dumps(self.body).encode()
-        def __enter__(self):
-            return self
-        def __exit__(self, *a):
-            return False
-
-    def fake_open(req, timeout=None):
-        seen["url"] = req.full_url
-        if seen.get("boom") and "totalLocations" in req.full_url:
-            raise HTTPError(req.full_url, 400, "Bad Request", None, None)
-        return FakeResp({"results": []})
-
-    real = globals()["urlopen"]
-    globals()["urlopen"] = fake_open
-    try:
-        fetch_bids_for_zip("54436", 60, 200)
-        ck("totalLocations is sent when set", "totalLocations=200" in seen["url"])
-        ck("the other parameters survive",
-           "getAllBids=1" in seen["url"] and "maxDistance=60" in seen["url"]
-           and "zipCode=54436" in seen["url"])
-        fetch_bids_for_zip("54436", 60, None)
-        ck("totalLocations is absent when unset", "totalLocations" not in seen["url"])
-
-        # Barchart rejects the parameter: fall back, but say so.
-        seen["boom"] = True
-        err = io.StringIO()
-        with redirect_stderr(err):
-            data, fell = fetch_bids_for_zip("54436", 60, 200)
-        ck("a rejected totalLocations falls back rather than losing the ZIP",
-           data is not None)
-        ck("...and the fallback is reported, not silent", fell is True)
-        ck("...loudly, naming the cap it fell back to",
-           "default 30 locations" in err.getvalue())
-        ck("...and the retry really did drop the parameter",
-           "totalLocations" not in seen["url"])
-    finally:
-        globals()["urlopen"] = real
-
-    print()
-    print("a blank dispatch input is unset, not a crash")
-    keep = os.environ.get("BARCHART_TOTAL_LOCATIONS")
-    default_for_noise = 200
-    try:
-        for raw, want, why in (
-            (None, 200, "variable absent"),
-            ("", 200, "empty string — an unfilled Run-workflow box"),
-            ("   ", 200, "whitespace"),
-            ("400", 400, "a real value"),
-            ("nope", 200, "not a number"),
-            ("0", 200, "zero is not a ceiling"),
-            ("-5", 200, "negative"),
-        ):
-            if raw is None:
-                os.environ.pop("BARCHART_TOTAL_LOCATIONS", None)
-            else:
-                os.environ["BARCHART_TOTAL_LOCATIONS"] = raw
-            err = io.StringIO()
-            with redirect_stderr(err):
-                got = _env_int("BARCHART_TOTAL_LOCATIONS", 200)
-            ck(f"{why} -> {want}", got == want)
-            # AND SILENTLY, for the blank cases. The try/except alone already
-            # returns 200 for "" -- the blank check is not what makes the
-            # value right, it is what stops EVERY SCHEDULED RUN printing
-            # "BARCHART_TOTAL_LOCATIONS='' is not a number". A warning that
-            # fires on every green run is how you learn to ignore warnings,
-            # so silence here is the contract, not a nicety.
-            if raw is None or not raw.strip():
-                ck(f"...and says nothing about it ({why})", err.getvalue() == "")
-            elif want == default_for_noise:
-                ck(f"...and says why ({why})", "using 200" in err.getvalue())
-    finally:
-        os.environ.pop("BARCHART_TOTAL_LOCATIONS", None)
-        if keep is not None:
-            os.environ["BARCHART_TOTAL_LOCATIONS"] = keep
-
-    print()
-    print("saturation is judged against what was asked for")
-    for asked, got, want in ((200, 200, True), (200, 199, False),
-                             (30, 30, True), (200, 0, False)):
-        ck(f"asked {asked}, got {got} -> {'at ceiling' if want else 'below'}",
-           (got >= asked) is want)
 
     print()
     print("the slim browser file cannot change what the page shows")
@@ -2695,20 +2093,6 @@ def selftest():
        _small["truncated"] is True and len(_small["withheld"]) == 1
        and _small["withheldRows"] == _rep["withheldRows"])
 
-    print("dedup still collapses the overlap a bigger radius creates")
-    dup = [
-        {"facility": "A", "branch": "", "commodity": "Corn", "deliveryStart": "",
-         "deliveryEnd": "", "deliveryMonth": "Sep", "distance": 12.0},
-        {"facility": "A", "branch": "", "commodity": "Corn", "deliveryStart": "",
-         "deliveryEnd": "", "deliveryMonth": "Sep", "distance": 3.0},
-        {"facility": "B", "branch": "", "commodity": "Corn", "deliveryStart": "",
-         "deliveryEnd": "", "deliveryMonth": "Sep", "distance": 8.0},
-    ]
-    out = deduplicate(dup)
-    ck("one row per facility+commodity+delivery", len(out) == 2)
-    ck("the closest of a duplicate pair wins",
-       [b for b in out if b["facility"] == "A"][0]["distance"] == 3.0)
-
     print()
     print("the pick does not depend on the order the rows arrive in")
     # 2026-09-02, run 91285466096: the run failed with exit 4 --
@@ -3041,49 +2425,6 @@ def selftest():
     ck("the NEARBY month wins the card, not the higher deferred bid",
        pick is not None and pick["cashPrice"] == 5.10)
 
-    # Dedup: ours displaces Barchart's copy and inherits its phone.
-    bc_rows = [
-        {"facility": "Dupe Co-op", "city": "Hutchinson", "state": "KS", "commodity": "Wheat",
-         "cashPrice": 7.10, "basis": -0.45, "phone": "(620) 555-0100", "category": "wheat",
-         "sourceZip": "67501", "zip": "67501", "deliveryEnd": "2026-09-30", "verified": True},
-        {"facility": "Only In Barchart", "city": "Wichita", "state": "KS", "commodity": "Corn",
-         "cashPrice": 5.00, "basis": -0.30, "phone": "(316) 555-0101", "category": "corn",
-         "sourceZip": "67501", "zip": "67202", "deliveryEnd": "2026-09-30", "verified": True},
-    ]
-    with redirect_stdout(buf), redirect_stderr(buf):
-        m = merge_network(bc_rows, grid_n, base=tmp)
-    ck("Barchart's copy of an elevator we read ourselves is dropped",
-       not any(r.get("cashPrice") == 7.10 for r in m))
-    ck("...and our row inherits the phone number it displaced",
-       any(r.get("source") == "network" and r.get("phone") == "(620) 555-0100" for r in m))
-    ck("a Barchart elevator we do NOT read is kept",
-       any(r.get("facility") == "Only In Barchart" for r in m))
-
-    # THE DUPLICATE THAT REACHED THE PAGE, 2026-09-22: cash-bids.html drew
-    # Badger Grain Supply of Wheeler twice because one feed writes ", LLC" and
-    # the other does not, and Midwest Commodity twice off a single plural.
-    ck("a trailing LLC does not split one elevator into two",
-       _net_key("Badger Grain Supply", "Wheeler", "WI")
-       == _net_key("Badger Grain Supply, LLC", "Wheeler", "WI"))
-    ck("nor does Service against Services",
-       _net_key("Midwest Commodity Services Inc.", "Baldwin", "WI")
-       == _net_key("Midwest Commodity Service, Inc.", "Baldwin", "WI"))
-    ck("nor Coop against Cooperative",
-       _net_key("Farmers Win Coop", "Cresco", "IA")
-       == _net_key("Farmers Win Cooperative", "Cresco", "IA"))
-    ck("but a name differing by a REAL word is still two elevators",
-       _net_key("ADM Grain", "Jackson", "TN") != _net_key("ADM", "Jackson", "TN"))
-    ck("a co-op keeps a 'co' that is part of its name",
-       _net_key("Co-op Services", "Ames", "IA").startswith("coopservice"))
-    ck("the key still separates two towns",
-       _net_key("Badger Grain Supply", "Wheeler", "WI")
-       != _net_key("Badger Grain Supply", "Menomonie", "WI"))
-
-    # NEVER LOAD-BEARING: an unreachable feed leaves Barchart untouched.
-    with redirect_stdout(buf), redirect_stderr(buf):
-        m2 = merge_network(bc_rows, grid_n, base=os.path.join(tmp, "does-not-exist"))
-    ck("an unreachable network feed returns the Barchart rows unchanged", m2 == bc_rows)
-
     # ---- A ROW WITHOUT A STATE (2026-09-26) ---------------------------------
     # 120 basis rows a run could not be filed because no state came with them.
     # The roster fills what it can say once; everything else stays empty.
@@ -3147,37 +2488,23 @@ def selftest():
        fill_states([{"facility": "Kanza Co-op", "city": "Iuka", "state": ""}],
                    load_roster(os.path.join(tmp, "nope.json")))["filled"] == 0)
 
-    # ---- CUTTING THE CORD (2026-09-25) --------------------------------------
+    # ---- THE FEED IS THE NETWORK ALONE ----------------------------------------
     # main() end to end, in a scratch directory, with the module's globals
-    # pointed at the fixture. What must hold the day the subscription lapses:
-    # the feed keeps being written from the network alone, says so in its own
-    # header, and still refuses to publish when NOTHING came from anywhere.
+    # pointed at the fixture. What must hold: the feed is written from the
+    # network alone, and it still refuses to publish when NOTHING came back.
     g = globals()
-    saved = {k: g[k] for k in ("API_KEY", "ZIP_GRID", "BIDS_NETWORK_BASE",
-                               "FULL_PATH", "fetch_bids_for_zip", "flatten",
-                               "location_count")}
-    saved_env = {k: os.environ.get(k) for k in ("BARCHART_MODE", "GITHUB_OUTPUT")}
+    saved = {k: g[k] for k in ("ZIP_GRID", "BIDS_NETWORK_BASE", "FULL_PATH")}
+    saved_env = {k: os.environ.get(k) for k in ("GITHUB_OUTPUT",)}
     cwd0 = os.getcwd()
 
-    def run_main(key, net_base, mode=None, barchart_rows=None, fail_zips=False):
+    def run_main(net_base):
         d = tempfile.mkdtemp()
         os.makedirs(os.path.join(d, "data"), exist_ok=True)
         gho = os.path.join(d, "gho")
         os.chdir(d)
-        g["API_KEY"] = key
         g["ZIP_GRID"] = [{"zip": "67501", "lat": 38.06, "lng": -97.93, "label": "Hutchinson KS"}]
         g["BIDS_NETWORK_BASE"] = net_base
         g["FULL_PATH"] = os.path.join(d, "bids-full.json")
-        if fail_zips:
-            g["fetch_bids_for_zip"] = lambda z: (None, False)
-        elif barchart_rows is not None:
-            g["fetch_bids_for_zip"] = lambda z: ({"results": []}, False)
-            g["flatten"] = lambda data, z: [dict(r) for r in barchart_rows]
-            g["location_count"] = lambda data: 1
-        if mode is None:
-            os.environ.pop("BARCHART_MODE", None)
-        else:
-            os.environ["BARCHART_MODE"] = mode
         os.environ["GITHUB_OUTPUT"] = gho
         code = 0
         b2 = io.StringIO()
@@ -3200,104 +2527,34 @@ def selftest():
         if os.path.exists(op):
             with open(op) as f:
                 out = json.load(f)
-        flag = open(gho).read() if os.path.exists(gho) else ""
         wp = os.path.join(d, "private", "data", "bids-withheld.json")
         run_main.withheld = json.load(open(wp)) if os.path.exists(wp) else None
-        rp = os.path.join(d, "barchart-raw.json")
-        run_main.raw = json.load(open(rp))["bids"] if os.path.exists(rp) else None
         fp = os.path.join(d, "bids-full.json")
         run_main.full = json.load(open(fp))["bids"] if os.path.exists(fp) else None
         shutil.rmtree(d, ignore_errors=True)
-        return code, out, flag, b2.getvalue()
+        return code, out, b2.getvalue()
 
-    code, out, flag, log = run_main("", tmp)
-    ck("no key: the feed is still written, exit 0", code == 0 and out is not None)
-    ck("no key: the full file carries the board, posted time and futures for the snapshots",
+    code, out, log = run_main(tmp)
+    ck("the feed is written from the network, exit 0", code == 0 and out is not None)
+    ck("the full file carries the board, posted time and futures for the snapshots",
        bool(run_main.full) and all("_board" in r and "_posted" in r and "_fut" in r for r in run_main.full))
-    ck("no key: the slim browser file carries none of the full-file-only '_' fields",
+    ck("the slim browser file carries none of the full-file-only '_' fields",
        out is not None and out["bids"] and not any(k.startswith("_") for r in out["bids"] for k in r))
-    ck("no key: every row is the network's",
+    ck("every row is the network's",
        out is not None and out["bids"] and all(r.get("source") == "network" for r in out["bids"]))
-    ck("no key: the header says the licensed feed is not in it",
-       out is not None and out["barchart"]["live"] is False
-       and "licensed" not in out["source"] and out["barchart"]["note"] == "no BARCHART_API_KEY")
-    ck("no key: the workflow is told to skip the Barchart-only steps",
-       "barchart_live=false" in flag)
-    ck("no key: Barchart is never asked", "📍" not in log and "locations across" not in log)
-
-    ck("no key: no barchart-raw.json is left for the directory step", run_main.raw is None)
-
-    code, out, flag, log = run_main("a-real-looking-key", tmp, mode="off")
-    ck("BARCHART_MODE=off beats a key that is set",
-       code == 0 and out is not None and out["barchart"]["mode"] == "off" and "📍" not in log)
-
-    code, out, flag, log = run_main("dead-key", tmp, fail_zips=True)
-    ck("a dead key degrades to the network instead of stopping the feed",
-       code == 0 and out is not None and out["barchart"]["live"] is False
-       and out["barchart"]["mode"] == "on")
-    ck("a dead key is a workflow WARNING on the run, not a silent green",
-       "::warning::Barchart returned 0 bids" in log)
-
-    code, out, flag, log = run_main("live-key", tmp, barchart_rows=bc_rows)
-    ck("a live key still merges both and reports live",
-       code == 0 and out is not None and out["barchart"]["live"] is True
-       and "licensed" in out["source"] and "barchart_live=true" in flag)
-    ck("a live key writes Barchart's rows alone to barchart-raw.json, before the merge",
-       run_main.raw is not None and len(run_main.raw) == len(bc_rows)
-       and not any(r.get("source") == "network" for r in run_main.raw))
-
-    ck("a live run writes the withheld list, and its counts add up",
+    ck("the header names the network alone and carries no licensed-feed block",
+       out is not None and "licensed" not in out["source"] and "barchart" not in out
+       and "network_generated" in out)
+    ck("the run writes the withheld list, and its counts add up",
        run_main.withheld is not None
        and sum(run_main.withheld["byKind"].values()) == run_main.withheld["withheldRows"])
 
-    code, out, flag, log = run_main("", os.path.join(tmp, "does-not-exist"))
-    ck("nothing from anywhere REFUSES to publish an empty file (exit 3)",
+    code, out, log = run_main(os.path.join(tmp, "does-not-exist"))
+    ck("nothing from the network REFUSES to publish an empty file (exit 3)",
        code == 3 and out is None)
     ck("...and leaves the withheld list alone too", run_main.withheld is None)
     shutil.rmtree(tmp, ignore_errors=True)
 
-    print("THE BASIS UNIT FROM CASH AGAINST THE DAY'S FUTURES (Oct 29 data check, real rows of 2026-06-09)")
-    def bc(company, city, st, comm, sym, cash, basis):
-        return {"company": company, "city": city, "state": st, "zip": "1", "commodity": comm, "symbol": sym,
-                "cashprice": cash, "basis": basis}
-    day = {"results": [
-        # four clean ZCU26 corn rows that day (cents as the feed sends them): cash - basis = 4.28
-        bc("Ref A", "A", "AR", "Corn", "ZCU26", 4.08, -20), bc("Ref B", "B", "AR", "Corn", "ZCU26", 4.03, -25),
-        bc("Ref C", "C", "AR", "Corn", "ZCU26", 3.98, -30), bc("Ref D", "D", "AR", "Corn", "ZCU26", 3.93, -35),
-        # Consolidated Grain & Barge, Sherrill AR: corn Sep26 $4.29 with a 1 cent basis (stored as $1.00 before)
-        bc("Consolidated Grain & Barge", "Sherrill", "AR", "Corn", "ZCU26", 4.29, 1),
-        bc("Ref E", "E", "IN", "#2 US Yellow Corn", "ZCN26", 4.00, -0.20), bc("Ref F", "F", "IN", "Corn", "ZCN26", 3.95, -0.25),
-        bc("Ref G", "G", "IN", "Corn", "ZCN26", 3.90, -0.30),
-        # ADM Grain, Attica IN: corn Jul26 $4.19 with a -1 cent basis against $4.20 (stored as -$1.00 before)
-        bc("ADM Grain", "Attica", "IN", "#2 US Yellow Corn", "ZCN26", 4.19, -1),
-        bc("Ref H", "H", "MN", "Beans", "ZSF27", 10.96, -50), bc("Ref I", "I", "MN", "Beans", "ZSF27", 10.86, -60),
-        bc("Ref J", "J", "MN", "Beans", "ZSF27", 10.76, -70),
-        # Central Farm Service, Hayfield MN: beans Dec26 $10.46 at -$1.00 against $11.46: a real dollar basis
-        bc("Central Farm Service", "Hayfield", "MN", "BEANS", "ZSF27", 10.46, -1.0),
-        # alone on its contract: no day futures to read the unit from, so the basis is withheld
-        bc("Lone Co", "L", "AR", "Corn", "ZCH27", 4.50, 2),
-        # ADM Grain, Frankfort IN: Soybean Meal Jun26 at $341.10 a TON (was "$3.41" filed as soybeans)
-        bc("ADM Grain", "Frankfort", "IN", "Soybean Meal", "ZMN26", 341.1, 4000),
-    ]}
-    fl = flatten(day, "00000")
-    n = settle_basis_units(fl)
-    by = {(b["facility"], b["city"]): b for b in fl}
-    ck("CGB Sherrill: 1 is a cent, read from $4.29 cash against $4.28 futures",
-       by[("Consolidated Grain & Barge", "Sherrill")]["basis"] == 0.01)
-    ck("ADM Attica: -1 is a cent below $4.20", by[("ADM Grain", "Attica")]["basis"] == -0.01)
-    ck("Central Farm Service Hayfield: -1.00 is a real dollar under", by[("Central Farm Service", "Hayfield")]["basis"] == -1.0)
-    ck("no day futures to read it from: withheld, never guessed", by[("Lone Co", "L")]["basis"] is None
-       and by[("Lone Co", "L")]["cashPrice"] == 4.5)
-    ck("unambiguous units unchanged: -20 is -$0.20, -0.20 stays -$0.20",
-       by[("Ref A", "A")]["basis"] == -0.2 and by[("Ref E", "E")]["basis"] == -0.2)
-    ck("the settle counts what it did", n == {"cents": 2, "dollars": 1, "withheld": 1})
-    meal = by[("ADM Grain", "Frankfort")]
-    ck("soybean meal is meal, not soybeans, and its $/ton price is not rescaled",
-       meal["category"] == "meal" and meal["cashPrice"] == 341.1)
-    ck("hull pellets and ZL oil are meal too; plain beans stay soybeans",
-       _barchart_category("Soybean Hull Pellets", "HSBN26-84134-15139.CM") == "meal"
-       and _barchart_category("Soybean Oil", "ZLN26") == "meal" and _barchart_category("Beans", "ZSX26") == "soybeans")
-    ck("no helper field is left on a row", not any("_basisRaw" in b for b in fl))
     ck("the network's classify_commodity() is unchanged", classify_commodity("Soybean Meal") == "soybeans")
 
     _AS_OF_OVERRIDE = _prev_as_of

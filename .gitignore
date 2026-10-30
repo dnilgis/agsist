@@ -9,9 +9,6 @@ __pycache__/
 # would have put 6 MB into the repo. Now the claim is true.
 bids-full.json
 
-# Barchart's rows alone, before the network is merged in. Same lifetime as
-# bids-full.json: written and read inside one job, never committed.
-barchart-raw.json
 
 # Daily cash bid snapshots: built in the fetch_bids job and saved to the raw
 # branch (scripts/bid_snapshots.py, scripts/push_raw.sh), never to main.

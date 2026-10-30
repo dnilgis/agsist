@@ -41,7 +41,7 @@ test("every grain futures page holds the line under the price from the first pai
     const h = read(p);
     assert.match(h, /<div class="ph-unit">[\s\S]*?<\/div><div class="ph-fresh" id="ph-fresh">Quotes delayed 10 to 25 min<\/div>/, p);
     assert.match(h, /\.ph-fresh\{[^}]*min-height:1\.35em/, p);
-    assert.match(h, /futures\.js\?v=28/, p);
+    assert.match(h, /futures\.js\?v=29/, p);
   }
 });
 

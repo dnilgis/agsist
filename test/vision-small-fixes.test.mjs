@@ -44,7 +44,7 @@ test("cash bids: the Best price tag names the delivery shown", () => {
   assert.match(liftFn(JS, "renderBestBids"), /bestTag\(currentDelivery\)/);
   const html = read("cash-bids.html");
   assert.match(html, /<span>Best price<\/span> <span class="bbc-tag" id="bbc-tag"/);
-  assert.match(html, /components\/cash-bids\.js\?v=16/);   // 16: fx/quickwins (posted date beside an old price); 15: fx/bidflags (basis line checks the day's futures)
+  assert.match(html, /components\/cash-bids\.js\?v=17/);   // 16: fx/quickwins (posted date beside an old price); 15: fx/bidflags (basis line checks the day's futures)
 });
 
 test("spray: conditions are estimated for your location, not measured at your field", () => {
