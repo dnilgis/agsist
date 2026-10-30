@@ -186,6 +186,9 @@ test("browser: shown Nov 15 at 390 and 1280, written before paint, never moves, 
         assert.equal(await pg.locator(".rpx").count(), 0, at + ": the x hides it");
         const kept = await pg.evaluate(() => localStorage.getItem("agsist-rp-xmas-hide"));
         assert.match(String(kept), /^\d{13}$/, at + ": the time is kept");
+        // the next visit comes later: a minute on the page clock. Reloading in the same millisecond let the restored
+        // clock land a few ms before the stored press on a busy runner, and dismissed() wants now >= t (Oct 30 CI)
+        await pg.clock.runFor(60000);
         await pg.reload({ waitUntil: "load" });
         assert.equal(await pg.locator(".rpx").count(), 0, at + ": still hidden after a reload");
         await ctx.close();
