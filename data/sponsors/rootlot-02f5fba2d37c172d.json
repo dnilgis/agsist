@@ -2,8 +2,8 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Root Lot",
  "slug": "rootlot",
- "generated": "2026-10-30T02:01:12+00:00",
- "through": "2026-10-28",
+ "generated": "2026-10-30T12:06:02+00:00",
+ "through": "2026-10-29",
  "start": "2026-10-28",
  "countFrom": "2026-10-28",
  "liveSince": "2026-10-28",
@@ -11,7 +11,7 @@
  "definitionChanged": "2026-09-05",
  "slotSince": "2026-10-29",
  "totals": {
-  "viewable": 10,
+  "viewable": 17,
   "clicks": 0,
   "ctr": 0.0,
   "legacyImpressions": 0
@@ -19,19 +19,19 @@
  "windows": [
   {
    "days": 7,
-   "viewable": 10,
+   "viewable": 17,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 30,
-   "viewable": 10,
+   "viewable": 17,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 90,
-   "viewable": 10,
+   "viewable": 17,
    "clicks": 0,
    "ctr": 0.0
   }
@@ -40,6 +40,12 @@
   {
    "d": "2026-10-28",
    "v": 10,
+   "l": 0,
+   "c": 0
+  },
+  {
+   "d": "2026-10-29",
+   "v": 7,
    "l": 0,
    "c": 0
   }
@@ -56,12 +62,22 @@
    "clicks": 0
   },
   {
-   "page": "/about",
-   "viewable": 1,
+   "page": "/cash-bids",
+   "viewable": 2,
    "clicks": 0
   },
   {
-   "page": "/cash-bids",
+   "page": "/rain",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/webb-county",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/about",
    "viewable": 1,
    "clicks": 0
   },
@@ -82,6 +98,16 @@
   },
   {
    "page": "/rent/texas",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/louisiana/union-parish",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/schleicher-county",
    "viewable": 1,
    "clicks": 0
   }
@@ -208,7 +234,7 @@
  "regionAds": {
   "pending": false,
   "start": "2026-10-28",
-  "through": "2026-10-28",
+  "through": "2026-10-29",
   "rows": [
    {
     "code": "CA",
@@ -225,7 +251,7 @@
    {
     "code": "TX",
     "name": "Texas",
-    "viewable": 9,
+    "viewable": 16,
     "clicks": 0
    }
   ],
