@@ -1,16 +1,15 @@
 {
-  "updated": "2026-10-29T21:44:19Z",
+  "updated": "2026-10-30T21:54:10Z",
   "corn": {
-    "pct": 40,
-    "cur": 4.5125,
+    "pct": 38,
+    "cur": 4.475,
     "lo": 3.6775,
     "hi": 8.1825,
-    "median": 4.6513,
-    "n": 262,
+    "median": 4.6475,
+    "n": 261,
     "years": 5,
-    "read": "At the 40th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 38th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      5.6825,
       5.53,
       5.7725,
       5.7075,
@@ -272,7 +271,7 @@
       4.7425,
       4.56
     ],
-    "hist_from": "2021-10-25",
+    "hist_from": "2021-11-01",
     "hist_to": "2026-10-26",
     "seasonality": [
       79,
@@ -297,15 +296,14 @@
   },
   "soybean": {
     "pct": 52,
-    "cur": 12.205,
+    "cur": 12.215,
     "lo": 9.3875,
     "hi": 17.455,
-    "median": 12.075,
-    "n": 262,
+    "median": 12.0575,
+    "n": 261,
     "years": 5,
-    "read": "At the 52nd percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 52nd percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      12.3575,
       11.9225,
       12.34,
       12.6325,
@@ -567,7 +565,7 @@
       12.6125,
       12.565
     ],
-    "hist_from": "2021-10-25",
+    "hist_from": "2021-11-01",
     "hist_to": "2026-10-26",
     "seasonality": [
       78,
@@ -595,12 +593,11 @@
     "cur": 6.0325,
     "lo": 4.985,
     "hi": 13.48,
-    "median": 6.0537,
-    "n": 262,
+    "median": 6.05,
+    "n": 261,
     "years": 5,
-    "read": "At the 49th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 49th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      7.7275,
       7.665,
       8.17,
       8.23,
@@ -862,7 +859,7 @@
       6.605,
       6.25
     ],
-    "hist_from": "2021-10-25",
+    "hist_from": "2021-11-01",
     "hist_to": "2026-10-26",
     "seasonality": [
       58,
@@ -886,16 +883,15 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "cattle": {
-    "pct": 81,
-    "cur": 227.225,
-    "lo": 127.375,
+    "pct": 78,
+    "cur": 224.0,
+    "lo": 131.575,
     "hi": 257.45,
-    "median": 183.8125,
-    "n": 262,
+    "median": 183.875,
+    "n": 261,
     "years": 5,
-    "read": "At the 81st percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 78th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      127.375,
       131.8,
       132.125,
       133.525,
@@ -1157,7 +1153,7 @@
       227.55,
       229.875
     ],
-    "hist_from": "2021-10-25",
+    "hist_from": "2021-11-01",
     "hist_to": "2026-10-26",
     "seasonality": [
       0,
@@ -1181,16 +1177,15 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "feeders": {
-    "pct": 87,
-    "cur": 351.1,
+    "pct": 79,
+    "cur": 337.475,
     "lo": 153.125,
     "hi": 375.5,
-    "median": 248.5375,
-    "n": 262,
+    "median": 248.7,
+    "n": 261,
     "years": 5,
-    "read": "At the 87th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 79th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      156.575,
       158.875,
       156.25,
       160.925,
@@ -1452,7 +1447,7 @@
       343.625,
       348.325
     ],
-    "hist_from": "2021-10-25",
+    "hist_from": "2021-11-01",
     "hist_to": "2026-10-26",
     "seasonality": [
       0,
