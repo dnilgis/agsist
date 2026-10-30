@@ -3,17 +3,17 @@
  "generated": "2026-10-30",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence. Rules: scripts/board_parents.py.",
  "counts": {
-  "live_boards": 2197,
-  "with_parent": 122,
-  "with_dest": 117,
+  "live_boards": 2040,
+  "with_parent": 133,
+  "with_dest": 107,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
-   "chs-brand": 117
+   "chs-brand": 128
   },
   "dest_by_brand": {
    "ADM": 26,
-   "AGP": 28,
+   "AGP": 24,
    "Big River": 4,
    "Bunge": 4,
    "CGB": 9,
@@ -21,9 +21,9 @@
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 11,
-   "Valero": 4,
-   "Viserion": 6
+   "POET": 9,
+   "Valero": 2,
+   "Viserion": 4
   },
   "board_pages_with_other_firms": 1
  },
@@ -140,6 +140,71 @@
   },
   "chsag-wykoff": {
    "elevId": "e806y84kf7",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-ada": {
+   "elevId": "e72fx9vevc",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-beltrami": {
+   "elevId": "ejkpgv78dr",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-callaway": {
+   "elevId": "e76ftnv376",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-crookstonterminal": {
+   "elevId": "e25kv76jt3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-erskine": {
+   "elevId": "et1bm7qz3y",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-greenbush": {
+   "elevId": "e42r8brc7d",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-grygla": {
+   "elevId": "e454qsjjzz",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-hazel": {
+   "elevId": "e1vw62ky3q",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-mahnomen": {
+   "elevId": "esv1phzjyx",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-oklee": {
+   "elevId": "ekv7zc10x4",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-roseau": {
+   "elevId": "e0y0dcvywh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-ulen": {
+   "elevId": "eq6zz1bk9m",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsagservices-warren": {
+   "elevId": "e7ep3aead0",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
@@ -528,11 +593,6 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
-  "chsprimeland-chsprimeland": {
-   "elevId": "ekj0yxn1y2",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
   "chsriverplains-ashley": {
    "elevId": "e41zb1vf15",
    "parent": "CHS Inc.",
@@ -603,11 +663,6 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
-  "chssouthwestgrain-newsalem": {
-   "elevId": "etzaek5vf9",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
   "chssunbasingrowers-bruceelevator": {
    "elevId": "evx7be37f8",
    "parent": "CHS Inc.",
@@ -667,16 +722,6 @@
    "elevId": "eev8k4xsz2",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
-  },
-  "countrypartnerscooperative-agpdavidcity": {
-   "elevId": "ex2c36pry4",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "countrypartnerscooperative-agphastings": {
-   "elevId": "eex5kgz70p",
-   "dest": "AGP",
-   "dv": "location"
   },
   "cvacoop365-admcolumbus": {
    "elevId": "ejtjhb7qmd",
@@ -853,31 +898,6 @@
    "dest": "Green Plains",
    "dv": "location"
   },
-  "farmerswin-agpmasoncity": {
-   "elevId": "e8jam8a9cw",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerswin-poetfairbank": {
-   "elevId": "ez7yaq8md0",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "farmerswin-poetshellrock": {
-   "elevId": "ek6gke6bgx",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "farmerswin-valero": {
-   "elevId": "ebsf77fnha",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "farmerswin-viserion": {
-   "elevId": "ey734h2jkj",
-   "dest": "Viserion",
-   "dv": "location"
-  },
   "fsgrain-admclintoncorn": {
    "elevId": "ekz8tqgy53",
    "dest": "ADM",
@@ -916,11 +936,6 @@
   "fsgrain-viserionsavanna": {
    "elevId": "eq4pgrxk46",
    "dest": "Viserion",
-   "dv": "location"
-  },
-  "fullcircleag-agpaberdeen": {
-   "elevId": "ebn7vhdmrb",
-   "dest": "AGP",
    "dv": "location"
   },
   "hovenequity-agpdirectship": {
@@ -1132,16 +1147,6 @@
    "elevId": "ef7wxjzrp7",
    "parent": "Stephenson Service Company",
    "pv": "change:oc01"
-  },
-  "premiercooperative-valerocc": {
-   "elevId": "ehysxd2cqp",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "premiercooperative-viserionmcgregor": {
-   "elevId": "e67nm42geg",
-   "dest": "Viserion",
-   "dv": "location"
   },
   "procooperative-agpeaglegrove": {
    "elevId": "ezah1nyyw4",
