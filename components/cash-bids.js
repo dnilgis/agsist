@@ -9,14 +9,6 @@
    functions from this file. Bump ?v= in cash-bids.html when it changes. */
 (function(){
 'use strict';
-// Cash bids load from the AGSIST data proxy; no credentials ship in the client.
-var BASE_URL='https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids';
-/* Set to false the day the second feed ends (the subscription was to be
-   cancelled 2026-09-25; that is the owner's cutover decision and this file does
-   not make it). Off means off: the proxy is not called and no "second feed did
-   not answer" banner is drawn, because nothing is failing. The AGSIST network is
-   the feed. */
-var LICENSED_FEED=false; /* Barchart turned off 2026-10-11 (Sig cancelling the subscription) */
 var currentBids=[],currentElevators=[],currentFilter='all',currentSort='distance',currentDelivery='all',pinnedKeys=[],wtdComm='corn';
 /* WHAT THE PAGE ASKS FOR BEFORE THE FARMER'S ANSWER, IT ASKS FOR SECOND.
    The national basis map and the "where do I take this load" block each fetch
@@ -1055,21 +1047,6 @@ function windowMonths(b){var R=typeof window!=='undefined'&&window.cbRank;return
    table and the elevator cards have used since 2026-09-22. If you want "the
    most this elevator will pay for anything, any month", write it under a name
    that says so and do not rank two elevators with it. */
-
-function flatten(data){
-  var flat=[],raw=data.results||data.bids||data.data||[];
-  if(!Array.isArray(raw))return flat;
-  raw.forEach(function(item){
-    if(item.bids&&Array.isArray(item.bids)){
-      var fac=item.company||item.name||item.locationName||'Unknown';
-      var br=(typeof item.location==='string')?item.location:'';
-      item.bids.forEach(function(bid){flat.push({facility:fac,branch:br,city:item.city||bid.city||'',state:item.state||bid.state||'',distance:parseFloat(item.distance||bid.distance)||null,phone:item.phone||bid.phone||'',commodity:bid.commodity||bid.commodity_display_name||bid.commodityName||'',cashPrice:parseFloat(bid.cashprice||bid.cashPrice)||null,basis:(function(v){return isFinite(v)?v:null;})(parseFloat(bid.basis)),deliveryMonth:bid.deliveryMonth||bid.delivery_month||'',deliveryStart:bid.deliveryStart||bid.delivery_start||'',symbol:bid.symbol||'',basisMonth:bid.basismonth||'',asOf:bid.dataTimestamp||bid.timestamp||bid.updateTimestamp||bid.dataDate||item.dataTimestamp||item.timestamp||'',category:classify(bid.commodity||bid.commodity_display_name||bid.commodityName||'')});});
-    }else if(item.commodity||item.commodityName||item.cashprice!==undefined||item.cashPrice!==undefined){
-      flat.push({facility:item.company||item.name||item.facility||item.locationName||'Unknown',branch:(typeof item.location==='string')?item.location:'',city:item.city||'',state:item.state||'',distance:parseFloat(item.distance)||null,phone:item.phone||'',commodity:item.commodity||item.commodity_display_name||item.commodityName||'',cashPrice:parseFloat(item.cashprice||item.cashPrice)||null,basis:(function(v){return isFinite(v)?v:null;})(parseFloat(item.basis)),/* NOT `parseFloat(x)||null`: 0 || null is null, so a FLAT basis -- the strongest basis on the board -- was published as "unknown" and sorted below -80c. 21 of 345 live rows are exactly 0, including the top two bean bids. The sibling branch three lines up already had this right. */deliveryMonth:item.deliveryMonth||item.delivery_month||'',deliveryStart:item.deliveryStart||item.delivery_start||'',symbol:item.symbol||'',basisMonth:item.basismonth||'',asOf:item.dataTimestamp||item.timestamp||item.updateTimestamp||item.dataDate||'',category:classify(item.commodity||item.commodity_display_name||item.commodityName||'')});
-    }
-  });
-  return flat;
-}
 
 /* The feed sends "N/A" for boards with no phone. Not a number: no Call button. */
 function hasPhone(p){return String(p||'').replace(/\D/g,'').length>=7;}
@@ -2296,155 +2273,6 @@ function netRowsFrom(shard,distanceMi){
   return rows;
 }
 
-/* THE DUPLICATE RULE, AND IT IS THE POINT OF THE WHOLE EXERCISE.
-   Same facility, same town, same state = the same elevator, however the two
-   feeds spell it. When both have it, ours is kept and Barchart's is dropped,
-   because ours is what the elevator posted and Barchart's is a copy. */
-/* Legal-entity words one feed carries and the other drops. Stripped only from
-   the END of a name, never mid-name: "Co-op Services" must keep its "co". */
-var NET_LEGAL={llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,
-               ltd:1,limited:1,lp:1,llp:1,company:1};
-/* EXACT MATCH WAS NOT ENOUGH AND IT SHOWED ON THIS PAGE. On 2026-09-22 this
-   drew Badger Grain Supply of Wheeler TWICE, 19 miles and 22 miles away, with
-   different corn bids: Barchart calls it "Badger Grain Supply" and the
-   elevator's own board says "Badger Grain Supply, LLC". Midwest Commodity at
-   Baldwin doubled off one plural, "Services Inc." against "Service, Inc.".
-   Two cards for one elevator quoting two prices is worse than either feed
-   alone. Measured against 1,807 Barchart facilities this groups two different
-   spellings once, and that pair is the same business typed twice. Names that
-   differ by a real word ("ADM Grain" vs "ADM") are merged only by netIsTwin()
-   below, under much stricter conditions — a duplicate pin is visible and
-   fixable, a wrong merge hides a real elevator.
-   scripts/fetch_bids.py carries the same rule in _norm_operator(). */
-function netNormOperator(name){
-  var s=String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ');
-  s=s.replace(/co op/g,'coop').replace(/co operative/g,'cooperative');
-  var toks=s.split(' ').filter(function(t){return t;});
-  while(toks.length&&NET_LEGAL[toks[toks.length-1]])toks.pop();
-  toks=toks.map(function(t){return (t==='cooperative'||t==='coops')?'coop':t;});
-  toks=toks.map(function(t){return (t.length>3&&t.charAt(t.length-1)==='s')?t.slice(0,-1):t;});
-  return toks.join('');
-}
-function netPlain(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
-function netKey(r){
-  return netNormOperator(r.facility||'')+'|'+netPlain(r.city)+'|'+netPlain(r.state);
-}
-/* WHAT OURS INHERITS WHEN IT WINS.
-   Ours wins on PRICE, because ours is the elevator's own posting and
-   Barchart's is a copy of it. It does not follow that ours knows more about
-   the elevator. The merged feed carries no phone number at all, so displacing
-   Barchart's row silently removed the Call button from the card — found by
-   rendering the page, not by any of the checks that came before it.
-   These are facts about the business, not about the bid, so they cross over. */
-var NET_INHERIT=['phone'];
-/* THE SAME ELEVATOR UNDER A LONGER NAME. "ADM" (the elevator's own board) and
-   "ADM Grain" (Barchart) at Mankato quote the same bid to the cent on every
-   delivery month, and the exact-key rule above keeps both, so the card was
-   drawn twice. A looser price rule would be wrong: CHS Ag Terminals Mankato
-   sits 5 cents under ADM Mankato, Bartlett sits within 5 cents of Heartland
-   Co-op at Council Bluffs, Cargill US within 5 cents of ADM at Hutchinson --
-   different companies, and a wrong merge hides a real elevator. So a twin needs
-   ALL of: same town, same state, same crop bucket, same delivery month, one
-   whole normalised name a prefix of the other ("adm" / "admgrain"), and cash
-   within one cent. Rows whose town differs by a board label do not match and
-   stay as two cards: a visible duplicate is fixable, a hidden elevator is not. */
-function netIsTwin(a,b){
-  if(!a||!b||a.category!==b.category)return false;
-  if(a.cashPrice==null||b.cashPrice==null)return false;
-  if(Math.abs(a.cashPrice-b.cashPrice)>0.01)return false;
-  var ca=netPlain(a.city),cb=netPlain(b.city);
-  if(!ca||ca!==cb||netPlain(a.state)!==netPlain(b.state)||!netPlain(a.state))return false;
-  var ka=delKey(a);
-  if(!ka||ka!==delKey(b))return false;
-  var na=netNormOperator(a.facility),nb=netNormOperator(b.facility);
-  if(na.length<3||nb.length<3)return false;
-  return na.indexOf(nb)===0||nb.indexOf(na)===0;
-}
-function netMerge(feedRows,networkRows){
-  var mine={},kept=[],dropped=0,byKey={};
-  (networkRows||[]).forEach(function(r){
-    var k=netKey(r);
-    mine[k]=true;kept.push(r);
-    (byKey[k]=byKey[k]||[]).push(r);
-  });
-  var inherit=function(ours,r){
-    /* Carry across anything ours does not have. Never overwrite: if our own
-       source gave us a phone one day, it is the elevator's own and wins. */
-    NET_INHERIT.forEach(function(f){if(!ours[f]&&r[f])ours[f]=r[f];});
-  };
-  /* PASS 1: which second-feed elevators are PROVEN to be one of ours. A
-     facility is proven when at least one of its rows twins (netIsTwin) a row of
-     ours; the network row's name is then the name for all of that facility's
-     rows, so a crop only the second feed carries (the meal row at ADM Mankato)
-     lands on the same card instead of a second card under "ADM Grain". Nothing
-     is proven by name alone: CHS Ag Terminals Mankato never twins ADM. */
-  var sameFac={};
-  /* Keyed by the second feed's branch as well: it files ADM's Fremont
-     elevator, soy plant and poultry plant as three branches of one name in one
-     town, and one key for all three filed every survivor under whichever card
-     twinned first. */
-  var facKey=function(r){return netKey(r)+'|'+netPlain(r.branch);};
-  (feedRows||[]).forEach(function(r){
-    var k=netKey(r),fk=facKey(r);
-    if(sameFac[fk]||mine[k])return;
-    for(var i=0;i<(networkRows||[]).length;i++){
-      if(netIsTwin(networkRows[i],r)){sameFac[fk]=networkRows[i];break;}
-    }
-  });
-  (feedRows||[]).forEach(function(r){
-    var k=netKey(r);
-    /* SAME ELEVATOR AND SAME CROP BUCKET, OR IT SURVIVES. Matching on the
-       elevator alone threw away every second-feed crop the network board did
-       not carry (a network board with corn only deleted that elevator's
-       soybeans). bids-homepage.js mergeFeeds already keys on facility + crop. */
-    if(mine[k]){
-      var same=(byKey[k]||[]).filter(function(o){return o.category===r.category&&!o._netOut;});
-      /* OURS WINS ONLY WHEN OURS IS CURRENT. Where every one of our rows for
-         this crop is from a board we could not read, or from an earlier day
-         than the second feed's copy, the second feed's row is the newer
-         price and it is the one kept. Ours are taken out, not shown twice. */
-      if(same.length&&same.every(function(o){return netOlder(o,r);})){
-        same.forEach(function(o){o._netOut=true;});
-        same=[];
-      }
-      if(!same.length&&(byKey[k]||[]).some(function(o){return o.category===r.category&&o._netOut;})){
-        kept.push(r);return;
-      }
-      if(same.length){
-        dropped++;
-        same.forEach(function(ours){inherit(ours,r);});
-        return;
-      }
-    }
-    var ours2=sameFac[facKey(r)];
-    if(ours2){
-      var twin=null;
-      for(var i=0;i<(networkRows||[]).length;i++){
-        if(netIsTwin(networkRows[i],r)){twin=networkRows[i];break;}
-      }
-      if(twin&&!twin._netOut&&netOlder(twin,r)){twin._netOut=true;twin=null;kept.push(r);return;}
-      if(twin&&twin._netOut){kept.push(r);return;}
-      if(twin){dropped++;inherit(twin,r);return;}
-      /* Survives (a crop ours lacks): file it under our name for this place. */
-      r.facility=ours2.facility;r.branch=ours2.branch;r.city=ours2.city;r.town=ours2.town||'';
-      if(!ours2.phone&&r.phone)ours2.phone=r.phone;
-      if(!r.phone&&ours2.phone)r.phone=ours2.phone;
-    }
-    kept.push(r);
-  });
-  kept=kept.filter(function(x){if(x._netOut){delete x._netOut;return false;}return true;});
-  return {rows:kept,duplicatesResolved:dropped};
-}
-/* Our row is the older price: its board was not read this run, or it was
-   priced on an earlier Central-time day than the second feed's copy. A row
-   with no readable date on either side is not called older. */
-function netOlder(ours,feed){
-  if(ours&&ours.stale===true)return true;
-  var R=typeof window!=='undefined'&&window.cbRank;if(!R)return false;
-  var a=R.centralDay(ours&&ours.asOf),b=R.centralDay(feed&&feed.asOf);
-  return !!(a&&b&&a<b);
-}
-
 /* Never rejects. Resolves to an empty result on any failure at all.
    `late` (optional) is a holder: the inner chain records its own answer on it
    (late.done, late.result) and calls late.onSettle(result) if that is set. */
@@ -2500,9 +2328,7 @@ function _fetchNetworkInner(zip,radiusMi,empty){
   }).catch(function(){return empty;});
 }
 
-/* BOTH FEEDS, AND THE NETWORK CANNOT BREAK THE PAGE.
-   Barchart is still the call that decides success or failure: if it fails the
-   page errors exactly as it always did. The network is asked alongside it and
+/* THE NETWORK IS THE ONLY SOURCE, AND IT CANNOT BREAK THE PAGE: it
    contributes whatever it has, including nothing. */
 var cbNetStats={places:0,rows:0,duplicatesResolved:0,nationalPlaces:null};
 /* SAY HOW MANY OF THESE CAME STRAIGHT FROM THE ELEVATOR.
@@ -2516,11 +2342,10 @@ function renderNetStats(){
   if(!el)return;
   if(!cbNetStats.places){el.style.display='none';el.textContent='';return;}
   /* One short phrase on the one status line. The detail is in the title. */
-  /* With the licensed feed off (2026-10-11) every elevator on screen is read
-     direct, and "25 elevators \u00b7 25 read direct" read as a second count. */
-  el.textContent=LICENSED_FEED?cbNetStats.places+' read direct':'each read from its own board';
+  /* Every elevator on screen is read direct, and "25 elevators \u00b7 25 read
+     direct" read as a second count. */
+  el.textContent='each read from its own board';
   el.title='AGSIST reads these elevators\u2019 own posted bid boards, rather than licensing them from a feed.'+
-    (cbNetStats.duplicatesResolved?' '+cbNetStats.duplicatesResolved+' duplicate'+(cbNetStats.duplicatesResolved===1?'':'s')+' resolved in the elevator\u2019s favor.':'')+
     (cbNetStats.nationalPlaces?' '+cbNetStats.nationalPlaces+' read direct nationally.':'');
   el.style.display='';
 }
@@ -2540,103 +2365,53 @@ function renderNetworkNote(){
     '\u201Cdirect from the elevator\u201D. ';
   p.style.display='';
 }
-/* HOW LONG THE SECOND FEED GETS BEFORE THE PAGE GOES ON WITHOUT IT.
-   Longer than the network leg's 3.5s, because unlike the shards this is one
-   request to one worker and a slow answer is still worth having. What it is
-   NOT is unbounded, which is what it was. */
-var FEED_DEADLINE_MS=15000;
-/* netFailed: the bids network could not be read, as opposed to answering
-   with nothing nearby. The sentence used to say "had nothing near this ZIP"
-   either way, which on a timeout is a claim nobody checked. */
-function feedHuman(err,netFailed){
+/* netFailed is not needed any more: the only two reasons a search ends with
+   no rows are an unknown ZIP and a network that could not be read. */
+function feedHuman(err){
   var msg=String(err);
-  var net=netFailed?'and the bids network couldn\u2019t be reached either.':'and the bids network had nothing near this ZIP.';
   return msg.indexOf('zip unknown')>=0?'ZIP not recognized. Check the number.':
-         msg.indexOf('429')>=0?'Too many requests. Wait a moment and try again.':
-         msg.indexOf('network unreachable')>=0?'Couldn\u2019t reach the elevator boards just now. Try again shortly.':
-         msg.indexOf('timeout')>=0?'The second feed did not answer in time, '+net+(netFailed?' Try again shortly.':''):
-         /HTTP 5/.test(msg)?'The second feed did not answer, '+net+' Try again shortly.':
-         msg.indexOf('Failed to fetch')>=0||msg.indexOf('NetworkError')>=0||msg.indexOf('TypeError')>=0||msg.indexOf('abort')>=0?'Couldn\u2019t reach the bid service. It may be busy or briefly down (it\u2019s usually not your signal). Tap Retry in a few seconds.':
+         msg.indexOf('network unreachable')>=0?'Couldn’t reach the elevator boards just now. Try again shortly.':
          'Could not load bids. Try again.';
 }
-/* THE TWO FEEDS ARE PEERS. Neither one failing may delete the other.
-   Until 2026-09-22 the licensed feed was the outer promise and the AGSIST
-   network was consumed inside its .then(), so one Barchart outage drew
-   "Unable to Load Bids" over sixty elevators whose shards had already
-   downloaded. callback's third argument is the warning to show ABOVE results
-   that did arrive, rather than instead of them. */
 /* callback may be called a SECOND time, with a fourth argument {late:true},
    when the bids network answers after the first render (see fetchNetwork). */
 var cbSearchSeq=0;
 function fetchBids(zip,radius,callback){
-  var url=BASE_URL+'?zipCode='+encodeURIComponent(zip)+'&maxDistance='+(radius||50)+'&getAllBids=1';
   var seq=++cbSearchSeq,late={};
   var net=fetchNetwork(zip,radius||50,late);
-  var bcErr=null,ctl=null,killer=null;
-  try{if(typeof AbortController==='function')ctl=new AbortController();}catch(e){}
-  var live=!LICENSED_FEED?Promise.resolve([]):fetch(url,ctl?{signal:ctl.signal}:undefined)
-    .then(function(r){return r.ok?r.json():Promise.reject('HTTP '+r.status);})
-    .then(function(data){return flatten(data).filter(function(b){return (b.cashPrice!==null||b.basis!==null)&&usScope(b.state);});})
-    .catch(function(err){bcErr=bcErr||err||'error';return [];});
-  /* The deadline RESOLVES rather than rejects, and aborts the request where
-     AbortController exists, so a worker that never answers cannot hold the
-     page open. Without AbortController the fetch is simply left to finish
-     into nothing, which is still better than waiting for it. */
-  var capped=!LICENSED_FEED?live:Promise.race([live,new Promise(function(res){
-    killer=setTimeout(function(){
-      bcErr=bcErr||'timeout';
-      if(ctl){try{ctl.abort();}catch(e){}}
-      res([]);
-    },FEED_DEADLINE_MS);
-  })]);
-  /* netMerge renames second-feed rows it files under one of ours, so a later
-     re-merge starts from untouched copies. */
-  var copyRows=function(a){return (a||[]).map(function(r){var c={};for(var k in r)c[k]=r[k];return c;});};
-  Promise.all([capped,net]).then(function(out){
-    if(killer){clearTimeout(killer);killer=null;}
-    var bcRows=out[0]||[],n=out[1]||{rows:[],places:0,nationalPlaces:null};
-    /* The network can finish while the second feed is still out: the deadline
-       won the race, but the real answer is already here. Use it. */
+  net.then(function(n){
+    n=n||{rows:[],places:0,nationalPlaces:null};
+    /* The network can finish after the deadline won the race, but the real
+       answer is already here. Use it. */
     if(late.done&&late.result&&!late.result.failed&&late.result.rows.length>=n.rows.length)n=late.result;
     var shown=false;
     var deliver=function(n,isLate){
       if(seq!==cbSearchSeq)return;
-      var bids=copyRows(bcRows);
-      var merged=netMerge(bids,n.rows);
-      cbNetStats={places:n.places,rows:n.rows.length,duplicatesResolved:merged.duplicatesResolved,nationalPlaces:n.nationalPlaces};
-      netLog(isLate?'LATE result:':'result:',n.places+' places, '+n.rows.length+' rows, '+
-             merged.duplicatesResolved+' duplicate(s) resolved; the second feed contributed '+
-             bcRows.length+' rows; the page will draw '+merged.rows.length,
-             bcErr?('(BARCHART FAILED: '+bcErr+')'):'',
+      var rows=n.rows.slice();
+      cbNetStats={places:n.places,rows:n.rows.length,duplicatesResolved:0,nationalPlaces:n.nationalPlaces};
+      netLog(isLate?'LATE result:':'result:',n.places+' places, '+n.rows.length+' rows; the page will draw '+rows.length,
              NET_ON?'':'(NETWORK IS SWITCHED OFF)');
-      if(!isLate&&bcErr)console.warn('[AGSIST]',bcErr);
-      if(!merged.rows.length){
+      if(!rows.length){
         if(isLate)return;
         cbNetStats={places:0,rows:0,duplicatesResolved:0,nationalPlaces:null};
-        /* Nothing came back AND the only source that could have answered did not:
-           say so. "No bids found" would tell the reader there are none near them. */
-        /* Not gated on the licensed feed being off: an empty answer from it
-           beside an unreachable network is not "No Bids Found" either. */
-        if(n.unknownZip)bcErr='zip unknown';
-        else if(!bcErr&&n.failed)bcErr='network unreachable';
+        /* Nothing came back AND the only source did not answer: say so.
+           "No bids found" would tell the reader there are none near them. */
+        var bad=n.unknownZip?'zip unknown':(n.failed?'network unreachable':null);
         shown=true;
-        callback(bcErr?new Error(feedHuman(bcErr,!!n.failed)):null,[]);
+        callback(bad?new Error(feedHuman(bad)):null,[]);
         return;
       }
       renderNetStats();
       var wasShown=shown;shown=true;
-      callback(null,merged.rows,bcErr?'The second feed did not answer. Showing the bids network only: the '+
-        n.places+' elevator'+(n.places===1?'':'s')+' AGSIST reads directly from their own boards.':
+      callback(null,rows,
         (n.failed&&n.shardsBad?n.shardsBad+' of the '+n.shardsAsked+' elevator boards near you did not load. Showing the ones that did; Retry for the rest.':null),
         (isLate&&wasShown)?{late:true}:undefined);
     };
     if(!late.done&&NET_ON){
-      /* THE NETWORK IS STILL DOWNLOADING. If nothing else arrived, "No Bids
-         Found" now would be a claim the page cannot make yet, so the search
-         waits for it -- up to 8 s more -- before saying so (and still draws
-         it if it lands after that). If
-         the second feed did answer, its rows are drawn now and the network's
-         are merged in when they land. */
+      /* THE NETWORK IS STILL DOWNLOADING. "No Bids Found" now would be a
+         claim the page cannot make yet, so the search waits for it -- up to
+         8 s more -- before saying so (and still draws it if it lands after
+         that). */
       var hold=null;
       late.onSettle=function(r){
         if(hold){clearTimeout(hold);hold=null;}
@@ -2649,7 +2424,7 @@ function fetchBids(zip,radius,callback){
          so there is nothing false to avoid and no reason to make anyone wait. */
       var snap=false;
       try{snap=!!(window.CBGlance&&CBGlance.snapshot(zip,radius||50));}catch(e){}
-      if(!bcRows.length&&!snap){
+      if(!snap){
         hold=setTimeout(function(){hold=null;if(!shown)deliver(n,false);},8000);
         return;
       }
@@ -2694,7 +2469,7 @@ function doSearch(zip){
     goBtn.disabled=false;
     results.removeAttribute('aria-busy');
     renderDegraded(null);
-    /* cb-glance: both feeds failed -- fall back to the last network snapshot this phone saved, dated. */
+    /* cb-glance: the network failed -- fall back to the last network snapshot this phone saved, dated. */
     if(err&&!bids.length&&window.CBGlance){var _sn=CBGlance.snapshot(zip,radius);if(_sn){err=null;bids=_sn.rows;warn=_sn.note;}}
     if(err&&!bids.length){
       goBtn.textContent=hasSearched?'\u21BB Refresh':'Search';
@@ -2733,8 +2508,7 @@ function doSearch(zip){
        new-crop option that returns nothing. */
     syncDeliveryOptions(bids);
     /* NOTHING IN RANGE. The page used to draw "0 elevators", a Watch button,
-       three empty Best cards, Delivery and Sort over "No Bids Found". Since
-       the licensed feed went off (2026-10-11) more ZIPs land here, so it says
+       three empty Best cards, Delivery and Sort over "No Bids Found". More ZIPs land here, so it says
        what was searched, what the network is, and offers the wider radius in
        one tap. */
     if(!bids.length){
