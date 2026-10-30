@@ -96,7 +96,7 @@ test("--help and -h print usage, exit 0 and change no file, for every script (an
     await Promise.all(Array.from({ length: 6 }, lane));
     const changed = diff(before, tree(work));
     if (changed.length) problems.push(`files changed in the copy: ${changed.slice(0, 8).join(", ")}`);
-    assert.deepEqual(problems, [], problems.slice(0, 20).join("\n"));
+    assert.deepEqual(problems, [], "A new script must answer --help without doing work: add the two guard lines (see scripts/_argguard.py, .mjs, .sh) after its docstring or imports.\n" + problems.slice(0, 20).join("\n"));
   } finally {
     fs.rmSync(work, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });

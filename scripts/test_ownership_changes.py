@@ -4,6 +4,8 @@
 Real rows: the Pearl City Elevator boards of dnilgis/bids data/index.json and the CHS Kasson, Ostrander, Wykoff
 records of data/ids/elevators.json, read 2026-10-29.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import copy
 import json
 import os
