@@ -62,6 +62,7 @@
     .rbz-fig{margin:1.4rem 0}
     .rbz-fig img{display:block;width:100%;height:auto;border-radius:4px;border:1px solid var(--border)}
     .rbz-fig figcaption{font-size:.8rem;color:var(--text-muted);margin-top:.35rem}
+    .lz-btn{display:block;width:100%;margin:0;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:zoom-in}.lz-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}.lz-cue{display:block;margin-top:.5rem;font-size:var(--fs-xs);font-weight:600;color:var(--link);text-decoration:underline}
     .rbz-fig-sm{max-width:340px}
     .rbz-fig-letter{max-width:420px;clear:both}
     @media (min-width:700px){.rbz-fig-sm{float:right;width:300px;margin:.2rem 0 .8rem 1.2rem}}
@@ -205,7 +206,7 @@
         <li><b>You pay the invoice</b>, net 30. A W-9 on request.</li>
       </ol>
       <figure class="rbz-fig rbz-fig-letter" id="rbz-letter">
-        <img src="/img/rain-print-business-letter-sample.webp" width="600" height="776" loading="lazy" decoding="async" alt="Sample box letter for the 2012 Ames, Iowa print, a business&rsquo;s note at the top: 25.52 inches, 32% less than usual.">
+        <button type="button" class="lz-btn" data-lz="/img/rain-print-business-letter-sample-lg.webp" data-lz-alt="Sample box letter for the 2012 Ames, Iowa print, a business&rsquo;s note at the top: 25.52 inches, 32% less than usual." aria-label="Read the sample letter full size"><img src="/img/rain-print-business-letter-sample.webp" width="600" height="776" loading="lazy" decoding="async" alt="Sample box letter for the 2012 Ames, Iowa print, a business&rsquo;s note at the top: 25.52 inches, 32% less than usual."><span class="lz-cue">Tap to read the letter full size</span></button>
         <figcaption>The letter on top in each box, with your note printed at the top. This sample uses the 2012 Ames example and a sample note; your proof sheet shows your own.</figcaption>
       </figure>
 
@@ -313,6 +314,7 @@
   <script src="/components/rp-logo.js?v=4" defer></script>
   <script src="/components/rain-print.js?v=87" defer></script>
   <script src="/components/rp-business.js?v=9" defer></script>
+  <script src="/components/rp-letterzoom.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

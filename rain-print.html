@@ -601,9 +601,10 @@
   .rp-inbox-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:1.4rem;align-items:start}
   .rp-inbox-list{margin:0;padding:0 0 0 1.1rem;color:var(--text-dim);line-height:1.6;max-width:var(--rp-measure)}
   .rp-inbox-list li{margin:0 0 .6rem}.rp-inbox-list b{color:var(--text)}
+  .lz-btn{display:block;width:100%;margin:0;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:zoom-in}.lz-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}.lz-cue{display:block;margin-top:.5rem;font-size:var(--fs-xs);font-weight:600;color:var(--link);text-decoration:underline}
   .rp-inbox-fig{margin:0}.rp-inbox-fig img{display:block;width:100%;max-width:360px;height:auto;border:1px solid var(--border);border-radius:var(--r-sm,4px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-  .rp-inbox-fig figcaption{font-size:var(--fs-xs);color:var(--text-muted);line-height:1.5;margin-top:.5rem;max-width:360px}
-  @media(max-width:760px){.rp-inbox-grid{grid-template-columns:1fr}.rp-inbox-fig img,.rp-inbox-fig figcaption{max-width:300px}}
+  .rp-inbox-fig .lz-btn{max-width:360px}.rp-inbox-fig figcaption{font-size:var(--fs-xs);color:var(--text-muted);line-height:1.5;margin-top:.5rem;max-width:360px}
+  @media(max-width:760px){.rp-inbox-grid{grid-template-columns:1fr}.rp-inbox-fig img,.rp-inbox-fig figcaption,.rp-inbox-fig .lz-btn{max-width:300px}}
   @media(min-width:600px) and (max-width:899px){.rp-box{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:480px){.rp-ogrid,.rp-opts{grid-template-columns:1fr}}
   @media(min-width:600px) and (max-width:899px){.rp-form{grid-template-columns:minmax(0,2fr) minmax(0,1fr) auto;align-items:end}.rp-form .btn{width:auto}}
@@ -1040,7 +1041,7 @@
           <li><b>No prices go in the box.</b> The digital file comes by email, so there&rsquo;s no box.</li>
         </ul>
         <figure class="rp-inbox-fig">
-          <img src="/img/rain-print-insert-letter-sample.webp" width="600" height="776" loading="lazy" decoding="async" alt="A sample of the letter for the 2012 Ames, Iowa example: what you&rsquo;re holding, a small copy of the print with how to read it, and the year in numbers, 25.52 inches of rain and melted snow, 32% less than a usual year.">
+          <button type="button" class="lz-btn" data-lz="/img/rain-print-insert-letter-sample-lg.webp" data-lz-alt="A sample of the letter for the 2012 Ames, Iowa example: what you&rsquo;re holding, a small copy of the print with how to read it, and the year in numbers, 25.52 inches of rain and melted snow, 32% less than a usual year." aria-label="Read the sample letter full size"><img src="/img/rain-print-insert-letter-sample.webp" width="600" height="776" loading="lazy" decoding="async" alt="A sample of the letter for the 2012 Ames, Iowa example: what you&rsquo;re holding, a small copy of the print with how to read it, and the year in numbers, 25.52 inches of rain and melted snow, 32% less than a usual year."><span class="lz-cue">Tap to read the letter full size</span></button>
           <figcaption>The letter that comes with every print: what it is, how to read it, and your year in numbers. This one is for the 2012 Ames example.</figcaption>
         </figure>
       </div>
@@ -1246,6 +1247,7 @@
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=9" defer></script>
   <script src="/components/rp-forme.js?v=1" defer></script>
+  <script src="/components/rp-letterzoom.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
