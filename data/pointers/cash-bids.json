@@ -25,6 +25,10 @@
    "to": "/cash-bids/illinois/",
    "since": "2026-10-31"
   },
+  "cash-bids/illinois/green-valley.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-10-31"
+  },
   "cash-bids/illinois/nashville.html": {
    "to": "/cash-bids/illinois/",
    "since": "2026-10-30"
@@ -108,6 +112,10 @@
   "cash-bids/iowa/cooper.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-10-29"
+  },
+  "cash-bids/iowa/corning.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-10-31"
   },
   "cash-bids/iowa/correctionville.html": {
    "to": "/cash-bids/iowa/",
