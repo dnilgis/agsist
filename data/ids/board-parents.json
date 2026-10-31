@@ -3,13 +3,13 @@
  "generated": "2026-10-31",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2169,
-  "with_parent": 130,
+  "live_boards": 2175,
+  "with_parent": 135,
   "with_dest": 109,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
-   "chs-brand": 125
+   "chs-brand": 130
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -300,6 +300,31 @@
   },
   "chsdevilslake-hannaford": {
    "elevId": "esbj1ph0v4",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-cavalier": {
+   "elevId": "epa9k4kbtc",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-drayton": {
+   "elevId": "egsv7kw65c",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-glasston": {
+   "elevId": "e8bh5jwyg0",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-kennedy": {
+   "elevId": "exmg57td7z",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsdrayton-manvel": {
+   "elevId": "ec34b2ptz0",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
