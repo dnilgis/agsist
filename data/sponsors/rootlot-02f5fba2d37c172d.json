@@ -2,8 +2,8 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Root Lot",
  "slug": "rootlot",
- "generated": "2026-10-30T17:00:57+00:00",
- "through": "2026-10-29",
+ "generated": "2026-10-31T13:41:48+00:00",
+ "through": "2026-10-30",
  "start": "2026-10-28",
  "countFrom": "2026-10-28",
  "liveSince": "2026-10-28",
@@ -11,7 +11,7 @@
  "definitionChanged": "2026-09-05",
  "slotSince": "2026-10-29",
  "totals": {
-  "viewable": 17,
+  "viewable": 29,
   "clicks": 0,
   "ctr": 0.0,
   "legacyImpressions": 0
@@ -19,19 +19,19 @@
  "windows": [
   {
    "days": 7,
-   "viewable": 17,
+   "viewable": 29,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 30,
-   "viewable": 17,
+   "viewable": 29,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 90,
-   "viewable": 17,
+   "viewable": 29,
    "clicks": 0,
    "ctr": 0.0
   }
@@ -46,6 +46,12 @@
   {
    "d": "2026-10-29",
    "v": 7,
+   "l": 0,
+   "c": 0
+  },
+  {
+   "d": "2026-10-30",
+   "v": 12,
    "l": 0,
    "c": 0
   }
@@ -63,6 +69,11 @@
   },
   {
    "page": "/cash-bids",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/texas",
    "viewable": 2,
    "clicks": 0
   },
@@ -97,17 +108,67 @@
    "clicks": 0
   },
   {
-   "page": "/rent/texas",
-   "viewable": 1,
-   "clicks": 0
-  },
-  {
    "page": "/rain/louisiana/union-parish",
    "viewable": 1,
    "clicks": 0
   },
   {
    "page": "/rain/texas/schleicher-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/arc-plc/texas/ochiltree-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/cash-bids/company/premier-grain",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/california/tuolumne-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/minnesota/lake-of-the-woods-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/texas/wharton-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/angelina-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/hood-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/montgomery-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/stonewall-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/california",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/idaho",
    "viewable": 1,
    "clicks": 0
   }
@@ -234,12 +295,12 @@
  "regionAds": {
   "pending": false,
   "start": "2026-10-28",
-  "through": "2026-10-29",
+  "through": "2026-10-30",
   "rows": [
    {
     "code": "CA",
     "name": "California",
-    "viewable": 1,
+    "viewable": 4,
     "clicks": 0
    },
    {
@@ -251,12 +312,12 @@
    {
     "code": "TX",
     "name": "Texas",
-    "viewable": 16,
+    "viewable": 22,
     "clicks": 0
    }
   ],
   "elsewhere": {
-   "viewable": 0,
+   "viewable": 3,
    "clicks": 0
   }
  }
