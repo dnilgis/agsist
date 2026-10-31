@@ -3,9 +3,9 @@
  "generated": "2026-10-31",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2167,
+  "live_boards": 2182,
   "with_parent": 135,
-  "with_dest": 108,
+  "with_dest": 109,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
@@ -13,17 +13,17 @@
   },
   "dest_by_brand": {
    "ADM": 26,
-   "AGP": 23,
+   "AGP": 25,
    "Big River": 3,
    "Bunge": 4,
    "CGB": 9,
-   "Cargill": 15,
+   "Cargill": 16,
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 10,
+   "POET": 9,
    "Valero": 3,
-   "Viserion": 6
+   "Viserion": 5
   },
   "board_pages_with_other_firms": 1
  },
@@ -908,31 +908,6 @@
    "dest": "Green Plains",
    "dv": "location"
   },
-  "farmerswin-agpmasoncity": {
-   "elevId": "e8jam8a9cw",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerswin-poetfairbank": {
-   "elevId": "ez7yaq8md0",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "farmerswin-poetshellrock": {
-   "elevId": "ek6gke6bgx",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "farmerswin-valero": {
-   "elevId": "ebsf77fnha",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "farmerswin-viserion": {
-   "elevId": "ey734h2jkj",
-   "dest": "Viserion",
-   "dv": "location"
-  },
   "fsgrain-admclintoncorn": {
    "elevId": "ekz8tqgy53",
    "dest": "ADM",
@@ -1136,6 +1111,36 @@
   "newvision-poetashton": {
    "elevId": "e5anxv6rn6",
    "dest": "POET",
+   "dv": "location"
+  },
+  "nexus-agpeaglegroveia": {
+   "elevId": "e3yxz3j8hg",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-agpmanningia": {
+   "elevId": "emr4kpq80q",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-agpmasoncityia": {
+   "elevId": "exe7f4q1hd",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "nexus-cargilliowafallsia": {
+   "elevId": "efdggq02m7",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "nexus-poetfairbankia": {
+   "elevId": "ekr2jj8was",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "nexus-valerocharlescityia": {
+   "elevId": "ev4rkxwapd",
+   "dest": "Valero",
    "dv": "location"
   },
   "pcecoops-adkinsenergy": {
