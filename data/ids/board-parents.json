@@ -3,13 +3,13 @@
  "generated": "2026-10-31",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2189,
-  "with_parent": 123,
+  "live_boards": 2201,
+  "with_parent": 135,
   "with_dest": 114,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
-   "chs-brand": 118
+   "chs-brand": 130
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -585,6 +585,66 @@
   },
   "chsprimeland-chsprimeland": {
    "elevId": "ekj0yxn1y2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-ashley": {
+   "elevId": "e41zb1vf15",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-blunt": {
+   "elevId": "e8a6cj4rw9",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-dupree": {
+   "elevId": "er0rpbq0hh",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-fairfax": {
+   "elevId": "ensmxhsnk3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-gettysburg": {
+   "elevId": "ep60fxjsw6",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-isabel": {
+   "elevId": "e9kbeq5mrp",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-onida": {
+   "elevId": "edqmpmqmk7",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-philip": {
+   "elevId": "e63nyxk8kt",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-pierre": {
+   "elevId": "ejmgasz6xt",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-selby": {
+   "elevId": "e5e8t4f70y",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-strasburg": {
+   "elevId": "enyzafcd2h",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsriverplains-winner": {
+   "elevId": "e1tx9wjye8",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
