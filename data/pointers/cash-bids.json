@@ -329,6 +329,10 @@
    "to": "/cash-bids/ohio/",
    "since": "2026-10-15"
   },
+  "cash-bids/ohio/west-mansfield.html": {
+   "to": "/cash-bids/ohio/",
+   "since": "2026-10-31"
+  },
   "cash-bids/texas/morton.html": {
    "to": "/cash-bids/texas/dumas",
    "since": "2026-10-20"
