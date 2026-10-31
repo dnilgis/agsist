@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Oct 2026 11:18:24 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 31 Oct 2026 10:55:15 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn ends the week at $4.47¾; crude up 2.1% to $104.12</title>
+      <link>https://agsist.com/daily/2026-10-31</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-31</guid>
+      <pubDate>Sat, 31 Oct 2026 10:54:28 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>December corn closed Friday at $4.47¾, down 3½ cents, its second lower close in a row. Beans added 2½ cents to $12.22¼, so corn lost a little ground to beans on the week. Crude ended at $104.12, up 2.1%, which keeps diesel costs firm while corn sits near its harvest lows.
+• Grains close the week soft
+• Cattle and hogs slip
+Read more: https://agsist.com/daily/2026-10-31</description>
+    </item>
     <item>
       <title>Crude up 2.2% to $104.27 as Houthis hit Saudi sites</title>
       <link>https://agsist.com/daily/2026-10-30</link>
@@ -352,18 +363,6 @@ Action: Crude under $89.37 and falling: lock any diesel needs now, this Gulf-flo
 • Grains Sit On Their Hands
 • Cattle Firm, Cull Cows Don't
 Read more: https://agsist.com/daily/2026-10-02</description>
-    </item>
-    <item>
-      <title>Corn runs 1.1% ahead of stocks, crude up on Gulf flows</title>
-      <link>https://agsist.com/daily/2026-10-01</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-01</guid>
-      <pubDate>Thu, 01 Oct 2026 11:23:02 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn's up 5 cents to $5.04, Chicago wheat added 8 cents to $6.80, and crude ran 3.3% to $92.08, all three moving before Quarterly Stocks even prints at 11 CT. That's not reaction, that's positioning, and positioning ahead of a Stocks report is a bet, not a read.
-Action: Unpriced corn in the bin: a close above $5.09 says the Stocks positioning was real, price another 10% there.
-• Grains Run Ahead Of Stocks
-• Crude Runs On Gulf Flow Reports
-Read more: https://agsist.com/daily/2026-10-01</description>
     </item>
   </channel>
 </rss>

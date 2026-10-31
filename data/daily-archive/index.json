@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-31",
+      "date_display": "Saturday, October 31, 2026",
+      "headline": "Corn ends the week at $4.47¾; crude up 2.1% to $104.12",
+      "teaser": "Corn settles at $4.47¾, down 3½ cents, while crude ends the week up 2.1% at $104.12.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-10-31",
+      "market_closed": true
+    },
+    {
       "date": "2026-10-30",
       "date_display": "Friday, October 30, 2026",
       "headline": "Crude up 2.2% to $104.27 as Houthis hit Saudi sites",
@@ -2646,6 +2657,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-30T11:17:45.802955+00:00",
-  "count": 231
+  "updated": "2026-10-31T10:54:33.334237+00:00",
+  "count": 232
 }
