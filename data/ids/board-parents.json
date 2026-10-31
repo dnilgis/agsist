@@ -3,27 +3,27 @@
  "generated": "2026-10-31",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2116,
+  "live_boards": 2147,
   "with_parent": 135,
-  "with_dest": 102,
+  "with_dest": 103,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
    "chs-brand": 130
   },
   "dest_by_brand": {
-   "ADM": 25,
-   "AGP": 20,
+   "ADM": 26,
+   "AGP": 22,
    "Big River": 3,
-   "Bunge": 3,
+   "Bunge": 4,
    "CGB": 9,
    "Cargill": 15,
-   "Green Plains": 2,
+   "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 10,
-   "Valero": 3,
-   "Viserion": 6
+   "POET": 8,
+   "Valero": 2,
+   "Viserion": 5
   },
   "board_pages_with_other_firms": 1
  },
@@ -878,29 +878,34 @@
    "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-agpmasoncity": {
-   "elevId": "e8jam8a9cw",
+  "farmerscooperative-admlincoln": {
+   "elevId": "edb03ytxwb",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "farmerscooperative-agpdavidcity": {
+   "elevId": "ebbb1axj14",
    "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-poetfairbank": {
-   "elevId": "ez7yaq8md0",
-   "dest": "POET",
+  "farmerscooperative-agphastings": {
+   "elevId": "e6jj2wjrkv",
+   "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-poetshellrock": {
-   "elevId": "ek6gke6bgx",
-   "dest": "POET",
+  "farmerscooperative-agpstjo": {
+   "elevId": "ed9cmnj2vn",
+   "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-valero": {
-   "elevId": "ebsf77fnha",
-   "dest": "Valero",
+  "farmerscooperative-bungeemporia": {
+   "elevId": "ej6psryg26",
+   "dest": "Bunge",
    "dv": "location"
   },
-  "farmerswin-viserion": {
-   "elevId": "ey734h2jkj",
-   "dest": "Viserion",
+  "farmerscooperative-greenplainsyork": {
+   "elevId": "e3ma049fmc",
+   "dest": "Green Plains",
    "dv": "location"
   },
   "fsgrain-admclintoncorn": {
