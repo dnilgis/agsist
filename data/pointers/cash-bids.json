@@ -1,6 +1,10 @@
 {
  "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
  "pointers": {
+  "cash-bids/company/atkinson-grain-fertilizer.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-10-31"
+  },
   "cash-bids/company/farmers-cooperative-elevator-company.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-28"
