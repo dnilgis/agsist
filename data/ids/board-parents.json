@@ -1,29 +1,29 @@
 {
  "schema": "agsist-board-parents/1",
- "generated": "2026-10-31",
+ "generated": "2026-11-01",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2184,
+  "live_boards": 2187,
   "with_parent": 135,
-  "with_dest": 109,
+  "with_dest": 108,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
    "chs-brand": 130
   },
   "dest_by_brand": {
-   "ADM": 26,
-   "AGP": 25,
+   "ADM": 25,
+   "AGP": 24,
    "Big River": 3,
    "Bunge": 4,
-   "CGB": 9,
-   "Cargill": 16,
+   "CGB": 8,
+   "Cargill": 14,
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 9,
-   "Valero": 3,
-   "Viserion": 5
+   "POET": 11,
+   "Valero": 4,
+   "Viserion": 6
   },
   "board_pages_with_other_firms": 1
  },
@@ -38,11 +38,6 @@
    "dest": "AGP",
    "dv": "location"
   },
-  "agtegra-agpwest": {
-   "elevId": "e9ftsqe30c",
-   "dest": "AGP",
-   "dv": "location"
-  },
   "alciviacoop-burlington": {
    "elevId": "etykedhvfk",
    "parent": "ALCIVIA",
@@ -51,11 +46,6 @@
   "balkgrain-adm": {
    "elevId": "e7fnj8a7m3",
    "dest": "ADM",
-   "dv": "location"
-  },
-  "balkgrain-cgbmtcarroll": {
-   "elevId": "edsr084ks3",
-   "dest": "CGB",
    "dv": "location"
   },
   "balkgrain-viseriongrain": {
@@ -793,21 +783,6 @@
    "dest": "Green Plains",
    "dv": "location"
   },
-  "dunkertoncoop-admcedarrapidscorn": {
-   "elevId": "e261bv72y7",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "dunkertoncoop-cargillcedarrapidssoybeans": {
-   "elevId": "e7ph7v3fqt",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "dunkertoncoop-cargillstarchcorn": {
-   "elevId": "e6zdsmnr7b",
-   "dest": "Cargill",
-   "dv": "location"
-  },
   "efgi-admclintonterminal": {
    "elevId": "ejyspxhyhg",
    "dest": "ADM",
@@ -908,6 +883,31 @@
    "dest": "Green Plains",
    "dv": "location"
   },
+  "farmerswin-agpmasoncity": {
+   "elevId": "e8jam8a9cw",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "farmerswin-poetfairbank": {
+   "elevId": "ez7yaq8md0",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "farmerswin-poetshellrock": {
+   "elevId": "ek6gke6bgx",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "farmerswin-valero": {
+   "elevId": "ebsf77fnha",
+   "dest": "Valero",
+   "dv": "location"
+  },
+  "farmerswin-viserion": {
+   "elevId": "ey734h2jkj",
+   "dest": "Viserion",
+   "dv": "location"
+  },
   "fsgrain-admclintoncorn": {
    "elevId": "ekz8tqgy53",
    "dest": "ADM",
@@ -950,11 +950,6 @@
   },
   "fullcircleag-agpaberdeen": {
    "elevId": "ebn7vhdmrb",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "hovenequity-agpdirectship": {
-   "elevId": "e5x4qs87tx",
    "dest": "AGP",
    "dv": "location"
   },
