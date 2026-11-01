@@ -3029,7 +3029,7 @@
      for a print or framed (a plain date from data/rain-print.json), the file
      by email. This year's gift and a year NOAA hasn't finished say so instead. */
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
-  var SUB_BASE = { framed12x18: 'Black frame, white mat, real glass.', print12x18: '13 x 19 paper, ships flat.' };
+  var SUB_BASE = { framed12x18: '13 x 19 black frame, white mat, real glass.', print12x18: '13 x 19 paper, ships flat.' };
   function syncCutoffs() {
     var gift = giftYear(), settle = !gift && SETTLE && canOrder();
     PRODUCTS.forEach(function (id) {
@@ -5493,6 +5493,19 @@
   });
   syncRows();
   syncCounts();
+  /* 2026-11-01 (audit): a screen reader on a shut Pay button hears the reason under it. */
+  try { $('rp-pay').setAttribute('aria-describedby', 'rp-buy-why'); $('rp-buy-why').setAttribute('role', 'status'); } catch (e) {}
+  /* 2026-11-01: the birth-year and wedding-year gift pages link here with ?from=birthyear or
+     ?from=weddingyear. With no design in the link, start day 1 as Born or Wedding (the same as
+     tapping that word) and put the cursor in the town box, the first thing to type. */
+  (function () {
+    var f = new URLSearchParams(root.location.search).get('from');
+    var w = f === 'birthyear' ? 'Born' : f === 'weddingyear' ? 'Wedding' : '';
+    if (!w || ST.place) return;
+    var b = doc.querySelector('#rp-presets button[data-en="' + w + '"]');
+    if (b && !$('rp-m1l').value) b.click();
+    try { $('rp-place').focus(); } catch (e) {}
+  })();
   radios('rp-style').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
   // Canada: mm or inches, English or French (the choice rides in the design)
   radios('rp-units').forEach(function (r) { r.addEventListener('change', function () { ST.units = r.value; restyle(); syncCa(); ga('rain_print_units', { units: r.value }); }); });
