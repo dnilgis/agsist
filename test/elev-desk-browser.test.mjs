@@ -165,7 +165,7 @@ for (const width of WIDTHS) test(`${width}px: after Save on a long preview, the 
   await shot(pg, `after-save-${width}`);
   assert.ok(await inView(pg, "#p-res"), "the result is on screen");
   assert.equal(await pg.getAttribute("#p-res", "role"), "status");
-  assert.match(await resultText(pg), /^Saved Oct \d+, \d+:\d\d [AP]M CT: \d+ rows at 51 locations\./);
+  assert.match(await resultText(pg), /^Saved [A-Z][a-z]{2} \d+, \d+:\d\d [AP]M CT: \d+ rows at 51 locations\./);
   const saved = JSON.parse(S.store.get("paste:newcoop"));
   assert.equal(saved.locations.length, 51);
   assert.ok(!saved.locations.some((l) => /Cainsville|Morton Mills|Mt\. Ayr/.test(l.name)), "boards bids does not have are not sent");

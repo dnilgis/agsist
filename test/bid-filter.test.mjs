@@ -19,18 +19,23 @@ const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const BF = createRequire(import.meta.url)(join(ROOT, "components/bid-filter.js"));
 const FUT = read("components/futures.js");
 
+/* The fixtures' delivery window must still be open on the day the test runs:
+   futures.js drops a row whose deliveryEnd is past the reader's own date (bidWhen).
+   A fixed "2026-10-31" turned the nightly red on Nov 1, 2026. */
+const OPEN_END = (() => { const d = new Date(Date.now() + 60 * 864e5);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
 const BARING = { facility: "Baring Elevator", branch: "", city: "Baring Elevator", town: "Baring", state: "MO", zip: "63531",
   commodity: "Organic Yellow Corn", symbol: "", cashPrice: 11.5, basis: null, category: "corn", sourceZip: "",
-  verified: true, source: "network", lat: 40.22101, lon: -92.21062, deliveryStart: "2026-10-01", deliveryEnd: "2026-10-31" };
+  verified: true, source: "network", lat: 40.22101, lon: -92.21062, deliveryStart: "2026-10-01", deliveryEnd: OPEN_END };
 const RICE = { facility: "Nutrition Service Co. LLC", branch: "", city: "Riceville", town: "", state: "IA", zip: "50466",
   commodity: "SOYBEANS", symbol: "ZSX26", cashPrice: 13.95, basis: 1.4, category: "soybeans", sourceZip: "55901",
-  verified: true, source: "network", lat: 43.3719, lon: -92.5554, deliveryStart: "2026-10-01", deliveryEnd: "2026-10-31" };
+  verified: true, source: "network", lat: 43.3719, lon: -92.5554, deliveryStart: "2026-10-01", deliveryEnd: OPEN_END };
 const DUMAS = { facility: "Dumas Co-op Elevators", city: "Dumas", state: "TX", zip: "79029", commodity: "Corn", symbol: "ZCZ26",
   cashPrice: 5.15, basis: -0.4, category: "corn", sourceZip: "", verified: true, source: "network",
-  deliveryStart: "2026-10-01", deliveryEnd: "2026-10-31" };
+  deliveryStart: "2026-10-01", deliveryEnd: OPEN_END };
 const ADM = { facility: "ADM", city: "Mankato", state: "MN", zip: "56001", commodity: "Soybeans", symbol: "ZSX26",
   cashPrice: 12.35, basis: -0.3, category: "soybeans", sourceZip: "56001", verified: true, source: "network",
-  deliveryStart: "2026-10-01", deliveryEnd: "2026-10-31" };
+  deliveryStart: "2026-10-01", deliveryEnd: OPEN_END };
 
 /* futures.js, lifted: the picker and the label helper, with the filter loaded. */
 function picker() {

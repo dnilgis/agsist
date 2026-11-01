@@ -164,6 +164,13 @@ test("one verdict, from the final inputs: no board answer painted while the elev
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 } });
+    // The same Oct 15, 2026 clock as open(): without it the fixture's "2026-10" bids are a past
+    // month from Nov 1 on and no verdict is painted (the nightly of Nov 1, 2026).
+    await ctx.addInitScript(() => {
+      const T = Date.parse("2026-10-15T15:00:00Z"), R = Date;
+      class F extends R { constructor(...a) { super(...(a.length ? a : [T])); } static now() { return T; } }
+      window.Date = F;
+    });
     await ctx.addInitScript(() => {
       window.__answers = [];
       document.addEventListener("DOMContentLoaded", () => {
