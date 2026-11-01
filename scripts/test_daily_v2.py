@@ -182,6 +182,16 @@ def main():
     ok(not os.path.exists(os.path.join(REPO, "data", "quote-pool.json")) or True, "old pool untouched")
     b = build(d21, fact=None)
     ok("I didn’t know that" in b["html"] and "Source:" in b["html"], "the day's fact prints with its source")
+    # the schedule (Nov 1): two weeks from its first day, a sourced fact each day, never one category twice running
+    from datetime import date as _date, timedelta as _td
+    two = [daily_fact.for_day(daily_fact.EPOCH + _td(days=k)) for k in range(14)]
+    ok(all(f and f.get("category") in daily_fact.CATEGORIES and f.get("source") and (f.get("url") or f.get("file"))
+           for f in two), "every scheduled fact has a category and a source")
+    ok(all(a["category"] != b_["category"] for a, b_ in zip(two, two[1:])), "no category two days running")
+    ok(daily_fact.for_day(_date(2026, 11, 20))["id"] == daily_fact.for_day(_date(2026, 11, 20))["id"],
+       "a date always gives the same fact (page and email agree)")
+    b = build(d21, fact=two[0])
+    ok(V.e(two[0]["text"]) in b["html"], "the scheduled fact prints in the email")
     # the switch
     import send_daily as S
     for env, want in (({}, "current"), ({"DAILY_FORMAT": "v2"}, "v2"), ({"DAILY_FORMAT": "v2", "TEST_TO_SIG": "1"}, "v2"),
