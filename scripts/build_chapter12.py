@@ -231,7 +231,8 @@ def daily_line(doc):
         p["national"], ("the " + p["label"]) if p["label"].startswith("12 months") else p["label"][len("calendar "):])
     # one period, one table: the quote below backs every number in the sentence
     fact += ". Chapter 12 is the bankruptcy chapter written for them. A filing is a case opened, not a farm sold or closed."
-    return {"id": "ch12-latest", "fact": fact, "source": "U.S. Courts, Table F-2, %s" % p["label"],
+    return {"id": "ch12-latest", "category": "policy and programs", "fact": fact,
+            "source": "U.S. Courts, Table F-2, %s" % p["label"],
             "url": p["url"], "checked": p["read"],
             "quote": p.get("note") or ("Total Chapter 12 cases commenced: %d" % p["national"])}
 

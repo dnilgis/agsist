@@ -475,19 +475,21 @@ def steer_top(day, repo=REPO):
     return _fact("ours-steer-top", "livestock", text, "USDA AMS Livestock Market News, auction reports", rel, w.isoformat())
 
 
-# name, category, function (rain_day and dry_spell live in daily_fact.py and are added there)
+ALL_YEAR = tuple(range(1, 13))
+# name, category, function, the months it is on the schedule (rain_day and dry_spell live in daily_fact.py).
+# A generator is only scheduled in the months its data can carry it, so a withheld day is rare and not a pattern.
 GENERATORS = (
-    ("ours-hail-big", "weather and climate", hail_big),
-    ("ours-drought", "weather and climate", drought),
-    ("ours-wasde-corn", "markets and prices", wasde_corn),
-    ("ours-wasde-soy", "markets and prices", wasde_soy),
-    ("ours-land-top", "land and rent", land_top),
-    ("ours-rent-range", "land and rent", rent_range),
-    ("ours-harvest-us", "agronomy", harvest_us),
-    ("ours-harvest-state", "agronomy", harvest_state),
-    ("ours-china-soy", "global trade", china_soy),
-    ("ours-export-pace", "global trade", export_pace),
-    ("ours-steer-top", "livestock", steer_top),
+    ("ours-hail-big", "weather and climate", hail_big, tuple(range(5, 13))),   # 500 reports in by May
+    ("ours-drought", "weather and climate", drought, ALL_YEAR),
+    ("ours-wasde-corn", "markets and prices", wasde_corn, ALL_YEAR),
+    ("ours-wasde-soy", "markets and prices", wasde_soy, ALL_YEAR),
+    ("ours-land-top", "land and rent", land_top, ALL_YEAR),
+    ("ours-rent-range", "land and rent", rent_range, ALL_YEAR),
+    ("ours-harvest-us", "agronomy", harvest_us, (9, 10, 11)),                 # NASS harvest progress weeks
+    ("ours-harvest-state", "agronomy", harvest_state, (9, 10, 11)),
+    ("ours-china-soy", "global trade", china_soy, ALL_YEAR),
+    ("ours-export-pace", "global trade", export_pace, ALL_YEAR),
+    ("ours-steer-top", "livestock", steer_top, ALL_YEAR),
 )
 
 
@@ -611,7 +613,7 @@ def _selftest():
        "steers: the top average, thin lots left out (%s)" % (f or {}).get("text"))
     # a missing file is None, never an error
     empty = tempfile.mkdtemp(prefix="dfo-empty-")
-    for gid, cat, fn in GENERATORS:
+    for gid, cat, fn, _m in GENERATORS:
         try:
             ok(fn(day, empty) is None, "%s: no file, no fact" % gid)
         except Exception as ex:
@@ -624,7 +626,7 @@ def main(argv):
     if "--selftest" in argv:
         return _selftest()
     d = date.fromisoformat(argv[argv.index("--date") + 1]) if "--date" in argv else date.today()
-    for gid, cat, fn in GENERATORS:
+    for gid, cat, fn, _m in GENERATORS:
         try:
             f = fn(d, REPO)
         except Exception as ex:
