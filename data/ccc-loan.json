@@ -1,0 +1,10 @@
+{
+ "note": "Written by scripts/fetch_ccc_loan.py from public FSA pages. /commodity-loan reads it.",
+ "generated": "2026-11-01T18:59:52Z",
+ "interest": null,
+ "counties": null,
+ "status": {
+  "interest": "kept last good; https://www.fsa.usda.gov/tools/informational/rates/current-fsa-loan-interest-rates: fetch failed: TimeoutError: The read operation timed out",
+  "counties": "kept last good; commodity loan rates page did not answer"
+ }
+}
