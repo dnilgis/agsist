@@ -2113,6 +2113,16 @@ def get_usda_release_today():
     return header
 
 
+# 2026-11-01 (fx/dailyfresh): weekends reran Friday. Oct 31 and Nov 1 both led
+# "Corn ends the week at $4.47¾; crude up 2.1% to $104.12". daily_fresh.py
+# sends a weekend board headline back and the gate holds one that stays.
+WEEKEND_HEADLINE_RULE = (
+    "WEEKEND HEADLINE: no new settle comes on a weekend, so a market headline can only rerun Friday's. "
+    "The headline and lead are NEVER a price move (no board price, percent or cents move in the headline). "
+    "Lead with the top news story, the week ahead (a dated report, deadline or vote), or a feature (how the week "
+    "or month compares with past years, from numbers in this prompt). Friday's close belongs in a section.\n")
+
+
 def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, weekly_thread=None, ongoing_situations="", editorial_notes="", past_one_number_topics=None, past_phrases=None, usda_release=""):
     weekend_instructions = ""
     if market_status["is_closed"]:
@@ -2120,7 +2130,7 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         if reason == "weekend" and "Saturday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SATURDAY: Markets CLOSED. Write WEEK IN REVIEW + WEEKEND OUTLOOK. "
-                "Reference 'Friday's close'. No overnight language.\n"
+                "Reference 'Friday's close'. No overnight language.\n" + WEEKEND_HEADLINE_RULE +
                 "RULE 17 ON WEEKENDS: the post-gen level-coherence validator checks every "
                 "'broke $X'/'below $X'/'above $X' claim against FRIDAY'S CLOSE (the only close "
                 "in locked_prices on weekends). Retrospective prose with explicit day-of-week "
@@ -2136,7 +2146,7 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
         elif reason == "weekend" and "Sunday" in day:
             weekend_instructions = (
                 "\nWEEKEND MODE SUNDAY: Markets CLOSED. Write SUNDAY PREVIEW + WEEK AHEAD. "
-                "Reference 'Friday's close'. No overnight language.\n"
+                "Reference 'Friday's close'. No overnight language.\n" + WEEKEND_HEADLINE_RULE +
                 "RULE 17 ON SUNDAYS: forecast and conditional prose is the dominant mode "
                 "('if cattle break $X next week', 'a move below $Y would target $Z'). The "
                 "validator auto-skips claims wrapped in 'if/would/should/could/next week/might/may' "
@@ -2318,7 +2328,7 @@ LEAD example (active day, from the 2026-10-08 issue):
 LEAD example (quiet day, equally good, from the 2026-10-08 issue):
 "Not much happened in corn. It's at $5.02½ overnight, up half a cent, right where it has been since it got back over $5 three sessions ago. Three quiet sessions in, $5 is still holding."
 
-SECTION BODY example (from the 2026-10-05 issue), 2-3 bullet lines, each ONE sentence, "- " prefix, MAX 55 WORDS; the so-what goes in so_what, not in a trailing bullet:
+SECTION BODY example (from the 2026-10-05 issue), 2-3 bullet lines, each ONE sentence, "- " prefix, MAX 40 WORDS; the so-what goes in so_what, not in a trailing bullet:
 "- Soybean oil gained 2.7% to **$68.27** and meal added 0.8% to $344.30.
 - Beans only gained 7¾ cents to $12.89, so the products are pulling the soy complex, not bean demand."
 
@@ -2330,7 +2340,7 @@ SECTION BODY example (livestock, from the 2026-10-07 issue):
 "- Live cattle are at **$221.23** overnight, up 1.8% from Tuesday's $217.25 settle, and feeders are up 2.0% to $340.50.
 - There was no Cattle on Feed report behind it, so the move came from the cash side."
 
-SO WHAT examples (adds something the title does not say, MAX 15 WORDS):
+SO WHAT examples (adds something the title does not say, MAX 12 WORDS):
 - "The market already knew the corn was there."
 - "The bean move came from meal and oil."
 - "Short local storage can weigh on basis even when futures sit still."
@@ -2439,13 +2449,13 @@ For genuinely once-a-decade events, you may use "historic" once. Otherwise descr
 
 4. WATCH LIST: EXACTLY 3 ITEMS, EACH UNDER 20 WORDS, CONDITIONAL. At least two of the three must include a specific level, threshold, or trigger. Calendar entries are weakest.
 
-5. SO WHAT MUST SYNTHESIZE, NOT RESTATE. Each section's so_what is MAX 15 WORDS and adds information beyond the section title. If inferable from the title alone, rewrite.
+5. SO WHAT MUST SYNTHESIZE, NOT RESTATE. Each section's so_what is MAX 12 WORDS and adds information beyond the section title. If inferable from the title alone, rewrite.
 
 6. QUIET DAYS DESERVE QUIET BRIEFINGS. Do not manufacture drama. Acceptable: "Most days don't move markets. Today is one of them." Prefer 2 sections to 3. A reader who sees you call quiet days quiet trusts your loud days.
 
 7. CONTINUITY: REWARD THE REGULAR READER. When past briefings are provided, connect today's move to the story they told, using only prices from today's LOCKED TABLE. Do not grade or restate a past call: there is no yesterdays_call block any more, and a verdict written from memory has printed the wrong direction before.
 
-8. THE WORD BUDGET IS THE PRODUCT. The whole briefing is about 400 words of prose. 450 is a hard ceiling: anything over it is cut by a machine after you finish, weakest block first, and if it is still over, the run fails and nobody gets a briefing. It used to run 1,090 words and the reader who pays for this said he barely reads it. Per-field caps: lead 55; each section body 55; so_what 15; one_number.context 30; outside_the_pit body 30; each watch item 20. The way to hit budget is to CUT the weakest material, not to compress everything equally. A 2-section briefing at 350 words beats a 3-section briefing at 460.
+8. THE WORD BUDGET IS THE PRODUCT. The whole briefing is about 400 words of prose. 450 is a hard ceiling: anything over it is cut by a machine after you finish, weakest block first, and if it is still over, the run fails and nobody gets a briefing. It used to run 1,090 words and the reader who pays for this said he barely reads it. Per-field caps: lead 45; each section body 40; so_what 12; one_number.context 25; each top story (outside_the_pit) title 12 and line 20; each watch item 20. The top stories are part of the budget: shorter market sections pay for them. The way to hit budget is to CUT the weakest material, not to compress everything equally. A 2-section briefing at 350 words beats a 3-section briefing at 460.
 
 9. VOICE, ABSOLUTELY NON-NEGOTIABLE. The briefing must sound like the VOICE SAMPLES above: Sig talking plainly to a neighbor. Reject your own draft for either of two failures. Wire-service neutral: a paragraph that could run unchanged in a Reuters or Bloomberg summary. Hype or trading-desk swagger: clever lines, slang, drama, commands at the reader. Rewrite either into plain, calm, specific sentences that still say what the move means. And never invent a first-person experience (THE VOICE, FIRST PERSON).
 
@@ -2476,25 +2486,26 @@ For genuinely once-a-decade events, you may use "historic" once. Otherwise descr
 
 15. MACRO EVENT ANCHORING. The first time any briefing in a given week references an ongoing geopolitical or macro event (Iran tensions, Hormuz disruption, election cycle, Fed pivot, trade war, etc.), include a single anchoring clause that establishes what the event is and roughly when it began. Example: "...as Iran-Iraq tensions over the Strait of Hormuz, ongoing since March, eased on diplomatic progress." Subsequent briefings in the same week can reference shorthand. The reader who lands on this briefing for the first time should be able to follow the macro thread.
 
-16. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, watch_list, outside_the_pit, so_what) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans). An acreage or planting line uses only next year's contracts (the PLANTING RATIO line, Nov and Dec of next year); this year's contracts and the nearby ratio are a storage and marketing fact, never a planting call. There is no standalone spread block. (d) NEVER use emoji or pictographic symbols in ANY field, headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs. (e) THE LEAD MUST BE NEW. The headline, lead and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28, eight days after the tour ended, it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one, lead with the price action and say it was quiet. A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not.
+16. CLEAN OUTPUT MECHANICS. (a) NEVER write internal field names (one_number, watch_list, outside_the_pit, so_what) in reader-facing prose; say "today's number" or restructure the sentence. A published issue once printed "the one_number today". (b) Percent-of-range figures are 0-100 by definition; if a close sits at or beyond the top of its 52-week range, write "at the top of its 52-week range" or "a fresh 52-week high", never "102% of the range". (c) If the current spread/ratio setup (bean/corn ratio, carry structure) is genuinely at a decision threshold, it earns ONE bolded sentence inside the relevant section, with the acreage/storage logic stated CORRECTLY (a high bean/corn ratio pulls acres toward beans). An acreage or planting line uses only next year's contracts (the PLANTING RATIO line, Nov and Dec of next year); this year's contracts and the nearby ratio are a storage and marketing fact, never a planting call. There is no standalone spread block. (d) NEVER use emoji or pictographic symbols in ANY field, headline, titles, bodies, everywhere. Plain text only; the page chrome supplies its own glyphs. (e) THE LEAD MUST BE NEW. The headline, lead and teaser may only be built on something that happened since the previous briefing: an overnight or prior-session price move, a report released, a forecast that changed, a story in today's news block. A fact that was equally true a week ago cannot lead, however important it is. Two published failures, both caught by the reader and not by any check here: on 2026-08-26 the briefing promised a Pro Farmer number that had already been published, and on 2026-08-28, eight days after the tour ended, it led with "PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER" over the sentence "The Pro Farmer tour is in the rearview." Nothing about that had changed in over a week. The seasonal and background context in this prompt exists to keep you from getting the CALENDAR wrong; it is not a source of stories, and an instruction telling you NOT to say something is never itself the thing to say. Before finalizing, ask of the headline: what changed to make this true today? If the honest answer is "nothing", the day is a quiet one: lead with the most useful new story in today's news block, or the biggest mover on the board, and say the market was quiet. Do not lead with corn by habit; 11 of 14 headlines from Oct 19 to Nov 1 2026 started "Corn". A quiet day reported as quiet is a good briefing. A stale fact dressed as news is not. Nothing in ALREADY SAID THIS WEEK may lead again unless something new happened, and then the new part leads.
 
 ══ OUTPUT, return valid JSON with EXACTLY these fields ══
 
 {{
   "headline": "Sentence case, 6-10 words: capitalize only the first word, names and acronyms (USDA, WASDE). A plain statement of what happened. No wordplay, no puns, no ALL CAPS, no Title Case.",
-  "lead": "2-3 sentences, MAX 55 WORDS (RULE 8). Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). LAST SENTENCE states a consequence already true, never a pointer forward (RULE 3).",
+  "lead": "2-3 sentences, MAX 45 WORDS (RULE 8). Specific price from table + synthesizing observation (RULE 1). Voice samples (RULE 9). Forward test (RULE 10). LAST SENTENCE states a consequence already true, never a pointer forward (RULE 3).",
   "teaser": "One plain sentence, max 18 words, for the collapsed hero bar and the archive index.",
-  "one_number": {{"value": "The day's most interesting number, see ONE NUMBER RUBRIC (RULE 14).", "unit": "3-6 words DESCRIBING WHAT THE VALUE IS. Must be coherent with value. Wrong: value=1.4%, unit='live cattle decline' when the actual mover was feeders. Right: value=1.4%, unit='feeder cattle decline'.", "context": "1-2 sentences, MAX 30 WORDS. Why this number matters today and what it tells you that prices alone don't. This is the ONLY place this stat gets explained (RULE 12)."}},
+  "one_number": {{"value": "The day's most interesting number, see ONE NUMBER RUBRIC (RULE 14).", "unit": "3-6 words DESCRIBING WHAT THE VALUE IS. Must be coherent with value. Wrong: value=1.4%, unit='live cattle decline' when the actual mover was feeders. Right: value=1.4%, unit='feeder cattle decline'.", "context": "1-2 sentences, MAX 25 WORDS. Why this number matters today and what it tells you that prices alone don't. This is the ONLY place this stat gets explained (RULE 12)."}},
   "sections": [
-    {{"title": "3-5 words, sentence case", "body": "2-3 BULLET LINES, MAX 55 WORDS TOTAL. Each line starts with '- ' and is ONE sentence, separated by newline (\\n). Exactly ONE **bold** number per section, the price or the threshold that matters (markdown bold, NEVER <strong>). All prices from LOCKED TABLE. VOICE. The news that drove the move is IN a bullet (NEWS DISCIPLINE), not a separate field. The so-what belongs in so_what, not a trailing bullet.",
-      "so_what": "MAX 15 WORDS. Synthesis beyond the title (RULE 5).",
+    {{"title": "3-5 words, sentence case", "body": "2-3 BULLET LINES, MAX 40 WORDS TOTAL. Each line starts with '- ' and is ONE sentence, separated by newline (\\n). Exactly ONE **bold** number per section, the price or the threshold that matters (markdown bold, NEVER <strong>). All prices from LOCKED TABLE. VOICE. The news that drove the move is IN a bullet (NEWS DISCIPLINE), not a separate field. The so-what belongs in so_what, not a trailing bullet.",
+      "so_what": "MAX 12 WORDS. Synthesis beyond the title (RULE 5).",
       "conviction_level": "low | medium | high (earned per RULE 2)",
       "overnight_surprise": true/false}}
   ],
   "outside_the_pit": [
-    {{"title": "Short headline of the news item, 6-12 words, sentence case.",
-      "body": "1-2 sentences, MAX 30 WORDS, in the same plain voice. Why this matters even though it's not in today's prices.",
-      "tag": "OPTIONAL. One-word category: POLICY, TRADE, WEATHER, DISEASE, LOGISTICS, INPUTS, MACRO, RURAL.",
+    {{"title": "Short headline of the news item, 5-12 words, sentence case. If the story ran this week (ALREADY SAID THIS WEEK), the title says what is NEW.",
+      "body": "ONE line, MAX 20 WORDS, in the same plain voice: what it means for a grain or livestock farmer.",
+      "tag": "One word: POLICY, TRADE, WEATHER, DISEASE, LIVESTOCK, GRAINS, LOGISTICS, INPUTS, TECHNOLOGY, LAND, MACRO or RURAL. At most ONE item per tag.",
+      "ref": "The digest id of the item this story comes from, exactly as shown in brackets, e.g. N3. Every story comes from one digest item; its link is attached by code.",
       "event_date": "OPTIONAL. YYYY-MM-DD of the upcoming event this item is about, ONLY if the news block gives that date. null for news that already happened."}}
   ],
   "watch_list": [{{"time": "Time", "desc": "What. EXACTLY 3 items, each under 20 words. Two of three carry a level or threshold (RULE 4)."}}],
@@ -2511,8 +2522,8 @@ SECTIONS:
 
 OMISSIONS, set fields to null or empty objects when not applicable:
 - action, todays_call, yesterdays_call: NEVER emit them (RULE 11). A machine deletes them if you do.
-- outside_the_pit: REQUIRED every day, weekday and weekend. EXACTLY 1 item. Pull from the news block.
-  ON A WEEKEND it is shown as "Week ahead in ag", so make it an event COMING UP in the next seven days (a report, a deadline, a vote, a meeting, a port or rail date) that the news block names with its date: set event_date to that date and name the day in the title or body ("Tuesday", "Oct 13"). Never invent an event or a date. If the news block names no upcoming dated event, use the most useful recent item, leave event_date null, and it is shown as "Outside the pit" instead. Never describe something that already happened as coming up.
+- outside_the_pit (the TOP STORIES): REQUIRED every day, weekday and weekend. 3 to 5 items, ranked by what matters most today to a Midwest grain and livestock farmer (prices he gets, costs he pays, rules and payments, animal disease, weather on his ground, trade that moves his market). At most ONE item per tag. Each comes from one item in the news digest and names its id in "ref"; never a story that is not in the digest, never a story already told this week unless its title leads with what is new. A story already used as the why in a section is not repeated here. Fewer than 3 only when the digest has fewer good farm stories; never pad.
+  ON A WEEKEND when EVERY item is a dated upcoming event the block is shown as "Week ahead in ag". On a weekend make at least one item an event COMING UP in the next seven days (a report, a deadline, a vote, a meeting, a port or rail date) that the news block names with its date: set event_date to that date and name the day in the title or body ("Tuesday", "Oct 13"). Never invent an event or a date. Items about news that already happened leave event_date null. Never describe something that already happened as coming up.
 - watch_list: REQUIRED every day. EXACTLY 3 items.
 - Do NOT emit these fields at all; they are retired and a machine deletes them: subheadline, the_takeaway, the_more_you_know, weekly_thread, catalyst, vs_yesterday, bottom_line, farmer_action, summary.
 
@@ -2771,7 +2782,7 @@ OVERNIGHT SURPRISES:
 
 SEASONAL: {seasonal_ctx}
 {past_section}
-TODAY'S AG NEWS DIGEST, USE THIS to thread the why into section bullets (NEWS DISCIPLINE) and to populate the one outside_the_pit item. Items are clustered by bucket and sorted recent-first. Each item has title + summary + age:
+TODAY'S AG NEWS DIGEST, USE THIS to thread the why into section bullets (NEWS DISCIPLINE) and to pick the 3 to 5 top stories (outside_the_pit, each with the item's id in "ref"). Items are clustered by bucket and sorted recent-first. Each item has its [id], title, source, age and summary:
 {news_block}
 
 TODAY'S QUOTE (copy exactly):
@@ -3486,12 +3497,18 @@ def mark_week_ahead(briefing, today=None):
     item carries an event_date in the next nine days AND its own text names
     that day (weekday, "Oct 13" or "October 13"), so the label never claims a
     date the reader cannot see. An event_date in the past, unparseable or too
-    far out is removed. Returns the reasons for the log."""
+    far out is removed. Returns the reasons for the log.
+
+    2026-11-01: with 3 to 5 top stories the label covers the whole block, so it
+    is True only when EVERY item is such a dated upcoming event; one item about
+    news that already happened keeps the block "Outside the pit"."""
     if today is None:
         today = datetime.now().date()
     notes, ahead = [], False
-    for it in briefing.get("outside_the_pit") or []:
-        if not isinstance(it, dict) or "event_date" not in it:
+    _items = [it for it in (briefing.get("outside_the_pit") or []) if isinstance(it, dict)]
+    _qualified = 0
+    for it in _items:
+        if "event_date" not in it:
             continue
         raw = it.get("event_date")
         try:
@@ -3509,9 +3526,12 @@ def mark_week_ahead(briefing, today=None):
                  or re.search(r"\b(" + ev.strftime("%b").lower() + r"|" + ev.strftime("%B").lower()
                               + r")\.?\s+" + str(ev.day) + r"\b", text))
         if named:
-            ahead = True
+            _qualified += 1
         else:
             notes.append(f"event_date {ev} not named in the item's text")
+    ahead = bool(_items) and _qualified == len(_items)
+    if _qualified and not ahead:
+        notes.append(f"{_qualified} of {len(_items)} items are dated events; the block stays Outside the pit")
     briefing["otp_week_ahead"] = bool(ahead and briefing.get("market_closed"))
     return notes
 
@@ -3536,10 +3556,17 @@ def render_outside_the_pit_html(items, week_ahead=False):
         tag_html = ""
         if tag:
             tag_html = (f'<span class="dv3-otp-tag">{html_esc(tag)}</span>')
-        title_html = f'<div class="dv3-otp-title">{html_esc(title)}</div>' if title else ""
+        link = safe_story_link(it.get("link"))
+        src = (it.get("source") or "").strip()
+        if title and link:
+            title_html = (f'<div class="dv3-otp-title"><a href="{html_esc(link)}" rel="noopener nofollow" '
+                          f'target="_blank">{html_esc(title)}</a></div>')
+        else:
+            title_html = f'<div class="dv3-otp-title">{html_esc(title)}</div>' if title else ""
         body_html = f'<div class="dv3-otp-body">{html_esc_preserve_strong(body)}</div>' if body else ""
+        src_html = f'<div class="dv3-otp-src">Source: {html_esc(src)}</div>' if src else ""
         rendered_items.append(
-            f'<div class="dv3-otp-item">{tag_html}{title_html}{body_html}</div>'
+            f'<div class="dv3-otp-item">{tag_html}{title_html}{body_html}{src_html}</div>'
         )
     if not rendered_items:
         return ""
@@ -4489,6 +4516,8 @@ a.dv3-quote{{color:inherit;text-decoration:none}}a.dv3-quote:hover .dv3-quote-na
 .dv3-otp-tag{{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(218,165,32,.08);padding:.2rem .55rem;border-radius:3px;align-self:flex-start;border:1px solid rgba(218,165,32,.22)}}
 .dv3-otp-title{{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.35}}
 .dv3-otp-body{{font-size:.82rem;line-height:1.55;color:var(--text-dim)}}
+.dv3-otp-title a{{color:inherit;text-decoration:underline;text-decoration-color:rgba(218,165,32,.55);text-underline-offset:2px}}
+.dv3-otp-src{{font-size:.74rem;color:var(--text-muted)}}
 /* v4.3: cash-bids inline conversion footer, weekday-only */
 .dv3-cashbids-cta{{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.22);border-radius:8px;margin:1rem 0 .65rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px}}
 .dv3-cashbids-cta:hover{{border-color:var(--green);background:rgba(74,171,76,.10)}}
@@ -5609,6 +5638,18 @@ def main():
     past_dailies_block, past_tmyk_topics = load_past_dailies(num_days=3)
     if past_dailies_block:
         print("  Past context loaded")
+    # 2026-11-01: the writer sees what the last 7 issues already said (headlines,
+    # numbers, news, section titles) and may not say it again (scripts/daily_fresh.py).
+    _fresh_recent = []
+    try:
+        import daily_fresh as _dfr
+        _fresh_recent = _dfr.recent(datetime.now().date(), str(ARCHIVE_JSON_DIR))
+        _mb = _dfr.memory_block(_fresh_recent)
+        if _mb:
+            past_dailies_block = (past_dailies_block + "\n\n" if past_dailies_block else "") + _mb
+            print(f"  Already said this week: {len(_fresh_recent)} issue(s) in the prompt")
+    except Exception as _e:
+        print(f"  [warn] already-said block skipped ({type(_e).__name__}: {_e})")
     # v4.6: new loaders for cross-day continuity, anti-cliche, anti-repetition,
     # editorial-notes cumulative learning, and USDA release-day awareness.
     ongoing_situations = load_ongoing_situations()
@@ -5759,6 +5800,78 @@ def main():
                 print("  [voice-self-heal] regenerated draft is no better; keeping the first")
     except Exception as _e:
         print(f"  [warn] voice-self-heal skipped ({type(_e).__name__}: {_e})")
+
+    # 2026-11-01: top stories carry the link and source of the digest item they
+    # came from; a story with no digest item is cut (attach_story_links).
+    try:
+        for _l in attach_story_links(briefing):
+            print(f"  [stories] {_l}")
+    except Exception as _e:
+        print(f"  [warn] story links skipped ({type(_e).__name__}: {_e})")
+
+    # ── FRESHNESS self-heal (2026-11-01) ────────────────────────────────
+    # Never the same headline, number or story twice in a week (Sig, Nov 1).
+    # scripts/daily_fresh.py compares the draft with the last 7 issues; any repeat
+    # sends it back ONCE with the reasons, the voice self-heal's pattern. A news
+    # item that still repeats is cut; a headline or number that still repeats is
+    # left for briefing_gate, which holds the send (fail loud). Fail-open on any
+    # error here: the gate re-checks from the archive.
+    _fresh_tries = 1
+    _fresh_found = []
+    try:
+        import daily_fresh as _dfr
+        _lp, _lc = price_data.get("locked_prices") or {}, price_data.get("locked_changes") or {}
+        _fd = datetime.now().date()
+
+        def _fhits(b):
+            return _dfr.hits(fix_headline_case(b), _fresh_recent, _fd, str(ARCHIVE_JSON_DIR), _lp, _lc)
+
+        def _fscore(f):
+            return (sum(1 for k, _, _ in f if k in _dfr.HARD), sum(1 for k, _, _ in f if k in _dfr.CUT),
+                    sum(1 for k, _, _ in f if k in _dfr.SOFT))
+        _fresh_found = _fhits(briefing)
+        if _fresh_found:
+            print(f"  [fresh-self-heal] {len(_fresh_found)} repeat(s) of the last {len(_fresh_recent)} issues; "
+                  f"regenerating once with correction...")
+            for _k, _loc, _why in _fresh_found:
+                print(f"    - {_loc} [{_k}]: {_why}")
+            _brief2 = call_claude(price_data, surprises, news_block, seasonal_ctx,
+                                  todays_quote, past_dailies_block, past_tmyk_topics,
+                                  market_status, yesterdays_call_ctx, weekly_thread_ctx,
+                                  ongoing_situations=ongoing_situations,
+                                  editorial_notes=editorial_notes,
+                                  past_one_number_topics=past_one_number_topics,
+                                  past_phrases=past_phrases,
+                                  usda_release=(usda_release or "") + "\n\n" + _dfr.correction(_fresh_found))
+            _fresh_tries = 2
+            for _l in attach_story_links(_brief2):
+                print(f"  [stories] {_l}")
+            _f2 = _fhits(_brief2)
+            _ok2 = True
+            try:
+                import voice_lint as _vl3
+                _ok2 = len(_vl3.lint(_brief2)["fabricated"]) <= len(_vl3.lint(briefing)["fabricated"])
+                import briefing_gate as _bg3
+                import usda_dates as _ud3
+                from datetime import timezone as _tz3
+                if not _ud3.wasde_results_are_public(_fd, datetime.now(_tz3.utc)):
+                    _ok2 = _ok2 and not _bg3.wasde_fabrication_hits(_brief2, today=_fd)[0]
+            except Exception:
+                pass
+            if _ok2 and _fscore(_f2) <= _fscore(_fresh_found):
+                print(f"  [fresh-self-heal] regenerated draft: {len(_f2)} repeat(s); using it")
+                briefing, _fresh_found = _brief2, _f2
+            else:
+                print("  [fresh-self-heal] regenerated draft is no better; keeping the first")
+        for _l in _dfr.drop_stories(briefing, _fresh_found):
+            print(f"  [fresh] {_l}")
+        _fresh_found = [x for x in _fresh_found if x[0] not in _dfr.CUT]
+        for _k, _loc, _why in _fresh_found:
+            print(f"  [fresh] still {'HELD AT THE GATE' if _k in _dfr.HARD else 'a warning'}: {_loc} [{_k}]: {_why}")
+        briefing["freshness"] = _dfr.stamp(_fresh_found, _fresh_tries)
+    except Exception as _e:
+        print(f"  [warn] fresh-self-heal skipped ({type(_e).__name__}: {_e})")
+        briefing["freshness"] = {"error": f"{type(_e).__name__}: {_e}"[:200], "tries": _fresh_tries}
 
     # call-design v2 (2026-08-13): stamp which claim design produced this
     # call, so build_scorecard can keep the v1 and v2 series separate (the
@@ -5969,7 +6082,7 @@ def main():
     otp = briefing.get("outside_the_pit") or []
     if otp:
         print(f"  Outside the Pit: {len(otp)} item(s)")
-        for it in otp[:3]:
+        for it in otp[:5]:
             tag = it.get("tag", "")
             tag_str = f"[{tag}] " if tag else ""
             print(f"    - {tag_str}{(it.get('title') or '')[:60]}")
