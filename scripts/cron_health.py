@@ -177,11 +177,19 @@ def judge(crons, max_delay, now, runs_after_tick, first_only):
     return "late", tick, None, "no run started within %d min of the %s tick" % (max_delay, t.strftime("%a %H:%M UTC"))
 
 
-def forgive(status, by, why, last_success):
-    """A tick whose run failed stays red only until the workflow succeeds again.
+def forgive(status, by, why, last_success, tick=None):
+    """A late tick stays red only until the workflow succeeds again.
     Without this, one failed report-day run kept the check red every half hour
-    until the next report, weeks later, long after the bug was fixed."""
-    if status == "late" and by and last_success and parse_ts(last_success) > parse_ts(by["created_at"]):
+    until the next report, weeks later, long after the bug was fixed.
+    The same holds for a tick nobody ran (Nov 1, 2026): the chained runs went
+    missing from the runs list Fri Oct 30 16:31 to Sat 15:45 UTC, the chain was
+    back by Saturday afternoon, and still report-day.yml and cot-release-watch.yml
+    stayed red every half hour until their next weekday tick (two alert emails an
+    hour all weekend). While nothing has succeeded since the tick, it stays red."""
+    if status != "late" or not last_success:
+        return status, why
+    since = by["created_at"] if by else (tick and tick.replace("Z", ":00Z"))
+    if since and parse_ts(last_success) > parse_ts(since):
         return "ok", why + "; a later run succeeded at " + last_success
     return status, why
 
@@ -229,7 +237,7 @@ def collect(now, repo, token, api):
                                   (t + timedelta(minutes=delay)).strftime("%Y-%m-%dT%H:%M:%SZ"))
                 runs = _get(base + "&created=" + rng, token).get("workflow_runs", [])
             status, tick, by, why = judge(crons, delay, now, runs, first_only=(wf in GATED))
-            status, why = forgive(status, by, why, row["last_success"])
+            status, why = forgive(status, by, why, row["last_success"], tick)
         except Exception as e:
             row.update(status="unknown", why="could not read runs: %s" % e)
             rows.append(row)
@@ -592,7 +600,11 @@ def selftest():
     failed = R(7, "2026-10-09 18:13", "failure")
     check(forgive("late", failed, "x", "2026-10-09T21:38:00Z")[0] == "ok", "a failed tick clears once a later run succeeds")
     check(forgive("late", failed, "x", "2026-10-09T18:00:00Z")[0] == "late", "a success before the failure does not clear it")
-    check(forgive("late", None, "x", "2026-10-09T21:38:00Z")[0] == "late", "a tick nobody ran stays late")
+    check(forgive("late", None, "x", "2026-10-09T21:38:00Z")[0] == "late", "a tick nobody ran, with no tick given, stays late")
+    check(forgive("late", None, "x", "2026-10-31T15:45:15Z", "2026-10-30T23:52Z")[0] == "ok",
+          "a tick nobody ran clears once a later run succeeds (Fri 23:52 miss, Sat 15:45 success)")
+    check(forgive("late", None, "x", "2026-10-30T16:31:29Z", "2026-10-30T23:52Z")[0] == "late",
+          "a tick nobody ran stays late while the last success is older than the tick")
 
     # should_commit
     now = T("2026-10-09 22:00")
