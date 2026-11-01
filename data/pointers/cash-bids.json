@@ -5,6 +5,10 @@
    "to": "/cash-bids/company/",
    "since": "2026-10-31"
   },
+  "cash-bids/company/dunkerton-co-op.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-01"
+  },
   "cash-bids/company/farmers-cooperative-elevator-company.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-28"
@@ -12,6 +16,10 @@
   "cash-bids/company/gateway-fs.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-30"
+  },
+  "cash-bids/company/hoven-equity-exchange.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-01"
   },
   "cash-bids/company/new-cooperative.html": {
    "to": "/cash-bids/company/",
@@ -320,6 +328,14 @@
   "cash-bids/kansas/dodge-city.html": {
    "to": "/cash-bids/kansas/",
    "since": "2026-10-28"
+  },
+  "cash-bids/minnesota/adrian.html": {
+   "to": "/cash-bids/minnesota/",
+   "since": "2026-11-01"
+  },
+  "cash-bids/minnesota/beaver-creek.html": {
+   "to": "/cash-bids/minnesota/",
+   "since": "2026-11-01"
   },
   "cash-bids/missouri/sainte-genevieve.html": {
    "to": "/cash-bids/missouri/",
