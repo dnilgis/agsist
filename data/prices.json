@@ -1317,19 +1317,19 @@
     },
     "cattle": {
       "ticker": "LEV26.CME",
-      "close": 224.0,
-      "open": 227.27499,
-      "netChange": -3.27499,
-      "pctChange": -1.441,
+      "close": 220.95,
+      "open": 226.3,
+      "netChange": -5.35,
+      "pctChange": -2.3641,
       "wk52_hi": 246.55,
       "wk52_lo": 196.75,
       "close_date": "2026-10-30",
       "prev_date": "2026-10-29",
       "close_kind": "settle",
       "prev_kind": "settle",
-      "settle": 224.0,
+      "settle": 220.95,
       "settle_date": "2026-10-30",
-      "settle_net": -3.27499,
+      "settle_net": -5.35001,
       "settles_v": 2,
       "settles": {
         "2026-10-28": 227.375,
@@ -1352,7 +1352,18 @@
       },
       "alias_of": "cattle-oct26",
       "contract": "Oct '26",
-      "continuous_ticker": "LE=F"
+      "continuous_ticker": "LE=F",
+      "repaired_from": "cattle-dec26",
+      "repair_reason": "continuous-roll-contamination",
+      "_orig": {
+        "ticker": "LEV26.CME",
+        "close": 224.0,
+        "open": 227.27499,
+        "netChange": -3.27499,
+        "pctChange": -1.441,
+        "close_date": "2026-10-30",
+        "prev_date": "2026-10-29"
+      }
     },
     "feeders": {
       "ticker": "GFX26.CME",
@@ -1434,19 +1445,19 @@
     },
     "milk": {
       "ticker": "DCV26.CME",
-      "close": 15.19,
-      "open": 15.19,
-      "netChange": 0.0,
-      "pctChange": 0.0,
+      "close": 17.7,
+      "open": 17.93,
+      "netChange": -0.23,
+      "pctChange": -1.2828,
       "wk52_hi": 19.25,
       "wk52_lo": 14.79,
       "close_date": "2026-10-30",
       "prev_date": "2026-10-29",
       "close_kind": "settle",
       "prev_kind": "settle",
-      "settle": 15.19,
+      "settle": 17.7,
       "settle_date": "2026-10-30",
-      "settle_net": 0.0,
+      "settle_net": -0.23,
       "settles_v": 2,
       "settles": {
         "2026-10-28": 15.229999542236328,
@@ -1456,7 +1467,18 @@
       "day_last": {},
       "alias_of": "milk-oct26",
       "contract": "Oct '26",
-      "continuous_ticker": "DC=F"
+      "continuous_ticker": "DC=F",
+      "repaired_from": "milk-nov26",
+      "repair_reason": "continuous-roll-contamination",
+      "_orig": {
+        "ticker": "DCV26.CME",
+        "close": 15.19,
+        "open": 15.19,
+        "netChange": 0.0,
+        "pctChange": 0.0,
+        "close_date": "2026-10-30",
+        "prev_date": "2026-10-29"
+      }
     },
     "cattle-oct26": {
       "ticker": "LEV26.CME",

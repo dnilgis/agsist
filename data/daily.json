@@ -1,62 +1,71 @@
 {
   "headline": "Corn ends the week at $4.47¾; crude up 2.1% to $104.12",
-  "lead": "December corn closed Friday at $4.47¾, down 3½ cents, its second lower close in a row. Beans added 2½ cents to $12.22¼, so corn lost a little ground to beans on the week. Crude ended at $104.12, up 2.1%, which keeps diesel costs firm while corn sits near its harvest lows.",
-  "teaser": "Corn settles at $4.47¾, down 3½ cents, while crude ends the week up 2.1% at $104.12.",
+  "lead": "December corn settled Friday at $4.47¾, down 3½ cents, its second lower close in a row, while beans held near $12.22. Corn is giving ground with harvest running and soybeans steady, so the feed side of the ledger got cheaper this week.",
+  "teaser": "Corn slipped to $4.47¾ Friday while crude ran up to $104.12; cattle and hogs ended the week lower.",
   "one_number": {
     "value": "2.48",
     "unit": "Nov '27 beans to Dec '27 corn ratio",
-    "context": "That is the ratio of next year's new-crop contracts. Nothing in this week's moves has pushed it far from where it was."
+    "context": "The ratio uses next year's contracts, so it is the one to watch for 2027 acres. At 2.48, the new-crop price signal sits close to even between the two crops."
   },
   "sections": [
     {
-      "title": "Grains close the week soft",
-      "body": "- December corn settled at **$4.47¾**, down 3½ cents, and November soybeans added 2½ cents to $12.22¼.\n- Feedstuffs called the week's finish lightly mixed, with corn, soybeans and winter wheat going different ways.\n- Chicago wheat was about unchanged at $6.03½.",
-      "so_what": "Harvest supply is still weighing on corn more than beans.",
+      "title": "Grains end the week soft",
+      "body": "- December corn settled at **$4.47¾**, down 3½ cents, while November soybeans added 2½ cents to $12.22¼.\n- Wheat finished at $6.03½, barely changed, and AgWeb's Gulke called the grain markets in free fall.",
+      "so_what": "Corn is sliding while beans hold steady.",
       "conviction_level": "low",
       "overnight_surprise": false
     },
     {
       "title": "Cattle and hogs slip",
-      "body": "- October live cattle settled at $224.00, down 1.4%, and November feeders fell 2.5% to **$337.78**.\n- AgWeb asked whether the cattle drop alongside weaker cash is more than a healthy correction. Nothing in the news answers that yet.\n- December hogs gave back 1.6% to $58.88.",
-      "so_what": "Feeders took the biggest hit of the livestock board.",
-      "conviction_level": "low",
+      "body": "- December hogs settled at **$58.88**, down 1.6%, near the bottom of their 52-week range.\n- October live cattle fell 2.4% to $220.95 and November feeders dropped 2.5% to $337.78, and AgWeb asked if the drop is more than a healthy correction.",
+      "so_what": "Hogs sit near their 52-week low.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Crude stays high",
+      "body": "- WTI crude was last at **$104.12**, up 2.1%, in Friday afternoon trading; that is a last trade, not a settle.\n- Agri-Pulse reported states were asked to waive dyed diesel restrictions, and Chevron said profits nearly tripled to $9.9 billion on strong refining.",
+      "so_what": "Fuel costs stay a story while crude holds over $100.",
+      "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Senate farm bill scores $4.4 billion, lame-duck passage uncertain",
-      "body": "AgWeb reports the Senate bill carries a $4.4 billion score. Passage in the lame-duck session after the election is not certain.",
+      "title": "Senate farm bill scores $4.4 billion; lame-duck passage uncertain",
+      "body": "AgWeb reports the Senate farm bill now has a $4.4 billion score. Passage in the lame-duck session after the election is not certain.",
       "tag": "POLICY"
     }
   ],
   "watch_list": [
     {
       "time": "Monday, Nov 2, 3:00 p.m. CT",
-      "desc": "Crop Progress. Harvest pace shows how much corn and bean supply is coming off the fields."
-    },
-    {
-      "time": "Ongoing",
-      "desc": "Dec corn holding $4.47¾ after two lower closes would show the slide is slowing; a third lower close would not."
+      "desc": "USDA Crop Progress. Harvest pace shows how much supply is still coming."
     },
     {
       "time": "Thursday, Nov 5, 7:30 a.m. CT",
-      "desc": "Export Sales. Soybean sales near last week's pace would keep $12.22¼ on solid footing."
+      "desc": "Export sales. Weak soybean numbers would sit awkwardly beside steady bean futures near $12."
+    },
+    {
+      "time": "Ongoing",
+      "desc": "Crude holding above $100 keeps diesel and input costs in the news."
     }
   ],
-  "source_summary": "CME Group settlements, Feedstuffs, AgWeb, Oilprice.com, Farm Policy News",
-  "date": "Saturday, October 31, 2026",
+  "source_summary": "CME Group settlements, USDA, AgWeb, Agri-Pulse, Feedstuffs, oilprice.com",
+  "date": "Sunday, November 1, 2026",
   "meta": {
     "market_mood": "mixed",
     "heat_section": 0,
     "overnight_surprises_count": 0,
-    "word_count": 275,
+    "word_count": 302,
     "news_coverage": {
-      "ok": 16,
+      "ok": 14,
       "total": 17,
-      "items": 78,
+      "items": 69,
       "dark": [
-        "brownfieldagnews.com"
+        "brownfieldagnews.com",
+        "dairyherd.com",
+        "porkbusiness.com"
       ]
     }
   },
@@ -67,10 +76,10 @@
     "beans-nov": 12.2225,
     "wheat": 6.035,
     "oats": 3.4375,
-    "cattle": 224.0,
+    "cattle": 220.95,
     "feeders": 337.77499,
     "hogs": 58.875,
-    "milk": 15.19,
+    "milk": 17.7,
     "meal": 324.60001,
     "soyoil": 65.9,
     "crude": 104.12,
@@ -125,8 +134,8 @@
       "prev_date": "2026-10-29"
     },
     "cattle": {
-      "prev": 227.275,
-      "pct": -1.441,
+      "prev": 226.3,
+      "pct": -2.3641,
       "kind": "settle",
       "date": "2026-10-30",
       "prev_date": "2026-10-29"
@@ -146,8 +155,8 @@
       "prev_date": "2026-10-29"
     },
     "milk": {
-      "prev": 15.19,
-      "pct": 0.0,
+      "prev": 17.93,
+      "pct": -1.2828,
       "kind": "settle",
       "date": "2026-10-30",
       "prev_date": "2026-10-29"
@@ -228,60 +237,9 @@
     "quote_session": "2026-10-30",
     "prev_close_session": "2026-10-29"
   },
-  "harvest_clock": {
-    "asof": "2026-10-30",
-    "updated": "2026-10-31T01:43:37Z",
-    "source": "USDA RMA Price Discovery",
-    "url": "/harvest-price-tracker",
-    "start": "2026-10-01",
-    "end": "2026-10-31",
-    "crops": [
-      {
-        "crop": "Corn",
-        "contract": "Dec '26",
-        "harvest": 4.75,
-        "projected": 4.62,
-        "pct": 2.8,
-        "days_done": 22,
-        "days_total": 22,
-        "days_left": 0,
-        "start": "2026-10-01",
-        "end": "2026-10-31",
-        "n_states": 31,
-        "all_states": false,
-        "rma_harvest": 4.76,
-        "through": "2026-10-30",
-        "rma_through": "2026-10-29",
-        "source": "settles"
-      },
-      {
-        "crop": "Soybeans",
-        "contract": "Nov '26",
-        "harvest": 12.63,
-        "projected": 11.09,
-        "pct": 13.9,
-        "days_done": 22,
-        "days_total": 22,
-        "days_left": 0,
-        "start": "2026-10-01",
-        "end": "2026-10-31",
-        "n_states": 25,
-        "all_states": false,
-        "rma_harvest": 12.65,
-        "through": "2026-10-30",
-        "rma_through": "2026-10-29",
-        "source": "settles"
-      }
-    ],
-    "lines": [
-      "Corn harvest price so far: $4.75 vs $4.62 projected (+2.8%), 22 of 22 trading days in.",
-      "Soybeans harvest price so far: $12.63 vs $11.09 projected (+13.9%), 22 of 22 trading days in."
-    ],
-    "note": "Ours: the average of the daily CBOT settles through Oct 30, figured the way USDA RMA does. RMA posts corn at $4.76 and soybeans at $12.65, both through Oct 29. Window and projected price: USDA RMA, as of Oct 30. Oct 1-31 window, most states."
-  },
   "edge": {
     "label": "Only on AGSIST",
-    "generated": "2026-10-31T10:54:12Z",
+    "generated": "2026-11-01T12:09:22Z",
     "facts": [
       {
         "id": "cash_change_corn",
@@ -317,13 +275,13 @@
         "id": "basis_spread_corn",
         "kind": "basis_spread",
         "crop": "corn",
-        "sentence": "Corn basis on Oct 31 ran from 55¢ over December futures in Texas to 90¢ under in North Dakota, state medians of the elevators AGSIST read at 5:17 a.m. CT.",
+        "sentence": "Corn basis on Nov 1 ran from 55¢ over December futures in Texas to 90¢ under in North Dakota, state medians of the elevators AGSIST read at 4:17 a.m. CT.",
         "key": "55¢ over December futures",
-        "detail": "Elevators behind each median: Texas 17, North Dakota 45. 15 states with 15 or more.",
+        "detail": "Elevators behind each median: Texas 17, North Dakota 43. 14 states with 15 or more.",
         "value": 145.0,
         "unit": "cents per bushel between the strongest and weakest state median",
-        "n": 1630,
-        "as_of": "2026-10-31",
+        "n": 1511,
+        "as_of": "2026-11-01",
         "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
         "url": "/basis",
         "link_text": "Basis by state"
@@ -366,9 +324,9 @@
     "2026-10-28",
     "2026-10-29",
     "2026-10-30",
-    "2026-10-31"
+    "2026-11-01"
   ],
-  "chart_window": "Oct 20 - Oct 31",
+  "chart_window": "Oct 20 - Nov 1",
   "quote_strip": {
     "asof": "2026-10-31T06:46:14Z",
     "session": "2026-10-30",
@@ -414,8 +372,8 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 232,
-  "generated_at": "2026-10-31T10:54:28.350851+00:00",
+  "issue_number": 233,
+  "generated_at": "2026-11-01T12:09:37.565781+00:00",
   "generator_version": "5.5.0",
   "surprise_count": 0,
   "surprises": [],
@@ -425,48 +383,48 @@
   "otp_week_ahead": false,
   "critic_pass": {
     "version": "2.0",
-    "ran_at": "2026-10-31T10:54:33.313411+00:00",
+    "ran_at": "2026-11-01T12:09:42.290249+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 4,
-      "rule_2_conviction_earned": 8,
+      "rule_2_conviction_earned": 5,
       "rule_3_lede_no_deferral": 6,
-      "rule_4_watch_conditional": 5,
+      "rule_4_watch_conditional": 4,
       "rule_5_so_what_synthesizes": 5,
       "rule_6_quiet_days_quiet": 7,
       "rule_7_yc_honesty": 10,
       "rule_8_word_budget": 9,
-      "rule_9_voice": 5,
+      "rule_9_voice": 6,
       "rule_10_forward_test": 3,
       "rule_11_action_thresholded": 10,
-      "rule_12_one_fact_one_home": 7,
-      "rule_13_level_coherence": 4,
-      "rule_14_one_number_coherence": 6,
+      "rule_12_one_fact_one_home": 6,
+      "rule_13_level_coherence": 3,
+      "rule_14_one_number_coherence": 7,
       "rule_15_markdown_not_html": 10,
-      "rule_16_macro_anchoring": 8
+      "rule_16_macro_anchoring": 10
     },
     "rewrites_applied": [
       {
         "pass": 1,
         "target": "lead",
-        "rule": "rule_1_lead_so_what",
+        "rule": "rule_13_level_coherence",
         "scores_before": {
           "rule_1_lead_so_what": 4,
-          "rule_2_conviction_earned": 8,
+          "rule_2_conviction_earned": 5,
           "rule_3_lede_no_deferral": 6,
-          "rule_4_watch_conditional": 5,
+          "rule_4_watch_conditional": 4,
           "rule_5_so_what_synthesizes": 5,
           "rule_6_quiet_days_quiet": 7,
           "rule_7_yc_honesty": 10,
           "rule_8_word_budget": 9,
-          "rule_9_voice": 5,
+          "rule_9_voice": 6,
           "rule_10_forward_test": 3,
           "rule_11_action_thresholded": 10,
-          "rule_12_one_fact_one_home": 7,
-          "rule_13_level_coherence": 4,
-          "rule_14_one_number_coherence": 6,
+          "rule_12_one_fact_one_home": 6,
+          "rule_13_level_coherence": 3,
+          "rule_14_one_number_coherence": 7,
           "rule_15_markdown_not_html": 10,
-          "rule_16_macro_anchoring": 8
+          "rule_16_macro_anchoring": 10
         }
       }
     ],

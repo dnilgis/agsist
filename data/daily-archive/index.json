@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-01",
+      "date_display": "Sunday, November 1, 2026",
+      "headline": "Corn ends the week at $4.47¾; crude up 2.1% to $104.12",
+      "teaser": "Corn slipped to $4.47¾ Friday while crude ran up to $104.12; cattle and hogs ended the week lower.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-11-01",
+      "market_closed": true
+    },
+    {
       "date": "2026-10-31",
       "date_display": "Saturday, October 31, 2026",
       "headline": "Corn ends the week at $4.47¾; crude up 2.1% to $104.12",
@@ -2657,6 +2668,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-31T10:54:33.334237+00:00",
-  "count": 232
+  "updated": "2026-11-01T12:09:42.356976+00:00",
+  "count": 233
 }

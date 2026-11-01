@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 31 Oct 2026 10:55:15 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 01 Nov 2026 12:10:22 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn ends the week at $4.47¾; crude up 2.1% to $104.12</title>
+      <link>https://agsist.com/daily/2026-11-01</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-01</guid>
+      <pubDate>Sun, 01 Nov 2026 12:09:37 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>December corn settled Friday at $4.47¾, down 3½ cents, its second lower close in a row, while beans held near $12.22. Corn is giving ground with harvest running and soybeans steady, so the feed side of the ledger got cheaper this week.
+• Grains end the week soft
+• Cattle and hogs slip
+• Crude stays high
+Read more: https://agsist.com/daily/2026-11-01</description>
+    </item>
     <item>
       <title>Corn ends the week at $4.47¾; crude up 2.1% to $104.12</title>
       <link>https://agsist.com/daily/2026-10-31</link>
@@ -350,19 +362,6 @@ Action: Diesel buyers: lock the next 30 days of on-farm fuel now; WTI at $91.26 
 • Crude Down, Diesel Up, Same Barrel
 • Harvest Stalls, Basis Stays Put
 Read more: https://agsist.com/daily/2026-10-03</description>
-    </item>
-    <item>
-      <title>Crude drops 3.5% as grains grind higher on no news</title>
-      <link>https://agsist.com/daily/2026-10-02</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-02</guid>
-      <pubDate>Fri, 02 Oct 2026 10:58:01 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn held $5.00 flat, beans ticked up to $12.77, and crude fell 3.5% to $89.37 on Gulf export flow that's actually working this time. That's the real story today: oil giving back the fear premium while grains just sit there, unbothered.
-Action: Crude under $89.37 and falling: lock any diesel needs now, this Gulf-flow story isn't done unwinding.
-• Crude Gives Back More Ground
-• Grains Sit On Their Hands
-• Cattle Firm, Cull Cows Don't
-Read more: https://agsist.com/daily/2026-10-02</description>
     </item>
   </channel>
 </rss>
