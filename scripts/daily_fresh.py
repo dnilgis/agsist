@@ -15,7 +15,7 @@ WHY. The 14 issues Oct 19 to Nov 1 2026 (data/daily-archive):
 The writer was shown three past headlines and nothing else, so it could not know.
 
 WHAT. One definition, used by the generator (prompt block and the one send-back),
-the gate (what still repeats is held) and the replay:
+the gate (what still repeats is a warning, never a hold: Sig, Nov 1) and the replay:
   recent(today, archive_dir, n)   the last n issues before today, oldest first
   memory_block(recent)            "ALREADY SAID THIS WEEK" for the writer's prompt
   hits(briefing, recent, today)   [(kind, loc, why)] for every repeat found
@@ -23,13 +23,13 @@ the gate (what still repeats is held) and the replay:
   drop_stories(briefing, found)   cut the news items that still repeat
 
 THE KINDS and what each one does:
-  headline   a headline too close to one of the last 7 (HEADLINE_SIM). Hold.
+  headline   a headline too close to one of the last 7 (HEADLINE_SIM). Sent back once, then a warning.
   weekend    a Saturday or Sunday headline built on the board (a price, a
              percent or a cents move that is on the locked board) or too close
              to the last weekday headline (WEEKEND_SIM). No new settle comes on a
-             weekend, so it can only rerun Friday. Hold.
+             weekend, so it can only rerun Friday. Sent back once, then a warning.
   number     the day's number (one_number) has a value used in the last 7 days
-             for the same kind of thing (its unit shares a word). Hold.
+             for the same kind of thing (its unit shares a word). Sent back once, then a warning.
   story      a news item whose title tells a story from the last 7 days
              (STORY_SIM) with nothing new in its title (no number or count that
              the old one lacked). The generator cuts it after the one rewrite.
@@ -74,8 +74,8 @@ WEEKEND_SIM = 0.3
 STORY_SIM = 0.5
 NEW_TURN_MAX = 0.8          # above this a title is a retelling even with a new number
 SAME_LEAD_RUN = 3
-HARD = ("headline", "weekend", "number")      # held at the gate
-CUT = ("story",)                              # cut by the generator, held if still there
+HARD = ("headline", "weekend", "number")      # sent back once; the gate warns
+CUT = ("story",)                              # cut by the generator, a warning if still there
 SOFT = ("same-lead",)                         # sent back once, a warning after
 
 STOP = set("a an the to of in on at as and for with after its it is by from into over than this that be are "

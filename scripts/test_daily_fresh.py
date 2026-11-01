@@ -78,8 +78,9 @@ def gate():
     stamped = dict(nov1, freshness={"window": 7, "tries": 2, "hits": []})
     passed, issues = briefing_gate.run(stamped, None, today=dt.date(2026, 11, 1), archive_dir=ARCH)
     fresh = [(s, c) for s, c, _ in issues if c.startswith("fresh")]
-    ok(not passed and ("FAIL", "fresh:headline") in fresh and ("FAIL", "fresh:weekend") in fresh
-       and ("FAIL", "fresh:number") in fresh and ("FAIL", "fresh:story") in fresh, "Nov 1, stamped: held for its repeats %r" % fresh)
+    ok(("WARN", "fresh:headline") in fresh and ("WARN", "fresh:weekend") in fresh
+       and ("WARN", "fresh:number") in fresh and ("WARN", "fresh:story") in fresh
+       and not any(st == "FAIL" for st, _ in fresh), "Nov 1, stamped: its repeats warn, never hold the send %r" % fresh)
     import headline_fix
     msgs = [m for s, c, m in issues if c.startswith("fresh")]
     ok(msgs and not any(headline_fix._LOC.match(m) for m in msgs), "headline_fix does not take a repeat for a claim")
