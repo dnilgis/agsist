@@ -184,7 +184,11 @@ def main():
         ok(daily_fact.valid_entry(x), "pool entry %s has fact, source, https url, date and quote" % x.get("id"))
     ok(not os.path.exists(os.path.join(REPO, "data", "quote-pool.json")) or True, "old pool untouched")
     b = build(d21, fact=None)
-    ok("I didn’t know that" in b["html"] and "Source:" in b["html"], "the day's fact prints with its source")
+    ok("Oh, that’s interesting" in b["html"] and "Source:" in b["html"], "the day's fact prints with its source")
+    ok(V.e(V.FACT_LABEL) in b["html"] and V.FACT_LABEL.upper() in b["text"] and "OH, THAT’S INTERESTING" in b["text"],
+       "the fact label is the same words in the HTML and the plain-text email")
+    ok("know that" not in (b["html"] + b["text"]).lower() and "never knew" not in (b["html"] + b["text"]).lower(),
+       "the old fact label is gone from both")
     # the switch
     import send_daily as S
     for env, want in (({}, "current"), ({"DAILY_FORMAT": "v2"}, "v2"), ({"DAILY_FORMAT": "v2", "TEST_TO_SIG": "1"}, "v2"),

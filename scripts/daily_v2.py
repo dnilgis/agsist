@@ -26,7 +26,8 @@ WHAT IS IN IT, top to bottom, about two phone screens:
               are not in that file and never reach here). No workings.
   Print of the day   scripts/print_of_day.py + render_print_of_day.mjs. No
               picture, no slot; the email never waits on it.
-  I didn’t know that  scripts/daily_fact.py, sourced every time.
+  Oh, that’s interesting  scripts/daily_fact.py, sourced every time (FACT_LABEL;
+              was "I didn’t know that", renamed by Sig Nov 1 2026).
   The board   one row per contract (Corn and Corn, Dec fold to one row when
               they are the same quote), stamped honestly: "Last trade 5:46
               a.m. CT, change from Tuesday's settle".
@@ -78,6 +79,7 @@ SUBJECT_MAX = 45
 SUBJECT_HARD = 62
 TODAY_MIN, TODAY_MAX = 4, 6
 MAX_NEWS = 3
+FACT_LABEL = "Oh, that’s interesting"   # the fact slot (Sig, Nov 1 2026); the text email prints it in capitals
 TODAY_STORIES = 1      # top stories that may also be a Today line (the rest go to Top stories)
 EMAIL_STORIES = 3      # Top stories lines in the email; a 5th story stays on the web page (two phone screens)
 TODAY_WITH_STORIES = 4  # Today lines when the Top stories block is there (it carries the news)
@@ -845,10 +847,10 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
             b.append('<tr><td class="mute" style="padding:3px 0 0;font-family:%s;font-size:13px;line-height:1.45;color:%s">%s</td></tr>' % (SANS, MUTE, e(xl)))
     elif offer:
         b.append(_row(_a(offer[1], offer[0], camp, "rainprint", cls="link"), pad="14px 0 0", size=14))
-    # I didn’t know that
+    # Oh, that’s interesting (FACT_LABEL)
     if fact:
         b.append(_rule())
-        b.append(_label("I didn’t know that", pad=14))
+        b.append(_label(FACT_LABEL, pad=14))
         b.append(_row(e(fact["text"]), pad="2px 0 0"))
         src = (_a(fact["url"], fact["source"], None, None, cls="mute link", color=MUTE) if fact.get("url")
                else e(fact["source"] + ("; " + fact["file"] if fact.get("file") else "")))
@@ -942,7 +944,7 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
     elif offer:
         L += ["", offer[0] + " " + BE.utm(offer[1], "rainprint", camp)]
     if fact:
-        L += ["", "I NEVER KNEW THAT", fact["text"],
+        L += ["", FACT_LABEL.upper(), fact["text"],
               "Source: " + fact["source"] + ((" " + fact["url"]) if fact.get("url") else ("; " + fact["file"] if fact.get("file") else ""))]
     rows = board_rows(daily)
     if rows:

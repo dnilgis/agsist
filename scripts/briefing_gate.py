@@ -1074,7 +1074,8 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
         try:
             import daily_fresh
             _d = daily_fresh.issue_date(daily, today)
-            for _k, _loc, _why in daily_fresh.hits(daily, daily_fresh.recent(_d, archive_dir), _d, archive_dir):
+            _ad = archive_dir or daily_fresh.ARCHIVE
+            for _k, _loc, _why in daily_fresh.hits(daily, daily_fresh.recent(_d, _ad), _d, _ad):
                 _m = 'repeat in %s: %s' % (_loc, _why)
                 if _k in daily_fresh.SOFT:
                     W('fresh:' + _k, _m)
