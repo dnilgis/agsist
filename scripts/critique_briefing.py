@@ -159,7 +159,7 @@ The briefing is SHORT by design: about 400 words, 450 is a hard ceiling. The rea
 
 7. NO PAST-CALL VERDICTS. The briefing no longer grades its own past calls (that block printed a wrong direction once and is retired). Any sentence that says a previous call "played out", "missed", "was right" or "was wrong" scores 1-3, with the field holding it as the target (`lead`, `section_index_N` or `trim`). Score 10 when there is none.
 
-8. THE WORD BUDGET — THE CUT. The draft comes with MEASURED word counts per field (`word_counts`) and the total. Caps: lead 55; section body 55; so_what 15; one_number.context 30; outside_the_pit body 30; watch item 20; sections 2-3; outside_the_pit exactly 1; watch_list exactly 3. Score 10 when the total is at or under 400 and every field is inside its cap. Any field over its cap scores below 7 and names `trim` as the target, listing the fields. A fourth section scores below 7 and names `drop_section_N` for the weakest one. A total over 450 scores below 5. The rewrite CUTS the weakest material; it never compresses good sentences into mush.
+8. THE WORD BUDGET — THE CUT. The draft comes with MEASURED word counts per field (`word_counts`) and the total. Caps: lead 45; section body 40; so_what 12; one_number.context 25; each top story (outside_the_pit) title 12 and line 20; watch item 20; sections 2-3; outside_the_pit 3 to 5 items, at most one per tag; watch_list exactly 3. Score 10 when the total is at or under 400 and every field is inside its cap. Any field over its cap scores below 7 and names `trim` as the target, listing the fields. A fourth section scores below 7 and names `drop_section_N` for the weakest one. A total over 450 scores below 5. The rewrite CUTS the weakest material; it never compresses good sentences into mush.
 
 9. VOICE, THE BIGGEST ONE. The briefing carries Sig Lindquist's name, CCA, and should read like him talking to a neighbor at the elevator. Plain words, short sentences, calm, practical, no hype, no clever wordplay, no trading-desk slang, no commands barked at the reader, proper capitalization. Does it sound like him, or like a Bloomberg/Reuters wire summary, or like a trader blog? Wire-neutral prose scores BELOW 5. Hype, swagger or slang ("basis is yelling", "carry's working", "the funds got lost", "the tape", "coiled spring") scores BELOW 5. This rule has the lowest tolerance for drift.
 
@@ -242,10 +242,10 @@ Return ONLY valid JSON in this exact shape, no markdown:
 
 REWRITE FORMAT — only include when rewrite_needed is true:
 
-If weakest_target is "lead": rewritten_content = {"lead": "new lead text"}  (55 words max; last sentence states a consequence already true)
+If weakest_target is "lead": rewritten_content = {"lead": "new lead text"}  (45 words max; last sentence states a consequence already true)
 If weakest_target is "section_index_N": rewritten_content = {"section_index": N, "section": {"title": "...", "body": "- ...\\n- ...", "so_what": "...", "conviction_level": "...", "overnight_surprise": false}}
 If weakest_target is "drop_section_N": rewritten_content = {"drop_section": N}  — the section is removed; nothing else changes. Never drop below 2 sections.
-If weakest_target is "trim": rewritten_content = {"trim": {"lead": "...", "sections": [{"index": N, "body": "...", "so_what": "..."}], "one_number_context": "...", "outside_the_pit_body": "...", "watch_list": [{"time": "...", "desc": "..."}, ...]}}  — include ONLY the fields you are shortening. Every replacement MUST be shorter than the original or it is refused. Cut sentences and bullets, do not compress them.
+If weakest_target is "trim": rewritten_content = {"trim": {"lead": "...", "sections": [{"index": N, "body": "...", "so_what": "..."}], "one_number_context": "...", "outside_the_pit": [{"index": N, "body": "..."}], "watch_list": [{"time": "...", "desc": "..."}, ...]}}  — include ONLY the fields you are shortening. Every replacement MUST be shorter than the original or it is refused. Cut sentences and bullets, do not compress them.
 If weakest_target is "one_number": rewritten_content = {"one_number": {"value": "...", "unit": "...", "context": "..."}}
 
 REWRITE STANDARD — when you rewrite, the new content must:
@@ -477,8 +477,20 @@ def apply_rewrite(briefing, critique):
         if isinstance(on, dict):
             take("one_number.context", on.get("context"), t.get("one_number_context"), lambda v: on.__setitem__("context", v))
         otp = briefing.get("outside_the_pit") or []
-        if otp and isinstance(otp[0], dict):
-            take("outside_the_pit[0].body", otp[0].get("body"), t.get("outside_the_pit_body"), lambda v: otp[0].__setitem__("body", v))
+        # 2026-11-01: 3 to 5 top stories; a trim names each by index. The old
+        # single "outside_the_pit_body" still trims the first one.
+        _otp_trims = [x for x in (t.get("outside_the_pit") or []) if isinstance(x, dict)]
+        if t.get("outside_the_pit_body") is not None:
+            _otp_trims.append({"index": 0, "body": t.get("outside_the_pit_body")})
+        for _ot in _otp_trims:
+            try:
+                _oi = int(_ot.get("index"))
+            except (TypeError, ValueError):
+                continue
+            if 0 <= _oi < len(otp) and isinstance(otp[_oi], dict):
+                _o = otp[_oi]
+                take(f"outside_the_pit[{_oi}].body", _o.get("body"), _ot.get("body"),
+                     lambda v, _o=_o: _o.__setitem__("body", v))
         for item in (t.get("sections") or []):
             if not isinstance(item, dict):
                 continue
