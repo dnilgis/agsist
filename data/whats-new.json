@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-01-dailyfacts",
+   "date": "2026-11-01",
+   "title": "A new fact in the Daily every morning",
+   "line": "The Daily's \"I didn't know that\" fact no longer comes back every two weeks, and it moves between topics: land, cattle, weather, markets, harvest and more.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-10-31-letterzoom",
    "date": "2026-10-31",
    "title": "Read the sample letter full size",
