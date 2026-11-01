@@ -33,18 +33,27 @@ import sys
 TARGET_WORDS = 400          # what a good day reads like
 HARD_CEILING = 450          # enforce_budget cuts to this; anything above fails the run
 
-CAP_LEAD = 55
-CAP_SECTION_BODY = 55
-CAP_SO_WHAT = 15
-CAP_ONE_NUMBER_CONTEXT = 30
+# 2026-11-01 (fx/dailyfresh): the top stories went from 1 item of 30 words to
+# 3 to 5 items of one line (20 words) each, inside the same 450 ceiling. The
+# room came from the market prose: lead 55 -> 45, section body 55 -> 40,
+# so_what 15 -> 12, one_number.context 30 -> 25. The watch line stays at 20
+# (report_day's fixed line must never be clamped). Most words a full issue can
+# have before the ladder: headline ~12 + lead 45 + 3 sections x (4 + 40 + 12)
+# + 25 + 3 x 20 + 5 x (12 + 20) = 470; the ladder cuts stories 4 and 5 first.
+CAP_LEAD = 45
+CAP_SECTION_BODY = 40
+CAP_SO_WHAT = 12
+CAP_ONE_NUMBER_CONTEXT = 25
 CAP_ACTION = 25
 CAP_YC_NOTE = 25
-CAP_OTP_BODY = 30
+CAP_OTP_TITLE = 12
+CAP_OTP_BODY = 20
 CAP_WATCH_DESC = 20
 
 MIN_SECTIONS = 2
 MAX_SECTIONS = 3
-MAX_OTP = 1
+MIN_OTP = 3                 # the prompt asks for 3 to 5; fewer is a warning, never padded by code
+MAX_OTP = 5
 MAX_WATCH = 3
 
 # Reader-facing fields the model no longer emits. If one shows up in a new
@@ -178,6 +187,36 @@ def clamp_bullets(body, cap):
     return "\n".join(keep)
 
 
+def clamp_title(s, cap):
+    """Word cut for a headline-like title: no period added."""
+    if wc(s) <= cap:
+        return s
+    toks = str(s).split()
+    keep, n = [], 0
+    for t in toks:
+        if _WORD.search(t):
+            n += 1
+        if n > cap:
+            break
+        keep.append(t)
+    return " ".join(keep).rstrip(" ,;:")
+
+
+def one_per_tag(items):
+    """Top stories carry at most one item per tag; the first (highest-ranked)
+    of a tag stays. Items with no tag are kept. Returns (items, dropped titles)."""
+    seen, keep, dropped = set(), [], []
+    for it in items:
+        t = str(it.get("tag") or "").strip().upper()
+        if t and t in seen:
+            dropped.append(it.get("title") or "")
+            continue
+        if t:
+            seen.add(t)
+        keep.append(it)
+    return keep, dropped
+
+
 def _drop_weakest_section(secs):
     """Remove the lowest-conviction section; ties drop the LAST one so the
     order the model chose (strongest first) is respected."""
@@ -202,6 +241,9 @@ def enforce_budget(b):
     b["sections"] = secs
 
     otp = [x for x in (b.get("outside_the_pit") or []) if isinstance(x, dict)]
+    otp, _dup = one_per_tag(otp)
+    for t in _dup:
+        log.append(f"outside_the_pit: dropped {t!r} (a second item with the same tag)")
     if len(otp) > MAX_OTP:
         log.append(f"outside_the_pit {len(otp)} -> {MAX_OTP}")
         otp = otp[:MAX_OTP]
@@ -237,12 +279,17 @@ def enforce_budget(b):
         clamp(s, "body", CAP_SECTION_BODY, clamp_bullets, f"sections[{i}].body")
         clamp(s, "so_what", CAP_SO_WHAT, clamp_words, f"sections[{i}].so_what")
     for i, it in enumerate(otp):
+        clamp(it, "title", CAP_OTP_TITLE, clamp_title, f"outside_the_pit[{i}].title")
         clamp(it, "body", CAP_OTP_BODY, clamp_sentences, f"outside_the_pit[{i}].body")
     for i, w in enumerate(wl):
         clamp(w, "desc", CAP_WATCH_DESC, clamp_words, f"watch_list[{i}].desc")
 
     # The ladder. Each rung is the least valuable thing left.
     total = word_count(b)
+    if total > HARD_CEILING and len(otp) > MIN_OTP:
+        b["outside_the_pit"] = otp = otp[:MIN_OTP]
+        log.append(f"over ceiling at {total}w: outside_the_pit -> {MIN_OTP}")
+        total = word_count(b)
     if total > HARD_CEILING and len(wl) > 2:
         b["watch_list"] = wl = wl[:2]
         log.append(f"over ceiling at {total}w: watch_list -> 2")
@@ -312,7 +359,7 @@ def _selftest():
     body = "- alpha beta gamma\n- delta epsilon\n- zeta"
     check("clamp_bullets keeps whole bullets", clamp_bullets(body, 5) == "- alpha beta gamma\n- delta epsilon")
 
-    def big(nsec=5, nwatch=5, notp=3):
+    def big(nsec=5, nwatch=5, notp=7):
         return {
             "headline": "SIX WORD HEADLINE FOR TEST RUN",
             "lead": " ".join(["lead"] * 80) + ".",
@@ -321,7 +368,7 @@ def _selftest():
             "yesterdays_call": {"outcome": "didnt", "note": " ".join(["note"] * 40) + "."},
             "sections": [{"title": f"S{i}", "conviction_level": ["high", "low", "medium", "low", "medium"][i],
                           "body": "- " + " ".join(["w"] * 70), "so_what": " ".join(["so"] * 30)} for i in range(nsec)],
-            "outside_the_pit": [{"title": "t", "body": " ".join(["o"] * 60) + "."} for _ in range(notp)],
+            "outside_the_pit": [{"title": "t", "tag": "T%d" % k, "body": " ".join(["o"] * 60) + "."} for k in range(notp)],
             "watch_list": [{"time": "T", "desc": " ".join(["d"] * 40)} for _ in range(nwatch)],
         }
 
@@ -329,7 +376,11 @@ def _selftest():
     check("max 3 sections", len(b["sections"]) == 3, str(len(b["sections"])))
     check("drops lowest conviction first", [s["title"] for s in b["sections"]] == ["S0", "S2", "S4"],
           str([s["title"] for s in b["sections"]]))
-    check("1 outside_the_pit", len(b["outside_the_pit"]) == 1)
+    check("3 to 5 top stories", MIN_OTP <= len(b["outside_the_pit"]) <= MAX_OTP, str(len(b["outside_the_pit"])))
+    check("top story lines clamped", all(wc(x["body"]) <= CAP_OTP_BODY for x in b["outside_the_pit"]))
+    tagged = [{"title": "a", "tag": "POLICY"}, {"title": "b", "tag": "policy"}, {"title": "c", "tag": "TRADE"}, {"title": "d"}]
+    check("one top story per tag, first kept", [x["title"] for x in one_per_tag(tagged)[0]] == ["a", "c", "d"])
+    check("clamp_title adds no period", clamp_title("one two three four", 2) == "one two")
     check("watch_list <= 3", len(b["watch_list"]) <= 3)
     check("lead clamped", wc(b["lead"]) <= CAP_LEAD, str(wc(b["lead"])))
     check("bodies clamped", all(wc(s["body"]) <= CAP_SECTION_BODY for s in b["sections"]))
