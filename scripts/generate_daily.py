@@ -329,6 +329,19 @@ STALE_NAMES = {"cattle": "live cattle", "feeders": "feeder", "hogs": "hogs", "mi
 # `source` chips and the dark-feed diagnostics name the publication, not
 # news.google.com seven times.
 _GN = "https://news.google.com/rss/search?q=site%3A{}&hl=en-US&gl=US&ceid=US%3Aen"
+# 2026-11-01 (fx/dailyfresh): the same Google News pattern with search words
+# after the site, for a site that is mostly not farm news (reuters.com) or a
+# source with no feed of its own (the Climate Prediction Center's outlooks).
+# Not reachable from the build sandbox: a feed that answers nothing is skipped
+# and counted dark in meta.news_coverage, like every other feed.
+_GNQ = "https://news.google.com/rss/search?q={}&hl=en-US&gl=US&ceid=US%3Aen"
+
+
+def _gn_query(site, words):
+    """Google News search URL for `site:<site> <words>` (words may use OR and
+    parentheses)."""
+    from urllib.parse import quote_plus
+    return _GNQ.format(quote_plus(("site:%s %s" % (site, words)).strip()))
 
 AG_RSS_FEEDS = [
     # Tier 1: federal sources that answer from datacenter IPs (probe: OK)
@@ -353,11 +366,30 @@ AG_RSS_FEEDS = [
     # Tier 5: policy / academic / DC insider
     ("farmpolicynews.illinois.edu", "https://farmpolicynews.illinois.edu/feed/"),
     ("farmdocdaily.illinois.edu",   "https://farmdocdaily.illinois.edu/feed"),
+    # Tier 6 (2026-11-01, fx/dailyfresh): more top stories. All through Google
+    # News, the pattern that works from the Actions runner (usda.gov answers 403
+    # to datacenter IPs directly, see the probe note above).
+    ("usda.gov",         _gn_query("usda.gov", "press release")),        # USDA press releases
+    ("dtnpf.com",        _GN.format("dtnpf.com")),                       # DTN Progressive Farmer
+    ("agriculture.com",  _GN.format("agriculture.com")),                 # Successful Farming
+    ("farmprogress.com", _GN.format("farmprogress.com")),                # Farm Progress
+    ("reuters.com",      _gn_query("reuters.com", "(farmers OR grain OR corn OR soybeans OR cattle OR USDA)")),
+    ("extension.iastate.edu", _GN.format("extension.iastate.edu")),      # Iowa State extension
+    ("extension.umn.edu",     _GN.format("extension.umn.edu")),          # Minnesota extension
+    ("extension.purdue.edu",  _GN.format("extension.purdue.edu")),       # Purdue extension
+    ("cpc.ncep.noaa.gov", _gn_query("noaa.gov", "Climate Prediction Center outlook")),   # seasonal outlooks
 ]
 
 # v4.4: news clustering buckets, every story tags into one bucket so the
 # model gets news organized by relevance to each section, not as a wall.
 NEWS_BUCKETS = {
+    # 2026-11-01: animal disease first, so a screwworm or bird flu story that
+    # names cattle or dairy lands here and not in LIVESTOCK (first match wins).
+    "ANIMAL HEALTH": [
+        "screwworm", "bird flu", "h5n1", "hpai", "avian", "african swine fever",
+        "foot-and-mouth", "foot and mouth", "prrs", "pseudorabies", "anaplasm",
+        "tuberculosis", "brucellosis", "quarantine", "outbreak",
+    ],
     "GRAINS & OILSEEDS": [
         "corn", "soybean", "soy ", "wheat", "oats", "barley", "sorghum",
         "grain", "planting", "crop progress", "harvest", "ethanol",
@@ -366,7 +398,7 @@ NEWS_BUCKETS = {
     "LIVESTOCK & DAIRY": [
         "cattle", "beef", "feedlot", "feeder", "hog", "pork", "swine",
         "dairy", "milk", "cheese", "whey", "butter", "lean", "boxed beef",
-        "cattle on feed", "cold storage", "bird flu", "h5n1", "avian",
+        "cattle on feed", "cold storage",
     ],
     "ENERGY & INPUTS": [
         "crude", "wti", "brent", "ethanol mandate", "rfs", "fertilizer",
@@ -383,6 +415,11 @@ NEWS_BUCKETS = {
         "drought", "rain", "weather", "frost", "freeze", "flood",
         "la nina", "el nino", "noaa", "monsoon", "heat dome",
         "polar vortex", "blizzard", "hurricane", "tropical",
+    ],
+    "TECHNOLOGY": [
+        "drone", "precision ag", "autonomous", "robot", "satellite",
+        "right to repair", "right-to-repair", "gene edit", "artificial intelligence",
+        "software", "sensor",
     ],
     "MACRO": [
         "dollar", "fed ", "fomc", "inflation", "recession", "treasury",
@@ -1577,6 +1614,7 @@ def fetch_ag_news():
     # Reset first: a stale coverage figure from an earlier call would be worse
     # than none, because the gate would trust it.
     fetch_ag_news.coverage = {"ok": 0, "total": 0, "items": 0, "dark": []}
+    fetch_ag_news.items = []   # the digest as data: id, title, link, source (attach_story_links)
     """v4.4: pull RSS entries, extract summaries, score by recency,
     cluster into buckets. Returns a structured prompt string the model
     is instructed to USE (not just consider as context).
@@ -1615,10 +1653,20 @@ def fetch_ag_news():
                 # drop items older than 5 days; they are not "news" anymore
                 if age_h is not None and age_h > 120:
                     continue
+                # Google News titles end " - Publisher"; the publisher is kept
+                # as the item's source name, the title loses the tail.
+                pub = ""
+                src_el = entry.get("source")
+                if isinstance(src_el, dict):
+                    pub = str(src_el.get("title") or "").strip()
+                if pub and title.endswith(" - " + pub):
+                    title = title[: -len(" - " + pub)].strip()
                 raw_items.append({
                     "title": title,
                     "summary": summary,
                     "source": host[:30],
+                    "publisher": pub[:60],
+                    "link": safe_story_link(entry.get("link")),
                     "age_h": age_h if age_h is not None else 60,
                 })
                 feed_pulled += 1
@@ -1671,6 +1719,17 @@ def fetch_ag_news():
         elif not bucket and len(other) < 4:
             other.append(it)
 
+    # 2026-11-01: every item gets an id ([N3]); a top story names the id it came
+    # from and attach_story_links() puts that item's link and source on it, so
+    # the model never writes a URL and every story can be checked.
+    _n = 0
+    for _b, _its in list(clustered.items()) + [("OTHER AG / RURAL", other)]:
+        for it in _its:
+            _n += 1
+            it["id"] = f"N{_n}"
+            it["bucket"] = _b
+            fetch_ag_news.items.append({k: it.get(k) for k in ("id", "title", "link", "source", "publisher", "bucket")})
+
     # format
     out = []
     for bucket, items in clustered.items():
@@ -1687,7 +1746,7 @@ def fetch_ag_news():
                 age_str = f"{int(age/24)}d ago"
             src = it["source"]
             src_str = f" ({src}, {age_str})" if src else f" ({age_str})"
-            line = f"  - {it['title']}{src_str}"
+            line = f"  - [{it['id']}] {it['title']}{src_str}"
             if it["summary"]:
                 line += f"\n    {it['summary']}"
             out.append(line)
@@ -1696,7 +1755,7 @@ def fetch_ag_news():
         for it in other:
             age = it["age_h"]
             age_str = f"{int(age)}h ago" if age < 24 else f"{int(age/24)}d ago"
-            line = f"  - {it['title']} ({age_str})"
+            line = f"  - [{it['id']}] {it['title']} ({it['source']}, {age_str})"
             if it["summary"]:
                 line += f"\n    {it['summary'][:160]}"
             out.append(line)
@@ -1704,6 +1763,82 @@ def fetch_ag_news():
     if not out:
         return "NO RELEVANT AG NEWS RETRIEVED. Focus on price action and seasonal context."
     return "\n".join(out)
+
+
+# ── top stories: links from the digest, never from the model (2026-11-01) ──
+STORY_SHARED_HOSTS = ("workers.dev", "github.io", "vercel.app", "pages.dev", "netlify.app", "herokuapp.com")
+STORY_LINK_MAX = 800
+STORY_REF_MIN = 0.25     # a cited id whose title shares less than this is a wrong id
+STORY_MATCH_MIN = 0.5    # an uncited story must be this close to a digest title (daily_fresh.STORY_SIM)
+
+
+def safe_story_link(url):
+    """A publisher link fit to put in front of a reader, else "". https only,
+    no shared host (BUILD-RULES 11), no user part, no spaces, bounded length.
+    Google News links (news.google.com/rss/articles/...) pass: they open the
+    publisher's story."""
+    from urllib.parse import urlparse
+    u = str(url or "").strip()
+    if not u or len(u) > STORY_LINK_MAX or any(c.isspace() for c in u):
+        return ""
+    try:
+        pu = urlparse(u)
+    except ValueError:
+        return ""
+    host = (pu.hostname or "").lower()
+    if pu.scheme != "https" or not host or "@" in pu.netloc:
+        return ""
+    if any(host == h or host.endswith("." + h) for h in STORY_SHARED_HOSTS):
+        return ""
+    return u
+
+
+def _story_sim(a, b):
+    try:
+        import daily_fresh as _df
+        return _df.story_sim(a, b)
+    except Exception:
+        A = set(re.findall(r"[a-z0-9]+", str(a).lower()))
+        B = set(re.findall(r"[a-z0-9]+", str(b).lower()))
+        return len(A & B) / max(1, min(len(A), len(B)))
+
+
+def attach_story_links(briefing, items=None):
+    """Every top story (outside_the_pit) gets the link and source name of the
+    digest item it came from. The model names the item's id ("ref": "N3"); a
+    missing or wrong id is matched on the title instead. A story that matches
+    no digest item is cut: it has no source a reader can check. With no digest
+    at all (no feeds answered) the stories stay as written, without links, as
+    before. Returns the log."""
+    items = list(getattr(fetch_ag_news, "items", None) or []) if items is None else list(items)
+    byid = {str(x.get("id") or "").upper(): x for x in items if x.get("id")}
+    log, keep = [], []
+    for it in briefing.get("outside_the_pit") or []:
+        if not isinstance(it, dict):
+            continue
+        ref = str(it.pop("ref", "") or "").strip().strip("[]").upper()
+        it.pop("link", None)                       # a URL the model wrote is never used
+        title = it.get("title") or ""
+        hit = byid.get(ref)
+        if hit is not None and _story_sim(title, hit.get("title")) < STORY_REF_MIN:
+            log.append(f"story {title!r} cited {ref} ({hit.get('title')!r}), a different story; matched by title")
+            hit = None
+        if hit is None and items:
+            best = max(((_story_sim(title, x.get("title")), x) for x in items), key=lambda t: t[0])
+            hit = best[1] if best[0] >= STORY_MATCH_MIN else None
+        if hit is None:
+            if items:
+                log.append(f"cut story {title!r}: no digest item matches it, so it has no checkable source")
+                continue
+            keep.append(it)
+            continue
+        if hit.get("link"):
+            it["link"] = hit["link"]
+        it["source"] = hit.get("publisher") or hit.get("source") or ""
+        it["news_id"] = hit.get("id")
+        keep.append(it)
+    briefing["outside_the_pit"] = keep
+    return log
 
 
 # Pro Farmer Crop Tour window. The tour's own file carries its dates; this
