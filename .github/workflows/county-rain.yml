@@ -41,7 +41,9 @@ concurrency:
 jobs:
   rain:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # 90, not 60 (Nov 1, 2026): Fetch took 33 min and Context 20 on Oct 31 and Nov 1
+    # (9 and 9 on Oct 29), which left the push about 5 minutes before the job was cancelled.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - name: Engine checkout
@@ -130,9 +132,14 @@ jobs:
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           N=$(ls data/rain/*.json 2>/dev/null | wc -l)
           git commit -q -m "data: county rain ($N states)"
+          # -X theirs: on a conflicting line this run's page wins (in a rebase "theirs" is the commit
+          # being replayed, this one). The cash-bids town rebuild (every 2 h) rewrites the "Cash bids
+          # by town near" line on every county rain page; a run of ~55 min always overlaps one, and
+          # on Oct 31 and Nov 1 all five tries stopped on that line in ~1,000 rain pages and nothing
+          # was committed. The town line is refreshed by that rebuild's next pass.
           for i in 1 2 3 4 5; do
             git rebase --abort 2>/dev/null || true
-            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            if git pull -q --rebase -X theirs --autostash origin main && git push -q; then exit 0; fi
             sleep $((20 * i))
           done
           echo "push failed after 5 attempts"; exit 1

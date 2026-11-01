@@ -178,7 +178,7 @@ test("a new visit: empty boxes with the example as gray hints; the print at the 
     }
     // a day's words box is empty; its hint says what goes there, never an example that looks filled in (panel 5; the 13-letter hint, 2026-10-15)
     assert.equal(await page.inputValue("#rp-m1l"), "");
-    assert.equal(await page.getAttribute("#rp-m1l", "placeholder"), "What happened (13 letters)");
+    assert.equal(await page.getAttribute("#rp-m1l", "placeholder"), "What happened");
     assert.match(await page.innerHTML("#rp-art"), /The Johnson Farm/, "the print at the top shows what a print can carry");
     assert.equal(await page.textContent("#rp-sample-txt"), "Your area, Chetek, WI, 2025, with example words. Yours start blank.");
     assert.ok(!/name=/.test(page.url()), "the example is never in the design: " + page.url());
@@ -219,7 +219,7 @@ test("one picker, framed first: the button, the print's look, the phone bar and 
     await settle(page);
     assert.equal(await page.$eval('input[name="rp-product"]:checked', (r) => r.value), "framed12x18", "framed is picked first");
     assert.equal(await page.textContent("#rp-pay"), "Check it and pay $" + J.framed12x18);
-    assert.match(await page.textContent("#rp-sub-framed12x18"), /^Black frame, white mat, real glass\. Order by Dec 9 for Christmas, if you OK the proof the day it comes\.$/);
+    assert.match(await page.textContent("#rp-sub-framed12x18"), /^13 x 19 black frame, white mat, real glass\. Order by Dec 9 for Christmas, if you OK the proof the day it comes\.$/);
     assert.match(await page.textContent("#rp-sub-print12x18"), /Order by Dec 10 for Christmas, if you OK the proof the day it comes\./);
     assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: last year (2025), or any past year, comes by Christmas if you order it framed by Dec 9, or as a print by Dec 10. This year (2026) is a gift card now, the print in January.");
     await page.click('.rp-prod[data-choice="print12x18"]');
@@ -448,10 +448,10 @@ test("labels: a counter to 13 letters, words typed or pasted past it are said in
     await page.fill("#rp-m3l", "");
     await page.type("#rp-m3l", "Sold the cows");
     assert.equal(await page.textContent("#rp-m3l-n"), "13 of 13 letters. That’s the most that fits.");
-    // 2026-10-15 (lead's buy-path brief): the box takes 13 letters (maxlength), with "What happened (13 letters)" as its hint;
+    // 2026-10-15 (lead's buy-path brief): the box takes 13 letters (maxlength), with "What happened" as its hint (2026-11-01: the count under it carries the 13);
     // typing stops at 13, and a paste past it is never a silent cut: the counter says in red what was cut
     assert.equal(await page.getAttribute("#rp-m3l", "maxlength"), "13");
-    assert.equal(await page.getAttribute("#rp-m3l", "placeholder"), "What happened (13 letters)");
+    assert.equal(await page.getAttribute("#rp-m3l", "placeholder"), "What happened");
     await page.fill("#rp-m3l", "");
     await page.type("#rp-m3l", "Dad's last crop");
     assert.equal(await page.inputValue("#rp-m3l"), "Dad's last cr", "typing stops at 13");

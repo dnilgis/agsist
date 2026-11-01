@@ -552,8 +552,8 @@ test("type, keyboard and screen reader fixes", () => {
   assert.ok(!HTML.includes('id="rp-m6row"'), "five days at most");
   assert.ok(!/<datalist|list="rp-labels"/.test(HTML), "no datalist");
   // the label boxes start empty; the only hint says what goes there and how much fits, never example words (2026-10-15)
-  assert.equal((HTML.match(/id="rp-m\dl"[^>]*maxlength="13" placeholder="What happened \(13 letters\)"/g) || []).length, 5);
-  assert.ok(!/id="rp-m\dl"[^>]*placeholder="(?!What happened \(13 letters\))/.test(HTML), "no other hint that looks filled in");
+  assert.equal((HTML.match(/id="rp-m\dl"[^>]*maxlength="13" placeholder="What happened"/g) || []).length, 5);
+  assert.ok(!/id="rp-m\dl"[^>]*placeholder="(?!What happened")/.test(HTML), "no other hint that looks filled in");
   assert.match(HTML, /Mark a day <span class="rp-step-opt">\(up to 5\)<\/span>/);
   assert.match(HTML, /id="rp-dates-max" hidden>5 days is the most that fits\. Remove one to mark another\.</);
   assert.match(HTML, /\.rp-date \[aria-invalid="true"\]\{border-color:var\(--red\)/, "a bad day's lists get a red border");

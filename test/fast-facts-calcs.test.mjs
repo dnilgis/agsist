@@ -53,6 +53,10 @@ function serve() {
 }
 async function open(browser, port, path, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1280, height: 900 } });
+  // The page's clock is pinned (Nov 1, 2026): components/fert-pick.js drops a price over 60 days
+  // old counted from today, so the dated fixtures below (Sep 1, Sep 24, Oct 6) went stale one by
+  // one as the calendar moved, and the nightly went red. Timers keep running.
+  await ctx.clock.setFixedTime(new Date("2026-10-15T15:00:00Z"));
   // Since 2026-10-16 the N box asks for a state before it fills a corn price
   // (state basis by default). These tests are about the N price, so the reader
   // has already picked "Futures only" (test/fast-facts-nrate.test.mjs covers the ask).
