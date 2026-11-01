@@ -2965,6 +2965,9 @@ def validate_briefing(briefing, locked_prices, timing=None):
             warnings.append(f"Field cap: {_k} {_n}w (cap {cap})")
     if len(briefing.get("sections") or []) > briefing_cut.MAX_SECTIONS:
         warnings.append(f"Section count: {len(briefing['sections'])} (max {briefing_cut.MAX_SECTIONS})")
+    _n_otp = len(briefing.get("outside_the_pit") or [])
+    if _n_otp < briefing_cut.MIN_OTP:
+        warnings.append(f"Top stories: {_n_otp} (asked for {briefing_cut.MIN_OTP} to {briefing_cut.MAX_OTP})")
     for _rf in briefing_cut.RETIRED_FIELDS:
         if briefing.get(_rf): warnings.append(f"Retired field emitted: {_rf}")
     for _i, _sec in enumerate(briefing.get("sections") or []):
@@ -3055,7 +3058,7 @@ def validate_briefing(briefing, locked_prices, timing=None):
     NON_BLOCKING = ("not in prices.json", "Em dash", "En dash", "Stale quote called flat",
                     "Geo scope", "Quote attribution filler",
                     "Field cap", "Retired field", "Lede deferral", "Action missing",
-                    "Section count")
+                    "Section count", "Top stories")
     fatal = [w for w in warnings if not any(tok in w for tok in NON_BLOCKING)]
     return len(fatal) == 0, warnings
 

@@ -1061,6 +1061,28 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
     except Exception as _e:
         W('claim', 'claim check could not run (%s: %s)' % (type(_e).__name__, _e))
 
+    # ── never the same thing twice in a week (2026-11-01) ───────────────
+    # scripts/daily_fresh.py, the same check the generator sent the draft back
+    # with. A headline too close to one of the last 7, a weekend headline built
+    # on Friday's board, or a number already used this week holds the send; the
+    # generator already had its one rewrite. A news item that retells a story
+    # with nothing new was cut there, so one here also holds. Leading with the
+    # same market four issues running only warns. Issues from before the check
+    # (no "freshness" stamp) are not re-judged. Messages start "repeat", never
+    # with a field name, so headline_fix does not rewrite a repeat as a claim.
+    if 'freshness' in daily:
+        try:
+            import daily_fresh
+            _d = daily_fresh.issue_date(daily, today)
+            for _k, _loc, _why in daily_fresh.hits(daily, daily_fresh.recent(_d, archive_dir), _d, archive_dir):
+                _m = 'repeat in %s: %s' % (_loc, _why)
+                if _k in daily_fresh.SOFT:
+                    W('fresh:' + _k, _m)
+                else:
+                    F('fresh:' + _k, _m)
+        except Exception as _e:
+            W('fresh', 'repeat check could not run (%s: %s)' % (type(_e).__name__, _e))
+
     passed=not any(s=='FAIL' for s,_,_ in issues)
     return passed, issues
 
