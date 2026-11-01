@@ -1602,10 +1602,12 @@ def _strip_html(s):
 
 
 def _bucket_for(text_lower):
-    """Return the first matching news bucket, or None."""
+    """Return the first matching news bucket, or None. A keyword must start a
+    word (2026-11-01): "epa" inside "repair" sent a right-to-repair story to
+    POLICY, and "rain" inside "grain" or "drain" is not weather."""
     for bucket, kws in NEWS_BUCKETS.items():
         for kw in kws:
-            if kw in text_lower:
+            if re.search(r"(?<![a-z0-9])" + re.escape(kw), text_lower):
                 return bucket
     return None
 

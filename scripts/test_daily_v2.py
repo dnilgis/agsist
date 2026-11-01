@@ -16,6 +16,9 @@ Run by test/daily-email-v2.test.mjs; no network, nothing is sent.
   links       no shared host (workers.dev and the like) in any link
   switch      v2 only with TEST_TO_SIG=1 or DRY_RUN=1
   contrast    every text colour >= 4.5:1, light and dark
+  top stories (Nov 1) five stories: one leads Today with its publisher link,
+              three more under "Top stories" with links and sources, never
+              twice, no tracking on a publisher link, a shared-host link dropped
 
     python3 scripts/test_daily_v2.py
 """
@@ -210,6 +213,31 @@ def main():
         ok(S.v2_gate("2026-10-20", d20, alert=True) is True and not sent, "a clean issue sends, no alert")
     finally:
         log_safe.owner_mail = real
+    # top stories (2026-11-01, fx/dailyfresh)
+    ts = json.load(open(os.path.join(REPO, "test", "fixtures", "daily", "2026-10-21-top-stories.json"), encoding="utf-8"))
+    bt = V.build(ts, "https://agsist.com/daily/2026-10-21.html", forward_url="https://agsist.com/?ref=email-forward")
+    news_today = [x for x in bt["items"] if x.get("field", "").startswith("outside_the_pit[")]
+    ok(len(news_today) == V.TODAY_STORIES, "one top story leads Today: %r" % [x["text"] for x in news_today])
+    ok(news_today and news_today[0]["url"] == "https://www.agweb.com/news/fixture-fuel-aid", "the Today story carries its link")
+    ok(bt["slots"]["top_stories"] == V.EMAIL_STORIES, "three more under Top stories: %r" % bt["slots"])
+    ok(len(bt["items"]) <= V.TODAY_WITH_STORIES, "Today is shorter when the stories carry the news")
+    ok("Top stories" in bt["html"] and "TOP STORIES" in bt["text"], "the block is labeled")
+    shown = V.top_stories(ts, bt["items"])
+    ok(not ({s_["title"] for s_ in shown} & {x["text"] for x in bt["items"]}), "no story twice")
+    for st in shown:
+        ok(st["link"] and st["link"] in bt["text"] and V.e(st["link"]) in bt["html"], "linked: %s" % st["title"])
+        ok(st["source"] and st["source"] in bt["text"], "sourced: %s" % st["title"])
+    ok("fixture-screwworm?utm" not in bt["text"] and "fixture-screwworm&amp;utm" not in bt["html"]
+       and "fixture-fuel-aid?utm" not in bt["text"], "no tracking on a publisher's link")
+    ok(bt["html"].index("Top stories") > bt["html"].index("Forward to a neighbor"), "the forward ask stays right under Today")
+    bad = json.loads(json.dumps(ts))
+    bad["outside_the_pit"][1]["link"] = "https://agsist-x.dnilgis.workers.dev/story"
+    bad["outside_the_pit"][2]["link"] = "http://www.agri-pulse.com/plain-http"
+    bb = V.build(bad, "https://agsist.com/daily/2026-10-21.html")
+    ok("workers.dev" not in bb["html"] and "plain-http" not in bb["html"], "a shared-host or plain http story link is dropped")
+    one = V.build(json.load(open(os.path.join(REPO, "data", "daily-archive", "2026-10-21.json"), encoding="utf-8")),
+                  "https://agsist.com/daily/2026-10-21.html")
+    ok(one["slots"]["top_stories"] == 0 and "Top stories" not in one["html"], "an old one-story issue has no block")
     # contrast
     for name, col in V.DARK_COLORS.items():
         ok(contrast(col, V.DARK_CARD) >= 4.5, "dark %s %s on %s: %.2f" % (name, col, V.DARK_CARD, contrast(col, V.DARK_CARD)))
