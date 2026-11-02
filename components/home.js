@@ -762,6 +762,20 @@ window.hydrateDaily = function(data) {
   // v4.4: local HTML-escape helper (used by outside_the_pit hydration which
   // builds innerHTML manually — kept scoped to this function to avoid global pollution)
   function escHtml(s){return(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  /* A top story's publisher link, fit to show a reader, else ''. Same test as
+     generate_daily.safe_story_link and daily.html storyLink: https only, no
+     shared host (BUILD-RULES 11), no user part, no spaces, at most 800 chars. */
+  function storyLink(u){
+    u=(u==null?'':String(u)).trim();
+    if(!u||u.length>800||/\s/.test(u)||u.slice(0,8).toLowerCase()!=='https://')return'';
+    if((u.split('/')[2]||'').indexOf('@')>=0)return'';
+    var h='';
+    try{h=new URL(u).hostname.toLowerCase();}catch(e){return'';}
+    if(!h)return'';
+    var shared=['workers.dev','github.io','vercel.app','pages.dev','netlify.app','herokuapp.com'];
+    for(var i=0;i<shared.length;i++){if(h===shared[i]||h.slice(-(shared[i].length+1))==='.'+shared[i])return'';}
+    return u;
+  }
   // v4.4.2: mdInline — escape + promote legacy <strong>/<em> tags
   // (model-emitted HTML in JSON body fields) and **markdown** asterisks.
   function mdInline(s){
@@ -895,9 +909,15 @@ window.hydrateDaily = function(data) {
       var oTag=(it.tag||'').trim().toUpperCase();
       if(!oTitle&&!oBody)continue;
       var oTagH=oTag?'<span class="daily-otp-tag">'+escHtml(oTag)+'</span>':'';
-      var oTitleH=oTitle?'<div class="daily-otp-title">'+escHtml(oTitle)+'</div>':'';
+      /* Each title links to the publisher's own news story (often through Google
+         News), the same link the email carries. News links, not links to a data
+         source, so the Oct 29 no-data-source-links rule does not apply here. */
+      var oLink=storyLink(it.link);
+      var oSrc=(it.source==null?'':String(it.source)).trim();
+      var oTitleH=oTitle?'<div class="daily-otp-title">'+(oLink?'<a href="'+escHtml(oLink)+'" rel="noopener nofollow" target="_blank">'+escHtml(oTitle)+'</a>':escHtml(oTitle))+'</div>':'';
       var oBodyH=oBody?'<div class="daily-otp-body">'+mdInline(oBody)+'</div>':'';
-      otpHtml+='<div class="daily-otp-item">'+oTagH+oTitleH+oBodyH+'</div>';
+      var oSrcH=oSrc?'<div class="daily-otp-src">Source: '+escHtml(oSrc)+'</div>':'';
+      otpHtml+='<div class="daily-otp-item">'+oTagH+oTitleH+oBodyH+oSrcH+'</div>';
     }
     if(otpHtml){
       otpGrid.innerHTML=otpHtml;
