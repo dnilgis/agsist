@@ -193,7 +193,7 @@ def build(repo=REPO, C=None):
         s = build_state(d, bs, C)
         if s:
             files["data/newsletter/%s.json" % s["state"].lower()] = s
-            idx[s["state"]] = {"name": s["name"], "year": s["year"], "month": s["month"], "counties": len(s["counties"])}
+            idx[s["state"]] = {"name": s["name"], "fp": next(iter(s["counties"]))[:2], "year": s["year"], "month": s["month"], "counties": len(s["counties"])}
     files["data/newsletter/index.json"] = {"schema": SCHEMA, "states": dict(sorted(idx.items(), key=lambda kv: kv[1]["name"]))}
     return files
 
