@@ -188,8 +188,7 @@
     var L = LV[k];
     if (!q || typeof q.close !== 'number') return { label: L.name, value: null, why: 'the price file did not load', src: L.src };
     var settle = q.close_kind === 'settle';
-    /* a withheld move (fetch_prices energy_roll_guard, or a contract roll) prints no change, 2026-11-02 */
-    var ch = typeof q.netChange === 'number' && isFinite(q.netChange) && q.prev_date && !q.move_withheld && !q.roll
+    var ch = typeof q.netChange === 'number' && isFinite(q.netChange) && q.prev_date
       ? ' ' + (Math.abs(q.netChange) < 0.005 ? 'Unchanged from' : (q.netChange > 0 ? 'Up $' : 'Down $') + Math.abs(q.netChange).toFixed(2) + ' from') + ' the ' + md(q.prev_date) + ' settle.' : '';
     var range = q.wk52_lo != null && q.wk52_hi != null ? ' 52-week range $' + q.wk52_lo.toFixed(2) + ' to $' + q.wk52_hi.toFixed(2) + '.' : '';
     var head = box.getAttribute('data-h-' + k);

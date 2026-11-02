@@ -934,8 +934,7 @@
     if (!q || typeof q.close !== 'number' || !px) return na(label, 'the price file did not load', ['Futures', href]);
     var settle = q.close_kind === 'settle';
     var range = q.wk52_lo != null && q.wk52_hi != null ? ' 52-week range ' + px(q.wk52_lo, 'down') + ' to ' + px(q.wk52_hi, 'up') + '.' : '';
-    /* a withheld move (fetch_prices energy_roll_guard, or a contract roll) prints no change, 2026-11-02 */
-    var ch = typeof q.netChange === 'number' && isFinite(q.netChange) && q.prev_date && !q.move_withheld && !q.roll ? ' ' + (Math.abs(q.netChange) < 0.0625 ? 'Unchanged from' : (q.netChange > 0 ? 'Up ' : 'Down ') + centsFrac(q.netChange) + ' from') + ' the ' + monDay(q.prev_date).replace(/, \d{4}$/, '') + ' settle.' : '';
+    var ch = typeof q.netChange === 'number' && isFinite(q.netChange) && q.prev_date ? ' ' + (Math.abs(q.netChange) < 0.0625 ? 'Unchanged from' : (q.netChange > 0 ? 'Up ' : 'Down ') + centsFrac(q.netChange) + ' from') + ' the ' + monDay(q.prev_date).replace(/, \d{4}$/, '') + ' settle.' : '';
     return { label: label, value: px(q.close), date: isoDay(settle ? q.settle_date || q.close_date : q.close_date),
       ctx: (contract ? contract + ', ' : '') + (settle ? 'settle' : 'last trade, delayed') + '.' + ch + range, src: ['CBOT', href], paper: 'CBOT futures, delayed' };
   }

@@ -331,3 +331,70 @@ test("lockNote: only for a net above zero, futures leaves the basis open, posted
   assert.equal(S.lockNote("posted", 0.05, "Jul '27"),
     "You can lock this today with a forward contract for Jul '27 delivery at this elevator. That fixes both the futures and the basis; ask the elevator for its terms.");
 });
+
+/* EARLIEST BID FIRST (Sig, 2026-11-02). The nearest delivery tier is spot or
+   cash, the first half and the whole month together; the last half (or a day
+   range starting on the 11th or later) ranks after. The town pages
+   (build_cash_bid_pages.period_rank), storesell.js periodRank and its Python
+   twin storesell.py period_rank read the same labels the same way. */
+const RANK_CASES = [
+  ["FH Nov 2026", "2026-11", 0], ["LH Nov 2026", "2026-11", 1], ["Nov 26 - FH", "2026-11", 0],
+  ["Nov 26 - LH", "2026-11", 1], ["Dec 2026", "2026-12", 0], ["Cash", "spot", 0], ["", "spot", 0],
+  ["Oct/FH Nov", "2027-10", 0], ["NOV 2026 (01 Nov 2026 to 30 Nov 2026)", "2026-11", 0],
+  ["Nov 2026 (01 Nov 2026 to 15 Nov 2026)", "2026-11", 0], ["Nov 2026 (16 Nov 2026 to 30 Nov 2026)", "2026-11", 1],
+  ["11/01/2026", "2026-11", 0], ["New crop 2026", "newcrop-2026", 0], ["Nov 26 (2026-12)", "2026-11", 0],
+  ["Second half Nov", "2026-11", 1], ["last half", "2026-11", 1], ["2H Nov", "2026-11", 1],
+  ["FH Nov 26 (Overfill Only)", "2026-11", 0], ["LH Nov 26", "2026-11", 1], ["Nov 26, LH", "2026-11", 1],
+  ["11 Nov 2026 to 30 Nov 2026", "2026-11", 1], ["10 Nov 2026 to 30 Nov 2026", "2026-11", 0],
+  ["16 Nov 2026 to 15 Dec 2026", "2026-11", 0], ["Harvest 2026", "2026-10", 0],
+];
+test("the delivery tier: storesell.js, storesell.py and the town page builder agree", () => {
+  const ranks = RANK_CASES.map(([label, period]) => ({ label, period }));
+  const py = JSON.parse(execFileSync("python3", [ROOT + "scripts/storesell.py", "--json"], { input: JSON.stringify([{ ranks }]) }).toString());
+  const town = JSON.parse(execFileSync("python3", ["-c",
+    "import json,sys; sys.path.insert(0, sys.argv[1]); import build_cash_bid_pages as b; " +
+    "print(json.dumps([b.period_rank(r) for r in json.load(sys.stdin)]))", ROOT + "scripts"],
+    { input: JSON.stringify(ranks) }).toString());
+  RANK_CASES.forEach(([label, period, want], i) => {
+    assert.equal(S.periodRank({ label, period }), want, "js " + label);
+    assert.equal(py[0].ranks[i], want, "py " + label);
+    assert.equal(town[i], want, "town page " + label);
+  });
+});
+
+/* Nevada, IA, Nov 2 2026 (real rows): FH Nov corn $4.17 (-30c) and LH Nov
+   $4.22 (-25c), both filed under Nov, then Dec. The store-or-sell box counted
+   the LH bid as "now"; the earliest tier present is the FH bid. */
+const NEVADA = [
+  { start: "2026-11", end: "2026-11", cash: 4.17, label: "FH Nov 2026", period: "2026-11" },
+  { start: "2026-11", end: "2026-11", cash: 4.22, label: "LH Nov 2026", period: "2026-11" },
+  { start: "2026-12", end: "2026-12", cash: 4.27, label: "Dec 2026", period: "2026-12" },
+];
+test("an LH bid is not 'now' beside an FH bid in the same month (Nevada, IA)", () => {
+  const m = S.buildPeriods(NEVADA, "corn");
+  assert.equal(m.spot.cash, 4.17);
+  assert.equal(JSON.stringify(m.later.map((p) => p.key)), JSON.stringify(["2026-12"]));
+  near(m.later[0].carry, 0.10, "Dec carry from the FH bid");
+  // only the LH row left in the month: it is the earliest there, so it stands
+  const lh = S.buildPeriods(NEVADA.slice(1), "corn");
+  assert.equal(lh.spot.cash, 4.22);
+  // a whole-month bid and a cash bid are one tier: the higher one is now (Pekin, IL)
+  const one = S.buildPeriods([{ start: "2026-11", end: "2026-11", cash: 4.12, label: "Cash", period: "spot" },
+    { start: "2026-11", end: "2026-11", cash: 4.52, label: "Nov 2026", period: "2026-11" }], "corn");
+  assert.equal(one.spot.cash, 4.52);
+  // a row with no label (licensed feed periods, the build's own rows) keeps the old rule
+  assert.equal(S.buildPeriods(NEVADA.map(({ start, end, cash }) => ({ start, end, cash })), "corn").spot.cash, 4.22);
+});
+test("the Python twin picks the same 'now' and later months from the same rows", () => {
+  const cases = [{ rows: NEVADA, crop: "corn" }, { rows: NEVADA.slice(1), crop: "corn" },
+    { rows: NEVADA.concat([{ start: "2027-03", end: "2027-03", cash: 4.45, label: "LH Mar 2027", period: "2027-03" },
+      { start: "2026-12", end: "2026-12", cash: 4.31, label: "LH Dec 2026", period: "2026-12" }]), crop: "corn", inputs: { cost: 0.02 } }];
+  const py = JSON.parse(execFileSync("python3", [ROOT + "scripts/storesell.py", "--json"], { input: JSON.stringify(cases) }).toString());
+  cases.forEach((c, i) => {
+    const inp = S.withDefaults(c.inputs || {}), m = S.buildPeriods(c.rows, c.crop), pk = S.pickPeriod(m, inp, null);
+    assert.deepEqual(py[i].spot, [m.spot.start, m.spot.cash], "spot " + i);
+    assert.equal(JSON.stringify(py[i].later), JSON.stringify(m.later.map((p) => p.key)), "later " + i);
+    assert.equal(py[i].pick, pk ? pk.key : null, "pick " + i);
+  });
+  assert.deepEqual(py[0].spot, ["2026-11", 4.17]);
+});
