@@ -131,7 +131,10 @@ def main():
 
     print("mailbox by area")
     import json as _json
-    real = _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "dairy-mailbox.json")))
+    # The June 2026 report, saved (Nov 2: this read the live data/dairy-mailbox.json, so the dairy job failed its own
+    # selftest the day AMS posted July, and no dairy update was saved from Oct 28 to Nov 2).
+    real = _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures", "milk",
+                                        "mailbox-2026-06.json"), encoding="utf-8"))
     ma = S.milk_mailbox_seeds(real, "2026-10-16")["milkmbareas"]
     ck("areas table: Wisconsin $18.13, down $1.00 from May, down $3.02 from Jun 2025 (21.15 - 18.13)",
        '<th scope="row">Wisconsin</th><td class="num">$18.13</td><td class="num dp-neg">▼ −$1.00</td><td class="num dp-neg">▼ −$3.02</td>' in ma, ma[:300])
