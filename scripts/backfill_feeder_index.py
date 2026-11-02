@@ -70,6 +70,10 @@ def reports(cfg):
     return out
 
 
+def iso_(d):
+    return d.isoformat()
+
+
 def ts_date(ts):
     return datetime.date(int(ts[:4]), int(ts[4:6]), int(ts[6:8]))
 
@@ -109,7 +113,7 @@ def read_copy(raw, barn):
     return FCA.summarize(p), text, None
 
 
-def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=print, root=FCA.ROOT):
+def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=PFA.flush_log, root=FCA.ROOT):
     # The Internet Archive refused connections (errno 111) to the Nov 2 coverage run at one ask
     # every 1.5 s, so this goes at one every 4 s and waits minutes, not seconds, when refused.
     fetch_ = fetch_ or Fetcher(min_gap=4.0, retries=3, timeout=90, backoff=(30, 120, 300), ok=(200, 404))
@@ -124,11 +128,14 @@ def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=pri
         def save(self):
             save(man_path, man)
     hi = d1 + datetime.timedelta(days=10)    # a copy taken after the last week can hold its sale
+    by_slug = dict(reports(cfg))
+    # 1. the copy list of every report (kept in the manifest, so a resumed run does not ask again)
     for slug, barn in reports(cfg):
         if stop and clock() > stop:
-            log("stopped at the time limit; dispatch again to go on")
             break
         m = man["reports"].setdefault(slug, {"barn": barn["id"], "done": {}, "listed": None})
+        if m.get("caps") is not None and m.get("range") == [iso_(d0), iso_(hi)]:
+            continue
         url = PFA.CDX % urllib.parse.quote(ORIG % slug, safe="")
         if not robots.allowed(url):
             m["listed"] = "robots: disallowed"
@@ -138,50 +145,65 @@ def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=pri
             rows = json.loads(body.decode("utf-8", "replace") or "[]") if s == 200 else []
         except (FetchError, ValueError) as e:
             m["listed"] = "failed: %s" % str(e)[:200]
+            log("  %s: copy list failed (%s)" % (slug, str(e)[:120]))
             continue
         caps = rows[1:] if rows and rows[0] and rows[0][0] == "timestamp" else rows
-        caps = [c for c in caps if d0 <= ts_date(c[0]) <= hi]
+        m["caps"] = [[c[0], c[1]] for c in caps if d0 <= ts_date(c[0]) <= hi]
+        m["range"] = [iso_(d0), iso_(hi)]
         m["listed"] = now_iso()
-        m["copies"] = len(caps)
-        sales_path = os.path.join(out, "sales", slug + ".json")
-        sales = load(sales_path, {})
-        for c in caps:
-            ts = c[0]
-            if ts in m["done"]:
-                continue
-            if stop and clock() > stop:
-                break
-            u = PFA.WAYBACK % (ts, c[1])
-            if not robots.allowed(u):
-                m["done"][ts] = "robots: disallowed"
-                continue
-            try:
-                s, raw = fetch_.get(u)
-            except FetchError as e:
-                log("  %s %s: %s" % (slug, ts, e))
-                continue                      # not marked: asked again next run
-            if s != 200:
-                m["done"][ts] = "HTTP %s" % s
-                continue
-            sale, text, why = read_copy(raw, barn)
-            if text:
-                tp = os.path.join(out, "text", slug, ts + ".txt")
-                os.makedirs(os.path.dirname(tp), exist_ok=True)
-                with open(tp, "w", encoding="utf-8") as f:
-                    f.write(text)
-            if sale is None:
-                m["done"][ts] = "refused: %s" % why
-                continue
+        m["copies"] = len(m["caps"])
+    save(man_path, man)
+    # 2. read the copies, the weeks the crawler caught the most barns in first: those are the
+    #    weeks that can pass the index's bar, so a run cut short has read them
+    week_barns = {}
+    for slug, m in man["reports"].items():
+        for ts, _ in m.get("caps") or []:
+            week_barns.setdefault(PFA.week_of(ts), set()).add(m["barn"])
+    queue = sorted(((slug, ts, orig) for slug, m in man["reports"].items() if slug in by_slug
+                    for ts, orig in (m.get("caps") or []) if ts not in m["done"]),
+                   key=lambda q: (-len(week_barns.get(PFA.week_of(q[1]), ())), q[1], q[0]))
+    log("copy lists: %d reports, %d copies to read" % (sum(1 for m in man["reports"].values() if m.get("caps") is not None), len(queue)))
+    sales_cache = {}
+    n = 0
+    for slug, ts, orig in queue:
+        if stop and clock() > stop:
+            log("stopped at the time limit; dispatch again to go on")
+            break
+        m, barn = man["reports"][slug], by_slug[slug]
+        u = PFA.WAYBACK % (ts, orig)
+        if not robots.allowed(u):
+            m["done"][ts] = "robots: disallowed"
+            continue
+        try:
+            s, raw = fetch_.get(u)
+        except FetchError as e:
+            log("  %s %s: %s" % (slug, ts, e))
+            continue                      # not marked: asked again next run
+        if s != 200:
+            m["done"][ts] = "HTTP %s" % s
+            continue
+        sale, text, why = read_copy(raw, barn)
+        if text:
+            tp = os.path.join(out, "text", slug, ts + ".txt")
+            os.makedirs(os.path.dirname(tp), exist_ok=True)
+            with open(tp, "w", encoding="utf-8") as f:
+                f.write(text)
+        if sale is None:
+            m["done"][ts] = "refused: %s" % why
+        else:
             sale["copy"] = ts
+            sales_path = os.path.join(out, "sales", slug + ".json")
+            sales = sales_cache.setdefault(slug, load(sales_path, {}))
             old = sales.get(sale["date"])
             if old is None or heads(sale) > heads(old):
                 sales[sale["date"]] = sale
+            save(sales_path, sales)
             m["done"][ts] = "read %s" % sale["date"]
-        save(sales_path, sales)
-        save(man_path, man)
-        log("%s (%s): %d copies, %d read" % (slug, barn["id"], len(caps),
-                                            sum(1 for v in m["done"].values() if v.startswith("read"))))
-        saver.tick(_Man())
+        n += 1
+        if n % 10 == 0:
+            save(man_path, man)
+            log("  %d copies read this run (last: %s %s, %s)" % (n, slug, ts, m["done"][ts][:60]))
+            saver.tick(_Man())
     save(man_path, man)
     return man
 
@@ -242,9 +264,12 @@ def selftest():
                 if "ams_1856" in u:
                     return 200, json.dumps([["timestamp", "original"], ["20250111093909", "https://www.ams.usda.gov/mnreports/ams_1856.pdf"],
                                             ["20230722103902", "https://www.ams.usda.gov/mnreports/ams_1856.pdf"],
-                                            ["20250112000000", "https://www.ams.usda.gov/mnreports/ams_1856.pdf"]]).encode(), {}
+                                            ["20250112000000", "https://www.ams.usda.gov/mnreports/ams_1856.pdf"],
+                                            ["20250201000000", "https://www.ams.usda.gov/mnreports/ams_1856.pdf"]]).encode(), {}
+                if "ams_1245" in u:
+                    return 200, json.dumps([["timestamp", "original"], ["20250111093819", "https://www.ams.usda.gov/mnreports/ams_1245.pdf"]]).encode(), {}
                 return 200, b"[]", {}
-            if "20250111093909id_" in u:
+            if "20250111093909id_" in u or "20250111093819id_" in u:
                 return 200, b"%PDF-1.4 fixture", {}
             if "20250112000000id_" in u:
                 return 200, b"<html>not a pdf</html>", {}
@@ -257,7 +282,12 @@ def selftest():
             out = os.path.join(d, "h")
             man = fetch(datetime.date(2025, 1, 1), datetime.date(2025, 12, 31), out=out, fetch_=f, log=lambda *a: None, root=root)
             m = man["reports"]["1856"]
-            ck("copies outside the dates are not asked", not any("20230722" in u for u in asked) and m["copies"] == 2, m)
+            ck("copies outside the dates are not asked", not any("20230722" in u for u in asked) and m["copies"] == 3, m)
+            order = [re.search(r"/web/(\d+)id_", u).group(1) for u in asked if "id_/" in u]
+            ck("the week with the most barns is read first", order[-1] == "20250201000000" and set(order[:3]) ==
+               {"20250111093909", "20250112000000", "20250111093819"}, order)
+            ck("another barn's report is refused by its title", man["reports"]["1245"]["done"]["20250111093819"].startswith("refused: title"),
+               man["reports"]["1245"]["done"])
             ck("a copy is read by the barn reader", m["done"]["20250111093909"] == "read 2025-01-09", m["done"])
             ck("a web page where a PDF should be is refused, with why", m["done"]["20250112000000"] == "refused: not a PDF", m["done"])
             sales = load(os.path.join(out, "sales", "1856.json"), {})
