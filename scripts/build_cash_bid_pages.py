@@ -1138,15 +1138,24 @@ def asof_time(t):
 # $4.52 over a $4.12 cash bid nearby). Every pick (answer, state line, FAQ,
 # structured data, share card, the nearby lists, the company pages and the
 # hold box) goes through nearest_rows(), so they agree.
-_LAST_HALF_RE = re.compile(r"^\s*(?:lh|2h|last\s+half|second\s+half)\b|[-,]\s*(?:lh|last\s+half)\s*$", re.I)
+# LH / 2H / last half / second half as a word anywhere in the label: real labels put it first
+# ("LH Nov 26"), last ("Nov 26 - LH", "November 2026 Second Half") or in the middle
+# ("14% Pro Dlvd LOGAN LH Nov-Dec", "Oct 2H 26 (17 Oct 2026 to 31 Oct 2026)").
+_LAST_HALF_RE = re.compile(r"\b(?:lh|2h|last\s+half|second\s+half)\b", re.I)
 _DAYS_RE = re.compile(r"\b(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4}) to (\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})\b")
+# the same range as delivery_text() prints it ("Nov 16-30, 2026") or a board writes it ("Nov 16-30")
+_PRINTED_DAYS_RE = re.compile(r"\b([A-Za-z]{3})[a-z]* (\d{1,2})-(\d{1,2})\b")
 
 
 def period_rank(r):
     """0 deliverable now (spot, cash, the first half, the whole month, or a
     label that does not say); 1 the last half of the month. Read from the
-    delivery label the table prints, and an explicit day range in it
-    ("16 Nov 2026 to 30 Nov 2026" is the last half)."""
+    delivery label the table prints. Sig's rule (Nov 2): spot/cash, FH and the
+    whole month are one tier; LH, or a day range inside one month that starts
+    on the 11th or later, ranks after. The range is read in the board's raw form
+    ("16 Nov 2026 to 30 Nov 2026") and as the page prints it ("Nov 16-30, 2026";
+    it ranked 0 before Nov 2, 2026). A range that runs across months (e.g.
+    "28 Oct 2026 to 30 Nov 2026") started earlier and stays 0."""
     if str(r.get("period") or "") == "spot":
         return 0
     lab = re.sub(r"\s+", " ", str(r.get("label") or "")).strip()
@@ -1154,6 +1163,9 @@ def period_rank(r):
         return 1
     m = _DAYS_RE.search(lab)
     if m and m.group(2).lower() == m.group(5).lower() and m.group(3) == m.group(6) and int(m.group(1)) >= 11:
+        return 1
+    m = _PRINTED_DAYS_RE.search(lab)
+    if m and m.group(1).title() in MONTH_ABBR and 11 <= int(m.group(2)) <= int(m.group(3)) <= 31:
         return 1
     return 0
 
@@ -4030,6 +4042,23 @@ def _selftest_answer():
                            ("Nov 2026 (16 Nov 2026 to 30 Nov 2026)", "2026-11", 1), ("11/01/2026", "2026-11", 0),
                            ("New crop 2026", "newcrop-2026", 0), ("Nov 26 (2026-12)", "2026-11", 0)):
         assert period_rank({"label": lab, "period": per}) == want, (lab, period_rank({"label": lab, "period": per}))
+    # Nov 2 audit: the printed form of a late range ranked 0 ("Nov 16-30, 2026"), and so did an LH or
+    # second half in the middle or at the end of a label. Real labels from the bids snapshot of
+    # 2026-11-02 22:37 UTC (raw delivery -> printed label); 5 of 23,069 rows moved to the later tier.
+    for raw, per, want in (("16 Nov 2026 to 30 Nov 2026", "2026-11", 1), ("20 Oct 2026 to 31 Oct 2026", "2026-10", 1),
+                           ("21 Oct 2026 to 31 Oct 2026", "2026-10", 1), ("November 2026 Second Half", "2026-11", 1),
+                           ("14% Pro Dlvd LOGAN LH Nov-Dec", "2026-11/2026-12", 1), ("LH Nov '26 (2026-12)", "2026-11", 1),
+                           ("Oct 2H 26 (17 Oct 2026 to 31 Oct 2026)", "2026-10", 1),
+                           ("November 2026 First Half", "2026-11", 0), ("02 Nov 2026 to 30 Nov 2026", "2026-11", 0),
+                           ("01 Nov 2026 to 15 Nov 2026", "2026-11", 0), ("Nov 1-15", "2026-11", 0), ("Dec 1-5 2026", "2026-12", 0),
+                           ("28 Oct 2026 to 30 Nov 2026", "2026-10/2026-11", 0),
+                           ("Fall 26 (16 Sep 2026 to 30 Nov 2026)", "2026-09/2026-11", 0),
+                           ("NEARBY (03 Nov 2026 to 30 Nov 2026)", "2026-11", 0)):
+        lab = delivery_label({"delivery": raw, "period": per})
+        assert period_rank({"label": lab, "period": per}) == want, (raw, lab, want)
+    assert delivery_label({"delivery": "16 Nov 2026 to 30 Nov 2026", "period": "2026-11"}) == "Nov 16-30, 2026"
+    for lab, want in (("Nov 16-30, 2026", 1), ("Nov 16-30", 1), ("Nov 11-30, 2026", 1), ("Nov 2-30, 2026", 0), ("Nov 1-10", 0)):
+        assert period_rank({"label": lab, "period": "2026-11"}) == want, (lab, want)
     # Pekin, IL (Nov 2, real rows): River Valley Cooperative's Alto ICP board posts Nov 2026 corn $4.52
     # (+5c vs Dec '26); Tremont Co-operative's Adwell board posts CASH $4.12 (-35c). Both deliver now: the
     # whole-month bid, the higher one, stays the answer (lead's ruling on Sig's rule, Nov 2)
