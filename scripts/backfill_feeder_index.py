@@ -152,6 +152,9 @@ def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=PFA
         m["range"] = [iso_(d0), iso_(hi)]
         m["listed"] = now_iso()
         m["copies"] = len(m["caps"])
+        log("  %s (%s): %d copies listed" % (slug, barn["id"], m["copies"]))
+        save(man_path, man)
+        saver.tick(_Man())                # the copy lists alone took about an hour on Nov 2
     save(man_path, man)
     # 2. read the copies, the weeks the crawler caught the most barns in first: those are the
     #    weeks that can pass the index's bar, so a run cut short has read them
