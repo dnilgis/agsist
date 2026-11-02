@@ -38,6 +38,46 @@ pages only draw them.
    its own copy of every barn's sales for KEEP_DAYS (barn_sales) and a short
    history of finished weeks (WEEKS_KEPT).
 
+3. The AGSIST USDA feeder steer index: ONE national weekly price, the
+   headline of the three boxes. Steers 700 to 899 lb, Medium and Large 1 and
+   1-2, every single-barn USDA AMS report in the barn store, weighted by
+   pounds sold (the 700-799 and 800-899 classes pooled by their dollars and
+   hundredweights, so it equals the table's national 700-899 steer line).
+   Why 700 to 899 lb: it is the yearling that goes on feed, the weight RMA's
+   steer value beside it covers (6 to 10 cwt), and every week of the record
+   has 55 or more barns selling it; the 500s sell more head but those are
+   calves most often headed to grass or a backgrounder first.
+   A week is published only if IDX_MIN_BARNS barns in IDX_MIN_STATES states
+   sold IDX_MIN_HEAD head and no one state sold more than IDX_MAX_STATE_SHARE
+   of the head; otherwise it is withheld with its counts and the reasons.
+   Set from the data (Oct 12 to Nov 1, 2026: 55 to 89 barns, 15 to 17
+   states, 9,600 to 14,600 head a week; Oklahoma the largest at 27 to 33%).
+   Drawing 30 of a week's barns at random moved the figure by about $2 (one
+   standard deviation) and 10 barns by $5 to $6, so 30 barns is the floor;
+   8 states keeps a holiday week with one region open from standing in for
+   the country.
+   Beside each week: how far it moves when its barns are redrawn (IDX_DRAWS
+   draws with replacement, seeded by the week, the 5th to 95th percentile),
+   and the change from the prior week only when both weeks pass and
+   IDX_MIN_BARNS barns sold in both, with its own redrawn range over the
+   barns of both weeks. A change whose range takes in zero is "no clear
+   change", whatever its sign.
+   Weekly only, no daily rolling figure: each barn sells on its own weekday,
+   so a day's figure is a different set of barns, and about 1 in 10 sales in
+   the record reached us 4 to 8 days after the sale (measured on the
+   committed barn file, Oct 17 to 31), so a 7-day window ending yesterday
+   would be revised most days. A week is marked final IDX_FINAL_DAYS days
+   after it ends; before that it says late reports can still land.
+   History: every finished week from IDX_START (the week our barn reads
+   began, Oct 16, 2026; earlier weeks hold only the last two sales each barn
+   had then, so they are not a full count) is kept in index.weeks forever.
+   A week is recounted while it and the week before it are both inside the
+   barn store (KEEP_DAYS); after that it stays as it was published.
+   Backfill: the committed data/cattle-auction.json on main goes back to
+   Oct 16, 2026 (27 versions checked Nov 2) and the raw branch holds only the
+   latest report per barn; every sale in those versions is in barn_sales.
+   No CME data is read or compared here (Sig, Oct 29).
+
 Modes:
   (default)   read the inputs and the last data/feeder-index.json, write it.
   --selftest  offline tests with hand-worked answers; non-zero exit on failure.
@@ -51,6 +91,7 @@ except ImportError: pass
 import datetime
 import json
 import os
+import random
 import sys
 from pathlib import Path
 
@@ -76,6 +117,17 @@ RMA_SOURCE_URL = "https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/"
 RMA_BASIS_NOTE = ("RMA bases feeder cattle LRP on the CME Feeder Cattle Index, steers 700 to 899 lb "
                   "(LRP Handbook FCIC-20010, 2027, section 23C). The exact definition is in the Feeder "
                   "Cattle endorsement, which we have not read yet, so this page does not call it the index.")
+
+IDX_NAME = "AGSIST USDA feeder steer index"
+IDX_LABEL = "AGSIST USDA feeder steer index, not the CME index"
+IDX_CLASSES = ("700", "800")   # 700-899 lb steers
+IDX_MIN_BARNS = 30
+IDX_MIN_HEAD = 4000
+IDX_MIN_STATES = 8
+IDX_MAX_STATE_SHARE = 0.5
+IDX_START = datetime.date(2026, 10, 12)
+IDX_FINAL_DAYS = 10
+IDX_DRAWS = 1000
 
 # Regions by the barn's state. A state not listed counts in the national row only.
 REGIONS = [
@@ -244,6 +296,161 @@ def build_table(store, monday):
     return table
 
 
+# ------------------------------------------------------------------ the index
+def index_barns(store, monday):
+    """{barn_id: [head, cwt, dollars, state]} for 700-899 lb steers sold that week."""
+    sunday = monday + datetime.timedelta(days=6)
+    out = {}
+    for bid, e in store.items():
+        for d, cells in e["sales"].items():
+            dd = pdate(d)
+            if not dd or dd < monday or dd > sunday:
+                continue
+            for c in IDX_CLASSES:
+                v = cells.get("steers|" + c)
+                if not v:
+                    continue
+                a = out.setdefault(bid, [0, 0.0, 0.0, e["state"]])
+                a[0] += v[0]
+                a[1] += v[1]
+                a[2] += v[2]
+    return out
+
+
+def pctl(xs, q):
+    """Nearest-rank percentile of a sorted list."""
+    return xs[min(len(xs) - 1, max(0, int(round(q * (len(xs) - 1)))))]
+
+
+def week_seed(monday, salt=0):
+    return int(monday.strftime("%Y%m%d")) * 10 + salt
+
+
+def redraw_range(barns, monday):
+    """5th to 95th percentile of the pounds-weighted price over IDX_DRAWS draws
+    of the week's barns with replacement."""
+    ids = sorted(barns)
+    rng = random.Random(week_seed(monday))
+    xs = []
+    for _ in range(IDX_DRAWS):
+        cwt = dollars = 0.0
+        for _ in ids:
+            b = barns[ids[rng.randrange(len(ids))]]
+            cwt += b[1]
+            dollars += b[2]
+        xs.append(dollars / cwt)
+    xs.sort()
+    return round(pctl(xs, 0.05), 2), round(pctl(xs, 0.95), 2)
+
+
+def change_range(cur, prev, monday):
+    """5th to 95th percentile of this week minus the prior week when the barns of
+    both weeks are drawn together (a barn keeps its sales in each week)."""
+    ids = sorted(set(cur) | set(prev))
+    rng = random.Random(week_seed(monday, 1))
+    xs = []
+    for _ in range(IDX_DRAWS):
+        c = [0.0, 0.0]
+        p = [0.0, 0.0]
+        for _ in ids:
+            bid = ids[rng.randrange(len(ids))]
+            if bid in cur:
+                c[0] += cur[bid][1]
+                c[1] += cur[bid][2]
+            if bid in prev:
+                p[0] += prev[bid][1]
+                p[1] += prev[bid][2]
+        if c[0] > 0 and p[0] > 0:
+            xs.append(c[1] / c[0] - p[1] / p[0])
+    xs.sort()
+    return round(pctl(xs, 0.05), 2), round(pctl(xs, 0.95), 2)
+
+
+def index_week(store, monday, today):
+    """One week of the index, published or withheld with its counts and reasons."""
+    sunday = monday + datetime.timedelta(days=6)
+    b = index_barns(store, monday)
+    head = sum(v[0] for v in b.values())
+    cwt = sum(v[1] for v in b.values())
+    dollars = sum(v[2] for v in b.values())
+    by_state = {}
+    for v in b.values():
+        by_state[v[3]] = by_state.get(v[3], 0) + v[0]
+    top = sorted(by_state.items(), key=lambda kv: (-kv[1], kv[0]))
+    o = {"start": iso(monday), "end": iso(sunday), "p": None, "barns": len(b), "head": head,
+         "states": len(by_state), "avg_wt": int(round(cwt * 100 / head)) if head else None,
+         "top": [[st, int(round(100.0 * h / head))] for st, h in top[:3]] if head else [],
+         "final": (today - sunday).days > IDX_FINAL_DAYS}
+    why = []
+    if len(b) < IDX_MIN_BARNS:
+        why.append("%d barns, %d needed" % (len(b), IDX_MIN_BARNS))
+    if head < IDX_MIN_HEAD:
+        why.append("%s head, %s needed" % (format(head, ","), format(IDX_MIN_HEAD, ",")))
+    if len(by_state) < IDX_MIN_STATES:
+        why.append("%d state%s, %d needed" % (len(by_state), "" if len(by_state) == 1 else "s", IDX_MIN_STATES))
+    if head and top[0][1] > IDX_MAX_STATE_SHARE * head:
+        why.append("%s sold %d%% of the head, %d%% at most" % (top[0][0], round(100.0 * top[0][1] / head), round(100 * IDX_MAX_STATE_SHARE)))
+    if why or cwt <= 0:
+        o["why"] = why or ["no sales"]
+        return o, b
+    o["p"] = round(dollars / cwt, 2)
+    o["lo"], o["hi"] = redraw_range(b, monday)
+    return o, b
+
+
+def index_change(o, b, po, pb, monday):
+    """Change from the prior week, only when both pass and IDX_MIN_BARNS sold both."""
+    both = len(set(b) & set(pb))
+    o["both"] = both
+    o["chg"] = None
+    if o["p"] is None or po is None or po.get("p") is None:
+        o["chg_why"] = ("this week withheld" if o["p"] is None else
+                        "first week of the record" if po is None else "prior week withheld")
+        return o
+    if both < IDX_MIN_BARNS:
+        o["chg_why"] = "%d barns sold both weeks, %d needed" % (both, IDX_MIN_BARNS)
+        return o
+    o["chg"] = round(o["p"] - po["p"], 2)
+    o["chg_lo"], o["chg_hi"] = change_range(b, pb, monday)
+    o["move"] = "up" if o["chg_lo"] > 0 else "down" if o["chg_hi"] < 0 else "flat"
+    return o
+
+
+def build_index(store, prev_weeks, monday, today):
+    """Every finished week from IDX_START to monday. A week is recounted while it
+    and the week before are inside the barn store; older weeks keep what was
+    published (prev_weeks, {start: week})."""
+    lo = today - datetime.timedelta(days=KEEP_DAYS)
+    weeks = []
+    m = IDX_START
+    while m <= monday:
+        pm = m - datetime.timedelta(days=7)
+        if pm >= lo:
+            o, b = index_week(store, m, today)
+            po, pb = index_week(store, pm, today) if m > IDX_START else (None, {})
+            weeks.append(index_change(o, b, po, pb, m))
+        elif iso(m) in prev_weeks:
+            w = dict(prev_weeks[iso(m)])
+            w["final"] = (today - (m + datetime.timedelta(days=6))).days > IDX_FINAL_DAYS
+            weeks.append(w)
+        else:
+            weeks.append({"start": iso(m), "end": iso(m + datetime.timedelta(days=6)), "p": None,
+                          "barns": 0, "head": 0, "states": 0, "avg_wt": None, "top": [], "final": True,
+                          "why": ["not held"], "both": 0, "chg": None, "chg_why": "this week withheld"})
+        m += datetime.timedelta(days=7)
+    ok = [w["start"] for w in weeks if w["p"] is not None]
+    return {
+        "name": IDX_NAME, "label": IDX_LABEL,
+        "what": "Feeder steers 700 to 899 lb, Medium and Large 1 and 1-2, $/cwt, weighted by pounds sold",
+        "gates": {"barns": IDX_MIN_BARNS, "head": IDX_MIN_HEAD, "states": IDX_MIN_STATES,
+                  "max_state_pct": int(round(100 * IDX_MAX_STATE_SHARE))},
+        "draws": IDX_DRAWS, "final_days": IDX_FINAL_DAYS, "start": iso(IDX_START),
+        "latest": weeks[-1]["start"] if weeks else None,
+        "last_ok": ok[-1] if ok else None,
+        "weeks": weeks,
+    }
+
+
 # ------------------------------------------------------------------ RMA
 def steer_type_codes(meta):
     """{reinsurance year: type code} for feeder cattle steers, weight 2, factor 1.00.
@@ -317,17 +524,16 @@ def build_rma(aev, meta, settles, today):
     return o
 
 
-def build_check(table, rma, monday):
-    """AGSIST's national 700-899 lb steer price for the week against the mean
-    of RMA's values for that week's days. Withheld under 3 RMA days."""
-    cell = table["steers"]["us"]["700-899"]
+def build_check(cell, rma, monday):
+    """The index for the week (cell: p, head, barns) against the mean of RMA's
+    values for that week's days. Withheld under 3 RMA days."""
     sunday = monday + datetime.timedelta(days=6)
     days = [v for d, v in (rma.get("hist") or []) if iso(monday) <= d <= iso(sunday)]
     o = {"week": iso(monday), "agsist": cell["p"], "head": cell["head"], "barns": cell["barns"],
          "rma_days": len(days), "rma": round(sum(days) / len(days), 2) if days else None}
     if cell["p"] is None or len(days) < 3:
         o["gap"] = None
-        o["why"] = "too few sales" if cell["p"] is None else "RMA has posted %d day%s for that week" % (len(days), "" if len(days) == 1 else "s")
+        o["why"] = "index withheld" if cell["p"] is None else "RMA has posted %d day%s for that week" % (len(days), "" if len(days) == 1 else "s")
     else:
         o["gap"] = round(cell["p"] - o["rma"], 2)
     return o
@@ -360,6 +566,10 @@ def build(auction, aev, meta, prices, prev, now_utc):
         else:
             weeks.pop(iso(m), None)
     weeks = [weeks[k] for k in sorted(weeks)][-WEEKS_KEPT:]
+    prev_idx = {w["start"]: w for w in ((prev.get("index") or {}).get("weeks") or [])}
+    index = build_index(store, prev_idx, monday, today)
+    cur = index["weeks"][-1] if index["weeks"] and index["weeks"][-1]["start"] == iso(monday) else \
+        {"p": None, "head": 0, "barns": 0}
     auction_ok = bool((auction or {}).get("barns"))
     return {
         "v": 1,
@@ -379,8 +589,9 @@ def build(auction, aev, meta, prices, prev, now_utc):
             "ok": auction_ok,
             "barns_held": len(store),
         },
+        "index": index,
         "rma": rma,
-        "check": build_check(table, rma, monday) if rma.get("ok") else None,
+        "check": build_check(cur, rma, monday) if rma.get("ok") else None,
         "weeks": weeks,
         "settles": settles,
         "barn_sales": {k: store[k] for k in sorted(store)},
@@ -552,10 +763,99 @@ def selftest():
     # the sanity check against RMA
     tb = build(auc, None, None, None, None, now)["auction"]["table"]
     hist = {"hist": [["2026-10-12", 340.0], ["2026-10-13", 341.0], ["2026-10-14", 342.0]]}
-    chk = build_check(tb, hist, D(2026, 10, 12))
+    chk = build_check(tb["steers"]["us"]["700-899"], hist, D(2026, 10, 12))
     ck("check: national 700-899 vs mean RMA for the week", chk["rma"] == 341.0 and chk["rma_days"] == 3 and chk["gap"] == round(tb["steers"]["us"]["700-899"]["p"] - 341.0, 2))
-    chk2 = build_check(tb, {"hist": [["2026-10-12", 340.0]]}, D(2026, 10, 12))
+    chk2 = build_check(tb["steers"]["us"]["700-899"], {"hist": [["2026-10-12", 340.0]]}, D(2026, 10, 12))
     ck("check withheld under 3 RMA days", chk2["gap"] is None and "1 day" in chk2["why"])
+
+    # ---- the AGSIST USDA feeder steer index
+    STATES = ["IA", "IL", "MO", "NE", "SD", "KS", "OK", "TX", "TN", "KY"]
+
+    def wk_barns(n, start, price, head=150, wt=800, cls="800", states=STATES, first=1, day=1):
+        return [barn(first + i, states[i % len(states)], iso(start + datetime.timedelta(days=day)), head, price, wt=wt, cls=cls)
+                for i in range(n)]
+
+    def store_of(barns_):
+        st = {}
+        for b in barns_:
+            for s_ in b["sales"]:
+                e = st.setdefault(b["id"], {"state": b["state"], "sales": {}})
+                e["sales"].setdefault(s_["date"], {})
+                for k, v in sale_cells(s_).items():
+                    e["sales"][s_["date"]][k] = v
+        return st
+
+    M = D(2026, 10, 19)
+    TODAY = D(2026, 10, 27)
+    st30 = store_of(wk_barns(30, M, 350.0))
+    o, b = index_week(st30, M, TODAY)
+    # 30 barns x 150 head = 4,500 head in 10 states, 10% each: every gate passes
+    ck("index: 30 barns, 4,500 head, 10 states is published", o["p"] == 350.0 and o["barns"] == 30 and o["head"] == 4500 and o["states"] == 10)
+    ck("index: one price everywhere redraws to itself", o["lo"] == 350.0 and o["hi"] == 350.0)
+    ck("index: average weight and the largest states", o["avg_wt"] == 800 and o["top"][0] == ["IA", 10])
+    ck("index: a week that ended 2 days before the run is not final", o["final"] is False)
+    o29, _ = index_week(store_of(wk_barns(29, M, 350.0, head=200)), M, TODAY)
+    ck("index: 29 barns is withheld, with its counts", o29["p"] is None and o29["why"] == ["29 barns, 30 needed"] and o29["head"] == 5800)
+    oh, _ = index_week(store_of(wk_barns(30, M, 350.0, head=100)), M, TODAY)
+    ck("index: 3,000 head is withheld", oh["p"] is None and oh["why"] == ["3,000 head, 4,000 needed"])
+    os_, _ = index_week(store_of(wk_barns(30, M, 350.0, states=STATES[:7])), M, TODAY)
+    ck("index: 7 states is withheld", os_["p"] is None and os_["why"] == ["7 states, 8 needed"])
+    heavy = wk_barns(29, M, 350.0, head=100) + wk_barns(1, M, 350.0, head=3000, states=["OK"], first=40)
+    ok_, _ = index_week(store_of(heavy), M, TODAY)
+    # OK: 3 of the 29 (indexes 6, 16, 26) at 100 head + one barn at 3,000 = 3,300 of 5,900 head = 56%
+    ck("index: one state over half the head is withheld", ok_["p"] is None and ok_["why"] == ["OK sold 56% of the head, 50% at most"])
+    # pounds weighting across the band: 15 barns of 700s at $360 (150 x 7.5 cwt), 15 of 800s at $340 (150 x 8.5 cwt)
+    mix = store_of(wk_barns(15, M, 360.0, wt=750, cls="700") + wk_barns(15, M, 340.0, wt=850, cls="800", first=16))
+    om, _ = index_week(mix, M, TODAY)
+    # dollars 15x150x7.5x360 + 15x150x8.5x340 = 6,075,000 + 6,502,500 = 12,577,500 over 36,000 cwt = 349.375
+    ck("index: 700s and 800s pooled by pounds", om["p"] == 349.38 and om["avg_wt"] == 800)
+    ck("index: redrawn range brackets the price", om["lo"] <= om["p"] <= om["hi"] and om["lo"] < om["hi"])
+    ck("index: the redraw is the same on every run", index_week(mix, M, TODAY)[0]["lo"] == om["lo"])
+    ck("index: heifers and lighter steers stay out",
+       index_barns(store_of(wk_barns(3, M, 300.0, cls="600") + [barn(9, "IA", "2026-10-20", 100, 300.0, sex="heifers")]), M) == {})
+
+    # change: same 30 barns both weeks, $10 higher
+    two = store_of(wk_barns(30, M - datetime.timedelta(days=7), 340.0) + wk_barns(30, M, 350.0))
+    idx = build_index(two, {}, M, TODAY)
+    w = idx["weeks"][-1]
+    ck("index: change when both weeks pass and 30 barns sold both", w["chg"] == 10.0 and w["both"] == 30)
+    ck("index: a $10 rise at every barn is a clear rise", w["chg_lo"] == 10.0 and w["chg_hi"] == 10.0 and w["move"] == "up")
+    ck("index: the record starts the week of Oct 12, 2026", idx["weeks"][0]["start"] == "2026-10-12" and idx["start"] == "2026-10-12")
+    ck("index: the first week has no change to show", idx["weeks"][0]["p"] == 340.0 and idx["weeks"][0]["chg_why"] == "first week of the record")
+    ck("index: latest and last published week", idx["latest"] == "2026-10-19" and idx["last_ok"] == "2026-10-19")
+    gap = build_index(store_of(wk_barns(10, M - datetime.timedelta(days=7), 340.0) + wk_barns(30, M, 350.0)), {}, M, TODAY)
+    ck("index: no change after a withheld week", gap["weeks"][1]["p"] == 350.0 and gap["weeks"][1]["chg"] is None and gap["weeks"][1]["chg_why"] == "prior week withheld")
+    nos = build_index(store_of(wk_barns(30, M, 350.0)), {}, M, TODAY)
+    ck("index: a week with no sales is in the record, withheld", nos["weeks"][0]["p"] is None and nos["weeks"][0]["barns"] == 0 and nos["weeks"][0]["why"])
+    # mixed moves: half the barns up $10, half down $10 -> a range that takes in zero
+    mixed = store_of(wk_barns(30, M - datetime.timedelta(days=7), 340.0) +
+                     wk_barns(15, M, 350.0) + wk_barns(15, M, 330.0, first=16))
+    wm = build_index(mixed, {}, M, TODAY)["weeks"][-1]
+    ck("index: up at some barns, down at others is no clear change", wm["chg"] == 0.0 and wm["chg_lo"] < 0 < wm["chg_hi"] and wm["move"] == "flat")
+    only20 = store_of(wk_barns(30, M - datetime.timedelta(days=7), 340.0) + wk_barns(20, M, 350.0) +
+                      wk_barns(10, M, 350.0, first=60))
+    w20 = build_index(only20, {}, M, TODAY)["weeks"][-1]
+    ck("index: no change when only 20 barns sold both weeks", w20["p"] == 350.0 and w20["chg"] is None and w20["chg_why"] == "20 barns sold both weeks, 30 needed")
+    # weeks older than the barn store keep what was published
+    later = D(2026, 12, 9)
+    frozen = {"2026-10-12": {"start": "2026-10-12", "end": "2026-10-18", "p": 347.85, "barns": 55, "head": 9595, "final": False}}
+    fi = build_index({}, frozen, last_full_week(later), later)
+    ck("index: a week past the store keeps its published price and turns final",
+       fi["weeks"][0]["p"] == 347.85 and fi["weeks"][0]["final"] is True and fi["weeks"][1]["why"] == ["not held"])
+    ck("index: a week ended 11 days before is final", index_week(st30, M, D(2026, 11, 6))[0]["final"] is True)
+    # through build(): the index sits beside RMA, and the RMA check reads the index week
+    full = {"barns": wk_barns(30, D(2026, 10, 12), 345.0) + wk_barns(30, D(2026, 10, 12), 350.0, first=1, day=8)}
+    # barns 1-30 sold Oct 13 and Oct 20: both weeks in the store
+    bd = build(full, aev, meta, prices, None, datetime.datetime(2026, 10, 28, 15, 0))
+    ck("build: index weeks Oct 12 and Oct 19", [x["start"] for x in bd["index"]["weeks"]] == ["2026-10-12", "2026-10-19"])
+    ck("build: index matches the table's national 700-899 steer line",
+       bd["index"]["weeks"][-1]["p"] == bd["auction"]["table"]["steers"]["us"]["700-899"]["p"] == 350.0)
+    ck("build: the RMA check reads the index week", bd["check"]["agsist"] == 350.0 and bd["check"]["barns"] == 30)
+    ck("build: the label says not the CME index", bd["index"]["label"] == "AGSIST USDA feeder steer index, not the CME index")
+    thin = build({"barns": wk_barns(10, D(2026, 10, 19), 350.0)}, aev, meta, prices, None, datetime.datetime(2026, 10, 28, 15, 0))
+    ck("build: a withheld index week withholds the RMA check", thin["check"]["gap"] is None and thin["check"]["why"] == "index withheld")
+    again2 = build(full, aev, meta, prices, bd, datetime.datetime(2026, 10, 28, 15, 0))
+    ck("build: a rerun gives the same index", again2["index"] == bd["index"])
 
     print("FAILS=%d" % len(fails))
     return 1 if fails else 0
