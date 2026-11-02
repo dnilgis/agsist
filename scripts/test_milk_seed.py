@@ -227,6 +227,8 @@ def main():
        '<tr><th scope="row">$9.50<span class="dp-dmc-prem">premium $0.150 / n/a</span></th>'
        '<td class="num">$0.16</td><td class="num">$0.50</td><td class="num">$1.79</td></tr>' in tb, tb)
     ck("...newest year first", tb.index(">2026*<") < tb.index(">2025*<") < tb.index(">2019*<"))
+    # Nov 2, 2026 (audit item 13): DMC pays on each month's margin; two-month averaging was MPP-Dairy
+    ck("...no two-month averaging claim for DMC", "consecutive" not in tb and "two months" not in tb.lower())
     ck("...$4.00: no premium, in FSA's word", '<th scope="row">$4.00<span class="dp-dmc-prem">premium none / none</span>' in tb)
     ck("...$8.00: Tier 2 rate printed as FSA prints it", '<th scope="row">$8.00<span class="dp-dmc-prem">premium $0.100 / $1.813</span>' in tb)
     ck("...a level with no premium read is a dash, said so", '<th scope="row">$6.00<span class="dp-dmc-prem">premium - / -</span>' in tb
