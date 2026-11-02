@@ -43,8 +43,9 @@ test("the gate in the workflow: the list only with RAIN_MONTHLY_LIVE=1, schedule
   const crons = [...WF.matchAll(/- cron: "([^"]+)"/g)].map((m) => m[1]);
   assert.deepEqual(crons, ["41 14 2 * *"], "the 2nd of each month, the schedule Sig approved (Oct 23)");
   assert.match(WF, /options: \[dry, preview, send\]\n\s+default: dry/);
-  assert.ok(WF.includes("SEND: ${{ ((github.event_name == 'schedule' && vars.RAIN_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.RAIN_MONTHLY_LIVE == '1')) && '1' || '' }}"),
-    "SEND=1 only with the variable, on both triggers");
+  // Nov 2, 2026: a chained run (workflow_run, gated to the cron) takes the scheduled path
+  assert.ok(WF.includes("SEND: ${{ (((github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.RAIN_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.RAIN_MONTHLY_LIVE == '1')) && '1' || '' }}"),
+    "SEND=1 only with the variable, on every trigger");
   assert.ok(WF.includes("RAIN_MONTHLY_LIVE: ${{ vars.RAIN_MONTHLY_LIVE }}"), "the script sees the variable too and refuses without it");
   assert.ok(WF.includes("PREVIEW: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'preview' && '1' || '' }}"), "preview by hand only");
   assert.match(WF, /if \[ "\$ASKED_SEND" = 1 \] && \[ "\$SEND" != 1 \]; then\n\s+echo "::error::[^"]*RAIN_MONTHLY_LIVE[^"]*"\n\s+exit 1/, "a send asked for without the variable fails loudly");
@@ -54,8 +55,9 @@ test("the gate in the workflow: the list only with RAIN_MONTHLY_LIVE=1, schedule
   assert.ok(WF.includes("SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}") && WF.includes("SIG_TO: ${{ secrets.SIG_TO }}"), "preview addresses from secrets");
   // the email job reads the data the fresh job just pushed, and sends nothing after a failed fetch
   const email = WF.slice(WF.indexOf("\n  email:\n"));
-  assert.match(email, /needs: fresh\n/);
-  assert.ok(email.includes("if: always() && (needs.fresh.result == 'success' || needs.fresh.result == 'skipped')"));
+  assert.match(email, /needs: \[gate, fresh\]\n/);
+  assert.ok(email.includes("if: always() && needs.gate.outputs.go == '1' && (needs.fresh.result == 'success' || needs.fresh.result == 'skipped')"),
+    "sends only on a run the gate let through, and never after a failed fetch");
   assert.match(email, /uses: actions\/checkout@v4\n\s+with:\n\s+ref: main/);
 });
 
@@ -83,7 +85,7 @@ test("the fresh job is county-rain.yml's own fetch, build and commit, in its que
   }
   const fresh = WF.slice(WF.indexOf("\n  fresh:\n"), WF.indexOf("\n  email:\n"));
   assert.match(fresh, /concurrency:\n\s+group: county-rain\n\s+cancel-in-progress: false/, "one queue with county-rain.yml");
-  assert.ok(fresh.includes("if: github.event_name == 'schedule' || inputs.fetch == true"));
+  assert.ok(fresh.includes("if: needs.gate.outputs.go == '1' && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.fetch == true)"));
   assert.ok(!fresh.includes("send_rain"), "no mail from the fetch job");
 });
 
