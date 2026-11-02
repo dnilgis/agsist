@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-02-feederindex",
+   "date": "2026-11-02",
+   "title": "Our own feeder steer index",
+   "line": "The cattle pages now show the AGSIST USDA feeder steer index: one weekly price for 700 to 899 lb steers from USDA sale barn reports, beside RMA's value.",
+   "link": "/cattle-auction-prices#feeder-index"
+  },
+  {
    "id": "2026-11-01-dailyfacts",
    "date": "2026-11-01",
    "title": "A new fact in the Daily every morning",

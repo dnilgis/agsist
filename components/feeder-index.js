@@ -1,6 +1,8 @@
 /* AGSIST feeder cattle boxes, drawn from /data/feeder-index.json
    (scripts/build_feeder_index.py computes every number; this file only draws).
    Mount points:
+     <section data-feeder="index" hidden>  the AGSIST USDA feeder steer index (weekly, national,
+                                           700-899 lb steers), its record and its method
      <section data-feeder="rma" hidden>    RMA's daily feeder steer value, the nearby
                                            futures beside it, the difference, a chart
      <section data-feeder="table" hidden>  AGSIST feeder cattle prices, by region and weight
@@ -96,19 +98,59 @@
     };
   }
 
-  // The 700-899 lb national steer line and its RMA comparison.
-  function sliceView(d) {
-    if (!d || !d.auction || !d.auction.table) return null;
-    var o = ((d.auction.table.steers || {}).us || {})['700-899'];
-    if (!o || !fxNum(o.p)) return null;
-    var s = { p: fxMoney(o.p), n: fxInt(o.barns) + ' barns, ' + fxInt(o.head) + ' head', week: fxWeek(d.auction.week) };
-    var c = d.check;
-    if (c && fxNum(c.gap) && fxNum(c.rma)) {
-      s.check = 'RMA&rsquo;s steer value averaged ' + fxMoney(c.rma) + ' over the ' + c.rma_days + ' days it posted that week, so these barns ran ' + fxSigned(c.gap) + ' against it.';
-    } else if (c && fxNum(c.rma)) {
-      s.check = 'Compared with RMA&rsquo;s steer value once RMA has posted 3 days of that week (it has posted ' + c.rma_days + ').';
+  // The AGSIST USDA feeder steer index box: the latest finished week, its sample,
+  // how far a redraw of its barns moves it, the change when earned, RMA beside it.
+  function indexView(d, nowMs) {
+    if (!d || typeof d !== 'object') return { down: true, msg: 'The index did not load.' };
+    var ix = d.index;
+    var ws = ix && ix.weeks;
+    if (!ws || !ws.length) return { down: true, msg: 'The index could not be built on the last run.' };
+    var w = ws[ws.length - 1];
+    var age = (nowMs - fxDay(w.end)) / 864e5;
+    if (!(age <= AUCTION_OLD_DAYS)) return { down: true, msg: 'No new USDA barn reports have been read since the week of ' + fxWeek(w) + ', so the index is held back.' };
+    var g = ix.gates || {};
+    var top = (w.top || []).map(function (t) { return t[0] + ' ' + t[1] + '%'; }).join(', ');
+    var out = {
+      down: false,
+      label: ix.label || 'AGSIST USDA feeder steer index, not the CME index',
+      week: fxWeek(w),
+      withheld: !fxNum(w.p),
+      val: fxNum(w.p) ? fxMoney(w.p) : '-',
+      n: fxInt(w.barns) + (w.barns === 1 ? ' barn' : ' barns') + ' in ' + fxInt(w.states) + (w.states === 1 ? ' state' : ' states') + ', ' + fxInt(w.head) + ' head' + (fxNum(w.avg_wt) ? ', average ' + fxInt(w.avg_wt) + ' lb' : ''),
+      top: top ? 'Largest shares of the head: ' + top + '.' : '',
+      why: (w.why || []).join('; '),
+      range: '', chgHead: '', chgLine: '', chgRange: '', last: '', check: '',
+      first: w.final ? '' : 'First count. USDA reports filed late can still add sales to this week for ' + (ix.final_days || 10) + ' days after it ends.',
+      gates: 'A week shows when ' + g.barns + ' or more barns in ' + g.states + ' or more states sold ' + fxInt(g.head) + ' or more head, and no one state sold more than ' + g.max_state_pct + '% of them. Otherwise it is withheld, with its counts.'
+    };
+    if (!out.withheld && fxNum(w.lo) && fxNum(w.hi)) out.range = 'Redraw this week&rsquo;s barns at random and it lands from ' + fxMoney(w.lo) + ' to ' + fxMoney(w.hi) + ' nine times in ten.';
+    if (out.withheld) {
+      out.why = 'Withheld: ' + (out.why || 'too few sales') + '.';
+      if (ix.last_ok) ws.forEach(function (x) { if (x.start === ix.last_ok && fxNum(x.p)) out.last = 'Last week with a figure: ' + fxWeek(x) + ', ' + fxMoney(x.p) + '.'; });
+    } else if (fxNum(w.chg) && fxNum(w.chg_lo) && fxNum(w.chg_hi)) {
+      out.chgHead = w.move === 'up' ? 'Higher than the week before' : w.move === 'down' ? 'Lower than the week before' : 'No clear change from the week before';
+      out.chgLine = fxSigned(w.chg) + '.';
+      out.chgRange = 'Redrawing the barns of both weeks puts the change at ' + fxSigned(w.chg_lo) + ' to ' + fxSigned(w.chg_hi) + ' (' + fxInt(w.both) + ' barns sold both weeks).';
+      out.chgNum = w.chg; out.move = w.move;
+    } else {
+      out.chgLine = 'No change shown: ' + (w.chg_why || 'not enough of the same barns both weeks') + '.';
     }
-    return s;
+    var c = d.check;
+    if (!out.withheld && c && c.week === w.start && fxNum(c.rma)) {
+      out.check = fxNum(c.gap)
+        ? 'RMA&rsquo;s steer value beside it averaged ' + fxMoney(c.rma) + ' over the ' + c.rma_days + ' days RMA posted that week; the index ran ' + fxSigned(c.gap) + ' against it.'
+        : 'Set beside RMA&rsquo;s steer value once RMA has posted 3 days of that week (it has posted ' + c.rma_days + ').';
+    }
+    // the record, oldest first; withheld weeks stay in as gaps
+    out.series = ws.map(function (x) { return { start: x.start, p: fxNum(x.p) ? x.p : null, lo: fxNum(x.lo) ? x.lo : null, hi: fxNum(x.hi) ? x.hi : null }; });
+    out.shownWeeks = out.series.filter(function (x) { return x.p != null; }).length;
+    out.rows = ws.slice(-12).reverse().map(function (x) {
+      return { week: fxWeek(x), p: fxNum(x.p) ? fxMoney(x.p) : '-', chg: fxNum(x.chg) ? fxSigned(x.chg) : '',
+        n: fxInt(x.barns) + ' barns, ' + fxInt(x.states) + ' states, ' + fxInt(x.head) + ' head', why: fxNum(x.p) ? '' : (x.why || []).join('; ') };
+    });
+    out.since = ix.start ? fxLab(ix.start) : '';
+    out.minBarns = g.barns; out.draws = fxInt(ix.draws || 1000);
+    return out;
   }
   /*feeder:end*/
 
@@ -194,7 +236,10 @@
     '.fx .fx-t td.p{font-family:"JetBrains Mono",monospace;font-weight:700;color:var(--text)}' +
     '.fx .fx-t td small{display:block;font-size:.74rem;color:var(--text-muted,var(--text-dim));font-weight:400;font-family:var(--font-body,Inter,system-ui,sans-serif)}' +
     '.fx .fx-t td.c{font-family:"JetBrains Mono",monospace}.fx .fx-t td.c.up{color:var(--green)}.fx .fx-t td.c.dn{color:var(--red)}' +
-    '' +
+    '.fx .fx-bar{stroke:var(--gold,#d4a23f);stroke-width:5;stroke-linecap:round;opacity:.3}' +
+    '.fx .fx-pt{fill:var(--gold,#d4a23f);stroke:var(--surface);stroke-width:1.5}' +
+    '.fx .fx-mv.up{color:var(--green)}.fx .fx-mv.dn{color:var(--red)}' +
+    '.fx-pair{display:grid;gap:.6rem;margin:0 0 .6rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));align-items:start}.fx-pair>.fx{margin:0}' +
     '@media(max-width:480px){.fx{padding:.7rem .7rem}.fx .fx-t{font-size:.82rem}.fx .fx-t th,.fx .fx-t td{padding:.35rem .25rem}.fx .fx-val{font-size:1.7rem}}';
 
   function injectCss() {
@@ -236,6 +281,87 @@
     if (!compact && !v.old) wireChart(box, v.hist, cw);
   }
 
+  // The index record: one dot per published week with its redrawn range as a bar,
+  // a line only between weeks next to each other, withheld weeks left as gaps.
+  function indexChartSvg(series, w) {
+    var pts = []; series.forEach(function (x, i) { if (x.p != null) pts.push(i); });
+    if (pts.length < 2) return '';
+    var g = geo(w), W = g.W, H = g.H, L = g.L, R = g.R + 8, T = g.T, B = g.B;
+    var lo = Infinity, hi = -Infinity;
+    series.forEach(function (x) { if (x.p == null) return; lo = Math.min(lo, x.lo != null ? x.lo : x.p); hi = Math.max(hi, x.hi != null ? x.hi : x.p); });
+    var pad = (hi - lo) * 0.1 || 5; lo -= pad; hi += pad;
+    var n = series.length;
+    var x = function (i) { return n === 1 ? (L + W - R) / 2 : L + 8 + (W - L - R - 16) * i / (n - 1); };
+    var y = function (v) { return T + (H - T - B) * (1 - (v - lo) / (hi - lo)); };
+    var ticks = [lo + pad, (lo + hi) / 2, hi - pad];
+    var out = ticks.map(function (v) {
+      return '<line x1="' + L + '" x2="' + (W - g.R) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '" class="fx-grid"/>' +
+        '<text x="' + (L - 6) + '" y="' + (y(v) + 4).toFixed(1) + '" text-anchor="end" class="fx-ax">$' + Math.round(v) + '</text>';
+    }).join('');
+    var path = '';
+    series.forEach(function (s, i) {
+      if (s.p == null) return;
+      path += (i > 0 && series[i - 1].p != null ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(s.p).toFixed(1);
+    });
+    out += '<path d="' + path + '" class="fx-line"/>';
+    series.forEach(function (s, i) {
+      if (s.p == null) return;
+      if (s.lo != null && s.hi != null) out += '<line class="fx-bar" x1="' + x(i).toFixed(1) + '" x2="' + x(i).toFixed(1) + '" y1="' + y(s.lo).toFixed(1) + '" y2="' + y(s.hi).toFixed(1) + '"/>';
+      out += '<circle class="fx-pt" r="3.5" cx="' + x(i).toFixed(1) + '" cy="' + y(s.p).toFixed(1) + '"><title>' + esc(fxLab(s.start)) + ': ' + fxMoney(s.p) + '</title></circle>';
+    });
+    var a = series[0].start, b = series[n - 1].start;
+    out += '<text x="' + x(0).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="start" class="fx-ax">Week of ' + esc(fxLab(a, true)) + '</text>' +
+      '<text x="' + (W - g.R) + '" y="' + (H - 6) + '" text-anchor="end" class="fx-ax">' + esc(fxLab(b)) + '</text>';
+    return '<svg class="fx-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="AGSIST USDA feeder steer index by week, ' + esc(fxLab(a)) + ' to ' + esc(fxLab(b)) + ', with the range from redrawing each week&rsquo;s barns">' + out + '</svg>';
+  }
+
+  function drawIndex(box, d) {
+    var v = indexView(d, Date.now());
+    var compact = box.getAttribute('data-compact') === '1';
+    var h = '<h2 class="fx-lbl">' + esc(v && v.label ? v.label : 'AGSIST USDA feeder steer index, not the CME index') + '</h2>';
+    if (!v || v.down) {
+      box.innerHTML = h + '<p class="fx-down">' + (v ? v.msg : '') + '</p><p class="fx-src">' + AMS_CREDIT + '</p>';
+      box.hidden = false; return;
+    }
+    h += '<div class="fx-val">' + v.val + ' <small>$/cwt</small></div>' +
+      '<p class="fx-note">' + esc(v.week) + '. Steers 700 to 899 lb, Medium and Large 1 and 1-2, USDA-reported barns: ' + esc(v.n) + '.</p>';
+    if (v.withheld) {
+      h += '<p class="fx-note"><b>' + esc(v.why) + '</b>' + (v.last ? ' ' + esc(v.last) : '') + '</p>';
+    } else {
+      if (v.chgHead) h += '<p class="fx-note"><b class="fx-mv' + (v.move === 'up' ? ' up' : v.move === 'down' ? ' dn' : '') + '">' + esc(v.chgHead) + ':</b> ' + esc(v.chgLine) + '</p>';
+      else h += '<p class="fx-note">' + esc(v.chgLine) + '</p>';
+    }
+    box.hidden = false;
+    var cs = window.getComputedStyle ? getComputedStyle(box) : null;
+    var cw = box.clientWidth ? box.clientWidth - (cs ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 36) : 640;
+    var chart = !compact && v.shownWeeks >= 2;
+    h += '<details><summary>' + (chart ? 'Every week since ' + esc(v.since) + ', and how it is figured' : 'How it is figured, and every week') + '</summary>';
+    if (chart) h += indexChartSvg(v.series, cw) + '<p class="fx-note">Dots are the index; the bar through each is the range from redrawing that week&rsquo;s barns. Gaps are withheld weeks.</p>';
+    else if (!compact) h += '<p class="fx-note">The chart starts once two weeks have a figure.</p>';
+    if (v.range) h += '<p class="fx-note">' + v.range + (v.top ? ' ' + esc(v.top) : '') + '</p>';
+    if (v.chgRange) h += '<p class="fx-note">' + esc(v.chgRange) + '</p>';
+    if (v.check && !v.withheld) h += '<p class="fx-note">' + v.check + '</p>';
+    /* the change's range, the RMA comparison (RMA's own box sits beside this one) and the "first count" note sit in the fold (Nov 2): on a phone the open box pushed
+       /cattle-futures-prices past its 8,000 px limit (test/price-local) */
+    if (v.first) h += '<p class="fx-note">' + esc(v.first) + '</p>';
+    h += '<table class="fx-t"><thead><tr><th scope="col">Week</th><th scope="col">Index</th><th scope="col">Change</th></tr></thead><tbody>';
+    v.rows.forEach(function (r) {
+      h += '<tr><td>' + esc(r.week) + '</td><td class="p">' + esc(r.p) + '<small>' + esc(r.n) + '</small>' + (r.why ? '<small>Withheld: ' + esc(r.why) + '</small>' : '') + '</td><td class="c">' + esc(r.chg) + '</td></tr>';
+    });
+    h += '</tbody></table><ul>' +
+      '<li>What: one national weekly price for feeder steers 700 to 899 lb, graded Medium and Large 1 and 1-2, in dollars per hundredweight. That is the yearling that goes on feed, and the weight RMA&rsquo;s steer value covers.</li>' +
+      '<li>From: every USDA AMS report for a single sale barn that we read. USDA&rsquo;s state summaries are left out so no sale counts twice. Rows USDA marks with a note (fleshy, thin, unweaned and the like) are left out.</li>' +
+      '<li>How: the dollars paid divided by the hundredweights sold, for every such steer that week, Monday to Sunday by sale date. Heavier lots weigh more.</li>' +
+      '<li>' + esc(v.gates) + '</li>' +
+      '<li>The range: we redraw the week&rsquo;s barns at random, with repeats, ' + v.draws + ' times and give the middle nine of ten results. A change from the week before shows only when both weeks pass and ' + v.minBarns + ' or more of the same barns sold both weeks; if its range takes in zero, it is called no clear change.</li>' +
+      '<li>Weekly, not daily: each barn sells on its own day, so a daily figure would be a different set of barns each day, and some USDA reports come in days late.</li>' +
+      '<li>The barns are the ones USDA reports on and we read, so states with more of them count for more. It is not every sale in the country.</li>' +
+      '<li>Our record starts the week of ' + esc(v.since) + ', when we began reading these reports. Every finished week is kept.</li>' +
+      '<li>This is AGSIST&rsquo;s own figure. It is not the CME Feeder Cattle Index, and no CME data goes into it.</li>' +
+      '</ul><p class="fx-src">' + AMS_CREDIT + '</p></details><p class="fx-src">Source: USDA AMS sale barn reports.</p>';
+    box.innerHTML = h; box.hidden = false;
+  }
+
   function drawTable(box, d) {
     var state = { sex: 'steers', region: 'us' };
     function render() {
@@ -259,8 +385,7 @@
           '<td class="c' + cc + '">' + (r.chgNum == null ? '<small>' + esc(r.withheld ? '' : r.chg) + '</small>' : esc(r.chg)) + '</td></tr>';
       });
       h += '</tbody></table>';
-      var s = sliceView(d);
-      if (s) h += '<p class="fx-note"><b>700 to 899 lb steers, all barns:</b> ' + s.p + ' (' + esc(s.n) + ').' + (s.check ? ' ' + s.check : '') + '</p>';
+      h += '<p class="fx-note">700 to 899 lb steers, all barns, is the AGSIST USDA feeder steer index, with its own rule for when a week shows.</p>';
       h += '<details><summary>How this is figured</summary><ul>' +
         '<li>Every feeder steer and heifer row USDA reported at a single barn that week, Medium and Large 1 and 1-2 together, priced per cwt on actual weight. Rows USDA marks with a note (value added, fleshy, thin, unweaned and the like) are left out.</li>' +
         '<li>Weighted by pounds sold (head times weight), so the price is dollars over hundredweight sold, the same way the barn tables below add rows.</li>' +
@@ -289,7 +414,7 @@
     fetch('/data/feeder-index.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (d) {
       Array.prototype.forEach.call(boxes, function (box) {
         var k = box.getAttribute('data-feeder');
-        try { if (k === "rma") drawRma(box, d); else if (k === "table") drawTable(box, d); } catch (e) { if (window.console) console.warn("feeder box", e); }
+        try { if (k === "index") drawIndex(box, d); else if (k === "rma") drawRma(box, d); else if (k === "table") drawTable(box, d); } catch (e) { if (window.console) console.warn("feeder box", e); }
       });
     });
   }
