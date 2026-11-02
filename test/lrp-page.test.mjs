@@ -362,6 +362,7 @@ test("the caption, the posted line, the buy-by line and the closed banner all na
     { sales_day: "2026-10-14", posted_utc: "2026-10-15T02:10:00Z" },                     // RMA late, posted the next calendar day
     // a file whose own close disagrees with RMA's rule: the rule wins, and it is flagged
     { sales_day: "2026-10-15", sales_close_ct: "2026-10-15T08:25", sales_close_utc: "2026-10-15T13:25:00Z" },
+    { sales_day: "2026-11-02", posted_utc: "2026-11-02T21:30:00Z" },                     // after the switch to CST: closes 14:25 UTC
   ];
   for (const T of cases) {
     const d = L.salesDay(T), day = d.day;
@@ -372,11 +373,13 @@ test("the caption, the posted line, the buy-by line and the closed banner all na
     assert.equal(L.captionText(T, true), `For sales on ${L.wdShort(day)} (closed, for reference)`);
     assert.equal(L.captionText(T, false), `For sales on ${L.wdShort(day)}`);
     if (d.postedDay && d.postedDay !== day) assert.ok(when.includes(`posted by RMA ${L.wdShort(d.postedDay)}, `), "a posting on another day names its day");
-    // closed exactly from 8:25 a.m. CT the next day (CDT in October: 13:25 UTC)
+    // closed exactly from 8:25 a.m. CT the next day (13:25 UTC under CDT, 14:25 UTC under CST from Nov 1 2026)
     const nd = L.addDays(day, 1);
     const iso = `${nd.slice(0, 4)}-${nd.slice(4, 6)}-${nd.slice(6, 8)}`;
-    assert.equal(d.closed(new Date(`${iso}T13:24:00Z`)), false, `${day} still open at 8:24`);
-    assert.equal(d.closed(new Date(`${iso}T13:25:00Z`)), true, `${day} closed at 8:25`);
+    const ctHour = +new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hourCycle: "h23" }).format(new Date(`${iso}T14:00:00Z`));
+    const utcH = String(8 + (14 - ctHour)).padStart(2, "0");
+    assert.equal(d.closed(new Date(`${iso}T${utcH}:24:00Z`)), false, `${day} still open at 8:24`);
+    assert.equal(d.closed(new Date(`${iso}T${utcH}:25:00Z`)), true, `${day} closed at 8:25`);
   }
   assert.equal(L.salesDay(cases[5]).closeAgrees, false, "the mismatched file is flagged");
   assert.equal(L.salesDay(cases[1]).closeAgrees, true);
