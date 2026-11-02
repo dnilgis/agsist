@@ -23,6 +23,13 @@
    "link": "/daily"
   },
   {
+   "id": "2026-11-02-homejobs",
+   "date": "2026-11-02",
+   "title": "The home page opens on three jobs",
+   "line": "The home page opens on Today near me, Sell grain and My field, with today's forecast for your ZIP; Rain Print, the rain gauge and new pages sit right under.",
+   "link": "/"
+  },
+  {
    "id": "2026-11-01-dailyfacts",
    "date": "2026-11-01",
    "title": "A new fact in the Daily every morning",
