@@ -315,6 +315,19 @@ def all_mail_box(c):
     return "INBOX"
 
 
+def _why(ex):
+    """The server's own words for a failed IMAP step (e.g. [AUTHENTICATIONFAILED] Invalid credentials), first
+    120 characters, any address masked: BUILD-RULES 20, read the real error before asking Sig to touch a secret."""
+    t = ex.args[0] if getattr(ex, "args", None) else str(ex)
+    t = t.decode("utf-8", "replace") if isinstance(t, bytes) else str(t)
+    try:
+        import log_safe
+        t = log_safe.mask_text(t)
+    except Exception:
+        t = re.sub(r"\S+@\S+", "<address>", t)
+    return t.replace("\n", " ")[:120]
+
+
 # counts from the last read_unsub, for one log line (no addresses, ever)
 DIAG = {}
 
@@ -709,7 +722,7 @@ def main():
         bounces = read_bounces(user, pw, LOOKBACK_DAYS)
     except Exception as ex:
         # Typo fixes still run; the bounce half needs IMAP, which Gmail can refuse.
-        print(f"::warning::could not read the sending inbox ({type(ex).__name__}); bounces skipped this run")
+        print(f"::warning::could not read the sending inbox ({type(ex).__name__}: {_why(ex)}); bounces skipped this run")
         bounces = {}
     remove = [x.strip().lower() for x in re.split(r"[,\s]+", env("REMOVE", "")) if "@" in x]
     acts = plan(daily, hail, bounces, remove=remove)
@@ -725,7 +738,7 @@ def main():
         ours = {x.lower() for x in (env("SMTP_USER"), env("FROM_ADDR"), env("REPORT_TO")) if x and "@" in x}
         reqs, skipped = read_unsub(c, days, ours)
     except Exception as ex:
-        print(f"::warning::could not read the inbox for unsubscribe requests ({type(ex).__name__}); retried next run")
+        print(f"::warning::could not read the inbox for unsubscribe requests ({type(ex).__name__}: {_why(ex)}); retried next run")
         notes.append("Could not read the inbox for unsubscribe requests this run (" + type(ex).__name__ + "); it tries again tomorrow.")
         reqs, skipped = [], 0
     notices, watches = None, {}
