@@ -57,14 +57,43 @@
     return y + '-' + (ncm < 10 ? '0' : '') + ncm;
   }
 
-  /* rows: [{start:'YYYY-MM', end:'YYYY-MM', cash:Number}] for one elevator,
-     one crop, one grade, already cleared of closed periods. The nearest start
-     is "now"; a later period starts after the nearest one ends. Two rows for
-     the same start month keep the higher cash. */
+  /* EARLIEST BID FIRST (Sig, 2026-11-02; scripts/build_cash_bid_pages.py
+     period_rank). Inside one delivery month a board can post a first-half and
+     a last-half bid ("FH Nov 2026" $4.17, "LH Nov 2026" $4.22 at Nevada, IA);
+     both file under Nov, and "now" took the higher one, so the last half
+     (later delivery) counted as today's price. Tier 0: spot or cash, the
+     first half, the whole month, or a label that does not say. Tier 1: the
+     last half, or a day range inside one month starting on the 11th or later.
+     Read from the delivery label; same patterns as the build, and the Python
+     twin scripts/storesell.py period_rank (test/storesell.test.mjs runs the
+     same cases through all three). */
+  var LAST_HALF_RE = /^\s*(?:lh|2h|last\s+half|second\s+half)\b|[-,]\s*(?:lh|last\s+half)\s*$/i;
+  var DAYS_RE = /\b(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4}) to (\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})\b/;
+  function periodRank(r){
+    if(!r || String(r.period || '') === 'spot') return 0;
+    var lab = String(r.label || '').replace(/\s*\(\d{4}-\d{2}\)\s*$/, '').replace(/\s+/g, ' ').trim();
+    if(LAST_HALF_RE.test(lab)) return 1;
+    var m = DAYS_RE.exec(lab);
+    if(m && m[2].toLowerCase() === m[5].toLowerCase() && m[3] === m[6] && +m[1] >= 11) return 1;
+    return 0;
+  }
+
+  /* rows: [{start:'YYYY-MM', end:'YYYY-MM', cash:Number, label?, period?}]
+     for one elevator, one crop, one grade, already cleared of closed periods.
+     The nearest start is "now", and inside it only the earliest tier present
+     counts (periodRank: an LH row beside an FH row is neither today's price
+     nor a later month); a later period starts after the nearest one ends.
+     Two rows for the same start month keep the higher cash. */
   function buildPeriods(rows, crop){
-    var by = {};
+    var by = {}, ok = [], k0 = null, t0 = 9;
     (rows || []).forEach(function(r){
       if(!r || !ym(r.start) || typeof r.cash !== 'number' || !isFinite(r.cash) || r.cash <= 0) return;
+      ok.push(r);
+      if(k0 === null || r.start < k0){ k0 = r.start; t0 = periodRank(r); }
+      else if(r.start === k0) t0 = Math.min(t0, periodRank(r));
+    });
+    ok.forEach(function(r){
+      if(r.start === k0 && periodRank(r) !== t0) return;
       var end = ym(r.end) && r.end >= r.start ? r.end : r.start;
       var o = by[r.start];
       if(!o || r.cash > o.cash) by[r.start] = { start: r.start, end: end, cash: r.cash };
@@ -354,7 +383,7 @@
     return 'You can lock this today with a forward contract for ' + to + ' delivery at this elevator. That fixes both the futures and the basis; ask the elevator for its terms.';
   }
 
-  var core = { buildPeriods: buildPeriods, netFor: netFor, pickPeriod: pickPeriod, headline: headline,
+  var core = { buildPeriods: buildPeriods, periodRank: periodRank, netFor: netFor, pickPeriod: pickPeriod, headline: headline,
                newCropFrom: newCropFrom, monthsApart: monthsApart, carryText: carryText, netText: netText,
                shortMon: shortMon, longMon: longMon, cashQ: cashQ,
                DEFAULTS: DEFAULTS, withDefaults: withDefaults, carryNet: carryNet, holdLine: holdLine,
@@ -416,7 +445,7 @@
     var end = m ? (m[2] || m[1]) : start;
     if(end < start) end = start;
     var c = typeof b.cash === 'number' ? (b.cash > 30 ? b.cash / 100 : b.cash) : null;
-    return { start: start, end: end, cash: c };
+    return { start: start, end: end, cash: c, label: String(b.delivery || ''), period: per };
   }
   function norm(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 
