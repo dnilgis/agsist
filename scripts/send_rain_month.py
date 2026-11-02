@@ -567,7 +567,20 @@ def selftest():
     txt, htm = m.get_body(("plain",)).get_content(), m.get_body(("html",)).get_content()
     # Barron County, 55005: the page's numbers
     ck("subject: county, month, the page's total and percent", m["Subject"] == "Barron County rain, September: 3.67 in, 102% of usual", m["Subject"])
-    ck("the month against usual, the page's row", "September: 3.67 inches at the weather station in Cumberland, 0.06 inches more than usual for the month (usual 3.61, 102% of usual)." in txt, txt[:600])
+    # Nov 2, 2026 (audit item 11): Barbour County AL, October 2026, 21 of 31 days reported (real data)
+    bfx = json.load(open(os.path.join(REPO, "test", "fixtures", "rain-month", "01005-2026.json"), encoding="utf-8"))
+    bd = {k: bfx[k] for k in ("state", "year", "edate", "fetched", "normals")}
+    bparts, bwhy = compose("01005", 2026, 9, {"01005": ("al", bd, bfx["county"], bfx["daily"])}, None, Records(lambda gid: None),
+                           date(2026, 11, 2), tmp)
+    bm = render("01005", "a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, bparts, "news@agsist.com")
+    btxt = bm.get_body(("plain",)).get_content()
+    ck("Barbour Oct 2026, 21 of 31 days: no percent in the subject or the body", bwhy == "send"
+       and bm["Subject"] == "Barbour County rain, October: 12.18 in" and "530" not in btxt and "% of usual)" not in btxt.split("Year to date")[0],
+       (bm["Subject"], btxt[:700]))
+    ck("Barbour Oct 2026: usual for the days it reported, not for the month",
+       "9.88 inches more than usual for the days it reported (usual 2.30). It missed 10 days, counted as unknown, not as dry. "
+       "With that many days missing there is no percent of usual for the month." in btxt and "In the field:" not in btxt, btxt[:900])
+    ck("the month against usual, the page's row","September: 3.67 inches at the weather station in Cumberland, 0.06 inches more than usual for the month (usual 3.61, 102% of usual)." in txt, txt[:600])
     ck("the year to date, the page's rows added up", "Year to date, Jan 1 to Sep 30: 26.99 inches. That is 0.33 inches less than a usual year to date (99% of usual)." in txt)
     ck("rank against the station's own record, with its years", re.search(r"That makes it the \d+(st|nd|rd|th) (wettest|driest)( \(tied with [^)]+\))? of 77 Septembers on this station's record, 1950 to 2026, counting the years it reported every day\.", txt), txt)
     ck("drought category and the change", "Drought Monitor, map valid Oct 20, 2026: 100% of it in drought (D1 or worse), the worst part severe drought (D2). Four weeks before (Sep 22, 2026) it was the same." in txt)

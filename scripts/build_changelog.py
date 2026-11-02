@@ -97,6 +97,12 @@ def live_href(page, root=ROOT):
     stub sends readers (its canonical), so no click on this page depends on a
     stub. The stub file is the one record of where a page went."""
     path, sep, frag = page.partition("#")
+    # Nov 2, 2026 (audit item 18): "/cash-bids/" asks for a folder index that does not exist
+    # (the page is cash-bids.html, served at /cash-bids); link the page, not the folder.
+    if path.endswith("/") and path.strip("/") and not (root / path.strip("/") / "index.html").is_file() \
+            and (root / (path.strip("/") + ".html")).is_file():
+        path = path.rstrip("/")
+        page = path + sep + frag
     f = root / (path.strip("/") + ".html") if path.strip("/") else None
     if not f or not f.is_file():
         return page

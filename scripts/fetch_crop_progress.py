@@ -283,11 +283,21 @@ def clean_series(rows: list[dict]) -> dict[str, dict]:
     return out
 
 
+# Nov 2, 2026 (audit item 12): the two published weeks either side of a date
+# may be at most this many days apart for a straight line between them to
+# stand in for the week. The fall 2025 shutdown left no corn harvest week
+# between Sep 28 (18%) and Nov 16 (91%); a line across those 49 days put
+# Oct 25, 2025 at 58% and fed it into the Oct 25, 2026 5-year average (66%).
+MAX_GAP_DAYS = 21
+
+
 def value_on(series: dict, target: datetime, season_days: int = 200):
     """Value on `target` interpolated between the published weeks either side.
     Only weeks within `season_days` of target count, so a different season of
-    the same year cannot bracket it. None if not bracketed, except a finished
-    crop: last week before target already at 100 -> 100."""
+    the same year cannot bracket it. None if not bracketed, or if the weeks
+    either side are more than MAX_GAP_DAYS apart (a gap in publishing is not
+    a straight line), except a finished crop: last week before target already
+    at 100 -> 100."""
     near = sorted((d, v) for d, v in series.items() if abs((d - target).days) <= season_days)
     before = [(d, v) for d, v in near if d <= target]
     after = [(d, v) for d, v in near if d >= target]
@@ -295,6 +305,8 @@ def value_on(series: dict, target: datetime, season_days: int = 200):
         return float(before[-1][1])
     if before and after:
         (d0, v0), (d1, v1) = before[-1], after[0]
+        if (d1 - d0).days > MAX_GAP_DAYS:
+            return 100.0 if v0 >= 100 else None
         return v0 + (v1 - v0) * (target - d0).days / (d1 - d0).days
     if before and not after and before[-1][1] >= 100:
         return 100.0
@@ -621,6 +633,28 @@ def selftest():
         half[D(f"{2026-k}-10-04")] = 1
     check(five_year_avg(half, D("2026-09-27")) == 1, "0.5 rounds up to 1 (half up, not banker's)",
           five_year_avg(half, D("2026-09-27")))
+
+    print("\nA GAP IN PUBLISHING IS NOT A STRAIGHT LINE (audit Nov 2, 2026)")
+    g = {D("2025-10-01"): 20, D("2025-10-22"): 41}
+    check(value_on(g, D("2025-10-08")) == 27.0, "weeks 21 days apart: still a line", value_on(g, D("2025-10-08")))
+    g = {D("2025-10-01"): 20, D("2025-10-23"): 42}
+    check(value_on(g, D("2025-10-08")) is None, "weeks 22 days apart: None", value_on(g, D("2025-10-08")))
+    check(value_on({D("2025-10-01"): 100, D("2025-11-16"): 100}, D("2025-10-20")) == 100.0, "already 100 before the gap: 100")
+    # the real national corn harvest weeks: the fall 2025 shutdown, Sep 28 (18%) to Nov 16 (91%)
+    fx = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures",
+                                     "crop-progress-corn-harvest-us.json")))
+    corn = {D(k): v for k, v in fx["weeks"].items()}
+    check(corn[D("2025-09-28")] == 18 and corn[D("2025-11-16")] == 91
+          and not [d for d in corn if D("2025-09-28") < d < D("2025-11-16")], "fixture: no 2025 week between Sep 28 and Nov 16")
+    check(value_on(corn, D("2025-10-25")) is None, "Oct 25, 2025 falls in the shutdown gap: None, not 58",
+          value_on(corn, D("2025-10-25")))
+    others = [round(value_on(corn, D(f"{y}-10-25")), 2) for y in (2024, 2023, 2022, 2021)]
+    check(others == [76.43, 64.14, 65.29, 67.14], "the four other years still interpolate within a week", others)
+    line = 18 + (91 - 18) * 27 / 49          # what the uncapped line gave for Oct 25, 2025
+    check(int((sum(others) + line) / 5 + 0.5) == 66, "before the fix: the Oct 25, 2026 average was 66 with the line")
+    sm = summarize({d: v for d, v in corn.items() if d <= D("2026-10-25")})
+    check(sm["date"] == "2026-10-25" and sm["pct"] == 60 and sm["avg5"] is None,
+          "Oct 25, 2026 corn harvested 60%: 5-year average withheld (one of the five years has no week near it)", sm)
 
     print("\nTHE WEEK BEFORE")
     wb = summarize({D("2026-10-11"): 33, D("2026-10-04"): 23, D("2026-09-27"): 15})
