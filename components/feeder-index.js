@@ -238,8 +238,7 @@
     '.fx .fx-bar{stroke:var(--gold,#d4a23f);stroke-width:5;stroke-linecap:round;opacity:.3}' +
     '.fx .fx-pt{fill:var(--gold,#d4a23f);stroke:var(--surface);stroke-width:1.5}' +
     '.fx .fx-mv.up{color:var(--green)}.fx .fx-mv.dn{color:var(--red)}' +
-    '.fx-pair{display:grid;gap:.6rem;margin:0 0 .6rem}.fx-pair>.fx{margin:0}' +
-    '@media(min-width:860px){.fx-pair{grid-template-columns:1fr 1fr;align-items:start}}' +
+    '.fx-pair{display:grid;gap:.6rem;margin:0 0 .6rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));align-items:start}.fx-pair>.fx{margin:0}' +
     '@media(max-width:480px){.fx{padding:.7rem .7rem}.fx .fx-t{font-size:.82rem}.fx .fx-t th,.fx .fx-t td{padding:.35rem .25rem}.fx .fx-val{font-size:1.7rem}}';
 
   function injectCss() {
@@ -323,7 +322,7 @@
       box.innerHTML = h + '<p class="fx-down">' + (v ? v.msg : '') + '</p><p class="fx-src">' + AMS_CREDIT + '</p>';
       box.hidden = false; return;
     }
-    h += '<div class="fx-val">' + v.val + ' <small>$/cwt &middot; week of ' + esc(v.week) + '</small></div>' +
+    h += '<div class="fx-val">' + v.val + ' <small>$/cwt &middot; ' + esc(v.week) + '</small></div>' +
       '<p class="fx-note">Feeder steers 700 to 899 lb, Medium and Large 1 and 1-2, at USDA-reported sale barns: ' + esc(v.n) + '.</p>';
     if (v.withheld) {
       h += '<p class="fx-note"><b>' + esc(v.why) + '</b>' + (v.last ? ' ' + esc(v.last) : '') + '</p>';
@@ -349,7 +348,7 @@
       '<li>What: one national weekly price for feeder steers 700 to 899 lb, graded Medium and Large 1 and 1-2, in dollars per hundredweight. That is the yearling that goes on feed, and the weight RMA&rsquo;s steer value covers.</li>' +
       '<li>From: every USDA AMS report for a single sale barn that we read. USDA&rsquo;s state summaries are left out so no sale counts twice. Rows USDA marks with a note (fleshy, thin, unweaned and the like) are left out.</li>' +
       '<li>How: the dollars paid divided by the hundredweights sold, for every such steer that week, Monday to Sunday by sale date. Heavier lots weigh more.</li>' +
-      '<li>When a week shows: ' + esc(v.gates) + '</li>' +
+      '<li>' + esc(v.gates) + '</li>' +
       '<li>The range: we redraw the week&rsquo;s barns at random, with repeats, ' + v.draws + ' times and give the middle nine of ten results. A change from the week before shows only when both weeks pass and ' + v.minBarns + ' or more of the same barns sold both weeks; if its range takes in zero, it is called no clear change.</li>' +
       '<li>Weekly, not daily: each barn sells on its own day, so a daily figure would be a different set of barns each day, and some USDA reports come in days late.</li>' +
       '<li>The barns are the ones USDA reports on and we read, so states with more of them count for more. It is not every sale in the country.</li>' +
