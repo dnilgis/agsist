@@ -141,8 +141,8 @@ def group(towns, srcs, minimum=COMPANY_MIN):
 
 def glance(bd):
     """{crop: row}: per crop, the commodity the board posts most, its earliest
-    delivery period (CB.nearest_rows: spot or first half, then the whole month,
-    then the last half), the highest cash there (CB.board_glance's rule), odd
+    delivery period (CB.nearest_rows: spot, first half or whole month, the last
+    half only when nothing earlier), the highest cash there (CB.board_glance's rule), odd
     and restricted (contract, feed, members or overfill only) rows left out."""
     out = {}
     for c in SHOW_CROPS:
