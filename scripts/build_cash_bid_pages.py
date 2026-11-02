@@ -1313,9 +1313,12 @@ def hold_lines(bd):
         if not rs:
             continue
         com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
+        # "now" is the earliest period (nearest_rows): an LH row in the nearest
+        # month is neither today's price nor a later month to hold to
+        k0 = min(nearest_key(r) for r in rs if r["commodity"].lower() == com)
         per = []
         for r in rs:
-            if r["commodity"].lower() != com:
+            if r["commodity"].lower() != com or (r["dm"] == k0[0] and period_rank(r) != k0[1]):
                 continue
             m = re.fullmatch(r"\d{4}-\d{2}/(\d{4}-\d{2})", str(r["period"]))
             per.append({"start": r["dm"], "end": max(r["dm"], m.group(1)) if m else r["dm"], "cash": r["cash"]})
@@ -1348,7 +1351,7 @@ def board_glance(bd):
     delivery period (nearest_rows), the highest cash there."""
     out = {}
     for c in CROPS:
-        rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd")]
+        rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd") and not restricted(r)]
         if not rs:
             continue
         com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
@@ -1587,8 +1590,10 @@ def head_name(bd, with_town=True):
 # A bid not every farmer can sell into: River Country Co-op's "HAR 26- contract
 # and feed only", "New Crop 26- CONTRACT ONLY". The table prints it as posted;
 # the answer and the share card never headline it.
-RESTRICTED_RE = re.compile(r"\b(?:contracts?|feed(?:\s+usage)?|members?)(?:\s*(?:and|&|or|/|,)\s*"
-                           r"(?:contracts?|feed(?:\s+usage)?|members?))*\s+only\b", re.I)
+# "FH Nov 26 (Overfill Only)" (United Wisconsin Grain Producers, 2026-11-02):
+# bushels over a contract only; once the first half ranked ahead it would headline.
+RESTRICTED_RE = re.compile(r"\b(?:contracts?|feed(?:\s+usage)?|members?|overfill)(?:\s*(?:and|&|or|/|,)\s*"
+                           r"(?:contracts?|feed(?:\s+usage)?|members?|overfill))*\s+only\b", re.I)
 FAR_OPEN_MONTHS = 10          # the nearest open bid this much later than a restricted one is said so
 
 
@@ -4008,8 +4013,16 @@ def _selftest_answer():
     # every other copy of the pick takes the same row
     assert top_nearby(lw["rows"] + key["rows"])["corn"][0] == 4.18
     assert board_glance(dict(lw, rows=lw["rows"]))["corn"][:2] == (4.18, "2026-11")
+    # the hold box counts the carry from the same FH row, not from the LH one (+9c to Dec, not +4c)
+    assert hold_lines(lw)[0][1].startswith("Hold to Dec? +9\u00a2 posted carry"), hold_lines(lw)
     # only the LH row left in the month: it is the earliest there, so it stands
     assert answer_picks([dict(lw, rows=lw["rows"][1:])])["corn"][0]["cash"] == 4.23
+    # an overfill-only first half is not an open bid; the open LH row stands (Friesland, WI)
+    uw = {"operator": "United Wisconsin Grain Producers", "city": "Friesland", "rows": [
+        dict(row("corn", 4.05, -0.42, dec, dm="2026-11"), label="FH Nov 26 (Overfill Only)"),
+        dict(row("corn", 4.22, -0.25, dec, dm="2026-11"), label="LH Nov 26")]}
+    assert answer_picks([uw])["corn"][0]["label"] == "LH Nov 26"
+    assert board_glance(uw)["corn"][0] == 4.22, "the nearby lists skip a restricted bid as the answer does"
     # spot or the first half, then the whole month, then the last half
     for lab, per, want in (("FH Nov 2026", "2026-11", 0), ("LH Nov 2026", "2026-11", 2), ("Nov 26 - FH", "2026-11", 0),
                            ("Dec 2026", "2026-12", 1), ("Cash", "spot", 0), ("", "spot", 0), ("Spot / GO", "2026-11", 0),

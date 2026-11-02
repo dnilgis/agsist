@@ -143,10 +143,10 @@ def glance(bd):
     """{crop: row}: per crop, the commodity the board posts most, its earliest
     delivery period (CB.nearest_rows: spot or first half, then the whole month,
     then the last half), the highest cash there (CB.board_glance's rule), odd
-    rows left out."""
+    and restricted (contract, feed, members or overfill only) rows left out."""
     out = {}
     for c in SHOW_CROPS:
-        rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd")]
+        rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd") and not CB.restricted(r)]
         if not rs:
             continue
         com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
