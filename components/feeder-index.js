@@ -259,14 +259,16 @@
       box.innerHTML = h + '<p class="fx-down">' + (v ? v.msg : '') + '</p>';
       box.hidden = false; return;
     }
-    h += '<div class="fx-val">' + v.val + (v.old ? '' : ' <small>$/cwt &middot; ' + v.date + '</small>') + '</div>' +
-      '<p class="fx-note">' + v.meta + '</p>';
-    if (v.fut) h += '<p class="fx-note">' + esc(v.fut) + ': <b>' + esc(v.diff) + '</b></p>';
+    h += '<div class="fx-val">' + v.val + (v.old ? '' : ' <small>$/cwt &middot; ' + v.date + '</small>') + '</div>';
+    /* Nov 2: what the value is and its gap to the futures settle sit in the fold below, so /cattle-futures-prices
+       stays under its 8,000 px phone cap (test/price-local) with room for the state basis line and new data. */
     // no settle for this date: said in the fold below, not on the card (keeps the cattle page short on phones)
     box.hidden = false;
     var cs = window.getComputedStyle ? getComputedStyle(box) : null;
     var cw = box.clientWidth ? box.clientWidth - (cs ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 36) : 640;
     h += '<details><summary>' + (!compact && !v.old && v.hist.length >= 20 ? 'The past year, and what this number is' : 'What this number is') + '</summary>';
+    h += '<p class="fx-note">' + v.meta + '</p>';
+    if (v.fut) h += '<p class="fx-note">' + esc(v.fut) + ': <b>' + esc(v.diff) + '</b></p>';
     if (!compact && !v.old && v.hist.length >= 20) {
       h += chartSvg(v.hist, cw);
       if (v.range) h += '<p class="fx-note">' + v.range + '</p>';
@@ -324,7 +326,7 @@
       box.hidden = false; return;
     }
     h += '<div class="fx-val">' + v.val + ' <small>$/cwt</small></div>' +
-      '<p class="fx-note">' + esc(v.week) + '. Steers 700 to 899 lb, Medium and Large 1 and 1-2, USDA-reported barns: ' + esc(v.n) + '.</p>';
+      '<p class="fx-note">700 to 899 lb steers, ' + esc(v.week) + ': ' + esc(String(v.n).replace(/, average [\d,]+ lb$/, '')) + '.</p>';
     if (v.withheld) {
       h += '<p class="fx-note"><b>' + esc(v.why) + '</b>' + (v.last ? ' ' + esc(v.last) : '') + '</p>';
     } else {
@@ -339,6 +341,7 @@
     if (chart) h += indexChartSvg(v.series, cw) + '<p class="fx-note">Dots are the index; the bar through each is the range from redrawing that week&rsquo;s barns. Gaps are withheld weeks.</p>';
     else if (!compact) h += '<p class="fx-note">The chart starts once two weeks have a figure.</p>';
     if (v.range) h += '<p class="fx-note">' + v.range + (v.top ? ' ' + esc(v.top) : '') + '</p>';
+    h += '<p class="fx-note">Feeder steers 700 to 899 lb, Medium and Large 1 and 1-2, at USDA-reported sale barns: ' + esc(v.n) + '.</p>';
     if (v.chgRange) h += '<p class="fx-note">' + esc(v.chgRange) + '</p>';
     if (v.check && !v.withheld) h += '<p class="fx-note">' + v.check + '</p>';
     /* the change's range, the RMA comparison (RMA's own box sits beside this one) and the "first count" note sit in the fold (Nov 2): on a phone the open box pushed
