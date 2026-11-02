@@ -13,6 +13,8 @@ generator's real page builder applies it.
 
 No network. Under a second.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import sys
 

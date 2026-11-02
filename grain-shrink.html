@@ -27,7 +27,7 @@
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
-  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <!-- static-nav:fonts -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
@@ -107,7 +107,7 @@
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header">
-<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+<!-- static-nav:header -->
   <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
   <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
     <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
@@ -293,10 +293,10 @@ soybeans at 9%, 1,000 bu: 1,000 x 91 / 87 = 1,046 bu, 46 more</span>
         <li>Iowa State ICM: <a href="https://crops.extension.iastate.edu/cropnews/2019/09/grain-drying-considerations-fall">Grain drying considerations this fall</a> (2019). The 20.5% corn example with a drying charge and a 1.4% factor.</li>
         <li>Iowa State ICM: <a href="https://crops.extension.iastate.edu/cropnews/2022/10/options-fall-grain-drying-and-marketing">Options for fall grain drying and marketing</a> (TeBockhorst, Dougherty and Mensing, Oct 20, 2022). Sell wet against dry on the farm: dry matter over 0.85, 1% handling loss, 0.018 gallon LP a bushel a point (0.010 to 0.025), 1 cent a bushel a mile hauling.</li>
         <li>Uhrig and Maier, Purdue: <a href="https://www.extension.purdue.edu/extmedia/gq/gq-3.html">Costs of drying high-moisture corn</a>, Grain Quality Fact Sheet 3 (1992). Fuel cost from BTUs a bushel, electricity from dryer horsepower and capacity.</li>
-        <li>Hellevang, NDSU: <a href="https://www.ndsu.edu/agriculture/sites/default/files/2021-05/Post%20Harvest%20Tips%20for%20Later%20Maturing%20Corn%20Oct2009.pdf">Post harvest tips for later maturing corn</a> (2009). Moisture shrink formula, 1.1834 per point to 15.5%.</li>
+        <li>Hellevang, NDSU: Post harvest tips for later maturing corn (2009). Moisture shrink formula, 1.1834 per point to 15.5%.</li>
         <li>Nebraska CropWatch: <a href="https://cropwatch.unl.edu/harvest-soybeans-13-moisture">Harvest soybeans at 13% moisture</a>. Beans under 13% are paid on weight; the 75 bushel example.</li>
         <li>Nebraska CropWatch: <a href="https://cropwatch.unl.edu/2016/set-harvest-goal-13-soybean-moisture-aid-profits">Set a harvest goal of 13% soybean moisture</a> (2016). When to start combining beans, and the dock against shatter loss.</li>
-        <li>University of Arkansas: <a href="https://www.uaex.uada.edu/publications/pdf/FSA-1078.pdf">FSA1078</a>. Base moistures: corn 15.5, soybeans 13, wheat 13.5, grain sorghum 14.</li>
+        <li>University of Arkansas: FSA1078. Base moistures: corn 15.5, soybeans 13, wheat 13.5, grain sorghum 14.</li>
       </ul>
       <p class="gs-src">Bids: the nearest posted bid comes from the same elevator boards as <a href="/cash-bids">cash bids near me</a>. A board posted before today is re-marked to today's futures when it states its futures month, the same rule the cash bids page uses, and the page prints both numbers. The state default is the latest futures price (the settle after it is recorded, otherwise the delayed quote and the time it was read) less the state's median basis from <a href="/basis">the basis page</a>. Call the elevator before you count on a bid or a discount.</p>
 
@@ -312,7 +312,7 @@ soybeans at 9%, 1,000 bu: 1,000 x 91 / 87 = 1,046 bu, 46 more</span>
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
   <div id="site-footer">
-<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+<!-- static-nav:footer -->
   <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
   <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
     <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>

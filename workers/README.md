@@ -12,12 +12,10 @@ on 2026-07-18.
 | `subs-worker.js` | agsist-api (new home, Oct 22, 2026; was agsist-subs) | daily-briefing list, hail-alert pins, watches, sponsor sign-ups, the site's three forms, unsubscribes, send-dedup flags |
 | `fieldscout-worker.js` | agsist-fieldscout | NDVI/moisture tiles, SSURGO, CDL rotation, hail history, drought, index stats |
 | `atlas-rma-proxy.js` | atlas-rma-proxy | RMA Summary of Business zips and FSA's two CRP workbooks, for the runners those hosts do not answer |
-| `barchart-proxy.js` | agsist-barchart | Barchart OnDemand quotes, key held server-side |
 
 Secrets live in each worker's Settings → Variables (encrypted), never in code:
 - agsist-api (and the old agsist-subs): see "The agsist-api Worker" below for the full list; KV binding `SUBS`
 - agsist-fieldscout: `SH_CLIENT_ID`, `SH_CLIENT_SECRET`
-- agsist-barchart: `BARCHART_API_KEY`
 - atlas-rma-proxy: none; the repository variable `RMA_PROXY_BASE` points the fetchers at it
 
 Scheduling is not done here. GitHub's own cron drops fires, so the workflows

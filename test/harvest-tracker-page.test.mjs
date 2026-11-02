@@ -45,7 +45,12 @@ test('the evening\'s own day is provisional, and the RMA note says which days ou
       assert.match(seed, new RegExp(`${ser.length} of ${corn.harvest.days_total} days, ${md} provisional`));
       assert.doesNotMatch(seed, new RegExp(`${ser.length} of ${corn.harvest.days_total} settles`));
     }
-    assert.match(seed, /class="hpc-math">For the harvest price to finish (below|above) the \$4\.62 projected price, the \d+ settles left would have to average \$\d+\.\d\d or (less|more)/);
+    if (ser.length < corn.harvest.days_total) {
+      assert.match(seed, /class="hpc-math">For the harvest price to finish (below|above) the \$4\.62 projected price, the \d+ settles left would have to average \$\d+\.\d\d or (less|more)/);
+    } else {
+      // every day of the window is in: nothing left to count, so no finish-line arithmetic (finish_line returns None)
+      assert.doesNotMatch(seed, /settles left/);
+    }
   }
 });
 

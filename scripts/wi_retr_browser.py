@@ -29,6 +29,8 @@ session-bound Retrieve URL, so a plain fetch cannot ask for it; the browser does
 Polite by design: one browser session, one request at a time, a pause between files, and a
 User-Agent that names agsist.com. It stops if robots.txt disallows the pages.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

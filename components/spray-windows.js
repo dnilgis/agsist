@@ -40,7 +40,7 @@
   var RAINFREE_CHOICES = [1, 2, 4, 6];
 
   var CREDITS = [
-    { id: 'forecast', t: 'Forecast:', a: 'National Weather Service', u: 'https://www.weather.gov/documentation/services-web-api', tail: '(NDFD forecast grid, 2.5 km, public domain). An estimate, not a measurement.' },
+    { id: 'forecast', t: 'Forecast:', a: 'National Weather Service', u: '', tail: '(NDFD forecast grid, 2.5 km, public domain). An estimate, not a measurement.' },
     { id: 'map', t: 'Map:', a: 'USGS The National Map', u: 'https://www.usgs.gov/programs/national-geospatial-program/national-map', tail: '(public domain).' },
     { id: 'boom', t: 'Boom wind from the 10 m forecast with the', a: 'FAO-56 wind profile', u: 'https://www.fao.org/4/x0490e/x0490e07.htm', tail: '(about 0.75 of the 10 m speed).' },
     { id: 'inv', t: 'Inversion rule after', a: 'Sprayers101, Spraying weather', u: 'https://sprayers101.com/spraying-weather/', tail: '' },

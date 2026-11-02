@@ -73,6 +73,8 @@ USAGE
   python scripts/atlas_reads.py --limit 20      # first 20 counties needing a read
   python scripts/atlas_reads.py --only 19169    # one county
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import math

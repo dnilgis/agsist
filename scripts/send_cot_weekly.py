@@ -45,6 +45,8 @@ is ever printed: counts only, masked in the failure annotation.
     python3 scripts/send_cot_weekly.py --selftest   fixtures, no network
     python3 scripts/send_cot_weekly.py --render out.html   the sample email, from the fixtures
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

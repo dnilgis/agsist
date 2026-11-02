@@ -53,12 +53,13 @@ test('the section on the page matches raises.json, or is absent before the first
   assert.match(s, /<summary>Private ag raises<\/summary>/);
   assert.ok(s.includes(LINE), 'the risk line');
   const hrefs = [...s.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
-  assert.ok(hrefs.length >= 1);
-  for (const h of hrefs) assert.match(h, /^https:\/\/www\.sec\.gov\//, `only SEC links: ${h}`);
+  // each filing is named with its form and date; nothing links straight at the filings (Oct 29, 2026)
+  assert.deepEqual(hrefs, [], 'no links to the filings');
+  assert.match(s, /on EDGAR, filed [A-Z][a-z]{2} \d{1,2}, \d{4}/, 'the filing named with its date');
   assert.doesNotMatch(s, /\b(invest now|buy|portal)\b/i);
   assert.ok(!s.includes('—'), 'no em dash');
   const rz = JSON.parse(rd('data/agstocks/raises.json'));
-  for (const o of rz.open) assert.ok(s.includes(o.link.replace(/&/g, '&amp;')), `open raise ${o.name} links its filing`);
+  for (const o of rz.open) assert.ok(s.includes(o.last_form + ' on EDGAR') && !s.includes(o.link.replace(/&/g, '&amp;')), `open raise ${o.name} names its filing, no link`);
   const ag = rz.track.ag;
   if (ag.n < rz.share_min) assert.match(s, /counts only, no share/);
 });

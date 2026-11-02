@@ -17,6 +17,8 @@ so a year can differ from the first printed report).
 Keep-last-good: a failed read keeps the file and records why in status.
 --selftest offline tests on the real reads (test/fixtures/milk/).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import os
@@ -227,7 +229,7 @@ def run(root=ROOT, now=None, get=None, pdf_text=None, key=None, force=False):
                series=SHORT,
                wi_source="USDA NASS Wisconsin field office, monthly milk cow herds, from the Wisconsin Dairy Producer "
                          "License list (DATCP) as of the first of each month",
-               _note="Written by scripts/fetch_dairy_herds.py from NASS's own numbers. Never typed by hand. A drop "
+               _note="From NASS's own numbers, never typed by hand. A drop "
                      "is net licences, not the exact number of farms that quit.")
     if not (new.get("us") or new.get("wi_monthly")):
         print("::warning::licensed herds: nothing read (%s)" % "; ".join(errs))

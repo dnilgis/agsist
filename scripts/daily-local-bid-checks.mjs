@@ -26,6 +26,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASE_URL = "https://dnilgis.github.io/bids/";

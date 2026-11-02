@@ -103,6 +103,8 @@ async function open(browser, port, path, w, opts = {}) {
   const pg = await ctx.newPage();
   await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
   if (opts.noDays) await pg.route(/\/data\/rain\/daily\//, (r) => r.abort());
+  // the Christmas Rain Print line (components/rp-xmas.js) runs Nov 1 to the print cutoff: the page is tested in and out of it
+  if (opts.day) await pg.addInitScript((d) => { window.AGSIST_TODAY = d; }, opts.day);
   // hold the print's script back so the page can be measured as first painted, before the print draws
   let release;
   const held = new Promise((ok) => { release = ok; });
@@ -121,13 +123,15 @@ test("browser: the print draws in the chart's place at 390 and 1280 without movi
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    for (const path of paths) {
+    for (const [day, line] of [["2026-10-15", 0], ["2026-11-15", 1]]) for (const path of paths) {
       for (const w of [390, 1280]) {
-        const { ctx, pg, before } = await open(browser, port, path, w);
+        const { ctx, pg, before } = await open(browser, port, path, w, { day });
         await pg.waitForSelector("#rc-print.rc-print-on", { timeout: 30000 });
         await pg.waitForTimeout(300);
         const after = await pg.evaluate(BOX);
-        const at = `${path} at ${w}`;
+        const at = `${path} at ${w} on ${day}`;
+        assert.equal(await pg.locator(".rpx").count(), line, `${at}: the Christmas line ${line ? "shows" : "stays off"}`);
+        if (line) assert.ok(await pg.evaluate(() => document.querySelector(".rpx").compareDocumentPosition(document.getElementById("rc-print")) & Node.DOCUMENT_POSITION_PRECEDING), `${at}: the line sits below the print`);
         for (const k of Object.keys(before)) assert.deepEqual(after[k], before[k], `${at}: ${k} [top, height] moved when the print drew`);
         const s = await pg.evaluate(() => ({
           fallback: !!document.querySelector('[aria-labelledby="rc-ct"]'),

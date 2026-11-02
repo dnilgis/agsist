@@ -68,6 +68,7 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 export const PRODUCTS = [
   { id: "feeder", comm: "0801", type: "810", name: "Feeder cattle (steers, weight 2)" },

@@ -28,7 +28,7 @@
   // RMA box. Returns null when there is nothing to draw; {down:true,...} for a
   // source that did not load or is out of date (the page says so in words).
   function rmaView(d, nowMs) {
-    if (!d || typeof d !== 'object') return { down: true, msg: 'This value did not load. It is in <a href="https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/" rel="noopener">USDA RMA&rsquo;s own files</a>.' };
+    if (!d || typeof d !== 'object') return { down: true, msg: 'This value did not load. It is in USDA RMA&rsquo;s own files.' };
     var r = d.rma;
     if (!r || !r.ok || !fxNum(r.value) || r.value <= 0 || !isFinite(fxDay(r.date))) return { down: true, msg: 'USDA RMA&rsquo;s value could not be read on the last run, so nothing is shown.' };
     var age = (nowMs - fxDay(r.date)) / 864e5;
@@ -38,7 +38,7 @@
       val: old ? '-' : fxMoney(r.value),
       date: fxLab(r.date),
       meta: old ? ('Latest held: ' + fxLab(r.date) + '. RMA has not posted a newer value, so it is not shown.')
-                : ('Ending value, steers 6 to 10 cwt, <a href="https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/" rel="noopener">USDA RMA</a>.'),
+                : ('Ending value, steers 6 to 10 cwt, USDA RMA.'),
       label: r.label || '',
       basis: r.basis_note || '',
       fut: null, diff: null, futNote: ''
@@ -202,9 +202,9 @@
     var s = document.createElement('style'); s.id = 'fx-css'; s.textContent = CSS; document.head.appendChild(s);
   }
 
-  var RMA_CREDIT = 'Source: <a href="https://pubfs-rma.fpac.usda.gov/pub/References/adm_livestock/" rel="noopener">USDA RMA</a>, Livestock Risk Protection actual ending values, read from RMA&rsquo;s daily ADM livestock files. Futures settles: CME feeder cattle futures via Yahoo Finance, the settle after the close. ' +
-    '<a href="https://www.rma.usda.gov/sites/default/files/2026-06/2027-20010-Livestock-Risk-Protection.pdf" rel="noopener">RMA LRP Handbook FCIC-20010</a>, section 23C.';
-  var AMS_CREDIT = 'Source: <a href="https://mymarketnews.ams.usda.gov/" rel="noopener">USDA AMS</a> auction reports (Livestock, Poultry and Grain Market News), as read for this page. Prices are AGSIST&rsquo;s sums of USDA&rsquo;s rows.';
+  var RMA_CREDIT = 'Source: USDA RMA, Livestock Risk Protection actual ending values. Futures settles: CME feeder cattle futures via Yahoo Finance, the settle after the close. ' +
+    'RMA LRP Handbook FCIC-20010, section 23C.';
+  var AMS_CREDIT = 'Source: USDA AMS auction reports (Livestock, Poultry and Grain Market News), as read for this page. Prices are AGSIST&rsquo;s sums of USDA&rsquo;s rows.';
 
   function drawRma(box, d) {
     var v = rmaView(d, Date.now());

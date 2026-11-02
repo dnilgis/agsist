@@ -27,6 +27,8 @@ reading, and every answer is checked against the copy. Nothing here touches a
 page; fx/landnation owns the state-level sources (its sources.md), this is
 the county-level list for phase 2.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

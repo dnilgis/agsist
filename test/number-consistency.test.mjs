@@ -23,6 +23,7 @@ test("freshness runs it after the bakes, report only, and adds no schedule", () 
   assert.ok(i < wf.indexOf("- name: Commit if changed"), "before the commit");
   assert.match(wf.slice(i, i + 300), /continue-on-error: true/);
   assert.doesNotMatch(wf.slice(i, i + 300), /--strict/);
-  assert.equal((wf.match(/^\s+- cron:/gm) || []).length, 3, "freshness keeps its three schedule lines");
+  // a fourth line, 06:50 UTC Tue-Sat for a late settle, approved by Sig Oct 30 (history-collect APPROVED)
+  assert.equal((wf.match(/^\s+- cron:/gm) || []).length, 4, "freshness keeps its four schedule lines");
   assert.match(readFileSync(ROOT + "scripts/dev/checks.sh", "utf8"), /check_number_consistency\.py --selftest/);
 });

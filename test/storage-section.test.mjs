@@ -188,7 +188,8 @@ test("history from another NASS pull is not used", () => {
   const same = storageHtml(FIX.storage, { ...hist, generated: FIX.storage.generated });
   assert.match(same, /Past falls in Iowa \(2000 to 2011/);
   assert.match(same, /the US took off 41 points of pressure by December 1 on average \(most years 36 to 45\)/);
-  assert.match(same, /<a href="\/data\/storage\/history\.json">history\.json<\/a>/);
+  assert.doesNotMatch(same, /history\.json/, "the source line names NASS and the pull date, not our files (Oct 29, 2026)");
+  assert.match(same, /Source: USDA NASS Quick Stats, Grain Stocks and Crop Production/);
 });
 
 test("the chart: one dot per year with a figure, the 1.00 line, this fall as a ring, a table view", () => {

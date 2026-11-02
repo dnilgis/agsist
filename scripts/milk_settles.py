@@ -23,6 +23,8 @@ Rules:
 
     python3 scripts/milk_settles.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

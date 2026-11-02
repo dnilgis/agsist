@@ -10,6 +10,8 @@ real repo's robots.txt names sitemap-arc-plc.xml. Nothing is sent.
 
     python3 scripts/test_indexnow_submit.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import sys
 import tempfile

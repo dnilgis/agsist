@@ -17,6 +17,8 @@ Design notes:
   existing file, and a fully empty run exits non-zero so the Action won't commit
   emptiness silently (same hard lesson as the cash-bids pipeline).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import csv
 import io

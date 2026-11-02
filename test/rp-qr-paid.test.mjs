@@ -15,7 +15,7 @@
  *
  *   node --test test/rp-qr-paid.test.mjs
  */
-import { makerFlag } from "./fixtures/rp-maker.mjs";
+import { makerFlag, MAKER_PANEL } from "./fixtures/rp-maker.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -80,7 +80,7 @@ test("the standard code reads back with jsQR", { skip: jsQR ? false : "jsqr is n
 });
 
 test("the maker box has the test print button, labeled, and it skips the link service in the code", () => {
-  assert.match(H, /<button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="pdf" data-qr="standard">Test print PDF \(standard code\)<\/button>/);
+  assert.match(MAKER_PANEL, /<button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="pdf" data-qr="standard">Test print PDF \(standard code\)<\/button>/);
   const i = S.indexOf("if (btn.getAttribute('data-qr') === 'standard') {"), j = S.indexOf("return;\n    }", i);
   assert.ok(i > 0 && j > i);
   const body = S.slice(i, j);

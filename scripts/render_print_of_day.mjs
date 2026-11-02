@@ -19,6 +19,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize, dirname } from "node:path";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const [pickPath, outPath] = process.argv.slice(2);

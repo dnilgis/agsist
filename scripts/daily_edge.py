@@ -51,6 +51,8 @@ history this repo does not keep yet, so none is made.
     python3 scripts/daily_edge.py --now 2026-10-16T10:40:00Z --print
     python3 scripts/daily_edge.py --selftest         hand-worked cases, no network
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import math

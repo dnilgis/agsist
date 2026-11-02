@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join(W, "scripts"))
 import inject_static_nav as NAV  # noqa: E402
 
 BLK = {k: NAV.block(k) for k in ("header", "footer")}
-RE = re.compile(r"\n<!-- static-nav:(header|footer) \(.*?<!-- /static-nav:\1 -->\n", re.S)
+RE = re.compile(r"\n<!-- static-nav:(header|footer)\b.*?<!-- /static-nav:\1 -->\n", re.S)
 n = 0
 dirs = {}
 for root, ds, fs in os.walk(W):

@@ -22,7 +22,7 @@ test('live prices hide the whole baked table, not just the nearby row', () => {
   assert.match(block, /querySelector\('\.seed-tbl-wrap'\);if\(__st\)__st\.style\.display='none'/);
   assert.doesNotMatch(block, /\/\^Nearby\//, 'no row-by-row filter that leaves deferred and KC rows behind');
   for (const p of ['corn', 'soybean', 'wheat']) {
-    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=27/, `${p} page loads the new futures.js`);
+    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=29/, `${p} page loads the new futures.js`);
   }
 });
 
@@ -66,7 +66,8 @@ test('the freshness workflow retries a rejected push and has a run after the set
   assert.match(y, /cron: '50 4 \* \* 2-6'/);
   assert.match(y, /--cron "50 4 \* \* 2-6"/);
   assert.doesNotMatch(y, /35 23 \* \* 1-5/);
-  for (const c of ['35 13 * * 1-5', '35 20 * * 1-5']) {
+  // Sig, Oct 30: a second night run for a late settle (Oct 29's landed at 06:16 UTC); every schedule tick is gated too
+  for (const c of ['35 13 * * 1-5', '35 20 * * 1-5', '50 6 * * 2-6']) {
     assert.ok(y.includes(`cron: '${c}'`) && y.includes(`--cron "${c}"`), c);
   }
 });

@@ -20,6 +20,8 @@ except which rows go where, so every price is still RMA's own.
                                                  do not match the mirror
   python3 scripts/split_rma_prices.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import sys
 from pathlib import Path
@@ -77,7 +79,7 @@ def split(doc):
         by.setdefault(FIPS.get(str(r["st"]), str(r["st"])), []).append(r)
     head = {"updated": doc.get("updated"), "crop_year": doc.get("crop_year"),
             "source": doc.get("source"), "app": doc.get("app"),
-            "_note": ("Split from data/rma-prices.json by scripts/split_rma_prices.py. Rows are "
+            "_note": ("Harvest and projected prices by state. Rows are "
                       "RMA's own, copied verbatim. " + str(doc.get("_note") or ""))}
     disc = []
     seen = set()

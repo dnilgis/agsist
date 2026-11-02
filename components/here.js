@@ -22,7 +22,7 @@
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var SALES_JS = '/components/atlas-sales.js?v=f31b5c18';
   var CL_JS = '/components/change-lines.js?v=3';
-  var CM_JS = '/components/changemap.js?v=2';
+  var CM_JS = '/components/changemap.js?v=3';
   var S = { seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
   var memo = {};
 
@@ -79,7 +79,7 @@
   /* A fact from place.js into its row: the value, one line of context, the date and its source. */
   function factHtml(f) {
     var d = /^\d{4}-\d{2}-\d{2}$/.test(f.date || '') ? mdy(f.date) : (f.date || '');
-    var a = f.src ? (f.src[1] ? '<a href="' + esc(f.src[1]) + '">' + esc(f.src[0]) + '</a>' : esc(f.src[0])) : '';
+    var a = f.src ? (f.src[1] && /^\/(?!\/)/.test(f.src[1]) ? '<a href="' + esc(f.src[1]) + '">' + esc(f.src[0]) + '</a>' : esc(f.src[0])) : '';  // our own pages stay linked; an outside source is named, not linked
     var s = (d || a) ? '<span class="fx-s">' + [esc(d), a].filter(Boolean).join(' &middot; ') + '</span>' : '';
     if (f.value == null) return '<p class="fx-b"><span class="fx-v fx-na">Not available</span>. <span class="fx-c">' + esc(cap(f.why)) + '.</span></p>' + s;
     return '<p class="fx-b"><span class="fx-v' + (f.long ? ' fx-vl' : '') + '">' + esc(f.value) + '</span>' + (f.ctx ? (f.join || '. ') + '<span class="fx-c">' + esc(f.ctx) + '</span>' : '') + '</p>' + s;
@@ -418,14 +418,21 @@
   function changeMap(fips) {
     var box = $('h-cm'), p = S.prof, w = S.where || {};
     if (!box || !p) return;
-    box.hidden = true; box.innerHTML = '';
+    /* shown and held at once (here.css .cm-hold), so nothing under it moves when it fills */
+    var old = box.querySelector('.cm-box');
+    if (old && old.cmMap) { try { old.cmMap.remove(); } catch (e) { /* the old map is gone with its box */ } }
+    box.innerHTML = ''; box.classList.add('cm-hold'); box.hidden = false;
     var top = $('cm-top'); if (top) top.innerHTML = '';
     function mine() { return S.prof && S.prof.fips === fips; }
     loadScript(CL_JS, function () { return !!window.AgChangeLines; }).then(function (ok) {
       return ok && loadScript(CM_JS, function () { return !!window.AgChangeMap; });
     }).then(function (ok) {
+      if (!ok && mine()) { box.hidden = true; box.classList.remove('cm-hold'); }
       if (!ok || !mine()) return;
-      window.AgChangeMap.draw(box, { fips: fips, st: p.st, stName: p.stName, name: p.name, lat: +w.lat, lng: +w.lng, net: window.AGSIST_BIDS_NET, mine: mine });
+      /* a tapped county links its Farmland Atlas county home where that page exists */
+      var cs = S.pct && S.pct.counties, sl = P.stSlug(p.st);
+      function atlas(f) { var c = cs && cs[f]; return c && c.s && String(c.k || '').indexOf('a') >= 0 ? '/farmland-atlas/' + sl + '/' + c.s : null; }
+      window.AgChangeMap.draw(box, { fips: fips, st: p.st, stName: p.stName, name: p.name, lat: +w.lat, lng: +w.lng, net: window.AGSIST_BIDS_NET, mine: mine, atlas: atlas });
     });
   }
   function loadSales(fips, st, href, mine) {
@@ -535,7 +542,7 @@
 
   /* The county station's year of rain, drawn by the county rain page's own Rain Print, and
      ranked against the same days of every earlier year the station kept in full (NOAA). */
-  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=43';
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=44';
   var porMemo = {};
   function porRows(sid) {
     if (porMemo[sid]) return porMemo[sid];

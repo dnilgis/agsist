@@ -1,5 +1,5 @@
 {
- "note": "Phone numbers checked against the buyer's own site. A row with a phone replaces the number our sources file for that elevator; a row with phone null withholds it (no number is printed) because nothing confirms it is the local line. Read by scripts/phone_corrections.py for the elevator contacts and the cash-bid town pages. Add a row only with the page it was read from and the date.",
+ "note": "Phone numbers checked against the buyer's own site. A row with a phone replaces the number our sources file for that elevator; a row with phone null withholds it (no number is printed) because nothing confirms it is the local line. Used for the elevator contacts and the cash-bid town pages. Add a row only with the page it was read from and the date.",
  "rows": [
   {
    "state": "WI",

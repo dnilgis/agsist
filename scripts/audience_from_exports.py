@@ -42,6 +42,8 @@ is second by active users and twentieth by engaged visits (2026-01-01 to
 A reader who connects from two states counts once in each, so the state rows
 add up to more than the national total. The page says so.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import io
 import json

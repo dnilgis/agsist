@@ -204,7 +204,7 @@
       h += '</tbody></table></div>' + vogLine(valueOfGain(s0, key, today()));
     }
     h += '<p class="sb-src">' + (s0.noted_head ? s0.noted_head + ' head with a note on the report (value added, fleshy, unweaned and the like) are left out of the averages. ' : '') +
-      'Reported by USDA AMS, not the barn. <a href="' + esc(b.source_url) + '" rel="noopener">The USDA report</a></p></section>';
+      'Reported by USDA AMS, not the barn.</p></section>';
     return h;
   }
 
@@ -218,10 +218,10 @@
         (s0.note ? '<p class="sb-src">' + esc(s0.note) + '.</p>' : '');
       h += '<div class="sb-tw"><table class="sb-t"><thead><tr><th scope="col">Weight<small>lb</small></th><th scope="col">Range<small>$/cwt</small></th></tr></thead><tbody>';
       rs.forEach(function (r) { h += '<tr><th scope="row">' + r.lo + '-' + r.hi + '</th><td>' + r.plo.toFixed(2) + '-' + r.phi.toFixed(2) + '</td></tr>'; });
-      h += '</tbody></table></div><p class="sb-src">Posted by the barn, not USDA: a low and high, no average or head count by class. <a href="' + esc(s0.source_url || b.site) + '" rel="noopener">The barn&#x27;s report</a></p>';
+      h += '</tbody></table></div><p class="sb-src">Posted by the barn, not USDA: a low and high, no average or head count by class. Source: the barn&#x27;s own market report.</p>';
     } else {
       h += '<p class="sb-none">Prices: USDA does not report this barn, and AGSIST has not read and checked its own report yet, so no price is shown here.</p>' +
-        '<p class="sb-src">' + (b.site ? '<a href="' + esc(b.site) + '" rel="noopener">See the barn&#x27;s own report</a>' : 'Ask the barn for its latest market report.') + '</p>';
+        '<p class="sb-src">Ask the barn for its latest market report.</p>';
     }
     return h + '</section>';
   }

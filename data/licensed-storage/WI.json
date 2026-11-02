@@ -1,6 +1,6 @@
 {
 "schema":1,
-"note":"Grain warehouse keepers licensed by Wisconsin DATCP, one row per warehouse keeper license, at the city of the license's mailing address. The list gives no storage capacity. id: the AGSIST elevator id when exactly one of our facilities matches (scripts/licensed_storage.py); unjoined and ambiguous rows are listed, never guessed.",
+"note":"Grain warehouse keepers licensed by Wisconsin DATCP, one row per warehouse keeper license, at the city of the license's mailing address. The list gives no storage capacity. id: the AGSIST elevator id when exactly one of our facilities matches; unjoined and ambiguous rows are listed, never guessed.",
 "source":{
 "name":"Wisconsin Department of Agriculture, Trade and Consumer Protection, licensed grain dealers and warehouse keepers",
 "short":"WI DATCP",

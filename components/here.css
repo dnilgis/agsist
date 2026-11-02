@@ -205,3 +205,8 @@ html:not([data-fx]) #h-form,html:not([data-fx]) .h-alt,html:not([data-fx]) .h-as
 /* the buy link under the county Rain Print */
 .h-rp-buy{margin:.1rem 0 .5rem;font-size:.95rem;font-weight:600}
 .h-rp-buy a{display:inline-flex;align-items:center;min-height:44px;color:var(--gold,#d4a23f);text-decoration:underline;text-underline-offset:2px}
+/* 2026-10-29: the change map's box is held from the moment a place opens (components/changemap.js
+   fills it), so the cards under it do not move when the map and its lines come in */
+.cm.cm-hold{min-height:740px}
+@media (min-width:900px){.cm.cm-hold{min-height:580px}}
+@media print{.cm.cm-hold{min-height:0}}

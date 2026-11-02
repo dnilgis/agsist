@@ -44,9 +44,10 @@
  * right. It will not catch a wrong price. It catches a page that is broken,
  * unreadable, empty, or lying about being loaded.
  */
-import { chromium } from "playwright";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
+const { chromium } = await import('playwright'); // after the guard: --help works without the package
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const argv = process.argv.slice(2);

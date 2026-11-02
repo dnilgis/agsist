@@ -35,6 +35,8 @@ HOW A STORY STAYS TRUE (the rain rules, kept)
   python3 scripts/stories_core.py stale SET                    how many stored stories still show
 SETS: prf, atlas, town, company.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime as dt
 import hashlib
 import importlib

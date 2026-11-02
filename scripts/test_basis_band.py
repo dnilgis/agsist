@@ -2,6 +2,8 @@
 """The stored USDA basis file holds no point outside the plausible band, and
 every rejected point is listed with its reason. Fails on the -10.248 Atlantic
 Coast soybean week that shipped before the guard (2026-10-06)."""
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import sys
 from pathlib import Path

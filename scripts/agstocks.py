@@ -30,6 +30,8 @@ SOURCES
   under 10 requests a second, companyfacts read again only when a new report is filed.
   Ticker check: www.sec.gov/files/company_tickers_exchange.json.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import math
 import os

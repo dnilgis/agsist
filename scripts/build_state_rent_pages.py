@@ -30,6 +30,8 @@ every bar), not a sparkline.
 
 --selftest builds everything to a temp dir and asserts invariants.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import html
 import json

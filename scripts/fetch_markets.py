@@ -34,6 +34,8 @@ v10 changes (2026-04-23):
 
   Retains all v9 word-boundary fixes and blacklists.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import re

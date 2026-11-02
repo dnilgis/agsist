@@ -45,6 +45,8 @@ FROM_ADDR, REPLY_TO, MAX_PER_RUN default 300).
 The log carries counts only. No address is ever printed, including in error
 lines. The unsubscribe link stops this one notice (send_notice.unsub_link).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import glob
 import html as H

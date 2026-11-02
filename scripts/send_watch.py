@@ -15,6 +15,8 @@ Transport env (same secrets as the briefing sender): SMTP_HOST, SMTP_PORT, SMTP_
 FROM_ADDR, FROM_NAME, REPLY_TO. Worker: LIST_URL, LIST_TOKEN, UNSUB_SECRET. DRY_RUN=1 sends and
 marks nothing. MAX_SENDS caps one run (default 100; Gmail's day limit is shared with the briefing).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import hashlib
 import hmac
 import html as H

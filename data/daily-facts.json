@@ -1,9 +1,10 @@
 {
   "schema": "agsist-daily-facts/1",
-  "about": "The Daily's 'I never knew that' pool. Every entry carries the source's name, a link a reader can open, the date the source was read, and the source's own words the fact rests on. An entry without them is never shown (scripts/daily_fact.py, test/daily-email-v2.test.mjs). The old quote pool (data/quote-pool.json) stays off.",
+  "about": "The Daily's 'I didn't know that' pool. Every entry carries the source's name, a link a reader can open, the date the source was read, and the source's own words the fact rests on. An entry without them is never shown (scripts/daily_fact.py, test/daily-email-v2.test.mjs). The old quote pool (data/quote-pool.json) stays off. Each entry has one category from the list in scripts/daily_fact.py (CATEGORIES); the day's pick comes from a fixed schedule that never repeats a fact until the pool is used up and never shows one category two days running. New entries come in with scripts/daily_fact.py --import, which stamps the day they may first show ('added') so the days already sent never change.",
   "facts": [
     {
       "id": "hail-vivian",
+      "category": "weather and climate",
       "fact": "The biggest hailstone ever recovered in the US fell at Vivian, South Dakota, on June 23, 2010: 8 inches across and 1 lb 15 oz.",
       "source": "NOAA National Severe Storms Laboratory, Severe Weather 101: Hail",
       "url": "https://www.nssl.noaa.gov/education/svrwx101/hail/",
@@ -12,6 +13,7 @@
     },
     {
       "id": "hail-speed",
+      "category": "weather and climate",
       "fact": "Hailstones bigger than 4 inches across can fall at over 100 mph. Hail under an inch falls at 9 to 25 mph.",
       "source": "NOAA National Severe Storms Laboratory, Severe Weather 101: Hail",
       "url": "https://www.nssl.noaa.gov/education/svrwx101/hail/",
@@ -20,6 +22,7 @@
     },
     {
       "id": "corn-two-kernels",
+      "category": "agronomy",
       "fact": "2 corn kernels on every square foot behind the combine add up to a bushel an acre left in the field.",
       "source": "Iowa State University Integrated Crop Management (Hanna, 2010)",
       "url": "https://crops.extension.iastate.edu/cropnews/2010/09/minimize-amount-corn-left-ground-behind-combine",
@@ -28,6 +31,7 @@
     },
     {
       "id": "corn-one-ear",
+      "category": "agronomy",
       "fact": "One dropped ear in a 20 by 22 foot patch behind an 8-row head is a bushel an acre lost.",
       "source": "Iowa State University Integrated Crop Management (Hanna, 2010)",
       "url": "https://crops.extension.iastate.edu/cropnews/2010/09/minimize-amount-corn-left-ground-behind-combine",
@@ -36,6 +40,7 @@
     },
     {
       "id": "corn-cornhead-losses",
+      "category": "machinery and safety",
       "fact": "Over half of corn harvest losses happen at the cornhead, where the combine's loss sensors cannot see them.",
       "source": "Iowa State University Integrated Crop Management (Hanna, 2010)",
       "url": "https://crops.extension.iastate.edu/cropnews/2010/09/minimize-amount-corn-left-ground-behind-combine",
@@ -44,6 +49,7 @@
     },
     {
       "id": "soy-four-beans",
+      "category": "agronomy",
       "fact": "4 to 5 soybeans on the ground per square foot add up to a bushel an acre lost.",
       "source": "Nebraska Extension CropWatch: Harvest soybeans at 13% moisture",
       "url": "https://cropwatch.unl.edu/harvest-soybeans-13-moisture",
@@ -52,6 +58,7 @@
     },
     {
       "id": "corn-water-car",
+      "category": "markets and prices",
       "fact": "Corn at 20% moisture is like five rail cars of grain where one whole car is water.",
       "source": "Purdue University Corny News (Nielsen): grain moisture and water shrink",
       "url": "https://www.agry.purdue.edu/ext/corn/news/timeless/WaterShrink.html",
@@ -60,6 +67,7 @@
     },
     {
       "id": "cattle-july-2026",
+      "category": "livestock",
       "fact": "There were 94.2 million cattle and calves on US farms on July 1, 2026. The 2026 calf crop was put at 32.5 million head, down 2% from 2025.",
       "source": "USDA NASS, July 2026 Cattle report news release",
       "url": "https://www.nass.usda.gov/Newsroom/2026/07-24-2026.php",
@@ -68,6 +76,7 @@
     },
     {
       "id": "beef-cows-july-2026",
+      "category": "livestock",
       "fact": "The US had 28.5 million beef cows on July 1, 2026, down 1% from a year earlier.",
       "source": "USDA NASS, July 2026 Cattle report news release",
       "url": "https://www.nass.usda.gov/Newsroom/2026/07-24-2026.php",
@@ -76,6 +85,7 @@
     },
     {
       "id": "loan-rates-2026",
+      "category": "policy and programs",
       "fact": "The 2026 national average marketing loan rate is $2.42 a bushel for corn and $6.82 for soybeans.",
       "source": "USDA FSA, 2026 National Average Loan Rates",
       "url": "https://www.fsa.usda.gov/sites/default/files/2026-04/2026-National-Average-Loan-Rates.pdf",
@@ -84,6 +94,7 @@
     },
     {
       "id": "flat-storage",
+      "category": "agronomy",
       "fact": "Flat storage holds about 0.8 bushel for every cubic foot of grain: length times width times depth times 0.8.",
       "source": "Nebraska Extension CropWatch: How to estimate bushels in a grain bin",
       "url": "https://cropwatch.unl.edu/how-estimate-bushels-grain-bin/",
@@ -92,6 +103,7 @@
     },
     {
       "id": "normals-decade",
+      "category": "weather and climate",
       "fact": "The 'normal' rain on a weather page is a 30-year average that NOAA redoes every 10 years. Today's normals cover 1991 to 2020.",
       "source": "NOAA National Centers for Environmental Information, U.S. Climate Normals",
       "url": "https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals",
@@ -100,6 +112,7 @@
     },
     {
       "id": "ch12-latest",
+      "category": "policy and programs",
       "fact": "Family farmers and fishermen filed 361 Chapter 12 bankruptcy cases in the 12 months to Sep 30, 2026. Chapter 12 is the bankruptcy chapter written for them. A filing is a case opened, not a farm sold or closed.",
       "source": "U.S. Courts, Table F-2, 12 months to Sep 30, 2026",
       "url": "https://www.uscourts.gov/sites/default/files/document/bf_f2_0930.2026.pdf",

@@ -20,6 +20,7 @@
  */
 import http from 'http'; import fs from 'fs'; import path from 'path'; import zlib from 'zlib';
 import { fileURLToPath } from 'url';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const PW = process.env.PLAYWRIGHT || '/home/user/node_modules/playwright/index.mjs';
 const CHROME = process.env.CHROMIUM || '/opt/pw-browsers/chromium';

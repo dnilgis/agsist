@@ -151,7 +151,8 @@ test("timing and loss claims match the saved Montana State text", () => {
   assert.doesNotMatch(HTML, /2 to 3 times more|two to three times more/);
   assert.match(HTML, /average 18% and up to 44%/);
   assert.match(HTML, /two to three weeks/);
-  assert.match(HTML, /UvolBMPEB0209\.pdf/);
+  assert.match(HTML, /EB0209/);
+  assert.doesNotMatch(HTML, /UvolBMPEB0209\.pdf/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   assert.match(HTML, /soilscoop\/ss_uvol\.html/);
   // New lines carry no em dashes.
   for (const ln of HTML.split("\n").filter((l) => /Spread before the rain|Partial on Residue|LOWER \(tilled\)|two to three weeks/.test(l))) {

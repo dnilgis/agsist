@@ -107,7 +107,7 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
       const model = await pg.$eval("#sp-model", (e) => e.textContent);
       assert.match(model, /^Forecast \(estimate\) for everything on this page: the National Weather Service forecast grid \(NDFD, 2\.5 km cells\), office DMX cell 70,80\. Issued .+\.$/);
       assert.equal(await pg.evaluate(() => document.body.innerText.split("Issued ").length - 1), 1, "the issue time is named once (on screen)");
-      assert.equal(await pg.$$eval("#sp-model a", (as) => as[0].href), "https://www.weather.gov/documentation/services-web-api");
+      assert.equal(await pg.$$eval("#sp-model a", (as) => as.length), 0, "the forecast grid is named, not linked (no direct links to data sources, Oct 29, 2026)");
       // the shared hour is the slider's hour
       assert.equal(+(await pg.$eval("#sw-slider", (e) => e.value)), IDX8, "slider at the shared hour");
       assert.match(await pg.$eval("#sw-read", (e) => e.textContent), /8 AM/);
@@ -123,7 +123,8 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
       const src = await pg.$eval("#sw-src", (e) => e.textContent);
       for (const s of ["Forecast (estimate): the same National Weather Service grid as the rest of this page (office DMX, cell 70,80, issued", "National Weather Service", "public domain", "USGS", "FAO-56", "Sprayers101", "SDSU Extension", "Check your product label"]) assert.ok(src.includes(s), s + " in: " + src);
       const links = await pg.$$eval("#sw-src a", (as) => as.map((a) => a.href));
-      for (const h of ["https://www.weather.gov/documentation/services-web-api", "sprayers101.com", "extension.sdstate.edu", "usgs.gov", "fao.org"]) assert.ok(links.some((l) => l.includes(h)), h);
+      for (const h of ["sprayers101.com", "extension.sdstate.edu", "usgs.gov", "fao.org"]) assert.ok(links.some((l) => l.includes(h)), h);
+      assert.ok(!links.some((l) => l.includes("weather.gov/documentation")), "the NWS API is named, not linked (Oct 29, 2026)");
       // nothing asked of anyone with a key, and the map came from USGS
       assert.ok(asked.some((u) => u.includes("basemap.nationalmap.gov")), "USGS tiles asked");
       assert.ok(!asked.some((u) => /key=|token=/i.test(u)));

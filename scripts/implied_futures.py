@@ -51,6 +51,8 @@ locations share one quote), so each line also counts operators.
     python3 scripts/implied_futures.py --replay 2026-10-28 --bids-git <bids clone> --prices-git <agsist clone> --out <dir>
     python3 scripts/implied_futures.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

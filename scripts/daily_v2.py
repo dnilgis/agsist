@@ -26,12 +26,21 @@ WHAT IS IN IT, top to bottom, about two phone screens:
               are not in that file and never reach here). No workings.
   Print of the day   scripts/print_of_day.py + render_print_of_day.mjs. No
               picture, no slot; the email never waits on it.
-  I didn’t know that  scripts/daily_fact.py, sourced every time.
+  Oh, that’s interesting  scripts/daily_fact.py, sourced every time (FACT_LABEL;
+              was "I didn’t know that", renamed by Sig Nov 1 2026).
   The board   one row per contract (Corn and Corn, Dec fold to one row when
               they are the same quote), stamped honestly: "Last trade 5:46
               a.m. CT, change from Tuesday's settle".
   Forward     "Forward to a neighbor" right under Today (Sig, Oct 23: the ask
               people see, not one under the footer).
+  Top stories (2026-11-01) the issue's other news items (outside_the_pit, 3 to 5),
+              each a linked title (the publisher's link from the news digest,
+              attached by code, no tracking added), one line, its tag and
+              source. Placed after Today, the forward ask and the reader's own
+              bids: the forward ask stays right under Today (Sig, Oct 23) and
+              the reader's bid is part of Today; the stories come before the
+              AGSIST-only slots so the day's news reads as one block. At most
+              one story also leads in Today (TODAY_STORIES), never twice.
   What to watch, the full-issue button, footer.
   Print of the day carries the Christmas order-by dates from
   data/rain-print.json (xmas_line), Oct 1 through the framed cutoff only.
@@ -70,6 +79,10 @@ SUBJECT_MAX = 45
 SUBJECT_HARD = 62
 TODAY_MIN, TODAY_MAX = 4, 6
 MAX_NEWS = 3
+FACT_LABEL = "Oh, that’s interesting"   # the fact slot (Sig, Nov 1 2026); the text email prints it in capitals
+TODAY_STORIES = 1      # top stories that may also be a Today line (the rest go to Top stories)
+EMAIL_STORIES = 3      # Top stories lines in the email; a 5th story stays on the web page (two phone screens)
+TODAY_WITH_STORIES = 4  # Today lines when the Top stories block is there (it carries the news)
 PRE_PAD = "&#847;&zwnj;&nbsp;" * 70
 SHARED_HOSTS = ("workers.dev", "github.io", "vercel.app", "pages.dev", "netlify.app", "herokuapp.com")
 SITE = "https://agsist.com"
@@ -192,15 +205,23 @@ def is_event(item):
 
 def news_items(daily):
     """News for Today and the subject: up to MAX_NEWS, each a line with a number.
-    [{text, field, kind: "news"}]. Events are left for What to watch."""
+    [{text, field, kind: "news"}]. Events are left for What to watch. At most
+    TODAY_STORIES of the top stories (a farm story first); the others are shown
+    once, under Top stories. A story line carries its publisher link."""
     out, seen = [], set()
+    cands = []
     for i, it in enumerate(daily.get("outside_the_pit") or []):
         if not isinstance(it, dict) or is_event(it):
             continue
         t = sentence(it.get("title"))
         if not t or not has_number(t):
             continue
-        out.append({"text": t, "field": "outside_the_pit[%d].title" % i, "kind": "news", "nums": _nums(t)})
+        x = {"text": t, "field": "outside_the_pit[%d].title" % i, "kind": "news", "nums": _nums(t)}
+        if story_link(it):
+            x.update(url=story_link(it), link=(it.get("source") or "Source").strip(), external=True)
+        cands.append(x)
+    cands.sort(key=lambda x: 0 if farm_story(x) else 1)      # stable: the writer's order within each
+    out += cands[:TODAY_STORIES]
     on = daily.get("one_number")
     if isinstance(on, dict) and on.get("value") and on.get("unit"):
         t = sentence("%s %s" % (BE.strip_md(on["value"]), BE.strip_md(on["unit"])))
@@ -214,6 +235,31 @@ def news_items(daily):
         seen |= big
         keep.append(x)
     return keep[:MAX_NEWS]
+
+
+def story_link(it):
+    """The story's publisher link when it is safe to put in front of a reader:
+    https, no shared host (BUILD-RULES 11), no user part."""
+    u = str((it or {}).get("link") or "").strip()
+    if not u.startswith("https://") or any(c.isspace() for c in u) or "@" in u.split("/")[2] or shared_host(u):
+        return ""
+    return u
+
+
+def top_stories(daily, items):
+    """The top stories not already a Today line, events left for What to watch.
+    [{title, body, tag, link, source}]."""
+    used = {x.get("field") for x in items}
+    out = []
+    for i, it in enumerate(daily.get("outside_the_pit") or []):
+        if not isinstance(it, dict) or not it.get("title") or is_event(it):
+            continue
+        if "outside_the_pit[%d].title" % i in used:
+            continue
+        out.append({"title": sentence(it.get("title")), "body": sentence(it.get("body")),
+                    "tag": BE.strip_md(it.get("tag") or "").strip().upper(), "link": story_link(it),
+                    "source": BE.strip_md(it.get("source") or "").strip()})
+    return out[:EMAIL_STORIES]
 
 
 def events(daily):
@@ -568,6 +614,8 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     # the subject's story leads the Today list
     lead = [x for x in items if x.get("field") == sfield or (sfrom == "market" and x.get("field") == sfield)]
     items = lead[:1] + [x for x in items if x not in lead[:1]]
+    if top_stories(daily, items):
+        items = items[:TODAY_WITH_STORIES]
     pre = preheader(local, items, subj, sfield)
     here = only_here(daily, rain, loc)
     if unsub_url and shared_host(unsub_url):
@@ -584,12 +632,14 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     pod = pod if (isinstance(pod, dict) and pod.get("image_url") and pod.get("why") and pod.get("make_url")) else None
     offer = BE.rain_print_offer(rain, today)
     cw = county_block(county)
-    slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact), "county": bool(cw)}
+    stories = top_stories(daily, items)
+    slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact), "county": bool(cw),
+             "top_stories": len(stories)}
     ask = county_ask_link(county_ask)
     html = _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
-                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask)
+                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories)
     text = _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
-                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask)
+                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories)
     html, text = tag_group(html, group, True), tag_group(text, group, False)
     return {"subject": subj, "subject_from": sfrom, "subject_field": sfield, "preheader": pre,
             "html": html, "text": text, "slots": slots, "items": items}
@@ -719,8 +769,30 @@ def _watch(daily):
     return out
 
 
+def _stories_html(stories):
+    """Top stories: a linked title, one line, tag and source. No tracking on a
+    publisher's link."""
+    if not stories:
+        return []
+    b = [_rule(), _label("Top stories", pad=14)]
+    for st in stories:
+        title = e(st["title"])
+        if st.get("link"):
+            title = '<a class="link" href="%s" style="color:%s;text-decoration:underline">%s</a>' % (
+                BE._href(e(st["link"])), INK, title)
+        src = e(st.get("source") or "")
+        # one paragraph per story, about two lines on a phone: the linked title,
+        # its line, the source in grey. The tag stays on the web page.
+        b.append('<tr><td class="ink" style="padding:5px 0 0;font-family:%s;font-size:14px;line-height:1.35;color:%s">'
+                 '<strong>%s.</strong>%s%s</td></tr>'
+                 % (SANS, INK, title.rstrip("."),
+                    (" " + e(st["body"])) if st.get("body") else "",
+                    (' <span class="mute" style="font-size:12px;color:%s">(%s)</span>' % (MUTE, src)) if src else ""))
+    return b
+
+
 def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
-               site_href, unsub_url, forward_url, today, county=None, county_ask=None):
+               site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None):
     date_display = BE.strip_md(daily.get("date")) or iso
     b = ['<div class="mute" style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;'
          'font-size:1px;line-height:1px">%s%s</div>' % (e(pre), PRE_PAD),
@@ -729,7 +801,10 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
     # Today
     b.append(_label("Today", pad=14))
     for x in items:
-        tail = (" " + _a(x["url"], x.get("link") or "More", camp, "today-" + x["kind"])) if x.get("url") else ""
+        if x.get("external"):        # a publisher's link: no tracking added
+            tail = " " + _a(x["url"], x.get("link") or "Source", None, None, cls="mute link", color=MUTE)
+        else:
+            tail = (" " + _a(x["url"], x.get("link") or "More", camp, "today-" + x["kind"])) if x.get("url") else ""
         b.append(_row('<span class="gold" style="color:%s">&bull;</span>&nbsp;&nbsp;%s%s' % (GOLD, e(x["text"]), tail),
                       pad="4px 0 0", size=16))
     if forward_url:
@@ -745,6 +820,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
     mine = BE.elevators_html(elevators)
     if mine:
         b.append(mine)
+    b += _stories_html(stories)
     # Only here
     if here or county:
         b.append(_rule())
@@ -771,10 +847,10 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
             b.append('<tr><td class="mute" style="padding:3px 0 0;font-family:%s;font-size:13px;line-height:1.45;color:%s">%s</td></tr>' % (SANS, MUTE, e(xl)))
     elif offer:
         b.append(_row(_a(offer[1], offer[0], camp, "rainprint", cls="link"), pad="14px 0 0", size=14))
-    # I didn’t know that
+    # Oh, that’s interesting (FACT_LABEL)
     if fact:
         b.append(_rule())
-        b.append(_label("I didn’t know that", pad=14))
+        b.append(_label(FACT_LABEL, pad=14))
         b.append(_row(e(fact["text"]), pad="2px 0 0"))
         src = (_a(fact["url"], fact["source"], None, None, cls="mute link", color=MUTE) if fact.get("url")
                else e(fact["source"] + ("; " + fact["file"] if fact.get("file") else "")))
@@ -833,9 +909,12 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
 
 
 def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
-               site_href, unsub_url, forward_url, today, county=None, county_ask=None):
+               site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None):
     L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso), "", "TODAY"]
     for x in items:
+        if x.get("external"):
+            L.append("- " + x["text"] + " " + x["url"])
+            continue
         L.append("- " + x["text"] + ((" " + BE.utm(x["url"], "today-" + x["kind"], camp)) if x.get("url") else ""))
     if forward_url:
         L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + BE.utm(forward_url, "forward", camp)]
@@ -843,6 +922,15 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
         L += ["", local["head"]] + (["  " + local["note"]] if local.get("note") else [])
     if isinstance(elevators, dict):
         L += BE._elevator_block_text(elevators)
+    if stories:
+        L += ["", "TOP STORIES"]
+        for st in stories:
+            head = " / ".join(x for x in (st.get("tag"), st.get("source")) if x)
+            L.append("- " + st["title"] + ((" (" + head + ")") if head else ""))
+            if st.get("body"):
+                L.append("  " + st["body"])
+            if st.get("link"):
+                L.append("  " + st["link"])
     if here or county:
         L += ["", "ONLY HERE"] + ["- %s %s" % (x["text"], BE.utm(SITE + x["url"], "onlyhere-" + x["kind"], camp)) for x in here]
         if county:
@@ -856,7 +944,7 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
     elif offer:
         L += ["", offer[0] + " " + BE.utm(offer[1], "rainprint", camp)]
     if fact:
-        L += ["", "I NEVER KNEW THAT", fact["text"],
+        L += ["", FACT_LABEL.upper(), fact["text"],
               "Source: " + fact["source"] + ((" " + fact["url"]) if fact.get("url") else ("; " + fact["file"] if fact.get("file") else ""))]
     rows = board_rows(daily)
     if rows:

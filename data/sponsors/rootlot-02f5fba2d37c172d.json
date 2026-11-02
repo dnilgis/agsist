@@ -2,8 +2,8 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Root Lot",
  "slug": "rootlot",
- "generated": "2026-10-29T17:25:27+00:00",
- "through": "2026-10-28",
+ "generated": "2026-11-01T17:07:04+00:00",
+ "through": "2026-10-31",
  "start": "2026-10-28",
  "countFrom": "2026-10-28",
  "liveSince": "2026-10-28",
@@ -11,7 +11,7 @@
  "definitionChanged": "2026-09-05",
  "slotSince": "2026-10-29",
  "totals": {
-  "viewable": 10,
+  "viewable": 40,
   "clicks": 0,
   "ctr": 0.0,
   "legacyImpressions": 0
@@ -19,19 +19,19 @@
  "windows": [
   {
    "days": 7,
-   "viewable": 10,
+   "viewable": 40,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 30,
-   "viewable": 10,
+   "viewable": 40,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 90,
-   "viewable": 10,
+   "viewable": 40,
    "clicks": 0,
    "ctr": 0.0
   }
@@ -42,9 +42,32 @@
    "v": 10,
    "l": 0,
    "c": 0
+  },
+  {
+   "d": "2026-10-29",
+   "v": 7,
+   "l": 0,
+   "c": 0
+  },
+  {
+   "d": "2026-10-30",
+   "v": 12,
+   "l": 0,
+   "c": 0
+  },
+  {
+   "d": "2026-10-31",
+   "v": 11,
+   "l": 0,
+   "c": 0
   }
  ],
  "byPage": [
+  {
+   "page": "/cash-bids",
+   "viewable": 3,
+   "clicks": 0
+  },
   {
    "page": "/",
    "viewable": 2,
@@ -56,12 +79,27 @@
    "clicks": 0
   },
   {
-   "page": "/about",
-   "viewable": 1,
+   "page": "/rent/texas",
+   "viewable": 2,
    "clicks": 0
   },
   {
-   "page": "/cash-bids",
+   "page": "/rain",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/webb-county",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/wood-county",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/about",
    "viewable": 1,
    "clicks": 0
   },
@@ -81,7 +119,107 @@
    "clicks": 0
   },
   {
-   "page": "/rent/texas",
+   "page": "/rain/louisiana/union-parish",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/schleicher-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/arc-plc/texas/ochiltree-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/cash-bids/company/premier-grain",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/california/tuolumne-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/minnesota/lake-of-the-woods-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/texas/wharton-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/angelina-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/hood-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/montgomery-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/stonewall-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/california",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/idaho",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/cash-bids/illinois/princeton",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/north-dakota/burke-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/prf",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/california/orange-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/california/san-diego-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/oklahoma",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/north-dakota",
    "viewable": 1,
    "clicks": 0
   }
@@ -208,12 +346,12 @@
  "regionAds": {
   "pending": false,
   "start": "2026-10-28",
-  "through": "2026-10-28",
+  "through": "2026-10-31",
   "rows": [
    {
     "code": "CA",
     "name": "California",
-    "viewable": 1,
+    "viewable": 8,
     "clicks": 0
    },
    {
@@ -225,12 +363,12 @@
    {
     "code": "TX",
     "name": "Texas",
-    "viewable": 9,
+    "viewable": 29,
     "clicks": 0
    }
   ],
   "elsewhere": {
-   "viewable": 0,
+   "viewable": 3,
    "clicks": 0
   }
  }

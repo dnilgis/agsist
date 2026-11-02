@@ -1,6 +1,41 @@
 {
- "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ by scripts/build_whats_new.py on main (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
+ "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
+  {
+   "id": "2026-11-01-dailyfacts",
+   "date": "2026-11-01",
+   "title": "A new fact in the Daily every morning",
+   "line": "The Daily's \"I didn't know that\" fact no longer comes back every two weeks, and it moves between topics: land, cattle, weather, markets, harvest and more.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-01-dailyfresh",
+   "date": "2026-11-01",
+   "title": "The Daily has top stories, and no reruns",
+   "line": "Each Daily now carries 3 to 5 top farm stories with links to the source, and never repeats a headline, number or story from the past week.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-10-31-letterzoom",
+   "date": "2026-10-31",
+   "title": "Read the sample letter full size",
+   "line": "On the Rain Print page, tap the sample letter in the box to open it large enough to read.",
+   "link": "/rain-print#rp-inbox"
+  },
+  {
+   "id": "2026-10-30-tapsize",
+   "date": "2026-10-30",
+   "title": "Easier to tap on a phone",
+   "line": "The grain bin depth slider and the hail map zoom buttons are bigger, so a thumb hits them the first time.",
+   "link": "/hail-map"
+  },
+  {
+   "id": "2026-10-30-rpxmas",
+   "date": "2026-10-30",
+   "title": "A Rain Print, made for you",
+   "line": "Rather not make the print yourself? Call or text Sig, or leave your number. He makes two or three versions to pick from; you pay only if you order.",
+   "link": "/rain-print"
+  },
   {
    "id": "2026-10-29-ratecard",
    "date": "2026-10-29",
@@ -65,6 +100,13 @@
    "link": "/cash-bids"
   },
   {
+   "id": "2026-10-29-changemap",
+   "date": "2026-10-29",
+   "title": "What changed, on a real map",
+   "line": "The Fast Facts county map now sits on a USGS map with towns and roads. Switch it between drought, bids, rent, sales and rain; tap a county for its line.",
+   "link": "/fast-facts#place"
+  },
+  {
    "id": "2026-10-29-farm-credit-cards",
    "date": "2026-10-29",
    "title": "Farm loan cards, shorter",
@@ -76,6 +118,13 @@
    "date": "2026-10-29",
    "title": "Field Scout reads more of our own data",
    "line": "Field Scout now uses free USGS maps, loads county cards even when a lookup is down, and shows last year's crop, rain vs normal and the nearest bid up top.",
+   "link": "/field-scout"
+  },
+  {
+   "id": "2026-10-29-landkeys",
+   "date": "2026-10-29",
+   "title": "Sales in your section first",
+   "line": "Field Scout's sold land list puts sales in your field's own section, or one touching it, at the top and marks them, read from the legal descriptions.",
    "link": "/field-scout"
   },
   {
@@ -112,6 +161,13 @@
    "title": "Private ag raises on Ag stocks",
    "line": "Ag stocks now lists farm companies raising money online, with their SEC filings and how past raises turned out. These are high risk and hard to sell.",
    "link": "/ag-stocks"
+  },
+  {
+   "id": "2026-10-29-quickwins",
+   "date": "2026-10-29",
+   "title": "Every price says how old it is",
+   "line": "Futures show their delay and a stale flag at the price, old cash bids show their posted date, and COT and crop conditions name survey and release days up top.",
+   "link": "/cash-bids"
   },
   {
    "id": "2026-10-28-farm-credit",

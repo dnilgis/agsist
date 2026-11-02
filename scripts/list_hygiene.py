@@ -24,6 +24,8 @@ the repository and its logs are public.
   python3 scripts/list_hygiene.py --dry-run   report what it would do, change nothing
   python3 scripts/list_hygiene.py --selftest  fixtures, no network
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import email, hashlib, hmac, imaplib, json, os, re, smtplib, sys, urllib.parse, urllib.request
 from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage

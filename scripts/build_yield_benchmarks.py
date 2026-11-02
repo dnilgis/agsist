@@ -34,6 +34,8 @@ WHAT IT REFUSES TO DO:
 
 Stdlib only. No secrets, no network.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

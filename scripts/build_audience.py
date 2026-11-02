@@ -54,6 +54,8 @@ It does not touch the AI-citation figures. Bing publishes those in its
 dashboard and has no API for them; they come from an export
 (scripts/audience_from_exports.py) and carry that export's dates.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

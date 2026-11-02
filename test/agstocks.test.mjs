@@ -46,7 +46,7 @@ test('every baked close is the stored Yahoo row for its date, and prints as stor
   }
   const rowsWithClose = (PAGE.match(/<tr data-t="[A-Z.]+" data-close=/g) || []).length;
   assert.equal(n, rowsWithClose, 'every row with a close was checked');
-  if (n) assert.match(PAGE, /<caption>Closes [A-Z][a-z]{2} \d{1,2}, \d{4} &middot; <a href="https:\/\/finance\.yahoo\.com\/"[^>]*>Yahoo Finance<\/a>, delayed<\/caption>/, 'table caption: date and Yahoo credit');
+  if (n) assert.match(PAGE, /<caption>Closes [A-Z][a-z]{2} \d{1,2}, \d{4} &middot; Yahoo Finance, delayed<\/caption>/, 'table caption: date and Yahoo credit (named, not linked)');
 });
 
 test('the index level on the page is the last stored level, with its source and date; before the base it says only "Starts Nov 2"', () => {
@@ -62,7 +62,7 @@ test('the index level on the page is the last stored level, with its source and 
   assert.ok(m, 'level present');
   assert.equal(Number(m[1]), last.v);
   assert.equal(m[2], last.d);
-  assert.match(PAGE, /<p class="ags-src">Closes: <a href="https:\/\/finance\.yahoo\.com\/"[^>]*>Yahoo Finance<\/a>, delayed, as of [A-Z][a-z]{2} \d{1,2}, \d{4} close\.<\/p>/);
+  assert.match(PAGE, /<p class="ags-src">Closes: Yahoo Finance, delayed, as of [A-Z][a-z]{2} \d{1,2}, \d{4} close\.<\/p>/);
   assert.match(PAGE, /share prices of suppliers \/ buyers, not fertilizer or grain prices/);
   if (last.held) assert.doesNotMatch(PAGE.match(/<section class="ags-ix"[\s\S]*?<\/section>/)[0], /0\.00%/, 'a held day is never shown as 0%');
 });

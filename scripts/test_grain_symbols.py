@@ -15,6 +15,8 @@ What it pins:
      has expired (dnilgis/flashgrain and the pages read these keys, so one
      disappearing early is a break), and expired keys are never fetched live.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 from datetime import date, datetime, timedelta, timezone

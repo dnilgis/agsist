@@ -39,6 +39,8 @@ Limits, stated so nobody reads more into the numbers than is there:
     python3 scripts/site_inventory.py             # write data/site-inventory.json
     python3 scripts/site_inventory.py --selftest  # offline unit checks
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import os

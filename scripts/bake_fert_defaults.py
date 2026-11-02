@@ -32,6 +32,8 @@ scripts/bake_seo.py reads CROP_DEFAULTS for its example, so run this first.
   python3 scripts/bake_fert_defaults.py --check   exit 1 if stale
   python3 scripts/bake_fert_defaults.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import re

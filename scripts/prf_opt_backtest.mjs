@@ -39,6 +39,7 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const require = createRequire(import.meta.url);

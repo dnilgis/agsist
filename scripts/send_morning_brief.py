@@ -46,6 +46,8 @@ Optional env:
   FORCE_SEND=1    — bypass the send guard (only for a manually verified briefing)
 ─────────────────────────────────────────────────────────────────
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

@@ -17,6 +17,8 @@ change is the WASDE PDF's own "prev" column.
 
     python3 scripts/usda_current.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

@@ -46,6 +46,8 @@ Env: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional: SMTP_HOST,
 SMTP_PORT, FROM_ADDR, RP_FROM_NAME (default "Sig at AGSIST"), SIG_TO.
 Run by .github/workflows/rp-design-email.yml.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import base64
 import datetime as dt
 import html as H

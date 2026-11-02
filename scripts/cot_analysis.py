@@ -40,6 +40,8 @@ push the same way.
 
 If that leaves a market with nothing to say, nothing is the output.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import math

@@ -19,6 +19,8 @@ v1.2 - 2026-10-10 each page lists that state's storm days (data/hail/storm-days.
        Avg/yr is reports over the elapsed span of the record, not the file count.
 `--selftest` runs hand-worked checks and exits.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

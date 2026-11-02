@@ -170,7 +170,7 @@
          Source: Natural Earth 1:50m admin-1, public domain, no attribution
          required. Rebuilt by build/make_outline.sh. */
       var OUTLINE_URL = '/data/us-states.geo.json';
-      var ATTR = 'Boundaries: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (public domain)';
+      var ATTR = 'Boundaries: Natural Earth (public domain)';
       var PALETTE = {
         dark:  { fill: '#141a1b', stroke: '#2b3335', page: '#0e1211' },
         /* THE LIGHT FILL IS NEARLY WHITE ON PURPOSE. At #e7ece8 the grey

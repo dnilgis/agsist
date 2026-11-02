@@ -1,5 +1,5 @@
 {
- "note": "One shared glossary. components/glossary.js marks the first use of each term inside a page's main content; scripts/build_glossary.py writes /glossary from this file. match: JavaScript regex sources (flags in 'flags', default 'i'); when a pattern has a group 1, only that part is marked. Definitions stay short and plain, no em dashes.",
+ "note": "One shared glossary. The first use of each term inside a page's main content is marked, and /glossary is written from this file. match: JavaScript regex sources (flags in 'flags', default 'i'); when a pattern has a group 1, only that part is marked. Definitions stay short and plain, no em dashes.",
  "updated": "2026-10-18",
  "terms": [
   {

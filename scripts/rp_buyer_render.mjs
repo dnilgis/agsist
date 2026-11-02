@@ -32,6 +32,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { join } from "node:path";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const MAKER_HASH = /var MAKER_HASH = '([0-9a-f]{64})'/.exec(readFileSync(ROOT + "components/rain-print.js", "utf8"))[1];

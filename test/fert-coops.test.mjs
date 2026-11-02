@@ -43,7 +43,8 @@ test("section: middle price only where the file gives one, every co-op named and
   assert.match(h, /one co-op: Test sheet co-op/, "UAN 32 from one co-op: no middle price, the co-op named");
   assert.match(h, /\$980<\/div><div class="fpc-unit">\$\/ton cash<\/div><div class="fpc-loc">average of 2 co-ops/, "MAP from two co-ops: their average, said so");
   assert.match(h, /\$420<\/div><div class="fpc-unit">\$\/ton cash<\/div><div class="fpc-loc">average of 2 co-ops/, "Thio-Sul: 390 and 450 average to 420");
-  for (const c of FEED.coops) assert.ok(h.includes('href="' + c.url + '"'), c.name + " linked");
+  // each co-op is named as the source; its price page is not linked (no direct links to data sources, Oct 29, 2026)
+  for (const c of FEED.coops) assert.ok(h.includes(c.name) && !h.includes('href="' + c.url + '"'), c.name + " named, not linked");
   assert.match(h, /Call to confirm/);
   assert.ok(!/—/.test(h), "no em dashes");
 });

@@ -22,6 +22,8 @@ the data the page was built from.
   python3 scripts/stories_core.py selftest prf
   python3 scripts/stories_core.py bundle prf OUT.json
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

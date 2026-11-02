@@ -43,6 +43,8 @@ WHAT THIS FILE WILL NOT DO
     python3 scripts/fetch_cull_cows.py          (fetches; the workflow runs it
                                                  through fetch_cattle_auction.py)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import re

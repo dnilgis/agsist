@@ -117,7 +117,7 @@ def build(sheet_name, cells, elevators, read="2026-10-28", sha=None, url=URL):
         "schema": SCHEMA,
         "note": ("Grain warehouse keepers licensed by Wisconsin DATCP, one row per warehouse keeper license, at the "
                  "city of the license's mailing address. The list gives no storage capacity. id: the AGSIST "
-                 "elevator id when exactly one of our facilities matches (scripts/licensed_storage.py); unjoined "
+                 "elevator id when exactly one of our facilities matches; unjoined "
                  "and ambiguous rows are listed, never guessed."),
         "source": {"name": SOURCE_LONG, "short": SOURCE_NAME, "url": url, "as_of": as_of, "read": read,
                    "sha256": sha},

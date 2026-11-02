@@ -16,6 +16,8 @@ is the only failure worth failing for.
 
     python3 scripts/test_rate_card.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import subprocess

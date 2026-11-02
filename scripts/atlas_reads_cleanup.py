@@ -37,6 +37,8 @@ THE NUMBER CHECK
     python3 scripts/atlas_reads_cleanup.py --check     # counts only, writes nothing
     python3 scripts/atlas_reads_cleanup.py             # rewrites data/atlas/reads.json
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import hashlib
 import json
 import os

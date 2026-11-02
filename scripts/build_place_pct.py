@@ -19,6 +19,8 @@ state keeps its own number and year, unranked, with the reason.
 
 Built only from files already in the repo; no network.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import collections
 import json
 import math
@@ -387,7 +389,7 @@ def build(root=REPO):
             counties[f] = row
         doc = {
             "schema": SCHEMA,
-            "note": "Built by scripts/build_place_pct.py from data/atlas/counties/*.json. Do not edit. v: one value per metric (null: not ranked, reason in w; a figure from another year in o). u: [metric, neighbor median, neighbors with the figure, distance in national middle-half widths]. Ranks are among this state's counties with the figure.",
+            "note": "Farmland Atlas county figures for this state, as each county file dates and credits them. v: one value per metric (null: not ranked, reason in w; a figure from another year in o). u: [metric, neighbor median, neighbors with the figure, distance in national middle-half widths]. Ranks are among this state's counties with the figure.",
             "state": st,
             "name": STATE_NAMES[st],
             "atlas_generated": generated,
@@ -398,7 +400,7 @@ def build(root=REPO):
         }
         files[os.path.join(root, "data", "atlas", "pct", st + ".json")] = json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + "\n"
     files[os.path.join(root, "data", "atlas", "pct", "index.json")] = json.dumps(
-        {"schema": SCHEMA, "note": "Every county: [name, state]. Built by scripts/build_place_pct.py.", "atlas_generated": generated,
+        {"schema": SCHEMA, "note": "Every county in the Farmland Atlas: [name, state].", "atlas_generated": generated,
          "counties": dict(sorted(index.items()))}, ensure_ascii=False, separators=(",", ":")) + "\n"
     return files
 

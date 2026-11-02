@@ -48,6 +48,8 @@ worker has one list) and the forward-to-a-neighbor link.
     DRY_RUN=1 python3 scripts/send_report_day.py    render, send nothing
     python3 scripts/send_report_day.py --date 2026-09-30 --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

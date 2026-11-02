@@ -552,8 +552,8 @@ test("type, keyboard and screen reader fixes", () => {
   assert.ok(!HTML.includes('id="rp-m6row"'), "five days at most");
   assert.ok(!/<datalist|list="rp-labels"/.test(HTML), "no datalist");
   // the label boxes start empty; the only hint says what goes there and how much fits, never example words (2026-10-15)
-  assert.equal((HTML.match(/id="rp-m\dl"[^>]*maxlength="13" placeholder="What happened \(13 letters\)"/g) || []).length, 5);
-  assert.ok(!/id="rp-m\dl"[^>]*placeholder="(?!What happened \(13 letters\))/.test(HTML), "no other hint that looks filled in");
+  assert.equal((HTML.match(/id="rp-m\dl"[^>]*maxlength="13" placeholder="What happened"/g) || []).length, 5);
+  assert.ok(!/id="rp-m\dl"[^>]*placeholder="(?!What happened")/.test(HTML), "no other hint that looks filled in");
   assert.match(HTML, /Mark a day <span class="rp-step-opt">\(up to 5\)<\/span>/);
   assert.match(HTML, /id="rp-dates-max" hidden>5 days is the most that fits\. Remove one to mark another\.</);
   assert.match(HTML, /\.rp-date \[aria-invalid="true"\]\{border-color:var\(--red\)/, "a bad day's lists get a red border");
@@ -606,7 +606,7 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   const picks = [...HTML.matchAll(/name="rp-product" value="([a-z0-9]+)"( checked)?/g)].map((m) => m[1] + (m[2] ? "*" : ""));
   assert.deepEqual(picks, ["framed12x18*", "print12x18", "digital"]);
   // 2026-10-20 (Sig, "do all"): under Pay, the date line, then the promise: numbered, and Sig's guarantee (test/rain-print-conv.test.mjs)
-  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<!--[\s\S]*?-->\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>/);
+  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>/);
   assert.match(S2, /'You see a proof first\. ' \+ GUARANTEE/, "the file gets the proof email too (2026-10-20)");
   // 2026-10-22: the comparison is the Usual year switch in the Layers card (Off, 30-yr normal, This station); what each
   // means is in Questions

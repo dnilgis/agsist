@@ -10,6 +10,8 @@ Discipline note (HANDOFF 2026-08-09 §4B): several of these tests were run
 against the PRE-change build_scorecard.py first and FAILED there (no
 by_design, no instrument on records) — they bite.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import sys
 import tempfile

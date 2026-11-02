@@ -169,7 +169,8 @@ test("page: head, canonical, byline, JSON-LD, baked tables match the math", () =
   assert.match(page, /<tr><th scope="row">28%<\/th><td>20,624<\/td><td>0\.224<\/td><td>0\.0172<\/td><\/tr>/);
   assert.match(page, /gq\/gq-3\.html/);
   assert.match(page, /cropnews\/2022\/10\/options-fall-grain-drying-and-marketing/);
-  assert.match(page, /Post%20Harvest%20Tips%20for%20Later%20Maturing%20Corn/);
+  assert.match(page, /Post-harvest tips for later maturing corn/);
+  assert.doesNotMatch(page, /Post%20Harvest%20Tips%20for%20Later%20Maturing%20Corn/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   assert.match(page, /class="hw-est">Estimate</);
   for (const s of ["/components/bids-network.js", "/components/grain-shrink.js", "/components/harvest-wait.js", "/components/harvest-wait-ui.js"])
     assert.ok(page.indexOf(s) > 0, s);

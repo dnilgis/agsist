@@ -21,6 +21,8 @@ old, or anything dated after today is left out. No fact, no line.
 
 Selftest: python3 scripts/moved_line.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html as H
 import json
 import sys

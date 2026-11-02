@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 103,
- "with_known_cadence": 103,
+ "count": 96,
+ "with_known_cadence": 96,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -446,43 +446,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/cot-deep.json",
-   "pages": [
-    "usda-calendar.html"
-   ],
-   "written_by": [
-    "COT Deep History Rebuild",
-    "COT Release Watch",
-    "Fetch COT Data"
-   ],
-   "touched_by": [
-    "COT Deep History Rebuild",
-    "COT Release Watch",
-    "Fetch COT Data"
-   ],
-   "cadence": "11 launches on a fixed schedule at about 4am, 2pm, 3pm, 4pm Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "20 9 * * 0",
-    "13,43 19-21 * * 1-5",
-    "47 19 * * 5",
-    "17 20 * * 5",
-    "47 20 * * 5",
-    "17 21 * * 5",
-    "47 19 * * 1",
-    "17 20 * * 1",
-    "47 20 * * 1",
-    "17 21 * * 1",
-    "33 21 * * *"
-   ],
-   "max_gap_hours": 23.8,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/cot-history.json",
    "pages": [
     "cot.html"
@@ -634,50 +597,6 @@
    "max_gap_hours": 127.7,
    "quiet": "weekly",
    "why_quiet": "USDA Crop Progress is a Monday afternoon release, in season only."
-  },
-  {
-   "path": "data/cull-cows.json",
-   "pages": [
-    "cattle-auction-prices.html",
-    "milk-prices.html"
-   ],
-   "written_by": [
-    "Cattle auction prices"
-   ],
-   "touched_by": [
-    "Cattle auction prices"
-   ],
-   "cadence": "2 launches on a fixed schedule at about 9am, 8pm Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "23 1 * * 2-6",
-    "37 14 * * 1-5"
-   ],
-   "max_gap_hours": 61.2,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/custom-rates/blend.json",
-   "pages": [
-    "custom-rates.html"
-   ],
-   "written_by": [],
-   "touched_by": [
-    "Rebuild Feed Manifest"
-   ],
-   "cadence": "maintained by hand, not on a schedule",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
   },
   {
    "path": "data/custom-rates/index.json",
@@ -887,7 +806,6 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
-    "cash-bids.html",
     "index.html",
     "sponsor-kit.html"
    ],
@@ -1978,7 +1896,6 @@
    "path": "data/prf/meta.json",
    "pages": [
     "index.html",
-    "prf-sponsor.html",
     "prf.html"
    ],
    "written_by": [
@@ -2212,18 +2129,11 @@
    "path": "data/rain-print.json",
    "pages": [
     "birth-year-weather-gift.html",
-    "cattle-futures-prices.html",
-    "corn-futures-prices.html",
     "farm-anniversary-gifts.html",
     "farmer-retirement-gifts.html",
     "gifts-for-farmers.html",
-    "index.html",
-    "markets.html",
     "rain-gauge.html",
-    "rain-print.html",
-    "soybean-futures-prices.html",
-    "wedding-year-weather-gift.html",
-    "wheat-futures-prices.html"
+    "wedding-year-weather-gift.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2342,33 +2252,8 @@
    "why_quiet": null
   },
   {
-   "path": "data/site-usage.json",
-   "pages": [
-    "tools.html"
-   ],
-   "written_by": [
-    "Site usage (GA4 + Search Console, 90 days)"
-   ],
-   "touched_by": [
-    "SEO weekly (index check + what to fix)",
-    "Site usage (GA4 + Search Console, 90 days)"
-   ],
-   "cadence": "1 launch every day at about 9am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "37 14 2 * *"
-   ],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/sponsor-slots.json",
    "pages": [
-    "prf-sponsor.html",
     "sponsor.html"
    ],
    "written_by": [
@@ -2468,66 +2353,6 @@
    "url": null,
    "crons": [
     "33 12 15 * *"
-   ],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/storage/history.json",
-   "pages": [
-    "basis.html"
-   ],
-   "written_by": [
-    "storage"
-   ],
-   "touched_by": [
-    "conditions",
-    "Fetch Crop Progress",
-    "Dairy prices",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Fetch Prices",
-    "storage"
-   ],
-   "cadence": "3 launches every day at about 2am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "35 7 20 1 *",
-    "35 7 1,14 10 *",
-    "35 7 14 11 *"
-   ],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/storage/storage.json",
-   "pages": [
-    "basis.html"
-   ],
-   "written_by": [
-    "storage"
-   ],
-   "touched_by": [
-    "conditions",
-    "Fetch Crop Progress",
-    "Dairy prices",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Fetch Prices",
-    "storage"
-   ],
-   "cadence": "3 launches every day at about 2am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "35 7 20 1 *",
-    "35 7 1,14 10 *",
-    "35 7 14 11 *"
    ],
    "max_gap_hours": null,
    "quiet": null,
@@ -2776,7 +2601,6 @@
   {
    "path": "data/whats-priced-in.json",
    "pages": [
-    "index.html",
     "usda-calendar.html"
    ],
    "written_by": [
@@ -2871,43 +2695,6 @@
     "18 15 * * 3,4"
    ],
    "max_gap_hours": 108.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/yield-panel.json",
-   "pages": [
-    "conditions.html"
-   ],
-   "written_by": [
-    "yield-panel"
-   ],
-   "touched_by": [
-    "ARC/PLC refresh",
-    "cash-bid-pages",
-    "cond-yield",
-    "Fetch COT Data",
-    "county rain",
-    "Fetch Crop Progress",
-    "Dairy prices",
-    "Bake farm-bill page",
-    "Harvest price tracker",
-    "lrp",
-    "Build Price Stats (5-year percentile)",
-    "Monthly county rain email",
-    "Share images",
-    "Build State Stats (USDA NASS)",
-    "yield-panel"
-   ],
-   "cadence": "1 launch every day at about 11pm Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "24 4 * * *"
-   ],
-   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   }

@@ -163,7 +163,7 @@
     m.ivs.forEach(function (iv) { h += ivHtml(iv, m.through); });
     h += '<p class="pn-fine pn-src"><b>An estimate, not RMA&rsquo;s index.</b> Rain from NOAA NCEI&rsquo;s nClimGrid on RMA&rsquo;s grid, the data RMA builds the index from, with daily grids through ' + fmtDateY(m.through) +
       ' (NCEI runs 3 days behind). Until both months are final, the index RMA publishes can differ. It is not a forecast. ' +
-      accLine(m.acc) + cpcLine(m.acc, m.ivs) + ' <a href="https://www.ncei.noaa.gov/pub/data/cirs/usda/" rel="noopener">NCEI data</a></p>';
+      accLine(m.acc) + cpcLine(m.acc, m.ivs) + ' NCEI data</p>';
     return h;
   }
 

@@ -37,6 +37,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const args = process.argv.slice(2);
 const SELFTEST = args[0] === '--selftest';

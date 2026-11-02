@@ -67,6 +67,8 @@ Sends individually (one To: per message — no exposed CC lists, better
 deliverability), throttled, with a List-Unsubscribe header. Individual
 failures are reported and tolerated; total failure exits nonzero.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import hashlib
 import json
 import os

@@ -18,6 +18,8 @@ on its staged copy) and the API job bundles are redacted when they are built.
 Each match becomes "[redacted]". The patterns never contain a quote, a
 backslash or a newline in what they replace, so a JSON file stays valid JSON.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import math
 import os
 import re

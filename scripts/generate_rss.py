@@ -4,6 +4,8 @@ generate_rss.py — Build feed.xml from data/daily-archive/index.json
 Run via GitHub Actions after every daily briefing push.
 Output: /feed.xml (root of repo / served at agsist.com/feed.xml)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

@@ -37,6 +37,8 @@ The unsubscribe link is the same signed token as the daily's
 (send_watch.token, the worker's hmac16) with &topic=, so it stops this one
 notice and nothing else.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import html as H
 import json

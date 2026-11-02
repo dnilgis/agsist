@@ -169,7 +169,7 @@ test("ZIP in May: station frost odds, heat units by hand, county dates, soil tre
     const asof = await txt(pg, "#st-asof");
     assert.match(asof, /Soil: measured at Testville Soil \(Wisconet\), 4 mi, last day 2027-05-04\./);
     assert.match(asof, /Air: the forecast for this hour, National Weather Service \(NDFD grid, ARX 30,60\), issued May 5/);
-    assert.equal(await pg.$eval("#st-asof a", (a) => a.href), "https://wisconet.wisc.edu/");
+    assert.equal(await pg.$$eval("#st-asof a", (as) => as.length), 0, "Wisconet named, not linked (no direct links to data sources, Oct 29, 2026)");
     // A planned date adds its own row.
     await pg.click("#pd-local"); // no-op focus
     await pg.$eval("details.pd-more", (d) => (d.open = true));

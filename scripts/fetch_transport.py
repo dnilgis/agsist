@@ -25,6 +25,8 @@ Fail-loud: zero rows from any dataset exits 1 (red workflow beats a
 silently stale page). Retry/backoff on transport errors. --selftest is
 offline and gates the workflow.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import math
 import os

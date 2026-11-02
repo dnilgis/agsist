@@ -18,6 +18,8 @@ FOUR THINGS A READER CAUGHT IN ONE SUNDAY ISSUE (2026-10-11), PINNED.
 
 Fixtures only: no network, no model call, nothing sent.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os
 import sys
 from datetime import date, datetime as _real_dt

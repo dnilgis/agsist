@@ -67,7 +67,8 @@ def public_url(endpoint, q):
 class Client:
     def __init__(self, key, fetch=None):
         self.key = key or ""
-        self.fetch = fetch or Fetcher(min_gap=1.0, ok=(200, 400, 404))   # a 400 carries NASS's reason ("no data")
+        # a 400 carries NASS's reason ("no data"); 403 and 413 come back too so the reason is logged (rule 20)
+        self.fetch = fetch or Fetcher(min_gap=1.0, ok=(200, 400, 403, 404, 413))
 
     def _get(self, endpoint, q):
         u = BASE + endpoint + "/?" + urllib.parse.urlencode(dict(q, key=self.key, format="JSON"))
@@ -82,6 +83,9 @@ class Client:
         if status == 200:
             return doc
         err = " ".join(doc.get("error") or []) if isinstance(doc, dict) else ""
+        if not err and body:                 # not JSON: the first line of the body, never the key
+            err = body.decode("utf-8", "replace").strip().splitlines()[0] if body.strip() else ""
+            err = err.replace(self.key, "***") if self.key else err
         if "no data" in err.lower():
             return {"count": 0, "data": []}
         raise FetchError(f"{endpoint}: HTTP {status} {err[:120]}")
@@ -113,16 +117,30 @@ def fetch_chunk(cli, stat, year):
             total = n
         if n == 0:
             continue
-        if n > LIMIT:
+        def split():
             if "agg_level_desc" not in q:
-                plan += [dict(q, agg_level_desc="NATIONAL"), dict(q, agg_level_desc="STATE")]
-                plan += [dict(q, agg_level_desc=lv) for lv in ("REGION : MULTI-STATE",)]
-                continue
+                return [dict(q, agg_level_desc="NATIONAL"), dict(q, agg_level_desc="STATE")] + \
+                    [dict(q, agg_level_desc=lv) for lv in ("REGION : MULTI-STATE",)]
             if q["agg_level_desc"] == "STATE" and "state_alpha" not in q:
-                plan += [dict(q, state_alpha=s) for s in STATES]
-                continue
-            raise FetchError(f"{stat} {year} {q.get('agg_level_desc')} {q.get('state_alpha', '')}: {n} rows, over the limit and no smaller split")
-        got = cli.rows(q)
+                return [dict(q, state_alpha=s) for s in STATES]
+            return None
+        if n > LIMIT:
+            more = split()
+            if more is None:
+                raise FetchError(f"{stat} {year} {q.get('agg_level_desc')} {q.get('state_alpha', '')}: {n} rows, over the limit and no smaller split")
+            plan += more
+            continue
+        try:
+            got = cli.rows(q)
+        except FetchError as e:
+            # Oct 29: condition/2015 was counted (under the limit) but its rows came back 403
+            # twice. A refused big read is asked again in smaller parts; a refused smallest part fails.
+            more = split()
+            if more is None:
+                raise
+            print(f"  {stat} {year} {q.get('agg_level_desc', 'all')}: rows refused ({str(e)[:160]}); asking in smaller parts")
+            plan += more
+            continue
         if len(got) != n:
             raise FetchError(f"{stat} {year}: {len(got)} rows read where NASS counted {n}")
         out += got
@@ -255,6 +273,20 @@ def selftest():
         rows, count, parts = fetch_chunk(cli2, "PROGRESS", 2025)
         ck("split: national + one call per state", len(rows) == len(sample) and {"agg_level_desc": "NATIONAL"} in parts
            and {"agg_level_desc": "STATE", "state_alpha": "IA"} in parts, parts)
+        # a whole-year read refused (403) although counted under the limit: asked again by level and state
+        def refuse_whole(u):
+            q = {k: v[0] for k, v in urllib.parse.parse_qs(urllib.parse.urlsplit(u).query).items()}
+            if "/api_GET/" in u and "agg_level_desc" not in q:
+                return 403, b"<html>Forbidden</html>", {}
+            return make_opener()(u)
+        cli4 = Client(KEY, Fetcher(min_gap=0, opener=refuse_whole, sleep=lambda s: None, ok=(200, 400, 403, 404, 413)))
+        rows, count, parts = fetch_chunk(cli4, "PROGRESS", 2025)
+        ck("refused whole read: split, every row read", len(rows) == len(sample) == count and "all" not in parts, parts)
+        try:
+            cli4._get("api_GET", query("PROGRESS", 2025))
+            ck("a 403 body's first line is in the error", False)
+        except FetchError as e:
+            ck("a 403 body's first line is in the error, never the key", "Forbidden" in str(e) and KEY not in str(e), str(e))
         # a refused key: reported, the key not in the message
         logs = []
         cli3 = Client(KEY, Fetcher(min_gap=0, opener=make_opener(refuse=True), sleep=lambda s: None))

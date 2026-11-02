@@ -1257,7 +1257,7 @@ function fetchKalshiMarkets() {
           + '<div style="margin-top:.75rem;font-size:.78rem">'
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Browse Kalshi \u2192</a>'
           + '<span style="color:var(--text-muted);margin:0 .5rem">\u00B7</span>'
-          + '<a href="https://polymarket.com" target="_blank" rel="noopener" style="color:var(--gold)">Browse Polymarket \u2192</a></div></div>';
+          + 'Browse Polymarket \u2192</div></div>';
         return;
       }
 
@@ -1319,7 +1319,7 @@ function fetchKalshiMarkets() {
         loading.innerHTML = ''
           + 'The prediction markets did not load. '
           + '<a href="https://kalshi.com/markets" target="_blank" rel="noopener" style="color:var(--gold)">Kalshi \u2192</a> \u00B7 '
-          + '<a href="https://polymarket.com" target="_blank" rel="noopener" style="color:var(--gold)">Polymarket \u2192</a>';
+          + 'Polymarket \u2192';
       }
     });
 }
@@ -1397,12 +1397,7 @@ function buildMarketCard(m, showExtras) {
       + 'padding-top:.35rem;border-top:1px solid var(--border);margin-top:.1rem">'
       + '<span style="font-size:.66rem;color:var(--text-muted)">NO: '
         + (m.no || (100 - yes)) + '%' + (volStr ? ' \u00B7 ' + volStr : '') + '</span>'
-      + '<a href="' + m.url + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" '
-        + 'style="font-size:.64rem;color:' + color + ';text-decoration:none;font-weight:600;'
-        + 'border:1px solid currentColor;border-radius:4px;padding:.12rem .4rem;'
-        + 'white-space:nowrap;transition:opacity .15s"'
-        + ' onmouseenter="this.style.opacity=\'.8\'" onmouseleave="this.style.opacity=\'1\'">'
-        + 'View Market \u2192</a>'
+      + '<span style="font-size:.64rem;color:var(--text-muted);white-space:nowrap">Polymarket</span>'
     + '</div>';
 
   return div;

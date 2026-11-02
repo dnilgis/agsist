@@ -33,6 +33,8 @@ USAGE
   python scripts/stamp_prf.py --check    # exit 1 if prf.html is not what this would write
   python scripts/stamp_prf.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import html
 import json

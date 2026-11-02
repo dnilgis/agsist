@@ -3,6 +3,8 @@
 first-published stamps, the Google News sitemap window, Central-time dates,
 the dateline and the one-headline rule. No network, writes only to a temp dir.
 test/daily-news.test.mjs runs this."""
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

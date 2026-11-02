@@ -20,6 +20,8 @@ Idempotence: one run per MESH day; the workflow chains to mesh.yml, which
 runs once daily, so a subscriber gets at most one email per swath day.
 Requires: shapely (installed by the workflow).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import math
 import os

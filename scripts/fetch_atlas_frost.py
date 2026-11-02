@@ -38,6 +38,8 @@ USAGE
   python scripts/fetch_atlas_frost.py --selftest
   python scripts/fetch_atlas_frost.py              # needs pyarrow
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import io
 import json

@@ -27,6 +27,8 @@ v1.2 — 2026-07-03 (hail-map added to both lists)
 v1.1 — 2026-07-03 (added the weekly-changing pages to DATEMOD_ONLY: urea,
          ag-odds, cot, whats-priced-in, drought-monitor)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import html as H
 import json
@@ -1160,6 +1162,19 @@ def harvest_lead(cp, rd):
             'table</a>. A dash means USDA did not report that crop for that state this week.</p></div></section>')
 
 
+def _cp_released(rd):
+    """', released Mon, Oct 26' for the Crop Progress week ending `rd` (usda_dates), or ''."""
+    try:
+        import usda_dates
+        from datetime import timedelta
+        r = usda_dates.crop_progress_date(rd + timedelta(days=1))
+    except Exception:
+        return ""
+    if not r or r <= rd:
+        return ""
+    return ", released %s, %s" % (r.strftime("%a"), _mdy(r).rsplit(",", 1)[0])
+
+
 def seed_conditions(today):
     cp = _load_json("data/crop-progress.json")
     cj = _load_json("data/conditions/conditions.json")
@@ -1191,7 +1206,9 @@ def seed_conditions(today):
         vsent = (f"US corn is rated <b>{ge:g}% good or better</b> for the week ending {_mdy(rd)} "
                  f"(USDA NASS). Pick a state for its rank against the same week in past years.")
         # first-screen line: the week and the national numbers, before any state
-        wk = f"Week ending {_mdy(rd)} (USDA NASS): US corn <b>{ge:g}%</b> good-to-excellent"
+        # Benchmark review, Oct 29, 2026: the survey week and the day USDA released it, plainly at the
+        # top (Crop Progress is out the Monday after the week ends, or the next business day).
+        wk = f"Week ending {_mdy(rd)}{_cp_released(rd)} (USDA NASS): US corn <b>{ge:g}%</b> good-to-excellent"
         if soy.get("good_excellent") is not None and sd == rd:
             wk += f", soybeans <b>{soy['good_excellent']:g}%</b>"
         bits = []
@@ -1605,7 +1622,6 @@ def storage_basis(j, today):
 
 FARMDOC = ("farmdoc daily (Dhakal and Janzen, &ldquo;Enough Room for the Harvest? Grain Storage Pressure in the "
            "Corn Belt,&rdquo; Oct 7, 2026)")
-FARMDOC_URL = "https://farmdocdaily.illinois.edu/wp-content/uploads/2026/10/fdd100726.pdf"
 ST_NAME = {"AL": "Alabama", "AR": "Arkansas", "CO": "Colorado", "GA": "Georgia", "ID": "Idaho", "IL": "Illinois",
            "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "MI": "Michigan", "MN": "Minnesota",
            "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NY": "New York",
@@ -1711,7 +1727,7 @@ def storage_html(d, today, hist=None, basis=None):
     if not cr or int(cr.get("year") or 0) != yr:
         return (lead + f"<p>{FARMDOC} found that the United States as a whole has room for this year&rsquo;s "
                 f"carry-in stocks and the fall harvest, but that carry-in plus this year&rsquo;s crop is more than "
-                f"storage capacity in most Corn Belt states. <a href=\"{FARMDOC_URL}\">Read their study</a>.</p>"
+                f"storage capacity in most Corn Belt states.</p>"
                 f"<p>Our own state-by-state version of that math (USDA NASS September 1 stocks plus the latest {yr} "
                 f"crop forecast, over on-farm plus off-farm capacity) fills in here once our next NASS pull "
                 f"lands. Until then this section shows no state numbers of its own.</p>")
@@ -1830,7 +1846,7 @@ def storage_html(d, today, hist=None, basis=None):
         out += (f"<p>That does not mean the bins run out. {FARMDOC} looked at how fast each state has cleared the "
                 f"pressure from September to December in past years and concluded that, on current production "
                 f"expectations, a storage crunch is unlikely in 2026. It can still pinch in some places, because bins, "
-                f"stocks and crops are spread unevenly. <a href=\"{FARMDOC_URL}\">Read their study</a>.</p>")
+                f"stocks and crops are spread unevenly.</p>")
     ush = (hst or {}).get("us", {}).get("stats") if hst else None
     if ush and ush.get("drop_avg") is not None:
         out += (f"<p>Our own count of the same history, USDA NASS December 1 stocks: in {ush['first']} to "
@@ -1864,9 +1880,7 @@ def storage_html(d, today, hist=None, basis=None):
             "the 10th to 90th percentile. The usual-pace line subtracts the state&rsquo;s average drop from this "
             "fall&rsquo;s pressure; it is a rule of thumb, tested by leaving each past year out in turn.</p>")
     out += (f"<p>Source: USDA NASS Quick Stats, Grain Stocks and Crop Production"
-            + (f", pulled {_mdy(gen)}" if gen else "") + ". Built by <code>scripts/fetch_storage.py</code>; "
-            "the data: <a href=\"/data/storage/storage.json\">storage.json</a>"
-            + (", <a href=\"/data/storage/history.json\">history.json</a>" if hst else "") + ". "
+            + (f", pulled {_mdy(gen)}" if gen else "") + ". "
             "Reviewed by Sigurd Lindquist, CCA.</p></details>")
     out += ("<script type=\"application/json\" id=\"st-data\">"
             + json.dumps({**meta, "gen": d.get("generated"), "states": blob}, separators=(",", ":")).replace("</", "<\\/")
@@ -2247,7 +2261,7 @@ def milk_seeds(d, today):
 
 
 MILK_MB_DATA = "data/dairy-mailbox.json"
-MILK_MB_LINK = '<a href="https://mymarketnews.ams.usda.gov/viewReport/3357" rel="noopener">AMS mailbox report</a>'
+MILK_MB_LINK = 'AMS mailbox report'
 
 
 def milk_mailbox_seeds(mb, today):
@@ -2408,8 +2422,7 @@ DMC_FIRST_YEAR = "2019"
 DMC_WITHHELD = ("What DMC would have paid at past margins: not shown yet. I only print it from FSA's own published "
                 "monthly margins and premium rates, checked against the USDA milk prices held here, and those are not "
                 "loaded yet. I will not guess them. FSA publishes each month's margin on its "
-                '<a href="https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates" '
-                'rel="noopener">DMC prices and updates page</a>.')
+                'DMC prices and updates page.')
 
 
 def milk_dmc_rows(dmc, d):
@@ -2434,13 +2447,13 @@ def milk_dmc_rows(dmc, d):
 
 
 def _cite(blk, name):
-    """'<a FSA url>name</a>' plus ', Internet Archive copy of <date>' when that is what was read."""
+    """The source named, plus ' (Internet Archive copy of <date>)' when that is what was read; not linked
+    (no direct links to data sources, Oct 29, 2026)."""
     blk = blk if isinstance(blk, dict) else {}
-    u = blk.get("source_url") or ""
-    t = f'<a href="{_e(u)}" rel="noopener">{name}</a>' if u.startswith("https://www.fsa.usda.gov/") else name
+    t = name
     au, sn = blk.get("archive_url") or "", blk.get("snapshot") or ""
     if blk.get("via") == "archive" and au.startswith("https://web.archive.org/") and sn:
-        t += f' (<a href="{_e(au)}" rel="noopener">Internet Archive copy</a> of {_e(sn)})'
+        t += f' (Internet Archive copy of {_e(sn)})'
     return t
 
 
@@ -2661,11 +2674,10 @@ def milk_herds_seed(h):
         i = _mkey(ld[:7])
         rel = f", newest year released {MON3[i % 12]} {int(ld[8:])}, {i // 12}"
     note = f" {_e(h['us_note'])}." if h.get("us_note") else ""
-    src = ('Source: <a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS</a>, licensed dairy herds, the yearly '
+    src = ('Source: USDA NASS, licensed dairy herds, the yearly '
            f'average of farms licensed to sell milk (Milk Production report{rel}), as NASS has the years now.{note}')
     if wm:
-        src += (' Wisconsin by month: <a href="https://www.nass.usda.gov/Statistics_by_State/Wisconsin/Publications/Dairy/" '
-                'rel="noopener">USDA NASS Wisconsin</a>, herds on the state&rsquo;s Dairy Producer License list on the first of each month.')
+        src += (' Wisconsin by month: USDA NASS Wisconsin, herds on the state&rsquo;s Dairy Producer License list on the first of each month.')
     rd = _e(h.get("read") or "")
     if rd:
         src += f" Read {rd}."
@@ -2715,7 +2727,7 @@ O30_ROWS = (("class1", "Class I price (3.5% fat)", "$/cwt"),
             ("uniform", "Statistical uniform price", "$/cwt"),
             ("ppd", "Producer price differential (PPD)", "$/cwt"),
             ("scc", "SCC adjustment, per 1,000 cells", "$/cwt"))
-O30_LINK = '<a href="https://www.fmma30.com/" rel="noopener">Upper Midwest Market Administrator</a>'
+O30_LINK = 'Upper Midwest Market Administrator'
 DEPOOL_GAP = 1.00     # $/cwt Class IV over Class III before the line is said
 
 
@@ -2839,7 +2851,7 @@ def milk_o30_hist(o30):
             f'<p class="dp-note-src">Source: {O30_LINK}, each month&rsquo;s producer price differential release, at the base zone, '
             "checked so the statistical uniform price equals that month&rsquo;s Class III plus the PPD. "
             f"{n_c} of these months were also checked against the Central Order&rsquo;s yearly summary of all orders "
-            '(<a href="https://www.fmmacentral.com/" rel="noopener">fmmacentral.com</a>) and matched.' + more +
+            '(the Central Market Administrator) and matched.' + more +
             " How much milk was left out of the pool is not published by order and month, so I do not show it.</p></details>")
 
 

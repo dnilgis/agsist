@@ -48,6 +48,8 @@ Usage:
   python scripts/fact_check_briefing.py             (needs ANTHROPIC_API_KEY)
   python scripts/fact_check_briefing.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

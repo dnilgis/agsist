@@ -92,6 +92,8 @@ FROM_NAME secret serves a dozen other jobs and never decides it), SIG_TO, SIG_TE
 separated), RENDER_BASE (default https://agsist.com), PLAYWRIGHT_PATH,
 CHROMIUM_PATH. Run by .github/workflows/rp-buyer-email.yml.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import base64
 import html as H
 import json

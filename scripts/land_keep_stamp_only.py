@@ -7,6 +7,8 @@ copy, so the run commits only when data changed.
   python3 scripts/land_keep_stamp_only.py [DIR]     (default data/land; run from the repo root)
   python3 scripts/land_keep_stamp_only.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import subprocess
 import sys

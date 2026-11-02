@@ -1,5 +1,5 @@
 {
- "_note": "What Read my check said for each Class III month at the standard tests (the futures settle of the last session before the month), and USDA's announced price once it is out. Written by scripts/milk_miss.py; only grows; never backfilled.",
+ "_note": "What Read my check said for each Class III month at the standard tests (the futures settle of the last session before the month), and USDA's announced price once it is out. It only grows and is never backfilled.",
  "months": {
   "2026-11": {
    "contract": "2026-11"

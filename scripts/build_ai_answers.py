@@ -34,11 +34,14 @@ render() from here, so both scripts write the same bytes.
     python3 scripts/build_ai_answers.py --stale    # answers past review_by (today, UTC)
     python3 scripts/build_ai_answers.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import html
 import json
 import os
 import re
 import sys
+import source_links  # noqa: E402  no direct links to data sources
 from datetime import date, datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -118,7 +121,7 @@ def render(a):
         return op + cl
     e = html.escape
     srcs = " &middot; ".join(
-        f'<a href="{e(s["url"], quote=True)}" rel="noopener" style="text-decoration:underline">{e(s["name"])}</a>'
+        source_links.link(s["url"], e(s["name"]), ' rel="noopener" style="text-decoration:underline"')
         for s in a["sources"])
     head = (f'<h2 id="answer-{aid}-h" style="font-size:1.1rem;margin:0 0 .4rem">{e(a["question"])}</h2>')
     body = (f'<p style="margin:0 0 .5rem">{e(" ".join(a["text"]))}</p>'

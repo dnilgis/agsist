@@ -1,22 +1,12 @@
-# AGSIST robots.txt — agsist.com
+# agsist.com
 User-agent: *
 Allow: /
 
-# Block non-public paths.
-# NOTE (2026-06-12): /data/ is deliberately NOT disallowed. Pages render
-# their content client-side from /data/*.json — blocking it stopped
-# Googlebot's renderer (and AI crawlers) from seeing any live content.
-# There is nothing in /data/ that isn't already painted on the pages.
 Disallow: /api/
 Disallow: /dev/
-# Test fixtures are captures of other businesses' pages (night SEO audit, Oct 19, 2026); nothing at runtime reads /test/.
 Disallow: /test/
-# Property transfer files (buyer and seller names from state records) are read
-# by the field scout land card for one picked parcel; not for search indexes.
+# Buyer and seller names stay out of search; county summaries hold no names.
 Disallow: /data/land/
-# Buyer and seller names behind the "Show buyer and seller" tap on the land-sales pages live in
-# /data/land/names/ (blocked by the line above; never in a page, a sitemap or a snippet).
-# The Atlas county sales summary holds no names and the indexed county pages draw from it
 Allow: /data/land/*/summary.json
 
 # Sitemaps

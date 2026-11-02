@@ -9,6 +9,8 @@ prose said "the WASDE on Tuesday", and nothing compared the two.
 
 Hardcoded per year (WASDE_2026, WASDE_2027); revisit annually (grep 'revisit annually').
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 from datetime import date, timedelta
 
 WASDE_2026 = {

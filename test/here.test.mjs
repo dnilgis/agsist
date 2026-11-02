@@ -40,8 +40,8 @@ test("/here is the site's redirect stub to /fast-facts, keeping the query and th
 test("the place code on Fast Facts: no em dashes, name only at the end, scripts versioned", () => {
   for (const f of ["components/here.js", "components/place.js", "components/here.css"]) assert.doesNotMatch(read(f), /—/, f);
   for (const s of ["place.js", "here.js", "here.css", "layers.js"]) assert.match(page, new RegExp("/components/" + s.replace(".", "\\.") + "\\?v=\\d+"), s);
-  assert.match(read("sw.js"), /v\d+ 2026-10-18: \/here place page/);
-  assert.match(read("sw.js"), /v\d+ 2026-10-21: fx\/fastfacts/);
+  // the cache bumps for this change were v184 (Oct 18) and v221 (Oct 21); their notes left the served sw.js on Oct 29
+  assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 221);
   assert.match(read("scripts/dev/checks.sh"), /build_place_pct\.py --check/);
   // Analytics gets the bare path: a place link carries a ZIP
   assert.match(page, /gtag\('config','G-6KXCTD5Z9H',\{page_location:location\.origin\+location\.pathname,/);

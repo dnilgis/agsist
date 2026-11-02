@@ -40,6 +40,8 @@ USAGE
   python scripts/atlas_geometry.py path/to/geojson-counties-fips.json
   python scripts/atlas_geometry.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

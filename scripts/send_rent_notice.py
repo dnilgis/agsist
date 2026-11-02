@@ -30,6 +30,8 @@ are build_state_rent_pages.state_stats(), the same ones the state page prints.
 
 Env: the same as send_notice.py. The log carries counts only, never an address.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import glob
 import json

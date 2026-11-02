@@ -25,11 +25,15 @@ import sys
 import time
 import urllib.error
 import urllib.request
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+try: import _argguard; _argguard.guard(__file__)  # scripts/_argguard.py: --help and bad flags exit before any work
+except ImportError: pass
+sys.path.pop(0)
 
 LABEL = "merge-when-green"
 API = "https://api.github.com"
 MARK = "<!-- merge-when-green:%s:%s -->"
-SHARDS = 4
+SHARDS = 8
 REQUIRED = ["guard", "other checks", "all checks"] + ["node tests (%d/%d)" % (i, SHARDS) for i in range(1, SHARDS + 1)]
 FULL_SUITE = "main-checks.yml"
 
@@ -293,8 +297,8 @@ def selftest():
     assert decide(dict(pr, labels=[]), repo, green)[0] == "wait"
     assert decide(dict(pr, head={"repo": {"full_name": "x/r"}, "sha": "a"}), repo, green)[0] == "no"
     assert decide(dict(pr, head={"repo": None, "sha": "a"}), repo, green)[0] == "no", "a deleted fork"
-    red = [dict(j, conclusion="failure") if j["name"] == "node tests (3/4)" else j for j in green]
-    assert decide(pr, repo, red) == ("no", "not green: node tests (3/4) failure")
+    red = [dict(j, conclusion="failure") if j["name"] == "node tests (3/8)" else j for j in green]
+    assert decide(pr, repo, red) == ("no", "not green: node tests (3/8) failure")
     assert decide(pr, repo, [dict(j, conclusion="skipped") if j["name"] == "guard" else j for j in green])[0] == "no"
     assert decide(pr, repo, [dict(j, status="in_progress", conclusion=None) if j["name"] == "all checks" else j for j in green])[0] == "wait"
     assert decide(pr, repo, green[:-1])[0] == "wait", "a shard not there yet"

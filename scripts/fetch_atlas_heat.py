@@ -31,6 +31,8 @@ USAGE
   python scripts/fetch_atlas_heat.py
   python scripts/fetch_atlas_heat.py --file /path/to/climdiv-tmincy-v1.0.0-20260707
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

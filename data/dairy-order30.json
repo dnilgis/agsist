@@ -1,5 +1,5 @@
 {
- "_note": "Written by scripts/fetch_order30.py from the market administrator's own PPD and class releases; every month checked (Class I identity, skim = mover + differential, uniform = Class III + PPD). Never typed by hand.",
+ "_note": "From the market administrator's own PPD and class releases; every month checked (Class I identity, skim = mover + differential, uniform = Class III + PPD). Never typed by hand.",
  "latest": {
   "adv_butterfat": 1.5164,
   "adv_class3_skim": 11.76,

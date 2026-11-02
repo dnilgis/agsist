@@ -26,6 +26,8 @@ Methodology, validated against the official reports:
 Missing years (2015, 2021 not published/downloaded) stay missing — the chart
 shows a gap, never a line across it. Same doctrine as cash-rent 2015.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

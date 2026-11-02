@@ -360,7 +360,19 @@ function renderVerdict(summary) {
   if (banner) banner.className = 'cot-verdict-banner ' + cls;
   if (badge)  { badge.textContent = badgeTxt; badge.className = 'cvb-badge ' + cls; }
   if (text)   text.textContent = desc;
-  if (date && summary.report_date) date.textContent = 'Positions as of ' + summary.report_date + ' (Tuesday) · CFTC Disaggregated, futures only';
+  /* Benchmark review, Oct 29, 2026: the positions' Tuesday and the day CFTC released them, plainly at
+     the top, so the count never reads as a live one. The release day is cot_analysis's own
+     (cot_calendar.release_date), shown only when that file is for this same report. */
+  if (date && summary.report_date) date.textContent = 'Positions held Tuesday, ' + summary.report_date + cotReleased() + ' · CFTC Disaggregated, futures only';
+}
+/* ' · released Fri Oct 23' from cot-analysis.json's release_date, or '' */
+function cotReleased(){
+  var r = cxAligned() && CX_A.release_date;
+  var m = r && /^(\d{4})-(\d{2})-(\d{2})$/.exec(r);
+  if (!m) return '';
+  var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12));
+  return ' · released ' + ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getUTCDay()] + ' ' +
+    ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()] + ' ' + d.getUTCDate();
 }
 
 var historyData = null;

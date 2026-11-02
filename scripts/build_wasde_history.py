@@ -29,6 +29,8 @@ Honest numbers (BUILD-RULES, honest-numbers skill):
 
 Stdlib only, no network.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import glob
 import json

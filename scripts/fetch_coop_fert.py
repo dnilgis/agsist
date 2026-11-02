@@ -67,6 +67,8 @@ WHAT THIS FILE WILL NOT DO
 
 Stdlib only, plus pdftotext (poppler) or pypdf for a PDF sheet.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import html
 import html.parser

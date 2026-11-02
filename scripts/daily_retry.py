@@ -40,6 +40,8 @@ THREE PIECES, all used by .github/workflows/daily.yml:
     python3 scripts/daily_retry.py alert          (FAILED="g2f ..." from daily.yml)
     python3 scripts/daily_retry.py dry-run-mark 2026-10-28
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

@@ -28,6 +28,8 @@ Run in GitHub Actions (full egress). First run downloads ~66 year files
 Schema is validated by header NAME, not position -- if NCEI ever changes
 column names this fails loudly instead of writing garbage.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import gzip
 import io

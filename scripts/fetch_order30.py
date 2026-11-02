@@ -39,6 +39,8 @@ writes why. A month never replaces a newer one.
   python3 scripts/fetch_order30.py --probe     raw captures to data/dairy-raw/order30/
   python3 scripts/fetch_order30.py --selftest  offline tests on the real releases
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import os
@@ -408,7 +410,7 @@ def run(root=ROOT, now=None, get_page=None, get_pdf=None):
     else:
         rec = dict(new, source="Upper Midwest Market Administrator (Federal Order 30)", source_url=SITE,
                    status={"ok": True, "at": now.strftime("%Y-%m-%dT%H:%M:%SZ")},
-                   _note="Written by scripts/fetch_order30.py from the market administrator's own PPD and class "
+                   _note="From the market administrator's own PPD and class "
                          "releases; every month checked (Class I identity, skim = mover + differential, uniform = "
                          "Class III + PPD). Never typed by hand.")
         print("[order30] %s: PPD %+.2f, uniform %.2f; year ago %s" % (

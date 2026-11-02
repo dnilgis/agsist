@@ -35,6 +35,8 @@ detector that fires on the same fact twelve times a day produces one item. The
 file keeps the newest KEEP items and never rewrites the text of one already
 published.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

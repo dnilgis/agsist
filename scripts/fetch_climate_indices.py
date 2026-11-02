@@ -55,6 +55,8 @@ April 1 snowpack (NRCS SNOTEL basin indices, wcc.sc.egov.usda.gov report
 generator): not fetched. April 1 is four months after the Dec 1 sales closing,
 so no buyer can know it when choosing; it cannot be an honest predictor.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import math
 import os
@@ -203,7 +205,7 @@ def main():
         return 1
     d = {"v": 1, "written_by": "scripts/fetch_climate_indices.py",
          "built": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-         "note": "Monthly values; null where the source has none. Read by scripts/prf_opt_backtest.mjs.",
+         "note": "Monthly values; null where the source has none.",
          "series": {k: series[k] for k in sorted(series)}}
     # an unchanged payload keeps the old timestamps, so a quiet month does not commit
     if old and old.get("series") and all(

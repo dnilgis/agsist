@@ -28,6 +28,8 @@ here and never shown.
     python3 scripts/only_here.py --date 2026-10-21 [--zip 54728]
     python3 scripts/only_here.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import math

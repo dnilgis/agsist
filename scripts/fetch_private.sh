@@ -12,6 +12,7 @@
 # `git show FETCH_HEAD:...`. Where from: scripts/private_remote.sh (in Actions,
 # PRIVATE_REPO_TOKEN; locally RAW_REMOTE=/path/to/feedbag, else origin).
 # DEPTH (default 1). Fails, saying so, when the branch cannot be fetched.
+_g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 set -u
 set -o pipefail
 BR="${1:-}"

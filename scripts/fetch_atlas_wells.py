@@ -44,6 +44,8 @@ USAGE
   python scripts/fetch_atlas_wells.py
   python scripts/fetch_atlas_wells.py --limit 5     # first 5 pages per service
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

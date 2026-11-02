@@ -15,6 +15,8 @@ Barchart returns `basis` directly on each bid, so no futures lookup or
 cents conversion is needed here. No API key required — this runs on the
 already-fetched bids.json. In a GitHub Action, run it right after fetch_bids.py.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json, os, re, sys
 from datetime import datetime, timezone
 from collections import defaultdict

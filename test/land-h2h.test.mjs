@@ -155,7 +155,8 @@ test("storage: farmdoc's conclusion is printed beside the ratios", () => {
   const h = storageHtml(STORE);
   assert.match(h, /a storage crunch is unlikely in 2026/);
   assert.match(h, /cleared the pressure from September to December in past years/);
-  assert.match(h, /fdd100726\.pdf/);
+  assert.match(h, /farmdoc daily \(Dhakal and Janzen/);
+  assert.doesNotMatch(h, /fdd100726\.pdf/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   // the farmdoc line is about 2026 only; another year does not carry it
   const next = JSON.parse(JSON.stringify(STORE)); next.crunch.year = 2027;
   assert.doesNotMatch(storageHtml(next, "2027-10-15"), /unlikely in 2026/);

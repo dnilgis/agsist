@@ -7,6 +7,8 @@ monthly margins (all-milk price, feed cost, margin) and the 2027 premium rates.
           (raw branch), so the parser is written against the real layout.
 --selftest offline tests.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 from pathlib import Path
@@ -237,7 +239,7 @@ def confirm(parsed, nass):
 # a month only when it is at least as new as the capture: an archive copy counts
 # from its snapshot date, a live read from the day it ran. Older never overwrites
 # newer.
-NOTE = ("Written by scripts/fetch_dmc.py from FSA's own DMC prices and updates page (live, or the Internet Archive copy "
+NOTE = ("From FSA's own DMC prices and updates page (live, or the Internet Archive copy "
         "named by archive_url and snapshot) and FSA's DMC fact sheet. A month is kept only when FSA's milk minus feed is "
         "FSA's margin and its all-milk matches the NASS month held; the rest are in withheld. The months under screenshot "
         "were read off a screen capture of FSA's live page on the date it names (with FSA's corn, hay and soybean meal, "

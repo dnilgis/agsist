@@ -1,6 +1,7 @@
 #!/bin/bash
 # Push HEAD to main (fetch + merge retry), then mirror it to the session's working branch.
 # Usage: scripts/dev/push.sh <working-branch>     Run scripts/dev/checks.sh first; push only on FAILS=0.
+_g="$(dirname "${BASH_SOURCE[0]}")/../_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 cd "$(git rev-parse --show-toplevel)" || exit 1
 BR="${1:-}"
 # Oct 18, 2026: a helper worktree shipped with -f to the working branch and dropped three commits that

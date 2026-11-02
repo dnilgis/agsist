@@ -18,6 +18,8 @@ Fails (exit 1) when:
 
 Prints one line per problem and FAILS=N. Run from anywhere in the checkout.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import json
 import os

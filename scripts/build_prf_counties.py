@@ -33,6 +33,8 @@ SIZE (CLAUDE.md): 3,070 pages. The page carries the answer and the tables a
   python3 scripts/build_prf_counties.py           write prf/<state>/<county>.html and sitemap-prf.xml
   python3 scripts/build_prf_counties.py --check   exit 1 if any page or the sitemap differs from what this would write
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re
@@ -43,6 +45,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_prf_states as S  # noqa: E402  shared helpers: long_date, money2, slug, boot, text_of
 import inject_static_nav as nav  # noqa: E402
+import html_slim as HS  # noqa: E402  the county set is written slim
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
@@ -293,7 +296,7 @@ def page(ctx):
            f'<p class="pn-sub">Where {"a grid in " if many else "the grid in "}{e(name)} stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
            f'<p class="pn-pick" data-pn-pick hidden></p>'
            f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when the page opens.</p></div></section>'
-           f'<script src="/components/prf-now.js?v=3" defer></script>'
+           f'<script src="/components/prf-now.js?v=4" defer></script>'
            # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
            f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
            f'<script src="/components/prf-notice.js?v=2" defer></script>')
@@ -446,7 +449,7 @@ def main():
                 story = SP.story_html(STORIES, st["st"], fips, SP.county_facts(meta, cf, st, sd, code, c, cf["counties"][fips], n), meta["built"][:10])
             body = page({"meta": meta, "cf": cf, "st": st, "sd": sd, "code": code, "c": c, "fx": cf["counties"][fips], "name": n,
                          "slug": sl, "st_slug": st_slug, "nbrs": nbrs, "links": links, "BOOT": BOOT, "story": story})
-            body = nav.fill_fonts(body)
+            body = HS.slim(nav.fill_fonts(body))   # no indentation between tags; the same page to readers and crawlers
             size = len(body.encode())
             if size > MAX_KB * 1024:
                 raise SystemExit(f"prf/{st_slug}/{sl}.html would be {size // 1024} KB, over {MAX_KB} KB")

@@ -36,6 +36,8 @@ passes on the broken file proves nothing.
 
 No network, no runner, about a second.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import yaml, subprocess, os, re, sys, tempfile
 

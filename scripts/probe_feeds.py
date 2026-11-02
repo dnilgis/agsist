@@ -29,6 +29,8 @@ WHAT THIS TESTS, PER FEED
 
 Writes nothing. Prints a verdict table.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import re
 import sys

@@ -20,6 +20,10 @@ on:
     # overnight; the price file names its settle (close_kind), so titles get
     # that settle, and the overnight trade stays on the cards, never a title.
     - cron: '50 4 * * 2-6'
+    # 06:50 UTC Tue-Sat: a second look for a late settle. Oct 30 the Oct 29 settle reached
+    # data/prices.json at 06:16 UTC, after the 04:50 run, so futures titles said Oct 28 until
+    # 13:35 (Sig, Oct 30: add it). A run with nothing new commits nothing.
+    - cron: '50 6 * * 2-6'
   # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
   # drops and delays the schedule above. The gate job below lets the first run
   # after each tick of the schedule do the work; see scripts/cron_gate.py.
@@ -65,6 +69,7 @@ jobs:
           --cron "35 13 * * 1-5"
           --cron "35 20 * * 1-5"
           --cron "50 4 * * 2-6"
+          --cron "50 6 * * 2-6"
 
   seed:
     needs: gate

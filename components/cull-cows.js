@@ -159,7 +159,7 @@
     h += '</tr></thead><tbody>';
     barns.forEach(function (b) {
       var s = b.sales[0];
-      h += '<tr><td><a href="' + esc(s.url || b.source_url) + '" rel="noopener">' + esc(b.name) + '</a><small>' +
+      h += '<tr><td>' + esc(b.name) + '<small>' +
         esc(b.town) + ', ' + esc(b.state) + '</small><small>Sale of ' + fmtDate(s.date, today) + '</small>' + dairyNote(s) + '</td>';
       COLS.forEach(function (c) { h += cell(s, c[0]); });
       h += '</tr>';
@@ -216,8 +216,8 @@
         barns.length + ')</summary>' + body + '</details>';
     }
     h += body + WORDS + mathBlock(doc, today) +
-      '<p class="cc-src">Source: <a href="https://mymarketnews.ams.usda.gov/" rel="noopener">USDA AMS Livestock, Poultry and Grain ' +
-      'Market News</a> auction reports, as reported by USDA, not the barns. Barn names link to each USDA report.</p>';
+      '<p class="cc-src">Source: USDA AMS Livestock, Poultry and Grain ' +
+      'Market News auction reports, as reported by USDA, not the barns.</p>';
     var box = el.querySelector('[data-cc="body"]') || el;
     box.innerHTML = h;
     var s = box.querySelector('[data-cc="state"]');
@@ -233,7 +233,7 @@
   function fail(el) {
     var box = el.querySelector('[data-cc="body"]') || el;
     box.innerHTML = '<p class="cc-late">Cull cow prices did not load just now. The USDA auction reports are at ' +
-      '<a href="https://mymarketnews.ams.usda.gov/" rel="noopener">USDA Market News</a>.</p>';
+      'USDA Market News.</p>';
   }
   function start() {
     var doc = root.document;

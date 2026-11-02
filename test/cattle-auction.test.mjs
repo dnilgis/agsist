@@ -125,8 +125,9 @@ test("honest empty state: shown by default, controls hidden until a checked file
     "a shipped data file has the barns shape");
 });
 
-test("attribution: every card says USDA AMS reported it, not the barn, and links the report", () => {
-  assert.match(js, /Reported by USDA AMS, not the barn\. <a href="' \+ esc\(b\.source_url\)/);
+test("attribution: every card says USDA AMS reported it, not the barn (named, not linked: Oct 29, 2026)", () => {
+  assert.match(js, /Reported by USDA AMS, not the barn\.<\/p><\/section>/);
+  assert.doesNotMatch(js, /href="' \+ esc\((b\.source_url|b\.site|s0\.source_url)/, "no link straight at a market report");
   assert.match(page, /Prices reported by USDA AMS market reporters at the sale, not by the barns\./);
 });
 
@@ -257,16 +258,13 @@ test("the page's barn list names every barn the fetcher reads, and no other", ()
   assert.deepEqual([...listed].sort(), [...want].sort());
 });
 
-test("the page's list of barns USDA does not report is the own_reports list; unconfirmed sites get no link", () => {
+test("the page's list of barns USDA does not report is the own_reports list; no barn site is linked", () => {
   const sec = page.split("<h2>Barns USDA does not report</h2>")[1].split("</ul>")[0];
   const items = [...sec.matchAll(/<li><b>([A-Z]{2})<\/b> ([\s\S]*?) <span class="sb-day">\(([^)]*)\)<\/span><\/li>/g)].map((m) =>
     m[1] + " " + m[2].replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'").replace(/&amp;/g, "&"));
   assert.deepEqual(items.sort(), srcs.own_reports.map((b) => `${b.state} ${b.name}, ${b.town}`).sort());
-  for (const b of srcs.own_reports) {
-    const linked = sec.includes('href="' + b.site.replace(/&/g, "&amp;") + '"');
-    if (b.check) assert.ok(!sec.includes(b.site), b.id + " unconfirmed site linked");
-    else assert.ok(linked, b.id + " site not linked");
-  }
+  // each barn is named with its town; its own report page is not linked (no direct links to data sources)
+  for (const b of srcs.own_reports) assert.ok(!sec.includes(b.site), b.id + " site linked");
   // Premier (Withee), Equity and Central Livestock are what Sig asked for by name
   for (const id of ["withee-wi", "lomira-wi", "stratford-wi", "reedsville-wi", "bonduel-wi", "johnson-creek-wi", "richland-center-wi", "rock-creek-mn", "zumbrota-mn"])
     assert.ok(srcs.own_reports.some((b) => b.id === id), id);
@@ -431,8 +429,7 @@ test("browser: a Wisconsin ZIP lists the barns USDA does not report, nearest fir
     assert.doesNotMatch(own[1], /\d head/);
     assert.match(own[2], /Zumbrota.*has not read and checked its own report yet, so no price is shown/s);
     assert.doesNotMatch(own[2], /\d{3}\.\d{2}/);
-    assert.equal(await p.$$eval(".sb-own", (x) => x[2].querySelector("a").href), "https://www.centrallivestock.com/zumbrota-market-report.html");
-    assert.equal(await p.$$eval(".sb-own", (x) => x[0].querySelector("a").href), "https://premierlivestockandauctions.com/market-reports/");
+    assert.equal(await p.$$eval(".sb-own", (x) => x.filter((e) => e.querySelector("a")).length), 0, "barn reports named, not linked");
     await p.selectOption("#sb-state", "MN");
     assert.match(await p.textContent("#sb-results"), /Minnesota barns USDA does not report.*Central Livestock Association/s);
     assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);

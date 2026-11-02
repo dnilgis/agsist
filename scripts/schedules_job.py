@@ -23,6 +23,8 @@ this is reading numbers out of tables and fine print, not naming a vendor, and
 a wrong shrink figure is worse than none. Nothing here touches a page: the
 output is a finding for a person.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

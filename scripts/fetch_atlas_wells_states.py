@@ -46,6 +46,8 @@ USAGE
   python scripts/fetch_atlas_wells_states.py
   python scripts/fetch_atlas_wells_states.py --only MN,OH --limit 2
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

@@ -23,6 +23,8 @@ Output data/storage/storage.json:
 Fail-loud: zero capacity rows or zero production rows exits 1.
 --selftest offline, gates the workflow.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

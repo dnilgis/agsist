@@ -32,6 +32,8 @@ Outcomes of a past raise (flags, each counted on its own; definitions in OUTCOME
 A past raise is one whose deadline is at least PAST_DAYS before the last filing date in the
 quarterly files, so its first annual report and the 15 months after were due in the data.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import csv
 import gzip
 import hashlib

@@ -79,6 +79,8 @@ USAGE
   python scripts/fetch_prf_outlook.py --check        # the published file is well formed
   python scripts/fetch_prf_outlook.py --fixture-doc  # rebuild the page tests' sample file from the fixtures
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import datetime as dt
 import glob
@@ -848,7 +850,7 @@ def merge(prev, new, failed):
 def assemble(sections, cy, now):
     doc = {"v": 1, "built": now, "crop_year": cy,
            "grid": {"lat0": LAT0, "lon0": LON0, "step": STEP, "cols": COLS, "point": "centre"},
-           "note": "Read at each PRF grid's center. Codes: B/A/N + CPC band floor/10 (B4 = below normal favored, 40 to 50%), E = equal chances, - = no data; drought N = none, 0-4 = D0-D4. Written by scripts/fetch_prf_outlook.py."}
+           "note": "Read at each PRF grid's center. Codes: B/A/N + CPC band floor/10 (B4 = below normal favored, 40 to 50%), E = equal chances, - = no data; drought N = none, 0-4 = D0-D4."}
     doc.update(sections)
     return doc
 

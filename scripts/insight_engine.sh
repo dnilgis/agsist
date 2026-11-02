@@ -16,6 +16,7 @@
 # 4. The run: one result row per spec, appended as a new day file; latest.json for the report.
 # 5. Saves private/ledger/tests to private-data (RAW_SOFT=1: a failed save is a warning).
 # Never touches main or Pages; nothing it writes is published.
+_g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 set -u
 set -o pipefail
 ROOT=$(git rev-parse --show-toplevel) || exit 1
@@ -39,7 +40,7 @@ if [ "$due" -eq 3 ]; then exit 0; fi
 [ "$due" -eq 0 ] || { echo "::error::insight_engine.py due failed"; exit 1; }
 
 for p in history/agtransport/barge_rates history/agtransport/grain_basis history/agtransport/inspections \
-         history/nass-progress/condition history/nass-progress/progress; do
+         history/nass-progress/condition history/nass-progress/progress history/nass-yield; do
   RAW_BRANCH=raw RAW_SOFT=1 bash scripts/pull_raw.sh "$p" || true
 done
 RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/pull_raw.sh private/ledger/bid-changes || true

@@ -1,5 +1,5 @@
 {
- "_note": "Corrections USDA itself published to a report AGSIST already uses, keyed by report + release date + place. Maintained by hand. What USDA printed stays printed everywhere on the site; the corrected figure is shown beside it with the notice date and source, and anything graded against the printed figure is graded against the corrected one too (scripts/usda_corrections.py; its --check fails the build when a file or page carries a corrected figure without the correction). Only figures USDA published go in here. A figure USDA says changed but did not print a corrected value for is listed under not_on_file and never computed.",
+ "_note": "Corrections USDA itself published to a report AGSIST already uses, keyed by report + release date + place. Maintained by hand. What USDA printed stays printed everywhere on the site; the corrected figure is shown beside it with the notice date and source, and anything graded against the printed figure is graded against the corrected one too. Only figures USDA published go in here. A figure USDA says changed but did not print a corrected value for is listed under not_on_file and never computed.",
  "corrections": [
   {
    "id": "nass-crop-production-2026-09-11-corn-yield",

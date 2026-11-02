@@ -22,6 +22,8 @@ trimmed to the keys that matter.
 
 Run: python scripts/test_preflight_limits.py     (exits non-zero on failure)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import copy
 import sys
 from datetime import datetime, timezone

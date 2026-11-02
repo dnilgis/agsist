@@ -28,6 +28,8 @@ this module to the same numbers.
     python3 scripts/crop_removal.py            # prints the table
     python3 scripts/crop_removal.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import sys

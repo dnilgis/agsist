@@ -47,11 +47,10 @@ function liftVar(name) {
 const FNS = ["ppu", "plausible", "basisUnit", "basisCents", "basisUnusual", "notPerBushel",
   "isSpecialGrade", "monthFloorKey", "bidPeriodPast", "periodFallbackKey", "deliveryRank",
   "deliverySort", "delKey", "getNearestBid", "preferPlain", "harvestYear", "harvestKeys",
-  "isHarvestSeason", "inDelivery", "windowMonths", "netNormOperator", "netPlain", "netKey",
-  "netIsTwin", "netMerge", "netOlder", "rankOf", "rankable", "wheatCls", "rankCmp",
+  "isHarvestSeason", "inDelivery", "windowMonths", "rankOf", "rankable", "wheatCls", "rankCmp",
   "rankCands", "classGroups", "pickClass", "clsName", "townOf", "placeOf", "bannerName", "markBidOutliers",
   "delLabel", "delShow"];
-const VARS = ["MONTHNAME", "PPU_BAND", "BASIS_SANE", "NOT_PER_BUSHEL", "SPECIAL_GRADE", "NET_LEGAL", "NET_INHERIT"];
+const VARS = ["MONTHNAME", "PPU_BAND", "BASIS_SANE", "NOT_PER_BUSHEL", "SPECIAL_GRADE"];
 
 function load() {
   const ctx = { console, Intl, Date, Math, JSON };
@@ -263,26 +262,6 @@ test("a delivery-point label gets its town only where the network knows it", () 
   assert.equal(c.placeOf(amb), "ADM CR", "two towns in one ZIP is a guess, so the label stays");
   const plain = elev("Y", 3, [row({})], { city: "Ames" });
   assert.equal(c.placeOf(plain), "Ames");
-});
-
-test("the second feed's row is kept when ours is unread or a day older", () => {
-  const c = load();
-  const bc = { facility: "Wheaton Grain", city: "Chippewa Falls", state: "WI", category: "soybeans",
-    cashPrice: 12.4, deliveryMonth: "Oct26", asOf: new Date(NOW).toISOString() };
-  const oursStale = { ...bc, cashPrice: 12.3, stale: true, via: "direct", asOf: iso(3 * H) };
-  let m = c.netMerge([bc], [oursStale]);
-  assert.deepEqual(arr(m.rows.map((r) => r.cashPrice)), [12.4], "the unread row beat a fresh copy");
-  assert.equal(m.duplicatesResolved, 0);
-  const oursFresh = { ...oursStale, stale: false, asOf: new Date(NOW).toISOString() };
-  m = c.netMerge([bc], [oursFresh]);
-  assert.deepEqual(arr(m.rows.map((r) => r.cashPrice)), [12.3], "ours, read today, must still win");
-  assert.equal(m.duplicatesResolved, 1);
-  /* the twin path: "ADM" (ours) vs "ADM Grain" (feed), same town, month and cent */
-  const feedTwin = { facility: "ADM Grain", city: "Mankato", state: "MN", category: "corn", cashPrice: 4.5,
-    deliveryMonth: "Oct26", asOf: new Date(NOW).toISOString() };
-  const ourTwin = { ...feedTwin, facility: "ADM", stale: true, via: "direct" };
-  m = c.netMerge([feedTwin], [ourTwin]);
-  assert.deepEqual(arr(m.rows.map((r) => r.facility)), ["ADM Grain"]);
 });
 
 /* Riceville IA, 2026-10-15: Nutrition Service Co. soybeans $14.04, basis

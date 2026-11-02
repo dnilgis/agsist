@@ -203,7 +203,7 @@ def build(doc, day, ids=None, partial=None, origin=None):
     snap = {
         "schema": SCHEMA, "day": day,
         "fetched": doc.get("fetched"),
-        "network_generated": (doc.get("barchart") or {}).get("network_generated"),
+        "network_generated": doc.get("network_generated") or (doc.get("barchart") or {}).get("network_generated"),  # old files kept it in a "barchart" block
         "source": doc.get("source"),
         "partial": partial,
         "note": ("One AGSIST cash bid snapshot per Central-time weekday (scripts/bid_snapshots.py). "

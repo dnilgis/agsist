@@ -23,6 +23,8 @@ Fail-loud (in season, Apr–Oct): zero rows for the current year exits 1.
 Backoff on 403/429/5xx (NASS throttle — learned live on cash-rent).
 --selftest offline, gates the workflow.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

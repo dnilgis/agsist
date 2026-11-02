@@ -22,6 +22,8 @@ cash-rent state file (about 200 KB) for two numbers a county.
 
 Run after either source changes (cash-rent.yml and arc-plc-refresh.yml do).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import sys

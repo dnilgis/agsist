@@ -51,6 +51,8 @@ Rules (id: what must agree):
     python3 scripts/check_number_consistency.py --strict   # exit 1 on a finding
     python3 scripts/check_number_consistency.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime as dt
 import html as H
 import json

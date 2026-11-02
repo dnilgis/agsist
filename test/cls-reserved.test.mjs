@@ -109,7 +109,9 @@ export function scan(html, root = ROOT) {
     for (const r of rules) {
       const h = holds(r.body, need); if (!h) continue;
       for (const sel of r.sel.split(',')) {
-        const s = sel.trim(), last = s.split(/\s*[>+~]\s*|\s+/).pop().replace(/::?[\w-]+(\([^)]*\))?/g, '');
+        // a functional pseudo-class (:has(), :not(), :is()) is part of its compound, not a step to the element:
+        // ".grid:has(.a>span)" holds the grid, never a span near .a (Oct 29, 2026: it held #export-mkt-yr by mistake)
+        const s = sel.trim().replace(/:[\w-]+\((?:[^()]|\([^()]*\))*\)/g, ''), last = s.split(/\s*[>+~]\s*|\s+/).pop().replace(/::?[\w-]+(\([^)]*\))?/g, '');
         if (!last || (/#[\w-]+/.test(last) && !new RegExp(`#${id}(?![\\w-])`).test(last))) continue;
         const byId = new RegExp(`#${id}(?![\\w-])`).test(last);
         const byCls = e.cls.some((c) => new RegExp(`\\.${c}(?![\\w-])`).test(last));

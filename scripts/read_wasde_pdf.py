@@ -38,6 +38,8 @@ WHAT IT REFUSES.
 
 Stdlib only, plus the pdftotext binary (poppler-utils).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import shutil

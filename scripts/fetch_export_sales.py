@@ -38,6 +38,8 @@ conventions, and auto-detects the 1,000-MT vs MT unit scale — and it logs
 every decision verbosely. On first deploy: add the secret, run the workflow
 manually, and read the log to confirm the resolved codes, units, and totals.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

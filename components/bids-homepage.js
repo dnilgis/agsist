@@ -4,13 +4,10 @@
 // HERO 2026-10-06: one row per elevator (price board), tap to expand; footer is one line;
 //   publishes `agsist:bids-top` + window.__agsistBidsTop for the hero band after every render.
 //
-// TWO FEEDS, ONE CARD (2026-09-25). The AGSIST elevator network (dnilgis/bids,
-// read in the browser by components/bids-network.js) is the primary source and
-// wins on price. The licensed Barchart feed, reached through the Cloudflare
-// Worker proxy so the key is never in the page, fills what the network does
-// not cover. Neither failing empties the card. When the second feed ends set
-// LICENSED_FEED = false below and the request is never made (that cutover is
-// the owner's decision; this file does not make it).
+// ONE FEED (2026-10-30). Every row on this card is read from an elevator's own
+// board by the AGSIST elevator network (dnilgis/bids, read in the browser by
+// components/bids-network.js). The licensed second feed ended 2026-10-11 and
+// its code is gone.
 //
 // Groups results by elevator, shows top 3 nearest with commodity rows.
 //
@@ -23,13 +20,6 @@
 (function(){
   'use strict';
 
-  // Cloudflare Worker proxy — API key is held server-side, never exposed.
-  var PROXY_URL = 'https://agsist-barchart.dnilgis.workers.dev/barchart/getGrainBids';
-
-  // Set to false the day the second feed ends. Off means off: the
-  // proxy is not called at all, rather than called and ignored.
-  var LICENSED_FEED = false;   // Barchart turned off 2026-10-11 (Sig cancelling the subscription)
-  var LICENSED_DEADLINE_MS = 6000;
   var NET_SCRIPT = '/components/bids-network.js?v=8';
 
   var MAX_ELEVATORS = 3;
@@ -109,8 +99,7 @@
   }
 
   /* 2026-10-06: EVERY ROW'S `basis` ON THIS CARD IS DOLLARS A BUSHEL, fixed
-     at ingestion (licBasis for the licensed feed, basisCents/100 for the
-     network). The old rule here re-guessed the unit by size (|b| under 5 is
+     at ingestion (basisCents/100 for the network). The old rule here re-guessed the unit by size (|b| under 5 is
      dollars) and read Ritzville Warehouse Co's +$6.23 spring wheat basis as
      +6 cents. */
   function basisCents(bN){
@@ -159,7 +148,6 @@
     return AG.px.move(cents, { style: 'slash', sign: true });
   }
   function formatBasis(bN, bid){
-    if(bid && bid.basisUnclear) return { str:'-', cls:'muted', title:'basis unit unclear' };
     var cents = basisCents(bN);
     if(cents == null) return { str:'-', cls:'muted' };
     if(bid && basisOdd(bid)) return { str: (cents < 0 ? '\u2212' : '+') + '$' + (Math.abs(cents) / 100).toFixed(2), cls: 'muted', odd: true,
@@ -171,8 +159,8 @@
     };
   }
 
-  /* 2026-10-01: the futures month a basis is quoted against, read from the
-     symbol the licensed feed sends (ZCZ26 -> Dec). The elevator network
+  /* 2026-10-01: the futures month a basis is quoted against, read from a
+     row's symbol (ZCZ26 -> Dec). The elevator network
      rows carry no symbol, so they print no month rather than a guessed one. */
   var FUT_MON = {F:'Jan',G:'Feb',H:'Mar',J:'Apr',K:'May',M:'Jun',N:'Jul',Q:'Aug',U:'Sep',V:'Oct',X:'Nov',Z:'Dec'};
   var WHEAT_EXCH = {KE:'KC', ZW:'Chicago', MW:'MGEX'};
@@ -193,7 +181,7 @@
       return (day === today ? '' : day + ', ') + t + ' CT';
     }catch(e){ return ''; }
   }
-  var feedTimes = { network: null, licensed: null };
+  var feedTimes = { network: null };
 
   var COMM_ORDER = ['corn','soybeans','wheat','sorghum','oats','other'];
   var COMM_NAMES = { corn:'Corn', soybeans:'Soybeans', wheat:'Wheat', sorghum:'Sorghum', oats:'Oats', other:'Other' };
@@ -216,66 +204,6 @@
   // NOT `parseFloat(x) || null`: a FLAT basis is exactly 0 and 0 is falsy, so
   // the strongest basis on a board was published as "unknown".
   function flatNum(v){ var n = parseFloat(v); return isFinite(n) ? n : null; }
-  function licBasis(v, cash, cat){
-    var n = flatNum(v); if(n == null) return null;
-    var u = basisUnitOf(n, cash, cat);
-    if(u === 'd') return n;
-    if(u === 'c') return n / 100;
-    if(u === '?') return null;
-    var a = Math.abs(n); return a < 1 ? n : a >= 5 ? n / 100 : null;
-  }
-  function licUnclear(v, cash, cat){ return basisUnitOf(flatNum(v), cash, cat) === '?'; }
-
-  // ── Flatten Barchart response (same logic as /cash-bids) ───────
-  function flattenBarchartResponse(data){
-    var flat = [];
-    var raw = data.results || data.bids || data.data || [];
-    if(!Array.isArray(raw)) return flat;
-
-    raw.forEach(function(item){
-      if(item.bids && Array.isArray(item.bids)){
-        var facName = item.company || item.name || item.locationName || 'Unknown';
-        var branchName = (typeof item.location === 'string') ? item.location : '';
-        item.bids.forEach(function(bid){
-          var lc = parseFloat(bid.cashprice || bid.cashPrice) || null;
-          var lk = classifyCommodity(bid.commodity || bid.commodity_display_name || bid.commodityName || '');
-          flat.push({
-            facility: facName, branch: branchName,
-            city: item.city || '', state: item.state || '',
-            distance: parseFloat(item.distance || bid.distance) || null,
-            phone: item.phone || '',
-            commodity: bid.commodity || bid.commodity_display_name || bid.commodityName || '',
-            cashPrice: parseFloat(bid.cashprice || bid.cashPrice) || null,
-            basis: licBasis(bid.basis, lc, lk), basisUnclear: licUnclear(bid.basis, lc, lk),
-            deliveryMonth: bid.deliveryMonth || bid.delivery_month || '',
-            deliveryStart: bid.deliveryStart || bid.delivery_start || '',
-            symbol: bid.symbol || item.symbol || '',
-            deliveryEnd: bid.deliveryEnd || bid.delivery_end || '',
-            category: classifyCommodity(bid.commodity || bid.commodity_display_name || bid.commodityName || '')
-          });
-        });
-      } else if(item.commodity || item.commodityName || item.cashprice !== undefined || item.cashPrice !== undefined){
-        var ic = parseFloat(item.cashprice || item.cashPrice) || null;
-        var ik = classifyCommodity(item.commodity || item.commodity_display_name || item.commodityName || '');
-        flat.push({
-          facility: item.company || item.name || item.facility || item.locationName || 'Unknown',
-          branch: (typeof item.location === 'string') ? item.location : '',
-          city: item.city || '', state: item.state || '',
-          distance: parseFloat(item.distance) || null,
-          phone: item.phone || '',
-          commodity: item.commodity || item.commodity_display_name || item.commodityName || '',
-          cashPrice: parseFloat(item.cashprice || item.cashPrice) || null,
-          basis: licBasis(item.basis, ic, ik), basisUnclear: licUnclear(item.basis, ic, ik),
-          deliveryMonth: item.deliveryMonth || item.delivery_month || '',
-          deliveryStart: item.deliveryStart || item.delivery_start || '',
-          symbol: item.symbol || '',
-          deliveryEnd: item.deliveryEnd || item.delivery_end || '',
-          category: classifyCommodity(item.commodity || item.commodity_display_name || item.commodityName || '')
-        });
-      }
-    });
-    return flat;
-  }
 
   // ── Group flat bids → elevator objects ──────────────────────────
   // The feed sends "N/A" for boards with no phone. Not a number: no Call button.
@@ -300,10 +228,9 @@
       if(b.pricedAt && (!elev.pricedAt || b.pricedAt > elev.pricedAt)) elev.pricedAt = b.pricedAt;
       if(b.checkedAt && (!elev.checkedAt || b.checkedAt > elev.checkedAt)) elev.checkedAt = b.checkedAt;
       if(!hasPhone(elev.phone) && hasPhone(b.phone)) elev.phone = b.phone;
-      // A real, existing distinction (line ~375): the AGSIST elevator network
-      // feed tags its own rows `source:'network'`. Barchart rows carry no
-      // `source` at all. This is the only honest "where did this number come
-      // from" signal in the data -- not an invented verification badge.
+      // The AGSIST elevator network feed tags its rows `source:'network'`.
+      // This is the only honest "where did this number come from" signal in
+      // the data -- not an invented verification badge.
       if(b.source === 'network') elev.fromNetwork = true;
       var cat = b.category || 'other';
       if(!elev.commodities[cat]) elev.commodities[cat] = [];
@@ -317,8 +244,7 @@
      elevator ("Oct 2026", then the crops priced for it), so the period is
      said once and a reader compares crops for the same haul. The distance
      sits on the town line and says what it is: the elevator network's miles
-     are straight-line (haversine in bids-network.js), not road miles. The
-     licensed feed's distance is its own and is labelled as from the ZIP. */
+     are straight-line (haversine in bids-network.js), not road miles. */
   function delLabel(b){ return b.deliveryMonth || b.deliveryStart || 'Spot'; }
   /* WAVE1-A 2026-10-03: FRESHNESS, PER ELEVATOR, FROM THE BOARD'S OWN TIMES.
      merged-index.json carries two times per place: pricedAt (when the board's
@@ -326,8 +252,7 @@
      are printed on the elevator's line. A board whose last change is older
      than one trading day is flagged in words. A trading day here is a weekday;
      exchange holidays are not known to this file, so the Monday after a
-     Friday holiday can flag a board one day early. The licensed feed sends no
-     time per row, so its elevators print the time this page read the feed. */
+     Friday holiday can flag a board one day early. */
   function ctDate(iso){
     var d = new Date(iso); if(!iso || isNaN(d)) return '';
     try{ return d.toLocaleDateString('en-CA', {timeZone:'America/Chicago'}); }catch(e){ return ''; }
@@ -458,13 +383,13 @@
       o.tag = (st ? 'Old · ' : '') + ctShort(elev.pricedAt);
       o.sr = (st ? 'Not updated since ' : 'Posted ') + ctShort(elev.pricedAt);
     } else {
-      o.full = ctTime(feedTimes.licensed) ? 'Quotes read ' + ctTime(feedTimes.licensed) + ', no posting time sent' : 'No posting time sent';
+      o.full = 'No posting time sent';
       o.sr = 'No posting time sent';
     }
     return o;
   }
   /* The basis contract, by the same rules as the expanded rows: named from
-     the licensed feed's symbol, or checked later against data/prices.json by
+     the row's symbol, or checked later against data/prices.json by
      fillRefs(). Returns the data attributes and any label known now. */
   /* PANEL6 D4: `staleOn` is the Central-time day a stale board last posted.
      Its basis is checked against that day's settle, not today's close. */
@@ -895,8 +820,7 @@
   function storeOptions(bids, best){
     var nowKey = thisMonth(), by = {}, per = {};
     /* storesell: every open period this elevator posts for the same crop and
-       grade, from the rows on hand (the licensed feed sends them all; a
-       network row is its crop's nearest period and storesell.js reads the
+       grade, from the rows on hand (a network row is its crop's nearest period and storesell.js reads the
        rest from the board's shard by `place`). */
     bids.forEach(function(b){
       if(b.cashPrice == null || notPerBushel(b) || isSpecialGrade(b) || basisOdd(b)) return;
@@ -919,7 +843,7 @@
         cash: ppu(b.cashPrice), monthKey: k, monthLabel: shortMon(k),
         boardCarry: boardCarry(b), isBest: b === best,
         commodity: b.commodity || '', place: b.source === 'network' ? (b.place || '') : '',
-        posted: b.source === 'network' ? (b.pricedAt || '') : (feedTimes.licensed || ''),
+        posted: b.source === 'network' ? (b.pricedAt || '') : '',
         periods: per[rowKey(b) + '|' + b.category + '|' + String(b.commodity || '').toLowerCase()] || [] };
     });
     /* One pin, several town names, same price: one option (see mergeOnePin). */
@@ -977,7 +901,7 @@
          or one further than the ring, is left out rather than assumed to
          match. If the headline bid itself has no coordinates, these fields
          stay unset and the line never appears -- the honest outcome for a
-         Barchart-only search, not a bug. Computed before the event below so
+         row with no coordinates, not a bug. Computed before the event below so
          the one dispatch this function makes carries the real numbers --
          this used to run after the dispatch and silently never reached the
          page; caught by actually rendering the page, not by the event
@@ -1144,8 +1068,7 @@
             category: cat, source: 'network', currency: r.currency || '',
             // Real coordinates, not a geocode -- bids-network.js already carries
             // each elevator's own lat/lon (it needs them to compute distance).
-            // The licensed feed never gives us coordinates, so Barchart rows
-            // leave these null and are simply left out of the nearby average.
+            // A row without coordinates is simply left out of the nearby average.
             bestCash: r.bestCash == null ? null : r.bestCash, bestPeriod: r.bestPeriod || '',   // r7-bids 7b: the board's own later period
             lat: typeof r.lat === 'number' ? r.lat : null,
             lon: typeof r.lon === 'number' ? r.lon : null
@@ -1154,19 +1077,6 @@
         return {rows: rows, ok: true};
       });
     }).catch(function(){ return {rows: [], ok: false}; });
-  }
-
-  function fromLicensed(zip){
-    if(!LICENSED_FEED) return Promise.resolve({rows: [], ok: null});   // not asked
-    var url = PROXY_URL + '?zipCode=' + encodeURIComponent(zip) + '&maxDistance=50&getAllBids=1';
-    var live = fetch(url)
-      .then(function(r){ return r.ok ? r.json() : Promise.reject('HTTP ' + r.status); })
-      .then(function(data){ feedTimes.licensed = new Date().toISOString(); var today = ctToday();
-        /* A delivery window that ended before today is not a bid (Sep 26 corn on Oct 1). */
-        var rows = flattenBarchartResponse(data).filter(function(b){ var e = String(b.deliveryEnd || '').slice(0, 10); return !(/^\d{4}-\d{2}-\d{2}$/.test(e) && e < today); });
-        return {rows: rows, ok: true}; })
-      .catch(function(err){ console.warn('[AGSIST] licensed bid feed:', err); return {rows: [], ok: false}; });
-    return Promise.race([live, new Promise(function(res){ setTimeout(function(){ res({rows: [], ok: false}); }, LICENSED_DEADLINE_MS); })]);
   }
 
   // The delivery month of a row as YYYY-MM: from the label ("Nov 2026",
@@ -1237,60 +1147,22 @@
     if(m[3] && st < nw && (m[3] + '-' + m[4]) >= nw) return nw;
     return st;
   }
-  // The same elevator under a longer name ("ADM" and "ADM Grain" at Mankato):
-  // same town, state, crop, delivery month, one whole normalised name a prefix
-  // of the other, cash within one cent. Same rule as netIsTwin() in /cash-bids;
-  // anything looser merges different companies (CHS Ag Terminals sits 5c under
-  // ADM Mankato).
-  function isTwin(a, b){
-    if(a.category !== b.category || a.cashPrice == null || b.cashPrice == null) return false;
-    if(Math.abs(a.cashPrice - b.cashPrice) > 0.01) return false;
-    var ca = plain(a.city);
-    if(!ca || ca !== plain(b.city) || !plain(a.state) || plain(a.state) !== plain(b.state)) return false;
-    var ka = rowMonthKey(a);
-    if(!ka || ka !== rowMonthKey(b)) return false;
-    var na = normOperator(a.facility), nb = normOperator(b.facility);
-    if(na.length < 3 || nb.length < 3) return false;
-    return na.indexOf(nb) === 0 || nb.indexOf(na) === 0;
-  }
-
-  // Ours wins on price. A licensed row is dropped only where the network
-  // already prices that SAME crop at that elevator; a crop the network lacks
-  // there is kept. The licensed row lends its phone number either way.
-  function mergeFeeds(net, lic){
-    var mine = {}, out = net.slice();
-    net.forEach(function(r){ (mine[rowKey(r)] = mine[rowKey(r)] || []).push(r); });
-    lic.forEach(function(r){
-      var k = rowKey(r), mates = mine[k];
-      if(mates){
-        mates.forEach(function(o){ if(!o.phone && r.phone) o.phone = r.phone; });
-        var has = mates.some(function(o){ return o.category === r.category; });
-        if(has) return;
-      }
-      for(var i = 0; i < net.length; i++){
-        if(isTwin(net[i], r)){ if(!net[i].phone && r.phone) net[i].phone = r.phone; return; }
-      }
-      out.push(r);
-    });
-    return out;
-  }
-
   function loadAllBids(zip){
-    return Promise.all([fromNetwork(zip), fromLicensed(zip)]).then(function(x){
-      // Neither feed could be read: say so. An empty list here would tell the
-      // reader there are no elevators near them, which is not what happened.
-      if(x[0].ok === false && (x[1].ok === false || x[1].ok === null)){
-        var err = new Error('no bid feed reachable'); err.pending = !!x[0].pending; throw err;
+    return fromNetwork(zip).then(function(net){
+      // The network could not be read: say so. An empty list here would tell
+      // the reader there are no elevators near them, which is not what happened.
+      if(net.ok === false){
+        var err = new Error('no bid feed reachable'); err.pending = !!net.pending; throw err;
       }
-      var out = mergeFeeds(x[0].rows, x[1].rows).filter(function(b){
+      var out = net.rows.slice().filter(function(b){
         return (b.cashPrice !== null || b.basis !== null) && inScope(b) && plausible(b);
       });
       /* WAVE1-A: the caller needs to know whether the network answered. */
-      out.netOk = x[0].ok !== false; out.netPending = !!x[0].pending;
+      out.netOk = net.ok !== false; out.netPending = !!net.pending;
       return out;
     });
   }
-  window.__agsistHomeBidsInternals = { mergeFeeds: mergeFeeds, rowKey: rowKey, fromNetwork: fromNetwork, widFor: widFor, publishSummary: publishSummary,
+  window.__agsistHomeBidsInternals = { rowKey: rowKey, fromNetwork: fromNetwork, widFor: widFor, publishSummary: publishSummary,
     rowMonthKey: function(r){ return rowMonthKey(r); }, rowExpired: function(r){ return rowExpired(r); }, topEntry: function(e, c){ return topEntry(e, c); } };
 
   // ── WAVE1-A: the day's change, filled after the card draws ──────────
@@ -1909,7 +1781,7 @@
     if(!area) return;
     lastArgs = [lat, lng, label, zip];
 
-    // Need ZIP for Barchart API
+    // Need a ZIP to find the nearby boards
     if(!zip){
       degraded = false;
       area.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'

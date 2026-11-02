@@ -157,7 +157,7 @@ test("harvest tracker, planting date, rent, crop tour, farm bill, rain, yield es
     const t = (mo, d) => ({ Aug: 8, Sep: 9, Oct: 10 }[mo]) * 100 + Number(d);
     assert.ok(t(m[1], m[2]) < t(m[3], m[4]) && t(m[3], m[4]) < t(m[5], m[6]), "fall row runs early to late: " + m[0]);
   }
-  assert.match(read("planting-date.html"), /planting-date\.js\?v=6/);
+  assert.match(read("planting-date.html"), /planting-date\.js\?v=7/);
   const r = read("rent/index.html");
   assert.match(r, /it is under the 20,000-acre line, or NASS held the rate back/);
   assert.match(read("scripts/build_state_rent_pages.py"), /def whole\(x\):/);

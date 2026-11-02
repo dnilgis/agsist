@@ -9,6 +9,8 @@ the card is drawn by hand.
 
   python3 scripts/build_prf_card.py
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json, os, sys
 from PIL import Image, ImageDraw, ImageFont
 

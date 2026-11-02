@@ -28,13 +28,15 @@ the email. The email never waits on it and never fails for it.
     python3 scripts/print_of_day.py --compress daily/img/print-2026-10-21.png
     python3 scripts/print_of_day.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import glob
 import html
 import json
 import os
 import re
 import sys
-from datetime import date
+from datetime import date, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
@@ -179,7 +181,11 @@ def _selftest():
     fig = page_fig(os.path.join(REPO, "rain", "iowa", "adams-county.html"))
     ok(fig and fig.get("fips") == "19003" and fig.get("st") == "ia", "reads the county page figure")
     got = 0
-    for d in (date(2026, 10, 19), date(2026, 10, 20), date(2026, 10, 21), date(2026, 10, 22)):
+    # Days after the newest rain data, not fixed dates (Nov 1, 2026): pick() skips a record dated
+    # after the issue, so Oct 19-22 found nothing once the county rain files reached Oct 30.
+    newest = max((str(x["c"].get("as_of") or "") for x in candidates()), default="")
+    base = date.fromisoformat(newest) if newest else date.today()
+    for d in [base + timedelta(days=k) for k in range(1, 5)]:
         p = pick(d)
         if not p:
             continue        # the pages and the data can be a build apart: then that day has no print

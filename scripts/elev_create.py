@@ -13,6 +13,8 @@ says to use "New link" on agsist.com/elev-admin instead.
 
     python3 scripts/elev_create.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import smtplib

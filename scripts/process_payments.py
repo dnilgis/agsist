@@ -27,6 +27,8 @@ Usage: python scripts/process_payments.py <dir-with-xlsx-files>
         state's counties, which is correct for county aggregation)
 --selftest builds from a synthetic frame.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

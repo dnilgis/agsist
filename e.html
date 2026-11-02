@@ -6,16 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <title>Your AGSIST email | AGSIST</title>
-<!-- The front door (Sig, Oct 22 2026; BUILD-RULES 11). Every link AGSIST
-     emails comes here: /e?a=<route>&<signed params> (scripts/email_links.py).
-     This page asks the subs worker from the reader's browser (GET /fd/<route>,
-     JSON, subs worker v5.48) and its button POSTs the same params, so a mail
-     scanner that only fetches the link changes nothing. No address is ever in
-     the link. If the worker cannot be reached the page says so and offers the
-     mailto stop. Not in the sitemap. Test: test/frontdoor-page.test.mjs.
-     Oct 27 2026 (subs worker v5.57): a route may ask for a field (the ZIP for
-     "Your county this week", a=daily-cw); it is typed here and sent in the
-     POST body, never in a link. -->
+
 <style>
   :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.72);--link:#7a5a12;--ok:#1f6b3a;--btn:#1f6b3a}
   @media (prefers-color-scheme: dark){:root{--bg:#0a0c0d;--text:#e9edeb;--muted:rgba(233,237,235,.72);--link:#d4a23f;--ok:#7fd19b;--btn:#2a8a4c}}

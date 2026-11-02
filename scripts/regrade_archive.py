@@ -75,6 +75,8 @@ Idempotent: a second run rewrites nothing. Reads and writes only
 data/daily-archive/*.json; the HTML is re-rendered by
 scripts/rebuild_archive_html.py, which the same workflow runs next.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import sys

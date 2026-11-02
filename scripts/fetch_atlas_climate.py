@@ -41,6 +41,8 @@ USAGE
   python scripts/fetch_atlas_climate.py --dir /path/with/the/files
       (pcpncy and tmaxcy required; tmincy used when it is there)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import gzip
 import json

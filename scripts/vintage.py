@@ -23,9 +23,9 @@ SOURCES (all public, no key)
                        revision shows from one day to the next. The date column
                        comes from the metadata, never assumed.
   usgs-river           USGS daily mean stage (00065) and flow (00060), last 30
-                       days, for a short list of grain river gauges. WaterServices
-                       first (one request for every gauge); if it does not
-                       answer, the newer api.waterdata.usgs.gov, one gauge at a time.
+                       days, for a short list of grain river gauges. The newer
+                       api.waterdata.usgs.gov first, one gauge at a time; the older
+                       WaterServices (one request for every gauge) when a gauge is left out.
   eia-ethanol          EIA weekly fuel ethanol production by PADD (table download)
   eia-diesel           EIA weekly on-highway diesel retail prices (table download)
                        Bytes kept as sent (base64), never opened here.
@@ -253,17 +253,12 @@ def legacy_values(doc):
 
 
 def fetch_usgs(net, day, days=USGS_DAYS, gauges=GAUGES):
+    """The newer api.waterdata.usgs.gov first, one gauge at a time. WaterServices (retired by USGS in
+    Q1 2027) is asked once for every gauge only when the new API left a gauge out, and its answer is
+    kept when it covers more gauges. The record keeps whichever answer it is, as sent."""
     start, end = (day - timedelta(days=days)).isoformat(), day.isoformat()
     sites = list(gauges)
     rec = {"gauges": gauges, "window": {"start": start, "end": end, "days": days}, "requests": [], "data": None}
-    req, body = net.get(usgs_legacy_url(sites, start, end))
-    rec["requests"].append(req)
-    doc = as_json(req, body)
-    if isinstance(doc, dict) and legacy_sites(doc):
-        rec.update(service="waterservices", data=doc, rows=legacy_values(doc))
-        rec["missing_sites"] = sorted(set(sites) - legacy_sites(doc))
-        return rec
-    # the newer API, one gauge at a time
     out, missing, rows = {}, [], 0
     for s in sites:
         req, body = net.get(usgs_ogc_url(s, start, end))
@@ -275,8 +270,18 @@ def fetch_usgs(net, day, days=USGS_DAYS, gauges=GAUGES):
             rows += len(feats)
         else:
             missing.append(s)
+    if not missing:
+        rec.update(service="api.waterdata", data=out, rows=rows, missing_sites=[])
+        return rec
+    req, body = net.get(usgs_legacy_url(sites, start, end))
+    rec["requests"].append(req)
+    doc = as_json(req, body)
+    if isinstance(doc, dict) and len(legacy_sites(doc)) > len(out):
+        rec.update(service="waterservices", data=doc, rows=legacy_values(doc))
+        rec["missing_sites"] = sorted(set(sites) - legacy_sites(doc))
+        return rec
     if not out:
-        rec["error"] = "no gauge answered (WaterServices and api.waterdata)"
+        rec["error"] = "no gauge answered (api.waterdata and WaterServices)"
         return rec
     rec.update(service="api.waterdata", data=out, rows=rows, missing_sites=missing)
     return rec
@@ -453,15 +458,17 @@ def selftest():
                for r in b["requests"]), b["requests"])
         ck("metadata saved as sent", b["meta"] == json.loads(meta_b))
         u = read_vintage(os.path.join(d, "usgs-river", "2026-10-28.json.gz"))
-        ck("USGS: one request for every gauge, answer kept whole",
-           u["service"] == "waterservices" and u["data"] == json.loads(usgs_b) and len(u["requests"]) == 1, u.get("service"))
+        ck("USGS: new API asked first, one gauge at a time, then WaterServices once; the answer covering more gauges kept whole",
+           u["service"] == "waterservices" and u["data"] == json.loads(usgs_b) and len(u["requests"]) == len(GAUGES) + 1, u.get("service"))
+        ck("USGS: the first request goes to api.waterdata, the last to waterservices",
+           "api.waterdata" in u["requests"][0]["url"] and "waterservices" in u["requests"][-1]["url"], [r["url"][:40] for r in u["requests"]])
         ck("USGS: gauges that did not answer are named", u["missing_sites"] == sorted(set(GAUGES) - {"07010000", "06934500"}), u["missing_sites"])
         ck("USGS: rows count every reading, no-data days included (kept as sent)", u["rows"] == 7, u["rows"])
         e = read_vintage(os.path.join(d, "eia-ethanol", "2026-10-28.json.gz"))
         ck("EIA: bytes kept exactly (base64)", base64.b64decode(e["data"]["body_b64"]) == xls_b and e["data"]["content_type"] == "application/vnd.ms-excel")
         ck("one request at a time, 3 s apart", sleeps and all(s == 3 for s in sleeps), sleeps[:5])
-        ck("polite: one metadata and one page per dataset, one USGS, one per EIA table",
-           len(calls) == 2 * len(AGTRANSPORT) + 1 + 2, len(calls))
+        ck("polite: one metadata and one page per dataset, one USGS call per gauge and one legacy, one per EIA table",
+           len(calls) == 2 * len(AGTRANSPORT) + len(GAUGES) + 1 + 2, len(calls))
         mp = os.path.join(d, "manifest", "2026-10-28.json")
         m = json.load(open(mp))
         gz = os.path.join(d, "eia-diesel", "2026-10-28.json.gz")
@@ -498,11 +505,11 @@ def selftest():
         ck("manifest records the failure", json.load(open(os.path.join(d, "manifest", "2026-10-28.json")))["sources"]["agtransport-barge_rates"]["ok"] is False)
 
     with tempfile.TemporaryDirectory() as d:
-        # a refusal (4xx) is not asked again; an HTML page is not a spreadsheet; USGS falls back to the newer API
+        # a refusal (4xx) is not asked again; an HTML page is not a spreadsheet; USGS keeps the new API's partial answer when WaterServices is down
         net, calls, sleeps = make(legacy_down=True, html_eia=True)
         man = run(day, out=d, only=["usgs-river", "eia-ethanol"], net=net, log=quiet)
         u = read_vintage(os.path.join(d, "usgs-river", "2026-10-28.json.gz"))
-        ck("USGS: newer API, one gauge at a time, when WaterServices is down",
+        ck("USGS: the new API's answer is kept when WaterServices is down",
            u["ok"] and u["service"] == "api.waterdata" and list(u["data"]) == ["07010000"] and len(u["requests"]) == 1 + len(GAUGES), u.get("service"))
         e = read_vintage(os.path.join(d, "eia-ethanol", "2026-10-28.json.gz"))
         ck("EIA: an HTML page is not saved as the table", not e["ok"] and all("not a spreadsheet" in r["error"] for r in e["requests"]), e["requests"])

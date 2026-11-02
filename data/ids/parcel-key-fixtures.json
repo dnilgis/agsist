@@ -1,5 +1,5 @@
 {
- "note": "[fips, pid, key] from scripts/build_ids.py parcel_key(); parcel-key.js must give the same.",
+ "note": "[fips, pid, key] parcel key examples; the page's key function must give the same key.",
  "cases": [
   [
    "17011",

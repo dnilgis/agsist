@@ -45,6 +45,8 @@ build fails if any company page passes MAX_PAGE_KB.
 
   python3 scripts/build_company_pages.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re
@@ -54,6 +56,7 @@ from urllib.parse import urlparse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_cash_bid_pages as CB  # noqa: E402
+import source_links as SL  # noqa: E402  no direct links to data sources
 from build_state_basis_pages import CT, MONTH_ABBR, SITE, STATE_NAMES, esc, money_basis  # noqa: E402
 
 COMPANY_MIN = 3           # boards placed in a town before a company gets a page
@@ -522,11 +525,11 @@ def write_all(companies, ctx, out_dir):
             raise SystemExit(f"[cash-bid-pages] company page {slug} is {kb:.0f} KB (> {MAX_PAGE_KB}); refusing")
         m["kb"] = kb
         with open(os.path.join(d, f"{slug}.html"), "w", encoding="utf-8") as f:
-            f.write(page)
+            f.write(SL.unlink(page))
         metas.append(m)
     page, im = build_index(metas, ctx)
     with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
-        f.write(page)
+        f.write(SL.unlink(page))
     return metas, im
 
 
@@ -610,7 +613,7 @@ def selftest():
                 'data-source="company:acme-co-op" data-crops="corn soybeans wheat"></div>') in p
         assert p.count("/components/cb-signup.js?v=") == 1 and p.count("/components/cb-signup.css?v=") == 1
         assert p.index('id="bid-email"') > p.index('id="iowa"'), "the box comes after the bids"
-        ld = [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">\n(.*?)\n  </script>', p, re.S)]
+        ld = [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">\s*(.*?)\s*</script>', p, re.S)]
         types = [g["@type"] for g in ld[0]["@graph"]]
         assert types == ["BreadcrumbList", "WebPage", "FAQPage"], types
         faqs = {q["name"]: q["acceptedAnswer"]["text"] for q in ld[0]["@graph"][2]["mainEntity"]}

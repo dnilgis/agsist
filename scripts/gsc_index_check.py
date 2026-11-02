@@ -33,6 +33,8 @@ on; a run where nothing could be inspected leaves the file alone and exits 1.
     python3 scripts/gsc_index_check.py --dry-run   # print the sample, no network
     python3 scripts/gsc_index_check.py --selftest  # offline, fake transport
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import math
 import os

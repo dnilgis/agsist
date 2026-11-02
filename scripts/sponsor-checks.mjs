@@ -12,6 +12,7 @@ import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { guard } from './_argguard.mjs'; guard(import.meta.url);
 
 const R = (p) => readFileSync(fileURLToPath(new URL("../" + p, import.meta.url)), "utf8");
 let pass = 0, fail = 0;

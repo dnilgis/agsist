@@ -238,7 +238,7 @@ test("byline, date and sources are on the page", () => {
   assert.match(PAGE, /<p class="gb-byline">Updated <time datetime="2026-10-16">Oct 16, 2026<\/time>/);
   assert.match(PAGE, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   assert.match(PAGE, /"dateModified":"2026-10-16"/);
-  for (const s of ["NCH-61", "doi.org/10.13031/trans.58.11033", "EP413.2", "grain-drying-considerations-fall", "gs401_40SeriesBins-Producer.pdf"])
+  for (const s of ["NCH-61", "doi.org/10.13031/trans.58.11033", "EP413.2", "grain-drying-considerations-fall", "GSI 40-Series producer brochure"])
     assert.ok(PAGE.includes(s), `source ${s}`);
   assert.doesNotMatch(PAGE, /K-State\/USDA WPACKING/, "the uncited 2-6% claim is gone");
   const visible = PAGE.replace(/<!--[\s\S]*?-->/g, "").replace(/<(script|style)\b[\s\S]*?<\/\1>/g, "");
@@ -262,7 +262,9 @@ test("dealer rows and shrink range match the documents", () => {
   assert.equal((24 * 12 + 2) - (21 * 12 + 6), 32, "GSI chart: 8 to 9 rings adds 32 in");
   assert.match(PAGE, /<tr><td>Brock 48 ft, 8 rings \(7-04808\)<\/td><td>21 ft 6 in, peak starts 1 in below<\/td><td>39,053<\/td>/);
   assert.doesNotMatch(PAGE, /unverified/, "the Brock chart has been read");
-  assert.match(PAGE, /BR-2286-202201-Brock-On-Farm-Storage-Capacities-EM\.pdf/);
+  // the brochures are named, not linked (no direct links to data sources, Oct 29, 2026)
+  assert.match(PAGE, /BR-2286 on-farm storage capacities \(Jan 2022\)/);
+  assert.doesNotMatch(PAGE, /href="[^"]*\.pdf"/);
   assert.match(PAGE, /starting one inch \(25 mm\) below the eave/);
   assert.match(PAGE, /7-04811\), 51,241 bu at 29 ft 6 in/);
   assert.doesNotMatch(PAGE, /GSI and Brock bins <a/);

@@ -24,6 +24,8 @@ refresh the same spans on load, from the same file.
     python3 scripts/bake_audience.py --check    exit 1 if a page is behind data/audience.json
     python3 scripts/bake_audience.py --selftest offline checks
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import re
 import sys

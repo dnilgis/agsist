@@ -41,19 +41,19 @@ COMP = REPO / "components"
 SKIP = set()
 
 FONTS = ("/fonts/inter-var.woff2", "/fonts/jetbrains-mono-var.woff2")
-FONT_BLOCK = ("<!-- static-nav:fonts (scripts/inject_static_nav.py) -->\n"
+FONT_BLOCK = ("<!-- static-nav:fonts -->\n"
               + "".join(f'  <link rel="preload" href="{u}" as="font" type="font/woff2" crossorigin>\n'
                         for u in FONTS)
               + "  <!-- /static-nav:fonts -->")
-FONT_RE = re.compile(r"<!-- static-nav:fonts .*?<!-- /static-nav:fonts -->", re.S)
+FONT_RE = re.compile(r"<!-- static-nav:fonts\b.*?<!-- /static-nav:fonts -->", re.S)
 REFRESH_RE = re.compile(r'<meta[^>]+http-equiv=["\']refresh["\']', re.I)
 DIV_TAG_RE = re.compile(r"<div\b|</div\s*>", re.I)
 
 
 def block(kind):
     body = (COMP / f"{kind}-fallback.html").read_text(encoding="utf-8").rstrip("\n")
-    return (f"\n<!-- static-nav:{kind} (scripts/inject_static_nav.py; source "
-            f"components/{kind}-fallback.html) -->\n{body}\n<!-- /static-nav:{kind} -->\n")
+    # bare markers: the page source does not name the script or file that wrote it (Sig, Oct 29)
+    return f"\n<!-- static-nav:{kind} -->\n{body}\n<!-- /static-nav:{kind} -->\n"
 
 
 def fill_div(html, div_id, inner, page):

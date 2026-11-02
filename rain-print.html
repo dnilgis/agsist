@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0e0e0c">
-  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <!-- static-nav:fonts -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
@@ -407,6 +407,14 @@
   .rp-ogrid .rp-ogrid{gap:.7rem}
   .rp-isgift .rp-note{margin:0 0 .2rem}
   .rp-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  /* "Rather not fiddle with it?" (Sig, 2026-10-30): Sig makes the print for them; components/rp-forme.js posts it */
+  .rp-fm{margin:.8rem 0 0;padding:10px 12px;border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:var(--r-md);background:var(--surface)}
+  .rp-fm-t{margin:0;font-size:var(--fs-sm);line-height:1.5;color:var(--text-dim)}
+  .rp-fm-t b{color:var(--text)}
+  .rp-fm-t .rp-linkbtn{min-height:24px;font-weight:600;text-align:left}
+  .rp-fm-f{margin:.7rem 0 0}
+  .rp-fm-go{margin:.7rem 0 0}
+  .rp-fm .rp-msg{margin:.7rem 0 0}
   .rp-msg{border-radius:var(--r-8);padding:10px 12px;margin:.6rem 0;line-height:1.55}
   .rp-msg p{margin:0 0 .4rem}
   .rp-msg.rp-ok{border:1px solid var(--green);color:var(--text)}
@@ -593,9 +601,10 @@
   .rp-inbox-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:1.4rem;align-items:start}
   .rp-inbox-list{margin:0;padding:0 0 0 1.1rem;color:var(--text-dim);line-height:1.6;max-width:var(--rp-measure)}
   .rp-inbox-list li{margin:0 0 .6rem}.rp-inbox-list b{color:var(--text)}
+  .lz-btn{display:block;width:100%;margin:0;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:zoom-in}.lz-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}.lz-cue{display:block;margin-top:.5rem;font-size:var(--fs-xs);font-weight:600;color:var(--link);text-decoration:underline}
   .rp-inbox-fig{margin:0}.rp-inbox-fig img{display:block;width:100%;max-width:360px;height:auto;border:1px solid var(--border);border-radius:var(--r-sm,4px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-  .rp-inbox-fig figcaption{font-size:var(--fs-xs);color:var(--text-muted);line-height:1.5;margin-top:.5rem;max-width:360px}
-  @media(max-width:760px){.rp-inbox-grid{grid-template-columns:1fr}.rp-inbox-fig img,.rp-inbox-fig figcaption{max-width:300px}}
+  .rp-inbox-fig .lz-btn{max-width:360px}.rp-inbox-fig figcaption{font-size:var(--fs-xs);color:var(--text-muted);line-height:1.5;margin-top:.5rem;max-width:360px}
+  @media(max-width:760px){.rp-inbox-grid{grid-template-columns:1fr}.rp-inbox-fig img,.rp-inbox-fig figcaption,.rp-inbox-fig .lz-btn{max-width:300px}}
   @media(min-width:600px) and (max-width:899px){.rp-box{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:480px){.rp-ogrid,.rp-opts{grid-template-columns:1fr}}
   @media(min-width:600px) and (max-width:899px){.rp-form{grid-template-columns:minmax(0,2fr) minmax(0,1fr) auto;align-items:end}.rp-form .btn{width:auto}}
@@ -663,7 +672,7 @@
     /* the print pins under the menu while the options are worked */
     .rp-pv{position:sticky;top:var(--rp-nav,64px);z-index:30;margin:0 -16px;padding:0 0 6px;background:var(--bg);border-bottom:1px solid var(--border)}
     .rp-pv .rp-wall{margin:0;padding:8px 16px 0}
-    .rp-pv .rp-frame{max-width:330px}
+    .rp-pv .rp-frame{max-width:min(330px,calc((40vh - 100px) * 1.45))}
     .rp-pv .rp-cap{padding:4px 0 6px;gap:.3rem .6rem}
     .rp-pv .rp-cap-l{flex-basis:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .rp-pv .rp-view{width:100%;justify-content:center;flex-wrap:nowrap;gap:.3rem}
@@ -734,7 +743,7 @@
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header">
-<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+<!-- static-nav:header -->
   <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
   <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
     <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
@@ -770,6 +779,21 @@
       <p class="rp-xmas-top" id="rp-xmas-top" hidden></p>
       <p class="rp-xmas-alt" id="rp-xmas-alt" hidden><button type="button" class="rp-linkbtn" id="rp-xmas-last">Make it last year, by Christmas</button></p>
       <p class="rp-start"><a class="btn btn-primary" id="rp-start" href="#rp-place">Make yours, free</a></p>
+      <div class="rp-fm" id="rp-fm">
+        <p class="rp-fm-t"><b>Rather not fiddle with it?</b> Call or text me at <a href="tel:+17157972428">(715) 797-2428</a>, or <button type="button" class="rp-linkbtn" id="rp-fm-open" aria-expanded="false" aria-controls="rp-fm-form">leave your number and the place</button>. I&rsquo;ll make two or three versions and email them to you to pick one. No charge for the design help; you only pay if you order.</p>
+        <form class="rp-fm-f" id="rp-fm-form" novalidate hidden>
+          <div class="rp-ogrid">
+            <label class="field"><span>Your name</span><input id="rp-fm-name" type="text" maxlength="80" autocomplete="name" required></label>
+            <label class="field"><span>Phone or email</span><input id="rp-fm-contact" type="text" maxlength="254" autocomplete="email" required></label>
+            <label class="field"><span>The farm or town, and state</span><input id="rp-fm-place" type="text" maxlength="120" placeholder="Chetek, WI" required></label>
+            <label class="field"><span>Who it is for</span><input id="rp-fm-for" type="text" maxlength="120" placeholder="My dad, for Christmas" required></label>
+            <label class="field rp-wide"><span>Anything else (optional)</span><textarea id="rp-fm-note" maxlength="1000" rows="2" placeholder="A year you want, words for the print, a good time to call"></textarea></label>
+            <label class="rp-hp" aria-hidden="true">Leave empty<input id="rp-fm-hp" name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <p class="rp-fm-go"><button class="btn btn-primary" id="rp-fm-submit" type="submit">Send it to Sig</button></p>
+        </form>
+        <div id="rp-fm-out" aria-live="polite"></div>
+      </div>
       <figure class="rp-photo" id="rp-photo"><picture><source type="image/webp" srcset="/img/photos/rain-print-photo-chetek-2025-800.webp 800w, /img/photos/rain-print-photo-chetek-2025-1600.webp 1348w" sizes="(min-width: 900px) 360px, 100vw"><img src="/img/photos/rain-print-photo-chetek-2025-800.jpg" srcset="/img/photos/rain-print-photo-chetek-2025-800.jpg 800w, /img/photos/rain-print-photo-chetek-2025-1600.jpg 1348w" sizes="(min-width: 900px) 360px, 100vw" width="1348" height="1011" loading="eager" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: daily rain below the line, snow above, 32.27 in."></picture><figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek. This test print is shown without its white mat.</figcaption></figure>
     </div>
 
@@ -801,7 +825,6 @@
             <label class="field rp-year"><span>Year</span><select id="rp-year" name="year"><option value="2025">2025</option></select></label>
             <button class="btn btn-primary" id="rp-go" type="submit">Draw my year</button>
           </form>
-          <!-- Canada (2026-10-16, components/rp-canada.js): shows once a Canadian town is drawn -->
           <div class="rp-ca" id="rp-ca" hidden>
             <span class="rp-seg" role="radiogroup" aria-label="Units" id="rp-units-g"><label><input type="radio" name="rp-units" value="mm"><span id="rp-units-mm">mm and cm</span></label><label><input type="radio" name="rp-units" value="in"><span id="rp-units-in">Inches</span></label></span>
             <span class="rp-seg" role="radiogroup" aria-label="Language" id="rp-lang-g"><label><input type="radio" name="rp-lang" value="en"><span lang="en">English</span></label><label><input type="radio" name="rp-lang" value="fr"><span lang="fr">Français</span></label></span>
@@ -819,35 +842,9 @@
           <p class="rp-preview-line" id="rp-preview-line" hidden></p>
           <p class="rp-source" id="rp-source"></p>
           <label class="field rp-stn"><span>Weather station</span><select id="rp-station" disabled><option value="">Nearest with a good record</option></select></label>
-          <div class="rp-maker" id="rp-maker" hidden>
-            <p><b>Print files for fulfillment.</b> The 13 x 19 in sheet at 300 dpi, landscape, untrimmed: the picture 16.5 x 11 in in the middle, white all round, every word inside the mat&rsquo;s window. Add &amp;serial=N to this page&rsquo;s link and the print files carry "No. 000N" under the QR (initial each physical print beside it in pencil); &amp;serial=0 gives "No. 0000" for your own test prints, with the real QR; the digital file and the SVG never do. The SVG is for viewing in a browser; print from the PNG or PDF. Test print PDF (standard code) is for your own test prints and samples: its QR opens the Rain Print page, not this design, and it needs no short link. Never send it as an order. This box opens only on a browser that has opened this page once with ?maker= and Sig&rsquo;s key; ?maker=1 anywhere else shows the public page. It keeps casual visitors out. It does not protect the files from anyone who reads the page&rsquo;s code.</p>
-            <p class="rp-count" id="rp-maker-logo" hidden></p>
-            <p class="rp-msg rp-bad" id="rp-maker-msg" role="alert" hidden></p>
-            <div class="rp-acts">
-              <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="png">13 x 19 print PNG</button>
-              <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="pdf">13 x 19 print PDF</button>
-              <button class="btn btn-secondary" type="button" data-size="digital" data-fmt="png">Digital file PNG</button>
-              <button class="btn btn-secondary" type="button" data-size="digital" data-fmt="pdf">Digital file PDF</button>
-              <button class="btn btn-secondary" type="button" data-size="digital" data-fmt="jpg">Digital file JPG</button>
-              <button class="btn btn-secondary" type="button" data-size="vector" data-fmt="svg">SVG</button>
-              <button class="btn btn-secondary" type="button" data-size="12x18" data-fmt="pdf" data-qr="standard">Test print PDF (standard code)</button>
-            </div>
-            <p>Insert letter: one 8.5 x 11 page that goes on top in the box of every print and framed print (not the digital file). It lies flat on the print. Its numbers are the print&rsquo;s own, it carries the serial from &amp;serial=N (a blank to fill in by hand without it) and the standard code. Paste the gift note or the business&rsquo;s message from the order below; leave it empty and the letter has no note.</p>
-            <label class="field rp-wide"><span>Note for the letter (from the order)</span><textarea id="rp-ins-gift" maxlength="300" rows="2"></textarea></label>
-            <label class="field rp-wide"><span>Note from (a business name, optional; the box then reads A note from &hellip;)</span><input id="rp-ins-from" type="text" maxlength="40"></label>
-            <div class="rp-acts">
-              <button class="btn btn-secondary" type="button" data-size="insert" data-fmt="pdf">Insert letter PDF</button>
-            </div>
-            <p>Reading guide: one 8.5 x 11 page, How to read your Rain Print, that goes with a digital file (the files email sends it with the PNG, PDF and JPG the moment the buyer approves the proof). The letter&rsquo;s numbers and key, plus a line for each extra the print draws; no serial and no code line. The note above goes on it too.</p>
-            <div class="rp-acts">
-              <button class="btn btn-secondary" type="button" data-size="guide" data-fmt="pdf">Reading guide PDF</button>
-            </div>
-          </div>
+          <div class="rp-maker" id="rp-maker" hidden></div>
         </section>
 
-        <!-- 2026-10-22 (Sig, yes to all six): one Layers card. Every layer is one tap, on or off, several at once, and the
-             print redraws at once; a layer that can't change the print right now is greyed with its reason in one line;
-             the line under the print says what the last tap did and where to look. Help that ran long is in Questions. -->
         <section class="rp-step rp-layers" id="rp-layers" aria-labelledby="rp-layers-h">
           <div class="rp-lh"><h2 class="rp-layers-h" id="rp-layers-h">Layers</h2><span class="rp-lcount" id="rp-lcount">7 in all</span><button type="button" class="rp-linkbtn rp-alloff" id="rp-alloff">All off</button></div>
           <div class="rp-lrow" role="group" aria-labelledby="rp-lg-usual"><span class="rp-lg" id="rp-lg-usual">Usual year</span>
@@ -874,11 +871,11 @@
             <div class="rp-wide2"><label class="field"><span>A line under the name</span><input id="rp-ded" type="text" maxlength="70" placeholder="For Dad, his 40th crop. Love, Kate" aria-describedby="rp-ded-n"></label><p class="rp-count rp-len" id="rp-ded-n">0 of 70 letters</p></div>
             <p class="rp-count rp-wide2" id="rp-sym-note" hidden>Emoji and symbols aren&rsquo;t in the print&rsquo;s typeface, so they were left out. Letters, numbers and everyday punctuation print as typed.</p>
             <div class="rp-dates" role="group" aria-labelledby="rp-dates-h"><p class="rp-dates-h" id="rp-dates-h">Mark a day <span class="rp-step-opt">(up to 5)</span></p>
-              <div class="rp-date" id="rp-m1row" role="group" aria-labelledby="rp-m1h"><span class="rp-date-n" id="rp-m1h">Day 1</span><select class="field rp-mo" id="rp-m1mo" aria-label="Month for day 1" aria-describedby="rp-m1err"></select><select class="field rp-dy" id="rp-m1dy" aria-label="Day for day 1" aria-describedby="rp-m1err"></select><input class="field rp-lab" id="rp-m1l" aria-label="Label for day 1" aria-describedby="rp-m1l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m1rm" aria-label="Remove day 1">&times;</button><p class="rp-count rp-len" id="rp-m1l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m1err" hidden></p><p class="rp-count rp-date-on" id="rp-m1on" hidden></p></div>
-              <div class="rp-date" id="rp-m2row" role="group" aria-labelledby="rp-m2h" hidden><span class="rp-date-n" id="rp-m2h">Day 2</span><select class="field rp-mo" id="rp-m2mo" aria-label="Month for day 2" aria-describedby="rp-m2err"></select><select class="field rp-dy" id="rp-m2dy" aria-label="Day for day 2" aria-describedby="rp-m2err"></select><input class="field rp-lab" id="rp-m2l" aria-label="Label for day 2" aria-describedby="rp-m2l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m2rm" aria-label="Remove day 2">&times;</button><p class="rp-count rp-len" id="rp-m2l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m2err" hidden></p><p class="rp-count rp-date-on" id="rp-m2on" hidden></p></div>
-              <div class="rp-date" id="rp-m3row" role="group" aria-labelledby="rp-m3h" hidden><span class="rp-date-n" id="rp-m3h">Day 3</span><select class="field rp-mo" id="rp-m3mo" aria-label="Month for day 3" aria-describedby="rp-m3err"></select><select class="field rp-dy" id="rp-m3dy" aria-label="Day for day 3" aria-describedby="rp-m3err"></select><input class="field rp-lab" id="rp-m3l" aria-label="Label for day 3" aria-describedby="rp-m3l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m3rm" aria-label="Remove day 3">&times;</button><p class="rp-count rp-len" id="rp-m3l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m3err" hidden></p><p class="rp-count rp-date-on" id="rp-m3on" hidden></p></div>
-              <div class="rp-date" id="rp-m4row" role="group" aria-labelledby="rp-m4h" hidden><span class="rp-date-n" id="rp-m4h">Day 4</span><select class="field rp-mo" id="rp-m4mo" aria-label="Month for day 4" aria-describedby="rp-m4err"></select><select class="field rp-dy" id="rp-m4dy" aria-label="Day for day 4" aria-describedby="rp-m4err"></select><input class="field rp-lab" id="rp-m4l" aria-label="Label for day 4" aria-describedby="rp-m4l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m4rm" aria-label="Remove day 4">&times;</button><p class="rp-count rp-len" id="rp-m4l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m4err" hidden></p><p class="rp-count rp-date-on" id="rp-m4on" hidden></p></div>
-              <div class="rp-date" id="rp-m5row" role="group" aria-labelledby="rp-m5h" hidden><span class="rp-date-n" id="rp-m5h">Day 5</span><select class="field rp-mo" id="rp-m5mo" aria-label="Month for day 5" aria-describedby="rp-m5err"></select><select class="field rp-dy" id="rp-m5dy" aria-label="Day for day 5" aria-describedby="rp-m5err"></select><input class="field rp-lab" id="rp-m5l" aria-label="Label for day 5" aria-describedby="rp-m5l-n" type="text" maxlength="13" placeholder="What happened (13 letters)" autocomplete="off"><button type="button" class="rp-rm" id="rp-m5rm" aria-label="Remove day 5">&times;</button><p class="rp-count rp-len" id="rp-m5l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m5err" hidden></p><p class="rp-count rp-date-on" id="rp-m5on" hidden></p></div>
+              <div class="rp-date" id="rp-m1row" role="group" aria-labelledby="rp-m1h"><span class="rp-date-n" id="rp-m1h">Day 1</span><select class="field rp-mo" id="rp-m1mo" aria-label="Month for day 1" aria-describedby="rp-m1err"></select><select class="field rp-dy" id="rp-m1dy" aria-label="Day for day 1" aria-describedby="rp-m1err"></select><input class="field rp-lab" id="rp-m1l" aria-label="Label for day 1" aria-describedby="rp-m1l-n" type="text" maxlength="13" placeholder="What happened" autocomplete="off"><button type="button" class="rp-rm" id="rp-m1rm" aria-label="Remove day 1">&times;</button><p class="rp-count rp-len" id="rp-m1l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m1err" hidden></p><p class="rp-count rp-date-on" id="rp-m1on" hidden></p></div>
+              <div class="rp-date" id="rp-m2row" role="group" aria-labelledby="rp-m2h" hidden><span class="rp-date-n" id="rp-m2h">Day 2</span><select class="field rp-mo" id="rp-m2mo" aria-label="Month for day 2" aria-describedby="rp-m2err"></select><select class="field rp-dy" id="rp-m2dy" aria-label="Day for day 2" aria-describedby="rp-m2err"></select><input class="field rp-lab" id="rp-m2l" aria-label="Label for day 2" aria-describedby="rp-m2l-n" type="text" maxlength="13" placeholder="What happened" autocomplete="off"><button type="button" class="rp-rm" id="rp-m2rm" aria-label="Remove day 2">&times;</button><p class="rp-count rp-len" id="rp-m2l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m2err" hidden></p><p class="rp-count rp-date-on" id="rp-m2on" hidden></p></div>
+              <div class="rp-date" id="rp-m3row" role="group" aria-labelledby="rp-m3h" hidden><span class="rp-date-n" id="rp-m3h">Day 3</span><select class="field rp-mo" id="rp-m3mo" aria-label="Month for day 3" aria-describedby="rp-m3err"></select><select class="field rp-dy" id="rp-m3dy" aria-label="Day for day 3" aria-describedby="rp-m3err"></select><input class="field rp-lab" id="rp-m3l" aria-label="Label for day 3" aria-describedby="rp-m3l-n" type="text" maxlength="13" placeholder="What happened" autocomplete="off"><button type="button" class="rp-rm" id="rp-m3rm" aria-label="Remove day 3">&times;</button><p class="rp-count rp-len" id="rp-m3l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m3err" hidden></p><p class="rp-count rp-date-on" id="rp-m3on" hidden></p></div>
+              <div class="rp-date" id="rp-m4row" role="group" aria-labelledby="rp-m4h" hidden><span class="rp-date-n" id="rp-m4h">Day 4</span><select class="field rp-mo" id="rp-m4mo" aria-label="Month for day 4" aria-describedby="rp-m4err"></select><select class="field rp-dy" id="rp-m4dy" aria-label="Day for day 4" aria-describedby="rp-m4err"></select><input class="field rp-lab" id="rp-m4l" aria-label="Label for day 4" aria-describedby="rp-m4l-n" type="text" maxlength="13" placeholder="What happened" autocomplete="off"><button type="button" class="rp-rm" id="rp-m4rm" aria-label="Remove day 4">&times;</button><p class="rp-count rp-len" id="rp-m4l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m4err" hidden></p><p class="rp-count rp-date-on" id="rp-m4on" hidden></p></div>
+              <div class="rp-date" id="rp-m5row" role="group" aria-labelledby="rp-m5h" hidden><span class="rp-date-n" id="rp-m5h">Day 5</span><select class="field rp-mo" id="rp-m5mo" aria-label="Month for day 5" aria-describedby="rp-m5err"></select><select class="field rp-dy" id="rp-m5dy" aria-label="Day for day 5" aria-describedby="rp-m5err"></select><input class="field rp-lab" id="rp-m5l" aria-label="Label for day 5" aria-describedby="rp-m5l-n" type="text" maxlength="13" placeholder="What happened" autocomplete="off"><button type="button" class="rp-rm" id="rp-m5rm" aria-label="Remove day 5">&times;</button><p class="rp-count rp-len" id="rp-m5l-n">0 of 13 letters</p><p class="rp-count rp-bad rp-date-err" id="rp-m5err" hidden></p><p class="rp-count rp-date-on" id="rp-m5on" hidden></p></div>
               <p class="rp-dates-n rp-add-row"><button type="button" class="rp-linkbtn" id="rp-add-day">+ Mark another day</button><span class="rp-count rp-dates-max" id="rp-dates-max" hidden>5 days is the most that fits. Remove one to mark another.</span></p>
               <p class="rp-count rp-dates-n" id="rp-labels-n">Or tap one: <span class="rp-presets" id="rp-presets" role="group" aria-label="Label ideas"></span></p>
               <p class="rp-count rp-dates-n rp-date-say" id="rp-date-say" aria-live="polite"></p>
@@ -913,8 +910,6 @@
               <p class="rp-note rp-wide2" id="rp-dl-note" aria-live="polite"></p>
             </div>
           </details>
-          <!-- 2026-10-20 (Sig): "Email me this design": the link now, one reminder the next day unless it's ordered, then nothing
-               (worker v5.43 POST /rp-remind; scripts/rp_design_email.py). Nothing is ticked for the reader. -->
           <div class="rp-mailme" id="rp-mailme" hidden>
             <p class="rp-mailme-q"><button type="button" class="rp-linkbtn" id="rp-mailme-open" aria-expanded="false" aria-controls="rp-mailme-form">Email me this design</button></p>
             <form class="rp-mailme-f" id="rp-mailme-form" novalidate hidden>
@@ -929,7 +924,6 @@
         </section>
 
         <section class="rp-step rp-buy" id="rp-buy" aria-labelledby="rp-buy-h">
-          <!-- prices, payment links, Christmas dates and shipping words come from data/rain-print.json (components/rain-print.js reads it) -->
           <h2 class="sec-h rp-step-h" id="rp-buy-h" tabindex="-1"><span class="rp-n" aria-hidden="true">3</span>How do you want it?</h2>
           <div class="rp-gift" id="rp-gift" hidden>
             <h3>A <span class="rp-cy">2026</span> print for Christmas</h3>
@@ -942,7 +936,7 @@
           </div>
           <div class="rp-gift-use" id="rp-gift-use-wrap" hidden><p class="rp-note" id="rp-gift-use-note"></p><button class="btn btn-primary" id="rp-gift-use" type="button">Use my gift</button></div>
           <fieldset class="rp-prods" id="rp-prods"><legend class="sr-only">Pick one</legend>
-            <label class="rp-prod" data-choice="framed12x18"><input type="radio" name="rp-product" value="framed12x18" checked><span class="rp-prod-b"><span class="rp-prod-t">Framed</span><span class="rp-prod-s" id="rp-sub-framed12x18">Black frame, white mat, real glass.</span></span><span class="rp-price" data-price="framed12x18">$89</span></label>
+            <label class="rp-prod" data-choice="framed12x18"><input type="radio" name="rp-product" value="framed12x18" checked><span class="rp-prod-b"><span class="rp-prod-t">Framed</span><span class="rp-prod-s" id="rp-sub-framed12x18">13 x 19 black frame, white mat, real glass.</span></span><span class="rp-price" data-price="framed12x18">$89</span></label>
             <label class="rp-prod" data-choice="print12x18"><input type="radio" name="rp-product" value="print12x18"><span class="rp-prod-b"><span class="rp-prod-t">Print</span><span class="rp-prod-s" id="rp-sub-print12x18">13 x 19 paper, ships flat.</span></span><span class="rp-price" data-price="print12x18">$45</span></label>
             <label class="rp-prod" data-choice="digital"><input type="radio" name="rp-product" value="digital"><span class="rp-prod-b"><span class="rp-prod-t">Digital file</span><span class="rp-prod-s" id="rp-sub-digital">A PDF, a PNG and a JPG by email within minutes of your OK on the proof.</span></span><span class="rp-price" data-price="digital">$19</span></label>
           </fieldset>
@@ -958,8 +952,6 @@
           <div class="rp-pay-wrap" id="rp-pay-wrap">
             <p class="rp-note rp-gift-pre" id="rp-gift-pre">A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note; Stripe asks where to ship it. I print your note at the top of the letter in the box, free, and no prices go in the box.</p>
             <button class="btn btn-primary rp-pay" id="rp-pay" type="button">Check it and pay $89</button>
-            <!-- 2026-10-20 (Sig, "do all"): two short lines under Pay, then the share. When it comes (the Christmas
-                 order-by date from data/rain-print.json while it holds), then the guarantee. Everything else goes lower. -->
             <p class="rp-arrive" id="rp-arrive" hidden></p>
             <p class="rp-promise" id="rp-promise">Numbered and initialed by hand. If it&rsquo;s not right, I&rsquo;ll redo it or refund it.</p>
             <p class="rp-fam" id="rp-fam-wrap" hidden><button type="button" class="rp-linkbtn" id="rp-fam" aria-expanded="false" aria-controls="rp-fam-more">Send this to your family</button></p>
@@ -969,10 +961,7 @@
             <p class="rp-another" id="rp-another-wrap" hidden><button type="button" class="rp-linkbtn" id="rp-another">Make another: same town, a different year</button></p>
             <p class="rp-note" id="rp-buy-note" aria-live="polite"></p>
           </div>
-          <!-- 2026-10-19: a print of this year, drawn: "Email me when <year> is finished" (rainyear notice, components/rain-print.js syncYearAsk). Under Pay, so Pay never moves. -->
           <div class="rp-yearask" id="rp-yearask" hidden></div>
-          <!-- 2026-10-16: the framed picture sits open under Pay (it used to hide inside What you get), so a phone's Pay
-               button stays where it was. It is a render, labeled so, until Sig sends photos of real prints. -->
           <figure class="rp-onwall" id="rp-onwall"><div class="rp-onwall-i"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="eager" fetchpriority="low" decoding="async" alt="Mockup: a framed Rain Print in a black frame on the painted steel wall of a farm shop."></picture><span class="rp-ex-tag" aria-hidden="true">Mockup</span></div><figcaption>Mockup of a framed print. Photos with the white mat coming soon.</figcaption></figure>
           <p class="rp-note rp-gift-line" id="rp-gift-line" hidden>It&rsquo;s a gift? Say so on the order form, with their name and your note.</p>
           <p class="rp-note" id="rp-arrive-est" hidden></p>
@@ -1052,7 +1041,7 @@
           <li><b>No prices go in the box.</b> The digital file comes by email, so there&rsquo;s no box.</li>
         </ul>
         <figure class="rp-inbox-fig">
-          <img src="/img/rain-print-insert-letter-sample.webp" width="600" height="776" loading="lazy" decoding="async" alt="A sample of the letter for the 2012 Ames, Iowa example: what you&rsquo;re holding, a small copy of the print with how to read it, and the year in numbers, 25.52 inches of rain and melted snow, 32% less than a usual year.">
+          <button type="button" class="lz-btn" data-lz="/img/rain-print-insert-letter-sample-lg.webp" data-lz-alt="A sample of the letter for the 2012 Ames, Iowa example: what you&rsquo;re holding, a small copy of the print with how to read it, and the year in numbers, 25.52 inches of rain and melted snow, 32% less than a usual year." aria-label="Read the sample letter full size"><img src="/img/rain-print-insert-letter-sample.webp" width="600" height="776" loading="lazy" decoding="async" alt="A sample of the letter for the 2012 Ames, Iowa example: what you&rsquo;re holding, a small copy of the print with how to read it, and the year in numbers, 25.52 inches of rain and melted snow, 32% less than a usual year."><span class="lz-cue">Tap to read the letter full size</span></button>
           <figcaption>The letter that comes with every print: what it is, how to read it, and your year in numbers. This one is for the 2012 Ames example.</figcaption>
         </figure>
       </div>
@@ -1172,7 +1161,6 @@
       <a href="/gdu-calculator">GDU calculator</a>
       <a href="/editorial-standards#sources">Where the numbers come from</a>
     </nav>
-    <!-- the rain gauge hook: gauge_hook in data/rain-print.json, word for word (test/gauge-hook.test.mjs) -->
     <p class="rp-also" style="margin:1rem 0 0;font-size:.9rem;color:var(--text-dim)">Also from me: I'm building a rain gauge that keeps a log for each field. <a href="/rain-gauge" style="color:var(--brand)">Join the waitlist</a>.</p>
     <div class="rp-strip" id="rp-strip" hidden>
       <div class="rp-mini" id="rp-mini" aria-hidden="true"></div>
@@ -1185,7 +1173,7 @@
   </div>
   </main>
   <div id="site-footer">
-<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+<!-- static-nav:footer -->
   <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
   <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
     <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
@@ -1217,9 +1205,6 @@
           <label><input type="radio" name="rp-pproduct" value="digital"><span>Digital file <b data-price="digital">$19</b></span></label>
         </div></div>
         <div><h3>Check the details</h3><dl class="rp-proof-sum" id="rp-proof-sum"></dl><dl class="rp-proof-sum" id="rp-pg-sum" hidden></dl></div>
-        <!-- 2026-10-17: the gift, before Stripe. Mirrors the order form's fields (#ro-isgift, #ro-gift-to, #ro-gift-msg,
-             #ro-deliver, #ro-address, #ro-name, #ro-email) and goes to Sig as a rain-print-order post (gift: yes), so the
-             note reaches the letter the same way an order request's does. -->
         <div class="rp-pgift" id="rp-pgift" hidden>
           <label class="rp-check"><input type="checkbox" id="rp-pg-on"><span>This is a gift</span></label>
           <div class="rp-pg-box" id="rp-pg-box" hidden>
@@ -1250,9 +1235,6 @@
       </div>
     </div>
   </dialog>
-  <!-- 2026-10-17 (speed panel): every script deferred, in the order they ran before (loader.js after the page's
-       own, as when the page's ran during parsing). rp-logo.js, gdu-stages.js and rain-print-extras.js load
-       when a logo or a temperature option is first wanted (components/rain-print.js logoReady, extrasReady). -->
   <script src="/components/util.js?v=19" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/form-post.js?v=8" defer></script>
@@ -1260,10 +1242,12 @@
   <script src="/components/rp-short.js?v=7" defer></script>
   <script src="/components/rp-canada.js?v=4" defer></script>
   <script src="/components/rain-print-art.js?v=23" defer></script>
-  <script src="/components/rain-print.js?v=86" defer></script>
+  <script src="/components/rain-print.js?v=88" defer></script>
   <script src="/components/rain-print-draw.js?v=5" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=9" defer></script>
+  <script src="/components/rp-forme.js?v=1" defer></script>
+  <script src="/components/rp-letterzoom.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

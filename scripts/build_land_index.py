@@ -56,6 +56,8 @@ BUYER TYPE: a pattern on the buyer field, run in memory, one word per sale (indi
 NASS: USDA NASS state cropland value per acre (data/atlas/state-value.json), put on the same
   base year as a separate line. Never blended into the index.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import html
 import json
@@ -808,7 +810,7 @@ def hub_section(data):
 <details class="li-more-d" id="faq"><summary>Questions about the index</summary>
 <dl class="li-faq">{faq_html}</dl>
 </details>
-<p class="li-note" id="sources">Index sources: Illinois Department of Revenue transfer declarations (PTAX-203), <a href="https://data.illinois.gov/d/it54-y4c6">Illinois open data portal</a>; USDA NASS land values and cash rents, <a href="https://quickstats.nass.usda.gov/">Quick Stats</a>. The Illinois farm managers and appraisers (<a href="https://www.ispfmra.org/">ISPFMRA</a>) run their own land value survey; it is not used here.</p>
+<p class="li-note" id="sources">Index sources: Illinois Department of Revenue transfer declarations (PTAX-203), Illinois open data portal; USDA NASS land values and cash rents, Quick Stats. The Illinois farm managers and appraisers (<a href="https://www.ispfmra.org/">ISPFMRA</a>) run their own land value survey; it is not used here.</p>
 </section>"""
     return {"css": CSS, "html": body, "js": COUNTY_JS.replace("__V__", v), "ld": ld}
 

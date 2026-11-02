@@ -35,6 +35,8 @@ THE RULES (design A in the research note, the method published on /ag-stocks)
 
     python3 scripts/agstocks_index.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import statistics
 import sys
 

@@ -34,7 +34,8 @@ test('hand-checked against MMPR-0626 (Sep 23, 2026): WI 18.13, MN 18.04, IA 18.2
 test('the table says what a mailbox price is, that some areas are groups, and links AMS', () => {
   assert.match(box, /some are groups of states/);
   assert.match(box, /after hauling and co-op deductions/);
-  assert.match(box, /viewReport\/3357/);
+  assert.match(box, /AMS mailbox report/);
+  assert.doesNotMatch(box, /viewReport\/3357/); // named, not linked (no direct links to data sources, Oct 29, 2026)
   assert.ok(!box.includes('—'), 'no em dash');
 });
 

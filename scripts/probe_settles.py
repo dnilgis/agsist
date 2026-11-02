@@ -19,6 +19,8 @@ Each result is also a ::notice:: annotation so it reads from the run page.
 Run (Actions): workflow_dispatch on probe-settles.yml, input trade_date
 MM/DD/YYYY (default: the last weekday).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import sys

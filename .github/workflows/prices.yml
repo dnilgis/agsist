@@ -111,6 +111,7 @@ jobs:
           # enough: a workflow_dispatch is one of the two events GitHub creates
           # runs for even when GITHUB_TOKEN sends it.
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
         run: |
           set -uo pipefail
           git config user.name  "AGSIST Bot"
@@ -147,6 +148,7 @@ jobs:
               echo "push attempt $i lost a race; retrying…"; sleep $((RANDOM % 5 + 2))
             done
             [ "$pushed" = "0" ] && echo "::warning::could not push this cycle; will retry next cycle"
+            [ "$pushed" = "1" ] && bash .github/pages-kick.sh
 
             # ── THE BRIEFING HEARTBEAT ──────────────────────────────────
             #

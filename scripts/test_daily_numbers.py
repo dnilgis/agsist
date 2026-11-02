@@ -19,6 +19,8 @@ THE DAILY'S STANDING FACTS AND NUMBERS, PINNED (2026-10-20 panel, C2 A2 F2 F5).
 
 Fixtures and repo data only: no network, no model call, nothing sent.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import glob
 import datetime as _dtmod

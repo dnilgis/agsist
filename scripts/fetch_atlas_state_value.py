@@ -25,6 +25,8 @@ USAGE
   python scripts/fetch_atlas_state_value.py --selftest
   python scripts/fetch_atlas_state_value.py            # needs NASS_API_KEY
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

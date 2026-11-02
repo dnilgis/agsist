@@ -24,6 +24,8 @@ same function the generator and critic use (briefing_cut.over_ceiling):
 this step is a hard stop in daily.yml, so a briefing over 450 words cannot
 reach the commit even if the earlier steps let it through.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import re
 import sys
 import json
@@ -52,7 +54,7 @@ OPTIONAL_TOP_LEVEL = [
     "subheadline",         # v5.1: retired from the model output; archived issues carry it
     "action",              # v5.5: the prediction bot's call, copied from data/predictions.json (string)
     "bot_call",            # v5.5: {date, text, calls, record, backtest, source, url}
-    "outside_the_pit",     # [{title, body, tag}] — one item since v5.1
+    "outside_the_pit",     # [{title, body, tag, link, source, news_id}]: the top stories, 3 to 5 since 2026-11-01 (one item v5.1 to Oct 31)
     "teaser",
     "one_number",          # {value, unit, context}
     "the_more_you_know",   # {title, body}
@@ -87,7 +89,22 @@ OPTIONAL_TOP_LEVEL = [
     "first_published_at",  # 2026-10-16: ISO UTC, when this date's issue first went up (generate_daily.keep_first_published)
     "edge",                # 2026-10-17: {label, generated, facts[]} "Only on AGSIST", computed by scripts/daily_edge.py
     "cca_note",            # 2026-10-17: {date, text} Sig's own note from data/cca-note.json, only on the date he set
+    "freshness",           # 2026-11-01: {window, tries, hits[]} the repeat check vs the last 7 issues (scripts/daily_fresh.py)
 ]
+
+_SHARED = ("workers.dev", "github.io", "vercel.app", "pages.dev", "netlify.app", "herokuapp.com")
+
+
+def _safe_link(u):
+    from urllib.parse import urlparse
+    try:
+        pu = urlparse(str(u))
+    except ValueError:
+        return False
+    h = (pu.hostname or "").lower()
+    return (pu.scheme == "https" and bool(h) and "@" not in pu.netloc and not any(c.isspace() for c in str(u))
+            and not any(h == x or h.endswith("." + x) for x in _SHARED))
+
 
 # Deprecated field names — if present, validation warns but does not fail.
 # Remove the warning once the generator has been fully migrated.
@@ -315,6 +332,16 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
             errors.append(f"briefing is {_n} words; the hard ceiling is {briefing_cut.HARD_CEILING}")
         if len(data.get("sections") or []) > briefing_cut.MAX_SECTIONS:
             errors.append(f"{len(data['sections'])} sections; max is {briefing_cut.MAX_SECTIONS}")
+        _otp = data.get("outside_the_pit") or []
+        if isinstance(_otp, list) and len(_otp) > briefing_cut.MAX_OTP:
+            errors.append(f"{len(_otp)} top stories; max is {briefing_cut.MAX_OTP}")
+
+    # top story links (2026-11-01): attached by code from the news digest. A link
+    # a reader clicks is https and never on a shared host (BUILD-RULES 11).
+    for _i, _it in enumerate(data.get("outside_the_pit") or []):
+        _u = _it.get("link") if isinstance(_it, dict) else None
+        if _u and not _safe_link(_u):
+            errors.append(f"outside_the_pit[{_i}].link is not a safe https publisher link")
 
     # todays_call (v4.7) — the falsifiable forward call, graded deterministically
     # (direction AND level) by grade_calls.py. Shape-checked here.

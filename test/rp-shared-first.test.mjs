@@ -218,7 +218,9 @@ test("an ordinary visit keeps its order and never shows the line", { skip }, asy
     // the box sits 14 px (390) and 4 px (1280) higher; the order is the same
     // 2026-10-22 (Sig: phones use the screen): one 12px gutter instead of 31px, so the words above the print take
     // fewer lines at 390 and the box sits 39 px higher; 1280 unchanged; the order is the same
-    assert.equal(L.art.top, w < 900 ? 966 : 488, `${w}: the print's box where it always was`);
+    // 2026-10-30 (Sig: "Rather not fiddle with it?", fx/rpxmas): the call-me box under "Make yours, free" puts the
+    // print 172 px lower at 390 and 57 px lower at 1280 (the words' column now runs past the photo); the order is the same
+    assert.equal(L.art.top, w < 900 ? 1138 : 545, `${w}: the print's box where it always was`);
     assert.deepEqual(errors, []);
   }, { width: w, height: h });
 });

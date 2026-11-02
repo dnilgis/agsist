@@ -64,7 +64,7 @@
     return '<div class="wp-nums wp-beat"><div class="nh"><b>The number to beat</b><span>USDA\u2019s '+esc(tb.report)+' ('+md+'), standing until the '+esc(nextReport||'next report')+'</span></div>'
       +'<table><thead><tr><th>Number</th><th>USDA now</th></tr></thead><tbody>'+body+'</tbody></table>'
       +'<div class="src">USDA\u2019s own figures'+(tb.wasde_no?(' ('+esc(tb.wasde_no)+')'):'')+'. A survey average, high and low go beside them once a pre-report survey posts, with the source and time. '
-      +'<a href="'+esc(tb.source)+'" rel="noopener" target="_blank">USDA WASDE</a></div></div>';
+      +'USDA WASDE</div></div>';
   }
   function nextCard(n,skipNums){
     if(!n)return '<div class="wp-err">No upcoming report is scheduled right now. Check the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA calendar</a>.</div>';

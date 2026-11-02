@@ -38,6 +38,8 @@ USAGE
   python scripts/fetch_atlas_sob.py            # first run 1989..now, later runs the last 4 years merged
   python scripts/fetch_atlas_sob.py --all
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import io
 import json

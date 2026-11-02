@@ -19,6 +19,8 @@ open: its indemnities are not all in.
 
   python3 scripts/lrp_sob_loss.py --history DIR [--out data/lrp/sob-loss.json]
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import io
 import json
 import os

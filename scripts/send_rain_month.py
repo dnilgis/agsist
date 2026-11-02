@@ -46,6 +46,8 @@ lines. Reply-To is news@agsist.com (Sig, Oct 22). The unsubscribe link stops
 this one county's monthly email (send_notice.unsub_link, the agsist.com front
 door).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import argparse
 import calendar
 import glob

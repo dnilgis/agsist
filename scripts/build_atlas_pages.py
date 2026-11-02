@@ -57,6 +57,8 @@ import statistics
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import html_slim as HS  # noqa: E402
+import source_links as SL  # noqa: E402  no direct links to data sources
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
@@ -73,6 +75,9 @@ OUT = "farmland-atlas"
 CARD_V = "1"          # bump when the share-card design changes; every card URL changes with it
 LICENSE_URL = "https://creativecommons.org/licenses/by/4.0/"
 CREDIT = "AGSIST Farmland Atlas, agsist.com/farmland-atlas"
+# the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30), county pages only. A plain script tag on
+# purpose: it writes the line before the first paint, so nothing moves.
+XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 
 STATE_NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -1442,7 +1447,8 @@ def _land_sales_door(W, f, lab, st):
 # /land-sales/<county> page is built with (scripts/build_land_sales.py), so the two cannot
 # disagree; test/atlas-land-first.test.mjs compares the pages. No value estimate, no adjustment,
 # no rent-to-price ratio. Other states keep the page as it was.
-LF_DISCLAIM = "Recorded prices. Not an appraisal. No adjustments."
+LF_DISCLAIM = ("Recorded prices. Not an appraisal. No adjustments. A recorded price is what the state's transfer record says was paid "
+               "once the sale closed, auction or private; never an asking price.")  # benchmark review, Oct 29, 2026
 
 
 def _w24_words(through):
@@ -1481,6 +1487,14 @@ def land_first(W, f, lab, st, rent_html):
         mid = ('<div class="lf-mid" data-lf-mid><div class="lf-k">Sold for</div><div class="lf-v lf-few">Too few sales</div>'
                '<div class="lf-s">%s bare farmland sale%s of 20+ acres, %s. A middle takes 5.</div></div>'
                % (k or "No", "" if k == 1 else "s", span))
+    # Two windows, one county (benchmark review, Oct 29, 2026): this middle is 24 months from the sale
+    # file; the recorded-sales median further down is the last 12 months from the state summary. Said
+    # once here, and the other way round on the sale page (build_land_sales.county_page).
+    sf = sales_facts(W, f, st) if u and u.get("med") is not None else None
+    if sf:
+        mid = mid[:-len("</div></div>")] + (' Two windows: this covers 24 months; the recorded-sales median further down covers the last 12 months, '
+                                            '%s: %d sales, %s an acre. <a href="%s">Every sale behind both</a>.</div></div>'
+                                            % (esc(sf["span"]), sf["n"], money(sf["med"]), esc(href)))
     if st == "IN":
         mid += '<p class="lf-fine">Most Indiana sales are marked not valid for trending by the state.</p>'
     cols = F.get("cols") or []
@@ -1530,7 +1544,7 @@ def land_first_rent(rv, ri, rv_old, R):
         v, sub = "n/a", "last published %s" % rv["year"]
     else:
         v, sub = "n/a", why(R) if not ok(R) else "no county rent published"
-    return '<div class="lf-r"><span class="l">Rent</span><span class="r"><b>%s</b> <span class="lc">%s</span></span></div>' % (esc(v), esc(sub))
+    return '<div class="lf-r"><span class="l">Rent</span><span class="r"><b>%s</b><span class="lc"> %s</span></span></div>' % (esc(v), esc(sub))
 
 
 def watch_form(f, lab, stn):
@@ -1544,6 +1558,38 @@ def watch_form(f, lab, stn):
             f'<button type="submit">Watch this county</button></div>'
             f'<div class="wm" role="status" aria-live="polite"></div></form>'
             f'<script defer src="/farmland-atlas/watch.js?v={WATCH_V}"></script>')
+
+# The county page script (rent calculator button, CSV download, copy link) was the same
+# 1.8 KB inline on 3,148 pages; it is one cached file now, loaded where it ran (Oct 29, 2026).
+COUNTY_JS = r"""(function(){
+var rb=document.getElementById('rc-open');
+if(rb)rb.addEventListener('click',function(){
+  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
+  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
+  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
+  s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
+  s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
+  document.head.appendChild(s);
+});
+var rec=JSON.parse(document.getElementById('rec').textContent);
+document.getElementById('dl').addEventListener('click',function(){
+  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
+  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
+});
+var cp=document.getElementById('cp');
+cp.addEventListener('click',function(){
+  var u=location.origin+location.pathname;
+  var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
+  else window.prompt('Copy this link',u);
+  try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
+});
+try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
+})();
+"""
+COUNTY_JS_V = hashlib.sha1(COUNTY_JS.encode()).hexdigest()[:8]
 
 CSS_FILE = "atlas-pages.css"
 CSS_V = hashlib.sha1(CSS.encode()).hexdigest()[:8]
@@ -2700,6 +2746,7 @@ def county_page(W, f, d, stamp):
     body = f"""
 <main class="ap ch">
 {crumb_vis}
+{XMAS_JS}
 <div class="kick">County farm facts</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
 {lf_html}<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}; the rows marked with a date load the newest reading when the page opens.</p>
@@ -2726,35 +2773,7 @@ def county_page(W, f, d, stamp):
 {prev_next}
 </main>
 <script type="application/json" id="{csv_id}">{rec_json}</script>
-<script>
-(function(){{
-var rb=document.getElementById('rc-open');
-if(rb)rb.addEventListener('click',function(){{
-  var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
-  if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
-  s.onload=function(){{window.AgRentCalc.mount(box,{{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')}});}};
-  s.onerror=function(){{box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');}};
-  document.head.appendChild(s);
-}});
-var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){{
-  var k=Object.keys(rec),q=function(v){{v=v==null?'':String(v);return /[",\\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}};
-  var t=k.join(',')+'\\n'+k.map(function(x){{return q(rec[x]);}}).join(',')+'\\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{{type:'text/csv'}}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{{gaEvent('atlas_county_csv',{{fips:rec.fips}});}}catch(e){{}}
-}});
-var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){{
-  var u=location.origin+location.pathname;
-  var done=function(){{cp.textContent='Link copied';setTimeout(function(){{cp.textContent='Copy link';}},1800);}};
-  if(navigator.clipboard&&navigator.clipboard.writeText){{navigator.clipboard.writeText(u).then(done,function(){{window.prompt('Copy this link',u);}});}}
-  else window.prompt('Copy this link',u);
-  try{{gaEvent('atlas_county_share',{{fips:rec.fips}});}}catch(e){{}}
-}});
-try{{gaEvent('atlas_county_page',{{fips:rec.fips}});}}catch(e){{}}
-}})();
-</script>
+<script src="/farmland-atlas/county.js?v={COUNTY_JS_V}"></script>
 """
     ld = [crumb_ld, {
         "@type": "Dataset", "@id": url + "#dataset",
@@ -3026,6 +3045,10 @@ def csv_text(recs):
 
 
 def write(path, text):
+    """Every .html goes through html_slim.slim(): compact JSON-LD, no indentation
+    or comments between tags; what a reader and a crawler see is unchanged."""
+    if path.endswith(".html"):
+        text = HS.slim(SL.unlink(text))
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(text)
@@ -3048,6 +3071,7 @@ def build(root=".", out_root=None, only=None, quiet=False):
     stamps = {}
     write(os.path.join(out_root, OUT, CSS_FILE), CSS)
     write(os.path.join(out_root, OUT, "watch.js"), WATCH_JS)
+    write(os.path.join(out_root, OUT, "county.js"), COUNTY_JS)
     for f in sorted(W.C):
         if only and f not in only:
             continue
@@ -3335,7 +3359,9 @@ def selftest():
             check("story trend headline", ("Corn yield, " + CY.label_trend(tr_["ty"])) in st_ and f1(tr_["v"]) in st_)
             check("story rent per bushel on the trend", ("÷ %s bu, %s" % (f1(tr_["v"]), CY.label_trend(tr_["ty"]))) in st_)
         check("story share-of-gross yield named", CY.label_year(W.rrev["19169"]["py"]) in st_ if W.rrev.get("19169", {}).get("p") is not None else True)
-        check("story calculator button", 'id="rc-open"' in st_ and "/components/rent-calc.js" in st_ and "AgRentCalc" not in st_.split("<script>")[0])
+        # the button's script is farmland-atlas/county.js since Oct 29, 2026 (one cached file, not 3,148 inline copies)
+        check("story calculator button", 'id="rc-open"' in st_ and ('/farmland-atlas/county.js?v=' + COUNTY_JS_V) in st_
+              and "/components/rent-calc.js" in COUNTY_JS and "AgRentCalc" not in st_.split("<script>")[0])
         seen_ = 0
         for f in list(W.C)[:600]:
             p_ = os.path.join(tmp, W.path(f))

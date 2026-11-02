@@ -100,8 +100,7 @@
   function coopTable(d) {
     var rows = d.coops.map(function (c) {
       var cur = c.rows.filter(function (r) { return !r.stale && r.product !== 'other' && r.cash != null; }).length;
-      var u = safeUrl(c.url);
-      var name = u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(c.name) + '</a>' : esc(c.name);
+      var name = esc(c.name);  // named, not linked: no direct links to data sources
       return '<tr><td class="prod">' + name + (c.town ? '<span class="fcp-town">' + esc(c.town) + '</span>' : '') +
         (c.ok === false ? '<span class="fcp-town">last read failed; older prices shown</span>' : '') + '</td><td>' + esc(c.state) +
         '</td><td>' + esc(posted(c)) + '</td><td>' + cur + '</td></tr>';
@@ -132,7 +131,7 @@
       }).join('');
       var u = safeUrl(c.source_url || c.url);
       var from = u
-        ? 'Read from <a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https:\/\/(www\.)?/, '')) + '</a>' +
+        ? 'Read from the co-op&rsquo;s own price page' +
           (c.fetched ? ' on ' + esc(shortDate(c.fetched.slice(0, 10), true)) : '')
         : 'The co-op&rsquo;s own prices' + (isDate(c.posted) ? ', dated ' + esc(shortDate(c.posted, true)) : '');
       return '<h3 class="fert-coop-h3">' + esc(c.name) + ', ' + esc(c.state) + '</h3><p class="fert-coop-src">' + from +
@@ -159,8 +158,7 @@
 
   function credits(d) {
     return list(d.coops.map(function (c) {
-      var u = safeUrl(c.url);
-      return u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(c.name) + '</a>' : esc(c.name);
+      return esc(c.name);
     }));
   }
 

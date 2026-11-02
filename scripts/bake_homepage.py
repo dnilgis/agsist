@@ -21,6 +21,8 @@ Runs from daily.yml after the critic pass (baked text == final text).
 Exit codes: 0 ok, 2 data missing, 3 anchor drift (index.html markup changed
 — fix the regexes here before the next deploy).
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import re

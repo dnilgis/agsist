@@ -26,6 +26,8 @@ Exit codes:
   0 — success (alert sent OR quietly passed)
   1 — alert needed but email failed (workflow log will surface this)
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

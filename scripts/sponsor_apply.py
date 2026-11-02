@@ -42,6 +42,8 @@ Every write checks first, so a rerun never doubles an entry or an email.
     python3 scripts/sponsor_apply.py --selftest   offline checks, no network
     DRY_RUN=1 ...                                  report what would happen, change nothing
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import base64
 import calendar
 import hashlib

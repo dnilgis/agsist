@@ -19,6 +19,8 @@ Q3  Does filtering reference_period_desc='YEAR' collapse the state yield series
 
 Writes nothing. Prints answers.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import json
 import os

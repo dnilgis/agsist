@@ -27,7 +27,7 @@
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
-  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <!-- static-nav:fonts -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
@@ -102,7 +102,7 @@
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header">
-<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+<!-- static-nav:header -->
   <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
   <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
     <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
@@ -124,6 +124,7 @@
   <main id="main" tabindex="-1">
     <article class="rr">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Rain on your field</nav>
+      <script src="/components/rp-xmas.js?v=1"></script>
       <h1>How much rain fell on your field?</h1>
       <p class="rr-label">NOAA radar and gauge estimate (MRMS), not a rain gauge reading.</p>
       
@@ -200,12 +201,11 @@
       </ul>
       <p class="src">Sources: NOAA National Severe Storms Laboratory and NCEP, Multi-Radar Multi-Sensor (MRMS) MultiSensor_QPE 24H, 72H and shorter Pass 2 products, NOAA Open Data Dissemination (noaa-mrms-pds); NOAA co-op and CoCoRaHS daily reports via RCC-ACIS for the gauge comparison. Map: USGS The National Map (map services and data from the U.S. Geological Survey, National Geospatial Program); state lines from Natural Earth.</p>
     </article>
-  <!-- the one cross-promo (components/rain-print-promo.js "auto"); empty and hidden when off -->
   <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
   <div id="site-footer">
-<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+<!-- static-nav:footer -->
   <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
   <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
     <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
@@ -227,7 +227,7 @@
 (function(){var p=null;function ld(s){return new Promise(function(ok,no){var e=document.createElement('script');e.src=s;e.onload=ok;e.onerror=no;document.head.appendChild(e);});}
 window.agsistStormReplay=function(o,note){if(!window.L){if(note)note.textContent='The map did not load, so the replay cannot open. Try again in a minute.';return;}
 if(note)note.textContent='Opening the replay\u2026';
-p=p||ld('/components/storm-replay-core.js?v=2').then(function(){return window.AgRadarRain?0:ld('/components/radar-rain.js?v=1');}).then(function(){return ld('/components/storm-replay.js?v=2');});
+p=p||ld('/components/storm-replay-core.js?v=2').then(function(){return window.AgRadarRain?0:ld('/components/radar-rain.js?v=1');}).then(function(){return ld('/components/storm-replay.js?v=3');});
 p.then(function(){if(note)note.textContent='';window.AgStormReplay.open(o||{});},function(){p=null;if(note)note.textContent='The replay did not load. Check your signal and try again.';});};
 if(/[?&]sr=1(&|$)/.test(location.search))window.addEventListener('load',function(){window.agsistStormReplay({});});})();</script>
 <script src="/components/radar-rain-page.js?v=8" defer></script>

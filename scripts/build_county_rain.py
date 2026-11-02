@@ -35,6 +35,8 @@ SIZE (CLAUDE.md)
   python3 scripts/build_county_rain.py --selftest   build from test/fixtures/rain into a temp folder and test it
   python3 scripts/build_county_rain.py --data DIR --root DIR   read data from DIR, write the site under DIR
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime as dt
 import glob
 import json
@@ -46,6 +48,8 @@ import urllib.parse
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import county_rain as R  # noqa: E402
+import html_slim as HS  # noqa: E402  the county set is written slim
+import source_links as SL  # noqa: E402  no direct links to data sources
 import build_prf_states as S  # noqa: E402  boot() and text_of()
 import cross_links as XL  # noqa: E402  same-county links between the county sets
 import seo_caps as CAPS  # noqa: E402  the site's one title and description cap (was 165 for descriptions here)
@@ -154,7 +158,12 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=43" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=44" defer></script>'
+# the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30): county pages and the hub, not the state pages.
+# On a county page it sits right under the Rain Print sell block, below the print, so the print stays on a phone's
+# first screen and still draws (it waits until it is near the screen).
+# A plain script tag on purpose: it writes the line before the first paint, so nothing moves.
+XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 
 
 def rp_prices():
@@ -800,7 +809,7 @@ def county_page(ctx):
         sell_btns = f' <a class="btn btn-primary" href="{e(rp)}">Make yours</a></p>'
     sell = (f'<div class="rc-sell"><p>{lead_print}{lead_plain}{sell_btns}'
             + (f'<p class="rc-fine">{(ship + " " + miss_note).strip()}</p>' if (ship or miss_note) else "")
-            + f'<p class="rc-fine">{RP_ANY_YEAR}</p>' + "</div>"
+            + f'<p class="rc-fine">{RP_ANY_YEAR}</p>' + "</div>" + XMAS_JS
             + (PRINT_JS if ready else ""))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""),
@@ -1046,6 +1055,7 @@ def hub_page(files, built, recs=None):
   <main id="main" class="main" tabindex="-1">
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
+    {XMAS_JS}
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.{" The counties having a record year are below the states." if recs else ""}</p>
     <ul class="rc-states">{''.join(rows)}</ul>
@@ -1057,7 +1067,7 @@ def hub_page(files, built, recs=None):
       <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, so the pages are updated every day and each one says the day its numbers run through.</li>
     </ul>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
-    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
+    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through RCC-ACIS.</p>
   </div>
 {FOOT_NAT}"""
     return nav.render(page, "rain.html", nav.block("header"), nav.block("footer"))
@@ -1218,6 +1228,13 @@ def build(data_dir, C=None, NB=None, img_root=None):
         urls.insert(0, (f"{ORIGIN}/rain", max(m for _u, m in urls)))
     urls = [urls[0]] + sorted(urls[1:]) if pages else []
     want["sitemap-rain.xml"] = sitemap(urls)
+    # the county and state pages (rain/**.html) are written slim: compact JSON-LD, no indentation
+    # or comments between tags (scripts/html_slim.py); rain.html, a root page, is left as written
+    for rel in want:
+        if rel.endswith(".html"):  # no direct links to data sources; the source is named in text (Sig, Oct 29, 2026)
+            want[rel] = SL.unlink(want[rel])
+        if rel.startswith("rain/") and rel.endswith(".html"):
+            want[rel] = HS.slim(want[rel])
     return want
 
 
@@ -1567,9 +1584,9 @@ def selftest():
         ok("the NOAA station in" not in want["rain.html"] and "One NOAA station per county" not in want["rain.html"], "hub does not call every gauge NOAA's")
         # the prose never names CoCoRaHS (Sig, Oct 15: weather station, volunteer rain gauge); the byline credits it
         # on a gauge's page and nowhere else (CC BY 4.0, Sig Oct 23)
-        bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace('Volunteer gauge data: <a href="https://www.cocorahs.org/" rel="noopener">CoCoRaHS</a>.', "")]
+        bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace("Volunteer gauge data: CoCoRaHS.", "")]
         ok(not bad, f"no page names CoCoRaHS outside its credit line: {bad[:3]}")
-        ok("Volunteer gauge data: <a href=\"https://www.cocorahs.org/\"" in jef, "a CoCoRaHS gauge's page credits CoCoRaHS")
+        ok("Volunteer gauge data: CoCoRaHS." in jef, "a CoCoRaHS gauge's page credits CoCoRaHS")
         ok("cocorahs.org" not in story, "a weather station's page does not")
         ks = want.get("rain/kansas/riley-county.html", "")
         ok(ks and "1991 to 2020" not in ks and "current 30-year" in ks, "normals period not claimed when ACIS did not confirm it")

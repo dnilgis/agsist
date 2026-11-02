@@ -9,6 +9,8 @@ Production Data" tab (read as data.stateStats).
 Requires env NASS_API_KEY (free: https://quickstats.nass.usda.gov/api).
 Stdlib only. Run with --selftest to validate parsing/conversion offline.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import os, sys, json, time, datetime, urllib.request, urllib.parse
 from datetime import date
 

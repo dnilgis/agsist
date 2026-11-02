@@ -87,6 +87,8 @@ USAGE
 
   Run `python scripts/contract_calendar.py` to execute the selftest.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 import calendar
 from datetime import datetime, timezone, date, timedelta

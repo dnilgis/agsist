@@ -20,6 +20,8 @@ Made-up readers only, nothing sent, counts only printed.
     and on no signed link; no tag without an arm; check_message passes.
 Run by test/cw-optin.test.mjs.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re

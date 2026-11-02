@@ -30,7 +30,7 @@
   }
   function money(v) { return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function pct(p) { return (p > 0 ? 'up ' : p < 0 ? 'down ' : 'flat, ') + Math.abs(p).toFixed(1) + '%'; }
-  function link(url, text) { return '<a href="' + esc(url) + '" rel="noopener">' + esc(text) + '</a>'; }
+  function link(url, text) { return esc(text); }  // the filing is named, not linked (no direct links to data sources)
   function filingUrl(cik, accn) { return 'https://www.sec.gov/Archives/edgar/data/' + (+cik) + '/' + String(accn || '').replace(/-/g, '') + '/'; }
   function miles(a, b) {
     var r = Math.PI / 180, dLat = (b[0] - a[0]) * r, dLon = (b[1] - a[1]) * r;

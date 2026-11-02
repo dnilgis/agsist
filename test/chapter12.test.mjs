@@ -75,7 +75,8 @@ test('every state Atlas page carries the line, credited and linked to the table'
     assert.match(m[0], /Farm bankruptcies \(Chapter 12\)/, s);
     assert.match(m[0], /\d+ filings?</, s);
     assert.match(m[0], /12 months to Sep 30, 2026/, s);
-    assert.match(m[0], /href="https:\/\/www\.uscourts\.gov\/[^"]+bf_f2_0930\.2026\.pdf"[^>]*>U\.S\. Courts, Table F-2</, s);
+    assert.match(m[0], /U\.S\. Courts, Table F-2</, s); // named in text; no direct link to the table (Oct 29)
+    assert.doesNotMatch(m[0], /href="https:\/\/www\.uscourts\.gov/, s);
     assert.doesNotMatch(m[0], /—|quarter|per farm| farms/i, s);
   }
   const ia = read('farmland-atlas/iowa/index.html').match(/<div class="fact st ch12">[\s\S]*?<\/div>/)[0];

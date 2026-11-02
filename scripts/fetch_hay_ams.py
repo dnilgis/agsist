@@ -60,6 +60,8 @@ the probe: add one as a fixture before trusting auction rows.
 
 Stdlib only, plus pdftotext or pypdf through fetch_dairy.pdf_to_text.
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import datetime
 import json
 import re

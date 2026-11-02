@@ -50,6 +50,8 @@ Usage: python3 scripts/build_geo_crosswalk.py                 rebuild (district 
        python3 scripts/build_geo_crosswalk.py --check         exit 1 when the committed file is not what this builds
        python3 scripts/build_geo_crosswalk.py --selftest
 """
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 import json
 import os
 import re
@@ -215,8 +217,7 @@ def build(spine, nass, source_line):
                  "FIPS plus these two digits. codes: every code a federal file publishes that is not a spine "
                  "county, with what it is (rename, part, office, merger, split, reshape) and where it goes; "
                  "a part, office, split or reshape is a lossy join. A spine county not in codes is written "
-                 "the same by FSA, RMA and the Drought Monitor in every file we read. Rules and sources: "
-                 "scripts/build_geo_crosswalk.py; match rates: scripts/join_report.py."),
+                 "the same by FSA, RMA and the Drought Monitor in every file we read."),
         "spine": {"file": "data/atlas/counties.geo.json", "counties": len(spine),
                   "vintage": "Census 2010-vintage outlines: eight Connecticut counties (09001-09015), 02261 Valdez-Cordova, 46102 Oglala Lakota"},
         "sources": {"asd": source_line, "asd_url": NASS_URL},

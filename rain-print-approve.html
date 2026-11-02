@@ -6,14 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <title>Rain Print proof | AGSIST</title>
-<!-- The proof email's "Approve this print" button (scripts/rp_buyer_email.py,
-     Sig 2026-10-20: the email is the proof, they sign off in it) opens
-     /rain-print-approve?k=<order key>&t=<token>. This page posts them to the
-     subs worker (v5.37, POST /rp-order/approve) and says what happens next
-     (a digital file: the files by email within minutes, v5.38).
-     The approval is a POST made by this page's script, so a mail scanner that
-     only fetches the link approves nothing. Approving twice is fine. Nothing
-     about the buyer is in the link. Not in the sitemap. -->
+
 <link rel="preconnect" href="https://agsist-api.dnilgis.workers.dev" crossorigin>
 <style>
   :root{--bg:#f6f7f5;--text:#161a18;--muted:rgba(22,26,24,.72);--link:#7a5a12;--ok:#1f6b3a}
@@ -32,8 +25,9 @@
 <body>
 <main>
 <p class="tag">AGSIST Rain Print</p>
-<h1 id="msg">Approving your print</h1>
-<p id="sub">One moment.</p>
+<h1 id="msg" aria-live="polite">Approve your print</h1>
+<p id="sub" aria-live="polite">Tap Approve if the proof looks right. If something needs changing, reply to the proof email instead.</p>
+<p id="ok-wrap" hidden><button type="button" id="ok">Approve this print</button></p>
 <p id="again-wrap" hidden><button type="button" id="again">Try again</button></p>
 <p><a href="/rain-print">Rain Print</a></p>
 <noscript><p>This page needs JavaScript to approve. Or reply to the proof email with the word Approved and I will take it from there.</p></noscript>
@@ -55,7 +49,7 @@
     return 'I make it, number it and initial it by hand, and it ships within 3 business days.';
   }
   function go() {
-    wrap.hidden = true;
+    wrap.hidden = true; okWrap.hidden = true;
     say('Approving your print', 'One moment.');
     if (!/^rpo:\d{10,16}:[0-9a-f]{8}$/.test(k) || !/^[0-9a-f]{16}$/.test(t)) {
       say('That approval link is not complete', 'Tap Approve this print in the proof email again, or reply to that email and say Approved.');
@@ -77,8 +71,13 @@
         wrap.hidden = false;
       });
   }
+  var okWrap = document.getElementById('ok-wrap');
   document.getElementById('again').addEventListener('click', go);
-  go();
+  /* 2026-11-01: approve on a tap, not on load. Work mail scanners open every link in an email,
+     and one that runs the page would approve the proof before the buyer read it. */
+  document.getElementById('ok').addEventListener('click', go);
+  if (!/^rpo:\d{10,16}:[0-9a-f]{8}$/.test(k) || !/^[0-9a-f]{16}$/.test(t)) go();
+  else okWrap.hidden = false;
 })();
 </script>
 </body>

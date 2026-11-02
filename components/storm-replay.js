@@ -135,7 +135,7 @@
     }).join('');
     var cred = ['radar', 'lightning', 'clouds', 'swaths', 'reports', 'rain', 'map'].map(function (k) {
       var c = C.CREDITS[k];
-      return '<span data-credit="' + k + '">' + esc(c.name) + ': <a href="' + esc(c.url) + '"' + (/^https?:/.test(c.url) ? ' rel="noopener" target="_blank"' : '') + '>' + esc(c.what) + '</a>.</span>';
+      return '<span data-credit="' + k + '">' + esc(c.name) + ': ' + (/^https?:/.test(c.url) ? esc(c.what) : '<a href="' + esc(c.url) + '">' + esc(c.what) + '</a>') + '.</span>';
     }).join(' ');
     wrap.innerHTML =
       '<div class="sr-panel">' +

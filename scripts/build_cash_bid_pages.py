@@ -89,8 +89,10 @@ from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
+import html_slim as HS  # noqa: E402  the town, state and company pages are written slim
 import moved_pages as MP  # noqa: E402  /cash-bids/states merged into /basis#states on Oct 22, 2026
 import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reader, one copy)
+import source_links as SL  # noqa: E402  no direct links to data sources
 import basis_method as BM  # noqa: E402  (the one state-basis method)
 import board_parents as _board_parents  # noqa: E402  (evidence-only parent per board, for the company count)
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
@@ -2586,7 +2588,7 @@ def counts_doc(counts, ctx, root="."):
         pass
     return {"schema": "agsist-elevator-counts/1", "generated": ctx["snap_iso"],
             "note": ("bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they "
-                     "are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest "
+                     "are in. coverage: boards read on the latest "
                      "full coverage pass out of every elevator tracked (copied from "
                      "data/elevator-coverage-counts.json). Different questions: a board can be read and have no "
                      "current bid."),
@@ -2844,8 +2846,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   {lst}
   {quiet_html}
   {ctx.get("storage_note", {}).get(st) or ""}
-  <div class="cbt-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
-  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was read
+  <div class="cbt-note"><b>How these numbers are made.</b> Source: each elevator&rsquo;s own posted bid board,
+  read by AGSIST; no third-party bid feed is used on this page. A bid counts only if its board was read
   successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours, long enough that a board unchanged
   over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved)
   are left out of the basis. A middle number needs at least {BM.MIN_STAT} elevators on the same futures month.{wow_note}
@@ -3213,7 +3215,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         d = os.path.join(tmp, url_slug(STATE_NAMES[t["state"]]))
         os.makedirs(d, exist_ok=True)
         with open(os.path.join(d, f"{t['slug']}.html"), "w", encoding="utf-8") as f:
-            f.write(page)
+            f.write(SL.unlink(page))
         metas.append(meta)
     smetas = []
     for st in states:
@@ -3223,7 +3225,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
                                      town_paths=town_paths)
         os.makedirs(os.path.join(tmp, url_slug(STATE_NAMES[st])), exist_ok=True)
         with open(os.path.join(tmp, url_slug(STATE_NAMES[st]), "index.html"), "w", encoding="utf-8") as f:
-            f.write(page)
+            f.write(SL.unlink(page))
         smetas.append(sm)
     # /cash-bids/states forwards to /basis#states (Oct 22, 2026); the list is baked there
     # (stamp_basis_hub) from the same counts the state pages print
@@ -3236,6 +3238,18 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     if companies_out is not None:      # /cash-bids names them (stamp_live_coverage)
         companies_out.extend(cmetas)
     assert not os.path.exists(os.path.join(tmp, "index.html")), "cash-bids/index.html would capture /cash-bids"
+    # every town, state and company page this run wrote goes out slim: compact JSON-LD, no
+    # indentation or comments between tags (scripts/html_slim.py); the same page to readers and crawlers
+    for dp, _, fs in os.walk(tmp):
+        for f in fs:
+            fp = os.path.join(dp, f)
+            if f.endswith(".html") and os.path.relpath(fp, tmp) != STATES_HUB and not PP.is_pointer(fp):
+                with open(fp, encoding="utf-8") as fh:
+                    body = fh.read()
+                slim = HS.slim(body)
+                if slim != body:
+                    with open(fp, "w", encoding="utf-8") as fh:
+                        fh.write(slim)
     if os.environ.get("STORY_FACTS_OUT"):     # the facts each page states, for a stories batch (scripts/stories_bids.py)
         with open(os.environ["STORY_FACTS_OUT"], "w", encoding="utf-8") as f:
             json.dump({"town": {f"{m['state'].lower()}/{m['slug']}": m["story_facts"] for m in metas if m.get("story_facts")},

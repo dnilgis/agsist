@@ -76,7 +76,7 @@ test("3, 4. numbered and initialed (never signed), and the guarantee in the page
   assert.match(art, /Q\.serial/);
   assert.ok(!/signature|signed/i.test(art));
   // by the button, in the page as served
-  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<!--[\s\S]*?-->\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>\s*<p class="rp-fam" id="rp-fam-wrap" hidden>/);
+  assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>\s*<p class="rp-fam" id="rp-fam-wrap" hidden>/);
   // the FAQ, visible and structured, opens with it, and the old "can't take it back" now names a change of mind
   const faq = HTML.match(/<details><summary>What if something&rsquo;s wrong with it\?<\/summary><p>([\s\S]*?)<\/p><\/details>/)[1].replace(/<[^>]+>/g, "").replace(/&rsquo;/g, "’");
   assert.ok(faq.startsWith(G), faq.slice(0, 80));

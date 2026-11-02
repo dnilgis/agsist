@@ -17,6 +17,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { MAKER_PANEL } from "./fixtures/rp-maker.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
@@ -151,8 +152,8 @@ test("plain words: no em dashes, never archival, no prices or store names", () =
 
 test("the maker page has the button and the note box; the engine makes the letter like the order files", () => {
   const html = read("rain-print.html"), js = read("components/rain-print.js");
-  const maker = html.match(/<div class="rp-maker" id="rp-maker" hidden>([\s\S]*?)\n          <\/div>\n        <\/section>/);
-  assert.ok(maker, "the maker box");
+  assert.match(html, /<div class="rp-maker" id="rp-maker" hidden><\/div>/, "the empty maker box on the public page");
+  const maker = [null, MAKER_PANEL];
   assert.match(maker[1], /<button class="btn btn-secondary" type="button" data-size="insert" data-fmt="pdf">Insert letter PDF<\/button>/);
   assert.match(maker[1], /<textarea id="rp-ins-gift" maxlength="300"/, "room for the longest note: a gift note (240) or a business's note for every print (300)");
   assert.match(html, /id="ro-gift-msg" maxlength="240"/);
@@ -365,9 +366,9 @@ test("the guide fits one page with the longest note, five marked days and every 
 
 test("the maker page has the digital PDF, JPG and the guide; the engine makes them", () => {
   const html = read("rain-print.html"), js = read("components/rain-print.js");
-  assert.match(html, /data-size="digital" data-fmt="pdf">Digital file PDF</);
-  assert.match(html, /data-size="digital" data-fmt="jpg">Digital file JPG</);
-  assert.match(html, /data-size="guide" data-fmt="pdf">Reading guide PDF</);
+  assert.match(MAKER_PANEL, /data-size="digital" data-fmt="pdf">Digital file PDF</);
+  assert.match(MAKER_PANEL, /data-size="digital" data-fmt="jpg">Digital file JPG</);
+  assert.match(MAKER_PANEL, /data-size="guide" data-fmt="pdf">Reading guide PDF</);
   for (const [k, re] of Object.entries(DRAWN_RE)) assert.ok(js.includes(k + ": " + re.toString() + ".test(mini)"), "the engine reads " + k + " the same way");
   assert.match(js, /var page = kind === 'digital' \? PRINT\[ST\.size\] : SHEET;/, "the digital PDF is the art alone");
   assert.match(js, /var PRINT = \{ '12x18': \{ w: 18, h: 12/);
@@ -382,4 +383,49 @@ test("jpegWithDpi marks a JPEG 300 dpi", () => {
   assert.deepEqual([...o2.slice(2, 12)], [0xff, 0xe0, 0, 16, 0x4a, 0x46, 0x49, 0x46, 0, 1]);
   assert.deepEqual([...o2.slice(-6)], [0xff, 0xdb, 0, 2, 0xff, 0xd9]);
   assert.deepEqual([...RP.jpegWithDpi(new Uint8Array([1, 2, 3]), 300)], [1, 2, 3], "not a JPEG: unchanged");
+});
+
+test("the sample letters open full size: a button, one shared script, a large file that loads only when opened", () => {
+  const js = read("components/rp-letterzoom.js");
+  const pages = [
+    ["rain-print.html", "rain-print-insert-letter-sample", /<figure class="rp-inbox-fig">([\s\S]*?)<\/figure>/],
+    ["rain-print-business.html", "rain-print-business-letter-sample", /<figure class="rbz-fig rbz-fig-letter" id="rbz-letter">([\s\S]*?)<\/figure>/]
+  ];
+  for (const [page, base, re] of pages) {
+    const html = read(page), fig = html.match(re);
+    assert.ok(fig, page + " has the figure");
+    // the trigger is a real button around the small picture, with a visible cue, and the small picture keeps its attrs
+    const btn = fig[1].match(/<button type="button" class="lz-btn" data-lz="([^"]+)" data-lz-alt="([^"]+)" aria-label="[^"]+">([\s\S]*?)<\/button>/);
+    assert.ok(btn, page + ": the trigger is a <button>");
+    assert.equal(btn[1], "/img/" + base + "-lg.webp");
+    assert.match(btn[3], /<img [^>]*src="\/img\/[^"]+-sample\.webp" width="600" height="776" loading="lazy"/);
+    assert.match(btn[3], /<span class="lz-cue">Tap to read the letter full size<\/span>/);
+    assert.ok(btn[2].length > 40 && btn[2].includes("25.52 inches"), "the large picture has real alt text with the letter's numbers");
+    assert.match(html, /<script src="\/components\/rp-letterzoom\.js\?v=\d+" defer><\/script>/, page + " loads the shared script");
+    assert.match(html, /\.lz-btn\{display:block;width:100%/, page + " styles the button before first paint (no layout shift)");
+    // the large file exists, is a webp, is wide enough to read and under the cap
+    const f = ROOT + "img/" + base + "-lg.webp", buf = readFileSync(f);
+    assert.equal(buf.toString("ascii", 0, 4), "RIFF"); assert.equal(buf.toString("ascii", 8, 12), "WEBP");
+    assert.ok(buf.length <= 250 * 1024, "the large letter is under 250 KB: " + buf.length);
+    assert.ok(buf.length > 20 * 1024, "and is a real picture: " + buf.length);
+    // not loaded until opened: the page never names the large file in a src, srcset, preload or prefetch
+    assert.ok(!/(src|srcset|href|imagesrcset)="[^"]*-lg\.webp/.test(html), page + " does not load the large file");
+    assert.ok(!/rel="(preload|prefetch)"[^>]*-lg\.webp/.test(html));
+  }
+  // the dialog: built on first press, close button, Esc (native), backdrop click, focus returned, scrolls, alt on the picture
+  assert.match(js, /document\.createElement\('dialog'\)/);
+  assert.match(js, /showModal\(\)/);
+  assert.match(js, /if \(!dlg\) build\(\)/, "built on first press");
+  assert.match(js, /img\.alt = /, "alt on the large image");
+  assert.match(js, /e\.target === dlg\) dlg\.close\(\)/, "backdrop closes");
+  assert.match(js, /opener\.focus\(\)/, "focus goes back");
+  assert.match(js, /overflow:auto/); assert.match(js, /pinch-zoom/);
+  assert.match(js, /min-width:48px;min-height:48px/, "a thumb-size close button");
+  assert.ok(!/—|&mdash;/.test(js), "no em dash");
+  // the large picture's address is only set on open, never at load
+  assert.ok(js.indexOf("img.src = src") > js.indexOf("function open"), "src set inside open()");
+  // the script that makes the large copies, and the sw slot
+  const rs = read("scripts/render_rp_letter_large.mjs");
+  assert.match(rs, /components\/rp-insert\.js/); assert.match(rs, /_argguard/);
+  assert.match(read("sw.js"), /var CACHE_VERSION = (\d+);/);
 });
