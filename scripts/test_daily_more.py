@@ -175,7 +175,7 @@ def main():
     for t in ("FARM CALENDAR (source:", "HARVEST PACE", "FUND POSITIONS (CFTC) (source: CFTC", "RULE: Use it in a section body"):
         ok(t in pb, "prompt block has %r" % t)
     ok(pb.count("RULE:") == 3 and pb.count("(source:") == 3, "each block carries its source and its rule")
-    ok("—" not in pb and "–" not in pb, "no em or en dash in the block")
+    ok("\u2014" not in pb and "\u2013" not in pb, "no em or en dash in the block")
     ok(not re.search(r"[\U0001F300-\U0001FAFF]", pb), "no emoji in the block")
 
     # ── the generator hands it to the writer, in the message the fact check reads
