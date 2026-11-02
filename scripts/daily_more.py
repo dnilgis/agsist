@@ -22,11 +22,11 @@ THE BLOCKS (prompt_block() joins the ones that are on, each with its source and 
   harvest    Monday and Tuesday issues only: US corn and soybean harvest
              percent from data/crop-progress.json, its week-ending date, the
              week before, and the 5-year average or last year only when the
-             file carries them. Withheld when the file is out of season, the
-             week ended more than HARVEST_MAX_AGE days before the issue, or the
-             report came out after the issue was written (no look-ahead: NASS
-             releases the Monday after the week ends, 3:00 PM CT, or the next
-             business day after a Monday federal holiday).
+             file carries them. Only the newest report public when the issue
+             is written: NASS releases the Monday after the week ends, 3:00 PM
+             CT, or the next business day after a Monday federal holiday. An
+             older week (a missed fetch, the season over) or a newer one
+             (look-ahead) is withheld, as is a file that says out of season.
   funds      Saturday and Monday issues after the Friday CFTC release (or the
              Tuesday issue after a Monday release in a holiday week): managed
              money's net position and its change, futures only, for corn,
@@ -73,7 +73,6 @@ INSPECTIONS_ET = (11, 0)
 FSA_OPENED_DAYS = 7        # "the signup opened Monday" stays in the block for a week
 FSA_DEADLINE_DAYS = 45     # a deadline closer than this is counted down
 WASDE_DAYS = 35            # the next WASDE is named when it is this close (always, in practice)
-HARVEST_MAX_AGE = 9        # days from the week's end to the issue (Tuesday after a holiday Monday)
 HARVEST_DAYS = (0, 1)      # Monday and Tuesday issues
 CROP_PROGRESS_HOUR_CT = 15
 FUND_MARKETS = ("corn", "beans", "wheat", "livecattle")
@@ -244,6 +243,17 @@ def crop_progress_release(week_end):
     return datetime.combine(d, time(CROP_PROGRESS_HOUR_CT, 0), tzinfo=CT)
 
 
+def latest_public_week(now):
+    """The week-ending Sunday of the newest Crop Progress public at `now`."""
+    d = now.astimezone(CT).date()
+    sun = d - timedelta(days=(d.weekday() + 1) % 7)
+    for k in range(4):
+        w = sun - timedelta(days=7 * k)
+        if crop_progress_release(w) <= now:
+            return w
+    return None
+
+
 def _pct_int(v):
     return isinstance(v, int) and not isinstance(v, bool) and 0 <= v <= 100
 
@@ -269,9 +279,9 @@ def harvest_facts(today, now, path=CROP_PATH):
             continue
         if not _pct_int(r.get("pct")):
             continue
-        if (today - we).days > HARVEST_MAX_AGE or we >= today:
-            continue
-        if crop_progress_release(we) > now:
+        # only the newest report public when the issue is written: an older week
+        # is stale (a missed fetch), a newer one is look-ahead
+        if we >= today or we != latest_public_week(now):
             continue
         s = "%s %d%% harvested in the week ending %s" % (name, r["pct"], _day(we))
         if _pct_int(r.get("prev_week")):
