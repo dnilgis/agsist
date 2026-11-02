@@ -825,6 +825,8 @@ def county_page(ctx):
                              {"@type": "Place", "name": f"{kind_word(c)} {stw['raw']} ({stw['sid'].split(' ')[0]})",
                               "geo": {"@type": "GeoCoordinates", "latitude": stw["ll"][1], "longitude": stw["ll"][0]}}],
          "creator": PUBLISHER, "dateModified": d["fetched"][:10],
+         # no data license is stated on these pages, so the license is the site's own terms (Nov 2 SEO audit)
+         "license": f"{ORIGIN}/terms",
          "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{ORIGIN}/data/rain/{st.lower()}.json"}},
         {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": S.text_of(q), "acceptedAnswer": {"@type": "Answer", "text": S.text_of(a)}} for q, a in faq]},

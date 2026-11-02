@@ -2440,7 +2440,8 @@ def state_page(st, S, D, ch, nav_states):
                           "name": f"{name} 2026 ARC-CO benchmark yields by county (FSA official)",
                           "description": (f"FSA's official program year 2026 ARC-CO benchmark yields for {len(S['c'])} {name} counties by crop and "
                                           f"practice, with benchmark revenue at the 2026 benchmark price, from FSA's county file as of {fsa['as_of']}."),
-                          "url": f"{SITE}{path}", "isAccessibleForFree": True, "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
+                          "url": f"{SITE}{path}", "isAccessibleForFree": True, "license": f"{SITE}/terms",
+                          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
                           "isBasedOn": FSA_DATA, "dateModified": D["updated"][:10],
                           "spatialCoverage": {"@type": "Place", "name": f"{name}, United States"},
                           "variableMeasured": ["ARC-CO benchmark yield (bushels per acre, or pounds per acre for peanuts, rice, pulses, seed cotton and most oilseeds)",

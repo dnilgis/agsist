@@ -112,3 +112,58 @@ test("hail map: one h1, and the print window still opens with an h1", () => {
     assert.equal((read("hail-map/" + f).match(/<h1\b/gi) || []).length, 1, f);
   }
 });
+
+// 3. Dataset records: every block parses, and each carries a license and a dateModified from the data's own date.
+function* walkHtml(dir) {
+  for (const e of readdirSync(ROOT + dir, { withFileTypes: true })) {
+    const p = dir + "/" + e.name;
+    if (e.isDirectory()) yield* walkHtml(p);
+    else if (e.name.endsWith(".html")) yield p;
+  }
+}
+function datasets(f) {
+  const out = [];
+  const walk = (o) => {
+    if (Array.isArray(o)) o.forEach(walk);
+    else if (o && typeof o === "object") { if (o["@type"] === "Dataset") out.push(o); Object.values(o).forEach(walk); }
+  };
+  for (const m of read(f).matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    let d;
+    try { d = JSON.parse(m[1]); } catch (e) { assert.fail(`${f}: a JSON-LD block does not parse (${e.message})`); }
+    walk(d);
+  }
+  return out;
+}
+const ISO = /^\d{4}-\d{2}-\d{2}$/;
+const TERMS = "https://agsist.com/terms";
+
+test("Dataset records: license and dateModified on rain, ARC/PLC, hail, rent and custom rates pages", () => {
+  const counts = {};
+  const sets = { rain: "rain", "arc-plc": "arc-plc", hail: "hail-map", rent: "rent", custom: "custom-rates" };
+  const hailAsOf = JSON.parse(read("data/hail/state-counties.json")).generated.slice(0, 10);
+  for (const [k, dir] of Object.entries(sets)) {
+    counts[k] = 0;
+    for (const f of walkHtml(dir)) {
+      for (const o of datasets(f)) {
+        counts[k]++;
+        assert.ok(typeof o.license === "string" && /^https:\/\//.test(o.license), `${f}: license`);
+        assert.match(String(o.dateModified || ""), ISO, `${f}: dateModified`);
+        if (k === "rain" || k === "hail") assert.equal(o.license, TERMS, f);
+        if (k === "hail") assert.equal(o.dateModified, hailAsOf, `${f}: the county file's own date`);
+        if (k === "rent") assert.match(read(f), new RegExp(`data refreshed ${o.dateModified}`), `${f}: the date the page shows`);
+      }
+    }
+  }
+  assert.ok(counts.rain >= 2500, `rain ${counts.rain}`);
+  assert.ok(counts["arc-plc"] >= 2800, `arc-plc ${counts["arc-plc"]}`);
+  assert.equal(counts.hail, 51);
+  assert.equal(counts.rent, 48);
+  assert.ok(counts.custom >= 9, `custom ${counts.custom}`);
+  // ARC/PLC state and crop hubs: the site's terms (no license is stated on them)
+  for (const f of ["arc-plc/iowa.html", "arc-plc/sunflower-seed.html"]) assert.equal(datasets(f)[0].license, TERMS, f);
+  // custom rates: the Dataset date is the date the page itself carries
+  for (const f of ["custom-rates.html", "custom-rates/indiana.html"]) {
+    const page = read(f).match(/"dateModified": ?"(\d{4}-\d{2}-\d{2})"/)[1];
+    for (const o of datasets(f)) assert.equal(o.dateModified, page, f);
+  }
+});
