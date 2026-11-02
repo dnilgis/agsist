@@ -24,7 +24,7 @@
     catch (e) { return (now || new Date()).toISOString().slice(0, 10); }
   }
   function dayNum(iso) { var p = iso.split('-').map(Number); return Math.floor(Date.UTC(p[0], p[1] - 1, p[2]) / 864e5); }
-  function shortDate(iso) { var p = iso.split('-').map(Number); return MON[p[1] - 1] + ' ' + p[2]; }
+  function shortDate(iso) { var p = iso.split('-').map(Number); return MON[p[1] - 1] + '\u00a0' + p[2]; }
   function pagePath(href) { return String(href).split('#')[0].split('?')[0].replace(/\/+$/, ''); }
   /* The pool: up to KEEP entries, newest first, dated today or in the last MAX_AGE days,
      one per page, internal links only. */
