@@ -128,7 +128,8 @@ test('index box: the week, its sample, the redrawn range, and RMA beside it', ()
   assert.equal(v.n, '66 barns in 16 states, 11,162 head, average 804 lb');
   assert.match(v.range, /lands from \$348\.68 to \$354\.76 nine times in ten\.$/);
   assert.equal(v.chgHead, 'Higher than the week before');
-  assert.equal(v.chgLine, '+$3.75. Redrawing the barns of both weeks puts the change at +$0.38 to +$6.82 (44 barns sold both weeks).');
+  assert.equal(v.chgLine, '+$3.75.');
+  assert.equal(v.chgRange, 'Redrawing the barns of both weeks puts the change at +$0.38 to +$6.82 (44 barns sold both weeks).');
   assert.match(v.check, /averaged \$344\.43 over the 5 days RMA posted that week; the index ran \+\$7\.17 against it\.$/);
   assert.match(v.first, /^First count\. USDA reports filed late can still add sales to this week for 10 days/);
   assert.match(v.gates, /30 or more barns in 8 or more states sold 4,000 or more head, and no one state sold more than 50%/);
@@ -143,7 +144,8 @@ test('index box: the week, its sample, the redrawn range, and RMA beside it', ()
 test('index box: a change inside the noise is no clear change; no change without one earned', () => {
   const flat = V.indexView(withWeeks([{ ...W2, chg: 0.71, chg_lo: -2.1, chg_hi: 3.4, move: 'flat' }]), NOW2);
   assert.equal(flat.chgHead, 'No clear change from the week before');
-  assert.match(flat.chgLine, /^\+\$0\.71\. .* -\$2\.10 to \+\$3\.40/);
+  assert.equal(flat.chgLine, '+$0.71.');
+  assert.match(flat.chgRange, / -\$2\.10 to \+\$3\.40/);
   const down = V.indexView(withWeeks([{ ...W2, chg: -6, chg_lo: -9, chg_hi: -2, move: 'down' }]), NOW2);
   assert.equal(down.chgHead, 'Lower than the week before');
   const first = V.indexView(D, NOW);

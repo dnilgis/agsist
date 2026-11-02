@@ -119,7 +119,7 @@
       n: fxInt(w.barns) + (w.barns === 1 ? ' barn' : ' barns') + ' in ' + fxInt(w.states) + (w.states === 1 ? ' state' : ' states') + ', ' + fxInt(w.head) + ' head' + (fxNum(w.avg_wt) ? ', average ' + fxInt(w.avg_wt) + ' lb' : ''),
       top: top ? 'Largest shares of the head: ' + top + '.' : '',
       why: (w.why || []).join('; '),
-      range: '', chgHead: '', chgLine: '', last: '', check: '',
+      range: '', chgHead: '', chgLine: '', chgRange: '', last: '', check: '',
       first: w.final ? '' : 'First count. USDA reports filed late can still add sales to this week for ' + (ix.final_days || 10) + ' days after it ends.',
       gates: 'A week shows when ' + g.barns + ' or more barns in ' + g.states + ' or more states sold ' + fxInt(g.head) + ' or more head, and no one state sold more than ' + g.max_state_pct + '% of them. Otherwise it is withheld, with its counts.'
     };
@@ -129,7 +129,8 @@
       if (ix.last_ok) ws.forEach(function (x) { if (x.start === ix.last_ok && fxNum(x.p)) out.last = 'Last week with a figure: ' + fxWeek(x) + ', ' + fxMoney(x.p) + '.'; });
     } else if (fxNum(w.chg) && fxNum(w.chg_lo) && fxNum(w.chg_hi)) {
       out.chgHead = w.move === 'up' ? 'Higher than the week before' : w.move === 'down' ? 'Lower than the week before' : 'No clear change from the week before';
-      out.chgLine = fxSigned(w.chg) + '. Redrawing the barns of both weeks puts the change at ' + fxSigned(w.chg_lo) + ' to ' + fxSigned(w.chg_hi) + ' (' + fxInt(w.both) + ' barns sold both weeks).';
+      out.chgLine = fxSigned(w.chg) + '.';
+      out.chgRange = 'Redrawing the barns of both weeks puts the change at ' + fxSigned(w.chg_lo) + ' to ' + fxSigned(w.chg_hi) + ' (' + fxInt(w.both) + ' barns sold both weeks).';
       out.chgNum = w.chg; out.move = w.move;
     } else {
       out.chgLine = 'No change shown: ' + (w.chg_why || 'not enough of the same barns both weeks') + '.';
@@ -322,16 +323,14 @@
       box.innerHTML = h + '<p class="fx-down">' + (v ? v.msg : '') + '</p><p class="fx-src">' + AMS_CREDIT + '</p>';
       box.hidden = false; return;
     }
-    h += '<div class="fx-val">' + v.val + ' <small>$/cwt &middot; ' + esc(v.week) + '</small></div>' +
-      '<p class="fx-note">Feeder steers 700 to 899 lb, Medium and Large 1 and 1-2, at USDA-reported sale barns: ' + esc(v.n) + '.</p>';
+    h += '<div class="fx-val">' + v.val + ' <small>$/cwt</small></div>' +
+      '<p class="fx-note">' + esc(v.week) + '. Steers 700 to 899 lb, Medium and Large 1 and 1-2, USDA-reported barns: ' + esc(v.n) + '.</p>';
     if (v.withheld) {
       h += '<p class="fx-note"><b>' + esc(v.why) + '</b>' + (v.last ? ' ' + esc(v.last) : '') + '</p>';
     } else {
       if (v.chgHead) h += '<p class="fx-note"><b class="fx-mv' + (v.move === 'up' ? ' up' : v.move === 'down' ? ' dn' : '') + '">' + esc(v.chgHead) + ':</b> ' + esc(v.chgLine) + '</p>';
       else h += '<p class="fx-note">' + esc(v.chgLine) + '</p>';
-      if (v.check) h += '<p class="fx-note">' + v.check + '</p>';
     }
-    if (v.first) h += '<p class="fx-note">' + esc(v.first) + '</p>';
     box.hidden = false;
     var cs = window.getComputedStyle ? getComputedStyle(box) : null;
     var cw = box.clientWidth ? box.clientWidth - (cs ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 36) : 640;
@@ -340,6 +339,11 @@
     if (chart) h += indexChartSvg(v.series, cw) + '<p class="fx-note">Dots are the index; the bar through each is the range from redrawing that week&rsquo;s barns. Gaps are withheld weeks.</p>';
     else if (!compact) h += '<p class="fx-note">The chart starts once two weeks have a figure.</p>';
     if (v.range) h += '<p class="fx-note">' + v.range + (v.top ? ' ' + esc(v.top) : '') + '</p>';
+    if (v.chgRange) h += '<p class="fx-note">' + esc(v.chgRange) + '</p>';
+    if (v.check && !v.withheld) h += '<p class="fx-note">' + v.check + '</p>';
+    /* the change's range, the RMA comparison (RMA's own box sits beside this one) and the "first count" note sit in the fold (Nov 2): on a phone the open box pushed
+       /cattle-futures-prices past its 8,000 px limit (test/price-local) */
+    if (v.first) h += '<p class="fx-note">' + esc(v.first) + '</p>';
     h += '<table class="fx-t"><thead><tr><th scope="col">Week</th><th scope="col">Index</th><th scope="col">Change</th></tr></thead><tbody>';
     v.rows.forEach(function (r) {
       h += '<tr><td>' + esc(r.week) + '</td><td class="p">' + esc(r.p) + '<small>' + esc(r.n) + '</small>' + (r.why ? '<small>Withheld: ' + esc(r.why) + '</small>' : '') + '</td><td class="c">' + esc(r.chg) + '</td></tr>';
@@ -354,7 +358,7 @@
       '<li>The barns are the ones USDA reports on and we read, so states with more of them count for more. It is not every sale in the country.</li>' +
       '<li>Our record starts the week of ' + esc(v.since) + ', when we began reading these reports. Every finished week is kept.</li>' +
       '<li>This is AGSIST&rsquo;s own figure. It is not the CME Feeder Cattle Index, and no CME data goes into it.</li>' +
-      '</ul></details><p class="fx-src">' + AMS_CREDIT + '</p>';
+      '</ul><p class="fx-src">' + AMS_CREDIT + '</p></details><p class="fx-src">Source: USDA AMS sale barn reports.</p>';
     box.innerHTML = h; box.hidden = false;
   }
 
