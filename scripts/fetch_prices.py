@@ -267,6 +267,100 @@ def pin_continuous(quotes, nearby, stale_keys=None):
     return done
 
 
+# ── Energy roll guard (2026-11-02) ──────────────────────────────────────────
+# NG=F and CL=F are continuous series, and the fetch cannot tell which contract
+# a bar belongs to. Around a front-month expiry Yahoo put the NEXT month's
+# trades in the morning bar while the bar before it was the expiring month's
+# close: Nov '26 natural gas expired Oct 28, and the Oct 26-29 Dailies printed
+# "up 13.9% to $3.01", "up 16.0%", "up 13.9%", "up 8.0%" while the Nov day
+# closes went 2.64, 2.602, 2.697, 2.817: Dec trades near $3.02 were measured
+# from Nov closes. Fix: inside the
+# window around an energy expiry, a move bigger than ENERGY_ROLL_PCT is not a
+# move we can stand behind; the price stays (it is a real trade) and the change
+# is withheld with the reason (quotes[key]["move_withheld"], "roll": True, which
+# the pages already read as "no day change"). Outside the window a big move is
+# logged, not touched (real 8% gas days happen).
+ENERGY_ROLL_PCT = 8.0
+ENERGY_ROLL_KEYS = ("natgas", "crude")
+ENERGY_WINDOW_BEFORE = 3      # trading days before the last trading day
+ENERGY_WINDOW_AFTER = 1       # trading days after it (the first bar of the new front)
+
+
+def _biz_back(d, n):
+    from contract_calendar import prior_trading_day
+    for _ in range(n):
+        d = prior_trading_day(d)
+    return d
+
+
+def energy_last_trade(key, yr, mon):
+    """Last trading day of the `key` contract for delivery month (yr, mon).
+    NYMEX natural gas: 3 business days before the first calendar day of the
+    delivery month. NYMEX WTI crude: 3 business days before the 25th of the
+    month before delivery; when the 25th is not a business day, 3 business
+    days before the business day preceding it. Holidays: contract_calendar."""
+    from datetime import date as _date
+    from contract_calendar import is_trading_day, prior_trading_day
+    if key == "natgas":
+        return _biz_back(_date(yr, mon, 1), 3)
+    if key == "crude":
+        py, pm = (yr, mon - 1) if mon > 1 else (yr - 1, 12)
+        d = _date(py, pm, 25)
+        if not is_trading_day(d):
+            d = prior_trading_day(d)
+        return _biz_back(d, 3)
+    return None
+
+
+def energy_roll_window(key, day):
+    """(delivery 'mon yy', last trade date) when `day` sits inside the roll
+    window of a front-month expiry for `key`, else None."""
+    from datetime import date as _date
+    from contract_calendar import next_trading_day
+    if key not in ENERGY_ROLL_KEYS:
+        return None
+    d = day if isinstance(day, _date) else datetime.strptime(str(day)[:10], "%Y-%m-%d").date()
+    for k in range(0, 4):
+        yr, mon = d.year + (d.month - 1 + k) // 12, (d.month - 1 + k) % 12 + 1
+        e = energy_last_trade(key, yr, mon)
+        lo = _biz_back(e, ENERGY_WINDOW_BEFORE)
+        hi = e
+        for _ in range(ENERGY_WINDOW_AFTER):
+            hi = next_trading_day(hi)
+        if lo <= d <= hi:
+            return (datetime(yr, mon, 1).strftime("%b '%y"), e)
+    return None
+
+
+def energy_roll_guard(quotes, now=None):
+    """Withhold the day change of a continuous energy quote that moved more
+    than ENERGY_ROLL_PCT inside an expiry window (see above). Mutates quotes;
+    returns {key: reason}. Pure function of its inputs; selftested in
+    scripts/test_mark_rolls.py with the Oct 26-30 2026 natural gas rows."""
+    held = {}
+    for key in ENERGY_ROLL_KEYS:
+        q = quotes.get(key)
+        if not isinstance(q, dict) or q.get("pctChange") is None:
+            continue
+        pct = float(q["pctChange"])
+        if abs(pct) <= ENERGY_ROLL_PCT:
+            continue
+        day = q.get("close_date") or (now or datetime.now(timezone.utc)).date()
+        win = energy_roll_window(key, day)
+        if not win:
+            print(f"  NOTE {key}: {pct:+.2f}% day change outside any expiry window; kept")
+            continue
+        mon, e = win
+        reason = (f"{q.get('ticker', key)} moved {pct:+.2f}% from {q.get('open')} ({q.get('prev_date')}) "
+                  f"to {q.get('close')} ({q.get('close_date')}), inside the {mon} contract's expiry "
+                  f"window (last trade {e.isoformat()}); the two prices may be different contracts, "
+                  f"so the change is withheld")
+        q["move_withheld"] = reason
+        q["roll"] = True
+        held[key] = reason
+    return held
+
+
 # ── Unit guard for the symbols no run has confirmed yet (2026-10-03) ─────────
 # key -> (low, high, unit the page prints). A close outside the range means
 # Yahoo is quoting in a different unit than the page labels (cents vs dollars),
@@ -1146,6 +1240,10 @@ def main():
             f"{c} (front rolled off {v['rolled_off']}, expired {v['expired']})"
             for c, v in rolls.items()))
 
+    move_withheld = energy_roll_guard(quotes)
+    for _k, _why in move_withheld.items():
+        print(f"  MOVE WITHHELD {_k}: {_why}")
+
     nearby = add_nearby(quotes, SYMBOLS)
     pinned = pin_continuous(quotes, nearby, stale_keys)
     if pinned:
@@ -1221,6 +1319,9 @@ def main():
         # Quotes left out because they arrived outside the unit the page
         # prints (UNIT_RANGE). Named with the reason, never silently dropped.
         "withheld_keys": withheld_keys,
+        # Day changes withheld because the two prices may be different
+        # contracts (energy_roll_guard); the price stays, the move does not.
+        "move_withheld": move_withheld,
         # KC HRW and MGEX HRS minus Chicago SRW, cents per bushel. See
         # class_spreads(): a same-month pair before first notice day, or a reason.
         "spreads":    spreads,

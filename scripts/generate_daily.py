@@ -898,6 +898,15 @@ def load_prices():
         locked_changes[key]["prev_date"] = pdate
         if stale:
             locked_changes[key]["stale"] = True
+        # 2026-11-02: fetch_prices.energy_roll_guard withheld the change (a
+        # continuous energy quote near expiry; Oct 26-29 natural gas printed
+        # +13.9% to +16.0%, a Dec trade over a Nov close). The price stays,
+        # the move goes: no prev, no pct, never a surprise.
+        held = q.get("move_withheld")
+        if held and not stale:
+            locked_changes[key]["prev"] = None
+            locked_changes[key]["pct"] = None
+            locked_changes[key]["withheld"] = str(held)
         arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
         # Name the month for the products whose key is the front month
         # (fetch_prices.pin_continuous), so "Lean Hogs" is never a dead month.
@@ -911,9 +920,13 @@ def load_prices():
             line = (f"  {label}{(' ' + mon) if mon else ''}: {price_str} [STALE: last "
                     + (("close" if key in INDEX_KEYS else "settle") if _done else "price")
                     + (f" {_sd}" if _sd else " unknown") + "; report no move]")
+        elif held:
+            line = (f"  {label}{(' ' + mon) if mon else ''}: {price_str} [MOVE WITHHELD: the contract "
+                    "rolls this week and this price may be a different month than the last close; "
+                    "give the price only, report no move and no percent]")
         else:
             line = f"  {label}{(' ' + mon) if mon else ''}: {price_str} ({arrow} {chg_str})"
-        if stale:
+        if stale or held:
             pass
         elif kind == "last":
             _at = _ct_hm(q.get("close_time") or fetched)
@@ -934,7 +947,7 @@ def load_prices():
                 line += f" [52wk: {position:.0f}% from low]"
         price_lines.append(line)
         threshold = SURPRISE_THRESHOLDS.get(key, 2.0)
-        if abs(pct) >= threshold and not stale:
+        if abs(pct) >= threshold and not stale and not held:
             surprises.append({"commodity": label, "key": key, "price": price_str,
                 "pct_change": pct, "direction": "up" if pct > 0 else "down",
                 "surprise_magnitude": round(abs(pct) / threshold, 1)})

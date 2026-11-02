@@ -248,5 +248,27 @@ ln, _ = es_line(date(2026, 10, 20), "2026-10-08")
 chk(ln == "- Weekly Export Sales: Thursday, Oct 22, 7:30 AM CT", "an ordinary week says Thursday", ln)
 chk("FAS often releases it Friday" in g.CALENDAR_FACTS_2026, "the calendar block no longer says every Thursday without exception")
 
+# 2026-11-02 audit: Oct 27's 10:46Z natural gas was a Dec trade (3.019) over the
+# expiring Nov close (2.602), printed "up 16.0%". fetch_prices.energy_roll_guard
+# marks it; the lock keeps the price and drops the move, and it is no surprise.
+print("\nOct 27 2026, natural gas in the Nov expiry window")
+import copy as _copy  # noqa: E402
+_fx = json.loads((Path(HERE).parent / "test" / "fixtures" / "daily-audit" / "ng-roll-2026-10.json").read_text())
+_r = next(r for r in _fx["rows"] if r["fetched"].startswith("2026-10-27"))
+_feed = {"fetched": _r["fetched"], "quotes": _copy.deepcopy(_r["quotes"])}
+import types as _types  # noqa: E402
+sys.modules.setdefault("yfinance", _types.ModuleType("yfinance"))  # the guard never calls Yahoo
+import fetch_prices as _fp  # noqa: E402
+_fp.energy_roll_guard(_feed["quotes"])
+pdata, surprises, t, blk = load(_feed)
+ng = row(pdata["price_block"], "Natural Gas")
+chk(ng and "$3.02" in ng[0] and "MOVE WITHHELD" in ng[0] and "%)" not in ng[0] and "(UP" not in ng[0], "the gas line keeps $3.02 and carries no percent", ng)
+lc = pdata["locked_changes"].get("natgas") or {}
+chk(lc.get("pct") is None and lc.get("prev") is None and lc.get("withheld"), "the lock has no prev and no pct for gas", lc)
+chk(not [s for s in surprises if s["key"] == "natgas"], "gas is not an overnight surprise", surprises)
+chk("natgas" not in t["prev_settles"], "no previous settle is offered for gas", t["prev_settles"])
+cl = row(pdata["price_block"], "WTI Crude Oil")
+chk(cl and "(UP +0.7%)" in cl[0], "crude keeps its move", cl)
+
 print("PASS" if ok else "FAIL")
 sys.exit(0 if ok else 1)

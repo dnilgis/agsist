@@ -82,6 +82,36 @@ q6 = {"beans": {"close": 1100.0}, "corn": {"close": 430.0}}
 rolls6 = mark_rolls(q6, SYMBOLS, T(2026, 8, 17))
 chk("beans" in rolls6 and q6["beans"].get("roll") is True, "Aug 17: beans front (aug26) in roll window")
 
+# 7. Energy roll guard (2026-11-02), the real rows: Nov '26 natural gas expired
+# Oct 28 and the Oct 26-29 Dailies printed Dec trades against Nov closes as
+# +13.9%, +16.0%, +13.9%, +8.0%. Fixture: test/fixtures/daily-audit/ng-roll-2026-10.json
+# (git show <commit>:data/prices.json, natgas and crude only).
+import copy, json  # noqa: E402
+from datetime import date  # noqa: E402
+from fetch_prices import energy_roll_guard, energy_last_trade, energy_roll_window  # noqa: E402
+chk(energy_last_trade("natgas", 2026, 11) == date(2026, 10, 28), "Nov '26 natural gas last trade Oct 28")
+chk(energy_last_trade("natgas", 2026, 12) == date(2026, 11, 25), "Dec '26 natural gas last trade Nov 25 (Nov 26 Thanksgiving, no session)")
+chk(energy_last_trade("crude", 2026, 12) == date(2026, 11, 20), "Dec '26 WTI last trade Nov 20 (25th a Wednesday)")
+chk(energy_last_trade("crude", 2026, 11) == date(2026, 10, 20), "Nov '26 WTI last trade Oct 20 (25th a Sunday)")
+chk(energy_roll_window("natgas", "2026-10-15") is None, "Oct 15 is outside the gas window")
+fx = json.load(open("test/fixtures/daily-audit/ng-roll-2026-10.json"))
+for row in fx["rows"]:
+    qs = copy.deepcopy(row["quotes"])
+    held = energy_roll_guard(qs)
+    day = row["fetched"][:10]
+    if day in ("2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29"):
+        chk("natgas" in held and qs["natgas"].get("roll") is True and qs["natgas"].get("move_withheld"),
+            f"{day}: natgas {row['quotes']['natgas']['pctChange']:+.1f}% withheld (Dec trade vs Nov close)")
+        chk(qs["natgas"]["close"] == row["quotes"]["natgas"]["close"], f"{day}: the price itself is kept")
+    else:
+        chk("natgas" not in held and "roll" not in qs["natgas"], f"{day}: natgas {row['quotes']['natgas']['pctChange']:+.1f}% kept (after the roll)")
+    chk("crude" not in held, f"{day}: crude {row['quotes']['crude']['pctChange']:+.1f}% kept")
+# outside any window a big move is kept, only logged
+qbig = {"natgas": {"close": 3.3, "open": 3.0, "pctChange": 10.0, "close_date": "2026-10-14"}}
+chk(energy_roll_guard(qbig) == {} and "roll" not in qbig["natgas"], "a 10% gas day outside the window is kept")
+qcl = {"crude": {"close": 110.0, "open": 100.0, "pctChange": 10.0, "close_date": "2026-11-19"}}
+chk("crude" in energy_roll_guard(qcl), "a 10% crude move the day before the Dec WTI expiry is withheld")
+
 if failures:
     print(f"\nSELFTEST FAILED — {len(failures)} failure(s)")
     sys.exit(1)
