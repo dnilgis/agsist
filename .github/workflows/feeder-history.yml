@@ -1,0 +1,69 @@
+name: Feeder index history (dispatch only)
+
+# Past weeks for the AGSIST USDA feeder steer index (Sig said yes, Nov 2 2026).
+# DISPATCH ONLY: no schedule, no push trigger, ever. The ongoing weeks ride
+# cattle-auction.yml as before.
+#
+#   probe    ask each candidate archive of past USDA AMS barn reports what it
+#            holds for a few barns (scripts/probe_feeder_archive.py) and save
+#            the answers to the private raw branch, history/feeder-archive/probe/.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe: ask the archives what they hold and save the answers"
+        type: choice
+        options: [probe]
+        default: probe
+      slugs:
+        description: "probe: AMS report numbers to ask about (comma-separated)"
+        type: string
+        default: "1856,1245"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: feeder-history
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # The same PDF reader the barn job uses (cattle-auction.yml), so a report reads the same here.
+      - name: Install pypdf
+        run: pip install pypdf==6.20.1
+      - name: Selftests (no network)
+        run: |
+          python3 scripts/probe_feeder_archive.py --selftest
+          python3 scripts/fetch_cattle_auction.py --selftest
+      - name: Probe the archives
+        if: ${{ inputs.mode == 'probe' }}
+        env:
+          SLUGS: ${{ inputs.slugs }}
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: |
+          case "$SLUGS" in *[!0-9,]*) echo "::error::slugs takes report numbers and commas"; exit 1;; esac
+          python3 scripts/probe_feeder_archive.py --probe --slugs "$SLUGS"
+      - name: Save the probe to the raw branch
+        if: ${{ !cancelled() && inputs.mode == 'probe' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          [ -d history/feeder-archive/probe ] || { echo "nothing written"; exit 0; }
+          bash scripts/push_raw.sh "feeder archive probe" history/feeder-archive/probe
