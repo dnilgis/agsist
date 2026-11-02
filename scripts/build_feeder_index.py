@@ -451,6 +451,91 @@ def build_index(store, prev_weeks, monday, today):
     }
 
 
+# ------------------------------------------------------------------ history from the archive
+HISTORY = "data/feeder-index-history.json"
+FAR = datetime.date(2100, 1, 1)   # archive weeks are long over: every one is final
+
+
+def history_store(sales):
+    """Archived barn sales -> the same store merge_barn_sales keeps:
+    {barn_id: {"state", "sales": {date: cells}}}. Each sale is one report's
+    summarize() (scripts/fetch_cattle_auction.py) plus "barn" and "state". A barn
+    with two reports dated the same day (a reissued report) keeps the one with
+    more head, so a sale is never counted twice."""
+    store = {}
+    for s in sales or []:
+        d = pdate(s.get("date"))
+        bid, st = s.get("barn"), s.get("state")
+        if not d or not bid or not st:
+            continue
+        cells = sale_cells(s)
+        if not cells:
+            continue
+        e = store.setdefault(bid, {"state": st, "sales": {}})
+        old = e["sales"].get(iso(d))
+        if old is not None:
+            if sum(v[0] for v in old.values()) > sum(v[0] for v in cells.values()) or \
+               (sum(v[0] for v in old.values()) == sum(v[0] for v in cells.values()) and
+                    json.dumps(old, sort_keys=True) <= json.dumps(cells, sort_keys=True)):
+                continue
+        e["sales"][iso(d)] = cells
+    return store
+
+
+def _same_week(a, b):
+    return {k: v for k, v in a.items() if k != "read"} == {k: v for k, v in b.items() if k != "read"}
+
+
+def build_history(store, prev, read_date, source, live_start=IDX_START):
+    """Past weeks of the index from archived reports, by the same rules as the
+    live record (index_week, index_change). Only weeks before live_start: the
+    live record (data/feeder-index.json) is never overwritten by an archive
+    read. A week whose numbers did not change keeps its first read date, so a
+    re-run changes nothing; weeks this store does not reach stay as they were."""
+    prev_weeks = {w["start"]: w for w in ((prev or {}).get("weeks") or [])}
+    days = sorted(pdate(d) for e in store.values() for d in e["sales"])
+    days = [d for d in days if d and d < live_start]
+    new = {}
+    if days:
+        first = week_start(days[0])
+        m = first
+        while m < live_start:
+            o, b = index_week(store, m, FAR)
+            pm = m - datetime.timedelta(days=7)
+            po, pb = index_week(store, pm, FAR) if m > first else (None, {})
+            o = index_change(o, b, po, pb, m)
+            o["from"] = "archive"
+            o["read"] = read_date
+            old = prev_weeks.get(o["start"])
+            if old and _same_week(old, o):
+                o["read"] = old["read"]
+            new[o["start"]] = o
+            m += datetime.timedelta(days=7)
+    weeks = dict(prev_weeks)
+    weeks.update(new)
+    out = [weeks[k] for k in sorted(weeks) if pdate(k) and pdate(k) < live_start]
+    ok = [w for w in out if w.get("p") is not None]
+    reads = sorted({w.get("read") for w in out if w.get("read")})
+    return {
+        "v": 1, "name": IDX_NAME, "label": IDX_LABEL,
+        "what": "Past weeks of the index, figured from USDA's archived barn reports by the same rules as the live record",
+        "source": source,
+        "read": reads[-1] if reads else None, "first_read": reads[0] if reads else None,
+        "start": out[0]["start"] if out else None, "end": out[-1]["end"] if out else None,
+        "live_start": iso(live_start),
+        "weeks_ok": len(ok), "barns": len(store),
+        "weeks": out,
+    }
+
+
+def write_history(root, doc):
+    path = Path(root) / HISTORY
+    tmp = path.with_name(path.name + ".tmp")
+    with open(tmp, "w") as f:
+        f.write(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
+    os.replace(tmp, path)
+
+
 # ------------------------------------------------------------------ RMA
 def steer_type_codes(meta):
     """{reinsurance year: type code} for feeder cattle steers, weight 2, factor 1.00.

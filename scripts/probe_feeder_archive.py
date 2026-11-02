@@ -30,6 +30,12 @@ Every PDF that comes back goes through fetch_cattle_auction's own reader
 
     python3 scripts/probe_feeder_archive.py --selftest
     python3 scripts/probe_feeder_archive.py --probe [--slugs 1856,1245]
+    python3 scripts/probe_feeder_archive.py --coverage
+        the Internet Archive's capture list (CDX) for every single-barn report in
+        scripts/cattle_auction_sources.json, no PDFs: how many barns and states
+        have a capture in each week (coverage.json). A capture holds the report
+        that was current then, so its sale is in that week or the one before:
+        this is an upper bound on what a week could be built from.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -253,6 +259,52 @@ def probe(slugs, out=OUT, fetch=None, mars_fetch=None, log=print):
     return summary
 
 
+def week_of(ts):
+    import datetime
+    d = datetime.date(int(ts[:4]), int(ts[4:6]), int(ts[6:8]))
+    return (d - datetime.timedelta(days=d.weekday())).isoformat()
+
+
+def coverage(out=OUT, fetch=None, log=print, since="2024"):
+    """Captures per week across every single-barn report (CDX lists only)."""
+    os.makedirs(out, exist_ok=True)
+    fetch = fetch or Fetcher(min_gap=1.5, retries=2, timeout=60, ok=(200, 404))
+    robots = Robots(fetch, log)
+    cfg = FCA.load_sources(FCA.ROOT)
+    weeks, per_slug, rec = {}, {}, []
+    for b in cfg.get("barns") or []:
+        for slug in [b.get("slug")] + list(b.get("also") or []):
+            if not slug:
+                continue
+            orig = "www.ams.usda.gov/mnreports/ams_%s.pdf" % slug
+            s, body = ask(fetch, robots, CDX % urllib.parse.quote(orig, safe=""), rec, out, keep=False)
+            caps = []
+            if s == 200:
+                try:
+                    rows = json.loads(body.decode("utf-8", "replace") or "[]")
+                    caps = [r for r in rows[1:]] if rows and rows[0] and rows[0][0] == "timestamp" else rows
+                except ValueError:
+                    caps = []
+            caps = [c for c in caps if c[0][:4] >= since]
+            per_slug[slug] = [c[0] for c in caps]
+            for c in caps:
+                w = weeks.setdefault(week_of(c[0]), {"barns": set(), "states": set()})
+                w["barns"].add(b["id"])
+                w["states"].add(b["state"])
+    table = {k: {"barns": len(v["barns"]), "states": len(v["states"])} for k, v in sorted(weeks.items())}
+    doc = {"read": now_iso(), "since": since, "slugs": len(per_slug),
+           "slugs_with_captures": sum(1 for v in per_slug.values() if v),
+           "weeks": table, "weeks_30_barns_8_states": sum(1 for v in table.values() if v["barns"] >= 30 and v["states"] >= 8),
+           "per_slug": per_slug, "failed": [r for r in rec if r.get("status") != 200]}
+    with open(os.path.join(out, "coverage.json"), "w", encoding="utf-8") as f:
+        json.dump(doc, f, indent=1)
+    log("coverage: %d reports, %d with captures since %s; %d weeks with a capture; weeks with 30+ barns in 8+ states: %d"
+        % (doc["slugs"], doc["slugs_with_captures"], since, len(table), doc["weeks_30_barns_8_states"]))
+    for k, v in table.items():
+        log("  week of %s: %d barns, %d states" % (k, v["barns"], v["states"]))
+    return doc
+
+
 # ------------------------------------------------------------------ selftest
 def selftest():
     import tempfile
@@ -300,6 +352,7 @@ def selftest():
         ck("a non-PDF body is not parsed", all(r.get("parsed") is None or r.get("parsed") is False for r in b["reads"]), b["reads"])
         ck("summary saved", os.path.exists(os.path.join(d, "summary.json")))
         ck("MARS url saved without its query", all("?" not in r["url"] for r in b["asked"] if "marsapi" in r["url"]))
+    ck("week_of: a Saturday capture is that Monday's week", week_of("20250111093909") == "2025-01-06")
     print("probe_feeder_archive selftest: %d failure(s)" % len(fails))
     return 1 if fails else 0
 
@@ -308,13 +361,17 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="probe_feeder_archive.py")
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--probe", action="store_true")
+    ap.add_argument("--coverage", action="store_true")
     ap.add_argument("--slugs", default=",".join(DEFAULT_SLUGS))
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
+    if a.coverage:
+        coverage(out=a.out)
+        return 0
     if not a.probe:
-        print("nothing to do: --probe or --selftest")
+        print("nothing to do: --probe, --coverage or --selftest")
         return 2
     slugs = [s for s in re.split(r"[,\s]+", a.slugs) if re.fullmatch(r"\d{3,5}", s)]
     probe(slugs, out=a.out)
