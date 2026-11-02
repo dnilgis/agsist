@@ -193,3 +193,23 @@ test('feeder-history.yml is dispatch only, dry run by default, and commits only 
   assert.doesNotMatch(y.slice(y.indexOf('Commit if changed')), /git add (?!"\$F")/);
   assert.match(y, /pip install pypdf==6\.20\.1/, 'the barn job\'s PDF reader');
 });
+
+test('the committed history file: every published week passes the index gates, none overlaps the live record', () => {
+  const f = path.join(root, 'data/feeder-index-history.json');
+  if (!fs.existsSync(f)) return;
+  const h = JSON.parse(fs.readFileSync(f, 'utf8'));
+  const live = JSON.parse(fs.readFileSync(path.join(root, 'data/feeder-index.json'), 'utf8'));
+  const first = live.index.weeks[0].start;
+  const starts = h.weeks.map((w) => w.start);
+  assert.equal(new Set(starts).size, starts.length, 'no week twice');
+  assert.deepEqual([...starts].sort(), starts, 'oldest first');
+  assert.ok(h.weeks.every((w) => w.start < first && w.start < h.live_start), 'no live week');
+  assert.ok(h.weeks.every((w) => w.from === 'archive' && /^\d{4}-\d{2}-\d{2}$/.test(w.read)), 'each week says where it came from and when');
+  for (const w of h.weeks.filter((x) => x.p != null)) {
+    assert.ok(w.barns >= 30 && w.states >= 8 && w.head >= 4000 && w.top[0][1] <= 50, JSON.stringify(w));
+    assert.ok(w.lo <= w.p && w.p <= w.hi, JSON.stringify(w));
+  }
+  for (const w of h.weeks.filter((x) => x.p == null)) assert.ok(Array.isArray(w.why) && w.why.length, JSON.stringify(w));
+  assert.ok(fs.statSync(f).size < 150 * 1024, 'loaded on open only, still small');
+  assert.match(h.source, /Internet Archive/);
+});

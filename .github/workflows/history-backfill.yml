@@ -192,7 +192,7 @@ jobs:
           except OSError:
               print("No manifest written."); sys.exit(0)
           t = m.get("totals") or {}
-          left = [k for k, c in sorted(m["chunks"].items()) if not c.get("complete")]
-          print(f"### {m['source']}\n\n{t.get('rows')} rows in {t.get('chunks')} chunks, {t.get('complete')} complete; {t.get('first')} to {t.get('last')}.\n")
+          left = [k for k, c in sorted(m.get("chunks", {}).items()) if not c.get("complete")]
+          print(f"### {m.get('source')}\n\n{t.get('rows')} rows in {t.get('chunks')} chunks, {t.get('complete')} complete; {t.get('first')} to {t.get('last')}.\n")
           print(f"Not final ({len(left)}): {', '.join(left[:40])}{' ...' if len(left) > 40 else ''}" if left else "Every chunk is complete.")
           EOF
