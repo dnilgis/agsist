@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 01 Nov 2026 12:10:22 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 02 Nov 2026 11:48:58 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Crude drops 4.6% to $99.38; cattle futures fell Friday</title>
+      <link>https://agsist.com/daily/2026-11-02</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-02</guid>
+      <pubDate>Mon, 02 Nov 2026 11:48:00 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Crude fell 4.6% to **$99.38** on hopes for a US-Iran peace deal, which lets the harvest diesel bill ease for now. Cattle already gave back 2.4% Friday, so a feeder buyer is paying less than a week ago.
+• Crude slides on Iran talk
+• Cattle futures fall hard Friday
+• Grains edge up
+Read more: https://agsist.com/daily/2026-11-02</description>
+    </item>
     <item>
       <title>Corn ends the week at $4.47¾; crude up 2.1% to $104.12</title>
       <link>https://agsist.com/daily/2026-11-01</link>
@@ -350,18 +362,6 @@ Read more: https://agsist.com/daily/2026-10-05</description>
 • Grains Grind Lower Into Harvest
 • Cattle Soft, Hogs Firm
 Read more: https://agsist.com/daily/2026-10-04</description>
-    </item>
-    <item>
-      <title>Crude splits from diesel as harvest stalls in the rain</title>
-      <link>https://agsist.com/daily/2026-10-03</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-03</guid>
-      <pubDate>Sat, 03 Oct 2026 14:46:19 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>WTI settled $91.26 Friday, down 1.5%, while Dated Brent physical barrels reportedly cleared $120 the same day as Hormuz tanker strikes (ongoing since the Iran war began) widen the crude-diesel split. That spread is why your diesel bill isn't following the crude headline down.
-Action: Diesel buyers: lock the next 30 days of on-farm fuel now; WTI at $91.26 says cheap, physical diesel markets say otherwise.
-• Crude Down, Diesel Up, Same Barrel
-• Harvest Stalls, Basis Stays Put
-Read more: https://agsist.com/daily/2026-10-03</description>
     </item>
   </channel>
 </rss>

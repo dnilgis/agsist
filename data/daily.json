@@ -1,137 +1,176 @@
 {
-  "headline": "Corn ends the week at $4.47¾; crude up 2.1% to $104.12",
-  "lead": "December corn settled Friday at $4.47¾, down 3½ cents, its second lower close in a row, while beans held near $12.22. Corn is giving ground with harvest running and soybeans steady, so the feed side of the ledger got cheaper this week.",
-  "teaser": "Corn slipped to $4.47¾ Friday while crude ran up to $104.12; cattle and hogs ended the week lower.",
+  "headline": "Crude drops 4.6% to $99.38; cattle futures fell Friday",
+  "lead": "Crude fell 4.6% to **$99.38** on hopes for a US-Iran peace deal, which lets the harvest diesel bill ease for now. Cattle already gave back 2.4% Friday, so a feeder buyer is paying less than a week ago.",
+  "teaser": "Crude falls 4.6% on Iran peace hopes while cattle and feeder futures sold off Friday.",
   "one_number": {
-    "value": "2.48",
-    "unit": "Nov '27 beans to Dec '27 corn ratio",
-    "context": "The ratio uses next year's contracts, so it is the one to watch for 2027 acres. At 2.48, the new-crop price signal sits close to even between the two crops."
+    "value": "$105",
+    "unit": "Goldman's December Brent forecast",
+    "context": "Goldman Sachs raised its December Brent forecast to $105, nearly 17% higher than before, even as crude slid this morning."
   },
   "sections": [
     {
-      "title": "Grains end the week soft",
-      "body": "- December corn settled at **$4.47¾**, down 3½ cents, while November soybeans added 2½ cents to $12.22¼.\n- Wheat finished at $6.03½, barely changed, and AgWeb's Gulke called the grain markets in free fall.",
-      "so_what": "Corn is sliding while beans hold steady.",
+      "title": "Crude slides on Iran talk",
+      "body": "- WTI is at **$99.38** overnight, down 4.6%, after reports of Iran-Qatar mediation talks over the weekend.\n- Oilprice.com noted a fall in oil last month on Hormuz news did not last, so this dip may not either.",
+      "so_what": "Diesel costs have moved with crude, so watch whether the dip holds.",
+      "conviction_level": "medium",
+      "overnight_surprise": true
+    },
+    {
+      "title": "Cattle futures fall hard Friday",
+      "body": "- December live cattle settled Friday at **$220.95**, down 2.4%, and November feeders fell 2.5% to $337.775.\n- AgWeb asked whether the drop is more than a healthy correction. Livestock has no overnight session, so the next test is today's open.",
+      "so_what": "Both contracts gave back the prior week's gains in one day.",
+      "conviction_level": "medium",
+      "overnight_surprise": true
+    },
+    {
+      "title": "Grains edge up",
+      "body": "- December corn is at **$4.50½** overnight, up 2¾ cents from Friday's $4.47¾ settle.\n- November soybeans are at $12.21½, down ¾ cent. Gulke called the grain market a free fall last week.",
+      "so_what": "Small moves after a soft week; nothing new in the news.",
       "conviction_level": "low",
-      "overnight_surprise": false
-    },
-    {
-      "title": "Cattle and hogs slip",
-      "body": "- December hogs settled at **$58.88**, down 1.6%, near the bottom of their 52-week range.\n- October live cattle fell 2.4% to $220.95 and November feeders dropped 2.5% to $337.78, and AgWeb asked if the drop is more than a healthy correction.",
-      "so_what": "Hogs sit near their 52-week low.",
-      "conviction_level": "medium",
-      "overnight_surprise": false
-    },
-    {
-      "title": "Crude stays high",
-      "body": "- WTI crude was last at **$104.12**, up 2.1%, in Friday afternoon trading; that is a last trade, not a settle.\n- Agri-Pulse reported states were asked to waive dyed diesel restrictions, and Chevron said profits nearly tripled to $9.9 billion on strong refining.",
-      "so_what": "Fuel costs stay a story while crude holds over $100.",
-      "conviction_level": "medium",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Senate farm bill scores $4.4 billion; lame-duck passage uncertain",
-      "body": "AgWeb reports the Senate farm bill now has a $4.4 billion score. Passage in the lame-duck session after the election is not certain.",
-      "tag": "POLICY"
+      "title": "China's slow buying tests $17 billion farm pledge",
+      "body": "Reuters reports China is behind on the $17 billion yearly purchase pledge, a pressure point for US export demand.",
+      "tag": "TRADE",
+      "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNeGp4TlZzUzhLZkJsbVoyLWVtTVNHUmMtWVNteFpvbE9vYkZhcWxUSTdwQ0JyYi14MzdCN2dqeEU1Rkw5NHZISnhzbVV0Wno3U3M2b3FkRFdlXzBkdW5OT3RKRU5DamhSOWh1WVQyVk5ucG83amhtMDdqNWUwR2xianV2MUNtQ1Y0Qmo1QXJmOWd3SnB3eVZDcHpCZFFXc1MwamktYlRMeVhRc3FlZUlr?oc=5",
+      "source": "Reuters",
+      "news_id": "N21"
+    },
+    {
+      "title": "Screwworm found in Arizona, third state affected",
+      "body": "USDA confirmed the first Arizona case, and the parasite's westward spread continues to threaten US cattle.",
+      "tag": "DISEASE",
+      "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPYzQ5a3MtbmR0aGdJVk1jZldmNDUzanJEbTJSSHUtdEFnR1Q1eGpWZGswc1BjT1VtV0JZSEdZNVdYRzdfTkhOeHkxR3QteDl0ekxtSG9wUklPV3psUFliM3FJSDZnS2JTQ0JBSDJqbzZVbDYtVGRxUGFPcDloOUg3Y0V6RVY5RkY1UEs5dklTN01VVnhpS3U1OW5n?oc=5",
+      "source": "Animal and Plant Health Inspection Service (.gov)",
+      "news_id": "N5"
+    },
+    {
+      "title": "States asked to waive dyed diesel restrictions",
+      "body": "Agri-Pulse reports states are being asked to ease dyed diesel rules, which touches fuel costs during harvest.",
+      "tag": "INPUTS",
+      "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNMmkxaDUxOXhxcExUd1ZnMjRWdWxOWDRXOFFBQ21TeWZ3aUtnOUE2RzR2dVN1SkFFYTAzdVhQZW0xS3RlZzV5Wkd6QXVIYlJObXpBV3ZCM1RyU2FZNi1jZ1JJZk9sY1QxWEtMZGc1YWZOcENQN1pZSFJONGhyWnhmS0YwUlVYYWxFQVJIaDB5YkZfWHlDUDdJd3A1MTc3b1hrTW1jdERUOA?oc=5",
+      "source": "Agri-Pulse Communications, Inc.",
+      "news_id": "N20"
     }
   ],
   "watch_list": [
     {
-      "time": "Monday, Nov 2, 3:00 p.m. CT",
-      "desc": "USDA Crop Progress. Harvest pace shows how much supply is still coming."
-    },
-    {
-      "time": "Thursday, Nov 5, 7:30 a.m. CT",
-      "desc": "Export sales. Weak soybean numbers would sit awkwardly beside steady bean futures near $12."
+      "time": "Today 3:00 p.m. CT",
+      "desc": "USDA Crop Progress. Harvest pace shows how much corn and beans are still in the field."
     },
     {
       "time": "Ongoing",
-      "desc": "Crude holding above $100 keeps diesel and input costs in the news."
+      "desc": "WTI back above $104 would mean the Iran peace dip is already fading."
+    },
+    {
+      "time": "Thursday, Nov 5, 7:30 a.m. CT",
+      "desc": "Export sales. Soybean sales to China matter most given the slow-buying story."
     }
   ],
-  "source_summary": "CME Group settlements, USDA, AgWeb, Agri-Pulse, Feedstuffs, oilprice.com",
-  "date": "Sunday, November 1, 2026",
+  "source_summary": "CME Group, ICE, Reuters, Oilprice.com, AgWeb, USDA",
+  "date": "Monday, November 2, 2026",
   "meta": {
     "market_mood": "mixed",
     "heat_section": 0,
-    "overnight_surprises_count": 0,
-    "word_count": 302,
+    "overnight_surprises_count": 4,
+    "word_count": 334,
     "news_coverage": {
-      "ok": 14,
-      "total": 17,
-      "items": 69,
+      "ok": 20,
+      "total": 26,
+      "items": 90,
       "dark": [
         "brownfieldagnews.com",
         "dairyherd.com",
-        "porkbusiness.com"
+        "porkbusiness.com",
+        "extension.iastate.edu",
+        "extension.umn.edu",
+        "cpc.ncep.noaa.gov"
       ]
     }
   },
+  "freshness": {
+    "window": 7,
+    "tries": 2,
+    "hits": [
+      {
+        "kind": "number",
+        "loc": "one_number.value",
+        "why": "$105 (Goldman's December Brent forecast) was the number on Fri Oct 30 already; pick a fresh one"
+      }
+    ]
+  },
   "locked_prices": {
-    "corn": 4.4775,
-    "corn-dec": 4.4775,
-    "beans": 12.2225,
-    "beans-nov": 12.2225,
-    "wheat": 6.035,
-    "oats": 3.4375,
+    "corn": 4.505,
+    "corn-dec": 4.505,
+    "beans": 12.215,
+    "beans-nov": 12.215,
+    "wheat": 6.05,
+    "oats": 3.4775,
     "cattle": 220.95,
     "feeders": 337.77499,
     "hogs": 58.875,
-    "milk": 17.7,
-    "meal": 324.60001,
-    "soyoil": 65.9,
-    "crude": 104.12,
-    "natgas": 2.898,
-    "gold": 3898.8999,
-    "silver": 49.097,
-    "dollar": 101.88,
+    "milk": 17.96,
+    "meal": 325.0,
+    "soyoil": 65.61,
+    "crude": 99.38,
+    "natgas": 2.929,
+    "gold": 3916.1001,
+    "silver": 50.29,
+    "dollar": 101.651,
     "sp500": 7580.06982,
-    "bitcoin": 77199.99219
+    "bitcoin": 77734.02344
   },
   "locked_changes": {
     "corn": {
-      "prev": 4.5125,
-      "pct": -0.7756,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 4.4775,
+      "pct": 0.6142,
+      "kind": "last",
+      "at": "2026-11-02T11:45:56Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "corn-dec": {
-      "prev": 4.5125,
-      "pct": -0.7756,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 4.4775,
+      "pct": 0.6142,
+      "kind": "last",
+      "at": "2026-11-02T11:45:57Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "beans": {
-      "prev": 12.1975,
-      "pct": 0.205,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 12.2225,
+      "pct": -0.0614,
+      "kind": "last",
+      "at": "2026-11-02T11:46:02Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "beans-nov": {
-      "prev": 12.1975,
-      "pct": 0.205,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 12.2225,
+      "pct": -0.0614,
+      "kind": "last",
+      "at": "2026-11-02T11:45:57Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "wheat": {
-      "prev": 6.0375,
-      "pct": -0.0414,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 6.035,
+      "pct": 0.2486,
+      "kind": "last",
+      "at": "2026-11-02T11:45:57Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "oats": {
-      "prev": 3.43,
-      "pct": 0.2187,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 3.4375,
+      "pct": 1.1636,
+      "kind": "last",
+      "at": "2026-11-02T11:46:00Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "cattle": {
       "prev": 226.3,
@@ -155,91 +194,93 @@
       "prev_date": "2026-10-29"
     },
     "milk": {
-      "prev": 17.93,
-      "pct": -1.2828,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 17.7,
+      "pct": 1.4689,
+      "kind": "last",
+      "at": "2026-11-02T11:46:13Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "meal": {
-      "prev": 329.3,
-      "pct": -1.4273,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 324.6,
+      "pct": 0.1232,
+      "kind": "last",
+      "at": "2026-11-02T11:46:14Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "soyoil": {
-      "prev": 65.64,
-      "pct": 0.3961,
-      "kind": "settle",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "prev": 65.9,
+      "pct": -0.4401,
+      "kind": "last",
+      "at": "2026-11-02T11:46:14Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "crude": {
-      "prev": 102.0,
-      "pct": 2.0784,
+      "prev": 104.12,
+      "pct": -4.5524,
       "kind": "last",
-      "at": "2026-10-30T21:00:00Z",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "at": "2026-11-02T11:46:14Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "natgas": {
-      "prev": 2.952,
-      "pct": -1.8293,
+      "prev": 2.898,
+      "pct": 1.0697,
       "kind": "last",
-      "at": "2026-10-30T21:00:00Z",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "at": "2026-11-02T11:46:14Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "gold": {
-      "prev": 4031.3999,
-      "pct": -3.2867,
+      "prev": 3898.8999,
+      "pct": 0.4412,
       "kind": "last",
-      "at": "2026-10-30T21:00:00Z",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "at": "2026-11-02T11:46:15Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "silver": {
-      "prev": 52.191,
-      "pct": -5.9282,
+      "prev": 49.097,
+      "pct": 2.4299,
       "kind": "last",
-      "at": "2026-10-30T21:00:00Z",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "at": "2026-11-02T11:46:15Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "dollar": {
-      "prev": 102.04,
-      "pct": -0.1568,
+      "prev": 101.88,
+      "pct": -0.2248,
       "kind": "last",
-      "at": "2026-10-31T06:46:14Z",
-      "date": "2026-10-30",
-      "prev_date": "2026-10-29"
+      "at": "2026-11-02T11:46:17Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-10-30"
     },
     "sp500": {
       "prev": 7720.3901,
       "pct": -1.8175,
-      "kind": "last",
-      "at": "2026-10-31T06:46:14Z",
+      "kind": "settle",
       "date": "2026-10-30",
       "prev_date": "2026-10-29"
     },
     "bitcoin": {
-      "prev": 77775.1094,
-      "pct": -0.7395,
+      "prev": 78248.4531,
+      "pct": -0.6574,
       "kind": "last",
-      "at": "2026-10-31T06:46:14Z",
-      "date": "2026-10-31",
-      "prev_date": "2026-10-29"
+      "at": "2026-11-02T11:46:17Z",
+      "date": "2026-11-02",
+      "prev_date": "2026-11-01"
     }
   },
   "board": {
-    "fetched": "2026-10-31T06:46:14Z",
-    "quote_session": "2026-10-30",
-    "prev_close_session": "2026-10-29"
+    "fetched": "2026-11-02T11:46:17Z",
+    "quote_session": "2026-11-02",
+    "prev_close_session": "2026-10-30"
   },
   "edge": {
     "label": "Only on AGSIST",
-    "generated": "2026-11-01T12:09:22Z",
+    "generated": "2026-11-02T11:47:26Z",
     "facts": [
       {
         "id": "cash_change_corn",
@@ -275,13 +316,13 @@
         "id": "basis_spread_corn",
         "kind": "basis_spread",
         "crop": "corn",
-        "sentence": "Corn basis on Nov 1 ran from 55¢ over December futures in Texas to 90¢ under in North Dakota, state medians of the elevators AGSIST read at 4:17 a.m. CT.",
+        "sentence": "Corn basis on Nov 2 ran from 55¢ over December futures in Texas to 90¢ under in North Dakota, state medians of the elevators AGSIST read at 4:16 a.m. CT.",
         "key": "55¢ over December futures",
-        "detail": "Elevators behind each median: Texas 17, North Dakota 43. 14 states with 15 or more.",
+        "detail": "Elevators behind each median: Texas 17, North Dakota 47. 14 states with 15 or more.",
         "value": 145.0,
         "unit": "cents per bushel between the strongest and weakest state median",
-        "n": 1511,
-        "as_of": "2026-11-01",
+        "n": 1552,
+        "as_of": "2026-11-02",
         "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
         "url": "/basis",
         "link_text": "Basis by state"
@@ -299,7 +340,7 @@
       4.515,
       4.5125,
       4.4975,
-      4.4775
+      4.505
     ],
     "soybeans": [
       12.575,
@@ -311,7 +352,7 @@
       12.3325,
       12.1675,
       12.2,
-      12.2225
+      12.215
     ]
   },
   "chart_dates": [
@@ -324,40 +365,43 @@
     "2026-10-28",
     "2026-10-29",
     "2026-10-30",
-    "2026-11-01"
+    "2026-11-02"
   ],
-  "chart_window": "Oct 20 - Nov 1",
+  "chart_window": "Oct 20 - Nov 2",
   "quote_strip": {
-    "asof": "2026-10-31T06:46:14Z",
-    "session": "2026-10-30",
-    "vs_session": "2026-10-29",
+    "asof": "2026-11-02T11:46:17Z",
+    "session": "2026-11-02",
+    "vs_session": "2026-10-30",
     "quotes": [
       {
         "key": "corn-dec",
         "name": "Corn",
         "contract": "Dec '26",
-        "last": 4.4775,
-        "prev": 4.5125,
-        "pct": -0.7756,
-        "kind": "settle"
+        "last": 4.505,
+        "prev": 4.4775,
+        "pct": 0.6142,
+        "kind": "last",
+        "at": "2026-11-02T11:45:57Z"
       },
       {
         "key": "beans-nov",
         "name": "Soybeans",
         "contract": "Nov '26",
-        "last": 12.2225,
-        "prev": 12.1975,
-        "pct": 0.205,
-        "kind": "settle"
+        "last": 12.215,
+        "prev": 12.2225,
+        "pct": -0.0614,
+        "kind": "last",
+        "at": "2026-11-02T11:45:57Z"
       },
       {
         "key": "wheat",
         "name": "Wheat",
         "contract": "nearby",
-        "last": 6.035,
-        "prev": 6.0375,
-        "pct": -0.0414,
-        "kind": "settle"
+        "last": 6.05,
+        "prev": 6.035,
+        "pct": 0.2486,
+        "kind": "last",
+        "at": "2026-11-02T11:45:57Z"
       }
     ]
   },
@@ -372,24 +416,57 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 233,
-  "generated_at": "2026-11-01T12:09:37.565781+00:00",
+  "issue_number": 234,
+  "generated_at": "2026-11-02T11:48:00.279434+00:00",
   "generator_version": "5.5.0",
-  "surprise_count": 0,
-  "surprises": [],
+  "surprise_count": 4,
+  "surprises": [
+    {
+      "commodity": "Feeder Cattle",
+      "key": "feeders",
+      "price": "$337.775",
+      "pct_change": -2.511,
+      "direction": "down",
+      "surprise_magnitude": 1.7
+    },
+    {
+      "commodity": "Live Cattle",
+      "key": "cattle",
+      "price": "$220.95",
+      "pct_change": -2.3641,
+      "direction": "down",
+      "surprise_magnitude": 1.6
+    },
+    {
+      "commodity": "WTI Crude Oil",
+      "key": "crude",
+      "price": "$99.38",
+      "pct_change": -4.5524,
+      "direction": "down",
+      "surprise_magnitude": 1.5
+    },
+    {
+      "commodity": "S&P 500",
+      "key": "sp500",
+      "price": "$7580.07",
+      "pct_change": -1.8175,
+      "direction": "down",
+      "surprise_magnitude": 1.2
+    }
+  ],
   "price_validation_clean": true,
-  "market_closed": true,
-  "market_status_reason": "weekend",
+  "market_closed": false,
+  "market_status_reason": "open",
   "otp_week_ahead": false,
   "critic_pass": {
     "version": "2.0",
-    "ran_at": "2026-11-01T12:09:42.290249+00:00",
+    "ran_at": "2026-11-02T11:48:07.103383+00:00",
     "threshold": 7,
     "final_scores": {
       "rule_1_lead_so_what": 4,
       "rule_2_conviction_earned": 5,
-      "rule_3_lede_no_deferral": 6,
-      "rule_4_watch_conditional": 4,
+      "rule_3_lede_no_deferral": 4,
+      "rule_4_watch_conditional": 5,
       "rule_5_so_what_synthesizes": 5,
       "rule_6_quiet_days_quiet": 7,
       "rule_7_yc_honesty": 10,
@@ -398,21 +475,21 @@
       "rule_10_forward_test": 3,
       "rule_11_action_thresholded": 10,
       "rule_12_one_fact_one_home": 6,
-      "rule_13_level_coherence": 3,
-      "rule_14_one_number_coherence": 7,
+      "rule_13_level_coherence": 6,
+      "rule_14_one_number_coherence": 8,
       "rule_15_markdown_not_html": 10,
-      "rule_16_macro_anchoring": 10
+      "rule_16_macro_anchoring": 4
     },
     "rewrites_applied": [
       {
         "pass": 1,
         "target": "lead",
-        "rule": "rule_13_level_coherence",
+        "rule": "rule_10_forward_test",
         "scores_before": {
           "rule_1_lead_so_what": 4,
           "rule_2_conviction_earned": 5,
-          "rule_3_lede_no_deferral": 6,
-          "rule_4_watch_conditional": 4,
+          "rule_3_lede_no_deferral": 4,
+          "rule_4_watch_conditional": 5,
           "rule_5_so_what_synthesizes": 5,
           "rule_6_quiet_days_quiet": 7,
           "rule_7_yc_honesty": 10,
@@ -421,10 +498,10 @@
           "rule_10_forward_test": 3,
           "rule_11_action_thresholded": 10,
           "rule_12_one_fact_one_home": 6,
-          "rule_13_level_coherence": 3,
-          "rule_14_one_number_coherence": 7,
+          "rule_13_level_coherence": 6,
+          "rule_14_one_number_coherence": 8,
           "rule_15_markdown_not_html": 10,
-          "rule_16_macro_anchoring": 10
+          "rule_16_macro_anchoring": 4
         }
       }
     ],

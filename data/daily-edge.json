@@ -1,6 +1,6 @@
 {
  "schema": "agsist-daily-edge/1",
- "generated": "2026-11-01T12:09:22Z",
+ "generated": "2026-11-02T11:47:26Z",
  "label": "Only on AGSIST",
  "note": "Computed by code from the elevator boards AGSIST reads. Not written by the drafting model.",
  "facts": [
@@ -44,13 +44,13 @@
    "id": "basis_spread_corn",
    "crop": "corn",
    "kind": "basis_spread",
-   "sentence": "Corn basis on Nov 1 ran from 55¢ over December futures in Texas to 90¢ under in North Dakota, state medians of the elevators AGSIST read at 4:17 a.m. CT.",
+   "sentence": "Corn basis on Nov 2 ran from 55¢ over December futures in Texas to 90¢ under in North Dakota, state medians of the elevators AGSIST read at 4:16 a.m. CT.",
    "key": "55¢ over December futures",
-   "detail": "Elevators behind each median: Texas 17, North Dakota 43. 14 states with 15 or more.",
+   "detail": "Elevators behind each median: Texas 17, North Dakota 47. 14 states with 15 or more.",
    "value": 145.0,
    "unit": "cents per bushel between the strongest and weakest state median",
    "comparison": "state median basis against ZCZ26, states with 15+ elevators",
-   "n": 1511,
+   "n": 1552,
    "states_n": 14,
    "high": [
     {
@@ -65,12 +65,12 @@
      "state": "ND",
      "name": "North Dakota",
      "median": -0.9,
-     "n": 43
+     "n": 47
     }
    ],
    "contract": "ZCZ26",
-   "as_of": "2026-11-01",
-   "snapshot": "2026-11-01T10:17:21Z",
+   "as_of": "2026-11-02",
+   "snapshot": "2026-11-02T10:16:18Z",
    "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
    "url": "/basis",
    "link_text": "Basis by state"
@@ -79,26 +79,31 @@
    "id": "over_futures_corn",
    "crop": "corn",
    "kind": "over_futures",
-   "sentence": "Of 1,274 elevators AGSIST reads with a fresh corn bid on Nov 1, 102 were paying over futures, most of them in Kansas (24).",
-   "key": "102 were paying over futures",
-   "detail": "1,157 under futures, 15 even. Each board against the futures month it names.",
-   "value": 102,
+   "sentence": "Of 1,718 elevators AGSIST reads with a fresh corn bid on Nov 2, 133 were paying over futures, most of them in Kansas (30).",
+   "key": "133 were paying over futures",
+   "detail": "1,561 under futures, 24 even. Each board against the futures month it names.",
+   "value": 133,
    "unit": "elevators bidding over futures",
    "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
-   "n": 1274,
-   "over": 102,
-   "under": 1157,
-   "even": 15,
+   "n": 1718,
+   "over": 133,
+   "under": 1561,
+   "even": 24,
    "states": [
     {
      "state": "KS",
      "name": "Kansas",
-     "n": 24
+     "n": 30
     },
     {
      "state": "NE",
      "name": "Nebraska",
-     "n": 19
+     "n": 20
+    },
+    {
+     "state": "IL",
+     "name": "Illinois",
+     "n": 17
     },
     {
      "state": "TX",
@@ -109,14 +114,9 @@
      "state": "OK",
      "name": "Oklahoma",
      "n": 11
-    },
-    {
-     "state": "IL",
-     "name": "Illinois",
-     "n": 9
     }
    ],
-   "as_of": "2026-11-01",
+   "as_of": "2026-11-02",
    "source": "AGSIST elevator network, live board basis (merged-index.json)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"
@@ -125,33 +125,39 @@
    "id": "basis_spread_soybeans",
    "crop": "soybeans",
    "kind": "basis_spread",
-   "sentence": "Soybean basis on Nov 1 ran from 30¢ under January futures in Illinois to 100¢ under in North Dakota, state medians of the elevators AGSIST read at 4:17 a.m. CT.",
+   "sentence": "Soybean basis on Nov 2 ran from 30¢ under January futures in Illinois to 95¢ under in North Dakota and Wisconsin, state medians of the elevators AGSIST read at 4:16 a.m. CT.",
    "key": "30¢ under January futures",
-   "detail": "Elevators behind each median: Illinois 120, North Dakota 45. 10 states with 15 or more.",
-   "value": 70.0,
+   "detail": "Elevators behind each median: Illinois 126, North Dakota 49, Wisconsin 49. 10 states with 15 or more.",
+   "value": 65.0,
    "unit": "cents per bushel between the strongest and weakest state median",
    "comparison": "state median basis against ZSF27, states with 15+ elevators",
-   "n": 941,
+   "n": 972,
    "states_n": 10,
    "high": [
     {
      "state": "IL",
      "name": "Illinois",
      "median": -0.3,
-     "n": 120
+     "n": 126
     }
    ],
    "low": [
     {
      "state": "ND",
      "name": "North Dakota",
-     "median": -1.0,
-     "n": 45
+     "median": -0.95,
+     "n": 49
+    },
+    {
+     "state": "WI",
+     "name": "Wisconsin",
+     "median": -0.95,
+     "n": 49
     }
    ],
    "contract": "ZSF27",
-   "as_of": "2026-11-01",
-   "snapshot": "2026-11-01T10:17:21Z",
+   "as_of": "2026-11-02",
+   "snapshot": "2026-11-02T10:16:18Z",
    "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
    "url": "/basis",
    "link_text": "Basis by state"

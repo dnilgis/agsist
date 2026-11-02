@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-02",
+      "date_display": "Monday, November 2, 2026",
+      "headline": "Crude drops 4.6% to $99.38; cattle futures fell Friday",
+      "teaser": "Crude falls 4.6% on Iran peace hopes while cattle and feeder futures sold off Friday.",
+      "market_mood": "mixed",
+      "surprise_count": 4,
+      "sections": 3,
+      "url": "/daily/2026-11-02",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-01",
       "date_display": "Sunday, November 1, 2026",
       "headline": "Corn ends the week at $4.47¾; crude up 2.1% to $104.12",
@@ -2668,6 +2679,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-01T12:09:42.356976+00:00",
-  "count": 233
+  "updated": "2026-11-02T11:48:07.142248+00:00",
+  "count": 234
 }
