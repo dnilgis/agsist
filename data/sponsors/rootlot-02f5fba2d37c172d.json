@@ -2,8 +2,8 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Root Lot",
  "slug": "rootlot",
- "generated": "2026-11-01T17:07:04+00:00",
- "through": "2026-10-31",
+ "generated": "2026-11-02T18:07:07+00:00",
+ "through": "2026-11-01",
  "start": "2026-10-28",
  "countFrom": "2026-10-28",
  "liveSince": "2026-10-28",
@@ -11,7 +11,7 @@
  "definitionChanged": "2026-09-05",
  "slotSince": "2026-10-29",
  "totals": {
-  "viewable": 40,
+  "viewable": 49,
   "clicks": 0,
   "ctr": 0.0,
   "legacyImpressions": 0
@@ -19,19 +19,19 @@
  "windows": [
   {
    "days": 7,
-   "viewable": 40,
+   "viewable": 49,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 30,
-   "viewable": 40,
+   "viewable": 49,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 90,
-   "viewable": 40,
+   "viewable": 49,
    "clicks": 0,
    "ctr": 0.0
   }
@@ -60,6 +60,12 @@
    "v": 11,
    "l": 0,
    "c": 0
+  },
+  {
+   "d": "2026-11-01",
+   "v": 9,
+   "l": 0,
+   "c": 0
   }
  ],
  "byPage": [
@@ -75,6 +81,11 @@
   },
   {
    "page": "/cash-lease",
+   "viewable": 2,
+   "clicks": 0
+  },
+  {
+   "page": "/about",
    "viewable": 2,
    "clicks": 0
   },
@@ -96,11 +107,6 @@
   {
    "page": "/rain/texas/wood-county",
    "viewable": 2,
-   "clicks": 0
-  },
-  {
-   "page": "/about",
-   "viewable": 1,
    "clicks": 0
   },
   {
@@ -220,6 +226,46 @@
   },
   {
    "page": "/rent/north-dakota",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/editorial-standards",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/texas/cherokee-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/prf/texas/cherokee-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/childress-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/lavaca-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/indiana",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/kansas",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/new-mexico",
    "viewable": 1,
    "clicks": 0
   }
@@ -346,12 +392,12 @@
  "regionAds": {
   "pending": false,
   "start": "2026-10-28",
-  "through": "2026-10-31",
+  "through": "2026-11-01",
   "rows": [
    {
     "code": "CA",
     "name": "California",
-    "viewable": 8,
+    "viewable": 11,
     "clicks": 0
    },
    {
@@ -363,12 +409,12 @@
    {
     "code": "TX",
     "name": "Texas",
-    "viewable": 29,
+    "viewable": 34,
     "clicks": 0
    }
   ],
   "elsewhere": {
-   "viewable": 3,
+   "viewable": 4,
    "clicks": 0
   }
  }
