@@ -2,6 +2,27 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-02-feederindex",
+   "date": "2026-11-02",
+   "title": "Our own feeder steer index",
+   "line": "The cattle pages now show the AGSIST USDA feeder steer index: one weekly price for 700 to 899 lb steers from USDA sale barn reports, beside RMA's value.",
+   "link": "/cattle-auction-prices#feeder-index"
+  },
+  {
+   "id": "2026-11-02-landnj",
+   "date": "2026-11-02",
+   "title": "New Jersey farm sales",
+   "line": "Every recorded New Jersey farm sale by county, with acres from the state's assessment list and price per acre. In Field Scout, the Atlas and the land email too.",
+   "link": "/land-sales/#new-jersey"
+  },
+  {
+   "id": "2026-11-02-dailyweblinks",
+   "date": "2026-11-02",
+   "title": "Daily top stories link to the full story",
+   "line": "On the web Daily and the home page, each top story title now opens the full story, with the publisher named underneath.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-01-dailyfacts",
    "date": "2026-11-01",
    "title": "A new fact in the Daily every morning",

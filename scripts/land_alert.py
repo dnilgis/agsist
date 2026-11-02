@@ -18,7 +18,9 @@ Oct 27 2026 ("Yes turn on Indiana": the land sale pages and this email). Indiana
 at the parcel's mailing town, whose point is that ZIP's Census centroid, not a township; the email
 says so whenever an Indiana sale is in it. Vermont on Oct 29, 2026 (Sig: next land states, Vermont first):
 the town clerk's recording date is on every return, and the place is the town's Census point, as in
-Illinois and Wisconsin. Minnesota (eCRV) is not in the data at all.
+Illinois and Wisconsin. New Jersey the same day: the SR-1A deed abstracts carry the recording date, the place
+is the municipality's Census point, and the acres are the lot's on the 2026 assessment list (NJ_NOTE).
+Minnesota (eCRV) is not in the data at all.
 
 WHERE A SALE IS. A transfer file places each sale at its township, town, village or city (the
 "muni" code), whose point is the Census county subdivision gazetteer's internal point
@@ -67,11 +69,26 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import build_land_summary as BLS   # noqa: E402  the shared market-sale rule
 
-STATES = ("IL", "WI", "IN", "VT")   # Indiana on since Oct 27, 2026, Vermont since Oct 29 (see above); MN not in the data
-STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana", "VT": "Vermont"}
-STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana", "VT": "vermont"}
+STATES = ("IL", "WI", "IN", "VT", "NJ")   # Indiana on since Oct 27, 2026, Vermont and New Jersey since Oct 29 (see above); MN not in the data
+STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana", "VT": "Vermont", "NJ": "New Jersey"}
+STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana", "VT": "vermont", "NJ": "new-jersey"}
 IN_NOTE = ("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "
            "the parcel's mailing town, placed at the middle of its ZIP code rather than a township, so distances to them are rougher.")
+# The New Jersey method note (build_land_sales.NJ_NOTE uses this one): how the state's codes map onto the market rule.
+NJ_NOTE = ("New Jersey sales come from the SR-1A deed abstracts that county tax boards send the state Division of Taxation. "
+           "A deed is a farm sale here when its lot is classed farm, 3A (the farmhouse lot) or 3B (farmland-assessed land), when it "
+           "sold or on the 2026 assessment list. Acres are the lot's calculated acreage on that 2026 list: today's lot, which may not "
+           "be the lot as it sold. A deed whose lot is not on the list has no acres; it is listed and kept out of the middle. "
+           "A 3A lot holds the farmhouse, so the sale is with buildings; 3B alone is bare land. How the state's non-usable codes map "
+           "onto the market rule: out are family (1), love and affection (2), related companies (3), correction deeds (4), part "
+           "interests (8) and less than full rights such as a preservation restriction (35), tax liens (9), partition, sheriff, "
+           "bankruptcy and short sales (11 to 13), quit claims (14), government (15) and charity (17) transfers, deeds in lieu of "
+           "foreclosure (18) and the first sale after one (31), rights of way (20), affordable housing (21), exchanges (22), "
+           "businesses sold with equipment (23), $100 or less (25), not a willing buyer and seller (26) and leasebacks (28), and any "
+           "deed exempt from the realty transfer fee. Part of a lot (6) or a lot in two districts (16): listed, no acres. Kept, since "
+           "they only keep a deed out of the state's assessment study: 5, 7, 10 (estate sales), 19, 24, 27, 29, 30, 32, 33 "
+           "(farmland assessment), 34 and 36. The state's public deed file leaves the buyer and seller blank, so no names show "
+           "here; the deed at the county clerk has them. Our New Jersey copy starts with deeds recorded in 2018.")
 MILES = (10, 25, 50)
 DEFAULT_MILES = 25
 EARTH_MI = 3958.8
@@ -89,6 +106,7 @@ SOURCES = {
     "WI": "Wisconsin Department of Revenue, electronic real estate transfer returns, farm and forest classes",
     "IN": "Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels",
     "VT": "Vermont Department of Taxes, property transfer tax returns (published by VCGI), farm, forest and current use land",
+    "NJ": "New Jersey Division of Taxation, SR-1A deed abstracts with acres from the MOD-IV 2026 assessment list, farm lots (classes 3A and 3B)",
 }
 
 
@@ -386,7 +404,8 @@ def selftest():
     ck("no filed date in the file: listed by sale date, marked sale date",
        [r["when"] for r in r4["rows"]] == ["2026-09-02", "2026-09-07", "2026-09-20", "2026-09-11", "2026-09-12"] and all(r["basis"] == "sale date" for r in r4["rows"]), r4["rows"])
     ck("Indiana is a state this email reads (Sig, Oct 27)", "IN" in STATES and Land().states[:3] == ("IL", "WI", "IN"))
-    ck("Vermont is a state this email reads (Sig, Oct 29)", Land().states == ("IL", "WI", "IN", "VT") and STATE_SLUGS["VT"] == "vermont")
+    ck("Vermont is a state this email reads (Sig, Oct 29)", Land().states[:4] == ("IL", "WI", "IN", "VT") and STATE_SLUGS["VT"] == "vermont")
+    ck("New Jersey is a state this email reads (Oct 29)", Land().states == ("IL", "WI", "IN", "VT", "NJ") and STATE_SLUGS["NJ"] == "new-jersey")
     print("\n%s: %d failure(s)" % ("FAIL" if fails else "OK", len(fails)))
     return 1 if fails else 0
 

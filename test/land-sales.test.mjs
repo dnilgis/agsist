@@ -177,7 +177,7 @@ test("the pages: the tap and the remove link, plain words, withheld sections say
     }
     assert.match(t, /\/components\/land-sales\.js\?v=\d+/, `${p}: loads the tap`);
     assert.match(t, /<link rel="canonical" href="https:\/\/agsist\.com\/land-sales\//, `${p}: canonical`);
-    assert.match(t, /Source: .*(Illinois Department of Revenue|Wisconsin Department of Revenue|Indiana Department of Local Government Finance|Vermont Department of Taxes)/, `${p}: the source is credited where the sales show`);
+    assert.match(t, /Source: .*(Illinois Department of Revenue|Wisconsin Department of Revenue|Indiana Department of Local Government Finance|Vermont Department of Taxes|New Jersey Division of Taxation)/, `${p}: the source is credited where the sales show`);
   }
   const m = read(month.sort().pop());
   for (const h of ["Biggest buyers", "Biggest sales", "Unusual prices", "Best value per acre"]) assert.ok(m.includes(">" + h + "</h2>"), "month section " + h);
@@ -196,7 +196,7 @@ test("the coverage table: every state, honest statuses, the live count matches t
   const cov = JSON.parse(read("data/land-sales/coverage.json"));
   assert.equal(cov.states.length, 50, "50 states");
   const live = cov.states.filter((s) => s.status === "live").map((s) => s.st).sort();
-  assert.deepEqual(live, ["IL", "IN", "VT", "WI"], "Indiana turned on (Sig, Oct 27), Vermont Oct 29");
+  assert.deepEqual(live, ["IL", "IN", "NJ", "VT", "WI"], "Indiana turned on (Sig, Oct 27), Vermont and New Jersey Oct 29");
   for (const s of cov.states) {
     assert.ok(cov.labels[s.status], `${s.st}: a status with a label`);
     assert.ok(s.tile && s.tile.length === 2, `${s.st}: a map tile`);
@@ -206,7 +206,8 @@ test("the coverage table: every state, honest statuses, the live count matches t
     assert.equal(cov.states.find((s) => s.st === st).status, "nondisclosure", st + " is listed as not public record");
   for (const st of ["illinois", "wisconsin", "indiana"]) assert.ok(fs.readdirSync(path.join(ROOT, "land-sales", st)).length > 70, "pages for " + st);
   assert.equal(fs.readdirSync(path.join(ROOT, "land-sales", "vermont")).length, 14, "a page for each of Vermont's 14 counties");
-  assert.match(read("land-sales/index.html"), /Sales reported for 4 states: Illinois, Indiana, Vermont and Wisconsin\./);
+  assert.equal(fs.readdirSync(path.join(ROOT, "land-sales", "new-jersey")).length >= 15, true, "a page for each New Jersey county with farm sales");
+  assert.match(read("land-sales/index.html"), /Sales reported for 5 states: Illinois, Indiana, New Jersey, Vermont and Wisconsin\./);
   // Vermont (Oct 29): the method note maps the return onto the shared rule; current use is a fact per sale; the ask shows
   const vtPage = read("land-sales/vermont/addison-county.html");
   assert.match(vtPage, /Vermont sales come from the property transfer tax return\. A return is a farm sale here when the land&#x27;s use before or after the sale is an operating farm or timberland, or open land enrolled in current use\./);
@@ -264,16 +265,16 @@ test("the component: names load only from the blocked folder; the remove link ca
 
 test("where the sales show: Atlas county pages, IL and WI rent pages, homepage, Fast Facts, search, Daily", () => {
   const loader = read("components/loader.js");
-  assert.match(loader, /\/components\/land-sales\.js\?v=3/);
+  assert.match(loader, /\/components\/land-sales\.js\?v=4/);
   assert.match(loader, /section\[data-atlas-sales="county"\]/);
-  assert.match(loader, /rent\\\/\(illinois\|wisconsin\|indiana\|vermont\)/);
-  assert.match(loader, /farmland-atlas\\\/\(indiana\|vermont\)/, "Indiana's and Vermont's Atlas county pages load it too");
+  assert.match(loader, /rent\\\/\(illinois\|wisconsin\|indiana\|vermont\|new-jersey\)/);
+  assert.match(loader, /farmland-atlas\\\/\(indiana\|vermont\|new-jersey\)/, "Indiana's, Vermont's and New Jersey's Atlas county pages load it too");
   // the card holds its space from the first paint (no hidden-then-shown jump; CLS) and works with no data
   assert.match(read("index.html"), /<a class="land-cell" id="land-sales" href="\/land-sales\/" data-land-sales="home" data-track="land"><span class="land-k">Farm sales<\/span><span class="land-v">[^<]+<\/span>/);
   assert.match(read("fast-facts.html"), /<div class="ls-near" id="h-land-sales" data-land-sales="near" hidden><\/div>/, "Fast Facts host (an h- hash opens My place)");
   const s = read("components/search.js");
   assert.match(s, /'Land sales near here: '/);
-  assert.match(s, /LAND_ST = \{ IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont' \}/, "only where the sales are");
+  assert.match(s, /LAND_ST = \{ IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont', NJ: 'new-jersey' \}/, "only where the sales are");
   const oh = read("scripts/only_here.py");
   assert.match(oh, /import daily_land_line/, "the Daily line rides in Only here");
   const d = py(["scripts/daily_land_line.py", "--selftest"]);
