@@ -850,6 +850,26 @@ def _resolve_front_month(data):
     return data.get("quotes", {})
 
 
+def overnight_only(surprises, locked_changes, quote_session):
+    """The surprises that moved in THIS session. A settle from an earlier
+    session (livestock at a morning pull, Friday's settles on a Monday, an
+    index's prior close) is not an overnight surprise.
+
+    2026-11-02 audit: the Monday Nov 2 /daily banner read "Overnight
+    surprises: Feeder Cattle -2.5% / Live Cattle -2.4%" (Friday's settles)
+    over a body that said livestock has no overnight session. One rule for
+    the lock (load_prices), the baked archive page and daily.html's twin."""
+    qs = str(quote_session or "")[:10]
+    out = []
+    for s in surprises or []:
+        lc = (locked_changes or {}).get((s or {}).get("key")) or {}
+        d = str(lc.get("date") or "")[:10]
+        if qs and d and d < qs and lc.get("kind") == "settle":
+            continue
+        out.append(s)
+    return out
+
+
 def load_prices():
     if not PRICES_PATH.exists():
         print("[error] prices.json not found", file=sys.stderr); return {}, []
@@ -981,6 +1001,7 @@ def load_prices():
             surprises.append({"commodity": label, "key": key, "price": price_str,
                 "pct_change": pct, "direction": "up" if pct > 0 else "down",
                 "surprise_magnitude": round(abs(pct) / threshold, 1)})
+    surprises = overnight_only(surprises, locked_changes, _qs)
     surprises.sort(key=lambda x: x["surprise_magnitude"], reverse=True)
     # 2026-10-27: the only ratio a planting line may use is next year's
     # (fetch_prices.planting_ratio); the Oct 25 issue read this year's nearby
@@ -4210,6 +4231,13 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     heat_idx = meta.get("heat_section", -1)
     surprises = briefing.get("surprises", [])
     surprise_count = meta.get("overnight_surprises_count", 0)
+    # 2026-11-02: an earlier session's settle is not an overnight surprise
+    # (overnight_only), for issues locked before load_prices dropped them.
+    if surprises and briefing.get("locked_changes"):
+        _kept = overnight_only(surprises, briefing.get("locked_changes"),
+                               (briefing.get("board") or {}).get("quote_session"))
+        if len(_kept) != len(surprises):
+            surprises, surprise_count = _kept, len(_kept)
     is_weekend_brief = briefing.get("market_closed", False)
     gen_at = briefing.get("generated_at", "")
     issue_num = briefing.get("issue_number", 0)

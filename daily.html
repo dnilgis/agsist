@@ -1213,6 +1213,10 @@ function renderToday(data,why){
   // Overnight surprise banner — uses data.surprises (array of objects from generator)
   var surprise='';
   var sArr=Array.isArray(data.surprises)?data.surprises:[];
+  // An earlier session's settle is not an overnight surprise (Nov 2 2026: Friday's
+  // cattle settles on a Monday). Twin of generate_daily.py overnight_only.
+  var sQs=String((data.board&&data.board.quote_session)||'').slice(0,10),sLc=data.locked_changes||{};
+  sArr=sArr.filter(function(x){var c=sLc[(x||{}).key]||{},d=String(c.date||'').slice(0,10);return !(sQs&&d&&d<sQs&&c.kind==='settle');});
   if(sArr.length){
     var sNames=sArr.map(function(x){
       var arrow=x.direction==='up'?'\u25B2':'\u25BC';

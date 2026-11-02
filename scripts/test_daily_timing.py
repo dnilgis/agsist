@@ -285,5 +285,21 @@ chk(pdata["locked_changes"]["feeders"].get("contract") == "Nov '26", "feeders ca
 chk(g.quoted_contract({"ticker": "LEZ26.CME", "contract": "Oct '26"}) == "Dec '26", "the ticker beats a stale label")
 chk(g.quoted_contract({"alias_of": "cattle-oct26", "repaired_from": "cattle-dec26"}) == "Dec '26", "the repair beats the alias")
 
+# 2026-11-02 audit: the Monday Nov 2 banner said "Overnight surprises: Feeder
+# Cattle -2.5% / Live Cattle -2.4%", Friday's settles. Replayed from the file
+# the issue read, and from the published archive JSON.
+print("\nMon Nov 2 2026, no Friday settle is an overnight surprise")
+_p2 = json.loads((Path(HERE).parent / "test" / "fixtures" / "daily-audit" / "prices-2026-11-02-part.json").read_text())
+pdata, surprises, t, blk = load({"fetched": _p2["fetched"], "quotes": _copy.deepcopy(_p2["quotes"])})
+_keys = [x["key"] for x in surprises]
+chk("cattle" not in _keys and "feeders" not in _keys and "sp500" not in _keys, "no Friday settle or close is a surprise", _keys)
+chk("crude" in _keys, "crude's overnight move still is", _keys)
+_a2 = json.loads((Path(HERE).parent / "data" / "daily-archive" / "2026-11-02.json").read_text())
+_kept = [x["key"] for x in g.overnight_only(_a2["surprises"], _a2["locked_changes"], _a2["board"]["quote_session"])]
+chk(_kept == ["crude"], "the published Nov 2 list keeps crude only", _kept)
+_html = g.generate_archive_html(_a2, "2026-11-02")
+chk("Overnight surprise:</strong> WTI Crude Oil" in _html and "Feeder Cattle -" not in _html.split("dv3-surprise-banner", 2)[-1][:400],
+    "the baked Nov 2 page shows crude alone", _html[_html.find("surprise-text"):][:300])
+
 print("PASS" if ok else "FAIL")
 sys.exit(0 if ok else 1)
