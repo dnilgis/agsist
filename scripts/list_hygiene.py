@@ -315,6 +315,10 @@ def all_mail_box(c):
     return "INBOX"
 
 
+# counts from the last read_unsub, for one log line (no addresses, ever)
+DIAG = {}
+
+
 def read_unsub(c, days, ours=()):
     """The unhandled unsubscribe requests in the selected mailbox, oldest first,
     plus how many handled ones were skipped. Reads with BODY.PEEK so nothing is
@@ -323,6 +327,12 @@ def read_unsub(c, days, ours=()):
     since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%d-%b-%Y")
     typ, data = c.uid("SEARCH", None, f'(SINCE {since} OR TO "{LIST_ADDR}" CC "{LIST_ADDR}")')
     uids = (data[0].split() if typ == "OK" and data and data[0] else [])
+    DIAG.update(search=typ, to_list=len(uids))
+    try:   # the same window by subject alone: tells a To/Cc mismatch from an empty mailbox
+        t2, d2 = c.uid("SEARCH", None, f'(SINCE {since} SUBJECT "unsubscribe")')
+        DIAG["subject_unsub"] = len(d2[0].split()) if t2 == "OK" and d2 and d2[0] else 0
+    except Exception as ex:
+        DIAG["subject_unsub"] = type(ex).__name__
     out, skipped = [], 0
     for uid in uids:
         uid = uid.decode() if isinstance(uid, bytes) else str(uid)
@@ -346,6 +356,7 @@ def read_unsub(c, days, ours=()):
             req["uid"] = uid
             out.append(req)
     out.sort(key=lambda r: r["ts"] or 0)
+    DIAG.update(parsed=len(out), skipped=skipped)
     return out, skipped
 
 
@@ -708,7 +719,9 @@ def main():
     notes, marks, c, days = [], {}, None, unsub_lookback()
     try:
         c = imap_open()
-        c.select(all_mail_box(c), readonly=dry)
+        box = all_mail_box(c)
+        st, cnt0 = c.select(box, readonly=dry)
+        DIAG.update(box=box.strip('"'), select=st, box_size=(cnt0[0].decode() if st == "OK" and cnt0 and isinstance(cnt0[0], bytes) else "?"))
         ours = {x.lower() for x in (env("SMTP_USER"), env("FROM_ADDR"), env("REPORT_TO")) if x and "@" in x}
         reqs, skipped = read_unsub(c, days, ours)
     except Exception as ex:
@@ -732,6 +745,10 @@ def main():
     first = len(acts)
     acts += uacts
     notes += unotes
+    # Nov 2, 2026: the first dry run found 0 though a request was sitting in the inbox; this line shows where
+    # the search loses it (folder, its size, messages to the list address, subject matches, parsed requests).
+    print("unsubscribe search: " + ", ".join(f"{k}={DIAG[k]}" for k in
+          ("box", "select", "box_size", "search", "to_list", "subject_unsub", "parsed", "skipped") if k in DIAG))
     print(f"unsubscribe emails ({days} days): {len(reqs)} new, {skipped} already handled; "
           f"{cnt['acted']} acted on, {cnt['already']} already off, {cnt['unverified']} unverified, "
           f"{cnt['unclear']} unclear, {cnt['again']} signed up again, {cnt['retry']} wait for the notice list")
