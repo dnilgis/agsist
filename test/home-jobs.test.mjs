@@ -48,9 +48,9 @@ test("the futures stay baked in the hero, under the jobs; signup band and Rain P
   }
   assert.match(band, /id="hb-ask" data-signup-ask=/, "the hero email ask stays");
   for (const id of ["signup-compact", "signup-full"]) assert.ok(HTML.includes(`id="${id}"`), `#${id} stays`);
-  const prices = HTML.indexOf('id="f-prices"'), early = HTML.indexOf("<div data-rp-card-early hidden></div>");
-  const next = HTML.indexOf('id="s7-month"');
-  assert.ok(prices > 0 && early > prices && early < next, "the Rain Print card's early slot is right under the prices, before the next section");
+  // round 3 (Sig, Nov 2): the Rain Print card moved up from under the prices into "Worth a look", under the jobs
+  const strip = HTML.indexOf('<section class="wl" id="wl"'), early = HTML.indexOf("<div data-rp-card-early hidden></div>");
+  assert.ok(strip > HTML.indexOf('id="hero-band"') && early > strip && early < HTML.indexOf('id="daily-hero"'), "the Rain Print card's early slot is in Worth a look, before the Daily");
   assert.ok(!/—/.test(band), "no em dash in the hero");
 });
 
@@ -243,5 +243,188 @@ test("browser: tight on a phone; at 390x844 the first screen holds the ZIP line,
     assert.ok(r.rows.length >= 6 && r.rows.every((x) => x.h >= 44 && x.chev && x.u === "none"), "the job links and the Daily are 44px rows with a chevron, not underlined");
     assert.deepEqual(errs, []);
     await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* ---- Round 3 (Sig, Nov 2: "are we still promoting the rain gauge, Rain Print and our other data features
+   nicely on the home page?"): "Worth a look", right under the three jobs. Rain Print (the promo card, moved up
+   so it is on the page once), the rain gauge waitlist in the gauge hook's words, and one new page from What's
+   new that turns over by the Central date. ---- */
+const require = (await import("node:module")).createRequire(import.meta.url);
+const WORTH = require(join(ROOT, "components/home-worth.js"));
+const RP = JSON.parse(read("data/rain-print.json"));
+
+test("Worth a look sits right under the jobs, before the Daily, with Rain Print once", () => {
+  const bandEnd = HTML.indexOf("</section>", HTML.indexOf('id="hero-band"'));
+  const wl = HTML.indexOf('<section class="wl" id="wl" aria-labelledby="wl-h">'), wlEnd = HTML.indexOf("</section>", wl);
+  assert.ok(wl > bandEnd && wl < HTML.indexOf('<section class="daily-hero'), "after the hero band (jobs and futures), before the Daily");
+  const strip = HTML.slice(wl, wlEnd);
+  assert.match(strip, /<h2 class="wl-h" id="wl-h">Worth a look<\/h2>/);
+  const cells = [...strip.matchAll(/class="wl-c ([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(cells, ["wl-rp", "wl-g", "wl-n"], "Rain Print, the rain gauge, then what is new");
+  assert.match(strip, /<div class="wl-c wl-rp"><div data-rp-card-early hidden><\/div><aside data-rain-print-promo="card" aria-label="Rain Print" hidden><\/aside><\/div>/);
+  assert.equal((HTML.match(/data-rain-print-promo/g) || []).length, 1, "one Rain Print promo on the page");
+  assert.equal((HTML.match(/data-rp-card-early/g) || []).length, 1);
+  assert.ok(!/class="rp-promo"/.test(HTML), "no second Rain Print line");
+  // the gauge card says the hook, the same words as every other place that links the gauge (test/gauge-hook)
+  const g = /<a class="wl-c wl-g" href="\/rain-gauge"[^>]*><span class="wl-t">([^<]+)<\/span><span class="wl-x">([^<]+)<\/span><span class="wl-a">([^<]+) &rarr;<\/span><\/a>/.exec(strip);
+  assert.ok(g, "the rain gauge card: title, one line, one action");
+  assert.equal(g[1], "A rain gauge that keeps its own log", "the /rain-gauge headline");
+  assert.equal(g[2], RP.gauge_hook.line);
+  assert.equal(g[3], RP.gauge_hook.link);
+  assert.match(strip, /<a class="wl-c wl-n" id="wl-new" href="\/changelog"[^>]*><span class="wl-t">New on AGSIST<\/span><span class="wl-x" id="wl-new-x">[^<]+<\/span><span class="wl-a" id="wl-new-a">[^<]+<\/span><\/a>/, "baked: a plain What's new link until today's page lands");
+  assert.match(HTML, /<script src="\/components\/home-worth\.js\?v=1" defer><\/script>/);
+  assert.match(HTML, /<link rel="stylesheet" href="\/css\/home\.css\?v=31">/);
+  assert.ok(!/[—–]|&mdash;|&ndash;/.test(strip) && !/[\u{1F300}-\u{1FAFF}]/u.test(strip), "no dashes or emoji");
+  assert.ok(!/href="https?:/.test(strip), "no outside links");
+});
+
+const WN = [
+  { id: "2026-11-02-feederindex", date: "2026-11-02", title: "Our own feeder steer index", link: "/cattle-auction-prices#feeder-index" },
+  { id: "2026-11-02-landnj", date: "2026-11-02", title: "New Jersey farm sales", link: "/land-sales/#new-jersey" },
+  { id: "2026-11-02-dailyweblinks", date: "2026-11-02", title: "Daily top stories link to the full story", link: "/daily" },
+  { id: "2026-11-02-homejobs", date: "2026-11-02", title: "The home page opens on three jobs", link: "/" },
+  { id: "2026-11-01-dailyfacts", date: "2026-11-01", title: "A new fact in the Daily every morning", link: "/daily" },
+  { id: "2026-10-30-rpxmas", date: "2026-10-30", title: "A Rain Print, made for you", link: "/rain-print" },
+  { id: "2026-10-30-tapsize", date: "2026-10-30", title: "Easier to tap on a phone", link: "/hail-map" },
+  { id: "2026-09-20-old", date: "2026-09-20", title: "Old news", link: "/spray" },
+];
+
+test("New on AGSIST: the newest three pages from What's new, one each, turning over by the date", () => {
+  const ids = (d) => WORTH.pool(WN, d).map((e) => e.id);
+  assert.deepEqual(ids("2026-11-02"), ["2026-11-02-feederindex", "2026-11-02-landnj", "2026-11-02-dailyweblinks"],
+    "newest first; the home page itself and a second /daily entry are skipped");
+  // deterministic: the same pick all day for everyone, the next one tomorrow, back round after three days
+  const days = ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05"].map((d) => WORTH.pickNew(WN, d).id);
+  assert.equal(new Set(days.slice(0, 3)).size, 3, "three days, three pages: " + days);
+  assert.equal(days[3], days[0]);
+  assert.deepEqual(WORTH.pickNew(WN, "2026-11-02"), WORTH.pickNew(WN.map((x) => ({ ...x })), "2026-11-02"));
+  const p = WORTH.pickNew(WN, "2026-11-02");
+  assert.match(p.line, /^[A-Z][^.]+\. Added Nov 2\.$/, "the entry's title, then the date it was added");
+  assert.equal(p.cta, "Take a look");
+  // Rain Print and the gauge have their own cards; nothing older than 30 days; no future-dated entry
+  assert.ok(!ids("2026-11-20").includes("2026-10-30-rpxmas"));
+  const aged = WN.filter((x) => /tapsize|old/.test(x.id)), aIds = (d) => WORTH.pool(aged, d).map((e) => e.id);
+  assert.ok(aIds("2026-11-29").includes("2026-10-30-tapsize") && !aIds("2026-11-30").includes("2026-10-30-tapsize"), "30 days, then gone");
+  assert.ok(aIds("2026-10-20").includes("2026-09-20-old") && !aIds("2026-10-21").includes("2026-09-20-old"));
+  assert.ok(!ids("2026-11-01").some((i) => i.startsWith("2026-11-02")), "nothing dated after today");
+  // fail soft: nothing recent, bad data or an outside link leaves the baked What's new link
+  assert.equal(WORTH.pickNew(WN, "2027-03-01"), null);
+  assert.equal(WORTH.pickNew(null, "2026-11-02"), null);
+  assert.equal(WORTH.pickNew([{ date: "2026-11-02", title: "x", link: "https://example.com/" }, { date: "2026-11-02", title: "y", link: "//evil.example/" }], "2026-11-02"), null);
+  // the live What's new file has today's three on Nov 2 (the brief's feeder index, New Jersey land, Daily stories)
+  const live = JSON.parse(read("data/whats-new.json")).items;
+  const want = ["/cattle-auction-prices", "/land-sales", "/daily"];
+  if (WORTH.pool(live, "2026-11-02").length === 3) assert.deepEqual(WORTH.pool(live, "2026-11-02").map((e) => e.href.split("#")[0].replace(/\/$/, "")), want);
+});
+
+/* the page at one date: rain-print.json and whats-new.json held back for `hold` ms so the cards fill late */
+async function openWorth(browser, port, { w, h = 844, day, cfg, hold = 1200, zip = true }) {
+  const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: w, height: h } });
+  const pg = await ctx.newPage(), errs = [];
+  pg.on("pageerror", (e) => errs.push(e.message));
+  await pg.clock.setFixedTime(new Date(day + "T16:00:00Z"));
+  await pg.route((u) => !u.href.startsWith(`http://127.0.0.1:${port}`), (r) => r.abort());
+  await pg.route(/\/data\/(rain-print|whats-new)\.json/, async (r) => {
+    await new Promise((ok) => setTimeout(ok, hold));
+    if (cfg && /rain-print/.test(r.request().url())) return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(cfg) });
+    return r.continue();
+  });
+  await pg.addInitScript(() => {
+    // shifts the strip causes: nodes in it or after it moved, none in the hero band above it (the band's own
+    // bids and forecast are held by the round 2 tests and test/cls-*.test.mjs)
+    window.__shift = 0;
+    try { new PerformanceObserver((l) => { for (const e of l.getEntries()) {
+      const wl = document.getElementById("wl"), band = document.getElementById("hero-band"), ns = e.sources.map((x) => x.node).filter(Boolean);
+      if (e.hadRecentInput || !wl || ns.some((n) => band && band.contains(n))) continue;
+      if (ns.some((n) => wl.contains(n) || (wl.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING))) window.__shift += e.value;
+    } }).observe({ type: "layout-shift", buffered: true }); } catch (e) {}
+  });
+  if (zip) await pg.addInitScript((l) => { try { localStorage.setItem("agsist-wx-loc", l); } catch (e) {} }, LOC);
+  await pg.goto(`http://127.0.0.1:${port}/`, { waitUntil: "domcontentloaded" });
+  return { ctx, pg, errs };
+}
+const worthBoxes = () => {
+  const b = (s) => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return { top: r.top + scrollY, bottom: r.bottom + scrollY, h: r.height }; };
+  return { wl: b("#wl"), rp: b(".wl-rp"), g: b(".wl-g"), n: b("#wl-new"), band: b("#hero-band"), jobs: b("#hb-jobs"), daily: b("#daily-hero") };
+};
+
+test("browser: Worth a look holds its place while it fills, for each Rain Print wording, at 390 and 1280", { skip, timeout: 240000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    // Christmas (through the framed cutoff), "Still need a gift?" (to Dec 24), the year-round card
+    for (const [day, angle] of [["2026-11-02", "christmas"], ["2026-12-15", "gift"], ["2027-01-15", "evergreen"]]) for (const w of [390, 1280]) {
+      const tag = `${w} ${day}`;
+      const { ctx, pg, errs } = await openWorth(browser, port, { w, day, h: w === 390 ? 844 : 900 });
+      await pg.waitForTimeout(400);
+      const before = await pg.evaluate(worthBoxes);
+      // a date with nothing recent in What's new keeps the baked link (2027-01-15 here)
+      const pick = WORTH.pickNew(JSON.parse(read("data/whats-new.json")).items, day);
+      await pg.waitForFunction((href) => !document.querySelector(".wl-rp aside").hidden && document.getElementById("wl-new").getAttribute("href") === href, pick ? pick.href : "/changelog", { timeout: 15000 });
+      await pg.waitForTimeout(pick ? 300 : 1500);
+      const after = await pg.evaluate(worthBoxes);
+      const r = await pg.evaluate(() => ({ shift: window.__shift, cards: document.querySelectorAll(".rp-card").length, place: document.querySelector(".rp-card").getAttribute("data-placement"),
+        inStrip: !!document.querySelector("#wl .rp-card"), hs: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+      assert.equal(r.place, "home-card-" + angle, `${tag}: the ${angle} card`);
+      assert.ok(r.cards === 1 && r.inStrip, `${tag}: one Rain Print card, in the strip`);
+      for (const k of ["wl", "rp", "g", "n", "daily"]) assert.ok(Math.abs(after[k].top - before[k].top) <= 1 && Math.abs(after[k].h - before[k].h) <= 1, `${tag}: ${k} did not move or grow (${before[k].top}/${before[k].h} -> ${after[k].top}/${after[k].h})`);
+      assert.ok(r.shift < 0.001, `${tag}: no layout shift (${r.shift})`);
+      assert.ok(after.wl.top >= after.band.bottom && after.wl.top > after.jobs.bottom && after.wl.bottom <= after.daily.top, `${tag}: under the jobs and the futures, above the Daily`);
+      if (w === 390) {
+        assert.ok(after.wl.h <= 844 * 0.6, `${tag}: the strip adds well under one screen on a phone (${Math.round(after.wl.h)}px)`);
+        assert.ok(after.g.top >= after.rp.bottom - 1 && after.n.top >= after.g.bottom - 1, `${tag}: one card under another`);
+      } else {
+        assert.ok(Math.abs(after.rp.top - after.g.top) <= 1 && Math.abs(after.g.top - after.n.top) <= 1, `${tag}: a row of three`);
+      }
+      assert.ok(r.hs <= 0, `${tag}: no sideways scroll`);
+      assert.deepEqual(errs, [], `${tag}: no page errors`);
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("browser: the Christmas card's order-by date comes from data/rain-print.json, never a countdown", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const [cut, want] of [[RP.framed_christmas_cutoff, "Dec 9"], ["2026-12-07", "Dec 7"]]) {
+      const cfg = { ...RP, framed_christmas_cutoff: cut };
+      const { ctx, pg, errs } = await openWorth(browser, port, { w: 390, day: "2026-11-02", cfg, hold: 50 });
+      await pg.waitForFunction(() => !document.querySelector(".wl-rp aside").hidden, null, { timeout: 15000 });
+      const t = await pg.evaluate(() => ({ title: document.querySelector(".wl .rp-card-t").textContent, text: document.querySelector(".wl .rp-card-x").textContent, a: document.querySelector(".wl .rp-card").getAttribute("href"), cta: document.querySelector(".wl .rp-card-p b").textContent }));
+      assert.equal(t.title, "A Christmas gift for the farm");
+      assert.ok(t.text.includes("Order framed by " + want + " for Christmas delivery."), `${cut}: ${t.text}`);
+      assert.ok(!/\bdays? (left|to go)\b|countdown|\d+ days/i.test(t.text), "no countdown");
+      assert.equal(t.a, "/gifts-for-farmers");
+      assert.ok(/ →$/.test(t.cta), "one action");
+      assert.deepEqual(errs, []);
+      await ctx.close();
+    }
+    // Rain Print switched off: the empty cell folds away, the other two cards stay
+    const { ctx, pg } = await openWorth(browser, port, { w: 1280, h: 900, day: "2026-11-02", cfg: { ...RP, promote: false }, hold: 50 });
+    await pg.waitForFunction(() => document.querySelector(".wl-rp").hidden, null, { timeout: 15000 });
+    const vis = await pg.evaluate(() => [...document.querySelectorAll("#wl .wl-c")].filter((e) => e.getBoundingClientRect().height > 0).map((e) => e.className));
+    assert.deepEqual(vis, ["wl-c wl-g", "wl-c wl-n"]);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("browser: New on AGSIST shows the same page all day and the next one tomorrow", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const live = JSON.parse(read("data/whats-new.json")).items;
+    const day = live[0].date, next = new Date(Date.parse(day + "T12:00:00Z") + 864e5).toISOString().slice(0, 10);
+    for (const d of [day, next]) {
+      const want = WORTH.pickNew(live, d);
+      const { ctx, pg, errs } = await openWorth(browser, port, { w: 390, day: d, hold: 50 });
+      if (!want) { await pg.waitForTimeout(1500); assert.equal(await pg.getAttribute("#wl-new", "href"), "/changelog"); await ctx.close(); continue; }
+      await pg.waitForFunction(() => document.getElementById("wl-new").getAttribute("href") !== "/changelog", null, { timeout: 15000 });
+      const got = await pg.evaluate(() => ({ href: document.getElementById("wl-new").getAttribute("href"), x: document.getElementById("wl-new-x").textContent, a: document.getElementById("wl-new-a").textContent }));
+      assert.deepEqual(got, { href: want.href, x: want.line, a: "Take a look →" }, d);
+      assert.deepEqual(errs, []);
+      await ctx.close();
+    }
   } finally { await browser.close(); srv.close(); }
 });

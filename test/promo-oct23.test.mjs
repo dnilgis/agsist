@@ -53,7 +53,11 @@ test("one cross-promo a page, after the answer, with its script", () => {
   const ix = read("index.html");
   assert.equal((ix.match(/data-rain-print-promo/g) || []).length, 1);
   assert.equal((ix.match(/data-rp-card-early/g) || []).length, 1);
-  assert.ok(ix.indexOf("data-rp-card-early") > ix.indexOf('id="f-prices"') && ix.indexOf("data-rp-card-early") < ix.indexOf('id="s7-month"'), "right under the prices");
+  // Nov 2 (Sig, home jobs round 3): the card and its early marker moved up from under the prices into
+  // "Worth a look", right under the three jobs and before the Daily (test/home-jobs.test.mjs)
+  const wl = ix.indexOf('<section class="wl" id="wl"'), wlEnd = ix.indexOf("</section>", wl);
+  for (const k of ["data-rp-card-early", 'data-rain-print-promo="card"']) assert.ok(ix.indexOf(k) > wl && ix.indexOf(k) < wlEnd, k + " sits in Worth a look");
+  assert.ok(wl > ix.indexOf('id="hero-band"') && wl < ix.indexOf('id="daily-hero"'), "under the jobs, before the Daily");
 });
 
 test("rent pages: the notice ask unticked, one land line after the FAQ", () => {
