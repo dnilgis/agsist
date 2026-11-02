@@ -164,8 +164,11 @@ def failed_recipients(raw):
 
 def read_bounces(user, pw, days):
     found = {}
-    c = imaplib.IMAP4_SSL(env("IMAP_HOST", "imap.gmail.com"))
-    c.login(user, pw)
+    # the same login as the unsubscribe step (UNSUB_IMAP_* when set): bounces land in the inbox news@ forwards to
+    # (Nov 2, 2026: the sending login was refused by Gmail IMAP, so both steps had read nothing)
+    c = imap_open() if (env("UNSUB_IMAP_USER") and env("UNSUB_IMAP_PASS")) else imaplib.IMAP4_SSL(env("IMAP_HOST", "imap.gmail.com"))
+    if not (env("UNSUB_IMAP_USER") and env("UNSUB_IMAP_PASS")):
+        c.login(user, pw)
     for box in ('"[Gmail]/All Mail"', "INBOX"):
         if c.select(box, readonly=True)[0] == "OK":
             break
