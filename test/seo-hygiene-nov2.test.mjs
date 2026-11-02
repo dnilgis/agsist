@@ -227,3 +227,37 @@ test("rain county pages: the title's inches are the total the page shows, og:tit
   assert.ok(bare < 100, `titles over 60 with the suffix: ${bare}`);
   assert.match(read("rain/kentucky/marion-county.html"), /<title>\d+\.\d\d in of Rain in Marion County, KY, \d{4} \| AGSIST<\/title>/);
 });
+
+// 4. ARC/PLC county pages: one plain sentence ahead of the cards, built only from what the cards print.
+test("ARC/PLC county pages: the lede repeats the cards' own answers, benchmarks and the data date", () => {
+  let n = 0, none = 0;
+  const unq = (t) => t.replace(/&rsquo;/g, "’").replace(/&amp;/g, "&");
+  for (const st of readdirSync(ROOT + "arc-plc", { withFileTypes: true }).filter((d) => d.isDirectory())) {
+    for (const f of readdirSync(ROOT + "arc-plc/" + st.name).filter((x) => x.endsWith(".html"))) {
+      const p = `arc-plc/${st.name}/${f}`;
+      const h = read(p);
+      if (!h.includes('<h2 id="crops">')) { none++; assert.ok(!h.includes("ap-sum"), `${p}: no cards, no lede`); continue; }
+      const m = h.match(/<\/h1>\s*<p class="ap-byline"><time[^>]*datetime="(\d{4}-\d{2}-\d{2})"[^>]*>Data updated ([^<]+)<\/time><\/p>\s*<p class="page-lede ap-sum">([^<]+)<\/p>\s*<h2 id="crops">/);
+      assert.ok(m, `${p}: the lede sits between the byline and the cards`);
+      n++;
+      const lede = unq(m[3]);
+      assert.ok(lede.endsWith(`, data updated ${m[2]}.`), `${p}: the page's own data date`);
+      const cards = h.slice(h.indexOf('<h2 id="crops">'), h.indexOf('<h2 id="your-plc-yield">') > 0 ? h.indexOf('<h2 id="your-plc-yield">') : undefined);
+      const arts = [...cards.matchAll(/<article class="ap-crop"[\s\S]*?<\/article>/g)].map((x) => x[0]);
+      for (const a of arts.slice(0, 3)) {
+        const big = a.match(/<span class="ap-big">([^<]+)<\/span>/)[1];
+        if (big === "PLC" || big === "ARC-CO") assert.ok(lede.includes(` ${big}`), `${p}: ${big}`);
+        const bm = a.match(/90% of the ([^<]+?) benchmark/);
+        if (bm) assert.ok(lede.includes(`(benchmark ${bm[1]})`), `${p}: benchmark ${bm[1]}`);
+      }
+      // every number in the lede is printed on the page outside the lede
+      const rest = h.replace(m[3], "");
+      for (const num of lede.replace(/, data updated [^.]+\.$/, "").match(/\d[\d,]*(?:\.\d+)?/g) || []) {
+        assert.ok(rest.includes(num), `${p}: ${num} is not printed elsewhere on the page`);
+      }
+      if (arts.length > 3) assert.match(lede, new RegExp(`; ${arts.length - 3} more crops? below`), p);
+    }
+  }
+  assert.ok(n >= 2600, `county ledes: ${n}`);
+  assert.ok(none < 150, `county pages without cards: ${none}`);
+});
