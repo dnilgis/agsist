@@ -183,6 +183,26 @@ def main():
     for x in pool:
         ok(daily_fact.valid_entry(x), "pool entry %s has fact, source, https url, date and quote" % x.get("id"))
     ok(not os.path.exists(os.path.join(REPO, "data", "quote-pool.json")) or True, "old pool untouched")
+    # Sig, Nov 2 2026: a fact whose url is a data file names its source and date, no link.
+    import source_links  # noqa: E402
+    dlinks, nlinks, n_data = [], 0, 0
+    for x in pool:
+        f = daily_fact._pool_fact(x)
+        bx = build(d21, fact=f)
+        part = bx["html"].split("Source:", 1)[-1][:900]
+        fx_links = [u for u in hrefs(part) if u == f["url"] or u.startswith(f["url"].split("#")[0])]
+        dlinks += [u for u in fx_links if source_links.is_data_source(u)]
+        if source_links.is_data_source(f["url"]):
+            n_data += 1
+            if f["url"] in bx["text"] or f["url"] in bx["html"]:
+                dlinks.append(f["url"])
+            if f["source"] not in bx["text"] or "read " not in bx["text"].split("Source:", 1)[-1][:400]:
+                dlinks.append("no plain source and date for " + f["id"])
+        else:
+            nlinks += bool(fx_links)
+    ok(not dlinks, "no rendered fact link is a data file (%d data-file facts print source and date only): %s"
+       % (n_data, dlinks[:3]))
+    ok(n_data > 0 and nlinks == len(pool) - n_data, "every other pool fact keeps its linked source (%d)" % nlinks)
     b = build(d21, fact=None)
     ok("Oh, that’s interesting" in b["html"] and "Source:" in b["html"], "the day's fact prints with its source")
     ok(V.e(V.FACT_LABEL) in b["html"] and V.FACT_LABEL.upper() in b["text"] and "OH, THAT’S INTERESTING" in b["text"],
