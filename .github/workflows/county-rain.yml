@@ -16,10 +16,23 @@ name: county rain
 # stays as its own run, a day after the year ends, in case the 13:23 run is
 # dropped. RCC-ACIS cannot be reached from the sandbox this was built in; the
 # first real fetch is a workflow_dispatch on main.
+#
+# GitHub's scheduler never started this on Nov 2, 2026 (it delivers a small share of
+# scheduled fires; scripts/cron_gate.py has the numbers). So it also runs after every
+# "Fetch Grain Bids" (cron-job.org, every 15 minutes), and the gate job lets exactly one run
+# per tick of the two crons below do the work: the first run after the tick, by either
+# trigger, within 720 minutes (by 01:23 UTC, 19:23 Central, still the same Central day; a
+# chain that comes back in the afternoon still rebuilds the day's pages, and yesterday's tick
+# is never served just before today's). Every other run skips in seconds. A run started by
+# hand (one state, a past year) does not use up the tick (cron_gate.py
+# MANUAL_DOES_NOT_SERVE). The January rain year email below marks each address once.
 on:
   schedule:
     - cron: "23 13 * * *"      # every day 13:23 UTC
     - cron: "41 14 2 1 *"      # Jan 2 14:41 UTC, the finished year
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       states:
@@ -34,13 +47,46 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: county-rain
-  cancel-in-progress: false
-
 jobs:
-  rain:
+  # One run per tick (see the top). Sparse: the skip costs seconds.
+  gate:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow county-rain.yml --max-lag 720
+          --cron "23 13 * * *"
+          --cron "41 14 2 1 *"
+
+  rain:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    # The queue (shared with rain-monthly.yml's fresh job) is on this job only: a chained run
+    # that skips never waits in it, and never replaces a pending run of the other workflow.
+    concurrency:
+      group: county-rain
+      cancel-in-progress: false
     # 90, not 60 (Nov 1, 2026): Fetch took 33 min and Context 20 on Oct 31 and Nov 1
     # (9 and 9 on Oct 29), which left the push about 5 minutes before the job was cancelled.
     timeout-minutes: 90
