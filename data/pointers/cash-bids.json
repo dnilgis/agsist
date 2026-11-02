@@ -1,10 +1,6 @@
 {
  "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
  "pointers": {
-  "cash-bids/company/atkinson-grain-fertilizer.html": {
-   "to": "/cash-bids/company/",
-   "since": "2026-10-31"
-  },
   "cash-bids/company/dunkerton-co-op.html": {
    "to": "/cash-bids/company/",
    "since": "2026-11-01"
@@ -276,6 +272,10 @@
   "cash-bids/iowa/woolstock.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-10-29"
+  },
+  "cash-bids/kansas/dodge-city.html": {
+   "to": "/cash-bids/kansas/",
+   "since": "2026-11-02"
   },
   "cash-bids/minnesota/adrian.html": {
    "to": "/cash-bids/minnesota/",
