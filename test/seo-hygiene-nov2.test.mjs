@@ -198,3 +198,32 @@ function datasetsOf(h, type) {
   for (const m of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) walk(JSON.parse(m[1]));
   return out;
 }
+
+// Rain county title test (Sig, Nov 2): the title leads with the year's own inches and place; it is the page's total.
+test("rain county pages: the title's inches are the total the page shows, og:title in step", () => {
+  let n = 0, bare = 0, question = 0;
+  for (const st of readdirSync(ROOT + "rain", { withFileTypes: true }).filter((d) => d.isDirectory())) {
+    for (const f of readdirSync(ROOT + "rain/" + st.name).filter((x) => x.endsWith(".html"))) {
+      const p = `rain/${st.name}/${f}`;
+      const h = read(p);
+      if (/http-equiv="refresh"/.test(h)) continue;   // a moved county's pointer
+      const title = h.match(/<title>([^<]*)<\/title>/)[1];
+      const shown = h.match(/<dt>Rain (?:so far|in \d{4})<\/dt><dd>([\d,]+\.\d\d) <small>in<\/small><\/dd>/);
+      if (!shown) { question++; assert.match(title, /^How Much Rain /, `${p}: no total shown, so the question title`); continue; }
+      n++;
+      const m = title.match(/^([\d,]+\.\d\d) in of Rain in (.+), ([A-Z]{2}), (\d{4})( \| AGSIST)?$/);
+      assert.ok(m, `${p}: ${title}`);
+      assert.equal(m[1], shown[1], `${p}: title inches = the page's total`);
+      assert.match(h, new RegExp(`class="rc-answer"><b>${m[1].replace(/\./, "\\.")} inches?</b>`), `${p}: the lead answer says the same`);
+      assert.match(h, new RegExp(`<h1>How much rain (?:has|did) ${m[2]}, [A-Za-z .]+, (?:had|get) in ${m[4]}\\?`), `${p}: same place and year as the h1`);
+      const base = m[0].replace(/ \| AGSIST$/, "");
+      if (m[5]) assert.ok(title.length <= 60, `${p}: ${title.length} chars with the suffix`);
+      else { bare++; assert.ok((base + " | AGSIST").length > 60, `${p}: suffix dropped only past 60`); }
+      assert.ok(!/thru|through/i.test(title), p);
+      assert.ok(h.includes(`<meta property="og:title" content="${base}">`), `${p}: og:title`);
+    }
+  }
+  assert.ok(n >= 2500, `inches-first titles: ${n}`);
+  assert.ok(bare < 100, `titles over 60 with the suffix: ${bare}`);
+  assert.match(read("rain/kentucky/marion-county.html"), /<title>\d+\.\d\d in of Rain in Marion County, KY, \d{4} \| AGSIST<\/title>/);
+});
