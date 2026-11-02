@@ -111,7 +111,11 @@ test('index view: archived weeks come first, a live week is never replaced, the 
   assert.equal(new Set(v.series.map((x) => x.start)).size, 5, 'no week twice');
   assert.equal(v.archive.ok, 2);
   assert.equal(v.archive.weeks, 3);
-  assert.equal(v.rows.filter((r) => r.arch).length, 3);
+  assert.equal(v.rows.filter((r) => r.arch).length, 2, 'the table lists archived weeks with a figure only');
+  const lead = histDoc(now); lead.weeks.unshift(Object.assign({}, lead.weeks[1], { start: '2020-01-06', end: '2020-01-12' }));
+  const vl = V.indexView(live, now, lead);
+  assert.equal(vl.series[0].p, 300, 'the chart starts at the first archived week with a figure');
+  assert.equal(vl.archive.weeks, 4);
   assert.notEqual(v.since, v.liveSince);
   assert.equal(V.indexView(live, now, { weeks: [{ start: '2020-01-06', p: 1 }] }).archive, null, 'a week not marked as archive is not used');
 });
@@ -160,7 +164,7 @@ test('page: the history file loads only when the fold opens, and the record then
     assert.match(t, /From archived USDA reports/);
     assert.match(t, /2 of 3 have a figure/);
     assert.equal(await page.$eval('#feeder-index details', (d) => d.open), true, 'the fold stays open');
-    assert.equal(await page.$$eval('#feeder-index details tbody tr', (r) => r.length), 5);
+    assert.equal(await page.$$eval('#feeder-index details tbody tr', (r) => r.length), 4);
     await page.click('#feeder-index details summary');
     await page.click('#feeder-index details summary');
     assert.equal(asked.length, 1, 'asked once');

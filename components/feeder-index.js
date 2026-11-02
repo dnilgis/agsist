@@ -146,15 +146,20 @@
     // the record, oldest first; withheld weeks stay in as gaps
     var past = [];
     if (hist && hist.weeks && hist.weeks.length) past = hist.weeks.filter(function (x) { return x && x.start < ws[0].start && x.from === 'archive'; });
-    var all = past.concat(ws);
+    // the chart starts at the first archived week with a figure; the table lists the live weeks
+    // and the archived weeks that have a figure (an archived withheld week is a gap in the chart only)
+    var firstOk = -1;
+    past.forEach(function (x, i) { if (firstOk < 0 && fxNum(x.p)) firstOk = i; });
+    var all = (firstOk >= 0 ? past.slice(firstOk) : []).concat(ws);
+    var listed = past.filter(function (x) { return fxNum(x.p); }).concat(ws);
     out.series = all.map(function (x) { return { start: x.start, p: fxNum(x.p) ? x.p : null, lo: fxNum(x.lo) ? x.lo : null, hi: fxNum(x.hi) ? x.hi : null }; });
     out.shownWeeks = out.series.filter(function (x) { return x.p != null; }).length;
-    out.rows = all.slice(-12).reverse().map(function (x) {
+    out.rows = listed.slice(-12).reverse().map(function (x) {
       return { week: fxWeek(x), p: fxNum(x.p) ? fxMoney(x.p) : '-', chg: fxNum(x.chg) ? fxSigned(x.chg) : '', arch: x.from === 'archive',
         n: fxInt(x.barns) + ' barns, ' + fxInt(x.states) + ' states, ' + fxInt(x.head) + ' head', why: fxNum(x.p) ? '' : (x.why || []).join('; ') };
     });
     out.liveSince = ix.start ? fxLab(ix.start) : '';
-    out.since = past.length ? fxLab(past[0].start) : out.liveSince;
+    out.since = fxLab(all[0].start);
     out.archive = past.length ? { since: fxLab(past[0].start), read: fxLab(hist.read), ok: past.filter(function (x) { return fxNum(x.p); }).length, weeks: past.length } : null;
     out.minBarns = g.barns; out.draws = fxInt(ix.draws || 1000);
     return out;
@@ -384,7 +389,7 @@
       '<li>Weekly, not daily: each barn sells on its own day, so a daily figure would be a different set of barns each day, and some USDA reports come in days late.</li>' +
       '<li>The barns are the ones USDA reports on and we read, so states with more of them count for more. It is not every sale in the country.</li>' +
       (v.archive
-        ? '<li>Our own reads start the week of ' + esc(v.liveSince) + '. The weeks before that, back to the week of ' + esc(v.archive.since) + ', are figured by the same rules from copies of USDA&rsquo;s own reports that the Internet Archive kept (read ' + esc(v.archive.read) + '). Those copies catch only some barns in a given week, so most of those weeks are withheld: ' + fxInt(v.archive.ok) + ' of ' + fxInt(v.archive.weeks) + ' have a figure.</li>'
+        ? '<li>Our own reads start the week of ' + esc(v.liveSince) + '. The weeks before that, back to the week of ' + esc(v.archive.since) + ', are figured by the same rules from copies of USDA&rsquo;s own reports that the Internet Archive kept (read ' + esc(v.archive.read) + '). Those copies catch only some barns in a given week, so most of those weeks are withheld: ' + fxInt(v.archive.ok) + ' of ' + fxInt(v.archive.weeks) + ' have a figure, and only those are in the table.</li>'
         : '<li>Our record starts the week of ' + esc(v.liveSince) + ', when we began reading these reports. Every finished week is kept.</li>') +
       '<li>This is AGSIST&rsquo;s own figure. It is not the CME Feeder Cattle Index, and no CME data goes into it.</li>' +
       '</ul><p class="fx-src">' + AMS_CREDIT + (v.archive ? ' Earlier weeks: USDA AMS reports as copied by the Internet Archive.' : '') + '</p>';
