@@ -140,9 +140,10 @@ def group(towns, srcs, minimum=COMPANY_MIN):
 
 
 def glance(bd):
-    """{crop: row}: per crop, the commodity the board posts most, its nearest
-    delivery month, the highest cash there (CB.board_glance's rule), odd rows
-    left out."""
+    """{crop: row}: per crop, the commodity the board posts most, its earliest
+    delivery period (CB.nearest_rows: spot or first half, then the whole month,
+    then the last half), the highest cash there (CB.board_glance's rule), odd
+    rows left out."""
     out = {}
     for c in SHOW_CROPS:
         rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd")]
@@ -150,8 +151,7 @@ def glance(bd):
             continue
         com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
         rs = [r for r in rs if r["commodity"].lower() == com]
-        m = min(r["dm"] for r in rs)
-        out[c] = max((r for r in rs if r["dm"] == m), key=lambda r: (r["cash"], r["priced"]))
+        out[c] = max(CB.nearest_rows(rs), key=lambda r: (r["cash"], r["priced"]))
     return out
 
 
@@ -455,7 +455,7 @@ def build_page(co, ctx):
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each {esc(short)} location&rsquo;s
   posted bid board directly; no third-party bid feed is used. A bid shows only if the board was read successfully in the
   last {CB.SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {CB.FRESH_HOURS} hours, and its delivery period has not ended. Each price is the
-  location&rsquo;s nearest delivery month for the grade it posts most; the town page has every month and the futures
+  location&rsquo;s earliest delivery period for the grade it posts most; the town page has every month and the futures
   contract each basis is quoted against. A basis far off the elevators around it is left out here and flagged on the town
   page. This page is a snapshot rebuilt through the day.</div>
   <p class="cbt-sub">{links}</p>
