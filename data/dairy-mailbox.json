@@ -1,146 +1,148 @@
 {
- "month": "June 2026",
- "month_key": "2026-06",
- "value": 20.18,
- "prev_month_change": -0.25,
- "year_ago_change": -0.37,
+ "month": "July 2026",
+ "month_key": "2026-07",
+ "value": 19.23,
+ "prev_month_change": -0.95,
+ "year_ago_change": -0.91,
  "history": {
   "2025-06": 20.55,
+  "2025-07": 20.14,
   "2026-03": 18.84,
   "2026-05": 20.43,
-  "2026-06": 20.18
+  "2026-06": 20.18,
+  "2026-07": 19.23
  },
  "source": "USDA AMS Mailbox Milk Price Report (MMN 3357)",
  "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3357",
- "updated": "2026-10-15T07:09:45Z",
+ "updated": "2026-11-02T16:27:37Z",
  "status": {
-  "ok": false,
-  "note": "AMS mailbox fetch failed: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
-  "checked": "2026-10-28T06:02:57Z"
+  "ok": true,
+  "note": "",
+  "checked": "2026-11-02T16:27:37Z"
  },
  "areas": {
-  "month_key": "2026-06",
-  "all": 20.18,
+  "month_key": "2026-07",
+  "all": 19.23,
   "rows": [
    {
     "area": "New England States",
-    "value": 22.51,
-    "prev": 22.05,
-    "year_ago": 21.52
+    "value": 21.17,
+    "prev": 22.51,
+    "year_ago": 21.49
    },
    {
     "area": "New York",
-    "value": 23.34,
-    "prev": 22.56,
-    "year_ago": 21.2
+    "value": 21.85,
+    "prev": 23.34,
+    "year_ago": 21.24
    },
    {
     "area": "Eastern Pennsylvania",
-    "value": 22.05,
-    "prev": 21.54,
-    "year_ago": 20.99
+    "value": 20.64,
+    "prev": 22.05,
+    "year_ago": 20.66
    },
    {
     "area": "Appalachian States",
-    "value": 25.16,
-    "prev": 23.2,
-    "year_ago": 21.33
+    "value": 24.48,
+    "prev": 25.16,
+    "year_ago": 22.63
    },
    {
     "area": "Southeast States",
-    "value": 26.75,
-    "prev": 24.63,
-    "year_ago": 22.26
+    "value": 25.82,
+    "prev": 26.75,
+    "year_ago": 24.0
    },
    {
     "area": "Southern Missouri",
-    "value": 19.39,
-    "prev": 20.27,
-    "year_ago": 20.41
+    "value": 18.26,
+    "prev": 19.39,
+    "year_ago": 19.67
    },
    {
     "area": "Florida",
-    "value": 27.59,
-    "prev": 25.47,
-    "year_ago": 22.71
+    "value": 26.93,
+    "prev": 27.59,
+    "year_ago": 24.4
    },
    {
     "area": "Western Pennsylvania",
-    "value": 23.62,
-    "prev": 23.17,
-    "year_ago": 22.11
+    "value": 22.5,
+    "prev": 23.62,
+    "year_ago": 20.04
    },
    {
     "area": "Ohio",
-    "value": 23.24,
-    "prev": 22.77,
-    "year_ago": 21.42
+    "value": 21.69,
+    "prev": 23.24,
+    "year_ago": 21.26
    },
    {
     "area": "Indiana",
-    "value": 22.41,
-    "prev": 22.15,
-    "year_ago": 20.3
+    "value": 21.39,
+    "prev": 22.41,
+    "year_ago": 20.48
    },
    {
     "area": "Michigan",
-    "value": 21.77,
-    "prev": 21.41,
-    "year_ago": 19.85
+    "value": 20.61,
+    "prev": 21.77,
+    "year_ago": 19.84
    },
    {
     "area": "Wisconsin",
-    "value": 18.13,
-    "prev": 19.13,
-    "year_ago": 21.15
+    "value": 17.28,
+    "prev": 18.13,
+    "year_ago": 19.67
    },
    {
     "area": "Minnesota",
-    "value": 18.04,
-    "prev": 19.42,
-    "year_ago": 20.97
+    "value": 17.9,
+    "prev": 18.04,
+    "year_ago": 19.31
    },
    {
     "area": "Iowa",
-    "value": 18.29,
-    "prev": 19.28,
-    "year_ago": 20.1
+    "value": 17.63,
+    "prev": 18.29,
+    "year_ago": 18.94
    },
    {
     "area": "Illinois",
-    "value": 20.54,
-    "prev": 20.81,
-    "year_ago": 21.29
+    "value": 19.5,
+    "prev": 20.54,
+    "year_ago": 20.74
    },
    {
     "area": "Corn Belt States",
-    "value": 19.26,
-    "prev": 19.59,
-    "year_ago": 19.51
+    "value": 17.97,
+    "prev": 19.26,
+    "year_ago": 18.83
    },
    {
     "area": "Western Texas",
-    "value": 19.45,
-    "prev": 20.24,
-    "year_ago": 19.93
+    "value": 18.77,
+    "prev": 19.45,
+    "year_ago": 19.36
    },
    {
     "area": "New Mexico",
-    "value": 18.75,
-    "prev": 19.17,
-    "year_ago": 18.92
+    "value": 17.45,
+    "prev": 18.75,
+    "year_ago": 18.39
    },
    {
     "area": "Northwest States",
-    "value": 18.54,
-    "prev": 19.37,
-    "year_ago": 17.96
+    "value": 17.88,
+    "prev": 18.54,
+    "year_ago": 17.78
    },
    {
     "area": "California",
-    "value": 18.97,
-    "prev": 19.47,
-    "year_ago": 20.57
+    "value": 18.11,
+    "prev": 18.97,
+    "year_ago": 20.22
    }
   ]
  }

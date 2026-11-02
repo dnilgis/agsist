@@ -14,9 +14,9 @@
    "kb":1.7
   },
   "AR":{
-   "rows":85,
+   "rows":96,
    "facilities":19,
-   "kb":4.7
+   "kb":5.2
   },
   "CO":{
    "rows":313,
@@ -39,9 +39,9 @@
    "kb":2.2
   },
   "IA":{
-   "rows":14268,
+   "rows":14364,
    "facilities":784,
-   "kb":643.0
+   "kb":647.3
   },
   "ID":{
    "rows":89,
@@ -49,24 +49,24 @@
    "kb":4.1
   },
   "IL":{
-   "rows":12374,
+   "rows":12491,
    "facilities":452,
-   "kb":557.0
+   "kb":562.1
   },
   "IN":{
-   "rows":2260,
+   "rows":2276,
    "facilities":130,
-   "kb":98.8
+   "kb":99.6
   },
   "KS":{
-   "rows":8397,
+   "rows":8410,
    "facilities":441,
-   "kb":366.3
+   "kb":366.9
   },
   "KY":{
-   "rows":120,
+   "rows":126,
    "facilities":11,
-   "kb":6.1
+   "kb":6.4
   },
   "LA":{
    "rows":5,
@@ -74,24 +74,24 @@
    "kb":0.5
   },
   "MI":{
-   "rows":879,
+   "rows":907,
    "facilities":45,
-   "kb":38.5
+   "kb":39.6
   },
   "MN":{
-   "rows":9652,
+   "rows":9674,
    "facilities":334,
-   "kb":425.3
+   "kb":426.3
   },
   "MO":{
-   "rows":1290,
+   "rows":1302,
    "facilities":110,
-   "kb":57.4
+   "kb":57.9
   },
   "MT":{
-   "rows":267,
+   "rows":277,
    "facilities":16,
-   "kb":12.4
+   "kb":12.8
   },
   "NC":{
    "rows":21,
@@ -99,14 +99,14 @@
    "kb":1.4
   },
   "ND":{
-   "rows":9375,
+   "rows":9429,
    "facilities":128,
-   "kb":407.2
+   "kb":409.3
   },
   "NE":{
-   "rows":12477,
+   "rows":12565,
    "facilities":345,
-   "kb":554.8
+   "kb":559.1
   },
   "NY":{
    "rows":10,
@@ -114,14 +114,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":5695,
+   "rows":5756,
    "facilities":203,
-   "kb":244.2
+   "kb":246.7
   },
   "OK":{
-   "rows":3174,
+   "rows":3190,
    "facilities":94,
-   "kb":136.3
+   "kb":136.9
   },
   "ON":{
    "rows":25,
@@ -134,9 +134,9 @@
    "kb":2.1
   },
   "PA":{
-   "rows":18,
+   "rows":20,
    "facilities":3,
-   "kb":1.4
+   "kb":1.5
   },
   "SC":{
    "rows":3,
@@ -144,14 +144,14 @@
    "kb":0.4
   },
   "SD":{
-   "rows":3742,
+   "rows":3763,
    "facilities":178,
-   "kb":164.6
+   "kb":165.5
   },
   "TN":{
    "rows":146,
    "facilities":11,
-   "kb":7.3
+   "kb":7.2
   },
   "TX":{
    "rows":339,
@@ -164,14 +164,14 @@
    "kb":1.5
   },
   "WA":{
-   "rows":516,
+   "rows":526,
    "facilities":23,
-   "kb":23.6
+   "kb":24.1
   },
   "WI":{
-   "rows":3624,
+   "rows":3684,
    "facilities":179,
-   "kb":161.6
+   "kb":164.2
   },
   "WY":{
    "rows":66,

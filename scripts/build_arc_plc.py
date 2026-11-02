@@ -994,13 +994,19 @@ def signup_copy(today):
     c6, o7, c7 = nice_date(a["close"]), nice_date(b["open"]), nice_date(b["close"])
     sign = ("Sign", "Producers with a share in the crop sign. FSA says a landowner with no share interest, such as a cash-rent landlord, cannot enroll.")
     bring = ("Bring", "Bring the farm&rsquo;s FSA-156EZ. It lists the base acres and PLC yields.")
+    # USDA FSA's ARC/PLC page, read Nov 2, 2026 (feedbag notes/INBOX.md entry of that date): "providing an additional
+    # 30 million base acres to be added to farms nationwide" and "Because eligible acres exceeded the nationwide
+    # 30-million-acre cap ... a prorated reduction of 3.69% to all newly allocated base acres." FSA's own releases
+    # differ on "more than 30 million" and "first in 20 years", so neither is said here.
+    base = ("New base", "A 2025 law added 30 million base acres nationwide. More acres qualified than that cap, so FSA cut "
+                        "every new allocation by 3.69%. Source: USDA FSA ARC/PLC page, read Nov 2, 2026.")
     if st[2026] != "closed":
         items = [(nice_date(a["close"], False), f"2026 signup ends {c6}."),
                  (f"{nice_date(b['open'], False)} to {nice_date(b['close'], False)}",
                   f"2027 signup runs {o7} to {c7}." if st[2027] == "upcoming" else f"2027 signup is open through {c7}."),
-                 ("Skip it", "Do nothing for 2026 and that farm gets no 2026 payment."), sign, bring]
+                 ("Skip it", "Do nothing for 2026 and that farm gets no 2026 payment."), base, sign, bring]
     elif st[2027] != "closed":
-        items = [(nice_date(b["close"], False), f"2027 signup is open through {c7}."), ("Closed", f"2026 signup closed {c6}."), sign, bring]
+        items = [(nice_date(b["close"], False), f"2027 signup is open through {c7}."), ("Closed", f"2026 signup closed {c6}."), base, sign, bring]
     else:
         items = [("Closed", f"2026 signup closed {c6}; 2027 signup closed {c7}."), bring]
     if st[2026] != "closed":

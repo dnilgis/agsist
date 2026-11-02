@@ -46,7 +46,7 @@ posts, and posts held by the screen or hidden by three reports, go to Sig in
 one more email (public text only, never the poster's phone or email), then
 POST /hay/admin/mark. The hay admin routes take the token as a Bearer header.
 Each post links to it on the Haymow desk (agsist.com/haymow-admin#<id>, the
-token pasted there once, never in the link), with the curl line under it.
+token pasted there once, never in the link). No curl line (Sig, Nov 2: the desk does it from a phone).
 
 The Actions log gets counts only, never a name, address or phone.
 
@@ -548,9 +548,7 @@ def hay_rows(p):
     if HAY_ID_RE.fullmatch(str(p.get("id") or "")):
         rows.append(("Id", p["id"]))
         rows.append(("On the desk", "%s#%s" % (HAY_DESK, p["id"])))
-        act = "clear" if st != "live" else "hide"
-        rows.append(("To %s" % act, "curl -X POST -H \"Authorization: Bearer $LIST_TOKEN\" -H \"Content-Type: application/json\" "
-                     "-d '{\"id\":\"%s\"}' $LIST_URL/hay/admin/%s" % (p["id"], act)))
+        # Nov 2, 2026 (Sig): no curl line. It is useless on a phone, and the desk link hides or clears the post.
     return rows
 
 
@@ -580,7 +578,7 @@ def hay_build(posts, to, fn="AGSIST", fa=""):
         hb.append("</table>")
     foot = ("Live posts are on agsist.com/haymow already. Phones and emails are not in this email; "
             "the Haymow desk (agsist.com/haymow-admin) shows one post's when you ask, and hides, clears "
-            "or marks posts. GET /hay/admin/list with the list token shows them too.")
+            "or marks posts.")
     text.append(foot)
     m.set_content("\n".join(text) + "\n\n-- \n" + ADDRESS + "\n")
     m.add_alternative('<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:20px 16px;color:#1a1a1a;background:#fff">'
@@ -1011,12 +1009,12 @@ def selftest():
     ck("hay: subject counts", m["Subject"] == "The Haymow: 1 new post, 1 not shown", m["Subject"])
     ck("hay: no phone or email in the mail", "715-555-0100" not in t + h and "seller@example.com" not in t + h and m["Reply-To"] is None, t)
     ck("hay: public text, status and reports", all(x in t for x in ("Where: Chetek, WI (54728)", "Test: RFV 165, CP 19.5",
-       "Delivery: Up to 50 miles", "Note: Barn <kept>.", "Status: Not shown: hidden by reports", "Reports: 3 (spam, scam, spam)",
-       "hay/admin/clear", "hay/admin/hide")), t)
+       "Delivery: Up to 50 miles", "Note: Barn <kept>.", "Status: Not shown: hidden by reports", "Reports: 3 (spam, scam, spam)")), t)
     ck("hay: html escaped", "Barn &lt;kept&gt;." in h and "<kept>" not in h, h)
-    ck("hay: the token is never written out", "tok123" not in t and "$LIST_TOKEN" in t)
-    ck("hay: each post links to the desk, the curl line kept", "On the desk: https://agsist.com/haymow-admin#a1b2c3d4e5" in t and
-       "On the desk: https://agsist.com/haymow-admin#f6g7h8j9k0" in t and t.count("curl -X POST") == 2 and "agsist.com/haymow-admin)" in t, t)
+    ck("hay: the token is never written out", "tok123" not in t + h)
+    ck("hay: each post links to the desk, and no curl line (Sig, Nov 2)", "On the desk: https://agsist.com/haymow-admin#a1b2c3d4e5" in t and
+       "On the desk: https://agsist.com/haymow-admin#f6g7h8j9k0" in t and "curl" not in t + h and "$LIST_TOKEN" not in t + h
+       and "agsist.com/haymow-admin)" in t, t)
     ck("hay: the desk link is a link in the html", '<a href="https://agsist.com/haymow-admin#a1b2c3d4e5">' in h, h)
     ck("hay: no token in a desk link", not re.search(r"haymow-admin[^\s\"<]*token", t + h))
     hcalls, hsent = [], []
