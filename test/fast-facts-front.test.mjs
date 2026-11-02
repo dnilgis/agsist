@@ -104,7 +104,9 @@ test("one number, one builder: each row builder is called from one place; the St
   // the harvest row carries the state and the US together, and says whose average it is
   const h = P.factProgress(J("data/crop-progress.json"), "WI", "corn");
   assert.match(h.value, /^\d+% WI, \d+% US$/);
-  assert.match(h.ctx, /Week ending [A-Z][a-z]{2} \d+\. The 5-year average is our average of the NASS weeks\.$/);
+  // with a 5-year average it says whose average it is; when the average is withheld (a year with a publishing
+  // gap, the fall 2025 shutdown, agsist #252) it gives last week instead
+  assert.match(h.ctx, /Week ending [A-Z][a-z]{2} \d+\. (The 5-year average is our average of the NASS weeks\.|$)|a week earlier\. .*Week ending [A-Z][a-z]{2} \d+\.$/);
 });
 
 test("every state link exists on disk, for all 50 states", () => {
