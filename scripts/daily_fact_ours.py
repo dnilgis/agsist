@@ -161,8 +161,9 @@ def wasde_month(day, repo, crop):
         what = "US %s ending stocks" % name
         amt = "%s million bushels, to %s million" % (_fmt_int(ch), _fmt_int(b))
     text = ("This month in WASDE history: the biggest %s change to %s since %d came in %s %d, when USDA %s it %s "
-            "for the %s crop year. %d %s reports on file." % (MONTHS[month - 1], what, first, MONTHS[month - 1], rd.year,
-                                                           up, amt, my, len(cases), MONTHS[month - 1]))
+            "for the %s crop year. %d years with %s %s report before it."
+            % (MONTHS[month - 1], what, first, MONTHS[month - 1], rd.year, up, amt, my, len(cases),
+               "an" if MONTHS[month - 2][0] in "AEIOU" else "a", MONTHS[month - 2]))
     rel = "data/wasde-history/%s.json" % crop
     return _fact("ours-wasde-" + ("corn" if crop == "corn" else "soy"), "markets and prices", text,
                  "USDA World Agricultural Outlook Board, WASDE reports as printed", rel, rd.isoformat())
@@ -285,9 +286,10 @@ def hail_big(day, repo=REPO):
             continue                             # one report alone could be a typo: it is not said
         size = ("%.2f" % e[2]).rstrip("0").rstrip(".")
         text = ("The biggest hail reported in the US so far this year: %s inches across, in %s on %s. "
-                "Another report there that day was %s inches. %s hail reports so far this year."
+                "Another report there that day was %s inches. %s hail reports this year through %s."
                 % (size, STATE_NAMES.get(e[4], e[4]), _md("%d-%s" % (day.year, e[3])),
-                   ("%.2f" % same[1]).rstrip("0").rstrip("."), _fmt_int(len(ev))))
+                   ("%.2f" % same[1]).rstrip("0").rstrip("."), _fmt_int(len(ev)),
+                   _md("%d-%s" % (day.year, max(x[3] for x in ev)))))
         return _fact("ours-hail-big", "weather and climate", text,
                      "National Weather Service storm reports (NOAA Storm Prediction Center)", rel,
                      "%d-%s" % (day.year, e[3]))
@@ -470,8 +472,8 @@ def steer_top(day, repo=REPO):
     rows.sort(key=lambda r: (-r[0], -r[1], r[2]))
     cwt, head, town, st, w = rows[0]
     text = ("The best average price for No. 1 feeder steers weighing 500 to 599 pounds at any sale barn report we read "
-            "this past week: $%.2f per hundredweight at %s, %s, on %s, for %d head. %d barns reported that class."
-            % (cwt, town, STATE_NAMES.get(st, st), _md(w.isoformat()), head, len(barns)))
+            "this past week: $%.2f per hundredweight at %s, %s, on %s, for %s head. %d barns reported that class."
+            % (cwt, town, STATE_NAMES.get(st, st), _md(w.isoformat()), _fmt_int(head), len(barns)))
     return _fact("ours-steer-top", "livestock", text, "USDA AMS Livestock Market News, auction reports", rel, w.isoformat())
 
 
@@ -526,7 +528,7 @@ def _selftest():
                                                                          {"line": "Yield per Harvested Acre"}], "years": years})
     f = wasde_corn(day, root)
     ok(f and "November 2014" in f["text"] and "cut it 3 bushels an acre, to 167" in f["text"] and "since 2010" in f["text"]
-       and "12 November reports" in f["text"], "WASDE: the biggest November yield change, hand-worked (%s)" % (f or {}).get("text"))
+       and "12 years with an October report before it" in f["text"], "WASDE: the biggest November yield change, hand-worked (%s)" % (f or {}).get("text"))
     ok(f and f["file"] == "data/wasde-history/corn.json" and f["category"] == "markets and prices", "WASDE names its file")
     ok(wasde_corn(date(2026, 11, 9), root) is None or "2014" in wasde_corn(date(2026, 11, 9), root)["text"], "WASDE no look-ahead")
     years2 = {k: v for k, v in years.items() if k < "2013"}
@@ -565,7 +567,7 @@ def _selftest():
     _w(root, "data/hail/events-2026.json", {"ev": ev})
     _w(root, "data/hail/manifest.json", {"generated": "2026-11-01"})
     f = hail_big(day, root)
-    ok(f and "5 inches across, in Iowa on June 2" in f["text"] and "was 4 inches" in f["text"] and "603 hail reports" in f["text"],
+    ok(f and "5 inches across, in Iowa on June 2" in f["text"] and "was 4 inches" in f["text"] and "603 hail reports this year through June 2." in f["text"],
        "hail: the biggest corroborated report (%s)" % (f or {}).get("text"))
     # drought
     _w(root, "data/drought/summary.json", {"valid": "2026-10-27", "fetched": "2026-10-30T19:00:00Z",
@@ -611,6 +613,12 @@ def _selftest():
     f = steer_top(day, root)
     ok(f and "$404.00 per hundredweight at T4, Nebraska, on October 30, for 30 head" in f["text"] and "5 barns" in f["text"],
        "steers: the top average, thin lots left out (%s)" % (f or {}).get("text"))
+    # Nov 2 audit: "for 1782 head" printed with no comma
+    barns.append({"id": "big", "town": "Big", "state": "KS",
+                  "sales": [{"date": "2026-10-30", "classes": {"steers|1": {"500": {"cwt": 410.0, "head": 1782}}}}]})
+    _w(root, "data/cattle-auction.json", {"updated": "2026-10-31T07:00:00Z", "barns": barns})
+    f = steer_top(day, root)
+    ok(f and "for 1,782 head" in f["text"], "steers: a head count over 999 takes a comma (%s)" % (f or {}).get("text"))
     # a missing file is None, never an error
     empty = tempfile.mkdtemp(prefix="dfo-empty-")
     for gid, cat, fn, _m in GENERATORS:
