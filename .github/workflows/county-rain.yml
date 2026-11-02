@@ -173,19 +173,29 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/atlas/pct
-          git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          N=$(ls data/rain/*.json 2>/dev/null | wc -l)
-          git commit -q -m "data: county rain ($N states)"
-          # -X theirs: on a conflicting line this run's page wins (in a rebase "theirs" is the commit
-          # being replayed, this one). The cash-bids town rebuild (every 2 h) rewrites the "Cash bids
-          # by town near" line on every county rain page; a run of ~55 min always overlaps one, and
-          # on Oct 31 and Nov 1 all five tries stopped on that line in ~1,000 rain pages and nothing
-          # was committed. The town line is refreshed by that rebuild's next pass.
+          # Keep only what this run fetched (the rain data and its share images); build every page again on a
+          # fresh main each try, so the pages always match main's other inputs (Nov 2, 2026: the -X theirs
+          # rebase kept this run's ~55-minute-old "Cash bids by town near" lines, and build_county_rain.py
+          # --check failed on main, 31 pages, until the next town rebuild). Nothing is rebased, so nothing
+          # conflicts. Same shape as dairy.yml's commit loop.
+          SAVE=$RUNNER_TEMP/rain-save; rm -rf "$SAVE"; mkdir -p "$SAVE/og"
+          cp -r data/rain "$SAVE/rain"
+          cp img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json "$SAVE/og/" 2>/dev/null || true
           for i in 1 2 3 4 5; do
-            git rebase --abort 2>/dev/null || true
-            if git pull -q --rebase -X theirs --autostash origin main && git push -q; then exit 0; fi
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            rm -rf data/rain && cp -r "$SAVE/rain" data/rain
+            cp "$SAVE"/og/* img/og/ 2>/dev/null || true
+            python scripts/build_county_rain.py
+            python scripts/build_county_rain.py --check
+            python scripts/build_place_pct.py
+            python scripts/cross_links.py --stamp
+            git add -A data/atlas/pct
+            git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            N=$(ls data/rain/*.json 2>/dev/null | wc -l)
+            git commit -q -m "data: county rain ($N states)"
+            if git push -q origin HEAD:main; then echo "pushed on attempt $i"; exit 0; fi
             sleep $((20 * i))
           done
           echo "push failed after 5 attempts"; exit 1
