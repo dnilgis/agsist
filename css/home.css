@@ -575,6 +575,8 @@
 .daily-otp-tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:.765rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(var(--gold-rgb),.08);padding:.18rem .5rem;border-radius:3px;align-self:flex-start;border:1px solid rgba(var(--gold-rgb),.22)}
 .daily-otp-title{font-size:.824rem;font-weight:700;color:var(--text);line-height:1.35}
 .daily-otp-body{font-size:.824rem;line-height:1.55;color:var(--text-dim)}
+.daily-otp-title a{color:inherit;text-decoration:underline;text-decoration-color:rgba(var(--gold-rgb),.55);text-underline-offset:2px}
+.daily-otp-src{font-size:.74rem;color:var(--text-muted)}
 /* v4.3: cash-bids inline conversion footer (weekday only) */
 .daily-cashbids-cta{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:rgba(74,171,76,.06);border:1px solid rgba(74,171,76,.22);border-radius:8px;margin:.5rem 0;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px}
 .daily-cashbids-cta:hover{border-color:var(--green);background:rgba(74,171,76,.10)}
