@@ -200,14 +200,27 @@ def _h(s):
     return hashlib.sha256((SEED + "|" + s).encode("utf-8")).hexdigest()
 
 
+def _key(x):
+    """Order inside a category, as one hex string (so _neg still works on it):
+      "0" + hash   a computed fact (ours): first in its category each cycle, as before the list came in;
+      "1" + order  a pool entry with a send "order" (the Nov 2, 2026 list of 233, already in send order: feedbag
+                   notes/chatgpt/2026-11-01-answers/README.md), in that order;
+      "2" + hash   any other pool entry, by the fixed hash of its id.
+    Adding the ordered list never changes a day before its "added" date: those days never saw it."""
+    o = x.get("order")
+    if isinstance(o, int) and not isinstance(o, bool) and o > 0:
+        return "1" + "%063x" % o
+    return "2" + _h(x["id"])
+
+
 def _items(pool, gens=None):
     """[(id, category, kind, start, hash, months)] for the pool entries and the computed generators."""
     out = []
     for x in pool:
         start = date.fromisoformat(x["added"]) if x.get("added") else EPOCH
-        out.append((x["id"], x["category"], "pool", max(start, EPOCH), _h(x["id"]), ALL_YEAR))
+        out.append((x["id"], x["category"], "pool", max(start, EPOCH), _key(x), ALL_YEAR))
     for g in (OURS if gens is None else gens):
-        out.append((g[0], g[1], "ours", max(g[3], EPOCH), _h(g[0]), tuple(g[4]) if len(g) > 4 else ALL_YEAR))
+        out.append((g[0], g[1], "ours", max(g[3], EPOCH), "0" + _h(g[0]), tuple(g[4]) if len(g) > 4 else ALL_YEAR))
     seen, uniq = set(), []
     for it in out:
         if it[0] not in seen:
@@ -331,7 +344,7 @@ def _legacy(day, repo, pool):
 
 def _pool_fact(x):
     return {"id": x["id"], "kind": "pool", "category": x["category"], "text": x["fact"], "source": x["source"],
-            "url": x["url"], "file": None, "checked": x["checked"]}
+            "url": x["url"], "file": None, "checked": x["checked"], "refresh": bool(x.get("refresh"))}
 
 
 def _run(gen, day, repo):
@@ -433,6 +446,10 @@ def import_entries(entries, pool_doc, today, added=None):
         keep = {k: x[k].strip() for k in ("id", "category", "fact", "source", "url", "checked", "quote")}
         if (x.get("note") or "").strip():
             keep["note"] = x["note"].strip()
+        if isinstance(x.get("order"), int) and not isinstance(x.get("order"), bool) and x["order"] > 0:
+            keep["order"] = x["order"]        # send order inside its category (see _key)
+        if x.get("refresh") is True:
+            keep["refresh"] = True            # from a recurring report: re-check the page when a newer edition is out
         keep["added"] = added
         facts.append(keep)
         have_ids.add(xid)
@@ -520,14 +537,22 @@ def _selftest():
     ok(all("—" not in (f or {}).get("text", "") for _d, f in rows), "no em dash")
     ok(twice == 0, "no category two days running in 60 days (%d)" % twice)
     items = _items(pool)
-    days, spares = plan(items, EPOCH + timedelta(days=60))
-    sched = [it[0] for it in days[:60]]
+    span = max(60, len(items) + 30)          # far enough to see one whole cycle (218 items since Nov 2, 2026)
+    days, spares = plan(items, EPOCH + timedelta(days=span))
+    sched = [it[0] if it else None for it in days[:span]]
     inseason = [it for it in items if EPOCH.month in it[5]]
-    rep_at = next((k for k in range(60) if sched[k] in sched[:k]), None)
+    rep_at = next((k for k in range(span) if sched[k] is not None and sched[k] in sched[:k]), None)
     ok(rep_at is not None and rep_at >= len(inseason) - 1, "the schedule shows every fact once before any comes back (%s of %d)"
        % (rep_at, len(inseason)))
     ok(all(f["kind"] == "ours" or f["id"] == days[k][0] or (spares[k] and f["id"] == spares[k][0])
            for k, (_d, f) in enumerate(rows)), "each day is its scheduled fact or that day's stand-in")
+    # the Nov 2, 2026 list: inside a category, ordered pool facts come out in their send order; refresh carries
+    seen_o = {}
+    for it in (x for x in days[:rep_at or span] if x and x[2] == "pool" and x[4].startswith("1")):   # first cycle
+        seen_o.setdefault(it[1], []).append(int(it[4][1:], 16))
+    ok(seen_o and all(v == sorted(v) for v in seen_o.values()), "ordered facts keep their send order inside each category")
+    rf = next((x for x in pool if x.get("refresh")), None)
+    ok(rf is None or _pool_fact(rf)["refresh"] is True, "a refresh fact says so to the sender")
     again = [for_day(d) for d, _f in rows[:10]]
     ok([f["id"] for f in again] == [f["id"] for _d, f in rows[:10]], "the same date gives the same fact")
     seen = {f["id"] for _d, f in rows}

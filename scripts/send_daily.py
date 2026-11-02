@@ -675,6 +675,11 @@ def v2_setup(b):
     try:
         import daily_fact
         V2["fact"] = daily_fact.for_day(date.today())
+        if (V2.get("fact") or {}).get("refresh"):
+            # Nov 2, 2026: the number comes from a recurring report (NASS, ERS, land values, rents, FINBIN, farmdoc
+            # costs); a newer edition may be out. Sent as checked on its date; this line asks for a look.
+            print("::warning::Today's fact %s is from a recurring report (checked %s); re-check its page if a newer edition is out: %s"
+                  % (V2["fact"].get("id"), V2["fact"].get("checked"), V2["fact"].get("url")))
     except Exception as ex:
         print("daily fact skipped (" + type(ex).__name__ + ")")
 
