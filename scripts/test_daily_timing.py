@@ -270,5 +270,20 @@ chk("natgas" not in t["prev_settles"], "no previous settle is offered for gas", 
 cl = row(pdata["price_block"], "WTI Crude Oil")
 chk(cl and "(UP +0.7%)" in cl[0], "crude keeps its move", cl)
 
+# 2026-11-02 audit: the Nov 1 issue read the Oct 31 06:46Z file; preflight
+# repaired the cattle key from dead Oct '26 to Dec '26 (220.95) but the label
+# stayed "Oct '26", and the issue said "October live cattle ... $220.95".
+print("\nNov 1 2026, cattle repaired to Dec '26")
+_lv = json.loads((Path(HERE).parent / "test" / "fixtures" / "daily-audit" / "prices-2026-10-31-livestock.json").read_text())
+_feed = {"fetched": "2026-11-01T12:09:37Z", "quotes": _copy.deepcopy(_lv["quotes"])}
+pdata, surprises, t, blk = load(_feed)
+lc_row = row(pdata["price_block"], "Live Cattle Dec '26")
+chk(lc_row and "$220.95" in lc_row[0], "the cattle line names Dec '26 beside $220.95", row(pdata["price_block"], "Live Cattle Oct '26") or pdata["price_block"])
+chk(not row(pdata["price_block"], "Live Cattle Oct '26"), "and never Oct '26")
+chk(pdata["locked_changes"]["cattle"].get("contract") == "Dec '26", "the lock carries the month", pdata["locked_changes"]["cattle"])
+chk(pdata["locked_changes"]["feeders"].get("contract") == "Nov '26", "feeders carry Nov '26", pdata["locked_changes"]["feeders"])
+chk(g.quoted_contract({"ticker": "LEZ26.CME", "contract": "Oct '26"}) == "Dec '26", "the ticker beats a stale label")
+chk(g.quoted_contract({"alias_of": "cattle-oct26", "repaired_from": "cattle-dec26"}) == "Dec '26", "the repair beats the alias")
+
 print("PASS" if ok else "FAIL")
 sys.exit(0 if ok else 1)

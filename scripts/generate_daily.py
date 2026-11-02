@@ -309,6 +309,32 @@ COMMODITY_LABELS = {
 
 GRAIN_KEYS = {"corn", "corn-dec", "beans", "beans-nov", "wheat", "oats"}
 LIVESTOCK_KEYS = {"cattle", "feeders", "hogs"}   # CME: day session only, 8:30 a.m. to 1:05 p.m. CT
+
+_CME_MONTH_CODE = dict(zip("FGHJKMNQUVXZ", ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")))
+
+
+def quoted_contract(q):
+    """The contract month ("Dec '26") the quote's PRICE belongs to, from the
+    symbol actually quoted, or None.
+
+    2026-11-02 audit: on Nov 1 preflight_prices repaired the cattle key from
+    the dead Oct '26 contract to cattle-dec26 (close 220.95) but the copied
+    quote kept contract "Oct '26" and ticker LEV26.CME, and the issue printed
+    "October live cattle fell 2.4% to $220.95". The repaired source wins, then
+    the nearby alias, then the ticker; the stored label only when none says."""
+    if not isinstance(q, dict):
+        return None
+    for src in (q.get("repaired_from"), q.get("alias_of")):
+        if src:
+            suf = str(src).split("-")[-1]
+            mon, yy = suf[:3].capitalize(), suf[3:]
+            if mon in _CME_MONTH_CODE.values() and yy.isdigit() and len(yy) == 2:
+                return f"{mon} '{yy}"
+    m = re.match(r"^[A-Z]{2,3}([FGHJKMNQUVXZ])(\d{2})\.", str(q.get("ticker") or ""))
+    if m:
+        return f"{_CME_MONTH_CODE[m.group(1)]} '{m.group(2)}"
+    return q.get("contract") or None
 INDEX_KEYS = {"sp500", "dollar", "treasury10"}   # cash indexes: they close, they do not settle
 STALE_NAMES = {"cattle": "live cattle", "feeders": "feeder", "hogs": "hogs", "milk": "milk",
                "crude": "crude", "natgas": "natural gas", "meal": "meal", "soyoil": "soybean oil",
@@ -910,7 +936,11 @@ def load_prices():
         arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
         # Name the month for the products whose key is the front month
         # (fetch_prices.pin_continuous), so "Lean Hogs" is never a dead month.
-        mon = q.get("contract") if key in ("cattle", "feeders", "hogs", "milk") else None
+        # The month comes from the symbol actually quoted (quoted_contract), and
+        # only where fetch_prices labeled the key a front month at all.
+        mon = quoted_contract(q) if key in ("cattle", "feeders", "hogs", "milk") and q.get("contract") else None
+        if mon:
+            locked_changes[key]["contract"] = mon
         if stale:
             # A quote the fetch could not refresh: its change is old news, and
             # "flat" would be a claim about a market nobody read today.
@@ -2438,7 +2468,7 @@ NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by
 
 ══ WRITING RULES ══
 1. NO EM DASHES (U+2014) OR EN DASHES (U+2013). Use periods, commas, semicolons, colons, parentheses. (Exception: standard hyphenated compounds like "old-crop" are fine.)
-2. Every specific price comes from the LOCKED PRICE TABLE. No exceptions.
+2. Every specific price comes from the LOCKED PRICE TABLE. No exceptions. Live cattle, feeder cattle, lean hogs and milk carry their contract month in the table ("Live Cattle Dec '26"): when you name a month for one of them, name THAT month, never the month before it (Nov 1 2026 printed "October live cattle fell 2.4% to $220.95"; $220.95 was December). A machine checks.
 3. Never invent or recall prices from training data.
 4. Describe moves exactly as shown.
 5. Headline and every title in sentence case.

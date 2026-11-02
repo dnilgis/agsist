@@ -48,6 +48,7 @@ import contract_calendar  # noqa: E402  ONE definition of "is this contract dead
 
 PROMPT_RULES = """CLAIM LIMITS (a machine checks every sentence after you finish; a sentence that breaks one is cut):
 - Quote only live contracts. A contract past its last trading day is not a price. When a month expires, name the new front month ("December hogs").
+- A livestock or milk price belongs to the contract month the price table names beside it ("Live Cattle Dec '26"). Name that month or none; never the month before it.
 - "Close", "closed", "settle" and "settled" belong only to a settlement. An overnight or morning price is a trade: "Dec corn is at $4.64 overnight, 3/4 cent above Wednesday's settle", never "a higher close".
 - A date after today's issue is in the future. Never attach a close, a settle or a result to it.
 - A futures move is not a cash price. Never say what a bushel in the bin, a farmer's corn, a hog or steer sold, or a cash bid is worth, brought, gained or lost from futures alone; that needs a posted bid or a cash trade report.
@@ -401,6 +402,33 @@ def r_cash_from_futures(sent, ctx):
     return grain or stock
 
 
+# Nov 2 audit: the Nov 1 issue said "October live cattle fell 2.4% to $220.95"; $220.95 was the Dec '26
+# settle (Oct '26 settled 224.00, -1.4%). A livestock or milk price that names a month must be that month's
+# price: when the price matches a contract on file and none of the matching contracts is the named month,
+# the sentence is wrong on its own data.
+_MONTH_FAMS = ("cattle", "feeders", "hogs", "milk")
+_MON_BEFORE = re.compile(r"\b" + _MON_RE + r"\.?(?:\s+(?:'|’)?\d{2})?\s+$", re.I)
+
+
+def r_month_mismatch(sent, ctx):
+    """A livestock or milk price credited to a contract month whose price it is not."""
+    words = [(m.start(), *family_of(m.group(1))) for m in _FAM_RE.finditer(sent)]
+    for m in PRICE.finditer(sent):
+        before = [w for w in words if w[0] < m.start()]
+        if not before or before[-1][1] not in _MONTH_FAMS:
+            continue
+        start, fam, _g = before[-1]
+        mm = _MON_BEFORE.search(sent[max(0, start - 24):start])
+        if not mm:
+            continue
+        named = mm.group(1).lower()[:3]
+        px = _num(m)
+        match = [k for k, v, _exp in (ctx["dated"].get(fam) or []) if _near(px, v, False)]
+        if match and not any(k.split("-")[-1][:3].lower() == named for k in match):
+            return True
+    return False
+
+
 # Oct 29: the headline "Hogs fall 5.5% to $58.60 while corn holds $4.51" and the teaser "Hogs drop 5.5% to
 # $58.60 ..." named a futures move as if it were the price of hogs. A headline or teaser that moves a
 # price says futures (or names the contract month, or calls it a settle; only futures settle), unless it
@@ -477,6 +505,7 @@ RULES = [
     ("cash-from-futures", r_cash_from_futures),
     ("planting-from-nearby", r_planting_from_nearby),
     ("cause-without-source", r_cause_without_source),
+    ("month-mismatch", r_month_mismatch),
 ]
 # read only on the headline-type fields (HEAD_LOCS); a wording rule, so it WARNs
 HEAD_RULES = [
@@ -485,7 +514,7 @@ HEAD_RULES = [
 
 
 # read against the data, so briefing_gate blocks on them; the rest WARN there
-BLOCKING = ("expired-contract", "close-before-settle", "future-as-past")
+BLOCKING = ("expired-contract", "close-before-settle", "future-as-past", "month-mismatch")
 
 
 def lint(briefing, ctx):
@@ -898,6 +927,22 @@ def _selftest():
     expect("cash-from-futures", "December lean hog futures settled 5.5% lower; what hogs sold this week brought depends on "
            "the cash trade and your contract.", c29, False)
     expect("cash-from-futures", "Your steers are worth $40 a head less than Monday.", c29, True)
+    # Nov 1: "October live cattle fell 2.4% to $220.95" -- $220.95 was Dec '26 (Oct '26 settled 224.00).
+    # Context: data/prices.json as the Nov 1 issue read it (Oct 31 06:46Z), livestock quotes only.
+    _n1 = json.load(open(os.path.join(REPO, "test", "fixtures", "daily-audit", "prices-2026-10-31-livestock.json")))
+    c_n1 = context(_n1, date(2026, 11, 1))
+    expect("month-mismatch", "October live cattle fell 2.4% to $220.95 and November feeders dropped 2.5% to $337.775.", c_n1, True)
+    expect("month-mismatch", "December live cattle fell 2.4% to $220.95 and November feeders dropped 2.5% to $337.775.", c_n1, False)
+    expect("month-mismatch", "Dec '26 live cattle settled at $220.95.", c_n1, False)
+    expect("month-mismatch", "October live cattle went off the board at $224.00.", c_n1, False)
+    expect("month-mismatch", "Live cattle fell 2.4% to $220.95.", c_n1, False)
+    expect("month-mismatch", "October feeders settled at $337.775.", c_n1, True)
+    expect("month-mismatch", "December corn is at $4.51.", c_n1, False)
+
+    # Nov 2 audit: the steer and fat-cattle forms of the same claim
+    expect("cash-from-futures", "Every steer sold Friday brought less than a week ago.", c29, True)
+    expect("cash-from-futures", "Each load of fat cattle sold Friday brought $5 less.", c29, True)
+    expect("cash-from-futures", "Steers sold at the Dodge City auction brought $5 less than a week ago.", c29, False)
     expect("cash-from-futures", "Negotiated cash hogs averaged $61.20 in the USDA AMS report, less than Tuesday.", c29, False)
     expect("cash-from-futures", "Live cattle futures settled at $227.375, down 1.1%.", c29, False)
     for loc, line, hit in (("headline", "Hogs fall 5.5% to $58.60 while corn holds $4.51", True),
