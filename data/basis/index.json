@@ -19,9 +19,9 @@
    "kb":5.1
   },
   "CO":{
-   "rows":315,
+   "rows":351,
    "facilities":26,
-   "kb":14.8
+   "kb":16.3
   },
   "DE":{
    "rows":5,
@@ -39,9 +39,9 @@
    "kb":2.2
   },
   "IA":{
-   "rows":14378,
+   "rows":14384,
    "facilities":784,
-   "kb":648.0
+   "kb":648.3
   },
   "ID":{
    "rows":89,
@@ -49,24 +49,24 @@
    "kb":4.1
   },
   "IL":{
-   "rows":12628,
+   "rows":12676,
    "facilities":452,
-   "kb":567.8
+   "kb":569.9
   },
   "IN":{
-   "rows":2278,
+   "rows":2279,
    "facilities":130,
    "kb":99.7
   },
   "KS":{
-   "rows":8403,
+   "rows":8655,
    "facilities":441,
-   "kb":366.6
+   "kb":377.4
   },
   "KY":{
-   "rows":126,
+   "rows":130,
    "facilities":11,
-   "kb":6.4
+   "kb":6.5
   },
   "LA":{
    "rows":5,
@@ -74,19 +74,19 @@
    "kb":0.5
   },
   "MI":{
-   "rows":907,
+   "rows":908,
    "facilities":45,
-   "kb":39.6
+   "kb":39.7
   },
   "MN":{
-   "rows":9707,
+   "rows":9733,
    "facilities":334,
-   "kb":427.7
+   "kb":428.8
   },
   "MO":{
-   "rows":1303,
+   "rows":1306,
    "facilities":110,
-   "kb":58.0
+   "kb":58.1
   },
   "MT":{
    "rows":277,
@@ -99,14 +99,14 @@
    "kb":1.4
   },
   "ND":{
-   "rows":9491,
+   "rows":9525,
    "facilities":128,
-   "kb":411.7
+   "kb":413.2
   },
   "NE":{
-   "rows":12653,
+   "rows":12754,
    "facilities":345,
-   "kb":563.4
+   "kb":568.7
   },
   "NY":{
    "rows":10,
@@ -114,14 +114,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":5804,
+   "rows":5820,
    "facilities":203,
-   "kb":248.7
+   "kb":249.5
   },
   "OK":{
-   "rows":3202,
+   "rows":3382,
    "facilities":94,
-   "kb":137.3
+   "kb":144.8
   },
   "ON":{
    "rows":25,
@@ -144,19 +144,19 @@
    "kb":0.4
   },
   "SD":{
-   "rows":3763,
+   "rows":3914,
    "facilities":178,
-   "kb":165.5
+   "kb":172.3
   },
   "TN":{
-   "rows":146,
+   "rows":147,
    "facilities":11,
-   "kb":7.2
+   "kb":7.3
   },
   "TX":{
-   "rows":339,
+   "rows":384,
    "facilities":20,
-   "kb":15.3
+   "kb":17.2
   },
   "VA":{
    "rows":27,
@@ -169,7 +169,7 @@
    "kb":24.2
   },
   "WI":{
-   "rows":3708,
+   "rows":3709,
    "facilities":179,
    "kb":165.2
   },

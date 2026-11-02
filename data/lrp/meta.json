@@ -267,23 +267,23 @@
   "last_run": {
    "failed": 0,
    "left": 0,
-   "read": 2,
-   "seconds": 2,
+   "read": 1,
+   "seconds": 5,
    "stopped_for_time": false,
    "unreadable": 0
   },
-  "offer_days_written": 3320,
+  "offer_days_written": 3321,
   "offers_restated": 1,
   "rate_blank": 0,
   "rate_blank_examples": [],
   "rate_cost_off": 37,
   "rate_deleted": 0,
   "rate_price_off": 425998,
-  "rate_rows": 2336620
+  "rate_rows": 2338620
  },
- "files_read": 6949,
+ "files_read": 6950,
  "first_sales_date": "20130701",
- "last_sales_date": "20261030",
+ "last_sales_date": "20261102",
  "offer_days_by_reinsurance_year": {
   "2014": 238,
   "2015": 249,
@@ -298,7 +298,7 @@
   "2024": 248,
   "2025": 250,
   "2026": 251,
-  "2027": 86
+  "2027": 87
  },
  "products": {
   "0801": "Feeder Cattle",
@@ -1454,7 +1454,7 @@
     "32": 1,
     "33": 3,
     "34": 5,
-    "35": 37981,
+    "35": 37979,
     "36": 47,
     "37": 35,
     "38": 29,
@@ -1464,7 +1464,7 @@
     "42": 9,
     "43": 1,
     "44": 1,
-    "45": 644,
+    "45": 646,
     "46": 3
    }
   },
@@ -1485,7 +1485,7 @@
     "31": 1,
     "32": 1,
     "34": 7,
-    "35": 59718,
+    "35": 59717,
     "36": 73,
     "37": 52,
     "38": 63,
@@ -1495,7 +1495,7 @@
     "42": 11,
     "43": 5,
     "44": 3,
-    "45": 836,
+    "45": 837,
     "46": 1
    },
    "75": {
