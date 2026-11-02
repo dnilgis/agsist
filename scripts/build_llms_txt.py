@@ -183,7 +183,7 @@ PAGES = [
     ]),
     ("About this site", [
         ("/glossary", "Farm Market Glossary", "plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses"),
-        ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, and the open JSON feeds"),
+        ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, the USDA report calendar files to subscribe to, the Daily RSS feed, the Farmland Atlas CSV files and this file"),
         ("/changelog", "Changelog", "dated list of site changes"),
         ("/about", "About", "who builds AGSIST and why"),
         ("/contact", "Contact", "sig@agsist.com"),
