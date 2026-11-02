@@ -265,10 +265,18 @@ def week_of(ts):
     return (d - datetime.timedelta(days=d.weekday())).isoformat()
 
 
-def coverage(out=OUT, fetch=None, log=print, since="2024"):
-    """Captures per week across every single-barn report (CDX lists only)."""
+def flush_log(*a):
+    print(*a, flush=True)
+
+
+def coverage(out=OUT, fetch=None, log=flush_log, since="2024", minutes=0, clock=None):
+    """Captures per week across every single-barn report (CDX lists only). Saved
+    after every report, so a run cut short keeps what it listed."""
+    import time
+    clock = clock or time.monotonic
+    stop = clock() + minutes * 60 if minutes else None
     os.makedirs(out, exist_ok=True)
-    fetch = fetch or Fetcher(min_gap=1.5, retries=2, timeout=60, ok=(200, 404))
+    fetch = fetch or Fetcher(min_gap=1.5, retries=1, timeout=30, backoff=(5,), ok=(200, 404))
     robots = Robots(fetch, log)
     cfg = FCA.load_sources(FCA.ROOT)
     weeks, per_slug, rec = {}, {}, []
@@ -291,17 +299,30 @@ def coverage(out=OUT, fetch=None, log=print, since="2024"):
                 w = weeks.setdefault(week_of(c[0]), {"barns": set(), "states": set()})
                 w["barns"].add(b["id"])
                 w["states"].add(b["state"])
+            log("  %s (%s): %s, %d copies since %s" % (slug, b["id"], rec[-1].get("status") if rec else "-", len(caps), since))
+            save_coverage(out, since, per_slug, weeks, rec, partial=True)
+            if stop and clock() > stop:
+                log("stopped at the time limit")
+                break
+        else:
+            continue
+        break
+    return save_coverage(out, since, per_slug, weeks, rec, partial=False, log=log)
+
+
+def save_coverage(out, since, per_slug, weeks, rec, partial, log=None):
     table = {k: {"barns": len(v["barns"]), "states": len(v["states"])} for k, v in sorted(weeks.items())}
-    doc = {"read": now_iso(), "since": since, "slugs": len(per_slug),
+    doc = {"read": now_iso(), "since": since, "partial": partial, "slugs": len(per_slug),
            "slugs_with_captures": sum(1 for v in per_slug.values() if v),
            "weeks": table, "weeks_30_barns_8_states": sum(1 for v in table.values() if v["barns"] >= 30 and v["states"] >= 8),
            "per_slug": per_slug, "failed": [r for r in rec if r.get("status") != 200]}
     with open(os.path.join(out, "coverage.json"), "w", encoding="utf-8") as f:
         json.dump(doc, f, indent=1)
-    log("coverage: %d reports, %d with captures since %s; %d weeks with a capture; weeks with 30+ barns in 8+ states: %d"
-        % (doc["slugs"], doc["slugs_with_captures"], since, len(table), doc["weeks_30_barns_8_states"]))
-    for k, v in table.items():
-        log("  week of %s: %d barns, %d states" % (k, v["barns"], v["states"]))
+    if log:
+        log("coverage: %d reports, %d with captures since %s; %d weeks with a capture; weeks with 30+ barns in 8+ states: %d"
+            % (doc["slugs"], doc["slugs_with_captures"], since, len(table), doc["weeks_30_barns_8_states"]))
+        for k, v in table.items():
+            log("  week of %s: %d barns, %d states" % (k, v["barns"], v["states"]))
     return doc
 
 
@@ -353,6 +374,22 @@ def selftest():
         ck("summary saved", os.path.exists(os.path.join(d, "summary.json")))
         ck("MARS url saved without its query", all("?" not in r["url"] for r in b["asked"] if "marsapi" in r["url"]))
     ck("week_of: a Saturday capture is that Monday's week", week_of("20250111093909") == "2025-01-06")
+
+    def op2(u):
+        if u.endswith("robots.txt"):
+            return 404, b"", {}
+        if "ams_1856" in u:
+            return 200, json.dumps([["timestamp", "original"], ["20250111093909", "x"], ["20250112093909", "x"], ["20230101000000", "x"]]).encode(), {}
+        return 200, b"[]", {}
+    with tempfile.TemporaryDirectory() as d:
+        doc = coverage(out=d, fetch=Fetcher(min_gap=0, retries=0, opener=op2, sleep=lambda s: None), log=lambda *a: None)
+        ck("coverage: one barn, two copies in one week, older copies left out", doc["weeks"] == {"2025-01-06": {"barns": 1, "states": 1}}, doc["weeks"])
+        ck("coverage: every single-barn report asked, saved, not partial", doc["slugs"] > 100 and not doc["partial"]
+           and os.path.exists(os.path.join(d, "coverage.json")))
+        t = [0]
+        doc = coverage(out=d, fetch=Fetcher(min_gap=0, retries=0, opener=op2, sleep=lambda s: None), log=lambda *a: None,
+                       minutes=1, clock=lambda: t.__setitem__(0, t[0] + 30) or t[0])
+        ck("coverage: stops at the time limit and keeps what it listed", 0 < doc["slugs"] < 10, doc["slugs"])
     print("probe_feeder_archive selftest: %d failure(s)" % len(fails))
     return 1 if fails else 0
 
@@ -363,12 +400,13 @@ def main(argv=None):
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--coverage", action="store_true")
     ap.add_argument("--slugs", default=",".join(DEFAULT_SLUGS))
+    ap.add_argument("--max-minutes", type=float, default=0)
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
     if a.coverage:
-        coverage(out=a.out)
+        coverage(out=a.out, minutes=a.max_minutes)
         return 0
     if not a.probe:
         print("nothing to do: --probe, --coverage or --selftest")

@@ -159,7 +159,7 @@ jobs:
           if [ "$PROBE" = "true" ]; then
             case "$SOURCE" in ams-fert|feeder-archive) ;; *) echo "::error::probe is for ams-fert and feeder-archive only"; exit 1;; esac
             if [ "$SOURCE" = "feeder-archive" ] && [ "$ONLY" = "coverage" ]; then
-              python3 scripts/probe_feeder_archive.py --coverage
+              python3 scripts/probe_feeder_archive.py --coverage --max-minutes "${MAXMIN:-300}"
             elif [ "$SOURCE" = "feeder-archive" ]; then
               python3 scripts/probe_feeder_archive.py --probe
             else
