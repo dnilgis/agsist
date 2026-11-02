@@ -316,6 +316,16 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </section>
   <script>try{AgPxStamp.reserve(document.querySelector('#hero-band .pl-line'));}catch(e){}try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
   <script src="/components/signup-ask.js?v=20"></script>
+  <!-- Worth a look (Sig, Nov 2, 2026): Rain Print (the promo card, components/rain-print-promo.js), the rain gauge, and one new page from What's new (components/home-worth.js) -->
+  <section class="wl" id="wl" aria-labelledby="wl-h">
+    <h2 class="wl-h" id="wl-h">Worth a look</h2>
+    <div class="wl-row">
+      <div class="wl-c wl-rp"><div data-rp-card-early hidden></div><aside data-rain-print-promo="card" aria-label="Rain Print" hidden></aside></div>
+      <a class="wl-c wl-g" href="/rain-gauge" data-track="worth"><span class="wl-t">A rain gauge that keeps its own log</span><span class="wl-x">I'm building a rain gauge that keeps a log for each field.</span><span class="wl-a">Join the waitlist &rarr;</span></a>
+      <a class="wl-c wl-n" id="wl-new" href="/changelog" data-track="worth"><span class="wl-t">New on AGSIST</span><span class="wl-x" id="wl-new-x">Every change to the site, by date.</span><span class="wl-a" id="wl-new-a">See what&rsquo;s new &rarr;</span></a>
+    </div>
+  </section>
+  <script src="/components/home-worth.js?v=1" defer></script>
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-11-01" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>
@@ -1072,7 +1082,6 @@ try {
     </details>
     <a class="r7-more" href="/markets" data-track="markets">All markets: grains, livestock, energy and metals on one page &rarr;</a>
     </div>
-    <div data-rp-card-early hidden></div>
   </div>
   </div>
   <section class="s7-month" id="s7-month" aria-labelledby="s7-month-h" data-track="season">
@@ -1498,7 +1507,7 @@ try {
     </ul>
     </details>
     </nav>
-    <aside data-rain-print-promo="card" aria-label="Rain Print" hidden></aside><script src="/components/rain-print-promo.js?v=6" defer></script>
+    <script src="/components/rain-print-promo.js?v=6" defer></script>
   </section>
   <script>
   /* Land band. Every number comes from a file in /data or the Atlas build,
