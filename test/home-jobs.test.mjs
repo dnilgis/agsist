@@ -344,6 +344,18 @@ async function openWorth(browser, port, { w, h = 844, day, cfg, hold = 1200, zip
   await pg.goto(`http://127.0.0.1:${port}/`, { waitUntil: "domcontentloaded" });
   return { ctx, pg, errs };
 }
+// heights of every element above the strip that has an id or class, so a failure names what grew
+const aboveStrip = () => {
+  const wl = document.getElementById("wl"), out = {};
+  if (!wl) return out;
+  for (const e of document.querySelectorAll("body *")) {
+    if (!(wl.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_PRECEDING) || e.contains(wl)) continue;
+    const k = e.id ? "#" + e.id : (typeof e.className === "string" && e.className.trim() ? e.tagName.toLowerCase() + "." + e.className.trim().split(/\s+/)[0] : null);
+    if (!k || k in out) continue;
+    out[k] = Math.round(e.getBoundingClientRect().height * 10) / 10;
+  }
+  return out;
+};
 const worthBoxes = () => {
   const b = (s) => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return { top: r.top + scrollY, bottom: r.bottom + scrollY, h: r.height }; };
   return { wl: b("#wl"), rp: b(".wl-rp"), g: b(".wl-g"), n: b("#wl-new"), band: b("#hero-band"), jobs: b("#hb-jobs"), daily: b("#daily-hero") };
@@ -360,6 +372,8 @@ test("browser: Worth a look holds its place while it fills, for each Rain Print 
       // still for 3 checks in a row), so a slow runner filling the hero band late (Nov 2: CI moved the strip 18 px
       // at 400 ms) is not read as the strip moving; the band is held by the round 2 and cls tests.
       const { ctx, pg, errs } = await openWorth(browser, port, { w, day, h: w === 390 ? 844 : 900, hold: 3000 });
+      // web fonts swap in when their files arrive; on a slow runner that can be after the page "settles"
+      await pg.evaluate(() => document.fonts && document.fonts.ready);
       let last = null, still = 0;
       for (let i = 0; i < 25 && still < 3; i++) {
         await pg.waitForTimeout(100);
@@ -371,6 +385,7 @@ test("browser: Worth a look holds its place while it fills, for each Rain Print 
       const filled = await pg.evaluate(() => document.getElementById("wl-new").getAttribute("href"));
       assert.equal(filled, "/changelog", `${tag}: "before" is read while the strip still holds its baked link`);
       const before = await pg.evaluate(worthBoxes);
+      const aboveBefore = await pg.evaluate(aboveStrip);
       // a date with nothing recent in What's new keeps the baked link (2027-01-15 here)
       const pick = WORTH.pickNew(JSON.parse(read("data/whats-new.json")).items, day);
       await pg.waitForFunction((href) => !document.querySelector(".wl-rp aside").hidden && document.getElementById("wl-new").getAttribute("href") === href, pick ? pick.href : "/changelog", { timeout: 15000 });
@@ -380,7 +395,9 @@ test("browser: Worth a look holds its place while it fills, for each Rain Print 
         inStrip: !!document.querySelector("#wl .rp-card"), hs: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
       assert.equal(r.place, "home-card-" + angle, `${tag}: the ${angle} card`);
       assert.ok(r.cards === 1 && r.inStrip, `${tag}: one Rain Print card, in the strip`);
-      for (const k of ["wl", "rp", "g", "n", "daily"]) assert.ok(Math.abs(after[k].top - before[k].top) <= 1 && Math.abs(after[k].h - before[k].h) <= 1, `${tag}: ${k} did not move or grow (${before[k].top}/${before[k].h} -> ${after[k].top}/${after[k].h})`);
+      const aboveAfter = await pg.evaluate(aboveStrip);
+      const grew = Object.keys(aboveAfter).filter((k) => Math.abs(aboveAfter[k] - (aboveBefore[k] || 0)) > 1).map((k) => `${k} ${aboveBefore[k]}->${aboveAfter[k]}`);
+      for (const k of ["wl", "rp", "g", "n", "daily"]) assert.ok(Math.abs(after[k].top - before[k].top) <= 1 && Math.abs(after[k].h - before[k].h) <= 1, `${tag}: ${k} did not move or grow (${before[k].top}/${before[k].h} -> ${after[k].top}/${after[k].h}); changed above the strip: ${grew.join(", ") || "none"}`);
       assert.ok(r.shift < 0.001, `${tag}: no layout shift (${r.shift})`);
       assert.ok(after.wl.top >= after.band.bottom && after.wl.top > after.jobs.bottom && after.wl.bottom <= after.daily.top, `${tag}: under the jobs and the futures, above the Daily`);
       if (w === 390) {
