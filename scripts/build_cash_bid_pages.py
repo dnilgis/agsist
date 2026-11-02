@@ -1309,7 +1309,7 @@ def hold_lines(bd):
     inputs = storesell.with_defaults({})
     out = []
     for c in CROPS:
-        rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd")]
+        rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd") and not restricted(r)]
         if not rs:
             continue
         com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
@@ -4023,6 +4023,9 @@ def _selftest_answer():
         dict(row("corn", 4.22, -0.25, dec, dm="2026-11"), label="LH Nov 26")]}
     assert answer_picks([uw])["corn"][0]["label"] == "LH Nov 26"
     assert board_glance(uw)["corn"][0] == 4.22, "the nearby lists skip a restricted bid as the answer does"
+    assert hold_lines(dict(uw, rows=uw["rows"] + [dict(row("corn", 4.35, -0.25, ("ZC", 2, 2027), dm="2027-01"),
+                                                       label="Jan 2027")]))[0][1].startswith("Hold to Jan? +13\u00a2"), \
+        "the hold box counts from the open LH bid, not the overfill-only one"
     # spot or the first half, then the whole month, then the last half
     for lab, per, want in (("FH Nov 2026", "2026-11", 0), ("LH Nov 2026", "2026-11", 2), ("Nov 26 - FH", "2026-11", 0),
                            ("Dec 2026", "2026-12", 1), ("Cash", "spot", 0), ("", "spot", 0), ("Spot / GO", "2026-11", 0),
