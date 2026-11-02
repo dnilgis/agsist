@@ -166,8 +166,10 @@ test("county answer, streaks as counts, rain from the county rain file", { skip 
     out = await txt(pg, "#dm-county-out");
     assert.ok(out.includes(`Since Jan 1: ${r.total.toFixed(2)} in`), "rain total");
     if (r.pct != null) assert.ok(out.includes(`${r.pct}% of usual (usual ${r.usual.toFixed(2)} in)`), "percent of usual");
-    const sep = r.months[8];
-    assert.ok(out.includes(`September: ${sep[0].toFixed(2)} in, usual ${sep[1].toFixed(2)} in`), "September");
+    // the last full month the page lists (it shows the last two months; the newest may be partial)
+    const MON = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const mi = r.months.length - 2, full = r.months[mi];
+    assert.ok(out.includes(`${MON[mi]}: ${full[0].toFixed(2)} in, usual ${full[1].toFixed(2)} in`), MON[mi]);
     assert.match(out, new RegExp(r.station.net === "cocorahs" ? "CoCoRaHS volunteer gauge" : "NOAA weather station"));
     // the address now names the county
     assert.match(await pg.evaluate(() => location.search), /county=19169/);

@@ -99,8 +99,14 @@ def month_facts(c, year, m):
     has_u = all(x[1] is not None for x in ytd)
     y_u = round(sum(x[1] for x in ytd), 2) if has_u else None
     y_p = round(100 * y_t / y_u) if y_u is not None and y_u >= R.PCT_MIN_NORMAL else None
-    m_p = round(100 * t / u) if u is not None and u >= R.PCT_MIN_NORMAL else None
-    return {"m": m, "year": year, "total": t, "usual": u, "pct": m_p, "reported": rep, "days": days,
+    # Nov 2, 2026 (audit item 11): the month gets the year's floor too. Under
+    # county_rain.MIN_SHARE of its days reported, the usual is NOAA's normal for
+    # only the days it reported, so a percent "of usual" for the month would be
+    # a percent of part of a month (Barbour County AL, Oct 2026: 21 of 31 days,
+    # "530% of usual"). The percent is withheld; the inches still say which days.
+    thin = rep < R.MIN_SHARE * days
+    m_p = round(100 * t / u) if u is not None and u >= R.PCT_MIN_NORMAL and not thin else None
+    return {"m": m, "year": year, "total": t, "usual": u, "pct": m_p, "reported": rep, "days": days, "thin": thin,
             "whole": days == whole_days, "last_day": last_day, "complete": days == whole_days and rep == days,
             "ytd": y_t, "ytd_usual": y_u, "ytd_pct": y_p,
             "ytd_reported": sum(x[2] for x in ytd), "ytd_days": sum(x[3] for x in ytd)}
@@ -121,11 +127,15 @@ def month_words(f, c):
     else:
         d = f["total"] - f["usual"]
         tail = "about the same as usual" if abs(d) < 0.05 else "%s %s than usual" % (BCR.inches_word(abs(d)), "more" if d > 0 else "less")
-        s += ", %s for %s (usual %s%s)." % (tail, "those days" if not f["whole"] else "the month", BCR.inch(f["usual"]),
+        # the usual is NOAA's normal over the days it reported: with a day missing it is not the month's usual
+        which = "the days it reported" if f["reported"] < f["days"] else "those days" if not f["whole"] else "the month"
+        s += ", %s for %s (usual %s%s)." % (tail, which, BCR.inch(f["usual"]),
                                            ", %d%% of usual" % f["pct"] if f["pct"] is not None else "")
     if f["reported"] < f["days"]:
         miss = f["days"] - f["reported"]
         s += " It missed %s, counted as unknown, not as dry." % BCR.days_word(miss)
+        if f.get("thin") and f["usual"] is not None:
+            s += " With that many days missing there is no percent of usual for the month."
     return s
 
 
@@ -381,6 +391,28 @@ def selftest():
     ok(not fo["whole"] and fo["last_day"] == 18 and month_words(fo, c).startswith("October 1 to 18: 1.06 inches at the weather station in Cumberland, the last day it has reported, 1.07 inches less than usual for those days"),
        "a month still coming in says through which day", month_words(fo, c))
     ok(month_facts(c, 2026, 10) is None, "no row, no facts")
+    # Nov 2, 2026 (audit item 11): the real Barbour County AL October, 21 of 31 days reported
+    bfx = json.load(open(REPO / "test" / "fixtures" / "rain-month" / "01005-2026.json"))
+    bc = bfx["county"]
+    bo = month_facts(bc, 2026, 9)
+    bdays = month_days(bfx["daily"], 2026, 9)
+    ok(len(bdays) == 31 and sum(1 for v in bdays if v != "M") == 21 == bo["reported"] and bo["days"] == 31,
+       "Barbour Oct 2026: the daily file and the month row agree, 21 of 31 days", (len(bdays), bo))
+    ok(bo["pct"] is None and bo["thin"] and bo["total"] == 12.18 and bo["usual"] == 2.3,
+       "under %d%% of the month's days reported: no month percent (was 530%%)" % round(100 * R.MIN_SHARE), bo)
+    bw = month_words(bo, bc)
+    ok(bw == "October: 12.18 inches at the weather station in Clayton, 9.88 inches more than usual for the days it reported (usual 2.30). "
+       "It missed 10 days, counted as unknown, not as dry. With that many days missing there is no percent of usual for the month.",
+       "Barbour Oct 2026 sentence: usual for the days it reported, no percent", bw)
+    ok("for the month (" not in bw and "%" not in bw and field_line(bo) is None, "no 'for the month', no percent, no field line from a part month", bw)
+    # above the floor with a day missing: the percent stays, the usual is said as the days it reported
+    sep = month_facts(dict(c, months=c["months"][:8] + [[3.67, 3.40, 28, 30]]), 2026, 8)
+    ok(sep["pct"] == 108 and not sep["thin"] and month_words(sep, c) == "September: 3.67 inches at the weather station in Cumberland, "
+       "0.27 inches more than usual for the days it reported (usual 3.40, 108% of usual). It missed 2 days, counted as unknown, not as dry.",
+       "28 of 30 days: percent kept, said for the days it reported", month_words(sep, c))
+    edge = month_facts(dict(c, months=c["months"][:8] + [[3.67, 3.40, 27, 30]]), 2026, 8)
+    ok(edge["pct"] == 108 and month_facts(dict(c, months=c["months"][:8] + [[3.67, 3.40, 26, 30]]), 2026, 8)["pct"] is None,
+       "the floor is the year's: 27 of 30 (90%) keeps it, 26 of 30 does not")
     # the record
     ok(ghcn_id("471923 2") == "USC00471923" and ghcn_id("14936 1") == "USW00014936" and ghcn_id("US1SDBN0020 6") == "US1SDBN0020"
        and ghcn_id("1234 3") is None and ghcn_id("") is None, "GHCN ids")

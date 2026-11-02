@@ -64,7 +64,12 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from cron_gate import Cron, latest_tick, max_spacing_minutes, parse_ts, NOT_A_RUN  # noqa: E402
+from cron_gate import Cron, latest_tick, max_spacing_minutes, parse_ts, NOT_A_RUN, ALWAYS_GO  # noqa: E402
+
+# Workflows whose gate does not count a run by hand as the tick's run (cron_gate.py
+# MANUAL_DOES_NOT_SERVE, Nov 2, 2026). Kept here too, so this file runs beside an older
+# copy of cron_gate.py; the selftest holds the two lists equal when both have it.
+MANUAL_DOES_NOT_SERVE = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"}
 
 UTC = timezone.utc
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -102,8 +107,11 @@ CHECKS = [
      "after every Fetch Grain Bids on WASDE days, 16:00-17:59 UTC"),
     ("report-day.yml", ["47 16 * * 1-5", "13 18 * * 1-5"], 60, True,
      "after WASDE watch, What's Priced In and Fetch Grain Bids"),
-    ("arcplc-reminder.yml", ["10 14,17,20 * 11,12,2,3 *"], 120, False,
-     "three times a day in Nov, Dec, Feb, Mar; mails only on an ARC/PLC deadline minus 7 days"),
+    # Gated since Nov 2, 2026 (GitHub's scheduler started neither monthly email that day): the four
+    # mail and rain rows read their clock from their own gate step, and a run by hand is not judged
+    # as the tick's run (cron_gate.py MANUAL_DOES_NOT_SERVE).
+    ("arcplc-reminder.yml", None, 60, False,
+     "chained, gated to three times a day in Nov, Dec, Feb, Mar; mails only on an ARC/PLC deadline minus 7 days"),
     ("news.yml", None, 30, False, "chained, gated to its own schedule"),
     ("crop_progress.yml", None, 60, False, "chained, gated to its own schedule"),
     ("export_sales.yml", None, 60, False, "chained, gated to its own schedule"),
@@ -116,12 +124,12 @@ CHECKS = [
     ("prf-outlook.yml", ["47 15 * * 4", "17 11 * * 5"], 240, False, "PRF long-range outlook (CPC, ENSO, Drought Monitor), Thursdays and Fridays"),
     ("climate-indices.yml", ["37 14 9 * *"], 240, False, "NOAA PDO and AMO for the PRF optimizer test, monthly on the 9th"),
     # Daily since Oct 23, 2026 (was Mondays): a missed day is late by the next morning, not a week later.
-    ("county-rain.yml", ["23 13 * * *", "41 14 2 1 *"], 240, False,
-     "rain so far this year by county (RCC-ACIS) and the /rain pages, every day, plus the Jan 2 finished-year run"),
-    ("rain-monthly.yml", ["41 14 2 * *"], 240, False,
-     "the monthly county rain email (fetch, pages, then the list once RAIN_MONTHLY_LIVE is 1), the 2nd of each month"),
-    ("land-alert.yml", ["47 15 3 * *"], 240, False,
-     "the monthly land sale email (after the land data run on the 3rd; the list only once LANDSALES_MONTHLY_LIVE is 1), the 3rd of each month"),
+    ("county-rain.yml", None, 60, False,
+     "chained, gated: rain so far this year by county (RCC-ACIS) and the /rain pages, every day, plus the Jan 2 finished-year run"),
+    ("rain-monthly.yml", None, 60, False,
+     "chained, gated: the monthly county rain email (fetch, pages, then the list once RAIN_MONTHLY_LIVE is 1), the 2nd of each month"),
+    ("land-alert.yml", None, 60, False,
+     "chained, gated: the monthly land sale email (after the land data run on the 3rd; the list only once LANDSALES_MONTHLY_LIVE is 1), the 3rd of each month"),
     # The watchers themselves (2026-10-20). GitHub's own cron runs the site check hours
     # late (3 h and 6 h on Oct 18 and 19, nothing on Oct 17), so 8 h is the limit.
     ("daily-site-check.yml", ["37 11 * * *"], 480, False, "the morning site check and its issue, GitHub cron 11:37 UTC"),
@@ -156,13 +164,15 @@ def gate_crons(workflow):
     return [args[i + 1] for i, a in enumerate(args[:-1]) if a == "--cron"]
 
 
-def judge(crons, max_delay, now, runs_after_tick, first_only):
+def judge(crons, max_delay, now, runs_after_tick, first_only, manual_serves=True):
     """(status, tick, served_by, why). runs_after_tick: runs created in
-    [tick, tick + max_delay], any order."""
+    [tick, tick + max_delay], any order. manual_serves=False: runs started by
+    hand are not the tick's run (the gate passes them over too)."""
     t = latest_tick(crons, now - timedelta(minutes=max_delay))
     if t is None:
         return "ok", None, None, "no tick due in the last eight days"
     runs = sorted((r for r in runs_after_tick if r.get("conclusion") not in NOT_A_RUN
+                   and (manual_serves or r.get("event") not in ALWAYS_GO)
                    and t <= parse_ts(r["created_at"]) <= t + timedelta(minutes=max_delay)),
                   key=lambda r: (r["created_at"], int(r["id"])))
     if first_only:
@@ -236,7 +246,8 @@ def collect(now, repo, token, api):
                 rng = "%s..%s" % (t.strftime("%Y-%m-%dT%H:%M:%SZ"),
                                   (t + timedelta(minutes=delay)).strftime("%Y-%m-%dT%H:%M:%SZ"))
                 runs = _get(base + "&created=" + rng, token).get("workflow_runs", [])
-            status, tick, by, why = judge(crons, delay, now, runs, first_only=(wf in GATED))
+            status, tick, by, why = judge(crons, delay, now, runs, first_only=(wf in GATED),
+                                          manual_serves=wf not in MANUAL_DOES_NOT_SERVE)
             status, why = forgive(status, by, why, row["last_success"], tick)
         except Exception as e:
             row.update(status="unknown", why="could not read runs: %s" % e)
@@ -640,14 +651,42 @@ def selftest():
         own = re.findall(r"""^\s*-\s*cron:\s*["']([^"']+)["']""", text, re.M)
         if own and wf in ("county-rain.yml", "prf.yml", "daily-site-check.yml"):
             check(sorted(own) == sorted(crons), "%s: the clock watched here is the workflow's own (%s vs %s)" % (wf, crons, own))
-    rain = next(c for c in CHECKS if c[0] == "county-rain.yml")
-    check(max_spacing_minutes(rain[1]) == 1440, "county rain: the longest gap its clock allows is one day")
-    s, tick, _, _ = judge(rain[1], rain[2], T("2026-10-24 18:00"), [], False)
+    # the four mail and rain workflows are gated (Nov 2, 2026): each row reads its clock from the
+    # gate step, and that clock is exactly the workflow's own schedule, so the scheduled fire and
+    # the chained runs serve the same ticks
+    for wf in sorted(MANUAL_DOES_NOT_SERVE):
+        row = next((c for c in CHECKS if c[0] == wf), None)
+        check(row is not None and row[1] is None, "%s: watched by its gate clock" % wf)
+        try:
+            text = open(os.path.join(WF_DIR, wf), encoding="utf-8").read()
+        except OSError:
+            text = ""
+        own = re.findall(r"""^\s*-\s*cron:\s*["']([^"']+)["']""", text, re.M)
+        check(own and sorted(own) == sorted(gate_crons(wf)),
+              "%s: the gate clock is the workflow's own schedule (%s vs %s)" % (wf, gate_crons(wf), own))
+    try:
+        import cron_gate as CG
+        check(getattr(CG, "MANUAL_DOES_NOT_SERVE", MANUAL_DOES_NOT_SERVE) == MANUAL_DOES_NOT_SERVE,
+              "the gate and this check pass over runs by hand for the same workflows")
+    except ImportError:
+        pass
+    rain = (gate_crons("county-rain.yml"), next(c for c in CHECKS if c[0] == "county-rain.yml")[2])
+    check(sorted(rain[0]) == ["23 13 * * *", "41 14 2 1 *"], "county rain: the gate watches the daily and the Jan 2 clock")
+    check(max_spacing_minutes(rain[0]) == 1440, "county rain: the longest gap its clock allows is one day")
+    s, tick, _, _ = judge(rain[0], rain[1], T("2026-10-24 18:00"), [], True, False)
     check(s == "late" and tick == "2026-10-24T13:23Z", "county rain: a Saturday with no run is late that day")
-    s, *_ = judge(rain[1], rain[2], T("2026-10-24 18:00"), [R(3, "2026-10-24 13:40")], False)
+    s, *_ = judge(rain[0], rain[1], T("2026-10-24 18:00"), [R(3, "2026-10-24 13:40")], True, False)
     check(s == "ok", "county rain: the day's run serves the day's tick")
-    s, tick, *_ = judge(rain[1], rain[2], T("2027-01-02 19:00"), [], False)
+    s, tick, *_ = judge(rain[0], rain[1], T("2027-01-02 19:00"), [], True, False)
     check(s == "late" and tick == "2027-01-02T14:41Z", "county rain: Jan 2 judges the finished-year run")
+    rm = gate_crons("rain-monthly.yml")
+    hand = dict(R(4, "2026-11-02 14:44", "failure"), event="workflow_dispatch")
+    s, *_ = judge(rm, 60, T("2026-11-02 16:00"), [hand, dict(R(5, "2026-11-02 14:52"), event="workflow_run")], True, False)
+    check(s == "ok", "rain email: a failed dry run by hand is not the tick's run; the chained run that sent is")
+    s, *_ = judge(rm, 60, T("2026-11-02 16:00"), [hand], True, False)
+    check(s == "late", "rain email: only a run by hand after the tick is late (the month was not sent)")
+    s, *_ = judge(gate_crons("land-alert.yml"), 60, T("2026-11-03 17:00"), [], True, False)
+    check(s == "late", "land email: no run within an hour of 15:47 on the 3rd is late")
 
     # briefing file check
     import tempfile

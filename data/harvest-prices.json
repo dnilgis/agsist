@@ -1,6 +1,6 @@
 {
  "crop_year": 2026,
- "updated": "2026-10-31",
+ "updated": "2026-11-02",
  "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
  "commodities": [
   {
@@ -15,9 +15,9 @@
     "days_total": 19
    },
    "harvest": {
-    "status": "running",
-    "price": null,
-    "running_avg": 4.75,
+    "status": "final",
+    "price": 4.75,
+    "running_avg": null,
     "window": "October",
     "series": [
      {
@@ -147,9 +147,9 @@
     "days_total": 19
    },
    "harvest": {
-    "status": "running",
-    "price": null,
-    "running_avg": 12.63,
+    "status": "final",
+    "price": 12.63,
+    "running_avg": null,
     "window": "October",
     "series": [
      {
@@ -390,9 +390,30 @@
     }
    ],
    "days_counted": 22,
+   "status": "final",
+   "price": 4.75,
+   "running_avg": null
+  },
+  {
+   "key": "ZCZ26.CBT|2026-11-01|2026-11-30",
+   "crop": "Corn",
+   "contract": "Dec '26",
+   "ticker": "ZCZ26.CBT",
+   "start": "2026-11-01",
+   "end": "2026-11-30",
+   "days_total": 20,
+   "series": [
+    {
+     "d": "2026-11-02",
+     "s": 4.4775,
+     "p": true,
+     "a": 4.48
+    }
+   ],
+   "days_counted": 1,
    "status": "running",
    "price": null,
-   "running_avg": 4.75
+   "running_avg": 4.48
   },
   {
    "key": "ZSX26.CBT|2026-10-01|2026-10-31",
@@ -515,9 +536,30 @@
     }
    ],
    "days_counted": 22,
+   "status": "final",
+   "price": 12.63,
+   "running_avg": null
+  },
+  {
+   "key": "ZSF27.CBT|2026-11-01|2026-11-30",
+   "crop": "Soybeans",
+   "contract": "Jan '27",
+   "ticker": "ZSF27.CBT",
+   "start": "2026-11-01",
+   "end": "2026-11-30",
+   "days_total": 20,
+   "series": [
+    {
+     "d": "2026-11-02",
+     "s": 12.16,
+     "p": true,
+     "a": 12.16
+    }
+   ],
+   "days_counted": 1,
    "status": "running",
    "price": null,
-   "running_avg": 12.63
+   "running_avg": 12.16
   }
  ]
 }

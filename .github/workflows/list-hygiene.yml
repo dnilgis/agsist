@@ -9,6 +9,11 @@ name: List cleanup
 # repo secret LIST_REMOVE (Settings > Secrets and variables > Actions), run
 # this workflow by hand with dry_run off, then clear the secret. Scheduled
 # runs ignore LIST_REMOVE, so a reader who signs up again later stays on.
+#
+# Unsubscribe emails (Gmail's Unsubscribe button mails news@agsist.com): read
+# from the same inbox as the bounces. If news@ forwards to a different mailbox
+# than the sending login, set the secrets UNSUB_IMAP_USER and UNSUB_IMAP_PASS
+# (and UNSUB_IMAP_HOST if it is not Gmail); left empty, the SMTP login is used.
 on:
   schedule:
     - cron: "23 13 * * *"
@@ -52,4 +57,7 @@ jobs:
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           FROM_NAME: ${{ secrets.FROM_NAME }}
           REPORT_TO: ${{ secrets.REPLY_TO }}
+          UNSUB_IMAP_HOST: ${{ secrets.UNSUB_IMAP_HOST }}
+          UNSUB_IMAP_USER: ${{ secrets.UNSUB_IMAP_USER }}
+          UNSUB_IMAP_PASS: ${{ secrets.UNSUB_IMAP_PASS }}
           REMOVE: ${{ github.event_name == 'workflow_dispatch' && secrets.LIST_REMOVE || '' }}

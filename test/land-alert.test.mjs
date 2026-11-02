@@ -106,8 +106,9 @@ test("the gate in the workflow: the list only with LANDSALES_MONTHLY_LIVE=1, sch
   if (rd) assert.notEqual(rd[1], "3", "never on the rain email's day");
   assert.match(read(".github/workflows/land-data.yml"), /- cron: '23 9 3 \* \*'/, "land-data runs the morning of the 3rd, before this");
   assert.match(WF, /options: \[dry, preview, send\]\n\s+default: dry/);
-  assert.ok(WF.includes("SEND: ${{ ((github.event_name == 'schedule' && vars.LANDSALES_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.LANDSALES_MONTHLY_LIVE == '1')) && '1' || '' }}"),
-    "SEND=1 only with the variable, on both triggers");
+  // Nov 2, 2026: a chained run (workflow_run, gated to the cron) takes the scheduled path
+  assert.ok(WF.includes("SEND: ${{ (((github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.LANDSALES_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.LANDSALES_MONTHLY_LIVE == '1')) && '1' || '' }}"),
+    "SEND=1 only with the variable, on every trigger");
   assert.ok(WF.includes("LANDSALES_MONTHLY_LIVE: ${{ vars.LANDSALES_MONTHLY_LIVE }}"), "the script sees the variable and refuses without it");
   assert.ok(WF.includes("PREVIEW: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'preview' && '1' || '' }}"), "preview by hand only");
   assert.match(WF, /if \[ "\$ASKED_SEND" = 1 \] && \[ "\$SEND" != 1 \]; then\n\s+echo "::error::[^"]*LANDSALES_MONTHLY_LIVE[^"]*"\n\s+exit 1/);
@@ -210,6 +211,8 @@ test("the morning report, signups and cron health know the list; signups count b
   assert.match(read("scripts/morning_report.py"), /\("land-alert\.yml", "send_land_alert\.py", "Monthly land sales", "email"\)/);
   assert.match(read("scripts/morning_report.py"), /"landsales": "land sales"/);
   assert.match(read("scripts/build_signups.py"), /if kind == "landsales":\n\s+sub = sub\.rsplit\(":", 1\)\[-1\] \+ " mi"/);
-  assert.match(read("scripts/cron_health.py"), /\("land-alert\.yml", \["47 15 3 \* \*"\]/);
+  // gated since Nov 2, 2026: the row reads its clock from the gate step, which carries the schedule's own cron
+  assert.match(read("scripts/cron_health.py"), /\("land-alert\.yml", None, \d+, False,/);
+  assert.match(WF, /cron_gate\.py tick --workflow land-alert\.yml --max-lag \d+\n\s+--cron "47 15 3 \* \*"/);
   assert.match(read("scripts/list_source.py"), /elif t\.startswith\("rain-month:"\) or t\.startswith\("landsales:"\):/);
 });

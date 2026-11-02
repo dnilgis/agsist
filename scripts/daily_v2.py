@@ -68,6 +68,7 @@ REPO = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import brief_email as BE   # noqa: E402  link tags, text hygiene, the shared blocks
 import pricefmt            # noqa: E402  the site's grain price text
+import source_links       # noqa: E402  one rule for "is this url a data file"
 
 try:
     from zoneinfo import ZoneInfo
@@ -791,6 +792,27 @@ def _stories_html(stories):
     return b
 
 
+def fact_link(fact):
+    """The fact's url when the email may link it, else None. Sig, Nov 2 2026: a fact whose
+    url is a data file (source_links.is_data_source: ERS data products, PDFs, esmis .txt)
+    names its source and date in plain text, no link; the url stays in the data."""
+    u = (fact or {}).get("url")
+    return u if u and not source_links.is_data_source(u) else None
+
+
+def fact_source_text(fact):
+    """The plain source line: the source, then the date it was read (a pool fact) or the
+    file it was worked from (one of ours)."""
+    s = fact["source"]
+    if fact.get("file"):
+        return s + "; " + fact["file"]
+    d = str(fact.get("checked") or "")[:10]
+    if re.match(r"\d{4}-\d{2}-\d{2}$", d):
+        dd = date.fromisoformat(d)
+        s += ", read %s %d, %d" % (dd.strftime("%B"), dd.day, dd.year)
+    return s
+
+
 def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
                site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None):
     date_display = BE.strip_md(daily.get("date")) or iso
@@ -852,8 +874,8 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
         b.append(_rule())
         b.append(_label(FACT_LABEL, pad=14))
         b.append(_row(e(fact["text"]), pad="2px 0 0"))
-        src = (_a(fact["url"], fact["source"], None, None, cls="mute link", color=MUTE) if fact.get("url")
-               else e(fact["source"] + ("; " + fact["file"] if fact.get("file") else "")))
+        src = (_a(fact["url"], fact["source"], None, None, cls="mute link", color=MUTE) if fact_link(fact)
+               else e(fact_source_text(fact)))
         b.append('<tr><td class="mute" style="padding:4px 0 0;font-family:%s;font-size:12px;line-height:1.4;color:%s">Source: %s</td></tr>'
                  % (SANS, MUTE, src))
     # the board
@@ -945,7 +967,7 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
         L += ["", offer[0] + " " + BE.utm(offer[1], "rainprint", camp)]
     if fact:
         L += ["", FACT_LABEL.upper(), fact["text"],
-              "Source: " + fact["source"] + ((" " + fact["url"]) if fact.get("url") else ("; " + fact["file"] if fact.get("file") else ""))]
+              "Source: " + ((fact["source"] + " " + fact["url"]) if fact_link(fact) else fact_source_text(fact))]
     rows = board_rows(daily)
     if rows:
         stamp, _m = board_stamp(daily, rows)
