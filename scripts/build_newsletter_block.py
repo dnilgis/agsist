@@ -47,6 +47,14 @@ import pricefmt                    # noqa: E402  basis cents, the site's one for
 SCHEMA = "agsist-newsletter-block/1"
 CROPS = (("corn", "corn"), ("soybeans", "soybean"))
 DAILY = "agsist.com/daily"
+# Lead decision, Nov 2: the rich HTML and the HTML code link with this tag so a
+# paste's visits can be told apart; the plain text and the image show the clean address.
+UTM = "utm_source=newsletter&utm_medium=paste"
+
+
+def tagged(url):
+    """https://agsist.com/daily -> https://agsist.com/daily?utm_source=newsletter&utm_medium=paste"""
+    return url + ("&" if "?" in url else "?") + UTM
 
 
 def last_whole_month(edate):
@@ -175,7 +183,7 @@ def build_state(d, bs, C):
         return None
     return {"schema": SCHEMA, "state": st, "name": R.STATES[st], "year": year, "month": m + 1,
             "month_name": R.MONTHS_LONG[m], "rain_fetched": d["fetched"], "basis_generated": bs.get("generated"),
-            "asof": asof, "basis": blines, "daily": DAILY, "counties": out}
+            "asof": asof, "basis": blines, "daily": DAILY, "utm": UTM, "counties": out}
 
 
 def build(repo=REPO, C=None):
@@ -269,6 +277,8 @@ def selftest():
     co, _ = basis_lines("CO", bs)
     ok(co[0].startswith("Colorado corn bids, Nov 2: middle basis 20 cents over Dec '26") and co[1].startswith("Too few Colorado elevator bids for a soybean"),
        "one crop shown, the other withheld", co)
+    ok(tagged("https://agsist.com/daily") == "https://agsist.com/daily?utm_source=newsletter&utm_medium=paste"
+       and "utm_" not in b["src"] and "utm_" not in b["url"], "the tag is for links only; the words stay clean")
     words = [b["head"], b["ytd"], b["stn"], b["src"], s["head"], s["ytd"]] + ia + al + co
     ok(not any(ch in w for w in words for ch in "—–"), "no em or en dashes")
     print("OK: %d failure(s)" % len(fails))

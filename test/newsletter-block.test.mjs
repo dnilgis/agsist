@@ -98,6 +98,14 @@ test("no data-source links, no em dashes, only our own pages linked", () => {
     assert.ok(!DASH.test(txt), f + " has an em or en dash");
     for (const m of txt.matchAll(/"url":"([^"]+)"/g)) urls.add(m[1]);
   }
+  for (const f of files.filter((f) => f !== "index.json")) {
+    const d = JSON.parse(read("data/newsletter/" + f));
+    assert.equal(d.utm, "utm_source=newsletter&utm_medium=paste", f + ": the paste tag (lead, Nov 2)");
+    for (const line of [d.daily, ...d.basis, ...Object.values(d.counties).flatMap((b) => [b.head, b.ytd, b.stn, b.src, b.url])])
+      assert.ok(!line.includes("utm_"), f + ": words and the clean url never carry the tag: " + line);
+    for (const b of Object.values(d.counties)) urls.add(b.url + "?" + d.utm);
+  }
+  urls.add("https://agsist.com/daily?utm_source=newsletter&utm_medium=paste");
   const js = read("components/newsletter-block.js");
   assert.ok(!DASH.test(js.split("\n").filter((l) => !/^\s*(\/\/|\/?\*)/.test(l)).join("\n")), "no dash in the page script's copy");
   for (const m of js.matchAll(/https?:\/\/[^"'\s)]+/g)) urls.add(m[0]);
@@ -145,6 +153,7 @@ test("in Chromium at 390 and 1280: the block from the link, copy buttons, the im
     const al = JSON.parse(read("data/newsletter/al.json")).counties["01005"];
     for (const width of [390, 1280]) {
       const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
+      await ctx.grantPermissions(["clipboard-read", "clipboard-write"], { origin: `http://127.0.0.1:${port}` });
       const pg = await ctx.newPage();
       const errs = [];
       pg.on("pageerror", (e) => errs.push(String(e)));
@@ -167,6 +176,20 @@ test("in Chromium at 390 and 1280: the block from the link, copy buttons, the im
       assert.equal(r.png, "agsist-al-barbour-county-2026-10.png".replace("2026-10", `${JSON.parse(read("data/newsletter/al.json")).year}-${String(JSON.parse(read("data/newsletter/al.json")).month).padStart(2, "0")}`));
       assert.deepEqual(r.img, [1200, 630]);
       assert.ok(r.tall.every((h) => h >= 40 && h < 60), width + ": one line per button " + r.tall);
+      // links in the HTML carry the paste tag; the plain text and the shown words do not
+      const hrefs = await pg.$$eval("#nlb-out a", (as) => as.map((a) => a.getAttribute("href")));
+      assert.deepEqual(hrefs, ["https://agsist.com/daily?utm_source=newsletter&utm_medium=paste",
+        "https://agsist.com/rain/alabama/barbour-county?utm_source=newsletter&utm_medium=paste"]);
+      assert.ok(!r.text.includes("utm_"), "the shown words are clean");
+      await pg.click("#nlb-txt");
+      await pg.waitForFunction(() => /Copied/.test(document.getElementById("nlb-msg").textContent));
+      const txt = await pg.evaluate(() => navigator.clipboard.readText());
+      assert.ok(txt.includes("Get this every morning: agsist.com/daily\n") && txt.includes(al.src) && !txt.includes("utm_"), "plain text: clean short addresses");
+      await pg.click("#nlb-code");
+      await pg.waitForFunction(() => /HTML code copied/.test(document.getElementById("nlb-msg").textContent));
+      const code = await pg.evaluate(() => navigator.clipboard.readText());
+      assert.ok(code.startsWith("<table") && code.includes('href="https://agsist.com/daily?utm_source=newsletter&amp;utm_medium=paste"'), "HTML code: tagged links");
+      assert.ok(code.includes(">agsist.com/daily</a>") && code.includes(">agsist.com/rain/alabama/barbour-county</a>"), "HTML code: the link text stays clean");
       assert.deepEqual(errs, []);
       await ctx.close();
     }

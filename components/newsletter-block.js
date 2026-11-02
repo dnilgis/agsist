@@ -24,7 +24,7 @@
 
   /* the block, in order: rain, year, gauge, basis, the Daily, the source */
   function lines(s, b) {
-    return { head: b.head, ytd: b.ytd, stn: b.stn, basis: s.basis.slice(), daily: "Get this every morning: " + s.daily, src: b.src, url: b.url };
+    return { head: b.head, ytd: b.ytd, stn: b.stn, basis: s.basis.slice(), daily: "Get this every morning: " + s.daily, src: b.src, url: b.url, utm: s.utm || "" };
   }
   function plain(L) {
     return [L.head, L.ytd, L.stn].concat(L.basis, [L.daily, L.src]).join("\n");
@@ -32,16 +32,18 @@
   var P = 'style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.45;color:#222222;"';
   var S = 'style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;color:#555555;"';
   var A = 'style="color:#2a6b1f;text-decoration:underline;"';
+  /* links in the HTML carry the paste tag (data file's utm); the words never do */
+  function tag(u, L) { return L.utm ? u + (u.indexOf("?") < 0 ? "?" : "&") + L.utm : u; }
   function html(L) {
     var path = L.url.replace(/^https:\/\//, "");
-    var src = esc(L.src).replace(esc(path), '<a href="' + esc(L.url) + '" ' + A + ">" + esc(path) + "</a>");
+    var src = esc(L.src).replace(esc(path), '<a href="' + esc(tag(L.url, L)) + '" ' + A + ">" + esc(path) + "</a>");
     return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;border-collapse:collapse;">' +
       '<tr><td style="border-top:3px solid #c9a227;padding:10px 0 4px 0;">' +
       '<p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.35;font-weight:bold;color:#222222;">' + esc(L.head) + "</p>" +
       "<p " + P + ">" + esc(L.ytd) + "</p>" +
       "<p " + S + ">" + esc(L.stn) + "</p>" +
       L.basis.map(function (x) { return "<p " + P + ">" + esc(x) + "</p>"; }).join("") +
-      '<p style="margin:10px 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.45;color:#222222;">Get this every morning: <a href="https://agsist.com/daily" ' + A + ">agsist.com/daily</a></p>" +
+      '<p style="margin:10px 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.45;color:#222222;">Get this every morning: <a href="' + esc(tag("https://agsist.com/daily", L)) + '" ' + A + ">agsist.com/daily</a></p>" +
       '<p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#555555;">' + src + "</p>" +
       "</td></tr></table>";
   }
