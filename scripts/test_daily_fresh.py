@@ -54,9 +54,11 @@ def load(iso):
 
 
 def replay():
-    want_hard = {"2026-10-24": {"weekend"}, "2026-10-25": {"headline", "weekend", "story"},
+    # "sentence" (Nov 2): Oct 24 retold Oct 23's Cattle on Feed line; Oct 25 the USDA data-error line, the
+    # Cattle on Feed line and Saturday's natural gas line word for word; Nov 1 Saturday's corn settle line.
+    want_hard = {"2026-10-24": {"weekend", "sentence"}, "2026-10-25": {"headline", "weekend", "story", "sentence"},
                  "2026-10-29": {"number"}, "2026-10-31": {"weekend", "number"},
-                 "2026-11-01": {"headline", "weekend", "number", "story"}}
+                 "2026-11-01": {"headline", "weekend", "number", "story", "sentence"}}
     want_soft = {"2026-10-23", "2026-10-24", "2026-10-25", "2026-10-26", "2026-10-27", "2026-10-28"}
     d = dt.date(2026, 10, 19)
     while d <= dt.date(2026, 11, 1):
@@ -80,7 +82,20 @@ def gate():
     fresh = [(s, c) for s, c, _ in issues if c.startswith("fresh")]
     ok(("WARN", "fresh:headline") in fresh and ("WARN", "fresh:weekend") in fresh
        and ("WARN", "fresh:number") in fresh and ("WARN", "fresh:story") in fresh
-       and not any(st == "FAIL" for st, _ in fresh), "Nov 1, stamped: its repeats warn, never hold the send %r" % fresh)
+       and not any(st == "FAIL" for st, _ in fresh), "Nov 1, stamped and uncut: its repeats warn, never hold %r" % fresh)
+    # Sig, Nov 2 2026: "cut the repeat". The rule changed from "repeats warn, never hold" to: what still
+    # repeats after the one rewrite is cut before the send (story, sentence, the day's number; a repeated
+    # headline becomes the top story's title), and only what cannot be cut is left, as a warning. The email
+    # always goes out.
+    cut = copy.deepcopy(stamped)
+    rec = F.recent(dt.date(2026, 11, 1), ARCH)
+    left, log = F.cut_repeats(cut, F.hits(cut, rec, dt.date(2026, 11, 1), ARCH), rec, dt.date(2026, 11, 1), ARCH)
+    passed, issues = briefing_gate.run(cut, None, today=dt.date(2026, 11, 1), archive_dir=ARCH)
+    fresh = [(s_, c) for s_, c, _ in issues if c.startswith("fresh")]
+    ok("one_number" not in cut and not cut.get("outside_the_pit"), "Nov 1: the 2.48 number and the farm bill story are cut %r" % log)
+    ok(not [c for _s, c in fresh if c in ("fresh:number", "fresh:story")] and ("WARN", "fresh:headline") in fresh
+       and not any(st == "FAIL" for st, _ in fresh),
+       "Nov 1, cut: only the headline is left (no story to replace it), and it warns, never holds the send %r" % fresh)
     import headline_fix
     msgs = [m for s, c, m in issues if c.startswith("fresh")]
     ok(msgs and not any(headline_fix._LOC.match(m) for m in msgs), "headline_fix does not take a repeat for a claim")
@@ -91,6 +106,42 @@ def gate():
     passed, issues = briefing_gate.run(fresh_head, None, today=dt.date(2026, 11, 1), archive_dir=ARCH)
     ok(not [c for s, c, _ in issues if c.startswith("fresh") and s == "FAIL"], "a new headline, number and story pass: %r"
        % [m for s, c, m in issues if c.startswith("fresh")])
+
+
+def cut_nov2():
+    """The Oct 30 to Nov 2 2026 repeats Sig named on Nov 2, from the real archive."""
+    d = dt.date(2026, 11, 2)
+    b = load("2026-11-02")
+    rec = F.recent(d, ARCH)
+    found = F.hits(b, rec, d, ARCH)
+    kinds = [(k, loc) for k, loc, _ in found]
+    ok(("number", "one_number.value") in kinds, "Nov 2: Brent $105 again (Oct 30) is a repeat")
+    ok(("story", "outside_the_pit[1]") in kinds, "Nov 2: 'Screwworm found in Arizona' is Oct 29's Arizona case")
+    ok(("story", "outside_the_pit[2]") in kinds, "Nov 2: the dyed diesel waiver ran in Nov 1's sections")
+    ok(("story", "outside_the_pit[0]") not in kinds, "Nov 2: China's $17 billion pledge is new")
+    ok(("sentence", "sections[1].body") in kinds, "Nov 2: AgWeb's 'healthy correction' (Oct 31, Nov 1) again")
+    cut = copy.deepcopy(b)
+    left, log = F.cut_repeats(cut, found, rec, d, ARCH)
+    ok(left == [], "Nov 2: nothing repeats after the cut %r" % left)
+    ok([x["title"] for x in cut["outside_the_pit"]] == [b["outside_the_pit"][0]["title"]], "Nov 2: the new story stays")
+    ok("one_number" not in cut and "healthy correction" not in cut["sections"][1]["body"]
+       and cut["sections"][1]["body"].strip(), "Nov 2: the number and the sentence are cut, the section keeps the rest")
+    ok(cut["headline"] == b["headline"], "Nov 2: a fresh headline is not touched")
+    # a repeated headline falls back to the top story's title, never the board
+    h = copy.deepcopy(b)
+    h["headline"] = load("2026-11-01")["headline"]
+    left, log = F.cut_repeats(h, F.hits(h, rec, d, ARCH), rec, d, ARCH)
+    ok(h["headline"] == b["outside_the_pit"][0]["title"] and not any(k == "headline" for k, _, _ in left),
+       "a repeated headline becomes the top story: %r" % h["headline"])
+    want = (b["outside_the_pit"][0].get("body") or "").strip()
+    ok(want and h["teaser"] == want, "the teaser follows the new headline (the story's line), not the old board teaser")
+    # Oct 29's Arizona item is a new turn from Oct 23/25 (a new state); a second case is a development
+    ok(F.new_development({"title": "Arizona confirms its first New World screwworm case", "body": "x"},
+                         {"title": "USDA confirms screwworm in a Texas elk", "body": "Pecos County"}), "a new state is new")
+    ok(not F.new_development({"title": "Screwworm found in Arizona, third state affected",
+                              "body": "USDA confirmed the first Arizona case."},
+                             {"title": "Arizona confirms its first New World screwworm case", "body": "Drovers"}),
+       "the same first case, retold, is not")
 
 
 def stories():
@@ -208,6 +259,7 @@ def week_ahead():
 def main():
     replay()
     gate()
+    cut_nov2()
     stories()
     feeds()
     prompt()

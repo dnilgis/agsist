@@ -309,6 +309,32 @@ COMMODITY_LABELS = {
 
 GRAIN_KEYS = {"corn", "corn-dec", "beans", "beans-nov", "wheat", "oats"}
 LIVESTOCK_KEYS = {"cattle", "feeders", "hogs"}   # CME: day session only, 8:30 a.m. to 1:05 p.m. CT
+
+_CME_MONTH_CODE = dict(zip("FGHJKMNQUVXZ", ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")))
+
+
+def quoted_contract(q):
+    """The contract month ("Dec '26") the quote's PRICE belongs to, from the
+    symbol actually quoted, or None.
+
+    2026-11-02 audit: on Nov 1 preflight_prices repaired the cattle key from
+    the dead Oct '26 contract to cattle-dec26 (close 220.95) but the copied
+    quote kept contract "Oct '26" and ticker LEV26.CME, and the issue printed
+    "October live cattle fell 2.4% to $220.95". The repaired source wins, then
+    the nearby alias, then the ticker; the stored label only when none says."""
+    if not isinstance(q, dict):
+        return None
+    for src in (q.get("repaired_from"), q.get("alias_of")):
+        if src:
+            suf = str(src).split("-")[-1]
+            mon, yy = suf[:3].capitalize(), suf[3:]
+            if mon in _CME_MONTH_CODE.values() and yy.isdigit() and len(yy) == 2:
+                return f"{mon} '{yy}"
+    m = re.match(r"^[A-Z]{2,3}([FGHJKMNQUVXZ])(\d{2})\.", str(q.get("ticker") or ""))
+    if m:
+        return f"{_CME_MONTH_CODE[m.group(1)]} '{m.group(2)}"
+    return q.get("contract") or None
 INDEX_KEYS = {"sp500", "dollar", "treasury10"}   # cash indexes: they close, they do not settle
 STALE_NAMES = {"cattle": "live cattle", "feeders": "feeder", "hogs": "hogs", "milk": "milk",
                "crude": "crude", "natgas": "natural gas", "meal": "meal", "soyoil": "soybean oil",
@@ -824,6 +850,26 @@ def _resolve_front_month(data):
     return data.get("quotes", {})
 
 
+def overnight_only(surprises, locked_changes, quote_session):
+    """The surprises that moved in THIS session. A settle from an earlier
+    session (livestock at a morning pull, Friday's settles on a Monday, an
+    index's prior close) is not an overnight surprise.
+
+    2026-11-02 audit: the Monday Nov 2 /daily banner read "Overnight
+    surprises: Feeder Cattle -2.5% / Live Cattle -2.4%" (Friday's settles)
+    over a body that said livestock has no overnight session. One rule for
+    the lock (load_prices), the baked archive page and daily.html's twin."""
+    qs = str(quote_session or "")[:10]
+    out = []
+    for s in surprises or []:
+        lc = (locked_changes or {}).get((s or {}).get("key")) or {}
+        d = str(lc.get("date") or "")[:10]
+        if qs and d and d < qs and lc.get("kind") == "settle":
+            continue
+        out.append(s)
+    return out
+
+
 def load_prices():
     if not PRICES_PATH.exists():
         print("[error] prices.json not found", file=sys.stderr); return {}, []
@@ -898,10 +944,23 @@ def load_prices():
         locked_changes[key]["prev_date"] = pdate
         if stale:
             locked_changes[key]["stale"] = True
+        # 2026-11-02: fetch_prices.energy_roll_guard withheld the change (a
+        # continuous energy quote near expiry; Oct 26-29 natural gas printed
+        # +13.9% to +16.0%, a Dec trade over a Nov close). The price stays,
+        # the move goes: no prev, no pct, never a surprise.
+        held = q.get("move_withheld")
+        if held and not stale:
+            locked_changes[key]["prev"] = None
+            locked_changes[key]["pct"] = None
+            locked_changes[key]["withheld"] = str(held)
         arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
         # Name the month for the products whose key is the front month
         # (fetch_prices.pin_continuous), so "Lean Hogs" is never a dead month.
-        mon = q.get("contract") if key in ("cattle", "feeders", "hogs", "milk") else None
+        # The month comes from the symbol actually quoted (quoted_contract), and
+        # only where fetch_prices labeled the key a front month at all.
+        mon = quoted_contract(q) if key in ("cattle", "feeders", "hogs", "milk") and q.get("contract") else None
+        if mon:
+            locked_changes[key]["contract"] = mon
         if stale:
             # A quote the fetch could not refresh: its change is old news, and
             # "flat" would be a claim about a market nobody read today.
@@ -911,9 +970,13 @@ def load_prices():
             line = (f"  {label}{(' ' + mon) if mon else ''}: {price_str} [STALE: last "
                     + (("close" if key in INDEX_KEYS else "settle") if _done else "price")
                     + (f" {_sd}" if _sd else " unknown") + "; report no move]")
+        elif held:
+            line = (f"  {label}{(' ' + mon) if mon else ''}: {price_str} [MOVE WITHHELD: the contract "
+                    "rolls this week and this price may be a different month than the last close; "
+                    "give the price only, report no move and no percent]")
         else:
             line = f"  {label}{(' ' + mon) if mon else ''}: {price_str} ({arrow} {chg_str})"
-        if stale:
+        if stale or held:
             pass
         elif kind == "last":
             _at = _ct_hm(q.get("close_time") or fetched)
@@ -934,10 +997,11 @@ def load_prices():
                 line += f" [52wk: {position:.0f}% from low]"
         price_lines.append(line)
         threshold = SURPRISE_THRESHOLDS.get(key, 2.0)
-        if abs(pct) >= threshold and not stale:
+        if abs(pct) >= threshold and not stale and not held:
             surprises.append({"commodity": label, "key": key, "price": price_str,
                 "pct_change": pct, "direction": "up" if pct > 0 else "down",
                 "surprise_magnitude": round(abs(pct) / threshold, 1)})
+    surprises = overnight_only(surprises, locked_changes, _qs)
     surprises.sort(key=lambda x: x["surprise_magnitude"], reverse=True)
     # 2026-10-27: the only ratio a planting line may use is next year's
     # (fetch_prices.planting_ratio); the Oct 25 issue read this year's nearby
@@ -2425,7 +2489,7 @@ NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by
 
 ══ WRITING RULES ══
 1. NO EM DASHES (U+2014) OR EN DASHES (U+2013). Use periods, commas, semicolons, colons, parentheses. (Exception: standard hyphenated compounds like "old-crop" are fine.)
-2. Every specific price comes from the LOCKED PRICE TABLE. No exceptions.
+2. Every specific price comes from the LOCKED PRICE TABLE. No exceptions. Live cattle, feeder cattle, lean hogs and milk carry their contract month in the table ("Live Cattle Dec '26"): when you name a month for one of them, name THAT month, never the month before it (Nov 1 2026 printed "October live cattle fell 2.4% to $220.95"; $220.95 was December). A machine checks.
 3. Never invent or recall prices from training data.
 4. Describe moves exactly as shown.
 5. Headline and every title in sentence case.
@@ -4167,6 +4231,13 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     heat_idx = meta.get("heat_section", -1)
     surprises = briefing.get("surprises", [])
     surprise_count = meta.get("overnight_surprises_count", 0)
+    # 2026-11-02: an earlier session's settle is not an overnight surprise
+    # (overnight_only), for issues locked before load_prices dropped them.
+    if surprises and briefing.get("locked_changes"):
+        _kept = overnight_only(surprises, briefing.get("locked_changes"),
+                               (briefing.get("board") or {}).get("quote_session"))
+        if len(_kept) != len(surprises):
+            surprises, surprise_count = _kept, len(_kept)
     is_weekend_brief = briefing.get("market_closed", False)
     gen_at = briefing.get("generated_at", "")
     issue_num = briefing.get("issue_number", 0)
@@ -5817,10 +5888,10 @@ def main():
     # ── FRESHNESS self-heal (2026-11-01) ────────────────────────────────
     # Never the same headline, number or story twice in a week (Sig, Nov 1).
     # scripts/daily_fresh.py compares the draft with the last 7 issues; any repeat
-    # sends it back ONCE with the reasons, the voice self-heal's pattern. A news
-    # item that still repeats is cut; a headline or number that still repeats is
-    # left for briefing_gate, which holds the send (fail loud). Fail-open on any
-    # error here: the gate re-checks from the archive.
+    # sends it back ONCE with the reasons, the voice self-heal's pattern. What
+    # still repeats is cut (daily_fresh.cut_repeats, Sig Nov 2); briefing_gate
+    # warns on anything left and never holds. Fail-open on any error here: the
+    # gate re-checks from the archive.
     _fresh_tries = 1
     _fresh_found = []
     try:
@@ -5868,11 +5939,16 @@ def main():
                 briefing, _fresh_found = _brief2, _f2
             else:
                 print("  [fresh-self-heal] regenerated draft is no better; keeping the first")
-        for _l in _dfr.drop_stories(briefing, _fresh_found):
-            print(f"  [fresh] {_l}")
-        _fresh_found = [x for x in _fresh_found if x[0] not in _dfr.CUT]
+        # Sig, Nov 2: "cut the repeat". What still repeats after the one rewrite is cut
+        # (story, sentence, the day's number; a repeated headline becomes the top
+        # story's title); what cannot be cut stays and the gate warns. The email goes out.
+        if _fresh_found:
+            _fresh_found, _cut_log = _dfr.cut_repeats(briefing, _fresh_found, _fresh_recent, _fd,
+                                                      str(ARCHIVE_JSON_DIR), _lp, _lc)
+            for _l in _cut_log:
+                print(f"  [fresh] {_l}")
         for _k, _loc, _why in _fresh_found:
-            print(f"  [fresh] still {'HELD AT THE GATE' if _k in _dfr.HARD else 'a warning'}: {_loc} [{_k}]: {_why}")
+            print(f"  [fresh] still a repeat (a warning at the gate): {_loc} [{_k}]: {_why}")
         briefing["freshness"] = _dfr.stamp(_fresh_found, _fresh_tries)
     except Exception as _e:
         print(f"  [warn] fresh-self-heal skipped ({type(_e).__name__}: {_e})")
