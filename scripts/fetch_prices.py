@@ -342,15 +342,23 @@ def energy_roll_guard(quotes, now=None):
         q = quotes.get(key)
         if not isinstance(q, dict) or q.get("pctChange") is None:
             continue
-        pct = float(q["pctChange"])
-        if abs(pct) <= ENERGY_ROLL_PCT:
+        try:
+            pct = float(q["pctChange"])
+            day = q.get("close_date") or (now or datetime.now(timezone.utc)).date()
+            win = energy_roll_window(key, day) if pct == pct else None
+        except (TypeError, ValueError) as ex:  # a bad field skips the guard, never the fetch
+            print(f"  NOTE {key}: roll guard skipped ({type(ex).__name__})")
             continue
-        day = q.get("close_date") or (now or datetime.now(timezone.utc)).date()
-        win = energy_roll_window(key, day)
         if not win:
-            print(f"  NOTE {key}: {pct:+.2f}% day change outside any expiry window; kept")
+            if abs(pct) > ENERGY_ROLL_PCT:
+                print(f"  NOTE {key}: {pct:+.2f}% day change outside any expiry window; kept")
             continue
         mon, e = win
+        d = day if hasattr(day, "year") else datetime.strptime(str(day)[:10], "%Y-%m-%d").date()
+        # after the last trade every bar compares the new front with the old one's settle: withheld at
+        # any size (Oct 29 2026: "up 8.0%" was 2.817 Nov against 3.03 Dec). Before it, only big moves.
+        if d <= e and abs(pct) <= ENERGY_ROLL_PCT:
+            continue
         reason = (f"{q.get('ticker', key)} moved {pct:+.2f}% from {q.get('open')} ({q.get('prev_date')}) "
                   f"to {q.get('close')} ({q.get('close_date')}), inside the {mon} contract's expiry "
                   f"window (last trade {e.isoformat()}); the two prices may be different contracts, "

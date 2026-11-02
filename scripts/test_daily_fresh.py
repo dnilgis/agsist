@@ -133,6 +133,8 @@ def cut_nov2():
     left, log = F.cut_repeats(h, F.hits(h, rec, d, ARCH), rec, d, ARCH)
     ok(h["headline"] == b["outside_the_pit"][0]["title"] and not any(k == "headline" for k, _, _ in left),
        "a repeated headline becomes the top story: %r" % h["headline"])
+    want = (b["outside_the_pit"][0].get("body") or "").strip()
+    ok(want and h["teaser"] == want, "the teaser follows the new headline (the story's line), not the old board teaser")
     # Oct 29's Arizona item is a new turn from Oct 23/25 (a new state); a second case is a development
     ok(F.new_development({"title": "Arizona confirms its first New World screwworm case", "body": "x"},
                          {"title": "USDA confirms screwworm in a Texas elk", "body": "Pecos County"}), "a new state is new")

@@ -522,6 +522,16 @@ def headline_from_story(briefing):
     return None
 
 
+def story_line(briefing):
+    """The top story's one line, for the teaser when the headline became that story; None when it has none."""
+    for it in _stories(briefing):
+        t = str(it.get("title") or "").strip()
+        if t:
+            ln = str(it.get("body") or it.get("line") or "").strip()
+            return ln or None
+    return None
+
+
 def cut_repeats(briefing, found, rec, today=None, archive_dir=ARCHIVE, locked_prices=None, locked_changes=None):
     """Sig, Nov 2 2026: "cut the repeat". After the one rewrite, a repeat that is still there does not ship,
     and the email still goes out:
@@ -555,6 +565,11 @@ def cut_repeats(briefing, found, rec, today=None, archive_dir=ARCHIVE, locked_pr
         if h:
             log.append("headline %r repeats; replaced by the top story %r" % (briefing.get("headline"), h))
             briefing["headline"] = h
+            # the teaser was written for the old headline; it follows the new one (the story's own line)
+            line = story_line(briefing)
+            if line:
+                log.append("teaser %r follows the new headline: %r" % (briefing.get("teaser"), line))
+                briefing["teaser"] = line
     left = hits(briefing, rec, today or issue_date(briefing), archive_dir, locked_prices, locked_changes)
     return left, log
 

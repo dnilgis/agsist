@@ -106,6 +106,13 @@ for row in fx["rows"]:
     else:
         chk("natgas" not in held and "roll" not in qs["natgas"], f"{day}: natgas {row['quotes']['natgas']['pctChange']:+.1f}% kept (after the roll)")
     chk("crude" not in held, f"{day}: crude {row['quotes']['crude']['pctChange']:+.1f}% kept")
+# the day after the last trade every bar is cross-contract: withheld at any size (checker, Nov 2: an Oct 29 bar read +7.6%)
+q29 = {"natgas": {"close": 3.031, "open": 2.817, "pctChange": 7.6, "close_date": "2026-10-29"}}
+chk("natgas" in energy_roll_guard(q29), "Oct 29 natgas +7.6% (Dec vs the Nov settle) withheld under 8%")
+q27 = {"natgas": {"close": 2.697, "open": 2.602, "pctChange": 3.65, "close_date": "2026-10-27"}}
+chk(energy_roll_guard(q27) == {}, "a 3.7% gas day before the last trade is kept")
+qbad = {"natgas": {"close": 3.0, "pctChange": "abc", "close_date": "2026-10-27"}, "crude": {"close": 60.0, "pctChange": 9.0, "close_date": "bad"}}
+chk(energy_roll_guard(qbad) == {}, "bad pctChange or close_date skips the guard, never raises")
 # outside any window a big move is kept, only logged
 qbig = {"natgas": {"close": 3.3, "open": 3.0, "pctChange": 10.0, "close_date": "2026-10-14"}}
 chk(energy_roll_guard(qbig) == {} and "roll" not in qbig["natgas"], "a 10% gas day outside the window is kept")
