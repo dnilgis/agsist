@@ -5888,10 +5888,10 @@ def main():
     # ── FRESHNESS self-heal (2026-11-01) ────────────────────────────────
     # Never the same headline, number or story twice in a week (Sig, Nov 1).
     # scripts/daily_fresh.py compares the draft with the last 7 issues; any repeat
-    # sends it back ONCE with the reasons, the voice self-heal's pattern. A news
-    # item that still repeats is cut; a headline or number that still repeats is
-    # left for briefing_gate, which holds the send (fail loud). Fail-open on any
-    # error here: the gate re-checks from the archive.
+    # sends it back ONCE with the reasons, the voice self-heal's pattern. What
+    # still repeats is cut (daily_fresh.cut_repeats, Sig Nov 2); briefing_gate
+    # warns on anything left and never holds. Fail-open on any error here: the
+    # gate re-checks from the archive.
     _fresh_tries = 1
     _fresh_found = []
     try:
@@ -5939,11 +5939,16 @@ def main():
                 briefing, _fresh_found = _brief2, _f2
             else:
                 print("  [fresh-self-heal] regenerated draft is no better; keeping the first")
-        for _l in _dfr.drop_stories(briefing, _fresh_found):
-            print(f"  [fresh] {_l}")
-        _fresh_found = [x for x in _fresh_found if x[0] not in _dfr.CUT]
+        # Sig, Nov 2: "cut the repeat". What still repeats after the one rewrite is cut
+        # (story, sentence, the day's number; a repeated headline becomes the top
+        # story's title); what cannot be cut stays and the gate warns. The email goes out.
+        if _fresh_found:
+            _fresh_found, _cut_log = _dfr.cut_repeats(briefing, _fresh_found, _fresh_recent, _fd,
+                                                      str(ARCHIVE_JSON_DIR), _lp, _lc)
+            for _l in _cut_log:
+                print(f"  [fresh] {_l}")
         for _k, _loc, _why in _fresh_found:
-            print(f"  [fresh] still {'HELD AT THE GATE' if _k in _dfr.HARD else 'a warning'}: {_loc} [{_k}]: {_why}")
+            print(f"  [fresh] still a repeat (a warning at the gate): {_loc} [{_k}]: {_why}")
         briefing["freshness"] = _dfr.stamp(_fresh_found, _fresh_tries)
     except Exception as _e:
         print(f"  [warn] fresh-self-heal skipped ({type(_e).__name__}: {_e})")

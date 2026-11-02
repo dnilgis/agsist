@@ -14,25 +14,36 @@ WHY. The 14 issues Oct 19 to Nov 1 2026 (data/daily-archive):
   - 11 of the 14 headlines start "Corn ...".
 The writer was shown three past headlines and nothing else, so it could not know.
 
-WHAT. One definition, used by the generator (prompt block and the one send-back),
-the gate (what still repeats is a warning, never a hold: Sig, Nov 1) and the replay:
+WHAT. One definition, used by the generator (prompt block, the one send-back and
+the cut), the gate (what is left is a warning, never a hold: Sig, Nov 1) and the replay.
+Sig, Nov 2: "cut the repeat": what still repeats after the one rewrite does not ship
+(cut_repeats); the email still always goes out.
   recent(today, archive_dir, n)   the last n issues before today, oldest first
   memory_block(recent)            "ALREADY SAID THIS WEEK" for the writer's prompt
   hits(briefing, recent, today)   [(kind, loc, why)] for every repeat found
   correction(found)               the send-back text, reasons quoted
   drop_stories(briefing, found)   cut the news items that still repeat
+  cut_repeats(briefing, found, rec, today)  cut every repeat that can be cut (see the kinds)
 
 THE KINDS and what each one does:
-  headline   a headline too close to one of the last 7 (HEADLINE_SIM). Sent back once, then a warning.
+  headline   a headline too close to one of the last 7 (HEADLINE_SIM). Sent back once, then replaced by
+             the top story's title (never the board); with no story left, a warning.
   weekend    a Saturday or Sunday headline built on the board (a price, a
              percent or a cents move that is on the locked board) or too close
              to the last weekday headline (WEEKEND_SIM). No new settle comes on a
              weekend, so it can only rerun Friday. Sent back once, then a warning.
   number     the day's number (one_number) has a value used in the last 7 days
-             for the same kind of thing (its unit shares a word). Sent back once, then a warning.
+             for the same kind of thing (its unit shares a word). Sent back once, then cut.
   story      a news item whose title tells a story from the last 7 days
              (STORY_SIM) with nothing new in its title (no number or count that
-             the old one lacked). The generator cuts it after the one rewrite.
+             the old one lacked). Since Nov 2 also: its title and body tell an item
+             of the last 7 days (STORY_TEXT_SIM) with no new development
+             (new_development), or its title was already said in a sentence
+             (SAID_SIM). The generator cuts it after the one rewrite.
+  sentence   a sentence of the lead, a section or a news body that says again
+             what one sentence of the last 7 issues said (SAID_SIM, no number the
+             old one lacked). Cut after the one rewrite, unless it is the field's
+             only sentence.
   same-lead  the headline leads with the same market as each of the last 3
              issues. Sent back once, never held (a warning at the gate).
 
@@ -50,6 +61,15 @@ THE THRESHOLDS, measured on the whole archive (Mar 4 to Nov 1 2026, 234 issues):
     the same story retold (Texas elk 0.50, farm bill 1.00, NRCS cuts 0.79 to 1.00);
     below 0.45 they are new turns (Arizona's first case 0.45, Senate Ag vote vs
     meeting notice 0.46).
+
+  SAID_SIM 0.8: share of a new sentence's weighted words found in one sentence of
+    the last 7 issues, numbers no newer (Sep 1 to Nov 2 2026). At 0.8 and up the
+    pairs are retellings (the Cargill lockout line, "Natural gas fell 5.6% to $2.64"
+    twice, Saturday's corn settle on Sunday, AgWeb's "healthy correction"); from
+    0.7 to 0.8 they are mostly watch-list boilerplate, which is not cut.
+  STORY_TEXT_SIM 0.5: title and body against title and body. Above it: the
+    Arizona screwworm case retold Nov 2 (0.58), FTC fertilizer probe, rail merger,
+    Theileria; a new state or a new count not retold in the body is a development.
 
     python3 scripts/daily_fresh.py --selftest      (the real archive pairs above)
     python3 scripts/daily_fresh.py --replay        (Oct 19 to Nov 1: what would go back)
@@ -74,9 +94,17 @@ WEEKEND_SIM = 0.3
 STORY_SIM = 0.5
 NEW_TURN_MAX = 0.8          # above this a title is a retelling even with a new number
 SAME_LEAD_RUN = 3
-HARD = ("headline", "weekend", "number")      # sent back once; the gate warns
-CUT = ("story",)                              # cut by the generator, a warning if still there
+SAID_SIM = 0.8              # share of a sentence's (weighted) words already said in one sentence this week
+STORY_TEXT_SIM = 0.5        # title + body against an older item's title + body: the same story
+HARD = ("headline", "weekend", "number")      # sent back once; then cut_repeats (Sig, Nov 2: "cut the repeat")
+CUT = ("story", "sentence")                   # sent back once, then cut by the generator
 SOFT = ("same-lead",)                         # sent back once, a warning after
+# where a repeated sentence may be cut (the headline and titles never are; a field is never emptied)
+SENTENCE_LOCS = re.compile(r"^(lead|sections\[\d+\]\.(body|so_what)|outside_the_pit\[\d+\]\.body)$")
+US_STATES = set("alabama alaska arizona arkansas california colorado connecticut delaware florida georgia hawaii "
+                "idaho illinois indiana iowa kansas kentucky louisiana maine maryland massachusetts michigan "
+                "minnesota mississippi missouri montana nebraska nevada ohio oklahoma oregon pennsylvania "
+                "tennessee texas utah vermont virginia washington wisconsin wyoming".split())
 
 STOP = set("a an the to of in on at as and for with after its it is by from into over than this that be are "
            "was were new s".split())
@@ -168,6 +196,76 @@ def new_turn(title, old):
     return any(_is_count(t) for t in toks(title) - toks(old))
 
 
+def said(s, o, archive_dir=ARCHIVE):
+    """Weighted share of sentence s's words that sentence o already has (rare words weigh more)."""
+    df, n = idf_table(archive_dir)
+    w = lambda t: math.log((n + 1) / (df.get(t, 0) + 1)) + 1
+    A, B = toks(s), toks(o)
+    if not A:
+        return 0.0
+    return sum(w(t) for t in A & B) / sum(w(t) for t in A)
+
+
+_FIG = re.compile(r"\d+(?:[.,]\d+)?[¼½¾]?")
+
+
+def figures(s):
+    """The numbers a sentence carries, as written ("4.47¾", "105", "2.48")."""
+    return set(_FIG.findall(str(s or "").replace(",", "")))
+
+
+def _sentences(b):
+    """[(loc, sentence)] for every reader-facing sentence of an issue (daily_claims.fields)."""
+    import daily_claims
+    out = []
+    for loc, text in daily_claims.fields(b):
+        for line in str(text).split("\n"):
+            for x in daily_claims.sentences(re.sub(r"^\s*-\s+", "", line)):
+                out.append((loc, x.replace("**", "")))
+    for it in _stories(b):
+        out.append(("title", it["title"]))
+    return out
+
+
+def new_development(it, old):
+    """A news item tells something new about an older one: a count or number in its title the old item's
+    text lacks, without its own body retelling the old event (Nov 2 2026: "Screwworm found in Arizona,
+    third state affected" said in its body "USDA confirmed the first Arizona case", the Oct 29 story), or a
+    state the old item never named."""
+    old_text = "%s %s" % (old.get("title") or "", old.get("body") or "")
+    new_t, old_t = toks(it.get("title")), toks(old_text)
+    if (new_t - old_t) & US_STATES:
+        return True
+    fresh = [t for t in new_t - old_t if _is_count(t)]
+    if not fresh:
+        return False
+    old_counts = {t for t in toks(old.get("title")) if _is_count(t)}
+    return not (old_counts & toks(it.get("body")))
+
+
+def sentence_repeats(briefing, rec, archive_dir=ARCHIVE):
+    """[(loc, sentence, day, old)] for each sentence that says again what one sentence of the last issues
+    said: SAID_SIM of its words, and no number the old one lacked (Nov 2 2026: "AgWeb asked whether the drop
+    is more than a healthy correction" ran Oct 31, Nov 1 and Nov 2). Short lines and notes in brackets are not
+    judged."""
+    olds = [(b, x) for b in rec for _l, x in _sentences(b)]
+    out = []
+    for loc, x in _sentences(briefing):
+        if not SENTENCE_LOCS.match(loc) or len(toks(x)) < 6 or x.lstrip().startswith("("):
+            continue
+        fx = figures(x)
+        best = None
+        for b, o in olds:
+            if fx - figures(o):
+                continue
+            v = said(x, o, archive_dir)
+            if v >= SAID_SIM and (best is None or v > best[0]):
+                best = (v, b, o)
+        if best:
+            out.append((loc, x, _day(best[1]), best[2]))
+    return out
+
+
 def norm_value(v):
     s = str(v or "").lower().replace(",", "").replace("$", "").strip()
     s = re.sub(r"\s+", " ", s)
@@ -256,7 +354,7 @@ def memory_block(rec):
         "not the same section angle, unless something new happened since; then the NEW part leads (a new number, a "
         "new state, a vote, a date) and the old part is at most a clause. A machine compares your draft with this "
         "list: a headline too close to one of them, a number already used this week, or a story already told sends "
-        "the draft back once with the reason; a repeat still there after that is cut or holds the send.",
+        "the draft back once with the reason; a repeat still there after that is cut before the send.",
         "Do not lead with the same market as the last three issues did. On a quiet day lead with the most useful news "
         "story or the biggest mover, not corn by habit.",
     ]
@@ -372,6 +470,24 @@ def hits(briefing, rec, today=None, archive_dir=ARCHIVE, locked_prices=None, loc
         if best and not (best[0] < NEW_TURN_MAX and new_turn(it["title"], best[2]["title"])):
             found.append(("story", "outside_the_pit[%d]" % i, "%r retells %s's %r with nothing new in the title"
                           % (it["title"], _day(best[1]), best[2]["title"])))
+            continue
+        # Sig, Nov 2: a story already reported in the last 7 days is a repeat unless its title has a new
+        # development, whether it ran as a news item or inside a section.
+        text = "%s %s" % (it["title"], it.get("body") or "")
+        best = None
+        for b in rec:
+            for old in _stories(b):
+                s = story_sim(text, "%s %s" % (old["title"], old.get("body") or ""), archive_dir)
+                if s >= STORY_TEXT_SIM and not new_development(it, old) and (best is None or s > best[0]):
+                    best = (s, b, old["title"])
+            for _l, o in _sentences(b):
+                if not (figures(it["title"]) - figures(o)) and said(it["title"], o, archive_dir) >= SAID_SIM:
+                    best = best or (1.0, b, o)
+        if best:
+            found.append(("story", "outside_the_pit[%d]" % i, "%r was already reported %s: %r"
+                          % (it["title"], _day(best[1]), best[2][:120])))
+    for loc, x, day, o in sentence_repeats(briefing, rec, archive_dir):
+        found.append(("sentence", loc, "%r says again what %s said: %r" % (x[:120], day, o[:120])))
     return found
 
 
@@ -395,6 +511,60 @@ def drop_stories(briefing, found):
     log = ["cut repeat story %r" % items[i].get("title") for i in sorted(idx) if i < len(items)]
     briefing["outside_the_pit"] = [it for i, it in enumerate(items) if i not in idx]
     return log
+
+
+def headline_from_story(briefing):
+    """A headline that is not the board: the top story's title, or None when no story is left."""
+    for it in _stories(briefing):
+        t = str(it["title"]).strip().rstrip(".")
+        if t:
+            return t
+    return None
+
+
+def cut_repeats(briefing, found, rec, today=None, archive_dir=ARCHIVE, locked_prices=None, locked_changes=None):
+    """Sig, Nov 2 2026: "cut the repeat". After the one rewrite, a repeat that is still there does not ship,
+    and the email still goes out:
+      story     the news item is cut (drop_stories)
+      sentence  the sentence is cut, unless it is the field's only sentence
+      number    the day's number (one_number) is cut
+      headline, weekend  the headline becomes the top story's title (not the board); with no story left it
+                stays, and the gate warns
+    Returns (found still there, log)."""
+    import daily_claims
+    log = drop_stories(briefing, found)
+    if any(k == "number" for k, _, _ in found) and briefing.get("one_number"):
+        log.append("cut repeat number %r" % (briefing["one_number"] or {}).get("value"))
+        briefing.pop("one_number", None)
+    if any(k == "sentence" for k, _, _ in found):
+        by_loc = {}
+        for loc, x, _d, _o in sentence_repeats(briefing, rec, archive_dir):
+            by_loc.setdefault(loc, set()).add(x)
+        for loc, bad in by_loc.items():
+            text = daily_claims._get(briefing, loc)
+            if not isinstance(text, str):
+                continue
+            cut = daily_claims._cut(text, {r for r in _raw_sentences(text) if r.replace("**", "") in bad})
+            if cut.strip():
+                daily_claims._set(briefing, loc, cut)
+                log += ["cut repeat sentence in %s: %r" % (loc, b[:100]) for b in sorted(bad)]
+            else:
+                log.append("kept the only sentence of %s (a repeat, a warning)" % loc)
+    if any(k in ("headline", "weekend") for k, _, _ in found):
+        h = headline_from_story(briefing)
+        if h:
+            log.append("headline %r repeats; replaced by the top story %r" % (briefing.get("headline"), h))
+            briefing["headline"] = h
+    left = hits(briefing, rec, today or issue_date(briefing), archive_dir, locked_prices, locked_changes)
+    return left, log
+
+
+def _raw_sentences(text):
+    import daily_claims
+    out = []
+    for line in str(text).split("\n"):
+        out += daily_claims.sentences(re.sub(r"^\s*-\s+", "", line))
+    return out
 
 
 def stamp(found, tries):
