@@ -68,6 +68,9 @@ test('the probe reads robots.txt, keeps a gap between requests and never prints 
   assert.match(s, /Fetcher\(min_gap=1\.5/);
   assert.doesNotMatch(s, /log\([^)]*MARS_API_KEY/);
   assert.match(s, /"mars_key_present": bool\(mars_auth\(\)\)/);
+  const b = fs.readFileSync(path.join(root, 'scripts/backfill_feeder_index.py'), 'utf8');
+  assert.match(b, /Fetcher\(min_gap=4\.0, retries=3, timeout=90, backoff=\(30, 120, 300\)/, 'the archive refused one ask every 1.5 s');
+  assert.match(b, /robots\.allowed\(u\)/);
 });
 
 // ---------- the page: past weeks join the record only when the fold opens ----------

@@ -276,7 +276,7 @@ def coverage(out=OUT, fetch=None, log=flush_log, since="2024", minutes=0, clock=
     clock = clock or time.monotonic
     stop = clock() + minutes * 60 if minutes else None
     os.makedirs(out, exist_ok=True)
-    fetch = fetch or Fetcher(min_gap=1.5, retries=1, timeout=30, backoff=(5,), ok=(200, 404))
+    fetch = fetch or Fetcher(min_gap=4.0, retries=2, timeout=30, backoff=(30, 120), ok=(200, 404))
     robots = Robots(fetch, log)
     cfg = FCA.load_sources(FCA.ROOT)
     weeks, per_slug, rec = {}, {}, []

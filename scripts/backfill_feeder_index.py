@@ -22,9 +22,10 @@ real counts of real USDA rows.
   --fetch --from 2025-01-01 --to 2026-10-11 [--max-minutes 300]
       For every single-barn report in scripts/cattle_auction_sources.json
       (state summaries never), list the copies (CDX), fetch each one not yet
-      read (1.5 s apart, robots.txt obeyed), and read it with
+      read (robots.txt obeyed), and read it with
       fetch_cattle_auction.parse_report / title_ok / summarize (no second
-      parser). Writes history/feeder-archive/:
+      parser). One request every 4 s: the Internet Archive refused a run that
+      asked every 1.5 s. Writes history/feeder-archive/:
         text/<slug>/<capture>.txt   the report text as read (the record)
         sales/<slug>.json           {sale date: summarize() result}
         manifest.json               per report: copies listed, read, refused and why
@@ -109,7 +110,9 @@ def read_copy(raw, barn):
 
 
 def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=print, root=FCA.ROOT):
-    fetch_ = fetch_ or Fetcher(min_gap=1.5, retries=2, timeout=90, ok=(200, 404))
+    # The Internet Archive refused connections (errno 111) to the Nov 2 coverage run at one ask
+    # every 1.5 s, so this goes at one every 4 s and waits minutes, not seconds, when refused.
+    fetch_ = fetch_ or Fetcher(min_gap=4.0, retries=3, timeout=90, backoff=(30, 120, 300), ok=(200, 404))
     robots = PFA.Robots(fetch_, log)
     stop = clock() + minutes * 60 if minutes else None
     man_path = os.path.join(out, "manifest.json")
