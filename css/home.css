@@ -2339,7 +2339,25 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
    the only cards; on a phone (520px and under) they are full-width sections split by a hairline, no
    boxes at all. Links are rows with a chevron, 44px tall, not underlined. Big figures, quiet labels,
    the site's gold as the one accent. */
-.hero-band{background:none;border:0;border-radius:0;padding:4px 0 6px}
+/* one panel: the band is the card, the jobs inside it are columns split by hairlines, not boxes */
+.hero-band{border-top:3px solid var(--gold)}
+.job{background:none;border:0;border-radius:0;padding:4px 0 6px}
+.job-near{border-top:0}
+@container hero (min-width:560px){
+  .jobs{gap:0;margin:0 0 10px}
+  .job-sell,.job-field{border-top:1px solid var(--border-2);padding-top:10px}
+  .job-sell{padding-right:16px}
+  .job-field{padding-left:16px;border-left:1px solid var(--border-2)}
+}
+@container hero (min-width:1000px){
+  .jobs{gap:0}
+  .job{padding:4px 0 6px}
+  .job-near{padding-right:20px}
+  .job-sell,.job-field{border-top:0;padding-top:4px;padding-left:20px;border-left:1px solid var(--border-2)}
+  .job-sell{padding-right:20px}
+}
+/* No ZIP: the ZIP box asks once; the forecast cell waits for a place (a granted location still paints it) */
+#hero-band.hb-nozip #hb-wx:not([data-state="ok"]){display:none}
 #hero-band .job-links a,#hero-band .job-daily{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;align-items:center;min-height:44px}
 #hero-band .job-links a>span,#hero-band .job-daily>span{grid-column:1}
 #hero-band .job-links a::after,#hero-band .job-daily::after{content:"";grid-column:2;grid-row:1/span 2;width:7px;height:7px;margin-right:4px;border-top:2px solid var(--text-dim);border-right:2px solid var(--text-dim);transform:rotate(45deg)}
@@ -2348,7 +2366,12 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 #hb-wx{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;row-gap:2px;align-items:center}
 #hb-wx>.hb-k{grid-column:1/-1}
 #hb-wx .hb-v{align-items:center;flex-wrap:nowrap;gap:0 8px;min-height:2.6rem;font-size:2.1rem}
-#hb-wx .hb-s{min-height:4.2em}
+/* the words beside the figure; rain, wind and the spray read on full lines under them */
+#hb-wx .hb-s{display:contents}
+#hb-wx .hb-s>.hb-l{grid-column:1/-1}
+#hb-wx .hb-s>.hb-wxw{grid-column:2;grid-row:2}
+#hb-wx{min-height:7.6rem;align-content:start}
+#hero-band.hb-nozip #hb-wx{min-height:0}
 .hb-wxg{flex:none;width:1.7rem;height:1.7rem;color:var(--gold)}
 .hb-lo{display:flex;flex-direction:column;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.765rem;font-weight:600;line-height:1.2;letter-spacing:0;color:var(--text-dim);white-space:nowrap}
 .hb-lo .hb-n{font-size:1.05rem;font-weight:800;color:var(--text)}
@@ -2359,21 +2382,29 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 @container hero (min-width:560px){
   #hero-band .job-near #hb-wx{grid-column:1/-1;display:grid;padding:10px 0}
 }
+/* the state's middle-bid line: a rule at its left, not a box inside the panel */
+#hero-band .pl-line{background:none;border-radius:0}
 /* More: shut by default, in the menu's groups */
 .land-fold .land-grp{margin:12px 0 0;font-size:.824rem;font-weight:700;color:var(--text)}
 .land-fold .land-links{margin-top:2px}
 @media(max-width:520px){
   /* the band and its jobs are full-width sections at the site's 12px gutter, split by hairlines */
-  .hero-band{margin:0 -4px 12px;padding:0}
+  .hero-band{margin:0 -4px 12px;padding:0;background:none;border:0;border-radius:0}
   .jobs{grid-template-columns:minmax(0,1fr);gap:0;margin:0 0 8px}
-  .job{background:none;border:0;border-radius:0;padding:10px 0 2px;border-top:1px solid var(--border-2)}
+  .job,.job-field{padding:10px 0 2px;border-top:1px solid var(--border-2);border-left:0}
   .job-near{border-top:0;padding-top:2px}
   .job-sell,.job-field{grid-column:1/-1}
   .job-h{margin:0 0 2px;font-size:1.1rem}
   #hero-band .job-near .hb-top{padding-bottom:0}
   /* the two bids side by side, the price big, the elevator under it */
   #hero-band .job-near .hb-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:12px}
-  #hero-band .job-near .hb-bid{grid-column:auto;display:flex;flex-direction:column;gap:2px;padding:8px 0}
+  #hero-band:not(.hb-nozip) .job-near .hb-bid{grid-column:auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 0}
+  /* label, price and elevator lines line up across the two bids when a label wraps */
+  @supports (grid-template-rows:subgrid){
+    #hero-band:not(.hb-nozip) .job-near .hb-bid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:span 3;align-items:start;row-gap:2px}
+    #hero-band:not(.hb-nozip) .job-near .hb-bid>.hb-k{align-self:end}
+  }
+  #hero-band .job-near .hb-bid{border-top:1px solid var(--border-2)}
   #hero-band .job-near #hb-soy{padding-left:12px;border-left:1px solid var(--border-2)}
   #hero-band .job-near .hb-bid .hb-v{font-size:1.9rem}
   #hero-band .job-near #hb-wx{grid-column:1/-1;padding:8px 0}
