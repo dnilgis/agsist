@@ -518,6 +518,20 @@ DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
+UID:2026-11-17-arc-plc-decision-webinar-umn-extension@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20261117T170000Z
+DTEND:20261117T180000Z
+SUMMARY:ARC/PLC decision webinar (UMN Extension) (FSA)
+DESCRIPTION:Free University of Minnesota Extension webinar\, "2026 Farm Bil
+ l decision": choosing ARC or PLC for 2026. 11 a.m. to 12:30 p.m. Central. 
+ Register on the UMN Extension event page to get the link.\nCompare ARC and
+  PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.
+ usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-k
+ ey-price-revenue-safety-net
+URL:https://agsist.com/arc-plc
+END:VEVENT
+BEGIN:VEVENT
 UID:2026-11-20-cattle-on-feed@agsist.com
 DTSTAMP:20261027T120000Z
 DTSTART:20261120T200000Z
