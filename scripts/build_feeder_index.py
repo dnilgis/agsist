@@ -942,6 +942,38 @@ def selftest():
     again2 = build(full, aev, meta, prices, bd, datetime.datetime(2026, 10, 28, 15, 0))
     ck("build: a rerun gives the same index", again2["index"] == bd["index"])
 
+    # history from archived reports: same rules, only before the live record, re-run changes nothing
+    def arch(n, start, price, first=1, day=1):
+        return [dict(b["sales"][0], barn=b["id"], state=b["state"]) for b in wk_barns(n, start, price, first=first, day=day)]
+    A1, A2 = D(2025, 1, 6), D(2025, 1, 13)
+    sales_a = arch(30, A1, 300.0) + arch(30, A2, 310.0) + arch(5, D(2025, 1, 27), 320.0) + arch(30, D(2026, 10, 12), 999.0)
+    hs = history_store(sales_a)
+    h1 = build_history(hs, None, "2026-11-02", "test")
+    hw = {w["start"]: w for w in h1["weeks"]}
+    ck("history: weeks from the first archived sale, none at or after the live start",
+       h1["start"] == "2025-01-06" and max(hw) < iso(IDX_START) and "2026-10-12" not in hw)
+    ck("history: same rules as the live index", hw["2025-01-06"]["p"] == index_week(hs, A1, FAR)[0]["p"] == 300.0)
+    ck("history: change between two passing weeks", hw["2025-01-13"]["chg"] == 10.0 and hw["2025-01-13"]["both"] == 30)
+    ck("history: a thin week is withheld with its counts", hw["2025-01-27"]["p"] is None and hw["2025-01-27"]["barns"] == 5
+       and hw["2025-01-27"]["why"][0] == "5 barns, 30 needed")
+    ck("history: a week with no archived sale is a gap", hw["2025-01-20"]["p"] is None and hw["2025-01-20"]["barns"] == 0)
+    ck("history: every week marked as read from the archive", all(w["from"] == "archive" and w["read"] == "2026-11-02" for w in h1["weeks"]))
+    ck("history: no week twice", len(h1["weeks"]) == len(hw))
+    h2 = build_history(history_store(sales_a), h1, "2026-11-09", "test")
+    ck("history: a re-run changes nothing (first read date kept)", h2 == h1)
+    more = sales_a + arch(10, A1, 330.0, first=100)
+    h3 = build_history(history_store(more), h1, "2026-11-09", "test")
+    w3 = {w["start"]: w for w in h3["weeks"]}
+    ck("history: a week with more barns read is recounted and dated anew",
+       w3["2025-01-06"]["barns"] == 40 and w3["2025-01-06"]["read"] == "2026-11-09" and w3["2025-01-27"]["read"] == "2026-11-02")
+    short = build_history(history_store(arch(30, A2, 310.0)), h1, "2026-11-09", "test")
+    ck("history: weeks the new store does not reach stay as they were",
+       {w["start"]: w for w in short["weeks"]}["2025-01-06"] == hw["2025-01-06"])
+    dup = history_store(arch(1, A1, 300.0) + [dict(arch(1, A1, 300.0)[0], classes={"steers|1": {"800": {"head": 5, "avg_wt": 800, "cwt": 1.0, "per_head": 8.0}}})])
+    ck("history: a barn's two reports of one sale count once (the fuller one)", dup["b1"]["sales"][iso(A1 + datetime.timedelta(days=1))]["steers|800"][0] == 150)
+    ck("history: a live-record week passed in is dropped", all(w["start"] < iso(IDX_START) for w in
+       build_history({}, {"weeks": [{"start": "2026-10-12", "end": "2026-10-18", "p": 1.0}]}, "x", "t")["weeks"]))
+
     print("FAILS=%d" % len(fails))
     return 1 if fails else 0
 
