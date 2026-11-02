@@ -2297,13 +2297,13 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 .job-h{margin:2px 0 4px;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:1.05rem;font-weight:800;line-height:1.25;letter-spacing:0;text-transform:none;color:var(--text)}
 .job-near .hb-top{padding-bottom:2px}
 .job-links{list-style:none;margin:0;padding:0}
-.job-links a{display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:44px;padding:6px 0;border-top:1px solid var(--border-2);color:inherit;text-decoration:none}
+#hero-band .job-links a{display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:44px;padding:6px 0;border-top:1px solid var(--border-2);color:inherit;text-decoration:none}
 .job-links li:first-child a{border-top:0}
 .job-l{font-weight:700;font-size:.941rem;line-height:1.3;color:var(--text);text-decoration:underline;text-decoration-color:var(--border-2);text-underline-offset:3px}
 .job-links a:hover .job-l{text-decoration-color:currentColor}
 .job-links a:focus-visible,.job-daily:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .job-s{display:none;font-size:.824rem;line-height:1.4;color:var(--text-dim)}
-.job-daily{display:block;padding:8px 0 6px;border-top:1px solid var(--border-2);color:inherit;text-decoration:none;font-size:.882rem;line-height:1.4}
+#hero-band .job-daily{display:block;padding:8px 0 6px;border-top:1px solid var(--border-2);color:inherit;text-decoration:none;font-size:.882rem;line-height:1.4}
 .job-daily-k{display:block;font-size:.824rem;font-weight:600;color:var(--text-dim)}
 .job-daily-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.8em;font-weight:600;color:var(--text);text-decoration:underline;text-decoration-color:var(--border-2);text-underline-offset:3px}
 .job-daily:hover .job-daily-t{text-decoration-color:currentColor}
