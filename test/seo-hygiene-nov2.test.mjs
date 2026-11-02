@@ -99,3 +99,16 @@ test("in Chromium: a fragment opened alone is noindex; a page with the live head
     }
   } finally { await b.close(); srv.close(); }
 });
+
+// 2. /hail-map: one h1 in the page source; the printed report keeps its own heading.
+test("hail map: one h1, and the print window still opens with an h1", () => {
+  const h = read("hail-map.html");
+  assert.equal((h.match(/<h1\b/gi) || []).length, 1);
+  assert.match(h, /<h1 class="hm-title">National Hail Map:/);
+  const lit = h.match(/'<div class="hd"><div><h\\x31>Hail History Report<\/h\\x31>'/);
+  assert.ok(lit, "print heading literal");
+  assert.equal(eval(lit[0]), '<div class="hd"><div><h1>Hail History Report</h1>');
+  for (const f of readdirSync(ROOT + "hail-map").filter((x) => x.endsWith(".html"))) {
+    assert.equal((read("hail-map/" + f).match(/<h1\b/gi) || []).length, 1, f);
+  }
+});
