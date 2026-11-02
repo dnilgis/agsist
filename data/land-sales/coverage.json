@@ -8,7 +8,7 @@
   "nondisclosure": "Sale prices not public record",
   "unchecked": "Not checked yet"
  },
- "note": "Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig), Vermont Oct 29. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
+ "note": "Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig), Vermont and New Jersey Oct 29. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
  "states": [
   {
    "status": "unchecked",
@@ -388,11 +388,11 @@
    ]
   },
   {
-   "status": "unchecked",
-   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
-   "names": "To check",
-   "cadence": "",
-   "terms": "To check",
+   "status": "live",
+   "source": "Deed abstracts (SR-1A) from the New Jersey Division of Taxation, acres and class from the state's 2026 assessment list (MOD-IV), farm lots (classes 3A and 3B), deeds recorded from 2018",
+   "names": "Yes",
+   "cadence": "State posts yearly files and a year-to-date file; read here monthly",
+   "terms": "Public record, free state download",
    "st": "NJ",
    "name": "New Jersey",
    "tile": [
