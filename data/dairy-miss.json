@@ -2,7 +2,10 @@
  "_note": "What Read my check said for each Class III month at the standard tests (the futures settle of the last session before the month), and USDA's announced price once it is out. It only grows and is never backfilled.",
  "months": {
   "2026-11": {
-   "contract": "2026-11"
+   "contract": "2026-11",
+   "recorded": "2026-11-02T16:28:29Z",
+   "said": 17.7,
+   "said_session": "2026-10-30"
   },
   "2026-12": {
    "contract": "2026-12"
