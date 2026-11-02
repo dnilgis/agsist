@@ -30,6 +30,14 @@ Every PDF that comes back goes through fetch_cattle_auction's own reader
 
     python3 scripts/probe_feeder_archive.py --selftest
     python3 scripts/probe_feeder_archive.py --probe [--slugs 1856,1245]
+    python3 scripts/probe_feeder_archive.py --mars [--since 2024-01-01]
+        with MARS_API_KEY set (Actions only; the key is never printed): the MARS
+        catalog (saved to history/mars/catalog-<date>.json), then for every
+        single-barn report in scripts/cattle_auction_sources.json the report
+        dates MARS holds since --since (one header query per report), and the
+        detail rows of two barns for two weeks to learn the shape. Writes
+        history/feeder-archive/probe/mars/ (raw answers) and mars-coverage.json
+        (weeks x barns x states).
     python3 scripts/probe_feeder_archive.py --coverage
         the Internet Archive's capture list (CDX) for every single-barn report in
         scripts/cattle_auction_sources.json, no PDFs: how many barns and states
@@ -61,6 +69,10 @@ FILEREPO = MMN + "/filerepo/reports?field_slug_id_value=%s&page=%d"
 VIEW = MMN + "/viewReport/%s"
 MARS = "https://marsapi.ams.usda.gov/services/v1.2/reports/%s?q=report_begin_date=%s:%s"
 MARS_LIST = "https://marsapi.ams.usda.gov/services/v1.2/reports"
+MARS_SECTION = "https://marsapi.ams.usda.gov/services/v1.2/reports/%s/%s?q=report_begin_date=%s:%s"
+MARS_ALL = "https://marsapi.ams.usda.gov/services/v1.2/reports/%s?q=report_begin_date=%s:%s&allSections=true"
+CATALOG_DIR = "history/mars"
+MARS_DATE_KEYS = ("report_date", "report_end_date", "report_begin_date", "published_date")
 CDX = ("https://web.archive.org/cdx/search/cdx?url=%s&output=json"
        "&fl=timestamp,original,statuscode,mimetype,digest,length&filter=statuscode:200&collapse=digest")
 WAYBACK = "https://web.archive.org/web/%sid_/%s"
@@ -326,6 +338,171 @@ def save_coverage(out, since, per_slug, weeks, rec, partial, log=None):
     return doc
 
 
+def mdy(d):
+    return d.strftime("%m/%d/%Y")
+
+
+def mars_date(v):
+    """A MARS date ("01/09/2025", "01/09/2025 00:00:00", "2025-01-09...") -> date or None."""
+    import datetime
+    v = str(v or "").strip()
+    m = re.match(r"(\d{1,2})/(\d{1,2})/(\d{4})", v)
+    try:
+        if m:
+            return datetime.date(int(m.group(3)), int(m.group(1)), int(m.group(2)))
+        m = re.match(r"(\d{4})-(\d{2})-(\d{2})", v)
+        if m:
+            return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    except ValueError:
+        return None
+    return None
+
+
+def mars_rows(body):
+    """The result rows of a MARS answer (a list, or {"results": [...]}), [] if none."""
+    try:
+        doc = json.loads(body.decode("utf-8", "replace") or "null")
+    except ValueError:
+        return None, None
+    if isinstance(doc, list):
+        return doc, doc
+    if isinstance(doc, dict):
+        r = doc.get("results")
+        return (r if isinstance(r, list) else []), doc
+    return [], doc
+
+
+def row_date(r):
+    for k in MARS_DATE_KEYS:
+        d = mars_date(r.get(k))
+        if d:
+            return k, d
+    return None, None
+
+
+def save_raw(path, body):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "wb") as f:
+        f.write(body)
+
+
+def mars_probe(since, until, out=OUT, catalog_dir=CATALOG_DIR, fetch=None, log=flush_log, detail_slugs=DEFAULT_SLUGS):
+    """What MARS holds for every single-barn report. Needs MARS_API_KEY (HTTP basic,
+    key as the user name); the key goes in the request header only, never in a log or a file."""
+    import datetime
+    auth = mars_auth()
+    d = os.path.join(out, "mars")
+    os.makedirs(d, exist_ok=True)
+    doc = {"read": now_iso(), "since": since.isoformat(), "until": until.isoformat(), "mars_key_present": bool(auth),
+           "catalog": None, "reports": {}, "detail": {}}
+    log("MARS key present: %s" % bool(auth))
+    if not auth:
+        doc["why"] = "no MARS_API_KEY: nothing asked"
+        with open(os.path.join(out, "mars-coverage.json"), "w", encoding="utf-8") as f:
+            json.dump(doc, f, indent=1)
+        return doc
+    fetch = fetch or Fetcher(min_gap=1.5, retries=2, timeout=120, headers=auth, ok=(200, 204, 400, 401, 403, 404))
+    # 1. the catalog (every report MARS serves)
+    cat_by_slug = {}
+    try:
+        s, b = fetch.get(MARS_LIST)
+    except FetchError as e:
+        s, b = None, b""
+        doc["catalog"] = {"status": "failed", "error": str(e)[:300]}
+    if s is not None:
+        rows, _ = mars_rows(b)
+        doc["catalog"] = {"status": s, "bytes": len(b), "reports": len(rows or [])}
+        if s == 200 and rows is not None:
+            os.makedirs(catalog_dir, exist_ok=True)
+            cp = os.path.join(catalog_dir, "catalog-%s.json" % until.isoformat())
+            save_raw(cp, b)
+            doc["catalog"]["saved"] = cp
+            for r in rows:
+                if isinstance(r, dict) and r.get("slug_id") is not None:
+                    cat_by_slug[str(r.get("slug_id"))] = r
+        else:
+            doc["catalog"]["first_line"] = b[:200].decode("utf-8", "replace").splitlines()[:1]
+    log("  catalog: %s" % json.dumps(doc["catalog"]))
+    # 2. report dates per single-barn report
+    cfg = FCA.load_sources(FCA.ROOT)
+    weeks = {}
+    for barn in cfg.get("barns") or []:
+        for slug in [barn.get("slug")] + list(barn.get("also") or []):
+            if not slug:
+                continue
+            slug = str(slug)
+            c = cat_by_slug.get(slug) or {}
+            rec = {"barn": barn["id"], "state": barn["state"], "in_catalog": bool(c),
+                   "title": c.get("report_title") or c.get("slug_name")}
+            u = MARS % (slug, mdy(since), mdy(until))
+            try:
+                s, b = fetch.get(u)
+            except FetchError as e:
+                rec["status"], rec["error"] = "failed", str(e)[:200]
+                doc["reports"][slug] = rec
+                log("  %s (%s): failed %s" % (slug, barn["id"], str(e)[:100]))
+                continue
+            rec["status"], rec["bytes"] = s, len(b)
+            save_raw(os.path.join(d, "header_%s.json" % slug), b)
+            rows, whole = mars_rows(b)
+            if rows is None:
+                rec["first_line"] = b[:200].decode("utf-8", "replace").splitlines()[:1]
+                rows = []
+            if isinstance(whole, dict):
+                rec["section"] = whole.get("reportSection")
+                rec["sections"] = whole.get("reportSections")
+                rec["stats"] = whole.get("stats")
+            rec["rows"] = len(rows)
+            rec["keys"] = sorted(rows[0].keys())[:80] if rows and isinstance(rows[0], dict) else []
+            dates = set()
+            key = None
+            for r in rows:
+                if isinstance(r, dict):
+                    k, dt = row_date(r)
+                    if dt:
+                        key = key or k
+                        dates.add(dt)
+            rec["date_key"] = key
+            rec["dates"] = sorted(x.isoformat() for x in dates)
+            rec["first"] = rec["dates"][0] if dates else None
+            rec["last"] = rec["dates"][-1] if dates else None
+            for x in dates:
+                w = weeks.setdefault((x - datetime.timedelta(days=x.weekday())).isoformat(), {"barns": set(), "states": set()})
+                w["barns"].add(barn["id"])
+                w["states"].add(barn["state"])
+            doc["reports"][slug] = rec
+            log("  %s (%s): %s, %d rows, %d report dates %s to %s" % (slug, barn["id"], s, len(rows), len(dates), rec["first"], rec["last"]))
+    # 3. detail rows, two barns, two weeks (the fixture week and the last full week)
+    last_mon = until - datetime.timedelta(days=until.weekday() + 7)
+    for slug in detail_slugs:
+        for a0 in (datetime.date(2025, 1, 6), last_mon):
+            a1 = a0 + datetime.timedelta(days=6)
+            for name, u in (("all", MARS_ALL % (slug, mdy(a0), mdy(a1))),
+                            ("detail", MARS_SECTION % (slug, urllib.parse.quote("Report Detail"), mdy(a0), mdy(a1)))):
+                k = "%s_%s_%s" % (name, slug, a0.isoformat())
+                try:
+                    s, b = fetch.get(u)
+                except FetchError as e:
+                    doc["detail"][k] = {"status": "failed", "error": str(e)[:200]}
+                    continue
+                save_raw(os.path.join(d, k + ".json"), b)
+                rows, whole = mars_rows(b)
+                doc["detail"][k] = {"status": s, "bytes": len(b), "rows": len(rows or []),
+                                    "keys": sorted(rows[0].keys())[:80] if rows and isinstance(rows[0], dict) else []}
+                log("  %s: %s, %d bytes" % (k, s, len(b)))
+    table = {k: {"barns": len(v["barns"]), "states": len(v["states"])} for k, v in sorted(weeks.items())}
+    doc["weeks"] = table
+    doc["weeks_30_barns_8_states"] = sum(1 for v in table.values() if v["barns"] >= 30 and v["states"] >= 8)
+    doc["reports_with_dates"] = sum(1 for r in doc["reports"].values() if r.get("dates"))
+    with open(os.path.join(out, "mars-coverage.json"), "w", encoding="utf-8") as f:
+        json.dump(doc, f, indent=1)
+    log("MARS: %d reports asked, %d with report dates since %s; %d weeks with any; %d weeks with 30+ barns in 8+ states"
+        % (len(doc["reports"]), doc["reports_with_dates"], since, len(table), doc["weeks_30_barns_8_states"]))
+    for k, v in table.items():
+        log("  week of %s: %d barns, %d states" % (k, v["barns"], v["states"]))
+    return doc
+
+
 # ------------------------------------------------------------------ selftest
 def selftest():
     import tempfile
@@ -390,6 +567,45 @@ def selftest():
         doc = coverage(out=d, fetch=Fetcher(min_gap=0, retries=0, opener=op2, sleep=lambda s: None), log=lambda *a: None,
                        minutes=1, clock=lambda: t.__setitem__(0, t[0] + 30) or t[0])
         ck("coverage: stops at the time limit and keeps what it listed", 0 < doc["slugs"] < 10, doc["slugs"])
+
+    # MARS probe: no key asks nothing; with a key, catalog saved, dates per report, weeks counted
+    os.environ.pop("MARS_API_KEY", None)
+    import datetime as _dt
+    with tempfile.TemporaryDirectory() as d:
+        doc = mars_probe(_dt.date(2024, 1, 1), _dt.date(2026, 11, 2), out=d, catalog_dir=os.path.join(d, "cat"),
+                         fetch=Fetcher(min_gap=0, retries=0, opener=lambda u: (500, b"", {}), sleep=lambda s: None), log=lambda *a: None)
+        ck("mars: no key, nothing asked", doc.get("why", "").startswith("no MARS_API_KEY") and not doc["reports"])
+    os.environ["MARS_API_KEY"] = "test-key-not-real"
+    seen = []
+
+    def op3(u):
+        seen.append(u)
+        if u == MARS_LIST:
+            return 200, json.dumps([{"slug_id": "1856", "report_title": "Valentine Livestock Auction - Valentine, NE"}]).encode(), {}
+        if "/reports/1856?" in u:
+            return 200, json.dumps({"reportSection": "Report Header", "results": [
+                {"report_date": "01/09/2025", "published_date": "01/09/2025 18:00:00"},
+                {"report_date": "01/16/2025"}, {"report_date": "01/16/2025"}]}).encode(), {}
+        return 200, json.dumps({"results": []}).encode(), {}
+    try:
+        assert mars_auth()["Authorization"] == "Basic " + base64.b64encode(b"test-key-not-real:").decode()
+        with tempfile.TemporaryDirectory() as d:
+            doc = mars_probe(_dt.date(2024, 1, 1), _dt.date(2026, 11, 2), out=d, catalog_dir=os.path.join(d, "cat"),
+                             fetch=Fetcher(min_gap=0, retries=0, opener=op3, sleep=lambda s: None), log=lambda *a: None)
+            r = doc["reports"]["1856"]
+            ck("mars: catalog saved under its date", os.path.exists(os.path.join(d, "cat", "catalog-2026-11-02.json")) and r["in_catalog"])
+            ck("mars: report dates and weeks", r["dates"] == ["2025-01-09", "2025-01-16"] and doc["weeks"]["2025-01-06"]["barns"] == 1
+               and doc["weeks"]["2025-01-13"]["states"] == 1, (r.get("dates"), doc.get("weeks")))
+            ck("mars: the key never lands in a URL or a file", not any("test-key" in u for u in seen) and
+               not any("test-key" in open(os.path.join(dp, f), errors="ignore").read()
+                       for dp, _, fs in os.walk(d) for f in fs))
+            ck("mars: every single-barn report asked once", sum(1 for u in seen if "?q=report_begin_date" in u and "allSections" not in u
+                                                                   and "Report%20Detail" not in u) == len(doc["reports"]) > 100)
+            ck("mars: detail asked for two barns, two weeks, two ways", sum(1 for u in seen if "allSections" in u or "Report%20Detail" in u) == 8)
+    finally:
+        os.environ.pop("MARS_API_KEY", None)
+    ck("mars_date: the shapes MARS uses", mars_date("01/09/2025 00:00:00") == _dt.date(2025, 1, 9) and
+       mars_date("2025-01-09T00:00:00") == _dt.date(2025, 1, 9) and mars_date("x") is None)
     print("probe_feeder_archive selftest: %d failure(s)" % len(fails))
     return 1 if fails else 0
 
@@ -399,12 +615,21 @@ def main(argv=None):
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--coverage", action="store_true")
+    ap.add_argument("--mars", action="store_true")
+    ap.add_argument("--since", default="2024-01-01")
     ap.add_argument("--slugs", default=",".join(DEFAULT_SLUGS))
     ap.add_argument("--max-minutes", type=float, default=0)
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
+    if a.mars:
+        import datetime
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.since):
+            print("--since is YYYY-MM-DD")
+            return 2
+        mars_probe(datetime.date.fromisoformat(a.since), datetime.datetime.now(datetime.timezone.utc).date(), out=a.out)
+        return 0
     if a.coverage:
         coverage(out=a.out, minutes=a.max_minutes)
         return 0

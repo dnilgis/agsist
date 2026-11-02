@@ -15,7 +15,9 @@ name: History backfill (dispatch only)
 #                             archived copies read by the barn reader (scripts/backfill_feeder_index.py
 #                             --fetch; years from/to). probe: which archives answer
 #                             (scripts/probe_feeder_archive.py); probe + only=coverage: the Internet
-#                             Archive's copy list for every barn. The page file is built by feeder-history.yml.
+#                             Archive's copy list for every barn; probe + only=mars: what the MARS API
+#                             (My Market News, MARS_API_KEY) holds per barn report, plus the MARS
+#                             catalog to history/mars/. The page file is built by feeder-history.yml.
 #   from, to     years (blank = the script's own start, this year)
 #   only         agtransport: dataset names (grain_basis,barge_rates); usdm: states (IA,MN)
 #   probe        ams-fert only: save what the archive and MARS answer, fetch nothing else
@@ -43,7 +45,7 @@ on:
         type: string
         default: ""
       only:
-        description: "agtransport: dataset names; usdm: state letters (comma-separated; blank = all); feeder-archive probe: coverage"
+        description: "agtransport: dataset names; usdm: state letters (comma-separated; blank = all); feeder-archive probe: coverage or mars"
         type: string
         default: ""
       probe:
@@ -160,6 +162,8 @@ jobs:
             case "$SOURCE" in ams-fert|feeder-archive) ;; *) echo "::error::probe is for ams-fert and feeder-archive only"; exit 1;; esac
             if [ "$SOURCE" = "feeder-archive" ] && [ "$ONLY" = "coverage" ]; then
               python3 scripts/probe_feeder_archive.py --coverage --max-minutes "${MAXMIN:-300}"
+            elif [ "$SOURCE" = "feeder-archive" ] && [ "$ONLY" = "mars" ]; then
+              python3 scripts/probe_feeder_archive.py --mars --since "${FROM:-2024}-01-01"
             elif [ "$SOURCE" = "feeder-archive" ]; then
               python3 scripts/probe_feeder_archive.py --probe
             else
@@ -178,6 +182,8 @@ jobs:
           DIR: ${{ steps.w.outputs.dir }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
+          # the MARS catalog (feeder-archive probe only=mars) is saved beside the feeder files
+          if [ -d history/mars ]; then bash scripts/push_raw.sh "history backfill $SOURCE catalog" history/mars; fi
           [ -d "$DIR" ] || { echo "nothing written"; exit 0; }
           bash scripts/push_raw.sh "history backfill $SOURCE" "$DIR"
       - name: Summary
