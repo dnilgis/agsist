@@ -77,6 +77,12 @@ pages only draw them.
    Oct 16, 2026 (27 versions checked Nov 2) and the raw branch holds only the
    latest report per barn; every sale in those versions is in barn_sales.
    No CME data is read or compared here (Sig, Oct 29).
+   Before IDX_START: data/feeder-index-history.json (build_history, run by
+   scripts/backfill_feeder_index.py from archived copies of the same USDA
+   reports, feeder-history.yml). Same index_week and index_change, only weeks
+   before IDX_START, so a live week is never replaced by an archive read; each
+   week says where it came from and when it was read. The page loads it only
+   when the record fold opens.
 
 Modes:
   (default)   read the inputs and the last data/feeder-index.json, write it.
