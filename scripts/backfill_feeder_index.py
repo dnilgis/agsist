@@ -48,7 +48,7 @@ import time
 import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from history_lib import Fetcher, FetchError, now_iso  # noqa: E402
+from history_lib import Fetcher, FetchError, Saver, now_iso  # noqa: E402
 import fetch_cattle_auction as FCA  # noqa: E402
 import fetch_dairy as FD  # noqa: E402
 import build_feeder_index as BFI  # noqa: E402
@@ -115,6 +115,11 @@ def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=pri
     man_path = os.path.join(out, "manifest.json")
     man = load(man_path, {"source": SOURCE, "reports": {}})
     cfg = FCA.load_sources(root)
+    saver = Saver(out, "history feeder-archive", every_min=30)   # HISTORY_PUSH=1 in the workflow only
+
+    class _Man:
+        def save(self):
+            save(man_path, man)
     hi = d1 + datetime.timedelta(days=10)    # a copy taken after the last week can hold its sale
     for slug, barn in reports(cfg):
         if stop and clock() > stop:
@@ -173,6 +178,7 @@ def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=pri
         save(man_path, man)
         log("%s (%s): %d copies, %d read" % (slug, barn["id"], len(caps),
                                             sum(1 for v in m["done"].values() if v.startswith("read"))))
+        saver.tick(_Man())
     save(man_path, man)
     return man
 

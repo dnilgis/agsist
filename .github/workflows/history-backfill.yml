@@ -11,9 +11,11 @@ name: History backfill (dispatch only)
 #                nass         NASS crop progress and condition, every state, as far back as Quick Stats goes
 #                ams-fert     AMS Illinois Production Cost Report (fertilizer), 2010 on
 #                nass-yield   NASS final state yields, corn and soybeans, every year (about 4 calls)
-#                feeder-archive  probe only: which archives hold past USDA AMS barn auction reports
-#                             (scripts/probe_feeder_archive.py, for the feeder steer index history);
-#                             only=coverage lists the Internet Archive's captures for every barn instead
+#                feeder-archive  past USDA AMS barn auction reports for the feeder steer index history:
+#                             archived copies read by the barn reader (scripts/backfill_feeder_index.py
+#                             --fetch; years from/to). probe: which archives answer
+#                             (scripts/probe_feeder_archive.py); probe + only=coverage: the Internet
+#                             Archive's copy list for every barn. The page file is built by feeder-history.yml.
 #   from, to     years (blank = the script's own start, this year)
 #   only         agtransport: dataset names (grain_basis,barge_rates); usdm: states (IA,MN)
 #   probe        ams-fert only: save what the archive and MARS answer, fetch nothing else
@@ -87,7 +89,7 @@ jobs:
             nass)        echo "dir=history/nass-progress" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_progress.py" >> "$GITHUB_OUTPUT";;
             ams-fert)    echo "dir=history/ams-fert" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_ams_fert.py" >> "$GITHUB_OUTPUT";;
             nass-yield)  echo "dir=history/nass-yield" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_yield.py" >> "$GITHUB_OUTPUT";;
-            feeder-archive) echo "dir=history/feeder-archive" >> "$GITHUB_OUTPUT"; echo "script=scripts/probe_feeder_archive.py" >> "$GITHUB_OUTPUT";;
+            feeder-archive) echo "dir=history/feeder-archive" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_feeder_index.py" >> "$GITHUB_OUTPUT";;
             *) echo "::error::unknown source $SOURCE"; exit 1;;
           esac
       # the barn job's PDF reader (cattle-auction.yml), so an archived report reads the same here
@@ -100,6 +102,7 @@ jobs:
         run: |
           python3 scripts/history_lib.py --selftest
           python3 "$SCRIPT" --selftest
+          if [ "$SOURCE" = "feeder-archive" ]; then python3 scripts/probe_feeder_archive.py --selftest; fi
       # The saved manifest says which chunks are done. A path that is not on raw yet is a
       # first run; a branch that cannot be read stops the run, because a fresh manifest
       # pushed over the saved one would forget what is done.
@@ -118,6 +121,14 @@ jobs:
               echo "::error::could not read the raw branch; not starting"; exit 1
             fi
           fi
+      # feeder-archive keeps each report's sales beside the manifest; a resumed run merges into them
+      - name: The saved sales (feeder-archive)
+        if: ${{ inputs.source == 'feeder-archive' }}
+        env:
+          DIR: ${{ steps.w.outputs.dir }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh "$DIR/sales"
       - name: Backfill
         env:
           SCRIPT: ${{ steps.w.outputs.script }}
@@ -148,12 +159,16 @@ jobs:
           if [ "$PROBE" = "true" ]; then
             case "$SOURCE" in ams-fert|feeder-archive) ;; *) echo "::error::probe is for ams-fert and feeder-archive only"; exit 1;; esac
             if [ "$SOURCE" = "feeder-archive" ] && [ "$ONLY" = "coverage" ]; then
-              python3 "$SCRIPT" --coverage
+              python3 scripts/probe_feeder_archive.py --coverage
+            elif [ "$SOURCE" = "feeder-archive" ]; then
+              python3 scripts/probe_feeder_archive.py --probe
             else
               python3 "$SCRIPT" --probe
             fi
           elif [ "$SOURCE" = "feeder-archive" ]; then
-            echo "::error::feeder-archive is a probe only: tick probe"; exit 1
+            fa=(--fetch --from "${FROM:-2025}-01-01" --max-minutes "${MAXMIN:-300}")
+            if [ -n "$TO" ]; then fa+=(--to "$TO-12-31"); fi
+            python3 "$SCRIPT" "${fa[@]}"
           else
             python3 "$SCRIPT" "${args[@]}"
           fi
