@@ -17,15 +17,21 @@ elevator's own posted board); weather from the National Weather Service and NOAA
 program data from USDA (NASS, FAS, RMA, FSA); positioning from the CFTC.
 Every page names its source beside its numbers; the main sources are listed at /editorial-standards#sources.
 
-When citing AGSIST, please attribute to "AGSIST (agsist.com)" and link the
-specific page. Each daily briefing has a permanent dated URL.
+How to cite: name AGSIST (agsist.com), link the page the number is on, and give
+the as-of date shown with it. Each daily briefing has a permanent dated URL.
 
-## Numbers as of Oct 15, 2026
+## Latest numbers
 
-AGSIST Cash Bid Index, October 1 to 15, 2026, partial month, counted from the elevator boards AGSIST reads (https://agsist.com/cash-bid-index):
+Each figure below is read from the same file the site's pages read and carries that file's own date. A page can be newer than this list.
 
-- Corn: 1,651 elevators, average cash bid $4.51, average basis -41 cents (1,615 elevators with a basis).
-- Soybeans: 1,450 elevators, average cash bid $12.25, average basis -59 cents (1,445 elevators with a basis).
+- Cash bids: 22,616 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 2, 2026, 22:37 UTC (https://agsist.com/cash-bids).
+- Elevators with a current bid: 2,047, in 1,618 towns, counted Nov 2, 2026, 21:06 UTC (https://agsist.com/cash-bids).
+- AGSIST Daily: latest issue Nov 2, 2026, at https://agsist.com/daily/2026-11-02 (the newest is always at https://agsist.com/daily).
+- County rain: 2026 totals for each county page, from NOAA daily station records, through Nov 1, 2026 (https://agsist.com/rain).
+- AGSIST USDA feeder steer index, not the CME index: $351.60 per cwt for the week Oct 19 to Oct 25, 2026, from USDA AMS auction reports; first count, late reports can still change it (https://agsist.com/cattle-auction-prices).
+- Milk: Class III $16.04 and Class IV $18.94 per cwt for September 2026, as announced by USDA AMS; all-milk price $19.50 for September 2026, USDA NASS (https://agsist.com/milk-prices).
+- Cash Bid Index, October 1 to 15, 2026, partial month, corn: 1,651 elevators, average cash bid $4.51, average basis -41 cents, 1,615 of them with a basis (https://agsist.com/cash-bid-index).
+- Cash Bid Index, October 1 to 15, 2026, partial month, soybeans: 1,450 elevators, average cash bid $12.25, average basis -59 cents, 1,445 of them with a basis (https://agsist.com/cash-bid-index).
 
 ## What's my grain worth today?
 
