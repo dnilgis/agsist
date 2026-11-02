@@ -20,15 +20,29 @@ name: Monthly county rain email
 #                 (the worker's mo mark). Needs RAIN_MONTHLY_LIVE=1.
 #
 # The 2nd, 14:41 UTC (morning in Central), the one schedule Sig approved.
-# GitHub sometimes drops a scheduled fire: if the 2nd's run is missing or cut
-# short, run this by hand with mode send and fetch ticked; a reader already
-# mailed for the month is never mailed again. Each scheduled run first fetches
+# GitHub's scheduler never started this on Nov 2, 2026 (it delivers a small share
+# of scheduled fires; scripts/cron_gate.py). So it also runs after every "Fetch
+# Grain Bids" (cron-job.org, every 15 minutes), and the gate job lets exactly one
+# run per tick of the cron below do the work: the first run after 14:41 on the
+# 2nd, by either trigger, within 360 minutes (by 20:41 UTC, 14:41 Central, the
+# same afternoon; long enough for a morning when cron-job.org or the fetch runs
+# late, short enough that the month is never mailed a day late by the chain).
+# Every other run skips in seconds. A run started by hand does not use up the
+# tick (cron_gate.py MANUAL_DOES_NOT_SERVE), and send_rain_month.py marks each
+# reader once per month, so a second send that month mails nobody.
+# A chained run takes the scheduled path: fetch, pages, then the list.
+# If the 2nd's run is still missing or cut short, run this by hand with mode
+# send and fetch ticked; a reader already mailed for the month is never mailed
+# again. Each scheduled run first fetches
 # the county rain data and rebuilds the /rain pages exactly as county-rain.yml
 # does, in the same queue, so the email and the page carry the same numbers
 # from the same files. A manual run fetches only when "fetch" is ticked.
 on:
   schedule:
     - cron: "41 14 2 * *"
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       mode:
@@ -53,10 +67,40 @@ permissions:
   contents: write
 
 jobs:
+  # One run per tick (see the top). Sparse: the skip costs seconds.
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow rain-monthly.yml --max-lag 360
+          --cron "41 14 2 * *"
+
   # The same steps as county-rain.yml (test/rain-monthly.test.mjs holds them
   # to it), in its queue, so the two never write data/rain at once.
   fresh:
-    if: github.event_name == 'schedule' || inputs.fetch == true
+    needs: gate
+    if: needs.gate.outputs.go == '1' && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.fetch == true)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     concurrency:
@@ -131,10 +175,10 @@ jobs:
           echo "::warning::A county rain state failed or the run hit its time cap; those states kept their published files. See the Fetch step."
 
   email:
-    needs: fresh
-    # after a fresh fetch that went through, or with no fetch asked for; a failed
-    # fetch sends nothing (the next catch-up day tries again)
-    if: always() && (needs.fresh.result == 'success' || needs.fresh.result == 'skipped')
+    needs: [gate, fresh]
+    # only on a run the gate let through; then after a fresh fetch that went through,
+    # or with no fetch asked for. A failed fetch sends nothing: run it by hand (top).
+    if: always() && needs.gate.outputs.go == '1' && (needs.fresh.result == 'success' || needs.fresh.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     concurrency:
@@ -159,7 +203,7 @@ jobs:
           python scripts/rain_month.py --selftest
           python scripts/send_rain_month.py --selftest
 
-      - name: Monthly county rain (${{ github.event_name == 'schedule' && 'scheduled' || inputs.mode }})
+      - name: Monthly county rain (${{ (github.event_name == 'schedule' || github.event_name == 'workflow_run') && 'scheduled' || inputs.mode }})
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
@@ -174,7 +218,7 @@ jobs:
           SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
           RAIN_MONTHLY_LIVE: ${{ vars.RAIN_MONTHLY_LIVE }}
           PREVIEW: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'preview' && '1' || '' }}
-          SEND: ${{ ((github.event_name == 'schedule' && vars.RAIN_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.RAIN_MONTHLY_LIVE == '1')) && '1' || '' }}
+          SEND: ${{ (((github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.RAIN_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.RAIN_MONTHLY_LIVE == '1')) && '1' || '' }}
           ASKED_SEND: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && '1' || '' }}
           MONTH: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'send' && inputs.month || '' }}
           FIPS: ${{ github.event_name == 'workflow_dispatch' && inputs.fips || '' }}

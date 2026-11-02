@@ -152,6 +152,9 @@ jobs:
           python scripts/test_milk_seed.py
           python scripts/seed_static.py --only milk
           python scripts/bake_seo.py --page milk-prices.html
+          # the FAQ's JSON-LD follows the visible FAQ the seed just rewrote (Nov 2, 2026: the July mailbox bake
+          # left them apart until freshness.yml ran, and bake_faq --check failed on main and every PR meanwhile)
+          python scripts/bake_faq.py
       - name: Pillow, for the share image
         continue-on-error: true
         run: pip install --quiet pillow==12.3.0
@@ -183,6 +186,7 @@ jobs:
             if [ "$PROBE" != "true" ]; then
               python scripts/seed_static.py --only milk
               python scripts/bake_seo.py --page milk-prices.html
+              python scripts/bake_faq.py
               python scripts/build_share_images.py --only milk-prices || true
               git add milk-prices.html sitemap.xml img/og/milk-prices.jpg
             fi

@@ -27,9 +27,22 @@ name: Monthly land sale email
 # were not fetched since the month ended waits; a late land run is caught up by dispatching
 # mode send by hand. A reader already mailed for the month is never mailed again, so a rerun
 # is safe. It runs a day after the 2nd-of-month rain email, never on the same day.
+#
+# GitHub's scheduler drops most scheduled fires (it never started the rain email on Nov 2,
+# 2026; scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain
+# Bids" (cron-job.org, every 15 minutes), and the gate job lets exactly one run per tick of the
+# cron below do the work: the first run after 15:47 on the 3rd, by either trigger, within 360
+# minutes (by 21:47 UTC, 15:47 Central, the same afternoon; long enough for a late chain,
+# short enough that the chain never mails the month a day late). Every other run skips in
+# seconds. A run started by hand does not use up the tick (cron_gate.py
+# MANUAL_DOES_NOT_SERVE), and send_land_alert.py marks each reader once per topic and month,
+# so a second send that month mails nobody. A chained run takes the scheduled path.
 on:
   schedule:
     - cron: "47 15 3 * *"
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       mode:
@@ -50,7 +63,38 @@ permissions:
   contents: read
 
 jobs:
+  # One run per tick (see the top). Sparse: the skip costs seconds.
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow land-alert.yml --max-lag 360
+          --cron "47 15 3 * *"
+
   email:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     concurrency:
@@ -75,7 +119,7 @@ jobs:
           python scripts/land_alert.py --selftest
           python scripts/send_land_alert.py --selftest
 
-      - name: Monthly land sale email (${{ github.event_name == 'schedule' && 'scheduled' || inputs.mode }})
+      - name: Monthly land sale email (${{ (github.event_name == 'schedule' || github.event_name == 'workflow_run') && 'scheduled' || inputs.mode }})
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
@@ -90,7 +134,7 @@ jobs:
           SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
           LANDSALES_MONTHLY_LIVE: ${{ vars.LANDSALES_MONTHLY_LIVE }}
           PREVIEW: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'preview' && '1' || '' }}
-          SEND: ${{ ((github.event_name == 'schedule' && vars.LANDSALES_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.LANDSALES_MONTHLY_LIVE == '1')) && '1' || '' }}
+          SEND: ${{ (((github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.LANDSALES_MONTHLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && vars.LANDSALES_MONTHLY_LIVE == '1')) && '1' || '' }}
           ASKED_SEND: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && '1' || '' }}
           MONTH: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'send' && inputs.month || '' }}
           SAMPLE: ${{ github.event_name == 'workflow_dispatch' && inputs.sample || '' }}

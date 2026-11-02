@@ -63,6 +63,13 @@ from datetime import date, datetime, timedelta, timezone
 UTC = timezone.utc
 ALWAYS_GO = {"workflow_dispatch", "push", "repository_dispatch", "pull_request", "workflow_call"}
 NOT_A_RUN = {"cancelled", "startup_failure"}   # replaced pending runs never reached their gate
+# The email and rain workflows (Nov 2, 2026): a run started by hand does not serve their tick.
+# A manual run of these takes its own inputs (dry by default, one state, a sample month), so
+# a dry run at 14:45 on the 2nd would otherwise make the 14:52 chained run skip the month's
+# send. Each sender marks every reader it mails (once per month, or once ever), so a manual
+# send followed by the tick's run mails nobody twice. Kept here, not as a flag, so a gate
+# step never names an option an older copy of this script does not know.
+MANUAL_DOES_NOT_SERVE = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"}
 
 
 # ── cron ─────────────────────────────────────────────────────────────────────
@@ -146,9 +153,11 @@ def parse_ts(s):
     return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
 
 
-def decide_tick(event, crons, now, self_id, runs, max_lag_minutes):
+def decide_tick(event, crons, now, self_id, runs, max_lag_minutes, manual_serves=True):
     """(go, reason). `runs` are this workflow's runs created at or after the
-    tick, as the API returns them (id, created_at, conclusion)."""
+    tick, as the API returns them (id, created_at, conclusion, event).
+    manual_serves=False: a run started by hand (an ALWAYS_GO event) does not
+    count as the tick's run."""
     if event in ALWAYS_GO:
         return 1, "%s always runs" % event
     t = latest_tick(crons, now)
@@ -161,6 +170,8 @@ def decide_tick(event, crons, now, self_id, runs, max_lag_minutes):
     my_key = (parse_ts(me["created_at"]), int(me["id"])) if me else None
     for r in runs:
         if int(r["id"]) == int(self_id) or r.get("conclusion") in NOT_A_RUN:
+            continue
+        if not manual_serves and r.get("event") in ALWAYS_GO:
             continue
         created = parse_ts(r["created_at"])
         if created < t:
@@ -369,7 +380,8 @@ def main(argv):
         print("::warning::cron_gate could not list runs (%s); running anyway" % e)
         emit(1, "run list unavailable; running")
         return 0
-    emit(*decide_tick(event, a.cron, now, os.environ.get("GITHUB_RUN_ID", "0"), runs, a.max_lag))
+    emit(*decide_tick(event, a.cron, now, os.environ.get("GITHUB_RUN_ID", "0"), runs, a.max_lag,
+                      manual_serves=os.path.basename(a.workflow) not in MANUAL_DOES_NOT_SERVE))
     return 0
 
 
@@ -425,6 +437,27 @@ def selftest():
           "a manual run always goes")
     check(decide_tick("workflow_run", cr, now, 50, [R(51, "2026-10-08 21:53"), R(50, "2026-10-08 21:52")], 120)[0] == 1,
           "a run created after this one does not block it")
+    # the mail and rain workflows (Nov 2, 2026): a dry run by hand at 14:45 on the 2nd must not
+    # make the 14:52 chained run skip the month's send
+    M = lambda i, s, ev: dict(R(i, s), event=ev)
+    rm = ["41 14 2 * *"]
+    hand = [M(70, "2026-11-02 14:45", "workflow_dispatch"), M(71, "2026-11-02 14:52", "workflow_run")]
+    check(decide_tick("workflow_run", rm, T("2026-11-02 14:52"), 71, hand, 360, manual_serves=False)[0] == 1,
+          "mail workflow: a run by hand after the tick does not serve it; the chained run sends")
+    check(decide_tick("workflow_run", rm, T("2026-11-02 14:52"), 71, hand, 360)[0] == 0,
+          "other workflows: a run by hand still serves the tick (unchanged)")
+    two = [M(70, "2026-11-02 14:45", "workflow_dispatch"), M(71, "2026-11-02 14:52", "workflow_run"),
+           M(72, "2026-11-02 15:07", "workflow_run")]
+    check(decide_tick("workflow_run", rm, T("2026-11-02 15:07"), 72, two, 360, manual_serves=False)[0] == 0,
+          "mail workflow: the second chained run after the tick still skips")
+    check(decide_tick("schedule", rm, T("2026-11-02 19:00"), 73, two + [M(73, "2026-11-02 19:00", "schedule")], 360,
+                      manual_serves=False)[0] == 0, "mail workflow: GitHub's late scheduled fire finds the tick served and skips")
+    check(decide_tick("workflow_run", rm, T("2026-11-02 21:00"), 74, [], 360, manual_serves=False)[0] == 0,
+          "mail workflow: a chained run past six hours does not send the month late")
+    check(decide_tick("workflow_run", rm, T("2026-11-03 14:52"), 75, [], 360, manual_serves=False)[0] == 0,
+          "mail workflow: the next day is no tick")
+    check(MANUAL_DOES_NOT_SERVE == {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"},
+          "the four mail and rain workflows, and only those, ignore runs by hand")
 
     # COT
     cot = {"report_date": "October 06, 2026", "next_release": "2026-10-16"}

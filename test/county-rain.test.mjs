@@ -49,7 +49,10 @@ test("the rain pages rebuild every day, and the job watcher expects a run every 
   assert.ok(!crons.some((c) => /\*\s+[0-6](-[0-6])?$/.test(c)), "no weekday-only clock left: " + crons);
   assert.doesNotMatch(wf, /Mondays 13:23|# Mondays|Mondays in\n/, "the workflow's schedule notes no longer say the pages run on Mondays");
   const ch = readFileSync(ROOT + "scripts/cron_health.py", "utf8");
-  assert.match(ch, /\("county-rain\.yml", \["23 13 \* \* \*", "41 14 2 1 \*"\], 240,/, "cron_health watches the same two clocks");
+  // gated since Nov 2, 2026: cron_health reads the clock from the gate step, which carries the same two crons
+  assert.match(ch, /\("county-rain\.yml", None, \d+, False,/, "cron_health watches the gate clock");
+  assert.match(wf, /cron_gate\.py tick --workflow county-rain\.yml --max-lag \d+\n\s+--cron "23 13 \* \* \*"\n\s+--cron "41 14 2 1 \*"/,
+    "the gate carries the same two clocks");
   const fetch = readFileSync(ROOT + "scripts/fetch_county_rain.py", "utf8");
   assert.match(fetch, /if today\.month == 1:\s+return today\.year - 1, f"\{today\.year - 1\}-12-31"/,
     "every January run, daily now, still fetches the finished year so late reports land");
