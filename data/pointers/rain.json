@@ -141,10 +141,6 @@
    "to": "/rain/missouri",
    "since": "2026-10-15"
   },
-  "rain/montana/petroleum-county.html": {
-   "to": "/rain/montana",
-   "since": "2026-10-30"
-  },
   "rain/new-york/schoharie-county.html": {
    "to": "/rain/new-york",
    "since": "2026-10-15"
@@ -185,10 +181,6 @@
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
   },
-  "rain/tennessee/jackson-county.html": {
-   "to": "/rain/tennessee",
-   "since": "2026-10-28"
-  },
   "rain/tennessee/overton-county.html": {
    "to": "/rain/tennessee",
    "since": "2026-10-19"
@@ -220,6 +212,10 @@
   "rain/texas/san-augustine-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
+  },
+  "rain/virginia/franklin-city.html": {
+   "to": "/rain/virginia",
+   "since": "2026-11-02"
   },
   "rain/virginia/richmond-county.html": {
    "to": "/rain/virginia",
