@@ -104,3 +104,37 @@ test("at 390 px every ranking row shows rank and bar on screen", { skip }, async
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
+
+// Nov 2, 2026 real case (test/fixtures/conditions-2026-11-02): ratings on Oct 25, harvest on
+// Nov 1. The page script keyed the harvest table on the rating week and replaced the table
+// with "No state harvest numbers for the week ending Oct 25, 2026" after the fetch.
+test("page script: the harvest table follows the harvest week, not the rating week", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const fx = readFileSync(ROOT + "test/fixtures/conditions-2026-11-02/crop-progress.json");
+  try {
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 } });
+    const pg = await ctx.newPage();
+    const errors = [];
+    pg.on("pageerror", (e) => errors.push(String(e)));
+    await pg.route("**/*", (r) => {
+      const u = r.request().url();
+      if (!u.startsWith(`http://127.0.0.1:${port}`)) return r.abort();
+      if (/\/data\/crop-progress\.json/.test(u)) return r.fulfill({ status: 200, contentType: "application/json", body: fx });
+      return r.continue();
+    });
+    await pg.goto(`http://127.0.0.1:${port}/conditions`);
+    await pg.waitForFunction(() => document.querySelector("#cd-h-tabs button"), null, { timeout: 20000 });
+    const t = await pg.$eval("#cd-h-table", (e) => e.textContent);
+    assert.match(t, /^Corn harvested, week ending Nov 1, 2026/);
+    assert.ok(!/No state harvest numbers/.test(t), t.slice(0, 120));
+    assert.equal(await pg.$eval("#cd-h-fresh", (e) => e.textContent), "week ending 2026-11-01");
+    const heads = await pg.$$eval("#cd-h-table th", (th) => th.map((x) => x.textContent.replace(/[▴▾]/g, "").trim()));
+    assert.deepEqual(heads, ["State", "Harvested", "Week before"], "no empty five-year columns");
+    const first = await pg.$$eval("#cd-h-table tr", (tr) => tr.slice(1, 3).map((r) => r.cells[0].textContent));
+    assert.deepEqual(first, ["New York", "Wyoming"], "least harvested first (NY 28%, WY 37%)");
+    await pg.click('#cd-h-tabs button[data-hc="soybeans"]');
+    assert.match(await pg.$eval("#cd-h-table", (e) => e.textContent), /^Soybeans harvested, week ending Nov 1, 2026/);
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
