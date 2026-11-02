@@ -2356,8 +2356,9 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
   .job-sell,.job-field{border-top:0;padding-top:4px;padding-left:20px;border-left:1px solid var(--border-2)}
   .job-sell{padding-right:20px}
 }
-/* No ZIP: the ZIP box asks once; the forecast cell waits for a place (a granted location still paints it) */
-#hero-band.hb-nozip #hb-wx:not([data-state="ok"]){display:none}
+/* No ZIP: the forecast cell is one short "Set ZIP" row that opens the ZIP box (test/home-front) */
+#hb-wx[data-state="nozip"]{min-height:0}
+#hb-wx[data-state="nozip"] .hb-v{min-height:0}
 #hero-band .job-links a,#hero-band .job-daily{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;align-items:center;min-height:44px}
 #hero-band .job-links a>span,#hero-band .job-daily>span{grid-column:1}
 #hero-band .job-links a::after,#hero-band .job-daily::after{content:"";grid-column:2;grid-row:1/span 2;width:7px;height:7px;margin-right:4px;border-top:2px solid var(--text-dim);border-right:2px solid var(--text-dim);transform:rotate(45deg)}

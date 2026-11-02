@@ -858,7 +858,7 @@ try {
     function wxNoLoc(){if(snapNow)return false;var ze=$('wx-zip-entry'),hb=$('hero-band');
       return !!(ze&&ze.style.display==='block')||!!(hb&&hb.classList.contains('hb-nozip'));}
     function paintNoLoc(){if(!wxNoLoc())return false;var c=$('hb-wx');if(c)c.dataset.state='nozip';
-      set('hb-wx-v','<span class="hb-setzip">Set ZIP</span>');set('hb-wx-s','<span class="hb-l">for today&rsquo;s forecast and spray read</span>');return true;}
+      set('hb-wx-v','<span class="hb-setzip">Set ZIP</span>');set('hb-wx-s','<span class="hb-l">for weather and spray days</span>');return true;}
     (function(){var ze=$('wx-zip-entry'),c=$('hb-wx');
       if(ze&&window.MutationObserver)new MutationObserver(function(){if(!paintNoLoc()&&c&&c.dataset.state==='nozip'&&ze.style.display!=='block'){c.dataset.state='';set('hb-wx-v','<span class="hb-skel" aria-hidden="true"></span>');set('hb-wx-s','');}}).observe(ze,{attributes:true,attributeFilter:['style']});
       paintNoLoc();
