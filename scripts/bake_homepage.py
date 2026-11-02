@@ -152,6 +152,22 @@ def main():
         if n:
             baked.append("date")
 
+    # 2026-11-02: the "Today near me" job card on the first screen names the
+    # Daily's date and headline (it links down to the briefing). Optional: an
+    # older index.html without the card bakes the rest as before.
+    html, ok = replace_inner(
+        html, r'<span class="job-daily-t" id="job-daily-t">', "</span>",
+        esc(daily.get("headline", "")), "job-daily", required=False)
+    if ok:
+        jd = ""
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", iso):
+            _m = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+            jd = " &middot; %s %d" % (_m[int(iso[5:7]) - 1], int(iso[8:10]))
+        html, _ = replace_inner(
+            html, r'<span class="job-daily-k" id="job-daily-k">', "</span>",
+            "The Daily" + jd, "job-daily-k", required=False)
+        baked.append("job card")
+
     html, _ = replace_inner(
         html, r'<p id="daily-subheadline"[^>]*>', "</p>",
         esc(daily.get("subheadline", "")), "subheadline")

@@ -2286,3 +2286,47 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 /* 3. A saved state's middle-bid line holds its space until the numbers come
       (components/price-local.js reserve()); unseen until filled. */
 .pl-line.pl-wait{visibility:hidden}
+/* ===== 2026-11-02 (Sig: go): the first screen is three jobs =====
+   Today near me (the reader's ZIP: best bids, weather, the Daily), Sell grain,
+   My field. The hero band keeps every id its script paints; the futures
+   cells (baked for crawlers, Oct 19) sit under the jobs, and every other
+   destination stays further down the page, the full list under More. */
+.jobs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:4px 0 12px}
+.job{min-width:0;background:var(--surface);border:1px solid var(--border-2);border-radius:8px;padding:8px 12px 6px}
+.job-near{grid-column:1/-1;border-top:3px solid var(--gold)}
+.job-h{margin:2px 0 4px;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:1.05rem;font-weight:800;line-height:1.25;letter-spacing:0;text-transform:none;color:var(--text)}
+.job-near .hb-top{padding-bottom:2px}
+.job-links{list-style:none;margin:0;padding:0}
+.job-links a{display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:44px;padding:6px 0;border-top:1px solid var(--border-2);color:inherit;text-decoration:none}
+.job-links li:first-child a{border-top:0}
+.job-l{font-weight:700;font-size:.941rem;line-height:1.3;color:var(--text);text-decoration:underline;text-decoration-color:var(--border-2);text-underline-offset:3px}
+.job-links a:hover .job-l{text-decoration-color:currentColor}
+.job-links a:focus-visible,.job-daily:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.job-s{display:none;font-size:.824rem;line-height:1.4;color:var(--text-dim)}
+.job-daily{display:block;padding:8px 0 6px;border-top:1px solid var(--border-2);color:inherit;text-decoration:none;font-size:.882rem;line-height:1.4}
+.job-daily-k{display:block;font-size:.824rem;font-weight:600;color:var(--text-dim)}
+.job-daily-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.8em;font-weight:600;color:var(--text);text-decoration:underline;text-decoration-color:var(--border-2);text-underline-offset:3px}
+.job-daily:hover .job-daily-t{text-decoration-color:currentColor}
+.hb-futh{margin:4px 0 0;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.824rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+#hero-band .hb-plain{display:none;margin:2px 0 4px;color:var(--text-dim);font-size:.882rem;line-height:1.45}
+#hero-band.hb-nozip .hb-plain{display:block}
+@container hero (min-width:560px){
+  .job-near{grid-column:1/-1}
+  .job-s{display:block}
+  #hero-band .job-near .hb-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px}
+  #hero-band .job-near .hb-bid{grid-column:auto}
+  #hero-band .job-near .hb-wx{grid-column:1/-1}
+  #hero-band .job-near .hb-cell{padding:10px 0 10px;border-left:0}
+  #hero-band .job-near #hb-soy{padding-left:16px;border-left:1px solid var(--border-2)}
+  #hero-band .hb-grid--fut{grid-template-columns:minmax(0,1fr) minmax(0,1fr);max-width:720px}
+  #hero-band .hb-grid--fut .hb-fut{grid-column:auto}
+  #hero-band .hb-grid--fut #hb-fs{padding-left:16px;border-left:1px solid var(--border-2)}
+}
+@container hero (min-width:1000px){
+  .jobs{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+  .job{padding:10px 16px 8px}
+  .job-near{grid-column:auto}
+  #hero-band .job-near .hb-v{font-size:clamp(1.7rem,2.6cqi,2.2rem)}
+  #hero-band .hb-grid--fut #hb-fc{padding-left:0;border-left:0}
+  #hero-band.hb-nozip .job-near .hb-grid{grid-template-columns:minmax(0,1fr)}
+}
