@@ -1131,45 +1131,40 @@ def asof_time(t):
 # so the last half (later delivery, usually more money) headlined. Nevada, IA
 # on Nov 2: "corn $4.23 at Lincolnway Energy, LH Nov (basis -25c)" while its
 # FH Nov row paid $4.18 (-30c), and the state line read 15c stronger than the
-# Iowa middle where the nearest row was 10c. Now the nearest month is ranked
-# by period: spot or cash, or the first half, then the whole month, then the
-# last half, and the best cash is taken only inside the earliest one present.
-# Every pick (answer, state line, FAQ, structured data, share card, the nearby
-# lists and the company pages) goes through nearest_rows(), so they agree.
-_FIRST_HALF_RE = re.compile(r"^\s*(?:fh|1h|first\s+half)\b|[-,]\s*(?:fh|first\s+half)\s*$", re.I)
+# Iowa middle where the nearest row was 10c. Now the nearest month has two
+# tiers: deliverable now (spot or cash, the first half, the whole month), then
+# the last half. The best cash is taken inside the first tier present, so a
+# whole-month bid still beats a lower spot bid (Pekin, IL: River Valley's Nov
+# $4.52 over a $4.12 cash bid nearby). Every pick (answer, state line, FAQ,
+# structured data, share card, the nearby lists, the company pages and the
+# hold box) goes through nearest_rows(), so they agree.
 _LAST_HALF_RE = re.compile(r"^\s*(?:lh|2h|last\s+half|second\s+half)\b|[-,]\s*(?:lh|last\s+half)\s*$", re.I)
-_SPOT_RE = re.compile(r"^\s*(?:spot|cash|in\s*store|instore)\b", re.I)
 _DAYS_RE = re.compile(r"\b(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4}) to (\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})\b")
 
 
 def period_rank(r):
-    """0 spot, cash or the first half of the month; 1 the whole month (or a
-    label that does not say); 2 the last half. Read from the delivery label the
-    table prints, and an explicit day range in it ("01 Nov 2026 to 15 Nov 2026")."""
+    """0 deliverable now (spot, cash, the first half, the whole month, or a
+    label that does not say); 1 the last half of the month. Read from the
+    delivery label the table prints, and an explicit day range in it
+    ("16 Nov 2026 to 30 Nov 2026" is the last half)."""
     if str(r.get("period") or "") == "spot":
         return 0
     lab = re.sub(r"\s+", " ", str(r.get("label") or "")).strip()
-    if _SPOT_RE.search(lab) or _FIRST_HALF_RE.search(lab):
-        return 0
     if _LAST_HALF_RE.search(lab):
-        return 2
+        return 1
     m = _DAYS_RE.search(lab)
-    if m and m.group(2).lower() == m.group(5).lower() and m.group(3) == m.group(6):
-        a, b = int(m.group(1)), int(m.group(4))
-        if a >= 11:
-            return 2
-        if a <= 2 and b <= 20:
-            return 0
-    return 1
+    if m and m.group(2).lower() == m.group(5).lower() and m.group(3) == m.group(6) and int(m.group(1)) >= 11:
+        return 1
+    return 0
 
 
 def nearest_key(r):
-    """Sort key for 'earliest delivery': the month, then the period inside it."""
+    """Sort key for 'earliest delivery': the month, then the tier inside it."""
     return (r["dm"], period_rank(r))
 
 
 def nearest_rows(rs):
-    """The rows in the earliest delivery period present (nearest_key)."""
+    """The rows in the earliest delivery tier present (nearest_key)."""
     if not rs:
         return []
     k = min(nearest_key(r) for r in rs)
@@ -1609,9 +1604,9 @@ def answer_picks(boards):
     """{crop: (row, elevator name)}: per elevator the commodity it posts most
     (a non-GMO premium is never the headline corn price), its earliest delivery
     period and the highest cash there; then across elevators the earliest
-    period and the highest cash in it. Earliest is the month, then spot or the
-    first half before the whole month before the last half (nearest_rows; Sig,
-    2026-11-02: "Earliest bid first"). On a tie the newer posting, then the name.
+    period and the highest cash in it. Earliest is the month, then inside it
+    spot, the first half and the whole month as one tier before the last half
+    (nearest_rows; Sig, 2026-11-02: "Earliest bid first"). On a tie the newer posting, then the name.
     A restricted bid (contract, feed or members only) is skipped; when that
     leaves the nearest open bid FAR_OPEN_MONTHS or more past it, the row comes
     back as a copy with "open_far": True so the answer says so."""
@@ -4026,18 +4021,27 @@ def _selftest_answer():
     assert hold_lines(dict(uw, rows=uw["rows"] + [dict(row("corn", 4.35, -0.25, ("ZC", 2, 2027), dm="2027-01"),
                                                        label="Jan 2027")]))[0][1].startswith("Hold to Jan? +13\u00a2"), \
         "the hold box counts from the open LH bid, not the overfill-only one"
-    # spot or the first half, then the whole month, then the last half
-    for lab, per, want in (("FH Nov 2026", "2026-11", 0), ("LH Nov 2026", "2026-11", 2), ("Nov 26 - FH", "2026-11", 0),
-                           ("Dec 2026", "2026-12", 1), ("Cash", "spot", 0), ("", "spot", 0), ("Spot / GO", "2026-11", 0),
-                           ("Oct/FH Nov", "2027-10", 1), ("NOV 2026 (01 Nov 2026 to 30 Nov 2026)", "2026-11", 1),
+    # spot, the first half and the whole month are one tier; the last half comes after
+    for lab, per, want in (("FH Nov 2026", "2026-11", 0), ("LH Nov 2026", "2026-11", 1), ("Nov 26 - FH", "2026-11", 0),
+                           ("Nov 26 - LH", "2026-11", 1), ("Dec 2026", "2026-12", 0), ("Cash", "spot", 0),
+                           ("", "spot", 0), ("Oct/FH Nov", "2027-10", 0),
+                           ("NOV 2026 (01 Nov 2026 to 30 Nov 2026)", "2026-11", 0),
                            ("Nov 2026 (01 Nov 2026 to 15 Nov 2026)", "2026-11", 0),
-                           ("Nov 2026 (16 Nov 2026 to 30 Nov 2026)", "2026-11", 2), ("11/01/2026", "2026-11", 1),
-                           ("New crop 2026", "newcrop-2026", 1), ("Nov 26 (2026-12)", "2026-11", 1)):
+                           ("Nov 2026 (16 Nov 2026 to 30 Nov 2026)", "2026-11", 1), ("11/01/2026", "2026-11", 0),
+                           ("New crop 2026", "newcrop-2026", 0), ("Nov 26 (2026-12)", "2026-11", 0)):
         assert period_rank({"label": lab, "period": per}) == want, (lab, period_rank({"label": lab, "period": per}))
-    # a whole-month bid that pays more at another elevator does not beat an earlier one (Sig: earliest first)
-    spot = {"operator": "Spot Grain", "city": "Nevada", "rows": [
-        dict(row("corn", 4.05, -0.42, dec, dm="2026-11"), label="Cash", period="spot")]}
-    assert answer_picks([spot, key])["corn"][1] == "Spot Grain"
+    # Pekin, IL (Nov 2, real rows): River Valley Cooperative's Alto ICP board posts Nov 2026 corn $4.52
+    # (+5c vs Dec '26); Tremont Co-operative's Adwell board posts CASH $4.12 (-35c). Both deliver now: the
+    # whole-month bid, the higher one, stays the answer (lead's ruling on Sig's rule, Nov 2)
+    alto = {"operator": "River Valley Cooperative", "city": "Alto Icp", "town": "Pekin", "rows": [
+        dict(row("corn", 4.52, 0.05, dec, dm="2026-11"), label="Nov 2026")]}
+    adwell = {"operator": "Tremont Co-operative Grain Co.", "city": "Adwell", "town": "Pekin", "rows": [
+        dict(row("corn", 4.12, -0.35, dec, dm="2026-11"), label="CASH", period="spot")]}
+    ppk = answer_picks([adwell, alto])
+    assert (ppk["corn"][0]["cash"], ppk["corn"][0]["label"]) == (4.52, "Nov 2026"), ppk
+    assert top_nearby(alto["rows"] + adwell["rows"])["corn"][0] == 4.52
+    # a whole-month bid under another elevator's LH bid still comes first (the LH is later delivery)
+    assert answer_picks([dict(lw, rows=lw["rows"][1:2]), key])["corn"][0]["cash"] == 4.12
     assert answer_sentence(pk, snap) == ("Nearest-delivery bids: corn $4.12 at Beta Co-op for Oct 2026 delivery "
                                          "(basis \u221258\u00a2 vs Dec '26) and soybeans $10.01 for Oct 2026 "
                                          "(basis \u221270\u00a2), posted Oct 6."), \
