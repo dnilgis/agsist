@@ -12,9 +12,23 @@ name: ARC/PLC signup reminder
 # Secrets (the same as the other senders): LIST_URL, LIST_TOKEN, UNSUB_SECRET,
 # SMTP_USER/SMTP_PASS (or GMAIL_USER/GMAIL_APP_PASS). Optional: SMTP_HOST,
 # SMTP_PORT, FROM_ADDR, REPLY_TO.
+#
+# GitHub's scheduler drops most scheduled fires (Nov 2, 2026 it started neither monthly
+# email; scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain
+# Bids" (cron-job.org, every 15 minutes), and the gate job lets exactly one run per tick of
+# the cron below do the work: the first run after 14:10, 17:10 or 20:10 UTC, by either
+# trigger, within 170 minutes, so each tick's window closes before the next tick and the
+# last one (20:10) by 23:00 UTC, 17:00 Central, the same Central day send_notice.py decides
+# on. Every other run, and every run outside Nov, Dec, Feb and Mar, skips in seconds. A run
+# started by hand does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE); each address
+# is marked after its send, so no reader is mailed twice. A chained run takes the scheduled
+# path (--send).
 on:
   schedule:
     - cron: '10 14,17,20 * 11,12,2,3 *'
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       topic:
@@ -26,17 +40,48 @@ on:
         type: boolean
         default: true
 
-concurrency:
-  group: arcplc-reminder
-  cancel-in-progress: false
-
 permissions:
   contents: read
 
 jobs:
+  # One run per tick (see the top). Sparse: the skip costs seconds.
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow arcplc-reminder.yml --max-lag 170
+          --cron "10 14,17,20 * 11,12,2,3 *"
+
   remind:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # the queue is on the sending job only, so the chained skips never wait in it
+    concurrency:
+      group: arcplc-reminder
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
@@ -74,6 +119,6 @@ jobs:
           DRY: ${{ inputs.dry_run }}
         run: |
           set --
-          if [ "$EVENT" = "schedule" ] || [ "$DRY" = "false" ]; then set -- --send; fi
+          if [ "$EVENT" = "schedule" ] || [ "$EVENT" = "workflow_run" ] || [ "$DRY" = "false" ]; then set -- --send; fi
           if [ -n "$TOPIC" ]; then set -- "$@" --topic "$TOPIC" --any-day; fi
           python3 scripts/send_notice.py "$@"

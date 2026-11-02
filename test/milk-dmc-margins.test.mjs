@@ -47,7 +47,12 @@ test('May to Aug 2026 margins are FSA\'s, as captured from its live page Oct 28,
   assert.equal(dmc.screenshot.source_url, 'https://www.fsa.usda.gov/resources/programs/dairy-margin-coverage-program-dmc/prices-updates');
   assert.equal(Object.keys(dmc.margins).sort().at(-1), '2026-08', 'nothing past what FSA posted');
   assert.equal(dmc.margins['2026-09'], undefined);
-  assert.deepEqual(dmc.withheld, { count: 0 });
+  // Months newer than the Oct 28 capture may be left out once NASS posts their all-milk price (Nov 2, 2026:
+  // September), always with the reason; nothing at or before Aug 2026 may be.
+  const held = (dmc.withheld && dmc.withheld.months) || [];
+  assert.equal(dmc.withheld.count, held.length);
+  assert.ok(held.every((k) => k > '2026-08'), 'only months after the capture are left out: ' + held);
+  if (held.length) assert.match(dmc.withheld.why, /not in the copy of FSA's page I read/);
   const nass = JSON.parse(read('data/dairy-data.json')).all_milk;
   if (dmc.margins[nass.month_key]) assert.equal(dmc.margins[nass.month_key].all_milk, nass.value, 'FSA all-milk is the NASS month held');
 });
@@ -57,7 +62,11 @@ test('the page shows them, credits the capture, and no longer says they are left
   assert.match(paid, /What DMC would have paid at these published prices, Jan 2019 to Aug 2026, before premium/);
   assert.match(paid, /2026 is Jan to Aug only/);
   assert.match(paid, /May 2026 to Aug 2026: the same FSA page, read 2026-10-28 from a screen capture of FSA&rsquo;s live page/);
-  assert.doesNotMatch(paid, /left out/, 'no DMC months withheld');
+  // nothing from the captured months is left out; a later month may be, named with its reason
+  const lo = [...paid.matchAll(/\(([A-Z][a-z]{2} \d{4}(?:, [A-Z][a-z]{2} \d{4})*)\) (?:is|are) left out/g)].flatMap((x) => x[1].split(', '));
+  const MON = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
+  assert.ok(lo.every((t) => { const [m, y] = t.split(' '); return +y * 100 + MON[m] > 202608; }), 'no captured month left out: ' + lo);
+  if (/left out/.test(paid)) assert.ok(lo.length, 'a "left out" line names its months');
   // $9.50 in 2026: (1.69 + 1.04 + 0 + 0 + 0 + 0 + 0 + 0.16) / 8 months
   assert.match(paid, /<tr><th scope="row">\$9\.50<span class="dp-dmc-prem">[^<]*<\/span><\/th><td class="num">\$0\.36<\/td>/);
   const m = seedOf('milkdmcmargin');

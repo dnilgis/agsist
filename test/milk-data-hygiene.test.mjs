@@ -17,9 +17,13 @@ test('mailbox history holds June 2025, March, May and June 2026', () => {
   assert.equal(mb.history['2026-05'], 20.43, 'May = June 20.18 + 0.25 (report: down $0.25 from May)');
   assert.equal(mb.history['2025-06'], 20.55, 'June 2025 = 20.18 + 0.37 (report: down $0.37 from a year earlier)');
   assert.equal(mb.history['2026-03'], 18.84);
-  // the changes the file states and the history agree to the cent
-  assert.ok(Math.abs(mb.value - mb.history['2026-05'] - mb.prev_month_change) < 0.006);
-  assert.ok(Math.abs(mb.value - mb.history['2025-06'] - mb.year_ago_change) < 0.006);
+  // the changes the file states and the history agree to the cent, for whatever month the file holds now
+  // (Nov 2, 2026: these were pinned to June 2026's neighbours and failed the day July came in)
+  const [y, m] = mb.month_key.split('-').map(Number);
+  const prev = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, '0')}`;
+  const yago = `${y - 1}-${String(m).padStart(2, '0')}`;
+  if (mb.history[prev] != null) assert.ok(Math.abs(mb.value - mb.history[prev] - mb.prev_month_change) < 0.006, prev);
+  if (mb.history[yago] != null) assert.ok(Math.abs(mb.value - mb.history[yago] - mb.year_ago_change) < 0.006, yago);
 });
 
 test('the mailbox reader keeps the report\'s own last-month and year-ago figures', () => {
