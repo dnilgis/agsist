@@ -164,8 +164,11 @@ def failed_recipients(raw):
 
 def read_bounces(user, pw, days):
     found = {}
-    c = imaplib.IMAP4_SSL(env("IMAP_HOST", "imap.gmail.com"))
-    c.login(user, pw)
+    # the same login as the unsubscribe step (UNSUB_IMAP_* when set): bounces land in the inbox news@ forwards to
+    # (Nov 2, 2026: the sending login was refused by Gmail IMAP, so both steps had read nothing)
+    c = imap_open() if (env("UNSUB_IMAP_USER") and env("UNSUB_IMAP_PASS")) else imaplib.IMAP4_SSL(env("IMAP_HOST", "imap.gmail.com"))
+    if not (env("UNSUB_IMAP_USER") and env("UNSUB_IMAP_PASS")):
+        c.login(user, pw)
     for box in ('"[Gmail]/All Mail"', "INBOX"):
         if c.select(box, readonly=True)[0] == "OK":
             break
@@ -315,6 +318,23 @@ def all_mail_box(c):
     return "INBOX"
 
 
+def _why(ex):
+    """The server's own words for a failed IMAP step (e.g. [AUTHENTICATIONFAILED] Invalid credentials), first
+    120 characters, any address masked: BUILD-RULES 20, read the real error before asking Sig to touch a secret."""
+    t = ex.args[0] if getattr(ex, "args", None) else str(ex)
+    t = t.decode("utf-8", "replace") if isinstance(t, bytes) else str(t)
+    try:
+        import log_safe
+        t = log_safe.mask_text(t)
+    except Exception:
+        t = re.sub(r"\S+@\S+", "<address>", t)
+    return t.replace("\n", " ")[:120]
+
+
+# counts from the last read_unsub, for one log line (no addresses, ever)
+DIAG = {}
+
+
 def read_unsub(c, days, ours=()):
     """The unhandled unsubscribe requests in the selected mailbox, oldest first,
     plus how many handled ones were skipped. Reads with BODY.PEEK so nothing is
@@ -323,6 +343,12 @@ def read_unsub(c, days, ours=()):
     since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%d-%b-%Y")
     typ, data = c.uid("SEARCH", None, f'(SINCE {since} OR TO "{LIST_ADDR}" CC "{LIST_ADDR}")')
     uids = (data[0].split() if typ == "OK" and data and data[0] else [])
+    DIAG.update(search=typ, to_list=len(uids))
+    try:   # the same window by subject alone: tells a To/Cc mismatch from an empty mailbox
+        t2, d2 = c.uid("SEARCH", None, f'(SINCE {since} SUBJECT "unsubscribe")')
+        DIAG["subject_unsub"] = len(d2[0].split()) if t2 == "OK" and d2 and d2[0] else 0
+    except Exception as ex:
+        DIAG["subject_unsub"] = type(ex).__name__
     out, skipped = [], 0
     for uid in uids:
         uid = uid.decode() if isinstance(uid, bytes) else str(uid)
@@ -346,6 +372,7 @@ def read_unsub(c, days, ours=()):
             req["uid"] = uid
             out.append(req)
     out.sort(key=lambda r: r["ts"] or 0)
+    DIAG.update(parsed=len(out), skipped=skipped)
     return out, skipped
 
 
@@ -698,7 +725,7 @@ def main():
         bounces = read_bounces(user, pw, LOOKBACK_DAYS)
     except Exception as ex:
         # Typo fixes still run; the bounce half needs IMAP, which Gmail can refuse.
-        print(f"::warning::could not read the sending inbox ({type(ex).__name__}); bounces skipped this run")
+        print(f"::warning::could not read the sending inbox ({type(ex).__name__}: {_why(ex)}); bounces skipped this run")
         bounces = {}
     remove = [x.strip().lower() for x in re.split(r"[,\s]+", env("REMOVE", "")) if "@" in x]
     acts = plan(daily, hail, bounces, remove=remove)
@@ -708,11 +735,13 @@ def main():
     notes, marks, c, days = [], {}, None, unsub_lookback()
     try:
         c = imap_open()
-        c.select(all_mail_box(c), readonly=dry)
+        box = all_mail_box(c)
+        st, cnt0 = c.select(box, readonly=dry)
+        DIAG.update(box=box.strip('"'), select=st, box_size=(cnt0[0].decode() if st == "OK" and cnt0 and isinstance(cnt0[0], bytes) else "?"))
         ours = {x.lower() for x in (env("SMTP_USER"), env("FROM_ADDR"), env("REPORT_TO")) if x and "@" in x}
         reqs, skipped = read_unsub(c, days, ours)
     except Exception as ex:
-        print(f"::warning::could not read the inbox for unsubscribe requests ({type(ex).__name__}); retried next run")
+        print(f"::warning::could not read the inbox for unsubscribe requests ({type(ex).__name__}: {_why(ex)}); retried next run")
         notes.append("Could not read the inbox for unsubscribe requests this run (" + type(ex).__name__ + "); it tries again tomorrow.")
         reqs, skipped = [], 0
     notices, watches = None, {}
@@ -732,6 +761,10 @@ def main():
     first = len(acts)
     acts += uacts
     notes += unotes
+    # Nov 2, 2026: the first dry run found 0 though a request was sitting in the inbox; this line shows where
+    # the search loses it (folder, its size, messages to the list address, subject matches, parsed requests).
+    print("unsubscribe search: " + ", ".join(f"{k}={DIAG[k]}" for k in
+          ("box", "select", "box_size", "search", "to_list", "subject_unsub", "parsed", "skipped") if k in DIAG))
     print(f"unsubscribe emails ({days} days): {len(reqs)} new, {skipped} already handled; "
           f"{cnt['acted']} acted on, {cnt['already']} already off, {cnt['unverified']} unverified, "
           f"{cnt['unclear']} unclear, {cnt['again']} signed up again, {cnt['retry']} wait for the notice list")
