@@ -2387,6 +2387,7 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 /* More: shut by default, in the menu's groups */
 .land-fold .land-grp{margin:12px 0 0;font-size:.824rem;font-weight:700;color:var(--text)}
 .land-fold .land-links{margin-top:2px}
+.land-fold .land-links>li:not(:has(a)){display:inline-flex;align-items:center;min-height:44px;color:var(--text-dim)}
 @media(max-width:520px){
   /* the band and its jobs are full-width sections at the site's 12px gutter, split by hairlines */
   .hero-band{margin:0 -4px 12px;padding:0;background:none;border:0;border-radius:0}

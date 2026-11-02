@@ -127,3 +127,121 @@ test("browser: the three jobs are the first screen at 390 and 1280, with and wit
     }
   } finally { await browser.close(); srv.close(); }
 });
+
+/* ---- Round 2 (Sig, Nov 2): "the weather today should be a snapshot of the actual day's forecast"; tight on
+   phones, no card inside a card; the More list folded shut and grouped like the menu. ---- */
+test("More is folded shut by default and grouped like the site menu", () => {
+  const nav = HTML.slice(HTML.indexOf('<nav class="land-more"'), HTML.indexOf("</nav>", HTML.indexOf('<nav class="land-more"')));
+  const det = /<details class="([^"]*)"([^>]*)>/.exec(nav);
+  assert.ok(det && /land-fold/.test(det[1]), "the More list is a <details>");
+  assert.ok(!/\bopen\b/.test(det[2]), "folded shut by default");
+  const groups = [...nav.matchAll(/<h4 class="land-grp">([^<]+)<\/h4>/g)].map((m) => m[1]);
+  assert.deepEqual(groups, ["Prices", "Livestock", "Field", "Money and land", "Daily"], "the menu's sections, in the menu's order");
+});
+
+const CT_OFF = 6 * 3600e3; // America/Chicago is UTC-6 in November
+/* a grid whose numbers are known by local hour: high 62 at 3 PM today, low 41 at 5 AM tomorrow, rain chance
+   40% at 1 PM, wind 5 to 12 mph from the south over the day, sky 55% (partly) */
+function gridOpts(now) {
+  const t0 = Math.floor(now / 3600e3) * 3600e3 - 6 * 3600e3;
+  const lh = (h) => new Date(t0 + h * 3600e3 - CT_OFF).getUTCHours();
+  const day = (h) => Math.floor((t0 + h * 3600e3 - CT_OFF) / 864e5) - Math.floor((now - CT_OFF) / 864e5);
+  return {
+    now,
+    tempF: (h) => (day(h) === 0 && lh(h) === 15 ? 62 : day(h) === 1 && lh(h) === 5 ? 41 : 50),
+    pop: (h) => (day(h) === 0 && lh(h) === 13 ? 40 : 10),
+    windMph: (h) => (day(h) === 0 && lh(h) >= 10 && lh(h) <= 17 ? 5 + (lh(h) - 10) : day(h) === 0 && lh(h) > 17 ? 4 : 9),
+    dir: 180, sky: 55, updated: new Date(now - 3600e3).toISOString().replace(".000Z", "+00:00"),
+  };
+}
+const BIDS = (t) => ({ status: "ok", radiusMi: 50, place: "Chetek, WI",
+  corn: { cash: 3.9275, basis: -0.55, ref: "Dec", name: "Test Elevator A", town: "Barron, WI", mi: 12, month: "Nov", posted: t, stale: false },
+  soybeans: { cash: 10.6125, basis: -1.0, ref: "Jan", name: "Test Elevator B", town: "Cameron, WI", mi: 18, month: "Nov", posted: t, stale: false } });
+
+async function openHome(browser, port, { w = 390, h = 844, now, nws, bids = true, zip = true } = {}) {
+  const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: w, height: h } });
+  const pg = await ctx.newPage(), errs = [];
+  pg.on("pageerror", (e) => errs.push(e.message));
+  if (now) await pg.clock.setFixedTime(new Date(now));
+  const { routeNws } = await import("./fixtures/nws-mock.mjs");
+  if (nws === "hang") await pg.route(/^https:\/\/api\.weather\.gov\//, () => {});
+  else if (nws) await routeNws(pg, nws);
+  await pg.route((u) => !u.href.startsWith(`http://127.0.0.1:${port}`) && !/^https:\/\/api\.weather\.gov\//.test(u.href), (r) => r.abort());
+  if (zip) await pg.addInitScript((l) => { try { localStorage.setItem("agsist-wx-loc", l); } catch (e) {} }, LOC);
+  await pg.goto(`http://127.0.0.1:${port}/`, { waitUntil: "load" });
+  if (bids) await pg.evaluate((d) => { window.dispatchEvent(new CustomEvent("agsist:bids-top", { detail: d })); }, BIDS(new Date((now || Date.now()) - 3000e3).toISOString()));
+  return { ctx, pg, errs };
+}
+
+test("browser: Weather today is a snapshot of today's NWS forecast, and tonight's after 6 PM", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const morning = Date.parse("2026-11-03T16:00:00Z"); // 10 AM CT
+    let { ctx, pg, errs } = await openHome(browser, port, { now: morning, nws: gridOpts(morning) });
+    await pg.waitForFunction(() => document.getElementById("hb-wx").dataset.state === "ok", null, { timeout: 15000 });
+    let t = await pg.evaluate(() => ({ k: document.getElementById("hb-wx-k").textContent, v: document.getElementById("hb-wx-v").textContent, s: document.getElementById("hb-wx-s").innerText, g: !!document.querySelector("#hb-wx-v svg.hb-wxg use") }));
+    assert.match(t.k, /^Today · NWS forecast, 9:00 AM$/, "labeled a forecast, with its issue time");
+    assert.match(t.v, /High today 62°/, "today's high");
+    assert.match(t.v, /41° low tonight/, "tonight's low");
+    assert.match(t.s, /Partly sunny/, "the sky in words");
+    assert.match(t.s, /Rain 40%/, "the day's highest rain chance");
+    assert.match(t.s, /Wind S 5-12 mph/, "wind direction and the range left today");
+    assert.ok(t.g, "a line icon from the site's sprite");
+    assert.ok(!/[\u{1F300}-\u{1FAFF}☀-➿]/u.test(t.v + t.s), "no emoji");
+    assert.deepEqual(errs, []);
+    await ctx.close();
+    const evening = Date.parse("2026-11-04T02:00:00Z"); // 8 PM CT on Nov 3
+    ({ ctx, pg, errs } = await openHome(browser, port, { now: evening, nws: { ...gridOpts(evening), tempF: 47 } }));
+    await pg.waitForFunction(() => document.getElementById("hb-wx").dataset.state === "ok", null, { timeout: 15000 });
+    t = await pg.evaluate(() => ({ k: document.getElementById("hb-wx-k").textContent, v: document.getElementById("hb-wx-v").textContent }));
+    assert.match(t.k, /^Tonight · NWS forecast/, "after 6 PM it is tonight's forecast");
+    assert.match(t.v, /Low tonight 47°.*47° high tomorrow/, "tonight's low, then tomorrow's high");
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("browser: the forecast cell holds its height while loading and says so in one line when the NWS is down", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const now = Date.parse("2026-11-03T16:00:00Z");
+    const hts = {};
+    for (const [tag, nws] of [["loading", "hang"], ["ok", gridOpts(now)], ["down", { down: true }]]) {
+      const { ctx, pg } = await openHome(browser, port, { now, nws });
+      if (tag === "ok") await pg.waitForFunction(() => document.getElementById("hb-wx").dataset.state === "ok", null, { timeout: 15000 });
+      if (tag === "down") await pg.waitForFunction(() => document.getElementById("hb-wx").dataset.state === "failed", null, { timeout: 20000 });
+      if (tag === "loading") await pg.waitForTimeout(1500);
+      hts[tag] = await pg.evaluate(() => ({ h: document.getElementById("hb-wx").getBoundingClientRect().height, s: document.getElementById("hb-wx-s").textContent.trim(), skel: !!document.querySelector("#hb-wx-v .hb-skel") }));
+      await ctx.close();
+    }
+    assert.ok(hts.loading.skel, "a placeholder while the forecast loads");
+    assert.ok(Math.abs(hts.ok.h - hts.loading.h) <= 2, `no shift when the forecast lands (${hts.loading.h} -> ${hts.ok.h})`);
+    assert.equal(hts.down.s, "Forecast did not load. Weather card below →", "one plain line when the NWS does not answer");
+    assert.ok(hts.down.h <= hts.loading.h + 2, "the failure line does not grow the cell");
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("browser: tight on a phone; at 390x844 the first screen holds the ZIP line, both bids, the forecast, the Daily and Sell grain", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const now = Date.parse("2026-11-03T16:00:00Z");
+    const { ctx, pg, errs } = await openHome(browser, port, { now, nws: gridOpts(now) });
+    await pg.waitForFunction(() => document.getElementById("hb-wx").dataset.state === "ok", null, { timeout: 15000 });
+    const r = await pg.evaluate(() => {
+      const b = (s) => { const e = document.querySelector(s); const x = e.getBoundingClientRect(); return { top: x.top, bottom: x.bottom, left: x.left, right: x.right, h: x.height }; };
+      const boxed = (e) => { const c = getComputedStyle(e); return (parseFloat(c.borderRadius) > 0) || (c.backgroundColor !== "rgba(0, 0, 0, 0)" && c.backgroundColor !== "transparent") || ["Left", "Right", "Bottom"].some((k) => parseFloat(c["border" + k + "Width"]) > 0 && k !== "Left"); };
+      const band = document.getElementById("hero-band");
+      return { vh: innerHeight, vw: innerWidth, place: b("#hb-place"), corn: b("#hb-corn"), soy: b("#hb-soy"), wx: b("#hb-wx"), daily: b("#job-daily-t"), sell: b("#job-sell-h"),
+        boxes: [band, ...document.querySelectorAll("#hb-jobs > .job")].filter(boxed).map((e) => e.id || e.className),
+        rows: [...document.querySelectorAll("#hero-band .job-links a, #hero-band .job-daily")].map((a) => ({ h: a.getBoundingClientRect().height, chev: getComputedStyle(a, "::after").content !== "none", u: getComputedStyle(a.querySelector(".job-l, .job-daily-t")).textDecorationLine })) };
+    });
+    for (const k of ["place", "corn", "soy", "wx", "daily", "sell"]) assert.ok(r[k].h > 0 && r[k].bottom <= r.vh, `${k} is on the first screen (${Math.round(r[k].bottom)} of ${r.vh})`);
+    assert.deepEqual(r.boxes, [], "no box inside a box on a phone: the band and its jobs have no background, radius or frame");
+    assert.ok(r.place.left >= 11 && r.place.left <= 13 && r.vw - r.wx.right >= 11 && r.vw - r.wx.right <= 13, `one 12px gutter (${r.place.left}, ${r.vw - r.wx.right})`);
+    assert.ok(r.rows.length >= 6 && r.rows.every((x) => x.h >= 44 && x.chev && x.u === "none"), "the job links and the Daily are 44px rows with a chevron, not underlined");
+    assert.deepEqual(errs, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
