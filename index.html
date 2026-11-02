@@ -761,7 +761,10 @@ try {
         set(id+'-k',label(x,a[3])+' '+a[2]+' futures');
         set(id+'-v','<span class="hb-n">'+qd(x.close/100)+'</span>');
         var diff=x.netChange!=null?Number(x.netChange):(x.open!=null?x.close-x.open:null);
-        var c=diff==null||isNaN(diff)?'':'<span class="hb-n hb-chg '+(diff>0?'up':(diff<0?'dn':'nc'))+'">'+(diff>0?'<span aria-hidden="true">▲ </span><span class="visually-hidden">up </span>':(diff<0?'<span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>':''))+qc(diff)+'</span>';
+        /* 2026-11-02: a move the price run withheld (fetch_prices energy_roll_guard: move_withheld and roll,
+           a change that crosses contracts near expiry) prints the price and no change, as home.js does */
+        var held=!!(x.move_withheld||x.roll);
+        var c=held?'<span class="hb-n hb-chg nc">contract roll</span>':diff==null||isNaN(diff)?'':'<span class="hb-n hb-chg '+(diff>0?'up':(diff<0?'dn':'nc'))+'">'+(diff>0?'<span aria-hidden="true">▲ </span><span class="visually-hidden">up </span>':(diff<0?'<span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>':''))+qc(diff)+'</span>';
         /* Age, always: an older close than the last weekday says so. */
         var cd=x.close_date||'',old=stale.indexOf(a[0])>=0||(cd&&lw&&cd<lw);
         /* 2026-10-17: "Oct 16 settle" or "Last trade as of 1:46 pm CT" from close_kind (components/price-local.js) */
@@ -772,7 +775,7 @@ try {
         var cell=$(id);if(cell)cell.classList.toggle('px-old',!!(sa&&sa.old));
         var age=old?'<span class="hb-l hb-old">Last close'+(cd?' · '+keyDay(cd):'')+'</span>':(stamp?'<span class="hb-l hb-age">'+stamp+'</span>':'');
         /* 2026-10-20 (Sig): the overnight electronic trade beside the settle when the file has one (price-local.js overnight) */
-        var ov=!old&&window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(x,function(c){return AG.px.price(c,{style:'slash'});},function(n){return AG.px.move(n,{style:'slash',sign:true});},null,{short:true}):'';
+        var ov=!old&&!held&&window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(x,function(c){return AG.px.price(c,{style:'slash'});},function(n){return AG.px.move(n,{style:'slash',sign:true});},null,{short:true}):'';
         set(id+'-s',(c?'<span class="hb-l">'+c+'</span>':'')+age+(ov?'<span class="hb-l hb-ovn">'+ov+'</span>':'')||'&nbsp;');
       });
     }
