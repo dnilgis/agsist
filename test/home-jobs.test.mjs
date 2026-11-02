@@ -356,8 +356,20 @@ test("browser: Worth a look holds its place while it fills, for each Rain Print 
     // Christmas (through the framed cutoff), "Still need a gift?" (to Dec 24), the year-round card
     for (const [day, angle] of [["2026-11-02", "christmas"], ["2026-12-15", "gift"], ["2027-01-15", "evergreen"]]) for (const w of [390, 1280]) {
       const tag = `${w} ${day}`;
-      const { ctx, pg, errs } = await openWorth(browser, port, { w, day, h: w === 390 ? 844 : 900 });
-      await pg.waitForTimeout(400);
+      // The strip's own data is held 3 s. "before" is taken once everything above the strip has settled (its top
+      // still for 3 checks in a row), so a slow runner filling the hero band late (Nov 2: CI moved the strip 18 px
+      // at 400 ms) is not read as the strip moving; the band is held by the round 2 and cls tests.
+      const { ctx, pg, errs } = await openWorth(browser, port, { w, day, h: w === 390 ? 844 : 900, hold: 3000 });
+      let last = null, still = 0;
+      for (let i = 0; i < 25 && still < 3; i++) {
+        await pg.waitForTimeout(100);
+        const t = await pg.evaluate(() => document.getElementById("wl").getBoundingClientRect().top + scrollY);
+        still = last !== null && Math.abs(t - last) < 0.5 ? still + 1 : 0;
+        last = t;
+      }
+      assert.ok(still >= 3, `${tag}: the page above the strip settles before its data comes`);
+      const filled = await pg.evaluate(() => document.getElementById("wl-new").getAttribute("href"));
+      assert.equal(filled, "/changelog", `${tag}: "before" is read while the strip still holds its baked link`);
       const before = await pg.evaluate(worthBoxes);
       // a date with nothing recent in What's new keeps the baked link (2027-01-15 here)
       const pick = WORTH.pickNew(JSON.parse(read("data/whats-new.json")).items, day);
