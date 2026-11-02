@@ -2288,3 +2288,165 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 /* 3. A saved state's middle-bid line holds its space until the numbers come
       (components/price-local.js reserve()); unseen until filled. */
 .pl-line.pl-wait{visibility:hidden}
+/* ===== 2026-11-02 (Sig: go): the first screen is three jobs =====
+   Today near me (the reader's ZIP: best bids, weather, the Daily), Sell grain,
+   My field. The hero band keeps every id its script paints; the futures
+   cells (baked for crawlers, Oct 19) sit under the jobs, and every other
+   destination stays further down the page, the full list under More. */
+.jobs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:4px 0 12px}
+.job{min-width:0;background:var(--surface);border:1px solid var(--border-2);border-radius:8px;padding:8px 12px 6px}
+.job-near{grid-column:1/-1;border-top:3px solid var(--gold)}
+.job-h{margin:2px 0 4px;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:1.05rem;font-weight:800;line-height:1.25;letter-spacing:0;text-transform:none;color:var(--text)}
+.job-near .hb-top{padding-bottom:2px}
+.job-links{list-style:none;margin:0;padding:0}
+#hero-band .job-links a{display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:44px;padding:6px 0;border-top:1px solid var(--border-2);color:inherit;text-decoration:none}
+#hero-band .job-links li:first-child a{border-top:0}
+.job-l{font-weight:700;font-size:.941rem;line-height:1.3;color:var(--text)}
+.job-links a:hover .job-l{color:var(--gold)}
+.job-links a:focus-visible,.job-daily:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+#job-ff{display:block;min-height:1.3em}
+.job-s{display:none;font-size:.824rem;line-height:1.4;color:var(--text-dim)}
+#hero-band .job-daily{display:block;padding:8px 0 6px;border-top:1px solid var(--border-2);color:inherit;text-decoration:none;font-size:.882rem;line-height:1.4}
+.job-daily-k{display:block;font-size:.824rem;font-weight:600;color:var(--text-dim)}
+.job-daily-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.8em;font-weight:700;font-size:.941rem;color:var(--text)}
+.job-daily:hover .job-daily-t{color:var(--gold)}
+.hb-futh{margin:4px 0 0;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.824rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+#hero-band .hb-plain{display:none;margin:2px 0 4px;color:var(--text-dim);font-size:.882rem;line-height:1.45}
+#hero-band.hb-nozip .hb-plain{display:block}
+@container hero (min-width:560px){
+  .job-near{grid-column:1/-1}
+  .job-s{display:block}
+  #hero-band .job-near .hb-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px}
+  #hero-band .job-near .hb-bid{grid-column:auto}
+  #hero-band .job-near .hb-wx{grid-column:1/-1}
+  #hero-band .job-near .hb-cell{padding:10px 0 10px;border-left:0}
+  #hero-band .job-near #hb-soy{padding-left:16px;border-left:1px solid var(--border-2)}
+  #hero-band .hb-grid--fut{grid-template-columns:minmax(0,1fr) minmax(0,1fr);max-width:720px}
+  #hero-band .hb-grid--fut .hb-fut{grid-column:auto}
+  #hero-band .hb-grid--fut #hb-fs{padding-left:16px;border-left:1px solid var(--border-2)}
+}
+@container hero (min-width:1000px){
+  .jobs{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+  .job{padding:10px 16px 8px}
+  .job-near{grid-column:auto}
+  #hero-band .job-near .hb-v{font-size:clamp(1.7rem,2.6cqi,2.2rem)}
+  #hero-band .hb-grid--fut #hb-fc{padding-left:0;border-left:0}
+  #hero-band.hb-nozip .job-near .hb-grid{grid-template-columns:minmax(0,1fr)}
+}
+/* ===== 2026-11-02 round 2 (Sig: "a snapshot of the actual day's forecast"; "the containers in
+   containers thing, I hate when they are not tight"; "not blown away") =====
+   One level of boxes at most: the band itself is no longer a card, so on a desktop the three jobs are
+   the only cards; on a phone (520px and under) they are full-width sections split by a hairline, no
+   boxes at all. Links are rows with a chevron, 44px tall, not underlined. Big figures, quiet labels,
+   the site's gold as the one accent. */
+/* one panel: the band is the card, the jobs inside it are columns split by hairlines, not boxes */
+.hero-band{border-top:3px solid var(--gold)}
+.job{background:none;border:0;border-radius:0;padding:4px 0 6px}
+.job-near{border-top:0}
+@container hero (min-width:560px){
+  .jobs{gap:0;margin:0 0 10px}
+  .job-sell,.job-field{border-top:1px solid var(--border-2);padding-top:10px}
+  .job-sell{padding-right:16px}
+  .job-field{padding-left:16px;border-left:1px solid var(--border-2)}
+}
+@container hero (min-width:1000px){
+  .jobs{gap:0}
+  .job{padding:4px 0 6px}
+  .job-near{padding-right:20px}
+  .job-sell,.job-field{border-top:0;padding-top:4px;padding-left:20px;border-left:1px solid var(--border-2)}
+  .job-sell{padding-right:20px}
+}
+/* No ZIP: the forecast cell is one short "Set ZIP" row that opens the ZIP box (test/home-front) */
+#hb-wx[data-state="nozip"]{min-height:0}
+#hb-wx[data-state="nozip"] .hb-v{min-height:0}
+#hero-band .job-links a,#hero-band .job-daily{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;align-items:center;min-height:44px}
+#hero-band .job-links a>span,#hero-band .job-daily>span{grid-column:1}
+#hero-band .job-links a::after,#hero-band .job-daily::after{content:"";grid-column:2;grid-row:1/span 2;width:7px;height:7px;margin-right:4px;border-top:2px solid var(--text-dim);border-right:2px solid var(--text-dim);transform:rotate(45deg)}
+#hero-band .job-links a:hover::after,#hero-band .job-daily:hover::after{border-color:var(--gold)}
+/* today's forecast: the figure and its icon on the left, the words, rain, wind and spray beside it */
+#hb-wx{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;row-gap:2px;align-items:center}
+#hb-wx>.hb-k{grid-column:1/-1}
+#hb-wx .hb-v{align-items:center;flex-wrap:nowrap;gap:0 8px;min-height:2.6rem;font-size:2.1rem}
+/* the words beside the figure; rain, wind and the spray read on full lines under them */
+#hb-wx .hb-s{display:contents}
+#hb-wx .hb-s>.hb-l{grid-column:1/-1}
+#hb-wx .hb-s>.hb-wxw{grid-column:2;grid-row:2}
+#hb-wx{min-height:7.6rem;align-content:start}
+#hero-band.hb-nozip #hb-wx{min-height:0}
+.hb-wxg{flex:none;width:1.7rem;height:1.7rem;color:var(--gold)}
+.hb-lo{display:flex;flex-direction:column;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.765rem;font-weight:600;line-height:1.2;letter-spacing:0;color:var(--text-dim);white-space:nowrap}
+.hb-lo .hb-n{font-size:1.05rem;font-weight:800;color:var(--text)}
+.hb-wxw{font-weight:700;font-size:.941rem;color:var(--text)}
+.hb-wxsrc{font-weight:500}
+.hb-wxfail{color:var(--text)}
+.hb-setzip{font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:1.05rem;font-weight:700;color:var(--gold)}
+@container hero (min-width:560px){
+  #hero-band .job-near #hb-wx{grid-column:1/-1;display:grid;padding:10px 0}
+}
+/* the state's middle-bid line: a rule at its left, not a box inside the panel */
+#hero-band .pl-line{background:none;border-radius:0}
+/* More: shut by default, in the menu's groups */
+.land-fold .land-grp{margin:12px 0 0;font-size:.824rem;font-weight:700;color:var(--text)}
+.land-fold .land-links{margin-top:2px}
+.land-fold .land-links>li:not(:has(a)){display:inline-flex;align-items:center;min-height:44px;color:var(--text-dim)}
+@media(max-width:520px){
+  /* the band and its jobs are full-width sections at the site's 12px gutter, split by hairlines */
+  .hero-band{margin:0 -4px 12px;padding:0;background:none;border:0;border-radius:0}
+  .jobs{grid-template-columns:minmax(0,1fr);gap:0;margin:0 0 8px}
+  .job,.job-field{padding:10px 0 2px;border-top:1px solid var(--border-2);border-left:0}
+  .job-near{border-top:0;padding-top:2px}
+  .job-sell,.job-field{grid-column:1/-1}
+  .job-h{margin:0 0 2px;font-size:1.1rem}
+  #hero-band .job-near .hb-top{padding-bottom:0}
+  /* the two bids side by side, the price big, the elevator under it */
+  #hero-band .job-near .hb-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:12px}
+  #hero-band:not(.hb-nozip) .job-near .hb-bid{grid-column:auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 0}
+  /* label, price and elevator lines line up across the two bids when a label wraps */
+  @supports (grid-template-rows:subgrid){
+    #hero-band:not(.hb-nozip) .job-near .hb-bid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:span 3;align-items:start;row-gap:2px}
+    #hero-band:not(.hb-nozip) .job-near .hb-bid>.hb-k{align-self:end}
+  }
+  #hero-band .job-near .hb-bid{border-top:1px solid var(--border-2)}
+  #hero-band .job-near #hb-soy{padding-left:12px;border-left:1px solid var(--border-2)}
+  #hero-band .job-near .hb-bid .hb-v{font-size:1.9rem}
+  #hero-band .job-near #hb-wx{grid-column:1/-1;padding:8px 0}
+  #hero-band .job-links a{padding:4px 0}
+}
+/* ===== 2026-11-02 round 3 (Sig: are we still promoting the rain gauge, Rain Print and the new features
+   nicely?): "Worth a look", right under the three jobs. Three short cards in a row on a wide screen, one
+   level of boxes; under 1100px full-width rows split by hairlines, no boxes. Each card holds its size from
+   the first paint: the Rain Print card is filled by rain-print-promo.js and the new-page card's words by
+   home-worth.js, after load (test/home-jobs.test.mjs measures no shift for each Rain Print wording). ===== */
+.wl{margin:0 0 16px;font-family:var(--font-body,Inter,system-ui,sans-serif)}
+.wl-h{margin:0 0 2px;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.882rem;font-weight:700;line-height:1.3;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+.wl-row{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.wl-c{display:flex;flex-direction:column;min-width:0;padding:10px 0;border-top:1px solid var(--border-2);color:inherit;text-decoration:none}
+a.wl-c:hover .wl-t,.wl a.rp-card:hover .rp-card-t{color:var(--gold)}
+a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wl-t{display:block;font-weight:700;font-size:.98rem;line-height:1.3;color:var(--text)}
+.wl-x{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.9em;margin-top:3px;font-size:.86rem;line-height:1.45;color:var(--text-dim)}
+.wl-a{display:block;min-height:1.3em;margin-top:auto;padding-top:6px;font-size:.86rem;font-weight:700;line-height:1.3;color:var(--gold)}
+/* the Rain Print card: the cell is the frame, the promo's own link fills it without a second one */
+.wl-rp{min-height:8.2rem}
+.wl-rp>aside{display:flex;flex:1 1 auto;min-height:0}
+.wl .rp-card{flex:1 1 auto;align-items:flex-start;gap:12px;margin:0;padding:0;border:0;border-radius:0;background:none}
+.wl .rp-card-i{width:88px}
+.wl .rp-card-b{display:flex;flex-direction:column;align-self:stretch}
+.wl .rp-card-x{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+/* one title, one line, one action, like the cards beside it: the price stays on /rain-print */
+.wl .rp-card-p{margin-top:auto;padding-top:6px;font-size:0;line-height:0}
+.wl .rp-card-p b{font-size:.86rem;font-weight:700;line-height:1.3;color:var(--gold)}
+@media(max-width:520px){
+  .wl{margin:0 -4px 12px}
+  .wl-rp{min-height:10.6rem}
+}
+/* rows: the action sits under its line; any room held for a longer wording stays under it */
+@media(max-width:1099px){.wl-a,.wl .rp-card-p{margin-top:0}}
+@media(max-width:359px){.wl .rp-card-i{width:64px}}
+@media(min-width:1100px){
+  .wl-h{margin:0 0 6px}
+  .wl-row{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+  .wl-c{min-height:8.4rem;padding:10px 14px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface)}
+  a.wl-c:hover,.wl-rp:has(a.rp-card:hover){border-color:var(--gold)}
+  .wl .rp-card-i{width:96px}
+}

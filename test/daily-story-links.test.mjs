@@ -63,7 +63,9 @@ test("both pages say why these links are allowed (news, not data sources) and bu
   }
   const idx = read("index.html");
   assert.ok(idx.includes('<script src="/components/home.js?v=18"></script>'));
-  assert.ok(idx.includes('<link rel="stylesheet" href="/css/home.css?v=29">'));
+  // v29 carried these styles; a later bump (fx/homejobs took v31) still serves them
+  const css = /<link rel="stylesheet" href="\/css\/home\.css\?v=(\d+)">/.exec(idx);
+  assert.ok(css && +css[1] >= 29, `home.css is v29 or later (${css && css[1]})`);
   assert.match(read("css/home.css"), /\.daily-otp-src\{/);
   assert.match(read("daily.html"), /\.dv3-otp-src\{/);
 });
