@@ -368,7 +368,10 @@ def prompt_block(blocks):
     if not parts:
         return ""
     return ("WHAT A FARMER SHOULD KNOW TODAY (computed from AGSIST's own files; every number below is checked "
-            "against them, so copy numbers and dates exactly):\n" + "\n".join(parts))
+            "against them, so copy numbers and dates exactly). Unlike the seasonal note above, this is not "
+            "background: a report, signup or deadline dated today is new today and may lead or be a top story, "
+            "and the harvest and fund numbers may be used where their rule says. Nothing here is repeated if "
+            "ALREADY SAID THIS WEEK has it, unless it changed.\n" + "\n".join(parts))
 
 
 def log_lines(blocks):

@@ -5762,6 +5762,23 @@ def main():
     print(f"  News block: {bucket_count} populated buckets, "
           f"{len(news_block)} chars")
     seasonal_ctx = get_seasonal_context()
+    # 2026-11-02 (fx/dailymore): what a DTN reader got that morning and the Daily
+    # did not: the day's USDA reports and FSA dates, last week's harvest pace
+    # (Mon/Tue), fund positions (Sat/Mon after the CFTC release). Dated data from
+    # the repo's own files (scripts/daily_more.py); a block that is stale, out of
+    # season or not yet public is withheld. It rides in the user message, which
+    # save_briefing_inputs() keeps for the fact check, so every number is bound
+    # to its source there. Fail-open: the briefing never waits on it.
+    try:
+        import daily_more as _dm
+        _more = _dm.build()
+        for _l in _dm.log_lines(_more):
+            print("  [more] " + _l)
+        _mb = _dm.prompt_block(_more)
+        if _mb:
+            seasonal_ctx = seasonal_ctx + "\n\n" + _mb
+    except Exception as _e:
+        print(f"  [warn] farm calendar / harvest / funds block skipped ({type(_e).__name__}: {_e})")
     print("  Selecting today's quote...")
     # Phase 2 (v4.2): two-pass quote selection. First pass picks a
     # default quote (mood unknown pre-generation). After generation,
