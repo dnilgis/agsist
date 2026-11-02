@@ -39,7 +39,9 @@ test("the generator runs the check, sends the draft back once and stamps the iss
   assert.ok(heal < main.indexOf("briefing_cut.enforce_budget(briefing)"), "before the cut");
   assert.match(main, /_dfr\.correction\(_fresh_found\)/);
   assert.match(main, /briefing\["freshness"\] = _dfr\.stamp/);
-  assert.match(main, /_dfr\.drop_stories\(briefing, _fresh_found\)/);
+  // Sig, Nov 2: "cut the repeat". cut_repeats cuts the stories (drop_stories), sentences and the
+  // day's number that still repeat after the one rewrite, and swaps a repeated headline for the top story.
+  assert.match(main, /_dfr\.cut_repeats\(briefing, _fresh_found,/);
   assert.match(main, /attach_story_links\(briefing\)/);
   assert.equal((main.match(/usda_release=\(usda_release or ""\) \+ "\\n\\n" \+ _dfr\.correction/g) || []).length, 1, "one rewrite, not a loop");
 });
