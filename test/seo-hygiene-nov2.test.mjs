@@ -167,3 +167,34 @@ test("Dataset records: license and dateModified on rain, ARC/PLC, hail, rent and
     for (const o of datasets(f)) assert.equal(o.dateModified, page, f);
   }
 });
+
+// 5. /spray: every FAQPage answer is the visible answer, word for word (the visible copy may carry links and bold).
+test("spray: FAQPage questions and answers are the visible FAQ", () => {
+  const h = read("spray.html");
+  const unesc = (t) => t.replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n)).replace(/&rsquo;/g, "’").replace(/&ldquo;/g, "“")
+    .replace(/&rdquo;/g, "”").replace(/&deg;/g, "°").replace(/&ndash;/g, "–").replace(/&times;/g, "×").replace(/&divide;/g, "÷")
+    .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+  const text = (t) => unesc(t.replace(/<[^>]+>/g, ""));
+  const vis = new Map();
+  for (const m of h.matchAll(/<div class="faq-item"><button class="faq-q"[^>]*>([\s\S]*?)<span class="faq-chevron"[\s\S]*?<div class="faq-a"[^>]*>([\s\S]*?)<\/div><\/div>/g)) {
+    vis.set(text(m[1]).trim(), text(m[2]));
+  }
+  const faq = datasetsOf(h, "FAQPage");
+  assert.equal(faq.length, 1);
+  const qs = faq[0].mainEntity;
+  assert.equal(qs.length, vis.size);
+  for (const q of qs) {
+    assert.ok(vis.has(q.name), `not on the page: ${q.name}`);
+    assert.equal(q.acceptedAnswer.text, vis.get(q.name), q.name);
+  }
+  assert.ok(qs.length >= 16);
+});
+function datasetsOf(h, type) {
+  const out = [];
+  const walk = (o) => {
+    if (Array.isArray(o)) o.forEach(walk);
+    else if (o && typeof o === "object") { if (o["@type"] === type) out.push(o); Object.values(o).forEach(walk); }
+  };
+  for (const m of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) walk(JSON.parse(m[1]));
+  return out;
+}
