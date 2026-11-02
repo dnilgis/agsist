@@ -291,9 +291,11 @@ def parse_request(raw, internal_ms=None, ours=()):
 
 
 def imap_open():
-    user = env("IMAP_USER") or env("SMTP_USER")
-    pw = env("IMAP_PASS") or env("SMTP_PASS")
-    c = imaplib.IMAP4_SSL(env("IMAP_HOST", "imap.gmail.com"))
+    """The inbox news@ lands in: UNSUB_IMAP_* when set (a different mailbox from
+    the sending login), else the same login and host the bounce step uses."""
+    user = env("UNSUB_IMAP_USER") or env("SMTP_USER")
+    pw = env("UNSUB_IMAP_PASS") or env("SMTP_PASS")
+    c = imaplib.IMAP4_SSL(env("UNSUB_IMAP_HOST") or env("IMAP_HOST", "imap.gmail.com"))
     c.login(user, pw)
     return c
 
@@ -363,7 +365,8 @@ def plan_unsub(reqs, daily, hail, notices, watches, taken=()):
     could not be read; watches: {name: records} (report only).
     Returns (acts, notes, marks): acts are removals for apply(); notes are lines
     for Sig; marks maps each request uid to the act indexes that must succeed
-    before it is marked handled (an empty list: mark it after the report)."""
+    before it is marked handled ([]: nothing to do, mark it now; None: it is
+    only a line for Sig, mark it once the report is sent)."""
     def index(rows):
         ix = {}
         for r in rows or []:
@@ -378,11 +381,11 @@ def plan_unsub(reqs, daily, hail, notices, watches, taken=()):
         e, k = r["from"], gkey(r["from"])
         if r["kind"] == "unclear":
             notes.append(f"Unsubscribe email, needs a look: {e}, a reply that mentions stopping but says more; not acted on")
-            marks[r["uid"]] = []; count["unclear"] += 1
+            marks[r["uid"]] = None; count["unclear"] += 1
             continue
         if not r["auth"]:
             notes.append(f"Unsubscribe email, not acted on: {e}, the sender could not be verified (no DKIM or SPF pass for its domain)")
-            marks[r["uid"]] = []; count["unverified"] += 1
+            marks[r["uid"]] = None; count["unverified"] += 1
             continue
         if N is None and k not in D and k not in H:
             count["retry"] += 1                       # notices unknown: try again next run, do not mark
@@ -413,7 +416,7 @@ def plan_unsub(reqs, daily, hail, notices, watches, taken=()):
             count["acted"] += 1
         elif not again:
             count["already"] += 1                     # already off: nothing to do
-        marks[r["uid"]] = mine
+        marks[r["uid"]] = None if again and not mine else mine
     return acts, notes, marks, count
 
 
@@ -637,6 +640,7 @@ def selftest():
     chk(any("reader7@example.com" in n and "signed up again" in n for n in un) and not any(a["email"] == "reader7@example.com" for a in ua),
         "an address that signed up again after its request stays on")
     chk(um["4"] == [] and uc["already"] == 1, "a second request for an already-removed address does nothing")
+    chk(um["2"] is None and um["5"] is None and um["7"] is None, "listed-only requests are marked once Sig has the report")
     chk(set(um) == {"1", "2", "3", "4", "5", "7", "8"}, "every request read is marked handled once done")
     ua2, _, um2, uc2 = plan_unsub([r8], daily, hail, None, {})
     chk(not ua2 and "8" not in um2 and uc2["retry"] == 1, "notice list unreadable: a notice-only request waits, unmarked")
@@ -746,7 +750,7 @@ def main():
         if not dry:
             # Acted-on requests once every removal worked; the rest once Sig has the report.
             done = [u for u, idx in marks.items()
-                    if (all(acts[first + i].get("ok") for i in idx) if idx else mailed)]
+                    if (mailed if idx is None else all(acts[first + i].get("ok") for i in idx))]
             try:
                 print(f"unsubscribe emails marked handled: {mark_done(c, done)}")
             except Exception as ex:
