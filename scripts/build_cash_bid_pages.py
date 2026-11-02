@@ -4609,7 +4609,11 @@ def _selftest_buyers():
                         '50 miles: 1 ethanol plant, 1 oilseed crusher</summary>') in fr, fr[fr.find("buyers") - 200:][:600]
                 assert "ccccc" not in fr, "57 miles out is not within 50"
                 assert fr.count("/components/cb-buyers.js?v=1") == 1
-                assert ">Renewable Fuels Association</a>" in fr and ">NOPA</a>" in fr and "Straight-line miles" in fr
+                # the lists are named with the date they were read, not linked (no direct links to data
+                # sources, Oct 29; the RFA and NOPA plant lists joined source_links.DATA_SOURCE Nov 2)
+                assert re.search(r"Lists from Renewable Fuels Association[^<]*NOPA[^<]*, read [A-Z][a-z]{2} \d{1,2}, \d{4}\.", fr), \
+                    fr[fr.find("Lists from"):][:200]
+                assert "ethanolrfa.org" not in fr and "nopa.org" not in fr and "Straight-line miles" in fr
                 assert fr.index('data-buyers=') > fr.index('id="bid-email"'), "under the bids, not above them"
             else:
                 assert "data-buyers" not in fr and "cb-buyers.js" not in fr, "no buyer: no line and no script"
