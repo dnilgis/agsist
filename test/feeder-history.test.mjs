@@ -174,3 +174,15 @@ test('page: a missing history file leaves the live record as it was', { skip }, 
     assert.equal(await page.$$eval('#feeder-index details tbody tr', (r) => r.length), 2);
   } finally { await browser.close(); srv.close(); }
 });
+
+test('feeder-history.yml is dispatch only, dry run by default, and commits only the history file', () => {
+  const y = fs.readFileSync(path.join(root, '.github/workflows/feeder-history.yml'), 'utf8');
+  const on = y.slice(y.indexOf('\non:'), y.indexOf('\npermissions:'));
+  assert.match(on, /^\s+workflow_dispatch:/m);
+  assert.doesNotMatch(y, /schedule:|cron:|workflow_run:|\bpush:|pull_request:|repository_dispatch:/);
+  assert.match(on, /dry_run:[\s\S]*?default: true/);
+  assert.match(y, /if: \$\{\{ !inputs\.dry_run \}\}/);
+  assert.match(y, /F=data\/feeder-index-history\.json/);
+  assert.doesNotMatch(y.slice(y.indexOf('Commit if changed')), /git add (?!"\$F")/);
+  assert.match(y, /pip install pypdf==6\.20\.1/, 'the barn job\'s PDF reader');
+});
