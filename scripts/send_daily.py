@@ -88,6 +88,7 @@ import brief_email        # noqa: E402  (needs the path line above)
 import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
+import delivery_line      # noqa: E402  (the DELIVERY count line cron_health reads)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 import list_source        # noqa: E402  (the worker, or the private copy when it is blocked)
 
@@ -808,6 +809,7 @@ def main():
     reply_to = env("REPLY_TO")
     dry = env("DRY_RUN", "") == "1"
     test = env("TEST_TO_SIG", "") == "1"
+    tally = delivery_line.start("daily", dry=dry or test)   # a test to Sig is not the list
 
     if not dry and not test and flag(day):
         print("already sent for " + day + " (day-flag set) — skipping. exit 0")
@@ -838,6 +840,7 @@ def main():
         print("FATAL: RECIPIENTS parsed to zero addresses")
         return 1
     print("briefing " + day + " · recipients " + str(len(recipients)) + " · dry_run " + str(dry))
+    tally.waiting = len(recipients)
     ELEVATOR_LINES.update(load_elevator_lines(subs, how))
     try:
         _ll, _counts = load_local_lines(subs, how)
@@ -997,6 +1000,7 @@ def main():
             conn.quit()
         except Exception:
             pass
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
     print("sent " + str(sent) + "/" + str(len(recipients)))
     # Set the day flag whenever ANY mail went out. Anyone who received a copy
     # must never get a second one, so the flag is about the day, not about

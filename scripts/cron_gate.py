@@ -69,7 +69,35 @@ NOT_A_RUN = {"cancelled", "startup_failure"}   # replaced pending runs never rea
 # send. Each sender marks every reader it mails (once per month, or once ever), so a manual
 # send followed by the tick's run mails nobody twice. Kept here, not as a flag, so a gate
 # step never names an option an older copy of this script does not know.
-MANUAL_DOES_NOT_SERVE = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"}
+MAIL_AND_RAIN = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"}
+# The data, page and email workflows gated Nov 3, 2026 (fx/gateall; GitHub never started
+# land-data.yml that day, so the land sale email mailed nobody). Each takes narrower inputs by
+# hand (a probe, a month, a state, a dry run) or a narrower path on a push, so a manual run or a
+# push must not use up the tick; the chained run that follows is the same idempotent job.
+GATED_NOV3 = {
+    "agstocks.yml", "analyst-scorecard.yml", "cash-bid-index.yml", "cash-rent.yml", "cattle-auction.yml",
+    "cattle-cash.yml", "ccc-loan.yml", "climate-indices.yml", "cot-deep-rebuild.yml", "coverage-map.yml",
+    "dairy.yml", "drought-county-week.yml", "fall-nitrogen.yml", "farmland-atlas.yml", "fertilizer-ams.yml",
+    "fertilizer-coops.yml", "fetch-fsa-arcplc.yml", "hail-data.yml", "hail-states.yml", "hay-ams.yml",
+    "hay-prices.yml", "land-data.yml", "list-hygiene.yml", "markets.yml", "mesh.yml", "nass-series.yml",
+    "ncei.yml", "planting-normals.yml", "predictions.yml", "prf-outlook.yml", "prf-season.yml", "prf.yml",
+    "radar-rain.yml", "refs.yml", "rma-prices.yml", "rp-canada-stations.yml", "rp-design-email.yml",
+    "seasonal-models.yml", "share-images.yml", "site-usage.yml", "sitemap.yml", "sponsor-report.yml",
+    "state-rent-pages.yml", "stats-ingest.yml", "storage.yml", "tenure.yml", "transport.yml", "vintage.yml",
+    "whats-priced-in.yml",
+}
+MANUAL_DOES_NOT_SERVE = MAIL_AND_RAIN | GATED_NOV3
+
+# A workflow that must run again, once, when the workflow that feeds it finishes after the run
+# that served its tick (Nov 3, 2026). land-alert.yml mails at 15:47 UTC on the 3rd; land-data.yml
+# fetches the month's transfers from 09:23 the same day and can run 150 minutes. When the land run
+# is late, the 15:47 email finds the files older than the month and every reader waits
+# ("wait-data"). The first chained run after the land run commits to data/land goes again,
+# inside the same max-lag window, and mails the waiting readers; send_land_alert.py marks each
+# reader once per topic and month, so nobody already mailed is mailed twice. The signal is a
+# commit to the path, not a land-data.yml run: that workflow is chained too, and every one of its
+# skipped runs ends "success". Kept here, not as a flag, for the reason above.
+RETRY_AFTER = {"land-alert.yml": "data/land"}
 
 
 # ── cron ─────────────────────────────────────────────────────────────────────
@@ -180,6 +208,44 @@ def decide_tick(event, crons, now, self_id, runs, max_lag_minutes, manual_serves
         if earlier:
             return 0, "tick %s already served by run %s (%s)" % (t.strftime("%a %H:%M"), r["id"], r["created_at"])
     return 1, "first run since the %s tick" % t.strftime("%a %H:%M UTC")
+
+
+def decide_retry(self_id, runs, fed, manual_serves=True):
+    """(go, reason) for a run whose tick is already served (RETRY_AFTER). `runs` are this
+    workflow's runs since the tick, `fed` the times of the commits to the feeding path.
+    Go once when the feed landed after the run that served the tick started, and no
+    other run of this workflow started between that commit and this run."""
+    mine = sorted((r for r in runs if r.get("conclusion") not in NOT_A_RUN
+                   and (manual_serves or r.get("event") not in ALWAYS_GO)),
+                  key=lambda r: (parse_ts(r["created_at"]), int(r["id"])))
+    me = next((r for r in mine if int(r["id"]) == int(self_id)), None)
+    others = [r for r in mine if int(r["id"]) != int(self_id)]
+    if not others:
+        return 0, "no earlier run to retry"
+    first = parse_ts(others[0]["created_at"])
+    my_t = parse_ts(me["created_at"]) if me else None
+    done = [d for d in fed if d > first and (my_t is None or d <= my_t)]
+    if not done:
+        return 0, "no new feed since the tick was served"
+    u = max(done)
+    for r in others:
+        rt = parse_ts(r["created_at"])
+        if u < rt and (my_t is None or (rt, int(r["id"])) < (my_t, int(self_id))):
+            return 0, "run %s already retried after the feed finished at %s" % (r["id"], u.strftime("%H:%M UTC"))
+    return 1, "the feed finished at %s, after the tick's run; one more pass" % u.strftime("%H:%M UTC")
+
+
+def api_commit_times(repo, path, since, token, api="https://api.github.com"):
+    """Committer times of the commits on the default branch that touch `path` since `since`."""
+    url = ("%s/repos/%s/commits?per_page=100&path=%s&since=%s"
+           % (api, repo, path, since.strftime("%Y-%m-%dT%H:%M:%SZ")))
+    req = urllib.request.Request(url, headers={
+        "Accept": "application/vnd.github+json",
+        "Authorization": "Bearer %s" % token,
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "agsist-cron-gate"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return [parse_ts(c["commit"]["committer"]["date"]) for c in json.loads(r.read().decode())]
 
 
 def api_runs(repo, workflow, since, token, api="https://api.github.com"):
@@ -380,8 +446,24 @@ def main(argv):
         print("::warning::cron_gate could not list runs (%s); running anyway" % e)
         emit(1, "run list unavailable; running")
         return 0
-    emit(*decide_tick(event, a.cron, now, os.environ.get("GITHUB_RUN_ID", "0"), runs, a.max_lag,
-                      manual_serves=os.path.basename(a.workflow) not in MANUAL_DOES_NOT_SERVE))
+    wf = os.path.basename(a.workflow)
+    serves = wf not in MANUAL_DOES_NOT_SERVE
+    me = os.environ.get("GITHUB_RUN_ID", "0")
+    go, why = decide_tick(event, a.cron, now, me, runs, a.max_lag, manual_serves=serves)
+    if not go and wf in RETRY_AFTER and "already served" in why:
+        try:
+            fed = api_commit_times(os.environ["GITHUB_REPOSITORY"], RETRY_AFTER[wf], t,
+                                   os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN", ""),
+                                   os.environ.get("GITHUB_API_URL", "https://api.github.com"))
+            go2, why2 = decide_retry(me, runs, fed, manual_serves=serves)
+            if go2:
+                go, why = go2, why2
+            else:
+                why = "%s; %s" % (why, why2)
+        except Exception as e:
+            # fail closed here: the tick was served, and a retry is only a second chance
+            print("::warning::cron_gate could not list %s runs (%s); no retry" % (RETRY_AFTER[wf], e))
+    emit(go, why)
     return 0
 
 
@@ -456,8 +538,32 @@ def selftest():
           "mail workflow: a chained run past six hours does not send the month late")
     check(decide_tick("workflow_run", rm, T("2026-11-03 14:52"), 75, [], 360, manual_serves=False)[0] == 0,
           "mail workflow: the next day is no tick")
-    check(MANUAL_DOES_NOT_SERVE == {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"},
-          "the four mail and rain workflows, and only those, ignore runs by hand")
+    check(MAIL_AND_RAIN == {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"}
+          and MANUAL_DOES_NOT_SERVE == MAIL_AND_RAIN | GATED_NOV3 and len(GATED_NOV3) == 49,
+          "the four mail and rain workflows and the 49 gated Nov 3, and only those, ignore runs by hand")
+    # The land sale email waits for the land data (Nov 3, 2026). Tick 15:47 on the 3rd; the 15:52
+    # chained run served it while the land run was still going.
+    la = ["47 15 3 * *"]
+    served = [M(80, "2026-11-03 15:52", "workflow_run"), M(81, "2026-11-03 16:07", "workflow_run")]
+    check(decide_tick("workflow_run", la, T("2026-11-03 16:07"), 81, served, 360, manual_serves=False)[0] == 0,
+          "land email: the second chained run finds the tick served")
+    check(decide_retry(81, served, [], False)[0] == 0, "land email: no land run since, no retry")
+    check(decide_retry(81, served, [T("2026-11-03 12:00")], False)[0] == 0,
+          "land email: the land data landed before the tick's run, no retry")
+    late = served + [M(82, "2026-11-03 17:52", "workflow_run")]
+    check(decide_retry(82, late, [T("2026-11-03 17:40")], False)[0] == 1,
+          "land email: the first chained run after late land data goes once more")
+    check(decide_retry(81, served, [T("2026-11-03 17:40")], False)[0] == 0,
+          "land email: a run from before the land data landed does not retry")
+    later = late + [M(83, "2026-11-03 18:07", "workflow_run")]
+    check(decide_retry(83, later, [T("2026-11-03 17:40")], False)[0] == 0,
+          "land email: only one retry per land data commit")
+    check(decide_retry(83, later, [T("2026-11-03 17:40"), T("2026-11-03 18:01")], False)[0] == 1,
+          "land email: a second land commit later that afternoon gets its own pass")
+    byhand = served + [M(84, "2026-11-03 17:45", "workflow_dispatch"), M(82, "2026-11-03 17:52", "workflow_run")]
+    check(decide_retry(82, byhand, [T("2026-11-03 17:40")], False)[0] == 1,
+          "land email: a dry run by hand after the land run does not use up the retry")
+    check(RETRY_AFTER == {"land-alert.yml": "data/land"}, "the land email, and only it, retries after its feed")
 
     # COT
     cot = {"report_date": "October 06, 2026", "next_release": "2026-10-16"}

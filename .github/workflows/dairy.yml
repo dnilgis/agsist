@@ -35,17 +35,62 @@ on:
     - cron: '37 15 28-31 * *'   # an early announcement at month end
     - cron: '11 14 * * 2'     # weekly catch-up, Tuesdays
     - cron: '23 16 15-27 * *' # mailbox price (scripts/fetch_mailbox.py): AMS posts it late in the month, about three months on
+  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
+  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
+  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+  # cron above, by either trigger, do the work within 76 minutes
+  # (closing before the next tick of the schedule).
+  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
+  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
+  # inputs, and the chained run that follows is the same idempotent job.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
 
 permissions:
   contents: write
 
-concurrency:
-  group: dairy
-  cancel-in-progress: false
-
 jobs:
-  build:
+  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
+  gate:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow dairy.yml --max-lag 76
+          --cron "37 15 1-9 * *"
+          --cron "37 21 1-9 * *"
+          --cron "37 15 28-31 * *"
+          --cron "11 14 * * 2"
+          --cron "23 16 15-27 * *"
+
+  build:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: dairy
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - name: Engine checkout
@@ -222,5 +267,5 @@ jobs:
           SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
           DAIRY_MONTHLY_LIVE: ${{ vars.DAIRY_MONTHLY_LIVE == '0' && '0' || '1' }}
           PREVIEW: ${{ github.event_name == 'workflow_dispatch' && inputs.email == 'preview' && '1' || '' }}
-          SEND: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.email == 'send')) && github.ref_name == 'main' && '1' || '' }}
+          SEND: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && inputs.email == 'send')) && github.ref_name == 'main' && '1' || '' }}
         run: python3 scripts/send_milk_month.py

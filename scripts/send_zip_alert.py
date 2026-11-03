@@ -64,6 +64,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import send_elevator_watch as sew  # noqa: E402
 import log_safe  # noqa: E402  (no address in the public log)
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
 
 ZIPS_URL = "https://dnilgis.github.io/bids/data/zips/{}.json"
 RADII = (10, 25, 50, 75, 100)           # what components/cb-alerts.js offers
@@ -445,6 +446,7 @@ def main():
         selftest()
         return 0
     dry = sew.env("DRY_RUN") == "1"
+    tally = delivery_line.start("zip-alert", dry=dry)
     base = (sew.env("LIST_URL", "") or "").rstrip("/")
     tok, secret = sew.env("LIST_TOKEN"), sew.env("UNSUB_SECRET")
     if not (dry and sew.env("WATCH_LIST_FILE")) and not (base and tok and secret):
@@ -460,6 +462,7 @@ def main():
     data = sew.fetch_net_index()
     tables = load_zip_tables(zip_prefixes(watchers))
     confirms, sends, rearms, n = plan(watchers, data, tables, now_ms)
+    tally.waiting = len(confirms) + len(sends)
     print(f"ZIP alerts: confirmations {len(confirms)}; alerts {len(sends)}; re-armed {len(rearms)}; "
           + "; ".join(f"{k} {v}" for k, v in n.items()))
     if dry:
@@ -517,6 +520,7 @@ def main():
                 pass
     # Counts and masked addresses only: the Actions log is public. The full
     # list goes to Sig by private mail.
+    tally.sent = sent
     print(f"sent {sent}; failed {len(failed)}"
           + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
     if failed:

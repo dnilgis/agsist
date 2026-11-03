@@ -64,6 +64,8 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import email_links                 # noqa: E402
 import log_safe                    # noqa: E402
+import delivery_line             # noqa: E402  (the DELIVERY count line cron_health reads)
+TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN           # noqa: E402
 from send_watch import base_msg    # noqa: E402
 
@@ -263,6 +265,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     p.add_argument("--max", type=int, default=int(SN.env("MAX_PER_RUN", "300")))
     a = p.parse_args(argv)
     mode = mode_of(argv)
+    if TALLY:
+        TALLY.dry = mode != "send"
     now = now or datetime.now(timezone.utc)
     today = now.astimezone(SN.TZ).date()
     d = _read(repo, "data/dairy-data.json")
@@ -270,6 +274,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     out("date %s (America/Chicago), mode %s, class month %s" % (today.isoformat(), mode, k or "none"))
     if mode == "send":
         if SN.env("DAIRY_MONTHLY_LIVE", "") != "1":
+            if TALLY:
+                TALLY.dry = True
             out("refused: DAIRY_MONTHLY_LIVE is not 1, so the milk price day list gets nothing. Nothing sent.")
             return 0
         if not k:
@@ -364,6 +370,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         todo.append((e, lid))
     later = max(0, len(todo) - a.max)
     todo = todo[:a.max]
+    if TALLY:
+        TALLY.waiting += len(todo)
     out("milk-month:%s: %d to mail, %d already mailed for it, %d skipped, %d left for the next run" % (k, len(todo), done, skipped, later))
     if not todo:
         return 0
@@ -405,6 +413,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    if TALLY:
+        TALLY.sent += sent
     out("milk-month:%s: sent %d; failed %d" % (k, sent, failed))
     if broken:
         return 1
@@ -527,4 +537,5 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv[1:]:
         sys.exit(selftest())
+    TALLY = delivery_line.start("milk-month")
     sys.exit(run(sys.argv[1:]))

@@ -69,6 +69,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
+import delivery_line      # noqa: E402  (the DELIVERY count line cron_health reads)
+TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 import list_source  # noqa: E402  (the worker, or the private copy of its list)
 from local_bid import q_cash_text, q_cents   # noqa: E402  (the site's quarter-cent text)
@@ -498,6 +500,8 @@ def flag(day, set_it=False):
 def main(argv=()):
     argv = list(argv)
     dry = env("DRY_RUN", "") == "1"
+    tally = TALLY or delivery_line.Tally("report-day")   # an unregistered tally prints nothing
+    tally.dry = dry
     day = date.fromisoformat(argv[argv.index("--date") + 1]) if "--date" in argv else today_ct()
     rel = release_utc(day)
     now = datetime.now(timezone.utc)
@@ -579,6 +583,7 @@ def main(argv=()):
     print("list: %d address(es), %d opted into report-day email (%s list), %d more on the report-day list alone"
           % (len(subs), len(recipients) - len(only), how, len(only)))
     gmail_limit.check(len(subs), len(recipients), day, dry=dry)
+    tally.waiting = len(recipients)
     if not recipients:
         print("nobody to send to. exit 0")
         return 0
@@ -653,6 +658,7 @@ def main(argv=()):
             conn.quit()
         except Exception:
             pass
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
     print("sent " + str(sent) + "/" + str(len(recipients)))
     if sent > 0:
         flag(day, set_it=True)
@@ -822,4 +828,5 @@ def _selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(_selftest())
+    TALLY = delivery_line.start("report-day")
     sys.exit(list_source.guard(lambda: main(sys.argv[1:]), soft=False))

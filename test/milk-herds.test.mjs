@@ -144,7 +144,13 @@ test('the chart draws from the file for the saved state, says each bar\'s change
       let asked = 0; pg.on('request', (r) => { if (r.url().includes('/data/dairy-herds.json')) asked++; });
       await pg.goto(`http://127.0.0.1:${port}/milk-prices`, { waitUntil: 'load' });
       assert.equal(asked, 0, 'the file is not fetched before the reader gets near the chart');
-      const plots = () => pg.evaluate(() => ['dp-hc-us', 'dp-hc-st', 'dp-herds-tbl', 'dp-do'].map((id) => { const e = document.getElementById(id); const r = e.getBoundingClientRect(); return [Math.round(r.top + scrollY), Math.round(r.height)]; }));
+      // Nov 3, 2026: the section sits in a closed fold; the reader opens it, then the chart fills. A closed
+      // fold has no boxes to measure, so the fold is opened first and the next section (cull cows) is the
+      // one below it that must not move.
+      await pg.evaluate(() => { document.querySelector('#dp-herds > details.dp-fold').open = true; });
+      await pg.waitForTimeout(100);
+      assert.equal(asked, 0, 'opening the fold far down the page does not fetch the file yet');
+      const plots = () => pg.evaluate(() => ['dp-hc-us', 'dp-hc-st', 'dp-herds-tbl', 'dp-cull-sec'].map((id) => { const e = document.getElementById(id); const r = e.getBoundingClientRect(); return [Math.round(r.top + scrollY), Math.round(r.height)]; }));
       const before = await plots();
       await pg.evaluate(() => document.getElementById('dp-herds').scrollIntoView());
       await pg.waitForFunction(() => document.querySelectorAll('#dp-hc-us .dp-hc-b').length > 0, null, { timeout: 20000 });

@@ -75,6 +75,7 @@ from email.utils import formataddr, make_msgid
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
 import list_source  # noqa: E402  (a blocked worker is a skip, not a failed run)
 import email_links  # noqa: E402  (links go to the agsist.com front door; the worker host is never in an email)
 
@@ -443,7 +444,7 @@ def worker(base, path, tok, body=None, **q):
     return list_source.request("POST" if body is not None else "GET", url, body, {"User-Agent": "agsist-form-digest"})
 
 
-def run(base, tok, to, dry, send, fetch=worker, top=None):
+def run(base, tok, to, dry, send, fetch=worker, top=None, tally=None):
     """Returns (exit code, log lines). Log lines carry counts only. `top`,
     when given, returns the counts line for the top of the email (main passes
     the last-24-hours reader); it is only asked when there is something new."""
@@ -468,6 +469,8 @@ def run(base, tok, to, dry, send, fetch=worker, top=None):
         return 1, log
     posts = usable(posts)
     log.append("new form posts: %s" % count_line(counts(posts)))
+    if tally:
+        tally.waiting += len(posts)
     if not posts:
         return 0, log
     line = top() if top else ""
@@ -480,6 +483,8 @@ def run(base, tok, to, dry, send, fetch=worker, top=None):
     except Exception as e:                                 # noqa: BLE001
         log.append("send failed (%s); left unmarked for the next run" % type(e).__name__)
         return 1, log
+    if tally:
+        tally.sent += len(posts)
     try:
         r = fetch(base, "form-mark", tok, {"keys": [p["key"] for p in posts]})
         log.append("mailed %d; marked %s" % (len(posts), r.get("marked") if isinstance(r, dict) else "?"))
@@ -586,7 +591,7 @@ def hay_build(posts, to, fn="AGSIST", fa=""):
     return m
 
 
-def hay_run(base, tok, to, dry, send, fetch=hay_worker):
+def hay_run(base, tok, to, dry, send, fetch=hay_worker, tally=None):
     """Returns (exit code, log lines). Counts only in the log."""
     log = []
     try:
@@ -609,6 +614,8 @@ def hay_run(base, tok, to, dry, send, fetch=hay_worker):
         return 1, log
     posts = [p for p in posts if isinstance(p, dict) and HAY_ID_RE.fullmatch(str(p.get("id") or ""))]
     log.append("hay board: %d new, %d not shown" % (sum(1 for p in posts if not p.get("n")), sum(1 for p in posts if p.get("status") != "live")))
+    if tally:
+        tally.waiting += len(posts)
     if not posts or dry:
         return 0, log
     try:
@@ -616,6 +623,8 @@ def hay_run(base, tok, to, dry, send, fetch=hay_worker):
     except Exception as ex:                                # noqa: BLE001
         log.append("hay send failed (%s); left unmarked for the next run" % type(ex).__name__)
         return 1, log
+    if tally:
+        tally.sent += len(posts)
     try:
         r = fetch(base, "hay/admin/mark", tok, {"ids": [p["id"] for p in posts]})
         log.append("hay mailed %d; marked %s" % (len(posts), r.get("marked") if isinstance(r, dict) else "?"))
@@ -636,6 +645,8 @@ def main():
         print("LIST_URL and LIST_TOKEN are required")
         return 1
     dry = env("DRY_RUN") == "1"
+    # Its readers are the people who posted a form: waiting = new posts, sent_readers = posts in a digest that went.
+    tally = delivery_line.start("form-digest", dry=dry)
     to = env("FORMS_TO") or env("SPONSOR_TO") or "sig@agsist.com"
     fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
 
@@ -653,10 +664,10 @@ def main():
             except Exception:                              # noqa: BLE001
                 pass
 
-    code, log = run(base, tok, to, dry, send, top=lambda: last24(base, tok, worker))
+    code, log = run(base, tok, to, dry, send, top=lambda: last24(base, tok, worker), tally=tally)
     for line in log:
         print(line)
-    hcode, hlog = hay_run(base, tok, to, dry, send)
+    hcode, hlog = hay_run(base, tok, to, dry, send, tally=tally)
     for line in hlog:
         print(line)
     return code or hcode
