@@ -16,6 +16,17 @@ name: Rain Print design email
 on:
   schedule:
     - cron: '23 * * * *'
+  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
+  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
+  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+  # cron above, by either trigger, do the work within 50 minutes
+  # (closing before the next tick of the schedule).
+  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
+  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
+  # inputs, and the chained run that follows is the same idempotent job.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       dry_run:
@@ -23,16 +34,46 @@ on:
         type: boolean
         default: true
 
-concurrency:
-  group: rp-design-email
-  cancel-in-progress: false
-
 permissions:
   contents: read
 
 jobs:
-  run:
+  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
+  gate:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow rp-design-email.yml --max-lag 50
+          --cron "23 * * * *"
+
+  run:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: rp-design-email
+      cancel-in-progress: false
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -65,5 +106,5 @@ jobs:
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           RP_FROM_NAME: ${{ vars.RP_FROM_NAME }}
           SIG_TO: ${{ secrets.SIG_TO }}
-          DRY_RUN: ${{ (github.event_name == 'schedule' && vars.RP_DESIGN_EMAIL_LIVE == '1') && '' || (github.event_name != 'schedule' && inputs.dry_run == false) && '' || '1' }}
+          DRY_RUN: ${{ ((github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.RP_DESIGN_EMAIL_LIVE == '1') && '' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false) && '' || '1' }}
         run: python3 scripts/rp_design_email.py
