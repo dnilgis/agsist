@@ -5,6 +5,8 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.62 (2026-11-03): RP_DESIGN_EMAIL_LIVE and RP_BUYER_EMAIL_LIVE now come from the
+ *   [vars] in wrangler.api.toml and wrangler.subs.toml ("1"), not the dashboard. No code change.
  * v5.61 (2026-11-03): CUSTOM RATES NEW-SURVEY ASK. Topic customrates:<st> (a state's
  *   two-letter code) on the notice list: one email when that state's next custom rate
  *   survey is on /custom-rates (scripts/send_custom_rates_notice.py, cash-rent.yml,
