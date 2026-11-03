@@ -146,9 +146,13 @@ SELF_STALE_HOURS = RECOMMIT_HOURS + 2
 # A top-level folder at this share of its check_site_budget.py budget gets a warn row.
 FOLDER_WARN = 0.90
 
-# The briefing is judged by what it publishes: today's archive file, by 07:30
-# Central. Its runs prove nothing alone (most heartbeats skip on purpose).
-BRIEFING = {"path": "data/daily-archive/{date}.json", "due_ct": "07:30", "critical": True}
+# The briefing is judged by what reached the list: today's sent copy, by 07:15
+# Central (Sig, Nov 3 2026: published is not sent; that morning the issue was
+# published by a manual dry run and mailed to nobody until 7:48). Its runs
+# prove nothing alone (most heartbeats skip on purpose). The email to Sig at
+# 7:15 is scripts/daily_late.py; this row is the same fact in the health file.
+BRIEFING = {"path": "data/daily-sent/{date}.json", "published": "data/daily-archive/{date}.json",
+            "due_ct": "07:15", "critical": True}
 
 
 def gate_crons(workflow):
@@ -210,10 +214,12 @@ def briefing_status(now, root=ROOT):
     path = BRIEFING["path"].format(date=ct.strftime("%Y-%m-%d"))
     due = ct.replace(hour=int(BRIEFING["due_ct"][:2]), minute=int(BRIEFING["due_ct"][3:]), second=0, microsecond=0)
     if os.path.exists(os.path.join(root, path)):
-        return "ok", path, "published"
+        return "ok", path, "sent"
     if ct < due:
         return "ok", path, "not due until %s Central" % BRIEFING["due_ct"]
-    return "late", path, "today's briefing is not published and it is past %s Central" % BRIEFING["due_ct"]
+    if os.path.exists(os.path.join(root, BRIEFING["published"].format(date=ct.strftime("%Y-%m-%d")))):
+        return "late", path, "today's briefing is published but not sent, and it is past %s Central" % BRIEFING["due_ct"]
+    return "late", path, "today's briefing is not sent (not even published) and it is past %s Central" % BRIEFING["due_ct"]
 
 
 def _get(url, token):
@@ -260,7 +266,7 @@ def collect(now, repo, token, api):
         if status == "late":
             late.append(wf)
     st, path, why = briefing_status(now)
-    rows.append({"workflow": "daily.yml", "critical": BRIEFING["critical"], "clock": "published by %s Central" % BRIEFING["due_ct"],
+    rows.append({"workflow": "daily.yml", "critical": BRIEFING["critical"], "clock": "sent by %s Central" % BRIEFING["due_ct"],
                  "check": path, "status": st, "why": why})
     if st == "late":
         late.append("daily.yml")
@@ -692,11 +698,18 @@ def selftest():
     import tempfile
     d = tempfile.mkdtemp()
     os.makedirs(os.path.join(d, "data", "daily-archive"))
+    os.makedirs(os.path.join(d, "data", "daily-sent"))
     check(briefing_status(T("2026-10-09 11:00"), d)[0] == "ok", "briefing not due at 06:00 CDT")
-    check(briefing_status(T("2026-10-09 13:00"), d)[0] == "late", "briefing missing at 08:00 CDT is late")
+    check(briefing_status(T("2026-10-09 12:14"), d)[0] == "ok", "briefing not due at 07:14 CDT")
+    check(briefing_status(T("2026-10-09 12:16"), d)[0] == "late", "briefing not sent at 07:16 CDT is late")
     open(os.path.join(d, "data", "daily-archive", "2026-10-09.json"), "w").write("{}")
-    check(briefing_status(T("2026-10-09 13:00"), d)[0] == "ok", "briefing published is ok")
+    # Nov 3 2026: published by a dry run, sent to nobody; published is not sent
+    st, _, why = briefing_status(T("2026-10-09 13:00"), d)
+    check(st == "late" and "published but not sent" in why, "briefing published but not sent at 08:00 CDT is late")
+    open(os.path.join(d, "data", "daily-sent", "2026-10-09.json"), "w").write("{}")
+    check(briefing_status(T("2026-10-09 13:00"), d)[0] == "ok", "briefing sent is ok")
     check(briefing_status(T("2026-10-10 02:00"), d)[0] == "ok", "21:00 CDT Friday still reads Friday's file")
+    check(briefing_status(T("2026-11-03 13:16"), d)[0] == "late", "Nov 3: nothing sent at 07:16 CST is late")
 
     # published size: warn and red lines, from a fake measure (the real walk is check_site_budget's own selftest)
     fake = lambda mb: (lambda root: {"total_mb": mb, "warn_mb": 850, "fail_mb": 900, "folders": {"data": 300.0}, "over": []})
