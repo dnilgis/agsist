@@ -8,6 +8,7 @@
 # ref: cr-oh-2024-pdf
 # spread: minmax
 # includes: These rates, except where noted, include the implement and tractor if required, all variable machinery costs such as fuel, oil, lube, twine, etc., and labor for the operation. Diesel ran about $3.20 to $3.50 a gallon off-road during the survey (January to April 2024).
+# diesel: $3.20 to $3.50 a gallon off-road|January to April 2024
 # range_note: The range is the lowest and highest answer (OSU also prints a one standard deviation band, not shown). OSU released a 2026 edition in late summer 2026; it could not be opened from here yet, so this is the 2024 edition. Rows OSU did not summarize for too few answers are left out.
 key	section	operation	unit	avg	lo	hi	n
 stalk-chop	Soil preparation	Stalk chopper	acre	17.33	13.00	30.00	9

@@ -463,6 +463,9 @@ def state_doc(meta, rows):
         d["rate_year"] = int(meta["rate_year"])
     if apart_of(meta):
         d["apart"] = apart_of(meta)
+    dz = diesel_of(meta, "includes")
+    if dz:
+        d["diesel"] = list(dz)
     return d
 
 
@@ -567,6 +570,19 @@ def load_diy(src_dir=DIY):
     return out, errs
 
 
+def diesel_of(meta, text_key):
+    """('$2.89 a gallon', 'February 2026') from '# diesel: $2.89 a gallon|February 2026', or None. Each dollar
+    figure in it must be printed in the file's own words (its includes or basis line): the survey said it."""
+    v = meta.get("diesel", "")
+    if "|" not in v:
+        return None
+    price, when = [x.strip() for x in v.split("|", 1)]
+    nums = re.findall(r"\d+\.\d\d", price)
+    if not nums or not all(n in meta.get(text_key, "") for n in nums) or not when:
+        raise ValueError("diesel %r is not in its %s line" % (price, text_key))
+    return price, when
+
+
 def blend_doc(docs, idx):
     newest = max(rate_year(d) for d in docs.values())
     cutoff = newest - AGE_MAX
@@ -627,7 +643,16 @@ def blend_doc(docs, idx):
             states[x] = {"same_as": s["st"], "name": STATE_NAMES[x]}
     diy_list, _ = load_diy()
     diy = []
+    # the fuel price a survey (or a machinery cost estimate) says it figured, never used to adjust a rate
+    diesel = {}
+    for st, d in sorted(docs.items()):
+        if d.get("diesel"):
+            price, when = d["diesel"]
+            diesel[st] = {"price": price, "when": when, "who": "%s's %s" % (d["name"], survey_words(d["survey_year"], d.get("rate_year")))}
     for fn, meta, rows in diy_list:
+        dz = diesel_of(meta, "basis")
+        if dz and meta.get("state") and meta["state"] not in diesel:
+            diesel[meta["state"]] = {"price": dz[0], "when": dz[1], "who": "the %s" % meta["name"]}
         # a cost only shows beside a job in the same unit as the going rate
         keep = {k: v for k, v in rows.items() if k in ops and ops[k]["u"] == v[1]}
         diy.append({"name": meta["name"], "what": meta["what"], "publisher": meta["publisher"], "published": meta["published"],
@@ -637,7 +662,7 @@ def blend_doc(docs, idx):
             "rule": {"middle": "median of the state survey averages", "min_surveys": MIN_BLEND, "age_max": AGE_MAX,
                      "newest": newest, "oldest_in_middle": cutoff,
                      "words": "Each state counts once. A survey of rates from before %d is shown but left out of the middle. A job needs %d surveys for a middle; with fewer, each number stands on its own." % (cutoff, MIN_BLEND)},
-            "cats": cats, "states": states, "ops": ops, "diy": diy, "names": STATE_NAMES, "borders": idx["borders"],
+            "cats": cats, "states": states, "ops": ops, "diy": diy, "diesel": diesel, "names": STATE_NAMES, "borders": idx["borders"],
             "not_covered": NOT_COVERED}
 
 
@@ -864,7 +889,7 @@ def state_page(d, idx, blend):
   <meta name="twitter:image" content="{og}">
   <script>try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script>
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/custom-rates.css?v=5">
+  <link rel="stylesheet" href="/components/custom-rates.css?v=6">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <script type="application/ld+json">{ld}</script>
@@ -1027,6 +1052,7 @@ def hero_block(b, k="combine-corn"):
             '<p class="crh-key">Each dot is a state survey\'s average, the dark line is the middle, and your state is the gold dot. The bar starts at zero.</p>\n'
             '<p class="crh-me" id="cr-me">%s.</p>\n'
             '<p class="crh-diy" id="cr-diy" hidden></p>\n'
+            '<p class="crh-diy" id="cr-diesel" hidden></p>\n'
             '<p class="crh-cost" id="cr-cost"></p>\n') % (
         esc(op["label"]), esc(unit_label(u)), big, esc(short_unit(u)),
         "middle" if "md" in op else "rate", op["n"], yr_span(op["y"]), rng,
