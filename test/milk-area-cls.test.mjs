@@ -124,10 +124,10 @@ test('it lays out what milk-tools.js shows: every state, every ZIP prefix, a sav
 test('a state with no mailbox area shows its own all-milk price; a state with an area does not', () => {
   const now = new FDate();
   const id = M.stateHtml(FIX_D, 'ID', now);
-  assert.match(id, /^<p class="dp-area-name">Idaho <span>all-milk price, September 2026<\/span><\/p><p class="dp-area-big">\$19\.60<span>\/cwt<\/span><\/p>/);
-  assert.match(id, /▲ \+\$0\.50 vs Aug<\/span> &middot; <span class="dp-neg">▼ −\$0\.40 vs Sep 2025/);
+  assert.match(id, /^<p class="dp-area-name">Idaho <span>all-milk price, September 2026<\/span><\/p><p class="dp-area-big">\$19\.60<span>\/cwt<\/span><\/p>/);  // pin-ok: FIX_D is the inline fixture above, on a fake clock
+  assert.match(id, /▲ \+\$0\.50 vs Aug<\/span> &middot; <span class="dp-neg">▼ −\$0\.40 vs Sep 2025/);  // pin-ok: FIX_D is the inline fixture above, on a fake clock
   assert.match(id, /No USDA mailbox area for Idaho/);
-  assert.match(id, /Source: USDA NASS, Agricultural Prices, September 2026\.<\/p>$/);
+  assert.match(id, /Source: USDA NASS, Agricultural Prices, September 2026\.<\/p>$/);  // pin-ok: FIX_D is the inline fixture above, on a fake clock
   assert.doesNotMatch(id, /<a /, 'the source in plain text, no link');
   assert.equal(M.stateHtml(FIX_D, 'WI', now), '', 'Wisconsin has its own mailbox area: the area card, not this');
   assert.equal(M.stateHtml(FIX_D, 'PA', now), '', 'a split state is asked, not guessed');
