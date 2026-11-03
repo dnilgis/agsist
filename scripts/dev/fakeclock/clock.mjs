@@ -8,9 +8,16 @@ if (OFF) {
   const shift = (off) => {
     const RD = globalThis.Date;
     if (RD.agsistFake) return;
-    function FakeDate(...a) {
+    // arity by hand, no rest array: a test that makes a million dates should not slow down here
+    function FakeDate(a, b, c, d, e, f, g) {
       if (!new.target) return new RD(RD.now() + off).toString();
-      return a.length === 0 ? new RD(RD.now() + off) : new RD(...a);
+      switch (arguments.length) {
+        case 0: return new RD(RD.now() + off);
+        case 1: return new RD(a);
+        case 2: return new RD(a, b);
+        case 3: return new RD(a, b, c);
+        default: return new RD(a, b, c, d === undefined ? 0 : d, e === undefined ? 0 : e, f === undefined ? 0 : f, g === undefined ? 0 : g);
+      }
     }
     FakeDate.prototype = RD.prototype;
     Object.setPrototypeOf(FakeDate, RD);

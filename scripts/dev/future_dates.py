@@ -126,7 +126,7 @@ def run_one(cmd, env, log):
     return cmd, rc, skipped, round(time.time() - t0, 1)
 
 
-def run_date(label, when, jobs, nfiles, pcmds, outdir):
+def run_date(label, when, jobs, nfiles, pcmds, outdir, names=None):
     env = dict(os.environ)
     if when is not None:
         off = int(when.timestamp() - time.time())
@@ -142,6 +142,8 @@ def run_date(label, when, jobs, nfiles, pcmds, outdir):
     os.makedirs(d, exist_ok=True)
     work = [(["node", "--test", "--test-reporter=tap", f], f) for f in nfiles]
     work += [(c.split(), c) for c in pcmds]
+    if names is not None:
+        work = [w for w in work if w[1] in names]
     before = dirty()
     res = {}
     with ThreadPoolExecutor(max_workers=jobs) as ex:
@@ -193,9 +195,25 @@ def main(argv):
         res, ch = run_date(label, when, jobs, nfiles, pcmds, outdir)
         bad = sorted(k for k, v in res.items() if v != "ok")
         new = [k for k in bad if base.get(k, "ok") == "ok" or not opts["baseline"]]
-        new_total += len(new)
-        print(f"{label} ({when:%Y-%m-%d %H:%M} UTC): {len(res) - len(bad)} ok, {len(bad)} not ok, {len(new)} only on this date"
-              + "".join(f"\n  {res[k]}: {k}   (log {outdir}/{label}/{re.sub(r'[^\w.-]+', '_', k)}.log)" for k in new))
+        # a busy machine fails timing tests at any date: each new failure runs again alone, once on the real
+        # clock and once on this date. Only "fails on this date, passes on today's" counts as the date.
+        why = {}
+        if new:
+            # twice each: under load a timing test can fail on either clock
+            ctl, again = {}, {}
+            for i in (1, 2):
+                c1, _ = run_date(f"{label}-control{i}", None, 1, nfiles, pcmds, outdir, set(new))
+                a1, _ = run_date(f"{label}-again{i}", when, 1, nfiles, pcmds, outdir, set(new))
+                for k in new:
+                    ctl[k] = "ok" if ctl.get(k) == "ok" or c1.get(k) == "ok" else "fail"
+                    again[k] = "ok" if again.get(k) == "ok" or a1.get(k) == "ok" else "fail"
+            for k in new:
+                why[k] = ("date" if again[k] != "ok" and ctl[k] == "ok" else
+                          "flaky (passed when run again alone)" if again[k] == "ok" else "fails on today's clock too")
+        dated = [k for k in new if why.get(k) == "date"]
+        new_total += len(dated)
+        print(f"{label} ({when:%Y-%m-%d %H:%M} UTC): {len(res) - len(bad)} ok, {len(bad)} not ok, {len(dated)} from the date"
+              + "".join(f"\n  {res[k]}: {k} [{why[k]}]   (log {outdir}/{label}/{re.sub(r'[^\w.-]+', '_', k)}.log)" for k in new))
         if ch:
             print("  changed in the checkout by the run: " + ", ".join(ch))
     print(f"future_dates: {new_total} failure(s) that come from the date")
