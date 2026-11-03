@@ -343,6 +343,52 @@ def main():
     ck("a graded month: futures as it began, announced, miss", ">$17.86 <" in m1 and ">$17.50<" in m1 and "−$0.36" in m1 and "Oct 30" in m1, m1)
     ck("...with the sample size", "1 month graded" in m1)
 
+    # the first card (Nov 3, 2026): frozen files and a frozen day, nothing read from data/
+    T = "2026-11-03"
+    dmcf = {"margins": {"2026-07": {"all_milk": 20.3, "feed": 10.37, "margin": 9.93},
+                        "2026-08": {"all_milk": 19.8, "feed": 10.46, "margin": 9.34}},
+            "premiums": {"as_of": "January 2026", "tier1": {"8.00": 0.1, "9.50": 0.15}}}
+    fbf = {"byOperation": {"_sources": {"f": "FSA"}, "dairy": {"signup": {"open": "2026-10-05", "close": "2026-12-18",
+                                                                          "year": 2027, "src": "f"}}}}
+    q = lambda st: {"close": 18.0, "close_kind": "last", "close_date": "2026-11-03", "settle": st,
+                    "settle_date": "2026-11-02", "settles": {"2026-10-30": 17.7, "2026-11-02": st}}
+    pf = {"fetched": "2026-11-03T14:00:00Z", "stale_keys": [], "retired_keys": [],
+          "quotes": {"milk": q(17.98), "milk-oct26": q(15.3), "milk-nov26": q(17.98), "milk-dec26": q(17.10)}}
+    hf = {"months": {"2026-08": {"class3": 16.64}}}
+    SEPN = dict(SEP, all_milk={"value": 19.5, "month": "September 2026", "month_key": "2026-09", "prev_month": 19.8, "year_ago": 20.4})
+    top, rest = S.milk_now_seed(SEPN, dmcf, fbf, pf, hf, T)
+    allh = top + rest
+    ck("card: Class III and IV with their change", ">$16.04<" in top and "−$0.60" in top and ">$18.94<" in top and "+$1.58" in top, top)
+    ck("card: the all-milk month it is, from NASS", "Sep · NASS" in top, top)
+    ck("card: $1/cwt on 100 cows at 2,000 lb is $2,000 a month", '<b id="dp-now-per">$2,000</b>' in rest, rest)
+    ck("card: the all-milk move on that herd (−$0.30 is −$600)", "−$600</b>" in rest, rest)
+    ck("card: DMC paid at $9.50, not at $8", "paid <b>$0.16/cwt</b> of covered milk; at $8.00, nothing." in rest, rest)
+    ck("card: the futures months from this month on, never the alias or a past month",
+       rest.count("<tr data-idx") == 2 and "Oct 2026" not in rest, rest)
+    ck("card: the newest settle, not the last trade", ">$17.98<" in rest and ">$18.00<" not in rest, rest)
+    ck("card: the range is the two stated cases", "$9.34 to $10.68" in rest and "$9.34 to $9.80" in rest, rest)
+    ck("card: labelled a range, not a forecast, with both assumptions",
+       "A range, not a forecast." in rest and "cent for cent" in rest and "Feed held at August" in rest, rest)
+    ck("card: what this means, by the rules", "DMC paid $0.16/cwt at $9.50 coverage for August, against a $0.15 tier 1 premium."
+       in rest and "across the $9.50 line" in rest and "2027 signup closes Fri, Dec 18." in rest, rest)
+    ck("card: the next margin dates from the NASS calendar", "Oct 30 Agricultural Prices report" in rest
+       and "October&rsquo;s follows the Mon, Nov 30, 2026 report" in rest, rest)
+    ck("card: no links, no em dash", "<a " not in allh and "\u2014" not in allh)
+    hi = copy.deepcopy(dmcf)
+    hi["margins"]["2026-08"] = {"all_milk": 19.8, "feed": 9.26, "margin": 10.54}
+    r2 = S.milk_now_seed(SEPN, hi, fbf, pf, hf, T)[1]
+    ck("card: a margin over $9.50 paid nothing", "DMC paid nothing for August: the margin, $10.54, was above $9.50." in r2, r2)
+    r3 = S.milk_now_seed(SEPN, dmcf, fbf, dict(pf, fetched="2026-10-29T14:00:00Z"), hf, T)[1]
+    ck("card: an old price file shows no futures and says why", "not shown (the newest price file is 5 days old)" in r3
+       and "<tr data-idx" not in r3, r3)
+    r4 = S.milk_now_seed(SEPN, dmcf, fbf, pf, {"months": {}}, T)[1]
+    ck("card: no announced Class III for the DMC month, no range", "<tr data-idx" not in r4 and "not shown" in r4, r4)
+    t5, r5 = S.milk_now_seed(SEPN, dmcf, fbf, pf, hf, "2027-02-01")
+    ck("card: a stale class month says so and shows nothing else", "not shown" in t5 and r5 == "" and "$16.04" not in t5, t5)
+    ck("next margin: a month past the known calendar says nothing", S.milk_next_margin(2026 * 12 + 11, T) == "")
+    ck("next margin: only the coming report when the last is not out yet",
+       S.milk_next_margin(2026 * 12 + 7, "2026-10-20") == "Next margin: September&rsquo;s follows the Fri, Oct 30, 2026 report.")
+
     print()
     if fails:
         print(f"{len(fails)} FAILED")
