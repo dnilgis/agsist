@@ -1041,11 +1041,19 @@ function update52WeekRange(priceElId, price, wk52Lo, wk52Hi, isGrain, prefix) {
   if (dot) dot.style.left = pct + '%';
 }
 
+/* 2026-11-02: fetch_prices.energy_roll_guard marks a quote whose day change
+   crosses contracts near expiry (Oct 26-29 natural gas printed +13.9% to
+   +16.0%, a Dec trade over a Nov close) with move_withheld and roll. The
+   price stays; the change, arrow, color and percent go, the same words the
+   futures and markets pages print for a roll. */
+var ROLL_CHG = {text: 'contract roll', cls: 'nc'};
+function moveWithheld(q) { return !!(q && (q.move_withheld || q.roll)); }
 function applyPriceResult(key, q, close, open, netChg, pctChg) {
   var meta = PRICE_MAP[key];
   if (!meta) return;
+  var held = moveWithheld(q);
   var priceTxt = fmtPrice(close, meta.dec, meta.grain, meta.suffix, meta.prefix, meta.comma, meta.tick);
-  var chgObj   = fmtChange(close, open, meta.grain, netChg, pctChg, meta.tick);
+  var chgObj   = held ? ROLL_CHG : fmtChange(close, open, meta.grain, netChg, pctChg, meta.tick);
   if (meta.priceEl) updatePriceEl(meta.priceEl, priceTxt);
   if (meta.chgEl)   updatePriceEl(meta.chgEl, chgObj.text, chgObj.cls);
 
@@ -1058,7 +1066,9 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
     }
   }
   var prevEl = (prevElId && prevElId !== meta.priceEl) ? document.getElementById(prevElId) : null;
-  if (prevEl && open != null) {
+  /* a withheld move's previous close is another contract's: not printed beside this price */
+  if (prevEl && held) prevEl.textContent = '';
+  else if (prevEl && open != null) {
     var prevTxt = fmtPrice(open, meta.dec, meta.grain, meta.suffix, meta.prefix, meta.comma, meta.tick);
     prevEl.textContent = 'prev: ' + prevTxt + ' ' + (q && q.ticker ? q.ticker : '');
   }
@@ -1085,7 +1095,7 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
     }
   }
   var tickerPriceTxt = fmtTickerPrice(close, meta.grain, meta.dec, meta.prefix, meta.comma, meta.tick);
-  var tickerChgObj = fmtTickerChange(close, open, meta.grain, netChg, pctChg, meta.prefix, meta.tick);
+  var tickerChgObj = held ? ROLL_CHG : fmtTickerChange(close, open, meta.grain, netChg, pctChg, meta.prefix, meta.tick);
   document.querySelectorAll('[data-sym="' + key + '"]').forEach(function(el) {
     var pe = el.querySelector('.t-price');
     var ce = el.querySelector('.t-chg');
@@ -1449,11 +1459,19 @@ function loadDailyBriefing() {
 
       var surpriseBanner = document.getElementById('daily-surprise-banner');
       var surpriseCount = (d.meta && d.meta.overnight_surprises_count) || 0;
+      /* a move the price run withheld (locked_changes[key].withheld, a contract roll) is never a surprise */
+      var lc = d.locked_changes || {}, heldN = 0;
+      var surprisesOk = (d.surprises || []).filter(function(s) {
+        var w = s && s.key && lc[s.key] && lc[s.key].withheld;
+        if (w) heldN++;
+        return !w;
+      });
+      surpriseCount = Math.max(0, surpriseCount - heldN);
       if (surpriseBanner) {
         if (surpriseCount > 0) {
           var surpriseNames = [];
-          if (d.surprises && d.surprises.length) {
-            d.surprises.forEach(function(s) {
+          if (surprisesOk.length) {
+            surprisesOk.forEach(function(s) {
               var arrow = s.direction === 'up' ? '\u25B2' : '\u25BC';
               surpriseNames.push(s.commodity + ' ' + arrow + Math.abs(s.pct_change).toFixed(1) + '%');
             });

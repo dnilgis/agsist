@@ -76,3 +76,66 @@ test("homepage strip on Fri Oct 16, 2026 shows Milk Production Oct 22 and Cattle
   assert.ok(cards.some((c) => /^Oct 23 Cattle on Feed 3:00 PM ET$/.test(c)), cards.join(" | "));
   assert.ok(cards.some((c) => /WASDE/.test(c)), "the next WASDE stays on the strip");
 });
+
+/* Nov 2, 2026 (Sig: the calendar a reader subscribed to brings them back):
+   every event in all three files ends with the line to /usda-calendar and the
+   Daily (utm_source=ics), and each file parses as RFC 5545. */
+import { TRAILER } from "../scripts/build_usda_ics.mjs";
+function unescapeText(v) { return v.replace(/\\n/gi, "\n").replace(/\\([,;\\])/g, "$1"); }
+function parseIcs(raw) {
+  assert.ok(raw.endsWith("\r\n"), "ends with CRLF");
+  assert.ok(!/[^\r]\n/.test(raw), "every line ends with CRLF");
+  for (const ln of raw.split("\r\n")) assert.ok(Buffer.byteLength(ln) <= 75, "folded at 75 octets: " + ln);
+  const lines = raw.replace(/\r\n[ \t]/g, "").split("\r\n").filter(Boolean);
+  assert.equal(lines[0], "BEGIN:VCALENDAR");
+  assert.equal(lines.at(-1), "END:VCALENDAR");
+  const events = [];
+  let cur = null;
+  for (const ln of lines) {
+    const i = ln.indexOf(":");
+    assert.ok(i > 0, "name:value line: " + ln);
+    const name = ln.slice(0, i), val = ln.slice(i + 1);
+    if (ln === "BEGIN:VEVENT") { assert.equal(cur, null, "no nested VEVENT"); cur = {}; continue; }
+    if (ln === "END:VEVENT") { assert.ok(cur); events.push(cur); cur = null; continue; }
+    if (cur) cur[name.split(";")[0]] = val;
+  }
+  assert.equal(cur, null, "every VEVENT closed");
+  return events;
+}
+test("every VEVENT in every .ics ends with the usda-calendar and Daily line, and each file parses", () => {
+  assert.match(TRAILER, /https:\/\/agsist\.com\/usda-calendar\b/);
+  assert.match(TRAILER, /https:\/\/agsist\.com\/daily\?utm_source=ics$/);
+  assert.ok(!/[—–]/.test(TRAILER), "no em or en dash");
+  for (const f of ["usda-calendar.ics", "usda-calendar-grain.ics", "usda-calendar-livestock.ics"]) {
+    const ev = parseIcs(readFileSync(ROOT + f, "utf8"));
+    assert.ok(ev.length >= 20, f + " has events");
+    const uids = new Set();
+    for (const e of ev) {
+      for (const k of ["UID", "DTSTAMP", "DTSTART", "SUMMARY", "DESCRIPTION"]) assert.ok(e[k], `${f} ${e.SUMMARY}: ${k}`);
+      assert.ok(!uids.has(e.UID), f + " unique UID " + e.UID);
+      uids.add(e.UID);
+      const d = unescapeText(e.DESCRIPTION);
+      assert.ok(d.endsWith("\n" + TRAILER), `${f} ${e.UID} ends with the line back`);
+      assert.ok(!/@[a-z0-9-]+\.[a-z]/i.test(d.replace(/https?:\/\/\S+/g, "")), "no address in a description");
+    }
+  }
+});
+
+/* Rest of 2026, read off NASS's 2026 Agricultural Statistics Board calendar
+   (references branch, bench-usda-calendar-1, fetched 2026-10-16) on Nov 2:
+   every release of the kinds the page lists, Nov 3 to Dec 31, is on the page
+   and in the .ics. Jan-Feb 2027 NASS dates are not in the repo yet (only the
+   usda.gov WASDE dates), so none are pinned or added here. */
+test("NASS releases Nov 3 to Dec 31, 2026 are all on the page and in the .ics", () => {
+  const want = [
+    ["2026-11-10", "Crop Production"], ["2026-11-20", "Cattle on Feed"], ["2026-11-20", "Milk Production"],
+    ["2026-11-24", "Cold Storage"], ["2026-12-10", "Crop Production"], ["2026-12-18", "Cattle on Feed"],
+    ["2026-12-22", "Milk Production"], ["2026-12-23", "Quarterly Hogs and Pigs"], ["2026-12-23", "Cold Storage"],
+  ];
+  const { reports } = readPage(CAL);
+  const flat = ICS.replace(/\r\n /g, "");
+  for (const [d, n] of want) {
+    assert.ok(reports.some((r) => r.date === d && r.name === n), `${n} ${d} on the page`);
+    assert.ok(flat.includes(`UID:${d}-${n.toLowerCase().replace(/[^a-z0-9]+/g, "-")}@agsist.com`), `${n} ${d} in the .ics`);
+  }
+});

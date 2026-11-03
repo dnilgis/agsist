@@ -18,6 +18,7 @@ compares the characters.
 import json
 import math
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -140,13 +141,48 @@ def new_crop_from(k, crop):
     return f"{y}-{ncm:02d}"
 
 
+# EARLIEST BID FIRST (Sig, 2026-11-02): storesell.js periodRank, the same
+# patterns as build_cash_bid_pages.period_rank (test/storesell.test.mjs runs
+# the same cases through all three). 0: spot or cash, the first half, the whole
+# month, or a label that does not say; 1: the last half, or a day range inside
+# one month starting on the 11th or later. LH / 2H / last or second half is a
+# word anywhere in the label; a day range is read raw ("16 Nov 2026 to 30 Nov
+# 2026") or printed ("Nov 16-30, 2026").
+_LAST_HALF_RE = re.compile(r"\b(?:lh|2h|last\s+half|second\s+half)\b", re.I)
+_DAYS_RE = re.compile(r"\b(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4}) to (\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})\b")
+_PRINTED_DAYS_RE = re.compile(r"\b([A-Za-z]{3})[a-z]* (\d{1,2})-(\d{1,2})\b")
+_MONS = ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
+
+
+def period_rank(r):
+    if not r or str(r.get("period") or "") == "spot":
+        return 0
+    lab = re.sub(r"\s*\(\d{4}-\d{2}\)\s*$", "", str(r.get("label") or ""))
+    lab = re.sub(r"\s+", " ", lab).strip()
+    if _LAST_HALF_RE.search(lab):
+        return 1
+    m = _DAYS_RE.search(lab)
+    if m and m.group(2).lower() == m.group(5).lower() and m.group(3) == m.group(6) and int(m.group(1)) >= 11:
+        return 1
+    m = _PRINTED_DAYS_RE.search(lab)
+    if m and m.group(1).lower() in _MONS and 11 <= int(m.group(2)) <= int(m.group(3)) <= 31:
+        return 1
+    return 0
+
+
 def build_periods(rows, crop):
-    """storesell.js buildPeriods: rows [{start, end, cash}] for one elevator and
-    crop. The nearest start is "now"; a later period starts after it ends and
-    before next year's crop. Same start month keeps the higher cash."""
+    """storesell.js buildPeriods: rows [{start, end, cash, label?, period?}] for
+    one elevator and crop. The nearest start is "now", and inside it only the
+    earliest tier present counts (period_rank: an LH row beside an FH row is
+    neither today's price nor a later month); a later period starts after it
+    ends and before next year's crop. Same start month keeps the higher cash."""
     by = {}
-    for r in rows or []:
-        if not r or not _ym(r.get("start")) or not _num(r.get("cash")) or r["cash"] <= 0:
+    ok = [r for r in rows or []
+          if r and _ym(r.get("start")) and _num(r.get("cash")) and r["cash"] > 0]
+    k0 = min((r["start"] for r in ok), default=None)
+    t0 = min((period_rank(r) for r in ok if r["start"] == k0), default=0)
+    for r in ok:
+        if r["start"] == k0 and period_rank(r) != t0:
             continue
         end = r["end"] if _ym(r.get("end")) and r["end"] >= r["start"] else r["start"]
         o = by.get(r["start"])
@@ -210,6 +246,13 @@ def _selftest():
     # Jan: .05-.105-.0732=-.128; Mar: .22-.175-.1219=-.077 -> Mar nets the most
     assert pick_period(m, d)["key"] == "2027-03"
     assert short_mon("2027-03") == "Mar '27" and months_apart("2026-10", "2027-03") == 5
+    # Nevada, IA (Nov 2 2026, real rows): FH Nov $4.17 (-30c) and LH Nov $4.22 (-25c) both file
+    # under Nov. "Now" is the FH bid; the LH bid is neither now nor a later month.
+    nv = build_periods([{"start": "2026-11", "end": "2026-11", "cash": 4.17, "label": "FH Nov 2026", "period": "2026-11"},
+                        {"start": "2026-11", "end": "2026-11", "cash": 4.22, "label": "LH Nov 2026", "period": "2026-11"},
+                        {"start": "2026-12", "end": "2026-12", "cash": 4.27, "label": "Dec 2026", "period": "2026-12"}], "corn")
+    assert nv["spot"]["cash"] == 4.17 and [p["key"] for p in nv["later"]] == ["2026-12"], nv
+    assert abs(nv["later"][0]["carry"] - 0.10) < 1e-9, nv
     print("storesell selftest ok")
 
 
@@ -220,11 +263,15 @@ if __name__ == "__main__":
         cases = json.loads(sys.stdin.read())
         out = []
         for c in cases:
+            if "ranks" in c:
+                out.append({"ranks": [period_rank(x) for x in c["ranks"]]})
+                continue
             inp = with_defaults(c.get("inputs"))
             if "rows" in c:
                 m = build_periods(c["rows"], c["crop"])
                 pk = pick_period(m, inp) if m else None
-                out.append({"later": [p["key"] for p in m["later"]] if m else None,
+                out.append({"spot": [m["spot"]["start"], m["spot"]["cash"]] if m else None,
+                            "later": [p["key"] for p in m["later"]] if m else None,
                             "newCrop": m["newCrop"] if m else None, "pick": pk["key"] if pk else None,
                             "note": cost_note(inp, None)})
                 continue

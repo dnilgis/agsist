@@ -674,7 +674,7 @@ def state_page(d, idx):
         {"@type": "Dataset", "name": "%s custom farm work rates, %d survey" % (name, yr), "description": "Average and range for each custom farm operation as published in the %s." % d["survey"],
          "url": url, "isAccessibleForFree": True, "temporalCoverage": str(yr), "spatialCoverage": {"@type": "Place", "name": name},
          "creator": {"@type": "Organization", "name": d["publisher"]}, "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/custom-rates/%s.json" % st.lower()},
-         "license": "https://agsist.com/terms"},
+         "license": "https://agsist.com/terms", "dateModified": STAMP},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
             {"@type": "ListItem", "position": 2, "name": "Custom rates", "item": "https://agsist.com/custom-rates"},
@@ -987,7 +987,7 @@ def build(src_dir=SRC):
                      "isAccessibleForFree": True, "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
                      "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": STAMP, "dateModified": STAMP, "inLanguage": "en-US"},
                     {"@type": "Dataset", "name": "Custom farm work rates by state", "description": "Average and range for custom farm operations as published by state surveys: " + ", ".join("%s %d" % (x["name"], x["year"]) for x in idx["states"]) + ".",
-                     "url": "https://agsist.com/custom-rates", "isAccessibleForFree": True, "license": "https://agsist.com/terms",
+                     "url": "https://agsist.com/custom-rates", "isAccessibleForFree": True, "license": "https://agsist.com/terms", "dateModified": STAMP,
                      "isBasedOn": [{"@type": "CreativeWork", "name": docs[x["st"]]["survey"], "url": x["url"]} for x in idx["states"]],
                      "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/custom-rates/index.json"}},
                     {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
