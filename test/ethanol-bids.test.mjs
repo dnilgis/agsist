@@ -79,8 +79,8 @@ test('the page formats only: quarter cents, signed basis, source and date in pla
   const html = E.render(fromFixtures(), Date.parse('2026-11-03T18:00:00Z'));
   assert.match(html, /USDA AMS, National Daily Ethanol Report, Nov 2, 2026/);
   assert.match(html, /USDA AMS, National Weekly Grain Co-Products Report, week of Oct 26, 2026/);
-  assert.match(html, /<td>Minnesota<\/td><td class="r">\$3\.67¾ to \$4\.07¾<\/td><td class="r">-80 to -40<\/td>/);
-  assert.match(html, /\$170\.65\/ton/);
+  assert.match(html, /<td>Minnesota<\/td><td class="r">\$3\.67\u00be to <span class="eth-nw">\$4\.07\u00be<\/span><\/td><td class="r"><span class="eth-nw">-80 to -40<\/span><\/td>/);
+  assert.match(html, /<td>Iowa<\/td><td class="r">\$170\.65<\/td>/);
   assert.doesNotMatch(html, /<a\s/i, 'sources named, never linked');
   assert.doesNotMatch(html, /—/);
   assert.doesNotMatch(html, /latest report AGSIST has read/, 'fresh report: no old-report note');

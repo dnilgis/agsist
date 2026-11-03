@@ -20,19 +20,18 @@
     return isNaN(d) ? esc(iso) : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
   }
   function ageDays(iso, now) { var d = Date.parse(iso + 'T12:00:00Z'); return isNaN(d) ? 0 : Math.floor((now - d) / 864e5); }
-  function money(p, unit) { return unit === 'cents/lb' ? p.toFixed(2) + '¢/lb' : '$' + p.toFixed(2) + '/ton'; }
+  function money(p, unit) { return unit === 'cents/lb' ? p.toFixed(2) + '\u00a2' : '$' + p.toFixed(2); }
 
   function cornHtml(c, now) {
     if (!c) return '';
     if (c.withheld) return '<p class="eth-note">Plant corn bids: not shown. ' + esc(c.withheld) + '</p>';
     var fut = esc(c.futures || ''), h = '';
     h += '<p class="eth-lead">What ethanol plants bid for corn, by state: ' + esc(c.terms || '') + '. Basis is in cents against ' + fut + ' futures.</p>';
-    h += '<div class="eth-wrap"><table class="eth-t"><thead><tr><th>State</th><th class="r">Bids, $/bu</th><th class="r">Basis vs ' + fut + '</th><th class="r">USDA average</th><th class="r">Year ago</th></tr></thead><tbody>';
+    h += '<div class="eth-wrap"><table class="eth-t"><thead><tr><th>State</th><th class="r">Bids, $/bu</th><th class="r">Basis vs ' + fut + '</th><th class="r">USDA average (year ago)</th></tr></thead><tbody>';
     c.rows.forEach(function (r) {
-      h += '<tr><td>' + esc(r.label) + '</td><td class="r">' + bid(r.bid_lo) + (r.bid_hi !== r.bid_lo ? ' to ' + bid(r.bid_hi) : '') + '</td>' +
-        '<td class="r">' + basis(r.basis_lo) + (r.basis_hi !== r.basis_lo ? ' to ' + basis(r.basis_hi) : '') + '</td>' +
-        '<td class="r">' + (r.avg == null ? 'not reported' : bid(r.avg)) + '</td>' +
-        '<td class="r">' + (r.avg_year_ago == null ? 'not reported' : bid(r.avg_year_ago)) + '</td></tr>';
+      h += '<tr><td>' + esc(r.label) + '</td><td class="r">' + bid(r.bid_lo) + (r.bid_hi !== r.bid_lo ? ' to <span class="eth-nw">' + bid(r.bid_hi) + '</span>' : '') + '</td>' +
+        '<td class="r"><span class="eth-nw">' + basis(r.basis_lo) + (r.basis_hi !== r.basis_lo ? ' to ' + basis(r.basis_hi) : '') + '</span></td>' +
+        '<td class="r">' + (r.avg == null ? 'not reported' : bid(r.avg)) + ' <span class="eth-nw">(' + (r.avg_year_ago == null ? 'not reported' : bid(r.avg_year_ago)) + ')</span></td></tr>';
     });
     h += '</tbody></table></div>';
     h += '<p class="eth-src">USDA AMS, ' + esc(c.report) + ', ' + day(c.report_date) + '. The report gives a range per state and names no plants.';
@@ -43,11 +42,19 @@
   function coHtml(co, now) {
     if (!co) return '';
     if (co.withheld) return '<p class="eth-note">Co-product prices: not shown. ' + esc(co.withheld) + '</p>';
-    var h = '<p class="eth-lead">What the plants sell back: distillers grains and corn oil, by area.</p>';
-    h += '<div class="eth-wrap"><table class="eth-t"><thead><tr><th>Product</th><th>Area</th><th class="r">Price</th><th class="r">Year ago</th></tr></thead><tbody>';
-    co.rows.forEach(function (r) {
-      h += '<tr><td>' + esc(r.name) + '</td><td>' + esc(r.area) + '</td><td class="r">' + money(r.price, r.unit) + '</td>' +
-        '<td class="r">' + (r.year_ago == null ? 'not reported' : money(r.year_ago, r.unit)) + '</td></tr>';
+    var h = '<p class="eth-lead">What the plants sell: distillers grains ($/ton) and corn oil (cents/lb), by area. Year ago in brackets.</p>';
+    /* one row per area, one column per product (layout only; the numbers are the file's) */
+    var cols = [['ddgs', 'Dried DDGS'], ['mwdg', 'Modified wet'], ['wdg', 'Wet'], ['corn_oil', 'Corn oil']], areas = [], cell = {};
+    co.rows.forEach(function (r) { if (areas.indexOf(r.area) < 0) areas.push(r.area); cell[r.area + '|' + r.product] = r; });
+    areas.sort();
+    cols = cols.filter(function (k) { return co.rows.some(function (r) { return r.product === k[0]; }); });
+    h += '<div class="eth-wrap"><table class="eth-t"><thead><tr><th>Area</th>' + cols.map(function (k) { return '<th class="r">' + k[1] + '</th>'; }).join('') + '</tr></thead><tbody>';
+    areas.forEach(function (a) {
+      h += '<tr><td>' + esc(a) + '</td>' + cols.map(function (k) {
+        var r = cell[a + '|' + k[0]];
+        if (!r) return '<td class="r eth-dim">no quote</td>';
+        return '<td class="r">' + money(r.price, r.unit) + (r.year_ago == null ? '' : ' <span class="eth-nw eth-dim">(' + money(r.year_ago, r.unit) + ')</span>') + '</td>';
+      }).join('') + '</tr>';
     });
     h += '</tbody></table></div>';
     h += '<p class="eth-src">USDA AMS, ' + esc(co.report) + ', week of ' + day(co.week_of) +

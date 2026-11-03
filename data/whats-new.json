@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-03-marseth",
+   "date": "2026-11-03",
+   "title": "Ethanol plants paying",
+   "line": "The cash bids page shows what ethanol plants bid for corn in each state, with basis, from USDA's daily report, plus distillers grains and corn oil prices.",
+   "link": "/cash-bids#eth-box"
+  },
+  {
    "id": "2026-11-02-feederindex",
    "date": "2026-11-02",
    "title": "Our own feeder steer index",
