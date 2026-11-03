@@ -69,6 +69,7 @@ from email.utils import formataddr, make_msgid
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
 
 try:
     from zoneinfo import ZoneInfo
@@ -252,7 +253,7 @@ def build(row, stage, to, base, prices, today):
 
 # ───────────────────────────── run ─────────────────────────────
 
-def run(src, dry, send, sig_to, now_ms=None, today=None):
+def run(src, dry, send, sig_to, now_ms=None, today=None, tally=None):
     """-> (exit code, log lines). Counts only in the log."""
     now_ms = now_ms if now_ms is not None else int(dt.datetime.now(dt.timezone.utc).timestamp() * 1000)
     today = today or dt.datetime.now(CHICAGO).date().isoformat()
@@ -273,6 +274,10 @@ def run(src, dry, send, sig_to, now_ms=None, today=None):
         orders = [o for o in od.get("orders") or [] if isinstance(o, dict)]
     except Exception:                                      # noqa: BLE001
         orders = None
+    if tally:
+        # what the worker should have started jobs for (cron_health: a worker-started job never started)
+        tally.extra["asks"] = len(rows)
+        tally.extra["orders"] = sum(1 for o in orders or [] if o.get("status") == "paid")
     cache = {}
 
     def buyer_of(key):
@@ -314,6 +319,8 @@ def run(src, dry, send, sig_to, now_ms=None, today=None):
             stage = "reminder"
         else:
             continue
+        if tally:
+            tally.waiting += 1
         if dry and age_h > DRY_FRESH_H:
             continue
         to = sig_to if dry else row["email"]
@@ -329,6 +336,8 @@ def run(src, dry, send, sig_to, now_ms=None, today=None):
             c["marked, send failed"] += 1
             continue
         c["to Sig" if dry else ("link sent" if stage == "now" else "reminder sent")] += 1
+        if tally and not dry:
+            tally.sent += 1
     log = ["Design asks: %d." % len(rows), "; ".join("%s: %d" % (k, v) for k, v in c.items()) + "."]
     return (1 if c["marked, send failed"] else 0), log
 
@@ -356,8 +365,9 @@ def main():
     if "--selftest" in sys.argv:
         return selftest()
     dry = env("DRY_RUN") == "1"
+    tally = delivery_line.start("rp-design", dry=dry)
     src = Sources(env("LIST_URL", ""), env("LIST_TOKEN", ""))
-    code, log = run(src, dry, smtp_send(log_safe.sender_addr()), env("SIG_TO", REPLY_TO))
+    code, log = run(src, dry, smtp_send(log_safe.sender_addr()), env("SIG_TO", REPLY_TO), tally=tally)
     for line in log:
         print(line)
     return code

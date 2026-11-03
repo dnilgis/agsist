@@ -195,6 +195,8 @@ test("browser: both pages show the regional line, a barn table on a tap, the cre
     for (const [page, sel] of [["cattle-auction-prices", "#cull-cows"], ["milk-prices", "#dp-cull-sec"]]) {
       for (const w of [390, 1280]) {
         const { p, errs } = await open(browser, srv, page, w);
+        // Nov 3, 2026: on /milk-prices the section sits in a closed fold; the reader taps its title first
+        if (page === "milk-prices") await p.click(sel + " > details.dp-fold > summary");
         await p.waitForSelector(sel + " .cc-line");
         const t = await p.textContent(sel);
         assert.match(t, /middle price of \$131\.38 per cwt at 3 barns/, page);

@@ -113,6 +113,7 @@ from email.utils import formataddr, make_msgid
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPLY_TO = "sig@agsist.com"
@@ -874,7 +875,7 @@ def gift_notes(src, refs):
     return out
 
 
-def run(src, dry, send, sig_to, test_emails):
+def run(src, dry, send, sig_to, test_emails, tally=None):
     """-> (exit code, log lines). Counts only in the log: never an address, a name or a design."""
     log = []
     try:
@@ -882,6 +883,8 @@ def run(src, dry, send, sig_to, test_emails):
     except Exception as e:                                 # noqa: BLE001
         return 0, ["Order records could not be read (%s); nothing sent." % type(e).__name__]
     orders = [o for o in d.get("orders") or [] if isinstance(o, dict)]
+    if tally:
+        tally.extra["orders"] = sum(1 for o in orders if o.get("status") == "paid")
     ac = send_alerts(src, orders, send, sig_to)
     log.append("Order alerts to Sig: %d sent, %d failed." % (ac["alerts"], ac["alert failed"]))
     if d.get("stripe") != "ok" and not any((o.get("paid") or {}).get("via") == "webhook" for o in orders):
@@ -894,6 +897,8 @@ def run(src, dry, send, sig_to, test_emails):
     log.append("Paid and not yet mailed: %d." % len(due))
     log.append("Approved digital files not yet sent: %d." % len(fdue))
     log.append("Paid gifts whose card has not gone yet: %d." % len(gdue))
+    if tally:
+        tally.waiting = len(due) + len(fdue) + len(gdue)
     try:
         notes = gift_notes(src, {o["ref"] for o in due} | {o["ref"] for o in fdue} | {o["ref"] for o in gdue})
     except Exception as e:                                 # noqa: BLE001
@@ -942,6 +947,8 @@ def run(src, dry, send, sig_to, test_emails):
                 continue
             counts["to Sig" if sig_only else "sent"] += 1
     log.append("; ".join("%s: %d" % (k, v) for k, v in counts.items()) + ".")
+    if tally:
+        tally.sent = counts["sent"] + fc["files sent"] + gc["cards sent"]
     return (1 if counts["marked, send failed"] or fc["files marked, send failed"] or gc["cards marked, send failed"] or ac["alert failed"] else 0), log
 
 
@@ -979,7 +986,8 @@ def main():
     tests = {x.strip().lower() for x in (env("SIG_TEST_EMAILS", "") or "").split(",") if x.strip()} | {sig_to.lower(), REPLY_TO}
     src = Sources(env("LIST_URL", ""), env("LIST_TOKEN", ""))
     fn, fa = env("FROM_NAME", "AGSIST"), log_safe.sender_addr()
-    code, log = run(src, dry, smtp_send(fn, fa), sig_to, tests)
+    tally = delivery_line.start("rp-buyer", dry=dry)
+    code, log = run(src, dry, smtp_send(fn, fa), sig_to, tests, tally=tally)
     for line in log:
         print(line)
     return code
