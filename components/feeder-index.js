@@ -395,7 +395,7 @@
       '<li>The range: we redraw the week&rsquo;s barns at random, with repeats, ' + v.draws + ' times and give the middle nine of ten results. A change from the week before shows only when both weeks pass and ' + v.minBarns + ' or more of the same barns sold both weeks; if its range takes in zero, it is called no clear change.</li>' +
       '<li>Weekly, not daily: each barn sells on its own day, so a daily figure would be a different set of barns each day, and some USDA reports come in days late.</li>' +
       '<li>The barns are the ones USDA reports on and we read, so states with more of them count for more. It is not every sale in the country.</li>' +
-      (v.liveVia ? '<li>Read: the week of ' + esc(v.week) + ' has ' + esc(v.liveVia.mars) + ' barns read through USDA&rsquo;s My Market News' +
+      (v.liveVia ? '<li>Read: the week of ' + esc(v.week) + ', '  + esc(v.liveVia.mars) + ' barns were read through USDA&rsquo;s My Market News' +
         (v.liveVia.pdf ? ' and ' + esc(v.liveVia.pdf) + ' from the barn&rsquo;s own USDA report, where My Market News did not have that week yet' : '') +
         '. A sale USDA put out twice (a first issue, then the final) counts once.</li>' : '') +
       (v.archive && v.archive.mars
