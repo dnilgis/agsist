@@ -107,7 +107,8 @@ test('the page: no hand-typed DMC, cost or pool figures, no Class IV futures pro
   // Only the Order 30 block (the real Sep 2025 mover) and the DMC margin line, baked from
   // data/dairy-dmc.json (FSA's Aug 2026 margin, $19.80 - $10.46 = $9.34; pinned to FSA's own
   // table in test/milk-dmc-margins.test.mjs), may hold 9.34; every other region is checked whole.
-  const typed = page.replace(/<!--SEED:(milko30|milkdmcmargin)-->[\s\S]*?<!--\/SEED-->/g, '');
+  // Nov 3, 2026: the first card (milknow) bakes the same FSA margin and feed cost from data/dairy-dmc.json
+  const typed = page.replace(/<!--SEED:(milko30|milkdmcmargin|milknow)-->[\s\S]*?<!--\/SEED-->/g, '');
   for (const bad of ['9.34', '10.46', '57%', '21%', '42,966', '1,736', '$1 to $2', '&minus;$1 to $2', 'ERS avg herd',
     'Class III and IV futures', 'enrollment already closed']) {
     assert.ok(!typed.includes(bad), bad);
@@ -115,7 +116,7 @@ test('the page: no hand-typed DMC, cost or pool figures, no Class IV futures pro
   for (const bad of ['57%', '21%', '42,966', '1,736', 'ERS avg herd', 'Class III and IV futures', 'enrollment already closed']) {
     assert.ok(!page.includes(bad), bad);
   }
-  for (const tag of ['milkarea', 'milkdmcpaid', 'milkdmcmargin', 'milkcostfaq', 'milkdmccard']) {
+  for (const tag of ['milkarea', 'milkdmcpaid', 'milkdmcmargin', 'milkcostfaq', 'milkdmccard', 'milknowtop', 'milknow']) {
     assert.match(page, new RegExp(`<!--SEED:${tag}-->[\\s\\S]+?<!--/SEED-->`), tag);
   }
   assert.match(page, /<script src="\/components\/milk-tools\.js\?v=\d+" defer><\/script>/);

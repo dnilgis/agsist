@@ -3180,6 +3180,232 @@ MILK_JS_SEED = re.compile(r"var SEED=\{[^\n]*\};")
 MILK_SEC = re.compile(r'(<section class="dp-sec" aria-labelledby="dp-mkt" id="dp-mkt-sec" data-seed-month=")([^"]*)(")')
 
 
+# --- /milk-prices first screen: "This month for your milk" (Sig, Nov 3, 2026) ---
+# One card a dairy farmer reads first: the announced Class III and IV and the
+# all-milk price with their change, what a $1/cwt move means on his herd (stated
+# assumption, editable on the page), the DMC margin and whether DMC paid, the
+# next margin release and the signup deadline, the Class III futures months as a
+# DMC margin range, and one "what this means" line set by rules on those numbers.
+# Every figure comes from the files the rest of the page reads; nothing is typed.
+# The range is two stated cases, not a forecast: the milk side held at the DMC
+# month's all-milk price, or moved cent for cent with Class III futures from that
+# month's announced Class III; feed held at that month's DMC feed cost.
+MILK_PRICES = "data/prices.json"
+MILK_HIST_DATA = "data/dairy-history.json"
+MILK_NOW_COWS, MILK_NOW_LB = 100, 2000          # the page's default herd: 100 cows, 2,000 lb a cow a month
+MILK_FUT_MAX_AGE = 3                            # days, the futures table's own rule
+# USDA NASS Agricultural Prices release days (NASS 2026 release calendar). FSA
+# figures each month's DMC margin from the report out at the end of the next
+# month. A month past this list gets no date: unknown, so not said.
+MILK_AGPRICES = ("2026-07-31", "2026-08-31", "2026-09-29", "2026-10-30", "2026-11-30", "2026-12-30")
+# all fifty, the same names as components/milk-tools.js (NASS writes the state's full name)
+MILK_STATES = ("AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|"
+               "FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|"
+               "LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|"
+               "MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|"
+               "NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|"
+               "RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|"
+               "VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming")
+MILK_FUT_KEY = re.compile(r"^milk-([a-z]{3})(\d{2})$")
+
+
+def _money0(v):
+    r = int(round(abs(v)))
+    return ("+" if v > 0 and r else MINUS if v < 0 and r else "") + "$" + f"{r:,}"
+
+
+def milk_futures_rows(prices, today, after_idx):
+    """([{idx, close, date}], why) Class III settles from the price file: contract
+    months from this month on and after the newest announced month, at most six,
+    each its newest CME settle (milk_settles rules). Empty with a reason when the
+    file is missing or older than the futures table allows."""
+    try:
+        import milk_settles
+    except ImportError:
+        return [], "no settle reader"
+    if not isinstance(prices, dict) or not isinstance(prices.get("quotes"), dict):
+        return [], "the price file could not be read"
+    f = milk_settles._utc(prices.get("fetched") or "")
+    t = datetime.strptime(today, "%Y-%m-%d").date()
+    if f is None:
+        return [], "the price file has no fetch time"
+    age = (t - f.date()).days
+    if age > MILK_FUT_MAX_AGE:
+        return [], f"the newest price file is {age} days old"
+    bad = set(prices.get("stale_keys") or []) | set(prices.get("retired_keys") or [])
+    now_idx = t.year * 12 + t.month - 1
+    low = [m.lower() for m in MON3]
+    out = []
+    for k, q in prices["quotes"].items():
+        m = MILK_FUT_KEY.match(k)
+        if not m or k in bad or m.group(1) not in low or not isinstance(q, dict):
+            continue
+        idx = (2000 + int(m.group(2))) * 12 + low.index(m.group(1))
+        if idx < now_idx or (after_idx is not None and idx <= after_idx):
+            continue
+        reads = milk_settles.session_reads({"quotes": {"milk": q}})
+        if not reads:
+            continue
+        d, v = max(reads)
+        if _pos(v):
+            out.append({"idx": idx, "close": round(v, 2), "date": d})
+    out.sort(key=lambda r: r["idx"])
+    return out[:6], ("" if out else "no current Class III contracts in the price file")
+
+
+def milk_next_margin(k_idx, today):
+    """The sentence on when the next DMC margin comes, or '' when the date is not known."""
+    t = datetime.strptime(today, "%Y-%m-%d").date()
+    days = [datetime.strptime(s, "%Y-%m-%d").date() for s in MILK_AGPRICES]
+
+    def rel(i):        # the report that carries month i: the one out in month i + 1
+        y, m = (i + 1) // 12, (i + 1) % 12 + 1
+        return next((x for x in days if x.year == y and x.month == m), None)
+    nxt, parts = k_idx + 1, []
+    r = rel(nxt)
+    if r is None:
+        return ""
+    if r <= t:
+        parts.append(f"{MONL[nxt % 12]}&rsquo;s is due from USDA&rsquo;s {_dmc_md(r, False)} Agricultural Prices report "
+                     "and is not in the copy of FSA&rsquo;s page read here yet")
+        nxt += 1
+        r = rel(nxt)
+    if r is not None and r > t:
+        parts.append(f"{MONL[nxt % 12]}&rsquo;s follows the {DMC_WKDAY[r.weekday()][:3]}, {_dmc_md(r)} report")
+    return ("Next margin: " + "; ".join(parts) + ".") if parts else ""
+
+
+def milk_now_seed(d, dmc, fb, prices, hist, today):
+    """(top, rest): the first card's price tiles, and its herd, DMC and futures lines below the area
+    picker; ('', '') when the class prices cannot be shown."""
+    cs = milk_class_state(d, today)
+    if not cs or cs[1]:
+        return ('<p class="dp-now-src">This month&rsquo;s class prices are not shown: the newest held here are older '
+                'than last month&rsquo;s announcement. What is held is in the folds below, each with its month.</p>', "")
+    idx = cs[0]
+    mon = MON3[idx % 12]
+    tiles, moves = [], []
+
+    def tile(name, v, p, meta):
+        if not _pos(v):
+            return
+        chg = ""
+        if _pos(p):
+            c = _jr(v - p, 2)
+            chg = f'<span class="dp-now-c {_cl(c)}">{_arr(c)} {_sg(c, 2)}</span>'
+        tiles.append(f'<p class="dp-now-t"><span class="dp-now-k">{name}</span>'
+                     f'<span class="dp-now-v">{_cwt(v)}</span>{chg}<span class="dp-now-m">{meta}</span></p>')
+    tile("Class III", d.get("class3"), d.get("class3_prev"), f"{mon} · announced")
+    tile("Class IV", d.get("class4"), d.get("class4_prev"), f"{mon} · announced")
+    a = d.get("all_milk") or {}
+    am = milk_allmilk_ok(a, today) if _pos(a.get("value")) else None
+    if am and not am[1]:
+        tile("All-milk", a.get("value"), a.get("prev_month"), f"{MON3[am[0] % 12]} · NASS")
+        if _pos(a.get("prev_month")):
+            moves.append((f"{MONL[am[0] % 12]}&rsquo;s all-milk move", _jr(a["value"] - a["prev_month"], 2)))
+    if _pos(d.get("class3")) and _pos(d.get("class3_prev")):
+        moves.append(("Class III&rsquo;s move", _jr(d["class3"] - d["class3_prev"], 2)))
+    src = (f'Class prices: USDA AMS, {_ilong(idx)}. All-milk: USDA NASS Agricultural Prices, before hauling.'
+           if am and not am[1] else f'Class prices: USDA AMS, {_ilong(idx)}.')
+    per = MILK_NOW_COWS * MILK_NOW_LB / 100
+    mv = "".join(f' {lab} <span class="dp-nw">({_sg(c, 2)})</span> is <b data-c="{c}">{_money0(c * per)}</b>.' for lab, c in moves)
+    herd = (f'<p class="dp-now-herd" id="dp-now-herd">On <input id="dp-now-cows" type="number" inputmode="numeric" min="1" max="50000" '
+            f'value="{MILK_NOW_COWS}" aria-label="Cows milking"> cows at <input id="dp-now-lb" type="number" '
+            f'inputmode="numeric" min="500" max="4000" step="50" value="{MILK_NOW_LB}" aria-label="Pounds of milk a cow a month">'
+            f' lb a cow a month, each $1/cwt is <b id="dp-now-per">${int(per):,}</b> a month.{mv}</p>')
+    # DMC: FSA's newest checked margin
+    rows, _ = milk_dmc_rows(dmc, d)
+    dmc_html, mean, k = "", [], None
+    pr = (dmc or {}).get("premiums") if isinstance((dmc or {}).get("premiums"), dict) else {}
+    t1 = (pr.get("tier1") or {}).get("9.50") if isinstance(pr.get("tier1"), dict) else None
+    if rows:
+        k = max(rows)
+        r = dmc["margins"][k]
+        ki = _mkey(k)
+        mg = r["margin"]
+        pay95, pay8 = max(0.0, _jr(9.5 - mg, 2)), max(0.0, _jr(8.0 - mg, 2))
+        paid = (f'At $9.50 coverage that paid <b>{_cwt(pay95)}/cwt</b> of covered milk; at $8.00, '
+                + (f'<b>{_cwt(pay8)}/cwt</b>.' if pay8 > 0 else 'nothing.') if pay95 > 0
+                else 'DMC paid nothing that month at any coverage level: the margin was above $9.50.')
+        prem = (f' Tier 1 premium at $9.50: {_cwt(t1)}/cwt (FSA fact sheet, {_e(pr.get("as_of") or "")}).'
+                if _pos(t1) and pr.get("as_of") else "")
+        dmc_html = (f'<p class="dp-now-p"><strong>DMC margin, {_ilong(ki)}: {_cwt(mg)}/cwt</strong> '
+                    f'({_cwt(r["all_milk"])} all-milk minus {_cwt(r["feed"])} feed, USDA FSA). {paid}{prem}</p>')
+        if pay95 > 0:
+            mean.append(f"DMC paid {_cwt(pay95)}/cwt at $9.50 coverage for {MONL[ki % 12]}"
+                        + (f", against a {_cwt(t1)} tier 1 premium" if _pos(t1) else "") + ".")
+        else:
+            mean.append(f"DMC paid nothing for {MONL[ki % 12]}: the margin, {_cwt(mg)}, was above $9.50.")
+        nm = milk_next_margin(ki, today)
+    else:
+        dmc_html = '<p class="dp-now-p"><strong>DMC margin: not shown.</strong> FSA&rsquo;s newest margin is not held here in a form that checks out.</p>'
+        nm = ""
+    st = milk_dmc_state(fb, today)
+    sign = ""
+    if st:
+        attrs = (f' data-open="{st["open"].isoformat()}" data-close="{st["close"].isoformat()}"'
+                 f' data-year="{st["year"]}"')
+        sign = f'<span id="dp-now-signup"{attrs}>{milk_dmc_words(st)}</span>'
+        if st["phase"] == "open":
+            c = st["close"]
+            mean.append(f"{st['year']} signup closes {DMC_WKDAY[c.weekday()][:3]}, {_dmc_md(c, False)}.")
+    nxt = " ".join(x for x in (sign, nm) if x)
+    nxt_html = f'<p class="dp-now-p dp-now-dim">{nxt}</p>' if nxt else ""
+    # futures months as a DMC margin range
+    fut, why = milk_futures_rows(prices, today, idx)
+    hm = ((hist or {}).get("months") or {}) if isinstance(hist, dict) else {}
+    base = None
+    if k:
+        b = hm.get(k) if isinstance(hm.get(k), dict) else {}
+        base = b.get("class3") if _pos(b.get("class3")) else (d.get("class3") if d.get("class_month_key") == k else None)
+    if fut and k and _pos(base):
+        r = dmc["margins"][k]
+        trs, lo_all, hi_all = [], [], []
+        for f in fut:
+            moved = _jr(r["margin"] + f["close"] - base, 2)
+            lo, hi = min(r["margin"], moved), max(r["margin"], moved)
+            lo_all.append(lo)
+            hi_all.append(hi)
+            trs.append(f'<tr data-idx="{f["idx"]}"><th scope="row">{_ishort(f["idx"])}</th>'
+                       f'<td class="num" data-v="{f["close"]}">{_cwt(f["close"])}</td>'
+                       f'<td class="num">{_cwt(lo)} to {_cwt(hi)}</td></tr>')
+        dates = sorted({f["date"] for f in fut})
+        asof = (f"settles from {_dmc_md(_dmc_date(dates[-1]))}" if len(dates) == 1
+                else f"newest settles, {_dmc_md(_dmc_date(dates[0]), False)} to {_dmc_md(_dmc_date(dates[-1]))}")
+        ki = _mkey(k)
+        fut_html = (
+            '<h3 class="dp-now-sub">The next months at futures</h3>'
+            '<table class="dp-now-tbl"><caption class="dp-sr">Class III futures and the DMC margin range at them, dollars per cwt</caption>'
+            '<thead><tr><th scope="col">Month</th><th scope="col" class="num">Class III futures</th>'
+            '<th scope="col" class="num">DMC margin range</th></tr></thead><tbody>' + "".join(trs) + '</tbody></table>'
+            f'<p class="dp-now-note"><b>A range, not a forecast.</b> One end holds {MONL[ki % 12]}&rsquo;s all-milk price, '
+            f'{_cwt(r["all_milk"])}; the other moves it cent for cent with Class III futures from {MONL[ki % 12]}&rsquo;s '
+            f'announced {_cwt(base)}. Feed held at {MONL[ki % 12]}&rsquo;s DMC feed cost, {_cwt(r["feed"])}. '
+            f'CME Class III, {asof} (Yahoo Finance). Class IV futures are not in the price file read here.</p>')
+        lo, hi = min(lo_all), max(hi_all)
+        span = f"{_ishort(fut[0]['idx'])} to {_ishort(fut[-1]['idx'])}" if len(fut) > 1 else _ishort(fut[0]["idx"])
+        if hi < 9.5:
+            mean.insert(1, f"At futures, {span} stays under $9.50 in both cases ({_cwt(lo)} to {_cwt(hi)}).")
+        elif lo >= 9.5:
+            mean.insert(1, f"At futures, {span} stays at or above $9.50 in both cases ({_cwt(lo)} to {_cwt(hi)}).")
+        else:
+            mean.insert(1, f"At futures, {span} runs {_cwt(lo)} to {_cwt(hi)}, across the $9.50 line.")
+    else:
+        w = why or ("the DMC month&rsquo;s announced Class III is not held" if fut else "no DMC month held")
+        fut_html = f'<p class="dp-now-note">The next months at futures: not shown ({w}).</p>'
+    mean_html = (f'<p class="dp-now-mean"><strong>What this means:</strong> {" ".join(mean)}</p>' if mean else "")
+    # the states NASS prices this month, for the area card's before-paint layout: a state with no AMS mailbox
+    # area shows its own all-milk price (Sig, Nov 3), and the bars it lays out must be the ones that fill
+    ams = d.get("all_milk_states") if isinstance(d.get("all_milk_states"), dict) else {}
+    amk = milk_allmilk_ok(ams, today) if isinstance(ams.get("rows"), list) else None
+    code = {s[3:]: s[:2] for s in MILK_STATES.split("|")}
+    have = sorted(code[r["state"]] for r in (ams.get("rows") or [])
+                  if isinstance(r, dict) and r.get("state") in code and _pos(r.get("value"))) if amk and not amk[1] else []
+    amattr = (f' data-am-month="{_ilong(amk[0])}" data-am-states="{" ".join(have)}"' if have else "")
+    return (f'<div class="dp-now-tiles">{"".join(tiles)}</div><p class="dp-now-src" id="dp-now-src"{amattr}>{src}</p>',
+            f'{herd}{mean_html}<h3 class="dp-now-sub">Dairy Margin Coverage</h3>{dmc_html}{nxt_html}{fut_html}')
+
+
 def seed_milk(today):
     d = _load_json(MILK_DATA)
     if not isinstance(d, dict):
@@ -3196,6 +3422,8 @@ def seed_milk(today):
     seeds["milkherds"] = milk_herds_seed(_load_json(MILK_HERDS_DATA))
     seeds["milkmiss"] = milk_miss_seed(_load_json(MILK_MISS_DATA), today)
     seeds["milko30"] = milk_o30_seed(_load_json(MILK_O30_DATA), d, today)
+    top, now = milk_now_seed(d, dmc, _load_json(MILK_FB_DATA), _load_json(MILK_PRICES), _load_json(MILK_HIST_DATA), today)
+    seeds["milknowtop"], seeds["milknow"] = top, now
     area = milk_area_seed(_load_json(MILK_MB_DATA), today)
     if area:
         seeds["milkarea"] = area

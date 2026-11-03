@@ -69,7 +69,7 @@ FRONT_OPTIONAL = {
  "oats":   ["oats-sep26","oats-dec26","oats-mar27","oats-may27"],
  "meal":   ["meal-aug26","meal-sep26","meal-oct26","meal-dec26","meal-jan27","meal-mar27"],
  "soyoil": ["soyoil-aug26","soyoil-sep26","soyoil-oct26","soyoil-dec26","soyoil-jan27","soyoil-mar27"],
- "milk":   ["milk-aug26","milk-sep26","milk-oct26","milk-nov26","milk-dec26","milk-jan27"],
+ "milk":   ["milk-aug26","milk-sep26","milk-oct26","milk-nov26","milk-dec26","milk-jan27","milk-feb27","milk-mar27","milk-apr27"],
 }
 ALL_FRONT = {**FRONT, **FRONT_OPTIONAL}
 _MON={'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12}

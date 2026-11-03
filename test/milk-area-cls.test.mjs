@@ -21,6 +21,17 @@ const OPTIONS = [...page.matchAll(/<option value="([^"]*)">/g)].map((m) => m[1])
   .filter((v, i, a) => a.indexOf(v) === i && (v === '' || /^[A-Z]/.test(v)));
 const AREAS = [...new Set(Object.values(M.BY_STATE).concat(...Object.values(M.SPLIT)))];
 
+/* Nov 3, 2026 (Sig: "show Idaho all-milk in the card"): a state with no AMS mailbox area shows its own NASS
+   all-milk price. Frozen: the day, the month the page bakes and the NASS rows (never the live files). */
+const NOW = Date.UTC(2026, 10, 3, 15);
+class FDate extends Date { constructor(...a) { if (a.length) super(...a); else super(NOW); } static now() { return NOW; } }
+const AM_STATES = 'AZ CA CO FL GA IA ID IL IN KS MI MN NM NY OH OR PA SD TX UT VA VT WA WI';
+const FIX_D = { all_milk_states: { month: 'September 2026', month_key: '2026-09', rows: AM_STATES.split(' ').map((s) => (
+  { state: { AZ: 'Arizona', CA: 'California', CO: 'Colorado', FL: 'Florida', GA: 'Georgia', IA: 'Iowa', ID: 'Idaho', IL: 'Illinois',
+    IN: 'Indiana', KS: 'Kansas', MI: 'Michigan', MN: 'Minnesota', NM: 'New Mexico', NY: 'New York', OH: 'Ohio', OR: 'Oregon',
+    PA: 'Pennsylvania', SD: 'South Dakota', TX: 'Texas', UT: 'Utah', VA: 'Virginia', VT: 'Vermont', WA: 'Washington', WI: 'Wisconsin' }[s],
+  value: s === 'ID' ? 19.6 : 19.0, prev_month: s === 'ID' ? 19.1 : 19.2, year_ago: s === 'ID' ? 20.0 : 20.1 })) } };
+
 /* run the before-paint script against a fake card and storage; returns what it laid out */
 function early(store) {
   const kids = [], attrs = {}, cls = new Set();
@@ -33,17 +44,19 @@ function early(store) {
   };
   const sel = { options: OPTIONS.map((value) => ({ value })), value: '' };
   const els = { 'dp-area-out': out, 'dp-area-sel': sel, 'dp-area': { classList: { add: (c) => cls.add(c), remove: (c) => cls.delete(c) } },
-    'dp-area-sum': { textContent: 'Mailbox price, June 2026, against Jun 2025: fell most in Wisconsin' } };
+    'dp-area-sum': { textContent: 'Mailbox price, June 2026, against Jun 2025: fell most in Wisconsin' },
+    'dp-now-src': { getAttribute: (k) => ({ 'data-am-month': 'September 2026', 'data-am-states': AM_STATES })[k] ?? null } };
   const document = {
     getElementById: (id) => els[id] || null,
     createElement: () => { const n = { attrs: {}, setAttribute(k, v) { n.attrs[k] = v; } }; return n; },
   };
   const localStorage = { getItem: (k) => (k in store ? store[k] : null) };
-  vm.runInNewContext(EARLY[1], { document, localStorage, setTimeout: () => 0, Date, JSON, String });
+  vm.runInNewContext(EARLY[1], { document, localStorage, setTimeout: () => 0, Date: FDate, JSON, String });
   const sk = kids.find((k) => k.html);
   const ask = kids.find((k) => k.attrs && 'data-early' in k.attrs);
   return {
-    area: sk ? /data-area="([^"]*)"/.exec(sk.html)[1] : '', ask: ask ? ask.innerHTML : '', html: sk ? sk.html : '',
+    area: sk && /data-area="([^"]*)"/.test(sk.html) ? /data-area="([^"]*)"/.exec(sk.html)[1] : '',
+    state: sk && /data-state="([^"]*)"/.test(sk.html) ? /data-state="([^"]*)"/.exec(sk.html)[1] : '', ask: ask ? ask.innerHTML : '', html: sk ? sk.html : '',
     waiting: cls.has('dp-area-wait'), busy: attrs['aria-busy'] === 'true', sel: sel.value,
   };
 }
@@ -55,6 +68,7 @@ function final(store) {
   if (saved && OPTIONS.includes(saved) && saved) return { area: saved, ask: '' };
   const a = M.areaForState(st);
   if (a && a.area) return { area: a.area, ask: '' };
+  if (a && a.none && M.stateHtml(FIX_D, st, new FDate())) return { area: '', state: st, ask: '' };
   return { area: '', ask: a ? M.askHtml(st, a).replace(/^<p class="dp-area-sum">|<\/p>$/g, '') : '' };
 }
 
@@ -88,7 +102,7 @@ test('the before-paint script is on the page, after the card, outside the seed',
 
 test('it lays out what milk-tools.js shows: every state, every ZIP prefix, a saved area, nothing saved', () => {
   const cases = [{}, { 'agsist-wx-loc': 'not json' }, { 'agsist-wx-loc': '{"state":"ZZ"}' }, { 'agsist-milk-area': 'Atlantis' }];
-  for (const st of Object.keys(M.BY_STATE).concat(Object.keys(M.SPLIT), ['MT', 'ND', 'CO', 'DC', 'HI'])) cases.push({ 'agsist-wx-loc': JSON.stringify({ state: st }) });
+  for (const st of Object.keys(M.BY_STATE).concat(Object.keys(M.SPLIT), ['MT', 'ND', 'CO', 'DC', 'HI', 'ID', 'UT', 'AZ', 'SD'])) cases.push({ 'agsist-wx-loc': JSON.stringify({ state: st }) });
   const z3 = /var Z3 = '([^']+)'/.exec(fs.readFileSync(join(ROOT, 'components/milk-tools.js'), 'utf8'))[1];
   for (let i = 0; i < z3.length; i += 5) {
     const zip = String(+z3.substr(i, 3) + 0).padStart(3, '0') + '01';
@@ -100,10 +114,32 @@ test('it lays out what milk-tools.js shows: every state, every ZIP prefix, a sav
     const e = early(c), f = final(c), k = JSON.stringify(c);
     assert.equal(e.area, f.area, `${k}: the same area`);
     assert.equal(e.ask, f.ask, `${k}: the same ask, word for word`);
-    assert.equal(e.waiting, !!f.area, `${k}: bars only when an area will fill`);
-    assert.equal(e.busy, !!f.area, k);
+    assert.equal(e.state, f.state || '', `${k}: the same state card`);
+    assert.equal(e.waiting, !!(f.area || f.state), `${k}: bars only when an area or a state card will fill`);
+    assert.equal(e.busy, !!(f.area || f.state), k);
     if (f.area) assert.equal(e.sel, f.area, `${k}: the picker shows the area at once`);
   }
+});
+
+test('a state with no mailbox area shows its own all-milk price; a state with an area does not', () => {
+  const now = new FDate();
+  const id = M.stateHtml(FIX_D, 'ID', now);
+  assert.match(id, /^<p class="dp-area-name">Idaho <span>all-milk price, September 2026<\/span><\/p><p class="dp-area-big">\$19\.60<span>\/cwt<\/span><\/p>/);
+  assert.match(id, /▲ \+\$0\.50 vs Aug<\/span> &middot; <span class="dp-neg">▼ −\$0\.40 vs Sep 2025/);
+  assert.match(id, /No USDA mailbox area for Idaho/);
+  assert.match(id, /Source: USDA NASS, Agricultural Prices, September 2026\.<\/p>$/);
+  assert.doesNotMatch(id, /<a /, 'the source in plain text, no link');
+  assert.equal(M.stateHtml(FIX_D, 'WI', now), '', 'Wisconsin has its own mailbox area: the area card, not this');
+  assert.equal(M.stateHtml(FIX_D, 'PA', now), '', 'a split state is asked, not guessed');
+  assert.equal(M.stateHtml(FIX_D, 'MT', now), '', 'no NASS row: the ask stays');
+  assert.equal(M.stateHtml(FIX_D, 'ID', new Date(Date.UTC(2027, 1, 3, 15))), '', 'a month NASS has moved past is not shown');
+  // the bars the page lays out are these five lines, in the same words
+  const e = early({ 'agsist-wx-loc': JSON.stringify({ state: 'ID' }) });
+  assert.equal(e.state, 'ID');
+  const lines = (h) => [...h.matchAll(/<p class="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(lines(e.html), lines(id));
+  assert.ok(e.html.includes('No USDA mailbox area for Idaho, so this is the state&rsquo;s all-milk price'), 'same words as the card');
+  assert.match(early({ 'agsist-wx-loc': JSON.stringify({ state: 'WI' }) }).html, /data-area="Wisconsin"/);
 });
 
 test('the bars carry no number a reader could take for a price', () => {
@@ -157,6 +193,7 @@ test('Your area fills without moving anything, at 390 and 1280, light and dark, 
     ['ZIP only', { agsist_user_zip: '55401' }, 'Minnesota'],
     ['split state', { 'agsist-wx-loc': JSON.stringify({ state: 'PA' }) }, ''],
     ['unreported state', { 'agsist-wx-loc': JSON.stringify({ state: 'MT' }) }, ''],
+    ['state card', { 'agsist-wx-loc': JSON.stringify({ state: 'ID' }) }, ''],
     ['no saved place', {}, ''],
   ];
   try {
@@ -187,7 +224,9 @@ test('Your area fills without moving anything, at 390 and 1280, light and dark, 
       await pg.goto(`http://127.0.0.1:${port}/milk-prices`, { waitUntil: 'load' });
       const tag = `${w} ${theme} ${name}`;
       if (area) assert.equal(await pg.locator('#dp-area-sel').inputValue(), area, `${tag}: the picker shows the area before the numbers`);
-      if (area) await pg.waitForFunction(() => document.querySelector('#dp-area-out > .dp-area-big'), null, { timeout: 20000 });
+      // Idaho's card shows when the served files hold a current Idaho row (computed from them, never a literal)
+      const idCard = name === 'state card' && !!M.stateHtml(JSON.parse(fs.readFileSync(join(ROOT, 'data/dairy-data.json'), 'utf8')), 'ID', new Date());
+      if (area || idCard) await pg.waitForFunction(() => document.querySelector('#dp-area-out > .dp-area-big'), null, { timeout: 20000 });
       else await pg.waitForFunction(() => window.agsistMilk, null, { timeout: 20000 });
       await pg.waitForTimeout(400);
       const r = await pg.evaluate(() => ({ cls: window.__cls, late: window.__late, t0: window.__t0, shifts: window.__shifts, skel: !!document.querySelector('.dp-area-skel'),
@@ -203,6 +242,7 @@ test('Your area fills without moving anything, at 390 and 1280, light and dark, 
       assert.equal(r.busy, null, tag);
       assert.ok(r.sw <= w, `${tag}: no sideways scroll (${r.sw})`);
       if (area) assert.match(r.text, new RegExp(`^${area} mailbox price, \\w+ \\d{4}`), `${tag}: the area's own price`);
+      else if (idCard) assert.match(r.text, /^Idaho all-milk price, \w+ \d{4}[\s\S]*No USDA mailbox area for Idaho/, `${tag}: Idaho's own price`);
       else assert.match(r.text, /Pick your area for its own price first/, `${tag}: the summary stays`);
       if (name === 'split state') assert.equal((r.text.match(/is split between AMS mailbox areas/g) || []).length, 1, `${tag}: the ask once`);
       if (name === 'unreported state') assert.equal((r.text.match(/does not report a mailbox price for Montana/g) || []).length, 1, `${tag}: the ask once`);
