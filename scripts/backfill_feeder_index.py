@@ -355,7 +355,7 @@ def mars_fetch(d0, d1, out=MARS_OUT, fetch_=None, log=PFA.flush_log, root=FCA.RO
     apart. Saves rows/<slug>.json (feeder rows as MARS sent them, the fields read),
     sales/<slug>.json and manifest.json. Needs MARS_API_KEY."""
     auth = PFA.mars_auth()
-    if not auth:
+    if not auth and fetch_ is None:     # a stand-in fetcher (tests) needs no key
         log("no MARS_API_KEY: nothing asked")
         return None
     fetch_ = fetch_ or Fetcher(min_gap=1.5, retries=2, timeout=180, headers=auth, ok=(200, 204, 404))

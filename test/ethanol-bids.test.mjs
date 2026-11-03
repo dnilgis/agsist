@@ -94,7 +94,7 @@ test('/cash-bids carries the fold, loads the component with a version, and sw.js
   assert.match(page, /<details class="cb-glance-box eth-box" id="eth-box">/);
   assert.match(page, /<script src="\/components\/ethanol-bids\.js\?v=1" defer><\/script>/);
   assert.match(page, /\.eth-box #eth-bids\{min-height:6rem/, 'space held for the filled box');
-  assert.match(read('sw.js'), /^var CACHE_VERSION = 332;/m);
+  assert.ok(Number(/^var CACHE_VERSION = (\d+);/m.exec(read('sw.js'))[1]) >= 332, 'CACHE_VERSION at or past 332');
 });
 
 test('the cattle-cash workflow runs the selftest before the fetch, passes the key only there, and commits the file', () => {

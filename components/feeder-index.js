@@ -165,6 +165,9 @@
       // lacked, from an Internet Archive copy (via.archive; a file without via is archive copies only)
       mars: past.some(function (x) { return x.via && x.via.mars > 0; }),
       iaWeeks: past.filter(function (x) { return x.via ? x.via.archive > 0 : x.barns > 0; }).length } : null;
+    // how this week's barns were read (Nov 3 2026): through USDA My Market News (via.mars) or, for a
+    // barn whose week My Market News did not have yet, from the barn's own USDA report file (via.pdf)
+    out.liveVia = w.via && (w.via.mars > 0) ? { mars: fxInt(w.via.mars), pdf: w.via.pdf > 0 ? fxInt(w.via.pdf) : '' } : null;
     out.minBarns = g.barns; out.draws = fxInt(ix.draws || 1000);
     return out;
   }
@@ -392,6 +395,9 @@
       '<li>The range: we redraw the week&rsquo;s barns at random, with repeats, ' + v.draws + ' times and give the middle nine of ten results. A change from the week before shows only when both weeks pass and ' + v.minBarns + ' or more of the same barns sold both weeks; if its range takes in zero, it is called no clear change.</li>' +
       '<li>Weekly, not daily: each barn sells on its own day, so a daily figure would be a different set of barns each day, and some USDA reports come in days late.</li>' +
       '<li>The barns are the ones USDA reports on and we read, so states with more of them count for more. It is not every sale in the country.</li>' +
+      (v.liveVia ? '<li>Read: the week of ' + esc(v.week) + ', '  + esc(v.liveVia.mars) + ' barns were read through USDA&rsquo;s My Market News' +
+        (v.liveVia.pdf ? ' and ' + esc(v.liveVia.pdf) + ' from the barn&rsquo;s own USDA report, where My Market News did not have that week yet' : '') +
+        '. A sale USDA put out twice (a first issue, then the final) counts once.</li>' : '') +
       (v.archive && v.archive.mars
         ? '<li>Our own reads start the week of ' + esc(v.liveSince) + '. The weeks before that, back to the week of ' + esc(v.archive.since) + ', are figured by the same rules from the same USDA barn reports, read through USDA&rsquo;s My Market News (read ' + esc(v.archive.read) + ')' +
           (v.archive.iaWeeks ? '; in ' + fxInt(v.archive.iaWeeks) + ' of those weeks a few barns come from copies of the reports the Internet Archive kept, where My Market News did not have that barn&rsquo;s week' : '') +
@@ -400,7 +406,7 @@
         ? '<li>Our own reads start the week of ' + esc(v.liveSince) + '. The weeks before that, back to the week of ' + esc(v.archive.since) + ', are figured by the same rules from copies of USDA&rsquo;s own reports that the Internet Archive kept (read ' + esc(v.archive.read) + '). Those copies catch only some barns in a given week, so most of those weeks are withheld: ' + fxInt(v.archive.ok) + ' of ' + fxInt(v.archive.weeks) + ' have a figure, and only those are in the table.</li>'
         : '<li>Our record starts the week of ' + esc(v.liveSince) + ', when we began reading these reports. Every finished week is kept.</li>') +
       '<li>This is AGSIST&rsquo;s own figure. It is not the CME Feeder Cattle Index, and no CME data goes into it.</li>' +
-      '</ul><p class="fx-src">' + AMS_CREDIT + (v.archive ? (v.archive.mars ? ' Earlier weeks: USDA AMS reports read through My Market News' + (v.archive.iaWeeks ? ', a few from copies kept by the Internet Archive' : '') + '.' : ' Earlier weeks: USDA AMS reports as copied by the Internet Archive.') : '') + '</p>';
+      '</ul><p class="fx-src">' + AMS_CREDIT + (v.liveVia ? ' Our weeks: read through USDA My Market News.' : '') + (v.archive ? (v.archive.mars ? ' Earlier weeks: USDA AMS reports read through My Market News' + (v.archive.iaWeeks ? ', a few from copies kept by the Internet Archive' : '') + '.' : ' Earlier weeks: USDA AMS reports as copied by the Internet Archive.') : '') + '</p>';
     return h;
   }
 
