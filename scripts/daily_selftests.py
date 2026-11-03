@@ -25,7 +25,7 @@ The same list runs the night before, under tomorrow's date, in the Daily
 rehearsal (scripts/daily_rehearsal.py).
 
     python3 scripts/daily_selftests.py              run all, report, mail on failure
-    python3 scripts/daily_selftests.py --no-mail    run all, report, never mail
+    python3 scripts/daily_selftests.py --no-mail    run all, report, never mail (--selftest: the same)
     python3 scripts/daily_selftests.py --list       print the list and exit
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
@@ -225,7 +225,7 @@ def main(argv):
         return 0
     for r in bad:
         print("::warning title=self-test failed (the Daily still goes out)::%s: %s" % (r["label"], r["line"]))
-    if "--no-mail" not in argv:
+    if "--no-mail" not in argv and "--selftest" not in argv:     # quick.sh runs it with --selftest: report only
         day = date.today().isoformat()
         if may_mail(day, this_run=os.environ.get("GITHUB_RUN_ID")):
             import log_safe
