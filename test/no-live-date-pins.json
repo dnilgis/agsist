@@ -45,6 +45,7 @@
   "test/custom-rates.test.mjs": 1,
   "test/daily-claims.test.mjs": 2,
   "test/daily-edge.test.mjs": 1,
+  "test/daily-safe.test.mjs": 12,
   "test/desk.test.mjs": 2,
   "test/drought-county-week.test.mjs": 3,
   "test/drought-to50.test.mjs": 8,
