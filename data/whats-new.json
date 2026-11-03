@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-03-feederlive",
+   "date": "2026-11-03",
+   "title": "Feeder steer index: more barns",
+   "line": "The feeder steer index now counts 80 to 94 barns a week through USDA's My Market News (55 to 92 before); the last three weeks came in $0.55 to $2.93 lower.",
+   "link": "/cattle-auction-prices#feeder-index"
+  },
+  {
    "id": "2026-11-03-auditleft",
    "date": "2026-11-03",
    "title": "Harvest pace back on Crop Conditions",
@@ -21,6 +28,13 @@
    "title": "Ethanol plants paying",
    "line": "The cash bids page shows what ethanol plants bid for corn in each state, with basis, from USDA's daily report, plus distillers grains and corn oil prices.",
    "link": "/cash-bids#eth-box"
+  },
+  {
+   "id": "2026-11-03-basisusda",
+   "date": "2026-11-03",
+   "title": "USDA's state average beside our state basis",
+   "line": "Each state basis number now says how many elevators it is the median of, and USDA's own state average for the day sits under it where USDA reports it.",
+   "link": "/basis"
   },
   {
    "id": "2026-11-03-dailyusda",
