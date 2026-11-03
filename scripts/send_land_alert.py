@@ -64,6 +64,8 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import email_links                 # noqa: E402  link ids, the front door, check_message
 import log_safe                    # noqa: E402  sender_addr
+import delivery_line             # noqa: E402  (the DELIVERY count line cron_health reads)
+TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN           # noqa: E402  unsub_link, footer, transport, EMAIL_RE, TZ
 from send_watch import base_msg    # noqa: E402  headers, List-Unsubscribe
 import land_alert as LA            # noqa: E402  the numbers
@@ -339,6 +341,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     mode = mode_of(argv)
     if a.out:
         mode = "dry"           # writing sample files never sends
+    if TALLY:
+        TALLY.dry = mode != "send"
     today = (now or datetime.now(SN.TZ)).astimezone(SN.TZ).date()
     tiso = today.isoformat()
     ly, lm = last_month(today)
@@ -354,6 +358,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     out("date %s (America/Chicago), month %s, mode %s" % (tiso, month, mode))
     if mode == "send":
         if SN.env("LANDSALES_MONTHLY_LIVE", "") != "1":
+            if TALLY:
+                TALLY.dry = True
             out("refused: LANDSALES_MONTHLY_LIVE is not 1, so the land sale list gets nothing (Sig turns it on). Nothing sent.")
             return 1
         if (year, m0) != (ly, lm):
@@ -475,6 +481,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         todo.append((e, t, k, lid))
     later = max(0, len(todo) - a.max)
     todo = todo[:a.max]
+    if TALLY:
+        TALLY.waiting += len(todo)
     out("%s%s: %d to mail, %d already mailed for it, %d not mailed (%s), %d skipped, %d left for the next run"
         % (TOPIC_PRE, month, len(todo), done, sum(wait.values()), ", ".join("%s %d" % kv for kv in sorted(wait.items())) or "none",
            skipped, later))
@@ -518,6 +526,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    if TALLY:
+        TALLY.sent += sent
     out("%s%s: sent %d; failed %d" % (TOPIC_PRE, month, sent, failed))   # the line morning_report.py reads
     if broken:
         return 1
@@ -822,4 +832,5 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv[1:]:
         sys.exit(selftest())
+    TALLY = delivery_line.start("land-alert")
     sys.exit(run(sys.argv[1:]))
