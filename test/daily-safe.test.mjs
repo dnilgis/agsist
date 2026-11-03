@@ -257,3 +257,83 @@ for day in ("2026-07-15", "2026-11-03", "2027-01-15", "2027-03-15"):
   const c = py(["-c", `import sys; sys.path.insert(0, "scripts"); import cron_health as C; print(C.gate_crons("cron-health.yml"))`]);
   assert.equal(c.stdout.trim(), "['26,56 * * * *']");
 });
+
+// ── 4. tomorrow's Daily, rehearsed the evening before ──────────────────────
+
+test("tomorrow's clock: every clock the Daily reads moves, and nothing moves without it", () => {
+  const code = `
+import datetime as D, time
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
+n = datetime.now(ZoneInfo("America/Chicago"))
+print(date.today(), n.strftime("%H:%M %z"), time.strftime("%Y-%m-%d"), datetime.utcnow().strftime("%Y-%m-%dT%H:%M"),
+      isinstance(D.date(2027, 1, 1), date), isinstance(datetime.now().date(), date), type(datetime.now() + timedelta(1)).__name__)
+`;
+  const fake = py(["-c", code], { PYTHONPATH: "scripts/daily_clock", DAILY_FAKE_NOW: "2026-12-31T23:59:00-06:00", TZ: "America/Chicago" });
+  assert.equal(fake.status, 0, fake.stderr);
+  assert.equal(fake.stdout.trim(), "2026-12-31 23:59 -0600 2026-12-31 2027-01-01T05:59 True True datetime");
+  // no date in this check (Nov 3 rule): without DAILY_FAKE_NOW the real classes and the real time.time are left in place
+  const real = py(["-c", "import datetime as D, time; print(type(D.date) is type and type(D.datetime) is type and time.time.__module__ == 'time')"], { PYTHONPATH: "scripts/daily_clock" });
+  assert.equal(real.stdout.trim(), "True", "without DAILY_FAKE_NOW the shim does nothing");
+});
+
+test("the rehearsal: tomorrow at 5:50 CT in either season, a test that breaks tomorrow fails tonight, and Sig is told", () => {
+  const out = py(["-c", `
+import sys, json, os, tempfile
+sys.path.insert(0, "scripts")
+import daily_rehearsal as H, daily_selftests as S
+from datetime import datetime
+from zoneinfo import ZoneInfo
+print(H.fake_now("2026-11-04"), H.fake_now("2026-03-09"), H.fake_now("2026-11-01"))
+print(H.tomorrow_ct(datetime(2026, 11, 2, 18, 41, tzinfo=ZoneInfo("America/Chicago"))),
+      H.tomorrow_ct(datetime(2026, 12, 31, 18, 41, tzinfo=ZoneInfo("America/Chicago"))))
+# a self-test with a date in it, the way the Nov 3 one compared a fixture with a file that moved on
+d = tempfile.mkdtemp()
+t = os.path.join(d, "datebound.py")
+open(t, "w").write("from datetime import date\\nimport sys\\nif date.today() >= date(2026, 11, 3):\\n    print('  FAIL  fixture window ends Nov 2'); sys.exit(1)\\nprint('ok')\\n")
+S.SELFTESTS = [("GATE 0g daily numbers", [t], {})]
+env = H.fake_env("2026-11-03", {k: v for k, v in os.environ.items()})
+rows = [H.check_clock("2026-11-03", env)] + H.check_selftests(env)
+print(json.dumps([(r["label"], r["ok"], r["line"]) for r in rows]))
+print("ANTHROPIC_API_KEY" in env, "SMTP_PASS" in env, env["TZ"])
+rows.append(H._row("GATE 2 briefing gate on the last issue", True, "would hold it: RESULT: BLOCK", note=True))
+md = H.summary_md("2026-11-03", rows)
+print(md.splitlines()[0])
+s, l = H.mail_lines("2026-11-03", rows)
+print(s)
+print("FAIL  fixture window ends Nov 2" in "\\n".join(l), "—" in s + "".join(l), "@" in "".join(l))
+`]);
+  assert.equal(out.status, 0, out.stderr);
+  const o = out.stdout.trim().split("\n");
+  assert.equal(o[0], "2026-11-04T05:50:00-06:00 2026-03-09T05:50:00-05:00 2026-11-01T05:50:00-06:00");
+  assert.equal(o[1], "2026-11-03 2027-01-01");
+  assert.deepEqual(JSON.parse(o[2]), [["tomorrow's clock takes", true, ""], ["self-test: GATE 0g daily numbers", false, "FAIL  fixture window ends Nov 2"]]);
+  assert.equal(o[3], "False False America/Chicago", "no model key and no mail login reach the rehearsed code");
+  assert.equal(o[4], "### Daily rehearsal for 2026-11-03: 1 of 2 checks failed");
+  assert.equal(o[5], "AGSIST Daily rehearsal: 1 check would fail tomorrow morning (Tue Nov 3)");
+  assert.equal(o[6], "True False False");
+});
+
+test("the rehearsal's gate check runs daily.yml's real gate for tomorrow", () => {
+  const out = py(["-c", `
+import sys; sys.path.insert(0, "scripts")
+import daily_rehearsal as H
+print(H.check_gate("2026-11-04"))
+`]);
+  assert.equal(out.status, 0, out.stderr);
+  assert.match(out.stdout, /'ok': True/);
+});
+
+test("cron-health.yml rehearses every evening after the 00:41 UTC tick, send off, nothing written", () => {
+  const ch = read(".github/workflows/cron-health.yml");
+  assert.match(ch, /- id: rehearse\n\s+env:\n\s+GH_TOKEN: \$\{\{ github\.token \}\}\n\s+run: >-\n\s+python3 scripts\/cron_gate\.py tick --workflow cron-health\.yml --max-lag 45\n\s+--cron "41 0 \* \* \*"/);
+  assert.match(ch, /rehearse: \$\{\{ steps\.rehearse\.outputs\.go \}\}/);
+  const j = ch.slice(ch.indexOf("\n  daily-rehearsal:\n"), ch.indexOf("\n  check:\n"));
+  assert.match(j, /if: needs\.gate\.outputs\.rehearse == '1'/);
+  assert.match(j, /permissions:\n\s+contents: read\n/);
+  assert.match(j, /run: python scripts\/daily_rehearsal\.py\n/);
+  assert.match(j, /OWNER_TO:\s+\$\{\{ secrets\.SIG_TO \}\}/);
+  assert.ok(!/ANTHROPIC|LIST_URL|LIST_TOKEN|RECIPIENTS|git (commit|push)|push_raw|send_daily/.test(j), "no model key, no list, no writes, no send");
+  // cron-job.org's chain wakes this workflow every evening; the GitHub cron stays its fallback
+  assert.match(ch, /workflow_run:\n\s+workflows: \["Fetch Grain Bids"\]/);
+});
