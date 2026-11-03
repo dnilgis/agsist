@@ -69,7 +69,21 @@ from cron_gate import Cron, latest_tick, max_spacing_minutes, parse_ts, NOT_A_RU
 # Workflows whose gate does not count a run by hand as the tick's run (cron_gate.py
 # MANUAL_DOES_NOT_SERVE, Nov 2, 2026). Kept here too, so this file runs beside an older
 # copy of cron_gate.py; the selftest holds the two lists equal when both have it.
-MANUAL_DOES_NOT_SERVE = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"}
+MANUAL_DOES_NOT_SERVE = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"} | {
+    # gated Nov 3, 2026 (cron_gate.py GATED_NOV3)
+    "agstocks.yml", "analyst-scorecard.yml", "cash-bid-index.yml", "cash-rent.yml", "cattle-auction.yml",
+    "cattle-cash.yml", "ccc-loan.yml", "climate-indices.yml", "cot-deep-rebuild.yml", "coverage-map.yml",
+    "dairy.yml", "drought-county-week.yml", "fall-nitrogen.yml", "farmland-atlas.yml", "fertilizer-ams.yml",
+    "fertilizer-coops.yml", "fetch-fsa-arcplc.yml", "hail-data.yml", "hail-states.yml", "hay-ams.yml",
+    "hay-prices.yml", "land-data.yml", "list-hygiene.yml", "markets.yml", "mesh.yml", "nass-series.yml",
+    "ncei.yml", "planting-normals.yml", "predictions.yml", "prf-outlook.yml", "prf-season.yml", "prf.yml",
+    "radar-rain.yml", "refs.yml", "rma-prices.yml", "rp-canada-stations.yml", "rp-design-email.yml",
+    "seasonal-models.yml", "share-images.yml", "site-usage.yml", "sitemap.yml", "sponsor-report.yml",
+    "state-rent-pages.yml", "stats-ingest.yml", "storage.yml", "tenure.yml", "transport.yml", "vintage.yml",
+    "whats-priced-in.yml",
+}
+# Gated rows whose gate runs on a denser clock than GitHub's fallback cron, on purpose.
+DENSER_GATE = {"news.yml", "cron-health.yml"}
 
 UTC = timezone.utc
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -120,9 +134,6 @@ CHECKS = [
     ("freshness.yml", None, 60, False, "chained, gated to its own schedule"),
     ("lrp.yml", ["7,22,37,52 19-23 * * 1-5"], 30, False,
      "after every Fetch Grain Bids, Mon-Fri 19:00-23:59 UTC; looks for RMA's LRP offers until today's are in"),
-    ("prf.yml", ["23 10 * * 3"], 240, False, "weekly PRF data refresh, Wednesdays; a full run after the August ADM takes about two hours"),
-    ("prf-outlook.yml", ["47 15 * * 4", "17 11 * * 5"], 240, False, "PRF long-range outlook (CPC, ENSO, Drought Monitor), Thursdays and Fridays"),
-    ("climate-indices.yml", ["37 14 9 * *"], 240, False, "NOAA PDO and AMO for the PRF optimizer test, monthly on the 9th"),
     # Daily since Oct 23, 2026 (was Mondays): a missed day is late by the next morning, not a week later.
     ("county-rain.yml", None, 60, False,
      "chained, gated: rain so far this year by county (RCC-ACIS) and the /rain pages, every day, plus the Jan 2 finished-year run"),
@@ -130,6 +141,58 @@ CHECKS = [
      "chained, gated: the monthly county rain email (fetch, pages, then the list once RAIN_MONTHLY_LIVE is 1), the 2nd of each month"),
     ("land-alert.yml", None, 60, False,
      "chained, gated: the monthly land sale email (after the land data run on the 3rd; the list only once LANDSALES_MONTHLY_LIVE is 1), the 3rd of each month"),
+    # Gated Nov 3, 2026 (GitHub's scheduler never started land-data.yml that day, so the land sale
+    # email mailed nobody): every data, page and email workflow whose schedule matters runs after
+    # Fetch Grain Bids, gated to its own schedule; a run by hand or a push is not the tick's run.
+    ("land-data.yml", None, 60, False, "chained, gated: monthly land data on the 3rd (parcel services, IL/WI/VT/NJ transfers, sale pages); the land sale email reads it"),
+    ("cash-bid-index.yml", None, 60, False, "chained, gated: the Cash Bid Index, monthly on the 1st"),
+    ("ccc-loan.yml", None, 60, False, "chained, gated: CCC loan rates, the 1st to 5th and the 15th"),
+    ("climate-indices.yml", None, 60, False, "chained, gated: NOAA PDO and AMO for the PRF optimizer test, monthly on the 9th"),
+    ("dairy.yml", None, 60, False, "chained, gated: milk prices and the milk price day email, the announcement windows"),
+    ("farmland-atlas.yml", None, 60, False, "chained, gated: the Farmland Atlas data, monthly on the 12th"),
+    ("hail-data.yml", None, 60, False, "chained, gated: the national hail map data, monthly on the 1st"),
+    ("hail-states.yml", None, 60, False, "chained, gated: the hail state pages, monthly on the 2nd"),
+    ("hay-prices.yml", None, 60, False, "chained, gated: NASS hay prices, month end and the 1st and 2nd"),
+    ("nass-series.yml", None, 60, False, "chained, gated: NASS series revisions, monthly on the 16th"),
+    ("refs.yml", None, 60, False, "chained, gated: the reference library, monthly on the 3rd"),
+    ("rp-canada-stations.yml", None, 60, False, "chained, gated: Rain Print Canada stations, monthly on the 3rd"),
+    ("site-usage.yml", None, 60, False, "chained, gated: site usage for the audit, monthly on the 2nd"),
+    ("ncei.yml", None, 60, False, "chained, gated: the long-term hail record, yearly on Jan 15"),
+    ("planting-normals.yml", None, 60, False, "chained, gated: planting date station normals, yearly on Feb 2"),
+    ("tenure.yml", None, 60, False, "chained, gated: Census land tenure, yearly on Feb 15"),
+    ("storage.yml", None, 60, False, "chained, gated: grain storage vs production, after the Jan, Oct and Nov reports"),
+    ("seasonal-models.yml", None, 60, False, "chained, gated: seasonal forecast models, Nov 15 and Dec 15"),
+    ("cash-rent.yml", None, 60, False, "chained, gated: NASS county cash rent, Wednesdays (works in Aug and Sep)"),
+    ("state-rent-pages.yml", None, 60, False, "chained, gated: the /rent state pages, Wednesdays after cash rent"),
+    ("cot-deep-rebuild.yml", None, 60, False, "chained, gated: the COT deep history rebuild, Sundays"),
+    ("drought-county-week.yml", None, 60, False, "chained, gated: the drought county week, Thursday and a Friday backstop"),
+    ("fertilizer-ams.yml", None, 60, False, "chained, gated: USDA AMS fertilizer series, Friday, Friday evening and Monday"),
+    ("fetch-fsa-arcplc.yml", None, 60, False, "chained, gated: FSA ARC/PLC program files, Mondays"),
+    ("prf.yml", None, 60, False, "chained, gated: the PRF rainfall index data, Wednesdays"),
+    ("prf-outlook.yml", None, 60, False, "chained, gated: the PRF long-range outlook, Thursdays and Fridays"),
+    ("transport.yml", None, 60, False, "chained, gated: AgTransport for /basis and /bushel-journey, Fridays"),
+    ("agstocks.yml", None, 60, False, "chained, gated: ag stocks closes and filings, weekday evenings"),
+    ("analyst-scorecard.yml", None, 60, False, "chained, gated: the analyst scorecard, daily"),
+    ("cattle-auction.yml", None, 60, False, "chained, gated: cattle auction prices, weekday mornings and evenings"),
+    ("cattle-cash.yml", None, 60, False, "chained, gated: cattle cash prices, weekday afternoons and the weekly 5-area"),
+    ("coverage-map.yml", None, 60, False, "chained, gated: the elevator coverage map, daily"),
+    ("fall-nitrogen.yml", None, 60, False, "chained, gated: soil temperature for /fall-nitrogen, twice daily in spring and fall"),
+    ("fertilizer-coops.yml", None, 60, False, "chained, gated: co-op posted fertilizer prices, weekday mornings"),
+    ("hay-ams.yml", None, 60, False, "chained, gated: AMS hay market reports, weekday evenings and Saturday"),
+    ("list-hygiene.yml", None, 60, False, "chained, gated: email list cleanup (bounces), daily"),
+    ("markets.yml", None, 60, False, "chained, gated: markets data, daily"),
+    ("mesh.yml", None, 60, False, "chained, gated: radar hail swaths for the previous day, daily"),
+    ("predictions.yml", None, 60, False, "chained, gated: the prediction bot calls and grades, weekday afternoons"),
+    ("prf-season.yml", None, 60, False, "chained, gated: the PRF interval so far, daily"),
+    ("radar-rain.yml", None, 60, False, "chained, gated: MRMS radar rain by state, four times a day"),
+    ("rma-prices.yml", None, 60, False, "chained, gated: RMA price discovery, daily after settle"),
+    ("rp-design-email.yml", None, 60, False, "chained, gated: Rain Print design emails readers asked for, hourly"),
+    ("share-images.yml", None, 60, False, "chained, gated: every page's share image, daily"),
+    ("sitemap.yml", None, 60, False, "chained, gated: sitemap lastmod for data-driven pages, daily"),
+    ("sponsor-report.yml", None, 60, False, "chained, gated: sponsor reports from GA4, daily"),
+    ("stats-ingest.yml", None, 60, False, "chained, gated: GA4, Search Console and Bing raw numbers (private), daily"),
+    ("vintage.yml", None, 60, False, "chained, gated: the point-in-time archive of outside data, weekdays (a missed day is lost)"),
+    ("whats-priced-in.yml", None, 60, False, "chained, gated: What's Priced In, daily"),
     # The watchers themselves (2026-10-20). GitHub's own cron runs the site check hours
     # late (3 h and 6 h on Oct 18 and 19, nothing on Oct 17), so 8 h is the limit.
     ("daily-site-check.yml", ["37 11 * * *"], 480, False, "the morning site check and its issue, GitHub cron 11:37 UTC"),
@@ -670,6 +733,20 @@ def selftest():
         own = re.findall(r"""^\s*-\s*cron:\s*["']([^"']+)["']""", text, re.M)
         check(own and sorted(own) == sorted(gate_crons(wf)),
               "%s: the gate clock is the workflow's own schedule (%s vs %s)" % (wf, gate_crons(wf), own))
+    # every gated row (Nov 3, 2026): the gate clock is the workflow's own schedule, except the two
+    # whose gate runs denser on purpose; and every workflow is a row at most once
+    for wf in sorted(GATED - DENSER_GATE):
+        try:
+            text = open(os.path.join(WF_DIR, wf), encoding="utf-8").read()
+        except OSError:
+            text = ""
+        on = text[text.find("\non:"):text.find("\njobs:")]
+        own = re.findall(r"""^\s*-\s*cron:\s*["']([^"']+)["']""", on, re.M)
+        check(own and sorted(own) == sorted(gate_crons(wf)),
+              "%s: gated row, its clock is the workflow's schedule (%s vs %s)" % (wf, gate_crons(wf), own))
+    names = [c[0] for c in CHECKS]
+    check(len(names) == len(set(names)), "no workflow is watched twice")
+    check({"land-data.yml", "land-alert.yml"} <= GATED, "the land data and the land email are both watched by their gate clocks")
     try:
         import cron_gate as CG
         check(getattr(CG, "MANUAL_DOES_NOT_SERVE", MANUAL_DOES_NOT_SERVE) == MANUAL_DOES_NOT_SERVE,

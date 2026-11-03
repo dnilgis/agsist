@@ -22,6 +22,17 @@ name: seasonal models
 on:
   schedule:
     - cron: "41 15 15 11,12 *"   # Nov 15 and Dec 15, 15:41 UTC
+  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
+  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
+  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+  # cron above, by either trigger, do the work within 360 minutes
+  # (six hours, the same day and well before the next tick).
+  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
+  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
+  # inputs, and the chained run that follows is the same idempotent job.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       probe:
@@ -31,14 +42,43 @@ on:
 
 permissions: {}
 
-concurrency:
-  group: seasonal-models
-  cancel-in-progress: false
-
 jobs:
+  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow seasonal-models.yml --max-lag 360
+          --cron "41 15 15 11,12 *"
+
   probe:
-    if: github.event_name == 'workflow_dispatch' && inputs.probe
+    needs: gate
+    if: needs.gate.outputs.go == '1' && (github.event_name == 'workflow_dispatch' && inputs.probe)
     runs-on: ubuntu-24.04
+    concurrency:
+      group: seasonal-models
+      cancel-in-progress: false
     timeout-minutes: 10
     permissions:
       contents: read
@@ -57,8 +97,12 @@ jobs:
         run: python3 scripts/fetch_seasonal_models.py --probe
 
   models:
-    if: github.event_name != 'workflow_dispatch' || !inputs.probe
+    needs: gate
+    if: needs.gate.outputs.go == '1' && (github.event_name != 'workflow_dispatch' || !inputs.probe)
     runs-on: ubuntu-24.04
+    concurrency:
+      group: seasonal-models
+      cancel-in-progress: false
     timeout-minutes: 75
     permissions:
       contents: write          # commits the two data files below

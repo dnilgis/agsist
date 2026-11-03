@@ -42,17 +42,58 @@ on:
   # (parcel services probe, Illinois transfers from the weekly MyDec data, Wisconsin newest-only)
   schedule:
     - cron: '23 9 3 * *'
+  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
+  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
+  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+  # cron above, by either trigger, do the work within 360 minutes
+  # (six hours, the same day and well before the next tick).
+  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
+  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
+  # inputs, and the chained run that follows is the same idempotent job.
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
 
 permissions:
   contents: write
 
-concurrency:
-  group: land-data
-  cancel-in-progress: false
-
 jobs:
+  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
+  gate:
+    runs-on: ubuntu-24.04  # pinned with the working job (test/runner-pin.test.mjs)
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow land-data.yml --max-lag 360
+          --cron "23 9 3 * *"
+
   build:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
+    concurrency:
+      group: land-data
+      cancel-in-progress: false
     timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
@@ -111,7 +152,7 @@ jobs:
           git -c user.name="AGSIST Bot" -c user.email=bot@agsist.com commit -qm "WI RETR explore $(date -u +%FT%TZ)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "HEAD:$B"
       - name: Check parcel services
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || startsWith(inputs.task, 'discover:') || inputs.task == 'all') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'services' || inputs.task == 'discover' || startsWith(inputs.task, 'discover:') || inputs.task == 'all') }}
         run: |
           T="${{ inputs.task }}"
           case "$T" in
@@ -193,7 +234,7 @@ jobs:
           fi
           rm -f data/land-raw/soil/*-soil.json.gz
       - name: Build transfers
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
         # VT: the statewide transfer return file (Parquet, about 85 MB); the dated copy goes to the raw branch below
         # NJ: the SR-1A yearly deed files (about 12 MB each, dated copies to the raw branch) and the MOD-IV 2026 list
@@ -208,7 +249,7 @@ jobs:
         run: python scripts/fetch_land_sales.py NJ || echo "::warning::New Jersey deeds were not written"
       - name: Wisconsin transfer returns (browser)
         continue-on-error: true  # a Wisconsin browser failure must never drop the other states' commit (Nov 3)
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-newest' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-newest' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
         run: |
           python3 -m venv "$RUNNER_TEMP/pw"
           "$RUNNER_TEMP/pw/bin/pip" install -q playwright==1.56.0
