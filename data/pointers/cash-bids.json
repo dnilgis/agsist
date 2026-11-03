@@ -5,6 +5,10 @@
    "to": "/cash-bids/company/",
    "since": "2026-10-28"
   },
+  "cash-bids/company/gateway-fs.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-03"
+  },
   "cash-bids/company/hoven-equity-exchange.html": {
    "to": "/cash-bids/company/",
    "since": "2026-11-01"
@@ -12,6 +16,38 @@
   "cash-bids/company/new-cooperative.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-29"
+  },
+  "cash-bids/illinois/carlyle.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-03"
+  },
+  "cash-bids/illinois/nashville.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-03"
+  },
+  "cash-bids/illinois/oakdale.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-03"
+  },
+  "cash-bids/illinois/percy.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-03"
+  },
+  "cash-bids/illinois/prairie-du-rocher.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-03"
+  },
+  "cash-bids/illinois/red-bud.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-03"
+  },
+  "cash-bids/illinois/waltonville.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-03"
+  },
+  "cash-bids/illinois/waterloo.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-03"
   },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
@@ -281,6 +317,10 @@
    "to": "/cash-bids/minnesota/",
    "since": "2026-11-01"
   },
+  "cash-bids/missouri/sainte-genevieve.html": {
+   "to": "/cash-bids/missouri/",
+   "since": "2026-11-03"
+  },
   "cash-bids/montana/circle.html": {
    "to": "/cash-bids/montana/",
    "since": "2026-10-13"
@@ -288,6 +328,10 @@
   "cash-bids/ohio/saint-marys.html": {
    "to": "/cash-bids/ohio/",
    "since": "2026-10-15"
+  },
+  "cash-bids/south-dakota/montrose.html": {
+   "to": "/cash-bids/south-dakota/",
+   "since": "2026-11-03"
   },
   "cash-bids/texas/morton.html": {
    "to": "/cash-bids/texas/dumas",
