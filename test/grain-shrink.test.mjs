@@ -417,7 +417,7 @@ test("browser: delayed futures label, a day-old ZIP bid re-marked, and the dry-i
     await pg.selectOption("#gs-state", "IA");
     await pg.waitForFunction(() => document.getElementById("gs-bid").value === "4.34");
     const src = await pg.textContent("#gs-bidsrc");
-    assert.match(src, /Dec '26 futures \$4\.74 \(delayed, \w{3} \d{1,2} \d{1,2}:\d{2} [ap]m CT\) less the Iowa median basis/);
+    assert.match(src, /Dec '26 futures \$4\.74 \(delayed, \w{3} \d{1,2} \d{1,2}:\d{2} [ap]m CT\) less the Iowa basis of \d+¢, median of /);
     assert.doesNotMatch(src, /settle/);
     // ZIP: the board is a day old and states ZCZ26 -> 4.7425 - 0.65 = $4.09, posted $4.14 beside it
     await pg.fill("#gs-zip", "54728");
