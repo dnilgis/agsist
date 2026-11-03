@@ -75,6 +75,7 @@
       .then(function (d) { box.innerHTML = render(d); })
       .catch(function () { box.innerHTML = render(null); });
     }
+    if (location.hash === '#eth-box') fold.open = true;   /* the What's new link */
     fold.addEventListener('toggle', load);
     load();
   }
