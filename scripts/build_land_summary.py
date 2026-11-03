@@ -40,7 +40,9 @@ made-up and real, and compares them row for row and the patterns character for c
 
 WINDOWS. Everything is dated by the sale date on the return. "Through" is the last day
 of the last full month before the state's files were fetched, so a half-filled month
-never sits in a count. Last 12 months, the 12 before, and 24 months for the sales list.
+never sits in a count, and never past the month of the newest return on file (Nov 3, 2026:
+Wisconsin's October report did not download, the run still stamped the files Nov 3, and the
+summary claimed sales through Oct 31 with no October return read). Last 12 months, the 12 before, and 24 months for the sales list.
 A sale dated after the fetch (a typo on a return) is never counted.
 
 HONESTY RULES
@@ -485,6 +487,12 @@ def build_state(st, files, fetched=None):
     st = st.upper()
     fetched = fetched or max((f.get("fetched_utc") or "") for f in files)
     through = month_end_before(fetched)
+    # never past the month of the newest return on file: a run that re-read only older months
+    # (a month that did not download) moves the stamp, not the data
+    filed = max((str((f.get("coverage") or {}).get("filed_to") or "")[:10] for f in files), default="")
+    if filed:
+        last_full = month_end_before((datetime.date.fromisoformat(filed).replace(day=28) + datetime.timedelta(days=4)).isoformat())
+        through = min(through, last_full)
     W = windows(through)
     today = fetched[:10]
     counties = {}
@@ -605,6 +613,14 @@ def selftest():
     c = s["counties"][f["fips"]]
     ck("through is the last full month", s["through"] == exp["through"])
     ck("windows", s["windows"] == exp["windows"])
+    # a later fetch that read no newer month keeps the through date at the newest return's month
+    import copy
+    g = copy.deepcopy(f)
+    g.setdefault("coverage", {})["filed_to"] = (exp["through"][:8] + "15")
+    later = (datetime.date.fromisoformat(exp["through"]) + datetime.timedelta(days=70)).isoformat()
+    ck("through stops at the month of the newest return on file", build_state("IL", [g], fetched=later)["through"] == exp["through"])
+    g["coverage"]["filed_to"] = later
+    ck("a newer return moves through to the last full month", build_state("IL", [g], fetched=later)["through"] > exp["through"])
     for k in ("n12", "n12p", "k12", "k12p", "k24", "a24", "u12", "u12p"):
         ck("count " + k, c.get(k) == exp["county"][k])
     ck("median and middle half", c.get("med") == exp["county"]["med"])
