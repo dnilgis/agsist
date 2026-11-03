@@ -94,10 +94,20 @@ test("farm diesel and propane: the report for the state, its range and freight, 
   const id = P.factFuel(PC, "ID", "diesel", TODAY);
   assert.equal(id.value, "$6.03 a gallon");
   assert.match(id.ctx, /^Inter-Mountain West fuel dealers’ asking price, \$5\.83 to \$6\.35 delivered\. Call to confirm\.$/);
-  assert.equal(P.factFuel(PC, "IL", "propane", TODAY).why, "the USDA Illinois report does not price propane");
-  assert.equal(P.factFuel(PC, "WI", "diesel", TODAY).why,
-    "USDA’s dealer price survey covers Illinois, Inter-Mountain West (UT, ID, CO, WY), Iowa, North Carolina and Oklahoma, not Wisconsin");
-  assert.equal(P.factFuel(PC, "IA", "diesel", "2026-12-20").why, "the newest USDA Iowa report is from Oct 30, 2026, too old to show");
+  // no report covers the state, or the covering report does not price the fuel: the row is hidden (lead, Nov 3)
+  for (const [st, k] of [["WI", "diesel"], ["WI", "propane"], ["IL", "propane"], ["KS", "diesel"]]) {
+    const h = P.factFuel(PC, st, k, TODAY);
+    assert.equal(h.hide, true, st + " " + k + " hidden");
+    assert.equal(h.value, null);
+  }
+  assert.ok(!P.factFuel(PC, "IA", "diesel", TODAY).hide, "a covered state shows its row");
+  // covered, but the newest report is over 45 days old: a dated "last USDA report" line, no stale price
+  const old = P.factFuel(PC, "IA", "diesel", "2026-12-20");
+  assert.equal(old.value, null);
+  assert.ok(!old.hide, "a covered state keeps its row");
+  assert.equal(old.why, "no USDA Iowa report since Oct 30, 2026, so no current price");
+  assert.equal(old.date, "2026-10-30");
+  assert.deepEqual(old.src, ["USDA AMS, Iowa Production Cost Report", null]);
   assert.equal(P.factFuel(null, "IA", "diesel", TODAY).why, "the USDA fuel price file did not load");
   for (const f of [d, id]) assert.ok(!/—/.test(f.ctx + f.value), "no em dash");
 });

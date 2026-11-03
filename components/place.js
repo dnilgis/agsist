@@ -1088,11 +1088,6 @@
     out.sort(function (a, b) { return a.age - b.age || a.r.states.length - b.r.states.length; });
     return out;
   }
-  function usdaCover(pc) {
-    var reps = (pc && pc.reports) || {};
-    return Object.keys(reps).map(function (k) { var r = reps[k]; return r.states.length > 1 ? r.region + ' (' + r.states.join(', ') + ')' : r.region; }).sort();
-  }
-  function andList(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
   /* the first of keys a fresh covering report prints with a real range (a single price is too thin to show) */
   function usdaItem(pc, st, keys, today) {
     var reps = usdaReports(pc, st, today);
@@ -1134,18 +1129,20 @@
     return { label: pick.name, value: '$' + fixed(Math.round(pick.price), 0) + ' a ton', date: isoDay(pick.as_of || file.updated),
       ctx: (where ? where.charAt(0).toUpperCase() + where.slice(1) + '. ' : '') + 'Cash price; call to confirm.', src: ['Fertilizer prices', '/fertilizer'], paper: 'Co-op posted prices' };
   }
-  /* Farm diesel or propane (key 'diesel' or 'propane') from the USDA report that covers the state;
-     where no report covers it, or the newest is over USDA_DAYS old, the row says so. */
+  /* Farm diesel or propane (key 'diesel' or 'propane') from the USDA report that covers the state.
+     Lead decision Nov 3 (Sig dislikes clutter): where no report covers the state, or the covering
+     report does not price the fuel, the row is hidden (hide: true). Where the newest covering report
+     is over USDA_DAYS old, the row says so, dated, with the report named; no stale price is shown. */
   function factFuel(pc, st, key, today) {
     var label = USDA_NAMES[key] || key;
     if (!pc || !pc.reports) return na(label, 'the USDA fuel price file did not load');
     var u = usdaItem(pc, st, [key], today);
-    if (u) return usdaRow(label, '$' + fixed(u.item.avg, 2) + ' a gallon', { as_of: u.rep.published, rep: u.rep, freight: u.item.freight, lo: fixed(u.item.low, 2), hi: fixed(u.item.high, 2) }, 'fuel dealers’');
-    var reps = usdaReports(pc, st, today), cover = usdaCover(pc);
-    if (reps.length && reps.every(function (x) { return x.age > USDA_DAYS; }))
-      return na(label, 'the newest USDA ' + reps[0].r.region + ' report is from ' + monDay(reps[0].r.published) + ', too old to show');
-    if (reps.length) return na(label, 'the USDA ' + reps[0].r.region + ' report does not price ' + label.toLowerCase());
-    return na(label, 'USDA’s dealer price survey covers ' + andList(cover) + (STATES[st] ? ', not ' + STATES[st] : ''));
+    if (u) return usdaRow(label, '$' + fixed(u.item.avg, 2) + ' a gallon', { as_of: u.rep.published, rep: u.rep, freight: u.item.freight, lo: fixed(u.item.low, 2), hi: fixed(u.item.high, 2) }, 'fuel dealers\u2019');
+    var reps = usdaReports(pc, st, today).filter(function (x) { return x.r.items.some(function (i) { return i.key === key && !i.thin && i.avg > 0; }); });
+    if (!reps.length) { var h = na(label, 'no USDA dealer price survey for ' + (STATES[st] || 'this state')); h.hide = true; return h; }
+    var r = reps[0].r, f = na(label, 'no USDA ' + r.region + ' report since ' + monDay(r.published) + ', so no current price', [usdaTitle(r), null]);
+    f.date = r.published;
+    return f;
   }
   /* Custom combining: the reader's state survey when there is one, beside the middle of the state
      custom rate surveys (data/custom-rates/blend.json, the file /custom-rates reads). */
