@@ -8,12 +8,25 @@ name: Cattle cash prices
 # FIRST RUN: dispatch this once with "probe" ticked. It saves what AMS returned
 # to data/cattle-cash-raw/ and saves it on the raw branch (never deployed), so the real PDF layout can be checked
 # against the parser before trusting a number.
+#
+# Also (Nov 3, 2026, fx/marseth; no new schedule): data/ethanol-bids.json for the
+# "Ethanol plants paying" fold on /cash-bids, from USDA My Market News (MARS API)
+# reports 3617 (daily ethanol plant corn bids) and 3618 (weekly co-products), read
+# by scripts/fetch_ethanol_mars.py with the MARS_API_KEY secret. It rides this
+# job because the 21:43 UTC weekday run is after noon Central, when the daily
+# report (usually out 6:30 to 7:15 AM CT, a few days near noon) is in, and the
+# Monday runs pick up the weekly co-products report. Its step cannot fail the
+# cattle steps, and a failed MARS call leaves the last good file in place.
 
 on:
   workflow_dispatch:
     inputs:
       probe:
         description: "Probe only: save the raw AMS PDFs and text to data/cattle-cash-raw/ on the raw branch"
+        type: boolean
+        default: false
+      ethanol_only:
+        description: "Ethanol only: run the USDA ethanol plant bids step and skip the cattle fetch"
         type: boolean
         default: false
   schedule:
@@ -56,14 +69,22 @@ jobs:
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "cattle-cash probe" data/cattle-cash-raw
       - name: Fetch and write data/cattle-cash.json
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || inputs.ethanol_only)) }}
         run: python scripts/fetch_cattle_cash.py
+      # selftest first: a failing selftest writes nothing; neither can stop the cattle commit
+      - name: Fetch and write data/ethanol-bids.json (USDA MARS 3617, 3618)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        continue-on-error: true
+        env:
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: python scripts/fetch_ethanol_mars.py --selftest && python scripts/fetch_ethanol_mars.py
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           FILES="data/cattle-cash.json"
+          FILES="$FILES data/ethanol-bids.json"
           rm -rf /tmp/cc && mkdir -p /tmp/cc
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/cc/ || true
