@@ -67,7 +67,11 @@
     box.setAttribute("data-on", "1");
     var st = box.getAttribute("data-st") || "", fips = box.getAttribute("data-c") || "", name = box.getAttribute("data-n") || "";
     var s = box.querySelector(".rc-emb-s");
-    if (s) { var t = s.textContent; s.appendChild(button(function () { return t; })); }
+    if (s) {
+      var t = s.textContent;   // the sentence as written in the page; the label below is not copied
+      s.insertBefore(document.createTextNode("In words, for a newsletter, paper or radio: "), s.firstChild);
+      s.appendChild(button(function () { return t; }));
+    }
     if (!/^[A-Z]{2}$/.test(st) || !/^\d{5}$/.test(fips)) return;
     var p = document.createElement("p");
     p.className = "rc-fine";
