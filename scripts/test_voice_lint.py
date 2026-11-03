@@ -169,8 +169,25 @@ out, applied = cb.apply_rewrite(br, {"weakest_target": "lead",
                                      "rewritten_content": {"lead": "I talked to three elevators this morning. Crude is at $92.61."}})
 check(applied is None and out["lead"] == old_lead, "rewrite with 'I talked to three elevators' refused")
 br = copy.deepcopy(base)
-out, applied = cb.apply_rewrite(br, {"weakest_target": "lead",
-                                     "rewritten_content": {"lead": "Crude is at $92.61 overnight, up 4.9%, after another tanker was hit off Qatar."}})
+# apply_rewrite puts the report-day line back from the clock (scripts/report_day.py), so the Oct 8 issue is
+# rewritten on Oct 8: on a real WASDE morning (Dec 10) "USDA's WASDE comes out..." led and this check failed
+import datetime as _dtmod  # noqa: E402
+_RealDT = _dtmod.datetime
+
+
+class _Oct8(_RealDT):
+    @classmethod
+    def now(cls, tz=None):
+        t = _RealDT(2026, 10, 8, 11, 0, tzinfo=_dtmod.timezone.utc)
+        return t.astimezone(tz) if tz else t.astimezone().replace(tzinfo=None)
+
+
+_dtmod.datetime = _Oct8
+try:
+    out, applied = cb.apply_rewrite(br, {"weakest_target": "lead",
+                                         "rewritten_content": {"lead": "Crude is at $92.61 overnight, up 4.9%, after another tanker was hit off Qatar."}})
+finally:
+    _dtmod.datetime = _RealDT
 check(applied == "lead" and out["lead"].startswith("Crude is at $92.61"), "a clean rewrite still applies")
 check("fabricated" in cb._voice_payload({"lead": "My neighbor said so."}), "the editor is shown voice_lint findings")
 
