@@ -580,7 +580,7 @@ def selftest():
     ck("daily_line: each figure with its own date, plain words",
        daily_line(d) == "National negotiated cash hogs $64.49/cwt carcass base on 8,718 head (killed Oct 30-31); "
        "pork cutout $72.28/cwt on Nov 2. USDA AMS.", daily_line(d))
-    ck("daily_line: no em dash", "—" not in (daily_line(d) or ""))
+    ck("daily_line: no em dash", "\u2014" not in (daily_line(d) or ""))
     ck("daily_line: nothing when the file holds nothing", daily_line({}) is None)
     with tempfile.TemporaryDirectory() as t:
         (Path(t) / "data").mkdir()
