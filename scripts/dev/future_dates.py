@@ -16,6 +16,7 @@ only on a future date is a test or a gate that reads today's date and will break
                      slowest selftests (build_atlas_pages, build_arc_plc): about a quarter of the time, for a busy machine
     --all            run every item on every date (by default the dates run only the items that read the clock in
                      the run at today: code in the checkout asked for "now", or the test opens Chromium)
+    --selftest       check the fake clocks themselves (python, node, a vm context, shell date, the probe) and exit
     --no-baseline    skip the run at today's real date (then every failure is listed, not only the new ones)
 
 How the clock moves: scripts/dev/fakeclock/ holds a python sitecustomize.py (time.time, datetime.now/utcnow/today,
@@ -201,7 +202,57 @@ def run_date(label, when, jobs, nfiles, pcmds, outdir, names=None, probe=False):
 READERS = None
 
 
+def selftest():
+    """The shims move the clock where they should, leave given dates and a test's own clock alone, and the probe
+    sees a read from the checkout. A few seconds, no tests run."""
+    import tempfile
+    bad = []
+
+    def ck(name, ok, got=""):
+        print(("ok   " if ok else "FAIL ") + name + ("" if ok else f"  -- {got!r}"))
+        if not ok:
+            bad.append(name)
+    when = parse_when("2027-01-01T13:00")
+    with tempfile.TemporaryDirectory() as td:
+        off = str(int(when.timestamp() - time.time()))
+        probe = os.path.join(td, "probe")
+        env = dict(os.environ, AGSIST_FAKE_OFFSET=off, AGSIST_CLOCK_PROBE=probe, PYTHONDONTWRITEBYTECODE="1",
+                   PYTHONPATH=CLOCK, NODE_OPTIONS=f"--import {CLOCK}/clock.mjs", PATH=shim_bin(td) + os.pathsep + os.environ["PATH"])
+        env.pop("PLAYWRIGHT_PATH", None)
+        py = subprocess.run(["python3", "-c", "import datetime, time, zlib; from datetime import date, datetime as D, timezone; "
+                             "print(date.today(), D.now(timezone.utc).date(), D.utcnow().date(), time.strftime('%Y-%m-%d', time.gmtime()), "
+                             "isinstance(date(2020, 1, 1), date), D(2020, 1, 2).date())"],
+                            capture_output=True, text=True, env=env, cwd=td)
+        ck("python: today, now, utcnow and time move; real dates stay real",
+           py.stdout.split() == ["2027-01-01"] * 4 + ["True", "2020-01-02"], py.stdout + py.stderr)
+        nd = subprocess.run(["node", "-e", "const vm = require('vm'); console.log([new Date().toISOString().slice(0, 10), new Date(2020, 0, 2).getDate(), "
+                             "vm.runInNewContext('new Date().toISOString().slice(0, 10)'), vm.runInNewContext('Date.now()', { Date: { now: () => 5 } }), "
+                             "new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', year: 'numeric' }).format()].join(' '))"],
+                            capture_output=True, text=True, env=env, cwd=td)
+        ck("node: Date, a vm context and Intl move; a given date and a test's own clock do not",
+           nd.stdout.split() == ["2027-01-01", "2", "2027-01-01", "5", "2027"], nd.stdout + nd.stderr)
+        sh = subprocess.run(["date", "-u", "+%F"], capture_output=True, text=True, env=env)
+        sd = subprocess.run(["date", "-u", "-d", "2020-01-02", "+%F"], capture_output=True, text=True, env=env)
+        ck("shell date moves, date -d stays", (sh.stdout.strip(), sd.stdout.strip()) == ("2027-01-01", "2020-01-02"), (sh.stdout, sd.stdout))
+        os.remove(probe) if os.path.exists(probe) else None
+        subprocess.run(["python3", "-c", "import datetime; datetime.date(2020, 1, 1)"], env=env, cwd=td)
+        ck("probe: a given date is not a read of the clock", not os.path.exists(probe))
+        with open(os.path.join(td, "reads.py"), "w") as fh:
+            fh.write("import datetime\nprint(datetime.date.today())\n")
+        subprocess.run(["python3", "reads.py"], env=env, cwd=td, capture_output=True)
+        ck("probe: a file in the checkout that asks for today is seen", os.path.exists(probe) and "python" in open(probe).read())
+        os.remove(probe) if os.path.exists(probe) else None
+        with open(os.path.join(td, "reads.mjs"), "w") as fh:
+            fh.write("console.log(Date.now());\n")
+        subprocess.run(["node", "reads.mjs"], env=env, cwd=td, capture_output=True)
+        ck("probe: node too", os.path.exists(probe) and "node" in open(probe).read())
+    print(f"future_dates selftest: {'ok' if not bad else str(len(bad)) + ' failed'}")
+    return 1 if bad else 0
+
+
 def main(argv):
+    if "--selftest" in argv:
+        return selftest()
     opts = {"all": False, "fast": False, "browser": False, "checks": False, "only": "", "files": "", "jobs": "2", "baseline": True}
     dates = []
     for a in argv:
