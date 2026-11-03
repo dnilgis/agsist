@@ -421,7 +421,15 @@ test("browser: the reader's state first, the middle under it, only the needed fi
       const [sw, cw] = await p.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
       assert.ok(sw <= cw, `${u} no sideways scroll`);
       // the column names stay in view under the site header down a long table
-      await p.evaluate(() => window.scrollTo(0, document.querySelector(".cr-full tbody tr:nth-child(30)").getBoundingClientRect().top + scrollY));
+      // the site scrolls smoothly (styles.css): jump there at once and wait until the page is there, then measure
+      const want = await p.evaluate(() => {
+        const y = Math.round(document.querySelector(".cr-full tbody tr:nth-child(30)").getBoundingClientRect().top + scrollY);
+        window.scrollTo({ top: y, behavior: "instant" });
+        return Math.min(y, document.documentElement.scrollHeight - innerHeight);
+      });
+      await p.waitForFunction((y) => Math.abs(scrollY - y) <= 2, want);
+      await p.waitForTimeout(50);
+      assert.ok(await p.evaluate(() => document.querySelector(".cr-full").getBoundingClientRect().top < 0), `${u}: the table's top is above the screen`);
       const [thTop, navBottom] = await p.evaluate(() => [document.querySelector(".cr-full thead th").getBoundingClientRect().top, document.querySelector(".nav") ? document.querySelector(".nav").getBoundingClientRect().bottom : 0]);
       assert.ok(Math.abs(thTop - navBottom) <= 2, `${u}: header row sticks under the site header (${thTop} vs ${navBottom})`);
       const small = await p.evaluate(() => [...document.querySelectorAll(".cr-faq summary, .cr-other a, .cr-btn")].filter((e) => e.offsetParent && e.getBoundingClientRect().height < 44).map((e) => e.outerHTML.slice(0, 60)));
