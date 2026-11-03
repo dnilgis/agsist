@@ -15,8 +15,10 @@ only on a future date is a test or a gate that reads today's date and will break
     --no-baseline    skip the run at today's real date (then every failure is listed, not only the new ones)
 
 How the clock moves: scripts/dev/fakeclock/ holds a python sitecustomize.py (time.time, datetime.now/utcnow/today,
-date.today), a node --import preload (Date, Intl formatting of now, and every Playwright page) and a `date`
-wrapper, all driven by AGSIST_FAKE_OFFSET (seconds to add). Code needs no override of its own; a date without a
+date.today), a node --import preload (Date, Intl formatting of now, every vm context and every Playwright page)
+and a `date` wrapper, all driven by AGSIST_FAKE_OFFSET (seconds to add). File times (mtime) and git stay real, so a
+test that compares a file's mtime with Date.now() (test/claude-hooks.test.mjs, the verify gate) fails here and only
+here: that one is the harness, not the date. Code needs no override of its own; a date without a
 time runs at 13:00 UTC (7 AM CT in winter, the Daily's hour).
 
 What it runs: the node tests (test/*.test.mjs; the Chromium ones only with --browser), every scripts/test_*.py,

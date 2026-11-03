@@ -7,6 +7,7 @@ if (OFF) {
   const RealDate = globalThis.Date;
   const shift = (off) => {
     const RD = globalThis.Date;
+    if (RD.agsistFake) return;
     function FakeDate(...a) {
       if (!new.target) return new RD(RD.now() + off).toString();
       return a.length === 0 ? new RD(RD.now() + off) : new RD(...a);
@@ -16,6 +17,7 @@ if (OFF) {
     FakeDate.now = () => RD.now() + off;
     FakeDate.parse = RD.parse;
     FakeDate.UTC = RD.UTC;
+    FakeDate.agsistFake = true;
     globalThis.Date = FakeDate;
     const DTF = Intl.DateTimeFormat.prototype;
     const fmt = Object.getOwnPropertyDescriptor(DTF, "format").get;
@@ -25,6 +27,19 @@ if (OFF) {
   };
   shift(OFF);
   void RealDate;
+  // vm contexts get fresh built-ins (147 tests run components in one): shift those too, once per context
+  const vm = (await import("node:vm")).default;
+  const { syncBuiltinESMExports } = await import("node:module");
+  const src = `(${shift.toString()})(${OFF});`;
+  const done = new WeakSet();
+  const create = vm.createContext, runIn = vm.runInContext;
+  const prep = (c) => { if (!done.has(c)) { done.add(c); try { runIn(src, c); } catch { /* frozen context */ } } return c; };
+  vm.createContext = function (o, opt) { return prep(create.call(this, o, opt)); };
+  vm.runInNewContext = function (code, o, opt) { return runIn(code, vm.createContext(o ?? {}), opt); };
+  const sRunNew = vm.Script.prototype.runInNewContext;
+  vm.Script.prototype.runInNewContext = function (o, opt) { return this.runInContext(vm.createContext(o ?? {}), opt); };
+  void sRunNew;
+  syncBuiltinESMExports();
   // pages opened through Playwright: the same shift, in the page, before any of its scripts
   if (process.env.PLAYWRIGHT_PATH) {
     try {
