@@ -30,8 +30,9 @@ legal description or document number is in any email: land_alert.row() is the on
 reaches this file in, and the selftest feeds named rows and checks the output.
 
 MODES (the same three as send_rain_month.py):
-  dry      the default. Counts the list and renders samples (a made-up address and link id)
-           into the log. Sends nothing.
+  dry      the default. Counts the list (and, without --month, what it would get now: counts by data
+           month and by the state not posted yet) and renders samples (a made-up address and link id)
+           into the log. Without --month a sample is what a reader there gets now. Sends nothing.
   preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per sample
            (--sample, default Chetek 54728 at 25 mi and Charleston, IL 61920 at 25 mi), with
            "[Preview]" in the subject. BUILD-RULES 13: this is the copy that goes through the spam
