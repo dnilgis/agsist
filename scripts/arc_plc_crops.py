@@ -5,7 +5,9 @@ for scripts/build_arc_plc.py (which imports this file; it writes nothing itself)
 
 WHERE EVERY NUMBER COMES FROM (verified 2026-10-09)
   FSA's national tables in data/fsa/ [FSAT]. Tables 1, 2 and 4 are FSA's
-  Oct 9, 2026 copies (sites/default/files/2026-10/, data/fsa/manifest.tsv);
+  Oct 30, 2026 copies (sites/default/files/2026-11/, data/fsa/manifest.tsv;
+  against Oct 9 only the 2025/26 long and medium/short grain rice prices
+  moved, projected 0.104 and 0.147 to final 0.101 and 0.146 $/lb);
   Table 3 on file is still the Sept 11, 2026 one, and each is labeled with
   the date printed in its own header (TABLE_DATES, read at build time):
     2026_MYA.xlsx     Table 1: final MYA prices 2020/21 to 2024/25, 2025/26
@@ -59,10 +61,10 @@ from decimal import Decimal, ROUND_HALF_UP
 
 FSA_DIR = "data/fsa"
 TABLE_URLS = {   # FSA's own copies (data/fsa/manifest.tsv); the date in each label is checked against the table's header (TABLE_DATES)
-    "FSAT_MYA": ("FSA, 2026 MYA prices (Table 1, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_MYA.xlsx"),
-    "FSAT_ERP": ("FSA, 2026 effective reference prices (Table 2, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_ERP.xlsx"),
+    "FSAT_MYA": ("FSA, 2026 MYA prices (Table 1, Oct 30, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-11/2026_MYA.xlsx"),
+    "FSAT_ERP": ("FSA, 2026 effective reference prices (Table 2, Oct 30, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-11/2026_ERP.xlsx"),
     "FSAT_PLC": ("FSA, projected 2026 PLC payment rates (Table 3, Sept 11, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-09/2026_PLC.xlsx"),
-    "FSAT_ARC": ("FSA, 2026 ARC-CO benchmark prices (Table 4, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_ARC_CO.xlsx"),
+    "FSAT_ARC": ("FSA, 2026 ARC-CO benchmark prices (Table 4, Oct 30, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-11/2026_ARC_CO.xlsx"),
 }
 TABLE_DATES = {"2026_MYA": "FSAT_MYA", "2026_ERP": "FSAT_ERP", "2026_PLC": "FSAT_PLC", "2026_ARC_CO": "FSAT_ARC"}
 
@@ -306,7 +308,7 @@ def load_tables(load_xlsx, root="."):
                 for key, i in idx.items():
                     out["rows"][c][key] = _num(r[i])
     for c, row in out["rows"].items():
-        # Table 4 (Oct 9) repeats the 2026 loan rate Table 3 (Sept 11) gives: two answers would be two loan rates
+        # Table 4 (Oct 30) repeats the 2026 loan rate Table 3 (Sept 11) gives: two answers would be two loan rates
         if row.get("loan4") is not None and row.get("loan") is not None and abs(row["loan4"] - row["loan"]) > 1e-9:
             raise SystemExit(f"FSA's 2026 loan rate for {c}: Table 3 says {row['loan']}, Table 4 says {row['loan4']}; refusing")
     for stem, key in TABLE_DATES.items():

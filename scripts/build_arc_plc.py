@@ -4245,9 +4245,9 @@ def selftest():
         ck("2025 ERPs in FSA's Table 4 match ours (corn $4.42, soybeans $10.71, wheat $6.35)",
            (y25["crops"]["corn"]["erp"], y25["crops"]["soybeans"]["erp"], y25["crops"]["wheat"]["erp"]) == (4.42, 10.71, 6.35))
         # item 6: the source list's dates are the tables' own
-        ck("FSA tables 1, 2 and 4 are the Oct 9, 2026 copies; Table 3 says its own Sept 11 date",
-           inp25["xtab"]["dates"] == {"2026_MYA": "2026-10-09", "2026_ERP": "2026-10-09", "2026_PLC": "2026-09-11", "2026_ARC_CO": "2026-10-09"}
-           and all("2026-10/" in XC.TABLE_URLS[k][1] for k in ("FSAT_MYA", "FSAT_ERP", "FSAT_ARC")), str(inp25["xtab"].get("dates")))
+        ck("FSA tables 1, 2 and 4 are the Oct 30, 2026 copies; Table 3 says its own Sept 11 date",
+           inp25["xtab"]["dates"] == {"2026_MYA": "2026-10-30", "2026_ERP": "2026-10-30", "2026_PLC": "2026-09-11", "2026_ARC_CO": "2026-10-30"}
+           and all("2026-11/" in XC.TABLE_URLS[k][1] for k in ("FSAT_MYA", "FSAT_ERP", "FSAT_ARC")), str(inp25["xtab"].get("dates")))
         ck("rice timing from FSA's Table 1: long and medium grain Oct 29, 2027, temperate japonica Jan 31, 2028",
            [inp25["xtab"]["rows"][n].get("final_on") for n in ("Rice (long grain)", "Rice (med/short grain)", "Rice (temperate japonica)")]
            == ["2027-10-29", "2027-10-29", "2028-01-31"])
