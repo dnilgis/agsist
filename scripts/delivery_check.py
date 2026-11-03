@@ -67,7 +67,7 @@ LOG_MAX_BYTES = 25 * 1024 * 1024
 SENDERS = [
     {"workflow": "daily.yml", "senders": {"send_daily.py": "daily"}, "switch": None,
      "counts": "job send, step 'Send the Daily' (and the Sig-only test job, dry=1)",
-     "sig_scripts": ["daily_retry.py", "send_morning_brief.py", "notify_critic_status.py", "daily_late.py"]},
+     "sig_scripts": ["notify_critic_status.py"]},
     {"workflow": "land-alert.yml", "senders": {"send_land_alert.py": "land-alert"},
      "switch": ("repo", "LANDSALES_MONTHLY_LIVE", "1"), "counts": "the step that runs send_land_alert.py"},
     {"workflow": "rain-monthly.yml", "senders": {"send_rain_month.py": "rain-month"},
