@@ -63,7 +63,7 @@ test('the fetcher selftest passes and the workflow runs it before any fetch', ()
   const wf = fs.readFileSync(path.join(root, '.github/workflows/cattle-cash.yml'), 'utf8');
   assert.ok(wf.indexOf('--selftest') < wf.indexOf('run: python scripts/fetch_cattle_cash.py\n'), 'selftest first');
   // main gets the feed only; the probe's PDFs and text go to the raw branch (never deployed)
-  assert.match(wf, /FILES="data\/cattle-cash\.json"/);
+  assert.match(wf, /FILES="data\/cattle-cash\.json data\/hog-cash\.json"/);   // + cash hogs, same run (fx/hogprobe)
   assert.match(wf, /bash scripts\/push_raw\.sh "cattle-cash probe" data\/cattle-cash-raw\n/);
 });
 
