@@ -36,9 +36,10 @@ test("hand check: corn running average, 11 Dec settles Oct 1-15 sum to 54.12, /1
   assert.match(PAGE, /2026 harvest price so far: corn \$4\.92/);
 });
 
-test("each running card carries a chart of every settle, the provisional one hollow", () => {
+test("each running or finished card carries a chart of every settle, the provisional one hollow", () => {
   const figs = PAGE.match(/<figure class="hpg">[\s\S]*?<\/figure>/g) || [];
-  const running = HP.commodities.filter((c) => c.harvest && c.harvest.status === "running" && (c.harvest.series || []).length > 1);
+  // the builder (harvest_chart) draws the window while it runs and keeps it once final (Nov 2 2026: both legs final, 2 charts)
+  const running = HP.commodities.filter((c) => c.harvest && ["running", "final"].includes(c.harvest.status) && (c.harvest.series || []).length > 1);
   assert.equal(figs.length, running.length);
   running.forEach((c, i) => {
     const ser = c.harvest.series;
