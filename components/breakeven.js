@@ -37,7 +37,7 @@
   function day(iso) { var m = /^(\d{4})-(\d\d)-(\d\d)/.exec(iso || ''); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
   function money(v) { return '$' + (Math.abs(v) % 1 ? Math.abs(v).toFixed(2) : Math.round(Math.abs(v)).toLocaleString('en-US')); }
 
-  var MORE_JS = '/components/breakeven-more.js?v=3', _hadSaved = false;
+  var MORE_JS = '/components/breakeven-more.js?v=4', _hadSaved = false;
   var _livePrices = null, _pricesFetched = null, _beYear = '0', _yearPicked = false, _suppressSeed = false, _region = 'n';
   var SRC = {};          /* field id -> {k: kind, t: text} */
   var _ls = null; try { _ls = W.localStorage; } catch (e) { _ls = null; }
@@ -327,7 +327,7 @@
       var bits = [], k = function (id) { return (SRC[id] || {}).k; };
       if (cnty && (k('land') === 'county' || k('yield') === 'county')) bits.push((k('land') === 'county' && k('yield') === 'county' ? 'Rent and trend yield' : k('land') === 'county' ? 'Rent' : 'Trend yield') + ' from ' + cnty + (ci.auto ? ' (your saved location)' : ''));
       if (k('other') === 'arc') bits.push('an ARC/PLC estimate in other revenue');
-      if (k('basis') === 'state') bits.push('basis: ' + SRC.basis.t.split(',')[0].replace(/ basis$/, ''));
+      if (k('basis') === 'state') bits.push('basis: ' + SRC.basis.t.split(',')[0].replace(/ basis$/, ' median'));
       var rr = region(); if (crop() !== 'wheat' && rr && ['seed', 'chemicals', 'machinery'].some(function (x) { return k(x) === 'budget'; })) bits.push('other costs from farmdoc\u2019s 2027 ' + rr.name + ' budget');
       if (k('fertilizer') === 'fert') bits.push('fertilizer at co-op prices posted through ' + day(FERT.asof));
       var t = bits.join('; ');

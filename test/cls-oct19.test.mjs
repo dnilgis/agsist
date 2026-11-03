@@ -62,7 +62,7 @@ test("fertilizer.html: the cards and the lede line are baked current from the sh
 test("price-local placeholder: same words as the line, for the saved state only", () => {
   const PL = (() => { const m = { exports: {} }; vm.runInNewContext(read("components/price-local.js"), { module: m, Intl, Date }); return m.exports; })();
   const h = PL.placeholder("IA", ["corn", "soybeans"]);
-  assert.match(h, /^<b>Iowa corn:<\/b> median basis <b>00¢ under<\/b> Dec '00 futures, about <b>\$0\.00<\/b> cash on the Oct 00 settle\. <span class="pl-s">000 elevators, Oct 00\.<\/span><br><b>Iowa soybeans:<\/b> /);
+  assert.match(h, /^<b>Iowa corn:<\/b> basis <b>00¢ under<\/b> Dec '00 futures, about <b>\$0\.00<\/b> cash on the Oct 00 settle\. <span class="pl-s">The median of 000 elevators, Oct 00\.<\/span><br><b>Iowa soybeans:<\/b> /);
   assert.match(h, /Nov '00 futures/);
   assert.match(h, / <a href="\/cash-bids" tabindex="-1">Bids near you &rarr;<\/a>$/);
   assert.equal(PL.placeholder("", ["corn"]), "");
@@ -150,7 +150,7 @@ test("browser: the homepage with a saved ZIP shifts under 0.1, at 390 and 1280",
       assert.ok(r.cls < 0.1, `/ saved ZIP ${w}: CLS ${r.cls.toFixed(4)} ${JSON.stringify(r.src)}`);
       // the reserved state line ends as the real one (or goes away): never left as the blank shape
       assert.ok(r.pl && !r.pl.wait, `${w}: the state line left its placeholder (${JSON.stringify(r.pl)})`);
-      if (!r.pl.hidden) assert.match(r.pl.text, /^Iowa corn: median basis /);
+      if (!r.pl.hidden) assert.match(r.pl.text, /^Iowa corn: basis /);
       assert.doesNotMatch(r.pl.text, /00¢|\$0\.00/);
     }
   } finally { await browser.close(); srv.close(); }

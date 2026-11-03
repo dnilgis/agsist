@@ -187,7 +187,7 @@ test("the top box gives the A2809 rate at the posted price and next year's corn"
     assert.equal(await txt(pg, "#nc-nlb"), "$0.50");
     assert.equal(await txt(pg, "#nc-ratio"), "0.109");
     assert.match(await txt(pg, "#ans-line"), /Against \$4\.60 corn \(Dec '\d\d futures \$5\.00 less Iowa basis \$0\.40\)/);
-    assert.match(await txt(pg, "#ans-src"), /less \$0\.40, the median Iowa corn basis this week \(50 elevators, against Dec '26\)/);
+    assert.match(await txt(pg, "#ans-src"), /less \$0\.40, the Iowa corn basis this week \(median of 50 elevators, against Dec '26\)/);
     assert.equal(await txt(pg, "#nc-col"), "0.10");
     assert.equal(await txt(pg, "#ans-rate"), "120");
     assert.equal(await txt(pg, "#ans-range"), "Profitable range 105–130");
@@ -218,7 +218,7 @@ test("the top box gives the A2809 rate at the posted price and next year's corn"
     assert.equal(await pg.inputValue("#nc-corn"), "4.60");
     assert.equal(await txt(pg, "#nc-ratio"), "0.109");
     assert.equal(await txt(pg, "#ans-rate"), "165");
-    assert.match(await txt(pg, "#ans-src"), /less \$0\.40, the median Iowa corn basis this week \(50 elevators, against Dec '26\)/);
+    assert.match(await txt(pg, "#ans-src"), /less \$0\.40, the Iowa corn basis this week \(median of 50 elevators, against Dec '26\)/);
     // Urea at its posted $590: 0.641 / 4.60 = 0.139 -> 0.15 -> 150.
     await pg.selectOption("#nc-fert", "46");
     assert.equal(await pg.inputValue("#nc-fertprice"), "590");

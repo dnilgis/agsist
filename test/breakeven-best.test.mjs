@@ -140,7 +140,7 @@ test("the saved location fills the county, rent, trend yield and an ARC/PLC esti
     /* hand math: 632 budget lines + fertilizer at 217 bu + 290 rent, less 6.44 */
     const total = 632 + fertAt("corn", yld) + 290, be = (total - 6.44) / yld;
     assert.equal(await txt(pg, "#ans-be"), "$" + be.toFixed(2));
-    assert.match(await txt(pg, "#ans-from"), /^Rent and trend yield from Story County, IA \(your saved location\); an ARC\/PLC estimate in other revenue; basis: Iowa median corn; other costs from farmdoc.s 2027 northern Illinois budget; fertilizer at co-op prices posted through /);
+    assert.match(await txt(pg, "#ans-from"), /^Rent and trend yield from Story County, IA \(your saved location\); an ARC\/PLC estimate in other revenue; basis: Iowa corn median; other costs from farmdoc.s 2027 northern Illinois budget; fertilizer at co-op prices posted through /);
     assert.deepEqual(srv.hits.filter((h) => h.startsWith("/data/breakeven/")), ["/data/breakeven/IA.json"]);
 
     /* the 2027 crop: the trend moves one slope, the 2027 estimate replaces 2026 */
@@ -324,7 +324,7 @@ test("a saved state opens on its median basis for the picked contract, labeled, 
     await pg.waitForFunction(() => document.getElementById("basis").value !== "0");
     assert.equal(await pg.inputValue("#basis"), e.median.toFixed(2));
     const tag = await txt(pg, "#src-basis");
-    assert.match(tag, new RegExp(`^Iowa median corn basis, ${e.companies != null ? `${e.n} locations, ${e.companies} companies` : `${e.n} elevators`}, Dec '26 delivery, as of [A-Z][a-z]{2} \\d+, \\d{4}\\. Basis by state$`), tag);
+    assert.match(tag, new RegExp(`^Iowa corn basis, median of ${e.n} elevators${e.companies != null ? `, ${e.companies} companies` : ``}, Dec '26 delivery, as of [A-Z][a-z]{2} \\d+, \\d{4}\\. Basis by state$`), tag);
     assert.equal(await pg.$eval("#src-basis a", (a) => a.getAttribute("href")), "/basis");
     /* futures needed = cash break-even - basis */
     const be = Number((await txt(pg, "#ans-be")).slice(1));

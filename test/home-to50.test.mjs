@@ -120,7 +120,7 @@ test("no location: the bid card offers the ZIP box and a state basis, numbers as
 
     await pg.selectOption("#bids-noloc .hn-sel", "IA");
     const rows = await pg.$$eval("#bids-noloc .hn-rows li", (ls) => ls.map((l) => l.textContent));
-    assert.deepEqual(rows, ["Corn−37½¢Dec '2612 elevators, +½¢ on the week"]);
+    assert.deepEqual(rows, ["Corn−37½¢Dec '26median of 12 elevators, +½¢ on the week"]);
     const fine = await pg.textContent("#bids-noloc .hn-fine");
     assert.match(fine, /read Oct 16/);
     assert.match(fine, /Too few bids to print: Soybeans\./);
@@ -130,7 +130,7 @@ test("no location: the bid card offers the ZIP box and a state basis, numbers as
 
     await pg.selectOption("#bids-noloc .hn-sel", "KS");
     assert.deepEqual(await pg.$$eval("#bids-noloc .hn-rows li", (ls) => ls.map((l) => l.textContent)),
-      ["HRW wheat−67½¢Dec '2624 elevators, no change on the week"]);
+      ["HRW wheat−67½¢Dec '26median of 24 elevators, no change on the week"]);
     assert.ok(!/Too few/.test(await pg.textContent("#bids-noloc .hn-fine")), "thin wheat classes are not listed");
 
     await pg.selectOption("#bids-noloc .hn-sel", "UT");

@@ -159,8 +159,8 @@ test("tariffs: the state's share of the US crop and its basis, no state export f
   assert.match(t, /Corn : Iowa’s crop, 2,803 million bu, is 17\.5% of the 16,034 million bu US crop\./);
   assert.match(t, /USDA does not publish exports by state, so no state export share is printed here\./);
   const w = text(run("tariffs", WI, { "state-stats": stats, wasde, "basis-states": basis }));
-  assert.match(w, /Soybeans : Wisconsin’s crop, 120 million bu, is 2\.6% .*Basis 82¢ under Nov '26, 2¢ weaker on the week \(32 elevators\)\./);
-  assert.match(w, /Basis 56½¢ under Dec '26, unchanged on the week \(46 elevators\)\./);
+  assert.match(w, /Soybeans : Wisconsin’s crop, 120 million bu, is 2\.6% .*Basis 82¢ under Nov '26, 2¢ weaker on the week \(median of 32 elevators\)\./);
+  assert.match(w, /Basis 56½¢ under Dec '26, unchanged on the week \(median of 46 elevators\)\./);
   // a forecast from a different month than the WASDE is not divided into it
   const sep = { stateStats: { IA: { ...stats.stateStats.IA, forecast_month: "September" } } };
   assert.doesNotMatch(text(run("tariffs", IA, { "state-stats": sep, wasde })), /%/);

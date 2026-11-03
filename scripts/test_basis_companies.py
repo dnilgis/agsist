@@ -204,25 +204,27 @@ st = BM.state_basis([dict(r, source=f"s{i}", group="corn", crop="corn", commodit
 j = BM.headline_json(st)
 check(j["n"] == 203 and j["companies"] == 23, f"headline_json carries n and companies: {j}")
 
-# ONE WORDING: every page script prints the count with a locCo helper that says
-# the same words as the state pages' Python (run in node, not matched as text:
-# the size-capped scripts carry a shorter spelling of it)
+# ONE WORDING: every page script prints the count beside a state middle with a medOf
+# helper that says the same words as the state pages' Python med_of (Sig, Nov 3 2026:
+# "median of N elevators, M companies"; run in node, not matched as text: the
+# size-capped scripts carry a shorter spelling of it)
 import json as _json  # noqa: E402
 import subprocess  # noqa: E402
 CASES = [[203, 23], [1, 1], [7, None]]
-WANT = ["203 locations, 23 companies", "1 location, 1 company", "7 elevators"]
+WANT = ["median of 203 elevators, 23 companies", "median of 1 elevator, 1 company", "median of 7 elevators"]
 for f in ("basis-map", "breakeven-more", "cb-vs-state", "combine-loss-ui", "fast-facts", "grain-shrink-ui",
           "harvest-wait-ui", "home", "near-coop", "place", "price-local", "your-area", "ys-tariffs"):
     src = open(os.path.join(ROOT, "components", f + ".js"), encoding="utf-8").read()
-    m = re.search(r"function locCo\(n, ?m\) ?\{[^\n]*\}", src)
-    check(m is not None, f"components/{f}.js: no locCo helper")
+    check("locCo" not in src, f"components/{f}.js: still carries the old 'N locations, M companies' helper")
+    m = re.search(r"function medOf\(n, ?m\) ?\{[^\n]*\}", src)
+    check(m is not None, f"components/{f}.js: no medOf helper")
     if not m:
         continue
-    check(src.count("locCo(") >= 2, f"components/{f}.js: locCo defined but not used")
-    js = m.group(0) + "; console.log(JSON.stringify(" + _json.dumps(CASES) + ".map(function (c) { return locCo(c[0], c[1] === null ? undefined : c[1]); })));"
+    check(src.count("medOf(") >= 2, f"components/{f}.js: medOf defined but not used")
+    js = m.group(0) + "; console.log(JSON.stringify(" + _json.dumps(CASES) + ".map(function (c) { return medOf(c[0], c[1] === null ? undefined : c[1]); })));"
     out = subprocess.run(["node", "-e", js], capture_output=True, text=True)
     got = _json.loads(out.stdout or "null")
-    check(got == WANT, f"components/{f}.js: locCo says {got}")
+    check(got == WANT, f"components/{f}.js: medOf says {got}")
 hub = open(os.path.join(ROOT, "basis.html"), encoding="utf-8").read()
 # Sig, Nov 3 2026: the state middle is labelled "median of N elevators", with the company count beside it.
 # basis.html's medOf (run in node) and the pages' med_of say the same words.

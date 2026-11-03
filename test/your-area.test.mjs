@@ -69,9 +69,9 @@ test("with a saved location: state basis, implied cash, harvest pace, all dated"
   const h = Y.build({ loc: WI, mode: "daily", basis, prices, progress, now: NOW });
   const t = text(h);
   assert.match(t, /Your area: Wisconsin/);
-  assert.match(t, /Corn basis 56½¢ under Dec '26, unchanged on the week \(46 elevators\)\./);
+  assert.match(t, /Corn basis 56½¢ under Dec '26, unchanged on the week \(median of 46 elevators\)\./);
   assert.match(t, /Dec '26 settled \$4\.74¼ Oct 16: about \$4\.18 at that basis\./);
-  assert.match(t, /Soybeans basis 82¢ under Nov '26, 2¢ weaker on the week \(32 elevators\)\..*Nov '26 settled \$12\.61¼ Oct 16: about \$11\.79/);
+  assert.match(t, /Soybeans basis 82¢ under Nov '26, 2¢ weaker on the week \(median of 32 elevators\)\..*Nov '26 settled \$12\.61¼ Oct 16: about \$11\.79/);
   assert.doesNotMatch(t, /closed/);
   assert.match(t, /Harvest in Wisconsin: corn 16% \(5-yr avg 18%\), soybeans 54% \(5-yr avg 47%\)\./);
   assert.match(t, /bids as of Oct 16, week vs Oct 9/);

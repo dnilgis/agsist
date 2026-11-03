@@ -4,8 +4,8 @@
    components/manure-value.js, shared with /manure-value. */
 (function(){
 'use strict';
-/* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
-function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
+/* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
 
 /* ─── TAB SYSTEM ─────────────────────────────────────────────────────── */
 var tabs=document.querySelectorAll('.ff-tab');
@@ -443,7 +443,7 @@ function calcNC(){
   if(cornTyped)src.push('corn price: yours');
   else if(CORN.fut!=null){
     var cl=(CORN.label==='nearby'?'nearby':CORN.label)+' corn futures $'+CORN.fut.toFixed(2)+(CORN.date?', CBOT close '+fmtDay(CORN.date):'')+', delayed';
-    if(b)cl+=(b.median<0?' less ':' plus ')+'$'+Math.abs(b.median).toFixed(2)+', the median '+b.name+' corn basis this week ('+locCo(b.n,b.companies)+', against '+b.label+')';
+    if(b)cl+=(b.median<0?' less ':' plus ')+'$'+Math.abs(b.median).toFixed(2)+', the '+b.name+' corn basis this week ('+medOf(b.n,b.companies)+', against '+b.label+')';
     src.push(cl);
   }
   t('ans-src',src.join(' · '));

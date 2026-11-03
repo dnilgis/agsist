@@ -11,8 +11,8 @@
    zip, crop, delivery}). Tests: test/cb-vs-state.test.mjs. */
 (function (root) {
   'use strict';
-  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
-  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var Z3 = '005NY006--010MA028RI030NH039ME050VT055MA056VT060CT070NJ090--100NY150PA197DE200DC201VA202DC206MD220VA247WV270NC290SC300GA320FL340--341FL350AL370TN386MS398GA400KY430OH460IN480MI500IA530WI550MN569DC570SD580ND590MT600IL630MO660KS680NE700LA716AR730OK733TX734OK750TX800CO820WY832ID840UT850AZ870NM885TX889NV900CA962--967HI969--970OR980WA995AK';
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' }, MIN = 3;
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybean']];
@@ -60,7 +60,7 @@
     return rows.map(function (r) {
       var d = r.diff, cmp = Math.abs(d) < 0.125 ? 'even with' : qc(d) + '¢ ' + (d > 0 ? 'stronger than' : 'weaker than');
       return '<b>' + r.label + ' basis here vs ' + esc(r.name) + ':</b> the middle of ' + r.n + ' elevators in this search is ' + words(r.search) + ' ' + esc(r.contract) +
-        ', ' + cmp + ' the ' + esc(r.name) + ' middle (' + words(r.state) + ', ' + locCo(r.stateN, r.stateCo) + ').';
+        ', ' + cmp + ' the ' + esc(r.name) + ' middle (' + words(r.state) + ', ' + medOf(r.stateN, r.stateCo) + ').';
     }).join('<br>') + ' <span class="cb-vs-s">Each elevator once, at its nearest bid on the same futures month. State middle as of ' + ct(r0.asOf) +
       (r0.path ? ', <a href="' + esc(r0.path) + '">' + esc(r0.name) + ' basis</a>' : '') + '.</span>';
   }
