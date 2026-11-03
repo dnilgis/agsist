@@ -67,6 +67,7 @@ try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit be
 except ImportError: pass
 import datetime
 import glob
+import hashlib
 import json
 import math
 import os
@@ -237,6 +238,19 @@ class Land:
         return out
 
 
+def sale_id(st, r):
+    """A sale's id: opaque and stable across rebuilds (a hash of the state, county, document, deed date and
+    price of its first deed). The county sale page gives that sale's row id="s-<id>" and the land sale email
+    links each sale to it (Sig, Nov 3, 2026). build_land_sales.sale_id is this one. No name goes into it."""
+    k = "|".join(str(x) for x in (st, r.get("fips"), r.get("doc"), str(r.get("date") or "")[:10], BLS.js_round(BLS.num(r.get("price")) or 0)))
+    return hashlib.sha1(k.encode("utf-8")).hexdigest()[:10]
+
+
+def county_slug(name):
+    """The county part of a county sale page's address: land-sales/<state>/<slug>."""
+    return re.sub(r"[^a-z0-9]+", "-", str(name or "").lower()).strip("-") + "-county"
+
+
 def fresh(f, month_last):
     """True when the county file was fetched after the month ended."""
     return bool(f) and str(f.get("fetched_utc") or "")[:10] > month_last
@@ -268,7 +282,7 @@ def row(r, d):
     return {"when": r["when"], "basis": "recorded" if r["has_rec"] else "sale date", "acres": a,
             "price": BLS.js_round(BLS.num(r.get("price")) or 0), "ppa": r.get("ppa"),
             "place": r.get("muniName") or None, "county": r.get("county"), "fips": r.get("fips"), "st": r["st"], "mi": d,
-            "pt": r["pt"], "bldg": with_bldg}
+            "pt": r["pt"], "bldg": with_bldg, "sid": sale_id(r["st"], r)}
 
 
 def windows(year, m0):
@@ -448,7 +462,8 @@ def selftest():
        (rep["no_acres"], rep["unplaced"]))
     ck("with buildings by property class, not by deed text; $/acre from the shared rule",
        rep["rows"][3]["bldg"] is True and rep["rows"][4]["bldg"] is False and rep["rows"][0]["ppa"] == 5000, rep["rows"][3:])
-    ck("a row carries no name, parcel, legal or document", all(set(r) == {"when", "basis", "acres", "price", "ppa", "place", "county", "fips", "st", "mi", "pt", "bldg"} for r in rep["rows"])
+    ck("a row carries no name, parcel, legal or document", all(set(r) == {"when", "basis", "acres", "price", "ppa", "place", "county", "fips", "st", "mi", "pt", "bldg", "sid"} for r in rep["rows"])
+       and all(re.fullmatch(r"[0-9a-f]{10}", r["sid"]) for r in rep["rows"])
        and not re.search(r"SELLERNAME|BUYERNAME|SECRET LEGAL|P-0|D0", json.dumps(rep)))
     med = rep["median"]
     ck("median: both windows have 10+ sales and compare, so both print with their counts", med["cur"] and med["cur"]["n"] >= 10 and med["prev"]["n"] >= 10, med)

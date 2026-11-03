@@ -155,6 +155,16 @@ def update_url(year, m0, repo):
     return SITE + "/" + p if (Path(repo) / (p + ".html")).is_file() else None
 
 
+def sale_url(r, repo):
+    """The sale's own row on its county sale page (Sig, Nov 3, 2026): SITE/land-sales/<state>/<county>?utm...#s-<sale id>.
+    The id is land_alert.sale_id (a hash, never a name); build_land_sales gives the row that id. A county page
+    not in this checkout: the farm sales hub instead, so every sale line still has its one link."""
+    p = "land-sales/%s/%s" % (LA.STATE_SLUGS.get(r["st"], ""), LA.county_slug(r["county"]))
+    if LA.STATE_SLUGS.get(r["st"]) and r.get("sid") and (Path(repo) / (p + ".html")).is_file():
+        return tag(SITE + "/" + p) + "#s-" + r["sid"]
+    return tag(SITE + "/land-sales/")
+
+
 def sale_line(r, mark=True):
     """One sale in words: date, acres, $/acre, price, where, how far. Nothing else.
     mark: say "(deed date)" on a row listed by its deed date (an email that mixes the two)."""
@@ -229,7 +239,7 @@ def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh="posted"
     if by_sale:
         blocks.append(("p", "%s sales are listed by the date on the deed for now: my copy of the state's file does not carry the recording date yet."
                        % " and ".join(LA.STATE_NAMES[s] for s in by_sale)))
-    blocks.append(("sales", rep["rows"]))
+    blocks.append(("sales", [dict(r, url=sale_url(r, repo)) for r in rep["rows"]]))
     extra = []
     if rep["more"]:
         extra.append("%d more %s within %d miles" % (rep["more"], "sale" if rep["more"] == 1 else "sales", radius))
@@ -293,12 +303,12 @@ def render(email, base, secret, lid, parts, from_addr, preview=False):
                 when = LA.short_day(r["when"]) + (" (deed date)" if mixed and r["basis"] == "sale date" else "")
                 where = (r["place"] + ", " if r.get("place") else "") + "%s Co., %s" % (r["county"], r["st"]) + (", with buildings" if r.get("bldg") else "")
                 NW = ";white-space:nowrap"
-                h.append("<tr>" + TD % (NW, e(when)) + TD % (NW + ";text-align:right", e(LA.acres_text(r["acres"])))
+                h.append("<tr>" + TD % (NW, '<a href="%s" style="color:#8a5a00">%s</a>' % (e(r["url"]), e(when))) + TD % (NW + ";text-align:right", e(LA.acres_text(r["acres"])))
                          + TD % (NW + ";text-align:right", e(LA.money(r["ppa"]) if r.get("ppa") is not None else "n/a"))
                          + TD % (NW + ";text-align:right", e(LA.money(r["price"]))) + TD % ("", e(where))
                          + TD % (";text-align:right", "%d" % LA.BLS.js_round(r["mi"])) + "</tr>")
             htm.append("".join(h) + "</tbody></table>")
-            txt.append("\n".join(sale_line(r, mixed) for r in v))
+            txt.append("\n".join(sale_line(r, mixed) + "\n" + r["url"] for r in v))
     text = "\n\n".join(txt) + "\n\n-- \n" + SN.FOOT_LINE + "\nUnsubscribe: " + stop + "\n" + SN.POSTAL + "\n"
     foot = '%s<br><a href="%s" style="color:#6b6b6b">Unsubscribe</a><br>%s' % (e(SN.FOOT_LINE), e(stop), e(SN.POSTAL))
     doc = ('<!doctype html><html><head><meta charset="utf-8">'
@@ -723,7 +733,8 @@ def selftest():
     txt, htm = m.get_body(("plain",)).get_content(), m.get_body(("html",)).get_content()
     ck("subject: radius, ZIP, month and the count", m["Subject"] == "Farm sales within 25 miles of 54001, September: 2 recorded", m["Subject"])
     ck("the sales, nearest first: date, acres, $/acre, price, where, miles",
-       "Sep 10: 80 acres at $5,000 an acre ($400,000), Near town, Testing County, WI, 7 miles\nSep 3: 40 acres at $7,500 an acre ($300,000, with buildings), Mid town, Testing County, WI, 14 miles" in txt, txt[:900])
+       "Sep 10: 80 acres at $5,000 an acre ($400,000), Near town, Testing County, WI, 7 miles\n" + SITE + "/land-sales/?" + UTM
+       + "\nSep 3: 40 acres at $7,500 an acre ($300,000, with buildings), Mid town, Testing County, WI, 14 miles\n" + SITE + "/land-sales/?" + UTM in txt, txt[:900])
     ck("no monthly update page in the checkout: no link to one", "land-sales/2026-09" not in txt)
     os.makedirs(os.path.join(tmp, "land-sales"), exist_ok=True)
     open(os.path.join(tmp, "land-sales", "2026-09.html"), "w").write("x")
@@ -1130,6 +1141,40 @@ def lag_selftest(ck, C):
     s5 = SMTP()
     rc, log = go(["--catch-up"], "2026-11-19 13:45", s5)
     ck("and the next catch-up mails nobody", rc == 0 and not s5.msgs, log)
+
+    # every sale links to its own row on the county sale page (Sig, Nov 3): build the pages from these files
+    # the way land-data does, then check each sale line's one link against the built page
+    import build_land_sales as BS
+    from pathlib import Path as _P
+    os.makedirs(os.path.join(tmp, "data", "land-sales"), exist_ok=True)
+    open(os.path.join(tmp, "grain-emc.html"), "w").write("<script>/* agsist-theme-early */</script><script>/* agsist-ga-guard */</script>")
+    json.dump({"labels": {"live": "Sales on this site"}, "note": "", "states": [{"st": "IL", "name": "Illinois", "status": "live"},
+                                                                                 {"st": "WI", "name": "Wisconsin", "status": "live"}]},
+              open(os.path.join(tmp, "data", "land-sales", "coverage.json"), "w"))
+    texts = BS.build(_P(tmp))
+    for pth, t in texts.items():
+        os.makedirs(os.path.dirname(os.path.join(tmp, pth)), exist_ok=True)
+        open(os.path.join(tmp, pth), "w", encoding="utf-8").write(t)
+    land2 = LA.Land(tmp)
+    ok_lines, ok_anchor, ok_names, n_rows = True, True, True, 0
+    for z, mi, ym in (("54451", 10, (2026, 9)), ("61920", 25, (2026, 9))):
+        pz, _ = compose(z, mi, ym[0], ym[1], land2, zips, "2026-11-19", tmp)
+        mz = render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, pz, "news@agsist.com")
+        hz, tz = mz.get_body(("html",)).get_content(), mz.get_body(("plain",)).get_content()
+        rows_h = re.findall(r"<tbody>(.*)</tbody>", hz, re.S)[0].split("</tr>")[:-1]
+        n_rows += len(rows_h)
+        for rh in rows_h:
+            links = email_links.hrefs(rh)
+            ok_lines &= len(links) == 1
+            m = re.fullmatch(re.escape(SITE) + r"/land-sales/([a-z-]+)/([a-z0-9-]+)\?" + re.escape(UTM) + r"#(s-[0-9a-f]{10})", links[0]) if links else None
+            ok_anchor &= bool(m) and ('<tr id="%s"' % m.group(3)) in texts.get("land-sales/%s/%s.html" % (m.group(1), m.group(2)), "")
+            ok_names &= not re.search(r"NAME|PIN|LEGAL|DOC", links[0] if links else "")
+        tl = tz.split("\n")
+        ok_lines &= all(tl[i + 1].startswith(SITE + "/land-sales/") and "#s-" in tl[i + 1] for i, x in enumerate(tl) if re.match(r"[A-Z][a-z]{2} \d+: ", x))
+        email_links.check_message(mz)
+    ck("every sale in the email has exactly one link, in the HTML row and under the line in the text", n_rows >= 2 and ok_lines)
+    ck("each link opens its sale's own row on the built county page (#s-<id>)", ok_anchor)
+    ck("no name, parcel, legal or document in any sale link", ok_names)
     shutil.rmtree(tmp, ignore_errors=True)
 
 
