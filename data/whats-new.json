@@ -44,6 +44,13 @@
    "link": "/"
   },
   {
+   "id": "2026-11-02-seofix",
+   "date": "2026-11-02",
+   "title": "ARC or PLC county pages open with the answer",
+   "line": "Each ARC or PLC county page now opens with one plain sentence: what each main crop leans toward for 2026, its benchmark yield and the data date.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-01-dailyfacts",
    "date": "2026-11-01",
    "title": "A new fact in the Daily every morning",
