@@ -3789,7 +3789,7 @@ def selftest():
             < fr.index('<div class="cbt-top">'), "answer, table, state line, then the hold box"
         cmp_ = re.search(r'<p class="cbt-cmp">(.*?)</p>', fr).group(1)
         assert cmp_.startswith("Corn basis at Op kept, \u221225\u00a2 vs Dec &#x27;26, is 6\u00bd\u00a2 stronger than the "
-                               "Nebraska middle (\u221231\u00bd\u00a2 vs Dec &#x27;26, 6 locations, 6 companies)."), cmp_
+                               "Nebraska middle (\u221231\u00bd\u00a2 vs Dec &#x27;26, median of 6 elevators, 6 companies)."), cmp_
         assert "Soybean basis" not in cmp_, "fewer than three soybean bids on Nov '26: no middle, no comparison"
         # three questions answered from the page's own numbers; the visible FAQ and
         # the FAQPage JSON-LD say the same words
@@ -3812,7 +3812,7 @@ def selftest():
                              "(Fremont) for delivery by Oct 9, posted Oct 7, 2026. The highest soybean bid is $9.85"), a1
         assert '<div class="v">$3.95</div>' in ne and '<div class="v">$9.85</div>' in ne, "answer prices are the cards'"
         assert nfaq[1]["acceptedAnswer"]["text"].startswith(
-            "The middle corn basis in Nebraska is \u221231\u00bd\u00a2 vs Dec '26, across 6 locations, 6 companies (range "), nfaq[1]
+            "The middle corn basis in Nebraska is \u221231\u00bd\u00a2 vs Dec '26, the median of 6 elevators, 6 companies (range "), nfaq[1]
         assert ne.index('class="cbt-faq"') > ne.index('id="basis"'), "FAQ after the basis block"
         wp = next(g for g in blks[0]["@graph"] if g["@type"] == "WebPage")
         sm_lm = re.search(r"<loc>https://agsist\.com/cash-bids/nebraska/fremont</loc><lastmod>([^<]+)</lastmod>",
@@ -3887,8 +3887,8 @@ def selftest():
         # the best bid first, the misread board left out and said so
         assert '<h2 id="basis">Nebraska basis today</h2>' in ne and 'href="/cash-bids/nebraska/#basis"' in fr
         assert ne.index('id="best"') < ne.index('id="basis"') < ne.index('id="elevators"') < ne.index('id="towns"')
-        assert "\u221231\u00bd\u00a2</span></div><div class=\"l\">Corn: middle basis vs Dec '26" in ne, "median of six Dec bids (-31.5c, as posted, not rounded to -32)"
-        assert "<b>6</b> locations, <b>6</b> companies" in ne and CO_RULE in ne and "$3.95</div><div class=\"l\">Top corn bid" in ne
+        assert "\u221231\u00bd\u00a2</span></div><div class=\"l\">Corn basis vs Dec '26" in ne, "median of six Dec bids (-31.5c, as posted, not rounded to -32)"
+        assert "Median of <b>6</b> elevators, <b>6</b> companies" in ne and CO_RULE in ne and "$3.95</div><div class=\"l\">Top corn bid" in ne
         assert "read as a misread board and left out" in ne and 'data-state-table="NE"' in ne
         assert "/components/state-bids.js?v=2" in ne and "/basis/" not in ne
         assert re.search(r'<meta name="twitter:description" content="Bids from \d+ elevators across 2 Nebraska towns\. '
@@ -3916,7 +3916,7 @@ def selftest():
         assert bs["states"]["NE"]["elevators"] == 7
         hub_html = open(hubp).read()
         assert 'href="/cash-bids/nebraska/#basis"' in hub_html and "old" not in hub_html, hub_html
-        assert 'href="/cash-bids/iowa/#basis"' in hub_html and "3 locations, 3 companies" in hub_html and CO_RULE in hub_html
+        assert 'href="/cash-bids/iowa/#basis"' in hub_html and "median of 3 elevators, 3 companies" in hub_html and CO_RULE in hub_html
         assert re.search(r'href="/cash-bids/nebraska/">Nebraska</a> <span class="mut">7 elevators in 2 towns', hub_html), "the states list on /basis"
         thin = hub_rank_html({"generated": "2026-10-07T18:00:00Z", "states": {"MO": {
             "name": "Missouri", "path": "/cash-bids/missouri/#basis",
@@ -4120,9 +4120,9 @@ def _selftest_answer():
     nv_line = state_compare(pnv, {"corn": {"contracts": [{"contract": dec, "n": 349, "companies": 51,
                                                           "median": -0.40}]}}, "Iowa")
     assert nv_line[1] == ["Corn basis at Lincolnway Energy LLC, \u221230\u00a2 vs Dec '26, is 10\u00a2 stronger than "
-                          "the Iowa middle (\u221240\u00a2 vs Dec '26, 349 locations, 51 companies)."], nv_line
+                          "the Iowa middle (\u221240\u00a2 vs Dec '26, median of 349 elevators, 51 companies)."], nv_line
     assert nv_line[0][0]["faq"] == ("That is 10\u00a2 stronger than the Iowa middle (\u221240\u00a2 vs Dec '26, "
-                                    "349 locations, 51 companies)."), nv_line
+                                    "median of 349 elevators, 51 companies)."), nv_line
     # every other copy of the pick takes the same row
     assert top_nearby(lw["rows"] + key["rows"])["corn"][0] == 4.18
     assert board_glance(dict(lw, rows=lw["rows"]))["corn"][:2] == (4.18, "2026-11")
@@ -4199,9 +4199,9 @@ def _selftest_answer():
             "soybeans": {"contracts": [{"contract": nov, "n": 4, "median": -0.80}]}}
     out, lines = state_compare(pk, summ, "Wisconsin")
     assert lines == ["Corn basis at Beta Co-op, \u221258\u00a2 vs Dec '26, is 3\u00a2 weaker than the Wisconsin middle "
-                     "(\u221255\u00a2 vs Dec '26, 9 elevators).",
+                     "(\u221255\u00a2 vs Dec '26, median of 9 elevators).",
                      "Beta Co-op posts no futures month with its basis, so it is not compared with the Wisconsin middle "
-                     "(soybean \u221280\u00a2 vs Nov '26, 4 elevators)."], lines
+                     "(soybean \u221280\u00a2 vs Nov '26, median of 4 elevators)."], lines
     pk3 = dict(pk, corn=(dict(pk["corn"][0], contract=("ZC", 2, 2027)), "Beta Co-op"))
     assert "a month too few Wisconsin elevators use" in state_compare(pk3, summ, "Wisconsin")[1][0]
     assert state_compare(pk, {"corn": {"contracts": [{"contract": dec, "n": 2}]}}, "Wisconsin") == ([], []), \
