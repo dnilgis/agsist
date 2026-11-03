@@ -4,7 +4,7 @@ name: Monthly land sale email
 # on the 3rd of each month to the readers who asked beside the recorded sales (subs worker
 # v5.55, topic landsales:<ZIP>:<miles>; scripts/send_land_alert.py, numbers from
 # scripts/land_alert.py). Sig approved the list, the sender and this schedule on Oct 23, 2026.
-# Illinois and Wisconsin only; Indiana is held (see scripts/land_alert.py).
+# Illinois, Wisconsin, Indiana (on since Oct 27, 2026), Vermont and New Jersey (Oct 29); scripts/land_alert.py STATES.
 #
 # Signups on (Sig approved Oct 27, 2026: "Turn on land sale email alert signups"). The ask tells a
 # reader the first email is due the next 3rd.
@@ -23,10 +23,15 @@ name: Monthly land sale email
 #                 worker's mo mark). Needs LANDSALES_MONTHLY_LIVE=1.
 #
 # The 3rd, 15:47 UTC (the schedule Sig approved): after land-data.yml (the 3rd, 09:23 UTC,
-# up to 150 minutes) has fetched and committed the month's transfers. A state whose files
-# were not fetched since the month ended waits; a late land run is caught up by dispatching
-# mode send by hand. A reader already mailed for the month is never mailed again, so a rerun
-# is safe. It runs a day after the 2nd-of-month rain email, never on the same day.
+# up to 150 minutes) has fetched and committed the month's transfers. A reader whose state has
+# not posted the month just ended (Wisconsin posts about a month behind) gets the newest month
+# the state has posted instead, said plainly (Sig, Nov 3, 2026, option 1), and the later month
+# when it lands: this also runs after every "Land data" run, and when that run committed to
+# data/land on main (and this month's send has gone), the gate's catch-up step mails the readers
+# with a newer month due (send_land_alert.py --catch-up; the readers who signed up after the 3rd
+# wait for the next 3rd). Only with LANDSALES_MONTHLY_LIVE=1; otherwise a dry run. A reader is
+# mailed each data month once (the worker's mo mark), so any rerun mails nobody twice. It runs
+# a day after the 2nd-of-month rain email, never on the same day.
 #
 # GitHub's scheduler drops most scheduled fires (it never started the rain email on Nov 2,
 # 2026; scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain
@@ -41,7 +46,7 @@ on:
   schedule:
     - cron: "47 15 3 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Land data (parcel services + transfers)"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -71,6 +76,7 @@ jobs:
       contents: read
     outputs:
       go: ${{ steps.g.outputs.go }}
+      catchup: ${{ steps.land.outputs.catchup }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -91,10 +97,24 @@ jobs:
         run: >-
           python3 scripts/cron_gate.py tick --workflow land-alert.yml --max-lag 360
           --cron "47 15 3 * *"
+      # After a Land data run on main: catch up only when it committed to data/land (a run that found
+      # nothing new commits nothing; a skipped or failed run commits nothing). Never on a run by hand.
+      - id: land
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Land data (parcel services + transfers)' && github.event.workflow_run.head_branch == 'main' && steps.g.outputs.go != '1' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SINCE: ${{ github.event.workflow_run.created_at }}
+        run: |
+          n=$(gh api "repos/$GITHUB_REPOSITORY/commits?sha=main&path=data/land&since=$SINCE&per_page=5" --jq 'length' 2>/dev/null || echo 0)
+          if [ "${n:-0}" -gt 0 ] 2>/dev/null; then
+            echo "catchup=1" >> "$GITHUB_OUTPUT"; echo "catch-up: the land run committed to data/land"
+          else
+            echo "catchup=0" >> "$GITHUB_OUTPUT"; echo "no catch-up: the land run committed nothing to data/land"
+          fi
 
   email:
     needs: gate
-    if: needs.gate.outputs.go == '1'
+    if: needs.gate.outputs.go == '1' || needs.gate.outputs.catchup == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     concurrency:
@@ -138,12 +158,15 @@ jobs:
           ASKED_SEND: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'send' && '1' || '' }}
           MONTH: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'send' && inputs.month || '' }}
           SAMPLE: ${{ github.event_name == 'workflow_dispatch' && inputs.sample || '' }}
+          CATCH_UP: ${{ needs.gate.outputs.go != '1' && needs.gate.outputs.catchup == '1' && '1' || '' }}
         run: |
           if [ "$ASKED_SEND" = 1 ] && [ "$SEND" != 1 ]; then
             echo "::error::mode send, but the repo variable LANDSALES_MONTHLY_LIVE is not 1: the list gets nothing. Nothing sent."
             exit 1
           fi
           ARGS=""
+          # a catch-up after a land run: the readers with a newer month due, only when the list is live
+          if [ "$CATCH_UP" = 1 ] && [ "$SEND" = 1 ]; then ARGS="--catch-up"; fi
           if [ -n "$MONTH" ]; then ARGS="$ARGS --month $MONTH"; fi
           if [ -n "$SAMPLE" ]; then ARGS="$ARGS --sample $SAMPLE"; fi
           # shellcheck disable=SC2086

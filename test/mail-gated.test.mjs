@@ -43,7 +43,9 @@ for (const [file, crons, lag, why] of FLOWS) {
     const wf = read(".github/workflows/" + file);
     const on = wf.slice(wf.indexOf("\non:\n"), wf.indexOf("\njobs:\n"));
     assert.deepEqual([...on.matchAll(/- cron: ["']([^"']+)["']/g)].map((m) => m[1]), crons, "the schedule is unchanged");
-    assert.match(on, /\n  workflow_run:\n    workflows: \["Fetch Grain Bids"\]\n    types: \[completed\]\n/);
+    // the land sale email also follows the land data run, for the month a state posts late (Nov 3, 2026; test/land-alert.test.mjs)
+    const feeds = file === "land-alert.yml" ? '\\["Fetch Grain Bids", "Land data \\(parcel services \\+ transfers\\)"\\]' : '\\["Fetch Grain Bids"\\]';
+    assert.match(on, new RegExp("\\n  workflow_run:\\n    workflows: " + feeds + "\\n    types: \\[completed\\]\\n"));
     assert.match(on, /\n  workflow_dispatch:\n/, "a run by hand stays");
 
     const gate = job(wf, "gate");
