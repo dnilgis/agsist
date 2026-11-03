@@ -651,7 +651,8 @@ def hub_page(B, D, k, ch):
          "name": f"{x['label']} PLC and ARC-CO prices 2026 and 2027, with FSA county benchmark yields",
          "description": (f"{x['label']} effective reference price, ARC-CO benchmark price and loan rate from FSA's 2026 national tables, "
                          f"and FSA's official 2026 ARC-CO benchmark yields for {n_c} counties."),
-         "url": f"{B.SITE}{path}", "isAccessibleForFree": True, "creator": {"@type": "Organization", "name": "AGSIST", "url": B.SITE},
+         "url": f"{B.SITE}{path}", "isAccessibleForFree": True, "license": f"{B.SITE}/terms",
+         "creator": {"@type": "Organization", "name": "AGSIST", "url": B.SITE},
          "isBasedOn": [B.FSA_DATA], "dateModified": upd,
          "variableMeasured": [f"Effective reference price ($/{c6['unit']})", f"ARC-CO benchmark yield ({c6['unit']}/acre)"]},
         {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [

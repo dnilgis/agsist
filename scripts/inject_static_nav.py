@@ -50,8 +50,14 @@ REFRESH_RE = re.compile(r'<meta[^>]+http-equiv=["\']refresh["\']', re.I)
 DIV_TAG_RE = re.compile(r"<div\b|</div\s*>", re.I)
 
 
+# The fallback files end with a noindex guard for direct visits to /components/ (Nov 2 SEO audit);
+# pages never carry it.
+DIRECT_GUARD_RE = re.compile(r"\n*<!-- noindex when this file is opened on its own;.*?</script>\s*$", re.S)
+
+
 def block(kind):
-    body = (COMP / f"{kind}-fallback.html").read_text(encoding="utf-8").rstrip("\n")
+    body = (COMP / f"{kind}-fallback.html").read_text(encoding="utf-8")
+    body = DIRECT_GUARD_RE.sub("", body).rstrip("\n")
     # bare markers: the page source does not name the script or file that wrote it (Sig, Oct 29)
     return f"\n<!-- static-nav:{kind} -->\n{body}\n<!-- /static-nav:{kind} -->\n"
 
