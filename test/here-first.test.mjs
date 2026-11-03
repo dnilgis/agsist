@@ -321,7 +321,7 @@ test("in a browser: ranked line, the Rain Print, unusual lines only when unusual
         await pg.waitForSelector("#h-rp svg", { timeout: 20000 });
         await pg.waitForFunction(() => !document.querySelector("#h-rank .h-wait") && !document.querySelector("#h-elev-b .wk-wait"), null, { timeout: 30000 });
         await pg.waitForSelector("#h-rp.rc-print-on", { timeout: 30000 });
-        assert.match(await pg.textContent(".h-rank-l"), /^2026 at .+: (the (wettest|driest)|\d+(st|nd|rd|th) (wettest|driest)) of \d+ years so far \(Jan 1 to [A-Z][a-z]{2} \d+\)\.$/);
+        assert.match(await pg.textContent(".h-rank-l"), /^2026 at .+: (the (wettest|driest)|(tied for )?\d+(st|nd|rd|th) (wettest|driest)) of \d+ years so far \(Jan 1 to [A-Z][a-z]{2} \d+\)\.$/);
         // the drawing leads the depth, under the cards
         assert.ok(await pg.evaluate(() => document.querySelector("#h-first").getBoundingClientRect().top < document.querySelector("#h-sec-fingerprint").getBoundingClientRect().top));
         assert.ok(await pg.evaluate(() => document.querySelector("#h-sec-week").getBoundingClientRect().top < document.querySelector("#h-first").getBoundingClientRect().top));
