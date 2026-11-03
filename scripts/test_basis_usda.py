@@ -109,7 +109,7 @@ sec = CB.basis_section("KS", summ, None)
 check("<a " not in re.sub(r'<ul class="cbt-list">.*', "", sec.split("cbt-hero", 1)[1], flags=re.S),
       "no link in the basis headline or USDA line (Oct 29 rule)")
 check("surveys by region" in sec, "the section says USDA's average is USDA's own")
-check("—" not in sec, "no em dash")
+check("\u2014" not in sec, "no em dash")
 bare = {"corn": {"contracts": [head(DEC26, 0.55, 17, 3)], "rows": [1], "no_contract": [], "suspect": []}}
 CB.attach_usda({"TX": bare}, USDA, NOV2)
 sec_tx = CB.basis_section("TX", bare, None)
