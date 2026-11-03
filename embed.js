@@ -1,6 +1,8 @@
 /*! AGSIST embed loader — agsist.com/embed.js
  * Usage: <div data-agsist-widget="gdu"></div><script async src="https://agsist.com/embed.js"></script>
- * Widgets: gdu, arc-plc (live). (calendar/briefing keys removed 2026-08-11 —
+ * Widgets: gdu, arc-plc, rain (live). The rain box names its county:
+ *   <div data-agsist-widget="rain" data-st="ia" data-c="19169"></div> (state letters, county FIPS; the code is on
+ *   each county rain page under "Put this on your site or in your newsletter"). (calendar/briefing keys removed 2026-08-11 —
  * they advertised embed pages that do not exist; a third-party mounting
  * one got a broken iframe. They return when their pages ship.)
  * The iframe gives partners the live tool; the injected <a> is the real backlink
@@ -11,7 +13,8 @@
   var ORIGIN = 'https://agsist.com';
   var WIDGETS = {
     gdu:      { path:'/embed/gdu',      link:'/gdu-calculator', label:'GDU Calculator', minH:560 },
-    'arc-plc':{ path:'/embed/arc-plc',  link:'/arc-plc',        label:'ARC or PLC calculator', minH:900 }
+    'arc-plc':{ path:'/embed/arc-plc',  link:'/arc-plc',        label:'ARC or PLC calculator', minH:900 },
+    rain:     { path:'/embed/rain',     link:'/rain',           label:'county rain box', minH:80, args:{ st:/^[a-z]{2}$/i, c:/^\d{5}$/ } }
 
   };
   function each(list, fn){ Array.prototype.forEach.call(list, fn); }
@@ -24,7 +27,13 @@
     node.setAttribute('data-agsist-mounted','1');
 
     var iframe = document.createElement('iframe');
-    iframe.src = ORIGIN + cfg.path + '?utm_source=embed&utm_medium=script';
+    // a widget that names a place passes only its own, checked arguments (rain: st, c); anything else is dropped
+    var extra = '';
+    for (var k in (cfg.args || {})) {
+      var v = node.getAttribute('data-' + k) || '';
+      if (cfg.args[k].test(v)) extra += '&' + k + '=' + encodeURIComponent(v.toLowerCase());
+    }
+    iframe.src = ORIGIN + cfg.path + '?utm_source=embed&utm_medium=script' + extra;
     iframe.title = 'AGSIST ' + cfg.label;
     iframe.loading = 'lazy';
     iframe.setAttribute('scrolling','no');
