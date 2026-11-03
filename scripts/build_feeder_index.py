@@ -77,6 +77,16 @@ pages only draw them.
    Oct 16, 2026 (27 versions checked Nov 2) and the raw branch holds only the
    latest report per barn; every sale in those versions is in barn_sales.
    No CME data is read or compared here (Sig, Oct 29).
+   Live reads through USDA My Market News (Sig, Nov 2 2026: "Ship + use USDA live"):
+   with MARS_API_KEY set, read_mars reads every single-barn report of the last
+   KEEP_DAYS through MARS with the past weeks' own reader (backfill_feeder_index
+   mars_fetch), and a barn's PDF read counts only for a barn and week MARS lacks
+   (resolve_store, the rule combined_sales builds the past weeks by). Each stored
+   sale says how it was read (barn_sales: a "pdf" list per barn; the rest came
+   through MARS) and each live week counts its barns by it ("via"). Two sales of
+   one barn in one week with the very same cells are one sale read twice and count
+   once (Oklahoma City, weeks of Oct 19 and 26 2026). No key, or no answer: the
+   PDF reads stand.
    Before IDX_START: data/feeder-index-history.json (build_history, run by
    scripts/backfill_feeder_index.py from archived copies of the same USDA
    reports, feeder-history.yml). Same index_week and index_change, only weeks
