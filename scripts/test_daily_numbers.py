@@ -230,7 +230,9 @@ def test_frozen_counts():
            "2026-10-15": 4.78, "2026-10-16": 4.7425}
     hp = json.load(open(REPO / "data" / "harvest-prices.json"))
     for w in hp.get("windows") or []:
-        if w.get("ticker") == "ZCZ26.CBT":
+        # the October window only: from Nov 2 the file also carries the next window on the same contract
+        # (one Nov settle), which has none of these days
+        if w.get("ticker") == "ZCZ26.CBT" and any(p["d"] == "2026-10-12" for p in w.get("series") or []):
             real = {p["d"]: p["s"] for p in w["series"]}
             check(all(abs(real.get(d, -1) - v) < 1e-9 for d, v in dec.items() if d != "2026-10-09"),
                   "fixture matches data/harvest-prices.json Oct 12 to 16", {d: real.get(d) for d in dec})
