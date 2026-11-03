@@ -22,7 +22,8 @@ time runs at 13:00 UTC (7 AM CT in winter, the Daily's hour).
 What it runs: the node tests (test/*.test.mjs; the Chromium ones only with --browser), every scripts/test_*.py,
 and every `--selftest` / test script line in .github/workflows/*.yml and scripts/dev/checks.sh (the Daily's
 GATE 0 steps among them). Exit 1 when a date has a failure that the run at today does not have.
-A file a run changed in the checkout is put back afterward (git checkout) and named.
+A file a run changed in the checkout is named (a test should write only to a temp folder); nothing is put back,
+so run it from a clean checkout and look at `git status` afterward.
 """
 import os
 import re
@@ -148,9 +149,6 @@ def run_date(label, when, jobs, nfiles, pcmds, outdir):
             res[name] = "fail" if rc else ("skip" if skipped else "ok")
     after = dirty()
     changed = sorted(p for p in after if p not in before or after[p] != before[p])
-    tracked = [p for p in changed if after[p] != "??"]
-    if tracked:
-        subprocess.run(["git", "checkout", "--"] + tracked, cwd=ROOT)
     return res, changed
 
 
@@ -187,7 +185,7 @@ def main(argv):
         bad = sorted(k for k, v in base.items() if v != "ok")
         print(f"today (real clock): {len(base) - len(bad)} ok, {len(bad)} not ok" + "".join(f"\n  {base[k]}: {k}" for k in bad))
         if ch:
-            print("  changed by the run (put back if tracked): " + ", ".join(ch))
+            print("  changed in the checkout by the run: " + ", ".join(ch))
     new_total = 0
     for label, when in whens:
         res, ch = run_date(label, when, jobs, nfiles, pcmds, outdir)
@@ -197,7 +195,7 @@ def main(argv):
         print(f"{label} ({when:%Y-%m-%d %H:%M} UTC): {len(res) - len(bad)} ok, {len(bad)} not ok, {len(new)} only on this date"
               + "".join(f"\n  {res[k]}: {k}   (log {outdir}/{label}/{re.sub(r'[^\w.-]+', '_', k)}.log)" for k in new))
         if ch:
-            print("  changed by the run (put back if tracked): " + ", ".join(ch))
+            print("  changed in the checkout by the run: " + ", ".join(ch))
     print(f"future_dates: {new_total} failure(s) that come from the date")
     return 1 if new_total else 0
 
