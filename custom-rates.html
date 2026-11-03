@@ -33,7 +33,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=28" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/custom-rates.css?v=5">
+  <link rel="stylesheet" href="/components/custom-rates.css?v=6">
   <link rel="stylesheet" href="/components/print-sheet.css?v=1">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -94,10 +94,18 @@
 <p class="crh-key">Each dot is a state survey's average, the dark line is the middle, and your state is the gold dot. The bar starts at zero.</p>
 <p class="crh-me" id="cr-me">Nebraska $49.29, Missouri $47.56, Iowa $46.05, North Dakota $43.87, Kansas $41.87, Maryland and Delaware $40.03, Wisconsin $38.47, Indiana $36.97, Ohio $34.61.</p>
 <p class="crh-diy" id="cr-diy" hidden></p>
+<p class="crh-diy" id="cr-diesel" hidden></p>
 <p class="crh-cost" id="cr-cost"></p>
 <!-- /cr:hero -->
         </div>
         <p class="cr-status" id="cr-status" role="status" aria-live="polite"></p>
+      </section>
+      <div class="crt" id="cr-notice" hidden></div>
+      <section class="crq" id="quote" aria-labelledby="crq-h">
+        <h2 id="crq-h">Quote my job</h2>
+        <p class="fine">Put in your acres, bushels or miles for each job. Each line uses your state's survey average where its survey prices the job, else the middle across the states. Survey average x your numbers, not a price from anyone.</p>
+        <div id="cr-quote" class="crq-b"><p class="fine">The quote fills in once the rates load.</p></div>
+        <p class="crq-act"><button type="button" class="cr-btn go" id="cr-quote-add" disabled>Add this job</button><button type="button" class="cr-btn" id="cr-quote-print" disabled>Print my quote</button></p>
       </section>
 
       <nav class="crn" aria-label="Jump to a category" id="cr-nav">
@@ -112,7 +120,7 @@
         <a href="#other">Other <small>6</small></a>
 <!-- /cr:nav -->
       </nav>
-      <p class="crn-tools"><span id="cr-count"></span><button type="button" class="cr-btn" id="cr-print" disabled>Print the rates</button></p>
+      <p class="crn-tools"><span id="cr-count"></span><button type="button" class="cr-btn" id="cr-print" disabled>Print the rates</button><button type="button" class="cr-btn" id="cr-sheet-state" disabled>Print my state's rate sheet</button></p>
 
       <div class="crcs" id="cr-cats">
 <!-- cr:cats -->
@@ -327,7 +335,7 @@
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/print-sheet.js?v=1" defer></script>
-  <script src="/components/custom-rates.js?v=6" defer></script>
+  <script src="/components/custom-rates.js?v=7" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

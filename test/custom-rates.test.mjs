@@ -305,6 +305,17 @@ test("custom rates panel, Nov 3: plain words for each range, hauling miles, bali
   assert.equal(idx.states.find((s) => s.st === "PA").page, false);
 });
 
+test("diesel: only a fuel price the survey printed, beside USDA farm diesel, never adjusting a rate", () => {
+  const files = { IA: "scripts/custom_rates/ia.tsv", OH: "scripts/custom_rates/oh.tsv", IL: "scripts/custom_rates/diy/il-2025.tsv" };
+  assert.deepEqual(Object.keys(blend.diesel).sort(), Object.keys(files).sort());
+  for (const [st, f] of Object.entries(files)) {
+    const meta = read(f).split("\n").filter((l) => /^# (includes|basis):/.test(l)).join(" ");
+    for (const n of blend.diesel[st].price.match(/\d+\.\d\d/g)) assert.ok(meta.includes(n), `${st} diesel ${n} is in the survey's own words`);
+  }
+  assert.match(js, /never adjusted for fuel/);
+  assert.match(js, /No USDA farm diesel report covers /);
+});
+
 test("calculators read the one blend file and fill only on a tap", () => {
   const hint = read("components/rate-hint.js");
   assert.match(hint, /\/data\/custom-rates\/blend\.json/);
@@ -435,6 +446,52 @@ test("browser: the reader's state first, the middle under it, only the needed fi
       const small = await p.evaluate(() => [...document.querySelectorAll(".cr-faq summary, .cr-other a, .cr-btn")].filter((e) => e.offsetParent && e.getBoundingClientRect().height < 44).map((e) => e.outerHTML.slice(0, 60)));
       assert.deepEqual(small, [], `${u}: taps under 44 px`);
     }
+    // quote my job, the diesel line and the state's rate sheet, every number from the files
+    const pc = JSON.parse(read("data/production-costs.json"));
+    const iaCC = blend.ops["combine-corn"].by.IA;
+    await p.goto(base + "/custom-rates?st=IA&qj=combine-corn~640", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /at the survey averages/.test(document.getElementById("cr-quote").textContent));
+    const qt = await p.textContent("#cr-quote");
+    const tot = "$" + Math.round(shownV(iaCC[0], "acre") * 640).toLocaleString("en-US");
+    assert.ok(qt.includes(tot + " at the survey averages"), qt);
+    assert.match(qt, /Survey average x your numbers/);
+    // the quote in a link keeps decimals (12.5 acres, 0.25 of a job's unit), in the new form and in links shared before it
+    for (const q of ["combine-corn~12.5_haul-grain-bu~0.25", "combine-corn~12.5.haul-grain-bu~0.25"]) {
+      await p.goto(base + "/custom-rates?st=IA&qj=" + q, { waitUntil: "networkidle" });
+      await p.waitForFunction(() => /at the survey averages/.test(document.getElementById("cr-quote").textContent));
+      assert.deepEqual(await p.evaluate(() => window.AgCustomRates.quoteList()), [{ k: "combine-corn", q: 12.5 }, { k: "haul-grain-bu", q: 0.25 }], q);
+      assert.deepEqual(await p.$$eval("#cr-quote input[data-qi]", (els) => els.map((e) => e.value)), ["12.5", "0.25"], q);
+      assert.match(new URL(p.url()).searchParams.get("qj") || "", /^combine-corn~12\.5_haul-grain-bu~0\.25$/, "written back with '_' between jobs");
+      // hauling: the survey's miles beside its per-bushel rate, on the page and the print
+      const ql = await p.textContent("#cr-quote");
+      assert.ok(ql.includes(`(${blend.ops["haul-grain-bu"].basis.IA})`), ql);
+      const spec = await p.evaluate(() => window.AgCustomRates.quote());
+      assert.ok(spec.sections[0].table.rows[1][2].includes(`(${blend.ops["haul-grain-bu"].basis.IA})`), spec.sections[0].table.rows[1][2]);
+    }
+    // a line on an old survey or one kept out of the middle says so, with its year or note
+    await p.goto(base + "/custom-rates?st=OK&qj=combine-soy~100", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /at the survey averages/.test(document.getElementById("cr-quote").textContent));
+    assert.match(await p.textContent("#cr-quote"), new RegExp(`Oklahoma's ${blend.states.OK.year} survey average \\(too old for the middle\\)`));
+    await p.goto(base + "/custom-rates?st=WI&qj=lime-ton~40", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /at the survey averages/.test(document.getElementById("cr-quote").textContent));
+    assert.ok((await p.textContent("#cr-quote")).includes("(not in the middle: " + blend.ops["lime-ton"].apart.WI[5] + ")"));
+    await p.goto(base + "/custom-rates?st=IA&qj=combine-corn~640", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /^Diesel: /.test(document.getElementById("cr-diesel").textContent));
+    const dz = await p.textContent("#cr-diesel");
+    assert.ok(dz.startsWith(`Diesel: ${blend.diesel.IA.who} figured ${blend.diesel.IA.price} (${blend.diesel.IA.when}).`), dz);
+    const rep = Object.values(pc.reports).find((r) => r.states.includes("IA") && r.items.some((i) => i.key === "diesel"));
+    if (rep) assert.ok(dz.includes("$" + rep.items.find((i) => i.key === "diesel").avg.toFixed(2) + " a gallon"), dz);
+    else assert.match(dz, /No USDA farm diesel report covers Iowa/);
+    const sheet = await p.evaluate(() => window.AgCustomRates.sheet());
+    assert.equal(sheet.title, "Iowa custom rate sheet");
+    const head = sheet.sections[0].table.head;
+    assert.equal(head[head.length - 1], "My price");
+    assert.ok(sheet.sections.every((sec) => sec.table.rows.every((r) => r[r.length - 1] === "")), "the my-price column is blank");
+    assert.deepEqual(sheet.sources.map((x) => x.date).slice(0, 1), [`${blend.states.IA.year} survey`]);
+    await p.goto(base + "/custom-rates?st=OH", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /^Diesel: /.test(document.getElementById("cr-diesel").textContent));
+    if (!Object.values(pc.reports).some((r) => r.states.includes("OH"))) assert.match(await p.textContent("#cr-diesel"), /No USDA farm diesel report covers Ohio/);
+    assert.match(await p.textContent("#cr-notice"), /Email me when Ohio's next custom rate survey is out/);
     // an old link to the tool's parts lands on the answer
     await p.goto(base + "/custom-rates#cr-cmp", { waitUntil: "networkidle" });
     await ctx.close();
