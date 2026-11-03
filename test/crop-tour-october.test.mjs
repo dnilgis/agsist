@@ -21,7 +21,11 @@ test("crop tour stamp is never older than the USDA date the hero quotes", () => 
   if (kick) {
     const m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].indexOf(kick[1]);
     const stampDate = new Date(stamp.match(/Updated (\w+ \d+, \d{4})/)[1]);
-    assert.ok(stampDate.getMonth() > m || (stampDate.getMonth() === m && stampDate.getDate() >= +kick[2]), stamp + " vs " + kick[0]);
+    // the USDA date carries no year: it is the latest such day on or before about six months past the stamp, so a
+    // December report read beside a January stamp is last year's (a month-only compare failed every January)
+    let usda = new Date(stampDate.getFullYear(), m, +kick[2]);
+    if (usda - stampDate > 183 * 864e5) usda = new Date(stampDate.getFullYear() - 1, m, +kick[2]);
+    assert.ok(stampDate >= usda, stamp + " vs " + kick[0]);
     assert.match(html, /If USDA's [\d.]+ holds to January, the tour's [\d.]+ (low|high) would be its [\w-]*biggest (low|high) miss since \d{4}/);
   }
   assert.ok(!/Record updated August 21/.test(html));
