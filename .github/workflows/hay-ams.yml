@@ -11,6 +11,14 @@ name: Hay market reports (AMS)
 # listing and the text of every report it finds to data/hay-ams-raw/ and
 # saves them on the raw branch (never deployed). Check that text against the parser, add any new layout (hay
 # auctions especially) as a selftest fixture, then run without probe.
+#
+# USDA STATE CASH GRAIN AND DAILY SLAUGHTER (Sig, Nov 2 2026) ride this job: it already runs on
+# weekdays at 23:17 UTC (5:17 PM CST, 6:17 PM CDT), after USDA's state grain reports (posted
+# about 12:45 to 3:50 PM Central) and its estimated daily slaughter. No new schedule.
+# scripts/fetch_state_grain_mars.py -> data/state-grain-ams.json, scripts/fetch_slaughter_mars.py
+# -> data/slaughter.json, both through USDA My Market News (MARS_API_KEY). Soft: a MARS failure
+# keeps the last good files and never stops the hay run. Saturday's run finds no new report and
+# changes nothing.
 
 on:
   workflow_dispatch:
@@ -72,12 +80,23 @@ jobs:
       - name: Fetch and write data/hay/ams-hay.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_hay_ams.py
+      - name: USDA state cash grain and daily slaughter (My Market News)
+        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        continue-on-error: true
+        env:
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: |
+          python scripts/fetch_state_grain_mars.py --selftest > /dev/null
+          python scripts/fetch_slaughter_mars.py --selftest > /dev/null
+          python scripts/fetch_state_grain_mars.py || echo "::warning::state grain read failed; last good file kept"
+          python scripts/fetch_slaughter_mars.py || echo "::warning::slaughter read failed; last good file kept"
+          python scripts/check_state_grain_ams.py
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json"
+          FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json data/state-grain-ams.json data/slaughter.json"
           rm -rf /tmp/ha && mkdir -p /tmp/ha
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/ha/ || true
@@ -90,7 +109,7 @@ jobs:
             mkdir -p data && cp -r /tmp/ha/data/. data/
             for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
-            git commit -m "Update AMS hay reports $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            git commit -m "Update AMS hay, state grain and slaughter $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
             echo "Push race on attempt $i; re-syncing to origin/$BR..."
             sleep $((RANDOM % 4 + 2))

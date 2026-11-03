@@ -1490,7 +1490,10 @@ function plainQ(el,c){var t=el&&el.textContent;return !!el&&(t===r2(c)||(t===qc(
 /* Writes the quarter as a smaller trailing span; textContent stays "$12.83 1/4". */
 function setQ(el,c){var t=qc(c);if(!el||(el.textContent===t&&(t.indexOf('/')<0||el.querySelector('.r7-frac'))))return;var m=/^(\$[\d.]+)( \d\/\d)?$/.exec(t);el.textContent=m[1];if(m[2]){var sp=document.createElement('span');sp.className='r7-frac';sp.textContent=m[2];el.appendChild(sp);}}
 function cents(a){return AG.px.move(a,{style:'slash'});}
+/* 2026-11-02: a move the price run withheld (fetch_prices energy_roll_guard: move_withheld
+   and roll, a change that crosses contracts near expiry) prints the price and no change. */
 function chg(k,q){
+  if(q.move_withheld||q.roll)return{t:'contract roll',c:'nc',p:''};
   var n=q.netChange;if(n==null||isNaN(+n))return null;n=+n;
   if(n===0)return{t:'unch',c:'nc',p:''};
   var c=CFG[k],s=n>0?'+':'\u2212',a=Math.abs(n),t;

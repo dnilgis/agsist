@@ -23,7 +23,8 @@ test('ams_http selftest: host order, wrong-content refusal, all-failed exit', ()
 
 // one copy: every reader of www.ams.usda.gov goes through the helper
 const READERS = ['scripts/fetch_hay_ams.py', 'scripts/fetch_cattle_auction.py', 'scripts/fetch_cattle_cash.py',
-  'scripts/fetch_mailbox.py', 'scripts/fetch_fert_ams.py', 'scripts/fetch_dairy.py'];
+  'scripts/fetch_mailbox.py', 'scripts/fetch_fert_ams.py', 'scripts/fetch_dairy.py',
+  'scripts/fetch_hog_cash.py'];   // LM_HG201 and LM_PK602 PDFs (fx/hogprobe)
 
 test('every AMS report reader fetches through ams_http and ends with its count line', () => {
   for (const f of READERS) {

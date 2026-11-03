@@ -72,8 +72,8 @@ elevator's own posted board); weather from the National Weather Service and NOAA
 program data from USDA (NASS, FAS, RMA, FSA); positioning from the CFTC.
 Every page names its source beside its numbers; the main sources are listed at /editorial-standards#sources.
 
-When citing AGSIST, please attribute to "AGSIST (agsist.com)" and link the
-specific page. Each daily briefing has a permanent dated URL.
+How to cite: name AGSIST (agsist.com), link the page the number is on, and give
+the as-of date shown with it. Each daily briefing has a permanent dated URL.
 """
 
 # (heading, [(path, title, description) or ("@machine", key)])
@@ -183,7 +183,7 @@ PAGES = [
     ]),
     ("About this site", [
         ("/glossary", "Farm Market Glossary", "plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses"),
-        ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, and the open JSON feeds"),
+        ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, the USDA report calendar files to subscribe to, the Daily RSS feed, the Farmland Atlas CSV files and this file"),
         ("/changelog", "Changelog", "dated list of site changes"),
         ("/about", "About", "who builds AGSIST and why"),
         ("/contact", "Contact", "sig@agsist.com"),
@@ -310,33 +310,146 @@ def norm(p):
 _MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
-def numbers_block(root=REPO):
-    """'Numbers as of <date>' (Oct 23, 2026): the newest Cash Bid Index edition's corn and
-    soybean counts, average cash bid and average basis, read from data/cash-index/editions.json
-    (written by scripts/cash_bid_index.py). Stated, not described: an answer engine that reads
-    only this file gets the figures and the period they cover. Nothing is estimated here; a
-    crop with no figure in the edition is left out, and no edition means no block.
-    -> list of lines (empty when there is nothing to state)."""
+def _day(iso):
+    """'2026-11-02...' -> 'Nov 2, 2026' (None when it is not a date)."""
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", str(iso or ""))
+    if not m or not 1 <= int(m.group(2)) <= 12:
+        return None
+    return "%s %d, %s" % (_MON[int(m.group(2)) - 1], int(m.group(3)), m.group(1))
+
+
+def _stamp(iso):
+    """'2026-11-02T22:37:41Z' -> 'Nov 2, 2026, 22:37 UTC' (None unless a UTC time)."""
+    m = re.match(r"(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})(:\d{2}(\.\d+)?)?(Z|\+00:00)$", str(iso or ""))
+    return "%s, %s:%s UTC" % (_day(m.group(1)), m.group(2), m.group(3)) if m and _day(m.group(1)) else None
+
+
+def _json(root, *rel):
     try:
-        ed = json.load(open(os.path.join(root, "data", "cash-index", "editions.json"), encoding="utf-8"))["editions"]
+        return json.load(open(os.path.join(root, *rel), encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def _num(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+NUMBERS_HEAD = "## Latest numbers"
+# A feeder index week that ended longer ago than this is held back on the page
+# (AUCTION_OLD_DAYS in components/feeder-index.js); here it is counted from the
+# file's own update time so the same files always give the same text.
+FEEDER_OLD_DAYS = 16
+
+
+def numbers_lines(root=REPO):
+    """The figures the site's own pages show, each read from the file those pages read and
+    stated with that file's own date (Nov 2, 2026; was one Cash Bid Index block, Oct 23).
+    Nothing is estimated or carried over: a file that is missing, unreadable or says its
+    figure is not good is left out, never guessed.
+    -> list of (key, line). key names the source: test/llms-numbers.test.mjs checks every
+    line against that file."""
+    out = []
+    # cash bids: rows on the last read (the cash-bids run's own counts file)
+    bs = _json(root, "data", "bids-stats.json") or {}
+    st, when = bs.get("stats") or {}, _stamp(bs.get("fetched"))
+    if when and isinstance(st.get("total_bids"), int) and st["total_bids"] > 0:
+        out.append(("bids", "- Cash bids: %s bid prices (crop and delivery period) on the last read of the elevator boards, %s (%s/cash-bids)."
+                    % (format(st["total_bids"], ","), when, HOST)))
+    # elevators with a current bid (the one counts file the site prints)
+    ec = _json(root, "data", "elevator-counts.json") or {}
+    eb, when = ec.get("bids") or {}, _stamp(ec.get("generated"))
+    if when and isinstance(eb.get("elevators"), int) and eb["elevators"] > 0 and isinstance(eb.get("towns"), int):
+        out.append(("elevators", "- Elevators with a current bid: %s, in %s towns, counted %s (%s/cash-bids)."
+                    % (format(eb["elevators"], ","), format(eb["towns"], ","), when, HOST)))
+    # the AGSIST Daily: the newest dated issue page
+    try:
+        issues = sorted(f[:-5] for f in os.listdir(os.path.join(root, "daily"))
+                        if re.match(r"^\d{4}-\d{2}-\d{2}\.html$", f))
+    except OSError:
+        issues = []
+    if issues and _day(issues[-1]):
+        out.append(("daily", "- AGSIST Daily: latest issue %s, at %s/daily/%s (the newest is always at %s/daily)."
+                    % (_day(issues[-1]), HOST, issues[-1], HOST)))
+    # county rain: the through-date of the state files the county pages are built from
+    try:
+        ends = []
+        for f in sorted(os.listdir(os.path.join(root, "data", "rain"))):
+            if re.match(r"^[a-z]{2}\.json$", f):
+                d = _json(root, "data", "rain", f) or {}
+                if _day(d.get("edate")):
+                    ends.append(d["edate"][:10])
+    except OSError:
+        ends = []
+    if ends:
+        new, old = max(ends), min(ends)
+        line = "- County rain: %s totals for each county page, from NOAA daily station records, through %s" % (new[:4], _day(new))
+        if old != new:
+            line += " (%d of %d states; the oldest through %s)" % (ends.count(new), len(ends), _day(old))
+        out.append(("rain", line + " (%s/rain)." % HOST))
+    # the AGSIST USDA feeder steer index: the latest week, as the cattle pages show it
+    fi = _json(root, "data", "feeder-index.json") or {}
+    ix = fi.get("index") or {}
+    ws = ix.get("weeks") or []
+    w = ws[-1] if ws and isinstance(ws[-1], dict) else {}
+    upd = str(fi.get("updated") or "")[:10]
+    if _num(w.get("p")) and _day(w.get("start")) and _day(w.get("end")) and _day(upd):
+        import datetime
+        age = (datetime.date.fromisoformat(upd) - datetime.date.fromisoformat(w["end"][:10])).days
+        if age <= FEEDER_OLD_DAYS:
+            out.append(("feeder", "- %s: $%.2f per cwt for the week %s to %s, from USDA AMS auction reports%s (%s/cattle-auction-prices)."
+                        % (ix.get("label") or "AGSIST USDA feeder steer index, not the CME index", w["p"],
+                           _day(w["start"]).replace(", " + w["start"][:4], "") if w["start"][:4] == w["end"][:4] else _day(w["start"]),
+                           _day(w["end"]), "" if w.get("final") else "; first count, late reports can still change it", HOST)))
+    # milk: the announced Class prices and NASS's all-milk price, as /milk-prices shows them
+    dd = _json(root, "data", "dairy-data.json") or {}
+    sts = dd.get("status") or {}
+    mo = dd.get("class_month")
+    if sts.get("class") == "ok" and mo and _num(dd.get("class3")) and _num(dd.get("class4")):
+        line = "- Milk: Class III $%.2f and Class IV $%.2f per cwt for %s, as announced by USDA AMS" % (dd["class3"], dd["class4"], mo)
+        am = dd.get("all_milk") or {}
+        if sts.get("all_milk") == "ok" and _num(am.get("value")) and am.get("month"):
+            line += "; all-milk price $%.2f for %s, USDA NASS" % (am["value"], am["month"])
+        out.append(("milk", line + " (%s/milk-prices)." % HOST))
+    # the newest Cash Bid Index edition (Oct 23, 2026)
+    ed = (_json(root, "data", "cash-index", "editions.json") or {}).get("editions") or []
+    try:
         e = max(ed, key=lambda x: x["month"])
-        day = e["last_day"]
-        when = "%s %d, %s" % (_MON[int(day[5:7]) - 1], int(day[8:10]), day[:4])
-    except (OSError, ValueError, KeyError, TypeError, IndexError):
-        return []
-    lines = []
-    for crop, word in (("corn", "Corn"), ("soybeans", "Soybeans")):
-        o = ((e.get("crops") or {}).get(crop) or {}).get("overall") or {}
-        n, cash, bas, bn = o.get("n"), o.get("avg_cash"), o.get("avg_basis_cents"), o.get("basis_n")
-        if not (isinstance(n, int) and n > 0 and isinstance(cash, (int, float)) and isinstance(bas, (int, float))):
-            continue
-        lines.append("- %s: %s elevators, average cash bid $%.2f, average basis %+d cents%s." % (
-            word, format(n, ","), cash, round(bas), (" (%s elevators with a basis)" % format(bn, ",")) if isinstance(bn, int) and bn != n else ""))
+    except (ValueError, KeyError, TypeError):
+        e = None
+    if e and _day(e.get("last_day")):
+        for crop, word in (("corn", "Corn"), ("soybeans", "Soybeans")):
+            o = ((e.get("crops") or {}).get(crop) or {}).get("overall") or {}
+            n, cash, bas, bn = o.get("n"), o.get("avg_cash"), o.get("avg_basis_cents"), o.get("basis_n")
+            if not (isinstance(n, int) and n > 0 and _num(cash) and _num(bas)):
+                continue
+            out.append(("index-" + crop, "- Cash Bid Index, %s, %s: %s elevators, average cash bid $%.2f, average basis %+d cents%s (%s/cash-bid-index)." % (
+                e.get("label") or _day(e["last_day"]), word.lower(), format(n, ","), cash, round(bas),
+                (", %s of them with a basis" % format(bn, ",")) if isinstance(bn, int) and bn != n else "", HOST)))
+    return out
+
+
+def numbers_block(root=REPO):
+    """The '## Latest numbers' section (numbers_lines with its heading). -> list of lines,
+    empty when there is nothing to state."""
+    lines = [ln for _, ln in numbers_lines(root)]
     if not lines:
         return []
-    return ["", "## Numbers as of " + when, "",
-            "AGSIST Cash Bid Index, %s, counted from the elevator boards AGSIST reads (%s):" % (
-                e.get("label") or day, "https://agsist.com/cash-bid-index"), ""] + lines
+    return ["", NUMBERS_HEAD, "",
+            "Each figure below is read from the same file the site's pages read and carries that file's own date. "
+            "A page can be newer than this list.", ""] + lines
+
+
+def without_numbers(text):
+    """The text with the numbers section taken out. --check compares this: the figures move
+    every few minutes and the daily rebuild catches them up; the list of pages must not drift."""
+    out, skip = [], False
+    for ln in (text or "").split("\n"):
+        if ln.startswith("## "):
+            skip = ln.startswith(NUMBERS_HEAD) or ln.startswith("## Numbers as of")
+        if not skip:
+            out.append(ln)
+    return "\n".join(out)
 
 
 def build(current_text, root=REPO):
@@ -438,15 +551,47 @@ def selftest():
                 "soybeans": {"overall": {"n": 1450, "avg_cash": 12.253, "avg_basis_cents": -58.95, "basis_n": 1450}}}}]}
         json.dump(fx, open(os.path.join(d, "data", "cash-index", "editions.json"), "w"))
         nb = numbers_block(d)
-        ok("## Numbers as of Oct 15, 2026" in nb, "block dated by the newest edition's last day: %s" % nb)
-        ok("- Corn: 1,651 elevators, average cash bid $4.51, average basis -41 cents (1,615 elevators with a basis)." in nb, "corn line: %s" % nb)
-        ok("- Soybeans: 1,450 elevators, average cash bid $12.25, average basis -59 cents." in nb, "soybean line: %s" % nb)
+        ok(nb[1] == "## Latest numbers", "one heading: %s" % nb)
+        ok("- Cash Bid Index, October 1 to 15, 2026, partial month, corn: 1,651 elevators, average cash bid $4.51, average basis -41 cents,"
+           " 1,615 of them with a basis (https://agsist.com/cash-bid-index)." in nb, "corn line: %s" % nb)
+        ok("- Cash Bid Index, October 1 to 15, 2026, partial month, soybeans: 1,450 elevators, average cash bid $12.25, average basis -59 cents"
+           " (https://agsist.com/cash-bid-index)." in nb, "soybean line: %s" % nb)
         ok(not any(" - " in x or "\u2014" in x for x in nb), "no dash")
         fx["editions"][1]["crops"]["soybeans"] = {"overall": {"n": 3}}
         json.dump(fx, open(os.path.join(d, "data", "cash-index", "editions.json"), "w"))
-        ok(not any("Soybeans" in x for x in numbers_block(d)), "a crop with no average is left out, not guessed")
+        ok(not any("soybeans:" in x for x in numbers_block(d)), "a crop with no average is left out, not guessed")
+        # the other figures, each from its own file with its own date (Nov 2, 2026)
+        def wj(rel, o):
+            os.makedirs(os.path.dirname(os.path.join(d, rel)), exist_ok=True)
+            json.dump(o, open(os.path.join(d, rel), "w"))
+        wj("data/bids-stats.json", {"fetched": "2026-11-02T22:37:41Z", "stats": {"total_bids": 22616}})
+        wj("data/elevator-counts.json", {"generated": "2026-11-02T21:06:48Z", "bids": {"elevators": 2047, "towns": 1618}})
+        wj("data/rain/ia.json", {"edate": "2026-11-01"})
+        wj("data/rain/wi.json", {"edate": "2026-10-30"})
+        wj("data/feeder-index.json", {"updated": "2026-11-02T00:45:48Z", "index": {"label": "AGSIST USDA feeder steer index, not the CME index",
+           "weeks": [{"start": "2026-10-19", "end": "2026-10-25", "p": 351.6, "final": False}]}})
+        wj("data/dairy-data.json", {"status": {"class": "ok", "all_milk": "ok"}, "class_month": "September 2026", "class3": 16.04, "class4": 18.94,
+           "all_milk": {"value": 19.5, "month": "September 2026"}})
+        os.makedirs(os.path.join(d, "daily"))
+        for f in ("2026-11-01.html", "2026-11-02.html", "index.html"):
+            open(os.path.join(d, "daily", f), "w").write("x")
+        got = dict(numbers_lines(d))
+        ok(got.get("bids") == "- Cash bids: 22,616 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 2, 2026, 22:37 UTC (https://agsist.com/cash-bids).", "bids: %s" % got.get("bids"))
+        ok(got.get("elevators") == "- Elevators with a current bid: 2,047, in 1,618 towns, counted Nov 2, 2026, 21:06 UTC (https://agsist.com/cash-bids).", "elevators: %s" % got.get("elevators"))
+        ok("latest issue Nov 2, 2026, at https://agsist.com/daily/2026-11-02 " in got.get("daily", ""), "daily: %s" % got.get("daily"))
+        ok("through Nov 1, 2026 (1 of 2 states; the oldest through Oct 30, 2026)" in got.get("rain", ""), "rain: %s" % got.get("rain"))
+        ok("$351.60 per cwt for the week Oct 19 to Oct 25, 2026" in got.get("feeder", "") and "first count" in got.get("feeder", ""), "feeder: %s" % got.get("feeder"))
+        ok("Class III $16.04 and Class IV $18.94 per cwt for September 2026" in got.get("milk", "") and "all-milk price $19.50" in got.get("milk", ""), "milk: %s" % got.get("milk"))
+        wj("data/feeder-index.json", {"updated": "2026-11-20T00:00:00Z", "index": {"weeks": [{"start": "2026-10-19", "end": "2026-10-25", "p": 351.6}]}})
+        wj("data/dairy-data.json", {"status": {"class": "stale"}, "class_month": "September 2026", "class3": 16.04, "class4": 18.94})
+        wj("data/bids-stats.json", {"fetched": "not a time", "stats": {"total_bids": 22616}})
+        got = dict(numbers_lines(d))
+        ok("feeder" not in got and "milk" not in got and "bids" not in got, "an old week, a source not ok, or no date: left out, not guessed: %s" % sorted(got))
+        ok(without_numbers("# A\n\n## Latest numbers\n\n- x 1\n\n## Pages\n\n- y\n") == "# A\n\n## Pages\n\n- y\n", "--check ignores the figures")
         os.remove(os.path.join(d, "data", "cash-index", "editions.json"))
-        ok(numbers_block(d) == [], "no edition file: no block")
+        ok(not any("Cash Bid Index" in x for x in numbers_block(d)), "no edition file: no index lines")
+    with tempfile.TemporaryDirectory() as d:
+        ok(numbers_block(d) == [], "no source files: no block")
     # the real list: no retired URL, one refresh statement, no em dash
     t, probs = build(open(os.path.join(REPO, OUT), encoding="utf-8").read() if os.path.exists(os.path.join(REPO, OUT)) else "")
     for gone in ("/presell-calculator", "/ag-odds", "/embed)", "/cash-rent", "/land-tenure", "/storage-crunch", "/basis-map", "/cash-bids-national"):
@@ -474,7 +619,7 @@ def main():
     for p in problems:
         print("::warning title=llms.txt::" + p)
     if "--check" in sys.argv:
-        stale = text != cur
+        stale = without_numbers(text) != without_numbers(cur)
         if stale:
             print("llms.txt is stale: run python3 scripts/build_llms_txt.py")
         sys.exit(1 if (stale or problems) else 0)

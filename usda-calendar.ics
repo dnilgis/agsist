@@ -18,7 +18,8 @@ DTSTART:20260112T170000Z
 DTEND:20260112T180000Z
 SUMMARY:Crop Production
 DESCRIPTION:January crop production report\, NASS (the Annual Summary comes
-  out the same day)\nDetails: https://agsist.com/usda-calendar
+  out the same day)\nWhat the market priced in: https://agsist.com/usda-cal
+ endar. Free morning Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -27,8 +28,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260112T170000Z
 DTEND:20260112T180000Z
 SUMMARY:Crop Production Annual Summary
-DESCRIPTION:Final 2025 crop production estimates\nDetails: https://agsist.c
- om/usda-calendar
+DESCRIPTION:Final 2025 crop production estimates\nWhat the market priced in
+ : https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com
+ /daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -37,8 +39,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260112T170000Z
 DTEND:20260112T180000Z
 SUMMARY:Grain Stocks (Dec 1)
-DESCRIPTION:Quarterly grain stocks: corn\, soybeans\, wheat\nDetails: https
- ://agsist.com/usda-calendar
+DESCRIPTION:Quarterly grain stocks: corn\, soybeans\, wheat\nWhat the marke
+ t priced in: https://agsist.com/usda-calendar. Free morning Daily: https:/
+ /agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -47,8 +50,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260112T170000Z
 DTEND:20260112T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -57,9 +61,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260123T200000Z
 DTEND:20260123T210000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -68,8 +73,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260210T170000Z
 DTEND:20260210T180000Z
 SUMMARY:Crop Production
-DESCRIPTION:February crop production report\, NASS\nDetails: https://agsist
- .com/usda-calendar
+DESCRIPTION:February crop production report\, NASS\nWhat the market priced 
+ in: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.c
+ om/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -78,8 +84,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260210T170000Z
 DTEND:20260210T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -87,8 +94,9 @@ UID:2026-02-19-agricultural-outlook-forum@agsist.com
 DTSTAMP:20261027T120000Z
 DTSTART;VALUE=DATE:20260219
 SUMMARY:Agricultural Outlook Forum
-DESCRIPTION:USDA's first new-crop projections for 2026/27 marketing year\nD
- etails: https://agsist.com/usda-calendar
+DESCRIPTION:USDA's first new-crop projections for 2026/27 marketing year\nW
+ hat the market priced in: https://agsist.com/usda-calendar. Free morning D
+ aily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -97,9 +105,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260220T200000Z
 DTEND:20260220T210000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -108,8 +117,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260310T160000Z
 DTEND:20260310T170000Z
 SUMMARY:Crop Production
-DESCRIPTION:March crop production report\, NASS\nDetails: https://agsist.co
- m/usda-calendar
+DESCRIPTION:March crop production report\, NASS\nWhat the market priced in:
+  https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/
+ daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -118,8 +128,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260310T160000Z
 DTEND:20260310T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -128,9 +139,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260320T190000Z
 DTEND:20260320T200000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -140,8 +152,9 @@ DTSTART:20260326T190000Z
 DTEND:20260326T200000Z
 SUMMARY:Quarterly Hogs and Pigs
 DESCRIPTION:March 1 hog inventory\, breeding herd and pig crop\, NASS. One 
- of four a year.\nDetails: https://agsist.com/usda-calendar\nLivestock futu
- res: https://agsist.com/cattle-futures-prices
+ of four a year.\nLivestock futures: https://agsist.com/cattle-futures-pric
+ es\nWhat the market priced in: https://agsist.com/usda-calendar. Free morn
+ ing Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -150,8 +163,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260331T160000Z
 DTEND:20260331T170000Z
 SUMMARY:Grain Stocks (Mar 1)
-DESCRIPTION:Quarterly grain stocks report\nDetails: https://agsist.com/usda
- -calendar
+DESCRIPTION:Quarterly grain stocks report\nWhat the market priced in: https
+ ://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/daily?
+ utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -161,7 +175,8 @@ DTSTART:20260331T160000Z
 DTEND:20260331T170000Z
 SUMMARY:Prospective Plantings
 DESCRIPTION:Farmer survey of intended 2026 corn\, soybean\, and wheat acres
- \nDetails: https://agsist.com/usda-calendar
+ \nWhat the market priced in: https://agsist.com/usda-calendar. Free mornin
+ g Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -170,8 +185,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260409T160000Z
 DTEND:20260409T170000Z
 SUMMARY:Crop Production
-DESCRIPTION:April crop production update\nDetails: https://agsist.com/usda-
- calendar
+DESCRIPTION:April crop production update\nWhat the market priced in: https:
+ //agsist.com/usda-calendar. Free morning Daily: https://agsist.com/daily?u
+ tm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -180,8 +196,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260409T160000Z
 DTEND:20260409T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -190,9 +207,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260417T190000Z
 DTEND:20260417T200000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -201,8 +219,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260512T160000Z
 DTEND:20260512T170000Z
 SUMMARY:Crop Production
-DESCRIPTION:May crop production: first 2026 winter wheat forecast\, NASS\nD
- etails: https://agsist.com/usda-calendar
+DESCRIPTION:May crop production: first 2026 winter wheat forecast\, NASS\nW
+ hat the market priced in: https://agsist.com/usda-calendar. Free morning D
+ aily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -211,8 +230,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260512T160000Z
 DTEND:20260512T170000Z
 SUMMARY:WASDE
-DESCRIPTION:First 2026/27 new-crop supply/demand projections\nDetails: http
- s://agsist.com/usda-calendar
+DESCRIPTION:First 2026/27 new-crop supply/demand projections\nWhat the mark
+ et priced in: https://agsist.com/usda-calendar. Free morning Daily: https:
+ //agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -221,9 +241,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260522T190000Z
 DTEND:20260522T200000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -232,8 +253,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260611T160000Z
 DTEND:20260611T170000Z
 SUMMARY:Crop Production
-DESCRIPTION:June crop production report\, NASS\nDetails: https://agsist.com
- /usda-calendar
+DESCRIPTION:June crop production report\, NASS\nWhat the market priced in: 
+ https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/d
+ aily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -242,8 +264,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260611T160000Z
 DTEND:20260611T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -252,9 +275,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260618T190000Z
 DTEND:20260618T200000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -264,8 +288,9 @@ DTSTART:20260625T190000Z
 DTEND:20260625T200000Z
 SUMMARY:Quarterly Hogs and Pigs
 DESCRIPTION:June 1 hog inventory\, breeding herd and pig crop\, NASS. One o
- f four a year.\nDetails: https://agsist.com/usda-calendar\nLivestock futur
- es: https://agsist.com/cattle-futures-prices
+ f four a year.\nLivestock futures: https://agsist.com/cattle-futures-price
+ s\nWhat the market priced in: https://agsist.com/usda-calendar. Free morni
+ ng Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -274,8 +299,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260630T160000Z
 DTEND:20260630T170000Z
 SUMMARY:Acreage
-DESCRIPTION:Actual planted acreage for 2026 crops\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Actual planted acreage for 2026 crops\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -284,8 +310,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260630T160000Z
 DTEND:20260630T170000Z
 SUMMARY:Grain Stocks (Jun 1)
-DESCRIPTION:Quarterly grain stocks\nDetails: https://agsist.com/usda-calend
- ar
+DESCRIPTION:Quarterly grain stocks\nWhat the market priced in: https://agsi
+ st.com/usda-calendar. Free morning Daily: https://agsist.com/daily?utm_sou
+ rce=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -294,8 +321,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260710T160000Z
 DTEND:20260710T170000Z
 SUMMARY:Crop Production
-DESCRIPTION:July crop production report\, NASS\nDetails: https://agsist.com
- /usda-calendar
+DESCRIPTION:July crop production report\, NASS\nWhat the market priced in: 
+ https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/d
+ aily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -304,8 +332,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260710T160000Z
 DTEND:20260710T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -314,9 +343,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260724T190000Z
 DTEND:20260724T200000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -326,7 +356,8 @@ DTSTART:20260812T160000Z
 DTEND:20260812T170000Z
 SUMMARY:Crop Production
 DESCRIPTION:First survey-based yield estimates for 2026 corn and soybeans\n
- Details: https://agsist.com/usda-calendar
+ What the market priced in: https://agsist.com/usda-calendar. Free morning 
+ Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -336,7 +367,8 @@ DTSTART:20260812T160000Z
 DTEND:20260812T170000Z
 SUMMARY:WASDE
 DESCRIPTION:Monthly world supply/demand estimates: first 2026 corn/soy yiel
- d survey\nDetails: https://agsist.com/usda-calendar
+ d survey\nWhat the market priced in: https://agsist.com/usda-calendar. Fre
+ e morning Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -345,9 +377,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260821T190000Z
 DTEND:20260821T200000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -356,8 +389,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260911T160000Z
 DTEND:20260911T170000Z
 SUMMARY:Crop Production
-DESCRIPTION:September 2026 corn and soybean production estimates\nDetails: 
- https://agsist.com/usda-calendar
+DESCRIPTION:September 2026 corn and soybean production estimates\nWhat the 
+ market priced in: https://agsist.com/usda-calendar. Free morning Daily: ht
+ tps://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -366,8 +400,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260911T160000Z
 DTEND:20260911T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -376,7 +411,8 @@ DTSTAMP:20261027T120000Z
 DTSTART;VALUE=DATE:20260915
 SUMMARY:CONAB Grain Survey (Brazil)
 DESCRIPTION:Final 2025/26 Brazilian grain estimate\, corn & soybeans\, CONA
- B\nDetails: https://agsist.com/usda-calendar
+ B\nWhat the market priced in: https://agsist.com/usda-calendar. Free morni
+ ng Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -385,9 +421,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260918T190000Z
 DTEND:20260918T200000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -397,8 +434,9 @@ DTSTART:20260924T190000Z
 DTEND:20260924T200000Z
 SUMMARY:Quarterly Hogs and Pigs
 DESCRIPTION:September 1 hog inventory\, breeding herd and pig crop\, NASS. 
- One of four a year.\nDetails: https://agsist.com/usda-calendar\nLivestock 
- futures: https://agsist.com/cattle-futures-prices
+ One of four a year.\nLivestock futures: https://agsist.com/cattle-futures-
+ prices\nWhat the market priced in: https://agsist.com/usda-calendar. Free 
+ morning Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -407,8 +445,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260930T160000Z
 DTEND:20260930T170000Z
 SUMMARY:Grain Stocks (Sep 1)
-DESCRIPTION:Quarterly grain stocks: sets the 2025/26 carryout\nDetails: htt
- ps://agsist.com/usda-calendar
+DESCRIPTION:Quarterly grain stocks: sets the 2025/26 carryout\nWhat the mar
+ ket priced in: https://agsist.com/usda-calendar. Free morning Daily: https
+ ://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -417,8 +456,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20260930T160000Z
 DTEND:20260930T170000Z
 SUMMARY:Small Grains Annual Summary
-DESCRIPTION:Final 2026 winter wheat and oat production\nDetails: https://ag
- sist.com/usda-calendar
+DESCRIPTION:Final 2026 winter wheat and oat production\nWhat the market pri
+ ced in: https://agsist.com/usda-calendar. Free morning Daily: https://agsi
+ st.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -427,8 +467,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20261009T160000Z
 DTEND:20261009T170000Z
 SUMMARY:Crop Production
-DESCRIPTION:October 2026 corn and soybean production estimates\nDetails: ht
- tps://agsist.com/usda-calendar
+DESCRIPTION:October 2026 corn and soybean production estimates\nWhat the ma
+ rket priced in: https://agsist.com/usda-calendar. Free morning Daily: http
+ s://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -437,8 +478,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20261009T160000Z
 DTEND:20261009T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -447,8 +489,9 @@ DTSTAMP:20261027T120000Z
 DTSTART;VALUE=DATE:20261015
 SUMMARY:CONAB Grain Survey (Brazil)
 DESCRIPTION:First monthly 2026/27 Brazil crop survey from CONAB\, soybeans 
- and corn (a preliminary projection came out Sep 15)\nDetails: https://agsi
- st.com/usda-calendar
+ and corn (a preliminary projection came out Sep 15)\nWhat the market price
+ d in: https://agsist.com/usda-calendar. Free morning Daily: https://agsist
+ .com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -458,8 +501,9 @@ DTSTART:20261022T190000Z
 DTEND:20261022T200000Z
 SUMMARY:Milk Production
 DESCRIPTION:Monthly milk cows\, milk per cow and total milk output\, NASS\n
- Details: https://agsist.com/usda-calendar\nMilk prices: https://agsist.com
- /milk-prices
+ Milk prices: https://agsist.com/milk-prices\nWhat the market priced in: ht
+ tps://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/dai
+ ly?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -468,9 +512,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20261023T190000Z
 DTEND:20261023T200000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -480,8 +525,9 @@ DTSTART:20261023T190000Z
 DTEND:20261023T200000Z
 SUMMARY:Cold Storage
 DESCRIPTION:Month-end stocks of beef\, pork\, poultry\, butter and cheese i
- n cold storage\, NASS\nDetails: https://agsist.com/usda-calendar\nMilk pri
- ces: https://agsist.com/milk-prices
+ n cold storage\, NASS\nMilk prices: https://agsist.com/milk-prices\nWhat t
+ he market priced in: https://agsist.com/usda-calendar. Free morning Daily:
+  https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -494,7 +540,9 @@ DESCRIPTION:Signup opens at your county FSA (Farm Service Agency) office fo
  ms that can pay when crop prices or revenue fall. It runs to Mar 15\, 2027
  .\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource
  : https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026
- -2027-enrollment-key-price-revenue-safety-net
+ -2027-enrollment-key-price-revenue-safety-net\nWhat the market priced in: 
+ https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/d
+ aily?utm_source=ics
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT
@@ -503,8 +551,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20261110T170000Z
 DTEND:20261110T180000Z
 SUMMARY:Crop Production
-DESCRIPTION:November 2026 crop production estimates\nDetails: https://agsis
- t.com/usda-calendar
+DESCRIPTION:November 2026 crop production estimates\nWhat the market priced
+  in: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.
+ com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -513,8 +562,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20261110T170000Z
 DTEND:20261110T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -528,7 +578,9 @@ DESCRIPTION:Free University of Minnesota Extension webinar\, "2026 Farm Bil
  Register on the UMN Extension event page to get the link.\nCompare ARC and
   PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.
  usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-k
- ey-price-revenue-safety-net
+ ey-price-revenue-safety-net\nWhat the market priced in: https://agsist.com
+ /usda-calendar. Free morning Daily: https://agsist.com/daily?utm_source=ic
+ s
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT
@@ -537,9 +589,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20261120T200000Z
 DTEND:20261120T210000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -549,8 +602,9 @@ DTSTART:20261120T200000Z
 DTEND:20261120T210000Z
 SUMMARY:Milk Production
 DESCRIPTION:Monthly milk cows\, milk per cow and total milk output\, NASS\n
- Details: https://agsist.com/usda-calendar\nMilk prices: https://agsist.com
- /milk-prices
+ Milk prices: https://agsist.com/milk-prices\nWhat the market priced in: ht
+ tps://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/dai
+ ly?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -560,8 +614,9 @@ DTSTART:20261124T200000Z
 DTEND:20261124T210000Z
 SUMMARY:Cold Storage
 DESCRIPTION:Month-end stocks of beef\, pork\, poultry\, butter and cheese i
- n cold storage\, NASS\nDetails: https://agsist.com/usda-calendar\nMilk pri
- ces: https://agsist.com/milk-prices
+ n cold storage\, NASS\nMilk prices: https://agsist.com/milk-prices\nWhat t
+ he market priced in: https://agsist.com/usda-calendar. Free morning Daily:
+  https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -571,7 +626,8 @@ DTSTART:20261204T133000Z
 DTEND:20261204T143000Z
 SUMMARY:StatCan Crop Production (Canada)
 DESCRIPTION:Final 2026 Canadian production (wheat\, canola\, barley) Statis
- tics Canada\nDetails: https://agsist.com/usda-calendar
+ tics Canada\nWhat the market priced in: https://agsist.com/usda-calendar. 
+ Free morning Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -581,7 +637,8 @@ DTSTART:20261210T170000Z
 DTEND:20261210T180000Z
 SUMMARY:Crop Production
 DESCRIPTION:December crop production update (cotton and other late crops)\,
-  NASS\nDetails: https://agsist.com/usda-calendar
+  NASS\nWhat the market priced in: https://agsist.com/usda-calendar. Free m
+ orning Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -590,8 +647,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20261210T170000Z
 DTEND:20261210T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -604,7 +662,9 @@ DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. Changing y
  ontract. Miss Dec 11 and the farm keeps its 2025 choice but gets no 2026 p
  ayment.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\n
  Source: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announce
- s-2026-2027-enrollment-key-price-revenue-safety-net
+ s-2026-2027-enrollment-key-price-revenue-safety-net\nWhat the market price
+ d in: https://agsist.com/usda-calendar. Free morning Daily: https://agsist
+ .com/daily?utm_source=ics
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT
@@ -613,9 +673,10 @@ DTSTAMP:20261027T120000Z
 DTSTART:20261218T200000Z
 DTEND:20261218T210000Z
 SUMMARY:Cattle on Feed
-DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
-  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
- le-futures-prices
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -625,8 +686,9 @@ DTSTART:20261222T200000Z
 DTEND:20261222T210000Z
 SUMMARY:Milk Production
 DESCRIPTION:Monthly milk cows\, milk per cow and total milk output\, NASS\n
- Details: https://agsist.com/usda-calendar\nMilk prices: https://agsist.com
- /milk-prices
+ Milk prices: https://agsist.com/milk-prices\nWhat the market priced in: ht
+ tps://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/dai
+ ly?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -636,8 +698,9 @@ DTSTART:20261223T200000Z
 DTEND:20261223T210000Z
 SUMMARY:Cold Storage
 DESCRIPTION:Month-end stocks of beef\, pork\, poultry\, butter and cheese i
- n cold storage\, NASS\nDetails: https://agsist.com/usda-calendar\nMilk pri
- ces: https://agsist.com/milk-prices
+ n cold storage\, NASS\nMilk prices: https://agsist.com/milk-prices\nWhat t
+ he market priced in: https://agsist.com/usda-calendar. Free morning Daily:
+  https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -647,8 +710,9 @@ DTSTART:20261223T200000Z
 DTEND:20261223T210000Z
 SUMMARY:Quarterly Hogs and Pigs
 DESCRIPTION:December 1 hog inventory\, breeding herd and pig crop\, NASS. O
- ne of four a year.\nDetails: https://agsist.com/usda-calendar\nLivestock f
- utures: https://agsist.com/cattle-futures-prices
+ ne of four a year.\nLivestock futures: https://agsist.com/cattle-futures-p
+ rices\nWhat the market priced in: https://agsist.com/usda-calendar. Free m
+ orning Daily: https://agsist.com/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -657,8 +721,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270112T170000Z
 DTEND:20270112T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -667,8 +732,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270210T170000Z
 DTEND:20270210T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -677,8 +743,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270310T170000Z
 DTEND:20270310T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -689,7 +756,9 @@ SUMMARY:2027 ARC/PLC signup deadline (FSA)
 DESCRIPTION:Last day to sign 2027 ARC or PLC at your FSA office.\nCompare A
  RC and PLC for your county: https://agsist.com/arc-plc\nSource: https://ww
  w.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enroll
- ment-key-price-revenue-safety-net
+ ment-key-price-revenue-safety-net\nWhat the market priced in: https://agsi
+ st.com/usda-calendar. Free morning Daily: https://agsist.com/daily?utm_sou
+ rce=ics
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT
@@ -698,8 +767,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270409T160000Z
 DTEND:20270409T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -708,8 +778,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270512T160000Z
 DTEND:20270512T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -718,8 +789,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270611T160000Z
 DTEND:20270611T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -728,8 +800,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270709T160000Z
 DTEND:20270709T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -738,8 +811,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270812T160000Z
 DTEND:20270812T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -748,8 +822,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20270910T160000Z
 DTEND:20270910T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -758,8 +833,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20271008T160000Z
 DTEND:20271008T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -768,8 +844,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20271110T170000Z
 DTEND:20271110T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
@@ -778,8 +855,9 @@ DTSTAMP:20261027T120000Z
 DTSTART:20271210T170000Z
 DTEND:20271210T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
- com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 END:VCALENDAR

@@ -84,6 +84,11 @@ const UID_NAME = {
   "2027 ARC/PLC signup deadline": "arc-plc-2027-signup-deadline",
 };
 
+/* The last line of every event (Sig, Nov 2: the calendar a reader subscribed to
+   brings them back). Plain URLs: calendar apps show DESCRIPTION as text and
+   link bare URLs themselves. The Daily link carries utm_source=ics only. */
+export const TRAILER = "What the market priced in: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/daily?utm_source=ics";
+
 export const SETS = {
   grain: { types: ["wasde", "supply", "stocks", "plantings", "outlook", "fsa"], name: "USDA Grain Reports - AGSIST",
     desc: "WASDE, Crop Production, Grain Stocks, Prospective Plantings and Acreage, the Outlook Forum and FSA ARC/PLC signup dates. No livestock, dairy, international or weekly reports. Built from the list on agsist.com/usda-calendar" },
@@ -113,7 +118,8 @@ export function buildIcs({ reports, fsa, mod }, set) {
     const url = r.link ? "https://agsist.com" + r.link : "https://agsist.com/usda-calendar";
     let desc = (r.desc || "").trim();
     if (isFsa) desc += "\nCompare ARC and PLC for your county: https://agsist.com/arc-plc" + (fsa ? "\nSource: " + fsa : "");
-    else desc += "\nDetails: https://agsist.com/usda-calendar" + (r.link ? "\n" + (r.linkText || "More") + ": " + url : "");
+    else desc += r.link ? "\n" + (r.linkText || "More") + ": " + url : "";
+    desc += "\n" + TRAILER;
     L.push("BEGIN:VEVENT", "UID:" + uid, "DTSTAMP:" + dtstamp);
     const c = clock(r.time);
     if (c) {
