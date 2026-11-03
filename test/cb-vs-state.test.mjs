@@ -40,8 +40,8 @@ test("hand-worked: corn middle of the 3 Dec bids, soybeans of the 3 Nov bids, ag
   assert.deepEqual([r[0].n, r[0].search, r[0].state, r[0].diff], [3, -38, -40, 2]);
   assert.deepEqual([r[1].n, r[1].search, r[1].state, r[1].diff], [3, -62, -65, 3]);
   const t = V.html(r).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
-  assert.match(t, /Corn basis here vs Iowa: the middle of 3 elevators in this search is 38¢ under Dec '26, 2¢ stronger than the Iowa middle \(40¢ under, 277 elevators\)\./);
-  assert.match(t, /Soybean basis here vs Iowa: the middle of 3 elevators in this search is 62¢ under Nov '26, 3¢ stronger than the Iowa middle \(65¢ under, 237 elevators\)\./);
+  assert.match(t, /Corn basis here vs Iowa: the middle of 3 elevators in this search is 38¢ under Dec '26, 2¢ stronger than the Iowa middle \(40¢ under, median of 277 elevators\)\./);
+  assert.match(t, /Soybean basis here vs Iowa: the middle of 3 elevators in this search is 62¢ under Nov '26, 3¢ stronger than the Iowa middle \(65¢ under, median of 237 elevators\)\./);
   assert.match(t, /State middle as of Oct 16/);
 });
 

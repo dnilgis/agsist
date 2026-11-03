@@ -83,7 +83,7 @@ test("board line and its baked twin (seed_static.py mk_board) agree", () => {
 test("state line: hand-worked numbers, one wheat class, nothing when thin or stale", () => {
   const il = P.build(BS, PR, "IL", ["corn"], NOW);
   assert.match(il, /<b>Illinois corn:<\/b> median basis <b>31¢ under<\/b> Dec '26 futures, about <b>\$4\.43<\/b> cash on the Oct 16 settle\./);
-  assert.match(il, /186 elevators, Oct 17\./);
+  assert.match(il, /The median of 186 elevators, Oct 17\./);
   assert.match(il, /<a href="\/cash-bids">/);
   assert.match(P.build(BS, PR, "WI", ["corn"], NOW), /56½¢ under<\/b> Dec '26 futures, about <b>\$4\.18<\/b>/);
   const ks = P.lines(BS, PR, "KS", ["wheat"], NOW);
@@ -138,7 +138,7 @@ test("grain futures pages: key table up, labeled folds, FAQ kept, scripts in ord
     const ld = JSON.parse(/<script type="application\/ld\+json">(\{"@context": "https:\/\/schema.org", "@graph".*?)<\/script>/.exec(h)[1]);
     const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage");
     for (const q of faq.mainEntity) assert.ok(h.includes(q.name.replace(/&/g, "&amp;")) || h.includes(q.name), page + " FAQ: " + q.name);
-    assert.ok(h.indexOf("components/price-local.js?v=8") > 0 && h.indexOf("components/price-local.js?v=8") < h.indexOf("components/futures.js?v=29"), page + ": stamp helper before futures.js");
+    assert.ok(h.indexOf("components/price-local.js?v=9") > 0 && h.indexOf("components/price-local.js?v=9") < h.indexOf("components/futures.js?v=29"), page + ": stamp helper before futures.js");
     assert.ok(!h.includes("futures.js?v=13") && !h.includes("futures.js?v=14") && !h.includes("futures.js?v=15") && !h.includes("futures.js?v=16") && !h.includes("futures.js?v=17") && !h.includes("futures.js?v=18") && !h.includes("futures.js?v=19") && !h.includes("futures.js?v=20") && !h.includes("futures.js?v=21") && !h.includes("futures.js?v=22") && !h.includes("futures.js?v=23") && !h.includes("futures.js?v=24") && !h.includes("futures.js?v=25") && !h.includes("futures.js?v=26") && !h.includes("price-local.js?v=6") && !h.includes("price-local.js?v=2"));
     assert.match(h, /matchMedia\('\(min-width:900px\)'\)\.matches\)document\.querySelectorAll\('details\.fold\[data-wide-open\]'\)/);
   }
