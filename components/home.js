@@ -1877,8 +1877,8 @@ try {
   function day(iso){var d=new Date(iso);return isNaN(d)?'':d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/Chicago'});}
   /* One state, as lines. Only crops with a median (basis-states.json prints
      one at min_n elevators or more); a thinner crop is counted, not priced. */
-  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
-  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   window.__agsistNolocRows=function(doc,code){
     var s=doc&&doc.states&&doc.states[code];if(!s)return null;
     var rows=[],thin=[];
@@ -1897,7 +1897,7 @@ try {
     var r=window.__agsistNolocRows(doc,code);
     if(!r||!r.rows.length){out.innerHTML='<p class="hn-fine">Not enough fresh '+esc(AB[code])+' bids in the AGSIST network to print a state basis this week.'+(r&&r.path?' <a href="'+esc(r.path.replace(/#.*$/,''))+'">'+esc(r.name)+' bids</a>':'')+'</p>';return;}
     out.innerHTML='<ul class="hn-rows">'+r.rows.map(function(x){
-      return '<li><span class="hn-crop">'+esc(x.crop)+'</span><span class="hn-b">'+esc(x.basis)+'</span><span class="hn-c">'+esc(x.contract)+'</span><span class="hn-n">'+locCo(x.n,x.co)+(x.week?', '+esc(x.week):'')+'</span></li>';
+      return '<li><span class="hn-crop">'+esc(x.crop)+'</span><span class="hn-b">'+esc(x.basis)+'</span><span class="hn-c">'+esc(x.contract)+'</span><span class="hn-n">'+medOf(x.n,x.co)+(x.week?', '+esc(x.week):'')+'</span></li>';
     }).join('')+'</ul><p class="hn-fine">Median basis of AGSIST network elevators with a fresh bid, read '+esc(day(doc.generated))+'. Your elevator will differ.'+(r.thin.length?' Too few bids to print: '+esc(r.thin.join(', '))+'.':'')+' <a href="'+esc(r.path||'/basis')+'">All '+esc(r.name)+' bids</a></p>';
   }
   function fallback(){

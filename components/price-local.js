@@ -25,8 +25,8 @@
    and this script (defer). Tests: test/price-local.test.mjs */
 (function (root) {
   'use strict';
-  /* '203 locations, 23 companies' beside a state basis middle (scripts/basis_method.py companies_behind); a file without the company count keeps 'N elevators'. */
-  function locCo(n, m) { return typeof m !== 'number' ? n + ' elevator' + (n === 1 ? '' : 's') : n + ' location' + (n === 1 ? '' : 's') + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' }, DAY = 864e5, TZ = 'America/Chicago';
   var NAMES = {};
@@ -330,8 +330,8 @@
       var c = cell(bs, prices, st, crop, now);
       if (!c) return;
       var cash = c.cash != null ? ', about <b>$' + c.cash.toFixed(2) + '</b> cash on ' + c.on : '';
-      out.push('<b>' + esc(c.name) + ' ' + c.crop + ':</b> median basis <b>' + c.basis + '</b> ' + esc(c.fut + c.label) + ' futures' + cash +
-        '. <span class="pl-s">' + locCo(c.n, c.companies) + ', ' + c.asOf + '.</span>');
+      out.push('<b>' + esc(c.name) + ' ' + c.crop + ':</b> basis <b>' + c.basis + '</b> ' + esc(c.fut + c.label) + ' futures' + cash +
+        '. <span class="pl-s">The ' + medOf(c.n, c.companies) + ', ' + c.asOf + '.</span>');
     });
     return out;
   }
