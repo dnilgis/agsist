@@ -211,6 +211,255 @@ def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=PFA
     return man
 
 
+# ------------------------------------------------------------------ MARS (USDA My Market News)
+# Sig, Nov 2: "Get a USDA key". MARS_API_KEY is an Actions secret (HTTP basic, key as
+# the user name, empty password); it is never printed or saved. The MARS answer for a
+# report (https://marsapi.ams.usda.gov/services/v1.2/reports/<slug>?q=report_begin_date=
+# MM/DD/YYYY:MM/DD/YYYY) is one JSON row per table row of the same USDA report the PDF
+# prints (probe of Nov 3 2026, raw history/feeder-mars/probe/): commodity, class, frame,
+# muscle_grade, price_unit, weight_collect, lot_desc, head_count, avg_weight_min/max,
+# avg_weight, avg_price_min/max, avg_price, receipts, report_date, report_title.
+MARS_OUT = "history/feeder-mars"
+MARS_SOURCE = "USDA AMS single-barn auction reports, read through USDA My Market News"
+MARS_ROWS_KEEP = ("report_date", "published_date", "report_title", "slug_id", "commodity", "class", "frame",
+                  "muscle_grade", "price_unit", "weight_collect", "lot_desc", "head_count", "avg_weight_min",
+                  "avg_weight_max", "avg_weight", "avg_price_min", "avg_price_max", "avg_price", "receipts",
+                  "final_ind", "age", "dressing")
+
+
+def mars_key(r):
+    """The PDF reader's table key for a MARS row ("steers|1"), or None for a row the PDF
+    reader never reads: only Feeder Cattle steers and heifers, Medium and Large 1 and 1-2,
+    Per Cwt on Actual Wt (fetch_cattle_auction.SECTION_RE)."""
+    if r.get("commodity") != "Feeder Cattle" or r.get("frame") != "Medium and Large":
+        return None
+    c, g = str(r.get("class") or ""), str(r.get("muscle_grade") or "")
+    if c not in ("Steers", "Heifers") or g not in ("1", "1-2"):
+        return None
+    if r.get("price_unit") != "Per Cwt" or r.get("weight_collect") != "Actual":
+        return None
+    return "%s|%s" % (c.lower(), g)
+
+
+def mars_note(v):
+    v = str(v or "").strip()
+    return "" if v.lower() in ("", "none", "null") else v
+
+
+def _num(v):
+    if isinstance(v, bool) or v is None:
+        raise ValueError("missing")
+    return float(v)
+
+
+def mars_row(r):
+    """(row, None) in fetch_cattle_auction.parse_rows' shape, ("skip", None), or (None, why)."""
+    try:
+        row = {"head": int(_num(r.get("head_count"))), "lo": int(_num(r.get("avg_weight_min"))),
+               "hi": int(_num(r.get("avg_weight_max"))), "wt": int(_num(r.get("avg_weight"))),
+               "plo": round(_num(r.get("avg_price_min")), 2), "phi": round(_num(r.get("avg_price_max")), 2),
+               "price": round(_num(r.get("avg_price")), 2), "note": mars_note(r.get("lot_desc"))}
+    except (TypeError, ValueError):
+        return None, "a row with a number missing"
+    why = FCA.check_row(row)
+    if why == "skip":
+        return "skip", None
+    if why:
+        return None, why
+    return row, None
+
+
+def mars_reports(rows, barn):
+    """MARS rows of one report number -> ({sale date: parse_report-shaped dict}, {date: why}).
+    The same rules as the PDF reader: the report's title must name the barn, one misread
+    row refuses the whole sale, a sale with no feeder row is not a sale."""
+    by_date = {}
+    for r in rows or []:
+        if not isinstance(r, dict):
+            continue
+        d = PFA.mars_date(r.get("report_date"))
+        if d:
+            by_date.setdefault(d.isoformat(), []).append(r)
+    good, bad = {}, {}
+    for d, rs in sorted(by_date.items()):
+        title = next((str(r.get("report_title")) for r in rs if r.get("report_title")), "")
+        if not FCA.title_ok(barn, title):
+            bad[d] = "title does not name this barn: %r" % title[:90]
+            continue
+        tables, why, rec = {}, None, None
+        for r in rs:
+            k = mars_key(r)
+            if k is None:
+                continue
+            row, why = mars_row(r)
+            if row is None:
+                break
+            if row != "skip":
+                tables.setdefault(k, []).append(row)
+        if why:
+            bad[d] = "%s: %s" % (k, why)
+            continue
+        if not any(tables.values()):
+            bad[d] = "no feeder steer or heifer Medium and Large 1 / 1-2 rows (Per Cwt, Actual Wt)"
+            continue
+        for r in rs:
+            if isinstance(r.get("receipts"), int):
+                rec = r["receipts"]
+                break
+        good[d] = {"date": d, "receipts": rec, "title": title, "tables": tables,
+                   "final": all(str(r.get("final_ind") or "Final") == "Final" for r in rs)}
+    return good, bad
+
+
+def mars_sales_of(rows, barn):
+    """{date: summarize() sale} plus the refusals, for the sales file."""
+    good, bad = mars_reports(rows, barn)
+    out = {}
+    for d, p in good.items():
+        s = FCA.summarize(p)
+        if not s["classes"]:
+            bad[d] = "no feeder row in the classes read"
+            continue
+        if not p["final"]:
+            s["preliminary"] = True
+        out[d] = s
+    return out, bad
+
+
+def mars_feeder_rows(body):
+    """The rows worth keeping from one MARS answer (feeder cattle only, the fields read)."""
+    rows, _ = PFA.mars_rows(body)
+    return [{k: r.get(k) for k in MARS_ROWS_KEEP} for r in rows or []
+            if isinstance(r, dict) and r.get("commodity") == "Feeder Cattle"]
+
+
+def mars_fetch(d0, d1, out=MARS_OUT, fetch_=None, log=PFA.flush_log, root=FCA.ROOT, minutes=0, clock=time.monotonic):
+    """Every single-barn report's rows from d0 to d1, one ask per report and year, 1.5 s
+    apart. Saves rows/<slug>.json (feeder rows as MARS sent them, the fields read),
+    sales/<slug>.json and manifest.json. Needs MARS_API_KEY."""
+    auth = PFA.mars_auth()
+    if not auth:
+        log("no MARS_API_KEY: nothing asked")
+        return None
+    fetch_ = fetch_ or Fetcher(min_gap=1.5, retries=2, timeout=180, headers=auth, ok=(200, 204, 404))
+    stop = clock() + minutes * 60 if minutes else None
+    man_path = os.path.join(out, "manifest.json")
+    man = load(man_path, {"source": MARS_SOURCE, "reports": {}})
+    cfg = FCA.load_sources(root)
+    years = list(range(d0.year, d1.year + 1))
+    for slug, barn in reports(cfg):
+        if stop and clock() > stop:
+            log("stopped at the time limit; dispatch again to go on")
+            break
+        m = man["reports"].setdefault(slug, {"barn": barn["id"], "years": {}})
+        rows_path = os.path.join(out, "rows", slug + ".json")
+        rows = load(rows_path, [])
+        for y in years:
+            a, b = max(d0, datetime.date(y, 1, 1)), min(d1, datetime.date(y, 12, 31))
+            if m["years"].get(str(y), {}).get("to") == iso_(b) and y < d1.year:
+                continue
+            try:
+                s, body = fetch_.get(PFA.MARS % (slug, PFA.mdy(a), PFA.mdy(b)))
+            except FetchError as e:
+                m["years"][str(y)] = {"status": "failed", "error": str(e)[:200]}
+                log("  %s %d: failed (%s)" % (slug, y, str(e)[:100]))
+                continue
+            got = mars_feeder_rows(body) if s == 200 else []
+            ds = {r.get("report_date") for r in got}
+            rows = [r for r in rows if r.get("report_date") not in ds] + got
+            m["years"][str(y)] = {"status": s, "from": iso_(a), "to": iso_(b), "rows": len(got), "read": now_iso()}
+        save(rows_path, rows)
+        sales, bad = mars_sales_of(rows, barn)
+        save(os.path.join(out, "sales", slug + ".json"), sales)
+        m["sales"], m["refused"] = len(sales), bad
+        log("  %s (%s): %d feeder rows, %d sales, %d refused" % (slug, barn["id"], len(rows), len(sales), len(bad)))
+        save(man_path, man)
+    save(man_path, man)
+    return man
+
+
+def mars_from_dir(src_dir, out=MARS_OUT, root=FCA.ROOT, log=print):
+    """Sales from MARS answers already saved (the probe's header_<slug>.json files), no network."""
+    cfg = FCA.load_sources(root)
+    man = {"source": MARS_SOURCE, "from_saved": src_dir, "reports": {}}
+    for slug, barn in reports(cfg):
+        p = os.path.join(src_dir, "header_%s.json" % slug)
+        if not os.path.exists(p):
+            continue
+        with open(p, "rb") as f:
+            rows = mars_feeder_rows(f.read())
+        sales, bad = mars_sales_of(rows, barn)
+        save(os.path.join(out, "sales", slug + ".json"), sales)
+        man["reports"][slug] = {"barn": barn["id"], "rows": len(rows), "sales": len(sales), "refused": bad}
+        log("  %s (%s): %d feeder rows, %d sales, %d refused" % (slug, barn["id"], len(rows), len(sales), len(bad)))
+    save(os.path.join(out, "manifest.json"), man)
+    return man
+
+
+# ------------------------------------------------------------------ cross-check: PDF and MARS, same sale
+def _rowkey(k, r):
+    return (k, r["head"], r["lo"], r["hi"], r["wt"], round(r["plo"], 2), round(r["phi"], 2), round(r["price"], 2),
+            bool(r["note"]))
+
+
+def compare_sale(pdf_parsed, mars_parsed):
+    """[] when the two reads of one sale hold the same rows, else what differs (rows only in one)."""
+    def rows_of(p):
+        return sorted(_rowkey(k, r) for k, rs in (p.get("tables") or {}).items() for r in rs)
+    a, b = rows_of(pdf_parsed), rows_of(mars_parsed)
+    if a == b:
+        return []
+    from collections import Counter
+    ca, cb = Counter(a), Counter(b)
+    return ([["pdf only"] + list(x) for x in sorted((ca - cb).elements())] +
+            [["mars only"] + list(x) for x in sorted((cb - ca).elements())])
+
+
+def crosscheck(texts, mars_rows_by_slug, root=FCA.ROOT):
+    """texts: [(slug, label, report text)] read by the PDF reader. For each sale MARS also
+    holds: rows equal or the diff; then the index of every week built from the matched
+    sales both ways. -> report dict."""
+    cfg = FCA.load_sources(root)
+    by_slug = dict(reports(cfg))
+    sales_pdf, sales_mars, out = [], [], {"pairs": 0, "same": 0, "differ": [], "pdf_refused": 0, "not_in_mars": 0}
+    seen = set()
+    for slug, label, text in texts:
+        barn = by_slug.get(slug)
+        if not barn:
+            continue
+        p, why = FCA.parse_report(text)
+        if p is None or not FCA.title_ok(barn, p["title"]):
+            out["pdf_refused"] += 1
+            continue
+        good, bad = mars_reports(mars_rows_by_slug.get(slug) or [], barn)
+        q = good.get(p["date"])
+        if q is None:
+            out["not_in_mars"] += 1
+            continue
+        if (slug, p["date"]) in seen:
+            continue
+        seen.add((slug, p["date"]))
+        out["pairs"] += 1
+        diff = compare_sale(p, q)
+        if diff:
+            out["differ"].append({"slug": slug, "barn": barn["id"], "date": p["date"], "copy": label, "diff": diff[:40]})
+        else:
+            out["same"] += 1
+        sales_pdf.append(dict(FCA.summarize(p), barn=barn["id"], state=barn["state"]))
+        sales_mars.append(dict(FCA.summarize(q), barn=barn["id"], state=barn["state"]))
+    sp, sm = BFI.history_store(sales_pdf), BFI.history_store(sales_mars)
+    weeks = sorted({BFI.week_start(BFI.pdate(s["date"])) for s in sales_pdf})
+    out["weeks"] = []
+    for w in weeks:
+        a, _ = BFI.index_week(sp, w, BFI.FAR)
+        b, _ = BFI.index_week(sm, w, BFI.FAR)
+        out["weeks"].append({"start": iso_(w), "barns": a["barns"], "head_pdf": a["head"], "head_mars": b["head"],
+                             "p_pdf": a["p"], "p_mars": b["p"], "same": {k: v for k, v in a.items() if k not in ("lo", "hi")} ==
+                             {k: v for k, v in b.items() if k not in ("lo", "hi")} and a.get("lo") == b.get("lo")})
+    out["weeks_same"] = sum(1 for w in out["weeks"] if w["same"])
+    return out
+
+
 def archived_sales(out=OUT, root=FCA.ROOT):
     """Every archived sale with its barn id and state, for history_store."""
     cfg = FCA.load_sources(root)
