@@ -23,10 +23,13 @@ name: Monthly land sale email
 #                 worker's mo mark). Needs LANDSALES_MONTHLY_LIVE=1.
 #
 # The 3rd, 15:47 UTC (the schedule Sig approved): after land-data.yml (the 3rd, 09:23 UTC,
-# up to 150 minutes) has fetched and committed the month's transfers. A state whose files
-# were not fetched since the month ended waits; a late land run is caught up by dispatching
-# mode send by hand. A reader already mailed for the month is never mailed again, so a rerun
-# is safe. It runs a day after the 2nd-of-month rain email, never on the same day.
+# gated the same way since Nov 3, 2026, up to 150 minutes) has fetched and committed the month's
+# transfers. A state whose files were not fetched since the month ended waits ("wait-data").
+# When the land run is late, the first chained run after it commits to data/land goes once more
+# inside the window below and mails the readers who waited (cron_gate.py RETRY_AFTER; one pass per
+# land commit). Past the window, catch up by dispatching mode send by hand. A reader already
+# mailed for the month is never mailed again, so a rerun is safe. It runs a day after the
+# 2nd-of-month rain email, never on the same day.
 #
 # GitHub's scheduler drops most scheduled fires (it never started the rain email on Nov 2,
 # 2026; scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain
