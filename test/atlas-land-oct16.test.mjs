@@ -37,7 +37,7 @@ test("county card: state farm real estate beside the census value, not cropland"
   assert.match(s, /IA farm real estate 2026: \$10,100 \(land and buildings, state survey\)/);
 });
 
-test("the state's own survey: dated, linked, read from a saved copy", () => {
+test("the state's own survey: dated, named in plain text, read from a saved copy", () => {
   const U = JSON.parse(read("data/atlas/state-land-surveys.json")).states;
   const ids = JSON.parse(read("references/sources.json")).sources.map((r) => r.id);
   for (const [st, u] of Object.entries(U)) {
@@ -47,7 +47,12 @@ test("the state's own survey: dated, linked, read from a saved copy", () => {
   assert.equal(U.IA.date, "Dec 9, 2025");
   assert.equal(U.NE.date, "Jun 30, 2026");
   const s = read("farmland-atlas/iowa/story-county.html");
-  assert.match(s, /Newer local survey: <a href="https:\/\/farmland\.card\.iastate\.edu\/isu-land-value-survey-2025" rel="noopener">ISU Land Value Survey 2025<\/a>, Iowa State University, released Dec 9, 2025/);
+  // Nov 2: the survey site joined source_links.DATA_SOURCE (no direct links to data sources, Sig Oct 29):
+  // the survey is named with its date in plain text
+  assert.match(s, /Newer local survey: ISU Land Value Survey 2025, Iowa State University, released Dec 9, 2025/);
+  assert.ok(!s.includes("farmland.card.iastate.edu"), "the survey site is not linked");
+  assert.ok(!read("farmland-atlas/nebraska/lancaster-county.html").includes("cap.unl.edu/realestate"), "nor UNL's survey");
+  assert.match(read("farmland-atlas/nebraska/lancaster-county.html"), /Newer local survey: Nebraska Farm Real Estate Market Survey, 2026 final, University of Nebraska-Lincoln, released Jun 30, 2026/);
   assert.doesNotMatch(read("farmland-atlas/wisconsin/barron-county.html"), /Newer local survey/, "no survey on file, no line");
 });
 
