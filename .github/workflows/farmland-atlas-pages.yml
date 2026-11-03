@@ -32,7 +32,7 @@ jobs:
   # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
   # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned with the working job (test/runner-pin.test.mjs)
     permissions:
       actions: read
       contents: read

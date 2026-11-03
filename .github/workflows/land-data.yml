@@ -60,7 +60,7 @@ permissions:
 jobs:
   # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned with the working job (test/runner-pin.test.mjs)
     permissions:
       actions: read
       contents: read
