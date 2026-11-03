@@ -30,6 +30,13 @@
    "link": "/cash-bids#eth-box"
   },
   {
+   "id": "2026-11-03-basislabel",
+   "date": "2026-11-03",
+   "title": "One label for the state basis everywhere",
+   "line": "Every tool that shows a state's basis now says how many elevators it is the median of and how many companies run them, the same words as /basis.",
+   "link": "/basis"
+  },
+  {
    "id": "2026-11-03-basisusda",
    "date": "2026-11-03",
    "title": "USDA's state average beside our state basis",
