@@ -92,7 +92,7 @@ CLASSES = {
     "biodiesel (farm)": ("biodiesel", "$/gal", (1.5, 12)),
     "propane": ("propane", "$/gal", (0.5, 6)),
 }
-GENERIC_BAND = {"$/ton": (5, 3000), "$/gal": (0.5, 12)}
+GENERIC_BAND = {"$/ton": (100, 3000), "$/gal": (0.5, 12)}   # lime has its own band; a $31 "ton" is another unit
 STATE_NAMES = {"IA": "Iowa", "IL": "Illinois", "OK": "Oklahoma", "NC": "North Carolina"}
 MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -443,6 +443,8 @@ def selftest():
     ck("diesel at $56 a gallon is outside the band", "diesel" not in {i["key"] for i in r["items"]})
     r, p = parse_report("2863", variant(lambda rs: rs[4].update(price_unit="Dollars Per Ton")), today)
     ck("diesel in $/ton is left out", "diesel" not in {i["key"] for i in r["items"]} and any("unit" in x for x in p))
+    r, p = parse_report("2863", variant(lambda rs: rs.append(dict(rs[0], **{"class": "Calcium Nitrate", "price_min": 31, "price_max": 31, "price_avg": 31}))), today)
+    ck("calcium nitrate at $31 a ton (Pacific Northwest, Oct 30 live run) is left out", "calcium-nitrate" not in {i["key"] for i in r["items"]})
     r, p = parse_report("2863", variant(lambda rs: rs.append(dict(rs[0], price_min=700, price_max=800, price_avg=750))), today)
     ck("a product on two lines: both left out", "anhydrous" not in {i["key"] for i in r["items"]} and any("2 lines" in x for x in p))
     r, p = parse_report("2863", variant(lambda rs: rs.append(dict(rs[0], report_date="10/12/2026", report_begin_date="10/12/2026", price_avg=800, price_min=790, price_max=810))), today)
