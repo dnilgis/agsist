@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 02 Nov 2026 11:48:58 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 03 Nov 2026 13:35:08 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn slips 4¢ to $4.44¼ overnight; crude up 0.8% to $97.21</title>
+      <link>https://agsist.com/daily/2026-11-03</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-03</guid>
+      <pubDate>Tue, 03 Nov 2026 13:34:14 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Dec corn is $4.44¼ overnight, 4 cents under Monday's settle, with harvest at 74% done. Crude bounced to $97.21 after Monday's 7% drop, amid the Iran conflict that began this spring. Diesel is still moving with each Iran headline, and so are your fuel costs.
+• Corn and wheat ease on harvest
+• Crude bounces after Monday's drop
+• Cattle and hogs ease Monday
+Read more: https://agsist.com/daily/2026-11-03</description>
+    </item>
     <item>
       <title>Crude drops 4.6% to $99.38; cattle futures fell Friday</title>
       <link>https://agsist.com/daily/2026-11-02</link>
@@ -351,17 +363,6 @@ Read more: https://agsist.com/daily/2026-10-06</description>
 • Soy Complex Leads On Products
 • Cattle Soft, Feeders Give More Back
 Read more: https://agsist.com/daily/2026-10-05</description>
-    </item>
-    <item>
-      <title>Corn closes under $5 with harvest stuck in the rain</title>
-      <link>https://agsist.com/daily/2026-10-04</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-04</guid>
-      <pubDate>Sun, 04 Oct 2026 15:26:55 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn settled Friday at $4.97, soybeans at $12.77, both down 20 to 40 cents on the week by the wire's own math. Record El Nino rain has stalled harvest across the Corn Belt at the exact moment farmers need combines rolling and bins filling.
-• Grains Grind Lower Into Harvest
-• Cattle Soft, Hogs Firm
-Read more: https://agsist.com/daily/2026-10-04</description>
     </item>
   </channel>
 </rss>

@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-03",
+      "date_display": "Tuesday, November 3, 2026",
+      "headline": "Corn slips 4¢ to $4.44¼ overnight; crude up 0.8% to $97.21",
+      "teaser": "Corn gives back 4 cents overnight while crude bounces on a report of a U.S. strike on Iran.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-11-03",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-02",
       "date_display": "Monday, November 2, 2026",
       "headline": "Crude drops 4.6% to $99.38; cattle futures fell Friday",
@@ -2679,6 +2690,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-02T11:48:07.142248+00:00",
-  "count": 234
+  "updated": "2026-11-03T13:34:19.719870+00:00",
+  "count": 235
 }
