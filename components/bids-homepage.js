@@ -817,6 +817,30 @@
   // cannot show a stale or invented number: no bid, no line.
   /* WAVE1-A: one option per elevator and crop: its nearest open delivery
      month, per bushel, not a special grade. Nearest elevator first. */
+  /* EARLIEST BID FIRST (Sig, 2026-11-02). Inside one delivery month a board can post a
+     first-half and a last-half bid (Nevada, IA: "FH Nov 2026" $4.17, "LH Nov 2026" $4.22);
+     both file under Nov and the option took the higher one, so the last half (later
+     delivery) stood in as today's price. Tier 0: spot or cash, the first half, the whole
+     month, or a label that does not say. Tier 1: LH / 2H / last or second half anywhere in
+     the label, or a day range inside one month starting on the 11th or later, raw
+     ("16 Nov 2026 to 30 Nov 2026") or printed ("Nov 16-30, 2026"). Same patterns as
+     scripts/build_cash_bid_pages.py period_rank (copied, not imported). */
+  var LAST_HALF_RE = /\b(?:lh|2h|last\s+half|second\s+half)\b/i;
+  var DAYS_RE = /\b(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4}) to (\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})\b/;
+  var PRINTED_DAYS_RE = /\b([A-Za-z]{3})[a-z]* (\d{1,2})-(\d{1,2})\b/;
+  function periodRank(label, period){
+    if(String(period || '') === 'spot') return 0;
+    var lab = String(label || '').replace(/\s*\(\d{4}-\d{2}\)\s*$/, '').replace(/\s+/g, ' ').trim();
+    if(LAST_HALF_RE.test(lab)) return 1;
+    var m = DAYS_RE.exec(lab);
+    if(m && m[2].toLowerCase() === m[5].toLowerCase() && m[3] === m[6] && +m[1] >= 11) return 1;
+    m = PRINTED_DAYS_RE.exec(lab);
+    var mons = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+    if(m && mons.indexOf(m[1].toLowerCase()) >= 0 && 11 <= +m[2] && +m[2] <= +m[3] && +m[3] <= 31) return 1;
+    return 0;
+  }
+  function rowRank(b){ return periodRank(b.delivery || b.deliveryMonth, b.deliveryStart); }
+
   function storeOptions(bids, best){
     var nowKey = thisMonth(), by = {}, per = {};
     /* storesell: every open period this elevator posts for the same crop and
@@ -827,20 +851,22 @@
       var k = rowMonthKey(b); if(!k || k < nowKey) return;
       var de = /^(\d{4}-\d{2})-\d{2}/.exec(String(b.deliveryEnd || '')), pe = periodEnd(b.deliveryStart);
       var id = rowKey(b) + '|' + b.category + '|' + String(b.commodity || '').toLowerCase();
-      (per[id] = per[id] || []).push({ start: k, end: de ? de[1] : (pe && pe >= k ? pe : k), cash: ppu(b.cashPrice) });
+      (per[id] = per[id] || []).push({ start: k, end: de ? de[1] : (pe && pe >= k ? pe : k), cash: ppu(b.cashPrice),
+        label: String(b.delivery || b.deliveryMonth || ''), period: String(b.deliveryStart || '') });
     });
     bids.forEach(function(b){
       if(['corn','soybeans','wheat','sorghum','oats'].indexOf(b.category) < 0) return;
       if(b.cashPrice == null || notPerBushel(b) || isSpecialGrade(b) || basisOdd(b)) return;
       var k = rowMonthKey(b); if(!k || k < nowKey) return;
-      var id = rowKey(b) + '|' + b.category;
+      var id = rowKey(b) + '|' + b.category, t = rowRank(b);
       var o = by[id];
-      if(o && (o.monthKey < k || (o.monthKey === k && o.cash >= b.cashPrice))) return;
+      /* the nearest month, then the earliest tier in it (periodRank), then the higher cash */
+      if(o && (o.monthKey < k || (o.monthKey === k && (o.tier < t || (o.tier === t && o.rawCash >= b.cashPrice))))) return;
       by[id] = { id: id, crop: b.category, cropName: COMM_NAMES[b.category] + (b.category === 'wheat' && wheatClass(b) ? ' ' + wheatClass(b) : ''),
         where: (b.facility || '') + (b.branch ? ' \u00b7 ' + b.branch : ''),
         city: townOf(b) + (b.state ? ', ' + b.state : ''),
         miles: b.distance == null ? null : b.distance,
-        cash: ppu(b.cashPrice), monthKey: k, monthLabel: shortMon(k),
+        cash: ppu(b.cashPrice), rawCash: b.cashPrice, tier: t, monthKey: k, monthLabel: shortMon(k),
         boardCarry: boardCarry(b), isBest: b === best,
         commodity: b.commodity || '', place: b.source === 'network' ? (b.place || '') : '',
         posted: b.source === 'network' ? (b.pricedAt || '') : '',
@@ -1059,6 +1085,7 @@
             // The network says its basis in cents; carry that, no unit guess.
             basis: r.basisCents != null && isFinite(r.basisCents) ? r.basisCents / 100 : (r.basis == null ? null : r.basis),
             deliveryMonth: periodLabel(r.period) || r.delivery || '',
+            delivery: r.delivery || '',   // the board's own label: FH / LH tier (periodRank)
             checkedAt: r.checkedAt || null,
             /* WAVE1-A: when the board last changed, the crop key and place
                string merged-index.json uses (the daily-change join), and
@@ -1163,7 +1190,8 @@
     });
   }
   window.__agsistHomeBidsInternals = { rowKey: rowKey, fromNetwork: fromNetwork, widFor: widFor, publishSummary: publishSummary,
-    rowMonthKey: function(r){ return rowMonthKey(r); }, rowExpired: function(r){ return rowExpired(r); }, topEntry: function(e, c){ return topEntry(e, c); } };
+    rowMonthKey: function(r){ return rowMonthKey(r); }, rowExpired: function(r){ return rowExpired(r); }, topEntry: function(e, c){ return topEntry(e, c); },
+    storeOptions: function(bids, best){ return storeOptions(bids, best); }, periodRank: periodRank };
 
   // ── WAVE1-A: the day's change, filled after the card draws ──────────
   // data/bids-prev/<ST>.json is written by scripts/build_bids_prev.py in the
