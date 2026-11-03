@@ -8,7 +8,8 @@
  * delivery period). After that moment only data-plain is shared, so a page read
  * days later never passes on an old price as today's. No futures price, no basis.
  *
- * Phones with the share sheet get it. Otherwise one tap shows "Copy" and, on a
+ * Phones with the share sheet get it, with the text minus its bare link and the
+ * tagged link once in the url field (lead, Nov 3). Otherwise one tap shows "Copy" and, on a
  * phone, "Text it" (an sms: link). The link carries utm_source=share and nothing
  * about the reader. One GA4 event, share_bid, with what was done.
  * Bump ?v= in SHARE_JS (scripts/build_cash_bid_pages.py) on any change here.
@@ -36,7 +37,9 @@
     var bare = url.replace(/^https?:\/\/(www\.)?/, '').replace(/^[^/]+/, 'agsist.com').replace(/\?.*$/, '');
     var i = text.lastIndexOf(bare);
     var body = i >= 0 ? text.slice(0, i) + url + text.slice(i + bare.length) : text + ' ' + url;
-    return { title: btn.getAttribute('data-title') || document.title, text: text, url: url, body: body, priced: priced };
+    // the share sheet adds the tagged url itself: its text drops the bare link so the link shows once
+    var sheet = i >= 0 && text.slice(i + bare.length).trim() === '' ? text.slice(0, i).replace(/\s+$/, '') : text;
+    return { title: btn.getAttribute('data-title') || document.title, text: text, sheet: sheet, url: url, body: body, priced: priced };
   }
 
   var more = null, msg = null;
@@ -104,7 +107,7 @@
     ga('open', p.priced);
     if (navigator.share) {
       var sent;
-      try { sent = navigator.share({ title: p.title, text: p.text, url: p.url }); } catch (err) { fallback(p); return; }
+      try { sent = navigator.share({ title: p.title, text: p.sheet, url: p.url }); } catch (err) { fallback(p); return; }
       if (sent && sent.then) {
         sent.then(function () { ga('shared', p.priced); }, function (err) {
           if (!err || err.name !== 'AbortError') fallback(p);

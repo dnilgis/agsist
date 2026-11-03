@@ -6,7 +6,7 @@
  * expectation is read from that page or that fixture; the browser clock is set
  * from the fixture, never from today (standing rule, Nov 3).
  *   - the share sheet gets the answer line's own row, with its posted day, and
- *     the town link tagged utm_source=share; one share_bid event per step
+ *     the town link tagged utm_source=share once (in url, not in the text); one share_bid event per step
  *   - once the bid's data-until has passed, the share carries no price
  *   - with no share sheet: Copy puts the text and the tagged link on the
  *     clipboard, and a phone gets an sms: link with the same body
@@ -121,7 +121,11 @@ test("the share sheet gets the bid while it counts, and no price once it does no
       await pg.waitForFunction(() => window.__shared, null, { timeout: 5000 });
       const r = await pg.evaluate(() => ({ shared: window.__shared, ga: window.__ga, url: location.href }));
       assert.equal(r.url, `http://127.0.0.1:${port}/cash-bids/iowa/nevada`, "the tap does not navigate");
-      assert.equal(r.shared.text, priced ? attr("data-text") : attr("data-plain"));
+      // the sheet's text is the page's text minus its trailing bare link; the tagged url carries the link once
+      const full = priced ? attr("data-text") : attr("data-plain");
+      assert.ok(full.endsWith(" agsist.com/cash-bids/iowa/nevada"), full);
+      assert.equal(r.shared.text, full.slice(0, -" agsist.com/cash-bids/iowa/nevada".length));
+      assert.ok(!r.shared.text.includes("agsist.com"), `the link shows once: ${r.shared.text}`);
       assert.equal(r.shared.title, "Nevada, IA cash bids");
       assert.equal(r.shared.url, `http://127.0.0.1:${port}/cash-bids/iowa/nevada?utm_source=share`);
       if (!priced) assert.ok(!/\$\d/.test(r.shared.text), "an old bid is never shared as today's");

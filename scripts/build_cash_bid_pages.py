@@ -1747,7 +1747,7 @@ def answer_and_desc(picks, snap_ct, place):
 # No basis and no futures price is shared. The script is one shared file, loaded
 # deferred on town pages that have a pick; the button is plain HTML, so the page
 # does not move when it loads. Bump SHARE_JS's ?v= on any change to that file.
-SHARE_JS = '<script src="/components/share-bid.js?v=1" defer></script>\n'
+SHARE_JS = '<script src="/components/share-bid.js?v=2" defer></script>\n'
 _FIRST_HALF_RE = re.compile(r"\b(?:fh|1h|first\s+half)\b", re.I)
 
 
