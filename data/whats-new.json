@@ -23,6 +23,13 @@
    "link": "/land-sales/#new-jersey"
   },
   {
+   "id": "2026-11-02-dailymore",
+   "date": "2026-11-02",
+   "title": "More in the Daily each morning",
+   "line": "The Daily now carries the day's USDA reports and FSA signup dates, last week's harvest pace, fund positions after each Friday report, and your state's basis near the top.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-02-dailyweblinks",
    "date": "2026-11-02",
    "title": "Daily top stories link to the full story",
