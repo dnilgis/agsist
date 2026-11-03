@@ -165,6 +165,38 @@ PRINT_JS = '<script src="/components/rain-county-print.js?v=44" defer></script>'
 # A plain script tag on purpose: it writes the line before the first paint, so nothing moves.
 XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 
+# The county rain box (Sig, Nov 3, 2026): a closed fold on every county page with the iframe code for /embed/rain,
+# the one plain sentence and the monthly newsletter block. The sentence is written here; components/rain-box.js
+# (loaded deferred, about 4 KB, shared and cached) only adds the iframe code and the copy buttons on first open.
+BOX_JS = '<script src="/components/rain-box.js?v=1" defer></script>'
+
+
+def box_line(c, st, year, done):
+    """'Story County, IA: 53.72 in of rain since Jan 1, 156% of usual, through Nov 2.' The page's own total and
+    percent, rounded as the page rounds them; no percent where the page has none. Mirrors line() in
+    components/rain-box.js (test/rain-box.test.mjs holds the two equal)."""
+    thru = short_date(c["as_of"]) + (f", {year}" if done else "")
+    pct = f", {c['pct']}% of usual" if c["pct"] is not None else ""
+    return f"{c['name']}, {st}: {inch(c['total'])} in of rain since Jan 1{pct}, through {thru}."
+
+
+def box_source(c):
+    """The source in plain words, no link (Oct 29 rule). The page's prose never names CoCoRaHS (Sig, Oct 15; only the
+    byline credits it), so the page's sentence says "volunteer rain gauge"; the embed box, shown on other sites with
+    no byline, names CoCoRaHS (source() in components/rain-box.js)."""
+    return "NOAA daily records" + (", volunteer rain gauge" if c["station"]["net"] == "cocorahs" else "")
+
+
+def box_fold(c, st, fips, year, done, path):
+    """The closed fold: the sentence to copy (source and page named), the monthly newsletter block; the iframe code
+    and copy buttons come from rain-box.js on open. Kept small: it is on every county page."""
+    sent = f"{box_line(c, st, year, done)} ({box_source(c)}, via AGSIST: agsist.com{path})"
+    return (f'<details class="rc-emb" data-st="{st}" data-c="{fips}" data-n="{e(c["name"])}">'
+            f"<summary>Put this on your site or in your newsletter</summary>"
+            f'<p class="rc-fine rc-emb-s">{e(sent)}</p>'
+            f'<p class="rc-fine"><a href="/newsletter-block?c={fips}">Monthly newsletter block for {e(c["name"])}</a></p>'
+            f"</details>{BOX_JS}")
+
 
 def rp_prices():
     """(framed, print) dollars from data/rain-print.json, the file /rain-print reads."""
@@ -883,6 +915,7 @@ def county_page(ctx):
     {('<h2>Next door</h2><ul class="rc-next">' + nb_html + '</ul>') if nb_html else ''}
     {near_towns}
     <p class="rc-fine">{more_html}</p>
+    <div class="rc-faq">{box_fold(c, st, fips, year, done, f"/rain/{st_slug}/{ctx['slug']}")}</div>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; updated daily. NOAA&rsquo;s daily numbers come in a few days late and are sometimes corrected.{cocorahs_credit}</p>
   </div>
 {FOOT}"""
@@ -1597,6 +1630,19 @@ def selftest():
         # on a gauge's page and nowhere else (CC BY 4.0, Sig Oct 23)
         bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace("Volunteer gauge data: CoCoRaHS.", "")]
         ok(not bad, f"no page names CoCoRaHS outside its credit line: {bad[:3]}")
+        # the county rain box fold (Sig, Nov 3): closed, once per county page, the page's own numbers, the newsletter block
+        sj = json.load(open(os.path.join(data, "ia.json"), encoding="utf-8"))["counties"]["19169"]
+        ok(story.count('<details class="rc-emb" data-st="IA" data-c="19169" data-n="Story County">') == 1 and "rc-emb\" open" not in story,
+           "one closed rain box fold on the county page")
+        ok(f'<p class="rc-fine rc-emb-s">Story County, IA: {inch(sj["total"])} in of rain since Jan 1, {sj["pct"]}% of usual, '
+           f'through {short_date(sj["as_of"])}. (NOAA daily records, via AGSIST: agsist.com/rain/iowa/story-county)</p>' in story,
+           "the box sentence is the page's total, percent and day, with the source and the page named")
+        ok(f'<dd>{inch(sj["total"])} <small>in</small></dd>' in story and f'<dd>{sj["pct"]}%</dd>' in story, "the same numbers in the page's figures")
+        ok('<a href="/newsletter-block?c=19169">' in story and story.count("/components/rain-box.js?v=") == 1, "newsletter block link and the one shared script")
+        ok(jef and "% of usual" not in jef[jef.index('class="rc-emb"'):jef.index("</details>", jef.index('class="rc-emb"'))]
+           and "volunteer rain gauge, via AGSIST" in jef, "no percent in the box where the page has none; a gauge is named as one")
+        ok(all(k.count('class="rc-emb"') == 1 for k2, k in want.items() if k2.count("/") == 2)
+           and all('class="rc-emb"' not in k for k2, k in want.items() if k2.count("/") < 2), "every county page has the fold, no state page or hub")
         ok("Volunteer gauge data: CoCoRaHS." in jef, "a CoCoRaHS gauge's page credits CoCoRaHS")
         ok("cocorahs.org" not in story, "a weather station's page does not")
         ks = want.get("rain/kansas/riley-county.html", "")
