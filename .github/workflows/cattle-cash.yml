@@ -16,6 +16,10 @@ on:
         description: "Probe only: save the raw AMS PDFs and text to data/cattle-cash-raw/ on the raw branch"
         type: boolean
         default: false
+      hog_probe:
+        description: "Hog probe only: ask the LM hog and pork cutout routes, save answers to data/hog-cash-raw/ on the raw branch"
+        type: boolean
+        default: false
   schedule:
     - cron: '43 21 * * 1-5'   # after the PM cutout
     - cron: '17 15 * * 1,2'   # the weekly 5-area report, early in the week
@@ -44,6 +48,19 @@ jobs:
         run: pip install pypdf==6.20.1
       - name: Selftest
         run: python scripts/fetch_cattle_cash.py --selftest
+      - name: Hog cash selftest
+        run: python scripts/fetch_hog_cash.py --selftest
+      - name: Hog probe (LM_HG201, LM_HG203, LM_PK602 by every route)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.hog_probe }}
+        env:
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: python scripts/fetch_hog_cash.py --probe
+      - name: Save the hog probe's answers to the raw branch
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.hog_probe }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "hog-cash probe" data/hog-cash-raw
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: python scripts/fetch_cattle_cash.py --probe
@@ -56,9 +73,10 @@ jobs:
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "cattle-cash probe" data/cattle-cash-raw
       - name: Fetch and write data/cattle-cash.json
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || inputs.hog_probe)) }}
         run: python scripts/fetch_cattle_cash.py
       - name: Commit if changed (race-tolerant)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.hog_probe) }}
         run: |
           set -e
           git config user.name "AGSIST Bot"
