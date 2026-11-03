@@ -554,6 +554,154 @@
     }
    ]
   },
+  "3657": {
+   "id": "3657",
+   "title": "Pacific Northwest Production Cost Report (Bi-Weekly)",
+   "region": "Pacific Northwest",
+   "states": [
+    "OR",
+    "WA"
+   ],
+   "cadence": "biweekly",
+   "week_begin": "2026-10-26",
+   "week_end": "2026-10-30",
+   "published": "2026-10-30",
+   "credit": "USDA AMS, Pacific Northwest Production Cost Report (Bi-Weekly), Oct 30, 2026",
+   "items": [
+    {
+     "key": "ams",
+     "name": "Ammonium Sulfate",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 630.0,
+     "high": 1110.0,
+     "avg": 812.75,
+     "change": 0.0,
+     "thin": false
+    },
+    {
+     "key": "blend-16-16-16",
+     "name": "Blend (16-16-16)",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1210.0,
+     "high": 1212.85,
+     "avg": 1211.43,
+     "change": 0.0,
+     "thin": false
+    },
+    {
+     "key": "blend-18-18-18",
+     "name": "Blend (18-18-18)",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1164.2,
+     "high": 1300.0,
+     "avg": 1232.1,
+     "change": 0.0,
+     "thin": false
+    },
+    {
+     "key": "calcium-nitrate",
+     "name": "Calcium Nitrate",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 31.0,
+     "high": 31.0,
+     "avg": 31.0,
+     "change": 0.0,
+     "thin": true
+    },
+    {
+     "key": "diesel",
+     "name": "No. 2 Diesel (Farm)",
+     "commod": "Fuels",
+     "unit": "$/gal",
+     "freight": "Delivered",
+     "low": 5.97,
+     "high": 6.42,
+     "avg": 6.16,
+     "change": 0.18,
+     "thin": false
+    },
+    {
+     "key": "map",
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1020.0,
+     "high": 1544.0,
+     "avg": 1284.34,
+     "change": 0.0,
+     "thin": false
+    },
+    {
+     "key": "potash",
+     "name": "Potash (Red 0-0-60)",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 565.0,
+     "high": 830.0,
+     "avg": 690.0,
+     "change": 0.0,
+     "thin": false
+    },
+    {
+     "key": "potash-white-0-0-62",
+     "name": "Potash (White 0-0-62)",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 851.33,
+     "high": 851.33,
+     "avg": 851.33,
+     "change": 0.0,
+     "thin": true
+    },
+    {
+     "key": "propane",
+     "name": "Propane",
+     "commod": "Fuels",
+     "unit": "$/gal",
+     "freight": "Delivered",
+     "low": 1.97,
+     "high": 2.38,
+     "avg": 2.17,
+     "change": -0.4,
+     "thin": false
+    },
+    {
+     "key": "uan32",
+     "name": "Liquid Nitrogen (32-0-0)",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 687.0,
+     "high": 957.09,
+     "avg": 822.05,
+     "change": 0.0,
+     "thin": false
+    },
+    {
+     "key": "urea",
+     "name": "Urea (46-0-0)",
+     "commod": "Fertilizer",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 857.0,
+     "high": 1350.0,
+     "avg": 1094.25,
+     "change": 0.0,
+     "thin": false
+    }
+   ]
+  },
   "3883": {
    "id": "3883",
    "title": "Inter-Mountain West Production Cost Report (Monthly)",
@@ -660,15 +808,15 @@
  "daily_line": {
   "key": "diesel",
   "date": "2026-10-30",
-  "text": "Farm diesel in USDA's dealer survey: Iowa $5.65 a gallon, Illinois $5.71, Oklahoma $5.54, North Carolina $5.40, Inter-Mountain West $6.03 delivered (USDA AMS production cost reports, Oct 30)."
+  "text": "Farm diesel in USDA's dealer survey: Iowa $5.65 a gallon, Illinois $5.71, Oklahoma $5.54, North Carolina $5.40, Inter-Mountain West $6.03 delivered, Pacific Northwest $6.16 delivered (USDA AMS production cost reports, Oct 30)."
  },
  "status": {
   "ok": true,
-  "checked": "2026-11-03T01:54:21Z",
+  "checked": "2026-11-03T02:16:18Z",
   "notes": {
-   "3657": "not read yet: the first Actions run reads it"
+   "3657": "Liquid Nitrogen (32-0-0): unit 'Dollars Per Gallon' not expected, left out"
   },
   "reconcile": "Illinois 2026-10-30: PDF and MARS agree on 6 products"
  },
- "generated": "2026-11-03T01:54:21Z"
+ "generated": "2026-11-03T02:16:18Z"
 }
