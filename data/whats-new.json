@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-03-auditleft",
+   "date": "2026-11-03",
+   "title": "Harvest pace back on Crop Conditions",
+   "line": "Crop Conditions shows this week's harvest by state again, named by its own week, after USDA's last corn rating. Home store-or-sell starts from the first-half bid.",
+   "link": "/conditions#harvest"
+  },
+  {
    "id": "2026-11-02-feederindex",
    "date": "2026-11-02",
    "title": "Our own feeder steer index",

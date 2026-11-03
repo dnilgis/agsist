@@ -89,7 +89,9 @@ test("the town page and Atlas builders print the line through build_buyers, the 
     assert.match(story, /<details class="buyers" data-buyers="[0-9a-f]{5}:\d+(,[0-9a-f]{5}:\d+)*"><summary>Nearby buyers within 50 miles: /);
     assert.equal(story.split("/components/cb-buyers.js?v=1").length - 1, 1);
     assert.match(story, /Straight-line miles from the middle of Story County/);
-    assert.match(story, />Renewable Fuels Association<\/a>/);
+    // named with the date it was read, not linked (no direct links to data sources; RFA list added Nov 2)
+    assert.match(story, /Lists from Renewable Fuels Association[^<]*, read [A-Z][a-z]{2} \d{1,2}, \d{4}\./);
+    assert.ok(!story.includes("ethanolrfa.org") && !story.includes("nopa.org"), "the plant lists are not linked");
     for (const m of story.match(/data-buyers="([^"]+)"/)[1].split(",")) {
       assert.ok(DATA.plants[m.split(":")[0]], `id ${m} is not in data/buyers.json`);
     }
