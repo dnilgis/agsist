@@ -1,6 +1,6 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-11-03T03:41:43Z",
+ "updated": "2026-11-03T23:52:58Z",
  "as_of": "2026-11-03",
  "crop_year": 2026,
  "open": [
@@ -17,8 +17,8 @@
     "Washington"
    ],
    "n_states": 4,
-   "lo": null,
-   "hi": null,
+   "lo": 4.48,
+   "hi": 4.48,
    "exch": [
     "CBOT"
    ],
@@ -41,8 +41,8 @@
     "Oklahoma"
    ],
    "n_states": 3,
-   "lo": null,
-   "hi": null,
+   "lo": 0.78,
+   "hi": 0.78,
    "exch": [
     "ICE"
    ],
@@ -63,8 +63,8 @@
     "Michigan"
    ],
    "n_states": 1,
-   "lo": null,
-   "hi": null,
+   "lo": 0.1926,
+   "hi": 0.1926,
    "exch": [
     "CBOT"
    ],
@@ -94,8 +94,8 @@
     "West Virginia"
    ],
    "n_states": 10,
-   "lo": null,
-   "hi": null,
+   "lo": 12.17,
+   "hi": 12.17,
    "exch": [
     "CBOT"
    ],
