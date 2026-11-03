@@ -82,13 +82,13 @@ test("board line and its baked twin (seed_static.py mk_board) agree", () => {
 
 test("state line: hand-worked numbers, one wheat class, nothing when thin or stale", () => {
   const il = P.build(BS, PR, "IL", ["corn"], NOW);
-  assert.match(il, /<b>Illinois corn:<\/b> median basis <b>31¢ under<\/b> Dec '26 futures, about <b>\$4\.43<\/b> cash on the Oct 16 settle\./);
+  assert.match(il, /<b>Illinois corn:<\/b> basis <b>31¢ under<\/b> Dec '26 futures, about <b>\$4\.43<\/b> cash on the Oct 16 settle\./);
   assert.match(il, /The median of 186 elevators, Oct 17\./);
   assert.match(il, /<a href="\/cash-bids">/);
   assert.match(P.build(BS, PR, "WI", ["corn"], NOW), /56½¢ under<\/b> Dec '26 futures, about <b>\$4\.18<\/b>/);
   const ks = P.lines(BS, PR, "KS", ["wheat"], NOW);
   assert.equal(ks.length, 1, "one wheat line");
-  assert.match(ks[0], /Kansas HRW wheat:<\/b> median basis <b>67½¢ under<\/b> KC Dec '26 futures, about <b>\$6\.38<\/b> cash on the latest delayed trade/);
+  assert.match(ks[0], /Kansas HRW wheat:<\/b> basis <b>67½¢ under<\/b> KC Dec '26 futures, about <b>\$6\.38<\/b> cash on the latest delayed trade/);
   assert.equal(P.build(BS, PR, "AL", ["soybeans"], NOW), "", "a crop with no median prints nothing");
   assert.equal(P.build(BS, PR, "TX", ["corn"], NOW), "", "a state not in the file prints nothing");
   assert.equal(P.build(BS, PR, "IL", ["corn"], Date.parse("2026-10-28T12:00:00Z")), "", "a basis file over 10 days old prints nothing");

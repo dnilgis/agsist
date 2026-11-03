@@ -140,7 +140,7 @@ test("the saved location fills the county, rent, trend yield and an ARC/PLC esti
     /* hand math: 632 budget lines + fertilizer at 217 bu + 290 rent, less 6.44 */
     const total = 632 + fertAt("corn", yld) + 290, be = (total - 6.44) / yld;
     assert.equal(await txt(pg, "#ans-be"), "$" + be.toFixed(2));
-    assert.match(await txt(pg, "#ans-from"), /^Rent and trend yield from Story County, IA \(your saved location\); an ARC\/PLC estimate in other revenue; basis: Iowa median corn; other costs from farmdoc.s 2027 northern Illinois budget; fertilizer at co-op prices posted through /);
+    assert.match(await txt(pg, "#ans-from"), /^Rent and trend yield from Story County, IA \(your saved location\); an ARC\/PLC estimate in other revenue; basis: Iowa corn median; other costs from farmdoc.s 2027 northern Illinois budget; fertilizer at co-op prices posted through /);
     assert.deepEqual(srv.hits.filter((h) => h.startsWith("/data/breakeven/")), ["/data/breakeven/IA.json"]);
 
     /* the 2027 crop: the trend moves one slope, the 2027 estimate replaces 2026 */

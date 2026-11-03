@@ -327,7 +327,7 @@
       var bits = [], k = function (id) { return (SRC[id] || {}).k; };
       if (cnty && (k('land') === 'county' || k('yield') === 'county')) bits.push((k('land') === 'county' && k('yield') === 'county' ? 'Rent and trend yield' : k('land') === 'county' ? 'Rent' : 'Trend yield') + ' from ' + cnty + (ci.auto ? ' (your saved location)' : ''));
       if (k('other') === 'arc') bits.push('an ARC/PLC estimate in other revenue');
-      if (k('basis') === 'state') bits.push('basis: ' + SRC.basis.t.split(',')[0].replace(/ basis$/, ''));
+      if (k('basis') === 'state') bits.push('basis: ' + SRC.basis.t.split(',')[0].replace(/ basis$/, ' median'));
       var rr = region(); if (crop() !== 'wheat' && rr && ['seed', 'chemicals', 'machinery'].some(function (x) { return k(x) === 'budget'; })) bits.push('other costs from farmdoc\u2019s 2027 ' + rr.name + ' budget');
       if (k('fertilizer') === 'fert') bits.push('fertilizer at co-op prices posted through ' + day(FERT.asof));
       var t = bits.join('; ');

@@ -150,7 +150,7 @@ test("browser: the homepage with a saved ZIP shifts under 0.1, at 390 and 1280",
       assert.ok(r.cls < 0.1, `/ saved ZIP ${w}: CLS ${r.cls.toFixed(4)} ${JSON.stringify(r.src)}`);
       // the reserved state line ends as the real one (or goes away): never left as the blank shape
       assert.ok(r.pl && !r.pl.wait, `${w}: the state line left its placeholder (${JSON.stringify(r.pl)})`);
-      if (!r.pl.hidden) assert.match(r.pl.text, /^Iowa corn: median basis /);
+      if (!r.pl.hidden) assert.match(r.pl.text, /^Iowa corn: basis /);
       assert.doesNotMatch(r.pl.text, /00¢|\$0\.00/);
     }
   } finally { await browser.close(); srv.close(); }

@@ -11,8 +11,8 @@
       already saved (agsist-wx-loc from geo.js, else a saved ZIP's state). It
       never guesses a state and sends nothing. With a state it loads
       data/basis-states.json (and only then) and prints one line:
-        Illinois corn: median basis 31¢ under Dec '26 futures, about $4.43 cash
-        on the Oct 16 settle. 186 elevators, Oct 17. Bids near you ->
+        Illinois corn: basis 31¢ under Dec '26 futures, about $4.43 cash
+        on the Oct 16 settle. The median of 186 elevators, Oct 17. Bids near you ->
       The cash figure is futures plus the state median basis, for the same
       contract only, and is labeled "about". No state: nothing, or a small
       "Set your ZIP" link where the page asks for one (data-zip-link).
@@ -348,7 +348,7 @@
     var l = [];
     (crops || []).forEach(function (crop) {
       var c = (CROPS[crop] || [])[0];
-      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> median basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the Oct 00 settle. <span class=\"pl-s\">000 elevators, Oct 00.</span>");
+      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the Oct 00 settle. <span class=\"pl-s\">The median of 000 elevators, Oct 00.</span>");
     });
     return l.length ? l.join('<br>') + ' <a href="/cash-bids" tabindex="-1">Bids near you &rarr;</a>' : '';
   }

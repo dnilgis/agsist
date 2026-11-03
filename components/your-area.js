@@ -14,7 +14,7 @@
    Tests: test/your-area.test.mjs. */
 (function (root) {
   'use strict';
-  function medOf(n,m){var s='median of '+n+' elevator'+(n===1?'':'s');return typeof m!=='number'?s:s+', '+m+' compan'+(m===1?'y':'ies');}
+  function medOf(n,m){return 'median of '+n+' elevator'+(n==1?'':'s')+(m==null?'':', '+m+' compan'+(m==1?'y':'ies'));}
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybeans']];
@@ -97,9 +97,8 @@
         var w = wowWords(b.wow);
         s += (w ? ', ' + w : '') + ' (' + medOf(b.n, b.companies) + ').';
         var q = quoteFor(o.prices, b.contract);
-        /* Only an exchange settle is called settled (2026-10-17: this line said
-           "Nov '26 closed $12.60½" for a 1:46 p.m. trade; CBOT settled $12.61¼).
-           A quote with no settle field is worded as the trade it is. */
+        /* Only an exchange settle is called settled (Oct 17: a 1:46 p.m. trade
+           was called the close); a quote with no settle is worded as a trade. */
         var sx = q && typeof q.settle === 'number' && q.settle_date ? { px: q.settle, d: q.settle_date, w: ' settled ' }
           : q && q.close_date ? { px: q.close, d: q.close_date, w: ' last traded ' } : null;
         if (sx && Math.abs(age(sx.d + 'T12:00:00Z', Date.parse(bs.generated))) <= 5)
