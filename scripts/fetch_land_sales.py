@@ -62,6 +62,7 @@ reader picked, and links the official record when they are not there).
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
 import csv
+import datetime
 import io
 import json
 import os
@@ -764,14 +765,15 @@ def mark_checked(st, now, recs, months=None):
     """data/land/checked.json: the state was read now, and the newest month its source holds.
     A run that finds nothing new restores the county files whole (land_keep_stamp_only.py), so
     their fetched_utc cannot say the state was looked at; this stamp does (scripts/land_alert.py
-    ready()). newest: the newest monthly report on file (Wisconsin), else the newest recorded or
-    sale month among the rows, never past the month of the read."""
+    ready()). newest: the last day of the newest monthly report on file (Wisconsin), else the newest
+    recorded or sale day among the rows, never past the day of the read."""
     if months:
         m = max(months)
-        newest = m[:4] + "-" + m[4:6]
+        y, mo = int(m[:4]), int(m[4:6])
+        newest = (datetime.date(y + mo // 12, mo % 12 + 1, 1) - datetime.timedelta(days=1)).isoformat()   # the report's last day
     else:
-        ds = [str(r.get("rec") or r.get("date") or "")[:7] for r in recs]
-        ds = [d for d in ds if re.fullmatch(r"\d{4}-\d{2}", d) and d <= now[:7]]
+        ds = [str(r.get("rec") or r.get("date") or "")[:10] for r in recs]
+        ds = [d for d in ds if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) and d <= now[:10]]
         newest = max(ds) if ds else None
     p = os.path.join(OUT, "checked.json")
     try:
@@ -3181,8 +3183,8 @@ def selftest():
         mark_checked("WI", "2026-11-03T09:40:00Z", [], {"202409", "202410"})
         mark_checked("IL", "2026-11-03T09:41:00Z", [{"date": "2026-10-28", "rec": "2026-10-30"}, {"date": "2026-12-19", "rec": None}])
         ckd = json.load(open(os.path.join(OUT, "checked.json")))
-        ck("checked stamp: Wisconsin's newest monthly report, Illinois' newest month read, never a month past the read",
-           ckd == {"IL": {"checked_utc": "2026-11-03T09:41:00Z", "newest": "2026-10"}, "WI": {"checked_utc": "2026-11-03T09:40:00Z", "newest": "2024-10"}})
+        ck("checked stamp: Wisconsin's newest monthly report, Illinois' newest day read, never a day past the read",
+           ckd == {"IL": {"checked_utc": "2026-11-03T09:41:00Z", "newest": "2026-10-30"}, "WI": {"checked_utc": "2026-11-03T09:40:00Z", "newest": "2024-10-31"}})
         build("IL", [dict(r) for r in il], {}, "2026-10-23T00:00:00Z")
         ixl = json.load(open(os.path.join(OUT, "il", "index.json")))
         fl = [json.load(open(os.path.join(OUT, "il", c["fips"] + ".json"))) for c in ixl["counties"]]

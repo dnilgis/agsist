@@ -195,7 +195,7 @@ def lag_line(m0, late):
             % (LA.MONTHS[m0], names_of(late), "has" if one else "have", nxt, "state" if one else "states", "posts" if one else "post"))
 
 
-def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True, late=None):
+def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh="posted", late=None):
     """(subject, preheader, blocks) for one ZIP and radius, or (None, why).
     why: bad-zip, zip-table (the ZIP table could not be read), outside, wait-data, empty.
     late: the states that have not published the month after this one (the reader gets this month
@@ -335,7 +335,7 @@ def due(zip5, radius, mo, ly, lm, land, zips, today, repo, cache=None):
         return None, "zip-table", (ly, lm)
     if not ll:
         return None, "bad-zip", (ly, lm)
-    rep = LA.month_report(land, ll, radius, ly, lm, today)
+    rep = LA.month_report(land, ll, radius, ly, lm, today, need_fresh="posted")
     if rep.get("skip") != "wait-data":
         parts, why = comp(ly, lm)
         return parts, why, (ly, lm)
@@ -353,7 +353,7 @@ def wait_states(zip5, radius, ly, lm, land, zips, today):
     ll = zips.coord(zip5)
     if not ll:
         return []
-    rep = LA.month_report(land, ll, radius, ly, lm, today)
+    rep = LA.month_report(land, ll, radius, ly, lm, today, need_fresh="posted")
     return rep.get("states") or ([rep["state"]] if rep.get("state") else [])
 
 
@@ -656,6 +656,7 @@ def _fixture(tmp):
     sale(2, "2026-08-28", "2026-09-03", 300000, 40, "1", "Warranty Deed", cls="4 1")   # buildings by class 1 (a house)
     sale(3, "2026-09-05", "2026-09-12", 900000, 150, "2")      # 26 mi
     sale(4, "2026-07-02", "2026-07-10", 200000, 40, "0")      # July
+    sale(5, "2026-09-25", "2026-09-29", 210000, 35, "2")      # 26 mi, deed Sep 25, recorded Sep 29: the records reach September's last week (posted)
     f = {"state": "WI", "county": "Testing", "fips": "55999", "fetched_utc": "2026-10-03T11:00:00Z",
          "coverage": {"from": "2000-01-01", "filed_from": "2021-01-01"}, "acres_rule": 2, "cols": cols, "munis": munis, "rows": R}
     json.dump(f, open(os.path.join(tmp, "data", "land", "wi", "55999.json"), "w"))
@@ -711,7 +712,8 @@ def selftest():
                "rows": [["IN-DOC-1", "2026-09-15", 1200000, 80, None, 1, "4", "Sale; land only", "PIN-IN-1", "0", "LEGALIN 1", 0,
                          "SELLER HOOSIERONE", "BUYER HOOSIERTWO", None]]},
               open(os.path.join(tmp, "data", "land", "in", "18999.json"), "w"))
-    json.dump({"counties": [{"fips": "18999", "name": "Hoosier", "lat": 40.05, "lng": -85.5}]}, open(os.path.join(tmp, "data", "land", "in", "index.json"), "w"))
+    # "to": the state's newest sale on file reaches September's last week, so September is posted (land_alert.ready)
+    json.dump({"counties": [{"fips": "18999", "name": "Hoosier", "lat": 40.05, "lng": -85.5, "to": "2026-09-28"}]}, open(os.path.join(tmp, "data", "land", "in", "index.json"), "w"))
     zin = Zips(data={"46001": (40.0, -85.5, "Testtown, IN")})
     pin, why_in = compose("46001", 25, 2026, 8, LA.Land(tmp), zin, today, tmp)
     tin = render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, pin, "news@agsist.com").get_body(("plain",)).get_content() if pin else ""
@@ -938,22 +940,28 @@ def lag_selftest(ck, C):
     tmp = tempfile.mkdtemp()
     cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt", "grantor", "grantee", "ac1", "rec"]
 
-    def county(st, fips, name, ll, rows, fetched, extra_ix=None):
+    def county(st, fips, name, ll, rows, fetched, extra_ix=None, north=None):
         d = os.path.join(tmp, "data", "land", st.lower())
         os.makedirs(d, exist_ok=True)
         R = [["%s-DOC-%d" % (st, i), dt, pr, ac, None, 1, "4", "Warranty Deed; land only", "%s-PIN-%d" % (st, i), "0", "LEGAL %s %d" % (st, i), 0,
-              "SELLER %sNAME%d" % (st, i), "BUYER %sNAME%d" % (st, i), None, rec] for i, (dt, rec, pr, ac) in enumerate(rows)]
+              "SELLER %sNAME%d" % (st, i), "BUYER %sNAME%d" % (st, i), None, rec] for i, (dt, rec, pr, ac, *mu) in enumerate(rows)]
+        for r, row_ in zip(R, rows):
+            r[9] = row_[4] if len(row_) > 4 else "0"
+        munis = {"0": [name + " town", ll[0], ll[1]]}
+        if north:
+            munis["1"] = ["North town", north[0], north[1]]
         json.dump({"state": st, "county": name, "fips": fips, "fetched_utc": fetched, "coverage": {"from": "2021-01-01", "filed_from": "2021-01-01"},
-                   "acres_rule": 2, "cols": cols, "munis": {"0": [name + " town", ll[0], ll[1]]}, "rows": R}, open(os.path.join(d, fips + ".json"), "w"))
+                   "acres_rule": 2, "cols": cols, "munis": munis, "rows": R}, open(os.path.join(d, fips + ".json"), "w"))
         ix = dict({"state": st, "fetched_utc": fetched, "counties": [{"fips": fips, "name": name, "lat": ll[0], "lng": ll[1],
                                                                      "to": max(r[0] for r in rows)}]}, **(extra_ix or {}))
         json.dump(ix, open(os.path.join(d, "index.json"), "w"))
     wi_months = ["2026%02d" % m for m in range(1, 10)]
-    wi_rows = [("2026-09-02", "2026-09-10", 400000, 80), ("2026-08-20", "2026-09-22", 240000, 40), ("2026-08-03", "2026-08-12", 300000, 60)]
-    county("WI", "55119", "Taylor", (45.15, -90.35), wi_rows, "2026-10-18T22:50:52Z", {"months": wi_months})
+    wi_rows = [("2026-09-02", "2026-09-10", 400000, 80), ("2026-08-20", "2026-09-22", 240000, 40), ("2026-08-03", "2026-08-12", 300000, 60),
+               ("2026-07-03", "2026-08-14", 320000, 60, "1")]      # North town: August only
+    county("WI", "55119", "Taylor", (45.15, -90.35), wi_rows, "2026-10-18T22:50:52Z", {"months": wi_months}, north=(45.60, -90.30))
     county("IL", "17029", "Coles", (39.50, -88.20), [("2026-10-01", "2026-10-14", 1500000, 100), ("2026-09-10", "2026-09-20", 700000, 50)],
            "2026-11-03T20:08:48Z")
-    json.dump({"IL": {"checked_utc": "2026-11-03T20:08:48Z", "newest": "2026-10"}, "WI": {"checked_utc": "2026-11-03T20:30:00Z", "newest": "2026-09"}},
+    json.dump({"IL": {"checked_utc": "2026-11-03T20:08:48Z", "newest": "2026-10-30"}, "WI": {"checked_utc": "2026-11-03T20:30:00Z", "newest": "2026-09-30"}},
               open(os.path.join(tmp, "data", "land", "checked.json"), "w"))
     zips = Zips(data={"54451": (45.14, -90.34, "Medford, WI"), "61920": (39.49, -88.18, "Charleston, IL"), "54999": (45.60, -90.34, "Nowhere, WI")})
     land = LA.Land(tmp)
@@ -1051,8 +1059,8 @@ def lag_selftest(ck, C):
 
     # Wisconsin posts October (a land run on the 19th commits it); the run after it mails October once
     wi_rows2 = wi_rows + [("2026-10-01", "2026-10-09", 500000, 100)]
-    county("WI", "55119", "Taylor", (45.15, -90.35), wi_rows2, "2026-11-19T18:00:00Z", {"months": wi_months + ["202610"]})
-    json.dump({"IL": {"checked_utc": "2026-11-03T20:08:48Z", "newest": "2026-10"}, "WI": {"checked_utc": "2026-11-19T18:00:00Z", "newest": "2026-10"}},
+    county("WI", "55119", "Taylor", (45.15, -90.35), wi_rows2, "2026-11-19T18:00:00Z", {"months": wi_months + ["202610"]}, north=(45.60, -90.30))
+    json.dump({"IL": {"checked_utc": "2026-11-03T20:08:48Z", "newest": "2026-10-30"}, "WI": {"checked_utc": "2026-11-19T18:00:00Z", "newest": "2026-10-31"}},
               open(os.path.join(tmp, "data", "land", "checked.json"), "w"))
     w.t["late@example.com"] = {"topic": "landsales:54451:10", "ts": C("2026-11-10 12:00").timestamp() * 1000}
     s4 = SMTP()
