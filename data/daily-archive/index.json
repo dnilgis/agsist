@@ -3,11 +3,11 @@
     {
       "date": "2026-11-03",
       "date_display": "Tuesday, November 3, 2026",
-      "headline": "Corn slips 4¢ to $4.44¼ overnight; crude up 0.8% to $97.21",
-      "teaser": "Corn gives back 4 cents overnight while crude bounces on a report of a U.S. strike on Iran.",
+      "headline": "Dec corn trades at $4.44½ Tuesday morning, under Monday's $4.48¼ settle",
+      "teaser": "Corn slips to $4.44½ overnight as USDA puts harvest at 74%; hogs sit near their 52-week low.",
       "market_mood": "mixed",
       "surprise_count": 0,
-      "sections": 3,
+      "sections": 2,
       "url": "/daily/2026-11-03",
       "market_closed": false
     },
@@ -2690,6 +2690,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-03T13:34:19.719870+00:00",
+  "updated": "2026-11-03T13:51:03.815845+00:00",
   "count": 235
 }
