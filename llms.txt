@@ -24,8 +24,8 @@ the as-of date shown with it. Each daily briefing has a permanent dated URL.
 
 Each figure below is read from the same file the site's pages read and carries that file's own date. A page can be newer than this list.
 
-- Cash bids: 22,252 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 3, 2026, 16:58 UTC (https://agsist.com/cash-bids).
-- Elevators with a current bid: 2,065, in 1,622 towns, counted Nov 3, 2026, 17:00 UTC (https://agsist.com/cash-bids).
+- Cash bids: 22,467 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 3, 2026, 19:28 UTC (https://agsist.com/cash-bids).
+- Elevators with a current bid: 2,005, in 1,587 towns, counted Nov 3, 2026, 19:21 UTC (https://agsist.com/cash-bids).
 - AGSIST Daily: latest issue Nov 3, 2026, at https://agsist.com/daily/2026-11-03 (the newest is always at https://agsist.com/daily).
 - County rain: 2026 totals for each county page, from NOAA daily station records, through Nov 2, 2026 (https://agsist.com/rain).
 - AGSIST USDA feeder steer index, not the CME index: $351.58 per cwt for the week Oct 26 to Nov 1, 2026, from USDA AMS auction reports; first count, late reports can still change it (https://agsist.com/cattle-auction-prices).
@@ -111,7 +111,7 @@ Each figure below is read from the same file the site's pages read and carries t
 
 ## My ground and programs
 
-- [Custom Farm Rates by State](https://agsist.com/custom-rates): what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>
+- [Custom Farm Rates by State](https://agsist.com/custom-rates): what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year and source named): 11 surveys covering 12 states: Iowa, Indiana, Kansas, Maryland and Delaware, Missouri, North Dakota, Nebraska, Ohio, Oklahoma, Pennsylvania, Wisconsin; a page per survey at /custom-rates/<state>, except Pennsylvania
 - [Cash Rent by State](https://agsist.com/rent/): USDA county cash rent for every published state, one page per state at /rent/<state>
 - [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>, and foreign-held farmland by state, county and holder country from USDA AFIDA filings since 2010
 - [Farmland Sales by County](https://agsist.com/land-sales/): recorded farm sales in every Illinois, Wisconsin and Indiana county from the state transfer and sales disclosure records (date, township, acres, price, price per acre), one page per county at /land-sales/<state>/<county>, a monthly update at /land-sales/<YYYY-MM> (biggest buyers, biggest sales, unusual prices against the county's usual, best value per acre) and a table of where each state's sales come from; no names in the pages. It also carries the Illinois farmland sale index (/land-sales/#illinois-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares
