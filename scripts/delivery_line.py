@@ -23,7 +23,10 @@ Use, in a sender's main(), after its --selftest branch (so a selftest never prin
     tally.waiting = len(jobs)
     ...  tally.sent += 1  per reader email sent
 
-The line prints when the script exits, on any return path, a sys.exit or a crash.
+The line prints when the script exits, on any return path, a sys.exit or a crash, and only when
+the script that called start() is the program being run: a test that imports a sender and calls
+its main() (scripts/test_zip_alert.py runs in elevator-watch.yml) prints no line, so no made-up
+count reaches a sender's log. DELIVERY_LINE_OFF=1 turns it off by hand.
 
     python3 scripts/delivery_line.py --selftest
 """
@@ -31,6 +34,7 @@ try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit be
 except ImportError: pass
 
 import atexit
+import os
 import re
 import sys
 
@@ -71,11 +75,18 @@ def line(sender, sent_readers, waiting, dry, **extra):
     return " ".join(parts)
 
 
-def start(sender, dry=False):
-    """A tally that prints its line when the process exits."""
+def start(sender, dry=False, _caller=None):
+    """A tally that prints its line when the process exits, when its caller is the program run."""
     t = Tally(sender, dry)
+    caller = _caller or sys._getframe(1).f_code.co_filename
+    if os.environ.get("DELIVERY_LINE_OFF") == "1" or not program_is(caller):
+        return t          # counted, never printed
     atexit.register(t.emit)
     return t
+
+
+def program_is(path):
+    return os.path.basename(path or "") == os.path.basename(sys.argv[0] if sys.argv else "")
 
 
 def parse(text):
@@ -120,6 +131,8 @@ def selftest():
         ck("a bad sender name is refused", False)
     except ValueError:
         ck("a bad sender name is refused", True)
+    ck("the program itself arms the line", program_is(sys.argv[0]))
+    ck("a sender imported by a test does not", not program_is("/x/send_zip_alert.py"))
     t = Tally("x", dry=True)
     t.sent, t.waiting = 1, 2
     ck("tally line", t.line() == "DELIVERY sender=x sent_readers=1 waiting=2 dry=1")

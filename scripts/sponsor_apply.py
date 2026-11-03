@@ -66,6 +66,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
 import email_links  # noqa: E402  (links go to the agsist.com front door; the worker host is never in an email)
 
 try:
@@ -552,6 +553,8 @@ def main():
         print("LIST_URL, LIST_TOKEN and UNSUB_SECRET are required")
         return 1
     dry = env("DRY_RUN") == "1"
+    # its readers are the applicants: waiting = emails to an applicant this run, sent_readers = those that went
+    tally = delivery_line.start("sponsor-apply", dry=dry)
     sig = env("SPONSOR_TO", "sig@agsist.com")
     fn, fa, rt = env("FROM_NAME", "AGSIST"), log_safe.sender_addr(), env("REPLY_TO") or sig
     card = json.loads((REPO / "data" / "rate-card.json").read_text())
@@ -606,7 +609,10 @@ def main():
                     continue
                 mark(a, status="ended")
             for to, kw in emails_for(action, a, base, secret, card, today, sig, slot_list):
+                reader = str(to).strip().lower() != str(sig).strip().lower()
+                tally.waiting += reader
                 send(to, kw)
+                tally.sent += reader
             if action == "confirm":
                 mark(a, m=1)
             elif action == "notify":
