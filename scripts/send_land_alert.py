@@ -357,6 +357,53 @@ def wait_states(zip5, radius, ly, lm, land, zips, today):
     return rep.get("states") or ([rep["state"]] if rep.get("state") else [])
 
 
+def sort_list(rows, ly, lm, land, zips, tiso, repo, out, month, cap, cutoff=None, label=""):
+    """Each sign-up: what it gets now (due()), counted. Returns [(email, topic, parts, lid, data month)], at most cap.
+    The log lines carry counts only: never an address, never a ZIP (states and months are counts' labels)."""
+    todo, seen, skipped, done, wait, cache, later_signup, wst, per_month = [], set(), 0, 0, {}, {}, 0, {}, {}
+    for r in rows:
+        r = r or {}
+        e = str(r.get("email") or "").strip().lower()
+        t = str(r.get("topic") or "")
+        mt = TOPIC_RE.fullmatch(t)
+        lid = email_links.lid_of(r)
+        if not mt or not SN.EMAIL_RE.match(e) or (e, t) in seen or not lid:
+            skipped += 1
+            continue
+        seen.add((e, t))
+        if cutoff is not None and isinstance(r.get("ts"), (int, float)) and r["ts"] > cutoff:
+            later_signup += 1          # signed up after this month's send: the next 3rd
+            continue
+        k = (mt.group(1), int(mt.group(2)))
+        parts, why, ym = due(k[0], k[1], str(r.get("mo") or ""), ly, lm, land, zips, tiso, repo, cache)
+        if why == "done":
+            done += 1
+            continue
+        if not parts:
+            wait[why] = wait.get(why, 0) + 1
+            if why == "wait-data":
+                for st in wait_states(k[0], k[1], ly, lm, land, zips, tiso):
+                    wst[st] = wst.get(st, 0) + 1
+            continue
+        mo_ = "%d-%02d" % (ym[0], ym[1] + 1)
+        why_ = "" if ym == (ly, lm) else " (%s not posted)" % "+".join(wait_states(k[0], k[1], ly, lm, land, zips, tiso))
+        per_month[mo_ + why_] = per_month.get(mo_ + why_, 0) + 1
+        todo.append((e, t, parts, lid, mo_))
+    later = max(0, len(todo) - cap)
+    todo = todo[:cap]
+    out(label + "%s%s: %d to mail, %d already mailed for it, %d not mailed (%s), %d skipped, %d left for the next run"
+        % (TOPIC_PRE, month, len(todo), done, sum(wait.values()), ", ".join("%s %d" % kv for kv in sorted(wait.items())) or "none",
+           skipped, later))
+    # counts only: the data month each reader due gets, and the states not posted yet (a reader may count under two)
+    if per_month:
+        out(label + "%s%s: by data month: %s" % (TOPIC_PRE, month, ", ".join("%s %d" % kv for kv in sorted(per_month.items(), reverse=True))))
+    if wst:
+        out(label + "%s%s: waiting on the state to post %s: %s" % (TOPIC_PRE, month, month, ", ".join("%s %d" % kv for kv in sorted(wst.items()))))
+    if cutoff is not None:
+        out(label + "%s%s: catch-up; %d signed up after this month's send and get the next 3rd's" % (TOPIC_PRE, month, later_signup))
+    return todo
+
+
 # ---------------------------------------------------------------- the run
 def last_month(today):
     """(year, 0-based month) of the month just ended."""
@@ -477,6 +524,9 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                     out("could not read the list (%s)" % type(ex).__name__)
             if n_list is not None:
                 out("list: %d land sale sign-up(s)" % n_list)
+                if not a.month:
+                    # what the list would get now, counts only (a dry run mails and marks nothing)
+                    sort_list(rows, ly, lm, land, zips, tiso, repo, out, month, a.max, label="dry: ")
             for z, mi, parts in made:
                 msg = render("reader@example.com", base or "https://w.dev", "preview", email_links.SAMPLE_LID, parts, from_addr)
                 out("sample (a made-up address and link id):")
@@ -546,46 +596,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     if not isinstance(rows, list):
         out("landsales: the list did not come back as a list")
         return 1
-    todo, seen, skipped, done, wait, cache, later_signup, wst, per_month = [], set(), 0, 0, {}, {}, 0, {}, {}
-    for r in rows:
-        r = r or {}
-        e = str(r.get("email") or "").strip().lower()
-        t = str(r.get("topic") or "")
-        mt = TOPIC_RE.fullmatch(t)
-        lid = email_links.lid_of(r)
-        if not mt or not SN.EMAIL_RE.match(e) or (e, t) in seen or not lid:
-            skipped += 1
-            continue
-        seen.add((e, t))
-        if cutoff is not None and isinstance(r.get("ts"), (int, float)) and r["ts"] > cutoff:
-            later_signup += 1          # signed up after this month's send: the next 3rd
-            continue
-        k = (mt.group(1), int(mt.group(2)))
-        parts, why, ym = due(k[0], k[1], str(r.get("mo") or ""), ly, lm, land, zips, tiso, repo, cache)
-        if why == "done":
-            done += 1
-            continue
-        if not parts:
-            wait[why] = wait.get(why, 0) + 1
-            if why == "wait-data":
-                for st in wait_states(k[0], k[1], ly, lm, land, zips, tiso):
-                    wst[st] = wst.get(st, 0) + 1
-            continue
-        mo_ = "%d-%02d" % (ym[0], ym[1] + 1)
-        per_month[mo_] = per_month.get(mo_, 0) + 1
-        todo.append((e, t, parts, lid, mo_))
-    later = max(0, len(todo) - a.max)
-    todo = todo[:a.max]
-    out("%s%s: %d to mail, %d already mailed for it, %d not mailed (%s), %d skipped, %d left for the next run"
-        % (TOPIC_PRE, month, len(todo), done, sum(wait.values()), ", ".join("%s %d" % kv for kv in sorted(wait.items())) or "none",
-           skipped, later))
-    # counts only: the data month each reader due gets, and the states not posted yet (a reader may count under two)
-    if per_month:
-        out("%s%s: by data month: %s" % (TOPIC_PRE, month, ", ".join("%s %d" % kv for kv in sorted(per_month.items(), reverse=True))))
-    if wst:
-        out("%s%s: waiting on the state to post %s: %s" % (TOPIC_PRE, month, month, ", ".join("%s %d" % kv for kv in sorted(wst.items()))))
-    if cutoff is not None:
-        out("%s%s: catch-up; %d signed up after this month's send and get the next 3rd's" % (TOPIC_PRE, month, later_signup))
+    todo = sort_list(rows, ly, lm, land, zips, tiso, repo, out, month, a.max, cutoff)
     if not todo:
         return 0
     conn, sent, failed, broken, reconnects = None, 0, 0, False, 0
@@ -1048,8 +1059,16 @@ def lag_selftest(ck, C):
                             ("wi@example.com", "Farm sales within 10 miles of 54451, September: 2 recorded")], (rc, sent, log))
     ck("marked with the data month mailed, not the send month", sorted(w.marks) == [("il@example.com", "2026-10"), ("wi@example.com", "2026-09")], w.marks)
     ck("the log: counts by data month and by state waiting, no address, no ZIP",
-       "by data month: 2026-10 1, 2026-09 1" in log and "waiting on the state to post 2026-10: WI 1" in log
+       "by data month: 2026-10 1, 2026-09 (WI not posted) 1" in log and "waiting on the state to post 2026-10: WI 1" in log
        and not re.search(r"@|54451|61920|54999", log), log)
+    wd = Worker({k: dict(v, mo=None) for k, v in w.t.items()})
+    sd = SMTP()
+    env_live = env.pop("LANDSALES_MONTHLY_LIVE")
+    rc, log = go([], "2026-11-03 10:47", sd, wd)
+    env["LANDSALES_MONTHLY_LIVE"] = env_live
+    ck("a dry run counts what the list would get now, by data month and state, and mails and marks nothing",
+       rc == 0 and not sd.msgs and not wd.marks and "dry: landsales:2026-10: 2 to mail" in log and "dry: landsales:2026-10: by data month: 2026-10 1, 2026-09 (WI not posted) 1" in log
+       and not re.search(r"@|54451|61920|54999", "\n".join(x for x in log.split("\n") if x.startswith("dry: "))), log[-600:])   # the samples print their own ZIP
     s2 = SMTP()
     rc, log = go(["--send"], "2026-11-04 10:47", s2)
     ck("a second run mails nobody", rc == 0 and not s2.msgs and "0 to mail, 1 already mailed for it" in log, log)
