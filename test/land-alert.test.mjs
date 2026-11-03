@@ -240,8 +240,8 @@ test("a month a state posts late (Sig, Nov 3 2026, option 1): the newest posted 
   assert.equal(name, "Land data (parcel services + transfers)");
   assert.ok(WF.includes('workflows: ["Fetch Grain Bids", "' + name + '"]'), "follows the land data run");
   const step = WF.slice(WF.indexOf("      - id: land\n"), WF.indexOf("\n  email:\n"));
-  assert.match(step, /if: \$\{\{ github\.event_name == 'workflow_run' && github\.event\.workflow_run\.name == 'Land data \(parcel services \+ transfers\)' && github\.event\.workflow_run\.head_branch == 'main' && steps\.g\.outputs\.go != '1' \}\}/,
-    "never on a run by hand, a Fetch Grain Bids run, a branch run, or a run the tick already sends");
+  assert.match(step, /if: \$\{\{ github\.event_name == 'workflow_run' && github\.event\.workflow_run\.name == 'Land data \(parcel services \+ transfers\)' && github\.event\.workflow_run\.head_branch == 'main' && github\.event\.workflow_run\.conclusion == 'success' && steps\.g\.outputs\.go != '1' \}\}/,
+    "never on a run of this workflow by hand, a Fetch Grain Bids run, a branch run, a failed land run, or a run the tick already sends");
   assert.match(step, /commits\?sha=main&path=data\/land&since=\$SINCE/, "only when the land run committed to data/land");
   assert.match(step, /\|\| echo 0\)/, "an API failure is no catch-up");
   assert.match(WF, /\n    if: needs\.gate\.outputs\.go == '1' \|\| needs\.gate\.outputs\.catchup == '1'\n/);
