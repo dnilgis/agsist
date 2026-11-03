@@ -745,9 +745,11 @@ def load_arc_tables(root="."):
     """FSA's national ARC-CO tables (data/fsa/<PY>_ARC_CO.xlsx, Table 4) -> {py: {commodity: (actual ARC-CO price, F or P, loan rate)}}.
     The 2026 table only feeds arc_plc_crops; here the settled years check FSA's county payment rates."""
     out = {}
-    for p in sorted(glob.glob(os.path.join(root, FSA_DIR, "20[0-9][0-9]_ARC_CO*.xls*"))):
-        py = int(os.path.basename(p)[:4])
-        rows = list(load_xlsx(p).worksheets[0].iter_rows(values_only=True))
+    by_py = {}
+    for p in glob.glob(os.path.join(root, FSA_DIR, "20[0-9][0-9]_ARC_CO*.xls*")):
+        by_py.setdefault(int(os.path.basename(p)[:4]), []).append(p)
+    for py in sorted(by_py):
+        p, rows = XC.newest_table(by_py[py], load_xlsx)   # the copy with the latest header date, never the last name
         hdr = next((r for r in rows if r and any("National Loan Rate" in str(x or "") for x in r)), None)
         if not hdr:
             continue
@@ -810,10 +812,9 @@ def load_fsa_tables(root="."):
     out = {"proj": {}, "erp": {}, "date": None}
     want = {v["fsa"]: k for k, v in CROPS.items()}
     for fn, key in (("2026_MYA", "proj"), ("2026_ERP", "erp")):
-        ps = glob.glob(os.path.join(root, FSA_DIR, fn + "*.xls*"))
-        if not ps:
+        p, rows = XC.newest_table(glob.glob(os.path.join(root, FSA_DIR, fn + "*.xls*")), load_xlsx)
+        if not p:
             continue
-        rows = list(load_xlsx(sorted(ps)[-1]).worksheets[0].iter_rows(values_only=True))
         for r in rows[:4]:
             for v in r or ():
                 m = re.match(r"([A-Z][a-z]+) (\d{1,2}), (20\d\d)", str(v or ""))
@@ -1468,7 +1469,7 @@ def range_call(cd, e):
 
 
 def y25_table(inp, arc_tabs):
-    """FSA's 2025 Table 4 (Oct 9, 2026): per crop key, the 2025 effective reference price, the actual ARC-CO price
+    """FSA's 2025 Table 4 (the newest copy; Oct 30, 2026 since Nov 3): per crop key, the 2025 effective reference price, the actual ARC-CO price
     (the higher of the 2025/26 season-average price and the 2025 loan rate), F or P, and the date FSA lists for the
     final price. The three main crops' 2025 ERPs must equal ours from NASS's final prices (2019 to 2023 window)."""
     t = arc_tabs.get(2025) or {}
@@ -2440,7 +2441,8 @@ def state_page(st, S, D, ch, nav_states):
                           "name": f"{name} 2026 ARC-CO benchmark yields by county (FSA official)",
                           "description": (f"FSA's official program year 2026 ARC-CO benchmark yields for {len(S['c'])} {name} counties by crop and "
                                           f"practice, with benchmark revenue at the 2026 benchmark price, from FSA's county file as of {fsa['as_of']}."),
-                          "url": f"{SITE}{path}", "isAccessibleForFree": True, "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
+                          "url": f"{SITE}{path}", "isAccessibleForFree": True, "license": f"{SITE}/terms",
+                          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
                           "isBasedOn": FSA_DATA, "dateModified": D["updated"][:10],
                           "spatialCoverage": {"@type": "Place", "name": f"{name}, United States"},
                           "variableMeasured": ["ARC-CO benchmark yield (bushels per acre, or pounds per acre for peanuts, rice, pulses, seed cotton and most oilseeds)",
@@ -3374,6 +3376,45 @@ def county_title(cname, st, lab, LY, by_txt):
     return f"{short} {st} ARC or PLC {LY}"[:TITLE_MAX]
 
 
+LEDE_MAX = 3   # crops named in the county lede; the rest are in the cards below it
+
+
+def lede_html(cname, st, LY, cards, updated):
+    """One plain sentence ahead of the cards (Nov 2 SEO audit: the page's first visible words were widget labels).
+    Built from the cards' own HTML, so it can only repeat what the page already prints: each main crop's
+    About the same answer and tier, and the benchmark from its trigger line when the card prints one.
+    A withheld card stays withheld ("no answer yet", "depends on your PLC yield")."""
+    parts = []
+    arts = re.findall(r'<article class="ap-crop"[^>]*>.*?</article>', cards, re.S)
+    for a in arts[:LEDE_MAX]:
+        h3 = re.search(r"<h3>(.*?)</h3>", a).group(1)
+        lab, _, prac = h3.partition(" &middot; ")
+        lc = re.search(r' data-lc="([^"]+)"', a)
+        crop = (lc.group(1) if lc else lab[:1].lower() + lab[1:]) + (f" ({prac})" if prac else "")
+        big = re.search(r'<span class="ap-big">([^<]+)</span>', a).group(1)
+        tier = re.search(r'ap-tier ap-tier-([a-z]+)', a).group(1)
+        if big in (WORD["plc"], WORD["arc"]):
+            say = f"{crop} leans {big}" if tier == "lean" else f"{crop}: {big}, a clear pick" if tier == "pick" else f"{crop}: {big}"
+        elif big == "Either one":
+            say = f"{crop} is too close to call"
+        elif big == "Neither expected to pay":
+            say = f"{crop}: neither program is expected to pay"
+        elif big == "Depends on your PLC yield":
+            say = f"{crop}: no one answer, it depends on your farm&rsquo;s own PLC yield"
+        else:
+            say = f"{crop}: {big[:1].lower() + big[1:]}"
+        bm = re.search(r"90% of the ([^<]+?) benchmark", a)
+        parts.append(say + (f" (benchmark {bm.group(1)})" if bm else ""))
+    if not parts:
+        return ""
+    more = len(arts) - len(parts)
+    tail = f"; {more} more crop{'s' if more > 1 else ''} below" if more > 0 else ""
+    day = (updated or "")[:10]
+    when = f", data updated {nice_date(day)}" if day else ""
+    return (f'<p class="page-lede ap-sum">{esc(cname)}, {st}: for {LY} on a farm with the county&rsquo;s typical PLC yield, '
+            + "; ".join(parts) + tail + when + ".</p>")
+
+
 def county_page(st, S, c, D, ch):
     hdr, ftr, fonts = ch
     name, sl = S["n"], S["slug"]
@@ -3586,6 +3627,7 @@ def county_page(st, S, c, D, ch):
   <p class="page-kicker">Farm program &middot; {LY} and {OY} crop years</p>
   <h1>{esc(cname)}, {esc(name)}: ARC or PLC</h1>
   {byline_html(D)}
+  {lede_html(cname, st, LY, cards, D["updated"]) if official else ""}
   {crops_html}
   <p class="page-lede">What pays more on your base acres for a typical farm here, crop by crop. {sc_['desc']} {ONLINE}</p>
   <h2 class="ap-find-h">Another county</h2>
@@ -4239,15 +4281,21 @@ def selftest():
                                ("Sumner KS non-irrigated wheat", ("20191", "Wheat", "non", "wheat"), (40.25, 27.91))):
             x = e25(*args)
             ck(f"2025 typical farm, {nm}: PLC ${want[0]:.2f}, ARC-CO ${want[1]:.2f}", x and x["final"] and (x["plc"], x["arc"]) == want, str(x))
-        ck("2025: rice's price is not final, so no 2025 dollars (FSA lists Oct 30, 2026)",
-           y25["crops"]["rice_long"]["flag"] == "P" and y25["crops"]["rice_long"]["final_on"] == "2026-10-30"
-           and est25({"f": "05001"}, "rice_long", {"hist": []}, {"_y25": y25, "_plc_raw": raw25, "years": {"2026": {"crops": {"rice_long": {"unit": "lb"}}}}})["final"] is False)
+        # FSA's Oct 30, 2026 tables made long grain rice final (0.104 P -> 0.101 F); temperate japonica is still projected.
+        # Hand check, Arkansas County AR long grain: PLC (0.169 - 0.101) x 6,972.05 lb x 85% = $402.98; ARC-CO FSA's $170.88 x 85% = $145.25
+        ck("2025: long grain rice is final in FSA's Oct 30 table, Arkansas County AR: PLC $402.98, ARC-CO $145.25",
+           y25["crops"]["rice_long"]["flag"] == "F" and y25["crops"]["rice_long"]["price"] == 0.101
+           and e25("05001", "Rice_Long Grain", "all", "rice_long") == {"final": True, "plc": 402.98, "arc": 145.25, "rate": 0.068, "py": 6972.05},
+           str(e25("05001", "Rice_Long Grain", "all", "rice_long")))
+        ck("2025: temperate japonica rice is still projected, so no 2025 dollars",
+           y25["crops"]["rice_japonica"]["flag"] == "P"
+           and est25({"f": "06007"}, "rice_japonica", {"hist": []}, {"_y25": y25, "_plc_raw": raw25, "years": {"2026": {"crops": {"rice_japonica": {"unit": "lb"}}}}})["final"] is False)
         ck("2025 ERPs in FSA's Table 4 match ours (corn $4.42, soybeans $10.71, wheat $6.35)",
            (y25["crops"]["corn"]["erp"], y25["crops"]["soybeans"]["erp"], y25["crops"]["wheat"]["erp"]) == (4.42, 10.71, 6.35))
         # item 6: the source list's dates are the tables' own
-        ck("FSA tables 1, 2 and 4 are the Oct 9, 2026 copies; Table 3 says its own Sept 11 date",
-           inp25["xtab"]["dates"] == {"2026_MYA": "2026-10-09", "2026_ERP": "2026-10-09", "2026_PLC": "2026-09-11", "2026_ARC_CO": "2026-10-09"}
-           and all("2026-10/" in XC.TABLE_URLS[k][1] for k in ("FSAT_MYA", "FSAT_ERP", "FSAT_ARC")), str(inp25["xtab"].get("dates")))
+        ck("FSA tables 1, 2 and 4 are the Oct 30, 2026 copies; Table 3 says its own Sept 11 date",
+           inp25["xtab"]["dates"] == {"2026_MYA": "2026-10-30", "2026_ERP": "2026-10-30", "2026_PLC": "2026-09-11", "2026_ARC_CO": "2026-10-30"}
+           and all("2026-11/" in XC.TABLE_URLS[k][1] for k in ("FSAT_MYA", "FSAT_ERP", "FSAT_ARC")), str(inp25["xtab"].get("dates")))
         ck("rice timing from FSA's Table 1: long and medium grain Oct 29, 2027, temperate japonica Jan 31, 2028",
            [inp25["xtab"]["rows"][n].get("final_on") for n in ("Rice (long grain)", "Rice (med/short grain)", "Rice (temperate japonica)")]
            == ["2027-10-29", "2027-10-29", "2028-01-31"])

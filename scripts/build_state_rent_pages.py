@@ -979,6 +979,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
                         f"as published annually by USDA NASS, {s['y0']} to {yr}.",
          "url": f"{SITE}/rent/{sl}",
          "license": "https://www.usa.gov/government-works",
+         **({"dateModified": d["generated"]} if ISO_DAY.match(str(d.get("generated", ""))) else {}),
          "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
          "temporalCoverage": f"{s['y0']}/{yr}",
@@ -1088,6 +1089,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
 # Moved from the retired /cash-rent page (2026-10): its explainer, its seven
 # questions and its Dataset record. The calculator itself is
 # components/rent-calc.js, opened from a Farmland Atlas county page.
+ISO_DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")   # a Dataset's dateModified is the data's own refresh date, or left off
 HUB_DATASET = {
     "@type": "Dataset", "@id": f"{SITE}/rent/#dataset", "name": "US County Cash Rent and Trend Yield",
     "description": ("County-level cash rental rates for non-irrigated cropland, irrigated cropland, and permanent pasture, "
@@ -1314,7 +1316,7 @@ def build_hub(states, stats, generated):
         {"@type": "CollectionPage", "name": f"Cash Rent by State, {yr}",
          "url": f"{SITE}/rent/", "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE}},
-        HUB_DATASET,
+        dict(HUB_DATASET, **({"dateModified": generated} if ISO_DAY.match(str(generated)) else {})),
         {"@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": f["q"], "acceptedAnswer": {"@type": "Answer", "text": f["a"]}} for f in hub_faq]},
         {"@type": "BreadcrumbList", "itemListElement": [
