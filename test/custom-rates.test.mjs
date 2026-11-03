@@ -447,6 +447,27 @@ test("browser: the reader's state first, the middle under it, only the needed fi
     const tot = "$" + Math.round(shownV(iaCC[0], "acre") * 640).toLocaleString("en-US");
     assert.ok(qt.includes(tot + " at the survey averages"), qt);
     assert.match(qt, /Survey average x your numbers/);
+    // the quote in a link keeps decimals (12.5 acres, 0.25 of a job's unit), in the new form and in links shared before it
+    for (const q of ["combine-corn~12.5_haul-grain-bu~0.25", "combine-corn~12.5.haul-grain-bu~0.25"]) {
+      await p.goto(base + "/custom-rates?st=IA&qj=" + q, { waitUntil: "networkidle" });
+      await p.waitForFunction(() => /at the survey averages/.test(document.getElementById("cr-quote").textContent));
+      assert.deepEqual(await p.evaluate(() => window.AgCustomRates.quoteList()), [{ k: "combine-corn", q: 12.5 }, { k: "haul-grain-bu", q: 0.25 }], q);
+      assert.deepEqual(await p.$$eval("#cr-quote input[data-qi]", (els) => els.map((e) => e.value)), ["12.5", "0.25"], q);
+      assert.match(new URL(p.url()).searchParams.get("qj") || "", /^combine-corn~12\.5_haul-grain-bu~0\.25$/, "written back with '_' between jobs");
+      // hauling: the survey's miles beside its per-bushel rate, on the page and the print
+      const ql = await p.textContent("#cr-quote");
+      assert.ok(ql.includes(`(${blend.ops["haul-grain-bu"].basis.IA})`), ql);
+      const spec = await p.evaluate(() => window.AgCustomRates.quote());
+      assert.ok(spec.sections[0].table.rows[1][2].includes(`(${blend.ops["haul-grain-bu"].basis.IA})`), spec.sections[0].table.rows[1][2]);
+    }
+    // a line on an old survey or one kept out of the middle says so, with its year or note
+    await p.goto(base + "/custom-rates?st=OK&qj=combine-soy~100", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /at the survey averages/.test(document.getElementById("cr-quote").textContent));
+    assert.match(await p.textContent("#cr-quote"), new RegExp(`Oklahoma's ${blend.states.OK.year} survey average \\(too old for the middle\\)`));
+    await p.goto(base + "/custom-rates?st=WI&qj=lime-ton~40", { waitUntil: "networkidle" });
+    await p.waitForFunction(() => /at the survey averages/.test(document.getElementById("cr-quote").textContent));
+    assert.ok((await p.textContent("#cr-quote")).includes("(not in the middle: " + blend.ops["lime-ton"].apart.WI[5] + ")"));
+    await p.goto(base + "/custom-rates?st=IA&qj=combine-corn~640", { waitUntil: "networkidle" });
     await p.waitForFunction(() => /^Diesel: /.test(document.getElementById("cr-diesel").textContent));
     const dz = await p.textContent("#cr-diesel");
     assert.ok(dz.startsWith(`Diesel: ${blend.diesel.IA.who} figured ${blend.diesel.IA.price} (${blend.diesel.IA.when}).`), dz);

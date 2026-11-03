@@ -437,7 +437,7 @@
       if (S.st) p.set('st', S.st);
       if (S.sheet.length) p.set('j', S.sheet.join('.'));
       if (S.k !== 'combine-corn') p.set('k', S.k);
-      if (S.quote.length) p.set('qj', S.quote.map(function (j) { return j.k + '~' + j.q; }).join('.'));
+      if (S.quote.length) p.set('qj', quoteStr());
       var s = p.toString();
       if (extra) return location.origin + location.pathname + (s ? '?' + s : '');
       history.replaceState(null, '', location.pathname + (s ? '?' + s : '') + location.hash);
@@ -506,7 +506,9 @@
     var me = stateVal(op), st = sv(S.st);
     if (me && me[2] !== 'other') {
       var sp = S.b.states[st].spread;
-      return { v: me[0][0], lo: me[0][1], hi: me[0][2], who: stName(st) + '\'s survey average', tag: SPTAG[sp] || '' };
+      /* an old survey or a line kept out of the middle says so; hauling says how far the survey's rate carries */
+      var why = me[2] === 'old' ? ' (too old for the middle)' : me[2] === 'apart' ? ' (not in the middle: ' + me[0][5] + ')' : '';
+      return { v: me[0][0], lo: me[0][1], hi: me[0][2], who: stName(st) + '\'s ' + svy(st) + ' average' + why, tag: SPTAG[sp] || '', basis: op.basis && op.basis[st] || '' };
     }
     if (op.md != null) return { v: op.md, lo: op.lo, hi: op.hi, who: 'the middle of ' + op.n + ' state surveys', tag: 'across the states' };
     if (op.n === 1) { var s1 = Object.keys(op.by)[0]; var v1 = op.by[s1]; return { v: v1[0], lo: v1[1], hi: v1[2], who: stName(s1) + '\'s survey average', tag: SPTAG[S.b.states[s1].spread] || '' }; }
@@ -532,14 +534,20 @@
     return t;
   }
   function quoteSave() {
-    lsSet(QJKEY, S.quote.map(function (j) { return j.k + '~' + j.q; }).join('.'));
+    lsSet(QJKEY, quoteStr());
     url();
   }
+  /* the quote in a link: job~amount, jobs joined by '_' (a '.' is a decimal point, so 12.5 acres
+     survives). Links shared before Nov 4 joined jobs with '.'; the same reading takes them, since a
+     job key starts with a letter and an amount never does. */
+  function quoteStr() { return S.quote.map(function (j) { return j.k + '~' + j.q; }).join('_'); }
   function quoteParse(s) {
-    return String(s || '').split('.').map(function (x) {
-      var p = x.split('~'), q = parseFloat(p[1]);
-      return S.b.ops[p[0]] && isFinite(q) && q >= 0 ? { k: p[0], q: q } : null;
-    }).filter(Boolean).slice(0, 20);
+    var out = [], re = /([a-z][a-z0-9-]*)~(\d+(?:\.\d+)?)/g, m;
+    while ((m = re.exec(String(s || ''))) && out.length < 20) {
+      var q = parseFloat(m[2]);
+      if (S.b.ops[m[1]] && isFinite(q) && q >= 0 && !out.some(function (j) { return j.k === m[1]; })) out.push({ k: m[1], q: q });
+    }
+    return out;
   }
   function quoteDraw() {
     var box = $('cr-quote');
@@ -555,7 +563,7 @@
       var u = QTY[l.op.u] ? QTY[l.op.u][1] : ULAB[l.op.u] || l.op.u;
       return '<li class="crq-r"><span class="crq-n">' + esc(l.op.label) + ' <small>' + esc(unitLabel(l.op.u)) + '</small></span>' +
         '<label class="cr-qty">' + '<input type="number" inputmode="decimal" min="0" step="any" data-qi="' + i + '" value="' + l.q + '" aria-label="How many ' + esc(u) + ' for ' + esc(l.op.label) + '"> ' + esc(u) + '</label>' +
-        '<span class="crq-v">' + (l.total != null ? '<b>' + dollars(l.total) + '</b> at ' + money(l.r.v, l.op.u) + ' ' + esc(shortUnit(l.op.u)) + ', ' + esc(l.r.who) : esc(l.r.who)) +
+        '<span class="crq-v">' + (l.total != null ? '<b>' + dollars(l.total) + '</b> at ' + money(l.r.v, l.op.u) + ' ' + esc(shortUnit(l.op.u)) + (l.r.basis ? ' (' + esc(l.r.basis) + ')' : '') + ', ' + esc(l.r.who) : esc(l.r.who)) +
         (l.lo != null ? '<small>' + dollars(l.lo) + ' to ' + dollars(l.hi) + (l.r.tag ? ' (' + esc(l.r.tag) + ')' : '') + '</small>' : '<small>no range printed</small>') + '</span>' +
         '<button type="button" class="cr-btn crq-x" data-qx="' + i + '" aria-label="Take ' + esc(l.op.label) + ' off the quote">Remove</button></li>';
     }).join('') + '</ul>' +
@@ -568,7 +576,7 @@
     var lines = quoteLines(), t = quoteTotals(lines), st = sv(S.st);
     var rows = lines.map(function (l) {
       var u = QTY[l.op.u] ? QTY[l.op.u][1] : unitLabel(l.op.u);
-      return [l.op.label, l.q.toLocaleString('en-US') + ' ' + u, l.r.v != null ? money(l.r.v, l.op.u) + ' ' + shortUnit(l.op.u) + ', ' + l.r.who : l.r.who,
+      return [l.op.label, l.q.toLocaleString('en-US') + ' ' + u, l.r.v != null ? money(l.r.v, l.op.u) + ' ' + shortUnit(l.op.u) + (l.r.basis ? ' (' + l.r.basis + ')' : '') + ', ' + l.r.who : l.r.who,
         l.total != null ? dollars(l.total) : '', l.lo != null ? dollars(l.lo) + ' to ' + dollars(l.hi) : 'no range printed'];
     });
     rows.push(['Total', '', '', dollars(t.sum), t.ranged ? dollars(t.lo) + ' to ' + dollars(t.hi) + (t.ranged < t.n ? ' (' + t.ranged + ' of ' + t.n + ' jobs)' : '') : '']);
@@ -580,7 +588,7 @@
       intro: 'Survey average x your numbers. Not a price from anyone; your local custom operator may charge more or less.',
       sections: [{ h: 'Jobs', table: { head: ['Job', 'How much', 'Rate used', 'At the average', 'Range'], rows: rows } }],
       sources: Object.keys(used).sort().map(function (s) { return { name: S.b.states[s].survey + ', ' + S.b.states[s].publisher, date: svy(s) }; }),
-      url: 'https://agsist.com/custom-rates?' + [S.st ? 'st=' + S.st : '', 'qj=' + S.quote.map(function (j) { return j.k + '~' + j.q; }).join('.')].filter(Boolean).join('&'),
+      url: 'https://agsist.com/custom-rates?' + [S.st ? 'st=' + S.st : '', 'qj=' + quoteStr()].filter(Boolean).join('&'),
       page: 'Custom rates quote'
     };
   }
@@ -685,7 +693,7 @@
         if (!res || !res.ok) {
           btn.disabled = false; btn.textContent = 'Email me once';
           var A = window.AgsistSignup;
-          msg.textContent = A && A.errText ? A.errText(res) : 'That did not go through. Nothing was saved. Try again, or email sig@agsist.com and I will add you by hand.';
+          msg.textContent = A && A.errText ? A.errText(res) : 'That did not go through. Nothing was saved. Try again, or email sig@agsist.com and we will add you by hand.';
           return;
         }
         box.innerHTML = '<p class="crt-ok" tabindex="-1">Done. One email when ' + esc(what) + ' is on this page.</p>';
@@ -817,7 +825,7 @@
       });
   }
   if (typeof window !== 'undefined') {
-    window.AgCustomRates = { matches: matches, money: money, stem: stem, cells: cells, usdaDiesel: usdaDiesel, quoteTotals: quoteTotals, sheet: function () { return S.b ? stateSheetSpec() : null; }, quote: function () { return S.b ? quoteSpec() : null; } };
+    window.AgCustomRates = { matches: matches, money: money, stem: stem, cells: cells, usdaDiesel: usdaDiesel, quoteTotals: quoteTotals, sheet: function () { return S.b ? stateSheetSpec() : null; }, quote: function () { return S.b ? quoteSpec() : null; }, quoteList: function () { return S.quote.slice(); } };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   }
 })();

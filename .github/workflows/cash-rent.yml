@@ -12,6 +12,10 @@ on:
         description: "Comma-separated states (blank = all)"
         required: false
         default: ""
+      customrates_send:
+        description: "Also send the custom rates new-survey emails on this manual run (yes to send; needs CUSTOMRATES_NOTICE_LIVE=1)"
+        required: false
+        default: "no"
 
 permissions:
   contents: write
@@ -102,8 +106,13 @@ jobs:
       # reached the page is mailed once and marked. Rides this job's weekly schedule all year
       # (no new cron; not gated by the rent window). The history fetch lets the sender find the
       # commit that brought each survey file's edition.
+      # LIVE GATE: nothing goes out until Sig sets the repo variable CUSTOMRATES_NOTICE_LIVE to 1
+      # (the script refuses --send without it too). A scheduled or chained run sends under the
+      # job's own gate; a run by hand sends only with customrates_send = yes.
       - name: Custom rates new-survey emails
+        if: vars.CUSTOMRATES_NOTICE_LIVE == '1' && (github.event_name != 'workflow_dispatch' || inputs.customrates_send == 'yes')
         env:
+          CUSTOMRATES_NOTICE_LIVE: ${{ vars.CUSTOMRATES_NOTICE_LIVE }}
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)

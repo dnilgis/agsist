@@ -69,5 +69,23 @@ test("the ask: posts customrates:<st> to the worker's /notice, says one email, r
   assert.match(js, /One email, when it is on this page/);
   const wf = read(".github/workflows/cash-rent.yml");
   assert.match(wf, /python3 scripts\/send_custom_rates_notice\.py --send/);
+  assert.match(js, /we will add you by hand/);
+  assert.doesNotMatch(js, /I will add you by hand/);
   assert.doesNotMatch(read("scripts/send_custom_rates_notice.py"), /—/);
+});
+
+test("live gate: the step sends only when Sig turns CUSTOMRATES_NOTICE_LIVE on, and a manual run only when asked", () => {
+  const wf = read(".github/workflows/cash-rent.yml");
+  const at = wf.indexOf("- name: Custom rates new-survey emails");
+  assert.ok(at > 0);
+  const step = wf.slice(at, wf.indexOf("\n      - name:", at + 10) > 0 ? wf.indexOf("\n      - name:", at + 10) : undefined);
+  assert.match(step, /if: vars\.CUSTOMRATES_NOTICE_LIVE == '1' && \(github\.event_name != 'workflow_dispatch' \|\| inputs\.customrates_send == 'yes'\)/);
+  assert.match(step, /CUSTOMRATES_NOTICE_LIVE: \$\{\{ vars\.CUSTOMRATES_NOTICE_LIVE \}\}/);
+  assert.match(wf, /customrates_send:\n\s+description:[^\n]*\n\s+required: false\n\s+default: "no"/);
+  // the script refuses on its own too: without the variable, --send sends and marks nothing
+  const src = read("scripts/send_custom_rates_notice.py");
+  assert.match(src, /if send and SN\.env\("CUSTOMRATES_NOTICE_LIVE", ""\) != "1":/);
+  const out = execFileSync("python3", ["scripts/send_custom_rates_notice.py", "--selftest"], { cwd: ROOT }).toString();
+  assert.match(out, /ok {3}live gate: --send without CUSTOMRATES_NOTICE_LIVE=1 sends and marks nothing, exit 1/);
+  assert.match(out, /ok {3}a title typo fix is the same edition/);
 });

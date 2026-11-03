@@ -10,7 +10,8 @@ on the page. The worker stores topic customrates:<st> under note:<email> with th
 THE RULE. A customrates:<st> notice waits for the first survey edition for that state that reached
 the page AFTER the notice's ts. The edition a state reads is its survey file
 scripts/custom_rates/<st>.tsv (Delaware reads the Maryland and Delaware file), named by its
-"# survey:", "# survey_year:" and "# rate_year:" lines. That edition counts as out at the time of
+"# survey_year:" and "# rate_year:" lines (the title is left out, so a typo fixed in it never
+mails anyone again). That edition counts as out at the time of
 the first commit whose file held it, trusted only when git history reaches the commit before it
 (a shallow clone that starts with the edition already in says nothing about when it came). If that
 is not known, nothing is sent for the state and the log says so. A notice is mailed once when it
@@ -22,10 +23,14 @@ its checkout fetched enough history. The email's numbers are the page's own (ble
 state file: the survey's combine corn average, answers and range when the survey prints one).
 
     python3 scripts/send_custom_rates_notice.py              # dry run: counts and a preview, sends nothing
-    python3 scripts/send_custom_rates_notice.py --send       # the real thing
+    CUSTOMRATES_NOTICE_LIVE=1 python3 scripts/send_custom_rates_notice.py --send   # the real thing
+
+LIVE GATE. --send is refused unless CUSTOMRATES_NOTICE_LIVE=1 (Sig turns it on; the workflow passes the
+repo variable), the same switch as LANDSALES_MONTHLY_LIVE in send_land_alert.py. Without it a run is a
+dry run at most: nothing is sent and nothing is marked.
     python3 scripts/send_custom_rates_notice.py --selftest   # fake HTTP and fake SMTP; no network
 
-Env: the same as send_notice.py. The log carries counts only, never an address.
+Env: the same as send_notice.py, plus CUSTOMRATES_NOTICE_LIVE. The log carries counts only, never an address.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -55,8 +60,9 @@ TOPIC_RE = re.compile(r"customrates:([a-z]{2})")
 
 # ---------------------------------------------------------------- data
 def edition(meta):
-    """What names a survey edition: its title and its years. A new edition changes at least one."""
-    return (meta.get("survey", ""), meta.get("survey_year", ""), meta.get("rate_year", ""))
+    """What names a survey edition: its years. A new edition changes the survey year (or the rate year);
+    a fix to the title's wording is the same edition and mails nobody."""
+    return (meta.get("survey_year", ""), meta.get("rate_year", ""))
 
 
 def survey_file(repo, st):
@@ -137,6 +143,9 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     p.add_argument("--max", type=int, default=int(SN.env("MAX_PER_RUN", "200")))
     a = p.parse_args(argv)
     send = a.send and not a.dry_run
+    if send and SN.env("CUSTOMRATES_NOTICE_LIVE", "") != "1":
+        out("refused: CUSTOMRATES_NOTICE_LIVE is not 1, so the new-survey list gets nothing (Sig turns it on). Nothing sent.")
+        return 1
     today = (now or datetime.now(SN.TZ)).astimezone(SN.TZ).date()
     base, tok, secret = SN.env("LIST_URL"), SN.env("LIST_TOKEN"), SN.env("UNSUB_SECRET")
     if not (base and tok and secret):
@@ -299,27 +308,31 @@ def selftest():
     ia, md = os.path.join(src, "ia.tsv"), os.path.join(src, "md.tsv")
     open(md, "w").write(tsv("MD", "Maryland and Delaware", "MD Survey", 2025, "\n# states: MD DE"))   # in the first commit
     steps = [(ia, tsv("IA", "Iowa", "2026 Iowa Survey", 2026), "2026-03-10T15:00:00+00:00"),
-             (ia, tsv("IA", "Iowa", "2026 Iowa Survey", 2026) + "\n", "2026-05-01T15:00:00+00:00"),       # a typo fix, same edition
-             (ia, tsv("IA", "Iowa", "2027 Iowa Survey", 2027), "2027-03-12T15:00:00+00:00")]               # the new edition
+             (ia, tsv("IA", "Iowa", "2026 Iowa Survey", 2026) + "\n", "2026-05-01T15:00:00+00:00"),       # a blank line, same edition
+             (ia, tsv("IA", "Iowa", "2027 Iowa Survey", 2027), "2027-03-12T15:00:00+00:00"),               # the new edition
+             (ia, tsv("IA", "Iowa", "2027 Iowa Custom Rate Survey", 2027), "2027-04-02T15:00:00+00:00")]   # its title's typo fixed
     for path, text, t in steps:
         open(path, "w").write(text)
         sh("add", "-A")
         sh("commit", "-qm", "x", t=t)
-    key27 = ("2027 Iowa Survey", "2027", "")
+    key27 = ("2027", "")
     ck("git: the first commit that held the new edition", git_first_ms(tmp, "ia.tsv", key27) == ms("2027-03-12T15:00:00"))
+    ck("a title typo fix is the same edition: its time stays the first commit's",
+       edition(BC.parse_tsv(open(ia).read(), "ia.tsv")[0]) == key27 and git_first_ms(tmp, "ia.tsv", key27) == ms("2027-03-12T15:00:00"))
     ck("git: an edition whose first commit starts the history is not trusted",
-       git_first_ms(tmp, "md.tsv", ("MD Survey", "2025", "")) is None and git_first_ms(tmp, "ia.tsv", ("2026 Iowa Survey", "2026", "")) is None)
+       git_first_ms(tmp, "md.tsv", ("2025", "")) is None and git_first_ms(tmp, "ia.tsv", ("2026", "")) is None)
     ck("Delaware reads the shared file", survey_file(tmp, "DE") == "md.tsv" and survey_file(tmp, "MN") is None)
 
     os.environ.update({"LIST_URL": "https://w.dev", "LIST_TOKEN": "tok", "UNSUB_SECRET": "sec",
                        "SMTP_USER": "news@agsist.com", "MAX_PER_RUN": "200"})
+    os.environ.pop("CUSTOMRATES_NOTICE_LIVE", None)
     docs = {"IA": load(tmp, "ia.tsv")[1], "DE": load(tmp, "md.tsv")[1]}
     SN.TEMPLATES["customrates"] = make_parts(docs)
     SN.LINK_IDS["a@example.com"] = SN.email_links.SAMPLE_LID
     m = SN.render("customrates:ia", "page:custom-rates", "a@example.com", "https://w.dev", "sec", datetime(2027, 3, 20).date(), "news@agsist.com", None, tmp)
     txt, htm = m.get_body(("plain",)).get_content(), m.get_body(("html",)).get_content()
     ck("subject", m["Subject"] == "Iowa's new custom rate survey is out", m["Subject"])
-    ck("names the survey and its year", "Test Extension put out a new custom rate survey for Iowa, the 2027 Iowa Survey (2027 survey)" in txt, txt[:400])
+    ck("names the survey and its year", "Test Extension put out a new custom rate survey for Iowa, the 2027 Iowa Custom Rate Survey (2027 survey)" in txt, txt[:400])
     ck("the survey's own number, answers and its kind of range",
        "Corn combining: $46.05 an acre (119 answers, trimmed range (lowest and highest answer left out) $25.00 to $80.00)." in txt, txt[:600])
     ck("links the state page", SITE + "/custom-rates/iowa?" + UTM in txt)
@@ -381,6 +394,13 @@ def selftest():
     rc, log = go([], w, s)
     ck("dry run: sends and marks nothing, previews a made-up address", rc == 0 and not s.sent and not w.marks
        and "%40" not in log and not any(e in log for e in addrs), log)
+    rc, log = go(["--send"], w, s)
+    ck("live gate: --send without CUSTOMRATES_NOTICE_LIVE=1 sends and marks nothing, exit 1",
+       rc == 1 and not s.sent and not w.marks and "refused: CUSTOMRATES_NOTICE_LIVE is not 1" in log, (rc, s.sent, log))
+    os.environ["CUSTOMRATES_NOTICE_LIVE"] = "0"
+    rc, log = go(["--send"], w, s)
+    ck("live gate: any value but 1 is off", rc == 1 and not s.sent and not w.marks)
+    os.environ["CUSTOMRATES_NOTICE_LIVE"] = "1"
     rc, log = go(["--send"], w, s)
     ck("mails the notice made before the new edition, not the one made after it", s.sent == ["before@example.com"], s.sent)
     ck("marked after the send", w.marks == ["before@example.com"])
