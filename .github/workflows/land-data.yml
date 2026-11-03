@@ -52,7 +52,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
     timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
@@ -207,6 +207,7 @@ jobs:
         timeout-minutes: 45
         run: python scripts/fetch_land_sales.py NJ || echo "::warning::New Jersey deeds were not written"
       - name: Wisconsin transfer returns (browser)
+        continue-on-error: true  # a Wisconsin browser failure must never drop the other states' commit (Nov 3)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-newest' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
         run: |
           python3 -m venv "$RUNNER_TEMP/pw"
