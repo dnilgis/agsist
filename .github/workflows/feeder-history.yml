@@ -6,18 +6,20 @@ name: Feeder index history (dispatch only)
 # push trigger, ever. The ongoing weeks ride cattle-auction.yml as before.
 #
 # What it does (scripts/backfill_feeder_index.py):
-#   1. lists the Internet Archive's copies of every single-barn USDA AMS report
-#      in scripts/cattle_auction_sources.json and reads each copy not yet read
-#      with fetch_cattle_auction's own reader (1.5 s apart, robots.txt obeyed);
-#      USDA's own archive did not answer a runner (probe of Nov 2, saved on raw
-#      at history/feeder-archive/probe/, and history-backfill.yml can run it again);
-#   2. saves the copies' text and the sales read to the private raw branch
-#      (history/feeder-archive/), so a later run picks up where this one stopped;
-#   3. builds the past weeks with build_feeder_index.build_history (the live
-#      record's own rules; never a week the live record holds) and commits the
-#      file to the branch it ran on, unless dry run is ticked.
-# Dispatch it again until the log says every copy is read; a re-run with
-# nothing new changes nothing.
+#   1. reads every single-barn USDA AMS report in scripts/cattle_auction_sources.json
+#      through the MARS API of USDA My Market News (--mars-fetch; secret MARS_API_KEY,
+#      HTTP basic, never printed), one ask per report and year, 1.5 s apart, and maps
+#      its rows to fetch_cattle_auction's own records with the same row rules;
+#   2. only when "archive" is ticked: also lists and reads the Internet Archive's
+#      copies of the same reports (--fetch, 4 s apart, robots.txt obeyed); a copy is
+#      used only for a barn and week MARS does not hold;
+#   3. saves what was read to the private raw branch (history/feeder-mars/ and
+#      history/feeder-archive/), so a later run picks up where this one stopped;
+#   4. builds the past weeks with build_feeder_index.build_history (the live
+#      record's own rules; never a week the live record holds; each week says how
+#      its barns were read) and commits the file to the branch it ran on, unless
+#      dry run is ticked.
+# A re-run with nothing new changes nothing.
 
 on:
   workflow_dispatch:
@@ -25,11 +27,15 @@ on:
       from:
         description: "First sale date to look for (YYYY-MM-DD)"
         type: string
-        default: "2025-01-01"
+        default: "2024-01-01"
       to:
         description: "Last sale date (YYYY-MM-DD; blank = the day before the live record starts)"
         type: string
         default: ""
+      archive:
+        description: "Also read Internet Archive copies (slow) for barn weeks MARS lacks"
+        type: boolean
+        default: false
       dry_run:
         description: "Dry run: read and save to raw, print the weeks, commit nothing"
         type: boolean
@@ -71,7 +77,24 @@ jobs:
         run: |
           bash scripts/pull_raw.sh history/feeder-archive/manifest.json
           bash scripts/pull_raw.sh history/feeder-archive/sales
+          bash scripts/pull_raw.sh history/feeder-mars/manifest.json
+          bash scripts/pull_raw.sh history/feeder-mars/rows
+      - name: Read the reports through My Market News (MARS)
+        env:
+          FROM: ${{ inputs.from }}
+          TO: ${{ inputs.to }}
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: |
+          for v in "$FROM" "$TO"; do
+            [ -z "$v" ] && continue
+            case "$v" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "::error::dates are YYYY-MM-DD ($v)"; exit 1;; esac
+          done
+          [ -n "$MARS_API_KEY" ] || { echo "::error::no MARS_API_KEY secret"; exit 1; }
+          args=(--mars-fetch --from "${FROM:-2024-01-01}")
+          if [ -n "$TO" ]; then args+=(--to "$TO"); fi
+          python3 scripts/backfill_feeder_index.py "${args[@]}"
       - name: Read the archived copies
+        if: ${{ inputs.archive }}
         env:
           FROM: ${{ inputs.from }}
           TO: ${{ inputs.to }}
@@ -83,7 +106,7 @@ jobs:
             [ -z "$v" ] && continue
             case "$v" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "::error::dates are YYYY-MM-DD ($v)"; exit 1;; esac
           done
-          args=(--fetch --from "${FROM:-2025-01-01}" --max-minutes 300)
+          args=(--fetch --from "${FROM:-2024-01-01}" --max-minutes 240)
           if [ -n "$TO" ]; then args+=(--to "$TO"); fi
           python3 scripts/backfill_feeder_index.py "${args[@]}"
       - name: Save to the raw branch
@@ -92,8 +115,10 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'
         run: |
-          [ -d history/feeder-archive ] || { echo "nothing written"; exit 0; }
-          bash scripts/push_raw.sh "feeder index history" history/feeder-archive
+          paths=()
+          for d in history/feeder-mars history/feeder-archive; do [ -d "$d" ] && paths+=("$d"); done
+          [ ${#paths[@]} -gt 0 ] || { echo "nothing written"; exit 0; }
+          bash scripts/push_raw.sh "feeder index history" "${paths[@]}"
       - name: Build the past weeks
         env:
           DRY: ${{ inputs.dry_run }}

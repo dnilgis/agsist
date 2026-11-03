@@ -134,6 +134,14 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'
         run: bash scripts/pull_raw.sh "$DIR/sales"
+      # feeder-mars keeps each report's feeder rows; a resumed run asks only what it lacks
+      - name: The saved rows (feeder-mars)
+        if: ${{ inputs.source == 'feeder-mars' && !inputs.probe }}
+        env:
+          DIR: ${{ steps.w.outputs.dir }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh "$DIR/rows"
       - name: Backfill
         env:
           SCRIPT: ${{ steps.w.outputs.script }}
@@ -172,6 +180,10 @@ jobs:
             else
               python3 "$SCRIPT" --probe
             fi
+          elif [ "$SOURCE" = "feeder-mars" ]; then
+            fm=(--mars-fetch --from "${FROM:-2024}-01-01" --max-minutes "${MAXMIN:-300}")
+            if [ -n "$TO" ]; then fm+=(--to "$TO-12-31"); fi
+            python3 "$SCRIPT" "${fm[@]}"
           elif [ "$SOURCE" = "feeder-archive" ]; then
             fa=(--fetch --from "${FROM:-2025}-01-01" --max-minutes "${MAXMIN:-300}")
             if [ -n "$TO" ]; then fa+=(--to "$TO-12-31"); fi

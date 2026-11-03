@@ -14,7 +14,7 @@ saved on the raw branch at history/feeder-archive/probe/):
     crawler passed: a handful a year per barn. Each copy is USDA's own PDF as
     it stood that day; read through fetch_cattle_auction's reader it gives the
     barn's sale of that week (fixtures: test/fixtures/cattle-auction/*archive*).
-So this reads the Internet Archive copies. A week gets only the barns a copy
+So this first read the Internet Archive copies (Nov 2). A week gets only the barns a copy
 happened to catch, so most weeks are withheld by the index's own rule (30
 barns, 8 states, 4,000 head, no state over half); the ones that pass are
 real counts of real USDA rows.
@@ -30,9 +30,26 @@ real counts of real USDA rows.
         sales/<slug>.json           {sale date: summarize() result}
         manifest.json               per report: copies listed, read, refused and why
       Resumable: a copy in the manifest is not asked again.
+  --mars-fetch --from 2024-01-01 [--to 2026-10-11] [--max-minutes 300]
+      (Nov 3 2026: Sig made a My Market News key, secret MARS_API_KEY, Actions only.)
+      Every single-barn report through the MARS API, one ask per report and year,
+      1.5 s apart; the rows are mapped to fetch_cattle_auction's own records
+      (mars_reports: same tables, same row rules via FCA.check_row, same title check)
+      and summarized by FCA.summarize. Writes history/feeder-mars/:
+        rows/<slug>.json   feeder rows as MARS sent them (the fields read)
+        sales/<slug>.json  {sale date: summarize() result}
+        manifest.json      per report and year: status, rows; refusals and why
+  --mars-saved DIR
+      The same from MARS answers already saved (the probe's header_<slug>.json), no network.
+  --mars-check
+      The cross-check: every saved Internet Archive copy (text/) read by the PDF
+      reader against MARS's rows for the same sale, row for row, then the index of
+      every week built both ways from those sales -> history/feeder-mars/crosscheck.json.
   --build [--dry-run]
-      sales/*.json -> build_feeder_index.build_history -> data/feeder-index-history.json
-      (only weeks before the live record starts; a re-run changes nothing).
+      MARS sales first; an Internet Archive copy's sale only for a barn and week MARS
+      does not hold -> build_feeder_index.build_history -> data/feeder-index-history.json
+      (only weeks before the live record starts; each week says how its barns were read
+      in "via"; a re-run changes nothing).
 
     python3 scripts/backfill_feeder_index.py --selftest
 """
@@ -353,10 +370,12 @@ def mars_fetch(d0, d1, out=MARS_OUT, fetch_=None, log=PFA.flush_log, root=FCA.RO
             break
         m = man["reports"].setdefault(slug, {"barn": barn["id"], "years": {}})
         rows_path = os.path.join(out, "rows", slug + ".json")
+        have_rows = os.path.exists(rows_path)
         rows = load(rows_path, [])
         for y in years:
             a, b = max(d0, datetime.date(y, 1, 1)), min(d1, datetime.date(y, 12, 31))
-            if m["years"].get(str(y), {}).get("to") == iso_(b) and y < d1.year:
+            # a finished year is asked once, but only while its saved rows are here to keep
+            if have_rows and m["years"].get(str(y), {}).get("to") == iso_(b) and y < d1.year:
                 continue
             try:
                 s, body = fetch_.get(PFA.MARS % (slug, PFA.mdy(a), PFA.mdy(b)))
@@ -694,6 +713,11 @@ def selftest():
             n0 = len(asked)
             mars_fetch(datetime.date(2024, 6, 1), datetime.date(2025, 3, 1), out=mo, fetch_=f, log=lambda *a: None, root=root)
             ck("fetch: a re-run asks only the last year again", len(asked) - n0 == n_rep, len(asked) - n0)
+            os.remove(os.path.join(mo, "rows", "1856.json"))
+            n0 = len(asked)
+            mars_fetch(datetime.date(2024, 6, 1), datetime.date(2025, 3, 1), out=mo, fetch_=f, log=lambda *a: None, root=root)
+            ck("fetch: a report whose saved rows are missing is asked again in full", len(asked) - n0 == n_rep + 1 and
+               load(os.path.join(mo, "sales", "1856.json"), {}), len(asked) - n0)
         finally:
             os.environ.pop("MARS_API_KEY", None)
         ck("fetch: no key, nothing asked", mars_fetch(datetime.date(2024, 6, 1), datetime.date(2025, 3, 1), out=mo,
@@ -728,7 +752,7 @@ def main(argv=None):
             return 2
     if a.mars_fetch:
         d1 = datetime.date.fromisoformat(a.d1) if a.d1 else BFI.IDX_START - datetime.timedelta(days=1)
-        if mars_fetch(datetime.date.fromisoformat(a.d0), d1, out=a.mars_out) is None:
+        if mars_fetch(datetime.date.fromisoformat(a.d0), d1, out=a.mars_out, minutes=a.max_minutes) is None:
             return 1
     if a.mars_saved:
         mars_from_dir(a.mars_saved, out=a.mars_out)

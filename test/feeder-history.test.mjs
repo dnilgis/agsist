@@ -2,7 +2,9 @@
 // from archived copies of the same USDA AMS barn reports. The numbers come from
 // scripts/build_feeder_index.py (build_history, its --selftest holds the merge
 // rules); this file checks that an archived report reads through the barn
-// reader unchanged, and that the probe keeps its manners.
+// reader unchanged, and that the probe keeps its manners. Nov 3: the same reports read
+// through USDA My Market News (MARS API, scripts/backfill_feeder_index.py --mars-fetch)
+// come first; the MARS reader must give the PDF reader's rows for the same sale.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -54,9 +56,53 @@ test('an archived report is never read as another barn', () => {
   assert.equal(r.title_ok, false);
 });
 
+// the MARS rows of the same two sales the PDF fixtures hold (saved by the Nov 3 probe)
+function bothReaders(slug, pdf, mars) {
+  const py = [
+    'import json, sys',
+    'sys.path.insert(0, "scripts")',
+    'import fetch_cattle_auction as F, backfill_feeder_index as B',
+    'src = dict(B.reports(F.load_sources(F.ROOT)))[sys.argv[1]]',
+    'p, why = F.parse_report(open(sys.argv[2], encoding="utf-8").read())',
+    'good, bad = B.mars_reports(json.load(open(sys.argv[3])), src)',
+    'q = good.get(p["date"])',
+    'drop = lambda s: {k: v for k, v in s.items() if k != "receipts"}',
+    'print(json.dumps({"date": p["date"], "mars_dates": sorted(good), "refused": bad, "diff": B.compare_sale(p, q) if q else None,',
+    '                  "same_summary": bool(q) and drop(F.summarize(p)) == drop(F.summarize(q)),',
+    '                  "rows": sum(len(v) for v in (q or {}).get("tables", {}).values())}))',
+  ].join('\n');
+  return JSON.parse(execFileSync('python3', ['-c', py, slug, `${FIX}/${pdf}`, `${FIX}/${mars}`], { cwd: root, encoding: 'utf8' }));
+}
+
+for (const [slug, pdf, mars, date] of [['1856', 'ams_1856-archive-2025-01-pypdf.txt', 'mars_1856-2025-01-06.json', '2025-01-09'],
+  ['1245', 'ams_1245-archive-2025-01-pypdf.txt', 'mars_1245-2025-01-06.json', '2025-01-06']]) {
+  test(`MARS reader: report ${slug}, sale of ${date}, gives the PDF reader's rows and summary`, () => {
+    const r = bothReaders(slug, pdf, mars);
+    assert.equal(r.date, date);
+    assert.deepEqual(r.mars_dates, [date]);
+    assert.deepEqual(r.refused, {});
+    assert.deepEqual(r.diff, [], 'row for row');
+    assert.ok(r.rows > 10);
+    assert.equal(r.same_summary, true);
+  });
+}
+
+test('the MARS fixtures hold feeder rows only, no key, no reader data', () => {
+  for (const f of ['mars_1856-2025-01-06.json', 'mars_1245-2025-01-06.json']) {
+    const t = fs.readFileSync(path.join(root, FIX, f), 'utf8');
+    const rows = JSON.parse(t);
+    assert.ok(rows.length && rows.every((r) => r.commodity === 'Feeder Cattle'));
+    assert.doesNotMatch(t, /MARS_API_KEY|Authorization|@/);
+  }
+});
+
 test('the probe and the history builder pass their selftests', () => {
   const a = execFileSync('python3', ['scripts/probe_feeder_archive.py', '--selftest'], { cwd: root, encoding: 'utf8' });
   assert.match(a, /probe_feeder_archive selftest: 0 failure\(s\)/);
+  const c = execFileSync('python3', ['scripts/backfill_feeder_index.py', '--selftest'], { cwd: root, encoding: 'utf8' });
+  assert.match(c, /ok {3}fetch: the key is never in a URL or a saved file/);
+  assert.match(c, /ok {3}combined: MARS holds the week, the archive copy of it is left out/);
+  assert.match(c, /backfill_feeder_index selftest: 0 failure\(s\)/);
   const b = execFileSync('python3', ['scripts/build_feeder_index.py', '--selftest'], { cwd: root, encoding: 'utf8' });
   assert.match(b, /ok {3}history: a re-run changes nothing/);
   assert.match(b, /FAILS=0/);
@@ -71,6 +117,8 @@ test('the probe reads robots.txt, keeps a gap between requests and never prints 
   const b = fs.readFileSync(path.join(root, 'scripts/backfill_feeder_index.py'), 'utf8');
   assert.match(b, /Fetcher\(min_gap=4\.0, retries=3, timeout=90, backoff=\(30, 120, 300\)/, 'the archive refused one ask every 1.5 s');
   assert.match(b, /robots\.allowed\(u\)/);
+  assert.match(b, /Fetcher\(min_gap=1\.5, retries=2, timeout=180, headers=auth/, 'MARS: one ask every 1.5 s, the key in the header');
+  assert.doesNotMatch(b, /(log|print)\([^)]*(\bauth\b|environ|mars_auth)/, 'no log line touches the key');
 });
 
 // ---------- the page: past weeks join the record only when the fold opens ----------
@@ -120,13 +168,29 @@ test('index view: archived weeks come first, a live week is never replaced, the 
   assert.equal(V.indexView(live, now, { weeks: [{ start: '2020-01-06', p: 1 }] }).archive, null, 'a week not marked as archive is not used');
 });
 
+function marsDoc(nowMs) {
+  const h = histDoc(nowMs);
+  h.weeks = h.weeks.map((w, i) => Object.assign({}, w, { via: i === 0 ? { mars: 34, archive: 1 } : { mars: w.barns } }));
+  return h;
+}
+
+test('index view: weeks read through My Market News say so, and count the weeks with an archive copy', () => {
+  const now = Date.now();
+  const v = V.indexView(liveDoc(now), now, marsDoc(now));
+  assert.equal(v.archive.mars, true);
+  assert.equal(v.archive.iaWeeks, 1);
+  const old = V.indexView(liveDoc(now), now, histDoc(now));
+  assert.equal(old.archive.mars, false, 'a file without via is archive copies only');
+  assert.equal(old.archive.iaWeeks, 3, 'every week with a barn');
+});
+
 const PW = process.env.PLAYWRIGHT_PATH || '/home/user/node_modules/playwright/index.mjs';
 const CHROME = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium';
 let chromium = null;
 try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !fs.existsSync(CHROME) ? 'Playwright or Chromium not found here' : false;
 
-async function openPage(histStatus) {
+async function openPage(histStatus, mkHist = histDoc) {
   const { createServer } = await import('node:http');
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
@@ -145,7 +209,7 @@ async function openPage(histStatus) {
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
   await page.route('**/data/feeder-index.json*', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(liveDoc(now)) }));
   await page.route('**/data/feeder-index-history.json*', (r) => { asked.push(r.request().url());
-    return histStatus === 200 ? r.fulfill({ contentType: 'application/json', body: JSON.stringify(histDoc(now)) }) : r.fulfill({ status: histStatus, body: '' }); });
+    return histStatus === 200 ? r.fulfill({ contentType: 'application/json', body: JSON.stringify(mkHist(now)) }) : r.fulfill({ status: histStatus, body: '' }); });
   await page.goto(`http://127.0.0.1:${srv.address().port}/cattle-auction-prices`, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('#feeder-index:not([hidden]) details', { timeout: 15000 });
   return { srv, browser, page, asked };
@@ -171,6 +235,23 @@ test('page: the history file loads only when the fold opens, and the record then
   } finally { await browser.close(); srv.close(); }
 });
 
+test('page: weeks read through My Market News: the method line and the credit name it, no links', { skip }, async () => {
+  const { srv, browser, page } = await openPage(200, marsDoc);
+  try {
+    await page.click('#feeder-index details summary');
+    await page.waitForSelector('#feeder-index details[data-hist="loaded"]');
+    await page.waitForFunction(() => /My Market News/.test(document.querySelector('#feeder-index details').textContent));
+    const t = await page.textContent('#feeder-index details');
+    assert.match(t, /read through USDA\u2019s My Market News/);
+    assert.match(t, /in 1 of those weeks a few barns come from copies of the reports the Internet Archive kept/);
+    assert.match(t, /2 of 3 weeks have a figure; the others are withheld by the same rule/);
+    assert.match(t, /Earlier weeks: USDA AMS reports read through My Market News, a few from copies kept by the Internet Archive\./);
+    const links = await page.$$eval('#feeder-index details a', (a) => a.map((x) => x.href));
+    assert.ok(!links.some((h) => /usda\.gov|archive\.org/.test(h)), 'no link to a data source (Oct 29 rule)');
+    assert.doesNotMatch(t, /\u2014/, 'no em dash');
+  } finally { await browser.close(); srv.close(); }
+});
+
 test('page: a missing history file leaves the live record as it was', { skip }, async () => {
   const { srv, browser, page } = await openPage(404);
   try {
@@ -192,6 +273,14 @@ test('feeder-history.yml is dispatch only, dry run by default, and commits only 
   assert.match(y, /F=data\/feeder-index-history\.json/);
   assert.doesNotMatch(y.slice(y.indexOf('Commit if changed')), /git add (?!"\$F")/);
   assert.match(y, /pip install pypdf==6\.20\.1/, 'the barn job\'s PDF reader');
+  // MARS first: the key only from secrets, only as env, only in that step, never echoed
+  assert.equal((y.match(/secrets\.MARS_API_KEY/g) || []).length, 1);
+  const m = y.slice(y.indexOf('- name: Read the reports through My Market News'), y.indexOf('- name: Read the archived copies'));
+  assert.match(m, /MARS_API_KEY: \$\{\{ secrets\.MARS_API_KEY \}\}/);
+  assert.match(m, /--mars-fetch/);
+  assert.doesNotMatch(m, /echo[^\n]*\$MARS_API_KEY/);
+  assert.match(y, /- name: Read the archived copies\n\s+if: \$\{\{ inputs\.archive \}\}/, 'archive copies only when asked');
+  assert.match(on, /archive:[\s\S]*?default: false/);
 });
 
 test('the committed history file: every published week passes the index gates, none overlaps the live record', () => {
@@ -211,5 +300,13 @@ test('the committed history file: every published week passes the index gates, n
   }
   for (const w of h.weeks.filter((x) => x.p == null)) assert.ok(Array.isArray(w.why) && w.why.length, JSON.stringify(w));
   assert.ok(fs.statSync(f).size < 150 * 1024, 'loaded on open only, still small');
-  assert.match(h.source, /Internet Archive/);
+  assert.match(h.source, /My Market News/);
+  // each week says how its counted barns were read: through MARS, or an archive copy MARS lacked
+  for (const w of h.weeks) {
+    assert.ok(w.via && typeof w.via === 'object', JSON.stringify(w));
+    assert.equal(Object.values(w.via).reduce((a, b) => a + b, 0), w.barns, JSON.stringify(w));
+    assert.ok(Object.keys(w.via).every((k) => k === 'mars' || k === 'archive'));
+  }
+  assert.ok(h.weeks.filter((w) => w.p != null).length >= 100, 'the record reaches back');
+  assert.ok(h.start <= '2024-01-07');
 });
