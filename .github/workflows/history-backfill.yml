@@ -15,9 +15,11 @@ name: History backfill (dispatch only)
 #                             archived copies read by the barn reader (scripts/backfill_feeder_index.py
 #                             --fetch; years from/to). probe: which archives answer
 #                             (scripts/probe_feeder_archive.py); probe + only=coverage: the Internet
-#                             Archive's copy list for every barn; probe + only=mars: what the MARS API
-#                             (My Market News, MARS_API_KEY) holds per barn report, plus the MARS
-#                             catalog to history/mars/. The page file is built by feeder-history.yml.
+#                             Archive's copy list for every barn. The page file is built by feeder-history.yml.
+#                feeder-mars  the same barn reports through the MARS API (USDA My Market News, MARS_API_KEY):
+#                             probe: the report dates MARS holds per barn report (from = first year)
+#                             and the MARS catalog to history/mars/; otherwise the detail rows per
+#                             barn and week (scripts/backfill_feeder_index.py --mars-fetch).
 #   from, to     years (blank = the script's own start, this year)
 #   only         agtransport: dataset names (grain_basis,barge_rates); usdm: states (IA,MN)
 #   probe        ams-fert only: save what the archive and MARS answer, fetch nothing else
@@ -34,7 +36,7 @@ on:
       source:
         description: "What to backfill"
         type: choice
-        options: [agtransport, usdm, nass, ams-fert, nass-yield, feeder-archive]
+        options: [agtransport, usdm, nass, ams-fert, nass-yield, feeder-archive, feeder-mars]
         required: true
       from:
         description: "First year (blank = the script's start)"
@@ -45,11 +47,11 @@ on:
         type: string
         default: ""
       only:
-        description: "agtransport: dataset names; usdm: state letters (comma-separated; blank = all); feeder-archive probe: coverage or mars"
+        description: "agtransport: dataset names; usdm: state letters (comma-separated; blank = all); feeder-archive probe: coverage"
         type: string
         default: ""
       probe:
-        description: "ams-fert and feeder-archive: probe the sources and save their answers, nothing else"
+        description: "ams-fert, feeder-archive and feeder-mars: probe the sources and save their answers, nothing else"
         type: boolean
         default: false
       max_minutes:
@@ -92,6 +94,7 @@ jobs:
             ams-fert)    echo "dir=history/ams-fert" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_ams_fert.py" >> "$GITHUB_OUTPUT";;
             nass-yield)  echo "dir=history/nass-yield" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_yield.py" >> "$GITHUB_OUTPUT";;
             feeder-archive) echo "dir=history/feeder-archive" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_feeder_index.py" >> "$GITHUB_OUTPUT";;
+            feeder-mars) echo "dir=history/feeder-mars" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_feeder_index.py" >> "$GITHUB_OUTPUT";;
             *) echo "::error::unknown source $SOURCE"; exit 1;;
           esac
       # the barn job's PDF reader (cattle-auction.yml), so an archived report reads the same here
@@ -104,7 +107,7 @@ jobs:
         run: |
           python3 scripts/history_lib.py --selftest
           python3 "$SCRIPT" --selftest
-          if [ "$SOURCE" = "feeder-archive" ]; then python3 scripts/probe_feeder_archive.py --selftest; fi
+          case "$SOURCE" in feeder-archive|feeder-mars) python3 scripts/probe_feeder_archive.py --selftest;; esac
       # The saved manifest says which chunks are done. A path that is not on raw yet is a
       # first run; a branch that cannot be read stops the run, because a fresh manifest
       # pushed over the saved one would forget what is done.
@@ -144,7 +147,7 @@ jobs:
           RAW_SOFT: '1'
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           NASS_API_KEY: ${{ (inputs.source == 'nass' || inputs.source == 'nass-yield') && secrets.NASS_API_KEY || '' }}
-          MARS_API_KEY: ${{ (inputs.source == 'ams-fert' || inputs.source == 'feeder-archive') && secrets.MARS_API_KEY || '' }}
+          MARS_API_KEY: ${{ (inputs.source == 'ams-fert' || inputs.source == 'feeder-archive' || inputs.source == 'feeder-mars') && secrets.MARS_API_KEY || '' }}
           SOCRATA_APP_TOKEN: ${{ inputs.source == 'agtransport' && secrets.SOCRATA_APP_TOKEN || '' }}
         run: |
           args=()
@@ -159,11 +162,11 @@ jobs:
             case "$SOURCE" in agtransport) args+=(--only "$ONLY");; usdm) args+=(--states "$ONLY");; esac
           fi
           if [ "$PROBE" = "true" ]; then
-            case "$SOURCE" in ams-fert|feeder-archive) ;; *) echo "::error::probe is for ams-fert and feeder-archive only"; exit 1;; esac
+            case "$SOURCE" in ams-fert|feeder-archive|feeder-mars) ;; *) echo "::error::probe is for ams-fert, feeder-archive and feeder-mars only"; exit 1;; esac
             if [ "$SOURCE" = "feeder-archive" ] && [ "$ONLY" = "coverage" ]; then
               python3 scripts/probe_feeder_archive.py --coverage --max-minutes "${MAXMIN:-300}"
-            elif [ "$SOURCE" = "feeder-archive" ] && [ "$ONLY" = "mars" ]; then
-              python3 scripts/probe_feeder_archive.py --mars --since "${FROM:-2024}-01-01"
+            elif [ "$SOURCE" = "feeder-mars" ]; then
+              python3 scripts/probe_feeder_archive.py --mars --since "${FROM:-2024}-01-01" --out "$DIR/probe"
             elif [ "$SOURCE" = "feeder-archive" ]; then
               python3 scripts/probe_feeder_archive.py --probe
             else
@@ -182,7 +185,7 @@ jobs:
           DIR: ${{ steps.w.outputs.dir }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
-          # the MARS catalog (feeder-archive probe only=mars) is saved beside the feeder files
+          # the MARS catalog (feeder-mars probe) is saved beside the feeder files
           if [ -d history/mars ]; then bash scripts/push_raw.sh "history backfill $SOURCE catalog" history/mars; fi
           [ -d "$DIR" ] || { echo "nothing written"; exit 0; }
           bash scripts/push_raw.sh "history backfill $SOURCE" "$DIR"
