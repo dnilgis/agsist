@@ -77,6 +77,22 @@ pages only draw them.
    Oct 16, 2026 (27 versions checked Nov 2) and the raw branch holds only the
    latest report per barn; every sale in those versions is in barn_sales.
    No CME data is read or compared here (Sig, Oct 29).
+   Live reads through USDA My Market News (Sig, Nov 2 2026: "Ship + use USDA live"):
+   with MARS_API_KEY set, read_mars reads every single-barn report of the last
+   KEEP_DAYS through MARS with the past weeks' own reader (backfill_feeder_index
+   mars_fetch), and a barn's PDF read counts only for a barn and week MARS lacks
+   (resolve_store, the rule combined_sales builds the past weeks by). Each stored
+   sale says how it was read (barn_sales: a "pdf" list per barn; the rest came
+   through MARS) and each live week counts its barns by it ("via"). Two sales of
+   one barn in one week with the very same cells are one sale read twice and count
+   once (Oklahoma City, weeks of Oct 19 and 26 2026). No key, or no answer: the
+   PDF reads stand.
+   Before IDX_START: data/feeder-index-history.json (build_history, run by
+   scripts/backfill_feeder_index.py from archived copies of the same USDA
+   reports, feeder-history.yml). Same index_week and index_change, only weeks
+   before IDX_START, so a live week is never replaced by an archive read; each
+   week says where it came from and when it was read. The page loads it only
+   when the record fold opens.
 
 Modes:
   (default)   read the inputs and the last data/feeder-index.json, write it.
@@ -208,10 +224,35 @@ def sale_cells(sale):
     return {k: [v[0], round(v[1], 3), round(v[2], 2)] for k, v in out.items()}
 
 
+def load_store(saved):
+    """The committed barn_sales -> the working store {barn_id: {"state", "sales": {date: cells},
+    "via": {date: "mars"|"pdf"}}}. On file a barn lists only the dates read from its own PDF
+    ("pdf"); every other date came through My Market News. A file from before Nov 3 2026
+    (no "pdf" list anywhere) was read from the PDFs only."""
+    store = json.loads(json.dumps(saved or {}))
+    old = not any("pdf" in (e or {}) for e in store.values())
+    for e in store.values():
+        pdf = set(e.pop("pdf", None) or [])
+        e["via"] = {d: ("pdf" if old or d in pdf else "mars") for d in e.get("sales") or {}}
+    return store
+
+
+def save_store(store):
+    """The working store -> the compact form kept in the file (see load_store)."""
+    out = {}
+    for bid in sorted(store):
+        e = store[bid]
+        o = {"state": e["state"], "sales": {d: e["sales"][d] for d in sorted(e["sales"])}}
+        o["pdf"] = sorted(d for d in e["sales"] if (e.get("via") or {}).get(d, "pdf") == "pdf")
+        out[bid] = o
+    return out
+
+
 def merge_barn_sales(store, auction, today):
-    """Add every sale in the barn file to store {barn_id: {"state", "sales": {date: cells}}}.
-    A newer read of the same barn and date replaces the old one. Sales older
-    than KEEP_DAYS or dated after today are dropped."""
+    """Add every sale in the barn file to store {barn_id: {"state", "sales": {date: cells}, "via"}}.
+    A newer read of the same barn and date replaces the old one, but never a sale read
+    through My Market News (resolve_store). Sales older than KEEP_DAYS or dated after today
+    are dropped."""
     lo = today - datetime.timedelta(days=KEEP_DAYS)
     for b in (auction or {}).get("barns") or []:
         bid, st = b.get("id"), b.get("state")
@@ -224,18 +265,88 @@ def merge_barn_sales(store, auction, today):
             cells = sale_cells(s)
             if not cells:
                 continue
-            e = store.setdefault(bid, {"state": st, "sales": {}})
+            e = store.setdefault(bid, {"state": st, "sales": {}, "via": {}})
+            e.setdefault("via", {})
             e["state"] = st
+            if e["via"].get(iso(d)) == "mars":
+                continue
             e["sales"][iso(d)] = cells
+            e["via"][iso(d)] = "pdf"
+    return prune_store(store, lo)
+
+
+def prune_store(store, lo):
     for bid in list(store):
-        sales = store[bid]["sales"]
+        sales, via = store[bid]["sales"], store[bid].setdefault("via", {})
         for d in list(sales):
             dd = pdate(d)
             if not dd or dd < lo:
                 del sales[d]
+        for d in list(via):
+            if d not in sales:
+                del via[d]
         if not sales:
             del store[bid]
     return store
+
+
+def merge_mars_sales(store, mars, today):
+    """Add the sales read through USDA My Market News (MARS; scripts/backfill_feeder_index.py
+    mars_fetch, the same reader the past weeks use) to the store, marked "mars". A MARS sale
+    replaces a PDF read of the same barn and date. mars: {"sales": [summarize() + barn,
+    state]} or None (no key, or MARS did not answer: the PDF reads stand, fail soft)."""
+    lo = today - datetime.timedelta(days=KEEP_DAYS)
+    for s in (mars or {}).get("sales") or []:
+        d = pdate(s.get("date"))
+        bid, st = s.get("barn"), s.get("state")
+        if not d or not bid or not st or d < lo or d > today:
+            continue
+        cells = sale_cells(s)
+        if not cells:
+            continue
+        e = store.setdefault(bid, {"state": st, "sales": {}, "via": {}})
+        e.setdefault("via", {})
+        e["state"] = st
+        e["sales"][iso(d)] = cells
+        e["via"][iso(d)] = "mars"
+    return store
+
+
+def resolve_store(store):
+    """One barn, one week: when My Market News holds any sale of a barn in a week, that
+    week's sales of the barn read from its PDF are dropped (MARS first, the PDF only for a
+    barn and week MARS lacks; the rule the past weeks are built by,
+    backfill_feeder_index.combined_sales). Then two sales of one barn in one week with the
+    very same cells are one sale read twice (Oklahoma City, weeks of Oct 19 and 26 2026:
+    the Monday Preliminary and the Tuesday Final of one sale, both kept): the earlier date
+    stays. -> [(barn, date dropped, why)]."""
+    dropped = []
+    for bid in sorted(store):
+        e = store[bid]
+        via = e.setdefault("via", {})
+        weeks = {}
+        for d in e["sales"]:
+            dd = pdate(d)
+            if dd:
+                weeks.setdefault(week_start(dd), []).append(d)
+        for w, ds in sorted(weeks.items()):
+            if any(via.get(d) == "mars" for d in ds):
+                for d in ds:
+                    if via.get(d, "pdf") != "mars":
+                        dropped.append((bid, d, "My Market News holds this barn's week"))
+                        del e["sales"][d]
+                        via.pop(d, None)
+                ds = [d for d in ds if d in e["sales"]]
+            seen = {}
+            for d in sorted(ds):
+                k = json.dumps(e["sales"][d], sort_keys=True)
+                if k in seen:
+                    dropped.append((bid, d, "same cells as the sale of %s" % seen[k]))
+                    del e["sales"][d]
+                    via.pop(d, None)
+                else:
+                    seen[k] = d
+    return dropped
 
 
 def week_sums(store, monday):
@@ -428,7 +539,9 @@ def build_index(store, prev_weeks, monday, today):
         if pm >= lo:
             o, b = index_week(store, m, today)
             po, pb = index_week(store, pm, today) if m > IDX_START else (None, {})
-            weeks.append(index_change(o, b, po, pb, m))
+            o = index_change(o, b, po, pb, m)
+            o["via"] = week_via(store, b, m, "pdf")   # barns read through My Market News or from their PDF
+            weeks.append(o)
         elif iso(m) in prev_weeks:
             w = dict(prev_weeks[iso(m)])
             w["final"] = (today - (m + datetime.timedelta(days=6))).days > IDX_FINAL_DAYS
@@ -449,6 +562,106 @@ def build_index(store, prev_weeks, monday, today):
         "last_ok": ok[-1] if ok else None,
         "weeks": weeks,
     }
+
+
+# ------------------------------------------------------------------ history from the archive
+HISTORY = "data/feeder-index-history.json"
+FAR = datetime.date(2100, 1, 1)   # archive weeks are long over: every one is final
+
+
+def history_store(sales):
+    """Archived barn sales -> the same store merge_barn_sales keeps:
+    {barn_id: {"state", "sales": {date: cells}}}. Each sale is one report's
+    summarize() (scripts/fetch_cattle_auction.py) plus "barn" and "state". A barn
+    with two reports dated the same day (a reissued report) keeps the one with
+    more head, so a sale is never counted twice."""
+    store = {}
+    for s in sales or []:
+        d = pdate(s.get("date"))
+        bid, st = s.get("barn"), s.get("state")
+        if not d or not bid or not st:
+            continue
+        cells = sale_cells(s)
+        if not cells:
+            continue
+        e = store.setdefault(bid, {"state": st, "sales": {}, "via": {}})
+        old = e["sales"].get(iso(d))
+        if old is not None:
+            if sum(v[0] for v in old.values()) > sum(v[0] for v in cells.values()) or \
+               (sum(v[0] for v in old.values()) == sum(v[0] for v in cells.values()) and
+                    json.dumps(old, sort_keys=True) <= json.dumps(cells, sort_keys=True)):
+                continue
+        e["sales"][iso(d)] = cells
+        if s.get("via"):
+            e["via"][iso(d)] = s["via"]
+    return store
+
+
+def week_via(store, b, monday, default="archive"):
+    """{how read: barns} for the barns counted in one week (b from index_week)."""
+    sunday = monday + datetime.timedelta(days=6)
+    out = {}
+    for bid in b:
+        vs = {v for d, v in (store[bid].get("via") or {}).items() if pdate(d) and monday <= pdate(d) <= sunday}
+        for v in vs or {default}:
+            out[v] = out.get(v, 0) + 1
+    return out
+
+
+def _same_week(a, b):
+    return {k: v for k, v in a.items() if k != "read"} == {k: v for k, v in b.items() if k != "read"}
+
+
+def build_history(store, prev, read_date, source, live_start=IDX_START):
+    """Past weeks of the index from archived reports, by the same rules as the
+    live record (index_week, index_change). Only weeks before live_start: the
+    live record (data/feeder-index.json) is never overwritten by an archive
+    read. A week whose numbers did not change keeps its first read date, so a
+    re-run changes nothing; weeks this store does not reach stay as they were."""
+    prev_weeks = {w["start"]: w for w in ((prev or {}).get("weeks") or [])}
+    days = sorted(pdate(d) for e in store.values() for d in e["sales"])
+    days = [d for d in days if d and d < live_start]
+    new = {}
+    if days:
+        first = week_start(days[0])
+        m = first
+        while m < live_start:
+            o, b = index_week(store, m, FAR)
+            pm = m - datetime.timedelta(days=7)
+            po, pb = index_week(store, pm, FAR) if m > first else (None, {})
+            o = index_change(o, b, po, pb, m)
+            o["from"] = "archive"
+            if any(e.get("via") for e in store.values()):
+                o["via"] = week_via(store, b, m)
+            o["read"] = read_date
+            old = prev_weeks.get(o["start"])
+            if old and _same_week(old, o):
+                o["read"] = old["read"]
+            new[o["start"]] = o
+            m += datetime.timedelta(days=7)
+    weeks = dict(prev_weeks)
+    weeks.update(new)
+    out = [weeks[k] for k in sorted(weeks) if pdate(k) and pdate(k) < live_start]
+    ok = [w for w in out if w.get("p") is not None]
+    reads = sorted({w.get("read") for w in out if w.get("read")})
+    return {
+        "v": 1, "name": IDX_NAME, "label": IDX_LABEL,
+        "what": "Past weeks of the index, figured from USDA's archived barn reports by the same rules as the live record",
+        "source": source,
+        "read": reads[-1] if reads else None, "first_read": reads[0] if reads else None,
+        "start": out[0]["start"] if out else None, "end": out[-1]["end"] if out else None,
+        "live_start": iso(live_start),
+        "weeks_ok": len(ok), "barns": len(store),
+        "weeks": out,
+    }
+
+
+def write_history(root, doc):
+    path = Path(root) / HISTORY
+    tmp = path.with_name(path.name + ".tmp")
+    with open(tmp, "w") as f:
+        f.write(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
+    os.replace(tmp, path)
 
 
 # ------------------------------------------------------------------ RMA
@@ -540,10 +753,12 @@ def build_check(cell, rma, monday):
 
 
 # ------------------------------------------------------------------ build
-def build(auction, aev, meta, prices, prev, now_utc):
+def build(auction, aev, meta, prices, prev, now_utc, mars=None):
     today = central_today(now_utc)
     prev = prev or {}
-    store = merge_barn_sales(json.loads(json.dumps(prev.get("barn_sales") or {})), auction, today)
+    store = merge_barn_sales(load_store(prev.get("barn_sales")), auction, today)
+    merge_mars_sales(store, mars, today)
+    dropped = resolve_store(store)
     settles = merge_settles(dict(prev.get("settles") or {}), prices)
     monday = last_full_week(today)
     table = build_table(store, monday)
@@ -594,21 +809,60 @@ def build(auction, aev, meta, prices, prev, now_utc):
         "check": build_check(cur, rma, monday) if rma.get("ok") else None,
         "weeks": weeks,
         "settles": settles,
-        "barn_sales": {k: store[k] for k in sorted(store)},
+        "barn_sales": save_store(store),
+        "barn_sales_via": "Each barn's sales were read through USDA My Market News, except the dates in its pdf list, read from the barn's USDA PDF report",
+        "mars": mars_note(mars, store, dropped),
+        "dropped": [list(x) for x in dropped],
     }
 
 
+def mars_note(mars, store, dropped):
+    """How this run read the barns: whether My Market News answered, and what it set aside."""
+    n = {"mars": 0, "pdf": 0}
+    for e in store.values():
+        for d in e["sales"]:
+            n[(e.get("via") or {}).get(d, "pdf")] += 1
+    o = {"read": bool(mars and mars.get("ok")), "sales_mars": n["mars"], "sales_pdf": n["pdf"], "dropped": len(dropped)}
+    if mars and mars.get("note"):
+        o["note"] = mars["note"]
+    return o
+
+
+# The builder's own copy of every barn's sales (barn_sales) lives in its own file, which no
+# page loads: read through My Market News the store holds 80 to 100 barns a week, over twice
+# the PDF reads, and kept in data/feeder-index.json it took that file, which three pages load,
+# past 230 KB (Nov 3 2026). A file from before then still holds barn_sales itself; it is read
+# from there once and moved.
+STORE = "data/feeder-index-store.json"
+STORE_KEYS = ("barn_sales", "barn_sales_via", "dropped")
+
+
 def read_inputs(root):
+    prev = load_json(root / OUT)
+    st = load_json(root / STORE)
+    if prev is not None and st and st.get("barn_sales") is not None:
+        prev = dict(prev, barn_sales=st["barn_sales"])
     return (load_json(root / AUCTION), load_json(root / AEV), load_json(root / META),
-            load_json(root / PRICES), load_json(root / OUT))
+            load_json(root / PRICES), prev)
+
+
+def split_doc(doc):
+    """(the file the pages load, the store file)."""
+    page = {k: v for k, v in doc.items() if k not in STORE_KEYS}
+    store = {"v": 1, "what": "The barn sales data/feeder-index.json is built from (scripts/build_feeder_index.py); no page loads this file",
+             "updated": doc.get("updated")}
+    store.update({k: doc[k] for k in STORE_KEYS if k in doc})
+    return page, store
 
 
 def write(root, doc):
-    path = root / OUT
-    tmp = path.with_name(path.name + ".tmp")
-    with open(tmp, "w") as f:
-        f.write(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
-    os.replace(tmp, path)
+    page, store = split_doc(doc)
+    for name, d in ((OUT, page), (STORE, store)):
+        path = root / name
+        tmp = path.with_name(path.name + ".tmp")
+        with open(tmp, "w") as f:
+            f.write(json.dumps(d, separators=(",", ":"), ensure_ascii=False) + "\n")
+        os.replace(tmp, path)
 
 
 # ------------------------------------------------------------------ selftest
@@ -857,15 +1111,84 @@ def selftest():
     again2 = build(full, aev, meta, prices, bd, datetime.datetime(2026, 10, 28, 15, 0))
     ck("build: a rerun gives the same index", again2["index"] == bd["index"])
 
+    # history from archived reports: same rules, only before the live record, re-run changes nothing
+    def arch(n, start, price, first=1, day=1):
+        return [dict(b["sales"][0], barn=b["id"], state=b["state"]) for b in wk_barns(n, start, price, first=first, day=day)]
+    A1, A2 = D(2025, 1, 6), D(2025, 1, 13)
+    sales_a = arch(30, A1, 300.0) + arch(30, A2, 310.0) + arch(5, D(2025, 1, 27), 320.0) + arch(30, D(2026, 10, 12), 999.0)
+    hs = history_store(sales_a)
+    h1 = build_history(hs, None, "2026-11-02", "test")
+    hw = {w["start"]: w for w in h1["weeks"]}
+    ck("history: weeks from the first archived sale, none at or after the live start",
+       h1["start"] == "2025-01-06" and max(hw) < iso(IDX_START) and "2026-10-12" not in hw)
+    ck("history: same rules as the live index", hw["2025-01-06"]["p"] == index_week(hs, A1, FAR)[0]["p"] == 300.0)
+    ck("history: change between two passing weeks", hw["2025-01-13"]["chg"] == 10.0 and hw["2025-01-13"]["both"] == 30)
+    ck("history: a thin week is withheld with its counts", hw["2025-01-27"]["p"] is None and hw["2025-01-27"]["barns"] == 5
+       and hw["2025-01-27"]["why"][0] == "5 barns, 30 needed")
+    ck("history: a week with no archived sale is a gap", hw["2025-01-20"]["p"] is None and hw["2025-01-20"]["barns"] == 0)
+    ck("history: every week marked as read from the archive", all(w["from"] == "archive" and w["read"] == "2026-11-02" for w in h1["weeks"]))
+    ck("history: no week twice", len(h1["weeks"]) == len(hw))
+    h2 = build_history(history_store(sales_a), h1, "2026-11-09", "test")
+    ck("history: a re-run changes nothing (first read date kept)", h2 == h1)
+    more = sales_a + arch(10, A1, 330.0, first=100)
+    h3 = build_history(history_store(more), h1, "2026-11-09", "test")
+    w3 = {w["start"]: w for w in h3["weeks"]}
+    ck("history: a week with more barns read is recounted and dated anew",
+       w3["2025-01-06"]["barns"] == 40 and w3["2025-01-06"]["read"] == "2026-11-09" and w3["2025-01-27"]["read"] == "2026-11-02")
+    short = build_history(history_store(arch(30, A2, 310.0)), h1, "2026-11-09", "test")
+    ck("history: weeks the new store does not reach stay as they were",
+       {w["start"]: w for w in short["weeks"]}["2025-01-06"] == hw["2025-01-06"])
+    dup = history_store(arch(1, A1, 300.0) + [dict(arch(1, A1, 300.0)[0], classes={"steers|1": {"800": {"head": 5, "avg_wt": 800, "cwt": 1.0, "per_head": 8.0}}})])
+    ck("history: a barn's two reports of one sale count once (the fuller one)", dup["b1"]["sales"][iso(A1 + datetime.timedelta(days=1))]["steers|800"][0] == 150)
+    ck("history: a live-record week passed in is dropped", all(w["start"] < iso(IDX_START) for w in
+       build_history({}, {"weeks": [{"start": "2026-10-12", "end": "2026-10-18", "p": 1.0}]}, "x", "t")["weeks"]))
+
     print("FAILS=%d" % len(fails))
     return 1 if fails else 0
+
+
+MARS_MINUTES = 12      # the MARS read never holds the barn job up longer than this
+
+
+def read_mars(today, out_dir=None, root=ROOT, fetch_=None, log=print):
+    """The barn sales of the last KEEP_DAYS through USDA My Market News (MARS), with the
+    reader the past weeks use (backfill_feeder_index.mars_fetch: every single-barn report in
+    scripts/cattle_auction_sources.json, one ask per report, 1.5 s apart, the PDF reader's
+    own row rules and title check). Needs MARS_API_KEY (Actions secret, HTTP basic, never
+    printed or saved). The answers go to a scratch folder, never to the repo.
+    -> {"ok", "sales": [...], "reports", "answered", "note"} or None with no key."""
+    if not os.environ.get("MARS_API_KEY", "").strip() and fetch_ is None:
+        return None
+    import tempfile
+    import backfill_feeder_index as BK   # noqa: E402  imports this file; only the live MARS read needs it
+    out_dir = out_dir or tempfile.mkdtemp(prefix="feeder-mars-live-")
+    d0, d1 = today - datetime.timedelta(days=KEEP_DAYS), today
+    try:
+        man = BK.mars_fetch(d0, d1, out=out_dir, fetch_=fetch_, log=log, root=root, minutes=MARS_MINUTES)
+    except Exception as e:  # noqa: BLE001  a MARS failure never holds back the PDF reads
+        return {"ok": False, "sales": [], "note": "My Market News read failed: %s" % type(e).__name__}
+    if not man:
+        return {"ok": False, "sales": [], "note": "My Market News not read"}
+    reps = man.get("reports") or {}
+    answered = sum(1 for m in reps.values() if any(y.get("status") == 200 for y in (m.get("years") or {}).values()))
+    sales = BK.mars_saved_sales(out_dir, root)
+    ok = answered > 0 and bool(sales)
+    o = {"ok": ok, "sales": sales if ok else [], "reports": len(reps), "answered": answered,
+         "from": iso(d0), "to": iso(d1)}
+    if not ok:
+        o["note"] = "My Market News answered %d of %d reports with no sale; the PDF reads stand" % (answered, len(reps))
+    return o
 
 
 def main(argv):
     if "--selftest" in argv:
         return selftest()
     now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
-    doc = build(*read_inputs(ROOT), now)
+    mars = None if "--check" in argv else read_mars(central_today(now))
+    if mars is not None:
+        print("feeder-index: My Market News %s, %d of %d reports answered, %d sales" % (
+            "read" if mars.get("ok") else "NOT read", mars.get("answered", 0), mars.get("reports", 0), len(mars["sales"])))
+    doc = build(*read_inputs(ROOT), now, mars=mars)
     if "--check" in argv:
         print("rma", doc["rma"].get("date"), doc["rma"].get("value"), "week", doc["auction"]["week"])
         return 0

@@ -9,6 +9,34 @@
    "link": "/conditions#harvest"
   },
   {
+   "id": "2026-11-03-marsfert",
+   "date": "2026-11-03",
+   "title": "Farm diesel, propane and USDA fertilizer prices in My place",
+   "line": "Fast Facts My place adds farm diesel and propane from USDA's dealer survey, and the fertilizer row shows the newer of co-op and USDA prices, dated.",
+   "link": "/fast-facts#f-diesel"
+  },
+  {
+   "id": "2026-11-03-marseth",
+   "date": "2026-11-03",
+   "title": "Ethanol plants paying",
+   "line": "The cash bids page shows what ethanol plants bid for corn in each state, with basis, from USDA's daily report, plus distillers grains and corn oil prices.",
+   "link": "/cash-bids#eth-box"
+  },
+  {
+   "id": "2026-11-03-dailyusda",
+   "date": "2026-11-03",
+   "title": "USDA cash hogs, slaughter and export bids in the Daily",
+   "line": "The Daily can now carry USDA's cash hog price and pork cutout, daily slaughter, ethanol plant and Gulf export corn bids, and new fuel and fertilizer prices.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-02-feederhist",
+   "date": "2026-11-02",
+   "title": "Feeder steer index: older weeks",
+   "line": "The feeder steer index chart now reaches back to January 2024, figured from USDA's barn reports read through My Market News; 136 of 145 past weeks have a figure.",
+   "link": "/cattle-auction-prices#feeder-index"
+  },
+  {
    "id": "2026-11-02-feederindex",
    "date": "2026-11-02",
    "title": "Our own feeder steer index",
@@ -42,6 +70,13 @@
    "title": "The home page opens on three jobs",
    "line": "The home page opens on Today near me, Sell grain and My field, with today's forecast for your ZIP; Rain Print, the rain gauge and new pages sit right under.",
    "link": "/"
+  },
+  {
+   "id": "2026-11-02-newsblock",
+   "date": "2026-11-02",
+   "title": "Rain and bids for your newsletter",
+   "line": "A monthly block for co-op, Farm Credit and local paper newsletters: a county's rain last month and the state basis, ready to paste as text, HTML or an image.",
+   "link": "/newsletter-block"
   },
   {
    "id": "2026-11-02-seofix",

@@ -78,7 +78,7 @@ test('history-backfill.yml is dispatch only: no schedule, no push, no other trig
   const on = y.slice(y.indexOf('\non:'), y.indexOf('\npermissions:'));
   assert.match(on, /^\s+workflow_dispatch:/m);
   assert.doesNotMatch(y, /schedule:|cron:|workflow_run:|\bpush:|pull_request:|repository_dispatch:/);
-  assert.match(on, /options: \[agtransport, usdm, nass, ams-fert, nass-yield\]/);
+  assert.match(on, /options: \[agtransport, usdm, nass, ams-fert, nass-yield, feeder-archive, feeder-mars\]/);
   assert.match(y, /permissions:\n  contents: read/, 'it never writes to this repo');
 });
 

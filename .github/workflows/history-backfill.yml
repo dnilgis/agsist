@@ -11,6 +11,15 @@ name: History backfill (dispatch only)
 #                nass         NASS crop progress and condition, every state, as far back as Quick Stats goes
 #                ams-fert     AMS Illinois Production Cost Report (fertilizer), 2010 on
 #                nass-yield   NASS final state yields, corn and soybeans, every year (about 4 calls)
+#                feeder-archive  past USDA AMS barn auction reports for the feeder steer index history:
+#                             archived copies read by the barn reader (scripts/backfill_feeder_index.py
+#                             --fetch; years from/to). probe: which archives answer
+#                             (scripts/probe_feeder_archive.py); probe + only=coverage: the Internet
+#                             Archive's copy list for every barn. The page file is built by feeder-history.yml.
+#                feeder-mars  the same barn reports through the MARS API (USDA My Market News, MARS_API_KEY):
+#                             probe: the report dates MARS holds per barn report (from = first year)
+#                             and the MARS catalog to history/mars/; otherwise the detail rows per
+#                             barn and week (scripts/backfill_feeder_index.py --mars-fetch).
 #   from, to     years (blank = the script's own start, this year)
 #   only         agtransport: dataset names (grain_basis,barge_rates); usdm: states (IA,MN)
 #   probe        ams-fert only: save what the archive and MARS answer, fetch nothing else
@@ -27,7 +36,7 @@ on:
       source:
         description: "What to backfill"
         type: choice
-        options: [agtransport, usdm, nass, ams-fert, nass-yield]
+        options: [agtransport, usdm, nass, ams-fert, nass-yield, feeder-archive, feeder-mars]
         required: true
       from:
         description: "First year (blank = the script's start)"
@@ -38,11 +47,11 @@ on:
         type: string
         default: ""
       only:
-        description: "agtransport: dataset names; usdm: state letters (comma-separated; blank = all)"
+        description: "agtransport: dataset names; usdm: state letters (comma-separated; blank = all); feeder-archive probe: coverage"
         type: string
         default: ""
       probe:
-        description: "ams-fert only: probe the sources and save their answers, nothing else"
+        description: "ams-fert, feeder-archive and feeder-mars: probe the sources and save their answers, nothing else"
         type: boolean
         default: false
       max_minutes:
@@ -84,14 +93,21 @@ jobs:
             nass)        echo "dir=history/nass-progress" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_progress.py" >> "$GITHUB_OUTPUT";;
             ams-fert)    echo "dir=history/ams-fert" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_ams_fert.py" >> "$GITHUB_OUTPUT";;
             nass-yield)  echo "dir=history/nass-yield" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_yield.py" >> "$GITHUB_OUTPUT";;
+            feeder-archive) echo "dir=history/feeder-archive" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_feeder_index.py" >> "$GITHUB_OUTPUT";;
+            feeder-mars) echo "dir=history/feeder-mars" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_feeder_index.py" >> "$GITHUB_OUTPUT";;
             *) echo "::error::unknown source $SOURCE"; exit 1;;
           esac
+      # the barn job's PDF reader (cattle-auction.yml), so an archived report reads the same here
+      - name: Install pypdf (feeder-archive)
+        if: ${{ inputs.source == 'feeder-archive' }}
+        run: pip install pypdf==6.20.1
       - name: Selftests (no network)
         env:
           SCRIPT: ${{ steps.w.outputs.script }}
         run: |
           python3 scripts/history_lib.py --selftest
           python3 "$SCRIPT" --selftest
+          case "$SOURCE" in feeder-archive|feeder-mars) python3 scripts/probe_feeder_archive.py --selftest;; esac
       # The saved manifest says which chunks are done. A path that is not on raw yet is a
       # first run; a branch that cannot be read stops the run, because a fresh manifest
       # pushed over the saved one would forget what is done.
@@ -110,6 +126,22 @@ jobs:
               echo "::error::could not read the raw branch; not starting"; exit 1
             fi
           fi
+      # feeder-archive keeps each report's sales beside the manifest; a resumed run merges into them
+      - name: The saved sales (feeder-archive)
+        if: ${{ inputs.source == 'feeder-archive' }}
+        env:
+          DIR: ${{ steps.w.outputs.dir }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh "$DIR/sales"
+      # feeder-mars keeps each report's feeder rows; a resumed run asks only what it lacks
+      - name: The saved rows (feeder-mars)
+        if: ${{ inputs.source == 'feeder-mars' && !inputs.probe }}
+        env:
+          DIR: ${{ steps.w.outputs.dir }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh "$DIR/rows"
       - name: Backfill
         env:
           SCRIPT: ${{ steps.w.outputs.script }}
@@ -123,7 +155,7 @@ jobs:
           RAW_SOFT: '1'
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           NASS_API_KEY: ${{ (inputs.source == 'nass' || inputs.source == 'nass-yield') && secrets.NASS_API_KEY || '' }}
-          MARS_API_KEY: ${{ inputs.source == 'ams-fert' && secrets.MARS_API_KEY || '' }}
+          MARS_API_KEY: ${{ (inputs.source == 'ams-fert' || inputs.source == 'feeder-archive' || inputs.source == 'feeder-mars') && secrets.MARS_API_KEY || '' }}
           SOCRATA_APP_TOKEN: ${{ inputs.source == 'agtransport' && secrets.SOCRATA_APP_TOKEN || '' }}
         run: |
           args=()
@@ -138,8 +170,24 @@ jobs:
             case "$SOURCE" in agtransport) args+=(--only "$ONLY");; usdm) args+=(--states "$ONLY");; esac
           fi
           if [ "$PROBE" = "true" ]; then
-            [ "$SOURCE" = "ams-fert" ] || { echo "::error::probe is for ams-fert only"; exit 1; }
-            python3 "$SCRIPT" --probe
+            case "$SOURCE" in ams-fert|feeder-archive|feeder-mars) ;; *) echo "::error::probe is for ams-fert, feeder-archive and feeder-mars only"; exit 1;; esac
+            if [ "$SOURCE" = "feeder-archive" ] && [ "$ONLY" = "coverage" ]; then
+              python3 scripts/probe_feeder_archive.py --coverage --max-minutes "${MAXMIN:-300}"
+            elif [ "$SOURCE" = "feeder-mars" ]; then
+              python3 scripts/probe_feeder_archive.py --mars --since "${FROM:-2024}-01-01" --out "$DIR/probe"
+            elif [ "$SOURCE" = "feeder-archive" ]; then
+              python3 scripts/probe_feeder_archive.py --probe
+            else
+              python3 "$SCRIPT" --probe
+            fi
+          elif [ "$SOURCE" = "feeder-mars" ]; then
+            fm=(--mars-fetch --from "${FROM:-2024}-01-01" --max-minutes "${MAXMIN:-300}")
+            if [ -n "$TO" ]; then fm+=(--to "$TO-12-31"); fi
+            python3 "$SCRIPT" "${fm[@]}"
+          elif [ "$SOURCE" = "feeder-archive" ]; then
+            fa=(--fetch --from "${FROM:-2025}-01-01" --max-minutes "${MAXMIN:-300}")
+            if [ -n "$TO" ]; then fa+=(--to "$TO-12-31"); fi
+            python3 "$SCRIPT" "${fa[@]}"
           else
             python3 "$SCRIPT" "${args[@]}"
           fi
@@ -149,6 +197,8 @@ jobs:
           DIR: ${{ steps.w.outputs.dir }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
+          # the MARS catalog (feeder-mars probe) is saved beside the feeder files
+          if [ -d history/mars ]; then bash scripts/push_raw.sh "history backfill $SOURCE catalog" history/mars; fi
           [ -d "$DIR" ] || { echo "nothing written"; exit 0; }
           bash scripts/push_raw.sh "history backfill $SOURCE" "$DIR"
       - name: Summary
@@ -163,7 +213,7 @@ jobs:
           except OSError:
               print("No manifest written."); sys.exit(0)
           t = m.get("totals") or {}
-          left = [k for k, c in sorted(m["chunks"].items()) if not c.get("complete")]
-          print(f"### {m['source']}\n\n{t.get('rows')} rows in {t.get('chunks')} chunks, {t.get('complete')} complete; {t.get('first')} to {t.get('last')}.\n")
+          left = [k for k, c in sorted(m.get("chunks", {}).items()) if not c.get("complete")]
+          print(f"### {m.get('source')}\n\n{t.get('rows')} rows in {t.get('chunks')} chunks, {t.get('complete')} complete; {t.get('first')} to {t.get('last')}.\n")
           print(f"Not final ({len(left)}): {', '.join(left[:40])}{' ...' if len(left) > 40 else ''}" if left else "Every chunk is complete.")
           EOF

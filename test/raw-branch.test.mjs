@@ -53,13 +53,13 @@ const MOVED_OCT29 = ['data/atlas/raw/drought.json', 'data/atlas/src/CRPHistoryCo
 
 // workflow -> [raw folder, main FILES line]
 const PROBES = {
-  'cattle-auction': ['data/cattle-auction-raw', 'FILES="data/cattle-auction.json data/cull-cows.json data/cattle-auction-raw/listing.json data/feeder-index.json"'],   // + the feeder index built from it (fx/feederidx) and the cull cow file read in the same run (fx/cullcow)
+  'cattle-auction': ['data/cattle-auction-raw', 'FILES="data/cattle-auction.json data/cull-cows.json data/cattle-auction-raw/listing.json data/feeder-index-store.json data/feeder-index.json"'],   // + the feeder index built from it (fx/feederidx) and the cull cow file read in the same run (fx/cullcow)
   'cattle-cash': ['data/cattle-cash-raw', 'FILES="data/cattle-cash.json data/hog-cash.json"'],   // + cash hogs and pork cutout read in the same run (fx/hogprobe)
   'ccc-loan': ['data/ccc-loan-raw', 'FILES="data/ccc-loan.json data/ccc-loan"'],
   'dairy': ['data/dairy-raw', 'FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json data/dairy-miss.json data/dairy-order30.json data/dairy-dmc.json data/dairy-herds.json"'],   // + licensed herds (fx/dairy3)
   'fall-nitrogen': ['data/fall-nitrogen-raw', 'FILES="data/fall-nitrogen.json fall-nitrogen.html"'],
   'fertilizer-coops': ['data/coop-fert-raw', 'FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json"'],   // probe added Oct 28 (fx/oct28adds)
-  'fertilizer-ams': ['data/fert-ams-raw', 'FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json"'],
+  'fertilizer-ams': ['data/fert-ams-raw', 'FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json data/production-costs.json"'],
   'hay-ams': ['data/hay-ams-raw', 'FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json data/state-grain-ams.json data/slaughter.json"'],   // + USDA state grain and slaughter (fx/marsgrain)
   'hay-prices': ['data/hay-raw', 'FILES="data/hay"'],
   'drought-county-week': ['data/drought/probe', 'FILES="data/drought/county-week.json data/drought/summary.json"'],

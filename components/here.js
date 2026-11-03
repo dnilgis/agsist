@@ -123,9 +123,18 @@
   }
   function centralDay() { try { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); } catch (e) { return new Date().toISOString().slice(0, 10); } }
   /* the place's own state's co-op sheets first (components/fert-pick.js, the one chooser) */
+  /* and the USDA dealer survey for the state (data/production-costs.json): the newer of the two shows,
+     with its own date and source; the same file gives the farm diesel and propane rows */
   function fert(id, st) {
+    var pc = getJSON('/data/production-costs.json'), today = centralDay();
     var F = window.AgFertPick;
-    (F ? F.load(st || null) : getJSON('/data/fertilizer-prices.json')).then(function (f) { fill(id, P.factFert(f)); });
+    (F ? F.load(st || null) : getJSON('/data/fertilizer-prices.json')).then(function (f) {
+      pc.then(function (c) { fill(id, P.factFert(f, c ? P.usdaFert(c, st, today) : null)); });
+    });
+  }
+  function fuel(st) {
+    var today = centralDay();
+    getJSON('/data/production-costs.json').then(function (c) { fill('f-diesel', P.factFuel(c, st, 'diesel', today)); fill('f-propane', P.factFuel(c, st, 'propane', today)); });
   }
   function daily(id) { getJSON('/data/daily.json').then(function (f) { fill(id, P.factDaily(f)); }); }
 
@@ -372,9 +381,9 @@
   /* The four cards. Every row is in the page already (an anchor a link can open); each fills
      in as its file answers, or says why not. */
   var PLACE_ROWS = ['f-corn-bid', 'f-soy-bid', 'f-corn-basis', 'f-soy-basis', 'f-corn-fut', 'f-soy-fut', 'f-wheat-fut', 'f-rain', 'f-drought', 'f-hail', 'f-progress', 'f-soy-progress',
-    'f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc', 'f-custom', 'f-usda', 'f-fert', 'f-daily'];
+    'f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc', 'f-custom', 'f-usda', 'f-fert', 'f-diesel', 'f-propane', 'f-daily'];
   var CARDS = [['Price', ['f-corn-bid', 'f-soy-bid', 'f-corn-basis', 'f-soy-basis', 'f-corn-fut', 'f-soy-fut', 'f-wheat-fut']], ['Field', ['f-rain', 'f-drought', 'f-hail', 'f-progress', 'f-soy-progress']],
-    ['Land and programs', ['f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc', 'f-custom']], ['Today', ['f-usda', 'f-fert']]];
+    ['Land and programs', ['f-rent', 'f-land', 'f-sales', 'f-loss', 'f-arcplc', 'f-custom']], ['Today', ['f-usda', 'f-fert', 'f-diesel', 'f-propane']]];
   function loadCards(fips) {
     var p = S.prof, st = p.st, w = S.where, slug = P.stSlug(st);
     function mine() { return S.prof && S.prof.fips === fips; }
@@ -411,6 +420,7 @@
     getJSON('/data/custom-rates/blend.json').then(function (f) { if (mine()) fill('f-custom', P.factCustom(f, st)); });
     usda('f-usda');
     fert('f-fert', st);
+    fuel(st);
     daily('f-daily');
   }
   /* What changed here this week, with the state map (components/changemap.js), loaded only once a

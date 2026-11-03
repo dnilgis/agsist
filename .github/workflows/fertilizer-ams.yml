@@ -69,13 +69,25 @@ jobs:
       - name: Fetch and write data/fertilizer-ams.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_fert_ams.py
+      # The same Friday and Monday runs read the USDA production cost reports
+      # (Iowa, Illinois, Oklahoma, North Carolina, Inter-Mountain West, Pacific
+      # Northwest: fertilizer, farm diesel, propane) through USDA My Market News
+      # (MARS API) into data/production-costs.json. They all post on Friday, so no
+      # schedule of their own. Keep-last-good; without the key it asks nothing.
+      - name: Selftest the production cost reader
+        run: python scripts/fetch_prodcost_mars.py --selftest
+      - name: Fetch and write data/production-costs.json (USDA MARS)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        env:
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: python scripts/fetch_prodcost_mars.py
 
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json"
+          FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json data/production-costs.json"
           rm -rf /tmp/fams && mkdir -p /tmp/fams
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/fams/ || true

@@ -119,7 +119,24 @@ def report_title(text):
     return " ".join([ln for ln in norm_lines(text) if ln][:4])
 
 
+# "Livestock Weighted Average Report for 10/26/2026 - Final": the sale's own date. The
+# weekday date in the header is the day the issue was put out, which for a Final is often
+# the day after the sale (Oklahoma City 1280: sold Mon Oct 26 2026, Final headed "Tue Oct 27";
+# St. Onge 2019: sold Fri Oct 23, headed "Sat Oct 24"). Read by the header, one sale showed
+# up under two dates, its Monday Preliminary and its Tuesday Final, and counted twice in a
+# week (feeder index, weeks of Oct 19 and 26 2026). USDA My Market News dates these sales
+# by the same "report for" date. A range ("10/18/2026 - 10/24/2026") is a weekly summary,
+# never one sale, so it is not read here.
+REPORT_FOR_RE = re.compile(r"\bweighted\s+average\s+report\s+for\s+(\d{1,2})/(\d{1,2})/(\d{4})(?!\s*-\s*\d)", re.I)
+
+
 def sale_date(text):
+    m = REPORT_FOR_RE.search(joined(text))
+    if m:
+        try:
+            return datetime.date(int(m.group(3)), int(m.group(1)), int(m.group(2))).isoformat()
+        except ValueError:
+            pass
     lines = [ln for ln in norm_lines(text) if ln][:30]
     for ln in lines:
         d = find_date(ln, weekday_first=True)
@@ -154,7 +171,7 @@ SECTION_RE = re.compile(
     r"(?<!dairy )(?<!open )\b(?:feeder\s+)?(steers|heifers)\s*-?\s*medium\s+(?:and|&)\s+large\s+(1-2|1)\s*\(\s*per\s+cwt\s*/\s*actual\s+wt\s*\)", re.I)
 # any table heading, so a block ends where the next one starts
 HEAD_RE = re.compile(
-    r"\b(?:feeder|slaughter|bred|stock|replacement|cow|cows|holstein|dairy|pairs|bulls?|steers|heifers|"
+    r"\b(?:feeder|slaughter|bred|stock|replacement(?=\s+(?:cattle|dairy)\b)|cow|cows|holstein|dairy|pairs|bulls?|steers|heifers|"
     r"heiferettes|baby|calves)\b[A-Za-z0-9 ,&/\-]{0,80}?\(\s*(?:per|price)\b[^)]*\)", re.I)
 # The market comment after the tables ("**CLOSE** Compared to last week ... 317.00/cwt")
 # quotes prices; a table ends where it starts.
@@ -201,12 +218,35 @@ INT = r"(\d{1,3}(?:,\d{3})*|\d+)"
 WT = r"(\d{3,4})"
 PX = r"(\d{2,4}\.\d{2})"
 # words that start the next thing, never a row note ("Please Note" after the last row
-# made Gordon 1858's one heifer 1-2 row a noted row before Oct 28)
-STOP = r"(?:feeder|slaughter|bred|stock|replacement|cows?|holstein|dairy|pairs|bulls?|source|head|wt|avg|price|range|agricultural|livestock|usda|page|special|please|note|compared)\b"
+# made Gordon 1858's one heifer 1-2 row a noted row before Oct 28). "Replacement" alone is
+# a row note USDA prints ("30 755 755 284.00 284.00 Replacement", Unionville 1237, Feb 2025;
+# MARS carries it as lot_desc "Replacement"); before Nov 3 it was a stop word, so those rows
+# went into the class average. Only "Replacement Cattle" and "Replacement Dairy" start the next
+# table (the only such headings in 1,174 reports read, Nov 3). "Source/Aged" is a note too
+# (Valentine 1856, Oct 22 2026: 83 steers); "Source: USDA" still stops.
+STOP = r"(?:feeder|slaughter|bred|stock|replacement\s+(?:cattle|dairy)|cows?|holstein|dairy|pairs|bulls?|source(?!/)|head|wt|avg|price|range|agricultural|livestock|usda|page|special|please|note|compared)\b"
 ROW_RE = re.compile(
     r"(?<![\d.])" + INT + r"\s+" + WT + r"(?:\s*-\s*" + WT + r")?\s+" + WT + r"\s+" + PX +
     r"(?:\s*-\s*" + PX + r")?\s+" + PX + r"(?![\d.])"
     r"((?:\s+(?!" + STOP + r")[A-Za-z][A-Za-z'/]*){0,3})", re.I)
+
+
+def check_row(r):
+    """None for a good row, "skip" for one outside the weights read at all, else why it
+    is a misread. The one set of row rules for the PDF reader here and the MARS reader
+    (scripts/backfill_feeder_index.py): a row that fails it refuses the whole report."""
+    head, lo, hi, wt, plo, phi, price = (r["head"], r["lo"], r["hi"], r["wt"], r["plo"], r["phi"], r["price"])
+    if head <= 0:
+        return "a row with no head"
+    if not (lo <= wt <= hi):
+        return "avg weight %d outside its own range %d-%d: misread" % (wt, lo, hi)
+    if not (plo <= price <= phi):
+        return "avg price %.2f outside its own range %.2f-%.2f: misread" % (price, plo, phi)
+    if not (PRICE_RANGE[0] <= price <= PRICE_RANGE[1]):
+        return "price %.2f outside %s" % (price, PRICE_RANGE)
+    if not (WT_RANGE[0] <= wt <= WT_RANGE[1]):
+        return "skip"
+    return None
 
 
 def parse_rows(block):
@@ -225,18 +265,14 @@ def parse_rows(block):
         phi = float(m.group(6)) if m.group(6) else plo
         price = float(m.group(7))
         note = (m.group(8) or "").strip()
-        if head <= 0:
-            return None, "a row with no head"
-        if not (lo <= wt <= hi):
-            return None, "avg weight %d outside its own range %d-%d: misread" % (wt, lo, hi)
-        if not (plo <= price <= phi):
-            return None, "avg price %.2f outside its own range %.2f-%.2f: misread" % (price, plo, phi)
-        if not (PRICE_RANGE[0] <= price <= PRICE_RANGE[1]):
-            return None, "price %.2f outside %s" % (price, PRICE_RANGE)
-        if not (WT_RANGE[0] <= wt <= WT_RANGE[1]):
+        row = {"head": head, "lo": lo, "hi": hi, "wt": wt, "plo": plo, "phi": phi,
+               "price": price, "note": note}
+        why = check_row(row)
+        if why == "skip":
             continue
-        rows.append({"head": head, "lo": lo, "hi": hi, "wt": wt, "plo": plo, "phi": phi,
-                     "price": price, "note": note})
+        if why:
+            return None, why
+        rows.append(row)
     tail = block[pos:]
     if re.search(r"\d{2,4}\.\d{2}", tail):
         return None, "a price after the last readable row: %r" % tail.strip()[:60]
@@ -1105,6 +1141,19 @@ def selftest():
         p, w = parse_report((fx / ("ams_%s-real.txt" % n)).read_text())
         return p, w, (summarize(p) if p else None)
 
+    # Oklahoma National Stockyards 1280, the Final of the Mon Oct 26 2026 sale, put out and headed
+    # "Tue Oct 27": the sale is dated by "Report for 10/26/2026 - Final", so the Final replaces the
+    # Monday read of the same sale instead of standing beside it as a second sale (feeder index,
+    # weeks of Oct 19 and 26 2026, Oklahoma City counted twice)
+    okc, w = parse_report((fx / "ams_1280-2026-10-26-final.txt").read_text())
+    ck("real Oklahoma City 1280: the Final headed Tue Oct 27 is the sale of Mon Oct 26",
+       okc and okc["date"] == "2026-10-26" and okc["receipts"] == 5506, w or (okc and okc["date"]))
+    ck("a weekly summary's date range is not a sale date: the header date stands",
+       sale_date("Florida Weekly Livestock Auction Summary\nFri Oct  23,  2026\n"
+                 "Livestock Weighted Average Report for 10/18/2026 - 10/24/2026\n") == "2026-10-23")
+    ck("the report-for date also when pdftotext splits it over lines",
+       sale_date("Clovis Livestock Auction - Clovis, NM\nThu Oct  22,  2026\nLivestock Weighted Average Report for \n"
+                 "10/21/2026\n - Final\n") == "2026-10-21")
     p, w, s = real("1819")   # Callaway Livestock Center, Kingdom City MO, Mon Oct 26
     # 65 hd x 5.29 cwt x 439.89 + 38 hd x 5.93 cwt x 415.41 = 244864.67 over 569.19 cwt;
     # the 15 hd Unweaned row at 591 lb is left out
@@ -1122,11 +1171,13 @@ def selftest():
     c = s and s["classes"]["steers|1"]["500"]
     ck("real Gordon 1858: 500 lb steers M&L 1 434.45 on 287 head, avg 572 lb",
        p and p["date"] == "2026-10-27" and (c["cwt"], c["head"], c["avg_wt"]) == (434.45, 287, 572), w or c)
-    p, w, s = real("2019")   # St. Onge Livestock Auction, St. Onge SD, Sat Oct 24 (the barn's 2nd report is 2012)
+    p, w, s = real("2019")   # St. Onge Livestock Auction, St. Onge SD, sold Fri Oct 23, issue headed Sat Oct 24 (2nd report is 2012)
     # 293 hd x 6.14 cwt x 435.13 + 116 hd x 6.57 cwt x 404.43 = 1091031.76 over 2561.14 cwt
     c = s and s["classes"]["steers|1"]["600"]
-    ck("real St. Onge 2019: Oct 24, 7,030 head; 600 lb steers M&L 1 425.99 on 409 head, $2,667.56 a head",
-       p and p["date"] == "2026-10-24" and p["receipts"] == 7030 and (c["cwt"], c["head"], c["per_head"]) == (425.99, 409, 2667.56),
+    # the sale date is the "Report for 10/23/2026 - Final" date (the barn's regular Friday sale), not
+    # the issue's header date: read by the header it was dated Sat Oct 24 until Nov 3 2026
+    ck("real St. Onge 2019: sold Fri Oct 23, 7,030 head; 600 lb steers M&L 1 425.99 on 409 head, $2,667.56 a head",
+       p and p["date"] == "2026-10-23" and p["receipts"] == 7030 and (c["cwt"], c["head"], c["per_head"]) == (425.99, 409, 2667.56),
        w or c)
     p, w, s = real("2229")   # Farmers Regional Livestock Market monthly sale, Glasgow KY, Oct 22 (weekly is 2198)
     # 23 hd x 7.34 cwt x 332.64 + 6 hd x 7.61 cwt x 343.34 = 71833.19 over 214.48 cwt. The
@@ -1140,6 +1191,23 @@ def selftest():
     c = s and s["classes"].get("heifers|1-2", {}).get("400")
     ck("real Gordon 1858: the heifer 1-2 row before 'Please Note:' is a plain row (9 hd 498 lb 412.50), not a noted one",
        c and (c["cwt"], c["head"]) == (412.5, 9) and s["noted_head"] == 0, c or (s and s["noted_head"]))
+
+    # "Replacement" after a row is that row's note (Unionville 1237, Feb 4 2025, the
+    # Internet Archive copy, pypdf text: one cell per line); the next heading still ends a table
+    rep = ("Unionville Livestock Market - Unionville, MO\nLivestock Weighted Average Report for 02/04/2025\nTue Feb  4,  2025\n"
+           "Total Receipts: 1,200\nFEEDER CATTLE\nHEIFERS - Medium and Large 1 (Per Cwt / Actual Wt)\nHead\nWt Range\nAvg Wt\n"
+           "Price Range\nAvg Price\n54\n656-695\n672\n265.50-289.50\n280.09 \n30\n755\n755\n284.00\n284.00 \nReplacement\n"
+           "11\n804-830\n818\n238.00-245.50\n242.15 \n26\n718\n718\n277.00\n277.00 \nReplacement\n"
+           "STEERS - Medium and Large 1 (Per Cwt / Actual Wt)\nHead\nWt Range\nAvg Wt\nPrice Range\nAvg Price\n"
+           "83\n722\n722\n402.00\n402.00 \nSource/Aged\n5\n730\n730\n390.00\n390.00 \n"
+           "REPLACEMENT CATTLE\nBred Cows (Per Head / Actual Wt)\n")
+    pr, w = parse_report(rep)
+    rr = pr and pr["tables"]["heifers|1"]
+    sr = pr and pr["tables"].get("steers|1")
+    ck("a lone 'Replacement' is the row's note, also right before the next table's heading",
+       rr and [r["note"] for r in rr] == ["", "Replacement", "", "Replacement"], w or rr)
+    ck("'Source/Aged' is the row's note; 'REPLACEMENT CATTLE' ends the table",
+       sr and [(r["head"], r["note"]) for r in sr] == [(83, "Source/Aged"), (5, "")], w or sr)
 
     # Kentucky reports, Oct 2026. The run on the runner reads pypdf text (no pdftotext
     # there), where a "Special Note:" follows the last row of a table and the table goes
