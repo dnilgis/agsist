@@ -214,7 +214,7 @@ def season_line(name, months):
     return span_txt + " " + verb + " " + share + " in " + name + "."
 
 
-def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_tot=None):
+def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_tot=None, data_asof=None):
     n_yrs = len(years)
     span = span or n_yrs
     # The averages divide by the elapsed span (Jan 1 of the first year to the pull), so the
@@ -322,7 +322,10 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         "\"spatialCoverage\":\"" + esc(name) + ", United States\","
         "\"isBasedOn\":\"NWS Local Storm Reports via Iowa Environmental Mesonet\","
         "\"creator\":{\"@type\":\"Person\",\"name\":\"Sigurd Lindquist\"},"
-        "\"isAccessibleForFree\":true},")
+        # the page states no data license, so the site's terms; dateModified is the county file's own date (Nov 2 SEO audit)
+        "\"license\":\"https://agsist.com/terms\","
+        + ("\"dateModified\":\"" + data_asof + "\"," if data_asof and re.match(r"^\d{4}-\d{2}-\d{2}$", data_asof) else "")
+        + "\"isAccessibleForFree\":true},")
 
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
@@ -409,6 +412,7 @@ def main():
     years = d.get("years", [])
     dmg_in = d.get("damaging_in", 1.5)
     span = elapsed_years(years, d.get("generated")) if years else 1
+    asof = str(d.get("generated") or "")[:10]
     try:
         days = json.load(open(DAYS)).get("days", [])
     except Exception as e:
@@ -435,10 +439,10 @@ def main():
         old = prev_mod.get(slug(name))
         sd = state_storm_days(days, abbr)
         tot = (d.get("state_totals") or {}).get(abbr)
-        if prev is not None and old and page_html(abbr, name, rows, years, dmg_in, old, span, sd, tot) == prev:
+        if prev is not None and old and page_html(abbr, name, rows, years, dmg_in, old, span, sd, tot, asof) == prev:
             lastmod[slug(name)] = old
             continue
-        html = page_html(abbr, name, rows, years, dmg_in, today, span, sd, tot)
+        html = page_html(abbr, name, rows, years, dmg_in, today, span, sd, tot, asof)
         lastmod[slug(name)] = today
         if prev != html:
             open(path, "w", encoding="utf-8").write(html)

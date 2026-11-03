@@ -614,6 +614,9 @@ def month_ask(name, fips):
     return RM.ask_html(name, fips)
 
 
+TITLE_TEST_MAX = 60   # the inches-first title drops " | AGSIST" past this (Sig, Nov 2 test)
+
+
 def county_page(ctx):
     c, st, fips, year, d = ctx["c"], ctx["st"], ctx["fips"], ctx["year"], ctx["d"]
     stn = R.STATES[st]
@@ -629,6 +632,11 @@ def county_page(ctx):
     # the site's one cap (scripts/seo_caps.py): " | AGSIST" gives way first
     q_ = (f"How Much Rain Did {full_c} Get in {year}?" if done else f"How Much Rain Has {full_c} Had in {year}?")
     title = CAPS.fit([q_ + CAPS.SUFFIX, q_])
+    # Title test (Sig, Nov 2, 2026): lead with the year's own total and place, short form, no through date (the
+    # description keeps it). A page with no total keeps the question.
+    if c.get("total") is not None:
+        t_ = f"{inch(c['total'])} in of Rain in {name}, {st}, {year}"
+        title = t_ + CAPS.SUFFIX if len(t_ + CAPS.SUFFIX) <= TITLE_TEST_MAX else t_
     span = f"Jan 1 to {short_date(asof)}"
     pct_bit = f", {c['pct']}% of a usual year{'' if whole else ' to date'}" if c["pct"] is not None else ""
     has = [x for x, k in (("the wettest month", "wet_month"), ("the biggest rain", "max_day"), ("the longest dry stretch", "dry")) if c.get(k)]
@@ -825,6 +833,8 @@ def county_page(ctx):
                              {"@type": "Place", "name": f"{kind_word(c)} {stw['raw']} ({stw['sid'].split(' ')[0]})",
                               "geo": {"@type": "GeoCoordinates", "latitude": stw["ll"][1], "longitude": stw["ll"][0]}}],
          "creator": PUBLISHER, "dateModified": d["fetched"][:10],
+         # no data license is stated on these pages, so the license is the site's own terms (Nov 2 SEO audit)
+         "license": f"{ORIGIN}/terms",
          "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{ORIGIN}/data/rain/{st.lower()}.json"}},
         {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": S.text_of(q), "acceptedAnswer": {"@type": "Answer", "text": S.text_of(a)}} for q, a in faq]},
@@ -1339,7 +1349,8 @@ def selftest():
         ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames, Story County, through Oct 12." in story,
            "the answer comes first, in plain words")
         ok(f"({c['pct']}% of usual)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
-        ok("<title>How Much Rain Has Story County, Iowa, Had in 2026? | AGSIST</title>" in story, "title")
+        ok(f"<title>{c['total']:.2f} in of Rain in Story County, IA, 2026 | AGSIST</title>" in story, "title: the year's inches first (Nov 2 test)")
+        ok('<meta property="og:title" content="%.2f in of Rain in Story County, IA, 2026">' % c["total"] in story, "og:title in step")
         # 2026-10-23 (Sig): the pages are rebuilt every day, not Mondays; each says the day it was read
         # and the day its numbers run through, and none says weekly
         ok('<p class="rc-asof">As of Oct 12, 2026, the latest day this station has reported</p>' in story
@@ -1608,7 +1619,9 @@ def selftest():
         nb = S.text_of(county_page({"c": c1, "st": "IA", "fips": "19169", "year": 2026, "d": d, "slug": "story-county", "nbrs": [], "n_ok": 1}))
         ok("the most the gauge caught in one day" not in nb and "Biggest one-day reading" in nb, "with multi-day reports: a one-day reading, not the most in one day")
         de = want.get("rain/delaware/kent-county.html", "")
-        ok(de and "How Much Rain Did Kent County, Delaware, Get in 2024?" in de and "fell in 2024" in de, "finished year wording")
+        # the title leads with the inches since the Nov 2 test, so the finished-year question is read from the h1
+        ok(de and "How much rain did Kent County, Delaware, get in 2024?" in de and "fell in 2024" in de
+           and re.search(r"<title>\d+\.\d\d in of Rain in Kent County, DE, 2024 \| AGSIST</title>", de), "finished year wording")
         ok(de and "ship in January" not in de and "All of 2024" in de, "finished year: no January note")
         # a station that last reported Dec 29 in a year fetched through Dec 31: the year is over, the page says Dec 29
         dd3 = os.path.join(t, "late")
@@ -1621,7 +1634,7 @@ def selftest():
         json.dump(dj, open(os.path.join(dd3, "de.json"), "w"))
         w3 = build(dd3)
         k3 = S.text_of(re.sub(r"<script(?! type=.application/ld).*?</script>", "", w3["rain/delaware/kent-county.html"]))
-        ok("How Much Rain Did Kent County, Delaware, Get in 2024?" in k3 and "ship in January" not in k3, "a lagging station does not reopen a finished year")
+        ok("How much rain did Kent County, Delaware, get in 2024?" in k3 and "ship in January" not in k3, "a lagging station does not reopen a finished year")
         ok("through Dec 29, the last day reported" in k3 and "Jan 1 to Dec 31" not in k3 and "2023, the whole year" not in k3, f"a finished year still says the last day reported")
         hub3 = w3["rain.html"]
         ok("How much rain did your county get in 2024?" in hub3 and "so far" not in S.text_of(hub3), "hub: finished-year wording when every state is done")

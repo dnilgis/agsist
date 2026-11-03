@@ -2441,7 +2441,8 @@ def state_page(st, S, D, ch, nav_states):
                           "name": f"{name} 2026 ARC-CO benchmark yields by county (FSA official)",
                           "description": (f"FSA's official program year 2026 ARC-CO benchmark yields for {len(S['c'])} {name} counties by crop and "
                                           f"practice, with benchmark revenue at the 2026 benchmark price, from FSA's county file as of {fsa['as_of']}."),
-                          "url": f"{SITE}{path}", "isAccessibleForFree": True, "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
+                          "url": f"{SITE}{path}", "isAccessibleForFree": True, "license": f"{SITE}/terms",
+                          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
                           "isBasedOn": FSA_DATA, "dateModified": D["updated"][:10],
                           "spatialCoverage": {"@type": "Place", "name": f"{name}, United States"},
                           "variableMeasured": ["ARC-CO benchmark yield (bushels per acre, or pounds per acre for peanuts, rice, pulses, seed cotton and most oilseeds)",
@@ -3375,6 +3376,45 @@ def county_title(cname, st, lab, LY, by_txt):
     return f"{short} {st} ARC or PLC {LY}"[:TITLE_MAX]
 
 
+LEDE_MAX = 3   # crops named in the county lede; the rest are in the cards below it
+
+
+def lede_html(cname, st, LY, cards, updated):
+    """One plain sentence ahead of the cards (Nov 2 SEO audit: the page's first visible words were widget labels).
+    Built from the cards' own HTML, so it can only repeat what the page already prints: each main crop's
+    About the same answer and tier, and the benchmark from its trigger line when the card prints one.
+    A withheld card stays withheld ("no answer yet", "depends on your PLC yield")."""
+    parts = []
+    arts = re.findall(r'<article class="ap-crop"[^>]*>.*?</article>', cards, re.S)
+    for a in arts[:LEDE_MAX]:
+        h3 = re.search(r"<h3>(.*?)</h3>", a).group(1)
+        lab, _, prac = h3.partition(" &middot; ")
+        lc = re.search(r' data-lc="([^"]+)"', a)
+        crop = (lc.group(1) if lc else lab[:1].lower() + lab[1:]) + (f" ({prac})" if prac else "")
+        big = re.search(r'<span class="ap-big">([^<]+)</span>', a).group(1)
+        tier = re.search(r'ap-tier ap-tier-([a-z]+)', a).group(1)
+        if big in (WORD["plc"], WORD["arc"]):
+            say = f"{crop} leans {big}" if tier == "lean" else f"{crop}: {big}, a clear pick" if tier == "pick" else f"{crop}: {big}"
+        elif big == "Either one":
+            say = f"{crop} is too close to call"
+        elif big == "Neither expected to pay":
+            say = f"{crop}: neither program is expected to pay"
+        elif big == "Depends on your PLC yield":
+            say = f"{crop}: no one answer, it depends on your farm&rsquo;s own PLC yield"
+        else:
+            say = f"{crop}: {big[:1].lower() + big[1:]}"
+        bm = re.search(r"90% of the ([^<]+?) benchmark", a)
+        parts.append(say + (f" (benchmark {bm.group(1)})" if bm else ""))
+    if not parts:
+        return ""
+    more = len(arts) - len(parts)
+    tail = f"; {more} more crop{'s' if more > 1 else ''} below" if more > 0 else ""
+    day = (updated or "")[:10]
+    when = f", data updated {nice_date(day)}" if day else ""
+    return (f'<p class="page-lede ap-sum">{esc(cname)}, {st}: for {LY} on a farm with the county&rsquo;s typical PLC yield, '
+            + "; ".join(parts) + tail + when + ".</p>")
+
+
 def county_page(st, S, c, D, ch):
     hdr, ftr, fonts = ch
     name, sl = S["n"], S["slug"]
@@ -3587,6 +3627,7 @@ def county_page(st, S, c, D, ch):
   <p class="page-kicker">Farm program &middot; {LY} and {OY} crop years</p>
   <h1>{esc(cname)}, {esc(name)}: ARC or PLC</h1>
   {byline_html(D)}
+  {lede_html(cname, st, LY, cards, D["updated"]) if official else ""}
   {crops_html}
   <p class="page-lede">What pays more on your base acres for a typical farm here, crop by crop. {sc_['desc']} {ONLINE}</p>
   <h2 class="ap-find-h">Another county</h2>

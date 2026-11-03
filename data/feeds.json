@@ -253,7 +253,8 @@
     "Fetch Grain Bids"
    ],
    "touched_by": [
-    "Fetch Grain Bids"
+    "Fetch Grain Bids",
+    "Sitemap lastmod"
    ],
    "cadence": "about every 60 minutes",
    "curated": false,
@@ -658,7 +659,6 @@
    "pages": [
     "cattle-futures-prices.html",
     "daily.html",
-    "developer.html",
     "index.html"
    ],
    "written_by": [
@@ -710,6 +710,7 @@
     "Monthly county rain email",
     "Rebuild Feed Manifest",
     "Share images",
+    "Sitemap lastmod",
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
@@ -837,6 +838,7 @@
     "Fetch Prices",
     "Monthly county rain email",
     "Share images",
+    "Sitemap lastmod",
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
@@ -1302,7 +1304,6 @@
   {
    "path": "data/markets.json",
    "pages": [
-    "developer.html",
     "index.html"
    ],
    "written_by": [
@@ -2055,7 +2056,6 @@
    "path": "data/prices.json",
    "pages": [
     "cattle-futures-prices.html",
-    "developer.html",
     "fertilizer.html",
     "index.html",
     "markets.html",

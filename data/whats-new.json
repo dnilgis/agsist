@@ -23,6 +23,13 @@
    "link": "/land-sales/#new-jersey"
   },
   {
+   "id": "2026-11-02-dailymore",
+   "date": "2026-11-02",
+   "title": "More in the Daily each morning",
+   "line": "The Daily now carries the day's USDA reports and FSA signup dates, last week's harvest pace, fund positions after each Friday report, and your state's basis near the top.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-02-dailyweblinks",
    "date": "2026-11-02",
    "title": "Daily top stories link to the full story",
@@ -35,6 +42,20 @@
    "title": "The home page opens on three jobs",
    "line": "The home page opens on Today near me, Sell grain and My field, with today's forecast for your ZIP; Rain Print, the rain gauge and new pages sit right under.",
    "link": "/"
+  },
+  {
+   "id": "2026-11-02-seofix",
+   "date": "2026-11-02",
+   "title": "ARC or PLC county pages open with the answer",
+   "line": "Each ARC or PLC county page now opens with one plain sentence: what each main crop leans toward for 2026, its benchmark yield and the data date.",
+   "link": "/arc-plc"
+  },
+  {
+   "id": "2026-11-02-usdacalphone",
+   "date": "2026-11-02",
+   "title": "USDA report dates on your phone",
+   "line": "Subscribe to USDA report dates from the futures pages and cash bids: one tap for your phone or Google Calendar, and each event links what the market priced in.",
+   "link": "/usda-calendar"
   },
   {
    "id": "2026-11-01-dailyfacts",

@@ -553,6 +553,17 @@ def only_here(daily, rain=None, loc=None):
     return [x for x in lines if not COUNT_LINE.search(x["text"])]
 
 
+def promote_basis(items, here, cap):
+    """(items, here) with the Only here basis line moved to second in Today,
+    tagged only_here. Nothing changes when there is no basis line."""
+    b = next((x for x in here if x.get("kind") == "basis_history"), None)
+    if not b or not has_number(b.get("text") or "") or COUNT_LINE.search(b["text"]):
+        return items, here
+    line = dict(b, url=SITE + b["url"] if str(b.get("url") or "").startswith("/") else b.get("url"), only_here=True)
+    pos = 1 if items else 0
+    return (items[:pos] + [line] + items[pos:])[:cap], [x for x in here if x is not b]
+
+
 # ── links ────────────────────────────────────────────────────────────────
 def shared_host(u):
     try:
@@ -615,10 +626,16 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     # the subject's story leads the Today list
     lead = [x for x in items if x.get("field") == sfield or (sfrom == "market" and x.get("field") == sfield)]
     items = lead[:1] + [x for x in items if x not in lead[:1]]
-    if top_stories(daily, items):
-        items = items[:TODAY_WITH_STORIES]
-    pre = preheader(local, items, subj, sfield)
+    cap = TODAY_WITH_STORIES if top_stories(daily, items) else TODAY_MAX
+    items = items[:cap]
     here = only_here(daily, rain, loc)
+    # 2026-11-02 (fx/dailymore): the basis line (a state's basis against its own
+    # record, with its sample) is the one thing a DTN reader cannot get, so it
+    # rides second in Today instead of down in Only here. The line moves, it is
+    # not added: Today keeps its length (the last line gives way) and Only here
+    # loses the line.
+    items, here = promote_basis(items, here, cap)
+    pre = preheader(local, items, subj, sfield)
     if unsub_url and shared_host(unsub_url):
         unsub_url = None          # BUILD-RULES 11: nothing a reader clicks on a shared host
     if isinstance(elevators, dict) and elevators.get("add_url") and shared_host(elevators["add_url"]):
@@ -827,7 +844,9 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
             tail = " " + _a(x["url"], x.get("link") or "Source", None, None, cls="mute link", color=MUTE)
         else:
             tail = (" " + _a(x["url"], x.get("link") or "More", camp, "today-" + x["kind"])) if x.get("url") else ""
-        b.append(_row('<span class="gold" style="color:%s">&bull;</span>&nbsp;&nbsp;%s%s' % (GOLD, e(x["text"]), tail),
+        tag = ('<span class="lab" style="color:%s;font-family:%s;font-size:11px;font-weight:700;letter-spacing:.08em;'
+               'text-transform:uppercase">Only here</span>&nbsp; ' % (GREEN, MONO)) if x.get("only_here") else ""
+        b.append(_row('<span class="gold" style="color:%s">&bull;</span>&nbsp;&nbsp;%s%s%s' % (GOLD, tag, e(x["text"]), tail),
                       pad="4px 0 0", size=16))
     if forward_url:
         b.append('<tr><td class="mute" style="padding:10px 0 0;font-family:%s;font-size:14px;line-height:1.5;color:%s">Forward to a neighbor. '
@@ -937,7 +956,8 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
         if x.get("external"):
             L.append("- " + x["text"] + " " + x["url"])
             continue
-        L.append("- " + x["text"] + ((" " + BE.utm(x["url"], "today-" + x["kind"], camp)) if x.get("url") else ""))
+        L.append("- " + ("Only here: " if x.get("only_here") else "") + x["text"]
+                 + ((" " + BE.utm(x["url"], "today-" + x["kind"], camp)) if x.get("url") else ""))
     if forward_url:
         L += ["", "Forward to a neighbor. Or send them the free sign-up link: " + BE.utm(forward_url, "forward", camp)]
     if isinstance(local, dict) and local.get("head"):
