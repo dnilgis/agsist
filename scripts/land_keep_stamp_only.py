@@ -14,6 +14,9 @@ import subprocess
 import sys
 
 STAMPS = ("fetched_utc", "checked_utc")
+# data/land/checked.json IS the stamp (fetch_land_sales.mark_checked, Nov 3, 2026): the day each state
+# was last read, so the land sale email can tell "read, nothing newer" from "not read". Never restored.
+KEEP = ("data/land/checked.json",)
 
 
 def unstamped(v):
@@ -36,7 +39,7 @@ def main(d):
     out = subprocess.run(["git", "diff", "--name-only", "--", d], capture_output=True, text=True, check=True).stdout.split()
     kept = 0
     for p in out:
-        if not p.endswith(".json"):
+        if not p.endswith(".json") or p in KEEP:
             continue
         old = subprocess.run(["git", "show", "HEAD:" + p], capture_output=True, text=True)
         if old.returncode == 0 and stamp_only(old.stdout, open(p).read()):
@@ -53,7 +56,8 @@ def selftest():
     d = json.dumps({"state": "WI", "fetched_utc": "2026-11-03T09:30:00Z", "rows": [[1, 2]], "e": [{"checked_utc": "y", "ok": False}]})
     bad = 0
     for name, ok in (("timestamps only: restored", stamp_only(a, b)), ("a new row: kept", not stamp_only(a, c)),
-                     ("a changed check result: kept", not stamp_only(a, d)), ("unreadable JSON: kept", not stamp_only(a, "{"))):
+                     ("a changed check result: kept", not stamp_only(a, d)), ("unreadable JSON: kept", not stamp_only(a, "{")),
+                     ("the checked stamp file is never restored", KEEP == ("data/land/checked.json",))):
         print(("ok   " if ok else "FAIL ") + name)
         bad += 0 if ok else 1
     print("FAILS=%d" % bad)

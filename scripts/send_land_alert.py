@@ -11,6 +11,19 @@ sales recorded the month before within that radius, and marks it with POST /noti
 only after the send went through. A row already marked for that month (mo) is never mailed again,
 so any number of runs is safe. A month with no sales to list sends nothing and marks nothing.
 
+WHICH MONTH EACH READER GETS (Sig, Nov 3, 2026, option 1). The month just ended, when every state
+within the reader's radius has published it (land_alert.ready()). When one has not (Wisconsin posts its
+transfer returns about a month behind), the month before, if it is ready and the reader has not had it,
+said plainly in the subject and the first line ("September is the newest month Wisconsin has published;
+October follows when the state posts it."). Never a month older than that, never a month twice (the
+worker keeps mo, the newest data month mailed, and a reader is only mailed a month after it), never an
+empty month. When the later month lands, the next run mails it: the run on the 3rd, or --catch-up, which
+land-alert.yml runs after a land data run that committed data/land.
+
+--catch-up: a send, for the readers who signed up before this month's send on the 3rd (15:47 UTC, the
+schedule); a reader who signed up later is told the first email comes the next 3rd and gets it then.
+Before this month's send time it does nothing (the monthly run has not gone yet).
+
 THE NUMBERS come from scripts/land_alert.py (the shared market-sale rule, sales placed at their
 township or town, the middle price only past its gates). No buyer or seller name, parcel number,
 legal description or document number is in any email: land_alert.row() is the only shape a sale
@@ -56,7 +69,7 @@ import smtplib
 import sys
 import time
 import urllib.parse
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -169,9 +182,24 @@ def median_words(med, radius):
     return t
 
 
-def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True):
+def names_of(sts):
+    n = [LA.STATE_NAMES.get(s, s) for s in sts]
+    return n[0] if len(n) == 1 else ", ".join(n[:-1]) + " and " + n[-1]
+
+
+def lag_line(m0, late):
+    """The first line when a reader gets the month before: which state has not posted the newer month."""
+    nxt = LA.MONTHS[(m0 + 1) % 12]
+    one = len(late) == 1
+    return ("%s is the newest month %s %s published; %s follows when the %s %s it."
+            % (LA.MONTHS[m0], names_of(late), "has" if one else "have", nxt, "state" if one else "states", "posts" if one else "post"))
+
+
+def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True, late=None):
     """(subject, preheader, blocks) for one ZIP and radius, or (None, why).
-    why: bad-zip, zip-table (the ZIP table could not be read), outside, wait-data, empty."""
+    why: bad-zip, zip-table (the ZIP table could not be read), outside, wait-data, empty.
+    late: the states that have not published the month after this one (the reader gets this month
+    because of them); the first line says so."""
     ll = zips.coord(zip5)
     if ll is False:
         return None, "zip-table"
@@ -189,8 +217,10 @@ def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh=True):
     subject = "Farm sales within %d miles of %s, %s: %d recorded" % (radius, zip5, mon, n)
     near = rep["rows"][0]
     pre = "Nearest: " + sale_line(near, False).split(": ", 1)[1]
-    blocks = [("h1", "Farm sales recorded in %s %d within %d miles of %s" % (mon, year, radius, here)),
-              ("p", "Here are the farm sales recorded in %s within %d miles of your ZIP, nearest first, from the state transfer records. "
+    blocks = [("h1", "Farm sales recorded in %s %d within %d miles of %s" % (mon, year, radius, here))]
+    if late:
+        blocks.append(("p", lag_line(m0, late)))
+    blocks += [("p", "Here are the farm sales recorded in %s within %d miles of your ZIP, nearest first, from the state transfer records. "
                     "I show the acres, the price and where each one is. I never show who bought or sold." % (mon, radius))]
     by_sale = sorted({r["st"] for r in rep["rows"] if r["basis"] == "sale date" and r["st"] != "IN"})
     if any(r["st"] == "IN" for r in rep["rows"]):
@@ -284,10 +314,62 @@ def render(email, base, secret, lid, parts, from_addr, preview=False):
     return email_links.check_message(msg)
 
 
+def due(zip5, radius, mo, ly, lm, land, zips, today, repo, cache=None):
+    """What one reader gets now: (parts, why, (year, m0)). mo: the newest month the reader was mailed
+    ("YYYY-MM" or ""). The month just ended when it is ready for every state near; else the month before,
+    when it is ready and newer than mo, with the line that says why (Sig, Nov 3, 2026). Never older.
+    why: send, done (mailed for the month just ended), wait-data (the newer month not posted and nothing
+    else due), empty, outside, bad-zip, zip-table."""
+    cache = {} if cache is None else cache
+    py, pm = (ly - 1, 11) if lm == 0 else (ly, lm - 1)
+
+    def comp(y, m, late=None):
+        k = (zip5, radius, y, m, tuple(late or ()))
+        if k not in cache:
+            cache[k] = compose(zip5, radius, y, m, land, zips, today, repo, late=late)
+        return cache[k]
+    if mo and mo >= "%d-%02d" % (ly, lm + 1):
+        return None, "done", (ly, lm)
+    ll = zips.coord(zip5)
+    if ll is False:
+        return None, "zip-table", (ly, lm)
+    if not ll:
+        return None, "bad-zip", (ly, lm)
+    rep = LA.month_report(land, ll, radius, ly, lm, today)
+    if rep.get("skip") != "wait-data":
+        parts, why = comp(ly, lm)
+        return parts, why, (ly, lm)
+    late = rep.get("states") or [rep.get("state")]
+    if mo and mo >= "%d-%02d" % (py, pm + 1):
+        return None, "wait-data", (ly, lm)
+    parts, why = comp(py, pm, late)
+    if why in ("wait-data", "empty"):
+        return None, "wait-data", (ly, lm)       # the month before is not posted either, or had nothing: waiting for the newer one
+    return parts, why, (py, pm)
+
+
+def wait_states(zip5, radius, ly, lm, land, zips, today):
+    """The states that have not posted the month just ended near this reader (for the log, as counts)."""
+    ll = zips.coord(zip5)
+    if not ll:
+        return []
+    rep = LA.month_report(land, ll, radius, ly, lm, today)
+    return rep.get("states") or ([rep["state"]] if rep.get("state") else [])
+
+
 # ---------------------------------------------------------------- the run
 def last_month(today):
     """(year, 0-based month) of the month just ended."""
     return (today.year - 1, 11) if today.month == 1 else (today.year, today.month - 2)
+
+
+SEND_AT = (3, 15, 47)          # the 3rd, 15:47 UTC: land-alert.yml's schedule (cron "47 15 3 * *")
+
+
+def send_time(now_utc):
+    """This month's send time (UTC) of the schedule."""
+    d, h, mi = SEND_AT
+    return now_utc.replace(day=d, hour=h, minute=mi, second=0, microsecond=0)
 
 
 def mode_of(argv):
@@ -296,7 +378,7 @@ def mode_of(argv):
         return "dry"
     if SN.env("PREVIEW", "") == "1" or "--preview" in argv:
         return "preview"
-    if SN.env("SEND", "") == "1" or "--send" in argv:
+    if SN.env("SEND", "") == "1" or "--send" in argv or "--catch-up" in argv:
         return "send"
     return "dry"
 
@@ -329,7 +411,7 @@ def samples_of(s):
 
 def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.sleep, out=print, repo=REPO, zips=None):
     p = argparse.ArgumentParser(add_help=False)
-    for a in ("--send", "--preview", "--dry-run"):
+    for a in ("--send", "--preview", "--dry-run", "--catch-up"):
         p.add_argument(a, action="store_true")
     p.add_argument("--month", default="")
     p.add_argument("--sample", default="")
@@ -373,8 +455,14 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     if mode in ("dry", "preview"):
         made = []
         for z, mi in samples_of(a.sample) or list(SAMPLES):
-            # a past month is drawn from the files on hand; the freshness wait is for the list
-            parts, why = compose(z, mi, year, m0, land, zips, tiso, repo, need_fresh=False)
+            if a.month:
+                # a past month is drawn from the files on hand; the freshness wait is for the list
+                parts, why = compose(z, mi, year, m0, land, zips, tiso, repo, need_fresh=False)
+            else:
+                # no month asked: exactly what a reader there who has had nothing yet gets now
+                parts, why, ym = due(z, mi, "", ly, lm, land, zips, tiso, repo)
+                if parts and ym != (ly, lm):
+                    out("sample %d: %d-%02d, the newest month every state near has published" % (len(made) + 1, ym[0], ym[1] + 1))
             if not parts:
                 out("sample %d: no email (%s)" % (len(made) + 1, why))
                 continue
@@ -443,6 +531,13 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         out("LIST_URL, LIST_TOKEN and UNSUB_SECRET are required")
         return 1
     base = base.rstrip("/")
+    cutoff = None
+    if a.catch_up:
+        now_utc = (now or datetime.now(SN.TZ)).astimezone(timezone.utc)
+        if now_utc < send_time(now_utc):
+            out("catch-up: this month's send on the 3rd has not run yet; nothing to catch up. Nothing sent.")
+            return 0
+        cutoff = send_time(now_utc).timestamp() * 1000     # the worker's ts is milliseconds
     try:
         rows = http("GET", "%s/notice-list?token=%s&topic=%s" % (base, urllib.parse.quote(tok), urllib.parse.quote(TOPIC_PRE)))
     except Exception as ex:
@@ -451,7 +546,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     if not isinstance(rows, list):
         out("landsales: the list did not come back as a list")
         return 1
-    todo, seen, skipped, done, wait, cache = [], set(), 0, 0, {}, {}
+    todo, seen, skipped, done, wait, cache, later_signup, wst, per_month = [], set(), 0, 0, {}, {}, 0, {}, {}
     for r in rows:
         r = r or {}
         e = str(r.get("email") or "").strip().lower()
@@ -462,30 +557,43 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
             skipped += 1
             continue
         seen.add((e, t))
-        if str(r.get("mo") or "") >= month:
-            done += 1
+        if cutoff is not None and isinstance(r.get("ts"), (int, float)) and r["ts"] > cutoff:
+            later_signup += 1          # signed up after this month's send: the next 3rd
             continue
         k = (mt.group(1), int(mt.group(2)))
-        if k not in cache:
-            cache[k] = compose(k[0], k[1], year, m0, land, zips, tiso, repo)
-        parts, why = cache[k]
+        parts, why, ym = due(k[0], k[1], str(r.get("mo") or ""), ly, lm, land, zips, tiso, repo, cache)
+        if why == "done":
+            done += 1
+            continue
         if not parts:
             wait[why] = wait.get(why, 0) + 1
+            if why == "wait-data":
+                for st in wait_states(k[0], k[1], ly, lm, land, zips, tiso):
+                    wst[st] = wst.get(st, 0) + 1
             continue
-        todo.append((e, t, k, lid))
+        mo_ = "%d-%02d" % (ym[0], ym[1] + 1)
+        per_month[mo_] = per_month.get(mo_, 0) + 1
+        todo.append((e, t, parts, lid, mo_))
     later = max(0, len(todo) - a.max)
     todo = todo[:a.max]
     out("%s%s: %d to mail, %d already mailed for it, %d not mailed (%s), %d skipped, %d left for the next run"
         % (TOPIC_PRE, month, len(todo), done, sum(wait.values()), ", ".join("%s %d" % kv for kv in sorted(wait.items())) or "none",
            skipped, later))
+    # counts only: the data month each reader due gets, and the states not posted yet (a reader may count under two)
+    if per_month:
+        out("%s%s: by data month: %s" % (TOPIC_PRE, month, ", ".join("%s %d" % kv for kv in sorted(per_month.items(), reverse=True))))
+    if wst:
+        out("%s%s: waiting on the state to post %s: %s" % (TOPIC_PRE, month, month, ", ".join("%s %d" % kv for kv in sorted(wst.items()))))
+    if cutoff is not None:
+        out("%s%s: catch-up; %d signed up after this month's send and get the next 3rd's" % (TOPIC_PRE, month, later_signup))
     if not todo:
         return 0
     conn, sent, failed, broken, reconnects = None, 0, 0, False, 0
     try:
         conn = connect()
-        for i, (e, t, k, lid) in enumerate(todo):
+        for i, (e, t, parts, lid, mo_) in enumerate(todo):
             try:
-                conn.send_message(render(e, base, secret, lid, cache[k][0], from_addr))
+                conn.send_message(render(e, base, secret, lid, parts, from_addr))
             except Exception as ex:
                 failed += 1
                 out("  send failed (%s)" % type(ex).__name__)
@@ -504,7 +612,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                         break
                 continue
             sent += 1
-            if not mark(http, base, tok, e, t, month, sleep):
+            if not mark(http, base, tok, e, t, mo_, sleep):     # the data month mailed, not the send month
                 out("::error::%s: a sent email could not be marked; stopping so nobody gets two" % TOPIC_PRE)
                 broken = True
                 break
@@ -815,8 +923,150 @@ def selftest():
        "Wisconsin sales are listed by the date on the deed for now" in td and "Sep 2: 80 acres" in td and "(deed date)" not in td
        and "Deed date</th>" in hd and "Recorded</th>" not in hd, td[:700])
     shutil.rmtree(tmp, ignore_errors=True)
+    lag_selftest(ck, C)
     print("\n%s: %d failure(s)" % ("FAIL" if fails else "OK", len(fails)))
     return 1 if fails else 0
+
+
+def lag_selftest(ck, C):
+    """The Nov 3, 2026 case (Sig's option 1), from fixture files and made-up readers: Wisconsin had posted
+    its transfer returns through September (fetched Oct 18, read again Nov 3 with nothing newer),
+    Illinois had October. No date here comes from the clock."""
+    import json
+    import shutil
+    import tempfile
+    tmp = tempfile.mkdtemp()
+    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt", "grantor", "grantee", "ac1", "rec"]
+
+    def county(st, fips, name, ll, rows, fetched, extra_ix=None):
+        d = os.path.join(tmp, "data", "land", st.lower())
+        os.makedirs(d, exist_ok=True)
+        R = [["%s-DOC-%d" % (st, i), dt, pr, ac, None, 1, "4", "Warranty Deed; land only", "%s-PIN-%d" % (st, i), "0", "LEGAL %s %d" % (st, i), 0,
+              "SELLER %sNAME%d" % (st, i), "BUYER %sNAME%d" % (st, i), None, rec] for i, (dt, rec, pr, ac) in enumerate(rows)]
+        json.dump({"state": st, "county": name, "fips": fips, "fetched_utc": fetched, "coverage": {"from": "2021-01-01", "filed_from": "2021-01-01"},
+                   "acres_rule": 2, "cols": cols, "munis": {"0": [name + " town", ll[0], ll[1]]}, "rows": R}, open(os.path.join(d, fips + ".json"), "w"))
+        ix = dict({"state": st, "fetched_utc": fetched, "counties": [{"fips": fips, "name": name, "lat": ll[0], "lng": ll[1],
+                                                                     "to": max(r[0] for r in rows)}]}, **(extra_ix or {}))
+        json.dump(ix, open(os.path.join(d, "index.json"), "w"))
+    wi_months = ["2026%02d" % m for m in range(1, 10)]
+    wi_rows = [("2026-09-02", "2026-09-10", 400000, 80), ("2026-08-20", "2026-09-22", 240000, 40), ("2026-08-03", "2026-08-12", 300000, 60)]
+    county("WI", "55119", "Taylor", (45.15, -90.35), wi_rows, "2026-10-18T22:50:52Z", {"months": wi_months})
+    county("IL", "17029", "Coles", (39.50, -88.20), [("2026-10-01", "2026-10-14", 1500000, 100), ("2026-09-10", "2026-09-20", 700000, 50)],
+           "2026-11-03T20:08:48Z")
+    json.dump({"IL": {"checked_utc": "2026-11-03T20:08:48Z", "newest": "2026-10"}, "WI": {"checked_utc": "2026-11-03T20:30:00Z", "newest": "2026-09"}},
+              open(os.path.join(tmp, "data", "land", "checked.json"), "w"))
+    zips = Zips(data={"54451": (45.14, -90.34, "Medford, WI"), "61920": (39.49, -88.18, "Charleston, IL"), "54999": (45.60, -90.34, "Nowhere, WI")})
+    land = LA.Land(tmp)
+
+    # ready(): Wisconsin by its monthly reports on file, the others by a read after the month and records that reach it
+    wf, lf = land.file("WI", "55119"), land.file("IL", "17029")
+    ck("ready: Wisconsin September is posted, October is not (its reports run through September)",
+       LA.ready(land, "WI", wf, 2026, 8) and not LA.ready(land, "WI", wf, 2026, 9))
+    ck("ready: Illinois October, read Nov 3 with records into October", LA.ready(land, "IL", lf, 2026, 9))
+    ck("fetched is not checked: the stamp says the state was read Nov 3", land.seen("WI", wf) == "2026-11-03" and land.seen("IL", lf) == "2026-11-03")
+
+    # the samples Sig previews: what a reader gets now
+    p1, why1, ym1 = due("54451", 10, "", 2026, 9, land, zips, "2026-11-03", tmp)
+    m1 = render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, p1, "news@agsist.com") if p1 else None
+    t1 = m1.get_body(("plain",)).get_content() if m1 else ""
+    ck("Wisconsin reader on Nov 3: September, said plainly in the subject", ym1 == (2026, 8) and m1 and m1["Subject"] == "Farm sales within 10 miles of 54451, September: 2 recorded",
+       (why1, ym1, m1 and m1["Subject"]))
+    ck("the first line says why: September is the newest month Wisconsin has posted, October follows",
+       t1.split("\n\n")[1:2] == ["September is the newest month Wisconsin has published; October follows when the state posts it."], t1[:400])
+    ck("the September email lists September's recordings only", "Sep 10: 80 acres" in t1 and "Sep 22: 40 acres" in t1 and "Aug 12" not in t1.split("Sig\n")[0], t1[:900])
+    ck("no names, parcels, legals or documents in it", not re.search(r"NAME\d|PIN-|LEGAL WI|DOC-", t1 + str(m1)))
+    ck("no em dash in the line", not re.search("[\u2013\u2014]", t1))
+    ck("Illinois reader on Nov 3: October, no line", due("61920", 25, "", 2026, 9, land, zips, "2026-11-03", tmp)[2] == (2026, 9)
+       and "newest month" not in render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID,
+                                         due("61920", 25, "", 2026, 9, land, zips, "2026-11-03", tmp)[0], "news@agsist.com").get_body(("plain",)).get_content())
+    ck("a reader already mailed September waits for October", due("54451", 10, "2026-09", 2026, 9, land, zips, "2026-11-03", tmp)[1] == "wait-data")
+    ck("a Wisconsin reader with no sale in September near: nothing (an empty month sends nothing)",
+       due("54999", 10, "", 2026, 9, land, zips, "2026-11-03", tmp)[:2] == (None, "wait-data"))
+    ck("never older than the month before: on Dec 3, with Wisconsin still at September, nothing",
+       due("54451", 10, "", 2026, 10, land, zips, "2026-12-03", tmp)[:2] == (None, "wait-data"))
+    ck("the lag line for two states", lag_line(8, ["WI", "IN"]) == "September is the newest month Wisconsin and Indiana have published; October follows when the states post it.")
+
+    # the runs: a fake worker and a fake SMTP; made-up readers
+    class Worker:
+        def __init__(self, rows):
+            self.t, self.marks = rows, []
+
+        def __call__(self, method, url, body=None):
+            u = urllib.parse.urlsplit(url)
+            if method == "GET" and u.path == "/notice-list":
+                return [dict({"email": e, "topic": v["topic"], "ts": v["ts"], "src": "x", "lid": "00000000000000%02x" % i}, **({"mo": v["mo"]} if v.get("mo") else {}))
+                        for i, (e, v) in enumerate(self.t.items())]
+            if method == "POST" and u.path == "/notice-mark":
+                self.marks.append((body["email"], body["month"]))
+                cur = self.t[body["email"]]
+                cur["mo"] = max(cur.get("mo") or "", body["month"])
+                return {"ok": True}
+            raise AssertionError(method + " " + u.path)
+
+    class SMTP:
+        def __init__(self):
+            self.msgs = []
+
+        def __call__(self):
+            return self
+
+        def send_message(self, msg):
+            self.msgs.append(msg)
+
+        def quit(self):
+            pass
+    oct20 = C("2026-10-20 12:00").timestamp() * 1000
+    w = Worker({"wi@example.com": {"topic": "landsales:54451:10", "ts": oct20}, "il@example.com": {"topic": "landsales:61920:25", "ts": oct20},
+                "none@example.com": {"topic": "landsales:54999:10", "ts": oct20}})
+    env = {"LIST_URL": "https://w.dev", "LIST_TOKEN": "tok", "UNSUB_SECRET": "sec", "FROM_ADDR": "news@agsist.com", "LANDSALES_MONTHLY_LIVE": "1"}
+
+    def go(argv, when, smtp, worker=None):
+        lines, old = [], {k: os.environ.get(k) for k in env}
+        os.environ.update(env)
+        try:
+            rc = run(argv, http=worker or w, connect=smtp, now=C(when), sleep=lambda x: None, out=lines.append, repo=tmp, zips=zips)
+        finally:
+            for k, v in old.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
+        return rc, "\n".join(lines)
+    s1 = SMTP()
+    rc, log = go(["--send"], "2026-11-03 10:47", s1)
+    sent = sorted((x["To"], x["Subject"]) for x in s1.msgs)
+    ck("Nov 3 send: Wisconsin reader September, Illinois reader October, the empty one nothing",
+       rc == 0 and sent == [("il@example.com", "Farm sales within 25 miles of 61920, October: 1 recorded"),
+                            ("wi@example.com", "Farm sales within 10 miles of 54451, September: 2 recorded")], (rc, sent, log))
+    ck("marked with the data month mailed, not the send month", sorted(w.marks) == [("il@example.com", "2026-10"), ("wi@example.com", "2026-09")], w.marks)
+    ck("the log: counts by data month and by state waiting, no address, no ZIP",
+       "by data month: 2026-10 1, 2026-09 1" in log and "waiting on the state to post 2026-10: WI 1" in log
+       and not re.search(r"@|54451|61920|54999", log), log)
+    s2 = SMTP()
+    rc, log = go(["--send"], "2026-11-04 10:47", s2)
+    ck("a second run mails nobody", rc == 0 and not s2.msgs and "0 to mail, 1 already mailed for it" in log, log)
+    s3 = SMTP()
+    rc, log = go(["--catch-up"], "2026-11-03 09:00", s3)
+    ck("catch-up before this month's send time does nothing", rc == 0 and not s3.msgs and "has not run yet" in log, log)
+
+    # Wisconsin posts October (a land run on the 19th commits it); the run after it mails October once
+    wi_rows2 = wi_rows + [("2026-10-01", "2026-10-09", 500000, 100)]
+    county("WI", "55119", "Taylor", (45.15, -90.35), wi_rows2, "2026-11-19T18:00:00Z", {"months": wi_months + ["202610"]})
+    json.dump({"IL": {"checked_utc": "2026-11-03T20:08:48Z", "newest": "2026-10"}, "WI": {"checked_utc": "2026-11-19T18:00:00Z", "newest": "2026-10"}},
+              open(os.path.join(tmp, "data", "land", "checked.json"), "w"))
+    w.t["late@example.com"] = {"topic": "landsales:54451:10", "ts": C("2026-11-10 12:00").timestamp() * 1000}
+    s4 = SMTP()
+    rc, log = go(["--catch-up"], "2026-11-19 13:30", s4)
+    got = [(x["To"], x["Subject"]) for x in s4.msgs]
+    t4 = s4.msgs[0].get_body(("plain",)).get_content() if s4.msgs else ""
+    ck("after Wisconsin's October lands: the same reader gets October, once, without the line",
+       rc == 0 and got == [("wi@example.com", "Farm sales within 10 miles of 54451, October: 1 recorded")] and "newest month" not in t4, (got, log))
+    ck("catch-up leaves a reader who signed up after the 3rd for the next 3rd", "1 signed up after this month's send" in log, log)
+    ck("marked October", w.marks[-1] == ("wi@example.com", "2026-10") and w.t["wi@example.com"]["mo"] == "2026-10", w.marks)
+    s5 = SMTP()
+    rc, log = go(["--catch-up"], "2026-11-19 13:45", s5)
+    ck("and the next catch-up mails nobody", rc == 0 and not s5.msgs, log)
+    shutil.rmtree(tmp, ignore_errors=True)
 
 
 if __name__ == "__main__":

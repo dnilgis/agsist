@@ -760,6 +760,31 @@ def build(st, recs, gaz, now, prior=None, months=None):
     return {"counties": len(index), "rows": sum(i["n"] for i in index), "mb": round(total / 1048576, 2), "names": names, "unplaced": unplaced}
 
 
+def mark_checked(st, now, recs, months=None):
+    """data/land/checked.json: the state was read now, and the newest month its source holds.
+    A run that finds nothing new restores the county files whole (land_keep_stamp_only.py), so
+    their fetched_utc cannot say the state was looked at; this stamp does (scripts/land_alert.py
+    ready()). newest: the newest monthly report on file (Wisconsin), else the newest recorded or
+    sale month among the rows, never past the month of the read."""
+    if months:
+        m = max(months)
+        newest = m[:4] + "-" + m[4:6]
+    else:
+        ds = [str(r.get("rec") or r.get("date") or "")[:7] for r in recs]
+        ds = [d for d in ds if re.fullmatch(r"\d{4}-\d{2}", d) and d <= now[:7]]
+        newest = max(ds) if ds else None
+    p = os.path.join(OUT, "checked.json")
+    try:
+        ck = json.load(open(p, encoding="utf-8"))
+        ck = ck if isinstance(ck, dict) else {}
+    except (OSError, ValueError):
+        ck = {}
+    ck[st] = {"checked_utc": now, "newest": newest}
+    with open(p, "w") as f:
+        json.dump(dict(sorted(ck.items())), f, separators=(",", ":"))
+    return ck[st]
+
+
 _JAR = None
 
 
@@ -2761,6 +2786,7 @@ def run(states, from_dir=None, merge=False):
                 recs = cut
         if res is None:
             continue
+        mark_checked(st, now, recs, months)
         res["trims"] = trims
         print("::notice::%s" % summary(st, recs, trims))
         print("::notice::%s transfers: %d rows in %d counties (%.2f MB); names %s; %d rows with no county match; files %d, rows read %d, not farm %d"
@@ -3151,6 +3177,12 @@ def selftest():
         _, _, derived = held("WI", none_dir)
         os.rmdir(none_dir)
         ck("merge: no files on disk means nothing held", derived == set())
+        # the checked stamp (Nov 3): a state read is stamped even when nothing in it changed
+        mark_checked("WI", "2026-11-03T09:40:00Z", [], {"202409", "202410"})
+        mark_checked("IL", "2026-11-03T09:41:00Z", [{"date": "2026-10-28", "rec": "2026-10-30"}, {"date": "2026-12-19", "rec": None}])
+        ckd = json.load(open(os.path.join(OUT, "checked.json")))
+        ck("checked stamp: Wisconsin's newest monthly report, Illinois' newest month read, never a month past the read",
+           ckd == {"IL": {"checked_utc": "2026-11-03T09:41:00Z", "newest": "2026-10"}, "WI": {"checked_utc": "2026-11-03T09:40:00Z", "newest": "2024-10"}})
         build("IL", [dict(r) for r in il], {}, "2026-10-23T00:00:00Z")
         ixl = json.load(open(os.path.join(OUT, "il", "index.json")))
         fl = [json.load(open(os.path.join(OUT, "il", c["fips"] + ".json"))) for c in ixl["counties"]]

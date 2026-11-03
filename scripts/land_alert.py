@@ -360,6 +360,14 @@ def month_report(land, ll, radius, year, m0, today, need_fresh=True):
 
 
 # ---------------------------------------------------------------- selftest
+def _with_months(tmp, months):
+    p = os.path.join(tmp, "data", "land", "wi", "index.json")
+    ix = json.load(open(p))
+    ix["months"] = months
+    json.dump(ix, open(p, "w"))
+    return Land(tmp)
+
+
 def selftest():
     import tempfile
     fails = []
@@ -438,6 +446,20 @@ def selftest():
     ck("an empty month is an answer with no rows, not a skip", "skip" not in emp and emp["rows"] == [] and emp["n"] == 0, emp)
     # stale data waits
     ck("files fetched before the month ended: wait-data", month_report(land, zipll, 25, 2026, 9, today)["skip"] == "wait-data")
+    # ready() (Nov 3): read after the month AND records that reach into it; the checked stamp counts as a read
+    wf = land.file("WI", "55999")
+    rch = "2026-10-02"     # the newest recording in the near files, as month_report passes it
+    ck("ready: read Oct 3 with records into September; not October", ready(land, "WI", wf, 2026, 8, rch) and not ready(land, "WI", wf, 2026, 9, rch)
+       and not ready(land, "WI", wf, 2026, 8))
+    ck("ready: read after the month but the records stop months before it (a state that posts late): not ready",
+       not ready(land, "WI", dict(wf, fetched_utc="2026-12-05T00:00:00Z"), 2026, 10, rch))
+    json.dump({"WI": {"checked_utc": "2026-11-03T09:40:00Z", "newest": "2026-10"}}, open(os.path.join(tmp, "data", "land", "checked.json"), "w"))
+    ck("ready: a checked stamp after the month, with records reaching it, is a read even when the file kept its old fetched date",
+       ready(Land(tmp), "WI", wf, 2026, 9) and Land(tmp).seen("WI", wf) == "2026-11-03")
+    os.remove(os.path.join(tmp, "data", "land", "checked.json"))
+    ck("ready: Wisconsin's monthly reports decide when the index lists them",
+       ready(Land(tmp), "WI", wf, 2026, 8, rch) and not ready(_with_months(tmp, ["202608"]), "WI", wf, 2026, 8, rch))
+    json.dump({"counties": [{"fips": "55999", "name": "Testing", "lat": 45.2, "lng": -91.0}]}, open(os.path.join(tmp, "data", "land", "wi", "index.json"), "w"))
     ck("a ZIP far from any Illinois or Wisconsin county: outside", month_report(land, (33.0, -97.0), 50, 2026, 8, today)["skip"] == "outside")
     # the median withheld under 10, with the reason in words and the counts
     f2 = dict(f, rows=R[:9])
