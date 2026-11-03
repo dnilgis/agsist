@@ -70,6 +70,8 @@ test("daily.yml runs the fix after the critic and fact check, right before GATE 
   assert.ok(fix > y.indexOf("python scripts/critique_briefing.py") && fix > y.indexOf("python scripts/fact_check_briefing.py"));
   const step = y.slice(y.lastIndexOf("- name:", fix), fix);
   assert.doesNotMatch(step, /continue-on-error/);
-  assert.match(step, /ANTHROPIC_API_KEY= python scripts\/headline_fix.py --selftest/);
+  // its selftest runs keyless in the self-test step and never holds the issue (Nov 3 2026)
+  assert.doesNotMatch(step, /headline_fix.py --selftest/);
+  assert.match(read("scripts/daily_selftests.py"), /\["scripts\/headline_fix\.py", "--selftest"\], NO_KEY\)/);
   assert.match(step, /OWNER_TO:\s+\$\{\{ secrets.SIG_TO \}\}/);
 });

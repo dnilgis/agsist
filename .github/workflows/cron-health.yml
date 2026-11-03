@@ -56,6 +56,8 @@ jobs:
       contents: read
     outputs:
       go: ${{ steps.g.outputs.go }}
+      late: ${{ steps.late.outputs.go }}
+      rehearse: ${{ steps.rehearse.outputs.go }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -76,6 +78,113 @@ jobs:
         run: >-
           python3 scripts/cron_gate.py tick --workflow cron-health.yml --max-lag 30
           --cron "26,56 * * * *"
+      # THE DAILY'S 7:15 CHECK (Sig, Nov 3 2026). One tick at 12:15 and one at
+      # 13:15 UTC: 7:15 AM Central is one of them in summer time and the other
+      # in standard time. The first run after each tick does the check;
+      # scripts/daily_late.py acts only between 7:15 and 8:15 Central, so the
+      # other tick does nothing and Sig gets one email at most.
+      - id: late
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow cron-health.yml --max-lag 45
+          --cron "15 12,13 * * *"
+      # THE DAILY REHEARSAL, every evening at 00:41 UTC (6:41 PM CST, 7:41 PM
+      # CDT): tomorrow's Daily checks under tomorrow's clock (Sig, Nov 3 2026).
+      - id: rehearse
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow cron-health.yml --max-lag 45
+          --cron "41 0 * * *"
+
+  # NOT SENT BY 7:15 AM CT, SIG HEARS ABOUT IT (Nov 3 2026: the Daily went
+  # out two hours late and nothing said so). Reads, never writes: the sent
+  # copy on main, the day flag, today's daily.yml runs and their logs. One
+  # email naming the failing step and its log line; no address.
+  daily-late:
+    needs: gate
+    if: needs.gate.outputs.late == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          sparse-checkout: |
+            /scripts/
+            /data/daily-sent/
+            /.github/workflows/daily.yml
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Has today's Daily gone out
+        env:
+          GH_TOKEN:           ${{ github.token }}
+          LIST_URL:           ${{ secrets.LIST_URL }}
+          LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          OWNER_TO:           ${{ secrets.SIG_TO }}
+          SMTP_HOST:          ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:          ${{ secrets.SMTP_PORT }}
+          SMTP_USER:          ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:          ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:          ${{ secrets.FROM_ADDR }}
+          TZ: America/Chicago
+        run: python3 scripts/daily_late.py check
+
+  # TOMORROW'S DAILY, REHEARSED TONIGHT (Sig, Nov 3 2026: "before a calendar
+  # boundary run the suite with a future date"). Every evening, because the
+  # Daily goes out every morning and any night can sit before a boundary:
+  # every code self-test, the morning gate, the generator's date-bound inputs
+  # and GATE 1 under tomorrow's 5:50 AM clock, and the content gates replayed
+  # on the last issue. Send off, nothing published or committed, no model
+  # call. A failure mails Sig and turns this run red (scripts/daily_rehearsal.py).
+  # On Nov 2 at 6:41 PM it would have failed GATE 0g's daily-numbers fixture,
+  # the test that held the Nov 3 Daily for two hours.
+  daily-rehearsal:
+    needs: gate
+    if: needs.gate.outputs.rehearse == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        # daily.yml's own set, plus PyYAML for the gate simulator
+        run: pip install feedparser==6.0.14 requests==2.34.2 pillow==12.3.0 pyyaml==6.0.2
+      - name: Rehearse tomorrow's Daily
+        env:
+          OWNER_TO:  ${{ secrets.SIG_TO }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          TZ: America/Chicago
+        run: python scripts/daily_rehearsal.py
 
   check:
     needs: gate
