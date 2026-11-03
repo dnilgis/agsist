@@ -35,7 +35,7 @@ jobs:
   build:
     # a failed data run must not rebuild the pages from half a refresh
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4

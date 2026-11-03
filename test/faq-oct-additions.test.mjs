@@ -52,7 +52,7 @@ const PAGES = {
   "usda-calendar": [11, ["What happens if I miss the Dec. 11 ARC/PLC deadline for 2026?"]],
   "breakeven": [8, ["How much profit per acre is corn expected to make in 2027?", "How much does a small move in corn price change my return per acre?"]],
   "commodity-loan": [8, ["Will the loan rate stay the same next year or change?", "Can I get a loan on wheat or oats too, or just corn and beans?"]],
-  "custom-rates": [8, ["What does custom grain hauling cost per bushel?", "Do custom combiners charge extra for a big corn crop?"]],
+  "custom-rates": [9, ["What does custom grain hauling cost per bushel?", "Do custom combiners charge extra for a big corn crop?", "What does custom round baling cost per bale?"]],   // 9: the round baling answer (fx/crfix, Nov 3 panel)
   "gdu-calculator": [8, ["Does a 115-day hybrid actually take 115 days?", "Does day length affect corn the way it does soybeans?"]],
   "grain-shrink": [9, ["Can I trust my moisture meter on corn coming hot out of the dryer?", "When should I start combining beans so I don't deliver them too dry?"]],
   "store-or-sell": [6, ["Should I sell more corn and beans at harvest this year instead of storing it all?", "Is the interest on my operating loan likely to go up?"]],

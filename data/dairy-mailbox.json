@@ -16,9 +16,9 @@
  "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3357",
  "updated": "2026-11-02T16:27:37Z",
  "status": {
-  "ok": false,
-  "note": "AMS mailbox fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-  "checked": "2026-11-03T03:03:48Z"
+  "ok": true,
+  "note": "",
+  "checked": "2026-11-03T20:30:35Z"
  },
  "areas": {
   "month_key": "2026-07",

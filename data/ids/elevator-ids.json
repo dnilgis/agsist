@@ -1,7 +1,7 @@
 {
  "schema": "agsist-elevator-ids/1",
- "note": "Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids (a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements filled from this ledger as it stood before them, commit 3dd4c29b39d).",
- "next": 538,
+ "note": "Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids (a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every merge and split. retired: bids-repo ids the bids repo folded into another row (into), or that left its directory with no fold (rule vanished: into the one row all their keys match, else a new AGSIST id; an event back if the id returns), never used again; their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements filled from this ledger as it stood before them, commit 3dd4c29b39d).",
+ "next": 539,
  "minted": {
   "a00001": {
    "first": "basis:AL|AGREX INC|MONTGOMERY",
@@ -2245,6 +2245,10 @@
    "first": "dir:87820",
    "since": "2026-10-18",
    "into": "evzwpjq41a"
+  },
+  "a00538": {
+   "first": "basis:SD|FARMERS COOP SOCIETY|BERESFORD",
+   "since": "2026-11-03"
   }
  },
  "retired": {
@@ -2801,6 +2805,14 @@
    "rule": "phone",
    "keys": [
     "basis:IA|RIVER VALLEY COOPERATIVE|DYERSVILLE"
+   ]
+  },
+  "edy2eazz93": {
+   "into": "a00538",
+   "on": "2026-11-03",
+   "rule": "vanished",
+   "keys": [
+    "basis:SD|FARMERS COOP SOCIETY|BERESFORD"
    ]
   },
   "ee46y3574r": {
@@ -4894,6 +4906,12 @@
    "merge": "a00529",
    "into": "ear80ntznz",
    "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-03",
+   "retire": "edy2eazz93",
+   "into": "a00538",
+   "why": "gone from the bids repo's directory with no mergedFrom; its keys keep a new AGSIST id"
   }
  ],
  "keys": {
@@ -8190,7 +8208,7 @@
   "basis:SD|DELL RAPIDS CO-OP GRAIN|DELL RAPIDS": "evj9e4wg5z",
   "basis:SD|FARMERS COOP ELEVATOR ROSHOLT|FARMERS COOP ELEVATOR ROSHOLT": "evqch7za7y",
   "basis:SD|FARMERS COOP SOCIETY|ALCESTER": "en2dfgb1dw",
-  "basis:SD|FARMERS COOP SOCIETY|BERESFORD": "edy2eazz93",
+  "basis:SD|FARMERS COOP SOCIETY|BERESFORD": "a00538",
   "basis:SD|FARMERS COOP SOCIETY|WORTHING": "e7x1wsajbn",
   "basis:SD|FARMERS PRIDE COOP|AVON": "epenwfp24y",
   "basis:SD|FULL CIRCLE AG|ABERDEEN": "a00426",
@@ -8573,6 +8591,7 @@
   "bids:Agtegra||West Terminal|SD": "efv9rhc6dm",
   "bids:Al-Corn Clean Fuel||Al-Corn|MN": "e2myy50ta1",
   "bids:Al-Corn Clean Fuel||HCP|MN": "eedymvf9hp",
+  "bids:Alliance Grain||Gibson City - West|IL": "e18ha9321x",
   "bids:Allied Cooperative||ADAMS|WI": "e2qmdjyzk1",
   "bids:Allied Cooperative||Clintonville|WI": "efky9pkdp0",
   "bids:American Plains Co-op - Cash Bid Include||Ellinwood|KS": "eeg8r3wx18",
@@ -8649,6 +8668,7 @@
   "bids:CoMark Equity Alliance LLC||CONWAY SPRINGS EAST|KS": "e1vtwncbm5",
   "bids:CoMark Equity Alliance LLC||HALSTEAD WEST|KS": "egz19x9jv6",
   "bids:CoMark Equity Alliance LLC||MT HOPE|KS": "eef2vr1k62",
+  "bids:CoMark Equity Alliance LLC||MULVANE|KS": "e4qqdpqz4n",
   "bids:CoMark Equity Alliance LLC||PATTERSON|KS": "ejvw0yf3yr",
   "bids:CoMark Equity Alliance LLC||PETERSBURG TX|TX": "ertktvytp1",
   "bids:CoMark Equity Alliance LLC||TUTTLE|OK": "echsscy3j8",

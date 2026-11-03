@@ -54,7 +54,7 @@ env:
 
 jobs:
   audit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
     timeout-minutes: 25
     permissions:
       contents: read

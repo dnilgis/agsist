@@ -13,6 +13,8 @@ Then nothing.
   Now           a row not yet sent gets "Your Rain Print design: <town>,
                 <year>", marked sent (POST /rp-remind/mark) BEFORE the send,
                 so a rerun can never send it twice.
+                An ask still unanswered after NOW_MAX_H hours is marked done, not
+                mailed: a link days late reads wrong (Nov 3, 2026).
   Next day      from REMIND_AFTER_H hours after the ask, one reminder, marked
                 reminded first, unless a paid order matches the design, in
                 which case the row is marked done and nothing goes. A paid
@@ -84,6 +86,7 @@ CODE_RE = re.compile(r"^[A-Za-z0-9_-]{8,400}$")
 REF_RE = re.compile(r"^RPS-[0-9A-HJKMNP-TV-Z]{5,8}$")
 REMIND_AFTER_H = 20
 GIVE_UP_H = 72
+NOW_MAX_H = 24   # Nov 3: an ask never answered within a day is closed, not mailed late (the first live run met a week of dry-run asks)
 DRY_FRESH_H = 2
 GUARANTEE = "If it\u2019s not right, I\u2019ll redo it or refund it."
 STORY = "Made by a crop adviser in Chetek, Wisconsin, from NOAA\u2019s own records."
@@ -285,6 +288,11 @@ def run(src, dry, send, sig_to, now_ms=None, today=None):
         age_h = (now_ms - (row.get("ts") or now_ms)) / 3600e3
         stage = None
         if not row.get("sent"):
+            if age_h > NOW_MAX_H:
+                if not dry:
+                    src.worker("rp-remind/mark", body={"key": row["key"], "stage": "done", "why": "late"})
+                c["too late, closed"] += 1
+                continue
             stage = "now"
         elif not row.get("reminded"):
             if age_h < REMIND_AFTER_H:
@@ -487,6 +495,12 @@ def selftest():
     f = Fake([row(9, sent={"at": "x"})], [])
     run(f, False, send, "sig@agsist.com", now_ms=NOW + 80 * H_, today="2026-10-24")
     ck("too late: closed quietly", not sent and f.marks == [(row(9)["key"], "done", "late")])
+    # never answered within a day (asks from the dry-run weeks): closed, no link sent days late
+    sent.clear()
+    f = Fake([row(14, ts=NOW - 30 * H_), row(15, ts=NOW - 2 * H_)], [])
+    run(f, False, send, "sig@agsist.com", now_ms=NOW, today="2026-10-21")
+    ck("unanswered past a day: closed, not mailed", len(sent) == 1 and f.marks[0] == (row(14)["key"], "done", "late")
+       and (row(15)["key"], "sent") in [(k, st) for k, st, *_ in f.marks], str(f.marks))
     # after the cutoff: no Christmas line; this year's print: January
     s, paras, _ = words(row(10), "reminder", Fake([], []).prices(), "2026-12-11")
     ck("after the cutoff: no Christmas line", not any("Christmas" in p for p in paras), str(paras))

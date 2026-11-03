@@ -51,7 +51,7 @@ permissions:
 
 jobs:
   run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -90,5 +90,7 @@ jobs:
           RP_FROM_NAME: ${{ vars.RP_FROM_NAME }}
           SIG_TO: ${{ secrets.SIG_TO }}
           SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
-          DRY_RUN: ${{ inputs.dry_run == false && '' || '1' }}
+          # Nov 3, 2026: was `inputs.dry_run == false && '' || '1'`, always '1' ('' is falsy), so no buyer was
+          # ever mailed. Dry unless the worker asked with dry_run false.
+          DRY_RUN: ${{ inputs.dry_run != false && '1' || '' }}
         run: python3 scripts/rp_buyer_email.py

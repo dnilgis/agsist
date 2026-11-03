@@ -52,7 +52,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
     timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
@@ -207,6 +207,7 @@ jobs:
         timeout-minutes: 45
         run: python scripts/fetch_land_sales.py NJ || echo "::warning::New Jersey deeds were not written"
       - name: Wisconsin transfer returns (browser)
+        continue-on-error: true  # a Wisconsin browser failure must never drop the other states' commit (Nov 3)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-newest' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
         run: |
           python3 -m venv "$RUNNER_TEMP/pw"
@@ -235,8 +236,13 @@ jobs:
         run: OMP_NUM_THREADS=1 python scripts/build_land_index.py
       # The farm sale pages (/land-sales/: one per IL and WI county, the monthly update, the hub and its
       # sitemap) and their data (data/land-sales/, names only under data/land/names/, robots-blocked).
-      # Offline; refuses to write a buyer or seller name outside data/land/.
+      # Offline; refuses to write a buyer or seller name outside data/land/, and then writes no page at all.
+      # A refusal must not drop the transfers the land sale email reads (Nov 3: Vermont's rows shifted a
+      # column, the pages refused, and the whole commit was skipped): the commit below still takes
+      # data/land, the pages keep their last good copy, and the last step fails the run so it is seen.
       - name: Build the farm sale pages
+        id: pages
+        continue-on-error: true
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: python scripts/build_land_sales.py
       - name: Save raw answers to the raw branch
@@ -252,13 +258,16 @@ jobs:
         run: python scripts/check_site_budget.py
       - name: Commit if changed (race-tolerant)
         if: ${{ !(github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil')) }}
+        env:
+          PAGES: ${{ steps.pages.outcome }}
         run: |
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           rm -rf /tmp/ld && mkdir -p /tmp/ld
           [ -d data/land ] && cp -r --parents data/land /tmp/ld/ || true
-          [ -d land-sales ] && cp -r --parents land-sales data/land-sales sitemap-land-sales.xml /tmp/ld/ || true
+          # the pages only when they built (a refused build writes none; never commit a half set)
+          if [ "$PAGES" = "success" ]; then [ -d land-sales ] && cp -r --parents land-sales data/land-sales sitemap-land-sales.xml /tmp/ld/ || true; fi
           [ -n "$(ls -A /tmp/ld)" ] || { echo "No output; nothing to commit."; exit 0; }
           BR="${GITHUB_REF_NAME:-main}"
           for i in 1 2 3 4 5; do
@@ -276,3 +285,8 @@ jobs:
             sleep $((RANDOM % 4 + 2))
           done
           echo "Failed to push after 5 attempts."; exit 1
+      - name: The farm sale pages were refused
+        if: ${{ steps.pages.outcome == 'failure' }}
+        run: |
+          echo "::error::The farm sale pages were not built (see that step); data/land was committed, the pages kept their last good copy"
+          exit 1
