@@ -162,7 +162,7 @@ LINES = {
     "rain-radar": ("Rain on your field", "Rain in the last 24 hours, 3 days and 7 days at any spot, from NOAA radar and gauges."),
     "harvest-or-wait": ("Harvest or wait", "Drying bill now vs after field drydown, against the field loss you expect."),
     "editorial-standards": ("Editorial standards", "How the AGSIST Daily is made, where the numbers come from, and how corrections work."),
-    "custom-rates": ("Custom rates", "Nine state surveys: the average, range, unit and year for each job, with the source."),
+    "custom-rates": ("Custom rates", None),  # counted from the survey files: cr_line()
     "grain-shrink": ("Grain shrink", "Corn, soybeans, wheat and sorghum: shrink, drying charges and overdry loss at your bid."),
     "hay-prices": ("Hay prices", "Alfalfa and other hay, dollars a ton, every state USDA publishes."),
     "haymow": ("The Haymow", "Hay, straw and forage people have or need, nearest first. Post free. No fees, no cut."),
@@ -212,6 +212,18 @@ LINES = {
     "farm-anniversary-gifts": ("Gifts for farmers", "For a farm couple or a century farm: the year it started, on the wall."),
     "rain-print-business": ("Rain Print for businesses", "Each customer's own year of rain, printed and framed. From 5 prints, shipping included."),
 }
+
+def cr_line():
+    """/custom-rates: how many surveys and states, counted from data/custom-rates/index.json (never typed)."""
+    try:
+        sts = json.load(open(os.path.join(ROOT, "data", "custom-rates", "index.json"), encoding="utf-8"))["states"]
+    except (OSError, ValueError, KeyError):
+        return "State surveys: the average, range, unit and year for each job, with the source."
+    n_states = sum(len(s.get("states") or [s["st"]]) for s in sts)
+    return "%d state surveys, %d states: the average, range, unit and year for each job, with the source." % (len(sts), n_states)
+
+
+LINES["custom-rates"] = ("Custom rates", cr_line())
 
 # Pages that borrow another page's card (drawn first, then pointed at).
 KEEP = {

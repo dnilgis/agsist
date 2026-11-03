@@ -18,6 +18,11 @@
 .cr-status{font-size:.88rem;color:var(--text-muted);margin:.5rem 0 0}
 .cr-status:empty{display:none}
 .cr-status.err{color:var(--red)}
+.crh-pick :disabled,.cr-chip:disabled,.cr-btn:disabled{opacity:.55;cursor:progress}
+.crc-note{margin:.5rem 1rem .7rem!important}
+/* a state page: the state's own number first */
+.crh-st p{margin:0 0 .45rem}
+.crh-me a{white-space:nowrap}
 
 /* the first-screen answer */
 .crh{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem 1.1rem;margin:1rem 0 1.4rem}
@@ -62,6 +67,25 @@
 .crn a small{color:var(--text-muted);font-weight:400}
 .crn-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem;margin:.4rem 0 .6rem!important;font-size:.88rem!important;color:var(--text-muted)!important}
 .crn-tools #cr-print{margin-left:auto}
+/* quote my job */
+.crq{margin:0 0 1.4rem;padding:.9rem 1.1rem;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+.crq h2{margin:0 0 .4rem!important}
+.crq-l{list-style:none;margin:.4rem 0;padding:0}
+.crq-r{display:grid;grid-template-columns:minmax(0,1.2fr) auto minmax(0,1.6fr) auto;align-items:center;gap:.4rem .8rem;padding:.5rem 0;border-bottom:1px solid var(--border)}
+.crq-n{font-weight:600;color:var(--text)}
+.crq-n small,.crq-v small{display:block;font-weight:400;font-size:.78rem;color:var(--text-muted)}
+.crq-v{font-size:.9rem;color:var(--text-dim)}
+.crq-t{font-size:1rem!important;color:var(--text)!important;margin:.7rem 0 .3rem!important}
+.crq-act{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0 0!important}
+/* the new-survey email ask */
+.crt{margin:0 0 1.2rem;padding:.75rem 1rem;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.crt[hidden]{display:none}
+.crt-h{margin:0 0 .2rem!important}
+.crt-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:.5rem .7rem}
+.crt-l{display:flex;flex-direction:column;gap:.2rem;flex:1 1 14rem;font-size:.8rem;font-weight:700;color:var(--text-muted)}
+.crt-in{min-height:44px;padding:0 .7rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem;box-sizing:border-box;width:100%}
+.crt-m{flex:1 1 100%;margin:0!important;font-size:.86rem!important;color:var(--red)!important}.crt-m:empty{display:none}
+.crt-ok{margin:0!important;font-weight:700;color:var(--green)!important}
 
 /* categories */
 .crc{margin:0 0 .9rem;border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:hidden;scroll-margin-top:72px}
@@ -118,18 +142,30 @@
 .cr-t td{font-family:var(--font-mono,'JetBrains Mono',monospace);color:var(--text);white-space:nowrap}
 .cr-t td small,.cr-t th small{font-family:var(--font-body,inherit);font-size:.74rem;color:var(--text-muted);font-weight:400}
 .cr-t tr.sec th{background:var(--surface2,var(--surface));font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);padding-top:.6rem}
+/* state pages: the column names stay in view down a long table; the hub summary keeps the state in view sideways */
+.cr-tw-v{overflow:visible;--cr-stick:74px}
+@media(max-width:520px){.cr-tw-v{--cr-stick:62px}}
+.cr-tw-v .cr-t thead th{position:sticky;top:var(--cr-stick);z-index:2;background:var(--bg)}
+.cr-sum th[scope="row"],.cr-sum thead th:first-child{position:sticky;left:0;z-index:1;background:var(--bg)}
 .cr-t .na{font-family:var(--font-body,inherit);font-size:.78rem;color:var(--text-muted)}
 .cr-t tr.me th,.cr-t tr.me td{background:rgba(var(--gold-rgb),.10)}
 .cr-t td .rgm{display:none;font-size:.72rem;color:var(--text-muted);white-space:normal}
 /* the median, where a survey prints one (Missouri G302): always under the average */
 .cr-t td.av .mdn{display:block;font-size:.72rem;color:var(--text-muted);white-space:normal}
-.cr-faq details{border-top:1px solid var(--border);padding:.75rem 0}
+.cr-faq details{border-top:1px solid var(--border);padding:.25rem 0}
 .cr-faq details:last-child{border-bottom:1px solid var(--border)}
-.cr-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem;min-height:28px}
+.cr-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem;min-height:44px;display:flex;align-items:center}
+.cr-faq summary::-webkit-details-marker{display:none}
+.cr-faq summary::before{content:"";flex:0 0 auto;width:7px;height:7px;border-right:2px solid var(--text-muted);border-bottom:2px solid var(--text-muted);transform:rotate(-45deg);margin:0 .7rem 0 .1rem;transition:transform .15s}
+.cr-faq details[open] summary::before{transform:rotate(45deg)}
 .cr-faq details p{margin:.6rem 0 .2rem}
 .cr-other{line-height:2!important}
 .cr .rel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;list-style:none;padding:0;margin:.4rem 0 0}
 .cr .rel li{min-height:44px;display:flex;align-items:center}
+.cr .rel a{display:inline-flex;align-items:center;min-height:44px}
+/* the site glossary's inline words: a 44 px tall tap area without moving the line */
+.cr button.gl-term{padding:12px 0!important;background-clip:content-box!important}
+.cr-other a{display:inline-block;min-height:44px;line-height:44px}
 
 @media(max-width:699px){
   .cr{padding:.8rem 12px 5rem}
@@ -156,8 +192,11 @@
   .cr-t.cr-full td.av,.crd-t td{white-space:normal;min-width:5.5rem}
   .cr-t.cr-full td.av small{display:block}
   .cr-t thead th{letter-spacing:0;font-size:.66rem}
+  .crq{padding:.8rem 12px}
+  .crq-r{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n x" "q q" "v v"}
+  .crq-n{grid-area:n}.crq-x{grid-area:x}.crq-r .cr-qty{grid-area:q}.crq-v{grid-area:v}
   .crs-bar{bottom:.4rem;padding:.5rem 10px}
   .crs-bar .cr-btn{flex:1 1 auto;padding:0 .6rem}
   .crs-bar p{flex:1 0 100%}
 }
-@media print{#site-header,#site-footer,.skip,.breadcrumb,.crh-pick,.crh-chips,.crn,.crn-tools,.crs-bar,.cr-faq,.cr-actions,.crd-act,.crc-sb{display:none!important}html,body,main{background:#fff!important;color:#000!important}.crc.shut .cro-l{display:block!important}.cr p,.cr li,.cr b,.cr-t td,.cr-t th{color:#000!important}}
+@media print{.crq,.crt,#cr-sheet-state,.crh-pick,.crh-chips,.crn,.crn-tools,.crs-bar,.cr-faq,.cr-actions,.crd-act,.crc-sb{display:none!important}html,body,main{background:#fff!important;color:#000!important}.crc.shut .cro-l{display:block!important}.cr p,.cr li,.cr b,.cr-t td,.cr-t th{color:#000!important}}

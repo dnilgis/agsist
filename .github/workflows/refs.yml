@@ -85,7 +85,7 @@ jobs:
   fetch:
     needs: gate
     if: needs.gate.outputs.go == '1'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
     concurrency:
       group: refs
       cancel-in-progress: false
