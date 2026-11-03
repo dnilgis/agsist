@@ -86,7 +86,7 @@ test("retired bids-repo ids: never a record, never held by a key, recorded once 
   // a data check, not a code check (the rule itself is pinned on fixtures in build_ids.py --selftest): the live file
   // the bids job writes holds a bids-repo id the bids repo no longer lists. Say so plainly when it happens.
   assert.equal(EL.counts.stale_ids, 0, `data/ids/elevators.json (generated ${EL.generated}): ${EL.counts.stale_ids} record(s) `
-    + "keep a bids-repo id the bids repo no longer lists (counts.stale_ids); python3 scripts/build_ids.py against the current bids repo names it");
+    + "keep a bids-repo id the bids repo no longer lists (counts.stale_ids); python3 scripts/build_ids.py against the current bids repo recounts it");
 });
 
 test("alias lookups: the basis history's spellings find one facility", () => {
