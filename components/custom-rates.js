@@ -648,7 +648,7 @@
     var u = usdaDiesel(pc, st);
     if (!u) return t + ' No USDA farm diesel report covers ' + stName(st) + ', so there is no current price beside it.';
     return t + ' USDA\'s dealer survey had farm diesel at ' + money(u.avg, 'gallon') + ' a gallon' + (/deliver/i.test(u.freight || '') ? ' delivered' : '') +
-      ' (' + u.title + ', ' + day(u.date) + '). The survey rates are shown as printed, never adjusted for fuel.';
+      ' (USDA AMS ' + String(u.title).replace(/ *\([^)]*\)/g, '') + ', ' + day(u.date) + '). The survey rates are shown as printed, never adjusted for fuel.';
   }
   /* ---- "tell me when my state's new survey is out": one email, topic customrates:<st> on the
      subscriptions worker's /notice; scripts/send_custom_rates_notice.py mails it once ---- */
