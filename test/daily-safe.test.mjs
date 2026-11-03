@@ -67,7 +67,7 @@ test("daily.yml: every code self-test runs in one report-only step; none is a ha
   const TESTY = /(scripts\/test_\w+\.py|--selftest\b|scripts\/(contract_calendar|market_board)\.py\s*$)/m;
   for (const s of steps(gen)) {
     const body = live(s.slice(s.indexOf("\n")));
-    if (!TESTY.test(body)) continue;
+    if (!TESTY.test(body) || /^python3 scripts\/test_send_loops\.py$/m.test(body.replace(/^\s*run: /m, "").trim())) continue;
     assert.match(s, /continue-on-error: true/, `a self-test in a hard step: ${s.split("\n")[0]}`);
   }
   // every command the old GATE 0 to 0g and the content steps ran is still run, from the one list
@@ -77,8 +77,16 @@ test("daily.yml: every code self-test runs in one report-only step; none is a ha
                    '"scripts/voice_lint.py", "--selftest"', '"scripts/report_day.py", "--selftest"', '"scripts/usda_dates.py", "--selftest"',
                    "scripts/test_daily_trust.py", '"scripts/watch_dates.py", "--selftest"', '"scripts/streak_words.py", "--selftest"',
                    "scripts/test_daily_numbers.py", '"scripts/daily_claims.py", "--selftest"', "scripts/test_fact_check.py",
-                   '"scripts/headline_fix.py", "--selftest"', '"scripts/cause_fix.py", "--selftest"', '"scripts/daily_edge.py", "--selftest"',
-                   "scripts/test_send_loops.py"]) assert.ok(list.includes(c), `still run: ${c}`);
+                   '"scripts/headline_fix.py", "--selftest"', '"scripts/cause_fix.py", "--selftest"', '"scripts/daily_edge.py", "--selftest"']) assert.ok(list.includes(c), `still run: ${c}`);
+  // the one exception: the send-loop guard stays a hard step right before the send (it stops a double or mass send)
+  assert.ok(!list.includes('["scripts/test_send_loops.py"]'), "the send-loop guard is not report-only");
+  const sl = steps(gen).find((x) => x.startsWith("- name: Neither send loop can re-mail the whole list"));
+  assert.ok(sl, "the send-loop guard step");
+  assert.match(sl, /run: python3 scripts\/test_send_loops\.py/);
+  assert.doesNotMatch(sl, /continue-on-error/, "a failing send-loop guard holds the email");
+  assert.match(sl, /if: \$\{\{ github\.event_name == 'schedule' \|\| inputs\.send_email == true \}\}/);
+  assert.ok(gen.indexOf("- name: Neither send loop") > gen.indexOf("- name: Commit and push") &&
+            gen.indexOf("- name: Neither send loop") < gen.indexOf("- name: Send daily email"), "right before the send");
   // and the content gates on today's issue still hold it: hard steps, in order, before the commit
   for (const [name, cmd] of [["GATE 1", "python scripts/preflight_prices.py data/prices.json --repair"],
                              ["GATE 2f", "python scripts/fact_check_briefing.py"],

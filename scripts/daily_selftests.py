@@ -11,8 +11,13 @@ Today's issue was fine; the test of the code was not. Nobody got the Daily on ti
 Sig, Nov 3: "Code self-tests never hold the Daily send; only content gates on the
 day's issue may." So every self-test that used to sit in front of the generator
 or inside a content step (GATE 0 to 0g, the fact check's, the headline fix's, the
-cause fix's, the edge facts' and the send loops' self-tests) runs here, in one
-step that reports and never stops the job. Each one still runs on every run.
+cause fix's and the edge facts' self-tests) runs here, in one step that reports
+and never stops the job. Each one still runs on every run.
+
+ONE EXCEPTION STAYS A HARD STEP: scripts/test_send_loops.py, daily.yml's "Neither
+send loop can re-mail the whole list", right before the send. It guards readers
+against a double or mass send, depends on no date and no live data, and a
+failure there must hold the email (lead, Nov 3 2026). It is not in this list.
 
 A failure is reported three ways:
   - the step goes red in the run (exit 1; daily.yml marks it continue-on-error)
@@ -64,7 +69,6 @@ SELFTESTS = [
     ("GATE 2h headline fix selftest", ["scripts/headline_fix.py", "--selftest"], NO_KEY),
     ("GATE 2c cause fix selftest", ["scripts/cause_fix.py", "--selftest"], {}),
     ("Only on AGSIST facts selftest", ["scripts/daily_edge.py", "--selftest"], {}),
-    ("send loops cannot re-mail the list", ["scripts/test_send_loops.py"], {}),
 ]
 STEP_NAME = "Code self-tests (report only, never hold the send)"
 TIMEOUT_S = 240

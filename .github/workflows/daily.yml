@@ -567,11 +567,12 @@ jobs:
       # voice check, 0f report-day line, 0g USDA dates, daily trust, watch
       # dates, streak words, daily numbers, daily claims, and the self-tests
       # that used to run inside GATE 2f (fact check), GATE 2h (headline fix),
-      # GATE 2c (cause fix), the edge facts and the send-loop guard. A failure
+      # GATE 2c (cause fix) and the edge facts. A failure
       # turns this step red, lists every test in the job summary, and mails Sig
       # once a day. The briefing goes on to the content gates below, which
       # still hold it: GATE 1 (feed), 2f (fact check), 2h (headline), 2
-      # (briefing gate), the schema and 2v (number check).
+      # (briefing gate), the schema and 2v (number check). So does the send-loop
+      # guard before the send (it protects readers from a double send).
       # The same list runs every evening under tomorrow's date
       # (scripts/daily_rehearsal.py, in cron-health.yml), so a test that is
       # about to break is found the night before.
@@ -975,7 +976,7 @@ jobs:
       # It cannot double-send: send_daily.py sets a day flag through the subs
       # worker and fails closed, and the gate above refuses any run on a day
       # that is already published.
-      # THE SEND LOOP IS CHECKED ON EVERY RUN.
+      # THE SEND LOOP IS CHECKED IN THE SECOND BEFORE IT MAILS THE LIST.
       #
       # Both senders in this repository put each message inside
       # `except smtplib.SMTPException`, and the day flag is set AFTER the loop.
@@ -985,9 +986,13 @@ jobs:
       #
       # The guard lifts both loops out of their scripts and runs them against a
       # fake server that drops mid-list. A second, no network, no dependencies.
-      # It runs in the self-test step at the top of this job now (Nov 3 2026):
-      # a test of the sender's code, reported every run, never holding the
-      # send. The day flag (send_daily.py) is what stops a second send.
+      # It stays a HARD step (Nov 3 2026), the one guard of code that still
+      # holds the send: it protects readers from a double or mass send, reads
+      # no date and no live data, so a failure here is a real defect.
+      - name: Neither send loop can re-mail the whole list
+        id: sendloops
+        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
+        run: python3 scripts/test_send_loops.py
 
       # THE LOCAL TOP BID MUST BE THE HOMEPAGE'S. scripts/local_bid.py ports
       # the hero's rule; this runs it against the real components/*.js on the
