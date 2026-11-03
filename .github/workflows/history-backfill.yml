@@ -11,9 +11,12 @@ name: History backfill (dispatch only)
 #                nass         NASS crop progress and condition, every state, as far back as Quick Stats goes
 #                ams-fert     AMS Illinois Production Cost Report (fertilizer), 2010 on
 #                nass-yield   NASS final state yields, corn and soybeans, every year (about 4 calls)
+#                mars-map     research probe for the My Market News map (MARS_API_KEY; probe ticked only):
+#                             names the ids the catalog leaves out, history depth, release times, one
+#                             trimmed sample per candidate report (scripts/probe_mars_map.py)
 #   from, to     years (blank = the script's own start, this year)
 #   only         agtransport: dataset names (grain_basis,barge_rates); usdm: states (IA,MN)
-#   probe        ams-fert only: save what the archive and MARS answer, fetch nothing else
+#   probe        ams-fert and mars-map only: save what the archive and MARS answer, fetch nothing else
 #   max_minutes  stop starting new chunks after this; what is done is saved
 #
 # Resumable: each run reads the saved manifest first and skips every chunk it
@@ -27,7 +30,7 @@ on:
       source:
         description: "What to backfill"
         type: choice
-        options: [agtransport, usdm, nass, ams-fert, nass-yield]
+        options: [agtransport, usdm, nass, ams-fert, nass-yield, mars-map]
         required: true
       from:
         description: "First year (blank = the script's start)"
@@ -84,6 +87,7 @@ jobs:
             nass)        echo "dir=history/nass-progress" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_progress.py" >> "$GITHUB_OUTPUT";;
             ams-fert)    echo "dir=history/ams-fert" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_ams_fert.py" >> "$GITHUB_OUTPUT";;
             nass-yield)  echo "dir=history/nass-yield" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_nass_yield.py" >> "$GITHUB_OUTPUT";;
+            mars-map)    echo "dir=history/mars-map" >> "$GITHUB_OUTPUT"; echo "script=scripts/probe_mars_map.py" >> "$GITHUB_OUTPUT";;
             *) echo "::error::unknown source $SOURCE"; exit 1;;
           esac
       - name: Selftests (no network)
@@ -123,7 +127,7 @@ jobs:
           RAW_SOFT: '1'
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           NASS_API_KEY: ${{ (inputs.source == 'nass' || inputs.source == 'nass-yield') && secrets.NASS_API_KEY || '' }}
-          MARS_API_KEY: ${{ inputs.source == 'ams-fert' && secrets.MARS_API_KEY || '' }}
+          MARS_API_KEY: ${{ (inputs.source == 'ams-fert' || inputs.source == 'mars-map') && secrets.MARS_API_KEY || '' }}
           SOCRATA_APP_TOKEN: ${{ inputs.source == 'agtransport' && secrets.SOCRATA_APP_TOKEN || '' }}
         run: |
           args=()
@@ -138,8 +142,14 @@ jobs:
             case "$SOURCE" in agtransport) args+=(--only "$ONLY");; usdm) args+=(--states "$ONLY");; esac
           fi
           if [ "$PROBE" = "true" ]; then
-            [ "$SOURCE" = "ams-fert" ] || { echo "::error::probe is for ams-fert only"; exit 1; }
-            python3 "$SCRIPT" --probe
+            case "$SOURCE" in ams-fert|mars-map) ;; *) echo "::error::probe is for ams-fert and mars-map only"; exit 1;; esac
+            if [ "$SOURCE" = "mars-map" ]; then
+              python3 "$SCRIPT" --probe --out "$DIR" --max-minutes "${MAXMIN:-300}"
+            else
+              python3 "$SCRIPT" --probe
+            fi
+          elif [ "$SOURCE" = "mars-map" ]; then
+            echo "::error::mars-map is a probe: tick probe"; exit 1
           else
             python3 "$SCRIPT" "${args[@]}"
           fi
