@@ -89,7 +89,9 @@ function loadFertPrices(){
     function key(k){return data.prices.find(function(p){return p.key===k&&p.price>0;})||null;}
     var el=document.getElementById('fert-date');
     if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');var stn=data.state&&window.AgFertPick?AgFertPick.NAMES[data.state]:'';el.textContent='Co-op posted cash prices through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+(stn?', '+stn+' sheets first when there are any':'')+'. Call to confirm.';
-      if((Date.now()-d.getTime())/864e5>30){el.style.color='var(--gold)';}}
+      if((Date.now()-d.getTime())/864e5>30){el.style.color='var(--gold)';}
+      /* the heading says the date the prices are from, never "current" */
+      var td=document.getElementById('fert-title-date');if(td)td.textContent=' as of '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
     var urea=key('urea'), potash=key('potash'), ams=key('ams'), phos=key('map')||key('dap'), aa=key('anhydrous');
     var wrap=document.getElementById('fert-pills');
     if(!wrap)return;

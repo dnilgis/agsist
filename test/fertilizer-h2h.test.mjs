@@ -136,7 +136,7 @@ test("the co-op workflow selftests first, then rebuilds the shared list and ever
   const wf = read(".github/workflows/fertilizer-ams.yml");
   assert.ok(wf.indexOf("fetch_fert_ams.py --selftest") < wf.indexOf("run: python scripts/fetch_fert_ams.py\n"));
   // main gets the feed only; the probe's raw text goes to the raw branch (never deployed)
-  assert.match(wf, /FILES="data\/fertilizer-ams\.json data\/fertilizer-ams-history\.json"/);
+  assert.match(wf, /FILES="data\/fertilizer-ams\.json data\/fertilizer-ams-history\.json data\/production-costs\.json"/);  // + the USDA MARS production cost file (fx/marsfert), still no raw capture
   assert.match(wf, /bash scripts\/push_raw\.sh "fertilizer-ams probe" data\/fert-ams-raw\n/);
   assert.doesNotMatch(wf, /fert_after_prices|build_fert_prices/, "the USDA job must not rebuild the price list");
   const w = read(".github/workflows/fertilizer-coops.yml");
