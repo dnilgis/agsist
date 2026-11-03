@@ -6,8 +6,8 @@ description: >-
   "success" with every working job skipped. A workflow that follows such an upstream must
   not treat those as fresh data (PR #285 review: the Atlas page rebuild and the hail alert
   email would have started every 15 minutes). go=1 when the upstream run has no job named
-  "gate" (an ungated upstream: unchanged), or when a job other than "gate" ended success.
-  go=0 when every job other than "gate" was skipped or failed, and when the jobs cannot be
+  "gate" or "upstream" (an unfiltered upstream: unchanged), or when another of its jobs ended
+  success. go=0 when every other job was skipped or failed, and when the jobs cannot be
   read (fail closed). Any other event (schedule, a run by hand, a push): go=1.
   The job that uses this needs `permissions: actions: read`.
 outputs:

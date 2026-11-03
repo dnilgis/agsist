@@ -5,8 +5,8 @@ Used by .github/actions/upstream-did-work (see its action.yml). Reads EVENT,
 RUN_ID, UPSTREAM, REPO, API and GH_TOKEN from the environment, lists the jobs
 of the upstream run (the latest attempt) and writes go=0|1 to $GITHUB_OUTPUT.
 
-  go=1  not a workflow_run event; or the upstream run has no job named "gate";
-        or a job other than "gate" ended success.
+  go=1  not a workflow_run event; or the upstream run has no job named "gate" or
+        "upstream" (the two filter jobs); or another of its jobs ended success.
   go=0  the upstream's gate skipped every working job (or they failed); or the
         jobs could not be read (fail closed: a missed chained run is caught by
         the next one or the backstop schedule, a false one rebuilds or mails).
@@ -21,6 +21,11 @@ import sys
 import urllib.request
 
 
+# A cron_gate.py gate, and this action's own job: a workflow that follows a filtered workflow
+# (farmland-atlas-watch after farmland-atlas-pages) must see through both.
+FILTER_JOBS = {"gate", "upstream"}
+
+
 def decide(event, jobs):
     """(go, reason). jobs: [{"name", "conclusion"}] of the upstream run, or None when unreadable."""
     if event != "workflow_run":
@@ -28,9 +33,9 @@ def decide(event, jobs):
     if not jobs:
         return 0, "upstream jobs unreadable or empty; fail closed"
     names = [j.get("name") for j in jobs]
-    if "gate" not in names:
+    if not FILTER_JOBS & set(names):
         return 1, "upstream has no gate job: %s" % ", ".join(n or "?" for n in names)
-    did = [j["name"] for j in jobs if j.get("name") != "gate" and j.get("conclusion") == "success"]
+    did = [j["name"] for j in jobs if j.get("name") not in FILTER_JOBS and j.get("conclusion") == "success"]
     if did:
         return 1, "upstream did its work (%s)" % ", ".join(did)
     return 0, "upstream's gate skipped its work (%s)" % ", ".join(
@@ -65,6 +70,10 @@ def selftest():
     check(decide("workflow_run", J(("gate", "success"), ("build", "failure")))[0] == 0,
           "the upstream's work failed: no go")
     check(decide("workflow_run", J(("fetch", "success")))[0] == 1, "an ungated upstream: go, as before")
+    check(decide("workflow_run", J(("upstream", "success"), ("build", "skipped")))[0] == 0,
+          "an upstream that was itself filtered out did nothing: no go")
+    check(decide("workflow_run", J(("upstream", "success"), ("build", "success")))[0] == 1,
+          "an upstream that passed its own filter and built: go")
     check(decide("workflow_run", None)[0] == 0, "jobs unreadable: fail closed")
     check(decide("workflow_run", [])[0] == 0, "no jobs listed: fail closed")
     print("\n%d failed" % len(fails) if fails else "\nall did_work checks passed")

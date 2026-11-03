@@ -280,3 +280,71 @@ test("the gate passes over runs by hand for these, the land email retries after 
     assert.ok(ch.includes("ok   " + file + ": gated row, its clock is the workflow's schedule"), file + ": cron health checked the gate clock");
   }
 });
+
+// PR #285 review (Nov 3, 2026): a gated workflow's skipped runs still end "success", so a workflow that
+// follows it on workflow_run would rebuild or mail every 15 minutes (the Atlas page rebuild, the hail
+// alert email, report-day's send). Every follower of a filtered workflow (one with a job named "gate" or
+// "upstream") checks that the run that started it did its work, with one shared action.
+const ALL = JSON.parse(execFileSync("python3", ["-c", `
+import glob, json, os, yaml
+out = {}
+for f in sorted(glob.glob(".github/workflows/*.yml")):
+    y = yaml.safe_load(open(f))
+    on = y.get(True) or y.get("on") or {}
+    out[os.path.basename(f)] = {
+        "name": y.get("name"),
+        "after": (on.get("workflow_run") or {}).get("workflows", []) if isinstance(on, dict) else [],
+        "concurrency": "concurrency" in y,
+        "jobs": {k: {"name": v.get("name"), "needs": v.get("needs"), "if": v.get("if"),
+                     "permissions": v.get("permissions"), "steps": v.get("steps") or [],
+                     "outputs": v.get("outputs")} for k, v in (y.get("jobs") or {}).items()},
+    }
+print(json.dumps(out))
+`], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 26 }));
+const BY_NAME = Object.fromEntries(Object.entries(ALL).map(([f, w]) => [w.name, f]));
+const FILTERED = new Set(Object.entries(ALL).filter(([, w]) => w.jobs.gate || w.jobs.upstream).map(([f]) => f));
+
+test("the filter jobs keep their ids as names, so the upstream check can find them", () => {
+  for (const [f, w] of Object.entries(ALL)) {
+    for (const id of ["gate", "upstream"]) {
+      if (w.jobs[id]) assert.ok(!w.jobs[id].name || w.jobs[id].name === id, `${f}: job ${id} must not be renamed`);
+    }
+  }
+});
+
+test("every workflow that follows a filtered workflow acts only when that run did its work", () => {
+  const followers = Object.entries(ALL).filter(([, w]) => w.after.some((n) => FILTERED.has(BY_NAME[n])));
+  assert.ok(followers.length >= 11, "the followers found: " + followers.map(([f]) => f).join(", "));
+  for (const [f, w] of followers) {
+    const up = w.jobs.upstream;
+    assert.ok(up, `${f}: follows ${w.after.filter((n) => FILTERED.has(BY_NAME[n])).join(", ")} but has no upstream job`);
+    assert.ok(up.steps.some((s) => s.uses === "./.github/actions/upstream-did-work" && s.id === "u"), f + ": the shared action");
+    assert.equal(up.outputs?.go, "${{ steps.u.outputs.go }}", f);
+    assert.equal(up.permissions?.actions, "read", f + ": may list the upstream run's jobs");
+    assert.ok(up.needs == null, f + ": the check runs first");
+    for (const [id, j] of Object.entries(w.jobs)) {
+      if (id === "upstream") continue;
+      const needs = [].concat(j.needs || []);
+      if (!needs.length || needs.includes("upstream")) {
+        assert.ok(needs.includes("upstream"), `${f}: job ${id} starts without the upstream check`);
+        assert.match(String(j.if), /^needs\.upstream\.outputs\.go == '1'( && \(.*\))?$/, `${f}: job ${id} runs only when the upstream did its work`);
+      }
+    }
+    assert.equal(w.concurrency, false, f + ": the queue is on the working job; a filtered run never replaces a real one waiting in it");
+  }
+  for (const f of ["farmland-atlas-pages.yml", "alert-check.yml", "report-day.yml"]) {
+    assert.ok(followers.some(([x]) => x === f), f + " is held here (the three named in the review)");
+  }
+});
+
+test("upstream-did-work: the decision, failing closed", () => {
+  const out = execFileSync("python3", [".github/actions/upstream-did-work/did_work.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
+  assert.match(out, /all did_work checks passed/);
+  for (const name of ["the upstream's gate skipped it: no go (the every-15-minutes case)", "jobs unreadable: fail closed",
+    "an ungated upstream: go, as before", "an upstream that was itself filtered out did nothing: no go"]) {
+    assert.ok(out.includes("ok   " + name), name);
+  }
+  const action = fs.readFileSync(path.join(ROOT, ".github/actions/upstream-did-work/action.yml"), "utf8");
+  assert.match(action, /RUN_ID: \$\{\{ github\.event\.workflow_run\.id \}\}/);
+  assert.match(action, /python3 "\$GITHUB_ACTION_PATH\/did_work\.py"/, "the script beside the action, never the engine copy");
+});
