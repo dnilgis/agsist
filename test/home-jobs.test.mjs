@@ -253,6 +253,10 @@ test("browser: tight on a phone; at 390x844 the first screen holds the ZIP line,
 const require = (await import("node:module")).createRequire(import.meta.url);
 const WORTH = require(join(ROOT, "components/home-worth.js"));
 const RP = JSON.parse(read("data/rain-print.json"));
+/* Frozen copies of data/rain-print.json and data/whats-new.json (Nov 3, 2026) for the browser cases that fake a
+   date: Sig's Nov 3 rule, no test depends on today's date or on live data holding a value. */
+const RPF = JSON.parse(read("test/fixtures/home-worth/rain-print.json"));
+const WNF = JSON.parse(read("test/fixtures/home-worth/whats-new.json"));
 
 test("Worth a look sits right under the jobs, before the Daily, with Rain Print once", () => {
   const bandEnd = HTML.indexOf("</section>", HTML.indexOf('id="hero-band"'));
@@ -319,7 +323,7 @@ test("New on AGSIST: the newest three pages from What's new, one each, turning o
 });
 
 /* the page at one date: rain-print.json and whats-new.json held back for `hold` ms so the cards fill late */
-async function openWorth(browser, port, { w, h = 844, day, cfg, hold = 1200, zip = true }) {
+async function openWorth(browser, port, { w, h = 844, day, cfg, wn, hold = 1200, zip = true }) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: w, height: h } });
   const pg = await ctx.newPage(), errs = [];
   pg.on("pageerror", (e) => errs.push(e.message));
@@ -328,6 +332,7 @@ async function openWorth(browser, port, { w, h = 844, day, cfg, hold = 1200, zip
   await pg.route(/\/data\/(rain-print|whats-new)\.json/, async (r) => {
     await new Promise((ok) => setTimeout(ok, hold));
     if (cfg && /rain-print/.test(r.request().url())) return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(cfg) });
+    if (wn && /whats-new/.test(r.request().url())) return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(wn) });
     return r.continue();
   });
   await pg.addInitScript(() => {
@@ -371,7 +376,7 @@ test("browser: Worth a look holds its place while it fills, for each Rain Print 
       // The strip's own data is held 3 s. "before" is taken once everything above the strip has settled (its top
       // still for 3 checks in a row), so a slow runner filling the hero band late (Nov 2: CI moved the strip 18 px
       // at 400 ms) is not read as the strip moving; the band is held by the round 2 and cls tests.
-      const { ctx, pg, errs } = await openWorth(browser, port, { w, day, h: w === 390 ? 844 : 900, hold: 3000 });
+      const { ctx, pg, errs } = await openWorth(browser, port, { w, day, h: w === 390 ? 844 : 900, hold: 3000, cfg: RPF, wn: WNF });
       // web fonts swap in when their files arrive; on a slow runner that can be after the page "settles"
       await pg.evaluate(() => document.fonts && document.fonts.ready);
       let last = null, still = 0;
@@ -386,8 +391,11 @@ test("browser: Worth a look holds its place while it fills, for each Rain Print 
       assert.equal(filled, "/changelog", `${tag}: "before" is read while the strip still holds its baked link`);
       const before = await pg.evaluate(worthBoxes);
       const aboveBefore = await pg.evaluate(aboveStrip);
+      // The bids land after "before", as they did on CI on Nov 3: the label "Top soybean bid nearby" became "...
+      // within 50 mi", a second line at 390, and the band grew 18px over the strip. The band holds it now.
+      await pg.evaluate((d) => { window.dispatchEvent(new CustomEvent("agsist:bids-top", { detail: d })); }, BIDS(new Date(Date.parse(day + "T16:00:00Z") - 3000e3).toISOString()));
       // a date with nothing recent in What's new keeps the baked link (2027-01-15 here)
-      const pick = WORTH.pickNew(JSON.parse(read("data/whats-new.json")).items, day);
+      const pick = WORTH.pickNew(WNF.items, day);
       await pg.waitForFunction((href) => !document.querySelector(".wl-rp aside").hidden && document.getElementById("wl-new").getAttribute("href") === href, pick ? pick.href : "/changelog", { timeout: 15000 });
       await pg.waitForTimeout(pick ? 300 : 1500);
       const after = await pg.evaluate(worthBoxes);
@@ -417,8 +425,8 @@ test("browser: the Christmas card's order-by date comes from data/rain-print.jso
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    for (const [cut, want] of [[RP.framed_christmas_cutoff, "Dec 9"], ["2026-12-07", "Dec 7"]]) {
-      const cfg = { ...RP, framed_christmas_cutoff: cut };
+    for (const [cut, want] of [[RPF.framed_christmas_cutoff, "Dec 9"], ["2026-12-07", "Dec 7"]]) {
+      const cfg = { ...RPF, framed_christmas_cutoff: cut };
       const { ctx, pg, errs } = await openWorth(browser, port, { w: 390, day: "2026-11-02", cfg, hold: 50 });
       await pg.waitForFunction(() => !document.querySelector(".wl-rp aside").hidden, null, { timeout: 15000 });
       const t = await pg.evaluate(() => ({ title: document.querySelector(".wl .rp-card-t").textContent, text: document.querySelector(".wl .rp-card-x").textContent, a: document.querySelector(".wl .rp-card").getAttribute("href"), cta: document.querySelector(".wl .rp-card-p b").textContent }));
@@ -431,7 +439,7 @@ test("browser: the Christmas card's order-by date comes from data/rain-print.jso
       await ctx.close();
     }
     // Rain Print switched off: the empty cell folds away, the other two cards stay
-    const { ctx, pg } = await openWorth(browser, port, { w: 1280, h: 900, day: "2026-11-02", cfg: { ...RP, promote: false }, hold: 50 });
+    const { ctx, pg } = await openWorth(browser, port, { w: 1280, h: 900, day: "2026-11-02", cfg: { ...RPF, promote: false }, hold: 50 });
     await pg.waitForFunction(() => document.querySelector(".wl-rp").hidden, null, { timeout: 15000 });
     const vis = await pg.evaluate(() => [...document.querySelectorAll("#wl .wl-c")].filter((e) => e.getBoundingClientRect().height > 0).map((e) => e.className));
     assert.deepEqual(vis, ["wl-c wl-g", "wl-c wl-n"]);
