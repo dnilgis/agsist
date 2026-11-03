@@ -64,17 +64,25 @@
      (later delivery) counted as today's price. Tier 0: spot or cash, the
      first half, the whole month, or a label that does not say. Tier 1: the
      last half, or a day range inside one month starting on the 11th or later.
-     Read from the delivery label; same patterns as the build, and the Python
-     twin scripts/storesell.py period_rank (test/storesell.test.mjs runs the
-     same cases through all three). */
-  var LAST_HALF_RE = /^\s*(?:lh|2h|last\s+half|second\s+half)\b|[-,]\s*(?:lh|last\s+half)\s*$/i;
+     Read from the delivery label; same patterns as the build, the home cash
+     bids card (components/bids-homepage.js periodRank) and the Python twin
+     scripts/storesell.py period_rank (test/storesell.test.mjs runs the same
+     cases through all four). LH / 2H / last or second half is a word anywhere
+     in the label ("LH Nov 26", "Nov 26 - LH", "November 2026 Second Half",
+     "14% Pro Dlvd LOGAN LH Nov-Dec"); a day range is read raw ("16 Nov 2026
+     to 30 Nov 2026") or printed ("Nov 16-30, 2026"). */
+  var LAST_HALF_RE = /\b(?:lh|2h|last\s+half|second\s+half)\b/i;
   var DAYS_RE = /\b(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4}) to (\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})\b/;
+  var PRINTED_DAYS_RE = /\b([A-Za-z]{3})[a-z]* (\d{1,2})-(\d{1,2})\b/;
+  var MONS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
   function periodRank(r){
     if(!r || String(r.period || '') === 'spot') return 0;
     var lab = String(r.label || '').replace(/\s*\(\d{4}-\d{2}\)\s*$/, '').replace(/\s+/g, ' ').trim();
     if(LAST_HALF_RE.test(lab)) return 1;
     var m = DAYS_RE.exec(lab);
     if(m && m[2].toLowerCase() === m[5].toLowerCase() && m[3] === m[6] && +m[1] >= 11) return 1;
+    m = PRINTED_DAYS_RE.exec(lab);
+    if(m && MONS.indexOf(m[1].toLowerCase()) >= 0 && 11 <= +m[2] && +m[2] <= +m[3] && +m[3] <= 31) return 1;
     return 0;
   }
 

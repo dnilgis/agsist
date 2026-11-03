@@ -347,8 +347,20 @@ const RANK_CASES = [
   ["FH Nov 26 (Overfill Only)", "2026-11", 0], ["LH Nov 26", "2026-11", 1], ["Nov 26, LH", "2026-11", 1],
   ["11 Nov 2026 to 30 Nov 2026", "2026-11", 1], ["10 Nov 2026 to 30 Nov 2026", "2026-11", 0],
   ["16 Nov 2026 to 15 Dec 2026", "2026-11", 0], ["Harvest 2026", "2026-10", 0],
+  /* the labels #270 taught the town pages and the home cash bids card (Nov 2): the range as
+     the page prints it, and LH / second half in the middle or at the end */
+  ["Nov 16-30, 2026", "2026-11", 1], ["Nov 16-30", "2026-11", 1], ["Nov 1-15, 2026", "2026-11", 0],
+  ["Nov 10-30", "2026-11", 0], ["November 2026 Second Half", "2026-11", 1],
+  ["14% Pro Dlvd LOGAN LH Nov-Dec", "2026-11", 1], ["Oct 2H 26 (17 Oct 2026 to 31 Oct 2026)", "2026-10", 1],
+  ["Nov 2026 Last Half", "2026-11", 1], ["Nov 2026 First Half", "2026-11", 0],
 ];
-test("the delivery tier: storesell.js, storesell.py and the town page builder agree", () => {
+/* the home cash bids card's copy (components/bids-homepage.js periodRank), cut from the shipped
+   file and run alone, so a change to either copy shows here */
+const HOME_SRC = readFileSync(ROOT + "components/bids-homepage.js", "utf8");
+const homeCut = HOME_SRC.slice(HOME_SRC.indexOf("var LAST_HALF_RE"), HOME_SRC.indexOf("function rowRank"));
+assert.ok(homeCut.includes("function periodRank("), "bids-homepage.js periodRank found");
+const homeRank = vm.runInNewContext(homeCut + "; periodRank");
+test("the delivery tier: storesell.js, storesell.py, the home cash bids card and the town page builder agree", () => {
   const ranks = RANK_CASES.map(([label, period]) => ({ label, period }));
   const py = JSON.parse(execFileSync("python3", [ROOT + "scripts/storesell.py", "--json"], { input: JSON.stringify([{ ranks }]) }).toString());
   const town = JSON.parse(execFileSync("python3", ["-c",
@@ -359,6 +371,7 @@ test("the delivery tier: storesell.js, storesell.py and the town page builder ag
     assert.equal(S.periodRank({ label, period }), want, "js " + label);
     assert.equal(py[0].ranks[i], want, "py " + label);
     assert.equal(town[i], want, "town page " + label);
+    assert.equal(homeRank(label, period), want, "home card " + label);
   });
 });
 

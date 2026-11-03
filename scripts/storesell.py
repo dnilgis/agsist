@@ -145,9 +145,13 @@ def new_crop_from(k, crop):
 # patterns as build_cash_bid_pages.period_rank (test/storesell.test.mjs runs
 # the same cases through all three). 0: spot or cash, the first half, the whole
 # month, or a label that does not say; 1: the last half, or a day range inside
-# one month starting on the 11th or later.
-_LAST_HALF_RE = re.compile(r"^\s*(?:lh|2h|last\s+half|second\s+half)\b|[-,]\s*(?:lh|last\s+half)\s*$", re.I)
+# one month starting on the 11th or later. LH / 2H / last or second half is a
+# word anywhere in the label; a day range is read raw ("16 Nov 2026 to 30 Nov
+# 2026") or printed ("Nov 16-30, 2026").
+_LAST_HALF_RE = re.compile(r"\b(?:lh|2h|last\s+half|second\s+half)\b", re.I)
 _DAYS_RE = re.compile(r"\b(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4}) to (\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})\b")
+_PRINTED_DAYS_RE = re.compile(r"\b([A-Za-z]{3})[a-z]* (\d{1,2})-(\d{1,2})\b")
+_MONS = ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
 
 
 def period_rank(r):
@@ -159,6 +163,9 @@ def period_rank(r):
         return 1
     m = _DAYS_RE.search(lab)
     if m and m.group(2).lower() == m.group(5).lower() and m.group(3) == m.group(6) and int(m.group(1)) >= 11:
+        return 1
+    m = _PRINTED_DAYS_RE.search(lab)
+    if m and m.group(1).lower() in _MONS and 11 <= int(m.group(2)) <= int(m.group(3)) <= 31:
         return 1
     return 0
 
