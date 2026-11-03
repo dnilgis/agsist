@@ -557,63 +557,41 @@ jobs:
           bash .github/pages-kick.sh
           echo "file=$f" >> "$GITHUB_OUTPUT"
 
-      # The gate's own selftest runs first. It regression-locks the two holes that
-      # let the 2026-08-08 briefing publish a 16.9% lean hog rally (2.9x the
-      # exchange daily limit) and a 5.4% corn break that was September's close
-      # measured against December's: a gate that silently stops catching things
-      # is worse than no gate, because the RESULT line still says CLEAN.
-      - name: GATE 0 — feed gate selftest
-        run: python scripts/test_preflight_limits.py
-
-      # v5.1 (the cut): the word budget lives in ONE file that the generator,
-      # the critic and the schema check all import. Prove it works before a
-      # briefing is generated against it.
-      - name: GATE 0b — word budget selftest
-        run: python scripts/briefing_cut.py --selftest
-
-      # v5.2 (the grading fix): the trading calendar and the call grader. A call
-      # is scored against a LATER SESSION, never against the board it was made
-      # from. 20 of 81 graded calls were scored that way until 2026-09-13 and
-      # nothing was red, so the rule is pinned here, ahead of the generator.
-      # 2026-10-03: the old call grader is archived with the old scorecard;
-      # the briefing's call now comes from the prediction bot, whose own
-      # selftests run in predictions.yml. The trading calendar stays pinned
-      # here because the generator's market-status check imports it.
-      - name: GATE 0c — trading calendar selftest
-        run: |
-          python scripts/contract_calendar.py
-
-      # v5.3: the board comparison the email and the gate both read. One
-      # definition; the copies it replaced all let a moving bitcoin pass a
-      # frozen ag board off as a fresh session.
-      - name: GATE 0d — session board + number binding selftests
-        run: |
-          python scripts/market_board.py
-          python scripts/test_number_binding.py
-          python scripts/test_arc_plc_link.py
-
-      # 2026-10-09: the voice check the generator, the critic and the gate all
-      # import. It catches an invented first person under Sig's name ("I talked
-      # to elevators today") and machine tells. Prove it still does.
-      - name: GATE 0e - voice check selftest
-        run: python scripts/voice_lint.py --selftest
-
-      # The report-day line (scripts/report_day.py): written by code on a USDA
-      # report day, put back after the critic, required by GATE 2.
-      - name: GATE 0f - report-day line selftest
-        run: python scripts/report_day.py --selftest
-
-      # 2026-10-11: Crop Progress day in a federal-holiday week (from
-      # usda_dates), the "Week ahead in ag" label only over a dated upcoming
-      # event, the byline, and lowercase acronyms in headlines.
-      - name: GATE 0g - holiday week, week-ahead label, byline, acronyms
-        run: |
-          python scripts/usda_dates.py --selftest
-          python scripts/test_daily_trust.py
-          python scripts/watch_dates.py --selftest
-          python scripts/streak_words.py --selftest
-          python scripts/test_daily_numbers.py
-          python scripts/daily_claims.py --selftest
+      # CODE SELF-TESTS REPORT; THEY NEVER HOLD THE SEND (Sig, Nov 3 2026).
+      #
+      # GATE 0 to 0g used to sit here as hard steps. On Nov 3 GATE 0g's
+      # scripts/test_daily_numbers.py checked its fixture against live
+      # data/harvest-prices.json, the live file had moved on, and every
+      # morning run from 5:46 to 7:31 CT stopped here with a perfectly good
+      # issue unwritten. A test of the code is not a check of today's issue.
+      #
+      # Every one of them still runs, on every run, in one list
+      # (scripts/daily_selftests.py): GATE 0 feed gate, 0b word budget, 0c
+      # trading calendar, 0d session board, number binding, ARC/PLC link, 0e
+      # voice check, 0f report-day line, 0g USDA dates, daily trust, watch
+      # dates, streak words, daily numbers, daily claims, and the self-tests
+      # that used to run inside GATE 2f (fact check), GATE 2h (headline fix),
+      # GATE 2c (cause fix), the edge facts and the send-loop guard. A failure
+      # turns this step red, lists every test in the job summary, and mails Sig
+      # once a day. The briefing goes on to the content gates below, which
+      # still hold it: GATE 1 (feed), 2f (fact check), 2h (headline), 2
+      # (briefing gate), the schema and 2v (number check).
+      # The same list runs every evening under tomorrow's date
+      # (scripts/daily_rehearsal.py, in cron-health.yml), so a test that is
+      # about to break is found the night before.
+      - name: Code self-tests (report only, never hold the send)
+        id: selftests
+        continue-on-error: true
+        timeout-minutes: 8
+        env:
+          OWNER_TO:     ${{ secrets.SIG_TO }}
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          GH_TOKEN:     ${{ github.token }}       # the once-a-day cap reads today's runs
+        run: python scripts/daily_selftests.py
 
       # The schedule is machinery too. This asserts the backup fires still
       # exist and are spread, and that the gate asks the remote rather than its
@@ -638,8 +616,10 @@ jobs:
       # workflow file is edited — plus once a week. It lives in
       # `.github/workflows/schedule-guard.yml`.
       #
-      # GATE 0 above stays exactly where it is. That one is about TODAY'S
-      # NUMBERS, and a bad number must stop the briefing.
+      # GATE 0 followed it on Nov 3 2026: a self-test is a design check too,
+      # and it now reports from the step above instead of stopping the run.
+      # TODAY'S NUMBERS are GATE 1 and the content gates below, and a bad
+      # number still stops the briefing.
 
       - name: GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)
         id: g1
@@ -652,9 +632,8 @@ jobs:
       # outliers) is withheld and logged. Never blocks the briefing.
       - name: Only on AGSIST facts
         continue-on-error: true
-        run: |
-          python scripts/daily_edge.py --selftest
-          python scripts/daily_edge.py
+        # its selftest runs in the self-test step above
+        run: python scripts/daily_edge.py
 
       # Sig's editorial notes are in the private repo (branch private-data,
       # Oct 20). Without them the briefing still runs, as it did before the
@@ -731,12 +710,10 @@ jobs:
           # went out, 4 of them an overnight or intraday price called a "close"). Only a high flag whose
           # quote is really in the draft blocks; pinned here so a repo variable cannot change it.
           FACT_CHECK_MODE: block
+        # Its selftest runs in the self-test step at the top of this job
+        # and no longer holds the issue (Nov 3 2026); the fact check itself does.
         run: |
           echo "fact check: model=$FACT_CHECK_MODEL mode=$FACT_CHECK_MODE"
-          if ! FACT_CHECK_MODE= FACT_CHECK_MODEL= python scripts/test_fact_check.py > /tmp/fc-selftest.txt 2>&1; then
-            grep -v '^::' /tmp/fc-selftest.txt | tail -25 | while IFS= read -r l; do echo "::error title=fact check selftest::$l"; done
-            exit 1
-          fi
           # the selftest's fixture findings land in the same file; the save step below must see only this run's
           rm -f "$RUNNER_TEMP/fact-check.json"
           python scripts/fact_check_briefing.py
@@ -790,9 +767,8 @@ jobs:
           SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR:    ${{ secrets.FROM_ADDR }}
           GH_TOKEN:     ${{ github.token }}       # its hold alert is under the block alert's cap
-        run: |
-          ANTHROPIC_API_KEY= python scripts/headline_fix.py --selftest
-          python scripts/headline_fix.py data/daily.json --prices data/prices.json
+        # its selftest runs in the self-test step (Nov 3 2026)
+        run: python scripts/headline_fix.py data/daily.json --prices data/prices.json
 
       # GATE 2c (Oct 29 2026): a cause sentence nobody is named as saying
       # ("diesel follows it") is reworded by code, the fact kept, or cut when its
@@ -803,7 +779,7 @@ jobs:
         continue-on-error: true
         run: |
           [ -f scripts/cause_fix.py ] || { echo "cause_fix.py not in this checkout yet"; exit 0; }
-          python scripts/cause_fix.py --selftest
+          # its selftest runs in the self-test step (Nov 3 2026)
           python scripts/cause_fix.py data/daily.json
 
       # ── GATE 2 ── deterministic pre-publish gate. Prose vs locked_prices vs the
@@ -1003,7 +979,7 @@ jobs:
       # It cannot double-send: send_daily.py sets a day flag through the subs
       # worker and fails closed, and the gate above refuses any run on a day
       # that is already published.
-      # THE SEND LOOP IS CHECKED IN THE SECOND BEFORE IT MAILS THE LIST.
+      # THE SEND LOOP IS CHECKED ON EVERY RUN.
       #
       # Both senders in this repository put each message inside
       # `except smtplib.SMTPException`, and the day flag is set AFTER the loop.
@@ -1013,9 +989,9 @@ jobs:
       #
       # The guard lifts both loops out of their scripts and runs them against a
       # fake server that drops mid-list. A second, no network, no dependencies.
-      - name: Neither send loop can re-mail the whole list
-        if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
-        run: python3 scripts/test_send_loops.py
+      # It runs in the self-test step at the top of this job now (Nov 3 2026):
+      # a test of the sender's code, reported every run, never holding the
+      # send. The day flag (send_daily.py) is what stops a second send.
 
       # THE LOCAL TOP BID MUST BE THE HOMEPAGE'S. scripts/local_bid.py ports
       # the hero's rule; this runs it against the real components/*.js on the

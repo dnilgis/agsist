@@ -66,7 +66,7 @@ test("the switch: v2 is live for the list, one input or one variable rolls it ba
 
 test("the live print never stops or delays the send past its caps", () => {
   const gen = job("generate");
-  const draw = gen.slice(gen.indexOf("- name: Print of the day, drawn"), gen.indexOf("- name: GATE 0 "));
+  const draw = gen.slice(gen.indexOf("- name: Print of the day, drawn"), gen.indexOf("- name: Code self-tests (report only"));
   assert.ok(draw.length > 100, "drawn at the top of the job, before the briefing is written");
   assert.match(draw, /continue-on-error: true\n\s+timeout-minutes: 7/);
   assert.match(draw, /git add "\$f"/);

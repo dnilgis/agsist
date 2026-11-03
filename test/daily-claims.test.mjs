@@ -100,7 +100,9 @@ test("claim guards run in the prompt, the generator's cut, the critic and the ga
   assert.ok(g.includes("PLANTING RATIO"), "the model is not handed next year's ratio");
   assert.ok(c.includes("daily_claims.strip(briefing"), "critic does not cut after a rewrite");
   assert.ok(gate.includes("daily_claims.lint(daily"), "gate does not check");
-  assert.ok(read(".github/workflows/daily.yml").includes("python scripts/daily_claims.py --selftest"), "daily run skips the selftest");
+  // the selftest runs on every Daily run in the report-only self-test step (Nov 3 2026)
+  assert.ok(read(".github/workflows/daily.yml").includes("run: python scripts/daily_selftests.py"), "daily run skips the selftests");
+  assert.ok(read("scripts/daily_selftests.py").includes('["scripts/daily_claims.py", "--selftest"]'), "daily run skips the selftest");
   const out = py(["-c", `
 import sys; sys.path.insert(0, "scripts")
 import generate_daily as g
@@ -267,7 +269,10 @@ test("cause fix runs in the Daily after the headline fix and before the gate, ne
   assert.ok(at > wf.indexOf("- name: GATE 2h,") && at < wf.indexOf("- name: GATE 2 — pre-publish briefing gate"), "step order");
   const st = wf.slice(at, wf.indexOf("- name:", at + 10));
   assert.match(st, /continue-on-error: true/);
-  assert.match(st, /python scripts\/cause_fix\.py --selftest\n\s+python scripts\/cause_fix\.py data\/daily\.json/);
+  assert.match(st, /python scripts\/cause_fix\.py data\/daily\.json/);
+  // its selftest runs in the self-test step (Nov 3 2026), so a failing selftest no longer skips the fix itself
+  assert.doesNotMatch(st, /cause_fix\.py --selftest/);
+  assert.match(read("scripts/daily_selftests.py"), /\["scripts\/cause_fix\.py", "--selftest"\]/);
   assert.ok(at < wf.indexOf("- name: Commit and push") && at < wf.indexOf("- name: Send daily email"), "fixed before the archive commit and the send");
   const dc = read("scripts/daily_claims.py"), cf = read("scripts/cause_fix.py");
   assert.match(dc, /def strip\(briefing, ctx\):[\s\S]{0,400}fix_causes\(briefing, ctx\)/, "strip does not reword first");
