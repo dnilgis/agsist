@@ -407,7 +407,7 @@ def main():
         except Exception:
             pass
 
-    tally.sent = sent
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
     print("sent " + str(sent) + "/" + str(len(hits)))
     # THE FLAG IS SET FOR ANY SUCCESSFUL SEND, and it is reached now because
     # nothing above it can escape. A partial send that silently repeats is a
