@@ -87,7 +87,8 @@ test("small parcels, unknown acres, buildings and forest are listed; the page ho
   assert.ok(!kinds.has("ilw") && !kinds.has("inw") && !kinds.has("njw"), "the forest split is Wisconsin's and Vermont's (timberland)");
   assert.ok(acresNull.length > 100, "sales with acres not stated are listed too: " + acresNull.length);
   const page = read("land-sales/wisconsin/barron-county.html"), all = listFile("wi", "55005");
-  const rows = [...page.matchAll(/<tr data-k="([fbws])"><td>([A-Z][a-z]{2} \d+, \d{4}\*?)<\/td>/g)];
+  // each row carries its sale's id (Nov 3, 2026: the land sale email links to land-sales/<state>/<county>#s-<id>)
+  const rows = [...page.matchAll(/<tr id="s-[0-9a-f]{10}" data-k="([fbws])"><td>([A-Z][a-z]{2} \d+, \d{4}\*?)<\/td>/g)];
   assert.equal(rows.length, Math.min(50, all.length), "the newest 50 in the page");
   assert.match(page, new RegExp(`Showing the newest 50 of ${all.length} sales\\. <button type="button" class="ls-mo" hidden>Show 50 more</button>`));
   assert.match(page, /<div class="ls-flt" hidden data-ls-list="\/data\/land-sales\/wi\/55005\.json" data-ls-names="\/data\/land\/names\/wi\/55005\.json"/);
@@ -96,7 +97,7 @@ test("small parcels, unknown acres, buildings and forest are listed; the page ho
   // a small county shows every sale in the page and no Show more
   const small = Object.entries(json("data/land-sales/wi.json").counties).map(([f, c]) => [f, c, listFile("wi", f).length]).find(([, , n]) => n > 0 && n <= 50);
   const sp = read(`land-sales/wisconsin/${small[1].slug}.html`);
-  assert.equal([...sp.matchAll(/<tr data-k=/g)].length, small[2]);
+  assert.equal([...sp.matchAll(/<tr id="s-[0-9a-f]{10}" data-k=/g)].length, small[2]);
   assert.doesNotMatch(sp, /class="ls-more"/);
   // pages stay well under the generated-page cap with every sale listed
   for (const st of Object.values(STATES)) for (const n of fs.readdirSync(path.join(ROOT, "land-sales", st))) {
