@@ -1780,7 +1780,8 @@
   },
   "a00425": {
    "first": "basis:SD|DAKOTA GROWERS COOP|HARTFORD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ef1y5my5gh"
   },
   "a00426": {
    "first": "basis:SD|FULL CIRCLE AG|ABERDEEN",
@@ -1788,7 +1789,8 @@
   },
   "a00427": {
    "first": "basis:SD|GLACIAL LAKES ENERGY, LLC|MINA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ervz160cv7"
   },
   "a00428": {
    "first": "basis:SD|HOWARD FARMERS CO-OP|HOWARD",
@@ -2208,7 +2210,8 @@
   },
   "a00529": {
    "first": "dir:86797",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ear80ntznz"
   },
   "a00530": {
    "first": "dir:86860",
@@ -4872,6 +4875,24 @@
    "on": "2026-10-30",
    "merge": "a00109",
    "into": "emknz275z3",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-03",
+   "merge": "a00425",
+   "into": "ef1y5my5gh",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-03",
+   "merge": "a00427",
+   "into": "ervz160cv7",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-03",
+   "merge": "a00529",
+   "into": "ear80ntznz",
    "why": "every key now matches that bids-repo row"
   }
  ],
@@ -8158,7 +8179,7 @@
   "basis:SD|COUNTRY PRIDE COOP|ABERDEEN": "e9gkehvc9m",
   "basis:SD|DAKOTA ETHANOL|WENTWORTH": "edxfnexyfg",
   "basis:SD|DAKOTA GROWERS COOP|COLTON": "en1m2yzjce",
-  "basis:SD|DAKOTA GROWERS COOP|HARTFORD": "a00425",
+  "basis:SD|DAKOTA GROWERS COOP|HARTFORD": "ef1y5my5gh",
   "basis:SD|DAKOTA MILL & GRAIN|BELLE FOURCHE": "eb4nnwrzrw",
   "basis:SD|DAKOTA MILL & GRAIN|FORT PIERRE": "eg7r8def6k",
   "basis:SD|DAKOTA MILL & GRAIN|MIDLAND": "ewzr8pgk2a",
@@ -8175,7 +8196,7 @@
   "basis:SD|FULL CIRCLE AG|ABERDEEN": "a00426",
   "basis:SD|FULL CIRCLE AG|AGP-ABERDEEN": "ebn7vhdmrb",
   "basis:SD|GLACIAL LAKES ENERGY, LLC|ABERDEEN": "ejb1yvbzj4",
-  "basis:SD|GLACIAL LAKES ENERGY, LLC|MINA": "a00427",
+  "basis:SD|GLACIAL LAKES ENERGY, LLC|MINA": "ervz160cv7",
   "basis:SD|HOVEN EQUITY EXCHANGE|ABERDEEN": "enwa4cr78t",
   "basis:SD|HOVEN EQUITY EXCHANGE|AGP - DIRECT SHIP": "e5x4qs87tx",
   "basis:SD|HOVEN EQUITY EXCHANGE|GLACIAL LAKES ENERGY - DIRECT SHIP": "e7s7rprw6z",
@@ -8858,6 +8879,7 @@
   "bids:Riceland Foods||Hazen|AR": "e5ftf2xp4b",
   "bids:Riceland Foods||Stuttgart|AR": "eqey1fx6ry",
   "bids:Ridgeville Elevator||Ridgeville Elevator- Ridgeville Corners|OH": "ea2xyw2922",
+  "bids:River Country Co-op||Bloomer|WI": "emfbgbsg6c",
   "bids:River Country Co-op||Marathon|WI": "e77q561ens",
   "bids:River Valley Cooperative||ADM- Creve Coeur|IL": "e6paazzke9",
   "bids:River Valley Cooperative||ALTO ICP|IL": "es9hsmx2eb",
@@ -9557,12 +9579,12 @@
   "dir:86503": "evvty3kagt",
   "dir:86547": "a00180",
   "dir:86550": "ex66sdw218",
-  "dir:86553": "a00425",
+  "dir:86553": "ef1y5my5gh",
   "dir:86714": "a00528",
   "dir:86767": "e0h7byvpvj",
   "dir:86770": "eq60vezx68",
   "dir:86778": "ev95n8p69y",
-  "dir:86797": "a00529",
+  "dir:86797": "ear80ntznz",
   "dir:86798": "ee9sf5h3vg",
   "dir:86802": "e2e5vjynnm",
   "dir:86803": "ensdd0992c",
