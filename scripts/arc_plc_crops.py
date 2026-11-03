@@ -5,7 +5,9 @@ for scripts/build_arc_plc.py (which imports this file; it writes nothing itself)
 
 WHERE EVERY NUMBER COMES FROM (verified 2026-10-09)
   FSA's national tables in data/fsa/ [FSAT]. Tables 1, 2 and 4 are FSA's
-  Oct 9, 2026 copies (sites/default/files/2026-10/, data/fsa/manifest.tsv);
+  Oct 30, 2026 copies (sites/default/files/2026-11/, data/fsa/manifest.tsv;
+  against Oct 9 only the 2025/26 long and medium/short grain rice prices
+  moved, projected 0.104 and 0.147 to final 0.101 and 0.146 $/lb);
   Table 3 on file is still the Sept 11, 2026 one, and each is labeled with
   the date printed in its own header (TABLE_DATES, read at build time):
     2026_MYA.xlsx     Table 1: final MYA prices 2020/21 to 2024/25, 2025/26
@@ -59,10 +61,10 @@ from decimal import Decimal, ROUND_HALF_UP
 
 FSA_DIR = "data/fsa"
 TABLE_URLS = {   # FSA's own copies (data/fsa/manifest.tsv); the date in each label is checked against the table's header (TABLE_DATES)
-    "FSAT_MYA": ("FSA, 2026 MYA prices (Table 1, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_MYA.xlsx"),
-    "FSAT_ERP": ("FSA, 2026 effective reference prices (Table 2, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_ERP.xlsx"),
+    "FSAT_MYA": ("FSA, 2026 MYA prices (Table 1, Oct 30, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-11/2026_MYA.xlsx"),
+    "FSAT_ERP": ("FSA, 2026 effective reference prices (Table 2, Oct 30, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-11/2026_ERP.xlsx"),
     "FSAT_PLC": ("FSA, projected 2026 PLC payment rates (Table 3, Sept 11, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-09/2026_PLC.xlsx"),
-    "FSAT_ARC": ("FSA, 2026 ARC-CO benchmark prices (Table 4, Oct 9, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_ARC_CO.xlsx"),
+    "FSAT_ARC": ("FSA, 2026 ARC-CO benchmark prices (Table 4, Oct 30, 2026)", "https://www.fsa.usda.gov/sites/default/files/2026-11/2026_ARC_CO.xlsx"),
 }
 TABLE_DATES = {"2026_MYA": "FSAT_MYA", "2026_ERP": "FSAT_ERP", "2026_PLC": "FSAT_PLC", "2026_ARC_CO": "FSAT_ARC"}
 
@@ -227,6 +229,29 @@ def _name(s):
     return re.sub(r"\s+\d/\s*$", "", str(s or "").strip()).strip()
 
 
+def table_date(rows):
+    """The date in an FSA table's header ('October 30, 2026 1/' -> '2026-10-30'), from its first four rows, or None."""
+    for r in rows[:4]:
+        for v in r or ():
+            m = re.match(r"([A-Z][a-z]+) (\d{1,2}), (20\d\d)", str(v or ""))
+            if m:
+                return dt.datetime.strptime(m.group(0), "%B %d, %Y").date().isoformat()
+    return None
+
+
+def newest_table(paths, load_xlsx):
+    """Of several copies of one FSA table (2025_ARC_CO.xlsx, 2025_ARC_CO_0.xlsx, ...), the one whose header
+    carries the latest date -> (path, rows), or (None, None). Never by file name: FSA's Oct 9, 2026 copy of the
+    2025 tables is 2025_ARC_CO_0.xlsx and its Oct 30 copy is 2025_ARC_CO.xlsx, so the name order picks the old one."""
+    best = (None, None, "")
+    for p in sorted(paths):
+        rows = [r for r in load_xlsx(p).worksheets[0].iter_rows(values_only=True)]
+        d = table_date(rows) or ""
+        if best[0] is None or d >= best[2]:
+            best = (p, rows, d)
+    return best[0], best[1]
+
+
 def load_tables(load_xlsx, root="."):
     """FSA's four national tables -> {date, rows: {commodity: {...}}} or None.
 
@@ -235,11 +260,11 @@ def load_tables(load_xlsx, root="."):
     out = {"date": None, "rows": {}, "files": {}}
 
     def rows_of(stem):
-        ps = sorted(glob.glob(os.path.join(root, FSA_DIR, stem + "*.xls*")))
-        if not ps:
+        p, rows = newest_table(glob.glob(os.path.join(root, FSA_DIR, stem + "*.xls*")), load_xlsx)
+        if not p:
             return None
-        out["files"][stem] = os.path.relpath(ps[-1], root)
-        return [r for r in load_xlsx(ps[-1]).worksheets[0].iter_rows(values_only=True)]
+        out["files"][stem] = os.path.relpath(p, root)
+        return rows
 
     def hdr_row(rows):
         return next(i for i, r in enumerate(rows) if r and str(r[0] or "").strip() == "Commodity")
@@ -306,7 +331,7 @@ def load_tables(load_xlsx, root="."):
                 for key, i in idx.items():
                     out["rows"][c][key] = _num(r[i])
     for c, row in out["rows"].items():
-        # Table 4 (Oct 9) repeats the 2026 loan rate Table 3 (Sept 11) gives: two answers would be two loan rates
+        # Table 4 (Oct 30) repeats the 2026 loan rate Table 3 (Sept 11) gives: two answers would be two loan rates
         if row.get("loan4") is not None and row.get("loan") is not None and abs(row["loan4"] - row["loan"]) > 1e-9:
             raise SystemExit(f"FSA's 2026 loan rate for {c}: Table 3 says {row['loan']}, Table 4 says {row['loan4']}; refusing")
     for stem, key in TABLE_DATES.items():

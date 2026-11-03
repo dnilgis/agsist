@@ -7,6 +7,13 @@
  * two data workflows re-bake right after each fetch, and this test holds the
  * shipped page, the builder and the workflows to that.
  *
+ * 2026-11-02: USDA's last corn rating was the week ending Oct 25 but the Nov 1
+ * report still counted harvest (corn 74%). Keyed on the rating week, the page
+ * said "No state harvest numbers for the week ending Oct 25". The rule is now:
+ * condition parts name the condition week, harvest parts the harvest week (the
+ * newer one when USDA keeps counting harvest after its last rating), and no
+ * other week appears. Real case: test/fixtures/conditions-2026-11-02/.
+ *
  *   node --test test/conditions-week.test.mjs
  */
 import { test } from "node:test";
@@ -32,6 +39,12 @@ const seed = (html, tag) => {
   return m[1];
 };
 // every "week ending <date>" outside <script>, as ISO dates
+// the week the harvest numbers are on: the newer of the rating week and the harvest date
+const harvestWeek = (cp, k = "corn_harvested") => {
+  const rd = (cp.corn || {}).report_date || cp.report_date;
+  const d = ((cp.progress || {})[k] || {}).date || (k === "corn_harvested" ? (cp.corn || {}).harvest_date : null);
+  return d && rd && d > rd ? d : rd;
+};
 const weeksNamed = (html) => {
   const body = html.replace(/<script[\s\S]*?<\/script>/g, "");
   const out = new Set();
@@ -39,12 +52,13 @@ const weeksNamed = (html) => {
   return out;
 };
 
-test("shipped page: title, summary, stats, caption and harvest table all name the data's week", () => {
+test("shipped page: condition parts name the condition week, harvest parts the harvest week", () => {
   const html = read("conditions.html");
   const cp = JSON.parse(read("data/crop-progress.json"));
   const cj = JSON.parse(read("data/conditions/conditions.json"));
   const rd = cp.corn.report_date || cp.report_date;
   const we = cj.crops.corn.week_ending;
+  const hd = harvestWeek(cp);
   if (!cp.in_season) return;
   const ge = cp.corn.good_excellent;
   const title = html.match(/<title>([^<]*)<\/title>/)[1];
@@ -59,16 +73,20 @@ test("shipped page: title, summary, stats, caption and harvest table all name th
   const desc = html.match(/<meta name="description" content="([^"]*)"/)[1];
   assert.match(desc, new RegExp(`(US c|C)orn is ${ge}% good to excellent`), "meta description too");
   if (harvest) assert.match(desc, new RegExp(`US corn is ${hp}% harvested`), "and the harvest");
-  for (const tag of ["condweek", "condvsent", "condstats", "condharvline"]) {
+  for (const tag of ["condweek", "condvsent", "condstats"]) {
     assert.ok(seed(html, tag).toLowerCase().includes(`week ending ${nice(rd)}`.toLowerCase()), `${tag} names ${nice(rd)}`);
-    assert.ok(seed(html, tag).includes(`${ge}%`) || tag === "condharvline", `${tag} carries ${ge}%`);
+    assert.ok(seed(html, tag).includes(`${ge}%`), `${tag} carries ${ge}%`);
   }
+  assert.ok(seed(html, "condharvline").includes(`week ending ${nice(hd)}`), `condharvline names the harvest week ${nice(hd)}`);
   assert.ok(seed(html, "condtable").includes(`<caption>Corn, week ending ${nice(we)}`), "rank table caption");
   assert.equal(seed(html, "condfresh"), `week ending ${we}`, "table header");
-  assert.ok(seed(html, "condharvtable").includes(`harvested, week ending ${nice(rd)}`), "harvest caption");
+  assert.ok(seed(html, "condharvtable").includes(`harvested, week ending ${nice(hd)}`), "harvest caption on the harvest week");
+  for (const tag of ["condvsent", "condstats", "condtable", "condfresh"])
+    for (const w of weeksNamed(seed(html, tag))) assert.ok(w === rd || w === we, `${tag}: ${w} is not the condition week`);
+  for (const tag of ["condharvline", "condharvtable", "condharvlead"])
+    for (const w of weeksNamed(seed(html, tag))) assert.ok(w === hd || (w === rd && tag === "condharvline"), `${tag}: ${w} is not the harvest week`);
   const named = weeksNamed(html);
-  if (rd === we) assert.deepEqual([...named], [rd], "one week on the whole page");
-  else for (const w of named) assert.ok(w === rd || w === we, `stray week ${w}`);
+  for (const w of named) assert.ok(w === rd || w === we || w === hd, `stray week ${w}`);
   const alt = html.match(/<meta property="og:image:alt" content="([^"]*)"/);
   if (alt && /week ending/.test(alt[1])) assert.ok(alt[1].includes(nice(rd)), "share image alt");
 });
@@ -178,4 +196,53 @@ test("builder: Oct-Nov lead with harvest pace by state; summer lede only Jun-Sep
   html = run("2026-11-29", "2026-12-01");
   assert.ok(!/drought summer/i.test(seed(html, "condlede")), "no summer lede in December");
   assert.equal(seed(html, "condharvlead"), "", "no harvest block in December");
+});
+
+// 2026-11-02 real case: data/crop-progress.json held the last corn rating (week ending Oct 25,
+// 56%) and the Nov 1 harvest (corn 74%, soybeans 88%, 30 corn states, no five-year average:
+// the 2025 shutdown gap leaves none). The page said "No state harvest numbers for the week
+// ending Oct 25, 2026" and dropped harvest entirely.
+test("builder, Nov 2 real case: harvest parts on Nov 1, condition parts on Oct 25", () => {
+  const FX = ROOT + "test/fixtures/conditions-2026-11-02/";
+  const dir = mkdtempSync(join(tmpdir(), "cond-nov2-"));
+  mkdirSync(join(dir, "data/conditions"), { recursive: true });
+  copyFileSync(ROOT + "conditions.html", join(dir, "conditions.html"));
+  copyFileSync(FX + "crop-progress.json", join(dir, "data/crop-progress.json"));
+  copyFileSync(FX + "conditions.json", join(dir, "data/conditions/conditions.json"));
+  const run = (today) => {
+    execFileSync("python3", ["-c",
+      "import os,sys; sys.path.insert(0, sys.argv[1]); os.chdir(sys.argv[2]); import seed_static; seed_static.seed_conditions(sys.argv[3])",
+      ROOT + "scripts", dir, today], { stdio: "pipe" });
+    return readFileSync(join(dir, "conditions.html"), "utf8");
+  };
+  let html = run("2026-11-02");
+  const line = seed(html, "condharvline"), tab = seed(html, "condharvtable"), lead = seed(html, "condharvlead");
+  assert.ok(line.startsWith("US, week ending Nov 1, 2026: Corn <strong>74%</strong> harvested; Soybeans <strong>88%</strong> harvested."), line);
+  assert.ok(line.includes("30 corn states reported this week."), "30 states on Nov 1");
+  assert.ok(line.includes("Condition ratings on this page are for the week ending Oct 25, 2026."), "says the ratings are a week older");
+  assert.ok(!/No state harvest numbers|No national harvest/.test(line + tab), "the harvest is not hidden");
+  assert.ok(tab.startsWith("<caption>Corn harvested, week ending Nov 1, 2026 &middot; least harvested first</caption>"), tab.slice(0, 120));
+  assert.ok(!tab.includes("5-yr avg") && !tab.includes("vs avg"), "no empty five-year columns");
+  assert.ok(tab.indexOf("New York") < tab.indexOf("Michigan") && tab.indexOf("Michigan") < tab.indexOf("Iowa") && tab.indexOf("Iowa") < tab.indexOf("Alabama"), "NY 28%, then MI 43%, IA 66%, AL 100%");
+  assert.ok(/Iowa<\/td><td class="num">66%<\/td><td class="num">47%<\/td><\/tr>/.test(tab), "Iowa 66%, 47% the week before");
+  assert.ok(lead.includes("week ending Nov 1, 2026") && !lead.includes("five-year average"), "top block on Nov 1, no average claimed");
+  assert.match(seed(html, "condlede"), /^Harvest pace first/);
+  const wk = seed(html, "condweek");
+  assert.ok(wk.startsWith("Week ending Oct 25, 2026") && wk.includes("<b>56%</b>"), wk);
+  assert.ok(wk.endsWith("Harvested, week ending Nov 1, 2026: corn 74%, soybeans 88%."), wk);
+  for (const tag of ["condvsent", "condstats", "condtable", "condfresh"])
+    for (const w of weeksNamed(seed(html, tag))) assert.equal(w, "2026-10-25", `${tag} on the condition week`);
+  const all = new Set();
+  for (const tag of ["condweek", "condvsent", "condstats", "condtable", "condfresh", "condharvline", "condharvtable", "condharvlead"])
+    for (const w of weeksNamed(seed(html, tag))) all.add(w);
+  assert.deepEqual([...all].sort(), ["2026-10-25", "2026-11-01"], "no other week");
+
+  // Nov 9: the Oct 25 rating is past 14 days and withheld; the Nov 1 harvest still shows
+  html = run("2026-11-09");
+  assert.match(seed(html, "condweek"), /^No current national rating/);
+  assert.ok(seed(html, "condharvline").startsWith("US, week ending Nov 1, 2026: Corn <strong>74%</strong>"), "harvest stands on its own week");
+  assert.ok(!seed(html, "condharvline").includes("Condition ratings on this page"), "no pointer to a withheld rating");
+  // Nov 20: the harvest week is stale too
+  html = run("2026-11-20");
+  assert.match(seed(html, "condharvline"), /^No current harvest numbers: the latest report on file is the week ending Nov 1, 2026\./);
 });
