@@ -335,13 +335,13 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
   <header class="cd-hero">
     <p class="cd-kicker page-kicker">USDA Crop Progress &middot; every Monday &middot; ranked against every year USDA rated it</p>
     <h1>Crop conditions ranked against every year on record</h1>
-    <p class="cd-sub page-lede"><!--SEED:condlede-->Each state&rsquo;s <strong>Good+Excellent share</strong> from USDA&rsquo;s weekly Crop Progress, ranked against <strong>the same week of every year USDA rated it since 2003</strong>. USDA rates crops from late spring into fall; between seasons the last ratings on file are shown.<!--/SEED--> Further down: <a href="#crop-size">how big the crop is</a>, every 2026 yield forecast side by side.</p>
+    <p class="cd-sub page-lede"><!--SEED:condlede-->Harvest pace first: how far each state&rsquo;s <strong>corn and soybean harvest</strong> is ahead of or behind its <strong>five-year average</strong>, from Monday&rsquo;s USDA Crop Progress. Below that, each state&rsquo;s Good+Excellent share, ranked against the same week of every year USDA rated it since 2003.<!--/SEED--> Further down: <a href="#crop-size">how big the crop is</a>, every 2026 yield forecast side by side.</p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: USDA NASS Crop Progress, out Mondays at 4 p.m. Eastern.</p>
   </header>
 
-  <p class="cd-week" id="cd-week"><!--SEED:condweek-->Week ending Oct 25, 2026, released Mon, Oct 26 (USDA NASS): US corn <b>56%</b> good-to-excellent.<!--/SEED--></p>
+  <p class="cd-week" id="cd-week"><!--SEED:condweek-->Week ending Oct 25, 2026, released Mon, Oct 26 (USDA NASS): US corn <b>56%</b> good-to-excellent. Harvested, week ending Nov 1, 2026: corn 74%, soybeans 88%.<!--/SEED--></p>
 
-  <div id="cd-harvlead"><!--SEED:condharvlead--><!--/SEED--></div>
+  <div id="cd-harvlead"><!--SEED:condharvlead--><section class="cd-panel cd-hl" aria-labelledby="cd-hl-t"><div class="cd-panel-hd"><span class="cd-panel-t" id="cd-hl-t">Harvest pace by state</span><span class="cd-fresh">week ending 2026-11-01</span></div><div class="cd-panel-b"><div class="tblscroll"><table class="cd-tbl cd-hl-t"><caption>Percent harvested, week ending Nov 1, 2026</caption><tr><th>State</th><th style="text-align:right">Corn</th><th style="text-align:right">Soybeans</th></tr><tr><td>Iowa</td><td class="num">66%</td><td class="num">90%</td></tr><tr><td>Illinois</td><td class="num">86%</td><td class="num">91%</td></tr><tr><td>Nebraska</td><td class="num">66%</td><td class="num">84%</td></tr><tr><td>Minnesota</td><td class="num">82%</td><td class="num">97%</td></tr><tr><td>Indiana</td><td class="num">75%</td><td class="num">87%</td></tr><tr><td>South Dakota</td><td class="num">63%</td><td class="num">94%</td></tr><tr><td>Ohio</td><td class="num">53%</td><td class="num">83%</td></tr><tr><td>North Dakota</td><td class="num">76%</td><td class="num">96%</td></tr><tr><td>Kansas</td><td class="num">86%</td><td class="num">72%</td></tr><tr><td>Missouri</td><td class="num">86%</td><td class="num">79%</td></tr><tr><td>Wisconsin</td><td class="num">61%</td><td class="num">94%</td></tr><tr><td>Michigan</td><td class="num">43%</td><td class="num">81%</td></tr></table></div><p class="cd-hl-more">Every state USDA reported: <a href="#harvest">full harvest table</a>. A dash means USDA did not report that crop for that state this week.</p></div></section><!--/SEED--></div>
 
   <section class="cd-ver" aria-live="polite">
     <div>
@@ -381,10 +381,10 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
   <section class="cd-panel" aria-labelledby="cd-h-t" id="harvest">
     <div class="cd-panel-hd"><span class="cd-panel-t" id="cd-h-t">Harvest progress by state</span><span class="cd-fresh" id="cd-h-fresh"></span></div>
     <div class="cd-panel-b">
-      <p class="cd-seed" id="cd-h-line"><!--SEED:condharvline-->No national harvest figure for the week ending Oct 25, 2026.<!--/SEED--></p>
+      <p class="cd-seed" id="cd-h-line"><!--SEED:condharvline-->US, week ending Nov 1, 2026: Corn <strong>74%</strong> harvested; Soybeans <strong>88%</strong> harvested. 30 corn states reported this week. Condition ratings on this page are for the week ending Oct 25, 2026.<!--/SEED--></p>
       <div class="cd-tabs" role="tablist" id="cd-h-tabs"></div>
-      <div class="tblscroll"><table class="cd-tbl" id="cd-h-table"><!--SEED:condharvtable--><tr><td style="color:#8a948f">No state harvest numbers for the week ending Oct 25, 2026</td></tr><!--/SEED--></table></div>
-      <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Percent of the crop harvested, from the same USDA Crop Progress report as the ratings. Only states USDA reported this week are listed. The five-year average is our arithmetic on USDA&rsquo;s weekly series (each of the five prior years read at the same calendar date), so it can differ from the average USDA prints by a point. A last-year column appears when USDA has a report for the same week a year earlier; it published none in October 2025, during the federal shutdown. Tap a column to sort.</p>
+      <div class="tblscroll"><table class="cd-tbl" id="cd-h-table"><!--SEED:condharvtable--><caption>Corn harvested, week ending Nov 1, 2026 &middot; least harvested first</caption><tr><th>State</th><th style="text-align:right">Harvested</th><th style="text-align:right">Week before</th></tr><tr><td>New York</td><td class="num">28%</td><td class="num">21%</td></tr><tr><td>Wyoming</td><td class="num">37%</td><td class="num">28%</td></tr><tr><td>Utah</td><td class="num">38%</td><td class="num">30%</td></tr><tr><td>West Virginia</td><td class="num">39%</td><td class="num">30%</td></tr><tr><td>Michigan</td><td class="num">43%</td><td class="num">28%</td></tr><tr><td>New Mexico</td><td class="num">45%</td><td class="num">39%</td></tr><tr><td>Montana</td><td class="num">48%</td><td class="num">40%</td></tr><tr><td>Ohio</td><td class="num">53%</td><td class="num">35%</td></tr><tr><td>Pennsylvania</td><td class="num">61%</td><td class="num">35%</td></tr><tr><td>Wisconsin</td><td class="num">61%</td><td class="num">42%</td></tr><tr><td>South Dakota</td><td class="num">63%</td><td class="num">44%</td></tr><tr><td>New Jersey</td><td class="num">64%</td><td class="num">52%</td></tr><tr><td>Colorado</td><td class="num">65%</td><td class="num">50%</td></tr><tr><td>Iowa</td><td class="num">66%</td><td class="num">47%</td></tr><tr><td>Nebraska</td><td class="num">66%</td><td class="num">55%</td></tr><tr><td>Indiana</td><td class="num">75%</td><td class="num">61%</td></tr><tr><td>North Dakota</td><td class="num">76%</td><td class="num">58%</td></tr><tr><td>Minnesota</td><td class="num">82%</td><td class="num">65%</td></tr><tr><td>Illinois</td><td class="num">86%</td><td class="num">74%</td></tr><tr><td>Kansas</td><td class="num">86%</td><td class="num">79%</td></tr><tr><td>Missouri</td><td class="num">86%</td><td class="num">79%</td></tr><tr><td>Maryland</td><td class="num">88%</td><td class="num">79%</td></tr><tr><td>Kentucky</td><td class="num">93%</td><td class="num">91%</td></tr><tr><td>Virginia</td><td class="num">94%</td><td class="num">92%</td></tr><tr><td>Delaware</td><td class="num">95%</td><td class="num">89%</td></tr><tr><td>Oklahoma</td><td class="num">95%</td><td class="num">93%</td></tr><tr><td>Texas</td><td class="num">97%</td><td class="num">95%</td></tr><tr><td>North Carolina</td><td class="num">98%</td><td class="num">96%</td></tr><tr><td>Alabama</td><td class="num">100%</td><td class="num">100%</td></tr><tr><td>Tennessee</td><td class="num">100%</td><td class="num">98%</td></tr><!--/SEED--></table></div>
+      <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Percent of the crop harvested, from USDA&rsquo;s weekly Crop Progress report. Only states USDA reported this week are listed. The five-year average is our arithmetic on USDA&rsquo;s weekly series (each of the five prior years read at the same calendar date), so it can differ from the average USDA prints by a point. A last-year column appears when USDA has a report for the same week a year earlier; it published none in October 2025, during the federal shutdown. Tap a column to sort.</p>
     </div>
   </section>
 
@@ -656,14 +656,19 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
   var hv={cp:null, crop:'corn', key:'gap', dir:1};
   var HK={corn:'corn_harvested',soybeans:'soybeans_harvested'};
   function pc(v){ return v==null?'':v+'%'; }
+  // the harvest week: newer than the rating week once USDA stops rating a crop but keeps
+  // counting harvest (Nov 2, 2026: ratings Oct 25, harvest Nov 1); same rule as seed_static.harvest_week
+  function hWeek(cp,k){ var rd=(cp.corn||{}).report_date||cp.report_date, d=((cp.progress||{})[k]||{}).date; return d&&rd&&d>rd?d:rd; }
   function hRows(){
-    var cp=hv.cp, k=HK[hv.crop], rd=cp.report_date, out=[];
+    var cp=hv.cp, k=HK[hv.crop], rd=hWeek(cp,k), out=[];
     Object.keys(cp.states||{}).forEach(function(st){
       var s=(cp.states[st]||{})[k];
       if(!s||s.pct==null||s.date!==rd)return;
       out.push({st:st, name:HN[st]||st, pct:s.pct, pw:s.prev_week, py:s.prev_year, avg:s.avg5, gap:s.avg5==null?null:s.pct-s.avg5});
     });
+    // no five-year average on file (the 2025 shutdown gap): sort by percent harvested instead
     var key=hv.key, dir=hv.dir;
+    if((key==='gap'||key==='avg')&&!out.some(function(r){return r.avg!=null;})) key='pct';
     out.sort(function(a,b){
       var x=a[key], y=b[key];
       if(key==='name')return dir*(x<y?-1:x>y?1:0);
@@ -675,7 +680,7 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
   }
   function renderHarvest(){
     var cp=hv.cp; if(!cp||!cp.states)return;
-    var rows=hRows(), rd=cp.report_date, cname=hv.crop==='corn'?'Corn':'Soybeans';
+    var rows=hRows(), rd=hWeek(cp,HK[hv.crop]), cname=hv.crop==='corn'?'Corn':'Soybeans';
     $('cd-h-tabs').innerHTML=['corn','soybeans'].map(function(c){return '<button class="cd-tab'+(c===hv.crop?' on':'')+'" role="tab" data-hc="'+c+'">'+(c==='corn'?'Corn':'Soybeans')+'</button>';}).join('');
     $('cd-h-fresh').textContent='week ending '+rd;
     if(!rows.length){ $('cd-h-table').innerHTML='<tr><td style="color:#8a948f">No state harvest numbers for the week ending '+niceDate(rd)+'</td></tr>'; return; }
@@ -683,7 +688,8 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
     var cols=[['name','State',0],['pct','Harvested',1]];
     if(lw)cols.push(['pw','Week before',1]);
     if(ly)cols.push(['py','Last year',1]);
-    cols.push(['avg','5-yr avg',1],['gap','vs avg',1]);
+    var la=rows.some(function(r){return r.avg!=null;});
+    if(la)cols.push(['avg','5-yr avg',1],['gap','vs avg',1]);
     var h='<caption>'+cname+' harvested, week ending '+niceDate(rd)+'</caption><tr>'+cols.map(function(c){
       var on=c[0]===hv.key;
       return '<th data-k="'+c[0]+'"'+(c[2]?' style="text-align:right"':'')+' aria-sort="'+(on?(hv.dir>0?'ascending':'descending'):'none')+'">'+c[1]+(on?(hv.dir>0?' \u25b4':' \u25be'):'')+'</th>';}).join('')+'</tr>';
@@ -692,8 +698,8 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
       h+='<tr><td>'+r.name+'</td><td class="num">'+pc(r.pct)+'</td>'
         +(lw?'<td class="num">'+pc(r.pw)+'</td>':'')
         +(ly?'<td class="num">'+pc(r.py)+'</td>':'')
-        +'<td class="num" style="color:#8a948f">'+pc(r.avg)+'</td>'
-        +'<td class="num'+cls+'">'+(r.gap==null?'':(r.gap>0?'+':r.gap<0?'\u2212':'')+Math.abs(r.gap)+' pts')+'</td></tr>';
+        +(la?'<td class="num" style="color:#8a948f">'+pc(r.avg)+'</td>'
+        +'<td class="num'+cls+'">'+(r.gap==null?'':(r.gap>0?'+':r.gap<0?'\u2212':'')+Math.abs(r.gap)+' pts')+'</td>':'')+'</tr>';
     });
     $('cd-h-table').innerHTML=h;
   }

@@ -1056,6 +1056,19 @@ def _years_txt(ys):
     return ys[0] if len(ys) == 1 else (", ".join(ys[:-1]) + " or " + ys[-1])
 
 
+def harvest_week(cp, rd, key="corn_harvested"):
+    """The week the harvest numbers are on. Nov 2, 2026 audit: USDA stopped rating corn after
+    the week ending Oct 25 but kept reporting harvest (Nov 1, 74%), so the file held condition
+    on Oct 25 and harvest on Nov 1, and every harvest part keyed on the condition week said
+    "No state harvest numbers for the week ending Oct 25". When the harvest week is newer than
+    the condition week, the harvest parts use it and name it; otherwise the condition week."""
+    p = ((cp or {}).get("progress") or {}).get(key) or {}
+    hd = _iso_date(p.get("date"))
+    if hd is None and key == "corn_harvested":
+        hd = _iso_date(((cp or {}).get("corn") or {}).get("harvest_date"))
+    return hd if (hd and rd and hd > rd) else rd
+
+
 def harvest_rows(cp, key, rd):
     """State harvest rows for one crop from crop-progress.json, only states on
     the national report week. -> [(ST, pct, prev_week, avg5)] most behind first."""
@@ -1075,19 +1088,25 @@ def harvest_table(cp, key, crop, rd):
         return ""
     lw = any(r[2] is not None for r in rows)
     ly = any(r[4] is not None for r in rows)
+    # no state has a five-year average (Nov 1, 2026: the 2025 shutdown gap leaves none): no empty columns
+    la = any(r[3] is not None for r in rows)
+    if not la:
+        rows = sorted(rows, key=lambda r: (r[1], r[0]))
     pc = lambda v: "" if v is None else f"{v:g}%"
-    h = [f"<caption>{crop} harvested, week ending {_mdy(rd)} &middot; furthest behind first</caption>"
+    order = "furthest behind first" if la else "least harvested first"
+    h = [f"<caption>{crop} harvested, week ending {_mdy(rd)} &middot; {order}</caption>"
          "<tr><th>State</th><th style=\"text-align:right\">Harvested</th>"
          + ("<th style=\"text-align:right\">Week before</th>" if lw else "")
          + ("<th style=\"text-align:right\">Last year</th>" if ly else "")
-         + "<th style=\"text-align:right\">5-yr avg</th><th style=\"text-align:right\">vs avg</th></tr>"]
+         + ("<th style=\"text-align:right\">5-yr avg</th><th style=\"text-align:right\">vs avg</th>" if la else "")
+         + "</tr>"]
     for st, pct, pw, av, py in rows:
         gap = "" if av is None else (f"{pct - av:+g}".replace("-", "&minus;") + " pts")
         h.append(f"<tr><td>{_e(STATE_NAMES.get(st, st))}</td><td class=\"num\">{pct:g}%</td>"
                  + (f"<td class=\"num\">{pc(pw)}</td>" if lw else "")
                  + (f"<td class=\"num\">{pc(py)}</td>" if ly else "")
-                 + f"<td class=\"num\">{pc(av)}</td>"
-                 f"<td class=\"num\">{gap}</td></tr>")
+                 + (f"<td class=\"num\">{pc(av)}</td><td class=\"num\">{gap}</td>" if la else "")
+                 + "</tr>")
     return "".join(h)
 
 
@@ -1151,11 +1170,14 @@ def harvest_lead(cp, rd):
         rows.append(f"<tr><td>{_e(STATE_NAMES.get(st, st))}</td>{td(c)}{td(s)}</tr>")
     if not rows:
         return ""
+    anyavg = any(((sts.get(st) or {}).get(k) or {}).get("avg5") is not None
+                 for st in HARVEST_LEAD_STATES for k in ("corn_harvested", "soybeans_harvested"))
     return ('<section class="cd-panel cd-hl" aria-labelledby="cd-hl-t">'
-            '<div class="cd-panel-hd"><span class="cd-panel-t" id="cd-hl-t">Harvest pace by state vs average</span>'
+            '<div class="cd-panel-hd"><span class="cd-panel-t" id="cd-hl-t">Harvest pace by state'
+            + (' vs average' if anyavg else '') + '</span>'
             f'<span class="cd-fresh">week ending {rd.isoformat()}</span></div><div class="cd-panel-b">'
-            f'<div class="tblscroll"><table class="cd-tbl cd-hl-t"><caption>Percent harvested, week ending {_mdy(rd)}, '
-            'and points ahead (+) or behind (&minus;) the five-year average</caption>'
+            f'<div class="tblscroll"><table class="cd-tbl cd-hl-t"><caption>Percent harvested, week ending {_mdy(rd)}'
+            + (', and points ahead (+) or behind (&minus;) the five-year average' if anyavg else '') + '</caption>'
             '<tr><th>State</th><th style="text-align:right">Corn</th><th style="text-align:right">Soybeans</th></tr>'
             + "".join(rows) +
             '</table></div><p class="cd-hl-more">Every state USDA reported: <a href="#harvest">full harvest '
@@ -1211,44 +1233,55 @@ def seed_conditions(today):
         wk = f"Week ending {_mdy(rd)}{_cp_released(rd)} (USDA NASS): US corn <b>{ge:g}%</b> good-to-excellent"
         if soy.get("good_excellent") is not None and sd == rd:
             wk += f", soybeans <b>{soy['good_excellent']:g}%</b>"
+        # harvest parts: the harvest week (hd), newer than the condition week once USDA stops
+        # rating a crop but keeps counting harvest; condition parts above stay on rd
+        hd = harvest_week(cp, rd)
         bits = []
         for k, nm in (("corn_harvested", "corn"), ("soybeans_harvested", "soybeans")):
             p = prog.get(k) or {}
-            if p.get("pct") is not None and _iso_date(p.get("date")) == rd:
+            if p.get("pct") is not None and _iso_date(p.get("date")) == hd and not _stale(hd, today, "conditions"):
                 b = f"{nm} {p['pct']:g}%"
                 if p.get("avg5") is not None:
                     b += f" (avg {p['avg5']:g}%)"
                 bits.append(b)
         if bits:
-            wk += ". Harvested: " + ", ".join(bits)
+            wk += (". Harvested: " if hd == rd else f". Harvested, week ending {_mdy(hd)}: ") + ", ".join(bits)
         wk += "."
-        # harvest by state
-        hl = []
-        for k, nm in (("corn_harvested", "Corn"), ("soybeans_harvested", "Soybeans")):
-            p = prog.get(k) or {}
-            if p.get("pct") is not None and _iso_date(p.get("date")) == rd:
-                s = f"{nm} <strong>{p['pct']:g}%</strong> harvested"
-                if p.get("avg5") is not None:
-                    s += f" vs a {p['avg5']:g}% five-year average"
-                hl.append(s)
-        hline = (f"US, week ending {_mdy(rd)}: " + "; ".join(hl) + ".") if hl else \
-            f"No national harvest figure for the week ending {_mdy(rd)}."
-        htab = harvest_table(cp, "corn_harvested", "Corn", rd)
-        nst = len(harvest_rows(cp, "corn_harvested", rd))
-        if nst:
-            hline += f" {nst} corn states reported this week."
-        seeds["condharvline"] = hline
-        has_h = any(((prog.get(k) or {}).get("pct") is not None and _iso_date((prog.get(k) or {}).get("date")) == rd)
-                    for k in ("corn_harvested", "soybeans_harvested"))
-        season = cond_season(today, has_h)
-        seeds["condharvlead"] = harvest_lead(cp, rd) if season == "harvest" else ""
-        seeds["condharvtable"] = htab or f'<tr><td style="color:#8a948f">No state harvest numbers for the week ending {_mdy(rd)}</td></tr>'
     else:
         why = ("USDA is between seasons" if cp and not cp.get("in_season") else
                (f"the latest national report on file is the week ending {_mdy(rd)}" if rd else "the national file is missing"))
         line = f"No current national rating: {why}."
         vsent = f"No current rating: {why}."
         wk = f"No current national rating: {why}."
+    # Harvest parts stand on their own week and their own freshness: USDA keeps counting
+    # harvest for weeks after its last corn rating, so a stale rating does not hide them.
+    hd = harvest_week(cp, rd)
+    hlive = bool(cp and cp.get("in_season") and not _stale(hd, today, "conditions"))
+    if hlive:
+        hl = []
+        for k, nm in (("corn_harvested", "Corn"), ("soybeans_harvested", "Soybeans")):
+            p = prog.get(k) or {}
+            if p.get("pct") is not None and _iso_date(p.get("date")) == hd:
+                s = f"{nm} <strong>{p['pct']:g}%</strong> harvested"
+                if p.get("avg5") is not None:
+                    s += f" vs a {p['avg5']:g}% five-year average"
+                hl.append(s)
+        hline = (f"US, week ending {_mdy(hd)}: " + "; ".join(hl) + ".") if hl else \
+            f"No national harvest figure for the week ending {_mdy(hd)}."
+        htab = harvest_table(cp, "corn_harvested", "Corn", hd)
+        nst = len(harvest_rows(cp, "corn_harvested", hd))
+        if nst:
+            hline += f" {nst} corn states reported this week."
+        if live and hl and hd != rd:
+            hline += f" Condition ratings on this page are for the week ending {_mdy(rd)}."
+        seeds["condharvline"] = hline
+        has_h = bool(hl)
+        season = cond_season(today, has_h)
+        seeds["condharvlead"] = harvest_lead(cp, hd) if season == "harvest" else ""
+        seeds["condharvtable"] = htab or f'<tr><td style="color:#8a948f">No state harvest numbers for the week ending {_mdy(hd)}</td></tr>'
+    else:
+        why = ("USDA is between seasons" if cp and not cp.get("in_season") else
+               (f"the latest report on file is the week ending {_mdy(hd)}" if hd else "the national file is missing"))
         seeds["condharvline"] = f"No current harvest numbers: {why}."
         seeds["condharvtable"] = f'<tr><td style="color:#8a948f">No current harvest numbers: {why}</td></tr>'
         season = cond_season(today, False)
