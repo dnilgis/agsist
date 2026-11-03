@@ -3,7 +3,7 @@
 // RP_DESIGN_EMAIL_LIVE was 1. This evaluates the workflow's own expression for each case.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,4 +39,24 @@ test("the script reads DRY_RUN == '1' as dry and anything else as live", () => {
   const py = readFileSync(join(ROOT, "scripts", "rp_design_email.py"), "utf8");
   assert.match(py, /dry = env\("DRY_RUN"\) == "1"/);
   assert.match(py, /NOW_MAX_H = 24/);
+});
+
+test("rp-buyer-email: dry unless the worker asks with dry_run false", () => {
+  const b = readFileSync(join(ROOT, ".github", "workflows", "rp-buyer-email.yml"), "utf8");
+  const e = b.match(/\n\s+DRY_RUN: \$\{\{(.*)\}\}\s*\n/)[1];
+  const f = (D) => Function("D", "return (" + e.replace(/inputs\.dry_run/g, "D").replace(/ == /g, " === ").replace(/ != /g, " !== ") + ");")(D);
+  assert.equal(f(false), "", "dry_run false: live");
+  assert.equal(f(true), "1");
+  assert.equal(f(null), "1", "no input: dry");
+});
+
+// `X && '' || Y` is always Y in a GitHub expression ('' is falsy). It hid two senders for two weeks.
+test("no workflow uses && '' (an empty string is falsy, so the branch can never win)", () => {
+  const dir = join(ROOT, ".github", "workflows");
+  const bad = [];
+  for (const f of readdirSync(dir).filter((n) => /\.ya?ml$/.test(n)))
+    readFileSync(join(dir, f), "utf8").split("\n").forEach((l, i) => {
+      if (!/^\s*#/.test(l) && /&&\s*''/.test(l)) bad.push(`${f}:${i + 1}`);
+    });
+  assert.deepEqual(bad, []);
 });
