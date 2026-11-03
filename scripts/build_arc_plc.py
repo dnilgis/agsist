@@ -4240,9 +4240,15 @@ def selftest():
                                ("Sumner KS non-irrigated wheat", ("20191", "Wheat", "non", "wheat"), (40.25, 27.91))):
             x = e25(*args)
             ck(f"2025 typical farm, {nm}: PLC ${want[0]:.2f}, ARC-CO ${want[1]:.2f}", x and x["final"] and (x["plc"], x["arc"]) == want, str(x))
-        ck("2025: rice's price is not final, so no 2025 dollars (FSA lists Oct 30, 2026)",
-           y25["crops"]["rice_long"]["flag"] == "P" and y25["crops"]["rice_long"]["final_on"] == "2026-10-30"
-           and est25({"f": "05001"}, "rice_long", {"hist": []}, {"_y25": y25, "_plc_raw": raw25, "years": {"2026": {"crops": {"rice_long": {"unit": "lb"}}}}})["final"] is False)
+        # FSA's Oct 30, 2026 tables made long grain rice final (0.104 P -> 0.101 F); temperate japonica is still projected.
+        # Hand check, Arkansas County AR long grain: PLC (0.169 - 0.101) x 6,972.05 lb x 85% = $402.98; ARC-CO FSA's $170.88 x 85% = $145.25
+        ck("2025: long grain rice is final in FSA's Oct 30 table, Arkansas County AR: PLC $402.98, ARC-CO $145.25",
+           y25["crops"]["rice_long"]["flag"] == "F" and y25["crops"]["rice_long"]["price"] == 0.101
+           and e25("05001", "Rice_Long Grain", "all", "rice_long") == {"final": True, "plc": 402.98, "arc": 145.25, "rate": 0.068, "py": 6972.05},
+           str(e25("05001", "Rice_Long Grain", "all", "rice_long")))
+        ck("2025: temperate japonica rice is still projected, so no 2025 dollars",
+           y25["crops"]["rice_japonica"]["flag"] == "P"
+           and est25({"f": "06007"}, "rice_japonica", {"hist": []}, {"_y25": y25, "_plc_raw": raw25, "years": {"2026": {"crops": {"rice_japonica": {"unit": "lb"}}}}})["final"] is False)
         ck("2025 ERPs in FSA's Table 4 match ours (corn $4.42, soybeans $10.71, wheat $6.35)",
            (y25["crops"]["corn"]["erp"], y25["crops"]["soybeans"]["erp"], y25["crops"]["wheat"]["erp"]) == (4.42, 10.71, 6.35))
         # item 6: the source list's dates are the tables' own
