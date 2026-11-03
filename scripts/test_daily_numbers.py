@@ -17,7 +17,8 @@ THE DAILY'S STANDING FACTS AND NUMBERS, PINNED (2026-10-20 panel, C2 A2 F2 F5).
 
     python3 scripts/test_daily_numbers.py
 
-Fixtures and repo data only: no network, no model call, nothing sent.
+Frozen copies under test/fixtures/daily-numbers (Nov 3, 2026), plus the published daily/*.html leads,
+which are read live on purpose (no page a reader sees prints raw **): no network, no model call, nothing sent.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -38,6 +39,10 @@ import generate_daily as g  # noqa: E402
 import fact_check_briefing as fc  # noqa: E402
 
 REPO = Path(HERE).parent
+# Frozen copies of the real files (taken Nov 3, 2026), so a bot rewriting data/ can never change what this
+# check means or hold the Daily (Sig, Nov 3: no test may depend on live data matching a literal value).
+# FIX/data/daily-archive holds the Oct 15 to 19 issues as published; the rest are the live files as of Nov 3.
+FIX = REPO / "test" / "fixtures" / "daily-numbers"
 fails = []
 
 
@@ -86,7 +91,7 @@ class _Root:
 
 
 def real_situations():
-    with open(REPO / "data" / "ongoing-situations.json") as f:
+    with open(FIX / "ongoing-situations.json") as f:
         return json.load(f)
 
 
@@ -100,7 +105,7 @@ def test_situations():
         check(bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", s.get("updated") or "")), f"{k}: has its own updated date", s.get("updated"))
 
     # The real file as it ships, on the day of the fix.
-    with _Clock(2026, 10, 20):
+    with _Root(real), _Clock(2026, 10, 20):
         block = g.load_ongoing_situations()
     active_fresh = [k for k, s in sits.items() if s.get("status") == "active"
                     and (_real_dt(2026, 10, 20) - _real_dt.strptime(s["updated"], "%Y-%m-%d")).days <= g.STALE_SITUATIONS_DAYS]
@@ -176,7 +181,7 @@ def test_situations():
 
 def test_archive_lead():
     print("2. archive leads: **bold** renders as <strong>")
-    b = json.load(open(REPO / "data" / "daily-archive" / "2026-10-19.json"))
+    b = json.load(open(FIX / "data" / "daily-archive" / "2026-10-19.json"))
     check("**" in b.get("lead", ""), "fixture: the Oct 19 lead has ** in the archive JSON")
     html = g.generate_archive_html(b, "2026-10-19")
     lead = re.search(r'<p class="dv3-lead">(.*?)</p>', html, re.S)
@@ -194,12 +199,12 @@ def test_archive_lead():
 def test_frozen_counts():
     print("3a. a past day's elevator count is printed once")
     import daily_edge as de
-    pub = de.load_published(str(REPO))
+    pub = de.load_published(str(FIX))
     hit = pub.get(("cash_change_corn", "2026-10-16"))
     check(hit and hit[0] == "2026-10-17" and hit[1]["key"] == "1,494 of the 1,527 elevators",
           "first print of Friday Oct 16 corn is the Oct 17 issue, 1,494 of 1,527", hit and (hit[0], hit[1].get("key")))
     # The Oct 19 run recounted Friday as 1,596 of 1,629; frozen, it prints the Oct 17 numbers.
-    oct19 = json.load(open(REPO / "data" / "daily-archive" / "2026-10-19.json"))["edge"]
+    oct19 = json.load(open(FIX / "data" / "daily-archive" / "2026-10-19.json"))["edge"]
     recount = {"schema": de.SCHEMA, "generated": oct19["generated"], "facts": [
         dict(f, **{"from": "2026-10-15"}) if f["kind"] == "cash_change" else dict(f) for f in oct19["facts"]]}
     frozen = de.freeze(recount, pub)
@@ -216,7 +221,7 @@ def test_frozen_counts():
           "today's basis snapshot is not frozen")
     # a day after every issue on disk, so no archived issue can have printed it (a fixed past date stopped working the
     # day an issue printed it: Oct 19 was "never printed" until the Oct 20 issue came out)
-    last = max(os.path.basename(f)[:10] for f in glob.glob(str(REPO / "data" / "daily-archive" / "20??-??-??.json")))
+    last = max(os.path.basename(f)[:10] for f in glob.glob(str(FIX / "data" / "daily-archive" / "20??-??-??.json")))
     nxt = (_dtmod.date.fromisoformat(last) + _dtmod.timedelta(days=1)).isoformat()
     newday = {"facts": [{"id": "cash_change_corn", "kind": "cash_change", "as_of": nxt, "key": "x", "n": 1}]}
     check(de.freeze(newday, pub)["facts"][0].get("frozen_from") is None, "a day no issue has printed is counted fresh")
@@ -225,10 +230,13 @@ def test_frozen_counts():
 
     print("3b. streak words come from the settles")
     import streak_words as sw
-    # Dec corn settles from data/harvest-prices.json (October 2026 window).
+    # Dec corn settles from data/harvest-prices.json (October 2026 window), frozen in FIX.
     dec = {"2026-10-09": 4.875, "2026-10-12": 4.83, "2026-10-13": 4.8275, "2026-10-14": 4.8075,
            "2026-10-15": 4.78, "2026-10-16": 4.7425}
-    hp = json.load(open(REPO / "data" / "harvest-prices.json"))
+    hp = json.load(open(FIX / "harvest-prices.json"))
+    check(sum(1 for w in hp.get("windows") or [] if w.get("ticker") == "ZCZ26.CBT"
+              and any(p["d"] == "2026-10-12" for p in w.get("series") or [])) == 1,
+          "the frozen file holds the October Dec corn window")
     for w in hp.get("windows") or []:
         # the October window only: from Nov 2 the file also carries the next window on the same contract
         # (one Nov settle), which has none of these days
@@ -240,7 +248,7 @@ def test_frozen_counts():
     st = sw.streaks({"corn": {"ticker": "ZCZ26.CBT", "month": "Dec", "label": "Dec corn", "settles": dec}}, "2026-10-16")
     check(st["corn"]["n"] == 4 and st["corn"]["dir"] == "lower" and not st["corn"]["open"],
           "Dec corn through Oct 16: four straight lower closes", st)
-    oct17 = json.load(open(REPO / "data" / "daily-archive" / "2026-10-17.json"))
+    oct17 = json.load(open(FIX / "data" / "daily-archive" / "2026-10-17.json"))
     body = oct17["sections"][0]["body"]
     check("the third straight lower close" in body, "fixture: the Oct 17 issue said third")
     fixed, log = sw.apply({"sections": [{"body": body}]}, st)
@@ -256,7 +264,7 @@ def test_frozen_counts():
 def test_watch_dates():
     print("6. a weekday beside a settle takes the settle's date")
     import watch_dates as wd
-    oct18 = json.load(open(REPO / "data" / "daily-archive" / "2026-10-18.json"))
+    oct18 = json.load(open(FIX / "data" / "daily-archive" / "2026-10-18.json"))
     # The published line was corrected on Oct 27 (dated note in 'corrections');
     # the line as it went out is quoted word for word in that note.
     item = [w for w in oct18["watch_list"] if "$227.55" in w.get("desc", "")][0]
@@ -270,7 +278,7 @@ def test_watch_dates():
     b, fx = wd.apply({"watch_list": [undated]}, _real_dt(2026, 10, 18, 10, 0), cattle)
     check("Friday's (Oct 16) $227.55 close" in b["watch_list"][0]["desc"],
           "Oct 18 line dated by the settle: Friday's (Oct 16)", b["watch_list"][0]["desc"])
-    got = wd.load_settles(str(REPO / "data" / "prices.json"))
+    got = wd.load_settles(str(FIX / "prices.json"))
     check(len(got) > 20 and all(isinstance(v, float) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) for v, d in got),
           "load_settles reads data/prices.json", len(got))
 

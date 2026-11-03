@@ -398,7 +398,11 @@ test("each page-matched ask posts the topic and source its sender reads", { skip
       assert.equal(await ask.locator(".sa-d input").isChecked(), false, "the Daily box starts empty");
       await send(pg, ask);
       assert.deepEqual(posts.filter((x) => x.path === "/notice").map((x) => x.body), [{ email: "reader@example.com", source: "page:rent/iowa", topic: "rent:ia", daily: false }], "rent " + width);
-      assert.match(await ask.locator(".sa-ok").textContent(), /^Done\. One email when USDA puts out the 2027 Iowa county rents, usually in August\./);
+      // the release year is the page's own: the rent builder bakes the year after the newest rents on file (2027
+      // until USDA's 2027 county rents are loaded next August), so read it from the page rather than pin it here
+      const rentOk = /data-topic="rent:ia" data-ok="([^"]+)"/.exec(read("rent/iowa.html"))[1];
+      assert.match(rentOk, /^Done\. One email when USDA puts out the 20\d\d Iowa county rents, usually in August\.$/);
+      assert.ok((await ask.locator(".sa-ok").textContent()).startsWith(rentOk), rentOk);
       await pg.context().close();
 
       posts = []; pg = await openAs(browser, port, "/arc-plc.html", posts, { width });

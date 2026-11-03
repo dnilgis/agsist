@@ -90,7 +90,7 @@ test("retired bids-repo ids: never a record, never held by a key, recorded once 
   // (folded, else vanished) and refuses to write a record with a dead bids-repo id, so a committed
   // file with stale ids means the builder broke, not the upstream. The rule itself runs on a fixture
   // in `python3 scripts/build_ids.py --selftest` (the Beresford case).
-  assert.equal(EL.counts.stale_ids, 0);
+  assert.equal(EL.counts.stale_ids, 0, `data/ids/elevators.json (generated ${EL.generated}) holds ${EL.counts.stale_ids} record(s) with a bids-repo id the bids repo no longer lists (counts.stale_ids)`);
 });
 
 test("alias lookups: the basis history's spellings find one facility", () => {

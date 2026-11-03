@@ -15,7 +15,14 @@ import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
-const ctx = { window: {}, console };
+// the quotes below are the Oct 16, 2026 board, so the page code reads that day as today (which contracts are still
+// trading comes from the clock: on the real one Dec '26 drops off in December and these checks failed from then on)
+const FIXED = Date.parse("2026-10-16T17:00:00Z");
+class FixedDate extends Date {
+  constructor(...a) { if (a.length) super(...a); else super(FIXED); }
+  static now() { return FIXED; }
+}
+const ctx = { window: {}, console, Date: FixedDate };
 ctx.window.window = ctx.window;
 vm.createContext(ctx);
 // storesell.js loads its pure core only when there is no document

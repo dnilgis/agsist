@@ -167,8 +167,11 @@ ok(F.delKey({deliveryMonth:"Mar 01, 2027"})==="2027-03", "Mar 01, 2027 is March 
 ok(F.delKey({deliveryMonth:"October 15, 2026"})==="2026-10", "a full month name works too");
 ok(F.delKey({deliveryMonth:"Fall 01, 2026"})==="", "and a season with a date in it is still not a month");
 F = mk("harvest");
-ok(F.inDelivery({deliveryMonth:"Oct 01, 2026"})===true,  "harvest keeps CDR's October row");
-ok(F.inDelivery({deliveryMonth:"Sep 01, 2026"})===false, "and still drops his September one");
+/* harvest is the harvest year's Oct to Dec (HY above, as harvestYear() reads the clock), so the rows carry that
+   year: with a fixed 2026 they failed from Jan 1, 2027 */
+ok(F.harvestYear()===HY, "the page's harvest year is the one these checks use");
+ok(F.inDelivery({deliveryMonth:"Oct 01, "+HY})===true,  "harvest keeps CDR's October row");
+ok(F.inDelivery({deliveryMonth:"Sep 01, "+HY})===false, "and still drops his September one");
 F = mk("2026-11");
 ok(F.inDelivery({deliveryMonth:"Nov 01, 2026"})===true,  "November keeps his November row");
 ok(F.inDelivery({deliveryMonth:"Oct 01, 2026"})===false, "and not his October one");
@@ -198,5 +201,5 @@ ok(F.inDelivery({deliveryMonth:"09/01/2026",deliveryPeriod:"2026-09"})===true,
 ok(F.inDelivery({deliveryMonth:"10/01/2026",deliveryPeriod:"2026-10"})===false,
    "and not its October one");
 F = mk("harvest");
-ok(F.inDelivery({deliveryMonth:"10/01/2026",deliveryPeriod:"2026-10"})===true,
+ok(F.inDelivery({deliveryMonth:"10/01/"+HY,deliveryPeriod:HY+"-10"})===true,
    "harvest keeps it too");
