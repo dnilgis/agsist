@@ -1073,17 +1073,79 @@
     if (p.src === 'coop' && p.n === 1) return 'one ' + (p.region ? p.region + ' ' : '') + 'co-op' + (p.as_of ? (short ? ', ' + monDay(p.as_of).replace(/, \d{4}$/, '') : ', posted ' + monDay(p.as_of)) : '');
     return short ? (p.short_label || p.src_label || '') : (p.src_label || p.short_label || '');
   }
+  /* USDA production cost reports (data/production-costs.json, scripts/fetch_prodcost_mars.py): the
+     reports that cover the state, published within USDA_DAYS of today, newest first (a one-state
+     report before a regional one on the same day). Each report's date is the day USDA published it. */
+  var USDA_DAYS = 45, USDA_NAMES = { anhydrous: 'Anhydrous ammonia', urea: 'Urea', diesel: 'Farm diesel', propane: 'Propane' };
+  function dayNum(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / 864e5 : null; }
+  function usdaReports(pc, st, today) {
+    var reps = (pc && pc.reports) || {}, t = dayNum(today), out = [];
+    Object.keys(reps).forEach(function (k) {
+      var r = reps[k], d = dayNum(r && r.published);
+      if (!r || d == null || !r.states || r.states.indexOf(st) < 0 || !(r.items || []).length) return;
+      out.push({ r: r, age: t == null ? 0 : t - d });
+    });
+    out.sort(function (a, b) { return a.age - b.age || a.r.states.length - b.r.states.length; });
+    return out;
+  }
+  function usdaCover(pc) {
+    var reps = (pc && pc.reports) || {};
+    return Object.keys(reps).map(function (k) { var r = reps[k]; return r.states.length > 1 ? r.region + ' (' + r.states.join(', ') + ')' : r.region; }).sort();
+  }
+  function andList(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+  /* the first of keys a fresh covering report prints with a real range (a single price is too thin to show) */
+  function usdaItem(pc, st, keys, today) {
+    var reps = usdaReports(pc, st, today);
+    for (var i = 0; i < reps.length; i++) {
+      if (reps[i].age > USDA_DAYS || reps[i].age < -1) continue;
+      for (var j = 0; j < keys.length; j++) {
+        var it = (reps[i].r.items || []).filter(function (x) { return x.key === keys[j] && !x.thin && x.avg > 0; })[0];
+        if (it) return { item: it, rep: reps[i].r };
+      }
+    }
+    return null;
+  }
+  /* the USDA fertilizer price for a place: anhydrous, else urea (the same order as the co-op row) */
+  function usdaFert(pc, st, today) {
+    var u = usdaItem(pc, st, ['anhydrous', 'urea'], today);
+    return u ? { key: u.item.key, name: USDA_NAMES[u.item.key], price: u.item.avg, low: u.item.low, high: u.item.high, freight: u.item.freight, as_of: u.rep.published, src: 'usda', rep: u.rep } : null;
+  }
+  function usdaTitle(rep) { return 'USDA AMS, ' + String(rep.title || '').replace(/\s*\((?:Bi-?weekly|Weekly|Monthly)\)\s*$/i, ''); }
+  function freightWords(f) { return /^delivered/i.test(f || '') ? ' delivered' : /f\.?o\.?b/i.test(f || '') ? ' at the dealer' : ''; }
+  function usdaRow(label, value, u, who) {
+    var fr = freightWords(u.freight);
+    return { label: label, value: value, date: u.as_of,
+      ctx: u.rep.region + ' ' + who + ' asking price, $' + u.lo + ' to $' + u.hi + fr + '. Call to confirm.',
+      src: [usdaTitle(u.rep), null], paper: 'USDA AMS production cost report' };
+  }
   /* file: the price doc components/fert-pick.js chose for the place's state (the reader's own
      state's co-op sheets first, else every current sheet). Anhydrous, else urea; a product from
-     the reader's own state comes first. Never a co-op's name; always the posting dates. */
-  function factFert(file) {
+     the reader's own state comes first. Never a co-op's name; always the posting dates.
+     usda: usdaFert() for the same state, or null. The newer of the two is shown, with its own date
+     and source; on the same day the reader's own state's co-op sheet comes first. Never blended. */
+  function factFert(file, usda) {
     var list = ((file && file.prices) || []).filter(function (p) { return (p.key === 'anhydrous' || p.key === 'urea') && p.price > 0; });
     list.sort(function (a, b) { return (a.scope === 'state' ? 0 : 1) - (b.scope === 'state' ? 0 : 1) || (a.key === 'anhydrous' ? 0 : 1) - (b.key === 'anhydrous' ? 0 : 1); });
-    var pick = list[0] || null;
+    var pick = list[0] || null, pd = pick && isoDay(pick.as_of || file.updated);
+    if (usda && usda.price > 0 && (!pick || !pd || usda.as_of > pd || (usda.as_of === pd && pick.scope !== 'state')))
+      return usdaRow(usda.name, '$' + fixed(Math.round(usda.price), 0) + ' a ton', { as_of: usda.as_of, rep: usda.rep, freight: usda.freight, lo: fixed(Math.round(usda.low), 0), hi: fixed(Math.round(usda.high), 0) }, 'dealers’');
     if (!pick) return na('Fertilizer', 'no current co-op price for anhydrous or urea', ['Fertilizer prices', '/fertilizer']);
     var where = pick.src === 'coop' && pick.n === 1 ? fertSrc(pick, false) : pick.src_label || '';
     return { label: pick.name, value: '$' + fixed(Math.round(pick.price), 0) + ' a ton', date: isoDay(pick.as_of || file.updated),
       ctx: (where ? where.charAt(0).toUpperCase() + where.slice(1) + '. ' : '') + 'Cash price; call to confirm.', src: ['Fertilizer prices', '/fertilizer'], paper: 'Co-op posted prices' };
+  }
+  /* Farm diesel or propane (key 'diesel' or 'propane') from the USDA report that covers the state;
+     where no report covers it, or the newest is over USDA_DAYS old, the row says so. */
+  function factFuel(pc, st, key, today) {
+    var label = USDA_NAMES[key] || key;
+    if (!pc || !pc.reports) return na(label, 'the USDA fuel price file did not load');
+    var u = usdaItem(pc, st, [key], today);
+    if (u) return usdaRow(label, '$' + fixed(u.item.avg, 2) + ' a gallon', { as_of: u.rep.published, rep: u.rep, freight: u.item.freight, lo: fixed(u.item.low, 2), hi: fixed(u.item.high, 2) }, 'fuel dealers’');
+    var reps = usdaReports(pc, st, today), cover = usdaCover(pc);
+    if (reps.length && reps.every(function (x) { return x.age > USDA_DAYS; }))
+      return na(label, 'the newest USDA ' + reps[0].r.region + ' report is from ' + monDay(reps[0].r.published) + ', too old to show');
+    if (reps.length) return na(label, 'the USDA ' + reps[0].r.region + ' report does not price ' + label.toLowerCase());
+    return na(label, 'USDA’s dealer price survey covers ' + andList(cover) + (STATES[st] ? ', not ' + STATES[st] : ''));
   }
   /* Custom combining: the reader's state survey when there is one, beside the middle of the state
      custom rate surveys (data/custom-rates/blend.json, the file /custom-rates reads). */
@@ -1132,7 +1194,7 @@
 
   return {
     factBid: factBid, factFutures: factFutures, factBasis: factBasis, factRain: factRain, factDrought: factDrought, factHail: factHail,
-    factProgress: factProgress, factCol: factCol, factSales: factSales, factArcPlc: factArcPlc, factUsda: factUsda, factFert: factFert, factCustom: factCustom,
+    factProgress: factProgress, factCol: factCol, factSales: factSales, factArcPlc: factArcPlc, factUsda: factUsda, factFert: factFert, factFuel: factFuel, usdaFert: usdaFert, USDA_DAYS: USDA_DAYS, factCustom: factCustom,
     factDaily: factDaily, fertSrc: fertSrc, srcName: srcName, centsFrac: centsFrac, deliveryWords: deliveryWords, stateLinks: stateLinks, NO_PAGE: NO_PAGE,
     rainFigure: rainFigure, rainChart: rainChart, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
     ownPast: ownPast, unusualHere: unusualHere, ownWords: ownWords, OWN_MIN: OWN_MIN, OWN_MAX: OWN_MAX,
