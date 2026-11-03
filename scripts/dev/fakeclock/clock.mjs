@@ -21,7 +21,8 @@ if (process.env.AGSIST_FAKE_OFFSET !== undefined) {
   const shift = (off) => {
     const probe = globalThis.__agsistClockRead || null;
     const RD = globalThis.Date;
-    if (RD.agsistFake) return;
+    // only the built-in Date: a test that hands a context its own clock (a stub, a class) keeps it as given
+    if (typeof RD !== "function" || RD.agsistFake || !/\[native code\]/.test(Function.prototype.toString.call(RD))) return;
     // arity by hand, no rest array: a test that makes a million dates should not slow down here
     function FakeDate(a, b, c, d, e, f, g) {
       if (!new.target) { if (probe) probe(); return new RD(RD.now() + off).toString(); }
