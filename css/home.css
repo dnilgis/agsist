@@ -2257,6 +2257,14 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 /* On a phone the "Updated ... days old" stamp lands as a third line under the
    place and date; hold that line too. */
 @container hero (max-width:559px){html.has-zip .hb-where{min-height:66px;align-content:flex-start}}
+/* The bid label grows when the bids land: "Top soybean bid nearby" becomes "... within 50 mi" or
+   "... posted today". Where the cell is narrow (phones, and the five-across row under about 1240px)
+   that is a second line, and the band grew 18px after first paint (CI, Nov 3, at 390). Hold two. */
+@container hero (max-width:559px){html.has-zip .hb-bid>.hb-k{min-height:2.6em}}
+@container hero (min-width:1000px) and (max-width:1239px){html.has-zip .hb-bid>.hb-k{min-height:2.6em}}
+/* The miles figure is in the mono face, whose taller line box made the town line 2px taller than the
+   three lines held above (60.8 for 58.8 at 390); keep it inside the line. */
+.hb-bid .hb-s .hb-n{line-height:1}
 /* 2026-10-16: cash bid card with no location (components/home.js, no-location block) */
 #bids-noloc{padding:.4rem 0 .2rem}
 #bids-noloc .hn-h{margin:0 0 .25rem;font-weight:700;color:var(--text);font-size:.95rem}
