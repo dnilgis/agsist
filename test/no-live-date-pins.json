@@ -71,6 +71,7 @@
   "test/foreign-land-h2h.test.mjs": 1,
   "test/futures-one-quote.test.mjs": 15,
   "test/futures-seed-note-cls.test.mjs": 3,
+  "test/futures-when.test.mjs": 6,
   "test/gauge-hook.test.mjs": 3,
   "test/geo-sponsor.test.mjs": 6,
   "test/gifts-for-farmers.test.mjs": 1,
