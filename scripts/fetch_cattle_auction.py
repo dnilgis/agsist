@@ -119,7 +119,24 @@ def report_title(text):
     return " ".join([ln for ln in norm_lines(text) if ln][:4])
 
 
+# "Livestock Weighted Average Report for 10/26/2026 - Final": the sale's own date. The
+# weekday date in the header is the day the issue was put out, which for a Final is often
+# the day after the sale (Oklahoma City 1280: sold Mon Oct 26 2026, Final headed "Tue Oct 27";
+# St. Onge 2019: sold Fri Oct 23, headed "Sat Oct 24"). Read by the header, one sale showed
+# up under two dates, its Monday Preliminary and its Tuesday Final, and counted twice in a
+# week (feeder index, weeks of Oct 19 and 26 2026). USDA My Market News dates these sales
+# by the same "report for" date. A range ("10/18/2026 - 10/24/2026") is a weekly summary,
+# never one sale, so it is not read here.
+REPORT_FOR_RE = re.compile(r"\bweighted\s+average\s+report\s+for\s+(\d{1,2})/(\d{1,2})/(\d{4})(?!\s*-\s*\d)", re.I)
+
+
 def sale_date(text):
+    m = REPORT_FOR_RE.search(joined(text))
+    if m:
+        try:
+            return datetime.date(int(m.group(3)), int(m.group(1)), int(m.group(2))).isoformat()
+        except ValueError:
+            pass
     lines = [ln for ln in norm_lines(text) if ln][:30]
     for ln in lines:
         d = find_date(ln, weekday_first=True)
@@ -1124,6 +1141,19 @@ def selftest():
         p, w = parse_report((fx / ("ams_%s-real.txt" % n)).read_text())
         return p, w, (summarize(p) if p else None)
 
+    # Oklahoma National Stockyards 1280, the Final of the Mon Oct 26 2026 sale, put out and headed
+    # "Tue Oct 27": the sale is dated by "Report for 10/26/2026 - Final", so the Final replaces the
+    # Monday read of the same sale instead of standing beside it as a second sale (feeder index,
+    # weeks of Oct 19 and 26 2026, Oklahoma City counted twice)
+    okc, w = parse_report((fx / "ams_1280-2026-10-26-final.txt").read_text())
+    ck("real Oklahoma City 1280: the Final headed Tue Oct 27 is the sale of Mon Oct 26",
+       okc and okc["date"] == "2026-10-26" and okc["receipts"] == 5506, w or (okc and okc["date"]))
+    ck("a weekly summary's date range is not a sale date: the header date stands",
+       sale_date("Florida Weekly Livestock Auction Summary\nFri Oct  23,  2026\n"
+                 "Livestock Weighted Average Report for 10/18/2026 - 10/24/2026\n") == "2026-10-23")
+    ck("the report-for date also when pdftotext splits it over lines",
+       sale_date("Clovis Livestock Auction - Clovis, NM\nThu Oct  22,  2026\nLivestock Weighted Average Report for \n"
+                 "10/21/2026\n - Final\n") == "2026-10-21")
     p, w, s = real("1819")   # Callaway Livestock Center, Kingdom City MO, Mon Oct 26
     # 65 hd x 5.29 cwt x 439.89 + 38 hd x 5.93 cwt x 415.41 = 244864.67 over 569.19 cwt;
     # the 15 hd Unweaned row at 591 lb is left out
@@ -1141,11 +1171,13 @@ def selftest():
     c = s and s["classes"]["steers|1"]["500"]
     ck("real Gordon 1858: 500 lb steers M&L 1 434.45 on 287 head, avg 572 lb",
        p and p["date"] == "2026-10-27" and (c["cwt"], c["head"], c["avg_wt"]) == (434.45, 287, 572), w or c)
-    p, w, s = real("2019")   # St. Onge Livestock Auction, St. Onge SD, Sat Oct 24 (the barn's 2nd report is 2012)
+    p, w, s = real("2019")   # St. Onge Livestock Auction, St. Onge SD, sold Fri Oct 23, issue headed Sat Oct 24 (2nd report is 2012)
     # 293 hd x 6.14 cwt x 435.13 + 116 hd x 6.57 cwt x 404.43 = 1091031.76 over 2561.14 cwt
     c = s and s["classes"]["steers|1"]["600"]
-    ck("real St. Onge 2019: Oct 24, 7,030 head; 600 lb steers M&L 1 425.99 on 409 head, $2,667.56 a head",
-       p and p["date"] == "2026-10-24" and p["receipts"] == 7030 and (c["cwt"], c["head"], c["per_head"]) == (425.99, 409, 2667.56),
+    # the sale date is the "Report for 10/23/2026 - Final" date (the barn's regular Friday sale), not
+    # the issue's header date: read by the header it was dated Sat Oct 24 until Nov 3 2026
+    ck("real St. Onge 2019: sold Fri Oct 23, 7,030 head; 600 lb steers M&L 1 425.99 on 409 head, $2,667.56 a head",
+       p and p["date"] == "2026-10-23" and p["receipts"] == 7030 and (c["cwt"], c["head"], c["per_head"]) == (425.99, 409, 2667.56),
        w or c)
     p, w, s = real("2229")   # Farmers Regional Livestock Market monthly sale, Glasgow KY, Oct 22 (weekly is 2198)
     # 23 hd x 7.34 cwt x 332.64 + 6 hd x 7.61 cwt x 343.34 = 71833.19 over 214.48 cwt. The
