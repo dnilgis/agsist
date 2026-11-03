@@ -90,8 +90,10 @@ SENDERS = [
      "counts": "the step that runs send_price_watch.py"},
     {"workflow": "arcplc-reminder.yml", "senders": {"send_notice.py": "arcplc-notice"}, "switch": None,
      "counts": "the step that runs send_notice.py"},
-    {"workflow": "cash-rent.yml", "senders": {"send_rent_notice.py": "rent-notice"}, "switch": None,
-     "counts": "the step that runs send_rent_notice.py --send"},
+    {"workflow": "cash-rent.yml", "senders": {"send_rent_notice.py": "rent-notice",
+                                              "send_custom_rates_notice.py": "customrates-notice"}, "switch": None,
+     "sender_switches": {"customrates-notice": ("repo", "CUSTOMRATES_NOTICE_LIVE", "1")},
+     "counts": "the steps that run send_rent_notice.py --send and send_custom_rates_notice.py --send"},
     {"workflow": "alert-check.yml", "senders": {"check_alerts.py": "hail-alert"}, "switch": None,
      "counts": "the step that runs check_alerts.py"},
     {"workflow": "form-digest.yml", "senders": {"form_digest.py": "form-digest"}, "switch": None,
@@ -120,7 +122,15 @@ SIG_ONLY = {
 
 
 def switch_vars():
-    return sorted({e["switch"][1] for e in SENDERS if e.get("switch")})
+    out = {e["switch"][1] for e in SENDERS if e.get("switch")}
+    out |= {sw[1] for e in SENDERS for sw in (e.get("sender_switches") or {}).values()}
+    return sorted(out)
+
+
+def sender_states(entry, environ):
+    """Each sender's switch: the workflow's, or its own (sender_switches) when a step has one."""
+    own = entry.get("sender_switches") or {}
+    return {n: switch_state(dict(entry, switch=own[n]) if n in own else entry, environ) for n in entry["senders"].values()}
 
 
 def switch_state(entry, environ):
@@ -145,29 +155,34 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
     (None = not read). evidence: the largest asks/orders count seen (None = none read).
     Pure: no clock, no network."""
     wf = entry["workflow"]
-    st, st_why = state
     worker = bool(entry.get("worker_started"))
-    names = set(entry["senders"].values())
+    names = sorted(set(entry["senders"].values()))
+    states = state if isinstance(state, dict) else {n: state for n in names}
+    several = len({states[n] for n in names}) > 1
     findings, notes = [], []
     lines = [(r, l) for r in runs for l in r.get("lines") or [] if l.get("sender") in names]
-    if st == "on":
-        dry_runs = sorted({r["id"] for r, l in lines if l["dry"] == 1 and r.get("event") != "workflow_dispatch"})
-        if dry_runs:
-            findings.append("(a) live switch on (%s), but %d scheduled or chained run(s) printed dry=1 (run %s)"
-                            % (st_why, len(dry_runs), ", ".join(str(i) for i in dry_runs[:3])))
-        counted = [(r, l) for r, l in lines
-                   if worker or not (l["dry"] == 1 and r.get("event") == "workflow_dispatch")]
-        waiting = sum(l["waiting"] for _r, l in counted)
-        sent = sum(l["sent_readers"] for _r, l in counted)
-        if waiting > 0 and sent == 0:
-            findings.append("(b) readers waiting (%d over %d run(s) read) and 0 emails reached a reader in %d h"
-                            % (waiting, len({r["id"] for r, _l in counted}), WINDOW_HOURS))
-        elif lines:
-            notes.append("%d sent to readers, %d waiting, over %d run(s) read" % (sent, waiting, len({r["id"] for r, _l in lines})))
-    elif st == "off":
-        notes.append("switch off (%s): the list is not due mail" % st_why)
-    else:
-        notes.append("switch unknown: %s" % st_why)
+    for name in names:
+        st, st_why = states[name]
+        mine = [(r, l) for r, l in lines if l["sender"] == name]
+        pre = (name + ": ") if several else ""
+        if st == "on":
+            dry_runs = sorted({r["id"] for r, l in mine if l["dry"] == 1 and r.get("event") != "workflow_dispatch"})
+            if dry_runs:
+                findings.append("%s(a) live switch on (%s), but %d scheduled or chained run(s) printed dry=1 (run %s)"
+                                % (pre, st_why, len(dry_runs), ", ".join(str(i) for i in dry_runs[:3])))
+            counted = [(r, l) for r, l in mine
+                       if worker or not (l["dry"] == 1 and r.get("event") == "workflow_dispatch")]
+            waiting = sum(l["waiting"] for _r, l in counted)
+            sent = sum(l["sent_readers"] for _r, l in counted)
+            if waiting > 0 and sent == 0:
+                findings.append("%s(b) readers waiting (%d over %d run(s) read) and 0 emails reached a reader in %d h"
+                                % (pre, waiting, len({r["id"] for r, _l in counted}), WINDOW_HOURS))
+            elif mine:
+                notes.append("%s%d sent to readers, %d waiting, over %d run(s) read" % (pre, sent, waiting, len({r["id"] for r, _l in mine})))
+        elif st == "off":
+            notes.append("%sswitch off (%s): the list is not due mail" % (pre, st_why))
+        else:
+            notes.append("%sswitch unknown: %s" % (pre, st_why))
     if worker and dispatch_runs == 0 and evidence:
         src, key = entry["evidence"]
         findings.append("(c) the subs worker has not started this job in %d days (no workflow_dispatch run) while %s=%d "
@@ -178,10 +193,11 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
         notes.append("no DELIVERY line in the %d of %d run(s) read in %d h" % (len(runs), runs_total, WINDOW_HOURS))
     else:
         notes.append("read %d of %d run(s) in %d h" % (len(runs), runs_total, WINDOW_HOURS))
-    status = "late" if findings else ("unknown" if st == "unknown" else "ok")
+    status = "late" if findings else ("unknown" if any(states[n][0] == "unknown" for n in names) else "ok")
     return {"workflow": "delivery:" + wf, "critical": True,
             "clock": "reader email delivered (BUILD-RULES 56): %s" % entry.get("counts", ""),
-            "status": status, "why": "; ".join(findings + notes), "switch": st}
+            "status": status, "why": "; ".join(findings + notes),
+            "switch": {n: states[n][0] for n in names} if several else states[names[0]][0]}
 
 
 def pick_runs(runs, n=RUNS_READ):
@@ -307,7 +323,7 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
                 vals = [l.get(key, 0) for r in read_cache[src][0] for l in r["lines"]]
                 evidence = max(vals) if vals else None
                 disp = dispatch_count(api, wf, now)
-            rows.append(classify(e, runs, total, switch_state(e, environ), disp, evidence))
+            rows.append(classify(e, runs, total, sender_states(e, environ), disp, evidence))
         except Exception as ex:                            # noqa: BLE001
             rows.append({"workflow": "delivery:" + wf, "critical": True, "clock": "reader email delivered",
                          "status": "unknown", "why": "could not read runs: %s" % str(ex)[:160]})
@@ -316,7 +332,9 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
 
 def inventory():
     return {"senders": [dict(e, switch=list(e["switch"]) if e.get("switch") else None,
-                             evidence=list(e["evidence"]) if e.get("evidence") else None) for e in SENDERS],
+                             evidence=list(e["evidence"]) if e.get("evidence") else None,
+                             sender_switches={k: list(v) for k, v in (e.get("sender_switches") or {}).items()})
+                        for e in SENDERS],
             "sig_only": SIG_ONLY, "switch_vars": switch_vars()}
 
 
@@ -407,6 +425,19 @@ def selftest():
     ew = E["elevator-watch.yml"]
     row = classify(ew, [R(4, "workflow_run", L("elevator-watch", 0, 0, 0), L("zip-alert", 0, 2, 0), L("price-watch", 9, 9, 0))], 96, ("on", "x"))
     ck("lines of another sender are ignored", row["status"] == "late" and "(b) readers waiting (2 " in row["why"], row["why"])
+
+    # cash-rent: the rent notice has no switch, the custom rates notice has its own (CUSTOMRATES_NOTICE_LIVE)
+    cr = E["cash-rent.yml"]
+    sts = sender_states(cr, {"CUSTOMRATES_NOTICE_LIVE": "1"})
+    ck("a sender's own switch is read", sts["customrates-notice"][0] == "on" and sts["rent-notice"][0] == "on", sts)
+    ck("its own switch off leaves the other on", sender_states(cr, {"CUSTOMRATES_NOTICE_LIVE": ""})["customrates-notice"][0] == "off")
+    ck("its own switch not passed is unknown", sender_states(cr, {})["customrates-notice"][0] == "unknown")
+    run_ = [R(8, "schedule", L("rent-notice", 3, 3, 0), L("customrates-notice", 0, 5, 1))]
+    row = classify(cr, run_, 2, sender_states(cr, {"CUSTOMRATES_NOTICE_LIVE": "1"}))
+    ck("custom rates dry with its switch on is late, named", row["status"] == "late" and "customrates-notice: (a)" in row["why"]
+       and "rent-notice: 3 sent" in row["why"], row["why"])
+    row = classify(cr, run_, 2, sender_states(cr, {"CUSTOMRATES_NOTICE_LIVE": "0"}))
+    ck("custom rates switch off: ok", row["status"] == "ok" and "customrates-notice: switch off" in row["why"], row["why"])
 
     # no lines read
     row = classify(E["daily.yml"], [R(1, "schedule")], 3, ("on", "x"))
