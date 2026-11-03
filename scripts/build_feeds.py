@@ -411,8 +411,9 @@ def main():
         # 2026-10-23: the pages merged on Oct 22 (scripts/moved_pages.py) load their section's
         # own script when the reader reaches it, so the page names it in a string, not a tag:
         # /usda-calendar reads data/analyst-scorecard.json through components/priced-in.js.
+        # 2026-11-03: /cash-bids reads data/ethanol-bids.json through components/ethanol-bids.js.
         own = set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf|cot)(?:-[\w-]+)?|cash-bids)\.js)""", text))
-        own |= set(re.findall(r"""["']/(components/(?:priced-in|bot-scorecard|coverage-map|elevator-claim|atlas-foreign|daily-archive)\.js)""", text))
+        own |= set(re.findall(r"""["']/(components/(?:priced-in|bot-scorecard|coverage-map|elevator-claim|atlas-foreign|daily-archive|ethanol-bids)\.js)""", text))
         for js in sorted(own):
             if os.path.exists(js):
                 text += "\n" + read(js)
