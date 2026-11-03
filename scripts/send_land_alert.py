@@ -349,6 +349,24 @@ def due(zip5, radius, mo, ly, lm, land, zips, today, repo, cache=None):
     return parts, why, (py, pm)
 
 
+def choice_words(zip5, radius, parts, why, ym, ly, lm, land, zips, today):
+    """Why due() chose what it chose, in words for the log (states and months, never a reader)."""
+    mo = lambda y, m: LA.MON[m] + " " + str(y)
+    py, pm = (ly - 1, 11) if lm == 0 else (ly, lm - 1)
+    def n(p):
+        k = int(re.search(r": (\d+) recorded$", p[0]).group(1))
+        return "%d sale%s" % (k, "" if k == 1 else "s")
+    if parts and ym == (ly, lm):
+        return "%s posted, %s" % (mo(ly, lm), n(parts))
+    late = "+".join(wait_states(zip5, radius, ly, lm, land, zips, today))
+    if parts:
+        return "%s not posted %s; %s posted, %s" % (late, mo(ly, lm), mo(py, pm), n(parts))
+    if why == "wait-data":
+        prev = compose(zip5, radius, py, pm, land, zips, today, str(land.repo))[1]
+        return "no email: %s not posted %s; %s %s" % (late, mo(ly, lm), mo(py, pm), "has no sales" if prev == "empty" else "not posted either")
+    return "no email (%s) for %s" % (why, mo(ly, lm))
+
+
 def wait_states(zip5, radius, ly, lm, land, zips, today):
     """The states that have not posted the month just ended near this reader (for the log, as counts)."""
     ll = zips.coord(zip5)
@@ -502,19 +520,17 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     # dry and preview: the samples
     if mode in ("dry", "preview"):
         made = []
-        for z, mi in samples_of(a.sample) or list(SAMPLES):
+        for i, (z, mi) in enumerate(samples_of(a.sample) or list(SAMPLES), 1):
             if a.month:
-                # a past month is drawn from the files on hand; the freshness wait is for the list
+                # a month asked for: that month, drawn from the files on hand (the freshness wait is for the list)
                 parts, why = compose(z, mi, year, m0, land, zips, tiso, repo, need_fresh=False)
+                out("sample %d: %s (asked for)%s" % (i, month, "" if parts else "; no email (%s)" % why))
             else:
-                # no month asked: exactly what a reader there who has had nothing yet gets now
+                # no month asked: the month a send would choose for a reader there who has had nothing yet
                 parts, why, ym = due(z, mi, "", ly, lm, land, zips, tiso, repo)
-                if parts and ym != (ly, lm):
-                    out("sample %d: %d-%02d, the newest month every state near has published" % (len(made) + 1, ym[0], ym[1] + 1))
-            if not parts:
-                out("sample %d: no email (%s)" % (len(made) + 1, why))
-                continue
-            made.append((z, mi, parts))
+                out("sample %d: %s" % (i, choice_words(z, mi, parts, why, ym, ly, lm, land, zips, tiso)))
+            if parts:
+                made.append((z, mi, parts))
         if mode == "dry":
             n_list = None
             if base and tok:
@@ -1070,6 +1086,26 @@ def lag_selftest(ck, C):
     ck("a dry run counts what the list would get now, by data month and state, and mails and marks nothing",
        rc == 0 and not sd.msgs and not wd.marks and "dry: landsales:2026-10: 2 to mail" in log and "dry: landsales:2026-10: by data month: 2026-10 1, 2026-09 (WI not posted) 1" in log
        and not re.search(r"@|54451|61920|54999", "\n".join(x for x in log.split("\n") if x.startswith("dry: "))), log[-600:])   # the samples print their own ZIP
+    # preview (no month asked) chooses the month a send chooses, and says why
+    sp = SMTP()
+    env_live = env.pop("LANDSALES_MONTHLY_LIVE")
+    env.update(PREVIEW="1", SIG_TO="sig@example.org")
+    rc, log = go(["--sample", "54451:10,61920:25,54999:10"], "2026-11-03 10:47", sp, Worker({}))
+    for k in ("PREVIEW", "SIG_TO"):
+        env.pop(k)
+    env["LANDSALES_MONTHLY_LIVE"] = env_live
+    ck("preview with no month picks each sample's month exactly as the send did, and says why",
+       rc == 0 and [x["Subject"][len("[Preview] "):] for x in sp.msgs] == [m["Subject"] for m in sorted(s1.msgs, key=lambda x: x["To"], reverse=True)]
+       and "sample 1: WI not posted Oct 2026; Sep 2026 posted, 2 sales" in log and "sample 2: Oct 2026 posted, 1 sale" in log
+       and "sample 3: no email: WI not posted Oct 2026; Sep 2026 has no sales" in log, (log, [x["Subject"] for x in sp.msgs]))
+    sq = SMTP()
+    env_live = env.pop("LANDSALES_MONTHLY_LIVE")
+    env.update(PREVIEW="1", SIG_TO="sig@example.org")
+    rc, log = go(["--sample", "54451:10", "--month", "2026-10"], "2026-11-03 10:47", sq, Worker({}))
+    for k in ("PREVIEW", "SIG_TO"):
+        env.pop(k)
+    env["LANDSALES_MONTHLY_LIVE"] = env_live
+    ck("preview with a month asked still forces that month", "sample 1: 2026-10 (asked for); no email (empty)" in log and not sq.msgs, log)
     s2 = SMTP()
     rc, log = go(["--send"], "2026-11-04 10:47", s2)
     ck("a second run mails nobody", rc == 0 and not s2.msgs and "0 to mail, 1 already mailed for it" in log, log)
