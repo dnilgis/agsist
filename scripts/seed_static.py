@@ -3198,6 +3198,14 @@ MILK_FUT_MAX_AGE = 3                            # days, the futures table's own 
 # figures each month's DMC margin from the report out at the end of the next
 # month. A month past this list gets no date: unknown, so not said.
 MILK_AGPRICES = ("2026-07-31", "2026-08-31", "2026-09-29", "2026-10-30", "2026-11-30", "2026-12-30")
+# all fifty, the same names as components/milk-tools.js (NASS writes the state's full name)
+MILK_STATES = ("AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|"
+               "FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|"
+               "LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|"
+               "MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|"
+               "NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|"
+               "RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|"
+               "VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming")
 MILK_FUT_KEY = re.compile(r"^milk-([a-z]{3})(\d{2})$")
 
 
@@ -3386,7 +3394,15 @@ def milk_now_seed(d, dmc, fb, prices, hist, today):
         w = why or ("the DMC month&rsquo;s announced Class III is not held" if fut else "no DMC month held")
         fut_html = f'<p class="dp-now-note">The next months at futures: not shown ({w}).</p>'
     mean_html = (f'<p class="dp-now-mean"><strong>What this means:</strong> {" ".join(mean)}</p>' if mean else "")
-    return (f'<div class="dp-now-tiles">{"".join(tiles)}</div><p class="dp-now-src">{src}</p>',
+    # the states NASS prices this month, for the area card's before-paint layout: a state with no AMS mailbox
+    # area shows its own all-milk price (Sig, Nov 3), and the bars it lays out must be the ones that fill
+    ams = d.get("all_milk_states") if isinstance(d.get("all_milk_states"), dict) else {}
+    amk = milk_allmilk_ok(ams, today) if isinstance(ams.get("rows"), list) else None
+    code = {s[3:]: s[:2] for s in MILK_STATES.split("|")}
+    have = sorted(code[r["state"]] for r in (ams.get("rows") or [])
+                  if isinstance(r, dict) and r.get("state") in code and _pos(r.get("value"))) if amk and not amk[1] else []
+    amattr = (f' data-am-month="{_ilong(amk[0])}" data-am-states="{" ".join(have)}"' if have else "")
+    return (f'<div class="dp-now-tiles">{"".join(tiles)}</div><p class="dp-now-src" id="dp-now-src"{amattr}>{src}</p>',
             f'{herd}{mean_html}<h3 class="dp-now-sub">Dairy Margin Coverage</h3>{dmc_html}{nxt_html}{fut_html}')
 
 

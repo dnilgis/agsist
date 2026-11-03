@@ -373,6 +373,13 @@ def main():
        in rest and "across the $9.50 line" in rest and "2027 signup closes Fri, Dec 18." in rest, rest)
     ck("card: the next margin dates from the NASS calendar", "Oct 30 Agricultural Prices report" in rest
        and "October&rsquo;s follows the Mon, Nov 30, 2026 report" in rest, rest)
+    SEPS = dict(SEPN, all_milk_states={"month": "September 2026", "month_key": "2026-09", "rows": [
+        {"state": "Idaho", "value": 19.6}, {"state": "Vermont", "value": 20.2}, {"state": "Ohio", "value": None}]})
+    ts = S.milk_now_seed(SEPS, dmcf, fbf, pf, hf, T)[0]
+    ck("card: the NASS states and month baked for the area card's layout",
+       'data-am-month="September 2026" data-am-states="ID VT"' in ts, ts)
+    ts2 = S.milk_now_seed(SEPS, dmcf, fbf, pf, hf, "2026-12-20")[0]
+    ck("...not once that month is past the page's window", "data-am-states" not in ts2, ts2)
     ck("card: no links, no em dash", "<a " not in allh and "\u2014" not in allh)
     hi = copy.deepcopy(dmcf)
     hi["margins"]["2026-08"] = {"all_milk": 19.8, "feed": 9.26, "margin": 10.54}

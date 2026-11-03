@@ -567,7 +567,7 @@
 
   <section class="dp-now" id="dp-now" aria-labelledby="dp-now-h">
     <h2 class="dp-now-h" id="dp-now-h"><svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg> This month for your milk</h2>
-    <!--SEED:milknowtop--><div class="dp-now-tiles"><p class="dp-now-t"><span class="dp-now-k">Class III</span><span class="dp-now-v">$16.04</span><span class="dp-now-c dp-neg">▼ −$0.60</span><span class="dp-now-m">Sep · announced</span></p><p class="dp-now-t"><span class="dp-now-k">Class IV</span><span class="dp-now-v">$18.94</span><span class="dp-now-c dp-pos">▲ +$1.58</span><span class="dp-now-m">Sep · announced</span></p><p class="dp-now-t"><span class="dp-now-k">All-milk</span><span class="dp-now-v">$19.50</span><span class="dp-now-c dp-neg">▼ −$0.30</span><span class="dp-now-m">Sep · NASS</span></p></div><p class="dp-now-src">Class prices: USDA AMS, September 2026. All-milk: USDA NASS Agricultural Prices, before hauling.</p><!--/SEED-->
+    <!--SEED:milknowtop--><div class="dp-now-tiles"><p class="dp-now-t"><span class="dp-now-k">Class III</span><span class="dp-now-v">$16.04</span><span class="dp-now-c dp-neg">▼ −$0.60</span><span class="dp-now-m">Sep · announced</span></p><p class="dp-now-t"><span class="dp-now-k">Class IV</span><span class="dp-now-v">$18.94</span><span class="dp-now-c dp-pos">▲ +$1.58</span><span class="dp-now-m">Sep · announced</span></p><p class="dp-now-t"><span class="dp-now-k">All-milk</span><span class="dp-now-v">$19.50</span><span class="dp-now-c dp-neg">▼ −$0.30</span><span class="dp-now-m">Sep · NASS</span></p></div><p class="dp-now-src" id="dp-now-src" data-am-month="September 2026" data-am-states="AZ CA CO FL GA IA ID IL IN KS MI MN NM NY OH OR PA SD TX UT VA VT WA WI">Class prices: USDA AMS, September 2026. All-milk: USDA NASS Agricultural Prices, before hauling.</p><!--/SEED-->
   <section class="dp-area" id="dp-area" aria-labelledby="dp-area-h">
     <div class="dp-area-top"><h2 class="dp-area-h" id="dp-area-h"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg> Your area</h2>
       <label class="dp-area-pick"><span class="dp-sr">Mailbox price area</span><select id="dp-area-sel"><option value="">Pick your area</option><option value="New England States">New England States</option><option value="New York">New York</option><option value="Eastern Pennsylvania">Eastern Pennsylvania</option><option value="Appalachian States">Appalachian States</option><option value="Southeast States">Southeast States</option><option value="Southern Missouri">Southern Missouri</option><option value="Florida">Florida</option><option value="Western Pennsylvania">Western Pennsylvania</option><option value="Ohio">Ohio</option><option value="Indiana">Indiana</option><option value="Michigan">Michigan</option><option value="Wisconsin">Wisconsin</option><option value="Minnesota">Minnesota</option><option value="Iowa">Iowa</option><option value="Illinois">Illinois</option><option value="Corn Belt States">Corn Belt States</option><option value="Western Texas">Western Texas</option><option value="New Mexico">New Mexico</option><option value="Northwest States">Northwest States</option><option value="California">California</option></select></label></div>
@@ -577,7 +577,7 @@ B={CT:'New England States',ME:'New England States',MA:'New England States',NH:'N
 S={PA:['Eastern Pennsylvania','Western Pennsylvania'],MO:['Southern Missouri','Corn Belt States'],TX:['Western Texas']},
 A={'New York':'NY','Florida':'FL','Ohio':'OH','Indiana':'IN','Michigan':'MI','Wisconsin':'WI','Minnesota':'MN','Iowa':'IA','Illinois':'IL','New Mexico':'NM','California':'CA','Eastern Pennsylvania':'PA','Western Pennsylvania':'PA','Southern Missouri':'MO','Western Texas':'TX'},
 M='January February March April May June July August September October November December'.split(' '),
-o=d.getElementById('dp-area-out'),sel=d.getElementById('dp-area-sel'),sec=d.getElementById('dp-area'),a=L.getItem('agsist-milk-area')||'',area='',st='',w=null,z='',i,p,x,h;
+o=d.getElementById('dp-area-out'),sel=d.getElementById('dp-area-sel'),sec=d.getElementById('dp-area'),a=L.getItem('agsist-milk-area')||'',area='',st='',w=null,z='',i,p,x,h,q;
 'AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming'.split('|').forEach(function(s){N[s.slice(0,2)]=s.slice(3);});
 function zs(v){var q='',k;if(!/^\d{5}$/.test(v||''))return '';for(k=0;k<Z.length;k+=5){if(+Z.substr(k,3)>+v.slice(0,3))break;q=Z.substr(k+3,2);}return N[q]?q:'';}
 function e(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -589,6 +589,16 @@ if(!st&&!(w&&typeof w==='object'&&(N[w.state]||/^\d{5}$/.test(w.zip||''))))st=zs
 if(!area&&st&&B[st])area=B[st];
 if(!area){
   if(!st)return;
+  q=d.getElementById('dp-now-src');var qm=q&&/^(\w+) (\d{4})$/.exec(q.getAttribute('data-am-month')||''),qn=new Date(),qi=qm?+qm[2]*12+M.indexOf(qm[1]):NaN,qc=qn.getFullYear()*12+qn.getMonth();
+  if(!S[st]&&qm&&M.indexOf(qm[1])>=0&&qc-2<=qi&&qi<=qc&&(' '+(q.getAttribute('data-am-states')||'')+' ').indexOf(' '+st+' ')>=0){
+    h='<div class="dp-area-skel" aria-hidden="true" data-state="'+st+'"><p class="dp-area-name">'+e(N[st])+' <span>all-milk price, '+qm[0]+'</span></p>'+
+    '<p class="dp-area-big">$88.88<span>/cwt</span></p><p class="dp-area-chg"><span>▼ −$8.88 vs Aug</span> &middot; <span>▼ −$8.88 vs Sep 2025</span></p>'+
+    '<p class="dp-area-line">No USDA mailbox area for '+e(N[st])+', so this is the state&rsquo;s all-milk price: what plants paid before hauling and co-op deductions. For a mailbox price, pick the nearest area above.</p>'+
+    '<p class="dp-note-src">Source: USDA NASS, Agricultural Prices, '+qm[0]+'.</p></div>';
+    o.insertAdjacentHTML('beforeend',h);o.setAttribute('aria-busy','true');sec.classList.add('dp-area-wait');
+    setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.removeChild(k);sec.classList.remove('dp-area-wait');o.removeAttribute('aria-busy');}},10000);
+    return;
+  }
   h=S[st]?e(N[st])+' is split between AMS mailbox areas ('+e(S[st].join(', '))+'). Pick yours above.':'AMS does not report a mailbox price for '+e(N[st])+'. Pick the nearest area above, or see the state all-milk table below.';
   p=d.createElement('p');p.className='dp-area-sum';p.setAttribute('data-early','');p.innerHTML=h;o.insertBefore(p,o.firstChild);return;
 }
@@ -1601,7 +1611,7 @@ try{(function(d){function open(id){var el=id&&d.getElementById(id);for(var n=el;
 function go(){var h=decodeURIComponent((location.hash||'').slice(1));if(h&&open(h)){var el=d.getElementById(h);if(el&&el.scrollIntoView)el.scrollIntoView();}}
 d.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[href^="#"]');if(a)open(a.getAttribute('href').slice(1));});
 window.addEventListener('hashchange',go);if(location.hash)go();})(document);}catch(_){}</script>
-  <script src="/components/milk-tools.js?v=4" defer></script>
+  <script src="/components/milk-tools.js?v=5" defer></script>
   <script src="/components/milk-herds.js?v=1" defer></script>
   <script src="/components/cull-cows.js?v=2" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>

@@ -119,6 +119,23 @@
     h += '<p class="dp-note-src">Mailbox price is net pay after hauling and co-op deductions, as USDA AMS reports it for the area. Source: ' + MB_LINK + '.</p>';
     return h;
   }
+  /* A state with no AMS mailbox area (Idaho, Colorado, Utah...): its own NASS all-milk price, the month the
+     state table shows, or '' when NASS has no row for it this month (then the ask stays). Sig, Nov 3, 2026.
+     The page's before-paint script lays out these same five lines from the state list baked in #dp-now-src. */
+  function stateHtml(d, st, now) {
+    var am = d && d.all_milk_states, ai = am ? kidx(am.month_key) : NaN, n = nowIdx(now);
+    if (!st || !NAMES[st] || BY_STATE[st] || SPLIT[st] || !am || !isFinite(ai) || n - 2 > ai || ai > n || !Array.isArray(am.rows)) return '';
+    var r = am.rows.filter(function (x) { return x && x.state === NAMES[st]; })[0];
+    if (!r || !pos(r.value)) return '';
+    var nm = esc(NAMES[st]), ch = [];
+    if (pos(r.prev_month)) ch.push('<span class="' + cls(r.value - r.prev_month) + '">' + arr(r.value - r.prev_month) + ' ' + sg(r.value - r.prev_month) + ' vs ' + MON[(ai + 11) % 12] + '</span>');
+    if (pos(r.year_ago)) ch.push('<span class="' + cls(r.value - r.year_ago) + '">' + arr(r.value - r.year_ago) + ' ' + sg(r.value - r.year_ago) + ' vs ' + ishort(ai - 12) + '</span>');
+    return '<p class="dp-area-name">' + nm + ' <span>all-milk price, ' + ilong(ai) + '</span></p>' +
+      '<p class="dp-area-big">' + cwt(r.value) + '<span>/cwt</span></p>' +
+      '<p class="dp-area-chg">' + (ch.length ? ch.join(' &middot; ') : '&nbsp;') + '</p>' +
+      '<p class="dp-area-line">No USDA mailbox area for ' + nm + ', so this is the state&rsquo;s all-milk price: what plants paid before hauling and co-op deductions. For a mailbox price, pick the nearest area above.</p>' +
+      '<p class="dp-note-src">Source: USDA NASS, Agricultural Prices, ' + ilong(ai) + '.</p>';
+  }
   function askHtml(st, why) {
     if (why && why.split) return '<p class="dp-area-sum">' + esc(NAMES[st]) + ' is split between AMS mailbox areas (' + esc(why.split.join(', ')) + '). Pick yours above.</p>';
     if (why && why.none) return '<p class="dp-area-sum">AMS does not report a mailbox price for ' + esc(NAMES[st]) + '. Pick the nearest area above, or see the state all-milk table below.</p>';
@@ -217,7 +234,7 @@
     return h;
   }
 
-  var api = { zipState: zipState, readState: readState, areaForState: areaForState, areaHtml: areaHtml, askHtml: askHtml,
+  var api = { zipState: zipState, readState: readState, areaForState: areaForState, areaHtml: areaHtml, askHtml: askHtml, stateHtml: stateHtml,
     testValue: testValue, adj: adj, checkHtml: checkHtml, ppdFor: ppdFor, readInputs: readInputs, STD: STD, BY_STATE: BY_STATE, SPLIT: SPLIT };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgMilkTools = api;
@@ -253,7 +270,11 @@
     if (!area) {
       var a = areaForState(st);
       if (a && a.area) { area = a.area; sel.value = area; }
-      else if (a) ask = askHtml(st, a);
+      else if (a) {
+        var sh = a.none ? stateHtml(data && data.d, st, new Date()) : '';
+        if (sh) { out.innerHTML = sh; if (held) out.style.minHeight = held + 'px'; return; }
+        ask = askHtml(st, a);
+      }
     }
     if (!area) { out.innerHTML = ask + baked; return; }
     var h = areaHtml(mb, data.d, data.rows, area, st, new Date());
