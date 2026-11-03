@@ -15,12 +15,12 @@
   <meta property="og:title"        content="Custom farm rates by state, from the state surveys">
   <meta property="og:description"  content="Custom farming rates by state from the university and state surveys: what hired combining, planting, spraying, tillage, hauling and baling cost, with the range.">
   <meta property="og:url"          content="https://agsist.com/custom-rates">
-  <meta property="og:image" content="https://agsist.com/img/og/custom-rates.jpg?v=fd92ecf2">
+  <meta property="og:image" content="https://agsist.com/img/og/custom-rates.jpg?v=cbcc184f">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Custom farm rates by state: the going rate for hired field work. Nine state surveys: the average, range, unit and year for each job, with the source.">
+  <meta property="og:image:alt" content="Custom farm rates by state: the going rate for hired field work. 11 state surveys, 12 states: the average, range, unit and year for each job, with the source.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://agsist.com/img/og/custom-rates.jpg?v=fd92ecf2">
+  <meta name="twitter:image" content="https://agsist.com/img/og/custom-rates.jpg?v=cbcc184f">
   <meta name="twitter:title"       content="Custom farm rates by state, from the state surveys">
   <meta name="twitter:description" content="Custom farming rates by state from the university and state surveys: what hired combining, planting, spraying, tillage, hauling and baling cost, with the range.">
 
@@ -33,7 +33,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=28" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/custom-rates.css?v=4">
+  <link rel="stylesheet" href="/components/custom-rates.css?v=5">
   <link rel="stylesheet" href="/components/print-sheet.css?v=1">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -72,18 +72,18 @@
       <section class="crh" id="answer" aria-labelledby="crh-h">
         <h2 id="crh-h" class="vh">The going rate</h2>
         <div class="crh-pick">
-          <label for="cr-q">What job?<input id="cr-q" type="search" placeholder="combine corn, plant, bale" autocomplete="off" enterkeyhint="search" list="cr-jobs"></label>
-          <label for="cr-st">My state<select id="cr-st"><option value="">Pick a state</option></select></label>
+          <label for="cr-q">What job?<input id="cr-q" disabled type="search" placeholder="combine corn, plant, bale" autocomplete="off" enterkeyhint="search" list="cr-jobs"></label>
+          <label for="cr-st">My state<select id="cr-st" disabled><option value="">Pick a state</option></select></label>
         </div>
         <datalist id="cr-jobs"></datalist>
         <div class="crh-chips" aria-label="Common jobs">
-          <button type="button" class="cr-chip" data-crk="combine-corn">Combine corn</button>
-          <button type="button" class="cr-chip" data-crk="combine-soy">Combine beans</button>
-          <button type="button" class="cr-chip" data-crk="plant-row">Plant</button>
-          <button type="button" class="cr-chip" data-crk="spray-ground">Spray</button>
-          <button type="button" class="cr-chip" data-crk="nh3">Anhydrous</button>
-          <button type="button" class="cr-chip" data-crk="haul-grain-bu">Haul grain</button>
-          <button type="button" class="cr-chip" data-crk="bale-round">Round bales</button>
+          <button type="button" class="cr-chip" disabled data-crk="combine-corn">Combine corn</button>
+          <button type="button" class="cr-chip" disabled data-crk="combine-soy">Combine beans</button>
+          <button type="button" class="cr-chip" disabled data-crk="plant-row">Plant</button>
+          <button type="button" class="cr-chip" disabled data-crk="spray-ground">Spray</button>
+          <button type="button" class="cr-chip" disabled data-crk="nh3">Anhydrous</button>
+          <button type="button" class="cr-chip" disabled data-crk="haul-grain-bu">Haul grain</button>
+          <button type="button" class="cr-chip" disabled data-crk="bale-round">Round bales</button>
         </div>
         <div class="crh-a" id="cr-answer" aria-live="polite">
 <!-- cr:hero -->
@@ -112,7 +112,7 @@
         <a href="#other">Other <small>6</small></a>
 <!-- /cr:nav -->
       </nav>
-      <p class="crn-tools"><span id="cr-count"></span><button type="button" class="cr-btn" id="cr-print">Print the rates</button></p>
+      <p class="crn-tools"><span id="cr-count"></span><button type="button" class="cr-btn" id="cr-print" disabled>Print the rates</button></p>
 
       <div class="crcs" id="cr-cats">
 <!-- cr:cats -->
@@ -327,7 +327,7 @@
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/print-sheet.js?v=1" defer></script>
-  <script src="/components/custom-rates.js?v=5" defer></script>
+  <script src="/components/custom-rates.js?v=6" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
