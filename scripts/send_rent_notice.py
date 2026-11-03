@@ -50,6 +50,8 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
+TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN               # noqa: E402  transport, render, unsubscribe link, mark
 import build_state_rent_pages as BR    # noqa: E402  state_stats, money, names, release dates
 
@@ -172,6 +174,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     p.add_argument("--max", type=int, default=int(SN.env("MAX_PER_RUN", "200")))
     a = p.parse_args(argv)
     send = a.send and not a.dry_run
+    if TALLY:
+        TALLY.dry = not send
     today = (now or datetime.now(SN.TZ)).astimezone(SN.TZ).date()
     want = a.topic.strip().lower()
     if want and not TOPIC_RE.fullmatch(want):
@@ -230,6 +234,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         out("::warning::rent:%s: %d waiting, release time unknown (%s)" % (st.lower(), n, why))
     later = max(0, len(todo) - a.max)
     todo = todo[:a.max]
+    if TALLY:
+        TALLY.waiting += len(todo)
     out("rent: %d to mail, %d waiting for a release after they asked, %d release unknown, %d skipped, %d left for the next run"
         % (len(todo), waiting, sum(unknown.values()), skipped, later))
 
@@ -285,6 +291,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    if TALLY:
+        TALLY.sent += sent
     out("rent: sent %d, failed %d" % (sent, failed))
     if broken:
         return 1
@@ -465,4 +473,5 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv[1:]:
         sys.exit(selftest())
+    TALLY = delivery_line.start("rent-notice")
     sys.exit(run(sys.argv[1:]))

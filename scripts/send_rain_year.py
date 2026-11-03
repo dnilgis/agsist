@@ -64,6 +64,8 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
+TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN          # noqa: E402  transport, render, unsubscribe link, mark
 import build_county_rain as BCR   # noqa: E402  done_year, answer, the page's own sentences
 import county_rain as R           # noqa: E402  state names, county slugs
@@ -192,6 +194,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     p.add_argument("--max", type=int, default=int(SN.env("MAX_PER_RUN", "300")))
     a = p.parse_args(argv)
     send = a.send and not a.dry_run
+    if TALLY:
+        TALLY.dry = not send
     today = (now or datetime.now(SN.TZ)).astimezone(SN.TZ).date()
     year = a.year or today.year - 1
     if not (a.any_day and a.year) and not (today.month == 1 and year == today.year - 1):
@@ -253,6 +257,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         todo.append((e, t, str(r.get("src") or ""), s))
     later = max(0, len(todo) - a.max)
     todo = todo[:a.max]
+    if TALLY:
+        TALLY.waiting += len(todo)
     kinds = {}
     for *_, s in todo:
         kinds[s] = kinds.get(s, 0) + 1
@@ -311,6 +317,8 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    if TALLY:
+        TALLY.sent += sent
     out("%s: sent %d, failed %d" % (pre, sent, failed))
     if broken:
         return 1
@@ -514,4 +522,5 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv[1:]:
         sys.exit(selftest())
+    TALLY = delivery_line.start("rain-year")
     sys.exit(run(sys.argv[1:]))

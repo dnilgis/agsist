@@ -34,6 +34,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
 import email_links  # noqa: E402  (k=<link id> links; never an address in one)
 import list_source  # noqa: E402  (the worker, or the private copy of its list)
 
@@ -259,11 +260,13 @@ def main():
         print("LIST_URL, LIST_TOKEN and UNSUB_SECRET are required")
         return 1
     dry = env("DRY_RUN") == "1"
+    tally = delivery_line.start("farmland-watch", dry=dry)
     cap = int(env("MAX_SENDS", "100"))
     cards = json.loads(CARDS.read_text())["counties"]
     watchers = worker(base, "watch-list", tok)
     confirms, chg, bs = plan(watchers, cards, time.time() * 1000)
     print(f"watchers {len(watchers)}; confirmations {len(confirms)}; changes {len(chg)}; baselines {len(bs)}")
+    tally.waiting = len(confirms) + len(chg)
     # v5.46: mail only watchers the worker gave a link id; the rest wait for the next run (counts only)
     LINK_IDS.clear()
     LINK_IDS.update(email_links.link_ids(watchers))
@@ -323,6 +326,7 @@ def main():
                 pass
     # Counts and masked addresses only: the Actions log is public. The full
     # list goes to Sig by private mail.
+    tally.sent = sent
     print(f"sent {sent}; failed {len(failed)}"
           + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
     if failed:

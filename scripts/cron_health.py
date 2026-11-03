@@ -29,6 +29,16 @@ github-authentication-token-expiration header) and private-raw-saves (a
 warning when nothing has reached the private raw branch for RAW_STALE_HOURS:
 the jobs' saves are failing softly).
 
+READER EMAIL DELIVERED (Nov 3, 2026; BUILD-RULES 55 and 56). A green run is not a delivered
+email: rp-design-email and rp-buyer-email ran dry for two weeks with their live variable at 1.
+One row per workflow that mails readers, "delivery:<workflow>", from scripts/delivery_check.py:
+it reads the DELIVERY line each sender prints (scripts/delivery_line.py) from the run logs, and
+is late when a live switch is on and a scheduled run printed dry=1, when readers waited a day and
+none got mail, or when a job only the subs worker starts was not started in 14 days while its asks
+or paid orders are above 0. The logs are read once per DELIVERY_EVERY_HOURS (the last pass is kept
+in this file as delivery_checked_at), and the switches come from the repository variables
+cron-health.yml passes as env.
+
 THE ENGINE (Oct 20, 2026). The collection code is checked out from the private
 repo's engine-agsist and engine-bids branches by the "Engine checkout" step
 of every job (.github/actions/engine) once the repository variable
@@ -597,6 +607,22 @@ def build(now, rows, late):
     }
 
 
+def add_delivery_rows(now, rows, late, repo, token, api, prev, environ=None, fake_api=None):
+    """The reader email rows (scripts/delivery_check.py). Fail soft: a broken check is one unknown row."""
+    rows, late = list(rows), list(late)
+    try:
+        import delivery_check
+        drows, at = delivery_check.delivery_rows(now, repo, token, api, environ, prev, api=fake_api)
+    except Exception as e:
+        drows, at = [{"workflow": "delivery:all", "critical": False, "clock": "reader email delivered",
+                      "status": "unknown", "why": "check could not run: %s" % e}], None
+    for r in drows:
+        rows.append(r)
+        if r.get("status") == "late":
+            late.append(r["workflow"])
+    return rows, late, at
+
+
 def should_commit(prev, doc, now):
     if not prev:
         return True
@@ -604,6 +630,8 @@ def should_commit(prev, doc, now):
     new = {r["workflow"]: r.get("status") for r in doc["workflows"]}
     if old != new:
         return True
+    if doc.get("delivery_checked_at") != prev.get("delivery_checked_at"):
+        return True    # a new pass over the run logs is kept, so the next runs reuse it
     try:
         return now - parse_ts(prev["generated_at"]) >= timedelta(hours=RECOMMIT_HOURS)
     except Exception:
@@ -619,14 +647,18 @@ def main(argv):
     if a.selftest:
         return selftest()
     now = datetime.now(UTC)
-    rows, late = collect(now, os.environ.get("GITHUB_REPOSITORY", "dnilgis/agsist"),
-                         os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN", ""),
-                         os.environ.get("GITHUB_API_URL", "https://api.github.com"))
-    doc = build(now, rows, late)
+    repo = os.environ.get("GITHUB_REPOSITORY", "dnilgis/agsist")
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
+    api = os.environ.get("GITHUB_API_URL", "https://api.github.com")
+    rows, late = collect(now, repo, token, api)
     try:
         prev = json.load(open(a.out))
     except Exception:
         prev = None
+    rows, late, checked_at = add_delivery_rows(now, rows, late, repo, token, api, prev)
+    doc = build(now, rows, late)
+    if checked_at:
+        doc["delivery_checked_at"] = checked_at
     commit = should_commit(prev, doc, now)
     if commit:
         os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
@@ -696,6 +728,39 @@ def selftest():
           "a status change commits")
     check(should_commit({"generated_at": "2026-10-09T15:00:00Z", "workflows": [{"workflow": "a", "status": "ok"}]}, doc, now),
           "an old file commits")
+    check(should_commit({"generated_at": "2026-10-09T21:00:00Z", "delivery_checked_at": "2026-10-09T15:00:00Z",
+                         "workflows": [{"workflow": "a", "status": "ok"}]},
+                        dict(doc, delivery_checked_at="2026-10-09T22:00:00Z"), now),
+          "a new pass over the run logs commits, so the next runs reuse it")
+
+    # reader email delivered (scripts/delivery_check.py; its own selftest holds the classifier)
+    import delivery_check as DC
+
+    class _Api:
+        def json(self, path):
+            if "event=workflow_dispatch" in path:
+                return {"total_count": 0}
+            return {"workflow_runs": [{"id": 1, "event": "schedule", "status": "completed", "conclusion": "success",
+                                       "created_at": "2026-10-20T09:00:00Z", "run_started_at": "2026-10-20T09:00:00Z",
+                                       "updated_at": "2026-10-20T09:01:00Z"}]} if "rp-design-email.yml" in path else {"workflow_runs": []}
+
+        def blob(self, path):
+            import io
+            import zipfile
+            b = io.BytesIO()
+            with zipfile.ZipFile(b, "w") as z:
+                z.writestr("0_send.txt", "2026-10-20T09:00:30.1Z DELIVERY sender=rp-design sent_readers=0 waiting=2 dry=1 asks=2\n")
+            return b.getvalue()
+    rows, late, at = add_delivery_rows(T("2026-10-20 12:00"), [{"workflow": "x.yml", "status": "ok"}], [], "o/r", "t",
+                                       "https://api", None, environ={"RP_DESIGN_EMAIL_LIVE": "1"}, fake_api=_Api())
+    d = build(T("2026-10-20 12:00"), rows, late)
+    check("delivery:rp-design-email.yml" in d["late_critical"],
+          "Nov 3: rp-design dry with its variable at 1 is a late critical row (%s)" % d["late_critical"])
+    check(len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(DC.SENDERS) and at,
+          "one delivery row per sender workflow, and the pass time kept")
+    check("delivery:price-watch.yml" not in late, "a sender with nothing read is not late")
+    rows, late, at = add_delivery_rows(T("2026-10-20 12:00"), [], [], "o/r", "", "https://api", None, environ={})
+    check(rows[0]["status"] == "unknown" and not late and at is None, "no token: one unknown row, nothing late")
 
     # every gated workflow in CHECKS has a gate step this can read
     for wf in sorted(GATED):

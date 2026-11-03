@@ -37,6 +37,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 import log_safe  # noqa: E402  (the real masker; only its mail is faked below)
+import delivery_line  # noqa: E402  (the DELIVERY tally the loop reports its count to)
 
 # (script, what its own loop calls the messages)
 SENDERS = [
@@ -101,7 +102,9 @@ def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises
         state["flagged"] = (day, set_it)
 
     addresses = ["w%d@example.com" % k for k in range(n)]
+    tally = delivery_line.Tally("loop-test")   # unregistered: prints nothing
     ns = {
+        "tally": tally,
         "smtplib": type("S", (), {
             "SMTP": FakeSMTP,
             "SMTPServerDisconnected": smtplib.SMTPServerDisconnected,
@@ -136,7 +139,9 @@ def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises
     }
     wrapped = "def _send():\n" + "\n".join("    " + ln for ln in body.splitlines())
     exec(compile(wrapped, "<lifted from %s>" % script, "exec"), ns)
-    return ns["_send"](), state
+    rc = ns["_send"]()
+    state["tally"] = tally.sent
+    return rc, state
 
 
 for script, plural in SENDERS:
@@ -158,6 +163,7 @@ for script, plural in SENDERS:
     rc, st = run(body)
     check(rc == 0, W("a clean run no longer returns 0"))
     check(len(st["sent"]) == 6, W("a clean run sent %d of 6" % len(st["sent"])))
+    check(st["tally"] == 6, W("a clean run told the DELIVERY line %r sent, not 6" % st["tally"]))
     check(st["flagged"] == ("2026-09-05", True), W("a clean run did not flag the day"))
     check(st["connects"] == 1,
           W("a clean run opened %d connections; one is enough" % st["connects"]))
@@ -169,6 +175,8 @@ for script, plural in SENDERS:
             "everyone who already received this"))
 
     # ── and the rest of the list still gets its mail ──────────────────────
+    check(st["tally"] == len(st["sent"]),
+          W("after a drop the DELIVERY line says %r sent, the server got %d" % (st["tally"], len(st["sent"]))))
     check(len(st["sent"]) == 5,
           W("only %d of the other 5 were sent to after a mid-list drop — one "
             "connection with no reconnect silently skips the tail of the list"
