@@ -30,8 +30,11 @@ test('the cattle cash run checks the hog reader before any fetch and never lets 
 });
 
 test('the MARS key reaches only the probe step, never a URL or the fetch', () => {
-  const i = wf.indexOf('MARS_API_KEY');
+  const i = wf.indexOf('MARS_API_KEY: ${{');   // the first env line (the file header comment names the key too, fx/marseth)
   assert.ok(i > 0 && i < wf.indexOf('run: python scripts/fetch_hog_cash.py --probe'));
-  assert.equal(wf.split('MARS_API_KEY: ${{ secrets.MARS_API_KEY }}').length, 2, 'one step only');
+  // two env lines: the hog probe and the ethanol fetch (fx/marseth); never the hog or cattle fetch
+  assert.equal(wf.split('MARS_API_KEY: ${{ secrets.MARS_API_KEY }}').length, 3, 'two steps only');
+  const keySteps = wf.split('\n      - name: ').slice(1).filter((st) => st.includes('MARS_API_KEY')).map((st) => st.split('\n')[0]);
+  assert.deepEqual(keySteps, ['Hog probe (LM_HG201, LM_HG203, LM_PK602 by every route)', 'Fetch and write data/ethanol-bids.json (USDA MARS 3617, 3618)']);
   assert.ok(i > wf.indexOf('inputs.hog_probe }}'), 'inside the hog probe step');
 });

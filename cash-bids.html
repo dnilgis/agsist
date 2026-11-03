@@ -741,6 +741,12 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
       </ul>
       <p class="il-one" style="margin:.8rem 0 0">Run an elevator? <a href="/list-your-elevator" data-track="elev_listing_cashbids">Post your bids free &#8594;</a></p>
     </div>
+    <style>.eth-box{margin:.8rem 0}.eth-box #eth-bids{min-height:6rem;padding:0 .75rem .6rem;font-size:.85rem}.eth-lead{margin:.2rem 0 .4rem;color:var(--text-dim)}.eth-wrap{overflow-x:auto}.eth-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.eth-t th,.eth-t td{padding:.3rem .4rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}.eth-nw{white-space:nowrap}.eth-dim{color:var(--text-muted)}.eth-t th{font-weight:600;color:var(--text-dim)}.eth-t .r{text-align:right}.eth-src,.eth-note{margin:.4rem 0 .8rem;font-size:.78rem;color:var(--text-muted)}</style>
+    <details class="cb-glance-box eth-box" id="eth-box">
+      <summary class="cb-fold-s">Ethanol plants paying for corn, by state</summary>
+      <div id="eth-bids"><p class="eth-note">The latest USDA ethanol plant report: corn bids and basis by state, and distillers grains and corn oil prices.</p></div>
+    </details>
+    <script src="/components/ethanol-bids.js?v=1" defer></script>
     <!--usda-cal-sub--><p class="cal-sub" style="font-size:.8rem;color:var(--text-dim);margin:.6rem 0 .3rem;line-height:1.6">USDA report dates on your phone: <a href="webcal://agsist.com/usda-calendar-grain.ics" onclick="try{gtag('event','ics_subscribe',{method:'webcal',calendar:'grain',from:'cash-bids'})}catch(e){}">Subscribe</a> &middot; <a href="https://calendar.google.com/calendar/render?cid=webcal%3A%2F%2Fagsist.com%2Fusda-calendar-grain.ics" target="_blank" rel="noopener" aria-label="Add to Google Calendar" onclick="try{gtag('event','ics_subscribe',{method:'google',calendar:'grain',from:'cash-bids'})}catch(e){}">Google</a></p>
     <details class="faq-section" id="cb-faq">
       <summary class="cb-fold-s"><h2>Questions farmers ask</h2></summary>
