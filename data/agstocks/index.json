@@ -1,41 +1,167 @@
 {
- "built": "2026-10-31T01:39:17Z",
+ "built": "2026-11-03T03:34:05Z",
  "ix": {
   "ag20": {
+   "base": "2026-11-02",
    "base_from": "2026-11-02",
    "base_level": 1000.0,
    "excluded": {},
    "key": "ag20",
    "left_out": [],
-   "levels": [],
+   "levels": [
+    {
+     "base": true,
+     "chg": null,
+     "d": "2026-11-02",
+     "n": 20,
+     "v": 1000.0
+    }
+   ],
+   "members": [
+    "DE",
+    "CNH",
+    "AGCO",
+    "TITN",
+    "LNN",
+    "NTR",
+    "CF",
+    "MOS",
+    "CTVA",
+    "FMC",
+    "ADM",
+    "BG",
+    "ANDE",
+    "GPRE",
+    "INGR",
+    "TSN",
+    "HRL",
+    "PPC",
+    "ZTS",
+    "ELAN"
+   ],
    "name": "AGSIST Ag 20",
-   "rebalances": [],
+   "rebalances": [
+    {
+     "d": "2026-11-02",
+     "kind": "base",
+     "members": [
+      "DE",
+      "CNH",
+      "AGCO",
+      "TITN",
+      "LNN",
+      "NTR",
+      "CF",
+      "MOS",
+      "CTVA",
+      "FMC",
+      "ADM",
+      "BG",
+      "ANDE",
+      "GPRE",
+      "INGR",
+      "TSN",
+      "HRL",
+      "PPC",
+      "ZTS",
+      "ELAN"
+     ]
+    }
+   ],
    "removed": [],
-   "status": "pending"
+   "status": "live"
   },
   "demand": {
+   "base": "2026-11-02",
    "base_from": "2026-11-02",
    "base_level": 1000.0,
    "excluded": {},
    "key": "demand",
    "left_out": [],
-   "levels": [],
+   "levels": [
+    {
+     "base": true,
+     "chg": null,
+     "d": "2026-11-02",
+     "n": 8,
+     "v": 1000.0
+    }
+   ],
+   "members": [
+    "ADM",
+    "BG",
+    "ANDE",
+    "GPRE",
+    "TSN",
+    "PPC",
+    "CALM",
+    "VITL"
+   ],
    "name": "Demand chain",
-   "rebalances": [],
+   "rebalances": [
+    {
+     "d": "2026-11-02",
+     "kind": "base",
+     "members": [
+      "ADM",
+      "BG",
+      "ANDE",
+      "GPRE",
+      "TSN",
+      "PPC",
+      "CALM",
+      "VITL"
+     ]
+    }
+   ],
    "removed": [],
-   "status": "pending"
+   "status": "live"
   },
   "input": {
+   "base": "2026-11-02",
    "base_from": "2026-11-02",
    "base_level": 1000.0,
    "excluded": {},
    "key": "input",
    "left_out": [],
-   "levels": [],
+   "levels": [
+    {
+     "base": true,
+     "chg": null,
+     "d": "2026-11-02",
+     "n": 8,
+     "v": 1000.0
+    }
+   ],
+   "members": [
+    "DE",
+    "AGCO",
+    "CNH",
+    "NTR",
+    "CF",
+    "MOS",
+    "FMC",
+    "CTVA"
+   ],
    "name": "Input suppliers",
-   "rebalances": [],
+   "rebalances": [
+    {
+     "d": "2026-11-02",
+     "kind": "base",
+     "members": [
+      "DE",
+      "AGCO",
+      "CNH",
+      "NTR",
+      "CF",
+      "MOS",
+      "FMC",
+      "CTVA"
+     ]
+    }
+   ],
    "removed": [],
-   "status": "pending"
+   "status": "live"
   }
  },
  "revisions": [],

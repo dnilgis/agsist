@@ -41,7 +41,7 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const git = (args, cwd = root) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
 
 const MOVED = [
-  'data/cattle-auction-raw', 'data/cattle-cash-raw', 'data/ccc-loan-raw', 'data/dairy-raw',
+  'data/cattle-auction-raw', 'data/cattle-cash-raw', 'data/hog-cash-raw', 'data/ccc-loan-raw', 'data/dairy-raw',
   'data/fall-nitrogen-raw', 'data/fert-ams-raw', 'data/coop-fert-raw', 'data/hay-ams-raw', 'data/hay-raw', 'data/drought/probe', 'vintage',
 ];
 const ATLAS_MOVED = ['heat', 'water', 'loss', 'sob', 'value', 'crp', 'energy', 'wells', 'practices',
@@ -54,13 +54,13 @@ const MOVED_OCT29 = ['data/atlas/raw/drought.json', 'data/atlas/src/CRPHistoryCo
 // workflow -> [raw folder, main FILES line]
 const PROBES = {
   'cattle-auction': ['data/cattle-auction-raw', 'FILES="data/cattle-auction.json data/cull-cows.json data/cattle-auction-raw/listing.json data/feeder-index.json"'],   // + the feeder index built from it (fx/feederidx) and the cull cow file read in the same run (fx/cullcow)
-  'cattle-cash': ['data/cattle-cash-raw', 'FILES="data/cattle-cash.json"'],
+  'cattle-cash': ['data/cattle-cash-raw', 'FILES="data/cattle-cash.json data/hog-cash.json"'],   // + cash hogs and pork cutout read in the same run (fx/hogprobe)
   'ccc-loan': ['data/ccc-loan-raw', 'FILES="data/ccc-loan.json data/ccc-loan"'],
   'dairy': ['data/dairy-raw', 'FILES="data/dairy-data.json data/dairy-history.json data/dairy-mailbox.json data/dairy-miss.json data/dairy-order30.json data/dairy-dmc.json data/dairy-herds.json"'],   // + licensed herds (fx/dairy3)
   'fall-nitrogen': ['data/fall-nitrogen-raw', 'FILES="data/fall-nitrogen.json fall-nitrogen.html"'],
   'fertilizer-coops': ['data/coop-fert-raw', 'FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json"'],   // probe added Oct 28 (fx/oct28adds)
   'fertilizer-ams': ['data/fert-ams-raw', 'FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json data/production-costs.json"'],
-  'hay-ams': ['data/hay-ams-raw', 'FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json"'],
+  'hay-ams': ['data/hay-ams-raw', 'FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json data/state-grain-ams.json data/slaughter.json"'],   // + USDA state grain and slaughter (fx/marsgrain)
   'hay-prices': ['data/hay-raw', 'FILES="data/hay"'],
   'drought-county-week': ['data/drought/probe', 'FILES="data/drought/county-week.json data/drought/summary.json"'],
 };
@@ -121,6 +121,17 @@ test('every probe saves its captures to the raw branch and commits only built ou
     const fl = y.split('\n').find((l) => l.includes('FILES="'));
     assert.ok(!new RegExp(`${dir.replace(/[/-]/g, '\\$&')}(["\\s]|$)`).test(fl), `${wf}: the raw folder is not committed to main`);
   }
+});
+
+test('the hog probe on the cattle cash run saves to raw and never commits', () => {
+  const y = read('.github/workflows/cattle-cash.yml');
+  const step = `        if: \${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.hog_probe }}\n` +
+    `        env:\n          PRIVATE_REPO_TOKEN: \${{ secrets.PRIVATE_REPO_TOKEN }}\n          RAW_SOFT: '1'\n` +
+    `        run: bash scripts/push_raw.sh "hog-cash probe" data/hog-cash-raw\n`;
+  assert.ok(y.includes(step), 'hog probe captures go to raw, even after a partial probe');
+  assert.ok(y.indexOf('push_raw.sh "hog-cash probe"') > y.indexOf('fetch_hog_cash.py --probe'), 'saved after the probe runs');
+  const commit = y.slice(y.indexOf('- name: Commit if changed'));
+  assert.match(commit, /^- name: Commit if changed \(race-tolerant\)\n\s+if: \$\{\{ !\(github\.event_name == 'workflow_dispatch' && inputs\.hog_probe\) \}\}/, 'a hog probe run commits nothing');
 });
 
 test('the Atlas unpacks its pulls from raw before any fetch and saves them back after the build', () => {
