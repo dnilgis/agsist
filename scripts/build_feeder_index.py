@@ -812,6 +812,7 @@ def build(auction, aev, meta, prices, prev, now_utc, mars=None):
         "barn_sales": save_store(store),
         "barn_sales_via": "Each barn's sales were read through USDA My Market News, except the dates in its pdf list, read from the barn's USDA PDF report",
         "mars": mars_note(mars, store, dropped),
+        "dropped": [list(x) for x in dropped],
     }
 
 
@@ -821,24 +822,47 @@ def mars_note(mars, store, dropped):
     for e in store.values():
         for d in e["sales"]:
             n[(e.get("via") or {}).get(d, "pdf")] += 1
-    o = {"read": bool(mars and mars.get("ok")), "sales_mars": n["mars"], "sales_pdf": n["pdf"],
-         "dropped": [list(x) for x in dropped]}
+    o = {"read": bool(mars and mars.get("ok")), "sales_mars": n["mars"], "sales_pdf": n["pdf"], "dropped": len(dropped)}
     if mars and mars.get("note"):
         o["note"] = mars["note"]
     return o
 
 
+# The builder's own copy of every barn's sales (barn_sales) lives in its own file, which no
+# page loads: read through My Market News the store holds 80 to 100 barns a week, over twice
+# the PDF reads, and kept in data/feeder-index.json it took that file, which three pages load,
+# past 230 KB (Nov 3 2026). A file from before then still holds barn_sales itself; it is read
+# from there once and moved.
+STORE = "data/feeder-index-store.json"
+STORE_KEYS = ("barn_sales", "barn_sales_via", "dropped")
+
+
 def read_inputs(root):
+    prev = load_json(root / OUT)
+    st = load_json(root / STORE)
+    if prev is not None and st and st.get("barn_sales") is not None:
+        prev = dict(prev, barn_sales=st["barn_sales"])
     return (load_json(root / AUCTION), load_json(root / AEV), load_json(root / META),
-            load_json(root / PRICES), load_json(root / OUT))
+            load_json(root / PRICES), prev)
+
+
+def split_doc(doc):
+    """(the file the pages load, the store file)."""
+    page = {k: v for k, v in doc.items() if k not in STORE_KEYS}
+    store = {"v": 1, "what": "The barn sales data/feeder-index.json is built from (scripts/build_feeder_index.py); no page loads this file",
+             "updated": doc.get("updated")}
+    store.update({k: doc[k] for k in STORE_KEYS if k in doc})
+    return page, store
 
 
 def write(root, doc):
-    path = root / OUT
-    tmp = path.with_name(path.name + ".tmp")
-    with open(tmp, "w") as f:
-        f.write(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
-    os.replace(tmp, path)
+    page, store = split_doc(doc)
+    for name, d in ((OUT, page), (STORE, store)):
+        path = root / name
+        tmp = path.with_name(path.name + ".tmp")
+        with open(tmp, "w") as f:
+            f.write(json.dumps(d, separators=(",", ":"), ensure_ascii=False) + "\n")
+        os.replace(tmp, path)
 
 
 # ------------------------------------------------------------------ selftest

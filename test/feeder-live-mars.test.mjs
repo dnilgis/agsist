@@ -138,7 +138,12 @@ test('the barn job passes the MARS key to the index build only, and the live wee
     assert.ok(w.via && Object.values(w.via).reduce((a, b) => a + b, 0) === w.barns, w.start + ': via counts every barn');
   }
   // no barn counts a sale twice: no two dates of one barn in one week with the same cells
-  for (const [bid, e] of Object.entries(d.barn_sales)) {
+  // the barn store is its own file, which no page loads (the page file stays small)
+  assert.equal(d.barn_sales, undefined, 'the pages\' file does not carry the barn store');
+  const st = JSON.parse(fs.readFileSync(path.join(root, 'data/feeder-index-store.json'), 'utf8'));
+  assert.ok(Object.keys(st.barn_sales).length > 30);
+  assert.ok(Object.values(st.barn_sales).every((e) => Array.isArray(e.pdf)), 'each barn lists its PDF-read dates');
+  for (const [bid, e] of Object.entries(st.barn_sales)) {
     const seen = {};
     for (const [day, cells] of Object.entries(e.sales)) {
       const dt = new Date(day + 'T00:00:00Z');

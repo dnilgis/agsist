@@ -103,7 +103,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/cattle-auction.json data/cull-cows.json data/cattle-auction-raw/listing.json data/feeder-index.json"
+          FILES="data/cattle-auction.json data/cull-cows.json data/cattle-auction-raw/listing.json data/feeder-index-store.json data/feeder-index.json"
           rm -rf /tmp/ca && mkdir -p /tmp/ca
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/ca/ || true
