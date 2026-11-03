@@ -12,6 +12,8 @@ only on a future date is a test or a gate that reads today's date and will break
     --only=node|py   one half only
     --files=a,b      only these node test files (test/x.test.mjs) and python commands whose script is named
     --jobs=N         parallel runs (default 2; never run this beside a full checks.sh, BUILD-RULES 19)
+    --fast           leave out the node files that take over 30 s (scripts/dev/test-durations.json) and the two
+                     slowest selftests (build_atlas_pages, build_arc_plc): about a quarter of the time, for a busy machine
     --no-baseline    skip the run at today's real date (then every failure is listed, not only the new ones)
 
 How the clock moves: scripts/dev/fakeclock/ holds a python sitecustomize.py (time.time, datetime.now/utcnow/today,
@@ -48,6 +50,7 @@ CLOCK = os.path.join(ROOT, "scripts", "dev", "fakeclock")
 DATES = ["2026-11-26", "2026-11-30", "2026-12-01", "2026-12-10", "2026-12-31", "2027-01-01", "2027-01-12",
          "2027-02-01", "2027-03-14"]
 TIMEOUT = 600
+SLOW_PY = ("scripts/build_atlas_pages.py", "scripts/build_arc_plc.py")
 # the shell `date` wrapper, written to a temp bin folder at run time (a repo file named "date" would match every
 # test that says "date" in quick.sh's pick)
 DATE_SHIM = r'''#!/bin/bash
@@ -178,11 +181,13 @@ def run_date(label, when, jobs, nfiles, pcmds, outdir, names=None):
 
 
 def main(argv):
-    opts = {"browser": False, "checks": False, "only": "", "files": "", "jobs": "2", "baseline": True}
+    opts = {"fast": False, "browser": False, "checks": False, "only": "", "files": "", "jobs": "2", "baseline": True}
     dates = []
     for a in argv:
         if a == "--browser":
             opts["browser"] = True
+        elif a == "--fast":
+            opts["fast"] = True
         elif a == "--checks":
             opts["checks"] = True
         elif a == "--no-baseline":
@@ -201,6 +206,11 @@ def main(argv):
     only = set(x for x in opts["files"].split(",") if x)
     nfiles = [] if opts["only"] == "py" else node_files(opts["browser"], only)
     pcmds = [] if opts["only"] == "node" else py_commands(opts["checks"], only)
+    if opts["fast"]:
+        import json
+        secs = json.load(open(os.path.join(ROOT, "scripts", "dev", "test-durations.json"))).get("seconds", {})
+        nfiles = [f for f in nfiles if secs.get(f, 0) <= 30]
+        pcmds = [c for c in pcmds if c.split()[1] not in SLOW_PY]
     jobs = max(1, int(opts["jobs"]))
     outdir = os.path.join(os.environ.get("TMPDIR", "/tmp"), "agsist-future-dates")
     print(f"future_dates: {len(nfiles)} node test file(s), {len(pcmds)} script check(s), dates {', '.join(d for d, _ in whens)}; logs in {outdir}")
