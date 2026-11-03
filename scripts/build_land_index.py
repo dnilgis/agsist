@@ -771,6 +771,9 @@ def hub_section(data):
         esc(o["name"]), o["start"], comma(o["n_sales"]), o["n_counties"], esc(o["held"])) for o in others)
     faq_html = "".join("<dt>%s</dt><dd>%s</dd>" % (esc(q), esc(a)) for q, a in faqs)
     first_html = ('<p>%s</p>' % esc(first)) if first else ""
+    # the chart draws a dashed end only when a quarter with an index is provisional; when the newest
+    # quarter is withheld for too few sales (Nov 3, 2026: 85 October sales in 2026Q4) there is none
+    prov_cap = "The dashed end and hollow dot are provisional. " if any(r.get("prov") and r.get("ix") is not None for r in s["quarters"]) else ""
     body = f"""<section class="li" id="illinois-index" aria-labelledby="li-h">
 <h2 id="li-h">Illinois farmland sale index</h2>
 <p class="by">What Illinois farm ground sold for, quarter by quarter, with the county mix held fixed. Sales through {esc(day_words(s["through"]))}, from the state's file of {esc(day_words(s["fetched"]))}.</p>
@@ -782,7 +785,7 @@ def hub_section(data):
 <figure class="li-fig">
 {chart_svg(s)}
 <ul class="li-key"><li><span class="li-sw"></span>Sale index by quarter</li><li><span class="li-sw b"></span>90% range</li><li><span class="li-sw n"></span>USDA NASS cropland value, once a year</li></ul>
-<figcaption>Illinois, {s["start"]} = 100. The dashed end and hollow dot are provisional. NASS is its own survey, drawn on the same base for comparison only.</figcaption>
+<figcaption>Illinois, {s["start"]} = 100. {prov_cap}NASS is its own survey, drawn on the same base for comparison only.</figcaption>
 </figure>
 <h3 id="years">By year, beside USDA</h3>
 {annual_table(s)}
@@ -952,6 +955,9 @@ def selftest():
         ck("section: a Dataset and a FAQPage", '"@type": "Dataset"' in ld and '"@type": "FAQPage"' in ld)
         ck("section: the old page's anchors", all('id="%s"' % i in page for i in ("illinois-index", "years", "counties", "buyers", "quarters", "method", "faq", "sources")))
         ck("data file under 150 KB", len(dump(data).encode()) < 150 * 1024)
+        # the caption names a dashed end only when the chart draws one (Nov 3, 2026: the newest quarter withheld)
+        drawn = any(r.get("prov") and r.get("ix") is not None for r in data["states"]["IL"]["quarters"])
+        ck("section: the provisional caption only beside a provisional point", ("dashed end" in page) == drawn and ("li-dot-prov" in page) == drawn)
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 

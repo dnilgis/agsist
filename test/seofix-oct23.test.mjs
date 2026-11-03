@@ -1,10 +1,13 @@
 /* Google and AI-answer fixes, Oct 23, 2026 (panel seat on search). Real cases, worked by hand:
  *
- *   1. Barron County WI (55005): data/land/wi/summary.json has med 5,668 on n 22 bare farmland sales (Oct 29 land rule; was 5,578 on 42), middle half 4,293
- *      to 6,605, windows cur Oct 1, 2025 to Sep 30, 2026. The Atlas page's meta description opens
- *      "Barron County, WI: 22 recorded bare farmland sales, Oct 2025 to Sep 2026, median $5,668 an acre."
- *      and a visible question + FAQPage markup say the same. Florence WI (55037) has 0 sales in
- *      the window, under the 5-sale minimum: no sales number in its description, FAQ or markup.
+ *   1. Barron County WI (55005), worked Oct 23 from data/land/wi/summary.json: med 5,668 on n 22 bare farmland
+ *      sales (Oct 29 land rule), middle half 4,293 to 6,605, windows cur Oct 1, 2025 to Sep 30, 2026. The Atlas
+ *      page's meta description opens "Barron County, WI: 22 recorded bare farmland sales, Oct 2025 to Sep 2026,
+ *      median $5,668 an acre." and a visible question + FAQPage markup say the same. Florence WI (55037) has 0
+ *      sales in the window, under the 5-sale minimum: no sales number in its description, FAQ or markup.
+ *      The monthly land run rewrites that file, so the test reads the count, median, middle half and window
+ *      from it (BUILD-RULES 50, Nov 3: Barron went to 21 sales at $5,760), and falls back to another county
+ *      with (or without) a median if Barron (or Florence) crosses the 5-sale line.
  *   2. Barron County's middle is about 6 to 8 miles from Cameron, Almena and Rice Lake, all with
  *      town bid pages: Atlas and rain pages link them (three at most, distance printed).
  *   3. Barron rain page (Oct 18 totals, story written through Oct 13): the lead no longer shows
@@ -23,6 +26,7 @@ import { readFileSync, readdirSync, existsSync, mkdtempSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import os from "node:os";
+import { createRequire } from "node:module";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
@@ -30,27 +34,34 @@ const json = (p) => JSON.parse(read(p));
 const meta = (t, n) => (t.match(new RegExp(`<meta name="${n}" content="([^"]*)"`)) || [])[1];
 const ld = (t) => JSON.parse(t.match(/<script type="application\/ld\+json">\s*([\s\S]*?)\s*<\/script>/)[1])["@graph"];
 
+const S = createRequire(import.meta.url)(join(ROOT, "components/atlas-sales.js"));
+const WI = json("data/land/wi/summary.json");
+const plain = (f) => /^[A-Za-z]+$/.test(WI.counties[f].name);
+const pick = (want, has) => (!!WI.counties[want].med === has ? want : Object.keys(WI.counties).sort().find((f) => !!WI.counties[f].med === has && plain(f)));
+const WITH = pick("55005", true), WITHOUT = pick("55037", false);
+const slug = (f) => "wisconsin/" + WI.counties[f].name.toLowerCase() + "-county";
 const out = mkdtempSync(join(os.tmpdir(), "seofix-"));
-execFileSync("python3", ["scripts/build_atlas_pages.py", "--only", "55005", "55037", "20169", "--out", out],
+execFileSync("python3", ["scripts/build_atlas_pages.py", "--only", ...new Set(["55005", "55037", WITH, WITHOUT]), "20169", "--out", out],
   { cwd: ROOT, env: { ...process.env, PYTHONHASHSEED: "0" }, stdio: "pipe" });
 const atlas = (p) => readFileSync(join(out, "farmland-atlas", p + ".html"), "utf8");
 const money = (n) => "$" + n.toLocaleString("en-US");
 
 test("1. Atlas: sales count, median and dates lead the description, from the page's own summary file", () => {
-  const sm = json("data/land/wi/summary.json").counties["55005"];
-  assert.deepEqual([sm.med.n, sm.med.med, sm.med.q1, sm.med.q3], [22, 5668, 4293, 6605]);
-  const t = atlas("wisconsin/barron-county");
+  const sm = WI.counties[WITH], name = sm.name, span = S.span(WI.windows.cur);
+  assert.ok(sm.med.n >= WI.min_n && Number.isInteger(sm.med.med) && sm.med.q1 <= sm.med.med && sm.med.med <= sm.med.q3);
+  const t = atlas(slug(WITH));
   const d = meta(t, "description");
-  assert.ok(d.startsWith("Barron County, WI: 22 recorded bare farmland sales, Oct 2025 to Sep 2026, median $5,668 an acre."), d);
+  assert.ok(d.startsWith(`${name} County, WI: ${sm.med.n} recorded bare farmland sales, ${span}, median ${money(sm.med.med)} an acre.`), d);
   assert.ok(d.length <= 160, "description cap");
   assert.equal(meta(t, "twitter:description"), d);
-  assert.match(t, /<title>Barron County, WI Farm Facts · Cash Rent 2026: \$103\/Acre<\/title>/);
+  if (WITH === "55005") assert.match(t, /<title>Barron County, WI Farm Facts · Cash Rent 2026: \$103\/Acre<\/title>/);
+  else assert.match(t, new RegExp(`<title>${name} County, WI Farm Facts`));
   assert.ok(t.match(/<title>(.*?)<\/title>/)[1].length <= 60, "title rule (county_title max 60)");
   // the visible question and the markup say the same
-  const q = "What has farmland sold for in Barron County, Wisconsin?";
+  const q = `What has farmland sold for in ${name} County, Wisconsin?`;
   const m = t.match(/<h3 id="sales-faq">([^<]*)<\/h3><p>([^<]*)<\/p>/);
   assert.equal(m[1], q);
-  assert.match(m[2], /^22 recorded market sales of bare farmland \(no buildings by the property class, no forest\), 20 or more acres, Oct 2025 to Sep 2026, with a median of \$5,668 an acre; the middle half of sales fell between \$4,293 and \$6,605 an acre\./);
+  assert.ok(m[2].startsWith(`${sm.med.n} recorded market sales of bare farmland (no buildings by the property class, no forest), 20 or more acres, ${span}, with a median of ${money(sm.med.med)} an acre; the middle half of sales fell between ${money(sm.med.q1)} and ${money(sm.med.q3)} an acre.`), m[2]);
   assert.match(m[2], /not a model or an appraisal, and no buyer or seller is named/);
   const faq = ld(t).find((x) => x["@type"] === "FAQPage");
   assert.equal(faq.mainEntity.length, 1);
@@ -61,9 +72,8 @@ test("1. Atlas: sales count, median and dates lead the description, from the pag
 });
 
 test("1. Atlas: under the page's own minimum sample, nothing is printed; states without a summary are unchanged", () => {
-  const sm = json("data/land/wi/summary.json");
-  assert.ok(!sm.counties["55037"].med, "Florence has no median in the file");
-  const t = atlas("wisconsin/florence-county");
+  assert.ok(!WI.counties[WITHOUT].med, "no median in the file for " + WITHOUT);
+  const t = atlas(slug(WITHOUT));
   assert.ok(!/recorded farm sale/.test(meta(t, "description")));
   assert.ok(!/sales-faq/.test(t));
   assert.ok(!ld(t).some((x) => x["@type"] === "FAQPage"));

@@ -318,6 +318,19 @@ test("monthly land run: the 3rd, Sig's approval noted, one run at a time", () =>
   assert.match(y, /--newest-only/); assert.match(y, /--merge/); assert.match(y, /land_keep_stamp_only\.py data\/land/);
 });
 
+// Nov 3, 2026 (run 41709528950): Wisconsin re-read September only (October did not download), the files were
+// stamped Nov 3, the summary and the sale pages were built from that stamp, and the commit step then put the
+// stamp back. Committed pages said "read Nov 3" over files that said Oct 18, and --check failed on main.
+// Timestamp-only changes are put back before the first builder reads the files.
+test("land run: timestamp-only changes are put back before anything is built from the files", () => {
+  const y = read(".github/workflows/land-data.yml");
+  const at = (re) => { const m = re.exec(y); assert.ok(m, String(re)); return m.index; };
+  const restore = at(/\n {8}run: python3 scripts\/land_keep_stamp_only\.py data\/land\n/);
+  for (const b of [/run: python scripts\/build_land_summary\.py/, /run: OMP_NUM_THREADS=1 python scripts\/build_land_index\.py\n/, /run: python scripts\/build_land_sales\.py/])
+    assert.ok(restore < at(b), "the restore runs before " + b);
+  assert.ok(restore > at(/fetch_land_sales\.py --from "\$RUNNER_TEMP\/wi\/build" WI/), "and after the last fetch");
+});
+
 // Nov 3, 2026 (run 41693977600): the page build refused a name leak, the step stopped the job and the transfers
 // the land sale email reads were never committed. The guard stays as strict; the transfers commit no longer rides on it.
 test("land run: a refused page build still commits data/land, never the pages, and fails the run", () => {
