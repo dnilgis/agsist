@@ -4126,6 +4126,7 @@ def selftest():
     _selftest_lead()
     _selftest_county()
     _selftest_share()
+    _selftest_sharebid()
     _selftest_best()
     _selftest_restricted()
     _selftest_pasted()
@@ -4584,6 +4585,64 @@ def _selftest_county():
         assert '<a href="/land-sales/iowa/hamilton-county">land sales near here</a>' in county_line(t, (42.4, -93.6, "x"), ctx)
         assert county_line(t, (40.0, -90.0, "x"), {"county": ctx["county"]}) == ""
         assert county_line(t, None, {}) == "" and county_finder(os.path.join(d, "nope")) is None
+
+
+def build_fixture_town(fixture_path, out_dir, root="."):
+    """Build the town pages of a frozen test fixture (test/fixtures/sharebid/
+    nevada-ia.json: merged, index, zip_towns and the build time "now") into
+    out_dir, offline. -> (metas, out_dir). The share-a-bid selftest and
+    test/share-bid.test.mjs both read the page this writes."""
+    with open(fixture_path) as f:
+        fx = json.load(f)
+    metas, _, _, _ = build_all(fx["merged"], fx["index"], fx["zip_towns"], out_dir=out_dir, root=root,
+                               sitemap=os.path.join(out_dir, "sitemap.xml"), min_towns=0, now=parse_ts(fx["now"]))
+    return metas, out_dir
+
+
+def _selftest_sharebid():
+    """Share today's bids (Sig, 2026-11-03), from the frozen Nevada, IA fixture:
+    the button shares the answer line's own row (Lincolnway FH Nov, not the
+    higher LH Nov), the day it was posted, the town link, and stops counting at
+    the end of its freshness window or delivery period. Every expectation is
+    computed from the fixture, never from today's date."""
+    import tempfile as _tf
+    fxp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures", "sharebid", "nevada-ia.json")
+    fx = json.load(open(fxp))
+    with _tf.TemporaryDirectory() as td:
+        metas, out = build_fixture_town(fxp, os.path.join(td, "cash-bids"), root=td)
+        pg = open(os.path.join(out, "iowa", "nevada.html")).read()
+    ans = html_unescape(re.search(r'<p class="cbt-answer">(.*?)</p>', pg).group(1))
+    m = re.search(r'<p class="cbt-share"><a class="cbt-share-btn" href="([^"]*)" data-share-bid '
+                  r'data-title="([^"]*)" data-text="([^"]*)" data-plain="([^"]*)" data-until="([^"]*)" '
+                  r'data-crop="([^"]*)">', pg)
+    assert m, "the town page has no share button"
+    href, title, text, plain, until, crop = [html_unescape(x) for x in m.groups()]
+    # the answer's own pick: the earliest tier's best corn bid, as the answer line names it
+    lw = [b for b in fx["merged"]["bids"] if b["crop"] == "corn" and b["delivery"].startswith("FH")][0]
+    price, posted = f"${lw['cash']:.2f}", parse_ts(lw["pricedAt"]).astimezone(CT)
+    day = f"{MONTH_ABBR[posted.month - 1]} {posted.day}, {posted.year}"
+    assert f"corn {price} at {lw['operator']} for {lw['delivery']}" in ans, ans
+    assert text == (f"Corn {price} at {lw['operator']}, Nevada, IA ({lw['delivery']}), {day}. "
+                    f"More bids near you: agsist.com/cash-bids/iowa/nevada"), text
+    assert f"{price}</td>" in pg, "the shared price is printed in the table"
+    higher = [b for b in fx["merged"]["bids"] if b["delivery"].startswith("LH")][0]
+    assert f"${higher['cash']:.2f}" not in text, "a later, higher row is never the shared one"
+    assert href == "/cash-bids/iowa/nevada?utm_source=share" and title == "Nevada, IA cash bids" and crop == "corn"
+    assert "$" not in plain and plain.endswith("agsist.com/cash-bids/iowa/nevada"), plain
+    assert not re.search(r"futures|\d{3}\.\d|basis", text, re.I), "no futures price and no basis in the share"
+    assert parse_ts(until) == parse_ts(lw["pricedAt"]) + dt.timedelta(hours=FRESH_HOURS), until
+    assert pg.count("/components/share-bid.js?v=") == 1 and pg.index('class="cbt-answer"') < pg.index("data-share-bid")
+    # the period can end first: a first-half bid stops on the 15th, a dated one on its day
+    late = parse_ts(lw["pricedAt"]).replace(day=14)
+    r = {"priced": late, "dm": late.strftime("%Y-%m"), "label": lw["delivery"]}
+    assert share_until(r).astimezone(CT).day == 16 and share_until(r).astimezone(CT).hour == 0
+    r = dict(r, label=f"By {MONTH_ABBR[late.month - 1]} {late.day + 1}")
+    assert share_until(r) < share_until(dict(r, label=f"{MONTH_ABBR[late.month - 1]} {late.year}"))
+    assert share_until(dict(r, label=f"{MONTH_ABBR[late.month - 1]} {late.year}")) == \
+        late + dt.timedelta(hours=FRESH_HOURS), "a month label's year is not read as a day"
+    # no answer line, no button and no script
+    assert share_bid_html({}, "Nevada, IA", "/cash-bids/iowa/nevada") == ""
+    assert "share-bid.js" not in page_end("") and "share-bid.js" in page_end("", share=True)
 
 
 def _selftest_share():
