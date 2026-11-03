@@ -1,6 +1,6 @@
 {
  "schema": "agsist-ethanol-bids/1",
- "generated": "2026-11-03T02:00:00Z",
+ "generated": "2026-11-03T02:25:37Z",
  "source": "USDA AMS",
  "credit": "USDA AMS, National Daily Ethanol Report and National Weekly Grain Co-Products Report",
  "corn": {
@@ -189,7 +189,7 @@
   "week_of": "2026-10-26",
   "week_end": "2026-10-30",
   "published": "2026-11-02 10:13:08",
-  "year_ago_week_of": null,
+  "year_ago_week_of": "2025-11-03",
   "rows": [
    {
     "product": "ddgs",
@@ -197,7 +197,7 @@
     "area": "Illinois",
     "unit": "$/ton",
     "price": 195.0,
-    "year_ago": null
+    "year_ago": 152.5
    },
    {
     "product": "ddgs",
@@ -205,7 +205,7 @@
     "area": "Indiana",
     "unit": "$/ton",
     "price": 177.25,
-    "year_ago": null
+    "year_ago": 147.25
    },
    {
     "product": "ddgs",
@@ -213,7 +213,7 @@
     "area": "Iowa",
     "unit": "$/ton",
     "price": 170.65,
-    "year_ago": null
+    "year_ago": 128.03
    },
    {
     "product": "ddgs",
@@ -221,7 +221,7 @@
     "area": "Kansas",
     "unit": "$/ton",
     "price": 220.0,
-    "year_ago": null
+    "year_ago": 170.0
    },
    {
     "product": "ddgs",
@@ -229,7 +229,7 @@
     "area": "Michigan",
     "unit": "$/ton",
     "price": 181.63,
-    "year_ago": null
+    "year_ago": 141.25
    },
    {
     "product": "ddgs",
@@ -237,7 +237,7 @@
     "area": "Minnesota",
     "unit": "$/ton",
     "price": 175.0,
-    "year_ago": null
+    "year_ago": 136.75
    },
    {
     "product": "ddgs",
@@ -245,7 +245,7 @@
     "area": "Missouri",
     "unit": "$/ton",
     "price": 210.0,
-    "year_ago": null
+    "year_ago": 162.5
    },
    {
     "product": "ddgs",
@@ -253,7 +253,7 @@
     "area": "Nebraska",
     "unit": "$/ton",
     "price": 202.5,
-    "year_ago": null
+    "year_ago": 149.14
    },
    {
     "product": "ddgs",
@@ -261,7 +261,7 @@
     "area": "Ohio",
     "unit": "$/ton",
     "price": 185.0,
-    "year_ago": null
+    "year_ago": 148.13
    },
    {
     "product": "ddgs",
@@ -269,7 +269,7 @@
     "area": "South Dakota",
     "unit": "$/ton",
     "price": 180.0,
-    "year_ago": null
+    "year_ago": 138.6
    },
    {
     "product": "ddgs",
@@ -277,7 +277,7 @@
     "area": "Wisconsin",
     "unit": "$/ton",
     "price": 174.0,
-    "year_ago": null
+    "year_ago": 134.5
    },
    {
     "product": "wdg",
@@ -285,7 +285,7 @@
     "area": "Iowa",
     "unit": "$/ton",
     "price": 56.0,
-    "year_ago": null
+    "year_ago": 45.0
    },
    {
     "product": "wdg",
@@ -293,7 +293,7 @@
     "area": "Kansas",
     "unit": "$/ton",
     "price": 70.67,
-    "year_ago": null
+    "year_ago": 60.0
    },
    {
     "product": "wdg",
@@ -301,7 +301,7 @@
     "area": "Minnesota",
     "unit": "$/ton",
     "price": 56.0,
-    "year_ago": null
+    "year_ago": 55.0
    },
    {
     "product": "wdg",
@@ -309,7 +309,7 @@
     "area": "Missouri",
     "unit": "$/ton",
     "price": 61.0,
-    "year_ago": null
+    "year_ago": 50.0
    },
    {
     "product": "wdg",
@@ -317,7 +317,7 @@
     "area": "Nebraska",
     "unit": "$/ton",
     "price": 65.0,
-    "year_ago": null
+    "year_ago": 48.33
    },
    {
     "product": "wdg",
@@ -325,7 +325,15 @@
     "area": "South Dakota",
     "unit": "$/ton",
     "price": 61.0,
-    "year_ago": null
+    "year_ago": 58.0
+   },
+   {
+    "product": "corn_oil",
+    "name": "Distillers corn oil",
+    "area": "Eastern Cornbelt",
+    "unit": "cents/lb",
+    "price": 69.5,
+    "year_ago": 54.54
    },
    {
     "product": "corn_oil",
@@ -333,7 +341,7 @@
     "area": "Iowa",
     "unit": "cents/lb",
     "price": 68.65,
-    "year_ago": null
+    "year_ago": 53.38
    },
    {
     "product": "corn_oil",
@@ -341,7 +349,47 @@
     "area": "Kansas",
     "unit": "cents/lb",
     "price": 67.5,
-    "year_ago": null
+    "year_ago": 50.0
+   },
+   {
+    "product": "corn_oil",
+    "name": "Distillers corn oil",
+    "area": "Minnesota",
+    "unit": "cents/lb",
+    "price": 69.67,
+    "year_ago": 54.63
+   },
+   {
+    "product": "corn_oil",
+    "name": "Distillers corn oil",
+    "area": "Missouri",
+    "unit": "cents/lb",
+    "price": 70.5,
+    "year_ago": 56.0
+   },
+   {
+    "product": "corn_oil",
+    "name": "Distillers corn oil",
+    "area": "Nebraska",
+    "unit": "cents/lb",
+    "price": 69.5,
+    "year_ago": 54.71
+   },
+   {
+    "product": "corn_oil",
+    "name": "Distillers corn oil",
+    "area": "South Dakota",
+    "unit": "cents/lb",
+    "price": 69.9,
+    "year_ago": 54.33
+   },
+   {
+    "product": "corn_oil",
+    "name": "Distillers corn oil",
+    "area": "Wisconsin",
+    "unit": "cents/lb",
+    "price": 65.0,
+    "year_ago": 52.0
    }
   ]
  },
