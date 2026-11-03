@@ -1,0 +1,29 @@
+name: Upstream did work
+description: >-
+  For a run started by workflow_run: did the run that started it do its work, or did its
+  gate job skip it? Since Nov 3, 2026 most data workflows also run after every "Fetch Grain
+  Bids" and a job named "gate" lets one run per tick do the work; the other runs end
+  "success" with every working job skipped. A workflow that follows such an upstream must
+  not treat those as fresh data (PR #285 review: the Atlas page rebuild and the hail alert
+  email would have started every 15 minutes). go=1 when the upstream run has no job named
+  "gate" (an ungated upstream: unchanged), or when a job other than "gate" ended success.
+  go=0 when every job other than "gate" was skipped or failed, and when the jobs cannot be
+  read (fail closed). Any other event (schedule, a run by hand, a push): go=1.
+  The job that uses this needs `permissions: actions: read`.
+outputs:
+  go:
+    description: "'1' when the upstream run did its work (or this run was not started by workflow_run)"
+    value: ${{ steps.u.outputs.go }}
+runs:
+  using: composite
+  steps:
+    - id: u
+      shell: bash
+      env:
+        EVENT: ${{ github.event_name }}
+        RUN_ID: ${{ github.event.workflow_run.id }}
+        UPSTREAM: ${{ github.event.workflow_run.name }}
+        REPO: ${{ github.repository }}
+        API: ${{ github.api_url }}
+        GH_TOKEN: ${{ github.token }}
+      run: python3 "$GITHUB_ACTION_PATH/did_work.py"

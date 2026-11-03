@@ -39,10 +39,6 @@ on:
         type: boolean
         default: false
 
-concurrency:
-  group: report-day-email
-  cancel-in-progress: false
-
 env:
   TZ: America/Chicago
 
@@ -50,10 +46,32 @@ permissions:
   contents: read
 
 jobs:
+  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
+  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
+  # and still end "success" (.github/actions/upstream-did-work; fails closed).
+  upstream:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.u.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            /.github/actions/upstream-did-work/
+          sparse-checkout-cone-mode: false
+      - id: u
+        uses: ./.github/actions/upstream-did-work
+
   # GitHub drops scheduled fires (this job's own cron delivered almost none),
   # so it also runs after every "Fetch Grain Bids", which cron-job.org starts
   # every 15 minutes. This gate makes those extra runs cost seconds outside weekdays 16:00-19:59 UTC.
   gate:
+    needs: upstream
+    if: needs.upstream.outputs.go == '1'
     runs-on: ubuntu-latest
     outputs:
       go: ${{ steps.g.outputs.go }}
@@ -69,6 +87,9 @@ jobs:
     needs: gate
     if: ${{ needs.gate.outputs.go == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: report-day-email
+      cancel-in-progress: false
     timeout-minutes: 20
     steps:
       # History, without the blobs: the price move reads the last price
