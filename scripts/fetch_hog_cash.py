@@ -26,7 +26,10 @@ branch under data/hog-cash-raw/):
   * LMR DataMart API (mpr.datamart.ams.usda.gov/services/v1.1/reports): answers,
     no key. LM_HG201 rows from Jan 2, 2002; LM_PK602 rows from Jan 2, 2014.
     Report ids come from its list: the slug_name there is AMS_<id>, the LM code
-    is in the title. The history backfill route, not used here yet.
+    is in the title. A section name with a slash ("Barrows/Gilts") must go bare:
+    %2F gets 400. An open call (no q=report_date=a:b) returns the whole history,
+    up to 83 MB a section, so every call carries a range. LSDLM_HG217 answers
+    (rows from 2020). The history backfill route, not used here yet.
   * MARS API v1.2: 404 for every LM id. The LM reports are not in MARS.
 
 Modes:
@@ -478,7 +481,7 @@ def probe(root=ROOT, get=None, ams_get=None, to_text=None, today=None, log=print
         ask("datamart", name + "-recent", "%s?%s" % (base, recent))
         for s in ((found.get(name) or {}).get("sections") or [])[1:SECTION_CAP + 1]:
             r = ask("datamart", "%s-sec-%s" % (name, s), "%s/%s?%s" % (base, urllib.parse.quote(s, safe=""), week))
-            if r is None and "/" in s:   # %2F was refused (400) on 2026-11-03: try the bare slash
+            if r is None and "/" in s:   # %2F is refused (400); the bare slash answers (2026-11-03)
                 ask("datamart", "%s-sec2-%s" % (name, s), "%s/%s?%s" % (base, urllib.parse.quote(s, safe="/"), week))
         for w in HISTORY_WEEKS:
             a = datetime.date.fromisoformat(w)
