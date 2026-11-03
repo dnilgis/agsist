@@ -1,8 +1,0 @@
-#!/bin/bash
-# Fake clock for shell `date`, used only by scripts/dev/future_dates.sh (on PATH first). With AGSIST_FAKE_OFFSET set and
-# no date of its own given (-d/--date/-r/--reference/-f/--file/-s/--set), it prints the shifted now; otherwise real date.
-REAL=/bin/date; [ -x "$REAL" ] || REAL=/usr/bin/date
-[ -n "${AGSIST_FAKE_OFFSET:-}" ] || exec "$REAL" "$@"
-for a in "$@"; do case "$a" in -d|-d*|--date*|-r|-r*|--reference*|-f|-f*|--file*|-s|-s*|--set*) exec "$REAL" "$@" ;; esac; done
-now=$("$REAL" +%s); off=${AGSIST_FAKE_OFFSET%.*}
-exec "$REAL" -d "@$((now + off))" "$@"

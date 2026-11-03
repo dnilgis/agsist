@@ -16,7 +16,7 @@ only on a future date is a test or a gate that reads today's date and will break
 
 How the clock moves: scripts/dev/fakeclock/ holds a python sitecustomize.py (time.time, datetime.now/utcnow/today,
 date.today), a node --import preload (Date, Intl formatting of now, every vm context and every Playwright page)
-and a `date` wrapper, all driven by AGSIST_FAKE_OFFSET (seconds to add). File times (mtime) and git stay real, so a
+and a `date` wrapper (written to a temp bin folder), all driven by AGSIST_FAKE_OFFSET (seconds to add). File times (mtime) and git stay real, so a
 test that compares a file's mtime with Date.now() (test/claude-hooks.test.mjs, the verify gate) fails here and only
 here: that one is the harness, not the date. Code needs no override of its own; a date without a
 time runs at 13:00 UTC (7 AM CT in winter, the Daily's hour).
@@ -48,6 +48,17 @@ CLOCK = os.path.join(ROOT, "scripts", "dev", "fakeclock")
 DATES = ["2026-11-26", "2026-11-30", "2026-12-01", "2026-12-10", "2026-12-31", "2027-01-01", "2027-01-12",
          "2027-02-01", "2027-03-14"]
 TIMEOUT = 600
+# the shell `date` wrapper, written to a temp bin folder at run time (a repo file named "date" would match every
+# test that says "date" in quick.sh's pick)
+DATE_SHIM = r'''#!/bin/bash
+# Fake clock for shell `date`, used only by scripts/dev/future_dates.py (on PATH first). With AGSIST_FAKE_OFFSET set and
+# no date of its own given (-d/--date/-r/--reference/-f/--file/-s/--set), it prints the shifted now; otherwise real date.
+REAL=/bin/date; [ -x "$REAL" ] || REAL=/usr/bin/date
+[ -n "${AGSIST_FAKE_OFFSET:-}" ] || exec "$REAL" "$@"
+for a in "$@"; do case "$a" in -d|-d*|--date*|-r|-r*|--reference*|-f|-f*|--file*|-s|-s*|--set*) exec "$REAL" "$@" ;; esac; done
+now=$("$REAL" +%s); off=${AGSIST_FAKE_OFFSET%.*}
+exec "$REAL" -d "@$((now + off))" "$@"
+'''
 
 
 def parse_when(s):
@@ -107,6 +118,16 @@ def py_commands(checks, only):
     return cmds
 
 
+def shim_bin(outdir):
+    b = os.path.join(outdir, "bin")
+    os.makedirs(b, exist_ok=True)
+    f = os.path.join(b, "date")
+    with open(f, "w") as fh:
+        fh.write(DATE_SHIM)
+    os.chmod(f, 0o755)
+    return b
+
+
 def dirty():
     r = subprocess.run(["git", "status", "--porcelain=v1", "-uall"], cwd=ROOT, capture_output=True, text=True)
     return {line[3:]: line[:2] for line in r.stdout.splitlines()}
@@ -133,7 +154,7 @@ def run_date(label, when, jobs, nfiles, pcmds, outdir, names=None):
         env.update(AGSIST_FAKE_OFFSET=str(off), AGSIST_FAKE_NOW=when.strftime("%Y-%m-%dT%H:%M:%SZ"),
                    PYTHONPATH=CLOCK + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""),
                    NODE_OPTIONS=(env.get("NODE_OPTIONS", "") + f" --import {CLOCK}/clock.mjs").strip(),
-                   PATH=f"{CLOCK}/bin" + os.pathsep + env["PATH"])
+                   PATH=shim_bin(outdir) + os.pathsep + env["PATH"])
     env.setdefault("PLAYWRIGHT_PATH", "/opt/node-tools/node_modules/playwright/index.mjs")
     env.setdefault("CHROMIUM_PATH", "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome")
     for k in ("AGSIST_TEST_FILES", "AGSIST_PICK_BASE"):
