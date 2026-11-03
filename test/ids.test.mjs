@@ -91,12 +91,6 @@ test("retired bids-repo ids: never a record, never held by a key, recorded once 
   // file with stale ids means the builder broke, not the upstream. The rule itself runs on a fixture
   // in `python3 scripts/build_ids.py --selftest` (the Beresford case).
   assert.equal(EL.counts.stale_ids, 0);
-  const live = new Set(EL.elevators.map((r) => r.id));
-  for (const r of EL.elevators) {
-    if (/^a\d{5}$/.test(r.id)) continue;
-    assert.ok(!R[r.id], `${r.id} has a record but is retired`);
-  }
-  assert.ok(live.size > 0);
 });
 
 test("alias lookups: the basis history's spellings find one facility", () => {

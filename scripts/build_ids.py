@@ -282,8 +282,18 @@ def retire_vanished(ledger, live, folded, fresh, today):
             new = next(iter(tgt))
             why = f"gone from the bids repo's directory with no mergedFrom; every key that held it now matches {new}"
         else:
-            new = mint(ledger, sorted(ks)[0], today)
-            why = "gone from the bids repo's directory with no mergedFrom; its keys keep a new AGSIST id"
+            # the bids repo's registry rows can flap (Beresford left and came back on Nov 3): an AGSIST id that
+            # stood in for this id before and merged back into it on its return stands in again, so a flap
+            # mints nothing new
+            prior = [ev["from"] for ev in ledger["events"] if ev.get("back") == e and ev.get("from") in minted
+                     and minted[ev["from"]].get("into") == e]
+            if prior:
+                new = prior[-1]
+                minted[new].pop("into")
+                why = f"gone from the bids repo's directory again with no mergedFrom; its keys go back to {new}"
+            else:
+                new = mint(ledger, sorted(ks)[0], today)
+                why = "gone from the bids repo's directory with no mergedFrom; its keys keep a new AGSIST id"
         ledger["retired"][e] = {"into": new, "on": today, "rule": "vanished"}
         ledger["events"].append({"on": today, "retire": e, "into": new, "why": why})
         out.append((e, new))
@@ -1168,6 +1178,14 @@ def selftest():
            led13["keys"][bk] == "edy2eazz93" and "edy2eazz93" not in led13["retired"] and va not in by13
            and led13["minted"][va].get("into") == "edy2eazz93" and "edy2eazz93" in by13
            and sum(1 for e in led13["events"] if e.get("back") == "edy2eazz93") == 1 and d13["counts"]["stale_ids"] == 0)
+        directory["elevators"] = kept_rows
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        d14 = build(root, bdir, sch, out, "2026-11-07", do_parcels=False, log=lambda *_: None)
+        led14 = read_json(os.path.join(out, "elevator-ids.json"))
+        ck("a flap (gone again) puts the key back on the same AGSIST id and mints nothing",
+           led14["keys"][bk] == va and led14["next"] == led13["next"] and not led14["minted"][va].get("into")
+           and led14["retired"]["edy2eazz93"]["into"] == va and d14["counts"]["stale_ids"] == 0
+           and any(r["id"] == va for r in d14["elevators"]))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print(f"FAILS={len(fails)}")
