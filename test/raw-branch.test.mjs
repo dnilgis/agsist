@@ -60,7 +60,7 @@ const PROBES = {
   'fall-nitrogen': ['data/fall-nitrogen-raw', 'FILES="data/fall-nitrogen.json fall-nitrogen.html"'],
   'fertilizer-coops': ['data/coop-fert-raw', 'FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json"'],   // probe added Oct 28 (fx/oct28adds)
   'fertilizer-ams': ['data/fert-ams-raw', 'FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json"'],
-  'hay-ams': ['data/hay-ams-raw', 'FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json"'],
+  'hay-ams': ['data/hay-ams-raw', 'FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json data/state-grain-ams.json data/slaughter.json"'],   // + USDA state grain and slaughter (fx/marsgrain)
   'hay-prices': ['data/hay-raw', 'FILES="data/hay"'],
   'drought-county-week': ['data/drought/probe', 'FILES="data/drought/county-week.json data/drought/summary.json"'],
 };

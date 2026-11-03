@@ -112,7 +112,8 @@ test('the reader selftest passes; the workflow runs it first and has a probe and
   assert.match(wf, /inputs\.probe/);
   assert.match(wf, /inputs\.scan/);
   // main gets the feed and the probe's listing (the normal run reads it); the report text goes to the raw branch
-  assert.match(wf, /FILES="data\/hay\/ams-hay\.json data\/hay-ams-raw\/listing\.json"/);
+  // (+ USDA state grain and slaughter, which ride this run: test/state-grain-mars.test.mjs)
+  assert.match(wf, /FILES="data\/hay\/ams-hay\.json data\/hay-ams-raw\/listing\.json data\/state-grain-ams\.json data\/slaughter\.json"/);
   assert.match(wf, /bash scripts\/push_raw\.sh "hay-ams probe" data\/hay-ams-raw\n/);
 });
 
