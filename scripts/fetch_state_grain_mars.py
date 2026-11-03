@@ -115,9 +115,10 @@ CROP_LABEL = {"corn": "corn", "soybeans": "soybeans", "wheat_hrw": "hard red win
               "wheat_cw": "club white wheat", "wheat_hw": "hard white wheat"}
 METHOD = ("USDA AMS state daily grain reports through My Market News. Country elevator bids only, plain "
           "bids (yellow corn, conventional). price_lo/price_hi: lowest and highest price USDA reports across "
-          "its regions. avg_price: simple average of USDA's regional average prices. basis lo/hi: USDA's "
-          "reported basis range on that futures month, cents. avg_basis: avg_price minus the futures price "
-          "USDA's own rows imply for that month (price minus basis, all rows agreeing within a cent), cents; "
+          "its regions. avg_price: simple average of USDA's regional average prices. basis[month] lo/hi: USDA's "
+          "reported basis range on that futures month, cents, and how many regions name it; month: the one "
+          "most regions name. avg_basis[month]: avg_price minus the futures price USDA's own rows imply for "
+          "that contract (price minus basis, all rows agreeing within a cent), cents; "
           "withheld when they do not agree or fewer than 2 regions report. current = USDA's current rows; "
           "new_crop = next marketing year delivery, kept apart.")
 
@@ -273,16 +274,24 @@ def clean(row):
             "mlo": mlo if basis_ok else None, "mhi": mhi if basis_ok else None}
 
 
+def family(ck):
+    """The futures a crop's basis is quoted against: hard white wheat trades off
+    the Kansas City (hard red winter) contract."""
+    return "wheat_hrw" if ck == "wheat_hw" else ck
+
+
 def implied_futures(rows):
-    """{month letter: futures $/bu} from every row's price - basis, kept only
-    where all rows naming that month agree within FUT_AGREE."""
+    """{(futures family, month letter): futures $/bu} from every row's price -
+    basis, kept only where all rows naming that contract agree within FUT_AGREE.
+    Corn, soybean and each wheat class's December are different contracts."""
     seen = {}
     for r in rows:
-        c = clean(r)
-        if not c or c["mlo"] is None:
+        c, ck = clean(r), crop_key(r)
+        if not c or c["mlo"] is None or not ck:
             continue
-        seen.setdefault(c["mlo"], []).append(c["plo"] - c["blo"] / 100.0)
-        seen.setdefault(c["mhi"], []).append(c["phi"] - c["bhi"] / 100.0)
+        f = family(ck)
+        seen.setdefault((f, c["mlo"]), []).append(c["plo"] - c["blo"] / 100.0)
+        seen.setdefault((f, c["mhi"]), []).append(c["phi"] - c["bhi"] / 100.0)
     out = {}
     for m, xs in seen.items():
         if max(xs) - min(xs) <= FUT_AGREE:
@@ -295,8 +304,9 @@ def r4(x):
 
 
 def aggregate(rows, fut, single_area):
-    """Rows of one state, crop, protein and period -> the summary record."""
-    regions, prices, avgs, by_m = [], [], [], {}
+    """Rows of one state, crop, protein and period -> the summary record.
+    fut: {month letter: futures} for this crop's contract (implied_futures)."""
+    regions, prices, avgs, by_m, named = [], [], [], {}, {}
     for r in rows:
         c = clean(r)
         if not c:
@@ -309,6 +319,8 @@ def aggregate(rows, fut, single_area):
         if c["mlo"] is not None:
             by_m.setdefault(c["mlo"], []).append(c["blo"])
             by_m.setdefault(c["mhi"], []).append(c["bhi"])
+            for m in {c["mlo"], c["mhi"]}:
+                named[m] = named.get(m, 0) + 1
     if not regions:
         return None
     rec = {"regions": len(regions), "price_lo": r4(min(prices)), "price_hi": r4(max(prices))}
@@ -316,14 +328,17 @@ def aggregate(rows, fut, single_area):
     avg_price = statistics.mean(avgs) if avgs and enough else None
     rec["avg_price"] = r4(avg_price)
     rec["avg_n"] = len(avgs)
-    basis = {}
-    for m in sorted(by_m, key=lambda k: "FGHJKMNQUVXZ".index(k)):
-        b = {"label": MONTHS[m], "lo": int(round(min(by_m[m]))), "hi": int(round(max(by_m[m])))}
-        if avg_price is not None and m in fut:
-            b["avg"] = int(round((avg_price - fut[m]) * 100))
-        basis[m] = b
+    order = lambda k: "FGHJKMNQUVXZ".index(k)  # noqa: E731
+    basis = {m: {"label": MONTHS[m], "lo": int(round(min(by_m[m]))), "hi": int(round(max(by_m[m]))),
+                 "regions": named[m]} for m in sorted(by_m, key=order)}
     if basis:
         rec["basis"] = basis
+        # the month most regions name (ties: the earlier contract in the calendar)
+        rec["month"] = sorted(basis, key=lambda m: (-named[m], order(m)))[0]
+    avg_basis = {m: int(round((avg_price - fut[m]) * 100)) for m in sorted(basis, key=order)
+                 if avg_price is not None and m in fut}
+    if avg_basis:
+        rec["avg_basis"] = avg_basis
     return rec
 
 
@@ -407,7 +422,7 @@ def parse_state(secs, code, name, today):
         groups.setdefault((ck, protein(r), p), []).append(r)
     crops = {}
     for (ck, prot, p), rs in sorted(groups.items(), key=lambda kv: (kv[0][0], kv[0][1] or "", kv[0][2])):
-        rec = aggregate(rs, fut, single)
+        rec = aggregate(rs, {m: v for (f, m), v in fut.items() if f == family(ck)}, single)
         if not rec:
             continue
         if p == "new_crop":
@@ -444,9 +459,9 @@ def state_daily_line(ent):
         if cur.get("avg_price") is None:
             continue
         bits = "%s $%.2f" % (ck, cur["avg_price"])
-        avgb = [(m, b) for m, b in (cur.get("basis") or {}).items() if "avg" in b]
-        if len(avgb) == 1:
-            bits += " (%s)" % cents_words(avgb[0][1]["avg"], avgb[0][1]["label"])
+        m = cur.get("month")
+        if m and m in (cur.get("avg_basis") or {}):
+            bits += " (%s)" % cents_words(cur["avg_basis"][m], MONTHS[m])
         parts.append(bits)
     if not parts or ent.get("stale"):
         return None
@@ -508,25 +523,37 @@ def parse_points(secs, name, today, keep_forward=3):
             "source": source_line(title, day), "stale": (today - rday).days > STALE_DAYS, "bids": bids}, None
 
 
+def cents_range(lo, hi, month_label):
+    """-5, 10, 'Dec' -> '5 under to 10 over Dec'; 92, 97 -> '92 to 97 over Dec'."""
+    if lo == hi:
+        return cents_words(lo, month_label)
+    if lo > 0 and hi > 0:
+        return "%d to %d over %s" % (lo, hi, month_label)
+    if lo < 0 and hi < 0:
+        return "%d to %d under %s" % (abs(hi), abs(lo), month_label)
+    return "%s to %s" % (cents_words(lo, month_label).rsplit(" ", 1)[0], cents_words(hi, month_label))
+
+
 def gulf_line(ent):
+    """The spot Gulf bid per crop (USDA's current row; else its nearest month)."""
     if not ent or ent.get("stale"):
         return None
     parts = []
     for ck in ("corn", "soybeans"):
-        bs = [b for b in ent["bids"] if b["crop"] == ck and "basis_lo" in b and b["period"] != "current"]
+        bs = [b for b in ent["bids"] if b["crop"] == ck and "basis_lo" in b]
+        bs.sort(key=lambda b: (b["period"] != "current", b["period"]))
         if not bs:
             continue
         b = bs[0]
-        p = b["period"]
-        y, m = int(p[:4]), int(p[5:7])
-        when = "%s%s" % (("first half of " if "first" in p else "last half of " if "last" in p else ""), MON_ABBR[m - 1])
-        rng = (cents_words(b["basis_lo"], b["basis_month"]) if b["basis_lo"] == b["basis_hi"] else
-               "%s to %s" % (cents_words(b["basis_lo"], b["basis_month"]).rsplit(" ", 1)[0],
-                             cents_words(b["basis_hi"], b["basis_month"])))
-        parts.append("%s %s for %s" % (ck, rng, when))
+        when = ""
+        if b["period"] != "current":
+            m = int(b["period"][5:7])
+            when = " for %s%s" % ("first half of " if "first" in b["period"] else "last half of " if "last" in b["period"] else "",
+                                  MON_ABBR[m - 1])
+        parts.append("%s %s%s" % (ck, cents_range(b["basis_lo"], b["basis_hi"], b["basis_month"]), when))
     if not parts:
         return None
-    return "Gulf export bids (barge, delivered): %s. %s." % ("; ".join(parts), ent["source"])
+    return "Gulf export bids, barge CIF: %s. %s." % ("; ".join(parts), ent["source"])
 
 
 # ---------- build ----------
@@ -620,16 +647,18 @@ def selftest():
         return r
 
     rows = [row("North", -48, -40, 4.0025, 4.0825, 4.0615), row("South", -40, -30, 4.0825, 4.1825, 4.1054)]
-    fut = implied_futures(rows)
+    fut = {m: v for (f, m), v in implied_futures(rows).items() if f == "corn"}
     ck("implied futures from price minus basis", abs(fut["Z"] - 4.4825) < 1e-9, fut)
     a = aggregate(rows, fut, False)
-    ck("state avg basis = mean avg price - futures", a["basis"]["Z"]["avg"] == round(((4.0615 + 4.1054) / 2 - 4.4825) * 100), a)
+    ck("state avg basis = mean avg price - futures", a["avg_basis"]["Z"] == round(((4.0615 + 4.1054) / 2 - 4.4825) * 100), a)
+    wz = implied_futures(rows + [dict(row("North", -80, -60, 5.66, 5.86, 5.76), commodity="Wheat", **{"class": "Hard Red Winter"})])
+    ck("corn December and wheat December are different contracts", ("corn", "Z") in wz and ("wheat_hrw", "Z") in wz, wz)
     ck("price range across regions", a["price_lo"] == 4.0025 and a["price_hi"] == 4.1825, a)
     one = aggregate(rows[:1], fut, False)
-    ck("one region of many: average withheld", one["avg_price"] is None and "avg" not in one["basis"]["Z"], one)
+    ck("one region of many: average withheld", one["avg_price"] is None and "avg_basis" not in one, one)
     ck("single-area report keeps its one average", aggregate(rows[:1], fut, True)["avg_price"] == 4.0615)
     bad = rows + [row("East", -45, -35, 4.10, 4.20, 4.15)]   # implies 4.55: disagrees by 7 cents
-    ck("futures that disagree withhold the average basis", "Z" not in implied_futures(bad))
+    ck("futures that disagree withhold the average basis", ("corn", "Z") not in implied_futures(bad))
     ck("zero price withheld", clean(row("x", -40, -30, 0, 4.1, 4.0)) is None)
     ck("low above high withheld", clean(row("x", -40, -30, 4.2, 4.1, 4.15)) is None)
     ck("basis beyond 300c dropped, price kept", clean(row("x", -400, -30, 4.0, 4.1, 4.05))["blo"] is None)
@@ -668,17 +697,22 @@ def selftest():
         ia = doc["states"]["IA"]["crops"]["corn"]["current"]
         ck("real case: Iowa corn 6 regions, $3.8325 to $4.3225", ia["regions"] == 6 and ia["price_lo"] == 3.8325
            and ia["price_hi"] == 4.3225, ia)
-        ck("real case: Iowa corn avg basis -41 Dec (USDA's narrative says -42)", ia["basis"]["Z"].get("avg") == -41, ia)
+        ck("real case: Iowa corn avg basis -41 Dec (USDA's narrative says -42)", ia["avg_basis"] == {"Z": -41}, ia)
         so = doc["states"]["IA"]["crops"]["soybeans"]["current"]
         ck("real case: Iowa soybeans vs Jan -82 (USDA's narrative $11.36 is 81 under the Jan its rows imply)",
-           so["basis"]["F"].get("avg") == -82, so)
+           so["avg_basis"]["F"] == -82 and so["avg_basis"]["X"] == -70, so)
+        il = doc["states"]["IL"]["crops"]["corn"]["current"]
+        ck("real case: Illinois corn avg basis vs Dec (wheat Dec not mixed in)", il["avg_basis"].get("Z") == -18, il)
         ck("real case: Iowa stated state average kept", doc["states"]["IA"]["usda_state_avg"]["corn"]["basis"] == -42)
         ck("real case: Ohio SRW new crop kept apart", "new_crop" in doc["states"]["OH"]["crops"].get("wheat_srw", {})
            and doc["states"]["OH"]["crops"]["wheat_srw"]["new_crop"]["delivery"] == "Jun to Jul 2027",
            doc["states"]["OH"]["crops"].get("wheat_srw"))
         ck("real case: white corn left out of Indiana", all(k != "corn_white" for k in doc["states"]["IN"]["crops"]))
         ck("real case: Gulf has corn and soybean bids", {b["crop"] for b in doc["export"]["gulf"]["bids"]} >= {"corn", "soybeans"})
-        ck("real case: top daily line is the Gulf", (doc["daily_line"] or "").startswith("Gulf export bids")
+        ck("cents ranges", cents_range(92, 97, "Dec") == "92 to 97 over Dec" and cents_range(-65, -16, "Dec") == "16 to 65 under Dec"
+           and cents_range(-5, 10, "Dec") == "5 under to 10 over Dec" and cents_range(0, 0, "Dec") == "even with Dec")
+        ck("real case: top daily line is the Gulf spot bid", (doc["daily_line"] or "").startswith(
+            "Gulf export bids, barge CIF: corn 92 to 94 over Dec; soybeans 109 to 116 over Nov.")
            and "Louisiana and Texas Export Bids, Nov 2, 2026" in doc["daily_line"], doc["daily_line"])
         s = json.dumps(doc)
         ck("real case: no em dash, no link, no key", "—" not in s and "http" not in s and "MARS_API_KEY" not in s)
