@@ -1,6 +1,6 @@
 {
  "schema": "agsist-ethanol-bids/1",
- "generated": "2026-11-03T02:25:37Z",
+ "generated": "2026-11-03T02:27:14Z",
  "source": "USDA AMS",
  "credit": "USDA AMS, National Daily Ethanol Report and National Weekly Grain Co-Products Report",
  "corn": {
@@ -189,7 +189,7 @@
   "week_of": "2026-10-26",
   "week_end": "2026-10-30",
   "published": "2026-11-02 10:13:08",
-  "year_ago_week_of": "2025-11-03",
+  "year_ago_week_of": "2025-10-27",
   "rows": [
    {
     "product": "ddgs",
@@ -197,7 +197,7 @@
     "area": "Illinois",
     "unit": "$/ton",
     "price": 195.0,
-    "year_ago": 152.5
+    "year_ago": 156.5
    },
    {
     "product": "ddgs",
@@ -205,7 +205,7 @@
     "area": "Indiana",
     "unit": "$/ton",
     "price": 177.25,
-    "year_ago": 147.25
+    "year_ago": 147.5
    },
    {
     "product": "ddgs",
@@ -213,7 +213,7 @@
     "area": "Iowa",
     "unit": "$/ton",
     "price": 170.65,
-    "year_ago": 128.03
+    "year_ago": 127.72
    },
    {
     "product": "ddgs",
@@ -237,7 +237,7 @@
     "area": "Minnesota",
     "unit": "$/ton",
     "price": 175.0,
-    "year_ago": 136.75
+    "year_ago": 135.75
    },
    {
     "product": "ddgs",
@@ -245,7 +245,7 @@
     "area": "Missouri",
     "unit": "$/ton",
     "price": 210.0,
-    "year_ago": 162.5
+    "year_ago": 161.5
    },
    {
     "product": "ddgs",
@@ -253,7 +253,7 @@
     "area": "Nebraska",
     "unit": "$/ton",
     "price": 202.5,
-    "year_ago": 149.14
+    "year_ago": 148.29
    },
    {
     "product": "ddgs",
@@ -269,7 +269,7 @@
     "area": "South Dakota",
     "unit": "$/ton",
     "price": 180.0,
-    "year_ago": 138.6
+    "year_ago": 132.0
    },
    {
     "product": "ddgs",
@@ -285,7 +285,7 @@
     "area": "Iowa",
     "unit": "$/ton",
     "price": 56.0,
-    "year_ago": 45.0
+    "year_ago": 44.0
    },
    {
     "product": "wdg",
@@ -293,7 +293,7 @@
     "area": "Kansas",
     "unit": "$/ton",
     "price": 70.67,
-    "year_ago": 60.0
+    "year_ago": 58.67
    },
    {
     "product": "wdg",
@@ -325,7 +325,7 @@
     "area": "South Dakota",
     "unit": "$/ton",
     "price": 61.0,
-    "year_ago": 58.0
+    "year_ago": 56.67
    },
    {
     "product": "corn_oil",
@@ -341,7 +341,7 @@
     "area": "Iowa",
     "unit": "cents/lb",
     "price": 68.65,
-    "year_ago": 53.38
+    "year_ago": 53.69
    },
    {
     "product": "corn_oil",
@@ -373,7 +373,7 @@
     "area": "Nebraska",
     "unit": "cents/lb",
     "price": 69.5,
-    "year_ago": 54.71
+    "year_ago": 54.57
    },
    {
     "product": "corn_oil",
@@ -381,7 +381,7 @@
     "area": "South Dakota",
     "unit": "cents/lb",
     "price": 69.9,
-    "year_ago": 54.33
+    "year_ago": 53.47
    },
    {
     "product": "corn_oil",
