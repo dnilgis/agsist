@@ -255,8 +255,9 @@ PRODUCT_NAME = {"ddgs": "Dried distillers grains (10% moisture)", "mwdg": "Modif
 PRODUCT_RANGE = {"$/ton": (5, 1000), "cents/lb": (5, 300)}
 
 
-def coprod_rows(secs):
-    """3618 sections -> (week begin date, {key: price}, notes) for its latest Final week."""
+def coprod_rows(secs, target=None):
+    """3618 sections -> (week begin date, {key: price}, notes) for its latest Final week, or with
+    `target` the Final week nearest that date (the year-ago window holds two or three weeks)."""
     notes = []
     finals = final_dates(secs.get("Report Header", []), "report_begin_date") | final_dates(secs.get("Report Header", []))
     by_week = {}
@@ -265,6 +266,8 @@ def coprod_rows(secs):
         if d:
             by_week.setdefault(d, []).append(r)
     weeks = sorted((d for d in by_week if d in finals), reverse=True)
+    if target is not None:
+        weeks.sort(key=lambda d: abs((d - target).days))
     if not weeks:
         return None, {}, notes, None
     wk = weeks[0]
@@ -295,7 +298,7 @@ def parse_coprod(secs, ya_secs=None):
         return {"withheld": "No final USDA co-products report in reach."}, notes
     ya_prices, ya_week = {}, None
     if ya_secs:
-        ywk, yp, yn, _ = coprod_rows(ya_secs)
+        ywk, yp, yn, _ = coprod_rows(ya_secs, wk - dt.timedelta(days=364))
         if ywk is not None and 357 <= (wk - ywk).days <= 371:
             ya_prices, ya_week = yp, ywk
         elif ywk is not None:
@@ -482,6 +485,8 @@ def selftest():
         cp("Soybean Meal", "N/A", "Iowa", "$ Per Ton", 343.6), cp("Distillers Grain", "Dried 10%", "Kansas", "$ Per Ton", None)]}
     ya_secs = {"Report Header": _hdr("10/27/2025", key="report_begin_date"), "Report Detail": [
         cp("Distillers Grain", "Dried 10%", "Iowa", "$ Per Ton", 127.5, wk="10/27/2025")]}
+    ya_secs["Report Header"] += _hdr("11/03/2025", key="report_begin_date")
+    ya_secs["Report Detail"].append(cp("Distillers Grain", "Dried 10%", "Iowa", "$ Per Ton", 140.0, wk="11/03/2025"))
     co, n = parse_coprod(now_secs, ya_secs)
     got = {(r["product"], r["area"]): (r["price"], r["year_ago"]) for r in co["rows"]}
     check(got == {("ddgs", "Iowa"): (170.65, 127.5), ("wdg", "Iowa"): (56, None), ("corn_oil", "Iowa"): (68.65, None)},
