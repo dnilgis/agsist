@@ -10,7 +10,6 @@
 # spread: minmax
 # counts: none
 # verify: window
-# page: none
 # includes: Reported rates include charges for machines, power, fuel, lube and the labor/operator. They do not include chemicals, seed or other materials, except hay baling materials and where noted (spreading lime includes the lime).
 # range_note: The range is the lowest and highest answer. The guide prints the average and the median but not how many answered each job; a job whose lowest, highest, median and average are all one number may rest on a single answer, so it is shown but never lined up with other states. The bed forming and plastic laying line names no unit and is left out.
 key	section	operation	unit	avg	md	lo	hi	n
