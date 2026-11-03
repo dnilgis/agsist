@@ -1517,5 +1517,9 @@
   }
  ],
  "counts": true,
- "page": true
+ "page": true,
+ "diesel": [
+  "$2.89 a gallon",
+  "February 2026"
+ ]
 }

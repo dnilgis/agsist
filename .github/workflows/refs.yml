@@ -55,7 +55,7 @@ permissions:
 jobs:
   # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned with the working job (test/runner-pin.test.mjs)
     permissions:
       actions: read
       contents: read
@@ -85,7 +85,7 @@ jobs:
   fetch:
     needs: gate
     if: needs.gate.outputs.go == '1'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
     concurrency:
       group: refs
       cancel-in-progress: false

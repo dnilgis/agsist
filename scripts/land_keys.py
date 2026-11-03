@@ -145,8 +145,13 @@ def key_for(st, legal, fips=None, geo=GEO):
 
 def add_column(doc, geo=GEO):
     """Put the "str" column into one county file's dict (in place), right after "legal".
-    Recomputed from the legal every time, so a file written before the column gets it."""
-    cols = doc["cols"]
+    Recomputed from the legal every time, so a file written before the column gets it.
+    Works on its own copy of cols: a list shared by several county files lost a row value per
+    file after the first (Nov 3, 2026). Refuses rows that are not as long as their columns."""
+    cols = doc["cols"] = list(doc["cols"])
+    short = sum(1 for row in doc["rows"] if len(row) != len(cols))
+    if short:
+        raise ValueError("%s %s: %d row(s) do not match the %d columns" % (doc.get("state"), doc.get("fips"), short, len(cols)))
     if COL in cols:
         i = cols.index(COL)
         cols.pop(i)
@@ -255,6 +260,19 @@ def selftest():
     ck("column after legal", d["cols"] == ["doc", "legal", "str", "exempt"] and d["rows"][0] == ["a", "S1/2 17-11-5", "17-11?-5?", 0] and d["rows"][1][2] is None)
     add_column(d, g)
     ck("column written again, not twice", d["cols"].count("str") == 1 and len(d["rows"][0]) == 4)
+    # Nov 3, 2026: two county files built with one cols list; the second lost its "exempt" value
+    shared = ["doc", "legal", "exempt", "grantor"]
+    d1 = {"state": "VT", "fips": "50001", "cols": shared, "rows": [["a", "", 0, "TEST SELLER A"]]}
+    d2 = {"state": "VT", "fips": "50003", "cols": shared, "rows": [["b", "", 0, "TEST SELLER B"]]}
+    add_column(d1, g)
+    add_column(d2, g)
+    ck("two files sharing one cols list both keep every value", shared == ["doc", "legal", "exempt", "grantor"]
+       and [dict(zip(x["cols"], x["rows"][0])) for x in (d1, d2)] == [{"doc": k, "legal": "", "str": None, "exempt": 0, "grantor": "TEST SELLER " + k.upper()} for k in "ab"])
+    try:
+        add_column({"state": "VT", "fips": "50005", "cols": ["doc", "legal", "exempt"], "rows": [["c", ""]]}, g)
+        ck("rows shorter than the columns are refused", False)
+    except ValueError:
+        ck("rows shorter than the columns are refused", True)
     _SIDES.clear()
     os.remove(g)
     print("%d failed" % len(bad) if bad else "all passed")

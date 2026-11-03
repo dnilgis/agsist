@@ -143,7 +143,7 @@
 <h1>Embed tools and data feeds</h1>
 <p class="sub page-lede">AGSIST publishes embeddable agricultural tools, a USDA report calendar and data files for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or read the files and build your own display.</p>
 
-<div class="dev-lead">Two tools are live: the GDU calculator and the ARC or PLC calculator. Both load from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; link in your page, and resizes the frame to fit. Prefer a plain iframe? Each tool below has one ready to copy.</div>
+<div class="dev-lead">Three are live: the GDU calculator, the ARC or PLC calculator and the county rain box. All load from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; link in your page, and resizes the frame to fit. Prefer a plain iframe? Each tool below has one ready to copy.</div>
 
 <h2 id="widgets" style="scroll-margin-top:80px">Embeddable widgets</h2>
 <p>Run a co-op, elevator, ag-retail or extension site? Copy a snippet, paste it into your page, and your visitors get the live tool. It's free and needs no account or API key.</p>
@@ -214,6 +214,41 @@
   <div class="wc-footer">
     <span class="wc-endpoint">iframe: /embed/arc-plc</span>
     <a href="/arc-plc">View live ARC or PLC calculator →</a>
+  </div>
+</div>
+
+<div class="widget-card" id="rain">
+  <div class="wc-head">
+    <div class="wc-icon"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"/></svg></div>
+    <div class="wc-meta">
+      <div class="wc-title-row">
+        <span class="wc-name">County rain box</span>
+        <span class="wc-tag wc-tag--live">Live</span>
+      </div>
+      <p class="wc-desc">One line for one county: the rain since Jan 1 at a weather station or volunteer gauge in that county, the percent of a usual year where there is a fair one, and the last day reported, from NOAA daily records. It updates itself each day with the county rain page it links to. For papers, radio and extension sites; each county rain page has its own code under &ldquo;Put this on your site or in your newsletter&rdquo;.</p>
+    </div>
+  </div>
+  <div class="wc-body">
+    <p class="wc-snip-lbl">Option A: iframe (simplest)</p>
+    <div class="wc-snip"><button type="button" class="wc-copy" data-copy="ifr-rain">Copy</button>
+<pre id="ifr-rain">&lt;iframe src="https://agsist.com/embed/rain?st=ia&amp;c=19169"
+  title="Story County rain, AGSIST"
+  width="100%" height="110"
+  style="border:0;max-width:480px"
+  loading="lazy"&gt;&lt;/iframe&gt;</pre></div>
+    <p class="wc-desc" style="margin:.8rem 0 0">Pick the county in the address: <code>st=ia</code> is the two-letter state and <code>c=19169</code> the five-digit county FIPS code. A county with no rain page shows a plain link to the rain pages instead of a number.</p>
+    <p class="wc-snip-lbl">Option B: script (resizes itself, adds the link for you)</p>
+    <div class="wc-snip"><button type="button" class="wc-copy" data-copy="scr-rain">Copy</button>
+<pre id="scr-rain">&lt;div data-agsist-widget="rain" data-st="ia" data-c="19169"&gt;&lt;/div&gt;
+&lt;script async src="https://agsist.com/embed.js"&gt;&lt;/script&gt;</pre></div>
+    <div class="wc-prev">
+      <p class="wc-snip-lbl" style="margin-top:0">Live preview</p>
+      <iframe src="/embed/rain?st=ia&amp;c=19169" title="AGSIST county rain box preview" loading="lazy" style="height:110px"></iframe>
+    </div>
+  </div>
+  <div class="wc-footer">
+    <span class="wc-endpoint">iframe: /embed/rain</span>
+    <a href="/rain">Rain by county →</a>
   </div>
 </div>
 

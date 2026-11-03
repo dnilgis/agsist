@@ -11,6 +11,7 @@ import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
@@ -315,6 +316,33 @@ test("monthly land run: the 3rd, Sig's approval noted, one run at a time", () =>
   assert.match(y, /# Sig approved Oct 17, 2026: monthly on the 3rd[\s\S]*?cron: '23 9 3 \* \*'/);
   assert.match(y, /concurrency:\s*\n\s*group: land-data/);
   assert.match(y, /--newest-only/); assert.match(y, /--merge/); assert.match(y, /land_keep_stamp_only\.py data\/land/);
+});
+
+// Nov 3, 2026 (run 41693977600): the page build refused a name leak, the step stopped the job and the transfers
+// the land sale email reads were never committed. The guard stays as strict; the transfers commit no longer rides on it.
+test("land run: a refused page build still commits data/land, never the pages, and fails the run", () => {
+  const y = read(".github/workflows/land-data.yml");
+  const step = (name) => (y.split(/\n      - name: /).find((s) => s.startsWith(name)) || "");
+  const pages = step("Build the farm sale pages");
+  assert.match(pages, /\n        id: pages\n/); assert.match(pages, /\n        continue-on-error: true\n/);
+  assert.match(pages, /run: python scripts\/build_land_sales\.py$/, "the build itself is unchanged (its leak guard stays)");
+  const commit = step("Commit if changed");
+  assert.match(commit, /PAGES: \$\{\{ steps\.pages\.outcome \}\}/);
+  assert.match(commit, /cp -r --parents data\/land \/tmp\/ld\//, "data/land is always taken");
+  assert.match(commit, /if \[ "\$PAGES" = "success" \]; then \[ -d land-sales \] && cp -r --parents land-sales data\/land-sales sitemap-land-sales\.xml/,
+    "the pages only when they built");
+  const last = step("The farm sale pages were refused");
+  assert.match(last, /if: \$\{\{ steps\.pages\.outcome == 'failure' \}\}/); assert.match(last, /exit 1/);
+  assert.ok(y.indexOf("name: Commit if changed") < y.indexOf("name: The farm sale pages were refused"), "the run fails only after the commit");
+  // the cause: one cols list shared by every county file shifted each row after the first county
+  const f = read("scripts/fetch_land_sales.py");
+  assert.match(f, /"cols": list\(cols\)/); assert.match(f, /land_keys\.add_column\(doc, GEO\)\n        check_rows\(doc\)/);
+  assert.match(read("scripts/land_keys.py"), /cols = doc\["cols"\] = list\(doc\["cols"\]\)/);
+  const out = execFileSync("python3", [join(ROOT, "scripts/fetch_land_sales.py"), "--selftest"], { cwd: ROOT, encoding: "utf8" });
+  for (const n of ["VT: three counties, every row as long as its columns", "VT: each county keeps exempt, seller, buyer and recorded date",
+    "a county file whose rows do not match its columns is refused"]) assert.ok(out.includes("ok   " + n), n);
+  const lk = execFileSync("python3", [join(ROOT, "scripts/land_keys.py"), "--selftest"], { cwd: ROOT, encoding: "utf8" });
+  assert.match(lk, /ok   two files sharing one cols list both keep every value/); assert.match(lk, /ok   rows shorter than the columns are refused/);
 });
 
 test("Sold land nearby: the report's defaults (3 years), the counties searched and the state line said plainly", () => {

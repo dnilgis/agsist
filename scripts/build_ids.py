@@ -249,7 +249,58 @@ def folded_ids(directory):
     return out
 
 
-def hold_retired(anchors, ledger):
+VANISH_MAX = 25     # more bids-repo ids gone in one run than this: a broken directory read, not a cleanup
+
+
+def retire_vanished(ledger, live, folded, fresh, today):
+    """A bids-repo id a key still holds that left the bids repo's directory with no fold naming it is retired by
+    rule, so no record keeps a dead id (Nov 3 2026: the bids repo dropped reg:SD|farmerscooperativesociety|beresford,
+    edy2eazz93, with no mergedFrom, and the basis key SD|FARMERS COOP SOCIETY|BERESFORD kept it as a stale record).
+    It goes into the one live row every key that holds it matches today, else into a new AGSIST id (rule
+    "vanished"). The retirement is one event; settle() then moves its keys like any other retirement.
+    -> [(retired id, into)]. More than VANISH_MAX in one run stops the build (the last ids stay)."""
+    minted = ledger["minted"]
+    gone = defaultdict(list)
+    for k in fresh:
+        v = ledger["keys"].get(k)
+        if not isinstance(v, str):
+            continue
+        if v in minted:
+            v = minted[v].get("into")
+            if not v:
+                continue
+        e = settle(ledger, folded, live, v, today, record=False)
+        if isinstance(e, str) and e not in live and e not in minted:
+            gone[e].append(k)
+    if len(gone) > VANISH_MAX:
+        raise SystemExit(f"[ids] {len(gone)} bids-repo ids gone from the bids repo's directory in one run "
+                         f"(limit {VANISH_MAX}): not retiring them; the last ids stay")
+    out = []
+    for e, ks in sorted(gone.items()):
+        tgt = {fresh[k][0] for k in ks}
+        if len(tgt) == 1 and None not in tgt and next(iter(tgt)) in live:
+            new = next(iter(tgt))
+            why = f"gone from the bids repo's directory with no mergedFrom; every key that held it now matches {new}"
+        else:
+            # the bids repo's registry rows can flap (Beresford left and came back on Nov 3): an AGSIST id that
+            # stood in for this id before and merged back into it on its return stands in again, so a flap
+            # mints nothing new
+            prior = [ev["from"] for ev in ledger["events"] if ev.get("back") == e and ev.get("from") in minted
+                     and minted[ev["from"]].get("into") == e]
+            if prior:
+                new = prior[-1]
+                minted[new].pop("into")
+                why = f"gone from the bids repo's directory again with no mergedFrom; its keys go back to {new}"
+            else:
+                new = mint(ledger, sorted(ks)[0], today)
+                why = "gone from the bids repo's directory with no mergedFrom; its keys keep a new AGSIST id"
+        ledger["retired"][e] = {"into": new, "on": today, "rule": "vanished"}
+        ledger["events"].append({"on": today, "retire": e, "into": new, "why": why})
+        out.append((e, new))
+    return out
+
+
+def hold_retired(anchors, ledger, today=None):
     """An id is never reused. When a bids-repo id the ledger already retired shows up again on a live
     directory row (Oct 28: a new farcoop-halstead manifest came back as e049c48vt9, folded by phone into
     CoMark's Halstead West board egz19x9jv6), its rows and places join the survivor's anchor and the old
@@ -257,6 +308,15 @@ def hold_retired(anchors, ledger):
     retired = ledger.get("retired") or {}
     back = {}
     for old in [e for e in anchors if e in retired]:
+        if retired[old].get("rule") == "vanished" and retired[old].get("into") in ledger.get("minted", {}):
+            # a vanished id is back on a live row: the AGSIST id that stood in for it merges into it again
+            aid = retired.pop(old)["into"]
+            m = ledger["minted"][aid]
+            if not m.get("into"):
+                m["into"] = old
+            ledger["events"].append({"on": today, "back": old, "from": aid,
+                                     "why": "the bids-repo id is back in the bids repo's directory"})
+            continue
         new, seen = retired[old].get("into"), {old}
         while new in retired and new not in seen:
             seen.add(new)
@@ -444,6 +504,9 @@ def assign(anchors, keys, ledger, today, folded=None):
         e, rule, cands = fresh[k]
         if cands:
             ambiguous.append({"key": k, "rule": rule, "candidates": cands})
+    # 0. a held bids-repo id gone from the directory with no fold is retired by rule (never left stale)
+    for e, new in retire_vanished(ledger, live, folded, fresh, today):
+        rules["vanished"] += 1
     # 1. keys already in the ledger keep their id; an "a" id whose keys now match one row moves there
     by_old = defaultdict(list)
     for k, _info in keys:
@@ -816,7 +879,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     os.makedirs(out_dir, exist_ok=True)
     lpath = os.path.join(out_dir, "elevator-ids.json")
     ledger = load_ledger(lpath)
-    back = hold_retired(anchors, ledger)
+    back = hold_retired(anchors, ledger, today)
     if back:
         log(f"[ids] retired ids back in the bids repo, kept on their survivor: {back}")
     groups, ambiguous, rules = assign(anchors, keys, ledger, today, folded_ids(directory))
@@ -843,6 +906,8 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
               "stale_ids": sum(1 for r in recs if not re.fullmatch(r"a\d{5}", r["id"]) and r["id"] not in anchors),
               "with_ownership_change": marked,
               "by_source": dict(sorted(kinds.items())), "keys_by_rule": dict(sorted(rules.items()))}
+    if counts["stale_ids"]:
+        raise SystemExit(f"[ids] {counts['stale_ids']} records keep a bids-repo id that is not live; the last ids stay")
     doc = {"schema": "agsist-elevators/1", "generated": today,
            "note": "One record per physical facility. id: the bids repo's permanent elevId when the facility is one of its "
                    "rows, else an AGSIST id (a + 5 digits) from data/ids/elevator-ids.json. Join on id, never on a name. "
@@ -855,7 +920,9 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     ledger["keys"] = dict(sorted(ledger["keys"].items()))
     ledger["note"] = ("Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids "
                       "(a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every "
-                      "merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; "
+                      "merge and split. retired: bids-repo ids the bids repo folded into another row (into), or that left its "
+                      "directory with no fold (rule vanished: into the one row all their keys match, else a new AGSIST id; "
+                      "an event back if the id returns), never used again; "
                       "their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements "
                       "filled from this ledger as it stood before them, commit 3dd4c29b39d).")
     ledger["retired"] = dict(sorted((ledger.get("retired") or {}).items()))
@@ -1059,6 +1126,66 @@ def selftest():
            "e8921vvzs3" not in by9 and led9["keys"]["basis:CO|ROGGEN FARMERS ELEVATOR ASSOCIATION|ROGGEN"] == "e7pqw0z5m3"
            and led9["retired"]["e8921vvzs3"]["into"] == "e7pqw0z5m3" and d9["counts"]["stale_ids"] == 0)
         ck("and the run says so", any("e8921vvzs3" in str(m) for m in msgs))
+        # REAL CASE (Nov 3): the bids repo dropped reg:SD|farmerscooperativesociety|beresford (edy2eazz93) with no
+        # mergedFrom. The basis key SD|FARMERS COOP SOCIETY|BERESFORD kept the dead id: a stale record, main red.
+        bk = "basis:SD|FARMERS COOP SOCIETY|BERESFORD"
+        beres = {"id": "reg:SD|farmerscooperativesociety|beresford", "elevId": "edy2eazz93",
+                 "operator": "Farmers Cooperative Society", "location": "Beresford", "state": "SD", "status": "registered",
+                 "lat": 43.0874, "lon": -96.7813}
+        directory["elevators"].append(beres)
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        json.dump({"state": "SD", "f": ["FARMERS COOP SOCIETY|BERESFORD"]}, open(os.path.join(root, "data", "basis", "SD.json"), "w"))
+        d10 = build(root, bdir, sch, out, "2026-11-02", do_parcels=False, log=lambda *_: None)
+        ck("the Beresford basis key holds the bids-repo id", read_json(os.path.join(out, "elevator-ids.json"))["keys"][bk] == "edy2eazz93"
+           and any(r["id"] == "edy2eazz93" for r in d10["elevators"]))
+        directory["elevators"] = [r for r in directory["elevators"] if r["elevId"] != "edy2eazz93"]
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        d11 = build(root, bdir, sch, out, "2026-11-03", do_parcels=False, log=lambda *_: None)
+        led11 = read_json(os.path.join(out, "elevator-ids.json"))
+        by11 = {r["id"]: r for r in d11["elevators"]}
+        va = led11["keys"][bk]
+        ck("a bids-repo id that vanishes with no fold is retired into a new AGSIST id, never left stale",
+           d11["counts"]["stale_ids"] == 0 and "edy2eazz93" not in by11 and re.fullmatch(r"a\d{5}", va)
+           and va in led11["minted"] and bk.split(":", 1)[1] in by11[va]["sources"]["basis"]
+           and led11["retired"]["edy2eazz93"]["into"] == va and led11["retired"]["edy2eazz93"]["rule"] == "vanished"
+           and led11["retired"]["edy2eazz93"].get("keys") == [bk])
+        ck("the vanish is one event", sum(1 for e in led11["events"] if e.get("retire") == "edy2eazz93") == 1)
+        d12 = build(root, bdir, sch, out, "2026-11-04", do_parcels=False, log=lambda *_: None)
+        led12 = read_json(os.path.join(out, "elevator-ids.json"))
+        ck("a rerun keeps the AGSIST id and adds no event", led12["keys"][bk] == va and led12["events"] == led11["events"]
+           and led12["next"] == led11["next"] and d12["counts"]["stale_ids"] == 0)
+        global VANISH_MAX
+        keep_max, VANISH_MAX = VANISH_MAX, 0
+        kept_rows = list(directory["elevators"])
+        directory["elevators"] = [r for r in directory["elevators"] if r["elevId"] != "e000000002"]
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        before = open(os.path.join(out, "elevator-ids.json")).read()
+        try:
+            build(root, bdir, sch, out, "2026-11-05", do_parcels=False, log=lambda *_: None)
+            stopped = False
+        except SystemExit:
+            stopped = True
+        finally:
+            VANISH_MAX = keep_max
+        ck("more vanished ids than the limit stops the build and leaves the ledger as it was",
+           stopped and open(os.path.join(out, "elevator-ids.json")).read() == before)
+        directory["elevators"] = kept_rows + [beres]
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        d13 = build(root, bdir, sch, out, "2026-11-06", do_parcels=False, log=lambda *_: None)
+        led13 = read_json(os.path.join(out, "elevator-ids.json"))
+        by13 = {r["id"]: r for r in d13["elevators"]}
+        ck("a vanished id back in the bids repo takes its key back; the stand-in AGSIST id merges into it",
+           led13["keys"][bk] == "edy2eazz93" and "edy2eazz93" not in led13["retired"] and va not in by13
+           and led13["minted"][va].get("into") == "edy2eazz93" and "edy2eazz93" in by13
+           and sum(1 for e in led13["events"] if e.get("back") == "edy2eazz93") == 1 and d13["counts"]["stale_ids"] == 0)
+        directory["elevators"] = kept_rows
+        json.dump(directory, open(os.path.join(bdir, "data", "directory.json"), "w"))
+        d14 = build(root, bdir, sch, out, "2026-11-07", do_parcels=False, log=lambda *_: None)
+        led14 = read_json(os.path.join(out, "elevator-ids.json"))
+        ck("a flap (gone again) puts the key back on the same AGSIST id and mints nothing",
+           led14["keys"][bk] == va and led14["next"] == led13["next"] and not led14["minted"][va].get("into")
+           and led14["retired"]["edy2eazz93"]["into"] == va and d14["counts"]["stale_ids"] == 0
+           and any(r["id"] == va for r in d14["elevators"]))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print(f"FAILS={len(fails)}")
