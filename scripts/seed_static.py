@@ -3272,7 +3272,8 @@ def milk_now_seed(d, dmc, fb, prices, hist, today):
     picker; ('', '') when the class prices cannot be shown."""
     cs = milk_class_state(d, today)
     if not cs or cs[1]:
-        return "", ""
+        return ('<p class="dp-now-src">This month&rsquo;s class prices are not shown: the newest held here are older '
+                'than last month&rsquo;s announcement. What is held is in the folds below, each with its month.</p>', "")
     idx = cs[0]
     mon = MON3[idx % 12]
     tiles, moves = [], []
@@ -3299,7 +3300,7 @@ def milk_now_seed(d, dmc, fb, prices, hist, today):
     src = (f'Class prices: USDA AMS, {_ilong(idx)}. All-milk: USDA NASS Agricultural Prices, before hauling.'
            if am and not am[1] else f'Class prices: USDA AMS, {_ilong(idx)}.')
     per = MILK_NOW_COWS * MILK_NOW_LB / 100
-    mv = "".join(f' {lab} ({_sg(c, 2)}) is <b data-c="{c}">{_money0(c * per)}</b>.' for lab, c in moves)
+    mv = "".join(f' {lab} <span class="dp-nw">({_sg(c, 2)})</span> is <b data-c="{c}">{_money0(c * per)}</b>.' for lab, c in moves)
     herd = (f'<p class="dp-now-herd" id="dp-now-herd">On <input id="dp-now-cows" type="number" inputmode="numeric" min="1" max="50000" '
             f'value="{MILK_NOW_COWS}" aria-label="Cows milking"> cows at <input id="dp-now-lb" type="number" '
             f'inputmode="numeric" min="500" max="4000" step="50" value="{MILK_NOW_LB}" aria-label="Pounds of milk a cow a month">'
