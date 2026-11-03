@@ -87,9 +87,16 @@ jobs:
       # components/feeder-index.js on the cattle, sale barn and LRP pages). It
       # reads the LRP and futures files as committed; a failure here never
       # holds back the barn prices.
+      # Since Nov 3 2026 (Sig: "Ship + use USDA live") the index's barn sales are read
+      # through USDA My Market News (MARS) first, with the reader the past weeks use
+      # (backfill_feeder_index.mars_fetch: one ask per report, 1.5 s apart, 12 minutes at
+      # most); a barn's PDF read above counts only for a barn and week MARS lacks. The key
+      # is an HTTP basic user name, never printed; no key or no answer and the PDF reads stand.
       - name: Build data/feeder-index.json
         if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         continue-on-error: true
+        env:
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
         run: python scripts/build_feeder_index.py
       - name: Commit if changed (race-tolerant)
         run: |
