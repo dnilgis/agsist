@@ -81,12 +81,16 @@ test("retired bids-repo ids: never a record, never held by a key, recorded once 
     assert.ok(!recIds.has(old), `${old} is retired but still has a record`);
     assert.ok(!held.has(old), `${old} is retired but a key still holds it`);
     assert.ok(r.into && r.on && r.rule, old);
-    assert.equal(LED.events.filter((e) => e.retire === old).length, 1, `${old}: one retirement event`);
+    // an id that vanished, came back (event "back") and vanished again has one open retirement
+    const n = LED.events.filter((e) => e.retire === old).length - LED.events.filter((e) => e.back === old).length;
+    assert.equal(n, 1, `${old}: one open retirement event`);
+    if (r.rule === "vanished") assert.ok(recIds.has(r.into) || (LED.minted[r.into] && LED.minted[r.into].into), `${old} -> ${r.into}`);
   }
-  // a data check, not a code check (the rule itself is pinned on fixtures in build_ids.py --selftest): the live file
-  // the bids job writes holds a bids-repo id the bids repo no longer lists. Say so plainly when it happens.
-  assert.equal(EL.counts.stale_ids, 0, `data/ids/elevators.json (generated ${EL.generated}): ${EL.counts.stale_ids} record(s) `
-    + "keep a bids-repo id the bids repo no longer lists (counts.stale_ids); python3 scripts/build_ids.py against the current bids repo recounts it");
+  // Nov 3: whether the bids repo drops an id is upstream's business; the builder retires it by rule
+  // (folded, else vanished) and refuses to write a record with a dead bids-repo id, so a committed
+  // file with stale ids means the builder broke, not the upstream. The rule itself runs on a fixture
+  // in `python3 scripts/build_ids.py --selftest` (the Beresford case).
+  assert.equal(EL.counts.stale_ids, 0, `data/ids/elevators.json (generated ${EL.generated}) holds ${EL.counts.stale_ids} record(s) with a bids-repo id the bids repo no longer lists (counts.stale_ids)`);
 });
 
 test("alias lookups: the basis history's spellings find one facility", () => {
