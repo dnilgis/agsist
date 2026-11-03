@@ -29,16 +29,23 @@ THREE PIECES, all used by .github/workflows/daily.yml:
                whether the next run tries again (until 2 p.m. CT, the gate's
                morning window) or not.
 
-  dry-run-mark DAY
-               A manual run without send_email publishes and sends nothing on
-               purpose. It leaves data/daily-sent/<day>.dry-run.json so the gate
-               treats the day as done (deliberately not sent) and does not mail
-               the list behind the person's back. No address, count or link.
+  retry DAY    For the gate, about a published issue with no sent copy: the
+               day flag's answer (0 write it again, 1 sent, 2 cannot tell).
+
+  dry-run-note DAY
+               A manual run without send_email publishes and sends nothing. It
+               NEVER marks the day done (Sig, Nov 3 2026): on Nov 3 the 7:32 CT
+               dry run left data/daily-sent/<day>.dry-run.json, the 7:46
+               heartbeat skipped on it, and the Daily went out only with a
+               second manual run. This writes nothing; it tells the person, in
+               the log and the run summary, that the next run before 2 p.m. CT
+               writes the issue again and sends it.
 
     python3 scripts/daily_retry.py prepublish [issue.json]
     python3 scripts/daily_retry.py flag 2026-10-28
     python3 scripts/daily_retry.py alert          (FAILED="g2f ..." from daily.yml)
-    python3 scripts/daily_retry.py dry-run-mark 2026-10-28
+    python3 scripts/daily_retry.py retry 2026-10-28
+    python3 scripts/daily_retry.py dry-run-note 2026-10-28
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -117,8 +124,8 @@ def flag_state(day):
 # ── today's runs of daily.yml, from the GitHub API (job token, read only) ──
 #
 # Two questions need them, and no file in the repo can answer either:
-#   - did a manual run without send_email publish today? (its dry-run mark may
-#     not have been pushed; the gate must not mail that day behind it)
+#   - did a manual run without send_email publish today? (the late alert says
+#     so when the day is not sent; it no longer stops a retry, Nov 3 2026)
 #   - how many block alerts went out today, and for which check? (the cap)
 # The run's title carries its inputs (daily.yml run-name), because the API
 # does not return a dispatch's inputs.
@@ -189,16 +196,10 @@ def dry_run_today(day, fetch=gh_fetch):
 
 
 def retry_state(day, fetch=gh_fetch):
-    """For the gate, about a published issue with no sent copy and no dry-run
-    mark: 0 write it again, 1 it went out, 2 cannot tell, 3 a manual dry run
-    published it today (its mark was not pushed). Anything unclear skips."""
-    try:
-        if dry_run_today(day, fetch):
-            print("runs today: a manual run without send_email published %s; it is deliberately not sent" % day)
-            return 3
-    except NoHistory as ex:
-        print("runs today: %s; cannot tell whether a dry run published %s" % (ex, day))
-        return 2
+    """For the gate, about a published issue with no sent copy: 0 write it
+    again, 1 it went out, 2 cannot tell (the gate skips). Only the day flag
+    decides. A manual dry run today is no reason to skip (Sig, Nov 3 2026):
+    a run without send_email never marks the day done."""
     return flag_state(day)
 
 
@@ -319,23 +320,31 @@ def alert(failed=None, now=None, mail=None, fetch=gh_fetch):
     return 0
 
 
-# ── dry-run-mark: published on purpose, not sent on purpose ─────────────────
+# ── dry-run-note: a dry run published, the next run sends ─────────────────
 
-def dry_run_mark(day, sent_dir=None, now=None):
-    d = Path(sent_dir) if sent_dir else SENT
-    if (d / (day + ".json")).exists():
-        print("dry run mark: %s already went to the list; no mark needed" % day)
-        return None
-    path = d / (day + ".dry-run.json")
-    d.mkdir(parents=True, exist_ok=True)
-    rec = {"date": day, "at": (now or datetime.now()).astimezone().isoformat(timespec="seconds"),
-           "note": "Published by a manual run without send_email: deliberately not sent. "
-                   "Later scheduled runs this day do not write or mail it again."}
-    with open(path, "w", encoding="utf-8") as fh:
-        json.dump(rec, fh, indent=1)
-        fh.write("\n")
-    print("dry run mark kept: data/daily-sent/%s.dry-run.json" % day)
-    return path
+def dry_run_note(day, now=None, summary=None):
+    """The words a manual run without send_email leaves in its log and run
+    summary. Writes no file in the repo: the day is not done until it is sent."""
+    now = now or datetime.now()
+    later = can_retry(now)
+    lines = ["This manual run published the Daily for %s and emailed nobody (send_email was not ticked)." % day,
+             "It does not mark the day done."]
+    if later:
+        lines.append("The next scheduled run or price-loop heartbeat before 2 p.m. CT finds it published and not "
+                     "sent, writes it again, checks it again and sends it to the list.")
+    else:
+        lines.append("No scheduled run starts again before 2 p.m. CT, so nothing sends it today. To send it: Run "
+                     "workflow on main with send_email ticked.")
+    for ln in lines:
+        print(ln)
+    path = summary if summary is not None else os.environ.get("GITHUB_STEP_SUMMARY")
+    if path:
+        try:
+            with open(path, "a", encoding="utf-8") as fh:
+                fh.write("### Dry run: published, not sent, not done\n\n" + "\n\n".join(lines) + "\n")
+        except OSError:
+            pass
+    return lines
 
 
 def main(argv):
@@ -351,8 +360,8 @@ def main(argv):
         return retry_state(rest[0])
     if cmd == "alert":
         return alert()
-    if cmd == "dry-run-mark" and rest:
-        dry_run_mark(rest[0])
+    if cmd == "dry-run-note" and rest:
+        dry_run_note(rest[0])
         return 0
     print("unknown command: " + " ".join(argv))
     return 2

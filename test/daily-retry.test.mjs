@@ -154,7 +154,7 @@ test("the gate: published means published and sent; it asks the day flag before 
     "…by the price loop's heartbeat too",
     "but not when the day flag says it went out (only the sent copy is missing)",
     "and not when the day flag cannot be read: never risk a second send",
-    "a manual run without send_email publishes on purpose; the morning does not mail it",
+    "Nov 3 7:46: the heartbeat after a dry run writes the issue again and sends it; the dry-run mark is not 'done'",
     "past the 14:00 morning window an unsent issue is left alone",
     "a day with its sent copy skips without asking the flag",
   ]) assert.ok(r.stdout.includes("  ok    " + line), line);
@@ -189,33 +189,37 @@ for v in (True, False, RuntimeError("down"), L.Unavailable("neither place")):
   assert.ok(!/token|t@|@/.test(out.stdout.replace(/briefed:/g, "")), "no token or address printed");
 });
 
-test("a dry run's mark: kept once, not over a real send, no reader data", () => {
-  const dir = mkdtempSync(join(tmpdir(), "mark-"));
+test("Nov 3: a dry run leaves no mark and says the next run sends; no reader data", () => {
+  const dir = mkdtempSync(join(tmpdir(), "note-"));
   try {
     const out = py(["-c", `
 import sys, json, os
 sys.path.insert(0, "scripts")
 import daily_retry as R
+from datetime import datetime
 d = sys.argv[1]
-p = R.dry_run_mark("2026-10-28", d)
-print(json.dumps(sorted(json.load(open(p)))))
-open(os.path.join(d, "2026-10-29.json"), "w").write("{}")
-print(R.dry_run_mark("2026-10-29", d))
+R.SENT = __import__("pathlib").Path(d)
+early = R.dry_run_note("2026-11-03", datetime(2026, 11, 3, 7, 32), summary=os.path.join(d, "summary.md"))
+late = R.dry_run_note("2026-11-03", datetime(2026, 11, 3, 13, 50), summary="")
+print(json.dumps([early, late, sorted(os.listdir(d))]))
 `, dir]);
     assert.equal(out.status, 0, out.stderr);
-    assert.match(out.stdout, /\["at", "date", "note"\]/);
-    assert.match(out.stdout, /2026-10-29 already went to the list; no mark needed\nNone/);
-    assert.ok(existsSync(join(dir, "2026-10-28.dry-run.json")) && !existsSync(join(dir, "2026-10-29.dry-run.json")));
-    assert.ok(!/@/.test(readFileSync(join(dir, "2026-10-28.dry-run.json"), "utf8")));
+    const [early, late, files] = JSON.parse(out.stdout.trim().split("\n").pop());
+    assert.deepEqual(files, ["summary.md"], "no dry-run mark is written");
+    assert.match(early.join(" "), /does not mark the day done[\s\S]*next scheduled run or price-loop heartbeat before 2 p\.m\. CT[\s\S]*sends it to the list/);
+    assert.match(late.join(" "), /nothing sends it today[\s\S]*send_email ticked/);
+    assert.match(readFileSync(join(dir, "summary.md"), "utf8"), /^### Dry run: published, not sent, not done/);
+    assert.ok(!/@|—/.test(out.stdout), "no address, no em dash");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
-  const s = step("Mark a dry run as deliberately not sent");
-  assert.ok(wf.indexOf("- name: Mark a dry run as deliberately not sent") > wf.lastIndexOf("run: python scripts/send_daily.py"));
+  const s = step("A dry run does not mark the day done");
+  assert.ok(wf.indexOf("- name: A dry run does not mark the day done") > wf.lastIndexOf("run: python scripts/send_daily.py"));
   assert.match(s, /steps\.commit\.outcome == 'success' && github\.event_name != 'schedule' && inputs\.send_email != true/);
   assert.match(s, /continue-on-error: true/);
-  assert.match(s, /git add "data\/daily-sent\/\$d\.dry-run\.json"/);
-  // a heartbeat carries send_email=true, so a price-loop run never marks the day
+  assert.doesNotMatch(s, /git (add|commit|push)/, "it commits nothing");
+  assert.ok(!wf.includes("dry-run-mark"), "nothing writes the old mark");
+  // a heartbeat carries send_email=true, so a price-loop run is never a dry run
   assert.match(read(".github/workflows/prices.yml"), /send_email=true/);
 });
 
@@ -305,32 +309,28 @@ print("late-subject", s)
   assert.match(gen.slice(0, 400), /permissions:\n\s+contents: write\n\s+actions: read/);
 });
 
-test("review: a manual dry run today stops the retry even when its mark was not pushed", () => {
+test("Nov 3: a manual dry run today no longer stops the retry; only the day flag decides", () => {
   const out = py(["-c", `
 import sys
 sys.path.insert(0, "scripts")
 import daily_retry as R
 ${FAKE}
 R.flag_state = lambda d: print("flag asked") or 0
-dry = run(1, "13:10:00", "success", title="Generate Daily Briefing (manual, send_email=false, heartbeat=false, test_to_sig=false)", event="workflow_dispatch")
-beat = run(2, "13:40:00", "success", title="Generate Daily Briefing (manual, send_email=true, heartbeat=true, test_to_sig=false)", event="workflow_dispatch")
-failed_dry = dict(dry, conclusion="failure")
-print("dry", R.retry_state("2026-10-28", fetcher([beat, dry])))
-print("beat", R.retry_state("2026-10-28", fetcher([beat])))
-print("failed-dry", R.retry_state("2026-10-28", fetcher([failed_dry])))
-print("yesterday", R.retry_state("2026-10-28", fetcher([dict(dry, created_at="2026-10-28T04:30:00Z")])))
-print("unreadable", R.retry_state("2026-10-28", fetcher([], fail=True)))
+nov3 = lambda r, z: dict(r, created_at="2026-11-03T%sZ" % z)
+dry = nov3(run(1, "", "success", title="Generate Daily Briefing (manual, send_email=false, heartbeat=false, test_to_sig=false)", event="workflow_dispatch"), "13:32:43")
+beat = nov3(run(2, "", "success", title="Generate Daily Briefing (manual, send_email=true, heartbeat=true, test_to_sig=false)", event="workflow_dispatch"), "13:46:25")
+print("retry", R.retry_state("2026-11-03", fetcher([beat, dry])))
+print("unreadable", R.retry_state("2026-11-03", fetcher([], fail=True)))
+print("dry-today", R.dry_run_today("2026-11-03", fetcher([beat, dry])), R.dry_run_today("2026-11-03", fetcher([beat])))
 `]);
   assert.equal(out.status, 0, out.stderr);
   const o = out.stdout;
-  assert.match(o, /^dry 3$/m);
-  assert.match(o, /^flag asked\nbeat 0$/m, "a heartbeat is not a dry run");
-  assert.match(o, /^flag asked\nfailed-dry 0$/m, "a dry run that published nothing does not count");
-  assert.match(o, /^flag asked\nyesterday 0$/m, "11:30 p.m. CT on Oct 27 is yesterday");
-  assert.match(o, /^unreadable 2$/m, "runs unreadable: cannot tell, the gate skips");
+  assert.match(o, /^flag asked\nretry 0$/m, "the 7:32 dry run does not make the 7:46 heartbeat skip");
+  assert.match(o, /^flag asked\nunreadable 0$/m, "the runs are not read for the retry at all");
+  assert.match(o, /^dry-today True False$/m, "the late alert can still say a dry run published it");
   assert.match(wf, /^run-name: .*format\('Generate Daily Briefing \(manual, send_email=\{0\}, heartbeat=\{1\}, test_to_sig=\{2\}\)', inputs\.send_email, inputs\.heartbeat, inputs\.test_to_sig\)/m);
   const gate = wf.slice(wf.indexOf("\n  gate:\n"), wf.indexOf("\n  generate:\n"));
-  assert.match(gate, /actions: read/);
-  assert.match(gate, /GH_TOKEN:\s+\$\{\{ github\.token \}\}/);
-  assert.match(gate, /python3 scripts\/daily_retry\.py retry "\$DAY"; rc=\$\?\n\s+(#.*\n\s+)*if \[ "\$rc" = "3" \]/);
+  assert.doesNotMatch(gate, /actions: read/, "the gate no longer reads today's runs");
+  assert.doesNotMatch(gate.split("\n").filter((l) => !l.trim().startsWith("#")).join("\n"), /dry-run\.json|"\$rc" = "3"/);
+  assert.match(gate, /python3 scripts\/daily_retry\.py retry "\$DAY"; rc=\$\?\n\s+if \[ "\$rc" = "1" \]/);
 });

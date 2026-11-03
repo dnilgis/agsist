@@ -97,8 +97,9 @@ def simulate(script, *, event="schedule", start="05:19", dow=1, published=False,
 
     sent: is data/daily-sent/<day>.json on the remote (default: same as
     published, the shape of every day before 2026-10-28). dry_run: is the
-    <day>.dry-run.json mark there. flag_rc: what `python3 scripts/daily_retry.py
-    flag` answers (0 not sent, 1 sent, 2 cannot tell).
+    <day>.dry-run.json mark there (since Nov 3 2026 the gate ignores it; old
+    marks are still on main). flag_rc: what `python3 scripts/daily_retry.py
+    retry` answers (0 not sent, 1 sent, 2 cannot tell).
 
     `sleep` advances the clock instead of sleeping, so a loop that waits for
     the floor completes in milliseconds and the wait is measurable.
@@ -301,10 +302,25 @@ def main():
     check(skip == "1", "but not when the day flag says it went out (only the sent copy is missing)", out)
     skip, _, out = simulate(gate, start="06:46", published=True, sent=False, flag_rc=2)
     check(skip == "1", "and not when the day flag cannot be read: never risk a second send", out)
-    skip, _, out = simulate(gate, start="06:46", published=True, sent=False, dry_run=True, flag_rc=0)
-    check(skip == "1", "a manual run without send_email publishes on purpose; the morning does not mail it", out)
-    skip, _, out = simulate(gate, start="06:46", published=True, sent=False, dry_run=False, flag_rc=3)
-    check(skip == "1", "…and when that run's mark was not pushed, today's runs still show the dry run", out)
+    # NOV 3 2026, IN ORDER (Central). Runs from 5:46 to 7:31 stopped at a
+    # self-test; at 7:32 a manual run without send_email published the issue
+    # and left data/daily-sent/2026-11-03.dry-run.json; the 7:46 heartbeat
+    # skipped on that mark. Sig: a manual run never marks the day done.
+    skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=True, start="07:31", day="2026-11-03",
+                            published=False, sent=False, flag_rc=0)
+    check(skip == "0", "Nov 3 7:31: a heartbeat with nothing published generates", out)
+    skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=False, start="07:32", day="2026-11-03",
+                            published=False, sent=False, flag_rc=0)
+    check(skip == "0", "Nov 3 7:32: the manual dry run generates (a person at the keyboard)", out)
+    skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=True, start="07:46", day="2026-11-03",
+                            published=True, sent=False, dry_run=True, flag_rc=0)
+    check(skip == "0" and "RETRYING" in out and "STUB day flag asked: scripts/daily_retry.py retry 2026-11-03" in out,
+          "Nov 3 7:46: the heartbeat after a dry run writes the issue again and sends it; the dry-run mark is not 'done'", out)
+    skip, _, out = simulate(gate, start="06:46", published=True, sent=False, dry_run=True, flag_rc=1)
+    check(skip == "1", "…but a dry-run day whose flag says it went out still skips", out)
+    skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=True, start="07:48", day="2026-11-03",
+                            published=True, sent=True, dry_run=True, flag_rc=0)
+    check(skip == "1", "Nov 3 after the 7:48 send: published and sent, every later run skips", out)
     skip, _, out = simulate(gate, start="14:05", dow=3, published=True, sent=False, flag_rc=0)
     check(skip == "1", "past the 14:00 morning window an unsent issue is left alone", out)
     skip, _, out = simulate(gate, start="06:46", published=True, sent=True, flag_rc=0)

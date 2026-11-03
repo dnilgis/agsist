@@ -1,8 +1,8 @@
 name: Generate Daily Briefing
 # The run's title carries a dispatch's inputs, because the API does not return
-# them: the gate reads it to tell a manual dry run (send_email=false) from the
-# price loop's heartbeat, and the block alert's cap counts today's blocked runs
-# (scripts/daily_retry.py, 2026-10-28).
+# them: the late alert (scripts/daily_late.py) reads it to tell a manual dry run
+# (send_email=false) from the price loop's heartbeat, and the block alert's cap
+# counts today's blocked runs (scripts/daily_retry.py, 2026-10-28).
 run-name: ${{ github.event_name == 'workflow_dispatch' && format('Generate Daily Briefing (manual, send_email={0}, heartbeat={1}, test_to_sig={2})', inputs.send_email, inputs.heartbeat, inputs.test_to_sig) || 'Generate Daily Briefing' }}
 
 # One briefing at a time, ever: a scheduled run overlapping a manual dispatch
@@ -111,7 +111,7 @@ on:
   workflow_dispatch:
     inputs:
       send_email:
-        description: "Email the live subscriber list? Manual runs default to NO — a dry run that generates, gates, and publishes but sends nothing. Scheduled runs always send."
+        description: "Email the live subscriber list? Manual runs default to NO: a dry run that generates, gates and publishes but sends nothing. It never marks the day done: the next scheduled run or heartbeat before 2 p.m. CT writes today's issue again and sends it. Scheduled runs always send."
         type: boolean
         default: false
       heartbeat:
@@ -278,7 +278,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      actions: read      # today's runs: did a manual dry run publish today (scripts/daily_retry.py retry)
     outputs:
       skip: ${{ steps.g.outputs.skip }}
     steps:
@@ -298,7 +297,6 @@ jobs:
           LIST_URL:           ${{ secrets.LIST_URL }}
           LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          GH_TOKEN:           ${{ github.token }}
         run: |
           # THE GATE WAITS NOW. IT USED TO DECIDE ONCE AND EXIT.
           #
@@ -435,37 +433,35 @@ jobs:
             # PUBLISHED MEANS PUBLISHED AND SENT (2026-10-28). That morning the
             # 6:16 run published the issue, the send step's number check refused
             # it, and every later run skipped on "already published": nobody got
-            # the Daily until a manual run. Now a day is done when its sent copy
-            # (data/daily-sent/<day>.json) is on main, or a manual run without
-            # send_email published it on purpose (<day>.dry-run.json). Otherwise,
-            # still inside the morning window (the 14:00 check above), the issue
-            # is written again and checked again, but ONLY when the day flag
-            # says no mail went out. A flag that is set (the sent copy just did
-            # not get committed) or cannot be read skips: a second copy to the
-            # list is the one thing worse than a late Daily. send_daily.py asks
-            # the same flag again before its first mail.
+            # the Daily until a manual run. Now a day is done only when its sent
+            # copy (data/daily-sent/<day>.json) is on main. Otherwise, still
+            # inside the morning window (the 14:00 check above), the issue is
+            # written again and checked again, but ONLY when the day flag says
+            # no mail went out. A flag that is set (the sent copy just did not
+            # get committed) or cannot be read skips: a second copy to the list
+            # is the one thing worse than a late Daily. send_daily.py asks the
+            # same flag again before its first mail.
+            #
+            # A MANUAL RUN WITHOUT send_email NEVER MARKS THE DAY DONE (Sig,
+            # Nov 3 2026). Until then it left <day>.dry-run.json and this gate
+            # skipped on it. On Nov 3 the 7:32 CT dry run published the issue,
+            # the 7:46 heartbeat read the mark and skipped, and the Daily went
+            # out only with a second manual run. A dry-run mark (old ones are
+            # still in data/daily-sent/) and a dry run in today's runs are no
+            # reason to skip now: the day flag alone says whether it went out.
             if published "$DAY"; then
               if on_remote "data/daily-sent/$DAY.json"; then
                 say "SKIPPING: $DAY is already published and sent, a backup launch doing its job"
                 decide 1; exit 0
               fi
-              if on_remote "data/daily-sent/$DAY.dry-run.json"; then
-                say "SKIPPING: $DAY was published by a manual run without send_email, deliberately not sent"
-                decide 1; exit 0
-              fi
-              # retry: a manual dry run today (its mark not pushed) = 3, the
-              # day flag set = 1, either one unreadable = 2, clear = 0
+              # retry: the day flag set = 1, unreadable = 2, clear = 0
               python3 scripts/daily_retry.py retry "$DAY"; rc=$?
-              if [ "$rc" = "3" ]; then
-                say "SKIPPING: a manual run without send_email published $DAY today, deliberately not sent"
-                decide 1; exit 0
-              fi
               if [ "$rc" = "1" ]; then
                 say "SKIPPING: $DAY went to the list (the day flag is set); only its sent copy is missing"
                 decide 1; exit 0
               fi
               if [ "$rc" != "0" ]; then
-                say "SKIPPING: $DAY is published, not marked sent, and the day flag or today's runs cannot be read; never risk a second send"
+                say "SKIPPING: $DAY is published, not marked sent, and the day flag cannot be read; never risk a second send"
                 decide 1; exit 0
               fi
               say "RETRYING: $DAY is published but never went to the list; writing it again"
@@ -1077,32 +1073,19 @@ jobs:
             echo "push attempt $i failed; retrying in 20s"; sleep 20
           done
 
-      # A MANUAL RUN WITHOUT send_email PUBLISHES AND SENDS NOTHING ON PURPOSE
-      # (2026-10-28). The gate now writes a published-but-unsent issue again,
-      # so this run leaves data/daily-sent/<day>.dry-run.json: the day is done,
-      # deliberately not sent, and a later scheduled run does not mail the list
-      # behind the person's back (the old rule: a manual run that generated
-      # today's issue makes the morning skip). The mark holds no address,
-      # count or link. Never fails the run.
-      - name: Mark a dry run as deliberately not sent
+      # A MANUAL RUN WITHOUT send_email PUBLISHES AND SENDS NOTHING, AND IT
+      # NEVER MARKS THE DAY DONE (Sig, Nov 3 2026). From Oct 28 to Nov 3 this
+      # step committed data/daily-sent/<day>.dry-run.json and the gate skipped
+      # every later run on it: on Nov 3 the 7:32 CT dry run published the
+      # issue and the 7:46 heartbeat skipped, so nobody got the Daily until a
+      # second manual run. Now it commits nothing. The next scheduled run or
+      # heartbeat before 2 p.m. CT finds today published but not sent, asks
+      # the day flag, writes the issue again and sends it. The step says so in
+      # the run's summary, so the person who clicked Run workflow knows.
+      - name: A dry run does not mark the day done
         if: ${{ !cancelled() && steps.commit.outcome == 'success' && github.event_name != 'schedule' && inputs.send_email != true && inputs.test_to_sig != true }}
         continue-on-error: true
-        run: |
-          d=$(date +%Y-%m-%d)
-          python scripts/daily_retry.py dry-run-mark "$d"
-          [ -f "data/daily-sent/$d.dry-run.json" ] || exit 0
-          git config user.name "AGSIST Bot"
-          git config user.email "bot@agsist.com"
-          git add "data/daily-sent/$d.dry-run.json"
-          git diff --staged --quiet && { echo "dry run mark already committed"; exit 0; }
-          git commit -m "AGSIST Daily $d published by a dry run, not sent"
-          for i in 1 2 3; do
-            git rebase --abort 2>/dev/null || true
-            if git pull --rebase --autostash origin main && git push; then
-              echo "push ok on attempt $i"; break
-            fi
-            echo "push attempt $i failed; retrying in 20s"; sleep 20
-          done
+        run: python scripts/daily_retry.py dry-run-note "$(date +%Y-%m-%d)"
 
       # The forwarding brief (the old plain-text copy Sig used
       # to forward by hand) is off since 2026-10-20 at Sig's word: the Daily list
