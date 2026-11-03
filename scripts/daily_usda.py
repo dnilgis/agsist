@@ -317,7 +317,9 @@ def prompt_block(blocks):
         return ""
     return ("USDA MARKET LINES (USDA AMS reports read into AGSIST's files; each is new since yesterday's issue; "
             "every number below is checked against them, so copy numbers, dates and futures months exactly, and "
-            "name USDA AMS as the source in plain words). Use the ones that matter today, one sentence each, in "
+            "name USDA AMS as the source in plain words). These cash, export and dealer prices are not futures: they come "
+            "from here and the LOCKED PRICE TABLE rule does not cover them; a futures price never stands in for them. "
+            "Use the ones that matter today, one sentence each, in "
             "a section body or the watch list; they do not lead unless one is the day's biggest news, and they "
             "never push the issue past its length.\n" + "\n".join(parts))
 

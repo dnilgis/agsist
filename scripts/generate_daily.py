@@ -5779,6 +5779,23 @@ def main():
             seasonal_ctx = seasonal_ctx + "\n\n" + _mb
     except Exception as _e:
         print(f"  [warn] farm calendar / harvest / funds block skipped ({type(_e).__name__}: {_e})")
+    # 2026-11-03 (fx/dailyusda): the USDA AMS market lines (cash hogs and the pork
+    # cutout, daily slaughter, ethanol plant corn bids, Gulf export bids, and farm
+    # diesel and fertilizer the issue after a new report), from the repo's own
+    # files (scripts/daily_usda.py). Only reports dated the day before the issue
+    # (new since yesterday's issue, no look-ahead); a missing or stale file is
+    # withheld. Same path as the block above: the user message the fact check
+    # reads. Fail-open: the briefing never waits on it.
+    try:
+        import daily_usda as _du
+        _usda = _du.build()
+        for _l in _du.log_lines(_usda):
+            print("  [usda] " + _l)
+        _ub = _du.prompt_block(_usda)
+        if _ub:
+            seasonal_ctx = seasonal_ctx + "\n\n" + _ub
+    except Exception as _e:
+        print(f"  [warn] USDA market lines block skipped ({type(_e).__name__}: {_e})")
     print("  Selecting today's quote...")
     # Phase 2 (v4.2): two-pass quote selection. First pass picks a
     # default quote (mood unknown pre-generation). After generation,
