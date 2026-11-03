@@ -79,6 +79,15 @@
   /* the survey a state reads: Delaware reads the Maryland and Delaware survey */
   function sv(c) { var s = S.b && c && S.b.states[c]; return s && s.same_as ? s.same_as : c; }
   function yl(c) { var s = S.b.states[sv(c)]; return s.ry !== s.year ? s.ry + ' rates' : String(s.year); }
+  /* the one year rule in a sentence: '2026 survey of 2025 rates', else '2026 survey' */
+  function svy(c) { var s = S.b.states[sv(c)]; return s.ry !== s.year ? s.year + ' survey of ' + s.ry + ' rates' : s.year + ' survey'; }
+  /* how far a hauling rate carries the grain, unless the survey's own words already say it */
+  function basisOf(op, st, words) {
+    var t = op.basis && op.basis[st];
+    if (!t) return '';
+    var nums = t.match(/\d+(\.\d+)?/g);
+    return nums && nums.every(function (n) { return words.indexOf(n) >= 0; }) ? '' : t;
+  }
   function ans(n) { return n == null ? 'answers not printed' : n + ' answers'; }
   /* what owning and running the machine costs (machinery cost estimates), beside the going rate; never in the middle */
   function diy(k, op) {
@@ -170,7 +179,7 @@
   /* 'Nebraska's 2026 survey', or the shared survey Delaware reads */
   function whose() {
     var b = S.b, st0 = S.st, st = sv(S.st), s = b.states[st];
-    return st0 !== st ? 'The ' + s.name + ' ' + yl(st) + ' survey, which ' + b.names[st0] + ' shares' : stName(st) + '\'s ' + yl(st) + ' survey';
+    return st0 !== st ? 'The ' + s.name + ' ' + svy(st) + ', which ' + b.names[st0] + ' shares' : stName(st) + '\'s ' + svy(st);
   }
   /* the reader's state when it has no number of its own for this job */
   function mine(op) {
@@ -217,7 +226,7 @@
     $('cr-ak').innerHTML = esc(op.label) + ' <small>' + esc(unitLabel(u)) + '</small>';
     var links = ' <a href="#' + esc(k) + '" data-open="' + esc(k) + '">Every state</a> &middot; <a href="#how">How I figure it</a>';
     if (me) {
-      var v = me[0], rw = rangeWords(v[1], v[2], u, S.b.states[st].spread), basis = op.basis && op.basis[st] ? ' (' + op.basis[st] + ')' : '';
+      var v = me[0], rw = rangeWords(v[1], v[2], u, S.b.states[st].spread), basis = basisOf(op, st, v[4]) ? ' (' + basisOf(op, st, v[4]) + ')' : '';
       $('cr-av').textContent = money(v[0], u);
       $('cr-au').textContent = shortUnit(u);
       $('cr-as').textContent = whose() + ', “' + v[4] + '”' + basis + ': ' + (v[3] == null ? 'Answers not printed' : ans(v[3])) + '. ' + rw.charAt(0).toUpperCase() + rw.slice(1) + '.' +
@@ -247,7 +256,7 @@
     });
     var marks = {};
     var row = function (s, v, cls, note, u) {
-      var uu = u || op.u, tag = SPTAG[b.states[s].spread], basis = op.basis && op.basis[s] ? op.basis[s] : '';
+      var uu = u || op.u, tag = SPTAG[b.states[s].spread], basis = basisOf(op, s, v[4]);
       if (tag && v[1] != null) marks[b.states[s].spread] = 1;
       var rg = v[1] != null ? money(v[1], uu) + ' to ' + money(v[2], uu) + (tag ? ' <small>' + tag + '</small>' : '') : 'no range printed';
       return '<tr' + (cls ? ' class="' + cls + '"' : '') + '><th scope="row">' + esc(stName(s)) + ' <small>' + yl(s) + (s === me ? ', your state' : nb.indexOf(s) >= 0 ? ', next door' : '') + '</small>' +
@@ -329,7 +338,7 @@
     var name = S.b.cats.filter(function (x) { return x[0] === c; })[0][1];
     if (!s) { box.innerHTML = st ? '<p class="fine">No ' + esc(stName(st)) + ' survey here, so there are no state lines to add.</p>' : ''; return; }
     var head = function (n) {
-      return '<button type="button" class="crc-sb" aria-expanded="' + (open ? 'true' : 'false') + '">' + (n == null ? 'Every ' + esc(name) + ' line in ' : 'All ' + n + ' ' + esc(name) + ' line' + (n === 1 ? '' : 's') + ' in ') + esc(s.name) + '\'s ' + yl(st) + ' survey</button>';
+      return '<button type="button" class="crc-sb" aria-expanded="' + (open ? 'true' : 'false') + '">' + (n == null ? 'Every ' + esc(name) + ' line in ' : 'All ' + n + ' ' + esc(name) + ' line' + (n === 1 ? '' : 's') + ' in ') + esc(s.name) + '\'s ' + svy(st) + '</button>';
     };
     var n = s.by_cat ? s.by_cat[c] : null;
     if (n === 0) { box.innerHTML = '<p class="fine">' + esc(s.name) + '\'s survey has no ' + esc(name.toLowerCase()) + ' lines.</p>'; return; }

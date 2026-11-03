@@ -339,7 +339,7 @@ test("browser: the reader's state first, the middle under it, only the needed fi
   const base = `http://127.0.0.1:${srv.address().port}`;
   const b = await chromium.launch({ executablePath: CHROME });
   // every expectation from the built files (Sig, Nov 3: no live literals)
-  const cc = blend.ops["combine-corn"], ne = cc.by.NE, ny = blend.states.NE.ry === blend.states.NE.year ? String(blend.states.NE.year) : blend.states.NE.ry + " rates";
+  const cc = blend.ops["combine-corn"], ne = cc.by.NE, ns = blend.states.NE, ny = ns.ry === ns.year ? `${ns.year} survey` : `${ns.year} survey of ${ns.ry} rates`;
   const dd = Math.round((shownV(ne[0], "acre") - shownV(cc.md, "acre")) * 1e6) / 1e6;
   const vctx = { window: {}, document: { readyState: "loading", addEventListener() {} }, URLSearchParams, location: { search: "" } };
   vm.runInNewContext(js, vctx);
@@ -360,7 +360,7 @@ test("browser: the reader's state first, the middle under it, only the needed fi
       assert.deepEqual(got.sort(), ["blend"], "the first screen reads the blend file only");
       // Nebraska's own number big, with its wording, answers and range; the middle on the line under it
       assert.equal(await p.textContent("#cr-av"), usd(ne[0], "acre"), "the reader's state is the big number");
-      assert.equal(await p.textContent("#cr-as"), `Nebraska's ${ny} survey, “${ne[4]}”: ${ne[3]} answers. Answers ran ${usd(ne[1], "acre")} to ${usd(ne[2], "acre")}.`);
+      assert.equal(await p.textContent("#cr-as"), `Nebraska's ${ny}, “${ne[4]}”: ${ne[3]} answers. Answers ran ${usd(ne[1], "acre")} to ${usd(ne[2], "acre")}.`);
       assert.match(await p.textContent("#cr-me"), new RegExp("^" + reEsc(`Middle of ${cc.n} state surveys: ${usd(cc.md, "acre")} an acre`) + ".*" + reEsc(dd === 0 ? "Nebraska is right at it" : `Nebraska is ${usd(Math.abs(dd), "acre")} ${dd > 0 ? "over" : "under"} it`)));
       const il = blend.diy.find((d) => d.ops["combine-corn"]);
       assert.match(await p.textContent("#cr-diy"), new RegExp("^Doing it yourself: " + reEsc(usd(il.ops["combine-corn"][0], "acre")) + " an acre"));
@@ -406,7 +406,7 @@ test("browser: the reader's state first, the middle under it, only the needed fi
     const ctx = await b.newContext({ viewport: { width: 390, height: 900 } });
     const p = await ctx.newPage();
     await p.goto(base + "/custom-rates?st=DE", { waitUntil: "networkidle" });
-    await p.waitForFunction(() => /^The Maryland and Delaware \d{4}( rates)? survey, which Delaware shares/.test(document.getElementById("cr-as").textContent));
+    await p.waitForFunction(() => /^The Maryland and Delaware \d{4} survey( of \d{4} rates)?, which Delaware shares/.test(document.getElementById("cr-as").textContent));
     assert.equal(await p.textContent("#cr-av"), usd(cc.by.MD[0], "acre"));
     const aer = row(doc("mo"), "Aerial spray application over cropland");
     await p.goto(base + "/custom-rates?st=MO&q=aerial", { waitUntil: "networkidle" });
