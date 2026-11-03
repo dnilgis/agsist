@@ -1067,7 +1067,7 @@ def trim(rows):
 # page, about 8 MB across the folder). The link sits where the <style> was, at
 # the end of the head, so the cascade and first paint are unchanged. Bump ?v=
 # here on any change to that file.
-CSS_LINK = '<link rel="stylesheet" href="/components/cash-bid-town.css?v=1">'
+CSS_LINK = '<link rel="stylesheet" href="/components/cash-bid-town.css?v=2">'
 
 
 def share_tags(h):
@@ -1251,12 +1251,12 @@ def sponsor_slot(ssl):
     return f'<aside class="ag-sponsor-ribbon" data-slot="cash-bids-{ssl}"></aside>'
 
 
-def page_end(ftr, table=False, signup=False, hist=False, promo=False, buyers=False):
+def page_end(ftr, table=False, signup=False, hist=False, promo=False, buyers=False, share=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}{RP_PROMO_JS if promo else ''}{BUY.BUYERS_JS if buyers else ''}</body>
+{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}{RP_PROMO_JS if promo else ''}{BUY.BUYERS_JS if buyers else ''}{SHARE_JS if share else ''}</body>
 </html>
 """
 
@@ -1735,6 +1735,72 @@ def answer_and_desc(picks, snap_ct, place):
     return "", ""
 
 
+# SHARE A BID (Sig, 2026-11-03). One button under the answer line: "Share today's
+# bids" sends the page's own headline pick (answer_picks, the same row the answer
+# line names, first crop only) as "Corn $4.16 at Lincolnway Energy LLC, Nevada, IA
+# (FH Nov 2026), Nov 3, 2026. More bids near you: agsist.com/cash-bids/iowa/nevada",
+# with the town URL tagged utm_source=share. The date is the day the bid was
+# posted, never the day it is shared. The page is read for hours after a build,
+# so the button carries the moment the bid stops counting (data-until: its posted
+# time plus the freshness window, or the end of its delivery period, whichever is
+# first); after that components/share-bid.js shares the town link with no price.
+# No basis and no futures price is shared. The script is one shared file, loaded
+# deferred on town pages that have a pick; the button is plain HTML, so the page
+# does not move when it loads. Bump SHARE_JS's ?v= on any change to that file.
+SHARE_JS = '<script src="/components/share-bid.js?v=1" defer></script>\n'
+_FIRST_HALF_RE = re.compile(r"\b(?:fh|1h|first\s+half)\b", re.I)
+
+
+def share_until(r):
+    """UTC datetime after which the shared price is withheld: the earliest of
+    the freshness window from its posted time (the same window that let the row
+    onto the page), the day a dated label names, the 15th for a first-half bid,
+    and the end of its delivery month, each to the end of that day in Central time."""
+    fresh_h = PASTE_HOURS if r.get("pasted") else FRESH_HOURS
+    ends = [r["priced"].astimezone(dt.timezone.utc) + dt.timedelta(hours=fresh_h)]
+    y, m = int(r["dm"][:4]), int(r["dm"][5:7])
+
+    def day_end(yy, mm, dd):
+        d = dt.datetime(yy, mm, dd, tzinfo=CT) + dt.timedelta(days=1)
+        return dt.datetime(d.year, d.month, d.day, tzinfo=CT).astimezone(dt.timezone.utc)
+    ends.append(day_end(y, m, 28 if m == 2 and y % 4 else _LAST_DAY[m - 1]))
+    lab = str(r.get("label") or "")
+    if _FIRST_HALF_RE.search(lab):
+        ends.append(day_end(y, m, 15))
+    # a day the label names ("By Nov 5", "Nov 16-30, 2026"); not the year of "Nov 2026" or "Oct 2H"
+    hits = [h for h in DAY_RE.finditer(lab) if not re.match(r"[\w]", lab[h.end():h.end() + 1])]
+    if hits:
+        h = hits[-1]
+        mm = MONTH_ABBR.index(h.group(1)[:3].title()) + 1
+        try:
+            ends.append(day_end(y + (1 if mm < m - 6 else 0), mm, int(h.group(3) or h.group(2))))
+        except ValueError:
+            pass
+    return min(ends)
+
+
+def share_bid_html(picks, place, path):
+    """The share button for a town page, or "" when it has no pick. Its text is
+    built here from the headline pick, so every number in it is on the page."""
+    cs = [c for c in CROPS if c in picks]
+    if not cs:
+        return ""
+    r, name = picks[cs[0]]
+    town = place.rsplit(", ", 1)[0]
+    name = re.sub(rf"(\([^()]*), {re.escape(town)}\)$", r"\1)", name)
+    pc = r["priced"].astimezone(CT)
+    when = f"{MONTH_ABBR[pc.month - 1]} {pc.day}, {pc.year}"
+    lab = re.sub(r"\s+", " ", str(r.get("label") or "")).strip()
+    link = f"agsist.com{path}"
+    text = (f"{CROP_LABEL[cs[0]]} {cash_c(r['cash'])} at {name}, {place}" + (f" ({lab})" if lab else "")
+            + f", {when}. More bids near you: {link}")
+    plain = f"Cash grain bids in {place}, read from each elevator's own board: {link}"
+    until = share_until(r).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return (f'<p class="cbt-share"><a class="cbt-share-btn" href="{esc(path)}?utm_source=share" data-share-bid '
+            f'data-title="{esc(place)} cash bids" data-text="{esc(text)}" data-plain="{esc(plain)}" '
+            f'data-until="{until}" data-crop="{cs[0]}">Share today&rsquo;s bids</a></p>')
+
+
 ADJ = {"corn": "corn", "soybeans": "soybean", "wheat": "wheat", "sorghum": "sorghum", "oats": "oat"}
 
 
@@ -2195,6 +2261,8 @@ def build_town_page(t, ctx):
                    max(times)) if indexable else []
     hist_html = history_box(t, live_b, ctx["hist"](st)) if indexable and ctx.get("hist") else ""
     answer_html = f'<p class="cbt-answer">{esc(answer)}</p>' if answer else ""
+    # the share button sends the answer line's own pick, so it shows only under an answer line
+    share_html = share_bid_html(picks, place, path) if answer else ""
     # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
     story_facts, story_html = None, ""
     if indexable:
@@ -2242,6 +2310,7 @@ def build_town_page(t, ctx):
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
   <h1>Cash grain bids in {esc(place)} today</h1>
   {answer_html}
+  {share_html}
   {story_html}{intro}
   {'' if indexable else near_html}
   {jump}
@@ -2278,7 +2347,7 @@ def build_town_page(t, ctx):
         assert sheet in h, "head() changed shape; update build_town_page()"
         h = h.replace(sheet, sheet + SIGNUP_CSS, 1)
     return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html), promo=bool(promo_html),
-                               buyers=bool(buyers_html)), meta
+                               buyers=bool(buyers_html), share=bool(share_html)), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
