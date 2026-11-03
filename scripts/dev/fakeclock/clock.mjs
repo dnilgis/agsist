@@ -1,18 +1,32 @@
 // Fake clock for node, used only by scripts/dev/future_dates.py (NODE_OPTIONS=--import this file).
 // With AGSIST_FAKE_OFFSET=<seconds> set, Date (new Date(), Date.now(), Intl formatting of "now") runs that many
 // seconds ahead and keeps moving; every Chromium page a test opens through Playwright gets the same shift.
-// Without the variable it does nothing.
+// Without the variable it does nothing. AGSIST_CLOCK_PROBE=<file>: the first time code in the checkout (or in a vm
+// context) reads "now", one line goes to that file, so the harness knows which tests can depend on the date.
+import fs from "node:fs";
 const OFF = Number(process.env.AGSIST_FAKE_OFFSET || 0) * 1000;
-if (OFF) {
+const PROBE = process.env.AGSIST_CLOCK_PROBE;
+if (process.env.AGSIST_FAKE_OFFSET !== undefined) {
   const RealDate = globalThis.Date;
+  const ROOT = process.cwd() + "/";
+  let marked = !PROBE, checks = 0;
+  const mark = (why) => { if (marked) return; marked = true; try { fs.appendFileSync(PROBE, why + "\n"); } catch { /* best effort */ } };
+  // a read counts when a frame from the checkout asked (not node itself, not this file); the first 20000 only
+  const hostProbe = () => {
+    if (marked || ++checks > 20000) return;
+    const st = new Error().stack.split("\n").slice(2);
+    if (st.some((l) => l.includes(ROOT) && !l.includes("/fakeclock/") && !l.includes("/node_modules/"))) mark("node");
+  };
+  globalThis.__agsistClockRead = PROBE ? hostProbe : null;
   const shift = (off) => {
+    const probe = globalThis.__agsistClockRead || null;
     const RD = globalThis.Date;
     if (RD.agsistFake) return;
     // arity by hand, no rest array: a test that makes a million dates should not slow down here
     function FakeDate(a, b, c, d, e, f, g) {
-      if (!new.target) return new RD(RD.now() + off).toString();
+      if (!new.target) { if (probe) probe(); return new RD(RD.now() + off).toString(); }
       switch (arguments.length) {
-        case 0: return new RD(RD.now() + off);
+        case 0: if (probe) probe(); return new RD(RD.now() + off);
         case 1: return new RD(a);
         case 2: return new RD(a, b);
         case 3: return new RD(a, b, c);
@@ -21,7 +35,7 @@ if (OFF) {
     }
     FakeDate.prototype = RD.prototype;
     Object.setPrototypeOf(FakeDate, RD);
-    FakeDate.now = () => RD.now() + off;
+    FakeDate.now = () => { if (probe) probe(); return RD.now() + off; };
     FakeDate.parse = RD.parse;
     FakeDate.UTC = RD.UTC;
     FakeDate.agsistFake = true;
@@ -40,7 +54,18 @@ if (OFF) {
   const src = `(${shift.toString()})(${OFF});`;
   const done = new WeakSet();
   const create = vm.createContext, runIn = vm.runInContext;
-  const prep = (c) => { if (!done.has(c)) { done.add(c); try { runIn(src, c); } catch { /* frozen context */ } } return c; };
+  // code run in a vm context is the checkout's own (components, scripts): any read of now there counts
+  const vmProbe = () => mark("vm");
+  const prep = (c) => {
+    if (!done.has(c)) {
+      done.add(c);
+      try {
+        if (PROBE) Object.defineProperty(c, "__agsistClockRead", { value: vmProbe, configurable: true, enumerable: false, writable: true });
+        runIn(src, c);
+      } catch { /* frozen context */ }
+    }
+    return c;
+  };
   vm.createContext = function (o, opt) { return prep(create.call(this, o, opt)); };
   vm.runInNewContext = function (code, o, opt) { return runIn(code, vm.createContext(o ?? {}), opt); };
   const sRunNew = vm.Script.prototype.runInNewContext;

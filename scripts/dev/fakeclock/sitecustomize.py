@@ -2,6 +2,7 @@
 
 With AGSIST_FAKE_OFFSET=<seconds> set, time.time(), datetime.now()/utcnow()/today() and date.today() run that many
 seconds ahead (the clock still moves). Without it this file does nothing but load the sandbox's own sitecustomize.
+AGSIST_CLOCK_PROBE=<file>: the first time code in the checkout reads "now", one line goes to that file.
 """
 import os
 import sys
@@ -33,10 +34,44 @@ if _off:
     import datetime as _dt
 
     _OFF = float(_off)
+    _PROBE = os.environ.get("AGSIST_CLOCK_PROBE")
+    _ROOT = os.getcwd() + os.sep
+    _here = os.path.dirname(os.path.abspath(__file__))
+    _seen = [not _PROBE, 0]
+
+    def _probe():
+        # a read counts when the caller is a file in the checkout (not the standard library, not this file)
+        if _seen[0] or _seen[1] > 20000:
+            return
+        _seen[1] += 1
+        f = sys._getframe(2)
+        while f is not None:
+            fn = f.f_code.co_filename
+            if fn.startswith(_ROOT) and not fn.startswith(_here):
+                _seen[0] = True
+                try:
+                    with open(_PROBE, "a") as fh:
+                        fh.write("python\n")
+                except OSError:
+                    pass
+                return
+            if not fn.startswith("<") and "/lib/python" not in fn and not fn.startswith(_here):
+                return
+            f = f.f_back
+
     _real_time, _real_time_ns = _time.time, _time.time_ns
     _real_localtime, _real_gmtime, _real_ctime, _real_strftime = _time.localtime, _time.gmtime, _time.ctime, _time.strftime
-    _time.time = lambda: _real_time() + _OFF
-    _time.time_ns = lambda: _real_time_ns() + int(_OFF * 1e9)
+    def _fake_time():
+        if not _seen[0]:
+            _probe()
+        return _real_time() + _OFF
+
+    def _fake_time_ns():
+        if not _seen[0]:
+            _probe()
+        return _real_time_ns() + int(_OFF * 1e9)
+    _time.time = _fake_time
+    _time.time_ns = _fake_time_ns
     _time.localtime = lambda secs=None: _real_localtime(_time.time() if secs is None else secs)
     _time.gmtime = lambda secs=None: _real_gmtime(_time.time() if secs is None else secs)
     _time.ctime = lambda secs=None: _real_ctime(_time.time() if secs is None else secs)
@@ -61,21 +96,25 @@ if _off:
     class FakeDate(_RealDate, metaclass=_DateMeta):
         @classmethod
         def today(cls):
-            t = _RealDate.fromtimestamp(_time.time())
+            _probe()
+            t = _RealDate.fromtimestamp(_real_time() + _OFF)
             return _RealDate(t.year, t.month, t.day)
 
     class FakeDatetime(_RealDatetime, metaclass=_DatetimeMeta):
         @classmethod
         def now(cls, tz=None):
-            return _RealDatetime.fromtimestamp(_time.time(), tz)
+            _probe()
+            return _RealDatetime.fromtimestamp(_real_time() + _OFF, tz)
 
         @classmethod
         def utcnow(cls):
-            return _RealDatetime.fromtimestamp(_time.time(), _dt.timezone.utc).replace(tzinfo=None)
+            _probe()
+            return _RealDatetime.fromtimestamp(_real_time() + _OFF, _dt.timezone.utc).replace(tzinfo=None)
 
         @classmethod
         def today(cls):
-            return _RealDatetime.fromtimestamp(_time.time())
+            _probe()
+            return _RealDatetime.fromtimestamp(_real_time() + _OFF)
 
     _dt.date = FakeDate
     _dt.datetime = FakeDatetime

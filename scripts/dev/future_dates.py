@@ -14,6 +14,8 @@ only on a future date is a test or a gate that reads today's date and will break
     --jobs=N         parallel runs (default 2; never run this beside a full checks.sh, BUILD-RULES 19)
     --fast           leave out the node files that take over 30 s (scripts/dev/test-durations.json) and the two
                      slowest selftests (build_atlas_pages, build_arc_plc): about a quarter of the time, for a busy machine
+    --all            run every item on every date (by default the dates run only the items that read the clock in
+                     the run at today: code in the checkout asked for "now", or the test opens Chromium)
     --no-baseline    skip the run at today's real date (then every failure is listed, not only the new ones)
 
 How the clock moves: scripts/dev/fakeclock/ holds a python sitecustomize.py (time.time, datetime.now/utcnow/today,
@@ -59,6 +61,7 @@ DATE_SHIM = r'''#!/bin/bash
 REAL=/bin/date; [ -x "$REAL" ] || REAL=/usr/bin/date
 [ -n "${AGSIST_FAKE_OFFSET:-}" ] || exec "$REAL" "$@"
 for a in "$@"; do case "$a" in -d|-d*|--date*|-r|-r*|--reference*|-f|-f*|--file*|-s|-s*|--set*) exec "$REAL" "$@" ;; esac; done
+[ -n "${AGSIST_CLOCK_PROBE:-}" ] && echo shell >> "$AGSIST_CLOCK_PROBE"
 now=$("$REAL" +%s); off=${AGSIST_FAKE_OFFSET%.*}
 exec "$REAL" -d "@$((now + off))" "$@"
 '''
@@ -150,11 +153,13 @@ def run_one(cmd, env, log):
     return cmd, rc, skipped, round(time.time() - t0, 1)
 
 
-def run_date(label, when, jobs, nfiles, pcmds, outdir, names=None):
+def run_date(label, when, jobs, nfiles, pcmds, outdir, names=None, probe=False):
+    """Run the items on the given date (None: the real clock). probe=True: the real clock through the shims, and
+    each item's clock reads are recorded (see clock_readers)."""
     env = dict(os.environ)
-    if when is not None:
-        off = int(when.timestamp() - time.time())
-        env.update(PYTHONDONTWRITEBYTECODE="1", AGSIST_FAKE_OFFSET=str(off), AGSIST_FAKE_NOW=when.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    if when is not None or probe:
+        off = int(when.timestamp() - time.time()) if when is not None else 0
+        env.update(PYTHONDONTWRITEBYTECODE="1", AGSIST_FAKE_OFFSET=str(off), AGSIST_FAKE_NOW=(when or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ"),
                    PYTHONPATH=CLOCK + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""),
                    NODE_OPTIONS=(env.get("NODE_OPTIONS", "") + f" --import {CLOCK}/clock.mjs").strip(),
                    PATH=shim_bin(outdir) + os.pathsep + env["PATH"])
@@ -170,22 +175,40 @@ def run_date(label, when, jobs, nfiles, pcmds, outdir, names=None):
         work = [w for w in work if w[1] in names]
     before = dirty()
     res = {}
+    stem = lambda name: os.path.join(d, re.sub(r"[^\w.-]+", "_", name))
+    def env_for(name):
+        if not probe:
+            return env
+        p = stem(name) + ".probe"
+        if os.path.exists(p):
+            os.remove(p)
+        return dict(env, AGSIST_CLOCK_PROBE=p)
     with ThreadPoolExecutor(max_workers=jobs) as ex:
-        futs = [ex.submit(run_one, argv, env, os.path.join(d, re.sub(r"[^\w.-]+", "_", name) + ".log")) for argv, name in work]
+        futs = [ex.submit(run_one, argv, env_for(name), stem(name) + ".log") for argv, name in work]
         for (argv, name), fut in zip(work, futs):
             _, rc, skipped, secs = fut.result()
             res[name] = "fail" if rc else ("skip" if skipped else "ok")
     after = dirty()
     changed = sorted(p for p in after if p not in before or after[p] != before[p])
+    if probe:
+        # which items read "now" from the checkout's own code (or opened Chromium, whose page clock is not probed)
+        global READERS
+        READERS = {name for _, name in work if os.path.exists(stem(name) + ".probe")
+                   or (name.endswith(".test.mjs") and re.search(r"PLAYWRIGHT|playwright|chromium", open(os.path.join(ROOT, name), encoding="utf-8", errors="replace").read()))}
     return res, changed
 
 
+READERS = None
+
+
 def main(argv):
-    opts = {"fast": False, "browser": False, "checks": False, "only": "", "files": "", "jobs": "2", "baseline": True}
+    opts = {"all": False, "fast": False, "browser": False, "checks": False, "only": "", "files": "", "jobs": "2", "baseline": True}
     dates = []
     for a in argv:
         if a == "--browser":
             opts["browser"] = True
+        elif a == "--all":
+            opts["all"] = True
         elif a == "--fast":
             opts["fast"] = True
         elif a == "--checks":
@@ -216,14 +239,17 @@ def main(argv):
     print(f"future_dates: {len(nfiles)} node test file(s), {len(pcmds)} script check(s), dates {', '.join(d for d, _ in whens)}; logs in {outdir}")
     base = {}
     if opts["baseline"]:
-        base, ch = run_date("today", None, jobs, nfiles, pcmds, outdir)
+        base, ch = run_date("today", None, jobs, nfiles, pcmds, outdir, probe=True)
         bad = sorted(k for k, v in base.items() if v != "ok")
         print(f"today (real clock): {len(base) - len(bad)} ok, {len(bad)} not ok" + "".join(f"\n  {base[k]}: {k}" for k in bad))
+        if not opts["all"]:
+            # an item that never read the clock cannot change with the date: the dates run the readers only
+            print(f"  {len(READERS)} of {len(base)} read today's clock (or open Chromium); the dates run those (--all: every item)")
         if ch:
             print("  changed in the checkout by the run: " + ", ".join(ch))
     new_total = 0
     for label, when in whens:
-        res, ch = run_date(label, when, jobs, nfiles, pcmds, outdir)
+        res, ch = run_date(label, when, jobs, nfiles, pcmds, outdir, READERS if opts["baseline"] and not opts["all"] else None)
         bad = sorted(k for k, v in res.items() if v != "ok")
         new = [k for k in bad if base.get(k, "ok") == "ok" or not opts["baseline"]]
         # a busy machine fails timing tests at any date: each new failure runs again alone, once on the real
