@@ -65,9 +65,12 @@ test("the builder: real counties get the tiles Sig asked for, and KS gets no sal
     assert.deepEqual([m[1], unesc(m[2]), unesc(m[3].replace(/<small>(.*?)<\/small>/, "|$1")), unesc(m[4])],
       [t.through, t.label, t.val == null ? "|n/a" : t.val + "|" + t.unit, t.sub], p);
   }
-  // the committed Dane summary since the one land rule (Oct 29): bare farm land, $11,974 on 28 (was $14,399 on 42 with buildings and forest in)
-  assert.match(SALES.exec(pg("wisconsin/dane-county"))[3], /^\$11,974<small>\/ac<\/small>$/);
-  assert.equal(SALES.exec(pg("illinois/alexander-county"))[3], "<small>n/a</small>");
+  // the value cell's shape: dollars and /ac with a median in the file, n/a without one. The numbers themselves
+  // come from the committed summary, which the monthly land run rewrites (BUILD-RULES 50, Nov 3: Dane read
+  // $11,974 on 28 and then $12,130 on 27); the fixture test above holds the worked numbers.
+  const cell = (st, f) => S.tile(sum[st], f).val ? /^\$\d{1,3}(,\d{3})*<small>\/ac<\/small>$/ : /^<small>n\/a<\/small>$/;
+  assert.match(SALES.exec(pg("wisconsin/dane-county"))[3], cell("WI", "55025"));
+  assert.match(SALES.exec(pg("illinois/alexander-county"))[3], cell("IL", "17003"));
   assert.doesNotMatch(pg("kansas/saline-county"), /data-as-tile|Median sale price/);
   // the dry rent rule: Iroquois 2022 and Gallatin 2017 are n/a with their year; Marathon's 2026 prints
   const dry = KEY("Cash rent, non-irrigated");
@@ -135,6 +138,15 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
 test("in Chromium: Dane's tile and sheet, a newer summary redraws the tile, Gallatin's sheet rent is n/a", { skip }, async () => {
+  // what the tile must say, from the same file the page reads (the land run rewrites it monthly; BUILD-RULES 50)
+  const live = JSON.parse(read("data/land/wi/summary.json"));
+  const text = (t) => t.label + (t.val == null ? "n/a" : t.val + t.unit) + t.sub;
+  const T0 = S.tile(live, "55025");
+  // a month of new deeds came in after the page was built: the file's through date a month on, a new Dane median
+  const thr = new Date(live.through + "T00:00:00Z"); thr.setUTCDate(1); thr.setUTCMonth(thr.getUTCMonth() + 2); thr.setUTCDate(0);
+  const newerSum = () => { const d = JSON.parse(JSON.stringify(live)); d.through = thr.toISOString().slice(0, 10); d.counties["55025"].med = { med: 15001, n: 43, q1: 10872, q3: 22471 }; return d; };
+  const T1 = S.tile(newerSum(), "55025");
+  assert.ok(T1.through > T0.through && T1.val === "$15,001" && T1.val !== T0.val);
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
   let newer = false;
   const srv = createServer((req, res) => {
@@ -144,12 +156,7 @@ test("in Chromium: Dane's tile and sheet, a newer summary redraws the tile, Gall
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
     let body = readFileSync(f);
-    if (newer && p === "/data/land/wi/summary.json") {
-      // a month of new deeds came in after the page was built
-      const d = JSON.parse(body);
-      d.through = "2026-10-31"; d.counties["55025"].med = { med: 15001, n: 43, q1: 10872, q3: 22471 };
-      body = JSON.stringify(d);
-    }
+    if (newer && p === "/data/land/wi/summary.json") body = JSON.stringify(newerSum());
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
     res.end(body);
   });
@@ -166,14 +173,15 @@ test("in Chromium: Dane's tile and sheet, a newer summary redraws the tile, Gall
         pg.on("pageerror", (e) => errors.push(String(e)));
         await pg.route("**/*", (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()));
         await pg.goto(base + "/farmland-atlas/wisconsin/dane-county");
-        assert.match(await pg.textContent("[data-as-tile]"), /\$11,974\/ac28 recorded bare farmland sales/);
+        assert.equal(await pg.textContent("[data-as-tile]"), text(T0), "the tile as built");
         await pg.locator("section.as").scrollIntoViewIfNeeded();
         await pg.waitForSelector("section.as[data-ready]", { timeout: 30000 });
         const tile = await pg.textContent("[data-as-tile]"), block = await pg.textContent("section.as");
         if (nw) {
-          assert.match(tile, /\$15,001\/ac43 recorded bare farmland sales.*through Oct 31, 2026/);
+          assert.equal(tile, text(T1), "redrawn from the newer file");
+          assert.ok(tile.includes("43 recorded bare farmland sales") && tile.endsWith("sales dated through " + S.day(T1.through)));
           assert.match(block, /\$15,001\/ac/);
-        } else assert.match(tile, /\$11,974\/ac28 recorded bare farmland sales.*through Sep 30, 2026/);
+        } else assert.equal(tile, text(T0));
         const [sw, iw] = await pg.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
         assert.ok(sw <= iw, `Dane at ${w}: ${sw}px in ${iw}px`);
         assert.deepEqual(errors, []);
@@ -187,7 +195,7 @@ test("in Chromium: Dane's tile and sheet, a newer summary redraws the tile, Gall
     await pg.goto(base + "/farmland-atlas/sheet#55025");
     await pg.waitForSelector("section.keys.k7", { timeout: 30000 });
     const keys = await pg.textContent("section.keys");
-    assert.match(keys, /Median sale price, bare land, 20\+ acres\$11,974\/ac28 recorded bare farmland sales, Oct 2025 to Sep 2026; sales dated through Sep 30, 2026/);
+    assert.ok(keys.includes(text(T0)), "the sheet's tile: " + text(T0));
     await pg.goto(base + "/farmland-atlas/sheet#21077");
     await pg.waitForFunction(() => /Gallatin/.test(document.title), null, { timeout: 30000 });
     await pg.waitForSelector("section.keys", { timeout: 30000 });

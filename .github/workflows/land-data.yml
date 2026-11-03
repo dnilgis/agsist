@@ -223,6 +223,13 @@ jobs:
           if [ -f "$RUNNER_TEMP/wi/build/wi-retr.csv" ]; then
             python scripts/fetch_land_sales.py --from "$RUNNER_TEMP/wi/build" WI $MERGE || echo "::warning::Wisconsin transfers were not written"
           fi
+      # Put back every land file whose only change is a timestamp BEFORE anything is built from them.
+      # The summaries, the index and the sale pages read fetched_utc (the through date, "read <day>");
+      # restored only at commit time, the pages said a state was read on a day the committed files did
+      # not, and --check failed on main (Nov 3: Wisconsin re-read September only, stamped Nov 3).
+      - name: Keep timestamp-only changes out of the build
+        if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
+        run: python3 scripts/land_keep_stamp_only.py data/land
       # The Farmland Atlas sale summaries (data/land/<st>/summary.json) from the county files just
       # written, or the committed ones when this run fetched nothing. Offline; refuses a summary
       # that carries a source name. Same command builds them locally.
