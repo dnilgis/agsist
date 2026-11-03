@@ -1306,22 +1306,6 @@
    ]
   },
   {
-   "key": "basis:SD|DAKOTA GROWERS COOP|HARTFORD",
-   "rule": "name+town",
-   "candidates": [
-    "ef1y5my5gh",
-    "ezbdtav1q6"
-   ]
-  },
-  {
-   "key": "basis:SD|GLACIAL LAKES ENERGY, LLC|MINA",
-   "rule": "name+town",
-   "candidates": [
-    "eaab8x5xs9",
-    "ervz160cv7"
-   ]
-  },
-  {
    "key": "basis:SD|WHEATON DUMONT CO-OP|BRITTON",
    "rule": "name+town",
    "candidates": [
@@ -1725,22 +1709,6 @@
     "e1hnxhn7jz",
     "e6z5tq3z1j",
     "er1rajgw9m"
-   ]
-  },
-  {
-   "key": "dir:86553",
-   "rule": "company+0.5mi",
-   "candidates": [
-    "ef1y5my5gh",
-    "ezbdtav1q6"
-   ]
-  },
-  {
-   "key": "dir:86797",
-   "rule": "company+0.5mi",
-   "candidates": [
-    "ear80ntznz",
-    "ec4ekzfx7s"
    ]
   },
   {
