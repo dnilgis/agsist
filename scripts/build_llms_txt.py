@@ -77,6 +77,21 @@ the as-of date shown with it. Each daily briefing has a permanent dated URL.
 """
 
 # (heading, [(path, title, description) or ("@machine", key)])
+def custom_rates_line():
+    """/custom-rates: the surveys and states counted from data/custom-rates/index.json, never typed."""
+    try:
+        with open(os.path.join(REPO, "data", "custom-rates", "index.json"), encoding="utf-8") as fh:
+            sts = json.load(fh)["states"]
+    except (OSError, ValueError, KeyError):
+        sts = []
+    names = ", ".join(s["name"] for s in sts)
+    n_states = sum(len(s.get("states") or [s["st"]]) for s in sts)
+    return ("what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey "
+            "published it (average, range, unit, survey year and source named): %d surveys covering %d states: %s; "
+            "a page per survey at /custom-rates/<state>%s" % (len(sts), n_states, names,
+                                                              "".join(", except %s" % s["name"] for s in sts if s.get("page") is False)))
+
+
 PAGES = [
     ("What's my grain worth today?", [
         ("/cash-bids", "Cash Grain Bids", "local elevator bids and basis by ZIP"),
@@ -156,7 +171,7 @@ PAGES = [
         ("/cattle-auction-prices", "Sale Barn Prices", "feeder steer and heifer prices by 100 lb weight class (Medium and Large 1 and 1-2), weighted average $/cwt and $/head with head counts, at USDA-reported sale barns and state auction summaries near a ZIP"),
     ]),
     ("My ground and programs", [
-        ("/custom-rates", "Custom Farm Rates by State", "what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>"),
+        ("/custom-rates", "Custom Farm Rates by State", custom_rates_line()),
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),
         ("/farmland-atlas", "Farmland Atlas",
          "every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>, and foreign-held farmland by state, county and holder country from USDA AFIDA filings since 2010"),

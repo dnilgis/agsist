@@ -33,6 +33,7 @@ try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit be
 except ImportError: pass
 import html
 import json
+from decimal import Decimal, ROUND_HALF_UP
 import os
 import re
 import subprocess
@@ -184,9 +185,31 @@ NOT_COVERED = {
     "SD": "SDSU Extension ran a new survey in 2026; its report was not out when this page was built.",
     "MI": "Michigan State's 2026 Custom Work Rates are machinery cost estimates built on Minnesota's machinery cost spreadsheet, not a survey of rates charged, so they are not mixed in here.",
     "NY": "Cornell Cooperative Extension of Oneida County's 2024 sheet is a rate guide for one county with no answer counts, not a survey, so it is not mixed in.",
-    "OH": "Ohio State released a 2026 survey in June 2026 that I could not get a copy of yet, so Ohio here is still the 2024 survey.",
+    "OH": "Ohio State released a 2026 survey in late summer 2026; it is not read in here yet, so Ohio here is still the 2024 survey.",
     "NE": "Nebraska's 2025 livestock services survey prints its tables as pictures; it is not typed in yet.",
     "KY": "Kentucky's guide averages other states' surveys, so it is not a Kentucky survey.",
+}
+# How far each survey's grain hauling rate carries the grain, in the survey's own words (a
+# number here must be printed in that state's haul-grain-bu row; the selftest checks it).
+# The surveys measure different distances, so the page says so beside each state.
+HAUL_BASIS = {
+    "IA": "25 mi one way, to market",
+    "IN": "average 23.2 mi one way, to market",
+    "KS": "field to storage or elevator, up to 16 mi",
+    "MO": "bin to market, over 20 mi",
+    "ND": "base charge, average base 47.62 mi",
+    "NE": "flat rate to storage or elevator, miles not stated",
+    "OH": "farm to market, average 22.7 mi one way",
+    "PA": "base charge, miles not stated",
+    "WI": "miles not stated",
+}
+# How a survey's range reads in a sentence, by its spread type (Purdue's one standard
+# deviation band is not the lowest and highest answer, and says so).
+SPREAD_WORDS = {
+    "minmax": ("answers ran", "to"),
+    "trimmed": ("trimmed range (lowest and highest answer left out)", "to"),
+    "sd": ("most answers fell between", "and"),
+    "mid80": ("middle 80% of answers", "to"),
 }
 STAMP = "2026-10-17"
 UNIT_LABEL = {"point": "point of moisture", "1,000 gallon": "1,000 gallons", "head / day": "head a day", "bushel / month": "bushel a month",
@@ -394,8 +417,29 @@ def load_states(src_dir=SRC):
                 errs.append("%s: name %r is not the region's states" % (where, meta.get("name")))
         elif STATE_NAMES.get(st) != meta.get("name"):
             errs.append("%s: name %r is not %s's name" % (where, meta.get("name"), st))
+        keyed = {r.get("k") for r in clean if r.get("k")}
+        for k, note in apart_of(meta).items():
+            if k not in keyed or not note:
+                errs.append("%s: apart %r is not a keyed row of this survey, or has no note" % (where, k))
         states[st] = (meta, clean, rows)
     return states, errs
+
+
+def apart_of(meta):
+    """Keyed jobs this survey prices too differently to go in the middle, with the reason
+    ('# apart: lime-ton=material not stated'). Shown beside the middle with the note, never in it."""
+    out = {}
+    for part in meta.get("apart", "").split(";"):
+        if "=" in part:
+            k, note = part.split("=", 1)
+            out[k.strip()] = note.strip()
+    return out
+
+
+def survey_words(year, ry=None):
+    """The one year rule: a rate's year is the year it was charged; the survey's own year
+    follows when it differs ('2026 survey of 2025 rates', else '2026 survey')."""
+    return "%d survey of %d rates" % (year, ry) if ry and ry != year else "%d survey" % year
 
 
 def state_doc(meta, rows):
@@ -417,6 +461,8 @@ def state_doc(meta, rows):
     # the April 2023 guide before it was 2022 rates; money audit 6, 2026-10-19)
     if meta.get("rate_year"):
         d["rate_year"] = int(meta["rate_year"])
+    if apart_of(meta):
+        d["apart"] = apart_of(meta)
     return d
 
 
@@ -535,10 +581,12 @@ def blend_doc(docs, idx):
             for _, r in ent:
                 count[r["u"]] = count.get(r["u"], 0) + 1
             unit = sorted(count, key=lambda u: (-count[u], u))[0]
-            by, other, old = {}, {}, {}
+            by, other, old, apart = {}, {}, {}, {}
             for st, r in ent:
                 v = [r["a"], r.get("lo"), r.get("hi"), r.get("n"), r["o"]]
-                if r["u"] != unit:
+                if docs[st].get("apart", {}).get(k):
+                    apart[st] = v + [docs[st]["apart"][k]]
+                elif r["u"] != unit:
                     other[st] = v + [r["u"]]
                 elif rate_year(docs[st]) < cutoff:
                     old[st] = v
@@ -551,13 +599,18 @@ def blend_doc(docs, idx):
                 op["y"] = [min(yrs), max(yrs)]
                 op["ans"] = sum(v[3] for v in by.values() if v[3])
             if len(vals) >= MIN_BLEND:
-                op["md"] = round(median(vals), 4)
+                op["md"] = float(half_up(median(vals), 4))
             if len(vals) >= 2:
                 op["lo"], op["hi"] = min(vals), max(vals)
             if other:
                 op["other"] = other
             if old:
                 op["old"] = old
+            if apart:
+                op["apart"] = apart
+            if k == "haul-grain-bu":
+                # the surveys measure different distances: each state's, in its own words
+                op["basis"] = {st: HAUL_BASIS[st] for st in sorted(set(by) | set(old) | set(other) | set(apart)) if st in HAUL_BASIS}
             ops[k] = op
             keep.append(k)
         cats.append([cat, CAT_NAME[cat], keep])
@@ -588,20 +641,44 @@ def blend_doc(docs, idx):
             "not_covered": NOT_COVERED}
 
 
+SMALL_UNITS = ("bushel", "point per bushel", "gross bushel", "bushel / month", "bushel / year",
+               "bushel / round trip", "horsepower / hour", "bale / loaded mile", "bale")
+
+
+def half_up(v, places):
+    """v rounded half up to places decimals (a half cent rounds up, never by float luck)."""
+    return Decimal(repr(float(v))).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
+
+
+def places_for(v, unit):
+    if unit == "percent of crop":
+        return 2
+    if v < 1 and unit in SMALL_UNITS:
+        return 3
+    if v >= 1000:
+        return 0
+    return 2
+
+
+def shown(v, unit):
+    """The number exactly as the page prints it, for sums and over/under lines."""
+    return float(half_up(v, places_for(v, unit)))
+
+
 def money(v, unit):
     if v is None:
         return ""
+    d = half_up(v, places_for(v, unit))
     if unit == "percent of crop":
-        return ("%.2f" % v).rstrip("0").rstrip(".") + "%"
-    if v < 1 and unit in ("bushel", "point per bushel", "gross bushel", "bushel / month", "bushel / year",
-                          "bushel / round trip", "horsepower / hour", "bale / loaded mile", "bale"):
-        s = ("%.3f" % v).rstrip("0")
+        return ("%.2f" % d).rstrip("0").rstrip(".") + "%"
+    if v < 1 and unit in SMALL_UNITS:
+        s = ("%.3f" % d).rstrip("0")
         if len(s.split(".")[1]) < 2:
-            s = "%.2f" % v
+            s = "%.2f" % d
         return "$" + s
     if v >= 1000:
-        return "${:,.0f}".format(v)
-    return "$%.2f" % v
+        return "${:,.0f}".format(d)
+    return "$%.2f" % d
 
 
 def unit_label(u):
@@ -620,8 +697,23 @@ def range_text(r, unit):
     return "%s to %s" % (money(r["lo"], unit), money(r["hi"], unit))
 
 
+def range_words(lo, hi, unit, spread):
+    """A survey's range in a sentence, named for what it is (Purdue's band is not the lowest and highest answer)."""
+    if lo is None:
+        return "no range printed"
+    w, j = SPREAD_WORDS.get(spread, SPREAD_WORDS["minmax"])
+    return "%s %s %s %s" % (w, money(lo, unit), j, money(hi, unit))
+
+
+def ans_words(n):
+    return "answers not printed" if n is None else "%d answer%s" % (n, "" if n == 1 else "s")
+
+
 def faq_for(d):
-    name, yr = d["name"], d["survey_year"]
+    name = d["name"]
+    when = survey_words(d["survey_year"], d.get("rate_year"))
+    sp_ = d.get("spread", "minmax")
+    rw = lambda r: "%s, %s" % (range_words(r.get("lo"), r.get("hi"), r["u"], sp_), ans_words(r.get("n")))
     by = {r.get("k"): r for r in d["rows"] if r.get("k")}
     qs = []
     c = by.get("combine-corn")
@@ -629,21 +721,21 @@ def faq_for(d):
     if c or s:
         parts = []
         if c:
-            parts.append("combining corn averaged %s %s (%s, %d answers)" % (money(c["a"], c["u"]), unit_label(c["u"]), range_text(c, c["u"]), c["n"]))
+            parts.append("combining corn averaged %s %s (%s)" % (money(c["a"], c["u"]), unit_label(c["u"]), rw(c)))
         if s:
-            parts.append("combining soybeans averaged %s %s (%s, %d answers)" % (money(s["a"], s["u"]), unit_label(s["u"]), range_text(s, s["u"]), s["n"]))
+            parts.append("combining soybeans averaged %s %s (%s)" % (money(s["a"], s["u"]), unit_label(s["u"]), rw(s)))
         qs.append(("What does custom combining cost in %s?" % name,
                    "In the %s, %s. Rates are survey averages; your local custom operator may charge more or less." % (d["survey"], " and ".join(parts))))
     p = by.get("plant-row") or by.get("plant-row-fert")
     if p:
         qs.append(("What is the custom planting rate in %s?" % name,
-                   "%s: %s %s in the %d survey (%s, %d answers). The survey's other planting lines are in the table above." % (p["o"], money(p["a"], p["u"]), unit_label(p["u"]), yr, range_text(p, p["u"]), p["n"])))
+                   "%s: %s %s in the %s (%s). The survey's other planting lines are in the table above." % (p["o"], money(p["a"], p["u"]), unit_label(p["u"]), when, rw(p))))
     sp = by.get("spray-ground")
     if sp:
         qs.append(("What does custom spraying cost in %s?" % name,
-                   "%s: %s %s in the %d survey (%s, %d answers). Chemical is not included." % (sp["o"], money(sp["a"], sp["u"]), unit_label(sp["u"]), yr, range_text(sp, sp["u"]), sp["n"])))
+                   "%s: %s %s in the %s (%s). Chemical is not included." % (sp["o"], money(sp["a"], sp["u"]), unit_label(sp["u"]), when, rw(sp))))
     qs.append(("Who set these rates?",
-               "Nobody set them. They are averages of what farmers and custom operators told %s they charged or paid. AGSIST copied them from the survey and links it. Your local custom operator may charge more or less." % d["publisher"]))
+               "Nobody set them. They are averages of what farmers and custom operators told %s they charged or paid. AGSIST copied them from the survey and names it. Your local custom operator may charge more or less." % d["publisher"]))
     qs.append(("What is included in a custom rate?", d["includes"]))
     return qs
 
@@ -657,8 +749,50 @@ def og_image():
     return "https://agsist.com/img/og/custom-rates.jpg?v=" + hashlib.sha1(open(fp, "rb").read()).hexdigest()[:8]
 
 
-def state_page(d, idx):
+def over_under(mine, md, unit, who):
+    """'Nebraska is $7.42 over it', from the two numbers as printed."""
+    dd = round(shown(mine, unit) - shown(md, unit), 6)
+    if abs(dd) < 1e-9:
+        return "%s is right at it" % who
+    return "%s is %s %s it" % (who, money(abs(dd), unit), "over" if dd > 0 else "under")
+
+
+def state_hero(d, blend):
+    """The state's own number first (Sig, Nov 3): one common job, the state's survey average big with its
+    answers and range, the middle across the state surveys on the line under it."""
+    st, name = d["state"], d["name"]
+    ops = blend["ops"]
+    keys = ["combine-corn"] + [k for _, ks in KEYED for k, _ in ks if k != "combine-corn"]
+    k = next((k for k in keys if k in ops and (st in ops[k]["by"] or st in ops[k].get("old", {}))), None)
+    if not k:
+        return ""
+    op = ops[k]
+    u = op["u"]
+    v = op["by"].get(st) or op["old"][st]
+    when = survey_words(d["survey_year"], d.get("rate_year"))
+    rw = range_words(v[1], v[2], u, d["spread"])
+    line1 = "%s's %s, &ldquo;%s&rdquo;: %s. %s." % (esc(name), when, esc(v[4]), ans_words(v[3]).capitalize() if v[3] is None else ans_words(v[3]), rw[0].upper() + rw[1:])
+    if "md" in op:
+        line2 = "Middle of %d state surveys: %s %s (%s)" % (op["n"], money(op["md"], u), short_unit(u), yr_span(op["y"]))
+        line2 += ("; " + over_under(v[0], op["md"], u, esc(name)) + ".") if st in op["by"] else ". %s's survey is too old to count in it." % esc(name)
+    elif op["n"] == 2:
+        line2 = "Two current surveys price it the same way, too few for a middle: they run %s to %s." % (money(op["lo"], u), money(op["hi"], u))
+    else:
+        line2 = "No other current survey prices it the same way, so there is no middle."
+    return ('<section class="crh crh-st" aria-labelledby="crh-h">\n'
+            '        <h2 id="crh-h" class="vh">%s, %s</h2>\n'
+            '        <p class="crh-k">%s <small>%s</small></p>\n'
+            '        <p class="crh-v"><b>%s</b> <small>%s</small></p>\n'
+            '        <p class="crh-s">%s</p>\n'
+            '        <p class="crh-me">%s <a href="/custom-rates?st=%s%s">Every state</a></p>\n'
+            '      </section>') % (
+        esc(op["label"]), esc(unit_label(u)), esc(op["label"]), esc(unit_label(u)), money(v[0], u), esc(short_unit(u)),
+        line1, line2, st, "" if k == "combine-corn" else "&amp;k=" + k)
+
+
+def state_page(d, idx, blend):
     name, yr, st = d["name"], d["survey_year"], d["state"]
+    when = survey_words(yr, d.get("rate_year"))
     url = "https://agsist.com/custom-rates/" + d["slug"]
     title = "%s custom rates %d: combining, planting, spraying, baling | AGSIST" % (name, yr)
     desc = "%s custom farm work rates from the %d survey by %s: the average and range for each job, per acre, hour, bushel or bale." % (name, yr, d["publisher"].split(",")[0])
@@ -670,9 +804,9 @@ def state_page(d, idx):
          "description": desc, "inLanguage": "en-US", "datePublished": STAMP, "dateModified": STAMP,
          "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
          "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"},
-         "isBasedOn": {"@type": "CreativeWork", "name": d["survey"], "url": d["sources"][0]["url"], "publisher": {"@type": "Organization", "name": d["publisher"]}}},
-        {"@type": "Dataset", "name": "%s custom farm work rates, %d survey" % (name, yr), "description": "Average and range for each custom farm operation as published in the %s." % d["survey"],
-         "url": url, "isAccessibleForFree": True, "temporalCoverage": str(yr), "spatialCoverage": {"@type": "Place", "name": name},
+         "isBasedOn": {"@type": "CreativeWork", "name": d["survey"], "publisher": {"@type": "Organization", "name": d["publisher"]}}},
+        {"@type": "Dataset", "name": "%s custom farm work rates, %s" % (name, when), "description": "Average and range for each custom farm operation as published in the %s (%s)." % (d["survey"], when),
+         "url": url, "isAccessibleForFree": True, "temporalCoverage": str(rate_year(d)), "spatialCoverage": {"@type": "Place", "name": name},
          "creator": {"@type": "Organization", "name": d["publisher"]}, "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/custom-rates/%s.json" % st.lower()},
          "license": "https://agsist.com/terms", "dateModified": STAMP},
         {"@type": "BreadcrumbList", "itemListElement": [
@@ -696,13 +830,14 @@ def state_page(d, idx):
                 continue
             rg = range_text(r, r["u"])
             mdn = ('<span class="mdn">median %s</span>' % money(r["md"], r["u"])) if "md" in r else ""
-            body.append('<tr><th scope="row">%s%s</th><td class="av">%s <small>%s</small>%s<span class="rgm">%s</span></td><td class="rg">%s</td><td>%d</td></tr>' % (
-                esc(r["o"]), note, money(r["a"], r["u"]), esc(unit_label(r["u"])), mdn, ("range " + rg) if "lo" in r else "", rg, r["n"]))
+            body.append('<tr><th scope="row">%s%s</th><td class="av">%s <small>%s</small>%s<span class="rgm">%s</span></td><td class="rg">%s</td><td>%s</td></tr>' % (
+                esc(r["o"]), note, money(r["a"], r["u"]), esc(unit_label(r["u"])), mdn, ("range " + rg) if "lo" in r else "", rg,
+                r["n"] if r.get("n") is not None else '<span class="na">not printed</span>'))
     me = next(s for s in idx["states"] if s["st"] == st)
     nb = ", ".join('<a href="%s">%s (%s)</a>' % (state_href(s), esc(s["name"]), year_label(s)) for s in idx["states"] if s["st"] in me["neighbors"])
     others = " &middot; ".join('<a href="%s">%s</a>' % (state_href(s), esc(s["name"])) for s in idx["states"] if s["st"] != st)
-    # the survey is named in words with its year; a survey file is not linked (no direct links to data sources)
-    srcl = " and ".join(source_links.link(s["url"], ("%s survey" % yr) if i == 0 else "its second part", ' rel="nofollow"') for i, s in enumerate(d["sources"]))
+    # the survey is named in words with its date; it is not linked (no direct links to data sources, Sig Oct 29 and Nov 3)
+    srcl = "%s (%s)" % (esc(d["survey"]), when)
     faq_html = "".join('<details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in faq)
     withheld = ('<p class="fine">%s</p>' % esc(d["withheld"])) if d.get("withheld") else ""
     return """<!DOCTYPE html>
@@ -729,7 +864,7 @@ def state_page(d, idx):
   <meta name="twitter:image" content="{og}">
   <script>try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script>
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/custom-rates.css?v=4">
+  <link rel="stylesheet" href="/components/custom-rates.css?v=5">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <script type="application/ld+json">{ld}</script>
@@ -740,12 +875,13 @@ def state_page(d, idx):
   <main id="main" tabindex="-1">
     <article class="cr">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/custom-rates">Custom rates</a> &rarr; {name}</nav>
-      <h1>{name} custom rates, {yr} survey{ofr}</h1>
+      <h1>{name} custom rates, {when}</h1>
       <p class="by">Numbers from {pub}</p>
       <p class="cr-lede">What farmers and custom operators in {name} said they charged or paid for custom work, as the {survey} printed it. Rates are survey averages; your local custom operator may charge more or less.</p>
+      {hero}
       <p class="cr-actions"><a class="cr-btn go" href="/custom-rates?st={st}">Search jobs and compare neighbors</a></p>
-      <div class="cr-tw"><table class="cr-t cr-full">
-        <caption>{name}, {capyr}: average{med} and {spread} for each job. Answers = how many reported that job.</caption>
+      <div class="cr-tw cr-tw-v"><table class="cr-t cr-full">
+        <caption>{name}, {capyr}: average{med} and {spread} for each job. {counts}</caption>
         <thead><tr><th scope="col">Job</th><th scope="col">Average</th><th scope="col" class="rg">Range</th><th scope="col">Answers</th></tr></thead>
         <tbody>
 {body}
@@ -770,7 +906,8 @@ def state_page(d, idx):
            pub=esc(d["publisher"]), survey=esc(d["survey"]), st=st, spread=esc(d["spread_label"]),
            body="\n".join(body), collected=esc(d["collected"].rstrip(".")), includes=esc(d["includes"]),
            range_note=esc(d["range_note"]), withheld=withheld, med=", median" if any("md" in r for r in d["rows"]) else "",
-           ofr=(" of %d rates" % d["rate_year"]) if d.get("rate_year") else "",
+           when=when, hero=state_hero(d, blend),
+           counts="Answers = how many reported that job." if d.get("counts", True) else "This survey does not print how many answered each job.",
            capyr=("%d rates" % d["rate_year"]) if d.get("rate_year") else yr, srcl=srcl, nb=nb or "none yet",
            faq=faq_html, others=others)
 
@@ -779,7 +916,34 @@ LD_RE = re.compile(r"(<!-- cr:ld -->)(.*?)(<!-- /cr:ld -->)", re.S)
 FAQ_RE = re.compile(r"(<!-- cr:faq -->)(.*?)(<!-- /cr:faq -->)", re.S)
 
 
-def faq_main(docs, idx):
+def _who(b, st):
+    s = b["states"][st]
+    return "%s %s" % (s["name"], ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"])
+
+
+def haul_faq(b):
+    """Grain hauling, every state with how far its rate carries the grain (the surveys measure different distances)."""
+    op = b["ops"]["haul-grain-bu"]
+    u = op["u"]
+    parts = ["%s %s a bushel (%s; %s)" % (_who(b, st), money(v[0], u), op["basis"].get(st, "miles not stated"), ans_words(v[3]))
+             for st, v in sorted(op["by"].items(), key=lambda x: x[0])]
+    old = ["%s %s (%s)" % (_who(b, st), money(v[0], u), op["basis"].get(st, "miles not stated")) for st, v in sorted(op.get("old", {}).items())]
+    mid = (" The middle of the %d current surveys is %s a bushel, but the surveys measure different distances, so set the miles beside the number before you compare." % (op["n"], money(op["md"], u))) if "md" in op else ""
+    return ("Survey averages for hauling grain by truck, and how far each survey's rate carries it: " + "; ".join(parts) + "." + mid +
+            ((" Older, not in the middle: " + "; ".join(old) + ".") if old else ""))
+
+
+def bale_faq(b):
+    """Round baling per bale, by state with answers; the surveys word the bale size their own way."""
+    op = b["ops"]["bale-round"]
+    u = op["u"]
+    parts = ["%s %s (%s, \"%s\")" % (_who(b, st), money(v[0], u), ans_words(v[3]), v[4]) for st, v in sorted(op["by"].items())]
+    mid = (" The middle of the %d current surveys is %s a bale." % (op["n"], money(op["md"], u))) if "md" in op else ""
+    return ("Survey averages for baling round bales, per bale: " + "; ".join(parts) + "." + mid +
+            " Bale size, twine or net wrap differ by survey, so read each state's wording. Rates are survey averages; your local custom operator may charge more or less.")
+
+
+def faq_main(docs, idx, blend):
     def line(k):
         out = []
         for s in idx["states"]:
@@ -796,13 +960,13 @@ def faq_main(docs, idx):
           ("What does custom spraying cost?",
            "Ground rig spraying, per acre, chemical not included: " + "; ".join(line("spray-ground")) + "."),
           ("Who sets these custom rates?",
-           "Nobody sets them. Each number is an average of what farmers and custom operators told a university or state survey they charged or paid. AGSIST copies the survey's own numbers and links the survey; it does not set, adjust or update them between surveys. Your local custom operator may charge more or less."),
+           "Nobody sets them. Each number is an average of what farmers and custom operators told a university or state survey they charged or paid. AGSIST copies the survey's own numbers and names the survey; it does not set, adjust or update them between surveys. Your local custom operator may charge more or less."),
           ("Which states are covered?",
            "States with a public survey read for this page: " + names + ". " + " ".join(NOT_COVERED[k] for k in sorted(NOT_COVERED))),
           ("Why do the same jobs differ between states?",
            "The surveys were taken in different years, ask about the job in different words (combine only, or combine, cart and haul), and hear from different people. Some print the lowest and highest answer, Iowa leaves out the single lowest and highest, Purdue prints a one standard deviation band and Oklahoma prints no range. Compare the wording before you compare the numbers."),
-          ("What does custom grain hauling cost per bushel?",
-           "Kansas's 2026 survey prices hauling from the field to the farm or the nearest elevator. Corn averaged 23.9 cents a bushel, plus 5.5 cents a bushel a mile past 16 miles. Soybeans averaged 24.2 cents a bushel, plus 5.6 cents a bushel a mile past 18 miles."),
+          ("What does custom grain hauling cost per bushel?", haul_faq(blend)),
+          ("What does custom round baling cost per bale?", bale_faq(blend)),
           ("Do custom combiners charge extra for a big corn crop?",
            "Some do. In Kansas's 2026 survey, harvesters who charge a base rate averaged $35.27 an acre for corn, plus $0.279 a bushel on yield over 69 bushels an acre. Those who charge one flat rate with no yield charge averaged $41.87 an acre.")]
     return qs
@@ -873,6 +1037,19 @@ def nav_block(b):
     return "\n".join('        <a href="#%s">%s <small>%d</small></a>' % (c, esc(name), len(ks)) for c, name, ks in b["cats"] if ks)
 
 
+def notes_html(b, ks):
+    """Under a category: how far each state's hauling rate carries the grain, and any state line kept out of a middle."""
+    out = []
+    for k in ks:
+        op = b["ops"][k]
+        if op.get("basis"):
+            out.append("%s: states measure different distances: %s." % (esc(op["label"]), "; ".join("%s %s" % (st, esc(t)) for st, t in sorted(op["basis"].items()))))
+        for st, v in sorted(op.get("apart", {}).items()):
+            out.append("%s: %s's line (%s %s, %s) is shown on its own, not in the middle: %s." % (
+                esc(op["label"]), esc(b["states"][st]["name"]), money(v[0], op["u"]), esc(short_unit(op["u"])), esc(v[4]), esc(v[5])))
+    return "".join('<p class="fine crc-note">%s</p>\n' % x for x in out)
+
+
 def cats_block(b, docs):
     out = []
     for c, name, ks in b["cats"]:
@@ -894,8 +1071,8 @@ def cats_block(b, docs):
                     ("states run " + rng) if rng else "", " %s" % yr_span(op["y"]) if op.get("y") else ""))
         out.append(
             '<section class="crc" id="%s" data-cat="%s">\n<h2 class="crc-h"><button type="button" class="crc-t" aria-expanded="true"><span class="crc-tt">%s<span class="crc-p">%s</span></span><small>%d job%s</small></button></h2>\n'
-            '<ul class="cro-l">\n%s\n</ul>\n<div class="crc-st" data-cat="%s" data-lines="%d"></div>\n</section>' % (
-                c, c, esc(name), esc(", ".join(b["ops"][k]["label"] for k in ks)), len(ks), "" if len(ks) == 1 else "s", "\n".join(rows), c, lines))
+            '<ul class="cro-l">\n%s\n</ul>\n%s<div class="crc-st" data-cat="%s" data-lines="%d"></div>\n</section>' % (
+                c, c, esc(name), esc(", ".join(b["ops"][k]["label"] for k in ks)), len(ks), "" if len(ks) == 1 else "s", "\n".join(rows), notes_html(b, ks), c, lines))
     return "\n".join(out)
 
 
@@ -907,9 +1084,9 @@ def month_year(ym):
 def how_block(b, docs):
     r = b["rule"]
     inb = [s for s in b["states"].values() if s.get("in_blend")]
-    li = "".join('<li><a href="%s">%s</a>, %s: %s, %s.%s%s</li>\n' % (
+    # each survey named with its year, never linked (no direct links to data sources, Sig Oct 29 and Nov 3)
+    li = "".join('<li><a href="%s">%s</a>, %s: %s, %s.%s</li>\n' % (
         state_href(dict(s, st=st)), esc(s["name"]), ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"], esc(s["survey"]), esc(s["publisher"]),
-        "" if source_links.is_data_source(s["url"]) else ' <a href="%s" rel="nofollow">The survey</a>.' % esc(s["url"]),
         "" if s["in_blend"] else " Too old for the middle; shown with its year.") for st, s in b["states"].items() if not s.get("same_as"))
     return ('<p>For each job I take each state survey\'s own average, as the survey printed it, and show the middle one. Half the states sit at or above it, half at or below. Under it you get the lowest and highest of the state averages and how many surveys priced the job. Tap a job and every state\'s number is there with its year, how many answered, and the lowest and highest answer that survey printed.</p>\n'
             '<p>Each state counts once, however many people answered. I don\'t inflate older surveys or adjust anything. A survey of rates from before %d is shown with its year but kept out of the middle. A job needs %d surveys before I give a middle; with fewer, each number stands on its own. Surveys word jobs their own way (combine only, or combine, cart and haul), so I only line up jobs that read the same, and each state\'s wording is under its number.</p>\n'
@@ -944,7 +1121,7 @@ def summary_block(docs, idx):
     return ("\n      <div class=\"cr-tw\"><table class=\"cr-t cr-sum\">\n        <caption>Four common jobs, each state survey\'s average.</caption>\n"
             "        <thead><tr><th scope=\"col\">State, survey year</th><th scope=\"col\">Combine corn</th><th scope=\"col\">Combine soybeans</th><th scope=\"col\">Plant, no fertilizer</th><th scope=\"col\">Spray, ground</th></tr></thead>\n"
             "        <tbody>\n        " + "\n        ".join(rows) + "\n        </tbody>\n      </table></div>\n"
-            "      <p class=\"fine\">Each state's own survey average, the year it covers, and its whole table on the state's page. The surveys and their links are under How I figure the going rate.</p>\n      ")
+            "      <p class=\"fine\">Each state's own survey average, the year it covers, and its whole table on the state's page. The surveys are named under How I figure the going rate.</p>\n      ")
 
 
 def build(src_dir=SRC):
@@ -952,18 +1129,18 @@ def build(src_dir=SRC):
     errs += load_diy()[1]
     docs = {st: state_doc(m, rows) for st, (m, rows, _) in states.items()}
     idx = index_doc(docs) if docs else None
+    blend = blend_doc(docs, idx) if docs else None
     files = {}
     for st, d in docs.items():
         files[os.path.join(OUT, st.lower() + ".json")] = json.dumps(d, indent=1, ensure_ascii=False) + "\n"
         if not d["page"]:
             continue
-        page = state_page(d, idx)
+        page = state_page(d, idx, blend)
         if "—" in page:
             errs.append("%s page: em dash" % st)
         if len(page.encode()) > PAGE_KB * 1024:
             errs.append("%s page: %d KB, over %d" % (st, len(page.encode()) // 1024, PAGE_KB))
         files[os.path.join(PAGES, d["slug"] + ".html")] = page
-    blend = blend_doc(docs, idx) if docs else None
     if idx:
         files[os.path.join(OUT, "index.json")] = json.dumps(idx, separators=(",", ":"), ensure_ascii=False) + "\n"
         files[os.path.join(OUT, "blend.json")] = json.dumps(blend, separators=(",", ":"), ensure_ascii=False) + "\n"
@@ -978,7 +1155,7 @@ def build(src_dir=SRC):
                     if not rx.search(main):
                         errs.append("custom-rates.html: no marker %s" % rx.pattern[:20])
                     main = rx.sub(lambda m, body=body: m.group(1) + body + m.group(3), main, count=1)
-                qs = faq_main(docs, idx)
+                qs = faq_main(docs, idx, blend)
                 fh = "".join('\n        <details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in qs) + "\n      "
                 ld = {"@context": "https://schema.org", "@graph": [
                     {"@type": "WebApplication", "@id": "https://agsist.com/custom-rates#app", "name": "Custom farm work rates by state",
@@ -986,9 +1163,9 @@ def build(src_dir=SRC):
                      "applicationCategory": "BusinessApplication", "operatingSystem": "Any (web browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
                      "isAccessibleForFree": True, "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
                      "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": STAMP, "dateModified": STAMP, "inLanguage": "en-US"},
-                    {"@type": "Dataset", "name": "Custom farm work rates by state", "description": "Average and range for custom farm operations as published by state surveys: " + ", ".join("%s %d" % (x["name"], x["year"]) for x in idx["states"]) + ".",
+                    {"@type": "Dataset", "name": "Custom farm work rates by state", "description": "Average and range for custom farm operations as published by state surveys: " + ", ".join("%s %s" % (x["name"], survey_words(x["year"], x.get("rate_year"))) for x in idx["states"]) + ".",
                      "url": "https://agsist.com/custom-rates", "isAccessibleForFree": True, "license": "https://agsist.com/terms", "dateModified": STAMP,
-                     "isBasedOn": [{"@type": "CreativeWork", "name": docs[x["st"]]["survey"], "url": x["url"]} for x in idx["states"]],
+                     "isBasedOn": [{"@type": "CreativeWork", "name": docs[x["st"]]["survey"]} for x in idx["states"]],
                      "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/custom-rates/index.json"}},
                     {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
                      {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"},
@@ -1202,14 +1379,25 @@ def selftest():
     d = {"state": "IA", "name": "Iowa", "survey_year": 2026, "survey": "S", "publisher": "P", "includes": "I",
          "rows": [{"s": "H", "o": "Corn combining", "u": "acre", "a": 46.05, "lo": 25.0, "hi": 80.0, "n": 119, "k": "combine-corn"}]}
     f = faq_for(d)
-    ok("$46.05 per acre ($25.00 to $80.00, 119 answers)" in f[0][1] and "may charge more or less" in f[0][1], "faq states the survey numbers: %s" % f[0][1])
+    ok("$46.05 per acre (answers ran $25.00 to $80.00, 119 answers)" in f[0][1] and "may charge more or less" in f[0][1], "faq states the survey numbers: %s" % f[0][1])
     ok(any("Nobody set them" in a for _, a in f), "faq says AGSIST did not set the rates")
+    ok(range_words(28.8, 45.1, "acre", "sd") == "most answers fell between $28.80 and $45.10", "a one SD band reads as most answers")
+    ok(range_words(25, 80, "acre", "trimmed").startswith("trimmed range") and range_words(5, 55, "ton", "mid80").startswith("middle 80%"), "trimmed and middle 80 named")
+    ok(range_words(None, None, "acre", "none") == "no range printed", "no range")
+    # half a cent rounds up, the same in every place a number prints
+    ok(money(41.865, "acre") == "$41.87" and money(0.1945, "bushel") == "$0.195" and money(12.125, "acre") == "$12.13", "half up: %s %s" % (money(41.865, "acre"), money(0.1945, "bushel")))
+    ok(over_under(49.29, 41.87, "acre", "NE") == "NE is $7.42 over it" and over_under(41.865, 41.87, "acre", "X") == "X is right at it", "over/under from the shown numbers")
+    ok(survey_words(2026, 2025) == "2026 survey of 2025 rates" and survey_words(2026) == "2026 survey", "one year rule")
     for st, nbs in BORDERS.items():
         for x in nbs.split():
             ok(st in BORDERS.get(x, "").split(), "borders symmetric %s-%s" % (st, x))
     # the real files build clean
     files, errs, docs = build()
     ok(not errs, "real sources build clean: %s" % errs[:5])
+    # each hauling distance is the survey's own: its numbers are printed in that state's hauling line
+    for st, t in HAUL_BASIS.items():
+        r = next((x for x in docs.get(st, {}).get("rows", []) if x.get("k") == "haul-grain-bu"), None)
+        ok(r is not None and all(n in r["o"] for n in re.findall(r"\d+(?:\.\d+)?", t)), "hauling distance %s %r is in its line %r" % (st, t, r and r["o"]))
     idx = json.loads(files[os.path.join(OUT, "index.json")])
     ok(all(s["neighbors"] == [x for x in BORDERS[s["st"]].split() if x in docs] for s in idx["states"]), "neighbors are covered bordering states")
     ia = docs.get("IA")

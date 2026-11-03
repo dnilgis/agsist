@@ -16,6 +16,13 @@
    "link": "/conditions#harvest"
   },
   {
+   "id": "2026-11-03-crfix",
+   "date": "2026-11-03",
+   "title": "Custom rates: your state's own number first",
+   "line": "Pick a state on Custom rates and its own survey number shows first, the middle across states under it; hauling shows each survey's miles.",
+   "link": "/custom-rates"
+  },
+  {
    "id": "2026-11-03-marsfert",
    "date": "2026-11-03",
    "title": "Farm diesel, propane and USDA fertilizer prices in My place",
