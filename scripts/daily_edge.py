@@ -348,7 +348,7 @@ def basis_spread(crop, bs, now):
             continue
         rows.append({"state": st, "name": US_STATES[st], "n": int(x["n"]), "median": float(m),
                      "contract": x.get("contract"), "label": x.get("label") or "",
-                     "path": v.get("path") or ""})
+                     "path": v.get("path") or "", "usda": usda_line(x.get("usda"))})
     if not rows:
         return None, {"id": fid, "why": "sample", "detail": "no state qualifies"}
     counts = {}
@@ -375,9 +375,15 @@ def basis_spread(crop, bs, now):
     # after the Daily is written. The sentence names its snapshot, and the
     # fact carries it (snapshot) so scripts/check_number_consistency.py can
     # compare like with like.
-    detail = ("Elevators behind each median: " +
-              ", ".join(f"{r['name']} {num(r['n'])}" for r in top + bot) +
-              f". {len(rows)} states with {MIN_STATE_N} or more.")
+    # Sig, Nov 3 2026: each state number is labelled the median of N elevators,
+    # and USDA AMS's own state average sits beside it when the page shows it
+    # (crops[crop].usda in data/basis-states.json, scripts/build_cash_bid_pages.py
+    # usda_beside: same futures month, not stale, dated by USDA).
+    detail = ("Median of " + ", ".join(f"{num(r['n'])} {'elevator' if r['n'] == 1 else 'elevators'} in {r['name']}"
+                                       if i == 0 else f"{num(r['n'])} in {r['name']}"
+                                       for i, r in enumerate(top + bot)) +
+              f". {len(rows)} states with {MIN_STATE_N} or more." +
+              "".join(" " + r["usda"] for r in top + bot if r["usda"]))
     return {
         "id": fid, "crop": crop, "kind": "basis_spread",
         "sentence": sentence, "key": f"{hiw} {cw}", "detail": detail,
@@ -390,6 +396,17 @@ def basis_spread(crop, bs, now):
         "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
         "url": "/basis", "link_text": "Basis by state",
     }, None
+
+
+def usda_line(u):
+    """USDA's state average line as the state page prints it, or None. Only a
+    plain sentence that names USDA AMS and a date is passed through."""
+    if not isinstance(u, dict):
+        return None
+    line = u.get("line")
+    if not isinstance(line, str) or not line.startswith("USDA's ") or "(USDA AMS, " not in line or len(line) > 200:
+        return None
+    return line if re.search(r", \d{4}\)\.$", line) and "<" not in line else None
 
 
 # ── fact: boards paying over futures ───────────────────────────────────────
@@ -791,6 +808,17 @@ def _selftest():
         ok(f["sentence"] == want, f"spread sentence {f['sentence']!r}")
         ok(f["snapshot"] == "2026-10-16T00:37:10Z", f"spread snapshot {f.get('snapshot')}")
         ok(f["value"] == 91.0 and f["states_n"] == 5, f"spread value {f['value']} {f['states_n']}")
+        ok(f["detail"] == "Median of 26 elevators in Colorado, 37 in North Dakota, 89 in South Dakota. "
+                          "5 states with 15 or more.", f"spread detail {f['detail']!r}")
+    # USDA AMS's own North Dakota average beside ours (Nov 2, 2026 real data: ours -90, USDA -89 vs Dec)
+    nd = "USDA's North Dakota average that day: 89 under Dec (USDA AMS, North Dakota Daily Grain Bids, Nov 2, 2026)."
+    bsu = json.loads(json.dumps(bs))
+    bsu["states"]["ND"]["crops"]["corn"]["usda"] = {"basis": -89, "line": nd}
+    bsu["states"]["IA"]["crops"]["corn"]["usda"] = {"basis": -41, "line": nd.replace("North Dakota", "Iowa")}
+    bsu["states"]["SD"]["crops"]["corn"]["usda"] = {"basis": -73, "line": "<b>x</b>"}
+    f, w = basis_spread("corn", bsu, now)
+    ok(f and f["detail"].endswith("5 states with 15 or more. " + nd), f"usda in detail {f and f['detail']!r}")
+    ok(f and "Iowa" not in f["detail"] and "<b>" not in f["detail"], "only the named states' USDA line, plain text")
     bs4 = json.loads(json.dumps(bs))
     del bs4["states"]["IL"]
     f, w = basis_spread("corn", bs4, now)

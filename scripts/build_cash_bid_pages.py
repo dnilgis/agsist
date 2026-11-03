@@ -1754,7 +1754,7 @@ def state_compare(picks, summ, sname):
         same = next((x for x in stats if r["contract"] and x["contract"] == r["contract"]), None)
         if same is None:
             head = stats[0]
-            mid = f"{pricefmt.basis(head['median'] * 100)} vs {contract_label(head['contract'])}, {loc_co(head)}"
+            mid = f"{pricefmt.basis(head['median'] * 100)} vs {contract_label(head['contract'])}, {med_of(head)}"
             why = ("posts no futures month with its basis" if not r["contract"] else
                    f"quotes basis vs {contract_label(r['contract'])}, a month too few {sname} elevators use")
             out.append({"crop": c, "name": name, "why": why, "mid": mid,
@@ -1765,7 +1765,7 @@ def state_compare(picks, summ, sname):
         # the middle names its futures month: the state index leads with the
         # month most boards quote (Jan '27 for Iowa soybeans on Nov 2) and a town
         # line against Nov '26 must not read as that same number
-        smid = f"{pricefmt.basis(same['median'] * 100)} vs {con_label(same['contract'])}, {loc_co(same)}"
+        smid = f"{pricefmt.basis(same['median'] * 100)} vs {con_label(same['contract'])}, {med_of(same)}"
         out.append({"crop": c, "line": f"{ADJ[c].capitalize()} basis at {name}, {_basis_plain(r)}, is {rel} the {sname} "
                                         f"middle ({smid}).",
                     "faq": f"That is {rel} the {sname} middle ({smid})."})
@@ -2335,6 +2335,96 @@ def loc_co(st, bold=False):
     return f"{b(n)} {_plural(n, 'location')}, {b(m)} {_plural(m, 'company', 'companies')}"
 
 
+def med_of(st, bold=False):
+    """'median of 203 elevators, 23 companies': the label on a state middle
+    wherever it prints as ours (Sig, Nov 3 2026: "Label + show USDA"); n is
+    the boards in the median. Twin of medOf() in basis.html. A record without
+    the company count (an older file) says 'median of N elevators'."""
+    n, m = st["n"], st.get("companies")
+    b = (lambda x: f"<b>{x}</b>") if bold else str
+    s = f"median of {b(n)} {_plural(n, 'elevator')}"
+    return s if m is None else f"{s}, {b(m)} {_plural(m, 'company', 'companies')}"
+
+
+# USDA BESIDE OUR MEDIAN (Sig, Nov 3 2026). USDA AMS's own state daily cash
+# grain report (data/state-grain-ams.json, scripts/fetch_state_grain_mars.py)
+# gets one quiet line under our corn and soybean median, no link (Oct 29 rule).
+# Only when USDA's average basis is on the same futures month as our headline
+# (the nearest one from USDA's report day, so a bare "Dec" cannot be next
+# year's), the report is not marked stale, and it is dated our snapshot's day
+# or at most USDA_MAX_DAYS before it, never after. A report that covers part of
+# the state says so by its own name ("Southern Minnesota").
+USDA_FILE = os.path.join("data", "state-grain-ams.json")
+USDA_MAX_DAYS = 3          # scripts/check_state_grain_ams.py MAX_DAYS
+USDA_CROPS = ("corn", "soybeans")
+
+
+def load_usda(root):
+    try:
+        with open(os.path.join(root, USDA_FILE), encoding="utf-8") as f:
+            d = json.load(f)
+    except (OSError, ValueError):
+        return None
+    return d if isinstance(d, dict) and isinstance(d.get("states"), dict) else None
+
+
+def usda_words(c):
+    """USDA's basis in cents, as the trade says it: '41 under', '5 over', 'even with'."""
+    return "even with" if c == 0 else f"{abs(c)} {'under' if c < 0 else 'over'}"
+
+
+def usda_beside(st, g, head, usda, snap_day):
+    """-> the record data/basis-states.json carries as crops[g].usda (and the
+    pages print as its line), or None when USDA's number may not sit beside
+    ours. head: our headline contract stat (contract = (root, month index, year))."""
+    if not usda or g not in USDA_CROPS or not head or "median" not in head:
+        return None
+    u = (usda.get("states") or {}).get(st)
+    if not isinstance(u, dict) or u.get("stale") is not False:
+        return None
+    try:
+        rday = dt.date.fromisoformat(str(u.get("report_date")))
+    except ValueError:
+        return None
+    lag = (snap_day - rday).days
+    if lag < 0 or lag > USDA_MAX_DAYS:
+        return None
+    con = head["contract"]
+    ahead = con[2] * 12 + con[1] - (rday.year * 12 + rday.month - 1)
+    if not 0 <= ahead < 12:
+        return None
+    cur = (((u.get("crops") or {}).get(g) or {}).get("current") or {})
+    ub = (cur.get("avg_basis") or {}).get(BM.MONTH_CODES[con[1]])
+    if not isinstance(ub, int) or isinstance(ub, bool) or abs(ub) > 300:
+        return None
+    area, report = str(u.get("name") or STATE_NAMES[st]), str(u.get("report") or "")
+    if not report:
+        return None
+    when = "that day" if lag == 0 else f"on {MONTH_ABBR[rday.month - 1]} {rday.day}"
+    mon = MONTH_ABBR[con[1]]
+    line = (f"USDA's {area} average {when}: {usda_words(ub)} {mon} (USDA AMS, {report}, "
+            f"{MONTH_ABBR[rday.month - 1]} {rday.day}, {rday.year}).")
+    return {"basis": ub, "month": mon, "area": area, "partial": area != STATE_NAMES[st], "report": report,
+            "date": rday.isoformat(), "regions": cur.get("avg_n"), "line": line}
+
+
+def attach_usda(summaries, usda, snap_day):
+    """Put USDA's line on each state's corn and soybean headline (head['usda'])."""
+    n = 0
+    for st, summ in summaries.items():
+        for g in USDA_CROPS:
+            cons = (summ.get(g) or {}).get("contracts") or []
+            if not cons:
+                continue
+            rec = usda_beside(st, g, cons[0], usda, snap_day)
+            if rec:
+                cons[0]["usda"] = rec
+                n += 1
+            else:
+                cons[0].pop("usda", None)
+    return n
+
+
 # one line wherever the company count first shows on a page (the god's-eye panel's skeptic: say how firms are matched)
 CO_RULE = ("Companies: boards that share a name, a website or one firm's own bid page count as one, and CHS counts "
            "once; a firm owned by another may still count apart.")
@@ -2356,10 +2446,13 @@ def basis_stat(g, st, prev_gen):
     if st.get("outliers"):
         k = len(st["outliers"])
         out = f' ({k} more left out as {_plural(k, "outlier")}, listed below)'
+    lab = med_of(st, bold=True)
+    # USDA's own state average for the same futures month, one quiet line under ours (usda_beside)
+    usda = f'<div class="s">{esc(st["usda"]["line"])}</div>' if st.get("usda") else ""
     return (f'<div class="cbt-stat"><div class="v">{money_basis(st["median"])}</div>'
-            f'<div class="l">{SB.CROP_LABEL[g]}: middle basis vs {contract_label(con)} {esc(root)}</div>'
-            f'<div class="s">{loc_co(st, bold=True)}{out} &middot; range '
-            f'{money_basis(st["lo"])} to {money_basis(st["hi"])}{wow}</div></div>')
+            f'<div class="l">{SB.CROP_LABEL[g]} basis vs {contract_label(con)} {esc(root)}</div>'
+            f'<div class="s">{lab[0].upper() + lab[1:]}{out} &middot; range '
+            f'{money_basis(st["lo"])} to {money_basis(st["hi"])}{wow}</div>{usda}</div>')
 
 
 def dtext(r):
@@ -2481,7 +2574,7 @@ def state_faq_pairs(sname, bests, summ, town_paths, labels, n_el, n_towns, snap_
             bg.append(ADJ[g])
             lead = (f"The middle {ADJ[g]} basis in {sname} is" if not bas else
                     f"For {SB.CROP_LABEL[g].lower()} it is")
-            bas.append(f"{lead} {SB.plain_basis(h['median'])} vs {SB.contract_plain(h['contract'])}, across {loc_co(h)} "
+            bas.append(f"{lead} {SB.plain_basis(h['median'])} vs {SB.contract_plain(h['contract'])}, the {med_of(h)} "
                        f"(range {SB.plain_basis(h['lo'])} to {SB.plain_basis(h['hi'])}).")
     if bas:
         qs.append((f"What is the {' and '.join(bg)} basis in {sname}?",
@@ -2558,9 +2651,13 @@ def basis_section(st, summ, prev_gen, town_paths=None):
         return (f'<h2 id="basis">{esc(sname)} basis today</h2><div class="cbt-note"><b>No basis number today.</b> '
                 f'No elevator here had a fresh corn, soybean or wheat bid on a named futures month.</div>')
     html_ = f'<h2 id="basis">{esc(sname)} basis today</h2>'
+    usda_note = (" The USDA line under a number is USDA&rsquo;s own average from the elevators it surveys by region, "
+                 "against the same futures month; it is not made from the elevators below."
+                 if any((summ.get(g) or {}).get("contracts") and summ[g]["contracts"][0].get("usda")
+                        for g in USDA_CROPS) else "")
     html_ += (f'<p class="cbt-sub">Basis is cash minus futures, $/bu. The number is the middle bid (median) of the '
               f'elevators below, each counted once at its nearest delivery, against the futures month most of them '
-              f'name, with how many locations and companies it rests on. {CO_RULE}</p>')
+              f'name, with how many elevators and companies it rests on. {CO_RULE}{usda_note}</p>')
     if blocks:
         html_ += f'<div class="cbt-hero">{"".join(blocks)}</div>'
     if notes:
@@ -2672,6 +2769,8 @@ def basis_states_doc(summaries, ctx, elevators):
         for g, s in summ.items():
             if s["contracts"]:
                 crops[g] = BM.headline_json(s["contracts"][0])
+                if s["contracts"][0].get("usda"):
+                    crops[g]["usda"] = s["contracts"][0]["usda"]
         states[st] = {"name": STATE_NAMES[st], "path": f"/cash-bids/{url_slug(STATE_NAMES[st])}/#basis",
                       "elevators": elevators.get(st, 0), "crops": crops}
     pg = ctx.get("prev_generated")
@@ -2683,15 +2782,19 @@ def basis_states_doc(summaries, ctx, elevators):
                        "standard deviations, and never less than 75 cents, from the median) are left out. "
                        "n = locations behind the median; companies = how many companies run them (boards that "
                        "share a name or a website count once, every CHS business counts as CHS). "
-                       "wow = median change of bids posted in both snapshots, in cents. scripts/basis_method.py."),
+                       "wow = median change of bids posted in both snapshots, in cents. scripts/basis_method.py. "
+                       "usda = USDA AMS's state daily cash grain average basis (data/state-grain-ams.json) on the "
+                       "same futures month, from a report not stale and dated this snapshot's day or up to 3 days "
+                       "before; line is the sentence the pages print."),
             "min_n": BM.MIN_STAT, "states": states}
 
 
 def _cell(c):
     if not c or "median" not in c:
         return '<td class="n"><span class="mut">too few</span></td>'
-    # each count kept whole on its line: "203 locations," then "23 companies" at phone width, one line at 1280
-    cnt = "".join(f'<span style="white-space:nowrap">{x}</span> ' for x in loc_co(c).replace(", ", ",\0").split("\0"))
+    # each count kept whole on its line: "median of", "203 elevators," then "23 companies" at phone width
+    cnt = "".join(f'<span style="white-space:nowrap">{x}</span> '
+                  for x in med_of(c).replace("median of ", "median of\0", 1).replace(", ", ",\0").split("\0"))
     return (f'<td class="n">{money_basis(c["median"])}<br><span class="mut">vs {esc(c["label"])}<br>'
             f'{cnt.strip()}</span></td>')
 
@@ -2730,8 +2833,9 @@ def hub_pick_html(doc, st="IA"):
         if not c or "median" not in c:
             continue
         wk = (f'; {SB.cents_delta(c["wow"])} in a week ({c["wow_n"]} bids both weeks)' if "wow" in c else "")
+        usda = f'<span class="bs-usda">{esc(c["usda"]["line"])}</span>' if (c.get("usda") or {}).get("line") else ""
         parts.append(f'<li><b>{SB.CROP_LABEL[g]}</b> {money_basis(c["median"])} vs {esc(c["label"])} '
-                     f'<span class="mut">{loc_co(c)}{wk}</span></li>')
+                     f'<span class="mut">{med_of(c)}{wk}</span>{usda}</li>')
     if not parts:
         return ""
     return (f'<ul class="bs-pick-l">{"".join(parts)}</ul><p class="bs-seed">Middle bid of {esc(v["name"])} '
@@ -3232,6 +3336,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     for st_ in sorted({r["state"] for r in near}):
         summaries[st_] = BM.state_basis([r for r in near if r["state"] == st_], prev_map)
     n_odd = flag_odd(towns, summaries)
+    n_usda = attach_usda(summaries, load_usda(root), gen.astimezone(CT).date())
+    print(f"[cash-bid-pages] USDA AMS state average shown beside {n_usda} corn and soybean medians")
     town_odd = odd_keys(towns)
     town_paths = {}
     for t in towns.values():
@@ -3683,7 +3789,7 @@ def selftest():
             < fr.index('<div class="cbt-top">'), "answer, table, state line, then the hold box"
         cmp_ = re.search(r'<p class="cbt-cmp">(.*?)</p>', fr).group(1)
         assert cmp_.startswith("Corn basis at Op kept, \u221225\u00a2 vs Dec &#x27;26, is 6\u00bd\u00a2 stronger than the "
-                               "Nebraska middle (\u221231\u00bd\u00a2 vs Dec &#x27;26, 6 locations, 6 companies)."), cmp_
+                               "Nebraska middle (\u221231\u00bd\u00a2 vs Dec &#x27;26, median of 6 elevators, 6 companies)."), cmp_
         assert "Soybean basis" not in cmp_, "fewer than three soybean bids on Nov '26: no middle, no comparison"
         # three questions answered from the page's own numbers; the visible FAQ and
         # the FAQPage JSON-LD say the same words
@@ -3706,7 +3812,7 @@ def selftest():
                              "(Fremont) for delivery by Oct 9, posted Oct 7, 2026. The highest soybean bid is $9.85"), a1
         assert '<div class="v">$3.95</div>' in ne and '<div class="v">$9.85</div>' in ne, "answer prices are the cards'"
         assert nfaq[1]["acceptedAnswer"]["text"].startswith(
-            "The middle corn basis in Nebraska is \u221231\u00bd\u00a2 vs Dec '26, across 6 locations, 6 companies (range "), nfaq[1]
+            "The middle corn basis in Nebraska is \u221231\u00bd\u00a2 vs Dec '26, the median of 6 elevators, 6 companies (range "), nfaq[1]
         assert ne.index('class="cbt-faq"') > ne.index('id="basis"'), "FAQ after the basis block"
         wp = next(g for g in blks[0]["@graph"] if g["@type"] == "WebPage")
         sm_lm = re.search(r"<loc>https://agsist\.com/cash-bids/nebraska/fremont</loc><lastmod>([^<]+)</lastmod>",
@@ -3781,8 +3887,8 @@ def selftest():
         # the best bid first, the misread board left out and said so
         assert '<h2 id="basis">Nebraska basis today</h2>' in ne and 'href="/cash-bids/nebraska/#basis"' in fr
         assert ne.index('id="best"') < ne.index('id="basis"') < ne.index('id="elevators"') < ne.index('id="towns"')
-        assert "\u221231\u00bd\u00a2</span></div><div class=\"l\">Corn: middle basis vs Dec '26" in ne, "median of six Dec bids (-31.5c, as posted, not rounded to -32)"
-        assert "<b>6</b> locations, <b>6</b> companies" in ne and CO_RULE in ne and "$3.95</div><div class=\"l\">Top corn bid" in ne
+        assert "\u221231\u00bd\u00a2</span></div><div class=\"l\">Corn basis vs Dec '26" in ne, "median of six Dec bids (-31.5c, as posted, not rounded to -32)"
+        assert "Median of <b>6</b> elevators, <b>6</b> companies" in ne and CO_RULE in ne and "$3.95</div><div class=\"l\">Top corn bid" in ne
         assert "read as a misread board and left out" in ne and 'data-state-table="NE"' in ne
         assert "/components/state-bids.js?v=2" in ne and "/basis/" not in ne
         assert re.search(r'<meta name="twitter:description" content="Bids from \d+ elevators across 2 Nebraska towns\. '
@@ -3810,7 +3916,7 @@ def selftest():
         assert bs["states"]["NE"]["elevators"] == 7
         hub_html = open(hubp).read()
         assert 'href="/cash-bids/nebraska/#basis"' in hub_html and "old" not in hub_html, hub_html
-        assert 'href="/cash-bids/iowa/#basis"' in hub_html and "3 locations, 3 companies" in hub_html and CO_RULE in hub_html
+        assert 'href="/cash-bids/iowa/#basis"' in hub_html and "median of 3 elevators, 3 companies" in hub_html and CO_RULE in hub_html
         assert re.search(r'href="/cash-bids/nebraska/">Nebraska</a> <span class="mut">7 elevators in 2 towns', hub_html), "the states list on /basis"
         thin = hub_rank_html({"generated": "2026-10-07T18:00:00Z", "states": {"MO": {
             "name": "Missouri", "path": "/cash-bids/missouri/#basis",
@@ -4014,9 +4120,9 @@ def _selftest_answer():
     nv_line = state_compare(pnv, {"corn": {"contracts": [{"contract": dec, "n": 349, "companies": 51,
                                                           "median": -0.40}]}}, "Iowa")
     assert nv_line[1] == ["Corn basis at Lincolnway Energy LLC, \u221230\u00a2 vs Dec '26, is 10\u00a2 stronger than "
-                          "the Iowa middle (\u221240\u00a2 vs Dec '26, 349 locations, 51 companies)."], nv_line
+                          "the Iowa middle (\u221240\u00a2 vs Dec '26, median of 349 elevators, 51 companies)."], nv_line
     assert nv_line[0][0]["faq"] == ("That is 10\u00a2 stronger than the Iowa middle (\u221240\u00a2 vs Dec '26, "
-                                    "349 locations, 51 companies)."), nv_line
+                                    "median of 349 elevators, 51 companies)."), nv_line
     # every other copy of the pick takes the same row
     assert top_nearby(lw["rows"] + key["rows"])["corn"][0] == 4.18
     assert board_glance(dict(lw, rows=lw["rows"]))["corn"][:2] == (4.18, "2026-11")
@@ -4093,9 +4199,9 @@ def _selftest_answer():
             "soybeans": {"contracts": [{"contract": nov, "n": 4, "median": -0.80}]}}
     out, lines = state_compare(pk, summ, "Wisconsin")
     assert lines == ["Corn basis at Beta Co-op, \u221258\u00a2 vs Dec '26, is 3\u00a2 weaker than the Wisconsin middle "
-                     "(\u221255\u00a2 vs Dec '26, 9 elevators).",
+                     "(\u221255\u00a2 vs Dec '26, median of 9 elevators).",
                      "Beta Co-op posts no futures month with its basis, so it is not compared with the Wisconsin middle "
-                     "(soybean \u221280\u00a2 vs Nov '26, 4 elevators)."], lines
+                     "(soybean \u221280\u00a2 vs Nov '26, median of 4 elevators)."], lines
     pk3 = dict(pk, corn=(dict(pk["corn"][0], contract=("ZC", 2, 2027)), "Beta Co-op"))
     assert "a month too few Wisconsin elevators use" in state_compare(pk3, summ, "Wisconsin")[1][0]
     assert state_compare(pk, {"corn": {"contracts": [{"contract": dec, "n": 2}]}}, "Wisconsin") == ([], []), \
