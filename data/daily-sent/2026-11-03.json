@@ -1,0 +1,491 @@
+{
+  "date": "2026-11-03",
+  "sent_at": "2026-11-03T13:51:37+00:00",
+  "format": "v2",
+  "subject": "88% soybeans harvested, week ending Nov. 1",
+  "note": "The Daily as emailed. The page at /daily/2026-11-03 may have been updated later the same day.",
+  "briefing": {
+    "headline": "Dec corn trades at $4.44½ Tuesday morning, under Monday's $4.48¼ settle",
+    "lead": "Dec corn is at $4.44½, 3¾ cents under Monday's settle, with harvest 74% done. That is a quiet slide, but it means the bushels still in the field have not changed the price picture yet.",
+    "teaser": "Corn slips to $4.44½ overnight as USDA puts harvest at 74%; hogs sit near their 52-week low.",
+    "one_number": {
+      "value": "88%",
+      "unit": "soybeans harvested, week ending Nov. 1",
+      "context": "USDA says beans gained 9 points on the week. Corn is behind at 74%, so combines still have work ahead."
+    },
+    "sections": [
+      {
+        "title": "Corn and beans edge lower",
+        "body": "- Dec corn is at **$4.44½** overnight, down 0.8% from Monday's settle, as USDA puts corn harvest at 74%.",
+        "so_what": "Harvest is moving, and the board is easing with it.",
+        "conviction_level": "low",
+        "overnight_surprise": false
+      },
+      {
+        "title": "Cattle dip, hogs stay low",
+        "body": "- Dec live cattle settled Monday at **$219.70**, down 0.6%, while Nov feeders edged up 0.2% to $338.425.\n- Dec hogs settled at $58.175, down 1.2% and sitting near the bottom of their 52-week range.",
+        "so_what": "Hogs remain the weakest part of the livestock board.",
+        "conviction_level": "low",
+        "overnight_surprise": false
+      }
+    ],
+    "outside_the_pit": [
+      {
+        "title": "Third port opens to Mexican cattle",
+        "body": "Cattle crossed from Puerto Palomas, Chihuahua, into Columbus, N.M., on Oct. 26, which adds a third port of entry.",
+        "tag": "LIVESTOCK",
+        "link": "https://www.thefencepost.com/news/third-u-s-port-of-entry-opens-to-mexican-cattle/",
+        "source": "thefencepost.com",
+        "news_id": "N1"
+      },
+      {
+        "title": "Corn growers object to NASS yield correction",
+        "body": "Rollins signed a data deal with NASA while corn growers complain about the NASS correction to September yields.",
+        "tag": "GRAINS",
+        "link": "https://www.thefencepost.com/news/rollins-signs-mou-with-nasa-as-corn-growers-complain-about-nass-correction/",
+        "source": "thefencepost.com",
+        "news_id": "N5"
+      },
+      {
+        "title": "State ag commissioners on today's ballots",
+        "body": "About one-third of state ag commissioners may change after today's elections, just as Congress takes up state policy issues.",
+        "tag": "POLICY",
+        "link": "https://www.thefencepost.com/news/about-one-third-state-ag-commissioners-likely-to-be-new-after-elections/",
+        "source": "thefencepost.com",
+        "news_id": "N20"
+      }
+    ],
+    "watch_list": [
+      {
+        "time": "Tuesday, Nov 10, 11:00 AM CT",
+        "desc": "WASDE. Corn yield and ending stocks are the numbers to watch."
+      },
+      {
+        "time": "Friday, Dec 11",
+        "desc": "2026 ARC/PLC signup deadline at county FSA offices; the 2027 signup is open and runs to Mar. 15, 2027."
+      }
+    ],
+    "source_summary": "CME futures, USDA NASS Crop Progress, USDA AMS reports, AGSIST news digest",
+    "date": "Tuesday, November 3, 2026",
+    "meta": {
+      "market_mood": "mixed",
+      "heat_section": 0,
+      "overnight_surprises_count": 0,
+      "word_count": 264,
+      "news_coverage": {
+        "ok": 22,
+        "total": 26,
+        "items": 102,
+        "dark": [
+          "brownfieldagnews.com",
+          "porkbusiness.com",
+          "extension.iastate.edu",
+          "extension.umn.edu"
+        ]
+      }
+    },
+    "freshness": {
+      "window": 7,
+      "tries": 1,
+      "hits": []
+    },
+    "locked_prices": {
+      "corn": 4.445,
+      "corn-dec": 4.445,
+      "beans": 12.0225,
+      "beans-nov": 12.0225,
+      "wheat": 6.02,
+      "oats": 3.4025,
+      "cattle": 219.7,
+      "feeders": 338.42499,
+      "hogs": 58.175,
+      "milk": 18.07,
+      "meal": 318.20001,
+      "soyoil": 64.68,
+      "crude": 94.62,
+      "natgas": 2.911,
+      "gold": 3965.3999,
+      "silver": 50.175,
+      "dollar": 101.76,
+      "sp500": 7541.3999,
+      "bitcoin": 77561.60938
+    },
+    "locked_changes": {
+      "corn": {
+        "prev": 4.4825,
+        "pct": -0.8366,
+        "kind": "last",
+        "at": "2026-11-03T13:46:04Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "corn-dec": {
+        "prev": 4.4825,
+        "pct": -0.8366,
+        "kind": "last",
+        "at": "2026-11-03T13:46:05Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "beans": {
+        "prev": 12.0475,
+        "pct": -0.2075,
+        "kind": "last",
+        "at": "2026-11-03T13:46:09Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "beans-nov": {
+        "prev": 12.0475,
+        "pct": -0.2075,
+        "kind": "last",
+        "at": "2026-11-03T13:46:05Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "wheat": {
+        "prev": 6.065,
+        "pct": -0.742,
+        "kind": "last",
+        "at": "2026-11-03T13:46:05Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "oats": {
+        "prev": 3.41,
+        "pct": -0.2199,
+        "kind": "last",
+        "at": "2026-11-03T13:46:07Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "cattle": {
+        "prev": 220.95,
+        "pct": -0.5657,
+        "kind": "settle",
+        "date": "2026-11-02",
+        "prev_date": "2026-10-30",
+        "contract": "Dec '26"
+      },
+      "feeders": {
+        "prev": 337.775,
+        "pct": 0.1924,
+        "kind": "settle",
+        "date": "2026-11-02",
+        "prev_date": "2026-10-30",
+        "contract": "Nov '26"
+      },
+      "hogs": {
+        "prev": 58.875,
+        "pct": -1.189,
+        "kind": "settle",
+        "date": "2026-11-02",
+        "prev_date": "2026-10-30",
+        "contract": "Dec '26"
+      },
+      "milk": {
+        "prev": 17.98,
+        "pct": 0.5006,
+        "kind": "last",
+        "at": "2026-11-03T13:46:17Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02",
+        "contract": "Nov '26"
+      },
+      "meal": {
+        "prev": 319.6,
+        "pct": -0.438,
+        "kind": "last",
+        "at": "2026-11-03T13:46:18Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "soyoil": {
+        "prev": 65.08,
+        "pct": -0.6146,
+        "kind": "last",
+        "at": "2026-11-03T13:46:18Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "crude": {
+        "prev": 96.46,
+        "pct": -1.9075,
+        "kind": "last",
+        "at": "2026-11-03T13:46:18Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "natgas": {
+        "prev": 2.856,
+        "pct": 1.9258,
+        "kind": "last",
+        "at": "2026-11-03T13:46:19Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "gold": {
+        "prev": 3969.6001,
+        "pct": -0.1058,
+        "kind": "last",
+        "at": "2026-11-03T13:46:19Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "silver": {
+        "prev": 50.72,
+        "pct": -1.0745,
+        "kind": "last",
+        "at": "2026-11-03T13:46:19Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "dollar": {
+        "prev": 101.75,
+        "pct": 0.0098,
+        "kind": "last",
+        "at": "2026-11-03T13:46:20Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      },
+      "sp500": {
+        "prev": 7580.0698,
+        "pct": -0.5102,
+        "kind": "settle",
+        "date": "2026-11-02",
+        "prev_date": "2026-10-30"
+      },
+      "bitcoin": {
+        "prev": 76677.2969,
+        "pct": 1.1533,
+        "kind": "last",
+        "at": "2026-11-03T13:46:20Z",
+        "date": "2026-11-03",
+        "prev_date": "2026-11-02"
+      }
+    },
+    "board": {
+      "fetched": "2026-11-03T13:46:20Z",
+      "quote_session": "2026-11-03",
+      "prev_close_session": "2026-11-02"
+    },
+    "edge": {
+      "label": "Only on AGSIST",
+      "generated": "2026-11-03T13:49:52Z",
+      "facts": [
+        {
+          "id": "cash_change_corn",
+          "kind": "cash_change",
+          "crop": "corn",
+          "sentence": "On Monday, Nov 2, 194 of the 293 elevators AGSIST reads posted a lower cash corn bid than Friday, 37 a higher one; 44 changed their basis, 7 weaker and 37 stronger.",
+          "key": "194 of the 293 elevators",
+          "detail": "62 unchanged; median change 1¢ lower. Biggest state move: Missouri, 4¢ higher (15 elevators).",
+          "value": -1.0,
+          "unit": "cents per bushel, median change in cash bid",
+          "n": 293,
+          "as_of": "2026-11-02",
+          "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
+          "url": "/cash-bids",
+          "link_text": "Cash bids near you"
+        },
+        {
+          "id": "cash_change_soybeans",
+          "kind": "cash_change",
+          "crop": "soybeans",
+          "sentence": "On Monday, Nov 2, 229 of the 233 elevators AGSIST reads posted a lower cash soybean bid than Friday, 3 a higher one; 45 changed their basis, 28 weaker and 17 stronger.",
+          "key": "229 of the 233 elevators",
+          "detail": "1 unchanged; median change 15¢ lower. Biggest state move: Wisconsin, 15¢ lower (42 elevators).",
+          "value": -15.0,
+          "unit": "cents per bushel, median change in cash bid",
+          "n": 233,
+          "as_of": "2026-11-02",
+          "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
+          "url": "/cash-bids",
+          "link_text": "Cash bids near you"
+        },
+        {
+          "id": "basis_spread_corn",
+          "kind": "basis_spread",
+          "crop": "corn",
+          "sentence": "Corn basis on Nov 3 ran from 55¢ over December futures in Texas to 90¢ under in North Dakota, state medians of the elevators AGSIST read at 6:48 a.m. CT.",
+          "key": "55¢ over December futures",
+          "detail": "Median of 17 elevators in Texas, 48 in North Dakota. 15 states with 15 or more. USDA's North Dakota average on Nov 2: 89 under Dec (USDA AMS, North Dakota Daily Grain Bids, Nov 2, 2026).",
+          "value": 145.0,
+          "unit": "cents per bushel between the strongest and weakest state median",
+          "n": 1598,
+          "as_of": "2026-11-03",
+          "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
+          "url": "/basis",
+          "link_text": "Basis by state"
+        }
+      ]
+    },
+    "chart_series": {
+      "corn": [
+        4.595,
+        4.64,
+        4.56,
+        4.53,
+        4.545,
+        4.515,
+        4.5125,
+        4.4975,
+        4.505,
+        4.445
+      ],
+      "soybeans": [
+        12.45,
+        12.47,
+        12.575,
+        12.4025,
+        12.4875,
+        12.3325,
+        12.1675,
+        12.2,
+        12.215,
+        12.0225
+      ]
+    },
+    "chart_dates": [
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-26",
+      "2026-10-27",
+      "2026-10-28",
+      "2026-10-29",
+      "2026-10-30",
+      "2026-11-02",
+      "2026-11-03"
+    ],
+    "chart_window": "Oct 21 - Nov 3",
+    "quote_strip": {
+      "asof": "2026-11-03T13:46:20Z",
+      "session": "2026-11-03",
+      "vs_session": "2026-11-02",
+      "quotes": [
+        {
+          "key": "corn-dec",
+          "name": "Corn",
+          "contract": "Dec '26",
+          "last": 4.445,
+          "prev": 4.4825,
+          "pct": -0.8366,
+          "kind": "last",
+          "at": "2026-11-03T13:46:05Z"
+        },
+        {
+          "key": "beans-nov",
+          "name": "Soybeans",
+          "contract": "Nov '26",
+          "last": 12.0225,
+          "prev": 12.0475,
+          "pct": -0.2075,
+          "kind": "last",
+          "at": "2026-11-03T13:46:05Z"
+        },
+        {
+          "key": "wheat",
+          "name": "Wheat",
+          "contract": "nearby",
+          "last": 6.02,
+          "prev": 6.065,
+          "pct": -0.742,
+          "kind": "last",
+          "at": "2026-11-03T13:46:05Z"
+        }
+      ]
+    },
+    "sponsor": {
+      "active": false,
+      "label": "SPONSOR · 1 SLOT",
+      "advertiser": "AGSIST",
+      "headline": "Sponsor the AGSIST Daily Briefing: $149 a month, first month free.",
+      "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, who read it every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
+      "cta_text": "Become the sponsor",
+      "cta_url": "mailto:sig@agsist.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
+      "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
+      "is_house_ad": true
+    },
+    "issue_number": 236,
+    "generated_at": "2026-11-03T13:50:14.237919+00:00",
+    "generator_version": "5.5.0",
+    "surprise_count": 0,
+    "surprises": [],
+    "price_validation_clean": true,
+    "market_closed": false,
+    "market_status_reason": "open",
+    "otp_week_ahead": false,
+    "critic_pass": {
+      "version": "2.0",
+      "ran_at": "2026-11-03T13:50:18.645643+00:00",
+      "threshold": 7,
+      "final_scores": {
+        "rule_1_lead_so_what": 4,
+        "rule_2_conviction_earned": 9,
+        "rule_3_lede_no_deferral": 6,
+        "rule_4_watch_conditional": 5,
+        "rule_5_so_what_synthesizes": 6,
+        "rule_6_quiet_days_quiet": 9,
+        "rule_7_yc_honesty": 10,
+        "rule_8_word_budget": 10,
+        "rule_9_voice": 7,
+        "rule_10_forward_test": 3,
+        "rule_11_action_thresholded": 10,
+        "rule_12_one_fact_one_home": 5,
+        "rule_13_level_coherence": 4,
+        "rule_14_one_number_coherence": 10,
+        "rule_15_markdown_not_html": 10,
+        "rule_16_macro_anchoring": 10
+      },
+      "rewrites_applied": [
+        {
+          "pass": 1,
+          "target": "lead",
+          "rule": "rule_1_lead_so_what",
+          "scores_before": {
+            "rule_1_lead_so_what": 4,
+            "rule_2_conviction_earned": 9,
+            "rule_3_lede_no_deferral": 6,
+            "rule_4_watch_conditional": 5,
+            "rule_5_so_what_synthesizes": 6,
+            "rule_6_quiet_days_quiet": 9,
+            "rule_7_yc_honesty": 10,
+            "rule_8_word_budget": 10,
+            "rule_9_voice": 7,
+            "rule_10_forward_test": 3,
+            "rule_11_action_thresholded": 10,
+            "rule_12_one_fact_one_home": 5,
+            "rule_13_level_coherence": 4,
+            "rule_14_one_number_coherence": 10,
+            "rule_15_markdown_not_html": 10,
+            "rule_16_macro_anchoring": 10
+          }
+        },
+        {
+          "pass": "consistency",
+          "target": "dropped watch item 0: Dec corn below $4.44 would say harvest supply is still weighing on the board.",
+          "rule": "13",
+          "scores_before": {}
+        }
+      ],
+      "consistency": [
+        "dropped watch item 0: Dec corn below $4.44 would say harvest supply is still weighing on the board."
+      ],
+      "dry_run": false
+    },
+    "headline_fix": {
+      "result": "rewritten",
+      "original": "Corn slips 3¾¢ to $4.44½ as harvest nears the finish",
+      "headline": "Dec corn trades at $4.44½ Tuesday morning, under Monday's $4.48¼ settle",
+      "tries": [
+        {
+          "try": 1,
+          "headline": "Dec corn trades at $4.44½ Tuesday morning, under Monday's $4.48¼ settle",
+          "rules": []
+        }
+      ]
+    },
+    "first_published_at": "2026-11-03T13:34:14.677650+00:00"
+  }
+}
