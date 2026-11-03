@@ -1,7 +1,7 @@
 {
  "schema": "agsist-elevator-ids/1",
- "note": "Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids (a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every merge and split. retired: bids-repo ids the bids repo folded into another row (into), never used again; their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements filled from this ledger as it stood before them, commit 3dd4c29b39d).",
- "next": 538,
+ "note": "Which id each key holds. A key keeps its id; ids are never renumbered or reused. minted: AGSIST ids (a + 5 digits) with the key that first held each; into: merged into a bids-repo elevId. events: every merge and split. retired: bids-repo ids the bids repo folded into another row (into), or that left its directory with no fold (rule vanished: into the one row all their keys match, else a new AGSIST id; an event back if the id returns), never used again; their keys hold the survivor; keys: the keys that held it when it was retired (the Oct 27 2026 retirements filled from this ledger as it stood before them, commit 3dd4c29b39d).",
+ "next": 539,
  "minted": {
   "a00001": {
    "first": "basis:AL|AGREX INC|MONTGOMERY",
@@ -1780,7 +1780,8 @@
   },
   "a00425": {
    "first": "basis:SD|DAKOTA GROWERS COOP|HARTFORD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ef1y5my5gh"
   },
   "a00426": {
    "first": "basis:SD|FULL CIRCLE AG|ABERDEEN",
@@ -1788,7 +1789,8 @@
   },
   "a00427": {
    "first": "basis:SD|GLACIAL LAKES ENERGY, LLC|MINA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ervz160cv7"
   },
   "a00428": {
    "first": "basis:SD|HOWARD FARMERS CO-OP|HOWARD",
@@ -2208,7 +2210,8 @@
   },
   "a00529": {
    "first": "dir:86797",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ear80ntznz"
   },
   "a00530": {
    "first": "dir:86860",
@@ -2242,6 +2245,10 @@
    "first": "dir:87820",
    "since": "2026-10-18",
    "into": "evzwpjq41a"
+  },
+  "a00538": {
+   "first": "basis:SD|FARMERS COOP SOCIETY|BERESFORD",
+   "since": "2026-11-03"
   }
  },
  "retired": {
@@ -2798,6 +2805,14 @@
    "rule": "phone",
    "keys": [
     "basis:IA|RIVER VALLEY COOPERATIVE|DYERSVILLE"
+   ]
+  },
+  "edy2eazz93": {
+   "into": "a00538",
+   "on": "2026-11-03",
+   "rule": "vanished",
+   "keys": [
+    "basis:SD|FARMERS COOP SOCIETY|BERESFORD"
    ]
   },
   "ee46y3574r": {
@@ -4873,6 +4888,30 @@
    "merge": "a00109",
    "into": "emknz275z3",
    "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-03",
+   "merge": "a00425",
+   "into": "ef1y5my5gh",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-03",
+   "merge": "a00427",
+   "into": "ervz160cv7",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-03",
+   "merge": "a00529",
+   "into": "ear80ntznz",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-03",
+   "retire": "edy2eazz93",
+   "into": "a00538",
+   "why": "gone from the bids repo's directory with no mergedFrom; its keys keep a new AGSIST id"
   }
  ],
  "keys": {
@@ -8158,7 +8197,7 @@
   "basis:SD|COUNTRY PRIDE COOP|ABERDEEN": "e9gkehvc9m",
   "basis:SD|DAKOTA ETHANOL|WENTWORTH": "edxfnexyfg",
   "basis:SD|DAKOTA GROWERS COOP|COLTON": "en1m2yzjce",
-  "basis:SD|DAKOTA GROWERS COOP|HARTFORD": "a00425",
+  "basis:SD|DAKOTA GROWERS COOP|HARTFORD": "ef1y5my5gh",
   "basis:SD|DAKOTA MILL & GRAIN|BELLE FOURCHE": "eb4nnwrzrw",
   "basis:SD|DAKOTA MILL & GRAIN|FORT PIERRE": "eg7r8def6k",
   "basis:SD|DAKOTA MILL & GRAIN|MIDLAND": "ewzr8pgk2a",
@@ -8169,13 +8208,13 @@
   "basis:SD|DELL RAPIDS CO-OP GRAIN|DELL RAPIDS": "evj9e4wg5z",
   "basis:SD|FARMERS COOP ELEVATOR ROSHOLT|FARMERS COOP ELEVATOR ROSHOLT": "evqch7za7y",
   "basis:SD|FARMERS COOP SOCIETY|ALCESTER": "en2dfgb1dw",
-  "basis:SD|FARMERS COOP SOCIETY|BERESFORD": "edy2eazz93",
+  "basis:SD|FARMERS COOP SOCIETY|BERESFORD": "a00538",
   "basis:SD|FARMERS COOP SOCIETY|WORTHING": "e7x1wsajbn",
   "basis:SD|FARMERS PRIDE COOP|AVON": "epenwfp24y",
   "basis:SD|FULL CIRCLE AG|ABERDEEN": "a00426",
   "basis:SD|FULL CIRCLE AG|AGP-ABERDEEN": "ebn7vhdmrb",
   "basis:SD|GLACIAL LAKES ENERGY, LLC|ABERDEEN": "ejb1yvbzj4",
-  "basis:SD|GLACIAL LAKES ENERGY, LLC|MINA": "a00427",
+  "basis:SD|GLACIAL LAKES ENERGY, LLC|MINA": "ervz160cv7",
   "basis:SD|HOVEN EQUITY EXCHANGE|ABERDEEN": "enwa4cr78t",
   "basis:SD|HOVEN EQUITY EXCHANGE|AGP - DIRECT SHIP": "e5x4qs87tx",
   "basis:SD|HOVEN EQUITY EXCHANGE|GLACIAL LAKES ENERGY - DIRECT SHIP": "e7s7rprw6z",
@@ -9558,12 +9597,12 @@
   "dir:86503": "evvty3kagt",
   "dir:86547": "a00180",
   "dir:86550": "ex66sdw218",
-  "dir:86553": "a00425",
+  "dir:86553": "ef1y5my5gh",
   "dir:86714": "a00528",
   "dir:86767": "e0h7byvpvj",
   "dir:86770": "eq60vezx68",
   "dir:86778": "ev95n8p69y",
-  "dir:86797": "a00529",
+  "dir:86797": "ear80ntznz",
   "dir:86798": "ee9sf5h3vg",
   "dir:86802": "e2e5vjynnm",
   "dir:86803": "ensdd0992c",
