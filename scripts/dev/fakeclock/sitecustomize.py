@@ -1,4 +1,4 @@
-"""Fake clock for python, used only by scripts/dev/future_dates.sh (PYTHONPATH puts this folder first).
+"""Fake clock for python, used only by scripts/dev/future_dates.py (PYTHONPATH puts this folder first).
 
 With AGSIST_FAKE_OFFSET=<seconds> set, time.time(), datetime.now()/utcnow()/today() and date.today() run that many
 seconds ahead (the clock still moves). Without it this file does nothing but load the sandbox's own sitecustomize.

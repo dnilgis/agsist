@@ -151,7 +151,7 @@ def run_date(label, when, jobs, nfiles, pcmds, outdir, names=None):
     env = dict(os.environ)
     if when is not None:
         off = int(when.timestamp() - time.time())
-        env.update(AGSIST_FAKE_OFFSET=str(off), AGSIST_FAKE_NOW=when.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        env.update(PYTHONDONTWRITEBYTECODE="1", AGSIST_FAKE_OFFSET=str(off), AGSIST_FAKE_NOW=when.strftime("%Y-%m-%dT%H:%M:%SZ"),
                    PYTHONPATH=CLOCK + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""),
                    NODE_OPTIONS=(env.get("NODE_OPTIONS", "") + f" --import {CLOCK}/clock.mjs").strip(),
                    PATH=shim_bin(outdir) + os.pathsep + env["PATH"])

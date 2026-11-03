@@ -1,4 +1,4 @@
-// Fake clock for node, used only by scripts/dev/future_dates.sh (NODE_OPTIONS=--import this file).
+// Fake clock for node, used only by scripts/dev/future_dates.py (NODE_OPTIONS=--import this file).
 // With AGSIST_FAKE_OFFSET=<seconds> set, Date (new Date(), Date.now(), Intl formatting of "now") runs that many
 // seconds ahead and keeps moving; every Chromium page a test opens through Playwright gets the same shift.
 // Without the variable it does nothing.
