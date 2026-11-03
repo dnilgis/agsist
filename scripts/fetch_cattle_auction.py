@@ -154,7 +154,7 @@ SECTION_RE = re.compile(
     r"(?<!dairy )(?<!open )\b(?:feeder\s+)?(steers|heifers)\s*-?\s*medium\s+(?:and|&)\s+large\s+(1-2|1)\s*\(\s*per\s+cwt\s*/\s*actual\s+wt\s*\)", re.I)
 # any table heading, so a block ends where the next one starts
 HEAD_RE = re.compile(
-    r"\b(?:feeder|slaughter|bred|stock|replacement|cow|cows|holstein|dairy|pairs|bulls?|steers|heifers|"
+    r"\b(?:feeder|slaughter|bred|stock|replacement(?=\s+(?:cattle|dairy)\b)|cow|cows|holstein|dairy|pairs|bulls?|steers|heifers|"
     r"heiferettes|baby|calves)\b[A-Za-z0-9 ,&/\-]{0,80}?\(\s*(?:per|price)\b[^)]*\)", re.I)
 # The market comment after the tables ("**CLOSE** Compared to last week ... 317.00/cwt")
 # quotes prices; a table ends where it starts.
@@ -201,12 +201,35 @@ INT = r"(\d{1,3}(?:,\d{3})*|\d+)"
 WT = r"(\d{3,4})"
 PX = r"(\d{2,4}\.\d{2})"
 # words that start the next thing, never a row note ("Please Note" after the last row
-# made Gordon 1858's one heifer 1-2 row a noted row before Oct 28)
-STOP = r"(?:feeder|slaughter|bred|stock|replacement|cows?|holstein|dairy|pairs|bulls?|source|head|wt|avg|price|range|agricultural|livestock|usda|page|special|please|note|compared)\b"
+# made Gordon 1858's one heifer 1-2 row a noted row before Oct 28). "Replacement" alone is
+# a row note USDA prints ("30 755 755 284.00 284.00 Replacement", Unionville 1237, Feb 2025;
+# MARS carries it as lot_desc "Replacement"); before Nov 3 it was a stop word, so those rows
+# went into the class average. Only "Replacement Cattle" and "Replacement Dairy" start the next
+# table (the only such headings in 1,174 reports read, Nov 3). "Source/Aged" is a note too
+# (Valentine 1856, Oct 22 2026: 83 steers); "Source: USDA" still stops.
+STOP = r"(?:feeder|slaughter|bred|stock|replacement\s+(?:cattle|dairy)|cows?|holstein|dairy|pairs|bulls?|source(?!/)|head|wt|avg|price|range|agricultural|livestock|usda|page|special|please|note|compared)\b"
 ROW_RE = re.compile(
     r"(?<![\d.])" + INT + r"\s+" + WT + r"(?:\s*-\s*" + WT + r")?\s+" + WT + r"\s+" + PX +
     r"(?:\s*-\s*" + PX + r")?\s+" + PX + r"(?![\d.])"
     r"((?:\s+(?!" + STOP + r")[A-Za-z][A-Za-z'/]*){0,3})", re.I)
+
+
+def check_row(r):
+    """None for a good row, "skip" for one outside the weights read at all, else why it
+    is a misread. The one set of row rules for the PDF reader here and the MARS reader
+    (scripts/backfill_feeder_index.py): a row that fails it refuses the whole report."""
+    head, lo, hi, wt, plo, phi, price = (r["head"], r["lo"], r["hi"], r["wt"], r["plo"], r["phi"], r["price"])
+    if head <= 0:
+        return "a row with no head"
+    if not (lo <= wt <= hi):
+        return "avg weight %d outside its own range %d-%d: misread" % (wt, lo, hi)
+    if not (plo <= price <= phi):
+        return "avg price %.2f outside its own range %.2f-%.2f: misread" % (price, plo, phi)
+    if not (PRICE_RANGE[0] <= price <= PRICE_RANGE[1]):
+        return "price %.2f outside %s" % (price, PRICE_RANGE)
+    if not (WT_RANGE[0] <= wt <= WT_RANGE[1]):
+        return "skip"
+    return None
 
 
 def parse_rows(block):
@@ -225,18 +248,14 @@ def parse_rows(block):
         phi = float(m.group(6)) if m.group(6) else plo
         price = float(m.group(7))
         note = (m.group(8) or "").strip()
-        if head <= 0:
-            return None, "a row with no head"
-        if not (lo <= wt <= hi):
-            return None, "avg weight %d outside its own range %d-%d: misread" % (wt, lo, hi)
-        if not (plo <= price <= phi):
-            return None, "avg price %.2f outside its own range %.2f-%.2f: misread" % (price, plo, phi)
-        if not (PRICE_RANGE[0] <= price <= PRICE_RANGE[1]):
-            return None, "price %.2f outside %s" % (price, PRICE_RANGE)
-        if not (WT_RANGE[0] <= wt <= WT_RANGE[1]):
+        row = {"head": head, "lo": lo, "hi": hi, "wt": wt, "plo": plo, "phi": phi,
+               "price": price, "note": note}
+        why = check_row(row)
+        if why == "skip":
             continue
-        rows.append({"head": head, "lo": lo, "hi": hi, "wt": wt, "plo": plo, "phi": phi,
-                     "price": price, "note": note})
+        if why:
+            return None, why
+        rows.append(row)
     tail = block[pos:]
     if re.search(r"\d{2,4}\.\d{2}", tail):
         return None, "a price after the last readable row: %r" % tail.strip()[:60]
@@ -1140,6 +1159,23 @@ def selftest():
     c = s and s["classes"].get("heifers|1-2", {}).get("400")
     ck("real Gordon 1858: the heifer 1-2 row before 'Please Note:' is a plain row (9 hd 498 lb 412.50), not a noted one",
        c and (c["cwt"], c["head"]) == (412.5, 9) and s["noted_head"] == 0, c or (s and s["noted_head"]))
+
+    # "Replacement" after a row is that row's note (Unionville 1237, Feb 4 2025, the
+    # Internet Archive copy, pypdf text: one cell per line); the next heading still ends a table
+    rep = ("Unionville Livestock Market - Unionville, MO\nLivestock Weighted Average Report for 02/04/2025\nTue Feb  4,  2025\n"
+           "Total Receipts: 1,200\nFEEDER CATTLE\nHEIFERS - Medium and Large 1 (Per Cwt / Actual Wt)\nHead\nWt Range\nAvg Wt\n"
+           "Price Range\nAvg Price\n54\n656-695\n672\n265.50-289.50\n280.09 \n30\n755\n755\n284.00\n284.00 \nReplacement\n"
+           "11\n804-830\n818\n238.00-245.50\n242.15 \n26\n718\n718\n277.00\n277.00 \nReplacement\n"
+           "STEERS - Medium and Large 1 (Per Cwt / Actual Wt)\nHead\nWt Range\nAvg Wt\nPrice Range\nAvg Price\n"
+           "83\n722\n722\n402.00\n402.00 \nSource/Aged\n5\n730\n730\n390.00\n390.00 \n"
+           "REPLACEMENT CATTLE\nBred Cows (Per Head / Actual Wt)\n")
+    pr, w = parse_report(rep)
+    rr = pr and pr["tables"]["heifers|1"]
+    sr = pr and pr["tables"].get("steers|1")
+    ck("a lone 'Replacement' is the row's note, also right before the next table's heading",
+       rr and [r["note"] for r in rr] == ["", "Replacement", "", "Replacement"], w or rr)
+    ck("'Source/Aged' is the row's note; 'REPLACEMENT CATTLE' ends the table",
+       sr and [(r["head"], r["note"]) for r in sr] == [(83, "Source/Aged"), (5, "")], w or sr)
 
     # Kentucky reports, Oct 2026. The run on the runner reads pypdf text (no pdftotext
     # there), where a "Special Note:" follows the last row of a table and the table goes

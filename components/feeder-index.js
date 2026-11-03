@@ -100,7 +100,9 @@
 
   // The AGSIST USDA feeder steer index box: the latest finished week, its sample,
   // how far a redraw of its barns moves it, the change when earned, RMA beside it.
-  function indexView(d, nowMs) {
+  // hist: data/feeder-index-history.json (past weeks from archived USDA reports), loaded when the
+  // fold opens; its weeks come before the live record and never replace a live week.
+  function indexView(d, nowMs, hist) {
     if (!d || typeof d !== 'object') return { down: true, msg: 'The index did not load.' };
     var ix = d.index;
     var ws = ix && ix.weeks;
@@ -142,13 +144,27 @@
         : 'Set beside RMA&rsquo;s steer value once RMA has posted 3 days of that week (it has posted ' + c.rma_days + ').';
     }
     // the record, oldest first; withheld weeks stay in as gaps
-    out.series = ws.map(function (x) { return { start: x.start, p: fxNum(x.p) ? x.p : null, lo: fxNum(x.lo) ? x.lo : null, hi: fxNum(x.hi) ? x.hi : null }; });
+    var past = [];
+    if (hist && hist.weeks && hist.weeks.length) past = hist.weeks.filter(function (x) { return x && x.start < ws[0].start && x.from === 'archive'; });
+    // the chart starts at the first archived week with a figure; the table lists the live weeks
+    // and the archived weeks that have a figure (an archived withheld week is a gap in the chart only)
+    var firstOk = -1;
+    past.forEach(function (x, i) { if (firstOk < 0 && fxNum(x.p)) firstOk = i; });
+    var all = (firstOk >= 0 ? past.slice(firstOk) : []).concat(ws);
+    var listed = past.filter(function (x) { return fxNum(x.p); }).concat(ws);
+    out.series = all.map(function (x) { return { start: x.start, p: fxNum(x.p) ? x.p : null, lo: fxNum(x.lo) ? x.lo : null, hi: fxNum(x.hi) ? x.hi : null }; });
     out.shownWeeks = out.series.filter(function (x) { return x.p != null; }).length;
-    out.rows = ws.slice(-12).reverse().map(function (x) {
-      return { week: fxWeek(x), p: fxNum(x.p) ? fxMoney(x.p) : '-', chg: fxNum(x.chg) ? fxSigned(x.chg) : '',
+    out.rows = listed.slice(-12).reverse().map(function (x) {
+      return { week: fxWeek(x), p: fxNum(x.p) ? fxMoney(x.p) : '-', chg: fxNum(x.chg) ? fxSigned(x.chg) : '', arch: x.from === 'archive',
         n: fxInt(x.barns) + ' barns, ' + fxInt(x.states) + ' states, ' + fxInt(x.head) + ' head', why: fxNum(x.p) ? '' : (x.why || []).join('; ') };
     });
-    out.since = ix.start ? fxLab(ix.start) : '';
+    out.liveSince = ix.start ? fxLab(ix.start) : '';
+    out.since = fxLab(all[0].start);
+    out.archive = past.length ? { since: fxLab(past[0].start), read: fxLab(hist.read), ok: past.filter(function (x) { return fxNum(x.p); }).length, weeks: past.length,
+      // how each past week was read: through USDA My Market News (via.mars) or, for a barn week it
+      // lacked, from an Internet Archive copy (via.archive; a file without via is archive copies only)
+      mars: past.some(function (x) { return x.via && x.via.mars > 0; }),
+      iaWeeks: past.filter(function (x) { return x.via ? x.via.archive > 0 : x.barns > 0; }).length } : null;
     out.minBarns = g.barns; out.draws = fxInt(ix.draws || 1000);
     return out;
   }
@@ -336,8 +352,25 @@
     box.hidden = false;
     var cs = window.getComputedStyle ? getComputedStyle(box) : null;
     var cw = box.clientWidth ? box.clientWidth - (cs ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 36) : 640;
+    h += '<details>' + indexFold(v, cw, compact) + '</details><p class="fx-src">Source: USDA AMS sale barn reports.</p>';
+    box.innerHTML = h; box.hidden = false;
+    // Past weeks from archived reports load only when the fold opens (the page payload stays as it was).
+    var det = box.querySelector('details');
+    if (det) det.addEventListener('toggle', function () {
+      if (!det.open || det.getAttribute('data-hist')) return;
+      det.setAttribute('data-hist', 'loading');
+      fetch('/data/feeder-index-history.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (hd) {
+        det.setAttribute('data-hist', hd ? 'loaded' : 'failed');
+        if (!hd) return;
+        var v2 = indexView(d, Date.now(), hd);
+        if (!v2 || v2.down || !v2.archive) return;
+        det.innerHTML = indexFold(v2, cw, compact);
+      });
+    });
+  }
+  function indexFold(v, cw, compact) {
     var chart = !compact && v.shownWeeks >= 2;
-    h += '<details><summary>' + (chart ? 'Every week since ' + esc(v.since) + ', and how it is figured' : 'How it is figured, and every week') + '</summary>';
+    var h = '<summary>' + (chart ? 'Every week since ' + esc(v.since) + ', and how it is figured' : 'How it is figured, and every week') + '</summary>';
     if (chart) h += indexChartSvg(v.series, cw) + '<p class="fx-note">Dots are the index; the bar through each is the range from redrawing that week&rsquo;s barns. Gaps are withheld weeks.</p>';
     else if (!compact) h += '<p class="fx-note">The chart starts once two weeks have a figure.</p>';
     if (v.range) h += '<p class="fx-note">' + v.range + (v.top ? ' ' + esc(v.top) : '') + '</p>';
@@ -349,7 +382,7 @@
     if (v.first) h += '<p class="fx-note">' + esc(v.first) + '</p>';
     h += '<table class="fx-t"><thead><tr><th scope="col">Week</th><th scope="col">Index</th><th scope="col">Change</th></tr></thead><tbody>';
     v.rows.forEach(function (r) {
-      h += '<tr><td>' + esc(r.week) + '</td><td class="p">' + esc(r.p) + '<small>' + esc(r.n) + '</small>' + (r.why ? '<small>Withheld: ' + esc(r.why) + '</small>' : '') + '</td><td class="c">' + esc(r.chg) + '</td></tr>';
+      h += '<tr><td>' + esc(r.week) + '</td><td class="p">' + esc(r.p) + '<small>' + esc(r.n) + '</small>' + (r.why ? '<small>Withheld: ' + esc(r.why) + '</small>' : '') + (r.arch ? '<small>From archived USDA reports</small>' : '') + '</td><td class="c">' + esc(r.chg) + '</td></tr>';
     });
     h += '</tbody></table><ul>' +
       '<li>What: one national weekly price for feeder steers 700 to 899 lb, graded Medium and Large 1 and 1-2, in dollars per hundredweight. That is the yearling that goes on feed, and the weight RMA&rsquo;s steer value covers.</li>' +
@@ -359,10 +392,16 @@
       '<li>The range: we redraw the week&rsquo;s barns at random, with repeats, ' + v.draws + ' times and give the middle nine of ten results. A change from the week before shows only when both weeks pass and ' + v.minBarns + ' or more of the same barns sold both weeks; if its range takes in zero, it is called no clear change.</li>' +
       '<li>Weekly, not daily: each barn sells on its own day, so a daily figure would be a different set of barns each day, and some USDA reports come in days late.</li>' +
       '<li>The barns are the ones USDA reports on and we read, so states with more of them count for more. It is not every sale in the country.</li>' +
-      '<li>Our record starts the week of ' + esc(v.since) + ', when we began reading these reports. Every finished week is kept.</li>' +
+      (v.archive && v.archive.mars
+        ? '<li>Our own reads start the week of ' + esc(v.liveSince) + '. The weeks before that, back to the week of ' + esc(v.archive.since) + ', are figured by the same rules from the same USDA barn reports, read through USDA&rsquo;s My Market News (read ' + esc(v.archive.read) + ')' +
+          (v.archive.iaWeeks ? '; in ' + fxInt(v.archive.iaWeeks) + ' of those weeks a few barns come from copies of the reports the Internet Archive kept, where My Market News did not have that barn&rsquo;s week' : '') +
+          '. ' + fxInt(v.archive.ok) + ' of ' + fxInt(v.archive.weeks) + ' weeks have a figure; the others are withheld by the same rule and are gaps in the chart.</li>'
+        : v.archive
+        ? '<li>Our own reads start the week of ' + esc(v.liveSince) + '. The weeks before that, back to the week of ' + esc(v.archive.since) + ', are figured by the same rules from copies of USDA&rsquo;s own reports that the Internet Archive kept (read ' + esc(v.archive.read) + '). Those copies catch only some barns in a given week, so most of those weeks are withheld: ' + fxInt(v.archive.ok) + ' of ' + fxInt(v.archive.weeks) + ' have a figure, and only those are in the table.</li>'
+        : '<li>Our record starts the week of ' + esc(v.liveSince) + ', when we began reading these reports. Every finished week is kept.</li>') +
       '<li>This is AGSIST&rsquo;s own figure. It is not the CME Feeder Cattle Index, and no CME data goes into it.</li>' +
-      '</ul><p class="fx-src">' + AMS_CREDIT + '</p></details><p class="fx-src">Source: USDA AMS sale barn reports.</p>';
-    box.innerHTML = h; box.hidden = false;
+      '</ul><p class="fx-src">' + AMS_CREDIT + (v.archive ? (v.archive.mars ? ' Earlier weeks: USDA AMS reports read through My Market News' + (v.archive.iaWeeks ? ', a few from copies kept by the Internet Archive' : '') + '.' : ' Earlier weeks: USDA AMS reports as copied by the Internet Archive.') : '') + '</p>';
+    return h;
   }
 
   function drawTable(box, d) {

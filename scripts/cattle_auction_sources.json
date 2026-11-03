@@ -19,7 +19,7 @@
     {"id": "searcy-ar", "name": "Arkansas Cattle Auction", "town": "Searcy", "state": "AR", "lat": 35.25, "lon": -91.74, "slug": "2052", "match": "searcy|arkansas cattle auction", "check": true},
     {"id": "brush-co", "name": "Livestock Exchange", "town": "Brush", "state": "CO", "lat": 40.26, "lon": -103.62, "slug": "1906", "match": "brush", "also": ["3090"]},
     {"id": "la-junta-co", "name": "Winter Livestock", "town": "La Junta", "state": "CO", "lat": 37.98, "lon": -103.54, "slug": "1901", "match": "la junta"},
-    {"id": "la-junta-lc-co", "name": "La Junta Livestock Commission", "town": "La Junta", "state": "CO", "lat": 37.98, "lon": -103.54, "slug": "1903", "match": "la junta livestock commission", "check": true},
+    {"id": "la-junta-lc-co", "name": "La Junta Livestock Commission", "town": "La Junta", "state": "CO", "lat": 37.98, "lon": -103.54, "slug": "1903", "match": "la junta livestock commis{1,2}ion", "check": true},
     {"id": "sterling-co", "name": "Sterling Livestock Commission", "town": "Sterling", "state": "CO", "lat": 40.63, "lon": -103.21, "slug": "1900", "match": "sterling"},
     {"id": "arcadia-fl", "name": "Arcadia Stockyard", "town": "Arcadia", "state": "FL", "lat": 27.22, "lon": -81.86, "slug": "1609", "match": "arcadia", "also": ["1422"]},
     {"id": "okeechobee-fl", "name": "Okeechobee Livestock Market", "town": "Okeechobee", "state": "FL", "lat": 27.24, "lon": -80.83, "slug": "1419", "match": "okeechobee", "check": true, "also": ["1608"]},
