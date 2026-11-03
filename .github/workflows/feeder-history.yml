@@ -1,0 +1,152 @@
+name: Feeder index history (dispatch only)
+
+# Past weeks of the AGSIST USDA feeder steer index (Sig said yes, Nov 2 2026):
+# data/feeder-index-history.json, read by components/feeder-index.js only when
+# a reader opens the index's record fold. DISPATCH ONLY: no schedule and no
+# push trigger, ever. The ongoing weeks ride cattle-auction.yml as before.
+#
+# What it does (scripts/backfill_feeder_index.py):
+#   1. reads every single-barn USDA AMS report in scripts/cattle_auction_sources.json
+#      through the MARS API of USDA My Market News (--mars-fetch; secret MARS_API_KEY,
+#      HTTP basic, never printed), one ask per report and year, 1.5 s apart, and maps
+#      its rows to fetch_cattle_auction's own records with the same row rules;
+#   2. only when "archive" is ticked: also lists and reads the Internet Archive's
+#      copies of the same reports (--fetch, 4 s apart, robots.txt obeyed); a copy is
+#      used only for a barn and week MARS does not hold;
+#   3. saves what was read to the private raw branch (history/feeder-mars/ and
+#      history/feeder-archive/), so a later run picks up where this one stopped;
+#   4. builds the past weeks with build_feeder_index.build_history (the live
+#      record's own rules; never a week the live record holds; each week says how
+#      its barns were read) and commits the file to the branch it ran on, unless
+#      dry run is ticked.
+# A re-run with nothing new changes nothing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: "First sale date to look for (YYYY-MM-DD)"
+        type: string
+        default: "2024-01-01"
+      to:
+        description: "Last sale date (YYYY-MM-DD; blank = the day before the live record starts)"
+        type: string
+        default: ""
+      archive:
+        description: "Also read Internet Archive copies (slow) for barn weeks MARS lacks"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Dry run: read and save to raw, print the weeks, commit nothing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: feeder-history
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # The same PDF reader the barn job uses (cattle-auction.yml), so a report reads the same here.
+      - name: Install pypdf
+        run: pip install pypdf==6.20.1
+      - name: Selftests (no network)
+        run: |
+          python3 scripts/fetch_cattle_auction.py --selftest
+          python3 scripts/build_feeder_index.py --selftest
+          python3 scripts/backfill_feeder_index.py --selftest
+      - name: What earlier runs read (private raw branch)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          bash scripts/pull_raw.sh history/feeder-archive/manifest.json
+          bash scripts/pull_raw.sh history/feeder-archive/sales
+          bash scripts/pull_raw.sh history/feeder-mars/manifest.json
+          bash scripts/pull_raw.sh history/feeder-mars/rows
+      - name: Read the reports through My Market News (MARS)
+        env:
+          FROM: ${{ inputs.from }}
+          TO: ${{ inputs.to }}
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: |
+          for v in "$FROM" "$TO"; do
+            [ -z "$v" ] && continue
+            case "$v" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "::error::dates are YYYY-MM-DD ($v)"; exit 1;; esac
+          done
+          [ -n "$MARS_API_KEY" ] || { echo "::error::no MARS_API_KEY secret"; exit 1; }
+          args=(--mars-fetch --from "${FROM:-2024-01-01}")
+          if [ -n "$TO" ]; then args+=(--to "$TO"); fi
+          python3 scripts/backfill_feeder_index.py "${args[@]}"
+      - name: Read the archived copies
+        if: ${{ inputs.archive }}
+        env:
+          FROM: ${{ inputs.from }}
+          TO: ${{ inputs.to }}
+          HISTORY_PUSH: '1'
+          RAW_SOFT: '1'
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          for v in "$FROM" "$TO"; do
+            [ -z "$v" ] && continue
+            case "$v" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "::error::dates are YYYY-MM-DD ($v)"; exit 1;; esac
+          done
+          args=(--fetch --from "${FROM:-2024-01-01}" --max-minutes 240)
+          if [ -n "$TO" ]; then args+=(--to "$TO"); fi
+          python3 scripts/backfill_feeder_index.py "${args[@]}"
+      - name: Save to the raw branch
+        if: ${{ !cancelled() }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: |
+          paths=()
+          for d in history/feeder-mars history/feeder-archive; do [ -d "$d" ] && paths+=("$d"); done
+          [ ${#paths[@]} -gt 0 ] || { echo "nothing written"; exit 0; }
+          bash scripts/push_raw.sh "feeder index history" "${paths[@]}"
+      - name: Build the past weeks
+        env:
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY" = "true" ]; then
+            python3 scripts/backfill_feeder_index.py --build --dry-run
+          else
+            python3 scripts/backfill_feeder_index.py --build
+          fi
+      - name: Commit if changed (race-tolerant)
+        if: ${{ !inputs.dry_run }}
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          F=data/feeder-index-history.json
+          [ -e "$F" ] || { echo "No output; nothing to commit."; exit 0; }
+          cp "$F" /tmp/fih.json
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            cp /tmp/fih.json "$F"
+            git add "$F"
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update feeder index history $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1

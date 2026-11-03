@@ -77,6 +77,12 @@ pages only draw them.
    Oct 16, 2026 (27 versions checked Nov 2) and the raw branch holds only the
    latest report per barn; every sale in those versions is in barn_sales.
    No CME data is read or compared here (Sig, Oct 29).
+   Before IDX_START: data/feeder-index-history.json (build_history, run by
+   scripts/backfill_feeder_index.py from archived copies of the same USDA
+   reports, feeder-history.yml). Same index_week and index_change, only weeks
+   before IDX_START, so a live week is never replaced by an archive read; each
+   week says where it came from and when it was read. The page loads it only
+   when the record fold opens.
 
 Modes:
   (default)   read the inputs and the last data/feeder-index.json, write it.
@@ -449,6 +455,106 @@ def build_index(store, prev_weeks, monday, today):
         "last_ok": ok[-1] if ok else None,
         "weeks": weeks,
     }
+
+
+# ------------------------------------------------------------------ history from the archive
+HISTORY = "data/feeder-index-history.json"
+FAR = datetime.date(2100, 1, 1)   # archive weeks are long over: every one is final
+
+
+def history_store(sales):
+    """Archived barn sales -> the same store merge_barn_sales keeps:
+    {barn_id: {"state", "sales": {date: cells}}}. Each sale is one report's
+    summarize() (scripts/fetch_cattle_auction.py) plus "barn" and "state". A barn
+    with two reports dated the same day (a reissued report) keeps the one with
+    more head, so a sale is never counted twice."""
+    store = {}
+    for s in sales or []:
+        d = pdate(s.get("date"))
+        bid, st = s.get("barn"), s.get("state")
+        if not d or not bid or not st:
+            continue
+        cells = sale_cells(s)
+        if not cells:
+            continue
+        e = store.setdefault(bid, {"state": st, "sales": {}, "via": {}})
+        old = e["sales"].get(iso(d))
+        if old is not None:
+            if sum(v[0] for v in old.values()) > sum(v[0] for v in cells.values()) or \
+               (sum(v[0] for v in old.values()) == sum(v[0] for v in cells.values()) and
+                    json.dumps(old, sort_keys=True) <= json.dumps(cells, sort_keys=True)):
+                continue
+        e["sales"][iso(d)] = cells
+        if s.get("via"):
+            e["via"][iso(d)] = s["via"]
+    return store
+
+
+def week_via(store, b, monday):
+    """{how read: barns} for the barns counted in one week (b from index_week)."""
+    sunday = monday + datetime.timedelta(days=6)
+    out = {}
+    for bid in b:
+        vs = {v for d, v in (store[bid].get("via") or {}).items() if pdate(d) and monday <= pdate(d) <= sunday}
+        for v in vs or {"archive"}:
+            out[v] = out.get(v, 0) + 1
+    return out
+
+
+def _same_week(a, b):
+    return {k: v for k, v in a.items() if k != "read"} == {k: v for k, v in b.items() if k != "read"}
+
+
+def build_history(store, prev, read_date, source, live_start=IDX_START):
+    """Past weeks of the index from archived reports, by the same rules as the
+    live record (index_week, index_change). Only weeks before live_start: the
+    live record (data/feeder-index.json) is never overwritten by an archive
+    read. A week whose numbers did not change keeps its first read date, so a
+    re-run changes nothing; weeks this store does not reach stay as they were."""
+    prev_weeks = {w["start"]: w for w in ((prev or {}).get("weeks") or [])}
+    days = sorted(pdate(d) for e in store.values() for d in e["sales"])
+    days = [d for d in days if d and d < live_start]
+    new = {}
+    if days:
+        first = week_start(days[0])
+        m = first
+        while m < live_start:
+            o, b = index_week(store, m, FAR)
+            pm = m - datetime.timedelta(days=7)
+            po, pb = index_week(store, pm, FAR) if m > first else (None, {})
+            o = index_change(o, b, po, pb, m)
+            o["from"] = "archive"
+            if any(e.get("via") for e in store.values()):
+                o["via"] = week_via(store, b, m)
+            o["read"] = read_date
+            old = prev_weeks.get(o["start"])
+            if old and _same_week(old, o):
+                o["read"] = old["read"]
+            new[o["start"]] = o
+            m += datetime.timedelta(days=7)
+    weeks = dict(prev_weeks)
+    weeks.update(new)
+    out = [weeks[k] for k in sorted(weeks) if pdate(k) and pdate(k) < live_start]
+    ok = [w for w in out if w.get("p") is not None]
+    reads = sorted({w.get("read") for w in out if w.get("read")})
+    return {
+        "v": 1, "name": IDX_NAME, "label": IDX_LABEL,
+        "what": "Past weeks of the index, figured from USDA's archived barn reports by the same rules as the live record",
+        "source": source,
+        "read": reads[-1] if reads else None, "first_read": reads[0] if reads else None,
+        "start": out[0]["start"] if out else None, "end": out[-1]["end"] if out else None,
+        "live_start": iso(live_start),
+        "weeks_ok": len(ok), "barns": len(store),
+        "weeks": out,
+    }
+
+
+def write_history(root, doc):
+    path = Path(root) / HISTORY
+    tmp = path.with_name(path.name + ".tmp")
+    with open(tmp, "w") as f:
+        f.write(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
+    os.replace(tmp, path)
 
 
 # ------------------------------------------------------------------ RMA
@@ -856,6 +962,38 @@ def selftest():
     ck("build: a withheld index week withholds the RMA check", thin["check"]["gap"] is None and thin["check"]["why"] == "index withheld")
     again2 = build(full, aev, meta, prices, bd, datetime.datetime(2026, 10, 28, 15, 0))
     ck("build: a rerun gives the same index", again2["index"] == bd["index"])
+
+    # history from archived reports: same rules, only before the live record, re-run changes nothing
+    def arch(n, start, price, first=1, day=1):
+        return [dict(b["sales"][0], barn=b["id"], state=b["state"]) for b in wk_barns(n, start, price, first=first, day=day)]
+    A1, A2 = D(2025, 1, 6), D(2025, 1, 13)
+    sales_a = arch(30, A1, 300.0) + arch(30, A2, 310.0) + arch(5, D(2025, 1, 27), 320.0) + arch(30, D(2026, 10, 12), 999.0)
+    hs = history_store(sales_a)
+    h1 = build_history(hs, None, "2026-11-02", "test")
+    hw = {w["start"]: w for w in h1["weeks"]}
+    ck("history: weeks from the first archived sale, none at or after the live start",
+       h1["start"] == "2025-01-06" and max(hw) < iso(IDX_START) and "2026-10-12" not in hw)
+    ck("history: same rules as the live index", hw["2025-01-06"]["p"] == index_week(hs, A1, FAR)[0]["p"] == 300.0)
+    ck("history: change between two passing weeks", hw["2025-01-13"]["chg"] == 10.0 and hw["2025-01-13"]["both"] == 30)
+    ck("history: a thin week is withheld with its counts", hw["2025-01-27"]["p"] is None and hw["2025-01-27"]["barns"] == 5
+       and hw["2025-01-27"]["why"][0] == "5 barns, 30 needed")
+    ck("history: a week with no archived sale is a gap", hw["2025-01-20"]["p"] is None and hw["2025-01-20"]["barns"] == 0)
+    ck("history: every week marked as read from the archive", all(w["from"] == "archive" and w["read"] == "2026-11-02" for w in h1["weeks"]))
+    ck("history: no week twice", len(h1["weeks"]) == len(hw))
+    h2 = build_history(history_store(sales_a), h1, "2026-11-09", "test")
+    ck("history: a re-run changes nothing (first read date kept)", h2 == h1)
+    more = sales_a + arch(10, A1, 330.0, first=100)
+    h3 = build_history(history_store(more), h1, "2026-11-09", "test")
+    w3 = {w["start"]: w for w in h3["weeks"]}
+    ck("history: a week with more barns read is recounted and dated anew",
+       w3["2025-01-06"]["barns"] == 40 and w3["2025-01-06"]["read"] == "2026-11-09" and w3["2025-01-27"]["read"] == "2026-11-02")
+    short = build_history(history_store(arch(30, A2, 310.0)), h1, "2026-11-09", "test")
+    ck("history: weeks the new store does not reach stay as they were",
+       {w["start"]: w for w in short["weeks"]}["2025-01-06"] == hw["2025-01-06"])
+    dup = history_store(arch(1, A1, 300.0) + [dict(arch(1, A1, 300.0)[0], classes={"steers|1": {"800": {"head": 5, "avg_wt": 800, "cwt": 1.0, "per_head": 8.0}}})])
+    ck("history: a barn's two reports of one sale count once (the fuller one)", dup["b1"]["sales"][iso(A1 + datetime.timedelta(days=1))]["steers|800"][0] == 150)
+    ck("history: a live-record week passed in is dropped", all(w["start"] < iso(IDX_START) for w in
+       build_history({}, {"weeks": [{"start": "2026-10-12", "end": "2026-10-18", "p": 1.0}]}, "x", "t")["weeks"]))
 
     print("FAILS=%d" % len(fails))
     return 1 if fails else 0
