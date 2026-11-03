@@ -388,6 +388,7 @@ def mars_from_dir(src_dir, out=MARS_OUT, root=FCA.ROOT, log=print):
             continue
         with open(p, "rb") as f:
             rows = mars_feeder_rows(f.read())
+        save(os.path.join(out, "rows", slug + ".json"), rows)
         sales, bad = mars_sales_of(rows, barn)
         save(os.path.join(out, "sales", slug + ".json"), sales)
         man["reports"][slug] = {"barn": barn["id"], "rows": len(rows), "sales": len(sales), "refused": bad}
@@ -460,6 +461,19 @@ def crosscheck(texts, mars_rows_by_slug, root=FCA.ROOT):
     return out
 
 
+def check_saved(out=OUT, mars_out=MARS_OUT, root=FCA.ROOT):
+    """The cross-check on what is saved: every Internet Archive copy's text (text/<slug>/)
+    against the MARS rows (rows/<slug>.json). Writes <mars_out>/crosscheck.json."""
+    texts = []
+    for p in sorted(glob.glob(os.path.join(out, "text", "*", "*.txt"))):
+        with open(p, encoding="utf-8") as f:
+            texts.append((os.path.basename(os.path.dirname(p)), os.path.basename(p)[:-4], f.read()))
+    rows = {slug: load(os.path.join(mars_out, "rows", slug + ".json"), []) for slug in {t[0] for t in texts}}
+    r = crosscheck(texts, rows, root)
+    save(os.path.join(mars_out, "crosscheck.json"), r)
+    return r
+
+
 def archived_sales(out=OUT, root=FCA.ROOT):
     """Every archived sale with its barn id and state, for history_store."""
     cfg = FCA.load_sources(root)
@@ -475,11 +489,49 @@ def archived_sales(out=OUT, root=FCA.ROOT):
     return out_
 
 
-def build(out=OUT, root=FCA.ROOT, read_date=None, dry=False, log=print):
+def mars_saved_sales(mars_out=MARS_OUT, root=FCA.ROOT):
+    """Every sale the MARS reader made (history/feeder-mars/sales/), with barn and state."""
+    cfg = FCA.load_sources(root)
+    by_slug = dict(reports(cfg))
+    out_ = []
+    for p in sorted(glob.glob(os.path.join(mars_out, "sales", "*.json"))):
+        b = by_slug.get(os.path.basename(p)[:-5])
+        if not b:
+            continue
+        for d, s in sorted(load(p, {}).items()):
+            out_.append(dict(s, barn=b["id"], state=b["state"], via="mars"))
+    return out_
+
+
+def combined_sales(out=OUT, mars_out=MARS_OUT, root=FCA.ROOT):
+    """MARS first; an Internet Archive copy's sale only for a barn and week MARS does not hold.
+    -> (sales, {"mars": n, "archive": n, "archive_dropped": n})"""
+    ms = mars_saved_sales(mars_out, root)
+    have = {(s["barn"], BFI.iso(BFI.week_start(BFI.pdate(s["date"])))) for s in ms if BFI.pdate(s.get("date"))}
+    arch, dropped = [], 0
+    for s in archived_sales(out, root):
+        d = BFI.pdate(s.get("date"))
+        if not d:
+            continue
+        if (s["barn"], BFI.iso(BFI.week_start(d))) in have:
+            dropped += 1
+            continue
+        arch.append(dict(s, via="archive"))
+    return ms + arch, {"mars": len(ms), "archive": len(arch), "archive_dropped": dropped}
+
+
+def build(out=OUT, root=FCA.ROOT, read_date=None, dry=False, log=print, mars_out=MARS_OUT):
     read_date = read_date or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
     prev = load(os.path.join(root, BFI.HISTORY), None)
-    store = BFI.history_store(archived_sales(out, root))
-    doc = BFI.build_history(store, prev, read_date, SOURCE)
+    sales, n = combined_sales(out, mars_out, root)
+    log("sales: %d read through MARS, %d from Internet Archive copies (%d archive copies left out: MARS holds that barn's week)"
+        % (n["mars"], n["archive"], n["archive_dropped"]))
+    store = BFI.history_store(sales)
+    src = MARS_SOURCE if n["mars"] else SOURCE
+    if n["mars"] and n["archive"]:
+        src = MARS_SOURCE + "; where it lacks a barn's week, from copies of the same reports kept by the Internet Archive"
+    doc = BFI.build_history(store, prev, read_date, src)
+    doc["sales"] = n
     log("history: %d weeks from %s to %s, %d with a figure, %d barns" % (
         len(doc["weeks"]), doc["start"], doc["end"], doc["weeks_ok"], doc["barns"]))
     if not dry:
@@ -565,6 +617,87 @@ def selftest():
             ck("dry run writes nothing", open(os.path.join(root, BFI.HISTORY)).read() == before)
         finally:
             FD.pdf_to_text = real
+
+    # MARS reader: the same sale as the PDF fixtures, row for row
+    fxd = os.path.join(here, "..", "test", "fixtures", "cattle-auction")
+    src = dict(reports(FCA.load_sources(FCA.ROOT)))
+    for slug, pdf, mj in (("1856", "ams_1856-archive-2025-01-pypdf.txt", "mars_1856-2025-01-06.json"),
+                          ("1245", "ams_1245-archive-2025-01-pypdf.txt", "mars_1245-2025-01-06.json")):
+        p, _ = FCA.parse_report(open(os.path.join(fxd, pdf), encoding="utf-8").read())
+        mrows = load(os.path.join(fxd, mj), [])
+        good, bad = mars_reports(mrows, src[slug])
+        ck("MARS %s: the PDF's sale, the same rows" % slug, p["date"] in good and not bad and compare_sale(p, good[p["date"]]) == [],
+           (list(good), bad, p and compare_sale(p, good.get(p["date"], {}))[:3]))
+        ck("MARS %s: the same summary as the PDF reader" % slug,
+           {k: v for k, v in FCA.summarize(good[p["date"]]).items() if k != "receipts"} ==
+           {k: v for k, v in FCA.summarize(p).items() if k != "receipts"})
+    v = load(os.path.join(fxd, "mars_1856-2025-01-06.json"), [])
+    good, bad = mars_reports([dict(r, report_title="Some Other Barn - Elsewhere, KS") for r in v], src["1856"])
+    ck("MARS: a report whose title does not name the barn is refused", not good and list(bad.values())[0].startswith("title"), bad)
+    bent = [dict(r) for r in v]
+    k = next(i for i, r in enumerate(bent) if mars_key(r))
+    bent[k]["avg_price"] = bent[k]["avg_price_max"] + 5
+    good, bad = mars_reports(bent, src["1856"])
+    ck("MARS: one misread row refuses the whole sale", not good and "outside its own range" in list(bad.values())[0], bad)
+    good, _ = mars_reports([dict(r, lot_desc="Replacement") if r.get("class") == "Steers" else r for r in v], src["1856"])
+    s1 = FCA.summarize(good["2025-01-09"])
+    ck("MARS: a row with a note is counted out of the class average", s1["noted_head"] > 0 and not any(
+        k.startswith("steers") for k in s1["classes"]), s1["noted_head"])
+    ck("MARS: rows the PDF reader never reads are not read", mars_key({"commodity": "Feeder Cattle", "class": "Dairy Steers", "frame": "Large",
+       "muscle_grade": "3", "price_unit": "Per Cwt", "weight_collect": "Actual"}) is None and
+       mars_key({"commodity": "Replacement Cattle", "class": "Heifers", "frame": "Medium and Large", "muscle_grade": "1",
+                 "price_unit": "Per Cwt", "weight_collect": "Actual"}) is None and
+       mars_key({"commodity": "Feeder Cattle", "class": "Steers", "frame": "Medium and Large", "muscle_grade": "1",
+                 "price_unit": "Per Unit", "weight_collect": "Actual"}) is None)
+    sales, _ = mars_sales_of([dict(r, final_ind="Preliminary") for r in v], src["1856"])
+    ck("MARS: a preliminary sale is marked", sales["2025-01-09"].get("preliminary") is True)
+
+    # MARS first; an archive copy only for a barn and week MARS lacks
+    with tempfile.TemporaryDirectory() as d:
+        root = os.path.join(d, "root")
+        os.makedirs(os.path.join(root, "scripts"))
+        os.makedirs(os.path.join(root, "data"))
+        shutil.copy(os.path.join(here, "cattle_auction_sources.json"), os.path.join(root, "scripts"))
+        ia, mo = os.path.join(d, "ia"), os.path.join(d, "mars")
+        sale = FCA.summarize(FCA.parse_report(open(os.path.join(fxd, "ams_1856-archive-2025-01-pypdf.txt"), encoding="utf-8").read())[0])
+        save(os.path.join(ia, "sales", "1856.json"), {"2025-01-09": dict(sale, copy="x"), "2025-02-06": dict(sale, date="2025-02-06", copy="y")})
+        save(os.path.join(mo, "sales", "1856.json"), {"2025-01-10": dict(sale, date="2025-01-10")})
+        al, n = combined_sales(ia, mo, root)
+        ck("combined: MARS holds the week, the archive copy of it is left out; another week comes from the archive",
+           n == {"mars": 1, "archive": 1, "archive_dropped": 1} and sorted((x["date"], x["via"]) for x in al) ==
+           [("2025-01-10", "mars"), ("2025-02-06", "archive")], (n, [(x["date"], x["via"]) for x in al]))
+        doc = build(ia, root, read_date="2026-11-03", log=lambda *a: None, mars_out=mo)
+        w = {x["start"]: x for x in doc["weeks"]}
+        ck("combined: each week says how its barns were read", w["2025-01-06"]["via"] == {"mars": 1} and
+           w["2025-02-03"]["via"] == {"archive": 1} and w["2025-01-13"]["via"] == {}, (w["2025-01-06"].get("via"), w["2025-02-03"].get("via")))
+        ck("combined: the file names both sources", "My Market News" in doc["source"] and "Internet Archive" in doc["source"], doc["source"])
+
+        # the fetch: one ask per report and year, the key only in the header, feeder rows saved
+        os.environ["MARS_API_KEY"] = "test-key-not-real"
+        asked = []
+
+        def mop(u):
+            asked.append(u)
+            if "/reports/1856?" in u and "01/01/2025" in u:
+                return 200, json.dumps({"results": v + [{"commodity": "Slaughter Cattle", "report_date": "01/09/2025"}]}).encode(), {}
+            return 200, json.dumps({"results": []}).encode(), {}
+        try:
+            f = Fetcher(min_gap=0, retries=0, opener=mop, sleep=lambda s: None, ok=(200, 204, 404))
+            man = mars_fetch(datetime.date(2024, 6, 1), datetime.date(2025, 3, 1), out=mo, fetch_=f, log=lambda *a: None, root=root)
+            n_rep = len(reports(FCA.load_sources(root)))
+            ck("fetch: every report asked once per year", len(asked) == 2 * n_rep, (len(asked), n_rep))
+            ck("fetch: the key is never in a URL or a saved file", not any("test-key" in u for u in asked) and
+               not any("test-key" in open(os.path.join(dp, x), errors="ignore").read() for dp, _, fs in os.walk(mo) for x in fs))
+            rows = load(os.path.join(mo, "rows", "1856.json"), [])
+            ck("fetch: only feeder rows kept, sale read", rows and all(r["commodity"] == "Feeder Cattle" for r in rows) and
+               man["reports"]["1856"]["sales"] == 1 and "2025-01-09" in load(os.path.join(mo, "sales", "1856.json"), {}))
+            n0 = len(asked)
+            mars_fetch(datetime.date(2024, 6, 1), datetime.date(2025, 3, 1), out=mo, fetch_=f, log=lambda *a: None, root=root)
+            ck("fetch: a re-run asks only the last year again", len(asked) - n0 == n_rep, len(asked) - n0)
+        finally:
+            os.environ.pop("MARS_API_KEY", None)
+        ck("fetch: no key, nothing asked", mars_fetch(datetime.date(2024, 6, 1), datetime.date(2025, 3, 1), out=mo,
+                                                      log=lambda *a: None, root=root) is None)
     print("backfill_feeder_index selftest: %d failure(s)" % len(fails))
     return 1 if fails else 0
 
@@ -574,6 +707,10 @@ def main(argv=None):
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--fetch", action="store_true")
     ap.add_argument("--build", action="store_true")
+    ap.add_argument("--mars-fetch", action="store_true")
+    ap.add_argument("--mars-saved", default="")
+    ap.add_argument("--mars-check", action="store_true")
+    ap.add_argument("--mars-out", default=MARS_OUT)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--from", dest="d0", default="2025-01-01")
     ap.add_argument("--to", dest="d1", default="")
@@ -582,18 +719,29 @@ def main(argv=None):
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
-    if not (a.fetch or a.build):
-        print("nothing to do: --fetch, --build or --selftest")
+    if not (a.fetch or a.build or a.mars_fetch or a.mars_saved or a.mars_check):
+        print("nothing to do: --fetch, --mars-fetch, --mars-saved DIR, --mars-check, --build or --selftest")
         return 2
-    if a.fetch:
-        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.d0) or (a.d1 and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.d1)):
+    for v in (a.d0, a.d1):
+        if v and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
             print("dates are YYYY-MM-DD")
             return 2
+    if a.mars_fetch:
+        d1 = datetime.date.fromisoformat(a.d1) if a.d1 else BFI.IDX_START - datetime.timedelta(days=1)
+        if mars_fetch(datetime.date.fromisoformat(a.d0), d1, out=a.mars_out) is None:
+            return 1
+    if a.mars_saved:
+        mars_from_dir(a.mars_saved, out=a.mars_out)
+    if a.mars_check:
+        r = check_saved(a.out, a.mars_out)
+        print("cross-check: %d sales read both ways, %d the same row for row, %d differ; %d weeks, %d the same index"
+              % (r["pairs"], r["same"], len(r["differ"]), len(r["weeks"]), r["weeks_same"]))
+    if a.fetch:
         d0 = datetime.date.fromisoformat(a.d0)
         d1 = datetime.date.fromisoformat(a.d1) if a.d1 else BFI.IDX_START - datetime.timedelta(days=1)
         fetch(d0, d1, out=a.out, minutes=a.max_minutes)
     if a.build:
-        build(a.out, dry=a.dry_run)
+        build(a.out, dry=a.dry_run, mars_out=a.mars_out)
     return 0
 
 

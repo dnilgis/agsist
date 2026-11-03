@@ -477,7 +477,7 @@ def history_store(sales):
         cells = sale_cells(s)
         if not cells:
             continue
-        e = store.setdefault(bid, {"state": st, "sales": {}})
+        e = store.setdefault(bid, {"state": st, "sales": {}, "via": {}})
         old = e["sales"].get(iso(d))
         if old is not None:
             if sum(v[0] for v in old.values()) > sum(v[0] for v in cells.values()) or \
@@ -485,7 +485,20 @@ def history_store(sales):
                     json.dumps(old, sort_keys=True) <= json.dumps(cells, sort_keys=True)):
                 continue
         e["sales"][iso(d)] = cells
+        if s.get("via"):
+            e["via"][iso(d)] = s["via"]
     return store
+
+
+def week_via(store, b, monday):
+    """{how read: barns} for the barns counted in one week (b from index_week)."""
+    sunday = monday + datetime.timedelta(days=6)
+    out = {}
+    for bid in b:
+        vs = {v for d, v in (store[bid].get("via") or {}).items() if pdate(d) and monday <= pdate(d) <= sunday}
+        for v in vs or {"archive"}:
+            out[v] = out.get(v, 0) + 1
+    return out
 
 
 def _same_week(a, b):
@@ -511,6 +524,8 @@ def build_history(store, prev, read_date, source, live_start=IDX_START):
             po, pb = index_week(store, pm, FAR) if m > first else (None, {})
             o = index_change(o, b, po, pb, m)
             o["from"] = "archive"
+            if any(e.get("via") for e in store.values()):
+                o["via"] = week_via(store, b, m)
             o["read"] = read_date
             old = prev_weeks.get(o["start"])
             if old and _same_week(old, o):
