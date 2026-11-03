@@ -817,7 +817,7 @@
       });
   }
   if (typeof window !== 'undefined') {
-    window.AgCustomRates = { matches: matches, money: money, stem: stem, cells: cells, usdaDiesel: usdaDiesel, quoteTotals: quoteTotals };
+    window.AgCustomRates = { matches: matches, money: money, stem: stem, cells: cells, usdaDiesel: usdaDiesel, quoteTotals: quoteTotals, sheet: function () { return S.b ? stateSheetSpec() : null; }, quote: function () { return S.b ? quoteSpec() : null; } };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   }
 })();
