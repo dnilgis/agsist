@@ -278,7 +278,8 @@ test("Worth a look sits right under the jobs, before the Daily, with Rain Print 
   assert.equal(g[3], RP.gauge_hook.link);
   assert.match(strip, /<a class="wl-c wl-n" id="wl-new" href="\/changelog"[^>]*><span class="wl-t">New on AGSIST<\/span><span class="wl-x" id="wl-new-x">[^<]+<\/span><span class="wl-a" id="wl-new-a">[^<]+<\/span><\/a>/, "baked: a plain What's new link until today's page lands");
   assert.match(HTML, /<script src="\/components\/home-worth\.js\?v=1" defer><\/script>/);
-  assert.match(HTML, /<link rel="stylesheet" href="\/css\/home\.css\?v=31">/);
+  const cssV = /<link rel="stylesheet" href="\/css\/home\.css\?v=(\d+)">/.exec(HTML);
+  assert.ok(cssV && +cssV[1] >= 31, "home.css v31 (the strip's styles) or later");
   assert.ok(!/[—–]|&mdash;|&ndash;/.test(strip) && !/[\u{1F300}-\u{1FAFF}]/u.test(strip), "no dashes or emoji");
   assert.ok(!/href="https?:/.test(strip), "no outside links");
 });
