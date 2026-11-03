@@ -100,10 +100,13 @@
     var prevEl=document.getElementById('pcprev-'+domSuffix);
     if(!priceEl||!chgEl)return false;
     priceEl.textContent=fmtPrice(fq.close,2,true);
-    var chgObj=fmtChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
+    /* a withheld move (move_withheld or roll) prints no change, 2026-11-02 */
+    var held=!!(fq.move_withheld||fq.roll);
+    var chgObj=held?{text:'contract roll',cls:'nc'}:fmtChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
     chgEl.textContent=chgObj.text;
     chgEl.className='pc-chg-val '+chgObj.cls;
-    if(prevEl&&fq.open!=null)prevEl.textContent='prev: '+fmtPrice(fq.open,2,true)+' '+(fq.ticker||'');
+    if(prevEl&&held)prevEl.textContent='';
+    else if(prevEl&&fq.open!=null)prevEl.textContent='prev: '+fmtPrice(fq.open,2,true)+' '+(fq.ticker||'');
     /* the card's overnight line (geo.js wrote the swapped-out contract's) follows the contract shown, 2026-10-20 */
     var ovCard=priceEl.closest?priceEl.closest('.pc'):null,ovEl=ovCard&&ovCard.querySelector('.pc-ovn');
     if(ovEl){var ovH=window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(fq,function(v){return AG.px.price(v,{style:'slash'});},function(n){return AG.px.move(n,{style:'slash',sign:true});},null,{short:true}):'';
@@ -123,7 +126,7 @@
        copy (rebuildTickerLoop clones the strip) so the strip does not read
        "Corn Dec '26 $5.01" beside "Corn (front) $5.01". */
     if(typeof fmtTickerPrice==='function'&&typeof fmtTickerChange==='function'){
-      var tp=fmtTickerPrice(fq.close,true,2), tc=fmtTickerChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
+      var tp=fmtTickerPrice(fq.close,true,2), tc=held?{text:'contract roll',cls:'nc'}:fmtTickerChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
       document.querySelectorAll('[data-sym="'+fwd.sym+'"]').forEach(function(el){
         var le=el.querySelector('.t-label'), pe=el.querySelector('.t-price'), ce=el.querySelector('.t-chg');
         if(le)le.textContent=fwd.tick;
