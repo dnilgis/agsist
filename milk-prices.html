@@ -92,7 +92,7 @@
   .dp-dmc-h .ic{width:1.05em;height:1.05em;color:var(--gold);}
   .dp-dmc-line{margin:0;line-height:1.5;color:var(--text);}
   /* the countdown is recounted on the reader's clock after paint: same-width figures, so "51 days" to "50 days" moves nothing */
-  #dp-dmc-words,#dp-dmc-lever{font-variant-numeric:tabular-nums;}
+  #dp-dmc-words,#dp-dmc-lever,#dp-now-per,#dp-now-signup{font-variant-numeric:tabular-nums;}
   .dp-dmc-src{font-size:.85rem;color:var(--text-dim);}
   .dp-dmc-fb{margin:.5rem 0 0;padding-left:1.1rem;color:var(--text-dim);font-size:.93rem;line-height:1.5;}
   .dp-dmc-fb li{margin:.2rem 0;}
@@ -118,6 +118,7 @@
   .dp-hc-plot{position:relative;height:200px;width:100%;}
   .dp-hc-wide .dp-hc-plot{height:220px;}
   .dp-hc-wide .dp-hc-note{min-height:6em;}
+  @media (max-width:480px){.dp-fold .dp-hc-wide .dp-hc-note{min-height:8em;}}
   .dp-hc-plot svg{display:block;width:100%;height:100%;overflow:visible;}
   .dp-hc-note{font-size:.93rem;line-height:1.5;color:var(--text-dim);margin:.35rem 0 0;min-height:4.5em;}
   .dp-hc-grid{stroke:var(--border);stroke-width:1;}
@@ -510,6 +511,7 @@
   .dp-fold-hint{display:block;margin-top:.2rem;font-size:.9rem;line-height:1.4;color:var(--text-dim);}
   .dp-ask{margin:1.2rem 0 0;}
   .dp-nw{white-space:nowrap;}
+  .dp-fold [id]{scroll-margin-top:76px;}
   .dp-fold[open]{padding-bottom:1rem;}
   .dp-fold[open]>summary{border-bottom:1px solid var(--border);margin-bottom:.8rem;}
   .dp-fold .dp-tbl-wrap,.dp-fold .dp-strip,.dp-fold .dp-o30-depool,.dp-fold .dp-ppd,.dp-fold .dp-margin,.dp-fold .dp-dollar,
@@ -558,7 +560,7 @@
   <header class="dp-head">
     <span class="dp-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg> Dairy Markets</span>
     <h1 class="dp-h1">Milk prices and your milk check</h1>
-    <p class="dp-lede page-lede">This month&rsquo;s prices, your area, the DMC margin and the months ahead come first. The rest is folded below. Every number carries its month and its source.</p>
+    <p class="dp-lede page-lede">This month first, the rest folded below. Every number carries its month and its source.</p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: USDA AMS mailbox and class prices, USDA NASS all-milk prices, CME Class III futures.</p>
   </header>
 
