@@ -4,7 +4,7 @@
  "slug": "wisconsin",
  "survey": "Custom Rates for 2025 Wisconsin Farm Operations (2026 Wisconsin Custom Rate Survey, of 2025 rates)",
  "publisher": "University of Wisconsin-Madison Division of Extension",
- "survey_year": 2025,
+ "survey_year": 2026,
  "collected": "Online survey launched March 2026; 135 Wisconsin farmers, farm managers and custom operators who did, hired or knew custom work in the 2025 season",
  "sources": [
   {
@@ -830,5 +830,9 @@
   }
  ],
  "counts": true,
- "page": true
+ "page": true,
+ "rate_year": 2025,
+ "apart": {
+  "lime-ton": "material not stated (Iowa and Ohio leave the lime out)"
+ }
 }
