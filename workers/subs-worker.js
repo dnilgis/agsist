@@ -5,6 +5,11 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.61 (2026-11-03): CUSTOM RATES NEW-SURVEY ASK. Topic customrates:<st> (a state's
+ *   two-letter code) on the notice list: one email when that state's next custom rate
+ *   survey is on /custom-rates (scripts/send_custom_rates_notice.py, cash-rent.yml,
+ *   repo variable CUSTOMRATES_NOTICE_LIVE). Asked again after it was sent, it starts over,
+ *   as rent: does.
  * v5.60 (2026-10-29): NO OPEN-METEO GEOCODER (Sig, Oct 29: its terms count an
  *   ad-supported site as commercial use). The hay board's ZIP point comes from the
  *   bids repo's ZIP table, then the same points on agsist.com/data/places/zip/
@@ -1468,6 +1473,7 @@ const landMonth = rainMonth;   // v5.55: a landsales month follows the same rule
 const MILK_MONTH = "milk-month";
 const MILK_MONTH_ASK = "Stop the milk price day email for this address?";
 const MILK_MONTH_DONE = "Stopped. No more milk price day emails.";
+const CR_STATES = new Set("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy".split(" "));
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
@@ -1476,6 +1482,10 @@ function noticeTopic(v, anyDate) {
   const ls = /^landsales:(\d{5}):(\d{2})$/.exec(t);
   if (ls) return ls[1] !== "00000" && LAND_MILES.includes(+ls[2]) ? t : null;
   if (LIST_TOPICS.includes(t)) return t;
+  // customrates:<st> (v5.61): one email when the
+  // state's next custom rate survey is on /custom-rates (scripts/send_custom_rates_notice.py)
+  const cr = /^customrates:([a-z]{2})$/.exec(t);
+  if (cr) return CR_STATES.has(cr[1]) ? t : null;
   const pg = /^prf:(\d+)$/.exec(t);
   if (pg) return prfGridOk(pg[1]) ? t : null;
   // v5.54: rain-month:<county FIPS>, the monthly county rain email
@@ -3349,7 +3359,7 @@ async function handle(req, env) {
       // v5.32: a rent notice is one release a year. Asked again after it was
       // sent, it starts over (new ts, no sent), so send_rent_notice.py mails
       // the next release after this ask, as it does for a first ask.
-      if (!(topic in r.t) || (topic.startsWith("rent:") && r.t[topic] && r.t[topic].sent)) r.t[topic] = { ts: Date.now(), src };
+      if (!(topic in r.t) || ((topic.startsWith("rent:") || topic.startsWith("customrates:")) && r.t[topic] && r.t[topic].sent)) r.t[topic] = { ts: Date.now(), src };
       // v5.18: the rain gauge list keeps an optional ZIP and a one-line note;
       // v5.24: asked again, it takes the new ones (the first ts and src stay)
       if (topic === "rain-gauge") {

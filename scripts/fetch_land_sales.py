@@ -659,6 +659,21 @@ class OverCap(Exception):
     """A state's county files together are over MAX_STATE_MB; nothing was written."""
 
 
+class BadRows(Exception):
+    """A county file whose rows do not line up with its columns; nothing of the state was written.
+    Nov 3, 2026: every county after the first shared one cols list, so the section key column was
+    taken out of it again and each row lost "exempt": the seller moved into exempt, the buyer into
+    grantor and the recorded date into grantee (a date became a "name"; build_land_sales refused)."""
+
+
+def check_rows(doc):
+    """Raise BadRows when any row of one county file is not as long as its columns."""
+    n = len(doc["cols"])
+    short = sum(1 for r in doc["rows"] if len(r) != n)
+    if short:
+        raise BadRows("%s %s: %d of %d rows do not match the %d columns; not written" % (doc.get("state"), doc.get("fips"), short, len(doc["rows"]), n))
+
+
 def build(st, recs, gaz, now, prior=None, months=None):
     """prior: {fips: coverage} of files merged in (their rows may lack a filed date), so the
     filed span stays the whole span. months: the monthly files the rows came from (index.json)."""
@@ -721,9 +736,11 @@ def build(st, recs, gaz, now, prior=None, months=None):
             cov["older_deeds"] = sum(1 for r in rs if r["date"] < cov["filed_from"][:4] + "-01-01")
         doc = {"state": st, "county": c["name"], "fips": fips, "source": cfg["source"], "source_short": cfg["short"],
                "links": cfg["links"], "since_note": cfg["since_note"], "fetched_utc": now, "names": names,
-               "coverage": cov, "acres_rule": ACRES_RULE, "cols": cols, "munis": munis, "rows": rows}
-        # the section key (scripts/land_keys.py), right after the legal; data/land/ only, robots-blocked
+               "coverage": cov, "acres_rule": ACRES_RULE, "cols": list(cols), "munis": munis, "rows": rows}
+        # the section key (scripts/land_keys.py), right after the legal; data/land/ only, robots-blocked.
+        # Each county gets its own copy of cols: add_column changes the list it is given (Nov 3).
         land_keys.add_column(doc, GEO)
+        check_rows(doc)
         s = json.dumps(doc, separators=(",", ":"))
         total += len(s)
         files.append((fips, s))
@@ -2725,9 +2742,15 @@ def run(states, from_dir=None, merge=False):
             print("%s: %d rows were a sale filed again under a newer document; the newest kept" % (st, refiled))
         gaz = in_places(recs, fetch(IN_ZCTA, timeout=300)) if st == "IN" else gazetteer(STATES[st]["fips"], gzblob)
         trims = []
+        res = None
         while True:
             try:
                 res = build(st, recs, gaz, now, prior, months)
+                break
+            except BadRows as e:
+                # this state keeps its committed files; the other states still build
+                print("::warning::%s" % e)
+                bad += 1
                 break
             except OverCap as e:
                 cut, why = trim(recs, trims) if st in ("WI", "IN") else (None, None)
@@ -2736,6 +2759,8 @@ def run(states, from_dir=None, merge=False):
                 print("::warning::%s; trimmed: %s (%d rows left of %d)" % (e, why, len(cut), len(recs)))
                 trims.append(why)
                 recs = cut
+        if res is None:
+            continue
         res["trims"] = trims
         print("::notice::%s" % summary(st, recs, trims))
         print("::notice::%s transfers: %d rows in %d counties (%.2f MB); names %s; %d rows with no county match; files %d, rows read %d, not farm %d"
@@ -2744,6 +2769,7 @@ def run(states, from_dir=None, merge=False):
 
 
 def selftest():
+    global OUT
     bad = 0
 
     def ck(name, ok):
@@ -2952,6 +2978,32 @@ def selftest():
        and "less than full interest" in vt1(intUDPdesc="Other", intPrTypOt="conservation easement")["flags"])
     ck("VT: current use enrollment is a fact on the sale", "enrolled in current use" in vt1(enrCrntUse="Yes")["flags"]
        and "enrolled in current use" not in v0["flags"])
+    # Nov 3, 2026 (land-data run 41693977600): every county file after the first lost its "exempt" value, so the
+    # seller sat in exempt, the buyer in grantor and the recorded date in grantee. Three counties, synthetic names.
+    import tempfile
+    import shutil
+    keep_out3, OUT = OUT, tempfile.mkdtemp(prefix="vt-three-")
+    try:
+        three = [dict(vb, returnID=str(i + 1), countyCode=cc, TOWNGEOID=None, TOWNNAME="TOWN %d" % i, sellEntNam="TEST SELLER %d LLC" % i,
+                      buyFstNam="PAT", buyLstNam="BUYER %d" % i, addBuyrNam=None) for i, cc in enumerate((1, 2, 3))]
+        vrecs, _ = parse_rows([iter(list(vt_table(three, {})))])
+        build("VT", vrecs, {}, "2026-11-03T00:00:00Z")
+        ixv = json.load(open(os.path.join(OUT, "vt", "index.json")))
+        fv = [json.load(open(os.path.join(OUT, "vt", c["fips"] + ".json"))) for c in ixv["counties"]]
+        got = sorted((f["fips"], [dict(zip(f["cols"], r)) for r in f["rows"]][0]) for f in fv)
+        ck("VT: three counties, every row as long as its columns (one shared cols list cut a value from each county after the first)",
+           len(fv) == 3 and all(len(r) == len(f["cols"]) for f in fv for r in f["rows"]))
+        ck("VT: each county keeps exempt, seller, buyer and recorded date in their own columns (a date was read as a buyer)",
+           [(o["exempt"], o["grantor"], o["grantee"], o["rec"]) for _, o in got]
+           == [(0, "TEST SELLER %d LLC" % i, "PAT BUYER %d" % i, "2025-03-18") for i in range(3)])
+    finally:
+        shutil.rmtree(OUT, ignore_errors=True)
+        OUT = keep_out3
+    try:
+        check_rows({"state": "VT", "fips": "50003", "cols": ["doc", "exempt", "grantor"], "rows": [["1", "", "A"], ["2", "B"]]})
+        ck("a county file whose rows do not match its columns is refused", False)
+    except BadRows:
+        ck("a county file whose rows do not match its columns is refused", True)
     # Indiana sales disclosure forms: a synthetic file in the real SDF_<year>.zip shape
     # (test/fixtures/land-sales/make_in_sdf_sample.py writes it with the real column titles)
     sys.path.insert(0, os.path.join(ROOT, "test", "fixtures", "land-sales"))
@@ -3060,7 +3112,6 @@ def selftest():
     # Newest-only merge: files on disk, then one month read again (a return filed again, a late
     # return) and one new month; nothing on disk is lost, nothing is doubled.
     import tempfile
-    global OUT
     keep_out = OUT
     OUT = tempfile.mkdtemp(prefix="wi-merge-")
     try:
