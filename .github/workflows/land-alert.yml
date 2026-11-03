@@ -43,17 +43,21 @@ name: Monthly land sale email
 #
 # A MONTH A STATE POSTS LATE (Sig, Nov 3, 2026, option 1). A reader whose state has not posted the
 # month just ended (Wisconsin posts about a month behind) gets the newest month the state has posted,
-# said plainly, and the later month when it lands. So this also follows every "Land data" run: when
-# that run succeeded on main and committed to data/land, and this month's send on the 3rd has gone,
-# the gate's land step sets catchup and the email job mails the readers with a newer month due
-# (send_land_alert.py --catch-up; a reader who signed up after the 3rd waits for the next 3rd). That
-# includes a land run started by hand on main, on purpose. Only with LANDSALES_MONTHLY_LIVE=1;
-# otherwise a dry run. Each data month reaches a reader once (the worker's mo mark).
+# said plainly, and the later month when it lands. On a chained run that the tick does not send, the
+# gate's land step looks for a land data commit on main ("Update land data", the commit step of
+# land-data.yml) in the last 30 minutes; one there means a land run did its work, so catchup is set and
+# the email job mails the readers with a newer month due (send_land_alert.py --catch-up, which does
+# nothing before this month's send on the 3rd; a reader who signed up after the 3rd waits for the next
+# 3rd). A land run started by hand on main counts, on purpose; every real land run commits
+# data/land/checked.json, so one that read a state counts even when no sale changed. Two chained runs
+# can see one commit; the second mails nobody (each data month reaches a reader once, the worker's mo
+# mark). Not a follower of the land data run itself: a gated follower's skipped runs would use up the
+# 3rd's tick (cron_gate.py counts every run). Only with LANDSALES_MONTHLY_LIVE=1; otherwise a dry run.
 on:
   schedule:
     - cron: "47 15 3 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids", "Land data (parcel services + transfers)"]
+    workflows: ["Fetch Grain Bids"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -104,21 +108,19 @@ jobs:
         run: >-
           python3 scripts/cron_gate.py tick --workflow land-alert.yml --max-lag 360
           --cron "47 15 3 * *"
-      # After a Land data run that succeeded on main, scheduled or started by hand (both on purpose):
-      # catch up when it committed to data/land. Every real land run commits data/land/checked.json (the
-      # day each state was read), so a run that read a state counts even when no sale changed; a skipped
-      # gate run reads nothing and commits nothing. A run of this workflow by hand never sets catchup.
+      # Catch-up (see the top): a chained run the tick does not send, and a land data commit on main in
+      # the last 30 minutes (a land run that did its work). An API failure is no catch-up.
       - id: land
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Land data (parcel services + transfers)' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success' && steps.g.outputs.go != '1' }}
+        if: ${{ github.event_name == 'workflow_run' && steps.g.outputs.go != '1' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          SINCE: ${{ github.event.workflow_run.created_at }}
         run: |
-          n=$(gh api "repos/$GITHUB_REPOSITORY/commits?sha=main&path=data/land&since=$SINCE&per_page=5" --jq 'length' 2>/dev/null || echo 0)
+          SINCE=$(date -u -d '-30 min' +%Y-%m-%dT%H:%M:%SZ)
+          n=$(gh api "repos/$GITHUB_REPOSITORY/commits?sha=main&path=data/land&since=$SINCE&per_page=20" --jq '[.[] | select(.commit.message | startswith("Update land data"))] | length' 2>/dev/null || echo 0)
           if [ "${n:-0}" -gt 0 ] 2>/dev/null; then
-            echo "catchup=1" >> "$GITHUB_OUTPUT"; echo "catch-up: the land run committed to data/land"
+            echo "catchup=1" >> "$GITHUB_OUTPUT"; echo "catch-up: a land data commit on main since $SINCE"
           else
-            echo "catchup=0" >> "$GITHUB_OUTPUT"; echo "no catch-up: the land run committed nothing to data/land"
+            echo "catchup=0" >> "$GITHUB_OUTPUT"
           fi
 
   email:

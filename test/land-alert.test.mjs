@@ -234,15 +234,15 @@ test("a month a state posts late (Sig, Nov 3 2026, option 1): the newest posted 
   assert.ok(py(["scripts/fetch_land_sales.py", "--selftest"]).includes("ok   checked stamp: Wisconsin's newest monthly report"));
   assert.ok(py(["scripts/land_keep_stamp_only.py", "--selftest"]).includes("ok   the checked stamp file is never restored"));
 
-  // the workflow: the land data run by its exact name; catch-up only after it committed on main, and only live
+  // the workflow: catch-up only on a chained run the tick does not send, after a land data commit on main
   const LD = read(".github/workflows/land-data.yml");
-  const name = /^name: (.*)$/m.exec(LD)[1];
-  assert.equal(name, "Land data (parcel services + transfers)");
-  assert.ok(WF.includes('workflows: ["Fetch Grain Bids", "' + name + '"]'), "follows the land data run");
+  assert.match(LD, /git commit -m "Update land data /, "the land data commit message the catch-up looks for");
+  assert.ok(WF.includes('workflows: ["Fetch Grain Bids"]\n'), "not a follower of the land data run (its skipped runs would use up the 3rd's tick)");
   const step = WF.slice(WF.indexOf("      - id: land\n"), WF.indexOf("\n  email:\n"));
-  assert.match(step, /if: \$\{\{ github\.event_name == 'workflow_run' && github\.event\.workflow_run\.name == 'Land data \(parcel services \+ transfers\)' && github\.event\.workflow_run\.head_branch == 'main' && github\.event\.workflow_run\.conclusion == 'success' && steps\.g\.outputs\.go != '1' \}\}/,
-    "never on a run of this workflow by hand, a Fetch Grain Bids run, a branch run, a failed land run, or a run the tick already sends");
-  assert.match(step, /commits\?sha=main&path=data\/land&since=\$SINCE/, "only when the land run committed to data/land");
+  assert.match(step, /if: \$\{\{ github\.event_name == 'workflow_run' && steps\.g\.outputs\.go != '1' \}\}/,
+    "never on a run of this workflow by hand, the schedule, or a run the tick already sends");
+  assert.match(step, /commits\?sha=main&path=data\/land&since=\$SINCE/, "only after a land data commit on main");
+  assert.match(step, /select\(\.commit\.message \| startswith\("Update land data"\)\)/, "a land run's own commit, not any edit to data/land");
   assert.match(step, /\|\| echo 0\)/, "an API failure is no catch-up");
   assert.match(WF, /\n    if: needs\.gate\.outputs\.go == '1' \|\| needs\.gate\.outputs\.catchup == '1'\n/);
   assert.match(WF, /CATCH_UP: \$\{\{ needs\.gate\.outputs\.go != '1' && needs\.gate\.outputs\.catchup == '1' && '1' \|\| '' \}\}/);
