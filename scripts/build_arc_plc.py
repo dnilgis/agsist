@@ -745,9 +745,11 @@ def load_arc_tables(root="."):
     """FSA's national ARC-CO tables (data/fsa/<PY>_ARC_CO.xlsx, Table 4) -> {py: {commodity: (actual ARC-CO price, F or P, loan rate)}}.
     The 2026 table only feeds arc_plc_crops; here the settled years check FSA's county payment rates."""
     out = {}
-    for p in sorted(glob.glob(os.path.join(root, FSA_DIR, "20[0-9][0-9]_ARC_CO*.xls*"))):
-        py = int(os.path.basename(p)[:4])
-        rows = list(load_xlsx(p).worksheets[0].iter_rows(values_only=True))
+    by_py = {}
+    for p in glob.glob(os.path.join(root, FSA_DIR, "20[0-9][0-9]_ARC_CO*.xls*")):
+        by_py.setdefault(int(os.path.basename(p)[:4]), []).append(p)
+    for py in sorted(by_py):
+        p, rows = XC.newest_table(by_py[py], load_xlsx)   # the copy with the latest header date, never the last name
         hdr = next((r for r in rows if r and any("National Loan Rate" in str(x or "") for x in r)), None)
         if not hdr:
             continue
@@ -810,10 +812,9 @@ def load_fsa_tables(root="."):
     out = {"proj": {}, "erp": {}, "date": None}
     want = {v["fsa"]: k for k, v in CROPS.items()}
     for fn, key in (("2026_MYA", "proj"), ("2026_ERP", "erp")):
-        ps = glob.glob(os.path.join(root, FSA_DIR, fn + "*.xls*"))
-        if not ps:
+        p, rows = XC.newest_table(glob.glob(os.path.join(root, FSA_DIR, fn + "*.xls*")), load_xlsx)
+        if not p:
             continue
-        rows = list(load_xlsx(sorted(ps)[-1]).worksheets[0].iter_rows(values_only=True))
         for r in rows[:4]:
             for v in r or ():
                 m = re.match(r"([A-Z][a-z]+) (\d{1,2}), (20\d\d)", str(v or ""))
@@ -1468,7 +1469,7 @@ def range_call(cd, e):
 
 
 def y25_table(inp, arc_tabs):
-    """FSA's 2025 Table 4 (Oct 9, 2026): per crop key, the 2025 effective reference price, the actual ARC-CO price
+    """FSA's 2025 Table 4 (the newest copy; Oct 30, 2026 since Nov 3): per crop key, the 2025 effective reference price, the actual ARC-CO price
     (the higher of the 2025/26 season-average price and the 2025 loan rate), F or P, and the date FSA lists for the
     final price. The three main crops' 2025 ERPs must equal ours from NASS's final prices (2019 to 2023 window)."""
     t = arc_tabs.get(2025) or {}

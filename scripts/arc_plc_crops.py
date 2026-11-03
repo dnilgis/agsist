@@ -229,6 +229,29 @@ def _name(s):
     return re.sub(r"\s+\d/\s*$", "", str(s or "").strip()).strip()
 
 
+def table_date(rows):
+    """The date in an FSA table's header ('October 30, 2026 1/' -> '2026-10-30'), from its first four rows, or None."""
+    for r in rows[:4]:
+        for v in r or ():
+            m = re.match(r"([A-Z][a-z]+) (\d{1,2}), (20\d\d)", str(v or ""))
+            if m:
+                return dt.datetime.strptime(m.group(0), "%B %d, %Y").date().isoformat()
+    return None
+
+
+def newest_table(paths, load_xlsx):
+    """Of several copies of one FSA table (2025_ARC_CO.xlsx, 2025_ARC_CO_0.xlsx, ...), the one whose header
+    carries the latest date -> (path, rows), or (None, None). Never by file name: FSA's Oct 9, 2026 copy of the
+    2025 tables is 2025_ARC_CO_0.xlsx and its Oct 30 copy is 2025_ARC_CO.xlsx, so the name order picks the old one."""
+    best = (None, None, "")
+    for p in sorted(paths):
+        rows = [r for r in load_xlsx(p).worksheets[0].iter_rows(values_only=True)]
+        d = table_date(rows) or ""
+        if best[0] is None or d >= best[2]:
+            best = (p, rows, d)
+    return best[0], best[1]
+
+
 def load_tables(load_xlsx, root="."):
     """FSA's four national tables -> {date, rows: {commodity: {...}}} or None.
 
@@ -237,11 +260,11 @@ def load_tables(load_xlsx, root="."):
     out = {"date": None, "rows": {}, "files": {}}
 
     def rows_of(stem):
-        ps = sorted(glob.glob(os.path.join(root, FSA_DIR, stem + "*.xls*")))
-        if not ps:
+        p, rows = newest_table(glob.glob(os.path.join(root, FSA_DIR, stem + "*.xls*")), load_xlsx)
+        if not p:
             return None
-        out["files"][stem] = os.path.relpath(ps[-1], root)
-        return [r for r in load_xlsx(ps[-1]).worksheets[0].iter_rows(values_only=True)]
+        out["files"][stem] = os.path.relpath(p, root)
+        return rows
 
     def hdr_row(rows):
         return next(i for i, r in enumerate(rows) if r and str(r[0] or "").strip() == "Commodity")
