@@ -224,8 +224,19 @@ for f in ("basis-map", "breakeven-more", "cb-vs-state", "combine-loss-ui", "fast
     got = _json.loads(out.stdout or "null")
     check(got == WANT, f"components/{f}.js: locCo says {got}")
 hub = open(os.path.join(ROOT, "basis.html"), encoding="utf-8").read()
-check("function locCo(c)" in hub and "+locCo(c)" in hub, "basis.html: the state pick does not print locations and companies")
+# Sig, Nov 3 2026: the state middle is labelled "median of N elevators", with the company count beside it.
+# basis.html's medOf (run in node) and the pages' med_of say the same words.
 import build_cash_bid_pages as CB  # noqa: E402
+m = re.search(r"function medOf\(c\)\{[^\n]*\}", hub)
+check(m is not None and "+medOf(c)" in hub, "basis.html: the state pick does not print 'median of N elevators'")
+WANT_MED = ["median of 203 elevators, 23 companies", "median of 1 elevator, 1 company", "median of 7 elevators"]
+if m:
+    js = m.group(0) + "; console.log(JSON.stringify(" + _json.dumps(CASES) + ".map(function (c) { return medOf(c[1] === null ? {n: c[0]} : {n: c[0], companies: c[1]}); })));"
+    out = subprocess.run(["node", "-e", js], capture_output=True, text=True)
+    check(_json.loads(out.stdout or "null") == WANT_MED, f"basis.html: medOf says {out.stdout.strip()}")
+check([CB.med_of({"n": c[0], **({"companies": c[1]} if c[1] else {})}) for c in CASES] == WANT_MED, "med_of words")
+check(CB.med_of({"n": 203, "companies": 23}, bold=True) == "median of <b>203</b> elevators, <b>23</b> companies",
+      "med_of bold")
 check(CB.loc_co({"n": 203, "companies": 23}) == "203 locations, 23 companies", "loc_co words")
 check(CB.loc_co({"n": 1, "companies": 1}) == "1 location, 1 company", "loc_co singular")
 check(CB.loc_co({"n": 7}) == "7 elevators", "an older record without companies keeps its words")
