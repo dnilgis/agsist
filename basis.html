@@ -70,7 +70,7 @@
     .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:var(--bs-txt)}
     .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:var(--bs-hi)}
     .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
-    .bm-svg{width:100%;height:auto;display:block;margin:6px 0 4px;--bm-mid:var(--bs-dim)}.bm-svg .bm-st{stroke:var(--bs-bg);stroke-width:1.2;vector-effect:non-scaling-stroke}.bm-svg .bm-st:not(.bm-has){stroke:var(--bs-faint);stroke-width:.6}.bm-svg .bm-a:hover .bm-st,.bm-svg .bm-a:focus .bm-st{stroke:var(--bs-hi);stroke-width:2}.bm-lab{font:700 13px 'JetBrains Mono',monospace;fill:var(--bs-hi);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--bs-bg);stroke-width:3px;pointer-events:none}.bm-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--bs-txt);margin:6px 0}.bm-key{display:inline-flex;align-items:center;gap:6px}.bm-key i{width:14px;height:10px;border-radius:2px;display:inline-block}#map{--bm-mid:var(--bs-dim)}.bm-key i.bm-none{border:1px solid var(--bs-faint)}.bm-tip{font-size:13.4px;color:var(--bs-txt);margin:6px 0 0;min-height:1.5em}.bm-foot{font-size:12.5px;color:var(--bs-dim);margin:4px 0 0}@media(max-width:620px){.bm-lab{display:none}}.bs-pick-l .bs-norm{display:block;font-size:13px;color:var(--bs-txt);margin-top:3px;line-height:1.5}.bs-panel .neg{color:var(--bs-neg) !important}.bs-panel .pos{color:var(--bs-pos) !important}
+    .bm-svg{width:100%;height:auto;display:block;margin:6px 0 4px;--bm-mid:var(--bs-dim)}.bm-svg .bm-st{stroke:var(--bs-bg);stroke-width:1.2;vector-effect:non-scaling-stroke}.bm-svg .bm-st:not(.bm-has){stroke:var(--bs-faint);stroke-width:.6}.bm-svg .bm-a:hover .bm-st,.bm-svg .bm-a:focus .bm-st{stroke:var(--bs-hi);stroke-width:2}.bm-lab{font:700 13px 'JetBrains Mono',monospace;fill:var(--bs-hi);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--bs-bg);stroke-width:3px;pointer-events:none}.bm-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--bs-txt);margin:6px 0}.bm-key{display:inline-flex;align-items:center;gap:6px}.bm-key i{width:14px;height:10px;border-radius:2px;display:inline-block}#map{--bm-mid:var(--bs-dim)}.bm-key i.bm-none{border:1px solid var(--bs-faint)}.bm-tip{font-size:13.4px;color:var(--bs-txt);margin:6px 0 0;min-height:1.5em}.bm-foot{font-size:12.5px;color:var(--bs-dim);margin:4px 0 0}@media(max-width:620px){.bm-lab{display:none}}.bs-pick-l .bs-norm{display:block;font-size:13px;color:var(--bs-txt);margin-top:3px;line-height:1.5}.bs-pick-l .bs-usda{display:block;font-size:13px;color:var(--bs-dim);margin-top:3px;line-height:1.5}.bs-panel .neg{color:var(--bs-neg) !important}.bs-panel .pos{color:var(--bs-pos) !important}
     .bs-spark{height:30px;width:100%;max-width:280px;min-width:170px;display:block}
     .bs-bars{display:grid;gap:10px}
     .bs-barrow{display:grid;grid-template-columns:130px 1fr 130px;gap:10px;align-items:center}
@@ -495,8 +495,8 @@
     }catch(e){ return ''; }
   }
   var LAB={corn:'Corn',soybeans:'Soybeans'}, USDA=null;
-  /* '203 locations, 23 companies' (scripts/build_cash_bid_pages.py loc_co); a file without the company count keeps 'N elevators' */
-  function locCo(c){ var n=c.n, m=c.companies; return typeof m!=='number'?n+' elevator'+(n===1?'':'s'):n+' location'+(n===1?'':'s')+', '+m+' compan'+(m===1?'y':'ies'); }
+  /* 'median of 203 elevators, 23 companies' (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators' */
+  function medOf(c){ var n=c.n, m=c.companies, s='median of '+n+' elevator'+(n===1?'':'s'); return typeof m!=='number'?s:s+', '+m+' compan'+(m===1?'y':'ies'); }
   /* USDA'S NORMAL BESIDE THE STATE NUMBER (2026-10-15). Where USDA tracks the
      state, its 5-year normal for the same week sits next to our number, with
      the gap, so nobody has to put two boxes together. It is USDA's regional
@@ -547,8 +547,10 @@
     var v=doc&&doc.states[st]; if(!v) return;
     var li=[];
     ['corn','soybeans'].forEach(function(g){ var c=v.crops[g]; if(!c||c.median==null) return;
-      li.push('<li><b>'+LAB[g]+'</b> '+money(c.median)+' vs '+esc(c.label)+' <span class="mut">'+locCo(c)
-        +(c.wow!=null?'; '+cents(c.wow)+' in a week ('+c.wow_n+' bids both weeks)':'')+'</span>'+usdaNormal(v.name,g,c,USDA,doc.generated)+'</li>'); });
+      /* USDA AMS's own state average on the same futures month, the line the state page prints (build_cash_bid_pages.py usda_beside) */
+      var ul=c.usda&&c.usda.line?'<span class="bs-usda">'+esc(c.usda.line)+'</span>':'';
+      li.push('<li><b>'+LAB[g]+'</b> '+money(c.median)+' vs '+esc(c.label)+' <span class="mut">'+medOf(c)
+        +(c.wow!=null?'; '+cents(c.wow)+' in a week ('+c.wow_n+' bids both weeks)':'')+'</span>'+ul+usdaNormal(v.name,g,c,USDA,doc.generated)+'</li>'); });
     box.innerHTML=li.length
       ? '<ul class="bs-pick-l">'+li.join('')+'</ul><p class="bs-seed">Middle bid of '+esc(v.name)+' elevators in the AGSIST network, snapshot of '+day(doc.generated)+'. <a href="'+esc(v.path)+'">'+esc(v.name)+' bids and basis by elevator &rarr;</a></p>'
       : '<p class="bs-seed">Too few '+esc(v.name)+' elevators on one futures month for a middle number today. <a href="'+esc(v.path)+'">Every '+esc(v.name)+' elevator we read &rarr;</a></p>';
