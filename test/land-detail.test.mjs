@@ -109,6 +109,7 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
           for (const e of l.getEntries()) {
             if (e.hadRecentInput) continue;
             window.__cls += e.value;
+            (window.__shifts = window.__shifts || []).push(Math.round(e.startTime) + "ms " + e.value.toFixed(5) + " " + (e.sources || []).map((x) => { const n = x.node && (x.node.nodeType === 3 ? x.node.parentElement : x.node); return n ? n.tagName + "." + n.className : "?"; }).join(","));
             const ours = (e.sources || []).some((x) => { const n = x.node && (x.node.nodeType === 3 ? x.node.parentElement : x.node); return n && n.closest && n.closest("#ls-all tbody, .ls-dp, .ls-ul"); });
             if (ours) window.__clsSale += e.value;
           }
@@ -171,8 +172,8 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
         await pg.keyboard.press("Enter");
         assert.equal(await pg.evaluate(() => document.querySelector("tr.ls-dr").hidden), true, st + ": closes from the keyboard");
         await pg.waitForTimeout(300);
-        assert.equal(await pg.evaluate(() => window.__cls), 0, st + ": no layout shift without input once the page settled");
-        assert.equal(await pg.evaluate(() => window.__clsSale), 0, st + ": the rows, their buttons and the panel never shift, load included");
+        assert.equal(await pg.evaluate(() => window.__cls), 0, st + " " + width + ": no layout shift without input once the page settled: " + await pg.evaluate(() => (window.__shifts || []).join(" | ")));
+        assert.equal(await pg.evaluate(() => window.__clsSale), 0, st + " " + width + ": the rows, their buttons and the panel never shift, load included: " + await pg.evaluate(() => (window.__shifts || []).join(" | ")));
         assert.deepEqual(errors, [], st + ": no page error");
         await pg.close();
       }

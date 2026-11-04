@@ -121,7 +121,7 @@ LIST_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind",
 # m, whether the sale counts toward the county's middle price and, when not, why (MID_WHY). DETAIL_COLS is the order
 # of a page row's data-ls attribute (components/land-sales.js DCOLS, the same list).
 DETAIL_COLS = ["ri", "g", "m"]
-ROW_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag", "cu"] + DETAIL_COLS
+ROW_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag", "cu"] + DETAIL_COLS   # then lx, only when there is one
 MID_WHY = {"y": "counts toward the middle", "b": "with buildings", "w": "forest", "a": "acres not stated", "s": "under %d acres",
            "p": "under $%d an acre", "o": "outside the 24 months"}
 NVT = "not valid for trending"          # Indiana's sales disclosure mark, carried in the deed-type text
@@ -260,6 +260,30 @@ def file_rows(f):
     return out
 
 
+def legal_mask(r):
+    """[[start, length], ...] of the sale's own buyer or seller names inside its legal description, so the panel can
+    blank them without ever reading a name (about 55 of 78,000 listed sales, Nov 4, 2026). Empty for the rest."""
+    leg = str(r.get("legal") or "").upper()
+    out = []
+    for v in (r.get("grantor"), r.get("grantee")):
+        for n in str(v or "").upper().split(";"):
+            n = n.strip()
+            if len(n) < 5:
+                continue
+            i = leg.find(n)
+            while i >= 0:
+                out.append([i, len(n)])
+                i = leg.find(n, i + len(n))
+    out.sort()
+    merged = []
+    for a, ln in out:
+        if merged and a < merged[-1][0] + merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], a + ln - merged[-1][0])
+        else:
+            merged.append([a, ln])
+    return merged
+
+
 def mid_code(r, st, w24=None):
     """Whether a listed sale counts toward its county's middle (y) and, when not, why: b with buildings, w forest,
     a acres not stated, s under 20 acres, p under $500 an acre, o outside the 24 months. The same tests, in the
@@ -304,7 +328,7 @@ def pub_row(st, r, county, u=None, w24=None):
             "ppa": r.get("ppa"), "pt": [round(r["pt"][0], 4), round(r["pt"][1], 4)] if r.get("pt") else None,
             "bldg": with_bldg(r), "kind": BLS.land_type(r, st), "flag": judge(r, u),
             "cu": st == "VT" and "ENROLLED IN CURRENT USE" in str(r.get("conv") or "").upper(),
-            "ri": r.get("_ri"), "g": int(r.get("grp") or 1), "m": mid_code(r, st, w24)}
+            "ri": r.get("_ri"), "g": int(r.get("grp") or 1), "m": mid_code(r, st, w24), "lx": legal_mask(r)}
 
 
 # ---------------------------------------------------------------- the monthly update
@@ -489,7 +513,8 @@ def sq(s):
 def row_data(p):
     """A sale's data-ls attribute: ROW_COLS, what the detail panel draws before (and besides) the county file."""
     return jdump([p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p.get("ppa"), p.get("place"),
-                  KIND_CODE.get(p.get("kind"), "f"), p.get("flag") or 0, 1 if p.get("cu") else 0, p.get("ri"), p.get("g") or 1, p.get("m") or ""])
+                  KIND_CODE.get(p.get("kind"), "f"), p.get("flag") or 0, 1 if p.get("cu") else 0, p.get("ri"), p.get("g") or 1, p.get("m") or ""]
+                 + ([p["lx"]] if p.get("lx") else []))
 
 
 def usual_list(u):
@@ -1003,7 +1028,7 @@ def build(repo=REPO):
             counties[st].append((c["name"], slug, n12))
             sfile["counties"][c["fips"]] = {"name": c["name"], "slug": slug, "ll": [c["lat"], c["lng"]], "n12": n12,
                                            "usual": {"med": u["med"], "n": u["n"], "q1": u["q1"], "q3": u["q3"]} if u else None, "k24": k24,
-                                           "w24": W["w24"],
+                                           "w24": W["w24"], "lx": {p["id"]: p["lx"] for p in feat if p.get("lx")},
                                            "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"],
                                                   p["place"], p["pt"][0] if p["pt"] else None, p["pt"][1] if p["pt"] else None,
                                                   p["flag"] or 0, 1 if p["bldg"] else 0, KIND_CODE[p["kind"]], 1 if p["cu"] else 0,
@@ -1014,7 +1039,7 @@ def build(repo=REPO):
             out["data/land-sales/%s/%s.json" % (st.lower(), c["fips"])] = dump(
                 {"st": st, "fips": c["fips"], "county": c["name"], "through": through, "names": "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]),
                  "kinds": {v: KIND_WORDS[k] for k, v in KIND_CODE.items()}, "cols": LIST_COLS + (["cu"] if cu else []) + DETAIL_COLS,
-                 "usual": usual_list(u), "w24": W["w24"],
+                 "usual": usual_list(u), "w24": W["w24"], "lx": {p["id"]: p["lx"] for p in allp if p.get("lx")},
                  "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"], p["place"],
                         KIND_CODE[p["kind"]], p["flag"] or 0] + ([1 if p["cu"] else 0] if cu else []) + [p["ri"], p["g"], p["m"]] for p in allp]})
             urls.append(("%s/land-sales/%s/%s" % (ORIGIN, SLUG[st], slug), d.fetched[st]))

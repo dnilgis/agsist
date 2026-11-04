@@ -114,7 +114,7 @@
       var box = document.createElement('section');
       box.className = 'ls-feat no-print';
       box.setAttribute('aria-labelledby', 'ls-feat-h');
-      var rows = (c.s || []).slice(0, 3).map(function (a) { return row(a, f.cols); });
+      var rows = (c.s || []).slice(0, 3).map(function (a) { var o = row(a, f.cols); if (c.lx && c.lx[o.id]) o.lx = c.lx[o.id]; return o; });
       var href = '/land-sales/' + STATES[st] + '/' + c.slug;
       box.innerHTML = '<div class="ls-feat-l"><h2 id="ls-feat-h">Latest farm sales here</h2>'
         + (rows.length ? '<ul class="ls-ul">' + rows.map(function (s) { return saleLi(s, null, st, f.names_dir + fips + '.json', null, c, fips); }).join('') + '</ul>'
@@ -196,6 +196,7 @@
           if (!c.ll || miles(lat, lng, c.ll[0], c.ll[1]) > NEAR_MI + 45) return;
           (c.s || []).forEach(function (a) {
             var s = row(a, f.cols);
+            if (c.lx && c.lx[s.id]) s.lx = c.lx[s.id];
             if (s.lat == null) return;
             var d = miles(lat, lng, s.lat, s.lng);
             if (d <= NEAR_MI) list.push({ s: s, d: d, c: c, st: st, nf: f.names_dir + fips + '.json', fips: fips });
@@ -235,7 +236,7 @@
       + '<td>' + esc((f.kinds && f.kinds[o.kind]) || '') + '</td><td>' + esc(flag) + '</td>'
       + '<td><button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button></td></tr>';
   }
-  function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; return o; }); }
+  function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; if (f.lx && f.lx[o.id]) o.lx = f.lx[o.id]; return o; }); }
   function fullList(box) {
     if (box.getAttribute('data-ls-done')) return;
     box.setAttribute('data-ls-done', '1');
@@ -280,7 +281,10 @@
      file carries buyer and seller too: this panel never reads them except to blank them out of a legal
      description. Names show only on "Show buyer and seller", as everywhere. A field the state's record does
      not have says "not in the state record"; one the state has and our copy does not yet keep says so. */
-  var DCOLS = ['id', 'when', 'recorded', 'acres', 'price', 'ppa', 'place', 'kind', 'flag', 'cu', 'ri', 'g', 'm'];
+  var DCOLS = ['id', 'when', 'recorded', 'acres', 'price', 'ppa', 'place', 'kind', 'flag', 'cu', 'ri', 'g', 'm', 'lx'];
+  /* the only columns of the county file this panel takes; every other column (the names among them) is never read */
+  var KEEP = ['doc', 'date', 'price', 'acres', 'tac', 'np', 'cls', 'conv', 'pid', 'muni', 'legal', 'str', 'exempt', 'ac1', 'rec', 'acx',
+    'pp', 'rr', 'mfl', 'fin', 'use0', 'use1', 'glv', 'avl', 'avb', 'avy', 'lsf', 'yb'];
   var NOT_REC = 'not in the state record', NOT_YET = 'not in our copy yet';
   var KINDW = { f: 'farmland', b: 'with buildings', w: 'forest', s: 'small parcel (under 20 acres)' };
   var MIDW = { b: 'it has buildings', w: 'it is forest land', a: 'the record does not state the acres', s: 'it is under 20 acres',
@@ -360,7 +364,7 @@
   function recOf(f, s, st) {
     /* the sale's first deed in the county file: row ri when its hash is the sale id, else any row that hashes to it */
     if (!f || !f.cols || !f.rows) return null;
-    var C = f.cols, obj = function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; return o; };
+    var C = f.cols, obj = function (a) { var o = {}; for (var i = 0; i < C.length; i++) if (KEEP.indexOf(C[i]) >= 0) o[C[i]] = a[i]; return o; };
     var fips = f.fips;
     if (s.ri != null && f.rows[s.ri]) { var o = obj(f.rows[s.ri]); if (sha1(saleKey(st, fips, o, s.price)).slice(0, 10) === s.id) return o; }
     for (var i = 0; i < f.rows.length; i++) { var x = obj(f.rows[i]); if (sha1(saleKey(st, fips, x, s.price)).slice(0, 10) === s.id) return x; }
@@ -400,16 +404,12 @@
     if (m) return 'New Jersey’s ratio study code ' + m[1] + ': ' + m[2] + '. The code keeps it out of the state’s assessment study only; it stays a market sale here.';
     return w.charAt(0).toUpperCase() + w.slice(1) + '.';
   }
-  /* the legal description with the sale's own buyer and seller blanked (names only behind the tap) */
-  function scrub(legal, r) {
+  /* the legal description with the sale's own buyer and seller blanked: the builder found where they sit
+     (build_land_sales.legal_mask, lx), so this never reads a name */
+  function scrub(legal, lx) {
     var t = String(legal || '');
-    [r.grantor, r.grantee].forEach(function (v) {
-      String(v || '').split(/;\s*/).forEach(function (n) {
-        n = n.trim();
-        if (n.length < 5) return;
-        var i, up = n.toUpperCase();
-        while ((i = t.toUpperCase().indexOf(up)) >= 0) t = t.slice(0, i) + '[name: tap Show buyer and seller]' + t.slice(i + n.length);
-      });
+    (lx || []).slice().sort(function (a, b) { return b[0] - a[0]; }).forEach(function (m) {
+      t = t.slice(0, m[0]) + '[name: tap Show buyer and seller]' + t.slice(m[0] + m[1]);
     });
     return t;
   }
@@ -465,7 +465,7 @@
       ['Parcels in the sale', wait || gone || esc(rv('np') || 1)]
     ]));
     /* where */
-    var leg = r && rv('legal') ? scrub(r.legal, r) : '';
+    var leg = r && rv('legal') ? scrub(r.legal, s.lx) : '';
     var legHtml = wait || gone || (!has('legal') || !leg ? miss(NOT_REC) : leg.length > 70
       ? '<span class="ls-lg">' + esc(leg.slice(0, 70).replace(/\s+\S*$/, '')) + '&hellip;</span> <button type="button" class="ls-lgb" aria-expanded="false" data-full="' + esc(leg) + '">Show the whole description</button>'
       : esc(leg));
