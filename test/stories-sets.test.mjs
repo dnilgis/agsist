@@ -71,7 +71,8 @@ test("the builders print the story where it belongs and only through the set's o
   assert.match(at, /SA\.story_html\(W\.stories, W, f, d\)/);
   assert.match(at, /\{story_html\}\{warn\}<div class="two">/);
   const cb = read("scripts/build_cash_bid_pages.py");
-  assert.match(cb, /\{answer_html\}\n  \{story_html\}\{intro\}/);
+  /* the share line (components/share-bid.js, Sig Nov 3) sits under the answer; the story comes right after it */
+  assert.match(cb, /\{answer_html\}\n  \{share_html\}\n  \{story_html\}\{intro\}/);
   assert.match(cb, /STORY_FACTS_OUT/);
   const co = read("scripts/build_company_pages.py");
   assert.match(co, /SBX\.COMPANY\.story_html\(/);
