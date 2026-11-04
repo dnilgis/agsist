@@ -67,9 +67,15 @@ FOLDER_MB = {
     # the budget counts published bytes (280.1 MB, not the tree's 285.5), and
     # the builder-only data/site-usage.json (4.0 MB) and data/cot-deep.json
     # (1.2 MB) moved to raw the same way (test/raw-readers.test.mjs).
+    # Nov 4 (fx/datarepo2): the Daily's share cards (data/social, 11.0 MB) moved to the public repo
+    # dnilgis/agsist-data (scripts/share_host.py). data stays at 300: it grows about 26 MB a week, so
+    # the 11 MB freed is room, not a reason to cut the line (264 of 300 is 88%, under the 90% warning).
     "data": 300,
     "arc-plc": 150,
-    "farmland-atlas": 200,
+    # farmland-atlas: 130 (Nov 4, fx/datarepo2; was 200). The 3,202 share cards (farmland-atlas/og,
+    # 57.3 MB) moved to dnilgis/agsist-data; the pages and downloads left are 111.8 MB. 130 leaves 18 MB
+    # (86%) for the county pages to grow, and stops the freed room from filling unnoticed.
+    "farmland-atlas": 130,
     "cash-bids": 60,
     "daily": 30,
     # prf: 75 (2026-10-13). 48 state pages (1.6 MB) plus 3,070 county pages
