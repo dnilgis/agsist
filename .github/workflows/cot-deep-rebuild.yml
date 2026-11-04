@@ -87,6 +87,14 @@ jobs:
           python scripts/cot_calendar.py
           python scripts/cot_deep.py --selftest
 
+      # Last week's file from the private raw branch (Nov 4: off main), for the
+      # revision check only; the rebuild below starts from the archive.
+      - name: Last deep history from raw
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh data/cot-deep.json
+
       # Loud, and allowed to find things: drift is the reason this job exists,
       # so a non-zero exit here is information, not a failure.
       - name: What has CFTC revised since last week?
@@ -94,6 +102,7 @@ jobs:
         run: python scripts/cot_deep.py --verify
 
       - name: Rebuild from the archive
+        id: rebuild
         run: python scripts/cot_deep.py --rebuild
 
       - name: Prove the statistics
@@ -111,13 +120,10 @@ jobs:
         run: |
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          cp data/cot-deep.json /tmp/deep.json
           cp data/cot-analysis.json /tmp/analysis.json
           for i in 1 2 3; do
             git fetch origin main && git reset --hard origin/main
-            cp /tmp/deep.json data/cot-deep.json
             cp /tmp/analysis.json data/cot-analysis.json
-            git add data/cot-deep.json
             git add data/cot-analysis.json 2>/dev/null || true
             if git diff --staged --quiet; then echo "No change after rebuild."; exit 0; fi
             git commit -m "chore: rebuild COT deep history $(date +%F) [skip ci]"
@@ -125,6 +131,14 @@ jobs:
             sleep 5
           done
           echo "ERROR: could not push"; exit 1
+
+      # The rebuilt history is this job's product: saved to the private raw
+      # branch (never main), and a failed save fails the run (no RAW_SOFT).
+      - name: Save the rebuilt history to raw
+        if: ${{ !cancelled() && steps.rebuild.outcome == 'success' }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/push_raw.sh "cot deep history rebuild" data/cot-deep.json
 
       - name: Analysis result
         if: steps.analysis.outcome == 'failure'

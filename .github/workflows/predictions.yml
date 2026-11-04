@@ -110,6 +110,12 @@ jobs:
           python scripts/cot_calendar.py
           python scripts/prediction_bot.py --selftest
 
+      # the backtest reads data/cot-deep.json, on the private raw branch since Nov 4
+      - name: Deep history from raw
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh data/cot-deep.json
+
       - name: Grade matured calls, make today's calls, rebuild the backtest
         run: python scripts/prediction_bot.py --live
 
