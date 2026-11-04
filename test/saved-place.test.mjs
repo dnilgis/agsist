@@ -182,3 +182,26 @@ test("/rent/iowa at 390 with ZIP 50201 saved: the calculator opens at Story, not
     await ctx.close();
   } finally { await browser.close(); srv.close(); rmSync(out, { recursive: true, force: true }); }
 });
+
+test("ARC/PLC at 390 with ZIP 50201 saved: the calculator starts at Iowa and Story County; a state the reader picked before stays", { skip }, async () => {
+  const srv = await serve();
+  const browser = await chromium.launch({ executablePath: CHROME });
+  // the hub as scripts/build_arc_plc.py tail() writes it now: saved-place.js right before arc-plc.js
+  const hub = read("arc-plc.html").replace(/<script src="\/components\/arc-plc\.js\?v=\d+" defer><\/script>/,
+    '<script src="/components/saved-place.js?v=1" defer></script><script src="/components/arc-plc.js?v=16" defer></script>');
+  assert.match(hub, /saved-place\.js\?v=1" defer><\/script><script src="\/components\/arc-plc\.js/);
+  try {
+    for (const [items, st, co] of [[{ agsist_zip: "50201" }, "IA", "19169"], [{ agsist_zip: "50201", "ap2:st": JSON.stringify("IL") }, "IL", ""], [{}, "", ""]]) {
+      const [ctx, pg] = await pageWith(browser, srv.address().port, items);
+      await pg.route(/\/arc-plc(\.html)?(\?|$)/, (r) => r.fulfill({ status: 200, contentType: "text/html", body: hub }));
+      await pg.goto(`http://127.0.0.1:${srv.address().port}/arc-plc`, { waitUntil: "load" });
+      await pg.waitForFunction(() => { const s = document.getElementById("ap-st"); return s && s.options.length > 1; }, null, { timeout: 15000 });
+      if (co) await pg.waitForFunction((c) => document.getElementById("ap-co").value === c, co, { timeout: 10000 });
+      else await pg.waitForTimeout(1200);
+      assert.equal(await pg.$eval("#ap-st", (e) => e.value), st, JSON.stringify(items));
+      assert.equal(await pg.$eval("#ap-co", (e) => e.value), co, JSON.stringify(items));
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+});
+
