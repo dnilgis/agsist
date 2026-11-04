@@ -51,12 +51,16 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
+const PAGE_NOW = "2026-10-15T15:00:00Z";
+// the co-op sheets: a frozen copy (Nov 3, 2026, rows Oct 1 to Oct 14), so the page clock above keeps them current;
+// the live file on that fixed clock went stale the day its rows did (BUILD-RULES 50)
+const COOPS_FIX = join(ROOT, "test/fixtures/fast-facts-calcs/fertilizer-coops.json");
 async function open(browser, port, path, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1280, height: 900 } });
   // The page's clock is pinned (Nov 1, 2026): components/fert-pick.js drops a price over 60 days
   // old counted from today, so the dated fixtures below (Sep 1, Sep 24, Oct 6) went stale one by
   // one as the calendar moved, and the nightly went red. Timers keep running.
-  await ctx.clock.setFixedTime(new Date("2026-10-15T15:00:00Z"));
+  await ctx.clock.setFixedTime(new Date(PAGE_NOW));
   // Since 2026-10-16 the N box asks for a state before it fills a corn price
   // (state basis by default). These tests are about the N price, so the reader
   // has already picked "Futures only" (test/fast-facts-nrate.test.mjs covers the ask).
@@ -68,7 +72,9 @@ async function open(browser, port, path, opts = {}) {
     const u = r.request().url();
     // Oct 21: the page reads the co-op sheets through components/fert-pick.js first; these tests
     // hand it a price list, so the sheet file is not there and the chooser falls back to it.
-    if (u.includes("/data/fertilizer-coops.json") && !opts.coops) return r.fulfill({ status: 404, body: "" });
+    if (u.includes("/data/fertilizer-coops.json")) return opts.coops
+      ? r.fulfill({ contentType: "application/json", body: readFileSync(COOPS_FIX) })
+      : r.fulfill({ status: 404, body: "" });
     if (u.includes("/data/fertilizer-prices.json")) {
       if (opts.fail) return r.fulfill({ status: 404, body: "" });
       if (opts.fertDelay) await new Promise((ok) => setTimeout(ok, opts.fertDelay));
@@ -241,8 +247,9 @@ test("a saved Wisconsin ZIP prices urea from the Wisconsin sheet, anhydrous from
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const F = (await import("../components/fert-pick.js")).default;
-    const live = JSON.parse(readFileSync(join(ROOT, "data/fertilizer-coops.json"), "utf8"));
-    const want = Object.fromEntries(F.choose(live, "WI").prices.map((p) => [p.key, p]));
+    const live = JSON.parse(readFileSync(COOPS_FIX, "utf8"));
+    // the same day the page sees (its clock is fixed), in Chicago
+    const want = Object.fromEntries(F.choose(live, "WI", new Date(PAGE_NOW).toLocaleDateString("en-CA", { timeZone: "America/Chicago" })).prices.map((p) => [p.key, p]));
     const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { coops: true, zip: "54728" });
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length >= 2);
     const pills = await pg.$$eval(".fert-pill", (els) => els.map((e) => e.getAttribute("aria-label")));
