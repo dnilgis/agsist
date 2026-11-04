@@ -49,6 +49,95 @@ test("the classifier passes its fixtures (no network, no clock)", () => {
   assert.match(py("scripts/delivery_line.py", "--selftest"), /delivery_line selftest: 0 failed/);
 });
 
+test("Nov 4 real case: the Daily's one send in 81 runs is found, and a send step with no line is red", () => {
+  // cron-health read the newest 2 and 3 longest of 81 Daily runs, found no DELIVERY line and said ok,
+  // while run 41823633959 had sent at 11:48 UTC. The fixture: 81 runs, the send in the 79th, the newest 5 gate-only.
+  const out = py("scripts/delivery_check.py", "--selftest");
+  for (const name of [
+    "Nov 4 Daily, the old view: the newest 5 runs say ok with no line (the blind spot)",
+    "Nov 4 Daily: the send in run 79 of 81 is found and its line read",
+    "Nov 4 Daily: only runs long enough to send are opened (5 of 81), one log",
+    "Daily: a send step that ran with no DELIVERY line is late (d)",
+    "Daily: sent_readers=0 with readers waiting, not dry, is late (f)",
+    "Daily: no run reached the send step by 07:15 Central is late (e)",
+    "Daily: only gate ticks all morning is late (e), not ok",
+    "tick: the served run stopped before the send step is late (e)",
+    "tick: no tick in 24 h is nothing due, ok",
+    "Daily: a live 0 sent, 0 waiting with no already_sent is not a send (e)",
+    "Daily: a 200 s send (under the 240 s floor) is found by the window",
+    "Daily: a send run still in progress is unknown, not (e)",
+    "Daily: the jobs API failing is unknown, not ok and not late",
+    "a spent call budget is raised, not read as no send",
+    "county-rain: the step outside January with no line is ok",
+    "county-rain: the step in January with no line is late (d)",
+    "run: the row says it is a sample",
+  ]) assert.ok(out.split("\n").includes("ok   " + name), `delivery_check.py --selftest no longer passes: ${name}`);
+});
+
+test("the Daily's exits before the send print no 'sent' signal; only the day flag path does", () => {
+  // Nov 4 checker: a live 0 sent, 0 waiting line was read as sent, and every early exit prints exactly that
+  const out = execFileSync("python3", ["scripts/test_daily_delivery_line.py"], { cwd: ROOT, encoding: "utf8" });
+  assert.match(out, /test_daily_delivery_line: \d+ passed, 0 failed/);
+  assert.match(fs.readFileSync(path.join(SCRIPTS, "send_daily.py"), "utf8"), /tally\.extra\["already_sent"\] = 1/);
+});
+
+test("a month-gated send step is gated in its workflow to those months, Central time", () => {
+  for (const e of INV.senders) {
+    for (const [key, months] of Object.entries(e.month_gate || {})) {
+      const s = steps(readWf(e.workflow)).find((x) => stepName(x) === key);
+      assert.ok(s, `${e.workflow}: month_gate names "${key}", which is not a step`);
+      assert.match(s, /TZ=America\/Chicago date \+%m/, `${e.workflow}: "${key}" must test the Central month`);
+      for (const m of months) assert.ok(s.includes(`"${String(m).padStart(2, "0")}"`), `${e.workflow}: "${key}" is not gated to month ${m}`);
+    }
+  }
+});
+
+// A step's name as the jobs API shows it: the text before any ${{ }} (and its open bracket)
+const stepName = (s) => {
+  const m = s.match(/^ {6}- name: *(.+)$/m);
+  return m ? m[1].replace(/^["']|["']$/g, "").split("${{")[0].replace(/\s*\($/, "").trim() : null;
+};
+
+test("each sender's send steps are steps of its workflow that run its scripts", () => {
+  for (const e of INV.senders) {
+    assert.ok(e.steps && Object.keys(e.steps).length, `${e.workflow}: name its send steps (SENDERS "steps")`);
+    const all = steps(readWf(e.workflow));
+    const names = new Set(Object.values(e.senders));
+    const byName = new Map(Object.entries(e.senders).map(([script, name]) => [name, script]));
+    const covered = new Set();
+    for (const [key, senders] of Object.entries(e.steps)) {
+      const hits = all.filter((s) => stepName(s) === key);
+      assert.equal(hits.length, 1, `${e.workflow}: one step must be named "${key}" (found ${hits.length})`);
+      const run = scriptsRun(hits[0]);
+      for (const n of senders) {
+        assert.ok(names.has(n), `${e.workflow}: step "${key}" names ${n}, which is not one of its senders`);
+        assert.ok(run.has(byName.get(n)), `${e.workflow}: step "${key}" does not run scripts/${byName.get(n)}`);
+        covered.add(n);
+      }
+    }
+    assert.deepEqual([...names].filter((n) => !covered.has(n)), [], `${e.workflow}: every sender has a send step`);
+  }
+});
+
+test("each sender says when a send is due, and a tick sender has the gate that sets its ticks", () => {
+  for (const e of INV.senders) {
+    const kind = (e.due || [])[0];
+    assert.ok(["daily", "tick", "run"].includes(kind), `${e.workflow}: due must be daily, tick or run`);
+    if (kind === "tick") {
+      // the same reader delivery_check.py uses for the ticks (cron_health.gate_crons)
+      const crons = JSON.parse(py("-c", `import sys, json; sys.path.insert(0, "scripts"); import cron_health; print(json.dumps(cron_health.gate_crons(${JSON.stringify(e.workflow)})))`));
+      assert.ok(crons.length, `${e.workflow}: a tick sender needs a cron_gate.py tick step with --cron`);
+    }
+    if (kind === "daily") assert.match(e.due[1], /^\d\d:\d\d$/);
+    // a step with its own if: may skip on a due run; the sender must say so, or a skip reads as a missed send
+    for (const key of Object.keys(e.steps)) {
+      const s = steps(readWf(e.workflow)).find((x) => stepName(x) === key);
+      if (/^ {8}if:/m.test(s) && kind !== "run") assert.ok(e.may_skip || e.own_if || kind === "daily",
+        `${e.workflow}: step "${key}" has its own if:, so a due run may skip it; set may_skip (or own_if: why it never skips a due run)`);
+    }
+  }
+});
+
 test("every workflow with mail secrets is a listed reader sender or listed as Sig only", () => {
   const senders = new Set(INV.senders.map((e) => e.workflow));
   const sig = new Set(Object.keys(INV.sig_only));

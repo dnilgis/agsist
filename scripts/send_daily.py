@@ -812,6 +812,10 @@ def main():
     tally = delivery_line.start("daily", dry=dry or test)   # a test to Sig is not the list
 
     if not dry and not test and flag(day):
+        # The one path where 0 sent is fine: say so on the DELIVERY line. Every other exit before the
+        # send (a held issue, no link ids, no recipients, a crash) prints 0 sent, 0 waiting without it,
+        # and delivery_check.py reads that as no send (Nov 4 2026).
+        tally.extra["already_sent"] = 1
         print("already sent for " + day + " (day-flag set) — skipping. exit 0")
         return 0
     if daily_format() == "v2":
