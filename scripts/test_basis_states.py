@@ -18,8 +18,9 @@ Reading "MO" off the end of a city field is reading. Inferring "IL" from
 says do not — so that row stays stateless and gets NAMED in the run instead of
 filed somewhere nobody can open.
 
-The function is LIFTED out of build_basis_history.py, so this cannot pass
-against a version the script no longer has.
+The rule is IMPORTED from build_basis_history.py (row_state, which the
+sparkline builder shares), so this cannot pass against a version the script
+no longer has.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -40,22 +41,22 @@ def check(cond, msg):
         fails.append(msg)
 
 
-# ── lift US_STATES and state_of ───────────────────────────────────────────
-i = SRC.find("    US_STATES = frozenset(")
-j = SRC.find("    by_state, stateless = {}, []")
-check(i >= 0, "build_basis_history.py no longer defines US_STATES in write_shards()")
-check(j > i, "build_basis_history.py no longer bucketing after state_of()")
-if i < 0 or j <= i:
+# ── the rule itself, imported (Nov 4, 2026: row_state moved to module level so
+# build_basis_sparklines.py files the same change logs by the same rule; it was
+# lifted out of write_shards() as text before) ─────────────────────────────
+sys.path.insert(0, str(ROOT / "scripts"))
+import build_basis_history as B  # noqa: E402
+check(callable(getattr(B, "row_state", None)), "build_basis_history.py no longer defines row_state()")
+check(isinstance(getattr(B, "US_STATES", None), frozenset), "build_basis_history.py no longer defines US_STATES")
+_ws = SRC[SRC.find("def write_shards"):]
+check("code = row_state(st, city)" in _ws[:_ws.find("by_state.setdefault")],
+      "write_shards() no longer buckets by row_state()")
+if fails:
     for f in fails:
         print("FAIL: " + f)
     sys.exit(1)
-
-body = "\n".join(ln[4:] if ln.startswith("    ") else ln
-                 for ln in SRC[i:j].splitlines())
-ns = {"frozenset": frozenset, "len": len}
-exec(compile(body, "<lifted from build_basis_history.py>", "exec"), ns)
-state_of = ns["state_of"]
-US_STATES = ns["US_STATES"]
+state_of = lambda city, st: B.row_state(st, city)  # noqa: E731  (the old lifted name and argument order)
+US_STATES = B.US_STATES
 
 # ── the bucket that could never be read is gone ───────────────────────────
 # THE DEFECT ITSELF, NOT THE PROSE EXPLAINING IT. A first cut asked whether
