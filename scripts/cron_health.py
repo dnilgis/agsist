@@ -48,6 +48,15 @@ the last ENGINE_LOOKBACK_HOURS, or when ENGINE_MODE is private and the key
 cannot read an engine branch; a warning when an engine branch cannot be read
 while the code still runs from the public repo (do not flip until it can).
 
+ENGINE DRIFT (Nov 4, 2026; BUILD-RULES 63). Engine sync is part of every merge that touches scripts/,
+test/ or build/: on Nov 3 the engine copy was missing the Daily's new safety checks for hours. One row,
+engine-drift: the engine-agsist branch of the private repo (one tree call with PRIVATE_REPO_TOKEN) against
+this checkout's HEAD (git ls-tree), the paths in .github/engine-paths, compared by git blob hash only. No
+file name or content is printed or saved: the row keeps a short hash of each differing path and when it was
+first seen differing. A warning while files differ, red once any has differed for more than
+ENGINE_DRIFT_HOURS. A file only in the engine is counted apart: an engine sync (engine.sh save) would delete
+it, so .github/workflows/engine-sync.yml refuses to run until the lead looks.
+
 This writes private/data/cron-health.json: for each watched workflow, its last
 successful run, the longest gap its clock allows, and whether the latest
 tick of that clock was served. A tick is served when a run that started
@@ -115,6 +124,8 @@ ENGINE_REPOS = ("dnilgis/agsist", "dnilgis/bids")
 ENGINE_STEP = "Engine checkout"
 ENGINE_LOOKBACK_HOURS = 6
 ENGINE_RUNS_LOOKED_AT = 15
+ENGINE_DRIFT_HOURS = 2       # engine-drift is red once a file has differed from main this long (BUILD-RULES 63)
+ENGINE_DRIFT_BRANCH = "engine-agsist"
 
 # file, clock (None = read it from the workflow's cron_gate step), max delay
 # in minutes, critical (fails the run red), and what the clock is.
@@ -538,6 +549,111 @@ def engine_row(now, key, gh_token, api="https://api.github.com", mode="", get=No
     return row
 
 
+def engine_paths(root=ROOT):
+    """(repo, branch, [paths]) from .github/engine-paths"""
+    repo, branch, paths = PRIVATE_REPO, ENGINE_DRIFT_BRANCH, []
+    with open(os.path.join(root, ".github", "engine-paths"), encoding="utf-8") as fh:
+        for line in fh:
+            f = line.split()
+            if len(f) == 2 and f[0] == "repo":
+                repo = f[1]
+            elif len(f) == 2 and f[0] == "branch":
+                branch = f[1]
+            elif len(f) == 2 and f[0] == "path":
+                paths.append(f[1].strip("/"))
+    return repo, branch, paths
+
+
+def main_blobs(paths, root=ROOT):
+    """{path: blob hash} of HEAD under the engine paths (the commit, never the working tree)"""
+    import subprocess
+    r = subprocess.run(["git", "-C", root, "ls-tree", "-r", "HEAD", "--"] + paths, capture_output=True, text=True, check=True)
+    out = {}
+    for line in r.stdout.splitlines():
+        meta, _, path = line.partition("\t")
+        f = meta.split()
+        if len(f) == 3 and f[1] == "blob":
+            out[path] = f[2]
+    return out
+
+
+def _pkey(path):
+    import hashlib
+    return hashlib.sha256(path.encode("utf-8")).hexdigest()[:16]
+
+
+def drift_row(now, key, prev=None, api="https://api.github.com", root=ROOT, get_h=None, blobs=None):
+    """engine-drift: files under the engine paths whose blob hash differs between the engine branch and HEAD.
+    prev: the last saved document (its engine-drift row keeps when each differing path was first seen)."""
+    get_h = get_h or _get_h
+    row = {"workflow": "engine-drift", "critical": True,
+           "clock": "the engine branch matches main's engine paths within %d h of a merge (BUILD-RULES 63)" % ENGINE_DRIFT_HOURS}
+    if not key:
+        row.update(status="unknown", critical=False, why="PRIVATE_REPO_TOKEN was not given to this job")
+        return row
+    try:
+        repo, branch, paths = engine_paths(root)
+        mine = blobs if blobs is not None else main_blobs(paths, root)
+        body, _ = get_h("%s/repos/%s/git/trees/%s?recursive=1" % (api, repo, branch), key)
+    except Exception as e:
+        code = getattr(e, "code", None)
+        row.update(status="unknown", why="could not compare: %s" % (("HTTP %s" % code) if code else type(e).__name__))
+        return row
+    if (body or {}).get("truncated"):
+        row.update(status="unknown", why="the engine tree came back truncated; not compared")
+        return row
+    eng = {t["path"]: t.get("sha") for t in (body or {}).get("tree", [])
+           if t.get("type") == "blob" and any(t["path"].startswith(p + "/") for p in paths)}
+    if not eng:
+        row.update(status="unknown", why="the engine branch has no file under %s" % ", ".join(paths))
+        return row
+    only_main = [p for p in mine if p not in eng]
+    only_eng = [p for p in eng if p not in mine]
+    changed = [p for p in mine if p in eng and mine[p] != eng[p]]
+    old = {}
+    for r in (prev or {}).get("workflows", []):
+        if r.get("workflow") == "engine-drift":
+            old = r.get("since") or {}
+    stamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    since = {}
+    for p in only_main + only_eng + changed:
+        k = _pkey(p)
+        since[k] = old.get(k) or stamp
+    row.update(compared=len(set(mine) | set(eng)), differ=len(changed), only_main=len(only_main),
+               only_engine=len(only_eng), since=since)
+    if not since:
+        row.update(status="ok", why="%d files match %s (blob hashes)" % (row["compared"], branch))
+        return row
+    try:
+        hours = max((now - parse_ts(t)).total_seconds() / 3600 for t in since.values())
+    except Exception:
+        hours = 0.0
+    what = "%d changed, %d only on main, %d only in the engine" % (len(changed), len(only_main), len(only_eng))
+    tail = ("; a file only in the engine is deleted by a sync, so engine-sync.yml refuses: look at it by hand"
+            if only_eng else "; run the engine sync (engine-sync.yml, or engine.sh save from a clean main)")
+    if hours > ENGINE_DRIFT_HOURS:
+        row.update(status="late", why="Engine out of date with main for %.1f h (limit %d h): %s%s" % (hours, ENGINE_DRIFT_HOURS, what, tail))
+    else:
+        row.update(status="warn", why="engine differs from main for %.1f h (red past %d h): %s%s" % (hours, ENGINE_DRIFT_HOURS, what, tail))
+    return row
+
+
+def add_drift_row(now, rows, late, prev, environ=None, **kw):
+    """the engine-drift row, fail soft (a broken check is one unknown row)"""
+    environ = os.environ if environ is None else environ
+    rows, late = list(rows), list(late)
+    try:
+        r = drift_row(now, environ.get("PRIVATE_REPO_TOKEN", ""), prev,
+                      environ.get("GITHUB_API_URL", "https://api.github.com"), **kw)
+    except Exception as e:
+        r = {"workflow": "engine-drift", "critical": False, "clock": "engine matches main", "status": "unknown",
+             "why": "check could not run: %s" % type(e).__name__}
+    rows.append(r)
+    if r.get("status") == "late":
+        late.append(r["workflow"])
+    return rows, late
+
+
 def folder_row(r, SB):
     """warn when a top-level folder passes FOLDER_WARN of its check_site_budget.py budget, over
     (red) past the budget itself (the site-budget check then fails every push)."""
@@ -632,6 +748,9 @@ def should_commit(prev, doc, now):
     new = {r["workflow"]: r.get("status") for r in doc["workflows"]}
     if old != new:
         return True
+    drift = lambda d: next((r.get("since") for r in d.get("workflows", []) if r.get("workflow") == "engine-drift"), None)
+    if drift(doc) != drift(prev):
+        return True    # when each engine file started to differ is kept, so the 2 h clock runs from then
     if doc.get("delivery_checked_at") != prev.get("delivery_checked_at"):
         return True    # a new pass over the run logs is kept, so the next runs reuse it
     try:
@@ -658,6 +777,7 @@ def main(argv):
     except Exception:
         prev = None
     rows, late, checked_at = add_delivery_rows(now, rows, late, repo, token, api, prev)
+    rows, late = add_drift_row(now, rows, late, prev)
     doc = build(now, rows, late)
     if checked_at:
         doc["delivery_checked_at"] = checked_at
@@ -982,6 +1102,50 @@ def selftest():
     check("ENGINE_MODE: ${{ vars.ENGINE_MODE }}" in wf, "cron-health.yml tells the check the engine mode")
     check("PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}" in wf and "--out private/data/cron-health.json" in wf,
           "cron-health.yml gives the check the key and writes the private copy")
+
+    # engine-drift (BUILD-RULES 63): blob hashes only, red past ENGINE_DRIFT_HOURS, nothing named
+    asked_t = []
+
+    def tree(files, fail=None, truncated=False):
+        def g(url, token):
+            asked_t.append(url)
+            if fail:
+                raise urllib.error.HTTPError(url, fail, "x", {}, None)
+            return {"truncated": truncated, "tree": [{"path": p, "type": "blob", "sha": h} for p, h in files.items()]
+                    + [{"path": "scripts", "type": "tree", "sha": "t"}, {"path": "notes/x.md", "type": "blob", "sha": "n"}]}, {}
+        return g
+    mine = {"scripts/a.py": "1", "scripts/b.py": "2", "test/c.mjs": "3"}
+    r = drift_row(now, TOK, None, get_h=tree(dict(mine)), blobs=dict(mine))
+    check(r["status"] == "ok" and r["compared"] == 3 and r["since"] == {}, "engine-drift: same hashes, ok (%s)" % r["why"])
+    check(asked_t[-1].endswith("/repos/dnilgis/feedbag/git/trees/engine-agsist?recursive=1"), "one tree call on engine-agsist")
+    r = drift_row(now, TOK, None, get_h=tree({"scripts/a.py": "1", "scripts/b.py": "OLD", "test/c.mjs": "3"}), blobs=dict(mine))
+    check(r["status"] == "warn" and r["differ"] == 1 and len(r["since"]) == 1, "a file changed on main just now: a warning (%s)" % r["why"])
+    prev = {"workflows": [r]}
+    later = now + timedelta(hours=ENGINE_DRIFT_HOURS, minutes=5)
+    r2 = drift_row(later, TOK, prev, get_h=tree({"scripts/a.py": "1", "scripts/b.py": "OLD", "test/c.mjs": "3"}), blobs=dict(mine))
+    check(r2["status"] == "late" and r2["critical"] and r2["why"].startswith("Engine out of date with main for 2.1 h"),
+          "the same file still differs past %d h: red (%s)" % (ENGINE_DRIFT_HOURS, r2["why"]))
+    r3 = drift_row(later, TOK, prev, get_h=tree({"scripts/a.py": "1", "scripts/b.py": "2", "test/c.mjs": "NEW"}), blobs=dict(mine))
+    check(r3["status"] == "warn", "a different file, first seen now, starts its own clock (%s)" % r3["why"])
+    r4 = drift_row(now, TOK, None, get_h=tree(dict(mine, **{"scripts/secret_only.py": "9"})), blobs=dict(mine))
+    check(r4["only_engine"] == 1 and "engine-sync.yml refuses" in r4["why"], "a file only in the engine is counted apart (%s)" % r4["why"])
+    r5 = drift_row(now, TOK, None, get_h=tree({"scripts/a.py": "1"}), blobs=dict(mine))
+    check(r5["only_main"] == 2, "files only on main (a sync not run) count as drift")
+    blob = json.dumps([r, r2, r3, r4, r5])
+    check(not any(n in blob for n in ("a.py", "b.py", "c.mjs", "secret_only")) and TOK not in blob,
+          "no file name and no key in the engine-drift rows")
+    check(drift_row(now, TOK, None, get_h=tree({}, fail=404), blobs=dict(mine))["status"] == "unknown", "engine tree unreadable: unknown")
+    check(drift_row(now, TOK, None, get_h=tree(dict(mine), truncated=True), blobs=dict(mine))["status"] == "unknown", "a truncated tree: unknown")
+    check(drift_row(now, "", None, blobs=dict(mine))["status"] == "unknown", "no key: unknown, not red")
+    d1 = {"generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "workflows": [{"workflow": "engine-drift", "status": "warn", "since": {"k": "t"}}]}
+    d2 = {"generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "workflows": [{"workflow": "engine-drift", "status": "warn", "since": {"k": "t", "j": "u"}}]}
+    check(should_commit(d1, d2, now) and not should_commit(d1, d1, now), "a new differing file is saved even when the status stays a warning")
+    rows, late = add_drift_row(later, [], [], prev, environ={"PRIVATE_REPO_TOKEN": TOK}, get_h=tree({"scripts/a.py": "1", "scripts/b.py": "OLD", "test/c.mjs": "3"}), blobs=dict(mine))
+    check(late == ["engine-drift"], "a red engine-drift row makes the run red")
+    rp, br, ps = engine_paths()
+    check(rp == PRIVATE_REPO and br == ENGINE_DRIFT_BRANCH and ps == ["scripts", "test", "build"], "the engine paths come from .github/engine-paths")
+    hb = main_blobs(["scripts"])
+    check("scripts/cron_health.py" in hb and len(hb["scripts/cron_health.py"]) == 40, "HEAD's blob hashes from git ls-tree")
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_health checks passed")
     return 1 if fails else 0
