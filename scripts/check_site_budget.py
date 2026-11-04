@@ -63,7 +63,10 @@ FOLDER_MB = {
     # data: 300. Oct 29 (fx/sizeinputs): build inputs no reader loads moved to
     # the private raw branch (data/atlas/src CRP workbooks 3.4 MB,
     # data/atlas/raw/drought.json 2.7 MB, data/site-inventory.json 0.2 MB); the
-    # workflows unpack them with scripts/pull_raw.sh.
+    # workflows unpack them with scripts/pull_raw.sh. Nov 4 (fx/datasplit):
+    # the budget counts published bytes (280.1 MB, not the tree's 285.5), and
+    # the builder-only data/site-usage.json (4.0 MB) and data/cot-deep.json
+    # (1.2 MB) moved to raw the same way (test/raw-readers.test.mjs).
     "data": 300,
     "arc-plc": 150,
     "farmland-atlas": 200,
