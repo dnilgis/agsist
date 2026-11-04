@@ -127,6 +127,10 @@ case "$cmd" in
       [ -e "$ROOT/$p" ] || { echo "engine: $ROOT/$p is missing; nothing saved" >&2; exit 1; }
     done
     for p in "${PATHS[@]}"; do rm -rf "${ED:?}/$p"; cp -a "$ROOT/$p" "$ED/$p"; done
+    # cp -a keeps each file's mtime, so a changed file of the same size can match the old index entry's
+    # stat data (an inode reused by rm then cp); drop the paths from the index and add them again so
+    # every file is hashed (Nov 4, 2026: a same-size edit was saved as "nothing to save" under load)
+    git -C "$ED" rm -r -q --cached --ignore-unmatch -- "${PATHS[@]}" >/dev/null
     git -C "$ED" add -A -- "${PATHS[@]}"
     if git -C "$ED" diff --cached --quiet; then echo "engine: nothing to save"; exit 0; fi
     git -C "$ED" -c user.name="${GIT_AUTHOR_NAME:-dnilgis}" -c user.email="${GIT_AUTHOR_EMAIL:-dnilgis@gmail.com}" \
