@@ -204,7 +204,11 @@ test("home: the Futures tile and the ticker print the headline month (Jan '27 on
       await pg.waitForFunction((n) => [...document.querySelectorAll('.prices-strip [data-sym="beans-nov"] .t-label')].every((e) => e.textContent === "Soybeans " + n), next, { timeout: 20000 });
       const labels = await pg.$$eval(".prices-strip .t-label", (es) => es.map((e) => e.textContent));
       if (mon === "Jan") {
-        assert.ok(!labels.some((l) => /Nov '26/.test(l)), w + ": no ticker item on Nov '26 past first notice: " + labels.join(" | "));
+        // soybeans only: feeder cattle and milk really are Nov '26
+        assert.ok(!labels.some((l) => /^Soybeans Nov '26/.test(l)), w + ": no soybean ticker item on Nov '26 past first notice: " + labels.join(" | "));
+        // and the second soybean item carries the Nov '27 price, not Nov '26's
+        const tp = await pg.$eval('.prices-strip [data-sym="beans-nov"] .t-price', (e) => e.textContent);
+        assert.match(tp, /11\.87/, w + " Nov '27 price on the ticker: " + tp);
         const hero = await pg.textContent("#hero-band");
         assert.doesNotMatch(hero, /Nov ’26|Nov '26/, w + ": hero");
         // the soybean cards: the front names Jan '27, the second card Nov '27
