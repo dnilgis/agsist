@@ -59,7 +59,7 @@ A(r.status === 200 && forms().length === before, 'honeypot: ok answer, nothing s
 // sponsor feedback keeps line breaks, email optional
 // v5.13: an approval must carry the portal link's r and its key k = hmac16("sponsor-portal|" + r)
 const skey = (r_) => crypto.createHmac('sha256', 'sec').update(('sponsor-portal|' + r_).toLowerCase()).digest('hex').slice(0, 16);
-const R1 = 'apex-c1c1e09865171cd1';
+const R1 = 'apex-0000000000000001';
 r = await post({ kind: 'sponsor-feedback', request: 'Approval', sponsor: 'Apex', proof: 'AB12', message: 'Line one\r\nLine two', subject: 'Approved', r: R1, k: skey(R1) });
 A(r.status === 200, 'sponsor feedback stored');
 rec = JSON.parse(store.get(forms().find(x => x.startsWith('form:sponsor-feedback:'))));
