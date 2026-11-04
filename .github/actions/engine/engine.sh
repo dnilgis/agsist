@@ -10,6 +10,10 @@
 #                               (ENGINE_DIR, default ../<repo>-engine) and copy it in
 #   engine.sh save [message]    copy this checkout's engine paths back into ENGINE_DIR and
 #                               commit there (it does not push; it prints the push line)
+#   engine.sh only-engine [dir] refuse (exit 1) when a file under the engine paths is in the
+#                               engine clone's HEAD (dir, default ENGINE_DIR) and not in this
+#                               checkout's HEAD: save would delete it. Prints a count, no names.
+#                               .github/workflows/engine-sync.yml runs it before every save.
 #
 # Rules:
 # - While this repository still tracks a path, the copy never overwrites a
@@ -129,6 +133,19 @@ case "$cmd" in
       commit -q -m "${1:-engine: from $(basename "$ROOT") $(git -C "$ROOT" rev-parse --short HEAD)}" || exit 1
     git -C "$ED" show --stat --format='engine: committed %h %s' HEAD | tail -n +1 | head -20
     echo "push it: git -C $ED push origin $BRANCH" ;;
+  only-engine)
+    ED="${1:-${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}}"
+    case "$ED" in /*) ;; *) ED="$ROOT/$ED" ;; esac
+    [ -e "$ED/.git" ] || { echo "engine: no engine clone at $ED" >&2; exit 1; }
+    n=$(LC_ALL=C comm -23 <(git -C "$ED" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | LC_ALL=C sort) \
+                         <(git -C "$ROOT" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | LC_ALL=C sort) | wc -l)
+    m=$(git -C "$ED" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | wc -l)
+    if [ "$m" -eq 0 ]; then echo "::error title=engine sync refused::the engine clone has no file under ${PATHS[*]}"; exit 1; fi
+    if [ "$n" -gt 0 ]; then
+      echo "::error title=engine sync refused::$n file(s) exist only in the engine branch $BRANCH, not on this checkout's HEAD; a save would delete them. Look by hand (git -C <engine clone> ls-tree against main) before any sync."
+      exit 1
+    fi
+    echo "engine: no file only in the engine ($m files under ${PATHS[*]})" ;;
   *)
-    sed -n '2,22p' "$0"; exit 2 ;;
+    sed -n '2,26p' "$0"; exit 2 ;;
 esac
