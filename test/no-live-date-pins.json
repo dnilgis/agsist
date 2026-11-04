@@ -14,7 +14,7 @@
   "test/accfix3.test.mjs": 9,
   "test/accuracy-sets-oct18.test.mjs": 1,
   "test/agstocks.test.mjs": 3,
-  "test/alert-asks.test.mjs": 10,
+  "test/alert-asks.test.mjs": 8,
   "test/asof.test.mjs": 4,
   "test/atlas-county-home.test.mjs": 2,
   "test/atlas-land-oct16.test.mjs": 4,
