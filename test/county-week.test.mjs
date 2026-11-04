@@ -247,7 +247,7 @@ const FIXED = { "/data/drought/county-week.json": "drought.json", "/data/basis-s
   "/data/land-sales/wi.json": "land-sales-wi.json", "/data/land-sales/il.json": "land-sales-il.json" };
 const ASK = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body><main style="padding:0 16px"><div data-signup-ask="The markets, free, every morning in the AGSIST Daily" data-source="page:test"></div></main>
-<script src="/components/signup-ask.js?v=20"></script></body></html>`;
+<script src="/components/signup-ask.js?v=21"></script></body></html>`;
 function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
   const srv = http.createServer((req, res) => {
