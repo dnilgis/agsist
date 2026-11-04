@@ -183,6 +183,7 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
+const DATA_AT = Date.parse(JSON.parse(readFileSync(join(ROOT, "data/prices.json"), "utf8")).fetched) + 3600e3;
 test("the six pages at 390 and 1280: no horizontal scroll, no page errors, the new lines render", { skip, timeout: 120000 }, async () => {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
@@ -208,6 +209,9 @@ test("the six pages at 390 and 1280: no horizontal scroll, no page errors, the n
   try {
     for (const w of [390, 1280]) {
       const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: w, height: w === 390 ? 844 : 800 } });
+      // the pages read the committed files, so their clock starts an hour after the futures copy was read and runs on:
+      // on a later clock (a January run) the no-ZIP bid table withheld itself over an old basis (BUILD-RULES 50)
+      await ctx.clock.install({ time: new Date(DATA_AT) });
       await ctx.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
       for (const [p, sel] of Object.entries(want)) {
         const pg = await ctx.newPage(), errs = [];
