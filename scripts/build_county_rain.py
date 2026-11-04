@@ -195,7 +195,7 @@ def wx_fold(c, r, d, noun, name, year, done):
     g = r.get("g")
     faq = []
     if isinstance(g, list):
-        line = f"{g[0]:,} corn GDDs May 1 to {a}" + (f", {g[4]}% of the 1991-2020 average" if len(g) > 2 else "")
+        line = f"{g[0]:,} corn GDDs May 1 to {a}" + (f", {g[4]}% of the 1991-2020 average ({g[3]} yrs)" if len(g) > 2 else "")
         faq.append((f"How many growing degree days {'did' if done else 'has'} {name} {'have' if done else 'had'} in {year}?",
                     f"{g[0]:,} corn GDDs (base 50°F, cap 86°F) May 1 to {a} at {where}"
                     + (f", {g[4]}% of its 1991-2020 average for the same days ({g[3]} years)." if len(g) > 2 else ".")))
@@ -1218,7 +1218,14 @@ def load_wx(data_dir, files):
     for st, d in files.items():
         p = os.path.join(data_dir, "wx", st.lower() + ".json")
         if os.path.exists(p):
-            x = json.load(open(p, encoding="utf-8"))
+            try:
+                x = json.load(open(p, encoding="utf-8"))
+                if not isinstance(x, dict) or not isinstance(x.get("counties") or {}, dict):
+                    raise ValueError("not a weather file")
+            except (OSError, ValueError) as err:
+                # a cut-off or broken weather file never takes the rain pages down: that state shows no fold
+                print(f"::warning::rain weather file {st.lower()}.json unreadable ({err}); its pages show no weather fold", flush=True)
+                continue
             if x.get("state") == st and x.get("fetched") == d["fetched"] and x.get("year") == d["year"]:
                 out[st] = x.get("counties") or {}
     return out
@@ -1446,7 +1453,7 @@ def selftest():
                    "counties": {"19169": rowx}}, open(os.path.join(data, "wx", "ia.json"), "w"))
         wx_story = build(data).get("rain/iowa/story-county.html", "")
         ok('<details class="rc-wx" data-w="ia/19169" data-v="' in wx_story and "rain-wx.js?v=1" in wx_story, "the weather fold is on the page")
-        ok("Weather 10 miles from the station: 2,912 corn GDDs May 1 to Oct 12, 106% of the 1991-2020 average</summary>" in wx_story,
+        ok("Weather 10 miles from the station: 2,912 corn GDDs May 1 to Oct 12, 106% of the 1991-2020 average (30 yrs)</summary>" in wx_story,
            "the fold's line: GDDs with their span and percent, the other station's distance")
         ok("How many growing degree days has Story County had in 2026?" in wx_story and "When was the first fall freeze in Story County in 2026?" in wx_story
            and wx_story.count("How many growing degree days") == 2, "two FAQ questions, on the page and in the FAQ data")
@@ -1459,6 +1466,11 @@ def selftest():
         json.dump({"schema": "agsist-rain-wx/1", "state": "IA", "year": sx["year"], "edate": sx["edate"], "fetched": "older",
                    "counties": {"19169": rowx}}, open(os.path.join(data, "wx", "ia.json"), "w"))
         ok("rc-wx" not in build(data).get("rain/iowa/story-county.html", ""), "a weather file from another fetch prints nothing")
+        for broken in ('{"schema": "agsist-rain-wx/1", "state": "IA", "counties": {"19169": {"a": 10', "", "[1, 2]", '{"counties": [1]}'):
+            open(os.path.join(data, "wx", "ia.json"), "w").write(broken)
+            bw = build(data)
+            ok("rain/iowa/story-county.html" in bw and "rc-wx" not in bw["rain/iowa/story-county.html"],
+               f"a cut-off or broken weather file ({broken[:20]!r}): the build still runs, that state shows no fold")
         os.remove(os.path.join(data, "wx", "ia.json"))
         os.rmdir(os.path.join(data, "wx"))
         # no figure without its date; withheld figures are left out

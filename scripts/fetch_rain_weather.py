@@ -135,26 +135,42 @@ def temp(v):
 
 # ---------------------------------------------------------------- talking to ACIS
 
+CALL_MARGIN_S = 30          # a call never runs past its window's end by more than this
+CALL_MIN_S = 20             # nor starts with less than this left
+
+
 class Net:
     def __init__(self, deadline):
         self.deadline = deadline
+        self.limit = None       # set during the normals fill: that window's end (fill_until)
         self.calls = 0
+
+    def budget(self):
+        """Seconds this call may take: TIMEOUT_S, cut to the fill window's end plus CALL_MARGIN_S and to
+        the run's deadline. Raises TimeoutError when too little is left to start a call."""
+        now = time.time()
+        ends = [self.deadline] + ([self.limit + CALL_MARGIN_S] if self.limit else [])
+        left = min(ends) - now
+        if left < CALL_MIN_S:
+            raise TimeoutError("time cap reached")
+        return min(TIMEOUT_S, left)
 
     def call(self, params):
         params = {k: v for k, v in params.items() if not k.startswith("_")}
         body = urllib.parse.urlencode({"params": json.dumps(params, separators=(",", ":"))}).encode()
         err = None
         for attempt in range(len(BACKOFF_S) + 1):
-            if time.time() > self.deadline:
-                raise TimeoutError("time cap reached")
+            t = self.budget()
             try:
                 self.calls += 1
                 req = urllib.request.Request(URL, data=body, headers={"User-Agent": UA})
-                with urllib.request.urlopen(req, timeout=TIMEOUT_S) as r:
+                with urllib.request.urlopen(req, timeout=t) as r:
                     return json.loads(r.read().decode("utf-8"))
             except Exception as e:  # noqa: BLE001
                 err = e
                 if attempt < len(BACKOFF_S):
+                    if self.budget() < BACKOFF_S[attempt] + CALL_MIN_S:
+                        raise TimeoutError("time cap reached") from e
                     print(f"  ACIS: {e}; retrying in {BACKOFF_S[attempt]}s", flush=True)
                     time.sleep(BACKOFF_S[attempt])
         raise RuntimeError(f"ACIS failed after retries: {err}")
@@ -502,11 +518,19 @@ def load_norms(st, d=NORM_DIR):
         return {}
 
 
+def write_json(path, obj, **kw):
+    """Whole or not at all: a temp file beside it, then os.replace (a cut-off run never leaves half a file)."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        json.dump(obj, fh, separators=(",", ":"), **kw)
+    os.replace(tmp, path)
+
+
 def save_norms(st, stations, d=NORM_DIR):
-    os.makedirs(d, exist_ok=True)
-    json.dump({"schema": NORM_SCHEMA, "state": st, "years": [NORM_Y0, NORM_Y1],
-               "source": "NOAA daily highs and lows through RCC-ACIS, 1991-2020", "stations": stations},
-              open(os.path.join(d, st.lower() + ".json"), "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)
+    write_json(os.path.join(d, st.lower() + ".json"),
+               {"schema": NORM_SCHEMA, "state": st, "years": [NORM_Y0, NORM_Y1],
+                "source": "NOAA daily highs and lows through RCC-ACIS, 1991-2020", "stations": stations}, sort_keys=True)
 
 
 # ---------------------------------------------------------------- one state
@@ -529,11 +553,14 @@ def build_state(src, d, C, norms, fill_until):
             print(f"  {st}: normals fill paused, {len(need) - i} stations wait for the next run", flush=True)
             break
         part = need[i:i + FILL_CHUNK]
+        src.limit = fill_until                  # Net: this call ends by fill_until + CALL_MARGIN_S
         try:
             ans = ask_norm(src, st, part)
         except (RuntimeError, TimeoutError) as e:
             print(f"  {st}: normals not read ({e})", flush=True)
             break
+        finally:
+            src.limit = None
         for s in ans:
             sids = (s.get("meta") or {}).get("sids") or []
             sid = next((x for x in part if x in sids), None)
@@ -557,15 +584,44 @@ def build_state(src, d, C, norms, fill_until):
             "normals": f"{NORM_Y0}-{NORM_Y1}", "counties": out}, added
 
 
-def run(src, states=None, rain=RAIN, out=OUT, norm_dir=NORM_DIR, fill_minutes=FILL_MINUTES):
+def written_at(out, st):
+    """The fetch time of a state's published weather file, "" when it has none or it cannot be read."""
+    try:
+        return str(json.load(open(os.path.join(out, st.lower() + ".json"), encoding="utf-8")).get("fetched") or "")
+    except (OSError, ValueError, AttributeError):
+        return ""
+
+
+def state_order(sts, out, day):
+    """The order to read states in: the stalest published weather first (none at all first of all), so a
+    run that hits its time cap leaves different states for the next run; ties start at a place that
+    moves with the day of the year (day), so no state is always last."""
+    n = len(sts) or 1
+    k = {st: i for i, st in enumerate(sorted(sts))}
+    return sorted(sts, key=lambda st: (written_at(out, st), (k[st] - day) % n))
+
+
+def run(src, states=None, rain=RAIN, out=OUT, norm_dir=NORM_DIR, fill_minutes=FILL_MINUTES, deadline=None, day=None):
     os.makedirs(out, exist_ok=True)
     C = R.counties()
     fill_until = time.time() + fill_minutes * 60
-    ok = bad = 0
+    deadline = deadline if deadline is not None else getattr(src, "deadline", None)
+    day = day if day is not None else dt.date.today().timetuple().tm_yday
+    files = {}
     for p in sorted(glob.glob(os.path.join(rain, "*.json"))):
-        d = json.load(open(p, encoding="utf-8"))
+        try:
+            d = json.load(open(p, encoding="utf-8"))
+        except (OSError, ValueError) as e:
+            print(f"  {os.path.basename(p)}: unreadable ({e})", flush=True)
+            continue
         st = d.get("state")
-        if not st or (states and st not in states) or not d.get("counties"):
+        if st and (not states or st in states) and d.get("counties"):
+            files[st] = d
+    done, skipped = [], []
+    for st in state_order(list(files), out, day):
+        d = files[st]
+        if deadline is not None and time.time() > deadline - CALL_MIN_S:
+            skipped.append(st)
             continue
         norms = load_norms(st, norm_dir)
         before = len(norms)
@@ -573,22 +629,24 @@ def run(src, states=None, rain=RAIN, out=OUT, norm_dir=NORM_DIR, fill_minutes=FI
             res, added = build_state(src, d, C, norms, fill_until)
         except (RuntimeError, TimeoutError, KeyError, ValueError) as e:
             print(f"  {st}: kept the published weather ({e})", flush=True)
-            bad += 1
+            skipped.append(st)
             continue
         if len(norms) != before:
             save_norms(st, norms, norm_dir)
         bad_rows = problems(res)
         if bad_rows or not res["counties"]:
             print(f"  {st}: kept the published weather ({'; '.join(bad_rows[:3]) or 'nothing came back'})", flush=True)
-            bad += 1
+            skipped.append(st)
             continue
-        json.dump(res, open(os.path.join(out, st.lower() + ".json"), "w", encoding="utf-8"), separators=(",", ":"))
+        write_json(os.path.join(out, st.lower() + ".json"), res)
         g = sum(1 for c in res["counties"].values() if isinstance(c.get("g"), list) and len(c["g"]) > 2)
         print(f"  {st}: weather for {len(res['counties'])} of {len(d['counties'])} counties, GDD normal for {g}; "
               f"normals cache +{added}", flush=True)
-        ok += 1
-    print(f"rain weather: {ok} states written, {bad} kept", flush=True)
-    return 0
+        done.append(st)
+    if skipped:
+        print(f"::warning::rain weather: {len(done)} of {len(files)} states updated, skipped: {','.join(sorted(skipped))}", flush=True)
+    print(f"RAIN-WX updated={len(done)} stale={len(skipped)}", flush=True)
+    return done, skipped
 
 
 # ---------------------------------------------------------------- checking
@@ -744,6 +802,36 @@ def selftest():
         calls = Saved(fx)
         run(calls, None, rain, out, nd)
         ok(calls.calls == 3, f"a second run reads no normals again ({calls.calls} calls: the year and two month records)")
+        ok(not [f for f in os.listdir(out) + os.listdir(nd) if f.endswith(".tmp")], "written whole: no temp file left behind")
+        # the order: the stalest published weather first, missing first of all; ties move with the day
+        for st, f in (("KS", "2026-11-03T13:00:00Z"), ("WY", "2026-11-01T13:00:00Z")):
+            json.dump({"fetched": f}, open(os.path.join(out, st.lower() + ".json"), "w"))
+        open(os.path.join(out, "va.json"), "w").write('{"fetched": "2026-11')     # cut off: as if none
+        ok(state_order(["IA", "KS", "VA", "WY"], out, 0)[:2] == ["VA", "WY"], f"stalest first: {state_order(['IA', 'KS', 'VA', 'WY'], out, 0)}")
+        ties = ["AK", "AL", "WI", "WY"]
+        o0, o3 = state_order(ties, os.path.join(t, "none"), 0), state_order(ties, os.path.join(t, "none"), 3)
+        ok(o0 == ["AK", "AL", "WI", "WY"] and o3[0] == "WY", f"ties start at a place that moves with the day: {o0} {o3}")
+        ok({state_order(ties, os.path.join(t, "none"), k)[-1] for k in range(4)} == set(ties), "no state is always last")
+        # a run out of time skips the rest and says which, with the marker line
+        import io
+        import contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            done, skipped = run(Saved(fx), None, rain, out, nd, deadline=time.time() - 1)
+        ok(done == [] and skipped == ["IA"], f"past the deadline nothing starts: {done} {skipped}")
+        ok("::warning::rain weather: 0 of 1 states updated, skipped: IA" in buf.getvalue()
+           and "RAIN-WX updated=0 stale=1" in buf.getvalue(), f"the skip is said: {buf.getvalue()[-200:]}")
+    # the normals window is hard: a call never runs past its end plus the margin, nor starts too late
+    nt = Net(time.time() + 600)
+    ok(abs(nt.budget() - TIMEOUT_S) < 1, "a call outside the fill window gets the full timeout")
+    nt.limit = time.time() + 60
+    ok(nt.budget() <= 60 + CALL_MARGIN_S + 0.5, f"inside the window a call ends by its end plus the margin ({nt.budget():.0f}s)")
+    nt.limit = time.time() - CALL_MARGIN_S
+    try:
+        nt.budget()
+        ok(False, "a call with no time left in the window must not start")
+    except TimeoutError:
+        pass
     print("fetch_rain_weather selftest:", "ok" if not fails else "FAIL " + "; ".join(fails))
     return 1 if fails else 0
 
@@ -754,7 +842,8 @@ def main(argv):
     states = None
     if "--states" in argv and argv.index("--states") + 1 < len(argv):
         states = {s.strip().upper() for s in argv[argv.index("--states") + 1].split(",") if s.strip()}
-    return run(Net(time.time() + MAX_MINUTES * 60), states)
+    run(Net(time.time() + MAX_MINUTES * 60), states)
+    return 0
 
 
 if __name__ == "__main__":
