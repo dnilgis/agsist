@@ -174,6 +174,26 @@ def write(out, generated):
     return written
 
 
+def remove_strays():
+    """Delete sparkline files this builder wrote under a name that is not a state (the nameless
+    data/basis-sparklines/.json, Nov 4, 2026). Only a file holding a sparkline payload goes; the bids
+    job's `git add data/basis-sparklines` records the deletion. -> [removed paths]"""
+    removed = []
+    for name in sorted(os.listdir(OUT_DIR)) if os.path.isdir(OUT_DIR) else []:
+        path = os.path.join(OUT_DIR, name)
+        if not name.endswith(".json") or re.fullmatch(r"[A-Z]{2}\.json", name) or not os.path.isfile(path):
+            continue
+        try:
+            with open(path) as f:
+                d = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if isinstance(d, dict) and "series" in d and "units" in d:
+            os.remove(path)
+            removed.append(path)
+    return removed
+
+
 def selftest():
     # A tiny synthetic run: two states, one key repeated across two files,
     # one duplicate-date row that must be dropped, one key over MAX_POINTS
@@ -227,6 +247,16 @@ def selftest():
         names = sorted(os.listdir(os.path.join(td, "out")))
         assert names == ["IA.json", "MO.json"], names
         assert sorted(os.path.basename(w) for w in written) == names, written
+        # the nameless file main carried is removed on the next run; anything else stays
+        with open(os.path.join(td, "out", ".json"), "w") as f:
+            json.dump({"generated": "x", "units": "integer cents per bushel", "series": {}}, f)
+        with open(os.path.join(td, "out", "notes.json"), "w") as f:
+            json.dump({"other": 1}, f)
+        OUT_DIR = os.path.join(td, "out")
+        gone = remove_strays()
+        OUT_DIR = old_out
+        assert [os.path.basename(g) for g in gone] == [".json"], gone
+        assert sorted(os.listdir(os.path.join(td, "out"))) == ["IA.json", "MO.json", "notes.json"]
         try:
             write({"": out["MO"]}, "x")
             raise AssertionError("write() took a blank state")
@@ -282,3 +312,5 @@ if __name__ == "__main__":
     generated = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     written = write(out, generated)
     print(f"wrote {len(written)} files to {OUT_DIR}")
+    for path in remove_strays():
+        print(f"removed {path}: a sparkline file named for no state")
