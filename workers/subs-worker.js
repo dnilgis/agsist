@@ -12,8 +12,8 @@
  *   frame_color for a framed order: the one on record, else "black" (every framed print
  *   sold before Nov 4 was black, and a page without the choice still says black), or ""
  *   for a framed order made from Stripe alone after Nov 4 (no press came, so the color is
- *   not known: Sig asks the buyer). fulfill_url carries &frame=<color> for a framed
- *   order. A client without the field works exactly as before.
+ *   not known: Sig asks the buyer). fulfill_url carries &frame=<color> (before &serial) for a
+ *   framed order. A client without the field works exactly as before.
  * v5.62 (2026-11-03): RP_DESIGN_EMAIL_LIVE and RP_BUYER_EMAIL_LIVE now come from the
  *   [vars] in wrangler.api.toml and wrangler.subs.toml ("1"), not the dashboard. No code change.
  * v5.61 (2026-11-03): CUSTOM RATES NEW-SURVEY ASK. Topic customrates:<st> (a state's
@@ -2734,7 +2734,7 @@ const RPO_APPROVE_WAIT_BIZ = 3;
 function rpoFulfill(r, serial) {
   if (!r.design_url) return "";
   const fc = rpoFrame(r);
-  return r.design_url + "&maker=1" + (RPO_PRINTS.includes(r.product) && serial ? "&serial=" + serial : "") + (fc ? "&frame=" + fc : "");
+  return r.design_url + "&maker=1" + (fc ? "&frame=" + fc : "") + (RPO_PRINTS.includes(r.product) && serial ? "&serial=" + serial : "");
 }
 // The records of the last `days` days, newest first, each paid or pay pressed.
 // A session is matched to the latest unpaid press of the same ref made before

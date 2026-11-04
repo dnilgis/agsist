@@ -425,7 +425,7 @@ test("prints ship flat between chipboard, never rolled; the framed one has a whi
     assert.ok(!/\btube\b|rolled in|ships rolled/i.test(t.replace(/rolled into a later/g, "")), n + " says nothing about a tube");
   }
   assert.match(HTML, /<li>Ships flat between chipboard<\/li>/);
-  assert.match(HTML, /<li>A 13 x 19 black frame with a white mat, ready to hang<\/li>/);
+  assert.match(HTML, /<li>A 13 x 19 in wood frame, oak or black, your pick<\/li>/);
   assert.doesNotMatch(HTML, /no mat|trim it to size|a little bigger than 12 x 18/);
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   // the box picture is a render of an older layout: it says so, and it keeps its shape

@@ -223,6 +223,22 @@ test("card: needs k; shows the message; a guessed code reads nothing", async () 
   assert.equal((await get("c=" + other.code + "&k=" + u.searchParams.get("k"))).status, 404, "k is per code");
 });
 
+test("redeem: the frame color goes with a framed card's order (worker v5.63, Sig Nov 4)", async () => {
+  const { env, store } = makeEnv();
+  const j = await issue(env);
+  const r = await pub(env, "/rp-gift/redeem", order(j.code, { frame_color: "oak" }));
+  assert.equal(r.status, 200);
+  const post = JSON.parse(store.get([...store.keys()].find((k) => k.startsWith("form:rain-print-order:"))));
+  assert.equal(post.frame_color, "oak");
+  const k = await issue(env);
+  const r2 = await pub(env, "/rp-gift/redeem", order(k.code, { choice: "print12x18", frame_color: "black" }));
+  assert.equal(r2.status, 200);
+  const p2 = [...store.keys()].filter((x) => x.startsWith("form:rain-print-order:")).map((x) => JSON.parse(store.get(x))).find((x) => x.choice === "print12x18");
+  assert.ok(p2 && !("frame_color" in p2), "a print from a framed card keeps no frame color");
+  // the page sends it: rp-gift.js passes frame_color with the order
+  assert.match(readFileSync(new URL("../components/rp-gift.js", import.meta.url), "utf8"), /'logo', 'frame_color'\]\.forEach/);
+});
+
 test("redeem: once; the order reaches the digest; a second redeem is 409 with the date", async () => {
   const { env, store } = makeEnv();
   const j = await issue(env);
@@ -242,6 +258,7 @@ test("redeem: once; the order reaches the digest; a second redeem is 409 with th
   assert.equal(post.gift_card_from, "Kate");
   assert.equal(post.address, "123 Farm Rd, Chetek WI 54728");
   assert.ok(!JSON.stringify(post).includes(j.code), "the full code is not in the order");
+  assert.ok(!("frame_color" in post), "no color sent (an old page): none kept, the order reads black");
   const again = await pub(env, "/rp-gift/redeem", order(j.code));
   assert.equal(again.status, 409);
   assert.match((await again.json()).error, /^This card was used on [A-Z][a-z]{2} \d{1,2}, \d{4}\.$/);
@@ -464,7 +481,7 @@ test("rp-gift.html: the card's words (station, marked days, full year, card numb
   assert.doesNotMatch(h, /NOAA gauge|since 1890|last rain is in|print on letter and trim/);
   assert.equal((h.match(/once the full year is in\./g) || []).length, 6, "both January lines on the small cards, and the 8 x 10's what's-coming lines");
   assert.match(h, /Your ' \+ s\.year \+ ' print comes in January, once the full year is in\./);
-  assert.match(h, /framed12x18: \['A print of the whole year in a 13 x 19 black frame with a white mat and glass, ready to hang\.', 'It ships in January, once the full year is in\.'\]/);
+  assert.match(h, /framed12x18: \['A print of the whole year in a 13 x 19 oak or black frame with a white mat and glass, ready to hang\.', 'It ships in January, once the full year is in\.'\]/);
   assert.match(h, /print12x18: \['A print of the whole year on 13 x 19 heavy, textured cotton fine-art paper\.', 'It ships in January, once the full year is in\.'\]/);
   assert.match(h, /digital: \['The 12 x 18 digital file of the whole year, to print anywhere\.', 'It comes by email in January, once the full year is in\.'\]/);
   assert.equal((h.match(/class="foot">Card ' \+ String\(C\.no/g) || []).length, 3, "every foot says Card 0017 (the small cards' two and the 8 x 10's)");
@@ -616,7 +633,7 @@ test("v5.26 issue: order_ref takes Stripe's ids (underscores, up to 80)", async 
 
 test("the page sends the logo with a redeem; the admin page looks up an RPS- design before locking a card", () => {
   const G = read("components/rp-gift.js");
-  assert.match(G, /\['name', 'email', 'address', 'notes', 'design_url', 'design_code', 'choice', 'page', 'logo'\]/);
+  assert.match(G, /\['name', 'email', 'address', 'notes', 'design_url', 'design_code', 'choice', 'page', 'logo', 'frame_color'\]/);
   const A = read("desk/gifts.html");
   assert.match(A, /function fullCode\(dc\)[\s\S]*?\/rp-short\/' \+ encodeURIComponent/);
   assert.match(A, /fullCode\(raw\)\.then/);

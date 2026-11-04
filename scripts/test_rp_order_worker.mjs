@@ -103,7 +103,8 @@ const dig = j.orders[3];
 A(dig.fulfill_url === dig.design_url + '&maker=1' && dig.serial_next === null, 'a digital file: maker link, no serial');
 const prints = j.orders.filter(o => o.product !== 'digital').reverse();
 A(prints.map(o => o.serial_next).join() === '2,3,4', 'suggested serials start at 2 (No. 0001 is Sig\'s wife\'s print, 0 his test), in the order pressed');
-A(prints[0].fulfill_url.endsWith('&maker=1&serial=2'), 'a print: maker link with the serial');
+A(prints[0].fulfill_url.endsWith('&maker=1&frame=oak&serial=2'), 'a framed print: maker link with its frame color (v5.63) and the serial');
+A(prints[1].fulfill_url.endsWith('&maker=1&serial=3') && prints[1].frame_color === null, 'a print: maker link with the serial, no frame');
 A(j.serial_last === 1 && !store.has('rpo-serial'), 'no counter stored: last is 1; nothing handed out without a confirmed payment');
 A(!JSON.stringify(j).includes('@'), 'no email anywhere in the list');
 
@@ -145,7 +146,7 @@ const byRef = (ref) => j.orders.find(o => o.ref === ref);
 A(byRef(sigCode).status === 'paid' && byRef(sigCode).paid.amount === 19 && byRef(sigCode).paid.session === 'cs_live_sig19', 'the $19 file is paid');
 A(byRef(sigCode).fulfill_url === byRef(sigCode).design_url + '&maker=1', 'the paid file opens in the maker view, no serial');
 const fr = byRef('RPS-K7Q2M');
-A(fr.status === 'paid' && fr.paid.amount === 79 && fr.paid.subtotal === 89 && fr.serial === 4 && fr.fulfill_url.endsWith('&maker=1&serial=4'), 'the paid framed print gets the next serial');
+A(fr.status === 'paid' && fr.paid.amount === 79 && fr.paid.subtotal === 89 && fr.serial === 4 && fr.fulfill_url.endsWith('&maker=1&frame=oak&serial=4'), 'the paid framed print gets the next serial');
 A(byRef('GIFT-RPS-K7Q2M').status === 'pay pressed' && byRef('GIFT-RPS-K7Q2M').serial === null && byRef('GIFT-RPS-K7Q2M').serial_next === null, 'an unpaid session leaves the press as pay pressed, no serial');
 A(j.serial_last === 4 && JSON.parse(store.get('rpo-serial')).last === 4, 'the counter moved once');
 A(!JSON.stringify(j).includes('@') && !JSON.stringify(j).includes('Jane') && !JSON.stringify(j).includes('Main St'), 'nothing about the buyer');
@@ -420,4 +421,37 @@ console.log('rp-order worker checks: ' + n + ' passed');
   r = await pub('/rp-gift/check', { code: j.code }); A((await r.json()).prepaid === false, 'check: an open card is not prepaid');
   globalThis.fetch = realFetch;
   console.log('rp-order gift card checks: ' + n + ' passed');
+}
+
+// ---------- v5.63: the frame color (Sig, Nov 4: oak, picked first, or black) ----------
+{
+  store.clear(); n = 0;
+  // one record a few ms apart, so the newest key is the last post
+  const post2 = async (b) => { await new Promise(res => setTimeout(res, 3)); return post(b); };
+  delete env.STRIPE_READ_KEY;
+  const fr = RP.orderRecord(sig, sigCode, 'framed12x18', 89, 'black');
+  A(fr.frame_color === 'black', 'the page puts the color on a framed record');
+  A(RP.orderRecord(sig, sigCode, 'framed12x18', 89).frame_color === 'oak', 'no color given: oak, the default');
+  A(!('frame_color' in RP.orderRecord(sig, sigCode, 'print12x18', 45, 'black')), 'a print carries no frame color');
+  A(RP.frameOf({}) === 'black' && RP.frameOf({ frame_color: 'oak' }) === 'oak' && RP.frameColor('teal') === 'oak', 'frameOf: no color reads black; frameColor: oak by default');
+  let r = await post2(fr); A(r.status === 200 && newest().frame_color === 'black', 'black kept');
+  r = await post2(Object.assign({}, fr, { frame_color: 'oak' })); A(r.status === 200 && newest().frame_color === 'oak', 'oak kept ' + r.status + ' ' + store.get(recs().pop()));
+  r = await post2(Object.assign({}, fr, { frame_color: 'teal' })); A(r.status === 200 && !('frame_color' in newest()), 'a bad color is dropped, the record kept');
+  r = await post2(Object.assign({}, RP.orderRecord(sig, sigCode, 'print12x18', 45), { frame_color: 'oak' })); A(r.status === 200 && !('frame_color' in newest()), 'a print keeps no frame color');
+  // an old page (no field at all): kept as before, and reads black
+  const old = Object.assign({}, fr); delete old.frame_color;
+  r = await post2(old); A(r.status === 200 && !('frame_color' in newest()), 'an old page without the field still works');
+  const L = await (await admin('/rp-order/list')).json();
+  A(L.orders.map(o => String(o.frame_color)).join() === 'black,null,black,oak,black', 'the list: old reads black, a bad one black, a print null, newest first ' + L.orders.map(o => o.frame_color).join());
+  A(L.orders[3].fulfill_url.endsWith('&maker=1&frame=oak&serial=3'), 'fulfill link carries the color');
+  // a framed payment from Stripe alone after Nov 4 (no press): the color is not known
+  const late = { ts: Date.UTC(2026, 10, 10), ref: sigCode, product: 'framed12x18', price: 89, design_url: fr.design_url, from_stripe: true, no_press: false };
+  const before = Object.assign({}, late, { ts: Date.UTC(2026, 9, 25) });
+  store.set('rpo:' + late.ts + ':0000000a', JSON.stringify(late));
+  store.set('rpo:' + before.ts + ':0000000b', JSON.stringify(before));
+  const L2 = await (await admin('/rp-order/list?days=120')).json();
+  const by = (t) => L2.orders.find(o => o.ts === t);
+  A(by(late.ts).frame_color === '' && !by(late.ts).fulfill_url.includes('&frame='), 'from Stripe alone after Nov 4: not known, no frame in the link');
+  A(by(before.ts).frame_color === 'black', 'from Stripe before Nov 4: black');
+  console.log('rp-order frame color checks: ' + n + ' passed');
 }
