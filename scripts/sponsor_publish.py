@@ -333,7 +333,9 @@ def main(argv):
         print("sent %d report(s): %s; dropped %d" % (len(sent), ", ".join(sent) or "none", len(dropped)))
         for p in problems:
             print("::warning::" + p)
-        return 0
+        # A report the worker refused is a sponsor whose page shows old numbers or none: a red run.
+        # A sponsor with no report built yet (new today, or never run) is only a warning.
+        return 1 if any("refused" in p for p in problems) else 0
     print(__doc__)
     return 2
 

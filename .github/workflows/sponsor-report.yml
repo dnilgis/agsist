@@ -206,6 +206,7 @@ jobs:
         run: python3 scripts/sponsor_publish.py publish
 
       - name: Save the reports and links to the private repo
+        if: always() && needs.gate.outputs.go == '1'
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_BRANCH: private-data
