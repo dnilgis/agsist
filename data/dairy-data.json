@@ -1,12 +1,11 @@
 {
- "updated": "2026-11-02T16:27:34Z",
+ "updated": "2026-11-04T21:40:50Z",
  "sources": {
   "class": "https://www.ams.usda.gov/mnreports/dymclassprices.pdf",
   "all_milk": "https://quickstats.nass.usda.gov/"
  },
  "status": {
   "class": "ok",
-  "note": "issue date not found",
   "all_milk": "ok",
   "all_milk_states": "ok"
  },
@@ -168,45 +167,46 @@
    }
   ]
  },
- "class_month": "September 2026",
- "class_month_key": "2026-09",
- "class2": 17.6,
- "class3": 16.04,
- "class4": 18.94,
- "class2_prev": 18.71,
- "class3_prev": 16.64,
- "class4_prev": 17.36,
- "class3_label": "announced · Sep 2026",
- "class4_label": "announced · Sep 2026",
- "components": {
-  "butterfat": 1.4762,
-  "protein": 2.6619,
-  "nonfat_solids": 1.5343,
-  "other_solids": 0.4147
- },
- "butter": 1.4462,
- "butter_chg": -0.0285,
- "ndm": 1.7891,
- "ndm_chg": 0.1906,
- "cheese": 1.5577,
- "cheese_chg": -0.0626,
- "whey": 0.6694,
- "whey_chg": 0.0092,
- "spot_date": "USDA survey avg · Sep 2026",
- "survey_cheese": 1.5577,
- "survey_whey": 0.6694,
- "survey_fat": 1.4762,
  "class3_math": {
-  "protein": 2.6619,
-  "other_solids": 0.4147,
-  "butterfat": 1.4762,
+  "protein": 2.3991,
+  "other_solids": 0.4659,
+  "butterfat": 1.378,
   "lb_protein": 3.3,
   "lb_other": 6.0,
   "lb_fat": 3.5,
   "skim_share": 0.965,
-  "skim_exact": 11.2725,
-  "skim": 11.27,
-  "class3_exact": 16.0423,
-  "class3": 16.04
- }
+  "skim_exact": 10.7124,
+  "skim": 10.71,
+  "class3_exact": 15.1582,
+  "class3": 15.16
+ },
+ "class_month": "October 2026",
+ "class_month_key": "2026-10",
+ "class_release": "2026-11-04",
+ "class2": 19.15,
+ "class3": 15.16,
+ "class4": 20.54,
+ "class2_prev": 17.6,
+ "class3_prev": 16.04,
+ "class4_prev": 18.94,
+ "class3_label": "announced · Oct 2026",
+ "class4_label": "announced · Oct 2026",
+ "components": {
+  "butterfat": 1.378,
+  "protein": 2.3991,
+  "nonfat_solids": 1.7511,
+  "other_solids": 0.4659
+ },
+ "butter": 1.3651,
+ "butter_chg": -0.0811,
+ "ndm": 2.0081,
+ "ndm_chg": 0.219,
+ "cheese": 1.4444,
+ "cheese_chg": -0.1133,
+ "whey": 0.7191,
+ "whey_chg": 0.0497,
+ "spot_date": "USDA survey avg · Oct 2026",
+ "survey_cheese": 1.4444,
+ "survey_whey": 0.7191,
+ "survey_fat": 1.378
 }

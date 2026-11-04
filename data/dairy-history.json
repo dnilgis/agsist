@@ -26,6 +26,20 @@
    "ndm": 1.7891,
    "cheese": 1.5577,
    "whey": 0.6694
+  },
+  "2026-10": {
+   "class3": 15.16,
+   "class4": 20.54,
+   "class2": 19.15,
+   "butterfat": 1.378,
+   "protein": 2.3991,
+   "nonfat_solids": 1.7511,
+   "other_solids": 0.4659,
+   "butter": 1.3651,
+   "ndm": 2.0081,
+   "cheese": 1.4444,
+   "whey": 0.7191,
+   "release": "2026-11-04"
   }
  }
 }
