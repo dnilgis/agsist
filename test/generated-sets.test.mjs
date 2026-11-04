@@ -284,3 +284,73 @@ test("rule 61: every --check builder in checks.sh is a set, a summary, or listed
     assert.ok(why.length > 20, `${b}: a reason`);
   }
 });
+
+// a fixture repository and a fake summary (its builder counts the lines of every page) for the rebuild rules
+const sumFixture = () => {
+  const d = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "gensum-"));
+  const remote = d + "/remote.git", a = d + "/a", b = d + "/b";
+  const g = (cwd, ...x) => execFileSync("git", ["-C", cwd, "-c", "user.name=t", "-c", "user.email=t@t", ...x], { encoding: "utf8" });
+  g(d, "init", "-q", "--bare", "-b", "main", remote);
+  fs.mkdirSync(a); g(a, "init", "-q", "-b", "main");
+  fs.mkdirSync(a + "/pages"); fs.writeFileSync(a + "/pages/one.html", "1\n");
+  fs.writeFileSync(a + "/build_sum.py", "import glob\nopen('sum.txt.tmp','w').write(''.join(sorted(open(f).read() for f in glob.glob('pages/*.html'))))\nimport os; os.replace('sum.txt.tmp','sum.txt')\n");
+  fs.writeFileSync(a + "/fail_sum.py", "open('sum.txt','w').write('HALF')\nraise SystemExit(3)\n");
+  execFileSync("python3", ["build_sum.py"], { cwd: a });
+  g(a, "add", "-A"); g(a, "commit", "-qm", "main"); g(a, "remote", "add", "origin", remote); g(a, "push", "-q", "origin", "main");
+  g(d, "clone", "-q", remote, b);
+  return { d, a, b, g };
+};
+const withFake = (root, code, build = "build_sum.py") => py(`import generated_sets as G
+G.ROOT = G.GIT_ROOT = ${JSON.stringify(root)}
+G.SUMMARIES = [{"id": "sum", "build": ["python3", ${JSON.stringify(build)}], "trace": [], "files": ["sum.txt"]}]
+G.SUMMARY = {"sum": G.SUMMARIES[0]}
+G.SETS = [dict(G.SETS[0], id="pages", dependents=["sum"])]
+${code}`);
+
+test("rule 61: a summary whose builder fails is not staged and is put back whole", () => {
+  const { d, a, g } = sumFixture();
+  fs.writeFileSync(a + "/pages/two.html", "2\n");
+  let out = JSON.parse(withFake(a, `bad = G.run_dependents(["sum"], stage=True)
+print(json.dumps(bad))`, "fail_sum.py").trim().split("\n").at(-1));
+  assert.deepEqual(out, ["sum"]);
+  assert.equal(fs.readFileSync(a + "/sum.txt", "utf8"), "1\n", "HEAD's copy is back, not the half-written one");
+  assert.equal(g(a, "diff", "--staged", "--name-only").trim(), "", "nothing staged");
+  out = JSON.parse(withFake(a, `print(json.dumps(G.run_dependents(["sum"], stage=True)))`).trim().split("\n").at(-1));
+  assert.deepEqual(out, []);
+  assert.equal(g(a, "diff", "--staged", "--name-only").trim(), "sum.txt", "a built summary is staged");
+  fs.rmSync(d, { recursive: true, force: true });
+});
+
+test("rule 61: pull-rebase rebuilds a summary that conflicts, never keeping either side; another conflict aborts", () => {
+  const { d, a, b, g } = sumFixture();
+  // main moves on: another job adds a page and rebuilds the summary
+  fs.writeFileSync(b + "/pages/three.html", "3\n"); execFileSync("python3", ["build_sum.py"], { cwd: b });
+  g(b, "add", "-A"); g(b, "commit", "-qm", "three"); g(b, "push", "-q", "origin", "main");
+  // this job adds its page and its summary, from the older main
+  fs.writeFileSync(a + "/pages/two.html", "2\n"); execFileSync("python3", ["build_sum.py"], { cwd: a });
+  g(a, "add", "-A"); g(a, "commit", "-qm", "two");
+  const rc = JSON.parse(withFake(a, `print(json.dumps(G.pull_rebase(["pages"])))`).trim().split("\n").at(-1));
+  assert.equal(rc, 0, "rebased");
+  assert.equal(fs.readFileSync(a + "/sum.txt", "utf8"), "1\n2\n3\n", "the summary is rebuilt from both sides' pages");
+  assert.equal(g(a, "status", "--porcelain").trim(), "", "clean, no rebase in progress");
+  assert.match(g(a, "log", "--format=%s", "-2"), /^two\nthree\n$/);
+  // a conflict outside the summary files aborts (the job's own recovery takes over)
+  fs.writeFileSync(b + "/pages/one.html", "1b\n"); g(b, "commit", "-qam", "b edits one"); g(b, "push", "-q", "origin", "main");
+  fs.writeFileSync(a + "/pages/one.html", "1a\n"); g(a, "commit", "-qam", "a edits one");
+  const rc2 = JSON.parse(withFake(a, `print(json.dumps(G.pull_rebase(["pages"])))`).trim().split("\n").at(-1));
+  assert.equal(rc2, 1);
+  assert.ok(!fs.existsSync(a + "/.git/rebase-merge") && !fs.existsSync(a + "/.git/rebase-apply"), "the rebase was aborted");
+  fs.rmSync(d, { recursive: true, force: true });
+});
+
+test("rule 61: every workflow that rebuilds summaries rebases through pull-rebase or resets and rebuilds; no push is ignored", () => {
+  for (const wf of fs.readdirSync(path.join(ROOT, ".github/workflows")).filter((f) => f.endsWith(".yml"))) {
+    const src = read(".github/workflows/" + wf).split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+    if (!/generated_sets\.py dependents /.test(src)) continue;
+    assert.doesNotMatch(src, /git pull[^\n]*--rebase/, `${wf}: a raw git pull --rebase keeps one side of a conflicting summary; use generated_sets.py pull-rebase`);
+    assert.doesNotMatch(src, /git push[^\n]*\|\| true/, `${wf}: a failed push is never ignored`);
+    assert.ok(/generated_sets\.py pull-rebase /.test(src) || /git reset (-q )?--hard "?origin\//.test(src), `${wf}: on a race it rebases through pull-rebase or resets to main and rebuilds`);
+  }
+  for (const f of ["scripts/build_llms_txt.py", "scripts/build_feeds.py", "scripts/build_search_index.py", "scripts/stamp_prf.py", "scripts/build_breakeven_data.py"])
+    assert.match(read(f), /os\.replace\(/, `${f} writes a whole file and renames it`);
+});

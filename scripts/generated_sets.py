@@ -605,9 +605,9 @@ def trace(sid, root=ROOT):
     return t
 
 
-def dependents_of(sid, sets=SETS):
+def dependents_of(sid, sets=None):
     """the summaries one set feeds, in SUMMARIES order"""
-    want = set(next(s for s in sets if s["id"] == sid)["dependents"])
+    want = set(next(s for s in (sets or SETS) if s["id"] == sid)["dependents"])
     return [x for x in SUMMARIES if x["id"] in want]
 
 
