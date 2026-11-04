@@ -73,7 +73,7 @@ test("the record: a framed order carries its color, oak by default; a print none
   assert.ok(!("frame_color" in RP.orderRecord(SIG, code, "print12x18", 45, "black")));
   assert.equal(RP.frameOf({ product: "framed12x18" }), "black");
   const W = read("workers/subs-worker.js");
-  assert.match(W, /^ \* v5\.63 \(2026-11-04\): FRAME COLOR/m, "the worker's version line");
+  assert.match(W, /^ \* v5\.63 \(2026-11-04\): FRAME COLOR/m, "the worker's version line");  // pin-ok: the worker version note in source, not data
   assert.match(W, /frame_color: \[5, false, "rpframe"\]/, "the order form kind (and the gift card redeem) keeps it");
 });
 
