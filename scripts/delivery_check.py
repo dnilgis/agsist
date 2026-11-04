@@ -227,9 +227,10 @@ def list_since(entry, now):
     return since
 
 
-def plan(entry, runs, now, crons=None):
+def plan(entry, runs, now, crons=None, truncated=False):
     """Which runs to read the jobs of, in order, and what was due. Pure: no network.
     runs: the workflow's runs listed since list_since(). crons: the gate's ticks (tick senders).
+    truncated: the list stopped at LIST_PAGES, so nothing older than its oldest run is judged.
     -> (order: [run ids], due: dict). Only a run that could have reached a send step is listed;
     the reader stops at JOBS_PER_WF (and, for a "run" sender, once SAMPLE_SENDS sends are found)."""
     due = entry.get("due") or ("run",)
@@ -248,7 +249,8 @@ def plan(entry, runs, now, crons=None):
         win = sorted((r for r in done if w0 <= (_ts(r.get("created_at")) or w0 - timedelta(1)) <= w1),
                      key=lambda r: (r.get("created_at") or "", r["id"]))
         info.update(day=day, due_ct=due[1], window_ct="%s to %s" % (due[2], due[3]), past_due=now >= at,
-                    window_runs=[r["id"] for r in win])
+                    window_runs=[r["id"] for r in win],
+                    cut_short=bool(truncated and runs and min(_ts(r.get("created_at")) or now for r in runs) > w0))
         first += win
         today = _ct(now).strftime("%Y-%m-%d")
         if today != day:                                   # before today's due time: today's morning so far, after
@@ -263,6 +265,9 @@ def plan(entry, runs, now, crons=None):
         manual = entry["workflow"] in cron_gate.MANUAL_DOES_NOT_SERVE
         ts = cron_gate.ticks(crons or [], now - timedelta(hours=WINDOW_HOURS), now + timedelta(minutes=1))
         ts = [t for t in ts if t <= now]
+        if truncated and runs:
+            oldest = min(_ts(r.get("created_at")) or now for r in runs)
+            ts = [t for t in ts if t >= oldest]
         every = sorted((r for r in runs if r.get("conclusion") not in NOT_A_RUN and _ts(r.get("created_at"))
                         and not (manual and r.get("event") in cron_gate.ALWAYS_GO)),
                        key=lambda r: (r["created_at"], r["id"]))
@@ -362,6 +367,7 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
     jobs_read = [r for r in runs if r.get("steps") is not None]
     sent_runs = [r for r in jobs_read if any(v == "ran" for v in r["steps"].values())]
     no_log = [r["id"] for r in sent_runs if r.get("lines") is None]
+    log_failed = [r["id"] for r in sent_runs if r.get("lines") is None and r.get("log") == "failed"]
     for r in sent_runs:
         if r.get("lines") is None:
             continue
@@ -369,9 +375,12 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
         for key, v in sorted(r["steps"].items()):
             if v == "ran" and not (set(steps.get(key) or names) & got):
                 findings.append("(d) run %s ran the send step '%s' and printed no DELIVERY line" % (r["id"], key))
-    if no_log:
-        unknown.append("%d run(s) reached a send step but their logs were not read (run %s)"
-                       % (len(no_log), ", ".join(str(i) for i in no_log[:3])))
+    if log_failed:
+        unknown.append("%d run(s) reached a send step and their logs could not be read (run %s)"
+                       % (len(log_failed), ", ".join(str(i) for i in log_failed[:3])))
+    if len(no_log) > len(log_failed):
+        notes.append("%d more run(s) reached a send step; their logs are past this pass's %d"
+                     % (len(no_log) - len(log_failed), LOGS_PER_WF))
 
     # (e) a send that was due and did not happen
     due = due or {}
@@ -382,7 +391,9 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
         live = {r["id"] for r, l in lines if l["dry"] == 0 and (l["sent_readers"] > 0 or l["waiting"] == 0)}
         win = due.get("window_runs") or []
         hit = [i for i in win if i in live]
-        if not due.get("past_due"):
+        if due.get("cut_short"):
+            unknown.append("%s: the run list stopped before its %s Central window" % (due.get("day"), due.get("window_ct")))
+        elif not due.get("past_due"):
             notes.append("%s: not due until %s Central" % (due.get("day"), due.get("due_ct")))
         elif hit:
             notes.append("%s: sent by run %s" % (due.get("day"), hit[0]))
@@ -510,7 +521,7 @@ def read_runs(api, entry, now, crons=None):
     that reached a send step, the due ones first. -> (runs read, newest first; total; due)."""
     wf = entry["workflow"]
     runs, total = list_runs(api, wf, list_since(entry, now))
-    order, due = plan(entry, runs, now, crons)
+    order, due = plan(entry, runs, now, crons, truncated=total > len(runs))
     by = {r["id"]: r for r in runs}
     due_ids = set(due.get("window_runs") or []) | set(due.get("today_runs") or []) | {t["run"] for t in due.get("ticks") or [] if t.get("run")}
     if entry.get("worker_started"):
@@ -530,7 +541,7 @@ def read_runs(api, entry, now, crons=None):
             continue
         r = by[rid]
         item = {"id": rid, "event": r.get("event"), "created_at": r.get("created_at"),
-                "steps": step_states(jobs, entry.get("steps") or {}), "lines": None}
+                "steps": step_states(jobs, entry.get("steps") or {}), "lines": None, "log": "not read"}
         found += any(v == "ran" for v in item["steps"].values())
         read.append(item)
     sends = [x for x in read if any(v == "ran" for v in x["steps"].values())]
@@ -538,8 +549,9 @@ def read_runs(api, entry, now, crons=None):
     for x in sends[:LOGS_PER_WF]:
         try:
             x["lines"] = lines_from_zip(api.blob("/actions/runs/%d/logs" % x["id"]))
-        except Exception:                                  # noqa: BLE001  a log gone or too big: that run is not read
-            pass
+            x["log"] = "read"
+        except Exception:                                  # noqa: BLE001  a log gone or too big: that run is not judged
+            x["log"] = "failed"
     read.sort(key=lambda x: (x.get("created_at") or "", x["id"]), reverse=True)
     return read, total, due
 
@@ -875,6 +887,18 @@ def selftest():
     _o, due3 = plan(la, lr, datetime(2026, 11, 2, 20, 0, tzinfo=UTC), ["47 15 3 * *"])
     row = classify(la, [], 0, LON, due=due3)
     ck("tick: no tick in 24 h is nothing due, ok", row["status"] == "ok" and "nothing due: no tick" in row["why"], row["why"])
+
+    late_runs = [r for r in lr if r["created_at"] >= "2026-11-03T17:00:00Z"]
+    _o, d4 = plan(la, late_runs, LAN, ["47 15 3 * *"], truncated=True)
+    ck("tick: a run list cut short judges no tick older than its oldest run", d4["ticks"] == [], d4)
+    _o, d5 = plan(la, late_runs, LAN, ["47 15 3 * *"])
+    ck("tick: a whole list with no run near the tick names the first run after it", d5["ticks"][0]["run"] == 2004, d5)
+    ran = step_states(J("success"), la["steps"])
+    row = classify(la, [dict(R(2000, "workflow_run"), lines=None, log="failed", steps=ran)], 18, LON, due=due)
+    ck("a send run whose log could not be read is unknown, not ok", row["status"] == "unknown" and "could not be read" in row["why"], row["why"])
+    row = classify(la, [dict(R(2000, "workflow_run", *lines_ok), steps=ran, log="read"),
+                        dict(R(2001, "workflow_run"), lines=None, log="not read", steps=ran)], 18, LON, due=due)
+    ck("a send run past the log cap is a note", row["status"] == "ok" and "1 more run(s) reached a send step" in row["why"], row["why"])
 
     # ── a sender that may send on any run: a sample, newest-longest first ──
     ew = E["elevator-watch.yml"]
