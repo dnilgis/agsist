@@ -124,10 +124,13 @@ test("rain-county-print.js mounts any figure; the county page mounts its own; ve
   assert.match(js, /var own = doc && doc\.getElementById\('rc-print'\);\s*if \(own\) mount\(own\);/);
   assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=46'/);
   assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=46/);
-  // the county pages are a generated set, rebuilt on main from the builder (#300): a page carries the builder's
-  // version, or the one before it until main's rebuild after the bump lands, never a newer one
+  // the county pages are a generated set, rebuilt on main from the builder (#300). The pull request checks
+  // rebuild the set first (AGSIST_PREBUILD=1), so there the page carries the builder's version; a local run
+  // without the prebuild reads the committed page, one bump behind until main's rebuild lands. The bound is
+  // read off the builder, so a bump needs no edit here; never newer than the builder, never two behind.
+  const bv = +/rain-county-print\.js\?v=(\d+)/.exec(read("scripts/build_county_rain.py"))[1];
   const pv = +(/rain-county-print\.js\?v=(\d+)/.exec(read("rain/wisconsin/barron-county.html")) || [])[1];
-  assert.ok(pv === 45 || pv === 44, "barron-county page pins v=" + pv);
+  assert.ok(pv === bv || pv === bv - 1, "barron-county page pins v=" + pv + ", the builder v=" + bv);
 });
 
 test("what's unusual here: own past only, the rule's numbers, nothing when nothing passes", () => {
