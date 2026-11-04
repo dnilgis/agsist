@@ -127,7 +127,7 @@ def _num(v):
     return f
 
 
-from contract_calendar import is_expired, recent_expiry, expiry_date, month_num, dead_from, next_live_year  # ONE definition of contract expiry
+from contract_calendar import is_expired, recent_expiry, expiry_date, month_num, dead_from, next_live_year, rule_for  # ONE definition of contract expiry
 
 # A transient yfinance hiccup clears within hours; a quote that cannot be
 # fetched for this many days is almost certainly an expired/rolled contract
@@ -216,6 +216,18 @@ def add_nearby(quotes, symbols, now=None):
                 continue          # undated benchmark alias like corn-dec
             dated.append((exp, k))
         dated.sort()
+        # CBOT grains roll at first notice day (2026-11-04, site panel): from
+        # first notice the month is in delivery and thinly traded, and every
+        # elevator quotes basis against the next month. On Nov 3 the headline
+        # still read Nov '26 soybeans ($12.03) while every basis was vs Jan '27
+        # ($12.135): futures plus basis missed the posted cash by 10.5c. A
+        # month past first notice is used only when no later month has a quote.
+        if rule_for(crop + "-x") == "GRAIN":
+            today = (now or datetime.now(timezone.utc)).date()
+            live = [(e, k) for e, k in dated if not is_expired(k, now)
+                    and (quotes.get(k) or {}).get("close") is not None]
+            if any(not _past_first_notice(k, today) for _, k in live):
+                dated = [(e, k) for e, k in dated if not _past_first_notice(k, today)]
         for exp, k in dated:
             q = quotes.get(k)
             if is_expired(k, now) or not q or q.get("close") is None:
@@ -401,6 +413,16 @@ def unit_guard(quotes):
 
 # The two other wheat classes against Chicago SRW, in cents per bushel.
 CLASS_SPREADS = {"kcwheat": "KC HRW", "mplswheat": "MGEX HRS"}
+
+
+def _past_first_notice(key, today):
+    """True when a dated grain key ('beans-nov26') is on or past its CBOT
+    first notice day on `today` (a date)."""
+    suffix = str(key).split("-")[-1]
+    mon = month_num(suffix[:3])
+    if mon is None or not suffix[3:].isdigit():
+        return False
+    return today >= first_notice_day(2000 + int(suffix[3:]), mon)
 
 
 def first_notice_day(yr, mon):

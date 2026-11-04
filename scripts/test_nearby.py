@@ -75,6 +75,30 @@ def main():
     n2c = add_nearby(quotes2c, SYMBOLS_AT(T(2026, 9, 15)), T(2026, 9, 15))
     chk(n2c["corn"]["key"] == "corn-mar27", "Sep 15 with dec26 quote missing: falls through to Mar '27 (no crash)")
 
+    # --- grains roll at first notice day (2026-11-04 site panel) -------------
+    # Nov 3 2026: the headline read Nov '26 soybeans 1203.0 past first notice
+    # (Fri Oct 30) while every elevator's basis was vs Jan '27 1213.5.
+    qfn = {"beans-nov26": q(1203.0), "beans-jan27": q(1213.5), "beans-mar27": q(1225.0)}
+    nfn = add_nearby(qfn, SYMBOLS_AT(T(2026, 11, 3)), T(2026, 11, 3))
+    chk(nfn["beans"]["key"] == "beans-jan27" and qfn["beans-nearby"]["close"] == 1213.5,
+        "Nov 3: beans nearby is Jan '27 (Nov '26 past first notice Oct 30)")
+    qfn2 = {"beans-nov26": q(1203.0), "beans-jan27": q(1213.5)}
+    nfn2 = add_nearby(qfn2, SYMBOLS_AT(T(2026, 10, 29)), T(2026, 10, 29))
+    chk(nfn2["beans"]["key"] == "beans-nov26", "Oct 29 (day before first notice): still Nov '26")
+    qfn3 = {"beans-nov26": q(1203.0), "beans-jan27": q(1213.5)}
+    nfn3 = add_nearby(qfn3, SYMBOLS_AT(T(2026, 10, 30)), T(2026, 10, 30))
+    chk(nfn3["beans"]["key"] == "beans-jan27", "Oct 30 (first notice day): rolls to Jan '27")
+    qfn4 = {"beans-nov26": q(1203.0), "beans-jan27": {"close": None}}
+    nfn4 = add_nearby(qfn4, SYMBOLS_AT(T(2026, 11, 3)), T(2026, 11, 3))
+    chk(nfn4["beans"]["key"] == "beans-nov26", "past first notice with no later quote: keeps the live month")
+    qfn5 = {"corn-dec26": q(441.5), "corn-mar27": q(455.0), "wheat-dec26": q(598.75), "wheat-mar27": q(612.0)}
+    nfn5 = add_nearby(qfn5, SYMBOLS_AT(T(2026, 11, 30)), T(2026, 11, 30))
+    chk(nfn5["corn"]["key"] == "corn-mar27" and nfn5["wheat"]["key"] == "wheat-mar27",
+        "Nov 30 (Dec first notice): corn and wheat roll to Mar '27")
+    qfn6 = {"cattle-dec26": q(230.0), "cattle-feb27": q(232.0)}
+    nfn6 = add_nearby(qfn6, SYMBOLS_AT(T(2026, 11, 30)), T(2026, 11, 30))
+    chk(nfn6["cattle"]["key"] == "cattle-dec26", "cattle is not on the grain first-notice roll")
+
     # --- missing/unusable quotes are skipped, never crash ---------------------
     quotes3 = {"corn-sep26": {"close": None}, "corn-mar27": q(490.0)}
     n3 = add_nearby(quotes3, SYMBOLS_AT(T(2026, 7, 28)), T(2026, 7, 28))
