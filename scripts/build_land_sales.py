@@ -16,6 +16,8 @@ the month and place logic of the land sale email (land_alert: Land.sales, window
                                         "Show more" (or a type filter) from the county's list file
   sitemap-land-sales.xml
   data/land-sales/latest.json           the newest update in brief (homepage card, rent pages, Daily)
+  data/land-sales/lead.json             one real sale per state for the home page's Farmland sales block, by
+                                        LEAD_RULE (the highest $/acre inside its county's usual range, last 30 days)
   data/land-sales/<st>.json             each county's latest few sales with the township point
                                         (Atlas county pages, Fast Facts within 25 miles)
   data/land-sales/<st>/<fips>.json      every recorded sale of the county, any acreage, no names
@@ -342,6 +344,43 @@ def month_build(d, year, m0):
     names = {"month": key, "sales": {i: names_s[i] for i in sorted(used)},
              "buyers": {b["id"]: names_b[b["id"]] for k in ("buyers_acres", "buyers_dollars") for b in (out.get(k) or [])}}
     return out, names
+
+
+# ---------------------------------------------------------------- the home page's one sale
+# Sig, Nov 4, 2026: "my buddy didn't know that farm land sales were on agsist"; "maybe we can link it somehow with
+# the unusual sales or something to get people's attention". The home page leads with one real sale per state,
+# picked by this rule (LEAD_RULE is printed under the sale on tap, word for word):
+#   bare farmland of 40 acres or more (the market-sale rule's comparable sales: known acres, $500 an acre or more, no buildings,
+#   not forest), recorded (or, in Indiana, sold) in the LEAD_DAYS days ending with the state's newest such sale
+#   on file, in a county with MIN_COMPS or more comparable sales over 24 months, and inside that county's usual
+#   range (a sale far outside it is "unusual" and may not be a market price: family sale, buildings, timber).
+#   Of those, the highest $/acre, set against the county's 24-month middle. No name, ever: county, acres, $/acre
+#   and the date only. Fewer than LEAD_MIN_SALES such sales in the window: the state has no lead (withheld).
+LEAD_DAYS = 30
+LEAD_MIN_SALES = 3
+LEAD_MIN_ACRES = BEST_MIN_ACRES          # 40: a field, not a building lot at the edge of town
+LEAD_RULE = ("The highest price per acre among bare farmland sales (%d acres or more, no buildings, not forest) recorded in "
+             "%%s in the %d days to %%s, the newest on file, in a county with at least %d such sales over 24 months to "
+             "compare with. Sales far outside their county's usual range are left out; they are on the monthly page."
+             % (LEAD_MIN_ACRES, LEAD_DAYS, MIN_COMPS))
+
+
+def lead_pick(st, cands):
+    """The home lead for one state from [(pub row, usual, county slug)] of its market sales (any county), or None."""
+    farm = [(p, u, cs) for p, u, cs in cands if p.get("kind") == "farm" and p.get("ppa") and p.get("when")]
+    if not farm:
+        return None
+    end = max(p["when"] for p, u, cs in farm)
+    start = (datetime.date.fromisoformat(end) - datetime.timedelta(days=LEAD_DAYS - 1)).isoformat()
+    ok = [(p, u, cs) for p, u, cs in farm
+          if start <= p["when"] <= end and u and u["n"] >= MIN_COMPS and p.get("flag") == 0 and (p["acres"] or 0) >= LEAD_MIN_ACRES]
+    if len(ok) < LEAD_MIN_SALES:
+        return None
+    p, u, cs = sorted(ok, key=lambda x: (-x[0]["ppa"], x[0]["when"], x[0]["id"]))[0]
+    return {"st": st, "id": p["id"], "county": p["county"], "acres": p["acres"], "ppa": p["ppa"], "when": p["when"],
+            "basis": p["basis"], "med": u["med"], "n24": u["n"], "pct": BLS.js_round((p["ppa"] / u["med"] - 1) * 100) if u["med"] else None,
+            "of": len(ok), "window": [start, end], "url": "/land-sales/%s/%s#s-%s" % (SLUG[st], cs, p["id"]),
+            "rule": LEAD_RULE % (NAME[st], LA.short_day(end) + ", " + end[:4])}
 
 
 # ---------------------------------------------------------------- per county
@@ -908,7 +947,9 @@ def build(repo=REPO):
         out["data/land-sales/latest.json"] = dump(latest)
     urls = []
     counties = {}
+    lead = {"states": d.states, "published": pub, "fetched": d.fetched, "lead": {}}
     for st in d.states:
+        lc = []
         summ = d.summary(st)
         through = (summ or {}).get("through") or BLS.month_end_before(d.fetched[st]).isoformat()
         sfile = {"state": st, "name": NAME[st], "through": through, "fetched": d.fetched[st], "source": SOURCES[st],
@@ -918,6 +959,7 @@ def build(repo=REPO):
             feat, allp, names, u, n12, W, k24, n12all = county_build(d, st, c, rows, through)
             slug = county_slug(c["name"])
             counties[st].append((c["name"], slug, n12))
+            lc.extend((p, u, slug) for p in allp)
             sfile["counties"][c["fips"]] = {"name": c["name"], "slug": slug, "ll": [c["lat"], c["lng"]], "n12": n12,
                                            "usual": {"med": u["med"], "n": u["n"], "q1": u["q1"], "q3": u["q3"]} if u else None, "k24": k24,
                                            "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"],
@@ -934,6 +976,9 @@ def build(repo=REPO):
             urls.append(("%s/land-sales/%s/%s" % (ORIGIN, SLUG[st], slug), d.fetched[st]))
         sfile["cols"] = ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg"]
         out["data/land-sales/%s.json" % st.lower()] = dump(sfile)
+        lead["lead"][st] = lead_pick(st, lc)
+    # the home page's Farmland sales block (index.html, components/home-land.js): one sale per state, by LEAD_RULE
+    out["data/land-sales/lead.json"] = dump(lead)
     out["land-sales/index.html"] = index_page(d, latest, counties, early, coverage, archive, index_section(repo))
     urls = [(ORIGIN + "/land-sales/", pub)] + [("%s/land-sales/%s" % (ORIGIN, k), pub if k == key else k + "-28") for k, _ in archive] + urls
     out["sitemap-land-sales.xml"] = sitemap(urls)
@@ -1077,6 +1122,22 @@ def selftest():
            "tr:target" in cp and "ls-hit" in cp and "mo.click()" in cp and "<style>" in cp)
         ck("the row id is a hash, never a name or document", all(not re.search(r"[A-Z]", x) for x in rids) and not re.search(r'id="s-[^"]*(SELLER|BUYER|D\d)', cp))
         ck("latest.json month", lat["month"] == "2026-09" and lat["n"] == 8)
+        # the home lead (Nov 4): the highest $/acre inside the county's usual range, never the far-off sale, no names
+        ld = json.loads(texts["data/land-sales/lead.json"])
+        wl = ld["lead"]["WI"]
+        ck("lead.json: Wisconsin's lead is the top in-range sale (DS5, $11,429), not the far-above one",
+           wl is not None and wl["ppa"] == 11429 and wl["county"] == "Testa" and wl["acres"] == 70.0)
+        ck("lead.json: its county middle, sample and window", wl["n24"] >= MIN_COMPS and wl["med"] > 0 and wl["window"][1] == "2026-09-17"
+           and wl["of"] >= LEAD_MIN_SALES and wl["url"].startswith("/land-sales/wisconsin/testa-county#s-") and "Wisconsin" in wl["rule"])
+        ck("lead.json: a state with no sales has no lead", ld["lead"].get("IL") is None)
+        ck("lead.json names no one", not any(n in texts["data/land-sales/lead.json"] for n in allnames)
+           and set(wl) == {"st", "id", "county", "acres", "ppa", "when", "basis", "med", "n24", "pct", "of", "window", "url", "rule"})
+        thin = lead_pick("WI", [(dict(p, when="2026-09-1%d" % i), {"n": 9, "med": 1}, "x") for i, p in enumerate(
+            [{"kind": "farm", "ppa": 10, "flag": 0, "acres": 40, "id": "a", "county": "X", "basis": "recorded"}] * (LEAD_MIN_SALES - 1))])
+        ck("lead: withheld under %d sales in the window" % LEAD_MIN_SALES, thin is None)
+        few = lead_pick("WI", [(dict(p, when="2026-09-1%d" % i, id=str(i)), {"n": MIN_COMPS - 1, "med": 1}, "x") for i, p in enumerate(
+            [{"kind": "farm", "ppa": 10, "flag": 0, "acres": 40, "county": "X", "basis": "recorded"}] * 5)])
+        ck("lead: withheld when the county has under %d comparable sales" % MIN_COMPS, few is None)
         sf = json.loads(texts["data/land-sales/wi.json"])
         ck("featured rows carry the township point", sf["counties"]["55999"]["s"][0][7] == 45.0)
         # removal: the high sale's names go
