@@ -286,9 +286,14 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
+// The page reads the committed rain files and works out "this year" and its windows from the clock, so its clock
+// starts an hour after the rain copy was read and runs on: on a later clock (a January run) the year had turned and
+// Champaign's unusual lines dropped from 2 to 1 (BUILD-RULES 50).
+const RAIN_AT = Date.parse(J("data/rain/il.json").fetched) + 3600e3;
 async function openPage(browser, port, url, width, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
   const pg = await ctx.newPage();
+  await pg.clock.install({ time: new Date(RAIN_AT) });
   const errs = [];
   pg.on("pageerror", (e) => errs.push(String(e)));
   await pg.route("**/*", (r) => {
