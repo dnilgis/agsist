@@ -486,7 +486,7 @@
     var win = s.w24 ? day(s.w24[0]) + ' to ' + day(s.w24[1]) : '24 months';
     out.push(grp('How it compares', [
       ['County middle, 24 months', cmp, 'Bare farmland sales of 20 acres or more at $500 an acre or more, ' + win + '.'],
-      ['Counts toward the middle', s.m === 'y' ? 'Yes' : MIDW[s.m] ? 'No: ' + esc(MIDW[s.m]) : miss('not figured')],
+      ['Counts toward the middle', s.m === 'y' ? (u ? 'Yes' : 'It qualifies, but the county has too few such sales for a middle') : MIDW[s.m] ? 'No: ' + esc(MIDW[s.m]) : miss('not figured')],
       ['Unusual price', s.flag === 1 ? 'Yes, well above the county’s usual' : s.flag === -1 ? 'Yes, well below the county’s usual' : 'No', s.flag ? 'Possible reasons are plain ones: buildings, timber or a neighbor paying more above; a family sale, poorer ground or a part interest below. The record does not say which.' : null]
     ]));
     /* source and names */
