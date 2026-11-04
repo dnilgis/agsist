@@ -469,8 +469,16 @@ test("T11, T13, T3, P9: logo rights, a mailto, the lost-or-damaged steps, the ma
 
 // ---------- panel 3, group B lens (data and failure modes) ----------
 // rain-print.js with qr.js and the art in a bare context, fetch answered here
-function engine(answer) {
+// now: the engine's clock (ms), for a test whose station series ends on a set day; left out, the real clock
+function fixedDate(now) {
+  return class extends Date {
+    constructor(...a) { if (a.length) super(...a); else super(now); }
+    static now() { return now; }
+  };
+}
+function engine(answer, now) {
   const c = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob, Map, Promise, setTimeout, clearTimeout, AbortController, Uint8Array };
+  if (now != null) c.Date = fixedDate(now);
   c.window = c;
   c.asked = [];
   c.fetch = (u) => { c.asked.push(String(u)); const a = answer(String(u)); return Promise.resolve(a); };
@@ -524,7 +532,7 @@ test("D8: the gift card's preview carries no QR of its own and makes no short li
     const url = new URL(u);
     if (url.pathname === "/StnData") return jsonRes({ meta: { name: "CHETEK", state: "WI", ll: [-91.65, 45.32] }, data: series(2026, "2026-10-09") });
     return jsonRes({});
-  });
+  }, Date.parse("2026-10-10T13:00:00Z"));   // the day after the series ends: on a later clock its gap is "unrecorded days"
   let shortAsked = 0;
   c.AgRpShort = { getShortLink: () => { shortAsked++; return Promise.resolve("HTTPS://AGSIST.COM/R?K7Q2M"); }, peek: () => null };
   const withQr = await c.RainPrint.previewArt(code, { idPrefix: "gc" });
