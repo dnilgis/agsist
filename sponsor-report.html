@@ -1481,7 +1481,23 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     AUD.d = d; AUD.a = a; AUD.r = ids.indexOf('28d') >= 0 ? '28d' : ids[0];
     var R = rangeOf('7d'), T = R && (a.totals || {})['7d'];
     var sum = T && T.users != null ? num(T.users) + ' US readers, ' + esc(span(R.start, R.end)) + (a.email ? ' &middot; ' + num(a.email.subscribers) + ' on the morning email' : '') : 'Readers, where they are, what they read';
-    return fold('audience', 'Who reads AGSIST', sum, '<div id="cp-aud-body">' + audBody() + '</div>', ' cp-aud');
+    var lag = lagLine(d, a);
+    return fold('audience', 'Who reads AGSIST', sum, (lag ? '<p class="cp-note" id="cp-aud-lag">' + esc(lag) + '</p>' : '') + '<div id="cp-aud-body">' + audBody() + '</div>', ' cp-aud');
+  }
+  /* WHY THE READERS END A DAY BEFORE THE AD (Sig, Nov 4: the readers "stopped on Nov 2", the ad ran to Nov 3).
+     Ad counts end yesterday; data/audience.json ends LAG days before the day it was built (scripts/build_audience.py:
+     GA4 has not finished a day before then). Every word comes from the two files, no date or count is typed here.
+     A reader file older than the ad results says when it was last updated instead of blaming Google. */
+  function nDays(n, a) { return n === 1 ? (a ? 'a day' : 'one day') : (['', '', 'two', 'three', 'four', 'five', 'six'][n] || num(n)) + ' days'; }
+  function lagLine(d, a) {
+    var end = null;
+    (a.ranges || []).forEach(function (x) { if (okDate(x.end) && (!end || x.end > end)) end = x.end; });
+    if (d.pending || d.withheld || d.demo || !end || !okDate(d.through) || d.through <= end) return '';
+    var gap = Math.round((D(d.through) - D(end)) / 864e5), built = String(a.built || '').slice(0, 10);
+    var lag = okDate(built) ? Math.round((D(built) - D(end)) / 864e5) : 0;
+    var h = 'Reader counts run ' + nDays(gap, true) + ' behind the ad results';
+    if (gap < lag) return h + ': Google takes ' + nDays(lag) + ' to finish counting a day.';
+    return h + (okDate(built) ? ': the reader file was last updated ' + fmt(built, true) + '.' : '.');
   }
   function rangeOf(id) { var r = null; (AUD.a.ranges || []).forEach(function (x) { if (x.id === id) r = x; }); return r; }
 
