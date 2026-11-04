@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Campaign portal | AGSIST</title>
 <meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<!-- No Google Analytics on a private report: the address carries the sponsor's link (Nov 4, 2026). loader.js skips GA when gtag exists. -->
+<script>window.agsistGaOff = true; window.gtag = function () {};</script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <!-- static-nav:fonts -->
@@ -284,6 +287,17 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 .cp-contact-who b{display:block;font-size:1.05rem}
 .cp-contact-who span{font-size:.86rem;color:var(--text-dim,#a9b3ae)}
 .cp-foot{margin-top:1.4rem;font-size:.76rem;color:var(--text-muted,#7d8782);line-height:1.6}
+/* The slim private header and footer: fixed heights, no menu. */
+.cp-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:56px;padding:0 16px;
+  max-width:1080px;margin:0 auto;border-bottom:1px solid var(--border,#2a3230)}
+.cp-top-logo{font-family:var(--font-display,'Inter',sans-serif);font-weight:800;letter-spacing:.06em;font-size:1.05rem;color:var(--text,#e8ece9);text-decoration:none}
+.cp-top-logo span{color:var(--gold,#d4a23f)}
+.cp-top-help{color:var(--gold,#d4a23f);font-size:.9rem;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.cp-bottom{max-width:1080px;margin:0 auto;padding:1.2rem 16px 2rem;border-top:1px solid var(--border,#2a3230);
+  color:var(--text-muted,#7d8782);font-size:.85rem;text-align:center}
+.cp-bottom a{color:var(--text-dim,#a9b3ae);display:inline-flex;align-items:center;min-height:44px}
+.cp-kpi-lag{margin-top:.5rem}
+.cp-plan-price small{white-space:nowrap}
 .cp-err{padding:3rem 0;color:var(--text-dim,#a9b3ae);text-align:center}
 .cp-err-msg{font-size:1.15rem;font-weight:700;color:var(--text,#e8ece9);margin:0 0 .8rem}
 .cp-err-contact{font-size:1rem;line-height:1.6;margin:0 auto;max-width:34rem}
@@ -426,26 +440,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 </style>
 </head>
 <body>
-<div id="site-header">
-<!-- static-nav:header -->
-  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
-  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
-    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
-    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
-      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
-      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
-        <b>Prices:</b> Near you: <a href="/cash-bids">Cash bids near me</a> · <a href="/basis">Bids and basis by state</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/fertilizer">Fertilizer prices</a> · Futures: <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/ag-stocks">Ag stocks</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · Reports: <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a> · <a href="/conditions">Crop progress, size and yield</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a><br>
-        <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
-        <b>Field:</b> Weather: <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/drought-monitor">Drought monitor</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-print">Rain Print</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · Crop: <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · Harvest and bins: <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a><br>
-        <b>Money &amp; Land:</b> Land: <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-        <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a><br>
-        <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
-        <b>More:</b> <a href="/about">About</a> · <a href="/sponsor">Advertise with AGSIST</a> · <a href="/contact">Contact</a>
-      </nav>
-    </div>
-  </header>
-<!-- /static-nav:header -->
-</div>
+<!-- A private page: a slim header and footer, not the site menu (Sig, Nov 4, 2026). Fixed height, so nothing moves (CLS). -->
+<header class="cp-top"><a class="cp-top-logo" href="/" aria-label="AGSIST home">AG<span>SIST</span></a><a class="cp-top-help" href="mailto:sig@agsist.com">Help: sig@agsist.com</a></header>
 <main id="main" tabindex="-1">
 <div class="cp" id="cp">
   <div class="cp-err" id="cp-loading">Loading your campaign&hellip;</div>
@@ -455,10 +451,13 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 <script>
 /* THE CAMPAIGN PORTAL.
  *
- * Reads one baked file, data/sponsors/<slug>-<token>.json, written by
- * scripts/build_sponsor_report.py: the numbers straight out of GA4 (through
- * yesterday), the creative with its proof code, the rate card, and the deal as
- * typed into data/sponsors.json. Nothing is counted or estimated here.
+ * Reads one report from the subs worker, GET /sponsor-report?r=<slug>-<token>
+ * (since Nov 4, 2026: the reports and tokens are private, never files on this
+ * site). scripts/build_sponsor_report.py writes it: the numbers straight out of
+ * GA4 (through yesterday), the creative with its proof code, the rate card, and
+ * the deal as typed into data/sponsors.json. Nothing is counted or estimated here.
+ * An old link (a retired token) answers 410 and the page says the link has
+ * changed; it never sends the reader on to the new one.
  *
  * THE AD PREVIEWS ARE THE AD. The homepage and /daily tabs are drawn by
  * components/sponsor-ad.js, the file those pages load; the archive tab is the
@@ -486,6 +485,15 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function num(n) { return n == null ? '-' : Number(n).toLocaleString('en-US'); }
+  /* A CLICK RATE ONLY OVER ENOUGH VIEWS (honest numbers, Sig Nov 4): under MIN_VIEWS times seen a rate is
+     noise (one click in 40 views reads 2.50%), so every rate on this page shows "-" and says why instead. */
+  var MIN_VIEWS = 100, THIN_RATE = 'Too few views to judge yet';
+  function rateOf(v, c, ctr) {
+    v = +v || 0;
+    if (v < MIN_VIEWS) return null;
+    var r = ctr != null && isFinite(+ctr) ? +ctr : 100 * (+c || 0) / v;
+    return r.toFixed(2) + '%';
+  }
   /* A free test (data/sponsors.json billing.free_test): the one label every muted money part carries. */
   var FREE = 'Free test: no charge';
   var ST_NAME = { AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut',
@@ -529,6 +537,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function localToday() { var n = new Date(); return iso(new Date(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate(), 12))); }
   var TODAY = localToday();
 
+  /* The subs worker (workers/subs-worker.js v5.65) holds each report under its link. */
+  var API = 'https://agsist-api.dnilgis.workers.dev';
   var r = (new URLSearchParams(location.search).get('r') || '').replace(/[^a-z0-9-]/gi, '');
   if (!r) return die('This page needs the link you were sent.');
   /* k proves the link came from Sig: the subs worker checks it against r before
@@ -548,8 +558,13 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     })
     .catch(function () { return null; });
 
-  fetch('/data/sponsors/' + r + '.json', { cache: 'no-cache' })
-    .then(function (x) { if (!x.ok) throw 0; return x.json(); })
+  fetch(API + '/sponsor-report?r=' + encodeURIComponent(r.toLowerCase()), { cache: 'no-store', referrerPolicy: 'no-referrer' })
+    .then(function (x) {
+      if (x.status === 410) throw 'changed';
+      if (!x.ok) throw 'unknown';
+      return x.json();
+    }, function () { throw 'down'; })
+    .then(function (j) { if (!j || !j.ok || !j.report) throw 'unknown'; return j.report; })
     .then(function (d) { return AUDP.then(function (a) { d.__aud = a; return d; }); })
     /* The ad sits on the first screen now, so its logo is fetched before the
        page is drawn (at most 1.5 s): an image that arrives later would push
@@ -572,7 +587,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
             'email it came in and we will fix it today.<br><small>' + esc(String((e && e.message) || e)) + '</small>');
       }
     })
-    .catch(function () {
+    .catch(function (e) {
+      if (e === 'changed') return die('This link has changed. Ask AGSIST for your new link.');
+      if (e === 'down') return die('Your report did not load just now. Your link is fine: try again in a few minutes.');
       die('That campaign link is not recognised. If it was working before, reply to the ' +
           'email it came in and we will send a fresh one.');
     });
@@ -994,18 +1011,21 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     /* IS THAT GOOD? Only against the sponsor's own run, and only when both
        sides have enough views to mean something. No outside benchmark is
        quoted that this page cannot show its source for. */
-    var verdict;
-    if (w.ctr == null || !v) verdict = 'Needs views first';
-    else if (v < 100) verdict = 'Clicks per 100 views. Too few views this week to judge.';
-    else if ((t.viewable || 0) - v >= 100 && t.ctr != null) {
+    var verdict, rate = rateOf(v, c, w.ctr);
+    if (!rate) verdict = THIN_RATE;
+    else if ((t.viewable || 0) - v >= MIN_VIEWS && t.ctr != null) {
       var r_ = w.ctr / (t.ctr || 1e-9);
-      verdict = (t.ctr === 0 ? 'Higher than' : r_ >= 1.2 ? 'Higher than' : r_ <= 0.8 ? 'Lower than' : 'About the same as') + ' your whole run (' + t.ctr.toFixed(2) + '%)';
+      verdict = (t.ctr === 0 ? 'Higher than' : r_ >= 1.2 ? 'Higher than' : r_ <= 0.8 ? 'Lower than' : 'About the same as') + ' your whole run (' + rateOf(t.viewable, t.clicks, t.ctr) + ')';
     } else verdict = 'Clicks per 100 views. The first week sets your baseline.';
     h += '<div class="cp-kpis">' +
       big(num(w.viewable), v ? '' : 'so far', 'Times seen', v ? 'Half the ad on screen for a second. One reader can count more than once.' : zeroWhy, asof, !v) +
       big(num(w.clicks), c ? '' : 'so far', 'Clicks', c ? 'Taps on your button or phone number' : (v ? 'No clicks yet in these 7 days' : zeroWhy), asof, !c) +
-      big(w.ctr == null ? '-' : w.ctr.toFixed(2) + '%', '', 'Click rate', verdict, asof, w.ctr == null) +
+      big(rate || '-', '', 'Click rate', verdict, asof, !rate) +
       areaKpi(d) + '</div>';
+    /* The same derived reader-lag line as under Who reads AGSIST (lagLine), right under the readers tile whose
+       earlier end date it explains (Sig, Nov 4). Empty when the two files end on the same day. */
+    var lag = d.__aud && areaReaders(d) ? lagLine(d, d.__aud) : '';
+    if (lag) h += '<p class="cp-note cp-kpi-lag" id="cp-kpi-lag"><b>' + esc(areaReaders(d).k) + ':</b> ' + esc(lag) + '</p>';
     if ((d.series || []).length > 7) h += '<p class="cp-note">Since ' + esc(fmt(d.liveSince || s.start, true)) + ': ' + num(t.viewable) + ' times seen, ' + num(t.clicks) + ' click' + (t.clicks === 1 ? '' : 's') + '.</p>';
     /* Days before GA4 could tell two ads apart are left out, never filled with the site's total. */
     if (d.split && d.split.note) h += '<p class="cp-note">' + esc(d.split.note) + '</p>';
@@ -1019,11 +1039,16 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     else {
       h = chart(ser);
       if (d.windows && d.windows.length) {
+        /* A new ad has the same 7, 30 and 90 day sums: one row "since <live date>", not three equal ones. */
+        var w0 = d.windows[0], since = okDate(d.liveSince) ? d.liveSince : (okDate(d.start) ? d.start : (ser[0] && ser[0].d));
+        var same = d.windows.length > 1 && since && d.windows.every(function (w) { return w.viewable === w0.viewable && w.clicks === w0.clicks; });
+        var rows = same ? [{ viewable: w0.viewable, clicks: w0.clicks, ctr: w0.ctr, label: 'since ' + fmt(since) }]
+          : d.windows.map(function (w) { return { viewable: w.viewable, clicks: w.clicks, ctr: w.ctr, label: 'last ' + w.days + ' days' + (w.countedFrom ? ' (counted from ' + fmt(w.countedFrom) + ')' : '') }; });
         h += '<div class="cp-win">';
-        d.windows.forEach(function (w) {
-          h += '<div><b>' + num(w.viewable) + '</b><span>times seen, last ' + esc(w.days) + ' days' +
-               (w.countedFrom ? ' (counted from ' + esc(fmt(w.countedFrom)) + ')' : '') + ' &middot; ' + num(w.clicks) + ' click' +
-               (w.clicks === 1 ? '' : 's') + (w.ctr == null ? '' : ' &middot; ' + w.ctr.toFixed(2) + '%') + '</span></div>';
+        rows.forEach(function (w) {
+          var rt = rateOf(w.viewable, w.clicks, w.ctr);
+          h += '<div><b>' + num(w.viewable) + '</b><span>times seen, ' + esc(w.label) + ' &middot; ' + num(w.clicks) + ' click' +
+               (w.clicks === 1 ? '' : 's') + ' &middot; click rate ' + (rt || '- (' + THIN_RATE.toLowerCase() + ')') + '</span></div>';
         });
         h += '</div>';
       }
@@ -1049,10 +1074,10 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     series.forEach(function (d, i) {
       var hh = (H - T - B) * (d.v / max), x = L + i * bw;
       s += '<rect x="' + (x + 0.8) + '" y="' + (T + (H - T - B) - hh) + '" width="' + Math.max(1, bw - 2) + '" height="' + Math.max(0, hh) +
-           '" rx="2" fill="#e8743a" opacity=".88"><title>' + esc(d.d) + ': ' + d.v + ' viewable, ' + d.c + ' click' + (d.c === 1 ? '' : 's') + '</title></rect>';
-      if (d.c) s += '<circle cx="' + (x + bw / 2) + '" cy="' + (T - 5) + '" r="3" fill="#4ade80"><title>' + esc(d.d) + ': ' + d.c + ' click' + (d.c === 1 ? '' : 's') + '</title></circle>';
+           '" rx="2" fill="#e8743a" opacity=".88"><title>' + esc(fmt(d.d) || d.d) + ': ' + d.v + ' viewable, ' + d.c + ' click' + (d.c === 1 ? '' : 's') + '</title></rect>';
+      if (d.c) s += '<circle cx="' + (x + bw / 2) + '" cy="' + (T - 5) + '" r="3" fill="#4ade80"><title>' + esc(fmt(d.d) || d.d) + ': ' + d.c + ' click' + (d.c === 1 ? '' : 's') + '</title></circle>';
     });
-    s += '<text x="' + L + '" y="' + (H - 6) + '">' + esc(series[0].d) + '</text><text x="' + W + '" y="' + (H - 6) + '" text-anchor="end">' + esc(series[n - 1].d) + '</text></svg>';
+    s += '<text x="' + L + '" y="' + (H - 6) + '">' + esc(fmt(series[0].d) || series[0].d) + '</text><text x="' + W + '" y="' + (H - 6) + '" text-anchor="end">' + esc(fmt(series[n - 1].d) || series[n - 1].d) + '</text></svg>';
     return s + '<p class="cp-note">Bars: times seen each day. Green dot: a day with a click.</p>';
   }
 
@@ -1174,11 +1199,12 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       h += '<h3 class="cp-sub3">By page</h3><table class="cp-t"><thead><tr><th>Page</th><th style="text-align:right">Seen</th><th style="text-align:right">Clicks</th>' +
            '<th style="text-align:right">Rate</th></tr></thead><tbody>';
       d.byPage.forEach(function (p) {
-        var ctr = p.viewable ? (100 * p.clicks / p.viewable) : null;
+        var ctr = rateOf(p.viewable, p.clicks, null);
         h += '<tr><td>' + esc(p.page) + '</td><td class="n">' + num(p.viewable) + '</td><td class="n">' + num(p.clicks) +
-             '</td><td class="n">' + (ctr == null ? 'n/a' : ctr.toFixed(2) + '%') + '</td></tr>';
+             '</td><td class="n">' + (ctr || '-') + '</td></tr>';
       });
       h += '</tbody></table>';
+      if (d.byPage.some(function (p) { return (+p.viewable || 0) < MIN_VIEWS; })) h += '<p class="cp-note">Rate -: ' + THIN_RATE.toLowerCase() + ' (under ' + MIN_VIEWS + ' views).</p>';
     }
     h += '<h3 class="cp-sub3">The places it runs</h3><div class="cp-places">';
     list.forEach(function (k) {
@@ -1345,12 +1371,37 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   /* A tier's monthly price for one state (a State Sponsor costs more in a few states), and the
      plain note that says which (data/rate-card.json price_by_state, opens_soon). */
   function tierPrice(t, st) { return (st && t.price_by_state && t.price_by_state[st]) || t.price_month; }
-  function stateNote(t) {
+  /* "opens soon" never names a state this sponsor already runs in (Root Lot holds CA, NV and TX: Sig, Nov 4). */
+  function stateNote(t, mine) {
     var by = t.price_by_state || {}, hi = {};
     Object.keys(by).forEach(function (k) { (hi[by[k]] = hi[by[k]] || []).push(k); });
     var out = Object.keys(hi).map(function (p) { return '$' + p + ' a month in ' + hi[p].join(', '); });
-    if ((t.opens_soon || []).length) out.push(t.opens_soon.join(', ') + (t.opens_soon.length > 1 ? ' open soon' : ' opens soon'));
+    var soon = (t.opens_soon || []).filter(function (c) { return !mine || mine.indexOf(c) < 0; });
+    if (soon.length) out.push(soon.join(', ') + (soon.length > 1 ? ' open soon' : ' opens soon'));
     return out.join('; ');
+  }
+  /* THE SPONSOR'S OWN PRICE (Sig, Nov 4): a State Sponsor costs its own state's price from the rate card
+     (Texas $49, California $29...), never the "most states" figure. The deal's billing.state when typed,
+     else the ad's states. [[price, [codes]], ...], dearest first; null when the tier has one price. */
+  function ownPrices(t, d, s) {
+    var mine = s.bill.state ? [s.bill.state] : (d.regions || []);
+    if (!t || !t.price_by_state || !mine.length) return null;
+    var by = {};
+    mine.forEach(function (c) { var p = tierPrice(t, c); (by[p] = by[p] || []).push(c); });
+    return Object.keys(by).map(Number).sort(function (a, b) { return b - a; }).map(function (p) { return [p, by[p]]; });
+  }
+  function priceText(t, d, s) {
+    var own = ownPrices(t, d, s);
+    if (!own) return '$' + tierPrice(t, s.bill.state);
+    return own.length === 1 ? '$' + own[0][0] : '$' + own[own.length - 1][0] + ' to $' + own[0][0];
+  }
+  function ownPriceNote(t, d, s) {
+    var own = ownPrices(t, d, s);
+    if (!own || (own.length === 1 && own[0][1].length === 1)) return '';
+    return own.map(function (x) {
+      var n = x[1].map(function (c) { return ST_NAME[c] || c; });
+      return (n.length > 1 ? n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1] : n[0]) + ' $' + x[0] + ' a month';
+    }).join('; ') + '.';
   }
   function billingSection(d, s) {
     var rc = d.rateCard || {}, t = s.tier;
@@ -1369,7 +1420,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       if (rc.trial || rc.terms) b += '<p class="cp-small cp-muted" style="margin:.6rem 0 0">' + esc([rc.trial, rc.day30, rc.terms, rc.prepay, rc.founding && rc.founding.text, rc.paperwork].filter(Boolean).join(' ')) + '</p>';
       return b + '</div></details>';
     }
-    var bsum = d.freeTest ? FREE : (t ? esc(t.name) + ' &middot; $' + esc(tierPrice(t, s.bill.state)) + ' a month' + (rc.currency && rc.currency !== 'USD' ? ' ' + esc(rc.currency) : '') : 'Plan not recorded yet');
+    var bsum = d.freeTest ? FREE : (t ? esc(t.name) + ' &middot; ' + esc(priceText(t, d, s)) + ' a month' + (rc.currency && rc.currency !== 'USD' ? ' ' + esc(rc.currency) : '') : 'Plan not recorded yet');
     var h = '<details class="cp-fold' + (d.freeTest ? ' cp-free' : '') + '" id="billing"><summary><span class="cp-fold-h"><span class="cp-fold-t">Billing</span><span class="cp-fold-s' + (d.freeTest ? ' cp-muted' : '') + '">' + bsum + '</span></span></summary><div class="cp-fold-b">';
     if (d.freeTest) {
       /* THE SAME LAYOUT, MUTED. Nothing below is charged or offered: it is the
@@ -1379,24 +1430,28 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     }
     if (!t) return h + '<div class="cp-card"><p class="cp-note" style="margin:0">Your plan will appear here once it is recorded.</p></div></div></details>';
     h += '<div class="cp-bill' + (d.freeTest ? ' cp-muted' : '') + '"' + (d.freeTest ? ' aria-hidden="true"' : '') + '><div class="cp-card cp-plan"><div class="cp-plan-name">' + esc(t.name) + '</div>' +
-         '<div class="cp-plan-price">$' + esc(tierPrice(t, s.bill.state)) + '<small> a month</small></div>' +
-         (t.price_by_state && !s.bill.state ? '<p class="cp-small">' + esc(stateNote(t)) + '</p>' : '') +
+         '<div class="cp-plan-price">' + esc(priceText(t, d, s)) + '<small> a month</small></div>' +
+         (ownPriceNote(t, d, s) ? '<p class="cp-small">' + esc(ownPriceNote(t, d, s)) + '</p>'
+           : (t.price_by_state && !ownPrices(t, d, s) ? '<p class="cp-small">' + esc(stateNote(t, d.regions)) + '</p>' : '')) +
          '<ul>' +
-         (s.free ? '<li>' + s.free.charAt(0).toUpperCase() + s.free.slice(1) + ' free</li>' : '') +
+         /* Only a deal with a free period says so, with its own end date when the ad has started (Sig, Nov 4). */
+         (s.trialEnd ? '<li>Free through ' + esc(fmt(s.trialEnd, true)) + ', then month to month</li>'
+           : s.free ? '<li>' + s.free.charAt(0).toUpperCase() + s.free.slice(1) + ' free, then month to month</li>' : '') +
          (s.lockM ? '<li>Rate locked for ' + esc(s.lockM) + ' months from your start date</li>' : '') +
-         (rc.terms ? '<li>' + esc(rc.terms) + '</li>' : '') +
+         (rc.terms ? '<li>' + esc((s.free ? '' : 'Month to month. ') + String(rc.terms).replace(/^Month to month after that\.\s*/, '')) + '</li>' : '') +
          (t.exclusive ? '<li>Exclusive: ' + (t.one_per_state ? 'one business per state' : t.id === 'daily' ? 'one sponsor per issue' : 'one sponsor only') + '</li>' : '') +
          '</ul></div>';
     var tl = [];
     if (s.start) {
       tl.push([s.start, 'Your ad goes live', (d.geo ? 'The first day your ad shows.' : 'The first briefing with your ad.') + ' The results counter starts here.', TODAY === s.start]);
       if (s.trialEnd) tl.push([s.trialEnd, 'Last free day', s.freeSpan + ' at no charge, ' + fmt(s.start) + ' to ' + fmt(s.trialEnd) + '.', s.inTrial]);
-      tl.push([s.firstBilled, 'First billed month', '$' + tierPrice(t, s.bill.state) + ' a month from here, month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
-      if (s.lockEnd) tl.push([s.lockEnd, 'Rate lock ends', 'Your $' + tierPrice(t, s.bill.state) + '-a-month ' + t.name.toLowerCase() + ' rate holds through this date.', false]);
+      /* No free period: the first billed month starts the day the ad goes live (audit, Nov 4). */
+      tl.push([s.firstBilled, 'First billed month', priceText(t, d, s) + ' a month from ' + (s.trialEnd ? 'here' : 'your first day') + ', month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
+      if (s.lockEnd) tl.push([s.lockEnd, 'Rate lock ends', 'Your ' + priceText(t, d, s) + '-a-month ' + t.name.toLowerCase() + ' rate holds through this date.', false]);
     } else {
       tl.push([null, 'Your ad goes live', 'The morning after you approve. That date sets everything below.', false]);
       if (s.trialM || s.trialW) tl.push([null, s.freeLabel, 'From the first day your ad runs.', false]);
-      tl.push([null, 'First billed month', 'The day after the free period ends, at $' + tierPrice(t, s.bill.state) + ' a month.', false]);
+      tl.push([null, 'First billed month', ((s.trialM || s.trialW) ? 'The day after the free period ends' : 'The day your ad goes live') + ', at ' + priceText(t, d, s) + ' a month.', false]);
       if (s.lockM) tl.push([null, 'Rate lock', 'Your rate holds for ' + s.lockM + ' months from the start date.', false]);
     }
     /* A free test is never billed, so its schedule carries no billing date (it read "First billed month Oct 28, $29"). */
@@ -1785,7 +1840,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function regionsSection(d) {
     if (!d.regions || !d.regions.length) return '';
     var a = d.__aud, ids = a ? (a.ranges || []).map(function (x) { return x.id; }) : [];
-    if (!REG.r) REG.r = ids.indexOf('28d') >= 0 ? '28d' : ids[0];
+    /* Opens on 7 days, the same window as the readers figure above it and this section's summary (Sig, Nov 4). */
+    if (!REG.r) REG.r = ids.indexOf('7d') >= 0 ? '7d' : ids[0];
     var ar = areaReaders(d);
     var sum = ar ? num(ar.n) + ' readers in ' + esc(regionNames(d)) + ', ' + ar.asof : 'Not available right now';
     return fold('area', 'Your area’s readers', sum, '<div id="cp-reg-body">' + regBody(d) + '</div>');
@@ -1828,7 +1884,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var rows = ra.rows || [], el = ra.elsewhere || {};
     var on = !!(d.creative && d.creative.live);
     var adNote = ra.withheld ? 'withheld' : (ra.pending || d.pending) ? (on ? 'live · no full day counted yet' : 'not started')
-      : (ra.start && ra.through && ra.through >= ra.start ? 'live since ' + esc(span(ra.start, ra.through)) : (on ? 'live · no full day counted yet' : ''));
+      : (ra.start && ra.through && ra.through >= ra.start ? 'live since ' + esc(fmt(ra.start)) + '; counted through ' + esc(fmt(ra.through)) : (on ? 'live · no full day counted yet' : ''));
     var t = '<p class="cp-small" style="margin:0">' + adNote + '</p><table class="cp-t cp-reg-t"><thead><tr><th>Where the reader was</th><th class="n">Times seen</th><th class="n">Clicks</th></tr></thead><tbody>';
     if (ra.withheld) t += '<tr><td colspan="3">' + esc(d.withheld || 'Withheld for now.') + '</td></tr>';
     else {
@@ -1898,22 +1954,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   }
 })();
 </script>
-<div id="site-footer">
-<!-- static-nav:footer -->
-  <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
-  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
-    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
-    <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a> · <a href="/rain-print">Rain Print: your farm’s year of rain, framed</a><br>
-    <b>Prices:</b> <a href="/cash-bids">Cash bids near me</a> · <a href="/basis">Bids and basis by state</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/fertilizer">Fertilizer prices</a> · <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a> · <a href="/conditions">Crop progress, size and yield</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a><br>
-    <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
-    <b>Field:</b> <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/drought-monitor">Drought monitor</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
-    <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
-    <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
-    <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
-  </nav>
-<!-- /static-nav:footer -->
-</div>
+<footer class="cp-bottom"><a href="/">agsist.com</a> &middot; <a href="mailto:sig@agsist.com">Contact</a> &middot; <a href="/privacy">Privacy</a></footer>
 <script src="/components/loader.js?v=19" defer></script>
 </body>
 </html>
