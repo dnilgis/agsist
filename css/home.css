@@ -2509,3 +2509,6 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .cot-ask[open]>summary::before,.cot-detail[open]>summary::before{content:"\2212  "}
 .cot-ask:has(>[data-signup-ask][hidden]){display:none}
 .cot-detail[open]>.cot-caption{margin-top:.2rem}
+/* held up front (cls-reserved): three lines of about three rows each, and the two-row date line */
+#cot-glance{min-height:11rem}
+#cot-gl-asof{min-height:2.3em}

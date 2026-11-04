@@ -880,7 +880,8 @@
         send: function () { return notice({ email: email, source: source, topic: 'rain-gauge', daily: false, askId: 'onemore' }); },
         ok: 'You are on the rain gauge waitlist. You will hear from me when the first batch is ready.' };
       var base = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily', 'cot'] : ['daily', 'gauge', 'rainyear', 'rent', 'zip'];
-      var lead = kind.hail ? ['hail'] : kind.futures ? ['price', 'cot', 'reports', 'wasde'] : kind.report ? ['reports', 'wasde', 'cot', 'price'] : [];
+      var lead = (kind.hail ? ['hail'] : kind.futures ? ['price', 'cot', 'reports', 'wasde'] : kind.report ? ['reports', 'wasde', 'cot', 'price'] : [])
+        .filter(function (k) { return k !== 'cot' || kind.cot; });   /* off a COT page, Funds this week waits at the end */
       /* a notice or alert: the Daily first, then what fits the page, then the gauge */
       var order = (gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1))).filter(function (k, i, a) { return a.indexOf(k) === i; });
       /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, Sig 2026-10-23) */

@@ -221,8 +221,8 @@ test("the tick sits inside the Daily ask, never pre-ticked, and no notice ask ca
   assert.match(sa, /lb\.innerHTML = '<input type="checkbox" id="' \+ cid \+ '"> ' \+ CW_LABEL;/);
   assert.doesNotMatch(sa, /sa-cw[^\n]*checked/);
   assert.match(sa, /if \(o\.cw === true\) body\.cw = true;/);
-  assert.match(read("components/loader.js"), /signup-ask\.js\?v=20/);
-  assert.match(read("index.html"), /signup-ask\.js\?v=20/);
+  assert.match(read("components/loader.js"), /signup-ask\.js\?v=21/);
+  assert.match(read("index.html"), /signup-ask\.js\?v=21/);
 });
 
 test("the county home: one hidden mount on every county page, filled by county-home.js from change-lines.js", () => {
