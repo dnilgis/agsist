@@ -56,8 +56,9 @@ Minnesota). A parcel that only ever sold as a house lot is not in these files.
 It refuses to write a state when the columns it needs are not found by name, or
 when fewer than 90 percent of rows give a readable date and price: a missing
 number stays missing, never a guess. Buyer and seller names are kept only when
-the state's public file carries them (the page shows them for the one parcel a
-reader picked, and links the official record when they are not there).
+the state's public file carries them, and never in a county file: since Nov 4, 2026
+they go to data/land/<st>/names/<fips>.json (scripts/land_names.py), which a page
+reads only when a reader taps Show buyer and seller.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
