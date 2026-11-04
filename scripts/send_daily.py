@@ -882,8 +882,15 @@ def main():
     try:
         # The mail plan's daily cap (scripts/send_cap.py): what is counted today, this list, and the
         # report-day email on a report day, against SEND_DAILY_CAP. A warning, never a stop.
+        # It runs here, before the mail server is reached, and reads within a few seconds or not at all.
         _kinds = gmail_limit.report_kinds(date.fromisoformat(day))
-        send_cap.preflight(tally, later=sum(1 for r in subs if r.get("reports") is not False) if _kinds else 0,
+        _only = []
+        if _kinds and not tally.dry and how == "json" and env("LIST_URL") and env("LIST_TOKEN"):
+            # the report-day email also goes to its own list (send_report_day.py merges it); a bounded read
+            _only, _err = send_cap.bounded(lambda: subscribers.fetch_topic(env("LIST_URL"), env("LIST_TOKEN"), "reports"))
+            if _err:
+                print("send cap: the report-day-only list was not read for the projection (%s)" % _err)
+        send_cap.preflight(tally, later=send_cap.report_day_count(subs, _only or []) if _kinds else 0,
                            later_what="the report-day email (%s)" % ", ".join(_kinds))
     except Exception as ex:                                  # noqa: BLE001
         print("send cap preflight skipped (" + type(ex).__name__ + ")")

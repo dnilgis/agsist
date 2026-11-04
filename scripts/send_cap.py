@@ -21,22 +21,26 @@ Three parts:
        SEND-CAP sender=<name> kind=refused code=<SMTP code> sent=<this run so far>
        SEND-CAP sender=<name> kind=preflight used=<counted today> size=<this send> later=<due later> cap=<cap>
 
-   kind=refused: the server refused with a reply that looks like a quota or rate limit. smtplib
-   raises SMTPSenderRefused (MAIL FROM), SMTPRecipientsRefused (every RCPT TO; its .recipients maps
-   each address to (code, text), and only the codes are read), SMTPDataError (DATA), and on a 421
-   it closes the connection first and raises the same classes with smtp_code 421. Brevo does not
-   publish the reply it gives at the daily cap (searched Nov 4: its help pages give the 300 a day, not
-   the reply), so a refusal counts as the cap when its text names a quota, limit, credit, rate or
-   "too many" with any 4xx or 5xx code, or when a send (not a connect or login) gets a bare 421 or
-   451, the codes relays use for "slow down". When Brevo's real reply is seen in a log, pin it in the
-   selftest.
+   kind=refused: the server refused the sender, the message or the login with a reply that names the
+   plan's cap. smtplib raises SMTPSenderRefused (MAIL FROM), SMTPRecipientsRefused (every RCPT TO),
+   SMTPDataError (DATA) and SMTPAuthenticationError (login); on a 421 it closes the connection first
+   and raises the same classes with smtp_code 421. Brevo does not publish the reply it gives at the
+   daily cap (searched Nov 4: its help pages give the 300 a day, not the reply), so (checker, PR 331):
+     - SMTPRecipientsRefused is never the cap (it is one recipient's mailbox), and neither is a reply
+       naming a mailbox, a message size or storage (552 5.2.2 mailbox over quota, 5.3.4 size limit);
+     - a sender, DATA or login refusal whose text names a daily, sending, account or credit quota is;
+     - a sender or DATA refusal with a bare 421 or 451 or a generic limit word is soft: one is a note
+       line, SOFT_TO_CAP of them in one run count as the cap.
+   When Brevo's real reply is seen in a log, pin it in the selftest. The wrapper never raises an error
+   of its own into a sender, and reads nothing over the network.
 
-   kind=preflight: before a send of PREFLIGHT_MIN or more readers, the count already sent today (the
-   send-volume row cron_health.py saved in the private repo, a floor: see 3) plus this send's list,
-   plus a send known to be coming the same UTC day (the report-day email on a report day, from the
-   Daily), would pass the cap. A ::warning:: and the marker print, and the send still goes: the cap
-   can be out of date after an upgrade, and a reader is better served by a send that may stop
-   partway than by none. The marker makes the send-volume row red early.
+   kind=preflight: only send_daily.py, before it connects to the mail server. The count already sent
+   today (the send-volume row cron_health.py saved in the private repo, a floor: see 3; one HTTPS read
+   of that file, HEALTH_SECONDS in all, no retries, else used=unknown) plus this list, plus the
+   report-day email on a report day (its Daily readers and its own list, as send_report_day.py merges
+   them), would pass the cap. A ::warning:: and the marker print, and the send still goes: the cap can
+   be out of date after an upgrade, and a reader is better served by a send that may stop partway
+   than by none. The marker makes the send-volume row red early; a raised cap clears it.
 
 3. The send-volume row (cron_health.py, built in delivery_check.delivery_rows from the run logs it
    already reads; no extra API calls). Per UTC day, the sum over every DELIVERY line read of smtp=
@@ -76,9 +80,18 @@ PREFLIGHT_MIN = 20                # sends to fewer readers skip the preflight (n
 HEALTH_PATH = "private/data/cron-health.json"
 ROW = "send-volume"
 
-MARKER_RE = re.compile(r"\bSEND-CAP sender=([a-z0-9][a-z0-9-]{0,40}) kind=(refused|preflight)((?: [a-z_]{1,20}=\d{1,9})*)\s*$")
-QUOTA_WORDS = re.compile(r"\b(quota|limits?|limited|exceed(?:ed|s)?|credits?|rate|too many|throttl\w*)\b", re.I)
-RATE_CODES = (421, 451)
+MARKER_RE = re.compile(r"\bSEND-CAP sender=([a-z0-9][a-z0-9-]{0,40}) kind=(refused|preflight)((?: [a-z_]{1,20}=(?:\d{1,9}|unknown))*)\s*$")
+# What counts as the cap (checker, PR 331): a refusal of the sender or of the message (MAIL FROM, DATA,
+# or the login), never one recipient's mailbox, whose text names a daily, sending or account quota.
+CAP_TEXT = re.compile(r"\bdaily\b|\bsending (?:limit|quota)|\b(?:account|sending|daily) (?:quota|limit)|\bquota (?:exceeded|reached)"
+                      r"|\bcredits? (?:exceeded|limit|reached)|\bmaximum credits\b|\bout of credits\b", re.I)
+# A softer sign: a sender-level or DATA refusal with a "slow down" code or a generic limit word. One is a
+# note (a transient 421 happens); SOFT_TO_CAP of them in one run count as the cap.
+SOFT_WORDS = re.compile(r"\b(?:limits?|limited|exceed(?:ed|s)?|rate|too many|throttl\w*|quota)\b", re.I)
+NOT_CAP = re.compile(r"\bmailbox\b|\bmessage size\b|\bsize (?:limit|exceeds)\b|\btoo (?:big|large)\b|\bstorage\b|\b5\.2\.2\b|\b5\.3\.4\b", re.I)
+SOFT_CODES = (421, 451)
+SOFT_TO_CAP = 2
+HEALTH_SECONDS = 5.0              # the preflight's whole budget to read today's count; past it, it skips
 
 
 def cap(environ=None, fallback=None):
@@ -90,45 +103,51 @@ def cap(environ=None, fallback=None):
     return int(fallback) if isinstance(fallback, int) and fallback > 0 else DEFAULT_CAP
 
 
-def _codes(ex):
-    """(code, text) pairs from an smtplib exception. Recipient addresses are never read."""
-    if isinstance(ex, smtplib.SMTPRecipientsRefused):
-        out = []
-        for v in (ex.recipients or {}).values():
-            try:
-                c, t = v
-                out.append((int(c), t.decode("utf-8", "replace") if isinstance(t, bytes) else str(t)))
-            except Exception:                              # noqa: BLE001
-                continue
-        return out
-    if isinstance(ex, smtplib.SMTPResponseException):
-        t = ex.smtp_error
-        return [(int(ex.smtp_code), t.decode("utf-8", "replace") if isinstance(t, bytes) else str(t))]
-    return []
+def _text(t):
+    return t.decode("utf-8", "replace") if isinstance(t, bytes) else str(t)
+
+
+def classify(ex, during="send"):
+    """("cap", code), ("soft", code) or (None, None) for an smtplib exception. Only a refusal of the
+    sender, the message or the login can be the cap: SMTPRecipientsRefused (one or every recipient's
+    mailbox) never is. `during` is send, login or connect."""
+    if isinstance(ex, smtplib.SMTPRecipientsRefused) or not isinstance(ex, smtplib.SMTPResponseException):
+        return None, None
+    try:
+        code, text = int(ex.smtp_code), _text(ex.smtp_error)
+    except Exception:                                      # noqa: BLE001
+        return None, None
+    if not 400 <= code < 600 or NOT_CAP.search(text):
+        return None, None
+    if CAP_TEXT.search(text):
+        return "cap", code
+    if during == "send" and isinstance(ex, (smtplib.SMTPSenderRefused, smtplib.SMTPDataError)) \
+            and (code in SOFT_CODES or SOFT_WORDS.search(text)):
+        return "soft", code
+    return None, None
 
 
 def cap_code(ex, during="send"):
-    """The SMTP code when `ex` looks like a quota or rate refusal, else None. `during` is
-    send, connect or login: a bare 421 or 451 counts only during a send."""
-    for code, text in _codes(ex):
-        if 400 <= code < 600 and QUOTA_WORDS.search(text or ""):
-            return code
-        if during == "send" and code in RATE_CODES:
-            return code
-    return None
+    """The SMTP code when `ex` on its own names the plan's cap, else None."""
+    kind, code = classify(ex, during)
+    return code if kind == "cap" else None
 
 
 def marker(sender, kind, **counts):
     parts = ["SEND-CAP sender=%s kind=%s" % (sender, kind)]
     for k in sorted(counts):
         v = counts[k]
-        if re.match(r"^[a-z_]{1,20}$", k) and isinstance(v, int) and not isinstance(v, bool):
+        if not re.match(r"^[a-z_]{1,20}$", k):
+            continue
+        if v == "unknown":
+            parts.append("%s=unknown" % k)
+        elif isinstance(v, int) and not isinstance(v, bool):
             parts.append("%s=%d" % (k, max(0, v)))
     return " ".join(parts)
 
 
 def parse(text):
-    """Every SEND-CAP marker in a log -> [{"sender", "kind", counts...}]."""
+    """Every SEND-CAP marker in a log -> [{"sender", "kind", counts...}] (a count may be "unknown")."""
     out = []
     for raw in (text or "").splitlines():
         m = MARKER_RE.search(raw.rstrip("\r"))
@@ -137,14 +156,14 @@ def parse(text):
         d = {"sender": m.group(1), "kind": m.group(2)}
         for kv in m.group(3).split():
             k, v = kv.split("=", 1)
-            d[k] = int(v)
+            d[k] = v if v == "unknown" else int(v)
         out.append(d)
     return out
 
 
 # ───────────────────────────── 1. the per-run SMTP wrapper ─────────────────────────────
 
-STATE = {"tally": None, "printed": set(), "preflight": False, "installed": False}
+STATE = {"tally": None, "printed": set(), "preflight": False, "installed": False, "soft": 0}
 
 
 def _out(s):
@@ -154,19 +173,40 @@ def _out(s):
         pass
 
 
+def _bump(t, key, n=1):
+    """t.extra[key] += n, never raising into a sender."""
+    try:
+        if not isinstance(t.extra, dict):
+            t.extra = {}
+        t.extra[key] = int(t.extra.get(key, 0)) + int(n)
+    except Exception:                                      # noqa: BLE001
+        pass
+
+
 def note_refusal(ex, during="send"):
-    """Count a cap-like refusal on the tally and print the marker once per run."""
-    t = STATE["tally"]
-    code = cap_code(ex, during)
-    if t is None or code is None:
+    """Count a refusal that names the cap (or the SOFT_TO_CAP-th soft one in this run) on the tally,
+    and print the marker once per run. A single soft refusal is a note. Never raises."""
+    try:
+        t = STATE["tally"]
+        kind, code = classify(ex, during)
+        if t is None or kind is None:
+            return None
+        if kind == "soft":
+            STATE["soft"] = STATE.get("soft", 0) + 1
+            if STATE["soft"] < SOFT_TO_CAP:
+                _out("send cap note: the mail server refused a send with code %d (a slow-down or limit reply); "
+                     "one is not read as the plan's cap" % code)
+                return None
+        _bump(t, "cap_refused")
+        if "refused" not in STATE["printed"]:
+            STATE["printed"].add("refused")
+            sent = (t.extra or {}).get("smtp", 0) if isinstance(t.extra, dict) else 0
+            _out("::error title=Mail plan daily cap::the mail server refused a send with code %d, which reads as "
+                 "the plan's daily cap; the rest of this list may not go out" % code)
+            _out(marker(t.sender, "refused", code=code, sent=sent))
+        return code
+    except Exception:                                      # noqa: BLE001  never break a send
         return None
-    t.extra["cap_refused"] = t.extra.get("cap_refused", 0) + 1
-    if "refused" not in STATE["printed"]:
-        STATE["printed"].add("refused")
-        _out("::error title=Mail plan daily cap::the mail server refused a send with code %d, which looks like "
-             "the plan's daily cap or a rate limit; the rest of this list may not go out" % code)
-        _out(marker(t.sender, "refused", code=code, sent=t.extra.get("smtp", 0)))
-    return code
 
 
 def _accepted(to_addrs, refused):
@@ -179,27 +219,26 @@ def _accepted(to_addrs, refused):
 
 
 def install(tally, smtp_cls=None):
-    """Wrap smtplib.SMTP (sendmail, login, connect) for this process. Idempotent."""
+    """Wrap smtplib.SMTP (sendmail, login, connect) for this process. Idempotent. The wrapper only
+    counts: it reads nothing over the network and never raises an error of its own into a sender."""
     STATE["tally"] = tally
     cls = smtp_cls or smtplib.SMTP
-    if getattr(cls, "_send_cap_wrapped", False):
+    if cls.__dict__.get("_send_cap_wrapped", False):     # this class itself, not a wrapped parent
         return
     send0, login0, connect0 = cls.sendmail, cls.login, cls.connect
 
     def sendmail(self, from_addr, to_addrs, msg, *a, **k):
-        t = STATE["tally"]
-        if t is not None and not STATE["preflight"]:
-            try:
-                preflight(t)                               # once per run, at the first send
-            except Exception:                              # noqa: BLE001
-                STATE["preflight"] = True
         try:
             refused = send0(self, from_addr, to_addrs, msg, *a, **k)
         except Exception as ex:
             note_refusal(ex, "send")
             raise
+        t = STATE["tally"]
         if t is not None:
-            t.extra["smtp"] = t.extra.get("smtp", 0) + _accepted(to_addrs, refused)
+            try:
+                _bump(t, "smtp", _accepted(to_addrs, refused))
+            except Exception:                              # noqa: BLE001
+                pass
         return refused
 
     def login(self, *a, **k):
@@ -222,19 +261,45 @@ def install(tally, smtp_cls=None):
 
 # ───────────────────────────── 2. preflight ─────────────────────────────
 
+def bounded(fn, seconds=HEALTH_SECONDS):
+    """fn() in a daemon thread, at most `seconds` in all. -> (value, None) or (None, why). A call still
+    hanging is left behind (daemon: it never holds the process open)."""
+    import threading
+    box = {}
+
+    def run():
+        try:
+            box["v"] = fn()
+        except Exception as ex:                            # noqa: BLE001
+            box["e"] = type(ex).__name__
+    th = threading.Thread(target=run, daemon=True)
+    th.start()
+    th.join(seconds)
+    if th.is_alive():
+        return None, "no answer in %g s" % seconds
+    if "e" in box:
+        return None, box["e"]
+    return box.get("v"), None
+
+
 def _read_health():
-    """The saved cron-health doc from the private repo, or None. Only with PRIVATE_REPO_TOKEN or
-    RAW_REMOTE set: without them list_source would read origin's old branch."""
+    """The saved cron-health doc, one small HTTPS read of the private repo's file (the contents API,
+    PRIVATE_REPO_TOKEN), no retries. None when there is no token. Called through bounded()."""
     p = os.environ.get("SEND_CAP_HEALTH_FILE")
     if p:
         with open(p, encoding="utf-8") as fh:
             return json.load(fh)
-    if not (os.environ.get("PRIVATE_REPO_TOKEN") or os.environ.get("RAW_REMOTE")):
+    url = os.environ.get("SEND_CAP_HEALTH_URL") or (
+        "https://api.github.com/repos/dnilgis/feedbag/contents/%s?ref=private-data" % HEALTH_PATH)
+    tok = (os.environ.get("PRIVATE_REPO_TOKEN") or "").strip()
+    if not tok and not os.environ.get("SEND_CAP_HEALTH_URL"):
         return None
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    import list_source
-    raw = list_source._show(HEALTH_PATH)
-    return json.loads(raw.decode("utf-8")) if raw else None
+    import urllib.request
+    h = {"Accept": "application/vnd.github.raw+json", "User-Agent": "agsist-send-cap", "X-GitHub-Api-Version": "2022-11-28"}
+    if tok:
+        h["Authorization"] = "Bearer " + tok
+    with urllib.request.urlopen(urllib.request.Request(url, headers=h), timeout=HEALTH_SECONDS) as r:
+        return json.loads(r.read(2 * 1024 * 1024).decode("utf-8"))
 
 
 def known_today(doc, now):
@@ -247,9 +312,24 @@ def known_today(doc, now):
     return (int(v) if isinstance(v, int) else None), rcap
 
 
-def preflight(tally, later=0, later_what="", now=None, doc=None, environ=None):
-    """Warn (and print the marker) when today's count plus this send would pass the cap. Never stops
-    the send. Runs once per process. -> dict of what it judged."""
+def report_day_count(daily_records, report_only):
+    """How many the report-day email goes to: the Daily readers with report days on, plus the
+    report-day-only readers not among them (the same merge as send_report_day.merge_lists). A count."""
+    seen = {str(r.get("email") or "").strip().lower() for r in daily_records or [] if r.get("reports") is not False}
+    seen.discard("")
+    n = len(seen)
+    for e in report_only or []:
+        e = str((e.get("email") if isinstance(e, dict) else e) or "").strip().lower()
+        if e and "@" in e and e not in seen:
+            seen.add(e)
+            n += 1
+    return n
+
+
+def preflight(tally, later=0, later_what="", now=None, doc=None, environ=None, seconds=HEALTH_SECONDS):
+    """Before connecting (never inside a send): warn and print the marker when today's count plus this
+    send would pass the cap. Reads today's count within `seconds` in all, else judges without it and
+    says used=unknown. Never stops the send. Once per process. -> dict of what it judged."""
     if STATE["preflight"]:
         return None
     STATE["preflight"] = True
@@ -259,29 +339,34 @@ def preflight(tally, later=0, later_what="", now=None, doc=None, environ=None):
         return None
     now = now or datetime.now(UTC)
     used, rcap, why = None, None, ""
-    try:
-        doc = doc if doc is not None else _read_health()
-        used, rcap = known_today(doc, now)
-        if doc is None:
-            why = "the saved count could not be read"
-        elif used is None:
+    if doc is None:
+        doc, err = bounded(_read_health, seconds)
+        if err:
+            why = "the saved count could not be read (%s)" % err
+    if doc is not None:
+        try:
+            used, rcap = known_today(doc, now)
+        except Exception as ex:                            # noqa: BLE001
+            why = "the saved count could not be read (%s)" % type(ex).__name__
+        if used is None and not why:
             why = "no count saved for today yet"
-    except Exception as ex:                                # noqa: BLE001
-        why = "the saved count could not be read (%s)" % type(ex).__name__
+    elif not why:
+        why = "the saved count could not be read"
     c = cap(environ, rcap)
     total = (used or 0) + size + int(later or 0)
     out = {"used": used, "size": size, "later": int(later or 0), "cap": c, "total": total, "over": total > c}
+    shown = "unknown" if used is None else str(used)
     _out("send cap: %s already counted today (UTC), this send %d%s, cap %d%s"
-         % ("unknown" if used is None else str(used), size,
-            (", %s later today %d" % (later_what or "a send", later)) if later else "", c,
+         % (shown, size, (", %s later today %d" % (later_what or "a send", later)) if later else "", c,
             ("; " + why) if why else ""))
     if out["over"]:
-        _out("::warning title=Mail plan daily cap::%d emails projected today (UTC) against a cap of %d: "
+        _out("::warning title=Mail plan daily cap::%d%s emails projected today (UTC) against a cap of %d: "
              "%s counted already, %d in this send%s. The send goes on; past the cap the mail server stops it "
              "partway. Raise the plan (and the SEND_DAILY_CAP variable) or move a send."
-             % (total, c, "unknown" if used is None else str(used), size,
+             % (total, " or more" if used is None else "", c, shown, size,
                 (", %d from %s later today" % (later, later_what or "a send")) if later else ""))
-        _out(marker(tally.sender, "preflight", used=used or 0, size=size, later=int(later or 0), cap=c))
+        _out(marker(tally.sender, "preflight", used="unknown" if used is None else used, size=size,
+                    later=int(later or 0), cap=c))
     return out
 
 
@@ -338,8 +423,8 @@ def judge(days, by, markers, c, now, logs=None, sampled=(), unread=(), daily7=No
                      % ", ".join("%s on %s (code %s)" % (m["sender"], m["day"], m.get("code", "?")) for m in refused[:3]))
     if pre:
         notes.append("projected past the cap before sending: %s"
-                     % ", ".join("%s on %s (%d counted + %d + %d later, cap %d)" % (
-                         m["sender"], m["day"], m.get("used", 0), m.get("size", 0), m.get("later", 0), m.get("cap", c))
+                     % ", ".join("%s on %s (%s counted + %s + %s later, cap %s)" % (
+                         m["sender"], m["day"], m.get("used", "?"), m.get("size", "?"), m.get("later", 0), m.get("cap", c))
                                  for m in pre[:3]))
     tail = ["counted from %d run log(s) read" % (logs or 0)]
     if sampled:
@@ -363,11 +448,18 @@ def judge(days, by, markers, c, now, logs=None, sampled=(), unread=(), daily7=No
     return row
 
 
+def _projected(m):
+    return sum(int(m.get(k)) for k in ("used", "size", "later") if isinstance(m.get(k), int))
+
+
 def rejudge(row, now, environ=None):
     """A saved row judged again against the cap in force now (the variable may have changed)."""
     c = cap(environ)
     by = {d: dict(v) for d, v in (row.get("top") or {}).items()}
-    return judge(dict(row.get("days") or {}), by, list(row.get("markers") or []), c, now,
+    # A preflight marker is a projection against the cap of its day: once the cap is above that
+    # projection it no longer holds (checker, PR 331). Refusals stay red for the window.
+    keep = [m for m in row.get("markers") or [] if m.get("kind") != "preflight" or _projected(m) > c]
+    return judge(dict(row.get("days") or {}), by, keep, c, now,
                  logs=int(row.get("logs") or 0), sampled=row.get("sampled") or (), unread=row.get("unread") or (),
                  daily7=row.get("daily7"))
 
@@ -455,15 +547,21 @@ def remind(doc, now, environ=None, is_set=None, set_flag=None, mail=None):
         if seen:
             print("brevo reminder %s: already sent" % key)
             continue
+        # The flag first (checker, PR 331): a flag that does not take sends nothing, so a failing flag
+        # store can cost one reminder but never mail Sig on every run.
+        try:
+            took = set_flag(key)
+        except Exception as ex:                            # noqa: BLE001
+            took = False
+            print("brevo reminder %s: the flag could not be set (%s); not sending" % (key, type(ex).__name__))
+        if not took:
+            print("brevo reminder %s: the flag did not take; not sending" % key)
+            continue
         if mail(subject, lines):
-            try:
-                set_flag(key)
-            except Exception as ex:                        # noqa: BLE001
-                print("::warning::brevo reminder %s sent, flag not set (%s)" % (key, type(ex).__name__))
             sent.append(key)
             print("brevo reminder %s: mailed to Sig" % key)
         else:
-            print("brevo reminder %s: NOT mailed (see above)" % key)
+            print("brevo reminder %s: NOT mailed (see above); the flag is set, so it is not retried today" % key)
     if not sent:
         print("brevo reminder: nothing to send")
     return sent
@@ -523,6 +621,14 @@ def selftest():
     ck("a saved row judged again with the cap at 10000 is ok", rr["status"] == "ok" and rr["cap"] == 10000
        and "report-day.yml" in rr["why"], rr)
     ck("no address in a row", "@" not in json.dumps(row_for(real)))
+    pre_row = row_for({"daily.yml": [run("2026-11-04", L("daily", 2), caps=[
+        {"sender": "daily", "kind": "preflight", "used": 5, "size": 209, "later": 200, "cap": 300}])]})
+    rr = rejudge(dict(pre_row), now, {"SEND_DAILY_CAP": "20000"})
+    ck("a raised cap clears a stale preflight marker", pre_row["status"] == "late" and rr["status"] == "ok"
+       and not rr["markers"], rr)
+    ref_row = row_for({"daily.yml": [run("2026-11-04", L("daily", 2), caps=[{"sender": "daily", "kind": "refused", "code": 550}])]})
+    rr = rejudge(dict(ref_row), now, {"SEND_DAILY_CAP": "20000"})
+    ck("a refusal stays red for the window, even with a raised cap", rr["status"] == "late", rr)
 
     # markers
     m = marker("daily", "refused", code=421, sent=12)
@@ -535,11 +641,20 @@ def selftest():
     # what looks like the cap
     q = smtplib.SMTPDataError(550, b"5.7.1 Daily sending quota exceeded")
     ck("550 naming a quota is the cap", cap_code(q) == 550)
-    ck("a bare 421 during a send is a rate refusal", cap_code(smtplib.SMTPSenderRefused(421, b"Service not available", "x@y.z")) == 421)
-    ck("a bare 421 at connect is not", cap_code(smtplib.SMTPConnectError(421, b"Service not available"), "connect") is None)
-    ck("a 550 unknown user is not the cap", cap_code(smtplib.SMTPRecipientsRefused({"x@y.z": (550, b"5.1.1 user unknown")})) is None)
-    ck("every recipient refused for a limit is the cap",
-       cap_code(smtplib.SMTPRecipientsRefused({"x@y.z": (451, b"4.7.0 too many messages")})) == 451)
+    ck("the cap text on DATA is the cap", cap_code(smtplib.SMTPDataError(550, b"5.7.1 You have exceeded your daily sending limit")) == 550)
+    ck("the cap text on MAIL FROM is the cap", cap_code(smtplib.SMTPSenderRefused(450, b"4.7.1 Account quota exceeded", "x@y.z")) == 450)
+    ck("a bare 421 during a send is soft, not the cap",
+       classify(smtplib.SMTPSenderRefused(421, b"Service not available", "x@y.z")) == ("soft", 421))
+    ck("a bare 451 on DATA is soft", classify(smtplib.SMTPDataError(451, b"4.3.0 try again later")) == ("soft", 451))
+    ck("a bare 421 at connect is not", classify(smtplib.SMTPConnectError(421, b"Service not available"), "connect") == (None, None))
+    ck("a 550 unknown user is not the cap", classify(smtplib.SMTPRecipientsRefused({"x@y.z": (550, b"5.1.1 user unknown")})) == (None, None))
+    ck("every recipient refused, even for a limit, is a mailbox reply, never the cap",
+       classify(smtplib.SMTPRecipientsRefused({"x@y.z": (451, b"4.7.0 too many messages, daily quota")})) == (None, None))
+    ck("mailbox over quota is not the cap",
+       classify(smtplib.SMTPDataError(552, b"5.2.2 Mailbox over quota")) == (None, None)
+       and classify(smtplib.SMTPSenderRefused(452, b"4.2.2 The email account that you tried to reach is over quota (mailbox full)", "x@y.z")) == (None, None))
+    ck("a message size limit is not the cap",
+       classify(smtplib.SMTPDataError(552, b"5.3.4 Message size exceeds fixed maximum message size limit")) == (None, None))
     ck("login refused for credits is the cap",
        cap_code(smtplib.SMTPAuthenticationError(535, b"Maximum credits exceeded"), "login") == 535)
     ck("a dropped connection is not the cap", cap_code(smtplib.SMTPServerDisconnected("gone")) is None)
@@ -589,6 +704,56 @@ def selftest():
     ck("no address printed", "@" not in out, out)
     ck("a line with smtp= counts that", line_volume(delivery_line.parse(t.line())[0]) == 2)
 
+    # one transient 421 is a note; a second one in the same run reads as the cap
+    class Soft(Fake):
+        def sendmail(self, f, to, msg, *a, **k):
+            raise smtplib.SMTPSenderRefused(421, b"4.7.0 Try again later", f)
+    t = delivery_line.Tally("daily")
+    STATE.update(tally=None, printed=set(), preflight=True, soft=0)
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        install(t, Soft)
+        try:
+            Soft().sendmail("a@b.c", ["r1@x.y"], "m")
+        except smtplib.SMTPSenderRefused:
+            pass
+        first, first_extra = buf.getvalue(), dict(t.extra)
+        try:
+            Soft().sendmail("a@b.c", ["r2@x.y"], "m")
+        except smtplib.SMTPSenderRefused:
+            pass
+    ck("one 421 is a note, no marker", "send cap note" in first and "SEND-CAP" not in first and "cap_refused" not in first_extra, first)
+    ck("a second 421 in one run is the cap", "SEND-CAP sender=daily kind=refused code=421" in buf.getvalue()
+       and t.extra.get("cap_refused") == 1, buf.getvalue())
+
+    # the wrapper never raises into a sender, even with a broken tally
+    class Odd(Fake):
+        pass
+    t = delivery_line.Tally("daily")
+    t.extra = None
+    STATE.update(tally=None, printed=set(), preflight=True, soft=0)
+    buf = io.StringIO()
+    err = None
+    with contextlib.redirect_stdout(buf):
+        install(t, Odd)
+        try:
+            Odd().sendmail("a@b.c", ["r1@x.y"], "m")
+            o = Odd(fail_at=1)
+            o.sendmail("a@b.c", ["r2@x.y"], "m")
+        except smtplib.SMTPDataError:
+            pass                                           # the server's own error goes through
+        except Exception as ex:                            # noqa: BLE001
+            err = ex
+    ck("a tally whose extra is None: the wrapper raises nothing of its own", err is None, repr(err))
+    STATE["tally"] = None
+    err = None
+    try:
+        note_refusal(smtplib.SMTPDataError(550, b"daily sending limit"))
+        note_refusal(object())
+    except Exception as ex:                                # noqa: BLE001
+        err = ex
+    ck("note_refusal never raises", err is None, repr(err))
+
     # preflight, from the real case and the report day
     doc = {"workflows": [{"workflow": ROW, "cap": 300, "days": {"2026-11-04": 2}}]}
 
@@ -611,8 +776,44 @@ def selftest():
     ck("no variable in the sender's step: the saved row's cap is used", res["cap"] == 10000 and not res["over"], res)
     res, out = pf(305, d=None)
     ck("no saved count: this send alone is still judged", res["over"] and res["used"] is None and "could not be read" in out, out)
+    ck("no saved count: the marker says used=unknown, not 0", "kind=preflight cap=300 later=0 size=305 used=unknown" in out, out)
+    ck("used=unknown parses", parse(marker("daily", "preflight", used="unknown", size=305))
+       == [{"sender": "daily", "kind": "preflight", "size": 305, "used": "unknown"}])
+
+    # a dead remote: the read hangs; the preflight gives up within its budget and the send goes on
+    import socket
+    import time
+    import threading
+    srv = socket.socket()
+    srv.bind(("127.0.0.1", 0))
+    srv.listen(5)
+    held = []
+    threading.Thread(target=lambda: held.append(srv.accept()), daemon=True).start()
+    old_env = {k: os.environ.get(k) for k in ("SEND_CAP_HEALTH_URL", "SEND_CAP_HEALTH_FILE")}
+    os.environ.pop("SEND_CAP_HEALTH_FILE", None)
+    os.environ["SEND_CAP_HEALTH_URL"] = "http://127.0.0.1:%d/cron-health.json" % srv.getsockname()[1]
+    try:
+        t0 = time.monotonic()
+        res, out = pf(209, d=None)
+        took = time.monotonic() - t0
+        went = []
+        install(delivery_line.Tally("daily"), Fake)        # the send that follows
+        Fake().sendmail("a@b.c", ["r@x.y"], "m") and went.append(1)
+        went.append(1)
+    finally:
+        for k, v in old_env.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+        srv.close()
+    ck("a dead remote adds under 6 s, says unknown, and the send proceeds",
+       took < 6 and res["used"] is None and "unknown" in out and went, (round(took, 2), out))
     res, _ = pf(5)
     ck("a small send skips the preflight", res is None)
+    daily = [{"email": "A@x.y"}, {"email": "b@x.y", "reports": False}, {"email": "c@x.y", "reports": True}]
+    ck("the report-day projection adds the report-only list, each reader once",
+       report_day_count(daily, [{"email": "a@x.y"}, {"email": "d@x.y"}, "e@x.y", {"email": "nope"}]) == 4)
     # reminders to Sig (Nov 4): once a day per level, again at 95% marked urgent, none once the cap is raised
     def vdoc(days, daily7=None, c=300):
         return {"workflows": [{"workflow": ROW, "cap": c, "days": days, "daily7": daily7 or {}}]}
@@ -621,7 +822,7 @@ def selftest():
     def go(doc, env=None, at=now):
         b = io.StringIO()
         with contextlib.redirect_stdout(b):
-            keys = remind(doc, at, env or {}, is_set=lambda k: k in flags, set_flag=flags.add,
+            keys = remind(doc, at, env or {}, is_set=lambda k: k in flags, set_flag=lambda k: flags.add(k) or True,
                           mail=lambda subj, lines: mailed.append((subj, lines)) or True)
         return keys
     ck("Nov 4: 211 of 300 sends no reminder", go(vdoc({"2026-11-04": 211})) == [] and not mailed)
@@ -648,9 +849,28 @@ def selftest():
         raise RuntimeError("down")
     b = io.StringIO()
     with contextlib.redirect_stdout(b):
-        ks = remind(vdoc({"2026-11-04": 290}), now, {}, is_set=fail_read, set_flag=flags.add,
+        ks = remind(vdoc({"2026-11-04": 290}), now, {}, is_set=fail_read, set_flag=lambda k: flags.add(k) or True,
                     mail=lambda s_, l_: mailed.append(1) or True)
     ck("a flag that cannot be read sends nothing", ks == [] and not mailed, b.getvalue())
+    order = []
+    b = io.StringIO()
+    with contextlib.redirect_stdout(b):
+        ks = remind(vdoc({"2026-11-04": 245}), now, {}, is_set=lambda k: False,
+                    set_flag=lambda k: order.append("flag") or True, mail=lambda s_, l_: order.append("mail") or True)
+    ck("the flag is set before the mail", order == ["flag", "mail"] and ks == ["sendcap-80:2026-11-04"], order)
+    b = io.StringIO()
+    with contextlib.redirect_stdout(b):
+        ks = remind(vdoc({"2026-11-04": 245}), now, {}, is_set=lambda k: False,
+                    set_flag=lambda k: False, mail=lambda s_, l_: mailed.append(1) or True)
+    ck("a flag that does not take sends nothing (no mail every run)", ks == [] and not mailed, b.getvalue())
+
+    def boom(k):
+        raise RuntimeError("store down")
+    b = io.StringIO()
+    with contextlib.redirect_stdout(b):
+        ks = remind(vdoc({"2026-11-04": 245}), now, {}, is_set=lambda k: False, set_flag=boom,
+                    mail=lambda s_, l_: mailed.append(1) or True)
+    ck("a flag store that raises sends nothing", ks == [] and not mailed, b.getvalue())
     week = {"2026-10-29": 212, "2026-10-30": 214, "2026-10-31": 213, "2026-11-01": 215, "2026-11-02": 216,
             "2026-11-03": 217, "2026-11-04": 3}
     ke = go(vdoc({"2026-11-04": 3}, week))
