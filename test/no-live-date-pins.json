@@ -52,7 +52,6 @@
   "test/ethanol-bids.test.mjs": 6,
   "test/fall-nitrogen.test.mjs": 2,
   "test/farm-bill.test.mjs": 8,
-  "test/fast-facts-calcs.test.mjs": 5,
   "test/fast-facts-front.test.mjs": 6,
   "test/fast-facts-nrate.test.mjs": 6,
   "test/fast-facts-panel-oct22.test.mjs": 1,
