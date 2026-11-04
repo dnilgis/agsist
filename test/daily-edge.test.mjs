@@ -86,3 +86,24 @@ test("no em dashes and no record claims in the new files", () => {
   const blk = JSON.parse(read("data/daily-edge.json"));
   for (const f of blk.facts) assert.ok(!/\b(first|record|ever)\b/i.test(f.sentence + " " + f.detail), f.sentence);
 });
+
+// Nov 2 2026 (site panel, skeptic row 9): the Nov 1 month roll left 293 of
+// about 1,800 corn boards with the same delivery month both days, and the
+// Daily printed "194 of the 293 elevators AGSIST reads". The line names the
+// rule, and a collapse below half the boards with a usable bid is withheld.
+test("cash change line names the matching rule and holds on a month-roll collapse", () => {
+  const out = JSON.parse(py(["-c", `
+import sys,json;sys.path.insert(0,'scripts')
+import daily_edge as d
+idx,prev,now=d._fixture(n_pairs=293)
+for i in range(1500):
+    idx['places'].append({'place':f'R{i}||T{i}|IA','state':'IA','currency':'USD','now':{'corn':{'cash':4.0,'basisCents':-40,'period':'2026-11','commodity':'Corn'}}})
+f,w=d.cash_change('corn',idx,prev,'2026-10-16T09:30:00Z',now)
+idx2,prev2,_=d._fixture(n_pairs=293)
+g,_=d.cash_change('corn',idx2,prev2,'2026-10-16T09:30:00Z',now)
+print(json.dumps({'f':f,'w':w,'g':g['sentence']}))`]));
+  assert.equal(out.f, null, "293 of 1,793 is a roll, not the network: withheld");
+  assert.equal(out.w.why, "sample");
+  assert.match(out.w.detail, /293 of 1793 boards/);
+  assert.match(out.g, /^On Thursday, Oct 15, all 293 elevators AGSIST reads with the same delivery month both days posted a lower cash corn bid/);
+});
