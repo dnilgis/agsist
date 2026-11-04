@@ -40,6 +40,7 @@ NAME_MARK = "[NAME]"     # where a legal named the sale's own seller or buyer (c
 # LEGAL_MARK + a hash of the legal's first 40 letters (so the one rule still groups and dedupes deeds of one parcel the
 # same way) + any part-interest words the rule reads, and the names file keeps the legal under "lg", shown on the tap.
 LEGAL_MARK = "[LEGAL WITH A NAME "
+HELD_COL = "legal_named"   # attach() and the fetcher's held() carry a held legal under this column, in memory only
 NAME_STOP = set("""LLC INC LTD LLP CORP CORPORATION COMPANY TRUST TRUSTS TRUSTEE TRUSTEES REVOCABLE IRREVOCABLE LIVING FAMILY
 FARM FARMS LAND LANDS ESTATE ESTATES PROPERTY PROPERTIES HOLDINGS INVESTMENTS INVESTMENT ENTERPRISES PARTNERSHIP PARTNERS
 LIMITED AGRICULTURAL AGRICULTURE DATED JOINT TENANTS TENANT HUSBAND WIFE BANK NATIONAL ASSOCIATION COUNTY STATE CITY
@@ -119,14 +120,18 @@ def split(doc):
     """(county doc with no name column and si, bi added; names doc). Changes neither input; a doc with no
     name column comes back as it is, with names None."""
     cols = list(doc.get("cols") or [])
-    if not has_names(doc):
+    if not has_names(doc) and HELD_COL not in cols:
         return doc, None
     ix = [cols.index(c) if c in cols else None for c in NAME_COLS]
-    keep = [i for i, c in enumerate(cols) if c not in NAME_COLS and c not in ID_COLS]
+    hx = cols.index(HELD_COL) if HELD_COL in cols else None
+    keep = [i for i, c in enumerate(cols) if c not in NAME_COLS and c not in ID_COLS and c != HELD_COL]
     li = cols.index("legal") if "legal" in cols else None
     ids, firsts = [{}, {}], [[], []]
     rows, lg = [], {}
-    rare = rare_words([r[li] for r in doc.get("rows") or [] if li is not None and r[li]]) if li is not None else set()
+    # rarity over the legals as written: a legal held before counts by its stored text, so a second run sees what the first saw
+    held = lambda r: r[hx] if hx is not None and hx < len(r) else None
+    rare = rare_words([held(r) if is_marked(r[li]) else r[li] for r in doc.get("rows") or []
+                       if li is not None and r[li] and (not is_marked(r[li]) or held(r))]) if li is not None else set()
     for ri, r in enumerate(doc.get("rows") or []):
         pair = [r[i] if i is not None and i < len(r) else None for i in ix]
         nums = []
@@ -137,7 +142,12 @@ def split(doc):
                 firsts[side].append(re.sub(r"\s+", " ", str(pair[side])).strip())
             nums.append(ids[side][k] if k else None)
         row = [r[i] for i in keep]
-        if li is not None and r[li]:
+        if li is not None and r[li] and is_marked(r[li]):
+            # held on an earlier run: the mark and its hash stay exactly as they are (never re-tested, never re-hashed),
+            # and the stored legal goes back to the names file
+            if held(r):
+                lg[str(ri)] = held(r)
+        elif li is not None and r[li]:
             if names_in_legal(r[li], pair, rare):
                 lg[str(ri)] = r[li]                          # shown only on the tap, from the names file
                 row[keep.index(li)] = legal_mark(r[li])
@@ -169,7 +179,7 @@ def attach(doc, names):
     lg = names.get("lg") or {}
     out = dict(doc)
     # legal_named: the whole legal of a row whose legal left the county file (memory only; the rule keeps reading "legal")
-    out["cols"] = list(cols) + list(NAME_COLS) + ["legal_named"]
+    out["cols"] = list(cols) + list(NAME_COLS) + [HELD_COL]
     out["rows"] = [list(r) + [pick(S, r[i_s]), pick(B, r[i_b]), lg.get(str(i))] for i, r in enumerate(doc["rows"])]
     return out
 
@@ -262,6 +272,13 @@ def selftest():
     ck("attach brings the whole legal back in memory only beside the rule's legal", dict(zip(b2["cols"], b2["rows"][20]))["legal_named"] == rows[20][3]
        and dict(zip(b2["cols"], b2["rows"][20]))["legal"] == leg[20])
     ck("the input doc is not changed", doc["cols"][4] == "grantor" and len(doc["rows"][0]) == 7 and "seller" in doc["rows"][0][3])
+    # split, attach, split again, twice: the county file and its names file come out the same (held legals, marks, hashes)
+    o3, n3 = o2, n2
+    for _ in range(2):
+        b3 = attach(o3, n3)
+        o3, n3 = split(dict(b3, cols=[c for c in b3["cols"]]))
+    ck("two split cycles change nothing: held legals, their marks and hashes stay", o3["rows"] == o2["rows"] and n3["lg"] == n2["lg"]
+       and n3["s"] == n2["s"] and n3["b"] == n2["b"])
     print("land_names selftest: %s" % ("ok" if not bad else "%d failure(s)" % bad))
     return 1 if bad else 0
 

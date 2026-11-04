@@ -710,6 +710,8 @@ def build(st, recs, gaz, now, prior=None, months=None):
     ac1 = any(r.get("ac1") for r in recs)
     acx = any(r.get("acx") for r in recs)
     extra = [x for x in EXTRA if any(r.get(x) not in (None, "") for r in recs)]
+    if any(r.get(land_names.HELD_COL) for r in recs):
+        extra.append(land_names.HELD_COL)     # dropped again by land_names.split before the file is written
     # Wisconsin rows keep their filed date, so a later newest-only run can tell the latest filing of a return.
     # Illinois rows keep it too (2026-10-23): the monthly land sale email lists sales by the month they
     # were recorded (scripts/land_alert.py), and Field Scout shows it as "Recorded (filed)".
@@ -1290,7 +1292,8 @@ def il_table(decls, extra, rep=None):
                str(d.get("step_4_seller_name") or ""), str(d.get("step_4_buyer_name") or ""), str(d.get("line_16_state_exemption") or ""), str(n),
                str(d.get("date_recorded") or "")[:10], "" if l1 is None or n == 1 else str(round(l1, 4)), "; ".join(flags),
                # Line 12a: a blank on the declaration means no personal property (0), not an unknown
-               str(d.get("line_12a_total_personal") or "0")]
+               # Line 12a: a field present but blank means no personal property (0); a field the answer leaves out stays absent
+               "" if d.get("line_12a_total_personal") is None else (str(d.get("line_12a_total_personal")).strip() or "0")]
 
 
 def soda(url, params):
@@ -1756,9 +1759,10 @@ def vt_text(v):
 
 
 def vt_value(v):
-    """The town grand list value on the return, whole dollars; "" when blank, zero or a 1 or 999 placeholder."""
+    """The town grand list value on the return, whole dollars, as the return gives it; "" only when blank. 0, 1, 999 and
+    9999 are kept: the state's layout documents no placeholder values, so none is guessed (checker, Nov 4, 2026)."""
     x = float(v) if isinstance(v, (int, float)) else parse_num(v)
-    return "" if x is None or x <= 1 or x in (999, 9999) else "%d" % round(x)
+    return "" if x is None else "%d" % round(x)
 
 
 def vt_table(rows, towns, rep=None):
@@ -2658,7 +2662,9 @@ def held(st, out=None):
                          "np": o.get("np"), "cls": o.get("cls") or "", "conv": o.get("conv") or "", "pid": o.get("pid") or "",
                          "muni": m[0] if m else "", "county": f["county"], "legal": o.get("legal") or "",
                          "grantor": o.get("grantor"), "grantee": o.get("grantee"), "exempt": o.get("exempt") or 0,
-                         "ac1": o.get("ac1"), "rec": o.get("rec"), "acany": None, "acx": o.get("acx")})
+                         "ac1": o.get("ac1"), "rec": o.get("rec"), "acany": None, "acx": o.get("acx"),
+                         # a legal held for the tap (its mark stays in "legal"): carried so the next split keeps it
+                         "legal_named": o.get(land_names.HELD_COL)})
             recs[-1].update({x: o.get(x) for x in EXTRA if x in o})
     months = set(ix.get("months") or [])
     if not months and lo:
@@ -3271,6 +3277,36 @@ def selftest():
         _, _, derived = held("WI", none_dir)
         os.rmdir(none_dir)
         ck("merge: no files on disk means nothing held", derived == set())
+        # held legals survive the newest-only cycle (checker, Nov 4): split, read back through held(), build, split again,
+        # twice; the held count, texts and marks (with their grouping hash) stay exactly the same
+        cyc = []
+        for i, r in enumerate(first):
+            r = dict(r)
+            if i % 2 == 0 and r.get("grantee"):
+                last, _, firstn = str(r["grantee"]).split(";")[0].partition(",")
+                r["legal"] = "PT SEC 12 T33N R10W EXC TRACT DEEDED TO %s %s" % (firstn.strip(), last.strip())   # the name in another order
+            cyc.append(r)
+        build("WI", cyc, {}, "2026-11-01T00:00:00Z", None, {"202403", "202404"})
+
+        def snap_held():
+            ix_ = json.load(open(os.path.join(OUT, "wi", "index.json")))
+            out_ = []
+            for c in ix_["counties"]:
+                f_ = json.load(open(os.path.join(OUT, "wi", c["fips"] + ".json")))
+                n_ = json.load(open(os.path.join(OUT, "wi", "names", c["fips"] + ".json")))
+                li_ = f_["cols"].index("legal")
+                out_.append((c["fips"], sorted((k, v) for k, v in (n_.get("lg") or {}).items()),
+                             [r_[li_] for r_ in f_["rows"] if land_names.is_marked(r_[li_])]))
+            return out_
+        s0 = snap_held()
+        held_n = sum(len(x[1]) for x in s0)
+        for k in range(2):
+            back_, covs_, had_ = held("WI")
+            ck("held legals: read back with their stored text, run %d" % (k + 1), sum(1 for r in back_ if r.get("legal_named")) == held_n)
+            build("WI", back_, {}, "2026-11-01T00:00:00Z", covs_, had_)
+        ck("held legals: the same count, texts and marks after two newest-only cycles", held_n > 0 and snap_held() == s0)
+        ck("held legals: never in a county file", all("EXC TRACT DEEDED TO" not in open(os.path.join(OUT, "wi", n)).read()
+                                                     for n in os.listdir(os.path.join(OUT, "wi")) if n.endswith(".json")))
         # the checked stamp (Nov 3): a state read is stamped even when nothing in it changed
         mark_checked("WI", "2026-11-03T09:40:00Z", [], {"202409", "202410"})
         mark_checked("IL", "2026-11-03T09:41:00Z", [{"date": "2026-10-28", "rec": "2026-10-30"}, {"date": "2026-12-19", "rec": None}])
@@ -3314,8 +3350,10 @@ def selftest():
     ix, _ = parse_rows([il_table([dd, decl[2]], {})])
     ck("detail IL: Line 10k and Line 9 in words, once each; Line 12a personal property as a number",
        ix[0]["conv"].endswith("financial institution or government agency; new construction; additions or remodeling") and ix[0]["pp"] == 25000
-       and ix[1].get("pp") == 0)
-    ck("honest none IL: a blank Line 12a is no personal property, 0, never unknown", ix[1].get("pp") == 0 and ix[1].get("pp") is not None)
+       and ix[1].get("pp") is None)
+    ib, _ = parse_rows([il_table([dict(decl[2], line_12a_total_personal="")], {})])
+    ck("honest none IL: a Line 12a present but blank is no personal property (0); a field the answer leaves out stays absent",
+       ib[0].get("pp") == 0 and ix[1].get("pp") is None)
     wh = WI_HEAD.index("RIGHTSRETAINED"), WI_HEAD.index("MANAGEDFORESTACRES")
     wl = wi_row(dict(rets[0], rr="LIFE ESTATE", parcels=[dict(rets[0]["parcels"][0], mfl=12.0)]), mu)
     ck("detail WI: rights the seller keeps and Managed Forest acres, in their own columns", wl[wh[0]] == "life" and wl[wh[1]] == "12"
@@ -3331,7 +3369,7 @@ def selftest():
     vh = list(vt_table([dict(vb, financing="Owner Financing", TownGlValu=250000.0)], {"75850": ("50001", "Waltham town")}))
     vo = dict(zip(vh[0], vh[1]))
     ck("detail VT: financing, use before and after and the town's listed value", vo["FINANCINGTYPE"] == "Owner Financing" and vo["USEBEFORE"] == "04. Operating Farm"
-       and vo["GRANDLISTVALUE"] == "250000" and vt_value(999.0) == "")
+       and vo["GRANDLISTVALUE"] == "250000" and vt_value(999.0) == "999" and vt_value(0) == "0" and vt_value(None) == "")
     vn = dict(zip(vh[0], list(vt_table([dict(vb, financing="None")], {"75850": ("50001", "Waltham town")}))[1]))
     ck("honest none VT: the return's own financing None stays None; a blank stays blank", vn["FINANCINGTYPE"] == "None" and vt_text(None) == "")
     ck("detail VT: still no parcel point or address column read", not any(re.search(r"(?i)latitude|longitude|geom|addr|street|zip", c) for c in VT_COLS))
