@@ -336,7 +336,7 @@
     'demolition or damage': 'Demolition or damage since January 1 of the year before the sale.',
     'additions or remodeling': 'Additions or major remodeling since January 1 of the year before the sale.'
   };
-  var RR = { life: 'The seller keeps a life estate (use of the land for life).', ease: 'The seller keeps an easement.', other: 'The seller keeps other rights in the land.' };
+  var RR = { none: 'None', life: 'The seller keeps a life estate (use of the land for life).', ease: 'The seller keeps an easement.', other: 'The seller keeps other rights in the land.' };
   var pend = {}, seq = 0;
 
   /* SHA-1, for the sale id check (land_alert.sale_id: sha1 of state|fips|document|deed date|price, first 10 hex) */
@@ -463,7 +463,7 @@
       st === 'VT' ? ['Town listed value', fromRec('glv', function (v) { return esc(money(+v)); }), 'The town grand list value on the return.'] : null,
       st === 'VT' ? ['Use before and after', fromRec('use0', function (v) { return 'Before the sale: ' + esc(useW(v)) + (rv('use1') ? '; the buyer\u2019s use: ' + esc(useW(rv('use1'))) : ''); })] : null,
       cu ? ['Current use', cu, 'Vermont’s use value program for farm and forest land.'] : null,
-      st === 'WI' ? ['Managed forest acres', fromRec('mfl', function (v) { return +v > 0 ? esc(v) + ' acres' : 'None'; }), 'Acres in Wisconsin’s Managed Forest Law program.'] : null,
+      st === 'WI' ? ['Managed forest acres', fromRec('mfl', function (v) { return esc(String(+v)) + ' acres'; }), 'Acres in Wisconsin’s Managed Forest Law program.'] : null,
       ['Parcels in the sale', wait || gone || esc(rv('np') || 1)]
     ]));
     /* where */

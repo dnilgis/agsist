@@ -599,7 +599,7 @@ def parse_rows(tables):
             for x in EXTRA:
                 if x in m:
                     v = parse_num(g(x)) if x in EXTRA_NUM else (g(x, 40) or None)
-                    recs[-1][x] = v if v not in (0, 0.0) or x in EXTRA_TXT else None
+                    recs[-1][x] = v      # a state's own 0 or "none" stays a value; only a blank is absent (checker, Nov 4)
     return recs, rep
 
 
@@ -1289,7 +1289,8 @@ def il_table(decls, extra, rep=None):
                str(d.get("line_1_township") or ""), str(d.get("line_1_county") or ""), str(d.get("step_3_legal_description") or ""),
                str(d.get("step_4_seller_name") or ""), str(d.get("step_4_buyer_name") or ""), str(d.get("line_16_state_exemption") or ""), str(n),
                str(d.get("date_recorded") or "")[:10], "" if l1 is None or n == 1 else str(round(l1, 4)), "; ".join(flags),
-               str(d.get("line_12a_total_personal") or "")]
+               # Line 12a: a blank on the declaration means no personal property (0), not an unknown
+               str(d.get("line_12a_total_personal") or "0")]
 
 
 def soda(url, params):
@@ -1750,9 +1751,8 @@ def vt_read(path):
 
 
 def vt_text(v):
-    """A return's word box as written ("Owner Financing", "Operating Farm"), "" for none."""
-    w = clean(v, 40)
-    return "" if w.upper() in ("", "NONE") else w
+    """A return's word box as written ("Owner Financing", "Operating Farm", or the state's own "None"); "" only for a blank."""
+    return clean(v, 40)
 
 
 def vt_value(v):
@@ -2120,9 +2120,9 @@ def nj_town(fips, code, towns, munis):
 
 
 def nj_int(v):
-    """A zero-filled SR-1A number as whole dollars or square feet; "" when blank or zero."""
+    """A zero-filled SR-1A number as whole dollars or square feet ("0" is the abstract's own zero); "" only when blank."""
     x = parse_num(str(v or "").strip())
-    return "" if not x or x <= 0 else "%d" % x
+    return "" if x is None or x < 0 else "%d" % x
 
 
 def nj_table(sales, md, towns, rep=None):
@@ -2611,15 +2611,19 @@ def wi_row(ret, munis):
             munis.get((ret["cc"], ps[0]["muni"]), ""), county, ret["legal"], names(ret["grantors"]), names(ret["grantees"]),
             ret["exempt"], str(len(ps)), ret["rec"] or "", f(ac1) if len(ps) > 1 else "",
             f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2)), "; ".join(flags),
-            wi_rights(ret.get("rr")), f(round(sum(p.get("mfl") or 0 for p in ps if (p.get("mfl") or 0) > 0), 2)) if any((p.get("mfl") or 0) > 0 for p in ps) else ""]
+            # Managed Forest acres: 0 when every parcel says 0 (a real answer), "" only when no parcel carries the box
+            wi_rights(ret.get("rr")), f(round(sum(p["mfl"] for p in ps if (p.get("mfl") or 0) > 0), 2)) if any(p.get("mfl") is not None for p in ps) else ""]
 
 
 def wi_rights(v):
-    """Rights the seller keeps (the return's Grantor Rights Retained): life (a life estate), ease (an easement), other, or ""
-    for none. Kept apart from the deed words on purpose: the market rule reads EASEM in those."""
+    """Rights the seller keeps (the return's Grantor Rights Retained): none (code 1, the state's own answer), life (a life
+    estate), ease (an easement), other, or "" when the return leaves the box out. Kept apart from the deed words on purpose:
+    the market rule reads EASEM in those."""
     u = str(v or "").strip().upper()
-    if not u or u in ("NONE", "1", "N", "NO"):
+    if not u:
         return ""
+    if u in ("NONE", "1", "N", "NO"):
+        return "none"
     if "LIFE" in u or u == "2":
         return "life"
     if "EASE" in u or u == "3":
@@ -3310,20 +3314,30 @@ def selftest():
     ix, _ = parse_rows([il_table([dd, decl[2]], {})])
     ck("detail IL: Line 10k and Line 9 in words, once each; Line 12a personal property as a number",
        ix[0]["conv"].endswith("financial institution or government agency; new construction; additions or remodeling") and ix[0]["pp"] == 25000
-       and ix[1].get("pp") is None)
+       and ix[1].get("pp") == 0)
+    ck("honest none IL: a blank Line 12a is no personal property, 0, never unknown", ix[1].get("pp") == 0 and ix[1].get("pp") is not None)
     wh = WI_HEAD.index("RIGHTSRETAINED"), WI_HEAD.index("MANAGEDFORESTACRES")
     wl = wi_row(dict(rets[0], rr="LIFE ESTATE", parcels=[dict(rets[0]["parcels"][0], mfl=12.0)]), mu)
     ck("detail WI: rights the seller keeps and Managed Forest acres, in their own columns", wl[wh[0]] == "life" and wl[wh[1]] == "12"
-       and rows[0][wh[0]] == "" and rows[0][wh[1]] == "" and wi_rights("EASEMENT") == "ease" and wi_rights("NONE") == "")
+       and wi_rights("EASEMENT") == "ease")
+    ck("honest none WI: code 1 or NONE is the state's none; a missing box is blank", rows[0][wh[0]] == "none" and wi_rights("1") == "none"
+       and wi_rights("NONE") == "none" and wi_rights("") == "")
+    ck("honest none WI: Managed Forest acres of 0 on the return stay 0; no box at all stays blank", rows[0][wh[1]] == "0"
+       and wi_row(dict(rets[0], parcels=[dict(rets[0]["parcels"][0], mfl=None)]), mu)[wh[1]] == "")
+    w0, _ = parse_rows([iter([WI_HEAD, rows[0]])])
+    ck("honest none WI: read back as values, not as missing", w0[0]["rr"] == "none" and w0[0]["mfl"] == 0)
     wx, _ = parse_rows([iter([WI_HEAD, wl])])
     ck("detail WI: read back by name, never into the deed words", wx[0]["rr"] == "life" and wx[0]["mfl"] == 12 and "LIFE" not in wx[0]["conv"].upper())
     vh = list(vt_table([dict(vb, financing="Owner Financing", TownGlValu=250000.0)], {"75850": ("50001", "Waltham town")}))
     vo = dict(zip(vh[0], vh[1]))
     ck("detail VT: financing, use before and after and the town's listed value", vo["FINANCINGTYPE"] == "Owner Financing" and vo["USEBEFORE"] == "04. Operating Farm"
-       and vo["GRANDLISTVALUE"] == "250000" and vt_value(999.0) == "" and vt_text("None") == "")
+       and vo["GRANDLISTVALUE"] == "250000" and vt_value(999.0) == "")
+    vn = dict(zip(vh[0], list(vt_table([dict(vb, financing="None")], {"75850": ("50001", "Waltham town")}))[1]))
+    ck("honest none VT: the return's own financing None stays None; a blank stays blank", vn["FINANCINGTYPE"] == "None" and vt_text(None) == "")
     ck("detail VT: still no parcel point or address column read", not any(re.search(r"(?i)latitude|longitude|geom|addr|street|zip", c) for c in VT_COLS))
-    ck("detail NJ: the main lot values sit where the SR-1A layout puts them, zero is blank", NJ_SR["avl"] == (56, 64) and NJ_SR["avb"] == (65, 73)
-       and NJ_SR["lsf"] == (657, 663) and nj_int("000060000") == "60000" and nj_int("000000000") == "")
+    ck("detail NJ: the main lot values sit where the SR-1A layout puts them; the abstract's 0 stays 0, a blank stays blank",
+       NJ_SR["avl"] == (56, 64) and NJ_SR["avb"] == (65, 73) and NJ_SR["lsf"] == (657, 663) and nj_int("000060000") == "60000"
+       and nj_int("000000000") == "0" and nj_int("       ") == "")
     ck("detail: every detail column has a header name", all(x in COLS for x in EXTRA) and set(EXTRA) == set(EXTRA_NUM) | set(EXTRA_TXT))
     ck("detail IN: a seller-financed form says so in words the market rule does not read",
        "seller financed" in in_flags({"E6_Seller_Financed": "Y"}, []) and "seller financed" not in in_flags({"E6_Seller_Financed": "N"}, [])

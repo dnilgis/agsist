@@ -188,6 +188,23 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
         assert.deepEqual(errors, [], st + ": no page error");
         await pg.close();
       }
+      // honest none (checker, Nov 4): the state's own "none" or 0 reads as such, never "not in the state record"
+      const pn = await ctx.newPage();
+      await pn.goto(`${base}/land-sales/wisconsin/testc-county`);
+      await pn.waitForSelector("#ls-all button.ls-dt");
+      const none = await pn.evaluate(() => {
+        const L = window.AgLandSales, s = { id: "x", when: "2026-09-22", recorded: 1, acres: 80, price: 600000, ppa: 7500, kind: "f", flag: 0, cu: 0, g: 1, m: "y", county: "T", fips: "1", u: null, w24: null };
+        const f = { cols: ["doc", "date", "rr", "mfl", "fin", "pp"], source: "x" };
+        const t = (st, r) => { const d = document.createElement("div"); d.innerHTML = L.panelHtml(Object.assign({}, s, { st: st }), f, r, null, "ok"); return d.textContent; };
+        return { wi: t("WI", { doc: "1", date: "2026-09-20", rr: "none", mfl: 0 }), vt: t("VT", { doc: "1", date: "2026-09-20", fin: "None" }), il: t("IL", { doc: "1", date: "2026-09-20", pp: 0 }),
+          wiGone: t("WI", { doc: "1", date: "2026-09-20" }) };
+      });
+      assert.match(none.wi, /Rights the seller keepsNone/);
+      assert.match(none.wi, /Managed forest acres0 acres/);
+      assert.match(none.vt, /FinancingNone/);
+      assert.match(none.il, /Personal property in the priceNone/);
+      assert.match(none.wiGone, /Rights the seller keepsnot in the state record/, "a field truly absent from the row still says so");
+      await pn.close();
       // the Atlas card and a month table row open the same panel
       const pa = await ctx.newPage();
       await pa.goto(`${base}/atlas-test`);

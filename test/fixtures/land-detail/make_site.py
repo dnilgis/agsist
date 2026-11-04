@@ -41,7 +41,7 @@ def rows_for(st):
              "legal": "" if st in ("VT", "NJ") else "PART OF SE 1/4 SEC 12 T15N R6E 4TH PM, %d ACRES" % (80 + 5 * i),
              "str": "12-15N-6E-4", "exempt": 0, "grantor": "SELLER %s%d SYNTH" % (st, i), "grantee": "BUYER %s%d SYNTH" % (st, i),
              "ac1": None, "rec": "2026-%02d-%02d" % (9 - i // 3, 22 - 6 * (i % 3)), "acx": None,
-             "rr": "life" if i == 0 else None, "mfl": 12.0 if i == 0 else None, "avl": 41200 + i, "avb": None if i != 2 else 185000,
+             "rr": "life" if i == 0 else "none", "mfl": 12.0 if i == 0 else 0, "avl": 41200 + i, "avb": None if i != 2 else 185000,
              "avy": "2026", "lsf": None if i != 2 else 1840, "yb": None if i != 2 else "1988"}
         if st == "IL" and i == 0:
             o["legal"] = "PART OF SE 1/4 SEC 12 T15N R6E 4TH PM, EXCEPT TRACT TO SELLER IL0 SYNTH, 80 ACRES"
