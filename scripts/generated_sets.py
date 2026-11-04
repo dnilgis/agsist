@@ -42,6 +42,9 @@ THE RULES IT ENFORCES
     python3 scripts/generated_sets.py main --window 360 [--dry-run]
     python3 scripts/generated_sets.py dependents rain [prf ...] [--stage] [--dry-run] [--files]
                                                             rebuild the sets' summary files (and git add them)
+    python3 scripts/generated_sets.py pull-rebase rain [--autostash] [--branch main]
+                                                            git pull --rebase; a conflict only in summary files
+                                                            is rebuilt, never resolved to either side
     python3 scripts/generated_sets.py trace llms            the sets a summary builder reads (JSON)
     python3 scripts/generated_sets.py --selftest
 """
@@ -631,11 +634,58 @@ def run_dependents(ids, dry=False, stage=False):
             print("::warning title=summary not rebuilt::%s failed (rc=%d); %s may now trail its set (BUILD-RULES 61)"
                   % (" ".join(x["build"]), r.returncode, ", ".join(x["files"])))
             bad.append(x["id"])
+            restore(x["files"])
     if stage and not dry:
-        have = [f for f in summary_files(ids) if os.path.exists(os.path.join(ROOT, f))]
+        have = [f for f in summary_files([i for i in ids if i not in bad]) if os.path.exists(os.path.join(ROOT, f))]
         if have:
             sh(["git", "add", "-A", "--"] + have)
     return bad
+
+
+def restore(files):
+    """put a failed summary's files back as HEAD has them, so no half-built copy is staged by a bare
+    `git add -A` later in the job (the builders also write whole files and rename)"""
+    for f in files:
+        if sh(["git", "cat-file", "-e", "HEAD:" + f]).returncode == 0:
+            sh(["git", "checkout", "HEAD", "--", f])
+        sh(["git", "clean", "-fdq", "--", f])
+
+
+def in_rebase():
+    gd = sh(["git", "rev-parse", "--git-dir"]).stdout.strip()
+    gd = gd if os.path.isabs(gd) else os.path.join(GIT_ROOT, gd)
+    return any(os.path.isdir(os.path.join(gd, d)) for d in ("rebase-merge", "rebase-apply"))
+
+
+def pull_rebase(sids, branch="main", autostash=False):
+    """git pull --rebase that never keeps either side of a summary file: when the only conflicts are summary
+    files (llms.txt, the search index, data/feeds.json, ...), they are rebuilt on the rebased tree, staged and
+    the rebase continues. Any other conflict aborts the rebase and returns 1 (the job's own retry or recovery
+    path takes over). -> 0 when the branch is rebased onto origin/<branch>."""
+    known = set(summary_files([x["id"] for x in SUMMARIES]))
+    want = sorted({x["id"] for sid in sids for x in dependents_of(sid)}) if sids else [x["id"] for x in SUMMARIES]
+    cmd = ["git", "pull", "-q", "--rebase"] + (["--autostash"] if autostash else []) + ["origin", branch]
+    r = sh(cmd)
+    for _ in range(50):
+        if r.returncode == 0 and not in_rebase():
+            return 0
+        if not in_rebase():
+            print("pull-rebase: git pull failed: %s" % (r.stdout + r.stderr).strip()[-300:])
+            return 1
+        un = [l for l in sh(["git", "diff", "--name-only", "--diff-filter=U"]).stdout.splitlines() if l]
+        if not un or not all(any(_under(f, k) for k in known) for f in un):
+            print("pull-rebase: a conflict outside the summary files (%d file(s)); rebase aborted" % len(un))
+            sh(["git", "rebase", "--abort"])
+            return 1
+        print("pull-rebase: %d summary file(s) conflicted; rebuilding them on the rebased tree" % len(un))
+        for f in un:   # main's copy first, so a failed rebuild leaves a whole file, never conflict markers
+            sh(["git", "checkout", "--ours", "--", f])
+        ids = sorted(set(want) | {x["id"] for x in SUMMARIES if any(_under(f, k) for f in un for k in x["files"])})
+        run_dependents(ids)
+        sh(["git", "add", "-A", "--"] + [f for f in summary_files(ids) if os.path.exists(os.path.join(GIT_ROOT, f))] + un)
+        r = sh(["git", "-c", "core.editor=true", "rebase", "--continue"])
+    sh(["git", "rebase", "--abort"])
+    return 1
 
 
 def cmd_dependents(sids, dry, stage, files):
@@ -748,6 +798,8 @@ def main(argv):
         return cmd_prebuild(opt("--base", "HEAD^1"))
     if cmd == "dependents":
         return cmd_dependents(args[1:], "--dry-run" in argv, "--stage" in argv, "--files" in argv)
+    if cmd == "pull-rebase":
+        return pull_rebase(args[1:], opt("--branch", "main"), "--autostash" in argv)
     if cmd == "trace":
         sid = args[1] if len(args) > 1 else ""
         if sid not in SUMMARY:

@@ -12,7 +12,10 @@
 #                               commit there (it does not push; it prints the push line)
 #   engine.sh only-engine [dir] refuse (exit 1) when a file under the engine paths is in the
 #                               engine clone's HEAD (dir, default ENGINE_DIR) and not in this
-#                               checkout's HEAD: save would delete it. Prints a count, no names.
+#                               checkout's HEAD, unless this checkout's history deleted or renamed
+#                               it since the engine's last sync (the "agsist main <sha>" in the
+#                               engine's newest sync commit message): then save deletes it there
+#                               too, as main did. Prints counts, no names.
 #                               .github/workflows/engine-sync.yml runs it before every save.
 #
 # Rules:
@@ -141,15 +144,30 @@ case "$cmd" in
     ED="${1:-${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}}"
     case "$ED" in /*) ;; *) ED="$ROOT/$ED" ;; esac
     [ -e "$ED/.git" ] || { echo "engine: no engine clone at $ED" >&2; exit 1; }
-    n=$(LC_ALL=C comm -23 <(git -C "$ED" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | LC_ALL=C sort) \
-                         <(git -C "$ROOT" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | LC_ALL=C sort) | wc -l)
     m=$(git -C "$ED" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | wc -l)
     if [ "$m" -eq 0 ]; then echo "::error title=engine sync refused::the engine clone has no file under ${PATHS[*]}"; exit 1; fi
-    if [ "$n" -gt 0 ]; then
-      echo "::error title=engine sync refused::$n file(s) exist only in the engine branch $BRANCH, not on this checkout's HEAD; a save would delete them. Look by hand (git -C <engine clone> ls-tree against main) before any sync."
+    only=$(LC_ALL=C comm -23 <(git -C "$ED" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | LC_ALL=C sort) \
+                            <(git -C "$ROOT" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | LC_ALL=C sort))
+    [ -n "$only" ] || { echo "engine: no file only in the engine ($m files under ${PATHS[*]})"; exit 0; }
+    n=$(printf '%s\n' "$only" | wc -l)
+    # the main commit the engine was last synced to, from the engine's newest sync message
+    last=$(git -C "$ED" log -50 --format=%s | sed -nE 's/.*agsist main ([0-9a-f]{7,40}).*/\1/p' | head -1)
+    gone=""
+    if [ -n "$last" ] && git -C "$ROOT" cat-file -e "$last^{commit}" 2>/dev/null; then
+      # what main deleted, or renamed away, since then (old names of renames are the second field)
+      gone=$(git -C "$ROOT" log -M --diff-filter=DR --name-status --format= "$last..HEAD" -- "${PATHS[@]}" |
+             awk -F'\t' '$1=="D"{print $2} $1 ~ /^R/{print $2}' | LC_ALL=C sort -u)
+    fi
+    left=$(LC_ALL=C comm -23 <(printf '%s\n' "$only" | LC_ALL=C sort) <(printf '%s\n' "$gone" | sed '/^$/d'))
+    k=$(printf '%s\n' "$left" | sed '/^$/d' | wc -l)
+    if [ "$k" -gt 0 ]; then
+      why="main never had them since the last sync"
+      [ -n "$last" ] || why="no sync commit (agsist main <sha>) found in the engine's history"
+      [ -z "$last" ] || git -C "$ROOT" cat-file -e "$last^{commit}" 2>/dev/null || why="the last sync commit $last is not in this checkout's history"
+      echo "::error title=engine sync refused::$k file(s) exist only in the engine branch $BRANCH ($why); a save would delete them. Look by hand (git -C <engine clone> ls-tree against main) before any sync."
       exit 1
     fi
-    echo "engine: no file only in the engine ($m files under ${PATHS[*]})" ;;
+    echo "engine: $n file(s) only in the engine were deleted or renamed on main since $last; the save deletes them there too ($m files under ${PATHS[*]})" ;;
   *)
     sed -n '2,26p' "$0"; exit 2 ;;
 esac

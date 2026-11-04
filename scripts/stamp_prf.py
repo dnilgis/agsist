@@ -381,8 +381,9 @@ def main():
         print("prf.html matches data/prf/meta.json")
         return 0
     if out != page:
-        with open(PAGE, "w", encoding="utf-8") as f:
+        with open(PAGE + ".tmp", "w", encoding="utf-8") as f:   # whole file, then renamed (never half written)
             f.write(out)
+        os.replace(PAGE + ".tmp", PAGE)
         print("prf.html stamped")
     else:
         print("prf.html already current")

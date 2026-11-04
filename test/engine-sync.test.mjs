@@ -100,3 +100,58 @@ test("cron-health engine-drift: the row is collected and its selftest passes", (
   const step = ch.slice(ch.indexOf("- name: Check every clock"), ch.indexOf("run: python3 scripts/cron_health.py --out private/data/cron-health.json"));
   assert.ok(step.length > 0 && step.includes("PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}"), "the check step has the key");
 });
+
+test("engine.sh only-engine: a file main deleted or renamed since the last sync is deleted from the engine too; one main never had is refused", () => {
+  const base = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "engsync-"));
+  const pub = path.join(base, "agsist"), eng = path.join(base, "engine");
+  for (const d of [pub, eng]) { fs.mkdirSync(d); g(d, "init", "-q"); }
+  write(pub, ".github/engine-paths", read(".github/engine-paths"));
+  const files = [["scripts/keep.py", "k\n"], ["scripts/old.py", "old\n"], ["scripts/ren.py", "renamed body, long enough to match\n"], ["test/t.mjs", "t\n"], ["build/b.sh", "b\n"]];
+  for (const [p, s] of files) { write(pub, p, s); write(eng, p, s); }
+  g(pub, "add", "-A"); g(pub, "commit", "-qm", "main before");
+  const synced = g(pub, "rev-parse", "--short", "HEAD").trim();
+  g(eng, "add", "-A"); g(eng, "commit", "-qm", `sync engine to agsist main ${synced} (#1)`);
+  g(pub, "rm", "-q", "scripts/old.py"); g(pub, "mv", "scripts/ren.py", "scripts/ren2.py"); g(pub, "commit", "-qm", "delete and rename");
+  const only = () => spawnSync("bash", [E, "only-engine", eng], { cwd: pub, encoding: "utf8" });
+  let r = only();
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, new RegExp(`2 file\\(s\\) only in the engine were deleted or renamed on main since ${synced}; the save deletes them there too`));
+  assert.doesNotMatch(r.stdout, /old\.py|ren\.py/, "no names");
+  const sv = spawnSync("bash", [E, "save", "sync engine to agsist main y (engine-sync.yml)"], { cwd: pub, encoding: "utf8", env: { ...process.env, ENGINE_DIR: eng } });
+  assert.equal(sv.status, 0, sv.stdout + sv.stderr);
+  const names = g(eng, "ls-tree", "-r", "--name-only", "HEAD").split("\n");
+  assert.ok(!names.includes("scripts/old.py") && !names.includes("scripts/ren.py") && names.includes("scripts/ren2.py"), "deleted and renamed in the engine in the same commit");
+  // a file main never had (added to the engine after the sync) is still a refusal
+  write(eng, "scripts/never_on_main.py", "n\n"); g(eng, "add", "-A"); g(eng, "commit", "-qm", "engine only");
+  r = only();
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /::error title=engine sync refused::1 file\(s\) exist only in the engine branch engine-agsist \(main never had them since the last sync\)/);
+  assert.doesNotMatch(r.stdout, /never_on_main/);
+  // a file main deleted BEFORE the last sync is not covered by main's history since then: refused
+  fs.rmSync(base, { recursive: true, force: true });
+});
+
+test("engine.sh only-engine: no sync commit in the engine's history, or one not in main's: refused", () => {
+  const { base, pub, eng } = fixture();
+  write(eng, "scripts/x.py", "x\n"); g(eng, "add", "-A"); g(eng, "commit", "-qm", "sync engine to agsist main deadbee (#9)");
+  const r = spawnSync("bash", [E, "only-engine", eng], { cwd: pub, encoding: "utf8" });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /the last sync commit deadbee is not in this checkout's history/);
+  fs.rmSync(base, { recursive: true, force: true });
+});
+
+test("engine.sh save commits a same-size, same-mtime edit (the index's stat data cannot hide it)", () => {
+  const { base, pub, eng } = fixture();
+  const old = new Date("2020-01-01T00:00:00Z");
+  write(eng, "scripts/same.py", "aaaa\n"); fs.utimesSync(path.join(eng, "scripts/same.py"), old, old);
+  // stat checks reduced to size and mtime, so only the content can tell the two apart
+  g(eng, "config", "core.checkStat", "minimal"); g(eng, "config", "core.trustctime", "false");
+  g(eng, "add", "-A"); g(eng, "commit", "-qm", "engine");
+  write(pub, "scripts/same.py", "bbbb\n"); fs.utimesSync(path.join(pub, "scripts/same.py"), old, old);
+  g(pub, "add", "-A"); g(pub, "commit", "-qm", "main edits same.py, same size");
+  const r = spawnSync("bash", [E, "save", "sync engine to agsist main z (engine-sync.yml)"], { cwd: pub, encoding: "utf8", env: { ...process.env, ENGINE_DIR: eng } });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /engine: committed [0-9a-f]+ sync engine to agsist main z/);
+  assert.equal(g(eng, "show", "HEAD:scripts/same.py"), "bbbb\n");
+  fs.rmSync(base, { recursive: true, force: true });
+});

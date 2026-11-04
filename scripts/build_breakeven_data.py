@@ -25,6 +25,7 @@ Run after either source changes (cash-rent.yml and arc-plc-refresh.yml do).
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -245,7 +246,9 @@ def main(argv):
             stale.append(rel)
             if "--check" not in argv:
                 p.parent.mkdir(parents=True, exist_ok=True)
-                p.write_text(text, encoding="utf-8")
+                t = p.with_name(p.name + ".tmp")   # whole file, then renamed (never half written)
+                t.write_text(text, encoding="utf-8")
+                os.replace(t, p)
     extra = [str(p.relative_to(ROOT)) for p in (ROOT / OUT_DIR).glob("*.json") if str(p.relative_to(ROOT)) not in out] if (ROOT / OUT_DIR).exists() else []
     if "--check" in argv:
         if stale or extra:

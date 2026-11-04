@@ -10,7 +10,10 @@ name: Engine sync
 # SAFE BY CONSTRUCTION
 # - It refuses first when any file under the engine paths is on the engine
 #   branch and not on main (`engine.sh only-engine`): a save deletes such a file,
-#   so the lead looks by hand. The refusal prints a count, never a name.
+#   so the lead looks by hand. A file main itself deleted or renamed since the
+#   engine's last sync (the "agsist main <sha>" its sync commits carry) is not a
+#   refusal: the save deletes it from the engine too, in the same commit. The
+#   refusal prints a count, never a name.
 # - It never force-pushes; a push race fetches the engine branch again and
 #   repeats the refusal check and the save on top of it.
 # - No Engine checkout step: this job must read main's own copy, not main with
@@ -46,10 +49,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # all of main's history, without file contents (trees and commits only): the refusal reads what main
+      # deleted or renamed since the engine's last sync
       - uses: actions/checkout@v4
         with:
           ref: main
           persist-credentials: false
+          fetch-depth: 0
+          filter: blob:none
       - name: The engine branch (private repo)
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:

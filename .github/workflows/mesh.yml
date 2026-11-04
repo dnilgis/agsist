@@ -156,7 +156,8 @@ jobs:
           # pushed while we ran, rebase conflicts there. Recovery: take main's
           # manifest, re-apply our recent/storm layers on top, retry. Three tries.
           for i in 1 2 3; do
-            if git pull --rebase origin main; then
+            # a conflict only in the summary files is rebuilt (BUILD-RULES 61); any other conflict takes the recovery below
+            if python3 scripts/generated_sets.py pull-rebase hail hail-map; then
               git push && exit 0
             fi
             echo "rebase conflict (attempt $i) — taking main's manifest and regenerating"
