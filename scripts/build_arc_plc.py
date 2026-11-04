@@ -3592,6 +3592,9 @@ def county_page(st, S, c, D, ch):
     rel = [f'<a href="/arc-plc/{sl}">All {esc(name)} counties</a>', '<a href="/arc-plc">ARC or PLC calculator and method</a>']
     if atlas:
         rel.append(f'<a href="/farmland-atlas/{sl}/{cslug}">{esc(cname)} in the Farmland Atlas</a>')
+    # the county's recorded farm sales, where the state has them (Nov 4, Sig: "make sure it is not missable")
+    if os.path.exists(os.path.join(ROOT, "land-sales", sl, f"{cslug}.html")):
+        rel.append(f'<a href="/land-sales/{sl}/{cslug}">Recent farmland sales near you: {esc(cname)}</a>')
     # the same county's PRF and rain pages (scripts/cross_links.py, night SEO audit Oct 19, 2026):
     # PRF only when its county page is live; rain the county page, else the state rain page
     prf_h = XL.prf_href(ROOT, sl, cslug)
