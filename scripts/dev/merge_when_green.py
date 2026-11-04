@@ -695,6 +695,33 @@ def selftest():
     capc = {"user": {"login": BOT}, "created_at": "2026-11-04T09:30:00Z", "body": "stopped " + MARK % ("loop", "cap-" + k)}
     assert loop_state(cs + [capc], "", k) == (3, True)
     assert loop_state(cs + [capc], "2026-11-04T09:40:00Z", k) == (0, False), "label added again: three more tries"
+    # loop_guard() itself, on a fake GitHub
+    class FakeGH:
+        def __init__(self, comments, events=(), broken=False):
+            self.comments, self.events, self.broken, self.posted = list(comments), list(events), broken, []
+
+        def all(self, path):
+            if self.broken:
+                raise urllib.error.HTTPError(path, 502, "bad gateway", None, None)
+            return self.events if path.endswith("/events") else self.comments
+
+        def call(self, method, path, body=None):
+            assert method == "POST" and path.endswith("/comments"), (method, path)
+            self.posted.append(body["body"])
+            self.comments.append({"user": {"login": BOT}, "created_at": "2026-11-04T09:30:00Z", "body": body["body"]})
+    labeled = [{"event": "labeled", "label": {"name": LABEL}, "created_at": "2026-11-04T08:00:00Z"}]
+    f = FakeGH(cs, labeled)
+    assert loop_guard(f, repo, pr, why) is False and len(f.posted) == 1, "three updates: stop and say so"
+    assert MARK % ("loop", "cap-" + k) in f.posted[0]
+    assert loop_guard(f, repo, pr, why) is False and len(f.posted) == 1, "said once, not again"
+    f = FakeGH(cs[:2], labeled)
+    assert loop_guard(f, repo, pr, why) is True and f.posted == [], "two updates: go on"
+    f = FakeGH(cs, labeled, broken=True)
+    assert loop_guard(f, repo, pr, why) is False and f.posted == [], "comments unreadable: no update this pass"
+    relabel = labeled + [{"event": "labeled", "label": {"name": LABEL}, "created_at": "2026-11-04T09:40:00Z"},
+                         {"event": "labeled", "label": {"name": "other"}, "created_at": "2026-11-04T10:00:00Z"}]
+    f = FakeGH(cs + [capc], relabel)
+    assert loop_guard(f, repo, pr, why) is True and f.posted == [], "label added again later: the count resets"
     print("merge_when_green selftest passed")
     return 0
 
