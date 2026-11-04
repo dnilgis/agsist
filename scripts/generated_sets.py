@@ -141,7 +141,8 @@ SETS = [
     {"id": "cash-bid-index", "offline": True, "workflow": "cash-bid-index.yml",
      "build": [[PY, "scripts/cash_bid_index.py", "--page"]], "check": [[PY, "scripts/cash_bid_index.py", "--check"]],
      "outputs": ["cash-bid-index.html"], "writes": ["data/cash-index/editions.json"],
-     "code": ["scripts/cash_bid_index.py"], "inputs": [],
+     # its page copies the site menu, fonts and early scripts from grain-emc.html (cash_bid_index._nav_blocks)
+     "code": ["scripts/cash_bid_index.py"], "inputs": ["grain-emc.html"],
      "dependents": ["feeds", "llms"]},
 ]
 
@@ -263,6 +264,7 @@ def relevant(pr_files, sets=SETS, root=ROOT):
     return test
 
 
+NAV_FILES = ("components/header-fallback.html", "components/footer-fallback.html")   # what inject_static_nav bakes in
 _IMP = re.compile(r"^\s*(?:from\s+([\w.]+)\s+import|import\s+([\w., ]+))", re.M)
 
 
@@ -286,6 +288,11 @@ def code_paths(s, root=ROOT):
     out = set(s["inputs"])
     for c in s["code"]:
         out.update(py_closure(c, root) if c.endswith(".py") else [c])
+    # a builder that bakes the site menu through inject_static_nav writes whatever the menu files say (Nov 4, 2026:
+    # the Farmland sales menu left the PRF state pages stale in PR 322's checks, which rebuilt only sets whose
+    # own code changed)
+    if "scripts/inject_static_nav.py" in out:
+        out.update(NAV_FILES)
     return sorted(out)
 
 
@@ -752,6 +759,11 @@ def selftest():
     check(guard(["rain/iowa/story-county.html"], "github-actions[bot]")[0], "the data bot may")
     check(guard(["rain/iowa/story-county.html"], "dnilgis", ["merge-when-green", LABEL])[0], "the regen-ok label lets it through")
     check(not guard(["rain/iowa/story-county.html"], "dnilgis", ["merge-when-green"])[0], "another label does not")
+    check(all(f in code_paths(next(s for s in SETS if s["id"] == "prf")) for f in NAV_FILES),
+          "a set whose builder bakes the menu (prf, through inject_static_nav) counts the menu files as its code")
+    check("cash-bid-index" in touched(SETS, ["grain-emc.html"]), "the Cash Bid Index page is rebuilt when grain-emc.html (its menu source) changes")
+    check(not set(NAV_FILES) & set(code_paths(next(s for s in SETS if s["id"] == "land-sales"))),
+          "a set that does not bake the menu does not")
     cp = code_paths(next(s for s in SETS if s["id"] == "rain"))
     check("scripts/build_county_rain.py" in cp and "scripts/cross_links.py" in cp, "a set's code is its builder and what it imports")
     check(touched(SETS, ["scripts/cross_links.py"]) and "rain" in touched(SETS, ["scripts/cross_links.py"]), "a shared module touches every set that imports it")

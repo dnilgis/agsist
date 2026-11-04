@@ -35,6 +35,8 @@ fi
 # the Atlas drought pull moved to raw too (Oct 29); test/drought-county-week.test.mjs reads it
 if [ "$LIST" = 0 ] && picked node-test; then
   [ -s data/atlas/raw/drought.json ] || bash scripts/pull_raw.sh data/atlas/raw/drought.json >/dev/null || { echo "FAIL drought-pull (bash scripts/pull_raw.sh data/atlas/raw/drought.json)"; fails=$((fails+1)); }
+  # builder-only data moved off main on Nov 4 (test/raw-readers.test.mjs); test/funds-weekly.test.mjs reads this one
+  [ -s data/cot-deep.json ] || bash scripts/pull_raw.sh data/cot-deep.json >/dev/null || { echo "FAIL cot-deep-pull (bash scripts/pull_raw.sh data/cot-deep.json)"; fails=$((fails+1)); }
 fi
 # AGSIST_PREBUILD=1 (the PR checks and main-checks.yml set it): first build the files that are built on
 # main (scripts/dev/main_build.py: What's new, the changelog, the test map) in this copy, so every check

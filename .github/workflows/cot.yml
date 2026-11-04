@@ -112,9 +112,31 @@ jobs:
           python scripts/cot_calendar.py
           python scripts/cot_deep.py --selftest
 
+      # data/cot-deep.json lives on the private raw branch (Nov 4: no page
+      # reads it). Unpacked before the append; a failed fetch fails this step,
+      # the append then finds no file and stops, and the COT numbers still
+      # publish (continue-on-error, as for the append). Never commits it to main.
+      - name: Deep history from raw
+        id: rawpull
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh data/cot-deep.json
+
       - name: Append the week to the deep history
+        id: deep
         continue-on-error: true
         run: python scripts/cot_deep.py --append
+
+      # Saved back only after a clean append: a failed one never overwrites
+      # the good copy on raw. RAW_SOFT: a failed save is a warning, the COT
+      # data still publishes; Sunday's cot-deep-rebuild.yml rebuilds the file.
+      - name: Save the deep history to raw
+        if: steps.deep.outcome == 'success'
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "cot deep history" data/cot-deep.json
 
       - name: Prove the statistics
         continue-on-error: true
@@ -215,7 +237,6 @@ jobs:
           cp data/cot-history.json  /tmp/cot-history.json
           cp cot.html               /tmp/cot.html
           cp img/og/cot.jpg         /tmp/cot-og.jpg        2>/dev/null || true
-          cp data/cot-deep.json     /tmp/cot-deep.json     2>/dev/null || true
           cp data/cot-analysis.json /tmp/cot-analysis.json 2>/dev/null || true
           for i in 1 2 3 4 5; do
             git fetch origin main
@@ -224,10 +245,9 @@ jobs:
             cp /tmp/cot-history.json data/cot-history.json
             cp /tmp/cot.html         cot.html
             [ -f /tmp/cot-og.jpg ]        && cp /tmp/cot-og.jpg        img/og/cot.jpg
-            [ -f /tmp/cot-deep.json ]     && cp /tmp/cot-deep.json     data/cot-deep.json
             [ -f /tmp/cot-analysis.json ] && cp /tmp/cot-analysis.json data/cot-analysis.json
             git add data/cot.json data/cot-history.json cot.html img/og/cot.jpg
-            git add data/cot-deep.json data/cot-analysis.json 2>/dev/null || true
+            git add data/cot-analysis.json 2>/dev/null || true
             if git diff --staged --quiet; then
               echo "No COT changes today — nothing to commit (expected ~6 days/week)."
               exit 0
@@ -263,3 +283,12 @@ jobs:
       - name: cot.html matches data/cot.json
         if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
         run: python scripts/check_cot_baked.py
+
+      # The deep history could not be read from raw: the COT numbers published,
+      # the analysis did not move. Loud, not quiet.
+      - name: Deep history result
+        if: ${{ !cancelled() && steps.rawpull.outcome == 'failure' }}
+        run: |
+          echo "data/cot-deep.json could not be unpacked from the private raw branch,"
+          echo "so this week was not appended and data/cot-analysis.json was not rebuilt."
+          exit 1
