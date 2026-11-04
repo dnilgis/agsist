@@ -110,7 +110,8 @@ SETS = [
      # compare, methods, sheet and qr.js are written by hand; the share cards are the atlas-cards set
      "outputs": ["farmland-atlas/**", "!farmland-atlas/og/**", "!farmland-atlas/compare.html",
                  "!farmland-atlas/methods.html", "!farmland-atlas/sheet.html", "!farmland-atlas/qr.js", "sitemap-atlas.xml"],
-     "writes": ["data/pointers"], "code": ["scripts/build_atlas_pages.py"], "inputs": [],
+     # data/share-host.json: where the share cards are served (scripts/share_host.py; the seed job writes it)
+     "writes": ["data/pointers"], "code": ["scripts/build_atlas_pages.py"], "inputs": ["data/share-host.json"],
      "dependents": ["search", "llms"]},
     {"id": "atlas-cards", "offline": True, "workflow": "farmland-atlas-pages.yml",
      "build": [[PY, "scripts/build_atlas_cards.py"]], "check": None,

@@ -719,6 +719,23 @@ def add_drift_row(now, rows, late, prev, environ=None, **kw):
     return rows, late
 
 
+def add_share_row(now, rows, late, prev, **kw):
+    """agsist-data-images (scripts/share_host.py row()): the og:image of a few pages that point at
+    dnilgis.github.io/agsist-data answers, checked once a day; a 404 is red. Fail soft."""
+    rows, late = list(rows), list(late)
+    old = next((r for r in (prev or {}).get("workflows", []) if r.get("workflow") == "agsist-data-images"), None)
+    try:
+        import share_host
+        r = share_host.row(now, old, **kw)
+    except Exception as e:
+        r = {"workflow": "agsist-data-images", "critical": False, "clock": "share images on agsist-data answer",
+             "status": "unknown", "why": "check could not run: %s" % type(e).__name__}
+    rows.append(r)
+    if r.get("status") == "late":
+        late.append(r["workflow"])
+    return rows, late
+
+
 def folder_row(r, SB):
     """warn when a top-level folder passes FOLDER_WARN of its check_site_budget.py budget, over
     (red) past the budget itself (the site-budget check then fails every push)."""
@@ -818,6 +835,9 @@ def should_commit(prev, doc, now):
         return True    # when each engine file started to differ is kept, so the 2 h clock runs from then
     if doc.get("delivery_checked_at") != prev.get("delivery_checked_at"):
         return True    # a new pass over the run logs is kept, so the next runs reuse it
+    share = lambda d: next((r.get("checked_at") for r in d.get("workflows", []) if r.get("workflow") == "agsist-data-images"), None)
+    if share(doc) != share(prev):
+        return True    # the day's share image check is kept, so it runs once a day
     try:
         return now - parse_ts(prev["generated_at"]) >= timedelta(hours=RECOMMIT_HOURS)
     except Exception:
@@ -843,6 +863,7 @@ def main(argv):
         prev = None
     rows, late, checked_at = add_delivery_rows(now, rows, late, repo, token, api, prev)
     rows, late = add_drift_row(now, rows, late, prev)
+    rows, late = add_share_row(now, rows, late, prev)
     doc = build(now, rows, late)
     if checked_at:
         doc["delivery_checked_at"] = checked_at
@@ -1067,6 +1088,24 @@ def selftest():
     check(folder_row({"folders": {"(root files)": 999.0}}, SB)["status"] == "ok", "root files have no folder budget")
     check(budget_rows(measure=lambda root: 1 / 0)[0]["status"] == "unknown", "a failed walk is unknown, not ok")
     check(any(r["workflow"] == "folder-budgets" for r in budget_rows()), "the real tree gives a folder-budgets row")
+
+    # share images on agsist-data (scripts/share_host.py row(); its own selftest covers the 404 and the once a day)
+    srows, slate = add_share_row(T("2026-11-06 12:00"), [], [], None, get=lambda u: (200, b""))
+    check([r["workflow"] for r in srows] == ["agsist-data-images"] and srows[0]["status"] in ("ok", "late", "unknown"),
+          "one agsist-data-images row (%s)" % srows[0].get("why"))
+    import share_host
+    import shutil
+    sd = tempfile.mkdtemp()
+    os.makedirs(os.path.join(sd, "data"))
+    open(os.path.join(sd, "data", "share-host.json"), "w").write('{"folders": {"data/social": "2026-11-05T00:00:00Z"}}')
+    open(os.path.join(sd, "index.html"), "w").write(
+        '<meta property="og:image" content="%s/data/social/card-2026-11-06.jpg">' % share_host.HOST)
+    srows, slate = add_share_row(T("2026-11-06 12:00"), [], [], None, root=sd, get=lambda u: (404, b""))
+    check(srows[0]["status"] == "late" and slate == ["agsist-data-images"], "a 404 on agsist-data is a red row")
+    prev_doc = {"workflows": [dict(srows[0], status="ok")]}
+    srows2, _ = add_share_row(T("2026-11-06 18:00"), [], [], prev_doc, root=sd, get=lambda u: (404, b""))
+    check(srows2[0]["status"] == "ok", "an ok check from this morning is kept until tomorrow")
+    shutil.rmtree(sd, ignore_errors=True)
 
     # the watchers are watched
     names = [c[0] for c in CHECKS]

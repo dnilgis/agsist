@@ -1,0 +1,175 @@
+name: agsist-data seed (share images)
+
+# ONE-TIME, BY HAND (Nov 4, 2026; growth plan phase 1, scripts/share_host.py). Moves the share images
+# (og:image) of the Farmland Atlas (farmland-atlas/og/) and the Daily (data/social/) to the public repo
+# dnilgis/agsist-data, served at https://dnilgis.github.io/agsist-data/ at the same paths. In order:
+#   1. copy each folder there (scripts/agsist_data.sh, AGSIST_DATA_TOKEN: contents write on that repo only);
+#   2. wait until a sample of each folder answers 200 there with the same bytes as here (Pages takes a
+#      few minutes after a push). If it does not within 20 minutes the run stops here: nothing on
+#      agsist.com has changed, and a page never points at an image that is not there;
+#   3. with flip on: list the folders in data/share-host.json and rewrite every committed page that
+#      names them on agsist.com, in one commit (a fresh worktree of main, retried from scratch when
+#      another job pushed first). The builders read data/share-host.json, so later rebuilds keep it.
+# The files stay in this repository until a later change removes them. Safe to run again: a folder
+# already listed keeps its date and an unchanged copy pushes nothing. No schedule.
+# THE DAILY (PR #327 checker, Nov 4): the flip rewrites index.html, which the Daily's commit rewrites too,
+# so a flip in the middle of a Daily run would make the Daily's push fail. The flip job waits (Actions API)
+# while any daily.yml run is queued or in progress, up to 30 minutes, and stops with nothing changed if one
+# still is; it does not share the Daily's concurrency group, which could cancel a pending Daily. The whole
+# run refuses to start between 10:00 and 14:30 UTC, the Daily's window, unless any_time is ticked, and the
+# flip checks the time again after its wait.
+on:
+  workflow_dispatch:
+    inputs:
+      folders:
+        description: "Folders to move (space separated)"
+        required: false
+        default: "farmland-atlas/og data/social"
+      flip:
+        description: "After the copies answer, point the pages at agsist-data"
+        type: boolean
+        required: false
+        default: true
+      any_time:
+        description: "Run even between 10:00 and 14:30 UTC (the Daily's window)"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agsist-data-seed
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Not in the Daily's window
+        env:
+          ANY_TIME: ${{ inputs.any_time }}
+        run: |
+          now=$((10#$(date -u +%H%M)))
+          if [ "$ANY_TIME" != "true" ] && [ "$now" -ge 1000 ] && [ "$now" -lt 1430 ]; then
+            echo "::error::$(date -u +%H:%M) UTC is inside the Daily's window (10:00 to 14:30 UTC); run later or tick any_time"
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - name: Check the folder names
+        env:
+          FOLDERS: ${{ inputs.folders }}
+        run: |
+          for f in $FOLDERS; do
+            case " farmland-atlas/og data/social " in *" $f "*) ;; *) echo "::error::not a share image folder: $f"; exit 1 ;; esac
+          done
+
+      - name: Copy to agsist-data
+        env:
+          FOLDERS: ${{ inputs.folders }}
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: bash scripts/agsist_data.sh sync $FOLDERS
+
+      - name: Check the copies answer with the same bytes
+        env:
+          FOLDERS: ${{ inputs.folders }}
+        run: python3 scripts/share_host.py verify $FOLDERS --wait 1200
+
+  flip:
+    needs: seed
+    if: inputs.flip
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Not in the Daily's window
+        env:
+          ANY_TIME: ${{ inputs.any_time }}
+        run: |
+          now=$((10#$(date -u +%H%M)))
+          if [ "$ANY_TIME" != "true" ] && [ "$now" -ge 1000 ] && [ "$now" -lt 1430 ]; then
+            echo "::error::$(date -u +%H:%M) UTC is inside the Daily's window (10:00 to 14:30 UTC); the copies are verified, run again later to flip"
+            exit 1
+          fi
+      # No shared concurrency group with the Daily: GitHub keeps one pending run per group and
+      # cancels the rest, and a lost Daily is never acceptable. Instead wait while any daily.yml run
+      # is queued or in progress (every 30 s, up to 30 minutes); if one still is, stop, nothing changed.
+      - name: Wait for any Daily run to finish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 61); do
+            n=0
+            for st in queued in_progress waiting pending requested; do
+              c=$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/daily.yml/runs?status=$st&per_page=1" --jq '.total_count') \
+                || { echo "::error::could not read the Daily's runs"; exit 1; }
+              n=$((n + c))
+            done
+            if [ "$n" -eq 0 ]; then echo "no Daily run queued or running"; exit 0; fi
+            [ "$i" -eq 61 ] && break
+            echo "$n Daily run(s) queued or running; checking again in 30 s"
+            sleep 30
+          done
+          echo "::error::a Daily run was still queued or running after 30 minutes; nothing was flipped, run again later"
+          exit 1
+
+      - name: Still not in the Daily's window
+        env:
+          ANY_TIME: ${{ inputs.any_time }}
+        run: |
+          now=$((10#$(date -u +%H%M)))
+          if [ "$ANY_TIME" != "true" ] && [ "$now" -ge 1000 ] && [ "$now" -lt 1430 ]; then
+            echo "::error::$(date -u +%H:%M) UTC is inside the Daily's window after the wait; nothing was flipped, run again later"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - name: Point the pages at agsist-data
+        env:
+          FOLDERS: ${{ inputs.folders }}
+          GH_TOKEN: ${{ github.token }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
+        run: |
+          set -u
+          W="$RUNNER_TEMP/flip"
+          for i in 1 2 3 4; do
+            git worktree remove --force "$W" 2>/dev/null || rm -rf "$W"
+            git fetch -q --depth 1 origin main
+            git worktree add -q --detach "$W" FETCH_HEAD
+            # this checkout's scripts (engine included) work on the fresh copy of main
+            python3 scripts/share_host.py --root "$W" mark $FOLDERS
+            python3 scripts/share_host.py --root "$W" flip --list > "$RUNNER_TEMP/flipped.txt"
+            echo "pages rewritten: $(wc -l < "$RUNNER_TEMP/flipped.txt")"
+            python3 scripts/share_host.py --root "$W" check
+            git -C "$W" add data/share-host.json
+            git -C "$W" add --pathspec-from-file="$RUNNER_TEMP/flipped.txt"
+            if git -C "$W" diff --cached --quiet; then echo "nothing to change"; exit 0; fi
+            git -C "$W" -c user.name="AGSIST Bot" -c user.email="bot@agsist.com" \
+              commit -q -m "share images: served from agsist-data ($FOLDERS)"
+            if git -C "$W" push -q origin HEAD:main; then
+              echo "pushed on try $i"; bash .github/pages-kick.sh; exit 0
+            fi
+            echo "push rejected on try $i (another job pushed first); starting again from main"
+            sleep $((20 * i))
+          done
+          echo "::error::could not push the flip after 4 tries"; exit 1

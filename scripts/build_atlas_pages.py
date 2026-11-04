@@ -58,6 +58,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import html_slim as HS  # noqa: E402
+import share_host as SH  # noqa: E402
 import source_links as SL  # noqa: E402  no direct links to data sources
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
@@ -1637,6 +1638,8 @@ GA = ("<script>/* agsist-theme-early: saved theme, else the device's, set before
 
 def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None, full_title=None):
     image = image or "/img/og/agsist.jpg"
+    # the share cards: agsist.com, or agsist-data once the seed job lists farmland-atlas/og (share_host.py)
+    img_url = SH.url(image)
     alt = alt or "AGSIST Farmland Atlas: cash rent, land value and risk for every U.S. county"
     ld = json.dumps({"@context": "https://schema.org", "@graph": extra_ld or []}, ensure_ascii=False, indent=1)
     ld = ld.replace("</", "<\\/")
@@ -1664,7 +1667,7 @@ def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None, f
   <meta property="og:title" content="{esc(title)}">
   <meta property="og:description" content="{esc(desc)}">
   <meta property="og:url" content="{esc(canon)}">
-  <meta property="og:image" content="{esc(SITE + image)}">
+  <meta property="og:image" content="{esc(img_url)}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="{"image/png" if ".png" in image else "image/jpeg"}">
@@ -1673,7 +1676,7 @@ def head(title, desc, canon, extra_ld=None, robots=None, image=None, alt=None, f
   <meta name="twitter:site" content="@agsist">
   <meta name="twitter:title" content="{esc(title)}">
   <meta name="twitter:description" content="{esc(desc)}">
-  <meta name="twitter:image" content="{esc(SITE + image)}">
+  <meta name="twitter:image" content="{esc(img_url)}">
   <meta name="twitter:image:alt" content="{esc(alt)}">
   <script type="application/ld+json">
 {ld}
