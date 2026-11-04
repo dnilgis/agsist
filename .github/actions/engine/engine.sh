@@ -3,7 +3,12 @@
 # branch of the private repo and is copied into the checkout before it runs.
 #
 # In Actions (the "Engine checkout" step, .github/actions/engine/action.yml):
-#   engine.sh plan              decide in-repo or private (MODE, HAVE_TOKEN), write step outputs
+#   engine.sh plan              decide in-repo or private (MODE, HAVE_TOKEN), write step outputs,
+#                               and install the commit guard (engine.sh hook)
+#   engine.sh hook              install the job's pre-commit guard: a new file under data/ whose name date
+#                               is more than 2 days ahead (UTC) is left out of the commit with a warning,
+#                               unless .github/future-dated-data.txt lists it (Nov 4, 2026: a test's
+#                               made-up day, data/daily-sent/2099-01-01.json, reached main in a commit)
 #   engine.sh overlay <dir>     copy the engine paths from <dir> (the private checkout) into place
 # In a local session (from anywhere inside the checkout):
 #   engine.sh pull              clone or update the engine next to this checkout
@@ -58,6 +63,54 @@ exclude_paths() {
   done
 }
 
+# The commit guard (Nov 4, 2026). scripts/test_list_fallback.py once wrote the sent copy of its made-up
+# day, data/daily-sent/2099-01-01.json, into the real checkout, and a later commit carried it to main.
+# Every job that runs code passes through this script first, so every job's `git commit` gets a
+# pre-commit hook: a NEW file under data/ whose earliest date in its path (YYYY-MM-DD) is more than
+# 2 days after today (UTC) is taken out of the commit with a warning. The data commit itself goes on
+# (rule 15: fail soft); a commit left with nothing in it is refused, never made empty. Real future
+# files (forecasts, schedules) are listed with a reason in .github/future-dated-data.txt (a line
+# "<path> <reason>"; a path ending in / covers its folder). test/future-dated-data.test.mjs runs it.
+GUARD_MARK="agsist commit guard (engine.sh hook)"
+install_hook() {
+  local hooks hook
+  hooks="$(git -C "$ROOT" rev-parse --git-path hooks)"
+  case "$hooks" in /*) ;; *) hooks="$ROOT/$hooks" ;; esac
+  hook="$hooks/pre-commit"
+  if [ -e "$hook" ] && ! grep -qF "$GUARD_MARK" "$hook"; then
+    echo "::notice title=commit guard not installed::a pre-commit hook is already there"; return 0
+  fi
+  mkdir -p "$hooks"
+  cat > "$hook" <<'HOOK'
+#!/bin/bash
+# agsist commit guard (engine.sh hook). Written by .github/actions/engine/engine.sh; see install_hook there.
+root="$(git rev-parse --show-toplevel)" || exit 0
+lim="$(date -u -d '+2 days' +%F)" || exit 0
+allow="$root/.github/future-dated-data.txt"
+dropped=0
+while IFS= read -r -d '' f; do
+  case "$f" in data/*) ;; *) continue ;; esac
+  d="$(printf '%s\n' "$f" | grep -oE '(19|20)[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])' | sort | head -1)"
+  [ -n "$d" ] && [[ "$d" > "$lim" ]] || continue
+  ok=0
+  if [ -f "$allow" ]; then
+    while read -r p _; do
+      case "$p" in ''|'#'*) continue ;; */) [[ "$f" == "$p"* ]] && ok=1 ;; *) [ "$f" = "$p" ] && ok=1 ;; esac
+    done < "$allow"
+  fi
+  [ "$ok" = 1 ] && continue
+  git rm --cached -q -- "$f" && dropped=$((dropped + 1))
+  echo "::warning title=test-shaped file left out of the commit::$f is dated $d, more than 2 days ahead; a test or a self-test wrote it into the checkout. Real future files go in .github/future-dated-data.txt with a reason."
+done < <(git diff --cached --name-only --diff-filter=A -z)
+if [ "$dropped" -gt 0 ] && git diff --cached --quiet; then
+  echo "commit guard: nothing left to commit after $dropped test-shaped file(s) were left out"
+  exit 1
+fi
+exit 0
+HOOK
+  chmod +x "$hook"
+}
+
 # copy <src> into the checkout, path by path
 overlay_from() {
   local src="$1" excl="${2:-exclude}" p kept=0 n
@@ -87,7 +140,11 @@ overlay_from() {
 
 cmd="${1:-}"; shift || true
 case "$cmd" in
+  hook)
+    install_hook
+    echo "engine: commit guard installed" ;;
   plan)
+    install_hook
     mode="${FIXED_MODE:-${MODE:-}}"
     out="${GITHUB_OUTPUT:-/dev/null}"
     if [ "$mode" = "private" ]; then
@@ -169,5 +226,5 @@ case "$cmd" in
     fi
     echo "engine: $n file(s) only in the engine were deleted or renamed on main since $last; the save deletes them there too ($m files under ${PATHS[*]})" ;;
   *)
-    sed -n '2,26p' "$0"; exit 2 ;;
+    sed -n '2,31p' "$0"; exit 2 ;;
 esac
