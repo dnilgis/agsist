@@ -32,6 +32,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from basis_method import relative_outlier  # noqa: E402  (the one outlier rule)
+from build_basis_history import row_state  # noqa: E402  (the one rule for a row's state)
 
 REPO = os.environ.get("AGSIST_REPO", ".")
 CHANGES_GLOB = os.path.join(REPO, "data/basis/changes-*.json")
@@ -109,15 +110,29 @@ def key_for(state, facility, city, commodity, symbol, delivery_month):
     return "|".join([state, facility, city, commodity, symbol, delivery_month])
 
 
-def build():
+# A change-log row with no state (Nov 4, 2026: HILLSIDE GRAIN, LLC | GOLDEN CITY, MO, soybeans ZSX26,
+# in changes-2026-08-03.json) was filed under the state "", so every run rewrote a nameless
+# data/basis-sparklines/.json that no page can ask for. The logs are never rewritten, so the state is
+# read the way build_basis_history.py reads it (the state at the end of the city field); a row with
+# nothing to read is skipped and counted in build()'s `stateless`, never written.
+def build(stats=None):
     files = sorted(glob.glob(CHANGES_GLOB))
     by_state = {}  # state -> key -> list of {date, to}
+    stats = {} if stats is None else stats
+    stats.update(recovered=0, stateless=0)
     for fp in files:
         with open(fp) as f:
             d = json.load(f)
         date = d["date"]
         for row in d["changes"]:
             state, facility, city, commodity, symbol, dm, frm, to = row[:8]   # a ninth column (idx) since Oct 27
+            st = row_state(state, city)
+            if st is None:
+                stats["stateless"] += 1
+                continue
+            if st != state:
+                stats["recovered"] += 1
+            state = st
             k = key_for(state, facility, city, commodity, symbol, dm)
             by_state.setdefault(state, {}).setdefault(k, [])
             pts = by_state[state][k]
@@ -149,6 +164,8 @@ def write(out, generated):
     os.makedirs(OUT_DIR, exist_ok=True)
     written = []
     for state, payload in out.items():
+        if not re.fullmatch(r"[A-Z]{2}", str(state)):
+            raise ValueError("refusing to write a sparkline file for state %r" % (state,))
         payload["generated"] = generated
         path = os.path.join(OUT_DIR, f"{state}.json")
         with open(path, "w") as f:
@@ -189,6 +206,34 @@ def selftest():
         assert pts[1] == {"date": "2026-01-02", "cents": -40}, pts[1]
         print("selftest OK: 2 real points, duplicate same-date row dropped, values correct")
 
+        # the real case (changes-2026-08-03.json): a row with a blank state is filed by the state
+        # in its city field; a row with nothing to read is skipped and counted; neither writes ".json"
+        with open(os.path.join(td, "data/basis/changes-2026-08-03.json"), "w") as f:
+            json.dump({"date": "2026-08-03", "changes": [
+                ["", "HILLSIDE GRAIN, LLC", "GOLDEN CITY, MO", "soybeans", "ZSX26", "NOV26", None, -70],
+                ["", "NOWHERE CO", "SOMEWHERE", "corn", "ZCZ26", "DEC26", None, -20],
+                [None, "NOWHERE CO", "", "corn", "ZCZ26", "DEC26", None, -20],
+            ]}, f)
+        global OUT_DIR
+        old_out = OUT_DIR
+        REPO, CHANGES_GLOB, OUT_DIR = td, os.path.join(td, "data/basis/changes-*.json"), os.path.join(td, "out")
+        stats = {}
+        out = build(stats)
+        written = write(out, "2026-11-04T00:00:00Z")
+        REPO, CHANGES_GLOB, OUT_DIR = old_repo, old_glob, old_out
+        assert stats == {"recovered": 1, "stateless": 2}, stats
+        assert "" not in out and None not in out, sorted(map(str, out))
+        assert key_for("MO", "HILLSIDE GRAIN, LLC", "GOLDEN CITY, MO", "soybeans", "ZSX26", "NOV26") in out["MO"]["series"]
+        names = sorted(os.listdir(os.path.join(td, "out")))
+        assert names == ["IA.json", "MO.json"], names
+        assert sorted(os.path.basename(w) for w in written) == names, written
+        try:
+            write({"": out["MO"]}, "x")
+            raise AssertionError("write() took a blank state")
+        except ValueError:
+            pass
+        print("selftest OK: blank state read from the city field (MO), 2 stateless rows skipped, no nameless file")
+
     # the misread screen, hand-worked: five elevators at -10 to -20c on Dec '26
     # corn, one logs -200c. Median of the others -15, MAD 2.5c -> scale floors
     # at 15c, gate 75c; -200 is 185c off: dropped. -40 is 25c off: kept.
@@ -220,7 +265,11 @@ if __name__ == "__main__":
         ok = selftest()
         sys.exit(0 if ok else 1)
 
-    out = build()
+    stats = {}
+    out = build(stats)
+    if stats["recovered"] or stats["stateless"]:
+        print(f"{stats['recovered']} change row(s) with no state filed by the state in their city field; "
+              f"{stats['stateless']} with nothing to read skipped (no file is written for a blank state)")
     total_keys = sum(len(v["series"]) for v in out.values())
     total_points = sum(len(pts) for v in out.values() for pts in v["series"].values())
     print(f"{len(out)} states, {total_keys} facility/commodity/contract keys, {total_points} real change-points")
