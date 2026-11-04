@@ -239,6 +239,11 @@ test("the comps table carries every field the brief lists", () => {
   // names only after the reader taps Show buyer and seller (Sig, Oct 27; lead, Nov 4, 2026): "shown"
   const h0 = CR.compsHTML([r], true);
   assert.ok(!h0.includes("SYNTHETIC") && h0.includes("Seller and buyer: tap Show buyer and seller"), "no name before the tap");
+  assert.ok(CR.compsHTML([r], "later").includes("Seller and buyer: names come after the next update") && !CR.compsHTML([r], "later").includes("SYNTHETIC"),
+    "a county file that still holds names: no button, the next-update wording");
+  const held = Object.assign({}, r, { legal: "[LEGAL WITH A NAME 0123456789]", legalNamed: "PT SW EXC TO SYNTHETIC SELLER" });
+  assert.ok(!CR.compsHTML([held], true).includes("EXC TO") && CR.compsHTML([held], true).includes("names a buyer or seller") && CR.compsHTML([held], "shown").includes("EXC TO"),
+    "a legal that names a party shows only after the tap");
   const h = CR.compsHTML([r], "shown");
   for (const want of ["Sep 30, 2026", "$464,000", "69.9", "$6,640", "1-2-3", "first of 2", "Section 8, T34N, R11W", "Land Contract, Sale", "Arm’s-length screen: Passes", "SYNTHETIC SELLER", "SYNTHETIC BUYER", "3.2", "Town A", "Agricultural, Residential", "61/100 NCCPI", "doc 923949", "buildings"]) assert.ok(h.includes(want), want);
   assert.match(CR.compsHTML([Object.assign({}, r, { soil: null, soilWhy: "no parcel map here" })], false), /no parcel map here[\s\S]*Seller and buyer not in our copy/);

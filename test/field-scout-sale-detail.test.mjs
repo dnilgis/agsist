@@ -236,15 +236,18 @@ test("no em dashes in the sale panel copy", () => {
 test("names load only on the tap, from the names file, and only when it matches the county file's read", async () => {
   const f = Object.assign(wiFile([["900030", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-3", "0", "", 0, null, null, null, ""]]),
     { cols: COLS.filter((c) => c !== "grantor" && c !== "grantee").concat(["si", "bi"]) });
-  f.rows = [["900030", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-3", "0", "", 0, null, "", 0, 1]];
-  const names = { n: 1, fetched_utc: f.fetched_utc, s: ["SYNTHETIC SELLER Z"], b: ["SYNTHETIC BUYER Y", "SYNTHETIC BUYER Z"] };
+  f.rows = [["900030", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-3", "0", "[LEGAL WITH A NAME 0123456789]", 0, null, "", 0, 1]];
+  const names = { n: 1, fetched_utc: f.fetched_utc, s: ["SYNTHETIC SELLER Z"], b: ["SYNTHETIC BUYER Y", "SYNTHETIC BUYER Z"], lg: { "0": "PT SW EXC TO Z SYNTHETIC" } };
   const seen = [];
   const keep = globalThis.fetch;
   globalThis.fetch = (u) => { seen.push(u); return Promise.resolve({ ok: true, json: () => Promise.resolve(u.endsWith("55005.json") ? names : null) }); };
   try {
     const r = F.rowObjs(f)[0];
-    assert.doesNotMatch(F.saleDetailHTML(r, f, []), /SYNTHETIC/);
+    const before = F.saleDetailHTML(r, f, []);
+    assert.doesNotMatch(before, /SYNTHETIC|LEGAL WITH A NAME/);
+    assert.match(before, /<span id="fl-sd-legal"><span class="fl-miss">names a buyer or seller: shown with Show buyer and seller/, "a held legal waits for the tap");
     assert.equal(await F.loadNames([r]), 1);
+    assert.equal(r.legalNamed, "PT SW EXC TO Z SYNTHETIC", "the tap brings the held legal");
     assert.deepEqual([r.grantor, r.grantee], ["SYNTHETIC SELLER Z", "SYNTHETIC BUYER Z"], "the row's si and bi pick its names");
     assert.deepEqual(seen, ["/data/land/wi/names/55005.json"], "one request, to the names file");
     const g = Object.assign({}, f, { fetched_utc: "2026-11-03T00:00:00Z", names_file: "/data/land/wi/names/55001.json", fips: "55001" });
