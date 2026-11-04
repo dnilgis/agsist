@@ -1,0 +1,97 @@
+name: agsist-data seed (share images)
+
+# ONE-TIME, BY HAND (Nov 4, 2026; growth plan phase 1, scripts/share_host.py). Moves the share images
+# (og:image) of the Farmland Atlas (farmland-atlas/og/) and the Daily (data/social/) to the public repo
+# dnilgis/agsist-data, served at https://dnilgis.github.io/agsist-data/ at the same paths. In order:
+#   1. copy each folder there (scripts/agsist_data.sh, AGSIST_DATA_TOKEN: contents write on that repo only);
+#   2. wait until a sample of each folder answers 200 there with the same bytes as here (Pages takes a
+#      few minutes after a push). If it does not within 20 minutes the run stops here: nothing on
+#      agsist.com has changed, and a page never points at an image that is not there;
+#   3. with flip on: list the folders in data/share-host.json and rewrite every committed page that
+#      names them on agsist.com, in one commit (a fresh worktree of main, retried from scratch when
+#      another job pushed first). The builders read data/share-host.json, so later rebuilds keep it.
+# The files stay in this repository until a later change removes them. Safe to run again: a folder
+# already listed keeps its date and an unchanged copy pushes nothing. No schedule.
+on:
+  workflow_dispatch:
+    inputs:
+      folders:
+        description: "Folders to move (space separated)"
+        required: false
+        default: "farmland-atlas/og data/social"
+      flip:
+        description: "After the copies answer, point the pages at agsist-data"
+        type: boolean
+        required: false
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agsist-data-seed
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
+      - name: Check the folder names
+        env:
+          FOLDERS: ${{ inputs.folders }}
+        run: |
+          for f in $FOLDERS; do
+            case " farmland-atlas/og data/social " in *" $f "*) ;; *) echo "::error::not a share image folder: $f"; exit 1 ;; esac
+          done
+
+      - name: Copy to agsist-data
+        env:
+          FOLDERS: ${{ inputs.folders }}
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: bash scripts/agsist_data.sh sync $FOLDERS
+
+      - name: Check the copies answer with the same bytes
+        env:
+          FOLDERS: ${{ inputs.folders }}
+        run: python3 scripts/share_host.py verify $FOLDERS --wait 1200
+
+      - name: Point the pages at agsist-data
+        if: inputs.flip
+        env:
+          FOLDERS: ${{ inputs.folders }}
+          GH_TOKEN: ${{ github.token }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
+        run: |
+          set -u
+          W="$RUNNER_TEMP/flip"
+          for i in 1 2 3 4; do
+            git worktree remove --force "$W" 2>/dev/null || rm -rf "$W"
+            git fetch -q --depth 1 origin main
+            git worktree add -q --detach "$W" FETCH_HEAD
+            # this checkout's scripts (engine included) work on the fresh copy of main
+            python3 scripts/share_host.py --root "$W" mark $FOLDERS
+            python3 scripts/share_host.py --root "$W" flip --list > "$RUNNER_TEMP/flipped.txt"
+            echo "pages rewritten: $(wc -l < "$RUNNER_TEMP/flipped.txt")"
+            python3 scripts/share_host.py --root "$W" check
+            git -C "$W" add data/share-host.json
+            git -C "$W" add --pathspec-from-file="$RUNNER_TEMP/flipped.txt"
+            if git -C "$W" diff --cached --quiet; then echo "nothing to change"; exit 0; fi
+            git -C "$W" -c user.name="AGSIST Bot" -c user.email="bot@agsist.com" \
+              commit -q -m "share images: served from agsist-data ($FOLDERS)"
+            if git -C "$W" push -q origin HEAD:main; then
+              echo "pushed on try $i"; bash .github/pages-kick.sh; exit 0
+            fi
+            echo "push rejected on try $i (another job pushed first); starting again from main"
+            sleep $((20 * i))
+          done
+          echo "::error::could not push the flip after 4 tries"; exit 1

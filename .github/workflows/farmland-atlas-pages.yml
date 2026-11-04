@@ -2,7 +2,7 @@ name: farmland-atlas-pages
 
 # Rebuilds the static Farmland Atlas pages: one page per county (3,148), one per
 # state (50), /farmland-atlas/states/, /farmland-atlas/data, the CSV and JSON
-# downloads, the share images (farmland-atlas/og/) and sitemap-atlas.xml. OFFLINE: reads data/atlas/ and data/tenure/,
+# downloads, the share images (farmland-atlas/og/, copied to dnilgis/agsist-data too) and sitemap-atlas.xml. OFFLINE: reads data/atlas/ and data/tenure/,
 # calls no API, needs no key. MACHINE-OWNED: never hand-edit the emitted files,
 # edit scripts/build_atlas_pages.py.
 #
@@ -90,6 +90,16 @@ jobs:
       # Uses the Chromium that Playwright installed above.
       - name: Draw share images
         run: python scripts/build_atlas_cards.py
+
+      # The share images also go to the public repo dnilgis/agsist-data, served at
+      # dnilgis.github.io/agsist-data/ (Nov 4, 2026; scripts/share_host.py). Before the commit
+      # below, so a page never names a card that is not there yet. --soft: a failure only warns
+      # while the pages still name agsist.com; once data/share-host.json lists farmland-atlas/og
+      # it stops the run before the commit.
+      - name: Copy share images to agsist-data
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: bash scripts/agsist_data.sh sync --soft farmland-atlas/og
 
       - name: Commit if changed
         id: commit
