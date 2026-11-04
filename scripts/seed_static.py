@@ -839,6 +839,19 @@ def seed_markets(prices, today):
             seeds["mk:" + chip] = _e(lab) + " &middot; nearby"
         else:
             seeds["mk:" + chip] = "most-active"
+    # 2026-11-04 (fx/soyroll2): the second corn and soybean cards are the next
+    # harvest contract after the headline (harvest_of), named on their chip; a
+    # card with none is hidden. They read the aliases and showed Nov '26 beans
+    # past first notice beside the Jan '27 headline.
+    dup, chips = [], {}
+    for crop, dk, card in (("corn", "corn-dec", "pc-card-corn-dec"), ("beans", "beans-nov", "pc-card-bean-nov")):
+        h = harvest_of(q, crop)
+        if h:
+            q[dk] = h[1]
+            chips[card] = _e(h[2] or "")
+        else:
+            q.pop(dk, None)
+            dup.append("#" + card)
     for root, chip in MK_CHIPS:
         r = nearby_of(q, root)
         if r:
@@ -868,20 +881,26 @@ def seed_markets(prices, today):
         rlo, rhi = pricefmt.range_ends(lo, hi) if (lo is not None and hi is not None) else ("-", "-")
         seeds["mk:rlo-" + sym] = rlo
         seeds["mk:rhi-" + sym] = rhi
-    # the nearby card and the deferred card are the same contract in the fall;
-    # the page hides the repeat once prices load, so the build hides it too
-    # (a card vanishing after first paint pulled the whole grid up)
-    dup = []
-    for crop, dk, card in (("corn", "corn-dec", "pc-card-corn-dec"), ("beans", "beans-nov", "pc-card-bean-nov")):
-        nb, dq = (prices.get("quotes") or {}).get(crop + "-nearby"), (prices.get("quotes") or {}).get(dk)
-        if nb and dq and nb.get("ticker") and nb.get("ticker") == dq.get("ticker"):
-            dup.append("#" + card)
+    # a card with no next harvest contract is hidden by the build too (a card
+    # vanishing after first paint pulled the whole grid up)
     seeds["mk:dup"] = ('<style id="mk-dup-css">' + ",".join(dup) + "{display:none}</style>") if dup else ""
     seeds["mk:src"] = _e(mk_source(q))
     seeds["mk:status"] = ('<time class="px-stamp" datetime="' + _e(str(fetched)) + '">' + _e(mk_board(q, fetched)) + "</time>"
                           " &middot; each change line carries its own close date")
     print(f"  markets.html: {n} of {len(MK_MAP)} quotes seeded")
-    return _write_seeds("markets.html", seeds)
+    return _write_seeds("markets.html", seeds, extra=lambda t: mk_card_chips(t, chips))
+
+
+def mk_card_chips(t, chips):
+    """The month chip on the two second cards (pc-card-corn-dec, pc-card-bean-nov),
+    written by the build like any seed: the chip sits on the card's own line,
+    which only this builder edits, so a PR never has to (fx/soyroll2: a PR that
+    edited a seeded line conflicted with every 15-minute price commit). A card
+    with no next harvest contract keeps its chip and is hidden by mk:dup."""
+    for card, lab in chips.items():
+        t = re.sub(r'(id="' + re.escape(card) + r'"><div class="pc-head"><div class="pc-name">[^<]*</div><span class="pc-contract">)[^<]*(</span>)',
+                   lambda m: m.group(1) + lab + m.group(2), t, count=1)
+    return t
 
 
 def seed_homepage(prices, today):
@@ -908,7 +927,11 @@ def seed_homepage(prices, today):
         seeds.update(hero_futures_seeds({}, fetched))  # back to the loading bar
         return _write_seeds("index.html", seeds)
     for k in ("corn", "beans"):
-        d = q.get(k) or {}
+        # the headline contract geo.js swaps in (<crop>-nearby), not the
+        # continuous series: on Nov 4 2026 ZS=F was still Nov '26 ($11.94 1/4)
+        # while the card drew Jan '27 ($12.06 1/4) a moment later (fx/soyroll2)
+        r = nearby_of(q, k)
+        d = (r[0] if r else None) or {}
         usd = grain_dollars(d)
         if not usd:
             seeds["hp:" + k] = "-"
@@ -930,23 +953,30 @@ HB_SKEL = '<span class="hb-skel" aria-hidden="true"></span>'
 
 
 def hero_futures_seeds(q, fetched):
-    """The hero band's two futures tiles (Dec corn, Nov beans), Sig Oct 19:
+    """The hero band's two futures tiles (corn, soybeans), Sig Oct 19:
     baked so a crawler sees prices, then index.html paintFut draws over them
     on load. Same quote, same formatter (AG.px slash, hb-frac) and the same
     label and change markup as paintFut; the moment line uses quote_when, the
     words the corn and soybean cards lower down are seeded with. No quote on
-    file leaves the tile on its loading bar, as before."""
+    file leaves the tile on its loading bar, as before.
+
+    2026-11-04 (fx/soyroll2): the tiles are the HEADLINE contract, the month
+    every elevator quotes basis against (nearby_of: <crop>-nearby, rolled at
+    first notice by fetch_prices.add_nearby). They read the harvest aliases
+    (corn-dec, beans-nov) and printed Nov '26 beans past first notice over a
+    basis line against Jan '27. Twin of AgPxStamp.headline (price-local.js)."""
     seeds = {}
-    for key, tile, word, mon in (("corn-dec", "fc", "corn", "Dec"), ("beans-nov", "fs", "bean", "Nov")):
-        d = q.get(key) or {}
+    for crop, tile, word, cap in (("corn", "fc", "corn", "Corn"), ("beans", "fs", "bean", "Bean")):
+        r = nearby_of(q, crop)
+        d = (r[0] if r else None) or {}
         m = re.match(r"^Z[CS]([FGHJKMNQUVXZ])(\d{2})", str(d.get("ticker") or ""))
-        lab = (_HB_MCODE[m.group(1)] + " \u2019" + m.group(2)) if m else mon
+        lab = (_HB_MCODE[m.group(1)] + " \u2019" + m.group(2) + " " + word + " futures") if m else cap + " futures"
         if not grain_dollars(d):
-            seeds["hp:" + tile + "-k"] = mon + " " + word + " futures"
+            seeds["hp:" + tile + "-k"] = cap + " futures"
             seeds["hp:" + tile] = HB_SKEL
             seeds["hp:" + tile + "-s"] = ""
             continue
-        seeds["hp:" + tile + "-k"] = lab + " " + word + " futures"
+        seeds["hp:" + tile + "-k"] = lab
         seeds["hp:" + tile] = ('<span class="hb-n">' +
                                pricefmt.price(d["close"], style="slash", frac_class="hb-frac") + "</span>")
         diff = d.get("netChange")
@@ -3585,6 +3615,37 @@ def new_crop_quote(q, root, mon):
         if key in q:
             return q[key]
     return q.get(root + "-" + mon)
+
+
+def harvest_of(q, crop):
+    """(key, quote, label) for the next harvest contract after the HEADLINE
+    month (2026-11-04, fx/soyroll2): Dec corn / Nov soybeans of the year after
+    the headline when the headline is that month or later (Dec '26 corn
+    headline: Dec '27; Jan '27 soybean headline: Nov '27). With that month not
+    on file, the harvest alias only when it is a later month than the headline,
+    never the headline's own month or one past first notice. None otherwise.
+    Twin of AgPxStamp.harvest in components/price-local.js."""
+    q = q or {}
+    mon = {"corn": "dec", "beans": "nov"}.get(crop)
+    if not mon:
+        return None
+    r = nearby_of(q, crop)
+    m = re.match(r"^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b", str(((r or (None,))[0] or {}).get("ticker") or ""))
+    key, d = None, None
+    if m:
+        hm, ny, nm = _MON3.index(mon) + 1, 2000 + int(m.group(2)), _FCODE.index(m.group(1)) + 1
+        key = crop + "-" + mon + str(ny + 1 if nm >= hm else ny)[-2:]
+        d = q.get(key)
+    if not d or d.get("close") is None:
+        key = crop + "-" + mon
+        d = q.get(key)
+        a = re.match(r"^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b", str((d or {}).get("ticker") or ""))
+        if m and (not a or int(a.group(2)) * 12 + _FCODE.index(a.group(1)) <= int(m.group(2)) * 12 + _FCODE.index(m.group(1))):
+            return None
+    if not d or d.get("close") is None:
+        return None
+    a = re.match(r"^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b", str(d.get("ticker") or ""))
+    return key, d, ((_HB_MCODE[a.group(1)] + " '" + a.group(2)) if a else None)
 
 
 def _nearby_label(prices, crop, fallback):

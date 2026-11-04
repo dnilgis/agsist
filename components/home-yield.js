@@ -86,39 +86,53 @@
   /* Reads the rendered cards rather than the feed: the two cards are fed by
      different keys and a symbol match in the data would not prove the reader
      is looking at the same two numbers. */
+  /* 2026-11-04 (fx/soyroll2): the second card is the NEXT harvest contract
+     after the headline month (AgPxStamp.harvest, components/price-local.js),
+     worked out from the file, not a pinned year. Past first notice the
+     harvest alias (beans-nov = Nov '26) sits BEFORE the headline (Jan '27)
+     and the card printed it; now it is Nov '27. */
   var FORWARD_YEAR={
-    'corn-dec':{dataKey:'corn-dec27',rangeId:'corn-dec',sym:'corn-dec',label:"Dec '27",tick:"Corn Dec '27"},
-    'bean-nov':{dataKey:'beans-nov27',rangeId:'beans-nov',sym:'beans-nov',label:"Nov '27",tick:"Soybeans Nov '27"}
+    'corn-dec':{crop:'corn',alias:'corn-dec',rangeId:'corn-dec',sym:'corn-dec',name:'Corn'},
+    'bean-nov':{crop:'beans',alias:'beans-nov',rangeId:'beans-nov',sym:'beans-nov',name:'Soybeans'}
   };
+  function forwardOf(fwd){
+    var q=window.AGSIST_PRICE_DATA||{},h=window.AgPxStamp&&AgPxStamp.harvest?AgPxStamp.harvest(q,fwd.crop):null;
+    if(!h||!h.label)return null;
+    return {dataKey:h.key,rangeId:fwd.rangeId,sym:fwd.sym,label:h.label,tick:fwd.name+' '+h.label,
+      moved:h.key!==fwd.alias&&!!(h.q&&h.q.ticker)&&h.q.ticker!==((q[fwd.alias]||{}).ticker)};
+  }
   function applyForwardYear(domSuffix,fwd){
     var q=window.AGSIST_PRICE_DATA||{};
     var fq=q[fwd.dataKey];
-    if(!fq||fq.close==null||fq.wk52_lo==null||fq.wk52_hi==null)return false;
+    if(!fq||fq.close==null)return false;
+    /* writes only what differs: the observer below watches these elements,
+       and a same-text write is still a mutation (a loop once the swap holds) */
+    var put=function(el,v){if(el&&el.textContent!==v)el.textContent=v;};
     if(typeof fmtPrice!=='function'||typeof fmtChange!=='function')return false;
     var priceEl=document.getElementById('pcp-'+domSuffix);
     var chgEl=document.getElementById('pcc-'+domSuffix);
     var prevEl=document.getElementById('pcprev-'+domSuffix);
     if(!priceEl||!chgEl)return false;
-    priceEl.textContent=fmtPrice(fq.close,2,true);
+    put(priceEl,fmtPrice(fq.close,2,true));
     /* a withheld move (move_withheld or roll) prints no change, 2026-11-02 */
     var held=!!(fq.move_withheld||fq.roll);
     var chgObj=held?{text:'contract roll',cls:'nc'}:fmtChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
-    chgEl.textContent=chgObj.text;
+    put(chgEl,chgObj.text);
     chgEl.className='pc-chg-val '+chgObj.cls;
-    if(prevEl&&held)prevEl.textContent='';
-    else if(prevEl&&fq.open!=null)prevEl.textContent='prev: '+fmtPrice(fq.open,2,true)+' '+(fq.ticker||'');
+    if(prevEl&&held)put(prevEl,'');
+    else if(prevEl&&fq.open!=null)put(prevEl,'prev: '+fmtPrice(fq.open,2,true)+' '+(fq.ticker||''));
     /* the card's overnight line (geo.js wrote the swapped-out contract's) follows the contract shown, 2026-10-20 */
     var ovCard=priceEl.closest?priceEl.closest('.pc'):null,ovEl=ovCard&&ovCard.querySelector('.pc-ovn');
     if(ovEl){var ovH=window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(fq,function(v){return AG.px.price(v,{style:'slash'});},function(n){return AG.px.move(n,{style:'slash',sign:true});},null,{short:true}):'';
-      ovEl.innerHTML=ovH;ovEl.hidden=!ovH;}
+      if(ovEl.innerHTML!==ovH)ovEl.innerHTML=ovH;ovEl.hidden=!ovH;}
     var lo=fq.wk52_lo/100,hi=fq.wk52_hi/100,cl=fq.close/100;
-    if(hi>lo){
+    if(fq.wk52_lo!=null&&fq.wk52_hi!=null&&hi>lo){
       var pct=Math.max(0,Math.min(100,((cl-lo)/(hi-lo))*100));
       var elLo=document.getElementById('pcrl-'+fwd.rangeId+'-lo'), elHi=document.getElementById('pcrl-'+fwd.rangeId+'-hi');
       var elF=document.getElementById('pcrf-'+fwd.rangeId), elD=document.getElementById('pcrd-'+fwd.rangeId);
       var fr=AG.px.range(fq.wk52_lo,fq.wk52_hi,{style:'slash'});
-      if(elLo)elLo.textContent=fr.lo;
-      if(elHi)elHi.textContent=fr.hi;
+      put(elLo,fr.lo);
+      put(elHi,fr.hi);
       if(elF)elF.style.width=pct.toFixed(1)+'%';
       if(elD)elD.style.left=pct.toFixed(1)+'%';
     }
@@ -129,9 +143,9 @@
       var tp=fmtTickerPrice(fq.close,true,2), tc=held?{text:'contract roll',cls:'nc'}:fmtTickerChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
       document.querySelectorAll('[data-sym="'+fwd.sym+'"]').forEach(function(el){
         var le=el.querySelector('.t-label'), pe=el.querySelector('.t-price'), ce=el.querySelector('.t-chg');
-        if(le)le.textContent=fwd.tick;
-        if(pe)pe.textContent=tp;
-        if(ce){ce.textContent=tc.text;ce.className='t-chg '+tc.cls;}
+        put(le,fwd.tick);
+        put(pe,tp);
+        if(ce){put(ce,tc.text);ce.className='t-chg '+tc.cls;}
       });
     }
     return true;
@@ -155,9 +169,18 @@
       while(card&&card!==document.body&&(' '+(card.className||'')+' ').indexOf(' pc ')<0)card=card.parentNode;
       if(!card||card===document.body)return;
       var same=at&&at!=='--'&&at===bt&&as&&as===bs;
-      var fwd=FORWARD_YEAR[pair[1]];
-      var swapped=(same&&fwd)?applyForwardYear(pair[1],fwd):false;
-      card.style.display=(same&&!swapped)?'none':'';
+      var fwd=forwardOf(FORWARD_YEAR[pair[1]]);
+      /* the harvest alias is not a later month than the headline (the same
+         contract, or past first notice): show the next harvest, else nothing */
+      var moved=!!(fwd&&fwd.moved);
+      /* once the swap holds, leave it: the ticker and card formatters in
+         home.js rewrite the same price their own way, and redoing the swap
+         on each of their writes never settles. A new write to this card
+         (geo.js refreshing the alias) changes its price text: swap again. */
+      var held=moved&&card.getAttribute('data-fwd')===fwd.dataKey&&card.getAttribute('data-fwd-px')===bt;
+      var swapped=held?true:(((same||moved)&&fwd)?applyForwardYear(pair[1],fwd):false);
+      if(swapped&&!held&&fwd){card.setAttribute('data-fwd',fwd.dataKey);card.setAttribute('data-fwd-px',(b.textContent||'').trim());}
+      card.style.display=((same||moved)&&!swapped)?'none':'';
       var keep=a.parentNode;
       while(keep&&keep!==document.body&&(' '+(keep.className||'')+' ').indexOf(' pc ')<0)keep=keep.parentNode;
       var lbl=keep&&keep.querySelector?keep.querySelector('.pc-contract'):null;
@@ -173,7 +196,7 @@
         var want=(same&&!swapped)?(base+NEW_CROP_SUFFIX):base;
         if(cur!==want)lbl.textContent=want;
       }
-      if(same&&swapped){
+      if((same||moved)&&swapped){
         var bLbl=card.querySelector&&card.querySelector('.pc-contract');
         if(bLbl&&bLbl.textContent!==fwd.label)bLbl.textContent=fwd.label;
       }

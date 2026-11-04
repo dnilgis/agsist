@@ -129,7 +129,9 @@ HEAD_SETTLE_S = 180         # a head this old with no pr-checks run at all gets 
 def squash_message(pr):
     """(commit_title, commit_message) for the squash: the title plus " (#N)", and the body alone with its AI
     footer lines stripped. The commits' own messages are never used."""
-    title = "%s (#%d)" % ((pr.get("title") or "").strip(), pr["number"])
+    title = (pr.get("title") or "").strip()
+    if not re.search(r"\(#%d\)$" % pr["number"], title):   # a title that already ends in its own (#N) keeps one
+        title = "%s (#%d)" % (title, pr["number"])
     return title, strip_footer((pr.get("body") or "").replace("\r\n", "\n")).strip()
 
 
@@ -753,6 +755,8 @@ def selftest():
     assert message == "Gift cards: store prepaid on every card.\n\nTests: 30 pass.", repr(message)
     assert not re.search(r"(?i)claude|co-authored|generated", title + message), message
     assert squash_message(dict(pr, title="T", body=None)) == ("T (#1)", "")
+    assert squash_message(dict(pr, title="T (#1)", body=None))[0] == "T (#1)", "no doubled suffix"
+    assert squash_message(dict(pr, title="Follow-up to (#12)", body=None))[0] == "Follow-up to (#12) (#1)", "another PR's number is not its own"
     # the merge call itself: a squash with that title and message, never a merge commit or GitHub's default body
     src = open(os.path.abspath(__file__), encoding="utf-8").read()
     put = src[src.index("title, message = squash_message(pr)\n"):src.index("except urllib.error.HTTPError as e:\n            comment_once")]

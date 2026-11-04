@@ -80,8 +80,10 @@ GUARD_MARK="agsist commit guard (engine.sh hook)"
 # commit-guard row reads the messages of the last 24 h of commits on main (a few API calls) and goes
 # red on any. A commit left with nothing in it is still refused: that job's commit step fails, a red
 # run of its own, and the line is in its log.
-# Speed: only new (A) or renamed (R) paths under data/ that carry a date at all are looked at, and the
-# date is read with bash's own regex, so a first add of thousands of files takes no subprocess each.
+# Speed: only new (A) or renamed (R) paths under data/ are looked at, and the date is read with bash's own
+# regex, so a first add of thousands of files takes no subprocess each. A rename onto a made-up day puts the
+# old path back, so the commit carries neither half of the move. The note the commit-msg hook reads holds
+# the tree being committed; a note from a commit that stopped after the hook is never used by a later one.
 install_hook() {
   local hooks hook
   hooks="$(git -C "$ROOT" rev-parse --git-path hooks)"
@@ -103,7 +105,10 @@ lim="$(date -u -d '+2 days' +%F)" || exit 0
 allow="$root/.github/future-dated-data.txt"
 re='(19|20)[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])'
 dropped=0 first=""
-while IFS= read -r -d '' f; do
+while IFS= read -r -d '' st; do
+  old=""
+  case "$st" in R*) IFS= read -r -d '' old ;; esac
+  IFS= read -r -d '' f || break
   case "$f" in data/*) ;; *) continue ;; esac
   d="" s="$f"
   while [[ "$s" =~ $re ]]; do
@@ -119,9 +124,12 @@ while IFS= read -r -d '' f; do
     done < "$allow"
   fi
   [ "$ok" = 1 ] && continue
-  git rm --cached -q -- "$f" && dropped=$((dropped + 1)) && [ -z "$first" ] && first="$f"
+  git rm --cached -q -- "$f" || continue
+  # a rename onto a made-up day: the old path goes back as it was, so the commit carries no half of the move
+  [ -n "$old" ] && git reset -q HEAD -- "$old" 2>/dev/null
+  dropped=$((dropped + 1)); [ -z "$first" ] && first="$f"
   echo "::warning title=test-shaped file left out of the commit::$f is dated $d, more than 2 days ahead; a test or a self-test wrote it into the checkout. Real future files go in .github/future-dated-data.txt with a reason."
-done < <(git diff --cached --name-only -M --diff-filter=AR -z -- data/ | grep -zE "$re")
+done < <(git diff --cached --name-status -M --diff-filter=AR -z -- data/)
 if [ "$dropped" -gt 0 ]; then
   line="COMMIT-GUARD dropped=$dropped path=$first"
   echo "$line"
@@ -129,7 +137,9 @@ if [ "$dropped" -gt 0 ]; then
     echo "commit guard: nothing left to commit after $dropped test-shaped file(s) were left out"
     exit 1
   fi
-  printf '%s\n' "$line" > "$note"
+  # keyed to the tree being committed: a note left by a commit that stopped after this hook (an empty
+  # message, GIT_EDITOR=false) never reaches a later commit or merge, whose tree differs
+  printf '%s\t%s\n' "$(git write-tree)" "$line" > "$note"
 fi
 exit 0
 HOOK
@@ -141,16 +151,38 @@ HOOK
 # Carries the pre-commit hook's COMMIT-GUARD line into the message, so cron_health.py can see it on main.
 note="$(git rev-parse --git-path agsist-commit-guard)" || exit 0
 [ -s "$note" ] || exit 0
-printf '\n%s\n' "$(cat "$note")" >> "$1"
+IFS=$'\t' read -r tree line < "$note"
 rm -f "$note"
+[ -n "$line" ] && [ "$tree" = "$(git write-tree)" ] && printf '\n%s\n' "$line" >> "$1"
 exit 0
 HOOK
   chmod +x "$hook"
 }
 
 # copy <src> into the checkout, path by path
+# Tests come from the commit being tested (Nov 4, 2026, PR #319). A pull request's checks ran on a commit
+# from before #318 while the engine was already synced with #318: the overlay added the new
+# test/ai-footer-check.test.mjs (missing here, so "add what is missing"), but kept this commit's older
+# scripts/dev/merge_when_green.py and pr-checks.yml, and two tests failed on code they never had. On a
+# pull request run (GITHUB_EVENT_NAME pull_request or pull_request_target) the overlay adds nothing under
+# TESTS_FROM_COMMIT that this commit lacks: the tests and the dev tools they test are this commit's own.
+# What stays overlaid there: the rest of scripts/ and build/ (collection code a job runs; a file this
+# commit lacks is code it does not call, and once the public copy is retired the engine is the only copy),
+# and every path this repository no longer tracks at all (then the engine is the only copy, tests too).
+# Main's runs (push, schedule, workflow_run, a dispatch, main-checks.yml's call of pr-checks) are not
+# pull request runs and get the whole engine as before.
+TESTS_FROM_COMMIT=("test/" "scripts/dev/")
+from_commit() {
+  local t
+  for t in "${TESTS_FROM_COMMIT[@]}"; do [[ "$1" == "$t"* ]] && return 0; done
+  return 1
+}
+
 overlay_from() {
-  local src="$1" excl="${2:-exclude}" p kept=0 n
+  local src="$1" excl="${2:-exclude}" p kept=0 n pr=0 held
+  case "${GITHUB_EVENT_NAME:-}" in pull_request|pull_request_target) pr=1 ;; esac
+  [ "$excl" = "local" ] && pr=0
+  held="$(mktemp)"
   for p in "${PATHS[@]}"; do
     [ -e "$src/$p" ] || say_fail "the engine branch $BRANCH has no $p"
   done
@@ -163,6 +195,7 @@ overlay_from() {
       kept=$((kept + n))
       (cd "$src" && find "$p" \( -type f -o -type l \) -print0) | while IFS= read -r -d '' f; do
         [ -e "$ROOT/$f" ] || [ -L "$ROOT/$f" ] && continue
+        if [ "$pr" = 1 ] && from_commit "$f"; then echo "$f" >> "$held"; continue; fi
         mkdir -p "$ROOT/$(dirname "$f")" && cp -a "$src/$f" "$ROOT/$f" || exit 1
       done || say_fail "could not copy $p from the engine"
     else
@@ -170,6 +203,10 @@ overlay_from() {
       cp -a "$src/$p" "$ROOT/$p" || say_fail "could not copy $p from the engine"
     fi
   done
+  n=$(wc -l < "$held"); rm -f "$held"
+  if [ "$n" -gt 0 ]; then
+    echo "::notice title=tests from this commit::$n engine file(s) under ${TESTS_FROM_COMMIT[*]} that this commit does not have were left out (a pull request run tests its own commit)"
+  fi
   if [ "$kept" -gt 0 ]; then
     echo "::notice title=engine older than this repository::$kept file(s) differ from this repository's copy; this repository's copy was used (it still tracks the code). Bring the engine up to date: bash .github/actions/engine/engine.sh save"
   fi

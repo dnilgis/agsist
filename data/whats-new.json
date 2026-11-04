@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-04-rain-weather",
+   "date": "2026-11-04",
+   "title": "County rain pages add heat and frost",
+   "line": "County rain pages get a weather fold: corn GDDs since May 1 against the station's own average, hottest and coldest days, and freezes, all measured.",
+   "link": "/rain"
+  },
+  {
    "id": "2026-11-04-rpcolor",
    "date": "2026-11-04",
    "title": "Framed Rain Prints now come in oak or black",
@@ -21,6 +28,13 @@
    "title": "Your ZIP works everywhere, and a slow connection still gets you bids",
    "line": "A ZIP typed on the cash bids page now carries to home, rent, ARC or PLC and custom rates. Slow live bids link the nearest town page with its time.",
    "link": "/rent/iowa#your-ground"
+  },
+  {
+   "id": "2026-11-04-soyroll2",
+   "date": "2026-11-04",
+   "title": "Home page soybeans on January too",
+   "line": "The home page, the price ticker, /markets and breakeven quote the soybean month your elevator's basis uses (January from first notice).",
+   "link": "/markets"
   },
   {
    "id": "2026-11-03-feederlive",

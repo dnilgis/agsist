@@ -222,7 +222,7 @@ test('engine.sh overlay, code still tracked here: never overwrites a tracked fil
   const d = publicRepo();
   g(d, 'remote', 'add', 'origin', up); g(d, 'push', '-q', 'origin', 'main');
   engineDir(d);
-  const r = sh(d, `${E} overlay .engine-src`, { CHECKOUT_OUTCOME: 'success' });
+  const r = sh(d, `${E} overlay .engine-src`, { CHECKOUT_OUTCOME: 'success', GITHUB_EVENT_NAME: 'workflow_run' });
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /engine: [0-9a-f]{40} from engine-agsist/);
   assert.match(r.stdout, /::notice title=engine older than this repository::1 file\(s\) differ/);
@@ -246,7 +246,7 @@ test('engine.sh overlay, code still tracked here: never overwrites a tracked fil
 test('engine.sh overlay, code gone from here: the engine is the only copy and git add -A never stages it', () => {
   const d = publicRepo({ tracked: false });
   engineDir(d);
-  const r = sh(d, `${E} overlay .engine-src`);
+  const r = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'pull_request' }); // gone from here: the engine is the only copy, even on a pull request
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'ENGINE a\n');
   assert.doesNotMatch(r.stdout, /notice/);
@@ -254,6 +254,45 @@ test('engine.sh overlay, code gone from here: the engine is the only copy and gi
   assert.equal(g(d, 'diff', '--cached', '--name-only').trim(), '', 'engine files are excluded');
   const ex = fs.readFileSync(path.join(d, '.git/info/exclude'), 'utf8');
   for (const p of ['/.engine-src/', '/scripts', '/test', '/build']) assert.ok(ex.split('\n').includes(p), p);
+});
+
+test('engine.sh overlay on a pull request: tests come from the commit being tested (PR #319, Nov 4, 2026)', () => {
+  // The real case: #319's checks ran on a commit from before #318 while the engine already had #318. The
+  // overlay added #318's new test (missing here) and kept this commit's older merge bot, so the test failed.
+  const engineWith318 = (d) => {
+    const e = engineDir(d);
+    write(e, 'test/ai-footer-check.test.mjs', 'the #318 test\n');
+    write(e, 'scripts/dev/ai_footer_check.py', 'the #318 check\n');
+    write(e, 'scripts/dev/merge_when_green.py', 'the #318 merge bot\n');
+    g(e, 'add', '-A'); g(e, 'commit', '-qm', '#318');
+  };
+  const pre318 = () => {
+    const d = publicRepo();
+    write(d, 'scripts/dev/merge_when_green.py', 'the merge bot before #318\n');
+    g(d, 'add', '-A'); g(d, 'commit', '-qm', 'before #318');
+    engineWith318(d);
+    return d;
+  };
+  for (const ev of ['pull_request', 'pull_request_target']) {
+    const d = pre318();
+    const r = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: ev });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.ok(!fs.existsSync(path.join(d, 'test/ai-footer-check.test.mjs')), ev + ': the engine\'s newer test was added to an older commit');
+    assert.ok(!fs.existsSync(path.join(d, 'scripts/dev/ai_footer_check.py')), ev + ': a dev tool this commit lacks was added');
+    assert.equal(fs.readFileSync(path.join(d, 'scripts/dev/merge_when_green.py'), 'utf8'), 'the merge bot before #318\n');
+    assert.equal(fs.readFileSync(path.join(d, 'scripts/new.py'), 'utf8'), 'engine only\n', 'collection code this commit lacks is still added');
+    assert.match(r.stdout, /::notice title=tests from this commit::2 engine file\(s\)/);
+    assert.equal(g(d, 'status', '--porcelain'), '', 'nothing to commit');
+  }
+  // main's runs still get everything the engine adds
+  for (const ev of ['push', 'schedule', 'workflow_run', 'workflow_dispatch', '']) {
+    const d = pre318();
+    const r = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: ev });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.ok(fs.existsSync(path.join(d, 'test/ai-footer-check.test.mjs')), (ev || 'no event') + ': a main run lost an engine test');
+    assert.ok(fs.existsSync(path.join(d, 'scripts/dev/ai_footer_check.py')));
+    assert.doesNotMatch(r.stdout, /tests from this commit/);
+  }
 });
 
 test('engine.sh overlay: a failed checkout or an incomplete engine fails loudly and changes nothing', () => {
