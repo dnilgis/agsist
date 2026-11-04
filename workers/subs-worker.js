@@ -5,6 +5,13 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.64 (2026-11-04): GIFT CARD PREPAID IS STORED, NOT GUESSED FROM THE CLOCK. Every
+ *   /rp-gift/issue path (Sig's card, already_redeemed, a paid order's card, a void reissue)
+ *   writes prepaid true or false on the record, and that key alone decides "already paid
+ *   for". The old rule (redeemed_ts === issued_ts) now reads only a card with no prepaid key,
+ *   one issued before v5.40. A card a reader redeemed in the millisecond it was issued (a fast
+ *   test runner, Nov 4) answers "This card was used on <date>." as it should. Every route
+ *   answers as before otherwise.
  * v5.63 (2026-11-04): FRAME COLOR (Sig, Nov 4: oak or black, oak picked first, same price).
  *   POST /rp-order and kind rain-print-order (so /rp-gift/redeem too) take an optional
  *   frame_color, "oak" or "black", kept on a framed12x18 order only (dropped for the
@@ -618,7 +625,7 @@
  *     {v, kind open|locked, product, status issued|pending|redeemed|void,
  *     issued_ts, no, last4, order_ref, giver {name, email}, to, from_line,
  *     message (240), lock null|{design_code, edit none|name}, ships
- *     now|january, redeemed_ts, redeem_key, form_key, void_reason, void_ts,
+ *     now|january, prepaid (v5.40; always written since v5.64), redeemed_ts, redeem_key, form_key, void_reason, void_ts,
  *     replaces, replaced_by}. Indexes rpg-ref:<order_ref> and
  *     rpg-by:<hmac16("rp-gift-by|" + email)> list record keys; rpg-n counts
  *     cards for "No. 0007".
@@ -2035,9 +2042,14 @@ function rpgPublic(r) {
     redeemed_on: r.status === "redeemed" ? rpgDay(r.redeemed_ts) : null, prepaid: rpgPrepaid(r) };
 }
 // v5.40: set at issue (the giver gave the address at checkout): nothing for the receiver to fill in.
-// An older card Sig issued as already redeemed has redeemed_ts === issued_ts.
+// v5.64: every card issued since stores prepaid true or false, and that key decides. Only a card
+// with no prepaid key (issued before v5.40; Sig's already-redeemed cards then had redeemed_ts ===
+// issued_ts) falls back to the times. A clock match is never read on a record that has the key: a
+// reader's redeem in the issuing millisecond is a used card, not a paid one (CI, Nov 4).
 function rpgPrepaid(r) {
-  return !!r && r.status === "redeemed" && (r.prepaid === true || (!!r.issued_ts && r.redeemed_ts === r.issued_ts));
+  if (!r || r.status !== "redeemed") return false;
+  if (Object.prototype.hasOwnProperty.call(r, "prepaid")) return r.prepaid === true;
+  return !!r.issued_ts && r.redeemed_ts === r.issued_ts;
 }
 // Sig's issue body -> the record's fields, or {error}.
 function rpgIssueClean(b) {
@@ -2094,9 +2106,10 @@ async function rpgIssue(env, f, extra) {
   const no = (Number(await env.SUBS.get("rpg-n")) || 0) + 1;   // Sig alone issues, one at a time
   await env.SUBS.put("rpg-n", String(no));
   const now = Date.now(), last4 = code.slice(-4);
-  const rec = Object.assign({ v: 1 }, f, { status: "issued", issued_ts: now, no, last4,
+  const rec = Object.assign({ v: 1 }, f, { status: "issued", prepaid: false, issued_ts: now, no, last4,
     redeemed_ts: null, redeem_key: null, void_reason: null }, extra || {});
   if (rec.status === "redeemed") rec.redeemed_ts = now;
+  rec.prepaid = rec.prepaid === true;   // v5.64: always stored, true or false
   await env.SUBS.put(key, JSON.stringify(rec));
   await rpgIndex(env, "rpg-ref:" + f.order_ref, key);
   if (f.giver.email) await rpgIndex(env, "rpg-by:" + await hmac16("rp-gift-by|" + f.giver.email, env.UNSUB_SECRET), key);
