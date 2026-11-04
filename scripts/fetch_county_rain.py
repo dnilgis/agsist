@@ -210,6 +210,17 @@ def daily_rec(vals, snows):
     return r
 
 
+def recent30(vals, nv):
+    """The county's last 30 days for the home page's Local conditions card (Sig, Nov 4, 2026):
+    [inches, usual or None, percent or None] from the same days the daily file carries (packed and
+    unpacked, so it is the county page's own "Last 30 days" figure), "m" when a day in the window has
+    no reading of its own, None (left out) when the year has fewer than 30 days so far."""
+    v = R.unpack_days(R.pack_days(vals))
+    if len(v) < 30:
+        return None
+    return R.last_days(v, 30, nv) or "m"
+
+
 REACH_SLACK = 15   # miles past the county outline's farthest corner a station may sit
 
 def build_state(src, st, year, edate, C, fetched):
@@ -323,6 +334,9 @@ def build_state(src, st, year, edate, C, fetched):
         rec.update(s)
         rec["n_ok"] = x["n_ok"]
         rec["last"] = last.get(fips)
+        r30 = recent30(x["vals"][:s["days"]], x["gauge"]["nv"])
+        if r30 is not None:
+            rec["r30"] = r30
         out[fips] = rec
         daily[fips] = daily_rec(x["vals"][:s["days"]], x["snows"][:s["days"]])
     return {"schema": SCHEMA, "state": st, "year": int(year), "edate": edate, "fetched": fetched,
@@ -458,6 +472,11 @@ def problems(d, path="", C=None):
                 bad.append(f"{w}: biggest day over the total")
             if c["cum"] and abs(c["cum"][-1][1] - c["total"]) > 0.011:
                 bad.append(f"{w}: running total ends at {c['cum'][-1][1]}, total {c['total']}")
+            r30 = c.get("r30")
+            if r30 is not None and r30 != "m" and not (isinstance(r30, list) and len(r30) == 3 and 0 <= r30[0] <= c["total"] + 0.011
+                                                       and (r30[1] is not None or r30[2] is None)
+                                                       and (r30[2] is None or abs(round(100 * r30[0] / r30[1]) - r30[2]) <= 1)):
+                bad.append(f"{w}: last 30 days {r30}")
             if not c["station"]["name"] or c["station"]["mi"] > max(200, (C or {}).get(f, {}).get("reach", 0) + REACH_SLACK):
                 bad.append(f"{w}: station {c['station']}")
         except (KeyError, TypeError, IndexError) as e:
@@ -722,6 +741,27 @@ def selftest():
     # snowfall comes in the third column and is packed beside the rain
     _sn = {"meta": _val["meta"], "data": [[r[0], r[1], "1.5" if i == 3 else "T" if i == 4 else "0.0"] for i, r in enumerate(_val["data"])]}
     _o = build_state(_Src([_sn]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z")
+    # the last 30 days (Sig, Nov 4, 2026: the home card's 30-day rain against normal): every day its own
+    # reading, else "m"; the usual is the same 30 days' normals; fewer than 30 days so far: none
+    _v30 = ["0.00"] * 10 + ["0.10"] * 25 + ["T"] * 5
+    _n30 = [0.05] * 40
+    ok(recent30(_v30, _n30) == [2.5, 1.5, 167], f"30 days by hand: 25 x 0.10 = 2.50 in, usual 30 x 0.05 = 1.50: {recent30(_v30, _n30)}")
+    ok(recent30(_v30, None) == [2.5, None, None], "no normals: the inches only")
+    ok(recent30(_v30[:-1] + ["M"], _n30) == "m" and recent30(_v30[:-2] + ["S", "0.20A"], _n30) == "m", "a missing or multi-day reading in the window: withheld")
+    ok(recent30(["0.10"] * 29, [0.1] * 29) is None, "under 30 days in the year: left out")
+    ok(recent30(_v30, [0.05] * 39 + [None]) == [2.5, None, None], "a day with no normal: no usual, no percent")
+    ok(recent30(["0.01"] * 30, [0.01] * 30) == [0.3, 0.3, None], "under 1 in of usual: no percent (PCT_MIN_NORMAL)")
+    for _f, _c in _o["counties"].items():
+        _bd = R.unpack_days(_o["_daily"][_f]["p"])
+        ok(_c.get("r30") == (R.last_days(_bd, 30, None) and [R.last_days(_bd, 30)[0]] + _c["r30"][1:] if isinstance(_c.get("r30"), list) else _c.get("r30")),
+           f"{_f}: the 30-day figure is the daily file's own last 30 days")
+        if isinstance(_c.get("r30"), list):
+            ok(abs(_c["r30"][0] - sum(float(x) for x in _bd[-30:] if x != "T")) < 0.006, f"{_f}: 30-day sum")
+    ok(any(isinstance(_c.get("r30"), list) for _c in _o["counties"].values()), "the fixture state has a 30-day figure")
+    ok(not problems({"schema": SCHEMA, "year": _o["year"], "counties": _o["counties"]}), f"the 30-day figures pass the check {problems({'schema': SCHEMA, 'year': _o['year'], 'counties': _o['counties']})[:2]}")
+    _bad = json.loads(json.dumps(next(c for c in _o["counties"].values() if isinstance(c.get("r30"), list))))
+    _bad["r30"] = [_bad["total"] + 5, None, None]
+    ok(any("last 30 days" in b for b in problems({"schema": SCHEMA, "year": _o["year"], "counties": {"1": _bad}})), "a 30-day figure over the year's total is refused")
     _dl = _o["_daily"]["19001"]
     ok(R.unpack_days(_dl.get("s", ""))[3:5] == ["1.50", "T"] and len(R.unpack_days(_dl["p"])) == _o["counties"]["19001"]["days"],
        f"snowfall packed beside the rain, day for day: {_dl}")

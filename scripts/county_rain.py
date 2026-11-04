@@ -400,6 +400,34 @@ def close_s(parsed):
     return out
 
 
+def last_days(vals, n, nv=None):
+    """The rain over the last n of these days: [inches, usual or None, percent or None], or None
+    unless every one of those days has its own reading (a missing day, an S day or a multi-day
+    A reading in the window: no figure, never a guess; a trace counts as nothing). vals are
+    ACIS-style day values ("1.25", "T", "M", "S", "1.50A"); nv, NOAA's daily normal for the
+    same days (None: no normals). The usual is the sum of those days' normals, withheld when
+    any is missing; the percent only on PCT_MIN_NORMAL inches of usual or more.
+    The one copy: the county page's last 7 and 30 days (build_county_rain.recent) and the
+    30-day figure in data/rain/<st>.json (fetch_county_rain, "r30") both call it."""
+    if n <= 0 or len(vals) < n:
+        return None
+    tot = 0.0
+    for x in vals[-n:]:
+        x = str(x)
+        if x in ("M", "S", "") or x.endswith("A"):
+            return None
+        if x != "T":
+            tot += float(x)
+    tot = round(tot, 2)
+    usual = None
+    if nv is not None and len(nv) >= len(vals):
+        w = list(nv[:len(vals)])[-n:]
+        if all(v is not None for v in w):
+            usual = round(sum(w), 2)
+    pct = round(100 * tot / usual) if usual is not None and usual >= PCT_MIN_NORMAL else None
+    return [tot, usual, pct]
+
+
 def days_of(year, sdate, n):
     d0 = dt.date.fromisoformat(sdate)
     return [(d0 + dt.timedelta(days=i)).isoformat() for i in range(n)]
