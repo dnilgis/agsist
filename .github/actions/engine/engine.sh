@@ -160,8 +160,29 @@ HOOK
 }
 
 # copy <src> into the checkout, path by path
+# Tests come from the commit being tested (Nov 4, 2026, PR #319). A pull request's checks ran on a commit
+# from before #318 while the engine was already synced with #318: the overlay added the new
+# test/ai-footer-check.test.mjs (missing here, so "add what is missing"), but kept this commit's older
+# scripts/dev/merge_when_green.py and pr-checks.yml, and two tests failed on code they never had. On a
+# pull request run (GITHUB_EVENT_NAME pull_request or pull_request_target) the overlay adds nothing under
+# TESTS_FROM_COMMIT that this commit lacks: the tests and the dev tools they test are this commit's own.
+# What stays overlaid there: the rest of scripts/ and build/ (collection code a job runs; a file this
+# commit lacks is code it does not call, and once the public copy is retired the engine is the only copy),
+# and every path this repository no longer tracks at all (then the engine is the only copy, tests too).
+# Main's runs (push, schedule, workflow_run, a dispatch, main-checks.yml's call of pr-checks) are not
+# pull request runs and get the whole engine as before.
+TESTS_FROM_COMMIT=("test/" "scripts/dev/")
+from_commit() {
+  local t
+  for t in "${TESTS_FROM_COMMIT[@]}"; do [[ "$1" == "$t"* ]] && return 0; done
+  return 1
+}
+
 overlay_from() {
-  local src="$1" excl="${2:-exclude}" p kept=0 n
+  local src="$1" excl="${2:-exclude}" p kept=0 n pr=0 held
+  case "${GITHUB_EVENT_NAME:-}" in pull_request|pull_request_target) pr=1 ;; esac
+  [ "$excl" = "local" ] && pr=0
+  held="$(mktemp)"
   for p in "${PATHS[@]}"; do
     [ -e "$src/$p" ] || say_fail "the engine branch $BRANCH has no $p"
   done
@@ -174,6 +195,7 @@ overlay_from() {
       kept=$((kept + n))
       (cd "$src" && find "$p" \( -type f -o -type l \) -print0) | while IFS= read -r -d '' f; do
         [ -e "$ROOT/$f" ] || [ -L "$ROOT/$f" ] && continue
+        if [ "$pr" = 1 ] && from_commit "$f"; then echo "$f" >> "$held"; continue; fi
         mkdir -p "$ROOT/$(dirname "$f")" && cp -a "$src/$f" "$ROOT/$f" || exit 1
       done || say_fail "could not copy $p from the engine"
     else
@@ -181,6 +203,10 @@ overlay_from() {
       cp -a "$src/$p" "$ROOT/$p" || say_fail "could not copy $p from the engine"
     fi
   done
+  n=$(wc -l < "$held"); rm -f "$held"
+  if [ "$n" -gt 0 ]; then
+    echo "::notice title=tests from this commit::$n engine file(s) under ${TESTS_FROM_COMMIT[*]} that this commit does not have were left out (a pull request run tests its own commit)"
+  fi
   if [ "$kept" -gt 0 ]; then
     echo "::notice title=engine older than this repository::$kept file(s) differ from this repository's copy; this repository's copy was used (it still tracks the code). Bring the engine up to date: bash .github/actions/engine/engine.sh save"
   fi
