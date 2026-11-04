@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-04-wave1a",
+ "date": "2026-11-04",
+ "title": "Price fixes: soybeans on Jan, basis vs USDA's own normal",
+ "line": "Soybean futures now show January from first notice day, so futures plus your basis matches the cash bid. /basis compares USDA's bid only with USDA's own normal, and the untested action box is gone from the futures pages.",
+ "link": "/basis",
+ "rank": 2
+}
