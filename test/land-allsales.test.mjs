@@ -205,8 +205,8 @@ test("no names in the indexed pages or the list files; names only from the block
     const nf = json(`data/land/names/${st}/${fips}.json`), list = listFile(st, fips);
     for (const g of list) assert.ok(g.id in nf.sales, `${st} ${fips}: the tap finds every listed sale (${g.id})`);
     const L = read(`data/land-sales/${st}/${fips}.json`), P = read(`land-sales/${s}.html`);
-    // usual, w24 and lx (where a legal names its own buyer or seller) and the ri, g, m columns: the sale detail panel (Nov 4, 2026)
-    assert.deepEqual(Object.keys(JSON.parse(L)).sort(), ["cols", "county", "fips", "kinds", "lx", "names", "s", "st", "through", "usual", "w24"]);
+    // usual, w24, lx (where a legal names its own buyer or seller) and rec (the county file is names-free) and the ri, g, m columns: the sale detail panel (Nov 4, 2026)
+    assert.deepEqual(Object.keys(JSON.parse(L)).sort(), ["cols", "county", "fips", "kinds", "lx", "names", "rec", "s", "st", "through", "usual", "w24"]);
     assert.deepEqual(JSON.parse(L).cols, ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"].concat(st === "vt" ? ["cu"] : [], ["ri", "g", "m"]), `${st}: the list columns`);
     for (const v of Object.values(nf.sales)) for (const n of (Array.isArray(v) ? v : [])) {
       if (!n || n.length < 8 || /^(?:COUNTY OF [A-Z .']+|[A-Z .']+ COUNTY)(?:,? (?:ILLINOIS|WISCONSIN|INDIANA|VERMONT|NEW JERSEY))?$/i.test(n)) continue;
