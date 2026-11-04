@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 03 Nov 2026 13:51:05 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 04 Nov 2026 11:48:43 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Soybeans fall to new lows; four tankers hit mines near Hormuz</title>
+      <link>https://agsist.com/daily/2026-11-04</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-04</guid>
+      <pubDate>Wed, 04 Nov 2026 11:47:40 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Jan soybeans are at $12.03¼ overnight, down 10¾ cents from Tuesday's $12.14 settle, a fresh low for this slide. Four oil tankers hit mines south of the Strait of Hormuz, Iran's Revolutionary Guard said, and WTI is still $95.38.
+• Beans make new lows
+• Cattle slip, hogs edge up
+• Crude holds near $95
+Read more: https://agsist.com/daily/2026-11-04</description>
+    </item>
     <item>
       <title>Dec corn trades at $4.44½ Tuesday morning, under Monday's $4.48¼ settle</title>
       <link>https://agsist.com/daily/2026-11-03</link>
@@ -350,18 +362,6 @@ Read more: https://agsist.com/daily/2026-10-07</description>
 • Beans Firm On Tighter Stocks
 • Cattle Soft, Crude Breaks Lower
 Read more: https://agsist.com/daily/2026-10-06</description>
-    </item>
-    <item>
-      <title>Corn back above $5 as rain keeps combines parked</title>
-      <link>https://agsist.com/daily/2026-10-05</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-05</guid>
-      <pubDate>Mon, 05 Oct 2026 10:57:13 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn closed $5.00, up 4 and a quarter cents, clawing back the round number it lost Friday while El Nino rain keeps the Belt's combines sitting in the shed. Soybean oil ran 2.7% on the back of soymeal's firm tone, the two products pulling in the same direction for once.
-• Corn Reclaims The Round Number
-• Soy Complex Leads On Products
-• Cattle Soft, Feeders Give More Back
-Read more: https://agsist.com/daily/2026-10-05</description>
     </item>
   </channel>
 </rss>
