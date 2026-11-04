@@ -80,7 +80,7 @@
   "test/hail-map-now.test.mjs": 8,
   "test/hail-storm-day.test.mjs": 5,
   "test/hail-year-first.test.mjs": 2,
-  "test/harvest-tracker-oct19.test.mjs": 9,
+  "test/harvest-tracker-oct19.test.mjs": 5,
   "test/hay-ams.test.mjs": 3,
   "test/hay-prices.test.mjs": 4,
   "test/headline-fix.test.mjs": 1,

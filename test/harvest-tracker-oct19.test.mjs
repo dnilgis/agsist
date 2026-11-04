@@ -12,6 +12,11 @@
  *   11 the source line, 12 tags stacked when close, 14 JS off, data failure, print, table a11y
  *   15 reviewer at the end, 16 Texas options by sales closing date, 17 RMA's app link
  *
+ * The browser test reads a frozen copy of the data the page fetches (test/fixtures/harvest-tracker/: harvest-prices.json
+ * and rma-prices/{index,GA,IA,TX}.json, as committed on Oct 25, 2026, corn and soybean windows running, Georgia soybeans
+ * not yet open), routed in the browser, on a fake clock taken from that copy. On Nov 4 it read live data/ on that
+ * clock and went red: Georgia soybeans had a running average before the fake date (BUILD-RULES 50).
+ *
  *   node --test test/harvest-tracker-oct19.test.mjs
  */
 import { test } from "node:test";
@@ -24,7 +29,8 @@ import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PAGE = readFileSync(join(ROOT, "harvest-price-tracker.html"), "utf8");
-const HP = JSON.parse(readFileSync(join(ROOT, "data/harvest-prices.json"), "utf8"));
+const FIX = join(ROOT, "test/fixtures/harvest-tracker");
+const HP = JSON.parse(readFileSync(join(FIX, "harvest-prices.json"), "utf8"));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
@@ -121,6 +127,13 @@ async function open(browser, port, when, opts = {}) {
   await pg.route("**/*", (r) => {
     const u = r.request().url();
     if (!u.startsWith(`http://127.0.0.1:${port}`) || (opts.fail && u.includes(opts.fail))) return r.abort();
+    // the harvest data comes from the frozen copy, never live data/
+    const path = new URL(u).pathname;
+    if (path === "/data/harvest-prices.json" || path.startsWith("/data/rma-prices/")) {
+      const f = join(FIX, path.slice("/data/".length));
+      if (!existsSync(f)) return r.abort();
+      return r.fulfill({ status: 200, contentType: "application/json", body: readFileSync(f) });
+    }
     return r.continue();
   });
   await pg.goto(`http://127.0.0.1:${port}/harvest-price-tracker.html`);
@@ -138,16 +151,19 @@ test("in a browser at 390: Iowa, Georgia and Texas read right", { skip, timeout:
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const last = ser.length ? ser[ser.length - 1].d : "2026-10-16";
+    // the frozen copy has Iowa corn's window running, so every branch below is checked, none skipped
+    assert.equal(corn.harvest.status, "running", "fixture: corn window running");
+    assert.ok(ser.length > 0 && ser.length < corn.harvest.days_total, "fixture: settles on file, days left");
+    const last = ser[ser.length - 1].d;
     const { ctx, pg, errors } = await open(browser, port, last + "T23:00:00Z");
     await pick(pg, "IA");
     const your = await pg.$eval("#pd-your", (x) => x.innerText.replace(/\s+/g, " "));
-    if (corn.harvest.status === "running" && ser.length) {
+    {
       const left = corn.harvest.days_total - ser.length;
-      assert.ok(your.includes(`${ser.length} /${corn.harvest.days_total} trading days counted, ${left} trading day${left === 1 ? "" : "s"} left · December CBOT corn contract`), your.slice(0, 300));
+      assert.ok(your.includes(`${ser.length} /${corn.harvest.days_total} trading days counted, ${left} trading day${left === 1 ? "" : "s"} left · December CBOT corn contract`), your.slice(0, 300)); // pin-ok: frozen fixture
       assert.match(await pg.$eval("#pd-verdict-h", (x) => x.textContent), /^Your corn and soybean prices are being set right now\.$/);
     }
-    if (corn.harvest.status === "running") assert.match(your, /would revise up \d+\.\d%: figured at the \$\d+\.\d\d \/bu running harvest price\./);
+    assert.match(your, /would revise up \d+\.\d%: figured at the \$\d+\.\d\d \/bu running harvest price\./);
     assert.doesNotMatch(your, /, to \$\d+\.\d\d \/bu\./, "the $/bu figure is a price, never called the guarantee");
     assert.doesNotMatch(your, /Day \d+ \/\d+|\bguarantee(?= \$|<)| \$[\d.]+ guarantee/, "a $/bu price is the projected price");
     assert.match(your, /against the projected price/i);
@@ -174,21 +190,23 @@ test("in a browser at 390: Iowa, Georgia and Texas read right", { skip, timeout:
     // 3, 5: Georgia corn closed in August on the September contract; soybeans ride January 2027
     await pick(pg, "GA");
     const ga = await pg.$eval("#pd-your", (x) => x.innerText.replace(/\s+/g, " "));
-    assert.match(ga, /window closed Aug 31 · September CBOT corn contract/);
+    assert.match(ga, /window closed Aug 31 · September CBOT corn contract/); // pin-ok: frozen fixture
     assert.match(ga, /Your revenue guarantee revised up \d+\.\d%: it is now figured at the \$\d+\.\d\d \/bu harvest price\./);
     assert.doesNotMatch(ga, /If the window closed today/);
-    assert.match(ga, /January 2027 CBOT soybeans/);
+    assert.match(ga, /January 2027 CBOT soybeans/); // pin-ok: frozen fixture
     // 16: Texas's options are told apart by the sales closing date
     await pick(pg, "TX");
     const opts = await pg.$$eval("#pd-crop option", (o) => o.map((x) => x.textContent));
-    assert.ok(opts.includes("Corn (sales closing Jan 31)") && opts.includes("Corn (sales closing Mar 15)"), opts.join("|"));
+    assert.ok(opts.includes("Corn (sales closing Jan 31)") && opts.includes("Corn (sales closing Mar 15)"), opts.join("|")); // pin-ok: frozen fixture
     assert.deepEqual(errors, []);
     await ctx.close();
 
     // 10: a week on with no new settle, the cached card says so
-    const stale = await open(browser, port, "2026-10-23T23:00:00Z");
+    const weekOn = new Date(Date.parse(last + "T23:00:00Z") + 7 * 864e5);
+    assert.ok(weekOn.toISOString().slice(0, 7) === last.slice(0, 7), "fixture: a week on, the October window is still open");
+    const stale = await open(browser, port, weekOn.toISOString());
     await stale.pg.waitForFunction(() => document.querySelector("#pd-state option[value=IA]"));
-    if (corn.harvest.status === "running" && last <= "2026-10-19") {
+    {
       assert.match(await stale.pg.$eval("#pd-cards", (x) => x.innerText), new RegExp("Not updated since " +
         new Date(last + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }).replace(" ", "[ \\u00a0]") + "\\."));
     }
