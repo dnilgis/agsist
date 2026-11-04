@@ -35,14 +35,18 @@ A row is late when:
   (c) a job only the worker starts (rp-design-email, rp-buyer-email) has no workflow_dispatch run
       in 14 days while its asks or paid orders are above 0 in rp-design-email's logs.
   (d) a send step ran and its log has no DELIVERY line for that step's sender (the check cannot
-      see what it did, so it does not call it fine);
-  (e) a send that was due did not happen: the Daily had no live line from a run of its morning by
-      07:15 Central; the run that served a gated sender's tick did not reach its send step (unless
+      see what it did, so it does not call it fine), except in a month a step's shell skips
+      (month_gate: county-rain's January step);
+  (e) a send that was due did not happen: the Daily had no live line that mailed readers (or says
+      already_sent=1, the day flag set) from a run of its morning by 07:15 Central (a live 0 sent,
+      0 waiting without it is an exit before the list: held, no link ids, no recipients, a crash); the run that served a gated sender's tick did not reach its send step (unless
       the step has its own condition, may_skip); a tick had no run after it for TICK_GRACE_HOURS;
       a run that started a sender's job stopped before the send step;
   (f) one live run (dry=0) had readers waiting and mailed none of them.
 "Nothing due" reads ok only when nothing was due: no tick in the window, or no run reached a send
-step that need not run. A due run whose jobs or log could not be read makes the row unknown.
+step that need not run. A due run whose jobs or log could not be read, or a Daily send run still
+going, makes the row unknown; a spent call budget leaves the rest of the rows unknown. A sender that
+may mail on any run is sampled, and its row says "sampled N of M run(s)".
 
 The live switches are repository variables, read from the env cron-health.yml passes
 (`vars.*`, readable with the Actions token). A switch that lives only in the subs worker
@@ -106,9 +110,11 @@ SENDERS = [
      "counts": "job send, step 'Send the Daily' (and the Sig-only test job, dry=1)",
      "sig_scripts": ["notify_critic_status.py"],
      "steps": {"Send daily email": ["daily"]}, "due": ("daily", "07:15", "04:30", "14:00"), "may_skip": True,
-     # A run that sends ran the gate and the whole generate job: 510 and 529 s on Nov 3 and 4 2026
-     # (runs 41647674667, 41823633959); a gate-only tick takes 29 to 40 s. A run shorter than this
-     # cannot have reached the send step, so its jobs are not read. Too high fails loud: the day reads late.
+     # A run that sends ran the gate and the whole generate job. The send runs still listed on Nov 4
+     # 2026 took 433, 458, 465, 510 and 529 s (Oct 28 to Nov 4; older runs are gone from the list); a
+     # gate-only tick takes 29 to 40 s. Window runs at or over the floor are read first; the ones under
+     # it after, longest first, while the jobs cap allows, so a faster send is still found. (e) is red
+     # once every window run at or over the floor was read and none sent.
      "min_send_s": 240, "max_jobs": 14},
     {"workflow": "land-alert.yml", "senders": {"send_land_alert.py": "land-alert"},
      "switch": ("repo", "LANDSALES_MONTHLY_LIVE", "1"), "counts": "the step that runs send_land_alert.py",

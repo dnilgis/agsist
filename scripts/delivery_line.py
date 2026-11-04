@@ -12,6 +12,7 @@ script that mails readers or a list prints, once per run, at exit:
   waiting       readers due an email this run, sent or not (in a dry run: what would have gone)
   dry           1 when this run could not mail the list (dry run, preview, Sig only, send off)
   asks, orders  extra counts a check reads (rp-design-email's design asks, rp-buyer-email's orders)
+  already_sent  1 when the Daily found its day flag set: 0 sent is fine (any other 0/0 exit is no send)
 
 Counts only, never an address. scripts/cron_health.py (the delivery rows) reads these lines
 from each sender's run logs; its list of senders is scripts/delivery_check.py SENDERS, and

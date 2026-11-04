@@ -63,7 +63,33 @@ test("Nov 4 real case: the Daily's one send in 81 runs is found, and a send step
     "Daily: only gate ticks all morning is late (e), not ok",
     "tick: the served run stopped before the send step is late (e)",
     "tick: no tick in 24 h is nothing due, ok",
+    "Daily: a live 0 sent, 0 waiting with no already_sent is not a send (e)",
+    "Daily: a 200 s send (under the 240 s floor) is found by the window",
+    "Daily: a send run still in progress is unknown, not (e)",
+    "Daily: the jobs API failing is unknown, not ok and not late",
+    "a spent call budget is raised, not read as no send",
+    "county-rain: the step outside January with no line is ok",
+    "county-rain: the step in January with no line is late (d)",
+    "run: the row says it is a sample",
   ]) assert.ok(out.split("\n").includes("ok   " + name), `delivery_check.py --selftest no longer passes: ${name}`);
+});
+
+test("the Daily's exits before the send print no 'sent' signal; only the day flag path does", () => {
+  // Nov 4 checker: a live 0 sent, 0 waiting line was read as sent, and every early exit prints exactly that
+  const out = execFileSync("python3", ["scripts/test_daily_delivery_line.py"], { cwd: ROOT, encoding: "utf8" });
+  assert.match(out, /test_daily_delivery_line: \d+ passed, 0 failed/);
+  assert.match(fs.readFileSync(path.join(SCRIPTS, "send_daily.py"), "utf8"), /tally\.extra\["already_sent"\] = 1/);
+});
+
+test("a month-gated send step is gated in its workflow to those months, Central time", () => {
+  for (const e of INV.senders) {
+    for (const [key, months] of Object.entries(e.month_gate || {})) {
+      const s = steps(readWf(e.workflow)).find((x) => stepName(x) === key);
+      assert.ok(s, `${e.workflow}: month_gate names "${key}", which is not a step`);
+      assert.match(s, /TZ=America\/Chicago date \+%m/, `${e.workflow}: "${key}" must test the Central month`);
+      for (const m of months) assert.ok(s.includes(`"${String(m).padStart(2, "0")}"`), `${e.workflow}: "${key}" is not gated to month ${m}`);
+    }
+  }
 });
 
 // A step's name as the jobs API shows it: the text before any ${{ }} (and its open bracket)
