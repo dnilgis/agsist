@@ -9,6 +9,11 @@
  *   3. /rain-gauge: no sponsor links, the form above the fold on a phone, an honest confirmation and one unticked
  *      Daily offer after a signup. No new sender: the confirmation never says an email is on its way.
  *
+ * The date switches (2) run on a frozen copy of data/rain-print.json (test/fixtures/gauge-hook/rain-print.json,
+ * Nov 4, 2026), and the browser reads that copy on clocks taken from its gauge_window: the live file's dates move
+ * each season, and a test pinned to them breaks the day they do (BUILD-RULES 50). The live file is checked for a
+ * well-formed window and for the same hook words the pages carry.
+ *
  *   node --test test/gauge-hook.test.mjs
  */
 import { test } from "node:test";
@@ -22,6 +27,9 @@ import vm from "node:vm";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const J = JSON.parse(read("data/rain-print.json"));
+const F = JSON.parse(read("test/fixtures/gauge-hook/rain-print.json")); // frozen copy, Nov 4, 2026
+const ISO = /^\d{4}-\d{2}-\d{2}$/;
+const addDays = (iso, n) => new Date(Date.parse(iso + "T12:00:00Z") + n * 864e5).toISOString().slice(0, 10);
 const pctx = {}; pctx.window = pctx;
 vm.runInNewContext(read("components/rain-print-promo.js"), pctx);
 const P = pctx.AgsistRainPromo;
@@ -45,31 +53,44 @@ test("the hook: one short line and a link label, plain and honest", () => {
 });
 
 test("auto switches on the dates in gauge_window: Rain Print to Dec 24, nothing Dec 25, the gauge Dec 26 to May 31", () => {
-  assert.deepEqual(J.gauge_window, { rain_print_until: "2026-12-24", from: "2026-12-26", until: "2027-05-31" });
+  assert.deepEqual(F.gauge_window, { rain_print_until: "2026-12-24", from: "2026-12-26", until: "2027-05-31" }); // pin-ok: frozen fixture
+  const HOOK_F = F.gauge_hook.line + " " + F.gauge_hook.link + ".";
   const cases = [
     ["2026-10-23", SEE], ["2026-12-09", SEE], ["2026-12-10", SEE], ["2026-12-24", SEE],
     ["2026-12-25", ""],
-    ["2026-12-26", HOOK], ["2027-01-15", HOOK], ["2027-04-01", HOOK], ["2027-05-31", HOOK],
+    ["2026-12-26", HOOK_F], ["2027-01-15", HOOK_F], ["2027-04-01", HOOK_F], ["2027-05-31", HOOK_F],
     ["2027-06-01", SEE], ["2027-10-01", SEE],
   ];
-  for (const [d, want] of cases) assert.equal(P.lineFor(J, "auto", d), want, d);
-  assert.equal(P.autoMode(J, "2026-12-25"), "");
-  assert.equal(P.autoMode(J, "2026-12-26"), "gauge");
-  assert.equal(P.autoMode(J, "2026-12-24"), "see");
+  for (const [d, want] of cases) assert.equal(P.lineFor(F, "auto", d), want, d);
+  assert.equal(P.autoMode(F, "2026-12-25"), "");
+  assert.equal(P.autoMode(F, "2026-12-26"), "gauge");
+  assert.equal(P.autoMode(F, "2026-12-24"), "see");
+  // the live file: a well-formed window, so "auto" switches on its own dates (they move each season)
+  const w = J.gauge_window;
+  assert.ok(w && [w.rain_print_until, w.from, w.until].every((x) => ISO.test(x || "")), "live gauge_window dates: " + JSON.stringify(w));
+  assert.ok(w.rain_print_until < w.from && w.from <= w.until, "live gauge_window in order: " + JSON.stringify(w));
+  assert.equal(P.autoMode(J, w.rain_print_until), "see");
+  assert.equal(P.autoMode(J, w.from), "gauge");
+  assert.equal(P.autoMode(J, w.until), "gauge");
+  assert.equal(P.autoMode(J, addDays(w.until, 1)), "see");
   // fail soft: a bad or missing window keeps the Rain Print line; promote off hides it; no hook, no gauge line
   for (const w of [undefined, null, {}, { from: "2027-05-31", until: "2026-12-26" }, { from: "Dec 26", until: "2027-05-31" }])
-    assert.equal(P.lineFor({ ...J, gauge_window: w }, "auto", "2027-01-15"), SEE, JSON.stringify(w));
-  assert.equal(P.lineFor({ ...J, promote: false }, "auto", "2026-11-15"), "");
-  assert.equal(P.lineFor({ ...J, promote: false }, "auto", "2027-01-15"), HOOK, "the gauge does not hang on the Rain Print switch");
-  assert.equal(P.lineFor({ ...J, gauge_hook: null }, "auto", "2027-01-15"), "");
+    assert.equal(P.lineFor({ ...F, gauge_window: w }, "auto", "2027-01-15"), SEE, JSON.stringify(w));
+  assert.equal(P.lineFor({ ...F, promote: false }, "auto", "2026-11-15"), "");
+  assert.equal(P.lineFor({ ...F, promote: false }, "auto", "2027-01-15"), HOOK_F, "the gauge does not hang on the Rain Print switch");
+  assert.equal(P.lineFor({ ...F, gauge_hook: null }, "auto", "2027-01-15"), "");
   assert.equal(P.lineFor(null, "auto", "2027-01-15"), "", "no data file, no line");
 });
 
 test("bids, markets and rent pages keep the gift line, which ends Dec 9", () => {
-  assert.equal(J.promote_until, "2026-12-09");
-  assert.equal(P.lineFor(J, "", "2026-12-09"), "A year of your farm's rain, as a gift. Order framed by Dec 9.");
-  assert.equal(P.lineFor(J, "", "2026-12-10"), "");
-  assert.equal(P.lineFor(J, "", "2027-01-15"), "", "never the gauge");
+  assert.equal(F.promote_until, "2026-12-09"); // pin-ok: frozen fixture
+  assert.equal(P.lineFor(F, "", "2026-12-09"), "A year of your farm's rain, as a gift. Order framed by Dec 9."); // pin-ok: frozen fixture
+  assert.equal(P.lineFor(F, "", "2026-12-10"), "");
+  assert.equal(P.lineFor(F, "", "2027-01-15"), "", "never the gauge");
+  // the live file: the gift line ends on its own promote_until and never turns into the gauge
+  assert.ok(ISO.test(J.promote_until || "") && ISO.test(J.promote_from || "") && J.promote_from <= J.promote_until, "live promote window");
+  assert.equal(P.lineFor(J, "", addDays(J.promote_until, 1)), "");
+  assert.equal(P.lineFor(J, "", J.gauge_window.from), "", "never the gauge");
   for (const f of ["cash-bids.html", "markets.html", "corn-futures-prices.html", "soybean-futures-prices.html", "wheat-futures-prices.html", "cattle-futures-prices.html"]) {
     const h = read(f);
     assert.equal(slots(h), 1, f);
@@ -253,9 +274,14 @@ test("in a browser: a signup gets the honest confirmation and one unticked Daily
 test("in a browser: a state rain page shows Rain Print now and the gauge hook on Dec 26", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), base = `http://127.0.0.1:${srv.address().port}`;
   const browser = await chromium.launch({ executablePath: CHROME });
+  // the page reads the frozen copy; the days come from its window: the last Rain Print day, the day between, the gauge's first
+  const w = F.gauge_window, between = addDays(w.rain_print_until, 1);
+  assert.ok(between < w.from, "fixture: a day with no line between Rain Print and the gauge");
+  const HOOK_F = F.gauge_hook.line + " " + F.gauge_hook.link + ".";
   try {
-    for (const [day, want, href] of [["2026-11-15T18:00:00Z", SEE, "/rain-print"], ["2026-12-25T18:00:00Z", "", ""], ["2026-12-26T18:00:00Z", HOOK, "/rain-gauge"]]) {
+    for (const [day, want, href] of [[w.rain_print_until, SEE, "/rain-print"], [between, "", ""], [w.from, HOOK_F, "/rain-gauge"]].map(([d, ...x]) => [d + "T18:00:00Z", ...x])) {
       const ctx = await context(browser, 390, 844);
+      await ctx.route(/^http:\/\/127\.0\.0\.1:\d+\/data\/rain-print\.json/, (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(F) }));
       const pg = await ctx.newPage();
       await pg.clock.setFixedTime(new Date(day));
       await pg.goto(base + "/rain/iowa");
