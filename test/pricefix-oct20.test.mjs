@@ -79,18 +79,23 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
+// Every file the page reads for this case is a frozen copy from Nov 3, 2026 (test/fixtures/pricefix/: the Iowa rows,
+// RMA's index and our harvest-prices.json, the October windows closed), and the clock is that copy's day.
 test("1: Nov 3, Iowa corn and soybeans closed Oct 31, not released: no 'if it closed today'", { skip, timeout: 90000 }, async () => {
   const FX = read("test/fixtures/pricefix/IA-closed-unreleased.json");
+  const HPF = read("test/fixtures/pricefix/harvest-prices-nov3.json");
+  const NOW = JSON.parse(HPF).updated + "T18:00:00Z";
   // Iowa is the page's reference state: its rows also ride in index.json (ref_rows)
-  const IDX = JSON.parse(read("data/rma-prices/index.json"));
-  if (IDX.ref_state === "IA") IDX.ref_rows = JSON.parse(FX).rows;
+  const IDX = JSON.parse(read("test/fixtures/pricefix/rma-index-nov3.json"));
+  assert.equal(IDX.ref_state, "IA", "fixture: Iowa is the reference state");
+  IDX.ref_rows = JSON.parse(FX).rows;
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     for (const width of [390, 1280]) {
       const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
       const pg = await ctx.newPage();
-      await pg.clock.setFixedTime(new Date("2026-11-03T18:00:00Z"));
+      await pg.clock.setFixedTime(new Date(NOW));
       const errors = [];
       pg.on("pageerror", (e) => errors.push(String(e)));
       await pg.route("**/*", (r) => {
@@ -98,6 +103,8 @@ test("1: Nov 3, Iowa corn and soybeans closed Oct 31, not released: no 'if it cl
         if (!u.startsWith(`http://127.0.0.1:${port}`)) return r.abort();
         if (u.includes("/data/rma-prices/index.json")) return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(IDX) });
         if (u.includes("/data/rma-prices/IA.json")) return r.fulfill({ status: 200, contentType: "application/json", body: FX });
+        if (u.includes("/data/harvest-prices.json")) return r.fulfill({ status: 200, contentType: "application/json", body: HPF });
+        if (new URL(u).pathname.startsWith("/data/rma-prices/")) return r.abort(); // only Iowa is picked
         return r.continue();
       });
       await pg.goto(`http://127.0.0.1:${port}/harvest-price-tracker.html`);
@@ -108,9 +115,9 @@ test("1: Nov 3, Iowa corn and soybeans closed Oct 31, not released: no 'if it cl
       assert.doesNotMatch(your, /If the window closed today/);
       assert.doesNotMatch(your, /Your revenue guarantee revised up/, "not released: never the past tense of a final");
       // corn, up: 4.91 against 4.62 is +6.3%
-      assert.match(your, /Window closed Oct 31\. RMA has not posted the final price yet\. If the final matches the last posted average, your revenue guarantee revises up 6\.3%: figured at the \$4\.91 \/bu last posted harvest price\./);
+      assert.match(your, /Window closed Oct 31\. RMA has not posted the final price yet\. If the final matches the last posted average, your revenue guarantee revises up 6\.3%: figured at the \$4\.91 \/bu last posted harvest price\./); // pin-ok: frozen fixture
       // soybeans, down: 10.80 against 11.09
-      assert.match(your, /Window closed Oct 31\. RMA has not posted the final price yet\. A last posted average below the projected price does not cut your guarantee: it stays figured at the \$11\.09 \/bu projected price\./);
+      assert.match(your, /Window closed Oct 31\. RMA has not posted the final price yet\. A last posted average below the projected price does not cut your guarantee: it stays figured at the \$11\.09 \/bu projected price\./); // pin-ok: frozen fixture
       assert.match(your, /Last posted average against the projected price/i);
       assert.equal(await pg.evaluate(() => document.documentElement.scrollWidth), width);
       assert.deepEqual(errors, []);
@@ -119,12 +126,18 @@ test("1: Nov 3, Iowa corn and soybeans closed Oct 31, not released: no 'if it cl
   } finally { await browser.close(); srv.close(); }
 });
 
-/* ---- Sig's call Oct 20 (v37 item 2): the window bar uses our running average where we have the settles ---- */
+/* ---- Sig's call Oct 20 (v37 item 2): the window bar uses our running average where we have the settles ----
+ * Reads a frozen copy of the harvest data (test/fixtures/harvest-tracker/, the copy test/harvest-tracker-oct19
+ * reads: Oct 25, 2026, Iowa corn's window running), routed in the browser, on a clock taken from that copy. On live
+ * data/ it returned early once the October window closed (Nov 2), so nothing was checked (BUILD-RULES 50). */
+const HFIX = "test/fixtures/harvest-tracker";
 test("bar: Iowa corn reads our running average, the calculator's number, with RMA's figure in one line", { skip, timeout: 90000 }, async () => {
-  const HP = JSON.parse(read("data/harvest-prices.json"));
+  const HP = JSON.parse(read(HFIX + "/harvest-prices.json"));
   const corn = HP.commodities.find((c) => c.label === "Corn");
   const ser = (corn.harvest && corn.harvest.series) || [];
-  if (corn.harvest.status !== "running" || !ser.length) return; // only while the window runs
+  // the frozen copy has the window running, so every check below fires
+  assert.equal(corn.harvest.status, "running", "fixture: corn window running");
+  assert.ok(ser.length > 0, "fixture: settles on file");
   const avg = Math.round(ser.reduce((t, x) => t + +x.s, 0) / ser.length * 100 + 1e-7) / 100;
   const last = ser[ser.length - 1].d;
   const srv = await serve(), port = srv.address().port;
@@ -133,16 +146,28 @@ test("bar: Iowa corn reads our running average, the calculator's number, with RM
     const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 900 } });
     const pg = await ctx.newPage();
     await pg.clock.setFixedTime(new Date(last + "T23:00:00Z"));
-    await pg.route("**/*", (r) => r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort());
+    await pg.route("**/*", (r) => {
+      const u = r.request().url();
+      if (!u.startsWith(`http://127.0.0.1:${port}`)) return r.abort();
+      // the harvest data comes from the frozen copy, never live data/
+      const path = new URL(u).pathname;
+      if (path === "/data/harvest-prices.json" || path.startsWith("/data/rma-prices/")) {
+        const f = join(ROOT, HFIX, path.slice("/data/".length));
+        if (!existsSync(f)) return r.abort();
+        return r.fulfill({ status: 200, contentType: "application/json", body: readFileSync(f) });
+      }
+      return r.continue();
+    });
     await pg.goto(`http://127.0.0.1:${port}/harvest-price-tracker.html`);
     await pg.waitForFunction(() => document.querySelector("#pd-state option[value=IA]"));
     await pg.selectOption("#pd-state", "IA");
     await pg.waitForFunction(() => !document.getElementById("pd-crop").disabled && !/Loading/.test(document.getElementById("pd-your").textContent));
     const bars = await pg.$$eval("#pd-your .pd-crop", (cs) => cs.map((c) => c.innerText.replace(/\s+/g, " ")));
     const cb = bars.find((t) => /^Corn /.test(t) && !/High Amylose/.test(t));
-    const rows = JSON.parse(read("data/rma-prices/IA.json")).rows;
+    const rows = JSON.parse(read(HFIX + "/rma-prices/IA.json")).rows;
     const r = rows.find((x) => x.crop === "Corn" && /^All/.test(x.type) && x.practice === "Conventional");
-    if (Math.abs(avg - r.h_price) / r.h_price > 0.03) return; // the 3% guard keeps RMA's figure
+    // the 3% guard keeps RMA's figure; in the frozen copy ours is within it, so our average is the one shown
+    assert.ok(Math.abs(avg - r.h_price) / r.h_price <= 0.03, `fixture: ours ${avg} within 3% of RMA's ${r.h_price}`);
     const d = new Date(last + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
     const pct = ((avg - r.p_price) / r.p_price * 100).toFixed(1);
     assert.match(cb, /Our running average of the daily settles against the projected price/i);
@@ -159,7 +184,8 @@ test("bar: Iowa corn reads our running average, the calculator's number, with RM
     assert.ok(calc.includes(`$${avg.toFixed(2)}`) && calc.includes(`+${pct}%`), calc);
     // High Amylose has no settles of its own: RMA's figure, no RMA line
     const ha = bars.find((t) => /High Amylose/.test(t));
-    if (ha) { assert.doesNotMatch(ha, /our average|latest posted figure/); }
+    assert.ok(ha, "fixture: Iowa has a High Amylose corn row");
+    assert.doesNotMatch(ha, /our average|latest posted figure/);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

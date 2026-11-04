@@ -40,6 +40,9 @@ test("the footer link, the holdout and the arm tags (scripts/test_cw_optin.py)",
 // the real worker, against an in-memory KV
 const tmp = path.join(os.tmpdir(), "subs-worker-cwoptin-" + process.pid + ".mjs");
 fs.copyFileSync(ROOT + "workers/subs-worker.js", tmp);
+const CW_END_M = /const CW_TEST_END = Date\.UTC\((\d+), (\d+), (\d+)\);/.exec(fs.readFileSync(ROOT + "workers/subs-worker.js", "utf8"));
+assert.ok(CW_END_M, "workers/subs-worker.js CW_TEST_END");
+const CW_TEST_END = Date.UTC(+CW_END_M[1], +CW_END_M[2], +CW_END_M[3]);
 const worker = (await import(pathToFileURL(tmp).href)).default;
 fs.unlinkSync(tmp);
 const store = new Map();
@@ -112,7 +115,9 @@ test("in a browser: the front door asks, takes a ZIP in the body only, and store
     assert.equal(store.get("sub:" + E), REC, "opening the page changes nothing");
     let txt = await page.locator("main").innerText();
     assert.match(txt, /Your ZIP tells us your county/);
-    assert.match(txt, /1 in 5 readers/);
+    // the holdout line shows while the test runs and is gone after the worker's own end date (CW_TEST_END)
+    if (Date.now() < CW_TEST_END) assert.match(txt, /1 in 5 readers/);
+    else assert.doesNotMatch(txt, /1 in 5 readers/, "the holdout line is gone once the test has ended");
     if (SHOTS) { fs.mkdirSync(SHOTS, { recursive: true }); for (const w of [390, 1280]) { await page.setViewportSize({ width: w, height: 760 }); await page.screenshot({ path: path.join(SHOTS, "cw-ask-" + w + ".png"), fullPage: true }); } await page.setViewportSize({ width: 390, height: 760 }); }
     const bb = await box.boundingBox();
     assert.ok(bb && bb.height >= 44, "the ZIP box is a 44 px tap");

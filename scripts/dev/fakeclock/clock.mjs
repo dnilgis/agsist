@@ -36,10 +36,14 @@ if (process.env.AGSIST_FAKE_OFFSET !== undefined) {
     }
     FakeDate.prototype = RD.prototype;
     Object.setPrototypeOf(FakeDate, RD);
-    FakeDate.now = () => { if (probe) probe(); return RD.now() + off; };
-    FakeDate.parse = RD.parse;
-    FakeDate.UTC = RD.UTC;
-    FakeDate.agsistFake = true;
+    // not enumerable: Playwright's page clock (page.clock.setFixedTime) copies the enumerable own properties of the
+    // Date it replaces onto its own, so an enumerable shifted now() would beat the test's fixed clock (Nov 4, 2026:
+    // test/alert-asks read Date.now() two months on while new Date() held the test's day)
+    const hide = (k, v) => Object.defineProperty(FakeDate, k, { value: v, writable: true, configurable: true, enumerable: false });
+    hide("now", () => { if (probe) probe(); return RD.now() + off; });
+    hide("parse", RD.parse);
+    hide("UTC", RD.UTC);
+    hide("agsistFake", true);
     globalThis.Date = FakeDate;
     const DTF = Intl.DateTimeFormat.prototype;
     const fmt = Object.getOwnPropertyDescriptor(DTF, "format").get;

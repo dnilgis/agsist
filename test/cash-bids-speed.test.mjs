@@ -22,6 +22,14 @@ const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
+// The table runs on frozen copies of the two files it reads (basis-states Nov 4, 2026; the futures copy alert-asks
+// uses, Nov 3) on a clock an hour after the newer one: it withholds itself when the basis is over 10 days old, so
+// live files on a fake clock (a January run) left no table at all (BUILD-RULES 50).
+const FIX = {
+  "/data/basis-states.json": readFileSync(ROOT + "test/fixtures/cash-bids-speed/basis-states.json"),
+  "/data/prices.json": readFileSync(ROOT + "test/fixtures/alert-asks/prices.json"),
+};
+const CLOCK = Math.max(Date.parse(JSON.parse(FIX["/data/basis-states.json"]).generated), Date.parse(JSON.parse(FIX["/data/prices.json"]).fetched)) + 3600e3;
 
 test("the table's place is held in the markup, inside the empty state, and hidden without scripts", () => {
   const empty = CB.indexOf('<div class="cb-empty">'), res = CB.indexOf('id="cb-results"');
@@ -46,6 +54,7 @@ test("no-ZIP load on a phone: the table shows and the page barely moves", { skip
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
     const p = decodeURIComponent(new URL(req.url, "http://x").pathname);
+    if (FIX[p]) { res.writeHead(200, { "content-type": "application/json" }); res.end(FIX[p]); return; }
     let f = normalize(join(ROOT, p));
     if (!p.endsWith("/") && existsSync(f + ".html")) f += ".html";
     else if (existsSync(f) && statSync(f).isDirectory()) f = join(f, "index.html");
@@ -58,6 +67,7 @@ test("no-ZIP load on a phone: the table shows and the page barely moves", { skip
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 }, isMobile: true });
+    await ctx.clock.setFixedTime(new Date(CLOCK));
     await ctx.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
     const pg = await ctx.newPage();
     await pg.addInitScript(() => { window.__cls = 0; new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: "layout-shift", buffered: true }); });

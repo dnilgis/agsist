@@ -210,10 +210,24 @@ test('everything on the below-the-fold list starts 900px or more down, at 390 an
       const pg = await ctx.newPage();
       await pg.goto(`http://127.0.0.1:${srv.address().port}/${page.replace(/index\.html$/, '').replace(/\.html$/, '')}`, { waitUntil: 'load' });
       await pg.waitForTimeout(1500);
+      // not shown yet: where it would open. A section the page hides for now (the wheat crop fold once the season's
+      // reports stop, a card whose quotes are stale) is opened for the measure and put back, so its rows are measured
+      // where they would appear, not at the top of the first shown parent (a January run put them at 74px)
       const ys = await pg.evaluate((list) => Object.fromEntries(list.map((id) => {
-        let e = document.getElementById(id);
-        while (e && !e.getClientRects().length) e = e.parentElement; // not shown yet: where it would open
-        return [id, e ? Math.round(e.getBoundingClientRect().top + scrollY) : null];
+        const el = document.getElementById(id);
+        if (!el) return [id, null];
+        const opened = [];
+        for (let e = el; e && e !== document.body; e = e.parentElement) {
+          if (getComputedStyle(e).display !== 'none') continue;
+          opened.push([e, e.getAttribute('style'), e.hidden]);
+          e.hidden = false; // a [hidden] rule with !important wins over a plain inline style
+          e.style.setProperty('display', 'block', 'important');
+        }
+        let e = el;
+        while (e && !e.getClientRects().length) e = e.parentElement;
+        const y = e ? Math.round(e.getBoundingClientRect().top + scrollY) : null;
+        for (const [o, st, hid] of opened.reverse()) { if (st === null) o.removeAttribute('style'); else o.setAttribute('style', st); o.hidden = hid; }
+        return [id, y];
       })), Object.keys(ids));
       for (const [id, y] of Object.entries(ys)) if (y === null || y < 900) high.push(`${page} #${id} at ${y}px (${w} wide)`);
       await ctx.close();

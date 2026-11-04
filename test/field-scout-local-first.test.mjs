@@ -145,9 +145,14 @@ function hashFor(lat, lng) {
   const d = 402.336 / 2 / 111320, k = 1 / Math.cos(lat * Math.PI / 180);
   return [[lat + d, lng - d * k], [lat + d, lng + d * k], [lat - d, lng + d * k], [lat - d, lng - d * k]].map((p) => p.map((x) => x.toFixed(5)).join(",")).join("~");
 }
+// The page reads the committed files (bids, rain, drought), so its clock starts an hour after the bid copy was read
+// and runs on from there: the nearest bid skips delivery windows that have closed, so the live copy on a later clock
+// (a January run) had no open window left near Chetek and showed "none nearby" (BUILD-RULES 50).
+const BIDS_AT = Date.parse(json("data/bids.json").fetched) + 3600e3;
 async function readField(browser, port, width, lat, lng, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 }, isMobile: width < 500, hasTouch: width < 500, timezoneId: "America/Chicago" });
   const pg = await ctx.newPage();
+  await pg.clock.install({ time: new Date(BIDS_AT) });
   const errors = [], outside = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
   await pg.route("**/*", (r) => {

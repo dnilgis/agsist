@@ -118,9 +118,14 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
+// The page reads the committed files (bids, futures, rain, drought, crop progress) and drops a source whose report is
+// out of season or stale by the clock, so its clock starts an hour after the bid copy was read and runs on: on a later
+// clock (a January run) USDA NASS Crop Progress left the printed sources list (BUILD-RULES 50).
+const DATA_AT = Date.parse(JSON.parse(read("data/bids.json")).fetched) + 3600e3;
 async function openPage(browser, port, url, width = 390, ctxIn = null) {
   const ctx = ctxIn || await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
   const pg = await ctx.newPage();
+  await pg.clock.install({ time: new Date(DATA_AT) });
   const errs = [];
   pg.on("pageerror", (e) => errs.push(String(e)));
   await pg.route("**/*", (r) => {
