@@ -185,12 +185,25 @@ def cwt_dollars(q):
     return pricefmt.cash(c, dollar=False)
 
 
+# SEEDS ON THEIR OWN LINES (BUILD-RULES 67, Nov 4 2026). The price job reseeds
+# index.html and markets.html every 15 minutes, so a PR whose structural edit
+# shared or neighboured a seed line conflicted with main (#320). Each seed is
+# written on its own line, split off by an empty comment that holds the line
+# break, so no whitespace text node is added and nothing on the page moves:
+#   <span id="x"><!--
+#   --><!--SEED:x-->value<!--/SEED--><!--
+#   --></span>
+SEED_BREAK = "<!--\n-->"
+
+
 def seed_between(text, tag, replacement):
-    """Replace content between <!--SEED:tag--> and <!--/SEED--> (first pair after tag)."""
-    pat = re.compile(r"(<!--SEED:" + re.escape(tag) + r"-->)(.*?)(<!--/SEED-->)", re.S)
+    """Replace content between <!--SEED:tag--> and <!--/SEED--> (first pair
+    after tag), on a line of its own (SEED_BREAK on both sides)."""
+    pat = re.compile(r"(?:" + re.escape(SEED_BREAK) + r")?(<!--SEED:" + re.escape(tag) + r"-->)(.*?)(<!--/SEED-->)"
+                     r"(?:" + re.escape(SEED_BREAK) + r")?", re.S)
     if not pat.search(text):
         return text, False
-    new = pat.sub(lambda m: m.group(1) + replacement + m.group(3), text, count=1)
+    new = pat.sub(lambda m: SEED_BREAK + m.group(1) + replacement + m.group(3) + SEED_BREAK, text, count=1)
     return new, new != text
 
 
