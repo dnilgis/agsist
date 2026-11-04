@@ -7,8 +7,10 @@
  *   - the menu: /land-sales/ in the live menu (desktop panel and phone drawer), the no-script header and the header
  *     baked into the home page;
  *   - site search: the words people type land on /land-sales/;
- *   - in Chromium at 390 and 1280 px: the block is on the first screen, shows the fixture's sale, never a name, and
- *     moves nothing (no layout shift from the block); with no data file the plain words and the link stay.
+ *   - in Chromium: at 1280 px the block is on the first screen, in the room under Sell grain and My field; at 390 px
+ *     it sits right under My field with no gap, before the futures (the three jobs keep the phone's first screen,
+ *     Sig Nov 2, test/home-jobs.test.mjs); it shows the fixture's sale, never a name, and moves nothing; with no
+ *     data file the plain words and the link stay.
  *     Every outside host is aborted and service workers are blocked (BUILD-RULES 58).
  *
  *   node --test test/home-land.test.mjs
@@ -104,7 +106,7 @@ test("the menu: Land sales in the live menu (desktop and phone), the no-script h
 test("the home page: the block, its script and the hub's email anchor", () => {
   const home = read("index.html");
   const jobs = home.slice(home.indexOf('<div class="jobs" id="hb-jobs">'), home.indexOf('<h3 class="hb-futh">'));
-  assert.match(jobs, /<section class="job job-land" id="job-land"[^]*<h3 class="job-h" id="job-land-h">Farmland sales<\/h3>/);
+  assert.match(jobs, /id="job-field-h">My field<[^]*<\/nav>\s*<!--[^]*?-->\s*<div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">\s*<h3 class="job-h" id="job-land-h">Farmland sales<\/h3>/, "right after My field");
   assert.match(jobs, /href="\/land-sales\/"[^>]*><span class="job-l" id="hl-all-l">Farmland sales by county in IL, IN, NJ, VT, WI<\/span>/);
   assert.match(jobs, /href="\/land-sales\/#email"/);
   assert.match(home, /<script src="\/components\/home-land\.js\?v=1" defer><\/script>/);
@@ -172,7 +174,8 @@ async function look(browser, port, width, place) {
   const r = await p.evaluate(() => {
     const b = document.getElementById("job-land"), v = document.getElementById("hl-v"), all = document.getElementById("hl-all");
     const box = (e) => { const x = e.getBoundingClientRect(); return { top: x.top, bottom: x.bottom, h: x.height }; };
-    return { block: box(b), v: v.textContent, k: document.getElementById("hl-k").textContent, s: document.getElementById("hl-s").textContent,
+    const field = document.querySelector(".job-field").getBoundingClientRect(), fut = document.querySelector(".hb-futh").getBoundingClientRect();
+    return { field: { top: field.top, bottom: field.bottom }, futTop: fut.top, block: box(b), v: v.textContent, k: document.getElementById("hl-k").textContent, s: document.getElementById("hl-s").textContent,
       href: document.getElementById("hl-sale").getAttribute("href"), all: all.textContent.trim(), allHref: all.getAttribute("href"),
       text: b.textContent, shift: window.__shift, vh: innerHeight, why: getComputedStyle(document.getElementById("hl-why")).visibility };
   });
@@ -180,20 +183,26 @@ async function look(browser, port, width, place) {
   return r;
 }
 
-test("in Chromium: on the first screen at 390 and 1280, the fixture's sale, no name, no shift; no data keeps the words", { skip, timeout: 180000 }, async () => {
+test("in Chromium: first screen at 1280, right under My field at 390; the fixture's sale, no name, no shift; no data keeps the words", { skip, timeout: 180000 }, async () => {
   const browser = await chromium.launch({ executablePath: CHROME });
   const withData = await serve(JSON.stringify(FIX)), without = await serve(null);
   try {
     for (const width of [390, 1280]) {
       const il = await look(browser, withData.address().port, width, { zip: "61761", state: "IL", county: "McLean", label: "Normal, IL", lat: 40.51, lon: -88.99 });
-      assert.ok(il.block.top < il.vh, `${width}: the Farmland sales block starts on the first screen (top ${il.block.top})`);
+      if (width >= 1000) {
+        assert.ok(il.block.bottom < il.vh, `${width}: the whole Farmland sales block is on the first screen (bottom ${il.block.bottom})`);
+        assert.ok(il.block.top >= il.field.bottom - 1 && il.block.top - il.field.bottom < 24, `${width}: under Sell grain and My field`);
+      } else {
+        assert.ok(il.block.top >= il.field.bottom - 1 && il.block.top - il.field.bottom < 24, `${width}: right under My field, no gap (${il.field.bottom} to ${il.block.top})`);
+      }
+      assert.ok(il.block.bottom <= il.futTop, `${width}: before the futures`);
       assert.equal(il.v, "$24,125 an acre", `${width}: the Illinois reader sees the Illinois sale`);
       assert.equal(il.href, "/land-sales/illinois/will-county#s-b2b2aaab92");
       assert.equal(il.why, "visible", `${width}: how the sale was picked`);
       assert.ok(!il.text.includes(NAME), `${width}: no name in the block`);
       assert.equal(il.shift, 0, `${width}: the block moves nothing`);
       const none = await look(browser, withData.address().port, width, null);
-      assert.ok(none.block.top < none.vh, `${width}: no saved place, still on the first screen`);
+      if (width >= 1000) assert.ok(none.block.bottom < none.vh, `${width}: no saved place, still on the first screen`);
       assert.match(none.k, /Vermont/);
       const gone = await look(browser, without.address().port, width, null);
       assert.equal(gone.v, "What farmland sold for near you", `${width}: no data, the plain words stay`);

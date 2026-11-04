@@ -280,23 +280,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
         <a class="job-daily" href="#daily-hero" data-track="jobs"><span class="job-daily-k" id="job-daily-k">The Daily &middot; Nov 4</span> <span class="job-daily-t" id="job-daily-t">Soybeans fall to new lows; four tankers hit mines near Hormuz</span></a>
       </div>
-      <!-- 2026-11-04 (Sig: "my buddy didn't know that farm land sales were on agsist"; "there is dead space on the home
-           page"): one real recorded sale, picked by the rule in scripts/build_land_sales.py (LEAD_RULE, shown on tap),
-           from data/land-sales/lead.json (components/home-land.js). County, acres, $/acre and the date only, never a
-           name. No data: these plain words stay and the link still works. Each line holds its room (no layout shift). -->
-      <section class="job job-land" id="job-land" aria-labelledby="job-land-h">
-        <h3 class="job-h" id="job-land-h">Farmland sales</h3>
-        <a class="hl-sale" id="hl-sale" href="/land-sales/" data-track="jobs">
-          <span class="hl-k" id="hl-k">Recorded farm sales, county by county</span>
-          <span class="hl-v" id="hl-v">What farmland sold for near you</span>
-          <span class="hl-s" id="hl-s">The date, acres and price per acre of every recorded farm sale. Never who bought or sold.</span>
-        </a>
-        <details class="hl-why hl-wait" id="hl-why"><summary>How this sale was picked</summary><p id="hl-rule"></p></details>
-        <ul class="job-links hl-links">
-          <li><a href="/land-sales/" id="hl-all" data-track="jobs"><span class="job-l" id="hl-all-l">Farmland sales by county in IL, IN, NJ, VT, WI</span></a></li>
-          <li><a href="/land-sales/#email" id="hl-ask" data-track="jobs"><span class="job-l" id="hl-ask-l">Email me new farm sales near me</span></a></li>
-        </ul>
-      </section>
       <nav class="job job-sell" aria-labelledby="job-sell-h">
         <h3 class="job-h" id="job-sell-h">Sell grain</h3>
         <ul class="job-links">
@@ -312,6 +295,24 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <li><a href="/fast-facts" data-track="jobs"><span class="job-l" id="job-ff">Fast Facts for your county</span><span class="job-s">Bids, rain, drought, rent and land value, each dated</span></a></li>
         </ul>
       </nav>
+      <!-- 2026-11-04 (Sig: "my buddy didn't know that farm land sales were on agsist"; "there is dead space on the home
+           page"): one real recorded sale, picked by the rule in scripts/build_land_sales.py (LEAD_RULE, shown on tap),
+           from data/land-sales/lead.json (components/home-land.js). County, acres, $/acre and the date only, never a
+           name. Phone: right under My field (the three jobs keep the first screen, Sig Nov 2); 1000px and up: the room
+           under Sell grain and My field. No data: these plain words stay and the link still works. Each line holds its room (no layout shift). -->
+      <div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">
+        <h3 class="job-h" id="job-land-h">Farmland sales</h3>
+        <a class="hl-sale" id="hl-sale" href="/land-sales/" data-track="jobs">
+          <span class="hl-k" id="hl-k">Recorded farm sales, county by county</span>
+          <span class="hl-v" id="hl-v">What farmland sold for near you</span>
+          <span class="hl-s" id="hl-s">The date, acres and price per acre of every recorded farm sale. Never who bought or sold.</span>
+        </a>
+        <details class="hl-why hl-wait" id="hl-why"><summary>How this sale was picked</summary><p id="hl-rule"></p></details>
+        <ul class="job-links hl-links">
+          <li><a href="/land-sales/" id="hl-all" data-track="jobs"><span class="job-l" id="hl-all-l">Farmland sales by county in IL, IN, NJ, VT, WI</span></a></li>
+          <li><a href="/land-sales/#email" id="hl-ask" data-track="jobs"><span class="job-l" id="hl-ask-l">Email me new farm sales near me</span></a></li>
+        </ul>
+      </div>
     </div>
     <script>try{(function(){var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null'),c=l&&/^\d{5}$/.test(String(l.zip||''))?String(l.county||'').trim():'';if(c&&c.length<40){if(!/county|parish|borough/i.test(c))c+=' County';var e=document.getElementById('job-ff');if(e)e.textContent='Fast Facts for '+c;}})();}catch(e){}</script>
     <h3 class="hb-futh">Futures</h3>
