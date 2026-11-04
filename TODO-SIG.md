@@ -15,3 +15,7 @@ names and anything private out of it.
 - [ ] Set up the bids Gmail and app password, then add the BIDS_IMAP_USER and BIDS_IMAP_PASSWORD secrets in dnilgis/bids
 - [ ] Join Something Special from Wisconsin
 - [ ] This week: find more co-ops and retailers that post fertilizer prices on their websites (WI, IA, MN, IL first) and send the links; each one is a line in scripts/coop_fert_sources.json
+- [ ] Land sale data: call the Minnesota, Florida and South Dakota revenue departments for their sale files; email Wisconsin DOR (permission only). Call sheet and drafts are in the private notes.
+- [ ] Rain Print before Christmas: measure the mat window, scan the QR on a test print with two phones, check the Stripe product names say 13 x 19, note when the first framed order went out vs the Dec 9 cutoff, photo of a framed print with the mat
+- [x] Barchart worker and BARCHART_API_KEY deleted (Nov 4)
+- [ ] Answer the five site panel calls (barge, Atlas as county home, hog page, PRF county fold Nov 15, town titles)

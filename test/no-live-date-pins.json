@@ -20,7 +20,7 @@
   "test/atlas-land-oct16.test.mjs": 4,
   "test/atlas-sales-tile.test.mjs": 2,
   "test/atlas-sales.test.mjs": 5,
-  "test/basis-h2h.test.mjs": 5,
+  "test/basis-h2h.test.mjs": 3,
   "test/basis-stitch.test.mjs": 6,
   "test/breakeven-best.test.mjs": 9,
   "test/breakeven-h2h.test.mjs": 4,

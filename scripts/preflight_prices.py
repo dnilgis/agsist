@@ -190,6 +190,43 @@ def _carry_dates(cont, f, data, key, fields=("close_date","prev_date")):
             sk.remove(key)
     return False
 
+# 2026-11-04 (site panel, PR 307): the Daily reads the same front month as every
+# other page. fetch_prices.add_nearby writes <crop>-nearby for the grains, rolled
+# at CBOT first notice day; the continuous ZS=F series stays on the delivery month
+# until it expires. On Nov 3 the Daily printed Nov '26 soybeans (1203.0) while the
+# site showed Jan '27 (1213.5). The Daily's lock, the gate's drift check and this
+# preflight's warning all read the quote through this one function.
+DAILY_NEARBY = ("corn", "beans", "wheat")
+
+
+def daily_quote(quotes, key):
+    """The quote the Daily prints for `key`: <key>-nearby for corn, beans and
+    wheat when it has a fresh close (its own prev and settles: the same
+    contract), else the key itself."""
+    quotes = quotes or {}
+    if key in DAILY_NEARBY:
+        nb = quotes.get(key + "-nearby")
+        if isinstance(nb, dict) and nb.get("close") is not None and not nb.get("stale"):
+            return nb
+    return quotes.get(key)
+
+
+def nearby_mismatch(quotes):
+    """WARN lines (never a hold, Nov 3 rule) when a continuous grain key sits on a
+    different contract than <key>-nearby. Pure."""
+    out = []
+    for key in DAILY_NEARBY:
+        c, nb = (quotes or {}).get(key), (quotes or {}).get(key + "-nearby")
+        if not (isinstance(c, dict) and isinstance(nb, dict)):
+            continue
+        if c.get("close") is None or nb.get("close") is None:
+            continue
+        if float(c["close"]) != float(nb["close"]):
+            out.append("%s continuous %s != %s-nearby %s (%s); the Daily prints the nearby"
+                       % (key, c["close"], key, nb["close"], nb.get("contract") or nb.get("alias_of") or "?"))
+    return out
+
+
 def run(data, today=None, repair=False):
     today=today or datetime.now(timezone.utc)
     quotes=data.get("quotes",{})
@@ -345,6 +382,11 @@ def run(data, today=None, repair=False):
             REPAIR("limit",msg+"  -> suppressed (no dated contract to repair from)")
         else:
             FAIL("limit",msg)
+
+    # 4) the Daily prints <grain>-nearby (daily_quote); a continuous key on another
+    # contract is a WARN only, never a hold (Nov 3 rule: the send is never held on code)
+    for m in nearby_mismatch(quotes):
+        WARN("nearby-roll", m)
 
     passed = not any(s=="FAIL" for s,_,_ in issues)
     return passed, issues, data

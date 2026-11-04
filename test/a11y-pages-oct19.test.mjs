@@ -174,7 +174,15 @@ test("cash-bid-index and spray: every checkbox is named, every sideways scroller
         assert.ok(s.focusable, `${w}px: .${s.cls} scrolls sideways and the keyboard cannot reach it`);
         if (/cbi-tw/.test(s.cls)) { assert.equal(s.role, "region"); assert.ok(s.label, "named region"); }
       }
-      if (w >= 640) assert.ok(a.scrollers.some((s) => /cbi-tw/.test(s.cls)), `${w}px: expected the state tables to scroll sideways here`);
+      if (w === 640) assert.ok(a.scrollers.some((s) => /cbi-tw/.test(s.cls)), `${w}px: expected the state tables to scroll sideways here`);
+      /* 2026-11-04 (site panel, PR 307): at 1280 the state tables fit their box (they were 871px in 824px,
+         the last column cut), so nothing scrolls sideways and nothing is clipped */
+      if (w === 1280) {
+        assert.ok(!a.scrollers.some((s) => /cbi-tw/.test(s.cls)), `${w}px: the state tables fit, no sideways scroll`);
+        const fit = await pg.$$eval(".cbi-tw", (els) => els.map((e) => { const t = e.querySelector("table");
+          return [e.scrollWidth, e.clientWidth, Math.ceil(t.getBoundingClientRect().right), Math.floor(e.getBoundingClientRect().right)]; }));
+        for (const [sw, cw, tr, br] of fit) assert.ok(sw <= cw && tr <= br + 1, `${w}px: table ${sw}px in a ${cw}px box, right edge ${tr} vs ${br}`);
+      }
       await ctx.close();
     }
     for (const w of [390, 1280]) {

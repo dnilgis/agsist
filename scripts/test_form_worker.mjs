@@ -772,6 +772,17 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   console.error = errOut;
 }
 
+// v5.63: the frame color (Sig, Nov 4): oak or black on a framed order only; a bad one is dropped, never an error
+{
+  const one = async (patch) => { const before = rpKeys(); const res = await post(Object.assign({}, rp, patch)); A(res.status === 200, 'frame order stored ' + JSON.stringify(patch)); return JSON.parse(store.get(newKey(before))); };
+  A((await one({ choice: 'framed12x18', frame_color: 'oak' })).frame_color === 'oak', 'v5.63: oak kept on a framed order');
+  A((await one({ choice: 'framed12x18', frame_color: 'Black' })).frame_color === 'black', 'v5.63: black kept, in lower case');
+  A(!('frame_color' in await one({ choice: 'framed12x18', frame_color: 'teal' })), 'v5.63: an unknown color is dropped, the order kept');
+  A(!('frame_color' in await one({ choice: 'framed12x18', frame_color: 'mahogany-red' })), 'v5.63: a long unknown color is dropped too, never "too long"');
+  A(!('frame_color' in await one({ choice: 'print12x18', frame_color: 'oak' })), 'v5.63: a print keeps no frame color');
+  A(!('frame_color' in await one({ choice: 'framed12x18' })), 'v5.63: an old page without the field still orders (reads black)');
+}
+
 // older routes still answer the same
 r = await call('/subscribe', 'POST', { email: 'c@x.com' }); A(store.has('sub:c@x.com'), 'subscribe intact');
 r = await call('/nope'); A(r.status === 404, 'unknown path 404');

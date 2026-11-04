@@ -748,7 +748,14 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
     today=today or dt.date.today()
     issues=[]; F=lambda c,m:issues.append(('FAIL',c,m)); W=lambda c,m:issues.append(('WARN',c,m))
     lp=daily.get('locked_prices') or {}
-    quotes=(prices or {}).get('quotes',{}) if prices else {}
+    raw_quotes=(prices or {}).get('quotes',{}) if prices else {}
+    # 2026-11-04: the Daily locks corn, beans and wheat from <crop>-nearby
+    # (preflight_prices.daily_quote); the gate checks against the same quote.
+    quotes=dict(raw_quotes)
+    for _k in ('corn','beans','wheat'):
+        _nb=raw_quotes.get(_k+'-nearby')
+        if isinstance(_nb,dict) and _nb.get('close') is not None and not _nb.get('stale'):
+            quotes[_k]=_nb
 
     # 0) feed defense-in-depth: re-run contamination check on the prices the briefing used
     if prices and preflight_prices:

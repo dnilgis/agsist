@@ -52,3 +52,11 @@ h3{font-size:.98rem;margin:16px 0 4px;color:var(--text)}
 .cbt-hist{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:14px 0}
 .cbt-hist summary{cursor:pointer;padding:12px 14px;font-weight:700;color:var(--text);min-height:44px;box-sizing:border-box}
 .cbt-hist-body{padding:0 14px 12px}
+/* Share today's bids (components/share-bid.js): one line under the answer; the copy and text choices show only after a tap */
+.cbt-share{margin:4px 0 10px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:.9rem}
+.cbt-share-btn{display:inline-flex;align-items:center;min-height:40px;box-sizing:border-box;padding:.4rem .85rem;border:1px solid var(--gold);border-radius:8px;color:var(--gold);font-weight:700;text-decoration:none;background:transparent;font:inherit;font-weight:700;cursor:pointer}
+.cbt-share-btn:hover,.cbt-share-btn:focus-visible{background:var(--surface)}
+.cbt-share-more{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.cbt-share-more[hidden]{display:none}
+.cbt-share-more input{flex:1 1 220px;min-width:0;font:inherit;font-size:.85rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text)}
+.cbt-share-msg{color:var(--text-muted);font-size:.85rem}

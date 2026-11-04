@@ -2,6 +2,20 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-04-rpcolor",
+   "date": "2026-11-04",
+   "title": "Framed Rain Prints now come in oak or black",
+   "line": "Pick an oak or a black frame for a framed Rain Print, same price; the picture on the page shows the one you pick, and What you get lists the frame, mat and glass.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-11-04-wave1a",
+   "date": "2026-11-04",
+   "title": "Price fixes: soybeans on Jan, basis vs USDA's own normal",
+   "line": "Soybean futures show January from first notice, so futures plus basis matches the cash bid; /basis compares USDA only with USDA's own normal.",
+   "link": "/basis"
+  },
+  {
    "id": "2026-11-03-feederlive",
    "date": "2026-11-03",
    "title": "Feeder steer index: more barns",
@@ -77,6 +91,13 @@
    "title": "USDA cash hogs, slaughter and export bids in the Daily",
    "line": "The Daily can now carry USDA's cash hog price and pork cutout, daily slaughter, ethanol plant and Gulf export corn bids, and new fuel and fertilizer prices.",
    "link": "/daily"
+  },
+  {
+   "id": "2026-11-03-sharebid",
+   "date": "2026-11-03",
+   "title": "Share today's bids from a town page",
+   "line": "Cash bid town pages have a Share today's bids button: it sends the top nearest-delivery bid, the day it was posted and the town link by text or copy.",
+   "link": "/cash-bids/iowa/nevada"
   },
   {
    "id": "2026-11-02-feederhist",

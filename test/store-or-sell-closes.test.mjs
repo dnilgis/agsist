@@ -38,5 +38,21 @@ test("the page says the same rule and no longer calls every quote a close", () =
   const html = readFileSync(new URL("store-or-sell.html", ROOT), "utf8");
   assert.ok(!/'closes of ' \+ fm\.date/.test(js));
   assert.match(html, /labeled as closes only once read after the 1:20 pm CT day close/);
-  assert.match(html, /store-or-sell\.js\?v=7/);
+  assert.match(html, /store-or-sell\.js\?v=8/);
+});
+
+/* 2026-11-04 (site panel, skeptic row 7): a failed read was turned into an
+ * empty list, and the page said "No elevator we read near 50010 posts a later
+ * corn bid", blaming the elevators for a network that did not answer. */
+test("a failed network read says the network did not answer, never that no elevator posts a later bid", () => {
+  const { noLaterWords, readFailed } = ctx.AgsistStoreOrSell;
+  assert.equal(readFailed({ list: [], farther: null, read: [], failed: true }), true, "the snapshot fetch threw");
+  assert.equal(readFailed({ list: [{ model: { failed: true } }, { model: { failed: true } }] }), true, "every board read failed");
+  assert.equal(readFailed({ list: [{ model: { failed: true } }, { model: { later: [] } }] }), false, "one board answered");
+  assert.equal(readFailed({ list: [], farther: null, read: [] }), false, "no candidates is a real empty answer");
+  const t = noLaterWords("50010", 0, null, true, "corn");
+  assert.match(t, /^The elevator network did not answer for 50010/);
+  assert.doesNotMatch(t, /No elevator|posts a later corn bid right now/);
+  assert.match(noLaterWords("50010", 3, null, false, "corn"), /^No elevator we read near 50010 posts a later corn bid right now/);
+  assert.match(noLaterWords("50010", 3, { row: {} }, false, "corn"), /^None of the 3 elevators nearest 50010 posts/);
 });

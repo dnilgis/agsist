@@ -1108,6 +1108,10 @@ def rp_order_line(o, now):
     """One order: product, town year style, paid or pay pressed, and the link
     that opens it in Sig's maker view (with the serial for a print)."""
     what = {"digital": "Digital file", "print12x18": "Print", "framed12x18": "Framed"}.get(o.get("product"), "Rain Print")
+    if o.get("product") == "framed12x18":
+        # worker v5.63 (Sig, Nov 4): oak or black; a record without the key reads black (sold before Nov 4), "" is not known
+        fc = "black" if o.get("frame_color") is None else str(o.get("frame_color") or "")
+        what += " in oak" if fc == "oak" else " in black" if fc == "black" else ", frame color not on file (ask the buyer)"
     design = " ".join(x for x in (clean_txt(o.get("place"), 60), str(o.get("year") or ""),
                                   RP_STYLE.get(o.get("style"), "")) if x) or "design not named"
     if o.get("status") == "paid":
@@ -2200,7 +2204,11 @@ def selftest():
     ck("the $19 file: paid, the maker link, no serial",
        rl[3] == "  - Digital file, Chetek, WI 2025 Staircase, paid $19.00, waiting for approval: open to fulfill " + sig_url + "&maker=1", rl)
     ck("a paid framed print: its serial in the line and the link",
-       rl[2] == "  - Framed, Chetek, WI 2025 Roots, paid $79.00, approved 11:00 am, serial 4: open to fulfill " + sig_url + "&maker=1&serial=4", rl)
+       rl[2] == "  - Framed in black, Chetek, WI 2025 Roots, paid $79.00, approved 11:00 am, serial 4: open to fulfill " + sig_url + "&maker=1&serial=4", rl)
+    # the frame color (worker v5.63): the one on record, an old record reads black, "" is not known
+    ck("a framed order names its frame color",
+       [rp_order_line(dict(paid_list["orders"][1], frame_color=c), now).split(",")[0] for c in ("oak", "black", "")] ==
+       ["Framed in oak", "Framed in black", "Framed"] and "frame color not on file (ask the buyer)" in rp_order_line(dict(paid_list["orders"][1], frame_color=""), now))
     ck("a press with no payment says so", rl[1].startswith("  - Print, Chetek, WI 2025 Staircase, pay pressed ") and "payment not confirmed" in rl[1] and "serial" not in rl[1], rl)
     ck("nothing about the buyer", not any("@" in x for x in rl), rl)
     # without a key anywhere: pay pressed, and a print's suggested serial

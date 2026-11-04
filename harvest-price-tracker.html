@@ -739,6 +739,17 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   // A window that has ended is only "final" once RMA has released the price.
   function isDone(g){ return isClosed(g) && g.hstatus==='Released'; }
   function stWord(g){ return isDone(g)?'final':(isOpen(g)?'running':'last posted'); }
+  /* 2026-11-04 (site panel, skeptic row 40): a running or last posted figure is
+     never called final. The worked example said the final price is set at
+     the end of October, with no gate: after the window closed it still said so, and
+     with the harvest price under the projected price it said nothing at all. */
+  function hWordsFor(g,rh){
+    return rh?'the running harvest price, '+runWords(rh):(isDone(g)?'the final harvest price':(isOpen(g)?'RMA&rsquo;s running harvest price':'RMA&rsquo;s last posted harvest price, not yet final'));
+  }
+  function hTail(g){
+    return isDone(g)?'':(isOpen(g)?', at today&rsquo;s running figure; the final price is set after the window closes '+shortd(g.he)
+      :', at RMA&rsquo;s last posted average; RMA has not released the final price');
+  }
   function rank(g){ return (LEAD[g.crop]||99); }
   function pct(g){ return (g.h!=null&&g.p) ? (g.h-g.p)/g.p*100 : null; }
 
@@ -1153,7 +1164,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     if(!g||!(g.p>0)||unitOf(g)!=='bu'){ box.hidden=true; return; }
     var per=EX.aph*EX.cov, rh=runH(g), H=rh?rh.avg:g.h, Hc=H!=null?Math.min(H,2*g.p):null;
     var price=Hc!=null&&Hc>g.p?Hc:g.p, gtee=per*price, f0=function(n){ return '$'+Math.round(n).toLocaleString('en-US'); };
-    var hWords=Hc==null?'':(rh?'the running harvest price, '+runWords(rh):(isDone(g)?'the final harvest price':'RMA&rsquo;s running harvest price'));
+    var hWords=Hc==null?'':hWordsFor(g,rh);
     $('pd-psex-out').textContent=per.toLocaleString('en-US')+' bu/ac';
     var t='Iowa corn, '+EX.aph+' bu APH, '+(EX.cov*100).toFixed(0)+'% coverage: '+EX.aph+' &times; '+(EX.cov*100).toFixed(0)+'% = '+per+
       ' bu an acre stand behind a revenue guarantee of <b class="pd-num">'+f0(gtee)+' /ac</b> ('+per+' &times; <b class="pd-num">'+money(price,'bu')+'</b>, '+
@@ -1161,7 +1172,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     if(Hc!=null){
       var ind=Math.max(0,gtee-EX.raised*Hc);
       t+=' Sell '+EX.sold+' ahead and raise '+EX.raised+': RP pays about <b class="pd-num">'+f0(ind)+' /ac</b> ('+f0(gtee)+' minus '+EX.raised+' &times; '+money(Hc,'bu')+
-        (price===g.p?'':', at today&rsquo;s running figure; the final price is set when October ends')+
+        hTail(g)+
         '), and you buy back '+(EX.sold-EX.raised)+' bu at the cash price. Basis is not covered.';
     }
     $('pd-psex-sub').innerHTML=t+' Pick your state above for your own numbers.';

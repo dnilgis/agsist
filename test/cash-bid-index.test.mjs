@@ -72,3 +72,39 @@ test("the Daily links the latest index", () => {
   assert.match(read("scripts/daily_edge.py"), /href="\/cash-bid-index"/);
   assert.match(read("components/daily-edge.js"), /href="\/cash-bid-index"/);
 });
+
+/* 2026-11-04 (site panel, skeptic rows 23 and 32): no "no one else has this set" claim,
+ * and the state table fits its box at 1280 (it was 871px in 824px, the last column cut). */
+test("no uniqueness claim on the page or in the builder", () => {
+  for (const f of ["cash-bid-index.html", "scripts/cash_bid_index.py"])
+    assert.doesNotMatch(readFileSync(join(ROOT, f), "utf8"), /no one else has/i, f);
+});
+
+const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
+const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
+const noBrowser = !existsSync(PW) || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
+test("the state tables fit their box at 1280 and 390 with no sideways scroll", { skip: noBrowser, timeout: 60000 }, async () => {
+  const { chromium } = await import(PW);
+  const { createServer } = await import("node:http");
+  const srv = createServer((q, r) => {
+    const p = decodeURIComponent(new URL(q.url, "http://x").pathname), f = join(ROOT, p === "/" ? "cash-bid-index.html" : p);
+    if (!f.startsWith(ROOT) || !existsSync(f) || statSync(f).isDirectory()) { r.writeHead(404); return r.end(); }
+    r.writeHead(200, { "content-type": f.endsWith(".html") ? "text/html" : f.endsWith(".css") ? "text/css" : f.endsWith(".js") ? "text/javascript" : "application/octet-stream" });
+    r.end(readFileSync(f));
+  });
+  await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
+  const port = srv.address().port, b = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const width of [1280, 390]) {
+      const c = await b.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
+      const pg = await c.newPage();
+      await pg.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
+      await pg.goto(`http://127.0.0.1:${port}/cash-bid-index.html`);
+      const boxes = await pg.$$eval(".cbi-tw", (els) => els.map((e) => [e.scrollWidth, e.clientWidth]));
+      assert.ok(boxes.length >= 2, "corn and soybean tables");
+      for (const [sw, cw] of boxes) assert.ok(sw <= cw, `${width}px: table ${sw}px in a ${cw}px box`);
+      assert.ok(await pg.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${width}px: no page scroll`);
+      await c.close();
+    }
+  } finally { await b.close(); srv.close(); }
+});

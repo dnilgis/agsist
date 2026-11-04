@@ -279,12 +279,17 @@
 
   /* ── the sentence ─────────────────────────────────────────────────── */
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+  /* 2026-11-04 (site panel, skeptic row 8): "Nothing changed here this week" printed with one
+     line read and three not read. It is said only when every line was read; otherwise the
+     sentence says how many were checked and names the ones that were not. */
   function summary(lines) {
     var ch = lines.filter(function (l) { return l.status === 'changed'; });
-    var known = lines.filter(function (l) { return l.status === 'changed' || l.status === 'held'; });
+    var known = lines.filter(function (l) { return l.status === 'changed' || l.status === 'held' || l.status === 'level'; });
     if (ch.length) return cap(ch.map(function (l) { return l.lead; }).join('; ')) + '.';
-    if (known.length) return 'Nothing changed here this week.';
-    return 'Not enough on file here to say what changed this week.';
+    if (!known.length) return 'Not enough on file here to say what changed this week.';
+    if (known.length === lines.length) return 'Nothing changed here this week.';
+    var not = lines.filter(function (l) { return known.indexOf(l) < 0; }).map(function (l) { return l.label || 'one line'; });
+    return 'No change in the ' + known.length + ' of ' + lines.length + ' lines we could check this week; not checked: ' + not.join(', ') + '.';
   }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
