@@ -86,6 +86,7 @@
    "touched_by": [
     "Accuracy pass",
     "ARC/PLC refresh",
+    "Cash Bid Index",
     "cash-bid-pages",
     "cash-rent",
     "Fetch COT Data",
@@ -93,14 +94,21 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
+    "farmland-atlas-pages",
+    "Hail state pages \u2014 generate from monthly data",
     "Harvest price tracker",
+    "Land data (parcel services + transfers)",
     "lrp",
     "main-checks",
+    "MESH radar hail swaths \u2014 daily",
     "pr-checks",
+    "prf",
     "Build Price Stats (5-year percentile)",
     "Monthly county rain email",
     "Share images",
+    "state-rent-pages",
     "Build State Stats (USDA NASS)",
+    "State yield pages",
     "yield-panel"
    ],
    "cadence": "4 launches on a fixed schedule at about 1am, 9am, 5pm Central",
@@ -280,12 +288,24 @@
     "Fetch Grain Bids"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
     "Bid change ledger (dispatch only)",
+    "Cash Bid Index",
+    "cash-bid-pages",
+    "county rain",
+    "farmland-atlas-pages",
     "Fetch Grain Bids",
+    "Hail state pages \u2014 generate from monthly data",
+    "Land data (parcel services + transfers)",
     "main-checks",
+    "MESH radar hail swaths \u2014 daily",
     "Morning report",
     "pr-checks",
-    "Tools hub dates"
+    "prf",
+    "Monthly county rain email",
+    "state-rent-pages",
+    "Tools hub dates",
+    "State yield pages"
    ],
    "cadence": "about every 60 minutes",
    "curated": false,
@@ -1034,7 +1054,6 @@
     "Coverage map \u2014 the elevator directory, drawn"
    ],
    "touched_by": [
-    "cash-bid-pages",
     "conditions",
     "Coverage map \u2014 the elevator directory, drawn",
     "Fetch Crop Progress",
@@ -2242,7 +2261,6 @@
    ],
    "touched_by": [
     "ARC/PLC refresh",
-    "cash-bid-pages",
     "Cattle auction prices",
     "Cattle cash prices",
     "conditions",

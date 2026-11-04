@@ -225,6 +225,8 @@ jobs:
           PY
             echo "changed=1" >> "$GITHUB_ENV"
           fi
+          # the summary files that read these pages (BUILD-RULES 61): prf.html's stamp, data/feeds.json, llms.txt
+          python scripts/generated_sets.py dependents prf --stage || true
           git add -A data/prf data/pointers prf.html prf img/og/prf.jpg sitemap.xml sitemap-prf.xml
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           C=$(python - <<'PY'
@@ -241,7 +243,8 @@ jobs:
           # other workflows commit to main all day; rebase and retry
           for i in 1 2 3 4 5; do
             git rebase --abort 2>/dev/null || true
-            if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
+            # a conflict only in the summary files is rebuilt on the rebased tree, never kept from one side (BUILD-RULES 61)
+            if python3 scripts/generated_sets.py pull-rebase prf --autostash && git push -q; then exit 0; fi
             sleep $((30 * i))
           done
           echo "push failed after 5 attempts"; exit 1

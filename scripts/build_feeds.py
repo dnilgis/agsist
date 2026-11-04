@@ -545,8 +545,9 @@ def main():
     text = json.dumps(payload, indent=1) + "\n"
     before = read(OUT) if os.path.exists(OUT) else None
     if text != before:
-        with open(OUT, "w") as fh:
+        with open(OUT + ".tmp", "w") as fh:   # whole file, then renamed (never half written)
             fh.write(text)
+        os.replace(OUT + ".tmp", OUT)
         print("wrote " + OUT)
     else:
         print("unchanged")
