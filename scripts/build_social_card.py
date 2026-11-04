@@ -3,11 +3,13 @@
 
 Reads  : data/daily.json  (headline, one_number, date, locked_prices/changes)
          data/predictions.json (the prediction bot's live record)
-Writes : data/social/card-YYYY-MM-DD.jpg   (dated, permanent: the daily page
-                                            and the homepage point at it)
-         data/social/card-latest.jpg
-         daily.yml then copies data/social to dnilgis/agsist-data (scripts/agsist_data.sh), and the
-         pages name the agsist-data copy once data/share-host.json lists the folder (share_host.py)
+Writes : <SOCIAL_CARD_DIR>/card-YYYY-MM-DD.jpg   (dated, permanent: the daily page
+                                                  and the homepage point at it)
+         <SOCIAL_CARD_DIR>/card-latest.jpg
+         The cards are served from the public repo dnilgis/agsist-data at data/social/ (Nov 4, 2026;
+         scripts/share_host.py), not from this repository. daily.yml sets SOCIAL_CARD_DIR to a folder
+         outside the checkout and then adds the new cards there (scripts/agsist_data.sh sync --keep).
+         Unset, SOCIAL_CARD_DIR is data/social here, which .gitignore keeps out of every commit.
 
 Runs AFTER GATE 2 in daily.yml, so a card is only ever rendered from a
 briefing that passed every gate. If the briefing was blocked, no card.
@@ -39,7 +41,7 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT_DIR = os.path.join(ROOT, "data", "social")
+OUT_DIR = os.environ.get("SOCIAL_CARD_DIR") or os.path.join(ROOT, "data", "social")
 SITE = "https://agsist.com"
 QUOTES = (("corn-dec", "corn", "Dec corn"), ("beans-nov", "beans", "Nov beans"), ("wheat", None, "Wheat"))
 
@@ -106,7 +108,7 @@ def build(daily_path="data/daily.json", predictions_path="data/predictions.json"
     for p in (dated, os.path.join(OUT_DIR, "card-latest.jpg")):
         with open(p, "wb") as f:
             f.write(data)
-    print("[social-card] wrote %s and card-latest.jpg (%d KB)" % (os.path.relpath(dated, ROOT), len(data) // 1024))
+    print("[social-card] wrote %s and card-latest.jpg (%d KB)" % (dated, len(data) // 1024))
     return dated, alt
 
 
@@ -161,9 +163,9 @@ def main(argv):
             build("data/daily-archive/%s.json" % day, stamp=day)
             return 0
         dated, alt = build()
-        # agsist.com, or agsist-data once the seed job has listed data/social (scripts/share_host.py)
+        # served from agsist-data (data/share-host.json lists data/social; scripts/share_host.py)
         import share_host
-        url = share_host.url(os.path.relpath(dated, ROOT).replace(os.sep, "/"))
+        url = share_host.url("data/social/" + os.path.basename(dated))
         update_page_og(os.path.join(ROOT, "index.html"), url, alt)
         return 0
     except Exception as e:  # never block the briefing over a share image

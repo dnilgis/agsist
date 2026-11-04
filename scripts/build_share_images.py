@@ -34,7 +34,7 @@ set's builder writes the URL into every page; this script draws the image.
   rent/*      -> img/og/rent.jpg      (scripts/build_state_rent_pages.py)
   yield/*     -> img/og/yield.jpg     (scripts/build_state_yield_pages.py)
   prf/*       -> img/og/prf.jpg       (scripts/build_prf_card.py)
-  daily/*     -> data/social/card-<date>.jpg (scripts/build_social_card.py)
+  daily/*     -> card-<date>.jpg on dnilgis/agsist-data (scripts/build_social_card.py)
 lrp/record.html gets its own card, img/og/lrp-record.jpg (SUB_PAGES); --only lrp draws both.
 
 COUNTY RAIN CARDS ONCE A WEEK (Sig, Oct 23 2026). The /rain pages rebuild every day, but
@@ -1142,12 +1142,15 @@ def check_page(rel, h, sizes):
         bad.append("no og:image:alt")
     if _meta(h, "property", "og:image:width") != "1200" or _meta(h, "property", "og:image:height") != "630":
         bad.append("og:image:width/height not 1200x630")
-    # agsist.com, or agsist-data for a folder data/share-host.json lists (scripts/share_host.py); while
-    # the files are on both, the copy here is the one measured
+    # agsist.com, or agsist-data for a folder data/share-host.json lists (scripts/share_host.py). The
+    # agsist-data images are not in this checkout (Nov 4, 2026): cron-health's agsist-data-images row
+    # asks for a sample of them every day instead of measuring them here.
     import share_host
     local = share_host.local(og)
     if local is None or (not og.startswith(SITE + "/") and share_host.url(local) != og.split("?")[0]):
         bad.append(f"og:image not on agsist.com: {og}")
+        return bad
+    if og.startswith(share_host.HOST + "/"):
         return bad
     if local not in sizes:
         fp = os.path.join(ROOT, local)

@@ -3330,7 +3330,25 @@ def js_esc(s):
 
 
 OG_IMAGE_FALLBACK = "https://agsist.com/img/og/agsist.jpg"
-SOCIAL_CARD_DIR = REPO_ROOT / "data" / "social"
+# where build_social_card.py drew today's card (daily.yml sets SOCIAL_CARD_DIR outside the checkout); the
+# cards themselves are served from dnilgis/agsist-data, not kept here (Nov 4, 2026)
+SOCIAL_CARD_DIR = Path(os.environ.get("SOCIAL_CARD_DIR") or (REPO_ROOT / "data" / "social"))
+DAILY_PAGE_DIR = REPO_ROOT / "daily"
+
+
+def has_card(date_iso):
+    """Is there a dated card for this issue? The cards left this repository on Nov 4, 2026 (they are
+    served from dnilgis/agsist-data), so the disk alone cannot say. An issue has a card when its
+    published page already names card-<date>.jpg (on either host: the 109 issues from 2026-07-18 that
+    had one on Nov 4 all do), or when the card was just drawn into SOCIAL_CARD_DIR."""
+    name = f"card-{date_iso}.jpg"
+    if (SOCIAL_CARD_DIR / name).exists():
+        return True
+    try:
+        page = (DAILY_PAGE_DIR / f"{date_iso}.html").read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        return False
+    return ("/" + name + '"') in page or ("/" + name + "?") in page
 
 
 def og_image_for(date_iso, require_file=False):
@@ -3347,11 +3365,12 @@ def og_image_for(date_iso, require_file=False):
     this check a full rebuild pointed 126 published pages at a PNG that does
     not exist and never will, silently breaking their social preview. The
     fallback is the image those pages already carry, so a rebuild leaves them
-    exactly as they are.
+    exactly as they are. Since Nov 4, 2026 has_card() answers from the published page, since the
+    cards are no longer on this disk.
     """
     if not OG_IMAGE_BASE:
         return OG_IMAGE_FALLBACK
-    if require_file and not (SOCIAL_CARD_DIR / f"card-{date_iso}.jpg").exists():
+    if require_file and not has_card(date_iso):
         return OG_IMAGE_FALLBACK
     return f"{OG_IMAGE_BASE}{date_iso}.jpg"
 
