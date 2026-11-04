@@ -77,6 +77,8 @@ const GATED = [
   ["transport.yml", ["43 11 * * 5"], 360],
   ["vintage.yml", ["37 17 * * 1-5"], 360],
   ["whats-priced-in.yml", ["20 11 * * *"], 360],
+  // Nov 4, 2026 (BUILD-RULES 59): data commits carry [skip ci], so main could sit red for hours unseen
+  ["main-checks.yml", ["17 */2 * * *"], 100],
 ];
 
 // Scheduled workflows that are not gated by a tick of their own, and why.
@@ -101,7 +103,6 @@ const NOT_GATED = {
   "cot.yml": "cot-release-watch.yml (gated) is the fast path; these crons are the backstop",
   "daily.yml": "the Daily is started by morning-report.yml and weekend-heartbeat.yml (both chained) and watched by daily_late.py",
   "daily-site-check.yml": "a watcher on GitHub's own cron on purpose, so it still reports when cron-job.org stops",
-  "main-checks.yml": "the nightly test suite; also runs on every main push; cron health watches it",
   "audit.yml": "a render audit with no published output; a missed day is caught the next day",
   "feeds-guard.yml": "a weekly guard with no published output",
   "schedule-guard.yml": "a weekly guard with no published output",
@@ -165,7 +166,7 @@ for (const [file, sched, lag] of GATED) {
 
     for (const name of jobs(wf).filter((j) => j !== "gate")) {
       const j = job(wf, name);
-      assert.match(j, /\n    needs: (gate|\[gate, [\w-]+\])\n/, name + " needs the gate");
+      assert.match(j, /\n    needs: (gate|\[gate(, [\w-]+)+\])\n/, name + " needs the gate");
       assert.match(j, /\n    if: needs\.gate\.outputs\.go == '1'( && \(.*\))?\n/, name + " runs only when the gate says go");
     }
     assert.doesNotMatch(wf.slice(0, wf.indexOf("\njobs:\n")), /^concurrency:/m,
@@ -259,7 +260,7 @@ test("the gate passes over runs by hand for these, the land email retries after 
   const out = execFileSync("python3", ["scripts/cron_gate.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.match(out, /all cron_gate checks passed/);
   for (const name of [
-    "the four mail and rain workflows and the 49 gated Nov 3, and only those, ignore runs by hand",
+    "the four mail and rain workflows and the 50 gated Nov 3 and 4, and only those, ignore runs by hand",
     "land email: the first chained run after late land data goes once more",
     "land email: only one retry per land data commit",
     "land email: the land data landed before the tick's run, no retry",

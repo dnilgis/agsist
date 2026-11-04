@@ -42,6 +42,14 @@ fi
 if [ "$LIST" = 0 ] && [ "${AGSIST_PREBUILD:-}" = 1 ]; then
   pb=$(python3 scripts/dev/main_build.py build 2>&1) || { echo "FAIL prebuild (python3 scripts/dev/main_build.py build)"; echo "$pb" | tail -25; fails=$((fails+1)); }
 fi
+# AGSIST_GEN_BASE (the PR checks set it): a generated page set whose builder the change touches is rebuilt in this
+# copy too (scripts/generated_sets.py prebuild), so its --check and the tests see what main will serve after
+# the rebuild there. Nothing is committed: generated pages are built on main.
+if [ "$LIST" = 0 ] && [ "${AGSIST_PREBUILD:-}" = 1 ] && [ -n "${AGSIST_GEN_BASE:-}" ]; then
+  gp=$(python3 scripts/generated_sets.py prebuild --base "$AGSIST_GEN_BASE" 2>&1); grc=$?
+  echo "$gp" | grep -E '^prebuild' >&2
+  [ $grc = 0 ] || { echo "FAIL gen-prebuild (python3 scripts/generated_sets.py prebuild --base $AGSIST_GEN_BASE)"; echo "$gp" | tail -25; fails=$((fails+1)); }
+fi
 NT="$OUT/nt${SHARD:+-${SHARD%/*}of${SHARD#*/}}.out"
 # AGSIST_NO_SKIPS=1 (the PR checks set it): a skipped node test fails node-test too, a skip is not a pass
 # (scripts/dev/check-skips.sh; test/skips-allowed.txt holds the either/or pairs it accepts)
@@ -73,7 +81,7 @@ run geo-crosswalk bash -c "python3 scripts/build_geo_crosswalk.py --selftest && 
 run join-report bash -c "python3 scripts/join_report.py --selftest >/dev/null && python3 scripts/join_report.py"
 run worker node scripts/test_form_worker.mjs
 run share python3 scripts/build_share_images.py --check
-for b in build_arc_plc build_breakeven_data build_prf_states build_prf_counties build_county_rain stamp_prf build_croptour build_farmbill; do [ -f scripts/$b.py ] && run $b python3 scripts/$b.py --check; done
+for b in build_arc_plc build_breakeven_data build_prf_states build_prf_counties build_county_rain build_land_sales stamp_prf build_croptour build_farmbill; do [ -f scripts/$b.py ] && run $b python3 scripts/$b.py --check; done
 # a name given to --only that is not a check is a typo, not a pass
 if [ -n "$ONLY" ]; then
   IFS=, read -ra asked <<< "${ONLY#,}"

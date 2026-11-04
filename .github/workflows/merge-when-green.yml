@@ -36,7 +36,7 @@ jobs:
     name: merge when green
     if: github.event_name != 'pull_request_target' || github.event.label.name == 'merge-when-green'
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20     # an update from main waits up to 5 minutes for the new head
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:
