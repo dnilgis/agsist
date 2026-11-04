@@ -446,7 +446,8 @@
   function thisCropKey(c) {
     var k = CROP_PRICE_KEY[c], P = W.AgPxStamp;
     if (c === 'wheat' || !P || !P.headline || !_livePrices) return k;
-    var h = P.headline(_livePrices, c === 'corn' ? 'corn' : 'beans'), a = tickerYM(k), hk = h && h.key, b = hk && tickerYM(hk);
+    /* only the file's own headline (<crop>-nearby): with none on file the harvest month stands */
+    var h = P.headline(_livePrices, c === 'corn' ? 'corn' : 'beans'), a = tickerYM(k), hk = h && /-nearby$/.test(h.key) && h.key, b = hk && tickerYM(hk);
     return (a && b && b.yy * 12 + MONTH_I[b.mon] > a.yy * 12 + MONTH_I[a.mon]) ? hk : k;
   }
   function contractFor(c) { if (_beYear === '1') { var k = nextYearKey(c); if (k) return k; } return thisCropKey(c); }
