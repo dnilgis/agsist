@@ -91,6 +91,8 @@ MANUAL_DOES_NOT_SERVE = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.
     "seasonal-models.yml", "share-images.yml", "site-usage.yml", "sitemap.yml", "sponsor-report.yml",
     "state-rent-pages.yml", "stats-ingest.yml", "storage.yml", "tenure.yml", "transport.yml", "vintage.yml",
     "whats-priced-in.yml",
+    # gated Nov 4, 2026 (BUILD-RULES 59)
+    "main-checks.yml",
 }
 # Gated rows whose gate runs on a denser clock than GitHub's fallback cron, on purpose.
 DENSER_GATE = {"news.yml", "cron-health.yml"}
@@ -208,8 +210,8 @@ CHECKS = [
     ("daily-site-check.yml", ["37 11 * * *"], 480, False, "the morning site check and its issue, GitHub cron 11:37 UTC"),
     ("cron-health.yml", None, 60, False, "this check, after every Fetch Grain Bids, gated to every half hour"),
     # The full suite on main (Oct 29, 2026): a red run opens the "main is red" issue itself; this row
-    # catches the nightly not running at all. GitHub cron, so the same 8 h slack as the site check.
-    ("main-checks.yml", ["17 8 * * *"], 480, False, "every test on main, nightly at 08:17 UTC and after each merge"),
+    # catches the suite not running at all. Chained and gated every two hours since Nov 4 (BUILD-RULES 59).
+    ("main-checks.yml", None, 100, False, "every test on main, every two hours on the chain and after each merge"),
 ]
 
 # The saved private/data/cron-health.json is rewritten at least every RECOMMIT_HOURS while
