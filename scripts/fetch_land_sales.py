@@ -75,6 +75,7 @@ import zipfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import land_keys  # noqa: E402  the section key column (scripts/land_keys.py)
+import land_names  # noqa: E402  buyer and seller apart from the county files (scripts/land_names.py)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "land")
@@ -760,17 +761,23 @@ def build(st, recs, gaz, now, prior=None, months=None):
         # Each county gets its own copy of cols: add_column changes the list it is given (Nov 3).
         land_keys.add_column(doc, GEO)
         check_rows(doc)
+        # no name in a county file (lead decision on PR 324, Nov 4, 2026; Sig's Oct 27 names-on-tap rule): the names
+        # go to data/land/<st>/names/<fips>.json, si and bi stay (scripts/land_names.py)
+        doc, ndoc = land_names.split(doc)
+        if land_names.has_names(doc):
+            raise BadRows("%s %s: a name column is still in the county file; not written" % (st, fips))
         s = json.dumps(doc, separators=(",", ":"))
         total += len(s)
-        files.append((fips, s))
+        files.append((fips, s, doc, ndoc))
         index.append({"fips": fips, "name": c["name"], "lat": c["lat"], "lng": c["lng"], "n": len(rs), "from": rs[-1]["date"], "to": rs[0]["date"]})
     cap = min(MAX_STATE_MB, cfg.get("max_mb") or MAX_STATE_MB)
     if total > cap * 1048576:
         raise OverCap("%s: %.1f MB of county files, over the %d MB cap; not written (raise it in this file on purpose)" % (st, total / 1048576, cap))
     os.makedirs(os.path.join(OUT, st.lower()), exist_ok=True)
-    for fips, s in files:
+    for fips, s, doc, ndoc in files:
         with open(os.path.join(OUT, st.lower(), fips + ".json"), "w") as f:
             f.write(s)
+        land_names.write(OUT, st, doc, ndoc)
     with open(os.path.join(OUT, st.lower(), "index.json"), "w") as f:
         ix = {"state": st, "source": cfg["source"], "fetched_utc": now, "names": names, "counties": index, "unplaced_rows": unplaced}
         if months:
@@ -2632,7 +2639,7 @@ def held(st, out=None):
         return [], {}, set()
     recs, covs, lo, hi = [], {}, None, None
     for c in ix.get("counties", []):
-        f = json.load(open(os.path.join(d, c["fips"] + ".json")))
+        f = land_names.load(json.load(open(os.path.join(d, c["fips"] + ".json"))), out or OUT)
         covs[c["fips"]] = f.get("coverage") or {}
         cv = covs[c["fips"]]
         if cv.get("filed_from"):
@@ -3089,7 +3096,15 @@ def selftest():
         vrecs, _ = parse_rows([iter(list(vt_table(three, {})))])
         build("VT", vrecs, {}, "2026-11-03T00:00:00Z")
         ixv = json.load(open(os.path.join(OUT, "vt", "index.json")))
-        fv = [json.load(open(os.path.join(OUT, "vt", c["fips"] + ".json"))) for c in ixv["counties"]]
+        fv0 = [json.load(open(os.path.join(OUT, "vt", c["fips"] + ".json"))) for c in ixv["counties"]]
+        ck("names: a county file never carries a name column or a name (Sig, Oct 27: names only on the tap, from the names files)",
+           all(not land_names.has_names(f) and "SELLER" not in json.dumps(f) and "BUYER" not in json.dumps(f) for f in fv0)
+           and all(f["names_file"] == "/data/land/vt/names/%s.json" % f["fips"] for f in fv0))
+        nv = [json.load(open(os.path.join(OUT, "vt", "names", c["fips"] + ".json"))) for c in ixv["counties"]]
+        ck("names: each county's names file holds every row's seller and buyer, in row order, stamped with the read",
+           [n["rows"] for n in nv] == [[["TEST SELLER %d LLC" % i, "PAT BUYER %d" % i]] for i in range(3)]
+           and all(n["n"] == len(f["rows"]) and n["fetched_utc"] == f["fetched_utc"] for n, f in zip(nv, fv0)))
+        fv = [land_names.load(f, OUT) for f in fv0]
         got = sorted((f["fips"], [dict(zip(f["cols"], r)) for r in f["rows"]][0]) for f in fv)
         ck("VT: three counties, every row as long as its columns (one shared cols list cut a value from each county after the first)",
            len(fv) == 3 and all(len(r) == len(f["cols"]) for f in fv for r in f["rows"]))
@@ -3260,9 +3275,10 @@ def selftest():
         build("IL", [dict(r) for r in il], {}, "2026-10-23T00:00:00Z")
         ixl = json.load(open(os.path.join(OUT, "il", "index.json")))
         fl = [json.load(open(os.path.join(OUT, "il", c["fips"] + ".json"))) for c in ixl["counties"]]
-        recs_il = sorted((r[-1] or "") for f in fl for r in f["rows"])
+        recs_il = sorted((r[f["cols"].index("rec")] or "") for f in fl for r in f["rows"])
         ck("IL build keeps the recorded date (the land sale email lists sales by it); a declaration without one stays blank",
-           bool(fl) and all(f["cols"][-1] == "rec" for f in fl) and recs_il == ["", "2026-10-09", "2026-10-09"])
+           bool(fl) and all("rec" in f["cols"] for f in fl) and recs_il == ["", "2026-10-09", "2026-10-09"])
+        ck("names: Illinois county files carry si and bi, no name", all(f["cols"][-2:] == ["si", "bi"] and not land_names.has_names(f) for f in fl))
     finally:
         import shutil
         shutil.rmtree(OUT, ignore_errors=True)

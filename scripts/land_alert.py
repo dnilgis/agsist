@@ -79,6 +79,7 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import build_land_summary as BLS   # noqa: E402  the shared market-sale rule
+import land_names                  # noqa: E402  names apart from the county files (Nov 4, 2026)
 
 STATES = ("IL", "WI", "IN", "VT", "NJ")   # Indiana on since Oct 27, 2026, Vermont and New Jersey since Oct 29 (see above); MN not in the data
 STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana", "VT": "Vermont", "NJ": "New Jersey"}
@@ -197,7 +198,10 @@ class Land:
         k = (st, fips)
         if k not in self._f:
             try:
-                self._f[k] = json.load(open(os.path.join(self.repo, "data", "land", st.lower(), fips + ".json"), encoding="utf-8"))
+                f = json.load(open(os.path.join(self.repo, "data", "land", st.lower(), fips + ".json"), encoding="utf-8"))
+                # names live in data/land/<st>/names/ since Nov 4, 2026 (scripts/land_names.py): back in memory here, for
+                # the names files and the monthly buyers only
+                self._f[k] = land_names.load(f, os.path.join(self.repo, "data", "land"))
             except (OSError, ValueError):
                 self._f[k] = None
         return self._f[k]

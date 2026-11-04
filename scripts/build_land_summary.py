@@ -171,6 +171,15 @@ def up(v):
     return clean(v).upper()
 
 
+def party(r, side):
+    """FSLand.party: who a row's seller (s) or buyer (b) is, for "same party or not" only. A county file written since
+    Nov 4, 2026 carries the ids si and bi (scripts/land_names.py: no name in it); an older one, the name itself."""
+    k = "si" if side == "s" else "bi"
+    if k in r:
+        return "" if r[k] is None else "#%s" % r[k]
+    return up(r.get("grantor" if side == "s" else "grantee"))
+
+
 def parcel_strip(pid):
     """FSLand.parcelKeys(pid).strip, or None."""
     s = up(pid)
@@ -295,7 +304,7 @@ def sale_rows(rows, today):
         k1 = co + "|d|" + up(r.get("doc")) if r.get("doc") else None
         pk = parcel_strip(r.get("pid"))
         where = pk if pk else (up(r.get("legal"))[:GROUP_LEGAL] if len(up(r.get("legal"))) >= 10 else "")
-        k2 = ("%s|%s|%s|%s|%s|%s" % (co, str(r.get("date") or "")[:10], "" if p is None else js_round(p * 100), where, up(r.get("grantor")), up(r.get("grantee")))) if where else None
+        k2 = ("%s|%s|%s|%s|%s|%s" % (co, str(r.get("date") or "")[:10], "" if p is None else js_round(p * 100), where, party(r, "s"), party(r, "b"))) if where else None
         if (k1 and k1 in seen) or (k2 and k2 in seen):
             continue
         if k1:
@@ -337,7 +346,7 @@ def sale_rows(rows, today):
         same_ac = all(not x.get("acUnsure") and (num(x.get("acres")) or 0) > 0 and num(x.get("acres")) == a0 for x in m)
         buyers = []
         for x in m:
-            b = up(x.get("grantee"))
+            b = party(x, "b")
             if b and b not in buyers:
                 buyers.append(b)
         o["grp"] = len(m)
@@ -512,10 +521,12 @@ def build_state(st, files, fetched=None):
 
 
 def load_state(st):
+    """The state's county files, each with its names put back in memory (land_names.load) for the leak check."""
+    import land_names
     out = []
     for p in sorted(glob.glob(os.path.join(LAND, st.lower(), "[0-9]*.json"))):
         with open(p, encoding="utf-8") as fh:
-            out.append(json.load(fh))
+            out.append(land_names.load(json.load(fh), LAND))
     return out
 
 
