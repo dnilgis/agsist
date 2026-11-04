@@ -430,13 +430,15 @@ test("browser: ?geo-preview=TX shows an inactive entry with copy, counts nothing
 test("browser: RootLot's portal: free test muted under its label, live with counts 0 until a full day, its states, no errors", { skip, timeout: 120000 }, async () => {
   const conf = JSON.parse(read("data/sponsors.json"));
   const rl = conf.sponsors.find((s) => s.slug === "rootlot");
-  assert.ok(rl && /^[0-9a-f]{16}$/.test(rl.token));
-  assert.ok(existsSync(join(ROOT, "data/sponsors", "rootlot-" + rl.token + ".json")), "the portal file is built");
-  // The shipped file decides what the page must say: before the first full day (pending, or no
+  assert.ok(rl && rl.token === undefined, "Root Lot is listed, its link token private (Nov 4, 2026)");
+  // The report file decides what the page must say: before the first full day (pending, or no
   // liveSince) the counts read 0 and say "no full day"; once a day is counted (the morning report
   // of Oct 29 counted Oct 28) the page shows the file's own 7-day counts, "Live since" in the hero
-  // and how far the counts go above them.
-  const rep = JSON.parse(read("data/sponsors/rootlot-" + rl.token + ".json"));
+  // and how far the counts go above them. Since Nov 4, 2026 the reports are private and the subs
+  // worker serves them; this is Root Lot's report of Nov 4 (frozen), with that morning's reader file.
+  const rep = JSON.parse(read("test/fixtures/sponsoraudit/rootlot-2026-11-04.json"));
+  const audFix = JSON.parse(read("test/fixtures/sponsoraudit/audience-2026-11-04.json"));
+  const R = "rootlot-0000000000000000";
   const noDay = !!rep.pending || !rep.liveSince;
   const w7 = (rep.windows || []).find((x) => x.days === 7) || rep.totals || {};
   const n = (v) => Number(v || 0).toLocaleString("en-US");
@@ -446,10 +448,13 @@ test("browser: RootLot's portal: free test muted under its label, live with coun
   await browserRun(async (browser, port) => {
     for (const w of [390, 1280]) {
       const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, serviceWorkers: "block" });
+      await ctx.clock.install({ time: new Date(Date.parse(rep.generated) + 3600e3) });
       const pg = await ctx.newPage();
       const errs = []; pg.on("pageerror", (e) => errs.push(String(e)));
       await pg.route((u) => u.hostname !== "127.0.0.1", (r) => r.abort());
-      await pg.goto(`http://127.0.0.1:${port}/sponsor-report.html?r=rootlot-${rl.token}`, { waitUntil: "load" });
+      await pg.route("https://agsist-api.dnilgis.workers.dev/sponsor-report?r=" + R, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify({ ok: true, report: rep }) }));
+      await pg.route("**/data/audience.json*", (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify(audFix) }));
+      await pg.goto(`http://127.0.0.1:${port}/sponsor-report.html?r=${R}`, { waitUntil: "load" });
       await pg.waitForSelector("#states", { timeout: 8000 });
       const t = await pg.evaluate(() => document.getElementById("cp").innerText);
       assert.match(t, /State-targeted sponsor/);
@@ -483,7 +488,7 @@ test("browser: RootLot's portal: free test muted under its label, live with coun
         const sum = ra.rows.reduce((a, r) => a + (r.viewable || 0), 0);
         assert.ok(rows.some((x) => /^Your \d+ states$/.test(x[0]) && x[1] === n(sum)), w + ": the sum row " + sum);
       }
-      const aud = JSON.parse(read("data/audience.json"));
+      const aud = audFix;
       const towns = ((aud.servers || {}).towns || []).filter((x) => ["California", "Nevada", "Texas"].includes(x.region));
       if (towns.length) for (const x of towns) assert.ok(reg.includes(x.city + ", " + x.region), "server town named: " + x.city);
       else assert.doesNotMatch(reg, /Data-center traffic left out/);

@@ -2,7 +2,9 @@
 // First screen: name, one status pill, four numbers for the last 7 days (each
 // with its meaning and as-of date, a zero reads "0 so far"), then the ad.
 // Everything else is one tap away in a collapsed section, never gone.
-// Checked for every sponsor file in data/sponsors/, at 390 and 1280.
+// Checked for each kind of sponsor report, at 390 and 1280: a live state-targeted free test (Root Lot, Nov 4), an
+// ended Daily sponsor that never ran (Apex) and a demo. Since Nov 4, 2026 the reports are private (the subs worker
+// serves them, GET /sponsor-report), so the frozen copies in test/fixtures/ are served through that route here.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
@@ -19,7 +21,10 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
 const PAGE = read("sponsor-report.html");
-const FILES = readdirSync(join(ROOT, "data/sponsors")).filter((f) => /^[a-z0-9-]+-[0-9a-f]{16}\.json$/.test(f));
+const FIXTURES = { "rootlot-0000000000000000": "test/fixtures/sponsoraudit/rootlot-2026-11-04.json",
+  "apex-0000000000000000": "test/fixtures/sponsorfix/apex-2026-10-08.json", "tscdemo-0000000000000000": "test/fixtures/sponsorfix/tscdemo-2026-11-04.json" };
+const FILES = Object.keys(FIXTURES);
+const REPORT = (r) => JSON.parse(read(FIXTURES[r]));
 const ORDER = ["where", "area", "trend", "ad", "billing", "audience", "how", "requests"];
 // The page was 14,208 px tall at 390 before (Root Lot, Oct 28). The aim is under a third.
 const BEFORE_390 = 14208;
@@ -52,7 +57,7 @@ function serve() {
 // Each report opens on a clock an hour after its own file was generated and runs on: the page reads "today" for the
 // flight, the counts and a demo's expiry, so a later clock (a January run) found the demo expired and drew no numbers
 // (BUILD-RULES 50).
-const genAt = (r) => Date.parse(JSON.parse(read("data/sponsors/" + r + ".json")).generated) + 3600e3;
+const genAt = (r) => Date.parse(REPORT(r).generated) + 3600e3;
 async function open(browser, port, r, w, hash = "") {
   const ctx = await browser.newContext({ viewport: { width: w, height: 844 }, serviceWorkers: "block" });
   await ctx.clock.install({ time: new Date(genAt(r)) });
@@ -64,6 +69,10 @@ async function open(browser, port, r, w, hash = "") {
       .observe({ type: "layout-shift", buffered: true });
   });
   await pg.route((u) => u.hostname !== "127.0.0.1", (x) => x.abort());
+  await pg.route("https://agsist-api.dnilgis.workers.dev/sponsor-report?**", (x) => {
+    const q = new URL(x.request().url()).searchParams.get("r");
+    return FIXTURES[q] ? x.fulfill({ contentType: "application/json", body: JSON.stringify({ ok: true, report: REPORT(q) }) }) : x.fulfill({ status: 404, contentType: "application/json", body: "{\"ok\":false}" });
+  });
   await pg.goto(`http://127.0.0.1:${port}/sponsor-report.html?r=${r}${hash}`, { waitUntil: "load" });
   await pg.waitForSelector("#results .cp-kpi", { timeout: 8000 });
   await pg.waitForTimeout(400);
@@ -74,9 +83,8 @@ test("browser: every sponsor's first screen, every section reachable, short, sti
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    for (const f of FILES) {
-      const r = f.replace(/\.json$/, "");
-      const d = JSON.parse(read("data/sponsors/" + f));
+    for (const r of FILES) {
+      const d = REPORT(r);
       for (const w of [390, 1280]) {
         const tag = r.split("-")[0] + " " + w + ": ";
         const { ctx, pg, errs } = await open(browser, port, r, w);
@@ -104,14 +112,14 @@ test("browser: every sponsor's first screen, every section reachable, short, sti
           if (x.n.trim() === "0") assert.equal(x.u.trim(), "so far", tag + x.k + ": a zero reads 0 so far");
           if (x.n.trim() === "-") assert.ok(x.m.trim(), tag + x.k + ": a dash says why");
         }
-        // the click rate: never a rate over zero views; over real views it is the file's own
-        // clicks / times seen for the 7 days shown, and under 100 views it says too few to judge
+        // the click rate: never a rate under 100 views (Sig, Nov 4: "-" and "Too few views to judge yet", the
+        // honest-numbers rule); over 100 it is the file's own clicks / times seen for the 7 days shown
         const w7 = d.pending || d.withheld ? null : (d.windows || []).find((x) => x.days === 7) || d.totals || {};
         if (!w7 || !w7.viewable) assert.equal(k[2].n.trim(), "-", tag + "no rate shown over zero views");
-        else {
-          assert.equal(k[2].n.trim(), (100 * (w7.clicks || 0) / w7.viewable).toFixed(2) + "%", tag + "the rate is clicks over times seen");
-          if (w7.viewable < 100) assert.match(k[2].m, /Too few views this week to judge/, tag + "a rate over few views says so");
-        }
+        else if (w7.viewable < 100) {
+          assert.equal(k[2].n.trim(), "-", tag + "no rate under 100 views");
+          assert.match(k[2].m, /^Too few views to judge yet$/, tag + "a rate over few views says so");
+        } else assert.equal(k[2].n.trim(), (100 * (w7.clicks || 0) / w7.viewable).toFixed(2) + "%", tag + "the rate is clicks over times seen");
         if (w === 390) assert.ok(Math.max(...k.map((x) => x.bottom)) <= 844, tag + "the four numbers are on the first screen");
 
         // the ad itself, as it runs, right under the numbers

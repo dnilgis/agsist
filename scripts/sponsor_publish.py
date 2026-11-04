@@ -238,7 +238,7 @@ def selftest():
         t2 = load_tokens(d)["barnco"]
         check(new != old and t2["token"] == new and t2["retired"] == [old], "rotate: new token, the old one retired")
         check(not FAKE_RE.match(new), "a minted token is never one of the made-up test patterns")
-        check(FAKE_RE.match("0000000000000000") and FAKE_RE.match("0123456789abcdef") and not FAKE_RE.match("02f5fba2d37c172d"),
+        check(FAKE_RE.match("0000000000000000") and FAKE_RE.match("0123456789abcdef") and not FAKE_RE.match("9c4e1b7a33d0f852"),
               "made-up token patterns are recognised")
         # k matches the worker's own formula (python one-liner in the worker header)
         check(sign("apex-0000000000000001", "sec") == hmac.new(b"sec", b"sponsor-portal|apex-0000000000000001", hashlib.sha256).hexdigest()[:16],
@@ -286,7 +286,7 @@ def selftest():
         r = Path(tmp)
         subprocess.run(["git", "init", "-q", str(r)], check=True)
         (r / "a.txt").write_text("nothing here\n")
-        (r / "b.txt").write_text("see /sponsor-report?r=x-1a2b3c4d5e6f7a8b\n")
+        (r / "b.txt").write_text("see token 1a2b3c4d5e6f7a8b here\n")
         subprocess.run(["git", "-C", str(r), "add", "."], check=True)
         hits = public_hits({"x": {"token": "1a2b3c4d5e6f7a8b", "retired": []}}, r)
         check(hits == ["b.txt"], "public check: a planted token is found, by file name")
