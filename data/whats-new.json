@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-04-wave1a",
+   "date": "2026-11-04",
+   "title": "Price fixes: soybeans on Jan, basis vs USDA's own normal",
+   "line": "Soybean futures show January from first notice, so futures plus basis matches the cash bid; /basis compares USDA only with USDA's own normal.",
+   "link": "/basis"
+  },
+  {
    "id": "2026-11-03-feederlive",
    "date": "2026-11-03",
    "title": "Feeder steer index: more barns",
