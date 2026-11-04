@@ -75,6 +75,7 @@ sys.path.insert(0, str(HERE))
 import build_land_summary as BLS   # noqa: E402
 import land_alert as LA             # noqa: E402
 import source_links as SL           # noqa: E402  no direct links to data sources
+import land_names                   # noqa: E402  names apart from the county files (Nov 4, 2026)
 
 ORIGIN = "https://agsist.com"
 STATES = ("IL", "WI", "IN", "VT", "NJ")   # Vermont and New Jersey since Oct 29, 2026 (Sig: next land states)
@@ -522,14 +523,23 @@ def usual_list(u):
     return [u["med"], u["q1"], u["q3"], u["n"]] if u else None
 
 
-def ctx_data(st, fips, county, u, w24):
-    """A sale's data-ls-c attribute (on the county table, or on each row of a month table): the state, county and the
-    county's 24-month middle the panel compares the sale with ([middle, lower quarter, upper quarter, sales] or null)."""
-    return jdump([st, fips, county, usual_list(u), w24])
+def rec_ok(d, st, fips):
+    """1 when the county's transfer file on disk carries no name (written since Nov 4, 2026, scripts/land_names.py, or a
+    state whose file never had names): only then may the panel read it. A file still holding names is never fetched
+    by a page; its panel shows what the page has until the next run rewrites the file."""
+    f = d.land.file(st, fips) if d else None   # in memory names are put back; a split file says so with names_file
+    return 1 if f and (f.get("names_file") or not land_names.has_names(f)) else 0
+
+
+def ctx_data(st, fips, county, u, w24, ok=0):
+    """A sale's data-ls-c attribute (on the county table, or on each row of a month table): the state, county, the
+    county's 24-month middle the panel compares the sale with ([middle, lower quarter, upper quarter, sales] or null),
+    its window, and rec_ok."""
+    return jdump([st, fips, county, usual_list(u), w24, ok])
 
 
 def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None, anchors=False,
-               ctx=None, win=None):
+               ctx=None, win=None, d=None):
     """anchors: each row gets id="s-<sale id>" (the county page; the land sale email links to it).
     ctx: the table's data-ls-c (one county); without it each row carries its own, with its own usual and win (a month table).
     Every row carries data-ls (row_data): components/land-sales.js opens the sale's detail panel from it."""
@@ -572,7 +582,7 @@ def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa",
         rid = ' id="s-%s"' % e(p["id"]) if anchors else ""
         dl = ' data-ls=%s' % sq(row_data(p))
         if not ctx:
-            dl += ' data-ls-c=%s' % sq(ctx_data(p["st"], p.get("fips"), p["county"], p.get("usual"), win))
+            dl += ' data-ls-c=%s' % sq(ctx_data(p["st"], p.get("fips"), p["county"], p.get("usual"), win, rec_ok(d, p["st"], p.get("fips"))))
         h.append(('<tr%s data-k="%s"%s>' % (rid, KIND_CODE.get(p.get("kind"), "f"), dl) if "kind" in cols else "<tr%s%s>" % (rid, dl)) + "".join(tds) + "</tr>")
     h.append("</tbody></table></div>")
     return "".join(h)
@@ -661,8 +671,8 @@ def month_page(d, M, early, coverage, archive):
     # biggest sales
     b.append('<h2 id="biggest">Biggest sales</h2>')
     if big:
-        b.append(sale_table(M["biggest_acres"], nf, caption="Most acres, %s" % lab, county_link=cl, win=M["window"]))
-        b.append(sale_table(big, nf, caption="Highest price, %s" % lab, county_link=cl, win=M["window"]))
+        b.append(sale_table(M["biggest_acres"], nf, caption="Most acres, %s" % lab, county_link=cl, win=M["window"], d=d))
+        b.append(sale_table(big, nf, caption="Highest price, %s" % lab, county_link=cl, win=M["window"], d=d))
     else:
         b.append('<p class="ls-held">Not shown this month: %s.</p>' % e(M["biggest_why"]))
     # unusual
@@ -674,7 +684,7 @@ def month_page(d, M, early, coverage, archive):
                  % (COMP_MIN_ACRES, COMP_MIN_ACRES, e(LA.short_day(M["window"][0]) + ", " + M["window"][0][:4]),
                     e(LA.short_day(M["window"][1]) + ", " + M["window"][1][:4]), M["n_unusual"], M["n_judged"]))
         if M["unusual"]:
-            b.append(sale_table(M["unusual"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"]))
+            b.append(sale_table(M["unusual"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"], d=d))
             b.append('<p class="ls-why"><b>Above the usual, possible reasons:</b> %s. <b>Below, possible reasons:</b> %s. '
                      "The return does not say which, and a price is not wrong because it is unusual.</p>" % (e(UP_WHY), e(DOWN_WHY)))
         else:
@@ -687,7 +697,7 @@ def month_page(d, M, early, coverage, archive):
         b.append("<p>Sales of %d acres or more priced lowest against their county's middle price, leaving out the unusual prices above and anything "
                  "more than half a middle-half under the county's middle half. "
                  "The record has no soil, tillable acres, buildings or drainage, so a low price can just mean poorer ground.</p>" % BEST_MIN_ACRES)
-        b.append(sale_table(M["best"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"]))
+        b.append(sale_table(M["best"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"], d=d))
     else:
         b.append('<p class="ls-held">Not shown this month: %s.</p>' % e(M["best_why"]))
     b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(NAMES_NOTE), e(RULE), e(src_line(d, M["states"]))))
@@ -851,7 +861,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
         b.append('<div class="ls-flt" hidden data-ls-list="%s" data-ls-names="%s" data-ls-n="%d"><label>Type <select class="ls-fk">'
                  '<option value="">All types</option>%s</select></label></div>' % (e(lf), e(nf), len(allp), opts))
         b.append(sale_table(page, nf, cols=("when", "where", "acres", "price", "ppa", "kind", "note"), caption="Newest first, %s" % cn, tid="ls-all", anchors=True,
-                             ctx=ctx_data(st, c["fips"], c["name"], u, W["w24"])))
+                             ctx=ctx_data(st, c["fips"], c["name"], u, W["w24"], rec_ok(d, st, c["fips"]))))
         if len(allp) > len(page):
             b.append('<p class="ls-more" data-ls-shown="%d">Showing the newest %d of %d sales. '
                      '<button type="button" class="ls-mo" hidden>Show %d more</button></p>' % (len(page), len(page), len(allp), COUNTY_ROWS))
@@ -1030,6 +1040,7 @@ def build(repo=REPO):
             sfile["counties"][c["fips"]] = {"name": c["name"], "slug": slug, "ll": [c["lat"], c["lng"]], "n12": n12,
                                            "usual": {"med": u["med"], "n": u["n"], "q1": u["q1"], "q3": u["q3"]} if u else None, "k24": k24,
                                            "w24": W["w24"], "lx": {p["id"]: p["lx"] for p in feat if p.get("lx")},
+                                           "rec": rec_ok(d, st, c["fips"]),
                                            "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"],
                                                   p["place"], p["pt"][0] if p["pt"] else None, p["pt"][1] if p["pt"] else None,
                                                   p["flag"] or 0, 1 if p["bldg"] else 0, KIND_CODE[p["kind"]], 1 if p["cu"] else 0,
@@ -1041,6 +1052,7 @@ def build(repo=REPO):
                 {"st": st, "fips": c["fips"], "county": c["name"], "through": through, "names": "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]),
                  "kinds": {v: KIND_WORDS[k] for k, v in KIND_CODE.items()}, "cols": LIST_COLS + (["cu"] if cu else []) + DETAIL_COLS,
                  "usual": usual_list(u), "w24": W["w24"], "lx": {p["id"]: p["lx"] for p in allp if p.get("lx")},
+                 "rec": rec_ok(d, st, c["fips"]),
                  "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"], p["place"],
                         KIND_CODE[p["kind"]], p["flag"] or 0] + ([1 if p["cu"] else 0] if cu else []) + [p["ri"], p["g"], p["m"]] for p in allp]})
             urls.append(("%s/land-sales/%s/%s" % (ORIGIN, SLUG[st], slug), d.fetched[st]))
@@ -1176,6 +1188,9 @@ def selftest():
         ck("unusual price wording", "Unusual price" in page)
         ck("sections withheld with a reason when too few", "Not shown this month" in page)
         ck("no em dash", "—" not in "".join(texts.values()))
+        ck("a county file that still holds names is never offered to the panel (rec 0)",
+           json.loads(texts["data/land-sales/wi/55999.json"])["rec"] == 0
+           and re.search(r"data-ls-c='\[\"WI\",\"55999\",[^']*,0\]'", texts["land-sales/wisconsin/testa-county.html"]) is not None)
         lat = json.loads(texts["data/land-sales/latest.json"])
         ck("latest.json names no one", not any(n in texts["data/land-sales/latest.json"] for n in allnames))
         # one sale, linked (Nov 3): every row of the county table has id="s-<sale id>", the same on a rebuild

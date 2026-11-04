@@ -89,7 +89,7 @@
     if (s.flag === 1) note.push('unusual price, above the county&rsquo;s usual');
     if (s.flag === -1) note.push('unusual price, below the county&rsquo;s usual');
     if (s.bldg) note.push('with buildings');
-    var det = c && fips && s.ri !== undefined ? attrs(s, st, fips, c.name, c.usual, c.w24) : '';
+    var det = c && fips && s.ri !== undefined ? attrs(s, st, fips, c.name, c.usual, c.w24, c.rec) : '';
     return '<li' + det + '><span class="ls-d">' + esc(day(s.when)) + (s.recorded ? '' : ' (deed date)') + '</span> '
       + '<b>' + esc(acres(s.acres)) + '</b> at ' + esc(s.ppa != null ? money(s.ppa) + ' an acre' : 'a price per acre not figured')
       + ' (' + esc(money(s.price)) + ')' + (s.place || county ? ', ' : '') + esc((s.place || '') + (county ? (s.place ? ', ' : '') + county + ' County, ' + st : ''))
@@ -377,14 +377,14 @@
     if (!a || !x) return null;
     var s = {};
     for (var i = 0; i < DCOLS.length; i++) s[DCOLS[i]] = a[i];
-    s.st = x[0]; s.fips = x[1]; s.county = x[2]; s.u = x[3]; s.w24 = x[4];
+    s.st = x[0]; s.fips = x[1]; s.county = x[2]; s.u = x[3]; s.w24 = x[4]; s.rec = x[5] === 1;
     el._ls = s;
     return s;
   }
-  function attrs(o, st, fips, county, u, w24) {
+  function attrs(o, st, fips, county, u, w24, rec) {
     /* data-ls and data-ls-c for a card drawn here, the same shape the builder writes on a row */
     return ' data-ls="' + esc(JSON.stringify(DCOLS.map(function (k) { return o[k] == null ? null : o[k]; }))) + '" data-ls-c="'
-      + esc(JSON.stringify([st, fips, county, u ? [u.med, u.q1, u.q3, u.n] : null, w24 || null])) + '"';
+      + esc(JSON.stringify([st, fips, county, u ? [u.med, u.q1, u.q3, u.n] : null, w24 || null, rec ? 1 : 0])) + '"';
   }
   function miss(t) { return '<span class="ls-miss">' + esc(t) + '</span>'; }
   function dl(rows) {
@@ -411,7 +411,8 @@
     (lx || []).slice().sort(function (a, b) { return b[0] - a[0]; }).forEach(function (m) {
       t = t.slice(0, m[0]) + '[name: tap Show buyer and seller]' + t.slice(m[0] + m[1]);
     });
-    return t;
+    /* county files written since Nov 4, 2026 carry the mark already (scripts/land_names.py NAME_MARK) */
+    return t.split('[NAME]').join('[name: tap Show buyer and seller]');
   }
   function namesBtnHtml(id, nf) { return '<button type="button" class="ls-nm" data-ls-id="' + esc(id) + '" data-ls-f="' + esc(nf) + '">Show buyer and seller</button>'; }
 
@@ -419,7 +420,8 @@
     var T = STF[s.st] || STF.WI, st = s.st;
     var has = function (c) { return !!(f && f.cols && f.cols.indexOf(c) >= 0); };
     var rv = function (c) { return r && r[c] != null && r[c] !== '' ? r[c] : null; };
-    var wait = state === 'wait' ? miss('loading the record') : null, gone = state === 'gone' ? miss('the record did not load') : null;
+    var wait = state === 'wait' ? miss('loading the record') : null,
+      gone = state === 'gone' ? miss('the record did not load') : state === 'later' ? miss(NOT_YET) : null;
     var fromRec = function (c, html) { return wait || gone || (!has(c) ? miss(NOT_YET) : rv(c) == null ? miss(NOT_REC) : html(rv(c))); };
     var cf = r ? flagsOf(r.conv) : { deed: '', flags: [] };
     var dd = s.when ? day(s.when) : '';
@@ -510,6 +512,9 @@
   function fill(p, s, nf) {
     var url = '/data/land/' + String(s.st).toLowerCase() + '/' + s.fips + '.json';
     var key = ++seq;
+    /* only a county file the builder found names-free (rec) is ever fetched: until a county's file is rewritten without
+       its names, the panel shows what the page has and says the rest is not in our copy yet */
+    if (!s.rec) { p.innerHTML = panelHtml(s, null, null, nf, 'later'); return; }
     p.setAttribute('data-k', key);
     p.innerHTML = panelHtml(s, null, null, nf, 'wait');
     p.setAttribute('aria-busy', 'true');
