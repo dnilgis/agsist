@@ -838,12 +838,15 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       st = { cls: 'is-off', pill: 'Ended ' + esc(fmt(d.ended, true)), p: 'Your ad is off. The numbers below are what it did while it ran.' };
     } else if (!s.c) {
       st = { cls: '', pill: 'Not started', p: 'Your ad is being written. It appears here for your approval before anything runs.' };
-    } else if (s.live && (d.liveSince || s.start)) {
-      st = { cls: 'is-ok', pill: 'Live since ' + esc(fmt(d.liveSince || s.start, true)),
+    } else if (s.live && (okDate(d.liveSince) || s.start)) {
+      st = { cls: 'is-ok', pill: 'Live since ' + esc(fmt(okDate(d.liveSince) ? d.liveSince : s.start, true)),
              p: (s.inTrial ? 'Free period: ' + s.trialLeft + ' day' + (s.trialLeft === 1 ? '' : 's') + ' left, through ' + esc(fmt(s.trialEnd, true)) + '. ' : '') +
                 'Numbers update every morning, through yesterday.' };
     } else if (s.live) {
-      st = { cls: 'is-ok', pill: 'Live', p: 'Your ad is running. No full day counted yet, so the counts read 0 until the first morning after one.' };
+      st = { cls: 'is-ok', pill: 'Live', p: d.totals && d.totals.viewable > 0 ? 'Numbers update every morning, through yesterday.' : 'Your ad is running. No full day counted yet, so the counts read 0 until the first morning after one.' };
+    } else if (!d.pending && !d.demo && ((d.totals && d.totals.viewable > 0) || (okDate(d.liveSince) && okDate(d.through) && d.liveSince <= d.through))) {
+      /* It ran and is off now with no end date (the active flag flipped by hand): it is paused, not waiting for a yes. */
+      st = { cls: 'is-off', pill: 'Paused', p: 'Your ad is off for now. The numbers below are what it did while it ran.' };
     } else if (s.approved) {
       st = { cls: '', pill: 'Not started', p: 'Approved' + (fmt(s.ap.on, true) ? ' on ' + esc(fmt(s.ap.on, true)) : '') + ', proof ' + esc(s.code) + '. ' +
              (d.geo ? 'It goes live the day Sig switches it on.' : 'It goes into the next morning’s briefing.') };
@@ -1382,11 +1385,11 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
          (s.free ? '<li>' + s.free.charAt(0).toUpperCase() + s.free.slice(1) + ' free</li>' : '') +
          (s.lockM ? '<li>Rate locked for ' + esc(s.lockM) + ' months from your start date</li>' : '') +
          (rc.terms ? '<li>' + esc(rc.terms) + '</li>' : '') +
-         (t.exclusive ? '<li>Exclusive: one sponsor per issue</li>' : '') +
+         (t.exclusive ? '<li>Exclusive: ' + (t.one_per_state ? 'one business per state' : t.id === 'daily' ? 'one sponsor per issue' : 'one sponsor only') + '</li>' : '') +
          '</ul></div>';
     var tl = [];
     if (s.start) {
-      tl.push([s.start, 'Your ad goes live', 'The first briefing with your ad. The results counter starts here.', TODAY === s.start]);
+      tl.push([s.start, 'Your ad goes live', (d.geo ? 'The first day your ad shows.' : 'The first briefing with your ad.') + ' The results counter starts here.', TODAY === s.start]);
       if (s.trialEnd) tl.push([s.trialEnd, 'Last free day', s.freeSpan + ' at no charge, ' + fmt(s.start) + ' to ' + fmt(s.trialEnd) + '.', s.inTrial]);
       tl.push([s.firstBilled, 'First billed month', '$' + tierPrice(t, s.bill.state) + ' a month from here, month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
       if (s.lockEnd) tl.push([s.lockEnd, 'Rate lock ends', 'Your $' + tierPrice(t, s.bill.state) + '-a-month ' + t.name.toLowerCase() + ' rate holds through this date.', false]);
@@ -1396,6 +1399,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       tl.push([null, 'First billed month', 'The day after the free period ends, at $' + tierPrice(t, s.bill.state) + ' a month.', false]);
       if (s.lockM) tl.push([null, 'Rate lock', 'Your rate holds for ' + s.lockM + ' months from the start date.', false]);
     }
+    /* A free test is never billed, so its schedule carries no billing date (it read "First billed month Oct 28, $29"). */
+    if (d.freeTest) tl = tl.slice(0, 1);
     h += '<div class="cp-card"><div class="cp-eyebrow" style="margin-bottom:.3rem">Schedule</div><ol class="cp-tl">';
     tl.forEach(function (x) {
       h += '<li' + (x[3] ? ' class="is-now"' : '') + '><div class="cp-tl-d' + (x[0] ? '' : ' is-tbd') + '">' + (x[0] ? esc(fmt(x[0], true)) : 'Set at go-live') +
@@ -1481,7 +1486,23 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     AUD.d = d; AUD.a = a; AUD.r = ids.indexOf('28d') >= 0 ? '28d' : ids[0];
     var R = rangeOf('7d'), T = R && (a.totals || {})['7d'];
     var sum = T && T.users != null ? num(T.users) + ' US readers, ' + esc(span(R.start, R.end)) + (a.email ? ' &middot; ' + num(a.email.subscribers) + ' on the morning email' : '') : 'Readers, where they are, what they read';
-    return fold('audience', 'Who reads AGSIST', sum, '<div id="cp-aud-body">' + audBody() + '</div>', ' cp-aud');
+    var lag = lagLine(d, a);
+    return fold('audience', 'Who reads AGSIST', sum, (lag ? '<p class="cp-note" id="cp-aud-lag">' + esc(lag) + '</p>' : '') + '<div id="cp-aud-body">' + audBody() + '</div>', ' cp-aud');
+  }
+  /* WHY THE READERS END A DAY BEFORE THE AD (Sig, Nov 4: the readers "stopped on Nov 2", the ad ran to Nov 3).
+     Ad counts end yesterday; data/audience.json ends LAG days before the day it was built (scripts/build_audience.py:
+     GA4 has not finished a day before then). Every word comes from the two files, no date or count is typed here.
+     A reader file older than the ad results says when it was last updated instead of blaming Google. */
+  function nDays(n, a) { return n === 1 ? (a ? 'a day' : 'one day') : (['', '', 'two', 'three', 'four', 'five', 'six'][n] || num(n)) + ' days'; }
+  function lagLine(d, a) {
+    var end = null;
+    (a.ranges || []).forEach(function (x) { if (okDate(x.end) && (!end || x.end > end)) end = x.end; });
+    if (d.pending || d.withheld || d.demo || !end || !okDate(d.through) || d.through <= end) return '';
+    var gap = Math.round((D(d.through) - D(end)) / 864e5), built = String(a.built || '').slice(0, 10);
+    var lag = okDate(built) ? Math.round((D(built) - D(end)) / 864e5) : 0;
+    var h = 'Reader counts run ' + nDays(gap, true) + ' behind the ad results';
+    if (gap < lag) return h + ': Google takes ' + nDays(lag) + ' to finish counting a day.';
+    return h + (okDate(built) ? ': the reader file was last updated ' + fmt(built, true) + '.' : '.');
   }
   function rangeOf(id) { var r = null; (AUD.a.ranges || []).forEach(function (x) { if (x.id === id) r = x; }); return r; }
 
@@ -1498,7 +1519,8 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 
     /* KPIs */
     var fourth = a.email
-      ? kpi(num(a.email.subscribers), 'Morning email subscribers', 'the briefing your ad runs in &middot; ' + esc(fmt(a.email.asOf, true)))
+      /* Only an ad that runs in the email is told it does (Root Lot's does not: Sig, Oct 28). */
+      ? kpi(num(a.email.subscribers), 'Morning email subscribers', ((d.placements || []).indexOf('daily_email') >= 0 ? 'the briefing your ad runs in' : 'the morning briefing') + ' &middot; ' + esc(fmt(a.email.asOf, true)))
       : kpi(num(rows.filter(function (r) { return r.users > 0; }).length), 'States with readers', rows.length === 51 ? 'all 50 and DC' : 'of 50 and DC');
     h += '<div class="cp-kpis">' +
       kpi(num(T.users), 'US readers', live ? 'server towns removed' : 'includes some server traffic') +
