@@ -504,7 +504,9 @@ def selftest():
     check(owner("scripts/build_county_rain.py") is None, "a builder is not an output")
     check(owner("data/land-sales/coverage.json") is None, "the hand-kept land coverage table is not an output")
     check(owner("data/land-sales/IL.json") == "land-sales" and owner("data/arc-plc/math/IA.json") == "arc-plc"
-          and owner("data/prf/facts.json") == "prf", "the data files a builder writes are guarded like its pages")
+          and owner("data/prf/facts.json") == "prf" and owner("data/land/names/il/17113.json") == "land-sales"
+          and owner("data/land/names/2026-10.json") == "land-sales" and owner("data/land/il/17113.json") is None,
+          "the data files a builder writes are guarded like its pages (the land names too; the transfer files are inputs)")
     check(owner("data/pointers/rain.json") is None and owner("sitemap.xml") is None and owner("llms.txt") is None,
           "shared files several builders rewrite are not guarded")
     rel = relevant(["scripts/build_county_rain.py"])
