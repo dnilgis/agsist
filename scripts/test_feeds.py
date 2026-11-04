@@ -67,6 +67,16 @@ def main():
     check(d.get("generated_by") == "scripts/build_feeds.py",
           "the manifest names the script that writes it")
 
+    print("\na day-of-month cron reads as monthly (Nov 4, 2026: land-data.yml's '23 9 3 * *' read \"every day\")")
+    sys.path.insert(0, os.path.join(ROOT, "scripts"))
+    import build_feeds as BF
+    check(BF.cron_sentence(["23 9 3 * *"]) == "1 launch monthly, on day 3 at about 4am Central", "'23 9 3 * *' is monthly, on day 3",
+          BF.cron_sentence(["23 9 3 * *"]))
+    check(BF.cron_sentence(["0 7 1,15 * *"]).startswith("1 launch monthly, on days 1 and 15"), "a comma list of days")
+    check(BF.cron_sentence(["23 9 * * *"]).startswith("1 launch every day"), "a daily cron stays every day")
+    lead = [f for f in d["feeds"] if f["path"] == "data/land-sales/lead.json"]
+    check(len(lead) == 1 and lead[0]["cadence"].startswith("1 launch monthly"), "the home lead file reads as monthly", lead[0]["cadence"] if lead else "missing")
+
     print("\nthe status page is retired (Sig, Oct 21): a redirect stub, linked from nowhere")
     # The feed checks above still run on every build; the public page that showed
     # them is gone (it put the plumbing on display). Each page names its own source.
