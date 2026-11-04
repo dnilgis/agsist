@@ -1073,6 +1073,7 @@ jobs:
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           FROM_NAME:    ${{ secrets.FROM_NAME }}
           REPLY_TO:     ${{ secrets.REPLY_TO }}
+          SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}   # the mail plan's daily cap (the send_cap.py preflight)
         run: python scripts/send_daily.py
 
       # 2026-10-27: the issue as it was emailed. A later run the same day redraws

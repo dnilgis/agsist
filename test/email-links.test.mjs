@@ -117,7 +117,8 @@ test("the front door: the worker's /fd/ routes (scripts/test_frontdoor_worker.mj
 const SENDS = (src) => /\.send_message\(|\.sendmail\(/.test(src);
 test("every script that sends mail imports email_links (its smtplib guard refuses a worker-host link)", () => {
   let seen = 0;
-  for (const f of readdirSync(ROOT + "scripts").filter((x) => x.endsWith(".py") && !x.startsWith("test_") && x !== "email_links.py")) {
+  // email_links.py and send_cap.py are the two smtplib wrappers (the link guard; the plan's daily cap count), not senders
+  for (const f of readdirSync(ROOT + "scripts").filter((x) => x.endsWith(".py") && !x.startsWith("test_") && x !== "email_links.py" && x !== "send_cap.py")) {
     const src = readFileSync(ROOT + "scripts/" + f, "utf8");
     if (!/import smtplib/.test(src) || !SENDS(src)) continue;
     seen++;

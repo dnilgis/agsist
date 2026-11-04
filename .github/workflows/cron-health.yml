@@ -215,6 +215,7 @@ jobs:
           python3 scripts/check_site_budget.py --selftest
           python3 scripts/cron_health.py --selftest
           python3 scripts/delivery_check.py --selftest
+          python3 scripts/send_cap.py --selftest
 
       # The last saved file: its age is the cron-health.json row, and the new
       # one is saved only when a status changed. Missing, the check still runs
@@ -240,6 +241,8 @@ jobs:
           RAIN_MONTHLY_LIVE: ${{ vars.RAIN_MONTHLY_LIVE }}
           RP_BUYER_EMAIL_LIVE: ${{ vars.RP_BUYER_EMAIL_LIVE }}
           RP_DESIGN_EMAIL_LIVE: ${{ vars.RP_DESIGN_EMAIL_LIVE }}
+          # the mail plan's emails a day (send_cap.py; unset = 300, Brevo free); raise it after an upgrade
+          SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}
         run: python3 scripts/cron_health.py --out private/data/cron-health.json
 
       - name: Save
@@ -249,6 +252,26 @@ jobs:
           RAW_BRANCH: private-data
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "cron health" private/data/cron-health.json
+
+      # Sig, Nov 4: "remind me to upgrade Brevo as we get closer to the daily limit." From the
+      # send-volume row: 80% of SEND_DAILY_CAP on a UTC day mails Sig once that day, 95% once more
+      # marked urgent, and the Daily's 7-day average at 70% a gentle heads-up once a week. Through
+      # log_safe.owner_mail, the path the daily-late job uses; deduped by the send flags. Counts only.
+      - name: Tell Sig when Brevo nears its daily limit
+        if: ${{ !cancelled() && steps.h.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          SEND_DAILY_CAP:     ${{ vars.SEND_DAILY_CAP }}
+          LIST_URL:           ${{ secrets.LIST_URL }}
+          LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          OWNER_TO:           ${{ secrets.SIG_TO }}
+          SMTP_HOST:          ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:          ${{ secrets.SMTP_PORT }}
+          SMTP_USER:          ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:          ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:          ${{ secrets.FROM_ADDR }}
+        run: python3 scripts/send_cap.py --remind private/data/cron-health.json
 
       - name: Late
         if: steps.h.outputs.red == '1'
