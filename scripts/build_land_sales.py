@@ -380,7 +380,8 @@ def lead_pick(st, cands):
     return {"st": st, "id": p["id"], "county": p["county"], "acres": p["acres"], "ppa": p["ppa"], "when": p["when"],
             "basis": p["basis"], "med": u["med"], "n24": u["n"], "pct": BLS.js_round((p["ppa"] / u["med"] - 1) * 100) if u["med"] else None,
             "of": len(ok), "window": [start, end], "url": "/land-sales/%s/%s#s-%s" % (SLUG[st], cs, p["id"]),
-            "rule": LEAD_RULE % (NAME[st], LA.short_day(end) + ", " + end[:4])}
+            "rule": LEAD_RULE % (NAME[st], LA.short_day(end) + ", " + end[:4]),
+            "src": SOURCES[st].split(",")[0]}      # the credit beside the figure, in plain text (Oct 29: no link)
 
 
 # ---------------------------------------------------------------- per county
@@ -885,7 +886,7 @@ def index_page(d, latest, counties, early, coverage, archive, ix=None):
                     (" The largest by acres: %s acres in %s County, %s, for %s." % (acres(big[0]["acres"]), e(big[0]["county"]), big[0]["st"], money(big[0]["price"]))) if big else "",
                     latest["month"]))
     b.append(jump_row(d, bool(ix)))
-    b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales"></div></div>')
+    b.append('<div class="ls-ask" id="email"><div data-land-alert data-source="page:land-sales"></div></div>')
     for st in d.states:
         b.append('<h2 id="%s">%s</h2><ul class="ls-cos">' % (SLUG[st], e(NAME[st])))
         for name, slug, n in counties[st]:
@@ -1131,7 +1132,7 @@ def selftest():
            and wl["of"] >= LEAD_MIN_SALES and wl["url"].startswith("/land-sales/wisconsin/testa-county#s-") and "Wisconsin" in wl["rule"])
         ck("lead.json: a state with no sales has no lead", ld["lead"].get("IL") is None)
         ck("lead.json names no one", not any(n in texts["data/land-sales/lead.json"] for n in allnames)
-           and set(wl) == {"st", "id", "county", "acres", "ppa", "when", "basis", "med", "n24", "pct", "of", "window", "url", "rule"})
+           and set(wl) == {"st", "id", "county", "acres", "ppa", "when", "basis", "med", "n24", "pct", "of", "window", "url", "rule", "src"})
         thin = lead_pick("WI", [(dict(p, when="2026-09-1%d" % i), {"n": 9, "med": 1}, "x") for i, p in enumerate(
             [{"kind": "farm", "ppa": 10, "flag": 0, "acres": 40, "id": "a", "county": "X", "basis": "recorded"}] * (LEAD_MIN_SALES - 1))])
         ck("lead: withheld under %d sales in the window" % LEAD_MIN_SALES, thin is None)
