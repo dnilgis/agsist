@@ -118,6 +118,7 @@ NOT_READER_FACING = (
     # parents are read by tests and --check lines in the PR checks.
     "data/prf-stories/", "data/atlas-stories/", "data/cash-bids-stories/",
     "data/wasde-pdf/", "data/rain-print-examples/",
+    "data/rain/wxnorm/",   # each rain station's 1991-2020 summary, read only by scripts/fetch_rain_weather.py (Nov 4, fx/rainwx)
     "data/elevator-directory.json",
     "data/ids/geo-crosswalk.json",   # read by scripts/join_report.py and builds only (Oct 27)
     "data/ids/board-parents.json",   # read by scripts/build_cash_bid_pages.py only (Oct 27, fx/bidkeys)
