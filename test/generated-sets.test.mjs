@@ -86,7 +86,7 @@ test("the pages are outputs, the hubs and builders edited by hand are not", () =
     "rain/iowa/story-county.html": "rain", "sitemap-rain.xml": "rain", "cash-bids/iowa/ames.html": "cash-bids",
     "land-sales/illinois/mclean-county.html": "land-sales", "prf/texas/anderson-county.html": "prf",
     "arc-plc/iowa/story-county.html": "arc-plc", "farmland-atlas/iowa/story-county.html": "farmland-atlas",
-    "farmland-atlas/og/19169.png": null, "rent/iowa.html": "rent", "yield/iowa.html": "yield",
+    "farmland-atlas/og/19169.png": "farmland-atlas", "rent/iowa.html": "rent", "yield/iowa.html": "yield",
     "hail/2026-06-11.html": "hail", "hail-map/iowa.html": "hail-map",
     "cash-bid-index.html": "cash-bid-index", "data/cash-index/editions.json": "cash-bid-index", "data/cash-index/acc-2026-11.json": null,
     "rain.html": null, "prf.html": null, "arc-plc.html": null, "farmland-atlas/compare.html": null, "farmland-atlas/methods.html": null,
