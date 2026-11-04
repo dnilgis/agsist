@@ -11,7 +11,7 @@ then a send stops partway down its list. The cap is the repository variable SEND
 
 Three parts:
 
-1. SMTP volume per run. delivery_line.start() calls install(tally) when the sender is the program
+1. SMTP volume per run. The start() of delivery_line.py calls install(tally) when the sender is the program
    run. It wraps smtplib.SMTP for that process only: every recipient a send hands to the server
    (Sig's copies too) adds to the DELIVERY line's smtp= count, and a refusal that looks like the cap
    prints one marker line and adds to cap_refused=.

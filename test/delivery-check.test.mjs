@@ -235,3 +235,27 @@ test("a worker-started job reads its asks or orders from a sender that prints th
       `scripts/${script} must count ${key}= on its DELIVERY line`);
   }
 });
+
+test("the mail plan's daily cap: send-volume row, SEND-CAP marker and preflight (Nov 4 real case)", () => {
+  // Brevo free: 300 emails a day across every sender, reset 00:00 UTC. Nov 4: 211 used (the Daily's 209 + 2).
+  const out = py("scripts/send_cap.py", "--selftest");
+  assert.match(out, /send_cap selftest: 0 failed/);
+  assert.doesNotMatch(out, /^FAIL /m);
+  for (const name of [
+    "Nov 4: 209 + 2 against 300 is ok",
+    "245 of 300 is a warning",
+    "a quota refusal is red, whatever the count",
+    "with the cap at 10000, 285 is ok",
+    "with SEND_DAILY_CAP=10000 nothing warns",
+    "a report day (209 + 200 later) warns and prints the marker",
+    "the marker prints once per run",
+  ]) assert.match(out, new RegExp(`^ok   ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"), name);
+  const dc = py("scripts/delivery_check.py", "--selftest");
+  assert.match(dc, /^ok   send-volume: a SEND-CAP refusal in a log read is red$/m);
+  // the cap is a repository variable, so an upgrade changes no code
+  for (const wf of ["cron-health.yml", "daily.yml", "report-day.yml"])
+    assert.match(readWf(wf), /\n\s+SEND_DAILY_CAP: \$\{\{ vars\.SEND_DAILY_CAP \}\}/, `${wf} must pass vars.SEND_DAILY_CAP`);
+  // every sender arms the SMTP count through the start() of delivery_line.py, and the Daily runs its preflight
+  assert.match(fs.readFileSync(path.join(SCRIPTS, "delivery_line.py"), "utf8"), /send_cap\.install\(t\)/);
+  assert.match(fs.readFileSync(path.join(SCRIPTS, "send_daily.py"), "utf8"), /send_cap\.preflight\(tally/);
+});

@@ -89,6 +89,7 @@ import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
 import delivery_line      # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_cap           # noqa: E402  (the mail plan's daily cap: preflight and the SEND-CAP marker)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 import list_source        # noqa: E402  (the worker, or the private copy when it is blocked)
 
@@ -878,6 +879,14 @@ def main():
         print("your county this week link skipped (" + type(ex).__name__ + ")")
     gmail_limit.check(len(recipients), sum(1 for r in subs if r.get("reports") is not False),
                       date.fromisoformat(day), dry=dry)
+    try:
+        # The mail plan's daily cap (scripts/send_cap.py): what is counted today, this list, and the
+        # report-day email on a report day, against SEND_DAILY_CAP. A warning, never a stop.
+        _kinds = gmail_limit.report_kinds(date.fromisoformat(day))
+        send_cap.preflight(tally, later=sum(1 for r in subs if r.get("reports") is not False) if _kinds else 0,
+                           later_what="the report-day email (%s)" % ", ".join(_kinds))
+    except Exception as ex:                                  # noqa: BLE001
+        print("send cap preflight skipped (" + type(ex).__name__ + ")")
 
     if dry:
         print("preview per recipient: %d with a local top bid, %d told nothing posted within 50 mi, "

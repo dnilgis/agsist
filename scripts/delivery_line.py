@@ -13,6 +13,9 @@ script that mails readers or a list prints, once per run, at exit:
   dry           1 when this run could not mail the list (dry run, preview, Sig only, send off)
   asks, orders  extra counts a check reads (rp-design-email's design asks, rp-buyer-email's orders)
   already_sent  1 when the Daily found its day flag set: 0 sent is fine (any other 0/0 exit is no send)
+  smtp          recipients this run handed to the mail server, Sig's copies too (scripts/send_cap.py; only
+                on a run that sent); the send-volume row counts the plan's daily cap from it
+  cap_refused   sends the mail server refused like the plan's daily cap or a rate limit (send_cap.py)
 
 Counts only, never an address. scripts/cron_health.py (the delivery rows) reads these lines
 from each sender's run logs; its list of senders is scripts/delivery_check.py SENDERS, and
@@ -83,6 +86,12 @@ def start(sender, dry=False, _caller=None):
     if os.environ.get("DELIVERY_LINE_OFF") == "1" or not program_is(caller):
         return t          # counted, never printed
     atexit.register(t.emit)
+    try:                  # count what reaches the mail server and mark a cap refusal (scripts/send_cap.py)
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import send_cap
+        send_cap.install(t)
+    except Exception:                                      # noqa: BLE001  never break a sender
+        pass
     return t
 
 
