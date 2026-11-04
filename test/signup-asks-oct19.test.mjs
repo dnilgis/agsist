@@ -61,7 +61,8 @@ test("cattle futures asks for Funds this week (Oct 21), its own list", () => {
   const [a] = asksIn(read("cattle-futures-prices.html"));
   assert.equal(a, '<div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:cattle-futures-prices" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>');
   const [c] = asksIn(read("cot.html"));
-  assert.equal(c, a.replace("cot-weekly:cattle-futures-prices", "cot-weekly:cot"), "the /cot ask word for word");
+  // Nov 4 (Sig): the /cot ask moved up under the at-a-glance lines, in its own words; same list, button and done line
+  assert.equal(c, '<div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="These lines in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask"></div>', "the /cot ask word for word");
   assert.ok(!read("cattle-futures-prices.html").includes(".catch(function(){});\n  });"), "the swallowed-error handler is gone");
 });
 
