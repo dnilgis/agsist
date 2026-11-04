@@ -606,7 +606,9 @@ CSS = """
 .cbi-tw{overflow-x:auto;margin:.8rem 0;border:1px solid var(--border);border-radius:8px}
 .cbi-t{border-collapse:collapse;width:100%;font-size:.84rem;min-width:640px}
 .cbi-t caption{text-align:left;font-weight:700;color:var(--text);padding:.55rem .7rem}
-.cbi-t th,.cbi-t td{padding:.4rem .6rem;border-top:1px solid var(--border);text-align:right;white-space:nowrap;color:var(--text-dim)}
+.cbi-t th,.cbi-t td{padding:.4rem .45rem;border-top:1px solid var(--border);text-align:right;white-space:nowrap;color:var(--text-dim)}
+/* 2026-11-04 (site panel): at 1280 the table was 871px in an 824px box; headers wrap so it fits */
+.cbi-t thead th{white-space:normal;vertical-align:bottom}
 .cbi-t th[scope=row],.cbi-t thead th:first-child{text-align:left;color:var(--text)}
 .cbi-t thead th{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.04em;color:var(--text-muted);font-weight:700}
 .cbi-t .cbi-all th,.cbi-t .cbi-all td{font-weight:700;color:var(--text)}
@@ -740,7 +742,7 @@ def page_html(editions):
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/cash-bids">Cash bids</a> &rarr; Cash Bid Index</nav>
       <h1>AGSIST Cash Bid Index</h1>
       <p class="by">Updated {esc(_short(modified))}, {esc(modified[:4])}.</p>
-      <p class="cbi-lede">Each month: what elevators actually bid for corn and soybeans, state by state, from the boards AGSIST reads every trading day. These numbers come from our own reads; no one else has this set.</p>
+      <p class="cbi-lede">Each month: what elevators actually bid for corn and soybeans, state by state, from the boards AGSIST reads every trading day. These numbers come from our own reads of each board.</p>
       {body}
       {past}
       {method}
