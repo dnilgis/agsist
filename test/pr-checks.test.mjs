@@ -266,16 +266,20 @@ test('main-checks.yml: rebuilds the built files, then every test on that commit,
   const m = read('.github/workflows/main-checks.yml');
   const mc = m.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
   assert.match(mc, /^on:\n  push:\n    branches: \[main\]\n    paths-ignore:\n/m);
-  assert.match(mc, /^  schedule:\n    - cron: '17 8 \* \* \*'/m, 'the nightly Sig approved (Oct 29)');
+  // the nightly Sig approved (Oct 29) became every two hours on the Fetch Grain Bids chain, gated (BUILD-RULES 59,
+  // Nov 3; test/cron-gated.test.mjs holds the gate)
+  assert.match(mc, /^  schedule:\n    - cron: '17 \*\/2 \* \* \*'/m);
   assert.match(mc, /^  workflow_dispatch:\n/m, 'merge-when-green.yml starts it after a merge');
   for (const p of mc.match(/paths-ignore:\n((?:      - .*\n)+)/)[1].trim().split('\n')) assert.match(p, /- 'data\//, `only collection data is ignored: ${p}`);
   assert.match(mc, /uses: \.\/\.github\/workflows\/pr-checks\.yml\n    with:\n      full: true\n      ref: \$\{\{ needs\.rebuild\.outputs\.sha \}\}\n    secrets: inherit/);
-  assert.match(mc, /needs: rebuild\n    uses:/, 'the checks run on the rebuilt commit');
+  assert.match(mc, /needs: \[gate, rebuild\]\n    if: needs\.gate\.outputs\.go == '1'\n(?:    .*\n)*?    uses:/, 'the checks run on the rebuilt commit');
+  // a generated set whose builder changed is rebuilt before the suite (scripts/generated_sets.py main)
+  assert.match(mc, /\n  generated:\n[\s\S]*?python3 scripts\/generated_sets\.py main --window 360\n/);
+  assert.match(mc, /\n  rebuild:\n[\s\S]*?needs: \[gate, generated\]\n    if: needs\.gate\.outputs\.go == '1' && \(!cancelled\(\)\)\n/, 'the suite runs whatever the generated job ended with');
   assert.match(mc, /for i in 1 2 3 4 5; do\n\s+git fetch -q origin main\n\s+git reset -q --hard origin\/main\n\s+python3 scripts\/dev\/main_build\.py build/, 'rebuild from main as it is on each try');
   assert.match(mc, /python3 scripts\/dev\/main_build\.py build\n(?:\s+#.*\n)*\s+python3 scripts\/dev\/main_build\.py stage\n/, 'stages only the built files (main_build.py stage)');
   assert.doesNotMatch(mc, /git add/, 'no bare git add in the rebuild');
-  assert.match(mc, /needs: \[rebuild, checks\]/);
-  assert.match(mc, /if: always\(\)/);
+  assert.match(mc, /needs: \[gate, rebuild, checks\]\n    if: needs\.gate\.outputs\.go == '1' && \(always\(\)\)/);
   assert.match(mc, /run: python3 scripts\/dev\/main_red\.py/);
   assert.match(mc, /^  issues: write$/m);
   const uses = [...mc.matchAll(/uses: (\S+)/g)].map((x) => x[1]).filter((u) => !u.startsWith('./'));

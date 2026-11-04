@@ -28,7 +28,8 @@ THE RULES IT ENFORCES
 
     python3 scripts/generated_sets.py table                 print the table
     python3 scripts/generated_sets.py json                  the table as JSON (the inventory test reads it)
-    python3 scripts/generated_sets.py guard --base HEAD^1   pr-checks guard (pull request event)
+    python3 scripts/generated_sets.py guard --base HEAD^1   pr-checks guard (pull request event; --root DIR
+                                                            diffs another checkout, for the tests)
     python3 scripts/generated_sets.py prebuild --base HEAD^1
     python3 scripts/generated_sets.py main --window 360 [--dry-run]
     python3 scripts/generated_sets.py --selftest
@@ -126,8 +127,11 @@ NOT_SET_CHECKS = {
 }
 
 
+GIT_ROOT = ROOT             # where the git commands run (--root: a fixture repository in the tests)
+
+
 def sh(cmd, check=False, **kw):
-    return subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=check, **kw)
+    return subprocess.run(cmd, cwd=GIT_ROOT, capture_output=True, text=True, check=check, **kw)
 
 
 # ── paths ──────────────────────────────────────────────────────────────────────
@@ -259,9 +263,9 @@ def cmd_guard(base):
         except (urllib.error.URLError, OSError, ValueError) as e:
             print("labels from the event (the API did not answer: %s)" % str(e)[:80])
     ok, msg = guard(changed_files(base), author, labels)
-    print(msg if ok else "::error title=generated pages::" + msg.replace("\n", "%0A"))
-    if not ok:
-        print(msg)
+    print(msg)
+    if not ok and os.environ.get("GITHUB_ACTIONS"):
+        print("::error title=generated pages are built on main::" + msg.splitlines()[1])
     return 0 if ok else 1
 
 
@@ -499,6 +503,10 @@ def selftest():
 
 
 def main(argv):
+    global GIT_ROOT
+    if "--root" in argv:
+        GIT_ROOT = os.path.abspath(argv[argv.index("--root") + 1])
+        argv = argv[:argv.index("--root")] + argv[argv.index("--root") + 2:]
     if "--selftest" in argv:
         return selftest()
     args = [a for a in argv if not a.startswith("--")]

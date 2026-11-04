@@ -95,6 +95,14 @@ jobs:
         run: git fetch -q --no-tags --depth=100 origin +refs/heads/main:refs/remotes/origin/main
       - name: the built files are not edited by hand, and their inputs are valid
         run: bash scripts/dev/checks.sh --only=built-guard,built-inputs
+      # generated page sets (scripts/generated_sets.py) are built on main, never carried in a pull request
+      # (Nov 3, 2026: #280, #282 twice, #296 went stale within hours). The data bot, or the lead's regen-ok
+      # label, may. A run by hand or main-checks.yml's call has no pull request to check.
+      - name: generated pages are built on main
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/generated_sets.py guard --base HEAD^1
       - name: the test pick
         id: pick
         env:
@@ -274,6 +282,10 @@ jobs:
           # a skipped test fails the shard (and so "all checks"): a skip is not a pass
           AGSIST_NO_SKIPS: '1'
           AGSIST_PREBUILD: '1'
+          # a pull request that changes a generated set's builder: that set is rebuilt in this copy first
+          # (scripts/generated_sets.py prebuild), against the merge commit's first parent; the bot's full run
+          # on an updated branch against main; main-checks.yml's call never (main rebuilds and commits)
+          AGSIST_GEN_BASE: ${{ (github.event_name == 'pull_request' && !inputs.full) && 'HEAD^1' || (github.event_name == 'workflow_dispatch' && !inputs.full && github.ref != 'refs/heads/main') && 'origin/main' || '' }}
           # the pick against the base, made in this shard the way the guard makes it (empty: every test
           # file): a pull request diffs against its merge commit's first parent; a replay by hand against
           # the branch it names; main-checks.yml's call (full) and any other run take every test
@@ -375,6 +387,10 @@ jobs:
         env:
           TMPDIR: ${{ runner.temp }}
           AGSIST_PREBUILD: '1'
+          # a pull request that changes a generated set's builder: that set is rebuilt in this copy first
+          # (scripts/generated_sets.py prebuild), against the merge commit's first parent; the bot's full run
+          # on an updated branch against main; main-checks.yml's call never (main rebuilds and commits)
+          AGSIST_GEN_BASE: ${{ (github.event_name == 'pull_request' && !inputs.full) && 'HEAD^1' || (github.event_name == 'workflow_dispatch' && !inputs.full && github.ref != 'refs/heads/main') && 'origin/main' || '' }}
         run: |
           bash scripts/dev/checks.sh --list --skip-node
           bash scripts/dev/checks.sh --skip-node

@@ -306,5 +306,13 @@ test("every built file can be staged on main, even under the engine's info/exclu
 
 test("a full run on main is never cancelled by the next merge (main-checks.yml concurrency, Oct 29)", () => {
   const wf = fs.readFileSync(path.join(ROOT, ".github/workflows/main-checks.yml"), "utf8");
-  assert.match(wf, /^concurrency:\n  group: main-checks\n  cancel-in-progress: false\b/m);
+  // Nov 4, 2026: the queues moved onto the working jobs (a chained run that skips must never replace a
+  // waiting full run; test/cron-gated.test.mjs), each keeping a running job running
+  assert.doesNotMatch(wf, /^concurrency:/m, "no queue on the workflow");
+  for (const [job, group] of [["generated", "main-checks-generated"], ["rebuild", "main-checks-rebuild"], ["checks", "main-checks"]]) {
+    const i = wf.indexOf("\n  " + job + ":\n");
+    assert.ok(i > 0, job);
+    const body = wf.slice(i + 1, i + 1 + wf.slice(i + 1).search(/\n  [a-z][\w-]*:\n|$/));
+    assert.match(body, new RegExp("\\n    concurrency:\\n      group: " + group + "\\n      cancel-in-progress: false\\b"), job);
+  }
 });
