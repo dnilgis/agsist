@@ -87,11 +87,12 @@ test('the workflow: the shards and --skip-node together run every check, and the
   assert.match(other, /^\s+bash scripts\/dev\/checks\.sh --skip-node\s*$/m, 'other-checks runs every other line');
   assert.doesNotMatch(other, /--only=/, 'and does not pick a subset');
   // no other job runs checks, and no job runs a check by hand beside the list; the guard runs two
-  // named lines of checks.sh (the built-files guard and its inputs) and the test pick, nothing else
+  // named lines of checks.sh (the built-files guard and its inputs), the generated pages guard on a pull
+  // request (Nov 4, 2026: scripts/generated_sets.py, test/generated-sets.test.mjs) and the test pick, nothing else
   for (const j of Object.keys(jobs)) if (!['node-tests', 'other-checks', 'guard'].includes(j)) assert.doesNotMatch(jobs[j], /checks\.sh|node --test|python3? scripts\//, j);
   const g = jobs.guard;
   assert.deepEqual([...g.matchAll(/checks\.sh[^\n]*/g)].map((m) => m[0]), ['checks.sh --only=built-guard,built-inputs']);
-  assert.deepEqual([...g.matchAll(/python3? scripts\/[^\n]*/g)].map((m) => m[0]), ['python3 scripts/dev/test_map.py --select-base "origin/$PICK_BASE" --github-output --why', 'python3 scripts/dev/test_map.py --select-base origin/main --github-output --why']);
+  assert.deepEqual([...g.matchAll(/python3? scripts\/[^\n]*/g)].map((m) => m[0]), ['python3 scripts/generated_sets.py guard --base HEAD^1', 'python3 scripts/dev/test_map.py --select-base "origin/$PICK_BASE" --github-output --why', 'python3 scripts/dev/test_map.py --select-base origin/main --github-output --why']);
   assert.doesNotMatch(g, /node --test/);
   for (const j of ['node-tests', 'other-checks']) assert.doesNotMatch(jobs[j], /node --test|python3? scripts\//, `${j} runs checks only through checks.sh`);
   for (const j of ['node-tests', 'other-checks']) assert.match(jobs[j], /node-version: '22'/, `${j}: Node 22`);
