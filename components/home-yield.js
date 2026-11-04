@@ -86,14 +86,25 @@
   /* Reads the rendered cards rather than the feed: the two cards are fed by
      different keys and a symbol match in the data would not prove the reader
      is looking at the same two numbers. */
+  /* 2026-11-04 (fx/soyroll2): the second card is the NEXT harvest contract
+     after the headline month (AgPxStamp.harvest, components/price-local.js),
+     worked out from the file, not a pinned year. Past first notice the
+     harvest alias (beans-nov = Nov '26) sits BEFORE the headline (Jan '27)
+     and the card printed it; now it is Nov '27. */
   var FORWARD_YEAR={
-    'corn-dec':{dataKey:'corn-dec27',rangeId:'corn-dec',sym:'corn-dec',label:"Dec '27",tick:"Corn Dec '27"},
-    'bean-nov':{dataKey:'beans-nov27',rangeId:'beans-nov',sym:'beans-nov',label:"Nov '27",tick:"Soybeans Nov '27"}
+    'corn-dec':{crop:'corn',alias:'corn-dec',rangeId:'corn-dec',sym:'corn-dec',name:'Corn'},
+    'bean-nov':{crop:'beans',alias:'beans-nov',rangeId:'beans-nov',sym:'beans-nov',name:'Soybeans'}
   };
+  function forwardOf(fwd){
+    var q=window.AGSIST_PRICE_DATA||{},h=window.AgPxStamp&&AgPxStamp.harvest?AgPxStamp.harvest(q,fwd.crop):null;
+    if(!h||!h.label)return null;
+    return {dataKey:h.key,rangeId:fwd.rangeId,sym:fwd.sym,label:h.label,tick:fwd.name+' '+h.label,
+      moved:h.key!==fwd.alias&&!!(h.q&&h.q.ticker)&&h.q.ticker!==((q[fwd.alias]||{}).ticker)};
+  }
   function applyForwardYear(domSuffix,fwd){
     var q=window.AGSIST_PRICE_DATA||{};
     var fq=q[fwd.dataKey];
-    if(!fq||fq.close==null||fq.wk52_lo==null||fq.wk52_hi==null)return false;
+    if(!fq||fq.close==null)return false;
     if(typeof fmtPrice!=='function'||typeof fmtChange!=='function')return false;
     var priceEl=document.getElementById('pcp-'+domSuffix);
     var chgEl=document.getElementById('pcc-'+domSuffix);
@@ -112,7 +123,7 @@
     if(ovEl){var ovH=window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(fq,function(v){return AG.px.price(v,{style:'slash'});},function(n){return AG.px.move(n,{style:'slash',sign:true});},null,{short:true}):'';
       ovEl.innerHTML=ovH;ovEl.hidden=!ovH;}
     var lo=fq.wk52_lo/100,hi=fq.wk52_hi/100,cl=fq.close/100;
-    if(hi>lo){
+    if(fq.wk52_lo!=null&&fq.wk52_hi!=null&&hi>lo){
       var pct=Math.max(0,Math.min(100,((cl-lo)/(hi-lo))*100));
       var elLo=document.getElementById('pcrl-'+fwd.rangeId+'-lo'), elHi=document.getElementById('pcrl-'+fwd.rangeId+'-hi');
       var elF=document.getElementById('pcrf-'+fwd.rangeId), elD=document.getElementById('pcrd-'+fwd.rangeId);
@@ -155,9 +166,12 @@
       while(card&&card!==document.body&&(' '+(card.className||'')+' ').indexOf(' pc ')<0)card=card.parentNode;
       if(!card||card===document.body)return;
       var same=at&&at!=='--'&&at===bt&&as&&as===bs;
-      var fwd=FORWARD_YEAR[pair[1]];
-      var swapped=(same&&fwd)?applyForwardYear(pair[1],fwd):false;
-      card.style.display=(same&&!swapped)?'none':'';
+      var fwd=forwardOf(FORWARD_YEAR[pair[1]]);
+      /* the harvest alias is not a later month than the headline (the same
+         contract, or past first notice): show the next harvest, else nothing */
+      var moved=!!(fwd&&fwd.moved);
+      var swapped=((same||moved)&&fwd)?applyForwardYear(pair[1],fwd):false;
+      card.style.display=((same||moved)&&!swapped)?'none':'';
       var keep=a.parentNode;
       while(keep&&keep!==document.body&&(' '+(keep.className||'')+' ').indexOf(' pc ')<0)keep=keep.parentNode;
       var lbl=keep&&keep.querySelector?keep.querySelector('.pc-contract'):null;
@@ -173,7 +187,7 @@
         var want=(same&&!swapped)?(base+NEW_CROP_SUFFIX):base;
         if(cur!==want)lbl.textContent=want;
       }
-      if(same&&swapped){
+      if((same||moved)&&swapped){
         var bLbl=card.querySelector&&card.querySelector('.pc-contract');
         if(bLbl&&bLbl.textContent!==fwd.label)bLbl.textContent=fwd.label;
       }
