@@ -6,6 +6,8 @@ Reads  : data/daily.json  (headline, one_number, date, locked_prices/changes)
 Writes : data/social/card-YYYY-MM-DD.jpg   (dated, permanent: the daily page
                                             and the homepage point at it)
          data/social/card-latest.jpg
+         daily.yml then copies data/social to dnilgis/agsist-data (scripts/agsist_data.sh), and the
+         pages name the agsist-data copy once data/share-host.json lists the folder (share_host.py)
 
 Runs AFTER GATE 2 in daily.yml, so a card is only ever rendered from a
 briefing that passed every gate. If the briefing was blocked, no card.
@@ -159,7 +161,9 @@ def main(argv):
             build("data/daily-archive/%s.json" % day, stamp=day)
             return 0
         dated, alt = build()
-        url = SITE + "/" + os.path.relpath(dated, ROOT).replace(os.sep, "/")
+        # agsist.com, or agsist-data once the seed job has listed data/social (scripts/share_host.py)
+        import share_host
+        url = share_host.url(os.path.relpath(dated, ROOT).replace(os.sep, "/"))
         update_page_og(os.path.join(ROOT, "index.html"), url, alt)
         return 0
     except Exception as e:  # never block the briefing over a share image

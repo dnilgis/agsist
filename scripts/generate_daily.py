@@ -280,7 +280,15 @@ def _refused_model(e):
 # (card step runs after generate, both commit together — so the published page
 # and its image land at the same moment). If a card ever fails to render, the
 # og:image 404s for that day and scrapers fall back to text — degrade, not break.
-OG_IMAGE_BASE = "https://agsist.com/data/social/card-"
+# Nov 4, 2026: the host comes from scripts/share_host.py: agsist.com until the seed job has copied
+# data/social to agsist-data and checked it (data/share-host.json), then dnilgis.github.io/agsist-data.
+# daily.yml copies each new card there before its commit. If share_host cannot load, the page
+# carries the plain site card (og_image_for: an empty base is the fallback image).
+try:
+    import share_host as _share_host
+    OG_IMAGE_BASE = _share_host.url("data/social/card-")
+except Exception:  # never let the share image host stop the briefing
+    OG_IMAGE_BASE = ""
 
 SURPRISE_THRESHOLDS = {
     "corn": 1.5, "corn-dec": 1.5, "beans": 1.5, "beans-nov": 1.5,
