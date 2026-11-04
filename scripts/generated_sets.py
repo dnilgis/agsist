@@ -26,12 +26,23 @@ THE RULES IT ENFORCES
              network set by starting its own workflow by hand and waiting for that run. A set whose code did not
              change is left alone, so a stale set from a failing data job still shows red.
 
+  dependents (BUILD-RULES 61, Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial
+             edition and main went red) every summary file that reads a set's output (SUMMARIES: llms.txt,
+             the search index, data/feeds.json, ...) is that set's dependent, and is rebuilt in the same
+             commit as the set: by the set's own workflow (`dependents <id> --stage` right before its commit)
+             and by `main` here. test/generated-sets.test.mjs traces what each summary builder really reads
+             (scripts/trace_reads.py) and fails when a set it reads does not list it, or a set's workflow
+             does not run the call.
+
     python3 scripts/generated_sets.py table                 print the table
     python3 scripts/generated_sets.py json                  the table as JSON (the inventory test reads it)
     python3 scripts/generated_sets.py guard --base HEAD^1   pr-checks guard (pull request event; --root DIR
                                                             diffs another checkout, for the tests)
     python3 scripts/generated_sets.py prebuild --base HEAD^1
     python3 scripts/generated_sets.py main --window 360 [--dry-run]
+    python3 scripts/generated_sets.py dependents rain [prf ...] [--stage] [--dry-run] [--files]
+                                                            rebuild the sets' summary files (and git add them)
+    python3 scripts/generated_sets.py trace llms            the sets a summary builder reads (JSON)
     python3 scripts/generated_sets.py --selftest
 """
 import json
@@ -61,56 +72,106 @@ SETS = [
     {"id": "cash-bids", "offline": False, "workflow": "cash-bid-pages.yml", "dispatch": {"force": "true"},
      "build": [[PY, "scripts/build_cash_bid_pages.py"]], "check": None,
      "outputs": ["cash-bids/**", "sitemap-cash-bids.xml"],
-     "writes": [], "code": ["scripts/build_cash_bid_pages.py"], "inputs": []},
+     "writes": [], "code": ["scripts/build_cash_bid_pages.py"], "inputs": [],
+     "dependents": ["search", "llms"]},
     {"id": "prf", "offline": True, "workflow": "prf.yml",
      "build": [["node", "scripts/prf_facts.mjs"], [PY, "scripts/build_prf_states.py"], [PY, "scripts/build_prf_counties.py"]],
      "check": [[PY, "scripts/build_prf_states.py", "--check"], [PY, "scripts/build_prf_counties.py", "--check"]],
      "outputs": ["prf/**", "sitemap-prf.xml"],
      "writes": ["data/prf/facts.json", "data/pointers"],
      "code": ["scripts/build_prf_states.py", "scripts/build_prf_counties.py", "scripts/prf_facts.mjs",
-              "scripts/prf_county_facts.mjs", "components/prf-math.js"], "inputs": []},
+              "scripts/prf_county_facts.mjs", "components/prf-math.js"], "inputs": [],
+     "dependents": ["stamp-prf", "feeds", "llms"]},
     {"id": "arc-plc", "offline": True, "workflow": "arc-plc-refresh.yml", "raw": ["data/fsa"],
      "build": [[PY, "scripts/build_arc_plc.py"]], "check": [[PY, "scripts/build_arc_plc.py", "--check"]],
      "outputs": ["arc-plc/**", "sitemap-arc-plc.xml"],
      "writes": ["data/arc-plc", "arc-plc.html", "data/arc-plc.json", "components/arc-plc-form.js", "embed/arc-plc.html", "llms.txt",
                 "data/pointers"],
-     "code": ["scripts/build_arc_plc.py"], "inputs": []},
+     "code": ["scripts/build_arc_plc.py"], "inputs": [],
+     "dependents": ["breakeven", "search", "feeds", "llms"]},
     {"id": "land-sales", "offline": True, "workflow": "land-data.yml",
      "build": [[PY, "scripts/build_land_sales.py"]], "check": [[PY, "scripts/build_land_sales.py", "--check"]],
      "outputs": ["land-sales/**", "sitemap-land-sales.xml"],
      "writes": ["data/land-sales", "data/land/names"],
      "code": ["scripts/build_land_sales.py"],
      # kept by hand (build_land_sales.py: the coverage table, the removed-name list)
-     "inputs": ["data/land-sales/coverage.json", "data/land-sales/removed.json"]},
+     "inputs": ["data/land-sales/coverage.json", "data/land-sales/removed.json"],
+     "dependents": ["search", "feeds", "llms"]},
     {"id": "rain", "offline": True, "workflow": "county-rain.yml",
      "build": [[PY, "scripts/build_county_rain.py"]], "check": [[PY, "scripts/build_county_rain.py", "--check"]],
      "outputs": ["rain/**", "sitemap-rain.xml"],
-     "writes": ["rain.html", "data/pointers"], "code": ["scripts/build_county_rain.py"], "inputs": []},
+     "writes": ["rain.html", "data/pointers"], "code": ["scripts/build_county_rain.py"], "inputs": [],
+     "dependents": ["feeds", "llms"]},
     {"id": "farmland-atlas", "offline": True, "workflow": "farmland-atlas-pages.yml",
      "build": [[PY, "scripts/build_atlas_pages.py"]], "check": None,
      # compare, methods, sheet and qr.js are written by hand; the share cards are the atlas-cards set
      "outputs": ["farmland-atlas/**", "!farmland-atlas/og/**", "!farmland-atlas/compare.html",
                  "!farmland-atlas/methods.html", "!farmland-atlas/sheet.html", "!farmland-atlas/qr.js", "sitemap-atlas.xml"],
-     "writes": ["data/pointers"], "code": ["scripts/build_atlas_pages.py"], "inputs": []},
+     "writes": ["data/pointers"], "code": ["scripts/build_atlas_pages.py"], "inputs": [],
+     "dependents": ["search", "llms"]},
     {"id": "atlas-cards", "offline": True, "workflow": "farmland-atlas-pages.yml",
      "build": [[PY, "scripts/build_atlas_cards.py"]], "check": None,
-     "outputs": ["farmland-atlas/og/**"], "writes": [], "code": ["scripts/build_atlas_cards.py"], "inputs": []},
+     "outputs": ["farmland-atlas/og/**"], "writes": [], "code": ["scripts/build_atlas_cards.py"], "inputs": [],
+     "dependents": []},
     {"id": "rent", "offline": True, "workflow": "state-rent-pages.yml",
      "build": [[PY, "scripts/build_state_rent_pages.py"]], "check": None,
-     "outputs": ["rent/**"], "writes": [], "code": ["scripts/build_state_rent_pages.py"], "inputs": []},
+     "outputs": ["rent/**"], "writes": [], "code": ["scripts/build_state_rent_pages.py"], "inputs": [],
+     "dependents": ["search", "llms"]},
     {"id": "yield", "offline": True, "workflow": "yield-pages.yml",
      "build": [[PY, "scripts/build_state_yield_pages.py"]], "check": None,
-     "outputs": ["yield/**"], "writes": [], "code": ["scripts/build_state_yield_pages.py"], "inputs": []},
+     "outputs": ["yield/**"], "writes": [], "code": ["scripts/build_state_yield_pages.py"], "inputs": [],
+     "dependents": ["search", "llms"]},
     {"id": "hail", "offline": True, "workflow": "mesh.yml",
      "build": [[PY, "scripts/generate_hail_events.py"]], "check": None,
      "outputs": ["hail/**"], "writes": ["hail-map.html", "sitemap.xml", "data/hail/storm-days.json"],
-     "code": ["scripts/generate_hail_events.py"], "inputs": []},
+     "code": ["scripts/generate_hail_events.py"], "inputs": [],
+     "dependents": ["feeds", "llms"]},
     {"id": "hail-map", "offline": True, "workflow": "hail-states.yml",
      "build": [[PY, "scripts/generate_hail_states.py"]], "check": None,
      "outputs": ["hail-map/**"], "writes": ["sitemap.xml"],
      # the state pages copy the ?v= the map page carries for its scripts
-     "code": ["scripts/generate_hail_states.py"], "inputs": ["hail-map.html"]},
+     "code": ["scripts/generate_hail_states.py"], "inputs": ["hail-map.html"],
+     "dependents": ["search", "llms"]},
+    # the Cash Bid Index (BUILD-RULES 61): the month's edition is written by cash-bid-index.yml (--build, from the
+    # boards folded into data/cash-index by fetch_bids.yml); the page is rebuilt from editions.json alone (--page)
+    {"id": "cash-bid-index", "offline": True, "workflow": "cash-bid-index.yml",
+     "build": [[PY, "scripts/cash_bid_index.py", "--page"]], "check": [[PY, "scripts/cash_bid_index.py", "--check"]],
+     "outputs": ["cash-bid-index.html"], "writes": ["data/cash-index/editions.json"],
+     "code": ["scripts/cash_bid_index.py"], "inputs": [],
+     "dependents": ["feeds", "llms"]},
 ]
+
+# Summary files: committed files whose builder reads what a set writes (BUILD-RULES 61). A set lists the ones it
+# feeds as its "dependents"; they are rebuilt, in this order, in the same commit as the set. "trace" is a run of
+# the builder that writes nothing (its --check, or the build itself when it writes only when its output changes),
+# which scripts/trace_reads.py watches to learn what it reads. "files" is what the rebuild commits.
+SUMMARIES = [
+    {"id": "stamp-prf", "build": [PY, "scripts/stamp_prf.py"], "trace": ["--check"], "files": ["prf.html"]},
+    {"id": "breakeven", "build": [PY, "scripts/build_breakeven_data.py"], "trace": ["--check"], "files": ["data/breakeven"]},
+    {"id": "search", "build": [PY, "scripts/build_search_index.py"], "trace": ["--check"],
+     "files": ["data/search-index.json", "data/search-elevators.json", "data/search-places.json"]},
+    {"id": "feeds", "build": [PY, "scripts/build_feeds.py"], "trace": [], "files": ["data/feeds.json"]},
+    {"id": "llms", "build": [PY, "scripts/build_llms_txt.py"], "trace": ["--check"], "files": ["llms.txt"]},
+]
+# Builders that read many files but are not a set's summary, and why (the inventory test holds every --check in
+# scripts/dev/checks.sh to SETS, SUMMARIES or one of these lists).
+NOT_SUMMARIES = {
+    "build_place_pct": "reads the Atlas data (data/atlas) and the fetched rain files, no file a set's builder writes",
+    "inject_static_nav": "writes the shared menu into pages; it reads the menu (components/), not a set's output",
+    "build_share_images": "checks the share images each page names; the images are drawn by their own jobs",
+    "build_croptour": "bakes one hand-written page (crop-tour.html) from its own data",
+    "build_farmbill": "bakes one hand-written page (farm-bill.html) from its own data",
+    "usda_corrections": "a log of USDA's own corrections, fetched; no set's output",
+    "build_basis_join": "joins the fetched bids and basis files, which no set's builder writes",
+    "build_geo_crosswalk": "a county and town crosswalk from Census files, no set's output",
+    "build_whats_new": "built from the entry files in data/whats-new on main (scripts/dev/main_build.py); it reads a "
+                       "page only to check an entry's link is there",
+    "generate_rss": "feed.xml, from the Daily's archive (data/daily-archive), which no set writes",
+    "update_sitemap": "sitemap.xml lastmod, bumped from git by sitemap.yml; each set writes its own sitemap-<set>.xml "
+                      "(an output, so always current with the set) and adds its pages to sitemap.xml itself",
+}
+TRACE_TIMEOUT = 900
+
 
 # Folders of SET_MIN or more pages (scripts/check_site_budget.py) that are not a set here, and why.
 NOT_SETS = {
@@ -423,8 +484,8 @@ def stage_paths(s):
     return sorted(out)
 
 
-def commit_and_push(ids, rebuild):
-    paths = sorted({p for s in SETS if s["id"] in ids for p in stage_paths(s)})
+def commit_and_push(ids, rebuild, extra=()):
+    paths = sorted({p for s in SETS if s["id"] in ids for p in stage_paths(s)} | {p for p in extra if os.path.exists(os.path.join(ROOT, p))})
     for i in range(1, 5):
         sh(["git", "add", "-A", "--"] + paths)
         if sh(["git", "diff", "--staged", "--quiet"]).returncode == 0:
@@ -471,17 +532,126 @@ def cmd_main(window, dry):
     sh(["git", "fetch", "-q", "origin", "main"])
     sh(["git", "reset", "-q", "--hard", "origin/main"])
 
+    deps = sorted({d for s in offline for d in s["dependents"]})
+
     def rebuild():
         ok = True
         for s in offline:
             print("main: rebuilding %s" % s["id"])
             pull_raw(s)
             ok = build(s) and ok
+        if ok and deps:
+            print("main: rebuilding their summary files: %s" % ", ".join(deps))
+            run_dependents(deps)
         return ok
     if not rebuild():
         print("::error::a generated set failed to build on main; nothing committed")
         return 1
-    return commit_and_push([s["id"] for s in offline], rebuild) or rc
+    return commit_and_push([s["id"] for s in offline], rebuild, summary_files(deps)) or rc
+
+
+# ── dependents (BUILD-RULES 61) ─────────────────────────────────────────────────
+SUMMARY = {x["id"]: x for x in SUMMARIES}
+
+
+def producers(path, sets=SETS):
+    """ids of the sets whose builder writes this file (pages, sitemaps, data files, hub pages, llms.txt lines);
+    the shared pointer files are left out"""
+    out = []
+    for s in sets:
+        if path in s["inputs"]:
+            continue
+        if matches(s["outputs"], path) or any(_under(path, w) for w in s["writes"] if w not in SHARED_WRITES):
+            out.append(s["id"])
+    return out
+
+
+def _bases(s):
+    return [p.split("*")[0].rstrip("/") for p in s["outputs"] + s["writes"] if not p.startswith("!") and p not in SHARED_WRITES]
+
+
+def read_sets(trace, sets=SETS, own=()):
+    """{set id: [paths]}: the sets whose output a traced run read (a file opened, or a folder listed inside a set's
+    output). own: the summary's own files (reading what it is about to rewrite is not reading a set)."""
+    hit = {}
+    for p in trace.get("read", []):
+        if any(_under(p, f) for f in own):
+            continue
+        for i in producers(p, sets):
+            hit.setdefault(i, []).append(p)
+    for d in trace.get("listed", []):
+        for s in sets:
+            if any(b and _under(d, b) for b in _bases(s)):
+                hit.setdefault(s["id"], []).append(d + "/")
+    return hit
+
+
+def trace(sid, root=ROOT):
+    """run the summary builder's write-nothing pass under scripts/trace_reads.py -> its trace dict"""
+    import tempfile
+    x = SUMMARY[sid]
+    fd, out = tempfile.mkstemp(suffix=".json")
+    os.close(fd)
+    try:
+        r = subprocess.run([PY, os.path.join(root, "scripts", "trace_reads.py"), out, os.path.join(root, x["build"][1])]
+                           + x["build"][2:] + x["trace"], cwd=root, capture_output=True, text=True, timeout=TRACE_TIMEOUT)
+        t = json.load(open(out, encoding="utf-8")) if os.path.getsize(out) else {"rc": r.returncode, "read": [], "listed": [], "written": []}
+    finally:
+        os.remove(out)
+    t["log"] = (r.stdout + r.stderr)[-1500:]
+    return t
+
+
+def dependents_of(sid, sets=SETS):
+    """the summaries one set feeds, in SUMMARIES order"""
+    want = set(next(s for s in sets if s["id"] == sid)["dependents"])
+    return [x for x in SUMMARIES if x["id"] in want]
+
+
+def summary_files(ids):
+    return [f for x in SUMMARIES if x["id"] in ids for f in x["files"]]
+
+
+def run_dependents(ids, dry=False, stage=False):
+    """rebuild these summaries (SUMMARIES order); -> the ids that failed. Fail soft (BUILD-RULES 53): a summary
+    that fails to build never stops the set's own commit; it is a warning here and main's --check stays red."""
+    bad = []
+    for x in SUMMARIES:
+        if x["id"] not in ids:
+            continue
+        if dry:
+            print(" ".join(x["build"]))
+            continue
+        t = time.time()
+        r = subprocess.run(x["build"], cwd=ROOT, capture_output=True, text=True)
+        tail = (r.stdout + r.stderr).strip().splitlines()[-1:] or [""]
+        print("  %s: rc=%d %.0fs %s" % (" ".join(x["build"]), r.returncode, time.time() - t, tail[0][:160]))
+        if r.returncode != 0:
+            print((r.stdout + r.stderr)[-2000:])
+            print("::warning title=summary not rebuilt::%s failed (rc=%d); %s may now trail its set (BUILD-RULES 61)"
+                  % (" ".join(x["build"]), r.returncode, ", ".join(x["files"])))
+            bad.append(x["id"])
+    if stage and not dry:
+        have = [f for f in summary_files(ids) if os.path.exists(os.path.join(ROOT, f))]
+        if have:
+            sh(["git", "add", "-A", "--"] + have)
+    return bad
+
+
+def cmd_dependents(sids, dry, stage, files):
+    """the summary files of these sets (a workflow that rebuilds several sets names each), rebuilt once each"""
+    bad = [x for x in sids if x not in {s["id"] for s in SETS}]
+    if not sids or bad:
+        print("generated_sets.py dependents: name the set(s) rebuilt: %s" % ", ".join(s["id"] for s in SETS), file=sys.stderr)
+        return 2
+    want = {x["id"] for sid in sids for x in dependents_of(sid)}
+    ids = [x["id"] for x in SUMMARIES if x["id"] in want]
+    if files:
+        print(" ".join(summary_files(ids)))
+        return 0
+    print("summary files of %s: %s" % (", ".join(sids), ", ".join(ids) or "none"))
+    run_dependents(ids, dry, stage)
+    return 0
 
 
 # ── table ──────────────────────────────────────────────────────────────────────
@@ -534,6 +704,18 @@ def selftest():
     since = _ts("2026-11-04T10:00:00Z")
     check((pick_run(runs, since) or {}).get("id") == 7, "a network set waits on a run by hand started after the change")
     check(pick_run(runs[:2], since) is None, "a chained run or an older run by hand does not count")
+    check(producers("cash-bid-index.html") == ["cash-bid-index"] and producers("data/cash-index/editions.json") == ["cash-bid-index"]
+          and producers("data/cash-index/acc-2026-11.json") == [], "the Cash Bid Index is a set; the folded days are not its output")
+    check(owner("data/cash-index/acc-2026-11.json") is None, "the daily fold (fetch_bids.yml) is not guarded")
+    check(sorted(producers("sitemap.xml")) == ["hail", "hail-map"] and producers("data/pointers/rain.json") == [],
+          "producers: every set that writes a shared file, never the pointers")
+    tr = {"read": ["data/cash-index/editions.json", "llms.txt", "rain/iowa/x.html", "README.md"], "listed": ["cash-bids/iowa", "data"]}
+    got = read_sets(tr, own=["llms.txt"])
+    check(sorted(got) == ["cash-bid-index", "cash-bids", "rain"], "read_sets: files and folders inside a set's output, not its own file (%s)" % sorted(got))
+    check([x["id"] for x in dependents_of("cash-bid-index")] == ["feeds", "llms"] and "llms.txt" in summary_files(["llms"]),
+          "the Cash Bid Index rebuilds llms.txt (Nov 4)")
+    check(all(d in SUMMARY for s in SETS for d in s["dependents"]), "every dependent is a summary")
+    check(all(x["build"][1].endswith(".py") for x in SUMMARIES), "summary builders are Python (the tracer runs them)")
     ids = [s["id"] for s in SETS]
     check(len(ids) == len(set(ids)), "every set once")
     check(all(s["build"] and s["workflow"] and s["outputs"] for s in SETS), "every set has a builder, a workflow and outputs")
@@ -557,12 +739,25 @@ def main(argv):
                   "yes" if s["check"] else "no", " ".join(s["outputs"])))
         return 0
     if cmd == "json":
-        print(json.dumps({"sets": table(), "not_sets": NOT_SETS, "not_set_checks": NOT_SET_CHECKS}, indent=1))
+        print(json.dumps({"sets": table(), "not_sets": NOT_SETS, "not_set_checks": NOT_SET_CHECKS,
+                          "summaries": SUMMARIES, "not_summaries": NOT_SUMMARIES}, indent=1))
         return 0
     if cmd == "guard":
         return cmd_guard(opt("--base", "HEAD^1"))
     if cmd == "prebuild":
         return cmd_prebuild(opt("--base", "HEAD^1"))
+    if cmd == "dependents":
+        return cmd_dependents(args[1:], "--dry-run" in argv, "--stage" in argv, "--files" in argv)
+    if cmd == "trace":
+        sid = args[1] if len(args) > 1 else ""
+        if sid not in SUMMARY:
+            print("generated_sets.py: no summary %r (%s)" % (sid, ", ".join(SUMMARY)), file=sys.stderr)
+            return 2
+        x = SUMMARY[sid]
+        t = trace(sid)
+        print(json.dumps({"id": sid, "rc": t["rc"], "written": t["written"], "log": t["log"],
+                          "sets": {k: sorted(v)[:5] for k, v in read_sets(t, own=x["files"]).items()}}, indent=1))
+        return 0
     if cmd == "main":
         return cmd_main(int(opt("--window", WINDOW_MIN)), "--dry-run" in argv)
     print("generated_sets.py: unknown command %r" % cmd, file=sys.stderr)

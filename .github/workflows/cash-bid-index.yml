@@ -108,6 +108,9 @@ jobs:
             git reset --hard "origin/$BR"
             mkdir -p data && cp -r /tmp/cbi/data/. data/ && cp /tmp/cbi/cash-bid-index.html .
             git add -A data/cash-index cash-bid-index.html
+            # the summary files that read the edition, on this main (BUILD-RULES 61, Nov 4: a hand run left
+            # llms.txt on the partial edition and main went red); fail soft (rule 53)
+            python scripts/generated_sets.py dependents cash-bid-index --stage || true
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Cash Bid Index edition $(date -u +%Y-%m-%d) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

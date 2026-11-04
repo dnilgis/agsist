@@ -225,6 +225,8 @@ jobs:
           PY
             echo "changed=1" >> "$GITHUB_ENV"
           fi
+          # the summary files that read these pages (BUILD-RULES 61): prf.html's stamp, data/feeds.json, llms.txt
+          python scripts/generated_sets.py dependents prf --stage || true
           git add -A data/prf data/pointers prf.html prf img/og/prf.jpg sitemap.xml sitemap-prf.xml
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           C=$(python - <<'PY'

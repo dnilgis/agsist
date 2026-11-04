@@ -94,6 +94,8 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add rent sitemap.xml
+          # the summary files that read these pages (BUILD-RULES 61): the search index and llms.txt
+          python scripts/generated_sets.py dependents rent --stage || true
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "pages: rebuild /rent state cash-rent pages"
           git pull --rebase --autostash origin main || true

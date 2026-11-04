@@ -75,6 +75,9 @@ jobs:
           python-version: '3.12'
       - name: Generate state pages
         run: python scripts/generate_hail_states.py
+      # the summary files that read the state pages (BUILD-RULES 61): the search index and llms.txt
+      - name: Rebuild the summary files
+        run: python scripts/generated_sets.py dependents hail-map --stage || true
       - name: Commit if changed
         run: |
           git config user.name  "agsist-bot"

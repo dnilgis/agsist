@@ -137,6 +137,11 @@ jobs:
       - name: Refresh state pages' storm-day lists
         run: python scripts/generate_hail_states.py || echo "state pages failed - data unaffected"
 
+      # The summary files that read the storm and state pages (BUILD-RULES 61):
+      # data/feeds.json, the search index and llms.txt, in the same commit.
+      - name: Rebuild the summary files
+        run: python scripts/generated_sets.py dependents hail hail-map --stage || true
+
       - name: Commit if changed (conflict-armored)
         run: |
           git config user.name  "agsist-bot"
@@ -161,6 +166,7 @@ jobs:
             python scripts/fetch_hail.py --recent || true
             python scripts/generate_hail_events.py || true
             python scripts/generate_hail_states.py || true
+            python scripts/generated_sets.py dependents hail hail-map --stage || true
             git add -A
             git commit --amend --no-edit
           done

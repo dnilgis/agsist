@@ -128,13 +128,14 @@ jobs:
           # /here reads which page kinds each county has (data/atlas/pct k flags)
           python scripts/build_place_pct.py
 
-      # The site search index reads these town pages (and the atlas, state and
-      # top-level pages already in the checkout), so towns and elevators in
-      # search follow every rebuild. If the index fails (too big), the old one
-      # stays and the town pages still ship; the step shows red.
-      - name: Rebuild the site search index
+      # The summary files that read these pages (BUILD-RULES 61): the site
+      # search index (towns and elevators in search follow every rebuild),
+      # data/feeds.json and llms.txt, rebuilt and staged for the commit below
+      # (scripts/generated_sets.py SUMMARIES). A summary that fails to build is
+      # a warning and the old copy stays; the town pages still ship.
+      - name: Rebuild the summary files
         continue-on-error: true
-        run: python scripts/build_search_index.py
+        run: python scripts/generated_sets.py dependents cash-bids rain farmland-atlas --stage
 
       # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
       # Best effort: a share card must never block the data commit.
