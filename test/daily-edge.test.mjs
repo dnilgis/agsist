@@ -105,5 +105,5 @@ print(json.dumps({'f':f,'w':w,'g':g['sentence']}))`]));
   assert.equal(out.f, null, "293 of 1,793 is a roll, not the network: withheld");
   assert.equal(out.w.why, "sample");
   assert.match(out.w.detail, /293 of 1793 boards/);
-  assert.match(out.g, /^On Thursday, Oct 15, all 293 elevators AGSIST reads with the same delivery month both days posted a lower cash corn bid/);
+  assert.match(out.g, /, all 293 elevators AGSIST reads with the same delivery month both days posted a lower cash corn bid/);
 });

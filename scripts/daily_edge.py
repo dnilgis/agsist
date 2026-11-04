@@ -258,7 +258,7 @@ def cash_change(crop, index, prev, prev_generated, now):
     if len(pairs) < MIN_MATCH_SHARE * eligible:
         return None, {"id": fid, "why": "sample", "detail": (
             f"{len(pairs)} of {eligible} boards with a usable bid posted the same delivery month on {P} and {L}, "
-            f"under {MIN_MATCH_SHARE:.0%}; a delivery-month roll, not the network")}
+            f"fewer than {MIN_MATCH_SHARE:.0%} of the boards matched")}
     kept, dropped = robust_keep([c for _, c, _ in pairs], OUTLIER_FLOOR[crop])
     if len(dropped) > MAX_DROP_SHARE * len(pairs):
         return None, {"id": fid, "why": "outlier", "detail": f"{len(dropped)} of {len(pairs)} pairs outside the filter"}

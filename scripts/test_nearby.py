@@ -88,6 +88,11 @@ def main():
     qfn3 = {"beans-nov26": q(1203.0), "beans-jan27": q(1213.5)}
     nfn3 = add_nearby(qfn3, SYMBOLS_AT(T(2026, 10, 30)), T(2026, 10, 30))
     chk(nfn3["beans"]["key"] == "beans-jan27", "Oct 30 (first notice day): rolls to Jan '27")
+    # first notice is a Central-time date: 8 pm CT Thu Oct 29 is 01:00 UTC Oct 30, still Oct 29 at the CBOT
+    qct = {"beans-nov26": q(1203.0), "beans-jan27": q(1213.5)}
+    tct = datetime(2026, 10, 30, 1, 0, tzinfo=timezone.utc)
+    nct = add_nearby(qct, SYMBOLS_AT(tct), tct)
+    chk(nct["beans"]["key"] == "beans-nov26", "8 pm CT Oct 29 (Oct 30 UTC): still Nov '26, first notice is Oct 30 in Chicago")
     qfn4 = {"beans-nov26": q(1203.0), "beans-jan27": {"close": None}}
     nfn4 = add_nearby(qfn4, SYMBOLS_AT(T(2026, 11, 3)), T(2026, 11, 3))
     chk(nfn4["beans"]["key"] == "beans-nov26", "past first notice with no later quote: keeps the live month")

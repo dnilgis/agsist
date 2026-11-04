@@ -223,7 +223,7 @@ def add_nearby(quotes, symbols, now=None):
         # ($12.135): futures plus basis missed the posted cash by 10.5c. A
         # month past first notice is used only when no later month has a quote.
         if rule_for(crop + "-x") == "GRAIN":
-            today = (now or datetime.now(timezone.utc)).date()
+            today = _ct_day(now)
             live = [(e, k) for e, k in dated if not is_expired(k, now)
                     and (quotes.get(k) or {}).get("close") is not None]
             if any(not _past_first_notice(k, today) for _, k in live):
@@ -413,6 +413,13 @@ def unit_guard(quotes):
 
 # The two other wheat classes against Chicago SRW, in cents per bushel.
 CLASS_SPREADS = {"kcwheat": "KC HRW", "mplswheat": "MGEX HRS"}
+
+
+def _ct_day(now=None):
+    """The exchange's calendar day (America/Chicago) for a UTC moment. First
+    notice is a CBOT date: 7 pm CT on Oct 29 is already Oct 30 in UTC."""
+    from zoneinfo import ZoneInfo
+    return (now or datetime.now(timezone.utc)).astimezone(ZoneInfo("America/Chicago")).date()
 
 
 def _past_first_notice(key, today):
