@@ -411,7 +411,11 @@ def early_scripts(repo=REPO):
     model = (REPO / "grain-emc.html") if Path(repo) == REPO else Path(repo) / "grain-emc.html"
     src = open(model, encoding="utf-8").read()
     m = re.search(r"<script>/\* agsist-theme-early.*?</script><script>/\* agsist-ga-guard.*?</script>", src, re.S)
-    return m.group(0) if m else ""
+    # and the GA config line beside them (Nov 4, 2026: without it the guard's gtag shim stopped loader.js from adding
+    # analytics, and gtag.js loaded with no config, so not one land sales page view reached GA since Oct 27)
+    g = re.search(r"<script>window\.dataLayer=window\.dataLayer\|\|\[\];function gtag\(\)\{dataLayer\.push\(arguments\);\}"
+                  r"gtag\('js',new Date\(\)\);gtag\('config','G-[A-Z0-9]+'\);[^<]*</script>", src)
+    return (m.group(0) if m else "") + (g.group(0) if g else "")
 
 
 def head(title, desc, url, ld, early, style=""):
@@ -873,10 +877,13 @@ def index_section(repo):
 
 def index_page(d, latest, counties, early, coverage, archive, ix=None):
     url = ORIGIN + "/land-sales/"
-    title = "Farmland Sales by County: %s Recorded Sales | AGSIST" % ", ".join(NAME[x] for x in d.states)
-    desc = "Recorded farm sales by county with acres, price and price per acre, a monthly update of the biggest buyers and sales, and where every state's sales come from."
+    # Nov 4 (Sig: "my buddy didn't know that farm land sales were on agsist"): the words people search for first
+    title = "Farmland Sales Prices by County: What Farmland Sold For in %s | AGSIST" % and_list(sorted(NAME[x] for x in d.states))
+    desc = ("What farmland sold for: every recorded farm sale by county with acres, price and price per acre, a monthly update of "
+            "the biggest buyers and sales, and where every state's sales come from.")
     if ix:
-        desc = "Recorded farm sales by county with acres, price and price per acre, the Illinois farmland sale index, a monthly update of the biggest buyers and sales, and where every state's sales come from."
+        desc = ("What farmland sold for: every recorded farm sale by county with acres, price and price per acre, the Illinois "
+                "farmland sale index, a monthly update of the biggest buyers and sales, and where every state's sales come from.")
     ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])] + (ix["ld"] if ix else [])
     b = [head(title, desc, url, ld, early, ix["css"] if ix else ""), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
     if latest:
@@ -1074,7 +1081,9 @@ def selftest():
         (t / "data" / "land" / "il").mkdir(parents=True)
         (t / "data" / "land" / "wi").mkdir(parents=True)
         (t / "data" / "land-sales").mkdir(parents=True)
-        (t / "grain-emc.html").write_text("<script>/* agsist-theme-early */</script><script>/* agsist-ga-guard */</script>")
+        (t / "grain-emc.html").write_text("<script>/* agsist-theme-early */</script><script>/* agsist-ga-guard */</script>\n  "
+                                          "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
+                                          "gtag('js',new Date());gtag('config','G-TEST1234');</script>")
         (t / "data" / "land-sales" / "coverage.json").write_text(json.dumps(
             {"labels": {"live": "Sales on this site", "none": "No public source found"}, "note": "",
              "states": [{"st": "IL", "name": "Illinois", "status": "live", "tile": [7, 3]}, {"st": "WI", "name": "Wisconsin", "status": "live"},
@@ -1110,6 +1119,8 @@ def selftest():
         ck("unusual price wording", "Unusual price" in page)
         ck("sections withheld with a reason when too few", "Not shown this month" in page)
         ck("no em dash", "—" not in "".join(texts.values()))
+        ck("every page carries the GA config, not only the guard (Nov 4: no land page view reached GA)",
+           all("gtag('config','G-TEST1234')" in v and "agsist-ga-guard" in v for k, v in texts.items() if k.endswith(".html")))
         lat = json.loads(texts["data/land-sales/latest.json"])
         ck("latest.json names no one", not any(n in texts["data/land-sales/latest.json"] for n in allnames))
         # one sale, linked (Nov 3): every row of the county table has id="s-<sale id>", the same on a rebuild
