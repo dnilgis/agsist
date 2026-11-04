@@ -114,7 +114,7 @@
   /* THE SHEET (2026-10-17, Sig): prints and framed prints are printed on 13 x 19 in
      paper and ship untrimmed. The 3:2 art (1800 x 1200 units) is scaled to 16.5 x
      11 in and centred on the sheet; the margin is the print's own white. The
-     framed print sits in a 13 x 19 black frame with a white mat (the stock
+     framed print sits in a 13 x 19 frame (oak or black, Nov 4) with a white mat (the stock
      "matted to 11 x 17" kind, window about 16.5 x 10.5 in), so everything the
      art draws stays inside the centred safe window, which
      test/rain-print-sheet.test.mjs measures on the drawn sheet. When Sig
@@ -975,15 +975,25 @@
      the full design link and the design in words, so Sig can match a payment
      to a design by ref, or by time and product. Never the buyer's email,
      name or address: Stripe has those. */
-  function orderRecord(x, ref, choice, price) {
+  function orderRecord(x, ref, choice, price, frame) {
     var s = normalize(x);
-    return {
+    var o = {
       ref: String(ref || ''), product: String(choice || ''), price: typeof price === 'number' && isFinite(price) ? price : null,
       design_url: designUrl(x), place: s.place, year: s.year, style: s.style, name: s.name,
       markers: s.markers.map(function (m) { return shortDate(m.date) + (m.label ? ' ' + m.label : ''); }).join('; '),
       dedication: s.dedication, gift: !!s.gift
     };
+    // the frame color, a framed print only (worker v5.63; a record without one reads black)
+    if (o.product === 'framed12x18') o.frame_color = frameColor(frame);
+    return o;
   }
+  /* THE FRAME COLOR (Sig, Nov 4): oak, picked first, or black, the same price.
+     frameColor(c) -> 'oak' | 'black' (anything else is oak, the default).
+     frameOf(rec) reads a record or order post: no color on it reads black
+     (every framed print sold before Nov 4 was black). */
+  var FRAMES = ['oak', 'black'], FRAME_WORD = { oak: 'Oak', black: 'Black' };
+  function frameColor(c) { return FRAMES.indexOf(c) >= 0 ? c : 'oak'; }
+  function frameOf(rec) { return rec && FRAMES.indexOf(rec.frame_color) >= 0 ? rec.frame_color : 'black'; }
 
   /* Labels in a link that were longer than a date's 13 letters: normalize cuts
      them to fit, so the page says so instead of printing "Our wedding d"
@@ -1890,7 +1900,7 @@
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
-    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, hashRef: hashRef, orderRecord: orderRecord, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
+    printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, hashRef: hashRef, orderRecord: orderRecord, frameColor: frameColor, frameOf: frameOf, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, placeShown: placeShown, missRank: missRank, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, orderCrop: orderCrop, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
@@ -2570,9 +2580,10 @@
   function sampleLine(on) {
     $('rp-sample-line').hidden = !on;
     var t = EMPTY_CAP, ex = SHOW_EX && DATA && !BLOCKED;
+    if (t === EMPTY_CAP) t = $('rp-wall').getAttribute('data-view') === 'print' ? 'The print alone, 13 x 19' : 'Print in ' + (frameColor(FRAME) === 'oak' ? 'an oak' : 'a black') + ' frame';
     if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + (ex ? ', with example words. Yours start blank.' : '.');
     else if (ex && META) t = (NEAR && ST.place === NEAR ? 'Your area, ' : '') + META.place + ', ' + META.year + ', with example words. Yours start blank.';
-    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '13 x 19 print.' : '13 x 19, framed with a white mat.') +
+    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '13 x 19 print.' : '13 x 19, in ' + (frameColor(FRAME) === 'oak' ? 'an oak' : 'a black') + ' frame with a white mat.') +
       (NEAR && ST.place === NEAR ? ' Your area, near you. Not your town? Type it below.' : '');
     $('rp-sample-txt').textContent = t;
   }
@@ -2580,6 +2591,7 @@
   function setView(v) {
     $('rp-wall').setAttribute('data-view', v);
     $('rp-strip').setAttribute('data-view', v);   // the phone's sticky thumbnail wears the same mat
+    ['rp-wall', 'rp-strip', 'rp-proof'].forEach(function (id) { $(id).setAttribute('data-frame', frameColor(FRAME)); });
     sampleLine(!!SAMPLE);
   }
   // After the reader's own draw, bring the frame into view if it is above the screen.
@@ -2958,7 +2970,9 @@
     URL_LOG.push(now);
     var q = toParams(ST) + (MAKER ? '&maker=1' + (SERIAL ? '&serial=' + SERIAL.replace(/\D/g, '') : '') + (ORDER_CROP ? '&' + orderCropQuery(ORDER_CROP) : '') : '') +
       // the product picked, so Back and a reload keep it (framed, the default, stays out of the address)
-      (PICK && PICK !== 'framed12x18' ? '&pick=' + PICK : '');
+      (PICK && PICK !== 'framed12x18' ? '&pick=' + PICK : '') +
+      // and the frame color, oak (the default) left out
+      (PICK === 'framed12x18' && FRAME !== 'oak' ? '&frame=' + FRAME : '');
     var to = root.location.pathname + '?' + q;
     if (root.location.pathname + root.location.search === to) return;
     try { root.history.replaceState(null, '', to); } catch (e) {}
@@ -3029,7 +3043,7 @@
      for a print or framed (a plain date from data/rain-print.json), the file
      by email. This year's gift and a year NOAA hasn't finished say so instead. */
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
-  var SUB_BASE = { framed12x18: '13 x 19 black frame, white mat, real glass.', print12x18: '13 x 19 paper, ships flat.' };
+  var SUB_BASE = { framed12x18: '13 x 19 oak or black frame, white mat, real glass.', print12x18: '13 x 19 paper, ships flat.' };
   function syncCutoffs() {
     var gift = giftYear(), settle = !gift && SETTLE && canOrder();
     PRODUCTS.forEach(function (id) {
@@ -3854,7 +3868,7 @@
      button that pays. Checkout is Stripe in the same tab (Sig): the design is
      in the address bar and saved for the way back, and Stripe sends the buyer
      back to rain-print?paid=<product>&s=<session> (PAID below). */
-  var PICK = 'framed12x18', NONAME_OK = false, PICK_CHOSEN = false;
+  var PICK = 'framed12x18', NONAME_OK = false, PICK_CHOSEN = false, FRAME = 'oak';
   /* PAST A CUTOFF (2026-10-17, gift-buyers panel): Framed stays picked only
      while it still makes Christmas. Past its date the page starts on the best
      choice that still does, the print through its own date, then the digital
@@ -3877,8 +3891,25 @@
     radios('rp-pproduct').forEach(function (r) { r.checked = r.value === id; });
     // the print at the top shows what is picked: framed, or the print alone (the file is the print alone too)
     setView(id === 'framed12x18' ? 'framed' : 'print');
+    syncFrame();
     syncPick();
     if ($('rp-proof').open) proofRender();
+  }
+  /* The frame color (Sig, Nov 4): one pair under the picker, one on the
+     review sheet and one on the order form, all the same choice; shown for
+     the framed print only. The mockup above follows it. */
+  function setFrame(c) {
+    FRAME = frameColor(c);
+    syncFrame();
+    setView(PICK === 'framed12x18' ? 'framed' : 'print');
+    if ($('rp-proof').open) proofRender();
+  }
+  function syncFrame() {
+    radios('rp-frame').concat(radios('rp-pframe')).forEach(function (r) { r.checked = r.value === FRAME; });
+    $('ro-frame').value = FRAME;
+    $('rp-fcolor').hidden = PICK !== 'framed12x18';
+    $('rp-pframe-wrap').hidden = PICK !== 'framed12x18';
+    $('ro-frame-wrap').hidden = $('ro-choice').value !== 'framed12x18';
   }
   function syncPick() {
     var p = pickPrice(PICK), link = !!payLink(PICK);
@@ -4057,7 +4088,8 @@
       function end(ok) {
         if (over) return;
         over = true; root.clearTimeout(t);
-        if (ok || !/^(GIFT-)?RPH-/.test(rec.ref)) return done();
+        // a framed order's color is in the record only (Stripe has no place for it): with the worker out it goes by the backup form too
+        if (ok || !(/^(GIFT-)?RPH-/.test(rec.ref) || rec.product === 'framed12x18')) return done();
         pressBackup(rec).then(done);
       }
       try {
@@ -4071,6 +4103,7 @@
       ref: rec.ref, product: rec.product, price: rec.price == null ? '' : String(rec.price), design_code: encodeCode(ST), design_url: rec.design_url,
       place: rec.place, year: String(rec.year || ''), name: rec.name, markers: rec.markers, dedication: rec.dedication, gift: rec.gift ? 'yes' : 'no',
       logo: ST.logo || '', logo_note: logoKeptNote().trim(), at: new Date().toISOString() };
+    if (rec.product === 'framed12x18') f.frame_color = frameOf(rec);
     var id = outboxAdd({ to: 'formspree', fields: f });
     return new Promise(function (done) {
       var t = root.setTimeout(done, BACKUP_WAIT_MS);
@@ -4121,7 +4154,7 @@
      design was paid for: this tab's own press, or the only recent one. */
   var PRESS_KEY = 'agsist-rp-presses', RECENT_MS = 2 * 3600000;
   function saveCheckout(id) {
-    var o = { code: encodeCode(ST), choice: id, place: META ? META.place : ST.place, year: ST.year, gift: !!ST.gift, settle: !!SETTLE, t: Date.now() }, v = JSON.stringify(o);
+    var o = { code: encodeCode(ST), choice: id, frame: FRAME, place: META ? META.place : ST.place, year: ST.year, gift: !!ST.gift, settle: !!SETTLE, t: Date.now() }, v = JSON.stringify(o);
     try { root.sessionStorage.setItem(SAVE_KEY, v); } catch (e) {}
     try { root.localStorage.setItem(SAVE_KEY, v); } catch (e) {}
     try { root.localStorage.setItem(PRESS_KEY, JSON.stringify(presses().concat([o]).slice(-10))); } catch (e) {}
@@ -4310,7 +4343,7 @@
       if (PRESS_BUSY) return;
       PRESS_BUSY = true;
       var J = OJ().j || {};
-      pressPost(orderRecord(ST, code, id, typeof J[id] === 'number' ? J[id] : null)).then(function () { PRESS_BUSY = false; goTo(u); });
+      pressPost(orderRecord(ST, code, id, typeof J[id] === 'number' ? J[id] : null, FRAME)).then(function () { PRESS_BUSY = false; goTo(u); });
       return;
     }
     closeProof(true);
@@ -4552,6 +4585,7 @@
     var dlg = $('rp-proof');
     if (!DATA || BLOCKED) { dlg.close && dlg.open && dlg.close(); return; }
     PROOF_VIEW = PICK === 'framed12x18' ? 'framed' : 'print';
+    dlg.setAttribute('data-frame', FRAME);
     $('rp-proof-art').innerHTML = buildSvg({ idPrefix: 'pf', serial: SERIAL });
     var svg = $('rp-proof-art').querySelector('svg');
     if (svg) svg.setAttribute('aria-hidden', 'true');   // the stage around it carries the words
@@ -4569,6 +4603,7 @@
     ['Crop', 'Temperatures', 'Every year behind'].forEach(function (k) { if (rows[k]) list.push([k, esc(rows[k])]); });
     // the logo, in words and as it prints
     if (rows['Logo']) { var la = logoArt(); list.push(['Logo', esc(rows['Logo']) + (la ? '<img class="rp-plogo" alt="" src="' + esc(la.href) + '">' : '')]); }
+    if (PICK === 'framed12x18') list.push(['Frame', esc(FRAME_WORD[FRAME] + ', with a white mat and real glass')]);
     if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
     var can = canOrder(), gift = !!(GIFT && GIFT.usable), p = pickPrice(PICK);
     // what the picker above it doesn't say: when it comes (and that a gift card covers it)
@@ -4663,6 +4698,7 @@
       gift_message: $('rp-pg-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX)
     };
     if (januaryGift()) x.gift_january = true; else x.gift = true;
+    if (PICK === 'framed12x18') x.frame_color = FRAME;
     if (ST.logo) x.logo = ST.logo;
     // the worker keeps known fields only, so the checkout and the proof tick ride in the notes
     x.notes = ('Paying now at Stripe checkout' + (ref ? ', reference ' + ref : '') + '. Gift details from the review sheet; no payment link needed.' +
@@ -4734,6 +4770,7 @@
     box.hidden = false;
     $('ro-choice').value = id;
     syncAddress();
+    syncFrame();
     $('ro-design').value = designUrl(ST);
     // "Sent." stays for the design it was sent for: opening the form again for that design doesn't wipe it (2026-10-15)
     if (SENT_CODE !== encodeCode(ST)) { $('ro-out').innerHTML = ''; SENT_CODE = ''; }
@@ -4788,10 +4825,11 @@
   }
   var EMAIL_RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[A-Za-z]{2,}$/;
   function orderSubject(x) {
-    return 'Rain Print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : x.gift ? ' (gift)' : '') + ': ' + CHOICE[x.choice] + ' for ' + x.name;
+    return 'Rain Print order' + (x.gift_january ? ' (' + ST.year + ' gift, January)' : x.gift ? ' (gift)' : '') + ': ' + CHOICE[x.choice] +
+      (x.choice === 'framed12x18' ? ', ' + FRAME_WORD[frameOf(x)].toLowerCase() + ' frame' : '') + ' for ' + x.name;
   }
   function orderText(x) {
-    return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
+    return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email + (x.choice === 'framed12x18' ? '\nFrame: ' + FRAME_WORD[frameOf(x)] : '') +
       (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the full year is in' : '\nGift: yes, the note printed at the top of the letter in the box, no prices') +
         (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
         (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nNote for the letter: ' + x.gift_message : '') : '') +
@@ -4818,6 +4856,7 @@
     x.notes = ((PROOF_OK === encodeCode(ST) ? 'Proof checked on the page: yes.' : 'Proof checked on the page: no.') +
       (SETTLE ? ' NOAA didn\u2019t have all of ' + ST.year + ' in yet: make it once the full year is in.' : '') + (x.notes ? '\n' + x.notes : '')).slice(0, 2000);
     if (x.choice === 'digital') x.address = '';
+    if (x.choice === 'framed12x18') x.frame_color = frameColor($('ro-frame').value);
     var gift = giftMode(), plain = plainGift();
     if (plain) {
       x.gift = true;
@@ -4884,7 +4923,7 @@
             '<p>Nothing is charged until you pay that link, and nothing prints until you OK the proof. ' + ('It ships within ' + ((PRICES && PRICES.ship_business_days) || 3) + ' business days after you OK the proof.') +
             ' If the email doesn\u2019t come, check spam, or write to ' + ORDER_TO + (shortRef() ? ' and give your order reference, <b>' + esc(shortRef()) + '</b>.' : '.') + '</p></div>';
         SENT_CODE = encodeCode(ST);
-        $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress();
+        $('ro-form').reset(); $('ro-choice').value = x.choice; $('ro-design').value = x.design_url; syncAddress(); syncFrame();
         try { out.firstChild.focus(); } catch (err) {}
       }).catch(function () {
         ga('rain_print_order', { result: 'fail', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
@@ -5414,6 +5453,17 @@
     if (r && r !== radios('rp-product')[0]) PICK_CHOSEN = true;   // a pick the browser kept
     return r && PRODUCTS.indexOf(r.value) >= 0 ? r.value : 'framed12x18';
   }
+  /* The frame color comes back the same way: ?frame=, else the one saved at
+     the press for this same design, else the radio the browser kept, else oak. */
+  function startFrame() {
+    var u = new URLSearchParams(root.location.search).get('frame');
+    if (FRAMES.indexOf(u) >= 0) return u;
+    var sv = savedCheckout();
+    if (sv && !PAID && sv.code === encodeCode(ST) && FRAMES.indexOf(sv.frame) >= 0) return sv.frame;
+    var r = radios('rp-frame').filter(function (x) { return x.checked; })[0];
+    return r ? r.value : 'oak';
+  }
+  FRAME = frameColor(startFrame());
   setPick(startPick());
   root.addEventListener('pagehide', function () { if (URL_T) updateUrlNow(); });
   root.addEventListener('pageshow', function () {
@@ -5585,7 +5635,9 @@
     try { $('rp-name').focus({ preventScroll: true }); } catch (e) {}
   });
   $('rp-noname-go').addEventListener('click', function () { NONAME_OK = true; $('rp-noname').hidden = true; checkIt(); });
-  $('ro-choice').addEventListener('change', function () { syncAddress(); syncSummary(); });
+  $('ro-choice').addEventListener('change', function () { syncAddress(); syncSummary(); syncFrame(); });
+  radios('rp-frame').concat(radios('rp-pframe')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); setFrame(r.value); if (DATA) updateUrl(); ga('rain_print_frame', { color: r.value, where: r.name === 'rp-pframe' ? 'review' : 'step3' }); } }); });
+  $('ro-frame').addEventListener('change', function () { setFrame($('ro-frame').value); if (DATA) updateUrl(); });
   $('rp-zoom').addEventListener('click', openProof);
   $('rp-strip-zoom').addEventListener('click', openProof);
   // tap the picture to see it up close (the Zoom in button is the keyboard way in)
