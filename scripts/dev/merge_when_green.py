@@ -18,9 +18,20 @@ since changed a file that can change the result, the bot updates the branch from
 branch), starts pr-checks on the new head by hand (a push by the job token starts no pull_request run) and
 merges only when that fresh run is green. "Can change the result" (stale()): a file the pull request changes,
 or an output or data file of a generated set whose builder the pull request changes (scripts/generated_sets.py
-relevant(): the PR checks rebuild that set from them). Main's changed files come from git (a shallow fetch of the
-base and main, then git diff --name-only), so the bot's 900 to 2,900 file data commits are read whole and,
-touching nothing relevant, hold nothing; another pull request's merge counts only when it overlaps.
+relevant(): the PR checks rebuild that set from them, and its code). Main's changed files come from git (a shallow
+fetch of the base and main, then git diff --name-only), so the bot's 900 to 2,900 file data commits are read whole.
+
+Data commits do not hold a builder's pull request (Nov 4, 2026, #308; BUILD-RULES 60 amended: checks green at 08:10
+UTC and still not merged at 09:27, since the bids bot rewrote the set it builds every 15 minutes and each fresh run was
+stale again). Main's own commits since the base are read along its first parents (a merge is one commit: what it
+brought in); a set's outputs and data changed only by scheduled data commits (data_bot_commit(): one parent, the data
+bots' address as author and committer, no "(#NNN)" suffix) do not make the checks stale, since pull requests carry
+no pages (#300) and main rebuilds the set with the new builder after the merge. Still stale: main changed a file the
+pull request changes (whoever did), another pull request's merge or any other commit changed a relevant file, main
+changed a workflow file, or main's changes or history cannot be read (then every change counts).
+
+No silent loop: after MAX_UPDATES updates from main for one kind of reason (counted from the bot's own comments since
+the label was last added) the bot says so once and stops updating; merge by hand, or remove and add the label again.
 
 A merge by the job token starts no push run on main, so after a merge this starts main-checks.yml
 by hand, and every workflow that would have run on that push (push to main, its paths matching the
@@ -337,7 +348,8 @@ def main():
             comment_once(gh, repo, pr, key, "Not merged (merge-when-green): %s." % why)
             continue
         if action == "update":
-            update_and_recheck(gh, repo, pr, why)
+            if loop_guard(gh, repo, pr, why):
+                update_and_recheck(gh, repo, pr, why)
             continue
         try:
             merged = gh.call("PUT", "/repos/%s/pulls/%d/merge" % (repo, pr["number"]),
@@ -464,6 +476,57 @@ def checks_stale(gh, repo, run, head_sha, files, root):
     return stale(files, main_files, relevant_to(files, root), None if commits is None else others_of(commits))
 
 
+MAX_UPDATES = 3             # updates from main for one reason before the bot stops and says so
+UPDATED = re.compile(r"<!-- merge-when-green:[0-9a-f]{12}:(updated(?:-[a-z0-9-]*)?) -->")
+
+
+def reason_key(why):
+    """the kind of a stale reason, without its counts and file names: one loop is one kind"""
+    w = re.sub(r"\(.*", "", why.split(": ", 1)[-1])
+    return re.sub(r"[^a-z]+", "-", re.sub(r"\d+", "", w).lower()).strip("-")[:40]
+
+
+def loop_state(comments, since, key):
+    """-> (how many times the bot updated the branch for this kind of reason since the label was last
+    added, whether it already said it stopped). comments: the pull request's comments from the API."""
+    n, said = 0, False
+    for c in comments:
+        if (c.get("user") or {}).get("login") != BOT or (since and (c.get("created_at") or "") < since):
+            continue
+        body = c.get("body") or ""
+        m = UPDATED.search(body)
+        if m and m.group(1) in ("updated", "updated-" + key):
+            n += 1
+        if MARK % ("loop", "cap-" + key) in body:
+            said = True
+    return n, said
+
+
+def loop_guard(gh, repo, pr, why):
+    """True: go on and update. False: the bot already updated the branch MAX_UPDATES times for this kind of
+    reason and the checks went stale again each time (Nov 4: #308 looped for over an hour); it says so once and
+    stops until someone removes the label and adds it again."""
+    key = reason_key(why)
+    try:
+        events = gh.all("/repos/%s/issues/%d/events" % (repo, pr["number"]))
+        since = max([e.get("created_at") or "" for e in events
+                     if e.get("event") == "labeled" and (e.get("label") or {}).get("name") == LABEL] or [""])
+        comments = gh.all("/repos/%s/issues/%d/comments" % (repo, pr["number"]))
+    except urllib.error.HTTPError as e:
+        print("#%d: cannot read its comments (HTTP %d); not updating this pass" % (pr["number"], e.code))
+        return False
+    n, said = loop_state(comments, since, key)
+    if n < MAX_UPDATES:
+        return True
+    print("#%d: updated from main %d times for the same reason; stopped (%s)" % (pr["number"], n, why))
+    if not said:
+        gh.call("POST", "/repos/%s/issues/%d/comments" % (repo, pr["number"]), {"body": (
+            "Not merged (merge-when-green): %s. The bot updated the branch from main %d times for this and the checks "
+            "were stale again each time, so it has stopped updating it. Merge by hand after a look, or remove the "
+            "label and add it again to give it %d more tries. %s") % (why, n, MAX_UPDATES, MARK % ("loop", "cap-" + key))})
+    return False
+
+
 def update_and_recheck(gh, repo, pr, why):
     """bring main into the branch, wait for the new head, and start the full PR checks on it; the merge
     waits for that run. If the head has not moved in RECHECK_WAIT_S, nothing is started now: the next
@@ -480,6 +543,9 @@ def update_and_recheck(gh, repo, pr, why):
                    "may not push). Merge main into the branch and push." % (why, e.code))
         comment_once(gh, repo, pr, "update-refused-%d" % e.code, "Not merged (merge-when-green): " + msg)
         return
+    # said (and counted by loop_guard) as soon as GitHub takes the update, whether or not the new head shows here
+    comment_once(gh, repo, pr, "updated-" + reason_key(why), "Not merged yet (merge-when-green): %s. Updated the branch "
+                 "from main; the PR checks run again on the new head, and it merges when they are green." % why)
     head, end = sha, time.time() + RECHECK_WAIT_S
     while time.time() < end:
         time.sleep(10)
@@ -491,8 +557,6 @@ def update_and_recheck(gh, repo, pr, why):
         return
     dispatch_checks(gh, repo, pr["head"]["ref"])
     print("#%d: updated from main (%s), pr-checks started on %s" % (pr["number"], why, head[:12]))
-    comment_once(gh, repo, pr, "updated", "Not merged yet (merge-when-green): %s. Updated the branch from main and "
-                 "started the PR checks again on it; merges when they are green." % why)
 
 
 def dispatch_checks(gh, repo, ref):
@@ -581,8 +645,110 @@ def selftest():
              "triggering_actor": {"login": "someone"}}]
     assert pick_run(runs, "fx/a")["id"] == 2, "the bot's own full run on the branch counts; a replay by hand does not"
     assert pick_run(runs, "fx/b")["id"] == 1 and pick_run([], "fx/a") is None
+    # Nov 4, 2026, #308: a builder PR never merged, since the bids bot rewrites its set every 15 minutes
+    real = ["scripts/build_cash_bid_pages.py", "test/cash-bid-pages.test.mjs"]
+    rel308 = lambda f: f in real or f.startswith("cash-bids/") or f in ("cash-bids.html", "data/bids.json")
+    town = ["cash-bids.html"] + ["cash-bids/alabama/t%d.html" % k for k in range(1824)]
+    botc = {"sha": "1b2efb89da7", "parents": 1, "author": "bot@agsist.com", "committer": "bot@agsist.com",
+            "subject": "pages: rebuild /cash-bids town pages from the elevator network 2026-11-04"}
+    assert data_bot_commit(botc)
+    assert stale(real, town, rel308).startswith("main changed 1825 file(s)"), "no commit split: every change counts, as before"
+    assert stale(real, town, rel308, others_of([(botc, town)])) is None, "#308: a 1,825-file bot data commit leaves a builder PR fresh"
+    merge = {"sha": "9096bb4fa61", "parents": 2, "author": "41898282+github-actions[bot]@users.noreply.github.com",
+             "committer": "noreply@github.com", "subject": "Merge pull request #307 from dnilgis:fx/wave1a"}
+    assert not data_bot_commit(merge), "the merge bot shares the data bot's name; two parents and GitHub as committer"
+    assert stale(real, town, rel308, others_of([(botc, town), (merge, ["cash-bids/alabama/t3.html", "x.js"])])) \
+        .startswith("main changed 1 file(s)"), "another PR's merge touching the set: stale"
+    squash = dict(botc, author="123344677+dnilgis@users.noreply.github.com", committer="noreply@github.com",
+                  subject="Site panel fixes, batch 2 (#308)")
+    assert not data_bot_commit(squash), "a squash merge"
+    assert not data_bot_commit(dict(botc, subject="Bids fix (#311)")), "the bot's address with a PR suffix counts"
+    assert not data_bot_commit(dict(botc, committer="noreply@github.com")), "GitHub committed it: a merge through GitHub"
+    assert not data_bot_commit(dict(botc, author="dnilgis@gmail.com")), "a hand push"
+    assert not data_bot_commit(dict(botc, author="sig@agsist.com", committer="sig@agsist.com")), "Sig's own address"
+    assert not data_bot_commit(dict(botc, parents=2, subject="Merge branch 'main'")), "a merge, whoever made it"
+    assert stale(real, town + ["scripts/build_cash_bid_pages.py"], rel308, []).startswith("main changed 1 file"), \
+        "main changed the PR's own file, even by the bot: stale"
+    assert stale(real, town + [".github/workflows/fetch-bids.yml"], rel308, []).startswith("main changed 1 workflow file"), \
+        "main changed a workflow: stale"
+    assert stale(real, None, rel308, []).startswith("main's changes"), "unreadable: stale"
+    assert stale(["scripts/x.py"], ["scripts/x.py"], None, []) and stale(["a"], ["b"], None, ["b"]) is None
+    log = ("\0aaa ppp\x01bot@agsist.com\x01bot@agsist.com\x01Update grain bids\n\ndata/bids.json\ncash-bids/a.html\n"
+           "\0mmm ppp qqq\x0141898282+github-actions[bot]@users.noreply.github.com\x01noreply@github.com\x01Merge pull request #1\n\nx.js\n")
+    pl = parse_log(log)
+    assert [m["parents"] for m, _ in pl] == [1, 2] and pl[0][1] == ["data/bids.json", "cash-bids/a.html"] and pl[1][1] == ["x.js"]
+    assert others_of(pl) == ["x.js"]
+    git_fixture()
+    # the bot stops after MAX_UPDATES updates for one kind of reason (#308 looped for over an hour)
+    why = "the checks ran against an older main: " + stale(real, town, rel308)
+    k = reason_key(why)
+    assert k == reason_key("the checks ran against an older main: main changed 7 file(s) this pull request's checks read since (a)")
+    assert k != reason_key("the checks ran against an older main: main changed 1 workflow file(s) since (x)")
+    upd = lambda sha, at, key=k, who=BOT: {"user": {"login": who}, "created_at": at, "body": "Not merged yet. " + MARK % (sha * 12, "updated-" + key)}
+    cs = [upd("a", "2026-11-04T08:20:00Z"), upd("b", "2026-11-04T08:45:00Z"), upd("c", "2026-11-04T09:10:00Z")]
+    assert loop_state(cs[:2], "", k) == (2, False) and loop_state(cs, "", k) == (3, False)
+    assert loop_state(cs, "2026-11-04T08:30:00Z", k)[0] == 2, "only since the label was last added"
+    assert loop_state([upd("a", "2026-11-04T08:20:00Z", "other")] * 5, "", k)[0] == 0, "another kind of reason"
+    assert loop_state([upd("a", "2026-11-04T08:20:00Z", who="dnilgis")] * 5, "", k)[0] == 0, "only the bot's own"
+    legacy = {"user": {"login": BOT}, "created_at": "2026-11-04T08:00:00Z", "body": MARK % ("d" * 12, "updated")}
+    assert loop_state([legacy], "", k)[0] == 1, "the comments from before this change count"
+    capc = {"user": {"login": BOT}, "created_at": "2026-11-04T09:30:00Z", "body": "stopped " + MARK % ("loop", "cap-" + k)}
+    assert loop_state(cs + [capc], "", k) == (3, True)
+    assert loop_state(cs + [capc], "2026-11-04T09:40:00Z", k) == (0, False), "label added again: three more tries"
     print("merge_when_green selftest passed")
     return 0
+
+
+def git_fixture():
+    """git_changed() on a real repository: a shallow clone of main as the job has it, the base three commits back"""
+    import subprocess
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        o, c = os.path.join(d, "origin"), os.path.join(d, "clone")
+        env0 = dict(os.environ, GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
+
+        def git(cwd, *a, who=("dnilgis", "dnilgis@gmail.com"), at=None, by=None):
+            env = dict(env0, GIT_AUTHOR_NAME=who[0], GIT_AUTHOR_EMAIL=who[1], GIT_COMMITTER_NAME=(by or who)[0],
+                       GIT_COMMITTER_EMAIL=(by or who)[1])
+            if at:
+                env.update(GIT_AUTHOR_DATE=at, GIT_COMMITTER_DATE=at)
+            r = subprocess.run(["git", "-C", cwd] + list(a), capture_output=True, text=True, env=env)
+            assert r.returncode == 0, (a, r.stderr)
+            return r.stdout.strip()
+
+        def put(path, text):
+            os.makedirs(os.path.dirname(os.path.join(o, path)) or o, exist_ok=True)
+            open(os.path.join(o, path), "w").write(text)
+        bot = ("AGSIST Bot", "bot@agsist.com")
+        os.makedirs(o)
+        git(o, "init", "-q", "-b", "main")
+        for f in ["scripts/build.py", "cash-bids/a.html", "x.js"]:
+            put(f, "0")
+        git(o, "add", "-A")
+        git(o, "commit", "-qm", "start", at="2026-11-04T06:00:00Z")
+        put("x.js", "1")
+        git(o, "commit", "-qam", "older", at="2026-11-04T07:00:00Z")
+        base = git(o, "rev-parse", "HEAD")
+        put("cash-bids/a.html", "1")
+        git(o, "commit", "-qam", "pages: rebuild", who=bot, at="2026-11-04T08:00:00Z")
+        git(o, "checkout", "-qb", "fx/other", at="2026-11-04T08:01:00Z")
+        put("x.js", "2")
+        git(o, "commit", "-qam", "other change", at="2026-11-04T08:02:00Z")
+        git(o, "checkout", "-q", "main")
+        git(o, "merge", "-q", "--no-ff", "-m", "Merge pull request #2 from o:fx/other", "fx/other",
+            who=("github-actions[bot]", "41898282+github-actions[bot]@users.noreply.github.com"),
+            by=("GitHub", "noreply@github.com"), at="2026-11-04T08:30:00Z")
+        put("cash-bids/a.html", "2")
+        git(o, "commit", "-qam", "Update grain bids", who=bot, at="2026-11-04T08:45:00Z")
+        git(d, "clone", "-q", "--depth=1", "--no-local", "file://" + o, c)
+        files, commits = git_changed(base, c)
+        assert files == ["cash-bids/a.html", "x.js"], files
+        assert [m["subject"] for m, _ in commits] == ["Update grain bids", "Merge pull request #2 from o:fx/other", "pages: rebuild"], commits
+        assert others_of(commits) == ["x.js"], "the merge brought x.js; the bot's two commits only the page"
+        assert stale(["scripts/build.py"], files, lambda f: f.startswith("cash-bids/"), others_of(commits)) is None
+        files2, commits2 = git_changed(git(o, "rev-parse", "fx/other"), c)
+        assert files2 is not None and commits2 is None, "a base off main's first-parent line: every change counts"
+        assert git_changed("f" * 40, c) == (None, None), "a base that is not there: unreadable"
 
 
 if __name__ == "__main__":

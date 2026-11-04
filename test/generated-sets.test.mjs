@@ -171,6 +171,9 @@ print(json.dumps({
   "merge_apart": M.stale(["scripts/x.py"], ["scripts/y.py", "test/y.test.mjs"]),
   "set": M.stale(["scripts/build_county_rain.py"], ["rain/iowa/x.html"], M.relevant_to(["scripts/build_county_rain.py"], ".")),
   "unread": M.stale(["a"], None),
+  "bot308": M.stale(["scripts/build_cash_bid_pages.py"], bot, M.relevant_to(["scripts/build_cash_bid_pages.py"], "."), M.others_of([({"parents": 1, "author": "bot@agsist.com", "committer": "bot@agsist.com", "subject": "pages: rebuild /cash-bids town pages"}, bot)])),
+  "merge308": M.stale(["scripts/build_cash_bid_pages.py"], bot, M.relevant_to(["scripts/build_cash_bid_pages.py"], "."), M.others_of([({"parents": 2, "author": "41898282+github-actions[bot]@users.noreply.github.com", "committer": "noreply@github.com", "subject": "Merge pull request #307 from dnilgis:fx/wave1a"}, bot[:2])])),
+  "wf": M.stale(["scripts/x.py"], [".github/workflows/x.yml"], None, []),
   "decide_stale": M.decide(pr, "o/r", green, ["scripts/x.py"], "main changed 1 file(s)")[0],
   "decide_fresh": M.decide(pr, "o/r", green, ["scripts/x.py"], None)[0],
 }))`);
@@ -180,6 +183,9 @@ print(json.dumps({
   assert.equal(r.merge_apart, null, "another PR's merge counts only when it overlaps");
   assert.match(r.set, /^main changed 1 file/, "main moved the pages of the set whose builder the PR changes (#280)");
   assert.match(r.unread, /could not be read/);
+  assert.equal(r.bot308, null, "#308: the bids bot rebuilding the set a builder PR changes does not hold it (the checks would never be fresh)");
+  assert.match(r.merge308, /^main changed \d+ file\(s\)/, "another PR's merge touching that set does");
+  assert.match(r.wf, /workflow file/, "main changed a workflow: stale");
   assert.equal(r.decide_stale, "update", "stale: bring main in and check again, never merge");
   assert.equal(r.decide_fresh, "merge");
   const src = read("scripts/dev/merge_when_green.py");
