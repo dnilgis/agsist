@@ -113,6 +113,17 @@ JS = '<script src="/components/land-sales.js?v=4" defer></script>'
 KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
 KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
 LIST_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"]
+# The detail panel (Sig, Nov 4, 2026: "when you click I want it to open every detail about the sale that is pertinent").
+# Each listed sale carries three more facts, no name in any: ri, the sale's first deed as a row number in the county's
+# transfer file (data/land/<st>/<fips>.json, robots-blocked, the file Field Scout already loads; the panel reads the
+# deed type, document, parcel, legal, section and the rest from it on the first tap, and checks the row against the
+# sale id before it trusts it); g, how many deeds were counted as this one sale (deeds of one parcel within 31 days);
+# m, whether the sale counts toward the county's middle price and, when not, why (MID_WHY). DETAIL_COLS is the order
+# of a page row's data-ls attribute (components/land-sales.js DCOLS, the same list).
+DETAIL_COLS = ["ri", "g", "m"]
+ROW_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag", "cu"] + DETAIL_COLS
+MID_WHY = {"y": "counts toward the middle", "b": "with buildings", "w": "forest", "a": "acres not stated", "s": "under %d acres",
+           "p": "under $%d an acre", "o": "outside the 24 months"}
 NVT = "not valid for trending"          # Indiana's sales disclosure mark, carried in the deed-type text
 REMOVE_TO = "sig@agsist.com"            # the site's own contact address (contact.html)
 
@@ -211,8 +222,10 @@ class Data:
             lst = []
             for c in self.land.index(st).get("counties") or []:
                 rows = self.land.sales(st, c["fips"], self.today[st])
+                at = file_rows(self.land.file(st, c["fips"]))
                 for r in rows:
                     r["_id"] = sale_id(st, r)
+                    r["_ri"] = at.get(row_key(r))
                 lst.append((c, rows))
             self.counties[st] = lst
 
@@ -231,6 +244,42 @@ class Data:
         return BLS.build_state(st, files) if files else None
 
 
+def row_key(r):
+    """What finds a sale's first deed in its county file: document, deed date and parcel (a merged sale keeps its first deed's)."""
+    return (str(r.get("doc") or ""), str(r.get("date") or "")[:10], str(r.get("pid") or ""))
+
+
+def file_rows(f):
+    """{row_key: row number} of a county transfer file, the first row of each key."""
+    out = {}
+    if not f or not f.get("cols"):
+        return out
+    cols = f["cols"]
+    for i, a in enumerate(f.get("rows") or []):
+        out.setdefault(row_key(dict(zip(cols, a))), i)
+    return out
+
+
+def mid_code(r, st, w24=None):
+    """Whether a listed sale counts toward its county's middle (y) and, when not, why: b with buildings, w forest,
+    a acres not stated, s under 20 acres, p under $500 an acre, o outside the 24 months. The same tests, in the
+    same order, as build_land_summary.farm_comp and usual()."""
+    k = BLS.land_type(r, st)
+    if k == "bldg":
+        return "b"
+    if k == "forest":
+        return "w"
+    if BLS.num(r.get("acres")) is None:
+        return "a"
+    if k == "small":
+        return "s"
+    if not BLS.stat_ok(r):
+        return "p"
+    if w24 and not BLS.inw(r, w24):
+        return "o"
+    return "y"
+
+
 def latest_month(d):
     """(year, m0) of the newest month every state was fetched after."""
     f = min(d.fetched.values())
@@ -244,8 +293,9 @@ def shown_day(r):
     return r["when"] or str(r.get("date") or "")[:10] or None
 
 
-def pub_row(st, r, county, u=None):
-    """The only shape a sale is published in: no names, parcel, legal or document."""
+def pub_row(st, r, county, u=None, w24=None):
+    """The only shape a sale is published in: no names, parcel, legal or document (ri points at the deed's row in
+    the robots-blocked county file; the panel reads those there)."""
     a = BLS.num(r.get("acres"))
     rec = bool(r["has_rec"] and r["when"])
     return {"id": r["_id"], "st": st, "fips": r.get("fips"), "county": county, "place": r.get("muniName") or None,
@@ -253,7 +303,8 @@ def pub_row(st, r, county, u=None):
             "acres": round(a, 2) if a is not None else None, "price": BLS.js_round(BLS.num(r.get("price")) or 0),
             "ppa": r.get("ppa"), "pt": [round(r["pt"][0], 4), round(r["pt"][1], 4)] if r.get("pt") else None,
             "bldg": with_bldg(r), "kind": BLS.land_type(r, st), "flag": judge(r, u),
-            "cu": st == "VT" and "ENROLLED IN CURRENT USE" in str(r.get("conv") or "").upper()}
+            "cu": st == "VT" and "ENROLLED IN CURRENT USE" in str(r.get("conv") or "").upper(),
+            "ri": r.get("_ri"), "g": int(r.get("grp") or 1), "m": mid_code(r, st, w24)}
 
 
 # ---------------------------------------------------------------- the monthly update
@@ -275,7 +326,7 @@ def month_build(d, year, m0):
                 if a < LIST_MIN_ACRES:
                     continue
                 u = usual(rows, W["w24"], skip_id=r["_id"])
-                p = pub_row(st, r, c["name"], u)
+                p = pub_row(st, r, c["name"], u, W["w24"])
                 p["usual"] = {"med": u["med"], "q1": u["q1"], "q3": u["q3"], "n": u["n"]} if u else None
                 listed.append(p)
                 per_state[st]["n"] += 1
@@ -353,7 +404,7 @@ def county_build(d, st, c, rows, through):
     lst = [r for r in rows if shown_day(r) and shown_day(r) <= d.today[st]]
     # newest first by the date the page shows (recorded, else the deed date)
     lst.sort(key=lambda r: (shown_day(r), r["_id"]), reverse=True)
-    allp = [pub_row(st, r, c["name"], u) for r in lst]
+    allp = [pub_row(st, r, c["name"], u, W["w24"]) for r in lst]
     w12 = W["cur"]
     names = {p["id"]: d.names(r) for p, r in zip(allp, lst)}
     big = [p for p in allp if (p["acres"] or 0) >= LIST_MIN_ACRES]
@@ -426,12 +477,40 @@ PRICE_KIND = ("Every price here is a recorded sale: what the state's transfer re
               "Auction sales count once recorded. Asking prices and auction bids that did not close are never shown.")
 
 
-def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None, anchors=False):
-    """anchors: each row gets id="s-<sale id>" (the county page; the land sale email links to it)."""
+def jdump(o):
+    return json.dumps(o, ensure_ascii=False, separators=(",", ":"))
+
+
+def sq(s):
+    """An attribute value in single quotes (JSON keeps its double quotes, no &quot; in every row)."""
+    return "'" + s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("'", "&#39;") + "'"
+
+
+def row_data(p):
+    """A sale's data-ls attribute: ROW_COLS, what the detail panel draws before (and besides) the county file."""
+    return jdump([p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p.get("ppa"), p.get("place"),
+                  KIND_CODE.get(p.get("kind"), "f"), p.get("flag") or 0, 1 if p.get("cu") else 0, p.get("ri"), p.get("g") or 1, p.get("m") or ""])
+
+
+def usual_list(u):
+    return [u["med"], u["q1"], u["q3"], u["n"]] if u else None
+
+
+def ctx_data(st, fips, county, u, w24):
+    """A sale's data-ls-c attribute (on the county table, or on each row of a month table): the state, county and the
+    county's 24-month middle the panel compares the sale with ([middle, lower quarter, upper quarter, sales] or null)."""
+    return jdump([st, fips, county, usual_list(u), w24])
+
+
+def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None, anchors=False,
+               ctx=None, win=None):
+    """anchors: each row gets id="s-<sale id>" (the county page; the land sale email links to it).
+    ctx: the table's data-ls-c (one county); without it each row carries its own, with its own usual and win (a month table).
+    Every row carries data-ls (row_data): components/land-sales.js opens the sale's detail panel from it."""
     th = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Recorded price", "ppa": "$/acre", "note": "Note", "usual": "County usual $/acre",
           "kind": "Type"}
     num = {"acres", "price", "ppa", "usual"}
-    h = ['<div class="ls-tw"><table class="ls-t"%s>' % (' id="%s"' % e(tid) if tid else "")]
+    h = ['<div class="ls-tw"><table class="ls-t"%s%s>' % (' id="%s"' % e(tid) if tid else "", ' data-ls-c=%s' % sq(ctx) if ctx else "")]
     if caption:
         h.append("<caption>%s</caption>" % e(caption))
     h.append("<thead><tr>" + "".join('<th scope="col"%s>%s</th>' % (' class="n"' if c in num else "", th[c]) for c in cols)
@@ -465,7 +544,10 @@ def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa",
             tds.append('<td%s>%s</td>' % (' class="n"' if c in num else "", e(v)))
         tds.append("<td>%s</td>" % names_btn(p["id"], names_file))
         rid = ' id="s-%s"' % e(p["id"]) if anchors else ""
-        h.append(('<tr%s data-k="%s">' % (rid, KIND_CODE.get(p.get("kind"), "f")) if "kind" in cols else "<tr%s>" % rid) + "".join(tds) + "</tr>")
+        dl = ' data-ls=%s' % sq(row_data(p))
+        if not ctx:
+            dl += ' data-ls-c=%s' % sq(ctx_data(p["st"], p.get("fips"), p["county"], p.get("usual"), win))
+        h.append(('<tr%s data-k="%s"%s>' % (rid, KIND_CODE.get(p.get("kind"), "f"), dl) if "kind" in cols else "<tr%s%s>" % (rid, dl)) + "".join(tds) + "</tr>")
     h.append("</tbody></table></div>")
     return "".join(h)
 
@@ -553,8 +635,8 @@ def month_page(d, M, early, coverage, archive):
     # biggest sales
     b.append('<h2 id="biggest">Biggest sales</h2>')
     if big:
-        b.append(sale_table(M["biggest_acres"], nf, caption="Most acres, %s" % lab, county_link=cl))
-        b.append(sale_table(big, nf, caption="Highest price, %s" % lab, county_link=cl))
+        b.append(sale_table(M["biggest_acres"], nf, caption="Most acres, %s" % lab, county_link=cl, win=M["window"]))
+        b.append(sale_table(big, nf, caption="Highest price, %s" % lab, county_link=cl, win=M["window"]))
     else:
         b.append('<p class="ls-held">Not shown this month: %s.</p>' % e(M["biggest_why"]))
     # unusual
@@ -566,7 +648,7 @@ def month_page(d, M, early, coverage, archive):
                  % (COMP_MIN_ACRES, COMP_MIN_ACRES, e(LA.short_day(M["window"][0]) + ", " + M["window"][0][:4]),
                     e(LA.short_day(M["window"][1]) + ", " + M["window"][1][:4]), M["n_unusual"], M["n_judged"]))
         if M["unusual"]:
-            b.append(sale_table(M["unusual"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl))
+            b.append(sale_table(M["unusual"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"]))
             b.append('<p class="ls-why"><b>Above the usual, possible reasons:</b> %s. <b>Below, possible reasons:</b> %s. '
                      "The return does not say which, and a price is not wrong because it is unusual.</p>" % (e(UP_WHY), e(DOWN_WHY)))
         else:
@@ -579,7 +661,7 @@ def month_page(d, M, early, coverage, archive):
         b.append("<p>Sales of %d acres or more priced lowest against their county's middle price, leaving out the unusual prices above and anything "
                  "more than half a middle-half under the county's middle half. "
                  "The record has no soil, tillable acres, buildings or drainage, so a low price can just mean poorer ground.</p>" % BEST_MIN_ACRES)
-        b.append(sale_table(M["best"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl))
+        b.append(sale_table(M["best"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"]))
     else:
         b.append('<p class="ls-held">Not shown this month: %s.</p>' % e(M["best_why"]))
     b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(NAMES_NOTE), e(RULE), e(src_line(d, M["states"]))))
@@ -742,7 +824,8 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
         opts = "".join('<option value="%s">%s</option>' % (KIND_CODE[k], e(w[0].upper() + w[1:])) for k, w in KIND_WORDS.items() if kc[k])
         b.append('<div class="ls-flt" hidden data-ls-list="%s" data-ls-names="%s" data-ls-n="%d"><label>Type <select class="ls-fk">'
                  '<option value="">All types</option>%s</select></label></div>' % (e(lf), e(nf), len(allp), opts))
-        b.append(sale_table(page, nf, cols=("when", "where", "acres", "price", "ppa", "kind", "note"), caption="Newest first, %s" % cn, tid="ls-all", anchors=True))
+        b.append(sale_table(page, nf, cols=("when", "where", "acres", "price", "ppa", "kind", "note"), caption="Newest first, %s" % cn, tid="ls-all", anchors=True,
+                             ctx=ctx_data(st, c["fips"], c["name"], u, W["w24"])))
         if len(allp) > len(page):
             b.append('<p class="ls-more" data-ls-shown="%d">Showing the newest %d of %d sales. '
                      '<button type="button" class="ls-mo" hidden>Show %d more</button></p>' % (len(page), len(page), len(allp), COUNTY_ROWS))
@@ -920,19 +1003,22 @@ def build(repo=REPO):
             counties[st].append((c["name"], slug, n12))
             sfile["counties"][c["fips"]] = {"name": c["name"], "slug": slug, "ll": [c["lat"], c["lng"]], "n12": n12,
                                            "usual": {"med": u["med"], "n": u["n"], "q1": u["q1"], "q3": u["q3"]} if u else None, "k24": k24,
+                                           "w24": W["w24"],
                                            "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"],
                                                   p["place"], p["pt"][0] if p["pt"] else None, p["pt"][1] if p["pt"] else None,
-                                                  p["flag"] or 0, 1 if p["bldg"] else 0] for p in feat]}
+                                                  p["flag"] or 0, 1 if p["bldg"] else 0, KIND_CODE[p["kind"]], 1 if p["cu"] else 0,
+                                                  p["ri"], p["g"], p["m"]] for p in feat]}
             out["data/land/names/%s/%s.json" % (st.lower(), c["fips"])] = dump({"fips": c["fips"], "sales": names})
             out["land-sales/%s/%s.html" % (SLUG[st], slug)] = county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all)
             cu = st == "VT"      # Vermont's list carries current use enrollment as a last column
             out["data/land-sales/%s/%s.json" % (st.lower(), c["fips"])] = dump(
                 {"st": st, "fips": c["fips"], "county": c["name"], "through": through, "names": "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]),
-                 "kinds": {v: KIND_WORDS[k] for k, v in KIND_CODE.items()}, "cols": LIST_COLS + (["cu"] if cu else []),
+                 "kinds": {v: KIND_WORDS[k] for k, v in KIND_CODE.items()}, "cols": LIST_COLS + (["cu"] if cu else []) + DETAIL_COLS,
+                 "usual": usual_list(u), "w24": W["w24"],
                  "s": [[p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p["ppa"], p["place"],
-                        KIND_CODE[p["kind"]], p["flag"] or 0] + ([1 if p["cu"] else 0] if cu else []) for p in allp]})
+                        KIND_CODE[p["kind"]], p["flag"] or 0] + ([1 if p["cu"] else 0] if cu else []) + [p["ri"], p["g"], p["m"]] for p in allp]})
             urls.append(("%s/land-sales/%s/%s" % (ORIGIN, SLUG[st], slug), d.fetched[st]))
-        sfile["cols"] = ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg"]
+        sfile["cols"] = ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg", "kind", "cu"] + DETAIL_COLS
         out["data/land-sales/%s.json" % st.lower()] = dump(sfile)
     out["land-sales/index.html"] = index_page(d, latest, counties, early, coverage, archive, index_section(repo))
     urls = [(ORIGIN + "/land-sales/", pub)] + [("%s/land-sales/%s" % (ORIGIN, k), pub if k == key else k + "-28") for k, _ in archive] + urls
