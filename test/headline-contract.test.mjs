@@ -151,7 +151,7 @@ test("no headline reads the harvest aliases: every 'corn-dec' / 'beans-nov' lite
   // the home Futures tile and its seed read the headline, not an alias
   const home = read("index.html"), paint = home.slice(home.indexOf("function paintFut"), home.indexOf("function getPrices"));
   assert.match(paint, /AgPxStamp\.headline/);
-  assert.doesNotMatch(paint, /beans-nov|corn-dec/);
+  assert.doesNotMatch(paint, /['"](?:beans-nov|corn-dec)['"]/);
   const seed = read("scripts/seed_static.py"), hero = seed.slice(seed.indexOf("def hero_futures_seeds"), seed.indexOf("# --- /news"));
   assert.match(hero, /nearby_of\(q, crop\)/);
   assert.doesNotMatch(hero, /"beans-nov"|"corn-dec"/);
@@ -181,7 +181,7 @@ async function open(browser, port, path, width, file, clock) {
   await pg.route((u) => !u.href.startsWith(`http://127.0.0.1:${port}/`), (r) => r.abort());
   await pg.route((u) => u.pathname === "/data/prices.json", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(file) }));
   await pg.clock.setFixedTime(new Date(clock));
-  await pg.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: "load" });
+  await pg.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: "domcontentloaded" });
   return { ctx, pg, errs };
 }
 const SHOTS = process.env.SHOT_DIR || "";
@@ -249,7 +249,9 @@ test("markets: the second soybean card is Nov '27 on Nov 4, and nothing names No
       assert.equal(await pg.textContent("#pct-bean-nov"), "Nov '27");
       assert.equal(await pg.textContent("#pct-corn-dec"), "Dec '27");
       assert.ok(await pg.isVisible("#pc-card-corn-dec"));
-      assert.doesNotMatch(await pg.evaluate(() => document.querySelector(".price-cards-grid, main").innerText), /Nov '26/);
+      // the soybean cards (feeder cattle and milk really are Nov '26)
+      const soy = await pg.$$eval(".pc", (es) => es.filter((e) => /soybeans|beans/i.test((e.querySelector(".pc-name") || {}).textContent || "")).map((e) => e.innerText).join(" | "));
+      assert.match(soy, /Jan '27/); assert.doesNotMatch(soy, /Nov '26/, soy);
       assert.deepEqual(errs, [], w + " page errors");
       await ctx.close();
     }

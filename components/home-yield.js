@@ -105,31 +105,34 @@
     var q=window.AGSIST_PRICE_DATA||{};
     var fq=q[fwd.dataKey];
     if(!fq||fq.close==null)return false;
+    /* writes only what differs: the observer below watches these elements,
+       and a same-text write is still a mutation (a loop once the swap holds) */
+    var put=function(el,v){if(el&&el.textContent!==v)el.textContent=v;};
     if(typeof fmtPrice!=='function'||typeof fmtChange!=='function')return false;
     var priceEl=document.getElementById('pcp-'+domSuffix);
     var chgEl=document.getElementById('pcc-'+domSuffix);
     var prevEl=document.getElementById('pcprev-'+domSuffix);
     if(!priceEl||!chgEl)return false;
-    priceEl.textContent=fmtPrice(fq.close,2,true);
+    put(priceEl,fmtPrice(fq.close,2,true));
     /* a withheld move (move_withheld or roll) prints no change, 2026-11-02 */
     var held=!!(fq.move_withheld||fq.roll);
     var chgObj=held?{text:'contract roll',cls:'nc'}:fmtChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
-    chgEl.textContent=chgObj.text;
+    put(chgEl,chgObj.text);
     chgEl.className='pc-chg-val '+chgObj.cls;
-    if(prevEl&&held)prevEl.textContent='';
-    else if(prevEl&&fq.open!=null)prevEl.textContent='prev: '+fmtPrice(fq.open,2,true)+' '+(fq.ticker||'');
+    if(prevEl&&held)put(prevEl,'');
+    else if(prevEl&&fq.open!=null)put(prevEl,'prev: '+fmtPrice(fq.open,2,true)+' '+(fq.ticker||''));
     /* the card's overnight line (geo.js wrote the swapped-out contract's) follows the contract shown, 2026-10-20 */
     var ovCard=priceEl.closest?priceEl.closest('.pc'):null,ovEl=ovCard&&ovCard.querySelector('.pc-ovn');
     if(ovEl){var ovH=window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(fq,function(v){return AG.px.price(v,{style:'slash'});},function(n){return AG.px.move(n,{style:'slash',sign:true});},null,{short:true}):'';
-      ovEl.innerHTML=ovH;ovEl.hidden=!ovH;}
+      if(ovEl.innerHTML!==ovH)ovEl.innerHTML=ovH;ovEl.hidden=!ovH;}
     var lo=fq.wk52_lo/100,hi=fq.wk52_hi/100,cl=fq.close/100;
     if(fq.wk52_lo!=null&&fq.wk52_hi!=null&&hi>lo){
       var pct=Math.max(0,Math.min(100,((cl-lo)/(hi-lo))*100));
       var elLo=document.getElementById('pcrl-'+fwd.rangeId+'-lo'), elHi=document.getElementById('pcrl-'+fwd.rangeId+'-hi');
       var elF=document.getElementById('pcrf-'+fwd.rangeId), elD=document.getElementById('pcrd-'+fwd.rangeId);
       var fr=AG.px.range(fq.wk52_lo,fq.wk52_hi,{style:'slash'});
-      if(elLo)elLo.textContent=fr.lo;
-      if(elHi)elHi.textContent=fr.hi;
+      put(elLo,fr.lo);
+      put(elHi,fr.hi);
       if(elF)elF.style.width=pct.toFixed(1)+'%';
       if(elD)elD.style.left=pct.toFixed(1)+'%';
     }
@@ -140,9 +143,9 @@
       var tp=fmtTickerPrice(fq.close,true,2), tc=held?{text:'contract roll',cls:'nc'}:fmtTickerChange(fq.close,fq.open,true,fq.netChange,fq.pctChange);
       document.querySelectorAll('[data-sym="'+fwd.sym+'"]').forEach(function(el){
         var le=el.querySelector('.t-label'), pe=el.querySelector('.t-price'), ce=el.querySelector('.t-chg');
-        if(le)le.textContent=fwd.tick;
-        if(pe)pe.textContent=tp;
-        if(ce){ce.textContent=tc.text;ce.className='t-chg '+tc.cls;}
+        put(le,fwd.tick);
+        put(pe,tp);
+        if(ce){put(ce,tc.text);ce.className='t-chg '+tc.cls;}
       });
     }
     return true;
@@ -170,7 +173,13 @@
       /* the harvest alias is not a later month than the headline (the same
          contract, or past first notice): show the next harvest, else nothing */
       var moved=!!(fwd&&fwd.moved);
-      var swapped=((same||moved)&&fwd)?applyForwardYear(pair[1],fwd):false;
+      /* once the swap holds, leave it: the ticker and card formatters in
+         home.js rewrite the same price their own way, and redoing the swap
+         on each of their writes never settles. A new write to this card
+         (geo.js refreshing the alias) changes its price text: swap again. */
+      var held=moved&&card.getAttribute('data-fwd')===fwd.dataKey&&card.getAttribute('data-fwd-px')===bt;
+      var swapped=held?true:(((same||moved)&&fwd)?applyForwardYear(pair[1],fwd):false);
+      if(swapped&&!held&&fwd){card.setAttribute('data-fwd',fwd.dataKey);card.setAttribute('data-fwd-px',(b.textContent||'').trim());}
       card.style.display=((same||moved)&&!swapped)?'none':'';
       var keep=a.parentNode;
       while(keep&&keep!==document.body&&(' '+(keep.className||'')+' ').indexOf(' pc ')<0)keep=keep.parentNode;
