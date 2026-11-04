@@ -108,8 +108,8 @@ MIN_LISTED = 3                          # biggest sales withheld under this many
 MIN_BUYERS = 5                          # buyers withheld under this many distinct buyers
 MIN_JUDGED = 10                         # unusual and best value withheld under this many judged sales
 BEST_MIN_ACRES = 40
-CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=1">'
-JS = '<script src="/components/land-sales.js?v=4" defer></script>'
+CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=2">'
+JS = '<script src="/components/land-sales.js?v=5" defer></script>'
 KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
 KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
 LIST_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"]

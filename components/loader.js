@@ -973,7 +973,7 @@
         && !/^\/rent\/(illinois|wisconsin|indiana|vermont|new-jersey)(\.html)?\/?$/.test(location.pathname)
         && !/^\/farmland-atlas\/(indiana|vermont|new-jersey)\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=4';
+    s.src = '/components/land-sales.js?v=5';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
