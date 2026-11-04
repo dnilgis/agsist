@@ -56,7 +56,7 @@
 .ap th.s{cursor:pointer}.ap th.s:hover{color:var(--gold)}
 @media (max-width:760px){.ap .keys{grid-template-columns:repeat(2,minmax(0,1fr))}.ap .two{grid-template-columns:minmax(0,1fr)}.ap h1{font-size:1.35rem}.ap .loc{max-width:300px}}
 @media (max-width:420px){.ap .keys{grid-template-columns:minmax(0,1fr)}}
-.ap .ch .bf{fill:var(--gold)}.ap .ch text{font-size:10px}.ap .ch .ta{fill:var(--text-muted);text-anchor:middle}.ap .ch .tay{text-anchor:end}
+.ap .ch .bf{fill:var(--gold)}.ap .ch text{font-size:12px}.ap .ch .ta{fill:var(--text-muted);text-anchor:middle}.ap .ch .tay{text-anchor:end}
 .ap .ch .tv{font-weight:700;fill:var(--text);text-anchor:middle}.ap .ch .rf{stroke:var(--blue);stroke-dasharray:4 3;fill:none}.ap .ch .tr{fill:var(--blue)}
 .ap .ch .ax{stroke:var(--border-2);fill:none}.ap .ch .gr{stroke:var(--border-2);stroke-width:.6;fill:none}
 .ap .ch .ln{fill:none;stroke-width:2}.ap .ch .dt{fill:none;stroke-width:4.4;stroke-linecap:round}
