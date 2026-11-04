@@ -147,7 +147,90 @@ def snap_price(daily, target_date):
     return None
 
 
+# ── THE REPORT-DAY CLOSE OF EACH DATED CONTRACT (Nov 4, 2026, Sig) ────────────
+# "Since Oct 27" on the home COT card compared the continuous front month (ZS=F,
+# still Nov '26) while every headline on the site had rolled to Jan '27 at first
+# notice (#320). The card now compares the headline contract with ITSELF: its close
+# today against its close on the report Tuesday. So each market in cot.json carries
+# `px_by_contract` {"ZSF27.CBT": 1245.5, ...}: the report-Tuesday close of the next
+# few dated contracts from the report month on (the headline today and after any
+# roll before the next report: corn Dec '26 to Mar '27 on Nov 30). Which contracts
+# exist comes from data/prices.json, the file the page compares against. A contract
+# Yahoo does not answer for is left out, and the page then prints nothing for it.
+COT_TO_PRICES = {"corn": "corn", "beans": "beans", "wheat": "wheat", "kcwheat": "kcwheat",
+                 "soymeal": "meal", "soyoil": "soyoil", "livecattle": "cattle",
+                 "feedercattle": "feeders", "leanhogs": "hogs", "milk": "milk"}
+PRICES_PATH = os.path.join(DATA, "prices.json")
+_FCODE = "FGHJKMNQUVXZ"
+_DATED = __import__("re").compile(r"^[A-Z]{2,3}([FGHJKMNQUVXZ])(\d{2})\.[A-Z]{3}$")
+CONTRACTS_AHEAD = 3
+
+
+def dated_tickers(quotes, prefix, report_date, ahead=CONTRACTS_AHEAD):
+    """The first `ahead` dated tickers for a market from the report month on, in
+    month order, read from the price file's <prefix>-<mon><yy> keys."""
+    rd = dt.date.fromisoformat(report_date)
+    floor = rd.year * 12 + rd.month - 1
+    seen = {}
+    for k, q in (quotes or {}).items():
+        if not isinstance(q, dict) or not k.startswith(prefix + "-"):
+            continue
+        m = _DATED.match(str(q.get("ticker") or ""))
+        if not m:
+            continue
+        ym = (2000 + int(m.group(2))) * 12 + _FCODE.index(m.group(1))
+        if ym >= floor:
+            seen[q["ticker"]] = ym
+    return [t for t, _ in sorted(seen.items(), key=lambda kv: kv[1])][:ahead]
+
+
+def contract_closes(quotes, prefix, report_date, fetch=None):
+    """{ticker: report-Tuesday close} for the next dated contracts. fetch(symbol,
+    start, end) -> {date: close} (fetch_daily by default). A failed or empty fetch
+    leaves that ticker out; nothing is guessed."""
+    fetch = fetch or fetch_daily
+    out = {}
+    for t in dated_tickers(quotes, prefix, report_date):
+        try:
+            p = snap_price(fetch(t, report_date, report_date), report_date)
+        except Exception as e:
+            log("  WARN: %s close for %s failed: %s" % (t, report_date, str(e)[:120]))
+            continue
+        if p is not None:
+            out[t] = p
+    return out
+
+
+def selftest():
+    q = {"beans": {"ticker": "ZS=F", "close": 1194.25},
+         "beans-nov26": {"ticker": "ZSX26.CBT", "close": 1194.25},
+         "beans-nov": {"ticker": "ZSX26.CBT", "close": 1194.25},
+         "beans-jan27": {"ticker": "ZSF27.CBT", "close": 1206.25},
+         "beans-mar27": {"ticker": "ZSH27.CBT", "close": 1212.75},
+         "beans-may27": {"ticker": "ZSK27.CBT", "close": 1221.5},
+         "beans-sep26": {"ticker": "ZSU26.CBT", "close": 1100.0},
+         "beans-nearby": {"ticker": "ZSF27.CBT", "close": 1206.25},
+         "corn-dec26": {"ticker": "ZCZ26.CBT", "close": 442.0}}
+    t = dated_tickers(q, "beans", "2026-10-27")
+    assert t == ["ZSX26.CBT", "ZSF27.CBT", "ZSH27.CBT"], t          # Sep '26 is past; one Nov even with two keys
+    asked = []
+    def fake(sym, a, b):
+        asked.append(sym)
+        if sym == "ZSH27.CBT":
+            raise RuntimeError("no data")
+        return {"2026-10-26": 1.0, "2026-10-27": {"ZSX26.CBT": 1229.25, "ZSF27.CBT": 1245.5}[sym]}
+    got = contract_closes(q, "beans", "2026-10-27", fetch=fake)
+    assert got == {"ZSX26.CBT": 1229.25, "ZSF27.CBT": 1245.5}, got     # a failed contract is left out
+    # a holiday Tuesday snaps to the trading day before
+    got = contract_closes(q, "corn", "2026-11-24", fetch=lambda s, a, b: {"2026-11-23": 440.0})
+    assert got == {"ZCZ26.CBT": 440.0}, got      # Dec '26 is still ahead of a Nov report; holiday snaps back
+    print("enrich_cot_prices selftest: ok")
+    return 0
+
+
 def main():
+    if "--selftest" in sys.argv[1:]:
+        return selftest()
     if not os.path.exists(HIST_PATH):
         log("ERROR: %s not found" % HIST_PATH)
         return 1
@@ -218,6 +301,31 @@ def main():
                     cur[k]["price"] = rows[-1]["price"]
                 if len(rows) >= 2 and rows[-2].get("price") is not None:
                     cur[k]["price_prev"] = rows[-2]["price"]
+        # the report-Tuesday close of each dated contract (see contract_closes)
+        quotes = {}
+        try:
+            quotes = (load_json(PRICES_PATH) or {}).get("quotes") or {}
+        except Exception as e:
+            log("  WARN: %s unreadable (%s); no per-contract closes" % (PRICES_PATH, e))
+        rd = None
+        for k in SYMBOLS:
+            rows = history.get(k, [])
+            if rows:
+                rd = max(rd or "", rows[-1]["date"])
+        for k, pfx in COT_TO_PRICES.items():
+            if k not in cur or not isinstance(cur[k], dict):
+                continue
+            cur[k].pop("px_by_contract", None)
+            if k in UNREPAIRED_ROLL or not rd or not quotes:
+                continue
+            rows = history.get(k, [])
+            if not rows or rows[-1]["date"] != rd:
+                continue
+            px = contract_closes(quotes, pfx, rd)
+            if px:
+                cur[k]["px_by_contract"] = px
+                cur[k]["px_date"] = rd
+                log("  %s: %d dated contract closes for %s" % (k, len(px), rd))
         save_json(CUR_PATH, cur)
         log("wrote", CUR_PATH)
 
