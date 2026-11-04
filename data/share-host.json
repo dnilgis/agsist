@@ -1,5 +1,8 @@
 {
- "folders": {},
+ "folders": {
+  "data/social": "2026-11-04T20:55:46Z",
+  "farmland-atlas/og": "2026-11-04T20:55:46Z"
+ },
  "host": "https://dnilgis.github.io/agsist-data",
  "note": "Written by .github/workflows/agsist-data-seed.yml (scripts/share_host.py mark) after the folder's copies answered. A listed folder's share images are served from the host."
 }
