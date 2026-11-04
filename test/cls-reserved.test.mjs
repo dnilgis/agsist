@@ -218,12 +218,15 @@ test('everything on the below-the-fold list starts 900px or more down, at 390 an
         if (!el) return [id, null];
         const opened = [];
         for (let e = el; e && e !== document.body; e = e.parentElement) {
-          if (getComputedStyle(e).display === 'none') { opened.push([e, e.style.display]); e.style.display = 'block'; }
+          if (getComputedStyle(e).display !== 'none') continue;
+          opened.push([e, e.getAttribute('style'), e.hidden]);
+          e.hidden = false; // a [hidden] rule with !important wins over a plain inline style
+          e.style.setProperty('display', 'block', 'important');
         }
         let e = el;
         while (e && !e.getClientRects().length) e = e.parentElement;
         const y = e ? Math.round(e.getBoundingClientRect().top + scrollY) : null;
-        for (const [o, d] of opened.reverse()) o.style.display = d;
+        for (const [o, st, hid] of opened.reverse()) { if (st === null) o.removeAttribute('style'); else o.setAttribute('style', st); o.hidden = hid; }
         return [id, y];
       })), Object.keys(ids));
       for (const [id, y] of Object.entries(ys)) if (y === null || y < 900) high.push(`${page} #${id} at ${y}px (${w} wide)`);
