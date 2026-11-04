@@ -81,7 +81,7 @@ run geo-crosswalk bash -c "python3 scripts/build_geo_crosswalk.py --selftest && 
 run join-report bash -c "python3 scripts/join_report.py --selftest >/dev/null && python3 scripts/join_report.py"
 run worker node scripts/test_form_worker.mjs
 run share python3 scripts/build_share_images.py --check
-for b in build_arc_plc build_breakeven_data build_prf_states build_prf_counties build_county_rain build_land_sales stamp_prf build_croptour build_farmbill; do [ -f scripts/$b.py ] && run $b python3 scripts/$b.py --check; done
+for b in build_arc_plc build_breakeven_data build_prf_states build_prf_counties build_county_rain build_land_sales cash_bid_index stamp_prf build_croptour build_farmbill; do [ -f scripts/$b.py ] && run $b python3 scripts/$b.py --check; done
 # a name given to --only that is not a check is a typo, not a pass
 if [ -n "$ONLY" ]; then
   IFS=, read -ra asked <<< "${ONLY#,}"

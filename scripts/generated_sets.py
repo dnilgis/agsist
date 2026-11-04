@@ -756,7 +756,9 @@ def main(argv):
         x = SUMMARY[sid]
         t = trace(sid)
         print(json.dumps({"id": sid, "rc": t["rc"], "written": t["written"], "log": t["log"],
-                          "sets": {k: sorted(v)[:5] for k, v in read_sets(t, own=x["files"]).items()}}, indent=1))
+                          "sets": {k: sorted(v)[:5] for k, v in read_sets(t, own=x["files"]).items()},
+                          "summaries": [y["id"] for y in SUMMARIES if y["id"] != sid
+                                        and any(_under(p, f) for p in t["read"] for f in y["files"])]}, indent=1))
         return 0
     if cmd == "main":
         return cmd_main(int(opt("--window", WINDOW_MIN)), "--dry-run" in argv)
