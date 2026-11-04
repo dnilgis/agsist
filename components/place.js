@@ -915,7 +915,7 @@
   /* partial (Nov 4, 2026, site panel): the bids came from the short committed list because the elevator
      network did not answer in time. The row never says "Best of N within 50 mi" or "no bid within 50 mi"
      then: it names the short list, or withholds. */
-  var PARTIAL = 'From the short list of bids the price pages use, because the full elevator network did not answer in time. Not every elevator near here is in it.';
+  var PARTIAL = 'From the short list of bids the price pages use; the full elevator network was too slow to read this time. Not every elevator near here is in it.';
   function factBid(o, crop, from, when, href, partial) {
     var label = CROP_ADJ[crop] + ' bid';
     if (partial && (!o || !o.best)) return na(label, 'the elevator network did not answer in time, so the bids near ' + from + ' are not known right now', ['See the bids near here', href]);

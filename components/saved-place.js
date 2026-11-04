@@ -49,7 +49,7 @@
       if (typedWins(o, z)) return { zip: z, state: '', county: '', town: '', lat: null, lon: null, typed: true };
       if (!o) return null;
       var oz = ZIP.test(String(o.zip || '')) ? String(o.zip) : '';
-      if (!oz && !coords(o)) return null;
+      if (!oz && !coords(o) && !ST.test(String(o.state || ''))) return null;   /* a record with only a state still names the state */
       return { zip: oz, state: ST.test(String(o.state || '')) ? o.state : '', county: county(o.county), town: town(o.label),
                lat: coords(o) ? +o.lat : null, lon: coords(o) ? +o.lon : null, typed: !!o.zipTyped };
     }

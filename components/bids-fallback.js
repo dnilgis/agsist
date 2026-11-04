@@ -25,7 +25,7 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   var MAX_MI = 60;
-  var PARTIAL = 'From the short list of bids the price pages use, because the full elevator network did not answer in time. Not every elevator near here is in it.';
+  var PARTIAL = 'From the short list of bids the price pages use; the full elevator network was too slow to read this time. Not every elevator near here is in it.';
   function miles(a, b, c, d) {
     var R = 3958.8, p = Math.PI / 180, x = Math.sin((c - a) * p / 2), y = Math.sin((d - b) * p / 2);
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(x * x + Math.cos(a * p) * Math.cos(c * p) * y * y)));

@@ -69,7 +69,7 @@ test("a bid row from the short list names it and never says Best of N within 50 
   assert.match(full.ctx, /Best of 4 within 50 mi/);
   const part = P.factBid(o, "corn", "Nevada", "2026-11-04T01:00:00Z", "/cash-bids", true);
   assert.doesNotMatch(part.ctx, /Best of|within 50 mi|Nearest:/);
-  assert.match(part.ctx, /short list of bids the price pages use, because the full elevator network did not answer in time/);
+  assert.match(part.ctx, /short list of bids the price pages use; the full elevator network was too slow to read this time/);
   assert.equal(part.value, "$4.28");
   const none = P.factBid(null, "corn", "Nevada", "", "/cash-bids", true);
   assert.equal(none.value, null);
