@@ -308,7 +308,7 @@ def cron_sentence(crons):
     gap = max_gap_hours(crons, minutes=True)
     if any(len(c.split()) == 5 and c.split()[1] == "*" for c in crons) and gap is not None and gap <= 60:
         return "about every %d minutes" % gap   # an hourly-or-faster cron is a rate, not launch times
-    hours, dows = set(), set()
+    hours, dows, doms = set(), set(), set()
     for c in crons:
         f = c.split()
         if len(f) != 5:
@@ -318,8 +318,14 @@ def cron_sentence(crons):
         except ValueError:
             hours.add(None)
         dows.add(f[4])
+        doms.add(f[2])
     n = len(crons)
-    when = ("weekdays" if all(d in ("1-5", "1,2,3,4,5") for d in dows)
+    # a day-of-month cron fires once a month (Nov 4, 2026: land-data.yml's '23 9 3 * *' read "every day")
+    monthly = bool(doms) and all(re.fullmatch(r"\d+(,\d+)*", d) for d in doms) and dows == {"*"}
+    days = sorted({x for d in doms for x in d.split(",")}, key=int) if monthly else []
+    on = ("monthly, on day " + days[0] if len(days) == 1 else "monthly, on days " + ", ".join(days[:-1]) + " and " + days[-1]) if days else ""
+    when = (on if monthly
+            else "weekdays" if all(d in ("1-5", "1,2,3,4,5") for d in dows)
             else "Mondays" if dows == {"1"}
             else "Fridays" if dows == {"5"}
             else "Thursdays" if dows == {"4"}

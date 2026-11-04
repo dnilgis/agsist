@@ -176,7 +176,7 @@ PAGES = [
         ("/farmland-atlas", "Farmland Atlas",
          "every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>, and foreign-held farmland by state, county and holder country from USDA AFIDA filings since 2010"),
         ("/land-sales/", "Farmland Sales by County",
-         "recorded farm sales in every Illinois, Wisconsin and Indiana county from the state transfer and sales disclosure records (date, township, acres, price, price per acre), one page per county at /land-sales/<state>/<county>, a monthly update at /land-sales/<YYYY-MM> (biggest buyers, biggest sales, unusual prices against the county's usual, best value per acre) and a table of where each state's sales come from; no names in the pages. It also carries the Illinois farmland sale index (/land-sales/#illinois-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares"),
+         "recorded farm sales in every {LAND_STATES} county from the state transfer and sales disclosure records (date, township, acres, price, price per acre), one page per county at /land-sales/<state>/<county>, a monthly update at /land-sales/<YYYY-MM> (biggest buyers, biggest sales, unusual prices against the county's usual, best value per acre) and a table of where each state's sales come from; no names in the pages. It also carries the Illinois farmland sale index (/land-sales/#illinois-index): what Illinois farm ground sold for each quarter since 2018, from the state's PTAX-203 sale declarations: arm's-length bare-land sales of 20+ acres, county mix and tract size held fixed, 2018 = 100, with 90% ranges, the latest quarter marked provisional, USDA NASS cropland value as a separate line, county medians by year, price-to-rent multiples and buyer-type shares"),
         ("/farmland-atlas/compare", "Compare Counties", "up to three counties side by side"),
         ("/farmland-atlas/data", "Farmland Atlas Data", "the county table as a CSV, every column with its unit and source"),
         ("/farmland-atlas/methods", "Farmland Atlas Methods", "sources and formulas"),
@@ -346,6 +346,20 @@ def _json(root, *rel):
         return None
 
 
+LAND_NAMES = {"IL": "Illinois", "IN": "Indiana", "NJ": "New Jersey", "VT": "Vermont", "WI": "Wisconsin", "MN": "Minnesota",
+              "FL": "Florida", "SD": "South Dakota", "IA": "Iowa", "OH": "Ohio", "MI": "Michigan"}
+
+
+def land_states(root=REPO):
+    """The states with sale pages, from the land-sales set's own summary (data/land-sales/latest.json, BUILD-RULES 61:
+    a new state shows here the day its pages do). Sorted by name; the hand list only when the file is missing."""
+    L = _json(root, "data", "land-sales", "latest.json") or {}
+    names = sorted(LAND_NAMES.get(s, s) for s in (L.get("states") or []) if isinstance(s, str) and len(s) == 2)
+    if not names:
+        names = ["Illinois", "Indiana", "New Jersey", "Vermont", "Wisconsin"]
+    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+
+
 def _num(v):
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
@@ -506,6 +520,8 @@ def build(current_text, root=REPO):
                     lines.append("- [%s](%s%s): %s" % (title, HOST, path, desc))
                 continue
             path, title, desc = it
+            if "{LAND_STATES}" in desc:
+                desc = desc.replace("{LAND_STATES}", land_states(root))
             why = page_problem(path, locs, root)
             if why:
                 problems.append("%s listed but %s" % (path, why))

@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 96,
- "with_known_cadence": 96,
+ "count": 97,
+ "with_known_cadence": 97,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -166,7 +166,7 @@
     "farmland-atlas",
     "State yield pages"
    ],
-   "cadence": "1 launch every day at about 4am Central",
+   "cadence": "1 launch monthly, on day 12 at about 4am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -189,7 +189,7 @@
    "touched_by": [
     "farmland-atlas"
    ],
-   "cadence": "1 launch every day at about 4am Central",
+   "cadence": "1 launch monthly, on day 12 at about 4am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1312,7 +1312,7 @@
     "Hail data refresh",
     "NCEI hail backfill"
    ],
-   "cadence": "2 launches every day at about 1am, 3am Central",
+   "cadence": "2 launches monthly, on days 1 and 15 at about 1am, 3am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1444,6 +1444,31 @@
    "why_quiet": "Every board the bid network reads, with its last read and why it failed. Sig's Today list (desk/today.html, a tab of /desk) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
   },
   {
+   "path": "data/land-sales/lead.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Feed manifest \u2014 every published number is accounted for",
+    "Land data (parcel services + transfers)",
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/land/index.json",
    "pages": [
     "land-sales/index.html"
@@ -1454,7 +1479,7 @@
    "touched_by": [
     "Land data (parcel services + transfers)"
    ],
-   "cadence": "1 launch every day at about 4am Central",
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1521,7 +1546,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1544,7 +1569,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1567,7 +1592,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1590,7 +1615,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1613,7 +1638,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1639,7 +1664,7 @@
     "Build NASS Series",
     "State yield pages"
    ],
-   "cadence": "2 launches every day at about 7am, 8am Central",
+   "cadence": "2 launches monthly, on days 16 and 17 at about 7am, 8am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1663,7 +1688,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1686,7 +1711,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1709,7 +1734,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1732,7 +1757,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1755,7 +1780,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1778,7 +1803,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1801,7 +1826,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1824,7 +1849,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1847,7 +1872,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1870,7 +1895,7 @@
    "touched_by": [
     "Build NASS Series"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 16 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2520,7 +2545,7 @@
     "State yield pages",
     "yield-panel"
    ],
-   "cadence": "1 launch every day at about 7am Central",
+   "cadence": "1 launch monthly, on day 15 at about 7am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2572,7 +2597,7 @@
     "Hail data refresh",
     "tenure"
    ],
-   "cadence": "1 launch every day at about 1am Central",
+   "cadence": "1 launch monthly, on day 15 at about 1am Central",
    "curated": false,
    "planned": false,
    "external": false,
