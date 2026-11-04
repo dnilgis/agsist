@@ -2491,6 +2491,13 @@ function doSearch(zip){
          ReferenceError and the only way out of the error state did nothing. */
       var rb=document.getElementById('cb-retry');
       if(rb){rb.addEventListener('click',function(){doSearch();});rb.focus();}
+      /* Nov 4, 2026 (site panel): the one failure path (components/bids-fallback.js). Counted, and the
+         nearest baked town page is linked with its time, so the page is not a dead end. */
+      if(!/^ZIP not recognized/.test(err.message)&&window.AgBidsFallback){
+        var bk=document.createElement('p');bk.className='cb-baked';bk.hidden=true;
+        var ce=results.querySelector('.cb-empty');if(ce)ce.appendChild(bk);
+        try{AgBidsFallback.line(bk,zip,'cash-bids','failed');}catch(x){}
+      }
       cbFirstResultsDone();
       announce('Error: unable to load bids. '+err.message);return;
     }

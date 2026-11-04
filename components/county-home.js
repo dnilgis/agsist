@@ -143,23 +143,36 @@
   /* ── bids and basis: the same pick as Fast Facts (P.bestBids over the live network, else the committed file) */
   function bids() {
     var net = window.AGSIST_BIDS_NET;
-    function draw(snap) {
+    function draw(snap, partial) {
       var b = P.bestBids(snap, lat, lng, 50), when = snap && snap.fetched ? snap.fetched : '';
-      fill('corn-bid', P.factBid(b.corn, 'corn', FROM, when, '/cash-bids'));
-      fill('soy-bid', P.factBid(b.soybeans, 'soybeans', FROM, when, '/cash-bids'));
-      fill('lf-bid', nearestBid(b, when));
+      fill('corn-bid', P.factBid(b.corn, 'corn', FROM, when, '/cash-bids', partial));
+      fill('soy-bid', P.factBid(b.soybeans, 'soybeans', FROM, when, '/cash-bids', partial));
+      fill('lf-bid', nearestBid(b, when, partial));
+      if (partial) return { when: when, partial: true };   /* no local middle basis from a short list */
       b.when = when;
       return b;
     }
+    /* Nov 4, 2026 (site panel): the network's index not in (slow or failed) means the short committed list
+       stands in, labelled as such and counted (components/bids-fallback.js, loaded only then); an index that
+       answered with nothing near is a real "none within 50 mi". */
+    function short() {
+      var st = net && net.status ? net.status() : 'failed';
+      if (st === 'ok') return getJSON('/data/bids.json').then(function (s) { return draw(s, false); });
+      loadScript('/components/bids-fallback.js?v=1', function () { return !!window.AgBidsFallback; }).then(function (ok) {
+        if (ok) window.AgBidsFallback.count('atlas-county', st === 'pending' ? 'slow' : 'failed');
+      }, function () {});
+      return getJSON('/data/bids.json').then(function (s) { return draw(s, true); });
+    }
     var live = net && net.snapshot && lat != null && lng != null ? net.snapshot(lat, lng, { radiusMi: 50, maxPlaces: 100000 }) : Promise.resolve(null);
     return live.then(function (snap) {
-      if (snap && snap.bids && snap.bids.length) return draw(snap);
-      return getJSON('/data/bids.json').then(draw);
-    }, function () { return getJSON('/data/bids.json').then(draw); });
+      if (snap && snap.bids && snap.bids.length) return draw(snap, false);
+      return short();
+    }, short);
   }
   /* land first: the nearest posted corn bid (else soybeans), its town and miles; never the buyer */
-  function nearestBid(b, when) {
+  function nearestBid(b, when, partial) {
     var src = ['Bids', '/cash-bids'];
+    if (partial) return { label: 'Nearest bid', value: null, why: 'the elevator network did not answer in time, so the nearest bid is not known right now', src: src };
     var o = (b.corn && b.corn.nearest) ? ['corn', b.corn.nearest] : (b.soybeans && b.soybeans.nearest) ? ['soybeans', b.soybeans.nearest] : null;
     if (!o) return { label: 'Nearest bid', value: null, why: 'no posted corn or soybean bid within 50 mi of ' + FROM, src: src };
     var r = o[1], at = r.town ? r.town + (r.st ? ', ' + r.st : '') : 'an elevator';
@@ -312,7 +325,7 @@
   function arc() { getJSON('/data/arc-plc.json').then(function (f) { fill('arc', P.factArcPlc(f, centralDay(), D.arc || '/arc-plc')); }); }
 
   function start() {
-    loadScript('/components/place.js?v=12', function () { return !!window.AgPlace; }).then(function (ok) {
+    loadScript('/components/place.js?v=13', function () { return !!window.AgPlace; }).then(function (ok) {
       if (!ok) { fail(ALL, 'this part did not load; try again in a minute'); return; }
       P = window.AgPlace;
       if (lat == null || lng == null) fail(['corn-bid', 'soy-bid', 'lf-bid'], 'no county middle on file to measure from');
