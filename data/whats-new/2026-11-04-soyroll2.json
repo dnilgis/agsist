@@ -2,6 +2,6 @@
  "id": "2026-11-04-soyroll2",
  "date": "2026-11-04",
  "title": "Home page soybeans on January too",
- "line": "The home page Futures tile, the price ticker, /markets and the breakeven calculator now quote the same soybean month your elevator's basis uses (January from first notice); the second card is next fall's November.",
+ "line": "The home page, the price ticker, /markets and breakeven quote the soybean month your elevator's basis uses (January from first notice).",
  "link": "/markets"
 }

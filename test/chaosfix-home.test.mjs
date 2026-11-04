@@ -51,9 +51,11 @@ test("home: Jan 2 2027 rolls Dec '26 off the first screen and ages the settle", 
   try {
     for (const w of [390, 1280]) {
       const { ctx, pg, errs } = await home(browser, port, w, "2027-01-02T17:00:00Z", FIX);
-      assert.match(await pg.textContent("#hb-fc-k"), /^Dec .27 corn futures$/);
+      // since fx/soyroll2 (Nov 4 2026) the tiles are the headline contract: Dec '26 corn rolls off to
+      // the nearest live month, Mar '27 (not next year's Dec), and Nov '26 soybeans to Jan '27
+      assert.match(await pg.textContent("#hb-fc-k"), /^Mar .27 corn futures$/);
       assert.doesNotMatch(await pg.textContent("#hb-fc-k"), /26/);
-      assert.match(await pg.textContent("#hb-fs-k"), /^Nov .27 bean futures$/);
+      assert.match(await pg.textContent("#hb-fs-k"), /^Jan .27 bean futures$/);
       const s = await pg.textContent("#hb-fc-s");
       assert.match(s, /Oct 16, 2026 settle · 78 days old/, s);
       assert.doesNotMatch(s, /Last close/);
