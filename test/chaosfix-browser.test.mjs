@@ -17,11 +17,11 @@ import vm from "node:vm";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
-const BIDS = process.env.BIDS_PATH || "/home/user/bids/";
+import { BIDS, needBids } from "./fixtures/bids-path.mjs";
 let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
-const skipBids = skip || (!existsSync(BIDS + "data/merged-index.json") ? "no local dnilgis/bids clone" : false);
+const skipBids = skip;   // the bids tests call needBids(): no bids data is a failure that says so, not a skip
 const WIDTHS = [390, 1280];
 const read = (f) => readFileSync(join(ROOT, f), "utf8");
 const FIX = read("test/fixtures/chaosfix/prices-2026-10-17.json");
@@ -216,6 +216,7 @@ test("chaos-6: /rain-print-business on Dec 20 says orders arrive after Christmas
    as in the audit; the clock is set to the morning after its index was built. */
 function bidsClock() { return new Date(Date.parse(JSON.parse(readFileSync(BIDS + "data/merged-index.json", "utf8")).generated) + 16 * 36e5).toISOString(); }
 test("chaos-2: a board frozen 30 days is never Best and its card says so", { skip: skipBids, timeout: 180000 }, async () => {
+  needBids();
   const frozen = readdirSync(BIDS + "data/merged").find((f) => f.startsWith("mid-iowa-cooperative-state-center"));
   await each(async (browser, port, w) => {
     const { ctx, pg } = await open(browser, port, "/cash-bids.html?zip=50010", w, {
@@ -236,6 +237,7 @@ test("chaos-2: a board frozen 30 days is never Best and its card says so", { ski
 });
 
 test("chaos-7: elevator files that 404, come back cut off or empty show 'Unable to Load Bids', not 'no elevators'", { skip: skipBids, timeout: 240000 }, async () => {
+  needBids();
   const faults = { "404": () => ({ status: 404, body: "x" }), trunc: (raw) => J(raw.slice(0, raw.length >> 1)), empty: () => J("{}") };
   await each(async (browser, port, w) => {
     for (const [name, f] of Object.entries(faults)) {
