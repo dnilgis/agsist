@@ -169,6 +169,54 @@ XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 # the one plain sentence and the monthly newsletter block. The sentence is written here; components/rain-box.js
 # (loaded deferred, about 4 KB, shared and cached) only adds the iframe code and the copy buttons on first open.
 BOX_JS = '<script src="/components/rain-box.js?v=1" defer></script>'
+WX_JS = '<script src="/components/rain-wx.js?v=1" defer></script>'
+
+
+def wx_md(v):
+    return f"{M3[v // 100 - 1]} {v % 100}"
+
+
+def wx_deg(n):
+    return (f"&minus;{-n}" if n < 0 else str(n)) + "°F"
+
+
+def wx_fold(c, r, d, noun, name, year, done):
+    """The weather fold (Sig, Nov 4 2026) and its FAQ answers, from data/rain/wx/<st>.json
+    (scripts/fetch_rain_weather.py). Only the one-line summary is baked into the page; the
+    fold's body is drawn by components/rain-wx.js from the same file, so each page carries a
+    few hundred bytes, not the whole block (the rain folder is near its budget). Every figure
+    here is the file's own, with its date; a withheld one ("m") is left out of the line and
+    the answers. Returns (html, [(question, answer)])."""
+    if not r:
+        return "", []
+    a = wx_md(r["a"])
+    same = not r.get("s")
+    where = where_words(c) if same else f"a weather station {r['s'][2]} miles from the rain {noun}"
+    g = r.get("g")
+    faq = []
+    if isinstance(g, list):
+        line = f"{g[0]:,} corn GDDs May 1 to {a}" + (f", {g[4]}% of the 1991-2020 average ({g[3]} yrs)" if len(g) > 2 else "")
+        faq.append((f"How many growing degree days {'did' if done else 'has'} {name} {'have' if done else 'had'} in {year}?",
+                    f"{g[0]:,} corn GDDs (base 50°F, cap 86°F) May 1 to {a} at {where}"
+                    + (f", {g[4]}% of its 1991-2020 average for the same days ({g[3]} years)." if len(g) > 2 else ".")))
+    elif isinstance(r.get("h"), list):
+        line = f"hottest day {wx_deg(r['h'][0])} on {wx_md(r['h'][1])}"
+    else:
+        line = f"highs, lows and freezes, Jan 1 to {a}"
+    f32 = (r.get("fr") or {}).get("f32")
+    if f32 and f32[0] != "m" and (f32[0] or r["a"] >= 915):
+        u = f" Usual: {wx_md(f32[1])}, the middle of {f32[2]} years, 1991-2020." if len(f32) > 2 and f32[1] else ""
+        faq.append((f"When was the first fall freeze in {name} in {year}?" if f32[0] else f"Has {name} had a fall freeze yet in {year}?",
+                    (f"{wx_md(f32[0])} (32°F or colder) at {where}." if f32[0]
+                     else f"No, not through {a}: no day at 32°F or colder since Jul 1 at {where}.") + u))
+    head = f"Weather at this {noun}" if same else f"Weather {r['s'][2]} miles from the {noun}"
+    v = "".join(ch for ch in d["fetched"] if ch.isdigit())
+    html = (f'<div class="rc-faq"><details class="rc-wx" data-w="{d["state"].lower()}/{c["fips"]}"'
+            + (' data-n="gauge"' if noun == "gauge" else "") + f' data-v="{v}">'
+            f"<summary>{head}: {line}</summary></details>{WX_JS}</div>")
+    return html, faq
+
+
 
 
 def box_line(c, st, year, done):
@@ -372,19 +420,30 @@ def chart(c, year, county, noun="station", ready=None):
     Y = lambda v: T + ph * (1 - v / ymax)
     out = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="rc-ct"><title id="rc-ct">Running total of rain in {e(county)}, {year}'
            + (", against a usual year" if has_us else "") + "</title>"]
+    # Bytes (Nov 4, 2026, fx/rainwx: the rain folder is at 96% of its budget): one axis path and one
+    # grid path, the labels in two groups that carry the class and anchor once, the lines as whole
+    # units drawn relative ("l7-1"). A unit is about a pixel on a phone; the print draws over it.
+    grid, ylab = [], []
     for v in range(0, int(ymax) + 1, step):
         y = Y(v)
-        out.append(f'<path class="{"rc-ax" if v == 0 else "rc-grid"}" d="M{L} {y:.0f}H{W - Rm}"/>'
-                   f'<text class="rc-lab" x="{L - 6}" y="{y + 4:.0f}" text-anchor="end">{v}</text>')
+        if v:
+            grid.append(f"M{L} {y:.0f}H{W - Rm}")
+        ylab.append(f'<text x="{L - 6}" y="{y + 4:.0f}">{v}</text>')
+    out.append(f'<path class="rc-ax" d="M{L} {Y(0):.0f}H{W - Rm}"/><path class="rc-grid" d="{"".join(grid)}"/>'
+               f'<g class="rc-lab" text-anchor="end">{"".join(ylab)}</g><g class="rc-lab" text-anchor="middle">')
     for m in range(12):
         doy = (dt.date(year, m + 1, 1) - dt.date(year, 1, 1)).days
-        x = X(doy)
-        out.append(f'<text class="rc-lab" x="{X(doy + 15):.0f}" y="{H - 8}" text-anchor="middle">{M3[m][0]}</text>')
+        out.append(f'<text x="{X(doy + 15):.0f}" y="{H - 8}">{M3[m][0]}</text>')
+    out.append("</g>")
 
     def path(k):
-        d = [f"M{X(0):.1f},{Y(0):.1f}"]
+        x0, y0 = round(X(0)), round(Y(0))
+        d = [f"M{x0},{y0}"]
         for p in pts:
-            d.append(f"L{X(p[0] + 1):.1f},{Y(p[k]):.1f}")
+            x1, y1 = round(X(p[0] + 1)), round(Y(p[k]))
+            dx, dy = x1 - x0, y1 - y0
+            d.append(f"l{dx}{',' if dy >= 0 else ''}{dy}")
+            x0, y0 = x1, y1
         return "".join(d)
     ly, lu = Y(pts[-1][1]), (Y(pts[-1][2]) if has_us else None)
     if has_us:
@@ -780,6 +839,8 @@ def county_page(ctx):
                      "That rain counts on the day it was read, so it is in the totals but not split by day.</li>")
     facts += context_facts(c, ctx.get("ctx"), noun, ctx.get("edate") or asof)
     facts_html = f'<ul class="rc-list">{"".join(facts)}</ul>' if facts else ""
+    wx_html, wx_faq = wx_fold(dict(c, fips=fips), ctx.get("wx"), d, noun, name, year, done)
+    faq += wx_faq
     # ---- station
     miss = c["missing"]
     sid, sid_type = stw["sid"].split(" ")[0], stw["sid"].split(" ")[-1]
@@ -904,7 +965,7 @@ def county_page(ctx):
     <h2>Month by month</h2>
     {table}
     {(month_ask(name, fips) or year_ask(name, year, fips)) if not done else ''}
-    {('<h2>' + str(year) + (' in' if done else ' so far in') + ' ' + e(name) + '</h2>' + facts_html) if facts_html else ''}
+    {('<h2>' + str(year) + (' in' if done else ' so far in') + ' ' + e(name) + '</h2>' + facts_html) if facts_html else ''}{wx_html}
     {"" if print_fig else sell}
     <h2>The station, and what usual means</h2>
     <p>{station_p}</p>
@@ -1150,6 +1211,26 @@ def load_context(data_dir, files):
     return out
 
 
+def load_wx(data_dir, files):
+    """{st: {fips: row}} from data/rain/wx/<st>.json (scripts/fetch_rain_weather.py), only for
+    states whose weather is from the same fetch as the state file."""
+    out = {}
+    for st, d in files.items():
+        p = os.path.join(data_dir, "wx", st.lower() + ".json")
+        if os.path.exists(p):
+            try:
+                x = json.load(open(p, encoding="utf-8"))
+                if not isinstance(x, dict) or not isinstance(x.get("counties") or {}, dict):
+                    raise ValueError("not a weather file")
+            except (OSError, ValueError) as err:
+                # a cut-off or broken weather file never takes the rain pages down: that state shows no fold
+                print(f"::warning::rain weather file {st.lower()}.json unreadable ({err}); its pages show no weather fold", flush=True)
+                continue
+            if x.get("state") == st and x.get("fetched") == d["fetched"] and x.get("year") == d["year"]:
+                out[st] = x.get("counties") or {}
+    return out
+
+
 def ordinal(n):
     return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
 
@@ -1221,6 +1302,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
     files = load(data_dir)
     daily = load_daily(data_dir, files)
     context = load_context(data_dir, files)
+    wx = load_wx(data_dir, files)
     stories = CS.load_stories(data_dir)   # data/rain/stories/<st>.json: dated stories, same station, at most 35 days old
     pages = {}   # fips -> (name, href, total text)
     for st, d in files.items():
@@ -1244,7 +1326,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
                                 "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "lat": C[fips].get("lat"), "lon": C[fips].get("lon"),
                                 "day": daily.get(st, {}).get(fips),
-                                "ctx": context.get(st, {}).get(fips), "edate": d["edate"],
+                                "ctx": context.get(st, {}).get(fips), "edate": d["edate"], "wx": wx.get(st, {}).get(fips),
                                 "story": CS.story_for(stories.get(st, {}).get(fips), dict(CS.page_now(c, d), facts=CS.facts(c, d, st)))})
             body = nav.fill_fonts(body)
             rel = f"rain/{st_slug}/{C[fips]['slug']}.html"
@@ -1361,6 +1443,60 @@ def selftest():
         story = want.get("rain/iowa/story-county.html", "")
         ok(story, "Story County page written")
         ok("rain/iowa/hamilton-county.html" not in want, "no page for a county without a station")
+        # the weather fold (fx/rainwx): a made-up row of data/rain/wx/ia.json, from the same fetch
+        sx = json.load(open(os.path.join(data, "ia.json")))
+        rowx = {"a": 1012, "g": [2912, 2, 2759, 30, 106], "mh": 2, "ml": 0, "n": 285, "h": [97, 721, 0], "l": [-18, 108, 0],
+                "d9": 12, "d3": 3, "s": ["8 miles west-southwest of Ames", "130203 2", 10],
+                "fr": {"f32": [1003, 1008, 28], "s32": [412, 414, 30]}, "nt": [["h", 10, 88, 1005, 2011, 76]]}
+        os.makedirs(os.path.join(data, "wx"))
+        json.dump({"schema": "agsist-rain-wx/1", "state": "IA", "year": sx["year"], "edate": sx["edate"], "fetched": sx["fetched"],
+                   "counties": {"19169": rowx}}, open(os.path.join(data, "wx", "ia.json"), "w"))
+        wx_story = build(data).get("rain/iowa/story-county.html", "")
+        ok('<details class="rc-wx" data-w="ia/19169" data-v="' in wx_story and "rain-wx.js?v=1" in wx_story, "the weather fold is on the page")
+        ok("Weather 10 miles from the station: 2,912 corn GDDs May 1 to Oct 12, 106% of the 1991-2020 average (30 yrs)</summary>" in wx_story,
+           "the fold's line: GDDs with their span and percent, the other station's distance")
+        ok("How many growing degree days has Story County had in 2026?" in wx_story and "When was the first fall freeze in Story County in 2026?" in wx_story
+           and wx_story.count("How many growing degree days") == 2, "two FAQ questions, on the page and in the FAQ data")
+        ok("Oct 3 (32°F or colder) at a weather station 10 miles from the rain station. Usual: Oct 8, the middle of 28 years, 1991-2020." in wx_story,
+           "the first fall freeze names the other station and its usual date with the years counted")
+        ok("How much rain has Story County, Iowa, had in 2026?" in wx_story, "the existing FAQ questions stay")
+        ok(re.search(r"<title>[^<]*</title>", wx_story).group(0) == re.search(r"<title>[^<]*</title>", story).group(0)
+           and re.search(r'<meta name="description"[^>]*>', wx_story).group(0) == re.search(r'<meta name="description"[^>]*>', story).group(0),
+           "title and description unchanged by the weather (the Nov 2 title test)")
+        json.dump({"schema": "agsist-rain-wx/1", "state": "IA", "year": sx["year"], "edate": sx["edate"], "fetched": "older",
+                   "counties": {"19169": rowx}}, open(os.path.join(data, "wx", "ia.json"), "w"))
+        ok("rc-wx" not in build(data).get("rain/iowa/story-county.html", ""), "a weather file from another fetch prints nothing")
+        for broken in ('{"schema": "agsist-rain-wx/1", "state": "IA", "counties": {"19169": {"a": 10', "", "[1, 2]", '{"counties": [1]}'):
+            open(os.path.join(data, "wx", "ia.json"), "w").write(broken)
+            bw = build(data)
+            ok("rain/iowa/story-county.html" in bw and "rc-wx" not in bw["rain/iowa/story-county.html"],
+               f"a cut-off or broken weather file ({broken[:20]!r}): the build still runs, that state shows no fold")
+        os.remove(os.path.join(data, "wx", "ia.json"))
+        os.rmdir(os.path.join(data, "wx"))
+        # no figure without its date; withheld figures are left out
+        cx = {"name": "Story County", "fips": "19169", "station": {"net": "noaa", "raw": "AMES 8 WSW"}}
+        dx = {"state": "IA", "fetched": "2026-11-04T13:27:11Z"}
+        dated = re.compile(r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}\b")
+        for rr, why in ((rowx, "full"), (dict(rowx, g="m"), "GDD withheld"), (dict(rowx, g="m", h="m"), "GDD and hottest withheld"),
+                        (dict(rowx, fr={"f32": ["m", 1008, 28]}), "freeze withheld"), (dict(rowx, a=1103, fr={"f32": [0, 1008, 28]}), "no freeze yet")):
+            h_, fq = wx_fold(cx, rr, dx, "station", "Story County", 2026, False)
+            summ = re.search(r"<summary>(.*?)</summary>", h_).group(1)
+            ok(dated.search(summ), f"{why}: the fold's line carries a date: {summ}")
+            for q, a_ in fq:
+                ok(dated.search(a_), f"{why}: the answer to {q!r} carries a date: {a_}")
+        h_, fq = wx_fold(cx, dict(rowx, g="m"), dx, "station", "Story County", 2026, False)
+        ok("hottest day 97°F on Jul 21" in h_ and not any("growing degree" in q for q, _ in fq), "GDD withheld: no GDD line, no GDD answer")
+        h_, fq = wx_fold(cx, dict(rowx, g="m", h="m"), dx, "station", "Story County", 2026, False)
+        ok("highs, lows and freezes, Jan 1 to Oct 12" in h_ and "97" not in h_, "both withheld: no number in the line")
+        _, fq = wx_fold(cx, dict(rowx, fr={"f32": ["m", 1008, 28]}), dx, "station", "Story County", 2026, False)
+        ok(not any("freeze" in q for q, _ in fq), "a withheld freeze gets no answer")
+        _, fq = wx_fold(cx, dict(rowx, a=1103, fr={"f32": [0, 1008, 28]}), dx, "station", "Story County", 2026, False)
+        ok(any(q == "Has Story County had a fall freeze yet in 2026?" and a_.startswith("No, not through Nov 3") for q, a_ in fq), "no freeze yet, said with its date")
+        _, fq = wx_fold(cx, dict(rowx, a=820, fr={"f32": [0]}), dx, "station", "Story County", 2026, False)
+        ok(not any("freeze" in q for q, _ in fq), "no freeze question in August")
+        _, fq = wx_fold(cx, dict(rowx, g=[2912, 0]), dx, "station", "Story County", 2026, False)
+        ok(any("growing degree" in q and "%" not in a_ for q, a_ in fq), "a GDD with no 1991-2020 average prints no percent")
+        ok(wx_fold(cx, None, dx, "station", "Story County", 2026, False) == ("", []), "no weather row, nothing")
         ok("rain/iowa/boone-county.html" not in want, "no page for a county whose station missed too many days")
         ok("rain/wyoming.html" not in want, "no state page without data")
         for rel, body in want.items():

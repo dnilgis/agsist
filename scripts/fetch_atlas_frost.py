@@ -70,11 +70,7 @@ def http(url):
         return r.read()
 
 
-def gdd(hi, lo):
-    """Corn GDD, the 86/50 method: the high is capped at 86, both are floored at 50."""
-    hi = min(max(hi, 50.0), 86.0)
-    lo = min(max(lo, 50.0), 86.0)
-    return (hi + lo) / 2 - 50.0
+from county_rain import corn_gdd as gdd   # noqa: E402  the one corn GDD (86/50) copy, shared with the county rain pages
 
 
 class Season:

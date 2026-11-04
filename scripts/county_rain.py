@@ -293,6 +293,17 @@ def station_where(raw):
     return "in " + station_town(s)
 
 
+def corn_gdd(hi, lo):
+    """Corn growing degree days for one day, the standard 86/50 method (base 50 F, cap 86 F):
+    the high and the low are each held between 50 and 86, then (high + low) / 2 - 50.
+    The one copy for the county rain pages (scripts/fetch_rain_weather.py) and the Farmland
+    Atlas (scripts/fetch_atlas_frost.py). Known values: (90, 60) 23.0; (45, 30) 0.0;
+    (70, 40) 10.0; (95, 72) 29.0; (86, 50) 18.0."""
+    hi = min(max(hi, 50.0), 86.0)
+    lo = min(max(lo, 50.0), 86.0)
+    return (hi + lo) / 2 - 50.0
+
+
 def network(sids):
     """'cocorahs' for a CoCoRaHS volunteer gauge (ACIS sid type 10), else 'noaa'."""
     return "cocorahs" if any(str(x).strip().endswith(" 10") for x in (sids or [])) else "noaa"
