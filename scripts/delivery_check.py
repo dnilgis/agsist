@@ -49,13 +49,25 @@ from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import delivery_line  # noqa: E402
+from cron_gate import NOT_A_RUN  # noqa: E402
 
 UTC = timezone.utc
 DELIVERY_EVERY_HOURS = 6      # one pass per saved cron-health file (cron_health.RECOMMIT_HOURS)
 WINDOW_HOURS = 24             # (a) and (b) read the runs of the last 24 hours
 DISPATCH_DAYS = 14            # (c) a worker-started job with no workflow_dispatch run in 14 days
-RUNS_READ = 5                 # run logs read per workflow per pass: the newest 2 and the 3 longest
-CALL_BUDGET = 150             # API calls per pass, all workflows together (the repo's token is shared)
+TICK_GRACE_HOURS = 2          # a gate tick with no run after it for this long: the send it was due never ran
+# What one pass may read, per workflow (Nov 4 2026: the Daily runs about 80 times a day and sends in
+# one; land-alert, price-watch and form-digest about 100; cot-release-watch about 200). The run list
+# is free of logs; the jobs of a run (one small call) say whether its send step ran; only runs that
+# reached a send step have their log read. Worst case per pass: 19 workflows x (3 pages + 8 jobs + 3
+# logs) plus 2 dispatch counts, under CALL_BUDGET; most workflows stop well short. A pass runs every
+# DELIVERY_EVERY_HOURS, against GitHub's 1,000 calls an hour for the repository's Actions token.
+LIST_PAGES = 3                # 300 runs in 24 h; the busiest sender (report-day) had 252 on Nov 4
+JOBS_PER_WF = 8               # runs whose jobs are read
+MORE_JOBS = 3                 # of those, runs read past the ones that were due (a catch-up, a run by hand)
+SAMPLE_SENDS = 3              # a sender that may send on any run: stop after this many runs reached a send step
+LOGS_PER_WF = 3               # run logs read per workflow, only of runs that reached a send step
+CALL_BUDGET = 260             # API calls per pass, all workflows together (the repo's token is shared)
 LOG_MAX_BYTES = 25 * 1024 * 1024
 
 # What each sender prints and where. `switch`: None = no switch, live on every scheduled or
@@ -173,17 +185,135 @@ def switch_state(entry, environ):
     return ("on" if live else "off"), "%s is %s" % (var, repr(v) if v else "unset")
 
 
-def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, now=None):
-    """One delivery row from the runs read. runs: [{"id", "event", "lines": [DELIVERY dicts]}],
-    newest first. state: switch_state(). dispatch_runs: workflow_dispatch runs in DISPATCH_DAYS
-    (None = not read). evidence: the largest asks/orders count seen (None = none read).
-    Pure: no clock, no network."""
+def _ts(s):
+    try:
+        return datetime.strptime(s or "", "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+    except ValueError:
+        return None
+
+
+def run_seconds(r):
+    a, b = _ts(r.get("run_started_at")), _ts(r.get("updated_at"))
+    return (b - a).total_seconds() if a and b else 0
+
+
+def _ct(dt):
+    from zoneinfo import ZoneInfo
+    return dt.astimezone(ZoneInfo("America/Chicago"))
+
+
+def _at_ct(day_ct, hhmm):
+    """day_ct (a Central datetime) at HH:MM Central, as UTC."""
+    return day_ct.replace(hour=int(hhmm[:2]), minute=int(hhmm[3:]), second=0, microsecond=0).astimezone(UTC)
+
+
+def daily_due(due, now):
+    """-> (day, due_at, window_start, window_end): the latest day whose due time has passed (UTC
+    datetimes; the window is the Central morning a send can happen in). Before today's due time
+    the day judged is yesterday."""
+    _k, by, frm, until = due
+    today = _ct(now)
+    day = today if now >= _at_ct(today, by) else _ct(now - timedelta(days=1))
+    return day.strftime("%Y-%m-%d"), _at_ct(day, by), _at_ct(day, frm), _at_ct(day, until)
+
+
+def list_since(entry, now):
+    """The oldest run time to list: 24 hours, or the start of the judged day's send window."""
+    since = now - timedelta(hours=WINDOW_HOURS)
+    due = entry.get("due") or ("run",)
+    if due[0] == "daily":
+        since = min(since, daily_due(due, now)[2])
+    return since
+
+
+def plan(entry, runs, now, crons=None):
+    """Which runs to read the jobs of, in order, and what was due. Pure: no network.
+    runs: the workflow's runs listed since list_since(). crons: the gate's ticks (tick senders).
+    -> (order: [run ids], due: dict). Only a run that could have reached a send step is listed;
+    the reader stops at JOBS_PER_WF (and, for a "run" sender, once SAMPLE_SENDS sends are found)."""
+    due = entry.get("due") or ("run",)
+    done = [r for r in runs if r.get("status") == "completed" and r.get("conclusion") not in NOT_A_RUN]
+    floor = entry.get("min_send_s") or 0
+    if floor:
+        done = [r for r in done if run_seconds(r) >= floor]
+    by_new = sorted(done, key=lambda r: (r.get("created_at") or "", r["id"]), reverse=True)
+    by_long = sorted(done, key=lambda r: (run_seconds(r), r.get("created_at") or ""), reverse=True)
+    first = []
+    if entry.get("worker_started"):
+        first += [r for r in by_new if r.get("event") == "workflow_dispatch"]
+    info = {"kind": due[0]}
+    if due[0] == "daily":
+        day, at, w0, w1 = daily_due(due, now)
+        win = sorted((r for r in done if w0 <= (_ts(r.get("created_at")) or w0 - timedelta(1)) <= w1),
+                     key=lambda r: (r.get("created_at") or "", r["id"]))
+        info.update(day=day, due_ct=due[1], window_ct="%s to %s" % (due[2], due[3]), past_due=now >= at,
+                    window_runs=[r["id"] for r in win])
+        first += win
+        rest = by_new
+    elif due[0] == "tick":
+        import cron_gate
+        manual = entry["workflow"] in cron_gate.MANUAL_DOES_NOT_SERVE
+        ts = cron_gate.ticks(crons or [], now - timedelta(hours=WINDOW_HOURS), now + timedelta(minutes=1))
+        ts = [t for t in ts if t <= now]
+        every = sorted((r for r in runs if r.get("conclusion") not in NOT_A_RUN and _ts(r.get("created_at"))
+                        and not (manual and r.get("event") in cron_gate.ALWAYS_GO)),
+                       key=lambda r: (r["created_at"], r["id"]))
+        out = []
+        for t in ts:
+            served = next((r for r in every if _ts(r["created_at"]) >= t), None)
+            pending = served is None and now - t < timedelta(hours=TICK_GRACE_HOURS) or (
+                served is not None and served.get("status") != "completed")
+            out.append({"tick": t.strftime("%Y-%m-%dT%H:%M:%SZ"), "run": served["id"] if served else None,
+                        "pending": bool(pending)})
+        info["ticks"] = out
+        ids = {x["run"] for x in out if x["run"] and not x["pending"]}
+        first += [r for r in by_new if r["id"] in ids]
+        rest = by_long
+    else:
+        rest = by_long
+    order, seen = [], set()
+    for r in first + rest:
+        if r["id"] not in seen:
+            seen.add(r["id"])
+            order.append(r["id"])
+    return order, info
+
+
+def step_states(jobs, steps):
+    """{step name: "ran" | "skipped" | "no_job"} for one run's jobs. A step name matches exactly
+    or with the "(...)" a workflow expression adds ("Monthly county rain (scheduled)").
+    "skipped": its job ran and the step did not (an earlier step failed, or its own `if:` said no).
+    "no_job": no job that ran lists the step (the job was skipped by its `if:`, or never made)."""
+    out = {}
+    for key in steps:
+        state = "no_job"
+        for j in jobs or []:
+            for s in j.get("steps") or []:
+                n = s.get("name") or ""
+                if n != key and not n.startswith(key + " ("):
+                    continue
+                c = s.get("conclusion")
+                if c in ("success", "failure") or (c == "cancelled" and s.get("started_at") and s.get("completed_at")
+                                                   and s["started_at"] != s["completed_at"]):
+                    state = "ran"
+                elif state != "ran":
+                    state = "skipped"
+        out[key] = state
+    return out
+
+
+def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, now=None, due=None):
+    """One delivery row from the runs read. runs: [{"id", "event", "lines": [DELIVERY dicts] or None
+    (log not read), "steps": step_states() or absent (jobs not read)}], newest first. state:
+    switch_state(). due: plan()'s due dict (None: no due check). dispatch_runs: workflow_dispatch
+    runs in DISPATCH_DAYS (None = not read). evidence: the largest asks/orders count seen (None =
+    none read). Pure: no clock, no network."""
     wf = entry["workflow"]
     worker = bool(entry.get("worker_started"))
     names = sorted(set(entry["senders"].values()))
     states = state if isinstance(state, dict) else {n: state for n in names}
     several = len({states[n] for n in names}) > 1
-    findings, notes = [], []
+    findings, notes, unknown = [], [], []
     lines = [(r, l) for r in runs for l in r.get("lines") or [] if l.get("sender") in names]
     for name in names:
         st, st_why = states[name]
@@ -207,42 +337,95 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
             notes.append("%sswitch off (%s): the list is not due mail" % (pre, st_why))
         else:
             notes.append("%sswitch unknown: %s" % (pre, st_why))
+        # (f) one live run with readers waiting and none mailed, whatever the rest of the day did
+        failed = sorted({r["id"] for r, l in mine if l["dry"] == 0 and l["waiting"] > 0 and l["sent_readers"] == 0})
+        if failed:
+            findings.append("%s(f) %d live run(s) had readers waiting and mailed none (run %s)"
+                            % (pre, len(failed), ", ".join(str(i) for i in failed[:3])))
     if worker and dispatch_runs == 0 and evidence:
         src, key = entry["evidence"]
         findings.append("(c) the subs worker has not started this job in %d days (no workflow_dispatch run) while %s=%d "
                         "in %s's log" % (DISPATCH_DAYS, key, evidence, src))
     elif worker and dispatch_runs is not None:
         notes.append("%d workflow_dispatch run(s) in %d days" % (dispatch_runs, DISPATCH_DAYS))
-    if not lines:
-        notes.append("no DELIVERY line in the %d of %d run(s) read in %d h" % (len(runs), runs_total, WINDOW_HOURS))
-    else:
-        notes.append("read %d of %d run(s) in %d h" % (len(runs), runs_total, WINDOW_HOURS))
-    status = "late" if findings else ("unknown" if any(states[n][0] == "unknown" for n in names) else "ok")
+
+    # (d) a send step ran and printed no DELIVERY line: the guard cannot see what it did
+    steps = entry.get("steps") or {}
+    jobs_read = [r for r in runs if r.get("steps") is not None]
+    sent_runs = [r for r in jobs_read if any(v == "ran" for v in r["steps"].values())]
+    no_log = [r["id"] for r in sent_runs if r.get("lines") is None]
+    for r in sent_runs:
+        if r.get("lines") is None:
+            continue
+        got = {l.get("sender") for l in r["lines"]}
+        for key, v in sorted(r["steps"].items()):
+            if v == "ran" and not (set(steps.get(key) or names) & got):
+                findings.append("(d) run %s ran the send step '%s' and printed no DELIVERY line" % (r["id"], key))
+    if no_log:
+        unknown.append("%d run(s) reached a send step but their logs were not read (run %s)"
+                       % (len(no_log), ", ".join(str(i) for i in no_log[:3])))
+
+    # (e) a send that was due and did not happen
+    due = due or {}
+    kind = due.get("kind")
+    may_skip = bool(entry.get("may_skip"))
+    by_id = {r["id"]: r for r in jobs_read}
+    if kind == "daily":
+        live = {r["id"] for r, l in lines if l["dry"] == 0 and (l["sent_readers"] > 0 or l["waiting"] == 0)}
+        win = due.get("window_runs") or []
+        hit = [i for i in win if i in live]
+        if not due.get("past_due"):
+            notes.append("%s: not due until %s Central" % (due.get("day"), due.get("due_ct")))
+        elif hit:
+            notes.append("%s: sent by run %s" % (due.get("day"), hit[0]))
+        else:
+            unread = [i for i in win if i not in by_id or i in no_log]
+            if unread:
+                unknown.append("%s: no send found yet in the %d run(s) read between %s Central; %d not read"
+                               % (due.get("day"), len(win) - len(unread), due.get("window_ct"), len(unread)))
+            else:
+                findings.append("(e) %s: no run sent it by %s Central (%d run(s) between %s Central long enough to "
+                                "send were read; none reached the send step with a live DELIVERY line)"
+                                % (due.get("day"), due.get("due_ct"), len(win), due.get("window_ct")))
+    elif kind == "tick":
+        ticks = due.get("ticks") or []
+        if not ticks:
+            notes.append("nothing due: no tick of its schedule in %d h" % WINDOW_HOURS)
+        n_unread = 0
+        for t in ticks:
+            if t.get("pending"):
+                notes.append("the %s tick: its run is not finished yet" % t["tick"])
+                continue
+            if t.get("run") is None:
+                findings.append("(e) the %s tick: no run started after it" % t["tick"])
+                continue
+            r = by_id.get(t["run"])
+            if r is None:
+                n_unread += 1
+                continue
+            missed = [k for k, v in sorted(r["steps"].items()) if v != "ran"]
+            if missed and not may_skip:
+                findings.append("(e) run %s served the %s tick and did not reach the send step '%s' (%s)"
+                                % (r["id"], t["tick"], missed[0], r["steps"][missed[0]]))
+            elif missed and len(missed) == len(r["steps"]):
+                notes.append("the %s tick: run %s, send step not due (its own condition)" % (t["tick"], r["id"]))
+        if n_unread:
+            notes.append("%d of %d tick run(s) not read this pass" % (n_unread, len(ticks)))
+    elif kind == "run" and not may_skip:
+        stopped = sorted({r["id"] for r in jobs_read if any(v == "skipped" for v in r["steps"].values())})
+        if stopped:
+            findings.append("(e) %d run(s) ran the send job and stopped before a send step (run %s)"
+                            % (len(stopped), ", ".join(str(i) for i in stopped[:3])))
+    if kind and not sent_runs and kind != "daily":
+        notes.append("nothing due seen: no send step ran in the %d run(s) whose jobs were read" % len(jobs_read))
+    notes.append("jobs read for %d of %d run(s) in %d h, logs for %d" % (len(jobs_read), runs_total, WINDOW_HOURS,
+                                                                      sum(1 for r in runs if r.get("lines") is not None)))
+    status = "late" if findings else ("unknown" if unknown or any(states[n][0] == "unknown" for n in names) else "ok")
     return {"workflow": "delivery:" + wf, "critical": True,
             "clock": "reader email delivered (BUILD-RULES 56): %s" % entry.get("counts", ""),
-            "status": status, "why": "; ".join(findings + notes),
+            "status": status, "why": "; ".join(findings + unknown + notes),
             "switch": {n: states[n][0] for n in names} if several else states[names[0]][0]}
 
-
-def pick_runs(runs, n=RUNS_READ):
-    """The newest 2 and then the longest (a run that mailed takes longer than a gate that skipped)."""
-    done = [r for r in runs if r.get("status") == "completed" and r.get("conclusion") != "skipped"]
-    done.sort(key=lambda r: r.get("created_at") or "", reverse=True)
-
-    def dur(r):
-        try:
-            a = datetime.strptime(r["run_started_at"], "%Y-%m-%dT%H:%M:%SZ")
-            b = datetime.strptime(r["updated_at"], "%Y-%m-%dT%H:%M:%SZ")
-            return (b - a).total_seconds()
-        except Exception:                                  # noqa: BLE001
-            return 0
-    out = done[:2]
-    for r in sorted(done[2:], key=dur, reverse=True):
-        if len(out) >= n:
-            break
-        out.append(r)
-    out.sort(key=lambda r: r.get("created_at") or "", reverse=True)
-    return out
 
 
 def lines_from_zip(blob):
@@ -294,19 +477,61 @@ class Api:
             return r.read(LOG_MAX_BYTES)
 
 
-def read_runs(api, wf, now):
-    since = (now - timedelta(hours=WINDOW_HOURS)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    d = api.json("/actions/workflows/%s/runs?per_page=100&exclude_pull_requests=true&created=%s"
-                 % (wf, urllib.parse.quote(">=" + since)))
-    runs = d.get("workflow_runs") or []
-    read = []
-    for r in pick_runs(runs):
+def list_runs(api, wf, since):
+    """The workflow's runs created since `since`, up to LIST_PAGES pages of 100 (page by number:
+    the API's next links name the repository by id). -> (runs, total)."""
+    runs, total = [], 0
+    for page in range(1, LIST_PAGES + 1):
+        d = api.json("/actions/workflows/%s/runs?per_page=100&page=%d&exclude_pull_requests=true&created=%s"
+                     % (wf, page, urllib.parse.quote(">=" + since.strftime("%Y-%m-%dT%H:%M:%SZ"))))
+        got = d.get("workflow_runs") or []
+        total = max(total, int(d.get("total_count") or 0))
+        runs += got
+        if len(got) < 100:
+            break
+    return runs, max(total, len(runs))
+
+
+def read_runs(api, entry, now, crons=None):
+    """The runs a delivery row is judged on. One list call (or a few pages), then the jobs of the
+    runs plan() names, at most JOBS_PER_WF (MORE_JOBS past the runs that were due; a "run" sender
+    stops once SAMPLE_SENDS runs reached a send step), then the logs of at most LOGS_PER_WF runs
+    that reached a send step, the due ones first. -> (runs read, newest first; total; due)."""
+    wf = entry["workflow"]
+    runs, total = list_runs(api, wf, list_since(entry, now))
+    order, due = plan(entry, runs, now, crons)
+    by = {r["id"]: r for r in runs}
+    due_ids = set(due.get("window_runs") or []) | {t["run"] for t in due.get("ticks") or [] if t.get("run")}
+    if entry.get("worker_started"):
+        due_ids |= {r["id"] for r in runs if r.get("event") == "workflow_dispatch"}
+    kind = due.get("kind")
+    read, found, extra = [], 0, 0
+    for rid in order:
+        if len(read) >= JOBS_PER_WF or (kind == "run" and found >= SAMPLE_SENDS):
+            break
+        if rid not in due_ids and kind != "run":
+            if extra >= MORE_JOBS:
+                continue
+            extra += 1
         try:
-            lines = lines_from_zip(api.blob("/actions/runs/%d/logs" % r["id"]))
-        except Exception:                                  # noqa: BLE001  a log gone or too big: that run is not read
+            jobs = api.json("/actions/runs/%d/jobs?per_page=100" % rid).get("jobs") or []
+        except Exception:                                  # noqa: BLE001  that run is not read
             continue
-        read.append({"id": r["id"], "event": r.get("event"), "lines": lines})
-    return read, len(runs)
+        r = by[rid]
+        item = {"id": rid, "event": r.get("event"), "created_at": r.get("created_at"),
+                "steps": step_states(jobs, entry.get("steps") or {}), "lines": None}
+        found += any(v == "ran" for v in item["steps"].values())
+        read.append(item)
+    sends = [x for x in read if any(v == "ran" for v in x["steps"].values())]
+    sends.sort(key=lambda x: (x["id"] in due_ids, x.get("created_at") or "", x["id"]), reverse=True)
+    for x in sends[:LOGS_PER_WF]:
+        try:
+            x["lines"] = lines_from_zip(api.blob("/actions/runs/%d/logs" % x["id"]))
+        except Exception:                                  # noqa: BLE001  a log gone or too big: that run is not read
+            pass
+    read.sort(key=lambda x: (x.get("created_at") or "", x["id"]), reverse=True)
+    return read, total, due
+
 
 
 def dispatch_count(api, wf, now):
@@ -333,21 +558,28 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
                      "status": "unknown", "why": "no Actions token: run logs not read"}], None
         api = Api(repo, token, api_url)
     rows, read_cache = [], {}
+    entries = {e["workflow"]: e for e in SENDERS}
+
+    def read(wf):
+        if wf not in read_cache:
+            e = entries[wf]
+            crons = None
+            if (e.get("due") or ("run",))[0] == "tick":
+                import cron_health                        # the gate's own --cron arguments, never a copy
+                crons = cron_health.gate_crons(wf)
+            read_cache[wf] = read_runs(api, e, now, crons)
+        return read_cache[wf]
     for e in SENDERS:
         wf = e["workflow"]
         try:
-            if wf not in read_cache:
-                read_cache[wf] = read_runs(api, wf, now)
-            runs, total = read_cache[wf]
+            runs, total, due = read(wf)
             evidence = disp = None
             if e.get("worker_started"):
                 src, key = e["evidence"]
-                if src not in read_cache:
-                    read_cache[src] = read_runs(api, src, now)
-                vals = [l.get(key, 0) for r in read_cache[src][0] for l in r["lines"]]
+                vals = [l.get(key, 0) for r in read(src)[0] for l in r.get("lines") or []]
                 evidence = max(vals) if vals else None
                 disp = dispatch_count(api, wf, now)
-            rows.append(classify(e, runs, total, sender_states(e, environ), disp, evidence))
+            rows.append(classify(e, runs, total, sender_states(e, environ), disp, evidence, due=due))
         except Exception as ex:                            # noqa: BLE001
             rows.append({"workflow": "delivery:" + wf, "critical": True, "clock": "reader email delivered",
                          "status": "unknown", "why": "could not read runs: %s" % str(ex)[:160]})
@@ -418,7 +650,14 @@ def selftest():
     ck("(b) counts what waited", "15 over 5 run(s)" in row["why"], row["why"])
     # one success in the window clears (b)
     row = classify(E["price-watch.yml"], pw + [R(9, "workflow_run", L("price-watch", 1, 1, 0))], 96, ("on", "no switch"))
-    ck("one reader email in 24 h clears (b)", row["status"] == "ok", row)
+    ck("one reader email in 24 h clears (b)", "(b)" not in row["why"], row)
+    ck("but each live run that mailed none of its waiting readers is (f), named", row["status"] == "late"
+       and "(f) 5 live run(s) had readers waiting and mailed none (run 0, 1, 2)" in row["why"], row["why"])
+    row = classify(E["price-watch.yml"], [R(9, "workflow_run", L("price-watch", 1, 1, 0)), R(8, "workflow_run", L("price-watch", 0, 0, 0))],
+                   96, ("on", "no switch"))
+    ck("(f) is not a run with nobody waiting", row["status"] == "ok", row)
+    row = classify(E["price-watch.yml"], [R(9, "workflow_dispatch", L("price-watch", 0, 3, 1))], 96, ("on", "no switch"))
+    ck("(f) is not a dry run", row["status"] == "ok", row)
     # nothing waiting, nothing sent: fine
     row = classify(E["price-watch.yml"], [R(1, "workflow_run", L("price-watch", 0, 0, 0))], 96, ("on", "no switch"))
     ck("nothing waiting is ok", row["status"] == "ok", row)
@@ -463,17 +702,195 @@ def selftest():
     row = classify(cr, run_, 2, sender_states(cr, {"CUSTOMRATES_NOTICE_LIVE": "0"}))
     ck("custom rates switch off: ok", row["status"] == "ok" and "customrates-notice: switch off" in row["why"], row["why"])
 
-    # no lines read
-    row = classify(E["daily.yml"], [R(1, "schedule")], 3, ("on", "x"))
-    ck("no DELIVERY line read: ok, and says so", row["status"] == "ok" and "no DELIVERY line" in row["why"], row)
+    # ── the Nov 4 2026 real case: the Daily runs about 81 times a day and sends in one ──
+    # cron-health read the newest 2 and 3 longest of 81 runs, found no DELIVERY line and called it ok:
+    # "no DELIVERY line in the 5 of 81 run(s) read in 24 h". The send was run 41823633959, step
+    # "Send daily email", 11:48 to 11:55 UTC. The fixture: 81 runs, newest first; the send is the
+    # 79th; the newest 5 are gate-only ticks; four long morning runs where the gate waited and the
+    # generate job never ran (a long run is not a send).
+    now = datetime(2026, 11, 5, 11, 12, tzinfo=UTC)          # before 07:15 CST: the day judged is Nov 4
+    SEND = 79
 
-    # pick_runs: the newest two, then the longest
-    T = lambda h, m: "2026-10-20T%02d:%02d:00Z" % (h, m)
-    rs = [{"id": i, "status": "completed", "conclusion": "success", "created_at": T(10, i), "run_started_at": T(10, i),
-           "updated_at": T(10 + (i == 3), i + (5 if i == 5 else 0))} for i in range(10)]
-    rs.append({"id": 99, "status": "in_progress", "created_at": T(11, 0)})
-    got = [r["id"] for r in pick_runs(rs, 4)]
-    ck("pick_runs: newest two, then the longest, newest first", got == [9, 8, 5, 3], got)
+    def daily_runs():
+        out = []
+        for i in range(81):                                  # i = 0 is the newest
+            c = now - timedelta(minutes=2 + i * 18)
+            secs = 30
+            if i + 1 == SEND:
+                secs = 529
+            elif i + 1 in (SEND - 2, SEND - 4, SEND - 6, SEND - 8):
+                secs = 600                                   # the gate looped, generate was skipped
+            out.append({"id": 1000 + i, "event": "workflow_dispatch", "status": "completed", "conclusion": "success",
+                        "created_at": c.strftime("%Y-%m-%dT%H:%M:%SZ"), "run_started_at": c.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        "updated_at": (c + timedelta(seconds=secs)).strftime("%Y-%m-%dT%H:%M:%SZ")})
+        return out
+    DR = daily_runs()
+    send_id = DR[SEND - 1]["id"]
+    ck("fixture: 81 runs, the send is the 79th and runs 11:46 UTC Nov 4", len(DR) == 81
+       and DR[SEND - 1]["created_at"].startswith("2026-11-04T11:4"), DR[SEND - 1])
+    JOB_GATE = {"name": "gate", "conclusion": "success", "steps": [{"name": "Run cron gate", "conclusion": "success"}]}
+
+    def daily_jobs(rid, send="ran"):
+        if rid != send_id:
+            return [JOB_GATE, {"name": "generate", "conclusion": "skipped", "steps": []}]
+        st = {"ran": "success", "skipped": "skipped"}[send]
+        return [JOB_GATE, {"name": "generate", "conclusion": "success", "steps": [
+            {"name": "Generate daily briefing", "conclusion": "success"},
+            {"name": "Send daily email", "conclusion": st, "started_at": "x", "completed_at": "y"},
+            {"name": "Keep the sent copy", "conclusion": "success"}]}]
+
+    def zip_of(*lines):
+        b = io.BytesIO()
+        with zipfile.ZipFile(b, "w") as z:
+            z.writestr("generate/27_Send daily email.txt", "".join("2026-11-04T11:55:00.1Z %s\n" % l for l in lines)
+                       or "2026-11-04T11:55:00.1Z briefing sent\n")
+        return b.getvalue()
+
+    class DailyApi:
+        def __init__(self, send="ran", line="DELIVERY sender=daily sent_readers=201 waiting=201 dry=0", runs=None):
+            self.calls, self.send, self.line, self.runs = [], send, line, runs if runs is not None else DR
+
+        def json(self, path):
+            self.calls.append(path)
+            if path.startswith("/actions/workflows/daily.yml/runs"):
+                page = int(urllib.parse.parse_qs(urllib.parse.urlsplit(path).query)["page"][0])
+                got = self.runs[(page - 1) * 100: page * 100]
+                return {"total_count": len(self.runs), "workflow_runs": got}
+            if path.startswith("/actions/runs/"):
+                return {"jobs": daily_jobs(int(path.split("/")[3]), self.send)}
+            return {"workflow_runs": [], "total_count": 0}
+
+        def blob(self, path):
+            self.calls.append(path)
+            rid = int(path.split("/")[3])
+            return zip_of(self.line) if rid == send_id and self.line else zip_of()
+
+    dl = E["daily.yml"]
+    on = {"daily": ("on", "no switch")}
+    # the old view: the newest five runs, no line in any, no due check -> ok
+    old = classify(dl, [R(r["id"], r["event"]) for r in DR[:5]], 81, on)
+    ck("Nov 4 Daily, the old view: the newest 5 runs say ok with no line (the blind spot)", old["status"] == "ok"
+       and "DELIVERY" not in old["why"], old)
+    api = DailyApi()
+    runs, total, due = read_runs(api, dl, now)
+    row = classify(dl, runs, total, on, due=due)
+    ck("Nov 4 Daily: the send in run 79 of 81 is found and its line read", row["status"] == "ok"
+       and "2026-11-04: sent by run %d" % send_id in row["why"] and "201 sent to readers" in row["why"], row["why"])
+    ck("Nov 4 Daily: the day judged before 07:15 CST is the day before", due["day"] == "2026-11-04" and due["past_due"], due)
+    jobs_calls = [c for c in api.calls if c.endswith("/jobs?per_page=100")]
+    logs_calls = [c for c in api.calls if c.endswith("/logs")]
+    ck("Nov 4 Daily: only runs long enough to send are opened (5 of 81), one log", len(jobs_calls) == 5
+       and logs_calls == ["/actions/runs/%d/logs" % send_id], (len(jobs_calls), logs_calls))
+    ck("Nov 4 Daily: within its call bound", len(api.calls) <= LIST_PAGES + JOBS_PER_WF + LOGS_PER_WF, len(api.calls))
+    # the send step ran and printed no DELIVERY line: red
+    runs, total, due = read_runs(DailyApi(line=""), dl, now)
+    row = classify(dl, runs, total, on, due=due)
+    ck("Daily: a send step that ran with no DELIVERY line is late (d)", row["status"] == "late"
+       and "(d) run %d ran the send step 'Send daily email' and printed no DELIVERY line" % send_id in row["why"], row["why"])
+    # it ran, live, to nobody of the 201 waiting: red
+    runs, total, due = read_runs(DailyApi(line="DELIVERY sender=daily sent_readers=0 waiting=201 dry=0"), dl, now)
+    row = classify(dl, runs, total, on, due=due)
+    ck("Daily: sent_readers=0 with readers waiting, not dry, is late (f)", row["status"] == "late" and "(f)" in row["why"], row["why"])
+    # the send step never ran that morning: the expected send is missing
+    runs, total, due = read_runs(DailyApi(send="skipped"), dl, now)
+    row = classify(dl, runs, total, on, due=due)
+    ck("Daily: no run reached the send step by 07:15 Central is late (e)", row["status"] == "late"
+       and "(e) 2026-11-04: no run sent it by 07:15 Central" in row["why"], row["why"])
+    # a dry run that reached the step (a run by hand) is not the day's send
+    runs, total, due = read_runs(DailyApi(line="DELIVERY sender=daily sent_readers=0 waiting=201 dry=1"), dl, now)
+    row = classify(dl, runs, total, on, due=due)
+    ck("Daily: a dry line is not the day's send (e)", row["status"] == "late" and "(e)" in row["why"], row["why"])
+    # a second run the same day finds the day flag set: sent_readers=0 waiting=0, that is the day sent
+    runs, total, due = read_runs(DailyApi(line="DELIVERY sender=daily sent_readers=0 waiting=0 dry=0"), dl, now)
+    row = classify(dl, runs, total, on, due=due)
+    ck("Daily: 'already sent' (0 sent, 0 waiting, live) counts as the day sent", row["status"] == "ok", row["why"])
+    # no run long enough to send in the morning window: missing, not "nothing seen"
+    short = [dict(r, updated_at=r["run_started_at"]) for r in DR]
+    runs, total, due = read_runs(DailyApi(runs=short), dl, now)
+    row = classify(dl, runs, total, on, due=due)
+    ck("Daily: only gate ticks all morning is late (e), not ok", row["status"] == "late" and "(e)" in row["why"], row["why"])
+    # before 07:15 Central the same morning's send is not yet due
+    early = datetime(2026, 11, 4, 12, 0, tzinfo=UTC)          # 06:00 CST
+    ck("Daily: at 06:00 CST the day judged is yesterday", daily_due(dl["due"], early)[0] == "2026-11-03")
+    # the list reaches back to the start of the judged day's window, past 24 h
+    ck("Daily: the runs listed reach back to 04:30 Central of the day judged",
+       list_since(dl, now) == datetime(2026, 11, 4, 10, 30, tzinfo=UTC), list_since(dl, now))
+    # the API caps a page at 100: a busier day is read in pages
+    many = [dict(DR[0], id=5000 + i) for i in range(150)]
+    pa = DailyApi(runs=many)
+    got, tot = list_runs(pa, "daily.yml", now - timedelta(hours=24))
+    ck("runs are listed in pages of 100", len(got) == 150 and tot == 150 and len(pa.calls) == 2, (len(got), pa.calls))
+
+    # ── a gated sender: the run that served the tick must reach the send step ──
+    la = E["land-alert.yml"]
+    LAN = datetime(2026, 11, 3, 20, 0, tzinfo=UTC)
+    lr = []
+    for i in range(16):                                      # chained runs every 15 minutes from 16:00
+        c = datetime(2026, 11, 3, 16, 0, tzinfo=UTC) + timedelta(minutes=15 * i)
+        lr.append({"id": 2000 + i, "event": "workflow_run", "status": "completed", "conclusion": "success",
+                   "created_at": c.strftime("%Y-%m-%dT%H:%M:%SZ"), "run_started_at": c.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                   "updated_at": (c + timedelta(seconds=60)).strftime("%Y-%m-%dT%H:%M:%SZ")})
+    lr.append({"id": 1999, "event": "workflow_dispatch", "status": "completed", "conclusion": "success",
+               "created_at": "2026-11-03T15:50:00Z", "run_started_at": "2026-11-03T15:50:00Z", "updated_at": "2026-11-03T15:59:00Z"})
+    lr.append({"id": 1998, "event": "workflow_run", "status": "completed", "conclusion": "success",
+               "created_at": "2026-11-03T15:30:00Z", "run_started_at": "2026-11-03T15:30:00Z", "updated_at": "2026-11-03T15:31:00Z"})
+    order, due = plan(la, lr, LAN, ["47 15 3 * *"])
+    ck("tick: the first chained run after 15:47 served it (a run by hand does not)", due["ticks"] == [
+        {"tick": "2026-11-03T15:47:00Z", "run": 2000, "pending": False}] and order[0] == 2000, (due, order[:3]))
+    J = lambda st: [{"name": "email", "conclusion": "success", "steps": [{"name": "Monthly land sale email (scheduled)", "conclusion": st}]}]
+    LON = {"land-alert": ("on", "LANDSALES_MONTHLY_LIVE is '1'")}
+    lines_ok = [L("land-alert", 4, 4, 0)]
+    row = classify(la, [dict(R(2000, "workflow_run", *lines_ok), steps=step_states(J("success"), la["steps"]))], 18, LON, due=due)
+    ck("tick: the served run reached the step and mailed: ok", row["status"] == "ok", row["why"])
+    row = classify(la, [dict(R(2000, "workflow_run"), steps=step_states(J("skipped"), la["steps"]))], 18, LON, due=due)
+    ck("tick: the served run stopped before the send step is late (e)", row["status"] == "late"
+       and "(e) run 2000 served the 2026-11-03T15:47:00Z tick and did not reach the send step" in row["why"], row["why"])
+    row = classify(la, [dict(R(2000, "workflow_run"), steps=step_states([{"name": "email", "conclusion": "skipped", "steps": []}], la["steps"]))],
+                   18, LON, due=due)
+    ck("tick: the served run's send job never ran is late (e)", row["status"] == "late" and "(no_job)" in row["why"], row["why"])
+    cr = E["cash-rent.yml"]
+    row = classify(cr, [dict(R(2000, "workflow_run"), steps=step_states([{"name": "build", "conclusion": "success", "steps": [
+        {"name": "Rent release emails", "conclusion": "skipped"}, {"name": "Custom rates new-survey emails", "conclusion": "skipped"}]}],
+        cr["steps"]))], 18, sender_states(cr, {"CUSTOMRATES_NOTICE_LIVE": "1"}), due=due)
+    ck("tick: a send step with its own condition (cash rent outside its window) skipped is ok", row["status"] == "ok", row["why"])
+    _o, due2 = plan(la, [r for r in lr if r["id"] in (1998, 1999)], LAN, ["47 15 3 * *"])
+    row = classify(la, [], 2, LON, due=due2)
+    ck("tick: no run after the tick for 2 h is late (e)", row["status"] == "late" and "no run started after it" in row["why"], row["why"])
+    _o, due3 = plan(la, lr, datetime(2026, 11, 2, 20, 0, tzinfo=UTC), ["47 15 3 * *"])
+    row = classify(la, [], 0, LON, due=due3)
+    ck("tick: no tick in 24 h is nothing due, ok", row["status"] == "ok" and "nothing due: no tick" in row["why"], row["why"])
+
+    # ── a sender that may send on any run: a sample, newest-longest first ──
+    ew = E["elevator-watch.yml"]
+    ewr = [dict(lr[i], id=3000 + i) for i in range(16)]
+    stop = [{"name": "watch", "conclusion": "failure", "steps": [{"name": "Fetch", "conclusion": "failure"},
+                                                                   {"name": "Send", "conclusion": "skipped"},
+                                                                   {"name": "Send ZIP alerts", "conclusion": "skipped"}]}]
+    row = classify(ew, [dict(R(3001, "workflow_run"), steps=step_states(stop, ew["steps"]))], 96, ("on", "x"), due={"kind": "run"})
+    ck("run: the job ran and stopped before its send steps is late (e)", row["status"] == "late" and "(e) 1 run(s)" in row["why"], row["why"])
+    ck("step names match exactly, or with a (...) suffix only", step_states(stop, {"Send": []}) == {"Send": "skipped"}
+       and step_states([{"steps": [{"name": "Send ZIP alerts", "conclusion": "success"}]}], {"Send": []}) == {"Send": "no_job"})
+
+    class EwApi(DailyApi):
+        def json(self, path):
+            self.calls.append(path)
+            if "/runs?" in path:
+                return {"total_count": 16, "workflow_runs": ewr}
+            return {"jobs": [{"name": "watch", "conclusion": "success", "steps": [
+                {"name": "Send", "conclusion": "success"}, {"name": "Send ZIP alerts", "conclusion": "success"}]}]}
+
+        def blob(self, path):
+            self.calls.append(path)
+            b = io.BytesIO()
+            with zipfile.ZipFile(b, "w") as z:
+                z.writestr("watch/5_Send.txt", "t DELIVERY sender=elevator-watch sent_readers=1 waiting=1 dry=0\n"
+                           "t DELIVERY sender=zip-alert sent_readers=0 waiting=0 dry=0\n")
+            return b.getvalue()
+    ea = EwApi()
+    runs, total, due = read_runs(ea, ew, LAN)
+    row = classify(ew, runs, total, {"elevator-watch": ("on", "x"), "zip-alert": ("on", "x")}, due=due)
+    ck("run: a sample stops at %d runs that reached a send step" % SAMPLE_SENDS,
+       sum(1 for c in ea.calls if c.endswith("/jobs?per_page=100")) == SAMPLE_SENDS and row["status"] == "ok", (ea.calls, row["why"]))
 
     # the archive: a line repeated in the job file and the step file counts once
     buf = io.BytesIO()
@@ -484,6 +901,7 @@ def selftest():
     ck("archive: one line, not two", len(got) == 1 and got[0]["asks"] == 2, got)
 
     # delivery_rows: a fake API, end to end, and the reuse of a recent pass
+    T = lambda h, m: "2026-10-20T%02d:%02d:00Z" % (h, m)
     class FakeApi:
         def __init__(self):
             self.calls = []
@@ -492,6 +910,8 @@ def selftest():
             self.calls.append(path)
             if "event=workflow_dispatch" in path:
                 return {"total_count": 0}
+            if path.startswith("/actions/runs/"):
+                return {"jobs": [{"name": "run", "conclusion": "success", "steps": [{"name": "Run", "conclusion": "success"}]}]}
             if "rp-design-email.yml" in path:
                 return {"workflow_runs": [{"id": 1, "event": "schedule", "status": "completed", "conclusion": "success",
                                            "created_at": T(9, 0), "run_started_at": T(9, 0), "updated_at": T(9, 2)}]}
