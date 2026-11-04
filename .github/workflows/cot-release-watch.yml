@@ -214,11 +214,33 @@ jobs:
       # job dies before the commit step and the page never gets this week's
       # report at all. A missing analysis panel is a hidden section. A missing
       # COT update is the thing readers came for.
+      # data/cot-deep.json lives on the private raw branch (Nov 4: no page
+      # reads it). Unpacked before the append; a failed fetch fails this step,
+      # the append then finds no file and stops, and the COT numbers still
+      # publish (continue-on-error, as for the append). Never commits it to main.
+      - name: Deep history from raw
+        id: rawpull
+        continue-on-error: true
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh data/cot-deep.json
+
       - name: Append the week to the deep history
         id: deep
         continue-on-error: true
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         run: python scripts/cot_deep.py --append
+
+      # Saved back only after a clean append: a failed one never overwrites
+      # the good copy on raw. RAW_SOFT: a failed save is a warning, the COT
+      # data still publishes; Sunday's cot-deep-rebuild.yml rebuilds the file.
+      - name: Save the deep history to raw
+        if: (steps.probe.outputs.moved == 'true' || inputs.force == true) && steps.deep.outcome == 'success'
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "cot deep history" data/cot-deep.json
 
       # The statistics are checked against fixtures BEFORE they are computed on
       # live data. A broken percentile is worse than a late one.
@@ -299,13 +321,13 @@ jobs:
           git config user.email "bot@agsist.com"
           # Same shape as cot.yml: our regenerated files are authoritative, so
           # snapshot them, hard-sync to the remote, lay ours back on top.
-          for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
+          for f in data/cot.json data/cot-history.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
             mkdir -p "/tmp/keep/$(dirname "$f")"; cp "$f" "/tmp/keep/$f" 2>/dev/null || true
           done
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in data/cot.json data/cot-history.json data/cot-deep.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
+            for f in data/cot.json data/cot-history.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
               [ -f "/tmp/keep/$f" ] && cp "/tmp/keep/$f" "$f"
             done
             git add data/cot.json data/cot-history.json cot.html
@@ -313,11 +335,10 @@ jobs:
             # same way: on a run where that step failed these are unchanged,
             # and an unchanged path is not an error.
             git add data/whats-priced-in.json usda-calendar.html 2>/dev/null || true
-            # These two do not exist until the deep rebuild has been run once.
+            # The analysis does not exist until the deep rebuild has run once.
             # Unguarded, `git add` on a missing path exits 128 and the commit
-            # never happens -- which would mean the first release after this
-            # kit is uploaded publishes nothing at all.
-            git add data/cot-deep.json data/cot-analysis.json 2>/dev/null || true
+            # never happens. (data/cot-deep.json itself goes to raw above.)
+            git add data/cot-analysis.json 2>/dev/null || true
             if git diff --staged --quiet; then
               echo "Probe said the report moved but nothing changed on disk — investigate."
               exit 0
@@ -348,9 +369,10 @@ jobs:
       # only evaluates on the runs where the analysis pipeline was actually
       # supposed to execute.
       - name: Analysis result
-        if: (steps.probe.outputs.moved == 'true' || inputs.force == true) && (steps.deep.outcome == 'failure' || steps.selftest.outcome == 'failure' || steps.analysis.outcome == 'failure' || steps.selftest.outcome == 'skipped')
+        if: (steps.probe.outputs.moved == 'true' || inputs.force == true) && (steps.rawpull.outcome == 'failure' || steps.deep.outcome == 'failure' || steps.selftest.outcome == 'failure' || steps.analysis.outcome == 'failure' || steps.selftest.outcome == 'skipped')
         run: |
           echo "The COT data published, but the analysis pipeline did not complete."
+          echo "  raw unpack  : ${{ steps.rawpull.outcome }}"
           echo "  deep append : ${{ steps.deep.outcome }}"
           echo "  selftest    : ${{ steps.selftest.outcome }}"
           echo "  analysis    : ${{ steps.analysis.outcome }}"
@@ -391,8 +413,10 @@ jobs:
           python scripts/send_cot_weekly.py --selftest
           python3 scripts/test_send_loops.py
 
+      # Nov 4 (#325): never mail the list when data/cot-deep.json could not be unpacked
+      # from raw (the step is soft so the COT numbers still publish); "Analysis result" is red.
       - name: Email Funds this week
-        if: ${{ !cancelled() && steps.commit.outcome == 'success' && steps.cot_mail_test.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' && steps.cot_mail_test.outcome == 'success' && steps.rawpull.outcome == 'success' }}
         env:
           SMTP_HOST:    ${{ secrets.SMTP_HOST }}
           SMTP_PORT:    ${{ secrets.SMTP_PORT }}

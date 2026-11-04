@@ -46,7 +46,8 @@ const MENU = {
     "Harvest and bins": [["/harvest-or-wait", "Harvest now or wait"], ["/grain-emc", "Grain drying (EMC)"], ["/grain-shrink", "Grain shrink"], ["/grain-bin-calculator", "Bin calculator"], ["/combine-loss", "Combine loss"], ["/tools", "All tools →"]],
   }],
   money: ["Money & Land", {
-    Land: [["/rent/", "Cash rent"], ["/farmland-atlas", "Farmland Atlas"], ["/land-sales/", "Land sales"], ["/custom-rates", "Custom rates"], ["/cash-lease", "Lease form"]],
+    // Nov 4, 2026 (lead, "not missable"): Land sales is Farmland sales, first under Land
+    Land: [["/land-sales/", "Farmland sales"], ["/rent/", "Cash rent"], ["/farmland-atlas", "Farmland Atlas"], ["/custom-rates", "Custom rates"], ["/cash-lease", "Lease form"]],
     Programs: [["/arc-plc", "ARC or PLC"], ["/farm-bill", "Farm bill"]],
     Selling: [["/store-or-sell", "Sell or store"], ["/breakeven", "Break-even"], ["/commodity-loan", "CCC loan"]],
   }],

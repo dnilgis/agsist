@@ -28,7 +28,12 @@ Answering that needs three things the old file does not carry:
 
 WHAT IT WRITES
 --------------
-  data/cot-deep.json    columnar, one block per commodity:
+  data/cot-deep.json    columnar, one block per commodity. On the private raw
+                        branch since Nov 4, 2026 (no page reads it): every job
+                        that reads it unpacks it with scripts/pull_raw.sh and
+                        the writers save it with scripts/push_raw.sh
+                        (test/raw-readers.test.mjs). "Committed" below means
+                        the copy on raw. Each block:
       dates[]  oi[]  mm_long[] mm_short[] mm_spread[]
       pm_long[] pm_short[]  swap_long[] swap_short[] swap_spread[]
       or_long[] or_short[]  nr_long[] nr_short[]

@@ -86,3 +86,11 @@ build/shots/
 /.verify/
 # implied futures shadow test: ticks live on the private raw branch only (implied-futures.yml)
 /data/implied-futures/
+# Builder-only data (Nov 4, Sig: "builder-only data moves to feedbag raw"; no page,
+# component, worker or other repo loads them). Each producing job saves it with
+# scripts/push_raw.sh and every job that reads it unpacks it first with
+# scripts/pull_raw.sh; test/raw-readers.test.mjs holds the list and checks both.
+# site-usage.json: 90 days of Search Console queries (private). cot-deep.json:
+# the twenty-year COT history behind data/cot-analysis.json.
+/data/site-usage.json
+/data/cot-deep.json

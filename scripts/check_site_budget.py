@@ -25,17 +25,21 @@ the same commit and say why in the message.
   python3 scripts/check_site_budget.py --selftest
   python3 scripts/check_site_budget.py --tree origin/main   # measure a commit, not the working tree
 
-How it counts: every file in the checkout (or, with --tree, every blob in that
-commit's tree) except .git, dot folders, the tooling folders in SKIP_DIRS and
-files git ignores, at its size on disk in bytes; 1 MB = 1,048,576 bytes. A sparse
+How it counts: what the Pages artifact receives. Every file in the checkout (or,
+with --tree, every blob in that commit's tree) except .git, dot folders, the
+tooling folders in SKIP_DIRS and files git ignores, at its size on disk in
+bytes; 1 MB = 1,048,576 bytes. Since #221 (Oct 30) Pages deploys a filtered
+artifact (scripts/pages_publish.py), so the total, the 900 MB stop and every
+folder budget count only the published bytes: a path in NOT_READER_FACING is
+left out (Nov 4, Sig: "count only the published bytes"; the tree held 31 MB that
+Pages never received). The tree total is still printed, as tree_mb. A sparse
 or partial checkout holds only part of the tree, so the walk would undercount
 (Oct 27: a sparse worktree read 25.9 MB of 817); there it measures HEAD's tree
 instead and says so.
 
-NOT_READER_FACING lists what Pages serves today that no reader loads (tooling,
-tests, fixtures, workflow-only data). It counts toward the total because Pages
-publishes it; the report prints it so a publish-only-the-site deploy can be
-weighed (notes/panels/godseye-2026-10-26/size-trim-plan.md in feedbag).
+NOT_READER_FACING lists what no reader loads (tooling, tests, fixtures,
+workflow-only data). scripts/pages_publish.py leaves it out of the artifact and
+fails the deploy when a published page links into it, so the gate can trust it.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -59,7 +63,10 @@ FOLDER_MB = {
     # data: 300. Oct 29 (fx/sizeinputs): build inputs no reader loads moved to
     # the private raw branch (data/atlas/src CRP workbooks 3.4 MB,
     # data/atlas/raw/drought.json 2.7 MB, data/site-inventory.json 0.2 MB); the
-    # workflows unpack them with scripts/pull_raw.sh.
+    # workflows unpack them with scripts/pull_raw.sh. Nov 4 (fx/datasplit):
+    # the budget counts published bytes (280.1 MB, not the tree's 285.5), and
+    # the builder-only data/site-usage.json (4.0 MB) and data/cot-deep.json
+    # (1.2 MB) moved to raw the same way (test/raw-readers.test.mjs).
     "data": 300,
     "arc-plc": 150,
     "farmland-atlas": 200,
@@ -99,6 +106,9 @@ PAGE_EXCEPTIONS = {
 }
 
 SKIP_DIRS = {".git", ".github", "node_modules", "__pycache__", ".claude"}
+# Pages needs these although they start with a dot or sit at the root; the
+# artifact always keeps them (scripts/pages_publish.py reads this too).
+KEEP_ALWAYS = (".well-known/", ".nojekyll", "CNAME")
 
 # Published today but not loaded by any reader (measured Oct 27, 2026 from
 # origin/main: no page, component or worker references them). A prefix ending
@@ -134,6 +144,22 @@ def reader_facing(rel):
     return True
 
 
+def publishes(rel):
+    """True when the Pages artifact keeps rel (scripts/pages_publish.py stages exactly these)."""
+    rel = rel.replace(os.sep, "/")
+    if rel.startswith(KEEP_ALWAYS) or rel in KEEP_ALWAYS:
+        return True
+    parts = rel.split("/")
+    if any(d in SKIP_DIRS or d.startswith(".") for d in parts[:-1]):
+        return False
+    return reader_facing(rel)
+
+
+def _walked(d):
+    """A folder the walk enters: not tooling, not a dot folder unless Pages keeps it."""
+    return d not in SKIP_DIRS and (not d.startswith(".") or d + "/" in KEEP_ALWAYS)
+
+
 def is_sparse(root):
     """True when root is a git checkout that holds only part of its tree."""
     import subprocess
@@ -162,7 +188,7 @@ def walk_tree(root, rev):
         if len(m) < 4 or m[1] != "blob" or m[3] == "-":
             continue
         parts = path.split("/")
-        if any(d in SKIP_DIRS or d.startswith(".") for d in parts[:-1]):
+        if not all(_walked(d) for d in parts[:-1]):
             continue
         yield os.path.normpath(path), int(m[3])
 
@@ -189,7 +215,7 @@ def walk(root):
     tooling folders above are left out, and so are files git ignores."""
     skip = ignored_files(root)
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".")]
+        dirnames[:] = [d for d in dirnames if _walked(d) and (dirpath == root or not d.startswith("."))]
         for f in filenames:
             p = os.path.join(dirpath, f)
             if skip and os.path.relpath(p, root) in skip:
@@ -208,18 +234,23 @@ def measure(root=ROOT, rev=None):
     elif rev is not None:
         source = f"git tree {rev}"
     files = walk(root) if rev is None else walk_tree(root, rev)
-    total = 0
+    total = 0       # published bytes: what the Pages artifact receives
+    tree = 0        # every walked file, published or not
     not_reader = 0
     sizes = {}
     folders = {}
+    folders_tree = {}
     html = {}
     for rel, n in files:
+        tree += n
+        top = rel.split(os.sep, 1)[0] if os.sep in rel else "(root files)"
+        folders_tree[top] = folders_tree.get(top, 0) + n
+        if not publishes(rel):
+            not_reader += n
+            continue
         total += n
         if rel.replace(os.sep, "/") in FILE_KB:
             sizes[rel.replace(os.sep, "/")] = n
-        if not reader_facing(rel):
-            not_reader += n
-        top = rel.split(os.sep, 1)[0] if os.sep in rel else "(root files)"
         folders[top] = folders.get(top, 0) + n
         if rel.endswith(".html") and top != "(root files)":
             html.setdefault(top, []).append((rel, n))
@@ -257,6 +288,7 @@ def measure(root=ROOT, rev=None):
         over.append(f"...and {len(fat) - 10} more generated pages over {SET_PAGE_KB} KB")
     return {
         "total_mb": total_mb,
+        "tree_mb": mb(tree),
         "warn_mb": WARN_MB,
         "fail_mb": FAIL_MB,
         "warn": warn,
@@ -264,6 +296,7 @@ def measure(root=ROOT, rev=None):
         "not_reader_facing_mb": mb(not_reader),
         "source": source,
         "folders": {k: mb(v) for k, v in sorted(folders.items(), key=lambda kv: -kv[1])},
+        "folders_tree": {k: mb(v) for k, v in sorted(folders_tree.items(), key=lambda kv: -kv[1])},
         "over": over,
         "excused": [f"{r} {kb} KB: {PAGE_EXCEPTIONS[r.replace(os.sep, '/')]}" for r, kb in excused],
     }
@@ -279,6 +312,7 @@ def selftest():
 
     global FAIL_MB, WARN_MB, SET_PAGE_KB, SET_MIN, DEFAULT_FOLDER_MB
     saved = (FAIL_MB, WARN_MB, SET_PAGE_KB, SET_MIN, DEFAULT_FOLDER_MB)
+    saved_data = FOLDER_MB["data"]
     try:
         with tempfile.TemporaryDirectory() as d:
             os.makedirs(os.path.join(d, "gen"))
@@ -345,13 +379,14 @@ def selftest():
                 if subprocess.run(g + ["commit", "-q", "-m", "t"], capture_output=True).returncode == 0:
                     full = measure(d)
                     tree = measure(d, rev="HEAD")
-                    ok(tree["total_mb"] == full["total_mb"] == 1.5,
-                       f"tree and checkout agree, .github and ignored files left out: {tree['total_mb']} {full['total_mb']}")
+                    ok(tree["tree_mb"] == full["tree_mb"] == 1.5 and tree["total_mb"] == full["total_mb"] == 1.0,
+                       f"tree and checkout agree, .github and ignored files left out, scripts/ not published:"
+                       f" {tree['tree_mb']} {full['tree_mb']} {tree['total_mb']} {full['total_mb']}")
                     ok(tree["not_reader_facing_mb"] == 0.5, f"scripts/ counts as not reader-facing: {tree['not_reader_facing_mb']}")
                     subprocess.run(g + ["sparse-checkout", "set", "--no-cone", "/scripts/"], capture_output=True)
                     if is_sparse(d):
                         sp = measure(d)
-                        ok(sp["total_mb"] == 1.5 and "sparse" in sp["source"],
+                        ok(sp["total_mb"] == 1.0 and "sparse" in sp["source"],
                            f"a sparse checkout is measured from its tree: {sp['total_mb']} {sp['source']}")
                     else:
                         fails.append("sparse checkout could not be set up in the selftest")
@@ -360,13 +395,47 @@ def selftest():
                         fails.append("a bad --tree commit must raise, not read as 0 MB")
                     except RuntimeError:
                         pass
+        # Nov 4 (Sig): the 900 MB stop and the folder budgets count the published
+        # bytes, not the tree. A tree over the stop whose artifact is under it passes;
+        # an artifact over it fails; a folder budget ignores its left-out files.
+        with tempfile.TemporaryDirectory() as d:
+            def w(rel, n):
+                os.makedirs(os.path.dirname(os.path.join(d, rel)), exist_ok=True)
+                with open(os.path.join(d, rel), "w") as f:
+                    f.write("x" * n)
+            w("scripts/tool.py", 3 * 1048576)            # left out of the artifact
+            w("data/prf-stories/s.json", 2 * 1048576)    # left out (NOT_READER_FACING data)
+            w("data/prf/a.json", 1048576)                # published
+            w(".well-known/security.txt", 1048576)      # published although a dot folder
+            w(".github/w.yml", 1048576)                  # never walked
+            FAIL_MB, DEFAULT_FOLDER_MB = 4, 25
+            r = measure(d)
+            ok(r["tree_mb"] == 7.0 and r["total_mb"] == 2.0 and r["not_reader_facing_mb"] == 5.0,
+               f"published 2 MB of a 7 MB tree: {r['tree_mb']} {r['total_mb']} {r['not_reader_facing_mb']}")
+            ok(not any("published total" in o for o in r["over"]),
+               f"a tree over the stop whose artifact is under it passes: {r['over']}")
+            ok(r["headroom_mb"] == 2.0, f"headroom is measured on the published bytes: {r['headroom_mb']}")
+            ok(r["folders"].get("data") == 1.0 and r["folders_tree"].get("data") == 3.0 and "scripts" not in r["folders"],
+               f"folders count published bytes: {r['folders']} {r['folders_tree']}")
+            FAIL_MB = 1.5
+            ok(any("published total" in o for o in measure(d)["over"]), "an artifact over the stop fails")
+            FAIL_MB, DEFAULT_FOLDER_MB = saved[0], 2
+            FOLDER_MB["data"] = 2
+            ok(not any(o.startswith("scripts/") or o.startswith("data/") for o in measure(d)["over"]),
+               "a folder whose published bytes fit passes although its tree does not")
+            FOLDER_MB["data"] = 0.5
+            ok(any(o.startswith("data/ is 1.0 MB") for o in measure(d)["over"]), "a folder over on published bytes fails")
+            DEFAULT_FOLDER_MB = saved[4]
     finally:
         FAIL_MB, WARN_MB, SET_PAGE_KB, SET_MIN, DEFAULT_FOLDER_MB = saved
         FILE_KB.pop("gen/hist.json", None)
+        FOLDER_MB["data"] = saved_data
     ok(not reader_facing("scripts/x.py") and not reader_facing("CLAUDE.md")
        and not reader_facing("data/prf-stories/a.json") and reader_facing("data/prf/a.json")
        and reader_facing("rain/iowa/story-county.html") and reader_facing("test.html"),
        "NOT_READER_FACING matches folders by prefix and files exactly")
+    ok(publishes(".well-known/security.txt") and publishes("CNAME") and not publishes(".github/w.yml")
+       and not publishes("scripts/a.py") and publishes("data/prf/a.json"), "publishes() keeps the Pages files and the site")
     for f in fails:
         print("FAIL", f)
     print("site budget selftest:", "ok" if not fails else f"{len(fails)} failure(s)")
@@ -392,9 +461,12 @@ def main(argv):
         print(json.dumps(r, indent=2))
         return 1 if r["over"] else 0
     print(f"published size {r['total_mb']} MB (warn {WARN_MB}, fail {FAIL_MB}, Pages limit 1024), measured from the {r['source']}")
-    for k, v in list(r["folders"].items())[:8]:
-        print(f"  {k:20s}{v:8.1f} MB")
-    print(f"not loaded by readers (NOT_READER_FACING): {r['not_reader_facing_mb']} MB; headroom to the {FAIL_MB} MB stop: {r['headroom_mb']} MB")
+    print(f"  {'folder':20s}{'published':>10s}{'budget':>8s}{'tree':>9s}")
+    for k, v in list(r["folders"].items())[:10]:
+        cap = "" if k == "(root files)" else FOLDER_MB.get(k, DEFAULT_FOLDER_MB)
+        print(f"  {k:20s}{v:7.1f} MB{cap:>8}{r['folders_tree'].get(k, v):6.1f} MB")
+    print(f"tree total {r['tree_mb']} MB; left out of the artifact (NOT_READER_FACING): {r['not_reader_facing_mb']} MB;"
+          f" headroom to the {FAIL_MB} MB stop: {r['headroom_mb']} MB")
     if r["warn"] and not r["over"]:
         print(f"WARNING: published size {r['total_mb']} MB is over {WARN_MB} MB; the check fails at {FAIL_MB} MB ({r['headroom_mb']} MB left)")
     for e in r["excused"]:

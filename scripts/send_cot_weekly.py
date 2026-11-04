@@ -516,6 +516,20 @@ def released_on(as_of):
     return cot_calendar.release_date(as_of)
 
 
+def deep_problem(path=None):
+    """Why the twenty-year file cannot be used, or None. data/cot-deep.json is on the
+    private raw branch since Nov 4, 2026: a job that did not unpack it has no file, and
+    load() reads that as None, which drops the twenty-year lines without a word. A send to
+    the list refuses instead (a dry run or a preview still renders, as before)."""
+    path = Path(path or DEEP)
+    if not path.is_file():
+        return "%s is missing (unpack it: bash scripts/pull_raw.sh data/cot-deep.json)" % path.name
+    d = load(path)
+    if not isinstance(d, dict) or not isinstance(d.get("commodities"), dict) or not d["commodities"]:
+        return "%s is unreadable or has no commodities" % path.name
+    return None
+
+
 def prepare(now=None, cot=None, hist=None, deep=None, ana=None, gaps=None, stale_ok=False):
     """(as_of, released, rows) or (None, None, why). stale_ok (the preview to
     Sig only) lets an older report through; a send to the list never."""
@@ -615,6 +629,14 @@ def main(argv=(), now=None, fetch=None):
         print("::warning::%d reader(s) had no link id this run and are not mailed" % (len(rows_) - len(recipients)))
     print("list: %d reader(s) on Funds this week" % len(recipients))
     tally.waiting = len(recipients)
+    if mode == "send":
+        # Nov 4 (fx/datasplit): never mail the list without the twenty-year file. The
+        # DELIVERY line then reads dry=0 with readers waiting and none sent, which the
+        # delivery check marks red (delivery_check.py rule f).
+        why = deep_problem()
+        if why:
+            print("::error::FATAL: %s; Funds this week not sent to the list" % why)
+            return 1
     if preview:
         recipients = preview_to()
         if not recipients:
@@ -1066,6 +1088,32 @@ def _selftest():
     ok(rc == 1 and not sent, "send: no list, no mail")
     rc, log, sent, calls = _run(files, dict(W, PREVIEW="1", SIG_TO="sig@example.org", **SM), now, broken)
     ok(rc == 0 and len(sent) == 1, "preview: no list still previews")
+    # 11. no twenty-year file (Nov 4: it lives on raw; a job that did not unpack it): a send to the
+    # list refuses, loudly, with readers counted as waiting so the DELIVERY line reads red; a dry
+    # run and a preview still render without it, as the missing-file render case above does
+    import tempfile
+    nodeep = {k: v for k, v in files.items() if k != "DEEP"}
+    keep_deep = DEEP
+    try:
+        globals()["DEEP"] = Path(tempfile.mkdtemp()) / "cot-deep.json"
+        tl = delivery_line.Tally("funds-weekly")
+        globals()["TALLY"] = tl
+        rc, log, sent, calls = _run(nodeep, dict(W, SEND="1", **SM), now, fetch)
+        ok(rc == 1 and not sent and not _FakeSMTP.made and "FATAL: cot-deep.json is missing" in log
+           and ("set", "cot:2026-10-13") not in calls, "send without the deep file: refused, week not flagged %r" % log[-300:])
+        ok(tl.sent == 0 and tl.waiting == 2 and not tl.dry
+           and delivery_line.line("funds-weekly", tl.sent, tl.waiting, tl.dry) == "DELIVERY sender=funds-weekly sent_readers=0 waiting=2 dry=0",
+           "the DELIVERY line reads readers waiting, none sent, live: %r" % tl.line())
+        globals()["DEEP"].write_text("{not json")
+        rc, log, sent, calls = _run(nodeep, dict(W, SEND="1", **SM), now, fetch)
+        ok(rc == 1 and not sent and "unreadable" in log, "send with a broken deep file: refused")
+        globals()["DEEP"].unlink()
+        rc, log, sent, calls = _run(nodeep, dict(W, **SM), now, fetch)
+        ok(rc == 0 and not sent and "dry run complete" in log, "a dry run still renders without it")
+        rc, log, sent, calls = _run(nodeep, dict(W, PREVIEW="1", SIG_TO="sig@example.org", **SM), now, fetch)
+        ok(rc == 0 and len(sent) == 1, "a preview still renders without it")
+    finally:
+        globals()["DEEP"], globals()["TALLY"] = keep_deep, None
     ok(re.match(r"^[\w:.-]{1,64}$", flag_key(as_of)) and flag_key(as_of) == "cot:2026-10-13", "flag key fits the worker's pattern")
     if fails:
         for f in fails:

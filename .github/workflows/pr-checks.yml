@@ -264,11 +264,12 @@ jobs:
 
       # The FSA files, and the Atlas drought pull (data/atlas/raw/drought.json, on raw since Oct 29;
       # test/drought-county-week.test.mjs reads it and fails without it), in one fetch of the raw branch:
-      # as two steps the second fetch took 10 s, once 58 s (Oct 29)
+      # as two steps the second fetch took 10 s, once 58 s (Oct 29). Nov 4: data/cot-deep.json too
+      # (off main; test/funds-weekly.test.mjs renders the email from it; test/raw-readers.test.mjs).
       - name: FSA files and the Atlas drought pull from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: bash scripts/pull_raw.sh data/fsa data/atlas/raw/drought.json
+        run: bash scripts/pull_raw.sh data/fsa data/atlas/raw/drought.json data/cot-deep.json
       # Tests that compare with origin/main (no new schedule) or read the saved sources
       # (origin/references, in the private repo since Oct 20) skip without them.
       - name: origin/main and the references branch

@@ -32,7 +32,7 @@ import check_site_budget as budget  # noqa: E402
 
 ROOT = budget.ROOT
 # Pages needs these although they start with a dot or sit at the root.
-KEEP_ALWAYS = (".well-known/", ".nojekyll", "CNAME")
+KEEP_ALWAYS = budget.KEEP_ALWAYS
 
 
 def _excluded_names():
@@ -61,14 +61,9 @@ def absolute_pattern():
 
 
 def publishes(rel):
-    """True when the filtered artifact keeps rel (a path with /)."""
-    rel = rel.replace(os.sep, "/")
-    if rel.startswith(KEEP_ALWAYS) or rel in KEEP_ALWAYS:
-        return True
-    parts = rel.split("/")
-    if any(d in budget.SKIP_DIRS or d.startswith(".") for d in parts[:-1]):
-        return False
-    return budget.reader_facing(rel)
+    """True when the filtered artifact keeps rel (a path with /). One rule for the
+    deploy and the size gate: check_site_budget counts exactly these bytes."""
+    return budget.publishes(rel)
 
 
 def tracked(root, rev=None):
