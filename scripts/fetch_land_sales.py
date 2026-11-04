@@ -378,7 +378,19 @@ COLS = {
     # New Jersey: 1 when the deed names land whose acres the files cannot give (nj_table); read as acres uncertain
     "acx": ["ACRESUNKNOWN"],
     "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION", "TRANSFEREXEMPTIONNUMBER"],
+    # The sale detail panel (Sig, Nov 4, 2026: "every detail about the sale that is pertinent"), EXTRA below:
+    # Illinois Line 12a personal property in the price; Wisconsin rights the seller keeps and Managed Forest Law acres;
+    # Vermont financing, use before and after, the town's listed value; New Jersey's main lot assessed land and
+    # building values, their list year, living space and year built (SR-1A).
+    "pp": ["PERSONALPROPERTYAMOUNT"], "rr": ["RIGHTSRETAINED"], "mfl": ["MANAGEDFORESTACRES"],
+    "fin": ["FINANCINGTYPE"], "use0": ["USEBEFORE"], "use1": ["USEAFTER"], "glv": ["GRANDLISTVALUE"],
+    "avl": ["ASSESSEDLAND"], "avb": ["ASSESSEDBUILDINGS"], "avy": ["ASSESSMENTYEAR"], "lsf": ["LIVINGSPACE"], "yb": ["YEARBUILT"],
 }
+# Detail columns: written after the others only when a state's rows carry them (numbers or short words). None is a
+# name, an address or a mailing place (the panel leaves those out).
+EXTRA_NUM = ("pp", "mfl", "glv", "avl", "avb", "lsf")
+EXTRA_TXT = ("rr", "fin", "use0", "use1", "avy", "yb")
+EXTRA = ("pp", "rr", "mfl", "fin", "use0", "use1", "glv", "avl", "avb", "avy", "lsf", "yb")
 WI_CONVEYANCE = {"1": "Warranty Deed", "2": "Land Contract", "3": "Quit Claim Deed", "4": "Other"}
 NEED = ["date", "price", "county"]
 FARM_WORDS = re.compile(r"\b(AGRIC|AG\b|FARM|FOREST|TIMBER|UNDEVELOP|SWAMP|WASTE|VACANT LAND|PASTURE|TILLABLE|CROPLAND|RURAL VACANT|OTHER)", re.I)
@@ -582,6 +594,10 @@ def parse_rows(tables):
                 "zip": g("zip", 5) if "zip" in m else None,
                 "acx": 1 if "acx" in m and g("acx") == "1" else None,
             })
+            for x in EXTRA:
+                if x in m:
+                    v = parse_num(g(x)) if x in EXTRA_NUM else (g(x, 40) or None)
+                    recs[-1][x] = v if v not in (0, 0.0) or x in EXTRA_TXT else None
     return recs, rep
 
 
@@ -691,12 +707,13 @@ def build(st, recs, gaz, now, prior=None, months=None):
     names = any(r.get("grantor") for r in recs)
     ac1 = any(r.get("ac1") for r in recs)
     acx = any(r.get("acx") for r in recs)
+    extra = [x for x in EXTRA if any(r.get(x) not in (None, "") for r in recs)]
     # Wisconsin rows keep their filed date, so a later newest-only run can tell the latest filing of a return.
     # Illinois rows keep it too (2026-10-23): the monthly land sale email lists sales by the month they
     # were recorded (scripts/land_alert.py), and Field Scout shows it as "Recorded (filed)".
     # Vermont rows keep the date the town recorded the deed (TownDteRec), the month the land sale email lists by.
     rec = st in ("WI", "IL", "VT", "NJ") and any(r.get("rec") for r in recs)
-    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else []) + (["rec"] if rec else []) + (["acx"] if acx else [])
+    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else []) + (["rec"] if rec else []) + (["acx"] if acx else []) + extra
     index, total, files = [], 0, []
     for fips, rs in sorted(by.items()):
         # several parcels on one return: the price is for all of them
@@ -727,7 +744,8 @@ def build(st, recs, gaz, now, prior=None, months=None):
             a = r["acres"]
             rows.append([r["doc"], r["date"], r["price"], round(a, 2) if a else None, r.get("tac"), r.get("np") or 1, r["cls"], r["conv"],
                          r["pid"], mcode.get(r["muni"], ""), r["legal"], r["exempt"]] + ([r["grantor"], r["grantee"]] if names else [])
-                        + ([r.get("ac1")] if ac1 else []) + ([r.get("rec")] if rec else []) + ([r.get("acx")] if acx else []))
+                        + ([r.get("ac1")] if ac1 else []) + ([r.get("rec")] if rec else []) + ([r.get("acx")] if acx else [])
+                        + [r.get(x) for x in extra])
         c = next(v for v in cix.values() if v["fips"] == fips)
         cov = coverage(rs)
         p = (prior or {}).get(fips) or {}
@@ -824,7 +842,11 @@ IL_FIELDS = ["declaration_id", "document_number", "date_recorded", "line_4_instr
              "line_1_unit", "line_1_split_parcel", "line_6_principal_residence", "line_7_property_advertised",
              "line_10a_fulfillment_of", "line_10c_transfer_of_100", "line_10d_court_ordered_sale", "line_10e_sale_in_lieu_of",
              "line_10f_condemnation", "line_10g_short_sale", "line_10h_bank_reo", "line_10i_auction_sale",
-             "line_10n_buyer_is_an_adjacent", "line_10p_trade_of_property", "line_10q_sale_leaseback", "line_12b_mobile_home_included"]
+             "line_10n_buyer_is_an_adjacent", "line_10p_trade_of_property", "line_10q_sale_leaseback", "line_12b_mobile_home_included",
+             # the detail panel (Nov 4, 2026): Line 12a personal property amount, Line 10 j, k, l, m, o, Line 9 changes
+             "line_12a_total_personal", "line_10j_seller_buyer_is", "line_10k_seller_buyer_is", "line_10l_buyer_is_a_real",
+             "line_10m_buyer_is_a_pension", "line_10o_buyer_is_exercising", "line_9_new_construction", "line_9_demolition_damage",
+             "line_9_additions", "line_9_major_remodeling"]
 # Line 10 boxes, by letter, as Form PTAX-203 (tax.illinois.gov, saved on the raw branch as
 # data/land-raw/sales/il/doc4.pdf) names them. A ticked box here leaves the declaration out:
 # not a sale between a willing buyer and seller on the open market.
@@ -833,7 +855,13 @@ IL_DROP = (("line_10d_court_ordered_sale", "court-ordered sale (10d)"), ("line_1
            ("line_10p_trade_of_property", "trade of property (10p)"), ("line_10q_sale_leaseback", "sale-leaseback (10q)"))
 # A ticked box here keeps the row and says so in plain words after the deed type.
 IL_FLAG = (("line_10c_transfer_of_100", "less than full interest"), ("line_10i_auction_sale", "auction"),
-           ("line_10n_buyer_is_an_adjacent", "adjacent owner"))
+           ("line_10n_buyer_is_an_adjacent", "adjacent owner"),
+           # Nov 4, 2026 (detail panel): who the parties are and what changed on the land, in words no market rule reads
+           ("line_10j_seller_buyer_is", "relocation company"), ("line_10k_seller_buyer_is", "financial institution or government agency"),
+           ("line_10l_buyer_is_a_real", "real estate investment trust"), ("line_10m_buyer_is_a_pension", "pension fund"),
+           ("line_10o_buyer_is_exercising", "buyer exercising an option"), ("line_9_new_construction", "new construction"),
+           ("line_9_demolition_damage", "demolition or damage"), ("line_9_additions", "additions or remodeling"),
+           ("line_9_major_remodeling", "additions or remodeling"))
 
 # Pages saved by --probe besides each state's data pages: layouts, data dictionaries and catalogs,
 # so the real columns can be read on the raw branch before any parser trusts them.
@@ -1196,7 +1224,7 @@ def il_flags(d, adds=()):
     or an added PIN marked split."""
     out = []
     for k, w in IL_FLAG:
-        if il_yes(d.get(k)):
+        if il_yes(d.get(k)) and w not in out:
             out.append(w)
     yr = parse_num(d.get("line_10a_fulfillment_of"))
     if yr:
@@ -1223,7 +1251,7 @@ def il_table(decls, extra, rep=None):
     rep = rep if rep is not None else {}
     head = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
             "TOWNSHIP", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "ACRESLINE1",
-            "FLAGS"]
+            "FLAGS", "PERSONALPROPERTYAMOUNT"]
     yield head
     for d in decls:
         why = next((w for k, w in IL_DROP if il_yes(d.get(k))), None)
@@ -1252,7 +1280,8 @@ def il_table(decls, extra, rep=None):
                "" if price is None else str(price), "" if ac is None else str(round(ac, 2)), "4", conv, str(d.get("line_1_primary_pin") or ""),
                str(d.get("line_1_township") or ""), str(d.get("line_1_county") or ""), str(d.get("step_3_legal_description") or ""),
                str(d.get("step_4_seller_name") or ""), str(d.get("step_4_buyer_name") or ""), str(d.get("line_16_state_exemption") or ""), str(n),
-               str(d.get("date_recorded") or "")[:10], "" if l1 is None or n == 1 else str(round(l1, 4)), "; ".join(flags)]
+               str(d.get("date_recorded") or "")[:10], "" if l1 is None or n == 1 else str(round(l1, 4)), "; ".join(flags),
+               str(d.get("line_12a_total_personal") or "")]
 
 
 def soda(url, params):
@@ -1582,7 +1611,7 @@ VT_FILE = "https://s3.us-east-2.amazonaws.com/vtopendata-prd/PropertyParcels/vt-
 VT_COLS = ["returnID", "closeDate", "recvdDate", "TownDteRec", "ValPdOrTrn", "landSize", "span", "countyCode", "TOWNGEOID", "TOWNNAME",
            "sUsePrDesc", "bUsePrDesc", "enrCrntUse", "famMemDesc", "prTxExDesc", "LGTExDesc", "intUDPdesc", "intUDP", "intPrTypOt",
            "blCn1Desc", "blCn2Desc", "blCn3Desc", "buyrAdjPrp", "sellEntNam", "sellFstNam", "sellLstNam", "buyEntNam", "buyFstNam",
-           "buyLstNam", "addSellNam", "addBuyrNam"]
+           "buyLstNam", "addSellNam", "addBuyrNam", "financing", "TownGlValu"]
 # Property use before the transfer (seller) and the buyer's use after it (PTT-172 Section 1): a return is
 # kept when either is an operating farm or timberland, or open land enrolled in current use (Vermont's
 # use value appraisal of farm and forest land). Our classes: farm 4, timber 6, open land 5.
@@ -1709,6 +1738,19 @@ def vt_read(path):
     return pq.read_table(path, columns=VT_COLS).to_pylist()
 
 
+
+def vt_text(v):
+    """A return's word box as written ("Owner Financing", "Operating Farm"), "" for none."""
+    w = clean(v, 40)
+    return "" if w.upper() in ("", "NONE") else w
+
+
+def vt_value(v):
+    """The town grand list value on the return, whole dollars; "" when blank, zero or a 1 or 999 placeholder."""
+    x = float(v) if isinstance(v, (int, float)) else parse_num(v)
+    return "" if x is None or x <= 1 or x in (999, 9999) else "%d" % round(x)
+
+
 def vt_table(rows, towns, rep=None):
     """rows: vt_read output. One table with our column names, farm and forest returns only. The county
     is the town's (its Census county subdivision code); the town is the Census name, so the gazetteer
@@ -1716,7 +1758,8 @@ def vt_table(rows, towns, rep=None):
     rep = rep if rep is not None else {}
     names = {v["fips"]: v["name"] for v in county_index("VT").values()}
     yield ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
-           "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "FLAGS"]
+           "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "FLAGS",
+           "FINANCINGTYPE", "USEBEFORE", "USEAFTER", "GRANDLISTVALUE"]
     n = agree = 0
     for r in rows:
         cls = vt_class(r)
@@ -1756,7 +1799,8 @@ def vt_table(rows, towns, rep=None):
                "" if not ls or ls <= 0 else "%g" % ls, " ".join(cls), ", ".join(conv), clean(r.get("span"), 40), muni.upper(), county, "",
                vt_names(r.get("sellEntNam"), r.get("sellFstNam"), r.get("sellLstNam"), r.get("addSellNam")),
                vt_names(r.get("buyEntNam"), r.get("buyFstNam"), r.get("buyLstNam"), r.get("addBuyrNam")),
-               vt_exempt(r.get("prTxExDesc")), "1", vt_day(r.get("TownDteRec")) or vt_day(r.get("recvdDate")) or "", "; ".join(flags)]
+               vt_exempt(r.get("prTxExDesc")), "1", vt_day(r.get("TownDteRec")) or vt_day(r.get("recvdDate")) or "", "; ".join(flags),
+               vt_text(r.get("financing")), vt_text(r.get("sUsePrDesc")), vt_text(r.get("bUsePrDesc")), vt_value(r.get("TownGlValu"))]
     rep["county check"] = "%d of %d towns agree with the county code" % (agree, n)
     if n and agree < 0.95 * n:
         raise ValueError("town and county codes disagree on %d of %d returns" % (n - agree, n))
@@ -1786,7 +1830,9 @@ NJ_SR1A_LEN, NJ_MODIV_LEN = 663, 700
 NJ_SR = {"county": (1, 2), "district": (3, 4), "untype": (34, 34), "nu": (35, 37), "price": (38, 46), "verified": (47, 55),
          "rtf_exempt": (98, 98), "serial": (99, 105), "grantor": (110, 144), "grantee": (204, 238), "book": (329, 333),
          "page": (334, 338), "deed": (339, 344), "recorded": (345, 350), "block": (351, 355), "bsuf": (356, 359),
-         "lot": (360, 364), "lsuf": (365, 368), "etc": (369, 369), "qual_codes": (620, 624), "cls": (627, 629)}
+         "lot": (360, 364), "lsuf": (365, 368), "etc": (369, 369), "qual_codes": (620, 624), "cls": (627, 629),
+         # the detail panel (Nov 4, 2026): the main lot's assessed land and building values, their list year, year built, living space
+         "avl": (56, 64), "avb": (65, 73), "avy": (625, 626), "yb": (653, 656), "lsf": (657, 663)}
 NJ_ADDL = [(370 + 50 * i, 378 + 50 * i, 379 + 50 * i, 387 + 50 * i, 388 + 50 * i, 392 + 50 * i) for i in range(5)]   # block, lot, qualifier
 # MOD-IV layout: county-district, block, lot, qualifier, class, calculated acreage (5.4 digits), improvement value
 NJ_MD = {"cd": (1, 4), "block": (5, 13), "lot": (14, 22), "qual": (23, 33), "cls": (56, 58), "acres": (119, 127), "imp": (430, 438)}
@@ -2063,6 +2109,12 @@ def nj_town(fips, code, towns, munis):
     return (hit[0], nm) if len(hit) == 1 else (None, nm)
 
 
+def nj_int(v):
+    """A zero-filled SR-1A number as whole dollars or square feet; "" when blank or zero."""
+    x = parse_num(str(v or "").strip())
+    return "" if not x or x <= 0 else "%d" % x
+
+
 def nj_table(sales, md, towns, rep=None):
     """sales: nj_sales; md: nj_modiv. One table with our column names, farm deeds only: a deed whose class on the
     SR-1A (the class when it sold) or any lot it names on today's list is 3A or 3B. rep counts the join and what
@@ -2072,7 +2124,7 @@ def nj_table(sales, md, towns, rep=None):
     names = {v["fips"]: v["name"] for v in county_index("NJ").values()}
     yield ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
            "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "FLAGS",
-           "ACRESUNKNOWN"]
+           "ACRESUNKNOWN", "ASSESSEDLAND", "ASSESSEDBUILDINGS", "ASSESSMENTYEAR", "LIVINGSPACE", "YEARBUILT"]
     kept = joined = 0
     nu_seen, untown = {}, set()
     for r in sales:
@@ -2119,7 +2171,10 @@ def nj_table(sales, md, towns, rep=None):
         yield [doc, nj_day(r["deed"]) or "", "" if price is None else "%d" % price, "" if not acres else "%g" % round(acres, 4),
                " ".join(cls), ", ".join(conv), "%s B %s L %s" % (r["cd"], b, lt), (town or (njname or "")).upper(), county, "",
                nj_person(r["grantor"]), nj_person(r["grantee"]), "1" if r["rtf_exempt"].strip().upper() == "E" else "",
-               str(nlots), nj_day(r["recorded"]) or "", "; ".join(flags), "" if acres else "1"]
+               str(nlots), nj_day(r["recorded"]) or "", "; ".join(flags), "" if acres else "1",
+               nj_int(r.get("avl")), nj_int(r.get("avb")), ("20" + r["avy"].strip()) if re.match(r"^\d\d$", (r.get("avy") or "").strip()) else "",
+               nj_int(r.get("lsf")), (r.get("yb") or "").strip() if re.match(r"^(1[6-9]|20)\d\d$", (r.get("yb") or "").strip()) else ""]
+
     rep["farm deeds"] = kept
     rep["join"] = "%d of %d farm deeds found every lot on the 2026 assessment list (%.1f%%)" % (joined, kept, 100.0 * joined / kept if kept else 0)
     rep["non-usable codes"] = ", ".join("%s %d" % kv for kv in sorted(nu_seen.items())) or "none"
@@ -2374,7 +2429,7 @@ WI_CONV = {"SALE": "Sale", "SALEREPDEED": "Sale", "GIFT": "Gift", "PARENTGIFT": 
 WI_RELATED = ("FAMILY", "PARENTCHILD", "SPOUSES", "EXSPOUSES", "SHAREHOLDER", "EMPLOYER")
 WI_HEAD = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
            "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "ACRESLINE1",
-           "ACRESANYPARCEL", "FLAGS"]
+           "ACRESANYPARCEL", "FLAGS", "RIGHTSRETAINED", "MANAGEDFORESTACRES"]
 
 
 def wi_date(s):
@@ -2420,10 +2475,10 @@ def wi_returns(fh):
             "cc": tx(el, "County/CountyCode"), "doc": tx(el, "County/DocumentNumber"), "rec": wi_date(tx(el, "County/RecordedDate")),
             "date": wi_date(tx(el, "Document/ConveyanceDate")), "doctype": tx(el, "Document/DocumentType"),
             "conv": tx(el, "Document/ConveyanceType"), "rel": tx(el, "Document/GrantorGranteeRelationship"),
-            "own": tx(el, "Document/Ownership"),
+            "own": tx(el, "Document/Ownership"), "rr": tx(el, "Document/RightsRetained"),
             "parcels": [{"muni": tx(p, "Municipality"), "pin": tx(p, "ParcelNumber"), "use": tx(p, "PropertyUseType"),
                          "acres": parse_num(tx(p, "TotalAcres")), "part": tx(p, "PartOfParcelTransferred"),
-                         "ptype": tx(p, "PropertyType")} for p in kids(el, "Parcels", "Parcel")],
+                         "ptype": tx(p, "PropertyType"), "mfl": parse_num(tx(p, "MFLPFCAcres"))} for p in kids(el, "Parcels", "Parcel")],
             "grantors": [wi_name(g, tx) for g in kids(el, "Grantors", "Grantor")],
             "grantees": [wi_name(g, tx) for g in kids(el, "Grantees", "Grantee")],
             "price": parse_num(tx(el, "Fee/SalePrice")), "exempt": tx(el, "Fee/Exemption"), "legal": tx(el, "LegalDescription")[:LEGAL_MAX + 20],
@@ -2545,7 +2600,21 @@ def wi_row(ret, munis):
     return [ret["doc"], ret["date"] or "", f(ret["price"]), f(ac), " ".join(codes), conv, ps[0]["pin"],
             munis.get((ret["cc"], ps[0]["muni"]), ""), county, ret["legal"], names(ret["grantors"]), names(ret["grantees"]),
             ret["exempt"], str(len(ps)), ret["rec"] or "", f(ac1) if len(ps) > 1 else "",
-            f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2)), "; ".join(flags)]
+            f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2)), "; ".join(flags),
+            wi_rights(ret.get("rr")), f(round(sum(p.get("mfl") or 0 for p in ps if (p.get("mfl") or 0) > 0), 2)) if any((p.get("mfl") or 0) > 0 for p in ps) else ""]
+
+
+def wi_rights(v):
+    """Rights the seller keeps (the return's Grantor Rights Retained): life (a life estate), ease (an easement), other, or ""
+    for none. Kept apart from the deed words on purpose: the market rule reads EASEM in those."""
+    u = str(v or "").strip().upper()
+    if not u or u in ("NONE", "1", "N", "NO"):
+        return ""
+    if "LIFE" in u or u == "2":
+        return "life"
+    if "EASE" in u or u == "3":
+        return "ease"
+    return "other"
 
 
 def held(st, out=None):
@@ -2576,6 +2645,7 @@ def held(st, out=None):
                          "muni": m[0] if m else "", "county": f["county"], "legal": o.get("legal") or "",
                          "grantor": o.get("grantor"), "grantee": o.get("grantee"), "exempt": o.get("exempt") or 0,
                          "ac1": o.get("ac1"), "rec": o.get("rec"), "acany": None, "acx": o.get("acx")})
+            recs[-1].update({x: o.get(x) for x in EXTRA if x in o})
     months = set(ix.get("months") or [])
     if not months and lo:
         y, m = int(lo[:4]), int(lo[5:7])
@@ -3210,6 +3280,32 @@ def selftest():
         ck("over the cap: refused before any file is written", snap() == before)
     finally:
         MAX_STATE_MB = keep
+    # The sale detail panel's fields (Nov 4, 2026): read by name, kept as numbers or short words, never a name or address,
+    # and never in the deed words the market rule reads (EASEM, TRADE and the rest).
+    import build_land_summary as BLSX
+    for k, w in IL_FLAG[3:]:       # the words added Nov 4 (the first three are read by the rule on purpose)
+        ck("detail: the Illinois flag %r is not read by the market rule" % w, not BLSX.NON_MARKET_RE.search(w.upper()) and not BLSX.PARTIAL_RE.search(w.upper()))
+    dd = dict(decl[0], declaration_id="9", document_number="2026-000009", line_2_total_parcels="1", line_3_additional_pins=False,
+              line_10k_seller_buyer_is=True, line_9_new_construction=True, line_9_additions=True, line_9_major_remodeling=True,
+              line_12a_total_personal="25000.0")
+    ix, _ = parse_rows([il_table([dd, decl[2]], {})])
+    ck("detail IL: Line 10k and Line 9 in words, once each; Line 12a personal property as a number",
+       ix[0]["conv"].endswith("financial institution or government agency; new construction; additions or remodeling") and ix[0]["pp"] == 25000
+       and ix[1].get("pp") is None)
+    wh = WI_HEAD.index("RIGHTSRETAINED"), WI_HEAD.index("MANAGEDFORESTACRES")
+    wl = wi_row(dict(rets[0], rr="LIFE ESTATE", parcels=[dict(rets[0]["parcels"][0], mfl=12.0)]), mu)
+    ck("detail WI: rights the seller keeps and Managed Forest acres, in their own columns", wl[wh[0]] == "life" and wl[wh[1]] == "12"
+       and rows[0][wh[0]] == "" and rows[0][wh[1]] == "" and wi_rights("EASEMENT") == "ease" and wi_rights("NONE") == "")
+    wx, _ = parse_rows([iter([WI_HEAD, wl])])
+    ck("detail WI: read back by name, never into the deed words", wx[0]["rr"] == "life" and wx[0]["mfl"] == 12 and "LIFE" not in wx[0]["conv"].upper())
+    vh = list(vt_table([dict(vb, financing="Owner Financing", TownGlValu=250000.0)], {"75850": ("50001", "Waltham town")}))
+    vo = dict(zip(vh[0], vh[1]))
+    ck("detail VT: financing, use before and after and the town's listed value", vo["FINANCINGTYPE"] == "Owner Financing" and vo["USEBEFORE"] == "04. Operating Farm"
+       and vo["GRANDLISTVALUE"] == "250000" and vt_value(999.0) == "" and vt_text("None") == "")
+    ck("detail VT: still no parcel point or address column read", not any(re.search(r"(?i)latitude|longitude|geom|addr|street|zip", c) for c in VT_COLS))
+    ck("detail NJ: the main lot values sit where the SR-1A layout puts them, zero is blank", NJ_SR["avl"] == (56, 64) and NJ_SR["avb"] == (65, 73)
+       and NJ_SR["lsf"] == (657, 663) and nj_int("000060000") == "60000" and nj_int("000000000") == "")
+    ck("detail: every detail column has a header name", all(x in COLS for x in EXTRA) and set(EXTRA) == set(EXTRA_NUM) | set(EXTRA_TXT))
     print("FAILS=%d" % bad)
     return 1 if bad else 0
 
