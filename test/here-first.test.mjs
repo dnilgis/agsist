@@ -122,9 +122,12 @@ test("rain-county-print.js mounts any figure; the county page mounts its own; ve
   const js = read("components/rain-county-print.js");
   assert.match(js, /mount: mount/);
   assert.match(js, /var own = doc && doc\.getElementById\('rc-print'\);\s*if \(own\) mount\(own\);/);
-  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=44'/);
-  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=44/);
-  assert.match(read("rain/wisconsin/barron-county.html"), /rain-county-print\.js\?v=44/);
+  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=45'/);
+  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=45/);
+  // the county pages are a generated set, rebuilt on main from the builder (#300): a page carries the builder's
+  // version, or the one before it until main's rebuild after the bump lands, never a newer one
+  const pv = +(/rain-county-print\.js\?v=(\d+)/.exec(read("rain/wisconsin/barron-county.html")) || [])[1];
+  assert.ok(pv === 45 || pv === 44, "barron-county page pins v=" + pv);
 });
 
 test("what's unusual here: own past only, the rule's numbers, nothing when nothing passes", () => {

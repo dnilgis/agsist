@@ -444,10 +444,28 @@ def numbers_lines(root=REPO):
     return out
 
 
-def numbers_block(root=REPO):
+# Lines whose source file moves every 15 minutes (the bids fetch). Every set's run rebuilds llms.txt now
+# (BUILD-RULES 61, scripts/generated_sets.py), so a line here keeps the copy already in llms.txt while that
+# copy's date is the same UTC day: llms.txt moves once a day for them, not on every fetch. The kept line
+# still states its own time, so it stays true (that count at that time). (Nov 4, 2026)
+DAILY_KEYS = {"bids": "- Cash bids: ", "elevators": "- Elevators with a current bid: "}
+_DAY_IN = re.compile(r"\b([A-Z][a-z]{2} \d{1,2}, \d{4})\b")
+
+
+def keep_same_day(key, line, current_lines):
+    """the current llms.txt line for a DAILY_KEYS line, when it carries the same day; else the new line"""
+    pre = DAILY_KEYS.get(key)
+    if not pre:
+        return line
+    old = next((ln for ln in current_lines if ln.startswith(pre)), None)
+    a, b = _DAY_IN.search(old or ""), _DAY_IN.search(line)
+    return old if (old and a and b and a.group(1) == b.group(1)) else line
+
+
+def numbers_block(root=REPO, current_lines=()):
     """The '## Latest numbers' section (numbers_lines with its heading). -> list of lines,
     empty when there is nothing to state."""
-    lines = [ln for _, ln in numbers_lines(root)]
+    lines = [keep_same_day(k, ln, current_lines) for k, ln in numbers_lines(root)]
     if not lines:
         return []
     return ["", NUMBERS_HEAD, "",
@@ -473,7 +491,7 @@ def build(current_text, root=REPO):
     problems = []
     cur_lines = (current_text or "").split("\n")
     out = [HEAD.rstrip("\n")]
-    out.extend(numbers_block(root))
+    out.extend(numbers_block(root, cur_lines))
     listed = set()
     for heading, items in PAGES:
         lines = []
@@ -592,6 +610,16 @@ def selftest():
             open(os.path.join(d, "daily", f), "w").write("x")
         got = dict(numbers_lines(d))
         ok(got.get("bids") == "- Cash bids: 22,616 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 2, 2026, 22:37 UTC (https://agsist.com/cash-bids).", "bids: %s" % got.get("bids"))
+        # the 15-minute lines move once a day (Nov 4, 2026: every set's run now rebuilds llms.txt)
+        same = "- Cash bids: 22,001 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 2, 2026, 01:07 UTC (https://agsist.com/cash-bids)."
+        ok(keep_same_day("bids", got["bids"], ["x", same]) == same, "a newer read the same day keeps the line already there")
+        older = same.replace("Nov 2,", "Nov 1,")
+        ok(keep_same_day("bids", got["bids"], [older]) == got["bids"], "a new day writes the new line")
+        ok(keep_same_day("bids", got["bids"], []) == got["bids"], "no line yet: the new line")
+        ok(keep_same_day("daily", "- The AGSIST Daily: x Nov 2, 2026", ["- The AGSIST Daily: y Nov 2, 2026"]) == "- The AGSIST Daily: x Nov 2, 2026",
+           "other lines are always the fresh ones")
+        nb2 = numbers_block(d, [same])
+        ok(same in nb2 and got["elevators"] in nb2, "numbers_block keeps the same-day bids line")
         ok(got.get("elevators") == "- Elevators with a current bid: 2,047, in 1,618 towns, counted Nov 2, 2026, 21:06 UTC (https://agsist.com/cash-bids).", "elevators: %s" % got.get("elevators"))
         ok("latest issue Nov 2, 2026, at https://agsist.com/daily/2026-11-02 " in got.get("daily", ""), "daily: %s" % got.get("daily"))
         ok("through Nov 1, 2026 (1 of 2 states; the oldest through Oct 30, 2026)" in got.get("rain", ""), "rain: %s" % got.get("rain"))
@@ -639,7 +667,10 @@ def main():
             print("llms.txt is stale: run python3 scripts/build_llms_txt.py")
         sys.exit(1 if (stale or problems) else 0)
     if text != cur:
-        open(path, "w", encoding="utf-8").write(text)
+        tmp = path + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as fh:   # written whole, then renamed: never half a file
+            fh.write(text)
+        os.replace(tmp, path)
         print("llms.txt written (%d lines)" % text.count("\n"))
     else:
         print("llms.txt unchanged")

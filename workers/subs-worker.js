@@ -5,6 +5,15 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.63 (2026-11-04): FRAME COLOR (Sig, Nov 4: oak or black, oak picked first, same price).
+ *   POST /rp-order and kind rain-print-order (so /rp-gift/redeem too) take an optional
+ *   frame_color, "oak" or "black", kept on a framed12x18 order only (dropped for the
+ *   others, and a bad value is dropped, never an error). /rp-order/list answers
+ *   frame_color for a framed order: the one on record, else "black" (every framed print
+ *   sold before Nov 4 was black, and a page without the choice still says black), or ""
+ *   for a framed order made from Stripe alone after Nov 4 (no press came, so the color is
+ *   not known: Sig asks the buyer). fulfill_url carries &frame=<color> (before &serial) for a
+ *   framed order. A client without the field works exactly as before.
  * v5.62 (2026-11-03): RP_DESIGN_EMAIL_LIVE and RP_BUYER_EMAIL_LIVE now come from the
  *   [vars] in wrangler.api.toml and wrangler.subs.toml ("1"), not the dashboard. No code change.
  * v5.61 (2026-11-03): CUSTOM RATES NEW-SURVEY ASK. Topic customrates:<st> (a state's
@@ -1658,6 +1667,8 @@ const FORM_KINDS = {
     gift: [3, false, "flag"],
     // v5.23: the logo on the print (an rpl: id); also read from design_code
     logo: [12, false, "rplogo"],
+    // v5.63: oak or black, a framed print only (a bad value is dropped, not refused)
+    frame_color: [5, false, "rpframe"],
   },
   // v5.12: Rain Print business quotes (rain-print.html#rp-biz). Sig emails back a quote and proofs.
   "rain-print-business": {
@@ -1689,6 +1700,7 @@ const EL_HOW = ["email", "phone", "not-sure"];
 const EL_REQ_STATUS = ["pending", "created", "dismissed"];
 const RP_CHOICES = ["digital", "print12x18", "framed12x18"];
 const RP_DELIVER = ["buyer", "recipient"];
+const RP_FRAMES = ["oak", "black"];   // v5.63
 const RPB_PRODUCTS = ["print", "framed", "digital", "not-sure"];
 const RPB_SHIP = ["one", "each", "not-sure"];
 const RPB_QTY_MIN = 5, RPB_QTY_MAX = 500;    // v5.17: business orders start at 5 prints
@@ -1712,6 +1724,8 @@ function formClean(kind, b) {
                         : v.replace(/[\u0000-\u001f\u007f]/g, " ");
     v = v.trim();
     if (!v) { if (req) return { error: f + " is required" }; continue; }
+    // v5.63: a frame color that is not oak or black, any length, is left off; the order still goes
+    if (type === "rpframe") { v = v.toLowerCase(); if (RP_FRAMES.includes(v)) out[f] = v; continue; }
     if (v.length > max) return { error: f + " is too long" };
     if (type === "email") {
       v = v.toLowerCase();
@@ -1771,6 +1785,7 @@ function formClean(kind, b) {
     if (lg) out.logo = lg;
     if (out.choice === "digital") delete out.address;
     else if (!out.address) return { error: "address is required for a print" };
+    if (out.choice !== "framed12x18") delete out.frame_color;   // v5.63
     if (out.gift_january !== "yes" && out.gift !== "yes") {
       for (const g of ["gift_to", "gift_deliver", "gift_email", "gift_message"]) delete out[g];
     } else {
@@ -2642,7 +2657,19 @@ function rpoClean(b) {
     ref: b.ref, product: b.product, price, design_url: url,
     place: oneLine(b.place, 80), year, style: b.style === "r1" || b.style === "r2" ? b.style : "",
     name: oneLine(b.name, 60), markers: oneLine(b.markers, 400), dedication: oneLine(b.dedication, 160), gift: b.gift === true,
+    // v5.63: oak or black on a framed order; no key at all otherwise
+    ...(b.product === "framed12x18" && RP_FRAMES.includes(b.frame_color) ? { frame_color: b.frame_color } : {}),
   } };
+}
+/* v5.63: a framed order's frame color for the list. Every framed print sold
+   before Nov 4 was black, and a page without the choice still says black, so
+   a record without one reads "black"; one made from Stripe alone after that
+   (no press came) is not known, "" (Sig asks the buyer). null: not framed. */
+const RPO_FRAME_SINCE_MS = Date.UTC(2026, 10, 4);
+function rpoFrame(r) {
+  if (!r || r.product !== "framed12x18") return null;
+  if (RP_FRAMES.includes(r.frame_color)) return r.frame_color;
+  return r.from_stripe && (r.ts || 0) >= RPO_FRAME_SINCE_MS ? "" : "black";
 }
 // Completed Checkout Sessions since sinceSec, from Stripe with a read-only key.
 // Only the id, client_reference_id, payment status, amounts and time are kept:
@@ -2705,7 +2732,8 @@ function rpoBizDaysSince(iso, nowMs) {
 const RPO_APPROVE_WAIT_BIZ = 3;
 function rpoFulfill(r, serial) {
   if (!r.design_url) return "";
-  return r.design_url + "&maker=1" + (RPO_PRINTS.includes(r.product) && serial ? "&serial=" + serial : "");
+  const fc = rpoFrame(r);
+  return r.design_url + "&maker=1" + (fc ? "&frame=" + fc : "") + (RPO_PRINTS.includes(r.product) && serial ? "&serial=" + serial : "");
 }
 // The records of the last `days` days, newest first, each paid or pay pressed.
 // A session is matched to the latest unpaid press of the same ref made before
@@ -2795,7 +2823,7 @@ async function rpoList(env, days) {
     return {
       key: r.key, ts: r.ts, at: new Date(r.ts).toISOString(), ref: r.ref, product: r.product, price: r.price,
       design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
-      dedication: r.dedication, gift: !!r.gift, status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
+      dedication: r.dedication, gift: !!r.gift, frame_color: rpoFrame(r), status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
       approved: r.approved || null, approved_alerted: r.approved_alerted || null, approve_t: toks[r.key] || null,
       delivered: r.delivered || null,   // v5.38: the digital files went out (rp_buyer_email.py)
       // v5.40: the gift card issued for this order (never the code here) and the buyer's card email

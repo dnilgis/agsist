@@ -366,7 +366,7 @@ test("the proof view and the order summary are on the page", () => {
 // ---------- gift cards on the page (components/rp-gift.js, worker v5.16) ----------
 test("a ?gift= card is redeemed on the page; the free pre-payment card is gone", () => {
   const H = readFileSync(ROOT + "rain-print.html", "utf8"), S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=9" defer><\/script>/);
+  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=10" defer><\/script>/);
   assert.ok(H.indexOf("/components/rain-print.js?v=") < H.indexOf("/components/rp-gift.js"), "the page script is in place before the gift script runs");
   for (const id of ["rp-gift-banner", "rp-gift-use"]) assert.ok(H.includes(`id="${id}"`), id);
   assert.ok(!/Print a gift card|id="rp-card"|id="rp-giftcard"|rp-carding/.test(H + S), "no free printable card before payment");
@@ -425,7 +425,7 @@ test("prints ship flat between chipboard, never rolled; the framed one has a whi
     assert.ok(!/\btube\b|rolled in|ships rolled/i.test(t.replace(/rolled into a later/g, "")), n + " says nothing about a tube");
   }
   assert.match(HTML, /<li>Ships flat between chipboard<\/li>/);
-  assert.match(HTML, /<li>A 13 x 19 black frame with a white mat, ready to hang<\/li>/);
+  assert.match(HTML, /<li>A 13 x 19 in wood frame, oak or black, your pick<\/li>/);
   assert.doesNotMatch(HTML, /no mat|trim it to size|a little bigger than 12 x 18/);
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   // the box picture is a render of an older layout: it says so, and it keeps its shape
@@ -455,7 +455,8 @@ const visible = HTML.replace(/<script[\s\S]*?<\/script>/g, "");
 
 test("Sig's notes: no printer named anywhere, framed prints have real glass, packed well", () => {
   assert.ok(!/epson|artisan|acrylic/i.test(HTML + S2), "no printer model, no acrylic");
-  assert.match(HTML, /<li>Real glass front, packed with corner guards and foam, double-boxed<\/li>/);
+  // the frame specs as plain lines since Nov 4 (Sig): the glass, then the packing
+  assert.match(HTML, /<li>Real tempered glass front<\/li><li>Hangs the long way across; hanging hardware included<\/li><li>Packed with corner guards and foam, double-boxed<\/li>/);
   assert.match(HTML, /<li>I print it myself, and you see a proof first<\/li>/);
   assert.match(HTML, /I print it myself, frame it if you ordered the frame, and ship it from Chetek, Wisconsin\./);
 });

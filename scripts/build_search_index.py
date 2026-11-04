@@ -550,8 +550,10 @@ def main():
         sys.exit(1)
     if not args.check:
         for path, s, _ in files:
-            with open(os.path.join(ROOT, path), "w", encoding="utf-8") as f:
+            dst = os.path.join(ROOT, path)
+            with open(dst + ".tmp", "w", encoding="utf-8") as f:   # whole file, then renamed (never half written)
                 f.write(s)
+            os.replace(dst + ".tmp", dst)
 
 if __name__ == "__main__":
     main()

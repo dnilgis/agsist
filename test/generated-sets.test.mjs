@@ -9,7 +9,11 @@
  *     made it or the lead set the regen-ok label;
  *   - the PR checks rebuild a set whose builder changed in their own copy; main-checks.yml rebuilds it on main
  *     right after the merge, before the suite;
- *   - merge-when-green never merges on checks run against an older main (the stale rule, unit cases).
+ *   - merge-when-green never merges on checks run against an older main (the stale rule, unit cases);
+ *   - BUILD-RULES 61 (Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial edition and main
+ *     went red): every summary file a set feeds is that set's dependent, found by tracing what each summary
+ *     builder really reads (scripts/trace_reads.py), and every workflow that runs a set's builder rebuilds
+ *     those summaries before its commit.
  *
  *   node --test test/generated-sets.test.mjs
  */
@@ -84,6 +88,7 @@ test("the pages are outputs, the hubs and builders edited by hand are not", () =
     "arc-plc/iowa/story-county.html": "arc-plc", "farmland-atlas/iowa/story-county.html": "farmland-atlas",
     "farmland-atlas/og/19169.png": "atlas-cards", "rent/iowa.html": "rent", "yield/iowa.html": "yield",
     "hail/2026-06-11.html": "hail", "hail-map/iowa.html": "hail-map",
+    "cash-bid-index.html": "cash-bid-index", "data/cash-index/editions.json": "cash-bid-index", "data/cash-index/acc-2026-11.json": null,
     "rain.html": null, "prf.html": null, "arc-plc.html": null, "farmland-atlas/compare.html": null, "farmland-atlas/methods.html": null,
     "scripts/build_county_rain.py": null, "data/land-sales/coverage.json": null, "components/prf.js": null, "daily/2026-11-03.html": null,
   };
@@ -181,4 +186,176 @@ print(json.dumps({
   assert.match(src, /"\/repos\/%s\/pulls\/%d\/update-branch"/, "updates the branch from main");
   assert.match(src, /"\/repos\/%s\/actions\/workflows\/pr-checks\.yml\/dispatches" % repo, \{"ref": ref, "inputs": \{"pick_base": ""\}\}/, "and starts every test on it");
   assert.match(src, /"git", "-C", root\] \+ list\(a\)/, "main's changed files from git, not the 300-file compare");
+});
+
+// ── BUILD-RULES 61: a builder run by hand leaves every summary of its output current ──────────────────────
+const summary = Object.fromEntries(T.summaries.map((x) => [x.id, x]));
+const setById = Object.fromEntries(T.sets.map((s) => [s.id, s]));
+const traced = {};
+for (const x of T.summaries) {
+  const r = spawnSync("python3", ["scripts/generated_sets.py", "trace", x.id], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 26 });
+  traced[x.id] = r.status === 0 ? JSON.parse(r.stdout) : { error: r.stdout + r.stderr };
+}
+
+test("rule 61: every set a summary builder reads lists that summary as a dependent (traced, not declared)", () => {
+  for (const x of T.summaries) {
+    const t = traced[x.id];
+    assert.ok(!t.error, `${x.id}: the trace ran (${t.error})`);
+    assert.deepEqual(t.written.filter((f) => !x.files.some((o) => f === o || f.startsWith(o + "/"))), [],
+      `${x.id}: its trace pass (${x.build.join(" ")} ${x.trace.join(" ")}) writes only its own files`);
+    const sets = Object.keys(t.sets);
+    assert.ok(sets.length > 0, `${x.id}: reads no set's output; it is not a summary (move it to NOT_SUMMARIES)`);
+    for (const sid of sets) {
+      assert.ok(setById[sid].dependents.includes(x.id),
+        `${x.id} (${x.build[1]}) reads ${sid}'s output (${t.sets[sid].slice(0, 3).join(", ")}): add "${x.id}" to ${sid}'s dependents in scripts/generated_sets.py`);
+    }
+    // a summary that reads another summary's file is rebuilt after it, wherever that one is
+    for (const a of t.summaries) {
+      assert.ok(T.summaries.findIndex((y) => y.id === a) < T.summaries.findIndex((y) => y.id === x.id), `${x.id} reads ${a}: ${a} comes first in SUMMARIES`);
+      for (const s of T.sets) if (s.dependents.includes(a)) assert.ok(s.dependents.includes(x.id), `${x.id} reads ${a}'s files: ${s.id} lists ${a}, so it lists ${x.id} too`);
+    }
+  }
+  // the Nov 4 case itself: the Cash Bid Index is a set and llms.txt reads its edition
+  assert.ok(traced.llms.sets["cash-bid-index"], "llms.txt reads the Cash Bid Index edition");
+  assert.ok(setById["cash-bid-index"].dependents.includes("llms"));
+});
+
+const NOT_A_BUILD = /--(check|selftest|out|fold|help|validate|dry-run)\b/;
+const builderRuns = (src, script) => src.split("\n").map((l, i) => [l, i])
+  .filter(([l]) => !/^\s*#/.test(l) && new RegExp(`(python3?|node)\\s+(\\S*/)?scripts/${script.replace(/\./g, "\\.")}(\\s|$)`).test(l) && !NOT_A_BUILD.test(l))
+  .map(([, i]) => i);
+
+test("rule 61: every workflow that runs a set's builder rebuilds that set's summary files before its commit", () => {
+  const wfs = fs.readdirSync(path.join(ROOT, ".github/workflows")).filter((f) => f.endsWith(".yml"));
+  let seen = 0;
+  for (const s of T.sets) {
+    const scripts = s.build.map((c) => path.basename(c[1]));
+    let inOwn = false;
+    for (const wf of wfs) {
+      const src = read(".github/workflows/" + wf);
+      const lines = src.split("\n");
+      const runs = scripts.flatMap((b) => builderRuns(src, b));
+      if (!runs.length) continue;
+      if (wf === s.workflow) inOwn = true;
+      if (!s.dependents.length) continue;
+      const calls = lines.map((l, i) => [l, i]).filter(([l]) => /generated_sets\.py dependents /.test(l) && !/^\s*#/.test(l))
+        .map(([l, i]) => ({ i, ids: /dependents ([\w -]+?) --stage( \|\| true)?\s*$/.exec(l)?.[1].split(/\s+/) || [] }));
+      for (const r of runs) {
+        const c = calls.find((c) => c.i > r && c.ids.includes(s.id));
+        assert.ok(c, `${wf} runs ${s.id}'s builder (line ${r + 1}) but never calls \`python3 scripts/generated_sets.py dependents ${s.id} --stage\` after it (BUILD-RULES 61)`);
+        assert.ok(lines.slice(c.i + 1).some((l) => /git commit/.test(l)), `${wf}: the dependents call (line ${c.i + 1}) comes before its commit`);
+        seen++;
+      }
+    }
+    assert.ok(inOwn, `${s.id}: ${s.workflow} runs its builder`);
+  }
+  assert.ok(seen >= 12, `the scan finds the builder runs (${seen})`);
+});
+
+test("rule 61: the dependents call runs each summary builder once, in order, and names what it stages", () => {
+  const run = (...a) => execFileSync("python3", ["scripts/generated_sets.py", "dependents", ...a], { cwd: ROOT, encoding: "utf8" });
+  const want = (ids) => T.summaries.filter((x) => ids.includes(x.id));
+  for (const s of T.sets) {
+    const out = run(s.id, "--dry-run").trim().split("\n").slice(1);
+    assert.deepEqual(out, want(s.dependents).map((x) => x.build.join(" ")), `${s.id}: its dependents, in SUMMARIES order`);
+    assert.equal(run(s.id, "--files").trim(), want(s.dependents).flatMap((x) => x.files).join(" "));
+  }
+  const both = run("cash-bids", "rain", "farmland-atlas", "--dry-run").trim().split("\n").slice(1);
+  assert.equal(new Set(both).size, both.length, "a summary two sets share is built once");
+  assert.equal(spawnSync("python3", ["scripts/generated_sets.py", "dependents", "nope"], { cwd: ROOT }).status, 2, "an unknown set is refused");
+  for (const x of T.summaries) for (const f of x.files) assert.ok(fs.existsSync(path.join(ROOT, f)), `${x.id}: ${f} is in the repository`);
+  const mainSrc = read("scripts/generated_sets.py");
+  assert.match(mainSrc, /run_dependents\(deps\)/, "main-checks' rebuild of a set rebuilds its summaries too");
+  assert.match(mainSrc, /commit_and_push\(\[s\["id"\] for s in offline\], rebuild, summary_files\(deps\)\)/, "and commits them with the set");
+});
+
+test("rule 61: every --check builder in checks.sh is a set, a summary, or listed with the reason it is neither", () => {
+  const src = read("scripts/dev/checks.sh");
+  const names = new Set([...src.matchAll(/python3 scripts\/(\w+)\.py --check/g)].map((m) => m[1]));
+  for (const b of /for b in ([\w ]+); do/.exec(src)[1].trim().split(/\s+/)) names.add(b);
+  const known = new Set([
+    ...T.sets.flatMap((s) => [...s.build, ...(s.check || [])].map((c) => path.basename(c[1], ".py"))),
+    ...T.summaries.map((x) => path.basename(x.build[1], ".py")),
+    ...Object.keys(T.not_set_checks), ...Object.keys(T.not_summaries)]);
+  assert.ok(names.size >= 15, `the scan finds the --check lines (${names.size})`);
+  for (const b of names) assert.ok(known.has(b), `${b}: a set, a summary (SUMMARIES) or NOT_SUMMARIES with a reason, in scripts/generated_sets.py`);
+  for (const [b, why] of Object.entries(T.not_summaries)) {
+    assert.ok(fs.existsSync(path.join(ROOT, "scripts", b + ".py")), `${b}: listed but not in scripts/`);
+    assert.ok(why.length > 20, `${b}: a reason`);
+  }
+});
+
+// a fixture repository and a fake summary (its builder counts the lines of every page) for the rebuild rules
+const sumFixture = () => {
+  const d = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "gensum-"));
+  const remote = d + "/remote.git", a = d + "/a", b = d + "/b";
+  const g = (cwd, ...x) => execFileSync("git", ["-C", cwd, "-c", "user.name=t", "-c", "user.email=t@t", ...x], { encoding: "utf8" });
+  g(d, "init", "-q", "--bare", "-b", "main", remote);
+  fs.mkdirSync(a); g(a, "init", "-q", "-b", "main");
+  fs.mkdirSync(a + "/pages"); fs.writeFileSync(a + "/pages/one.html", "1\n");
+  fs.writeFileSync(a + "/build_sum.py", "import glob\nopen('sum.txt.tmp','w').write(''.join(sorted(open(f).read() for f in glob.glob('pages/*.html'))))\nimport os; os.replace('sum.txt.tmp','sum.txt')\n");
+  fs.writeFileSync(a + "/fail_sum.py", "open('sum.txt','w').write('HALF')\nraise SystemExit(3)\n");
+  execFileSync("python3", ["build_sum.py"], { cwd: a });
+  g(a, "add", "-A"); g(a, "commit", "-qm", "main"); g(a, "remote", "add", "origin", remote); g(a, "push", "-q", "origin", "main");
+  g(d, "clone", "-q", remote, b);
+  return { d, a, b, g };
+};
+// the runner's git, not this machine's: no global or system config, so no identity and no autostash setting
+const bareGit = { ...process.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_NOSYSTEM: "1" };
+delete bareGit.GIT_AUTHOR_NAME; delete bareGit.GIT_AUTHOR_EMAIL; delete bareGit.GIT_COMMITTER_NAME; delete bareGit.GIT_COMMITTER_EMAIL;
+const pyBare = (code) => execFileSync("python3", ["-c", "import sys, json; sys.path.insert(0, 'scripts'); " + code], { cwd: ROOT, encoding: "utf8", env: bareGit });
+const withFake = (root, code, build = "build_sum.py") => pyBare(`import generated_sets as G
+G.ROOT = G.GIT_ROOT = ${JSON.stringify(root)}
+G.SUMMARIES = [{"id": "sum", "build": ["python3", ${JSON.stringify(build)}], "trace": [], "files": ["sum.txt"]}]
+G.SUMMARY = {"sum": G.SUMMARIES[0]}
+G.SETS = [dict(G.SETS[0], id="pages", dependents=["sum"])]
+${code}`);
+
+test("rule 61: a summary whose builder fails is not staged and is put back whole", () => {
+  const { d, a, g } = sumFixture();
+  fs.writeFileSync(a + "/pages/two.html", "2\n");
+  let out = JSON.parse(withFake(a, `bad = G.run_dependents(["sum"], stage=True)
+print(json.dumps(bad))`, "fail_sum.py").trim().split("\n").at(-1));
+  assert.deepEqual(out, ["sum"]);
+  assert.equal(fs.readFileSync(a + "/sum.txt", "utf8"), "1\n", "HEAD's copy is back, not the half-written one");
+  assert.equal(g(a, "diff", "--staged", "--name-only").trim(), "", "nothing staged");
+  out = JSON.parse(withFake(a, `print(json.dumps(G.run_dependents(["sum"], stage=True)))`).trim().split("\n").at(-1));
+  assert.deepEqual(out, []);
+  assert.equal(g(a, "diff", "--staged", "--name-only").trim(), "sum.txt", "a built summary is staged");
+  fs.rmSync(d, { recursive: true, force: true });
+});
+
+test("rule 61: pull-rebase rebuilds a summary that conflicts, never keeping either side; another conflict aborts", () => {
+  const { d, a, b, g } = sumFixture();
+  // main moves on: another job adds a page and rebuilds the summary
+  fs.writeFileSync(b + "/pages/three.html", "3\n"); execFileSync("python3", ["build_sum.py"], { cwd: b });
+  g(b, "add", "-A"); g(b, "commit", "-qm", "three"); g(b, "push", "-q", "origin", "main");
+  // this job adds its page and its summary, from the older main
+  fs.writeFileSync(a + "/pages/two.html", "2\n"); execFileSync("python3", ["build_sum.py"], { cwd: a });
+  g(a, "add", "-A"); g(a, "commit", "-qm", "two");
+  const rcOut = withFake(a, `print(json.dumps(G.pull_rebase(["pages"])))`);
+  const rc = JSON.parse(rcOut.trim().split("\n").at(-1));
+  assert.equal(rc, 0, "rebased: " + rcOut);
+  assert.equal(fs.readFileSync(a + "/sum.txt", "utf8"), "1\n2\n3\n", "the summary is rebuilt from both sides' pages");
+  assert.equal(g(a, "status", "--porcelain").trim(), "", "clean, no rebase in progress");
+  assert.match(g(a, "log", "--format=%s", "-2"), /^two\nthree\n$/);
+  // a conflict outside the summary files aborts (the job's own recovery takes over)
+  fs.writeFileSync(b + "/pages/one.html", "1b\n"); g(b, "commit", "-qam", "b edits one"); g(b, "push", "-q", "origin", "main");
+  fs.writeFileSync(a + "/pages/one.html", "1a\n"); g(a, "commit", "-qam", "a edits one");
+  const rc2 = JSON.parse(withFake(a, `print(json.dumps(G.pull_rebase(["pages"])))`).trim().split("\n").at(-1));
+  assert.equal(rc2, 1);
+  assert.ok(!fs.existsSync(a + "/.git/rebase-merge") && !fs.existsSync(a + "/.git/rebase-apply"), "the rebase was aborted");
+  fs.rmSync(d, { recursive: true, force: true });
+});
+
+test("rule 61: every workflow that rebuilds summaries rebases through pull-rebase or resets and rebuilds; no push is ignored", () => {
+  for (const wf of fs.readdirSync(path.join(ROOT, ".github/workflows")).filter((f) => f.endsWith(".yml"))) {
+    const src = read(".github/workflows/" + wf).split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+    if (!/generated_sets\.py dependents /.test(src)) continue;
+    assert.doesNotMatch(src, /git pull[^\n]*--rebase/, `${wf}: a raw git pull --rebase keeps one side of a conflicting summary; use generated_sets.py pull-rebase`);
+    assert.doesNotMatch(src, /git push[^\n]*\|\| true/, `${wf}: a failed push is never ignored`);
+    assert.ok(/generated_sets\.py pull-rebase /.test(src) || /git reset (-q )?--hard "?origin\//.test(src), `${wf}: on a race it rebases through pull-rebase or resets to main and rebuilds`);
+  }
+  for (const f of ["scripts/build_llms_txt.py", "scripts/build_feeds.py", "scripts/build_search_index.py", "scripts/stamp_prf.py", "scripts/build_breakeven_data.py"])
+    assert.match(read(f), /os\.replace\(/, `${f} writes a whole file and renames it`);
 });

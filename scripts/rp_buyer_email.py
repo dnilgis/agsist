@@ -208,12 +208,25 @@ class Sources:
 
 # ───────────────────────────── the email ─────────────────────────────
 
+def frame_of(o):
+    """A framed order's frame color (worker v5.63, Sig Nov 4): "oak" or "black"; a record with no
+    frame_color key reads "black" (every framed print sold before Nov 4 was black); "" is a framed
+    order paid at Stripe with no press on record, so the color is not known. None: not framed."""
+    if o.get("product") != "framed12x18":
+        return None
+    if "frame_color" not in o or o.get("frame_color") is None:
+        return "black"
+    c = str(o.get("frame_color") or "")
+    return c if c in ("oak", "black") else ""
+
+
 def what_line(o):
     place = one_line(o.get("place"), 80)
     style = STYLE.get(o.get("style"), "")
     year = str(o.get("year") or "")
-    return "%s of %s%s%s" % (PRODUCT.get(o.get("product"), "Rain Print"), place or "your place",
-                             (", " + year) if year else "", (", " + style) if style else "")
+    fc = frame_of(o)
+    return "%s%s of %s%s%s" % (PRODUCT.get(o.get("product"), "Rain Print"), (" (%s frame)" % fc) if fc else "", place or "your place",
+                               (", " + year) if year else "", (", " + style) if style else "")
 
 
 def subject(o):
@@ -536,7 +549,7 @@ REDEEM_BASE = "agsist.com/rain-print?gift="
 DRY_CODE = "RP-XXXX-XXXX-XXXX"
 # what the receiver gets, in plain words (the card's own words, rp-gift.html COMING)
 GIFT_WHAT = {
-    "framed12x18": "A framed Rain Print: the whole year printed on 13 x 19 heavy, textured cotton paper, in a black frame with a white mat and glass, ready to hang. Shipping is included.",
+    "framed12x18": "A framed Rain Print: the whole year printed on 13 x 19 heavy, textured cotton paper, in an oak or black frame with a white mat and glass, ready to hang. Shipping is included.",
     "print12x18": "A Rain Print: the whole year printed on 13 x 19 heavy, textured cotton fine-art paper, shipped flat and ready to frame. Shipping is included.",
     "digital": "The Rain Print digital file: the whole year as a PDF, a PNG and a JPG at 12 x 18 in, 300 dpi, to print anywhere, with a page on how to read it.",
 }
@@ -779,6 +792,10 @@ def alert_text(o, buyer):
     lines = ["New Rain Print order.", ""]
     lines.append("What: %s" % (what_line(o) if not o.get("no_press") else "%s (no design on record: the press post never came)"
                                 % PRODUCT.get(o.get("product"), "unknown product")))
+    fc = frame_of(o)
+    if fc is not None:
+        lines.append("Frame: %s" % ({"oak": "Oak", "black": "Black"}.get(fc) or
+                                    "not on file (paid at Stripe with no press on record): ask the buyer, oak or black"))
     lines.append("Gift: %s" % ("yes, this year's print, made in January" if o.get("gift") else "see the order form posts" if o.get("gift_to") else "no"))
     if o.get("gift_to"):
         lines[-1] = "Gift: yes, for %s" % o["gift_to"]
@@ -1200,9 +1217,21 @@ def selftest():
     ck("one alert per paid record, to Sig, even on a dry run", len(alerts) == 2 and all(m["To"] == "sig@agsist.com" for m in alerts), [m["Subject"] for m in sent])
     a = alerts[0].get_content()
     ck("alert subject", alerts[0]["Subject"] == "Rain Print order: Framed, Chetek, WI 2025 ($79.00)", alerts[0]["Subject"])
-    ck("alert: what, paid, serial, the maker link", "What: 13 x 19 framed print of Chetek, WI, 2025, Staircase" in a and "Paid: $79.00 ($89.00 less a code)" in a
+    ck("alert: what, paid, serial, the maker link", "What: 13 x 19 framed print (black frame) of Chetek, WI, 2025, Staircase" in a and "Paid: $79.00 ($89.00 less a code)" in a
        and "Serial: 4" in a and "Open to fulfill: " + SIG_URL + "&maker=1&serial=4" in a, a)
     ck("alert: the buyer only as Stripe sent it", "Buyer (as Stripe sent it): buyer@example.com" in a, a)
+    # the frame color (worker v5.63, Sig Nov 4): a record from before it has none and reads Black
+    ck("alert: an old framed record reads Black", "\nFrame: Black\n" in a, a)
+    ck("alert: no Frame line for a print", "Frame:" not in alerts[1].get_content(), alerts[1].get_content())
+    ck("frame_of: oak, black, old, unknown, not framed",
+       [frame_of(order("1", frame_color="oak")), frame_of(order("1", frame_color="black")), frame_of(order("1")), frame_of(order("1", frame_color=None)),
+        frame_of(order("1", frame_color="")), frame_of(order("1", frame_color="teal")), frame_of(order("1", product="print12x18", frame_color="oak"))]
+       == ["oak", "black", "black", "black", "", "", None])
+    oa = alert_text(order("1", frame_color="oak"), "")
+    ck("alert: the chosen color, in Frame and in What", "\nFrame: Oak\n" in oa and "What: 13 x 19 framed print (oak frame) of Chetek, WI, 2025" in oa, oa)
+    ua = alert_text(order("1", frame_color=""), "")
+    ck("alert: a framed order with no color on file says ask the buyer", "Frame: not on file (paid at Stripe with no press on record): ask the buyer, oak or black" in ua
+       and "(oak frame)" not in ua and "(black frame)" not in ua, ua)
     b = alerts[1].get_content()
     ck("alert with no press: says so, no link", "no design on record" in b and "no design link" in b and "Buyer (as Stripe sent it): not given" in b, b)
     ck("alerts marked once", f.alerted == {order("1")["key"], order("3")["key"]})
@@ -1245,7 +1274,7 @@ def selftest():
     txt = m.get_body(("plain",)).get_content()
     htm = m.get_body(("html",)).get_content()
     ck("subject: the proof, the town and year", m["Subject"] == "Your Rain Print proof: Chetek, WI, 2025", m["Subject"])
-    ck("what was bought", "13 x 19 framed print of Chetek, WI, 2025, Staircase" in txt and "13 x 19 framed print of Chetek, WI, 2025, Staircase" in htm, txt)
+    ck("what was bought", "13 x 19 framed print (black frame) of Chetek, WI, 2025, Staircase" in txt and "13 x 19 framed print (black frame) of Chetek, WI, 2025, Staircase" in htm, txt)
     ck("who it is for", "For: Dad Olson" in txt and "For: <b>Dad Olson</b>" in htm)
     ck("the email is the proof: check it, approve it, nothing made before", "This email is your proof." in txt and "Nothing is made until you approve it." in txt
        and "Your proof comes by email" not in txt and "Your proof comes by email" not in htm, txt)
@@ -1421,7 +1450,7 @@ def selftest():
     link = "https://agsist.com/rp-gift?c=RP-7K3M-Q9TW-H07F&k=0123456789abcdef"
     ck("the card link as the big button", ('href="%s"' % H.escape(link)) in gh and ">Print the gift card</a>" in gh and "Print the gift card: " + link in gt, gh[:1500])
     ck("what they get: the framed print, shipping included, in plain words",
-       "A framed Rain Print: the whole year printed on 13 x 19 heavy, textured cotton paper, in a black frame with a white mat and glass, ready to hang. Shipping is included." in gt
+       "A framed Rain Print: the whole year printed on 13 x 19 heavy, textured cotton paper, in an oak or black frame with a white mat and glass, ready to hang. Shipping is included." in gt
        and "every rain and snow of 2026 at the NOAA weather station nearest Chetek" in gt, gt)
     ck("how they use it: nothing to fill in, the square or the address, never expires",
        "There is nothing for Dad to fill in or pay. It is paid for, and it ships to the address you gave at checkout." in gt

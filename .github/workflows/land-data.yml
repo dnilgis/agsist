@@ -326,6 +326,8 @@ jobs:
             python3 scripts/land_keep_stamp_only.py data/land   # a file whose only change is a timestamp is not data
             git add data/land
             [ -d land-sales ] && git add land-sales data/land-sales sitemap-land-sales.xml || true
+            # the summary files that read the pages, on this main (BUILD-RULES 61; fail soft, rule 53)
+            python3 scripts/generated_sets.py dependents land-sales --stage || true
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update land data $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
