@@ -110,4 +110,4 @@ jobs:
       - name: Save usage to raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: bash scripts/push_raw.sh "site usage: 90 days" data/site-usage.json
+        run: bash scripts/push_raw.sh "site usage, 90 days" data/site-usage.json

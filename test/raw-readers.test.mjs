@@ -49,7 +49,9 @@ const code = (s) => s.split('\n').filter((l) => !/^\s*#/.test(l)).join('\n');
 
 /** script file name -> the moved paths it reads (by name, or through an imported reader) */
 export function readers() {
-  const text = Object.fromEntries(scriptFiles().map((f) => [f, read(`scripts/${f}`)]));
+  // comment lines dropped: a note that names a moved file does not make a reader
+  const text = Object.fromEntries(scriptFiles().map((f) => [f, read(`scripts/${f}`).split('\n')
+    .filter((l) => !/^\s*(#|\/\/)/.test(l)).join('\n')]));
   const out = {};
   for (const [f, t] of Object.entries(text)) {
     for (const p of Object.keys(MOVED)) {
