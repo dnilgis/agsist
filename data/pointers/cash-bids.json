@@ -269,6 +269,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-10-29"
   },
+  "cash-bids/kansas/dodge-city.html": {
+   "to": "/cash-bids/kansas/",
+   "since": "2026-11-04"
+  },
   "cash-bids/minnesota/adrian.html": {
    "to": "/cash-bids/minnesota/",
    "since": "2026-11-01"
@@ -292,6 +296,10 @@
   "cash-bids/texas/morton.html": {
    "to": "/cash-bids/texas/dumas",
    "since": "2026-10-20"
+  },
+  "cash-bids/washington/ritzville.html": {
+   "to": "/cash-bids/washington/",
+   "since": "2026-11-04"
   },
   "cash-bids/wisconsin/ixonia.html": {
    "to": "/cash-bids/wisconsin/",
