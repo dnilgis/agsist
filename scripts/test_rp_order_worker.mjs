@@ -436,6 +436,8 @@ console.log('rp-order worker checks: ' + n + ' passed');
   A(RP.frameOf({}) === 'black' && RP.frameOf({ frame_color: 'oak' }) === 'oak' && RP.frameColor('teal') === 'oak', 'frameOf: no color reads black; frameColor: oak by default');
   let r = await post2(fr); A(r.status === 200 && newest().frame_color === 'black', 'black kept');
   r = await post2(Object.assign({}, fr, { frame_color: 'oak' })); A(r.status === 200 && newest().frame_color === 'oak', 'oak kept ' + r.status + ' ' + store.get(recs().pop()));
+  r = await post2(Object.assign({}, fr, { frame_color: 'mahogany-red' })); A(r.status === 200 && !('frame_color' in newest()), 'a long bad color is dropped, the record kept');
+  store.delete(recs().pop());
   r = await post2(Object.assign({}, fr, { frame_color: 'teal' })); A(r.status === 200 && !('frame_color' in newest()), 'a bad color is dropped, the record kept');
   r = await post2(Object.assign({}, RP.orderRecord(sig, sigCode, 'print12x18', 45), { frame_color: 'oak' })); A(r.status === 200 && !('frame_color' in newest()), 'a print keeps no frame color');
   // an old page (no field at all): kept as before, and reads black

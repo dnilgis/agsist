@@ -1724,6 +1724,8 @@ function formClean(kind, b) {
                         : v.replace(/[\u0000-\u001f\u007f]/g, " ");
     v = v.trim();
     if (!v) { if (req) return { error: f + " is required" }; continue; }
+    // v5.63: a frame color that is not oak or black, any length, is left off; the order still goes
+    if (type === "rpframe") { v = v.toLowerCase(); if (RP_FRAMES.includes(v)) out[f] = v; continue; }
     if (v.length > max) return { error: f + " is too long" };
     if (type === "email") {
       v = v.toLowerCase();
@@ -1738,9 +1740,6 @@ function formClean(kind, b) {
       if (!/^https:\/\/agsist\.com\/rain-print\?[A-Za-z0-9%+._~=&-]+$/.test(v)) return { error: "invalid " + f };
     } else if (type === "rpcode") {
       if (!/^[A-Za-z0-9_-]+$/.test(v)) return { error: "invalid " + f };
-    } else if (type === "rpframe") {
-      v = v.toLowerCase();
-      if (!RP_FRAMES.includes(v)) continue;   // v5.63: an unknown color is left off, the order still goes
     } else if (type === "rpdeliver") {
       if (!RP_DELIVER.includes(v)) return { error: "invalid " + f };
     } else if (type === "rpqty") {

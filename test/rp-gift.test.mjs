@@ -235,6 +235,11 @@ test("redeem: the frame color goes with a framed card's order (worker v5.63, Sig
   assert.equal(r2.status, 200);
   const p2 = [...store.keys()].filter((x) => x.startsWith("form:rain-print-order:")).map((x) => JSON.parse(store.get(x))).find((x) => x.choice === "print12x18");
   assert.ok(p2 && !("frame_color" in p2), "a print from a framed card keeps no frame color");
+  const m = await issue(env);
+  const r3 = await pub(env, "/rp-gift/redeem", order(m.code, { frame_color: "mahogany-red" }));
+  assert.equal(r3.status, 200, "a long unknown color never stops a redeem");
+  const p3 = [...store.keys()].filter((x) => x.startsWith("form:rain-print-order:")).map((x) => JSON.parse(store.get(x))).filter((x) => x.choice === "framed12x18" && !("frame_color" in x));
+  assert.ok(p3.length >= 1, "the order went, with the color dropped");
   // the page sends it: rp-gift.js passes frame_color with the order
   assert.match(readFileSync(new URL("../components/rp-gift.js", import.meta.url), "utf8"), /'logo', 'frame_color'\]\.forEach/);
 });

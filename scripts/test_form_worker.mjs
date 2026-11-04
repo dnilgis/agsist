@@ -778,6 +778,7 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   A((await one({ choice: 'framed12x18', frame_color: 'oak' })).frame_color === 'oak', 'v5.63: oak kept on a framed order');
   A((await one({ choice: 'framed12x18', frame_color: 'Black' })).frame_color === 'black', 'v5.63: black kept, in lower case');
   A(!('frame_color' in await one({ choice: 'framed12x18', frame_color: 'teal' })), 'v5.63: an unknown color is dropped, the order kept');
+  A(!('frame_color' in await one({ choice: 'framed12x18', frame_color: 'mahogany-red' })), 'v5.63: a long unknown color is dropped too, never "too long"');
   A(!('frame_color' in await one({ choice: 'print12x18', frame_color: 'oak' })), 'v5.63: a print keeps no frame color');
   A(!('frame_color' in await one({ choice: 'framed12x18' })), 'v5.63: an old page without the field still orders (reads black)');
 }
