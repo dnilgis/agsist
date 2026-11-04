@@ -42,8 +42,10 @@ const py = (code) => JSON.parse(execFileSync("python3", ["-c", "import sys, json
    nearby aliases picked again by add_nearby at noon UTC of that day */
 function fileOn(day, back) {
   return py(`
-import re
+import re, types
 from datetime import datetime, timedelta, timezone
+# the CI test runner has no yfinance; add_nearby never calls it (pure function)
+sys.modules.setdefault('yfinance', types.ModuleType('yfinance'))
 import fetch_prices as F
 raw = open(${JSON.stringify(FX)}).read()
 def mv(m):

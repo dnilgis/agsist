@@ -576,7 +576,7 @@ def commit_guard_row(now, repo, token, api="https://api.github.com", get=None):
     row = {"workflow": "commit-guard", "critical": True,
            "clock": "no job's commit on main leaves a future-dated data file out (last %d h)" % COMMIT_GUARD_HOURS}
     since = (now - timedelta(hours=COMMIT_GUARD_HOURS)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    hits, n, full = [], 0, False
+    hits, n, full, err = [], 0, False, None
     try:
         for page in range(1, COMMIT_GUARD_PAGES + 1):
             cs = get("%s/repos/%s/commits?sha=main&since=%s&per_page=100&page=%d" % (api, repo, since, page), token)
@@ -594,15 +594,18 @@ def commit_guard_row(now, repo, token, api="https://api.github.com", get=None):
             if not full:
                 break
     except Exception as e:
-        row.update(status="unknown", why="main's commits could not be read (%s)" % (getattr(e, "code", None) or type(e).__name__))
-        return row
+        err = "main's commits could not be read (%s)" % (getattr(e, "code", None) or type(e).__name__)
+        if not hits:     # a drop already found stays red; a later page that fails only adds to the why
+            row.update(status="unknown", why=err)
+            return row
     row["commits_read"] = n
     if hits:
         hits.sort(reverse=True)
         when, sha, k, path = hits[0]
         row.update(status="late", why="%d commit(s) on main in the last %d h left %d future-dated data file(s) out; newest %s "
                    "at %s left out %s. Add the file to .github/future-dated-data.txt with a reason if it is real, or fix "
-                   "the test that wrote it" % (len(hits), COMMIT_GUARD_HOURS, sum(h[2] for h in hits), sha, when, path))
+                   "the test that wrote it" % (len(hits), COMMIT_GUARD_HOURS, sum(h[2] for h in hits), sha, when, path)
+                   + ("; then %s, so there may be more" % err if err else ""))
     elif full:
         row.update(status="unknown", why="read %d commits of the last %d h and there are more; none left a file out so far"
                    % (n, COMMIT_GUARD_HOURS))
@@ -1246,6 +1249,18 @@ def selftest():
     check(r["status"] == "unknown" and "403" in r["why"], "an unreadable commit list is unknown (%s)" % r.get("why"))
     r = commit_guard_row(now, "o/r", "t", "https://api", get=commits([[]]))
     check(r["status"] == "ok", "no commits: ok")
+    def fail_on(page, pages):
+        def g(url, token):
+            k = int(url.rsplit("page=", 1)[1])
+            if k == page:
+                raise urllib.error.HTTPError("u", 502, "x", {}, None)
+            return pages[k - 1]
+        return g
+    r = commit_guard_row(now, "o/r", "t", "https://api", get=fail_on(2, [[cm("x")] * 99 + [real], [], []]))
+    check(r["status"] == "late" and "2099-01-01" in r["why"] and "502" in r["why"],
+          "a drop on page 1 stays red when page 2 fails (%s)" % r.get("why"))
+    r = commit_guard_row(now, "o/r", "t", "https://api", get=fail_on(2, [[cm("x")] * 100, [], []]))
+    check(r["status"] == "unknown" and "502" in r["why"], "no drop found before a failed page: unknown")
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_health checks passed")
     return 1 if fails else 0

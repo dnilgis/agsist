@@ -89,7 +89,8 @@ jobs:
       cancel-in-progress: false
     # 90, not 60 (Nov 1, 2026): Fetch took 33 min and Context 20 on Oct 31 and Nov 1
     # (9 and 9 on Oct 29), which left the push about 5 minutes before the job was cancelled.
-    timeout-minutes: 90
+    # 105, not 90 (Nov 4, 2026, fx/rainwx): the weather step adds up to 15 minutes.
+    timeout-minutes: 105
     steps:
       - uses: actions/checkout@v4
       - name: Engine checkout
@@ -105,6 +106,7 @@ jobs:
         run: |
           python scripts/fetch_county_rain.py --selftest
           python scripts/fetch_rain_context.py --selftest
+          python scripts/fetch_rain_weather.py --selftest
           python scripts/build_county_rain.py --selftest
           python scripts/send_rain_year.py --selftest
 
@@ -139,6 +141,22 @@ jobs:
           STATES: ${{ github.event.inputs.states }}
         run: |
           if [ -n "$STATES" ]; then python scripts/fetch_rain_context.py --states "$STATES"; else python scripts/fetch_rain_context.py; fi
+
+      # The other measured weather at each page's station (scripts/fetch_rain_weather.py): corn GDDs
+      # from May 1 against the station's own 1991-2020 average, the hottest and coldest day, freezes,
+      # and the month's warmest or coldest day of note, into data/rain/wx/<st>.json (one small file a
+      # state, read by the page's weather fold). Best effort, 12-minute cap: about 3 calls a state, plus
+      # a one-time read of each station's 1991-2020 days into data/rain/wxnorm (7 minutes a run at most;
+      # the rest waits for the next day). A state that fails keeps its last file, and the pages use a
+      # file only when it is from this same fetch.
+      - name: Weather (GDDs, extremes, freezes)
+        continue-on-error: true
+        timeout-minutes: 15
+        env:
+          PYTHONUNBUFFERED: "1"
+          STATES: ${{ github.event.inputs.states }}
+        run: |
+          if [ -n "$STATES" ]; then python scripts/fetch_rain_weather.py --states "$STATES"; else python scripts/fetch_rain_weather.py; fi
 
       # Share images (og:image): the US county map for /rain and one map per
       # state for its state and county pages (img/og/rain.jpg, img/og/rain-<st>.jpg),

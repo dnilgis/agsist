@@ -175,6 +175,8 @@ test('a rename onto a made-up day is left out too, and a first add of 5,000 date
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.ok(!inHead(d).includes('data/hail/2099-01-01.json'), 'a renamed made-up day reached the commit'); // pin-ok: the file this test wrote itself
   assert.match(g(d, 'log', '-1', '--format=%B'), /^COMMIT-GUARD dropped=1 path=data\/hail\/2099-01-01\.json$/m); // pin-ok: the file this test wrote itself
+  assert.ok(inHead(d).includes('data/hail/a.json'), 'the old path of the dropped rename was deleted in the commit');
+  assert.equal(g(d, 'show', 'HEAD:data/x.json'), 'renamed\n', 'the rest of the commit went in');
 
   fs.rmSync(path.join(d, 'data/hail/2099-01-01.json')); // pin-ok: the file this test wrote itself
   const today = Date.now();
@@ -229,4 +231,26 @@ test('a file or folder on the list commits, and the hook stays one hook when pla
   const head = inHead(d);
   assert.ok(head.includes('data/sched/2099-01-01.json') && head.includes('data/fc/2099-02-01.json'), 'a listed file was left out'); // pin-ok: files this test wrote itself
   assert.ok(!head.includes('data/other/2099-01-01.json'), 'an unlisted made-up day went in'); // pin-ok: a file this test wrote itself
+});
+
+test('a commit that stops after the hook leaves no line for a later merge (GIT_EDITOR=false, then merge --no-ff)', () => {
+  const d = jobRepo();
+  g(d, 'checkout', '-qb', 'side');
+  write(d, 'data/side.json', '1\n'); g(d, 'add', '-A'); g(d, 'commit', '-qm', 'side');
+  g(d, 'checkout', '-q', 'main');
+  write(d, 'data/daily-sent/2099-01-01.json', realCase); // pin-ok: the file this test wrote itself
+  write(d, 'data/x.json', 'main\n');
+  g(d, 'add', '-A');
+  // no -m: git opens the editor after the pre-commit hook; GIT_EDITOR=false stops the commit there
+  const r = spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q'], { cwd: d, encoding: 'utf8', env: { ...process.env, GIT_EDITOR: 'false' } });
+  assert.notEqual(r.status, 0, 'the commit was meant to stop at the editor');
+  assert.match(r.stdout + r.stderr, /^COMMIT-GUARD dropped=1 /m, 'the hook ran and dropped the file');
+  assert.ok(fs.existsSync(path.join(d, '.git/agsist-commit-guard')), 'the stopped commit left its note');
+  g(d, 'reset', '-q');
+  fs.rmSync(path.join(d, 'data/daily-sent/2099-01-01.json')); // pin-ok: the file this test wrote itself
+  g(d, 'checkout', '-q', '--', 'data/x.json');
+  const m = spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'merge', '--no-ff', '-q', '-m', 'Merge side', 'side'], { cwd: d, encoding: 'utf8' });
+  assert.equal(m.status, 0, m.stdout + m.stderr);
+  assert.doesNotMatch(g(d, 'log', '-1', '--format=%B'), /COMMIT-GUARD/, 'the stale note reached the merge message');
+  assert.ok(!fs.existsSync(path.join(d, '.git/agsist-commit-guard')), 'the stale note is cleared');
 });
