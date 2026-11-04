@@ -164,6 +164,10 @@ test("the sentence: changed lines lead; nothing changed says so in one line; not
   assert.equal(C.summary(held), "Nothing changed here this week.");
   const ct = [C.droughtChange(DR, "09003"), C.topBid(IDX, PREV, ...HARTFORD, TODAY)].map((l, i) => Object.assign(l, { label: ["Drought", "Top corn bid"][i] }));
   assert.equal(C.summary(ct), "Not enough on file here to say what changed this week.");
+  // 2026-11-04 (site panel, skeptic row 8): one line read and three not read is not "nothing changed"
+  const part = held.slice(0, 1).concat(ct, [Object.assign(C.newSales(null, "55005", "WI"), { label: "Land sales" })]);
+  assert.equal(C.summary(part), "No change in the 1 of 4 lines we could check this week; not checked: Drought, Top corn bid, Land sales.");
+  assert.doesNotMatch(C.summary(part), /Nothing changed/);
   const html = C.linesHtml(held.concat(ct));
   assert.match(html, /<b>Held<\/b>Drought at D2; the top posted corn bid/);
   assert.match(html, /<b>Not shown<\/b>Drought: the Drought Monitor maps Connecticut/);
@@ -174,7 +178,7 @@ test("the page: one mount, the map code loads only once a place is open, files b
   const page = read("fast-facts.html"), here = read("components/here.js"), cm = read("components/changemap.js");
   assert.match(page, /<p id="h-where" class="h-where"><\/p>\n<div id="h-cm" class="cm" hidden><\/div>/);
   assert.doesNotMatch(page, /changemap\.js/, "not a page script: loaded by here.js");
-  assert.match(page, /\/components\/here\.js\?v=39"/);   // v39: fx/wave1b (short-list bid rows); v38: production cost rows (fx/marsfert); v37: change-lines.js v3 (fx/landnj, New Jersey sales)
+  assert.match(page, /\/components\/here\.js\?v=41"/);   // v41: the bids failure path (fx/wave1b; v40 is fx/rpcolor); v39: change-lines.js v4, nothing changed only when every line was read (fx/wave1a); v38: production cost rows (fx/marsfert); v37: change-lines.js v3 (fx/landnj, New Jersey sales)
   assert.match(here, /var CM_JS = '\/components\/changemap\.js\?v=\d+';/);
   assert.match(here, /loadCards\(fips\);\n\s+changeMap\(fips\);/);
   for (const f of [cm]) assert.doesNotMatch(f, /—/);
@@ -397,4 +401,13 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
       await ctx.close();
     }
   } finally { await browser.close(); srv.close(); }
+});
+
+// 2026-11-04 (site panel, skeptic row 13): before a state was picked the N box read "-lb N/ac".
+test("the N rate unit shows only beside a rate", () => {
+  const ffh = fs.readFileSync(new URL("../fast-facts.html", import.meta.url), "utf8");
+  const ffj = fs.readFileSync(new URL("../components/fast-facts.js", import.meta.url), "utf8");
+  assert.match(ffh, /<span id="ans-rate">-<\/span><span class="u" id="ans-unit" hidden>lb N\/ac<\/span>/);
+  assert.equal((ffj.match(/t\('ans-rate','-'\);rateUnit\(false\);/g) || []).length, 3, "every placeholder hides the unit");
+  assert.match(ffj, /t\('ans-rate',String\(r\.rate\)\);rateUnit\(true\);/);
 });

@@ -908,15 +908,12 @@ try{renderMarketSession();}catch(e){}
 // ============ MARKET READ ASSEMBLY (v13 sectioned refactor) ============
 // Replaces v12 single-paragraph render with 3-section render.
 // State unchanged: {base, crop, cot, breakeven, price}.
-// New: buildActionLine(state, ctx) synthesizes a "what I'd do" framework line.
 
 function renderMarketRead(){
   var mr=window.__agsistMR;
   if(!mr||!mr.base||mr.base.length===0)return;
   var whereEl=document.getElementById('mr-where');
   var whatEl=document.getElementById('mr-what');
-  var doEl=document.getElementById('mr-do');
-  var doWrap=document.getElementById('mr-do-wrap');
   if(!whereEl||!whatEl)return;
 
   // WHERE: first phrase from base[] (always the price-percentile phrase)
@@ -932,14 +929,9 @@ function renderMarketRead(){
   whatEl.innerHTML=whatPhrases.length?(cap(whatPhrases.join('; '))+'.'):'<span class="sr-only">Loading fundamentals</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span>';
 
   try{renderScorecard();}catch(e){}
-  // DO: action-oriented synthesis using breakeven + signal shape
-  var actionLine=buildActionLine(mr);
-  if(actionLine){
-    if(doEl)doEl.innerHTML=actionLine;
-    if(doWrap)doWrap.style.display='block';
-  }else{
-    if(doWrap)doWrap.style.display='none';
-  }
+  // The action box under "What's moving it" was removed on 2026-11-04 (site panel): it framed
+  // buy/sell moves with no tested sample behind them. test/no-unsampled-advice.test.mjs
+  // keeps it out.
 }
 
 
@@ -1124,66 +1116,6 @@ function getBreakevenPhrase(currentPriceDollars){
     if(result){result.innerHTML='<strong>$'+Math.abs(diff).toFixed(2)+'/bu below</strong> your $'+be.toFixed(2)+' breakeven';result.className='be-result under';}
     return {phrase:'current prices are <strong>$'+Math.abs(diff).toFixed(2)+'/bu below your stated breakeven</strong> of $'+be.toFixed(2),be:be,diff:diff};
   }
-}
-
-
-// Action-oriented synthesis. NOT advice: decision framework only.
-// Reads from mr.priceCtx (set by price fetch) and breakeven state.
-function buildActionLine(mr){
-  var p=mr.priceCtx; // {pct, percentile_zone, cropKey}
-  if(!p)return null;
-  var be=mr.breakeven; // {phrase, be, diff} or null
-  var cot=mr.cotCtx;   // {pct, zone}
-  var crop=mr.cropCtx; // {planting_diff, ge_diff} or null
-
-  // Frame the four corners using percentile + breakeven
-  // pct: 0-100 (price percentile), be.diff: $/bu vs BE
-  var pct=p.pct;
-  var hasB=!!be;
-  var diff=hasB?be.diff:null;
-  var lines=[];
-
-  if(hasB){
-    if(diff>=0&&pct>=75){
-      lines.push('You are <strong>above breakeven and price is in the upper quartile</strong> of its 52-week range. Historically a window where scaling-in forward sales (HTAs, futures hedges, or floor strategies) protects margin without committing all bushels.');
-    }else if(diff>=0&&pct>=25){
-      lines.push('You are <strong>above breakeven, with price in the '+bandOf(pct)+'</strong> of its 52-week range. Mixed setup. If you need to price bushels for cash flow, partial sales lock in margin; if you can wait, the seasonal calendar may give a better window.');
-    }else if(diff>=0&&pct<25){
-      lines.push('You are <strong>above breakeven but price is in the lower quartile</strong> of its 52-week range. If you can wait, waiting has often paid at this level. Prices this low in the range have tended to bounce, and selling hard at the bottom rarely works out.');
-    }else if(diff<0&&pct<25){
-      lines.push('Below breakeven and in the <strong>lower quartile</strong> of the 52-week range. Patience setup: selling here locks in losses. Hold what you can store and watch for any catalyst that breaks the pattern.');
-    }else if(diff<0&&pct<75){
-      lines.push('Below breakeven, with price in the '+bandOf(pct)+' of its 52-week range. <strong>No forward-selling opportunity at these levels</strong>. Focus on protecting downside (puts) rather than locking in losses through cash sales.');
-    }else if(diff<0){
-      lines.push('Below breakeven but price is in the upper quartile of its range, a <strong>tight market</strong>. Check whether you can trim your costs (input timing, basis) before you decide these prices are out of reach.');
-    }
-  }else{
-    // No breakeven entered: give a generic price-only frame
-    if(pct>=75){
-      lines.push('Price is in the <strong>upper quartile</strong> of its 52-week range, a window where many operations evaluate forward sales. Enter your cost of production above to see what these prices mean for your margin.');
-    }else if(pct<25){
-      lines.push('Price is in the <strong>lower quartile</strong> of its 52-week range. Historically a weak pricing window; selling here locks in losses for most operations. Enter your cost of production above to see how far below your breakeven you are.');
-    }else{
-      lines.push('Price is in the '+bandOf(pct)+' of its 52-week range. Add your cost of production above to see what it means for your margin.');
-    }
-  }
-
-  // COT overlay: only when funds are crowded on the one measure, and with the
-  // COT page's tested result, not a claim that crowded positions "unwind hard".
-  if(cot&&cot.crowded){
-    lines.push('Managed money is <strong>crowded '+cot.crowded+'</strong> ('+(cot.word||'')+' of its record since '+cot.since+', as a share of open interest). '+(cot.tested||''));
-  }
-
-  // Crop progress overlay: only when there's a meaningful divergence
-  if(crop&&crop.planting_diff!=null&&Math.abs(crop.planting_diff)>15){
-    if(crop.planting_diff<-15){
-      lines.push('Planting pace is <strong>well behind prior year</strong>: historically supportive for prices through the May\u2013June weather window.');
-    }else if(crop.planting_diff>15){
-      lines.push('Planting pace is <strong>well ahead of prior year</strong>: typically removes weather premium; mild bearish bias for the spring.');
-    }
-  }
-
-  return lines.join(' ');
 }
 
 
