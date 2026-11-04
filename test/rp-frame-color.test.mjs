@@ -50,14 +50,14 @@ test("no reader copy still promises only a black frame", () => {
   assert.deepEqual(bad, []);
   // the offer, the FAQ and its structured data say oak or black
   assert.match(HTML, /"name": "Framed print, 13 x 19 wood frame, oak or black, acid-free white mat, tempered glass, shipping included"/);
-  assert.match(HTML, /The framed one comes in a 13 x 19 wood frame, oak or black, with an acid-free white mat and tempered glass, ready to hang wide or tall\./);
+  assert.match(HTML, /The framed one comes in a 13 x 19 wood frame, oak or black, with an acid-free white mat and tempered glass, ready to hang\./);
 });
 
 test("What you get lists the frame plainly, and the mat opening is the one the sheet is drawn for", () => {
   const box = HTML.match(/<h3>Framed<\/h3><ul>([\s\S]*?)<\/ul>/)[1];
   const items = [...box.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) => m[1]);
   for (const want of ["A 13 x 19 in wood frame, oak or black, your pick", "An acid-free white mat cut for 11 x 17, a 16.5 x 10.5 in opening", "Tempered glass front",
-    "Hangs wide or tall, hanging hardware included; the picture itself is drawn wide", "Packed with corner guards and foam, double-boxed"]) assert.ok(items.includes(want), want);
+    "Hanging hardware included", "Packed with corner guards and foam, double-boxed"]) assert.ok(items.includes(want), want);
   const S = read("components/rain-print.js");
   const sheet = /var SHEET = \{ w: 19, h: 13, art: \{ w: 16\.5, h: 11 \}, mat: \{ w: 16\.5, h: 10\.5 \}, safe: \{ w: 16\.25, h: 10\.25 \} \};/;
   assert.match(S, sheet, "the mat opening and safe area the page promises are the drawn ones");

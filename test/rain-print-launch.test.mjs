@@ -456,7 +456,7 @@ const visible = HTML.replace(/<script[\s\S]*?<\/script>/g, "");
 test("Sig's notes: no printer named anywhere, framed prints have real glass, packed well", () => {
   assert.ok(!/epson|artisan|acrylic/i.test(HTML + S2), "no printer model, no acrylic");
   // the frame specs as plain lines since Nov 4 (Sig): the glass, then the packing
-  assert.match(HTML, /<li>Tempered glass front<\/li><li>Hangs wide or tall, hanging hardware included; the picture itself is drawn wide<\/li><li>Packed with corner guards and foam, double-boxed<\/li>/);
+  assert.match(HTML, /<li>Tempered glass front<\/li><li>Hanging hardware included<\/li><li>Packed with corner guards and foam, double-boxed<\/li>/);
   assert.match(HTML, /<li>I print it myself, and you see a proof first<\/li>/);
   assert.match(HTML, /I print it myself, frame it if you ordered the frame, and ship it from Chetek, Wisconsin\./);
 });

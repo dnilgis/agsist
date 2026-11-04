@@ -114,8 +114,7 @@
   /* THE SHEET (2026-10-17, Sig): prints and framed prints are printed on 13 x 19 in
      paper and ship untrimmed. The 3:2 art (1800 x 1200 units) is scaled to 16.5 x
      11 in and centred on the sheet; the margin is the print's own white. The
-     framed print sits in a 13 x 19 wood frame (oak or black, Sig's Nov 4 order: tempered glass,
-     hangs wide or tall) with an acid-free white mat (the stock "cut for 11 x 17" kind, window about 16.5 x 10.5 in), so everything the
+     framed print sits in a 13 x 19 wood frame (oak or black, Sig's Nov 4 order: tempered glass) with an acid-free white mat (the stock "cut for 11 x 17" kind, window about 16.5 x 10.5 in), so everything the
      art draws stays inside the centred safe window, which
      test/rain-print-sheet.test.mjs measures on the drawn sheet. When Sig
      measures the real mat, change mat and safe here (inches, landscape). The
@@ -3043,7 +3042,7 @@
      for a print or framed (a plain date from data/rain-print.json), the file
      by email. This year's gift and a year NOAA hasn't finished say so instead. */
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
-  var SUB_BASE = { framed12x18: '13 x 19 wood frame, oak or black, acid-free white mat, tempered glass. Hangs wide or tall.', print12x18: '13 x 19 paper, ships flat.' };
+  var SUB_BASE = { framed12x18: '13 x 19 wood frame, oak or black, acid-free white mat, tempered glass.', print12x18: '13 x 19 paper, ships flat.' };
   function syncCutoffs() {
     var gift = giftYear(), settle = !gift && SETTLE && canOrder();
     PRODUCTS.forEach(function (id) {
