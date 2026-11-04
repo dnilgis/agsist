@@ -62,9 +62,9 @@ test('the rule, from the real case: 2099-01-01 is a made-up day, today and the n
     'daily/2099-01-01.html',                      // outside data/: the page builders have their own checks
     'data/x/2026-11-04-to-2027-01-12.json',       // dated today, naming a later day: the earliest date counts
   ];
-  assert.deepEqual(futureShaped(files, '2026-11-04', []),
+  assert.deepEqual(futureShaped(files, '2026-11-04', []), // pin-ok: inline fixture paths and a fixed today, no live data
     ['data/daily-sent/2099-01-01.json', 'data/daily-sent/2026-11-07.dry-run.json']);
-  assert.deepEqual(futureShaped(['data/sched/2027-01-12.json', 'data/fc/a/2027-02-01.json', 'data/daily-sent/2099-01-01.json'], '2026-11-04',
+  assert.deepEqual(futureShaped(['data/sched/2027-01-12.json', 'data/fc/a/2027-02-01.json', 'data/daily-sent/2099-01-01.json'], '2026-11-04', // pin-ok: inline fixture paths and a fixed today
     [{ path: 'data/sched/2027-01-12.json', why: 'x' }, { path: 'data/fc/', why: 'y' }]),
   ['data/daily-sent/2099-01-01.json'], 'a listed file or folder passes, nothing else');
 });
@@ -126,9 +126,9 @@ test('a job\'s commit leaves out a made-up day and keeps the real sent copy (the
   g(d, 'add', 'data/daily-sent/'); // the "Keep the sent copy" step adds the whole folder
   const r = commit(d, 'AGSIST Daily sent copy');
   assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.match(r.stdout + r.stderr, /::warning title=test-shaped file left out of the commit::data\/daily-sent\/2099-01-01\.json is dated 2099-01-01/);
+  assert.match(r.stdout + r.stderr, /::warning title=test-shaped file left out of the commit::data\/daily-sent\/2099-01-01\.json is dated 2099-01-01/); // pin-ok: the file this test wrote itself
   const head = inHead(d);
-  assert.ok(!head.includes('data/daily-sent/2099-01-01.json'), 'the made-up day reached the commit');
+  assert.ok(!head.includes('data/daily-sent/2099-01-01.json'), 'the made-up day reached the commit'); // pin-ok: the file this test wrote itself
   assert.ok(head.includes('data/daily-sent/' + today + '.json'), 'today\'s sent copy was left out');
   assert.ok(head.includes('data/daily-sent/' + iso(Date.now() + DAY_MS) + '.json'), 'tomorrow\'s file (a time zone away) was left out');
 });
@@ -170,6 +170,6 @@ test('a file or folder on the list commits, and the hook stays one hook when pla
   const r = commit(d, 'listed');
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const head = inHead(d);
-  assert.ok(head.includes('data/sched/2099-01-01.json') && head.includes('data/fc/2099-02-01.json'), 'a listed file was left out');
-  assert.ok(!head.includes('data/other/2099-01-01.json'), 'an unlisted made-up day went in');
+  assert.ok(head.includes('data/sched/2099-01-01.json') && head.includes('data/fc/2099-02-01.json'), 'a listed file was left out'); // pin-ok: files this test wrote itself
+  assert.ok(!head.includes('data/other/2099-01-01.json'), 'an unlisted made-up day went in'); // pin-ok: a file this test wrote itself
 });
