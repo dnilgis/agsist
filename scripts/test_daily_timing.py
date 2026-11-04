@@ -63,6 +63,11 @@ def load(feed):
     return pdata, surprises, t, g.price_timing_block(t)
 
 
+def pricefmt_price(cents):
+    import pricefmt
+    return pricefmt.price(cents)
+
+
 def fixture(day):
     return json.loads((FIX / ("prices-2026-%s.json" % day)).read_text())
 
@@ -300,6 +305,33 @@ chk(_kept == ["crude"], "the published Nov 2 list keeps crude only", _kept)
 _html = g.generate_archive_html(_a2, "2026-11-02")
 chk("Overnight surprise:</strong> WTI Crude Oil" in _html and "Feeder Cattle -" not in _html.split("dv3-surprise-banner", 2)[-1][:400],
     "the baked Nov 2 page shows crude alone", _html[_html.find("surprise-text"):][:300])
+
+# 2026-11-04 (site panel, PR 307): the Daily reads the front month every page
+# shows. On Nov 3 the site rolled soybeans to Jan '27 at first notice while the
+# Daily still read the continuous key (Nov '26). Replayed from the Nov 3 12:46Z
+# price file with -nearby rebuilt by the fixed fetch_prices.add_nearby.
+print("\nNov 3 2026, soybeans on Jan '27 in the Daily as on the site")
+_r = json.loads((Path(HERE).parent / "test" / "fixtures" / "daily-audit" / "prices-2026-11-03-beans-roll.json").read_text())
+_feed = {"fetched": _r["fetched"], "nearby": _r["nearby"], "quotes": _copy.deepcopy(_r["quotes"])}
+pdata, surprises, t, blk = load(_feed)
+_nb = _r["quotes"]["beans-nearby"]
+chk(_nb["alias_of"] == "beans-jan27", "the fixture's nearby is Jan '27", _nb.get("alias_of"))
+chk(pdata["locked_prices"]["beans"] == _nb["close"] / 100, "the Daily locks the nearby close, not the continuous Nov '26",
+    str((pdata["locked_prices"]["beans"], _r["quotes"]["beans"]["close"])))
+chk(pdata["locked_changes"]["beans"]["prev"] == round(_nb["open"] / 100, 4),
+    "the change is against the same contract's prior close", pdata["locked_changes"]["beans"])
+chk(pdata["locked_changes"]["beans"].get("contract") == "Jan '27", "the lock names Jan '27", pdata["locked_changes"]["beans"])
+_bl = [x for x in pdata["price_block"].splitlines() if "Soybeans (nearby)" in x]
+chk(_bl and "Jan '27" in _bl[0] and pricefmt_price(_nb["close"]) in _bl[0], "the prompt line says Jan '27 and its price", _bl)
+_ok, _iss, _ = preflight_prices.run(_copy.deepcopy(_feed), today=datetime(2026, 11, 3, 12, 46, tzinfo=timezone.utc))
+_w = [m for sev, c, m in _iss if c == "nearby-roll"]
+chk(any(m.startswith("beans continuous") for m in _w) and all(sev == "WARN" for sev, c, m in _iss if c == "nearby-roll"),
+    "preflight warns on the continuous vs nearby split, and only warns", _w)
+import briefing_gate  # noqa: E402
+_, _gi = briefing_gate.run({"locked_prices": pdata["locked_prices"], "locked_changes": pdata["locked_changes"]}, _copy.deepcopy(_feed),
+                        today=datetime(2026, 11, 3).date())
+chk(not [m for sev, c, m in _gi if c == "locked-drift"], "the gate checks the lock against the same nearby quote: no drift",
+    [m for sev, c, m in _gi if c == "locked-drift"])
 
 print("PASS" if ok else "FAIL")
 sys.exit(0 if ok else 1)

@@ -887,8 +887,16 @@ def load_prices():
         _qs = _qs.isoformat() if _qs else None
     except Exception:
         _qs = None
+    try:
+        from preflight_prices import daily_quote as _daily_quote
+    except ImportError:                            # never block a send on this
+        _daily_quote = lambda qs, k: qs.get(k)
     for key, label in COMMODITY_LABELS.items():
-        q = quotes.get(key)
+        # 2026-11-04: corn, beans and wheat read <crop>-nearby, the month every
+        # page shows (rolled at first notice), with that contract's own prior
+        # close, so the day's change is one contract. Nov 3 printed Nov '26
+        # soybeans at 1203.0 while the site showed Jan '27 at 1213.5.
+        q = _daily_quote(quotes, key)
         if not q or q.get("close") is None: continue
         close = float(q["close"]); opn = float(q.get("open", close))
         net = q.get("netChange"); pct = q.get("pctChange")
@@ -959,6 +967,8 @@ def load_prices():
         # The month comes from the symbol actually quoted (quoted_contract), and
         # only where fetch_prices labeled the key a front month at all.
         mon = quoted_contract(q) if key in ("cattle", "feeders", "hogs", "milk") and q.get("contract") else None
+        if key in ("corn", "beans", "wheat") and q.get("alias_of"):
+            mon = q.get("contract") or quoted_contract(q)
         if mon:
             locked_changes[key]["contract"] = mon
         if stale:
