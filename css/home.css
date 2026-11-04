@@ -2461,7 +2461,9 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 /* ===== 2026-11-04 (Sig: "my buddy didn't know that farm land sales were on agsist"; "there is dead space on the
    home page"): the Farmland sales block (components/home-land.js). Phone and tablet: right under Today near me,
    full width. 1000px and up: it fills the room under Sell grain and My field, beside the forecast and the Daily.
-   Every line holds its room from first paint, so the sale replacing the plain words moves nothing. */
+   Every line holds its room from first paint, so the sale replacing the plain words moves nothing. Nov 4 (checker):
+   the place line holds 2 lines and the sale line 4 at every width, so no source name or date is ever cut
+   (test/home-land.test.mjs fills them with the longest real words). */
 .job-land{grid-column:1/-1;min-width:0}
 #hero-band .hl-sale{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;align-items:center;padding:4px 0 6px;color:inherit;text-decoration:none}
 #hero-band .hl-sale>span{grid-column:1}
@@ -2479,8 +2481,6 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .hl-v .hl-u{font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.941rem;font-weight:600;color:var(--text-dim);letter-spacing:0}
 @container hero (min-width:560px){
   .job-land{border-top:1px solid var(--border-2);padding-top:10px}
-  .hl-s{-webkit-line-clamp:2;min-height:2.8em}
-  .hl-k{-webkit-line-clamp:1;min-height:1.3em}
 }
 @container hero (min-width:1000px){
   .jobs{grid-template-rows:auto 1fr}
@@ -2494,5 +2494,4 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
   #hero-band .hl-sale{grid-area:sale;padding-top:0;align-self:start;align-content:start}
   .hl-why{grid-area:why;align-self:start}
   .hl-links{grid-area:links;align-self:start}
-  .hl-s{-webkit-line-clamp:3;min-height:4.2em}
 }

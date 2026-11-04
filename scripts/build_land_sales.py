@@ -366,11 +366,13 @@ LEAD_DAYS = 30
 LEAD_MIN_SALES = 3
 LEAD_MIN_ACRES = BEST_MIN_ACRES          # 40: a field, not a building lot at the edge of town
 LEAD_FARM_X = 2                          # a county middle over twice the state's: town and development ground
-LEAD_RULE = ("The highest price per acre among bare farmland sales (%d acres or more, no buildings, not forest) recorded in "
-             "%%s in the %d days to %%s, the newest on file. Only farm counties count: a county needs at least %d such sales "
-             "over 24 months to compare with, and a county whose middle price is more than twice the state's (%%s an acre) "
-             "is left out as town or development ground, and so is any sale priced at more than twice the state's middle. "
-             "Sales far outside their county's usual range are left out too; they are on the monthly page." % (LEAD_MIN_ACRES, LEAD_DAYS, MIN_COMPS))
+LEAD_RULE = ("The highest price per acre among bare farmland sales of %d acres or more (no buildings, not forest) %%s in %%s "
+             "in the %d days to %%s, the newest on file. Only farm ground counts: the county needs at least %d bare farmland "
+             "sales of %d acres or more over 24 months to compare with, a county whose middle price is more than twice the "
+             "state's (%%s an acre) is left out as town or development ground, and so is any sale priced at more than twice "
+             "the state's middle. Sales far outside their county's usual range are left out too; they are on the monthly page. "
+             "Fewer than %d such sales: no sale shown."
+             % (LEAD_MIN_ACRES, LEAD_DAYS, MIN_COMPS, COMP_MIN_ACRES, LEAD_MIN_SALES))
 
 
 def lead_pick(st, cands, state_med=None):
@@ -401,7 +403,7 @@ def lead_pick(st, cands, state_med=None):
     return {"st": st, "id": p["id"], "county": p["county"], "acres": p["acres"], "ppa": p["ppa"], "when": p["when"],
             "basis": p["basis"], "med": u["med"], "n24": u["n"], "pct": BLS.js_round((p["ppa"] / u["med"] - 1) * 100) if u["med"] else None,
             "of": len(ok), "window": [start, end], "url": "/land-sales/%s/%s#s-%s" % (SLUG[st], cs, p["id"]),
-            "rule": LEAD_RULE % (NAME[st], LA.short_day(end) + ", " + end[:4], money(state_med)),
+            "rule": LEAD_RULE % ("sold" if p["basis"] == "sale date" else "recorded", NAME[st], LA.short_day(end) + ", " + end[:4], money(state_med)),
             "src": SOURCES[st].split(",")[0]}, drop      # the credit beside the figure, in plain text (Oct 29: no link)
 
 
@@ -899,12 +901,13 @@ def index_section(repo):
 def index_page(d, latest, counties, early, coverage, archive, ix=None):
     url = ORIGIN + "/land-sales/"
     # Nov 4 (Sig: "my buddy didn't know that farm land sales were on agsist"): the words people search for first
-    title = "Farmland Sales Prices by County: What Farmland Sold For in %s | AGSIST" % and_list(sorted(NAME[x] for x in d.states))
-    desc = ("What farmland sold for: every recorded farm sale by county with acres, price and price per acre, a monthly update of "
-            "the biggest buyers and sales, and where every state's sales come from.")
+    title = "Farmland Sales Prices by County | AGSIST"     # 60 characters or fewer; the states are in the description
+    desc = ("What farmland sold for in %s: every recorded farm sale by county with acres, price and price per acre, a monthly "
+            "update of the biggest buyers and sales, and where every state's sales come from." % and_list(sorted(NAME[x] for x in d.states)))
     if ix:
-        desc = ("What farmland sold for: every recorded farm sale by county with acres, price and price per acre, the Illinois "
-                "farmland sale index, a monthly update of the biggest buyers and sales, and where every state's sales come from.")
+        desc = ("What farmland sold for in %s: every recorded farm sale by county with acres, price and price per acre, the "
+                "Illinois farmland sale index, a monthly update of the biggest buyers and sales, and where every state's sales come "
+                "from." % and_list(sorted(NAME[x] for x in d.states)))
     ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])] + (ix["ld"] if ix else [])
     b = [head(title, desc, url, ld, early, ix["css"] if ix else ""), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
     if latest:
@@ -1188,6 +1191,11 @@ def selftest():
            hl is not None and hl["ppa"] == 9002 and hd["over_cap"] == 1 and hd["counties"] == 0)
         nf, nd = lead_pick("WI", town[:3] + town[3:4], 10000)
         ck("lead: withheld when the filter leaves under %d sales" % LEAD_MIN_SALES, nf is None and nd["sales"] == 3)
+        ck("lead: the rule says 20-acre county sales, recorded or sold, and no sale under 3",
+           "at least 5 bare farmland sales of 20 acres or more" in fl["rule"] and " recorded in Wisconsin " in fl["rule"]
+           and "Fewer than 3 such sales: no sale shown." in fl["rule"]
+           and " sold in Indiana " in lead_pick("IN", [(dict(x[0], basis="sale date"), x[1], x[2]) for x in town], 10000)[0]["rule"])
+        ck("hub title is 60 characters or fewer", len(re.search(r"<title>([^<]*)</title>", texts["land-sales/index.html"]).group(1)) <= 60)
         ck("lead: withheld with no state middle to test the county against", lead_pick("WI", town, None)[0] is None)
         ck("lead.json: the farm filter's counts and the state middle are written", set(ld["farm_filter"]["WI"]) == {"counties", "sales", "over_cap", "state_med"})
         sf = json.loads(texts["data/land-sales/wi.json"])

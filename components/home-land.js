@@ -13,7 +13,8 @@
    NO DATA (file missing, malformed, or no state has a lead): the baked plain words stay, the links still work.
    NO LAYOUT SHIFT: the baked words and the sale fill the same lines; css/home.css holds each line's room.
 
-   window.AgHomeLand = { pick, words } (test/home-land.test.mjs runs both in node on fixtures). */
+   STALE: a state's sale more than 60 days past its window's end is withheld (fresh(), the page's own clock).
+   window.AgHomeLand = { pick, words } (test/home-land.test.mjs runs both in node on fixtures and a fake clock). */
 (function (root) {
   'use strict';
   var NAMES = { AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut',
@@ -41,9 +42,20 @@
   }
   function states(L) { return (L && Array.isArray(L.states) ? L.states : []).filter(function (s) { return /^[A-Z]{2}$/.test(s); }); }
 
-  /* {lead, st, covered} for a reader in state `mine` ('' when unknown), or null when no state has a lead */
-  function pick(L, mine) {
-    var sts = states(L), leads = (L && L.lead) || {}, have = sts.filter(function (s) { return ok(leads[s], s); });
+  /* STALE (lead's call, Nov 4): a state whose newest 30 days on file ended more than STALE_DAYS before today (the
+     page's own clock) has no sale line; New Jersey's June sale in November is withheld, never shown as news. */
+  var STALE_DAYS = 60;
+  function fresh(r, now) {
+    var m = DAY.exec(String(r.window[1] || '')), t = now && typeof now.getTime === 'function' ? now : new Date();
+    if (!m || isNaN(t.getTime())) return false;
+    var end = Date.UTC(+m[1], +m[2] - 1, +m[3]), today = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
+    return (today - end) / 864e5 <= STALE_DAYS;
+  }
+
+  /* {lead, st, covered} for a reader in state `mine` ('' when unknown), or null when no state has a fresh lead.
+     now: the page clock (a Date); tests pass their own. */
+  function pick(L, mine, now) {
+    var sts = states(L), leads = (L && L.lead) || {}, have = sts.filter(function (s) { return ok(leads[s], s) && fresh(leads[s], now); });
     if (!have.length) return null;
     if (mine && have.indexOf(mine) >= 0) return { lead: leads[mine], st: mine, covered: true, mine: mine };
     have.sort(function (a, b) { var x = leads[a], y = leads[b]; return x.when < y.when ? 1 : x.when > y.when ? -1 : y.ppa - x.ppa; });
@@ -73,7 +85,7 @@
   function txt(id, t) { var e = document.getElementById(id); if (e && t) e.textContent = t; return e; }
 
   function draw(L) {
-    var p = pick(L, mineState());
+    var p = pick(L, mineState(), new Date());
     var all = states(L).slice().sort();
     if (all.length) txt('hl-all-l', 'Farmland sales by county in ' + all.join(', '));
     if (!p) return;                       /* withheld: the plain words and the links stay */

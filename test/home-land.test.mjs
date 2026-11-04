@@ -35,12 +35,15 @@ function lead(st, o) {
     rule: "The highest price per acre among bare farmland sales (40 acres or more) recorded in Wisconsin in the 30 days to Sep 30, 2026.",
     src: "Wisconsin Department of Revenue", buyer: NAME, grantee: NAME }, o || {});
 }
+// the page clock for every case below (BUILD-RULES 50: no test reads today's date)
+const NOW = new Date(2026, 10, 4, 9, 0);
 const FIX = {
   states: ["IL", "WI", "IN", "VT", "NJ"], published: "2026-11-03",
   lead: {
     WI: lead("WI"),
-    IL: lead("IL", { county: "Will", acres: 96.36, ppa: 24125, when: "2026-10-09", med: 14500, n24: 49, pct: 66, window: ["2026-10-01", "2026-10-30"],
-      url: "/land-sales/illinois/will-county#s-b2b2aaab92", src: "Illinois Department of Revenue" }),
+    // a sale that passes today's rule (Nov 4 build: Madison County, both farm-ground tests)
+    IL: lead("IL", { county: "Madison", acres: 120, ppa: 21000, when: "2026-10-30", med: 11584, n24: 48, pct: 81, window: ["2026-10-01", "2026-10-30"],
+      url: "/land-sales/illinois/madison-county#s-0a1b2c3d4e", src: "Illinois Department of Revenue" }),
     IN: null, NJ: null,
     VT: lead("VT", { county: "Windham", ppa: 5959, when: "2026-10-15", window: ["2026-09-16", "2026-10-15"], url: "/land-sales/vermont/windham-county#s-3167bd3a27" }),
   },
@@ -62,34 +65,48 @@ vm.runInNewContext(read("components/home-land.js"), ctx);
 const H = ctx.module.exports;
 
 test("home-land.js: whose sale, what it says, and never a name", () => {
-  const il = H.pick(FIX, "IL");
+  const il = H.pick(FIX, "IL", NOW);
   assert.equal(il.st, "IL"); assert.equal(il.covered, true);
   const w = H.words(FIX, il);
-  assert.equal(w.v, "$24,125 an acre");
+  assert.equal(w.v, "$21,000 an acre");
   assert.equal(w.k, "Top bare-land price in Illinois, 30 days to Oct 30");
-  assert.equal(w.s, "96.4 acres, Will County, recorded Oct 9, 2026. 66% above the county’s middle, $14,500 (49 sales in 24 months). Illinois Department of Revenue records.");
-  assert.equal(w.href, "/land-sales/illinois/will-county#s-b2b2aaab92");
+  assert.equal(w.s, "120 acres, Madison County, recorded Oct 30, 2026. 81% above the county\u2019s middle, $11,584 (48 sales in 24 months). Illinois Department of Revenue records.");
+  assert.equal(w.href, "/land-sales/illinois/madison-county#s-0a1b2c3d4e");
   assert.equal(w.all, "Farmland sales by county in IL, IN, NJ, VT, WI");
   // no saved state: the newest lead of any covered state, labeled with its state
-  const any = H.pick(FIX, "");
-  assert.equal(any.st, "VT");
-  assert.match(H.words(FIX, any).k, /^Top bare-land price in Vermont, 30 days to Oct 15$/);
+  const any = H.pick(FIX, "", NOW);
+  assert.equal(any.st, "IL");
+  assert.match(H.words(FIX, any).k, /^Top bare-land price in Illinois, 30 days to Oct 30$/);
   // an uncovered saved state: said plainly, then the newest covered sale
-  const ia = H.pick(FIX, "IA");
-  assert.equal(ia.st, "VT"); assert.equal(ia.covered, false);
-  assert.match(H.words(FIX, ia).k, /^Not yet in Iowa\. Top bare-land price in Vermont/);
+  const ia = H.pick(FIX, "IA", NOW);
+  assert.equal(ia.st, "IL"); assert.equal(ia.covered, false);
+  assert.match(H.words(FIX, ia).k, /^Not yet in Iowa\. Top bare-land price in Illinois/);
   // a covered state with no lead this month (Indiana): the newest covered sale, not an empty box
-  assert.equal(H.pick(FIX, "IN").st, "VT");
+  assert.equal(H.pick(FIX, "IN", NOW).st, "IL");
+  assert.equal(H.pick(FIX, "VT", NOW).st, "VT");
   // under the county middle reads "under"; sale date for Indiana-style records
   const low = { states: ["WI"], lead: { WI: lead("WI", { pct: -12, basis: "sale date" }) } };
-  assert.match(H.words(low, H.pick(low, "WI")).s, /, sold Sep 4, 2026\. 12% under the county\u2019s middle/);
+  assert.match(H.words(low, H.pick(low, "WI", NOW)).s, /, sold Sep 4, 2026\. 12% under the county\u2019s middle/);
   for (const p of [il, any, ia]) assert.ok(!JSON.stringify(H.words(FIX, p)).includes(NAME), "no name in any line");
   // withheld: no file, no leads, a malformed lead, a link that is not a land sales page
-  assert.equal(H.pick(null, "IL"), null);
-  assert.equal(H.pick({ states: ["IL"], lead: {} }, "IL"), null);
-  assert.equal(H.pick({ states: ["IL"], lead: { IL: lead("IL", { ppa: "lots" }) } }, "IL"), null);
-  assert.equal(H.pick({ states: ["IL"], lead: { IL: lead("IL", { url: "https://example.com/" }) } }, "IL"), null);
-  assert.ok(!/—/.test(read("components/home-land.js")), "no em dash");
+  assert.equal(H.pick(null, "IL", NOW), null);
+  assert.equal(H.pick({ states: ["IL"], lead: {} }, "IL", NOW), null);
+  assert.equal(H.pick({ states: ["IL"], lead: { IL: lead("IL", { ppa: "lots" }) } }, "IL", NOW), null);
+  assert.equal(H.pick({ states: ["IL"], lead: { IL: lead("IL", { url: "https://example.com/" }) } }, "IL", NOW), null);
+  assert.ok(!/\u2014/.test(read("components/home-land.js")), "no em dash");
+});
+
+test("home-land.js: a state's sale more than 60 days past its window is withheld, by the page clock", () => {
+  const nj = { states: ["NJ"], lead: { NJ: lead("NJ", { county: "Hunterdon", when: "2026-06-04", window: ["2026-06-01", "2026-06-30"], url: "/land-sales/new-jersey/hunterdon-county#s-0123456789" }) } };
+  assert.equal(H.pick(nj, "NJ", NOW), null, "June's window, read on Nov 4: withheld");
+  assert.equal(H.pick(nj, "NJ", new Date(2026, 7, 29)).st, "NJ", "60 days after Jun 30 (Aug 29): still shown");
+  assert.equal(H.pick(nj, "NJ", new Date(2026, 7, 30)), null, "61 days after: withheld");
+  // a New Jersey reader with a stale New Jersey sale sees the newest fresh covered sale instead, labeled
+  const both = { states: ["NJ", "IL"], lead: { NJ: nj.lead.NJ, IL: FIX.lead.IL } };
+  assert.equal(H.pick(both, "NJ", NOW).st, "IL");
+  // the default clock is the page's own (new Date()), never a date written into the code
+  assert.doesNotMatch(read("components/home-land.js"), /new Date\(\s*\d|Date\.UTC\(20\d\d/);
+  assert.match(read("components/home-land.js"), /pick\(L, mineState\(\), new Date\(\)\)/);
 });
 
 test("the menu: Farmland sales first under Money & Land > Land, in the live menu (desktop and phone), the no-script header, the menu table and the home page's baked header", () => {
@@ -170,6 +187,7 @@ async function look(browser, port, width, place) {
     } catch (e) {}
   });
   const p = await ctx.newPage();
+  await p.clock.setFixedTime(new Date(2026, 10, 4, 9, 0));   // the page clock the fixtures are dated against
   await p.goto(`http://127.0.0.1:${port}/`, { waitUntil: "load" });
   await p.waitForFunction(() => document.getElementById("hl-v") && (/an acre/.test(document.getElementById("hl-v").textContent) || window.__hlDone), null, { timeout: 4000 }).catch(() => {});
   await p.waitForTimeout(600);
@@ -179,7 +197,8 @@ async function look(browser, port, width, place) {
     const field = document.querySelector(".job-field").getBoundingClientRect(), fut = document.querySelector(".hb-futh").getBoundingClientRect();
     return { field: { top: field.top, bottom: field.bottom }, futTop: fut.top, block: box(b), v: v.textContent, k: document.getElementById("hl-k").textContent, s: document.getElementById("hl-s").textContent,
       href: document.getElementById("hl-sale").getAttribute("href"), all: all.textContent.trim(), allHref: all.getAttribute("href"),
-      text: b.textContent, shift: window.__shift, vh: innerHeight, why: getComputedStyle(document.getElementById("hl-why")).visibility };
+      text: b.textContent, shift: window.__shift, vh: innerHeight, why: getComputedStyle(document.getElementById("hl-why")).visibility,
+      cut: ["hl-k", "hl-v", "hl-s"].filter((id) => { const e = document.getElementById(id); return e.scrollHeight > e.clientHeight + 1 || e.scrollWidth > e.clientWidth + 1; }) };
   });
   await ctx.close();
   return r;
@@ -198,14 +217,14 @@ test("in Chromium: first screen at 1280, right under My field at 390; the fixtur
         assert.ok(il.block.top >= il.field.bottom - 1 && il.block.top - il.field.bottom < 24, `${width}: right under My field, no gap (${il.field.bottom} to ${il.block.top})`);
       }
       assert.ok(il.block.bottom <= il.futTop, `${width}: before the futures`);
-      assert.equal(il.v, "$24,125 an acre", `${width}: the Illinois reader sees the Illinois sale`);
-      assert.equal(il.href, "/land-sales/illinois/will-county#s-b2b2aaab92");
+      assert.equal(il.v, "$21,000 an acre", `${width}: the Illinois reader sees the Illinois sale`);
+      assert.equal(il.href, "/land-sales/illinois/madison-county#s-0a1b2c3d4e");
       assert.equal(il.why, "visible", `${width}: how the sale was picked`);
       assert.ok(!il.text.includes(NAME), `${width}: no name in the block`);
       assert.equal(il.shift, 0, `${width}: the block moves nothing`);
       const none = await look(browser, withData.address().port, width, null);
       if (width >= 1000) assert.ok(none.block.bottom < none.vh, `${width}: no saved place, still on the first screen`);
-      assert.match(none.k, /Vermont/);
+      assert.match(none.k, /Illinois/);
       const gone = await look(browser, without.address().port, width, null);
       assert.equal(gone.v, "What farmland sold for near you", `${width}: no data, the plain words stay`);
       assert.equal(gone.href, "/land-sales/");
@@ -219,3 +238,34 @@ test("in Chromium: first screen at 1280, right under My field at 390; the fixtur
     await browser.close(); withData.close(); without.close();
   }
 });
+
+/* The longest real words never get cut (checker, Nov 4): each state's source name, the longest county sentence,
+   and the uncovered-state opener, at 390, 768 and 1280; the block keeps the height it has with no data. */
+const SRC = { IL: "Illinois Department of Revenue", IN: "Indiana Department of Local Government Finance",
+  NJ: "New Jersey Division of Taxation", VT: "Vermont Department of Taxes", WI: "Wisconsin Department of Revenue" };
+const SLUGS = { IL: "illinois", IN: "indiana", NJ: "new-jersey", VT: "vermont", WI: "wisconsin" };
+test("in Chromium: the longest real words fit, nothing is cut, the height holds", { skip, timeout: 300000 }, async () => {
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const without = await serve(null);
+  try {
+    for (const st of Object.keys(SRC)) {
+      const L = { states: ["IL", "WI", "IN", "VT", "NJ"], lead: { [st]: lead(st, { county: "Jo Daviess", acres: 1186.36, ppa: 123456, med: 112345,
+        n24: 148, pct: 163, basis: st === "IN" ? "sale date" : "recorded", when: "2026-10-30", window: ["2026-10-01", "2026-10-30"],
+        url: "/land-sales/" + SLUGS[st] + "/jo-daviess-county#s-0123456789", src: SRC[st] }) } };
+      const srv = await serve(JSON.stringify(L));
+      try {
+        for (const width of [390, 768, 1280]) {
+          const nc = await look(browser, srv.address().port, width, { zip: "27601", state: "NC", county: "Wake", label: "Raleigh, NC", lat: 35.78, lon: -78.64 });
+          assert.match(nc.k, /^Not yet in North Carolina\. Top bare-land price in /, `${st} ${width}`);
+          assert.ok(nc.s.endsWith(SRC[st] + " records."), `${st} ${width}: the source is in the line`);
+          assert.match(nc.s, /Oct 30, 2026/, `${st} ${width}: the date is in the line`);
+          assert.deepEqual(nc.cut, [], `${st} ${width}: no line cut (${nc.k} | ${nc.s})`);
+          const gone = await look(browser, without.address().port, width, { zip: "27601", state: "NC", county: "Wake", label: "Raleigh, NC", lat: 35.78, lon: -78.64 });
+          assert.ok(Math.abs(gone.block.h - nc.block.h) < 1, `${st} ${width}: the same height with and without the sale (${gone.block.h} vs ${nc.block.h})`);
+          assert.equal(nc.shift, 0);
+        }
+      } finally { srv.close(); }
+    }
+  } finally { await browser.close(); without.close(); }
+});
+
