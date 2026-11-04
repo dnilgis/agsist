@@ -185,13 +185,37 @@ def cwt_dollars(q):
     return pricefmt.cash(c, dollar=False)
 
 
+# SEEDS ON THEIR OWN LINES (BUILD-RULES 67, Nov 4 2026). The price job reseeds
+# index.html and markets.html every 15 minutes, so a PR whose structural edit
+# shared or neighboured a seed line conflicted with main (#320). Each seed is
+# written on its own line, split off by an empty comment that holds the line
+# break, so no whitespace text node is added and nothing on the page moves:
+#   <span id="x"><!--
+#   --><!--SEED:x-->value<!--/SEED--><!--
+#   --></span>
+SEED_BREAK = "<!--\n-->"
+
+
 def seed_between(text, tag, replacement):
-    """Replace content between <!--SEED:tag--> and <!--/SEED--> (first pair after tag)."""
-    pat = re.compile(r"(<!--SEED:" + re.escape(tag) + r"-->)(.*?)(<!--/SEED-->)", re.S)
+    """Replace content between <!--SEED:tag--> and <!--/SEED--> (first pair
+    after tag), on a line of its own (SEED_BREAK on both sides)."""
+    pat = re.compile(r"(?:" + re.escape(SEED_BREAK) + r")?(<!--SEED:" + re.escape(tag) + r"-->)(.*?)(<!--/SEED-->)"
+                     r"(?:" + re.escape(SEED_BREAK) + r")?", re.S)
     if not pat.search(text):
         return text, False
-    new = pat.sub(lambda m: m.group(1) + replacement + m.group(3), text, count=1)
+    new = pat.sub(lambda m: SEED_BREAK + m.group(1) + replacement + m.group(3) + SEED_BREAK, text, count=1)
     return new, new != text
+
+
+def seed_relayout(text):
+    """Every <!--SEED:tag-->...<!--/SEED--> in `text` written again with its
+    own value, so each sits on its own line (what the next reseed does to a
+    page). Values are unchanged. Read by test/seed-lines.test.mjs."""
+    for tag in re.findall(r"<!--SEED:([^>]*?)-->", text):
+        m = re.search(r"<!--SEED:" + re.escape(tag) + r"-->(.*?)<!--/SEED-->", text, re.S)
+        if m and "<!--SEED:" not in m.group(1) and "<!--/SEED:" not in m.group(1):
+            text, _ = seed_between(text, tag, m.group(1))
+    return text
 
 
 def stamp_meta_description(text, desc):
@@ -3646,6 +3670,64 @@ def harvest_of(q, crop):
         return None
     a = re.match(r"^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b", str(d.get("ticker") or ""))
     return key, d, ((_HB_MCODE[a.group(1)] + " '" + a.group(2)) if a else None)
+
+
+# --- the same two contracts for a briefing (daily.json) ----------------------
+# 2026-11-04 (fx/smallfix1104): the share card, the Daily email and the wire
+# still named the harvest aliases (corn-dec, beans-nov) after first notice: the
+# Nov 4 card read "Nov beans" for a month in delivery while the briefing was
+# written on Jan '27. A briefing carries only its locked prices, so these read
+# what it locked: <crop> is the headline (generate_daily stamps its contract),
+# <crop>-<mon> is the harvest alias, whose month is the next live one on the
+# issue date (fetch_prices.benchmark_ticker, one calendar).
+_HARVEST_MON = {"corn": 12, "beans": 11}
+
+
+def _label_index(label):
+    """"Jan '27" -> 2027 * 12 + 0, else None."""
+    m = re.match(r"^([A-Z][a-z]{2}) '(\d{2})$", str(label or ""))
+    if not m or m.group(1) not in _MON_ABBR:
+        return None
+    return (2000 + int(m.group(2))) * 12 + _MON_ABBR.index(m.group(1))
+
+
+def daily_headline(daily, crop):
+    """(key, label) for the headline contract a briefing locked for `crop`
+    ("corn", "beans"): label is its month ("Jan '27"), None on an issue from
+    before the month was stamped. None when nothing is locked."""
+    lp = (daily or {}).get("locked_prices") or {}
+    if not isinstance(lp.get(crop), (int, float)):
+        return None
+    lab = ((daily.get("locked_changes") or {}).get(crop) or {}).get("contract")
+    return crop, (lab if _label_index(lab) is not None else None)
+
+
+def daily_harvest(daily, crop, iso_day=None):
+    """(key, label) for the harvest alias a briefing locked (corn-dec,
+    beans-nov), labelled with its month and year on the issue date. None when
+    it is not locked, the date cannot be read, or the headline is known and
+    the alias is not a LATER month (the headline itself, or a month past first
+    notice): the harvest_of rule for a briefing."""
+    from contract_calendar import next_live_year
+    mon = _HARVEST_MON.get(crop)
+    lp = (daily or {}).get("locked_prices") or {}
+    key = crop + "-" + (_MON3[mon - 1] if mon else "")
+    if not mon or not isinstance(lp.get(key), (int, float)):
+        return None
+    if not iso_day:
+        import grade_calls
+        iso_day = grade_calls.iso_date(daily)
+    try:
+        day = datetime.strptime(str(iso_day)[:10], "%Y-%m-%d").date()
+    except ValueError:
+        return None
+    yr = next_live_year(mon, day)
+    lab = _MON_ABBR[mon - 1] + " '" + str(yr)[-2:]
+    head = daily_headline(daily, crop)
+    hi = _label_index(head[1]) if head else None
+    if hi is not None and yr * 12 + mon - 1 <= hi:
+        return None
+    return key, lab
 
 
 def _nearby_label(prices, crop, fallback):
