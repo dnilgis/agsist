@@ -62,7 +62,7 @@ test("the framed-with-mat view stays a labeled mockup; the framed offer still na
   const fig = RP.match(/<figure class="rp-onwall"[\s\S]*?<\/figure>/)[0];
   assert.match(fig, /<span class="rp-ex-tag" aria-hidden="true">Mockup<\/span>/);
   assert.match(RP, /<li>A 13 x 19 in wood frame, oak or black, your pick<\/li>/);
-  assert.match(BIZ, /framed in a 13 x 19 oak or black frame with a white mat/);
+  assert.match(BIZ, /framed in a 13 x 19 wood frame, oak or black, with an acid-free white mat/);
 });
 
 test("hero photo loads eagerly; the rest are lazy; Product image lists the real photo first", () => {
