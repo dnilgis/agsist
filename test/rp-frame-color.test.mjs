@@ -45,7 +45,7 @@ test("no reader copy still promises only a black frame", () => {
     if (t.includes("\ndef selftest(")) t = t.slice(0, t.indexOf("\ndef selftest("));
     t = t.replace(/alt="[^"]*"/g, "").replace(/<figcaption>[\s\S]*?<\/figcaption>/g, "");
     // "oak or black frame" is the offer; "(black frame)" names the color a buyer chose
-    for (const m of t.matchAll(/(.{0,40})\bblack frame\b/gi)) if (!/(oak or |\()$/i.test(m[1])) bad.push(f + ": ..." + m[0]);
+    for (const m of t.matchAll(/(.{0,40})\bblack frame\b/gi)) if (!/(oak or (an? )?|\()$/i.test(m[1])) bad.push(f + ": ..." + m[0]);
   }
   assert.deepEqual(bad, []);
   // the offer, the FAQ and its structured data say oak or black
@@ -112,7 +112,7 @@ for (const width of [390, 1280]) {
       assert.equal(await page.getAttribute("#rp-wall", "data-frame"), "oak");
       assert.equal(await frameBg(page), "rgb(196, 154, 108)", "an oak tone");
       assert.match(await page.$eval("#rp-wall .rp-frame", (el) => getComputedStyle(el).backgroundImage), /repeating-linear-gradient/, "with a grain");
-      assert.match(await page.textContent("#rp-sample-txt"), /in an oak frame with a white mat/);
+      assert.match(await page.textContent("#rp-sample-txt"), /13 x 19, oak frame, white mat\./);
       // 44 px targets
       for (const v of ["oak", "black"]) {
         const b = await page.locator(`.rp-fc:has(input[value="${v}"])`).boundingBox();
@@ -122,7 +122,7 @@ for (const width of [390, 1280]) {
       assert.equal(await page.getAttribute("#rp-wall", "data-frame"), "black");
       assert.equal(await page.getAttribute("#rp-strip", "data-frame"), "black");
       assert.equal(await frameBg(page), "rgb(19, 19, 19)", "the black stays as it was");
-      assert.match(await page.textContent("#rp-sample-txt"), /in a black frame with a white mat/);
+      assert.match(await page.textContent("#rp-sample-txt"), /13 x 19, black frame, white mat\./);
       await page.waitForFunction(() => /[?&]frame=black\b/.test(location.search), null, { timeout: 5000 });
       // a print: no frame choice
       await page.locator('.rp-prod[data-choice="print12x18"]').click();

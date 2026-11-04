@@ -2583,7 +2583,7 @@
     if (t === EMPTY_CAP) t = $('rp-wall').getAttribute('data-view') === 'print' ? 'The print alone, 13 x 19' : 'Print in ' + (frameColor(FRAME) === 'oak' ? 'an oak' : 'a black') + ' frame';
     if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + (ex ? ', with example words. Yours start blank.' : '.');
     else if (ex && META) t = (NEAR && ST.place === NEAR ? 'Your area, ' : '') + META.place + ', ' + META.year + ', with example words. Yours start blank.';
-    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '13 x 19 print.' : '13 x 19, in ' + (frameColor(FRAME) === 'oak' ? 'an oak' : 'a black') + ' frame with a white mat.') +
+    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '13 x 19 print.' : '13 x 19, ' + frameColor(FRAME) + ' frame, white mat.') +
       (NEAR && ST.place === NEAR ? ' Your area, near you. Not your town? Type it below.' : '');
     $('rp-sample-txt').textContent = t;
   }
