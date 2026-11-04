@@ -25,6 +25,7 @@ cron_health.py's agsist-data-images row fetches the og:image of a few pages once
     python3 scripts/share_host.py flip [--list]           rewrite committed pages for the listed folders
     python3 scripts/share_host.py check                   the guard; exit 1 on a hit
     python3 scripts/share_host.py verify FOLDER... [--wait SECONDS]   the seed job: copies answer, same bytes
+    python3 scripts/share_host.py wait [PAGE] [--wait SECONDS]   daily.yml: the page's og:image answers (best effort)
     python3 scripts/share_host.py --selftest
   --root DIR  works on another checkout (the seed job flips a fresh worktree of main).
 """
@@ -137,18 +138,50 @@ def page_hits(root=None, folders=None):
     return hits
 
 
+# scripts that may name a share folder as a path in this repository, and why. Everywhere else a builder
+# names the folders only through url() (a line that calls url( is fine).
+BUILDER_ALLOW = {
+    "build_atlas_cards.py": "draws the Atlas cards into farmland-atlas/og",
+    "build_social_card.py": "draws the Daily cards into data/social",
+    "build_share_images.py": "its docstring lists where each set's card lives",
+    "generated_sets.py": "the set table names farmland-atlas/og as the atlas-cards output",
+    "cron_health.py": "its selftest writes a fixture page on the agsist-data host",
+}
+_BARE = re.compile(r"farmland-atlas/og\b|data/social\b")
+# a share card URL put together on agsist.com: SITE + "/farmland-atlas/og/..", f"{SITE}/..", "/%s/og/" % OUT
+_ON_SITE = re.compile(r"(\bSITE\b|agsist\.com)[^\n]*?(?<!img)/(?:%s|\{[^}]*\}|farmland-atlas)/og/|"
+                      r"(\bSITE\b|agsist\.com)[^\n]*?(data/social|social/card)")
+
+
+def _code(line):
+    """the line without a trailing # comment (a # inside a string is kept: good enough for this check)"""
+    i = line.find("#")
+    while i >= 0:
+        before = line[:i]
+        if before.count('"') % 2 == 0 and before.count("'") % 2 == 0:
+            return before
+        i = line.find("#", i + 1)
+    return line
+
+
 def builder_hits(root=None):
-    """scripts/*.py (other than this file) that spell a share folder's agsist.com URL: they must call url()"""
+    """scripts/*.py (other than this file) that put a share card URL together on agsist.com, or that name a
+    share folder outside url() and outside BUILDER_ALLOW"""
     root = root or ROOT
     out = []
     sd = os.path.join(root, "scripts")
     for fn in sorted(os.listdir(sd)) if os.path.isdir(sd) else []:
         if not fn.endswith(".py") or fn == "share_host.py":
             continue
-        txt = open(os.path.join(sd, fn), encoding="utf-8", errors="ignore").read()
-        for f in FOLDERS:
-            if ("agsist.com/" + f + "/") in txt:
-                out.append("scripts/%s names %s on agsist.com" % (fn, f))
+        lines = open(os.path.join(sd, fn), encoding="utf-8", errors="ignore").read().splitlines()
+        for n, line in enumerate(lines, 1):
+            code = _code(line)
+            if _ON_SITE.search(code) or ("agsist.com/" in code and _BARE.search(code)):
+                out.append("scripts/%s:%d builds a share card URL on agsist.com (use share_host.url())" % (fn, n))
+            elif fn not in BUILDER_ALLOW and _BARE.search(code) and "url(" not in code \
+                    and not code.strip().startswith(("#", '"""')):
+                out.append("scripts/%s:%d names a share folder outside share_host.url() (or add it to "
+                           "BUILDER_ALLOW with a reason)" % (fn, n))
     return out
 
 
@@ -250,6 +283,33 @@ def verify(folders, root=None, wait=0, get=None, sleep=time.sleep):
         sleep(30)
 
 
+def wait_page(rel, root=None, wait=150, get=None, sleep=time.sleep, clock=time.time):
+    """daily.yml, after the copy: wait until the og:image a page names answers 200 when it is on agsist-data,
+    so the issue does not go live before its card is served. Best effort: -> (ok, message), never raises."""
+    root = root or ROOT
+    try:
+        h = open(os.path.join(root, rel), encoding="utf-8", errors="ignore").read()
+    except OSError as e:
+        return False, "could not read %s: %s" % (rel, e)
+    m = re.search(r'<meta\s+property="og:image"\s+content="([^"]+)"', h)
+    if not m or not m.group(1).startswith(HOST + "/"):
+        return True, "%s does not name an agsist-data image; nothing to wait for" % rel
+    u = m.group(1)
+    get = get or (lambda x: _fetch(x, method="HEAD", timeout=20))
+    deadline = clock() + wait
+    last = None
+    while True:
+        try:
+            last = get(u)[0]
+        except Exception as e:
+            last = type(e).__name__
+        if last == 200:
+            return True, "%s answers 200" % u
+        if clock() >= deadline:
+            return False, "%s still answers %s after %d s" % (u, last, wait)
+        sleep(10)
+
+
 def newest_daily(root=None):
     root = root or ROOT
     d = os.path.join(root, "daily")
@@ -342,8 +402,27 @@ def selftest():
         ok(seeded(tmp) == (), "no marker: nothing is seeded")
         ok(url("/data/social/card-2026-11-04.jpg", tmp) == SITE + "/data/social/card-2026-11-04.jpg",
            "before the seed the card stays on agsist.com")
-        ok(check(tmp) == ["scripts/x.py names data/social on agsist.com"],
+        ok(check(tmp) == ["scripts/x.py:1 builds a share card URL on agsist.com (use share_host.url())"],
            "before the seed only a hard-coded builder URL is a hit: %r" % check(tmp))
+        # the forms a checker tried (Nov 4): SITE + "/farmland-atlas/og/..", an f-string, a bare folder path
+        forms = {
+            "a.py": 'IMG = SITE + "/farmland-atlas/og/" + f + ".png"\n',
+            "b.py": 'IMG = f"{SITE}/farmland-atlas/og/{f}.png"\n',
+            "c.py": 'IMG = SITE + "/%s/og/%s.png" % (OUT, f)\n',
+            "d.py": 'CARD = os.path.join("data/social", name)\n',
+            "e.py": 'IMG = f"{SITE}/data/social/card-{d}.jpg"\n',
+            "f.py": '# farmland-atlas/og/ in a comment\nU = share_host.url("data/social/card-")\nX = SITE + "/img/og/a.jpg"\n',
+        }
+        for fn, body in forms.items():
+            open(os.path.join(tmp, "scripts", fn), "w").write(body)
+        got = check(tmp)
+        for fn in ("a.py", "b.py", "c.py", "d.py", "e.py"):
+            ok(any(g.startswith("scripts/%s:1 " % fn) for g in got), "the guard catches %s: %r" % (fn, forms[fn]))
+        ok(not any("f.py" in g for g in got), "a comment, a url() call and img/og are fine: %r" % got)
+        open(os.path.join(tmp, "scripts", "build_social_card.py"), "w").write('OUT = "data/social"\n')
+        ok(not any("build_social_card" in g for g in check(tmp)), "an allowed writer may name its folder")
+        for fn in list(forms) + ["build_social_card.py"]:
+            os.remove(os.path.join(tmp, "scripts", fn))
         os.remove(os.path.join(tmp, "scripts", "x.py"))
         ok(check(tmp) == [], "before the seed the pages are fine")
 
@@ -406,6 +485,21 @@ def selftest():
         r0 = row(now, None, tmp)
         ok(r0["status"] == "ok" and not r0["critical"], "before the seed the row is info only")
         ok(newest_daily(tmp) == "daily/2026-11-04.html", "newest Daily issue")
+
+        # wait_page: nothing to wait for before the flip; polls after it; gives up with a message
+        open(os.path.join(tmp, "index.html"), "w").write('<meta property="og:image" content="%s/data/social/card-x.jpg">' % SITE)
+        ok(wait_page("index.html", tmp, wait=0, get=lambda u: (404, b""))[0], "an agsist.com image needs no wait")
+        flip_page = '<meta property="og:image" content="%s/data/social/card-x.jpg">' % HOST
+        open(os.path.join(tmp, "index.html"), "w").write(flip_page)
+        answers = iter([404, 404, 200])
+        t = [0]
+        res = wait_page("index.html", tmp, wait=60, get=lambda u: (next(answers), b""),
+                        sleep=lambda n: t.__setitem__(0, t[0] + n), clock=lambda: t[0])
+        ok(res[0] and t[0] == 20, "polls until the card answers: %r %r" % (res, t))
+        t = [0]
+        res = wait_page("index.html", tmp, wait=30, get=lambda u: (404, b""),
+                        sleep=lambda n: t.__setitem__(0, t[0] + n), clock=lambda: t[0])
+        ok(not res[0] and "404" in res[1] and t[0] == 30, "gives up at the deadline: %r" % (res,))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -455,6 +549,16 @@ def main(argv):
             print("... and %d more" % (len(bad) - 40))
         print("share_host check: %s" % ("OK" if not bad else "%d problems" % len(bad)))
         return 1 if bad else 0
+    if cmd == "wait":
+        # best effort: always exits 0; a card that never answers is one warning line
+        wait = 150
+        if "--wait" in rest:
+            i = rest.index("--wait")
+            wait = int(rest[i + 1])
+            rest = rest[:i] + rest[i + 2:]
+        res, msg = wait_page(rest[0] if rest else "index.html", root, wait=wait)
+        print(msg if res else "::warning::share card not served yet: " + msg)
+        return 0
     if cmd == "verify":
         wait = 0
         if "--wait" in rest:

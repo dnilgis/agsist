@@ -871,12 +871,18 @@ jobs:
       # never holds the briefing, and it is capped at 4 minutes. If it fails after data/social is
       # listed in data/share-host.json, today's og:image 404s and scrapers fall back to text (the
       # same degrade as a card that failed to draw); cron-health's agsist-data-images row goes red.
+      # Then, once the pages name agsist-data, wait (best effort, inside the same 4 minutes) until
+      # today's card answers there, so the issue does not go live before its image; if it never
+      # does, one warning and the commit goes on. 2 tries only, so a bad token cannot eat the cap.
       - name: Copy social card to agsist-data
         continue-on-error: true
         timeout-minutes: 4
         env:
           AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
-        run: bash scripts/agsist_data.sh sync --soft data/social
+          AGSIST_DATA_TRIES: "2"
+        run: |
+          bash scripts/agsist_data.sh sync --soft data/social
+          python3 scripts/share_host.py wait index.html --wait 150
 
       - name: Add today's archive page to sitemap
         continue-on-error: true        # sitemap update must never block the briefing publish

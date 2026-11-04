@@ -12,6 +12,11 @@ name: agsist-data seed (share images)
 #      another job pushed first). The builders read data/share-host.json, so later rebuilds keep it.
 # The files stay in this repository until a later change removes them. Safe to run again: a folder
 # already listed keeps its date and an unchanged copy pushes nothing. No schedule.
+# THE DAILY (PR #327 checker, Nov 4): the flip rewrites index.html, which the Daily's commit rewrites too,
+# so a flip in the middle of a Daily run would make the Daily's push fail. The flip job therefore shares
+# the Daily's concurrency group (daily-briefing; it waits for a running Daily), and the whole run refuses
+# to start between 10:00 and 14:30 UTC, the Daily's window, unless any_time is ticked. GitHub keeps one
+# pending run per group, so outside the window nothing of the Daily's is waiting to be replaced.
 on:
   workflow_dispatch:
     inputs:
@@ -24,6 +29,11 @@ on:
         type: boolean
         required: false
         default: true
+      any_time:
+        description: "Run even between 10:00 and 14:30 UTC (the Daily's window)"
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -37,6 +47,15 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
+      - name: Not in the Daily's window
+        env:
+          ANY_TIME: ${{ inputs.any_time }}
+        run: |
+          now=$((10#$(date -u +%H%M)))
+          if [ "$ANY_TIME" != "true" ] && [ "$now" -ge 1000 ] && [ "$now" -lt 1430 ]; then
+            echo "::error::$(date -u +%H:%M) UTC is inside the Daily's window (10:00 to 14:30 UTC); run later or tick any_time"
+            exit 1
+          fi
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -65,8 +84,35 @@ jobs:
           FOLDERS: ${{ inputs.folders }}
         run: python3 scripts/share_host.py verify $FOLDERS --wait 1200
 
+  flip:
+    needs: seed
+    if: inputs.flip
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # the Daily's group: waits for a running Daily, and the Daily waits for this (see the header)
+    concurrency:
+      group: daily-briefing
+      cancel-in-progress: false
+    steps:
+      - name: Not in the Daily's window
+        env:
+          ANY_TIME: ${{ inputs.any_time }}
+        run: |
+          now=$((10#$(date -u +%H%M)))
+          if [ "$ANY_TIME" != "true" ] && [ "$now" -ge 1000 ] && [ "$now" -lt 1430 ]; then
+            echo "::error::$(date -u +%H:%M) UTC is inside the Daily's window (10:00 to 14:30 UTC); the copies are verified, run again later to flip"
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+
       - name: Point the pages at agsist-data
-        if: inputs.flip
         env:
           FOLDERS: ${{ inputs.folders }}
           GH_TOKEN: ${{ github.token }}

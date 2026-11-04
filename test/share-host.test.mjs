@@ -67,6 +67,22 @@ test("the Daily copies its card before its commit and can never be held by it", 
   assert.match(copy.text, /continue-on-error: true/);
   assert.match(copy.text, /timeout-minutes: [1-5]\b/);
   assert.match(copy.text, /bash scripts\/agsist_data\.sh sync --soft data\/social/);
+  // a bad token cannot eat the 4 minutes; then a best-effort wait for today's card on agsist-data
+  assert.match(copy.text, /AGSIST_DATA_TRIES: "2"/);
+  assert.match(copy.text, /python3 scripts\/share_host\.py wait index\.html --wait (\d+)/);
+  assert.ok(+copy.text.match(/--wait (\d+)/)[1] <= 180, "the wait fits inside the step's 4 minutes");
+});
+
+test("the seed's flip waits for the Daily and never starts in the Daily's window", () => {
+  const wf = read(".github/workflows/agsist-data-seed.yml");
+  const flipJob = wf.slice(wf.indexOf("\n  flip:\n"));
+  assert.ok(flipJob.length > 10, "a separate flip job");
+  assert.match(flipJob, /concurrency:\n\s+group: daily-briefing\n\s+cancel-in-progress: false/);
+  assert.match(read(".github/workflows/daily.yml"), /\nconcurrency:\n  group: daily-briefing\n/);
+  const windows = wf.match(/-ge 1000 \] && \[ "\$now" -lt 1430 \]/g) || [];
+  assert.equal(windows.length, 2, "both jobs refuse 10:00 to 14:30 UTC");
+  assert.match(wf, /any_time:/);
+  assert.ok(flipJob.indexOf("Not in the Daily's window") < flipJob.indexOf("share_host.py --root"), "checked before the flip");
 });
 
 test("the seed job copies, checks the copies, then flips; by hand only, never forced", () => {
@@ -94,16 +110,17 @@ test("the builders read the host from share_host.py", () => {
   assert.match(read("scripts/build_atlas_pages.py"), /img_url = SH\.url\(image\)/);
   assert.match(read("scripts/generate_daily.py"), /OG_IMAGE_BASE = _share_host\.url\("data\/social\/card-"\)/);
   assert.match(read("scripts/build_social_card.py"), /url = share_host\.url\(/);
+  const day = ["2030", "01", "02"].join("-");  // an inline fixture day, not live data
   const out = py(["-c", [
     "import sys; sys.path.insert(0, 'scripts')",
     "import share_host as S, generate_daily as G",
-    "print(G.og_image_for('2026-11-04'))",
+    `print(G.og_image_for('${day}'))`,
     "print(S.url('/farmland-atlas/og/hub.png?v=1'))",
     "print(S.url('/img/og/agsist.jpg'))",
   ].join("\n")]).trim().split("\n");
   const seeded = Object.keys(JSON.parse(read("data/share-host.json")).folders || {});
   const host = (f) => (seeded.includes(f) ? "https://dnilgis.github.io/agsist-data" : "https://agsist.com");
-  assert.equal(out[0], `${host("data/social")}/data/social/card-2026-11-04.jpg`);
+  assert.equal(out[0], `${host("data/social")}/data/social/card-${day}.jpg`);
   assert.equal(out[1], `${host("farmland-atlas/og")}/farmland-atlas/og/hub.png?v=1`);
   assert.equal(out[2], "https://agsist.com/img/og/agsist.jpg", "other images stay on agsist.com");
 });

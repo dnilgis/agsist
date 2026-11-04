@@ -68,7 +68,7 @@ for i in $(seq 1 "$TRIES"); do
   dir=$(mktemp -d "$base/agsist-data.XXXXXX")
   if ! git clone -q --depth 1 --branch main "$REMOTE" "$dir/r" 2>"$dir/err"; then
     echo "try $i: clone failed: $(head -c 300 "$dir/err" | tr '\n' ' ')"
-    rm -rf "$dir"; sleep $((15 * i)); continue
+    rm -rf "$dir"; [ "$i" -lt "$TRIES" ] && sleep $((15 * i)); continue
   fi
   for f in "${folders[@]}"; do
     rm -rf "${dir:?}/r/$f"; mkdir -p "$dir/r/$f"
@@ -87,6 +87,6 @@ for i in $(seq 1 "$TRIES"); do
     echo "agsist-data: pushed $n changed files in ${folders[*]} (try $i)"; rm -rf "$dir"; exit 0
   fi
   echo "try $i: push rejected: $(head -c 300 "$dir/err" | tr '\n' ' ')"
-  rm -rf "$dir"; sleep $((15 * i))
+  rm -rf "$dir"; [ "$i" -lt "$TRIES" ] && sleep $((15 * i))
 done
 give_up "push failed after $TRIES tries"
