@@ -23,6 +23,7 @@ has no age limit; any figure that moves takes it off.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
+import datetime
 import json
 import os
 import re
@@ -431,7 +432,9 @@ def selftest():
             want.append(f"{co['recent_average']['label'].capitalize()}</span><span class=\"r\">{co['recent_average']['bu_ac']} bu/ac")
         if f["rented_share_2022"]:
             want.append(f"{f['rented_share_2022']}</div>")
-        want.append(f"Figures as of {f['as_of_iso']}")
+        # the page prints the day in words since Nov 4, 2026 ("Oct 19, 2026"; scripts/build_atlas_pages.py human_day)
+        _d = datetime.date.fromisoformat(f['as_of_iso'][:10])
+        want.append(f"Figures as of {_d.strftime('%b')} {_d.day}, {_d.year}")
         for w in want:
             if w not in h:
                 miss.append(f"{pid}: {w!r}")
