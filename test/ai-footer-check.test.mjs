@@ -40,6 +40,17 @@ test('a pull request run with #316\'s body and no API fails on the body; a run w
   fs.rmSync(tmp, { recursive: true, force: true });
 });
 
+test('prose that names a footer form passes and keeps its line in the squash; the real #304 and #316 footers fail', () => {
+  const run = (code) => spawnSync('python3', ['-c', 'import sys, json; sys.path.insert(0, "scripts/dev")\nimport ai_footer_check as A\n' + code], { cwd: root, encoding: 'utf8' });
+  const prose = ['Notes.', 'lines like `Co-Authored-By: Claude` are stripped', 'Docs at https://claude.ai/code'].join('\n');
+  let r = run('t = sys.argv[1]\nprint(json.dumps([A.check(t, [])[0], A.strip(t)]))'.replace('sys.argv[1]', JSON.stringify(prose)));
+  assert.deepEqual(JSON.parse(r.stdout), [true, prose], r.stderr);
+  r = run('print(json.dumps([A.check(A.REAL_316, [])[0], A.check(A.REAL_304_BODY, [])[0], A.check(A.REAL_304, [])[0]]))');
+  assert.deepEqual(JSON.parse(r.stdout), [false, false, false], r.stderr);
+  r = run('print(json.dumps(A.strip("Body.\\n\\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\\n")))');
+  assert.equal(JSON.parse(r.stdout), 'Body.', r.stderr);
+});
+
 test('the merge bot squashes with the body only, footer stripped (#304: commit lines reached main)', () => {
   const r = spawnSync('python3', ['scripts/dev/merge_when_green.py', '--selftest'], { cwd: root, encoding: 'utf8' });
   assert.equal(r.status, 0, r.stdout + r.stderr);
