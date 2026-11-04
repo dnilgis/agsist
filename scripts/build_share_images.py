@@ -1142,10 +1142,13 @@ def check_page(rel, h, sizes):
         bad.append("no og:image:alt")
     if _meta(h, "property", "og:image:width") != "1200" or _meta(h, "property", "og:image:height") != "630":
         bad.append("og:image:width/height not 1200x630")
-    if not og.startswith(SITE + "/"):
+    # agsist.com, or agsist-data for a folder data/share-host.json lists (scripts/share_host.py); while
+    # the files are on both, the copy here is the one measured
+    import share_host
+    local = share_host.local(og)
+    if local is None or (not og.startswith(SITE + "/") and share_host.url(local) != og.split("?")[0]):
         bad.append(f"og:image not on agsist.com: {og}")
         return bad
-    local = og[len(SITE) + 1:].split("?")[0]
     if local not in sizes:
         fp = os.path.join(ROOT, local)
         if not os.path.exists(fp):
