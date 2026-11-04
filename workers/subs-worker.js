@@ -12,7 +12,11 @@
  *   Bearer LIST_TOKEN only (?token= refused): POST /sponsor-report/put {slug, token,
  *   retired, report} (sponsor-report.yml through scripts/sponsor_publish.py),
  *   GET /sponsor-report/list (desk.html), POST /sponsor-report/drop {slug}. The
- *   tokens and reports are no longer in the public repo or on agsist.com. Every
+ *   tokens and reports are no longer in the public repo or on agsist.com. A sponsor
+ *   approval (/form kind sponsor-feedback) now also needs r's token to be live: a
+ *   retired link's k is refused. BACKUPS: GET /export (and so the monthly SSD backup
+ *   and private-data kv-backup/) now carries the spr:* records, each sponsor's live
+ *   token and report; keep those copies private like the rest of the export. Every
  *   other route answers as before.
  * v5.64 (2026-11-04): GIFT CARD PREPAID IS STORED, NOT GUESSED FROM THE CLOCK. Every
  *   /rp-gift/issue path (Sig's card, already_redeemed, a paid order's card, a void reissue)
@@ -1149,6 +1153,7 @@ async function listKeys(env, prefix) {
 }
 
 // ---------- v5.39: GET /export, the monthly backup ----------
+// v5.65: it carries spr:* too (each sponsor's live link token and report), so the backup stays private.
 const EXPORT_LIMIT_MAX = 900;       // 1 list + 900 gets stays under 1,000 KV operations a call
 const EXPORT_LIMIT_DEFAULT = 500;
 const EXPORT_BATCH = 50;            // values read in parallel, this many at a time
@@ -2382,7 +2387,10 @@ async function sponsorKey(env, r) {
 async function sponsorFeedback(env, b, rec) {
   const r = String(b.r == null ? "" : b.r).trim().toLowerCase();
   const k = String(b.k == null ? "" : b.k).trim().toLowerCase();
-  const verified = !!env.UNSUB_SECRET && SPONSOR_R_RE.test(r) && /^[0-9a-f]{16}$/.test(k) && safeEq(k, await sponsorKey(env, r));
+  // v5.65: k alone is not enough; the link's token must also be live. A retired token (every link before
+  // Nov 4, 2026 is in the public git history) keeps its old k, so without this an old link could still approve.
+  const verified = !!env.UNSUB_SECRET && SPONSOR_R_RE.test(r) && /^[0-9a-f]{16}$/.test(k) && safeEq(k, await sponsorKey(env, r))
+    && (await sprGet(env, r)).status === 200;
   const approval = /^approv/i.test(rec.request || "");
   if (approval && !verified) return { error: "this approval needs the link Sig sent you" };
   if (SPONSOR_R_RE.test(r)) rec.r = r;

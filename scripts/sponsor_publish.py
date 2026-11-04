@@ -21,14 +21,20 @@ handed out every sponsor's numbers. Now:
 private/ is in .gitignore on main, so a copy unpacked into a checkout is never
 committed there (scripts/pull_raw.sh, scripts/push_raw.sh, RAW_BRANCH=private-data).
 
-    python3 scripts/sponsor_publish.py mint             a token for every sponsor without one
+    python3 scripts/sponsor_publish.py mint             a token for every sponsor without one (never replaces one)
     python3 scripts/sponsor_publish.py rotate <slug>    a new token; the old one is retired
     python3 scripts/sponsor_publish.py rotate --all
     python3 scripts/sponsor_publish.py publish          reports to the worker, links.json written
     python3 scripts/sponsor_publish.py --selftest
 
 SPONSOR_PRIVATE_DIR overrides the folder (default <repo>/private/sponsors).
-Every line printed names slugs and counts only, never a token or a link.
+Every line printed names slugs and counts only, never a token or a link. In Actions the
+first lines are ::add-mask:: for every token, so the runner blanks them from the log.
+
+THE FIRST TOKEN WINS. Two jobs can mint for the same new sponsor at once (sponsor-apply.yml and
+sponsor-report.yml). Both save with RAW_KEEP=1 (scripts/push_raw.sh: a file already on the
+branch is never replaced) and then pull the tokens back, so each adopts whichever landed first.
+Only a hand rotation replaces a live token (push without RAW_KEEP).
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -54,6 +60,19 @@ TOKEN_RE = re.compile(r"^[0-9a-f]{16,64}$")
 # scripts/sponsor_publish.py's public check and test/sponsor-private.test.mjs allow
 # only these in the public tree.
 FAKE_RE = re.compile(r"^(?:(.)\1{15}|0123456789abcdef|000000000000000\d)$")
+
+
+def mask(tokens, out=None):
+    """In Actions, tell the runner to blank every live and retired token from the log before anything
+    else is printed (::add-mask::). Outside Actions nothing is printed: the line itself carries the token."""
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        return 0
+    out = out or sys.stdout
+    pats = sorted({t for rec in tokens.values() for t in [rec["token"]] + rec["retired"]})
+    for t in pats:
+        out.write("::add-mask::%s\n" % t)
+    out.flush()
+    return len(pats)
 
 
 def private_dir():
@@ -103,8 +122,9 @@ def mint(slug, d=None, rotate=False, today=None):
     d = d or private_dir()
     have = load_tokens(d).get(slug)
     if have and not rotate:
-        return have["token"]
+        return have["token"]   # idempotent: a live token is never replaced except by rotate
     rec = {"token": secrets.token_hex(8), "retired": [], "minted": (today or date.today()).isoformat()}
+    mask({slug: {"token": rec["token"], "retired": []}})
     if have:
         rec["retired"] = (have["retired"] + [have["token"]])[-20:]
     _write_token(d, slug, rec)
@@ -281,6 +301,33 @@ def selftest():
               and put[0][3]["report"]["slug"] == "barnco", "publish: Bearer, live token, retired tokens and the report")
         check(all("token=" not in c[1] for c in calls), "publish: never a token in a URL")
 
+    # ::add-mask:: for every live and retired token, in Actions only, and for a token as it is minted
+    with tempfile.TemporaryDirectory() as tmp:
+        d = Path(tmp)
+        _write_token(d, "barnco", {"token": "1" * 16, "retired": ["2" * 16, "3" * 16]})
+        buf = io.StringIO()
+        old_env = os.environ.get("GITHUB_ACTIONS")
+        try:
+            os.environ["GITHUB_ACTIONS"] = "true"
+            n = mask(load_tokens(d), buf)
+            check(n == 3 and buf.getvalue().splitlines() == ["::add-mask::" + "1" * 16, "::add-mask::" + "2" * 16, "::add-mask::" + "3" * 16],
+                  "mask: every live and retired token, in Actions")
+            real = sys.stdout
+            sys.stdout = cap = io.StringIO()
+            try:
+                t = mint("seedco", d)
+            finally:
+                sys.stdout = real
+            check(cap.getvalue() == "::add-mask::%s\n" % t, "mask: a new token is masked as it is minted, before anything else")
+            os.environ["GITHUB_ACTIONS"] = "false"
+            buf2 = io.StringIO()
+            check(mask(load_tokens(d), buf2) == 0 and buf2.getvalue() == "", "mask: nothing printed outside Actions")
+        finally:
+            if old_env is None:
+                os.environ.pop("GITHUB_ACTIONS", None)
+            else:
+                os.environ["GITHUB_ACTIONS"] = old_env
+
     # the public tree check finds a planted token and names only the file
     with tempfile.TemporaryDirectory() as tmp:
         r = Path(tmp)
@@ -302,6 +349,7 @@ def main(argv):
     cmd = argv[1] if len(argv) > 1 else ""
     conf = load_conf()
     d = private_dir()
+    mask(load_tokens(d))   # first, before any other line (Actions only)
     if cmd == "mint":
         m = ensure_tokens(conf, d)
         print("tokens minted for %d sponsor(s): %s" % (len(m), ", ".join(m) or "none"))

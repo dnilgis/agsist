@@ -180,11 +180,16 @@ test('publishing jobs save softly; build inputs, paid batch records and the FSA 
   // job's only product (site usage moved off main; the rebuilt COT history), so a failed save is a red run.
   const HARD = new Set(['accuracy-pass.yml', 'api-jobs.yml', 'fetch-fsa-arcplc.yml', 'fetch-fsa-files.yml', 'history-backfill.yml',
     'site-usage.yml', 'cot-deep-rebuild.yml']);
+  // One step, not a whole job (Nov 4, fx/sponsorfix): a new sponsor's link token is saved to private-data
+  // BEFORE anything uses it, so a failed save must stop the run; a soft save would hand out a link the
+  // private copy does not hold. The same job's reports save stays soft.
+  const HARD_STEPS = new Set(['sponsor-report.yml: Sponsor links from the private repo']);
   for (const f of workflows) {
     for (const s of steps(f)) {
       const pushes = /scripts\/push_raw\.sh/.test(s.code);
       const soft = /RAW_SOFT: '1'/.test(s.text);
-      if (pushes) assert.equal(soft, !HARD.has(f), `${f}: ${s.name} should be ${HARD.has(f) ? 'hard' : 'soft'}`);
+      const hard = HARD.has(f) || HARD_STEPS.has(f + ': ' + s.name);
+      if (pushes) assert.equal(soft, !hard, `${f}: ${s.name} should be ${hard ? 'hard' : 'soft'}`);
       if (/pull_raw\.sh data\/(atlas\/raw|fsa)/.test(s.code)) assert.ok(!soft, `${f}: ${s.name} pulls a build input; never soft`);
     }
   }

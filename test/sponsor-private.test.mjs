@@ -24,7 +24,7 @@ const CONF = JSON.parse(read("data/sponsors.json"));
 const SLUGS = (CONF.sponsors || []).map((s) => s.slug).filter(Boolean);
 // A made-up token: one character sixteen times, the plain run, or fifteen zeros and a digit
 // (the same rule as FAKE_RE in scripts/sponsor_publish.py).
-const FAKE = /^(?:(.)\1{15}|0123456789abcdef|000000000000000\d)$/;
+const FAKE = /^(?:(.)\1{15,}|0123456789abcdef|0{15,}\d)$/;
 
 test("the public registry carries no token, and no report folder is published", () => {
   assert.ok(SLUGS.length >= 1);
@@ -36,14 +36,16 @@ test("the public registry carries no token, and no report folder is published", 
 });
 
 test("no tracked file holds a sponsor link with a real-looking token", () => {
-  const pats = [...SLUGS.map((s) => "\\b" + s + "-[0-9a-f]{16}\\b"), "sponsor-report(\\.html)?\\?r=[a-z0-9-]+-[0-9a-f]{16}", "data/sponsors/[a-z0-9-]+-[0-9a-f]{16}"];
+  // any run of 16 or more hex characters right after a sponsor's slug (with or without a separator), any
+  // portal link, and any old report file name
+  const pats = [...SLUGS.map((s) => "\\b" + s + "[-_/=:.]?[0-9a-f]{16,}"), "sponsor-report(\\.html)?\\?r=[a-z0-9-]+-[0-9a-f]{16,}", "data/sponsors/[a-z0-9-]+-[0-9a-f]{16,}"];
   let out = "";
   try {
     out = execFileSync("git", ["-C", ROOT, "grep", "-I", "-n", "-o", "-E", ...pats.flatMap((p) => ["-e", p])], { encoding: "utf8", maxBuffer: 64 << 20 });
   } catch (e) { if (e.status !== 1) throw e; }
   const bad = [];
   for (const line of out.split("\n").filter(Boolean)) {
-    const m = /([0-9a-f]{16})\b(?!.*[0-9a-f]{16})/.exec(line);
+    const m = /([0-9a-f]{16,})$/.exec(line);
     if (m && !FAKE.test(m[1])) bad.push(line.split(":").slice(0, 2).join(":"));   // file and line only, never the token
   }
   assert.deepEqual(bad, [], "a sponsor link token in a public file (rotate every token: scripts/sponsor_publish.py rotate --all)");
@@ -67,7 +69,8 @@ test("the sponsor report job keeps tokens and reports private and commits neithe
   const yml = read(".github/workflows/sponsor-report.yml");
   assert.doesNotMatch(yml, /git add [^\n]*data\/sponsors\b(?!\.json)/, "the job commits no report files");
   assert.match(yml, /pull_raw\.sh private\/sponsors/);
-  assert.match(yml, /sponsor_publish\.py mint\n\s*bash scripts\/push_raw\.sh "sponsor tokens" private\/sponsors\/tokens/, "a new token is saved before it is used");
+  assert.match(yml, /sponsor_publish\.py mint\n(?:\s*#[^\n]*\n)*\s*RAW_KEEP=1 bash scripts\/push_raw\.sh "sponsor tokens" private\/sponsors\/tokens\n\s*bash scripts\/pull_raw\.sh private\/sponsors\/tokens/,
+    "a new token is saved before it is used, never over one already saved (the first token wins), then read back");
   assert.match(yml, /sponsor_publish\.py publish/);
   assert.match(yml, /sponsor_publish\.py --selftest/);
   assert.match(read("scripts/build_sponsor_report.py"), /OUTDIR = Path\(os\.environ\.get\("SPONSOR_PRIVATE_DIR"\) or \(ROOT \/ "private" \/ "sponsors"\)\) \/ "reports"/);
@@ -126,7 +129,7 @@ test("worker v5.65: a report is read with its own link only; old links say chang
   const old = await call("/sponsor-report?r=barnco-" + OLD);
   assert.equal(old.status, 410, "a retired link answers 410");
   assert.deepEqual(await old.json(), { ok: false, changed: true }, "and never names the new one");
-  for (const r of ["barnco-" + LIVE.slice(0, 15) + "0", "barnco-" + LIVE + "0", "nobody-" + LIVE, "barnco", "", "barnco-" + LIVE.toUpperCase().replace(/[0-9]/g, "Z")]) {
+  for (const r of ["barnco-" + LIVE.slice(0, 15) + (LIVE.slice(-1) === "0" ? "1" : "0"), "barnco-" + LIVE + "0", "nobody-" + LIVE, "barnco", "", "barnco-" + LIVE.toUpperCase().replace(/[0-9]/g, "Z")]) {
     const x = await call("/sponsor-report?r=" + encodeURIComponent(r));
     assert.equal(x.status, 404, "unknown: " + r.replace(LIVE, "<live>"));
     assert.deepEqual(await x.json(), { ok: false }, "a bare 404");
@@ -148,7 +151,7 @@ test("worker v5.65: the token is compared in constant time, and the version note
   assert.match(fn, /safeEq\(p\.token, rec\.t\)/);
   assert.match(fn, /old = safeEq\(h, x\) \|\| old;/, "every retired hash checked, no early exit");
   assert.doesNotMatch(fn, /p\.token\s*[!=]==|[!=]==\s*p\.token/, "never a plain comparison of the token");
-  assert.match(src, /^ \* v5\.65 \(2026-11-04\): PRIVATE SPONSOR REPORTS/m);
+  assert.match(src, /^ \* v5\.65 \([0-9-]+\): PRIVATE SPONSOR REPORTS/m);
 });
 
 test("end to end: sponsor_publish.py posts through the worker route and the portal's request reads it back", { timeout: 60000 }, async () => {

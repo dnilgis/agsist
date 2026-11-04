@@ -185,7 +185,10 @@ jobs:
         run: |
           bash scripts/pull_raw.sh private/sponsors
           python3 scripts/sponsor_publish.py mint
-          bash scripts/push_raw.sh "sponsor tokens" private/sponsors/tokens
+          # The first token wins: RAW_KEEP never replaces a token file already saved (sponsor-apply.yml may
+          # have minted the same sponsor a moment ago), and the pull after it adopts whichever landed.
+          RAW_KEEP=1 bash scripts/push_raw.sh "sponsor tokens" private/sponsors/tokens
+          bash scripts/pull_raw.sh private/sponsors/tokens
 
       # No secrets, no report, no failure. A fork or a PR cannot have these and
       # should not go red for it — the script says so and exits 0.

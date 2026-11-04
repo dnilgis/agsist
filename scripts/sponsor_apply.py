@@ -306,9 +306,15 @@ def report_entry(a, ct, state, want, start, root=REPO):
 def _sync_private(op):
     """Pull or save the private token files (private-data, private/sponsors/tokens). True on success."""
     env_ = dict(os.environ, RAW_BRANCH="private-data")
-    cmd = (["bash", "scripts/pull_raw.sh", "private/sponsors/tokens"] if op == "pull"
-           else ["bash", "scripts/push_raw.sh", "sponsor token", "private/sponsors/tokens"])
-    return subprocess.run(cmd, cwd=REPO, env=env_).returncode == 0
+    pull = ["bash", "scripts/pull_raw.sh", "private/sponsors/tokens"]
+    if op == "pull":
+        return subprocess.run(pull, cwd=REPO, env=env_).returncode == 0
+    # The first token wins: RAW_KEEP never replaces a token file already on private-data (the report job
+    # may have minted this sponsor a moment ago), and the pull after it adopts whichever one landed.
+    if subprocess.run(["bash", "scripts/push_raw.sh", "sponsor token", "private/sponsors/tokens"], cwd=REPO,
+                      env=dict(env_, RAW_KEEP="1")).returncode != 0:
+        return False
+    return subprocess.run(pull, cwd=REPO, env=env_).returncode == 0
 
 
 def portal_link(app_id, root=REPO, private=None, secret=None, sync=None):
@@ -328,10 +334,11 @@ def portal_link(app_id, root=REPO, private=None, secret=None, sync=None):
     if not sync("pull"):
         return None
     pd = Path(private) if private else sp.private_dir()
-    tok = sp.mint(e["slug"], pd)
+    sp.mint(e["slug"], pd)
     if not sync("push"):
         return None
-    return sp.link(e["slug"], tok, secret)
+    rec = sp.load_tokens(pd).get(e["slug"])   # after the save and pull: the token that landed first
+    return sp.link(e["slug"], rec["token"], secret) if rec else None
 
 
 def take_down(a, root=REPO, today=None):
@@ -755,6 +762,12 @@ def selftest():
         tok_ = sp_.load_tokens(root / "priv").get(rep_[0]["slug"], {}).get("token")
         ck("the report link is the agsist.com portal with a private token and its approval key",
            tok_ and pl_ == sp_.link(rep_[0]["slug"], tok_, "sec") and "&k=" in pl_ and ops_ == ["pull", "push"], (ops_,))
+        def _race(op, d=root / "priv4"):
+            if op == "push":   # another job saved its token first; the pull brings it back
+                sp_._write_token(d, rep_[0]["slug"], {"token": "a" * 16, "retired": []})
+            return True
+        ck("the first token saved wins: the link uses the one that landed, not ours",
+           portal_link("a1b2c3d4e5f6", root, private=root / "priv4", secret="sec", sync=_race) == sp_.link(rep_[0]["slug"], "a" * 16, "sec"))
         ck("a rerun keeps the same private token",
            portal_link("a1b2c3d4e5f6", root, private=root / "priv", secret="sec", sync=lambda op: True) == pl_)
         ck("no link when the private save fails",
