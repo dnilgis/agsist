@@ -3,11 +3,13 @@
 
 Reads  : data/daily.json  (headline, one_number, date, locked_prices/changes)
          data/predictions.json (the prediction bot's live record)
-Writes : data/social/card-YYYY-MM-DD.jpg   (dated, permanent: the daily page
-                                            and the homepage point at it)
-         data/social/card-latest.jpg
-         daily.yml then copies data/social to dnilgis/agsist-data (scripts/agsist_data.sh), and the
-         pages name the agsist-data copy once data/share-host.json lists the folder (share_host.py)
+Writes : <SOCIAL_CARD_DIR>/card-YYYY-MM-DD.jpg   (dated, permanent: the daily page
+                                                  and the homepage point at it)
+         <SOCIAL_CARD_DIR>/card-latest.jpg
+         The cards are served from the public repo dnilgis/agsist-data at data/social/ (Nov 4, 2026;
+         scripts/share_host.py), not from this repository. daily.yml sets SOCIAL_CARD_DIR to a folder
+         outside the checkout and then adds the new cards there (scripts/agsist_data.sh sync --keep).
+         Unset, SOCIAL_CARD_DIR is data/social here, which .gitignore keeps out of every commit.
 
 Runs AFTER GATE 2 in daily.yml, so a card is only ever rendered from a
 briefing that passed every gate. If the briefing was blocked, no card.
@@ -39,9 +41,31 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT_DIR = os.path.join(ROOT, "data", "social")
+OUT_DIR = os.environ.get("SOCIAL_CARD_DIR") or os.path.join(ROOT, "data", "social")
 SITE = "https://agsist.com"
-QUOTES = (("corn-dec", "corn", "Dec corn"), ("beans-nov", "beans", "Nov beans"), ("wheat", None, "Wheat"))
+# 2026-11-04 (fx/smallfix1104): the grain rows are the HEADLINE contract the
+# briefing was written on, named with its month ("Jan '27 soybeans"). The card
+# read the harvest aliases and printed "Nov beans" past first notice, beside a
+# briefing on Jan '27. An issue from before the month was stamped keeps its
+# harvest alias, named with its month and year on the issue date.
+CROPS = (("corn", "corn"), ("beans", "soybeans"))
+
+
+def quote_rows(daily):
+    """[(key, name)] for the card's futures rows, in order."""
+    import seed_static as S
+    out = []
+    for crop, word in CROPS:
+        h = S.daily_headline(daily, crop)
+        if h and h[1]:
+            out.append((h[0], h[1] + " " + word))
+            continue
+        a = S.daily_harvest(daily, crop)
+        if a:
+            out.append((a[0], a[1] + " " + word))
+        elif h:
+            out.append((h[0], word.capitalize()))
+    return out + [("wheat", "Wheat")]
 
 
 def _quarters(v):
@@ -73,9 +97,8 @@ def card_bytes(daily, record=None):
     date_str = (daily.get("date") or "").strip()
     rows = []
     lp, lc = daily.get("locked_prices") or {}, daily.get("locked_changes") or {}
-    for key, alt, name in QUOTES:
-        k = key if key in lp else alt
-        if not k or lp.get(k) is None:
+    for k, name in quote_rows(daily):
+        if lp.get(k) is None:
             continue
         pct = (lc.get(k) or {}).get("pct")
         chg = None if pct is None else ("%+.1f%%" % pct)
@@ -85,7 +108,7 @@ def card_bytes(daily, record=None):
         pic = ("number", {"big": num_val, "unit": num_unit, "table": rows, "table_title": "Futures in the briefing"})
         caption = "AGSIST Daily  ·  " + date_str + "  ·  the number"
     else:
-        pic = ("number", {"big": rows[0][1] if rows else "AGSIST", "unit": "Dec corn" if rows else "",
+        pic = ("number", {"big": rows[0][1] if rows else "AGSIST", "unit": rows[0][0] if rows else "",
                           "table": rows[1:], "table_title": "Futures in the briefing"})
         caption = "AGSIST Daily  ·  " + date_str
     meta = record or "Grain markets before the open, free every morning"
@@ -106,7 +129,7 @@ def build(daily_path="data/daily.json", predictions_path="data/predictions.json"
     for p in (dated, os.path.join(OUT_DIR, "card-latest.jpg")):
         with open(p, "wb") as f:
             f.write(data)
-    print("[social-card] wrote %s and card-latest.jpg (%d KB)" % (os.path.relpath(dated, ROOT), len(data) // 1024))
+    print("[social-card] wrote %s and card-latest.jpg (%d KB)" % (dated, len(data) // 1024))
     return dated, alt
 
 
@@ -161,9 +184,9 @@ def main(argv):
             build("data/daily-archive/%s.json" % day, stamp=day)
             return 0
         dated, alt = build()
-        # agsist.com, or agsist-data once the seed job has listed data/social (scripts/share_host.py)
+        # served from agsist-data (data/share-host.json lists data/social; scripts/share_host.py)
         import share_host
-        url = share_host.url(os.path.relpath(dated, ROOT).replace(os.sep, "/"))
+        url = share_host.url("data/social/" + os.path.basename(dated))
         update_page_og(os.path.join(ROOT, "index.html"), url, alt)
         return 0
     except Exception as e:  # never block the briefing over a share image

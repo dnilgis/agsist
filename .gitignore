@@ -94,3 +94,7 @@ build/shots/
 # the twenty-year COT history behind data/cot-analysis.json.
 /data/site-usage.json
 /data/cot-deep.json
+
+# Share images live in dnilgis/agsist-data since Nov 4, 2026 (scripts/share_host.py); never commit them here
+/farmland-atlas/og/
+/data/social/

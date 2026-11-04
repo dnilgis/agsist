@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { tmpdir } from "node:os";
+const SB = "(?:<!--\\n-->)?";   // a seed may sit on its own line (seed_static SEED_BREAK, BUILD-RULES 67)
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -44,7 +45,7 @@ test("the futures stay baked in the hero, under the jobs; signup band and Rain P
   for (const t of ["fc", "fs"]) {
     const at = band.indexOf(`id="hb-${t}"`);
     assert.ok(at > jobsEnd, `#hb-${t} sits under the jobs`);
-    assert.match(band, new RegExp(`id="hb-${t}-v"><!--SEED:hp:${t}-->`), `#hb-${t} is still baked`);
+    assert.match(band, new RegExp(`id="hb-${t}-v">${SB}<!--SEED:hp:${t}-->`), `#hb-${t} is still baked`);
   }
   assert.match(band, /id="hb-ask" data-signup-ask=/, "the hero email ask stays");
   for (const id of ["signup-compact", "signup-full"]) assert.ok(HTML.includes(`id="${id}"`), `#${id} stays`);

@@ -213,7 +213,9 @@ test('skips the PR checks accept: only the listed halves of an either/or pair, a
   assert.ok(allow.length <= 3, `test/skips-allowed.txt is for either/or pairs only (${allow.length} lines)`);
   for (const l of allow) assert.match(l, /^.+ # SKIP .+$/, l);
   // each listed skip's other half is a real test that runs where this one skips
-  const pairs = { "without FSA's 2026 file, no county carries a benchmark the calculator could use # SKIP official file loaded": ['test/arc-plc.test.mjs', 'FSA official county figures, when the file is loaded'] };
+  const pairs = { "without FSA's 2026 file, no county carries a benchmark the calculator could use # SKIP official file loaded": ['test/arc-plc.test.mjs', 'FSA official county figures, when the file is loaded'],
+    // until the price job writes the new seed layout on main; the seeder half runs on every page copy
+    "no seed marker line carries anything but the value # SKIP old seed layout still on index.html or markets.html; the next price run rewrites it (BUILD-RULES 67)": ['test/seed-lines.test.mjs', 'the seeder puts every seed on its own line, values and text unchanged'] };
   for (const l of allow) { assert.ok(pairs[l], `say in this test which test is the other half of: ${l}`); assert.ok(read(pairs[l][0]).includes(pairs[l][1]), pairs[l][1]); }
   const dir = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'skips-'));
   const nt = path.join(dir, 'nt.out');

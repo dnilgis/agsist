@@ -1,6 +1,6 @@
 /* Share images on dnilgis/agsist-data (Nov 4, 2026; growth plan phase 1, scripts/share_host.py).
  *
- * The Atlas cards (farmland-atlas/og/) and the Daily cards (data/social/) move to the public repo
+ * The Atlas cards (farmland-atlas/og/) and the Daily cards (data/social/) moved to the public repo
  * dnilgis/agsist-data, served from dnilgis.github.io/agsist-data/ at the same paths. A page must never point
  * at an image that is not there, so the order is: copy, check the copies answer, then flip (the seed job
  * lists the folder in data/share-host.json and rewrites the pages in the same commit).
@@ -37,7 +37,7 @@ test("guard: no page names a moved folder on agsist.com, no builder hard-codes o
   assert.match(out, /share_host check: OK/);
 });
 
-test("share_host.py selftest (mark, flip, check, verify, the daily row)", () => {
+test("share_host.py selftest (mark, flip, check, verify, wait, the daily row)", () => {
   const out = py(["scripts/share_host.py", "--selftest"]);
   assert.match(out, /share_host selftest: OK/);
 });
@@ -48,64 +48,81 @@ test("data/share-host.json names the host and lists only known folders", () => {
   for (const f of Object.keys(doc.folders || {})) assert.ok(["farmland-atlas/og", "data/social"].includes(f), f);
 });
 
-test("the Atlas copies its cards to agsist-data after drawing them and before its commit", () => {
-  const draw = step("farmland-atlas-pages.yml", "Draw share images");
-  const copy = step("farmland-atlas-pages.yml", "Copy share images to agsist-data");
-  const commit = step("farmland-atlas-pages.yml", "Commit if changed");
-  assert.ok(draw.at < copy.at && copy.at < commit.at, "draw, copy, commit");
-  assert.match(copy.text, /bash scripts\/agsist_data\.sh sync --soft farmland-atlas\/og/);
-  assert.match(copy.text, /AGSIST_DATA_TOKEN: \$\{\{ secrets\.AGSIST_DATA_TOKEN \}\}/);
-  // after the flip a failed copy must stop the commit: no continue-on-error here
-  assert.doesNotMatch(copy.text, /continue-on-error/);
+test("both folders are served from agsist-data and none of their files is kept here", () => {
+  const doc = JSON.parse(read("data/share-host.json"));
+  assert.deepEqual(Object.keys(doc.folders).sort(), ["data/social", "farmland-atlas/og"]);
+  const tracked = execFileSync("git", ["ls-files", "--", "farmland-atlas/og", "data/social"], { cwd: ROOT, encoding: "utf8" });
+  assert.equal(tracked.trim(), "", "no share image is committed here");
+  const ign = read(".gitignore");
+  assert.match(ign, /^\/farmland-atlas\/og\/$/m);
+  assert.match(ign, /^\/data\/social\/$/m);
+  assert.ok(!existsSync(join(ROOT, ".github/workflows/agsist-data-seed.yml")), "the one-time seed job is gone");
 });
 
-test("the Daily copies its card before its commit and can never be held by it", () => {
+test("the Atlas draws its cards into an agsist-data checkout and pushes them before its commit", () => {
+  const co = step("farmland-atlas-pages.yml", "Check out the share images");
+  const draw = step("farmland-atlas-pages.yml", "Draw share images");
+  const push = step("farmland-atlas-pages.yml", "Push share images to agsist-data");
+  const commit = step("farmland-atlas-pages.yml", "Commit if changed");
+  assert.ok(co.at < draw.at && draw.at < push.at && push.at < commit.at, "checkout, draw, push, commit");
+  assert.match(co.text, /bash scripts\/agsist_data\.sh checkout "\$RUNNER_TEMP\/agsist-data"/);
+  assert.match(draw.text, /build_atlas_cards\.py --out "\$RUNNER_TEMP\/agsist-data\/farmland-atlas\/og"/);
+  assert.match(push.text, /agsist_data\.sh sync --from "\$RUNNER_TEMP\/agsist-data" farmland-atlas\/og/);
+  for (const x of [co, draw, push]) {
+    assert.doesNotMatch(x.text, /continue-on-error|--soft/, "a failure stops the run before the commit");
+  }
+  assert.match(co.text + push.text, /AGSIST_DATA_TOKEN: \$\{\{ secrets\.AGSIST_DATA_TOKEN \}\}/);
+  assert.doesNotMatch(read(".github/workflows/farmland-atlas-pages.yml"), /atlas-cards/);
+});
+
+test("the card builder never writes into this repository", () => {
+  let err = null;
+  try { py(["scripts/build_atlas_cards.py"]); } catch (e) { err = e; }
+  assert.ok(err && err.status === 2, "no --out: refuses");
+  assert.match(String(err.stderr), /--out <agsist-data checkout>\/farmland-atlas\/og/);
+});
+
+test("the Daily draws its card outside the checkout and can never be held by agsist-data", () => {
   const card = step("daily.yml", "Build social card");
   const copy = step("daily.yml", "Copy social card to agsist-data");
   const commit = step("daily.yml", "Commit and push");
   assert.ok(card.at < copy.at && copy.at < commit.at, "card, copy, commit");
+  assert.match(card.text, /continue-on-error: true/);
+  assert.match(card.text, /SOCIAL_CARD_DIR: \$\{\{ runner\.temp \}\}\/social\/data\/social/);
   assert.match(copy.text, /continue-on-error: true/);
   assert.match(copy.text, /timeout-minutes: [1-5]\b/);
-  assert.match(copy.text, /bash scripts\/agsist_data\.sh sync --soft data\/social/);
-  // a bad token cannot eat the 4 minutes; then a best-effort wait for today's card on agsist-data
+  // adds today's card there, never mirrors (a run holds one card, not the archive)
+  assert.match(copy.text, /bash scripts\/agsist_data\.sh sync --keep --from "\$RUNNER_TEMP\/social" data\/social/);
   assert.match(copy.text, /AGSIST_DATA_TRIES: "2"/);
   assert.match(copy.text, /python3 scripts\/share_host\.py wait index\.html --wait (\d+)/);
   assert.ok(+copy.text.match(/--wait (\d+)/)[1] <= 180, "the wait fits inside the step's 4 minutes");
+  assert.doesNotMatch(commit.text, /data\/social/, "the Daily commits no card");
+  assert.match(read("scripts/build_social_card.py"), /OUT_DIR = os\.environ\.get\("SOCIAL_CARD_DIR"\)/);
 });
 
-test("the seed's flip waits for any Daily run (API, not a shared group) and never runs in the Daily's window", () => {
-  const wf = read(".github/workflows/agsist-data-seed.yml");
-  const flipJob = wf.slice(wf.indexOf("\n  flip:\n"));
-  assert.ok(flipJob.length > 10, "a separate flip job");
-  // never the Daily's concurrency group: GitHub cancels all but one pending run in a group
-  assert.doesNotMatch(wf, /daily-briefing/, "no shared group with the Daily");
-  const wait = flipJob.indexOf("- name: Wait for any Daily run to finish");
-  const again = flipJob.indexOf("- name: Still not in the Daily's window");
-  const flip = flipJob.indexOf("share_host.py --root");
-  assert.ok(wait > 0 && wait < again && again < flip, "wait for the Daily, re-check the time, then flip");
-  const waitStep = flipJob.slice(wait, again);
-  assert.match(waitStep, /actions\/workflows\/daily\.yml\/runs\?status=\$st/);
-  assert.match(waitStep, /for st in queued in_progress/);
-  assert.match(waitStep, /sleep 30/);
-  assert.match(waitStep, /seq 1 61/, "30 minutes of 30 s checks");
-  assert.match(waitStep, /exit 1/, "a Daily still running stops the flip");
-  assert.match(flipJob, /actions: read/);
-  const windows = wf.match(/-ge 1000 \] && \[ "\$now" -lt 1430 \]/g) || [];
-  assert.equal(windows.length, 3, "the seed, the flip and the re-check after the wait refuse 10:00 to 14:30 UTC");
-  assert.match(wf, /any_time:/);
+test("an archive rebuild keeps each issue's own card (the cards are not on this disk)", () => {
+  const out = py(["-c", [
+    "import sys, os, re, json; sys.path.insert(0, 'scripts')",
+    "import generate_daily as G",
+    "res = {'card': 0, 'plain': 0, 'moved': []}",
+    "for f in sorted(os.listdir('daily')):",
+    "    m = re.match(r'(\\d{4}-\\d\\d-\\d\\d)\\.html$', f)",
+    "    if not m: continue",
+    "    u = G.og_image_for(m.group(1), require_file=True)",
+    "    res['card' if '/card-' in u else 'plain'] += 1",
+    "    if u not in open('daily/' + f, encoding='utf-8').read(): res['moved'].append(m.group(1))",
+    "print(json.dumps(res))",
+  ].join("\n")]);
+  const r = JSON.parse(out);
+  assert.deepEqual(r.moved, [], "every issue keeps the image it carries");
+  assert.ok(r.card >= 109, `issues with their own card: ${r.card}`);
+  assert.ok(r.plain > 0, "issues before the cards keep the plain card");
 });
 
-test("the seed job copies, checks the copies, then flips; by hand only, never forced", () => {
-  const wf = read(".github/workflows/agsist-data-seed.yml");
-  assert.match(wf, /\non:\n  workflow_dispatch:/);
-  assert.doesNotMatch(wf, /schedule:|cron:/);
-  const copy = wf.indexOf("scripts/agsist_data.sh sync");
-  const verify = wf.indexOf("scripts/share_host.py verify");
-  const mark = wf.indexOf("share_host.py --root \"$W\" mark");
-  const flip = wf.indexOf("share_host.py --root \"$W\" flip");
-  assert.ok(copy > 0 && copy < verify && verify < mark && mark < flip, "copy, verify, mark, flip");
-  assert.doesNotMatch(wf, /push[^\n]*(--force|-f\b)/);
-  assert.doesNotMatch(read("scripts/agsist_data.sh"), /push[^\n]*(--force|-f\b)/);
+test("agsist_data.sh never forces a push and refuses to empty a folder", () => {
+  const s = read("scripts/agsist_data.sh");
+  assert.doesNotMatch(s, /push[^\n]*(--force|-f\b)/);
+  assert.match(s, /refusing to remove more than half/);
 });
 
 test("the token goes in a header, never in a URL or a file", () => {
