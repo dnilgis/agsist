@@ -58,14 +58,16 @@ test("the framed mockup is open under Pay, tagged Mockup, not inside What you ge
 
 test("the frame: only what Sig has said, no made-up sizes", () => {
   const box = HTML.match(/<h3>Framed<\/h3><ul>[\s\S]*?<\/ul>/)[0];
-  // Sig, 2026-10-17: a 13 x 19 black frame with a white mat; the real glass front confirmed the same day
-  for (const want of [/<li>A 13 x 19 black frame with a white mat, ready to hang<\/li>/, /<li>Real glass front, packed with corner guards and foam, double-boxed<\/li>/]) assert.match(box, want);
+  // Sig, 2026-10-17: a 13 x 19 frame with a white mat; the real glass front confirmed the same day.
+  // Sig, 2026-11-04: oak or black, and the frame specs in What you get (the mat opening is components/rain-print.js SHEET.mat)
+  for (const want of [/<li>A 13 x 19 in wood frame, oak or black, your pick<\/li>/, /<li>A white acid-free mat with a 16\.5 x 10\.5 in opening<\/li>/, /<li>Real tempered glass front<\/li>/,
+    /<li>Hangs the long way across; hanging hardware included<\/li>/, /<li>Packed with corner guards and foam, double-boxed<\/li>/]) assert.match(box, want);
   assert.doesNotMatch(box, /no mat|a little bigger/);
   const big = HTML.match(/<details><summary>How big is it\?<\/summary><p>[\s\S]*?<\/details>/)[0];
-  assert.match(big, /The framed one comes in a 13 x 19 black frame with a white mat and a real glass front, ready to hang\./);
+  assert.match(big, /The framed one comes in a 13 x 19 oak or black frame with a white mat and a real glass front, ready to hang\./);
   assert.doesNotMatch(big, /no mat|trim|a little bigger/);
   // the structured data says the same
-  assert.match(HTML, /"text": "[^"]*The framed one comes in a 13 x 19 black frame with a white mat and a real glass front, ready to hang\./);
+  assert.match(HTML, /"text": "[^"]*The framed one comes in a 13 x 19 oak or black frame with a white mat and a real glass front, ready to hang\./);
   // no moulding width, outside size, weight or hanger until Sig measures them
   const vis = HTML.replace(/<script[\s\S]*?<\/script>/g, "");
   assert.ok(!/moulding|molding|sawtooth|wire hanger|\b\d+(\.\d+)?\s?(x|by)\s?\d+(\.\d+)?\s?(in|inches)? (outside|overall)|\d+(\.\d+)?[- ]?(inch|in\.?) (wide|deep)|\b\d+(\.\d+)? ?(lb|lbs|pounds)\b/i.test(vis), "no frame size or weight invented");

@@ -80,7 +80,10 @@ globalThis.fetch = async () => new Response(null, { status: 204 });   // the ema
   A(j.already === true && rpo(K).length === 1 && rpo(K)[0].serial === 2, 'the same event again changes nothing');
   // the list shows it once, ready for the proof email
   const L = await list(env);
-  A(L.orders.length === 1 && L.orders[0].status === 'paid' && L.orders[0].fulfill_url === x.design_url + '&maker=1&serial=2', 'listed once, with the maker link');
+  // v5.63: a framed order from Stripe alone has no frame color on record: black before Nov 4 2026, not known ("") after
+  const fc = created * 1000 >= Date.UTC(2026, 10, 4) ? '' : 'black';
+  A(L.orders.length === 1 && L.orders[0].frame_color === fc, 'the frame color as the rule reads it: ' + JSON.stringify(L.orders[0] && L.orders[0].frame_color));
+  A(L.orders[0].status === 'paid' && L.orders[0].fulfill_url === x.design_url + '&maker=1' + (fc ? '&frame=' + fc : '') + '&serial=2', 'listed once, with the maker link');
   console.log('rp burst: late webhook ' + n + ' passed');
 }
 

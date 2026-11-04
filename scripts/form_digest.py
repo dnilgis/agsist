@@ -138,7 +138,7 @@ FIELDS = {
     "sponsor-feedback": [("request", "Request"), ("sponsor", "Sponsor"), ("proof", "Proof code"), ("email", "Reply to"),
                          ("message", "Message")],
     "atlas-feedback": [("email", "Email"), ("source", "Source")],
-    "rain-print-order": [("choice", "Choice"), ("gift_january", "Gift"), ("gift", "Gift"), ("name", "Name"), ("email", "Email"),
+    "rain-print-order": [("choice", "Choice"), ("frame_color", "Frame"), ("gift_january", "Gift"), ("gift", "Gift"), ("name", "Name"), ("email", "Email"),
                          ("gift_to", "Gift for"), ("gift_deliver", "Deliver to"), ("gift_email", "Their email"),
                          ("gift_message", "Card message"), ("address", "Ship to"),
                          ("notes", "Notes"), ("design_code", "Design code"), ("design_url", "Design"), ("logo", "Logo"),
@@ -341,6 +341,8 @@ def value(p, f):
     v = p[f]
     if f == "choice":
         return RP_CHOICE.get(v, str(v))
+    if f == "frame_color":
+        return {"oak": "Oak", "black": "Black"}.get(v, str(v))
     if p.get("kind") == "rain-print-business" and f == "product":
         return RPB_PRODUCT.get(v, str(v))
     if p.get("kind") == "rain-print-business" and f == "ship":
@@ -377,6 +379,9 @@ def blocks(posts):
         if cards.get(p.get("gift_card"), 0) > 1:
             p = dict(p, gift_card_twice="yes")
         gift = is_gift(p)
+        if p["kind"] == "rain-print-order" and p.get("choice") == "framed12x18" and p.get("frame_color") not in ("oak", "black"):
+            # worker v5.63 (Sig, Nov 4): a framed order from before the color choice was black
+            p = dict(p, frame_color="black")
         rows = [(lab, value(p, f)) for f, lab in FIELDS[p["kind"]]
                 if p.get(f) not in (None, "") and (gift or not f.startswith("gift_") or f.startswith("gift_card"))
                 and (f != "gift" or (gift and not is_january(p)))]
@@ -1004,6 +1009,10 @@ def selftest():
     bad = build([dict(rp, logo="<b>x</b>")], "s").get_body(("html",)).get_content()
     ck("a bad logo id is no link", "<b>x</b>" not in bad and "rp-logo/&lt;" not in bad and "does not look right" in bad)
     ck("no logo, no Logo: line", "Logo:" not in build([rp], "s").get_body(("plain",)).get_content())
+    # the frame color (worker v5.63, Sig Nov 4): the chosen one; a framed post from before it reads Black; none for a print
+    ck("a framed order with no frame color reads Black", "Frame: Black" in build([rp], "s").get_body(("plain",)).get_content())
+    ck("a framed order shows its frame color", "Frame: Oak" in build([dict(rp, frame_color="oak")], "s").get_body(("plain",)).get_content())
+    ck("a print has no Frame line", "Frame:" not in build([dict(rp, choice="print12x18")], "s").get_body(("plain",)).get_content())
 
 
     print("\nhay board (worker v5.30)")

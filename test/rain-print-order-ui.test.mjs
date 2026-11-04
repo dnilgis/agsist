@@ -219,7 +219,7 @@ test("one picker, framed first: the button, the print's look, the phone bar and 
     await settle(page);
     assert.equal(await page.$eval('input[name="rp-product"]:checked', (r) => r.value), "framed12x18", "framed is picked first");
     assert.equal(await page.textContent("#rp-pay"), "Check it and pay $" + J.framed12x18);
-    assert.match(await page.textContent("#rp-sub-framed12x18"), /^13 x 19 black frame, white mat, real glass\. Order by Dec 9 for Christmas, if you OK the proof the day it comes\.$/);
+    assert.match(await page.textContent("#rp-sub-framed12x18"), /^13 x 19 oak or black frame, white mat, real glass\. Order by Dec 9 for Christmas, if you OK the proof the day it comes\.$/);
     assert.match(await page.textContent("#rp-sub-print12x18"), /Order by Dec 10 for Christmas, if you OK the proof the day it comes\./);
     assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: last year (2025), or any past year, comes by Christmas if you order it framed by Dec 9, or as a print by Dec 10. This year (2026) is a gift card now, the print in January.");
     await page.click('.rp-prod[data-choice="print12x18"]');
@@ -673,9 +673,9 @@ test("Your print: labeled controls, the magnifier, Esc back to Fit then closed, 
     assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "fit", "it opens at Fit");
     assert.match(await page.getAttribute("#rp-proof-stage", "aria-label"), /^The print\. +Place and year: Chetek, WI, 2025\. .*Name: Olson\./, "the print has its words");
     // the details: label above value, in the order a buyer checks them
-    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Marked days", "Compared with", "Style", "Temperatures", "Every year behind", "When"]);   // a hand link has every year behind on (2026-10-22)
+    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Marked days", "Compared with", "Style", "Temperatures", "Every year behind", "Frame", "When"]);   // the framed print names its frame color (Sig, Nov 4)   // a hand link has every year behind on (2026-10-22)
     // one product state (2026-10-14): the sheet's picker is step 3's, no Style or Look of its own
-    assert.deepEqual(await page.$$eval("#rp-proof [role=radiogroup]", (a) => a.map((g) => document.getElementById(g.getAttribute("aria-labelledby")).textContent)), ["You get"]);
+    assert.deepEqual(await page.$$eval("#rp-proof [role=radiogroup]", (a) => a.map((g) => document.getElementById(g.getAttribute("aria-labelledby")).textContent)), ["You get", "Frame"]);   // plus the framed print's frame color (Sig, Nov 4)
     await page.click('#rp-proof label:has(input[name="rp-pproduct"][value="print12x18"])');
     assert.ok(await page.$eval('input[name="rp-product"][value="print12x18"]', (r) => r.checked), "step 3 follows");
     assert.equal(await page.getAttribute("#rp-wall", "data-view"), "print", "and so does the print at the top");
