@@ -60,14 +60,15 @@ TICK_GRACE_HOURS = 2          # a gate tick with no run after it for this long: 
 # one; land-alert, price-watch and form-digest about 100; cot-release-watch about 200). The run list
 # is free of logs; the jobs of a run (one small call) say whether its send step ran; only runs that
 # reached a send step have their log read. Worst case per pass: 19 workflows x (3 pages + 8 jobs + 3
-# logs) plus 2 dispatch counts, under CALL_BUDGET; most workflows stop well short. A pass runs every
+# logs) for the 18 workflows read, 6 more jobs for the Daily (max_jobs) and 2 dispatch counts: 260 at
+# most, under CALL_BUDGET; most workflows stop well short (Nov 4, live: 143 calls). A pass runs every
 # DELIVERY_EVERY_HOURS, against GitHub's 1,000 calls an hour for the repository's Actions token.
 LIST_PAGES = 3                # 300 runs in 24 h; the busiest sender (report-day) had 252 on Nov 4
 JOBS_PER_WF = 8               # runs whose jobs are read
 MORE_JOBS = 3                 # of those, runs read past the ones that were due (a catch-up, a run by hand)
 SAMPLE_SENDS = 3              # a sender that may send on any run: stop after this many runs reached a send step
 LOGS_PER_WF = 3               # run logs read per workflow, only of runs that reached a send step
-CALL_BUDGET = 260             # API calls per pass, all workflows together (the repo's token is shared)
+CALL_BUDGET = 280             # API calls per pass, all workflows together (the repo's token is shared)
 LOG_MAX_BYTES = 25 * 1024 * 1024
 
 # What each sender prints and where. `switch`: None = no switch, live on every scheduled or
@@ -84,7 +85,7 @@ SENDERS = [
      # A run that sends ran the gate and the whole generate job: 510 and 529 s on Nov 3 and 4 2026
      # (runs 41647674667, 41823633959); a gate-only tick takes 29 to 40 s. A run shorter than this
      # cannot have reached the send step, so its jobs are not read. Too high fails loud: the day reads late.
-     "min_send_s": 240},
+     "min_send_s": 240, "max_jobs": 14},
     {"workflow": "land-alert.yml", "senders": {"send_land_alert.py": "land-alert"},
      "switch": ("repo", "LANDSALES_MONTHLY_LIVE", "1"), "counts": "the step that runs send_land_alert.py",
      "steps": {"Monthly land sale email": ["land-alert"]}, "due": ("tick",)},
@@ -249,6 +250,13 @@ def plan(entry, runs, now, crons=None):
         info.update(day=day, due_ct=due[1], window_ct="%s to %s" % (due[2], due[3]), past_due=now >= at,
                     window_runs=[r["id"] for r in win])
         first += win
+        today = _ct(now).strftime("%Y-%m-%d")
+        if today != day:                                   # before today's due time: today's morning so far, after
+            t0, t1 = _at_ct(_ct(now), due[2]), _at_ct(_ct(now), due[3])
+            nxt = sorted((r for r in done if t0 <= (_ts(r.get("created_at")) or t0 - timedelta(1)) <= t1),
+                         key=lambda r: (r.get("created_at") or "", r["id"]))
+            info.update(today=today, today_runs=[r["id"] for r in nxt])
+            first += nxt
         rest = by_new
     elif due[0] == "tick":
         import cron_gate
@@ -387,6 +395,9 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
                 findings.append("(e) %s: no run sent it by %s Central (%d run(s) between %s Central long enough to "
                                 "send were read; none reached the send step with a live DELIVERY line)"
                                 % (due.get("day"), due.get("due_ct"), len(win), due.get("window_ct")))
+        early = [i for i in due.get("today_runs") or [] if i in live]
+        if early:
+            notes.append("%s: sent by run %s (due %s Central)" % (due.get("today"), early[0], due.get("due_ct")))
     elif kind == "tick":
         ticks = due.get("ticks") or []
         if not ticks:
@@ -501,13 +512,13 @@ def read_runs(api, entry, now, crons=None):
     runs, total = list_runs(api, wf, list_since(entry, now))
     order, due = plan(entry, runs, now, crons)
     by = {r["id"]: r for r in runs}
-    due_ids = set(due.get("window_runs") or []) | {t["run"] for t in due.get("ticks") or [] if t.get("run")}
+    due_ids = set(due.get("window_runs") or []) | set(due.get("today_runs") or []) | {t["run"] for t in due.get("ticks") or [] if t.get("run")}
     if entry.get("worker_started"):
         due_ids |= {r["id"] for r in runs if r.get("event") == "workflow_dispatch"}
     kind = due.get("kind")
     read, found, extra = [], 0, 0
     for rid in order:
-        if len(read) >= JOBS_PER_WF or (kind == "run" and found >= SAMPLE_SENDS):
+        if len(read) >= entry.get("max_jobs", JOBS_PER_WF) or (kind == "run" and found >= SAMPLE_SENDS):
             break
         if rid not in due_ids and kind != "run":
             if extra >= MORE_JOBS:
@@ -812,6 +823,11 @@ def selftest():
     # before 07:15 Central the same morning's send is not yet due
     early = datetime(2026, 11, 4, 12, 0, tzinfo=UTC)          # 06:00 CST
     ck("Daily: at 06:00 CST the day judged is yesterday", daily_due(dl["due"], early)[0] == "2026-11-03")
+    # before 07:15, this morning's long runs are read too, after the day judged
+    dr2 = [dict(DR[0], updated_at="2026-11-05T11:20:00Z")] + DR[1:]
+    _o, d2 = plan(dl, dr2, now)
+    ck("Daily: before 07:15 this morning's runs so far are read after the day judged", d2.get("today") == "2026-11-05"
+       and d2.get("today_runs") == [DR[0]["id"]] and _o.index(DR[0]["id"]) == len(d2["window_runs"]), (d2.get("today_runs"), _o[:7]))
     # the list reaches back to the start of the judged day's window, past 24 h
     ck("Daily: the runs listed reach back to 04:30 Central of the day judged",
        list_since(dl, now) == datetime(2026, 11, 4, 10, 30, tzinfo=UTC), list_since(dl, now))
