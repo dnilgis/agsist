@@ -1291,7 +1291,6 @@ def il_table(decls, extra, rep=None):
                str(d.get("line_1_township") or ""), str(d.get("line_1_county") or ""), str(d.get("step_3_legal_description") or ""),
                str(d.get("step_4_seller_name") or ""), str(d.get("step_4_buyer_name") or ""), str(d.get("line_16_state_exemption") or ""), str(n),
                str(d.get("date_recorded") or "")[:10], "" if l1 is None or n == 1 else str(round(l1, 4)), "; ".join(flags),
-               # Line 12a: a blank on the declaration means no personal property (0), not an unknown
                # Line 12a: a field present but blank means no personal property (0); a field the answer leaves out stays absent
                "" if d.get("line_12a_total_personal") is None else (str(d.get("line_12a_total_personal")).strip() or "0")]
 
