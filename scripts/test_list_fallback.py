@@ -160,6 +160,11 @@ try:
 
     # ------------------------------------------------------------ the Daily
     import send_daily
+    # Nov 4, 2026: this run once wrote the real data/daily-sent/2099-01-01.json (the sent copy of a made-up day)
+    # and a later commit carried it to main. The sent copy goes to the temp folder; the repo's data/ is never written.
+    real_sent_dir = send_daily.SENT
+    send_daily.SENT = Path(TMP) / "daily-sent"
+    sent_before = sorted(p.name for p in real_sent_dir.glob("*"))
     archive = sorted((ROOT / "data" / "daily-archive").glob("20*.json"))[-1]
     DAY = "2099-01-01"
     send_daily.load_today = lambda: (DAY, json.load(open(archive)))
@@ -175,6 +180,8 @@ try:
     check("@farm.com" not in out, "daily: an address in the log")
     for m in SENT:
         links_ok(m, "daily", str(m["To"]).lower())
+    check((Path(TMP) / "daily-sent" / (DAY + ".json")).exists(), "daily: the sent copy was not kept in the temp folder")
+    check(not (real_sent_dir / (DAY + ".json")).exists(), "daily: the sent copy of a made-up day was written into the repo's data/daily-sent")
     fl = json.loads((Path(TMP) / list_source._flag_file("briefed:" + DAY)).read_text())
     check(fl.get("state") == "sent", "daily: the day flag is in the private repo after the send: %s" % fl)
 
@@ -351,7 +358,11 @@ try:
     r = send_notice.http_json("GET", "https://%s/notice-list?token=tok&topic=rent%%3Aia&unsent=1" % HOST)
     check(r == [], "notice: marked row still unsent")
     list_source.flush()
+    check(sorted(p.name for p in real_sent_dir.glob("*")) == sent_before,
+          "the run changed the repo's data/daily-sent (a test writes only into its temp folder)")
 finally:
+    if "send_daily" in sys.modules:
+        sys.modules["send_daily"].SENT = real_sent_dir
     urllib.request.urlopen, smtplib.SMTP, time.sleep = real_open, real_smtp, real_sleep
     list_source.FLAG_ROOT = old_root
     os.environ.clear()

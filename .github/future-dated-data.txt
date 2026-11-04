@@ -1,0 +1,6 @@
+# Files under data/ whose name carries a date more than 2 days ahead, on purpose (Nov 4, 2026).
+# Anything else dated that far ahead is a test's made-up day written into a real checkout
+# (data/daily-sent/2099-01-01.json reached main that way). Read by the commit guard every job
+# installs (.github/actions/engine/engine.sh hook) and by test/future-dated-data.test.mjs.
+# One line each: <path> <reason>. A path ending in / covers every file in that folder.
+# A real forecast or schedule file goes here with its reason, in the PR that adds it.
