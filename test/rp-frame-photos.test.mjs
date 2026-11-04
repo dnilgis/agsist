@@ -52,8 +52,10 @@ test("no brand name on the page, in an alt or a caption", () => {
   assert.doesNotMatch(HTML, /\bWS\b/);
 });
 
-test("the tiles hold their height before the pictures load: 2 across on a phone, 5 on a wide screen", () => {
+test("the tiles hold their height before the pictures load: 2 across on a phone, more as the box widens", () => {
   assert.match(HTML, /\.rp-if-p\{height:120px;/);
+  assert.match(HTML, /\.rp-inframe\{[^}]*container:inframe\/inline-size\}/);
   assert.match(HTML, /\.rp-box \.rp-inframe ul\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(HTML, /@media\(min-width:900px\)\{\.rp-box \.rp-inframe ul\{grid-template-columns:repeat\(5,minmax\(0,1fr\)\)\}\}/);
+  assert.match(HTML, /@container inframe \(min-width:340px\)\{\.rp-box \.rp-inframe ul\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)\}\}/);
+  assert.match(HTML, /@container inframe \(min-width:640px\)\{\.rp-box \.rp-inframe ul\{grid-template-columns:repeat\(5,minmax\(0,1fr\)\)\}\}/);
 });

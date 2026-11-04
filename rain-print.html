@@ -375,15 +375,18 @@
   .rp-call a{color:inherit;text-decoration:underline;text-underline-offset:2px}
   .rp-box ul{margin:0;padding:0 0 0 1.05rem;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5}
   /* In the frame (Sig, Nov 4: crops of the frame maker's photos, logo and model removed; no brand name).
-     Each picture sits in a fixed-height tile, so nothing moves as it loads; 2 across on a phone, 5 on a wide screen. */
-  .rp-inframe{grid-column:1/-1;margin:.3rem 0 0}
+     Each picture sits in a fixed-height tile, so nothing moves as it loads; 2 across on a phone. */
+  .rp-inframe{grid-column:1/-1;margin:.3rem 0 0;container:inframe/inline-size}
   .rp-box .rp-inframe ul{list-style:none;padding:0;margin:.2rem 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
   .rp-inframe li{margin:0}
   .rp-inframe figure{margin:0}
   .rp-if-p{height:120px;display:flex;align-items:center;justify-content:center;background:var(--surface,#f4f1ec);border-radius:6px;overflow:hidden}
   .rp-if-p img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
   .rp-inframe figcaption{margin:.25rem 0 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.35}
-  @media(min-width:900px){.rp-box .rp-inframe ul{grid-template-columns:repeat(5,minmax(0,1fr))}}
+  /* the columns follow the room the box has, not the screen: at 1280 the box is about 350 px, where 5
+     across would be 64 px tiles with captions broken mid-word; 3 across there, 5 when the box is 640 px or wider */
+  @container inframe (min-width:340px){.rp-box .rp-inframe ul{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @container inframe (min-width:640px){.rp-box .rp-inframe ul{grid-template-columns:repeat(5,minmax(0,1fr))}}
   /* room around the buy button (2026-10-23, Sig: a cleaner path to checkout) */
   .rp-pay{width:100%;min-height:52px;margin:.2rem 0 .3rem;font-size:1.05rem;font-weight:700}
   .rp-pay:disabled,.rp-bar .btn:disabled{opacity:.55;cursor:not-allowed}
