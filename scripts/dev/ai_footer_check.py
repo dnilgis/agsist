@@ -6,12 +6,14 @@ The platform appends a "Generated with Claude Code" footer to pull request bodie
 brief forbids them. A squash merge copies every commit message into main's history. On Nov 4 the body
 of #316 ended with that footer, and #300 and #301 merged with it; #304 and 13 more squash merges carried
 the session lines onto main. The rule was kept by hand and missed. This is its guard: the PR checks'
-guard job runs it, and it fails, naming each place, when the body or any commit message holds one of
-MARKS (any case).
+guard job runs it. It fails, naming each line, when the body holds one of MARKS (any case), and warns
+when a commit message does: since Nov 4 the merge bot squashes with a message built from the body alone,
+footer lines stripped (strip(), used by scripts/dev/merge_when_green.py), so commit messages never reach
+main.
 
 It reads the body and the commits through the API at run time (a re-run after the body is fixed sees
-the fixed body; the event payload is used only when the API does not answer). The commits cannot be
-read at all: it fails and says so, it never passes on nothing read.
+the fixed body; the event payload is used only when the API does not answer). Commits that cannot be
+read are said in the log; the body is still checked.
 
     python3 scripts/dev/ai_footer_check.py              (pr-checks.yml guard job; GH_TOKEN, GITHUB_EVENT_PATH)
     python3 scripts/dev/ai_footer_check.py --selftest
@@ -54,20 +56,32 @@ def found(text):
     return out
 
 
+def strip(text):
+    """text without its footer lines, and without the blank lines and --- rules left trailing after them
+    (the merge bot's squash message, scripts/dev/merge_when_green.py squash_message)."""
+    keep = [line for line in (text or "").splitlines() if not found(line)]
+    while keep and (not keep[-1].strip() or re.fullmatch(r"\s*-{3,}\s*", keep[-1])):
+        keep.pop()
+    return "\n".join(keep)
+
+
 def check(body, commits):
-    """body: the PR body; commits: [(sha, message)]. -> (ok, report lines)"""
-    bad = []
-    for m, line in found(body):
-        bad.append("the pull request body: %s" % line)
+    """body: the PR body; commits: [(sha, message)]. -> (ok, report lines, warning lines).
+    A footer in the body fails. One in a commit message is a warning: the merge bot squashes with a message
+    built from the body only (merge_when_green.py squash_message), so commit messages never reach main;
+    a hand merge must do the same."""
+    bad = ["the pull request body: %s" % line for m, line in found(body)]
+    warn = []
     for sha, msg in commits:
         for m, line in found(msg):
-            bad.append("commit %s: %s" % (sha[:10], line))
+            warn.append("commit %s: %s" % (sha[:10], line))
+    warnings = (["%d AI footer line(s) in commit messages; the merge bot's squash leaves them out (merge by hand "
+                 "only with a squash message built from the body):" % len(warn)] + ["  " + w for w in warn]) if warn else []
     if not bad:
-        return True, ["no AI footer in the body or the %d commit message(s)" % len(commits)]
-    return False, ["%d AI footer line(s); BUILD-RULES 38: strip them before this can merge "
-                   "(the body with the GitHub MCP update_pull_request, then re-run this job; commit lines by "
-                   "rewording those commits on the branch, or the lead squashes with a clean message):" % len(bad)] + \
-        ["  " + b for b in bad]
+        return True, ["no AI footer in the body (%d commit message(s) read)" % len(commits)], warnings
+    return False, ["%d AI footer line(s) in the pull request body; BUILD-RULES 38: strip them with the GitHub MCP "
+                   "update_pull_request (a PATCH through gh api gets the footer back, rule 40), then re-run this "
+                   "job:" % len(bad)] + ["  " + b for b in bad], warnings
 
 
 def gh_get(path, token):
@@ -107,15 +121,15 @@ def main():
             if len(cs) < 100:
                 break
     except (urllib.error.URLError, OSError, ValueError) as e:
-        msg = "the pull request's commits could not be read (%s); re-run this job" % str(e)[:80]
-        print(msg)
-        if os.environ.get("GITHUB_ACTIONS"):
-            print("::error title=AI footer check::" + msg)
-        return 1
-    ok, lines = check(body, commits)
-    print("\n".join(lines))
-    if not ok and os.environ.get("GITHUB_ACTIONS"):
-        print("::error title=AI footer in the pull request::" + lines[0])
+        # commit lines only warn (the squash leaves them out), so unread commits are said, not failed
+        print("the pull request's commits could not be read (%s); only the body was checked" % str(e)[:80])
+    ok, lines, warnings = check(body, commits)
+    print("\n".join(lines + warnings))
+    if os.environ.get("GITHUB_ACTIONS"):
+        if warnings:
+            print("::warning title=AI footer in commit messages::" + warnings[0])
+        if not ok:
+            print("::error title=AI footer in the pull request body::" + lines[0])
     return 0 if ok else 1
 
 
@@ -146,11 +160,12 @@ def selftest():
         if not cond:
             fails.append(what)
 
-    ok, lines = check(REAL_316, [("26cc73685438ab71f7c81ceea7ab23f04fa055c0", "Gift cards: store prepaid on every card")])
+    ok, lines, warns = check(REAL_316, [("26cc73685438ab71f7c81ceea7ab23f04fa055c0", "Gift cards: store prepaid on every card")])
     ck(not ok and len(lines) == 3 and "the pull request body: \U0001F916 Generated with [Claude Code]" in lines[1]
-       and "claude.ai/code/session_" in lines[2], "#316's body fails, both footer lines named")
-    ok, lines = check("Plain body.", [("fa242c9e1657c2237e2801d50c6b43a70cefb717", REAL_304)])
-    ck(not ok and len(lines) == 4 and all("commit fa242c9e16" in l for l in lines[1:]), "#304's squash message fails on its 3 lines")
+       and "claude.ai/code/session_" in lines[2] and not warns, "#316's body fails, both footer lines named")
+    ok, lines, warns = check("Plain body.", [("fa242c9e1657c2237e2801d50c6b43a70cefb717", REAL_304)])
+    ck(ok and len(warns) == 4 and all("commit fa242c9e16" in w for w in warns[1:]),
+       "#304's squash message in a commit warns on its 3 lines; the body passes")
     ck(not check(REAL_304_BODY, [])[0], "#304's body line fails")
     ck(check(REAL_316.split("\U0001F916")[0], [("a" * 40, "Basis sparklines: a change row with no state")])[0],
        "#316's body with the footer stripped passes")
@@ -158,8 +173,12 @@ def selftest():
               "claude-session: x", "see https://Claude.AI/code/session_x"):
         ck(not check(t, [])[0], "any case: %r" % t)
     for t in ("Claude Monet painted it", "Co-authored-by: Sig <s@x>", "the claude-code skill", "generated pages"):
-        ck(check(t, [("b" * 40, t)])[0], "not a footer: %r" % t)
+        r = check(t, [("b" * 40, t)])
+        ck(r[0] and not r[2], "not a footer: %r" % t)
     ck(found(None) == [] and check("", [])[0], "an empty body and no commits pass")
+    ck(strip(REAL_316) == REAL_316.split("\n\n\U0001F916")[0], "strip: #316's body loses its footer and the blank lines before it")
+    ck(strip(REAL_304) == REAL_304.split("\n\nCo-Authored-By")[0], "strip: #304's lines and the --- rule between them go")
+    ck(strip("a\n\nb\n") == "a\n\nb" and strip("") == "" and strip(None) == "", "strip keeps a clean text")
     print("\n%d failed" % len(fails) if fails else "\nall ai_footer_check checks passed")
     return 1 if fails else 0
 

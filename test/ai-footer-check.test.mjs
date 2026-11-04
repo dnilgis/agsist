@@ -16,22 +16,40 @@ test('the footer check fails #316\'s body and #304\'s squash message, and passes
   const out = execFileSync('python3', ['scripts/dev/ai_footer_check.py', '--selftest'], { cwd: root, encoding: 'utf8' });
   assert.match(out, /all ai_footer_check checks passed/);
   assert.match(out, /ok {3}#316's body fails, both footer lines named/);
-  assert.match(out, /ok {3}#304's squash message fails on its 3 lines/);
+  assert.match(out, /ok {3}#304's squash message in a commit warns on its 3 lines; the body passes/);
+  assert.match(out, /ok {3}strip: #304's lines and the --- rule between them go/);
 });
 
-test('a pull request run with #316\'s body and no API fails by name; a run with no pull request passes', () => {
+test('a pull request run with #316\'s body and no API fails on the body; a run with no pull request passes', () => {
   const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'aifoot-'));
   const ev = path.join(tmp, 'event.json');
   const body = 'Fixes the PR #315 CI failure.\n\n\u{1F916} Generated with [Claude Code](https://claude.com/claude-code)\n';
   fs.writeFileSync(ev, JSON.stringify({ pull_request: { number: 316, body } }));
-  // the API is a closed local port: the body falls back to the event, the commits cannot be read: a failure
+  // the API is a closed local port: the body falls back to the event and fails; unread commits are only said
   const env = { ...process.env, GITHUB_EVENT_PATH: ev, GITHUB_REPOSITORY: 'dnilgis/agsist', GITHUB_API_URL: 'http://127.0.0.1:9', GH_TOKEN: '' };
   const r = spawnSync('python3', ['scripts/dev/ai_footer_check.py'], { cwd: root, encoding: 'utf8', env });
   assert.equal(r.status, 1, r.stdout + r.stderr);
-  assert.match(r.stdout, /commits could not be read/, 'nothing read is never a pass');
+  assert.match(r.stdout, /commits could not be read/);
+  assert.match(r.stdout, /AI footer line\(s\) in the pull request body/);
+  const clean = path.join(tmp, 'clean.json');
+  fs.writeFileSync(clean, JSON.stringify({ pull_request: { number: 316, body: 'Fixes the PR #315 CI failure.' } }));
+  const ok = spawnSync('python3', ['scripts/dev/ai_footer_check.py'], { cwd: root, encoding: 'utf8', env: { ...env, GITHUB_EVENT_PATH: clean } });
+  assert.equal(ok.status, 0, ok.stdout + ok.stderr);
   const none = spawnSync('python3', ['scripts/dev/ai_footer_check.py'], { cwd: root, encoding: 'utf8', env: { ...env, GITHUB_EVENT_PATH: path.join(tmp, 'none.json') } });
   assert.equal(none.status, 0, none.stdout + none.stderr);
   fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('the merge bot squashes with the body only, footer stripped (#304: commit lines reached main)', () => {
+  const r = spawnSync('python3', ['scripts/dev/merge_when_green.py', '--selftest'], { cwd: root, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const out = spawnSync('python3', ['-c', [
+    'import sys, json; sys.path.insert(0, "scripts/dev")',
+    'import merge_when_green as M',
+    'pr = {"number": 319, "title": "Fix", "body": "Body.\\n\\n\\U0001F916 Generated with [Claude Code](https://claude.com/claude-code)\\n"}',
+    'print(json.dumps(M.squash_message(pr)))',
+  ].join('\n')], { cwd: root, encoding: 'utf8' });
+  assert.deepEqual(JSON.parse(out.stdout), ['Fix (#319)', 'Body.'], out.stderr);
 });
 
 test('the PR checks\' guard job runs it on every pull request, with the job token', () => {
