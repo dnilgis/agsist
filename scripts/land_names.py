@@ -40,7 +40,8 @@ NAME_MARK = "[NAME]"     # where a legal named the sale's own seller or buyer (c
 # LEGAL_MARK + a hash of the legal's first 40 letters (so the one rule still groups and dedupes deeds of one parcel the
 # same way) + any part-interest words the rule reads, and the names file keeps the legal under "lg", shown on the tap.
 LEGAL_MARK = "[LEGAL WITH A NAME "
-HELD_COL = "legal_named"   # attach() and the fetcher's held() carry a held legal under this column, in memory only
+HELD_COL = "legal_named"
+HOLD_MIN = 10              # a held text this long or longer also holds any legal that contains it (shorter: equal only)   # attach() and the fetcher's held() carry a held legal under this column, in memory only
 NAME_STOP = set("""LLC INC LTD LLP CORP CORPORATION COMPANY TRUST TRUSTS TRUSTEE TRUSTEES REVOCABLE IRREVOCABLE LIVING FAMILY
 FARM FARMS LAND LANDS ESTATE ESTATES PROPERTY PROPERTIES HOLDINGS INVESTMENTS INVESTMENT ENTERPRISES PARTNERSHIP PARTNERS
 LIMITED AGRICULTURAL AGRICULTURE DATED JOINT TENANTS TENANT HUSBAND WIFE BANK NATIONAL ASSOCIATION COUNTY STATE CITY
@@ -132,8 +133,28 @@ def split(doc):
     held = lambda r: r[hx] if hx is not None and hx < len(r) else None
     rare = rare_words([held(r) if is_marked(r[li]) else r[li] for r in doc.get("rows") or []
                        if li is not None and r[li] and (not is_marked(r[li]) or held(r))]) if li is not None else set()
-    for ri, r in enumerate(doc.get("rows") or []):
-        pair = [r[i] if i is not None and i < len(r) else None for i in ix]
+    src = doc.get("rows") or []
+    pairs = [[r[i] if i is not None and i < len(r) else None for i in ix] for r in src]
+    leg = lambda r: r[li] if li is not None and li < len(r) else None
+    # which legals are held: a mark from an earlier run (kept as it is), a legal with a rare word of its own party,
+    # then, until nothing changes, any legal that equals or contains a held legal's text (the same parcel on another
+    # deed whose own parties the legal does not name: checker, Nov 4)
+    hold = [bool(leg(r)) and (is_marked(leg(r)) or names_in_legal(leg(r), pairs[ri], rare)) for ri, r in enumerate(src)]
+    texts = {up(held(r) if is_marked(leg(r)) else leg(r)) for ri, r in enumerate(src) if hold[ri] and (held(r) or not is_marked(leg(r)))}
+    texts.discard("")
+    grew = True
+    while grew:
+        grew = False
+        for ri, r in enumerate(src):
+            if hold[ri] or not leg(r):
+                continue
+            n = up(leg(r))
+            if n in texts or any(len(t) >= HOLD_MIN and t in n for t in texts):
+                hold[ri] = True
+                texts.add(n)
+                grew = True
+    for ri, r in enumerate(src):
+        pair = pairs[ri]
         nums = []
         for side in (0, 1):
             k = up(pair[side])
@@ -142,17 +163,16 @@ def split(doc):
                 firsts[side].append(re.sub(r"\s+", " ", str(pair[side])).strip())
             nums.append(ids[side][k] if k else None)
         row = [r[i] for i in keep]
-        if li is not None and r[li] and is_marked(r[li]):
+        if leg(r) and is_marked(leg(r)):
             # held on an earlier run: the mark and its hash stay exactly as they are (never re-tested, never re-hashed),
             # and the stored legal goes back to the names file
             if held(r):
                 lg[str(ri)] = held(r)
-        elif li is not None and r[li]:
-            if names_in_legal(r[li], pair, rare):
-                lg[str(ri)] = r[li]                          # shown only on the tap, from the names file
-                row[keep.index(li)] = legal_mark(r[li])
-            else:
-                row[keep.index(li)] = blank_names(r[li], pair)
+        elif leg(r) and hold[ri]:
+            lg[str(ri)] = leg(r)                              # shown only on the tap, from the names file
+            row[keep.index(li)] = legal_mark(leg(r))
+        elif leg(r):
+            row[keep.index(li)] = blank_names(leg(r), pair)
         rows.append(row + nums)
     out = dict(doc)
     out["cols"] = [cols[i] for i in keep] + list(ID_COLS)
@@ -279,6 +299,18 @@ def selftest():
         o3, n3 = split(dict(b3, cols=[c for c in b3["cols"]]))
     ck("two split cycles change nothing: held legals, their marks and hashes stay", o3["rows"] == o2["rows"] and n3["lg"] == n2["lg"]
        and n3["s"] == n2["s"] and n3["b"] == n2["b"])
+    # two deeds of one parcel, only the first names its own party: the second, with the same legal, is held too
+    rows4 = [["%d" % i, "2026-03-%02d" % (i + 1), 100, "NE SEC %d T2N R2E" % i, "OWNER %d" % i, "TAKER %d" % i, None] for i in range(20)]
+    rows4.append(["40", "2026-04-01", 900, "W 1/2 NW 1/4 SEC 9 EXC 2 AC TO QUILLFEATHER", "QUILLFEATHER, ANN", "NEXT ONE", None])
+    rows4.append(["41", "2026-04-20", 950, "w 1/2  nw 1/4 sec 9 exc 2 ac to quillfeather", "OTHER PARTY", "SOMEONE ELSE", None])
+    rows4.append(["42", "2026-05-01", 990, "PARCEL A: W 1/2 NW 1/4 SEC 9 EXC 2 AC TO QUILLFEATHER, AND MORE", "THIRD", "FOURTH", None])
+    o4, n4 = split(dict(doc, rows=rows4))
+    l4 = [r[3] for r in o4["rows"]]
+    ck("closure: the same parcel on another deed (any case or spacing) and a legal containing it are held too",
+       all(is_marked(x) for x in l4[20:23]) and sorted(n4["lg"]) == ["20", "21", "22"] and "QUILLFEATHER" not in json.dumps(o4).upper())
+    ck("closure: the other legals stay", not any(is_marked(x) for x in l4[:20]))
+    o5, n5 = split(attach(o4, n4))
+    ck("closure is a fixed point: a second split changes nothing", o5["rows"] == o4["rows"] and n5["lg"] == n4["lg"])
     print("land_names selftest: %s" % ("ok" if not bad else "%d failure(s)" % bad))
     return 1 if bad else 0
 

@@ -3293,9 +3293,9 @@ def selftest():
             for c in ix_["counties"]:
                 f_ = json.load(open(os.path.join(OUT, "wi", c["fips"] + ".json")))
                 n_ = json.load(open(os.path.join(OUT, "wi", "names", c["fips"] + ".json")))
-                li_ = f_["cols"].index("legal")
+                li_, si_ = f_["cols"].index("legal"), f_["cols"].index("str")
                 out_.append((c["fips"], sorted((k, v) for k, v in (n_.get("lg") or {}).items()),
-                             [r_[li_] for r_ in f_["rows"] if land_names.is_marked(r_[li_])]))
+                             [(r_[li_], r_[si_]) for r_ in f_["rows"] if land_names.is_marked(r_[li_])]))
             return out_
         s0 = snap_held()
         held_n = sum(len(x[1]) for x in s0)
@@ -3304,6 +3304,8 @@ def selftest():
             ck("held legals: read back with their stored text, run %d" % (k + 1), sum(1 for r in back_ if r.get("legal_named")) == held_n)
             build("WI", back_, {}, "2026-11-01T00:00:00Z", covs_, had_)
         ck("held legals: the same count, texts and marks after two newest-only cycles", held_n > 0 and snap_held() == s0)
+        ck("held legals: the section key is read from the held text and kept on every cycle (never from the mark)",
+           all(k_ == land_keys.key_for("WI", "PT SEC 12 T33N R10W", fp) and k_ for fp, _, ms in s0 for _, k_ in ms))
         ck("held legals: never in a county file", all("EXC TRACT DEEDED TO" not in open(os.path.join(OUT, "wi", n)).read()
                                                      for n in os.listdir(os.path.join(OUT, "wi")) if n.endswith(".json")))
         # the checked stamp (Nov 3): a state read is stamped even when nothing in it changed
