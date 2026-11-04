@@ -19,6 +19,7 @@ import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { answerOf } from "../scripts/rain_print_examples_pack.mjs";
+import { BIDS, needBids } from "./fixtures/bids-path.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const require = createRequire(import.meta.url);
@@ -226,9 +227,9 @@ test("its own history: real rows are too new to compare; the kinds on a hand-bui
   assert.equal(P.basisHistory(m, "WI|COOP X|CHETEK", "corn", "ZCZ26", "NOV26", 392, "2026-10-19").status, "none");
 });
 
-// the bids checkout: BIDS_PATH in CI (pr-checks.yml clones dnilgis/bids data there), the local clone otherwise
-const BIDS = (process.env.BIDS_PATH || "/home/user/bids/").replace(/\/?$/, "/");
-test("a real shard path from the bids index answers: data/ + the index's shard field", { skip: !existsSync(BIDS + "data/merged-index.json") && "no bids checkout at " + BIDS }, () => {
+// the bids checkout (test/fixtures/bids-path.mjs): no bids data is a failure that says so, not a skip
+test("a real shard path from the bids index answers: data/ + the index's shard field", () => {
+  needBids();
   const idx = JSON.parse(readFileSync(BIDS + "data/merged-index.json", "utf8"));
   assert.equal(idx.shards.dir, "data/merged");
   const withShard = idx.places.filter((p) => p.shard);

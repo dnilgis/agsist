@@ -60,6 +60,16 @@ first seen differing. A warning while files differ, red once any has differed fo
 ENGINE_DRIFT_HOURS. A file only in the engine is counted apart: an engine sync (engine.sh save) would delete
 it, so .github/workflows/engine-sync.yml refuses to run until the lead looks.
 
+THE COMMIT GUARD (Nov 4, 2026). Every job's commit leaves out a new data/ file dated more than 2 days
+ahead (.github/actions/engine/engine.sh hook; a test's made-up day, data/daily-sent/2099-01-01.json,
+once reached main). A warning on a green data job is read by nobody, so the hook also writes the line
+"COMMIT-GUARD dropped=N path=<first path>" into the commit's message. One row, commit-guard: red when
+a commit on main in the last COMMIT_GUARD_HOURS carries that line (one commit list call per 100
+commits, up to COMMIT_GUARD_PAGES; reading run logs or annotations would cost a call per run). Merge
+commits and pull request merges ("(#N)" in the subject) are not read: only a job's own commit says
+what its hook did. A commit the hook refused (nothing left) makes no commit; that job's commit step
+fails, a red run of its own. More commits than the pages hold, with none found, is unknown, not ok.
+
 This writes private/data/cron-health.json: for each watched workflow, its last
 successful run, the longest gap its clock allows, and whether the latest
 tick of that clock was served. A tick is served when a run that started
@@ -126,6 +136,9 @@ ENGINE_BRANCHES = ("engine-agsist", "engine-bids")
 ENGINE_REPOS = ("dnilgis/agsist", "dnilgis/bids")
 ENGINE_STEP = "Engine checkout"
 ENGINE_LOOKBACK_HOURS = 6
+COMMIT_GUARD_HOURS = 24     # the commit-guard row reads main's commits of the last 24 h
+COMMIT_GUARD_PAGES = 8      # 100 commits a page; main took about 450 a day on Nov 4, 2026
+COMMIT_GUARD_RE = re.compile(r"COMMIT-GUARD dropped=(\d+) path=(\S+)")
 ENGINE_RUNS_LOOKED_AT = 15
 ENGINE_DRIFT_HOURS = 2       # engine-drift is red once a file has differed from main this long (BUILD-RULES 63)
 ENGINE_DRIFT_BRANCH = "engine-agsist"
@@ -384,6 +397,10 @@ def collect(now, repo, token, api):
     rows.append(row)
     if row["status"] == "late":
         late.append(row["workflow"])
+    row = commit_guard_row(now, repo, token, api)
+    rows.append(row)
+    if row["status"] == "late":
+        late.append(row["workflow"])
     for row in budget_rows():
         rows.append(row)
         if row["status"] == "over":
@@ -549,6 +566,48 @@ def engine_row(now, key, gh_token, api="https://api.github.com", mode="", get=No
                    % (" and ".join(ENGINE_BRANCHES), row["mode"], ENGINE_LOOKBACK_HOURS))
     if scan_err and row["status"] == "ok":
         row.update(status="unknown", why=row["why"] + "; " + "; ".join(scan_err))
+    return row
+
+
+def commit_guard_row(now, repo, token, api="https://api.github.com", get=None):
+    """commit-guard: did any job's commit on main in the last COMMIT_GUARD_HOURS leave a future-dated
+    data file out (the hook's COMMIT-GUARD line in its message)?"""
+    get = get or _get
+    row = {"workflow": "commit-guard", "critical": True,
+           "clock": "no job's commit on main leaves a future-dated data file out (last %d h)" % COMMIT_GUARD_HOURS}
+    since = (now - timedelta(hours=COMMIT_GUARD_HOURS)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    hits, n, full = [], 0, False
+    try:
+        for page in range(1, COMMIT_GUARD_PAGES + 1):
+            cs = get("%s/repos/%s/commits?sha=main&since=%s&per_page=100&page=%d" % (api, repo, since, page), token)
+            for c in cs or []:
+                n += 1
+                msg = ((c.get("commit") or {}).get("message") or "")
+                if len(c.get("parents") or []) > 1 or re.search(r"\(#\d+\)\s*$", msg.split("\n", 1)[0]):
+                    continue
+                for line in msg.splitlines():
+                    m = COMMIT_GUARD_RE.fullmatch(line.strip())
+                    if m:
+                        when = ((c.get("commit") or {}).get("committer") or {}).get("date") or "?"
+                        hits.append((when, (c.get("sha") or "?")[:10], int(m.group(1)), m.group(2)))
+            full = len(cs or []) >= 100
+            if not full:
+                break
+    except Exception as e:
+        row.update(status="unknown", why="main's commits could not be read (%s)" % (getattr(e, "code", None) or type(e).__name__))
+        return row
+    row["commits_read"] = n
+    if hits:
+        hits.sort(reverse=True)
+        when, sha, k, path = hits[0]
+        row.update(status="late", why="%d commit(s) on main in the last %d h left %d future-dated data file(s) out; newest %s "
+                   "at %s left out %s. Add the file to .github/future-dated-data.txt with a reason if it is real, or fix "
+                   "the test that wrote it" % (len(hits), COMMIT_GUARD_HOURS, sum(h[2] for h in hits), sha, when, path))
+    elif full:
+        row.update(status="unknown", why="read %d commits of the last %d h and there are more; none left a file out so far"
+                   % (n, COMMIT_GUARD_HOURS))
+    else:
+        row.update(status="ok", why="no commit on main in the last %d h left a file out (%d read)" % (COMMIT_GUARD_HOURS, n))
     return row
 
 
@@ -1151,6 +1210,42 @@ def selftest():
     check(rp == PRIVATE_REPO and br == ENGINE_DRIFT_BRANCH and ps == ["scripts", "test", "build"], "the engine paths come from .github/engine-paths")
     hb = main_blobs(["scripts"])
     check("scripts/cron_health.py" in hb and len(hb["scripts/cron_health.py"]) == 40, "HEAD's blob hashes from git ls-tree")
+
+    # the commit guard, from the real case: the Daily's sent-copy commit with the 2099 file left out
+    def commits(pages, fail=None):
+        calls = []
+        def g(url, token):
+            calls.append(url)
+            if fail:
+                raise fail
+            return pages[len(calls) - 1] if len(calls) <= len(pages) else []
+        g.calls = calls
+        return g
+    def cm(msg, sha="a" * 40, parents=1, when="2026-11-04T12:01:00Z"):
+        return {"sha": sha, "parents": [{}] * parents, "commit": {"message": msg, "committer": {"date": when}}}
+    now = T("2026-11-04 14:00")
+    real = cm("AGSIST Daily sent copy\n\nCOMMIT-GUARD dropped=1 path=data/daily-sent/2099-01-01.json\n", sha="b" * 40)
+    g = commits([[cm("data: county rain (50 states)"), real, cm("pages: rebuild")]])
+    r = commit_guard_row(now, "o/r", "t", "https://api", get=g)
+    check(r["status"] == "late" and r["critical"] and "data/daily-sent/2099-01-01.json" in r["why"]
+          and ".github/future-dated-data.txt" in r["why"] and "fix the test" in r["why"] and "bbbbbbbbbb" in r["why"],
+          "the 2099 sent copy left out of a commit on main is a red commit-guard row (%s)" % r.get("why"))
+    check(len(g.calls) == 1 and "sha=main" in g.calls[0] and "since=2026-11-03T14:00:00Z" in g.calls[0],
+          "one call for under 100 commits, main's last 24 h (%s)" % g.calls)
+    r = commit_guard_row(now, "o/r", "t", "https://api", get=commits([[cm("data: x"), cm("Merge main\n\nCOMMIT-GUARD dropped=1 path=data/a/2099-01-01.json", parents=2),
+                         cm("Guard row (#320)\n\n* COMMIT-GUARD dropped=1 path=data/a/2099-01-01.json\nCOMMIT-GUARD dropped=1 path=data/a/2099-01-01.json"),
+                         cm("notes\n\nthe hook prints COMMIT-GUARD dropped=N path=<first path>")]]))
+    check(r["status"] == "ok" and r["commits_read"] == 4, "merges, PR merges and prose about the line are not a drop (%s)" % r.get("why"))
+    g = commits([[cm("x")] * 100, [cm("x")] * 100, [cm("x")] * 30 + [real]])
+    r = commit_guard_row(now, "o/r", "t", "https://api", get=g)
+    check(r["status"] == "late" and len(g.calls) == 3, "a drop on the third page is found")
+    g = commits([[cm("x")] * 100] * COMMIT_GUARD_PAGES)
+    r = commit_guard_row(now, "o/r", "t", "https://api", get=g)
+    check(r["status"] == "unknown" and len(g.calls) == COMMIT_GUARD_PAGES, "more commits than the pages hold, none found: unknown, not ok")
+    r = commit_guard_row(now, "o/r", "t", "https://api", get=commits([], fail=urllib.error.HTTPError("u", 403, "x", {}, None)))
+    check(r["status"] == "unknown" and "403" in r["why"], "an unreadable commit list is unknown (%s)" % r.get("why"))
+    r = commit_guard_row(now, "o/r", "t", "https://api", get=commits([[]]))
+    check(r["status"] == "ok", "no commits: ok")
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_health checks passed")
     return 1 if fails else 0

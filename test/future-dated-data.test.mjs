@@ -13,6 +13,9 @@
 //      new file out of the commit (.github/actions/engine/engine.sh hook), so a self-test that writes
 //      into a data workflow's checkout cannot reach main;
 //   3. the test itself keeps the sent copy in its temp folder (scripts/test_list_fallback.py).
+// A drop must reach a red row (Nov 4, after the #314 check): the hook prints one fixed line,
+// COMMIT-GUARD dropped=N path=<first path>, and its commit-msg half puts that line in the commit's
+// message; scripts/cron_health.py's commit-guard row reads main's commits and goes red on it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -131,6 +134,60 @@ test('a job\'s commit leaves out a made-up day and keeps the real sent copy (the
   assert.ok(!head.includes('data/daily-sent/2099-01-01.json'), 'the made-up day reached the commit'); // pin-ok: the file this test wrote itself
   assert.ok(head.includes('data/daily-sent/' + today + '.json'), 'today\'s sent copy was left out');
   assert.ok(head.includes('data/daily-sent/' + iso(Date.now() + DAY_MS) + '.json'), 'tomorrow\'s file (a time zone away) was left out');
+  assert.match(r.stdout + r.stderr, /^COMMIT-GUARD dropped=1 path=data\/daily-sent\/2099-01-01\.json$/m, 'the hook prints the fixed line'); // pin-ok: the file this test wrote itself
+  const msg = g(d, 'log', '-1', '--format=%B');
+  assert.match(msg, /^AGSIST Daily sent copy\n\nCOMMIT-GUARD dropped=1 path=data\/daily-sent\/2099-01-01\.json\n/, 'the commit message carries the line'); // pin-ok: the file this test wrote itself
+  assert.ok(!fs.existsSync(path.join(d, '.git/agsist-commit-guard')), 'the note is cleared once used');
+
+  // that commit, as the commit list on main gives it, is a red cron-health row (the selftest holds the rest)
+  const c = [{ sha: g(d, 'rev-parse', 'HEAD').trim(), parents: [{}], commit: { message: msg, committer: { date: new Date().toISOString() } } }];
+  const row = JSON.parse(execFileSync('python3', ['-c', [
+    'import json, sys; sys.path.insert(0, "scripts")',
+    'from datetime import datetime, timezone',
+    'import cron_health as C',
+    'c = json.loads(sys.argv[1])',
+    'print(json.dumps(C.commit_guard_row(datetime.now(timezone.utc), "dnilgis/agsist", "", get=lambda url, t: c if "page=1" in url else [])))',
+  ].join('\n'), JSON.stringify(c)], { cwd: root, encoding: 'utf8' }));
+  assert.equal(row.workflow, 'commit-guard');
+  assert.equal(row.status, 'late', row.why);
+  assert.equal(row.critical, true);
+  assert.match(row.why, /data\/daily-sent\/2099-01-01\.json/); // pin-ok: the file this test wrote itself
+  assert.match(row.why, /\.github\/future-dated-data\.txt with a reason/);
+  assert.match(row.why, /fix the test that wrote it/);
+
+  // the file stays in the checkout, so every later commit of the folder leaves it out again and says so;
+  // once it is gone, a commit carries no line
+  write(d, 'data/x.json', 'again\n'); g(d, 'add', '-A');
+  assert.equal(commit(d, 'data again').status, 0);
+  assert.match(g(d, 'log', '-1', '--format=%B'), /^COMMIT-GUARD dropped=1 /m);
+  fs.rmSync(path.join(d, 'data/daily-sent/2099-01-01.json')); // pin-ok: the file this test wrote itself
+  write(d, 'data/x.json', 'next\n'); g(d, 'add', '-A');
+  assert.equal(commit(d, 'data next').status, 0);
+  assert.doesNotMatch(g(d, 'log', '-1', '--format=%B'), /COMMIT-GUARD/);
+});
+
+test('a rename onto a made-up day is left out too, and a first add of 5,000 dated files is quick', () => {
+  const d = jobRepo();
+  write(d, 'data/hail/a.json', '{}\n'); g(d, 'add', '-A'); g(d, 'commit', '-qm', 'a');
+  g(d, 'mv', 'data/hail/a.json', 'data/hail/2099-01-01.json');
+  write(d, 'data/x.json', 'renamed\n'); g(d, 'add', '-A');
+  let r = commit(d, 'rename');
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.ok(!inHead(d).includes('data/hail/2099-01-01.json'), 'a renamed made-up day reached the commit'); // pin-ok: the file this test wrote itself
+  assert.match(g(d, 'log', '-1', '--format=%B'), /^COMMIT-GUARD dropped=1 path=data\/hail\/2099-01-01\.json$/m); // pin-ok: the file this test wrote itself
+
+  fs.rmSync(path.join(d, 'data/hail/2099-01-01.json')); // pin-ok: the file this test wrote itself
+  const today = Date.now();
+  for (let i = 0; i < 5000; i++) write(d, 'data/many/' + iso(today - (i % 400) * DAY_MS) + '-' + i + '.json', '1\n');
+  write(d, 'data/many/' + iso(today + 30 * DAY_MS) + '-late.json', '1\n');
+  g(d, 'add', '-A');
+  const t0 = Date.now();
+  r = commit(d, 'first add');
+  const secs = (Date.now() - t0) / 1000;
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout + r.stderr, /^COMMIT-GUARD dropped=1 path=data\/many\/\S+-late\.json$/m);
+  assert.equal(inHead(d).filter((f) => f.startsWith('data/many/')).length, 5000, 'every real dated file went in');
+  assert.ok(secs < 15, 'the hook took ' + secs + ' s over 5,000 dated files (was about 29 s)');
 });
 
 test('a bare git add -A, a commit -a and a commit of nothing else: the made-up day never lands, no empty commit', () => {
