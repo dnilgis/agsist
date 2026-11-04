@@ -224,17 +224,24 @@ function loadGrainPrices(){
     if(!data||!data.quotes)return;
     var q=data.quotes;
     function fmtGrain(v){return v!=null?AG.px.price(v):'--';}   /* components/util.js */
+    /* 2026-11-04 (fx/soyroll2): the corn and soybean tiles are the headline
+       contract (AgPxStamp.headline, components/price-local.js), named under
+       the price. They read the continuous series, still Nov '26 soybeans past
+       first notice while every basis was against Jan '27. */
+    var PS=window.AgPxStamp,hd=function(c){var h=PS&&PS.headline?PS.headline(data,c):null;return h&&h.q&&h.q.close?h:null;};
+    var hc=hd('corn'),hb=hd('beans');
+    function unit(id,h){var e=document.getElementById(id),u=e&&e.parentNode.querySelector('.eco-price-unit');if(u)u.textContent='$/bu CBOT'+(h&&h.label?', '+h.label:'');}
     var ecp=document.getElementById('eco-corn-price');
-    if(q.corn&&q.corn.close){
-      if(ecp)ecp.textContent=fmtGrain(q.corn.close);
-      CORN.nearby=parseFloat(q.corn.close)/100;
+    if(hc){
+      if(ecp)ecp.textContent=fmtGrain(hc.q.close);unit('eco-corn-price',hc);
+      CORN.nearby=parseFloat(hc.q.close)/100;
       var elb=document.getElementById('eco-live-badge');if(elb)elb.style.display='inline-flex';
     }
     var nc=newCropKey(new Date(),q), row=q[nc.key];
     if(row&&row.close){CORN.fut=parseFloat(row.close)/100;CORN.label=nc.label;CORN.date=row.close_date||'';}
-    else if(q.corn&&q.corn.close){CORN.fut=CORN.nearby;CORN.label='nearby';CORN.date=q.corn.close_date||'';}
+    else if(hc){CORN.fut=CORN.nearby;CORN.label='nearby';CORN.date=hc.q.close_date||'';}
     fillCorn();
-    var ebp=document.getElementById('eco-bean-price');if(q.beans&&q.beans.close&&ebp)ebp.textContent=fmtGrain(q.beans.close); /* key is 'beans' in prices.json: 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
+    var ebp=document.getElementById('eco-bean-price');if(hb&&ebp){ebp.textContent=fmtGrain(hb.q.close);unit('eco-bean-price',hb);} /* key is 'beans' in prices.json: 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
     var ewp=document.getElementById('eco-wheat-price');if(q.wheat&&q.wheat.close&&ewp)ewp.textContent=fmtGrain(q.wheat.close);
     updateEcoCosts();
   }).catch(function(){calcNC();});

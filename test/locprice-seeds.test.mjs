@@ -12,6 +12,9 @@
  *      soybean cards lower down are seeded with. Fixtures are the real
  *      Oct 19 price file rows (test/fixtures/locprice/prices-2026-10-19.json)
  *      and the same rows marked as the Oct 16 settle (prices-settled.json).
+ *      Since fx/soyroll2 (Nov 4) the tiles read the headline contract
+ *      (<crop>-nearby), so the fixtures carry the file's nearby rows too: on
+ *      Oct 19 they were Dec '26 corn and Nov '26 soybeans, the same rows.
  *   2. /fertilizer said "Loading co-op prices..." to anything without script.
  *      scripts/bake_seo.py body_fertilizer bakes the description's sentence
  *      (same numbers, same dates, same "$616/ton" writing). Fixture: the real
@@ -71,7 +74,8 @@ test("hero seeds: no quote leaves the loading bar, never a number", () => {
   const s = py(`import seed_static as S\nprint(json.dumps(S.hero_futures_seeds({}, "")))`);
   assert.equal(s["hp:fc"], '<span class="hb-skel" aria-hidden="true"></span>');
   assert.equal(s["hp:fc-s"], "");
-  assert.equal(s["hp:fc-k"], "Dec corn futures");
+  // fx/soyroll2: the tile is the headline contract, so with nothing on file it names no month
+  assert.equal(s["hp:fc-k"], "Corn futures");
 });
 
 test("index.html: hero tiles carry their seed markers, and the 15-row ticker is not seeded", () => {

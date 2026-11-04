@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/asof.js?v=1"></script>
-  <script src="/components/price-local.js?v=9"></script>
+  <script src="/components/price-local.js?v=10"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
 <link rel="stylesheet" href="/css/home.css?v=32">
@@ -747,7 +747,11 @@ try {
       Object.keys(CROP).forEach(function(k){emptyCell(CROP[k][0],CROP[k][1],'nearby',st);});
     },8000);
 
-    /* ---- futures: the harvest contracts, labelled from their own ticker ---- */
+    /* ---- futures: the headline contract, labelled from its own ticker ----
+       2026-11-04 (fx/soyroll2): the month every elevator quotes basis against,
+       AgPxStamp.headline (components/price-local.js; <crop>-nearby, rolled at
+       first notice). It read the harvest aliases and printed Nov '26 beans
+       over a basis line against Jan '27. */
     var futParsed=false;
     function label(q,fallback){var m=/^Z[CS]([FGHJKMNQUVXZ])(\d{2})/.exec((q&&q.ticker)||'');return m?MCODE[m[1]]+' ’'+m[2]:fallback;}
     function paintFut(data){
@@ -756,10 +760,10 @@ try {
       if(window.AgPxStamp&&AgPxStamp.roll)q=AgPxStamp.roll(q);
       futParsed=true;
       var stale=(data.stale_keys||[]),lw=lastWeekdayKey(),at=ctTime(data.fetched);
-      [['corn-dec','hb-fc','corn',"Dec"],['beans-nov','hb-fs','bean',"Nov"]].forEach(function(a){
-        var x=q[a[0]],id=a[1];
-        if(!x||x.close==null){set(id+'-k',a[3]+' '+a[2]+' futures');set(id+'-v',DASH);set(id+'-s','<span class="hb-l">Not in today’s price file</span>');return;}
-        set(id+'-k',label(x,a[3])+' '+a[2]+' futures');
+      [['corn','hb-fc','corn',"Corn"],['beans','hb-fs','bean',"Bean"]].forEach(function(a){
+        var hl=window.AgPxStamp&&AgPxStamp.headline?AgPxStamp.headline({quotes:q,nearby:data.nearby},a[0]):null,x=hl?hl.q:null,id=a[1];
+        if(!x||x.close==null){set(id+'-k',a[3]+' futures');set(id+'-v',DASH);set(id+'-s','<span class="hb-l">Not in today’s price file</span>');return;}
+        var lb=label(x,'');set(id+'-k',lb?lb+' '+a[2]+' futures':a[3]+' futures');
         set(id+'-v','<span class="hb-n">'+qd(x.close/100)+'</span>');
         var diff=x.netChange!=null?Number(x.netChange):(x.open!=null?x.close-x.open:null);
         /* 2026-11-02: a move the price run withheld (fetch_prices energy_roll_guard: move_withheld and roll,
@@ -767,7 +771,7 @@ try {
         var held=!!(x.move_withheld||x.roll);
         var c=held?'<span class="hb-n hb-chg nc">contract roll</span>':diff==null||isNaN(diff)?'':'<span class="hb-n hb-chg '+(diff>0?'up':(diff<0?'dn':'nc'))+'">'+(diff>0?'<span aria-hidden="true">▲ </span><span class="visually-hidden">up </span>':(diff<0?'<span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>':''))+qc(diff)+'</span>';
         /* Age, always: an older close than the last weekday says so. */
-        var cd=x.close_date||'',old=stale.indexOf(a[0])>=0||(cd&&lw&&cd<lw);
+        var cd=x.close_date||'',old=x.stale===true||stale.indexOf(hl.key)>=0||(cd&&lw&&cd<lw);
         /* 2026-10-17: "Oct 16 settle" or "Last trade as of 1:46 pm CT" from close_kind (components/price-local.js) */
         var stamp=window.AgPxStamp?AgPxStamp.html(x,data.fetched):(window.AgAsOf?AgAsOf.html(data.fetched,'prices'):at);
         /* chaos-1: a settle carries its own year and age (price-local.js), so it is the stamp even when old; the cell greys once it is OLD_SESSIONS behind */
@@ -1698,7 +1702,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <link rel="stylesheet" href="/components/cb-myelev.css?v=2">
 <script src="/components/cb-myelev.js?v=6" defer></script>
 <script src="/components/homepage-extras.js?v=18" defer></script>
-<script src="/components/home-yield.js?v=11" defer></script>
+<script src="/components/home-yield.js?v=12" defer></script>
 <script src="/components/home.js?v=21"></script>
 <script src="/components/home-planting.js?v=4" defer></script>
 <script src="/components/home-season.js?v=8" defer></script>

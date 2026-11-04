@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=9"></script>
+<script src="/components/price-local.js?v=10"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -305,14 +305,18 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
     var q=data.quotes||{};
     /* chaos-1: expired contracts roll off; each alias names the live month it now shows (components/price-local.js roll) */
     if(window.AgPxStamp&&AgPxStamp.roll)q=AgPxStamp.roll(q);
-    /* 2026-10-08: when the nearby contract IS the deferred one (Dec corn,
-       Nov beans in the fall), the second card repeats the first to the cent.
-       Hide it only when the two quotes carry the same ticker. */
-    /* the build hides a repeat card already (SEED:mk:dup); this decides from live data */
+    /* 2026-11-04 (fx/soyroll2): the second corn and soybean cards are the
+       next harvest contract after the headline month (AgPxStamp.harvest,
+       components/price-local.js): Dec '27 corn while Dec '26 is the front,
+       Nov '27 soybeans once Nov '26 is past first notice. They read the
+       aliases and printed Nov '26 beside the Jan '27 front. No such contract
+       on file: the card is hidden. Twin: seed_static.py harvest_of. */
+    /* the build hides a card with none already (SEED:mk:dup); this decides from live data */
     var dupCss=document.getElementById('mk-dup-css');if(dupCss)dupCss.parentNode.removeChild(dupCss);
-    [['corn','corn-dec','pcp-corn-dec'],['beans','beans-nov','pcp-bean-nov']].forEach(function(t){
-      var nb=q[t[0]+'-nearby'],dq=q[t[1]],el=document.getElementById(t[2]),card=el&&el.closest('.pc');
-      if(card)card.style.display=(nb&&dq&&nb.ticker&&nb.ticker===dq.ticker)?'none':'';
+    [['corn','corn-dec','pc-card-corn-dec'],['beans','beans-nov','pc-card-bean-nov']].forEach(function(t){
+      var h=window.AgPxStamp&&AgPxStamp.harvest?AgPxStamp.harvest({quotes:q,nearby:data.nearby},t[0]):null,card=document.getElementById(t[2]),chip=card&&card.querySelector('.pc-contract');
+      if(h){q[t[1]]=h.q;if(chip)chip.textContent=h.label||'';}else delete q[t[1]];
+      if(card)card.style.display=h?'':'none';
     });
     /* True front month (2026-07-30): continuous corn/beans/wheat track the
        MOST-ACTIVE contract (was printing front == Dec '26, byte-identical).
