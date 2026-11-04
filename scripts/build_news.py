@@ -67,6 +67,39 @@ CROPS = {
     "wheat":     ("Wheat",          "/wheat-futures-prices"),
     "kcwheat":   ("KC wheat",       "/wheat-futures-prices"),
 }
+GRAIN_WORD = {"corn": "corn", "beans": "soybeans"}
+
+
+def board_quotes(q):
+    """[(key, quote, name, url)] the board detector files, in CROPS order.
+
+    2026-11-04 (fx/smallfix1104): corn and soybeans are the shared headline
+    and harvest contracts (seed_static.nearby_of / harvest_of, the twins of
+    AgPxStamp.headline / .harvest), each named with its month: "Jan '27
+    soybeans", "Nov '27 soybeans". The wire read the harvest aliases and on
+    Nov 4 would have filed "November beans" for a month in delivery. A
+    quote with no ticker keeps its plain name (no month is guessed)."""
+    import seed_static as S
+    out = []
+    for key, (name, url) in CROPS.items():
+        crop = key.split("-")[0]
+        if crop not in GRAIN_WORD:
+            v = q.get(key)
+            if isinstance(v, dict):
+                out.append((key, v, name, url))
+            continue
+        if "-" in key:
+            h = S.harvest_of(q, crop)
+            if h:
+                out.append((h[0], h[1], (h[2] + " " + GRAIN_WORD[crop]) if h[2] else name, url))
+            continue
+        r = S.nearby_of(q, crop)
+        if not r:
+            continue
+        v, lab = r
+        k = v.get("alias_of") or next((x for x, y in q.items() if y is v and not x.endswith("-nearby")), crop)
+        out.append((k, v, (lab + " " + GRAIN_WORD[crop]) if lab else name, url))
+    return out
 COT_NAMES = {"corn": "Corn", "beans": "Soybeans", "wheat": "Chicago wheat",
              "kcwheat": "KC wheat", "soymeal": "Soybean meal", "soyoil": "Soybean oil"}
 
@@ -405,10 +438,7 @@ def board(out, state, held):
         return
     px = state.setdefault("px", {})
     seen_quotes = []
-    for key, (name, url) in CROPS.items():
-        v = q.get(key)
-        if not isinstance(v, dict):
-            continue
+    for key, v, name, url in board_quotes(q):
         day, settled = quote_session(v, fday, fsettled)
         # "Corn down 3.8%" and "December corn down 3.8%" were the same
         # contract twice: from early fall the front month IS December. One
@@ -577,7 +607,7 @@ def weather(out, state, held):
 
 DETECTORS = (wasde, positioning, board, ratings, weather)
 
-NAMED = ("corn-dec", "beans-nov")
+NAMED = ("corn-dec", "beans-nov")    # and their dated months (corn-dec27), see board_quotes
 
 
 def tidy(items):
@@ -601,7 +631,7 @@ def tidy(items):
     drop = set()
     for group in by.values():
         if len(group) > 1:
-            keep = next((i for i in group if i["id"].split(":")[2] in NAMED), group[0])
+            keep = next((i for i in group if i["id"].split(":")[2].startswith(NAMED)), group[0])
             drop.update(id(i) for i in group if i is not keep)
     # ONE BASE, TWO DAYS. A move dated the next day that is measured from the
     # same previous close as the day before, at a different close, is not that
