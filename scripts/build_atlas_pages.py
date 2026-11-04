@@ -874,7 +874,35 @@ def drought_missing(Dr):
     return [y for y in range(int(Dr["first_year"]), int(Dr["last_full_year"]) + 1) if y not in full]
 
 
-def bars_svg(series, label, unit_fmt, w=640, h=170, ref=None, ref_label=None, hatch_last=False, every=None):
+# Chart text (Nov 4, 2026, site panel): the charts were drawn 640 units wide with 10-unit text, so a phone
+# showed the labels at 6 to 7 px. They are drawn CH_W units wide with CH_FS-unit text now, about the width
+# they show at on a phone, so the text is 11 px or more at 390 and about 15 px at 1280
+# (test/atlas-chart-text.test.mjs measures it). Labels that would touch at that size are dropped, never shrunk.
+CH_W, CH_H, CH_FS = 360, 170, 12
+CH_CHAR = 0.62 * CH_FS      # about how wide one character of chart text runs, in units (bold a little wider)
+
+
+def _text_w(t, bold=False):
+    return len(str(t)) * CH_CHAR * (1.08 if bold else 1.0)
+
+
+def _inside(x, t, w, bold=False):
+    """A centred label's x, moved in so the whole label stays inside the chart's 0..w."""
+    half = _text_w(t, bold) / 2 + 1
+    return min(max(x, half), w - half)
+
+
+def _apart(xs_w, pri):
+    """Keep the labels (x, width) in priority order that do not touch one already kept."""
+    kept = []
+    for i in pri:
+        x, wd = xs_w[i]
+        if all(abs(x - xs_w[j][0]) >= (wd + xs_w[j][1]) / 2 + 4 for j in kept):
+            kept.append(i)
+    return set(kept)
+
+
+def bars_svg(series, label, unit_fmt, w=CH_W, h=CH_H, ref=None, ref_label=None, hatch_last=False, every=None):
     """Labelled bar chart. series: {year:int -> value}. Every axis and the
     endpoints are labelled; a year with no value is a gap, never a zero.
     Colours are CSS classes so the light theme works and the markup stays small."""
@@ -884,7 +912,7 @@ def bars_svg(series, label, unit_fmt, w=640, h=170, ref=None, ref_label=None, ha
     vmax = max(max(series.values()), ref or 0)
     if vmax <= 0:
         return ""
-    L, R, T, B = 8, 8, 16, 22
+    L, R, T, B = 8, 8, CH_FS + 8, CH_FS + 14
     n = ys[-1] - ys[0] + 1
     bw = (w - L - R) / n
     top = vmax * 1.12
@@ -897,13 +925,19 @@ def bars_svg(series, label, unit_fmt, w=640, h=170, ref=None, ref_label=None, ha
         path.append("M%.1f %.1fh%.1fV%dh-%.1fz" % (L + (y - ys[0]) * bw + bw * 0.12, Y(series[y]), bw * 0.76, base, bw * 0.76))
     s = ['<path class="bf" d="%s"/>' % "".join(path)]
     step = every or (1 if n <= 14 else 2 if n <= 30 else 5)
+    while step * bw < _text_w("2000") + 6:      # year labels never touch
+        step = {1: 2, 2: 5, 5: 10}.get(step, step * 2)
     for y in range(ys[0], ys[-1] + 1):
-        if (y - ys[0]) % step == 0 or (y == ys[-1] and n <= 14):
-            s.append('<text class="ta" x="%.1f" y="%d">%d</text>' % (L + (y - ys[0] + 0.5) * bw, h - 6, y))
+        if (y - ys[0]) % step == 0 or (y == ys[-1] and step == 1):
+            s.append('<text class="ta" x="%.1f" y="%d">%d</text>' % (_inside(L + (y - ys[0] + 0.5) * bw, y, w), h - 7, y))
     peak = max(ys, key=lambda y: series[y])
-    lab = set(ys) if len(ys) <= 12 else {ys[0], ys[-1], peak}
+    want = list(ys) if len(ys) <= 12 else [ys[0], ys[-1], peak]
+    # the last year, then the peak, then the first, then the rest, each only where it has room
+    pri = [ys[-1], peak, ys[0]] + [y for y in ys if y not in (ys[-1], ys[0], peak)]
+    pos = {y: (_inside(L + (y - ys[0] + 0.5) * bw, unit_fmt(series[y]), w, True), _text_w(unit_fmt(series[y]), True)) for y in want}
+    lab = _apart(pos, [y for y in pri if y in pos])
     for y in sorted(lab):
-        s.append('<text class="tv" x="%.1f" y="%.1f">%s</text>' % (L + (y - ys[0] + 0.5) * bw, Y(series[y]) - 3, esc(unit_fmt(series[y]))))
+        s.append('<text class="tv" x="%.1f" y="%.1f">%s</text>' % (pos[y][0], Y(series[y]) - 3, esc(unit_fmt(series[y]))))
     if ref is not None:
         s.append('<path class="rf" d="M%d %.1fH%d"/>' % (L, Y(ref), w - R))
         s.append('<text class="tr" x="%d" y="%.1f">%s</text>' % (L + 2, Y(ref) - 3, esc(ref_label or "")))
@@ -911,7 +945,7 @@ def bars_svg(series, label, unit_fmt, w=640, h=170, ref=None, ref_label=None, ha
     return '<svg viewBox="0 0 %d %d" role="img" aria-label="%s" class="ch">%s</svg>' % (w, h, esc(label), "".join(s))
 
 
-def lines_svg(seriesets, label, unit_fmt, w=640, h=170):
+def lines_svg(seriesets, label, unit_fmt, w=CH_W, h=CH_H):
     """Rent by survey year, dry and irrigated. A break in the years breaks the line."""
     allp = [(y, v) for sd in seriesets for y, v in sd["d"].items()]
     if len(allp) < 3:
@@ -923,23 +957,26 @@ def lines_svg(seriesets, label, unit_fmt, w=640, h=170):
     # the longest end label instead (10px bold text runs about 6.2 units a
     # character), so a dry-only chart keeps its width.
     ends = ["%s %s" % (unit_fmt(sd["d"][max(sd["d"])]), sd["n"]) for sd in seriesets if sd["d"]]
-    L, R, T, B = 34, max(40, int(max(len(e) for e in ends) * 6.2) + 12), 14, 22
     top = vmax * 1.1
+    step = 100 if vmax > 400 else 50 if vmax > 150 else 20 if vmax > 60 else 10
+    L = max(34, int(_text_w("$%d" % (int(top // step) * step))) + 6)
+    R, T, B = max(40, int(max(_text_w(e, True) for e in ends)) + 10), CH_FS + 4, CH_FS + 14
     X = lambda y: L + (0 if x1 == x0 else (y - x0) / (x1 - x0)) * (w - L - R)
     Y = lambda v: T + (1 - v / top) * (h - T - B)
     s = []
-    step = 100 if vmax > 400 else 50 if vmax > 150 else 20 if vmax > 60 else 10
     grid, g = [], 0
     while g <= top:
         grid.append("M%d %.1fH%d" % (L, Y(g), w - R))
-        s.append('<text class="ta tay" x="%d" y="%.1f">$%d</text>' % (L - 4, Y(g) + 3, g))
+        s.append('<text class="ta tay" x="%d" y="%.1f">$%d</text>' % (L - 4, Y(g) + CH_FS * 0.35, g))
         g += step
     s.insert(0, '<path class="gr" d="%s"/>' % "".join(grid))
     span = x1 - x0
     xs = 5 if span > 12 else 2 if span > 6 else 1
+    while span and xs * (w - L - R) / span < _text_w("2000") + 6:
+        xs = {1: 2, 2: 5, 5: 10}.get(xs, xs * 2)
     y = -(-x0 // xs) * xs
     while y <= x1:
-        s.append('<text class="ta" x="%.1f" y="%d">%d</text>' % (X(y), h - 6, y))
+        s.append('<text class="ta" x="%.1f" y="%d">%d</text>' % (X(y), h - 7, y))
         y += xs
     for i, sd in enumerate(seriesets):
         ys = sorted(sd["d"])
@@ -953,7 +990,7 @@ def lines_svg(seriesets, label, unit_fmt, w=640, h=170):
         s.append('<path class="dt %s" d="%s"/>' % (cls, dots))
         a, b = ys[0], ys[-1]
         s.append('<text class="tl %s" x="%.1f" y="%.1f">%s</text>' % (cls, X(a) + 2, Y(sd["d"][a]) - 6, unit_fmt(sd["d"][a])))
-        s.append('<text class="tl %s" x="%.1f" y="%.1f">%s %s</text>' % (cls, X(b) + 5, Y(sd["d"][b]) + 3, unit_fmt(sd["d"][b]), esc(sd["n"])))
+        s.append('<text class="tl %s" x="%.1f" y="%.1f">%s %s</text>' % (cls, X(b) + 5, Y(sd["d"][b]) + CH_FS * 0.35, unit_fmt(sd["d"][b]), esc(sd["n"])))
     return '<svg viewBox="0 0 %d %d" role="img" aria-label="%s" class="ch">%s</svg>' % (w, h, esc(label), "".join(s))
 
 
@@ -1129,7 +1166,7 @@ CSS = """
 .ap th.s{cursor:pointer}.ap th.s:hover{color:var(--gold)}
 @media (max-width:760px){.ap .keys{grid-template-columns:repeat(2,minmax(0,1fr))}.ap .two{grid-template-columns:minmax(0,1fr)}.ap h1{font-size:1.35rem}.ap .loc{max-width:300px}}
 @media (max-width:420px){.ap .keys{grid-template-columns:minmax(0,1fr)}}
-.ap .ch .bf{fill:var(--gold)}.ap .ch text{font-size:10px}.ap .ch .ta{fill:var(--text-muted);text-anchor:middle}.ap .ch .tay{text-anchor:end}
+.ap .ch .bf{fill:var(--gold)}.ap .ch text{font-size:12px}.ap .ch .ta{fill:var(--text-muted);text-anchor:middle}.ap .ch .tay{text-anchor:end}
 .ap .ch .tv{font-weight:700;fill:var(--text);text-anchor:middle}.ap .ch .rf{stroke:var(--blue);stroke-dasharray:4 3;fill:none}.ap .ch .tr{fill:var(--blue)}
 .ap .ch .ax{stroke:var(--border-2);fill:none}.ap .ch .gr{stroke:var(--border-2);stroke-width:.6;fill:none}
 .ap .ch .ln{fill:none;stroke-width:2}.ap .ch .dt{fill:none;stroke-width:4.4;stroke-linecap:round}
@@ -2216,6 +2253,7 @@ def gaps_html(W, f, d, st):
 
 
 def county_page(W, f, d, stamp):
+    stamp_h = "@@STAMPH@@" if stamp == "@@STAMP@@" else human_day(stamp)
     c = W.C[f]
     st = c["state"]
     stn = STATE_NAMES.get(st, st)
@@ -2740,7 +2778,7 @@ def county_page(W, f, d, stamp):
             '<a href="/fast-facts?fips=%s">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>' % (esc(f), esc(f)))
 
     cite = ("AGSIST Farmland Atlas. %s, %s. Figures as of %s, from USDA NASS, USDA RMA, USDA FSA, the U.S. Drought Monitor and NOAA. %s"
-            % (lab, stn, stamp, url))
+            % (lab, stn, stamp_h, url))
     csv_id = "rec"
     rec_json = json.dumps(rec, ensure_ascii=False).replace("</", "<\\/")
     body = f"""
@@ -2749,7 +2787,7 @@ def county_page(W, f, d, stamp):
 {XMAS_JS}
 <div class="kick">County farm facts</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
-{lf_html}<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp)}; the rows marked with a date load the newest reading when the page opens.</p>
+{lf_html}<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp_h)}; the rows marked with a date load the newest reading when the page opens.</p>
 {btns}
 {stands_html(stands_out(W, f, d))}{story_html}{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 <div class="act">
@@ -3054,9 +3092,46 @@ def write(path, text):
         fh.write(text)
 
 
-def build(root=".", out_root=None, only=None, quiet=False):
+def build_day(today=None):
+    """The day this build runs, Central time (the site's clock), as YYYY-MM-DD. AGSIST_BUILD_DATE overrides
+    it (tests). It stamps a county page whose figures changed in this build (Nov 4, 2026: the stamp was the
+    summary file's own date, so every page said "Figures as of 2026-10-19" and every lastmod was Oct 19,
+    whatever changed after)."""
+    d = today or os.environ.get("AGSIST_BUILD_DATE", "")
+    if re.match(r"^\d{4}-\d{2}-\d{2}$", str(d)):
+        return str(d)
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.datetime.now(ZoneInfo("America/Chicago")).date().isoformat()
+    except Exception:
+        return (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=6)).date().isoformat()
+
+
+def page_day(prev, h, day, built):
+    """The "Figures as of" day of one county page. prev: its [hash, day] from the last build or None; h: the
+    hash of its figures now; day: this build's day; built: the summary file's day. Unchanged figures keep
+    their day; changed ones take this build's day (never before the summary file's); a county with no
+    earlier stamp starts at the summary file's day."""
+    if prev and prev[0] == h:
+        return prev[1]
+    if prev:
+        return max(day, built)
+    return built
+
+
+def human_day(iso):
+    """'2026-10-19' -> 'Oct 19, 2026' (reader text; dateModified and the sitemap keep the ISO day)."""
+    try:
+        d = datetime.date.fromisoformat(str(iso)[:10])
+    except ValueError:
+        return str(iso)
+    return "%s %d, %d" % (d.strftime("%b"), d.day, d.year)
+
+
+def build(root=".", out_root=None, only=None, quiet=False, today=None):
     """Writes everything. Returns (urls, problems)."""
     W = World(root)
+    day = build_day(today)
     import stories_core as SK
     import stories_atlas as SA
     W.stories = SK.load(SA, os.path.join(root, SA.STORE))
@@ -3102,9 +3177,9 @@ def build(root=".", out_root=None, only=None, quiet=False):
                                  get(d, "climate", "gs_recent", "mean_in"), stands_out(W, f, d), price_lines(W, f, d)]
             h = hashlib.sha1(json.dumps(fig, sort_keys=True,
                                         default=str).encode("utf-8")).hexdigest()[:12]
-            date = prev[f][1] if f in prev and prev[f][0] == h else W.built
+            date = page_day(prev.get(f), h, day, W.built)
             stamps[f] = [h, date]
-            write(os.path.join(out_root, W.path(f)), raw.replace("@@STAMP@@", date))
+            write(os.path.join(out_root, W.path(f)), raw.replace("@@STAMPH@@", human_day(date)).replace("@@STAMP@@", date))
         except Exception as e:  # one bad county must not stop 3,147
             problems.append("%s: %s: %s" % (f, type(e).__name__, e))
             continue
@@ -3429,8 +3504,14 @@ def selftest():
         st["19169"][0] = "000000000000"     # pretend the page's content changed since the last stamp
         st["19169"][1] = "2000-01-01"
         json.dump(st, open(os.path.join(tmp, OUT, "data", "page-stamps.json"), "w"))
-        build(".", tmp, quiet=True)
-        check("changed content moves the date", ("Figures as of " + W.built) in open(os.path.join(tmp, W.path("19169")), encoding="utf-8").read())
+        build(".", tmp, quiet=True, today="2031-05-06")
+        t19 = open(os.path.join(tmp, W.path("19169")), encoding="utf-8").read()
+        check("changed content moves the date to the build day", "Figures as of May 6, 2031" in t19 and re.search(r'"dateModified": ?"2031-05-06"', t19) is not None)
+        sm = open(os.path.join(tmp, "sitemap-atlas.xml"), encoding="utf-8").read()
+        check("changed content moves the lastmod", "<loc>%s</loc><lastmod>2031-05-06</lastmod>" % W.url("19169") in sm)
+        other = [f for f in W.C if f != "19169" and f not in W.thin][0]
+        check("unchanged content keeps its lastmod", "<loc>%s</loc><lastmod>2031-05-06</lastmod>" % W.url(other) not in sm)
+        check("reader text never prints an ISO day", not re.search(r"Figures as of \d{4}-", t19))
         import shutil
         shutil.rmtree(tmp, ignore_errors=True)
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
