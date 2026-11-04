@@ -232,9 +232,13 @@ check("no footer supporter is live while a daily sponsor is being reported", () 
     "footer-strip views and supporter_click would be counted as the sponsor's. Register `slot` as a GA4 " +
     "custom dimension and set SLOT_DIMENSION, or keep one of the two off.");
 });
-check("every sponsor has a token long enough to be unguessable", () => {
+/* Nov 4, 2026 (Sig: "move the codes to feedbag"): the link tokens live only in the private
+   repo (scripts/sponsor_publish.py refuses one shorter than 16 hex), so the public registry
+   carries none and no report file is published. test/sponsor-private.test.mjs scans the tree. */
+check("no sponsor token in the public registry, and no public report folder", () => {
   for (const s of CONF.sponsors || [])
-    assert.ok((s.token || "").length >= 16, s.slug + "'s token is too short to be the key to the page");
+    assert.ok(!("token" in s), s.slug + " carries a token in data/sponsors.json; tokens live in the private repo only");
+  assert.ok(!existsSync(fileURLToPath(new URL("../data/sponsors", import.meta.url))), "data/sponsors/ is back: reports are private (worker /sponsor-report)");
 });
 
 /* ── ONE AD, EVERY SURFACE ──────────────────────────────────────────────

@@ -56,6 +56,8 @@ jobs:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          # a new sponsor's portal token is saved to the private repo, never to main (Nov 4, 2026)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
