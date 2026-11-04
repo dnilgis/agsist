@@ -53,7 +53,7 @@ either host: `scripts/email_links.py` refuses any `*.workers.dev` link.
 - KV binding: `SUBS` -> namespace id `9024f0b7ca5948bf9ed98d6135d73357` (the same store the
   old Worker uses; `wrangler.api.toml` declares it, so the first deploy binds it)
 
-### Secrets and variables (Settings, Variables and Secrets; every key as type Secret)
+### Secrets and variables (Settings, Variables and Secrets; every key as type Secret; the RP_*_LIVE vars come from wrangler.api.toml)
 Read from `env.*` in `subs-worker.js`. None of them is in this repo.
 
 | name | kind | what it is | needed for |
@@ -63,8 +63,12 @@ Read from `env.*` in `subs-worker.js`. None of them is in this repo.
 | `STRIPE_WEBHOOK_SECRET` | Secret | the signing secret (`whsec_...`) of the Stripe webhook endpoint that points at this Worker | `POST /rp-order/stripe` (503 without it) |
 | `STRIPE_READ_KEY` | Secret | Stripe restricted key, Checkout Sessions Read and Charges Read only (`rk_live_...`) | `/rp-order/list` reading paid sessions from Stripe |
 | `GH_DISPATCH_TOKEN` | Secret | GitHub fine-grained token, repository dnilgis/agsist only, Actions: Read and write (Metadata: Read comes with it) | starting `rp-buyer-email.yml` and `rp-design-email.yml` |
-| `RP_BUYER_EMAIL_LIVE` | Variable | `1` = buyer emails reach buyers; anything else sends them to Sig only | Rain Print buyer email |
-| `RP_DESIGN_EMAIL_LIVE` | Variable | `1` = "email me this design" reaches readers; anything else is a dry run to Sig | Rain Print design email |
+| `RP_BUYER_EMAIL_LIVE` | Variable, set in `wrangler.api.toml` [vars] | `1` = buyer emails reach buyers; anything else sends them to Sig only | Rain Print buyer email |
+| `RP_DESIGN_EMAIL_LIVE` | Variable, set in `wrangler.api.toml` [vars] | `1` = "email me this design" reaches readers; anything else is a dry run to Sig | Rain Print design email |
+
+Since Nov 3, 2026 (v5.62) the two RP_*_LIVE switches are plain vars in `wrangler.api.toml`, so every deploy sets them
+(`keep_vars = true` keeps the dashboard's secrets). Change them in that file, not in the dashboard. The repo variables
+of the same names in dnilgis/agsist gate the hourly runs of rp-buyer-email.yml and rp-design-email.yml.
 
 `SUBS` is the KV binding, not a secret. A missing `UNSUB_SECRET` makes confirm links answer 503;
 a missing `LIST_TOKEN` makes every token route answer 403.
