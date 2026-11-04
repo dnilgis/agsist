@@ -124,15 +124,16 @@ test('the browser tests find Playwright and Chromium under the names they read, 
 test('the FSA files are pulled before the checks in every job that runs them, with the key at step level', () => {
   for (const j of ['node-tests', 'other-checks']) {
     const s = steps(j);
-    // node tests: the FSA files and the Atlas drought pull in one fetch of raw (Oct 29, fx/cifast)
-    const pull = s.findIndex((x) => (j === 'node-tests' ? /run: bash scripts\/pull_raw\.sh data\/fsa data\/atlas\/raw\/drought\.json\s*$/ : /run: bash scripts\/pull_raw\.sh data\/fsa\s*$/).test(x));
+    // node tests: the FSA files and the Atlas drought pull in one fetch of raw (Oct 29, fx/cifast);
+    // Nov 4 (fx/datasplit): data/cot-deep.json in the same fetch (test/raw-readers.test.mjs)
+    const pull = s.findIndex((x) => (j === 'node-tests' ? /run: bash scripts\/pull_raw\.sh data\/fsa data\/atlas\/raw\/drought\.json data\/cot-deep\.json\s*$/ : /run: bash scripts\/pull_raw\.sh data\/fsa\s*$/).test(x));
     const run = s.findIndex((x) => /checks\.sh/.test(x));
     assert.ok(pull >= 0 && pull < run, `${j}: pull before the checks`);
     assert.match(s[pull], /\n        env:\n          PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n/);
     // the key reaches only the steps that read the private repo: the FSA pull, and (node tests) the drought pull and the references fetch
     const keyed = s.filter((x) => /PRIVATE_REPO_TOKEN: /.test(x));
     // node tests (Oct 29): the Atlas drought pull, which test/drought-county-week.test.mjs reads, keyed the same way
-    const drought = s.findIndex((x) => /run: bash scripts\/pull_raw\.sh (?:data\/fsa )?data\/atlas\/raw\/drought\.json\s*$/.test(x));
+    const drought = s.findIndex((x) => /run: bash scripts\/pull_raw\.sh (?:data\/fsa )?data\/atlas\/raw\/drought\.json(?: data\/cot-deep\.json)?\s*$/.test(x));
     if (j === 'node-tests') {
       assert.ok(drought >= 0 && drought < run, 'node-tests: the drought pull before the checks');
       assert.match(s[drought], /\n        env:\n          PRIVATE_REPO_TOKEN: \$\{\{ secrets\.PRIVATE_REPO_TOKEN \}\}\n/);

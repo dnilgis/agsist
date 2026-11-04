@@ -70,6 +70,14 @@ jobs:
           python scripts/send_cot_weekly.py --selftest
           python3 scripts/test_send_loops.py
 
+      # data/cot-deep.json is on the private raw branch (Nov 4). The sender
+      # reads it for the twenty-year lines and quietly drops them without it,
+      # so the unpack is a hard stop, not a warning.
+      - name: Deep history from raw
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh data/cot-deep.json
+
       - name: Funds this week (${{ inputs.mode }})
         env:
           SMTP_HOST:    ${{ secrets.SMTP_HOST }}

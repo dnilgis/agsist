@@ -2,7 +2,10 @@
 """
 site_usage_report.py - 90 days of real usage per page, for the site audit.
 
-Writes data/site-usage.json with two blocks, each aggregate only:
+Writes data/site-usage.json with two blocks, each aggregate only. Since Nov 4,
+2026 the file lives on the private raw branch, never main (it carries 90 days
+of search queries): site-usage.yml unpacks it with scripts/pull_raw.sh first and
+saves it with scripts/push_raw.sh (test/raw-readers.test.mjs).
 
   ga4  GA4 Data API, per page path: page views, total users, active users,
        entrances, engagement seconds, and average engagement seconds per
