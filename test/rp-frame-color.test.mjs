@@ -61,7 +61,7 @@ test("the frame specs follow the maker's listings: wood is oak only, 2 mm glass,
     "wedding-year-weather-gift.html", "components/rain-print.js", "scripts/rp_buyer_email.py"];
   for (const f of files) {
     const t = read(f).replace(/\/\*[\s\S]*?\*\//g, "");
-    assert.doesNotMatch(t, /wood frame/i, f + ": black is not wood");
+    assert.doesNotMatch(t, /(?<!oak )wood frame/i, f + ": black is not wood");
     assert.doesNotMatch(t, /\bUV\b|75\s?%/, f + ": no UV claim");
     if (/tempered glass/.test(t)) assert.doesNotMatch(t, /(?<!2 mm )\btempered glass/i, f + ": the glass is 2 mm");
   }

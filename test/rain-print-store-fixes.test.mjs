@@ -69,8 +69,9 @@ test("the frame: only what Sig has said, no made-up sizes", () => {
   assert.doesNotMatch(big, /no mat|trim|a little bigger/);
   // the structured data says the same
   assert.match(HTML, /"text": "[^"]*The framed one comes in a 13 x 19 frame in oak wood or black, with an acid-free white mat and 2 mm tempered glass, ready to hang\./);
-  // no moulding width, outside size, weight or hanger until Sig measures them
-  const vis = HTML.replace(/<script[\s\S]*?<\/script>/g, "");
+  // no moulding width, outside size, weight or hanger beyond what Sig gave from the maker's listings (Nov 4): the one
+  // What you get line with 14.3 x 20.3 in outside and the 0.9 in frame; any other size or weight is invented
+  const vis = HTML.replace(/<script[\s\S]*?<\/script>/g, "").replace("<li>14.3 x 20.3 in outside, 0.9 in frame, sturdy backboard, hanging hardware included</li>", "");
   assert.ok(!/moulding|molding|sawtooth|wire hanger|\b\d+(\.\d+)?\s?(x|by)\s?\d+(\.\d+)?\s?(in|inches)? (outside|overall)|\d+(\.\d+)?[- ]?(inch|in\.?) (wide|deep)|\b\d+(\.\d+)? ?(lb|lbs|pounds)\b/i.test(vis), "no frame size or weight invented");
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   assert.ok(!/acrylic|archival/i.test(vis.replace(/never claim[^.]*archival/gi, "")), "glass, and never 'archival'");
