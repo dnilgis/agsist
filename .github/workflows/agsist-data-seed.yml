@@ -13,10 +13,11 @@ name: agsist-data seed (share images)
 # The files stay in this repository until a later change removes them. Safe to run again: a folder
 # already listed keeps its date and an unchanged copy pushes nothing. No schedule.
 # THE DAILY (PR #327 checker, Nov 4): the flip rewrites index.html, which the Daily's commit rewrites too,
-# so a flip in the middle of a Daily run would make the Daily's push fail. The flip job therefore shares
-# the Daily's concurrency group (daily-briefing; it waits for a running Daily), and the whole run refuses
-# to start between 10:00 and 14:30 UTC, the Daily's window, unless any_time is ticked. GitHub keeps one
-# pending run per group, so outside the window nothing of the Daily's is waiting to be replaced.
+# so a flip in the middle of a Daily run would make the Daily's push fail. The flip job waits (Actions API)
+# while any daily.yml run is queued or in progress, up to 30 minutes, and stops with nothing changed if one
+# still is; it does not share the Daily's concurrency group, which could cancel a pending Daily. The whole
+# run refuses to start between 10:00 and 14:30 UTC, the Daily's window, unless any_time is ticked, and the
+# flip checks the time again after its wait.
 on:
   workflow_dispatch:
     inputs:
@@ -89,10 +90,9 @@ jobs:
     if: inputs.flip
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    # the Daily's group: waits for a running Daily, and the Daily waits for this (see the header)
-    concurrency:
-      group: daily-briefing
-      cancel-in-progress: false
+    permissions:
+      contents: write
+      actions: read
     steps:
       - name: Not in the Daily's window
         env:
@@ -103,6 +103,38 @@ jobs:
             echo "::error::$(date -u +%H:%M) UTC is inside the Daily's window (10:00 to 14:30 UTC); the copies are verified, run again later to flip"
             exit 1
           fi
+      # No shared concurrency group with the Daily: GitHub keeps one pending run per group and
+      # cancels the rest, and a lost Daily is never acceptable. Instead wait while any daily.yml run
+      # is queued or in progress (every 30 s, up to 30 minutes); if one still is, stop, nothing changed.
+      - name: Wait for any Daily run to finish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 61); do
+            n=0
+            for st in queued in_progress waiting pending requested; do
+              c=$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/daily.yml/runs?status=$st&per_page=1" --jq '.total_count') \
+                || { echo "::error::could not read the Daily's runs"; exit 1; }
+              n=$((n + c))
+            done
+            if [ "$n" -eq 0 ]; then echo "no Daily run queued or running"; exit 0; fi
+            [ "$i" -eq 61 ] && break
+            echo "$n Daily run(s) queued or running; checking again in 30 s"
+            sleep 30
+          done
+          echo "::error::a Daily run was still queued or running after 30 minutes; nothing was flipped, run again later"
+          exit 1
+
+      - name: Still not in the Daily's window
+        env:
+          ANY_TIME: ${{ inputs.any_time }}
+        run: |
+          now=$((10#$(date -u +%H%M)))
+          if [ "$ANY_TIME" != "true" ] && [ "$now" -ge 1000 ] && [ "$now" -lt 1430 ]; then
+            echo "::error::$(date -u +%H:%M) UTC is inside the Daily's window after the wait; nothing was flipped, run again later"
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
         with:
           ref: main

@@ -73,16 +73,26 @@ test("the Daily copies its card before its commit and can never be held by it", 
   assert.ok(+copy.text.match(/--wait (\d+)/)[1] <= 180, "the wait fits inside the step's 4 minutes");
 });
 
-test("the seed's flip waits for the Daily and never starts in the Daily's window", () => {
+test("the seed's flip waits for any Daily run (API, not a shared group) and never runs in the Daily's window", () => {
   const wf = read(".github/workflows/agsist-data-seed.yml");
   const flipJob = wf.slice(wf.indexOf("\n  flip:\n"));
   assert.ok(flipJob.length > 10, "a separate flip job");
-  assert.match(flipJob, /concurrency:\n\s+group: daily-briefing\n\s+cancel-in-progress: false/);
-  assert.match(read(".github/workflows/daily.yml"), /\nconcurrency:\n  group: daily-briefing\n/);
+  // never the Daily's concurrency group: GitHub cancels all but one pending run in a group
+  assert.doesNotMatch(wf, /daily-briefing/, "no shared group with the Daily");
+  const wait = flipJob.indexOf("- name: Wait for any Daily run to finish");
+  const again = flipJob.indexOf("- name: Still not in the Daily's window");
+  const flip = flipJob.indexOf("share_host.py --root");
+  assert.ok(wait > 0 && wait < again && again < flip, "wait for the Daily, re-check the time, then flip");
+  const waitStep = flipJob.slice(wait, again);
+  assert.match(waitStep, /actions\/workflows\/daily\.yml\/runs\?status=\$st/);
+  assert.match(waitStep, /for st in queued in_progress/);
+  assert.match(waitStep, /sleep 30/);
+  assert.match(waitStep, /seq 1 61/, "30 minutes of 30 s checks");
+  assert.match(waitStep, /exit 1/, "a Daily still running stops the flip");
+  assert.match(flipJob, /actions: read/);
   const windows = wf.match(/-ge 1000 \] && \[ "\$now" -lt 1430 \]/g) || [];
-  assert.equal(windows.length, 2, "both jobs refuse 10:00 to 14:30 UTC");
+  assert.equal(windows.length, 3, "the seed, the flip and the re-check after the wait refuse 10:00 to 14:30 UTC");
   assert.match(wf, /any_time:/);
-  assert.ok(flipJob.indexOf("Not in the Daily's window") < flipJob.indexOf("share_host.py --root"), "checked before the flip");
 });
 
 test("the seed job copies, checks the copies, then flips; by hand only, never forced", () => {
