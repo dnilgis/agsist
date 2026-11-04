@@ -26,7 +26,7 @@
   var MAX_TRY = 6;          // elevators read for their later months, nearest first
   var MAX_MORE = 6;         // read further out when none of those posts one
   var FAR_MILES = 150;      // how far out that second look goes
-  var state = { zip: '', crop: 'corn', seq: 0, models: null, futures: null, noWindow: false, pick: null, farther: null, read: [] };
+  var state = { zip: '', crop: 'corn', seq: 0, models: null, futures: null, noWindow: false, pick: null, farther: null, read: [], netFail: false };
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
@@ -125,7 +125,8 @@
      so the page can name the nearest elevator that does and how far off it
      is, or say how far out it looked. -> {list, farther, read} */
   function loadElevators(seq) {
-    if (!state.zip || !NET || !SS.modelFor) return Promise.resolve({ list: [], farther: null, read: [] });
+    if (!state.zip) return Promise.resolve({ list: [], farther: null, read: [] });
+    if (!NET || !SS.modelFor) return Promise.resolve({ list: [], farther: null, read: [], failed: true });
     return NET.snapshotForZip(state.zip).then(function (snap) {
       if (seq !== state.seq) return null;
       var cs = candidates(snap, state.crop);
@@ -141,7 +142,7 @@
           return { list: ms, farther: f, read: ms.concat(more) };
         });
       });
-    }).catch(function () { return { list: [], farther: null, read: [] }; });
+    }).catch(function () { return { list: [], farther: null, read: [], failed: true }; });
   }
 
   /* ── the board ─────────────────────────────────────────────────────── */
@@ -363,7 +364,7 @@
   /* After "no elevator we read posts a later bid": the nearest one further
      out that does, or how far out the page looked. HTML, escaped. */
   function fartherText() {
-    if (!state.zip || state.models === null) return '';
+    if (!state.zip || state.models === null || state.netFail) return '';
     var f = state.farther;
     if (f) {
       var inp = inputs(), p = SS.pickPeriod(f.model, inp, null);
@@ -374,11 +375,25 @@
     if (!ds.length) return '';
     return esc(' We read the boards of the ' + state.read.length + ' nearest elevator' + (state.read.length === 1 ? '' : 's') + ', out to ' + Math.round(Math.max.apply(null, ds)) + ' miles.');
   }
+  /* 2026-11-04 (site panel, skeptic row 7): a read that failed (the network
+     or every board did not answer) used to come back as an empty list and
+     print "No elevator we read near 50010 posts a later bid", blaming the
+     elevators for our own failed read. A failed read now says so. */
+  function readFailed(res) {
+    if (!res) return false;
+    if (res.failed) return true;
+    var l = res.list || [];
+    return l.length > 0 && l.every(function (x) { return x.model && x.model.failed; });
+  }
+  function noLaterWords(zip, n, farther, failed, cropWord) {
+    if (failed) return 'The elevator network did not answer for ' + zip + ', so we cannot say which elevators post a later ' + cropWord + ' bid. Try again in a minute. ';
+    var what = ' a later ' + cropWord + ' bid right now, so this is the board. ';
+    if (farther && n > 1) return 'None of the ' + n + ' elevators nearest ' + zip + ' posts' + what;
+    if (farther && n === 1) return 'The elevator nearest ' + zip + ' does not post' + what;
+    return 'No elevator we read near ' + zip + ' posts' + what;
+  }
   function noLaterText() {
-    var n = state.models ? state.models.length : 0, what = ' a later ' + CROP_WORD[state.crop] + ' bid right now, so this is the board. ';
-    if (state.farther && n > 1) return 'None of the ' + n + ' elevators nearest ' + state.zip + ' posts' + what;
-    if (state.farther && n === 1) return 'The elevator nearest ' + state.zip + ' does not post' + what;
-    return 'No elevator we read near ' + state.zip + ' posts' + what;
+    return noLaterWords(state.zip, state.models ? state.models.length : 0, state.farther, state.netFail, CROP_WORD[state.crop]);
   }
   function noWindowText(short) {
     return 'No board carry to show right now: fewer than two ' + CROP_WORD[state.crop] + ' contracts in this crop year still trade.' +
@@ -416,7 +431,7 @@
   function run() {
     var seq = ++state.seq;
     state.models = state.zip ? null : [];
-    state.farther = null; state.read = [];
+    state.farther = null; state.read = []; state.netFail = false;
     state.pick = null;
     pushUrl();
     loadFutures().then(function (p) { if (seq !== state.seq) return; state.prices = p;
@@ -425,11 +440,12 @@
     loadElevators(seq).then(function (res) {
       if (seq !== state.seq || res === null) return;
       state.models = res.list || []; state.farther = res.farther || null; state.read = res.read || [];
+      state.netFail = readFailed(res);
       render();
     }, function () {
       // a read that failed outright is an empty answer, never a "Working it out" left on screen
       if (seq !== state.seq) return;
-      state.models = []; render();
+      state.models = []; state.netFail = true; render();
     });
   }
   function init() {
@@ -459,6 +475,7 @@
     });
     run();
   }
-  window.AgsistStoreOrSell = { wheatExch: wheatExch, kcQuotes: kcQuotes, futuresModel: futuresModel, quoteWhen: quoteWhen };
+  window.AgsistStoreOrSell = { wheatExch: wheatExch, kcQuotes: kcQuotes, futuresModel: futuresModel, quoteWhen: quoteWhen,
+    noLaterWords: noLaterWords, readFailed: readFailed };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

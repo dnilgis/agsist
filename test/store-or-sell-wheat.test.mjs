@@ -86,5 +86,5 @@ test("corn and soybeans are untouched", () => {
 });
 
 test("the page loads the new store-or-sell.js", () => {
-  assert.match(read("store-or-sell.html"), /components\/store-or-sell\.js\?v=7/);
+  assert.match(read("store-or-sell.html"), /components\/store-or-sell\.js\?v=8/);
 });
