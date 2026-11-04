@@ -433,9 +433,23 @@
   function useLivePrice() { var p = $('live-bar').dataset.price; if (p) { $('price').value = p; calcBreakeven(); } }
 
   var MONTHS = { F: 'Jan', G: 'Feb', H: 'Mar', J: 'Apr', K: 'May', M: 'Jun', N: 'Jul', Q: 'Aug', U: 'Sep', V: 'Oct', X: 'Nov', Z: 'Dec' };
+  var MONTH_I = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+  /* the crop a contract prices: Jan '27 soybeans and Mar '27 corn are the 2026 crop */
+  function cropOf(c, ym) { var hm = c === 'corn' ? 11 : 10; return 2000 + ym.yy - (MONTH_I[ym.mon] < hm ? 1 : 0); }
   function tickerYM(key) { var q = _livePrices && _livePrices[key], m = q && /([FGHJKMNQUVXZ])(\d\d)\.CBT$/.exec(q.ticker || ''); return m ? { mon: MONTHS[m[1]], yy: +m[2] } : null; }
   function nextYearKey(c) { if (c === 'wheat') return null; var ym = tickerYM(CROP_PRICE_KEY[c]); if (!ym) return null; var k = (c === 'corn' ? 'corn-dec' : 'beans-nov') + String(ym.yy + 1).padStart(2, '0'), q = _livePrices && _livePrices[k]; return (q && q.close != null) ? k : null; }
-  function contractFor(c) { if (_beYear === '1') { var k = nextYearKey(c); if (k) return k; } return CROP_PRICE_KEY[c]; }
+  /* THIS crop's contract (2026-11-04, fx/soyroll2): the harvest month (Dec corn, Nov soybeans)
+     until CBOT first notice; from first notice to its expiry it is in delivery and every elevator
+     quotes basis against the next month, so the board price is the headline contract
+     (AgPxStamp.headline, components/price-local.js; Jan '27 soybeans from Oct 30 2026, Mar '27
+     corn from Nov 30). The page printed Nov '26 against a basis line on Jan '27. */
+  function thisCropKey(c) {
+    var k = CROP_PRICE_KEY[c], P = W.AgPxStamp;
+    if (c === 'wheat' || !P || !P.headline || !_livePrices) return k;
+    var h = P.headline(_livePrices, c === 'corn' ? 'corn' : 'beans'), a = tickerYM(k), hk = h && h.key, b = hk && tickerYM(hk);
+    return (a && b && b.yy * 12 + MONTH_I[b.mon] > a.yy * 12 + MONTH_I[a.mon]) ? hk : k;
+  }
+  function contractFor(c) { if (_beYear === '1') { var k = nextYearKey(c); if (k) return k; } return thisCropKey(c); }
   /* When the cost lines are farmdoc's budget for next year's crop (BUDGETS.year 2027 while the
      front December is Dec '26), the contract opens on that crop year too: Dec '27 corn, Nov '27
      beans, so price and costs are one crop (Oct 17, 2026 re-score). A reader who picks a contract
@@ -446,7 +460,7 @@
     if (ym && BUDGETS.year === 2000 + ym.yy + 1 && nextYearKey(c) && _beYear !== '1') { _beYear = '1'; syncRegionUI(); coFill(true, true); }
   }
   W.__beAutoYear = function () { return { year: _beYear, picked: _yearPicked }; };
-  function contractLabel(c, key) { if (c === 'wheat') return CROP_CONTRACT.wheat; var ym = tickerYM(key); if (!ym) return CROP_CONTRACT[c] || CROP_NAMES[c]; return ym.mon + " '" + String(ym.yy).padStart(2, '0') + ' ' + (c === 'corn' ? 'corn' : 'soybeans') + ' (' + (2000 + ym.yy) + ' crop)'; }
+  function contractLabel(c, key) { if (c === 'wheat') return CROP_CONTRACT.wheat; var ym = tickerYM(key); if (!ym) return CROP_CONTRACT[c] || CROP_NAMES[c]; return ym.mon + " '" + String(ym.yy).padStart(2, '0') + ' ' + (c === 'corn' ? 'corn' : 'soybeans') + ' (' + cropOf(c, ym) + ' crop)'; }
   function cropYear() {
     var ym = tickerYM(CROP_PRICE_KEY.corn);
     var base = ym ? 2000 + ym.yy : new Date().getFullYear();
@@ -454,14 +468,14 @@
   }
   function syncYearSelect(c) {
     var sel = $('be-year'), nw = $('live-name-wrap'), nt = $('yr-note'); if (!sel) return;
-    var k0 = CROP_PRICE_KEY[c], k1 = nextYearKey(c);
+    var k0 = thisCropKey(c), k1 = nextYearKey(c);
     var y2 = $('be-yr2');
     if (!k1) { sel.hidden = true; if (nw) nw.hidden = false; if (nt) nt.hidden = true; if (y2) y2.hidden = true; return; }
     sel.innerHTML = '<option value="0">' + contractLabel(c, k0) + '</option><option value="1">' + contractLabel(c, k1) + '</option>';
     sel.value = _beYear; sel.hidden = false; if (nw) nw.hidden = true;
     /* the same two choices as buttons beside the answer (2026-10-17): "2026 crop, Dec '26" */
     if (y2) {
-      var lab = function (key) { var ym = tickerYM(key); return ym ? (2000 + ym.yy) + ' crop, ' + ym.mon + " '" + String(ym.yy).padStart(2, '0') : contractLabel(c, key); };
+      var lab = function (key) { var ym = tickerYM(key); return ym ? cropOf(c, ym) + ' crop, ' + ym.mon + " '" + String(ym.yy).padStart(2, '0') : contractLabel(c, key); };
       y2.innerHTML = ['0', '1'].map(function (v) { return '<label><input type="radio" name="be-yr2" value="' + v + '"' + (_beYear === v ? ' checked' : '') + '>' + lab(v === '1' ? k1 : k0) + '</label>'; }).join('');
       y2.hidden = false;
     }
