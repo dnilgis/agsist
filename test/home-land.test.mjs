@@ -69,14 +69,14 @@ test("home-land.js: whose sale, what it says, and never a name", () => {
   assert.equal(il.st, "IL"); assert.equal(il.covered, true);
   const w = H.words(FIX, il);
   assert.equal(w.v, "$21,000 an acre");
-  assert.equal(w.k, "Top bare-land price in Illinois, 30 days to Oct 30");
-  assert.equal(w.s, "120 acres, Madison County, recorded Oct 30, 2026. 81% above the county\u2019s middle, $11,584 (48 sales in 24 months). Illinois Department of Revenue records.");
+  assert.equal(w.k, "Top bare-land price in Illinois, 30 days to Oct 30");  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
+  assert.equal(w.s, "120 acres, Madison County, recorded Oct 30, 2026. 81% above the county\u2019s middle, $11,584 (48 sales in 24 months). Illinois Department of Revenue records.");  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
   assert.equal(w.href, "/land-sales/illinois/madison-county#s-0a1b2c3d4e");
   assert.equal(w.all, "Farmland sales by county in IL, IN, NJ, VT, WI");
   // no saved state: the newest lead of any covered state, labeled with its state
   const any = H.pick(FIX, "", NOW);
   assert.equal(any.st, "IL");
-  assert.match(H.words(FIX, any).k, /^Top bare-land price in Illinois, 30 days to Oct 30$/);
+  assert.match(H.words(FIX, any).k, /^Top bare-land price in Illinois, 30 days to Oct 30$/);  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
   // an uncovered saved state: said plainly, then the newest covered sale
   const ia = H.pick(FIX, "IA", NOW);
   assert.equal(ia.st, "IL"); assert.equal(ia.covered, false);
@@ -86,7 +86,7 @@ test("home-land.js: whose sale, what it says, and never a name", () => {
   assert.equal(H.pick(FIX, "VT", NOW).st, "VT");
   // under the county middle reads "under"; sale date for Indiana-style records
   const low = { states: ["WI"], lead: { WI: lead("WI", { pct: -12, basis: "sale date" }) } };
-  assert.match(H.words(low, H.pick(low, "WI", NOW)).s, /, sold Sep 4, 2026\. 12% under the county\u2019s middle/);
+  assert.match(H.words(low, H.pick(low, "WI", NOW)).s, /, sold Sep 4, 2026\. 12% under the county\u2019s middle/);  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
   for (const p of [il, any, ia]) assert.ok(!JSON.stringify(H.words(FIX, p)).includes(NAME), "no name in any line");
   // withheld: no file, no leads, a malformed lead, a link that is not a land sales page
   assert.equal(H.pick(null, "IL", NOW), null);
@@ -258,7 +258,7 @@ test("in Chromium: the longest real words fit, nothing is cut, the height holds"
           const nc = await look(browser, srv.address().port, width, { zip: "27601", state: "NC", county: "Wake", label: "Raleigh, NC", lat: 35.78, lon: -78.64 });
           assert.match(nc.k, /^Not yet in North Carolina\. Top bare-land price in /, `${st} ${width}`);
           assert.ok(nc.s.endsWith(SRC[st] + " records."), `${st} ${width}: the source is in the line`);
-          assert.match(nc.s, /Oct 30, 2026/, `${st} ${width}: the date is in the line`);
+          assert.match(nc.s, /Oct 30, 2026/, `${st} ${width}: the date is in the line`);  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
           assert.deepEqual(nc.cut, [], `${st} ${width}: no line cut (${nc.k} | ${nc.s})`);
           const gone = await look(browser, without.address().port, width, { zip: "27601", state: "NC", county: "Wake", label: "Raleigh, NC", lat: 35.78, lon: -78.64 });
           assert.ok(Math.abs(gone.block.h - nc.block.h) < 1, `${st} ${width}: the same height with and without the sale (${gone.block.h} vs ${nc.block.h})`);
