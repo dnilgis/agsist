@@ -374,19 +374,16 @@
   .rp-call{margin:.25rem 0 0}
   .rp-call a{color:inherit;text-decoration:underline;text-underline-offset:2px}
   .rp-box ul{margin:0;padding:0 0 0 1.05rem;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5}
-  /* In the frame (Sig, Nov 4: crops of the frame maker's photos, logo and model removed; no brand name).
-     Each picture sits in a fixed-height tile, so nothing moves as it loads; 2 across on a phone. */
+  /* In the frame (Sig, Nov 4): Sig's own three crops of the frame maker's pictures, used as he cropped them
+     (resized only). The page's own text names no brand. Each picture carries its width and height and is
+     drawn at width:100%, height:auto, so its box is held before it loads (CLS 0). Stacked in a narrow box
+     (a phone, and the buy column at 1280, about 350 px), a row of three once the box is 520 px or wider. */
   .rp-inframe{grid-column:1/-1;margin:.3rem 0 0;container:inframe/inline-size}
-  .rp-box .rp-inframe ul{list-style:none;padding:0;margin:.2rem 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
-  .rp-inframe li{margin:0}
-  .rp-inframe figure{margin:0}
-  .rp-if-p{height:120px;display:flex;align-items:center;justify-content:center;background:var(--surface,#f4f1ec);border-radius:6px;overflow:hidden}
-  .rp-if-p img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
-  .rp-inframe figcaption{margin:.25rem 0 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.35}
-  /* the columns follow the room the box has, not the screen: at 1280 the box is about 350 px, where 5
-     across would be 64 px tiles with captions broken mid-word; 3 across there, 5 when the box is 640 px or wider */
-  @container inframe (min-width:340px){.rp-box .rp-inframe ul{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  @container inframe (min-width:640px){.rp-box .rp-inframe ul{grid-template-columns:repeat(5,minmax(0,1fr))}}
+  .rp-box .rp-inframe ul{list-style:none;padding:0;margin:.2rem 0 0;display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;justify-items:center}
+  .rp-inframe li{margin:0;width:100%;display:flex;justify-content:center}
+  .rp-inframe img{display:block;width:100%;height:auto;border-radius:6px}
+  .rp-inframe .rp-if-hw{max-width:192px}
+  @container inframe (min-width:520px){.rp-box .rp-inframe ul{grid-template-columns:minmax(0,3.2fr) minmax(0,1fr) minmax(0,3.2fr);align-items:center}}
   /* room around the buy button (2026-10-23, Sig: a cleaner path to checkout) */
   .rp-pay{width:100%;min-height:52px;margin:.2rem 0 .3rem;font-size:1.05rem;font-weight:700}
   .rp-pay:disabled,.rp-bar .btn:disabled{opacity:.55;cursor:not-allowed}
@@ -980,7 +977,7 @@
               <div><h3>Framed</h3><ul><li>Shipping included, anywhere in the 50 states</li><li>A 13 x 19 in frame, oak wood or black, your pick</li><li>An acid-free white mat cut for 11 x 17, a 16.5 x 10.5 in opening</li><li>2 mm tempered glass front</li><li>14.3 x 20.3 in outside, 0.9 in frame, sturdy backboard, hanging hardware included</li><li>Packed with corner guards and foam, double-boxed</li><li>Numbered, and initialed by hand in pencil</li></ul></div>
               <div><h3>Print</h3><ul><li>Shipping included, anywhere in the 50 states</li><li>I print it myself, and you see a proof first</li><li>Numbered, and initialed by hand in pencil</li><li>Printed on 13 x 19 in heavy, textured cotton fine-art paper; fits a standard 13 x 19 frame with an 11 x 17 mat</li><li>Ships flat between chipboard</li></ul></div>
               <div><h3>Digital file</h3><ul><li>A PDF, a PNG and a JPG of the picture alone, 12 x 18 in at 300 dpi, no watermark; it fits a 12 x 18 frame</li><li>A one-page guide to reading it, and tips for printing it</li><li id="rp-dig-when">A proof by email within 1 business day of paying, the full file once you approve it</li><li>Take it to any print shop</li><li>Want a change after? Write to me and I&rsquo;ll redo it.</li></ul></div>
-              <div class="rp-inframe" id="rp-inframe"><h3>In the frame</h3><ul><li><figure><div class="rp-if-p"><img src="/img/rain-print/frame/oak-back.webp" width="255" height="353" loading="lazy" decoding="async" alt="The back of an oak frame: a sturdy brown backboard held by metal turn tabs"></div><figcaption>Oak, back: sturdy backboard and turn tabs</figcaption></figure></li><li><figure><div class="rp-if-p"><img src="/img/rain-print/frame/black-back.webp" width="247" height="410" loading="lazy" decoding="async" alt="The back of a black frame: a black backboard held by metal turn tabs"></div><figcaption>Black, back</figcaption></figure></li><li><figure><div class="rp-if-p"><img src="/img/rain-print/frame/layers-top.webp" width="480" height="180" loading="lazy" decoding="async" alt="The corner of an oak wood frame lifted above its sheet of clear glass"></div><figcaption>Oak wood frame over 2 mm tempered glass</figcaption></figure></li><li><figure><div class="rp-if-p"><img src="/img/rain-print/frame/tab.webp" width="88" height="67" loading="lazy" decoding="async" alt="A close look at one metal turn tab that holds the backboard"></div><figcaption>Metal turn tabs, no tools</figcaption></figure></li><li><figure><div class="rp-if-p"><img src="/img/rain-print/frame/hanger.webp" width="88" height="67" loading="lazy" decoding="async" alt="A close look at a metal hanger"></div><figcaption>Hangs wide or tall</figcaption></figure></li></ul></div>
+              <div class="rp-inframe" id="rp-inframe"><h3>In the frame</h3><ul><li><img src="/img/rain-print/frame/layers.webp" width="637" height="541" loading="lazy" decoding="async" alt="What&rsquo;s in the frame: oak wood frame, 2 mm tempered glass, acid-free mat, your print, backboard"></li><li><img class="rp-if-hw" src="/img/rain-print/frame/hardware.webp" width="192" height="358" loading="lazy" decoding="async" alt="Back of the frame: metal turn tabs, hangers for wide or tall, backboard"></li><li><img src="/img/rain-print/frame/glass.webp" width="617" height="521" loading="lazy" decoding="async" alt="2 mm tempered glass"></li></ul></div>
               <p class="rp-box-sun">Keep a print out of direct sun; the inks fade in strong light.</p>
             </div>
           </details>

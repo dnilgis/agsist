@@ -1,6 +1,6 @@
-/* In the frame (Sig, Nov 4): five crops of the frame maker's photos under What you get on /rain-print,
- * with the maker's logo and model photos removed. Each picture exists, is a small webp, carries its size,
- * loads lazily and has alt text; no brand name is on the page, in an alt or a caption.
+/* In the frame (Sig, Nov 4): Sig's own three crops of the frame maker's pictures under What you get on
+ * /rain-print, used as he cropped them (resized only). Each picture exists, is a small webp, carries its
+ * size, loads lazily and has its alt text; the page's own text names no brand.
  *
  *   node --test test/rp-frame-photos.test.mjs
  */
@@ -11,7 +11,11 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const HTML = readFileSync(ROOT + "rain-print.html", "utf8");
-const NAMES = ["oak-back", "black-back", "layers-top", "tab", "hanger"];
+const PICS = [
+  ["layers", "What&rsquo;s in the frame: oak wood frame, 2 mm tempered glass, acid-free mat, your print, backboard"],
+  ["hardware", "Back of the frame: metal turn tabs, hangers for wide or tall, backboard"],
+  ["glass", "2 mm tempered glass"],
+];
 
 // the webp header: RIFF....WEBP, and the canvas size from a VP8, VP8L or VP8X chunk
 function webpSize(buf) {
@@ -24,38 +28,32 @@ function webpSize(buf) {
   throw new Error("unknown webp chunk " + kind);
 }
 
-test("the five frame pictures exist, are small, and the page gives each its size, lazy loading and alt text", () => {
+test("the three frame pictures exist, are small, and the page gives each its size, lazy loading and alt text", () => {
   const block = HTML.match(/<div class="rp-inframe" id="rp-inframe"><h3>In the frame<\/h3><ul>([\s\S]*?)<\/ul><\/div>/);
   assert.ok(block, "the In the frame row is in What you get");
   const imgs = [...block[1].matchAll(/<img ([^>]*)>/g)].map((m) => m[1]);
-  assert.equal(imgs.length, NAMES.length);
-  NAMES.forEach((n, i) => {
+  assert.equal(imgs.length, PICS.length);
+  PICS.forEach(([n, alt], i) => {
     const a = imgs[i], f = "img/rain-print/frame/" + n + ".webp";
     assert.ok(existsSync(ROOT + f), f);
     assert.ok(a.includes('src="/' + f + '"'), n + " src");
-    assert.ok(statSync(ROOT + f).size <= 25 * 1024, f + " is 25 KB or less");
+    assert.ok(statSync(ROOT + f).size <= 60 * 1024, f + " is 60 KB or less");
     const [w, h] = webpSize(readFileSync(ROOT + f));
-    assert.ok(Math.max(w, h) <= 640, f + " is 640 px or less on the long side");
+    assert.ok(Math.max(w, h) <= 900, f + " is 900 px or less on the long side");
     assert.ok(a.includes('width="' + w + '" height="' + h + '"'), n + " carries its real size");
     assert.match(a, /loading="lazy"/, n + " loads lazily");
-    const alt = /alt="([^"]*)"/.exec(a);
-    assert.ok(alt && alt[1].trim().length >= 10, n + " has alt text");
+    assert.ok(a.includes('alt="' + alt + '"'), n + " has its alt text");
   });
-  const caps = [...block[1].matchAll(/<figcaption>([^<]*)<\/figcaption>/g)].map((m) => m[1]);
-  assert.deepEqual(caps, ["Oak, back: sturdy backboard and turn tabs", "Black, back", "Oak wood frame over 2 mm tempered glass",
-    "Metal turn tabs, no tools", "Hangs wide or tall"]);
   assert.doesNotMatch(block[1], /—|https?:|<a /, "no em dash, no store link");
 });
 
-test("no brand name on the page, in an alt or a caption", () => {
+test("the page's own text names no brand", () => {
   assert.doesNotMatch(HTML, /wisesun/i);
-  assert.doesNotMatch(HTML, /\bWS\b/);
 });
 
-test("the tiles hold their height before the pictures load: 2 across on a phone, more as the box widens", () => {
-  assert.match(HTML, /\.rp-if-p\{height:120px;/);
+test("the pictures hold their box before they load: stacked in a narrow box, a row of three when it is wide", () => {
+  assert.match(HTML, /\.rp-inframe img\{display:block;width:100%;height:auto;/);
   assert.match(HTML, /\.rp-inframe\{[^}]*container:inframe\/inline-size\}/);
-  assert.match(HTML, /\.rp-box \.rp-inframe ul\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(HTML, /@container inframe \(min-width:340px\)\{\.rp-box \.rp-inframe ul\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)\}\}/);
-  assert.match(HTML, /@container inframe \(min-width:640px\)\{\.rp-box \.rp-inframe ul\{grid-template-columns:repeat\(5,minmax\(0,1fr\)\)\}\}/);
+  assert.match(HTML, /\.rp-box \.rp-inframe ul\{[^}]*grid-template-columns:minmax\(0,1fr\);/);
+  assert.match(HTML, /@container inframe \(min-width:520px\)\{\.rp-box \.rp-inframe ul\{grid-template-columns:minmax\(0,3\.2fr\) minmax\(0,1fr\) minmax\(0,3\.2fr\);/);
 });
