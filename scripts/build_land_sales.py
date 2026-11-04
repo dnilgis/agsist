@@ -144,14 +144,8 @@ def day(iso):
     return LA.long_day(iso)
 
 
-def county_slug(name):
-    return re.sub(r"[^a-z0-9]+", "-", str(name or "").lower()).strip("-") + "-county"
-
-
-def sale_id(st, r):
-    """Opaque and stable: the state, county, document and date of the first deed of the sale."""
-    k = "|".join(str(x) for x in (st, r.get("fips"), r.get("doc"), str(r.get("date") or "")[:10], BLS.js_round(BLS.num(r.get("price")) or 0)))
-    return hashlib.sha1(k.encode("utf-8")).hexdigest()[:10]
+county_slug = LA.county_slug    # one copy: the land sale email links each sale to land-sales/<state>/<county_slug>#s-<sale_id>
+sale_id = LA.sale_id            # opaque and stable: the state, county, document, deed date and price of the first deed
 
 
 def buyer_key(name):
@@ -432,7 +426,8 @@ PRICE_KIND = ("Every price here is a recorded sale: what the state's transfer re
               "Auction sales count once recorded. Asking prices and auction bids that did not close are never shown.")
 
 
-def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None):
+def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None, anchors=False):
+    """anchors: each row gets id="s-<sale id>" (the county page; the land sale email links to it)."""
     th = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Recorded price", "ppa": "$/acre", "note": "Note", "usual": "County usual $/acre",
           "kind": "Type"}
     num = {"acres", "price", "ppa", "usual"}
@@ -469,7 +464,8 @@ def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa",
                 v = "; ".join(x for x in (flag_words(p), "with buildings" if p.get("bldg") else "") if x)
             tds.append('<td%s>%s</td>' % (' class="n"' if c in num else "", e(v)))
         tds.append("<td>%s</td>" % names_btn(p["id"], names_file))
-        h.append(('<tr data-k="%s">' % KIND_CODE.get(p.get("kind"), "f") if "kind" in cols else "<tr>") + "".join(tds) + "</tr>")
+        rid = ' id="s-%s"' % e(p["id"]) if anchors else ""
+        h.append(('<tr%s data-k="%s">' % (rid, KIND_CODE.get(p.get("kind"), "f")) if "kind" in cols else "<tr%s>" % rid) + "".join(tds) + "</tr>")
     h.append("</tbody></table></div>")
     return "".join(h)
 
@@ -706,7 +702,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     atlas = "/farmland-atlas/%s/%s" % (s, slug)
     has_atlas = (d.repo / "farmland-atlas" / s / (slug + ".html")).exists()
     page = allp[:COUNTY_ROWS]
-    b = [head(title, desc[:300], url, ld, early), '<div class="ls-w">',
+    b = [head(title, desc[:300], url, ld, early, SALE_CSS), '<div class="ls-w">',
          '<nav class="ls-bc" aria-label="Breadcrumb"><a href="/land-sales/">Farmland sales</a> / %s</nav>' % e(NAME[st]),
          "<h1>Farmland sales in %s</h1>" % e(cn),
          '<p class="ls-ans">%d recorded sales in the last 12 months, any size (%d of %d acres or more).</p>' % (n12all, n12, LIST_MIN_ACRES),
@@ -746,7 +742,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
         opts = "".join('<option value="%s">%s</option>' % (KIND_CODE[k], e(w[0].upper() + w[1:])) for k, w in KIND_WORDS.items() if kc[k])
         b.append('<div class="ls-flt" hidden data-ls-list="%s" data-ls-names="%s" data-ls-n="%d"><label>Type <select class="ls-fk">'
                  '<option value="">All types</option>%s</select></label></div>' % (e(lf), e(nf), len(allp), opts))
-        b.append(sale_table(page, nf, cols=("when", "where", "acres", "price", "ppa", "kind", "note"), caption="Newest first, %s" % cn, tid="ls-all"))
+        b.append(sale_table(page, nf, cols=("when", "where", "acres", "price", "ppa", "kind", "note"), caption="Newest first, %s" % cn, tid="ls-all", anchors=True))
         if len(allp) > len(page):
             b.append('<p class="ls-more" data-ls-shown="%d">Showing the newest %d of %d sales. '
                      '<button type="button" class="ls-mo" hidden>Show %d more</button></p>' % (len(page), len(page), len(allp), COUNTY_ROWS))
@@ -768,7 +764,32 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     links.append('<a href="/comp-report">Comparable sales report</a>')
     links.append('<a href="/land-sales/">Other counties</a>')
     b.append("<p>" + " &middot; ".join(links) + "</p></div>")
+    if allp:
+        b.append("<script>%s</script>" % SALE_JS)
     return "\n".join(b) + "\n" + FOOT
+
+
+# One sale, linked (Sig, Nov 3, 2026: every sale in the land sale email links to its row here). Each row of
+# the county table has id="s-<sale id>" (land_alert.sale_id: a hash, no name). #s-<id> scrolls to the row and
+# marks it (:target). A sale past the newest COUNTY_ROWS is not in the page until components/land-sales.js draws
+# it from the list file, so this presses its "Show more" until the row is there (found by its names button,
+# which carries the same id), then marks it. Kept in the page, not in land-sales.js, so no shared file changes.
+SALE_CSS = (".ls-t tr[id]{scroll-margin-top:5rem}"
+            ".ls-t tr:target td,.ls-t tr.ls-hit td{background:rgba(212,160,23,.18)}"
+            ".ls-t tr:target,.ls-t tr.ls-hit{outline:2px solid var(--brand,var(--gold,#d4a017));outline-offset:-2px}")
+SALE_JS = ("(function(){var t=0,n=0,id='',k=0;"
+           "function find(){var r=document.getElementById('s-'+id);if(r)return r;"
+           "var b=document.querySelector('#ls-all button.ls-nm[data-ls-id=\"'+id+'\"]');return b?b.closest('tr'):null;}"
+           "function show(r){try{r.scrollIntoView({block:'center'});}catch(e){}}"
+           "function step(my){if(my!==k)return;var r=find();if(r){r.classList.add('ls-hit');show(r);[600,1600].forEach(function(d){setTimeout(function(){if(my===k&&r.isConnected)show(r);},d);});return;}"
+           "var mo=document.querySelector('.ls-more button.ls-mo');"
+           "if(mo&&!mo.hidden&&mo.getAttribute('aria-busy')!=='true'&&n<80){n++;mo.click();}"
+           "if(++t<160)setTimeout(function(){step(my);},250);}"
+           "function go(){var m=/^#s-([0-9a-f]{10})$/.exec(location.hash||'');"
+           "Array.prototype.forEach.call(document.querySelectorAll('#ls-all tr.ls-hit'),function(r){r.classList.remove('ls-hit');});"
+           "if(!m)return;id=m[1];t=0;step(++k);}"
+           "window.addEventListener('hashchange',go);"
+           "if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();")
 
 
 # "Your county" on the hub (Sig, Oct 29, 2026: the land sale page should be easy to find). The jump
@@ -1045,6 +1066,16 @@ def selftest():
         ck("no em dash", "—" not in "".join(texts.values()))
         lat = json.loads(texts["data/land-sales/latest.json"])
         ck("latest.json names no one", not any(n in texts["data/land-sales/latest.json"] for n in allnames))
+        # one sale, linked (Nov 3): every row of the county table has id="s-<sale id>", the same on a rebuild
+        cp = texts["land-sales/wisconsin/testa-county.html"]
+        rids = re.findall(r'<tr id="s-([0-9a-f]{10})" data-k=', cp)
+        lf = json.loads(texts["data/land-sales/wi/55999.json"])
+        want = sorted(a[lf["cols"].index("id")] for a in lf["s"])      # the county's whole list (under COUNTY_ROWS here)
+        ck("county page: each listed sale's row carries its id, once", len(rids) == len(set(rids)) == len(want) and sorted(rids) == want)
+        ck("county page: the row ids are the same on a second build", re.findall(r'<tr id="s-([0-9a-f]{10})"', build(t)["land-sales/wisconsin/testa-county.html"]) == rids)
+        ck("county page: #s-<id> marks the row (:target) and the page opens Show more for an older one",
+           "tr:target" in cp and "ls-hit" in cp and "mo.click()" in cp and "<style>" in cp)
+        ck("the row id is a hash, never a name or document", all(not re.search(r"[A-Z]", x) for x in rids) and not re.search(r'id="s-[^"]*(SELLER|BUYER|D\d)', cp))
         ck("latest.json month", lat["month"] == "2026-09" and lat["n"] == 8)
         sf = json.loads(texts["data/land-sales/wi.json"])
         ck("featured rows carry the township point", sf["counties"]["55999"]["s"][0][7] == 45.0)

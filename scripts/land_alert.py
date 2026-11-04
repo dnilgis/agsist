@@ -34,8 +34,18 @@ the middle of the township or town. A sale whose place has no point is not place
 WHICH MONTH. A sale belongs to the month it was recorded (filed): Wisconsin rows carry the
 filed date (rec); Illinois rows carry it from the land-data run after Oct 23, 2026. A county file
 without a rec column is listed by its sale (deed) date instead, and the email says "sale date"
-for those rows. A state's sales are read for month M only when its files were fetched after M
-ended (fresh); otherwise the reader waits (a late land run is followed by a send dispatched by hand).
+for those rows. A state's sales are read for month M only when the state has published M (ready()):
+Wisconsin's RETR reports are monthly, so M is ready when its report is on file (index.json "months");
+any other state when it was read after M ended (a county file's fetched_utc, the state index's, or the
+state's checked stamp, data/land/checked.json) AND its records reach M's last week (REACH_DAYS): a state
+read on Nov 3 whose records stop on Oct 14 has posted half of October, not October. Otherwise the reader waits
+("wait-data"), and scripts/send_land_alert.py sends the newest month that is ready instead (Sig, Nov 3).
+
+FETCHED AND CHECKED (Nov 3, 2026). A land run that reads a state and finds nothing new leaves its county
+files as they were (scripts/land_keep_stamp_only.py), fetched_utc included, so the files alone cannot
+tell "looked and there is nothing newer" from "did not look". fetch_land_sales.py writes
+data/land/checked.json after each state it read: {st: {checked_utc, newest}} (newest: the newest month
+the source holds). checked_utc counts as a read; newest counts toward the reach.
 
 WHAT IS LISTED (Sig, Oct 29, 2026: every recorded sale of any acreage): market sales recorded in
 the month with the acres known, any acreage, small parcels included, nearest first, at most
@@ -57,6 +67,7 @@ try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit be
 except ImportError: pass
 import datetime
 import glob
+import hashlib
 import json
 import math
 import os
@@ -147,7 +158,7 @@ class Land:
 
     def __init__(self, repo=REPO, states=STATES):
         self.repo, self.states = str(repo), tuple(states)
-        self._ix, self._f, self._rows = {}, {}, {}
+        self._ix, self._f, self._rows, self._ck = {}, {}, {}, None
 
     def index(self, st):
         if st not in self._ix:
@@ -156,6 +167,31 @@ class Land:
             except (OSError, ValueError):
                 self._ix[st] = None
         return self._ix[st]
+
+    def checked(self, st):
+        """The state's checked stamp from data/land/checked.json, {} when none."""
+        if self._ck is None:
+            try:
+                self._ck = json.load(open(os.path.join(self.repo, "data", "land", "checked.json"), encoding="utf-8"))
+            except (OSError, ValueError):
+                self._ck = {}
+        v = self._ck.get(st) if isinstance(self._ck, dict) else None
+        return v if isinstance(v, dict) else {}
+
+    def seen(self, st, f):
+        """The last day state st was read for this county file: its fetched_utc, the state index's, or the checked stamp."""
+        return max(str((f or {}).get("fetched_utc") or "")[:10], str((self.index(st) or {}).get("fetched_utc") or "")[:10],
+                   str(self.checked(st).get("checked_utc") or "")[:10])
+
+    def reach(self, st, seen):
+        """The newest day state st's records reach, never past the day they were read: the index's newest
+        county date (a typed year can put a deed in the future) and the checked stamp's newest day."""
+        ds = [str(c.get("to") or "")[:10] for c in (self.index(st) or {}).get("counties") or []]
+        nw = str(self.checked(st).get("newest") or "")[:10]
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", nw):
+            ds.append(nw)
+        ds = [d for d in ds if d and d <= seen]
+        return max(ds) if ds else ""
 
     def file(self, st, fips):
         k = (st, fips)
@@ -202,9 +238,40 @@ class Land:
         return out
 
 
+def sale_id(st, r):
+    """A sale's id: opaque and stable across rebuilds (a hash of the state, county, document, deed date and
+    price of its first deed). The county sale page gives that sale's row id="s-<id>" and the land sale email
+    links each sale to it (Sig, Nov 3, 2026). build_land_sales.sale_id is this one. No name goes into it."""
+    k = "|".join(str(x) for x in (st, r.get("fips"), r.get("doc"), str(r.get("date") or "")[:10], BLS.js_round(BLS.num(r.get("price")) or 0)))
+    return hashlib.sha1(k.encode("utf-8")).hexdigest()[:10]
+
+
+def county_slug(name):
+    """The county part of a county sale page's address: land-sales/<state>/<slug>."""
+    return re.sub(r"[^a-z0-9]+", "-", str(name or "").lower()).strip("-") + "-county"
+
+
 def fresh(f, month_last):
     """True when the county file was fetched after the month ended."""
     return bool(f) and str(f.get("fetched_utc") or "")[:10] > month_last
+
+
+REACH_DAYS = 7      # a month is posted when the state's records reach its last 7 days (Illinois read Nov 3 reached Oct 30)
+
+
+def ready(land, st, f, year, m0, reach=""):
+    """True when state st has published month m0 of year for this county file (see WHICH MONTH).
+    reach: the newest recorded day already seen in the near county files of st (capped by the caller)."""
+    first, last = month_bounds(year, m0)
+    ix = land.index(st) or {}
+    months = ix.get("months")
+    if months:                                  # Wisconsin: the state's monthly report is on file or not
+        return "%04d%02d" % (year, m0 + 1) in months
+    seen = land.seen(st, f)
+    if not seen > last:
+        return False
+    week = (datetime.date.fromisoformat(last) - datetime.timedelta(days=REACH_DAYS - 1)).isoformat()
+    return max(land.reach(st, seen), min(reach or "", seen)) >= week
 
 
 def row(r, d):
@@ -215,7 +282,7 @@ def row(r, d):
     return {"when": r["when"], "basis": "recorded" if r["has_rec"] else "sale date", "acres": a,
             "price": BLS.js_round(BLS.num(r.get("price")) or 0), "ppa": r.get("ppa"),
             "place": r.get("muniName") or None, "county": r.get("county"), "fips": r.get("fips"), "st": r["st"], "mi": d,
-            "pt": r["pt"], "bldg": with_bldg}
+            "pt": r["pt"], "bldg": with_bldg, "sid": sale_id(r["st"], r)}
 
 
 def windows(year, m0):
@@ -259,20 +326,42 @@ def median_line(near, W, starts):
 
 def month_report(land, ll, radius, year, m0, today, need_fresh=True):
     """Everything one email needs for one ZIP point and radius, or {"skip": reason}.
-    skip reasons: outside (no IL or WI county near), wait-data (a state's files not fetched
-    since the month ended). An empty month is not a skip: rows == []."""
+    skip reasons: outside (no county of a state in the data near), wait-data ("states" lists the late ones).
+    need_fresh: True, each near county file fetched after the month ended (fresh(); the Daily line);
+    "posted", each state near has posted the month (ready(); the land sale email since Nov 3, 2026);
+    False, the files on hand. An empty month is not a skip: rows == []."""
     first, last = month_bounds(year, m0)
     near_c = land.counties_near(ll, radius)
     if not near_c:
         return {"skip": "outside"}
+    if need_fresh is True:
+        for st, c in near_c:
+            f = land.file(st, c["fips"])
+            if f and not fresh(f, last):
+                return {"skip": "wait-data", "state": st, "states": [st]}
+    elif need_fresh == "posted":
+        late, got = [], {}
+        for st, c in near_c:
+            f = land.file(st, c["fips"])
+            # a county counts when its center or one of its places is inside the radius: a state whose
+            # nearest places are all past it holds no reader's month back (Charleston, IL at 25 miles)
+            if f and (miles(ll, (c["lat"], c["lng"])) <= radius or any(
+                    isinstance(m, list) and len(m) > 2 and isinstance(m[1], (int, float)) and isinstance(m[2], (int, float))
+                    and miles(ll, (m[1], m[2])) <= radius for m in (f.get("munis") or {}).values())):
+                got.setdefault(st, []).append((c, f))
+        for st, cf in got.items():
+            seen = max(land.seen(st, f) for c, f in cf)
+            near_reach = max([r["when"] for c, f in cf for r in land.sales(st, c["fips"], today) if r["when"] and r["when"] <= seen] or [""])
+            if not all(ready(land, st, f, year, m0, near_reach) for c, f in cf):
+                late.append(st)
+        if late:
+            return {"skip": "wait-data", "state": late[0], "states": sorted(late)}
     rows_in, unplaced, inside, starts, reads = [], 0, [], [], {}
     for st, c in near_c:
         f = land.file(st, c["fips"])
         if not f:
             continue
-        if need_fresh and not fresh(f, last):
-            return {"skip": "wait-data", "state": st}
-        reads[st] = max(reads.get(st, ""), str(f.get("fetched_utc") or "")[:10])
+        reads[st] = max(reads.get(st, ""), land.seen(st, f) if need_fresh == "posted" else str(f.get("fetched_utc") or "")[:10])
         touched = False
         for r in land.sales(st, c["fips"], today):
             if not r["pt"]:
@@ -301,6 +390,14 @@ def month_report(land, ll, radius, year, m0, today, need_fresh=True):
 
 
 # ---------------------------------------------------------------- selftest
+def _with_months(tmp, months):
+    p = os.path.join(tmp, "data", "land", "wi", "index.json")
+    ix = json.load(open(p))
+    ix["months"] = months
+    json.dump(ix, open(p, "w"))
+    return Land(tmp)
+
+
 def selftest():
     import tempfile
     fails = []
@@ -365,7 +462,8 @@ def selftest():
        (rep["no_acres"], rep["unplaced"]))
     ck("with buildings by property class, not by deed text; $/acre from the shared rule",
        rep["rows"][3]["bldg"] is True and rep["rows"][4]["bldg"] is False and rep["rows"][0]["ppa"] == 5000, rep["rows"][3:])
-    ck("a row carries no name, parcel, legal or document", all(set(r) == {"when", "basis", "acres", "price", "ppa", "place", "county", "fips", "st", "mi", "pt", "bldg"} for r in rep["rows"])
+    ck("a row carries no name, parcel, legal or document", all(set(r) == {"when", "basis", "acres", "price", "ppa", "place", "county", "fips", "st", "mi", "pt", "bldg", "sid"} for r in rep["rows"])
+       and all(re.fullmatch(r"[0-9a-f]{10}", r["sid"]) for r in rep["rows"])
        and not re.search(r"SELLERNAME|BUYERNAME|SECRET LEGAL|P-0|D0", json.dumps(rep)))
     med = rep["median"]
     ck("median: both windows have 10+ sales and compare, so both print with their counts", med["cur"] and med["cur"]["n"] >= 10 and med["prev"]["n"] >= 10, med)
@@ -379,6 +477,28 @@ def selftest():
     ck("an empty month is an answer with no rows, not a skip", "skip" not in emp and emp["rows"] == [] and emp["n"] == 0, emp)
     # stale data waits
     ck("files fetched before the month ended: wait-data", month_report(land, zipll, 25, 2026, 9, today)["skip"] == "wait-data")
+    # ready() (Nov 3): read after the month AND records that reach into it; the checked stamp counts as a read
+    wf = land.file("WI", "55999")
+    rch = "2026-10-02"     # the newest recording in the near files, as month_report passes it
+    ck("ready: read Oct 3 with records into September; not October", ready(land, "WI", wf, 2026, 8, rch) and not ready(land, "WI", wf, 2026, 9, rch)
+       and not ready(land, "WI", wf, 2026, 8))
+    ck("ready: read after the month but the records stop months before it (a state that posts late): not ready",
+       not ready(land, "WI", dict(wf, fetched_utc="2026-12-05T00:00:00Z"), 2026, 10, rch))
+    json.dump({"WI": {"checked_utc": "2026-11-03T09:40:00Z", "newest": "2026-10-29"}}, open(os.path.join(tmp, "data", "land", "checked.json"), "w"))
+    ck("ready: a checked stamp after the month, with records reaching it, is a read even when the file kept its old fetched date",
+       ready(Land(tmp), "WI", wf, 2026, 9) and Land(tmp).seen("WI", wf) == "2026-11-03")
+    json.dump({"WI": {"checked_utc": "2026-11-03T09:40:00Z", "newest": "2026-10-14"}}, open(os.path.join(tmp, "data", "land", "checked.json"), "w"))
+    ck("ready: records that stop mid-month (read Nov 3, newest Oct 14) are half of October, not October; Oct 25 is its last week",
+       not ready(Land(tmp), "WI", wf, 2026, 9, "2026-10-14") and not ready(Land(tmp), "WI", wf, 2026, 9, "2026-10-24")
+       and ready(Land(tmp), "WI", wf, 2026, 9, "2026-10-25"))
+    os.remove(os.path.join(tmp, "data", "land", "checked.json"))
+    ck("ready: Wisconsin's monthly reports decide when the index lists them",
+       ready(Land(tmp), "WI", wf, 2026, 8, rch) and not ready(_with_months(tmp, ["202608"]), "WI", wf, 2026, 8, rch))
+    json.dump({"counties": [{"fips": "55999", "name": "Testing", "lat": 45.2, "lng": -91.0}]}, open(os.path.join(tmp, "data", "land", "wi", "index.json"), "w"))
+    far10 = month_report(Land(tmp), (44.5, -91.0), 10, 2026, 9, today, need_fresh="posted")
+    far50 = month_report(Land(tmp), (44.5, -91.0), 50, 2026, 9, today, need_fresh="posted")
+    ck("posted: a county with no place inside the radius holds nothing back; with a place inside, it does",
+       "skip" not in far10 and far10["rows"] == [] and far50.get("skip") == "wait-data" and far50.get("states") == ["WI"], (far10.get("skip"), far50))
     ck("a ZIP far from any Illinois or Wisconsin county: outside", month_report(land, (33.0, -97.0), 50, 2026, 8, today)["skip"] == "outside")
     # the median withheld under 10, with the reason in words and the counts
     f2 = dict(f, rows=R[:9])
