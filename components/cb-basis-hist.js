@@ -161,7 +161,7 @@
   }
   function chart(pts, endDate, label, sc) {
     var w = 320, h = CH_H, pl = 4, pr = 4, pt = CH_PT, pb = CH_PB;
-    var lo = sc.lo, hi = sc.hi;
+    var lo = sc.lo, hi = sc.hi, vals = pts.filter(function (p) { return !p.gap; });
     var lastD = pts[pts.length - 1].date;
     var t0 = Date.parse(sc.d0), t1 = Date.parse(sc.d1 > lastD ? sc.d1 : lastD);
     if (!(t1 > t0)) t1 = t0 + 864e5;
