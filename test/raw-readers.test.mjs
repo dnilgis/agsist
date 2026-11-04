@@ -15,6 +15,9 @@
  *   - every job that writes one saves it with push_raw.sh after the write, never `git add`s it,
  *     and rebuilds its summary in the same run (BUILD-RULES 61)
  *   - the PR checks and scripts/dev/checks.sh pull a moved file a node test reads
+ *   - a soft pull (continue-on-error) of a moved file never lets a send step mail on without it:
+ *     the send step's if must require that pull's success (Nov 4 checker on #325: cot-release-watch
+ *     mailed Funds this week with the twenty-year lines silently dropped when the unpack failed)
  * A --selftest run is not a read: each reader's selftest passed with both files absent (Nov 4).
  */
 import { test } from 'node:test';
@@ -110,10 +113,28 @@ function readsIn(step, rd) {
   return hits;
 }
 
-/** problems in one workflow's text: reads before a pull, writes never saved, `git add` of a moved path */
+const SEND = /scripts\/send_[A-Za-z0-9_]+\.py\b(?![^\n]*--selftest)/;
+const softOf = (step) => /^\s*continue-on-error:\s*true\s*$/m.test(step);
+const stepId = (step) => (step.match(/^\s*(?:- )?id:\s*([A-Za-z0-9_-]+)\s*$/m) || [])[1];
+const stepIf = (step) => (step.match(/^\s*(?:- )?if:\s*(.+)$/m) || [])[1] || '';
+
+/** problems in one workflow's text: reads before a pull, writes never saved, `git add` of a moved path,
+ * a send step that runs after a soft pull of a moved file without requiring it succeeded */
 export function problems(name, yml, rd = readers().readers) {
   const bad = [];
   const plain = code(yml);
+  for (const { job, steps } of jobs(yml)) {
+    const soft = [];
+    steps.forEach((s, i) => {
+      const moved = pulled(s).filter((a) => Object.keys(MOVED).some((p) => covers(a, p)));
+      if (moved.length && softOf(s)) soft.push({ i, id: stepId(s), moved });
+      if (!SEND.test(s)) return;
+      for (const p of soft) {
+        const need = p.id && new RegExp(`steps\\.${p.id}\\.outcome == 'success'`).test(stepIf(s));
+        if (!need) bad.push(`${name} ${job} step ${i + 1}: sends after a soft pull of ${p.moved.join(' ')} (step ${p.i + 1}) without requiring it succeeded`);
+      }
+    });
+  }
   for (const p of Object.keys(MOVED)) {
     if (new RegExp(`git add[^\\n]*${p.replace(/[.-]/g, '\\$&')}`).test(plain)) bad.push(`${name}: git add of ${p} (it lives on raw)`);
   }
@@ -198,6 +219,14 @@ test('the guard catches a read before the pull, a write never saved, and a git a
   assert.match(problems('nosum.yml', wf(pull + append + push), rd).join('\n'), /does not rebuild cot_analysis\.py/);
   assert.match(problems('add.yml', wf(pull + append + ana + push + `      - run: git add data/cot-deep.json\n`), rd).join('\n'), /git add of data\/cot-deep\.json/);
   assert.match(problems('notoken.yml', wf(`      - run: bash scripts/pull_raw.sh data/cot-deep.json\n` + ana), rd).join('\n'), /without PRIVATE_REPO_TOKEN/);
+  // a send after a soft pull must require that pull's success
+  const softPull = `      - id: rawpull\n        continue-on-error: true\n        env:\n          PRIVATE_REPO_TOKEN: \${{ secrets.PRIVATE_REPO_TOKEN }}\n        run: bash scripts/pull_raw.sh data/cot-deep.json\n`;
+  const send = (cond) => `      - name: mail\n${cond ? `        if: \${{ ${cond} }}\n` : ''}        run: python scripts/send_cot_weekly.py\n`;
+  const sel = `      - run: python scripts/send_cot_weekly.py --selftest\n`;
+  assert.match(problems('soft.yml', wf(softPull + sel + send('')), rd).join('\n'), /sends after a soft pull of data\/cot-deep\.json \(step 1\)/);
+  assert.match(problems('soft2.yml', wf(softPull + send("!cancelled()")), rd).join('\n'), /without requiring it succeeded/);
+  assert.deepEqual(problems('soft3.yml', wf(softPull + sel + send("!cancelled() && steps.rawpull.outcome == 'success'")), rd), []);
+  assert.deepEqual(problems('hard.yml', wf(pull + send('')), rd), [], 'a hard pull needs no condition: the job stops on a failed one');
   // a pull in another job does not count
   const two = `name: x\non: push\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps:\n${pull}  b:\n    runs-on: ubuntu-latest\n    steps:\n${ana}`;
   assert.match(problems('twojobs.yml', two, rd).join('\n'), /twojobs\.yml b step 1/);

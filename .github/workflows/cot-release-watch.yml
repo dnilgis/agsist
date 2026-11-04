@@ -413,8 +413,10 @@ jobs:
           python scripts/send_cot_weekly.py --selftest
           python3 scripts/test_send_loops.py
 
+      # Nov 4 (#325): never mail the list when data/cot-deep.json could not be unpacked
+      # from raw (the step is soft so the COT numbers still publish); "Analysis result" is red.
       - name: Email Funds this week
-        if: ${{ !cancelled() && steps.commit.outcome == 'success' && steps.cot_mail_test.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' && steps.cot_mail_test.outcome == 'success' && steps.rawpull.outcome == 'success' }}
         env:
           SMTP_HOST:    ${{ secrets.SMTP_HOST }}
           SMTP_PORT:    ${{ secrets.SMTP_PORT }}
