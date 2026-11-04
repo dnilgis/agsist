@@ -78,6 +78,12 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
     assert.doesNotMatch(html, /SYNTH/, st + ": no name in the page");
     assert.doesNotMatch(html, /DOC0\d\d|PART OF SE/, st + ": no document or legal in the indexed page");
   }
+  // the builder marks the sale whose legal names its own seller ("h") and puts that legal in the names file, beside the names
+  const ilp = fs.readFileSync(path.join(tmp, "land-sales/illinois/testa-county.html"), "utf8");
+  const first = /<tr id="s-([0-9a-f]{10})"[^>]*data-ls='([^']*)'/.exec(ilp);
+  assert.equal(JSON.parse(first[2].replace(/&amp;/g, "&")).pop(), "h", "IL: the row is marked h");
+  const nfile = JSON.parse(fs.readFileSync(path.join(tmp, "data/land/names/il/17999.json"), "utf8"));
+  assert.ok(nfile.legals && /EXCEPT TRACT TO/.test(nfile.legals[first[1]]), "IL: the held legal is in the robots-blocked names file");
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
@@ -153,11 +159,9 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
           assert.equal(got.kv["Buildings"], "not in the state record", "IL: the declaration does not say");
           assert.match(got.kv["What the declaration says"], /owns land next to it/);
           assert.match(got.kv["Section, township, range"], /Section 12, T15N, R6E, Fourth Principal Meridian/);
-          // the legal names its own seller: blanked, also in full
-          await pg.click(".ls-dp button.ls-lgb");
-          const leg = await pg.evaluate(() => document.querySelector(".ls-dp .ls-lgb").previousElementSibling.textContent);
-          assert.match(leg, /EXCEPT TRACT TO \[name: tap Show buyer and seller\]/);
-          assert.doesNotMatch(leg, /SYNTH/);
+          // the legal names its own seller in another word order: not in the county file, not shown before the tap
+          assert.equal(got.kv["Legal description"], "names a buyer or seller: shown with Show buyer and seller");
+          assert.doesNotMatch(county[0], /EXCEPT TRACT TO/, "IL: the named legal is not in the county file");
         }
         if (st === "WI") assert.match(got.kv["Rights the seller keeps"], /life estate/);
         if (st === "NJ") {
@@ -180,11 +184,17 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
         await pg.click(".ls-dp button.ls-nm");
         await pg.waitForFunction(() => !document.querySelector("#ls-all tbody tr:first-child button.ls-nm") && !document.querySelector(".ls-dp button.ls-nm"));
         if (st !== "NJ") assert.match(await pg.evaluate(() => document.querySelector(".ls-dp").innerText), /Seller: SELLER .*SYNTH/, st + ": names after the tap");
+        if (st === "IL") assert.match(await pg.evaluate(() => document.querySelector(".ls-dp .ls-lgh").textContent), /EXCEPT TRACT TO SYNTH IL0 SELLER/, "IL: the legal comes with the names");
         assert.ok(reqs.some((u) => /^\/data\/land\/names\/[a-z]{2}\/\d{5}\.json$/.test(u)), st + ": the tap loads the names file");
-        // Enter again closes it
+        // Enter again closes it; Escape from inside the panel closes it too and puts the focus back on its button
         await pg.focus("#ls-all tbody tr:first-child button.ls-dt");
         await pg.keyboard.press("Enter");
         assert.equal(await pg.evaluate(() => document.querySelector("tr.ls-dr").hidden), true, st + ": closes from the keyboard");
+        await pg.keyboard.press("Enter");
+        await pg.focus(".ls-dp");
+        await pg.keyboard.press("Escape");
+        assert.deepEqual(await pg.evaluate(() => [document.querySelector("tr.ls-dr").hidden, document.activeElement.matches("#ls-all tbody tr:first-child button.ls-dt"),
+          document.querySelector("#ls-all tbody tr:first-child button.ls-dt").getAttribute("aria-expanded")]), [true, true, "false"], st + ": Escape closes it and returns the focus");
         assert.deepEqual(errors, [], st + ": no page error");
         await pg.close();
       }

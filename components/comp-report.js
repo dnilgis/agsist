@@ -232,8 +232,8 @@
     var out = [CR.CSV_COLS.join(',')];
     (list || []).forEach(function (r) {
       out.push([r.no, r.date || '', r.rec || '', num(r.price) > 0 ? Math.round(r.price) : '', r.acres > 0 ? +r.acres : (r.acUnsure ? 'uncertain' : ''), r.ppa != null ? r.ppa : '',
-        r.pid || '', +r.np || 1, F.strOf(r.legal) || '', F.clean(r.legal), r.muniName || '', r.county || '', r.st || '', F.classLabel(r.cls, r.st), r.conv || '',
-        CR.screenText(r, today), F.relatedParty(r) ? 'yes' : 'not marked', r.exempt ? 'yes' : 'no', names === 'shown' ? (r.grantor || '') : names ? 'tap Show buyer and seller' : 'not in our copy', names === 'shown' ? (r.grantee || '') : names ? 'tap Show buyer and seller' : 'not in our copy',
+        r.pid || '', +r.np || 1, F.strOf(F.legalText(r)) || '', F.legalHeld(r) && names !== 'shown' ? 'names a buyer or seller: tap Show buyer and seller' : F.legalText(r), r.muniName || '', r.county || '', r.st || '', F.classLabel(r.cls, r.st), r.conv || '',
+        CR.screenText(r, today), F.relatedParty(r) ? 'yes' : 'not marked', r.exempt ? 'yes' : 'no', names === 'shown' ? (r.grantor || '') : names === 'later' ? 'names come after the next update' : names ? 'tap Show buyer and seller' : 'not in our copy', names === 'shown' ? (r.grantee || '') : names === 'later' ? 'names come after the next update' : names ? 'tap Show buyer and seller' : 'not in our copy',
         r.mi != null ? r.mi.toFixed(1) : '', r.pmi != null ? r.pmi.toFixed(1) : '', r.soil && r.soil.np != null ? Math.round(r.soil.np * 100) : '', r.doc || '', r.src || '', CR.flags(r).join('; '), 'unverified'].map(cell).join(','));
     });
     return out.join('\r\n') + '\r\n';
@@ -363,17 +363,18 @@
     return '<table class="cr-tbl" role="table" aria-label="Comparable sales, numbered as on the map">' + head + list.map(function (r) {
       var ac = r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="acres uncertain">uncertain</span>' : '';
       var soil = r.soil === undefined ? '<span class="cr-dim cr-wait">reading</span>' : CR.soilText(r.soil) || '<span class="cr-dim">' + esc(r.soilWhy || 'not available') + '</span>';
-      var str = F.strOf(r.legal);
+      var str = F.strOf(F.legalText(r)) || (r.str ? F.keyText(r.str) : null);
       var form = r.st === 'IL' ? 'declaration' : r.st === 'IN' ? 'sales disclosure form' : 'return';
       // names only after the reader taps Show buyer and seller (names === 'shown'; Sig, Oct 27; lead, Nov 4, 2026)
       var who = names === 'shown' ? 'Seller ' + esc(r.grantor || 'not in the record') + ' &rarr; buyer ' + esc(r.grantee || 'not in the record')
-        : names ? 'Seller and buyer: tap Show buyer and seller' : 'Seller and buyer not in our copy';
+        : names === 'later' ? esc(F.NAMES_LATER) : names ? 'Seller and buyer: tap Show buyer and seller' : 'Seller and buyer not in our copy';
       var det = ['Parcel ' + esc(r.pid || 'not in the record') + (+r.np > 1 ? ' (first of ' + (+r.np) + ' on the ' + form + ')' : ''),
         str ? esc(str) : null, esc(r.conv || 'deed type not in the record'), 'Arm’s-length screen: ' + esc(CR.screenText(r, today)), who,
         r.pmi != null ? 'parcel located on the parcel map, ' + r.pmi.toFixed(1) + ' mi from the subject' : null,
         r.rec ? 'recorded ' + fd(r.rec) : null, r.doc ? esc(F.docLabel(r.st)) + ' ' + esc(r.doc) : null].filter(Boolean).join(' &middot; ');
       var flags = CR.flags(r);
-      var leg = F.clean(r.legal);
+      // a legal that names a party comes with the names (land_names.py LEGAL_MARK), only after the tap
+      var leg = F.legalHeld(r) ? (names === 'shown' && r.legalNamed ? r.legalNamed : 'Legal description names a buyer or seller: tap Show buyer and seller') : F.clean(r.legal);
       return '<tbody class="cr-c" data-no="' + r.no + '"><tr role="row">' + cell('n cr-no', 'No.', r.no) + cell('', 'Deed date', fd(r.date)) + cell('n', 'Price', fm(r.price)) + cell('n', 'Acres', ac) +
         cell('n', '$/acre', r.ppa != null ? fm(r.ppa) : '') + cell('n cr-mi', 'Miles', CR.milesText(r, tie)) + cell('', 'Town', esc(r.muniName || '') + (r.county ? '<span class="cr-dim">, ' + esc(r.county) + ' Co.</span>' : '')) +
         cell('', 'Class', esc(F.classLabel(r.cls, r.st)) + (F.hasBuildings(r.cls) ? ' <span class="cr-flag">buildings</span>' : '')) + cell('cr-soil', 'Soil', soil) + '</tr>' +
@@ -610,7 +611,8 @@
     function run() {
       var sel = CR.selectComps(S.sales.rows, P, S.subj.c, subjIds(), P.today);
       S.sel = sel; S.list = sel.list;
-      S.names = S.sales.files.some(function (f) { return f.names; });
+      // true: names files to tap for; 'later': county files that still hold names (no names file yet, no button); false: none
+      S.names = S.sales.files.some(function (f) { return f.names && f.names_file; }) ? true : S.sales.files.some(function (f) { return f.names; }) ? 'later' : false;
       S.newest = S.sales.files.map(function (f) { return f.coverage && f.coverage.to; }).filter(Boolean).sort().pop() || null;
       // the subject's own recorded sales
       var home = S.sales.files.filter(function (f) { return f.fips === S.fips; })[0];

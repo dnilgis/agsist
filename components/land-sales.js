@@ -72,6 +72,11 @@
       if (!d) { b.textContent = 'Names did not load. Tap to try again'; return; }
       var v = (d.sales && id in d.sales) ? d.sales[id] : (d.buyers && id in d.buyers) ? d.buyers[id] : null;
       /* this button and any other for the same sale and file (the row's and its detail panel's) */
+      /* a legal description held back because it names a party comes with the names */
+      var lg = d.legals && d.legals[id];
+      Array.prototype.forEach.call(document.querySelectorAll('span.ls-lgh[data-ls-id="' + id + '"]'), function (x) {
+        x.textContent = lg || 'not in our copy';
+      });
       Array.prototype.forEach.call(document.querySelectorAll('button.ls-nm'), function (x) {
         if (x !== b && (x.getAttribute('data-ls-id') !== id || x.getAttribute('data-ls-f') !== f)) return;
         var s = document.createElement('span');
@@ -467,8 +472,12 @@
       ['Parcels in the sale', wait || gone || esc(rv('np') || 1)]
     ]));
     /* where */
-    var leg = r && rv('legal') ? scrub(r.legal, s.lx) : '';
-    var legHtml = wait || gone || (!has('legal') || !leg ? miss(NOT_REC) : leg.length > 70
+    /* a legal that names its own seller or buyer is not in the county file (scripts/land_names.py LEGAL_MARK): it comes
+       with the names, on the tap (onTap fills span.ls-lgh) */
+    var named = s.lx === 'h' || (r && /^\[LEGAL WITH A NAME /.test(String(r.legal || '')));
+    var leg = r && rv('legal') && !named ? scrub(r.legal, s.lx) : '';
+    var legHtml = wait || gone || (named ? '<span class="ls-lgh" data-ls-id="' + esc(s.id) + '">' + miss('names a buyer or seller: shown with Show buyer and seller') + '</span>'
+      : !has('legal') || !leg ? miss(NOT_REC) : leg.length > 70
       ? '<span class="ls-lg">' + esc(leg.slice(0, 70).replace(/\s+\S*$/, '')) + '&hellip;</span> <button type="button" class="ls-lgb" aria-expanded="false" data-full="' + esc(leg) + '">Show the whole description</button>'
       : esc(leg));
     var stk = rv('str');
@@ -539,7 +548,7 @@
     b.setAttribute('aria-controls', id);
     var nb = host.querySelector('button.ls-nm'), nf = nb ? nb.getAttribute('data-ls-f') : null;
     p = document.createElement('div');
-    p.className = 'ls-dp'; p.id = id; p.setAttribute('role', 'region'); p.setAttribute('aria-label', 'Sale details, ' + day(s.when));
+    p.className = 'ls-dp'; p.id = id; p.setAttribute('role', 'region'); p.tabIndex = -1; p.setAttribute('aria-label', 'Sale details, ' + day(s.when));
     if (host.tagName === 'TR') {
       var tr = document.createElement('tr'), td = document.createElement('td');
       tr.className = 'ls-dr'; td.colSpan = host.cells.length; td.appendChild(p); tr.appendChild(td);
@@ -596,6 +605,17 @@
 
   document.addEventListener('click', onTap);
   document.addEventListener('click', onDetail);
+  /* Escape closes the open panel the focus is in (or whose button has it) and puts the focus back on its button */
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Escape' && ev.key !== 'Esc') return;
+    var a = document.activeElement, p = a && a.closest ? a.closest('.ls-dp') : null, b = null;
+    if (p) b = document.querySelector('button.ls-dt[aria-controls="' + p.id + '"]');
+    else if (a && a.matches && a.matches('button.ls-dt[aria-expanded="true"]')) b = a;
+    if (!b || b.getAttribute('aria-expanded') !== 'true') return;
+    ev.preventDefault();
+    toggle(b);
+    try { b.focus(); } catch (e) {}
+  });
   window.AgLandSales = { scan: scan, namesHtml: namesHtml, removeHref: removeHref, miles: miles, latestLine: latestLine, listRow: listRow, listRows: listRows,
     sha1: sha1, saleKey: saleKey, panelHtml: panelHtml, DCOLS: DCOLS };
   function ready() { scan(); watchNear(); }

@@ -40,7 +40,7 @@ function expectFor(c, r, f) {
     case "exempt": return [v ? "Exemption claimed" : "No exemption claimed"];
     // names never show in the panel itself (Sig, Oct 27; lead, Nov 4, 2026): a names-free county file offers the tap,
     // an older one still holding names says they come with the next update
-    case "grantor": case "grantee": return f.names ? (f.names_file ? ["Show buyer and seller"] : ["not in our copy of the record"]) : ["not in our copy"];
+    case "grantor": case "grantee": return f.names ? (f.names_file ? ["Show buyer and seller"] : ["names come after the next update"]) : ["not in our copy"];
     case "si": case "bi": return f.names && f.names_file ? ["Show buyer and seller"] : [];
     case "ac1": return v != null ? [esc(v)] : (+r.np > 1 ? ["not in the record"] : []);
     default: return null;

@@ -332,7 +332,9 @@ def pub_row(st, r, county, u=None, w24=None):
             "ppa": r.get("ppa"), "pt": [round(r["pt"][0], 4), round(r["pt"][1], 4)] if r.get("pt") else None,
             "bldg": with_bldg(r), "kind": BLS.land_type(r, st), "flag": judge(r, u),
             "cu": st == "VT" and "ENROLLED IN CURRENT USE" in str(r.get("conv") or "").upper(),
-            "ri": r.get("_ri"), "g": int(r.get("grp") or 1), "m": mid_code(r, st, w24), "lx": legal_mask(r)}
+            "ri": r.get("_ri"), "g": int(r.get("grp") or 1), "m": mid_code(r, st, w24),
+            # "h": the legal names its own seller or buyer and sits in the names file, shown only on the tap (land_names)
+            "lx": "h" if land_names.is_marked(r.get("legal")) else legal_mask(r)}
 
 
 # ---------------------------------------------------------------- the monthly update
@@ -340,7 +342,7 @@ def month_build(d, year, m0):
     first, last = LA.month_bounds(year, m0)
     key = "%04d-%02d" % (year, m0 + 1)
     W = LA.windows(year, m0)
-    listed, buyers, judged, names_s, names_b = [], {}, [], {}, {}
+    listed, buyers, judged, names_s, names_b, legals_s = [], {}, [], {}, {}, {}
     per_state = {st: {"n": 0, "basis": None, "fresh": True} for st in d.states}
     for st in d.states:
         for c, rows in d.counties[st]:
@@ -361,6 +363,8 @@ def month_build(d, year, m0):
                 per_state[st]["basis"] = p["basis"]
                 nm = d.names(r)
                 names_s[p["id"]] = nm
+                if p["lx"] == "h" and nm != 0 and r.get("legal_named"):
+                    legals_s[p["id"]] = r["legal_named"]
                 if p["flag"] is not None:
                     judged.append(p)
                 bk = buyer_key(r.get("grantee"))
@@ -420,6 +424,8 @@ def month_build(d, year, m0):
     used = {p["id"] for k in ("biggest", "biggest_acres", "unusual", "best") for p in (out.get(k) or [])}
     names = {"month": key, "sales": {i: names_s[i] for i in sorted(used)},
              "buyers": {b["id"]: names_b[b["id"]] for k in ("buyers_acres", "buyers_dollars") for b in (out.get(k) or [])}}
+    if any(i in legals_s for i in used):
+        names["legals"] = {i: legals_s[i] for i in sorted(used) if i in legals_s}
     return out, names
 
 
@@ -495,6 +501,9 @@ def county_build(d, st, c, rows, through):
     allp = [pub_row(st, r, c["name"], u, W["w24"]) for r in lst]
     w12 = W["cur"]
     names = {p["id"]: d.names(r) for p, r in zip(allp, lst)}
+    # a legal that names its own seller or buyer: in the names file, loaded only on the tap (removed names: none)
+    legals = {p["id"]: r["legal_named"] for p, r in zip(allp, lst) if p["lx"] == "h" and names[p["id"]] != 0 and r.get("legal_named")}
+    names = (names, legals)
     big = [p for p in allp if (p["acres"] or 0) >= LIST_MIN_ACRES]
     feat = [p for p in big if p["when"] >= w12[0]][:FEATURED]
     n12 = len([r for r in rows if BLS.inw({"date": shown_day(r)}, w12) and (BLS.num(r.get("acres")) or 0) >= LIST_MIN_ACRES])
@@ -1120,7 +1129,8 @@ def build(repo=REPO):
                                                   p["place"], p["pt"][0] if p["pt"] else None, p["pt"][1] if p["pt"] else None,
                                                   p["flag"] or 0, 1 if p["bldg"] else 0, KIND_CODE[p["kind"]], 1 if p["cu"] else 0,
                                                   p["ri"], p["g"], p["m"]] for p in feat]}
-            out["data/land/names/%s/%s.json" % (st.lower(), c["fips"])] = dump({"fips": c["fips"], "sales": names})
+            names, legals = names
+            out["data/land/names/%s/%s.json" % (st.lower(), c["fips"])] = dump(dict({"fips": c["fips"], "sales": names}, **({"legals": legals} if legals else {})))
             out["land-sales/%s/%s.html" % (SLUG[st], slug)] = county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all)
             cu = st == "VT"      # Vermont's list carries current use enrollment as a last column
             out["data/land-sales/%s/%s.json" % (st.lower(), c["fips"])] = dump(

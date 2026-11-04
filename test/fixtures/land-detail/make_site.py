@@ -44,7 +44,8 @@ def rows_for(st):
              "rr": "life" if i == 0 else "none", "mfl": 12.0 if i == 0 else 0, "avl": 41200 + i, "avb": None if i != 2 else 185000,
              "avy": "2026", "lsf": None if i != 2 else 1840, "yb": None if i != 2 else "1988"}
         if st == "IL" and i == 0:
-            o["legal"] = "PART OF SE 1/4 SEC 12 T15N R6E 4TH PM, EXCEPT TRACT TO SELLER IL0 SYNTH, 80 ACRES"
+            # names its own seller in another word order ("SELLER IL0 SYNTH" on the record): the whole legal waits for the tap
+            o["legal"] = "PART OF SE 1/4 SEC 12 T15N R6E 4TH PM, EXCEPT TRACT TO SYNTH IL0 SELLER, 80 ACRES"
         if i == 1:
             o["acres"], o["np"], o["ac1"] = None, 2, 41.5      # several parcels, acres not added up for sure
         out.append([o[c] for c in cols])
