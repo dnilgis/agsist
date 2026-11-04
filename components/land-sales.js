@@ -471,7 +471,7 @@
       : esc(leg));
     var stk = rv('str');
     out.push(grp('Where', [
-      [T.place, s.place ? esc(s.place) : miss(NOT_REC)],
+      [T.place, s.place ? esc(s.place) : wait || gone || (r && f && f.munis && r.muni != null && f.munis[String(r.muni)] ? esc(f.munis[String(r.muni)][0]) : miss(NOT_REC))],
       ['County', esc(s.county + ' County, ' + st)],
       ['Section, township, range', wait || gone || (stk ? esc(strWords(stk)) : miss(leg ? 'not readable from the legal description' : NOT_REC))],
       ['Legal description', legHtml, leg && leg.length >= 138 ? 'Our copy keeps the first 140 characters.' : null],

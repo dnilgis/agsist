@@ -512,7 +512,8 @@ def sq(s):
 
 def row_data(p):
     """A sale's data-ls attribute: ROW_COLS, what the detail panel draws before (and besides) the county file."""
-    return jdump([p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p.get("ppa"), p.get("place"),
+    # place: null here (it is in the row's own cell; the panel names it from the county file), so no town name sits in an attribute
+    return jdump([p["id"], p["when"], 1 if p["basis"] == "recorded" else 0, p["acres"], p["price"], p.get("ppa"), None,
                   KIND_CODE.get(p.get("kind"), "f"), p.get("flag") or 0, 1 if p.get("cu") else 0, p.get("ri"), p.get("g") or 1, p.get("m") or ""]
                  + ([p["lx"]] if p.get("lx") else []))
 
