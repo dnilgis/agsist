@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 96,
- "with_known_cadence": 96,
+ "count": 97,
+ "with_known_cadence": 97,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1442,6 +1442,29 @@
    "max_gap_hours": null,
    "quiet": null,
    "why_quiet": "Every board the bid network reads, with its last read and why it failed. Sig's Today list (desk/today.html, a tab of /desk) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
+  },
+  {
+   "path": "data/land-sales/lead.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch every day at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/land/index.json",
