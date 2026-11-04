@@ -122,7 +122,7 @@ print(json.dumps(S.hero_futures_seeds(d['quotes'], d['fetched'])))`);
    from the harvest aliases. Every remaining 'corn-dec' / 'beans-nov' literal is listed here with
    its reason and count; a new one fails until it is reviewed and added. */
 const ALLOWED = {
-  "components/breakeven.js": [6, "the 2026/2027 crop picker: the alias names the crop year; this crop's price is thisCropKey (headline past first notice); the price-watch sender follows only these symbols"],
+  "components/breakeven.js": [6, "the 2026/2027 crop picker: the alias names the crop year; this crop's price is thisCropKey (headline past first notice); the price-watch sender follows only these symbols, so the price-watch ask hides for this-crop soybeans from Oct 30 and corn from Nov 30 (intended: no alert is armed on a contract other than the one shown)"],
   "components/fast-facts.js": [1, "newCropKey's fallback key for the labeled Dec new-crop row"],
   "components/futures.js": [5, "the futures pages' new-crop tiles, labeled, picked by newCropKey after the nearby"],
   "components/geo.js": [2, "PRICE_MAP wiring of the second-card element ids; home-yield.js swaps in AgPxStamp.harvest"],
@@ -146,8 +146,10 @@ test("no headline reads the harvest aliases: every 'corn-dec' / 'beans-nov' lite
   }
   for (const [f, n] of Object.entries(seen)) {
     assert.ok(ALLOWED[f], `${f} names 'corn-dec' or 'beans-nov' ${n} times: a headline reads AgPxStamp.headline; an explicit contract goes on the allow-list with its reason`);
-    assert.ok(n <= ALLOWED[f][0], `${f}: ${n} alias literals, ${ALLOWED[f][0]} allowed (${ALLOWED[f][1]})`);
+    // exact: a swap inside an allowed file (one use removed, a headline one added) is caught too
+    assert.equal(n, ALLOWED[f][0], `${f}: ${n} alias literals, exactly ${ALLOWED[f][0]} allowed (${ALLOWED[f][1]}); review the change and update the count`);
   }
+  for (const f of Object.keys(ALLOWED)) assert.ok(seen[f], `${f} is on the allow-list but names no alias any more: take it off`);
   // the home Futures tile and its seed read the headline, not an alias
   const home = read("index.html"), paint = home.slice(home.indexOf("function paintFut"), home.indexOf("function getPrices"));
   assert.match(paint, /AgPxStamp\.headline/);
@@ -157,6 +159,18 @@ test("no headline reads the harvest aliases: every 'corn-dec' / 'beans-nov' lite
   assert.doesNotMatch(hero, /"beans-nov"|"corn-dec"/);
   // every page that calls the helper loads it first
   assert.ok(read("breakeven.html").indexOf("price-local.js?v=10") < read("breakeven.html").indexOf("breakeven.js?v="));
+});
+
+/* PR #320 checker: the merge of main put markets.html back on price-local.js?v=9 while the page
+   calls AgPxStamp.harvest (v10 only); a cached v9 hid the second cards after they painted. One
+   version everywhere the helper loads, every page, so a missed page cannot happen again. */
+test("every page and script that loads price-local.js asks for the same version", () => {
+  const files = readdirSync(ROOT).filter((f) => f.endsWith(".html"))
+    .concat(readdirSync(join(ROOT, "components")).filter((f) => f.endsWith(".js")).map((f) => "components/" + f));
+  const seen = {};
+  for (const f of files) for (const m of read(f).matchAll(/components\/price-local\.js\?v=(\d+)/g)) (seen[m[1]] = seen[m[1]] || []).push(f);
+  assert.deepEqual(Object.keys(seen), ["10"], "price-local.js versions: " + JSON.stringify(seen));
+  for (const f of ["index.html", "markets.html", "breakeven.html", "fast-facts.html"]) assert.ok(seen["10"].includes(f), f + " loads price-local.js");
 });
 
 /* ---------------------------------------------------------------- browser */
