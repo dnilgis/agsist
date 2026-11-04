@@ -333,7 +333,7 @@ def county_row(meta, hi, lo, mi, year, same, norm, recs):
     mh, ml = sum(v is None for v in hi), sum(v is None for v in lo)
     row = {"a": mmdd(asof)}
     if not same:
-        row["s"] = [R.station_name(meta.get("name", "")), meta["sids"][0], round(mi)]
+        row["s"] = [R.station_where(meta.get("name", "")), meta["sids"][0], round(mi)]
     # GDD from May 1
     if (int(asof[5:7]), int(asof[8:10])) >= GDD_FROM:
         tot, rep, miss = gdd_year(hi, lo, dates)
@@ -736,7 +736,7 @@ def selftest():
         ok(w["fetched"] == st_file["fetched"], "fetched carried over")
         ok("s" not in cs.get("19015", {"s": 1}), f"Boone: the rain station's own highs and lows {cs.get('19015')}")
         st_ = cs.get("19169", {}).get("s")
-        ok(st_ and st_[0] == "Ames, 8 mi WSW" and st_[2] == 10, f"Story: a volunteer gauge, so the co-op station 10 mi away is named: {st_}")
+        ok(st_ and st_[0] == "8 miles west-southwest of Ames" and st_[2] == 10, f"Story: a volunteer gauge, so the co-op station 10 mi away is named: {st_}")
         ok("19127" not in cs, "Marshall: no station with enough highs and lows, no weather")
         ok(isinstance(cs.get("19169", {}).get("g"), list) and len(cs["19169"]["g"]) == 5, f"Story GDD with its normal {cs.get('19169', {}).get('g')}")
         ok(any(x[4] == 2011 for x in cs.get("19169", {}).get("nt", [])), f"Story note {cs.get('19169', {}).get('nt')}")
