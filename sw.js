@@ -37,7 +37,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 344;  // v344 2026-11-04: fx/wave1a (344 assigned by the lead). Site panel fixes: the futures pages lose the untested action box (futures.js?v=30).
+var CACHE_VERSION = 346;  // v346 2026-11-04: fx/wave1a (346 assigned by the lead). Site panel fixes: the futures pages lose the untested action box (futures.js?v=30).
 // CACHE_VERSION = 343;  // v343 2026-11-03: fx/landlag (343 assigned by the lead). Every sale in the monthly land sale email links to its own row on the county sale page (land-sales/<state>/<county>#s-<sale id>, a hash, no name); the row is marked and an older one is drawn with Show more (inline in the county pages; no shared file changed).
 // v341 2026-11-03: fx/milkepic (341 assigned by the lead; was 338). /milk-prices "Your area": a state with no AMS mailbox area (Idaho, Colorado, Utah, Arizona, South Dakota) shows its own NASS all-milk price. milk-tools.js v5.
 // CACHE_VERSION = 340;  // v340 2026-11-03: fx/crquote (340 assigned by the lead). Custom rates: quote my job, a printable state rate sheet with a blank my-price column, the diesel line beside USDA farm diesel, and the new-survey email ask. custom-rates.js?v=7, custom-rates.css?v=6.
