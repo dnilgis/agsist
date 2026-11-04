@@ -883,9 +883,10 @@
       clearTimeout(t); if (!r.ok) throw new Error(String(r.status)); return r.json();
     }, function (e) { clearTimeout(t); throw e; });
   }
-  // Names on the tap (Sig, Oct 27; lead decision, Nov 4, 2026): each row's [seller, buyer] from its county's names file
-  // (data/land/<st>/names/<fips>.json, robots-blocked), trusted only when the file's read time and row count are the
-  // county file's. Fills r.grantor and r.grantee in memory; resolves to how many rows got names.
+  // Names on the tap (Sig, Oct 27; lead decision, Nov 4, 2026): each row's seller and buyer from its county's names
+  // file (data/land/<st>/names/<fips>.json, robots-blocked: s and b, the distinct names, at the row's si and bi),
+  // trusted only when the file's read time and row count are the county file's. Fills r.grantor and r.grantee in
+  // memory; resolves to how many rows got names.
   var _names = {};
   FSLand.loadNames = function (rows) {
     var by = {};
@@ -896,10 +897,10 @@
       if (!_names[u]) _names[u] = getJSON(u, 15000).catch(function () { delete _names[u]; return null; });
       return _names[u].then(function (d) {
         var n = 0;
-        if (!d || !d.rows) return 0;
+        if (!d || !d.s || !d.b) return 0;
         by[u].forEach(function (x) {
-          if (d.n !== x._nn || String(d.fetched_utc) !== String(x._nt) || !d.rows[x._i]) return;
-          x.grantor = d.rows[x._i][0]; x.grantee = d.rows[x._i][1]; n++;
+          if (d.n !== x._nn || String(d.fetched_utc) !== String(x._nt)) return;
+          x.grantor = x.si != null ? d.s[x.si] || null : null; x.grantee = x.bi != null ? d.b[x.bi] || null : null; n++;
         });
         return n;
       });

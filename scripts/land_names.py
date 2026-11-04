@@ -3,13 +3,13 @@
 
 Sig's rule (STANDING-DECISIONS, Oct 27): names load only on a reader's tap, from separate names files in the
 robots-blocked folder. So a county transfer file, data/land/<st>/<fips>.json, carries no grantor or grantee column.
-Its names sit in data/land/<st>/names/<fips>.json, one [seller, buyer] pair per row of the county file, in the same
-order, stamped with the county file's read time and row count (a tap trusts the pair only when both match):
+Its names sit in data/land/<st>/names/<fips>.json: the county's distinct sellers and buyers, each once (as first
+written), stamped with the county file's read time and row count (a tap trusts the file only when both match):
 
-    {"state": "WI", "fips": "55005", "fetched_utc": "...", "n": 1234, "cols": ["grantor", "grantee"], "rows": [[s, b], ...]}
+    {"state": "WI", "fips": "55005", "fetched_utc": "...", "n": 1234, "s": [seller, ...], "b": [buyer, ...]}
 
-What stays in the county file is two numbers, si and bi: the seller's and the buyer's place in the county's list of
-distinct names (written up the way build_land_summary.up does it), null when the record names no one. The one market
+What stays in the county file is two numbers, si and bi: the row's seller and buyer as places in those lists (names
+compared the way build_land_summary.up writes them), null when the record names no one. The one market
 rule (build_land_summary.sale_rows, FSLand.saleRows) needs only whether two rows have the same seller or buyer, and
 these answer that with no name in them. A legal description that names the row's own seller or buyer keeps NAME_MARK
 in its place.
@@ -74,15 +74,17 @@ def split(doc):
     ix = [cols.index(c) if c in cols else None for c in NAME_COLS]
     keep = [i for i, c in enumerate(cols) if c not in NAME_COLS and c not in ID_COLS]
     li = cols.index("legal") if "legal" in cols else None
-    ids = [{}, {}]
-    rows, pairs = [], []
+    ids, firsts = [{}, {}], [[], []]
+    rows = []
     for r in doc.get("rows") or []:
         pair = [r[i] if i is not None and i < len(r) else None for i in ix]
-        pairs.append([p if p != "" else None for p in pair])
         nums = []
         for side in (0, 1):
             k = up(pair[side])
-            nums.append(ids[side].setdefault(k, len(ids[side])) if k else None)
+            if k and k not in ids[side]:
+                ids[side][k] = len(firsts[side])
+                firsts[side].append(re.sub(r"\s+", " ", str(pair[side])).strip())
+            nums.append(ids[side][k] if k else None)
         row = [r[i] for i in keep]
         if li is not None and r[li]:
             row[keep.index(li)] = blank_names(r[li], pair)
@@ -90,10 +92,10 @@ def split(doc):
     out = dict(doc)
     out["cols"] = [cols[i] for i in keep] + list(ID_COLS)
     out["rows"] = rows
-    out["names"] = any(p[0] or p[1] for p in pairs)
+    out["names"] = bool(firsts[0] or firsts[1])
     out["names_file"] = rel_path(doc.get("state"), doc.get("fips"))
     names = {"state": doc.get("state"), "fips": doc.get("fips"), "fetched_utc": doc.get("fetched_utc"), "n": len(rows),
-             "cols": list(NAME_COLS), "rows": pairs}
+             "s": firsts[0], "b": firsts[1]}
     return out, names
 
 
@@ -104,9 +106,14 @@ def attach(doc, names):
         return doc
     if names.get("n") != len(doc.get("rows") or []) or str(names.get("fetched_utc")) != str(doc.get("fetched_utc")):
         return doc
+    cols = doc["cols"]
+    if not all(c in cols for c in ID_COLS):
+        return doc
+    i_s, i_b, S, B = cols.index("si"), cols.index("bi"), names.get("s") or [], names.get("b") or []
+    pick = lambda L, i: L[i] if isinstance(i, int) and 0 <= i < len(L) else None
     out = dict(doc)
-    out["cols"] = list(doc["cols"]) + list(NAME_COLS)
-    out["rows"] = [list(r) + list(p) for r, p in zip(doc["rows"], names["rows"])]
+    out["cols"] = list(cols) + list(NAME_COLS)
+    out["rows"] = [list(r) + [pick(S, r[i_s]), pick(B, r[i_b])] for r in doc["rows"]]
     return out
 
 
@@ -170,10 +177,11 @@ def selftest():
     ck("a legal that names its own seller keeps a mark", out["rows"][0][3] == "PT NW EXC TO [NAME] AND WIFE")
     ck("si and bi: the same seller written two ways is one id; no one is null",
        [r[-2:] for r in out["rows"]] == [[0, 0], [0, None], [None, 1]])
-    ck("the names file holds every pair, in row order, stamped", names["rows"] == [["Seller One", "BUYER A"], ["SELLER ONE", None], [None, "Buyer B"]]
+    ck("the names file holds each seller and buyer once, as first written, stamped", names["s"] == ["Seller One"] and names["b"] == ["BUYER A", "Buyer B"]
        and names["n"] == 3 and names["fetched_utc"] == doc["fetched_utc"] and out["names_file"] == "/data/land/wi/names/55999.json")
     back = attach(out, names)
-    ck("attach puts them back in memory", [dict(zip(back["cols"], r))["grantor"] for r in back["rows"]] == ["Seller One", "SELLER ONE", None])
+    ck("attach puts them back in memory, row by row", [(dict(zip(back["cols"], r))["grantor"], dict(zip(back["cols"], r))["grantee"]) for r in back["rows"]]
+       == [("Seller One", "BUYER A"), ("Seller One", None), (None, "Buyer B")])
     ck("a names file from another read is not attached", not has_names(attach(out, dict(names, fetched_utc="2026-10-01"))))
     ck("a names file with another row count is not attached", not has_names(attach(out, dict(names, n=2))))
     ck("split of a split file changes nothing", split(out)[0] is out and split(out)[1] is None)

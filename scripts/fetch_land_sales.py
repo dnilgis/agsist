@@ -3102,7 +3102,7 @@ def selftest():
            and all(f["names_file"] == "/data/land/vt/names/%s.json" % f["fips"] for f in fv0))
         nv = [json.load(open(os.path.join(OUT, "vt", "names", c["fips"] + ".json"))) for c in ixv["counties"]]
         ck("names: each county's names file holds every row's seller and buyer, in row order, stamped with the read",
-           [n["rows"] for n in nv] == [[["TEST SELLER %d LLC" % i, "PAT BUYER %d" % i]] for i in range(3)]
+           [(n["s"], n["b"]) for n in nv] == [(["TEST SELLER %d LLC" % i], ["PAT BUYER %d" % i]) for i in range(3)]
            and all(n["n"] == len(f["rows"]) and n["fetched_utc"] == f["fetched_utc"] for n, f in zip(nv, fv0)))
         fv = [land_names.load(f, OUT) for f in fv0]
         got = sorted((f["fips"], [dict(zip(f["cols"], r)) for r in f["rows"]][0]) for f in fv)
