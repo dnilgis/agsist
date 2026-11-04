@@ -359,7 +359,58 @@
       (b.when ? '. <span class="pl-s">' + esc(b.when) + '.</span>' : '.') + ' <a href="/cash-bids">All bids near you &rarr;</a>';
   }
 
-  var api = { stamp: stamp, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+  /* THE HEADLINE CONTRACT (2026-11-04, Sig's screenshot): ONE choice for every
+     headline corn and soybean futures price. It is <crop>-nearby, the month
+     scripts/fetch_prices.py add_nearby picks: the nearest live month, rolled at
+     CBOT first notice day (Nov '26 soybeans to Jan '27 from Oct 30; Dec '26
+     corn to Mar '27 from Nov 30). Every elevator quotes basis against that
+     month, so a headline on any other month puts cash off by the spread. The
+     home page printed "Nov '26 bean futures $11.94" over a basis line against
+     Jan '27. Twin: scripts/seed_static.py nearby_of. data: the price file or
+     its quotes. -> {key, q, label} or null. With no alias on file: the
+     nearest dated month, then the continuous series (no label for ZS=F). */
+  function quotesOf(data) { return data && data.quotes ? data.quotes : (data || {}); }
+  function headline(data, crop) {
+    var q = quotesOf(data), n = q[crop + '-nearby'], nb = data && data.nearby && data.nearby[crop], k, bk = null, bi = Infinity;
+    if (n && n.close != null) return { key: crop + '-nearby', q: n, label: label(n.ticker) || n.contract || (nb && nb.label) || null };
+    var re = new RegExp('^' + crop + '-([a-z]{3})(\\d{2})$');
+    for (k in q) {
+      var mm = re.exec(k), mi = mm ? M3.indexOf(mm[1]) : -1;
+      if (mi < 0 || !q[k] || q[k].close == null) continue;
+      if ((+mm[2]) * 12 + mi < bi) { bi = (+mm[2]) * 12 + mi; bk = k; }
+    }
+    if (bk) return { key: bk, q: q[bk], label: label(q[bk].ticker) || null };
+    var c = q[crop];
+    return c && c.close != null ? { key: crop, q: c, label: label(c.ticker) || null } : null;
+  }
+  /* THE NEXT HARVEST CONTRACT: the Dec corn or Nov soybeans after the headline
+     month. Dec '26 corn while Dec '26 is the headline is Dec '27; Nov soybeans
+     with Jan '27 the headline is Nov '27 (Sig, Oct 1: never two cards of one
+     contract; Nov 4: never a month past first notice). A card or ticker slot
+     for "new crop" reads this and names the month. Twin: seed_static.py
+     new_crop_quote (and futures.js newCropKey). -> {key, q, label} or null. */
+  var HARVEST = { corn: 'dec', beans: 'nov' };
+  function harvest(data, crop) {
+    var q = quotesOf(data), mon = HARVEST[crop], h = headline(data, crop);
+    if (!mon) return null;
+    var x = h && /^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b/.exec(String(h.q.ticker || '')), key;
+    if (x) {
+      var hm = M3.indexOf(mon) + 1, ny = 2000 + (+x[2]), nm = FCODE.indexOf(x[1]) + 1;
+      key = crop + '-' + mon + String(nm >= hm ? ny + 1 : ny).slice(-2);
+    }
+    var d = key && q[key];
+    if (!(d && d.close != null)) {
+      /* that month is not on file: the alias (corn-dec), only when it is a
+         later month than the headline; never the headline's own month again */
+      key = crop + '-' + mon; d = q[key];
+      var a = d && /^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b/.exec(String(d.ticker || ''));
+      if (x && (!a || (+a[2]) * 12 + FCODE.indexOf(a[1]) <= (+x[2]) * 12 + FCODE.indexOf(x[1]))) return null;
+    }
+    if (!(d && d.close != null)) return null;
+    return { key: key, q: d, label: label(d.ticker) || null };
+  }
+
+  var api = { headline: headline, harvest: harvest, stamp: stamp, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
     deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;

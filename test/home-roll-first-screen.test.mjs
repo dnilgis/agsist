@@ -34,7 +34,8 @@ function serve() {
 test("home first screen: a withheld move shows the price and 'contract roll', no change", { skip, timeout: 120000 }, async () => {
   const fx = structuredClone(FIX);
   // as energy_roll_guard leaves it: the change vs another contract's close, withheld with a reason
-  Object.assign(fx.quotes["corn-dec"], { netChange: 61.5, pctChange: 14.9, move_withheld: "contract roll near expiry", roll: true });
+  // on the contract itself and on the headline alias that carries it (the tile reads <crop>-nearby since fx/soyroll2, Nov 4 2026)
+  for (const k of ["corn-dec", "corn-nearby"]) if (fx.quotes[k]) Object.assign(fx.quotes[k], { netChange: 61.5, pctChange: 14.9, move_withheld: "contract roll near expiry", roll: true });
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
