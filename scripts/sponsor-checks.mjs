@@ -199,6 +199,16 @@ check(SPLIT ? "the active sponsors: no shared slot, every slot known to the repo
   const bad = slotRule(ACTIVE, slotsOf, known);
   assert.equal(bad, null, bad);
 });
+/* Every date typed by hand into data/sponsors.json is a real YYYY-MM-DD (audit, Nov 4, 2026). A count_from of
+   "2026-11-3" went straight to GA4 as the first day asked for, and a malformed ended or expires date read as
+   "not ended" and "already over". */
+const okDay = (x) => typeof x === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x) && !isNaN(Date.parse(x + "T12:00:00Z")) &&
+  new Date(x + "T12:00:00Z").toISOString().slice(0, 10) === x;
+check("every hand-typed sponsor date (start, count_from, ended, expires) is a real YYYY-MM-DD", () => {
+  for (const s of CONF.sponsors || [])
+    for (const k of ["start", "count_from", "ended", "expires"])
+      if (s[k] != null) assert.ok(okDay(s[k]), s.slug + " has a malformed " + k + " date");
+});
 check("no active sponsor carries a start date nobody has confirmed", () => {
   for (const s of (CONF.sponsors || []).filter((x) => x.active !== false))
     assert.ok(s.start === null || /^\d{4}-\d{2}-\d{2}$/.test(s.start),
