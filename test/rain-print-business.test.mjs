@@ -112,7 +112,7 @@ test("standing rules: no sponsor, name off the print, honest copy", () => {
   // Sig, 2026-10-17: no separate card; the business's message is printed at the top of the letter in each box
   assert.match(COPY, /Your message is printed at the top of the letter in the box, at no charge\./);
   assert.doesNotMatch(COPY, /note card|on a card/);
-  assert.match(COPY, /13 x 19 wood frame, oak or black, with an acid-free white mat and tempered glass, ready to hang/);
+  assert.match(COPY, /13 x 19 frame in oak wood or black, with an acid-free white mat and 2 mm tempered glass, ready to hang/);
   assert.doesNotMatch(COPY, /12 x 18/);
   assert.match(COPY, /No prices go in the box/);
   assert.match(COPY, /net 30/);

@@ -49,15 +49,32 @@ test("no reader copy still promises only a black frame", () => {
   }
   assert.deepEqual(bad, []);
   // the offer, the FAQ and its structured data say oak or black
-  assert.match(HTML, /"name": "Framed print, 13 x 19 wood frame, oak or black, acid-free white mat, tempered glass, shipping included"/);
-  assert.match(HTML, /The framed one comes in a 13 x 19 wood frame, oak or black, with an acid-free white mat and tempered glass, ready to hang\./);
+  assert.match(HTML, /"name": "Framed print, 13 x 19 frame in oak wood or black, acid-free white mat, 2 mm tempered glass, shipping included"/);
+  assert.match(HTML, /The framed one comes in a 13 x 19 frame in oak wood or black, with an acid-free white mat and 2 mm tempered glass, ready to hang\./);
+});
+
+test("the frame specs follow the maker's listings: wood is oak only, 2 mm glass, no UV claim", () => {
+  // Sig, Nov 4 (the maker's listings): oak is an oak wood frame, black is MDF with a black finish, so a
+  // "wood frame" said of both is wrong; the glass is 2 mm tempered; the "75% UV protection" claim is the
+  // maker's and unverified, so it is never repeated.
+  const files = ["rain-print.html", "rp-gift.html", "rain-print-business.html", "birth-year-weather-gift.html",
+    "wedding-year-weather-gift.html", "components/rain-print.js", "scripts/rp_buyer_email.py"];
+  for (const f of files) {
+    const t = read(f).replace(/\/\*[\s\S]*?\*\//g, "");
+    assert.doesNotMatch(t, /(?<!oak )wood frame/i, f + ": black is not wood");
+    assert.doesNotMatch(t, /\bUV\b|75\s?%/, f + ": no UV claim");
+    if (/tempered glass/.test(t)) assert.doesNotMatch(t, /(?<!2 mm )\btempered glass/i, f + ": the glass is 2 mm");
+  }
+  const S = read("components/rain-print.js");
+  assert.match(S, /framed12x18: '13 x 19 frame in oak wood or black, acid-free white mat, 2 mm tempered glass\.'/);
+  assert.match(S, /\(FRAME === 'oak' \? 'Oak wood' : 'Black'\) \+ ', 13 x 19 frame, acid-free white mat, 2 mm tempered glass'/);
 });
 
 test("What you get lists the frame plainly, and the mat opening is the one the sheet is drawn for", () => {
   const box = HTML.match(/<h3>Framed<\/h3><ul>([\s\S]*?)<\/ul>/)[1];
   const items = [...box.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) => m[1]);
-  for (const want of ["A 13 x 19 in wood frame, oak or black, your pick", "An acid-free white mat cut for 11 x 17, a 16.5 x 10.5 in opening", "Tempered glass front",
-    "Hanging hardware included", "Packed with corner guards and foam, double-boxed"]) assert.ok(items.includes(want), want);
+  for (const want of ["A 13 x 19 in frame, oak wood or black, your pick", "An acid-free white mat cut for 11 x 17, a 16.5 x 10.5 in opening", "2 mm tempered glass front",
+    "14.3 x 20.3 in outside, 0.9 in frame, sturdy backboard, hanging hardware included", "Packed with corner guards and foam, double-boxed"]) assert.ok(items.includes(want), want);
   const S = read("components/rain-print.js");
   const sheet = /var SHEET = \{ w: 19, h: 13, art: \{ w: 16\.5, h: 11 \}, mat: \{ w: 16\.5, h: 10\.5 \}, safe: \{ w: 16\.25, h: 10\.25 \} \};/;
   assert.match(S, sheet, "the mat opening and safe area the page promises are the drawn ones");
@@ -159,11 +176,11 @@ test("in a browser: the review sheet shows the frame, switches it, and the order
     await page.waitForTimeout(300);
     assert.equal(await page.$eval("#rp-proof", (d) => d.open), true);
     assert.equal(await page.isVisible("#rp-pframe-wrap"), true);
-    assert.match(await page.textContent("#rp-proof-sum"), /FrameOak, 13 x 19 wood frame, acid-free white mat, tempered glass/);
+    assert.match(await page.textContent("#rp-proof-sum"), /FrameOak wood, 13 x 19 frame, acid-free white mat, 2 mm tempered glass/);
     assert.equal(await page.getAttribute("#rp-proof", "data-frame"), "oak");
     await page.locator('#rp-pframe-wrap label:has(input[value="black"])').click();
     assert.equal(await page.getAttribute("#rp-proof", "data-frame"), "black");
-    assert.match(await page.textContent("#rp-proof-sum"), /FrameBlack, 13 x 19 wood frame, acid-free white mat, tempered glass/);
+    assert.match(await page.textContent("#rp-proof-sum"), /FrameBlack, 13 x 19 frame, acid-free white mat, 2 mm tempered glass/);
     assert.equal(await page.$eval("#rp-proof-frame", (el) => getComputedStyle(el).backgroundColor), "rgb(19, 19, 19)");
     assert.equal(await page.$eval('input[name="rp-frame"][value="black"]', (x) => x.checked), true, "step 3 follows the sheet");
     await page.check("#rp-proof-ok");
