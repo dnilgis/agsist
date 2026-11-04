@@ -13,10 +13,6 @@
    "to": "/rain/alaska",
    "since": "2026-10-14"
   },
-  "rain/arkansas/arkansas-county.html": {
-   "to": "/rain/arkansas",
-   "since": "2026-10-15"
-  },
   "rain/arkansas/bradley-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -177,6 +173,10 @@
    "to": "/rain/texas",
    "since": "2026-10-14"
   },
+  "rain/texas/brooks-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-04"
+  },
   "rain/texas/concho-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
@@ -192,6 +192,10 @@
   "rain/texas/delta-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
+  },
+  "rain/texas/hartley-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-04"
   },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
