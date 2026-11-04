@@ -5,7 +5,8 @@
  * in-memory KV (as scripts/test_elev_worker.mjs does). Nothing leaves the
  * machine. Paste input is test/fixtures/paste-bids (NEW Cooperative's board),
  * grown to 51 boards for the long preview Sig saw on Oct 20.
- * Needs Playwright and Chromium; skipped where they are missing.
+ * Needs Playwright and Chromium; skipped where they are missing. Today reads the bids data at BIDS_PATH
+ * (test/fixtures/bids-path.mjs): without it those tests fail at once and say so.
  * SHOTS=<dir> saves a screenshot of each case there.
  *   node --test test/elev-desk-browser.test.mjs
  */
@@ -20,7 +21,7 @@ import { createRequire } from "node:module";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
-const BIDS = process.env.BIDS_PATH || "/home/user/bids/";
+import { BIDS, needBids } from "./fixtures/bids-path.mjs";
 let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
@@ -71,6 +72,7 @@ function blocked(ix) {
 const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".png": "image/png", ".ico": "image/x-icon", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
 /* o: {width, token, worker: 'ok'|'down'|'500'|'slow', seed: async (env) => {}, newcoop: html, pages: {origin: html}} */
 async function open(browser, path, o = {}) {
+  if (path.startsWith("/desk/today")) needBids();   // Today lists the bid sites from the bids data: say so, never time out
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: o.width || 1280, height: o.height || 800 } });
   await ctx.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "https://agsist.com" }).catch(() => {});
   const { store, SUBS: kvs } = kv();
