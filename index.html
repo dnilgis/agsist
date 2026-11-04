@@ -11,6 +11,7 @@
   <!-- /static-nav:fonts -->
   <link rel="stylesheet" href="/components/styles.css?v=28">
   <link rel="stylesheet" href="/components/asof.css?v=1">
+  <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/asof.js?v=1"></script>
   <script src="/components/price-local.js?v=9"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
@@ -598,7 +599,7 @@ try {
 
     /* ---- place and date ---- */
     function loc(){try{return JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){return null;}}
-    function hasZip(){var l=loc();return !!(l&&/^\d{5}$/.test(String(l.zip||'')));}
+    function hasZip(){var l=window.AgSavedPlace?AgSavedPlace.read():loc();return !!(l&&/^\d{5}$/.test(String(l.zip||'')));}
     var placeFromBids='';
     /* 2026-10-08: with no ZIP the band asked four times (the title, the
        button and both empty bid rows). Now it asks once: the top row reads
@@ -1200,36 +1201,11 @@ try {
 (function(){
   var el = document.getElementById('idx1-trust-ledger');
   if(!el) return;
-  /* 2026-10-01 r7-design: Sig, "that location count of elevators is way
-     understated". The old line printed only the second bid feed (494
-     locations in data/bids.json). The elevator network reads its own boards
-     (data/elevator-coverage.json: read 1,110 of 8,566 known on Oct 1). Both
-     are printed, separately: the two can overlap, so they are never added. */
-  var cov = document.createElement('div');
-  cov.className = 'r7-cov';
-  el.parentNode.insertBefore(cov, el);
-  /* The counts only. 2026-10-10: data/elevator-counts.json is the one file
-     every page reads its elevator counts from (scripts/build_cash_bid_pages.py
-     writes it; its coverage block is the coverage map's own counts, with their
-     date). The map's counts file, then the full map, stay the fallbacks. */
-  function cov1(u){ return fetch(u).then(function(r){
-    if(!r.ok) throw new Error('coverage ' + r.status);
-    return r.json();
-  }); }
-  cov1('/data/elevator-counts.json').then(function(c){
-    if(!c || !c.coverage) throw new Error('no coverage block');
-    return { generated: c.coverage.generated, counts: c.coverage };
-  }).catch(function(){ return cov1('/data/elevator-coverage-counts.json'); }).catch(function(){
-    return cov1('/data/elevator-coverage.json');
-  }).then(function(c){
-    var k = c && c.counts;
-    if(!k || typeof k.read !== 'number' || typeof k.elevators !== 'number'){ cov.textContent = 'Elevator network: Not loaded yet'; return; }
-    var t = new Date(c.generated);
-    var w = isNaN(t.getTime()) ? '' : ' \u00b7 ' + t.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT';
-    var st = window.AgAsOf ? AgAsOf.html(c.generated, 'bids') : '';
-    if(st){ cov.innerHTML = k.read.toLocaleString('en-US') + ' of ' + k.elevators.toLocaleString('en-US') + ' elevators read directly \u00b7 ' + st; return; }
-    cov.textContent = k.read.toLocaleString('en-US') + ' of ' + k.elevators.toLocaleString('en-US') + ' elevators read directly' + w;
-  }).catch(function(){ cov.textContent = 'Elevator network: Not loaded yet'; });
+  /* Nov 4, 2026 (site panel, Nov 2 item 22): ONE elevator count on the home page, with one label and one
+     time. A second line (the coverage map's "2,109 of 8,052" from the counts file) sat beside
+     this one with its own time and a different count; the bids file's location count covers both feeds
+     now (2,069 on Nov 4 against 494 when the Oct 1 line was added), so it is the one kept.
+     test/home-one-count.test.mjs holds it. */
   /* 2026-10-16: the counts only (data/bids-stats.json, under 1 KB, written
      by scripts/fetch_bids.py on the same run as data/bids.json), not the
      230 KB bids file. The bids file stays the fallback. */
@@ -1717,12 +1693,13 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/soil-near.js?v=1" defer></script>
 <script src="/components/prism.js?v=1" defer></script>
 <script src="/components/geo.js?v=36" defer></script>
-<script src="/components/bids-homepage.js?v=45" defer></script>
+<script src="/components/bids-fallback.js?v=1" defer></script>
+<script src="/components/bids-homepage.js?v=46" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=2">
 <script src="/components/cb-myelev.js?v=6" defer></script>
 <script src="/components/homepage-extras.js?v=18" defer></script>
 <script src="/components/home-yield.js?v=11" defer></script>
-<script src="/components/home.js?v=20"></script>
+<script src="/components/home.js?v=21"></script>
 <script src="/components/home-planting.js?v=4" defer></script>
 <script src="/components/home-season.js?v=8" defer></script>
 <script src="/components/next-links.js?v=3" defer></script>

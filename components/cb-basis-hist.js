@@ -131,14 +131,39 @@
     return out;
   }
 
-  function chart(pts, endDate, label) {
-    var w = 320, h = 84, pl = 4, pr = 4, pt = 8, pb = 8;
-    var vals = pts.filter(function (p) { return !p.gap; });
-    var cents = vals.map(function (p) { return p.cents; });
-    var lo = Math.min.apply(null, cents), hi = Math.max.apply(null, cents);
-    if (lo === hi) { lo -= 2; hi += 2; }
+  /* ONE SCALE PER TOWN AND CROP (Nov 4, 2026, site panel). Each elevator's chart used to take its own
+     low, high and start date, so a 15-cent swing filled the same height as a 30-cent one and two lines
+     side by side could not be compared. scaleFor() takes every elevator's points for one crop in the town:
+     the low and high rounded out to 5 cents, the first logged date to the log's last run. The axis values
+     print beside each chart (HTML, since the chart stretches to the page). */
+  function scaleFor(sets, endDate) {
+    var lo = Infinity, hi = -Infinity, d0 = '', d1 = endDate || '';
+    sets.forEach(function (pts) {
+      pts.forEach(function (p) {
+        if (!d0 || p.date < d0) d0 = p.date;
+        if (p.date > d1) d1 = p.date;
+        if (p.gap) return;
+        if (p.cents < lo) lo = p.cents;
+        if (p.cents > hi) hi = p.cents;
+      });
+    });
+    if (!isFinite(lo)) return null;
+    lo = Math.floor(lo / 5) * 5; hi = Math.ceil(hi / 5) * 5;
+    if (lo === hi) { lo -= 5; hi += 5; }
+    return { lo: lo, hi: hi, d0: d0, d1: d1 };
+  }
+  var CH_H = 84, CH_PT = 8, CH_PB = 8;
+  function axis(sc) {
+    var Yp = function (c) { return ((CH_PT + (sc.hi - c) * (CH_H - CH_PT - CH_PB) / (sc.hi - sc.lo)) / CH_H * 100).toFixed(1); };
+    var ys = [sc.hi, sc.lo];
+    if (sc.lo < 0 && sc.hi > 0 && Math.min(sc.hi, -sc.lo) >= (sc.hi - sc.lo) * 0.2) ys.splice(1, 0, 0);
+    return '<div class="cbh-ya" aria-hidden="true">' + ys.map(function (c) { return '<span style="top:' + Yp(c) + '%">' + basisText(c) + '</span>'; }).join('') + '</div>';
+  }
+  function chart(pts, endDate, label, sc) {
+    var w = 320, h = CH_H, pl = 4, pr = 4, pt = CH_PT, pb = CH_PB;
+    var lo = sc.lo, hi = sc.hi, vals = pts.filter(function (p) { return !p.gap; });
     var lastD = pts[pts.length - 1].date;
-    var t0 = Date.parse(pts[0].date), t1 = Date.parse(endDate > lastD ? endDate : lastD);
+    var t0 = Date.parse(sc.d0), t1 = Date.parse(sc.d1 > lastD ? sc.d1 : lastD);
     if (!(t1 > t0)) t1 = t0 + 864e5;
     var X = function (d) { return (pl + (Date.parse(d) - t0) * (w - pl - pr) / (t1 - t0)).toFixed(1); };
     var Y = function (c) { return (pt + (hi - c) * (h - pt - pb) / (hi - lo)).toFixed(1); };
@@ -158,10 +183,11 @@
     segs.forEach(function (sg) { s += '<polyline points="' + sg.join(' ') + '" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'; });
     /* a dot per logged change: a zero-length round-capped line stays round when the chart is stretched to the page's width */
     vals.forEach(function (p) { s += '<line x1="' + X(p.date) + '" y1="' + Y(p.cents) + '" x2="' + X(p.date) + '" y2="' + Y(p.cents) + '" stroke="var(--gold)" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'; });
-    return '<svg class="cbh-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '">' + s + '</svg>';
+    return '<div class="cbh-ch">' + axis(sc) + '<svg class="cbh-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '">' + s + '</svg>' +
+      '<div class="cbh-xa" aria-hidden="true"><span>' + dayText(sc.d0) + '</span><span>' + dayText(sc.d1 > lastD ? sc.d1 : lastD) + '</span></div></div>';
   }
 
-  function cropBlock(name, cropLabel, pts, endDate) {
+  function cropBlock(name, cropLabel, pts, endDate, sc) {
     var vals = pts.filter(function (p) { return !p.gap; });
     var first = vals[0], last = vals[vals.length - 1], tail = pts[pts.length - 1];
     var cents = vals.map(function (p) { return p.cents; });
@@ -171,7 +197,7 @@
       basisText(last.cents) + ' for ' + monText(last.dm) + ' delivery' + (last.con ? ' vs ' + esc(last.con) : '') + ' since ' + dayText(last.date) + '. ';
     var lead = '<p class="cbh-l">' + now + (vals.length > 1 ? 'From ' + basisText(first.cents) + ' on ' + dayText(first.date) +
       '; low ' + basisText(Math.min.apply(null, cents)) + ', high ' + basisText(Math.max.apply(null, cents)) + '.' : 'The only change logged.') + '</p>';
-    var svg = vals.length > 1 ? chart(pts, endDate, cropLabel + ' basis at ' + name + ' from ' + dayText(first.date) + ' to ' + dayText(last.date) + ', ' + basisText(first.cents) + ' to ' + basisText(last.cents)) : '';
+    var svg = vals.length > 1 ? chart(pts, endDate, cropLabel + ' basis at ' + name + ' from ' + dayText(first.date) + ' to ' + dayText(last.date) + ', ' + basisText(first.cents) + ' to ' + basisText(last.cents) + ', on a scale from ' + basisText(sc.lo) + ' to ' + basisText(sc.hi), sc || scaleFor([pts], endDate)) : '';
     var rows = pts.slice(-TABLE_MAX).reverse().map(function (p) {
       if (p.gap) return '<tr><td>' + dayText(p.date) + '</td><td>' + monText(p.dm) + '</td><td class="n cbh-mut">none</td><td><span class="cbh-mut">not logged</span></td></tr>';
       return '<tr><td>' + dayText(p.date) + '</td><td>' + monText(p.dm) + '</td><td class="n">' + basisText(p.cents) + '</td><td>' + (p.con ? esc(p.con) : '<span class="cbh-mut">not named</span>') + '</td></tr>';
@@ -189,20 +215,26 @@
     if (!data || !data.series) { body.innerHTML = '<p class="cbt-sub">The basis log could not be loaded. Try again later.</p>'; return; }
     var end = String(data.generated || '').slice(0, 10), first = '';
     if (/^\d{4}/.test(end)) REF_YEAR = end.slice(0, 4);
-    var html = '', none = [];
-    boards.forEach(function (b) {
-      var name = b[0], cities = b[1] || [], got = false;
+    var html = '', none = [], got = {}, ser = {}, scales = {};
+    boards.forEach(function (b, i) {
       CROPS.forEach(function (c) {
-        var pts = nearestSeries(keysFor(data, name, cities, c[0]), end);
+        var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end);
         if (!pts.length) return;
-        got = true;
+        got[i] = 1;
+        (ser[c[0]] = ser[c[0]] || []).push(pts);
         if (!first || pts[0].date < first) first = pts[0].date;
-        html += cropBlock(name, c[1], pts, end);
       });
-      if (!got) none.push(name);
+    });
+    CROPS.forEach(function (c) { if (ser[c[0]]) scales[c[0]] = scaleFor(ser[c[0]], end); });
+    boards.forEach(function (b, i) {
+      if (!got[i]) { none.push(b[0]); return; }
+      CROPS.forEach(function (c) {
+        var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end);
+        if (pts.length) html += cropBlock(b[0], c[1], pts, end, scales[c[0]]);
+      });
     });
     var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (first ? ', since ' + dayText(first) : '') +
-      '. Only the days a basis changed are logged: it held flat between dots. A break in the line is a stretch when no open delivery month had a logged basis yet. A thin mark is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price.</p>';
+      '. Only the days a basis changed are logged: it held flat between dots. A break in the line is a stretch when no open delivery month had a logged basis yet. A thin mark is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator\'s chart for a crop shares one scale and one time span, so the lines compare.</p>';
     if (none.length) html += '<p class="cbt-sub">No basis change logged' + (first ? ' since ' + dayText(first) : '') + ' for ' + esc(none.join(', ')) + '.</p>';
     body.innerHTML = intro + html;
     /* the heading names the log's own first date (2026-10-17 audit N5: the heading said June over a log from Aug 27) */
@@ -222,7 +254,11 @@
 
   var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border)}' +
     '.cbh-h{margin:0 0 2px;font-size:.95rem}.cbh-l{margin:0 0 6px;font-size:.88rem;line-height:1.5;color:var(--text)}' +
-    '.cbh-svg{display:block;width:100%;height:84px;margin:4px 0 6px}' +
+    '.cbh-ch{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;margin:4px 0 6px}' +
+    '.cbh-ya{position:relative;height:84px;min-width:2.6em;font-family:\'JetBrains Mono\',monospace;font-size:.72rem;color:var(--text-muted)}' +
+    '.cbh-ya span{position:absolute;right:0;transform:translateY(-50%);white-space:nowrap;line-height:1}' +
+    '.cbh-svg{display:block;width:100%;height:84px}' +
+    '.cbh-xa{grid-column:2;display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-muted);margin-top:2px}' +
     '.cbh-scroll{overflow-x:auto}.cbh-t{width:100%;border-collapse:collapse;font-size:.82rem}' +
     '.cbh-t th{text-align:left;color:var(--text-muted);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--border)}' +
     '.cbh-t td{padding:4px 6px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}' +
@@ -239,7 +275,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText };
+    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, scaleFor: scaleFor, chart: chart, render: render };
   } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else { init(); }

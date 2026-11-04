@@ -1071,12 +1071,14 @@ var STATE_NAMES={};
 // Sequential ramps: one hue, dark -> bright on the dark surface. Lightness is monotone by construction.
 // Seven classes, each holding about a seventh of the counties. The lowest class is lifted off the
 // map's background so a low county never reads as a hole; the highest runs to a light tint.
+// Nov 4, 2026 (site panel): every class is 3:1 or more against the #101415 map (the lowest gold was
+// 1.64:1); the old ramps re-sampled from the point where they reach 3:1. test/atlas-chart-text.test.mjs.
 var RAMPS={
-  heat:['#4a3326','#6c3f29','#92502c','#b8642f','#d97c35','#f09a4a','#fcc486'],
-  water:['#29404f','#2c5670','#336d90','#3f86ae','#56a0c9','#7bbade','#b0d8ef'],
-  gold:['#403a27','#5f5229','#806c2d','#a28731','#c3a238','#dfbb4f','#f5dc93'],
-  loss:['#4a2b2e','#6a3232','#8d3e39','#ae4d43','#cb6250','#e27f69','#f4ab98'],
-  green:['#2c4030','#325838','#3c7146','#4a8b55','#5ca667','#7bbf84','#acdcb1']
+  heat:['#94512c','#ad5e2e','#c46d31','#d97d35','#e99043','#f4a85e','#fcc486'],
+  water:['#316888','#39799e','#438bb3','#539dc6','#6cafd5','#8bc3e3','#b0d8ef'],
+  gold:['#72612b','#8a742e','#a38831','#bc9c36','#d2af44','#e5c461','#f5dc93'],
+  loss:['#a0473f','#b25045','#c35c4c','#d26a57','#df7b65','#ea927d','#f4ab98'],
+  green:['#3b6d44','#447f4e','#4e9159','#5ba466','#6fb579','#8ac892','#acdcb1']
 };
 var DIVNEG=['#4d6571','#43708f','#3f86b3','#62a8d8'], DIVPOS=['#6f5b47','#965f36','#c3732f','#f09a4a'];   // nearest zero first
 // Diverging: blue pole, neutral grey midpoint, orange pole. Equal arms.

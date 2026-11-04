@@ -1568,7 +1568,7 @@ ANSWER_CROPS = 2              # crops named in the answer sentence
 DESC_MAX = 160
 HIST_NOTE = (" The &ldquo;Basis since&rdquo; box reads AGSIST&rsquo;s daily basis log, which keeps the day each "
              "elevator&rsquo;s basis changed; until Oct 11, 2026 that log also drew on a licensed bid feed.")
-HIST_JS = '<script src="/components/cb-basis-hist.js?v=2" defer></script>\n'
+HIST_JS = '<script src="/components/cb-basis-hist.js?v=3" defer></script>\n'
 
 
 def head_name(bd, with_town=True):
@@ -2340,6 +2340,7 @@ def build_town_page(t, ctx):
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
             "latest": max(times) if times else None, "title": title, "desc": desc, "tops": tops,
+            "ll": [round(center[0], 4), round(center[1], 4)] if center else None,
             "share": share, "story_facts": story_facts}
     h = head(title, desc, path, jsonld, indexable, share)
     if box:
@@ -2758,10 +2759,13 @@ def top_bid_table(g, near, town_paths):
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>')
 
 
-def state_table_doc(st, near, ctx, town_paths):
+def state_table_doc(st, near, ctx, town_paths, metas=()):
     """data/state-basis/<ST>.json: every elevator's nearest bid per crop, the
     table /basis/<state> used to print in full. Rows are lists to keep the
-    file small; cols names them."""
+    file small; cols names them.
+    towns (Nov 4, 2026): every town page with a current bid, [path, town, lat, lon, latest bid time], so a
+    page whose live bids did not answer links the nearest baked town page with its time
+    (components/bids-fallback.js)."""
     rows = []
     for r in sorted(near, key=lambda r: (BM.CROP_ORDER.index(r["group"]) if r["group"] in BM.CROP_ORDER else 9,
                                          SB.town_text(r["city"]).casefold(), r["operator"])):
@@ -2778,7 +2782,15 @@ def state_table_doc(st, near, ctx, town_paths):
             "crops": {g: SB.CROP_LABEL[g] for g in BM.CROP_ORDER},
             "cols": ["crop", "elevator", "town", "path", "cash", "basis", "vs", "delivery", "wow_cents",
                      "priced", "flag"],
-            "rows": rows}
+            "rows": rows,
+            "towns": [[m["path"], m["name"], m["ll"][0], m["ll"][1], iso_z(m["latest"])]
+                      for m in sorted(metas, key=lambda m: m["path"])
+                      if m.get("state") == st and m.get("indexable") and m.get("ll") and m.get("latest")]}
+
+
+def iso_z(t):
+    """a bid time as the file writes them ('2026-11-04T01:41:41Z'); a string passes through"""
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ") if hasattr(t, "strftime") else str(t)
 
 
 def state_counts(towns, near):
@@ -3555,7 +3567,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
                 continue
             keep.add(f"{st}.json")
             with open(os.path.join(sd, f"{st}.json"), "w", encoding="utf-8") as f:
-                json.dump(state_table_doc(st, rs, ctx, town_paths), f, separators=(",", ":"))
+                json.dump(state_table_doc(st, rs, ctx, town_paths, metas), f, separators=(",", ":"))
         for fn in os.listdir(sd):
             if fn.endswith(".json") and fn not in keep:
                 os.remove(os.path.join(sd, fn))
@@ -3976,6 +3988,11 @@ def selftest():
         tbl = json.load(open(os.path.join(dd, "state-basis", "NE.json")))
         assert tbl["cols"][0] == "crop" and any(r[-1] == "suspect" for r in tbl["rows"]), tbl["rows"]
         assert any(r[3] == "/cash-bids/nebraska/fremont" for r in tbl["rows"])
+        # the baked town pages a slow network falls back to: path, town, a point, the latest bid time (Nov 4, 2026)
+        tw = {t[0]: t for t in tbl["towns"]}
+        assert "/cash-bids/nebraska/fremont" in tw, tbl["towns"]
+        assert all(len(t) == 5 and -90 < t[2] < 90 and -180 < t[3] < 180 and re.match(r"^\d{4}-\d\d-\d\dT", t[4])
+                   for t in tbl["towns"]), tbl["towns"]
         # one count: the counts file, the state page and the share text all say the same number
         cn = json.load(open(os.path.join(dd, "elevator-counts.json")))
         assert cn["bids"]["elevators"] == sum(v["elevators"] for v in cn["states"].values()), cn
@@ -4304,7 +4321,7 @@ def _selftest_answer():
     assert box and json.loads(html_unescape(box.group(1))) == [["Op n0", ["Fremont"]]], \
         "Op n1's only key names no month it can draw, so it is not offered"
     assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
-    assert fr.count('/components/cb-basis-hist.js?v=2') == 1 and "&ldquo;Basis since&rdquo; box reads" in fr
+    assert fr.count('/components/cb-basis-hist.js?v=3') == 1 and "&ldquo;Basis since&rdquo; box reads" in fr
     assert "<summary>Basis since Sep 1</summary>" in fr and "since June" not in fr, "the heading is the first logged date"
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
     assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"

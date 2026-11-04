@@ -912,10 +912,20 @@
   }
   /* A bid row: the best price within BID_MILES, its miles and delivery, how many it beat, and the
      nearest elevator's price beside it. Never the buyer. paper: the source as it prints. */
-  function factBid(o, crop, from, when, href) {
+  /* partial (Nov 4, 2026, site panel): the bids came from the short committed list because the elevator
+     network did not answer in time. The row never says "Best of N within 50 mi" or "no bid within 50 mi"
+     then: it names the short list, or withholds. */
+  var PARTIAL = 'From the short list of bids the price pages use; the full elevator network was too slow to read this time. Not every elevator near here is in it.';
+  function factBid(o, crop, from, when, href, partial) {
     var label = CROP_ADJ[crop] + ' bid';
+    if (partial && (!o || !o.best)) return na(label, 'the elevator network did not answer in time, so the bids near ' + from + ' are not known right now', ['See the bids near here', href]);
     if (!o || !o.best) return na(label, 'no posted ' + crop + ' bid within ' + BID_MILES + ' mi of ' + from, ['See the bids near here', href]);
     var b = o.best, dw = deliveryWords(b), nb = o.nearest;
+    if (partial) {
+      return { label: label, value: '$' + fixed(b.price, 2), date: isoDay(when), join: ', ',
+        ctx: b.mi + ' mi from ' + from + (dw ? ', ' + dw : '') + '. ' + PARTIAL, partial: true,
+        src: ['See the bids near here', href], paper: 'Posted elevator bids, short list' };
+    }
     var near = nb && nb !== b && (nb.mi !== b.mi || nb.price !== b.price) ? ' Nearest: $' + fixed(nb.price, 2) + ' at ' + nb.mi + ' mi.' : '';
     return { label: label, value: '$' + fixed(b.price, 2), date: isoDay(when), join: ', ',
       ctx: b.mi + ' mi from ' + from + (dw ? ', ' + dw : '') + '. ' + (o.n === 1 ? 'The only one within ' + BID_MILES + ' mi.' : 'Best of ' + o.n + ' within ' + BID_MILES + ' mi.') + near,

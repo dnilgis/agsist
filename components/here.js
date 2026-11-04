@@ -461,20 +461,30 @@
   function loadBids(fips, w) {
     var net = window.AGSIST_BIDS_NET, lat = +w.lat, lng = +w.lng;
     var from = fromWords(w), href = w.zip ? '/cash-bids?zip=' + w.zip : '/cash-bids';
-    function draw(snap) {
+    function draw(snap, partial) {
       if (!S.prof || S.prof.fips !== fips) return null;
       var b = P.bestBids(snap, lat, lng, 50), when = snap && snap.fetched ? snap.fetched : '';
-      fill('f-corn-bid', P.factBid(b.corn, 'corn', from, when, href));
-      fill('f-soy-bid', P.factBid(b.soybeans, 'soybeans', from, when, href));
+      fill('f-corn-bid', P.factBid(b.corn, 'corn', from, when, href, partial));
+      fill('f-soy-bid', P.factBid(b.soybeans, 'soybeans', from, when, href, partial));
+      if (partial) return { when: when, partial: true };   /* no local middle basis from a short list */
       b.when = when;
       return b;
+    }
+    /* Nov 4, 2026 (site panel): the network's index not in (slow or failed) means the short committed list
+       stands in, labelled as such and counted (components/bids-fallback.js); an index that answered with
+       nothing near is a real "none within 50 mi". */
+    function short() {
+      var st = net && net.status ? net.status() : 'failed';
+      if (st === 'ok') return getJSON('/data/bids.json').then(function (s) { return draw(s, false); });
+      try { if (window.AgBidsFallback) window.AgBidsFallback.count('fast-facts', st === 'pending' ? 'slow' : 'failed'); } catch (e) {}
+      return getJSON('/data/bids.json').then(function (s) { return draw(s, true); });
     }
     /* every place within 50 mi counts toward "Best of N", not only the 40 the price card keeps */
     var live = net && net.snapshot && isFinite(lat) && isFinite(lng) ? net.snapshot(lat, lng, { radiusMi: 50, maxPlaces: 100000 }) : Promise.resolve(null);
     return live.then(function (snap) {
-      if (snap && snap.bids && snap.bids.length) return draw(snap);
-      return getJSON('/data/bids.json').then(draw);
-    }, function () { return getJSON('/data/bids.json').then(draw); });
+      if (snap && snap.bids && snap.bids.length) return draw(snap, false);
+      return short();
+    }, short);
   }
 
   /* ── More about this county: loads on open, or for a printed report ───── */

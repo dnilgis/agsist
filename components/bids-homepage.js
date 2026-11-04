@@ -1370,8 +1370,15 @@
     return '<div class="bh-err" style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'
       + (pending ? 'Elevator bids are still loading. They will show here when they arrive.'
                  : 'The cash bids did not load. Try again, or open the cash bids page.')
-      + '<br><button type="button" class="bh-retry" style="margin:.5rem 0 .2rem;min-height:44px;padding:.4rem 1rem;background:none;border:1px solid var(--border);border-radius:6px;color:var(--gold);font-weight:700;font-size:.82rem;cursor:pointer">Try again</button>'
+      + '<p class="bh-baked" hidden style="margin:.5rem 0 0;color:var(--text)"></p>'
+      + '<button type="button" class="bh-retry" style="margin:.5rem 0 .2rem;min-height:44px;padding:.4rem 1rem;background:none;border:1px solid var(--border);border-radius:6px;color:var(--gold);font-weight:700;font-size:.82rem;cursor:pointer">Try again</button>'
       + '<br><a href="/cash-bids' + (zip ? '?zip=' + escHtml(zip) : '') + '" style="color:var(--gold)">Search cash bids →</a></div>';
+  }
+  /* Nov 4, 2026 (site panel): the one failure path (components/bids-fallback.js). A slow or failed
+     network is counted (bids_net_fallback) and the card links the nearest baked town page with its time,
+     so "did not load" is never a dead end. */
+  function baked(area, zip, pending){
+    try{ if(window.AgBidsFallback) window.AgBidsFallback.line(area.querySelector('.bh-baked'), zip, 'home', pending ? 'slow' : 'failed'); }catch(e){}
   }
 
   // ── 2026-10-06 HERO: the card's own styles ───────────────────────
@@ -1851,7 +1858,7 @@
 
         if(bids.length === 0){
           /* WAVE1-A: "none within 50 mi" only when the network really answered. */
-          if(!bids.netOk){ area.innerHTML = errorHTML(bids.netPending, zip); Array.prototype.forEach.call(area.querySelectorAll('.bh-retry'), function(b){ b.addEventListener('click', retryLoad); }); publishEmpty(label, zip, bids.netPending ? 'pending' : 'failed'); announce(area, bids.netPending ? 'Elevator bids are still loading.' : 'The cash bids did not load.'); return; }
+          if(!bids.netOk){ area.innerHTML = errorHTML(bids.netPending, zip); baked(area, zip, bids.netPending); Array.prototype.forEach.call(area.querySelectorAll('.bh-retry'), function(b){ b.addEventListener('click', retryLoad); }); publishEmpty(label, zip, bids.netPending ? 'pending' : 'failed'); announce(area, bids.netPending ? 'Elevator bids are still loading.' : 'The cash bids did not load.'); return; }
           area.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'
             + 'No elevator bids found within ' + BIDS_RADIUS_MI + ' mi.<br>'
             + '<a href="/cash-bids?zip=' + escHtml(zip) + '" style="color:var(--gold)">Try wider search →</a></div>';
@@ -1875,6 +1882,7 @@
         degraded = true;
         console.warn('[AGSIST] Homepage bids fetch failed:', err);
         area.innerHTML = errorHTML(!!(err && err.pending), zip);
+        baked(area, zip, !!(err && err.pending));
         Array.prototype.forEach.call(area.querySelectorAll('.bh-retry'), function(b){ b.addEventListener('click', retryLoad); });
         publishEmpty(label, zip, err && err.pending ? 'pending' : 'failed');
         announce(area, err && err.pending ? 'Elevator bids are still loading.' : 'The cash bids did not load.');

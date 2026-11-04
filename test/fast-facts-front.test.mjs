@@ -303,7 +303,10 @@ test("in Chromium: every row answers with a date and a source or says why; no na
       else assert.ok(await pg.$("#" + id + " .fx-s"), id + " has its date and source line");
     }
     const bid = await pg.textContent("#f-corn-bid .fx-w");
-    assert.match(bid, /^\$\d+\.\d{2}, \d+ mi from ZIP 54728, ([A-Za-z]+ )?delivery\. (Best of \d+|The only one) within 50 mi\.( Nearest: \$\d+\.\d\d at \d+ mi\.)?/, bid);
+    // every outside host is blocked here, so the bids network did not answer and the row comes from the short committed
+    // list: it says so, and never "Best of N within 50 mi" (Nov 4, 2026 site panel; test/bids-fallback.test.mjs)
+    assert.match(bid, /^\$\d+\.\d{2}, \d+ mi from ZIP 54728, ([A-Za-z]+ )?delivery\. From the short list of bids the price pages use; the full elevator network was too slow to read this time\./, bid);
+    assert.doesNotMatch(bid, /Best of|within 50 mi/, bid);
     assert.equal(await pg.$eval("#f-corn-bid .fx-s a", (a) => [a.textContent, a.getAttribute("href")].join(" ")), "See the bids near here /cash-bids?zip=54728");
     // no elevator in the bid file within 50 miles is named anywhere on the page
     const near = J("data/bids.json").bids.filter((b) => b.lat != null && P.miles(45.31413, -91.651, b.lat, b.lon) <= 60).map((b) => b.facility).filter((n) => n && n.length > 3);

@@ -409,8 +409,9 @@
     if (/^[A-Z]{2}$/.test(u) && S.b.names[u]) return u;
     var saved = lsGet(KEY);
     if (saved && S.b.names[saved]) return saved;
+    /* Nov 4, 2026: the one saved-place reader (components/saved-place.js), so a ZIP typed on /cash-bids counts here too */
     var loc = null;
-    try { loc = JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) {}
+    try { loc = window.AgSavedPlace ? window.AgSavedPlace.read() : JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) {}
     var home = loc && /^[A-Z]{2}$/.test(loc.state || '') ? loc.state : '';
     return home && S.b.names[home] ? home : '';
   }
@@ -813,6 +814,10 @@
         status('');
         sheetUi();
         setState(first, true);
+        /* a saved ZIP with no state on record yet: the state comes from our own ZIP table, unless the reader picked one meanwhile */
+        if (!first && window.AgSavedPlace) window.AgSavedPlace.full().then(function (pl) {
+          if (!S.st && pl && pl.state && S.b.names[pl.state]) setState(pl.state, true);
+        }, function () {});
         if (S.q) search();
         goHash();
         if (window.AgPrintSheet) window.AgPrintSheet.attach(function () { return S.b ? printSpec(S.sheet.length ? S.sheet.slice() : null) : null; });
