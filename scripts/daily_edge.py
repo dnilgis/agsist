@@ -78,6 +78,13 @@ SCHEMA = "agsist-daily-edge/1"
 
 STALE_H = 36
 MIN_PAIRS = 100
+# 2026-11-04 (site panel): on Nov 2 the month roll left 293 of about 1,800 corn
+# boards with the same delivery month on both days, and the Daily printed
+# "194 of the 293 elevators AGSIST reads" as if 293 were the network. The
+# change line is withheld when the matched boards fall below this share of
+# the boards with a usable bid today (the usual match is above 95%).
+MIN_MATCH_SHARE = 0.5
+POP = "elevators AGSIST reads with the same delivery month both days"
 MIN_STATE_N = 15
 MIN_STATES = 5
 MIN_FRESH = 200
@@ -227,11 +234,12 @@ def cash_change(crop, index, prev, prev_generated, now):
     last = prior_trading_day(today)
     before = prior_trading_day(last)
     L, P = last.isoformat(), before.isoformat()
-    pairs, by_state = [], {}
+    pairs, by_state, eligible = [], {}, 0
     for p in index["places"]:
         n = usable_now(p, crop)
         if not n:
             continue
+        eligible += 1
         st = p["state"].upper()
         hist = (prev.get(st) or {}).get(fnv(p["place"] + "|" + crop + "|" + n["period"]))
         if not isinstance(hist, list):
@@ -247,6 +255,10 @@ def cash_change(crop, index, prev, prev_generated, now):
         pairs.append((st, c, bc))
     if len(pairs) < MIN_PAIRS:
         return None, {"id": fid, "why": "sample", "detail": f"{len(pairs)} matched boards for {P} to {L}, need {MIN_PAIRS}"}
+    if len(pairs) < MIN_MATCH_SHARE * eligible:
+        return None, {"id": fid, "why": "sample", "detail": (
+            f"{len(pairs)} of {eligible} boards with a usable bid posted the same delivery month on {P} and {L}, "
+            f"fewer than {MIN_MATCH_SHARE:.0%} of the boards matched")}
     kept, dropped = robust_keep([c for _, c, _ in pairs], OUTLIER_FLOOR[crop])
     if len(dropped) > MAX_DROP_SHARE * len(pairs):
         return None, {"id": fid, "why": "outlier", "detail": f"{len(dropped)} of {len(pairs)} pairs outside the filter"}
@@ -273,11 +285,11 @@ def cash_change(crop, index, prev, prev_generated, now):
     lday, pday = day_words(last), DOW[before.weekday()]
     cw = CROP_WORD[crop]
     if down == 0 and up == 0:
-        lead = f"On {lday}, none of the {num(len(good))} elevators AGSIST reads changed its cash {cw} bid from {pday}"
+        lead = f"On {lday}, none of the {num(len(good))} {POP} changed its cash {cw} bid from {pday}"
     else:
         (k1, w1), (k2, w2) = sorted([(down, "lower"), (up, "higher")], key=lambda x: -x[0])
         who = f"all {num(k1)}" if k1 == len(good) else f"{num(k1)} of the {num(len(good))}"
-        lead = f"On {lday}, {who} elevators AGSIST reads posted a {w1} cash {cw} bid than {pday}"
+        lead = f"On {lday}, {who} {POP} posted a {w1} cash {cw} bid than {pday}"
         if k2:
             lead += f", {num(k2)} a {w2} one"
     changed = weaker + stronger
@@ -724,8 +736,8 @@ def _selftest():
     if f:
         ok(f["n"] == 120 and f["value"] == -4.0 and f["down"] == 120 and f["up"] == 0, f"counts {f}")
         ok(f["basis_changed"] == 13 and f["basis_weaker"] == 10 and f["basis_stronger"] == 3, "basis counts")
-        want = ("On Thursday, Oct 15, all 120 elevators AGSIST reads posted a lower cash corn bid than "
-                "Wednesday; 13 changed their basis, 10 weaker and 3 stronger.")
+        want = ("On Thursday, Oct 15, all 120 elevators AGSIST reads with the same delivery month both days "
+                "posted a lower cash corn bid than Wednesday; 13 changed their basis, 10 weaker and 3 stronger.")
         ok(f["sentence"] == want, f"sentence {f['sentence']!r}")
         ok(f["as_of"] == "2026-10-15" and f["from"] == "2026-10-14", "dates")
         ok("Biggest state move: Iowa, 4¢ lower (120 elevators)." in f["detail"], f["detail"])
@@ -735,7 +747,7 @@ def _selftest():
         prev2["IA"][k] = [["2026-10-15", 4.08, -40], ["2026-10-16", 4.10, -40]]
     idx2["generated"] = "2026-10-19T09:00:00Z"
     f, w = cash_change("corn", idx2, prev2, "2026-10-19T09:30:00Z", datetime(2026, 10, 19, 10, 40, tzinfo=timezone.utc))
-    ok(f and f["value"] == 2.0 and f["sentence"].startswith("On Friday, Oct 16, all 120 elevators AGSIST reads posted a higher cash corn bid than Thursday;"), f"monday {w} {f and f['sentence']}")
+    ok(f and f["value"] == 2.0 and f["sentence"].startswith("On Friday, Oct 16, all 120 elevators AGSIST reads with the same delivery month both days posted a higher cash corn bid than Thursday;"), f"monday {w} {f and f['sentence']}")
     # 99 boards: refused, sample
     idx, prev, now = _fixture(n_pairs=99)
     f, w = cash_change("corn", idx, prev, "2026-10-16T09:30:00Z", now)
@@ -767,7 +779,7 @@ def _selftest():
     for k in prev["IA"]:
         prev["IA"][k][-1][2] = -40
     f, w = cash_change("corn", idx, prev, "2026-10-16T09:30:00Z", now)
-    ok(f and f["sentence"] == "On Thursday, Oct 15, none of the 120 elevators AGSIST reads changed its cash corn bid from Wednesday; none changed its basis.", f and f["sentence"])
+    ok(f and f["sentence"] == "On Thursday, Oct 15, none of the 120 elevators AGSIST reads with the same delivery month both days changed its cash corn bid from Wednesday; none changed its basis.", f and f["sentence"])
     ok(f and f["detail"].startswith("120 unchanged; median change 0¢."), f and f["detail"])
     # mixed day: 70 lower 4c, 30 higher 1c, 20 unchanged -> lower first, median of all 120
     idx, prev, now = _fixture()
@@ -775,13 +787,24 @@ def _selftest():
     for i, key in enumerate(keys):
         prev["IA"][key][-1][1] = round(4.08 + (-0.04 if i < 70 else (0.01 if i < 100 else 0.0)), 4)
     f, w = cash_change("corn", idx, prev, "2026-10-16T09:30:00Z", now)
-    ok(f and f["sentence"].startswith("On Thursday, Oct 15, 70 of the 120 elevators AGSIST reads posted a lower cash corn bid than Wednesday, 30 a higher one;"), f and f["sentence"])
+    ok(f and f["sentence"].startswith("On Thursday, Oct 15, 70 of the 120 elevators AGSIST reads with the same delivery month both days posted a lower cash corn bid than Wednesday, 30 a higher one;"), f and f["sentence"])
     ok(f and f["value"] == -4.0 and f["unchanged"] == 20, f and (f["value"], f["unchanged"]))
     # a board whose period rolled (no matching key) is not a pair
     idx, prev, now = _fixture()
     idx["places"][0]["now"]["corn"]["period"] = "2026-11"
     f, _ = cash_change("corn", idx, prev, "2026-10-16T09:30:00Z", now)
     ok(f and f["n"] == 119, "rolled period")
+    # Nov 2 2026 month roll: 120 boards matched, 130 more rolled to a new delivery
+    # month (no pair): 120 of 250 is under half, so the line is withheld
+    idx, prev, now = _fixture()
+    for i in range(130):
+        idx["places"].append({"place": f"Rolled {i}||Town{i}|IA", "state": "IA", "currency": "USD",
+                              "now": {"corn": {"cash": 4.0, "basisCents": -40, "period": "2026-11", "commodity": "Corn"}}})
+    f, w = cash_change("corn", idx, prev, "2026-10-16T09:30:00Z", now)
+    ok(f is None and w and w["why"] == "sample" and "120 of 250" in w["detail"], f"roll collapse {w}")
+    idx["places"] = idx["places"][:230]          # 120 of 230 is over half: printed
+    f, w = cash_change("corn", idx, prev, "2026-10-16T09:30:00Z", now)
+    ok(f and f["n"] == 120, f"over half {w}")
     # special grades and CAD boards are left out
     idx, prev, now = _fixture()
     idx["places"][1]["now"]["corn"]["commodity"] = "Non-GMO Corn"

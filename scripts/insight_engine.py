@@ -25,7 +25,14 @@ Here, a scored spec is:
   verdict   HOLDS (all five) | PARTLY (holdout and placebo, but not the rest) | NO | WAIT (data
             missing, holdout window still open, too few rows) | ERROR (the spec changed after
             its first result, or the run broke)
-  eligible  HOLDS, the same sign on the spec's last scored re-test, and no sig_yes yet
+  eligible  HOLDS, the same sign on the spec's last scored re-test, the minimum effect, and no
+            sig_yes yet
+  min effect (Sig, Nov 4 2026, site panel call 1): skill of at least MIN_SKILL (5%) over the
+            benchmark (1 - model MAE / benchmark MAE on the holdout) AND the gain above zero in the
+            latest scored season. barge-change-leads-spread-v1 held every test and was eligible
+            with skill 1.4% (0.11c on an 8.07c error) and a 2026 season below zero: printable by
+            rule, nil in a farmer's hands. A kind with no MAE skill (contagion) is never eligible
+            until it has one.
 A first HOLDS is never eligible: it needs one re-test with the same sign first.
 
 BENCHMARKS. A level is scored against persistence (the last value known that Friday). A change
@@ -87,6 +94,7 @@ SHUFFLES, SHUFFLES_NEAR, NEAR_P = 1000, 5000, 0.01
 SHUFFLES_LINE = 20000      # when p is within 10x the ledger-wide line
 LINE = [None]              # alpha / M for this run (set by run())
 BOOT = 1000
+MIN_SKILL = 0.05           # minimum effect for "eligible": 5% better than the benchmark (Sig, Nov 4 2026)
 CHECK_PAIRS = []           # selftest only: compare the matrix counts with a pair-by-pair count
 BLOCK_WEEKS = 8            # weekly placebo: shuffle 8-week blocks, not single weeks (autocorrelation)
 WEEKDAY_RUN = 6            # Sunday (Python weekday), Central time
@@ -998,6 +1006,30 @@ def span(years):
 
 
 # ------------------------------------------------------------------ the gate
+def min_effect(c, min_skill=MIN_SKILL):
+    """Sig's Nov 4 2026 minimum effect. Pure. -> {skill, min_skill, latest_season, latest_gain, pass, why}.
+    skill = 1 - model MAE / benchmark MAE on the holdout (the engine's own figure when it wrote one);
+    the latest season is the last scored one in the core's by_season (written in season order)."""
+    ho = c.get("holdout") or {}
+    skill = ho.get("skill")
+    if skill is None and ho.get("mae_model") is not None and ho.get("mae_benchmark"):
+        skill = r6(1 - ho["mae_model"] / ho["mae_benchmark"])
+    by = (c.get("seasons") or {}).get("by_season") or {}
+    scored = [(k, v) for k, v in by.items() if v is not None]
+    latest = scored[-1] if scored else (None, None)
+    why = []
+    if skill is None:
+        why.append("no skill figure against the benchmark")
+    elif skill < min_skill:
+        why.append("skill %s%% is under %s%%" % (round(skill * 100, 1), round(min_skill * 100, 1)))
+    if latest[1] is None:
+        why.append("no scored latest season")
+    elif latest[1] <= 0:
+        why.append("the latest season (%s) went the other way" % latest[0])
+    return {"skill": skill, "min_skill": min_skill, "latest_season": latest[0], "latest_gain": latest[1],
+            "pass": not why, "why": "; ".join(why)}
+
+
 def gate(reg, cores, previous, today, M):
     """cores: {id: kind output}. previous: {id: [earlier rows, oldest first]}. Returns rows."""
     alpha = float(reg.get("alpha", 0.05))
@@ -1045,11 +1077,18 @@ def gate(reg, cores, previous, today, M):
             verdict = "NO"
         last = next((q for q in reversed(prev) if q.get("verdict") in ("HOLDS", "PARTLY", "NO") and q.get("date") != str(today)), None)
         stable = bool(last and last.get("sign") == c["sign"] and last.get("verdict") == "HOLDS")
-        eligible = verdict == "HOLDS" and stable and not s.get("sig_yes")
+        eff = min_effect(c, float(reg.get("min_skill", MIN_SKILL)))
+        eligible = verdict == "HOLDS" and stable and eff["pass"] and not s.get("sig_yes")
         failed = [k for k, v in conds.items() if not v]
+        if verdict != "HOLDS":
+            why = "fails: " + ", ".join(failed)
+        elif eff["pass"]:
+            why = "all printable conditions but Sig's yes"
+        else:
+            why = "holds every test but is under the minimum effect: " + eff["why"]
         row.update({
             "verdict": verdict,
-            "why": "all printable conditions but Sig's yes" if verdict == "HOLDS" else "fails: " + ", ".join(failed),
+            "why": why, "min_effect": eff,
             "n": c["n"], "n_detail": c.get("n_detail"), "estimate": c["estimate"], "range": c["range"], "unit": c["unit"],
             "sign": c["sign"], "holdout": c["holdout"], "placebo": c["placebo"],
             "holm_family": r6(holm_adj.get(sid, 1.0)), "family_size": fam_size[s["family"]],
@@ -1401,8 +1440,8 @@ def selftest():
 
     print("the gate")
     good = {"status": "scored", "n": 300, "estimate": 2.0, "range": [1.0, 3.0], "unit": "u", "sign": 1, "sign_ok": True,
-            "holdout": {"pass": True}, "placebo": {"p": 0.0002, "shuffles": 5000},
-            "seasons": {"pass": True, "good": 3, "closed": 3}}
+            "holdout": {"pass": True, "mae_model": 8.0, "mae_benchmark": 10.0, "skill": 0.2}, "placebo": {"p": 0.0002, "shuffles": 5000},
+            "seasons": {"pass": True, "good": 3, "closed": 3, "by_season": {"2023": 1.5, "2024": 2.0, "2025": 2.5}}}
     sA = dict(wspec("ga-v1"), family="f")
     sB = dict(wspec("gb-v1"), family="f")
     regG = dict(reg, specs=[sA, sB])
@@ -1417,6 +1456,25 @@ def selftest():
     ck("HOLDS again with the same sign: eligible for Sig's review", rws2[0]["eligible"] and rws2[0]["sign_stable"], rws2[0])
     rws3 = gate(regG, {"ga-v1": dict(good, sign=-1, estimate=-2.0), "gb-v1": good}, prev, today, M)
     ck("sign flipped since the last re-test: not eligible", not rws3[0]["eligible"], rws3[0])
+    # the minimum effect (Sig, Nov 4 2026): barge-change-leads-spread-v1 as the ledger had it on Nov 1,
+    # HOLDS twice with the same sign, gain 0.11c on an 8.07c benchmark error (skill 1.4%), 2026 below zero
+    barge = dict(good, estimate=0.11, holdout={"pass": True, "mae_model": 7.96, "mae_benchmark": 8.07, "skill": 0.013631},
+                 seasons={"pass": True, "good": 3, "closed": 4, "by_season": {"2023": 0.3, "2024": 0.2, "2025": 0.1, "2026": -0.05}})
+    rb = gate(regG, {"ga-v1": barge, "gb-v1": good}, prev, today, M)
+    ck("barge change: HOLDS, same sign, but skill 1.4% and 2026 the other way: not eligible", rb[0]["verdict"] == "HOLDS"
+       and rb[0]["sign_stable"] and not rb[0]["eligible"] and not rb[0]["min_effect"]["pass"]
+       and "skill 1.4% is under 5.0%" in rb[0]["why"] and "(2026) went the other way" in rb[0]["why"], rb[0])
+    rs = gate(regG, {"ga-v1": dict(good, holdout={"pass": True, "skill": 0.049}), "gb-v1": good}, prev, today, M)
+    ck("skill 4.9%: under the 5% line, not eligible", not rs[0]["eligible"] and "skill 4.9% is under" in rs[0]["why"], rs[0])
+    rl = gate(regG, {"ga-v1": dict(good, seasons=dict(good["seasons"], by_season={"2023": 1.0, "2024": 1.0, "2025": -0.2})),
+                     "gb-v1": good}, prev, today, M)
+    ck("skill 20% but the latest season went the other way: not eligible", not rl[0]["eligible"]
+       and rl[0]["min_effect"]["latest_season"] == "2025", rl[0])
+    ry = gate(regG, {"ga-v1": dict(good, holdout={"pass": True, "mae_model": 9.5, "mae_benchmark": 10.0}), "gb-v1": good}, prev, today, M)
+    ck("state-yield style core (MAEs, no skill field): skill 5% computed, eligible", ry[0]["eligible"]
+       and ry[0]["min_effect"]["skill"] == 0.05, ry[0])
+    rc = gate(regG, {"ga-v1": dict(good, holdout={"pass": True}), "gb-v1": good}, prev, today, M)
+    ck("no skill figure at all (contagion): never eligible", not rc[0]["eligible"] and "no skill figure" in rc[0]["why"], rc[0])
     sAy = dict(sA, sig_yes="2026-11-02")
     rws4 = gate(dict(regG, specs=[sAy, sB]), {"ga-v1": good, "gb-v1": good}, prev, today, M)
     ck("Sig's yes is not part of the hash, and a spec he said yes to is no longer listed for review",

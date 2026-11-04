@@ -168,12 +168,18 @@ def loc_label(t, bd):
 
 
 def _cell(r, snap_ct):
+    """Cash, then the basis against the futures month it is quoted on, then the
+    delivery month. 2026-11-04 (site panel): the cell read "Nov -80c" for a
+    November delivery soybean bid quoted vs Jan '27; with a Nov soybean
+    contract on the board that reads as basis vs Nov. Now "-80c vs Jan '27",
+    the town page's wording (CB.con_label), and "Nov delivery" on its own."""
     if r is None:
         return '<td class="n"><span class="mut">&ndash;</span></td>'
-    sub = CB._mon(r["dm"], snap_ct)
-    if r["basis"] is not None:
-        sub += " " + money_basis(r["basis"])
-    return f'<td class="n">{CB.cash_c(r["cash"])}<br><span class="mut">{sub}</span></td>'
+    mon = CB._mon(r["dm"], snap_ct) + " delivery"
+    if r["basis"] is None:
+        return f'<td class="n">{CB.cash_c(r["cash"])}<br><span class="mut">{mon}</span></td>'
+    b = money_basis(r["basis"]) + (f" vs {CB.con_label(r['contract'])}" if r.get("contract") else "")
+    return f'<td class="n">{CB.cash_c(r["cash"])}<br><span class="mut">{b}<br>{mon}</span></td>'
 
 
 def _days(ts):
@@ -608,6 +614,11 @@ def selftest():
         assert 'content="index,follow"' in p and "<title>Acme Co-op Cash Bids Today | AGSIST</title>" in p
         assert "ga-guard" in p and 'id="site-header"' in p, "same head and static chrome as the town pages"
         assert "\u2014" not in p, "no em dashes"
+        # 2026-11-04: the basis names the futures month it is against, never the delivery month
+        cells = re.findall(r'<td class="n">\$[\d.]+<br><span class="mut">(.*?)</span></td>', p)
+        assert cells and all(" vs " in c and c.endswith(" delivery") for c in cells), cells
+        assert "\u221245\u00a2</span> vs Nov '26<br>Oct delivery" in p, cells
+        assert not re.search(r'mut">(?:Oct|Nov|Dec)(?: &rsquo;\d\d)? <span', p), "a delivery month glued to the basis"
         # the bid email box: its own ZIP field, the company as the source, loaded once
         assert ('<input type="hidden" id="co-zip" value=""><div id="bid-email" data-bid-alerts data-zip-input="co-zip" '
                 'data-source="company:acme-co-op" data-crops="corn soybeans wheat"></div>') in p
