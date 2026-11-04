@@ -20,7 +20,7 @@ COLS = {
     "IN": BASE + ["grantor", "grantee", "ac1"],
     "WI": BASE + ["grantor", "grantee", "ac1", "rec", "rr", "mfl"],
     "VT": BASE + ["grantor", "grantee", "rec"],
-    "NJ": [c for c in BASE if c != "str"] + ["rec", "acx", "avl", "avb", "avy", "lsf"],
+    "NJ": [c for c in BASE if c != "str"] + ["rec", "acx", "avl", "avb", "avy", "lsf", "yb"],
 }
 CO = {"IL": ("17999", "Testa", "Tess township"), "IN": ("18999", "Testb", "TESSVILLE"), "WI": ("55999", "Testc", "Town of Tess"),
       "VT": ("50999", "Testd", "TESSBURY"), "NJ": ("34999", "Teste", "Tess township")}
@@ -40,8 +40,8 @@ def rows_for(st):
              "legal": "" if st in ("VT", "NJ") else "PART OF SE 1/4 SEC 12 T15N R6E 4TH PM, %d ACRES" % (80 + 5 * i),
              "str": "12-15N-6E-4", "exempt": 0, "grantor": "SELLER %s%d SYNTH" % (st, i), "grantee": "BUYER %s%d SYNTH" % (st, i),
              "ac1": None, "rec": "2026-%02d-%02d" % (9 - i // 3, 22 - 6 * (i % 3)), "acx": None,
-             "rr": "life" if i == 0 else None, "mfl": 12.0 if i == 0 else 0, "avl": 41200 + i, "avb": 0 if i != 2 else 185000,
-             "avy": "26", "lsf": 0 if i != 2 else 1840}
+             "rr": "life" if i == 0 else None, "mfl": 12.0 if i == 0 else None, "avl": 41200 + i, "avb": None if i != 2 else 185000,
+             "avy": "2026", "lsf": None if i != 2 else 1840, "yb": None if i != 2 else "1988"}
         if st == "IL" and i == 0:
             o["legal"] = "PART OF SE 1/4 SEC 12 T15N R6E 4TH PM, EXCEPT TRACT TO SELLER IL0 SYNTH, 80 ACRES"
         if i == 1:

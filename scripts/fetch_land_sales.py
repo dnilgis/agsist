@@ -1444,6 +1444,8 @@ def in_flags(d, parcels):
         out.append("land only")
     elif n("B3_Vacant_Land"):
         out.append("with buildings")
+    if y("E6_Seller_Financed"):        # the detail panel (Nov 4, 2026): 214 of 6,474 farm forms in the 2026 file
+        out.append("seller financed")
     if y("P2_16_Valid_Trending"):
         out.append("valid for trending")
     elif n("P2_16_Valid_Trending"):
@@ -3306,6 +3308,9 @@ def selftest():
     ck("detail NJ: the main lot values sit where the SR-1A layout puts them, zero is blank", NJ_SR["avl"] == (56, 64) and NJ_SR["avb"] == (65, 73)
        and NJ_SR["lsf"] == (657, 663) and nj_int("000060000") == "60000" and nj_int("000000000") == "")
     ck("detail: every detail column has a header name", all(x in COLS for x in EXTRA) and set(EXTRA) == set(EXTRA_NUM) | set(EXTRA_TXT))
+    ck("detail IN: a seller-financed form says so in words the market rule does not read",
+       "seller financed" in in_flags({"E6_Seller_Financed": "Y"}, []) and "seller financed" not in in_flags({"E6_Seller_Financed": "N"}, [])
+       and not BLSX.NON_MARKET_RE.search("SELLER FINANCED"))
     print("FAILS=%d" % bad)
     return 1 if bad else 0
 

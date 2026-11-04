@@ -303,7 +303,7 @@
     NJ: { form: 'deed abstract', doc: 'District and deed serial (SR-1A)', deed: 'Deed date', rec: 'Recorded', place: 'Municipality',
       pid: 'Block and lot', price: 'Sale price on the New Jersey deed abstract (SR-1A).',
       cls: { '1': 'House (farmhouse lot 3A, or residential 2)', '2': 'Commercial (4A)', '3': 'Industrial (4B)', '4': 'Farm (3A or 3B)', '5': 'Vacant land (1)', 'X': 'Exempt (15)' },
-      bldg: 1, tax: 'Realty transfer fee', extra: ['avl', 'avb', 'avy', 'lsf'] }
+      bldg: 1, tax: 'Realty transfer fee', extra: ['avl', 'avb', 'avy', 'lsf', 'yb'] }
   };
   /* the sale-kind words the fetcher writes after the deed type (scripts/fetch_land_sales.py il_flags, in_flags, wi_flags,
      vt_table, nj_table), in plain sentences */
@@ -456,9 +456,10 @@
       ['Property class', fromRec('cls', function (v) { return esc(clsWords(v, T.cls)); })],
       ['Buildings', bld, !T.bldg ? 'An Illinois declaration does not say whether buildings were included.' : null],
       st === 'NJ' ? ['Living space', fromRec('lsf', function (v) { return +v > 0 ? esc((+v).toLocaleString('en-US')) + ' square feet (main lot)' : 'None on the main lot'; })] : null,
-      st === 'NJ' ? ['Assessed value, main lot', fromRec('avl', function (v) { return esc(money(+v)) + ' land' + (rv('avb') != null ? ', ' + esc(money(+rv('avb'))) + ' buildings' : '') + (rv('avy') ? ' (' + esc(rv('avy')) + ' list)' : ''); }), 'Farmland-assessed lots (3B) are valued on their farm use, far under a sale price.'] : null,
+      st === 'NJ' ? ['Year built', fromRec('yb', function (v) { return esc(v) + ' (main lot)'; }), 'Blank on the deed abstract when the lot has no house or the assessor left it out.'] : null,
+      st === 'NJ' ? ['Assessed value, main lot', fromRec('avl', function (v) { return esc(money(+v)) + ' land' + (rv('avb') != null ? ', ' + esc(money(+rv('avb'))) + ' buildings' : '') + (rv('avy') ? ' (' + esc(rv('avy')) + ' tax list)' : ''); }), 'Farmland-assessed lots (3B) are valued on their farm use, far under a sale price.'] : null,
       st === 'VT' ? ['Town listed value', fromRec('glv', function (v) { return esc(money(+v)); }), 'The town grand list value on the return.'] : null,
-      st === 'VT' ? ['Use before and after', fromRec('use0', function (v) { return 'Seller: ' + esc(v) + (rv('use1') ? '; buyer: ' + esc(rv('use1')) : ''); })] : null,
+      st === 'VT' ? ['Use before and after', fromRec('use0', function (v) { return 'Before the sale: ' + esc(useW(v)) + (rv('use1') ? '; the buyer\u2019s use: ' + esc(useW(rv('use1'))) : ''); })] : null,
       cu ? ['Current use', cu, 'Vermont’s use value program for farm and forest land.'] : null,
       st === 'WI' ? ['Managed forest acres', fromRec('mfl', function (v) { return +v > 0 ? esc(v) + ' acres' : 'None'; }), 'Acres in Wisconsin’s Managed Forest Law program.'] : null,
       ['Parcels in the sale', wait || gone || esc(rv('np') || 1)]
@@ -496,6 +497,7 @@
   }
   var SRC = { IL: 'Illinois Department of Revenue, MyDec transfer declarations', IN: 'Indiana sales disclosure forms', WI: 'Wisconsin Department of Revenue, transfer returns',
     VT: 'Vermont property transfer tax returns', NJ: 'New Jersey deed abstracts (SR-1A) and the 2026 assessment list' };
+  function useW(v) { return String(v).replace(/^\d+\.\s*/, ''); }
   function FLAG_BLDG(r) { return r && (/(^|[\s,;/])(1|2|3|7)($|[\s,;/])/.test(String(r.cls || '')) || /(^|; )with buildings(;|$)/.test(String(r.conv || ''))); }
   function strWords(k) {
     var m = /^(\d{1,2})-(\d{1,3})([NS?])-(\d{1,3})([EW?])(?:-(\d))?$/.exec(String(k || ''));
