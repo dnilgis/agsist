@@ -2,8 +2,8 @@
  "schema": "agsist-sponsor-report/1",
  "sponsor": "Root Lot",
  "slug": "rootlot",
- "generated": "2026-11-02T20:45:48+00:00",
- "through": "2026-11-01",
+ "generated": "2026-11-04T11:40:42+00:00",
+ "through": "2026-11-03",
  "start": "2026-10-28",
  "countFrom": "2026-10-28",
  "liveSince": "2026-10-28",
@@ -11,7 +11,7 @@
  "definitionChanged": "2026-09-05",
  "slotSince": "2026-10-29",
  "totals": {
-  "viewable": 49,
+  "viewable": 71,
   "clicks": 0,
   "ctr": 0.0,
   "legacyImpressions": 0
@@ -19,19 +19,19 @@
  "windows": [
   {
    "days": 7,
-   "viewable": 49,
+   "viewable": 71,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 30,
-   "viewable": 49,
+   "viewable": 71,
    "clicks": 0,
    "ctr": 0.0
   },
   {
    "days": 90,
-   "viewable": 49,
+   "viewable": 71,
    "clicks": 0,
    "ctr": 0.0
   }
@@ -66,11 +66,38 @@
    "v": 9,
    "l": 0,
    "c": 0
+  },
+  {
+   "d": "2026-11-02",
+   "v": 15,
+   "l": 0,
+   "c": 0
+  },
+  {
+   "d": "2026-11-03",
+   "v": 7,
+   "l": 0,
+   "c": 0
   }
  ],
  "byPage": [
   {
+   "page": "/rent/california",
+   "viewable": 4,
+   "clicks": 0
+  },
+  {
    "page": "/cash-bids",
+   "viewable": 3,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/webb-county",
+   "viewable": 3,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/california/orange-county",
    "viewable": 3,
    "clicks": 0
   },
@@ -96,11 +123,6 @@
   },
   {
    "page": "/rain",
-   "viewable": 2,
-   "clicks": 0
-  },
-  {
-   "page": "/rain/texas/webb-county",
    "viewable": 2,
    "clicks": 0
   },
@@ -180,11 +202,6 @@
    "clicks": 0
   },
   {
-   "page": "/rent/california",
-   "viewable": 1,
-   "clicks": 0
-  },
-  {
    "page": "/rent/idaho",
    "viewable": 1,
    "clicks": 0
@@ -201,11 +218,6 @@
   },
   {
    "page": "/prf",
-   "viewable": 1,
-   "clicks": 0
-  },
-  {
-   "page": "/rain/california/orange-county",
    "viewable": 1,
    "clicks": 0
   },
@@ -266,6 +278,86 @@
   },
   {
    "page": "/rent/new-mexico",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/arc-plc/texas/cottle-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/arc-plc/texas/gaines-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/arc-plc/texas/lubbock-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/cash-bids/kentucky/",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/california/fresno-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/texas/jim-hogg-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/farmland-atlas/texas/starr-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/bexar-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/georgia",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/michigan",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/oklahoma",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/arc-plc/texas/tom-green-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/mills-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rain/texas/reeves-county",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/arkansas",
+   "viewable": 1,
+   "clicks": 0
+  },
+  {
+   "page": "/rent/missouri",
    "viewable": 1,
    "clicks": 0
   }
@@ -392,12 +484,12 @@
  "regionAds": {
   "pending": false,
   "start": "2026-10-28",
-  "through": "2026-11-01",
+  "through": "2026-11-03",
   "rows": [
    {
     "code": "CA",
     "name": "California",
-    "viewable": 11,
+    "viewable": 20,
     "clicks": 0
    },
    {
@@ -409,12 +501,12 @@
    {
     "code": "TX",
     "name": "Texas",
-    "viewable": 34,
+    "viewable": 44,
     "clicks": 0
    }
   ],
   "elsewhere": {
-   "viewable": 4,
+   "viewable": 7,
    "clicks": 0
   }
  }
