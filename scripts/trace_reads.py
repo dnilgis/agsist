@@ -15,6 +15,17 @@ other write into the repository is refused. Bytecode is not written. Child proce
 
 OUT.json: {"rc": exit code, "read": [repository paths], "listed": [folders], "written": [paths it tried to write]}
 """
+import sys
+if __name__ == "__main__":
+    # --help and a bad flag of its own exit before any work (BUILD-RULES 46); the arguments after the
+    # builder's path are the builder's, so only the ones before it are checked here
+    _own = []
+    for _a in sys.argv[1:]:
+        if _a.endswith(".py"):
+            break
+        _own.append(_a)
+    try: import _argguard; _argguard.guard(__file__, argv=_own)
+    except ImportError: pass
 import builtins
 import io
 import json

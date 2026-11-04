@@ -300,7 +300,11 @@ const sumFixture = () => {
   g(d, "clone", "-q", remote, b);
   return { d, a, b, g };
 };
-const withFake = (root, code, build = "build_sum.py") => py(`import generated_sets as G
+// the runner's git, not this machine's: no global or system config, so no identity and no autostash setting
+const bareGit = { ...process.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_NOSYSTEM: "1" };
+delete bareGit.GIT_AUTHOR_NAME; delete bareGit.GIT_AUTHOR_EMAIL; delete bareGit.GIT_COMMITTER_NAME; delete bareGit.GIT_COMMITTER_EMAIL;
+const pyBare = (code) => execFileSync("python3", ["-c", "import sys, json; sys.path.insert(0, 'scripts'); " + code], { cwd: ROOT, encoding: "utf8", env: bareGit });
+const withFake = (root, code, build = "build_sum.py") => pyBare(`import generated_sets as G
 G.ROOT = G.GIT_ROOT = ${JSON.stringify(root)}
 G.SUMMARIES = [{"id": "sum", "build": ["python3", ${JSON.stringify(build)}], "trace": [], "files": ["sum.txt"]}]
 G.SUMMARY = {"sum": G.SUMMARIES[0]}
@@ -329,8 +333,9 @@ test("rule 61: pull-rebase rebuilds a summary that conflicts, never keeping eith
   // this job adds its page and its summary, from the older main
   fs.writeFileSync(a + "/pages/two.html", "2\n"); execFileSync("python3", ["build_sum.py"], { cwd: a });
   g(a, "add", "-A"); g(a, "commit", "-qm", "two");
-  const rc = JSON.parse(withFake(a, `print(json.dumps(G.pull_rebase(["pages"])))`).trim().split("\n").at(-1));
-  assert.equal(rc, 0, "rebased");
+  const rcOut = withFake(a, `print(json.dumps(G.pull_rebase(["pages"])))`);
+  const rc = JSON.parse(rcOut.trim().split("\n").at(-1));
+  assert.equal(rc, 0, "rebased: " + rcOut);
   assert.equal(fs.readFileSync(a + "/sum.txt", "utf8"), "1\n2\n3\n", "the summary is rebuilt from both sides' pages");
   assert.equal(g(a, "status", "--porcelain").trim(), "", "clean, no rebase in progress");
   assert.match(g(a, "log", "--format=%s", "-2"), /^two\nthree\n$/);

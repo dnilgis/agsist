@@ -664,7 +664,14 @@ def pull_rebase(sids, branch="main", autostash=False):
     path takes over). -> 0 when the branch is rebased onto origin/<branch>."""
     known = set(summary_files([x["id"] for x in SUMMARIES]))
     want = sorted({x["id"] for sid in sids for x in dependents_of(sid)}) if sids else [x["id"] for x in SUMMARIES]
-    cmd = ["git", "pull", "-q", "--rebase"] + (["--autostash"] if autostash else []) + ["origin", branch]
+    # the same on any runner: no identity in the config (the rebase commits as the bot), no editor, the
+    # autostash setting stated, never read from the machine's config
+    ident = []
+    for k, v in (("user.name", "AGSIST Bot"), ("user.email", "bot@agsist.com")):
+        if not sh(["git", "config", k]).stdout.strip():
+            ident += ["-c", "%s=%s" % (k, v)]
+    git = ["git"] + ident + ["-c", "core.editor=true", "-c", "rebase.autoStash=%s" % ("true" if autostash else "false")]
+    cmd = git + ["pull", "-q", "--rebase", "--no-edit"] + (["--autostash"] if autostash else ["--no-autostash"]) + ["origin", branch]
     r = sh(cmd)
     for _ in range(50):
         if r.returncode == 0 and not in_rebase():
@@ -673,7 +680,11 @@ def pull_rebase(sids, branch="main", autostash=False):
             print("pull-rebase: git pull failed: %s" % (r.stdout + r.stderr).strip()[-300:])
             return 1
         un = [l for l in sh(["git", "diff", "--name-only", "--diff-filter=U"]).stdout.splitlines() if l]
-        if not un or not all(any(_under(f, k) for k in known) for f in un):
+        if not un:
+            print("pull-rebase: the rebase stopped with no conflict: %s; rebase aborted" % (r.stdout + r.stderr).strip()[-300:])
+            sh(["git", "rebase", "--abort"])
+            return 1
+        if not all(any(_under(f, k) for k in known) for f in un):
             print("pull-rebase: a conflict outside the summary files (%d file(s)); rebase aborted" % len(un))
             sh(["git", "rebase", "--abort"])
             return 1
@@ -683,7 +694,7 @@ def pull_rebase(sids, branch="main", autostash=False):
         ids = sorted(set(want) | {x["id"] for x in SUMMARIES if any(_under(f, k) for f in un for k in x["files"])})
         run_dependents(ids)
         sh(["git", "add", "-A", "--"] + [f for f in summary_files(ids) if os.path.exists(os.path.join(GIT_ROOT, f))] + un)
-        r = sh(["git", "-c", "core.editor=true", "rebase", "--continue"])
+        r = sh(git + ["rebase", "--continue"])
     sh(["git", "rebase", "--abort"])
     return 1
 
