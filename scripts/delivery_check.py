@@ -184,7 +184,7 @@ SENDERS = [
 # Workflows with mail secrets that mail only Sig (or the person who ran them), never readers.
 SIG_ONLY = {
     "audit.yml": "audit findings to Sig",
-    "cron-health.yml": "the Daily's 7:15 check and the rehearsal mail Sig",
+    "cron-health.yml": "the Daily's 7:15 check, the rehearsal and the Brevo limit reminder mail Sig",
     "elev-create.yml": "an elevator's private portal link, to Sig",
     "list-hygiene.yml": "what changed on the lists, to Sig",
     "morning-report.yml": "the morning report, to Sig",
@@ -701,11 +701,11 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
         except Exception as ex:                            # noqa: BLE001
             rows.append({"workflow": "delivery:" + wf, "critical": True, "clock": "reader email delivered",
                          "status": "unknown", "why": "could not read runs: %s" % str(ex)[:160]})
-    rows.append(volume_row(now, read_cache, environ))
+    rows.append(volume_row(now, read_cache, environ, prev))
     return rows, now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def volume_row(now, read_cache, environ):
+def volume_row(now, read_cache, environ, prev=None):
     """send-volume (scripts/send_cap.py): emails per UTC day from the logs this pass read, against the
     mail plan's cap. No API call of its own. A sender that may mail on any run is sampled (its row
     says so), so the count is a floor."""
@@ -724,7 +724,9 @@ def volume_row(now, read_cache, environ):
             if sends > logs_read or ((due or {}).get("kind") == "run" and total > len(read)):
                 sampled.append(wf)
         unread = [wf for wf in entries if wf not in read_cache]
-        return send_cap.judge(days, by, markers, send_cap.cap(environ), now, logs=logs, sampled=sampled, unread=unread)
+        prev_row = next((w for w in (prev or {}).get("workflows") or [] if w.get("workflow") == send_cap.ROW), None)
+        return send_cap.judge(days, by, markers, send_cap.cap(environ), now, logs=logs, sampled=sampled, unread=unread,
+                              daily7=send_cap.daily_history(prev_row, by))
     except Exception as ex:                                # noqa: BLE001
         return {"workflow": send_cap.ROW, "critical": True, "clock": "emails per UTC day under the mail plan's cap",
                 "status": "unknown", "why": "could not count: %s" % str(ex)[:160]}

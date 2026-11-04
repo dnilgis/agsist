@@ -259,3 +259,30 @@ test("the mail plan's daily cap: send-volume row, SEND-CAP marker and preflight 
   assert.match(fs.readFileSync(path.join(SCRIPTS, "delivery_line.py"), "utf8"), /send_cap\.install\(t\)/);
   assert.match(fs.readFileSync(path.join(SCRIPTS, "send_daily.py"), "utf8"), /send_cap\.preflight\(tally/);
 });
+
+test("Sig's reminder to upgrade Brevo: once a day at 80%, again at 95% marked urgent, a weekly heads-up at 70%", () => {
+  // Sig, Nov 4: "remind me to upgrade Brevo as we get closer to the daily limit."
+  const out = py("scripts/send_cap.py", "--selftest");
+  for (const name of [
+    "Nov 4: 211 of 300 sends no reminder",
+    "245 of 300 (81%) mails one reminder",
+    "the reminder text names the count, the cap and the variable",
+    "the same day again: once a day, no second mail",
+    "95% the same day: one urgent reminder",
+    "95% again: no repeat that day",
+    "SEND_DAILY_CAP raised above the day's count: no reminder",
+    "a flag that cannot be read sends nothing",
+    "the Daily's 7-day average at 71% of 300: a gentle heads-up",
+    "the heads-up comes once a week",
+    "no address in a reminder",
+  ]) assert.match(out, new RegExp(`^ok   ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"), name);
+  // the path that already tells Sig things: the job's SMTP secrets to SIG_TO (log_safe.owner_mail)
+  const ch = readWf("cron-health.yml");
+  const step = steps(ch).find((s) => /name: Tell Sig when Brevo nears its daily limit/.test(s));
+  assert.ok(step, "cron-health.yml has the Brevo reminder step");
+  assert.match(step, /python3 scripts\/send_cap\.py --remind private\/data\/cron-health\.json/);
+  assert.match(step, /OWNER_TO: +\$\{\{ secrets\.SIG_TO \}\}/);
+  assert.match(step, /SEND_DAILY_CAP: +\$\{\{ vars\.SEND_DAILY_CAP \}\}/);
+  assert.match(step, /continue-on-error: true/);
+  assert.match(fs.readFileSync(path.join(SCRIPTS, "send_cap.py"), "utf8"), /mail = log_safe\.owner_mail/);
+});
