@@ -63,6 +63,30 @@ ROWS = [
     ("crude", "Crude", False),
 ]
 
+
+def rows_of(daily):
+    """ROWS for one issue (2026-11-04, fx/smallfix1104). The corn and bean
+    rows name the headline contract the briefing locked ("Beans, Jan '27"),
+    and a harvest alias row ("Corn, Dec") shows only when it is a later month
+    than that headline, named with its year (seed_static.daily_harvest). The
+    Nov 4 email read "Beans, Nov" for a month in delivery under a briefing
+    written on Jan '27. An issue from before the month was stamped keeps its
+    rows, the harvest one named with its year."""
+    import seed_static as S
+    out = []
+    for key, label, grain in ROWS:
+        crop = key.split("-")[0]
+        if key in ("corn", "beans"):
+            h = S.daily_headline(daily, crop)
+            out.append((key, label + (", " + h[1] if h and h[1] else ""), grain))
+        elif key in ("corn-dec", "beans-nov"):
+            a = S.daily_harvest(daily, crop)
+            if a:
+                out.append((key, label.split(",")[0] + ", " + a[1], grain))
+        else:
+            out.append((key, label, grain))
+    return out
+
 INK, MUTE, LINE = "#14100a", "#6b6b6b", "#e3ded4"
 GOLD, UP, DOWN, PAPER = "#8a6b1f", "#1f6f2a", "#b3261e", "#ffffff"
 SANS = ("-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,"
@@ -256,7 +280,7 @@ def pct_class(p):
 
 def biggest_mover(daily, prior):
     best, bp = None, 0.0
-    for key, label, _g in ROWS:
+    for key, label, _g in rows_of(daily):
         p = change(daily, prior, key)
         if p is not None and abs(p) > abs(bp):
             best, bp = label, p
@@ -277,7 +301,7 @@ def _label(text):
 
 def price_table(daily, prior, prior_day):
     rows = []
-    for key, label, grain in ROWS:
+    for key, label, grain in rows_of(daily):
         v = (daily.get("locked_prices") or {}).get(key)
         if not isinstance(v, (int, float)):
             continue
@@ -1207,7 +1231,7 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
     _b = (daily.get("board") or {})
     _ag = (_b.get("prev_close_session") if daily.get("locked_changes") else None) or prior_day
     L += ["", "THE BOARD" + (" (close, against %s)" % _ag if _ag else "")]
-    for key, label, grain in ROWS:
+    for key, label, grain in rows_of(daily):
         v = (daily.get("locked_prices") or {}).get(key)
         if not isinstance(v, (int, float)):
             continue

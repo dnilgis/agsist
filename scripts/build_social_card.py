@@ -41,7 +41,29 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(ROOT, "data", "social")
 SITE = "https://agsist.com"
-QUOTES = (("corn-dec", "corn", "Dec corn"), ("beans-nov", "beans", "Nov beans"), ("wheat", None, "Wheat"))
+# 2026-11-04 (fx/smallfix1104): the grain rows are the HEADLINE contract the
+# briefing was written on, named with its month ("Jan '27 soybeans"). The card
+# read the harvest aliases and printed "Nov beans" past first notice, beside a
+# briefing on Jan '27. An issue from before the month was stamped keeps its
+# harvest alias, named with its month and year on the issue date.
+CROPS = (("corn", "corn"), ("beans", "soybeans"))
+
+
+def quote_rows(daily):
+    """[(key, name)] for the card's futures rows, in order."""
+    import seed_static as S
+    out = []
+    for crop, word in CROPS:
+        h = S.daily_headline(daily, crop)
+        if h and h[1]:
+            out.append((h[0], h[1] + " " + word))
+            continue
+        a = S.daily_harvest(daily, crop)
+        if a:
+            out.append((a[0], a[1] + " " + word))
+        elif h:
+            out.append((h[0], word.capitalize()))
+    return out + [("wheat", "Wheat")]
 
 
 def _quarters(v):
@@ -73,9 +95,8 @@ def card_bytes(daily, record=None):
     date_str = (daily.get("date") or "").strip()
     rows = []
     lp, lc = daily.get("locked_prices") or {}, daily.get("locked_changes") or {}
-    for key, alt, name in QUOTES:
-        k = key if key in lp else alt
-        if not k or lp.get(k) is None:
+    for k, name in quote_rows(daily):
+        if lp.get(k) is None:
             continue
         pct = (lc.get(k) or {}).get("pct")
         chg = None if pct is None else ("%+.1f%%" % pct)
@@ -85,7 +106,7 @@ def card_bytes(daily, record=None):
         pic = ("number", {"big": num_val, "unit": num_unit, "table": rows, "table_title": "Futures in the briefing"})
         caption = "AGSIST Daily  ·  " + date_str + "  ·  the number"
     else:
-        pic = ("number", {"big": rows[0][1] if rows else "AGSIST", "unit": "Dec corn" if rows else "",
+        pic = ("number", {"big": rows[0][1] if rows else "AGSIST", "unit": rows[0][0] if rows else "",
                           "table": rows[1:], "table_title": "Futures in the briefing"})
         caption = "AGSIST Daily  ·  " + date_str
     meta = record or "Grain markets before the open, free every morning"
