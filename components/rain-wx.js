@@ -19,7 +19,7 @@
   function deg(n) { return (n < 0 ? "&minus;" + (-n) : String(n)) + DEG; }
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   function li(k, v) { return "<li><b>" + k + ":</b> " + v + "</li>"; }
-  function miss(n, what) { return n ? " (" + days(n) + " not reported" + (what || "") + ")" : ""; }
+  function miss(n) { return n ? " (" + days(n) + " not reported)" : ""; }
 
   /* the fold's body for one county row; noun: "station" or "gauge" (the rain page's word) */
   function render(r, noun) {
@@ -34,7 +34,7 @@
     if (g === "m") L.push(li("Corn GDDs, May 1 to " + a, NOPE));
     else if (g) L.push(li("Corn GDDs, May 1 to " + a, num(g[0]) +
       (g.length > 2 ? ", " + g[4] + "% of the 1991 to 2020 average for the same days (" + num(g[2]) + ", " + g[3] + " years)" : ", no 1991 to 2020 average for this station yet") +
-      miss(g[1], ", left out of both") + "."));
+      (g[1] ? "; " + days(g[1]) + " not reported, left out of both" : "") + "."));
     function ext(k, x, n) {
       if (x === "m") return li(k, NOPE);
       if (!x) return "";
@@ -44,25 +44,29 @@
     L.push(ext("Coldest day", r.l, r.ml));
     if (r.d9 !== undefined) L.push(li("Days at 90" + DEG + " or above, Jan 1 to " + a, r.d9 === "m" ? NOPE : r.d9 + miss(r.mh) + "."));
     if (r.d3 !== undefined) L.push(li("Days at 32" + DEG + " or below, Jul 1 to " + a, r.d3 === "m" ? NOPE : r.d3 + "."));
-    var fr = r.fr || {};
+    var fr = r.fr || {}, ns = {};
     function fz(key, t, spring) {
       var x = fr[key];
       if (!x) return "";
-      var v = x[0] === "m" ? NOPE : x[0] === 0 ? (spring ? "none Jan 1 to Jun 30" : "none yet through " + a) : md(x[0]);
-      var u = x.length > 2 ? (x[1] === 0 ? "usually none" : "usual " + md(x[1])) + ", middle of " + x[2] + " years, 1991 to 2020" : "";
-      return t + DEG + ": " + v + (u ? " (" + u + ")" : "");
+      var v = x[0] === "m" ? NOPE : x[0] === 0 ? (spring ? "none Jan 1 to Jun 30" : "none yet through " + a) : "on " + md(x[0]);
+      if (x.length > 2) ns[x[2]] = 1;
+      return t + DEG + " " + v + (x.length > 2 ? " (usual: " + (x[1] === 0 ? "none" : md(x[1])) + ")" : "");
     }
-    var sp = [fz("s32", 32, 1), fz("s28", 28, 1)].filter(Boolean);
-    if (sp.length) L.push(li("Last spring freeze", sp.join("; ") + "."));
-    var fa = [fz("f32", 32), fz("f28", 28)].filter(Boolean);
-    if (fa.length) L.push(li("First fall freeze", fa.join("; ") + "."));
+    function fline(k, parts) {
+      parts = parts.filter(Boolean);
+      if (parts.length) L.push(li(k, parts.join("; ") + "."));
+    }
+    fline("Last spring freeze", [fz("s32", 32, 1), fz("s28", 28, 1)]);
+    fline("First fall freeze", [fz("f32", 32), fz("f28", 28)]);
+    var nk = Object.keys(ns);
     (r.nt || []).forEach(function (x) {
       L.push(li("Of note", deg(x[2]) + " on " + md(x[3]) + ", the " + (x[0] === "h" ? "warmest " : "coldest ") + ML[x[1] - 1] +
         " day here " + (x[4] ? "since " + x[4] + " (" + x[5] + " years of record)" : "in " + x[5] + " years of record") + "."));
     });
     out.push('<ul class="rc-list">' + L.join("") + "</ul>");
     out.push('<p class="rc-fine">Corn GDDs: each day&rsquo;s high and low held between 50' + DEG + " and 86" + DEG +
-      ", averaged, minus 50, the standard corn method, added from May 1. The average and the usual dates are this station&rsquo;s own 1991 to 2020 record. " +
+      ", averaged, minus 50, the standard corn method, added from May 1. The average and the usual dates are this station&rsquo;s own 1991 to 2020 record" +
+      (nk.length ? "; a usual freeze date is the middle year of " + nk.join(" or ") + " years" : "") + ". " +
       "Of note: against every year of this station&rsquo;s record, only with 20 or more full years and no gap since the year named. " +
       "A figure with more than 5% of its days not reported is not shown. NOAA daily records through RCC-ACIS.</p>");
     return out.join("");

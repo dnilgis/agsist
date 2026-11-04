@@ -37,10 +37,11 @@ test("every figure in the fold carries its date or its span", () => {
   const li = items(h);
   assert.ok(li.length >= 8, h);
   for (const x of li) assert.match(x, DATED, x);
-  assert.match(h, /2,912, 106% of the 1991 to 2020 average for the same days \(2,759, 30 years\) \(2 days not reported, left out of both\)\./);
+  assert.match(h, /2,912, 106% of the 1991 to 2020 average for the same days \(2,759, 30 years\); 2 days not reported, left out of both\./);
   assert.match(h, /97&deg;F on Jul 21, and 2 days more at 97&deg;F/);
   assert.match(h, /&minus;18&deg;F on Jan 8/);
-  assert.match(h, /28&deg;F: none yet through Nov 3 \(usual Nov 2, middle of 30 years, 1991 to 2020\)/);
+  assert.match(h, /<b>First fall freeze:<\/b> 32&deg;F on Oct 27 \(usual: Oct 25\); 28&deg;F none yet through Nov 3 \(usual: Nov 2\)\./);
+  assert.match(h, /1991 to 2020 record; a usual freeze date is the middle year of 30 years\./);
   assert.match(h, /88&deg;F on Oct 5, the warmest October day here since 2011 \(76 years of record\)/);
   assert.match(h, /held between 50&deg;F and 86&deg;F, averaged, minus 50, the standard corn method/, "the method is said where it is read");
   assert.match(h, /NOAA daily records through RCC-ACIS/);
@@ -55,7 +56,7 @@ test("a withheld figure says so, with no number", () => {
     const x = li.find((s) => s.startsWith("<b>" + k));
     assert.ok(x && x.endsWith("not enough days reported"), k + ": " + x);
   }
-  assert.ok(li.find((s) => s.startsWith("<b>First fall freeze")).includes("32&deg;F: not enough days reported"));
+  assert.ok(li.find((s) => s.startsWith("<b>First fall freeze")).includes("32&deg;F not enough days reported"));
   assert.doesNotMatch(li.find((s) => s.startsWith("<b>Hottest")), /97/);
 });
 
