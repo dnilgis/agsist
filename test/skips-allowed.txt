@@ -3,3 +3,4 @@
 # here, and only while its other half runs in the same checks (test/pr-checks.test.mjs holds that). Anything else
 # that skips fails the PR checks: install what it needs in pr-checks.yml instead.
 without FSA's 2026 file, no county carries a benchmark the calculator could use # SKIP official file loaded
+no seed marker line carries anything but the value # SKIP old seed layout still on index.html or markets.html; the next price run rewrites it (BUILD-RULES 67)

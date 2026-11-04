@@ -207,6 +207,17 @@ def seed_between(text, tag, replacement):
     return new, new != text
 
 
+def seed_relayout(text):
+    """Every <!--SEED:tag-->...<!--/SEED--> in `text` written again with its
+    own value, so each sits on its own line (what the next reseed does to a
+    page). Values are unchanged. Read by test/seed-lines.test.mjs."""
+    for tag in re.findall(r"<!--SEED:([^>]*?)-->", text):
+        m = re.search(r"<!--SEED:" + re.escape(tag) + r"-->(.*?)<!--/SEED-->", text, re.S)
+        if m and "<!--SEED:" not in m.group(1) and "<!--/SEED:" not in m.group(1):
+            text, _ = seed_between(text, tag, m.group(1))
+    return text
+
+
 def stamp_meta_description(text, desc):
     """Replace the <meta name="description"> content with a freshly-priced one.
     The description must contain no double quotes."""

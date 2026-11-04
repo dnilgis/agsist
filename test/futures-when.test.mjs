@@ -66,6 +66,6 @@ test("no copy of the old words left", () => {
     assert.ok(!/Refreshed in session/.test(read(f)), f);
   }
   for (const f of ["soybean-futures-prices.html", "wheat-futures-prices.html"]) {
-    assert.match(read(f), /<span id="ph-when"><!--SEED:when-->[^<]+<!--\/SEED--><\/span>/, f);
+    assert.match(read(f), /<span id="ph-when">(?:<!--\n-->)?<!--SEED:when-->[^<]+<!--\/SEED-->(?:<!--\n-->)?<\/span>/, f);
   }
 });
