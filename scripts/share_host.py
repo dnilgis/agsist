@@ -18,7 +18,7 @@ THE ORDER (a page must never point at an image that is not there):
 
 THE GUARD (check, test/share-host.test.mjs): no committed page names a listed folder on agsist.com, and no
 builder (scripts/*.py) spells either folder's agsist.com URL at all: they go through url().
-cron_health.py's share-images row fetches the og:image of a few pages once a day and goes red on a 404.
+cron_health.py's agsist-data-images row fetches the og:image of a few pages once a day and goes red on a 404.
 
     python3 scripts/share_host.py seeded                  folders served from agsist-data now
     python3 scripts/share_host.py mark FOLDER...          list folders in data/share-host.json (the seed job)
@@ -274,11 +274,11 @@ def sample_urls(root=None):
 
 
 def row(now, prev=None, root=None, get=None):
-    """the cron-health row 'share-images'. Once a day (or every run while it is red) it asks for the og:image
+    """the cron-health row 'agsist-data-images'. Once a day (or every run while it is red) it asks for the og:image
     of a few pages that point at agsist-data; a 404 is late (red). Before any folder is listed it is an
     info row. prev: the row from the last saved cron-health.json."""
     root = root or ROOT
-    base = {"workflow": "share-images", "clock": "share images on %s answer, checked once a day" % HOST}
+    base = {"workflow": "agsist-data-images", "clock": "share images on %s answer, checked once a day" % HOST}
     if not seeded(root):
         return dict(base, critical=False, status="ok", why="no share image is served from agsist-data yet")
     base["critical"] = True
