@@ -233,7 +233,7 @@
     (list || []).forEach(function (r) {
       out.push([r.no, r.date || '', r.rec || '', num(r.price) > 0 ? Math.round(r.price) : '', r.acres > 0 ? +r.acres : (r.acUnsure ? 'uncertain' : ''), r.ppa != null ? r.ppa : '',
         r.pid || '', +r.np || 1, F.strOf(r.legal) || '', F.clean(r.legal), r.muniName || '', r.county || '', r.st || '', F.classLabel(r.cls, r.st), r.conv || '',
-        CR.screenText(r, today), F.relatedParty(r) ? 'yes' : 'not marked', r.exempt ? 'yes' : 'no', names ? (r.grantor || '') : 'not in our copy', names ? (r.grantee || '') : 'not in our copy',
+        CR.screenText(r, today), F.relatedParty(r) ? 'yes' : 'not marked', r.exempt ? 'yes' : 'no', names === 'shown' ? (r.grantor || '') : names ? 'tap Show buyer and seller' : 'not in our copy', names === 'shown' ? (r.grantee || '') : names ? 'tap Show buyer and seller' : 'not in our copy',
         r.mi != null ? r.mi.toFixed(1) : '', r.pmi != null ? r.pmi.toFixed(1) : '', r.soil && r.soil.np != null ? Math.round(r.soil.np * 100) : '', r.doc || '', r.src || '', CR.flags(r).join('; '), 'unverified'].map(cell).join(','));
     });
     return out.join('\r\n') + '\r\n';
@@ -365,7 +365,9 @@
       var soil = r.soil === undefined ? '<span class="cr-dim cr-wait">reading</span>' : CR.soilText(r.soil) || '<span class="cr-dim">' + esc(r.soilWhy || 'not available') + '</span>';
       var str = F.strOf(r.legal);
       var form = r.st === 'IL' ? 'declaration' : r.st === 'IN' ? 'sales disclosure form' : 'return';
-      var who = names ? 'Seller ' + esc(r.grantor || 'not in the record') + ' &rarr; buyer ' + esc(r.grantee || 'not in the record') : 'Seller and buyer not in our copy';
+      // names only after the reader taps Show buyer and seller (names === 'shown'; Sig, Oct 27; lead, Nov 4, 2026)
+      var who = names === 'shown' ? 'Seller ' + esc(r.grantor || 'not in the record') + ' &rarr; buyer ' + esc(r.grantee || 'not in the record')
+        : names ? 'Seller and buyer: tap Show buyer and seller' : 'Seller and buyer not in our copy';
       var det = ['Parcel ' + esc(r.pid || 'not in the record') + (+r.np > 1 ? ' (first of ' + (+r.np) + ' on the ' + form + ')' : ''),
         str ? esc(str) : null, esc(r.conv || 'deed type not in the record'), 'Arm’s-length screen: ' + esc(CR.screenText(r, today)), who,
         r.pmi != null ? 'parcel located on the parcel map, ' + r.pmi.toFixed(1) + ' mi from the subject' : null,
@@ -635,7 +637,16 @@
       return note('Price is the whole sale as recorded' + (S.st === 'IL' ? '; Illinois records do not say whether buildings were included' : ', buildings included unless the class is bare land') + '. Miles run from the subject to the center of the town or township where the sale was filed, not to the parcel, unless the row says the parcel was located. Seller and buyer are as recorded on the state form.');
     }
     function drawComps() {
-      set('cr-comps', '<p id="cr-status" class="fl-note" role="status" aria-live="polite"></p>' + CR.compsHTML(S.list, S.names, P.today) + compsNote());
+      set('cr-comps', '<p id="cr-status" class="fl-note" role="status" aria-live="polite"></p>'
+        + (S.names === true && S.list.length ? '<p class="no-print"><button type="button" class="fl-btn" id="cr-names">Show buyer and seller</button></p>' : '')
+        + CR.compsHTML(S.list, S.names, P.today) + compsNote());
+      var nb = $('cr-names');
+      if (nb) nb.addEventListener('click', function () {
+        nb.disabled = true; nb.textContent = 'Loading names';
+        F.loadNames(S.list).then(function (n) {
+          if (n) { S.names = 'shown'; drawComps(); } else { nb.disabled = false; nb.textContent = 'The names did not load. Tap to try again'; }
+        });
+      });
     }
     // One comp's row again, in place (its soil and where the parcel map put it), without redrawing the table.
     function patchComp(r) {

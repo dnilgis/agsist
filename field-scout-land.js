@@ -148,8 +148,10 @@
   FSLand.rowObjs = function (file) {
     if (!file || !file.cols || !file.rows) return [];
     var munis = file.munis || {}, checked = (+file.acres_rule || 0) >= FSLand.ACRES_RULE;
-    return file.rows.map(function (a) {
+    return file.rows.map(function (a, ri) {
       var o = {}; file.cols.forEach(function (c, i) { o[c] = a[i]; });
+      // the row's place in its county file and that file's names file: the tap reads [seller, buyer] there (FSLand.loadNames)
+      o._i = ri; o._nf = file.names_file || null; o._nn = file.rows.length; o._nt = file.fetched_utc || null;
       var m = munis[o.muni];
       if (m) { o.muniName = m[0]; o.lat = m[1]; o.lng = m[2]; }
       else o.muniName = o.muni;
@@ -296,6 +298,13 @@
     var l = up(r.legal);
     return l.length >= 10 ? co + '|l|' + l.slice(0, FSLand.GROUP_LEGAL) : null;
   };
+  // who a row's seller (s) or buyer (b) is, for "the same party or not" only: the si and bi ids a county file carries
+  // since Nov 4, 2026 (scripts/land_names.py, no name in them), else the name itself (build_land_summary.party)
+  FSLand.party = function (r, side) {
+    var k = side === 's' ? 'si' : 'bi';
+    if (r && k in r) return r[k] == null ? '' : '#' + r[k];
+    return up(r && (side === 's' ? r.grantor : r.grantee));
+  };
   FSLand.saleRows = function (rows, today) {
     var seen = {}, once = [];
     (rows || []).forEach(function (r) {
@@ -303,7 +312,7 @@
       var k1 = r.doc ? co + '|d|' + up(r.doc) : null;
       var pk = FSLand.parcelKeys(r.pid);
       var where = pk ? pk.strip : up(r.legal).length >= 10 ? up(r.legal).slice(0, FSLand.GROUP_LEGAL) : '';
-      var k2 = where ? co + '|' + String(r.date || '').slice(0, 10) + '|' + (p == null ? '' : Math.round(p * 100)) + '|' + where + '|' + up(r.grantor) + '|' + up(r.grantee) : null;
+      var k2 = where ? co + '|' + String(r.date || '').slice(0, 10) + '|' + (p == null ? '' : Math.round(p * 100)) + '|' + where + '|' + FSLand.party(r, 's') + '|' + FSLand.party(r, 'b') : null;
       if ((k1 && seen[k1]) || (k2 && seen[k2])) return;
       if (k1) seen[k1] = 1;
       if (k2) seen[k2] = 1;
@@ -333,7 +342,7 @@
       for (var key in f) o[key] = f[key];
       var a0 = num(f.acres);
       var sameAc = m.every(function (x) { return !x.acUnsure && num(x.acres) > 0 && num(x.acres) === a0; });
-      var buyers = m.map(function (x) { return up(x.grantee); }).filter(function (x, i, s) { return x && s.indexOf(x) === i; });
+      var buyers = m.map(function (x) { return FSLand.party(x, 'b'); }).filter(function (x, i, s) { return x && s.indexOf(x) === i; });
       o.grp = m.length;
       o.grpRows = m;
       o.grpPrices = m.map(function (x) { return num(x.price); });
@@ -524,7 +533,7 @@
       if (r.acres > 0) bits.push((+r.acres).toFixed(1) + ' ac');
       else if (r.acUnsure) bits.push((+r.np || 2) + ' parcels, acres uncertain');
       if (ppa != null) bits.push(fm(ppa) + '/ac');
-      var who = names ? ('<div>' + esc(r.grantor || 'seller not given') + ' &rarr; ' + esc(r.grantee || 'buyer not given') + '</div>') : '';
+      var who = '';   /* names only on a tap, in the sale's own panel (Sig, Oct 27; lead, Nov 4, 2026) */
       var meta = [r.conv ? esc(r.conv) : null, r.cls ? esc(FSLand.classLabel(r.cls, r.st || (cov && cov.st))) : null, r.exempt ? 'exempt from the transfer fee' : null,
         m.how === 'format' ? 'parcel number matched with county formatting set aside' : null,
         m.how === 'uncertain' ? '<span class="fl-warn">match uncertain: same section, quarter and town, parcel number differs (often a split)</span>' : null,
@@ -532,7 +541,7 @@
       return '<li><span class="d">' + fd(r.date) + '</span> &middot; ' + bits.join(' &middot; ') + who + '<div class="m">' + meta + '</div></li>';
     }).join('');
     return '<ul class="fl-hist">' + li + '</ul>' +
-      '<p class="fl-note">' + span + ' ' + older + (names ? '' : ' Seller and buyer names are not in the free data; the official record has them.') +
+      '<p class="fl-note">' + span + ' ' + older + (names ? ' Seller and buyer: open a sale and tap Show buyer and seller.' : ' Seller and buyer names are not in the free data; the official record has them.') +
       (anyUnsure ? ' Rows marked uncertain may belong to a neighboring piece of the same parcel.' : '') +
       ' A sale price covers everything that sold, buildings included, unless the class says bare land.</p>' + (links ? '<p class="fl-note fl-links">' + links + '</p>' : '');
   };
@@ -737,10 +746,11 @@
     row('Verified', 'No', 'Taken from public transfer records, not confirmed with a party to the sale.');
 
     group('Who');
-    if (file.names && has('grantor')) {
-      var cut = function (x) { return String(x || '').length >= FSLand.NAME_MAX ? 'May be cut short: our copy keeps the first ' + FSLand.NAME_MAX + ' characters.' : null; };
-      row('Seller (grantor)', v(r.grantor) ? esc(r.grantor) : NOTIN, cut(r.grantor));
-      row('Buyer (grantee)', v(r.grantee) ? esc(r.grantee) : NOTIN, cut(r.grantee));
+    if (file.names && file.names_file) {
+      // names live in their own robots-blocked file and load only on this tap (Sig, Oct 27; lead, Nov 4, 2026)
+      row('Seller and buyer', '<span id="fl-sd-who"><button type="button" class="fl-btn" data-sd="names">Show buyer and seller</button></span>');
+    } else if (file.names) {
+      row('Seller and buyer', NOTKEPT, 'The names load from their own file once this county\u2019s record is next updated.');
     } else {
       row('Seller and buyer', NOTKEPT, 'The free state data does not carry names here; the deed at the county has them.');
     }
@@ -763,7 +773,7 @@
       var o = m.r || m;
       return '<li><button type="button" class="fl-sale" data-other="' + i + '"><span class="d">' + fd(o.date) + '</span></button> &middot; ' + (o.price > 0 ? fm(o.price) : 'no price') +
         (o.acres > 0 ? ' &middot; ' + (+o.acres).toFixed(1) + ' ac' : '') + (o.ppa != null ? ' &middot; ' + fm(o.ppa) + '/ac' : '') +
-        '<div class="m">' + [o.conv ? esc(o.conv) : null, file.names && (o.grantor || o.grantee) ? esc(o.grantor || 'seller not given') + ' &rarr; ' + esc(o.grantee || 'buyer not given') : null,
+        '<div class="m">' + [o.conv ? esc(o.conv) : null,
           m.how === 'format' ? 'parcel number matched with county formatting set aside' : null].filter(Boolean).join(' &middot; ') + '</div></li>';
     }).join('') + '</ul>' : '<p class="fl-note">No other transfer of parcel ' + esc(r.pid || '(no number)') + ' is in our copy. ' + esc(FSLand.coverageText(file.coverage, st)) + '.</p>';
 
@@ -873,6 +883,31 @@
       clearTimeout(t); if (!r.ok) throw new Error(String(r.status)); return r.json();
     }, function (e) { clearTimeout(t); throw e; });
   }
+  // Names on the tap (Sig, Oct 27; lead decision, Nov 4, 2026): each row's [seller, buyer] from its county's names file
+  // (data/land/<st>/names/<fips>.json, robots-blocked), trusted only when the file's read time and row count are the
+  // county file's. Fills r.grantor and r.grantee in memory; resolves to how many rows got names.
+  var _names = {};
+  FSLand.loadNames = function (rows) {
+    var by = {};
+    (rows || []).forEach(function (r) {
+      [r].concat(r.grpRows || []).forEach(function (x) { if (x && x._nf && /^\/data\/land\/[a-z]{2}\/names\/\d{5}\.json$/.test(x._nf)) (by[x._nf] = by[x._nf] || []).push(x); });
+    });
+    return Promise.all(Object.keys(by).map(function (u) {
+      if (!_names[u]) _names[u] = getJSON(u, 15000).catch(function () { delete _names[u]; return null; });
+      return _names[u].then(function (d) {
+        var n = 0;
+        if (!d || !d.rows) return 0;
+        by[u].forEach(function (x) {
+          if (d.n !== x._nn || String(d.fetched_utc) !== String(x._nt) || !d.rows[x._i]) return;
+          x.grantor = d.rows[x._i][0]; x.grantee = d.rows[x._i][1]; n++;
+        });
+        return n;
+      });
+    })).then(function (ns) {
+      (rows || []).forEach(function (r) { if (r.grpRows && r.grpRows[0] && r.grantor == null) { r.grantor = r.grpRows[0].grantor; r.grantee = r.grpRows[0].grantee; } });
+      return ns.reduce(function (a, b) { return a + b; }, 0);
+    });
+  };
   var _reg = null;
   FSLand.registry = function () {
     if (!_reg) _reg = getJSON(REG_URL, 15000).catch(function () { _reg = null; return {}; });
@@ -1280,6 +1315,14 @@
       el.addEventListener('click', function (e) {
         var t = e.target.closest ? e.target.closest('[data-sd],[data-other]') : null; if (!t) return;
         if (t.getAttribute('data-sd') === 'map') showOnMap(d);
+        else if (t.getAttribute('data-sd') === 'names') {
+          t.disabled = true; t.textContent = 'Loading names';
+          FSLand.loadNames([d.r]).then(function (n) {
+            var who = d.el.querySelector('#fl-sd-who'); if (!who || SD !== d) return;
+            who.innerHTML = n ? 'Seller: ' + esc(d.r.grantor || 'not in the record') + '<br>Buyer: ' + esc(d.r.grantee || 'not in the record')
+              : 'The names did not load. <button type="button" class="fl-btn" data-sd="names">Try again</button>';
+          });
+        }
         else { var m = others[+t.getAttribute('data-other')]; if (m) openSale(m.r || m); }
       });
       SD = d;
