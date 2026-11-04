@@ -111,17 +111,50 @@ def pick_run(runs, head_ref):
     return max(ok, key=lambda r: (r.get("created_at") or "", r.get("run_number", 0))) if ok else None
 
 
-def stale(pr_files, main_files, relevant=None):
+def stale(pr_files, main_files, relevant=None, others=None):
     """-> why the checks are stale, or None. main_files: every file main changed since the checks' base
     (None: they could not be read); relevant: path -> bool, the files that can change this pull request's
-    checks (default: the files it changes)."""
+    checks (default: the files it changes); others: the files main's commits other than the data bots' own
+    changed (main_commits(); None: unknown, so every change counts)."""
     if main_files is None:
         return "main's changes since the checks' base could not be read"
-    rel = relevant or set(pr_files).__contains__
-    both = sorted(f for f in main_files if rel(f))
+    wf = sorted(f for f in main_files if f.startswith(WORKFLOW_DIR))
+    if wf:
+        return "main changed %d workflow file(s) since (%s)" % (len(wf), ", ".join(wf[:3]))
+    mine = set(pr_files)
+    rel = relevant or mine.__contains__
+    pool = set(main_files) if others is None else set(others) & set(main_files)
+    both = sorted(f for f in main_files if f in mine or (f in pool and rel(f)))
     if both:
         return "main changed %d file(s) this pull request's checks read since (%s)" % (len(both), ", ".join(both[:3]))
     return None
+
+
+# Who commits data straight to main (the bids, prices, rain, freshness and summary jobs; git config in
+# .github/workflows). Any job, or anyone who sets these in git, can commit as them, so the address alone is not
+# enough: a data commit also has one parent and no "(#NNN)" pull request suffix, and its committer is the bot,
+# never GitHub (noreply@github.com commits every merge and squash done through GitHub, the bot's merges too).
+# sig@agsist.com commits from two jobs but is Sig's own address too: not here, so those count (stale, never a
+# blind merge).
+DATA_BOT_EMAILS = {"bot@agsist.com", "actions@users.noreply.github.com", "actions@github.com",
+                   "github-actions[bot]@users.noreply.github.com", "41898282+github-actions[bot]@users.noreply.github.com"}
+PR_SUFFIX = re.compile(r"\(#\d+\)\s*$")
+
+
+def data_bot_commit(c):
+    """c: {"parents": n, "author": email, "committer": email, "subject": first line}: a scheduled data commit"""
+    subject = c.get("subject") or ""
+    return (c.get("parents") == 1 and c.get("author") in DATA_BOT_EMAILS and c.get("committer") in DATA_BOT_EMAILS
+            and not PR_SUFFIX.search(subject) and not subject.startswith("Merge "))
+
+
+def others_of(commits):
+    """the files changed by the commits that are not data bot commits: [(meta, files)] -> sorted list"""
+    out = set()
+    for meta, files in commits:
+        if not data_bot_commit(meta):
+            out.update(files)
+    return sorted(out)
 
 
 def glob_re(pat):
@@ -346,22 +379,69 @@ def main():
 
 
 def git_changed(base, root):
-    """files that differ between base and main, by git: a shallow fetch of both commits, then a tree diff
-    (no history needed, no 300-file cap). None when git cannot fetch or diff them."""
+    """-> (files, commits): files that differ between base and main, by git (a shallow fetch of both commits,
+    then a tree diff: no 300-file cap), and main's own commits since base, [(meta, files)] along main's first
+    parents (a merge counts as one commit: what it brought in). files None: git cannot fetch or diff them.
+    commits None: the history back to base cannot be read (base is not on main's first-parent line, or the
+    fetch fell short), so the caller counts every change."""
     import subprocess
     g = lambda *a: subprocess.run(["git", "-C", root] + list(a), capture_output=True, text=True)
     if g("fetch", "-q", "--no-tags", "--depth=1", "origin", base, "+refs/heads/main:refs/remotes/origin/main").returncode != 0:
-        return None
+        return None, None
     r = g("diff", "--name-only", "--no-renames", base, "refs/remotes/origin/main")
-    return [l for l in r.stdout.splitlines() if l] if r.returncode == 0 else None
+    if r.returncode != 0:
+        return None, None
+    files = [l for l in r.stdout.splitlines() if l]
+    return files, main_commits(g, base)
+
+
+HISTORY_MARGIN_S = 3600     # fetch main's history from this long before the base's commit time
+
+
+def main_commits(g, base):
+    when = g("show", "-s", "--format=%ct", base)
+    if when.returncode != 0 or not when.stdout.strip().isdigit():
+        return None
+    since = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(int(when.stdout.strip()) - HISTORY_MARGIN_S))
+    g("fetch", "-q", "--no-tags", "--shallow-since=" + since, "origin", "+refs/heads/main:refs/remotes/origin/main")
+    line = g("rev-list", "--first-parent", "--parents", base + "..refs/remotes/origin/main")
+    if line.returncode != 0:
+        return None
+    rows = [l.split() for l in line.stdout.splitlines() if l.strip()]
+    if rows and (len(rows[-1]) < 2 or rows[-1][1] != base):
+        return None     # the line does not reach base: base is not main as it was, or the history is cut short
+    log = g("log", "--first-parent", "--diff-merges=first-parent", "--name-only", "--no-renames",
+            "--format=%x00%H %P%x01%ae%x01%ce%x01%s", base + "..refs/remotes/origin/main")
+    if log.returncode != 0:
+        return None
+    out = parse_log(log.stdout)
+    return out if len(out) == len(rows) else None
+
+
+def parse_log(text):
+    """git log --format=%x00%H %P%x01%ae%x01%ce%x01%s --name-only -> [(meta, files)]"""
+    out = []
+    for chunk in text.split("\0")[1:]:
+        head, _, rest = chunk.partition("\n")
+        ids, author, committer, subject = (head.split("\x01") + ["", "", ""])[:4]
+        out.append(({"sha": ids.split(" ")[0], "parents": len(ids.split()) - 1, "author": author,
+                     "committer": committer, "subject": subject}, [l for l in rest.splitlines() if l.strip()]))
+    return out
 
 
 def relevant_to(files, root):
-    """scripts/generated_sets.py relevant() for these files; only the files themselves without it"""
+    """scripts/generated_sets.py relevant() for these files, plus the code of every set they touch (another
+    merge that changes a module the PR's builder imports changes what its checks built); only the files
+    themselves without it"""
     sys.path.insert(0, os.path.join(root, "scripts"))
     try:
-        import generated_sets
-        return generated_sets.relevant(files, root=root)
+        import generated_sets as G
+        rel = G.relevant(files, root=root)
+        hit, code = set(G.touched(G.SETS, files, root)), set()
+        for s in G.SETS:
+            if s["id"] in hit:
+                code.update(G.code_paths(s, root))
+        return lambda f: f in code or rel(f)
     except ImportError:
         return set(files).__contains__
     finally:
@@ -380,7 +460,8 @@ def checks_stale(gh, repo, run, head_sha, files, root):
         return "the checks' base could not be found (HTTP %d)" % e.code
     if not base:
         return "the base the checks ran on cannot be found"
-    return stale(files, git_changed(base, root), relevant_to(files, root))
+    main_files, commits = git_changed(base, root)
+    return stale(files, main_files, relevant_to(files, root), None if commits is None else others_of(commits))
 
 
 def update_and_recheck(gh, repo, pr, why):
