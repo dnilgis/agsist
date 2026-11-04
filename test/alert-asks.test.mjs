@@ -7,6 +7,10 @@
  *     box with its own ZIP field (AGSIST Daily by ZIP, send_zip_alert.py);
  *   - What's Priced In: AGSIST Daily with report-day mail (send_report_day.py).
  * The browser parts need Playwright and Chromium and skip where they are missing.
+ * The page-matched asks run on a frozen copy of the futures file (test/fixtures/alert-asks/prices.json, Nov 3,
+ * 2026), routed in the browser, on a clock taken from that copy; the ARC/PLC reminder's date is worked out from the
+ * deadlines the page carries. They read live data/prices.json on a fixed Oct 23 clock and pinned Dec 11 before,
+ * which breaks when the December contract rolls or the deadline passes (BUILD-RULES 50).
  *
  *   node --test test/alert-asks.test.mjs
  */
@@ -334,6 +338,25 @@ test("break-even, grain bin and yield pages: the ask sits under the answer, once
   assert.ok(sa.includes("'/price-watch-subscribe', priceBody(email, el.getAttribute('data-sa-pwsym'), 'above', dollars)"), "the homepage alert's route and body");
 });
 
+// the frozen futures copy and the clock taken from it (an hour after its read, so the price reads fresh)
+const PRICES_FIX = path.join(ROOT, "test/fixtures/alert-asks/prices.json");
+const PRICES = JSON.parse(fs.readFileSync(PRICES_FIX, "utf8"));
+const CLOCK = Date.parse(PRICES.fetched) + 3600e3;
+// the ARC/PLC reminder signup-ask.js shows at CLOCK: the first deadline in the page whose reminder day (a week
+// before, local time) is still ahead
+const MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function arcAsk() {
+  const ds = (/data-deadlines="([^"]*)"/.exec(read("arc-plc.html")) || [])[1] || "";
+  for (const iso of ds.split(/\s+/)) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso); if (!m) continue;
+    if (new Date(+m[1], +m[2] - 1, +m[3] - 7).getTime() > CLOCK)
+      return { topic: "arcplc:" + iso, copy: `Remind me a week before the ${MON3[+m[2] - 1]} ${+m[3]} signup deadline.` };
+  }
+  return null;
+}
+// the rent release year the Iowa page asks about, from its own copy
+const rentYearIA = () => +/data-topic="rent:ia" data-ok="[^"]*?\b(20\d\d)\b/.exec(read("rent/iowa.html"))[1];
+
 const STAYS_OFF = [
   ["/rent/iowa.html", "state rent page"], ["/corn-futures-prices.html", "futures page"], ["/cattle-futures-prices.html", "cattle futures page"],
   ["/arc-plc.html", "ARC/PLC"], ["/arc-plc/alabama/autauga-county.html", "ARC/PLC county page"],
@@ -344,6 +367,7 @@ async function openAs(browser, port, url, posts, o = {}) {
   const pg = await ctx.newPage();
   await pg.route("**/*", (r) => {
     const u = r.request().url();
+    if (u.startsWith(`http://127.0.0.1:${port}/data/prices.json`)) return r.fulfill({ status: 200, contentType: "application/json", body: fs.readFileSync(PRICES_FIX) });
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
     if (u.startsWith("https://agsist-api.dnilgis.workers.dev/")) {
       posts.push({ path: new URL(u).pathname, body: JSON.parse(r.request().postData() || "{}") });
@@ -351,7 +375,7 @@ async function openAs(browser, port, url, posts, o = {}) {
     }
     return r.abort();
   });
-  await pg.clock.setFixedTime(new Date("2026-10-23T15:00:00Z"));
+  await pg.clock.setFixedTime(new Date(CLOCK));
   // a returning reader: the bar opens at once on any page that allows it
   await pg.addInitScript((ls) => { try { for (const k in ls) localStorage.setItem(k, ls[k]); } catch (e) {} }, { agsist_visits: "5", ...(o.ls || {}) });
   await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });
@@ -369,7 +393,9 @@ test("the second-visit bar stays off the page-matched pages, even after the read
     for (const [url, what] of STAYS_OFF) {
       // asked already (a notice ask hides itself once it is asked for in this browser): the bar must not take its place.
       // A Daily ask hides only for a reader who is on the Daily, who gets no bar anyway.
-      const done = { agsist_notices: JSON.stringify({ "rent:ia:2027": Date.now(), "arcplc:2026-12-11": Date.now(), cot: Date.now() }) };
+      const arc = arcAsk();
+      assert.ok(arc, "arc-plc.html has a deadline whose reminder is still ahead at the test clock");
+      const done = { agsist_notices: JSON.stringify({ ["rent:ia:" + rentYearIA()]: CLOCK, [arc.topic]: CLOCK, cot: CLOCK }) };
       for (const ls of [{}, done]) {
         pg = await openAs(browser, port, url, [], { ls });
         await pg.waitForTimeout(1500);
@@ -405,12 +431,15 @@ test("each page-matched ask posts the topic and source its sender reads", { skip
       assert.ok((await ask.locator(".sa-ok").textContent()).startsWith(rentOk), rentOk);
       await pg.context().close();
 
+      // the reminder date comes from the deadlines the page carries, at the test clock
+      const arc = arcAsk();
+      assert.ok(arc, "arc-plc.html has a deadline whose reminder is still ahead at the test clock");
       posts = []; pg = await openAs(browser, port, "/arc-plc.html", posts, { width });
-      ask = pg.locator('[data-sa-topic="arcplc:2026-12-11"]');
+      ask = pg.locator(`[data-sa-topic="${arc.topic}"]`);
       await ask.waitFor();
-      assert.equal((await ask.locator(".sa-l").textContent()).trim(), "Remind me a week before the Dec 11 signup deadline.");
+      assert.equal((await ask.locator(".sa-l").textContent()).trim(), arc.copy);
       await send(pg, ask);
-      assert.deepEqual(posts.filter((x) => x.path === "/notice").map((x) => x.body), [{ email: "reader@example.com", source: "page:arc-plc", topic: "arcplc:2026-12-11", daily: false }], "arc " + width);
+      assert.deepEqual(posts.filter((x) => x.path === "/notice").map((x) => x.body), [{ email: "reader@example.com", source: "page:arc-plc", topic: arc.topic, daily: false }], "arc " + width);
       await pg.context().close();
 
       posts = []; pg = await openAs(browser, port, "/corn-futures-prices.html", posts, { width });
@@ -438,12 +467,17 @@ test("each page-matched ask posts the topic and source its sender reads", { skip
       posts = []; pg = await openAs(browser, port, "/breakeven.html", posts, { width });
       await pg.locator("#be-daily-ask .sa-in").waitFor();
       await pg.waitForTimeout(600);
+      // the frozen futures copy carries next year's December, so the contract pick shows and both branches run:
+      // the page opens on next year's contract when its budget year is that crop (autoYear), else the test picks it
+      const front = /Z(\d\d)\.CBT$/.exec(PRICES.quotes["corn-dec"].ticker), nextKey = "corn-dec" + (+front[1] + 1);
+      assert.ok(PRICES.quotes[nextKey] && PRICES.quotes[nextKey].close != null, "fixture: next year's December corn quoted");
+      const budgetYear = +/var BUDGETS=\{year:(\d{4})/.exec(read("breakeven.html"))[1];
       const yr = await pg.evaluate(() => (document.getElementById("be-year") || {}).value);
-      if (yr === "1") {
-        assert.equal(await pg.locator("#be-price-ask").isVisible(), false, "no watch on next year's contract");
-        assert.equal(await pg.locator("#be-daily-ask").isVisible(), true, "the Daily stands in");
-        await pg.selectOption("#be-year", "0");
-      }
+      assert.equal(yr, budgetYear === 2000 + +front[1] + 1 ? "1" : "0", "opens on the contract of the budget's crop year");
+      if (yr !== "1") { await pg.selectOption("#be-year", "1"); await pg.waitForTimeout(300); }
+      assert.equal(await pg.locator("#be-price-ask").isVisible(), false, "no watch on next year's contract");
+      assert.equal(await pg.locator("#be-daily-ask").isVisible(), true, "the Daily stands in");
+      await pg.selectOption("#be-year", "0");
       ask = pg.locator("#be-price-ask");
       await ask.waitFor({ state: "visible" });
       assert.equal(await pg.locator("#be-daily-ask").isVisible(), false, "never both asks");

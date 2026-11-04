@@ -7,7 +7,10 @@
  *   200 bu APH x 80% = 160 bu/ac; guarantee 160 x 4.91 = 785.60 -> $786 /ac
  *   sell 160, raise 120: RP pays 785.60 - 120 x 4.91 = 785.60 - 589.20 = 196.40 -> $196 /ac,
  *   and 40 bu are bought back at the cash price; basis is not covered.
- * The test recomputes those from the files on disk, with the clock fixed at Oct 16 (window open).
+ * The test recomputes those from a frozen copy of the files (test/fixtures/harvest-tracker/, the copy
+ * test/harvest-tracker-oct19 reads: Oct 25, 2026, Iowa corn's October window running), routed in the browser,
+ * on a clock taken from that copy (the day of its last settle). It read live data/ on a fixed Oct 16 clock
+ * before, which breaks once the window closes or a new one opens (BUILD-RULES 50).
  * The Acres box is full width on a phone (it was 103 px at 390, placeholder clipped).
  *
  * Needs Playwright and Chromium; skipped where they are missing.
@@ -21,6 +24,7 @@ import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
+const FIX = join(ROOT, "test/fixtures/harvest-tracker");
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
@@ -40,14 +44,30 @@ function serve() {
 }
 
 function expected() {
-  const idx = JSON.parse(readFileSync(ROOT + "data/rma-prices/index.json", "utf8"));
-  const hp = JSON.parse(readFileSync(ROOT + "data/harvest-prices.json", "utf8"));
+  const idx = JSON.parse(readFileSync(join(FIX, "rma-prices/index.json"), "utf8"));
+  const hp = JSON.parse(readFileSync(join(FIX, "harvest-prices.json"), "utf8"));
   const row = idx.ref_rows.find((r) => r.crop === "Corn" && /^all\b/i.test(r.type) && r.practice !== "Organic");
   const w = hp.windows.find((x) => x.crop === "Corn" && x.start === row.h_start && x.end === row.h_end);
   const avg = Math.round(w.series.reduce((t, x) => t + +x.s, 0) / w.series.length * 100 + 1e-7) / 100;
   const p = row.p_price, H = Math.abs(avg - row.h_price) / row.h_price <= 0.03 ? avg : row.h_price;
   const Hc = Math.min(H, 2 * p), price = Hc > p ? Hc : p, gtee = 160 * price, ind = Math.max(0, gtee - 120 * Hc);
-  return { gtee: Math.round(gtee), ind: Math.round(ind), price: price.toFixed(2), Hc: Hc.toFixed(2), n: w.series.length };
+  return { gtee: Math.round(gtee), ind: Math.round(ind), price: price.toFixed(2), Hc: Hc.toFixed(2), n: w.series.length,
+    last: w.series[w.series.length - 1].d, end: w.end, status: hp.commodities.find((c) => c.label === "Corn").harvest.status };
+}
+
+// the page's harvest data comes from the frozen copy, never live data/
+function frozen(port) {
+  return (r) => {
+    const u = r.request().url();
+    if (!u.startsWith(`http://127.0.0.1:${port}`)) return r.abort();
+    const path = new URL(u).pathname;
+    if (path === "/data/harvest-prices.json" || path.startsWith("/data/rma-prices/")) {
+      const f = join(FIX, path.slice("/data/".length));
+      if (!existsSync(f)) return r.abort();
+      return r.fulfill({ status: 200, contentType: "application/json", body: readFileSync(f) });
+    }
+    return r.continue();
+  };
 }
 
 test("landing on #presell with no state: a labeled Iowa example, numbers from the files, by hand", { skip, timeout: 60000 }, async () => {
@@ -56,13 +76,16 @@ test("landing on #presell with no state: a labeled Iowa example, numbers from th
   try {
     const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 } });
     const pg = await ctx.newPage();
-    await pg.clock.setFixedTime(new Date("2026-10-16T17:00:00Z"));
+    const e = expected();
+    // the frozen copy has Iowa corn's window running, so the running-average example is the one checked
+    assert.equal(e.status, "running", "fixture: corn window running");
+    assert.ok(e.last < e.end, "fixture: settle days left in the window");
+    await pg.clock.setFixedTime(new Date(e.last + "T17:00:00Z"));
     const errors = [];
     pg.on("pageerror", (e) => errors.push(String(e)));
-    await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
+    await pg.route("**/*", frozen(port));
     await pg.goto(`http://127.0.0.1:${port}/harvest-price-tracker.html#presell`);
     await pg.waitForSelector("#pd-psex:not([hidden])", { timeout: 15000 });
-    const e = expected();
     const txt = await pg.$eval("#pd-psex", (x) => x.textContent.replace(/\s+/g, " "));
     assert.match(txt, /^Example, not your farm/);
     assert.match(txt, /160 bu\/ac/);

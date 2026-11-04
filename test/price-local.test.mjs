@@ -201,6 +201,10 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
+// the pages read the committed basis and futures files, so their clock starts an hour after the newer copy was read
+// and runs on: on a later clock (a January run) the state line withheld itself over an old basis (BUILD-RULES 50)
+const DATA_AT = Math.max(Date.parse(JSON.parse(readFileSync(join(ROOT, "data/basis-states.json"), "utf8")).generated),
+  Date.parse(JSON.parse(readFileSync(join(ROOT, "data/prices.json"), "utf8")).fetched)) + 3600e3;
 test("phone and desktop: no sideways scroll, no script errors, short phone pages, state line only with a state", { skip, timeout: 240000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
@@ -211,6 +215,7 @@ test("phone and desktop: no sideways scroll, no script errors, short phone pages
     for (const path of ["/corn-futures-prices", "/soybean-futures-prices", "/wheat-futures-prices", "/cattle-futures-prices", "/markets", "/cash-bid-index"]) {
       for (const [w, scheme, loc] of [[390, "light", ""], [390, "dark", '{"zip":"61761","state":"IL"}'], [1280, "dark", ""], [1280, "light", '{"zip":"61761","state":"IL"}']]) {
         const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: w, height: w < 500 ? 844 : 900 }, colorScheme: scheme });
+        await ctx.clock.install({ time: new Date(DATA_AT) });
         await ctx.addInitScript(([s, l]) => { try { localStorage.setItem("agsist-theme", s); if (l) localStorage.setItem("agsist-wx-loc", l); } catch (e) {} }, [scheme, loc]);
         const pg = await ctx.newPage();
         const errs = [], got = [];

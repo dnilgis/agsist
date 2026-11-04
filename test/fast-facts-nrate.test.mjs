@@ -127,9 +127,12 @@ function newCropKey(now) {
   const y = now.getFullYear(), m = now.getMonth();
   return "corn-dec" + String((m >= 7 ? y + 1 : y) % 100).padStart(2, "0");
 }
+// the page runs on a clock the day after these quotes close (the prices above are posted Oct 6): on the real clock the
+// quotes and the fertilizer list age, and a future-date run (Jan 1, 2027) left the box waiting for a fresh price
+const CLOCK = Date.parse("2026-10-17T14:00:00Z");
 const PRICES = { quotes: {
   corn: { close: 450, close_date: "2026-10-16" },
-  [newCropKey(new Date())]: { close: 500, close_date: "2026-10-16" },
+  [newCropKey(new Date(CLOCK))]: { close: 500, close_date: "2026-10-16" },
 } };
 const BASIS = { min_n: 3, states: {
   IA: { name: "Iowa", crops: { corn: { label: "Dec '26", n: 50, median: -0.4 } } },
@@ -150,6 +153,7 @@ function serve() {
 }
 async function open(browser, port, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: opts.viewport || { width: 1280, height: 900 } });
+  await ctx.clock.setFixedTime(new Date(CLOCK));
   if (opts.storage) await ctx.addInitScript((kv) => { for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, v); }, opts.storage);
   const pg = await ctx.newPage();
   const errors = [];

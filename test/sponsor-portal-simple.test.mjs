@@ -49,8 +49,13 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
+// Each report opens on a clock an hour after its own file was generated and runs on: the page reads "today" for the
+// flight, the counts and a demo's expiry, so a later clock (a January run) found the demo expired and drew no numbers
+// (BUILD-RULES 50).
+const genAt = (r) => Date.parse(JSON.parse(read("data/sponsors/" + r + ".json")).generated) + 3600e3;
 async function open(browser, port, r, w, hash = "") {
   const ctx = await browser.newContext({ viewport: { width: w, height: 844 }, serviceWorkers: "block" });
+  await ctx.clock.install({ time: new Date(genAt(r)) });
   const pg = await ctx.newPage();
   const errs = []; pg.on("pageerror", (e) => errs.push(String(e)));
   await pg.addInitScript(() => {

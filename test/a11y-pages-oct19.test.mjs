@@ -95,8 +95,9 @@ function serve(prices) {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-async function page(browser, port, path, width, theme = "dark") {
+async function page(browser, port, path, width, theme = "dark", clock = null) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
+  if (clock != null) await ctx.clock.setFixedTime(new Date(clock));
   await ctx.addInitScript((t) => { try { localStorage.setItem("agsist-theme", t); } catch (e) {} }, theme);
   await ctx.route("**/*", (r) => r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort());
   const pg = await ctx.newPage();
@@ -105,10 +106,13 @@ async function page(browser, port, path, width, theme = "dark") {
 }
 
 test("zero change on the real corn and soybean pages: (unch), not green", { skip, timeout: 120000 }, async () => {
-  const prices = JSON.parse(read("data/prices.json"));
+  /* a frozen futures copy (the alert-asks one, Nov 3, 2026) on a clock an hour after its read: the page picks its
+     contracts by the date, so live data/prices.json on a fake clock (a January run) showed corn-mar27, not zeroed */
+  const prices = JSON.parse(read("test/fixtures/alert-asks/prices.json"));
+  const clock = Date.parse(prices.fetched) + 3600e3;
   /* the day's quotes, with the new-crop contracts and the corn nearby flat */
   const Q = prices.quotes;
-  assert.ok(Q && Q["corn-dec27"] && Q["beans-nov27"] && Q["corn-nearby"], "data/prices.json quotes moved");
+  assert.ok(Q && Q["corn-dec27"] && Q["beans-nov27"] && Q["corn-nearby"], "the frozen futures copy lost its contracts");
   for (const k of Object.keys(Q)) {
     if (/^corn-dec2[7-9]$|^corn(-nearby)?$|^corn-dec$|^corn-dec26$/.test(k)) Object.assign(Q[k], { netChange: 0, pctChange: 0 });
     if (/^beans-nov2[7-9]$/.test(k)) Object.assign(Q[k], { netChange: 0.1, pctChange: 0.008 });
@@ -117,7 +121,7 @@ test("zero change on the real corn and soybean pages: (unch), not green", { skip
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     for (const theme of ["dark", "light"]) {
-      const c = await page(browser, port, "/corn-futures-prices", 390, theme);
+      const c = await page(browser, port, "/corn-futures-prices", 390, theme, clock);
       await c.pg.waitForFunction(() => { const e = document.getElementById("nc-glance"); return e && e.style.display === "block"; }, null, { timeout: 30000 });
       const nc = await c.pg.evaluate(() => { const e = document.getElementById("nc-chg"), g = document.getElementById("nc-glance");
         return { t: e.textContent, c: e.className, color: getComputedStyle(e).color, green: getComputedStyle(document.documentElement).getPropertyValue("--green").trim(), base: getComputedStyle(g).color }; });
@@ -125,7 +129,7 @@ test("zero change on the real corn and soybean pages: (unch), not green", { skip
       assert.equal(nc.c, "nc");
       assert.equal(nc.color, nc.base, `a flat chip takes the line's own color, not green (${theme})`);
       await c.ctx.close();
-      const s = await page(browser, port, "/soybean-futures-prices", 390, theme);
+      const s = await page(browser, port, "/soybean-futures-prices", 390, theme, clock);
       await s.pg.waitForFunction(() => /unch|%/.test((document.getElementById("corn-line") || {}).textContent || "") && /new crop/.test((document.getElementById("nc-line") || {}).textContent || ""), null, { timeout: 30000 });
       const chips = await s.pg.evaluate(() => ["nc-line", "corn-line"].map((id) => { const sp = document.querySelector(`#${id} > span`); return [id, sp && sp.textContent, sp && sp.className]; }));
       for (const [id, t, cls] of chips) { assert.equal(t, "(unch)", `${id} (${theme})`); assert.equal(cls, "nc", id); }
