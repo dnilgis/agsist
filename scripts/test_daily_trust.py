@@ -211,12 +211,15 @@ for rel in ("data/daily.json", "data/daily-archive/2026-10-12.json", "daily/2026
           f"{rel}: the wrong figures are gone")
     check("up 1\u00bc\u00a2" in t and "9\u00bc\u00a2" in t and "USDA raised the corn yield" in t,
           f"{rel}: up 1\u00bc\u00a2, 9\u00bc\u00a2 and the yield raise are printed")
-_d = _json.load(open(os.path.join(ROOT, "data/daily-archive/2026-10-12.json"), encoding="utf-8"))
+# frozen copies (Nov 3, 2026): the Oct 5 to 12 issues and analyst-estimates.json, so a new issue or a new
+# estimate on main can never change this check (Sig, Nov 3: no test depends on live data)
+_FIX = os.path.join(ROOT, "test", "fixtures", "daily-trust")
+_d = _json.load(open(os.path.join(_FIX, "daily-archive", "2026-10-12.json"), encoding="utf-8"))
 _iss = []
 _bg.check_number_binding(_d, lambda c, m: _iss.append(("FAIL", c, m)), lambda c, m: _iss.append(("WARN", c, m)),
-                         archive_dir=os.path.join(ROOT, "data/daily-archive"))
+                         archive_dir=os.path.join(_FIX, "daily-archive"))
 _bg.check_usda_revisions(_d, lambda c, m: _iss.append(("FAIL", c, m)), lambda c, m: _iss.append(("WARN", c, m)),
-                         est_path=os.path.join(ROOT, "data/analyst-estimates.json"))
+                         est_path=os.path.join(_FIX, "analyst-estimates.json"))
 _bad = [m for s, c, m in _iss if c in ("bind:cents", "usda-revision")]
 check(not _bad, "the corrected issue passes the cents and USDA-direction checks", _bad)
 _src = open(os.path.join(HERE, "generate_daily.py"), encoding="utf-8").read()

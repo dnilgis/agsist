@@ -52,6 +52,7 @@ from shapely.validation import explain_validity, make_valid
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe           # noqa: E402  (no address or watched place in the public log)
+import delivery_line      # noqa: E402  (the DELIVERY count line cron_health reads)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 import list_source        # noqa: E402  (the worker, or the private copy of its list when it is blocked)
 
@@ -279,6 +280,7 @@ def build_email(w, day, band, from_name, from_addr, reply_to):
 
 
 def main():
+    tally = delivery_line.start("hail-alert", dry=env("DRY_RUN", "") == "1")
     day = newest_mesh_date()
     bands = load_bands(day)
     thresholds = sorted(bands.keys())
@@ -317,6 +319,7 @@ def main():
         if band is not None:
             hits.append((w, band))
     print("hits: " + str(len(hits)))
+    tally.waiting = len(hits)
     # COUNTS ONLY. The log is public: an address next to the place it watches
     # (often the reader's own farm town) must never be printed here.
     by_band = {}
@@ -404,6 +407,7 @@ def main():
         except Exception:
             pass
 
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
     print("sent " + str(sent) + "/" + str(len(hits)))
     # THE FLAG IS SET FOR ANY SUCCESSFUL SEND, and it is reached now because
     # nothing above it can escape. A partial send that silently repeats is a

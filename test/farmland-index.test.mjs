@@ -84,7 +84,14 @@ test("a state that does not hold up on its own prints no index number, and says 
 
 test("quarters: thin ones withheld with the reason, the latest provisional, the headline from settled quarters", () => {
   const q = D.states.IL.quarters;
-  assert.equal(q[q.length - 1].prov, 1, "the latest quarter is provisional");
+  // The latest quarter never prints as settled: it carries an index marked provisional, or it is withheld for
+  // too few sales and prints no index at all (Nov 3, 2026: 2026Q4 held one month, 85 sales, withheld).
+  const last = q[q.length - 1];
+  assert.ok(last.ix == null ? /fewer than \d+ sales/.test(last.why) : last.prov === 1, "the latest quarter is provisional or withheld: " + JSON.stringify(last));
+  // the chart's caption names a dashed end only when there is a provisional point to draw
+  const drawn = q.some((r) => r.prov && r.ix != null);
+  assert.equal(/dashed end and hollow dot are provisional/.test(PAGE), drawn);
+  assert.equal(/class="li-dot-prov"/.test(PAGE), drawn);
   for (const r of q) {
     if (r.ix == null) assert.match(r.why, /fewer than \d+ sales/);
     else assert.ok(r.n >= D.rule.min_q && r.lo <= r.ix && r.ix <= r.hi, `${r.q}`);

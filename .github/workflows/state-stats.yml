@@ -19,13 +19,30 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: state-stats
-  cancel-in-progress: false
-
 jobs:
+  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
+  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
+  # and still end "success" (.github/actions/upstream-did-work; fails closed).
+  upstream:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.u.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            /.github/actions/upstream-did-work/
+          sparse-checkout-cone-mode: false
+      - id: u
+        uses: ./.github/actions/upstream-did-work
+
   gate:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    needs: upstream
+    if: needs.upstream.outputs.go == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     outputs:
       go: ${{ steps.g.outputs.go }}
@@ -56,6 +73,9 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    concurrency:
+      group: state-stats
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - name: Engine checkout

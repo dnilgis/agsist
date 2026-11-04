@@ -691,6 +691,9 @@ def build_symbols(now=None):
         "milk-nov26": "DCX26.CME",
         "milk-dec26": "DCZ26.CME",
         "milk-jan27": "DCF27.CME",
+        "milk-feb27": "DCG27.CME",
+        "milk-mar27": "DCH27.CME",
+        "milk-apr27": "DCJ27.CME",
 
         # ── Oilseeds / Feed ──
         "meal":       "ZM=F",

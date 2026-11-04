@@ -1123,7 +1123,7 @@ def fetch_sob(p, h, today=None):
     used to check the subsidy table the backtest applies. A missing year is
     fetched; a year still open (this one or later) at most every
     SOB_REFRESH_DAYS, so the branch does not take a 3 MB zip every day."""
-    today = today or datetime.now(timezone.utc).date()
+    today = today or _today()
     _, _, raw = p.get(SOB, keep_cap=2 * 1024 * 1024)
     if raw is None:
         raise RuntimeError("the Summary of Business folder did not answer")
@@ -1830,9 +1830,16 @@ def selftest_run_history():
     globals()["http_get"] = fake_http
     try:
         with tempfile.TemporaryDirectory() as td:
-            assert run_history(td, minutes=0) == 0 and fetched == []        # time limit: nothing started
-            assert load_json(os.path.join(td, "state.json"), {})["stats"]["last_run"]["left"] == 2
-            assert run_history(td) == 0
+            # the first fetch happens on Oct 20, 2026, the day this was written: the refresh checks below count
+            # from it (on the real clock the Dec 1 check would fail from Nov 4, 2026 on, under 28 days before it)
+            real_today0 = globals()["_today"]
+            globals()["_today"] = lambda: date(2026, 10, 20)
+            try:
+                assert run_history(td, minutes=0) == 0 and fetched == []        # time limit: nothing started
+                assert load_json(os.path.join(td, "state.json"), {})["stats"]["last_run"]["left"] == 2
+                assert run_history(td) == 0
+            finally:
+                globals()["_today"] = real_today0
             assert sorted(fetched) == sorted(files), fetched
             assert sorted(sob_fetched) == ["lrp_2025.zip", "lrp_2026.zip"]
             with open(os.path.join(td, "sob", "lrp_2026.zip"), "rb") as f:

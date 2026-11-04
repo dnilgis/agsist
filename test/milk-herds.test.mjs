@@ -14,7 +14,14 @@ import { execFileSync } from 'node:child_process';
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const read = (p) => fs.readFileSync(join(ROOT, p), 'utf8');
 const page = read('milk-prices.html');
-const herds = JSON.parse(read('data/dairy-herds.json'));
+// The hand-checked numbers are asserted on a frozen copy of the herds file (Nov 3, 2026); the live file is rewritten
+// by dairy.yml each month (Wisconsin's Nov 1 count), so it gets the shape checks, and the page is checked against
+// the seed the builder makes from it (Sig, Nov 3: no test pins live data to a literal value).
+const herds = JSON.parse(read('test/fixtures/milk-herds/dairy-herds.json'));
+const live = JSON.parse(read('data/dairy-herds.json'));
+const herdsSeed = (file) => execFileSync('python3', ['-c',
+  'import sys, json; sys.path.insert(0, "scripts"); import seed_static; print(seed_static.milk_herds_seed(json.load(open(sys.argv[1]))), end="")',
+  file], { cwd: ROOT, encoding: 'utf8' });
 const dmc = JSON.parse(read('data/dairy-dmc.json'));
 const seedOf = (tag) => {
   const m = new RegExp(`<!--SEED:${tag}-->([\\s\\S]*?)<!--/SEED-->`).exec(page);
@@ -38,13 +45,28 @@ test('herds file: NASS numbers as released, hand-checked', () => {
   assert.deepEqual(herds.wi_monthly.gaps, []);
   assert.equal(herds.loaded, '2026-02-20');
   assert.ok(herds.status.ok);
-  for (const [st, r] of Object.entries(herds.states)) {
-    for (const [y, v] of Object.entries(r)) assert.ok(v <= herds.us[y], `${st} ${y} above the US`);
+  for (const h of [herds, live]) {
+    for (const [st, r] of Object.entries(h.states)) {
+      for (const [y, v] of Object.entries(r)) assert.ok(v <= h.us[y], `${st} ${y} above the US`);
+    }
   }
 });
 
+test('the live herds file keeps its shape: years from 2003, Wisconsin months with no gaps, a load date', () => {
+  assert.equal(Object.keys(live.us).sort()[0], '2003');
+  assert.ok(Object.values(live.us).every((v) => Number.isInteger(v) && v > 0));
+  assert.match(live.loaded, /^\d{4}-\d{2}-\d{2}$/);
+  assert.deepEqual(live.wi_monthly.gaps, []);
+  const ks = Object.keys(live.wi_monthly.months).sort();
+  assert.ok(ks.length > 200 && ks[0] === '2003-08', ks[0]);
+  for (const k of Object.keys(herds.wi_monthly.months)) assert.ok(k in live.wi_monthly.months, `${k} still in the live file`);
+});
+
 test('the page bakes the lead line, the net-licence caveat and the NASS credit from the file', () => {
-  const s = seedOf('milkherds');
+  // the page carries exactly what the builder makes from the file it ships beside
+  assert.equal(seedOf('milkherds'), herdsSeed('data/dairy-herds.json'));
+  // and on the frozen copy, the builder's words are the hand-checked ones
+  const s = herdsSeed('test/fixtures/milk-herds/dairy-herds.json');
   assert.ok(s.includes('<strong>23,609 licensed dairy herds in the US in 2025</strong>, &minus;1,036 from 2024'), s.slice(0, 200));
   assert.ok(s.includes('Wisconsin, October 1, 2026: 4,944, &minus;229 from a year earlier'));
   assert.ok(s.includes('A drop is net licences, not the exact number of farms that quit'));
@@ -122,7 +144,13 @@ test('the chart draws from the file for the saved state, says each bar\'s change
       let asked = 0; pg.on('request', (r) => { if (r.url().includes('/data/dairy-herds.json')) asked++; });
       await pg.goto(`http://127.0.0.1:${port}/milk-prices`, { waitUntil: 'load' });
       assert.equal(asked, 0, 'the file is not fetched before the reader gets near the chart');
-      const plots = () => pg.evaluate(() => ['dp-hc-us', 'dp-hc-st', 'dp-herds-tbl', 'dp-do'].map((id) => { const e = document.getElementById(id); const r = e.getBoundingClientRect(); return [Math.round(r.top + scrollY), Math.round(r.height)]; }));
+      // Nov 3, 2026: the section sits in a closed fold; the reader opens it, then the chart fills. A closed
+      // fold has no boxes to measure, so the fold is opened first and the next section (cull cows) is the
+      // one below it that must not move.
+      await pg.evaluate(() => { document.querySelector('#dp-herds > details.dp-fold').open = true; });
+      await pg.waitForTimeout(100);
+      assert.equal(asked, 0, 'opening the fold far down the page does not fetch the file yet');
+      const plots = () => pg.evaluate(() => ['dp-hc-us', 'dp-hc-st', 'dp-herds-tbl', 'dp-cull-sec'].map((id) => { const e = document.getElementById(id); const r = e.getBoundingClientRect(); return [Math.round(r.top + scrollY), Math.round(r.height)]; }));
       const before = await plots();
       await pg.evaluate(() => document.getElementById('dp-herds').scrollIntoView());
       await pg.waitForFunction(() => document.querySelectorAll('#dp-hc-us .dp-hc-b').length > 0, null, { timeout: 20000 });

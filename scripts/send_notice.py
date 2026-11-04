@@ -58,6 +58,8 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
+TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import build_arc_plc as AP              # noqa: E402  deadlines and signup facts, one copy
 from send_watch import token, base_msg  # noqa: E402  the worker's hmac16, and the message headers
 import email_links                      # noqa: E402  k=<link id> links; never an address in one
@@ -237,6 +239,8 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
     p.add_argument("--max", type=int, default=int(env("MAX_PER_RUN", "200")))
     a = p.parse_args(argv)
     send = a.send and not a.dry_run
+    if TALLY:
+        TALLY.dry = not send
     today = (now or datetime.now(TZ)).astimezone(TZ).date()
     topic_in = a.topic.strip().lower()
     if re.fullmatch(r"rent:[a-z]{2}", topic_in):
@@ -294,6 +298,8 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
             todo.append((e, str(r.get("src") or "")))
         later = max(0, len(todo) - a.max)
         todo = todo[:a.max]
+        if TALLY:
+            TALLY.waiting += len(todo)
         total_todo += len(todo)
         county = sum(1 for _, s in todo if page_for(s)[2])
         out("%s: %d to mail (%d link a county page, %d link /arc-plc), %d skipped (sent or not valid), %d left for the next run"
@@ -349,6 +355,8 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
                     conn.quit()
             except Exception:
                 pass
+        if TALLY:
+            TALLY.sent += sent
         out("%s: sent %d, failed %d" % (topic, sent, failed))
         total_sent += sent
         total_failed += failed
@@ -625,4 +633,5 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv[1:]:
         sys.exit(selftest())
+    TALLY = delivery_line.start("arcplc-notice")
     sys.exit(run(sys.argv[1:]))

@@ -93,6 +93,7 @@
   .dp-dmc-line{margin:0;line-height:1.5;color:var(--text);}
   /* the countdown is recounted on the reader's clock after paint: same-width figures, so "51 days" to "50 days" moves nothing */
   #dp-dmc-words,#dp-dmc-lever{font-variant-numeric:tabular-nums;}
+  #dp-now-per,#dp-now-signup{font-variant-numeric:tabular-nums;}
   .dp-dmc-src{font-size:.85rem;color:var(--text-dim);}
   .dp-dmc-fb{margin:.5rem 0 0;padding-left:1.1rem;color:var(--text-dim);font-size:.93rem;line-height:1.5;}
   .dp-dmc-fb li{margin:.2rem 0;}
@@ -118,6 +119,7 @@
   .dp-hc-plot{position:relative;height:200px;width:100%;}
   .dp-hc-wide .dp-hc-plot{height:220px;}
   .dp-hc-wide .dp-hc-note{min-height:6em;}
+  @media (max-width:480px){.dp-fold .dp-hc-wide .dp-hc-note{min-height:8em;}}
   .dp-hc-plot svg{display:block;width:100%;height:100%;overflow:visible;}
   .dp-hc-note{font-size:.93rem;line-height:1.5;color:var(--text-dim);margin:.35rem 0 0;min-height:4.5em;}
   .dp-hc-grid{stroke:var(--border);stroke-width:1;}
@@ -471,6 +473,51 @@
   
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
 @media(max-width:640px){#tab-real,#tab-sand,#ppd-normal,#ppd-diverge{min-height:40px}}
+
+  /* Nov 3, 2026 (Sig: "the milk page has to be epic"): one card style for the first card and every fold;
+     what a farmer needs this month first, the rest closed below; nothing boxed inside a card */
+  .dp-now,.dp-fold{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);}
+  .dp-now{padding:.85rem 1rem .9rem;margin:0 0 .9rem;}
+  .dp-now-h{font-family:var(--font-display);font-size:1.15rem;font-weight:800;margin:0 0 .55rem;display:flex;align-items:center;gap:.45rem;color:var(--text);}
+  .dp-now-h .ic{width:1.05em;height:1.05em;color:var(--gold);}
+  .dp-now-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;}
+  .dp-now-t{margin:0;padding:.1rem .6rem .1rem 0;display:flex;flex-direction:column;gap:.1rem;min-width:0;}
+  .dp-now-t+.dp-now-t{border-left:1px solid var(--border);padding-left:.55rem;}
+  .dp-now-k{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);}
+  .dp-now-v{font-family:'JetBrains Mono',monospace;font-size:clamp(1.12rem,5vw,1.45rem);font-weight:800;line-height:1.15;color:var(--text);font-variant-numeric:tabular-nums;}
+  .dp-now-c{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;font-variant-numeric:tabular-nums;}
+  .dp-now-m{font-size:.78rem;color:var(--text-muted);}
+  .dp-now-src,.dp-now-note{margin:.45rem 0 0;font-size:.85rem;line-height:1.5;color:var(--text-dim);}
+  .dp-now-herd,.dp-now-p,.dp-now-mean{margin:.55rem 0 0;line-height:1.5;color:var(--text);font-variant-numeric:tabular-nums;}
+  .dp-now-dim{color:var(--text-dim);font-size:.93rem;}
+  .dp-now-herd input{width:4.6em;min-height:36px;font:inherit;padding:.15rem .35rem;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:6px;}
+  .dp-now-herd #dp-now-lb{width:5.2em;}
+  .dp-now-mean{padding:.55rem 0 0;border-top:1px solid var(--border);}
+  .dp-now-sub{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:.95rem 0 0;padding-top:.7rem;border-top:1px solid var(--border);}
+  .dp-now-tbl{width:100%;border-collapse:collapse;margin:.35rem 0 0;font-variant-numeric:tabular-nums;}
+  .dp-now-tbl th,.dp-now-tbl td{padding:.38rem .3rem;border-bottom:1px solid var(--border);text-align:left;font-size:.95rem;}
+  .dp-now-tbl thead th{font-size:.72rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;}
+  .dp-now-tbl th,.dp-now-tbl td{white-space:nowrap;}
+  .dp-now-tbl .num{text-align:right;font-family:'JetBrains Mono',monospace;}
+  .dp-now .dp-area{background:none;border:0;border-top:1px solid var(--border);border-radius:0;padding:.7rem 0 0;margin:.7rem 0 0;}
+  .dp-now .dp-area-h{font-size:1rem;}
+  .dp-sec:has(>.dp-fold),.dp-dmc{margin:.6rem 0 0;}
+  .dp-dmc{background:none;border:0;padding:0;}
+  .dp-fold{padding:0 1rem;}
+  .dp-fold>summary{list-style:none;cursor:pointer;display:block;position:relative;margin:0 -1rem;padding:.75rem 2.6rem .75rem 1rem;min-height:44px;}
+  .dp-fold>summary::-webkit-details-marker{display:none;}
+  .dp-fold>summary::after{content:"";position:absolute;right:1.1rem;top:1.05rem;width:.55rem;height:.55rem;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg);}
+  .dp-fold[open]>summary::after{transform:rotate(-135deg);top:1.3rem;}
+  .dp-fold>summary h2{margin:0;padding:0;border:0;width:auto;font-family:var(--font-display);font-size:1.05rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--text);line-height:1.3;}
+  .dp-fold-hint{display:block;margin-top:.2rem;font-size:.9rem;line-height:1.4;color:var(--text-dim);}
+  .dp-ask{margin:1.2rem 0 0;}
+  .dp-nw,.dp-now-herd b{white-space:nowrap;}
+  .dp-fold [id]{scroll-margin-top:76px;}
+  .dp-fold[open]{padding-bottom:1rem;}
+  .dp-fold[open]>summary{border-bottom:1px solid var(--border);margin-bottom:.8rem;}
+  .dp-fold .dp-tbl-wrap,.dp-fold .dp-strip,.dp-fold .dp-o30-depool,.dp-fold .dp-ppd,.dp-fold .dp-margin,.dp-fold .dp-dollar,
+  .dp-fold .dp-split,.dp-fold .dp-lever,.dp-fold .dp-tldr,.dp-fold .dp-example,.dp-fold .sw.chain{border-left:0;border-right:0;border-radius:0;box-shadow:none;}
+  .dp-fold .dp-dmc #dp-dmc-paid,.dp-fold #dp-dmc-paid{margin-top:.6rem;}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https://agsist.com/milk-prices#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Milk Prices","item":"https://agsist.com/milk-prices"}]}]}</script>
 </head>
@@ -514,10 +561,13 @@
   <header class="dp-head">
     <span class="dp-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg> Dairy Markets</span>
     <h1 class="dp-h1">Milk prices and your milk check</h1>
-    <p class="dp-lede page-lede">Your area first, then what your own milk is worth at your tests, and the DMC signup date. Every number carries its month and its source.</p>
+    <p class="dp-lede page-lede">This month first, the rest folded below. Every number carries its month and its source.</p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: USDA AMS mailbox and class prices, USDA NASS all-milk prices, CME Class III futures.</p>
   </header>
 
+  <section class="dp-now" id="dp-now" aria-labelledby="dp-now-h">
+    <h2 class="dp-now-h" id="dp-now-h"><svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg> This month for your milk</h2>
+    <!--SEED:milknowtop--><div class="dp-now-tiles"><p class="dp-now-t"><span class="dp-now-k">Class III</span><span class="dp-now-v">$16.04</span><span class="dp-now-c dp-neg">▼ −$0.60</span><span class="dp-now-m">Sep · announced</span></p><p class="dp-now-t"><span class="dp-now-k">Class IV</span><span class="dp-now-v">$18.94</span><span class="dp-now-c dp-pos">▲ +$1.58</span><span class="dp-now-m">Sep · announced</span></p><p class="dp-now-t"><span class="dp-now-k">All-milk</span><span class="dp-now-v">$19.50</span><span class="dp-now-c dp-neg">▼ −$0.30</span><span class="dp-now-m">Sep · NASS</span></p></div><p class="dp-now-src" id="dp-now-src" data-am-month="September 2026" data-am-states="AZ CA CO FL GA IA ID IL IN KS MI MN NM NY OH OR PA SD TX UT VA VT WA WI">Class prices: USDA AMS, September 2026. All-milk: USDA NASS Agricultural Prices, before hauling.</p><!--/SEED-->
   <section class="dp-area" id="dp-area" aria-labelledby="dp-area-h">
     <div class="dp-area-top"><h2 class="dp-area-h" id="dp-area-h"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg> Your area</h2>
       <label class="dp-area-pick"><span class="dp-sr">Mailbox price area</span><select id="dp-area-sel"><option value="">Pick your area</option><option value="New England States">New England States</option><option value="New York">New York</option><option value="Eastern Pennsylvania">Eastern Pennsylvania</option><option value="Appalachian States">Appalachian States</option><option value="Southeast States">Southeast States</option><option value="Southern Missouri">Southern Missouri</option><option value="Florida">Florida</option><option value="Western Pennsylvania">Western Pennsylvania</option><option value="Ohio">Ohio</option><option value="Indiana">Indiana</option><option value="Michigan">Michigan</option><option value="Wisconsin">Wisconsin</option><option value="Minnesota">Minnesota</option><option value="Iowa">Iowa</option><option value="Illinois">Illinois</option><option value="Corn Belt States">Corn Belt States</option><option value="Western Texas">Western Texas</option><option value="New Mexico">New Mexico</option><option value="Northwest States">Northwest States</option><option value="California">California</option></select></label></div>
@@ -527,7 +577,7 @@ B={CT:'New England States',ME:'New England States',MA:'New England States',NH:'N
 S={PA:['Eastern Pennsylvania','Western Pennsylvania'],MO:['Southern Missouri','Corn Belt States'],TX:['Western Texas']},
 A={'New York':'NY','Florida':'FL','Ohio':'OH','Indiana':'IN','Michigan':'MI','Wisconsin':'WI','Minnesota':'MN','Iowa':'IA','Illinois':'IL','New Mexico':'NM','California':'CA','Eastern Pennsylvania':'PA','Western Pennsylvania':'PA','Southern Missouri':'MO','Western Texas':'TX'},
 M='January February March April May June July August September October November December'.split(' '),
-o=d.getElementById('dp-area-out'),sel=d.getElementById('dp-area-sel'),sec=d.getElementById('dp-area'),a=L.getItem('agsist-milk-area')||'',area='',st='',w=null,z='',i,p,x,h;
+o=d.getElementById('dp-area-out'),sel=d.getElementById('dp-area-sel'),sec=d.getElementById('dp-area'),a=L.getItem('agsist-milk-area')||'',area='',st='',w=null,z='',i,p,x,h,q;
 'AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming'.split('|').forEach(function(s){N[s.slice(0,2)]=s.slice(3);});
 function zs(v){var q='',k;if(!/^\d{5}$/.test(v||''))return '';for(k=0;k<Z.length;k+=5){if(+Z.substr(k,3)>+v.slice(0,3))break;q=Z.substr(k+3,2);}return N[q]?q:'';}
 function e(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -539,6 +589,16 @@ if(!st&&!(w&&typeof w==='object'&&(N[w.state]||/^\d{5}$/.test(w.zip||''))))st=zs
 if(!area&&st&&B[st])area=B[st];
 if(!area){
   if(!st)return;
+  q=d.getElementById('dp-now-src');var qm=q&&/^(\w+) (\d{4})$/.exec(q.getAttribute('data-am-month')||''),qn=new Date(),qi=qm?+qm[2]*12+M.indexOf(qm[1]):NaN,qc=qn.getFullYear()*12+qn.getMonth();
+  if(!S[st]&&qm&&M.indexOf(qm[1])>=0&&qc-2<=qi&&qi<=qc&&(' '+(q.getAttribute('data-am-states')||'')+' ').indexOf(' '+st+' ')>=0){
+    h='<div class="dp-area-skel" aria-hidden="true" data-state="'+st+'"><p class="dp-area-name">'+e(N[st])+' <span>all-milk price, '+qm[0]+'</span></p>'+
+    '<p class="dp-area-big">$88.88<span>/cwt</span></p><p class="dp-area-chg"><span>▼ −$8.88 vs Aug</span> &middot; <span>▼ −$8.88 vs Sep 2025</span></p>'+
+    '<p class="dp-area-line">No USDA mailbox area for '+e(N[st])+', so this is the state&rsquo;s all-milk price: what plants paid before hauling and co-op deductions. For a mailbox price, pick the nearest area above.</p>'+
+    '<p class="dp-note-src">Source: USDA NASS, Agricultural Prices, '+qm[0]+'.</p></div>';
+    o.insertAdjacentHTML('beforeend',h);o.setAttribute('aria-busy','true');sec.classList.add('dp-area-wait');
+    setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.removeChild(k);sec.classList.remove('dp-area-wait');o.removeAttribute('aria-busy');}},10000);
+    return;
+  }
   h=S[st]?e(N[st])+' is split between AMS mailbox areas ('+e(S[st].join(', '))+'). Pick yours above.':'AMS does not report a mailbox price for '+e(N[st])+'. Pick the nearest area above, or see the state all-milk table below.';
   p=d.createElement('p');p.className='dp-area-sum';p.setAttribute('data-early','');p.innerHTML=h;o.insertBefore(p,o.firstChild);return;
 }
@@ -555,31 +615,31 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
 })(document,localStorage);}catch(_){}try{document.documentElement.classList.remove('dp-area-pend');}catch(_){}</script>
   </section>
 
-  <section class="dp-dmc" id="dp-dmc" aria-labelledby="dp-dmc-h">
-    <h2 class="dp-dmc-h" id="dp-dmc-h"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Dairy Margin Coverage signup</h2>
+    <!--SEED:milknow--><p class="dp-now-herd" id="dp-now-herd">On <input id="dp-now-cows" type="number" inputmode="numeric" min="1" max="50000" value="100" aria-label="Cows milking"> cows at <input id="dp-now-lb" type="number" inputmode="numeric" min="500" max="4000" step="50" value="2000" aria-label="Pounds of milk a cow a month"> lb a cow a month, each $1/cwt is <b id="dp-now-per">$2,000</b> a month. September&rsquo;s all-milk move <span class="dp-nw">(−$0.30)</span> is <b data-c="-0.3">−$600</b>. Class III&rsquo;s move <span class="dp-nw">(−$0.60)</span> is <b data-c="-0.6">−$1,200</b>.</p><p class="dp-now-mean"><strong>What this means:</strong> DMC paid $0.16/cwt at $9.50 coverage for August, against a $0.15 tier 1 premium. At futures, Nov 2026 to Jan 2027 runs $9.34 to $10.68, across the $9.50 line. 2027 signup closes Fri, Dec 18.</p><h3 class="dp-now-sub">Dairy Margin Coverage</h3><p class="dp-now-p"><strong>DMC margin, August 2026: $9.34/cwt</strong> ($19.80 all-milk minus $10.46 feed, USDA FSA). At $9.50 coverage that paid <b>$0.16/cwt</b> of covered milk; at $8.00, nothing. Tier 1 premium at $9.50: $0.15/cwt (FSA fact sheet, January 2026).</p><p class="dp-now-p dp-now-dim"><span id="dp-now-signup" data-open="2026-10-05" data-close="2026-12-18" data-year="2027">2027 DMC signup is open now, to Friday, Dec 18, 2026, at your FSA office. 45 days left.</span> Next margin: September&rsquo;s is due from USDA&rsquo;s Oct 30 Agricultural Prices report and is not in the copy of FSA&rsquo;s page read here yet; October&rsquo;s follows the Mon, Nov 30, 2026 report.</p><h3 class="dp-now-sub">The next months at futures</h3><table class="dp-now-tbl"><caption class="dp-sr">Class III futures and the DMC margin range at them, dollars per cwt</caption><thead><tr><th scope="col">Month</th><th scope="col" class="num">Class III futures</th><th scope="col" class="num">DMC margin range</th></tr></thead><tbody><tr data-idx="24322"><th scope="row">Nov 2026</th><td class="num" data-v="17.98">$17.98</td><td class="num">$9.34 to $10.68</td></tr><tr data-idx="24323"><th scope="row">Dec 2026</th><td class="num" data-v="17.1">$17.10</td><td class="num">$9.34 to $9.80</td></tr><tr data-idx="24324"><th scope="row">Jan 2027</th><td class="num" data-v="16.97">$16.97</td><td class="num">$9.34 to $9.67</td></tr></tbody></table><p class="dp-now-note"><b>A range, not a forecast.</b> One end holds August&rsquo;s all-milk price, $19.80; the other moves it cent for cent with Class III futures from August&rsquo;s announced $16.64. Feed held at August&rsquo;s DMC feed cost, $10.46. CME Class III, settles from Nov 2, 2026 (Yahoo Finance). Class IV futures are not in the price file read here.</p><!--/SEED-->
+  </section>
+  <script>/* agsist-milk-herd: the first card's herd line, on the reader's own cows and pounds (saved on this device only). Runs before paint, so a saved herd moves nothing. Fails soft: no storage or no card, the 100-cow line stays. */
+try{(function(d){var c=d.getElementById('dp-now-cows'),l=d.getElementById('dp-now-lb'),p=d.getElementById('dp-now-per');if(!c||!l||!p)return;var L=null;try{L=localStorage;}catch(_){}
+function f(v){var r=Math.round(Math.abs(v));return (v<0&&r?'\u2212':v>0&&r?'+':'')+'$'+r.toLocaleString('en-US');}
+function run(save){var n=+c.value,lb=+l.value;if(!(n>0&&n<=50000&&lb>=500&&lb<=4000))return;var per=n*lb/100;p.textContent='$'+Math.round(per).toLocaleString('en-US');
+[].forEach.call(d.querySelectorAll('#dp-now-herd b[data-c]'),function(b){b.textContent=f(+b.getAttribute('data-c')*per);});
+if(save&&L)try{L.setItem('agsist-milk-herd',JSON.stringify({cows:n,lb:lb}));}catch(_){}}
+var s=null;if(L)try{s=JSON.parse(L.getItem('agsist-milk-herd')||'null');}catch(_){}
+if(s&&s.cows>0&&s.lb>=500){c.value=s.cows;l.value=s.lb;run(false);}
+c.addEventListener('input',function(){run(true);});l.addEventListener('input',function(){run(true);});})(document);}catch(_){}</script>
+
+  <section class="dp-dmc" id="dp-dmc" aria-labelledby="dp-dmc-h"><details class="dp-fold" id="dp-dmc-fold"><summary>
+    <h2 class="dp-sec-label dp-dmc-h" id="dp-dmc-h"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> DMC signup and the farm bill</h2><span class="dp-fold-hint">The 2027 signup, the 2031 lock-in, and what DMC paid each year since 2019</span></summary>
     <!--SEED:milkdmccard--><p class="dp-dmc-line"><strong id="dp-dmc-words" data-open="2026-10-05" data-close="2026-12-18" data-year="2027">2027 DMC signup is open now, to Friday, Dec 18, 2026, at your FSA office. 45 days left.</strong><span class="dp-dmc-src"> Source: <a href="https://www.fsa.usda.gov/news-events/news/09-30-2026/usda-announces-2027-dairy-margin-coverage-enrollment" rel="noopener">FSA, Sep 30, 2026</a>.</span></p>
     <ul class="dp-dmc-fb"><li><b>Dairy Margin Coverage runs through 2031.</b> The 2025 law renewed it and raised Tier 1 to 6 million pounds. In FSA's words, a dairy operation that makes a one-time election of coverage level and coverage percentage that are applicable to each of calendar years 2026 through 2031 "will receive a 25 percent discount on premium rates." <span class="dp-dmc-src">(FSA DMC fact sheet, January 2026, page 2, read from the Internet Archive copy of Apr 14, 2026)</span></li><li>Dairy Forward Pricing and the Dairy Indemnity Payment Program are paused since Oct 1. <span class="dp-dmc-src">(<a href="https://farmpolicynews.illinois.edu/2026/10/farm-bill-expires-again-as-lawmakers-continue-negotiations/" rel="noopener">Farm Policy News, Oct 2026</a>)</span></li><li>The Senate text renews both <b>through 2031</b>, not permanently. <span class="dp-dmc-src">(<a href="https://www.fb.org/intel/policy/time-to-finish-the-job-2026-farm-bill" rel="noopener">AFBF Market Intel on the Senate text and Aug 6 markup</a>)</span></li><li><b>Jan 1, 2027 is your date.</b> Milk is first to fall back to permanent law if nothing passes. CRS put the parity support price at 252% of the market price in July 2025. Both bills fix it; neither is law. <span class="dp-dmc-src">(CRS R48775)</span></li></ul><!--/SEED-->
     <!--SEED:milkdmcpaid--><details class="dp-states" id="dp-dmc-paid"><summary>What DMC would have paid at these published prices, Jan 2019 to Aug 2026, before premium</summary><div class="dp-tbl-wrap dp-tbl-scroll"><table class="dp-tbl"><caption class="dp-sr">DMC premium and what DMC would have paid, dollars per cwt of covered milk, by coverage level and year</caption><thead><tr><th scope="col">Level<span class=dp-dmc-prem>premium Tier 1 / 2</span></th><th scope="col" class="num">2026*</th><th scope="col" class="num">2025</th><th scope="col" class="num">2024</th><th scope="col" class="num">2023</th><th scope="col" class="num">2022</th><th scope="col" class="num">2021</th><th scope="col" class="num">2020</th><th scope="col" class="num">2019</th></tr></thead><tbody><tr><th scope="row">$4.00<span class="dp-dmc-prem">premium none / none</span></th><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.07</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td></tr><tr><th scope="row">$4.50<span class="dp-dmc-prem">premium $0.0025 / $0.0025</span></th><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.15</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td></tr><tr><th scope="row">$5.00<span class="dp-dmc-prem">premium $0.005 / $0.005</span></th><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.25</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td></tr><tr><th scope="row">$5.50<span class="dp-dmc-prem">premium $0.030 / $0.100</span></th><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.38</td><td class="num">$0.00</td><td class="num">$0.04</td><td class="num">$0.03</td><td class="num">$0.00</td></tr><tr><th scope="row">$6.00<span class="dp-dmc-prem">premium $0.050 / $0.310</span></th><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.51</td><td class="num">$0.00</td><td class="num">$0.13</td><td class="num">$0.08</td><td class="num">$0.00</td></tr><tr><th scope="row">$6.50<span class="dp-dmc-prem">premium $0.070 / $0.650</span></th><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.74</td><td class="num">$0.00</td><td class="num">$0.31</td><td class="num">$0.17</td><td class="num">$0.00</td></tr><tr><th scope="row">$7.00<span class="dp-dmc-prem">premium $0.080 / $1.107</span></th><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$1.04</td><td class="num">$0.00</td><td class="num">$0.60</td><td class="num">$0.25</td><td class="num">$0.00</td></tr><tr><th scope="row">$7.50<span class="dp-dmc-prem">premium $0.090 / $1.413</span></th><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$1.33</td><td class="num">$0.00</td><td class="num">$0.98</td><td class="num">$0.33</td><td class="num">$0.00</td></tr><tr><th scope="row">$8.00<span class="dp-dmc-prem">premium $0.100 / $1.813</span></th><td class="num">$0.02</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$1.62</td><td class="num">$0.00</td><td class="num">$1.35</td><td class="num">$0.42</td><td class="num">$0.03</td></tr><tr><th scope="row">$8.50<span class="dp-dmc-prem">premium $0.105 / n/a</span></th><td class="num">$0.09</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$1.97</td><td class="num">$0.03</td><td class="num">$1.73</td><td class="num">$0.50</td><td class="num">$0.11</td></tr><tr><th scope="row">$9.00<span class="dp-dmc-prem">premium $0.110 / n/a</span></th><td class="num">$0.22</td><td class="num">$0.00</td><td class="num">$0.04</td><td class="num">$2.38</td><td class="num">$0.11</td><td class="num">$2.14</td><td class="num">$0.63</td><td class="num">$0.27</td></tr><tr><th scope="row">$9.50<span class="dp-dmc-prem">premium $0.150 / n/a</span></th><td class="num">$0.36</td><td class="num">$0.01</td><td class="num">$0.09</td><td class="num">$2.81</td><td class="num">$0.19</td><td class="num">$2.59</td><td class="num">$0.81</td><td class="num">$0.54</td></tr></tbody></table></div><p class="dp-note-src">Would have paid at these published prices, before premium: for each year, the average over its months of the coverage level minus FSA&rsquo;s margin when the margin was below it, in dollars per cwt of covered milk (2026 is Jan to Aug only). Newest year first. Under each level: FSA&rsquo;s premium per cwt covered, from its DMC fact sheet of January 2026, Tier 1 / Tier 2; the payment columns do not take them off. Payment works the same in both tiers. Tier 1 is the first 6 million lb of your production history a year, Tier 2 the rest; FSA offers Tier 2 only up to $8.00 (n/a above). No level is a pick for your farm, and past margins are not next year&rsquo;s.</p><p class="dp-note-src">These are the margins as FSA publishes them now. FSA&rsquo;s own tables price the hay in the feed cost as blended alfalfa in 2019 (a 50 percent hay blend, in FSA's words: FSA, Jul 11, 2019 (Internet Archive copy of 2026-06-10)) and as premium alfalfa from 2020 on; FSA changed the feed cost to premium alfalfa in December 2021, back to January 2020, and recalculated those margins (FSA Notice DMC-53 (Internet Archive copy of 2025-04-21)). 1 month from 2019 on (Sep 2026) is left out: not in the copy of FSA's page I read. Margins: FSA, DMC prices and updates (Internet Archive copy of 2026-06-10), read 2026-11-03. May 2026 to Aug 2026: the same FSA page, read 2026-10-28 from a screen capture of FSA&rsquo;s live page, which had newer months than the archive copy. Premiums: FSA DMC fact sheet (Internet Archive copy of 2026-04-14).</p></details><!--/SEED-->
     <!--SEED:milkmpp--><details class="dp-states" id="dp-mpp"><summary>Before DMC: MPP-Dairy margins, Jan 2014 to Jul 2018 (a different program)</summary><div class="dp-tbl-wrap dp-tbl-scroll"><table class="dp-tbl"><caption class="dp-sr">MPP-Dairy monthly milk margin above feed cost, dollars per cwt, by month and year</caption><thead><tr><th scope="col">MPP margin</th><th scope="col" class="num">2018</th><th scope="col" class="num">2017</th><th scope="col" class="num">2016</th><th scope="col" class="num">2015</th><th scope="col" class="num">2014</th></tr></thead><tbody><tr><th scope="row">Jan</th><td class="num">$8.12</td><td class="num">$11.06</td><td class="num">$8.10</td><td class="num">$8.34</td><td class="num">$12.70</td></tr><tr><th scope="row">Feb</th><td class="num">$6.88</td><td class="num">$10.58</td><td class="num">$7.91</td><td class="num">$7.66</td><td class="num">$13.91</td></tr><tr><th scope="row">Mar</th><td class="num">$6.77</td><td class="num">$9.35</td><td class="num">$7.47</td><td class="num">$7.53</td><td class="num">$14.10</td></tr><tr><th scope="row">Apr</th><td class="num">$6.62</td><td class="num">$8.55</td><td class="num">$6.83</td><td class="num">$7.48</td><td class="num">$13.65</td></tr><tr><th scope="row">May</th><td class="num">$6.78</td><td class="num">$8.61</td><td class="num">$5.77</td><td class="num">$7.83</td><td class="num">$12.26</td></tr><tr><th scope="row">Jun</th><td class="num">$7.37</td><td class="num">$9.33</td><td class="num">$5.75</td><td class="num">$8.16</td><td class="num">$11.65</td></tr><tr><th scope="row">Jul</th><td class="num">$6.72</td><td class="num">$9.08</td><td class="num">$7.59</td><td class="num">$7.45</td><td class="num">$12.68</td></tr><tr><th scope="row">Aug</th><td class="num">-</td><td class="num">$10.27</td><td class="num">$9.26</td><td class="num">$7.94</td><td class="num">$13.74</td></tr><tr><th scope="row">Sep</th><td class="num">-</td><td class="num">$9.99</td><td class="num">$9.48</td><td class="num">$8.95</td><td class="num">$15.40</td></tr><tr><th scope="row">Oct</th><td class="num">-</td><td class="num">$10.00</td><td class="num">$8.84</td><td class="num">$9.22</td><td class="num">$15.62</td></tr><tr><th scope="row">Nov</th><td class="num">-</td><td class="num">$10.39</td><td class="num">$9.98</td><td class="num">$10.01</td><td class="num">$13.39</td></tr><tr><th scope="row">Dec</th><td class="num">-</td><td class="num">$9.36</td><td class="num">$11.10</td><td class="num">$9.10</td><td class="num">$10.66</td></tr></tbody></table></div><p class="dp-note-src">MPP-Dairy, the Margin Protection Program, ran 2014 to 2018, before DMC. It was a different program, so these margins are not on the same footing as the DMC table above and no MPP payment is worked out here. Its feed cost priced plain alfalfa hay (FSA&rsquo;s column: &ldquo;Alfalfa Hay&rdquo;); DMC&rsquo;s prices premium alfalfa (a 50 percent hay blend in 2019). Through 2017 MPP paid on the margin of two-month pay periods (January and February, March and April, and so on), as FSA&rsquo;s table sets them out. FSA&rsquo;s own note: &ldquo;At a milk margin (all-milk price minus feed cost) of less than $8.00 per cwt, payments are possible depending on the level of coverage chosen by the dairy operation.&rdquo; DMC&rsquo;s levels go to $9.50. Lowest month here: Jun 2016, $5.75. FSA prints each margin to the millionth of a dollar; shown here to the cent. Aug 2018 to Dec 2018 are left out: FSA's MPP table as read ends at July 2018. Source: FSA, MPP calculations (Internet Archive copy of 2024-06-14), read 2026-10-28.</p></details><!--/SEED-->
     <p class="dp-dmc-more"><a href="#dp-margin">The DMC margin and its catch</a> &middot; <a href="/farm-bill">What the farm bill lapse means for dairy</a></p>
-  </section>
+  </details></section>
 
-    <nav class="dp-nav" aria-label="On this page">
-      <a href="#dp-mkt">Right now</a>
-      <a href="#dp-check-h">Read my check</a>
-      <a href="#dp-fall-h">Check built</a>
-      <a href="#dp-mailbox">Your mailbox price</a>
-      <a href="#dp-margin">DMC margin</a>
-      <a href="#dp-herds-h">Licensed herds</a>
-      <a href="#dp-do">What you can do</a>
-      <a href="#dp-reform">2025 changes</a>
-      <a href="#dp-bg">Background</a>
-      <a href="#dp-faq-h">Questions</a>
-    </nav>
 
   <!-- 1. RIGHT NOW: verdict + live strip -->
   <section class="dp-sec" aria-labelledby="dp-mkt" id="dp-mkt-sec" data-seed-month="2026-09">
-    <h2 class="dp-sec-label" id="dp-mkt"><svg class="ic" aria-hidden="true"><use href="#i-activity"/></svg> What milk pays right now</h2>
+    <details class="dp-fold" id="dp-mkt-fold"><summary><h2 class="dp-sec-label" id="dp-mkt"><svg class="ic" aria-hidden="true"><use href="#i-activity"/></svg> What milk pays right now</h2><span class="dp-fold-hint">Class III, IV and II, futures, component and product prices, all-milk by state</span></summary>
 
     <div class="dp-tldr" style="margin-top:0">
       <div class="dp-verdict" id="dp-verdict"><!--SEED:milkverdict-->Sep: Class III fell $0.60 to $16.04. Class IV rose $1.58 to $18.94.<!--/SEED--></div>
@@ -671,16 +731,16 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
       <script type="application/json" id="dp-states-seed">{"month":"September 2026","month_key":"2026-09","rows":[{"state":"Arizona","value":19.0,"prev_month":19.6,"year_ago":19.7},{"state":"California","value":20.4,"prev_month":21.0,"year_ago":20.4},{"state":"Colorado","value":18.0,"prev_month":18.2,"year_ago":19.7},{"state":"Florida","value":23.3,"prev_month":24.7,"year_ago":24.4},{"state":"Georgia","value":24.2,"prev_month":25.4,"year_ago":25.4},{"state":"Idaho","value":19.6,"prev_month":19.1,"year_ago":20.0},{"state":"Illinois","value":19.1,"prev_month":19.6,"year_ago":20.8},{"state":"Indiana","value":20.6,"prev_month":21.3,"year_ago":21.6},{"state":"Iowa","value":18.3,"prev_month":18.9,"year_ago":19.8},{"state":"Kansas","value":17.1,"prev_month":17.3,"year_ago":18.8},{"state":"Michigan","value":19.0,"prev_month":19.7,"year_ago":20.3},{"state":"Minnesota","value":19.3,"prev_month":19.6,"year_ago":20.6},{"state":"New Mexico","value":17.8,"prev_month":18.6,"year_ago":18.3},{"state":"New York","value":20.2,"prev_month":20.4,"year_ago":21.0},{"state":"Ohio","value":20.9,"prev_month":21.6,"year_ago":22.1},{"state":"Oregon","value":20.3,"prev_month":20.7,"year_ago":21.2},{"state":"Pennsylvania","value":19.7,"prev_month":20.1,"year_ago":20.6},{"state":"South Dakota","value":18.5,"prev_month":19.0,"year_ago":20.2},{"state":"Texas","value":19.3,"prev_month":19.3,"year_ago":20.2},{"state":"Utah","value":18.7,"prev_month":18.9,"year_ago":19.8},{"state":"Vermont","value":20.2,"prev_month":20.5,"year_ago":21.4},{"state":"Virginia","value":23.6,"prev_month":24.6,"year_ago":24.7},{"state":"Washington","value":20.1,"prev_month":19.3,"year_ago":20.2},{"state":"Wisconsin","value":18.3,"prev_month":18.9,"year_ago":20.2}]}</script><!--/SEED-->
     </div>
     <p class="dp-note-src" id="dp-strip-note">Each block shows its own month. A block that is too old is shown as a dash, not as the market. Class prices and components: USDA AMS. All-milk: USDA NASS.</p>
-  </section>
+  </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-o30-h" id="dp-o30">
-    <h2 class="dp-sec-label" id="dp-o30-h"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Upper Midwest order (Federal Order 30)</h2>
+    <details class="dp-fold" id="dp-o30-h-fold"><summary><h2 class="dp-sec-label" id="dp-o30-h"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Upper Midwest order (Federal Order 30)</h2><span class="dp-fold-hint">The Upper Midwest order&rsquo;s own prices and PPD</span></summary>
     <p class="dp-sec-intro">The Upper Midwest federal order, home to Wisconsin and Minnesota. These are the order&rsquo;s own numbers for the month, beside a year earlier.</p>
     <!--SEED:milko30--><div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-tbl"><caption class="dp-sr">Federal Order 30 monthly prices, dollars per hundredweight</caption><thead><tr><th scope="col">Order 30</th><th scope="col" class="num">Sep 2026</th><th scope="col" class="num">Sep 2025</th></tr></thead><tbody><tr><th scope="row">Class I price (3.5% fat)</th><td class="num">$20.24</td><td class="num">$21.90</td></tr><tr><th scope="row">Class I skim mover</th><td class="num">$12.16</td><td class="num">$9.34</td></tr><tr><th scope="row">Advanced Class III skim</th><td class="num">$11.76</td><td class="num">$7.54</td></tr><tr><th scope="row">Advanced Class IV skim</th><td class="num">$12.16</td><td class="num">$9.34</td></tr><tr><th scope="row">Statistical uniform price</th><td class="num">$16.62</td><td class="num">$17.94</td></tr><tr><th scope="row">Producer price differential (PPD)</th><td class="num">+$0.58</td><td class="num">+$0.35</td></tr><tr><th scope="row">SCC adjustment, per 1,000 cells</th><td class="num">$0.00078</td><td class="num">$0.00090</td></tr></tbody></table></div><p class="dp-note-src" id="dp-o30-next">Class I ahead, announced in advance: Oct 2026 $22.08/cwt; Nov 2026 $23.47/cwt.</p><p class="dp-note-src" id="dp-o30-src">Source: Upper Midwest Market Administrator, monthly class price and producer price differential releases, read 2026-11-03. Prices at the order&rsquo;s base zone; your plant&rsquo;s zone adds or takes a little. Base zone: Cook County, IL. The Class I skim mover is the higher of the two advanced skim prices beside it. The PPD is what the order adds to (or takes from) the component value of your milk, before hauling and co-op deductions. A dash: not in the release read for that month.</p><details class="dp-states" id="dp-o30-hist"><summary>Order 30 PPD by month, Oct 2024 to Sep 2026</summary><div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-hist-tbl"><caption class="dp-sr">Order 30 producer price differential, dollars per hundredweight, by month and year</caption><thead><tr><th scope="col">PPD, $/cwt</th><th scope="col" class="num">2024</th><th scope="col" class="num">2025</th><th scope="col" class="num">2026</th></tr></thead><tbody><tr><th scope="row">Jan</th><td class="num"></td><td class="num">+$0.13</td><td class="num">+$0.46</td></tr><tr><th scope="row">Feb</th><td class="num"></td><td class="num">+$0.13</td><td class="num">+$0.58</td></tr><tr><th scope="row">Mar</th><td class="num"></td><td class="num">+$0.20</td><td class="num">+$0.50</td></tr><tr><th scope="row">Apr</th><td class="num"></td><td class="num">+$0.27</td><td class="num">+$0.61</td></tr><tr><th scope="row">May</th><td class="num"></td><td class="num">+$0.07</td><td class="num">+$0.69</td></tr><tr><th scope="row">Jun</th><td class="num"></td><td class="num">+$0.28</td><td class="num">+$0.87</td></tr><tr><th scope="row">Jul</th><td class="num"></td><td class="num">+$0.63</td><td class="num">+$0.88</td></tr><tr><th scope="row">Aug</th><td class="num"></td><td class="num">+$0.58</td><td class="num">+$0.60</td></tr><tr><th scope="row">Sep</th><td class="num"></td><td class="num">+$0.35</td><td class="num">+$0.58</td></tr><tr><th scope="row">Oct</th><td class="num">−$0.47</td><td class="num">+$0.14</td><td class="num"></td></tr><tr><th scope="row">Nov</th><td class="num">+$0.38</td><td class="num">−$0.56</td><td class="num"></td></tr><tr><th scope="row">Dec</th><td class="num">+$0.36</td><td class="num">+$0.35</td><td class="num"></td></tr></tbody></table></div><p class="dp-note-src">Source: Upper Midwest Market Administrator, each month&rsquo;s producer price differential release, at the base zone, checked so the statistical uniform price equals that month&rsquo;s Class III plus the PPD. 24 of these months were also checked against the Central Order&rsquo;s yearly summary of all orders (the Central Market Administrator) and matched. How much milk was left out of the pool is not published by order and month, so I do not show it.</p></details><p class="dp-o30-depool" id="dp-o30-depool"><strong>Depooling watch, Sep 2026:</strong> Class IV was $2.90/cwt over Class III (USDA AMS, $18.94 against $16.04). When Class IV runs this far above Class III, a butter and powder plant would owe the pool for its milk, so it can do better by leaving the pool for the month (depooling). The higher-valued milk it takes out is value the pool, and so the PPD, does not get. Whether any plant did shows up later in the order&rsquo;s pooled volume, not in this line. I say it when Class IV is more than $1.00 over Class III.</p><!--/SEED-->
-  </section>
+  </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-check-h" id="dp-check-sec">
-    <h2 class="dp-sec-label" id="dp-check-h"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Read my check</h2>
+    <details class="dp-fold" id="dp-check-h-fold"><summary><h2 class="dp-sec-label" id="dp-check-h"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Read my check</h2><span class="dp-fold-hint">Type your tests and see what your milk is worth</span></summary>
     <p class="dp-sec-intro">Type in your own milk. I work out the federal minimum value of that milk at your tests from USDA&rsquo;s announced component prices, then the same at the next two Class III futures months. What you type is saved on this device only.</p>
     <form class="dp-check" id="dp-check" autocomplete="off">
       <label><span>Milk shipped this month</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-cwt" min="1" step="any" placeholder="2170"><em>cwt</em></span></label>
@@ -694,11 +754,10 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
     <div class="dp-check-out" id="dp-check-out" aria-live="polite"><p class="dp-note-src">Type your butterfat, protein and other solids tests to see what your milk is worth at them.</p></div>
     <noscript><p class="dp-note-src">The check reader needs JavaScript. The component prices it uses are in the strip above.</p></noscript>
     <!--SEED:milkmiss--><div id="dp-miss"><h3 class="dp-sub dp-sub-tight" id="dp-miss-h">How close the futures came</h3><p class="dp-note-src">Each month I keep what this reader showed at the standard tests (3.5% butterfat, 3.18% protein and 5.79% other solids, the Class III standard, where your tests add nothing): the Class III futures settle of the last session before the month began. When USDA announces the month I print the miss beside it. Started Oct 28, 2026; nothing before that is filled in.</p><p class="dp-note-src" id="dp-miss-none">No month graded yet. The first month it can grade is November 2026: its price is recorded as November begins, and USDA announces it about the start of December.</p></div><!--/SEED-->
-    <div data-signup-ask="Email me when each month&rsquo;s milk prices are announced." data-topic="milk-month" data-source="page:milk-prices" data-ok="Done. One email each month when USDA announces the Class prices." data-note="One email a month, the day the Class and component prices come out. Stop it any time."></div>
-  </section>
+  </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-fall-h">
-    <h2 class="dp-sec-label" id="dp-fall-h"><svg class="ic" aria-hidden="true"><use href="#i-git-branch"/></svg> How your milk check is built</h2>
+    <details class="dp-fold" id="dp-fall-h-fold"><summary><h2 class="dp-sec-label" id="dp-fall-h"><svg class="ic" aria-hidden="true"><use href="#i-git-branch"/></svg> How your milk check is built</h2><span class="dp-fold-hint">Cheese, butter, powder and whey to your Class III price, step by step</span></summary>
     <p class="dp-sec-intro">One hundredweight of milk, top to bottom. Four commodities set the prices: cheese, dry whey and butter set Class III (butter through the butterfat price); butter and nonfat dry milk set Class IV. <span style="color:var(--green);font-weight:700">Green</span> is a credit, <span style="color:var(--red);font-weight:700">red</span> is a deduction. Switch to the sandbox to move the prices yourself.</p>
 
     <div class="dp-fall">
@@ -750,10 +809,10 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
         <div class="dp-row dp-final"><div class="dp-row-main"><div class="dp-row-name">Class III milk price</div><div class="dp-row-desc">The federal minimum a cheese plant must pay for 100 lb of milk this month, as announced by USDA. What lands in the mailbox is this, blended with the other classes and adjusted by the producer price differential and hauling.</div></div><div class="dp-row-val">$16.04<span class="u">/cwt</span></div></div><!--/SEED-->
       </div>
     </div>
-  </section>
+  </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-mailbox">
-    <h2 class="dp-sec-label" id="dp-mailbox"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg> Why your check is not the headline price</h2>
+    <details class="dp-fold" id="dp-mailbox-fold"><summary><h2 class="dp-sec-label" id="dp-mailbox"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg> Why your check is not the headline price</h2><span class="dp-fold-hint">Mailbox price by area, and when better milk pays less</span></summary>
     <p class="dp-sec-intro">The class price is a <strong>starting point, not your paycheck</strong>. Three more layers sit between it and your account.</p>
 
     <div class="dp-fall">
@@ -787,20 +846,20 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
     </div>
 
     <p class="dp-sec-intro" style="margin-top:1.1rem">It has happened. When Class III and IV blew apart in 2020, cheese handlers pulled large volumes of milk out of the pool for months. Farmers whose milk made cheese saw negative PPDs claw money back off their checks, while the risk-management tools they'd paid for paid out against a price they never received.</p>
-  </section>
+  </details></section>
 
   <!-- 4. THE DMC MARGIN AND YOUR COST -->
   <section class="dp-sec" aria-labelledby="dp-margin">
-    <h2 class="dp-sec-label" id="dp-margin"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> The DMC margin and your own cost</h2>
+    <details class="dp-fold" id="dp-margin-fold"><summary><h2 class="dp-sec-label" id="dp-margin"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> The DMC margin and your own cost</h2><span class="dp-fold-hint">What the DMC margin sees and what it cannot</span></summary>
     <p class="dp-sec-intro">Dairy Margin Coverage pays when the national all-milk price minus a national feed cost falls below the level you elect. It cannot see your own feed, labor, fuel or interest, so it can read fine while a farm loses money.</p>
     <div class="dp-margin"><!--SEED:milkdmcmargin--><p class="dp-dmc-m"><strong>DMC margin, August 2026: $9.34/cwt</strong> ($19.80 all-milk minus $10.46 feed), as USDA Farm Service Agency, Dairy Margin Coverage prices and updates published it (read 2026-10-28 from a screen capture of FSA&rsquo;s live page).</p><!--/SEED--></div>
     <div class="dp-cards" style="margin-top:1rem">
       <div class="dp-card"><div class="dp-card-h"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Run your own number</div><p>The only cost of production that matters is yours, so this page prints no national cost figure. Put your own tests, deductions and cost in the <a href="#dp-check-h" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">check reader</a>. Selling manure to a neighbor? See <a href="/manure-value" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">what it is worth</a>.</p></div>
     </div>
-  </section>
+  </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-herds-h" id="dp-herds">
-    <h2 class="dp-sec-label" id="dp-herds-h"><svg class="ic" aria-hidden="true"><use href="#i-activity"/></svg> Licensed dairy herds (NASS)</h2>
+    <details class="dp-fold" id="dp-herds-h-fold"><summary><h2 class="dp-sec-label" id="dp-herds-h"><svg class="ic" aria-hidden="true"><use href="#i-activity"/></svg> Licensed dairy herds (NASS)</h2><span class="dp-fold-hint">Licensed dairy herds by state, year by year</span></summary>
     <!--SEED:milkherds--><p class="dp-sec-intro" id="dp-herds-lead"><strong>23,609 licensed dairy herds in the US in 2025</strong>, &minus;1,036 from 2024 and &minus;46,766 since 2003 (70,375). Wisconsin, October 1, 2026: 4,944, &minus;229 from a year earlier.</p><p class="dp-note-src" id="dp-herds-caveat">A drop is net licences, not the exact number of farms that quit: a herd that sells, merges or changes hands can leave the list while another joins it.</p><p class="dp-note-src" id="dp-herds-src">Source: USDA NASS, licensed dairy herds, the yearly average of farms licensed to sell milk (Milk Production report, newest year released Feb 20, 2026), as NASS has the years now. NASS's yearly series starts in 2003; 2002 is not in it. Wisconsin by month: USDA NASS Wisconsin, herds on the state&rsquo;s Dairy Producer License list on the first of each month. Read 2026-10-28.</p><!--/SEED-->
     <div class="dp-herds-pick"><label for="dp-herds-st">Your state</label> <select id="dp-herds-st"><option value="">Pick a state</option></select></div>
     <div class="dp-herds" id="dp-herds-out" aria-live="polite">
@@ -810,17 +869,17 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
       <script>/* before paint: a saved Wisconsin place gets the monthly chart's space now, so nothing moves when the data lands (components/milk-herds.js fills it) */try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null'),_m=localStorage.getItem('agsist-milk-herd-st');if((/^[A-Z]{2}$/.test(_m||'')?_m:(_w&&_w.state))==='WI')document.getElementById('dp-hc-wi-f').hidden=false;}catch(e){}</script>
     </div>
     <details class="dp-states" id="dp-herds-tbl"><summary>The numbers, with the net change each year</summary><div class="dp-tbl-wrap dp-tbl-scroll" id="dp-herds-tbl-in"><p class="dp-note-src">Loads with the chart.</p></div></details>
-  </section>
+  </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-cull" id="dp-cull-sec">
-    <h2 class="dp-sec-label" id="dp-cull"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Cull cows this week</h2>
+    <details class="dp-fold" id="dp-cull-fold"><summary><h2 class="dp-sec-label" id="dp-cull"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Cull cows this week</h2><span class="dp-fold-hint">Slaughter cow prices at the sale barns USDA reports</span></summary>
     <p class="dp-sec-intro">The cull cow check is part of what the herd brings in. These are slaughter cow prices at the sale barns USDA reports, each barn with its own sale day. USDA does not report the Wisconsin or Minnesota barns, so the numbers come from the states it does.</p>
     <div class="cc" data-cull-cows="dairy"><div data-cc="body"><p class="dp-sec-intro">Cull cow prices from USDA sale barn reports load here. The full list is on <a href="/cattle-auction-prices#cull-cows" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">sale barn prices</a>.</p></div></div>
-  </section>
+  </details></section>
 
   <!-- 5. WHAT YOU CAN DO -->
   <section class="dp-sec" aria-labelledby="dp-do">
-    <h2 class="dp-sec-label" id="dp-do"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg> What you can actually do about it</h2>
+    <details class="dp-fold" id="dp-do-fold"><summary><h2 class="dp-sec-label" id="dp-do"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg> What you can actually do about it</h2><span class="dp-fold-hint">DRP, DMC, LGM and contracts: what each does, and its catch</span></summary>
     <p class="dp-sec-intro">You can't set the price, but you can manage the <strong>risk</strong> around it. Each tool has a catch, and none raises the price. This is a map of the tools, not advice: run your own numbers and talk to your advisor. AGSIST sells none of these; see <a href="https://www.rma.usda.gov/" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">USDA RMA</a> and your cooperative.</p>
 
     <div class="dp-levers">
@@ -842,11 +901,11 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
         <p class="catch"><b>The catch</b>: a CME milk contract is 200,000 lb (about 90 cows' monthly output), so it's coarse for small herds; hedging means a margin account and margin calls if the market rises; and if you lock and the market climbs, you gave up that gain. Extension guidance is blunt: don't lock it all in at once.</p>
       </div>
     </div>
-  </section>
+  </details></section>
 
   <!-- 6. WHAT CHANGED IN 2025 -->
   <section class="dp-sec" aria-labelledby="dp-reform">
-    <h2 class="dp-sec-label" id="dp-reform"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> What changed in 2025</h2>
+    <details class="dp-fold" id="dp-reform-fold"><summary><h2 class="dp-sec-label" id="dp-reform"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> What changed in 2025</h2><span class="dp-fold-hint">The 2025 federal order changes, with dates</span></summary>
     <p class="dp-sec-intro">The formulas were rewritten in <strong>2025: the biggest overhaul of federal milk pricing since 2000</strong>, approved by producer vote in all eleven marketing orders. Five changes, each moving your price in a specific direction.</p>
     <details class="dp-states" id="dp-reform-list"><summary>The five changes, with dates</summary>
     <div class="dp-timeline">
@@ -857,10 +916,10 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
       <div class="dp-tl-item"><div class="dp-tl-dot"></div><div class="dp-tl-body"><div class="dp-tl-date">Dec 1, 2025</div><div class="dp-tl-title">Updated skim composition factors</div><div class="dp-tl-desc">The assumed protein, other-solids, and nonfat-solids content of skim milk was updated to 3.3% / 6.0% / 9.3% to match today's milk, phased in later to give processors time to adjust risk positions.</div><div class="dp-tl-effect up">&#x25B2; Slightly raises classified prices, especially in fluid-milk orders</div></div></div>
     </div>
     </details>
-  </section>
+  </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-bg">
-    <h2 class="dp-sec-label" id="dp-bg"><svg class="ic" aria-hidden="true"><use href="#i-gavel"/></svg> Background: who sets the price, and where the dollar goes</h2>
+    <details class="dp-fold" id="dp-bg-fold"><summary><h2 class="dp-sec-label" id="dp-bg"><svg class="ic" aria-hidden="true"><use href="#i-gavel"/></svg> Background: who sets the price, and where the dollar goes</h2><span class="dp-fold-hint">Who sets the price, and where your milk dollar goes</span></summary>
     <div class="dp-bgd">
       <details id="dp-who">
         <summary>Who actually sets the price<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
@@ -909,7 +968,11 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
         </div>
       </details>
     </div>
-  </section>
+  </details></section>
+
+  <div class="dp-ask">
+    <div data-signup-ask="Email me when each month&rsquo;s milk prices are announced." data-topic="milk-month" data-source="page:milk-prices" data-ok="Done. One email each month when USDA announces the Class prices." data-note="One email a month, the day the Class and component prices come out. Stop it any time."></div>
+  </div>
 
   <!-- FAQ (visible; mirrors FAQPage JSON-LD) -->
   <section class="dp-sec" aria-labelledby="dp-faq-h">
@@ -1537,13 +1600,18 @@ setTimeout(function(){var k=o.querySelector('.dp-area-skel');if(k){k.parentNode.
       (n===0?'Today is the last day.':n===1?'1 day left.':n+' days left.');
   }
   window.agsistDmcWords=words;
-  ['dp-dmc-words','dp-dmc-lever'].forEach(function(id){
+  ['dp-dmc-words','dp-dmc-lever','dp-now-signup'].forEach(function(id){
     var el=document.getElementById(id); if(!el) return;
     var w=words(el,new Date()); if(w&&el.textContent!==w) el.textContent=w;
   });
 })();
 </script>
-  <script src="/components/milk-tools.js?v=4" defer></script>
+<script>/* agsist-milk-folds: a link or saved address to a spot inside a closed fold opens that fold first */
+try{(function(d){function open(id){var el=id&&d.getElementById(id);for(var n=el;n;n=n.parentElement){if(n.tagName==='DETAILS')n.open=true;}return el;}
+function go(){var h=decodeURIComponent((location.hash||'').slice(1));if(h&&open(h)){var el=d.getElementById(h);if(el&&el.scrollIntoView)el.scrollIntoView();}}
+d.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[href^="#"]');if(a)open(a.getAttribute('href').slice(1));});
+window.addEventListener('hashchange',go);if(location.hash)go();})(document);}catch(_){}</script>
+  <script src="/components/milk-tools.js?v=5" defer></script>
   <script src="/components/milk-herds.js?v=1" defer></script>
   <script src="/components/cull-cows.js?v=2" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>

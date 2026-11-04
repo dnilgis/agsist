@@ -24,17 +24,37 @@ on:
     workflows: ["MESH radar hail swaths — daily"]
     types: [completed]
 
-concurrency:
-  group: alert-check
-  cancel-in-progress: false
-
 permissions:
   contents: read
 
 jobs:
-  check:
+  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
+  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
+  # and still end "success" (.github/actions/upstream-did-work; fails closed).
+  upstream:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.u.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            /.github/actions/upstream-did-work/
+          sparse-checkout-cone-mode: false
+      - id: u
+        uses: ./.github/actions/upstream-did-work
+
+  check:
+    needs: upstream
+    runs-on: ubuntu-latest
+    concurrency:
+      group: alert-check
+      cancel-in-progress: false
+    if: needs.upstream.outputs.go == '1' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
     steps:
       - uses: actions/checkout@v4
         with:

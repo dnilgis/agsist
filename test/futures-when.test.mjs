@@ -52,7 +52,10 @@ test("futures.js names the same moment the seed does, from the price-local stamp
   const window = { AgPxStamp: require(join(ROOT, "components/price-local.js")) };
   const exchWhen = new Function("window", "AgPxStamp", m[0] + "; return exchWhen;")(window, window.AgPxStamp);
   const p = JSON.parse(readFileSync(FIX, "utf8"));
-  assert.equal(exchWhen(p.quotes["corn-nearby"], p.fetched), "Settle Oct 16");
+  // the stamp drops the year inside the reader's own year (Chicago): the frozen Oct 16, 2026 settle reads with
+  // its year from Jan 1, 2027 (a literal "Settle Oct 16" failed from then on)
+  const year = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric" }).format(new Date());
+  assert.equal(exchWhen(p.quotes["corn-nearby"], p.fetched), year === "2026" ? "Settle Oct 16" : "Settle Oct 16, 2026");
   assert.equal(exchWhen(null, p.fetched), "Last quote");
   assert.match(js, /setTxt\('ph-exch','CBOT · CME Group · '\+lbl\+' · '\+when\)/);
   assert.match(js, /setTxt\('ph-when',__when\)/);

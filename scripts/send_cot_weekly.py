@@ -64,6 +64,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import subscribers        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
+import delivery_line      # noqa: E402  (the DELIVERY count line cron_health reads)
+TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import cot_calendar       # noqa: E402  (the release day CFTC keeps)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 import list_source  # noqa: E402  (the worker, or the private copy of its list)
@@ -562,6 +564,8 @@ def main(argv=(), now=None, fetch=None):
     argv = list(argv)
     mode = mode_of(argv)
     dry, preview = mode == "dry", mode == "preview"
+    tally = TALLY or delivery_line.Tally("funds-weekly")   # an unregistered tally prints nothing
+    tally.dry = mode != "send"
     print("mode: " + {"dry": "dry run (the default; SEND=1 sends to the list, PREVIEW=1 to Sig only)",
                       "preview": "preview to Sig only (SIG_TEST_EMAILS, else SIG_TO); no flag read or set",
                       "send": "send to the Funds this week list"}[mode])
@@ -610,6 +614,7 @@ def main(argv=(), now=None, fetch=None):
     if len(recipients) < len(rows_):
         print("::warning::%d reader(s) had no link id this run and are not mailed" % (len(rows_) - len(recipients)))
     print("list: %d reader(s) on Funds this week" % len(recipients))
+    tally.waiting = len(recipients)
     if preview:
         recipients = preview_to()
         if not recipients:
@@ -700,6 +705,7 @@ def main(argv=(), now=None, fetch=None):
             conn.quit()
         except Exception:
             pass
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
     print("sent " + str(sent) + "/" + str(len(recipients)))
     if sent > 0:
         flag(day, set_it=True)
@@ -1100,4 +1106,5 @@ if __name__ == "__main__":
         sys.exit(_selftest())
     if "--render" in sys.argv:
         sys.exit(render(sys.argv[sys.argv.index("--render") + 1], live="--live" in sys.argv))
+    TALLY = delivery_line.start("funds-weekly")
     sys.exit(list_source.guard(lambda: main(sys.argv[1:]), soft=False))

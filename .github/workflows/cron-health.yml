@@ -31,6 +31,13 @@ name: Cron health
 # header) and private-raw-saves (warns when no save has reached the private raw
 # branch for 80 h). The morning email shows both. Saved only when a status
 # changes or every six hours.
+#
+# READER EMAIL DELIVERED (Nov 3 2026, BUILD-RULES 55 and 56): a green run is
+# not a delivered email. One delivery:<workflow> row per workflow that mails
+# readers (scripts/delivery_check.py), from the DELIVERY line each sender
+# prints, read from the run logs every six hours with this run's token (it
+# needs actions: read). The live switches are the repository variables below;
+# never a worker secret.
 
 on:
   workflow_run:
@@ -190,7 +197,8 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    # 10: every six hours the delivery rows read about 100 run logs
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -206,6 +214,7 @@ jobs:
           python3 scripts/cron_gate.py --selftest
           python3 scripts/check_site_budget.py --selftest
           python3 scripts/cron_health.py --selftest
+          python3 scripts/delivery_check.py --selftest
 
       # The last saved file: its age is the cron-health.json row, and the new
       # one is saved only when a status changed. Missing, the check still runs
@@ -223,6 +232,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           ENGINE_MODE: ${{ vars.ENGINE_MODE }}
+          # the live switches of the reader emails (scripts/delivery_check.py SENDERS)
+          CUSTOMRATES_NOTICE_LIVE: ${{ vars.CUSTOMRATES_NOTICE_LIVE }}
+          DAIRY_MONTHLY_LIVE: ${{ vars.DAIRY_MONTHLY_LIVE }}
+          FUNDS_WEEKLY_LIVE: ${{ vars.FUNDS_WEEKLY_LIVE }}
+          LANDSALES_MONTHLY_LIVE: ${{ vars.LANDSALES_MONTHLY_LIVE }}
+          RAIN_MONTHLY_LIVE: ${{ vars.RAIN_MONTHLY_LIVE }}
+          RP_BUYER_EMAIL_LIVE: ${{ vars.RP_BUYER_EMAIL_LIVE }}
+          RP_DESIGN_EMAIL_LIVE: ${{ vars.RP_DESIGN_EMAIL_LIVE }}
         run: python3 scripts/cron_health.py --out private/data/cron-health.json
 
       - name: Save
@@ -236,6 +253,6 @@ jobs:
       - name: Late
         if: steps.h.outputs.red == '1'
         run: |
-          echo "::error::Time-critical check failed (a workflow past its clock, or published-size over budget): ${{ steps.h.outputs.late }}"
+          echo "::error::Time-critical check failed (a workflow past its clock, a reader email not delivered, or published-size over budget): ${{ steps.h.outputs.late }}"
           echo "See private/data/cron-health.json (private repo, branch private-data) or the log above for which tick was missed and why."
           exit 1
