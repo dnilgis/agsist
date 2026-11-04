@@ -34,7 +34,9 @@ function expectFor(c, r, f) {
     case "conv": return v ? [esc(v)] : ["not in the record"];
     case "pid": return v ? [esc(v)] : ["not in the record"];
     case "muni": return r.muniName ? [esc(r.muniName)] : ["not in the record"];
-    case "legal": return v ? [esc(F.clean(v))] : ["not in the record"];
+    // a legal that names its own buyer or seller is held for the tap (scripts/land_names.py): the panel shows the tap hint
+    case "legal": return F.legalHeld(r) ? ["names a buyer or seller: shown with Show buyer and seller"] : v ? [esc(F.clean(v))] : ["not in the record"];
+    case "legal_named": return [];
     // the section key (scripts/land_keys.py): the panel's "Section, township, range" line reads it
     case "str": return v ? ["Section, township, range", esc(F.strOf(r.legal) || F.keyText(v))] : ["Section, township, range"];
     case "exempt": return [v ? "Exemption claimed" : "No exemption claimed"];
@@ -62,6 +64,7 @@ test("every column a real transfer file carries reaches the panel (WI and IL)", 
         assert.ok(want, `${st} column ${c} has no panel line; add it to saleDetailHTML and to this test`);
         for (const w of want) assert.ok(h.includes(w), `${st}/${fips} doc ${r.doc}: column ${c} should show ${JSON.stringify(w)}`);
         if ((c === "grantor" || c === "grantee") && r[c] && String(r[c]).length > 4) assert.ok(!h.includes(esc(r[c])), `${st}/${fips} doc ${r.doc}: no name in the panel before the tap`);
+        if (c === "legal" && F.legalHeld(r)) assert.ok(!h.includes("[LEGAL WITH A NAME"), `${st}/${fips} doc ${r.doc}: the mark itself is never shown`);
       }
       assert.ok(h.includes(esc(f.source)), "source named");
       for (const l of f.links || []) assert.ok(h.includes(esc(l.url)), "source link " + l.url);
@@ -76,6 +79,18 @@ const wiFile = (rows) => ({ state: "WI", county: "Barron", fips: "55005", names:
   source_short: "Wisconsin transfer return", links: [{ t: "Wisconsin DOR transfer return data", url: "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx" }],
   fetched_utc: "2026-10-17T18:32:11Z", names_file: "/data/land/wi/names/55005.json", coverage: { from: "2019-01-01", to: "2026-09-26", filed_from: "2021-01-15", filed_to: "2026-09-30" }, acres_rule: 2, cols: COLS,
   munis: { "0": ["Chetek town", 45.31, -91.65] }, rows });
+
+test("a held legal (it names its own buyer or seller) shows the tap hint in the panel, never the mark or a section guess from it", () => {
+  const f = Object.assign(wiFile([["900040", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-4", "0", "", 0, null, null, null, ""]]),
+    { cols: COLS.filter((c) => c !== "grantor" && c !== "grantee").concat(["str", "si", "bi"]) });
+  f.rows = [["900040", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-4", "0", "[LEGAL WITH A NAME 0123456789] UNDIVIDED", 0, null, "", "12-33N-10W", 0, 0]];
+  const r = F.rowObjs(f)[0];
+  assert.ok(F.legalHeld(r));
+  const h = F.saleDetailHTML(r, f, []);
+  for (const c of f.cols) for (const w of expectFor(c, r, f) || []) assert.ok(h.includes(w), "held row: column " + c + " shows " + JSON.stringify(w));
+  assert.doesNotMatch(h, /LEGAL WITH A NAME/);
+  assert.match(h, /Section 12, T33N, R10W/, "the section comes from the key, which was read before the legal was held");
+});
 
 test("blank fields say 'not in the record'; fields we do not keep say 'not in our copy'", () => {
   const f = wiFile([["", "", null, null, null, 1, "", "", "", "9", "", 0, "", "", null, ""]]);
