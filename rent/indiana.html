@@ -265,6 +265,7 @@
   <h2>Rent for your ground, not the county average</h2>
   <p class="sub">The county number doesn&rsquo;t know your ground. This scales the county&rsquo;s 2026 rent by your own corn yield.</p>
   <label>County <select id="gr-co"></select></label>
+  <p class="sub" id="gr-own" hidden></p>
   <label>Your corn yield, bu/ac <input id="gr-y" type="number" inputmode="decimal" min="1" max="400" step="1"></label>
   <p class="rs-gr-out" id="gr-out" aria-live="polite">Pick a county and type your yield.</p>
   <p class="sub" id="gr-math" style="color:var(--text)"></p>
@@ -333,7 +334,7 @@ for(let i=0;i<ths.length;i++)ths[i].addEventListener('click',function(){
  rows.forEach(function(r){t.tBodies[0].appendChild(r);});
  gaEvent('rent_state_sort',{col:ths[i].textContent});
 });})();
-</script><script>
+</script><script src="/components/saved-place.js?v=1"></script><script>
 (function(){var el=document.getElementById('gr-data');if(!el)return;var D=JSON.parse(el.textContent);
 var $=function(i){return document.getElementById(i);},sel=$('gr-co'),y=$('gr-y'),pr=$('gr-p'),sh=$('gr-s'),lv=$('gr-v'),rr=$('gr-r');
 var shDirty=false,sent=false;
@@ -359,10 +360,16 @@ function draw(){var c=cur(),Y=num(y),p=num(pr);
  var a=$('gr-atlas');if(a){if(c[4]){a.href='/farmland-atlas/'+c[4];a.textContent=cname(c)+' on the Farmland Atlas';}else{a.removeAttribute('href');a.textContent=cname(c)+' (no Atlas page yet)';}}
  if(!sent&&document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.rs-gr')){sent=true;gaEvent('rent_ground',{st:D.st});}
 }
-sel.addEventListener('change',function(){y.value=Math.round(cur()[2]);draw();});
+var picked=false;
+sel.addEventListener('change',function(){picked=true;y.value=Math.round(cur()[2]);draw();});
 sh.addEventListener('input',function(){shDirty=sh.value!=='';draw();});
-[y,pr,lv,rr].forEach(function(e){e.addEventListener('input',draw);});
+[y,pr,lv,rr].forEach(function(e){e.addEventListener('input',function(){if(e===y)picked=true;draw();});});
 y.value=Math.round(cur()[2]);draw();
+/* Nov 4, 2026 (site panel): the reader's saved county, when it is in this state, replaces the middle county
+   (components/saved-place.js; the county comes from our own ZIP table). A pick the reader made stays. */
+function own(p){if(picked||!p||p.state!==D.st||!p.county)return;var k=String(p.county).toLowerCase();
+ for(var i=0;i<D.c.length;i++)if(String(D.c[i][0]).toLowerCase()===k){sel.value=i;y.value=Math.round(cur()[2]);var n=$('gr-own');if(n){n.textContent='Opened at '+cname(D.c[i])+', from the ZIP saved on this browser. Pick another '+D.unit.toLowerCase()+' any time.';n.hidden=false;}draw();return;}}
+try{if(window.AgSavedPlace){own(AgSavedPlace.read());AgSavedPlace.full().then(own);}}catch(e){}
 })();
 </script>
 </body>
