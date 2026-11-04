@@ -246,6 +246,27 @@ def selftest():
             fh.write("console.log(Date.now());\n")
         subprocess.run(["node", "reads.mjs"], env=env, cwd=td, capture_output=True)
         ck("probe: node too", os.path.exists(probe) and "node" in open(probe).read())
+        # a page: the shift reaches it, and a test's own page clock (page.clock.setFixedTime) keeps Date.now() too
+        # (Nov 4, 2026: Playwright copied the shim's enumerable now() onto its fake Date, so pages read today + offset)
+        pw = os.environ.get("PLAYWRIGHT_PATH", "/opt/node-tools/node_modules/playwright/index.mjs")
+        chrome = os.environ.get("CHROMIUM_PATH", "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome")
+        if os.path.exists(pw) and os.path.exists(chrome):
+            with open(os.path.join(td, "page.mjs"), "w") as fh:
+                fh.write(f"const {{ chromium }} = await import({pw!r});\n"
+                         f"const b = await chromium.launch({{ executablePath: {chrome!r} }});\n"
+                         "const day = async (fixed) => { const ctx = await b.newContext({ serviceWorkers: 'block' }); const pg = await ctx.newPage();\n"
+                         "  await pg.route('**/*', (r) => r.fulfill({ body: '<html></html>', contentType: 'text/html' }));\n"
+                         "  if (fixed) await pg.clock.setFixedTime(new Date('2020-01-02T12:00:00Z'));\n"
+                         "  await pg.goto('http://127.0.0.1:9/x');\n"
+                         "  const v = await pg.evaluate(() => [new Date().toISOString().slice(0, 10), new Date(Date.now()).toISOString().slice(0, 10)].join(' '));\n"
+                         "  await ctx.close(); return v; };\n"
+                         "try { console.log(await day(false) + ' ' + await day(true)); } finally { await b.close(); }\n")
+            penv = dict(env, PLAYWRIGHT_PATH=pw)
+            pg = subprocess.run(["node", "page.mjs"], capture_output=True, text=True, env=penv, cwd=td, timeout=120)
+            ck("page: the shift reaches a page; a page clock the test fixed stays fixed",
+               pg.stdout.split() == ["2027-01-01", "2027-01-01", "2020-01-02", "2020-01-02"], pg.stdout + pg.stderr[-400:])
+        else:
+            print("skip page: Playwright or Chromium not found here")
     print(f"future_dates selftest: {'ok' if not bad else str(len(bad)) + ' failed'}")
     return 1 if bad else 0
 
