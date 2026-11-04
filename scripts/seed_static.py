@@ -930,23 +930,30 @@ HB_SKEL = '<span class="hb-skel" aria-hidden="true"></span>'
 
 
 def hero_futures_seeds(q, fetched):
-    """The hero band's two futures tiles (Dec corn, Nov beans), Sig Oct 19:
+    """The hero band's two futures tiles (corn, soybeans), Sig Oct 19:
     baked so a crawler sees prices, then index.html paintFut draws over them
     on load. Same quote, same formatter (AG.px slash, hb-frac) and the same
     label and change markup as paintFut; the moment line uses quote_when, the
     words the corn and soybean cards lower down are seeded with. No quote on
-    file leaves the tile on its loading bar, as before."""
+    file leaves the tile on its loading bar, as before.
+
+    2026-11-04 (fx/soyroll2): the tiles are the HEADLINE contract, the month
+    every elevator quotes basis against (nearby_of: <crop>-nearby, rolled at
+    first notice by fetch_prices.add_nearby). They read the harvest aliases
+    (corn-dec, beans-nov) and printed Nov '26 beans past first notice over a
+    basis line against Jan '27. Twin of AgPxStamp.headline (price-local.js)."""
     seeds = {}
-    for key, tile, word, mon in (("corn-dec", "fc", "corn", "Dec"), ("beans-nov", "fs", "bean", "Nov")):
-        d = q.get(key) or {}
+    for crop, tile, word, cap in (("corn", "fc", "corn", "Corn"), ("beans", "fs", "bean", "Bean")):
+        r = nearby_of(q, crop)
+        d = (r[0] if r else None) or {}
         m = re.match(r"^Z[CS]([FGHJKMNQUVXZ])(\d{2})", str(d.get("ticker") or ""))
-        lab = (_HB_MCODE[m.group(1)] + " \u2019" + m.group(2)) if m else mon
+        lab = (_HB_MCODE[m.group(1)] + " \u2019" + m.group(2) + " " + word + " futures") if m else cap + " futures"
         if not grain_dollars(d):
-            seeds["hp:" + tile + "-k"] = mon + " " + word + " futures"
+            seeds["hp:" + tile + "-k"] = cap + " futures"
             seeds["hp:" + tile] = HB_SKEL
             seeds["hp:" + tile + "-s"] = ""
             continue
-        seeds["hp:" + tile + "-k"] = lab + " " + word + " futures"
+        seeds["hp:" + tile + "-k"] = lab
         seeds["hp:" + tile] = ('<span class="hb-n">' +
                                pricefmt.price(d["close"], style="slash", frac_class="hb-frac") + "</span>")
         diff = d.get("netChange")
