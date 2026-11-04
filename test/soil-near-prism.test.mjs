@@ -57,7 +57,7 @@ test("PRISM: one GridData ask on grid 21 at the point, the page's field names ba
 });
 
 test("every page loads one version of nws.js, soil-near.js and prism.js (count the copies)", () => {
-  const files = ["index.html", "spray.html", "urea.html", "grain-emc.html", "harvest-or-wait.html", "planting-date.html", "components/geo.js", "components/spray-wind.js"];
+  const files = ["index.html", "spray.html", "urea.html", "grain-emc.html", "harvest-or-wait.html", "planting-date.html", "gdu-calculator.html", "components/geo.js", "components/spray-wind.js"];
   const v = { nws: new Set(), "soil-near": new Set(), prism: new Set() };
   for (const f of files) {
     const t = readFileSync(ROOT + f, "utf8");

@@ -15,7 +15,7 @@
  *
  *   AgSeason.fipsFor(rainFile, countyName)        the county's FIPS in a state rain file, or null
  *   AgSeason.model(rainFile, wxFile, fips)        what the block shows (no DOM)
- *   AgSeason.html(model)                          the block's HTML
+ *   AgSeason.html(model, today)                   the block's HTML (today: an ISO date, for the year in a label)
  *   AgSeason.chart(model)                         the rain-by-month chart (SVG), or ""
  */
 (function () {
@@ -113,9 +113,11 @@
     return '<div class="wxs-t" data-k="' + k + '"><span class="wxs-k">' + label + "</span>" + body + "</div>";
   }
 
-  function html(m) {
+  function html(m, today) {
     var r = m.rain, r3 = m.rain30, g = m.gdd, g3 = m.gdd30, out = [];
-    function lab(what, f, dflt) { return esc(what) + ", " + (f && f.from && f.to ? span(f.from, f.to) : dflt); }
+    var yNow = String(today || new Date().toISOString()).slice(0, 4);
+    /* a figure from a finished year (January reads last year through Dec 31) names its year */
+    function lab(what, f, dflt) { return esc(what) + ", " + (f && f.from && f.to ? span(f.from, f.to) + (f.to.slice(0, 4) !== yNow ? ", " + f.to.slice(0, 4) : "") : dflt); }
     out.push('<div class="wxs-grid">');
     out.push(tile(lab("Rain", r, "since Jan 1"), r, "in", inch, "rain"));
     out.push(tile(lab("Rain", r3, "last 30 days"), r3, "in", inch, "rain30"));
@@ -131,7 +133,8 @@
     if (m.wxStation) s.push("GDDs are corn growing degree days (86/50): " + (m.wxStation === "same" ? "highs and lows from the same station" : "highs and lows from the weather station " + esc(m.wxStation.where) + ", " + m.wxStation.mi + " mi from the rain " + (m.station && m.station.cocorahs ? "gauge" : "station")) +
       "; each day&rsquo;s high and low held between 50&deg;F and 86&deg;F, averaged, minus 50. Normal: the station&rsquo;s own 1991 to 2020 average for the same days" + (m.gdd && m.gdd.years ? " (" + m.gdd.years + " years)" : "") + ".");
     if (m.gpStation) s.push("Last season&rsquo;s GDDs: " + esc(m.gpStation.where) + ", " + m.gpStation.mi + " mi off.");
-    s.push("A figure with more than 5% of its days not reported is not shown; the 30-day rain needs every day. NOAA daily records through RCC-ACIS.");
+    s.push("A figure with more than 5% of its days not reported is not shown; the 30-day rain needs every day. NOAA daily records through RCC-ACIS." +
+      (m.station && m.station.cocorahs ? " Volunteer gauge data: CoCoRaHS." : ""));
     out.push('<div class="wxs-foot">');
     if (m.months && m.months.length) out.push('<button type="button" class="wxs-b" id="wxs-chart-b" aria-expanded="false" aria-controls="wxs-chart">Rain by month</button>');
     out.push('<details class="wxs-src"><summary>Stations and sources</summary><p>' + s.join(" ") + "</p></details></div>");
@@ -151,14 +154,14 @@
       if (x) {
         var hu = x[1] == null ? 0 : (x[1] / max) * (H - pad * 2), ht = (x[0] / max) * (H - pad * 2);
         if (x[1] != null) bars += '<rect x="' + (x0 + bw * 0.12).toFixed(1) + '" y="' + (H - pad - hu).toFixed(1) + '" width="' + (bw * 0.36).toFixed(1) + '" height="' + hu.toFixed(1) + '" class="wxs-cu"><title>' + M3[i] + " usual " + inch(x[1]) + " in</title></rect>";
-        bars += '<rect x="' + (x0 + bw * 0.5).toFixed(1) + '" y="' + (H - pad - ht).toFixed(1) + '" width="' + (bw * 0.36).toFixed(1) + '" height="' + ht.toFixed(1) + '" class="wxs-cy"><title>' + M3[i] + " " + inch(x[0]) + " in" + (x[2] < x[3] ? ", " + (x[3] - x[2]) + " days not reported" : "") + "</title></rect>";
+        bars += '<rect x="' + (x0 + bw * 0.5).toFixed(1) + '" y="' + (H - pad - ht).toFixed(1) + '" width="' + (bw * 0.36).toFixed(1) + '" height="' + ht.toFixed(1) + '" class="wxs-cy"><title>' + M3[i] + " " + inch(x[0]) + " in" + (x[2] < x[3] ? ", " + (x[3] - x[2]) + (x[3] - x[2] === 1 ? " day" : " days") + " not reported" : "") + "</title></rect>";
       }
       bars += '<text x="' + (x0 + bw / 2).toFixed(1) + '" y="' + (H - 2) + '" text-anchor="middle" class="wxs-cl">' + M3[i].charAt(0) + "</text>";
     }
-    var last = mo.length - 1;
     return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Rain by month, ' + m.year + ', against the usual for the same days">' + bars +
       '<text x="4" y="10" class="wxs-cl">' + inch(max) + " in</text></svg>" +
-      '<p class="wxs-cleg"><span class="wxs-sw wxs-cu"></span>Usual <span class="wxs-sw wxs-cy"></span>' + m.year + " (" + M3[last] + " to the " + mo[last][3] + (mo[last][3] === 1 ? "st" : "") + ")</p>";
+      '<p class="wxs-cleg"><span class="wxs-sw wxs-cu"></span>Usual <span class="wxs-sw wxs-cy"></span>' + m.year +
+      (m.rain && m.rain.to ? ", Jan 1 to " + mdIso(m.rain.to) : "") + "</p>";
   }
 
   var api = { fipsFor: fipsFor, model: model, html: html, chart: chart, norm: norm };
