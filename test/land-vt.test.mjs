@@ -105,8 +105,11 @@ test("no Vermont buyer or seller name in an indexed page, a list file or the Atl
   let n = 0;
   for (const nm of FILES) {
     const f = json(`${VT}/${nm}`), gi = f.cols.indexOf("grantor"), ge = f.cols.indexOf("grantee");
-    assert.ok(gi >= 0 && ge >= 0 && f.names === true, nm + ": names kept in the blocked folder only");
-    for (const r of f.rows) for (const side of [r[gi], r[ge]]) for (const one of String(side || "").split(/;\s*/)) {
+    // names in the county file (before Nov 4, 2026) or in its names file (scripts/land_names.py); both under /data/land/
+    const nd = gi < 0 && f.names_file ? json(f.names_file.replace(/^\//, "")) : null;
+    assert.ok(((gi >= 0 && ge >= 0) || (nd && f.cols.includes("si"))) && f.names === true, nm + ": names kept in the blocked folder only");
+    const sides = nd ? (nd.s || []).concat(nd.b || []).map((x) => [x]) : f.rows.map((r) => [r[gi], r[ge]]);
+    for (const r of sides) for (const side of r) for (const one of String(side || "").split(/;\s*/)) {
       const s = one.trim().toUpperCase();
       // a public body or a short word can match ordinary page text; private names of 8+ characters must not
       if (s.length < 8 || /^(STATE OF VERMONT|TOWN OF |CITY OF |VILLAGE OF |UNITED STATES|USA\b|VERMONT )/.test(s)) continue;

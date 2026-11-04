@@ -9,7 +9,7 @@
  * from the land files is in any of it. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
@@ -192,9 +192,12 @@ test("no person's name from the land files is anywhere in data/ids", () => {
     for (const f of readdirSync(join(ROOT, "data/land", st)).filter((x) => /^\d{5}\.json$/.test(x))) {
       const d = json(`data/land/${st}/${f}`);
       const gi = d.cols.indexOf("grantor"), ge = d.cols.indexOf("grantee");
-      if (gi < 0) continue;
-      for (const r of d.rows) {
-        for (const v of [r[gi], r[ge]]) {
+      // since Nov 4, 2026 the names sit in data/land/<st>/names/<fips>.json (scripts/land_names.py): read them there
+      const nf = `data/land/${st}/names/${f}`, nd = gi < 0 && existsSync(join(ROOT, nf)) ? json(nf) : null;
+      if (gi < 0 && !nd) continue;
+      const pairs = nd ? (nd.s || []).concat(nd.b || []).map((x) => [x]) : d.rows.map((r) => [r[gi], r[ge]]);
+      for (const r of pairs) {
+        for (const v of r) {
           const s = String(v || "").toUpperCase().split(/\s+/).filter(Boolean).join(" ");
           if (s.length < 8) continue;
           n++;
