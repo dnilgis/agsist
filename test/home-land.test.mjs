@@ -4,8 +4,8 @@
  *   - components/home-land.js in node: the reader's state first, else the newest covered sale labeled with its state,
  *     "Not yet in <state>" for an uncovered saved state, withheld on a missing or malformed file, and never a name
  *     even when the file carries one;
- *   - the menu: /land-sales/ in the live menu (desktop panel and phone drawer), the no-script header and the header
- *     baked into the home page;
+ *   - the menu: "Farmland sales" first under Money & Land > Land (lead, Nov 4), in the live menu (desktop panel and
+ *     phone drawer), the no-script header, the menu table and the header baked into the home page;
  *   - site search: the words people type land on /land-sales/;
  *   - in Chromium: at 1280 px the block is on the first screen, in the room under Sell grain and My field; at 390 px
  *     it sits right under My field with no gap, before the futures (the three jobs keep the phone's first screen,
@@ -92,15 +92,17 @@ test("home-land.js: whose sale, what it says, and never a name", () => {
   assert.ok(!/—/.test(read("components/home-land.js")), "no em dash");
 });
 
-test("the menu: Land sales in the live menu (desktop and phone), the no-script header and the home page's baked header", () => {
+test("the menu: Farmland sales first under Money & Land > Land, in the live menu (desktop and phone), the no-script header, the menu table and the home page's baked header", () => {
   const header = read("components/header.html");
   const desk = header.slice(header.indexOf('<div class="nav-menu">'), header.indexOf('<div class="nav-actions">'));
   const drawer = header.slice(header.indexOf('<div class="drawer" id="drawer"'));
-  assert.match(desk, /<a href="\/land-sales\/">[^]*?Land sales<\/a>/);
-  assert.match(drawer, /<a href="\/land-sales\/" class="draw-item">[^]*?Land sales<\/a>/);
-  assert.match(read("components/header-fallback.html"), /<a href="\/land-sales\/">Land sales<\/a>/);
+  assert.match(desk, /<div class="nav-q">Land<\/div>\s*<a href="\/land-sales\/"><svg[^>]*><use href="#i-land-plot"\/><\/svg>Farmland sales<\/a>/);
+  assert.match(drawer, /<h3 class="draw-sub">Land<\/h3>\s*<div class="draw-links">\s*<a href="\/land-sales\/" class="draw-item"><svg[^>]*><use href="#i-land-plot"\/><\/svg>Farmland sales<\/a>/);
+  assert.doesNotMatch(header, />Land sales<\/a>/, "the old label is gone");
+  assert.match(read("components/header-fallback.html"), /Land: <a href="\/land-sales\/">Farmland sales<\/a> · <a href="\/rent\/">Cash rent<\/a>/);
+  assert.match(read("scripts/dev/nav/gen_nav.py"), /\("Land", \[\("\/land-sales\/", "Farmland sales", "i-land-plot"\)/);
   const home = read("index.html");
-  assert.match(home.slice(home.indexOf("<!-- static-nav:header -->"), home.indexOf("<!-- /static-nav:header -->")), /<a href="\/land-sales\/">Land sales<\/a>/);
+  assert.match(home.slice(home.indexOf("<!-- static-nav:header -->"), home.indexOf("<!-- /static-nav:header -->")), /Land: <a href="\/land-sales\/">Farmland sales<\/a>/);
 });
 
 test("the home page: the block, its script and the hub's email anchor", () => {
