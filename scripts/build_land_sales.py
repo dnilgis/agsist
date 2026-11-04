@@ -359,7 +359,9 @@ def month_build(d, year, m0):
 #   and the date only. Fewer than LEAD_MIN_SALES such sales in the window: the state has no lead (withheld).
 #   Farm counties only (lead's call, Nov 4, after the first samples were edge-of-town ground: Marion IN $48,285,
 #   Will IL $24,125): a county whose 24-month middle is more than LEAD_FARM_X times the state's middle by the same
-#   rule (every comparable sale in the state over the same 24 months) is skipped; lead.json counts what it drops.
+#   rule (every comparable sale in the state over the same 24 months) is skipped, and so is a sale itself priced
+#   over LEAD_FARM_X times the state's middle (lead's call, Nov 4: Will IL passed the county test at 1.4x but the
+#   sale was 2.3x); lead.json counts what each drops.
 LEAD_DAYS = 30
 LEAD_MIN_SALES = 3
 LEAD_MIN_ACRES = BEST_MIN_ACRES          # 40: a field, not a building lot at the edge of town
@@ -367,8 +369,8 @@ LEAD_FARM_X = 2                          # a county middle over twice the state'
 LEAD_RULE = ("The highest price per acre among bare farmland sales (%d acres or more, no buildings, not forest) recorded in "
              "%%s in the %d days to %%s, the newest on file. Only farm counties count: a county needs at least %d such sales "
              "over 24 months to compare with, and a county whose middle price is more than twice the state's (%%s an acre) "
-             "is left out as town or development ground. Sales far outside their county's usual range are left out too; "
-             "they are on the monthly page." % (LEAD_MIN_ACRES, LEAD_DAYS, MIN_COMPS))
+             "is left out as town or development ground, and so is any sale priced at more than twice the state's middle. "
+             "Sales far outside their county's usual range are left out too; they are on the monthly page." % (LEAD_MIN_ACRES, LEAD_DAYS, MIN_COMPS))
 
 
 def lead_pick(st, cands, state_med=None):
@@ -389,6 +391,10 @@ def lead_pick(st, cands, state_med=None):
         far = [x for x in ok if x[1]["med"] > LEAD_FARM_X * state_med]
         drop = {"counties": len({x[2] for x in far}), "sales": len(far)}
         ok = [x for x in ok if x[1]["med"] <= LEAD_FARM_X * state_med]
+        # and the sale itself: over LEAD_FARM_X times the state's middle is town or development ground too
+        hot = [x for x in ok if x[0]["ppa"] > LEAD_FARM_X * state_med]
+        drop["over_cap"] = len(hot)
+        ok = [x for x in ok if x[0]["ppa"] <= LEAD_FARM_X * state_med]
     if len(ok) < LEAD_MIN_SALES:
         return None, drop
     p, u, cs = sorted(ok, key=lambda x: (-x[0]["ppa"], x[0]["when"], x[0]["id"]))[0]
@@ -1174,11 +1180,16 @@ def selftest():
         town = [mk("Town", 40000, 30000, i) for i in range(3)] + [mk("Farm", 9000 + i, 8000, i) for i in range(3)]
         fl, fd = lead_pick("WI", town, 10000)
         ck("lead: a county whose middle is over twice the state's is skipped and counted",
-           fl is not None and fl["county"] == "Farm" and fl["ppa"] == 9002 and fd == {"counties": 1, "sales": 3} and "$10,000 an acre" in fl["rule"])
+           fl is not None and fl["county"] == "Farm" and fl["ppa"] == 9002 and fd == {"counties": 1, "sales": 3, "over_cap": 0} and "$10,000 an acre" in fl["rule"]
+           and "more than twice the state's middle" in fl["rule"])
+        hot = [mk("Farm", 25000, 9000, 7)] + [mk("Farm", 9000 + i, 9000, i) for i in range(3)]
+        hl, hd = lead_pick("WI", hot, 10000)
+        ck("lead: a sale over twice the state's middle is left out, in a farm county too, and counted",
+           hl is not None and hl["ppa"] == 9002 and hd["over_cap"] == 1 and hd["counties"] == 0)
         nf, nd = lead_pick("WI", town[:3] + town[3:4], 10000)
         ck("lead: withheld when the filter leaves under %d sales" % LEAD_MIN_SALES, nf is None and nd["sales"] == 3)
         ck("lead: withheld with no state middle to test the county against", lead_pick("WI", town, None)[0] is None)
-        ck("lead.json: the farm filter's counts and the state middle are written", set(ld["farm_filter"]["WI"]) == {"counties", "sales", "state_med"})
+        ck("lead.json: the farm filter's counts and the state middle are written", set(ld["farm_filter"]["WI"]) == {"counties", "sales", "over_cap", "state_med"})
         sf = json.loads(texts["data/land-sales/wi.json"])
         ck("featured rows carry the township point", sf["counties"]["55999"]["s"][0][7] == 45.0)
         # removal: the high sale's names go
