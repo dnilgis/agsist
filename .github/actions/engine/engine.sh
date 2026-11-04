@@ -80,8 +80,10 @@ GUARD_MARK="agsist commit guard (engine.sh hook)"
 # commit-guard row reads the messages of the last 24 h of commits on main (a few API calls) and goes
 # red on any. A commit left with nothing in it is still refused: that job's commit step fails, a red
 # run of its own, and the line is in its log.
-# Speed: only new (A) or renamed (R) paths under data/ that carry a date at all are looked at, and the
-# date is read with bash's own regex, so a first add of thousands of files takes no subprocess each.
+# Speed: only new (A) or renamed (R) paths under data/ are looked at, and the date is read with bash's own
+# regex, so a first add of thousands of files takes no subprocess each. A rename onto a made-up day puts the
+# old path back, so the commit carries neither half of the move. The note the commit-msg hook reads holds
+# the tree being committed; a note from a commit that stopped after the hook is never used by a later one.
 install_hook() {
   local hooks hook
   hooks="$(git -C "$ROOT" rev-parse --git-path hooks)"
@@ -103,7 +105,10 @@ lim="$(date -u -d '+2 days' +%F)" || exit 0
 allow="$root/.github/future-dated-data.txt"
 re='(19|20)[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])'
 dropped=0 first=""
-while IFS= read -r -d '' f; do
+while IFS= read -r -d '' st; do
+  old=""
+  case "$st" in R*) IFS= read -r -d '' old ;; esac
+  IFS= read -r -d '' f || break
   case "$f" in data/*) ;; *) continue ;; esac
   d="" s="$f"
   while [[ "$s" =~ $re ]]; do
@@ -119,9 +124,12 @@ while IFS= read -r -d '' f; do
     done < "$allow"
   fi
   [ "$ok" = 1 ] && continue
-  git rm --cached -q -- "$f" && dropped=$((dropped + 1)) && [ -z "$first" ] && first="$f"
+  git rm --cached -q -- "$f" || continue
+  # a rename onto a made-up day: the old path goes back as it was, so the commit carries no half of the move
+  [ -n "$old" ] && git reset -q HEAD -- "$old" 2>/dev/null
+  dropped=$((dropped + 1)); [ -z "$first" ] && first="$f"
   echo "::warning title=test-shaped file left out of the commit::$f is dated $d, more than 2 days ahead; a test or a self-test wrote it into the checkout. Real future files go in .github/future-dated-data.txt with a reason."
-done < <(git diff --cached --name-only -M --diff-filter=AR -z -- data/ | grep -zE "$re")
+done < <(git diff --cached --name-status -M --diff-filter=AR -z -- data/)
 if [ "$dropped" -gt 0 ]; then
   line="COMMIT-GUARD dropped=$dropped path=$first"
   echo "$line"
@@ -129,7 +137,9 @@ if [ "$dropped" -gt 0 ]; then
     echo "commit guard: nothing left to commit after $dropped test-shaped file(s) were left out"
     exit 1
   fi
-  printf '%s\n' "$line" > "$note"
+  # keyed to the tree being committed: a note left by a commit that stopped after this hook (an empty
+  # message, GIT_EDITOR=false) never reaches a later commit or merge, whose tree differs
+  printf '%s\t%s\n' "$(git write-tree)" "$line" > "$note"
 fi
 exit 0
 HOOK
@@ -141,8 +151,9 @@ HOOK
 # Carries the pre-commit hook's COMMIT-GUARD line into the message, so cron_health.py can see it on main.
 note="$(git rev-parse --git-path agsist-commit-guard)" || exit 0
 [ -s "$note" ] || exit 0
-printf '\n%s\n' "$(cat "$note")" >> "$1"
+IFS=$'\t' read -r tree line < "$note"
 rm -f "$note"
+[ -n "$line" ] && [ "$tree" = "$(git write-tree)" ] && printf '\n%s\n' "$line" >> "$1"
 exit 0
 HOOK
   chmod +x "$hook"
