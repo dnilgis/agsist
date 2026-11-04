@@ -55,6 +55,9 @@ UTC = timezone.utc
 DELIVERY_EVERY_HOURS = 6      # one pass per saved cron-health file (cron_health.RECOMMIT_HOURS)
 WINDOW_HOURS = 24             # (a) and (b) read the runs of the last 24 hours
 DISPATCH_DAYS = 14            # (c) a worker-started job with no workflow_dispatch run in 14 days
+# The DELIVERY line merged Nov 3 2026 23:40 UTC (#293): a run started before then cannot print it,
+# so it is never judged (a send step with no line, or a send due, before the line existed).
+LINE_SINCE = "2026-11-04T00:00:00Z"
 TICK_GRACE_HOURS = 2          # a gate tick with no run after it for this long: the send it was due never ran
 # What one pass may read, per workflow (Nov 4 2026: the Daily runs about 80 times a day and sends in
 # one; land-alert, price-watch and form-digest about 100; cot-release-watch about 200). The run list
@@ -234,6 +237,7 @@ def plan(entry, runs, now, crons=None, truncated=False):
     -> (order: [run ids], due: dict). Only a run that could have reached a send step is listed;
     the reader stops at JOBS_PER_WF (and, for a "run" sender, once SAMPLE_SENDS sends are found)."""
     due = entry.get("due") or ("run",)
+    runs = [r for r in runs if (r.get("created_at") or "") >= LINE_SINCE]
     done = [r for r in runs if r.get("status") == "completed" and r.get("conclusion") not in NOT_A_RUN]
     floor = entry.get("min_send_s") or 0
     if floor:
@@ -250,6 +254,7 @@ def plan(entry, runs, now, crons=None, truncated=False):
                      key=lambda r: (r.get("created_at") or "", r["id"]))
         info.update(day=day, due_ct=due[1], window_ct="%s to %s" % (due[2], due[3]), past_due=now >= at,
                     window_runs=[r["id"] for r in win],
+                    before_line=w1 < _ts(LINE_SINCE),
                     cut_short=bool(truncated and runs and min(_ts(r.get("created_at")) or now for r in runs) > w0))
         first += win
         today = _ct(now).strftime("%Y-%m-%d")
@@ -264,7 +269,7 @@ def plan(entry, runs, now, crons=None, truncated=False):
         import cron_gate
         manual = entry["workflow"] in cron_gate.MANUAL_DOES_NOT_SERVE
         ts = cron_gate.ticks(crons or [], now - timedelta(hours=WINDOW_HOURS), now + timedelta(minutes=1))
-        ts = [t for t in ts if t <= now]
+        ts = [t for t in ts if t <= now and t >= _ts(LINE_SINCE)]
         if truncated and runs:
             oldest = min(_ts(r.get("created_at")) or now for r in runs)
             ts = [t for t in ts if t >= oldest]
@@ -391,7 +396,9 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
         live = {r["id"] for r, l in lines if l["dry"] == 0 and (l["sent_readers"] > 0 or l["waiting"] == 0)}
         win = due.get("window_runs") or []
         hit = [i for i in win if i in live]
-        if due.get("cut_short"):
+        if due.get("before_line"):
+            notes.append("%s: before the DELIVERY line existed, not judged" % due.get("day"))
+        elif due.get("cut_short"):
             unknown.append("%s: the run list stopped before its %s Central window" % (due.get("day"), due.get("window_ct")))
         elif not due.get("past_due"):
             notes.append("%s: not due until %s Central" % (due.get("day"), due.get("due_ct")))
@@ -851,20 +858,20 @@ def selftest():
 
     # ── a gated sender: the run that served the tick must reach the send step ──
     la = E["land-alert.yml"]
-    LAN = datetime(2026, 11, 3, 20, 0, tzinfo=UTC)
+    LAN = datetime(2026, 12, 3, 20, 0, tzinfo=UTC)
     lr = []
     for i in range(16):                                      # chained runs every 15 minutes from 16:00
-        c = datetime(2026, 11, 3, 16, 0, tzinfo=UTC) + timedelta(minutes=15 * i)
+        c = datetime(2026, 12, 3, 16, 0, tzinfo=UTC) + timedelta(minutes=15 * i)
         lr.append({"id": 2000 + i, "event": "workflow_run", "status": "completed", "conclusion": "success",
                    "created_at": c.strftime("%Y-%m-%dT%H:%M:%SZ"), "run_started_at": c.strftime("%Y-%m-%dT%H:%M:%SZ"),
                    "updated_at": (c + timedelta(seconds=60)).strftime("%Y-%m-%dT%H:%M:%SZ")})
     lr.append({"id": 1999, "event": "workflow_dispatch", "status": "completed", "conclusion": "success",
-               "created_at": "2026-11-03T15:50:00Z", "run_started_at": "2026-11-03T15:50:00Z", "updated_at": "2026-11-03T15:59:00Z"})
+               "created_at": "2026-12-03T15:50:00Z", "run_started_at": "2026-12-03T15:50:00Z", "updated_at": "2026-12-03T15:59:00Z"})
     lr.append({"id": 1998, "event": "workflow_run", "status": "completed", "conclusion": "success",
-               "created_at": "2026-11-03T15:30:00Z", "run_started_at": "2026-11-03T15:30:00Z", "updated_at": "2026-11-03T15:31:00Z"})
+               "created_at": "2026-12-03T15:30:00Z", "run_started_at": "2026-12-03T15:30:00Z", "updated_at": "2026-12-03T15:31:00Z"})
     order, due = plan(la, lr, LAN, ["47 15 3 * *"])
     ck("tick: the first chained run after 15:47 served it (a run by hand does not)", due["ticks"] == [
-        {"tick": "2026-11-03T15:47:00Z", "run": 2000, "pending": False}] and order[0] == 2000, (due, order[:3]))
+        {"tick": "2026-12-03T15:47:00Z", "run": 2000, "pending": False}] and order[0] == 2000, (due, order[:3]))
     J = lambda st: [{"name": "email", "conclusion": "success", "steps": [{"name": "Monthly land sale email (scheduled)", "conclusion": st}]}]
     LON = {"land-alert": ("on", "LANDSALES_MONTHLY_LIVE is '1'")}
     lines_ok = [L("land-alert", 4, 4, 0)]
@@ -872,7 +879,7 @@ def selftest():
     ck("tick: the served run reached the step and mailed: ok", row["status"] == "ok", row["why"])
     row = classify(la, [dict(R(2000, "workflow_run"), steps=step_states(J("skipped"), la["steps"]))], 18, LON, due=due)
     ck("tick: the served run stopped before the send step is late (e)", row["status"] == "late"
-       and "(e) run 2000 served the 2026-11-03T15:47:00Z tick and did not reach the send step" in row["why"], row["why"])
+       and "(e) run 2000 served the 2026-12-03T15:47:00Z tick and did not reach the send step" in row["why"], row["why"])
     row = classify(la, [dict(R(2000, "workflow_run"), steps=step_states([{"name": "email", "conclusion": "skipped", "steps": []}], la["steps"]))],
                    18, LON, due=due)
     ck("tick: the served run's send job never ran is late (e)", row["status"] == "late" and "(no_job)" in row["why"], row["why"])
@@ -884,11 +891,11 @@ def selftest():
     _o, due2 = plan(la, [r for r in lr if r["id"] in (1998, 1999)], LAN, ["47 15 3 * *"])
     row = classify(la, [], 2, LON, due=due2)
     ck("tick: no run after the tick for 2 h is late (e)", row["status"] == "late" and "no run started after it" in row["why"], row["why"])
-    _o, due3 = plan(la, lr, datetime(2026, 11, 2, 20, 0, tzinfo=UTC), ["47 15 3 * *"])
+    _o, due3 = plan(la, lr, datetime(2026, 12, 2, 20, 0, tzinfo=UTC), ["47 15 3 * *"])
     row = classify(la, [], 0, LON, due=due3)
     ck("tick: no tick in 24 h is nothing due, ok", row["status"] == "ok" and "nothing due: no tick" in row["why"], row["why"])
 
-    late_runs = [r for r in lr if r["created_at"] >= "2026-11-03T17:00:00Z"]
+    late_runs = [r for r in lr if r["created_at"] >= "2026-12-03T17:00:00Z"]
     _o, d4 = plan(la, late_runs, LAN, ["47 15 3 * *"], truncated=True)
     ck("tick: a run list cut short judges no tick older than its oldest run", d4["ticks"] == [], d4)
     _o, d5 = plan(la, late_runs, LAN, ["47 15 3 * *"])
@@ -899,6 +906,13 @@ def selftest():
     row = classify(la, [dict(R(2000, "workflow_run", *lines_ok), steps=ran, log="read"),
                         dict(R(2001, "workflow_run"), lines=None, log="not read", steps=ran)], 18, LON, due=due)
     ck("a send run past the log cap is a note", row["status"] == "ok" and "1 more run(s) reached a send step" in row["why"], row["why"])
+
+    _o, d6 = plan(la, [dict(r, created_at=r["created_at"].replace("2026-12-03", "2026-11-03")) for r in lr], datetime(2026, 11, 3, 20, 0, tzinfo=UTC),
+                  ["47 15 3 * *"])
+    ck("a run or a tick from before the DELIVERY line existed (Nov 3) is never judged", d6["ticks"] == [] and _o == [], d6)
+    _o, d7 = plan(dl, DR, datetime(2026, 11, 3, 23, 0, tzinfo=UTC))
+    row = classify(dl, [], 0, on, due=d7)
+    ck("the Daily's Nov 3 send, before the line existed, is not judged", row["status"] == "ok" and "not judged" in row["why"], row["why"])
 
     # ── a sender that may send on any run: a sample, newest-longest first ──
     ew = E["elevator-watch.yml"]
@@ -941,7 +955,7 @@ def selftest():
     ck("archive: one line, not two", len(got) == 1 and got[0]["asks"] == 2, got)
 
     # delivery_rows: a fake API, end to end, and the reuse of a recent pass
-    T = lambda h, m: "2026-10-20T%02d:%02d:00Z" % (h, m)
+    T = lambda h, m: "2026-11-20T%02d:%02d:00Z" % (h, m)
     class FakeApi:
         def __init__(self):
             self.calls = []
@@ -961,13 +975,13 @@ def selftest():
             self.calls.append(path)
             b = io.BytesIO()
             with zipfile.ZipFile(b, "w") as z:
-                z.writestr("0_send.txt", "2026-10-20T09:01:00.1Z DELIVERY sender=rp-design sent_readers=0 waiting=1 dry=1 asks=1 orders=2\n")
+                z.writestr("0_send.txt", "2026-11-20T09:01:00.1Z DELIVERY sender=rp-design sent_readers=0 waiting=1 dry=1 asks=1 orders=2\n")
             return b.getvalue()
-    now = datetime(2026, 10, 20, 12, 0, tzinfo=UTC)
+    now = datetime(2026, 11, 20, 12, 0, tzinfo=UTC)
     fa = FakeApi()
     rows, at = delivery_rows(now, "o/r", "t", "https://api", {"RP_DESIGN_EMAIL_LIVE": "1"}, api=fa)
     by = {r["workflow"]: r for r in rows}
-    ck("delivery_rows: one row per sender workflow", len(rows) == len(SENDERS) and at == "2026-10-20T12:00:00Z", len(rows))
+    ck("delivery_rows: one row per sender workflow", len(rows) == len(SENDERS) and at == "2026-11-20T12:00:00Z", len(rows))
     ck("delivery_rows: rp-design late", by["delivery:rp-design-email.yml"]["status"] == "late", by["delivery:rp-design-email.yml"])
     ck("delivery_rows: rp-buyer (c) from rp-design's orders", "(c)" in by["delivery:rp-buyer-email.yml"]["why"]
        and "orders=2" in by["delivery:rp-buyer-email.yml"]["why"], by["delivery:rp-buyer-email.yml"])

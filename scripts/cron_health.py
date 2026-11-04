@@ -862,26 +862,28 @@ def selftest():
         def json(self, path):
             if "event=workflow_dispatch" in path:
                 return {"total_count": 0}
+            if path.startswith("/actions/runs/"):          # the run's jobs: its send step ran
+                return {"jobs": [{"name": "run", "conclusion": "success", "steps": [{"name": "Run", "conclusion": "success"}]}]}
             return {"workflow_runs": [{"id": 1, "event": "schedule", "status": "completed", "conclusion": "success",
-                                       "created_at": "2026-10-20T09:00:00Z", "run_started_at": "2026-10-20T09:00:00Z",
-                                       "updated_at": "2026-10-20T09:01:00Z"}]} if "rp-design-email.yml" in path else {"workflow_runs": []}
+                                       "created_at": "2026-11-20T09:00:00Z", "run_started_at": "2026-11-20T09:00:00Z",
+                                       "updated_at": "2026-11-20T09:01:00Z"}]} if "rp-design-email.yml" in path else {"workflow_runs": []}
 
         def blob(self, path):
             import io
             import zipfile
             b = io.BytesIO()
             with zipfile.ZipFile(b, "w") as z:
-                z.writestr("0_send.txt", "2026-10-20T09:00:30.1Z DELIVERY sender=rp-design sent_readers=0 waiting=2 dry=1 asks=2\n")
+                z.writestr("0_send.txt", "2026-11-20T09:00:30.1Z DELIVERY sender=rp-design sent_readers=0 waiting=2 dry=1 asks=2\n")
             return b.getvalue()
-    rows, late, at = add_delivery_rows(T("2026-10-20 12:00"), [{"workflow": "x.yml", "status": "ok"}], [], "o/r", "t",
+    rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [{"workflow": "x.yml", "status": "ok"}], [], "o/r", "t",
                                        "https://api", None, environ={"RP_DESIGN_EMAIL_LIVE": "1"}, fake_api=_Api())
-    d = build(T("2026-10-20 12:00"), rows, late)
+    d = build(T("2026-11-20 12:00"), rows, late)
     check("delivery:rp-design-email.yml" in d["late_critical"],
           "Nov 3: rp-design dry with its variable at 1 is a late critical row (%s)" % d["late_critical"])
     check(len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(DC.SENDERS) and at,
           "one delivery row per sender workflow, and the pass time kept")
     check("delivery:price-watch.yml" not in late, "a sender with nothing read is not late")
-    rows, late, at = add_delivery_rows(T("2026-10-20 12:00"), [], [], "o/r", "", "https://api", None, environ={})
+    rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "", "https://api", None, environ={})
     check(rows[0]["status"] == "unknown" and not late and at is None, "no token: one unknown row, nothing late")
 
     # every gated workflow in CHECKS has a gate step this can read
