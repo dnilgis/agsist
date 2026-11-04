@@ -10,6 +10,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -30,8 +31,9 @@ test("the live header and its fallback list Farmland sales first under Land", ()
   assert.doesNotMatch(rd("components/header.html"), /href="\/farmland-index"/);
 });
 
-test("every page with a baked static header carries the land sales link: Farmland sales on root pages, either name on a generated set's page until main rebuilds it", () => {
+test("every page with a baked static header carries the land sales link: Farmland sales, the old name only on a generated set's page until main rebuilds it", () => {
   let n = 0;
+  const old = [];
   const walk = (d) => {
     for (const f of readdirSync(join(ROOT, d))) {
       if (f.startsWith(".") || f === "node_modules") continue;
@@ -41,12 +43,19 @@ test("every page with a baked static header carries the land sales link: Farmlan
         const t = rd(p), i = t.indexOf("<!-- static-nav:header");
         if (i < 0) continue;
         const blk = t.slice(i, t.indexOf("<!-- /static-nav:header -->", i));
-        if (!p.includes("/")) assert.ok(blk.includes('<a href="/land-sales/">Farmland sales</a>'), p);
-        else assert.ok(blk.includes('<a href="/land-sales/">Farmland sales</a>') || blk.includes('<a href="/land-sales/">Land sales</a>'), p);
+        if (blk.includes('<a href="/land-sales/">Farmland sales</a>')) { n++; continue; }
+        assert.ok(blk.includes('<a href="/land-sales/">Land sales</a>'), p);
+        old.push(p);
         n++;
       }
     }
   };
   walk("");
   assert.ok(n > 4800, "baked headers: " + n);
+  // the old name is allowed only on a generated set's own pages (scripts/generated_sets.py SETS outputs), which main
+  // rebuilds; any other page (a root page, lrp/record.html from bake_lrp.mjs) must carry the new one now
+  const owned = JSON.parse(execFileSync("python3", ["-c",
+    "import json,sys; sys.path.insert(0,'scripts'); import generated_sets as G; print(json.dumps([p for p in json.load(sys.stdin) if not G.owner(p)]))"],
+    { cwd: ROOT, encoding: "utf8", input: JSON.stringify(old), maxBuffer: 1 << 26 }));
+  assert.deepEqual(owned, [], "pages outside the generated sets still say Land sales");
 });
