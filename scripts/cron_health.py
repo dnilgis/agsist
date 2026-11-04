@@ -34,8 +34,11 @@ email: rp-design-email and rp-buyer-email ran dry for two weeks with their live 
 One row per workflow that mails readers, "delivery:<workflow>", from scripts/delivery_check.py:
 it reads the DELIVERY line each sender prints (scripts/delivery_line.py) from the run logs, and
 is late when a live switch is on and a scheduled run printed dry=1, when readers waited a day and
-none got mail, or when a job only the subs worker starts was not started in 14 days while its asks
-or paid orders are above 0. The logs are read once per DELIVERY_EVERY_HOURS (the last pass is kept
+none got mail, when a job only the subs worker starts was not started in 14 days while its asks
+or paid orders are above 0, when a send step ran with no line, when a due send (the Daily by 07:15
+Central, a gated sender's tick) did not happen, or when a live run mailed none of its waiting readers.
+It finds the runs that sent from each run's jobs, not from the newest few (Nov 4: the Daily sends in
+one run of about 81 a day). The logs are read once per DELIVERY_EVERY_HOURS (the last pass is kept
 in this file as delivery_checked_at), and the switches come from the repository variables
 cron-health.yml passes as env.
 

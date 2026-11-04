@@ -14,7 +14,19 @@ its sender scripts prints one line per run (scripts/delivery_line.py):
 
 scripts/cron_health.py calls delivery_rows() every DELIVERY_EVERY_HOURS. It reads the DELIVERY
 lines from each sender's recent run logs through the Actions API (counts only; a log is never
-printed or saved) and gives each workflow one row, "delivery:<workflow>", that is late when:
+printed or saved) and gives each workflow one row, "delivery:<workflow>".
+
+WHICH RUNS (Nov 4 2026). The first version read the newest 2 and the 3 longest runs. The Daily runs
+about 81 times a day and sends in one (Nov 4: run 41823633959, 11:48 to 11:55 UTC), so the row read
+"no DELIVERY line in the 5 of 81 run(s) read" and said ok: a Daily that mailed nobody would have read
+green. Now each sender names its send steps and when a send is due (SENDERS "steps" and "due"), and
+plan() picks the runs that could have sent: for the Daily, the runs of the day's 04:30 to 14:00
+Central window long enough to have run the generate job; for a gated sender, the run that served each
+tick of its cron_gate.py schedule; for a sender that may mail on any run, a sample. The jobs of those
+runs (one small call each) say whether a send step ran; only the runs that reached a send step have
+their log read. The limits per pass are below (LIST_PAGES, JOBS_PER_WF, LOGS_PER_WF, CALL_BUDGET).
+
+A row is late when:
 
   (a) the live switch is on and a scheduled or chained run printed dry=1 (Nov 3: the
       `X && '' || Y` expression that is always Y);
@@ -22,6 +34,15 @@ printed or saved) and gives each workflow one row, "delivery:<workflow>", that i
       email reached a reader (switch on + readers waiting + 0 sent = alert);
   (c) a job only the worker starts (rp-design-email, rp-buyer-email) has no workflow_dispatch run
       in 14 days while its asks or paid orders are above 0 in rp-design-email's logs.
+  (d) a send step ran and its log has no DELIVERY line for that step's sender (the check cannot
+      see what it did, so it does not call it fine);
+  (e) a send that was due did not happen: the Daily had no live line from a run of its morning by
+      07:15 Central; the run that served a gated sender's tick did not reach its send step (unless
+      the step has its own condition, may_skip); a tick had no run after it for TICK_GRACE_HOURS;
+      a run that started a sender's job stopped before the send step;
+  (f) one live run (dry=0) had readers waiting and mailed none of them.
+"Nothing due" reads ok only when nothing was due: no tick in the window, or no run reached a send
+step that need not run. A due run whose jobs or log could not be read makes the row unknown.
 
 The live switches are repository variables, read from the env cron-health.yml passes
 (`vars.*`, readable with the Actions token). A switch that lives only in the subs worker
