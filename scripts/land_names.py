@@ -24,6 +24,7 @@ checks) put them back in memory with attach() / load(); no page reads a county f
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
 import glob
+import hashlib
 import json
 import os
 import re
@@ -34,6 +35,55 @@ LAND = os.path.join(ROOT, "data", "land")
 NAME_COLS = ("grantor", "grantee")
 ID_COLS = ("si", "bi")
 NAME_MARK = "[NAME]"     # where a legal named the sale's own seller or buyer (components/land-sales.js shows a tap hint)
+# A legal description that holds any rare word of its own row's seller or buyer (a name written another way, "JOHN A
+# SMITH" for "SMITH, JOHN") leaves the county file whole (checker on PR 324, Nov 4, 2026): the county file keeps
+# LEGAL_MARK + a hash of the legal's first 40 letters (so the one rule still groups and dedupes deeds of one parcel the
+# same way) + any part-interest words the rule reads, and the names file keeps the legal under "lg", shown on the tap.
+LEGAL_MARK = "[LEGAL WITH A NAME "
+NAME_STOP = set("""LLC INC LTD LLP CORP CORPORATION COMPANY TRUST TRUSTS TRUSTEE TRUSTEES REVOCABLE IRREVOCABLE LIVING FAMILY
+FARM FARMS LAND LANDS ESTATE ESTATES PROPERTY PROPERTIES HOLDINGS INVESTMENTS INVESTMENT ENTERPRISES PARTNERSHIP PARTNERS
+LIMITED AGRICULTURAL AGRICULTURE DATED JOINT TENANTS TENANT HUSBAND WIFE BANK NATIONAL ASSOCIATION COUNTY STATE CITY
+VILLAGE TOWN TOWNSHIP SECTION NORTH SOUTH EAST WEST QUARTER HALF THE AND UNDER AGREEMENT DECLARATION SURVIVORSHIP
+DECEASED HEIRS SUCCESSOR SUCCESSORS CHURCH SCHOOL DISTRICT CREDIT UNION SERVICES GROUP ACRES ACRE""".split())
+
+
+def tokens(s):
+    return set(w for w in re.findall(r"[A-Z]+", up(s)) if len(w) >= 4)
+
+
+def rare_words(legals):
+    """{word: in how many of the county's legals}: a word in at most 1 percent of them (3 at least) counts as rare."""
+    df = {}
+    for t in legals:
+        for w in tokens(t):
+            df[w] = df.get(w, 0) + 1
+    cap = max(3, len(legals) // 100)
+    return {w for w, n in df.items() if n <= cap}
+
+
+def names_in_legal(legal, pair, rare):
+    """True when the legal holds a rare word (4 letters or more, not an entity or survey word) of the row's own seller or
+    buyer. Never prints or returns the word."""
+    lt = tokens(legal)
+    for v in pair:
+        for w in tokens(v):
+            if w not in NAME_STOP and w in rare and w in lt:
+                return True
+    return False
+
+
+def legal_mark(legal):
+    """What a county file keeps for a legal that left it: the mark, a short hash of its first 40 letters, and any part
+    interest words the market rule reads (build_land_summary.PARTIAL)."""
+    import build_land_summary as B
+    u = up(legal)
+    h = hashlib.sha1(u[:40].encode("utf-8")).hexdigest()[:10]
+    m = B.PARTIAL_RE.search(u)
+    return LEGAL_MARK + h + "]" + (" " + m.group(0) if m else "")
+
+
+def is_marked(legal):
+    return str(legal or "").startswith(LEGAL_MARK)
 
 
 def up(v):
@@ -75,8 +125,9 @@ def split(doc):
     keep = [i for i, c in enumerate(cols) if c not in NAME_COLS and c not in ID_COLS]
     li = cols.index("legal") if "legal" in cols else None
     ids, firsts = [{}, {}], [[], []]
-    rows = []
-    for r in doc.get("rows") or []:
+    rows, lg = [], {}
+    rare = rare_words([r[li] for r in doc.get("rows") or [] if li is not None and r[li]]) if li is not None else set()
+    for ri, r in enumerate(doc.get("rows") or []):
         pair = [r[i] if i is not None and i < len(r) else None for i in ix]
         nums = []
         for side in (0, 1):
@@ -87,7 +138,11 @@ def split(doc):
             nums.append(ids[side][k] if k else None)
         row = [r[i] for i in keep]
         if li is not None and r[li]:
-            row[keep.index(li)] = blank_names(r[li], pair)
+            if names_in_legal(r[li], pair, rare):
+                lg[str(ri)] = r[li]                          # shown only on the tap, from the names file
+                row[keep.index(li)] = legal_mark(r[li])
+            else:
+                row[keep.index(li)] = blank_names(r[li], pair)
         rows.append(row + nums)
     out = dict(doc)
     out["cols"] = [cols[i] for i in keep] + list(ID_COLS)
@@ -95,7 +150,7 @@ def split(doc):
     out["names"] = bool(firsts[0] or firsts[1])
     out["names_file"] = rel_path(doc.get("state"), doc.get("fips"))
     names = {"state": doc.get("state"), "fips": doc.get("fips"), "fetched_utc": doc.get("fetched_utc"), "n": len(rows),
-             "s": firsts[0], "b": firsts[1]}
+             "s": firsts[0], "b": firsts[1], "lg": lg}
     return out, names
 
 
@@ -111,9 +166,11 @@ def attach(doc, names):
         return doc
     i_s, i_b, S, B = cols.index("si"), cols.index("bi"), names.get("s") or [], names.get("b") or []
     pick = lambda L, i: L[i] if isinstance(i, int) and 0 <= i < len(L) else None
+    lg = names.get("lg") or {}
     out = dict(doc)
-    out["cols"] = list(cols) + list(NAME_COLS)
-    out["rows"] = [list(r) + [pick(S, r[i_s]), pick(B, r[i_b])] for r in doc["rows"]]
+    # legal_named: the whole legal of a row whose legal left the county file (memory only; the rule keeps reading "legal")
+    out["cols"] = list(cols) + list(NAME_COLS) + ["legal_named"]
+    out["rows"] = [list(r) + [pick(S, r[i_s]), pick(B, r[i_b]), lg.get(str(i))] for i, r in enumerate(doc["rows"])]
     return out
 
 
@@ -174,7 +231,10 @@ def selftest():
     out, names = split(doc)
     ck("a county file keeps no name column", not has_names(out) and out["cols"][-2:] == ["si", "bi"])
     ck("no name anywhere in the county file, the legal included", not re.search(r"(?i)seller|buyer", json.dumps(out)))
-    ck("a legal that names its own seller keeps a mark", out["rows"][0][3] == "PT NW EXC TO [NAME] AND WIFE")
+    ck("a legal that names its own seller leaves the county file for the names file", is_marked(out["rows"][0][3])
+       and names["lg"] == {"0": "PT NW EXC TO seller  one AND WIFE"})
+    ck("blank_names: the exact name, any case or spacing, becomes the mark", blank_names("PT NW EXC TO seller  one AND WIFE", ["Seller One", None])
+       == "PT NW EXC TO [NAME] AND WIFE")
     ck("si and bi: the same seller written two ways is one id; no one is null",
        [r[-2:] for r in out["rows"]] == [[0, 0], [0, None], [None, 1]])
     ck("the names file holds each seller and buyer once, as first written, stamped", names["s"] == ["Seller One"] and names["b"] == ["BUYER A", "Buyer B"]
@@ -185,6 +245,22 @@ def selftest():
     ck("a names file from another read is not attached", not has_names(attach(out, dict(names, fetched_utc="2026-10-01"))))
     ck("a names file with another row count is not attached", not has_names(attach(out, dict(names, n=2))))
     ck("split of a split file changes nothing", split(out)[0] is out and split(out)[1] is None)
+    # a legal that names its own buyer in another word order ("SMITH, JOHN" written "JOHN Q SMITH"): out of the county file
+    rows = [["%d" % i, "2026-01-%02d" % (i + 1), 100, "NW SEC %d T1N R1E" % i, "SELLER %d" % i, "BUYER %d" % i, None] for i in range(20)]
+    rows.append(["21", "2026-02-01", 500, "UNDIVIDED ONE-HALF INTEREST, PT SW EXC TRACT DEEDED TO JOHN Q ZYZZYVA", "Old Owner Estate", "ZYZZYVA, JOHN", None])
+    rows.append(["22", "2026-02-02", 500, "THE SMITH ADDITION LOT 4", "SMITH FARMS LLC", "NEW BUYER CO", None])
+    d2 = dict(doc, rows=rows)
+    o2, n2 = split(d2)
+    leg = [r[3] for r in o2["rows"]]
+    ck("a legal naming the buyer in another word order leaves the county file", "ZYZZYVA" not in json.dumps(o2) and is_marked(leg[20])
+       and n2["lg"].get("20") == rows[20][3])
+    ck("the county file keeps the part-interest words the rule reads, and a hash for grouping", leg[20].endswith("] UNDIVIDED")
+       and leg[20] == legal_mark(rows[20][3]))
+    ck("a word that names many of the county's legals is not rare; the legal stays (an LLC word never counts)",
+       not names_in_legal("NW SEC 3 T1N R1E", ["SELLER 3", None], rare_words([r[3] for r in rows])) and not is_marked(leg[0]))
+    b2 = attach(o2, n2)
+    ck("attach brings the whole legal back in memory only beside the rule's legal", dict(zip(b2["cols"], b2["rows"][20]))["legal_named"] == rows[20][3]
+       and dict(zip(b2["cols"], b2["rows"][20]))["legal"] == leg[20])
     ck("the input doc is not changed", doc["cols"][4] == "grantor" and len(doc["rows"][0]) == 7 and "seller" in doc["rows"][0][3])
     print("land_names selftest: %s" % ("ok" if not bad else "%d failure(s)" % bad))
     return 1 if bad else 0
