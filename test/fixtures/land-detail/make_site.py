@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 import build_land_sales as BS  # noqa: E402
+import land_names  # noqa: E402
 
 BASE = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "str", "exempt"]
 COLS = {
@@ -65,9 +66,13 @@ def main(out):
             c = COLS[st]
             if "grantor" in c:
                 names += [r[c.index("grantor")], r[c.index("grantee")]]
-        (d / (fips + ".json")).write_text(json.dumps({"state": st, "county": county, "fips": fips, "source": BS.SOURCES[st],
-            "fetched_utc": "2026-10-18T00:00:00Z", "names": "grantor" in COLS[st], "cols": COLS[st], "rows": rows, "acres_rule": 2,
-            "munis": {"0": [muni, 45.0, -91.0]}, "coverage": {"from": "2020-01-01", "to": "2026-09-30"}}))
+        doc = {"state": st, "county": county, "fips": fips, "source": BS.SOURCES[st],
+               "fetched_utc": "2026-10-18T00:00:00Z", "names": "grantor" in COLS[st], "cols": COLS[st], "rows": rows, "acres_rule": 2,
+               "munis": {"0": [muni, 45.0, -91.0]}, "coverage": {"from": "2020-01-01", "to": "2026-09-30"}}
+        # as the fetcher writes them since Nov 4, 2026: the county file names no one, the names have their own file
+        doc, ndoc = land_names.split(doc)
+        land_names.write(str(t / "data" / "land"), st, doc, ndoc)
+        (d / (fips + ".json")).write_text(json.dumps(doc))
         (d / "index.json").write_text(json.dumps({"state": st, "fetched_utc": "2026-10-18T00:00:00Z",
             "counties": [{"fips": fips, "name": county, "lat": 45.0, "lng": -91.0}]}))
     texts = BS.build(t)

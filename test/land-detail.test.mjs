@@ -119,8 +119,11 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
       });
       for (const [st, p] of Object.entries(PAGES)) {
         const pg = await ctx.newPage();
-        const errors = [];
+        const errors = [], reqs = [], county = [];
         pg.on("pageerror", (e) => errors.push(String(e)));
+        // the network log: no file that carries a name may load before the tap (lead, Nov 4, 2026)
+        pg.on("request", (q) => reqs.push(new URL(q.url()).pathname));
+        pg.on("response", async (r) => { const u = new URL(r.url()).pathname; if (/^\/data\/land\/[a-z]{2}\/\d{5}\.json$/.test(u)) county.push(await r.text()); });
         await pg.goto(`${base}/land-sales/${p}`);
         await pg.waitForSelector("#ls-all tbody tr:first-child button.ls-dt");
         // the page's own load (its header and email ask, unchanged here) settles first; from here on nothing may shift
@@ -170,10 +173,14 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
         await pg.waitForTimeout(300);
         assert.equal(await pg.evaluate(() => window.__cls), 0, st + " " + width + ": no layout shift without input once the page settled: " + await pg.evaluate(() => (window.__shifts || []).join(" | ")));
         assert.equal(await pg.evaluate(() => window.__clsSale), 0, st + " " + width + ": the rows, their buttons and the panel never shift, load included: " + await pg.evaluate(() => (window.__shifts || []).join(" | ")));
+        assert.deepEqual(reqs.filter((u) => /\/names\//.test(u)), [], st + ": no names file requested before the tap");
+        assert.equal(county.length, 1, st + ": the panel read its county file once: " + reqs.join(" "));
+        assert.doesNotMatch(county[0], /grantor|grantee|SYNTH/, st + ": the county file it read carries no name and no name column");
         // names: on the tap, from the robots-blocked file, in the panel and on the row
         await pg.click(".ls-dp button.ls-nm");
         await pg.waitForFunction(() => !document.querySelector("#ls-all tbody tr:first-child button.ls-nm") && !document.querySelector(".ls-dp button.ls-nm"));
         if (st !== "NJ") assert.match(await pg.evaluate(() => document.querySelector(".ls-dp").innerText), /Seller: SELLER .*SYNTH/, st + ": names after the tap");
+        assert.ok(reqs.some((u) => /^\/data\/land\/names\/[a-z]{2}\/\d{5}\.json$/.test(u)), st + ": the tap loads the names file");
         // Enter again closes it
         await pg.focus("#ls-all tbody tr:first-child button.ls-dt");
         await pg.keyboard.press("Enter");
