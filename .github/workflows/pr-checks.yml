@@ -97,7 +97,8 @@ jobs:
         run: bash scripts/dev/checks.sh --only=built-guard,built-inputs
       # generated page sets (scripts/generated_sets.py) are built on main, never carried in a pull request
       # (Nov 3, 2026: #280, #282 twice, #296 went stale within hours). The data bot, or the lead's regen-ok
-      # label, may. A run by hand or main-checks.yml's call has no pull request to check.
+      # label, may: the step reads the labels when it runs, so after adding regen-ok re-run this job.
+      # A run by hand or main-checks.yml's call has no pull request to check.
       - name: generated pages are built on main
         if: github.event_name == 'pull_request'
         env:

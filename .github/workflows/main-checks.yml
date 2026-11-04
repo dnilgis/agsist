@@ -182,7 +182,7 @@ jobs:
 
   report:
     name: main is red issue
-    needs: [gate, rebuild, checks]
+    needs: [gate, generated, rebuild, checks]
     if: needs.gate.outputs.go == '1' && (always())
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -201,6 +201,7 @@ jobs:
       - name: open, update or close the issue
         env:
           GH_TOKEN: ${{ github.token }}
+          GENERATED: ${{ needs.generated.result }}
           REBUILD: ${{ needs.rebuild.result }}
           CHECKS: ${{ needs.checks.result }}
           SHA: ${{ needs.rebuild.outputs.sha }}

@@ -57,9 +57,11 @@ def title_for(names):
     return t[:240]
 
 
-def decide(rebuild, checks, open_issue):
-    """-> 'red' (open or update the issue), 'close' (green again), or 'none'"""
-    if rebuild == "failure" or checks == "failure":
+def decide(rebuild, checks, open_issue, generated=""):
+    """-> 'red' (open or update the issue), 'close' (green again), or 'none'. generated: the result of
+    main-checks.yml's generated job (Nov 4, 2026); its failure is red too (a set whose builder changed
+    was not rebuilt on main), and skipped (an older workflow copy, or nothing) does not hold a close."""
+    if rebuild == "failure" or checks == "failure" or generated == "failure":
         return "red"
     if rebuild == "success" and checks == "success":
         return "close" if open_issue else "none"
@@ -137,6 +139,7 @@ def main():
     run_id = os.environ.get("GITHUB_RUN_ID", "")
     run_url = "%s/%s/actions/runs/%s" % (os.environ.get("GITHUB_SERVER_URL", "https://github.com"), repo, run_id)
     rebuild, checks, sha = os.environ.get("REBUILD", ""), os.environ.get("CHECKS", ""), os.environ.get("SHA", "")[:12]
+    generated = os.environ.get("GENERATED", "")
     gh = GH(token, repo)
     issues = []
     for page in range(1, 6):
@@ -145,8 +148,8 @@ def main():
         if len(got) < 100:
             break
     issue = find_issue(issues)
-    what = decide(rebuild, checks, issue)
-    print("rebuild: %s, checks: %s, open issue: %s -> %s" % (rebuild, checks, issue and issue["number"], what))
+    what = decide(rebuild, checks, issue, generated)
+    print("generated: %s, rebuild: %s, checks: %s, open issue: %s -> %s" % (generated, rebuild, checks, issue and issue["number"], what))
     if what == "none":
         return 0
     if what == "close":
@@ -173,6 +176,8 @@ def main():
         failed_tests += [x for x in t if x not in failed_tests]
     if rebuild == "failure":
         failed_checks.insert(0, "rebuild of the built files")
+    if generated == "failure":
+        failed_checks.insert(0, "rebuild of the generated pages whose builder changed")
     names = failed_tests or failed_checks or [j["name"] for j in red_jobs]
     title = title_for(names)
     lines = ["Full suite on main, commit %s: %s" % (sha or "(none)", run_url), ""]
@@ -232,6 +237,9 @@ def selftest():
     assert decide("success", "failure", None) == "red"
     assert decide("failure", "skipped", None) == "red"
     assert decide("success", "success", {"number": 1}) == "close"
+    assert decide("success", "success", {"number": 1}, "failure") == "red", "a failed generated pages rebuild is red"
+    assert decide("success", "success", {"number": 1}, "success") == "close"
+    assert decide("success", "success", None, "skipped") == "none"
     assert decide("success", "success", None) == "none"
     assert decide("success", "cancelled", {"number": 1}) == "none"
     fp = fingerprint(["b", "a", "a"])

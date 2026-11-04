@@ -14,11 +14,13 @@ Red, pending, conflicted or behind: no merge. A red or conflicted head gets one 
 No merge on stale checks (Nov 4, 2026; BUILD-RULES 60: #280 and #282 merged on checks run against an older
 main and main went red). Green checks ran against main as it was when they started (the checked base: main at
 the run's start for a pull_request run, the branch's merge base for a run this script started). When main has
-moved past it in a way that can change the result, the bot updates the branch from main (GitHub's update
-branch), starts pr-checks on the branch by hand (a push by the job token starts no pull_request run) and merges
-only when that fresh run is green. "Can change the result" (stale()): another merge landed on main, a commit on
-main changed a file this pull request also changes, or the compare is too big to read. The data jobs' commits
-to other files (every 15 minutes) do not count, or nothing would ever merge.
+since changed a file that can change the result, the bot updates the branch from main (GitHub's update
+branch), starts pr-checks on the new head by hand (a push by the job token starts no pull_request run) and
+merges only when that fresh run is green. "Can change the result" (stale()): a file the pull request changes,
+or an output or data file of a generated set whose builder the pull request changes (scripts/generated_sets.py
+relevant(): the PR checks rebuild that set from them). Main's changed files come from git (a shallow fetch of the
+base and main, then git diff --name-only), so the bot's 900 to 2,900 file data commits are read whole and,
+touching nothing relevant, hold nothing; another pull request's merge counts only when it overlaps.
 
 A merge by the job token starts no push run on main, so after a merge this starts main-checks.yml
 by hand, and every workflow that would have run on that push (push to main, its paths matching the
@@ -27,6 +29,7 @@ merged files, workflow_dispatch on) the same way.
   python3 scripts/dev/merge_when_green.py              (in merge-when-green.yml)
   python3 scripts/dev/merge_when_green.py --selftest
 """
+import calendar
 import json
 import os
 import re
@@ -95,7 +98,8 @@ def decide(pr, repo, jobs, files=(), stale_reason=None):
 
 
 BOT = "github-actions[bot]"
-COMPARE_FILES_MAX = 300     # the compare API lists at most 300 files
+RECHECK_WAIT_S = 300        # how long to wait for update-branch to move the head before starting the checks
+HEAD_SETTLE_S = 180         # a head this old with no pr-checks run at all gets one started
 
 
 def pick_run(runs, head_ref):
@@ -107,20 +111,16 @@ def pick_run(runs, head_ref):
     return max(ok, key=lambda r: (r.get("created_at") or "", r.get("run_number", 0))) if ok else None
 
 
-def stale(pr_files, compare):
-    """-> why the checks are stale, or None. compare: the compare API answer for <checked base>...main."""
-    if not compare or compare.get("status") in ("identical", "behind"):
-        return None
-    commits = compare.get("commits") or []
-    files = compare.get("files") or []
-    if compare.get("total_commits", len(commits)) > len(commits) or len(files) >= COMPARE_FILES_MAX:
-        return "main moved by more than the compare lists (%s commits)" % compare.get("total_commits")
-    merges = [c for c in commits if len(c.get("parents") or []) > 1]
-    if merges:
-        return "another merge landed on main since (%s)" % merges[-1].get("sha", "")[:12]
-    both = sorted(set(pr_files) & {f.get("filename") for f in files})
+def stale(pr_files, main_files, relevant=None):
+    """-> why the checks are stale, or None. main_files: every file main changed since the checks' base
+    (None: they could not be read); relevant: path -> bool, the files that can change this pull request's
+    checks (default: the files it changes)."""
+    if main_files is None:
+        return "main's changes since the checks' base could not be read"
+    rel = relevant or set(pr_files).__contains__
+    both = sorted(f for f in main_files if rel(f))
     if both:
-        return "main changed %d file(s) this pull request also changes since (%s)" % (len(both), ", ".join(both[:3]))
+        return "main changed %d file(s) this pull request's checks read since (%s)" % (len(both), ", ".join(both[:3]))
     return None
 
 
@@ -280,11 +280,21 @@ def main():
         sha = pr["head"]["sha"]
         runs = gh.call("GET", "/repos/%s/actions/workflows/pr-checks.yml/runs?head_sha=%s&per_page=20" % (repo, sha)) or {}
         run = pick_run(runs.get("workflow_runs", []), pr["head"]["ref"])
+        if not runs.get("workflow_runs") and LABEL in {l["name"] for l in pr.get("labels", [])} and not pr.get("draft") \
+                and ((pr.get("head") or {}).get("repo") or {}).get("full_name") == repo:
+            try:
+                when = ((gh.call("GET", "/repos/%s/commits/%s" % (repo, sha)) or {}).get("commit") or {}).get("committer", {}).get("date")
+                age = time.time() - calendar.timegm(time.strptime(when, "%Y-%m-%dT%H:%M:%SZ")) if when else None
+            except (urllib.error.HTTPError, ValueError):
+                age = None
+            if needs_run([], age) and dispatch_checks(gh, repo, pr["head"]["ref"]):
+                print("#%d %s: no PR checks on this head; started them" % (pr["number"], sha[:12]))
+                continue
         jobs = gh.all("/repos/%s/actions/runs/%d/jobs" % (repo, run["id"])) if run else []
         files = [f["filename"] for f in gh.all("/repos/%s/pulls/%d/files" % (repo, pr["number"]))]
         why_stale = None
         if run and decide(pr, repo, jobs, files)[0] == "merge":
-            why_stale = checks_stale(gh, repo, run, sha, files)
+            why_stale = checks_stale(gh, repo, run, sha, files, root)
         action, why = decide(pr, repo, jobs, files, why_stale)
         print("#%d %s: %s (%s)" % (pr["number"], sha[:12], action, why))
         if action == "wait":
@@ -335,7 +345,30 @@ def main():
     return 0
 
 
-def checks_stale(gh, repo, run, head_sha, files):
+def git_changed(base, root):
+    """files that differ between base and main, by git: a shallow fetch of both commits, then a tree diff
+    (no history needed, no 300-file cap). None when git cannot fetch or diff them."""
+    import subprocess
+    g = lambda *a: subprocess.run(["git", "-C", root] + list(a), capture_output=True, text=True)
+    if g("fetch", "-q", "--no-tags", "--depth=1", "origin", base, "+refs/heads/main:refs/remotes/origin/main").returncode != 0:
+        return None
+    r = g("diff", "--name-only", "--no-renames", base, "refs/remotes/origin/main")
+    return [l for l in r.stdout.splitlines() if l] if r.returncode == 0 else None
+
+
+def relevant_to(files, root):
+    """scripts/generated_sets.py relevant() for these files; only the files themselves without it"""
+    sys.path.insert(0, os.path.join(root, "scripts"))
+    try:
+        import generated_sets
+        return generated_sets.relevant(files, root=root)
+    except ImportError:
+        return set(files).__contains__
+    finally:
+        sys.path.pop(0)
+
+
+def checks_stale(gh, repo, run, head_sha, files, root):
     """stale() of main since the base the run checked: main when a pull_request run started (GitHub
     tests the merge with main as it was), the branch's merge base for a run on the branch itself"""
     try:
@@ -343,36 +376,57 @@ def checks_stale(gh, repo, run, head_sha, files):
             base = (gh.call("GET", "/repos/%s/commits?sha=main&until=%s&per_page=1" % (repo, run["created_at"])) or [{}])[0].get("sha")
         else:
             base = ((gh.call("GET", "/repos/%s/compare/main...%s" % (repo, head_sha)) or {}).get("merge_base_commit") or {}).get("sha")
-        if not base:
-            return "the base the checks ran on cannot be found"
-        return stale(files, gh.call("GET", "/repos/%s/compare/%s...main" % (repo, base)))
     except urllib.error.HTTPError as e:
-        return "main could not be compared with the checks' base (HTTP %d)" % e.code
+        return "the checks' base could not be found (HTTP %d)" % e.code
+    if not base:
+        return "the base the checks ran on cannot be found"
+    return stale(files, git_changed(base, root), relevant_to(files, root))
 
 
 def update_and_recheck(gh, repo, pr, why):
-    """bring main into the branch and start the full PR checks on it; the merge waits for that run"""
+    """bring main into the branch, wait for the new head, and start the full PR checks on it; the merge
+    waits for that run. If the head has not moved in RECHECK_WAIT_S, nothing is started now: the next
+    pass finds the new head without a run and starts one (start_missing_run)."""
     sha = pr["head"]["sha"]
     try:
         gh.call("PUT", "/repos/%s/pulls/%d/update-branch" % (repo, pr["number"]), {"expected_head_sha": sha})
     except urllib.error.HTTPError as e:
-        comment_once(gh, repo, pr, "update-refused", "Not merged (merge-when-green): %s; GitHub refused to update the "
-                     "branch from main (HTTP %d: a conflict, or main changed workflow files). Merge main into the branch "
-                     "and push." % (why, e.code))
+        if e.code == 422:
+            msg = ("%s; GitHub cannot update the branch from main by itself (a conflict, or the head moved). Merge main "
+                   "into the branch and push." % why)
+        else:
+            msg = ("%s; GitHub refused to update the branch (HTTP %d: main changed workflow files, which the job token "
+                   "may not push). Merge main into the branch and push." % (why, e.code))
+        comment_once(gh, repo, pr, "update-refused-%d" % e.code, "Not merged (merge-when-green): " + msg)
         return
-    head = sha
-    for _ in range(10):         # the update lands in a few seconds; the run must start on the new head
-        time.sleep(3)
-        head = (gh.call("GET", "/repos/%s/pulls/%d" % (repo, pr["number"])) or {}).get("head", {}).get("sha", sha)
+    head, end = sha, time.time() + RECHECK_WAIT_S
+    while time.time() < end:
+        time.sleep(10)
+        head = ((gh.call("GET", "/repos/%s/pulls/%d" % (repo, pr["number"])) or {}).get("head") or {}).get("sha", sha)
         if head != sha:
             break
-    try:
-        gh.call("POST", "/repos/%s/actions/workflows/pr-checks.yml/dispatches" % repo, {"ref": pr["head"]["ref"], "inputs": {"pick_base": ""}})
-    except urllib.error.HTTPError as e:
-        print("::warning::could not start pr-checks on %s (HTTP %d)" % (pr["head"]["ref"], e.code))
+    if head == sha:
+        print("#%d: the update has not landed after %d s; the next pass starts the checks on the new head" % (pr["number"], RECHECK_WAIT_S))
+        return
+    dispatch_checks(gh, repo, pr["head"]["ref"])
     print("#%d: updated from main (%s), pr-checks started on %s" % (pr["number"], why, head[:12]))
     comment_once(gh, repo, pr, "updated", "Not merged yet (merge-when-green): %s. Updated the branch from main and "
                  "started the PR checks again on it; merges when they are green." % why)
+
+
+def dispatch_checks(gh, repo, ref):
+    try:
+        gh.call("POST", "/repos/%s/actions/workflows/pr-checks.yml/dispatches" % repo, {"ref": ref, "inputs": {"pick_base": ""}})
+        return True
+    except urllib.error.HTTPError as e:
+        print("::warning::could not start pr-checks on %s (HTTP %d)" % (ref, e.code))
+        return False
+
+
+def needs_run(all_runs, head_age_s):
+    """a labeled head with no pr-checks run of any kind, settled long enough that a push's own run would
+    have started: start one (a head the bot's update made gets no pull_request run)"""
+    return not all_runs and head_age_s is not None and head_age_s >= HEAD_SETTLE_S
 
 
 def selftest():
@@ -428,17 +482,17 @@ def selftest():
         ("update", "the checks ran against an older main: another merge landed on main since (abc)")
     assert decide(pr, repo, red, ["a.html"], "x")[0] == "no", "red stays red, stale or not"
     assert decide(pr, repo, green, [".github/workflows/x.yml"], "x")[0] == "no", "workflow changes are merged by hand"
-    c = lambda sha, n=1: {"sha": sha, "parents": [{}] * n}
-    data = {"status": "ahead", "total_commits": 2, "commits": [c("d1"), c("d2")],
-            "files": [{"filename": "data/bids.json"}, {"filename": "cash-bids/iowa/ames.html"}]}
-    assert stale(["scripts/x.py", "test/x.test.mjs"], data) is None, "data commits to other files: not stale"
-    assert stale(["cash-bids/iowa/ames.html"], data).startswith("main changed 1 file(s) this pull request also changes"), \
-        "main rebuilt a page the pull request carries (#282)"
-    merged = dict(data, total_commits=3, commits=data["commits"] + [c("m" * 40, 2)])
-    assert stale(["scripts/x.py"], merged) == "another merge landed on main since (mmmmmmmmmmmm)", "another merge (#280)"
-    assert stale(["a"], dict(data, total_commits=400)).startswith("main moved by more than"), "too big to read: stale"
-    assert stale(["a"], dict(data, files=[{"filename": "f%d" % i} for i in range(COMPARE_FILES_MAX)])).startswith("main moved")
-    assert stale(["a"], {"status": "identical"}) is None and stale(["a"], {"status": "behind", "commits": []}) is None
+    bot = ["data/bids.json"] + ["cash-bids/st%d/t%d.html" % (k // 100, k) for k in range(2900)]
+    assert stale(["scripts/x.py", "test/x.test.mjs"], bot) is None, "a 2,900-file bot commit touching nothing relevant: fresh"
+    assert stale(["cash-bids/st1/t150.html", "scripts/x.py"], bot).startswith("main changed 1 file(s) this pull request's checks read"), \
+        "main rebuilt a page the pull request carries (#282): stale"
+    assert stale(["scripts/x.py"], ["scripts/y.py", "components/z.js", "test/y.test.mjs"]) is None, "another PR's merge that does not overlap: fresh"
+    assert stale(["scripts/x.py"], ["scripts/x.py"]).startswith("main changed 1 file"), "another PR's merge that overlaps: stale"
+    rel = lambda f: f.startswith("rain/") or f == "scripts/build_county_rain.py"
+    assert stale(["scripts/build_county_rain.py"], ["rain/iowa/x.html"], rel), "main moved the set the PR's builder writes (#280): stale"
+    assert stale(["a"], None).startswith("main's changes"), "unreadable: stale, never a blind merge"
+    assert stale(["a"], []) is None
+    assert needs_run([], HEAD_SETTLE_S) and not needs_run([], 10) and not needs_run([{"id": 1}], 999) and not needs_run([], None)
     runs = [{"event": "pull_request", "created_at": "2026-11-04T10:00:00Z", "id": 1},
             {"event": "workflow_dispatch", "created_at": "2026-11-04T11:00:00Z", "id": 2, "head_branch": "fx/a",
              "triggering_actor": {"login": BOT}},

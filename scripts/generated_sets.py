@@ -161,12 +161,41 @@ def matches(pats, path):
     return hit
 
 
+SHARED_WRITES = {"data/pointers"}   # written by many builders and jobs: staged on main, never guarded
+
+
+def guarded_writes(s):
+    """the data files a set's builder writes besides its pages (data/arc-plc, data/land-sales, ...): guarded
+    like the pages. Shared files a builder also rewrites (hub pages, sitemap.xml, llms.txt) are edited by hand
+    too, so they are staged on main but not guarded."""
+    return [w for w in s["writes"] if w.startswith("data/") and w not in SHARED_WRITES]
+
+
+def _under(path, w):
+    return path == w or path.startswith(w.rstrip("/") + "/")
+
+
 def owner(path, sets=SETS):
-    """the set whose outputs hold this path, or None"""
+    """the set whose outputs (pages, and the data files it writes) hold this path, or None. A hand-kept
+    input (data/land-sales/coverage.json) is never an output."""
     for s in sets:
-        if matches(s["outputs"], path):
+        if path in s["inputs"]:
+            continue
+        if matches(s["outputs"], path) or any(_under(path, w) for w in guarded_writes(s)):
             return s["id"]
     return None
+
+
+def relevant(pr_files, sets=SETS, root=ROOT):
+    """-> a test path -> bool: the files whose change on main can change this pull request's checks: the
+    files it changes, and every output and write of a set whose code it changes (its prebuild and the
+    tests read those)."""
+    mine = set(pr_files)
+    hit = [s for s in sets if s["id"] in touched(sets, pr_files, root)]
+
+    def test(path):
+        return path in mine or any(matches(s["outputs"], path) or any(_under(path, w) for w in s["writes"]) for s in hit)
+    return test
 
 
 _IMP = re.compile(r"^\s*(?:from\s+([\w.]+)\s+import|import\s+([\w., ]+))", re.M)
@@ -226,7 +255,8 @@ def guard(files, author="", labels=(), sets=SETS):
     lines.append("Drop them from the branch: git checkout origin/main -- <those paths> (or git rm the new ones), "
                  "commit, push. The PR checks rebuild an offline set in their own copy when its builder changes, "
                  "and main rebuilds it after the merge (main-checks.yml).")
-    lines.append("Only the lead may let this through, with the label %s (a set with no main job, or a one-time repair)." % LABEL)
+    lines.append("Only the lead may let this through, with the label %s (a set with no main job, or a one-time repair); "
+                 "after adding it, re-run this guard job (it reads the labels as they are then)." % LABEL)
     return False, "\n".join(lines)
 
 
@@ -473,6 +503,13 @@ def selftest():
     check(owner("rain.html") is None and owner("prf.html") is None, "hub pages edited by hand are not outputs")
     check(owner("scripts/build_county_rain.py") is None, "a builder is not an output")
     check(owner("data/land-sales/coverage.json") is None, "the hand-kept land coverage table is not an output")
+    check(owner("data/land-sales/IL.json") == "land-sales" and owner("data/arc-plc/math/IA.json") == "arc-plc"
+          and owner("data/prf/facts.json") == "prf", "the data files a builder writes are guarded like its pages")
+    check(owner("data/pointers/rain.json") is None and owner("sitemap.xml") is None and owner("llms.txt") is None,
+          "shared files several builders rewrite are not guarded")
+    rel = relevant(["scripts/build_county_rain.py"])
+    check(rel("rain/iowa/x.html") and rel("scripts/build_county_rain.py") and not rel("cash-bids/iowa/ames.html"),
+          "relevant to a builder change: its own set's pages, not another set's")
     ok, msg = guard(["scripts/build_county_rain.py", "test/rain.test.mjs"])
     check(ok, "a builder and its test: passes")
     ok, msg = guard(["scripts/build_county_rain.py", "rain/iowa/story-county.html", "cash-bids/iowa/ames.html"], "dnilgis")

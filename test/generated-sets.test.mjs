@@ -157,28 +157,28 @@ print(json.dumps({"rain": p.get("rain"), "cash": p.get("cash-bids"), "prf": p.ge
 
 test("merge-when-green: no merge on checks run against an older main", () => {
   const out = py(`import merge_when_green as M
-c = lambda s, n=1: {"sha": s * 40, "parents": [{}] * n}
-data = {"status": "ahead", "total_commits": 2, "commits": [c("a"), c("b")], "files": [{"filename": "data/bids.json"}, {"filename": "rain/iowa/x.html"}]}
 pr = {"state": "open", "labels": [{"name": M.LABEL}], "head": {"repo": {"full_name": "o/r"}, "sha": "h" * 40}, "mergeable_state": "clean", "mergeable": True, "draft": False, "number": 1}
 green = [{"name": n, "status": "completed", "conclusion": "success"} for n in M.REQUIRED]
+bot = ["data/bids.json"] + ["cash-bids/s/t%d.html" % k for k in range(2900)]
 print(json.dumps({
-  "data": M.stale(["scripts/x.py"], data),
-  "overlap": M.stale(["rain/iowa/x.html"], data),
-  "merge": M.stale(["scripts/x.py"], dict(data, total_commits=3, commits=data["commits"] + [c("m", 2)])),
-  "big": M.stale(["scripts/x.py"], dict(data, total_commits=999)),
-  "same": M.stale(["scripts/x.py"], {"status": "identical"}),
-  "decide_stale": M.decide(pr, "o/r", green, ["scripts/x.py"], "another merge landed on main since (x)")[0],
+  "bot": M.stale(["scripts/x.py"], bot),
+  "overlap": M.stale(["cash-bids/s/t7.html"], bot),
+  "merge_apart": M.stale(["scripts/x.py"], ["scripts/y.py", "test/y.test.mjs"]),
+  "set": M.stale(["scripts/build_county_rain.py"], ["rain/iowa/x.html"], M.relevant_to(["scripts/build_county_rain.py"], ".")),
+  "unread": M.stale(["a"], None),
+  "decide_stale": M.decide(pr, "o/r", green, ["scripts/x.py"], "main changed 1 file(s)")[0],
   "decide_fresh": M.decide(pr, "o/r", green, ["scripts/x.py"], None)[0],
 }))`);
   const r = JSON.parse(out);
-  assert.equal(r.data, null, "the data jobs' commits to other files do not hold a merge");
-  assert.match(r.overlap, /^main changed 1 file\(s\) this pull request also changes/);
-  assert.match(r.merge, /^another merge landed on main since/);
-  assert.match(r.big, /^main moved by more than the compare lists/);
-  assert.equal(r.same, null);
+  assert.equal(r.bot, null, "a 2,900-file data commit touching nothing the PR's checks read does not hold a merge");
+  assert.match(r.overlap, /^main changed 1 file\(s\) this pull request's checks read/);
+  assert.equal(r.merge_apart, null, "another PR's merge counts only when it overlaps");
+  assert.match(r.set, /^main changed 1 file/, "main moved the pages of the set whose builder the PR changes (#280)");
+  assert.match(r.unread, /could not be read/);
   assert.equal(r.decide_stale, "update", "stale: bring main in and check again, never merge");
   assert.equal(r.decide_fresh, "merge");
   const src = read("scripts/dev/merge_when_green.py");
   assert.match(src, /"\/repos\/%s\/pulls\/%d\/update-branch"/, "updates the branch from main");
-  assert.match(src, /"\/repos\/%s\/actions\/workflows\/pr-checks\.yml\/dispatches" % repo, \{"ref": pr\["head"\]\["ref"\], "inputs": \{"pick_base": ""\}\}/, "and starts every test on it");
+  assert.match(src, /"\/repos\/%s\/actions\/workflows\/pr-checks\.yml\/dispatches" % repo, \{"ref": ref, "inputs": \{"pick_base": ""\}\}/, "and starts every test on it");
+  assert.match(src, /"git", "-C", root\] \+ list\(a\)/, "main's changed files from git, not the 300-file compare");
 });

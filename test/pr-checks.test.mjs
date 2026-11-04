@@ -280,7 +280,7 @@ test('main-checks.yml: rebuilds the built files, then every test on that commit,
   assert.match(mc, /for i in 1 2 3 4 5; do\n\s+git fetch -q origin main\n\s+git reset -q --hard origin\/main\n\s+python3 scripts\/dev\/main_build\.py build/, 'rebuild from main as it is on each try');
   assert.match(mc, /python3 scripts\/dev\/main_build\.py build\n(?:\s+#.*\n)*\s+python3 scripts\/dev\/main_build\.py stage\n/, 'stages only the built files (main_build.py stage)');
   assert.doesNotMatch(mc, /git add/, 'no bare git add in the rebuild');
-  assert.match(mc, /needs: \[gate, rebuild, checks\]\n    if: needs\.gate\.outputs\.go == '1' && \(always\(\)\)/);
+  assert.match(mc, /needs: \[gate, generated, rebuild, checks\]\n    if: needs\.gate\.outputs\.go == '1' && \(always\(\)\)/);
   assert.match(mc, /run: python3 scripts\/dev\/main_red\.py/);
   assert.match(mc, /^  issues: write$/m);
   const uses = [...mc.matchAll(/uses: (\S+)/g)].map((x) => x[1]).filter((u) => !u.startsWith('./'));
