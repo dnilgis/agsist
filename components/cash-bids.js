@@ -2501,7 +2501,8 @@ function doSearch(zip){
        this one rather than being overwritten by a count that is already old. */
     clearTimeout(cbAnnTimer);
     if(!isLate)cbAnnTimer=setTimeout(function(){ announce((bids.length||0)+' elevator listings loaded. Results below.'); }, 400);
-    try{localStorage.setItem('agsist_zip',zip);}catch(e){}
+    /* Nov 4, 2026: both saved-place keys at once (components/saved-place.js), so home, rent and ARC/PLC start at this ZIP too. */
+    try{if(window.AgSavedPlace){AgSavedPlace.save(zip);AgSavedPlace.full();}else localStorage.setItem('agsist_zip',zip);}catch(e){}
     goBtn.textContent='\u21BB Refresh';
     currentBids=bids;pinnedKeys=isLate?pinsBefore:[];if(!isLate){cbPinsHidden=false;cbPinsDropped={};cbPinsQuiet=true;}
     if(window.CBGlance&&!isLate)CBGlance.newSearch();

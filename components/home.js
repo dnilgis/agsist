@@ -1867,7 +1867,9 @@ try {
   var AB={}; /* code -> state name, from basis-states.json itself */
   var CROP={corn:'Corn',soybeans:'Soybeans',wheat_srw:'SRW wheat',wheat_hrw:'HRW wheat',wheat_hrs:'Spring wheat'};
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function savedZip(){try{var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');return !!(l&&/^\d{5}$/.test(String(l.zip||'')));}catch(e){return false;}}
+  /* Nov 4, 2026: the one saved-place reader (components/saved-place.js), so a ZIP typed on /cash-bids counts here too. */
+  function place(){try{if(window.AgSavedPlace)return AgSavedPlace.read();var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');return l&&typeof l==='object'?l:null;}catch(e){return null;}}
+  function savedZip(){var l=place();return !!(l&&/^\d{5}$/.test(String(l.zip||'')));}
   function pickedCode(){
     try{var c=localStorage.getItem('agsist-pd-state');if(c&&AB[c])return c;
       var n=localStorage.getItem('agsist-rma-state');for(var k in AB){if(AB[k]===n)return k;}}catch(e){}
@@ -1952,7 +1954,7 @@ try {
      first visit with no saved place gets this box at once (home.js runs
      before first paint, so the card never shows the gray rows first). A
      saved place keeps the old wait, for a lookup that stalls. */
-  function savedPlace(){try{var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');return !!(l&&((l.lat&&l.lon)||/^\d{5}$/.test(String(l.zip||''))));}catch(e){return false;}}
+  function savedPlace(){var l=place();return !!(l&&((l.lat&&l.lon)||/^\d{5}$/.test(String(l.zip||''))));}
   function arm(){if(!savedPlace())fallback();else setTimeout(fallback,NOLOC_MS);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm);else arm();
 })();

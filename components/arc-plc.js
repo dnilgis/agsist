@@ -717,6 +717,16 @@
         stSel.innerHTML = '<option value="">Pick a state</option>' + keys.map(function (k) { return '<option value="' + k + '">' + esc(D.states[k].n) + '</option>'; }).join('');
         var st = q.st || root.getAttribute('data-state') || sget('ap2:st') || '';
         var fp = q.fips || root.getAttribute('data-fips') || (st === sget('ap2:st') ? sget('ap2:co') : '') || '';
+        /* Nov 4, 2026 (site panel): with no state or county picked here before, start at the place saved on this
+           browser (components/saved-place.js; county from our own ZIP table), matched by county name. */
+        var own = null;
+        function ownFips() {
+          var S = SD[stSel.value];
+          if (fp || !own || !S || own.state !== stSel.value || !own.county) return fp;
+          var k = String(own.county).toLowerCase();
+          for (var i = 0; i < S.c.length; i++) if (w.AgSavedPlace.county(S.c[i].n).toLowerCase() === k) return S.c[i].f;
+          return fp;
+        }
         function go() {
           restore('blank');
           Object.keys(early).forEach(function (k) { $(ID[k]).value = early[k]; });   /* typed before the data came: keep it */
@@ -724,10 +734,18 @@
           ['py', 'by', 'p', 'base'].forEach(function (k) { if (q[k] && isFinite(parseFloat(q[k]))) $(ID[k]).value = q[k]; });
           render(); futLine();
         }
-        if (D.states[st]) {
-          stSel.value = st; coSel.disabled = true;
-          loadState(st).then(function () { fillCounties(fp); go(); }).catch(function () { go(); stateFailed(st, fp); });
-        } else go();
+        function begin() {
+          if (D.states[st]) {
+            stSel.value = st; coSel.disabled = true;
+            loadState(st).then(function () { fp = ownFips(); fillCounties(fp); go(); }).catch(function () { go(); stateFailed(st, fp); });
+          } else go();
+        }
+        if (!fp && !q.st && w.AgSavedPlace && (!st || st === (root.getAttribute('data-state') || ''))) {
+          w.AgSavedPlace.full().then(function (p) {
+            if (p && p.state && D.states[p.state] && (!st || st === p.state)) { own = p; st = p.state; }
+            begin();
+          }, begin);
+        } else begin();
         fetch('/data/prices.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
           .then(function (j) { fut = j; futLine(); }).catch(function () { futLine(); });
       }).catch(function () {
