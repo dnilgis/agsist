@@ -273,6 +273,77 @@ test("redeem: once; the order reaches the digest; a second redeem is 409 with th
   assert.equal([...store.keys()].filter((k) => k.startsWith("form:")).length, 1, "no second order");
 });
 
+// The CI case (Nov 4, PR #315, shard 6/8): on a fast runner issue and redeem landed in the same
+// millisecond, and the old clock rule (redeemed_ts === issued_ts means prepaid) read the used card
+// as "already paid for". A frozen clock replays it every run (worker v5.64).
+async function frozen(fn) {
+  const real = Date.now, T = Date.UTC(2026, 10, 4, 15, 0, 0, 123);
+  Date.now = () => T;
+  try { return await fn(T); } finally { Date.now = real; }
+}
+
+test("redeem in the issuing millisecond: the second redeem is 'used on', never 'already paid' (worker v5.64)", async () => {
+  await frozen(async (T) => {
+    const { env, store } = makeEnv();
+    const j = await issue(env);
+    const r = await pub(env, "/rp-gift/redeem", order(j.code));
+    assert.equal(r.status, 200, JSON.stringify(await r.clone().json()));
+    const rec = JSON.parse(store.get(j.key));
+    assert.equal(rec.issued_ts, T); assert.equal(rec.redeemed_ts, T, "the fake clock gives the same ms to both");
+    const again = await pub(env, "/rp-gift/redeem", order(j.code));
+    assert.equal(again.status, 409);
+    assert.match((await again.json()).error, /^This card was used on [A-Z][a-z]{2} \d{1,2}, \d{4}\.$/);
+    const c = await (await pub(env, "/rp-gift/check", { code: j.code })).json();
+    assert.equal(c.status, "redeemed"); assert.equal(c.prepaid, false, "check: a used card is not prepaid");
+    assert.equal(rec.prepaid, false, "a card a reader redeemed keeps prepaid false");
+  });
+});
+
+test("every issue path stores prepaid, true or false (worker v5.64)", async () => {
+  await frozen(async () => {
+    const { env, store } = makeEnv();
+    const plain = await issue(env);
+    assert.equal(JSON.parse(store.get(plain.key)).prepaid, false, "a plain card: prepaid false");
+    const pre = await issue(env, { already_redeemed: true });
+    assert.equal(JSON.parse(store.get(pre.key)).prepaid, true, "issued already redeemed: prepaid true");
+    const v = await (await admin(env, "/rp-gift/void", { code: plain.code, reissue: true })).json();
+    assert.equal(v.ok, true);
+    assert.equal(JSON.parse(store.get(v.key)).prepaid, false, "a reissued card: prepaid false");
+  });
+  // the order path (scripts/test_rp_order_worker.mjs runs it end to end) passes prepaid true itself
+  assert.match(read("workers/subs-worker.js"), /rpgIssue\(env, v\.rec, \{ status: "redeemed", prepaid: true, order_key: k \}\)/);
+  const W = read("workers/subs-worker.js");
+  assert.match(W, /status: "issued", prepaid: false, issued_ts: now/, "rpgIssue writes prepaid false unless the caller says true");
+  assert.match(W, /^ \* v5\.64 \(2026-11-04\): GIFT CARD PREPAID/m, "the worker's version line");  // pin-ok: the worker version note in source, not data
+});
+
+test("a card from before v5.40 (no prepaid key): issued as already redeemed still reads prepaid", async () => {
+  const { env, store } = makeEnv();
+  const j = await issue(env, { already_redeemed: true });
+  const legacy = JSON.parse(store.get(j.key));
+  delete legacy.prepaid;
+  assert.equal(legacy.redeemed_ts, legacy.issued_ts, "Sig's old already-redeemed cards: one timestamp for both");
+  store.set(j.key, JSON.stringify(legacy));
+  const r = await pub(env, "/rp-gift/redeem", order(j.code));
+  assert.equal(r.status, 409);
+  assert.match((await r.json()).error, /^This gift is already paid for and on its way\./);
+  assert.equal((await (await pub(env, "/rp-gift/check", { code: j.code })).json()).prepaid, true);
+  // an old card a reader used (no key, a later redeem time) is still "used on"
+  const k = await issue(env);
+  const used = Object.assign(JSON.parse(store.get(k.key)), { status: "redeemed", redeemed_ts: JSON.parse(store.get(k.key)).issued_ts + 60e3 });
+  delete used.prepaid;
+  store.set(k.key, JSON.stringify(used));
+  const r2 = await pub(env, "/rp-gift/redeem", order(k.code));
+  assert.equal(r2.status, 409);
+  assert.match((await r2.json()).error, /^This card was used on /);
+  // a new record with prepaid false is never read by the clock, even with equal times
+  const n = await issue(env);
+  const same = Object.assign(JSON.parse(store.get(n.key)), { status: "redeemed" });
+  same.redeemed_ts = same.issued_ts;
+  store.set(n.key, JSON.stringify(same));
+  assert.match((await (await pub(env, "/rp-gift/redeem", order(n.code))).json()).error, /^This card was used on /);
+});
+
 test("redeem: the order rules apply (address for a print, email, design link)", async () => {
   const { env } = makeEnv();
   const j = await issue(env);
