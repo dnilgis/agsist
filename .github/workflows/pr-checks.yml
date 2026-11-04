@@ -104,6 +104,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/generated_sets.py guard --base HEAD^1
+      # BUILD-RULES 38: no AI footer in the body or a commit message (the platform appends one even when a
+      # brief forbids it; #300, #301, #304 and #316 reached main with it on Nov 4). Read through the API when
+      # it runs, so after fixing the body re-run this job.
+      - name: no AI footer in the pull request
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/dev/ai_footer_check.py
       - name: the test pick
         id: pick
         env:

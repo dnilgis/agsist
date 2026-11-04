@@ -5,8 +5,9 @@
 # In Actions (the "Engine checkout" step, .github/actions/engine/action.yml):
 #   engine.sh plan              decide in-repo or private (MODE, HAVE_TOKEN), write step outputs,
 #                               and install the commit guard (engine.sh hook)
-#   engine.sh hook              install the job's pre-commit guard: a new file under data/ whose name date
-#                               is more than 2 days ahead (UTC) is left out of the commit with a warning,
+#   engine.sh hook              install the job's commit guard: a new file under data/ whose name date
+#                               is more than 2 days ahead (UTC) is left out of the commit with a warning
+#                               and a COMMIT-GUARD line in the message (cron_health.py commit-guard row),
 #                               unless .github/future-dated-data.txt lists it (Nov 4, 2026: a test's
 #                               made-up day, data/daily-sent/2099-01-01.json, reached main in a commit)
 #   engine.sh overlay <dir>     copy the engine paths from <dir> (the private checkout) into place
@@ -72,25 +73,44 @@ exclude_paths() {
 # files (forecasts, schedules) are listed with a reason in .github/future-dated-data.txt (a line
 # "<path> <reason>"; a path ending in / covers its folder). test/future-dated-data.test.mjs runs it.
 GUARD_MARK="agsist commit guard (engine.sh hook)"
+# A drop must reach a red row (Nov 4, 2026): a ::warning on a green data job is read by nobody, so a
+# real future file with no allow-list line would be left out of every commit unseen. The pre-commit
+# hook prints one fixed line, COMMIT-GUARD dropped=N path=<first path>, and leaves a note in the git
+# directory; the commit-msg hook adds that same line to the commit's message. scripts/cron_health.py's
+# commit-guard row reads the messages of the last 24 h of commits on main (a few API calls) and goes
+# red on any. A commit left with nothing in it is still refused: that job's commit step fails, a red
+# run of its own, and the line is in its log.
+# Speed: only new (A) or renamed (R) paths under data/ that carry a date at all are looked at, and the
+# date is read with bash's own regex, so a first add of thousands of files takes no subprocess each.
 install_hook() {
   local hooks hook
   hooks="$(git -C "$ROOT" rev-parse --git-path hooks)"
   case "$hooks" in /*) ;; *) hooks="$ROOT/$hooks" ;; esac
-  hook="$hooks/pre-commit"
-  if [ -e "$hook" ] && ! grep -qF "$GUARD_MARK" "$hook"; then
-    echo "::notice title=commit guard not installed::a pre-commit hook is already there"; return 0
-  fi
+  for hook in "$hooks/pre-commit" "$hooks/commit-msg"; do
+    if [ -e "$hook" ] && ! grep -qF "$GUARD_MARK" "$hook"; then
+      echo "::notice title=commit guard not installed::a ${hook##*/} hook is already there"; return 0
+    fi
+  done
   mkdir -p "$hooks"
+  hook="$hooks/pre-commit"
   cat > "$hook" <<'HOOK'
 #!/bin/bash
 # agsist commit guard (engine.sh hook). Written by .github/actions/engine/engine.sh; see install_hook there.
 root="$(git rev-parse --show-toplevel)" || exit 0
+note="$(git rev-parse --git-path agsist-commit-guard)" || exit 0
+rm -f "$note"
 lim="$(date -u -d '+2 days' +%F)" || exit 0
 allow="$root/.github/future-dated-data.txt"
-dropped=0
+re='(19|20)[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])'
+dropped=0 first=""
 while IFS= read -r -d '' f; do
   case "$f" in data/*) ;; *) continue ;; esac
-  d="$(printf '%s\n' "$f" | grep -oE '(19|20)[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])' | sort | head -1)"
+  d="" s="$f"
+  while [[ "$s" =~ $re ]]; do
+    m="${BASH_REMATCH[0]}"
+    { [ -z "$d" ] || [[ "$m" < "$d" ]]; } && d="$m"
+    s="${s#*"$m"}"
+  done
   [ -n "$d" ] && [[ "$d" > "$lim" ]] || continue
   ok=0
   if [ -f "$allow" ]; then
@@ -99,13 +119,30 @@ while IFS= read -r -d '' f; do
     done < "$allow"
   fi
   [ "$ok" = 1 ] && continue
-  git rm --cached -q -- "$f" && dropped=$((dropped + 1))
+  git rm --cached -q -- "$f" && dropped=$((dropped + 1)) && [ -z "$first" ] && first="$f"
   echo "::warning title=test-shaped file left out of the commit::$f is dated $d, more than 2 days ahead; a test or a self-test wrote it into the checkout. Real future files go in .github/future-dated-data.txt with a reason."
-done < <(git diff --cached --name-only --diff-filter=A -z)
-if [ "$dropped" -gt 0 ] && git diff --cached --quiet; then
-  echo "commit guard: nothing left to commit after $dropped test-shaped file(s) were left out"
-  exit 1
+done < <(git diff --cached --name-only -M --diff-filter=AR -z -- data/ | grep -zE "$re")
+if [ "$dropped" -gt 0 ]; then
+  line="COMMIT-GUARD dropped=$dropped path=$first"
+  echo "$line"
+  if git diff --cached --quiet; then
+    echo "commit guard: nothing left to commit after $dropped test-shaped file(s) were left out"
+    exit 1
+  fi
+  printf '%s\n' "$line" > "$note"
 fi
+exit 0
+HOOK
+  chmod +x "$hook"
+  hook="$hooks/commit-msg"
+  cat > "$hook" <<'HOOK'
+#!/bin/bash
+# agsist commit guard (engine.sh hook). Written by .github/actions/engine/engine.sh; see install_hook there.
+# Carries the pre-commit hook's COMMIT-GUARD line into the message, so cron_health.py can see it on main.
+note="$(git rev-parse --git-path agsist-commit-guard)" || exit 0
+[ -s "$note" ] || exit 0
+printf '\n%s\n' "$(cat "$note")" >> "$1"
+rm -f "$note"
 exit 0
 HOOK
   chmod +x "$hook"

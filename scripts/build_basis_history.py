@@ -253,6 +253,28 @@ def unit_error_rows(state, out_dir):
     return out
 
 
+# A row's state, read, never guessed (see write_shards). One copy: build_basis_sparklines.py
+# reads the same change logs and files them by the same rule (Nov 4, 2026: it wrote
+# data/basis-sparklines/.json for the one log row with no state).
+US_STATES = frozenset(
+    ("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI "
+     "MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT "
+     "VA WA WV WI WY PR VI GU AS MP").split())
+
+
+def row_state(st, city):
+    """The row's own state, else the two-letter state at the end of its city field
+    ("GOLDEN CITY, MO"), else None."""
+    if st and str(st).strip():
+        return str(st).strip()
+    tail = str(city or "").strip().rsplit(",", 1)
+    if len(tail) == 2:
+        code = tail[1].strip().upper()
+        if code in US_STATES:
+            return code
+    return None
+
+
 # ------------------------------------------------------------- the write ---
 def write_shards(state, out_dir, generated):
     os.makedirs(out_dir, exist_ok=True)
@@ -269,25 +291,10 @@ def write_shards(state, out_dir, generated):
     # Reading "MO" off the end of that is reading, not inventing, so it is
     # done. A row with nothing to read stays stateless — and is REPORTED
     # rather than filed somewhere nobody can open.
-    US_STATES = frozenset(
-        ("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI "
-         "MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT "
-         "VA WA WV WI WY PR VI GU AS MP").split())
-
-    def state_of(city, st):
-        if st:
-            return st
-        tail = (city or "").strip().rsplit(",", 1)
-        if len(tail) == 2:
-            code = tail[1].strip().upper()
-            if code in US_STATES:
-                return code
-        return None
-
     by_state, stateless = {}, []
     recovered = 0
     for (facility, city, st, cat, sym, month), v in state.items():
-        code = state_of(city, st)
+        code = row_state(st, city)
         if code is None:
             stateless.append("%s | %s" % (facility, city or "no city"))
             continue
