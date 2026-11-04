@@ -826,7 +826,7 @@ def seed_markets(prices, today):
             seeds["mk:" + i] = "-"
         for i in ("pct-corn", "pct-beans", "pct-wheat"):
             seeds["mk:" + i] = "front"
-        for _, chip in MK_CHIPS + (("corn", "pct-corn-dec"), ("beans", "pct-bean-nov")):
+        for _, chip in MK_CHIPS:
             seeds["mk:" + chip] = "-"
         return _write_seeds("markets.html", seeds)
 
@@ -843,16 +843,14 @@ def seed_markets(prices, today):
     # harvest contract after the headline (harvest_of), named on their chip; a
     # card with none is hidden. They read the aliases and showed Nov '26 beans
     # past first notice beside the Jan '27 headline.
-    dup = []
-    for crop, dk, card, chip in (("corn", "corn-dec", "pc-card-corn-dec", "pct-corn-dec"),
-                                 ("beans", "beans-nov", "pc-card-bean-nov", "pct-bean-nov")):
+    dup, chips = [], {}
+    for crop, dk, card in (("corn", "corn-dec", "pc-card-corn-dec"), ("beans", "beans-nov", "pc-card-bean-nov")):
         h = harvest_of(q, crop)
         if h:
             q[dk] = h[1]
-            seeds["mk:" + chip] = _e(h[2] or "")
+            chips[card] = _e(h[2] or "")
         else:
             q.pop(dk, None)
-            seeds["mk:" + chip] = "-"
             dup.append("#" + card)
     for root, chip in MK_CHIPS:
         r = nearby_of(q, root)
@@ -890,7 +888,19 @@ def seed_markets(prices, today):
     seeds["mk:status"] = ('<time class="px-stamp" datetime="' + _e(str(fetched)) + '">' + _e(mk_board(q, fetched)) + "</time>"
                           " &middot; each change line carries its own close date")
     print(f"  markets.html: {n} of {len(MK_MAP)} quotes seeded")
-    return _write_seeds("markets.html", seeds)
+    return _write_seeds("markets.html", seeds, extra=lambda t: mk_card_chips(t, chips))
+
+
+def mk_card_chips(t, chips):
+    """The month chip on the two second cards (pc-card-corn-dec, pc-card-bean-nov),
+    written by the build like any seed: the chip sits on the card's own line,
+    which only this builder edits, so a PR never has to (fx/soyroll2: a PR that
+    edited a seeded line conflicted with every 15-minute price commit). A card
+    with no next harvest contract keeps its chip and is hidden by mk:dup."""
+    for card, lab in chips.items():
+        t = re.sub(r'(id="' + re.escape(card) + r'"><div class="pc-head"><div class="pc-name">[^<]*</div><span class="pc-contract">)[^<]*(</span>)',
+                   lambda m: m.group(1) + lab + m.group(2), t, count=1)
+    return t
 
 
 def seed_homepage(prices, today):

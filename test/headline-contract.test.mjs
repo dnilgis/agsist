@@ -264,8 +264,8 @@ test("markets: the second soybean card is Nov '27 on Nov 4, and nothing names No
     for (const w of [390, 1280]) {
       const { ctx, pg, errs } = await open(browser, port, "/markets.html", w, NOV4, DAYS[0][0]);
       await pg.waitForFunction(() => /Jan '27/.test(document.getElementById("pct-beans").textContent), null, { timeout: 20000 });
-      assert.equal(await pg.textContent("#pct-bean-nov"), "Nov '27");
-      assert.equal(await pg.textContent("#pct-corn-dec"), "Dec '27");
+      assert.equal(await pg.textContent("#pc-card-bean-nov .pc-contract"), "Nov '27");
+      assert.equal(await pg.textContent("#pc-card-corn-dec .pc-contract"), "Dec '27");
       assert.ok(await pg.isVisible("#pc-card-corn-dec"));
       // the soybean cards (feeder cattle and milk really are Nov '26)
       const soy = await pg.$$eval(".pc", (es) => es.filter((e) => /soybeans|beans/i.test((e.querySelector(".pc-name") || {}).textContent || "")).map((e) => e.innerText).join(" | "));
@@ -274,4 +274,23 @@ test("markets: the second soybean card is Nov '27 on Nov 4, and nothing names No
       await ctx.close();
     }
   } finally { await browser.close(); srv.close(); }
+});
+
+/* BUILD-RULES 67 (PR #320): the price run reseeds markets.html and index.html every 15 minutes,
+   so a PR that edits a line carrying a seed (or the line next to one) conflicts with main
+   forever. This PR edits no such line: the second-card chips are written by the builder
+   (seed_static.mk_card_chips) on the card's own line, and every seed value is main's. */
+test("seeds: the builder writes the second-card chips; this branch carries main's seed lines", () => {
+  const out = py(`import seed_static as S
+t = open('markets.html').read()
+t2 = S.mk_card_chips(t, {'pc-card-corn-dec': "Dec '27", 'pc-card-bean-nov': "Nov '27"})
+import re
+print(json.dumps([re.search(r'id="pc-card-corn-dec">.*?class="pc-contract">([^<]*)<', t2).group(1),
+                  re.search(r'id="pc-card-bean-nov">.*?class="pc-contract">([^<]*)<', t2).group(1),
+                  S.mk_card_chips(t2, {'pc-card-corn-dec': "Dec '27", 'pc-card-bean-nov': "Nov '27"}) == t2]))`);
+  assert.deepEqual(out, ["Dec '27", "Nov '27", true], "chips written, and a second run changes nothing");
+  // no line this page script block owns carries a seed marker
+  const mk = read("markets.html"), blk = mk.slice(mk.indexOf("(fx/soyroll2): the second corn and soybean cards"), mk.indexOf("True front month (2026-07-30)"));
+  assert.ok(blk.length > 100);
+  assert.doesNotMatch(blk, /<!--SEED:/);
 });
