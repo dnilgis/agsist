@@ -868,6 +868,32 @@
       (bad.length ? ' Did not load just now: ' + bad.join(', ') + '.' : '') +
       ' Only ' + (stName || 'this state') + '\u2019s records are searched; sales across a state line are not.';
   };
+  // Names on the tap (Sig, Oct 27; lead decision, Nov 4, 2026): each row's seller and buyer from its county's names
+  // file (data/land/<st>/names/<fips>.json, robots-blocked: s and b, the distinct names, at the row's si and bi),
+  // trusted only when the file's read time and row count are the county file's. Fills r.grantor and r.grantee in
+  // memory; resolves to how many rows got names.
+  var _names = {};
+  FSLand.loadNames = function (rows) {
+    var by = {};
+    (rows || []).forEach(function (r) {
+      [r].concat(r.grpRows || []).forEach(function (x) { if (x && x._nf && /^\/data\/land\/[a-z]{2}\/names\/\d{5}\.json$/.test(x._nf)) (by[x._nf] = by[x._nf] || []).push(x); });
+    });
+    return Promise.all(Object.keys(by).map(function (u) {
+      if (!_names[u]) _names[u] = fetch(u).then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); }).catch(function () { delete _names[u]; return null; });
+      return _names[u].then(function (d) {
+        var n = 0;
+        if (!d || !d.s || !d.b) return 0;
+        by[u].forEach(function (x) {
+          if (d.n !== x._nn || String(d.fetched_utc) !== String(x._nt)) return;
+          x.grantor = x.si != null ? d.s[x.si] || null : null; x.grantee = x.bi != null ? d.b[x.bi] || null : null; n++;
+        });
+        return n;
+      });
+    })).then(function (ns) {
+      (rows || []).forEach(function (r) { if (r.grpRows && r.grpRows[0] && r.grantor == null) { r.grantor = r.grpRows[0].grantor; r.grantee = r.grpRows[0].grantee; } });
+      return ns.reduce(function (a, b) { return a + b; }, 0);
+    });
+  };
   if (typeof module === 'object' && module.exports) { module.exports = FSLand; return; }
   G.FSLand = FSLand;
 
@@ -883,32 +909,6 @@
       clearTimeout(t); if (!r.ok) throw new Error(String(r.status)); return r.json();
     }, function (e) { clearTimeout(t); throw e; });
   }
-  // Names on the tap (Sig, Oct 27; lead decision, Nov 4, 2026): each row's seller and buyer from its county's names
-  // file (data/land/<st>/names/<fips>.json, robots-blocked: s and b, the distinct names, at the row's si and bi),
-  // trusted only when the file's read time and row count are the county file's. Fills r.grantor and r.grantee in
-  // memory; resolves to how many rows got names.
-  var _names = {};
-  FSLand.loadNames = function (rows) {
-    var by = {};
-    (rows || []).forEach(function (r) {
-      [r].concat(r.grpRows || []).forEach(function (x) { if (x && x._nf && /^\/data\/land\/[a-z]{2}\/names\/\d{5}\.json$/.test(x._nf)) (by[x._nf] = by[x._nf] || []).push(x); });
-    });
-    return Promise.all(Object.keys(by).map(function (u) {
-      if (!_names[u]) _names[u] = getJSON(u, 15000).catch(function () { delete _names[u]; return null; });
-      return _names[u].then(function (d) {
-        var n = 0;
-        if (!d || !d.s || !d.b) return 0;
-        by[u].forEach(function (x) {
-          if (d.n !== x._nn || String(d.fetched_utc) !== String(x._nt)) return;
-          x.grantor = x.si != null ? d.s[x.si] || null : null; x.grantee = x.bi != null ? d.b[x.bi] || null : null; n++;
-        });
-        return n;
-      });
-    })).then(function (ns) {
-      (rows || []).forEach(function (r) { if (r.grpRows && r.grpRows[0] && r.grantor == null) { r.grantor = r.grpRows[0].grantor; r.grantee = r.grpRows[0].grantee; } });
-      return ns.reduce(function (a, b) { return a + b; }, 0);
-    });
-  };
   var _reg = null;
   FSLand.registry = function () {
     if (!_reg) _reg = getJSON(REG_URL, 15000).catch(function () { _reg = null; return {}; });
