@@ -9,10 +9,12 @@ A card shows the same figures the page shows, with the same rules: a value
 flagged to read with care shows those words, a missing figure is left off the
 card (never a zero), and a card with no figures at all says so in one line.
 
-MACHINE-OWNED OUTPUT: farmland-atlas/og/*.png and farmland-atlas/og/stamps.json.
-Edit this script, never the images.
+MACHINE-OWNED OUTPUT: <out>/*.png and <out>/stamps.json. Since Nov 4, 2026 the cards live in the public
+repo dnilgis/agsist-data at farmland-atlas/og/ (served from dnilgis.github.io/agsist-data; the pages name
+them through scripts/share_host.py), not in this repository. farmland-atlas-pages.yml checks that repo out
+(scripts/agsist_data.sh checkout), draws into it with --out and pushes it. Edit this script, never the images.
 
-INCREMENTAL. og/stamps.json holds the card key each image was drawn from. A
+INCREMENTAL. stamps.json (next to the cards) holds the card key each image was drawn from. A
 card is redrawn only when its key changed or its file is missing, so the
 monthly run redraws the counties whose figures moved and leaves the rest alone
 (the repo does not grow by 100 MB a month). Bump CARD_V in build_atlas_pages.py
@@ -20,9 +22,10 @@ to redraw everything after a design change.
 
 USAGE
   python scripts/build_atlas_cards.py --selftest
-  python scripts/build_atlas_cards.py                    # whatever is stale
-  python scripts/build_atlas_cards.py --only 19169 state-ia hub
-  python scripts/build_atlas_cards.py --all --preview /tmp/cards   # redraw all into a folder
+  bash scripts/agsist_data.sh checkout /tmp/ad              # the cards as they are now
+  python scripts/build_atlas_cards.py --out /tmp/ad/farmland-atlas/og                  # whatever is stale
+  python scripts/build_atlas_cards.py --out /tmp/ad/farmland-atlas/og --only 19169 state-ia hub
+  python scripts/build_atlas_cards.py --all --preview /tmp/cards   # redraw all into a folder, no stamps
   CHROME=/path/to/chrome python scripts/build_atlas_cards.py       # default: Playwright's own Chromium
 
 Needs: pip install playwright pillow && python -m playwright install chromium
@@ -319,17 +322,22 @@ def main():
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--all", action="store_true", help="redraw everything")
     ap.add_argument("--root", default=".")
-    ap.add_argument("--preview", default=None, help="write here instead of farmland-atlas/og, and do not touch stamps")
+    ap.add_argument("--out", default=None, help="the cards folder of an agsist-data checkout (stamps.json is kept there)")
+    ap.add_argument("--preview", default=None, help="write here instead, and do not touch stamps")
     ap.add_argument("--chrome", default=os.environ.get("CHROME"))
     a = ap.parse_args()
     if a.selftest:
         return selftest()
     root = a.root
+    if not (a.out or a.preview):
+        print("say where the cards go: --out <agsist-data checkout>/farmland-atlas/og (or --preview DIR); "
+              "they are not kept in this repository", file=sys.stderr)
+        return 2
     cards = json.load(open(os.path.join(root, OUT, "data", "cards.json"), encoding="utf-8"))
     W = gen.World(root)
     items = keyed(cards)
-    out_dir = a.preview or os.path.join(root, OUT, "og")
-    sp = os.path.join(root, OUT, "og", "stamps.json")
+    out_dir = a.preview or a.out
+    sp = os.path.join(a.out or out_dir, "stamps.json")
     try:
         have = json.load(open(sp, encoding="utf-8"))
     except Exception:

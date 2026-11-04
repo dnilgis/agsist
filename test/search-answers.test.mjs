@@ -96,10 +96,10 @@ test("cattle futures: feeder cattle is a headline price beside live cattle, same
   assert.match(hero, /<h1><!--BAKE:cattle-h1-->Feeder and live cattle futures prices today<!--\/BAKE--><\/h1>/);
   const gf = hero.indexOf('id="hero-gf-price"'), le = hero.indexOf('id="hero-price"');
   assert.ok(gf > 0 && le > gf, "feeder first, then live");
-  assert.match(hero, /<div class="ph-val sk" id="hero-gf-price"><!--SEED:gfpx-->\$\d{3}\.\d+<!--\/SEED--><\/div>/);
-  assert.match(hero, /<div class="ph-val sk" id="hero-price"><!--SEED:px-->\$\d{3}\.\d+<!--\/SEED--><\/div>/);
-  assert.match(hero, /id="hero-gf-stamp"><!--SEED:gfstamp-->/);
-  assert.match(hero, /id="hero-le-stamp"><!--SEED:lestamp-->/);
+  assert.match(hero, /<div class="ph-val sk" id="hero-gf-price">(?:<!--\n-->)?<!--SEED:gfpx-->\$\d{3}\.\d+<!--\/SEED-->(?:<!--\n-->)?<\/div>/);
+  assert.match(hero, /<div class="ph-val sk" id="hero-price">(?:<!--\n-->)?<!--SEED:px-->\$\d{3}\.\d+<!--\/SEED-->(?:<!--\n-->)?<\/div>/);
+  assert.match(hero, /id="hero-gf-stamp">(?:<!--\n-->)?<!--SEED:gfstamp-->/);
+  assert.match(hero, /id="hero-le-stamp">(?:<!--\n-->)?<!--SEED:lestamp-->/);
   assert.match(h, /heroQ\(gf,'hero-gf-price','hero-gf-chg','hero-gf-stamp','hero-gf-ct'\)/);
   assert.match(h, /AgPxStamp\.html\(q,d\.fetched\)/, "the same settle / last-trade words as the status line");
   assert.ok(!/Feeder Cattle Index/i.test(hero), "no index value without index data");

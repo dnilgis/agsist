@@ -30,6 +30,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
+const SB = "(?:<!--\\n-->)?";   // a seed may sit on its own line (seed_static SEED_BREAK, BUILD-RULES 67)
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const FX = join(ROOT, "test/fixtures/locprice");
@@ -81,11 +82,11 @@ test("hero seeds: no quote leaves the loading bar, never a number", () => {
 test("index.html: hero tiles carry their seed markers, and the 15-row ticker is not seeded", () => {
   const html = readFileSync(join(ROOT, "index.html"), "utf8");
   for (const t of ["fc", "fs"]) {
-    assert.match(html, new RegExp(`id="hb-${t}-k"><!--SEED:hp:${t}-k-->`));
-    assert.match(html, new RegExp(`id="hb-${t}-v"><!--SEED:hp:${t}-->`));
-    assert.match(html, new RegExp(`id="hb-${t}-s"><!--SEED:hp:${t}-s-->`));
+    assert.match(html, new RegExp(`id="hb-${t}-k">${SB}<!--SEED:hp:${t}-k-->`));
+    assert.match(html, new RegExp(`id="hb-${t}-v">${SB}<!--SEED:hp:${t}-->`));
+    assert.match(html, new RegExp(`id="hb-${t}-s">${SB}<!--SEED:hp:${t}-s-->`));
   }
-  assert.ok(!/ticker[^>]*><!--SEED:/.test(html), "ticker rows stay JS-only (per-row dates)");
+  assert.ok(!/ticker[^>]*>(?:<!--\n-->)?<!--SEED:/.test(html), "ticker rows stay JS-only (per-row dates)");
 });
 
 test("fertilizer body line: the description's numbers and dates, real Oct 19 rows", () => {

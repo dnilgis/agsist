@@ -107,16 +107,14 @@ SETS = [
      "dependents": ["feeds", "llms"]},
     {"id": "farmland-atlas", "offline": True, "workflow": "farmland-atlas-pages.yml",
      "build": [[PY, "scripts/build_atlas_pages.py"]], "check": None,
-     # compare, methods, sheet and qr.js are written by hand; the share cards are the atlas-cards set
-     "outputs": ["farmland-atlas/**", "!farmland-atlas/og/**", "!farmland-atlas/compare.html",
+     # compare, methods, sheet and qr.js are written by hand; the share cards (farmland-atlas/og) live in
+     # dnilgis/agsist-data since Nov 4, 2026 (scripts/share_host.py), drawn by farmland-atlas-pages.yml;
+     # a card committed here again would count as this set's output (and share_host.py check fails on it)
+     "outputs": ["farmland-atlas/**", "!farmland-atlas/compare.html",
                  "!farmland-atlas/methods.html", "!farmland-atlas/sheet.html", "!farmland-atlas/qr.js", "sitemap-atlas.xml"],
      # data/share-host.json: where the share cards are served (scripts/share_host.py; the seed job writes it)
      "writes": ["data/pointers"], "code": ["scripts/build_atlas_pages.py"], "inputs": ["data/share-host.json"],
      "dependents": ["search", "llms"]},
-    {"id": "atlas-cards", "offline": True, "workflow": "farmland-atlas-pages.yml",
-     "build": [[PY, "scripts/build_atlas_cards.py"]], "check": None,
-     "outputs": ["farmland-atlas/og/**"], "writes": [], "code": ["scripts/build_atlas_cards.py"], "inputs": [],
-     "dependents": []},
     {"id": "rent", "offline": True, "workflow": "state-rent-pages.yml",
      "build": [[PY, "scripts/build_state_rent_pages.py"]], "check": None,
      "outputs": ["rent/**"], "writes": [], "code": ["scripts/build_state_rent_pages.py"], "inputs": [],
@@ -737,7 +735,7 @@ def selftest():
             fails.append(name)
     check(owner("rain/iowa/story-county.html") == "rain", "a county rain page belongs to the rain set")
     check(owner("farmland-atlas/compare.html") is None, "the Atlas compare page is written by hand")
-    check(owner("farmland-atlas/og/19169.png") == "atlas-cards", "the Atlas share cards are their own set")
+    check(owner("farmland-atlas/og/19169.png") == "farmland-atlas", "a share card committed here again is guarded like the pages")
     check(owner("farmland-atlas/iowa/story-county.html") == "farmland-atlas", "an Atlas county page")
     check(owner("rain.html") is None and owner("prf.html") is None, "hub pages edited by hand are not outputs")
     check(owner("scripts/build_county_rain.py") is None, "a builder is not an output")

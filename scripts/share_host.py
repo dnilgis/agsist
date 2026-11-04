@@ -6,18 +6,18 @@ WHY. The share images (og:image, twitter:image) are 68 MB of the published site:
 repos, one job each; the public repo dnilgis/agsist-data serves files that pages point at, from
 https://dnilgis.github.io/agsist-data/ at the same paths. Social sites accept an og:image on another host.
 
-THE ORDER (a page must never point at an image that is not there):
-  1. the producers copy their folder to agsist-data on every run (scripts/agsist_data.sh, before their own
-     commit), while the files also stay here;
-  2. .github/workflows/agsist-data-seed.yml (by hand) copies each folder, waits until a sample of its URLs
-     answers with the same bytes as here, and only then lists the folder in data/share-host.json and rewrites
-     the committed pages (flip) in the same commit;
-  3. the builders read data/share-host.json through url(): a folder listed there is served from agsist-data,
-     any other from agsist.com, so a rebuild before or after the seed writes what is true at that moment;
-  4. the files leave this repository in a later change, only after the seed is verified.
+THE ORDER (a page must never point at an image that is not there), as it ran:
+  1. the producers copied their folder to agsist-data on every run, while the files also stayed here (#327);
+  2. a one-time seed job (agsist-data-seed.yml, run 41910531691 on Nov 4, then removed) copied each folder,
+     waited until a sample of its URLs answered with the same bytes as here, and only then listed the folder
+     in data/share-host.json and rewrote the committed pages (flip, commit e65dff9cb78);
+  3. the builders read data/share-host.json through url(), so every rebuild keeps the new host;
+  4. the files left this repository (fx/datarepo2): the Atlas cards are drawn into an agsist-data checkout
+     (farmland-atlas-pages.yml) and the Daily card is drawn outside the checkout and added there (daily.yml).
 
-THE GUARD (check, test/share-host.test.mjs): no committed page names a listed folder on agsist.com, and no
-builder (scripts/*.py) spells either folder's agsist.com URL at all: they go through url().
+THE GUARD (check, test/share-host.test.mjs): no committed page names a listed folder on agsist.com, no
+builder (scripts/*.py) spells either folder's agsist.com URL at all (they go through url()), and no file of a
+listed folder is in this repository again.
 cron_health.py's agsist-data-images row fetches the og:image of a few pages once a day and goes red on a 404.
 
     python3 scripts/share_host.py seeded                  folders served from agsist-data now
@@ -185,9 +185,28 @@ def builder_hits(root=None):
     return out
 
 
+def kept_files(root=None):
+    """files of a listed folder that are in this repository again (they live in agsist-data now)"""
+    root = root or ROOT
+    out = []
+    for f in seeded(root):
+        try:
+            r = subprocess.run(["git", "-C", root, "ls-files", "--", f], capture_output=True, text=True, timeout=60)
+            files = [x for x in r.stdout.splitlines() if x] if r.returncode == 0 else None
+        except Exception:
+            files = None
+        if files is None:  # not a git checkout (a test folder): look at the disk
+            d = os.path.join(root, f)
+            files = [f + "/" + x for x in sorted(os.listdir(d))] if os.path.isdir(d) else []
+        if files:
+            out.append("%d files of %s are in this repository (%s ...): the share images live in agsist-data"
+                       % (len(files), f, files[0]))
+    return out
+
+
 def check(root=None):
     """the guard: [] when every listed folder is named only on agsist-data, and no builder hard-codes one"""
-    bad = builder_hits(root)
+    bad = builder_hits(root) + kept_files(root)
     for rel, fs in sorted(page_hits(root).items()):
         bad.append("%s names %s on agsist.com (served from agsist-data since data/share-host.json lists it)"
                    % (rel, ", ".join(fs)))
@@ -433,10 +452,12 @@ def selftest():
         ok(url("/farmland-atlas/og/hub.png?v=1", tmp) == SITE + "/farmland-atlas/og/hub.png?v=1",
            "a folder not listed stays on agsist.com")
         ok(url("/data/socialist.jpg", tmp) == SITE + "/data/socialist.jpg", "a lookalike path is not the folder")
-        bad = check(tmp)
+        ok(any("3 files of data/social" in b for b in check(tmp)), "files of a listed folder kept here are a hit")
+        keep = [b for b in check(tmp) if " files of " not in b]
+        bad = keep
         ok(len(bad) == 2 and all("data/social" in b for b in bad), "after the seed the old pages are hits: %r" % bad)
         ok(sorted(flip(tmp)) == ["daily/2026-11-04.html", "index.html"], "flip rewrites both pages")
-        ok(check(tmp) == [], "after the flip the guard passes: %r" % check(tmp))
+        ok([b for b in check(tmp) if " files of " not in b] == [], "after the flip the guard passes: %r" % check(tmp))
         h = open(os.path.join(tmp, "index.html")).read()
         ok(h.count(HOST + "/data/social/card-2026-11-04.jpg") == 3, "og, twitter and JSON-LD all move")
         ok(SITE + "/farmland-atlas/og/hub.png?v=1" in h and "/img/og/agsist.jpg" in h, "other images stay")
