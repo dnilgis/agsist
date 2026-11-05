@@ -158,6 +158,7 @@ def row_objs(f):
         o["ppa"] = per_acre(o.get("price"), o.get("acres"))
         o["fips"], o["county"] = f.get("fips"), f.get("county")
         o["st"] = o.get("st") or f.get("state")
+        o["dm"] = 1 if f.get("dates") == "month" else 0      # FSLand.rowObjs dm: month-only dates (Florida)
         out.append(o)
     return out
 
@@ -315,7 +316,7 @@ def sale_rows(rows, today):
     by, order = {}, []
     for i, r in enumerate(once):
         why = [w for w in screen(r, today) if w != "partial"]
-        k = group_key(r) if not why and day_no(r.get("date")) is not None else None
+        k = group_key(r) if not why and not r.get("dm") and day_no(r.get("date")) is not None else None   # month dates: no grouping
         if not k:
             order.append({"i": i, "r": r})
             continue

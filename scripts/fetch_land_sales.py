@@ -48,6 +48,8 @@ Sources (free and public only; a state is built only once its files read cleanly
   python3 scripts/fetch_land_sales.py --from DIR WI --merge   add those rows to data/land/wi
         (the monthly newest-only run): a return read again replaces its older copy, nothing
         else on disk is dropped unless the size cap trims it
+  python3 scripts/fetch_land_sales.py --from DIR --to LAND FL   Florida, from the prepared files in DIR, written
+        to LAND/fl in an agsist-data checkout (its files are served from there, never from this site)
   python3 scripts/fetch_land_sales.py --selftest
 
 What it keeps: transfers whose property class is farm, forest, undeveloped or
@@ -177,10 +179,13 @@ STATES.update({
         "source": "Florida Department of Revenue, sale data file and assessment roll",
         "short": "Florida sale data file",
         "pages": [], "links": [],
-        "since_note": "Florida's sale data files give the month of each sale, not the day, and carry no buyer or seller names; the newest years are listed here.",
+        # since_note is set from the years read (fl_since); every year and every deed is kept (Sig, Nov 5: option A)
+        "since_note": "Florida's sale data files give the month of each sale, not the day, and carry no buyer or seller names.",
         "terms": "public records published by the Florida Department of Revenue; confidential owners removed by the state",
         "dates": "month",
-        "max_mb": 8,
+        # served from the public agsist-data repo, not this site (Sig, Nov 5): written with --to <agsist-data checkout>
+        "host": "agsist-data",
+        "max_mb": 200,
     },
     "NY": {
         "name": "New York", "fips": "36",
@@ -757,6 +762,8 @@ def build(st, recs, gaz, now, prior=None, months=None):
                         + [r.get(x) for x in extra])
         c = next(v for v in cix.values() if v["fips"] == fips)
         cov = coverage(rs)
+        if cfg.get("dates") == "month":
+            cov["dates"] = "month"      # FSLand.coverageText: months, never a day
         p = (prior or {}).get(fips) or {}
         if p.get("filed_from"):
             cov["filed_from"] = min(p["filed_from"], cov.get("filed_from") or p["filed_from"])
@@ -782,7 +789,7 @@ def build(st, recs, gaz, now, prior=None, months=None):
         total += len(s)
         files.append((fips, s, doc, ndoc))
         index.append({"fips": fips, "name": c["name"], "lat": c["lat"], "lng": c["lng"], "n": len(rs), "from": rs[-1]["date"], "to": rs[0]["date"]})
-    cap = min(MAX_STATE_MB, cfg.get("max_mb") or MAX_STATE_MB)
+    cap = cfg["max_mb"] if cfg.get("host") else min(MAX_STATE_MB, cfg.get("max_mb") or MAX_STATE_MB)
     if total > cap * 1048576:
         raise OverCap("%s: %.1f MB of county files, over the %d MB cap; not written (raise it in this file on purpose)" % (st, total / 1048576, cap))
     os.makedirs(os.path.join(OUT, st.lower()), exist_ok=True)
@@ -2728,12 +2735,15 @@ FL_QUAL = {
 }
 FL_QUALIFIED = ("01", "02")
 FL_FOREST = range(54, 60)      # DOR use codes 054 to 059: timberland
+FL_NOMINAL = 1000      # a deed under this price paid minimum stamps: listed, with no sale price, never in a middle
 FL_DOR_HELD = ("UNINCORPORATED", "UNINCORPORATED COUNTY", "COUNTY", "UNINC")
 
 
-def fl_conv(code):
+def fl_conv(code, price=None):
     c = str(code or "").strip().zfill(2) if str(code or "").strip() else ""
     words = FL_QUAL.get(c, "no code in the file" if not c else "code not in the guide")
+    if price is not None and price < FL_NOMINAL:
+        return "Florida code %s: %s; no sale price (minimum stamps); %s" % (c or "blank", words, FL_OUT)
     if c in FL_QUALIFIED:
         return "Qualified sale, Florida code %s: %s" % (c, words)
     return "Florida code %s: %s; %s" % (c or "blank", words, FL_OUT)
@@ -2780,7 +2790,7 @@ def fl_recs(src=FL_SRC, rep=None):
             city = clean(g("city"), 40).upper()
             recs.append({
                 "doc": ("%s %04d-%02d" % (doc, yr, mo)) if doc else "", "date": "%04d-%02d-01" % (yr, mo), "price": round(price),
-                "acres": None if mixed else g("acres"), "cls": fl_class(g("uc"), g("vi")), "conv": fl_conv(g("qual")),
+                "acres": None if mixed else g("acres"), "cls": fl_class(g("uc"), g("vi")), "conv": fl_conv(g("qual"), price),
                 "pid": clean(g("pid"), 40), "muni": "" if city in FL_DOR_HELD else city, "county": cname, "legal": "",
                 "grantor": None, "grantee": None, "np": np_ if np_ > 1 else None, "rec": None, "ac1": None, "acany": None,
                 "exempt": 0, "zip": None, "acx": 1 if mixed else None,
@@ -2788,7 +2798,17 @@ def fl_recs(src=FL_SRC, rep=None):
             })
             rep["rows"] = rep.get("rows", 0) + 1
     rep["file_date"] = meta.get("file_date")
+    ys = sorted(r["date"][:4] for r in recs)
+    if ys:
+        rep["years"] = "%s to %s" % (ys[0], ys[-1])
     return recs
+
+
+def fl_since(years):
+    """The Florida coverage note: the years covered, months not days, how no-price deeds are treated, no names."""
+    return ("Florida Department of Revenue sale data files, sales from %s. Dates are months: the state gives the sale month, "
+            "not the day. Deeds with no sale price (minimum stamps) are listed but not counted in the middles. The files carry "
+            "no buyer or seller names." % years)
 
 
 FL_FIXTURE = os.path.join(ROOT, "test", "fixtures", "land-fl")
@@ -2813,11 +2833,14 @@ def fl_selftest(ck):
     ck("FL: a deed that also sold non-farm parcels keeps its parcel count, no acres, acres marked unknown",
        by["FX-006"]["np"] == 2 and by["FX-006"]["acres"] is None and by["FX-006"]["acx"] == 1)
     ck("FL: no buyer or seller anywhere", not any(r["grantor"] or r["grantee"] for r in recs))
-    c1, w1 = trim(recs, [], "FL")
-    c2, w2 = trim(c1, [w1], "FL")
-    ck("FL over the cap: the deeds with no sale price go first, then the oldest year; small parcels stay",
-       w1 == "no sale price" and "FX-002" not in {r["pid"] for r in c1} and len(c1) == 8
-       and w2 == "dropped filing year 2025" and [r["pid"] for r in c2] == ["FX-009"])
+    ck("FL: a deed with no sale price is listed and never counted, whatever its code",
+       FL_OUT in by["FX-002"]["conv"] and "no sale price" in by["FX-002"]["conv"] and FL_OUT in fl_conv("01", 100)
+       and fl_conv("01", 400000).startswith("Qualified sale"))
+    ck("FL: every year and every deed kept (no size cut), files for agsist-data only",
+       STATES["FL"]["host"] == "agsist-data" and STATES["FL"]["max_mb"] >= 100 and rep.get("years") == "2025 to 2026"
+       and "sales from 2025 to 2026" in fl_since(rep["years"]) and "not counted" in fl_since("x") and "month" in fl_since("x"))
+    import inspect
+    ck("FL: run() refuses to write Florida into this site's data/land", "--to <agsist-data checkout>" in inspect.getsource(run))
     keep = OUT
     OUT = tempfile.mkdtemp(prefix="flself-")
     try:
@@ -2873,18 +2896,10 @@ def refiled_dedupe(recs):
     return out, len(recs) - len(out)
 
 
-FL_NOMINAL = 1000      # a Florida deed under this price paid minimum stamps: a transfer with no sale price
-
-
 def trim(recs, done, st=None):
     """The next cut when a state's files are over the cap: first farm sales of 10 acres or more
     (any parcel's acres; a return with no acres at all is dropped), then the oldest filing year,
-    one year at a time. None when nothing is left to cut. Florida keeps every acreage: first the deeds with no
-    sale price (under FL_NOMINAL), then the oldest year."""
-    if st == "FL" and "no sale price" not in done:
-        return [r for r in recs if (r.get("price") or 0) >= FL_NOMINAL], "no sale price"
-    if st == "FL":
-        done = list(done) + ["10+ acres"]
+    one year at a time. None when nothing is left to cut. Florida is never cut (Sig, Nov 5: every year, every deed)."""
     if "10+ acres" not in done:
         return [r for r in recs if max(r.get("acres") or 0, r.get("ac1") or 0, r.get("acany") or 0) >= 10], "10+ acres"
     yrs = sorted({(r.get("rec") or r["date"])[:4] for r in recs})
@@ -2906,9 +2921,10 @@ def summary(st, recs, trims):
         st, ", ".join("%s %d" % kv for kv in sorted(by.items())), named, multi, known, "; ".join(trims) or "none")
 
 
-def run(states, from_dir=None, merge=False):
+def run(states, from_dir=None, merge=False, to_dir=None):
     """merge (Wisconsin newest-only): add the rows read now to the ones on disk; a return read
     again replaces its older copy (wi_dedupe), nothing else on disk is dropped unless the cap trims it."""
+    global OUT
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     gzblob = fetch(GAZ)
     bad = 0
@@ -2963,9 +2979,15 @@ def run(states, from_dir=None, merge=False):
                 bad += 1
                 continue
         elif st == "FL":
+            if not to_dir:
+                print("::warning::%s not written: its files are served from agsist-data; pass --to <agsist-data checkout>" % st)
+                bad += 1
+                continue
             try:
                 frep = {}
                 recs_fl = fl_recs(from_dir or FL_SRC, frep)
+                if frep.get("years"):
+                    STATES["FL"]["since_note"] = fl_since(frep["years"])
                 print("::notice::%s: %s" % (st, "; ".join("%s: %s" % kv for kv in sorted(frep.items()))))
             except (OSError, ValueError, KeyError, BadRows) as e:
                 print("::warning::%s prepared sale files not read: %s" % (st, e))
@@ -3035,8 +3057,11 @@ def run(states, from_dir=None, merge=False):
         gaz = in_places(recs, fetch(IN_ZCTA, timeout=300)) if st == "IN" else gazetteer(STATES[st]["fips"], gzblob)
         trims = []
         res = None
+        here = OUT
         while True:
             try:
+                if STATES[st].get("host"):
+                    OUT = to_dir      # the agsist-data checkout's land folder; never this site's data/land
                 res = build(st, recs, gaz, now, prior, months)
                 break
             except BadRows as e:
@@ -3045,12 +3070,13 @@ def run(states, from_dir=None, merge=False):
                 bad += 1
                 break
             except OverCap as e:
-                cut, why = trim(recs, trims, st) if st in ("WI", "IN", "FL") else (None, None)
+                cut, why = trim(recs, trims, st) if st in ("WI", "IN") else (None, None)
                 if cut is None:
                     raise SystemExit(str(e))
                 print("::warning::%s; trimmed: %s (%d rows left of %d)" % (e, why, len(cut), len(recs)))
                 trims.append(why)
                 recs = cut
+        OUT = here
         if res is None:
             continue
         mark_checked(st, now, recs, months)
@@ -3584,4 +3610,5 @@ if __name__ == "__main__":
         sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS or x in PROBE_ONLY_DOCS or x in PROBE_FILES] or sorted(set(STATES) | set(PROBE_DOCS) | set(PROBE_ONLY_DOCS) | set(PROBE_FILES))))
     sts = [x for x in a if x in STATES] or ["WI", "MN", "IL"]
     fd = a[a.index("--from") + 1] if "--from" in a else None
-    sys.exit(run(sts, fd, "--merge" in a))
+    td = a[a.index("--to") + 1] if "--to" in a else None
+    sys.exit(run(sts, fd, "--merge" in a, td))

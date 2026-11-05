@@ -190,7 +190,7 @@
     var qs = Object.keys(q).sort().map(function (k) { var a = q[k].sort(function (x, y) { return x - y; }); return { q: k, n: a.length, med: a.length >= CR.MIN_N ? median(a) : null }; });
     var ac = known.map(function (r) { return +r.acres; }).sort(function (a, b) { return a - b; });
     var ds = known.map(function (r) { return String(r.date || '').slice(0, 10); }).filter(Boolean).sort();
-    return { withheld: false, n: v.length, unsure: unsure, low: low, med: median(v), lo: v[0], hi: v[v.length - 1], q: qs, acMed: Math.round(median(ac.map(function (x) { return Math.round(x * 10); })) / 10), d0: ds[0], d1: ds[ds.length - 1] };
+    return { withheld: false, n: v.length, unsure: unsure, low: low, med: median(v), lo: v[0], hi: v[v.length - 1], q: qs, acMed: Math.round(median(ac.map(function (x) { return Math.round(x * 10); })) / 10), d0: ds[0], d1: ds[ds.length - 1], dm: known.some(function (r) { return r.dm; }) };
   };
   // The summary of every matched sale: bare land (no buildings by property class, the one land
   // rule) in the tiles; sales with buildings and Wisconsin forest sales (forest classes, no farm
@@ -231,7 +231,7 @@
   CR.csv = function (list, names, today) {
     var out = [CR.CSV_COLS.join(',')];
     (list || []).forEach(function (r) {
-      out.push([r.no, r.date || '', r.rec || '', num(r.price) > 0 ? Math.round(r.price) : '', r.acres > 0 ? +r.acres : (r.acUnsure ? 'uncertain' : ''), r.ppa != null ? r.ppa : '',
+      out.push([r.no, r.dm ? String(r.date || '').slice(0, 7) : r.date || '', r.rec || '',   // a month-only date stays a month (Florida) num(r.price) > 0 ? Math.round(r.price) : '', r.acres > 0 ? +r.acres : (r.acUnsure ? 'uncertain' : ''), r.ppa != null ? r.ppa : '',
         r.pid || '', +r.np || 1, F.strOf(F.legalText(r)) || '', F.legalHeld(r) && names !== 'shown' ? 'names a buyer or seller: tap Show buyer and seller' : F.legalText(r), r.muniName || '', r.county || '', r.st || '', F.classLabel(r.cls, r.st), r.conv || '',
         CR.screenText(r, today), F.relatedParty(r) ? 'yes' : 'not marked', r.exempt ? 'yes' : 'no', names === 'shown' ? (r.grantor || '') : names === 'later' ? 'names come after the next update' : names ? 'tap Show buyer and seller' : 'not in our copy', names === 'shown' ? (r.grantee || '') : names === 'later' ? 'names come after the next update' : names ? 'tap Show buyer and seller' : 'not in our copy',
         r.mi != null ? r.mi.toFixed(1) : '', r.pmi != null ? r.pmi.toFixed(1) : '', r.soil && r.soil.np != null ? Math.round(r.soil.np * 100) : '', r.doc || '', r.src || '', CR.flags(r).join('; '), 'unverified'].map(cell).join(','));
@@ -375,7 +375,7 @@
       var flags = CR.flags(r);
       // a legal that names a party comes with the names (land_names.py LEGAL_MARK), only after the tap
       var leg = F.legalHeld(r) ? (names === 'shown' && r.legalNamed ? r.legalNamed : 'Legal description names a buyer or seller: tap Show buyer and seller') : F.clean(r.legal);
-      return '<tbody class="cr-c" data-no="' + r.no + '"><tr role="row">' + cell('n cr-no', 'No.', r.no) + cell('', 'Deed date', fd(r.date)) + cell('n', 'Price', fm(r.price)) + cell('n', 'Acres', ac) +
+      return '<tbody class="cr-c" data-no="' + r.no + '"><tr role="row">' + cell('n cr-no', 'No.', r.no) + cell('', 'Deed date', fd(r.date, r.dm)) + cell('n', 'Price', fm(r.price)) + cell('n', 'Acres', ac) +
         cell('n', '$/acre', r.ppa != null ? fm(r.ppa) : '') + cell('n cr-mi', 'Miles', CR.milesText(r, tie)) + cell('', 'Town', esc(r.muniName || '') + (r.county ? '<span class="cr-dim">, ' + esc(r.county) + ' Co.</span>' : '')) +
         cell('', 'Class', esc(F.classLabel(r.cls, r.st)) + (F.hasBuildings(r.cls) ? ' <span class="cr-flag">buildings</span>' : '')) + cell('cr-soil', 'Soil', soil) + '</tr>' +
         '<tr class="cr-d" role="row"><td role="cell" aria-hidden="true"></td><td role="cell" colspan="8">' + (flags.length ? '<div class="cr-flagl">' + flags.map(function (f) { return '<span class="cr-flag">' + esc(f) + '</span>'; }).join(' ') + '</div>' : '') + det + (leg ? '<div class="cr-leg">' + esc(leg) + '</div>' : '') + '</td></tr></tbody>';
@@ -399,7 +399,7 @@
       return count + '<p class="cr-held"><b>No summary.</b> ' + (s.n ? 'Only ' + s.n + ' matched ' + bare + (s.n === 1 ? 'sale has' : 'sales have') + ' a usable $/acre.' : 'No matched ' + bare + 'sale has a usable $/acre.') + ' A middle, low and high price per acre needs at least ' + CR.MIN_N + '. Widen the settings.</p>' +
         (notes.length ? '<p class="fl-note">' + esc(notes.join(' ')) + '</p>' : '') + CR.impHTML(s);
     }
-    var lead = '<p class="cr-lead">Typical ' + bare + 'price paid near you: <b>' + fm(s.med) + '/ac</b>, ' + s.n + ' sales, dated ' + fd(s.d0) + ' to ' + fd(s.d1) + (o.newest ? ', newest sale in our copy ' + fd(o.newest) : '') + '.</p>';
+    var lead = '<p class="cr-lead">Typical ' + bare + 'price paid near you: <b>' + fm(s.med) + '/ac</b>, ' + s.n + ' sales, dated ' + fd(s.d0, s.dm) + ' to ' + fd(s.d1, s.dm) + (o.newest ? ', newest sale in our copy ' + fd(o.newest, o.newestDm) : '') + '.</p>';
     var tiles = [[s.noBldg ? 'Sales with a $/acre' : 'Bare-land sales with a $/acre', String(s.n)], ['Middle (median) $/acre', fm(s.med)], ['Low $/acre', fm(s.lo)], ['High $/acre', fm(s.hi)], ['Middle size', s.acMed + ' ac']];
     var q = '<table class="cr-q"><thead><tr><th scope="col">Quarter (deed date)</th><th scope="col" class="n">Sales</th><th scope="col" class="n">Middle $/acre</th></tr></thead><tbody>' + s.q.map(function (x) {
       return '<tr><td>' + esc(x.q) + '</td><td class="n">' + x.n + '</td><td class="n">' + (x.med != null ? fm(x.med) : '<span class="cr-dim">under ' + CR.MIN_N + ' sales</span>') + '</td></tr>';
@@ -430,8 +430,9 @@
   // ════════════════════════════════════════════════════════════════════
   var FS_WORKER = 'https://agsist-fieldscout.dnilgis.workers.dev';
   // States whose sales may exist under data/land/<st>/index.json; the page asks for each and
-  // names only the ones that answer, so a newly added state shows up on its own.
-  var MAYBE = ['WI', 'IL', 'IN', 'MN', 'IA', 'FL', 'NY', 'MD', 'VT', 'NJ', 'CT'];
+  // names only the ones that answer, so a newly added state shows up on its own. Only the states the readers load
+  // (FSLand.SALES_LIVE): Florida waits until every reader shows its month-only dates (Nov 5, 2026).
+  var MAYBE = ['WI', 'IL', 'IN', 'MN', 'IA', 'FL', 'NY', 'MD', 'VT', 'NJ', 'CT'].filter(function (st) { return !F.salesLive || F.salesLive(st); });
   function $(id) { return document.getElementById(id); }
   function set(id, h) { var e = $(id); if (e) e.innerHTML = h; }
   function note(t) { return '<p class="fl-note">' + t + '</p>'; }
@@ -614,6 +615,7 @@
       // true: names files to tap for; 'later': county files that still hold names (no names file yet, no button); false: none
       S.names = S.sales.files.some(function (f) { return f.names && f.names_file; }) ? true : S.sales.files.some(function (f) { return f.names; }) ? 'later' : false;
       S.newest = S.sales.files.map(function (f) { return f.coverage && f.coverage.to; }).filter(Boolean).sort().pop() || null;
+      S.newestDm = S.sales.files.some(function (f) { return f.dates === 'month' && f.coverage && f.coverage.to === S.newest; });
       // the subject's own recorded sales
       var home = S.sales.files.filter(function (f) { return f.fips === S.fips; })[0];
       if (home && (S.parcels.length || P.pid)) {
@@ -629,7 +631,7 @@
     }
     function drawSummary() {
       var s = CR.summary(S.sel.all);
-      set('cr-sum', CR.summaryHTML(s, { matched: S.sel.matched, listed: S.list.length, sort: P.sort, newest: S.newest }) + note('<b>Recorded sales from public records. Not an appraisal; no adjustments made.</b>'));
+      set('cr-sum', CR.summaryHTML(s, { matched: S.sel.matched, listed: S.list.length, sort: P.sort, newest: S.newest, newestDm: S.newestDm }) + note('<b>Recorded sales from public records. Not an appraisal; no adjustments made.</b>'));
     }
     function drawFunnel() {
       set('cr-funnel', '<ol class="cr-fun">' + S.sel.funnel.map(function (x) { return '<li><b>' + x.n.toLocaleString('en-US') + '</b> ' + esc(x.t) + '</li>'; }).join('') + '</ol>' +
@@ -751,7 +753,7 @@
       set('cr-own', note('No ' + esc(S.stName) + ' transfer records here to search.'));
       var srcSec = $('cr-src'); if (srcSec && srcSec.parentNode) srcSec.parentNode.hidden = true;
       set('cr-funnel', '');
-      Promise.all(MAYBE.map(function (st) { return getJSON('/data/land/' + st.toLowerCase() + '/index.json', 10000).then(function (ix) { return ix && ix.counties && ix.counties.length ? st : null; }, function () { return null; }); })).then(function (have) {
+      Promise.all(MAYBE.map(function (st) { return getJSON(F.landBase ? F.landBase(st) + 'index.json' : '/data/land/' + st.toLowerCase() + '/index.json', 10000).then(function (ix) { return ix && ix.counties && ix.counties.length ? st : null; }, function () { return null; }); })).then(function (have) {
         have = have.filter(Boolean).map(function (st) { return CR.ST[st] || st; });
         set('cr-sum', '<div class="cr-held"><b>We do not hold ' + esc(S.stName) + ' recorded sales yet, so this report has no comps.</b>' +
           note(esc(noteSt || 'Sales are public at the county recorder. We add a state only when its own sale records are free to read in bulk and we have checked them.')) +

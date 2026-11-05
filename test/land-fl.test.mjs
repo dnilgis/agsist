@@ -5,7 +5,9 @@
  *   node --test test/land-fl.test.mjs
  *
  * The county file has the shared columns and says its dates are months; qualified sales and the rest are kept
- * apart the same way in JavaScript and Python; no owner or name field anywhere in the Florida files. */
+ * apart the same way in JavaScript and Python; no owner or name field anywhere in the Florida files; a month-only date
+ * reads as a month (never a day) in Field Scout and the comp report; Florida is served from agsist-data and stays out of
+ * every reader until each one shows month dates (an explicit allow-list). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -20,6 +22,8 @@ const require = createRequire(import.meta.url);
 const F = require(path.join(ROOT, "field-scout-land.js"));
 const FIX = path.join(ROOT, "test/fixtures/land-fl");
 const OWNER = /^(grantor|grantee|own|owner|own_name|own_addr\d?|fidu_name|phy_addr\d?|s_legal|mail)/i;
+const CR = require(path.join(ROOT, "components/comp-report.js"));
+const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
 
 function built() {
   const out = fs.mkdtempSync(path.join(os.tmpdir(), "flb-"));
@@ -79,4 +83,59 @@ test("no owner, address or name field in any Florida file the site carries", () 
   const src = fs.readFileSync(path.join(ROOT, "scripts/fetch_land_sales.py"), "utf8");
   const fl = src.slice(src.indexOf("FL_SRC = "), src.indexOf("def refiled_dedupe"));
   assert.ok(!/OWN_NAME|OWN_ADDR|FIDU_|PHY_ADDR|S_LEGAL/.test(fl), "the Florida reader never names an owner, address or legal column of the roll");
+});
+
+test("a month-only date reads as a month in Field Scout and the comp report, never a day", () => {
+  assert.equal(F.fmtDate("2025-08-01", 1), "Aug 2025");
+  assert.equal(F.fmtDate("2025-08-01"), "Aug 1, 2025", "other states keep their day");
+  const { out } = built();
+  try {
+    const f = JSON.parse(fs.readFileSync(path.join(out, "fl", "12049.json"), "utf8")), today = "2026-11-05";
+    const rows = F.rowObjs(f);
+    assert.ok(rows.every((r) => r.dm === 1));
+    const cov = F.covOf(f);
+    assert.equal(cov.dates, "month");
+    assert.match(F.coverageText(cov, "FL"), /^Sales from Feb 2025 to Aug 2025, by month/);
+    const hist = F.historyHTML(rows.map((r) => ({ r, how: "parcel" })), cov, { detail: true });
+    assert.match(hist, /Aug 2025/);
+    assert.doesNotMatch(hist, /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, 20\d\d/, "no day in Field Scout's list");
+    const detail = F.saleDetailHTML(rows[0], f, rows.slice(1).map((r) => ({ r })));
+    assert.doesNotMatch(detail, /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) 1, 20\d\d/, "no first-of-month day in the detail panel (the read date keeps its day)");
+    assert.match(detail, /Aug 2025/);
+    const once = F.saleRows(rows, today);
+    assert.equal(once.length, rows.length - 1, "one row per deed (two parcels of one deed once), and month dates never group deeds by day");
+    assert.ok(once.every((r) => !r.grp));
+    const list = once.map((r, i) => Object.assign(r, { no: i + 1, mi: 1 }));
+    const comps = CR.compsHTML(list, false, today);
+    assert.match(comps, /Aug 2025/);
+    assert.doesNotMatch(comps, /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, 20\d\d/, "no day in the comp report rows");
+    const s = CR.summary(list.map((r) => Object.assign({}, r, { acres: 40, ppa: 10000, cls: "4" })));
+    const sum = CR.summaryHTML(s, { matched: list.length, listed: list.length, sort: "mi", newest: "2025-08-01", newestDm: true });
+    assert.match(sum, /dated Feb 2025 to Aug 2025, newest sale in our copy Aug 2025/);
+    const csv = CR.csv(list.slice(0, 1), false, today).split("\r\n")[1];
+    assert.match(csv, /^1,2025-08,/, "the spreadsheet keeps the month, not a first-of-month day");
+  } finally { fs.rmSync(out, { recursive: true, force: true }); }
+});
+
+test("Florida is served from agsist-data and stays out of every reader until each shows month dates", () => {
+  assert.equal(F.salesLive("FL"), false);
+  assert.equal(F.landBase("FL"), "https://dnilgis.github.io/agsist-data/land/fl/");
+  assert.equal(F.landBase("IL"), "/data/land/il/");
+  for (const st of ["IL", "IN", "WI", "VT", "NJ"]) assert.ok(F.salesLive(st), st);
+  assert.match(read("components/comp-report.js"), /\.filter\(function \(st\) \{ return !F\.salesLive \|\| F\.salesLive\(st\); \}\)/);
+  for (const [file, rx] of [["components/land-sales.js", /var STATES = \{[^}]*\}/], ["components/search.js", /var LAND_ST = \{[^}]*\}/],
+    ["components/change-lines.js", /var SALES_STATES = \{[^}]*\}/], ["components/atlas-sales.js", /S\.STATES = \{[^}]*\}/],
+    ["scripts/build_land_sales.py", /^STATES = \([^)]*\)/m], ["scripts/build_land_index.py", /^STATES = \{[^\n]*/m]]) {
+    const m = read(file).match(rx);
+    assert.ok(m, file);
+    assert.doesNotMatch(m[0], /\bFL\b/, file + " keeps Florida out until it shows month dates");
+  }
+  const code = "import sys\nsys.path.insert(0,sys.argv[1])\nimport land_alert as A, build_land_summary as B\nprint('FL' in A.STATES, 'FL' in B.SOURCES)";
+  const r = spawnSync("python3", ["-c", code, path.join(ROOT, "scripts")], { encoding: "utf8" });
+  assert.equal(r.stdout.trim(), "False False", r.stderr);
+  assert.ok(!fs.existsSync(path.join(ROOT, "data/land/fl")), "Florida's county files are never in this repository");
+  const wf = read(".github/workflows/land-data.yml");
+  assert.match(wf, /fetch_land_sales\.py FL --from data\/land-src\/fl --to "\$RUNNER_TEMP\/agsist-data\/land"/);
+  assert.match(wf, /agsist_data\.sh sync --soft --from "\$RUNNER_TEMP\/agsist-data" land\/fl/);
+  assert.doesNotMatch(wf, /fetch_land_sales\.py MN IL IN VT NJ FL/);
 });
