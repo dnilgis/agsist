@@ -9,6 +9,13 @@
    "link": "/tar-spot"
   },
   {
+   "id": "2026-11-05-dailyadds",
+   "date": "2026-11-05",
+   "title": "The Daily: price change since the week, month and year began",
+   "line": "Corn, soybeans and wheat now show the change for the week so far and the month to date, plus a short weather note from USDA.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-05-wxcard2",
    "date": "2026-11-05",
    "title": "Home weather: weather and season totals only",
