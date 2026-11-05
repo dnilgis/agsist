@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-05",
+      "date_display": "Thursday, November 5, 2026",
+      "headline": "Midterms hand Democrats Congress; Dec corn is at $4.47¼ overnight",
+      "teaser": "Democrats take Congress with farm-state wins, while corn and beans edge up ahead of 7:30 export sales.",
+      "market_mood": "mixed",
+      "surprise_count": 1,
+      "sections": 3,
+      "url": "/daily/2026-11-05",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-04",
       "date_display": "Wednesday, November 4, 2026",
       "headline": "Soybeans fall to new lows; four tankers hit mines near Hormuz",
@@ -2701,6 +2712,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-04T11:47:47.183028+00:00",
-  "count": 236
+  "updated": "2026-11-05T11:48:26.742319+00:00",
+  "count": 237
 }
