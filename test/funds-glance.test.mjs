@@ -230,7 +230,7 @@ test("home card: the top three markets in plain lines, the ask and the ranges be
       assert.deepEqual(got, G.lines(COT, CX, ["corn", "beans", "wheat"]).map((l) => l.text), "three lines, the reader's first three markets " + width);
       assert.equal((await pg.textContent("#cot-gl-asof")).trim(), "Positions as of Tuesday, Oct 27, released Friday, Oct 30.");
       assert.equal((await pg.textContent("#cot-verdict")).trim(), "Crowded: soybean meal (long), lean hogs and Class III milk (short)", "the verdict over all markets " + width);
-      assert.equal(await pg.isVisible("#cot-verdict-lv"), false, "one verdict, not a grains and a cattle badge");
+      assert.equal(await pg.locator("#cot-verdict-lv").count(), 0, "one verdict, not a grains and a cattle badge");
       assert.equal(await pg.$eval("#cot-detail", (d) => d.open), false);
       assert.equal(await pg.$eval("#cot-ask", (d) => d.open), false);
       await pg.click("#cot-ask > summary");

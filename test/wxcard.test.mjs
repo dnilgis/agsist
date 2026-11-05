@@ -40,12 +40,13 @@ function card() {
 test("the spray days table, its How it's rated and the Today spray line are gone from the card", () => {
   const c = card();
   for (const x of ["spray-days-strip", "spray-windows", "Spray days", "tip-s7-spray", "How it&rsquo;s rated"]) assert.ok(!c.includes(x), x);
-  // Nov 5 (Sig): the one Today spray line left the card too (test/wxcard2.test.mjs); the hero band keeps its read
+  // Nov 5 (Sig): the one Today spray line left the card too (test/wxcard2.test.mjs), and the hero band's read with it
+  // (test/homeseasonal.test.mjs)
   assert.ok(!/id="wx-today-summary"/.test(c), "no Today spray line in the card");
   assert.ok(!/spray days/i.test(c), "no 'spray days' copy left in the card");
   const hs = read("components/home-season.js");
   assert.ok(!/spray-days-strip|spray-day-name/.test(hs), "home-season.js paints no spray table");
-  assert.ok(/agsist:spray/.test(hs) && /function sprayRule/.test(hs), "the one spray rule still feeds the hero band");
+  assert.ok(!/agsist:spray|function sprayRule/.test(hs), "home-season.js carries no spray rule now that home shows no spray read");
   // the other pages keep their spray days (count the copies)
   assert.match(read("spray.html"), /spray/i);
   assert.ok(existsSync(ROOT + "components/spray-windows.js"), "/spray's spray windows stay");

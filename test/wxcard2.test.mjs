@@ -3,7 +3,8 @@
  *
  *   - no Fall nitrogen block (or its link) and no one-line "Today: ... spray" read in the card, in markup, script or CSS
  *   - the pages that keep them still carry them: /fall-nitrogen (its soil answer, rendered), /planting-date (soil at
- *     4 in and the fall anhydrous link), /spray and Field Scout (their spray reads), the This month strip's fall N cell
+ *     4 in and the fall anhydrous link), /spray and Field Scout (their spray reads). Later on Nov 5 (Sig) soil
+ *     temperature, the hero band spray read and the strip's fall N cell left home too (test/homeseasonal.test.mjs)
  *   - on the page in November (a fall N month, fixed clock): neither block shows, the card is shorter than the 908 px it
  *     was with both (measured Nov 5 with these fixtures at 390 and 1280), taps 44 px, text 12 px, nothing moves
  *
@@ -36,16 +37,15 @@ test("the card carries no fall nitrogen block and no Today spray line", () => {
   assert.ok(!/s7-falln|wx-today-summary|wx-today-text/.test(hs), "home-season.js paints neither block");
   const css = strip(read("css/home.css"));
   assert.ok(!/\.wx-falln|\.wx-today|#wx-today-summary/.test(css), "home.css has no rule for either block");
-  // the card's soil reading stays, so the page still loads the soil reader once
-  assert.match(c, /id="s7-wx-soil"/);
-  assert.equal((HTML.match(/components\/soil-near\.js\?v=\d+/g) || []).length, 1);
+  // Nov 5 (Sig): the card's soil reading left too, so home loads no soil reader (test/homeseasonal.test.mjs)
+  assert.ok(!/id="s7-wx-soil"/.test(c), "no soil cell in the card");
+  assert.equal((HTML.match(/components\/soil-near\.js\?v=\d+/g) || []).length, 0);
 });
 
 test("the pages that keep them still carry them", () => {
-  // the This month strip (outside the card) keeps its fall N cell in October and November
+  // Nov 5 (Sig): the This month strip has no fall N cell either; the pages below keep it
   const hs = read("components/home-season.js");
-  assert.match(hs, /11:\/\*[^*]*\*\/\s*\{lead:\[[^\]]*'fallN'/, "November's strip leads with the fall N window");
-  assert.match(hs, /put\('fallN',/);
+  assert.ok(!/'fallN'/.test(hs), "no fall N cell in any month's strip");
   // /fall-nitrogen: the soil view; /planting-date: measured soil at 4 in and the fall anhydrous link
   assert.match(read("fall-nitrogen.html"), /\/\*falln:start\*\/[\s\S]*\/\*falln:end\*\//);
   const pd = read("planting-date.html");
@@ -54,8 +54,8 @@ test("the pages that keep them still carry them", () => {
   // /spray and Field Scout keep their spray reads
   assert.match(read("spray.html"), /components\/spray-windows\.js|spray-wind\.js/);
   assert.match(read("field-scout-read.js"), /Too windy to spray right now/);
-  // the hero band still reads today's verdict from the one rule (left as is; the lead asks Sig)
-  assert.match(hs, /agsist:spray/);
+  // Nov 5 (Sig): the hero band's spray read left too
+  assert.ok(!/agsist:spray/.test(hs), "no spray read handed to the hero band");
 });
 
 /* ---------- in the browser ---------- */
@@ -121,8 +121,8 @@ test("on the page in November: neither block, a shorter card, 44px taps, 12px te
       await pg.goto(`http://127.0.0.1:${port}/`);
       await pg.waitForFunction(() => document.querySelector('#wx-season .wxs-t[data-k="gdd30"] .wxs-v'), null, { timeout: 20000 });
       await pg.waitForFunction(() => { const t = document.getElementById("wx-temp"); return t && /\d/.test(t.textContent); }, null, { timeout: 20000 });
-      // the soil reader has painted the card's soil cell, so a fall N block would have painted by now
-      await pg.waitForFunction(() => /measured at Ames/.test((document.getElementById("s7-wx-soil") || {}).textContent || ""), null, { timeout: 20000 });
+      // the forecast has painted the card (Overnight low), so a fall N block would have painted by now
+      await pg.waitForFunction(() => /\d/.test((document.getElementById("s7-wx-low") || {}).textContent || ""), null, { timeout: 20000 });
       await pg.waitForTimeout(1000);
       const got = await pg.evaluate(() => {
         const c = document.querySelector(".wx-card"), small = [], taps = [];
