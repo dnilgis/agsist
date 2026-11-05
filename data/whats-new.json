@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-05-tarspot1",
+   "date": "2026-11-05",
+   "title": "Tar spot of corn, in one place",
+   "line": "How to tell it from rust, when to scout, when a fungicide pays, the 2026 product ratings, and a spray break-even calculator.",
+   "link": "/tar-spot"
+  },
+  {
    "id": "2026-11-05-wxcard2",
    "date": "2026-11-05",
    "title": "Home weather: weather and season totals only",
