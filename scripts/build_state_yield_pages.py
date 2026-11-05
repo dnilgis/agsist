@@ -58,6 +58,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import county_yield as CY  # noqa: E402  (the one least-squares fit)
+import credits as CR  # noqa: E402  (NASS notice wording)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -618,6 +619,7 @@ def build_state_page(name, inp, ctx):
   of the published years in the stated window, printed with how many years they rest on (withheld below
   {MIN_AVG_N[5]} of 5 or {MIN_AVG_N[10]} of 10). The trend is an ordinary least-squares line through every published
   year (at least {MIN_TREND_N}); it describes the past window and is not a forecast.{cty_note}{gap_txt}{wheat_note}</div>
+  <p class="yl-sub yl-credit">{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
   <p class="yl-links yl-sub">Related: {' &middot; '.join(links)}.</p>
   <h2>Yield by year in other states</h2>
   <p class="yl-cloud">{cloud}</p>
