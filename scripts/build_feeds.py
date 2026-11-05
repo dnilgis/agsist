@@ -418,8 +418,11 @@ def main():
         # own script when the reader reaches it, so the page names it in a string, not a tag:
         # /usda-calendar reads data/analyst-scorecard.json through components/priced-in.js.
         # 2026-11-03: /cash-bids reads data/ethanol-bids.json through components/ethanol-bids.js.
+        # 2026-11-05: the home page and /planting-date read data/fall-nitrogen.json through
+        # components/soil-near.js; the home page used to be credited only through a comment in
+        # home-planting.js, so dropping that comment dropped the reader.
         own = set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf|cot)(?:-[\w-]+)?|cash-bids)\.js)""", text))
-        own |= set(re.findall(r"""["']/(components/(?:priced-in|bot-scorecard|coverage-map|elevator-claim|atlas-foreign|daily-archive|ethanol-bids)\.js)""", text))
+        own |= set(re.findall(r"""["']/(components/(?:priced-in|bot-scorecard|coverage-map|elevator-claim|atlas-foreign|daily-archive|ethanol-bids|soil-near)\.js)""", text))
         for js in sorted(own):
             if os.path.exists(js):
                 text += "\n" + read(js)
