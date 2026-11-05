@@ -183,8 +183,23 @@ function cotMarkCard(key, present) {
     (LABELS[key] || key) + ': no data in this report.');
 }
 
+/* AT A GLANCE (2026-11-04, Sig): the first screen is one plain line per market
+   (components/cot-glance.js, the same words as the home card). From cot.json
+   alone until the analysis for the same report arrives; then each line gains
+   its percentile and its period. */
+function renderGlance() {
+  var ul = document.getElementById('cg-lines'), G = window.AgCotGlance;
+  if (!ul || !G || !COT_SUMMARY) return;
+  var cx = cxAligned() ? CX_A : null, ls = G.lines(COT_SUMMARY, cx);
+  if (!ls.length) return;
+  ul.innerHTML = ls.map(function (l) { return '<li class="cg-line cg-' + l.side + '">' + l.html + '</li>'; }).join('');
+  ul.removeAttribute('aria-busy');
+  var a = document.getElementById('cg-date');
+  if (a) a.textContent = G.asOf(COT_SUMMARY, cx);
+}
 function cotRenderDerived() {
   var read = document.getElementById('cot-read');
+  renderGlance();
   if (!cxAligned()) {
     /* No analysis that matches the cards: say nothing rather than last week's
        sentences under this week's numbers. */
@@ -809,6 +824,10 @@ cotLoadHistory(false);
 window.addEventListener('resize', function() {
   if (historyData) drawChart(activeKey);
 });
+/* The chart sits behind the details tap (2026-11-04): drawn while closed it
+   has no width, so draw it again when the reader opens it. */
+(function(){ var f = document.getElementById('cot-all');
+  if (f) f.addEventListener('toggle', function(){ if (f.open && historyData) drawChart(activeKey); }); })();
 
 /* The canvas is painted once and does not know the theme changed under it.
    Without this, toggling to light left the previous theme's ink on screen

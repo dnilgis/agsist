@@ -86,10 +86,10 @@ test("hail-map and gdu-calculator: one Daily ask each, honest about what the Dai
 });
 
 test("versions: signup-ask.js v12 where it loads (Oct 21), home.js v15", () => {
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=20';"));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=21';"));
   const idx = read("index.html");
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=20"></script>'));
-  assert.ok(idx.includes('<script src="/components/home.js?v=21"></script>'));
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=21"></script>'));
+  assert.ok(idx.includes('<script src="/components/home.js?v=22"></script>'));
   assert.ok(read("privacy.html").includes("for one year, so the signup prompts stop until then."));
 });
 
@@ -275,7 +275,8 @@ test("town cash bid box: after the Daily, One more? offers a ZIP alert for the t
     const more = box.locator("[data-sa-more]");
     await more.locator(".sa-mh").waitFor();
     const keys = await more.locator("[data-k]").evaluateAll((a) => a.map((x) => x.getAttribute("data-k")));
-    assert.deepEqual(keys, ["zip", "rent"]);
+    // Nov 4 (Sig): after a Daily signup anywhere, Funds this week is offered last, when there is room
+    assert.deepEqual(keys, ["zip", "rent", "cot"]);
     assert.match(await more.locator('[data-k="zip"]').textContent(), new RegExp("within 25 mi of ZIP " + town.zip + " pays \\$"));
     await more.locator(".sa-mp").fill("4.25");
     assert.equal(await more.locator('[data-k="zip"] input[type="checkbox"]').isChecked(), true, "typing a price ticks it");
