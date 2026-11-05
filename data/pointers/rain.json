@@ -1,6 +1,10 @@
 {
  "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
  "pointers": {
+  "rain/alabama/barbour-county.html": {
+   "to": "/rain/alabama",
+   "since": "2026-11-05"
+  },
   "rain/alabama/houston-county.html": {
    "to": "/rain/alabama",
    "since": "2026-10-14"
@@ -160,6 +164,10 @@
   "rain/south-dakota/dewey-county.html": {
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
+  },
+  "rain/south-dakota/turner-county.html": {
+   "to": "/rain/south-dakota",
+   "since": "2026-11-05"
   },
   "rain/tennessee/overton-county.html": {
    "to": "/rain/tennessee",
