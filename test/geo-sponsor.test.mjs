@@ -311,12 +311,16 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       await pg.evaluate(() => {
         window.__ev = []; window.gtag = function () { window.__ev.push([].slice.call(arguments)); };
         document.addEventListener("click", (e) => { const a = e.target.closest("a"); window.__href = a ? a.href : ""; e.preventDefault(); }, true);
-        document.querySelector(".geo-spon").scrollIntoView({ block: "center" });
+        document.documentElement.style.scrollBehavior = "auto";
+        const g = document.querySelector(".geo-spon");
+        window.scrollTo({ top: g.getBoundingClientRect().top + scrollY - innerHeight / 3, behavior: "instant" });
       });
-      await pg.waitForTimeout(300);
+      // wait for the scroll to settle (a slow runner can still be moving)
+      await pg.waitForFunction(() => { const r = document.querySelector(".geo-spon .sa-headline").getBoundingClientRect();
+        const ok = r.top > 0 && r.bottom < innerHeight && r.top === window.__lastTop; window.__lastTop = r.top; return ok; }, null, { timeout: 5000, polling: 100 }).catch(() => {});
       const pt = await pg.evaluate(() => { const r = document.querySelector(".geo-spon .sa-headline").getBoundingClientRect(); const x = r.left + 20, y = r.top + r.height / 2;
-        const hit = document.elementFromPoint(x, y); return { x, y, hit: hit ? hit.className : "" }; });
-      assert.equal(pt.hit, "sa-cta", w + ": the headline is under the card's link");
+        const hit = document.elementFromPoint(x, y); return { x, y, hit: hit ? hit.tagName + "." + hit.className : "", top: r.top, vh: innerHeight }; });
+      assert.equal(pt.hit, "A.sa-cta", w + ": the headline is under the card's link " + JSON.stringify(pt));
       await pg.mouse.click(pt.x, pt.y);
       const tap = await pg.evaluate(() => ({ href: window.__href, ev: window.__ev.filter((e) => e[0] === "event").map((e) => [e[1], e[2] && e[2].slot]) }));
       assert.equal(tap.href, a.href, w + ": the tap opens the tagged link");
