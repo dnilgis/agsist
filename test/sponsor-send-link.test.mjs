@@ -151,6 +151,37 @@ test("a dry run reads everything, sends nothing and writes no marker", () => {
   }
 });
 
+test("checker, PR 336: a send that succeeds and a marker write that fails says SENT, exits non-zero, and tells the workflow", () => {
+  const s = setup();
+  try {
+    const ghout = path.join(s.dir, "gh_output");
+    const code = `
+import sys
+sys.path.insert(0, ${JSON.stringify(path.join(ROOT, "scripts"))})
+import delivery_line, sponsor_send_link as s
+from pathlib import Path
+sent = []
+def broken(mk, rec):
+    raise OSError("disk full")
+t = delivery_line.Tally("sponsor-link")
+rc = s.run("barnco", Path(${JSON.stringify(s.priv)}), "owner@agsist.example", send=sent.append, tally=t, mark=broken)
+print("rc=%d sent=%d counted=%d" % (rc, len(sent), t.sent))
+`;
+    const env = { ...process.env, GITHUB_OUTPUT: ghout, DELIVERY_LINE_OFF: "1" };
+    delete env.GITHUB_ACTIONS;
+    const r = spawnSync("python3", ["-c", code], { cwd: ROOT, env, encoding: "utf8", timeout: 60000 });
+    const out = (r.stdout || "") + (r.stderr || "");
+    assert.match(out, /^barnco: SENT, marker not written: do not rerun without resend \(OSError\)$/m, out);
+    assert.match(out, /^rc=2 sent=1 counted=1$/m, out);
+    assert.doesNotMatch(out, /not sent/, "never says not sent after a send");
+    assert.doesNotMatch(out, /@/);
+    assert.equal(fs.readFileSync(ghout, "utf8"), "sent=1\n", "the workflow learns a send happened");
+    assert.ok(!fs.existsSync(path.join(s.priv, "sent")));
+  } finally {
+    fs.rmSync(s.dir, { recursive: true, force: true });
+  }
+});
+
 test("the workflow: by hand only, sponsor and resend inputs, private pull before the send, hard marker save", () => {
   const wf = fs.readFileSync(path.join(ROOT, ".github/workflows/sponsor-send-link.yml"), "utf8");
   const on = wf.slice(wf.indexOf("\non:"), wf.indexOf("\nconcurrency:"));
@@ -165,5 +196,10 @@ test("the workflow: by hand only, sponsor and resend inputs, private pull before
   const save = wf.indexOf('bash scripts/push_raw.sh "sponsor link sent" private/sponsors/sent');
   assert.ok(pull > 0 && send > pull && save > send, "pull, then send, then save the marker");
   assert.match(wf, /SPONSOR_TO: \$\{\{ secrets\.SPONSOR_TO \}\}/, "Sig's copy comes from the secret sponsor-apply uses");
-  assert.doesNotMatch(wf.slice(save - 300, save), /RAW_SOFT/, "the marker save is hard");
+  const saveStep = wf.slice(wf.indexOf("- name: Save the sent marker"));
+  assert.doesNotMatch(saveStep, /RAW_SOFT/, "the marker save is hard");
+  assert.match(wf, /- name: Send the link\n\s+id: send\n/);
+  assert.match(saveStep, /\n\s+if: steps\.send\.outputs\.sent == '1'\n/, "the marker is saved only after a send");
+  assert.match(saveStep, /::error::SENT, marker not saved: the email already went out\. Do not rerun without resend\.[^\n]*\n\s+exit 1/,
+    "a failed save after a send says the email went out and fails the run");
 });

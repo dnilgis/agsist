@@ -47,6 +47,7 @@ import sponsor_publish as sp  # noqa: E402  (the private folder, the token mask,
 
 SUBJECT = "Your AGSIST ad report"
 BUTTON = "Open your ad report"
+SENT_NO_MARKER = "SENT, marker not written: do not rerun without resend"
 
 
 class Stop(Exception):
@@ -109,8 +110,14 @@ def marker_path(d, sid):
     return d / "sent" / ("%s.json" % sid)
 
 
-def run(sid, d, sig, resend=False, dry=False, send=None, now=None, out=print, tally=None):
-    """Returns 0 (sent, skipped or a clean dry run) or 1 (not sent). send(msg) delivers one message."""
+def write_marker(mk, rec):
+    mk.parent.mkdir(parents=True, exist_ok=True)
+    mk.write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
+
+
+def run(sid, d, sig, resend=False, dry=False, send=None, now=None, out=print, tally=None, mark=write_marker):
+    """Returns 0 (sent, skipped or a clean dry run), 1 (not sent) or 2 (sent, marker not written).
+    send(msg) delivers one message; mark(path, record) writes the sent marker."""
     tally = tally or delivery_line.Tally("sponsor-link", dry=dry)
     sp.mask(sp.load_tokens(d))    # Actions only: every token is blanked from the log before anything else
     try:
@@ -134,12 +141,27 @@ def run(sid, d, sig, resend=False, dry=False, send=None, now=None, out=print, ta
         return 0
     send(m)
     tally.sent += 1
+    step_output("sent", "1")      # the workflow saves the marker only after a send, and says the email went
     when = (now or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    mk.parent.mkdir(parents=True, exist_ok=True)
-    mk.write_text(json.dumps({"id": sid, "sent_utc": when, "resend": bool(resend),
-                              "run": env("GITHUB_RUN_ID", "")}, indent=1) + "\n", encoding="utf-8")
+    try:
+        mark(mk, {"id": sid, "sent_utc": when, "resend": bool(resend), "run": env("GITHUB_RUN_ID", "")})
+    except Exception as e:                                   # noqa: BLE001  the email already went out
+        out("%s: %s (%s)" % (sid, SENT_NO_MARKER, type(e).__name__))
+        return 2
     out("%s: the report link went to the sponsor (1) with a copy to Sig%s" % (sid, " (resend)" if resend else ""))
     return 0
+
+
+def step_output(key, value):
+    """In Actions, a step output (GITHUB_OUTPUT). Never raises: the send already happened."""
+    p = os.environ.get("GITHUB_OUTPUT")
+    if not p:
+        return
+    try:
+        with open(p, "a", encoding="utf-8") as f:
+            f.write("%s=%s\n" % (key, value))
+    except Exception:                                        # noqa: BLE001
+        pass
 
 
 def smtp_send(m):
@@ -259,6 +281,16 @@ def selftest():
         ck("dry run: greeting falls back to Hello", "Hello" in lines[0], lines)
         rc, sent, lines, t = go(d5)
         ck("no first name: Hello,", sent and sent[0].get_body(("plain",)).get_content().startswith("Hello,"))
+
+        d6 = Path(tmp) / "f"
+        setup(d6)
+        def broken(mk, rec):
+            raise OSError("disk full")
+        rc, sent, lines, t = go(d6, mark=broken)
+        ck("marker write fails after a send: exit non-zero", rc != 0 and len(sent) == 1, (rc, len(sent)))
+        ck("marker write fails: says SENT, never 'not sent'",
+           any(SENT_NO_MARKER in x for x in lines) and not any("not sent" in x for x in lines), lines)
+        ck("marker write fails: the send is still counted", (t.waiting, t.sent) == (1, 1))
 
     print("sponsor_send_link selftest: %d failed" % len(fails))
     return 1 if fails else 0

@@ -57,6 +57,7 @@ jobs:
         run: bash scripts/pull_raw.sh private/sponsors
 
       - name: Send the link
+        id: send
         env:
           SPONSOR_ID: ${{ inputs.sponsor }}
           RESEND: ${{ inputs.resend == true && '1' || '0' }}
@@ -71,9 +72,13 @@ jobs:
         run: python3 scripts/sponsor_send_link.py
 
       # Hard on purpose: if the marker does not land after a send, the run is red, so nobody reruns
-      # it and mails the sponsor twice without resend.
+      # it and mails the sponsor twice without resend. Runs only after a send (the step output sent=1).
       - name: Save the sent marker
+        if: steps.send.outputs.sent == '1'
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_BRANCH: private-data
-        run: bash scripts/push_raw.sh "sponsor link sent" private/sponsors/sent
+        run: |
+          bash scripts/push_raw.sh "sponsor link sent" private/sponsors/sent && exit 0
+          echo "::error::SENT, marker not saved: the email already went out. Do not rerun without resend."
+          exit 1
