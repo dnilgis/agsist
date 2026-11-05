@@ -73,3 +73,19 @@ test('the PR checks\' guard job runs it on every pull request, with the job toke
   assert.match(step, /GH_TOKEN: \$\{\{ github\.token \}\}/);
   assert.match(step, /run: python3 scripts\/dev\/ai_footer_check\.py\s*$/);
 });
+
+test('a long pull request body warns and passes (Nov 5: say what changed for readers)', () => {
+  const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'aifoot-'));
+  const ev = path.join(tmp, 'event.json');
+  fs.writeFileSync(ev, JSON.stringify({ pull_request: { number: 9, body: 'Town pages show the bid date. '.repeat(50) } }));
+  const env = { ...process.env, GITHUB_EVENT_PATH: ev, GITHUB_REPOSITORY: 'dnilgis/agsist', GITHUB_API_URL: 'http://127.0.0.1:9', GH_TOKEN: '', GITHUB_ACTIONS: 'true' };
+  const r = spawnSync('python3', ['scripts/dev/ai_footer_check.py'], { cwd: root, encoding: 'utf8', env });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /::warning title=Long wording::the pull request body is \d+ characters .*method goes in private notes/);
+  const short = path.join(tmp, 'short.json');
+  fs.writeFileSync(short, JSON.stringify({ pull_request: { number: 9, body: 'Town pages show the bid date.' } }));
+  const s = spawnSync('python3', ['scripts/dev/ai_footer_check.py'], { cwd: root, encoding: 'utf8', env: { ...env, GITHUB_EVENT_PATH: short } });
+  assert.equal(s.status, 0, s.stdout + s.stderr);
+  assert.doesNotMatch(s.stdout, /Long wording/);
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
