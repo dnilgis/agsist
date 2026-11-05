@@ -61,6 +61,22 @@ CERTIFIED PARCEL EXCEPT EXCEPTING THENCE BEGINNING COMMENCING TOWNSHIPS RANGE ME
 SOUTHEAST SOUTHWEST RECORDED VOLUME DOCUMENT OUTLOT CONDOMINIUM PLAT FIRST SECOND THIRD FOURTH""".split())
 
 
+# A party that looks like an entity (checker, Nov 5): it carries one of these words, or it is not 1 to 5 alphabetic
+# words. Only such a party may have its state, public body, survey or county place word skipped by the common-word rule;
+# a person whose surname is a township's name is still held.
+ENTITY_WORDS = set("""LLC INC LTD LLP LP CORP CORPORATION COMPANY CO TRUST TRUSTS BANK ASSOCIATION ASSN COUNTY STATE CITY VILLAGE
+TOWN TOWNSHIP CHURCH SCHOOL DISTRICT CREDIT UNION PARTNERSHIP PARTNERS HOLDINGS INVESTMENTS INVESTMENT ENTERPRISES
+PROPERTIES PROPERTY LIMITED GROUP SERVICES FARMS FARM LAND LANDS ESTATES DEPARTMENT DEPT COMMISSION COMMISSIONERS
+AUTHORITY AGENCY BOARD SUPERVISORS UTILITY UTILITIES ELECTRIC POWER ENERGY COOPERATIVE COOP TELEPHONE COMMUNICATIONS
+PIPELINE RAILROAD RAILWAY UNITED STATES AMERICA FEDERAL GOVERNMENT CONSERVANCY FOUNDATION SOCIETY CLUB MINISTRIES
+HOSPITAL UNIVERSITY COLLEGE""".split())
+
+
+def looks_like_entity(party):
+    w = re.findall(r"[A-Z]+", up(party))
+    return any(x in ENTITY_WORDS for x in w) or not 1 <= len(w) <= 5
+
+
 def tokens(s):
     return set(w for w in re.findall(r"[A-Z]+", up(s)) if len(w) >= 4)
 
@@ -77,16 +93,25 @@ def rare_words(legals):
 
 def names_in_legal(legal, pair, rare, places=frozenset()):
     """True when the legal holds a word of the row's own seller or buyer that is not an entity or survey word: a rare
-    one of 4 letters or more, or any one of OWN_MIN letters or more, rare or not, that is not a state, public body,
-    survey word or the county's own place name (checker, Nov 5: a common surname of the row's own party in its own
-    legal still names the party). Never prints or returns the word."""
+    one of 4 letters or more, or any one of OWN_MIN letters or more, rare or not (checker, Nov 5: a common surname of
+    the row's own party in its own legal still names the party). A state, public body, survey word or the county's own
+    place name is skipped only when its party looks like an entity (looks_like_entity). Never prints or returns the word."""
     lt = tokens(legal)
     for v in pair:
-        for w in tokens(v):
-            if w in NAME_STOP or w not in lt:
-                continue
-            if w in rare or (len(w) >= OWN_MIN and w not in OWN_SKIP and w not in places):
-                return True
+        for party in str(v or "").split(";"):
+            ent = None
+            for w in tokens(party):
+                if w in NAME_STOP or w not in lt:
+                    continue
+                if w in rare:
+                    return True
+                if len(w) >= OWN_MIN:
+                    if w not in OWN_SKIP and w not in places:
+                        return True
+                    if ent is None:
+                        ent = looks_like_entity(party)
+                    if not ent:
+                        return True      # a person whose name is also a state, survey or place word: held all the same
     return False
 
 
@@ -394,6 +419,14 @@ def selftest():
        not names_in_legal("RIGHT OF WAY TO STATE OF WISCONSIN DEPT OF TRANSPORTATION IN VILLAGE OF MAPLEFORD",
                           ["WISCONSIN DEPARTMENT OF TRANSPORTATION", "MAPLEFORD VILLAGE"], set(), {"MAPLEFORD"})
        and names_in_legal("LOT 1 MAPLEFORD", ["MAPLEFORD, ANN", None], {"MAPLEFORD"}, {"MAPLEFORD"}))
+    ck("a person whose surname is a township's name is held; an entity with the same place word is not",
+       names_in_legal("NE SEC 4 MAPLEFORD TOWNSHIP", ["MAPLEFORD, ANN B", None], set(), {"MAPLEFORD"})
+       and not names_in_legal("NE SEC 4 MAPLEFORD TOWNSHIP", ["MAPLEFORD GRAIN LLC", None], set(), {"MAPLEFORD"})
+       and not names_in_legal("NE SEC 4 MAPLEFORD TOWNSHIP", ["TOWNSHIP OF MAPLEFORD", None], set(), {"MAPLEFORD"}))
+    ck("each party of a pair is read on its own: a person after an entity is still held",
+       names_in_legal("RIGHT OF WAY WISCONSIN", ["WISCONSIN DEPT OF TRANSPORTATION; WISCONSIN, JO", None], set(), set()))
+    ck("looks_like_entity: an entity word, or not 1 to 5 words", looks_like_entity("A B C D E F") and looks_like_entity("SMITH FARMS")
+       and not looks_like_entity("SMITH, JOHN A & MARY B") and looks_like_entity(""))
     ck("place words come from the county and its munis", place_words({"county": "Dane", "munis": {"0": ["Mapleford", 1, 2]}}) == {"DANE", "MAPLEFORD"})
     print("land_names selftest: %s" % ("ok" if not bad else "%d failure(s)" % bad))
     return 1 if bad else 0
