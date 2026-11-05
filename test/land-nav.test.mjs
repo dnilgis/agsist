@@ -69,11 +69,11 @@ test("every Atlas county home has one land sales line, to a real county page or 
       }
     }
   }
-  assert.ok(county >= 260, "county links: " + county);
-  assert.ok(state >= 2800, "state lines: " + state);
+  assert.ok(county >= 360, "county links: " + county);
+  assert.ok(state >= 2780, "state lines: " + state);
 });
 
-test("rent pages: every land sales link resolves, and the three states with sales link their counties", () => {
+test("rent pages: every land sales link resolves, and the states with sales link their counties", () => {
   for (const f of readdirSync(ROOT + "rent")) {
     if (!f.endsWith(".html")) continue;
     const html = rd("rent/" + f);
@@ -81,8 +81,8 @@ test("rent pages: every land sales link resolves, and the three states with sale
     const st = f.slice(0, -5);
     if (LIVE[st]) {
       assert.ok(html.includes(`href="/land-sales/#${st}"`), `rent/${f}: the state's land sales line`);
-      // Vermont (14 counties) and New Jersey (21): every row of the rent table links; the bigger states keep 60 or more
-      const need = st === "vermont" || st === "new-jersey" ? (html.match(/<tr><td/g) || []).length : 60;
+      // Vermont (14 counties), New Jersey (21) and Florida (59 rent rows): every row of the rent table links; the bigger states keep 60 or more
+      const need = st === "vermont" || st === "new-jersey" || st === "florida" ? (html.match(/<tr><td/g) || []).length : 60;
       assert.ok(need > 0 && (html.match(/class="rs-ls"/g) || []).length >= need, `rent/${f}: county sales links`);
     } else assert.equal(hrefs(html).length, 0, `rent/${f}: no land sales link without sales`);
   }

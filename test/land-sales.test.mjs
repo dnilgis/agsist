@@ -207,7 +207,15 @@ test("the coverage table: every state, honest statuses, the live count matches t
   for (const st of ["illinois", "wisconsin", "indiana"]) assert.ok(fs.readdirSync(path.join(ROOT, "land-sales", st)).length > 70, "pages for " + st);
   assert.equal(fs.readdirSync(path.join(ROOT, "land-sales", "vermont")).length, 14, "a page for each of Vermont's 14 counties");
   assert.equal(fs.readdirSync(path.join(ROOT, "land-sales", "new-jersey")).length >= 15, true, "a page for each New Jersey county with farm sales");
-  assert.match(read("land-sales/index.html"), /Sales reported for 5 states: Illinois, Indiana, New Jersey, Vermont and Wisconsin\./);
+  // the hub is a CROSS page (build_land_sales.carry): a build without the hosted Florida copy keeps it as committed, so it
+  // names Florida only after the next land-data run. It must count exactly the states it names, all of them live.
+  const hub = read("land-sales/index.html").match(/Sales reported for (\d+) states: ([^.]+)\./);
+  assert.ok(hub, "the hub counts the live states");
+  const named = hub[2].split(/, | and /);
+  assert.equal(named.length, Number(hub[1]), "the count matches the names");
+  const liveNames = cov.states.filter((s) => s.status === "live").map((s) => s.name);
+  assert.ok(named.every((n) => liveNames.includes(n)), "every named state is live");
+  assert.deepEqual(liveNames.filter((n) => !named.includes(n)).filter((n) => n !== "Florida"), [], "only Florida may wait for the next land-data run");
   // Vermont (Oct 29): the method note maps the return onto the shared rule; current use is a fact per sale; the ask shows
   const vtPage = read("land-sales/vermont/addison-county.html");
   assert.match(vtPage, /Vermont sales come from the property transfer tax return\. A return is a farm sale here when the land&#x27;s use before or after the sale is an operating farm or timberland, or open land enrolled in current use\./);
