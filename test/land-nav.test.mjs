@@ -17,7 +17,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const rd = (p) => readFileSync(ROOT + p, "utf8");
 const cov = JSON.parse(rd("data/land-sales/coverage.json"));
 const COV = Object.fromEntries(cov.states.map((r) => [r.name, r]));
-const LIVE = { illinois: "IL", wisconsin: "WI", indiana: "IN", vermont: "VT", "new-jersey": "NJ" };
+const LIVE = { illinois: "IL", wisconsin: "WI", indiana: "IN", vermont: "VT", "new-jersey": "NJ", florida: "FL" };
 
 /* '/land-sales/x/y#z' -> true when the file exists and, with a #z, the page carries id="z" */
 const ids = {};
@@ -69,11 +69,11 @@ test("every Atlas county home has one land sales line, to a real county page or 
       }
     }
   }
-  assert.ok(county >= 260, "county links: " + county);
-  assert.ok(state >= 2800, "state lines: " + state);
+  assert.ok(county >= 360, "county links: " + county);
+  assert.ok(state >= 2780, "state lines: " + state);
 });
 
-test("rent pages: every land sales link resolves, and the three states with sales link their counties", () => {
+test("rent pages: every land sales link resolves, and the states with sales link their counties", () => {
   for (const f of readdirSync(ROOT + "rent")) {
     if (!f.endsWith(".html")) continue;
     const html = rd("rent/" + f);
@@ -81,8 +81,8 @@ test("rent pages: every land sales link resolves, and the three states with sale
     const st = f.slice(0, -5);
     if (LIVE[st]) {
       assert.ok(html.includes(`href="/land-sales/#${st}"`), `rent/${f}: the state's land sales line`);
-      // Vermont (14 counties) and New Jersey (21): every row of the rent table links; the bigger states keep 60 or more
-      const need = st === "vermont" || st === "new-jersey" ? (html.match(/<tr><td/g) || []).length : 60;
+      // Vermont (14 counties), New Jersey (21) and Florida (59 rent rows): every row of the rent table links; the bigger states keep 60 or more
+      const need = st === "vermont" || st === "new-jersey" || st === "florida" ? (html.match(/<tr><td/g) || []).length : 60;
       assert.ok(need > 0 && (html.match(/class="rs-ls"/g) || []).length >= need, `rent/${f}: county sales links`);
     } else assert.equal(hrefs(html).length, 0, `rent/${f}: no land sales link without sales`);
   }
@@ -118,8 +118,8 @@ test("the hub: a jump row to every state list and the source table, and the save
   const row = (html.match(/<p class="ls-jump">(.*?)<\/p>/) || [])[1];
   assert.ok(row, "jump row");
   const jumps = [...row.matchAll(/href="(#[a-z-]+)"/g)].map((m) => m[1]);
-  // Oct 29, 2026: the Illinois farmland sale index is a section of the hub (it was /farmland-index); Vermont and New Jersey are live
-  assert.deepEqual(jumps, ["#illinois", "#wisconsin", "#indiana", "#vermont", "#new-jersey", "#illinois-index", "#coverage"]);
+  // Oct 29, 2026: the Illinois farmland sale index is a section of the hub (it was /farmland-index); Vermont and New Jersey are live; Florida joined Nov 5
+  assert.deepEqual(jumps, ["#illinois", "#wisconsin", "#indiana", "#vermont", "#new-jersey", "#florida", "#illinois-index", "#coverage"]);
   for (const j of jumps) assert.ok(resolves("/land-sales/" + j), j);
   assert.ok(html.indexOf('class="ls-jump"') < html.indexOf('<h2 id="illinois">'), "near the top");
   assert.match(html, /<p class="ls-mine" id="ls-mine" hidden><\/p>/);
