@@ -790,7 +790,7 @@ def build(results, today, now_utc, prev=None, points=None, log=print):
     if len(uniq) < MIN_STATIONS:
         raise Refuse("only %d stations passed (need %d)" % (len(uniq), MIN_STATIONS))
     doc = {
-        "about": 'Measured soil temperature near 4 in by county.' % DAYS,
+        "about": 'Measured soil temperature near 4 in by county.',
         "updated_utc": now_utc,
         "max_miles": MAX_MI,
         "max_age_days": MAX_AGE_DAYS,
