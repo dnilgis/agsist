@@ -840,7 +840,9 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
 
       <section class="pb-page pb-in cal-sec" id="scorecard" aria-labelledby="sc-h">
       <h2 class="cal-big-h" id="sc-h">Prediction bot scorecard</h2>
-      <p class="pb-plain" id="pb-plain"><!--SEED:pb:pb-plain-->In plain words: replayed on history since 2013, the bot&rsquo;s rule was right 47.6% of the time, no better than a coin flip. I publish its calls anyway, graded by code, so you can hold any market call to the same test. The 8 open calls are not graded until Nov 17, 2026 or later, on that day&rsquo;s close only.<!--/SEED--></p>
+      <p class="pb-plain" id="pb-plain"><!--
+--><!--SEED:pb:pb-plain-->In plain words: replayed on history since 2013, the bot&rsquo;s rule was right 47.6% of the time, no better than a coin flip. I publish its calls anyway, graded by code, so you can hold any market call to the same test. The 8 open calls are not graded until Nov 17, 2026 or later, on that day&rsquo;s close only.<!--/SEED--><!--
+--></p>
       <p class="pb-sub">A simple statistical bot calls whether corn, soybeans, Chicago wheat and KC wheat will close higher or lower about four weeks out, one call per crop after each weekly CFTC report. Code grades every call against Yahoo Finance daily closes, and nobody picks which calls count. The timing rules, and why the four Oct 5 entry prices were set by hand, are under How the arithmetic works, further down.</p>
 
       <noscript><p><strong>This page needs JavaScript to read the record.</strong> The raw file is <a href="/data/predictions.json">/data/predictions.json</a>.</p></noscript>
@@ -848,34 +850,56 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       <div class="pb-verdicts" aria-live="polite">
         <section class="pb-box" id="pb-live" aria-labelledby="pb-live-tag">
           <div class="pb-box-tag" id="pb-live-tag">Live record</div>
-          <p class="pb-verdict" id="pb-live-verdict"><!--SEED:pb:pb-live-verdict-->Not enough calls yet.<!--/SEED--></p>
-          <p id="pb-live-line"><!--SEED:pb:pb-live-line-->4 graded so far. A rate is shown from 40 graded calls and 30 non-overlapping windows. Record as of Nov 4, 2026.<!--/SEED--></p>
-          <p id="pb-live-luck"><!--SEED:pb:pb-live-luck-->8 calls are waiting for their grading day. The first live calls are made at the Oct 5, 2026 close and graded four weeks later.<!--/SEED--></p>
+          <p class="pb-verdict" id="pb-live-verdict"><!--
+--><!--SEED:pb:pb-live-verdict-->Not enough calls yet.<!--/SEED--><!--
+--></p>
+          <p id="pb-live-line"><!--
+--><!--SEED:pb:pb-live-line-->4 graded so far. A rate is shown from 40 graded calls and 30 non-overlapping windows. Record as of Nov 4, 2026.<!--/SEED--><!--
+--></p>
+          <p id="pb-live-luck"><!--
+--><!--SEED:pb:pb-live-luck-->8 calls are waiting for their grading day. The first live calls are made at the Oct 5, 2026 close and graded four weeks later.<!--/SEED--><!--
+--></p>
         </section>
         <section class="pb-box" id="pb-bt" aria-labelledby="pb-bt-tag">
           <div class="pb-box-tag" id="pb-bt-tag">Backtest</div>
-          <p class="pb-verdict" id="pb-bt-verdict"><!--SEED:pb:pb-bt-verdict-->No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.<!--/SEED--></p>
-          <p id="pb-bt-line"><!--SEED:pb:pb-bt-line-->Jan 7, 2013 to Aug 31, 2026. Right on 1,301 of 2,736 weekly calls (47.6%). Across four non-overlapping groups of calls: 44.6% to 51.2% (170 windows).<!--/SEED--></p>
-          <p id="pb-bt-luck"><!--SEED:pb:pb-bt-luck-->Odds pure guessing does at least this well: about 96 in 100; at least this badly: about 4 in 100 (about 10 in 100 after adjusting for the records tested at once).<!--/SEED--></p>
-          <p id="pb-bt-base"><!--SEED:pb:pb-bt-base-->Always saying down: 51.1%. Always saying up: 48.9% (2,736 weekly calls).<!--/SEED--></p>
+          <p class="pb-verdict" id="pb-bt-verdict"><!--
+--><!--SEED:pb:pb-bt-verdict-->No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.<!--/SEED--><!--
+--></p>
+          <p id="pb-bt-line"><!--
+--><!--SEED:pb:pb-bt-line-->Jan 7, 2013 to Aug 31, 2026. Right on 1,301 of 2,736 weekly calls (47.6%). Across four non-overlapping groups of calls: 44.6% to 51.2% (170 windows).<!--/SEED--><!--
+--></p>
+          <p id="pb-bt-luck"><!--
+--><!--SEED:pb:pb-bt-luck-->Odds pure guessing does at least this well: about 96 in 100; at least this badly: about 4 in 100 (about 10 in 100 after adjusting for the records tested at once).<!--/SEED--><!--
+--></p>
+          <p id="pb-bt-base"><!--
+--><!--SEED:pb:pb-bt-base-->Always saying down: 51.1%. Always saying up: 48.9% (2,736 weekly calls).<!--/SEED--><!--
+--></p>
         </section>
       </div>
       <p class="pb-note">The two boxes are kept apart on purpose. The backtest is the rule replayed on 2013&ndash;2026 history. The live record is calls made in public before the outcome was known. Adding them together would let old history prop up the live number.</p>
 
       <h3 class="pb-h">Latest calls</h3>
-      <p id="pb-latest-when" class="pb-note"><!--SEED:pb:pb-latest-when-->Made at the Oct 26, 2026 close.<!--/SEED--></p>
+      <p id="pb-latest-when" class="pb-note"><!--
+--><!--SEED:pb:pb-latest-when-->Made at the Oct 26, 2026 close.<!--/SEED--><!--
+--></p>
       <div class="pb-wrap"><table class="pb-table" id="pb-latest" aria-describedby="pb-latest-when">
         <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry close</th><th scope="col">Grades on</th><th scope="col">Where it stands (not graded)</th><th scope="col">Why</th></tr></thead>
-        <tbody><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.55</td><td>Nov 23, 2026</td><td>$4.4575 on Nov 4, 9.25 cents under entry: right side so far</td><td>13-week trend down (-3.8% over 13 weeks). Funds at the 79th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Jan '27</td><td class="num">$12.525</td><td>Nov 23, 2026</td><td>$12.0375 on Nov 4, 48.75 cents under entry: right side so far</td><td>13-week trend down (-1.2% over 13 weeks). Funds at the 89th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>Chicago wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$6.16</td><td>Nov 23, 2026</td><td>$5.9925 on Nov 4, 16.75 cents under entry: right side so far</td><td>13-week trend down (-9.5% over 13 weeks). Funds at the 74th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$6.59</td><td>Nov 23, 2026</td><td>$6.3425 on Nov 4, 24.75 cents under entry: right side so far</td><td>13-week trend down (-11.7% over 13 weeks). Funds at the 81st percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><!--/SEED--></tbody>
+        <tbody><!--
+--><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.55</td><td>Nov 23, 2026</td><td>$4.4575 on Nov 4, 9.25 cents under entry: right side so far</td><td>13-week trend down (-3.8% over 13 weeks). Funds at the 79th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Jan '27</td><td class="num">$12.525</td><td>Nov 23, 2026</td><td>$12.0375 on Nov 4, 48.75 cents under entry: right side so far</td><td>13-week trend down (-1.2% over 13 weeks). Funds at the 89th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>Chicago wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$6.16</td><td>Nov 23, 2026</td><td>$5.9925 on Nov 4, 16.75 cents under entry: right side so far</td><td>13-week trend down (-9.5% over 13 weeks). Funds at the 74th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$6.59</td><td>Nov 23, 2026</td><td>$6.3425 on Nov 4, 24.75 cents under entry: right side so far</td><td>13-week trend down (-11.7% over 13 weeks). Funds at the 81st percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><!--/SEED--><!--
+--></tbody>
       </table></div>
       <p class="pb-note">Where it stands is the latest close of the same contract, read by the bot after each run. It is not a grade: a call is graded on its grading day&rsquo;s close only, and nothing in that column is ever counted. Calls are graded on futures: a call that is right by 10&cent; moves your local bid the same 10&cent; only if basis holds, and basis is not graded here.</p>
       <p class="pl-line" data-state-bid="corn soybeans wheat" data-zip-link hidden></p><script src="/components/price-local.js?v=10" defer></script>
-      <p class="pb-note" id="pb-next"><!--SEED:pb:pb-next-->Next calls: at the Nov 9, 2026 close, on the Nov 3, 2026 report.<!--/SEED--></p>
+      <p class="pb-note" id="pb-next"><!--
+--><!--SEED:pb:pb-next-->Next calls: at the Nov 9, 2026 close, on the Nov 3, 2026 report.<!--/SEED--><!--
+--></p>
 
       <h3 class="pb-h">By crop</h3>
       <div class="pb-wrap"><table class="pb-table" id="pb-bycrop">
         <thead><tr><th scope="col">Crop</th><th scope="col" class="num">Live, right</th><th scope="col" class="num">Live windows</th><th scope="col" class="num">Backtest, right</th><th scope="col" class="num">Backtest, non-overlapping</th><th scope="col">Backtest verdict</th></tr></thead>
-        <tbody><!--SEED:pb:bycrop--><tr><td>Corn</td><td class="num">1 graded</td><td class="num">n/a</td><td class="num">347 of 684 (50.7%)</td><td class="num">49.1%&ndash;51.8% (170 windows)</td><td>No better than a coin flip.</td></tr><tr><td>Soybeans</td><td class="num">1 graded</td><td class="num">n/a</td><td class="num">318 of 684 (46.5%)</td><td class="num">43.3%&ndash;50.6% (170 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying up.</td></tr><tr><td>Chicago wheat</td><td class="num">1 graded</td><td class="num">n/a</td><td class="num">330 of 684 (48.2%)</td><td class="num">45.0%&ndash;54.7% (170 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.</td></tr><tr><td>KC wheat</td><td class="num">1 graded</td><td class="num">n/a</td><td class="num">306 of 684 (44.7%)</td><td class="num">39.8%&ndash;48.5% (170 windows)</td><td>No better than a coin flip; below half in 5 of 5 ways of counting, and worse than always saying down.</td></tr><!--/SEED--></tbody>
+        <tbody><!--
+--><!--SEED:pb:bycrop--><tr><td>Corn</td><td class="num">1 graded</td><td class="num">n/a</td><td class="num">347 of 684 (50.7%)</td><td class="num">49.1%&ndash;51.8% (170 windows)</td><td>No better than a coin flip.</td></tr><tr><td>Soybeans</td><td class="num">1 graded</td><td class="num">n/a</td><td class="num">318 of 684 (46.5%)</td><td class="num">43.3%&ndash;50.6% (170 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying up.</td></tr><tr><td>Chicago wheat</td><td class="num">1 graded</td><td class="num">n/a</td><td class="num">330 of 684 (48.2%)</td><td class="num">45.0%&ndash;54.7% (170 windows)</td><td>No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.</td></tr><tr><td>KC wheat</td><td class="num">1 graded</td><td class="num">n/a</td><td class="num">306 of 684 (44.7%)</td><td class="num">39.8%&ndash;48.5% (170 windows)</td><td>No better than a coin flip; below half in 5 of 5 ways of counting, and worse than always saying down.</td></tr><!--/SEED--><!--
+--></tbody>
       </table></div>
       <p class="pb-note" id="pb-bycrop-note"></p>
 
@@ -914,7 +938,9 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
           <dt>Raw files</dt>
           <dd><a href="/data/predictions.json">/data/predictions.json</a> (calls, record, rule) and <a href="/data/predictions-backtest.json">/data/predictions-backtest.json</a> (every backtest call).</dd>
           <dt>Last changed</dt>
-          <dd id="pb-updated"><!--SEED:pb:pb-updated-->2026-11-04 19:43:56 UTC<!--/SEED--></dd>
+          <dd id="pb-updated"><!--
+--><!--SEED:pb:pb-updated-->2026-11-04 19:43:56 UTC<!--/SEED--><!--
+--></dd>
         </dl>
       </details>
 
