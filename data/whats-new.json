@@ -30,6 +30,13 @@
    "link": "/basis"
   },
   {
+   "id": "2026-11-04-wxcard",
+   "date": "2026-11-04",
+   "title": "Season so far in Local conditions",
+   "line": "Rain and corn GDDs since Jan 1 and May 1 and for the last 30 days, each against normal, from your county rain page's station, all year.",
+   "link": "/"
+  },
+  {
    "id": "2026-11-04-funds",
    "date": "2026-11-04",
    "title": "Fund positions at a glance",

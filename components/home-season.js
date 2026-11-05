@@ -69,7 +69,7 @@
   if(S){
     if(!S.urea)root.classList.add('s7-no-urea');
     if(!S.planting)root.classList.add('s7-no-planting');
-    if(!S.gdu)root.classList.add('s7-no-gdu');
+    /* gdu: 2026-11-04 (Sig) the season figures show all year (components/season-wx.js); the flag hides nothing now. */
     if(!S.hail)root.classList.add('s7-no-hail');
     if(!S.cropTour)root.classList.add('s7-no-croptour');
     if(S.hailLead){root.classList.add('s7-hail-lead');var lh=$('land-hail');if(lh&&lh.parentNode&&lh.previousElementSibling)lh.parentNode.insertBefore(lh,lh.parentNode.firstElementChild);}
@@ -708,11 +708,8 @@
       /* 2026-10-06: the hero band reads today's verdict from here, so the page
          never shows two spray reads. */
       try{window.__agsistSprayToday=WX.spray?WX.spray[0]:null;window.dispatchEvent(new CustomEvent('agsist:spray',{detail:window.__agsistSprayToday}));}catch(e){}
-      var strip=$('spray-days-strip');
-      if(strip){
-        if(WX.spray){strip.innerHTML=out.map(function(r){return r?'<div class="spray-day '+r.s+'"><span class="spray-day-name">'+r.label+'</span><span class="spray-day-icon"><svg class="ic" aria-hidden="true"><use href="'+ICON[r.s]+'"/></svg></span><span class="spray-day-status">'+r.t+'</span><span class="spray-day-reason" title="'+esc(r.why)+'">'+esc(r.short)+'</span></div>':'';}).join('');var sw=$('spray-windows');if(sw)sw.classList.add('loaded');}
-        else strip.innerHTML='<div class="s7-wx-off">Not loaded yet</div>';
-      }
+      /* 2026-11-04 (Sig): the five-day spray table left Local conditions; today's read stays as one line
+         below. /spray and Field Scout keep their own spray days. */
       if(!WX.spray){
         var st0=$('wsp-spray-status'),dt0=$('wsp-spray-detail');
         if(st0){st0.textContent='Not loaded yet';st0.style.color='var(--text-muted)';}
@@ -721,10 +718,8 @@
       var el=$('wx-today-summary');
       if(el){
         var r0=WX.spray&&WX.spray[0];
-        var clauses=[];
-        if(typeof a.gduPct==='number')clauses.push(a.gduPct>2?'season heat is running <strong>'+a.gduPct+'% ahead of</strong> the 5-year normal':(a.gduPct<-2?'season heat is running <strong>'+Math.abs(a.gduPct)+'% behind</strong> the 5-year normal':'season heat is right at the 5-year normal'));
-        if(typeof a.prPct==='number')clauses.push('30-day rain is '+(a.prPct>5?'<strong>'+a.prPct+'% above</strong>':(a.prPct<-5?'<strong>'+Math.abs(a.prPct)+'% below</strong>':'near'))+' normal');
-        var ctx='';if(clauses.length){var j=clauses.join(', and ');ctx=' '+j.charAt(0).toUpperCase()+j.slice(1)+'.';}
+        /* the season against normal is in Season so far (components/season-wx.js), one source, so not here */
+        var ctx='';
         el.innerHTML=r0?'<span class="wx-today-icon" aria-hidden="true" style="color:'+COLOR[r0.s]+'"><svg class="ic" aria-hidden="true"><use href="'+ICON[r0.s]+'"/></svg></span><span class="wx-today-text"><strong>Today:</strong> '+r0.long+'. '+esc(r0.why.charAt(0).toUpperCase()+r0.why.slice(1))+'.'+ctx+'</span>'
           :'<span class="wx-today-text"><strong>Today:</strong> spray read not loaded yet.</span>';
         el.classList.add('loaded');

@@ -74,7 +74,7 @@ RAIN = os.path.join(ROOT, "data", "rain")
 OUT = os.path.join(RAIN, "wx")
 NORM_DIR = os.path.join(RAIN, "wxnorm")
 SCHEMA = "agsist-rain-wx/1"
-NORM_SCHEMA = "agsist-rain-wxnorm/1"
+NORM_SCHEMA = "agsist-rain-wxnorm/2"   # /2 (Nov 4): adds "e", the Jan 1 to Apr 30 GDD normal for the 30-day figure; a /1 cache is read again
 URL = "https://data.rcc-acis.org/MultiStnData"
 UA = "agsist.com county rain (https://agsist.com/rain; daily)"
 TIMEOUT_S = 180
@@ -96,6 +96,8 @@ FIRST_YEAR = 1850          # ACIS answers "M" for years before a station began
 NOTE_MIN_SPAN = 10
 NOTE_MAXMISSING = 1
 WITHHELD = "m"             # a figure withheld for missing days, in the written file
+RECENT_DAYS = 30           # the home card's last-30-days GDD figure ("g30")
+GDD30_PCT_MIN = 50         # under this many GDDs of normal a 30-day percent is too jumpy to print (winter)
 
 # a 365-day calendar for the normals: Feb 29 has no day of its own
 _REF = 2021
@@ -367,6 +369,9 @@ def county_row(meta, hi, lo, mi, year, same, norm, recs):
                     if nv > 0:
                         g += [int(round(nv)), ny, int(round(100 * tot / nv))]
             row["g"] = g
+    g30 = gdd_recent(hi, lo, dates, norm)
+    if g30 is not None:
+        row["g30"] = g30
     row["mh"], row["ml"], row["n"] = mh, ml, n
     row["h"] = WITHHELD if withheld(mh, n) else extreme(hi, dates, max)
     row["l"] = WITHHELD if withheld(ml, n) else extreme(lo, dates, min)
@@ -450,6 +455,62 @@ def unrle(r):
     return [v for v, k in r for _ in range(k)]
 
 
+def norm_day(norm, k):
+    """(mean corn GDD x10, years counted) on day-of-year k from a station's cache entry, or None."""
+    key, i = ("g", k - GDD_DOY0) if k >= GDD_DOY0 else ("e", k - 1)
+    ng = (norm or {}).get(key)
+    if not ng:
+        return None
+    c = unrle(ng["c"])
+    return (ng["m"][i], c[i]) if 0 <= i < len(c) else None
+
+
+def gdd_recent(hi, lo, dates, norm, days=RECENT_DAYS):
+    """The last `days` days ending on the last day: [total, missing] plus [normal, years, percent or None]
+    when every reported day has a normal of MIN_YEARS or more years, the normal summed over the same
+    reported days (a missing day counts on neither side). WITHHELD over 5% missing; None under `days` days."""
+    if len(hi) < days:
+        return None
+    tot, rep, miss = 0.0, [], 0
+    for h, l, d in zip(hi[-days:], lo[-days:], dates[len(hi) - days:len(hi)]):
+        if h is None or l is None:
+            miss += 1
+            continue
+        tot += R.corn_gdd(h, l)
+        rep.append(doy((int(d[5:7]), int(d[8:10]))))
+    if withheld(miss, days):
+        return WITHHELD
+    g = [int(round(tot)), miss]
+    nd = [norm_day(norm, k) for k in rep]
+    if rep and all(nd):
+        ny = min(c for _, c in nd)
+        if ny >= MIN_YEARS:
+            nv = sum(m for m, _ in nd) / 10.0
+            g += [int(round(nv)), ny, int(round(100 * tot / nv)) if nv >= GDD30_PCT_MIN else None]
+    return g
+
+
+def carry_season(prev, res):
+    """Last season's corn GDDs ("gp") for a row with no season of its own yet (Jan 1 to Apr 30 of a new
+    year): from the published file of last year (its "g", with its as-of day and station), or carried on
+    from a published file of this year that already has it. Read, never computed again (Sig, Nov 4:
+    off-season the card still shows the last full season)."""
+    if not isinstance(prev, dict) or not isinstance(prev.get("counties"), dict):
+        return
+    py, y = prev.get("year"), res.get("year")
+    for f, row in res.get("counties", {}).items():
+        if "g" in row:
+            continue
+        p = prev["counties"].get(f) or {}
+        if py == y - 1 and p.get("g") not in (None, ""):
+            gp = {"y": py, "a": p["a"], "g": p["g"]}
+            if p.get("s"):
+                gp["s"] = p["s"]
+            row["gp"] = gp
+        elif py == y and p.get("gp"):
+            row["gp"] = p["gp"]
+
+
 def median_date(xs, none_val):
     """Middle of the years' dates (day of year), none_val for a year with none. Returns
     MMDD, 0 when the middle year has none, or None when the middle falls between a date and none."""
@@ -467,7 +528,7 @@ def norm_summary(rows):
     """One station's 1991-2020 daily rows ([maxt, mint] from Jan 1 1991) -> the cache entry:
     g: {m: mean corn GDD x10 for each day May 1 to Dec 31, c: years counted per day (run-length)};
     f: {s32: [usual MMDD or 0, years], ...} only where 20 or more years count."""
-    gs, gc = [0.0] * GDD_DAYS, [0] * GDD_DAYS
+    gs, gc = [0.0] * 365, [0] * 365
     years = {}
     d0 = dt.date(NORM_Y0, 1, 1)
     for i, r in enumerate(rows):
@@ -479,12 +540,14 @@ def norm_summary(rows):
         l = temp(r[1]) if len(r) > 1 else None
         years.setdefault(d.year, []).append((d, l))
         k = doy((d.month, d.day))
-        if k >= GDD_DOY0 and h is not None and l is not None and not (d.month == 2 and d.day == 29):
-            gs[k - GDD_DOY0] += R.corn_gdd(h, l)
-            gc[k - GDD_DOY0] += 1
+        if h is not None and l is not None and not (d.month == 2 and d.day == 29):
+            gs[k - 1] += R.corn_gdd(h, l)
+            gc[k - 1] += 1
     out = {}
-    if min(gc) >= MIN_YEARS:
-        out["g"] = {"m": [int(round(10 * s / c)) for s, c in zip(gs, gc)], "c": rle(gc)}
+    # g: May 1 to Dec 31 (the season); e: Jan 1 to Apr 30 (only the 30-day figure reads it)
+    for key, a, b in (("g", GDD_DOY0 - 1, 365), ("e", 0, GDD_DOY0 - 1)):
+        if min(gc[a:b]) >= MIN_YEARS:
+            out[key] = {"m": [int(round(10 * s / c)) for s, c in zip(gs[a:b], gc[a:b])], "c": rle(gc[a:b])}
     f = {}
     for t in FREEZES:
         sp, fa = [], []
@@ -633,6 +696,11 @@ def run(src, states=None, rain=RAIN, out=OUT, norm_dir=NORM_DIR, fill_minutes=FI
             continue
         if len(norms) != before:
             save_norms(st, norms, norm_dir)
+        try:
+            prev = json.load(open(os.path.join(out, st.lower() + ".json"), encoding="utf-8"))
+        except (OSError, ValueError):
+            prev = None
+        carry_season(prev, res)
         bad_rows = problems(res)
         if bad_rows or not res["counties"]:
             print(f"  {st}: kept the published weather ({'; '.join(bad_rows[:3]) or 'nothing came back'})", flush=True)
@@ -671,6 +739,13 @@ def problems(res):
         g = c.get("g")
         if g not in (None, WITHHELD) and not (isinstance(g, list) and len(g) in (2, 5) and 0 <= g[0] < 9000):
             bad.append(f"{w}: gdd {g}")
+        g3 = c.get("g30")
+        if g3 not in (None, WITHHELD) and not (isinstance(g3, list) and len(g3) in (2, 5) and 0 <= g3[0] <= 36 * RECENT_DAYS):
+            bad.append(f"{w}: gdd 30 days {g3}")
+        gp = c.get("gp")
+        if gp is not None and not (isinstance(gp, dict) and isinstance(gp.get("y"), int) and _is_date(gp.get("a"))
+                                   and (gp.get("g") == WITHHELD or (isinstance(gp.get("g"), list) and len(gp["g"]) in (2, 5)))):
+            bad.append(f"{w}: last season {gp}")
         for k, v in (c.get("fr") or {}).items():
             if not (isinstance(v, list) and (v[0] == WITHHELD or v[0] == 0 or _is_date(v[0]))):
                 bad.append(f"{w}: freeze {k} {v}")
@@ -719,6 +794,37 @@ def selftest():
     ok(row["fr"]["f32"] == [1012, 1008, 28] and row["fr"]["f28"] == [1020], f"fall freezes {row['fr']}")
     ok(row["fr"]["s32"] == [430, 425, 29], f"spring freeze {row['fr'].get('s32')}")
     ok(row["d3"] == 2, f"days at or below 32 since Jul 1 {row.get('d3')}")
+    # the last 30 days (Oct 5 to Nov 3): 28 days at 20, Oct 12 and Oct 20 at 15 (low held at 50); normal 18 a day
+    ok(row["g30"] == [590, 0, 540, 30, 109], f"30-day GDD by hand: {row.get('g30')}")
+    hi30 = list(hi)
+    hi30[-1] = hi30[-2] = None                # 2 of 30 days missing: 6.7%
+    ok(county_row({"name": "X", "sids": ["1 2"]}, hi30, lo, 0, year, True, norm, [])["g30"] == WITHHELD, "30-day GDD withheld over 5% missing")
+    hi30[-2] = 80.0                            # 1 of 30: 3.3%, left out of both sides
+    ok(county_row({"name": "X", "sids": ["1 2"]}, hi30, lo, 0, year, True, norm, [])["g30"] == [570, 1, 522, 30, 109], "one missing day counts on neither side")
+    # winter: Feb 14 to Mar 15 needs the Jan 1 to Apr 30 normal ("e"); a small normal prints no percent
+    nw = 74
+    hw, lw = [55.0] * nw, [45.0] * nw          # 2.5 GDD a day
+    wn = {"g": norm["g"], "e": {"m": [10] * (GDD_DOY0 - 1), "c": [[30, GDD_DOY0 - 1]]}}
+    rw = county_row({"name": "X", "sids": ["1 2"]}, hw, lw, 0, year, True, wn, [])
+    ok("g" not in rw and rw["g30"] == [75, 0, 30, 30, None], f"winter 30-day GDD with its normal, no percent under {GDD30_PCT_MIN}: {rw.get('g30')}")
+    ok(county_row({"name": "X", "sids": ["1 2"]}, hw, lw, 0, year, True, norm, [])["g30"] == [75, 0], "no Jan to Apr normal cached: the figure alone")
+    ok(county_row({"name": "X", "sids": ["1 2"]}, hw[:29], lw[:29], 0, year, True, wn, []).get("g30") is None, "under 30 days in the year: no 30-day figure")
+    ok(norm_day(wn, 1) == (10, 30) and norm_day(wn, 121) == (180, 30) and norm_day(wn, 365) == (180, 30) and norm_day(norm, 1) is None, "normal by day of year")
+    # last season carried into the new year's rows that have no season yet
+    prev = {"year": 2026, "counties": {"1": {"a": 1231, "g": [2950, 1, 2840, 30, 104], "s": ["8 miles west of Ames", "130203 2", 10]},
+                                       "2": {"a": 1231, "g": WITHHELD}}}
+    res = {"year": 2027, "counties": {"1": {"a": 314}, "2": {"a": 314}, "3": {"a": 314}}}
+    carry_season(prev, res)
+    ok(res["counties"]["1"]["gp"] == {"y": 2026, "a": 1231, "g": [2950, 1, 2840, 30, 104], "s": ["8 miles west of Ames", "130203 2", 10]}
+       and res["counties"]["2"]["gp"]["g"] == WITHHELD and "gp" not in res["counties"]["3"], f"last season carried: {res['counties']}")
+    nxt = {"year": 2027, "counties": {"1": {"a": 315}, "2": {"a": 501, "g": [0, 0]}}}
+    carry_season(res, nxt)
+    ok(nxt["counties"]["1"]["gp"]["y"] == 2026 and "gp" not in nxt["counties"]["2"], "carried on through the spring; dropped once the season starts")
+    old = {"year": 2025, "counties": prev["counties"]}
+    nxt2 = {"year": 2027, "counties": {"1": {"a": 315}}}
+    carry_season(old, nxt2)
+    ok("gp" not in nxt2["counties"]["1"], "a file two years old is no last season")
+    ok(problems({"counties": res["counties"]}) == [] and problems({"counties": {"1": {"a": 314, "gp": {"y": 2026, "a": 0, "g": [1, 0]}}}}), "the last season is checked for its date")
     # withhold on missing days: 6% of the GDD days gone -> "m"; 5% kept
     hi2 = list(hi)
     gd = [i for i, d in enumerate(dates) if d[5:] >= "05-01"]
@@ -772,6 +878,8 @@ def selftest():
         rows.append(["75", str(l)])
     s = norm_summary(rows)
     ok(s.get("g", {}).get("m", [None])[0] == 150 and s["g"]["c"] == [[30, GDD_DAYS]], f"normal GDD {s.get('g', {}).get('m', [None])[:1]}")
+    ok(s.get("e", {}).get("m", [None])[0] == 150 and s["e"]["c"] == [[30, GDD_DOY0 - 1]] and len(s["e"]["m"]) == GDD_DOY0 - 1,
+       f"the Jan 1 to Apr 30 normal beside it: {s.get('e', {}).get('c')}")
     ok(s.get("f", {}).get("s32") == [420, 30] and s["f"].get("f32") == [1011, 30], f"usual freezes {s.get('f')}")
     for i in range(0, 5000):
         rows[i] = ["M", "M"]                 # 1991 to mid-2004 gone: 16 full years
