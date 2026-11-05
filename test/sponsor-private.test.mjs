@@ -35,20 +35,48 @@ test("the public registry carries no token, and no report folder is published", 
   assert.match(read(".gitignore"), /^\/private\/$/m, "private/ (where the job unpacks the tokens) is never committed");
 });
 
-test("no tracked file holds a sponsor link with a real-looking token", () => {
-  // any run of 16 or more hex characters right after a sponsor's slug (with or without a separator), any
-  // portal link, and any old report file name
-  const pats = [...SLUGS.map((s) => "\\b" + s + "[-_/=:.]?[0-9a-f]{16,}"), "sponsor-report(\\.html)?\\?r=[a-z0-9-]+-[0-9a-f]{16,}", "data/sponsors/[a-z0-9-]+-[0-9a-f]{16,}"];
+// The tree guard, on any git checkout: any run of 16 or more hex characters right after a sponsor's slug
+// (with or without a separator), any portal link, any old report file name, and any bare "token": "<hex>"
+// field. Case-insensitive (Nov 5 checker: an upper-case copy of a token is the same token). Returns
+// file:line only, never the token.
+function treeHits(root) {
+  const pats = [...SLUGS.map((s) => "\\b" + s + "[-_/=:.]?[0-9a-f]{16,}"), "sponsor-report(\\.html)?\\?r=[a-z0-9-]+-[0-9a-f]{16,}",
+    "data/sponsors/[a-z0-9-]+-[0-9a-f]{16,}", "[\"']token[\"'][[:space:]]*:[[:space:]]*[\"'][0-9a-f]{16,}[\"']"];
   let out = "";
   try {
-    out = execFileSync("git", ["-C", ROOT, "grep", "-I", "-n", "-o", "-E", ...pats.flatMap((p) => ["-e", p])], { encoding: "utf8", maxBuffer: 64 << 20 });
+    out = execFileSync("git", ["-C", root, "grep", "-I", "-i", "-n", "-o", "-E", ...pats.flatMap((p) => ["-e", p])], { encoding: "utf8", maxBuffer: 64 << 20 });
   } catch (e) { if (e.status !== 1) throw e; }
   const bad = [];
   for (const line of out.split("\n").filter(Boolean)) {
-    const m = /([0-9a-f]{16,})$/.exec(line);
-    if (m && !FAKE.test(m[1])) bad.push(line.split(":").slice(0, 2).join(":"));   // file and line only, never the token
+    const m = /([0-9a-f]{16,})["']?$/i.exec(line);
+    if (m && !FAKE.test(m[1].toLowerCase())) bad.push(line.split(":").slice(0, 2).join(":"));
   }
-  assert.deepEqual(bad, [], "a sponsor link token in a public file (rotate every token: scripts/sponsor_publish.py rotate --all)");
+  return bad;
+}
+
+test("no tracked file holds a sponsor link with a real-looking token", () => {
+  assert.deepEqual(treeHits(ROOT), [], "a sponsor link token in a public file (rotate every token: scripts/sponsor_publish.py rotate --all)");
+});
+
+test("the tree guard catches upper-case and quoted tokens, and lets made-up ones through", () => {
+  const dir = mkdtempSync(join(tmpdir(), "spr-guard-")), s = SLUGS[0];
+  const h = () => randomBytes(8).toString("hex");
+  try {
+    execFileSync("git", ["init", "-q", dir]);
+    const plant = {
+      "upper-link.txt": "https://agsist.com/sponsor-report?r=" + s + "-" + h().toUpperCase(),
+      "upper-slug.txt": "see " + s.toUpperCase() + "-" + h().toUpperCase() + " here",
+      "quoted.json": JSON.stringify({ slug: s, token: h() }),
+      "quoted-upper.json": '{"Token": "' + h().toUpperCase() + '"}',
+      "single.js": "const rec = { 'token': '" + h() + "' };",
+      "fake.json": JSON.stringify({ token: "0".repeat(15) + "2" }) + "\n" + s + "-" + "a".repeat(16) + "\n",
+      "clean.txt": "nothing here\n",
+    };
+    for (const [f, body] of Object.entries(plant)) writeFileSync(join(dir, f), body + "\n");
+    execFileSync("git", ["-C", dir, "add", "."]);
+    const files = [...new Set(treeHits(dir).map((x) => x.split(":")[0]))].sort();
+    assert.deepEqual(files, ["quoted-upper.json", "quoted.json", "single.js", "upper-link.txt", "upper-slug.txt"]);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
 test("the portal asks the worker, never a file on the site, and keeps its address out of analytics", () => {

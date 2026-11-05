@@ -329,15 +329,17 @@ def selftest():
                 os.environ["GITHUB_ACTIONS"] = old_env
 
     # the public tree check finds a planted token and names only the file
+    # made up at run time: a real-looking token typed into this file would sit in the public tree
+    planted, other, other2 = secrets.token_hex(8), secrets.token_hex(8), secrets.token_hex(8)
     with tempfile.TemporaryDirectory() as tmp:
         r = Path(tmp)
         subprocess.run(["git", "init", "-q", str(r)], check=True)
         (r / "a.txt").write_text("nothing here\n")
-        (r / "b.txt").write_text("see token 1a2b3c4d5e6f7a8b here\n")
+        (r / "b.txt").write_text("see token %s here\n" % planted)
         subprocess.run(["git", "-C", str(r), "add", "."], check=True)
-        hits = public_hits({"x": {"token": "1a2b3c4d5e6f7a8b", "retired": []}}, r)
+        hits = public_hits({"x": {"token": planted, "retired": []}}, r)
         check(hits == ["b.txt"], "public check: a planted token is found, by file name")
-        check(public_hits({"x": {"token": "9a2b3c4d5e6f7a8b", "retired": ["8a2b3c4d5e6f7a8b"]}}, r) == [], "public check: a clean tree passes")
+        check(public_hits({"x": {"token": other, "retired": [other2]}}, r) == [], "public check: a clean tree passes")
 
     print("sponsor_publish selftest: %d failed" % len(fails))
     return 1 if fails else 0

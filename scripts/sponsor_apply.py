@@ -46,9 +46,11 @@ try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit be
 except ImportError: pass
 import base64
 import calendar
+import contextlib
 import hashlib
 import hmac
 import html as H
+import io
 import json
 import os
 import re
@@ -334,10 +336,13 @@ def portal_link(app_id, root=REPO, private=None, secret=None, sync=None):
     if not sync("pull"):
         return None
     pd = Path(private) if private else sp.private_dir()
+    sp.mask(sp.load_tokens(pd))   # Actions only: every pulled token is blanked from the log before use
     sp.mint(e["slug"], pd)
     if not sync("push"):
         return None
-    rec = sp.load_tokens(pd).get(e["slug"])   # after the save and pull: the token that landed first
+    toks = sp.load_tokens(pd)
+    sp.mask(toks)   # the pull after the save may bring back another job's token (the first one wins)
+    rec = toks.get(e["slug"])   # after the save and pull: the token that landed first
     return sp.link(e["slug"], rec["token"], secret) if rec else None
 
 
@@ -768,6 +773,22 @@ def selftest():
             return True
         ck("the first token saved wins: the link uses the one that landed, not ours",
            portal_link("a1b2c3d4e5f6", root, private=root / "priv4", secret="sec", sync=_race) == sp_.link(rep_[0]["slug"], "a" * 16, "sec"))
+        def _race5(op, d=root / "priv5"):
+            if op == "push":
+                sp_._write_token(d, rep_[0]["slug"], {"token": "b" * 16, "retired": []})
+            return True
+        old_ga_, buf_ = os.environ.get("GITHUB_ACTIONS"), io.StringIO()
+        os.environ["GITHUB_ACTIONS"] = "true"
+        try:
+            with contextlib.redirect_stdout(buf_):
+                pl5_ = portal_link("a1b2c3d4e5f6", root, private=root / "priv5", secret="sec", sync=_race5)
+        finally:
+            if old_ga_ is None:
+                os.environ.pop("GITHUB_ACTIONS", None)
+            else:
+                os.environ["GITHUB_ACTIONS"] = old_ga_
+        ck("in Actions the token pulled back after the save is masked before the link is used",
+           pl5_ == sp_.link(rep_[0]["slug"], "b" * 16, "sec") and ("::add-mask::" + "b" * 16) in buf_.getvalue().splitlines())
         ck("a rerun keeps the same private token",
            portal_link("a1b2c3d4e5f6", root, private=root / "priv", secret="sec", sync=lambda op: True) == pl_)
         ck("no link when the private save fails",
