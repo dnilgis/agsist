@@ -16,6 +16,7 @@
   <!-- /static-nav:fonts -->
   <link rel="stylesheet" href="/components/styles.css?v=28">
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=3">
+<link rel="stylesheet" href="/components/geo-sponsor.css?v=1">
 <script src="/components/util.js?v=17"></script>
 <script src="/components/sponsor-ad.js?v=2"></script>
 <script src="/components/form-post.js?v=8"></script>
@@ -891,7 +892,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     if (!s.c || !window.AgsistAd) return '';
     var tab = d.geo ? 'state-page' : 'homepage';
     return '<div class="cp-adnow"><span class="cp-eyebrow">Your ad, as it ' + (d.demo ? 'would run' : 'runs') + (d.geo ? ' on pages about your states' : ' on the homepage') + '</span>' +
-      '<div class="cp-frame">' + window.AgsistAd.render(adFields(s), tab) + '</div></div>';
+      '<div class="cp-frame">' + (d.geo ? '<div class="geo-spon">' : '') + window.AgsistAd.render(adFields(s), tab) + (d.geo ? '</div>' : '') + '</div></div>';
   }
 
   /* THE FIVE STEPS, now inside "Your ad and approval". Each is done, now, or next. */

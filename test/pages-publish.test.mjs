@@ -161,3 +161,25 @@ test('every page script minifies, parses, and leaves the repository copy as it w
   assert.equal(st.stdout.trim(), '', 'the repository copies changed');
   fs.rmSync(tmp, { recursive: true, force: true });
 });
+
+test('the staged service worker has no comment history, keeps its version and parses', { skip: !process.env.TERSER_PATH && !process.env.CI && 'no TERSER_PATH (pr-checks installs it)' }, () => {
+  assert.ok(process.env.TERSER_PATH, 'TERSER_PATH is set in CI (pr-checks.yml installs terser)');
+  const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), 'minify-sw-'));
+  const code = [
+    'import sys, json; sys.path.insert(0, "scripts")',
+    'import pages_publish as P',
+    'P.stage(P.ROOT, sys.argv[1], ["sw.js"])',
+    'print(json.dumps(P.minify_published(sys.argv[1], ["sw.js"], sys.argv[2])))',
+  ].join('\n');
+  const r = spawnSync('python3', ['-c', code, tmp, process.env.TERSER_PATH], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 });
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(JSON.parse(r.stdout).kept, [], 'sw.js minified');
+  const out = fs.readFileSync(path.join(tmp, 'sw.js'), 'utf8');
+  assert.doesNotThrow(() => new vm.Script(out));
+  assert.doesNotMatch(out, /fx\//);
+  assert.doesNotMatch(out, /assigned by the lead/);
+  const ver = (fs.readFileSync(path.join(root, 'sw.js'), 'utf8').match(/^var CACHE_VERSION = (\d+);/m) || [])[1];
+  assert.match(out, new RegExp(`var CACHE_VERSION ?= ?${ver};`));
+  assert.ok(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes('assigned by the lead'), 'the repository copy keeps its history');
+  fs.rmSync(tmp, { recursive: true, force: true });
+});

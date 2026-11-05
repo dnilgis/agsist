@@ -572,6 +572,12 @@ test("browser: RootLot's portal: free test muted under its label, live with coun
         assert.match(res, new RegExp("through " + new Date(rep.through + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })), w + ": the counts say how far they go");
       }
       assert.match(t, /Live/);
+      // the ad preview is drawn the way the live card is: inside .geo-spon, with the card's own style sheet
+      assert.ok(await pg.$('link[href*="/components/geo-sponsor.css"]'), w + ": the portal loads geo-sponsor.css");
+      if (await pg.$(".cp-adnow")) {
+        assert.ok(await pg.$(".cp-adnow .cp-frame > .geo-spon .sa-ad"), w + ": the preview is wrapped like the live card");
+        assert.ok(await pg.evaluate(() => parseFloat(getComputedStyle(document.querySelector(".cp-adnow .sa-headline")).fontSize) >= 22), w + ": larger headline");
+      }
       const reg = await pg.textContent("#states");
       for (const s of ["California", "Nevada", "Texas", "Everywhere else", "Readers in your states"]) assert.ok(reg.includes(s), w + ": " + s);
       if (!regDay) assert.ok(reg.includes("no full day counted yet"), w + ": the state table says no full day yet");

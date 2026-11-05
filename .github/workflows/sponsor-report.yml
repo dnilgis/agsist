@@ -233,18 +233,50 @@ jobs:
           node scripts/build_rp_sealed.mjs "$RUNNER_TEMP/kv.json.gz"
           rm -f "$RUNNER_TEMP/kv.json.gz"
 
+      # A run by hand can start from an older commit than a push-triggered run that lands first, and a
+      # pull --rebase then conflicts on data/audience*.json. On a refused push this step does not rebase:
+      # it takes only the files this run itself changed, starts again from the fresh main, puts those on top
+      # (an added or changed file copied, a deleted one removed), writes the two sponsor pages' figures
+      # again, and commits once more. If main already holds the
+      # same files there is nothing left to commit and it stops quietly.
       - name: Commit
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
-          git add data/audience.json data/audience-pages.json sponsor.html sponsor-kit.html 2>/dev/null || true
-          git add -A data/rp-sealed 2>/dev/null || true
+          add_all() {
+            git add data/audience.json data/audience-pages.json sponsor.html sponsor-kit.html 2>/dev/null || true
+            git add -A data/rp-sealed 2>/dev/null || true
+          }
+          add_all
           if git diff --cached --quiet; then
             echo "no change"
             exit 0
           fi
           git commit -m "sponsor reports: through $(date -d yesterday +%Y-%m-%d) [skip ci]"
-          for i in 1 2 3; do
-            git push && break
-            git pull --rebase --autostash && sleep 3
+          KEEP="$RUNNER_TEMP/keep"
+          for i in 1 2 3 4; do
+            git push && exit 0
+            echo "::notice::push refused (another run landed first), try $i: starting again from the fresh main"
+            sleep $((i * 3))
+            # only what this run changed (its one commit on top of its base) is carried over
+            rm -rf "$KEEP"; mkdir -p "$KEEP/tree"
+            git diff --name-status --no-renames HEAD~1 HEAD -- data/audience.json data/audience-pages.json data/rp-sealed > "$KEEP/changes"
+            while IFS=$'\t' read -r st f; do
+              case "$st" in D) ;; *) mkdir -p "$KEEP/tree/$(dirname "$f")"; cp "$f" "$KEEP/tree/$f" ;; esac
+            done < "$KEEP/changes"
+            git fetch --quiet origin main
+            git reset --quiet --hard origin/main
+            while IFS=$'\t' read -r st f; do
+              case "$st" in D) rm -f "$f" ;; *) mkdir -p "$(dirname "$f")"; cp "$KEEP/tree/$f" "$f" ;; esac
+            done < "$KEEP/changes"
+            python3 scripts/bake_audience.py || true
+            add_all
+            if git diff --cached --quiet; then
+              echo "main already holds these files"
+              exit 0
+            fi
+            git commit -m "sponsor reports: through $(date -d yesterday +%Y-%m-%d) [skip ci]"
           done
+          if git push; then exit 0; fi
+          echo "::warning::the report files were not saved after 4 refused pushes; the next run writes them again"
+          exit 0

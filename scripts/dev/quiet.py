@@ -25,6 +25,12 @@ KEEP = [
     re.compile(r"^[A-Z][A-Z0-9-]{2,}(?: [a-z][a-z0-9_]*=[A-Za-z0-9_.:+-]*)+$"),
 ]
 LAST_MAX = 200
+# anything that looks like a token: a run of 16 or more hex characters, or a k= / t= value
+TOKEN = re.compile(r"[0-9A-Fa-f]{16,}|\b[kt]=[^\s&\"']+")
+
+
+def mask(text):
+    return TOKEN.sub("***", text)
 
 
 def keep(line):
@@ -48,7 +54,7 @@ def run(name, cmd, out=sys.stdout):
     try:
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
     except OSError as e:
-        print("%s: failed (exit 127), %s" % (name, str(e)[:LAST_MAX]), file=out, flush=True)
+        print("%s: failed (exit 127), %s" % (name, mask(str(e))[:LAST_MAX]), file=out, flush=True)
         return 127
 
     def forward(sig, _frame):
@@ -75,7 +81,7 @@ def run(name, cmd, out=sys.stdout):
     if code == 0:
         print("%s: ok" % name, file=out, flush=True)
     else:
-        print("%s: failed (exit %d), %s" % (name, code, last[:LAST_MAX] or "no output"), file=out, flush=True)
+        print("%s: failed (exit %d), %s" % (name, code, mask(last)[:LAST_MAX] or "no output"), file=out, flush=True)
     return code
 
 
@@ -111,6 +117,10 @@ def selftest():
         buf = io.StringIO()
         code = run("t4", [sys.executable, "-c", "import os, signal; os.kill(os.getpid(), signal.SIGTERM)"], out=buf)
         ck(code == 143 and "failed (exit 143)" in buf.getvalue(), "a command killed by a signal is 128 + the signal")
+        buf = io.StringIO()
+        run("t6", [sys.executable, "-c", "import sys; print('bad link /x?k=abc123def&t=zz9 id 0123456789abcdef0123 ok', file=sys.stderr); sys.exit(1)"], out=buf)
+        ck(buf.getvalue() == "t6: failed (exit 1), bad link /x?***&*** id *** ok\n", "tokens are masked in the failure line: %r" % buf.getvalue())
+        ck(mask("deadbeef12345678") == "***" and mask("deadbeef1234567") == "deadbeef1234567", "16 hex characters mask, 15 do not")
         for t in ("DELIVERYsender=x", "RAIN-WX skipping YAKUTAT AIRPORT", "Rain-wx updated=1", "ok   a test name", "  rows=3",
                   "COUNTS: a=1", "::group::x"):
             ck(not keep(t), "not kept: %r" % t)
