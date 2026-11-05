@@ -791,7 +791,7 @@
     if (has('use0')) row('Use before and after', v(r.use0) != null ? 'Before the sale: ' + esc(useW(r.use0)) + (v(r.use1) != null ? '; the buyer’s use: ' + esc(useW(r.use1)) : '') : NOTIN);
     if (has('glv')) row('Town listed value', v(r.glv) != null ? fm(+r.glv) : NOTIN, 'The town grand list value on the return.');
     if (has('lsf')) row('Living space', v(r.lsf) != null ? (+r.lsf > 0 ? esc((+r.lsf).toLocaleString('en-US')) + ' square feet (main lot)' : 'None on the main lot') : NOTIN);
-    if (has('yb')) row('Year built', v(r.yb) != null ? esc(r.yb) + ' (main lot)' : NOTIN, 'Blank on the deed abstract when the lot has no house or the assessor left it out.');
+    if (has('yb')) row('Year built', v(r.yb) != null ? esc(r.yb) + ' (main lot)' : NOTIN, FL ? 'From the assessment roll; blank when the parcel has no building or the roll leaves it out.' : 'Blank on the deed abstract when the lot has no house or the assessor left it out.');
     if (has('avl')) row('Assessed value, main lot', v(r.avl) != null ? fm(+r.avl) + ' land' + (v(r.avb) != null ? ', ' + fm(+r.avb) + ' buildings' : '') + (v(r.avy) != null ? ' (' + esc(r.avy) + ' tax list)' : '') : NOTIN, 'Farmland-assessed lots (3B) are valued on their farm use, far under a sale price.');
     var why = FSLand.notMarketWhy(r);
     if (FL && flc && !flc.qualified) why = ['not a qualified sale on the Florida file' + (flc.nominal ? ', no sale price' : '')].concat(why.filter(function (w) { return w !== FSLand.WHY.deed; }));
