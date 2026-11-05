@@ -231,7 +231,7 @@
   CR.csv = function (list, names, today) {
     var out = [CR.CSV_COLS.join(',')];
     (list || []).forEach(function (r) {
-      out.push([r.no, r.dm ? String(r.date || '').slice(0, 7) : r.date || '', r.rec || '',   // a month-only date stays a month (Florida) num(r.price) > 0 ? Math.round(r.price) : '', r.acres > 0 ? +r.acres : (r.acUnsure ? 'uncertain' : ''), r.ppa != null ? r.ppa : '',
+      out.push([r.no, r.dm ? String(r.date || '').slice(0, 7) : r.date || '', r.rec || '', num(r.price) > 0 ? Math.round(r.price) : '', r.acres > 0 ? +r.acres : (r.acUnsure ? 'uncertain' : ''), r.ppa != null ? r.ppa : '',
         r.pid || '', +r.np || 1, F.strOf(F.legalText(r)) || '', F.legalHeld(r) && names !== 'shown' ? 'names a buyer or seller: tap Show buyer and seller' : F.legalText(r), r.muniName || '', r.county || '', r.st || '', F.classLabel(r.cls, r.st), r.conv || '',
         CR.screenText(r, today), F.relatedParty(r) ? 'yes' : 'not marked', r.exempt ? 'yes' : 'no', names === 'shown' ? (r.grantor || '') : names === 'later' ? 'names come after the next update' : names ? 'tap Show buyer and seller' : 'not in our copy', names === 'shown' ? (r.grantee || '') : names === 'later' ? 'names come after the next update' : names ? 'tap Show buyer and seller' : 'not in our copy',
         r.mi != null ? r.mi.toFixed(1) : '', r.pmi != null ? r.pmi.toFixed(1) : '', r.soil && r.soil.np != null ? Math.round(r.soil.np * 100) : '', r.doc || '', r.src || '', CR.flags(r).join('; '), 'unverified'].map(cell).join(','));
