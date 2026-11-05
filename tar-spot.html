@@ -63,7 +63,7 @@
     .ts-seg button{flex:1 1 0;min-height:48px;padding:0 .4rem;border:0;background:var(--bg);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
     .ts-seg button+button{border-left:1px solid var(--border)}
     .ts-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
-    .ts-in{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:.6rem .9rem;margin:0 0 .6rem;align-items:end}
+    .ts-in{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:.6rem .9rem;margin:0 0 .6rem;align-items:end}
     .ts-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
     .ts-in input,.ts-in select{width:100%;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;box-sizing:border-box}
     .ts-in select{font-family:inherit;font-size:.92rem}
@@ -201,12 +201,15 @@
         <div class="ts-in">
           <label>Product, $/acre<input id="ts-product" type="number" inputmode="decimal" step="0.01" min="0" max="500" placeholder="20.00"></label>
           <label>Application, $/acre<input id="ts-app" type="number" inputmode="decimal" step="0.01" min="0" max="500" placeholder="12.00"></label>
+        </div>
+        <p class="ts-src" style="margin:0">Product: your dealer's price for the rate on the label. Application: what you pay to have it put on.</p>
+        <p class="rate-hint" data-cr-job="spray-aerial" data-for="ts-app" data-what="Custom spraying by airplane" data-note="Survey rates are application only, no product."></p>
+        <p class="rate-hint" data-cr-job="spray-ground" data-for="ts-app" data-what="Custom spraying by ground rig"></p>
+        <div class="ts-in" style="margin-top:.7rem">
           <label>Corn price, $/bu<input id="ts-price" type="number" inputmode="decimal" step="0.01" min="0.5" max="50" placeholder="4.00"></label>
           <label>Price from<select id="ts-state" aria-label="Corn price from"><option value="">December futures (no state)</option></select></label>
         </div>
-        <p class="rate-hint" data-cr-job="spray-aerial" data-for="ts-app" data-what="Custom spraying by airplane" data-note="Survey rates are application only, no product."></p>
-        <p class="rate-hint" data-cr-job="spray-ground" data-for="ts-app" data-what="Custom spraying by ground rig"></p>
-        <p id="ts-pricesrc" class="ts-src" style="margin:.3rem 0">Loading a corn price. You can type your own.</p>
+        <p id="ts-pricesrc" class="ts-src" style="margin:.1rem 0 .4rem">Loading a corn price. You can type your own.</p>
         <button type="button" id="ts-pricereset" class="ts-btn">Use the page's corn price</button>
         <details class="box">
           <summary>Optional: run-down and your own risk guess</summary>
@@ -240,7 +243,7 @@
       <p class="ts-src">Bushels an acre = cost an acre / corn price. Arithmetic on round numbers, not prices we found or yields anyone measured.</p>
 
       <h2 id="products">Product efficacy ratings</h2>
-      <p>The Corn Disease Working Group rates how well each fungicide <b>controls tar spot</b>, from trials across universities. The ratings are about disease control, not bushels or profit, and the table is not a full list of every product sold. The current edition is <b>February 2026</b> (Crop Protection Network, Fungicide Efficacy for Control of Corn Foliar Diseases). Numbers in brackets are the products' FRAC groups, for rotating modes of action.</p>
+      <p>The Corn Disease Working Group rates how well each fungicide <b>controls tar spot</b>, from trials across universities. The ratings are about disease control, not bushels or profit, and the table is not a full list of every product sold. The current edition is <b>February 2026</b> (Crop Protection Network, Fungicide Efficacy for Control of Corn Foliar Diseases). Numbers in parentheses are the products' FRAC groups, for rotating modes of action.</p>
       <div class="ts-tw"><table class="ts-t"><caption class="sr-only">Tar spot ratings from the February 2026 corn fungicide efficacy table</caption>
         <thead><tr><th scope="col">Tar spot rating</th><th scope="col">Products</th></tr></thead>
         <tbody>
