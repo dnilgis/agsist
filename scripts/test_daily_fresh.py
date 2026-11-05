@@ -170,6 +170,20 @@ def stories():
        "no id: matched by title; no link in the digest, no link on the story")
     ok(any("cut story" in l and "sorghum" in l for l in log), "a story with no digest item is cut: %r" % log)
     ok(not any("ref" in x for x in t), "the ref field never reaches the issue")
+    snip = "Lawmakers said on Tuesday that the new farm bill would not be taken up before the end of the year"
+    cp = {"outside_the_pit": [
+        {"title": "Farm bill waits on the new Congress", "ref": "N1", "tag": "POLICY",
+         "body": "Lawmakers said on Tuesday that the new farm bill would not be taken up before the end of the year."},
+        {"title": "Farm bill waits on the new Congress", "ref": "N2", "tag": "POLICY",
+         "body": "Nothing moves on the farm bill until the new Congress sits in January."}]}
+    cl = g.attach_story_links(cp, [
+        {"id": "N1", "title": "Farm bill stalls", "summary": snip, "link": "", "source": "a.com", "publisher": "A"},
+        {"id": "N2", "title": "Farm bill stalls", "summary": snip, "link": "", "source": "b.com", "publisher": "B"}])
+    ok(len(cp["outside_the_pit"]) == 1 and cp["outside_the_pit"][0]["news_id"] == "N2"
+       and any("repeats" in l and "N1" not in l and "publisher" in l for l in cl),
+       "a story body that repeats 8 or more words from the publisher's summary is cut: %r" % cl)
+    ok(g.copied_run("the new farm bill would not be taken up", snip) == 10, "copied_run counts shared words")
+    ok(g.copied_run("Farm bill stalls", "farm bill stalls as the senate leaves") == 3, "a three word headline echo is under the limit")
     keep = {"outside_the_pit": [{"title": "Anything", "body": "x"}]}
     g.attach_story_links(keep, [])
     ok(len(keep["outside_the_pit"]) == 1, "with no digest at all the stories stay, unlinked, as before")
