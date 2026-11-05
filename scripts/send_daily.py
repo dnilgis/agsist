@@ -89,6 +89,7 @@ import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
 import delivery_line      # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_cap           # noqa: E402  (the mail plan's daily cap: preflight and the SEND-CAP marker)
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 import list_source        # noqa: E402  (the worker, or the private copy when it is blocked)
 
@@ -878,6 +879,21 @@ def main():
         print("your county this week link skipped (" + type(ex).__name__ + ")")
     gmail_limit.check(len(recipients), sum(1 for r in subs if r.get("reports") is not False),
                       date.fromisoformat(day), dry=dry)
+    try:
+        # The mail plan's daily cap (scripts/send_cap.py): what is counted today, this list, and the
+        # report-day email on a report day, against SEND_DAILY_CAP. A warning, never a stop.
+        # It runs here, before the mail server is reached, and reads within a few seconds or not at all.
+        _kinds = gmail_limit.report_kinds(date.fromisoformat(day))
+        _only = []
+        if _kinds and not tally.dry and how == "json" and env("LIST_URL") and env("LIST_TOKEN"):
+            # the report-day email also goes to its own list (send_report_day.py merges it); a bounded read
+            _only, _err = send_cap.bounded(lambda: subscribers.fetch_topic(env("LIST_URL"), env("LIST_TOKEN"), "reports"))
+            if _err:
+                print("send cap: the report-day-only list was not read for the projection (%s)" % _err)
+        send_cap.preflight(tally, later=send_cap.report_day_count(subs, _only or []) if _kinds else 0,
+                           later_what="the report-day email (%s)" % ", ".join(_kinds))
+    except Exception as ex:                                  # noqa: BLE001
+        print("send cap preflight skipped (" + type(ex).__name__ + ")")
 
     if dry:
         print("preview per recipient: %d with a local top bid, %d told nothing posted within 50 mi, "

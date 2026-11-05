@@ -74,6 +74,7 @@ from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import delivery_line  # noqa: E402
+import send_cap  # noqa: E402  (the mail plan's daily cap: the send-volume row)
 from cron_gate import NOT_A_RUN  # noqa: E402
 
 UTC = timezone.utc
@@ -183,7 +184,7 @@ SENDERS = [
 # Workflows with mail secrets that mail only Sig (or the person who ran them), never readers.
 SIG_ONLY = {
     "audit.yml": "audit findings to Sig",
-    "cron-health.yml": "the Daily's 7:15 check and the rehearsal mail Sig",
+    "cron-health.yml": "the Daily's 7:15 check, the rehearsal and the Brevo limit reminder mail Sig",
     "elev-create.yml": "an elevator's private portal link, to Sig",
     "list-hygiene.yml": "what changed on the lists, to Sig",
     "morning-report.yml": "the morning report, to Sig",
@@ -522,20 +523,27 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
 
 
 
-def lines_from_zip(blob):
-    """DELIVERY lines from a run's log archive. A job's whole log and its per-step files repeat
-    the same timestamped lines, so each raw line counts once."""
-    seen, out = set(), []
+def scan_zip(blob):
+    """DELIVERY lines and SEND-CAP markers (scripts/send_cap.py) from a run's log archive. A job's
+    whole log and its per-step files repeat the same timestamped lines, so each raw line counts once.
+    -> (lines, markers)."""
+    seen, out, caps = set(), [], []
     with zipfile.ZipFile(io.BytesIO(blob)) as z:
         for name in z.namelist():
             if not name.endswith(".txt"):
                 continue
             for raw in z.read(name).decode("utf-8", "replace").splitlines():
-                if "DELIVERY sender=" not in raw or raw in seen:
+                if ("DELIVERY sender=" not in raw and "SEND-CAP sender=" not in raw) or raw in seen:
                     continue
                 seen.add(raw)
                 out.extend(delivery_line.parse(raw))
-    return out
+                caps.extend(send_cap.parse(raw))
+    return out, caps
+
+
+def lines_from_zip(blob):
+    """DELIVERY lines from a run's log archive (scan_zip without the markers)."""
+    return scan_zip(blob)[0]
 
 
 class _NoAuthOffHost(urllib.request.HTTPRedirectHandler):
@@ -631,7 +639,7 @@ def read_runs(api, entry, now, crons=None):
     sends.sort(key=lambda x: (x["id"] in due_ids, x.get("created_at") or "", x["id"]), reverse=True)
     for x in sends[:LOGS_PER_WF]:
         try:
-            x["lines"] = lines_from_zip(api.blob("/actions/runs/%d/logs" % x["id"]))
+            x["lines"], x["caps"] = scan_zip(api.blob("/actions/runs/%d/logs" % x["id"]))
             x["log"] = "read"
         except BudgetSpent:
             raise
@@ -657,7 +665,9 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
         at = datetime.strptime((prev or {}).get("delivery_checked_at", ""), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
         old = [w for w in (prev or {}).get("workflows") or [] if str(w.get("workflow", "")).startswith("delivery:")]
         if old and now - at < timedelta(hours=DELIVERY_EVERY_HOURS):
-            return old, prev["delivery_checked_at"]
+            vol = [send_cap.rejudge(w, now, environ) for w in (prev or {}).get("workflows") or []
+                   if w.get("workflow") == send_cap.ROW]   # the cap variable may have changed since
+            return old + vol, prev["delivery_checked_at"]
     except Exception:                                      # noqa: BLE001
         pass
     if api is None:
@@ -691,7 +701,35 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
         except Exception as ex:                            # noqa: BLE001
             rows.append({"workflow": "delivery:" + wf, "critical": True, "clock": "reader email delivered",
                          "status": "unknown", "why": "could not read runs: %s" % str(ex)[:160]})
+    rows.append(volume_row(now, read_cache, environ, prev))
     return rows, now.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def volume_row(now, read_cache, environ, prev=None):
+    """send-volume (scripts/send_cap.py): emails per UTC day from the logs this pass read, against the
+    mail plan's cap. No API call of its own. A sender that may mail on any run is sampled (its row
+    says so), so the count is a floor."""
+    try:
+        runs = {wf: v[0] for wf, v in read_cache.items()}
+        days, by, markers, logs = send_cap.tally_days(runs)
+        keep = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+        days = {d: n for d, n in days.items() if d >= keep}
+        by = {d: v for d, v in by.items() if d >= keep}
+        markers = [m for m in markers if m.get("day", "") >= keep]
+        entries = {e["workflow"]: e for e in SENDERS}
+        sampled = []
+        for wf, (read, total, due) in read_cache.items():
+            sends = sum(1 for r in read if "ran" in (r.get("steps") or {}).values())
+            logs_read = sum(1 for r in read if r.get("lines") is not None)
+            if sends > logs_read or ((due or {}).get("kind") == "run" and total > len(read)):
+                sampled.append(wf)
+        unread = [wf for wf in entries if wf not in read_cache]
+        prev_row = next((w for w in (prev or {}).get("workflows") or [] if w.get("workflow") == send_cap.ROW), None)
+        return send_cap.judge(days, by, markers, send_cap.cap(environ), now, logs=logs, sampled=sampled, unread=unread,
+                              daily7=send_cap.daily_history(prev_row, by))
+    except Exception as ex:                                # noqa: BLE001
+        return {"workflow": send_cap.ROW, "critical": True, "clock": "emails per UTC day under the mail plan's cap",
+                "status": "unknown", "why": "could not count: %s" % str(ex)[:160]}
 
 
 def inventory():
@@ -1096,6 +1134,13 @@ def selftest():
         z.writestr("run/5_Send.txt", "2026-10-20T10:00:01.1Z DELIVERY sender=rp-design sent_readers=1 waiting=1 dry=0 asks=2\n")
     got = lines_from_zip(buf.getvalue())
     ck("archive: one line, not two", len(got) == 1 and got[0]["asks"] == 2, got)
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("0_run.txt", "2026-11-04T11:50:00.1Z SEND-CAP sender=daily kind=refused code=550 sent=180\n")
+        z.writestr("run/5_Send.txt", "2026-11-04T11:50:00.1Z SEND-CAP sender=daily kind=refused code=550 sent=180\n")
+    got = scan_zip(buf.getvalue())
+    ck("archive: a SEND-CAP marker is read once, apart from the lines",
+       got == ([], [{"sender": "daily", "kind": "refused", "code": 550, "sent": 180}]), got)
 
     # delivery_rows: a fake API, end to end, and the reuse of a recent pass
     T = lambda h, m: "2026-11-20T%02d:%02d:00Z" % (h, m)
@@ -1124,7 +1169,27 @@ def selftest():
     fa = FakeApi()
     rows, at = delivery_rows(now, "o/r", "t", "https://api", {"RP_DESIGN_EMAIL_LIVE": "1"}, api=fa)
     by = {r["workflow"]: r for r in rows}
-    ck("delivery_rows: one row per sender workflow", len(rows) == len(SENDERS) and at == "2026-11-20T12:00:00Z", len(rows))
+    ck("delivery_rows: one row per sender workflow, and the send-volume row",
+       len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(SENDERS) and len(rows) == len(SENDERS) + 1
+       and at == "2026-11-20T12:00:00Z", len(rows))
+    vol = by.get(send_cap.ROW) or {}
+    ck("send-volume: counted from the log read, a dry run counts 0, ok",
+       vol.get("status") == "ok" and vol.get("logs") == 1 and vol.get("days") == {"2026-11-20": 0} and vol.get("critical") is True, vol)
+
+    class CapApi(FakeApi):
+        def blob(self, path):
+            self.calls.append(path)
+            b = io.BytesIO()
+            with zipfile.ZipFile(b, "w") as z:
+                z.writestr("0_send.txt", "2026-11-20T09:01:00.1Z SEND-CAP sender=rp-design kind=refused code=421 sent=3\n"
+                           "2026-11-20T09:01:01.1Z DELIVERY sender=rp-design sent_readers=3 waiting=9 dry=0 smtp=3 cap_refused=6\n")
+            return b.getvalue()
+    vol = {r["workflow"]: r for r in delivery_rows(now, "o/r", "t", "https://api", {"RP_DESIGN_EMAIL_LIVE": "1"}, api=CapApi())[0]}[send_cap.ROW]
+    ck("send-volume: a SEND-CAP refusal in a log read is red", vol["status"] == "late" and vol["days"] == {"2026-11-20": 3}
+       and "refused" in vol["why"], vol)
+    big = {"RP_DESIGN_EMAIL_LIVE": "1", "SEND_DAILY_CAP": "10000"}
+    vol = {r["workflow"]: r for r in delivery_rows(now, "o/r", "t", "https://api", big, api=CapApi())[0]}[send_cap.ROW]
+    ck("send-volume: a refusal is red even with the cap at 10000", vol["status"] == "late" and vol["cap"] == 10000, vol)
     ck("delivery_rows: rp-design late", by["delivery:rp-design-email.yml"]["status"] == "late", by["delivery:rp-design-email.yml"])
     ck("delivery_rows: rp-buyer (c) from rp-design's orders", "(c)" in by["delivery:rp-buyer-email.yml"]["why"]
        and "orders=2" in by["delivery:rp-buyer-email.yml"]["why"], by["delivery:rp-buyer-email.yml"])

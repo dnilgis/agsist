@@ -42,6 +42,14 @@ one run of about 81 a day). The logs are read once per DELIVERY_EVERY_HOURS (the
 in this file as delivery_checked_at), and the switches come from the repository variables
 cron-health.yml passes as env.
 
+THE MAIL PLAN'S DAILY CAP (Nov 4, 2026). Every sender goes through one Brevo SMTP account, 300 emails a
+day on the free plan, reset at 00:00 UTC (Nov 4: 211 used). One row, send-volume (critical), built in the
+same pass as the delivery rows from the logs that pass already reads (scripts/send_cap.py; no API call of its
+own): emails per UTC day (each DELIVERY line's smtp=, else sent_readers=) against the cap, the repository
+variable SEND_DAILY_CAP (default 300; cron-health.yml passes it). A warning at 80%, red at 95%, and red on a
+SEND-CAP marker: a refusal that looks like the cap, or a sender's preflight that projected past it. The count
+is a floor (sampled senders and Sig-only mail are not all counted) and the row says so.
+
 THE ENGINE (Oct 20, 2026). The collection code is checked out from the private
 repo's engine-agsist and engine-bids branches by the "Engine checkout" step
 of every job (.github/actions/engine) once the repository variable
@@ -969,6 +977,26 @@ def selftest():
     check(len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(DC.SENDERS) and at,
           "one delivery row per sender workflow, and the pass time kept")
     check("delivery:price-watch.yml" not in late, "a sender with nothing read is not late")
+    vol = next((r for r in rows if r["workflow"] == "send-volume"), {})
+    check(vol.get("status") == "ok" and vol.get("cap") == 300 and "send-volume" not in late,
+          "send-volume: one row, the cap defaults to 300, a dry run counts nothing (%s)" % vol.get("why"))
+    _tl = lambda n: {"workflow": "send-volume", "critical": True, "cap": 300, "days": {"2026-11-20": n},
+                     "top": {"2026-11-20": [["daily", n]]}, "markers": [], "logs": 1, "sampled": [], "unread": []}
+    prev_doc = {"delivery_checked_at": "2026-11-20T11:00:00Z",
+                "workflows": [{"workflow": "delivery:daily.yml", "status": "ok"}, _tl(245)]}
+    rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "t", "https://api", prev_doc,
+                                       environ={}, fake_api=_Api())
+    d = build(T("2026-11-20 12:00"), rows, late)
+    vol = next((r for r in rows if r["workflow"] == "send-volume"), {})
+    check(vol.get("status") == "warn" and "send-volume" not in d["late_critical"], "a reused pass: 245 of 300 is a warning")
+    prev_doc["workflows"][1] = _tl(290)
+    rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "t", "https://api", prev_doc,
+                                       environ={}, fake_api=_Api())
+    check("send-volume" in build(T("2026-11-20 12:00"), rows, late)["late_critical"], "290 of 300 is a late critical row")
+    rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "t", "https://api", prev_doc,
+                                       environ={"SEND_DAILY_CAP": "10000"}, fake_api=_Api())
+    check(not late and next(r for r in rows if r["workflow"] == "send-volume")["status"] == "ok",
+          "with SEND_DAILY_CAP=10000 the reused 290 is ok, no new pass needed")
     rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "", "https://api", None, environ={})
     check(rows[0]["status"] == "unknown" and not late and at is None, "no token: one unknown row, nothing late")
 

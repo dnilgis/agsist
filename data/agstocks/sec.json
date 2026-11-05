@@ -36,7 +36,7 @@
     "period": "2026-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/7084/000000708426000057/adm-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -70,11 +70,11 @@
   "AFG": {
    "cik": "0001042046",
    "earnings": {
-    "accn": "0001193125-26-333957",
-    "filed": "2026-08-05",
+    "accn": "0001193125-26-446243",
+    "filed": "2026-11-04",
     "form": "8-K",
-    "period": "2026-08-04",
-    "url": "https://www.sec.gov/Archives/edgar/data/1042046/000119312526333957/d124182d8k.htm"
+    "period": "2026-11-03",
+    "url": "https://www.sec.gov/Archives/edgar/data/1042046/000119312526446243/d190021d8k.htm"
    },
    "facts_read": "2026-10-29",
    "ni": {
@@ -103,7 +103,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1042046/000104204626000024/afg-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -125,7 +125,7 @@
    },
    "usual_from": [
     "2024-02-07",
-    "2026-08-05"
+    "2026-11-04"
    ],
    "usual_months": [
     2,
@@ -170,7 +170,7 @@
     "period": "2026-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/880266/000088026626000077/agco-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -237,7 +237,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/845877/000084587726000123/agm-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "usual_from": [
     "2023-11-06",
@@ -279,7 +279,7 @@
     "period": "2025-12-31",
     "url": "https://www.sec.gov/Archives/edgar/data/1499505/000149950526000069/agro-20251231.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenue",
     "cur": {
@@ -318,7 +318,7 @@
     "period": "2025-12-31",
     "url": "https://www.sec.gov/Archives/edgar/data/2009233/000121390026104158/ea0306404-20f_agrozinc.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "sixk": {
     "accn": "0001213900-26-097279",
@@ -364,7 +364,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/3545/000000354526000043/alco-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -404,51 +404,51 @@
     "period": "2026-11-02",
     "url": "https://www.sec.gov/Archives/edgar/data/897077/000089707726000108/alg-20261102.htm"
    },
-   "facts_read": "2026-10-29",
+   "facts_read": "2026-11-04",
    "ni": {
     "concept": "NetIncomeLoss",
     "cur": {
-     "accn": "0000897077-26-000092",
-     "end": "2026-06-30",
-     "filed": "2026-08-03",
+     "accn": "0000897077-26-000110",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 30940000
+     "start": "2026-07-01",
+     "val": 2026000
     },
     "prior": {
-     "accn": "0000897077-26-000092",
-     "end": "2025-06-30",
-     "filed": "2026-08-03",
+     "accn": "0000897077-26-000110",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 31106000
+     "start": "2025-07-01",
+     "val": 25383000
     }
    },
    "periodic": {
-    "accn": "0000897077-26-000092",
-    "filed": "2026-08-03",
+    "accn": "0000897077-26-000110",
+    "filed": "2026-11-04",
     "form": "10-Q",
-    "period": "2026-06-30",
-    "url": "https://www.sec.gov/Archives/edgar/data/897077/000089707726000092/alg-20260630.htm"
+    "period": "2026-09-30",
+    "url": "https://www.sec.gov/Archives/edgar/data/897077/000089707726000110/alg-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
-     "accn": "0000897077-26-000092",
-     "end": "2026-06-30",
-     "filed": "2026-08-03",
+     "accn": "0000897077-26-000110",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 450733000
+     "start": "2026-07-01",
+     "val": 403137000
     },
     "prior": {
-     "accn": "0000897077-26-000092",
-     "end": "2025-06-30",
-     "filed": "2026-08-03",
+     "accn": "0000897077-26-000110",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 419073000
+     "start": "2025-07-01",
+     "val": 420042000
     }
    },
    "usual_from": [
@@ -465,11 +465,11 @@
   "ALTO": {
    "cik": "0000778164",
    "earnings": {
-    "accn": "0001213900-26-085686",
-    "filed": "2026-08-05",
+    "accn": "0001213900-26-115940",
+    "filed": "2026-11-04",
     "form": "8-K",
-    "period": "2026-08-05",
-    "url": "https://www.sec.gov/Archives/edgar/data/778164/000121390026085686/ea0300669-8k_alto.htm"
+    "period": "2026-11-04",
+    "url": "https://www.sec.gov/Archives/edgar/data/778164/000121390026115940/ea0310849-8k_alto.htm"
    },
    "facts_read": "2026-10-29",
    "ni": {
@@ -498,7 +498,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/778164/000121390026086336/ea0300178-10q_alto.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -520,7 +520,7 @@
    },
    "usual_from": [
     "2023-11-06",
-    "2026-08-05"
+    "2026-11-04"
    ],
    "usual_months": [
     3,
@@ -565,7 +565,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/738214/000143774926026052/amtx20260630_10q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerIncludingAssessedTax",
     "cur": {
@@ -605,51 +605,51 @@
     "period": "2026-11-03",
     "url": "https://www.sec.gov/Archives/edgar/data/821026/000082102626000145/ande-20261103.htm"
    },
-   "facts_read": "2026-10-29",
+   "facts_read": "2026-11-04",
    "ni": {
     "concept": "NetIncomeLoss",
     "cur": {
-     "accn": "0000821026-26-000122",
-     "end": "2026-06-30",
-     "filed": "2026-08-04",
+     "accn": "0000821026-26-000147",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 56563000
+     "start": "2026-07-01",
+     "val": 46445000
     },
     "prior": {
-     "accn": "0000821026-26-000122",
-     "end": "2025-06-30",
-     "filed": "2026-08-04",
+     "accn": "0000821026-26-000147",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 7857000
+     "start": "2025-07-01",
+     "val": 20138000
     }
    },
    "periodic": {
-    "accn": "0000821026-26-000122",
-    "filed": "2026-08-04",
+    "accn": "0000821026-26-000147",
+    "filed": "2026-11-04",
     "form": "10-Q",
-    "period": "2026-06-30",
-    "url": "https://www.sec.gov/Archives/edgar/data/821026/000082102626000122/ande-20260630.htm"
+    "period": "2026-09-30",
+    "url": "https://www.sec.gov/Archives/edgar/data/821026/000082102626000147/ande-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
-     "accn": "0000821026-26-000122",
-     "end": "2026-06-30",
-     "filed": "2026-08-04",
+     "accn": "0000821026-26-000147",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 3097660000
+     "start": "2026-07-01",
+     "val": 2833715000
     },
     "prior": {
-     "accn": "0000821026-26-000122",
-     "end": "2025-06-30",
-     "filed": "2026-08-04",
+     "accn": "0000821026-26-000147",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 3135869000
+     "start": "2025-07-01",
+     "val": 2677712000
     }
    },
    "usual_from": [
@@ -699,7 +699,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/792987/000079298726000044/aste-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -766,7 +766,7 @@
     "period": "2025-12-31",
     "url": "https://www.sec.gov/Archives/edgar/data/5981/000119312526409138/d942957d10ka.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -832,7 +832,7 @@
     "period": "2026-07-31",
     "url": "https://www.sec.gov/Archives/edgar/data/1802974/000180297426000043/avo-20260731.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -899,7 +899,7 @@
     "period": "2026-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1996862/000162828026068130/bg-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -959,7 +959,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1769484/000110465926120726/biox-20260630x20f.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenue",
     "cur": {
@@ -1023,7 +1023,7 @@
     "period": "2026-08-29",
     "url": "https://www.sec.gov/Archives/edgar/data/16160/000156276226000113/calm-20260829.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -1057,11 +1057,11 @@
   "CF": {
    "cik": "0001324404",
    "earnings": {
-    "accn": "0001104659-26-091275",
-    "filed": "2026-08-05",
+    "accn": "0001104659-26-122757",
+    "filed": "2026-11-04",
     "form": "8-K",
-    "period": "2026-08-05",
-    "url": "https://www.sec.gov/Archives/edgar/data/1324404/000110465926091275/tm2622111d1_8k.htm"
+    "period": "2026-11-04",
+    "url": "https://www.sec.gov/Archives/edgar/data/1324404/000110465926122757/tm2628886d1_8k.htm"
    },
    "facts_read": "2026-10-29",
    "ni": {
@@ -1090,7 +1090,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1324404/000132440426000019/cf-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -1112,12 +1112,13 @@
    },
    "usual_from": [
     "2024-02-14",
-    "2026-08-05"
+    "2026-11-04"
    ],
    "usual_months": [
     2,
     5,
-    8
+    8,
+    11
    ]
   },
   "CLMT": {
@@ -1156,7 +1157,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/2013745/000201374526000024/clmt-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -1224,7 +1225,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1567094/000156709426000018/cnhi-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -1273,7 +1274,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1034957/000165495426009074/cresud_20f.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "sixk": {
     "accn": "0001034957-26-000077",
@@ -1319,7 +1320,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1755672/000175567226000025/ctva-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -1386,7 +1387,7 @@
     "period": "2026-07-04",
     "url": "https://www.sec.gov/Archives/edgar/data/916540/000091654026000023/dar-20260704.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -1454,7 +1455,7 @@
     "period": "2026-08-02",
     "url": "https://www.sec.gov/Archives/edgar/data/315189/000110465926102213/de-20260802x10q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -1521,7 +1522,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1857475/000185747526000076/dole-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -1585,7 +1586,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1809750/000147793226005081/edbl_10q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -1654,7 +1655,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1739104/000173910426000043/elan-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -1721,7 +1722,7 @@
     "period": "2026-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/37785/000003778526000171/fmc-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -1788,7 +1789,7 @@
     "period": "2026-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1591670/000110465926120201/fpi-20260930x10q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -1855,7 +1856,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1069394/000149315226038290/form10-q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -1912,7 +1913,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1309402/000162828026054377/gpre-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -1978,7 +1979,7 @@
     "period": "2026-07-26",
     "url": "https://www.sec.gov/Archives/edgar/data/48465/000004846526000055/hrl-20260726.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerIncludingAssessedTax",
     "cur": {
@@ -2020,7 +2021,7 @@
     "period": "2025-12-31",
     "url": "https://www.sec.gov/Archives/edgar/data/941221/000117891326000817/zk2634483.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "sixk": {
     "accn": "0001178913-26-004540",
@@ -2066,7 +2067,7 @@
     "period": "2026-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/874716/000087471626000135/idxx-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -2133,7 +2134,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1046257/000162828026054722/ingr-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -2173,51 +2174,51 @@
     "period": "2026-11-03",
     "url": "https://www.sec.gov/Archives/edgar/data/1421461/000142146126000026/ipi-20261103.htm"
    },
-   "facts_read": "2026-10-29",
+   "facts_read": "2026-11-04",
    "ni": {
     "concept": "NetIncomeLoss",
     "cur": {
-     "accn": "0001421461-26-000021",
-     "end": "2026-06-30",
-     "filed": "2026-08-05",
+     "accn": "0001421461-26-000028",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 15577000
+     "start": "2026-07-01",
+     "val": 1732000
     },
     "prior": {
-     "accn": "0001421461-26-000021",
-     "end": "2025-06-30",
-     "filed": "2026-08-05",
+     "accn": "0001421461-26-000028",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 3263000
+     "start": "2025-07-01",
+     "val": 3745000
     }
    },
    "periodic": {
-    "accn": "0001421461-26-000021",
-    "filed": "2026-08-05",
+    "accn": "0001421461-26-000028",
+    "filed": "2026-11-04",
     "form": "10-Q",
-    "period": "2026-06-30",
-    "url": "https://www.sec.gov/Archives/edgar/data/1421461/000142146126000021/ipi-20260630.htm"
+    "period": "2026-09-30",
+    "url": "https://www.sec.gov/Archives/edgar/data/1421461/000142146126000028/ipi-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerIncludingAssessedTax",
     "cur": {
-     "accn": "0001421461-26-000021",
-     "end": "2026-06-30",
-     "filed": "2026-08-05",
+     "accn": "0001421461-26-000028",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 66685000
+     "start": "2026-07-01",
+     "val": 51034000
     },
     "prior": {
-     "accn": "0001421461-26-000021",
-     "end": "2025-06-30",
-     "filed": "2026-08-05",
+     "accn": "0001421461-26-000028",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 67536000
+     "start": "2025-07-01",
+     "val": 50807000
     }
    },
    "usual_from": [
@@ -2267,7 +2268,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1791942/000179194226000004/jbsay-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenue",
     "cur": {
@@ -2331,7 +2332,7 @@
     "period": "2026-09-24",
     "url": "https://www.sec.gov/Archives/edgar/data/880117/000119312526436164/jbss-20260924.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -2398,7 +2399,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1495240/000149524026000021/land-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -2465,7 +2466,7 @@
     "period": "2026-07-31",
     "url": "https://www.sec.gov/Archives/edgar/data/1342423/000134242326000031/lmnr-20260731.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -2507,14 +2508,14 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1499849/000121390026114187/ea0309497-20f_brasilagro.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "sixk": {
-    "accn": "0001213900-26-111503",
-    "filed": "2026-10-22",
+    "accn": "0001213900-26-115741",
+    "filed": "2026-11-04",
     "form": "6-K",
-    "period": "2026-10-22",
-    "url": "https://www.sec.gov/Archives/edgar/data/1499849/000121390026111503/ea0309350-6k_brasil.htm"
+    "period": "2026-11-03",
+    "url": "https://www.sec.gov/Archives/edgar/data/1499849/000121390026115741/ea0310848-6k_brasil.htm"
    }
   },
   "LNN": {
@@ -2553,7 +2554,7 @@
     "period": "2026-08-31",
     "url": "https://www.sec.gov/Archives/edgar/data/836157/000119312526428926/lnn-20260831.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -2620,7 +2621,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/814586/000168316826006302/lifeway_i10q-063026.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -2659,51 +2660,51 @@
     "period": "2026-11-03",
     "url": "https://www.sec.gov/Archives/edgar/data/1285785/000128578526000139/mos-20261103.htm"
    },
-   "facts_read": "2026-10-29",
+   "facts_read": "2026-11-04",
    "ni": {
     "concept": "NetIncomeLoss",
     "cur": {
-     "accn": "0001285785-26-000112",
-     "end": "2026-06-30",
-     "filed": "2026-08-05",
+     "accn": "0001285785-26-000147",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": -272800000
+     "start": "2026-07-01",
+     "val": -72100000
     },
     "prior": {
-     "accn": "0001285785-26-000112",
-     "end": "2025-06-30",
-     "filed": "2026-08-05",
+     "accn": "0001285785-26-000147",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 410700000
+     "start": "2025-07-01",
+     "val": 411400000
     }
    },
    "periodic": {
-    "accn": "0001285785-26-000112",
-    "filed": "2026-08-05",
+    "accn": "0001285785-26-000147",
+    "filed": "2026-11-04",
     "form": "10-Q",
-    "period": "2026-06-30",
-    "url": "https://www.sec.gov/Archives/edgar/data/1285785/000128578526000112/mos-20260630.htm"
+    "period": "2026-09-30",
+    "url": "https://www.sec.gov/Archives/edgar/data/1285785/000128578526000147/mos-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
-     "accn": "0001285785-26-000112",
-     "end": "2026-06-30",
-     "filed": "2026-08-05",
+     "accn": "0001285785-26-000147",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 2824100000
+     "start": "2026-07-01",
+     "val": 3100600000
     },
     "prior": {
-     "accn": "0001285785-26-000112",
-     "end": "2025-06-30",
-     "filed": "2026-08-05",
+     "accn": "0001285785-26-000147",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 3005700000
+     "start": "2025-07-01",
+     "val": 3452100000
     }
    },
    "usual_from": [
@@ -2753,7 +2754,7 @@
     "period": "2026-08-31",
     "url": "https://www.sec.gov/Archives/edgar/data/711377/000119312526416954/neog-20260831.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -2795,75 +2796,75 @@
     "period": "2025-12-31",
     "url": "https://www.sec.gov/Archives/edgar/data/1725964/000119312526081326/d56746d40f.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "sixk": {
-    "accn": "0001193125-26-413251",
-    "filed": "2026-10-05",
+    "accn": "0001193125-26-447603",
+    "filed": "2026-11-04",
     "form": "6-K",
-    "period": "2026-10-05",
-    "url": "https://www.sec.gov/Archives/edgar/data/1725964/000119312526413251/d159964d6k.htm"
+    "period": "2026-11-04",
+    "url": "https://www.sec.gov/Archives/edgar/data/1725964/000119312526447603/d184413d6k.htm"
    }
   },
   "PAHC": {
    "cik": "0001069899",
    "earnings": {
-    "accn": "0001104659-26-101531",
-    "filed": "2026-08-26",
+    "accn": "0001104659-26-122727",
+    "filed": "2026-11-04",
     "form": "8-K",
-    "period": "2026-08-26",
-    "url": "https://www.sec.gov/Archives/edgar/data/1069899/000110465926101531/pahc-20260826x8k.htm"
+    "period": "2026-11-03",
+    "url": "https://www.sec.gov/Archives/edgar/data/1069899/000110465926122727/pahc-20261103x8k.htm"
    },
-   "facts_read": "2026-10-29",
+   "facts_read": "2026-11-04",
    "ni": {
     "concept": "NetIncomeLoss",
     "cur": {
-     "accn": "0001104659-26-056280",
-     "end": "2026-03-31",
-     "filed": "2026-05-06",
+     "accn": "0001104659-26-122692",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-01-01",
-     "val": 24024000
+     "start": "2026-07-01",
+     "val": 29520000
     },
     "prior": {
-     "accn": "0001104659-26-056280",
-     "end": "2025-03-31",
-     "filed": "2026-05-06",
+     "accn": "0001104659-26-122692",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-01-01",
-     "val": 20880000
+     "start": "2025-07-01",
+     "val": 26527000
     }
    },
    "periodic": {
-    "accn": "0001104659-26-101493",
-    "filed": "2026-08-26",
-    "form": "10-K",
-    "period": "2026-06-30",
-    "url": "https://www.sec.gov/Archives/edgar/data/1069899/000110465926101493/pahc-20260630x10k.htm"
+    "accn": "0001104659-26-122692",
+    "filed": "2026-11-04",
+    "form": "10-Q",
+    "period": "2026-09-30",
+    "url": "https://www.sec.gov/Archives/edgar/data/1069899/000110465926122692/pahc-20260930x10q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
-     "accn": "0001104659-26-056280",
-     "end": "2026-03-31",
-     "filed": "2026-05-06",
+     "accn": "0001104659-26-122692",
+     "end": "2026-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-01-01",
-     "val": 383543000
+     "start": "2026-07-01",
+     "val": 386774000
     },
     "prior": {
-     "accn": "0001104659-26-056280",
-     "end": "2025-03-31",
-     "filed": "2026-05-06",
+     "accn": "0001104659-26-122692",
+     "end": "2025-09-30",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-01-01",
-     "val": 347825000
+     "start": "2025-07-01",
+     "val": 363893000
     }
    },
    "usual_from": [
     "2023-11-08",
-    "2026-08-26"
+    "2026-11-04"
    ],
    "usual_months": [
     2,
@@ -2883,7 +2884,7 @@
     "period": "2025-12-31",
     "url": "https://www.sec.gov/Archives/edgar/data/2032755/000121390026050423/ea0287795-20f_pinnacle.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "sixk": {
     "accn": "0001213900-26-107212",
@@ -2929,7 +2930,7 @@
     "period": "2026-09-27",
     "url": "https://www.sec.gov/Archives/edgar/data/802481/000080248126000081/ppc-20260927.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -2996,7 +2997,7 @@
     "period": "2026-07-31",
     "url": "https://www.sec.gov/Archives/edgar/data/744187/000093041326002814/c117568_10q-ixbrl.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -3045,7 +3046,7 @@
     "period": "2025-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1321851/000110465926008700/seed-20250930x20f.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "sixk": {
     "accn": "0001104659-26-120676",
@@ -3064,51 +3065,51 @@
     "period": "2023-08-09",
     "url": "https://www.sec.gov/Archives/edgar/data/88948/000143774923022801/senea20230802_8k.htm"
    },
-   "facts_read": "2026-10-29",
+   "facts_read": "2026-11-04",
    "ni": {
     "concept": "NetIncomeLoss",
     "cur": {
-     "accn": "0001437749-26-026264",
-     "end": "2026-06-27",
-     "filed": "2026-08-06",
+     "accn": "0001437749-26-034938",
+     "end": "2026-09-26",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 19507000
+     "start": "2026-06-28",
+     "val": 29230000
     },
     "prior": {
-     "accn": "0001437749-26-026264",
-     "end": "2025-06-28",
-     "filed": "2026-08-06",
+     "accn": "0001437749-26-034938",
+     "end": "2025-09-27",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 14885000
+     "start": "2025-06-29",
+     "val": 29739000
     }
    },
    "periodic": {
-    "accn": "0001437749-26-026264",
-    "filed": "2026-08-06",
+    "accn": "0001437749-26-034938",
+    "filed": "2026-11-04",
     "form": "10-Q",
-    "period": "2026-06-27",
-    "url": "https://www.sec.gov/Archives/edgar/data/88948/000143774926026264/senea20260627_10q.htm"
+    "period": "2026-09-26",
+    "url": "https://www.sec.gov/Archives/edgar/data/88948/000143774926034938/senea20261003_10q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerIncludingAssessedTax",
     "cur": {
-     "accn": "0001437749-26-026264",
-     "end": "2026-06-27",
-     "filed": "2026-08-06",
+     "accn": "0001437749-26-034938",
+     "end": "2026-09-26",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-01",
-     "val": 405174000
+     "start": "2026-06-28",
+     "val": 492590000
     },
     "prior": {
-     "accn": "0001437749-26-026264",
-     "end": "2025-06-28",
-     "filed": "2026-08-06",
+     "accn": "0001437749-26-034938",
+     "end": "2025-09-27",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-01",
-     "val": 297458000
+     "start": "2025-06-29",
+     "val": 460022000
     }
    }
   },
@@ -3148,7 +3149,7 @@
     "period": "2026-09-27",
     "url": "https://www.sec.gov/Archives/edgar/data/91388/000009138826000069/smf-20260927.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -3182,11 +3183,11 @@
   "SMG": {
    "cik": "0000825542",
    "earnings": {
-    "accn": "0000825542-26-000036",
-    "filed": "2026-07-29",
+    "accn": "0000825542-26-000061",
+    "filed": "2026-11-04",
     "form": "8-K",
-    "period": "2026-07-29",
-    "url": "https://www.sec.gov/Archives/edgar/data/825542/000082554226000036/smg-20260729.htm"
+    "period": "2026-11-04",
+    "url": "https://www.sec.gov/Archives/edgar/data/825542/000082554226000061/smg-20261104.htm"
    },
    "facts_read": "2026-10-29",
    "ni": {
@@ -3215,7 +3216,7 @@
     "period": "2026-06-27",
     "url": "https://www.sec.gov/Archives/edgar/data/825542/000082554226000041/smg-20260627.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -3237,7 +3238,7 @@
    },
    "usual_from": [
     "2024-02-07",
-    "2026-07-29"
+    "2026-11-04"
    ],
    "usual_months": [
     1,
@@ -3258,7 +3259,7 @@
     "period": "2025-12-31",
     "url": "https://www.sec.gov/Archives/edgar/data/909037/000090903726000023/sqm-20251231.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null,
    "sixk": {
     "accn": "0000909037-26-000036",
@@ -3304,7 +3305,7 @@
     "period": "2026-07-31",
     "url": "https://www.sec.gov/Archives/edgar/data/1409171/000162828026060350/titn-20260731.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -3338,62 +3339,62 @@
   "TRMB": {
    "cik": "0000864749",
    "earnings": {
-    "accn": "0000864749-26-000106",
-    "filed": "2026-08-12",
+    "accn": "0000864749-26-000119",
+    "filed": "2026-11-04",
     "form": "8-K",
-    "period": "2026-08-12",
-    "url": "https://www.sec.gov/Archives/edgar/data/864749/000086474926000106/trmb-20260812.htm"
+    "period": "2026-11-04",
+    "url": "https://www.sec.gov/Archives/edgar/data/864749/000086474926000119/trmb-20261104.htm"
    },
-   "facts_read": "2026-10-29",
+   "facts_read": "2026-11-04",
    "ni": {
     "concept": "NetIncomeLoss",
     "cur": {
-     "accn": "0000864749-26-000108",
-     "end": "2026-07-03",
-     "filed": "2026-08-12",
+     "accn": "0000864749-26-000121",
+     "end": "2026-10-02",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-04",
-     "val": -471700000
+     "start": "2026-07-04",
+     "val": 59100000
     },
     "prior": {
-     "accn": "0000864749-26-000108",
-     "end": "2025-07-04",
-     "filed": "2026-08-12",
+     "accn": "0000864749-26-000121",
+     "end": "2025-10-03",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-05",
-     "val": 89200000
+     "start": "2025-07-05",
+     "val": 111500000
     }
    },
    "periodic": {
-    "accn": "0000864749-26-000108",
-    "filed": "2026-08-12",
+    "accn": "0000864749-26-000121",
+    "filed": "2026-11-04",
     "form": "10-Q",
-    "period": "2026-07-03",
-    "url": "https://www.sec.gov/Archives/edgar/data/864749/000086474926000108/trmb-20260703.htm"
+    "period": "2026-10-02",
+    "url": "https://www.sec.gov/Archives/edgar/data/864749/000086474926000121/trmb-20261002.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
-     "accn": "0000864749-26-000108",
-     "end": "2026-07-03",
-     "filed": "2026-08-12",
+     "accn": "0000864749-26-000121",
+     "end": "2026-10-02",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2026-04-04",
-     "val": 972000000
+     "start": "2026-07-04",
+     "val": 966800000
     },
     "prior": {
-     "accn": "0000864749-26-000108",
-     "end": "2025-07-04",
-     "filed": "2026-08-12",
+     "accn": "0000864749-26-000121",
+     "end": "2025-10-03",
+     "filed": "2026-11-04",
      "form": "10-Q",
-     "start": "2025-04-05",
-     "val": 875700000
+     "start": "2025-07-05",
+     "val": 901200000
     }
    },
    "usual_from": [
     "2024-02-12",
-    "2026-08-12"
+    "2026-11-04"
    ],
    "usual_months": [
     2,
@@ -3438,7 +3439,7 @@
     "period": "2026-06-27",
     "url": "https://www.sec.gov/Archives/edgar/data/916365/000091636526000059/tsco-20260627.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -3505,7 +3506,7 @@
     "period": "2026-06-27",
     "url": "https://www.sec.gov/Archives/edgar/data/100493/000010049326000058/tsn-20260627.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -3572,7 +3573,7 @@
     "period": "2026-07-31",
     "url": "https://www.sec.gov/Archives/edgar/data/737758/000073775826000043/ttc-20260731.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -3639,7 +3640,7 @@
     "period": "2026-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/899751/000089975126000083/twi-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -3706,7 +3707,7 @@
     "period": "2026-09-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1425292/000142529226000033/cvi-20260930.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -3773,7 +3774,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/8504/000143774926028026/uavs20260630_10q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerIncludingAssessedTax",
     "cur": {
@@ -3838,7 +3839,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1584549/000119312526341194/vff-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -3912,7 +3913,7 @@
     "period": "2026-09-27",
     "url": "https://www.sec.gov/Archives/edgar/data/1579733/000119312526444385/vitl-20260927.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -3979,7 +3980,7 @@
     "period": "2026-09-26",
     "url": "https://www.sec.gov/Archives/edgar/data/102729/000010272926000050/vmi-20260926x10q.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "cur": {
@@ -4014,7 +4015,7 @@
    "cik": "0002128626",
    "facts_read": "2026-10-29",
    "ni": null,
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": null
   },
   "ZTS": {
@@ -4053,7 +4054,7 @@
     "period": "2026-06-30",
     "url": "https://www.sec.gov/Archives/edgar/data/1555280/000155528026000040/zts-20260630.htm"
    },
-   "read": "2026-11-03",
+   "read": "2026-11-04",
    "rev": {
     "concept": "Revenues",
     "cur": {
@@ -4085,7 +4086,7 @@
    ]
   }
  },
- "checked": "2026-11-03T23:40:12Z",
+ "checked": "2026-11-04T22:25:22Z",
  "source": "SEC EDGAR (data.sec.gov)",
  "v": 1
 }
