@@ -38,6 +38,8 @@
 .breadcrumb a{color:var(--text-dim);text-decoration:none}
 :root[data-theme="light"] .fm{--gold:#7a5a12}
 </style>
+<link rel="stylesheet" href="/components/src-fold.css?v=1">
+<script src="/components/src-fold.js?v=1" defer></script>
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
@@ -92,7 +94,7 @@
   
   <h2 id="m-thesis">The night-heat yield test</h2>
   <p>The Atlas tests one claim: that counties whose July nights are warm, or warming, gain corn yield more slowly. Each county's yield trend is fitted on every published year since 2008. Four night-heat measures are compared with it, each across all counties and again within each state after the state mean is taken out. The within-state rows are the ones that count, because across the country the south is warmer and different in every other way too. Eight tests are run and all eight are shown; each chance figure is multiplied by eight. Neighbouring counties move together, so treat the chance figures as generous.</p>
-  <h2 id="m-sources">Sources</h2>
+  <details class="src-fold"><summary><h2 id="m-sources">Sources</h2></summary>
   <p class="src">NOAA NCEI, nClimDiv county monthly minimum temperature (climdiv-tmincy) ·
       USDA NASS, Census of Agriculture 2022 and Cash Rents Survey ·
       USGS, Estimated Use of Water in the United States, county-level data for 2015 ·
@@ -113,6 +115,7 @@
       USDA FSA, Agricultural Foreign Investment Disclosure Act holdings (via <a href="/farmland-atlas#foreign">Foreign-Owned Land</a>) ·
       County boundaries: US Census cartographic boundary file, 2010 vintage, with the 2013 and 2015 county changes applied (Bedford city, Virginia, merged into Bedford County; Shannon County, South Dakota, renamed Oglala Lakota; Wade Hampton, Alaska, renamed Kusilvak).
       <br>Data files: <a href="/data/atlas/atlas.json">atlas.json</a> (every county, every layer) · per-county detail under <span class="fa-mono">/data/atlas/counties/&lt;fips&gt;.json</span>.</p>
+</details>
 </main>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19" defer></script>

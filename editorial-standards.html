@@ -94,6 +94,8 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://agsist.com/editorial-standards", "url": "https://agsist.com/editorial-standards", "name": "Editorial standards: how the AGSIST Daily is made", "description": "Who runs AGSIST, how the AGSIST Daily briefing is written and checked, where its numbers come from, how sponsors are kept out of it, and how corrections work.", "inLanguage": "en-US", "datePublished": "2026-10-16", "dateModified": "2026-10-29", "isPartOf": {"@type": "WebSite", "url": "https://agsist.com/", "name": "AGSIST"}, "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "about": {"@id": "https://agsist.com/#org"}}, {"@type": "NewsMediaOrganization", "@id": "https://agsist.com/#org", "name": "AGSIST", "url": "https://agsist.com/", "logo": {"@type": "ImageObject", "url": "https://agsist.com/img/logo-agsist.png", "width": 634, "height": 296}, "founder": {"@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com/about"}, "publishingPrinciples": "https://agsist.com/editorial-standards", "correctionsPolicy": "https://agsist.com/editorial-standards#corrections", "ownershipFundingInfo": "https://agsist.com/about", "actionableFeedbackPolicy": "https://agsist.com/editorial-standards#corrections", "masthead": "https://agsist.com/about", "email": "sig@agsist.com", "telephone": "+1-715-797-2428", "address": {"@type": "PostalAddress", "postOfficeBoxNumber": "243", "addressLocality": "Chetek", "addressRegion": "WI", "postalCode": "54728", "addressCountry": "US"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "About", "item": "https://agsist.com/about"}, {"@type": "ListItem", "position": 3, "name": "Editorial standards", "item": "https://agsist.com/editorial-standards"}]}]}
 </script>
+<link rel="stylesheet" href="/components/src-fold.css?v=1">
+<script src="/components/src-fold.js?v=1" defer></script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -131,7 +133,7 @@
       <p>The Daily is drafted each morning by AI software, working from my rules, examples of how I write, and that morning&rsquo;s market data and news. Before it posts, code checks every price in it against the market feed; a draft that fails does not post. It usually goes up between 5:45 and 6:30 a.m. Central. I read it each morning and fix what is wrong when I see it or when you tell me.</p>
       <p>The Daily is market news and commentary. It is not advice to buy, sell or hedge anything, and it never knows your farm. When an issue carries the prediction bot's call, it is copied from <a href="/usda-calendar#scorecard">the bot's own page</a>, where every call is graded.</p>
 
-      <h2 id="sources">Where the numbers come from</h2>
+      <details class="src-fold"><summary><h2 id="sources">Where the numbers come from</h2></summary>
       <ul>
         <li id="yahoo">Futures: delayed quotes from Yahoo Finance, labeled with the time they were read. Yahoo lists CBOT and CME futures at a 10-minute exchange delay and the site reads them about every 15 minutes, so a grain or livestock price here is about 10 to 25 minutes old while markets trade. A settle is called a settle only when it is one.</li>
         <li>USDA: NASS, WASDE, AMS and RMA, read from USDA's published files and reports.</li>
@@ -155,6 +157,7 @@
       </ul>
       <p>See a number that looks wrong? <a href="/contact">Tell me</a>.</p>
 
+</details>
       <h2 id="independence">Sponsors and independence</h2>
       <p>Sponsors pay for a labeled spot. They never see an issue before it posts, never pick its topics, and never change data, rankings or bid order anywhere on the site. My own businesses are not advertised here.</p>
 
