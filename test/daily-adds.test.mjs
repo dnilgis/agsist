@@ -66,3 +66,15 @@ test("the archive page and the live page both draw the added lines", () => {
   const live = readFileSync(ROOT + "daily.html", "utf8");
   assert.ok(live.includes("data.price_windows") && live.includes("data.ag_weather"));
 });
+
+test("the weather line never prints an error or landing page", () => {
+  const r = execFileSync("python3", ["-c", `
+import sys; sys.path.insert(0, "scripts")
+import daily_adds as d
+nf = "<html><body><h1>Page Not Found</h1><p>The page you requested could not be found on this server. Please check the address and try again. You may also return to the home page and search.</p></body></html>"
+land = "<html><body><p>Welcome to the Office of the Chief Economist. We provide economic analysis to the Secretary. Our staff supports policy decisions across the department every day.</p></body></html>"
+wx = "AGRICULTURAL WEATHER HIGHLIGHTS\\n\\nIn the Corn Belt, rain showers are slowing harvest across the eastern half of the region. Temperatures remain near normal for early November. Fieldwork resumes where it is dry."
+print(d.ag_weather(lambda u: nf) is None, d.ag_weather(lambda u: land) is None, bool(d.ag_weather(lambda u: wx)))
+`], { cwd: ROOT, encoding: "utf8" }).trim();
+  assert.equal(r, "True True True");
+});

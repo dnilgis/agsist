@@ -152,7 +152,12 @@ def ag_weather(fetch, urls=WEATHER_URLS, today_iso=""):
             raw = None
         if not raw or raw.lstrip().startswith("%PDF"):
             continue
+        # A guessed or moved URL can answer with an error or landing page written in prose. Print only text that is
+        # plainly a weather summary: no error words, and at least two weather words in the chosen sentences.
+        if re.search(r"(?i)\b(not found|404|error|page you requested|moved)\b", raw[:4000]):
+            continue
         t = first_sentences(raw)
-        if t:
+        wx = re.findall(r"(?i)\b(rain\w*|showers?|precipitation|temperatures?|snow\w*|frost|freez\w*|dry\w*|drought|warm\w*|cool\w*|storms?|fieldwork)\b", t)
+        if t and len(wx) >= 2:
             return {"text": t, "source": WEATHER_SOURCE, "date": today_iso}
     return None
