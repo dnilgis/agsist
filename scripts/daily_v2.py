@@ -774,6 +774,28 @@ def _board_html(daily):
             + '<tr><td><table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0">%s</table></td></tr>' % "".join(trs))
 
 
+def _adds_html(daily):
+    """Week/month/year price change and the USDA weather lines, under the board."""
+    rows = []
+    for w in (daily.get("price_windows") or []):
+        its = ", ".join("%s %s" % (i["name"], i["text"]) for i in w.get("items") or [])
+        if its:
+            rows.append(_row('<b>%s:</b> %s' % (e(w["label"]), e(its)), pad="4px 0 0", size=13))
+    aw = daily.get("ag_weather") or {}
+    if aw.get("text"):
+        rows.append(_row('<b>USDA weather:</b> %s <span class="mute" style="color:%s;font-size:12px">Source: %s.</span>'
+                         % (e(aw["text"]), MUTE, e(aw.get("source") or "USDA")), pad="8px 0 0", size=13))
+    return "".join(rows)
+
+
+def _adds_text(daily):
+    L = ["  " + t for t in __import__("daily_adds").windows_text(daily.get("price_windows"))]
+    aw = daily.get("ag_weather") or {}
+    if aw.get("text"):
+        L.append("  USDA weather: %s Source: %s." % (aw["text"], aw.get("source") or "USDA"))
+    return L
+
+
 def _watch(daily):
     out = []
     for w in (daily.get("watch_list") or [])[:2]:
@@ -902,6 +924,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
     if bd:
         b.append(_rule())
         b.append(bd)
+        b.append(_adds_html(daily))
     w = _watch(daily)
     if w:
         b.append(_rule())
@@ -994,6 +1017,7 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
         L += ["", "THE BOARD" + (" (" + stamp + ")" if stamp else "")]
         for r in rows:
             L.append("  %s %s %s" % (r["label"], px(r["key"], r["last"]), mv(r["key"], r)))
+        L += _adds_text(daily)
     w = _watch(daily)
     if w:
         L += ["", "WHAT TO WATCH"] + ["  %s: %s" % (a, d) for a, d in w]
