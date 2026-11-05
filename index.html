@@ -894,7 +894,7 @@ try {
     function wxNoLoc(){if(snapNow)return false;var ze=$('wx-zip-entry'),hb=$('hero-band');
       return !!(ze&&ze.style.display==='block')||!!(hb&&hb.classList.contains('hb-nozip'));}
     function paintNoLoc(){if(!wxNoLoc())return false;var c=$('hb-wx');if(c)c.dataset.state='nozip';
-      set('hb-wx-v','<span class="hb-setzip">Set ZIP</span>');set('hb-wx-s','<span class="hb-l">for weather and spray days</span>');return true;}
+      set('hb-wx-v','<span class="hb-setzip">Set ZIP</span>');set('hb-wx-s','<span class="hb-l">for weather and season totals</span>');return true;}
     (function(){var ze=$('wx-zip-entry'),c=$('hb-wx');
       if(ze&&window.MutationObserver)new MutationObserver(function(){if(!paintNoLoc()&&c&&c.dataset.state==='nozip'&&ze.style.display!=='block'){c.dataset.state='';set('hb-wx-v','<span class="hb-skel" aria-hidden="true"></span>');set('hb-wx-s','');}}).observe(ze,{attributes:true,attributeFilter:['style']});
       paintNoLoc();
@@ -993,7 +993,7 @@ try {
             <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div><div class="wstat" id="s7-wx-soil-w"><div class="wstat-lbl">Soil</div><div class="wstat-val" id="s7-wx-soil"><span class="s7-nl">Not loaded yet</span></div></div>
+            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div><div class="wstat" id="s7-wx-soil-w"><div class="wstat-lbl">Soil, 2.4 in, modeled</div><div class="wstat-val" id="s7-wx-soil"><span class="s7-nl">Not loaded yet</span></div></div>
           </div>
                     <div class="wx-today" id="wx-today-summary"></div>
           <a href="/fall-nitrogen" class="wx-falln" id="s7-falln" data-track="season" hidden><span class="wx-falln-k">Fall nitrogen</span><span class="wx-falln-v" id="s7-falln-badge">Not loaded yet</span><span class="wx-falln-s" id="s7-falln-rec">Soil temperature at 2.4 in (6 cm). Extension guidance: wait for fall anhydrous until soil at 4 in stays below 50&deg;F.</span></a>

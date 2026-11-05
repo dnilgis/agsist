@@ -90,7 +90,7 @@ test("homepage Today cell asks for a ZIP when there is no location, and a tap op
     // ignores it does: no ZIP saved, "Detecting location..." below.
     await pg.waitForFunction(() => document.getElementById("hb-wx-v").textContent.trim() === "Set ZIP", null, { timeout: 15000 });
     assert.equal((await pg.textContent("#hb-wx-v")).trim(), "Set ZIP");
-    assert.equal((await pg.textContent("#hb-wx-s")).trim(), "for weather and spray days");
+    assert.equal((await pg.textContent("#hb-wx-s")).trim(), "for weather and season totals");
     await pg.waitForTimeout(10500);
     assert.ok(!/didn/.test(await pg.textContent("#hb-wx-s")), "after 10 s it still says why, not didn't load");
     await pg.click("#hb-wx");

@@ -9,9 +9,10 @@
  *   corn GDDs over the last 30 days and their average          data/rain/wx/<st>.json g30
  *   last season's corn GDDs, Jan 1 to Apr 30                   data/rain/wx/<st>.json gp
  * The only arithmetic here is a departure, figure minus its normal, as the county page's month table does it.
- * Every figure carries its own dates. A figure with more than 5% of its days not reported says "not enough days
- * reported" (the 30-day rain needs every day, the county page's rule). The stations are named on tap; the sources
- * are named in plain text, never linked.
+ * Every figure carries its own dates. Whether a figure has enough days is decided where it is built, never here:
+ * a county row in the rain file passed the county page's own rule (county_rain.MIN_SHARE), r30 "m" and a GDD "m"
+ * are the builders' withholds, and each reads "Not enough days reported". The stations are named on tap; the
+ * sources are named in plain text, never linked.
  *
  *   AgSeason.fipsFor(rainFile, countyName)        the county's FIPS in a state rain file, or null
  *   AgSeason.model(rainFile, wxFile, fips)        what the block shows (no DOM)
@@ -21,11 +22,11 @@
 (function () {
   "use strict";
   var M3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  var MINUS = "−", MISS_MAX = 0.05, NOPE = "Not enough days reported";
+  var MINUS = "−", NOPE = "Not enough days reported";
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function num(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
-  function inch(x) { return (Math.round(x * 100) / 100).toFixed(2); }
-  function sgn(x, f) { return (x > 0 ? "+" : x < 0 ? MINUS : "") + f(Math.abs(x)); }
+  /* the county page's inch() is Python's f"{x:.2f}"; toFixed(2) rounds the same double the same way */
+  function inch(x) { return x.toFixed(2); }
   function mdIso(iso) { return M3[+iso.slice(5, 7) - 1] + " " + (+iso.slice(8, 10)); }
   function mdNum(v) { return M3[Math.floor(v / 100) - 1] + " " + (v % 100); }
   function isoOf(year, mmdd) { return year + "-" + ("0" + Math.floor(mmdd / 100)).slice(-2) + "-" + ("0" + (mmdd % 100)).slice(-2); }
@@ -66,14 +67,14 @@
       m.county = c.name;
       m.station = c.station ? { name: c.station.name, mi: c.station.mi, cocorahs: c.station.net === "cocorahs" } : null;
       m.normals = rain.normals;
-      var thin = c.missing > MISS_MAX * c.days;
-      m.rain = thin ? { status: "thin", from: rain.year + "-01-01", to: c.as_of }
-        : { status: "ok", value: c.total, normal: c.usual, dep: c.usual == null ? null : Math.round((c.total - c.usual) * 100) / 100,
+      // the row is in the file only if it passed the county page's rule; a row with no total is withheld too
+      m.rain = c.total == null ? { status: "thin", from: rain.year + "-01-01", to: c.as_of }
+        : { status: "ok", value: c.total, normal: c.usual, dep: c.usual == null ? null : c.total - c.usual,
           pct: c.pct, from: rain.year + "-01-01", to: c.as_of, missing: c.missing };
       if (c.r30 !== undefined) {
         var f = back(c.as_of, 29);
         m.rain30 = c.r30 === "m" ? { status: "thin", from: f, to: c.as_of }
-          : { status: "ok", value: c.r30[0], normal: c.r30[1], dep: c.r30[1] == null ? null : Math.round((c.r30[0] - c.r30[1]) * 100) / 100,
+          : { status: "ok", value: c.r30[0], normal: c.r30[1], dep: c.r30[1] == null ? null : c.r30[0] - c.r30[1],
             pct: c.r30[2], from: f, to: c.as_of };
       }
       m.months = c.months || null;
@@ -105,8 +106,11 @@
     else {
       var d = "";
       if (f.dep != null) {
-        var cls = f.dep > 0 ? "wxs-up" : f.dep < 0 ? "wxs-dn" : "";
-        d = '<span class="wxs-d ' + cls + '">' + sgn(f.dep, fmt) + (unit === "in" ? " in" : "") + (f.pct != null ? " (" + f.pct + "%)" : "") + "</span>";
+        /* the county page's month table: a sign past half a hundredth (0.004 in), then the rounded size, so a
+           departure of 0.0045 reads "+0.00" on both; GDDs are whole numbers */
+        var eps = unit === "in" ? 0.004 : 0, up = f.dep > eps, dn = f.dep < -eps;
+        var cls = up ? "wxs-up" : dn ? "wxs-dn" : "";
+        d = '<span class="wxs-d ' + cls + '">' + (up ? "+" : dn ? MINUS : "") + fmt(Math.abs(f.dep)) + (unit === "in" ? " in" : "") + (f.pct != null ? " (" + f.pct + "%)" : "") + "</span>";
       } else d = '<span class="wxs-d">No normal for this station</span>';
       body = '<span class="wxs-v">' + fmt(f.value) + (unit === "in" ? ' <small>in</small>' : ' <small>GDDs</small>') + "</span>" + d;
     }
@@ -133,7 +137,7 @@
     if (m.wxStation) s.push("GDDs are corn growing degree days (86/50): " + (m.wxStation === "same" ? "highs and lows from the same station" : "highs and lows from the weather station " + esc(m.wxStation.where) + ", " + m.wxStation.mi + " mi from the rain " + (m.station && m.station.cocorahs ? "gauge" : "station")) +
       "; each day&rsquo;s high and low held between 50&deg;F and 86&deg;F, averaged, minus 50. Normal: the station&rsquo;s own 1991 to 2020 average for the same days" + (m.gdd && m.gdd.years ? " (" + m.gdd.years + " years)" : "") + ".");
     if (m.gpStation) s.push("Last season&rsquo;s GDDs: " + esc(m.gpStation.where) + ", " + m.gpStation.mi + " mi off.");
-    s.push("A figure with more than 5% of its days not reported is not shown; the 30-day rain needs every day. NOAA daily records through RCC-ACIS." +
+    s.push("A figure is shown only with enough days reported, by the county rain page&rsquo;s own rule; the 30-day rain needs every day. NOAA daily records through RCC-ACIS." +
       (m.station && m.station.cocorahs ? " Volunteer gauge data: CoCoRaHS." : ""));
     out.push('<div class="wxs-foot">');
     if (m.months && m.months.length) out.push('<button type="button" class="wxs-b" id="wxs-chart-b" aria-expanded="false" aria-controls="wxs-chart">Rain by month</button>');

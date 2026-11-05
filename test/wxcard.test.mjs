@@ -66,9 +66,9 @@ test("the old GDU and 30-day precip boxes, their PRISM history and the fold are 
 test("summer: every figure from the files, with its dates; departures by hand", () => {
   const m = A.model(FX, WX, A.fipsFor(FX, "Story"));
   // rain: 55.03 in against 34.60 usual: +20.43, 159% (the file's percent)
-  assert.deepEqual([m.rain.value, m.rain.normal, m.rain.dep, m.rain.pct, m.rain.from, m.rain.to], [55.03, 34.6, 20.43, 159, "2026-01-01", "2026-11-03"]);
+  assert.deepEqual([m.rain.value, m.rain.normal, +m.rain.dep.toFixed(2), m.rain.pct, m.rain.from, m.rain.to], [55.03, 34.6, 20.43, 159, "2026-01-01", "2026-11-03"]);
   // 30 days, Oct 5 to Nov 3: 2.71 against 2.80: -0.09, 97%
-  assert.deepEqual([m.rain30.value, m.rain30.normal, m.rain30.dep, m.rain30.pct, m.rain30.from], [2.71, 2.8, -0.09, 97, "2026-10-05"]);
+  assert.deepEqual([m.rain30.value, m.rain30.normal, +m.rain30.dep.toFixed(2), m.rain30.pct, m.rain30.from], [2.71, 2.8, -0.09, 97, "2026-10-05"]);
   // GDDs from May 1: 2,912 against 2,759: +153, 106%; 30 days 312 against 290: +22, 108%
   assert.deepEqual([m.gdd.value, m.gdd.normal, m.gdd.dep, m.gdd.pct, m.gdd.from, m.gdd.to], [2912, 2759, 153, 106, "2026-05-01", "2026-11-03"]);
   assert.deepEqual([m.gdd30.value, m.gdd30.dep, m.gdd30.pct, m.gdd30.from, m.gdd30.to], [312, 22, 108, "2026-10-05", "2026-11-03"]);
@@ -89,7 +89,7 @@ test("summer: every figure from the files, with its dates; departures by hand", 
 
 test("winter: no season yet, last season's GDDs with their year; withheld figures say so; a finished year names its year", () => {
   const r = clone(FX), w = clone(WX), c = r.counties["19169"];
-  r.year = 2027; c.as_of = "2027-03-14"; c.days = 73; c.missing = 4; c.r30 = "m";   // 4 of 73 days missing: 5.5%
+  r.year = 2027; c.as_of = "2027-03-14"; c.days = 73; c.missing = 4; c.total = null; c.r30 = "m";   // a row the builder withheld
   w.year = 2027; w.edate = "2027-03-14";
   w.counties["19169"] = { a: 314, g30: [9, 0, 30, 30, null], gp: { y: 2026, a: 1231, g: [2950, 1, 2840, 30, 104], s: ["8 miles west-southwest of Ames", "130203 2", 10] } };
   const m = A.model(r, w, "19169"), t = text(A.html(m, "2027-03-15"));
@@ -100,8 +100,9 @@ test("winter: no season yet, last season's GDDs with their year; withheld figure
   assert.ok(t.includes("GDDs, Feb 13 to Mar 14 9 GDDs −21"), "a 30-day figure with no percent under 50 GDDs of normal: 9 - 30 = -21\n" + t);
   assert.ok(!/GDDs, Feb 13 to Mar 14 9 GDDs −21 \(/.test(t), "no percent on a tiny normal");
   assert.match(t, /Last season's GDDs: 8 miles west-southwest of Ames, 10 mi off\./);
-  // 3 of 73 missing (4.1%): shown
-  c.missing = 3;
+  // the county page's rule, not the card's: a row in the file is shown. 7 of 73 missing (9.6%, past 5% but inside
+  // county_rain.MIN_SHARE 0.90) shows its total on the page, so on the card too
+  c.missing = 7; c.total = 1.2;
   assert.equal(A.model(r, w, "19169").rain.status, "ok");
   // January reads the finished year: the label says 2026
   const j = clone(FX);
@@ -151,7 +152,11 @@ wx = {"schema": "agsist-rain-wx/1", "state": "IA", "year": sx["year"], "edate": 
                              "s": ["8 miles west-southwest of Ames", "130203 2", 10]}}}
 json.dump(wx, open(os.path.join(data, "wx", "ia.json"), "w"))
 pages = B.build(data)
-print(json.dumps({"rain": sx, "wx": wx, "page": pages["rain/iowa/story-county.html"]}))
+# the same county with its total a hair over its usual (0.0045 in): the page's sign and rounding, built again
+sz = json.loads(json.dumps(sx)); cz = sz["counties"]["19169"]; cz["total"] = cz["usual"] + 0.0045
+json.dump(sz, open(os.path.join(data, "ia.json"), "w"))
+pz = B.build(data)["rain/iowa/story-county.html"]
+print(json.dumps({"rain": sx, "wx": wx, "page": pages["rain/iowa/story-county.html"], "rainZ": sz, "pageZ": pz}))
 `;
     const out = JSON.parse(execFileSync("python3", ["-c", py, t], { cwd: ROOT, encoding: "utf8", maxBuffer: 64 << 20 }));
     const c = out.rain.counties["19169"], page = out.page;
@@ -162,9 +167,13 @@ print(json.dumps({"rain": sx, "wx": wx, "page": pages["rain/iowa/story-county.ht
     assert.equal(dd("Usual by Oct 12"), m.rain.normal.toFixed(2), "its usual");
     assert.match(page, new RegExp("<dt>Percent of usual</dt><dd>" + m.rain.pct + "%</dd>"), "its percent");
     assert.ok(card.includes("Rain, Jan 1 to Oct 12 " + dd("Rain so far") + " in"), card);
-    // the month table's So far row prints the same departure, +/- total minus usual
-    const dep = (m.rain.dep > 0 ? "\\+" : m.rain.dep < 0 ? "&minus;" : "") + Math.abs(m.rain.dep).toFixed(2);
-    assert.match(page, new RegExp("<td><b>" + dep + "</b></td>"), "the page's year departure is the card's");
+    // the month table's So far row: its departure, sign and all, is the card's
+    const soFar = (pg) => /<th scope="row"><b>(?:So far|Year)<\/b><\/th><td><b>[\d.]+<\/b><\/td><td><b>[\d.]+<\/b><\/td><td><b>([^<]+)<\/b><\/td>/.exec(pg)[1].replace("&minus;", "\u2212");
+    assert.ok(card.includes("Rain, Jan 1 to Oct 12 " + dd("Rain so far") + " in " + soFar(page) + " in"), soFar(page) + "\n" + card);
+    // a departure that rounds to zero: the page prints "+0.00", and so does the card
+    const cardZ = text(A.html(A.model(out.rainZ, out.wx, "19169"), "2026-10-13"));
+    assert.equal(soFar(out.pageZ), "+0.00");
+    assert.ok(cardZ.includes(" in +0.00 in"), cardZ);
     // the last 30 days: the page shows it only when every day has its reading, and so does the card
     const p30 = /<dt>Last 30 days, Sep 13 to Oct 12<\/dt><dd>([\d.]+) /.exec(page);
     if (p30) {
