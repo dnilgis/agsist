@@ -147,7 +147,16 @@ test('the action: pinned checkout, key not left on disk, a failed checkout reach
   assert.match(a, /continue-on-error: true/);
   assert.match(a, /CHECKOUT_OUTCOME: \$\{\{ steps\.checkout\.outcome \}\}/);
   assert.match(a, /HAVE_TOKEN: \$\{\{ inputs\.token != '' \}\}/);
-  assert.equal((a.match(/inputs\.token/g) || []).length, 2, 'the key goes to the checkout and the yes/no check, nowhere else');
+  // the key goes to the two checkouts (the run's same-named engine branch, then the default) and the
+  // yes/no check, nowhere else; each checkout that takes it leaves no credentials behind
+  assert.equal((a.match(/inputs\.token/g) || []).length, 3, 'the key goes to the checkouts and the yes/no check, nowhere else');
+  const steps = a.split(/\n(?=    - id: )/).slice(1);
+  for (const st of steps.filter((x) => /inputs\.token/.test(x) && !/HAVE_TOKEN/.test(x))) {
+    assert.match(st, /uses: actions\/checkout@[0-9a-f]{40}/, 'only a checkout step takes the key');
+    assert.match(st, /persist-credentials: false/, 'a checkout that takes the key leaves it off disk');
+    assert.equal((st.match(/inputs\.token/g) || []).length, 1);
+  }
+  assert.equal(steps.filter((x) => /inputs\.token/.test(x)).length, 3);
   const sh = read('.github/actions/engine/engine.sh');
   assert.doesNotMatch(sh, /\$\{?(PRIVATE_REPO_TOKEN|INPUT_TOKEN|TOKEN)\b/, 'engine.sh never reads the key');
   const conf = read('.github/engine-paths');

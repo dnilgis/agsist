@@ -3,8 +3,9 @@ description: >-
   Puts the collection code (the paths in .github/engine-paths) in the workspace.
   mode empty: this repository's own copy (nothing changes). mode private: the
   engine branch of the private repo, checked out with PRIVATE_REPO_TOKEN and
-  copied into place. A failed checkout fails the job here, before any step can
-  read or publish data.
+  copied into place; a run on a branch (a pull request's head, or a dispatch on
+  it) uses the engine branch of the same name when there is one. A failed
+  checkout fails the job here, before any step can read or publish data.
 inputs:
   token:
     description: PRIVATE_REPO_TOKEN (Contents read on the private repo)
@@ -27,10 +28,23 @@ runs:
       env:
         MODE: ${{ inputs.mode }}
         HAVE_TOKEN: ${{ inputs.token != '' }}
+        RUN_BRANCH: ${{ github.head_ref || github.ref_name }}
       run: bash "$GITHUB_ACTION_PATH/engine.sh" plan
 
+    # the run's own branch on the engine (fx/x for a pull request from fx/x), when it exists
+    - id: paired
+      if: steps.plan.outputs.private == 'true' && steps.plan.outputs.paired != ''
+      continue-on-error: true
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      with:
+        repository: ${{ steps.plan.outputs.repo }}
+        ref: ${{ steps.plan.outputs.paired }}
+        token: ${{ inputs.token }}
+        path: .engine-pair
+        persist-credentials: false
+
     - id: checkout
-      if: steps.plan.outputs.private == 'true'
+      if: steps.plan.outputs.private == 'true' && steps.paired.outcome != 'success'
       continue-on-error: true
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       with:
@@ -46,4 +60,7 @@ runs:
       working-directory: ${{ github.workspace }}
       env:
         CHECKOUT_OUTCOME: ${{ steps.checkout.outcome }}
+        PAIRED_OUTCOME: ${{ steps.paired.outcome }}
+        PAIRED: ${{ steps.plan.outputs.paired }}
+        RUN_BRANCH: ${{ github.head_ref || github.ref_name }}
       run: bash "$GITHUB_ACTION_PATH/engine.sh" overlay .engine-src
