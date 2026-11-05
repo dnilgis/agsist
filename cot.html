@@ -520,6 +520,22 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
 @media(max-width:640px){.cx-hz button,.cx-link{min-height:40px}}
+/* At a glance (2026-11-04): one line per market, then the details behind a tap */
+.cg{margin:0 0 1rem}
+.cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .25rem}
+.cg-asof{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:0 0 .55rem}
+.cg-asof #cg-date{color:var(--text-dim);font-weight:700}
+.cg-lines{list-style:none;margin:0 0 .8rem;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.cg-lines[aria-busy="true"]{display:none}
+.cg-line{padding:.55rem .85rem;font-size:.95rem;line-height:1.5;color:var(--text);border-top:1px solid var(--border)}
+.cg-line:first-child{border-top:0}
+.cg-line b{font-weight:800}
+.cg-baked{margin:0 0 .8rem!important}
+.cg-ask{margin:0 0 .5rem}
+details.fold.cot-all[open]{border:0;background:none}
+details.fold.cot-all>.fold-body{padding:1rem 0 0}
+.cot-all>summary .cg-more-h{font-family:var(--font-display);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+@media(max-width:560px){.cg-line{font-size:.9rem;padding:.5rem .7rem}}
 </style>
 </head>
 
@@ -594,13 +610,25 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
     </details>
   </div>
 
+  <!-- At a glance (2026-11-04, Sig): one plain line per market, the details behind a tap -->
+  <section class="cg" id="cot-glance" aria-labelledby="cg-h">
+    <h2 class="cg-h" id="cg-h">Funds this week</h2>
+    <p class="cg-asof"><span id="cg-date"></span> Managed money (hedge funds and commodity trading advisers), from the CFTC Commitments of Traders. The percentile ranks the net as a share of open interest against every week in the record.</p>
+    <ul class="cg-lines" id="cg-lines" aria-busy="true"></ul>
+  <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
+    <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="These lines in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask"></div>
+  </section>
+
+  <details class="fold cot-all" id="cot-all">
+    <summary><h2 class="fold-title cg-more-h">Ranges, history and charts</h2> <span class="fold-hint">Every market&rsquo;s card and 52-week range, where each stands against its record, the weekly chart, one market at a time, and how to read the report</span></summary>
+    <div class="fold-body">
+
   <div class="cot-read" id="cot-read" style="display:none">
     <div class="cot-read-tag">The Read</div>
     <div class="cot-read-body" id="cot-read-body"></div>
   </div>
 
   <!-- Verdict banner -->
-  <div id="cot-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
   <div class="cot-verdict-banner mixed" id="cot-verdict-banner">
     <div class="cvb-badge mixed" id="cvb-badge">-</div>
     <div class="cvb-text" id="cvb-text">Loading fund positioning data…</div>
@@ -764,9 +792,9 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
     Released usually Friday 3:30 pm ET; a Wednesday-to-Friday federal holiday moves it to Monday · Refreshed here after each release ·
     <a href="/">← AGSIST Dashboard</a>
   </div>
+    </div>
+  </details>
 
-
-<div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>
 </main>
 
 <div id="site-footer">
@@ -787,7 +815,8 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 </div>
 <script src="/components/loader.js?v=19"></script>
 
-<script src="/components/cot-page.js?v=4"></script>
+<script src="/components/cot-glance.js?v=1"></script>
+<script src="/components/cot-page.js?v=5"></script>
 
 <script>
 /* COT chart-tab interaction event (2026-06-12) */

@@ -24,8 +24,8 @@ the as-of date shown with it. Each daily briefing has a permanent dated URL.
 
 Each figure below is read from the same file the site's pages read and carries that file's own date. A page can be newer than this list.
 
-- Cash bids: 22,979 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 4, 2026, 05:23 UTC (https://agsist.com/cash-bids).
-- Elevators with a current bid: 2,075, in 1,631 towns, counted Nov 4, 2026, 04:15 UTC (https://agsist.com/cash-bids).
+- Cash bids: 23,082 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 5, 2026, 00:22 UTC (https://agsist.com/cash-bids).
+- Elevators with a current bid: 2,060, in 1,626 towns, counted Nov 5, 2026, 01:48 UTC (https://agsist.com/cash-bids).
 - AGSIST Daily: latest issue Nov 4, 2026, at https://agsist.com/daily/2026-11-04 (the newest is always at https://agsist.com/daily).
 - County rain: 2026 totals for each county page, from NOAA daily station records, through Nov 3, 2026 (https://agsist.com/rain).
 - AGSIST USDA feeder steer index, not the CME index: $351.58 per cwt for the week Oct 26 to Nov 1, 2026, from USDA AMS auction reports; first count, late reports can still change it (https://agsist.com/cattle-auction-prices).

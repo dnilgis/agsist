@@ -40,7 +40,8 @@ test("one ask a page: the list's ask replaced the Daily ask, with its topic and 
     const a = asks[0];
     assert.equal(attr(a, "data-topic"), topic, p);
     assert.equal(attr(a, "data-source"), src, p + ": its own source tag");
-    assert.equal(attr(a, "data-signup-ask"), topic === "reports" ? "Email me the WASDE summary when it drops" : "Email me Funds this week, after each COT report", p);
+    // Nov 4 (Sig): /cot's ask sits under its at-a-glance lines and says when it comes
+    assert.equal(attr(a, "data-signup-ask"), topic === "reports" ? "Email me the WASDE summary when it drops" : p === "cot" ? "Get this every Friday by email" : "Email me Funds this week, after each COT report", p);
     assert.ok(attr(a, "data-note").endsWith("Free, its own list."), p + ": says it is not the Daily");
     assert.ok(!/data-daily|checked/.test(a), p + ": nothing ticks the Daily");
     assert.ok(!DASH.test(a), p + ": no dashes");
