@@ -727,6 +727,47 @@ def add_drift_row(now, rows, late, prev, environ=None, **kw):
     return rows, late
 
 
+def prediction_calls_row(now, root=ROOT, path=os.path.join("data", "prediction" + "s.json")):
+    """prediction-calls: the bot's weekly calls were made. From 5:30 PM Central on an entry day, a
+    crop with no call and no recorded reason is red (the run can still be started by hand until
+    6:55 PM). A call recorded as missed stays red for two days after its entry day. The day and
+    report come from the file the bot writes, so a run that never came leaves the date behind."""
+    from zoneinfo import ZoneInfo
+    base = {"workflow": "prediction-calls", "critical": True, "clock": "a call for every crop on its entry day"}
+    try:
+        d = json.load(open(os.path.join(root, path), encoding="utf-8"))
+        ne = d.get("next_entry") or {}
+        ct = now.astimezone(ZoneInfo("America/Chicago"))
+        today = ct.date()
+        bad = []
+        if ne.get("day") and ne.get("report"):
+            day = datetime.strptime(ne["day"], "%Y-%m-%d").date()
+            if day < today or (day == today and (ct.hour, ct.minute) >= (17, 30)):
+                have = {c.get("id") for c in d.get("calls", [])}
+                seen = {(s.get("crop"), s.get("report")) for s in d.get("skipped", [])}
+                bad += ["%s-%s" % (k, ne["report"]) for k in ("corn", "beans", "wheat", "kcwheat")
+                        if "%s-%s" % (k, ne["report"]) not in have and (k, ne["report"]) not in seen]
+        for s in d.get("skipped", []):
+            ed = s.get("entry_day")
+            if str(s.get("reason", "")).startswith("missed") and ed and \
+                    0 <= (today - datetime.strptime(ed, "%Y-%m-%d").date()).days <= 2:
+                bad.append("%s-%s" % (s.get("crop"), s.get("report")))
+        base.update(status="late" if bad else "ok",
+                    why=("no call for " + ", ".join(sorted(set(bad)))) if bad else "every due call is made")
+    except Exception as e:
+        base.update(status="unknown", why="check could not run: %s" % type(e).__name__)
+    return base
+
+
+def add_prediction_row(now, rows, late, **kw):
+    rows, late = list(rows), list(late)
+    r = prediction_calls_row(now, **kw)
+    rows.append(r)
+    if r.get("status") == "late":
+        late.append(r["workflow"])
+    return rows, late
+
+
 def add_share_row(now, rows, late, prev, **kw):
     """agsist-data-images (scripts/share_host.py row()): the og:image of a few pages that point at
     dnilgis.github.io/agsist-data answers, checked once a day; a 404 is red. Fail soft."""
@@ -872,6 +913,7 @@ def main(argv):
     rows, late, checked_at = add_delivery_rows(now, rows, late, repo, token, api, prev)
     rows, late = add_drift_row(now, rows, late, prev)
     rows, late = add_share_row(now, rows, late, prev)
+    rows, late = add_prediction_row(now, rows, late)
     doc = build(now, rows, late)
     if checked_at:
         doc["delivery_checked_at"] = checked_at
@@ -902,6 +944,31 @@ def selftest():
     T = lambda s: datetime.strptime(s, "%Y-%m-%d %H:%M").replace(tzinfo=UTC)
     R = lambda i, s, c="success", st="completed": {"id": i, "created_at": T(s).strftime("%Y-%m-%dT%H:%M:%SZ"),
                                                    "conclusion": c if st == "completed" else None, "status": st}
+    import tempfile as _tf
+    with _tf.TemporaryDirectory() as pd:
+        os.makedirs(os.path.join(pd, "data"))
+        def pj(ne, calls, skipped=()):
+            json.dump({"next_entry": ne, "calls": [{"id": c} for c in calls],
+                       "skipped": list(skipped)}, open(os.path.join(pd, "data", "prediction" + "s.json"), "w"))
+        allc = ["%s-2026-11-03" % k for k in ("corn", "beans", "wheat", "kcwheat")]
+        ne = {"report": "2026-11-03", "day": "2026-11-09"}
+        pj(ne, [])
+        check(prediction_calls_row(T("2026-11-09 21:00"), pd)["status"] == "ok", "entry day before 5:30 PM CT: not due yet")
+        check(prediction_calls_row(T("2026-11-09 23:45"), pd)["status"] == "late", "entry day 5:45 PM CT, no calls: red")
+        check(prediction_calls_row(T("2026-11-10 13:00"), pd)["status"] == "late", "day after, no run came: red")
+        pj(ne, allc)
+        check(prediction_calls_row(T("2026-11-09 23:45"), pd)["status"] == "ok", "all four made: ok")
+        pj(ne, allc[:3])
+        check("kcwheat" in prediction_calls_row(T("2026-11-09 23:45"), pd)["why"], "one crop short names it")
+        pj(ne, allc[:3], [{"crop": "kcwheat", "report": "2026-11-03", "reason": "no usable contract"}])
+        check(prediction_calls_row(T("2026-11-09 23:45"), pd)["status"] == "ok", "a recorded reason is not red")
+        pj({"report": "2026-11-10", "day": "2026-11-16"}, allc, [{"crop": "beans", "report": "2026-10-27", "entry_day": "2026-11-02",
+            "reason": "missed: no run at its entry close on 2026-11-02; never made late"}])
+        check(prediction_calls_row(T("2026-11-04 15:00"), pd)["status"] == "late", "a missed call is red two days on")
+        check(prediction_calls_row(T("2026-11-05 15:00"), pd)["status"] == "ok", "and clear on the third")
+        check(prediction_calls_row(T("2026-11-04 15:00"), os.path.join(pd, "nope"))["status"] == "unknown", "no file: unknown, not a crash")
+        check(add_prediction_row(T("2026-11-04 15:00"), [], [], root=pd)[1] == ["prediction-calls"], "a red row lands in the late list")
+
     cot = ["7,22,37,52 19-23 * * 1-5"]
     # The week this was written for: nothing ran in the window.
     s, tick, _, why = judge(cot, 30, T("2026-10-09 21:33"), [], False)
