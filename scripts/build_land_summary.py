@@ -554,6 +554,7 @@ def build_layer(land=None):
     1 bare land or 2 any 20+ acre sale (0: none priced), first sale date, last sale date, market sales in the window].
     A state with a summary is covered; its counties missing here had no market sale in the window."""
     land = land or LAND
+    import land_alert as LA
     states, counties = {}, {}
     for p in sorted(glob.glob(os.path.join(land, "*", "summary.json"))):
         with open(p, encoding="utf-8") as fh:
@@ -562,15 +563,19 @@ def build_layer(land=None):
         if not st:
             continue
         states[st] = {"through": s.get("through"), "cur": (s.get("windows") or {}).get("cur"),
-                      "dates": s.get("dates") or "day", "who": s.get("who"), "record": s.get("record")}
+                      "dates": s.get("dates") or "day", "who": s.get("who"), "record": s.get("record"),
+                      "slug": LA.STATE_SLUGS.get(st)}
         for f, c in sorted((s.get("counties") or {}).items()):
             if not c.get("n12"):
                 continue
             m = c.get("m12") or {}
             d = m.get("d") or [None, None]
-            counties[f] = [m.get("med"), m.get("n") or 0, LAYER_SET.get(m.get("set"), 0), d[0], d[1], c["n12"]]
-    return {"cols": ["med", "n", "set", "d0", "d1", "n12"], "min_acres": MIN_ACRES, "thin": MIN_N,
-            "states": states, "counties": counties}
+            counties[f] = [m.get("med"), m.get("n") or 0, LAYER_SET.get(m.get("set"), 0), d[0], d[1], c["n12"],
+                           LA.county_slug(c.get("name")) if c.get("name") else None]
+    # states whose sales are on the land-sales pages but not yet in a summary (the market-sale rule not checked there)
+    listed = {st: sl for st, sl in sorted(LA.STATE_SLUGS.items()) if st not in states}
+    return {"cols": ["med", "n", "set", "d0", "d1", "n12", "page"], "min_acres": MIN_ACRES, "thin": MIN_N,
+            "states": states, "listed": listed, "counties": counties}
 
 
 def build_state(st, files, fetched=None):
@@ -800,8 +805,9 @@ def selftest():
                 "17001": {"n12": 3, "m12": {"med": 9000, "n": 2, "set": "bare", "d": ["2026-01-05", "2026-04-05"]}},
                 "17003": {"n12": 2}, "17005": {"n12": 0}}}, fh)
         lay = build_layer(td)
-        ck("layer file: priced, unpriced, zero-sale counties", lay["counties"] == {"17001": [9000, 2, 1, "2026-01-05", "2026-04-05", 3],
-           "17003": [None, 0, 0, None, None, 2]} and lay["states"]["IL"]["dates"] == "day" and lay["thin"] == MIN_N)
+        ck("layer file: priced, unpriced, zero-sale counties", lay["counties"] == {"17001": [9000, 2, 1, "2026-01-05", "2026-04-05", 3, None],
+           "17003": [None, 0, 0, None, None, 2, None]} and lay["states"]["IL"]["dates"] == "day" and lay["thin"] == MIN_N
+           and "IL" not in lay["listed"] and lay["states"]["IL"]["slug"] == "illinois")
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 
