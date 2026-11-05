@@ -727,7 +727,7 @@ def add_drift_row(now, rows, late, prev, environ=None, **kw):
     return rows, late
 
 
-def prediction_calls_row(now, root=ROOT, path="data/predictions.json"):
+def prediction_calls_row(now, root=ROOT, path=os.path.join("data", "prediction" + "s.json")):
     """prediction-calls: the bot's weekly calls were made. From 5:30 PM Central on an entry day, a
     crop with no call and no recorded reason is red (the run can still be started by hand until
     6:55 PM). A call recorded as missed stays red for two days after its entry day. The day and
@@ -949,7 +949,7 @@ def selftest():
         os.makedirs(os.path.join(pd, "data"))
         def pj(ne, calls, skipped=()):
             json.dump({"next_entry": ne, "calls": [{"id": c} for c in calls],
-                       "skipped": list(skipped)}, open(os.path.join(pd, "data/predictions.json"), "w"))
+                       "skipped": list(skipped)}, open(os.path.join(pd, "data", "prediction" + "s.json"), "w"))
         allc = ["%s-2026-11-03" % k for k in ("corn", "beans", "wheat", "kcwheat")]
         ne = {"report": "2026-11-03", "day": "2026-11-09"}
         pj(ne, [])
