@@ -1855,19 +1855,8 @@ try {
 
 /* ---- former inline block 14 ---- */
 try {
-/* 2026-10-06 (U13): September to November, a phone folds the GDU and soil
-   tiles in Local conditions behind one button. Nothing is removed; the
-   button opens them in place. Wider screens show them as before. */
-(function(){
-  var b=document.getElementById('wx-fold-btn'),root=document.documentElement;if(!b)return;
-  var m;try{m=+new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',month:'numeric'}).format(new Date());}catch(e){m=new Date().getMonth()+1;}
-  if(m<9||m>11){b.hidden=true;return;}
-  root.classList.add('wx-fold-season');
-  function word(){b.textContent=root.classList.contains('s7-no-gdu')?'Soil temperature':'Growing degree days and soil temperature';}
-  /* home-season.js (deferred) sets s7-no-gdu; DOMContentLoaded comes after it runs. */
-  word();setTimeout(word,0);document.addEventListener('DOMContentLoaded',word);
-  b.addEventListener('click',function(){var on=!root.classList.contains('wx-fold-open');root.classList.toggle('wx-fold-open',on);b.setAttribute('aria-expanded',on?'true':'false');});
-})();
+/* 2026-10-06 (U13) folded the GDU and soil tiles on phones, Sep to Nov. 2026-11-04 (Sig: GDUs year round, less wasted
+   space): the GDU tile is in Season so far now (components/season-wx.js) and soil sits in the grid, so no fold. */
 } catch (e) { blockFailed(e); }
 /* ---- 2026-10-16: no location after a few seconds ----
    2026-10-19 (Sig): never ask for the location on load. With no saved place

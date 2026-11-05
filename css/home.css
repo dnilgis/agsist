@@ -234,35 +234,10 @@
 .hero-sidebar > .s-card[hidden],
   #daily-tmyk-wrap[hidden] { display: none !important; }
 .main{overflow-x:clip;padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right));}
-.spray-windows{margin-top:.4rem;margin-bottom:.15rem;display:none;}
-.spray-windows.loaded{display:block;}
-.spray-windows-lbl{font-family:"JetBrains Mono",monospace;font-size:.765rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;}
-.spray-days{display:flex;gap:.35rem;align-items:stretch;}
-.spray-day{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.22rem;padding:.55rem .25rem;border-radius:6px;border:1px solid;text-align:center;}
-.spray-day.go{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);}
-.spray-day.caution{background:rgba(var(--gold-rgb),.08);border-color:rgba(var(--gold-rgb),.25);}
-.spray-day.stop{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.20);}
-.spray-day-name{max-width:100%;font-family:"JetBrains Mono",monospace;font-size:clamp(.6rem,2.7vw,.68rem);font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.spray-day-icon{font-size:.824rem;line-height:1;display:flex;align-items:center;justify-content:center;}
-.spray-day-icon .ic{width:1em;height:1em;}
-.spray-day-status{font-family:"JetBrains Mono",monospace;font-size:clamp(.62rem,2.7vw,.7rem);font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
-.spray-day.go .spray-day-status{color:var(--green);}
-.spray-day.caution .spray-day-status{color:var(--gold);}
-.spray-day.stop .spray-day-status{color:#ef4444;}
-.spray-day-reason{max-width:100%;font-size:clamp(.6rem,2.6vw,.68rem);color:var(--text-muted);font-family:"JetBrains Mono",monospace;margin-top:.05rem;line-height:1.35;overflow-wrap:anywhere;}
-.wx-data-extra{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;}
 #wx-today-summary{margin-top:1rem;}
 /* Watch list: stack description directly under the date/time, full width */
 #daily-watch-list .watch-item{flex-direction:column;gap:.25rem;align-items:stretch;}
-.wx-extra-stat{flex:1;min-width:140px;background:var(--surface2);border-radius:8px;padding:.65rem .8rem;display:none;}
-.wx-extra-stat.loaded{display:block;}
-.wx-extra-lbl{font-size:.824rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem;}
-.wx-extra-val{font-family:"JetBrains Mono",monospace;font-size:1.294rem;font-weight:700;color:var(--text);line-height:1.1;}
-.wx-extra-ctx{font-size:.824rem;color:var(--text-dim);margin-top:.2rem;}
 /* Historical chart expandable (GDU + Precip) */
-.wx-extra-stat.with-chart{cursor:pointer;transition:background .15s;}
-.wx-extra-stat.with-chart:hover{background:var(--surface3,#2a2a2a);}
-.wx-extra-stat .wx-chart-toggle{font-size:.824rem;color:var(--gold);margin-top:.35rem;letter-spacing:.05em;display:flex;align-items:center;gap:.25rem;font-weight:700;min-height:24px;}
 .wx-chart-panel{display:none;padding:.8rem .7rem .65rem;background:var(--surface2);border-radius:8px;margin-top:.5rem;overflow-x:hidden;overflow-x:clip;}
 .wx-chart-panel.expanded{display:block;}
 .wx-chart-title{font-size:.824rem;color:var(--text-dim);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;}
@@ -333,7 +308,6 @@
 #f3>.card{background:transparent;border:none;border-radius:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);transition:none}
 #f3>.card:hover{border-color:var(--border)}
 #f3 .card-body{padding:.3rem 0}
-#f3 .spray-windows{border-top:none;padding-top:.2rem}
 .km-tier-tag{font-family:"JetBrains Mono",monospace;font-size:.765rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .42rem;border-radius:3px;border:1px solid;}
 .ratio-cot-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.75rem;margin:.6rem 0 .4rem;}
 .ratio-cot-grid .ratio-widget{margin:0}
@@ -1198,7 +1172,6 @@ html[data-theme="light"] #daily-teaser-sponsor:not(.empty-state){color:var(--ad-
 .wstat .s7-flag{display:block;font-family:Inter,system-ui,sans-serif;font-size:.765rem;font-weight:600;margin-top:4px}
 .wstat .s7-sub{display:block;font-family:Inter,system-ui,sans-serif;font-size:.765rem;font-weight:500;color:var(--text-muted);margin-top:4px}
 /* F: one spray rule, documented in the tooltip beside the 5-day label. */
-.spray-windows-lbl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .s7-wx-off{font-size:.824rem;color:var(--text-muted);padding:8px 0}
 /* H: radar shows "Not loaded yet" until the map paints over it. */
 .radar-card{position:relative}
@@ -1206,8 +1179,6 @@ html[data-theme="light"] #daily-teaser-sponsor:not(.empty-state){color:var(--ad-
 #windy-frame{position:relative;z-index:1;background:transparent}
 .s7-brief-note{font-size:.824rem;line-height:1.5;color:var(--text);margin:0 0 8px;padding-left:8px;border-left:2px solid var(--hair,rgba(132,160,168,.24))}
 html.s7-no-planting #rma-widget{display:none!important}
-html.s7-no-gdu #gdu-stat,html.s7-no-gdu #gdu-chart-panel{display:none!important}
-html.s7-no-gdu .wx-data-extra{grid-template-columns:minmax(0,1fr)!important}
 html.s7-no-hail #land-hail{display:none!important}
 html.s7-no-croptour .s7-croptour{display:none!important}
 #idx1-land .land-grid{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
@@ -1283,7 +1254,6 @@ html[data-theme="light"] .teaser-action{color:#86600f!important;border-color:#86
 /* 2. Boxes to hairlines. Cash Bids is the only box. */
 .crop-week-badge,.export-mkt-yr,.sig-tag,#f-whats-priced a[href="/usda-calendar#priced-in"],a[href="/usda-calendar#priced-in"][style*="border-radius:5px"]{border:0!important;padding:0!important;background:none!important;color:var(--text-muted)!important}
 .cal-card,.radar-card,.spray-day{background:none!important;border:0!important;border-top:1px solid var(--hair)!important;border-radius:0!important;box-shadow:none!important}
-.spray-day{padding-left:0!important;padding-right:0!important}
 .wx-7day-cell{background:none!important;border-radius:0!important;border-top:1px solid var(--hair)!important}
 #nowcast-widget div[style*="border-radius:9px"]{background:none!important;border:0!important;border-top:1px solid var(--hair)!important;border-radius:0!important}
 .cot-dir{background:none!important;padding:0!important}
@@ -1482,7 +1452,6 @@ details.wr>summary{align-items:center!important}
 /* A tip longer than the screen scrolls inside itself. */
 .tip-t{max-height:min(60vh,420px);overflow:auto}
 /* Spray windows were stretched across 1,000px. */
-.spray-days{max-width:640px}
 /* ===== block 16 of 23 ===== */
 .idx1-skip-rail{position:absolute;left:-9999px;top:0;z-index:1000;background:var(--brand-fill,var(--brand));color:#0a0c0d;font-family:var(--font-mono,"JetBrains Mono",monospace);font-size:.824rem;font-weight:700;padding:.6rem 1rem;border-radius:0 0 var(--r-sm) 0;text-decoration:none}
 .idx1-skip-rail:focus{left:110px}
@@ -1959,14 +1928,7 @@ body:has(#hero-band) #idx1-zip-chip .idx1-zip-change{margin-left:0}
 .s7-cv .s7-line{font-variant-numeric:tabular-nums}
 /* U13: September to November, Local conditions on a phone folds the GDU and
    soil tiles behind one button; the hero already gives today's read. */
-#wx-fold-btn{display:none}
 @media(max-width:900px){
-html.wx-fold-season #wx-fold-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:44px;margin:8px 0 0;padding:10px 0;background:none;border:0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);font:inherit;font-size:.875rem;font-weight:600;color:var(--text-dim);cursor:pointer;text-align:left}
-html.wx-fold-season #wx-fold-btn::after{content:"+" / "";color:var(--text-dim)}
-html.wx-fold-season.wx-fold-open #wx-fold-btn::after{content:"−" / ""}
-html.wx-fold-season #wx-fold-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-html.wx-fold-season:not(.wx-fold-open) :is(#gdu-stat,#gdu-chart-panel,#s7-wx-soil-w){display:none!important}
-html.wx-fold-season:not(.wx-fold-open) .wx-data-extra{grid-template-columns:minmax(0,1fr)!important}
 }
 /* Teaser: one line on a phone; the briefing stamp drops there. */
 @media(max-width:640px){
@@ -2021,9 +1983,6 @@ html[data-look] #market-intel{grid-row:2/12!important}
 .wx-falln-k{font-size:.824rem;font-weight:600;color:var(--text-dim)}
 .wx-falln-v{font-size:.875rem;font-weight:700;color:var(--text)}
 .wx-falln-s{flex-basis:100%;font-size:.8125rem;line-height:1.45;color:var(--text-muted)}
-#f2 .spray-windows{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--hair)}
-#f2 .spray-windows-lbl{font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-size:.824rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-dim)}
-#f2 .spray-days{max-width:none;justify-content:space-between}
 .crop-export-grid--one{grid-template-columns:minmax(0,1fr)!important}
 #idx1-land .land-grid{grid-template-columns:minmax(0,1fr)}
 #idx1-land:not(:has(#land-hail:not([hidden]))) .land-grid,html.s7-no-hail #idx1-land .land-grid{grid-template-columns:minmax(0,1fr)!important}
@@ -2495,6 +2454,70 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
   .hl-why{grid-area:why;align-self:start}
   .hl-links{grid-area:links;align-self:start}
 }
+
+/* 2026-11-04 (fx/wxcard, Sig: "too much space between elements"): Season so far (components/season-wx.js) and a
+   tighter Local conditions card. The gaps between blocks are halved, inner padding cut, section heads smaller;
+   tap targets stay 44px and text 12px or more. Everything is scoped to .wx-card.wx-tight. */
+.wx-season{margin-top:6px;padding-top:6px;border-top:1px solid var(--hair)}
+.wxs-h{margin:0 0 4px;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.8125rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+#wx-season{min-height:178px}
+.wxs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px}
+.wxs-t{display:flex;flex-direction:column;gap:1px;min-height:64px;min-width:0}
+.wxs-skel .wxs-t{background:var(--surface2);border-radius:4px;opacity:.5}
+.wxs-k{font-size:.75rem;line-height:1.3;color:var(--text-dim)}
+.wxs-v{font-family:"JetBrains Mono",monospace;font-size:1.06rem;font-weight:700;line-height:1.25;color:var(--text);font-variant-numeric:tabular-nums}
+.wxs-v small{font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.75rem;font-weight:500;color:var(--text-muted)}
+.wxs-v.wxs-nl{font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.8125rem;font-weight:500;color:var(--text-muted)}
+.wxs-d{font-size:.75rem;line-height:1.3;color:var(--text-dim);font-variant-numeric:tabular-nums}
+.wxs-foot{display:flex;flex-wrap:wrap;align-items:center;gap:0 18px}
+.wxs-b,.wxs-src>summary{display:inline-flex;align-items:center;min-height:44px;padding:0;background:none;border:0;font:inherit;font-size:.8125rem;color:var(--text-dim);text-decoration:underline;text-underline-offset:3px;cursor:pointer;list-style:none}
+.wxs-src>summary::-webkit-details-marker{display:none}
+.wxs-src[open]{flex-basis:100%}
+.wxs-src p{margin:0 0 6px;font-size:.8125rem;line-height:1.45;color:var(--text-muted)}
+.wxs-chart{padding:4px 0 6px}
+.wxs-chart svg{display:block;width:100%;max-width:560px;height:auto}
+.wxs-cu{fill:rgba(58,139,60,.45)}
+.wxs-cy{fill:var(--gold-fill,var(--gold))}
+.wxs-cl{font-size:12px;fill:var(--text-muted)}
+.wxs-cleg{margin:2px 0 0;font-size:.75rem;color:var(--text-dim)}
+.wxs-sw{display:inline-block;width:10px;height:10px;margin:0 4px 0 10px;vertical-align:-1px}
+.wxs-sw:first-child{margin-left:0}
+.wxs-msg{margin:0;padding:8px 0;font-size:.8125rem;color:var(--text-muted)}
+.wx-card.wx-tight .card-body{padding:8px 12px!important}
+.wx-card.wx-tight .wx-hero{margin-bottom:6px!important;padding-bottom:6px!important;gap:.6rem!important}
+.wx-card.wx-tight .wx-grid{gap:0 14px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.wx-card.wx-tight .wstat{padding:5px 0!important}
+.wx-card.wx-tight .wstat-val{font-size:1.06rem!important;line-height:1.25}
+.wx-card.wx-tight .wstat-lbl{font-size:.75rem!important;margin-bottom:0!important}
+.wx-card.wx-tight .wstat .s7-flag,.wx-card.wx-tight .wstat .s7-sub{margin-top:1px;font-size:.75rem}
+.wx-card.wx-tight #wx-today-summary{margin:6px 0 0!important;padding:6px 0!important}
+.wx-card.wx-tight .wx-falln{padding:4px 0!important}
+.wx-card.wx-tight #wx-data .wx-summary-card{margin-top:6px!important;padding:6px 0 0!important}
+.wx-card.wx-tight .wx-summary-title{font-size:.8125rem!important;letter-spacing:0!important;text-transform:none!important;font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-weight:600!important;color:var(--text-dim)!important;margin-bottom:2px!important}
+.wx-card.wx-tight .wx-7day-strip{gap:4px!important;padding:0!important}
+.wx-card.wx-tight .wx-7day-cell{padding:4px 2px!important;gap:2px!important}
+.wx-card.wx-tight .wx-7day-icon{margin:0!important;font-size:1.2rem!important}
+.wx-card.wx-tight .wx-7day-meta{margin-top:0!important;line-height:1.35!important}
+.wx-card.wx-tight .wx-hourly-toggle{margin-top:4px!important;padding:0!important}
+.wx-card.wx-tight #wx-loc-label{display:inline}
+.wx-card.wx-tight .wx-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 12px;margin-top:4px;border-top:1px solid var(--hair)}
+.wx-card.wx-tight .wx-foot .wx-hourly-toggle{width:auto!important;min-height:44px;margin:0!important;border:0!important}
+.wx-locrow{display:inline-flex;align-items:center;gap:4px;font-size:.8125rem;color:var(--text-muted)}
+.wx-locb{display:inline-flex;align-items:center;min-height:44px;margin-left:6px;padding:0;background:none;border:0;font:inherit;color:var(--text-dim);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.wx-card.wx-tight .wx-falln-s{font-size:.8125rem;line-height:1.35}
+.wx-card.wx-tight .wx-7day-temps{font-size:1rem!important}
+.wx-card.wx-tight .wx-7day-name{font-size:.75rem!important}
+.wx-card.wx-tight .wx-temp{font-size:2.25rem!important}
+.wx-card.wx-tight .wx-desc{margin-top:0!important;font-size:.9375rem!important}
+.wx-card.wx-tight .wx-loc{margin-top:0!important}
+.wx-card.wx-tight #wx-asof{margin-top:0!important}
+.wx-card.wx-tight .wx-icon{font-size:2.25rem!important}
+.wx-card.wx-tight .wx-today-text{line-height:1.4!important}
+.wx-card.wx-tight .wxs-grid{gap:4px 8px}
+.wx-card.wx-tight .wx-7day-meta{font-size:.75rem!important;line-height:1.3!important}
+.wx-card.wx-tight .wstat{display:flex!important;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:0 6px;min-height:0!important}
+.wx-card.wx-tight .wstat-val{display:contents}
+.wx-card.wx-tight .wstat .s7-flag,.wx-card.wx-tight .wstat .s7-sub{flex-basis:100%;text-align:left}
 /* COT at a glance (2026-11-04): three plain lines, the email ask and the ranges behind a tap */
 .cot-gl-asof{font-size:.765rem;color:var(--text-muted);line-height:1.45;margin:0 0 .35rem}
 .cot-glance{list-style:none;margin:0 0 .45rem;padding:0;display:flex;flex-direction:column;gap:.35rem}

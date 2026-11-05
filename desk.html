@@ -296,10 +296,18 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
         var out = {};
         files.forEach(function (f, i) { out[f] = got[i]; });
         var list = out.sponsors.ok && Array.isArray(out.sponsors.d.sponsors) ? out.sponsors.d.sponsors : [];
-        return Promise.all(list.map(function (s) {
-          if (!/^[a-z0-9-]+$/.test(s.slug || '') || !/^[0-9a-f]{16}$/.test(s.token || '')) return Promise.resolve({ ok: false, why: 'no portal token' });
-          return get('/data/sponsors/' + s.slug + '-' + s.token + '.json');
-        })).then(function (portals) { out.portals = portals; return out; });
+        /* Since Nov 4, 2026 the reports and their link tokens are private: the worker holds them
+           (GET /sponsor-report/list, Bearer only), never a file on agsist.com. */
+        return worker('sponsor-report/list').then(function (L) {
+          var by = {};
+          if (L.ok) (L.d.reports || []).forEach(function (x) { if (x && x.slug) by[x.slug] = x; });
+          out.portals = list.map(function (s) {
+            if (!L.ok) return { ok: false, why: L.why };
+            var x = by[s.slug];
+            return x && x.report ? { ok: true, d: x.report, r: x.r } : { ok: false, why: 'no report on the worker yet' };
+          });
+          return out;
+        });
       });
     },
     dir: function () { return get(BIDS + 'directory.json'); },
@@ -440,7 +448,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
       var file = g ? 'data/geo-sponsors.json' : daily ? 'data/sponsor.json' : 'data/sponsors.json';
       var key = g ? '"id": "' + g.id + '"' : (file === 'data/sponsor.json' ? 'the top of the file' : '"slug": "' + s.slug + '"');
       rows.push({ slug: s.slug, name: s.name, where: where, st: st, start: g ? (s.count_from || g.start) : s.start, end: g ? g.end : (s.ended || null),
-        free: !!(s.billing && s.billing.free_test), tier: s.billing && s.billing.tier, portal: '/sponsor-report?r=' + encodeURIComponent(s.slug + '-' + s.token),
+        free: !!(s.billing && s.billing.free_test), tier: s.billing && s.billing.tier, portal: portal && portal.r ? '/sponsor-report?r=' + encodeURIComponent(portal.r) : null,
         p: portal, file: file, key: key });
     });
     geo.forEach(function (g) {
@@ -505,7 +513,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
             '</td><td data-h="Paid">' + paidCell(r, D) + '</td><td data-h="Last 7 days">' + views(r) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
     }
-    h += src('data/sponsors.json, geo-sponsors.json, page-sponsors.json, prf-sponsors.json, sponsor.json and each portal file (GA4 through the portal’s date)', ct(D.now));
+    h += src('data/sponsors.json, geo-sponsors.json, page-sponsors.json, prf-sponsors.json, sponsor.json and each private portal report in the subs worker (GA4 through the portal’s date)', ct(D.now));
     h += '<details><summary>Switch an ad on or off</summary><ol class="l">' +
       '<li>Open its file on GitHub (links below) and tap the pencil if it does not open in edit.</li>' +
       '<li>Find its entry (' + rows.map(function (r) { return esc(r.name) + ': ' + esc(r.key); }).join('; ') + ').</li>' +

@@ -63,7 +63,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CONF = ROOT / "data" / "sponsors.json"
-OUTDIR = ROOT / "data" / "sponsors"
+# Since Nov 4, 2026 the reports are private: built here into the private folder
+# (private/ is in .gitignore on main), saved to the private repo and served by the
+# subs worker. No token in a file name; scripts/sponsor_publish.py holds the tokens.
+OUTDIR = Path(os.environ.get("SPONSOR_PRIVATE_DIR") or (ROOT / "private" / "sponsors")) / "reports"
 
 # The day the viewable rule became the MRC one.
 DEFINITION_CHANGED = "2026-09-05"
@@ -777,10 +780,10 @@ def write_demos(conf, today=None):
     out = []
     OUTDIR.mkdir(parents=True, exist_ok=True)
     for s in conf.get("sponsors", []):
-        if not is_demo(s) or not s.get("slug") or not s.get("token"):
+        if not is_demo(s) or not s.get("slug"):
             continue
         p = demo_payload(s, today)
-        f = OUTDIR / ("%s-%s.json" % (s["slug"], s["token"]))
+        f = OUTDIR / ("%s.json" % s["slug"])
         f.write_text(json.dumps(p, indent=1) + "\n", encoding="utf-8")
         out.append("%s: demo %s" % (s["slug"], "ended, data dropped" if p.get("demoEnded") else "through " + str(s.get("expires"))))
     return out
@@ -1002,10 +1005,10 @@ def main():
         n = 0
         OUTDIR.mkdir(parents=True, exist_ok=True)
         for s_ in sponsors:
-            slug_, token_ = s_.get("slug"), s_.get("token")
-            if not slug_ or not token_:
+            slug_ = s_.get("slug")
+            if not slug_:
                 continue
-            f_ = OUTDIR / ("%s-%s.json" % (slug_, token_))
+            f_ = OUTDIR / ("%s.json" % slug_)
             try:
                 cur = json.loads(f_.read_text()) if f_.exists() else {
                     "schema": "agsist-sponsor-report/1",
@@ -1062,9 +1065,9 @@ def main():
     all_sponsors = [x for x in conf.get("sponsors", []) if not is_demo(x)]
 
     for s in sponsors:
-        slug, token = s["slug"], s["token"]
+        slug = s["slug"]
         payload, line = sponsor_payload(s, ga, end, all_sponsors, today)
-        f = OUTDIR / ("%s-%s.json" % (slug, token))
+        f = OUTDIR / ("%s.json" % slug)
         f.write_text(json.dumps(payload, indent=1) + "\n", encoding="utf-8")
         written.append(line)
 

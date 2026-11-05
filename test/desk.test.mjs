@@ -206,18 +206,19 @@ const iso = (ms) => new Date(ms).toISOString();
 const FIX = {
   ["/data/daily-sent/" + TODAY + ".json"]: { date: TODAY, sent_at: iso(Date.now() - 3 * 3600e3), format: "v2", subject: "Corn bounces after four lower closes", briefing: {} },
   "/data/sponsors.json": { sponsors: [
-    { slug: "apex", name: "Apex Insurance Group", active: false, ended: "2026-10-08", start: null, token: "c1c1e09865171cd1", billing: { tier: "daily" }, placements: ["homepage", "daily_email"] },
-    { slug: "rootlot", name: "Root Lot", active: true, start: null, count_from: "2026-10-28", token: "02f5fba2d37c172d", billing: { tier: "page", free_test: true }, placements: ["geo_pages"], geo: "rootlot", regions: ["CA", "NV", "TX"] },
-    { slug: "barnco", name: "Barn Co", active: true, start: "2026-10-01", token: "0123456789abcdef", billing: { tier: "page" }, placements: ["cash-bids"] }] },
+    { slug: "apex", name: "Apex Insurance Group", active: false, ended: "2026-10-08", start: null, billing: { tier: "daily" }, placements: ["homepage", "daily_email"] },
+    { slug: "rootlot", name: "Root Lot", active: true, start: null, count_from: "2026-10-28", billing: { tier: "page", free_test: true }, placements: ["geo_pages"], geo: "rootlot", regions: ["CA", "NV", "TX"] },
+    { slug: "barnco", name: "Barn Co", active: true, start: "2026-10-01", billing: { tier: "page" }, placements: ["cash-bids"] }] },
   "/data/geo-sponsors.json": { sponsors: [{ id: "rootlot", name: "Root Lot", states: ["CA", "NV", "TX"], active: true, start: null, end: null }] },
   "/data/page-sponsors.json": { slots: {} },
   "/data/prf-sponsors.json": { _how: "x" },
   "/data/sponsor.json": { active: false },
-  "/data/sponsors/rootlot-02f5fba2d37c172d.json": { schema: "agsist-sponsor-report/1", through: null, pending: true, windows: [] },
-  "/data/sponsors/apex-c1c1e09865171cd1.json": { schema: "agsist-sponsor-report/1", through: "2026-10-07", pending: true, windows: [] },
-  "/data/sponsors/barnco-0123456789abcdef.json": { schema: "agsist-sponsor-report/1", through: "2026-10-26", windows: [{ days: 7, viewable: 1234, clicks: 17 }, { days: 30, viewable: 5000, clicks: 60 }] },
   "/data/audience.json": JSON.parse(read("test/fixtures/desk/audience.json")),
 };
+const PORTALS = [
+  { slug: "rootlot", r: "rootlot-1111111111111111", report: { schema: "agsist-sponsor-report/1", through: null, pending: true, windows: [] } },
+  { slug: "apex", r: "apex-2222222222222222", report: { schema: "agsist-sponsor-report/1", through: "2026-10-07", pending: true, windows: [] } },
+  { slug: "barnco", r: "barnco-0123456789abcdef", report: { schema: "agsist-sponsor-report/1", through: "2026-10-26", windows: [{ days: 7, viewable: 1234, clicks: 17 }, { days: 30, viewable: 5000, clicks: 60 }] } }];
 const DIR = { generated: iso(Date.now() - 1800e3), counts: { byStatus: { read: 2098, stale: 98, known: 5873, down: 133 } },
   elevators: [{ elevId: "eaaaaaaaaa", status: "read" }, { elevId: "ebbbbbbbbb", status: "known" }, { elevId: "eccccccccc", status: "read" }] };
 const IDS = [{ id: "eaaaaaaaaa", since: "2026-10-18", via: "minted" }, { id: "ebbbbbbbbb", since: iso(Date.now() - 2 * 864e5).slice(0, 10), via: "minted" },
@@ -258,6 +259,8 @@ async function open(br, width, opts) {
     if (u.pathname === "/desk/ledger" && body && body.action === "mark") { ledger.unshift({ slug: body.slug, period: body.period, amount: body.amount, paid_on: body.paid_on, at: iso(Date.now()) }); return send({ ok: true, rows: ledger }); }
     if (u.pathname === "/desk/ledger" && body && body.action === "unmark") { ledger.splice(0, ledger.length); return send({ ok: true, rows: [] }); }
     if (u.pathname === "/hay/admin/list") return send({ ok: true, posts: [] });
+    // Since Nov 4, 2026 the sponsor reports are private: the worker lists them for the desk (Bearer only).
+    if (u.pathname === "/sponsor-report/list") return send({ ok: true, reports: PORTALS });
     return send({ ok: false }, 404);
   });
   await p.route("https://api.github.com/**", (r) => {

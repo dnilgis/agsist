@@ -1,8 +1,11 @@
 name: Sponsor reports — yesterday's numbers, from GA4
 
-# One file per sponsor under data/sponsors/, rebuilt daily from the GA4 Data
-# API and committed. The report page reads those files; nothing is computed in
-# the browser and nothing is counted twice.
+# One report per sponsor, rebuilt daily from the GA4 Data API. Since Nov 4, 2026
+# the reports and the link tokens are private (Sig: "move the codes to feedbag"):
+# they live in the private repo (private-data, private/sponsors/) and the subs
+# worker serves each report to its own link (GET /sponsor-report). Nothing about a
+# sponsor's link is committed here. Nothing is computed in the browser and nothing
+# is counted twice.
 #
 # WHY DAILY AND NOT LIVE. A live counter would need a server holding its own
 # tally — a second source of truth for a number the sponsor will check against
@@ -34,6 +37,7 @@ on:
     paths:
       - 'scripts/build_sponsor_report.py'
       - 'scripts/sponsor_links.py'
+      - 'scripts/sponsor_publish.py'
       - 'scripts/test_sponsor_portal.py'
       - 'scripts/test_rate_card.py'
       - 'scripts/sponsor-checks.mjs'
@@ -132,6 +136,7 @@ jobs:
       - name: The portal cannot approve words nobody saw
         run: |
           python3 scripts/sponsor_links.py --selftest
+          python3 scripts/sponsor_publish.py --selftest
           python3 scripts/test_sponsor_portal.py
           python3 scripts/test_rate_card.py
           python3 scripts/audience_from_exports.py --selftest
@@ -169,6 +174,22 @@ jobs:
           LIST_TOKEN:          ${{ secrets.LIST_TOKEN }}
         run: python3 scripts/build_signups.py
 
+      # THE LINKS ARE PRIVATE (Nov 4, 2026). The tokens and the last reports come from
+      # the private repo; a sponsor new in data/sponsors.json gets its token here and it
+      # is saved back BEFORE anything uses it (a failed save stops the run, so no link
+      # is ever handed out that the private copy does not hold).
+      - name: Sponsor links from the private repo
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+        run: |
+          bash scripts/pull_raw.sh private/sponsors
+          python3 scripts/sponsor_publish.py mint
+          # The first token wins: RAW_KEEP never replaces a token file already saved (sponsor-apply.yml may
+          # have minted the same sponsor a moment ago), and the pull after it adopts whichever landed.
+          RAW_KEEP=1 bash scripts/push_raw.sh "sponsor tokens" private/sponsors/tokens
+          bash scripts/pull_raw.sh private/sponsors/tokens
+
       # No secrets, no report, no failure. A fork or a PR cannot have these and
       # should not go red for it — the script says so and exits 0.
       - name: Build the reports
@@ -176,6 +197,24 @@ jobs:
           GA4_PROPERTY_ID:     ${{ secrets.GA4_PROPERTY_ID }}
           GA4_SERVICE_ACCOUNT: ${{ secrets.GA4_SERVICE_ACCOUNT }}
         run: python3 scripts/build_sponsor_report.py
+
+      # Each report goes to the subs worker with its token (Bearer LIST_TOKEN), and the
+      # links to hand out (with the approval key k) go to private/sponsors/links.json.
+      # It refuses to publish while any token is in a public file. Counts and slugs only in the log.
+      - name: Send the reports to the worker
+        env:
+          LIST_URL:     ${{ secrets.LIST_URL }}
+          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+        run: python3 scripts/sponsor_publish.py publish
+
+      - name: Save the reports and links to the private repo
+        if: always() && needs.gate.outputs.go == '1'
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "sponsor reports" private/sponsors/reports private/sponsors/links.json
 
       # THE RAIN PRINT QR WITHOUT THE WORKER (Oct 22, 2026). A printed QR opens
       # agsist.com/r?<id>; when the subs worker does not answer, /r opens a
@@ -198,7 +237,7 @@ jobs:
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
-          git add data/sponsors data/audience.json data/audience-pages.json sponsor.html sponsor-kit.html 2>/dev/null || true
+          git add data/audience.json data/audience-pages.json sponsor.html sponsor-kit.html 2>/dev/null || true
           git add -A data/rp-sealed 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no change"

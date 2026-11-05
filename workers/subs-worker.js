@@ -5,6 +5,19 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.65 (2026-11-04): PRIVATE SPONSOR REPORTS (Sig, Nov 4: "move the codes to feedbag").
+ *   GET /sponsor-report?r=<slug>-<token> answers that sponsor's report from KV
+ *   (spr:<slug>), compared in constant time; a retired token answers 410
+ *   {changed: true}, anything else a bare 404; always Cache-Control no-store.
+ *   Bearer LIST_TOKEN only (?token= refused): POST /sponsor-report/put {slug, token,
+ *   retired, report} (sponsor-report.yml through scripts/sponsor_publish.py),
+ *   GET /sponsor-report/list (desk.html), POST /sponsor-report/drop {slug}. The
+ *   tokens and reports are no longer in the public repo or on agsist.com. A sponsor
+ *   approval (/form kind sponsor-feedback) now also needs r's token to be live: a
+ *   retired link's k is refused. BACKUPS: GET /export (and so the monthly SSD backup
+ *   and private-data kv-backup/) now carries the spr:* records, each sponsor's live
+ *   token and report; keep those copies private like the rest of the export. Every
+ *   other route answers as before.
  * v5.64 (2026-11-04): GIFT CARD PREPAID IS STORED, NOT GUESSED FROM THE CLOCK. Every
  *   /rp-gift/issue path (Sig's card, already_redeemed, a paid order's card, a void reissue)
  *   writes prepaid true or false on the record, and that key alone decides "already paid
@@ -725,7 +738,7 @@
  *     or it is refused (400) and the page falls back to its written email.
  *     Other requests are kept with verified yes/no and r. The Subject is
  *     built here. Make k for a link with:
- *       python3 -c "import hmac,hashlib,sys;print(hmac.new(sys.argv[1].encode(),('sponsor-portal|'+sys.argv[2]).lower().encode(),hashlib.sha256).hexdigest()[:16])" "$UNSUB_SECRET" apex-c1c1e09865171cd1
+ *       python3 -c "import hmac,hashlib,sys;print(hmac.new(sys.argv[1].encode(),('sponsor-portal|'+sys.argv[2]).lower().encode(),hashlib.sha256).hexdigest()[:16])" "$UNSUB_SECRET" <slug>-<token>
  * v5.12 (2026-10-12): RAIN PRINT BUSINESS QUOTES AND GIFT NOTES. One new form
  *   kind on POST /form and one new optional field on rain-print-order; every
  *   existing route answers exactly as before. kind rain-print-business (the
@@ -1140,6 +1153,7 @@ async function listKeys(env, prefix) {
 }
 
 // ---------- v5.39: GET /export, the monthly backup ----------
+// v5.65: it carries spr:* too (each sponsor's live link token and report), so the backup stays private.
 const EXPORT_LIMIT_MAX = 900;       // 1 list + 900 gets stays under 1,000 KV operations a call
 const EXPORT_LIMIT_DEFAULT = 500;
 const EXPORT_BATCH = 50;            // values read in parallel, this many at a time
@@ -2358,8 +2372,8 @@ function elevCreateClean(b) {
     bids_updated_at: null, info_updated_at: now, created_at: now } };
 }
 
-// v5.13 (M4): THE SPONSOR APPROVAL BOX. The proof code and the portal link's
-// r= are both readable in the public repo, so neither proves who is asking.
+// v5.13 (M4): THE SPONSOR APPROVAL BOX. The proof code is readable in the public repo and
+// a portal link's r= can be forwarded (v5.65: no longer in the repo), so neither proves who is asking.
 // Sig's portal link now also carries k = hmac16("sponsor-portal|" + r) under
 // UNSUB_SECRET (sponsor-report.html?r=<slug>-<token>&k=<16 hex>), and the page
 // posts r and k with every request. An Approval without a k that matches its
@@ -2373,7 +2387,10 @@ async function sponsorKey(env, r) {
 async function sponsorFeedback(env, b, rec) {
   const r = String(b.r == null ? "" : b.r).trim().toLowerCase();
   const k = String(b.k == null ? "" : b.k).trim().toLowerCase();
-  const verified = !!env.UNSUB_SECRET && SPONSOR_R_RE.test(r) && /^[0-9a-f]{16}$/.test(k) && safeEq(k, await sponsorKey(env, r));
+  // v5.65: k alone is not enough; the link's token must also be live. A retired token (every link before
+  // Nov 4, 2026 is in the public git history) keeps its old k, so without this an old link could still approve.
+  const verified = !!env.UNSUB_SECRET && SPONSOR_R_RE.test(r) && /^[0-9a-f]{16}$/.test(k) && safeEq(k, await sponsorKey(env, r))
+    && (await sprGet(env, r)).status === 200;
   const approval = /^approv/i.test(rec.request || "");
   if (approval && !verified) return { error: "this approval needs the link Sig sent you" };
   if (SPONSOR_R_RE.test(r)) rec.r = r;
@@ -2383,6 +2400,67 @@ async function sponsorFeedback(env, b, rec) {
     ? "Approved: " + who + " ad, proof " + oneLine(rec.proof || "-", 40) + " (verified link " + r + ")"
     : (verified ? "" : "[unverified link] ") + "AGSIST portal: " + oneLine(rec.request, 60) + " (" + who + ")";
   return {};
+}
+
+// ---------- v5.65: PRIVATE SPONSOR REPORTS (sponsor-report.html) ----------
+// Until v5.65 each sponsor's report was a public file, data/sponsors/<slug>-<token>.json,
+// and data/sponsors.json listed every token, so the repo itself handed out every link.
+// Now the token and the report live only here and in the private repo: the sponsor
+// report job (sponsor-report.yml, scripts/sponsor_publish.py) posts each report with
+// its token, and the portal asks GET /sponsor-report?r=<slug>-<token>.
+// spr:<slug> = {t: the live token, old: [sha-256 hex of each retired token], at, report}.
+// A right token answers the report; a retired one answers 410 {changed: true} so the
+// page can say the link has changed (never which one is new); anything else is a bare
+// 404. The token is compared in constant time (safeEq). Every answer is no-store.
+const SPR_SLUG_RE = /^[a-z0-9][a-z0-9-]{0,40}$/;
+const SPR_TOKEN_RE = /^[0-9a-f]{16,64}$/;
+const SPR_MAX_BYTES = 512 * 1024;
+async function sha256Hex(s) {
+  const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(s))));
+  return [...d].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+function sprSplit(r) {
+  const m = /^([a-z0-9][a-z0-9-]{0,40})-([0-9a-f]{16,64})$/.exec(String(r || "").trim().toLowerCase());
+  return m ? { slug: m[1], token: m[2] } : null;
+}
+async function sprGet(env, r) {
+  const p = sprSplit(r);
+  if (!p) return { status: 404 };
+  let rec = null;
+  try { rec = JSON.parse((await env.SUBS.get("spr:" + p.slug)) || "null"); } catch (e) { rec = null; }
+  if (!rec || typeof rec !== "object") return { status: 404 };
+  if (typeof rec.t === "string" && safeEq(p.token, rec.t)) return { status: 200, report: rec.report || null };
+  const h = await sha256Hex(p.token);
+  let old = false;
+  for (const x of Array.isArray(rec.old) ? rec.old : []) old = safeEq(h, x) || old;   // every one checked, no early exit
+  return { status: old ? 410 : 404 };
+}
+async function sprPut(env, b) {
+  const slug = String((b && b.slug) || "").trim().toLowerCase();
+  const token = String((b && b.token) || "").trim().toLowerCase();
+  if (!SPR_SLUG_RE.test(slug)) return { error: "slug: lowercase letters, digits and dashes" };
+  if (!SPR_TOKEN_RE.test(token)) return { error: "token: 16 to 64 hex" };
+  const report = b && b.report;
+  if (!report || typeof report !== "object" || Array.isArray(report)) return { error: "report: an object" };
+  const retired = Array.isArray(b.retired) ? b.retired.map(x => String(x || "").trim().toLowerCase()) : [];
+  if (retired.length > 20 || retired.some(x => !SPR_TOKEN_RE.test(x))) return { error: "retired: at most 20 tokens, 16 to 64 hex" };
+  if (retired.includes(token)) return { error: "retired: the live token cannot be retired" };
+  const old = [];
+  for (const x of retired) old.push(await sha256Hex(x));
+  const rec = JSON.stringify({ t: token, old, at: new Date().toISOString(), report });
+  if (rec.length > SPR_MAX_BYTES) return { error: "report: larger than " + SPR_MAX_BYTES + " bytes" };
+  await env.SUBS.put("spr:" + slug, rec);
+  return { ok: true, slug };
+}
+async function sprList(env) {
+  const out = [];
+  for (const k of await listKeys(env, "spr:")) {
+    let rec = null;
+    try { rec = JSON.parse((await env.SUBS.get(k)) || "null"); } catch (e) { rec = null; }
+    if (!rec || typeof rec !== "object") continue;
+    out.push({ slug: k.slice(4), r: k.slice(4) + "-" + rec.t, at: rec.at || null, old: (rec.old || []).length, report: rec.report || null });
+  }
+  return out.sort((a, b) => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0));
 }
 
 // v5.41: one key per unsubscribe, no address in it, for /count.
@@ -3329,6 +3407,16 @@ async function handle(req, env) {
     // v5.33: may this visit load Google Analytics? Network type only; nothing kept.
     if (path === "/ga-ok" && req.method === "GET") {
       return json({ ok: gaOk(req.cf) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
+    }
+
+    // v5.65: one sponsor's private report (sponsor-report.html). 404 with no detail for
+    // anything but a live or retired token; never cached anywhere.
+    if (path === "/sponsor-report" && req.method === "GET") {
+      const h = Object.assign({ "Cache-Control": "no-store", "X-Robots-Tag": "noindex" }, cors(req));
+      const got = await sprGet(env, url.searchParams.get("r"));
+      if (got.status === 200) return json({ ok: true, report: got.report }, 200, h);
+      if (got.status === 410) return json({ ok: false, changed: true }, 410, h);
+      return json({ ok: false }, 404, h);
     }
 
     // v5.46: a link with k=<link id> instead of e=<address>. A good one is
@@ -4503,6 +4591,26 @@ async function handle(req, env) {
       const limit = Number.isFinite(lim) ? Math.min(AREA_LIMIT, Math.max(1, Math.floor(lim))) : AREA_LIMIT;
       const out = await areaPage(env, part, String(url.searchParams.get("cursor") || ""), limit);
       return json(Object.assign({ ok: true, part }, out), 200, ns);
+    }
+    // v5.65: the sponsor report job writes each report here; Sig's desk lists them. Bearer only.
+    if (path === "/sponsor-report/put" || path === "/sponsor-report/list" || path === "/sponsor-report/drop") {
+      const ns = Object.assign({ "Cache-Control": "no-store" }, ac);
+      if (!sig || url.searchParams.has("token")) return json({ ok: false }, 403, ns);
+      if (path === "/sponsor-report/list") {
+        if (req.method !== "GET") return json({ ok: false, error: "GET only" }, 405, ns);
+        return json({ ok: true, reports: await sprList(env) }, 200, ns);
+      }
+      if (req.method !== "POST") return json({ ok: false, error: "POST only" }, 405, ns);
+      let b = {};
+      try { b = await req.json(); } catch (e) { return json({ ok: false, error: "bad json" }, 400, ns); }
+      if (path === "/sponsor-report/drop") {
+        const slug = String((b && b.slug) || "").trim().toLowerCase();
+        if (!SPR_SLUG_RE.test(slug)) return json({ ok: false, error: "slug: lowercase letters, digits and dashes" }, 400, ns);
+        await env.SUBS.delete("spr:" + slug);
+        return json({ ok: true, dropped: slug }, 200, ns);
+      }
+      const put = await sprPut(env, b);
+      return json(put.ok ? put : { ok: false, error: put.error }, put.ok ? 200 : 400, ns);
     }
     // v5.59: Sig's desk (desk.html). Bearer only; a ?token= in the address is refused outright.
     if (path === "/desk" || path === "/desk/ledger") {
