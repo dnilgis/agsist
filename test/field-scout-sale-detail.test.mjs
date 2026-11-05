@@ -47,6 +47,16 @@ function expectFor(c, r, f) {
     case "ac1": return v != null ? [esc(v)] : (+r.np > 1 ? ["not in the record"] : []);
     case "rr": return [v != null ? esc(({ none: "None", life: "The seller keeps a life estate (use of the land for life).", ease: "The seller keeps an easement.", other: "The seller keeps other rights in the land." })[v] || v) : "not in the record"];
     case "mfl": return [v != null ? esc(String(+v)) + " acres" : "not in the record"];
+    case "pp": return [v != null ? (+v > 0 ? F.fmtMoney(+v) + " (taken out of the net price above)" : "None") : "not in the record"];
+    case "fin": return [v != null ? esc(v) : "not in the record"];
+    case "use0": return [v != null ? "Before the sale: " + esc(String(v).replace(/^\d+\.\s*/, "")) : "not in the record"];
+    case "use1": return [];
+    case "glv": return [v != null ? F.fmtMoney(+v) : "not in the record"];
+    case "lsf": return [v != null ? (+v > 0 ? esc((+v).toLocaleString("en-US")) + " square feet (main lot)" : "None on the main lot") : "not in the record"];
+    case "yb": return [v != null ? esc(v) + " (main lot)" : "not in the record"];
+    case "avl": return [v != null ? F.fmtMoney(+v) + " land" : "not in the record"];
+    case "avb": return r.avl != null && v != null ? [F.fmtMoney(+v) + " buildings"] : [];
+    case "avy": return r.avl != null && v != null ? [esc(v) + " tax list"] : [];
     default: return null;
   }
 }
