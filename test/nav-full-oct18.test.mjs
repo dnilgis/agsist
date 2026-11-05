@@ -108,9 +108,9 @@ test("phone panel: search, My place, the five groups open with subheads, a Rain 
   assert.match(drawer, /<a href="\/rain-print" class="draw-rp"><span class="draw-rp-k">Rain Print<\/span><span class="draw-rp-t">Your farm&rsquo;s year of rain, framed<\/span>/);
   assert.equal((drawer.match(/href="\/rain-print"/g) || []).length, 1, "Rain Print once in the phone panel");
   for (const u of ["/prf", "/lrp"]) assert.equal((drawer.match(new RegExp(`href="${u}"`, "g")) || []).length, 1, `${u} once in the phone panel`);
-  // Oct 29, 2026: 63 lines to 57, plus Ag stocks. Groups, the Rain Print card and About, Advertise, Contact.
+  // Oct 29, 2026: 63 lines to 57, plus Ag stocks; Nov 5 (Sig) plus Tar spot. Groups, the Rain Print card and About, Advertise, Contact.
   const lines = (drawer.match(/class="draw-item[^"]*"|class="draw-rp"/g) || []).length;
-  assert.equal(lines, 58, "phone panel lines");
+  assert.equal(lines, 59, "phone panel lines");
 });
 
 test("moved note: Harvest tools moved to Field, in Money & Land, dismissible, gated to two weeks", () => {
