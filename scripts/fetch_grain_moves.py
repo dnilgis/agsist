@@ -918,7 +918,11 @@ def connection(basis_rows, freight, ours, today):
               for (crop, g), pts in groups.items()}
     fser = {k: [[d, round(v, 1)] for d, v in pts if d >= keep_from] for k, pts in fdev.items()}
     doc = {"generated": today.isoformat(),
-           "method": ('Weekly USDA elevator basis and freight by region, compared over time. Correlation only: two lines moving together does not show that one moved the other.' + str(MIN_EFF_N) +
+           "method": ("Each week, each region's USDA elevator basis minus its own average for that week over the five "
+                      "years before (at least 3 years needed); the group line is the middle of its regions. Freight is "
+                      "treated the same way. r is the Pearson correlation of the two weekly lines; independent weeks "
+                      "correct the week count for slow-moving series (Bartlett); q is the chance-adjusted p-value "
+                      "across every pair tested here (Benjamini-Hochberg). A pair needs " + str(MIN_EFF_N) +
                       " independent weeks before any r is printed. Correlation only: two lines moving together does "
                       "not show that one moved the other."),
            "groups": {"river": RIVER_STATES, "rail": RAIL_STATES, "left_out": ["Iowa", "Minnesota"]},
@@ -1025,7 +1029,7 @@ def our_weekly(repo=REPO, states=OUR_STATES):
     # whole weeks only: the week in progress has seen only some boards (2026-10-20, a Tuesday: Missouri
     # corn read -$0.15 on 19 elevators against -$0.40 on 68 the Friday before)
     res = {"states": {}, "weeks": fridays, "through": fridays[-1] if fridays else None,
-           "method": "The AGSIST network's weekly state basis.",
+           "method": our_weekly.__doc__.split("\n\n")[0].strip().replace("\n    ", " "),
            "units": "$/bu, cash minus futures", "since": first}
     for st, rows in out["states"].items():
         res["states"][st] = {}
