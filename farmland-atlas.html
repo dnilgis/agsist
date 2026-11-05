@@ -614,6 +614,10 @@ details.fa-arith .body a{color:var(--gold)}
 .fa-mk-t{font-size:.74rem;color:var(--text);font-weight:700}
 .fa-legend .miss{background:repeating-linear-gradient(45deg,#161b1d 0 3px,#3a4448 3px 5px)!important;border:1px solid var(--border)!important}
 :root[data-theme="light"] .fa-page{--gold:#7a5a12}
+.fa-legend .sk{display:inline-block;width:12px;height:12px;vertical-align:-2px;margin-right:.3rem;border:1px solid var(--border)}
+.fa-legend .sk.zero{background:radial-gradient(circle,#7f8c90 0 1px,transparent 1.4px) 0 0/5px 5px,#1b2123}
+.fa-legend .sk.nop{background:repeating-linear-gradient(-45deg,#2a2418 0 3px,#8a742e 3px 5px)}
+.fa-thin{color:var(--text);font-weight:700}
 :root[data-theme="light"] .fa-nbt tr.me td:first-child{background:#f3ead6}
 :root[data-theme="light"] .fa-page .fa-tab.active{color:#0a0c0d}
 @media (max-width:640px){
@@ -751,7 +755,7 @@ details.fa-arith .body a{color:var(--gold)}
     <div class="fa-legend" id="fa-legend"></div>
     <div class="fa-map-wrap">
       <svg class="fa-map" id="fa-map" viewBox="0 0 960 600" role="img" aria-label="County map of the United States colored by the selected layer">
-        <defs><pattern id="fa-miss" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#161b1d"/><line x1="0" y1="0" x2="0" y2="6" stroke="#3a4448" stroke-width="2"/></pattern></defs>
+        <defs><pattern id="fa-miss" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#161b1d"/><line x1="0" y1="0" x2="0" y2="6" stroke="#3a4448" stroke-width="2"/></pattern><pattern id="fa-zero" width="5" height="5" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="#1b2123"/><circle cx="2.5" cy="2.5" r="1" fill="#7f8c90"/></pattern><pattern id="fa-nop" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="6" height="6" fill="#2a2418"/><line x1="0" y1="0" x2="0" y2="6" stroke="#8a742e" stroke-width="2"/></pattern></defs>
         <g id="fa-counties"></g>
         <g id="fa-states"></g>
         <g id="fa-insets"></g>
@@ -1196,6 +1200,10 @@ var LAYERS=[
   v:function(c){var v=get(c,'wells','irrigation_wells'); return v==null?get(c,'wells','irrigation_active'):v;},title:'Irrigation wells on the state register (log scale; Kansas: active irrigation water rights, surface water included). Registers differ: Nebraska counts wells in use; most others count every well ever logged, sealed ones included; Michigan and Arizona include lawn and multi-use wells. Compare a county with its own state'},
  {key:'we_prio',grp:'Wells and rights',label:'KS: rights, priority year',ramp:'water',unit:'',k:0,needs:'wells',
   v:function(c){return get(c,'wells','priority_year_median');},title:'Kansas: median priority year of active irrigation water rights (older is served first in a shortage)'},
+ {key:'sales_med',grp:'Recorded sales',label:'Median sale $/acre',ramp:'gold',unit:'$/acre',money:true,k:0,side:'sales',
+  v:function(c,f){var r=srow(f); return r&&r[0]!=null?r[0]:null;},title:'Median price per acre of recorded farmland sales, last 12 months of each state\'s records (sale count beside every figure)'},
+ {key:'sales_n',grp:'Recorded sales',label:'Number of sales',ramp:'green',unit:'sales',k:0,side:'sales',
+  v:function(c,f){var r=srow(f); return r?r[5]:null;},title:'Recorded market sales of farmland, last 12 months of each state\'s records'},
  {key:'ten_rent',grp:'Who farms it',label:'Rented, 2022',ramp:'gold',unit:'%',pct:true,k:0,side:'tenure',
   v:function(c,f){return tenShare(f,'2022');},title:'Share of land in farms rented from others, 2022 Census of Agriculture, as farms reported it'},
  {key:'pr_tile',grp:'Tile and tillage',label:'Tile-drained',ramp:'water',unit:'%',pct:true,k:0,needs:'practices',
@@ -1223,8 +1231,66 @@ var SIDE={
   tenure:{url:'/data/tenure/tenure.json', why:'the census tenure file did not load'},
   afida:{url:'/data/afida/county.json', nat:'/data/afida/national.json', why:'the AFIDA file did not load'},
   more:{url:'/data/atlas/more.json', why:'the weather, storm and livestock file did not load'},
-  rentrev:{url:'/data/cash-rent/national.json', why:'the cash rent file did not load'}
+  rentrev:{url:'/data/cash-rent/national.json', why:'the cash rent file did not load'},
+  sales:{url:'/data/land/atlas-layer.json', why:'the recorded sales file did not load'}
 };
+// ---------- recorded farmland sales (Sig, Nov 5, 2026): every county with a recorded market sale is shown, no
+// minimum count. The count stands beside every figure and a count under the file's "thin" is marked; never hidden.
+// Row: [median $/acre or null, sales in it, 1 bare land / 2 any 20+ acre sale / 0 none priced, first, last, sales in the window, page]
+var SMON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function srow(f){ var S=SIDE.sales; return S.ok?S.d.counties[f]||null:null; }
+function sst(c){ var S=SIDE.sales; return S.ok&&c?S.d.states[c.state]||null:null; }
+function sday(iso,month){ var m=SMON[Number(iso.slice(5,7))-1]; return month?m+' '+iso.slice(0,4):m+' '+Number(iso.slice(8,10))+', '+iso.slice(0,4); }
+function srange(a,b,month){ return a===b?sday(a,month):sday(a,month)+' to '+sday(b,month); }
+function swin(st){ return srange(st.cur[0],st.cur[1],true); }
+function scount(n){ return fmt(n,0)+' '+(n===1?'sale':'sales'); }
+function sthin(n){ return n<(SIDE.sales.d.thin||5); }
+function sthinText(n){ return 'based on '+scount(n)+': a thin read'; }
+// the short tag beside a county's figure in the tip, the rail and the next-door list
+function stag(L,f){ var r=srow(f); if(!r||L.side!=='sales') return ''; if(L.key==='sales_n') return ''; return r[0]==null?'':' · '+scount(r[1])+(sthin(r[1])?', thin':''); }
+function swhy(c,f){
+  var S=SIDE.sales; if(!S.ok) return S.why; var st=sst(c);
+  if(!st) return S.d.listed&&S.d.listed[c.state]?'sales here are listed on the land sales pages, not yet counted on this map':'no public sale records here yet';
+  var r=srow(f); if(!r) return 'no recorded sale in the window ('+swin(st)+')';
+  return scount(r[5])+' in the window, none of '+S.d.min_acres+' acres or more with a price per acre';
+}
+// fills for a county with no figure: grey where no state record is read, dots where the state is read and the
+// county had no sale, a hatch where it had sales but none priced as farmland
+function sfill(c,f){ var st=sst(c); if(!st) return '#3b4245'; return srow(f)?'url(#fa-nop)':'url(#fa-zero)'; }
+function sLegend(L,inScope){
+  var S=SIDE.sales.d, sts=Object.keys(S.states).sort(), thin=0, any=0;
+  for(var f in S.counties){ var c=ATLAS.counties[f]; if(!c||!inScope(f)) continue; var r=S.counties[f]; if(L.key==='sales_med'&&r[0]!=null){ if(sthin(r[1])) thin++; if(r[2]===2) any++; } }
+  var h='<span><span class="sk" style="background:#3b4245"></span>no public sale records here yet</span>'
+    +'<span><span class="sk zero"></span>no recorded sale in the window</span>'
+    +(L.key==='sales_med'?'<span><span class="sk nop"></span>sales, none of '+S.min_acres+'+ acres with a price</span>':'');
+  h+='<span class="fa-note">'+(L.key==='sales_med'?'Median price per acre of recorded market sales: bare farm land of '+S.min_acres+' acres or more; a county with none uses its sales of '+S.min_acres+' acres or more with buildings or woods (said in its card). Every county with a sale is colored, whatever the count. '
+      +(thin?fmt(thin,0)+' of these medians rest on fewer than '+S.thin+' sales: a thin read, marked in the card and the lists. ':'')
+      +(any?fmt(any,0)+' use sales with buildings or woods. ':'')
+    :'Recorded market sales of farmland in each county. ')
+    +'Window, the last 12 months of each state\'s records: '+sts.map(function(k){ var t=S.states[k]; return esc(STATE_NAMES[k]||k)+' '+esc(swin(t))+(t.dates==='month'?' (sale months)':''); }).join('; ')+'. '
+    +'Sources: '+sts.map(function(k){ return esc(S.states[k].who||k); }).join(', ')+' transfer records.</span>';
+  return h;
+}
+function sCard(L,c,f){
+  var r=srow(f), st=sst(c), h='';
+  if(!r||(L.key==='sales_med'&&r[0]==null)){ h+='<div class="fa-cc-v dim">'+esc(swhy(c,f))+'</div>'; }
+  else {
+    var mo=st.dates==='month';
+    if(L.key==='sales_med') h+='<div class="fa-cc-v">'+esc(money(r[0]))+'<span class="fa-cc-u"> an acre</span></div>';
+    else h+='<div class="fa-cc-v">'+esc(scount(r[5]))+'</div>';
+    var ls=[];
+    if(r[0]!=null){
+      ls.push((L.key==='sales_med'?'Median of ':'Median '+money(r[0])+' an acre, from ')+scount(r[1])+(r[2]===1?' of bare farm land, '+SIDE.sales.d.min_acres+' acres or more':' of '+SIDE.sales.d.min_acres+' acres or more with buildings or woods (no bare farm land sale in the window)'));
+      ls.push((r[1]===1?'Sold ':'Sales from ')+srange(r[3],r[4],mo));
+      if(sthin(r[1])) ls.push('<b class="fa-thin">'+esc(sthinText(r[1]).replace(/^b/,'B'))+'</b>');
+    } else ls.push('None of '+SIDE.sales.d.min_acres+' acres or more with a price per acre');
+    ls.push(scount(r[5])+' recorded in all, '+swin(st)+(mo?' (sale months)':''));
+    h+='<div class="fa-cc-r">'+ls.map(function(x){ return x.indexOf('<b')===0?x:esc(x); }).join('<br>')+'</div>';
+  }
+  if(st&&r&&r[6]) h+='<a class="fa-cc-print" href="/land-sales/'+esc(st.slug)+'/'+esc(r[6])+'">Land sales in this county</a><a class="fa-cc-print" href="/farmland-atlas/'+esc(st.slug)+'/'+esc(r[6])+'">County page</a>';
+  else if(SIDE.sales.ok&&SIDE.sales.d.listed&&SIDE.sales.d.listed[c.state]) h+='<a class="fa-cc-print" href="/land-sales/'+esc(SIDE.sales.d.listed[c.state])+'/">Land sales in '+esc(STATE_NAMES[c.state]||c.state)+'</a>';
+  return h;
+}
 // rent ÷ corn gross: read from data/cash-rent/national.json, the file the county pages and the rent share calculator use, so they cannot disagree.
 // p = rent ÷ (county corn yield of the same practice × state price received), py its year, pp = that price is preliminary.
 // A file without pair_rule divided dryland rent by a mixed yield; this layer withholds it.
@@ -1327,6 +1393,7 @@ function paint(){
     if(vv==null){ PATHS[f3].setAttribute('fill',MISSING); continue; }
     if(!inScope(f3)){ PATHS[f3].setAttribute('fill','#262b2d'); continue; }     // another state's county, on another state's scale: no color at all
     var ci=K.cls(L.log?Math.round(un(vv)):un(vv)); CLS[f3]=ci; counts[ci]++; PATHS[f3].setAttribute('fill',K.cols[ci]); }
+  if(L.side==='sales') for(var fs in PATHS){ if(byF[fs]==null&&ATLAS.counties[fs]) PATHS[fs].setAttribute('fill',sfill(ATLAS.counties[fs],fs)); }
   for(var fo in PATHS){ var co=ATLAS.counties[fo]; PATHS[fo].classList.toggle('out',!!(STATE&&(!co||co.state!==STATE))); }
   var inN=0; for(var fi in byF) if(inScope(fi)) inN++;
   K.counts=counts; K.L=L; LEG=K;
@@ -1336,9 +1403,10 @@ function paint(){
     +K.labels.map(function(t){ return '<span'+(t[2]?' class="in"':'')+' style="left:'+(t[0]*100)+'%">'+esc(t[1])+'</span>'; }).join('')+'</div><span class="fa-cls-out" id="fa-cls-out" aria-live="polite"></span><span class="fa-mk-t" id="fa-mk-t" hidden></span></div>';
   var tot=0; for(var ft in PATHS) if(!local||(ATLAS.counties[ft]&&ATLAS.counties[ft].state===STATE)) tot++;
   var html2='';
-  html2+='<span><span class="miss"></span>withheld or not published</span><span class="fa-mono">'+(local?inN:vals.length)+' of '+tot+' counties'+(local?' in '+esc(STATE_NAMES[STATE]||STATE):'')+'</span>';
+  html2+=(L.side==='sales'?'':'<span><span class="miss"></span>withheld or not published</span>')+'<span class="fa-mono">'+(local?inN:vals.length)+' of '+tot+' counties'+(local?' in '+esc(STATE_NAMES[STATE]||STATE):'')+'</span>';
   html2+='<span class="fa-note">'+(L.div?(K.hasNeg&&K.hasPos?'Blue is below zero, orange above. ':K.hasNeg?'Blue is below zero; no county is above it. ':'Orange is above zero. '):'')+(L.pivot!=null&&K.br.indexOf(L.pivot)>=0?'The colors change at '+shortv(L,L.pivot)+', where claims matched premium. ':'')+(K.zero?'Zero is its own class. ':'')+(local?'Colors are set for '+esc(STATE_NAMES[STATE]||STATE)+' alone; other states are grey. ':'')+(K.even?'Each color holds about the same number of counties':'The colors split the counties at the values shown')+(L.key==='heat_decade'?', across every decade together':'')+'. Tap or point at a color to see its counties. <a href="/farmland-atlas/methods#m-map">How the colors and ranks work</a></span>';
   if(L.side==='rentrev') html2+=rrevLegend(byF,inScope);
+  if(L.side==='sales') html2+=sLegend(L,inScope);
   if(L.key==='ten_rent') html=tenNatLine()+html;
   leg.innerHTML=html; $('fa-legend2').innerHTML=html2;
   wireLegend();
@@ -1532,7 +1600,8 @@ function renderRail(){
   if(SEL&&ATLAS.counties[SEL]){
     var c=ATLAS.counties[SEL], v=L.v(c,SEL), rk=RK[SEL]||{}, nbs=neighbours(SEL);
     h+='<div class="fa-cc" role="region" aria-labelledby="fa-cc-n" tabindex="-1"><div class="fa-cc-top"><div><h3 class="fa-cc-n" id="fa-cc-n" style="margin:0">'+esc(cname(c))+'</h3><div class="fa-cc-l">'+esc(L.label)+'</div></div><span style="display:flex;gap:6px;align-items:center"><a class="fa-cc-pr" href="/farmland-atlas/sheet#'+SEL+'" target="_blank" rel="noopener" aria-label="Printable county sheet">Print</a><button type="button" class="fa-cc-x" id="fa-cc-x" aria-label="Close this county">×</button></span></div>';
-    if(v==null||isNaN(v)) h+='<div class="fa-cc-v dim">'+esc(missingWhy(c,L,SEL))+'</div>';
+    if(L.side==='sales') h+=sCard(L,c,SEL);
+    else if(v==null||isNaN(v)) h+='<div class="fa-cc-v dim">'+esc(missingWhy(c,L,SEL))+'</div>';
     else { var yr=ryear(L,c), RL=rlatest(L); h+='<div class="fa-cc-v">'+esc(fmtv(L,v))+(L.money&&L.unit==='$/acre'?'<span class="fa-cc-u"> an acre</span>':'')+(L.key==='rent_rev'?' <small>'+esc(rnote(L,SEL).replace(/^ \(|\)$/g,''))+'</small>':yr&&yr!==RL?' <small>'+esc(yr)+'</small>':'')+'</div>';
       var rs=[];
       if(!SIDE.tenure.done){}
@@ -1551,7 +1620,7 @@ function renderRail(){
       rows.sort(function(a,b){ var A=a.v==null||isNaN(a.v), B=b.v==null||isNaN(b.v); if(A!==B) return A?1:-1; if(A) return a.c.name<b.c.name?-1:1; return b.v-a.v; });
       h+='<h3 class="fa-rk-h"><span>Next door, same layer</span></h3><ul class="fa-nb-l">'+rows.map(function(r){ var miss=r.v==null||isNaN(r.v);
         var ry2=ryear(L,r.c), tag=ry2&&ry2!==ryear(L,c)?' ('+ry2+')':'';
-        return '<li><button type="button" data-fips="'+r.f+'"'+(r.f===SEL?' class="me"':'')+'><span class="sw" style="background:'+(miss?'transparent':PATHS[r.f]?PATHS[r.f].getAttribute('fill'):'transparent')+'"></span><span class="nm">'+esc(shortName(r.c,c.state))+'</span><span class="v">'+(miss?'-':esc(fmtv(L,r.v)+tag))+'</span></button></li>'; }).join('')+'</ul>';
+        return '<li><button type="button" data-fips="'+r.f+'"'+(r.f===SEL?' class="me"':'')+'><span class="sw" style="background:'+(miss?'transparent':PATHS[r.f]?PATHS[r.f].getAttribute('fill'):'transparent')+'"></span><span class="nm">'+esc(shortName(r.c,c.state))+'</span><span class="v">'+(miss?'-':esc(fmtv(L,r.v)+tag+stag(L,r.f)))+'</span></button></li>'; }).join('')+'</ul>';
     }
     h+='<button type="button" class="fa-cc-go" id="fa-cc-go">Full county record ↓</button><a class="fa-cc-print" href="/farmland-atlas/sheet#'+SEL+'" target="_blank" rel="noopener">Printable county sheet</a><a class="fa-cc-print" href="'+scoutHref(SEL)+'">Scout a field here</a></div>';
   }
@@ -1565,7 +1634,7 @@ function renderRail(){
   else if(n<4) h+='<div class="fa-rk"><p class="fa-rk-n">'+(n?'Only '+n:'No')+' '+(n===1?'county':'counties')+(farmOk?' with 10,000 acres or more in farms':'')+' in '+esc(scope)+' '+(n===1?'has':'have')+' a figure on this layer'+(n?', too few to list':'')+'.</p></div>';
   else {
     var key=STATE?'st':'us';
-    function row(r){ return '<li><button type="button" data-fips="'+r.f+'"'+(r.f===SEL?' class="me"':'')+'><span class="sw" style="background:'+(PATHS[r.f].getAttribute('fill'))+'"></span><span class="nm">'+esc(shortName(r.c,STATE||'~'))+'</span><span class="v">'+esc(fmtv(L,r.v))+'</span></button></li>'; }
+    function row(r){ return '<li><button type="button" data-fips="'+r.f+'"'+(r.f===SEL?' class="me"':'')+'><span class="sw" style="background:'+(PATHS[r.f].getAttribute('fill'))+'"></span><span class="nm">'+esc(shortName(r.c,STATE||'~'))+'</span><span class="v">'+esc(fmtv(L,r.v)+stag(L,r.f))+'</span></button></li>'; }
     h+='<div class="fa-rk"><h3 class="fa-rk-h"><span>'+hl(L,'Highest')+' in '+esc(scope)+'</span></h3><ol class="fa-rk-l">'+list.slice(0,k).map(row).join('')+'</ol>'
       +(function(){ var lo=list[n-1].v, tied=list.filter(function(r){return r.v===lo;}).length;
           // a list of eight of the 540 counties at 0% says nothing; say how many share the floor instead
@@ -1597,7 +1666,7 @@ function layerOf(k){ return LAYERS.filter(function(l){return l.key===k;})[0]; }
 var GROUPS=[], LAST_IN={}, LAST_FAM={};
 // Four kinds on top, so a first look is four choices, not sixteen. Every layer is still here.
 // Order is the order on screen; a group missing from this list falls into the last kind.
-var FAMILIES=[['Land & rent',['Land value','Rent','Who farms it']],
+var FAMILIES=[['Land & rent',['Land value','Recorded sales','Rent','Who farms it']],
   ['Yield & insurance',['Corn yield','Loss ratio','Loss record']],
   ['Weather & water',['Rain and heat','Night heat','Drought','Season','Storms','Water','Wells and rights']],
   ['Farm & programs',['CRP','Tile and tillage','Livestock','Solar and wind']]];
@@ -1725,7 +1794,7 @@ function wireMap(){
     var f=t.getAttribute('data-fips'), c=ATLAS.counties[f]; if(!c) return;
     var L=LAYERS.filter(function(l){return l.key===CUR;})[0], v=L.v(c,f);
     var rk=RK[f]||{}, rw=rk.st?hl(L,rankWords(rk.st)):'';
-    tip.innerHTML='<b>'+esc(cname(c))+'</b><br>'+esc(L.label)+': <span class="v">'+(v==null?''+esc(missingWhy(c,L,f)):esc(fmtv(L,v)+rnote(L,f)))+'</span>'+(v!=null&&rw?'<br><span style="color:var(--text-muted)">'+esc(rw)+' in '+esc(c.state)+'</span>':'');
+    tip.innerHTML='<b>'+esc(cname(c))+'</b><br>'+esc(L.label)+': <span class="v">'+(v==null?''+esc(missingWhy(c,L,f)):esc(fmtv(L,v)+rnote(L,f)+stag(L,f)))+'</span>'+(v!=null&&rw&&L.side!=='sales'?'<br><span style="color:var(--text-muted)">'+esc(rw)+' in '+esc(c.state)+'</span>':'');
     var r=wrap.getBoundingClientRect(), x=e.clientX-r.left+14, y=e.clientY-r.top+14;
     if(x>r.width-270) x=e.clientX-r.left-270; if(y>r.height-80) y=e.clientY-r.top-70; if(x<4) x=4; if(y<4) y=4;
     tip.style.left=x+'px'; tip.style.top=y+'px'; tip.style.display='block';
@@ -1752,7 +1821,7 @@ function rrevLegend(byF,inScope){
     +(np?' '+fmt(np,0)+' '+(np===1?'county uses':'counties use')+' a preliminary '+ys.join(', ')+' price.':'')
     +(R.generated?' Cash rent file refreshed '+esc(R.generated)+'.':'')+' Every year for every county: open a county page and tap the rent share calculator.</span>';
 }
-function missingWhy(c,L,f){ if(L.key==='rent'){ var rr=get(c,'rent','nonirr'); if(rr&&rr.year&&RENT_LATEST&&rr.year<RENT_LATEST-3) return 'latest published rent is from '+rr.year; } if(L.key==='sob_over'&&ok(c.sob)&&get(c,'sob','share_over_one')==null) return 'fewer than ten crop years with a rated premium'; if((L.side&&!SIDE[L.side].done)||(L.sidecar&&!HEATD_DONE)) return 'loading'; if(L.side==='rentrev') return rrevWhy(f); if(L.side) return L.side==='tenure'?'not published for this county (census suppression or no match)':L.side==='more'?(!SIDE.more.ok?(SIDE.more.why||'the file did not load'):L.key==='fr_spring'&&mv(f,'f',0)===-1?'no freeze after March 1 in most years':L.key==='fr_fall'&&mv(f,'f',1)===999?'no freeze before December in most years':'withheld or not published here; the county record says why'):'no data'; var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay);
+function missingWhy(c,L,f){ if(L.key==='rent'){ var rr=get(c,'rent','nonirr'); if(rr&&rr.year&&RENT_LATEST&&rr.year<RENT_LATEST-3) return 'latest published rent is from '+rr.year; } if(L.key==='sob_over'&&ok(c.sob)&&get(c,'sob','share_over_one')==null) return 'fewer than ten crop years with a rated premium'; if((L.side&&!SIDE[L.side].done)||(L.sidecar&&!HEATD_DONE)) return 'loading'; if(L.side==='rentrev') return rrevWhy(f); if(L.side==='sales') return swhy(c,f); if(L.side) return L.side==='tenure'?'not published for this county (census suppression or no match)':L.side==='more'?(!SIDE.more.ok?(SIDE.more.why||'the file did not load'):L.key==='fr_spring'&&mv(f,'f',0)===-1?'no freeze after March 1 in most years':L.key==='fr_fall'&&mv(f,'f',1)===999?'no freeze before December in most years':'withheld or not published here; the county record says why'):'no data'; var lay=c[L.needs]; if(!lay) return 'no data'; if(lay.status!=='ok') return why(lay);
   if(L.key==='crp_peak') return 'peak enrollment under 100 acres';
   if(L.key==='crp_rate') return 'under 100 acres enrolled';
   if(L.key==='val_rtv'&&get(c,'value','flag')) return 'the census value moved against next door; see the county record';
@@ -2557,6 +2626,7 @@ function boot(){
     if(drm.length) LAYERS.forEach(function(l){ if(l.needs==='drought'&&l.title.indexOf(' left out')<0) l.title+=' ('+drm.join(' and ')+' left out: the Atlas copy of that year is incomplete)'; });
     if(L.drought&&L.drought.status==='ok') v.push('Drought Monitor '+L.drought.first_year+'–'+L.drought.latest_year+(drm.length?' ('+drm.join(' and ')+' left out, incomplete)':'')); else v.push('Drought: not yet measured');
     if(L.energy&&L.energy.status==='ok') v.push('Solar and wind: Form 860 '+L.energy.year); else v.push('Solar and wind: not yet measured');
+    v.push('Recorded sales: state transfer records, last 12 months, refreshed with the land data');
     var regs=Object.keys(get(L,'wells_states','registers')||{}).sort();
     if(L.wells&&L.wells.status==='ok') v.push('Wells and rights: NE and KS registers'+(regs.length?', and '+regs.join(', '):'')+', '+(L.wells.fetched||'').slice(0,10)); else v.push('Wells and rights: not yet measured');
     if(L.climate&&L.climate.status==='ok') v.push('Rain and July highs: nClimDiv to '+(L.climate.gs_latest_year||'')); else v.push('Rain: not yet measured');
