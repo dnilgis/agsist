@@ -73,7 +73,6 @@
     if(!S.hail)root.classList.add('s7-no-hail');
     if(!S.cropTour)root.classList.add('s7-no-croptour');
     if(S.hailLead){root.classList.add('s7-hail-lead');var lh=$('land-hail');if(lh&&lh.parentNode&&lh.previousElementSibling)lh.parentNode.insertBefore(lh,lh.parentNode.firstElementChild);}
-    var fn=$('s7-falln');if(fn)fn.hidden=!S.fallN;
     var hp=$('s7-hp-link');if(hp)hp.hidden=!S.hp;
     var hb=$('harvest-band');
     if(hb){if(S.band==='off')hb.hidden=true;else if(S.band==='open')hb.open=true;}
@@ -619,18 +618,17 @@
           esc(ff?'First frost risk in the forecast: '+ff.day+' morning, '+ff.lo+'°F ('+frostFlag(ff.lo).toLowerCase()+').':(ff===false?'No frost in the 5-day forecast.':'')));
       } else if(WX.state!=='wait')put('frost',NL(),'Weather forecast');
     }
-    if(cells.fallN||cells.soilPlant||$('s7-falln')){
-      var fb=$('s7-falln-badge'),fr=$('s7-falln-rec');
-      if(noLoc){needZip('fallN');needZip('soilPlant');if(fb)fb.textContent='Set your ZIP';}
+    /* 2026-11-05 (Sig): fall nitrogen left the Local conditions card ("doesn't belong ... same as the spray
+       conditions"); the This month strip cell, /fall-nitrogen, /planting-date and Field Scout keep it. */
+    if(cells.fallN||cells.soilPlant){
+      if(noLoc){needZip('fallN');needZip('soilPlant');}
       else if(s){
         var v=fallVerdict(s);
         var at=s.name+', '+s.mi+' mi, '+s.day;
         var sub=(v.t==='In range'?'Below 50°F each of the last 3 days at '+at+'.':'Last 3 days at '+at+': '+s.last3.map(function(x){return Math.round(x)+'°F';}).join(', ')+'.')+' Apply once 4 in soil stays below 50°F. Not on sandy or poorly drained soils.';
         put('fallN','<span class="s7-line'+(v.c?' '+v.c:'')+'">'+v.t+'</span><span class="s7-line">'+s.now+'°F <small>at 4 in, measured</small></span>',esc(sub));
         put('soilPlant','<span class="s7-line">'+s.now+'°F <small>at 4 in</small></span><span class="s7-line">'+(s.now>=50?'At or above 50°F':'Below 50°F')+'</span>',esc('Measured at 4 in at '+at+'. Corn is commonly planted once soil at 2 in holds near 50°F.'));
-        if(fb){fb.textContent=v.t+' · '+s.now+'°F';fb.style.color=v.c?'var(--green)':'var(--text)';}
-        if(fr)fr.textContent='Measured, not your field. '+sub;
-      } else if(WX.state!=='wait'){put('fallN',NL(),'No current soil station reading within 50 miles');put('soilPlant',NL(),'');if(fb)fb.textContent='Not loaded yet';}
+      } else if(WX.state!=='wait'){put('fallN',NL(),'No current soil station reading within 50 miles');put('soilPlant',NL(),'');}
     }
     if(cells.spray){
       var d0=WX.spray&&WX.spray[0];
@@ -708,21 +706,12 @@
       /* 2026-10-06: the hero band reads today's verdict from here, so the page
          never shows two spray reads. */
       try{window.__agsistSprayToday=WX.spray?WX.spray[0]:null;window.dispatchEvent(new CustomEvent('agsist:spray',{detail:window.__agsistSprayToday}));}catch(e){}
-      /* 2026-11-04 (Sig): the five-day spray table left Local conditions; today's read stays as one line
-         below. /spray and Field Scout keep their own spray days. */
+      /* 2026-11-04 (Sig): the five-day spray table left Local conditions; 2026-11-05 (Sig) the one Today
+         spray line left too. /spray and Field Scout keep their own spray reads. */
       if(!WX.spray){
         var st0=$('wsp-spray-status'),dt0=$('wsp-spray-detail');
         if(st0){st0.textContent='Not loaded yet';st0.style.color='var(--text-muted)';}
         if(dt0)dt0.textContent='The spray read needs the forecast, which has not loaded.';
-      }
-      var el=$('wx-today-summary');
-      if(el){
-        var r0=WX.spray&&WX.spray[0];
-        /* the season against normal is in Season so far (components/season-wx.js), one source, so not here */
-        var ctx='';
-        el.innerHTML=r0?'<span class="wx-today-icon" aria-hidden="true" style="color:'+COLOR[r0.s]+'"><svg class="ic" aria-hidden="true"><use href="'+ICON[r0.s]+'"/></svg></span><span class="wx-today-text"><strong>Today:</strong> '+r0.long+'. '+esc(r0.why.charAt(0).toUpperCase()+r0.why.slice(1))+'.'+ctx+'</span>'
-          :'<span class="wx-today-text"><strong>Today:</strong> spray read not loaded yet.</span>';
-        el.classList.add('loaded');
       }
       paintSprayTile();paintWx();
     },
