@@ -109,7 +109,11 @@ test("no buyer or seller name, legal, parcel id or document number from any coun
 });
 
 test("indexed Atlas pages for IL and WI carry no private value, before and after the sales block draws", () => {
-  for (const [s, dir] of STATES) {
+  // the states whose county pages draw the sales block (S.STATES); a state summarized only for the Atlas map layer
+  // (Indiana, New Jersey, Vermont since Nov 5, 2026) has no block on its pages yet; its summary is checked above
+  const ON = STATES.filter(([s]) => S.STATES[s.toUpperCase()]);
+  assert.ok(ON.length >= 2);
+  for (const [s, dir] of ON) {
     const sum = JSON.parse(read(`data/land/${s}/summary.json`));
     const pages = new Map();
     for (const n of readdirSync(join(ROOT, "farmland-atlas", dir))) {
