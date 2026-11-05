@@ -72,6 +72,35 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LAND = os.path.join(ROOT, "data", "land")
+# States whose county files are served from the public agsist-data repo, not this site (Florida, Nov 5, 2026;
+# FSLand.LAND_HOST). A job that builds from them puts a copy of agsist-data's land folder at data/land-hosted/
+# (never committed); the summaries and pages built from them stay here.
+HOSTED = ("FL",)
+HOSTED_DIR = os.path.join(ROOT, "data", "land-hosted")
+
+
+def state_dir(st, root=None):
+    """The folder holding state st's county files and index.json."""
+    st = str(st).lower()
+    if st.upper() in HOSTED:
+        return os.path.join(root, "data", "land-hosted", st) if root else os.path.join(HOSTED_DIR, st)
+    return os.path.join(root, "data", "land", st) if root else os.path.join(LAND, st)
+
+
+def read_county(path):
+    """One county file, with its older years put back (a big hosted county keeps its last years in <fips>.json and
+    each older year in <fips>-<year>.json, listed in "older", newest first: fetch_land_sales.split_county). The rows
+    come back in the file's order, newest first, so a row number means the same in the whole county."""
+    with open(path, encoding="utf-8") as fh:
+        doc = json.load(fh)
+    older = doc.pop("older", None)
+    if older:
+        rows = list(doc.get("rows") or [])
+        for o in older:
+            with open(os.path.join(os.path.dirname(path), o["f"]), encoding="utf-8") as fh:
+                rows += json.load(fh).get("rows") or []
+        doc["rows"] = rows
+    return doc
 FIXTURE = os.path.join(ROOT, "test", "fixtures", "land-summary.json")
 
 ACRES_RULE = 2          # FSLand.ACRES_RULE
@@ -100,6 +129,11 @@ SOURCES = {
            "who": "Wisconsin Department of Revenue",
            "url": "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx",
            "kinds": "agricultural, forest and undeveloped classes"},
+    # Florida (Nov 5, 2026): sale months, not days; files served from agsist-data (HOSTED)
+    "FL": {"record": "Florida sale data files joined to the assessment roll",
+           "who": "Florida Department of Revenue",
+           "url": None,
+           "kinds": "agricultural land use codes 50 to 69, timberland included"},
 }
 
 
@@ -501,6 +535,8 @@ def build_state(st, files, fetched=None):
     # never past the month of the newest return on file: a run that re-read only older months
     # (a month that did not download) moves the stamp, not the data
     filed = max((str((f.get("coverage") or {}).get("filed_to") or "")[:10] for f in files), default="")
+    # a month-date file (Florida) has no filed date: its newest sale month is as far as the summary may claim
+    filed = filed or max((str((f.get("coverage") or {}).get("to") or "")[:10] for f in files if f.get("dates") == "month"), default="")
     if filed:
         last_full = month_end_before((datetime.date.fromisoformat(filed).replace(day=28) + datetime.timedelta(days=4)).isoformat())
         through = min(through, last_full)
@@ -526,9 +562,10 @@ def load_state(st):
     """The state's county files, each with its names put back in memory (land_names.load) for the leak check."""
     import land_names
     out = []
-    for p in sorted(glob.glob(os.path.join(LAND, st.lower(), "[0-9]*.json"))):
-        with open(p, encoding="utf-8") as fh:
-            out.append(land_names.load(json.load(fh), LAND))
+    for p in sorted(glob.glob(os.path.join(state_dir(st), "[0-9]*.json"))):
+        if not re.fullmatch(r"\d+\.json", os.path.basename(p)):
+            continue      # an older year of a split county (<fips>-<year>.json), read with its county
+        out.append(land_names.load(read_county(p), LAND))
     return out
 
 
@@ -561,8 +598,7 @@ def states_on_disk():
     """States with transfer files AND a checked source entry above. A new state's files (Indiana,
     Oct 18) get no Atlas summary until its deed types and acres are checked against the market-sale
     rule and it is added to SOURCES."""
-    return sorted(os.path.basename(d).upper() for d in glob.glob(os.path.join(LAND, "*"))
-                  if os.path.isdir(d) and glob.glob(os.path.join(d, "[0-9]*.json")) and os.path.basename(d).upper() in SOURCES)
+    return sorted(st for st in SOURCES if glob.glob(os.path.join(state_dir(st), "[0-9]*.json")))
 
 
 def main(argv):
@@ -599,6 +635,7 @@ def main(argv):
             else:
                 print("ok   %s summary current" % st)
             continue
+        os.makedirs(os.path.dirname(path), exist_ok=True)      # a hosted state keeps only its summary here
         with open(path, "w", encoding="utf-8") as fh:
             fh.write(text)
         withm = sum(1 for c in s["counties"].values() if c.get("med"))

@@ -1042,6 +1042,32 @@
     if (!_co[k]) _co[k] = getJSON(FSLand.landBase(st) + fips + '.json', 20000).catch(function () { _co[k] = null; return null; });
     return _co[k];
   }
+  // A big hosted county (Florida) keeps its last 3 years in <fips>.json and each older year in <fips>-<year>.json
+  // ("older", newest first; fetch_land_sales.split_county). olderLeft: the older years not loaded yet in these files.
+  FSLand.olderLeft = function (files) {
+    var out = { years: 0, n: 0, before: null };
+    (files || []).forEach(function (f) {
+      if (!f || !f.older || f.olderDone) return;
+      f.older.forEach(function (o) { out.years++; out.n += +o.n || 0; });
+      var y = f.older.length ? f.older[0].y + 1 : null;
+      if (y && (out.before == null || y > out.before)) out.before = y;
+    });
+    return out;
+  };
+  // Loads every older year of these files and adds its rows after the county's own, in the file's order (newest
+  // first), so a row number counts across the whole county. Resolves to the files; a year that does not load
+  // leaves that county as it was, and says so (failed).
+  FSLand.loadOlder = function (st, files, get) {
+    get = get || getJSON;
+    var failed = 0;
+    return Promise.all((files || []).map(function (f) {
+      if (!f || !f.older || f.olderDone) return null;
+      return Promise.all(f.older.map(function (o) { return get(FSLand.landBase(st) + o.f, 20000); })).then(function (parts) {
+        parts.forEach(function (p) { f.rows = f.rows.concat((p && p.rows) || []); });
+        f.olderDone = true;
+      }, function () { failed++; });
+    })).then(function () { return { files: files, failed: failed }; });
+  };
   FSLand.loadSales = function (st, c, homeFips, reachMi) {
     return landIndex(st).then(function (ix) {
       if (!ix || !ix.counties) return { ix: ix, rows: [], files: [], searched: [], reach: reachMi };
@@ -1440,7 +1466,29 @@
         '<label>Deeds<select data-f="all"><option value="">market sales</option><option value="1">every deed type</option></select></label>' +
         '</div><div id="fl-clist"></div>' +
         '<p class="fl-note"><a class="fl-btn" style="display:inline-block;text-decoration:none" id="fl-comprep" href="#" target="_blank" rel="noopener">Comparable sales report</a> Numbered comps, map, search stated, print or CSV. Free.</p>' +
-        '<p class="fl-note">' + esc(f.source || 'State transfer returns') + '. ' + (FSLand.coverageText(cov, f.state) ? esc(FSLand.coverageText(cov, f.state)) + '. ' : '') + 'Price is what the return lists for the whole sale, buildings included unless the class is bare land. Miles run from your field to the center of the town or township where the sale was filed, not to the parcel. Market sales leave out quit claims, gifts, sales between related parties, court, foreclosure, trade and partition deeds, shares of the land, sales dated after today and fee-exempt transfers. Deeds of one parcel filed within ' + FSLand.GROUP_DAYS + ' days are one sale.</p>';
+        olderHTML(files) +
+        '<p class="fl-note">' + esc(f.source || 'State transfer returns') + '. ' + (FSLand.coverageText(cov, f.state) ? esc(FSLand.coverageText(cov, f.state)) + '. ' : '') +
+        (String(f.state).toUpperCase() === 'FL'
+          ? 'Price is the sale price on the Florida sale data file for the whole sale, buildings included unless the land is marked vacant. Miles run from your field to the center of the town where the sale was filed, not to the parcel. Market sales are the sales the county property appraiser marked qualified (codes 01 and 02); shares of the land and sales dated after today are left out too.</p>'
+          : 'Price is what the return lists for the whole sale, buildings included unless the class is bare land. Miles run from your field to the center of the town or township where the sale was filed, not to the parcel. Market sales leave out quit claims, gifts, sales between related parties, court, foreclosure, trade and partition deeds, shares of the land, sales dated after today and fee-exempt transfers. Deeds of one parcel filed within ' + FSLand.GROUP_DAYS + ' days are one sale.</p>');
+    }
+    function olderHTML(files) {
+      var o = FSLand.olderLeft(files);
+      if (!o.years) return '';
+      return '<p class="fl-note" id="fl-older"><button type="button" class="fl-btn" data-older="1">Show older sales</button> Sales before ' + o.before + ' load on tap (' + o.n.toLocaleString('en-US') + ' more records).</p>';
+    }
+    function wireOlder() {
+      var b = body(), btn = b && b.querySelector('[data-older]'); if (!btn || !S.sales) return;
+      btn.addEventListener('click', function () {
+        var gen = S.gen, s = S.sales;
+        btn.disabled = true; btn.textContent = 'Loading older sales';
+        FSLand.loadOlder(S.st, s.files).then(function (res) {
+          if (S.gen !== gen || !live() || S.sales !== s) return;
+          s.rows = []; s.files.forEach(function (f) { s.rows = s.rows.concat(FSLand.rowObjs(f)); });
+          set('fl-older', res.failed ? '<span class="fl-warn">Some older years did not load just now. Tap the field again to try again.</span>' : 'Older sales loaded.');
+          renderComps(); if (S.parcels.length) renderHistory();
+        });
+      });
     }
     function wireFilters() {
       var b = body(); if (!b) return;
@@ -1515,7 +1563,7 @@
             S.sales = s;
             if (!s.files.length && s.searched && s.searched.length) { set('fl-comps', '<p class="fl-note">The county sales files did not load just now. Pick the field again in a minute.</p>'); }
             else if (!s.files.length) { set('fl-comps', S.noSales); }
-            else { set('fl-comps', compsShell(s.files)); wireFilters(); renderComps(); }
+            else { set('fl-comps', compsShell(s.files)); wireFilters(); wireOlder(); renderComps(); }
             if (S.parcels.length) renderHistory();
           });
           if (!svcs.length) { set('fl-parcel', emptyHTML); return; }
