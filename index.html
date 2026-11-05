@@ -16,7 +16,7 @@
   <script src="/components/price-local.js?v=10"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
-<link rel="stylesheet" href="/css/home.css?v=35">
+<link rel="stylesheet" href="/css/home.css?v=36">
 <script src="/components/sponsor-ad.js?v=2" defer></script>
   <script src="/components/util.js?v=20"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
@@ -815,10 +815,11 @@ try {
     /* ---- today: a snapshot of today's forecast for the saved place (2026-11-02, Sig: "the weather
        today should be a snapshot of the actual day's forecast"). The National Weather Service grid the
        page already reads (components/nws.js; it keeps one answer per point, so this adds no request):
-       today's high and tonight's low, the sky in words, the rain chance, the wind, and the spray read
-       (components/home-season.js) under it. After 6 PM local it is tonight's low and tomorrow's high.
+       today's high and tonight's low, the sky in words, the rain chance and the wind. 2026-11-05 (Sig): no spray
+       read here; spraying is seasonal and /spray and Field Scout keep theirs. After 6 PM local it is tonight's
+       low and tomorrow's high.
        A forecast is an estimate: the label says so and names the NWS issue time. ---- */
-    var spray=null,sprayDone=false,fcDone=false,fcFail=false,fcAt='';
+    var fcDone=false,fcFail=false,fcAt='';
     var WORDS_D={0:'Sunny',1:'Mostly sunny',2:'Partly sunny',3:'Cloudy'},WORDS_N={0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Cloudy'};
     function wxWords(c,night){if(c==null)return '';if(c<=3)return (night?WORDS_N:WORDS_D)[c];
       if(c===45)return 'Fog';if(c===48)return 'Freezing fog';if(c===56||c===57)return 'Freezing drizzle';if(c>=51&&c<=55)return 'Drizzle';
@@ -865,7 +866,6 @@ try {
         if(x.wmax!=null)bits.push('<span class="hb-nw">Wind '+(x.dir?x.dir+' ':'')+'<span class="hb-n">'+(x.wmin!=null&&x.wmin!==x.wmax?x.wmin+'-'+x.wmax:x.wmax)+'</span> mph</span>');
         var s='';var w=wxWords(x.code,x.night);if(w)s+='<span class="hb-l hb-wxw">'+esc(w)+'</span>';
         if(bits.length)s+='<span class="hb-l">'+bits.join(SEP)+'</span>';
-        if(spray&&spray.long)s+='<span class="hb-l"><span class="hb-spray hb-'+esc(spray.s)+'">'+esc(spray.long)+'</span>'+(spray.s!=='go'&&spray.short?SEP+esc(spray.short):'')+'</span>';
         set('hb-wx-s',s);return;
       }
       if(fcFail){if(c){c.dataset.state='failed';c.classList.add('hb-none');}
@@ -885,8 +885,6 @@ try {
       fcLoad();}
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchTemp);else watchTemp();
     window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(fcLoad,0);});
-    window.addEventListener('agsist:spray',function(e){spray=e&&e.detail||null;sprayDone=true;paintWx();});
-    if(window.__agsistSprayToday!==undefined){spray=window.__agsistSprayToday;sprayDone=true;}
     /* No forecast yet and no ZIP saved (.hb-nozip), or Local Conditions has
        given up on location and shows its "Set your ZIP" box (geo.js
        showZipEntry): the cell says "Set ZIP" and a tap opens the ZIP box,
@@ -993,10 +991,8 @@ try {
             <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
             <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div><div class="wstat" id="s7-wx-soil-w"><div class="wstat-lbl">Soil, 2.4 in, modeled</div><div class="wstat-val" id="s7-wx-soil"><span class="s7-nl">Not loaded yet</span></div></div>
+            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div>
           </div>
-                    <div class="wx-today" id="wx-today-summary"></div>
-          <a href="/fall-nitrogen" class="wx-falln" id="s7-falln" data-track="season" hidden><span class="wx-falln-k">Fall nitrogen</span><span class="wx-falln-v" id="s7-falln-badge">Not loaded yet</span><span class="wx-falln-s" id="s7-falln-rec">Soil temperature at 2.4 in (6 cm). Extension guidance: wait for fall anhydrous until soil at 4 in stays below 50&deg;F.</span></a>
           <div id="wx-forecast" style="display:none"></div>
           <section class="wx-season" aria-labelledby="wxs-h"><h3 class="wxs-h" id="wxs-h">Season so far, against normal</h3>
             <div id="wx-season"><div class="wxs-grid wxs-skel" aria-hidden="true"><div class="wxs-t"></div><div class="wxs-t"></div><div class="wxs-t"></div><div class="wxs-t"></div></div></div>
@@ -1263,12 +1259,12 @@ try {
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Positioning and yield</h2><a href="/cot" class="sec-all">Full COT chart</a></div>
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
-        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span><span class="cot-verdict mixed" id="cot-verdict-lv" hidden></span></span></div>
+        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></span></div>
         <p class="cot-gl-asof" id="cot-gl-asof">CFTC managed money, weekly.</p>
         <ul class="cot-glance" id="cot-glance" aria-busy="true"><li class="cot-gl-line"></li><li class="cot-gl-line"></li><li class="cot-gl-line"></li></ul>
         <details class="cot-ask" id="cot-ask"><summary>Get this every Friday by email</summary><div data-signup-ask="Funds this week by email" data-topic="cot" data-source="cot-weekly:home" data-btn="Email me" data-stack data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Every market in one short email after each weekly CFTC report. Free, its own list."></div></details>
         <details class="cot-detail" id="cot-detail"><summary>Ranges, price since the report, all markets</summary>
-          <div class="cot-caption">Rank: net as a share of open interest, against every week since 2010. Bar: where the net sits in its 52-week range. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by that group in CFTC&rsquo;s disaggregated report. The rank beside each market is the COT page&rsquo;s one measure: the net as a share of open interest, ranked against every week since 2010; crowded means the top or bottom tenth of that record on the side the position is on. The bar is a second, shorter yardstick: where the net sits between its 52-week low and high in contracts, not adjusted for the size of the market. The badges name any market that is crowded on the rank, grains and live cattle separately. Neither is a headcount of who&rsquo;s long or short, and one grain can run the other way. &ldquo;Since&rdquo; compares the front-month close on the report&rsquo;s Tuesday with today&rsquo;s, so a contract roll in between is inside the number. Interpretation of public CFTC data, not a trading signal.</span></span></div>
+          <div class="cot-caption">Rank: net as a share of open interest, against every week since 2010. Bar: where the net sits in its 52-week range. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-cot">How to read</button><span id="tip-cot" role="tooltip" class="tip-t" hidden>COT is the CFTC&rsquo;s weekly Commitments of Traders report, positions as of Tuesday. Managed money means hedge funds and commodity trading advisers. Net futures contracts held long vs short by that group in CFTC&rsquo;s disaggregated report. The rank beside each market is the COT page&rsquo;s one measure: the net as a share of open interest, ranked against every week since 2010; crowded means the top or bottom tenth of that record on the side the position is on. The bar is a second, shorter yardstick: where the net sits between its 52-week low and high in contracts, not adjusted for the size of the market. The one verdict at the top names any market that is crowded on the rank, across every market in the report. Neither is a headcount of who&rsquo;s long or short, and one grain can run the other way. &ldquo;Since&rdquo; compares the front-month close on the report&rsquo;s Tuesday with today&rsquo;s, so a contract roll in between is inside the number. Interpretation of public CFTC data, not a trading signal.</span></span></div>
           <div class="cot-rows" id="cot-rows">
             <div class="cot-row-corn"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Corn</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-corn-dir">--</span><span class="cot-net" id="cot-corn-net">--</span><span class="cot-chg nc" id="cot-corn-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-corn-fill"></div><div class="cot-zero-mark" id="cot-corn-zero"></div><div class="cot-bar-dot" id="cot-corn-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-corn-min">--</span><span>52-week range</span><span id="cot-corn-max">--</span></div></div>
             <div class="cot-row-beans"><div class="cot-row-top"><div class="cot-label"><span class="cot-comm-name">Soybeans</span></div><div class="cot-right"><span class="cot-dir nc" id="cot-beans-dir">--</span><span class="cot-net" id="cot-beans-net">--</span><span class="cot-chg nc" id="cot-beans-chg">--</span></div></div><div class="cot-bar-wrap"><div class="cot-bar-fill" id="cot-beans-fill"></div><div class="cot-zero-mark" id="cot-beans-zero"></div><div class="cot-bar-dot" id="cot-beans-dot" style="background:var(--text-muted)"></div></div><div class="cot-bar-labels"><span id="cot-beans-min">--</span><span>52-week range</span><span id="cot-beans-max">--</span></div></div>
@@ -1460,6 +1456,7 @@ try {
       <li><a href="/drought-monitor" data-track="land">Drought monitor</a></li>
       <li>NOAA outlooks</li>
       <li><a href="/spray" data-track="land">Spray advisory</a></li>
+      <li><a href="/fall-nitrogen" data-track="land">Soil temp (fall anhydrous)</a></li>
       <li><a href="/rain-print" data-track="land">Rain Print</a></li>
       <li><a href="/rain-gauge" data-track="land">Rain gauge waitlist</a></li>
       <li><a href="/gdu-calculator" data-track="land">GDU</a></li>
@@ -1697,7 +1694,6 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   </script>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/nws.js?v=1" defer></script>
-<script src="/components/soil-near.js?v=1" defer></script>
 <script src="/components/geo.js?v=36" defer></script>
 <script src="/components/bids-fallback.js?v=1" defer></script>
 <script src="/components/bids-homepage.js?v=46" defer></script>
@@ -1708,8 +1704,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/cot-glance.js?v=1"></script>
 <script src="/components/home.js?v=23"></script>
 <script src="/components/home-land.js?v=1" defer></script>
-<script src="/components/home-planting.js?v=5" defer></script>
-<script src="/components/home-season.js?v=9" defer></script>
+<script src="/components/home-planting.js?v=6" defer></script>
+<script src="/components/home-season.js?v=10" defer></script>
 <script src="/components/season-wx.js?v=1" defer></script>
 <script src="/components/next-links.js?v=3" defer></script>
 </body>

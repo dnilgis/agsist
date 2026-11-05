@@ -1,4 +1,4 @@
-/* Homepage: final planting dates (RMA, county or nothing) and the Local Conditions weather extras (forecast, hourly, soil). Moved out of index.html (2026-10-11), loaded as a plain script in the same place, same order. */
+/* Homepage: final planting dates (RMA, county or nothing) and the Local Conditions weather extras (forecast, hourly). Moved out of index.html (2026-10-11), loaded as a plain script in the same place, same order. */
 (function(){
 'use strict';
 /* FINAL PLANTING DATES -- COUNTY OR NOTHING.
@@ -266,30 +266,10 @@ function loadWeatherEnhancements(state){
   if(lat==null||lon==null||isNaN(+lat)||isNaN(+lon))return;
   var fcastPromise=(window.AgNWS?window.AgNWS.forecast(lat,lon,{days:7}):Promise.reject(new Error('the forecast reader did not load')))
     .then(null,function(e){console.warn('[AGSIST] forecast fetch failed',e);return null;});
-  var soilPromise=window.AgSoilNear?window.AgSoilNear.load().then(function(feed){return window.AgSoilNear.near(feed,+lat,+lon,window.AgSoilNear.todayIso());}):Promise.resolve(null);
-  fcastPromise=Promise.all([fcastPromise,soilPromise]).then(function(r){if(r[0])r[0]._soil=r[1]||null;return r[0];});
   Promise.all([fcastPromise]).then(function(results){
     var forecast=results[0]||{};try{if(window.S7)window.S7.onWx(results[0]);}catch(e){}
     var dailyF=forecast.daily||{};
-    // Soil temp — use current local hour from time array; fall back to nearest non-null, then daily average
-    // Soil: the measured 4 in reading (last day's mean) at the nearest station, when it is current
-    var soilEstF=null,_soil=forecast._soil||null;
-    if(_soil&&_soil.now!=null)soilEstF=Math.round(_soil.now);
-    var soilClass='warn',soilCtx='';
-    if(soilEstF!=null){
-      if(soilEstF<32){soilClass='cold';soilCtx='Too cold for field work';}
-      else if(soilEstF<40){soilClass='cold';soilCtx='Cold, wait for warmup';}
-      else if(soilEstF<50){soilClass='warn';soilCtx='Approaching planting threshold';}
-      else if(soilEstF<55){soilClass='warn';soilCtx='Near planting threshold (50\xb0F)';}
-      else if(soilEstF<60){soilClass='good';soilCtx='Good for planting';}
-      else{soilClass='good';soilCtx='Excellent planting conditions';}
-    }
-    if(soilEstF!=null&&_soil.st)soilCtx+=' (measured at 4 in, '+_soil.st.name+', '+Math.round(_soil.mi)+' mi)';
-    var soilDisplay=soilEstF!=null?soilEstF+'\xb0F':'--\xb0F';
-    var stv=document.getElementById('soil-temp-val');
-    if(stv){stv.textContent=soilDisplay;stv.className='soil-temp-val '+soilClass;}
-    var stc=document.getElementById('soil-temp-ctx');if(stc)stc.textContent=soilCtx;
-    var str=document.getElementById('soil-temp-row');if(str)str.classList.add('loaded');
+    /* 2026-11-05 (Sig): no soil temperature on the home page; /planting-date and /fall-nitrogen keep it. */
     // Update Quick Tools planting dates location label with detected city + state-aware dates
     var detectedState=applyPlantingDates(lat,lon);
     var _wxSt=state.weather||{};
@@ -301,10 +281,7 @@ function loadWeatherEnhancements(state){
     }
     var forecastMaxArr=dailyF.temperature_2m_max||[],forecastMinArr=dailyF.temperature_2m_min||[];
     var forecastPrecipArr=dailyF.precipitation_sum||[],forecastWindArr=dailyF.windspeed_10m_max||[];
-    var forecastHumidArr=dailyF.relative_humidity_2m_mean||[];
-    /* r7-season: the per-day badges and the summary sentence come from
-       the one spray rule (S7.spray), the same one the tile uses. */
-    if(window.S7)window.S7.spray({max:forecastMaxArr,min:forecastMinArr,rain:forecastPrecipArr,wind:forecastWindArr,rh:forecastHumidArr,gust:dailyF.wind_gusts_10m_max||[],pop:dailyF.precipitation_probability_max||[],code:dailyF.weathercode||dailyF.weather_code||[]});
+    /* 2026-11-05 (Sig): the home page shows no spray read; /spray and Field Scout keep theirs. */
 
     // ========== 7-DAY FORECAST ==========
     var forecastWcodeArr=dailyF.weathercode||[];
