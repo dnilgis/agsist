@@ -37,6 +37,8 @@ import tempfile
 from datetime import date, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from credits import NASS_NOTICE  # noqa: E402  the NASS API notice
 REPO = os.path.dirname(HERE)
 FARM_STATES = ("IA", "IL", "IN", "OH", "MN", "NE", "SD", "ND", "WI", "MO", "KS", "MI", "KY")
 MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
@@ -257,7 +259,7 @@ def rent_range(day, repo=REPO):
     text = ("Cash rent on %s cropland without irrigation, %d: the highest county was %s at $%s an acre, the lowest %s "
             "at $%s. That is a gap of $%s an acre across %d counties with a USDA figure."
             % (STATE_NAMES[st], y, hi[1], _fmt_int(hi[0]), lo[1], _fmt_int(lo[0]), _fmt_int(hi[0] - lo[0]), len(rows)))
-    return _fact("ours-rent-range", "land and rent", text, "USDA NASS Cash Rents Survey, county estimates",
+    return _fact("ours-rent-range", "land and rent", text, "USDA NASS Cash Rents Survey, county estimates. " + NASS_NOTICE,
                  "data/cash-rent/%s.json" % st, "%d" % y)
 
 
@@ -362,7 +364,7 @@ def harvest_us(day, repo=REPO):
     text = ("The US %s harvest was %d%% done on %s, %s the 5-year average of %d%% for that date."
             % (crop, pct, _md(when.isoformat()), rel, avg))
     return _fact("ours-harvest-us", "agronomy", text,
-                 "USDA NASS Crop Progress; 5-year average is our arithmetic on the NASS weekly series",
+                 "USDA NASS Crop Progress; 5-year average is a calculation by AGSIST on the NASS weekly series. " + NASS_NOTICE,
                  "data/crop-progress.json", when.isoformat())
 
 
@@ -386,7 +388,7 @@ def harvest_state(day, repo=REPO):
             "%d%%, %d points %s." % (STATE_NAMES.get(st, st), crop, pct, _md(when.isoformat()), avg, gap,
                                      "ahead" if pct > avg else "behind"))
     return _fact("ours-harvest-state", "agronomy", text,
-                 "USDA NASS Crop Progress; 5-year average is our arithmetic on the NASS weekly series",
+                 "USDA NASS Crop Progress; 5-year average is a calculation by AGSIST on the NASS weekly series. " + NASS_NOTICE,
                  "data/crop-progress.json", when.isoformat())
 
 
