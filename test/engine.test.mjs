@@ -397,7 +397,8 @@ test('the action: with ENGINE_MODE unset every engine step is skipped; the defau
   assert.match(steps.paired, /continue-on-error: true/, 'a missing paired branch falls back, never fails the job');
   assert.match(steps.checkout, /if: .*steps\.paired\.outcome != 'success'/);
   assert.match(steps.checkout, /ref: \$\{\{ steps\.plan\.outputs\.ref \}\}/);
-  for (const k of ['plan', 'overlay']) assert.match(steps[k], /RUN_BRANCH: \$\{\{ github\.head_ref \|\| github\.ref_name \}\}/);
+  // never paired on pull_request_target (merge-when-green.yml runs it with a write token)
+  for (const k of ['plan', 'overlay']) assert.match(steps[k], /RUN_BRANCH: \$\{\{ github\.event_name != 'pull_request_target' && \(github\.head_ref \|\| github\.ref_name\) \|\| '' \}\}/);
   assert.match(steps.overlay, /PAIRED_OUTCOME: \$\{\{ steps\.paired\.outcome \}\}/);
 });
 
@@ -453,7 +454,7 @@ test('overlay on main in private mode keeps a job\'s own sparse checkout and sti
 });
 
 test('overlay on a pull request: the same-named engine branch wins, tests included; with none, the commit\'s own code is tested', () => {
-  for (const ev of ['pull_request', 'pull_request_target']) {
+  for (const ev of ['pull_request']) {
     const d = publicRepo();
     engineAt(d, '.engine-src', ENGINE_FILES);
     engineAt(d, '.engine-pair', PAIR_FILES);
@@ -528,4 +529,26 @@ test('pair and pull with local bare repositories: fx/x uses the engine branch fx
   assert.match(r.stdout, /\(engine-agsist\)/);
   assert.equal(fs.readFileSync(path.join(d, 'scripts/new.py'), 'utf8'), 'engine only\n');
   assert.equal(g(d, 'status', '--porcelain'), '');
+});
+
+test('pull_request_target never pairs: a head branch named like an engine branch cannot pick the code a write-token run uses', () => {
+  // merge-when-green.yml runs on pull_request_target with a write token; fx/flsales and fx/flgrab exist on the engine
+  const d = publicRepo();
+  const out = path.join(tmp(), 'out');
+  const r = sh(d, `${E} plan`, { GITHUB_OUTPUT: out, MODE: 'private', HAVE_TOKEN: 'true', GITHUB_EVENT_NAME: 'pull_request_target', RUN_BRANCH: 'fx/flsales' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(fs.readFileSync(out, 'utf8'), /^paired=$/m);
+  // even if a paired checkout were somehow present and reported success, the overlay ignores it
+  engineAt(d, '.engine-src', ENGINE_FILES);
+  engineAt(d, '.engine-pair', PAIR_FILES);
+  const o = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'pull_request_target', RUN_BRANCH: 'fx/flsales', PAIRED: 'fx/flsales', PAIRED_OUTCOME: 'success', CHECKOUT_OUTCOME: 'success' });
+  assert.equal(o.status, 0, o.stdout + o.stderr);
+  assert.match(o.stdout, /from engine-agsist /);
+  assert.notEqual(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'PAIRED a\n');
+  assert.ok(!fs.existsSync(path.join(d, 'test/newer.test.mjs')), 'nothing from the paired branch');
+  assert.ok(!fs.existsSync(path.join(d, '.engine-pair')), 'the paired checkout is removed');
+  // the same branch name on a plain pull_request still pairs
+  fs.writeFileSync(out, '');
+  sh(d, `${E} plan`, { GITHUB_OUTPUT: out, MODE: 'private', HAVE_TOKEN: 'true', GITHUB_EVENT_NAME: 'pull_request', RUN_BRANCH: 'fx/flsales' });
+  assert.match(fs.readFileSync(out, 'utf8'), /^paired=fx\/flsales$/m);
 });

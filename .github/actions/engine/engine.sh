@@ -315,7 +315,9 @@ case "$cmd" in
       # a run on fx/x (a pull request's head, a dispatch or push on that branch) tries the engine
       # branch fx/x first, so it runs its own branch's code (BUILD-RULES 62, 66); main and the rest
       # use the default engine branch
-      paired=""; pair_name "${RUN_BRANCH:-}" && paired="$RUN_BRANCH"
+      # never on pull_request_target: it runs with a write token, and a head branch name is the PR's to pick
+      paired=""
+      [ "${GITHUB_EVENT_NAME:-}" != "pull_request_target" ] && pair_name "${RUN_BRANCH:-}" && paired="$RUN_BRANCH"
       { echo "private=true"; echo "repo=$REPO"; echo "ref=$BRANCH"; echo "paired=$paired"; } >> "$out"
       echo "engine: private, $REPO $BRANCH${paired:+ (the same-named engine branch $paired first, when it exists)}"
     elif [ -z "$mode" ] || [ "$mode" = "in-repo" ]; then
@@ -331,7 +333,7 @@ case "$cmd" in
     case "$src" in /*) ;; *) src="$ROOT/$src" ;; esac
     pair="$ROOT/$PAIR"
     pr=0; case "${GITHUB_EVENT_NAME:-}" in pull_request|pull_request_target) pr=1 ;; esac
-    if [ "${PAIRED_OUTCOME:-}" = "success" ] && [ -n "${PAIRED:-}" ] && [ -d "$pair/.git" -o -f "$pair/.git" ]; then
+    if [ "${GITHUB_EVENT_NAME:-}" != "pull_request_target" ] && [ "${PAIRED_OUTCOME:-}" = "success" ] && [ -n "${PAIRED:-}" ] && [ -d "$pair/.git" -o -f "$pair/.git" ]; then
       # the run's own engine branch: its code wins, tests included
       from="$PAIRED"; sha=$(git -C "$pair" rev-parse HEAD)
       engine_take "$pair"

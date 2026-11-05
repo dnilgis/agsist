@@ -28,10 +28,11 @@ runs:
       env:
         MODE: ${{ inputs.mode }}
         HAVE_TOKEN: ${{ inputs.token != '' }}
-        RUN_BRANCH: ${{ github.head_ref || github.ref_name }}
+        RUN_BRANCH: ${{ github.event_name != 'pull_request_target' && (github.head_ref || github.ref_name) || '' }}
       run: bash "$GITHUB_ACTION_PATH/engine.sh" plan
 
-    # the run's own branch on the engine (fx/x for a pull request from fx/x), when it exists
+    # the run's own branch on the engine (fx/x for a pull request from fx/x), when it exists; never on
+    # pull_request_target, which runs with a write token (RUN_BRANCH is empty there)
     - id: paired
       if: steps.plan.outputs.private == 'true' && steps.plan.outputs.paired != ''
       continue-on-error: true
@@ -62,5 +63,5 @@ runs:
         CHECKOUT_OUTCOME: ${{ steps.checkout.outcome }}
         PAIRED_OUTCOME: ${{ steps.paired.outcome }}
         PAIRED: ${{ steps.plan.outputs.paired }}
-        RUN_BRANCH: ${{ github.head_ref || github.ref_name }}
+        RUN_BRANCH: ${{ github.event_name != 'pull_request_target' && (github.head_ref || github.ref_name) || '' }}
       run: bash "$GITHUB_ACTION_PATH/engine.sh" overlay .engine-src
