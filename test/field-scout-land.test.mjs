@@ -124,7 +124,11 @@ test("blank parcel rolls (all zeros) print as missing, not as $0", () => {
 test("which parcel services a spot uses", () => {
   const wi = F.servicesFor(REG, "WI", "55005");
   assert.ok(wi.length >= 1 && wi.every((s) => s.builtin), "Wisconsin's statewide map is tried before the first check");
-  assert.equal(F.servicesFor(REG, "IA", "19169").length, 0, "nothing for Iowa until a county service is verified");
+  // Live registry (BUILD-RULES 70): the land-data probe verifies county services over time (Story IA, Nov 5), so test the
+  // rule on a county the registry does not list rather than on a named one.
+  const iaOpen = Array.from({ length: 99 }, (_, i) => "19" + String(2 * i + 1).padStart(3, "0")).find((f) => !(REG.counties || {})[f]);
+  if (!((REG.statewide || {}).IA || []).length && iaOpen) assert.equal(F.servicesFor(REG, "IA", iaOpen).length, 0, "nothing for an Iowa county until a county service is verified");
+  assert.equal(F.servicesFor({ statewide: {}, counties: {} }, "IA", "19169").length, 0, "nothing without a verified service");
   const reg = { statewide: { MN: [{ id: "mn", verified: true, covers: ["27001"] }] }, counties: { "27003": [{ id: "c", verified: true }], "27005": [{ id: "u", verified: false }] } };
   assert.deepEqual(F.servicesFor(reg, "MN", "27001").map((s) => s.id), ["mn"]);
   assert.deepEqual(F.servicesFor(reg, "MN", "27003").map((s) => s.id), ["c"]);  // a county that opted out of the state file
