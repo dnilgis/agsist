@@ -169,7 +169,7 @@ test("lazy: the land card is not on Field Scout's first screen and loads by vers
   assert.doesNotMatch(read("field-scout.html"), /field-scout-land\.js/);
   assert.match(read("field-scout-read.js"), /var FS_LAND_SRC='\/field-scout-land\.js\?v=\d+'/);
   assert.match(read("field-scout-read.js"), /section\('land',ICONS\.rent,'Parcel, Owner &amp; Sales','fs-land'\)/);
-  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=19'/);   // v19: fx/landnj (field-scout-land.js v13, New Jersey); v18: field-scout-land.js v12; v17: fx/landkeys (field-scout-land.js v11, section key in comps); v16: fx/landfirst (field-scout-land.js v10, one ground-height call); v15: fx/landvt (field-scout-land.js v9, Vermont); v14: fx/fsbase; v13: fx/merges (old addresses repointed), past v12 (bids-network.js v8, fx/fastfacts)
+  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=20'/);   // v19: fx/landnj (field-scout-land.js v13, New Jersey); v18: field-scout-land.js v12; v17: fx/landkeys (field-scout-land.js v11, section key in comps); v16: fx/landfirst (field-scout-land.js v10, one ground-height call); v15: fx/landvt (field-scout-land.js v9, Vermont); v14: fx/fsbase; v13: fx/merges (old addresses repointed), past v12 (bids-network.js v8, fx/fastfacts)
 });
 
 test("the land report is one shared page with a query parameter, kept out of search", () => {
@@ -292,7 +292,8 @@ test("Wisconsin transfer files on disk, when present, carry the checked acres ru
   for (const c of ix.counties.slice(0, 8)) {
     const f = JSON.parse(read("data/land/wi/" + c.fips + ".json"));
     assert.equal(f.acres_rule, 2);
-    assert.ok(f.cols.includes("grantor") && f.cols.includes("ac1"));
+    // names: in the county file before Nov 4, 2026, in its names file after (scripts/land_names.py: si and bi stay)
+    assert.ok((f.cols.includes("grantor") || (f.cols.includes("si") && f.names_file === `/data/land/wi/names/${c.fips}.json`)) && f.cols.includes("ac1"));
     const ia = f.cols.indexOf("acres"), inp = f.cols.indexOf("np"), ic = f.cols.indexOf("cls");
     for (const r of f.rows) {
       assert.ok(/(^| )(4|5M|6)( |$)/.test(r[ic]), "farm or forest class: " + r[ic]);

@@ -34,11 +34,16 @@ function expectFor(c, r, f) {
     case "conv": return v ? [esc(v)] : ["not in the record"];
     case "pid": return v ? [esc(v)] : ["not in the record"];
     case "muni": return r.muniName ? [esc(r.muniName)] : ["not in the record"];
-    case "legal": return v ? [esc(F.clean(v))] : ["not in the record"];
+    // a legal that names its own buyer or seller is held for the tap (scripts/land_names.py): the panel shows the tap hint
+    case "legal": return F.legalHeld(r) ? ["names a buyer or seller: shown with Show buyer and seller"] : v ? [esc(F.clean(v))] : ["not in the record"];
+    case "legal_named": return [];
     // the section key (scripts/land_keys.py): the panel's "Section, township, range" line reads it
     case "str": return v ? ["Section, township, range", esc(F.strOf(r.legal) || F.keyText(v))] : ["Section, township, range"];
     case "exempt": return [v ? "Exemption claimed" : "No exemption claimed"];
-    case "grantor": case "grantee": return f.names ? (v ? [esc(v)] : ["not in the record"]) : ["not in our copy"];
+    // names never show in the panel itself (Sig, Oct 27; lead, Nov 4, 2026): a names-free county file offers the tap,
+    // an older one still holding names says they come with the next update
+    case "grantor": case "grantee": return f.names ? (f.names_file ? ["Show buyer and seller"] : ["names come after the next update"]) : ["not in our copy"];
+    case "si": case "bi": return f.names && f.names_file ? ["Show buyer and seller"] : [];
     case "ac1": return v != null ? [esc(v)] : (+r.np > 1 ? ["not in the record"] : []);
     default: return null;
   }
@@ -58,6 +63,8 @@ test("every column a real transfer file carries reaches the panel (WI and IL)", 
         const want = expectFor(c, r, f);
         assert.ok(want, `${st} column ${c} has no panel line; add it to saleDetailHTML and to this test`);
         for (const w of want) assert.ok(h.includes(w), `${st}/${fips} doc ${r.doc}: column ${c} should show ${JSON.stringify(w)}`);
+        if ((c === "grantor" || c === "grantee") && r[c] && String(r[c]).length > 4) assert.ok(!h.includes(esc(r[c])), `${st}/${fips} doc ${r.doc}: no name in the panel before the tap`);
+        if (c === "legal" && F.legalHeld(r)) assert.ok(!h.includes("[LEGAL WITH A NAME"), `${st}/${fips} doc ${r.doc}: the mark itself is never shown`);
       }
       assert.ok(h.includes(esc(f.source)), "source named");
       for (const l of f.links || []) assert.ok(h.includes(esc(l.url)), "source link " + l.url);
@@ -70,15 +77,27 @@ test("every column a real transfer file carries reaches the panel (WI and IL)", 
 const COLS = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt", "grantor", "grantee", "ac1", "rec"];
 const wiFile = (rows) => ({ state: "WI", county: "Barron", fips: "55005", names: true, source: "Wisconsin Department of Revenue, electronic Real Estate Transfer Returns",
   source_short: "Wisconsin transfer return", links: [{ t: "Wisconsin DOR transfer return data", url: "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx" }],
-  fetched_utc: "2026-10-17T18:32:11Z", coverage: { from: "2019-01-01", to: "2026-09-26", filed_from: "2021-01-15", filed_to: "2026-09-30" }, acres_rule: 2, cols: COLS,
+  fetched_utc: "2026-10-17T18:32:11Z", names_file: "/data/land/wi/names/55005.json", coverage: { from: "2019-01-01", to: "2026-09-26", filed_from: "2021-01-15", filed_to: "2026-09-30" }, acres_rule: 2, cols: COLS,
   munis: { "0": ["Chetek town", 45.31, -91.65] }, rows });
+
+test("a held legal (it names its own buyer or seller) shows the tap hint in the panel, never the mark or a section guess from it", () => {
+  const f = Object.assign(wiFile([["900040", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-4", "0", "", 0, null, null, null, ""]]),
+    { cols: COLS.filter((c) => c !== "grantor" && c !== "grantee").concat(["str", "si", "bi"]) });
+  f.rows = [["900040", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-4", "0", "[LEGAL WITH A NAME 0123456789] UNDIVIDED", 0, null, "", "12-33N-10W", 0, 0]];
+  const r = F.rowObjs(f)[0];
+  assert.ok(F.legalHeld(r));
+  const h = F.saleDetailHTML(r, f, []);
+  for (const c of f.cols) for (const w of expectFor(c, r, f) || []) assert.ok(h.includes(w), "held row: column " + c + " shows " + JSON.stringify(w));
+  assert.doesNotMatch(h, /LEGAL WITH A NAME/);
+  assert.match(h, /Section 12, T33N, R10W/, "the section comes from the key, which was read before the legal was held");
+});
 
 test("blank fields say 'not in the record'; fields we do not keep say 'not in our copy'", () => {
   const f = wiFile([["", "", null, null, null, 1, "", "", "", "9", "", 0, "", "", null, ""]]);
   const r = F.rowObjs(f)[0];
   const h = F.saleDetailHTML(r, f, []);
   const blanks = (h.match(/not in the record/g) || []).length;
-  assert.ok(blanks >= 9, "deed date, recorded, price, acres, deed type, class, seller, buyer, parcel, legal: " + blanks);
+  assert.ok(blanks >= 8, "deed date, recorded, price, acres, deed type, class, parcel, legal: " + blanks);   // seller and buyer: on the tap
   assert.match(h, /Street address<\/th><td><span class="fl-miss">not in our copy of the record/);
   assert.match(h, /\$\/acre<\/th><td><span class="fl-miss">not figured/);   // never $0/ac or a guess
   assert.doesNotMatch(h, /NaN|undefined|null/);
@@ -110,7 +129,8 @@ test("the panel by hand: a two-parcel related-party land contract", () => {
   assert.match(h, /Section 29, T33N, R10W/);
   assert.match(h, /About 3 miles to the center of Chetek town/);
   assert.match(h, /Barron County Register of Deeds/);
-  assert.match(h, /SYNTHETIC, BUYER B; SYNTHETIC, BUYER C/);
+  assert.doesNotMatch(h, /SYNTHETIC/, "no name before the tap");
+  assert.match(h, /<span id="fl-sd-who"><button type="button" class="fl-btn" data-sd="names">Show buyer and seller<\/button>/);
   assert.match(h, /not an appraisal/);
 });
 
@@ -124,7 +144,7 @@ test("other recorded transfers of the same parcel are listed, each opening its o
   assert.equal(others.length, 1);
   const h = F.saleDetailHTML(rows[0], f, others);
   assert.match(h, /data-other="0"[^>]*><span class="d">Jun 1, 2019/);
-  assert.match(h, /SYNTHETIC C &rarr; SYNTHETIC A/);
+  assert.doesNotMatch(h, /SYNTHETIC/, "the other transfers list no name either");
   assert.match(h, /county formatting set aside/);
   assert.match(F.saleDetailHTML(rows[2], f, []), /No other transfer of parcel 022-9999-00-000 is in our copy/);
 });
@@ -188,8 +208,10 @@ test("names stay off indexed pages: /data/land is blocked, the report is noindex
   // a sample of real names must appear in no page the sitemaps list
   const f = landFile("wi", "55017") || landFile("il", "17001");
   if (!f) return;
-  const gi = f.cols.indexOf("grantee");
-  const names = [...new Set(f.rows.map((r) => r[gi]).filter((x) => x && x.length > 14))].slice(0, 40);
+  // the names: the county file's own column (files written before Nov 4, 2026) or its names file
+  const gi = f.cols.indexOf("grantee"), nfp = `data/land/${String(f.state).toLowerCase()}/names/${f.fips}.json`;
+  const pool = gi >= 0 ? f.rows.map((r) => r[gi]) : existsSync(join(ROOT, nfp)) ? JSON.parse(read(nfp)).b : [];
+  const names = [...new Set(pool.filter((x) => x && x.length > 14))].slice(0, 40);
   const pages = [...sitemaps.matchAll(/<loc>https:\/\/agsist\.com\/([^<]*)<\/loc>/g)].map((m) => m[1]).map((p) => p === "" ? "index.html" : p.endsWith("/") ? p + "index.html" : /\.[a-z]+$/.test(p) ? p : p + ".html");
   let seen = 0;
   for (const p of pages) {
@@ -210,8 +232,8 @@ test("printable report: your filters or 3-year defaults, median with n, the 10 n
   assert.match(js, /Recorded sales in our data, through ' \+ F\.fmtDate\(thru\) \+ '; not an appraisal\./);
   assert.match(js, /middle of ' \+ med\.n \+ ' sales/);
   assert.match(read("field-scout-land.js"), /rep\.setAttribute\('href', base \+ \(cf \? '&cf=' \+ encodeURIComponent\(cf\) : ''\)\)/);
-  assert.match(read("field-report.html"), /field-scout-land\.js\?v=13/);
-  assert.match(read("field-scout-read.js"), /FS_LAND_SRC='\/field-scout-land\.js\?v=13'/);
+  assert.match(read("field-report.html"), /field-scout-land\.js\?v=14/);
+  assert.match(read("field-scout-read.js"), /FS_LAND_SRC='\/field-scout-land\.js\?v=14'/);
   // the same nearest-first list from rows (hand-checked: 2, 6, 10, 14 and 20 mi; the 30 mi sale is out)
   const c = { lat: 45.0, lng: -91.0 };
   const mk = (doc, dLat) => ({ doc, date: "2025-01-01", price: 400000, acres: 80, cls: "4", conv: "Warranty Deed", lat: 45.0 + dLat, lng: -91.0, muniName: "T" });
@@ -224,4 +246,30 @@ test("printable report: your filters or 3-year defaults, median with n, the 10 n
 
 test("no em dashes in the sale panel copy", () => {
   for (const f of ["field-scout-land.js", "components/field-report.js", "test/field-scout-sale-detail.test.mjs"]) assert.ok(!read(f).includes(String.fromCharCode(0x2014)), f);
+});
+
+test("names load only on the tap, from the names file, and only when it matches the county file's read", async () => {
+  const f = Object.assign(wiFile([["900030", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-3", "0", "", 0, null, null, null, ""]]),
+    { cols: COLS.filter((c) => c !== "grantor" && c !== "grantee").concat(["si", "bi"]) });
+  f.rows = [["900030", "2025-03-03", 500000, 100, null, 1, "4", "Warranty Deed, Sale", "022-3", "0", "[LEGAL WITH A NAME 0123456789]", 0, null, "", 0, 1]];
+  const names = { n: 1, fetched_utc: f.fetched_utc, s: ["SYNTHETIC SELLER Z"], b: ["SYNTHETIC BUYER Y", "SYNTHETIC BUYER Z"], lg: { "0": "PT SW EXC TO Z SYNTHETIC" } };
+  const seen = [];
+  const keep = globalThis.fetch;
+  globalThis.fetch = (u) => { seen.push(u); return Promise.resolve({ ok: true, json: () => Promise.resolve(u.endsWith("55005.json") ? names : null) }); };
+  try {
+    const r = F.rowObjs(f)[0];
+    const before = F.saleDetailHTML(r, f, []);
+    assert.doesNotMatch(before, /SYNTHETIC|LEGAL WITH A NAME/);
+    assert.match(before, /<span id="fl-sd-legal"><span class="fl-miss">names a buyer or seller: shown with Show buyer and seller/, "a held legal waits for the tap");
+    assert.equal(await F.loadNames([r]), 1);
+    assert.equal(r.legalNamed, "PT SW EXC TO Z SYNTHETIC", "the tap brings the held legal");
+    assert.deepEqual([r.grantor, r.grantee], ["SYNTHETIC SELLER Z", "SYNTHETIC BUYER Z"], "the row's si and bi pick its names");
+    assert.deepEqual(seen, ["/data/land/wi/names/55005.json"], "one request, to the names file");
+    const g = Object.assign({}, f, { fetched_utc: "2026-11-03T00:00:00Z", names_file: "/data/land/wi/names/55001.json", fips: "55001" });
+    names.fetched_utc = "2026-10-01T00:00:00Z";
+    globalThis.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve(names) });
+    const r2 = F.rowObjs(g)[0];
+    assert.equal(await F.loadNames([r2]), 0, "a names file from another read is not used");
+    assert.equal(r2.grantor, undefined);
+  } finally { globalThis.fetch = keep; }
 });

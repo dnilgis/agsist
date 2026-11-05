@@ -43,6 +43,28 @@ test("fixture rows: JavaScript and Python agree row for row", () => {
   assert.deepEqual(FX.files.map((f) => jsRule(f, FX.today)), py);
 });
 
+test("names-free county files (Nov 4, 2026): the rule gives the same rows from si and bi as from the names, in both languages", () => {
+  // scripts/land_names.py split: the same fixture with the names moved out; every row, price, group and middle the same
+  const r = spawnSync("python3", ["-c", `
+import json, sys
+sys.path.insert(0, "scripts")
+import land_names
+fx = json.load(open("test/fixtures/land-rule.json"))
+fx["files"] = [land_names.split(dict(f, state=f.get("state") or "WI", fips=f.get("fips") or "55999"))[0] for f in fx["files"]]
+print(json.dumps(fx))`], { cwd: ROOT, encoding: "utf8", maxBuffer: 64 << 20 });
+  assert.equal(r.status, 0, r.stderr);
+  const sx = JSON.parse(r.stdout);
+  assert.ok(sx.files.every((f) => !f.cols.includes("grantor") && !f.cols.includes("grantee") && f.cols.includes("si")), "split files carry no name column");
+  const { mkdtempSync, writeFileSync, rmSync } = require("node:fs");
+  const d = mkdtempSync(join(require("node:os").tmpdir(), "rule-split-"));
+  try {
+    writeFileSync(join(d, "fx.json"), JSON.stringify(sx));
+    const py = pyRule(join(d, "fx.json"), FX.today);
+    assert.deepEqual(sx.files.map((f) => jsRule(f, FX.today)), py, "JavaScript and Python agree on the split files");
+    assert.deepEqual(py, pyRule(join(ROOT, "test/fixtures/land-rule.json"), FX.today), "and the rows are the ones the names gave");
+  } finally { rmSync(d, { recursive: true, force: true }); }
+});
+
 test("fixture rows, worked by hand", () => {
   const out = Object.fromEntries(jsRule(FX.files[0], FX.today).map((x) => [x[0], x]));
   const mk = (d) => out[d][5], ppa = (d) => out[d][4];
