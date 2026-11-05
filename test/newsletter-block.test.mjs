@@ -45,7 +45,16 @@ const in2 = (x) => x.toFixed(2);
 test("every number equals its source file: Barbour County AL and Story County IA", () => {
   const B = build();
   const bs = JSON.parse(read("data/basis-states.json"));
-  for (const [st, fips, slug] of [["al", "01005", "alabama/barbour-county"], ["ia", "19169", "iowa/story-county"]]) {
+  // Live data (BUILD-RULES 70): a county can drop out of the rain file on a day its stations miss the reporting rule
+  // (Barbour AL did on Nov 5). Use the named county when it is published, else the state's first published county.
+  const pick = (st, fips, slug) => {
+    const rain = JSON.parse(read(`data/rain/${st}.json`));
+    if (rain.counties[fips]) return [st, fips, slug];
+    const f = Object.keys(rain.counties).sort()[0];
+    const s2 = slug.split("/")[0] + "/" + rain.counties[f].name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return [st, f, s2];
+  };
+  for (const [st, fips, slug] of [pick("al", "01005", "alabama/barbour-county"), pick("ia", "19169", "iowa/story-county")]) {
     const rain = JSON.parse(read(`data/rain/${st}.json`));
     const s = B(`data/newsletter/${st}.json`);
     const c = rain.counties[fips], b = s.counties[fips];
