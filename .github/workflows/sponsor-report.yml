@@ -233,18 +233,47 @@ jobs:
           node scripts/build_rp_sealed.mjs "$RUNNER_TEMP/kv.json.gz"
           rm -f "$RUNNER_TEMP/kv.json.gz"
 
+      # A run by hand can start from an older commit than a push-triggered run that lands first, and a
+      # pull --rebase then conflicts on data/audience*.json. On a refused push this step does not rebase:
+      # it keeps this run's data files, starts again from the fresh main, puts them on top, writes the
+      # two sponsor pages' figures again from them, and commits once more. If main already holds the
+      # same files there is nothing left to commit and it stops quietly.
       - name: Commit
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
-          git add data/audience.json data/audience-pages.json sponsor.html sponsor-kit.html 2>/dev/null || true
-          git add -A data/rp-sealed 2>/dev/null || true
+          add_all() {
+            git add data/audience.json data/audience-pages.json sponsor.html sponsor-kit.html 2>/dev/null || true
+            git add -A data/rp-sealed 2>/dev/null || true
+          }
+          add_all
           if git diff --cached --quiet; then
             echo "no change"
             exit 0
           fi
           git commit -m "sponsor reports: through $(date -d yesterday +%Y-%m-%d) [skip ci]"
-          for i in 1 2 3; do
-            git push && break
-            git pull --rebase --autostash && sleep 3
+          KEEP="$RUNNER_TEMP/keep"
+          for i in 1 2 3 4; do
+            git push && exit 0
+            echo "::notice::push refused (another run landed first), try $i: starting again from the fresh main"
+            sleep $((i * 3))
+            rm -rf "$KEEP"; mkdir -p "$KEEP"
+            for f in data/audience.json data/audience-pages.json; do
+              [ -f "$f" ] && cp "$f" "$KEEP/$(basename "$f")"
+            done
+            [ -d data/rp-sealed ] && cp -r data/rp-sealed "$KEEP/rp-sealed"
+            git fetch --quiet origin main
+            git reset --quiet --hard origin/main
+            for f in audience.json audience-pages.json; do
+              [ -f "$KEEP/$f" ] && cp "$KEEP/$f" "data/$f"
+            done
+            if [ -d "$KEEP/rp-sealed" ]; then rm -rf data/rp-sealed; cp -r "$KEEP/rp-sealed" data/rp-sealed; fi
+            python3 scripts/bake_audience.py || true
+            add_all
+            if git diff --cached --quiet; then
+              echo "main already holds these files"
+              exit 0
+            fi
+            git commit -m "sponsor reports: through $(date -d yesterday +%Y-%m-%d) [skip ci]"
           done
+          git push
