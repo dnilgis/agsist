@@ -4,6 +4,7 @@ name: Stats ingest (GA4 + Search Console + Bing, private)
 on:
   schedule:
     - cron: '47 12 * * *'
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

@@ -543,7 +543,6 @@ def main():
     known = sum(1 for x in feeds if x["cadence"] != "unknown")
     payload = {
         "schema": "agsist-feeds/1",
-        "generated_by": "scripts/build_feeds.py",
         "note": ('Derived, never typed.'),
         "count": len(feeds),
         "with_known_cadence": known,

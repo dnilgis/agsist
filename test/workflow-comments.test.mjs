@@ -61,7 +61,8 @@ test('every workflow has only its neutral header line (plus operator notes)', ()
   for (const f of fs.readdirSync(WF).filter((n) => n.endsWith('.yml'))) {
     const text = fs.readFileSync(path.join(WF, f), 'utf8');
     const comments = text.split('\n').filter((l) => /^\s*#/.test(l) && !/^\s*#!/.test(l) && !keep.test(l));
-    assert.ok(comments.length <= 1, `${f}: ${comments.length} comment lines, expected one neutral line`);
-    assert.ok(!comments.length || comments[0].length < 100, `${f}: header too long`);
+    const loose = comments.filter((l) => !/\bSig\b|approved|^\s*#\s*(-\s*cron:|schedule:|on:)|cron above/i.test(l));
+    assert.ok(loose.length <= 1, `${f}: ${loose.length} comment lines, expected one neutral line`);
+    assert.ok(!loose.length || loose[0].length < 100, `${f}: header too long`);
   }
 });

@@ -1,9 +1,11 @@
 name: Ag stocks
 # Ag stocks.
 
+# page scripts/build_agstocks_page.py). Approved by Sig Oct 29, 2026.
 on:
   schedule:
     - cron: '17 22 * * 1-5'
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

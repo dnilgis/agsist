@@ -4,6 +4,7 @@ name: Coverage map — the elevator directory, drawn
 on:
   schedule:
     - cron: '38 12 * * *'
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

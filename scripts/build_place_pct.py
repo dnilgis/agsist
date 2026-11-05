@@ -393,7 +393,6 @@ def build(root=REPO):
             "state": st,
             "name": STATE_NAMES[st],
             "atlas_generated": generated,
-            "unusual_rule": "u lists the 3 biggest gaps; the page calls one unusual when it is at least %s national middle-half widths (IQR) from the median of %d or more neighboring counties" % (MIN_SCORE, MIN_NEIGHBORS),
             "unusual_min": MIN_SCORE,
             "metrics": metrics,
             "counties": counties,

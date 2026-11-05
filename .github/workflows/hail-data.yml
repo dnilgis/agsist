@@ -3,7 +3,8 @@ name: Hail data refresh
 
 on:
   schedule:
-    - cron: '41 6 1 * *'
+    - cron: '41 6 1 * *'      # 1st of each month, 07:00 UTC
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

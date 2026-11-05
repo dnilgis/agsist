@@ -214,7 +214,7 @@ jobs:
             DAY=$(date +%F)
             HHMM=$(date +%H%M)
             H=$(date +%H)
-            DOW=$(date +%u)
+            DOW=$(date +%u)          # 1=Mon ... 5=Fri
 
             if [ "$EVENT" != "schedule" ] && [ "$EVENT" != "heartbeat" ]; then
               say "GENERATING: manual $EVENT, $DAY"
@@ -366,6 +366,7 @@ jobs:
         continue-on-error: true
         run: python scripts/critique_briefing.py
 
+      # ── GATE 2f ── fact check (2026-10-17, Sig approved). A careful reviewer
       - name: GATE 2f, fact check against the source data
         id: g2f
         env:

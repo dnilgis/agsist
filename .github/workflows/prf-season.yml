@@ -1,9 +1,11 @@
 name: PRF interval so far
 # PRF interval so far.
 
+# Daily at 14:23 UTC (Sig approved Oct 17, 2026), plus dispatch modes below.
 on:
   schedule:
     - cron: '23 14 * * *'
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

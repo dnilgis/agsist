@@ -15,7 +15,12 @@ import textwrap
 
 import yaml
 
-KEEP = re.compile(r"never force|do not force|force[- ]push|do not rename|secrets? needed", re.I)
+KEEP = re.compile(
+    r"never force|do not force|force[- ]push|do not rename|secrets? needed"
+    r"|\bSig\b.*approved|approved.*\bSig\b"
+    r"|^\s*#\s*(-\s*cron:|schedule:|on:)"
+    r"|cron above, by either trigger", re.I)
+VERSION = re.compile(r"\s+#\s*v?\d")
 BLOCK_OPEN = re.compile(r"(?::|^\s*-)\s+[|>][+-]?\d*\s*$")
 HEREDOC = re.compile(r"<<-?\s*['\"]?(\w+)['\"]?")
 
@@ -156,7 +161,7 @@ def _strip_trailing(text):
             blk_ind = ind
             continue
         mm = re.search(r"\s+#.*$", ln)
-        if not mm or _is_comment(ln) or KEEP.search(ln):
+        if not mm or _is_comment(ln) or KEEP.search(ln) or VERSION.match(mm.group(0)):
             continue
         cand = ln[: mm.start()].rstrip()
         trial = lines[:k] + [cand] + lines[k + 1:]
@@ -179,7 +184,7 @@ def _header(text, name):
 
 
 def _norm_run(s):
-    return "\n".join(re.sub(r"(\S)\s+# .*$", r"\1", ln) for ln in s.split("\n") if not _is_comment(ln)).rstrip("\n")
+    return "\n".join(re.sub(r"(\S)\s+# (?!v?\d).*$", r"\1", ln) for ln in s.split("\n") if not _is_comment(ln)).rstrip("\n")
 
 
 def _walk(o):

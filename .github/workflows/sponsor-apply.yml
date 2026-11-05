@@ -1,6 +1,8 @@
 name: Sponsor sign-ups
 # Sponsor sign-ups.
 
+# to Sig, putting approved ads live (writes data/page-sponsors.json or
+
 on:
   schedule:
     - cron: '38 * * * *'

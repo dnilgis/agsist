@@ -1,9 +1,11 @@
 name: Daily site check
 # Daily site check.
 
+# Sig approved 2026-10-17. Once a day after the morning data runs: the number
+
 on:
   schedule:
-    - cron: '37 11 * * *'
+    - cron: '37 11 * * *'     # 11:37 UTC, after the morning price, bids and Daily runs
   workflow_dispatch:
     inputs:
       dry:

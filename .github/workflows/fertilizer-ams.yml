@@ -12,6 +12,7 @@ on:
     - cron: '23 20 * * 5'
     - cron: '23 1 * * 6'
     - cron: '23 15 * * 1'
+  # cron above, by either trigger, do the work within 290 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

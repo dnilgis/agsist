@@ -4,7 +4,7 @@ name: Harvest price tracker
 on:
   workflow_dispatch:
   schedule:
-    - cron: '47 21 * * 1-6'
+    - cron: '47 21 * * 1-6'   # 21:47 UTC Mon-Sat — after CBOT settles; Saturday swaps in Friday's settle
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

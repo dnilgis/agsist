@@ -4,6 +4,7 @@ name: Rain Print design email
 on:
   schedule:
     - cron: '23 * * * *'
+  # cron above, by either trigger, do the work within 50 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

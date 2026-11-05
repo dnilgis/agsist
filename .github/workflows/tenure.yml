@@ -4,6 +4,7 @@ name: tenure
 on:
   schedule:
     - cron: "25 6 15 2 *"
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

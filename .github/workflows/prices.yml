@@ -26,7 +26,7 @@ jobs:
         env:
           IN_FORCE: ${{ inputs.force }}
         run: |
-          DOW=$(TZ=America/Chicago date +%u)
+          DOW=$(TZ=America/Chicago date +%u)              # 1=Mon .. 7=Sun
           HM=$(( 10#$(TZ=America/Chicago date +%H%M) ))
           OPEN=0
           case "$DOW" in

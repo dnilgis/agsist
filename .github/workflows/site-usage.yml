@@ -4,6 +4,7 @@ name: Site usage (GA4 + Search Console, 90 days)
 on:
   schedule:
     - cron: '37 14 2 * *'
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

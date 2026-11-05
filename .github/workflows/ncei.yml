@@ -9,6 +9,7 @@ on:
         required: false
   schedule:
     - cron: '47 8 15 1 *'
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

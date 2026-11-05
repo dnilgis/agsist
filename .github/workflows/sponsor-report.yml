@@ -4,6 +4,7 @@ name: Sponsor reports — yesterday's numbers, from GA4
 on:
   schedule:
     - cron: '12 11 * * *'
+  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
