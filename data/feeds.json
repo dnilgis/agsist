@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 97,
- "with_known_cadence": 97,
+ "count": 98,
+ "with_known_cadence": 98,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1455,6 +1455,29 @@
     "Feed manifest \u2014 every published number is accounted for",
     "Land data (parcel services + transfers)",
     "Rebuild Feed Manifest"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land/atlas-layer.json",
+   "pages": [
+    "farmland-atlas.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
    ],
    "cadence": "1 launch monthly, on day 3 at about 4am Central",
    "curated": false,

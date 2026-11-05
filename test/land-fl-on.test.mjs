@@ -248,8 +248,11 @@ test("the land sale email for a Florida reader lists sales by month", () => {
 
 test("the other states' summaries are what main's code makes (summary hash)", () => {
   const code = ["import sys,json,hashlib", "sys.path.insert(0,sys.argv[1])", "import build_land_summary as B",
-    "fx=json.load(open(sys.argv[2]))", "s=B.dump(B.build_state('IL',[fx['file']],fetched=fx['fetched']))",
-    "s2=B.dump(B.build_state('WI',[dict(fx['file'],state='WI')],fetched=fx['fetched']))",
+    "fx=json.load(open(sys.argv[2]))",
+    // the Atlas map layer's m12 (Nov 5, 2026) is the one field added since; every other byte must still match
+    "def strip(d):\n    [c.pop('m12',None) for c in d['counties'].values()]\n    return d",
+    "s=B.dump(strip(B.build_state('IL',[fx['file']],fetched=fx['fetched'])))",
+    "s2=B.dump(strip(B.build_state('WI',[dict(fx['file'],state='WI')],fetched=fx['fetched'])))",
     "print(hashlib.sha256((s+s2).encode()).hexdigest()[:16])"].join("\n");
   // 91ca80a7384a2629: the same fixture through build_land_summary.py on main at 7fc9233 (#353), before Florida was switched on
   assert.equal(py(code, path.join(ROOT, "test/fixtures/land-summary.json")), "91ca80a7384a2629");

@@ -20,7 +20,7 @@ const NAMED = readdirSync(join(ROOT, "data/land"), { withFileTypes: true })
   .filter((d) => d.isDirectory() && readdirSync(join(ROOT, "data/land", d.name)).some((n) => /^\d{5}\.json$/.test(n))).map((d) => d.name);
 const STATES = NAMED.map((s) => [s, STATE_DIRS[s]]).filter(([s]) => existsSync(join(ROOT, `data/land/${s}/summary.json`)));
 const PRIVATE = ["grantor", "grantee", "legal", "pid", "doc"];
-const COUNTY_KEYS = new Set(["a24", "chg", "from", "k12", "k12p", "k24", "large", "med", "medp", "n12", "n12p", "name", "nout", "out", "r24", "to", "u12", "u12p", "why_chg", "why_p"]);
+const COUNTY_KEYS = new Set(["a24", "chg", "from", "k12", "k12p", "k24", "large", "m12", "med", "medp", "n12", "n12p", "name", "nout", "out", "r24", "to", "u12", "u12p", "why_chg", "why_p"]);
 const TOP_KEYS = new Set(["counties", "fetched", "kinds", "min_acres", "min_n", "record", "since_note", "state", "state_med", "through", "url", "who", "windows"]);
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const norm = (s) => String(s).toUpperCase().replace(/\s+/g, " ").trim();
@@ -80,6 +80,12 @@ test("summary files hold only counts, acres, prices, dates and place names: no f
         // an outlier row ends with its direction; a largest-sales row with its kind (the one land rule, Oct 29)
         if (r.length > 5) assert.ok(r[5] === 1 || r[5] === -1 || (c.large || []).includes(r) && ["farm", "bldg", "forest", "small"].includes(r[5]), `${s} ${fips}: direction flag or kind`);
         assert.ok(r.length <= 6, `${s} ${fips}: a sale row has extra fields`);
+      }
+      // the Atlas map layer's median (Nov 5, 2026): numbers, a set word and two dates, nothing else
+      if (c.m12) {
+        assert.deepEqual(Object.keys(c.m12).sort(), ["d", "med", "n", "set"], `${s} ${fips}: m12 fields`);
+        assert.ok(typeof c.m12.med === "number" && typeof c.m12.n === "number" && ["bare", "any"].includes(c.m12.set), `${s} ${fips}: m12 values`);
+        assert.ok(c.m12.d.length === 2 && c.m12.d.every((d) => ISO.test(d)), `${s} ${fips}: m12 dates`);
       }
       for (const k of ["why_chg", "why_p"]) if (c[k] != null) assert.match(c[k], /^(acres unknown on \d+ of \d+ market sales in the last 12 months and \d+ of \d+ in the 12 before|records start [\w ,-]+|\d+ and \d+ sales of \d+\+ acres with known acres; a change needs \d+ or more in each year|the middle half of prices in one year does not overlap the other's; the two sets of sales are too different to compare)$/, `${s} ${fips} ${k}`);
     }
