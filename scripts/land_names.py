@@ -48,6 +48,17 @@ FARM FARMS LAND LANDS ESTATE ESTATES PROPERTY PROPERTIES HOLDINGS INVESTMENTS IN
 LIMITED AGRICULTURAL AGRICULTURE DATED JOINT TENANTS TENANT HUSBAND WIFE BANK NATIONAL ASSOCIATION COUNTY STATE CITY
 VILLAGE TOWN TOWNSHIP SECTION NORTH SOUTH EAST WEST QUARTER HALF THE AND UNDER AGREEMENT DECLARATION SURVIVORSHIP
 DECEASED HEIRS SUCCESSOR SUCCESSORS CHURCH SCHOOL DISTRICT CREDIT UNION SERVICES GROUP ACRES ACRE""".split())
+# Words that name no person, skipped by the common-word rule only (OWN_MIN; a rare one still holds): states, public
+# bodies and utilities that buy right of way, and survey words. The county's own place names are skipped the same way
+# (split() reads them from the county and its munis). On the Nov 5 data these few words alone (the state's name 780 rows,
+# TRANSPORTATION 171, HIGHWAY 30) and the place names (624 rows) would have hidden 1,600 public legals that name no one.
+OWN_SKIP = NAME_STOP | set("""ILLINOIS INDIANA WISCONSIN VERMONT JERSEY IOWA MINNESOTA MICHIGAN MISSOURI KENTUCKY OHIO NEW YORK
+AMERICA AMERICAN UNITED STATES FEDERAL DEPARTMENT DEPT TRANSPORTATION HIGHWAY HIGHWAYS NATURAL RESOURCES CONSERVATION
+CONSERVANCY COMMISSION COMMISSIONERS AUTHORITY AGENCY BOARD SUPERVISORS PUBLIC WORKS UTILITY UTILITIES ELECTRIC POWER
+ENERGY COOPERATIVE TELEPHONE COMMUNICATIONS PIPELINE RAILROAD RAILWAY DRAINAGE SANITARY WATER SEWER FOREST PRESERVE
+PRESERVES PARKS RECREATION HOUSING DEVELOPMENT SECRETARY VETERANS AFFAIRS GOVERNMENT ADDITION SUBDIVISION BLOCK SURVEY
+CERTIFIED PARCEL EXCEPT EXCEPTING THENCE BEGINNING COMMENCING TOWNSHIPS RANGE MERIDIAN PRINCIPAL NORTHEAST NORTHWEST
+SOUTHEAST SOUTHWEST RECORDED VOLUME DOCUMENT OUTLOT CONDOMINIUM PLAT FIRST SECOND THIRD FOURTH""".split())
 
 
 def tokens(s):
@@ -64,16 +75,27 @@ def rare_words(legals):
     return {w for w, n in df.items() if n <= cap}
 
 
-def names_in_legal(legal, pair, rare):
+def names_in_legal(legal, pair, rare, places=frozenset()):
     """True when the legal holds a word of the row's own seller or buyer that is not an entity or survey word: a rare
-    one of 4 letters or more, or any one of OWN_MIN letters or more, rare or not (checker, Nov 5: a common surname of
-    the row's own party in its own legal still names the party). Never prints or returns the word."""
+    one of 4 letters or more, or any one of OWN_MIN letters or more, rare or not, that is not a state, public body,
+    survey word or the county's own place name (checker, Nov 5: a common surname of the row's own party in its own
+    legal still names the party). Never prints or returns the word."""
     lt = tokens(legal)
     for v in pair:
         for w in tokens(v):
-            if w not in NAME_STOP and w in lt and (w in rare or len(w) >= OWN_MIN):
+            if w in NAME_STOP or w not in lt:
+                continue
+            if w in rare or (len(w) >= OWN_MIN and w not in OWN_SKIP and w not in places):
                 return True
     return False
+
+
+def place_words(doc):
+    """The county's own place words (its name and its municipalities'), which the common-word rule skips."""
+    out = tokens(doc.get("county"))
+    for v in (doc.get("munis") or {}).values():
+        out |= tokens(v[0] if isinstance(v, (list, tuple)) and v else v)
+    return out
 
 
 def legal_mark(legal):
@@ -155,7 +177,8 @@ def split(doc, prior=None):
     # which legals are held: a mark from an earlier run (kept as it is), a legal with a rare word of its own party,
     # then, until nothing changes, any legal that equals or contains a held legal's text (the same parcel on another
     # deed whose own parties the legal does not name: checker, Nov 4)
-    hold = [bool(leg(r)) and (is_marked(leg(r)) or names_in_legal(leg(r), pairs[ri], rare)) for ri, r in enumerate(src)]
+    places = place_words(doc)
+    hold = [bool(leg(r)) and (is_marked(leg(r)) or names_in_legal(leg(r), pairs[ri], rare, places)) for ri, r in enumerate(src)]
     texts = {up(held(r) if is_marked(leg(r)) else leg(r)) for ri, r in enumerate(src) if hold[ri] and (held(r) or not is_marked(leg(r)))}
     texts |= {up(t) for t in prior or ()}
     texts.discard("")
@@ -367,6 +390,11 @@ def selftest():
     ck("a common own-party word of 5+ letters in its own legal holds it", sorted(n6["lg"], key=int) == [str(i) for i in range(40)])
     ck("a stop word or a short word alone holds nothing",
        not names_in_legal("PART OF THE FARM LOT JO", ["FARM TRUST", "JO X"], set()))
+    ck("a state, a public body or the county's own place name alone holds nothing; a rare one still does",
+       not names_in_legal("RIGHT OF WAY TO STATE OF WISCONSIN DEPT OF TRANSPORTATION IN VILLAGE OF MAPLEFORD",
+                          ["WISCONSIN DEPARTMENT OF TRANSPORTATION", "MAPLEFORD VILLAGE"], set(), {"MAPLEFORD"})
+       and names_in_legal("LOT 1 MAPLEFORD", ["MAPLEFORD, ANN", None], {"MAPLEFORD"}, {"MAPLEFORD"}))
+    ck("place words come from the county and its munis", place_words({"county": "Dane", "munis": {"0": ["Mapleford", 1, 2]}}) == {"DANE", "MAPLEFORD"})
     print("land_names selftest: %s" % ("ok" if not bad else "%d failure(s)" % bad))
     return 1 if bad else 0
 
