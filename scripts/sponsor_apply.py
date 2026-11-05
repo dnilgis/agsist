@@ -46,9 +46,11 @@ try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit be
 except ImportError: pass
 import base64
 import calendar
+import contextlib
 import hashlib
 import hmac
 import html as H
+import io
 import json
 import os
 import re
@@ -279,12 +281,11 @@ def go_live(a, logo, card, start, root=REPO, slots=None):
 
 def report_entry(a, ct, state, want, start, root=REPO):
     """THE DAY-30 REPORT (rate card, Oct 29, 2026). A sponsor who goes live gets a
-    portal like every other: an entry in data/sponsors.json with its own token and
-    "page_slots", the ribbons it holds. scripts/build_sponsor_report.py reads GA4
+    portal like every other: an entry in data/sponsors.json with "page_slots", the
+    ribbons it holds (its link token is private since Nov 4, 2026: portal_link). scripts/build_sponsor_report.py reads GA4
     filtered to page:<id> for exactly those ribbons, so the report is this sponsor's
     events and nobody else's. No contact here: the file is public. Returns True when
     the file changed. A rerun finds the entry by the application id and leaves it."""
-    import secrets
     p = root / "data" / "sponsors.json"
     d = json.loads(p.read_text(encoding="utf-8"))
     lst = d.setdefault("sponsors", [])
@@ -294,7 +295,7 @@ def report_entry(a, ct, state, want, start, root=REPO):
     slugs = {x.get("slug") for x in lst}
     slug = base if base not in slugs else base + "-" + a["id"][:4]
     e = {"slug": slug, "name": a["company"], "active": True, "start": start.isoformat(),
-         "token": secrets.token_hex(8), "page_slots": list(want), "app": a["id"],
+         "page_slots": list(want), "app": a["id"],
          "billing": {"tier": ct, "trial_months": 1}}
     if state:
         e["billing"]["state"] = state
@@ -304,14 +305,45 @@ def report_entry(a, ct, state, want, start, root=REPO):
     return True
 
 
-def portal_link(app_id, root=REPO):
-    """The private report page for a live application, or None. An opaque token, no personal data."""
+def _sync_private(op):
+    """Pull or save the private token files (private-data, private/sponsors/tokens). True on success."""
+    env_ = dict(os.environ, RAW_BRANCH="private-data")
+    pull = ["bash", "scripts/pull_raw.sh", "private/sponsors/tokens"]
+    if op == "pull":
+        return subprocess.run(pull, cwd=REPO, env=env_).returncode == 0
+    # The first token wins: RAW_KEEP never replaces a token file already on private-data (the report job
+    # may have minted this sponsor a moment ago), and the pull after it adopts whichever one landed.
+    if subprocess.run(["bash", "scripts/push_raw.sh", "sponsor token", "private/sponsors/tokens"], cwd=REPO,
+                      env=dict(env_, RAW_KEEP="1")).returncode != 0:
+        return False
+    return subprocess.run(pull, cwd=REPO, env=env_).returncode == 0
+
+
+def portal_link(app_id, root=REPO, private=None, secret=None, sync=None):
+    """The private report page for a live application, or None. An opaque token, no personal data.
+    Since Nov 4, 2026 the token lives only in the private repo (scripts/sponsor_publish.py): it is
+    pulled, minted if this sponsor has none, and saved back before the link is used. If either
+    step fails there is no link (the daily report job mints one, and Sig sends it from links.json)."""
     try:
         d = json.loads((root / "data" / "sponsors.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return None
     e = next((x for x in d.get("sponsors") or [] if x.get("app") == app_id), None)
-    return "%s/sponsor-report?r=%s-%s" % (SITE, e["slug"], e["token"]) if e and e.get("token") else None
+    if not e or not e.get("slug"):
+        return None
+    import sponsor_publish as sp
+    sync = sync or _sync_private
+    if not sync("pull"):
+        return None
+    pd = Path(private) if private else sp.private_dir()
+    sp.mask(sp.load_tokens(pd))   # Actions only: every pulled token is blanked from the log before use
+    sp.mint(e["slug"], pd)
+    if not sync("push"):
+        return None
+    toks = sp.load_tokens(pd)
+    sp.mask(toks)   # the pull after the save may bring back another job's token (the first one wins)
+    rec = toks.get(e["slug"])   # after the save and pull: the token that landed first
+    return sp.link(e["slug"], rec["token"], secret) if rec else None
 
 
 def take_down(a, root=REPO, today=None):
@@ -601,7 +633,7 @@ def main():
                     failed += 1
                     continue
                 a = dict(a, start=start.isoformat(), _page=(slots_by_id.get(a.get("slot")) or {}).get("page"),
-                         _portal=portal_link(a["id"]))
+                         _portal=portal_link(a["id"], secret=secret))
                 mark(a, status="live", start=a["start"], slug=slug)
             if action == "takedown":
                 if not push(take_down(a), "sponsor ended: %s" % a["company"]):
@@ -725,12 +757,43 @@ def selftest():
         ck("files reported for the commit", "data/page-sponsors.json" in files and "img/sponsors/smith-seed-supply-cash-bids.png" in files)
         ck("a rerun changes nothing", go_live(A(status="approved"), png, card, date(2026, 10, 8), root)[1] == [])
         rep_ = [x for x in json.loads((root / "data" / "sponsors.json").read_text())["sponsors"] if x.get("app") == "a1b2c3d4e5f6"]
-        ck("going live writes one report entry: its own token and its ribbon, no contact",
-           len(rep_) == 1 and re.fullmatch(r"[0-9a-f]{16}", rep_[0]["token"]) and rep_[0]["page_slots"] == ["cash-bids"]
+        ck("going live writes one report entry: its ribbon, no token and no contact in the public file",
+           len(rep_) == 1 and "token" not in rep_[0] and rep_[0]["page_slots"] == ["cash-bids"]
            and rep_[0]["billing"]["tier"] == "cashbids" and rep_[0]["start"] == "2026-10-07"
            and "al@smith.com" not in json.dumps(rep_) and "data/sponsors.json" in files, rep_)
-        ck("the report link is the agsist.com portal with an opaque token",
-           portal_link("a1b2c3d4e5f6", root) == "%s/sponsor-report?r=%s-%s" % (SITE, rep_[0]["slug"], rep_[0]["token"]))
+        import sponsor_publish as sp_
+        ops_ = []
+        pl_ = portal_link("a1b2c3d4e5f6", root, private=root / "priv", secret="sec", sync=lambda op: ops_.append(op) or True)
+        tok_ = sp_.load_tokens(root / "priv").get(rep_[0]["slug"], {}).get("token")
+        ck("the report link is the agsist.com portal with a private token and its approval key",
+           tok_ and pl_ == sp_.link(rep_[0]["slug"], tok_, "sec") and "&k=" in pl_ and ops_ == ["pull", "push"], (ops_,))
+        def _race(op, d=root / "priv4"):
+            if op == "push":   # another job saved its token first; the pull brings it back
+                sp_._write_token(d, rep_[0]["slug"], {"token": "a" * 16, "retired": []})
+            return True
+        ck("the first token saved wins: the link uses the one that landed, not ours",
+           portal_link("a1b2c3d4e5f6", root, private=root / "priv4", secret="sec", sync=_race) == sp_.link(rep_[0]["slug"], "a" * 16, "sec"))
+        def _race5(op, d=root / "priv5"):
+            if op == "push":
+                sp_._write_token(d, rep_[0]["slug"], {"token": "b" * 16, "retired": []})
+            return True
+        old_ga_, buf_ = os.environ.get("GITHUB_ACTIONS"), io.StringIO()
+        os.environ["GITHUB_ACTIONS"] = "true"
+        try:
+            with contextlib.redirect_stdout(buf_):
+                pl5_ = portal_link("a1b2c3d4e5f6", root, private=root / "priv5", secret="sec", sync=_race5)
+        finally:
+            if old_ga_ is None:
+                os.environ.pop("GITHUB_ACTIONS", None)
+            else:
+                os.environ["GITHUB_ACTIONS"] = old_ga_
+        ck("in Actions the token pulled back after the save is masked before the link is used",
+           pl5_ == sp_.link(rep_[0]["slug"], "b" * 16, "sec") and ("::add-mask::" + "b" * 16) in buf_.getvalue().splitlines())
+        ck("a rerun keeps the same private token",
+           portal_link("a1b2c3d4e5f6", root, private=root / "priv", secret="sec", sync=lambda op: True) == pl_)
+        ck("no link when the private save fails",
+           portal_link("0000000000aa", root, private=root / "priv2", sync=lambda op: True) is None
+           and portal_link("a1b2c3d4e5f6", root, private=root / "priv3", sync=lambda op: op == "pull") is None)
         ck("an svg/bad logo is not written", write_logo(A(), "data:image/svg+xml;base64,PHN2Zz4=", "x", root) == "")
         W = A(id="0123456789ab", slot="cash-bids-wisconsin", company="Barron Co-op")
         go_live(W, "", card, date(2026, 10, 7), root)

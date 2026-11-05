@@ -37,7 +37,7 @@ test("there is a demo to check, and it is Tractor Supply's", () => {
 
 test("a demo carries what it needs and nothing that runs or bills", () => {
   for (const s of DEMOS) {
-    assert.match(s.token || "", /^[0-9a-f]{16}$/, s.slug + ": the same token scheme as every portal");
+    assert.equal(s.token, undefined, s.slug + ": its link token is private like every portal's (Nov 4, 2026), never in this file");
     assert.match(s.expires || "", /^\d{4}-\d{2}-\d{2}$/, s.slug + ": a demo has a last day");
     assert.equal(s.geo, undefined, s.slug + ": no geo id, so no state-targeted ad exists for it");
     assert.equal(s.start, null, s.slug + ": no start date");
@@ -57,7 +57,7 @@ test("the demo never appears in any data that serves an ad", () => {
     const t = read(f).toLowerCase();
     for (const s of DEMOS) {
       assert.ok(!t.includes(s.slug.toLowerCase()), f + " names " + s.slug);
-      assert.ok(!t.includes(s.token), f + " carries " + s.slug + "'s token");
+      assert.ok(!new RegExp(s.slug + "-[0-9a-f]{16}").test(t), f + " carries a portal link for " + s.slug);
       assert.ok(!t.includes(String(s.demo_for || s.name).toLowerCase()), f + " names " + (s.demo_for || s.name));
     }
   }
@@ -103,11 +103,12 @@ test("the builder: full page up to the last day, the ended stub after it, no dat
   assert.equal(offFlag.demoEnded, true, "switched off by hand: ended");
 });
 
-test("the shipped demo file matches its entry, and is not listed anywhere", () => {
-  for (const s of DEMOS) {
-    const f = "data/sponsors/" + s.slug + "-" + s.token + ".json";
-    assert.ok(existsSync(join(ROOT, f)), f + " is built");
-    const d = JSON.parse(read(f));
+// Since Nov 4, 2026 the built reports are private (the subs worker serves them); this is the demo report as the
+// job built it that day, frozen.
+const DEMO_FILE = "test/fixtures/sponsorfix/tscdemo-2026-11-04.json";
+test("the built demo report matches its entry, and the portal is not listed anywhere", () => {
+  for (const s of DEMOS.filter((x) => x.slug === "tscdemo")) {
+    const d = JSON.parse(read(DEMO_FILE));
     assert.equal(d.demo, true);
     if (!d.demoEnded) {
       assert.equal(d.totals.viewable, 0); assert.equal(d.totals.clicks, 0);
@@ -118,10 +119,8 @@ test("the shipped demo file matches its entry, and is not listed anywhere", () =
   assert.match(read("sponsor-report.html"), /name="robots"[^>]*noindex/i);
   const maps = readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f));
   for (const m of maps) assert.ok(!read(m).includes("sponsor-report"), m + " lists the portal");
-  for (const s of DEMOS) {
-    for (const f of ["index.html", "sponsor.html", "about.html", "components/header-fallback.html", "components/footer-fallback.html", "llms.txt"].filter((x) => existsSync(join(ROOT, x))))
-      assert.ok(!read(f).includes(s.token), f + " links the demo");
-  }
+  for (const f of ["index.html", "sponsor.html", "about.html", "components/header-fallback.html", "components/footer-fallback.html", "llms.txt"].filter((x) => existsSync(join(ROOT, x))))
+    assert.doesNotMatch(read(f), /sponsor-report[^"'\s]*\?r=/, f + " links a portal");
 });
 
 function serve(over) {
@@ -140,13 +139,18 @@ function serve(over) {
 
 test("browser: the demo says what it is, shows real readers and zero ad counts, greys the rate card, and ends on the day", { skip, timeout: 180000 }, async () => {
   const s = DEMOS.find((x) => x.slug === "tscdemo");
-  const r = s.slug + "-" + s.token;
-  const file = JSON.parse(read("data/sponsors/" + r + ".json"));
-  const base = "/data/sponsors/" + r + ".json";
+  const r = "tscdemo-2222222222222222";
+  const file = JSON.parse(read(DEMO_FILE));
   // the page ends on the day by itself too: shown against a file that is still full
   const live = { ...file, expires: "2099-12-31" };
-  const srv = await serve({ [base]: live, "/data/sponsors/tscdemo-0000000000000000.json": { ...file, expires: "2026-01-01" },
-    "/data/sponsors/tscdemo-1111111111111111.json": { schema: "agsist-sponsor-report/1", slug: "tscdemo", demo: true, demoEnded: true, expires: "2026-11-28" } });
+  // the reports come from the subs worker (GET /sponsor-report, Nov 4, 2026), stubbed here per link
+  const REPORTS = { [r]: live, "tscdemo-0000000000000000": { ...file, expires: "2026-01-01" },
+    "tscdemo-1111111111111111": { schema: "agsist-sponsor-report/1", slug: "tscdemo", demo: true, demoEnded: true, expires: "2026-11-28" } };
+  const fromWorker = (pg) => pg.route("https://agsist-api.dnilgis.workers.dev/sponsor-report?**", (x) => {
+    const q = new URL(x.request().url()).searchParams.get("r");
+    return REPORTS[q] ? x.fulfill({ contentType: "application/json", body: JSON.stringify({ ok: true, report: REPORTS[q] }) }) : x.fulfill({ status: 404, body: "{}" });
+  });
+  const srv = await serve();
   const port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   const rows = (AUD.states || {})["7d"] || [];
@@ -157,6 +161,7 @@ test("browser: the demo says what it is, shows real readers and zero ad counts, 
       const pg = await ctx.newPage();
       const errs = []; pg.on("pageerror", (e) => errs.push(String(e)));
       const outside = []; await pg.route((u) => u.hostname !== "127.0.0.1", (x) => { outside.push(x.request().url()); x.abort(); });
+      await fromWorker(pg);
       await pg.goto(`http://127.0.0.1:${port}/sponsor-report.html?r=${r}`, { waitUntil: "load" });
       await pg.waitForSelector("#results .cp-kpi", { timeout: 8000 });
       const top = (await pg.textContent(".cp-demo")).replace(/\s+/g, " ").trim();
@@ -198,6 +203,7 @@ test("browser: the demo says what it is, shows real readers and zero ad counts, 
       const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
       const pg = await ctx.newPage();
       await pg.route((u) => u.hostname !== "127.0.0.1", (x) => x.abort());
+      await fromWorker(pg);
       await pg.goto(`http://127.0.0.1:${port}/sponsor-report.html?r=${rr}`, { waitUntil: "load" });
       await pg.waitForSelector(".cp-err", { timeout: 8000 });
       assert.match(await pg.textContent(".cp-err-msg"), /^This demo has ended\. Contact Sig\.$/, rr);

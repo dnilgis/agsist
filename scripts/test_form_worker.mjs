@@ -59,7 +59,10 @@ A(r.status === 200 && forms().length === before, 'honeypot: ok answer, nothing s
 // sponsor feedback keeps line breaks, email optional
 // v5.13: an approval must carry the portal link's r and its key k = hmac16("sponsor-portal|" + r)
 const skey = (r_) => crypto.createHmac('sha256', 'sec').update(('sponsor-portal|' + r_).toLowerCase()).digest('hex').slice(0, 16);
-const R1 = 'apex-c1c1e09865171cd1';
+const R1 = 'apex-0000000000000001';
+// v5.65: the link's token must be live in the worker (spr:<slug>); 0000000000000002 is a retired one.
+const R0 = 'apex-0000000000000002';
+store.set('spr:apex', JSON.stringify({ t: '0000000000000001', old: [crypto.createHash('sha256').update('0000000000000002').digest('hex')], report: {} }));
 r = await post({ kind: 'sponsor-feedback', request: 'Approval', sponsor: 'Apex', proof: 'AB12', message: 'Line one\r\nLine two', subject: 'Approved', r: R1, k: skey(R1) });
 A(r.status === 200, 'sponsor feedback stored');
 rec = JSON.parse(store.get(forms().find(x => x.startsWith('form:sponsor-feedback:'))));
@@ -258,6 +261,11 @@ for (const [patch, why] of [[{}, 'no r and no k (an old link, or a forgery built
   r = await post(Object.assign({}, appr, patch)); j = await r.json();
   A(r.status === 400 && j.ok === false && /link Sig sent/.test(j.error), 'forged approval refused: ' + why);
 }
+// v5.65: an old link (its token retired on Nov 4, 2026, and in the public git history) keeps a valid k; it is refused all the same
+r = await post(Object.assign({}, appr, { r: R0, k: skey(R0) })); j = await r.json();
+A(r.status === 400 && j.ok === false && /link Sig sent/.test(j.error), 'an approval from a retired link is refused');
+r = await post(Object.assign({}, appr, { r: 'nobody-0000000000000001', k: skey('nobody-0000000000000001') }));
+A(r.status === 400, 'an approval from a link with no report on the worker is refused');
 A(sfKeys().length === sfb.length, 'a refused approval stores nothing');
 r = await post(Object.assign({}, appr, { r: R1, k: skey(R1) })); A(r.status === 200, 'an approval from the real link is taken');
 rec = sfNew(sfb);

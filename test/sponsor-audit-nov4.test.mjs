@@ -60,7 +60,8 @@ async function portal(browser, port, d, a) {
   const pg = await ctx.newPage();
   const errs = []; pg.on("pageerror", (e) => errs.push(String(e)));
   await pg.route((u) => u.hostname !== "127.0.0.1", (x) => x.abort());
-  await pg.route("**/data/sponsors/" + R + ".json*", (x) => x.fulfill({ contentType: "application/json", body: JSON.stringify(d) }));
+  // the report comes from the subs worker since Nov 4, 2026 (private, GET /sponsor-report)
+  await pg.route("https://agsist-api.dnilgis.workers.dev/sponsor-report?r=" + R, (x) => x.fulfill({ contentType: "application/json", body: JSON.stringify({ ok: true, report: d }) }));
   await pg.route("**/data/audience.json*", (x) => x.fulfill({ contentType: "application/json", body: JSON.stringify(a) }));
   await pg.goto(`http://127.0.0.1:${port}/sponsor-report.html?r=${R}`, { waitUntil: "load" });
   await pg.waitForSelector("#results .cp-kpi", { timeout: 8000 });

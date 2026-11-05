@@ -9,15 +9,16 @@ Double-click backup-agsist once a month. It saves, onto this drive:
            (every branch, every commit).
   kv\      kv-YYYY-MM-DD.json: every record the subs worker keeps
            (the subscriber list, alerts, Rain Print orders, gift cards,
-           elevator listings). The newest 12 are kept.
+           elevator listings, and since Nov 4, 2026 each sponsor's private
+           report link and report, the spr: records). The newest 12 are kept.
   log\     backup-YYYY-MM-DD.txt: what ran and how many, counts only.
 
 The last line in the window says how it went, for example:
   Backup done: 4 repos up to date, 3,418 records saved, Nov 1 2026.
 If something fails, that line says what failed and what to do.
 
-KEEP THIS DRIVE SAFE. The kv files hold every subscriber's email address
-and the order records. Do not leave it plugged into a shared PC, do not
+KEEP THIS DRIVE SAFE. The kv files hold every subscriber's email address,
+the order records and every sponsor's private report link. Do not leave it plugged into a shared PC, do not
 copy the kv folder to email or a cloud drive.
 
 
