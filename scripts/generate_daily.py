@@ -4353,6 +4353,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
         or build_quote_strip(briefing.get("locked_prices"),
                              briefing.get("locked_changes"),
                              briefing.get("board")))
+    sparks_html += render_adds_html(briefing) if sparks_html else ""
 
     sections_html = ""
     for i, sec in enumerate(briefing.get("sections", [])):
@@ -4753,7 +4754,6 @@ a.dv3-quote{{color:inherit;text-decoration:none}}a.dv3-quote:hover .dv3-quote-na
       {hclock_html}
     </header>
     {sparks_html}
-    {render_adds_html(briefing)}
     <aside class="ya" data-your-area="daily" hidden></aside>
     {topbar_html}
     <aside class="dl" data-daily-local data-before="article .dv3-quotes" data-after="aside.ya[data-your-area]" hidden></aside>
