@@ -183,7 +183,10 @@ test('publishing jobs save softly; build inputs, paid batch records and the FSA 
   // One step, not a whole job (Nov 4, fx/sponsorfix): a new sponsor's link token is saved to private-data
   // BEFORE anything uses it, so a failed save must stop the run; a soft save would hand out a link the
   // private copy does not hold. The same job's reports save stays soft.
-  const HARD_STEPS = new Set(['sponsor-report.yml: Sponsor links from the private repo']);
+  // Nov 5 (fx/sponsormail): the sent marker after a sponsor's link email is hard, so a failed save is a red
+  // run and nobody reruns it into a second email.
+  const HARD_STEPS = new Set(['sponsor-report.yml: Sponsor links from the private repo',
+    'sponsor-send-link.yml: Save the sent marker']);
   for (const f of workflows) {
     for (const s of steps(f)) {
       const pushes = /scripts\/push_raw\.sh/.test(s.code);
