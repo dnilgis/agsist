@@ -1,0 +1,28 @@
+{
+ "state": "FL",
+ "made_utc": "2026-11-05T00:00:00Z",
+ "rolls": {
+  "2026": {
+   "sdf_date": "2026-10-28",
+   "rows": 9
+  }
+ },
+ "newest_roll": "2026",
+ "file_date": "2026-10-28",
+ "counties": [
+  {
+   "fips": "12049",
+   "name": "Hardee",
+   "n": 8
+  },
+  {
+   "fips": "12055",
+   "name": "Highlands",
+   "n": 1
+  }
+ ],
+ "by_year": {
+  "2025": 8,
+  "2026": 1
+ }
+}

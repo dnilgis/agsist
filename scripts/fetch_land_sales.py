@@ -48,6 +48,8 @@ Sources (free and public only; a state is built only once its files read cleanly
   python3 scripts/fetch_land_sales.py --from DIR WI --merge   add those rows to data/land/wi
         (the monthly newest-only run): a return read again replaces its older copy, nothing
         else on disk is dropped unless the size cap trims it
+  python3 scripts/fetch_land_sales.py --from DIR --to LAND FL   Florida, from the prepared files in DIR, written
+        to LAND/fl in an agsist-data checkout (its files are served from there, never from this site)
   python3 scripts/fetch_land_sales.py --selftest
 
 What it keeps: transfers whose property class is farm, forest, undeveloped or
@@ -172,10 +174,18 @@ STATES.update({
     # the probe so each layout and its terms are read before a parser exists. Farm acres order.
     "FL": {
         "name": "Florida", "fips": "12",
-        "probe_only": "Florida DOR's Sale Data File (SDF) and NAL roll, one file per county; saved to read the layout (land use codes 50 to 69 are agricultural) first",
-        "source": "Florida Department of Revenue, Property Tax Oversight, Sale Data File", "short": "Florida sale data file",
-        "pages": ["https://floridarevenue.com/property/Pages/DataPortal_RequestAssessmentRollGISData.aspx"],
-        "links": [], "terms": "public data portal; confidential owners removed by the state; terms not read yet",
+        # Built (Nov 5, 2026): fl_recs reads the prepared county files (sale data file joined to the roll of the same
+        # year, farm use codes 50 to 69); the sale month only, no day; no buyer or seller names in the files.
+        "source": "Florida Department of Revenue, sale data file and assessment roll",
+        "short": "Florida sale data file",
+        "pages": [], "links": [],
+        # since_note is set from the years read (fl_since); every year and every deed is kept (Sig, Nov 5: option A)
+        "since_note": "Florida's sale data files give the month of each sale, not the day, and carry no buyer or seller names.",
+        "terms": "public records published by the Florida Department of Revenue; confidential owners removed by the state",
+        "dates": "month",
+        # served from the public agsist-data repo, not this site (Sig, Nov 5): written with --to <agsist-data checkout>
+        "host": "agsist-data",
+        "max_mb": 200,
     },
     "NY": {
         "name": "New York", "fips": "36",
@@ -752,6 +762,8 @@ def build(st, recs, gaz, now, prior=None, months=None):
                         + [r.get(x) for x in extra])
         c = next(v for v in cix.values() if v["fips"] == fips)
         cov = coverage(rs)
+        if cfg.get("dates") == "month":
+            cov["dates"] = "month"      # FSLand.coverageText: months, never a day
         p = (prior or {}).get(fips) or {}
         if p.get("filed_from"):
             cov["filed_from"] = min(p["filed_from"], cov.get("filed_from") or p["filed_from"])
@@ -760,6 +772,8 @@ def build(st, recs, gaz, now, prior=None, months=None):
         doc = {"state": st, "county": c["name"], "fips": fips, "source": cfg["source"], "source_short": cfg["short"],
                "links": cfg["links"], "since_note": cfg["since_note"], "fetched_utc": now, "names": names,
                "coverage": cov, "acres_rule": ACRES_RULE, "cols": list(cols), "munis": munis, "rows": rows}
+        if cfg.get("dates") == "month":
+            doc["dates"] = "month"      # each date is the first of the sale month; the state gives no day
         # the section key (scripts/land_keys.py), right after the legal; data/land/ only, robots-blocked.
         # Each county gets its own copy of cols: add_column changes the list it is given (Nov 3).
         land_keys.add_column(doc, GEO)
@@ -775,7 +789,7 @@ def build(st, recs, gaz, now, prior=None, months=None):
         total += len(s)
         files.append((fips, s, doc, ndoc))
         index.append({"fips": fips, "name": c["name"], "lat": c["lat"], "lng": c["lng"], "n": len(rs), "from": rs[-1]["date"], "to": rs[0]["date"]})
-    cap = min(MAX_STATE_MB, cfg.get("max_mb") or MAX_STATE_MB)
+    cap = cfg["max_mb"] if cfg.get("host") else min(MAX_STATE_MB, cfg.get("max_mb") or MAX_STATE_MB)
     if total > cap * 1048576:
         raise OverCap("%s: %.1f MB of county files, over the %d MB cap; not written (raise it in this file on purpose)" % (st, total / 1048576, cap))
     os.makedirs(os.path.join(OUT, st.lower()), exist_ok=True)
@@ -2700,6 +2714,166 @@ def wi_dedupe(recs):
     return list(best.values())
 
 
+# Florida (Nov 5, 2026): the DOR sale files joined to the assessment roll of the same year, prepared privately and
+# read here from the raw branch (scripts/pull_raw.sh data/land-src/fl). The files give the sale month, not the day.
+FL_SRC = os.path.join(ROOT, "data", "land-src", "fl")
+# The county appraiser's qualification code, in plain words. 01 and 02 are the qualified (arm's length) sales the
+# state's sales ratio study uses; every other code, or none (the 2009 roll's file has none), carries FL_OUT, which the market-sale rule reads as not a market sale.
+FL_OUT = "not counted as a qualified sale"
+FL_QUAL = {
+    "01": "arm's length, deed examined", "02": "arm's length, other evidence",
+    "03": "arm's length, but the parcel changed after the sale", "04": "arm's length, but its legal makeup changed after the sale",
+    "05": "arm's length, several parcels on one deed", "06": "arm's length, one parcel across a county line",
+    "11": "corrective, quit claim or tax deed, or minimum stamps", "12": "to or from a lender, or in lieu of foreclosure",
+    "13": "cemetery lots", "14": "life estate kept", "16": "less than full interest", "17": "religious or charitable party",
+    "18": "government party", "19": "bankruptcy, estate or guardianship", "20": "utility party", "21": "contract or agreement for deed",
+    "30": "between relatives or affiliated companies", "31": "trade or exchange of land", "32": "long gap between contract and sale",
+    "33": "unbuilt common property", "34": "paying off an earlier contract", "35": "unusual personal property in the price",
+    "36": "unusual costs of sale", "37": "unusual exposure or motivation", "38": "forced sale or under duress",
+    "39": "price differs from the stamps", "40": "non-market financing or lease", "41": "other", "42": "mortgage fraud notice",
+    "43": "price allocated from a package sale", "98": "deed errors, decision pending", "99": "decision pending",
+}
+FL_QUALIFIED = ("01", "02")
+FL_FOREST = range(54, 60)      # DOR use codes 054 to 059: timberland
+FL_NOMINAL = 1000      # a deed under this price paid minimum stamps: listed, with no sale price, never in a middle
+FL_DOR_HELD = ("UNINCORPORATED", "UNINCORPORATED COUNTY", "COUNTY", "UNINC")
+
+
+def fl_conv(code, price=None):
+    c = str(code or "").strip().zfill(2) if str(code or "").strip() else ""
+    words = FL_QUAL.get(c, "no code in the file" if not c else "code not in the guide")
+    if price is not None and price < FL_NOMINAL:
+        return "Florida code %s: %s; no sale price (minimum stamps); %s" % (c or "blank", words, FL_OUT)
+    if c in FL_QUALIFIED:
+        return "Qualified sale, Florida code %s: %s" % (c, words)
+    return "Florida code %s: %s; %s" % (c or "blank", words, FL_OUT)
+
+
+def fl_class(uc, vi):
+    """The site's classes: 6 timberland (use codes 54 to 59), else 4 farm; 7 added when the sale price includes buildings
+    (improved, or use code 50 improved agricultural)."""
+    base = "6" if uc in FL_FOREST else "4"
+    return base + (" 7" if str(vi or "").upper() == "I" or uc == 50 else "")
+
+
+def fl_recs(src=FL_SRC, rep=None):
+    """Rows for build() from the prepared county files. A deed that also sold non-farm parcels keeps its parcel count
+    but no acres (the price covers land not in these files)."""
+    rep = rep if rep is not None else {}
+    names = {v["fips"]: v["name"] for v in county_index("FL").values()}
+    recs, meta = [], {}
+    try:
+        meta = json.load(open(os.path.join(src, "index.json"), encoding="utf-8"))
+    except (OSError, ValueError):
+        meta = {}
+    for n in sorted(os.listdir(src)):
+        if not re.match(r"^12\d{3}\.json$", n):
+            continue
+        d = json.load(open(os.path.join(src, n), encoding="utf-8"))
+        if d.get("names") or any(c in d["cols"] for c in ("grantor", "grantee", "owner", "own_name")):
+            raise BadRows("FL %s: the prepared file carries a name column; not read" % n)
+        c = {k: i for i, k in enumerate(d["cols"])}
+        cname = names.get(d["fips"])
+        if not cname:
+            rep["no county"] = rep.get("no county", 0) + 1
+            continue
+        for row in d["rows"]:
+            g = lambda k: row[c[k]] if k in c and c[k] < len(row) else None
+            yr, mo, price = g("yr"), g("mo"), g("price")
+            if not (isinstance(yr, int) and isinstance(mo, int) and 1 <= mo <= 12 and price is not None):
+                rep["no month or price"] = rep.get("no month or price", 0) + 1
+                continue
+            book, page, clerk = str(g("book") or ""), str(g("page") or ""), str(g("clerk") or "")
+            doc = ("I %s" % clerk) if clerk else ("B %s P %s" % (book, page)) if (book or page) else ""
+            mixed = g("mixed") == 1
+            np_ = g("np") or 1
+            city = clean(g("city"), 40).upper()
+            recs.append({
+                "doc": ("%s %04d-%02d" % (doc, yr, mo)) if doc else "", "date": "%04d-%02d-01" % (yr, mo), "price": round(price),
+                "acres": None if mixed else g("acres"), "cls": fl_class(g("uc"), g("vi")), "conv": fl_conv(g("qual"), price),
+                "pid": clean(g("pid"), 40), "muni": "" if city in FL_DOR_HELD else city, "county": cname, "legal": "",
+                "grantor": None, "grantee": None, "np": np_ if np_ > 1 else None, "rec": None, "ac1": None, "acany": None,
+                "exempt": 0, "zip": None, "acx": 1 if mixed else None,
+                "yb": str(g("yb")) if g("yb") else None, "lsf": g("lsf") or None,
+            })
+            rep["rows"] = rep.get("rows", 0) + 1
+    rep["file_date"] = meta.get("file_date")
+    ys = sorted(r["date"][:4] for r in recs)
+    if ys:
+        rep["years"] = "%s to %s" % (ys[0], ys[-1])
+    return recs
+
+
+def fl_since(years):
+    """The Florida coverage note: the years covered, months not days, how no-price deeds are treated, no names."""
+    return ("Florida Department of Revenue sale data files, sales from %s. Dates are months: the state gives the sale month, "
+            "not the day. Deeds with no sale price (minimum stamps) are listed but not counted in the middles. The files carry "
+            "no buyer or seller names." % years)
+
+
+FL_FIXTURE = os.path.join(ROOT, "test", "fixtures", "land-fl")
+
+
+def fl_selftest(ck):
+    """Synthetic prepared rows only (test/fixtures/land-fl): no real parcel, no name."""
+    global OUT
+    import tempfile
+    import shutil
+    import build_land_summary as BLS
+    rep = {}
+    recs = fl_recs(FL_FIXTURE, rep)
+    by = {r["pid"]: r for r in recs}
+    ck("FL: every prepared row read, the month as the first of the month", rep.get("rows") == len(recs) == 9
+       and by["FX-001"]["date"] == "2025-08-01")
+    ck("FL: qualified codes 01 and 02 read as qualified; every other code, and none, is not counted as qualified",
+       all(fl_conv(c).startswith("Qualified sale") for c in FL_QUALIFIED)
+       and all(FL_OUT in fl_conv(c) for c in FL_QUAL if c not in FL_QUALIFIED) and FL_OUT in fl_conv("") and FL_OUT in fl_conv("77"))
+    ck("FL: classes from the use code and the improved mark: timber 6, farm 4, buildings 7",
+       by["FX-003"]["cls"] == "6" and by["FX-001"]["cls"] == "4" and by["FX-004"]["cls"] == "4 7" and fl_class(50, "V") == "4 7")
+    ck("FL: a deed that also sold non-farm parcels keeps its parcel count, no acres, acres marked unknown",
+       by["FX-006"]["np"] == 2 and by["FX-006"]["acres"] is None and by["FX-006"]["acx"] == 1)
+    ck("FL: no buyer or seller anywhere", not any(r["grantor"] or r["grantee"] for r in recs))
+    ck("FL: a deed with no sale price is listed and never counted, whatever its code",
+       FL_OUT in by["FX-002"]["conv"] and "no sale price" in by["FX-002"]["conv"] and FL_OUT in fl_conv("01", 100)
+       and fl_conv("01", 400000).startswith("Qualified sale"))
+    ck("FL: every year and every deed kept (no size cut), files for agsist-data only",
+       STATES["FL"]["host"] == "agsist-data" and STATES["FL"]["max_mb"] >= 100 and rep.get("years") == "2025 to 2026"
+       and "sales from 2025 to 2026" in fl_since(rep["years"]) and "not counted" in fl_since("x") and "month" in fl_since("x"))
+    import inspect
+    ck("FL: run() refuses to write Florida into this site's data/land", "--to <agsist-data checkout>" in inspect.getsource(run))
+    keep = OUT
+    OUT = tempfile.mkdtemp(prefix="flself-")
+    try:
+        res = build("FL", [dict(r) for r in recs], {}, "2026-11-05T00:00:00Z")
+        f = json.load(open(os.path.join(OUT, "fl", "12049.json")))
+        ck("FL: county file in the shared columns, month-only dates marked, no names",
+           res["counties"] == 2 and f["cols"][:12] == ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "str"]
+           and f["dates"] == "month" and f["names"] is False and not land_names.has_names(f) and "grantor" not in f["cols"])
+        today = "2026-11-05"
+        mk = {r[f["cols"].index("pid")]: BLS.market_sale(o, today) for r, o in zip(f["rows"], BLS.row_objs(f))}
+        ck("FL: only the qualified sales are market sales (the gift-priced and family sales are listed, kept apart)",
+           mk == {"FX-001": True, "FX-002": False, "FX-003": True, "FX-004": True, "FX-005": False, "FX-006": False, "FX-007": True, "FX-008": True})
+        two = [r for r in f["rows"] if r[0] == f["rows"][0][0]]
+        ck("FL: two farm parcels on one deed share the deed: two parcels, acres added", any(
+            r[f["cols"].index("np")] == 2 and r[f["cols"].index("tac")] == 120.0 for r in f["rows"]) and len(two) >= 1)
+    finally:
+        shutil.rmtree(OUT, ignore_errors=True)
+        OUT = keep
+    bad_dir = tempfile.mkdtemp(prefix="flbad-")
+    try:
+        d = json.load(open(os.path.join(FL_FIXTURE, "12049.json")))
+        d["cols"] = d["cols"] + ["own_name"]
+        d["rows"] = [r + ["X"] for r in d["rows"]]
+        json.dump(d, open(os.path.join(bad_dir, "12049.json"), "w"))
+        try:
+            fl_recs(bad_dir, {})
+            ck("FL: a prepared file with an owner column is refused", False)
+        except BadRows:
+            ck("FL: a prepared file with an owner column is refused", True)
+    finally:
+        shutil.rmtree(bad_dir, ignore_errors=True)
+
+
 def refiled_dedupe(recs):
     """One sale filed twice under two documents (same county, sale date, price and parcel number,
     a different document number, same seller and buyer): keep the newest document only, by filed date and then document
@@ -2722,10 +2896,10 @@ def refiled_dedupe(recs):
     return out, len(recs) - len(out)
 
 
-def trim(recs, done):
+def trim(recs, done, st=None):
     """The next cut when a state's files are over the cap: first farm sales of 10 acres or more
     (any parcel's acres; a return with no acres at all is dropped), then the oldest filing year,
-    one year at a time. None when nothing is left to cut."""
+    one year at a time. None when nothing is left to cut. Florida is never cut (Sig, Nov 5: every year, every deed)."""
     if "10+ acres" not in done:
         return [r for r in recs if max(r.get("acres") or 0, r.get("ac1") or 0, r.get("acany") or 0) >= 10], "10+ acres"
     yrs = sorted({(r.get("rec") or r["date"])[:4] for r in recs})
@@ -2747,9 +2921,10 @@ def summary(st, recs, trims):
         st, ", ".join("%s %d" % kv for kv in sorted(by.items())), named, multi, known, "; ".join(trims) or "none")
 
 
-def run(states, from_dir=None, merge=False):
+def run(states, from_dir=None, merge=False, to_dir=None):
     """merge (Wisconsin newest-only): add the rows read now to the ones on disk; a return read
     again replaces its older copy (wi_dedupe), nothing else on disk is dropped unless the cap trims it."""
+    global OUT
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     gzblob = fetch(GAZ)
     bad = 0
@@ -2803,6 +2978,22 @@ def run(states, from_dir=None, merge=False):
                 print("::warning::%s deed files not read: %s" % (st, e))
                 bad += 1
                 continue
+        elif st == "FL":
+            if not to_dir:
+                print("::warning::%s not written: its files are served from agsist-data; pass --to <agsist-data checkout>" % st)
+                bad += 1
+                continue
+            try:
+                frep = {}
+                recs_fl = fl_recs(from_dir or FL_SRC, frep)
+                if frep.get("years"):
+                    STATES["FL"]["since_note"] = fl_since(frep["years"])
+                print("::notice::%s: %s" % (st, "; ".join("%s: %s" % kv for kv in sorted(frep.items()))))
+            except (OSError, ValueError, KeyError, BadRows) as e:
+                print("::warning::%s prepared sale files not read: %s" % (st, e))
+                bad += 1
+                continue
+            tables.append(None)
         elif STATES[st].get("socrata") and not from_dir:
             try:
                 decls, extra, multi = fetch_il()
@@ -2834,7 +3025,10 @@ def run(states, from_dir=None, merge=False):
             print("::warning::%s transfers not written: the data page lists no file to download%s" % (st, STATES[st].get("no_files", "")))
             bad += 1
             continue
-        recs, rep = parse_rows(tables)
+        if st == "FL":
+            recs, rep = recs_fl, {"files": 1, "rows": len(recs_fl), "bad_date": frep.get("no month or price", 0), "bad_price": 0, "not_farm": 0, "missing": []}
+        else:
+            recs, rep = parse_rows(tables)
         ok, why = checks_pass(recs, rep)
         if not ok:
             print("::warning::%s transfers not written: %s" % (st, why))
@@ -2855,14 +3049,19 @@ def run(states, from_dir=None, merge=False):
             months = read_now | had
         if st == "WI":
             recs = wi_dedupe(recs)
-        recs, refiled = refiled_dedupe(recs)
+        # Florida's file lists each deed once with its own record number, and gives months, not days: two deeds of one
+        # parcel in one month at one price (minimum-stamp deeds, mostly) are two deeds, not one filed twice
+        recs, refiled = refiled_dedupe(recs) if st != "FL" else (recs, 0)
         if refiled:
             print("%s: %d rows were a sale filed again under a newer document; the newest kept" % (st, refiled))
         gaz = in_places(recs, fetch(IN_ZCTA, timeout=300)) if st == "IN" else gazetteer(STATES[st]["fips"], gzblob)
         trims = []
         res = None
+        here = OUT
         while True:
             try:
+                if STATES[st].get("host"):
+                    OUT = to_dir      # the agsist-data checkout's land folder; never this site's data/land
                 res = build(st, recs, gaz, now, prior, months)
                 break
             except BadRows as e:
@@ -2871,12 +3070,13 @@ def run(states, from_dir=None, merge=False):
                 bad += 1
                 break
             except OverCap as e:
-                cut, why = trim(recs, trims) if st in ("WI", "IN") else (None, None)
+                cut, why = trim(recs, trims, st) if st in ("WI", "IN") else (None, None)
                 if cut is None:
                     raise SystemExit(str(e))
                 print("::warning::%s; trimmed: %s (%d rows left of %d)" % (e, why, len(cut), len(recs)))
                 trims.append(why)
                 recs = cut
+        OUT = here
         if res is None:
             continue
         mark_checked(st, now, recs, months)
@@ -2935,8 +3135,9 @@ def selftest():
            any("[terms] Resale of this data is strictly forbidden." in x for x in terms_lines(b'{"licenseInfo":"Data are public. Resale of this data is strictly forbidden.","results":[{"id":"ab","type":"Feature Service","title":"T","url":"https://x/FeatureServer"}]}', ".json"))
            and any(x.startswith("  item ab | Feature Service | T | https://x/FeatureServer") for x in terms_lines(b'{"results":[{"id":"ab","type":"Feature Service","title":"T","url":"https://x/FeatureServer"}]}', ".json"))
            and any("[terms]" in x and "Public domain" in x for x in terms_lines(b"<p>Hello there.</p><p>Public domain data from the state, free for any use.</p>", ".html")))
-        ck("CT, MA and FL are probed (docs, and the CT sales file) and none is built",
-           all(STATES[x].get("probe_only") for x in ("CT", "FL")) and len(PROBE_ONLY_DOCS["CT"]) > 8 and len(PROBE_ONLY_DOCS["MA"]) > 8
+        ck("CT, MA and FL are probed (docs, and the CT sales file); CT is not built, FL is built from the prepared files (Nov 5)",
+           STATES["CT"].get("probe_only") and not STATES["FL"].get("probe_only") and STATES["FL"]["dates"] == "month"
+           and len(PROBE_ONLY_DOCS["CT"]) > 8 and len(PROBE_ONLY_DOCS["MA"]) > 8
            and len(PROBE_ONLY_DOCS["FL"]) > 8 and any("5mzw-sjtu" in u for u in PROBE_FILES["CT"]))
         ck("file probe: column values stay out of the log (they can be names)",
                not any("Minnehaha" in x for x in lg) and os.path.exists(os.path.join(out, "head-s.csv.txt")))
@@ -3058,9 +3259,11 @@ def selftest():
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
     ck("probe-only states (IA, SD, OH) are never built before their parser exists",
        all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IA", "SD", "OH")))
-    ck("phase 1 statewide sources (FL, NY, MD, CT) are saved by the probe and never built",
-       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "CT")))
+    ck("phase 1 statewide sources (NY, MD, CT) are saved by the probe and never built; FL keeps its probe docs and is built (Nov 5)",
+       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("NY", "MD", "CT"))
+       and PROBE_ONLY_DOCS.get("FL") and not STATES["FL"].get("probe_only"))
     nj_selftest(ck)
+    fl_selftest(ck)
     # Vermont (Oct 29): PTT-172 returns from the statewide file, mapped onto the shared rule by the form's words.
     ck("VT: built, not probe-only, never reads a parcel point or an address",
        not STATES["VT"].get("probe_only") and not any(re.search(r"(?i)latitude|longitude|geom|addr|street|zip", c) for c in VT_COLS))
@@ -3407,4 +3610,5 @@ if __name__ == "__main__":
         sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS or x in PROBE_ONLY_DOCS or x in PROBE_FILES] or sorted(set(STATES) | set(PROBE_DOCS) | set(PROBE_ONLY_DOCS) | set(PROBE_FILES))))
     sts = [x for x in a if x in STATES] or ["WI", "MN", "IL"]
     fd = a[a.index("--from") + 1] if "--from" in a else None
-    sys.exit(run(sts, fd, "--merge" in a))
+    td = a[a.index("--to") + 1] if "--to" in a else None
+    sys.exit(run(sts, fd, "--merge" in a, td))

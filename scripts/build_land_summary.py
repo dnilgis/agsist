@@ -86,7 +86,7 @@ MAX_UNSURE = 0.25       # the year-over-year change needs known acres on 3 in 4 
 LARGEST = 3             # rows in the largest-sales list
 OUTLIERS = 4            # rows in the outside-the-range list
 # Same text as FSLand.NON_MARKET and FSLand.PARTIAL in field-scout-land.js (the node tests compare them).
-NON_MARKET = r"QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE"
+NON_MARKET = r"QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE|NOT COUNTED AS A QUALIFIED SALE"
 NON_MARKET_RE = re.compile(NON_MARKET)
 PARTIAL = r"\bUNDIVIDED\b|LESS THAN (?:FULL|100 ?%|THE WHOLE|ENTIRE)|PARTIAL INTEREST|\b(?:ONE|TWO|THREE)[- ](?:HALF|THIRD|THIRDS|FOURTH|FOURTHS|QUARTER|FIFTH|SIXTH)\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}\s*\/\s*\d{1,2}(?:TH|RD|ND)?\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}(?:\.\d+)?\s*%\s+(?:UNDIVIDED\s+)?INTEREST\b"
 PARTIAL_RE = re.compile(PARTIAL)
@@ -158,6 +158,7 @@ def row_objs(f):
         o["ppa"] = per_acre(o.get("price"), o.get("acres"))
         o["fips"], o["county"] = f.get("fips"), f.get("county")
         o["st"] = o.get("st") or f.get("state")
+        o["dm"] = 1 if f.get("dates") == "month" else 0      # FSLand.rowObjs dm: month-only dates (Florida)
         out.append(o)
     return out
 
@@ -236,7 +237,7 @@ def stat_ok(r):
 
 HAS_BLDG_RE = re.compile(r"(^|[\s,;/])(1|2|3|7)($|[\s,;/])")   # FSLand.hasBuildings, character for character
 FOREST_CLS = ("5M", "6")
-FOREST_STATES = ("WI", "VT")      # FSLand.FOREST_STATES: records that carry a forest class (Vermont: timberland)
+FOREST_STATES = ("WI", "VT", "FL")      # FSLand.FOREST_STATES: records that carry a forest class (Vermont and Florida: timberland)
 
 
 def has_buildings(cls):
@@ -315,7 +316,7 @@ def sale_rows(rows, today):
     by, order = {}, []
     for i, r in enumerate(once):
         why = [w for w in screen(r, today) if w != "partial"]
-        k = group_key(r) if not why and day_no(r.get("date")) is not None else None
+        k = group_key(r) if not why and not r.get("dm") and day_no(r.get("date")) is not None else None   # month dates: no grouping
         if not k:
             order.append({"i": i, "r": r})
             continue

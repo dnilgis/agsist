@@ -162,6 +162,8 @@
       else if (+o.acx === 1 && !(num(o.acres) > 0)) { o.acres = null; o.acUnsure = true; o.acGone = true; }
       o.ppa = FSLand.perAcre(o.price, o.acres);
       o.county = file.county; o.st = file.state; o.fips = file.fips; o.src = file.source_short;
+      // a file whose dates are months (Florida: the state gives the sale month, not the day) shows the month only
+      o.dm = file.dates === 'month' ? 1 : 0;
       return o;
     });
   };
@@ -211,7 +213,13 @@
   // counts bare farm land only; with buildings and forest are listed, never in a middle.
   FSLand.MIN_N = 5;          // under this many sales, no middle (the Atlas, the land-sales pages, the comp report)
   FSLand.MIN_ACRES = 20;     // a sale this size or larger may set a county middle
-  FSLand.FOREST_STATES = ['WI', 'VT'];   // states whose records carry a forest class (Vermont: timberland)
+  // The states whose sale files the readers load (an allow-list). Florida's files are served from agsist-data
+  // (FSLand.LAND_HOST) and stay out until every reader shows its month-only dates (Nov 5, 2026).
+  FSLand.SALES_LIVE = ['IL', 'IN', 'WI', 'VT', 'NJ'];
+  FSLand.LAND_HOST = { FL: 'https://dnilgis.github.io/agsist-data/land/fl/' };
+  FSLand.landBase = function (st) { st = String(st || '').toUpperCase(); return FSLand.LAND_HOST[st] || '/data/land/' + st.toLowerCase() + '/'; };
+  FSLand.salesLive = function (st) { return FSLand.SALES_LIVE.indexOf(String(st || '').toUpperCase()) >= 0; };
+  FSLand.FOREST_STATES = ['WI', 'VT', 'FL'];   // states whose records carry a forest class (Vermont and Florida: timberland)
   FSLand.isForest = function (c, st) {
     if (FSLand.FOREST_STATES.indexOf(String(st || '').toUpperCase()) < 0 || FSLand.hasBuildings(c)) return false;
     var have = String(c || '').toUpperCase().split(/[\s,;/]+/).filter(Boolean);
@@ -245,7 +253,7 @@
   //     Auctions and sales to a neighbor stay in: those are open-market farm sales.
   //   - it is a whole interest: not "an undivided one-third interest", not "less than full interest"
   //   - it is not dated after today (a typo on a return)
-  FSLand.NON_MARKET = /QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE/;
+  FSLand.NON_MARKET = /QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE|NOT COUNTED AS A QUALIFIED SALE/;
   // A sale of a share of the land is not a price for the whole.
   FSLand.PARTIAL = /\bUNDIVIDED\b|LESS THAN (?:FULL|100 ?%|THE WHOLE|ENTIRE)|PARTIAL INTEREST|\b(?:ONE|TWO|THREE)[- ](?:HALF|THIRD|THIRDS|FOURTH|FOURTHS|QUARTER|FIFTH|SIXTH)\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}\s*\/\s*\d{1,2}(?:TH|RD|ND)?\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}(?:\.\d+)?\s*%\s+(?:UNDIVIDED\s+)?INTEREST\b/;
   FSLand.PPA_FLOOR = 500;     // under this $/acre: listed, marked, out of every middle and low figure
@@ -327,7 +335,7 @@
     var by = {}, order = [];
     once.forEach(function (r, i) {
       var why = FSLand.screen(r, today).filter(function (w) { return w !== 'partial'; });
-      var k = !why.length && dayNo(r.date) != null ? FSLand.groupKey(r) : null;
+      var k = !why.length && !r.dm && dayNo(r.date) != null ? FSLand.groupKey(r) : null;   // month dates: no day to group deeds by
       if (!k) { order.push({ i: i, r: r }); return; }
       (by[k] = by[k] || []).push({ i: i, r: r });
     });
@@ -367,7 +375,7 @@
   // A sale filed as several deeds, in words.
   FSLand.groupText = function (r) {
     if (!r || !r.grp) return '';
-    return 'filed as ' + r.grp + ' deeds' + (r.date2 && r.date2 !== r.date ? ' from ' + FSLand.fmtDate(r.date) + ' to ' + FSLand.fmtDate(r.date2) : ' the same day') + ', ' + FSLand.fmtMoney(r.price) + ' in all' +
+    return 'filed as ' + r.grp + ' deeds' + (r.date2 && r.date2 !== r.date ? ' from ' + FSLand.fmtDate(r.date, r.dm) + ' to ' + FSLand.fmtDate(r.date2, r.dm) : ' the same day') + ', ' + FSLand.fmtMoney(r.price) + ' in all' +
       (r.grpWhole ? '' : r.acUnsure ? '; the deeds do not carry the same acres, so no $/acre' : '; more than one buyer, so no $/acre');
   };
   FSLand.LOW_TEXT = 'far below the range, likely not a whole open-market sale';
@@ -495,9 +503,11 @@
   };
 
   FSLand.fmtMoney = function (n) { n = num(n); return n == null ? '' : '$' + Math.round(n).toLocaleString('en-US'); };
-  FSLand.fmtDate = function (iso) {
+  // month (truthy): the date is a month only (a file with dates "month"); "2025-08-01" reads "Aug 2025", never a day
+  FSLand.fmtDate = function (iso, month) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); if (!m) return String(iso || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
+    var mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1];
+    return month ? mo + ' ' + m[1] : mo + ' ' + (+m[3]) + ', ' + m[1];
   };
 
   // ── transfer history and comps list (plain strings, so node tests run them) ──
@@ -510,6 +520,7 @@
   FSLand.FILED_SINCE = { IL: 'Illinois MyDec declarations filed from 2014' };
   FSLand.coverageText = function (cov, st) {
     if (!cov || !cov.to) return '';
+    if (cov.dates === 'month') return 'Sales from ' + fd(cov.from, 1) + ' to ' + fd(cov.to, 1) + ', by month (the state gives no day)';
     if (cov.filed_from) return (String(st || '').toUpperCase() === 'IL' ? 'Declarations' : 'Returns') + ' filed ' + fd(cov.filed_from) + ' to ' + fd(cov.filed_to) +
       (cov.older_deeds ? '; ' + cov.older_deeds.toLocaleString() + (cov.older_deeds === 1 ? ' carries a deed date' : ' carry deed dates') + ' before ' + String(cov.filed_from).slice(0, 4) : '');
     var since = FSLand.FILED_SINCE[String(st || '').toUpperCase()];
@@ -544,7 +555,7 @@
         m.how === 'format' ? 'parcel number matched with county formatting set aside' : null,
         m.how === 'uncertain' ? '<span class="fl-warn">match uncertain: same section, quarter and town, parcel number differs (often a split)</span>' : null,
         r.doc ? esc(FSLand.docLabel(r.st || (cov && cov.st))) + ' ' + esc(r.doc) : null].filter(Boolean).join(' &middot; ');
-      return '<li><span class="d">' + fd(r.date) + '</span> &middot; ' + bits.join(' &middot; ') + who + '<div class="m">' + meta + '</div></li>';
+      return '<li><span class="d">' + fd(r.date, r.dm) + '</span> &middot; ' + bits.join(' &middot; ') + who + '<div class="m">' + meta + '</div></li>';
     }).join('');
     return '<ul class="fl-hist">' + li + '</ul>' +
       '<p class="fl-note">' + span + ' ' + older + (names ? (cov.namesFile ? ' Seller and buyer: open a sale and tap Show buyer and seller.' : ' ' + FSLand.NAMES_LATER) : ' Seller and buyer names are not in the free data; the official record has them.') +
@@ -560,7 +571,7 @@
     return '<div class="fl-tblw"><table role="table" class="fl-tbl' + (opts.detail ? ' fl-tap' : '') + '"><thead role="rowgroup"><tr role="row">' + th('date', 'Date') + th('ppa', '$/ac', 1) + th('acres', 'Acres', 1) + th('price', 'Price', 1) + th('mi', 'Miles', 1) + '<th scope="col" role="columnheader">Town, class</th>' + (opts.src ? '<th scope="col" role="columnheader">Source</th>' : '') + '</tr></thead><tbody role="rowgroup">' +
       list.slice(0, max).map(function (r, i) {
         var town = esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls, r.st)) : '');
-        var date = opts.detail ? '<button type="button" class="fl-sale" data-sale="' + i + '" aria-haspopup="dialog" aria-label="' + esc('Everything on the sale of ' + fd(r.date) + (r.price > 0 ? ', ' + fm(r.price) : '') + (r.acres > 0 ? ', ' + (+r.acres).toFixed(1) + ' acres' : '') + (r.muniName ? ', ' + r.muniName : '')) + '">' + fd(r.date) + '</button>' : fd(r.date);
+        var date = opts.detail ? '<button type="button" class="fl-sale" data-sale="' + i + '" aria-haspopup="dialog" aria-label="' + esc('Everything on the sale of ' + fd(r.date, r.dm) + (r.price > 0 ? ', ' + fm(r.price) : '') + (r.acres > 0 ? ', ' + (+r.acres).toFixed(1) + ' acres' : '') + (r.muniName ? ', ' + r.muniName : '')) + '">' + fd(r.date, r.dm) + '</button>' : fd(r.date, r.dm);
         /* data-l: the column name a phone shows over each value when the rows stack into cards (2026-10-17) */
         return '<tr role="row"' + (opts.detail ? ' data-row="' + i + '"' : '') + '><td role="cell" data-l="Date">' + date + '</td><td role="cell" class="n" data-l="$/ac">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td role="cell" class="n" data-l="Acres">' + (r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="' + (+r.np || 2) + ' parcels on one return; acres uncertain">?</span>' : '') + '</td><td role="cell" class="n" data-l="Price">' + fm(r.price) + '</td><td role="cell" class="n" data-l="Miles">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td role="cell" class="t" data-l="Town, class">' + town + (r.secRel ? ' &middot; <span class="fl-sec">' + FSLand.SEC_TEXT[r.secRel] + '</span>' : '') + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + (r.grp ? ' <span class="fl-warn">' + esc(FSLand.groupText(r)) + '</span>' : '') + (FSLand.lowPpa(r) ? ' <span class="fl-warn">' + FSLand.LOW_TEXT + '</span>' : '') + '</td>' +
           (opts.src ? '<td role="cell" class="t" data-l="Source">' + esc(r.src || '') + (r.doc ? ' ' + esc(r.doc) : '') + '</td>' : '') + '</tr>';
@@ -728,7 +739,7 @@
     var price = num(r.price), ac = num(r.acres), np = +r.np || 1;
 
     group('The sale');
-    row(IL ? 'Deed date (instrument date)' : 'Deed date (date of conveyance)', v(r.date) ? fd(r.date) : NOTIN);
+    row(IL ? 'Deed date (instrument date)' : 'Deed date (date of conveyance)', v(r.date) ? fd(r.date, r.dm) : NOTIN);
     row('Recorded (filed)', has('rec') ? (v(r.rec) ? fd(r.rec) : NOTIN) : NOTKEPT, has('rec') ? null : 'The state file has the recording date; our copy keeps only the deed date for ' + esc(st || 'this state') + '.');
     row('Price', price > 0 ? fm(price) : price === 0 ? '$0 on the ' + (IL ? 'declaration' : 'return') : NOTIN,
       (IL ? 'Net consideration (Line 13 of Form PTAX-203: full consideration less personal property, Line 12a), or full consideration (Line 11) when Line 13 is blank. Covers the real estate that sold, buildings included.'
@@ -790,7 +801,7 @@
 
     var other = others.length ? '<ul class="fl-hist">' + others.map(function (m, i) {
       var o = m.r || m;
-      return '<li><button type="button" class="fl-sale" data-other="' + i + '"><span class="d">' + fd(o.date) + '</span></button> &middot; ' + (o.price > 0 ? fm(o.price) : 'no price') +
+      return '<li><button type="button" class="fl-sale" data-other="' + i + '"><span class="d">' + fd(o.date, o.dm) + '</span></button> &middot; ' + (o.price > 0 ? fm(o.price) : 'no price') +
         (o.acres > 0 ? ' &middot; ' + (+o.acres).toFixed(1) + ' ac' : '') + (o.ppa != null ? ' &middot; ' + fm(o.ppa) + '/ac' : '') +
         '<div class="m">' + [o.conv ? esc(o.conv) : null,
           m.how === 'format' ? 'parcel number matched with county formatting set aside' : null].filter(Boolean).join(' &middot; ') + '</div></li>';
@@ -995,12 +1006,14 @@
   var _idx = {}, _co = {};
   function landIndex(st) {
     st = String(st || '').toLowerCase();
-    if (!_idx[st]) _idx[st] = getJSON('/data/land/' + st + '/index.json', 15000).catch(function () { _idx[st] = null; return null; });
+    if (!FSLand.salesLive(st)) return Promise.resolve(null);
+    if (!_idx[st]) _idx[st] = getJSON(FSLand.landBase(st) + 'index.json', 15000).catch(function () { _idx[st] = null; return null; });
     return _idx[st];
   }
   function countyFile(st, fips) {
     var k = st + fips;
-    if (!_co[k]) _co[k] = getJSON('/data/land/' + st.toLowerCase() + '/' + fips + '.json', 20000).catch(function () { _co[k] = null; return null; });
+    if (!FSLand.salesLive(st)) return Promise.resolve(null);
+    if (!_co[k]) _co[k] = getJSON(FSLand.landBase(st) + fips + '.json', 20000).catch(function () { _co[k] = null; return null; });
     return _co[k];
   }
   FSLand.loadSales = function (st, c, homeFips, reachMi) {
@@ -1284,7 +1297,7 @@
     function showOnMap(d) {
       var map = FSX.map, L = G.L, r = d.r; if (!map || !L) return;
       clearSaleMark();
-      var label = 'Sale of ' + fd(r.date) + (r.price > 0 ? ', ' + fm(r.price) : '');
+      var label = 'Sale of ' + fd(r.date, r.dm) + (r.price > 0 ? ', ' + fm(r.price) : '');
       var p = d.parcel;
       if (p && p.rings && p.rings.length) {
         S.saleMark = L.polygon(p.rings.map(function (ring) { return ring.map(function (q) { return [q.lat, q.lng]; }); }), { color: '#5fd3ff', weight: 3, fillOpacity: 0.15 }).addTo(map);
@@ -1313,7 +1326,7 @@
       var el = document.createElement('div'); el.className = 'fl-sd';
       el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'fl-sd-t');
       var head = [r.price > 0 ? fm(r.price) : 'No price', r.acres > 0 ? (+r.acres).toFixed(1) + ' ac' : null, r.ppa != null ? fm(r.ppa) + '/ac' : null].filter(Boolean).join(' &middot; ');
-      el.innerHTML = '<div class="fl-sd-h"><div style="flex:1;min-width:0"><div class="fl-sd-grab" aria-hidden="true"></div><h2 id="fl-sd-t">Sale of ' + fd(r.date) + '<br><span class="fl-big" style="font-size:1rem">' + head + '</span></h2>' +
+      el.innerHTML = '<div class="fl-sd-h"><div style="flex:1;min-width:0"><div class="fl-sd-grab" aria-hidden="true"></div><h2 id="fl-sd-t">Sale of ' + fd(r.date, r.dm) + '<br><span class="fl-big" style="font-size:1rem">' + head + '</span></h2>' +
         '<p class="fl-note">' + esc([r.muniName, r.county ? r.county + ' County, ' + r.st : null].filter(Boolean).join(', ')) + '</p></div>' +
         '<button type="button" class="fl-sd-x" aria-label="Close sale details">&times;</button></div>' +
         '<p class="fl-note"><a class="fl-btn" style="display:inline-block;text-decoration:none" id="fl-sd-cr" target="_blank" rel="noopener" href="' + esc(FSLand.compReportURL({ pid: r.pid, fips: r.fips, lat: r.lat, lng: r.lng, town: true }, S.f)) + '">Comparable sales report</a> Sales near this parcel, with this list\u2019s filters.</p>' + FSLand.saleDetailHTML(r, file, others);
