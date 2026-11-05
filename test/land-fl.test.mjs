@@ -6,8 +6,8 @@
  *
  * The county file has the shared columns and says its dates are months; qualified sales and the rest are kept
  * apart the same way in JavaScript and Python; no owner or name field anywhere in the Florida files; a month-only date
- * reads as a month (never a day) in Field Scout and the comp report; Florida is served from agsist-data and stays out of
- * every reader until each one shows month dates (an explicit allow-list). */
+ * reads as a month (never a day) in Field Scout and the comp report; Florida is served from agsist-data and is in every
+ * reader's state list since each one shows month dates (Nov 5; test/land-fl-on.test.mjs). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
