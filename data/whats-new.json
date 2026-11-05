@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-05-tarspot2",
+   "date": "2026-11-05",
+   "title": "Tar spot photos",
+   "line": "Eight field photos of tar spot on corn leaves and an ear husk, added to the identification section.",
+   "link": "/tar-spot#identify"
+  },
+  {
    "id": "2026-11-05-tarspot1",
    "date": "2026-11-05",
    "title": "Tar spot of corn, in one place",
