@@ -909,12 +909,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     if counts["stale_ids"]:
         raise SystemExit(f"[ids] {counts['stale_ids']} records keep a bids-repo id that is not live; the last ids stay")
     doc = {"schema": "agsist-elevators/1", "generated": today,
-           "note": "One record per physical facility. id: the bids repo's permanent elevId when the facility is one of its "
-                   "rows, else an AGSIST id (a + 5 digits) from data/ids/elevator-ids.json. Join on id, never on a name. "
-                   "sources holds every key the facility is known by (bids: data/bids.json place, basis: ST|FACILITY|CITY "
-                   "in data/basis/<ST>.json, directory: data/elevator-directory.json locationId, bids_repo: dnilgis/bids "
-                   "data/directory.json id, schedules: company on the raw-branch schedules job). fips: point in "
-                   "data/atlas/counties.geo.json, null without a point.",
+           "note": 'One record per physical facility.',
            "counts": counts, "elevators": recs}
     write_json(os.path.join(out_dir, "elevators.json"), doc, compact=True)
     ledger["keys"] = dict(sorted(ledger["keys"].items()))
@@ -928,8 +923,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     ledger["retired"] = dict(sorted((ledger.get("retired") or {}).items()))
     write_json(lpath, {k: ledger[k] for k in ("schema", "note", "next", "minted", "retired", "events", "keys")})
     write_json(os.path.join(out_dir, "ambiguous.json"),
-               {"note": "Keys that matched more than one facility at the strongest step that matched at all. Each has its own "
-                        "record; fix by hand with a ledger line, never by guessing.", "keys": ambiguous})
+               {"note": 'Facilities that could not be matched to a single record. Each has its own record.', "keys": ambiguous})
     # parent company and destination per board (scripts/board_parents.py); the bids repo's board index
     # holds each board's page URL. Unreadable: the last file stays, said so, the ids are unaffected.
     try:

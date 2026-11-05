@@ -119,10 +119,7 @@ def build(now):
 
     return {
         "generated": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "note": "For /tools. asof is the tool's own data date (read, posted or report date), "
-                "copied from the file the tool reads; a tool with no valid date is left out. states counts, per state: "
-                "bids (cash bids in data/bids.json), hay (USDA AMS hay reports), barns (sale barns with a sale), "
-                "soil (counties with a soil temperature station in reach).",
+        "note": 'Data date of each tool, from the file it reads. A tool with no valid date is left out.',
         "tools": tools,
         "states": dict(sorted(states.items())),
     }

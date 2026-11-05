@@ -239,12 +239,7 @@ def confirm(parsed, nass):
 # a month only when it is at least as new as the capture: an archive copy counts
 # from its snapshot date, a live read from the day it ran. Older never overwrites
 # newer.
-NOTE = ("From FSA's own DMC prices and updates page (live, or the Internet Archive copy "
-        "named by archive_url and snapshot) and FSA's DMC fact sheet. A month is kept only when FSA's milk minus feed is "
-        "FSA's margin and its all-milk matches the NASS month held; the rest are in withheld. The months under screenshot "
-        "were read off a screen capture of FSA's live page on the date it names (with FSA's corn, hay and soybean meal, "
-        "each feed cost checked against FSA's formula) and stay until a read of FSA's page at least as new has them. mpp "
-        "holds MPP-Dairy (2014-2018), a different program with a different feed cost, from FSA's MPP calculations table.")
+NOTE = ("From FSA's DMC prices and updates page and fact sheet. Months that do not match the source are withheld.")
 
 
 def shot_ok(r):

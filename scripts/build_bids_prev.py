@@ -131,9 +131,7 @@ def write_shards(shards, stamp):
     wrote = 0
     for st, rows in sorted(shards.items()):
         doc = {"schema": SCHEMA, "generated": stamp, "tz": "America/Chicago",
-               "note": "Per elevator-network place, crop and delivery period: the last cash and basis "
-                       "(cents) seen on each recent trading day, Central time. Key = FNV-1a of "
-                       "place|crop|period. Weekends are not recorded.",
+               "note": 'Recent daily cash and basis by place, crop and delivery period, in cents, Central time. Weekends are not recorded.',
                "rows": {k: rows[k] for k in sorted(rows)}}
         fp = os.path.join(OUT_DIR, st + ".json")
         body = json.dumps(doc, separators=(",", ":"), ensure_ascii=False)

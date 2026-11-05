@@ -339,10 +339,7 @@ def main():
         "too_near_wins": sum(1 for r in _near if r["outcome"] == "played_out"),
         "too_far": len(_far),
         "too_far_wins": sum(1 for r in _far if r["outcome"] == "played_out"),
-        "note": ("Calls whose level sat outside the one-session band computed from "
-                 "that instrument's own realized moves. Counted in the hit rate "
-                 "exactly like every other call; flagged so they can be read "
-                 "separately."),
+        "note": ('Calls flagged for separate reading are counted in the hit rate like every other call.'),
     }
 
     # Two eras, two grading methods. Early records could only be graded by the

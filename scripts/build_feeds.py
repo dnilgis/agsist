@@ -544,9 +544,7 @@ def main():
     payload = {
         "schema": "agsist-feeds/1",
         "generated_by": "scripts/build_feeds.py",
-        "note": ("Derived from the repository, never typed. Pages come from a grep of "
-                 "every .html; the writer and its cadence come from the workflow that "
-                 "names the file or runs the script that names it."),
+        "note": ('Derived, never typed.'),
         "count": len(feeds),
         "with_known_cadence": known,
         "feeds": feeds,

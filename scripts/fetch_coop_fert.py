@@ -786,10 +786,7 @@ def append_history(hist, doc, now):
     return hist
 
 
-HIST_NOTE = ("Co-op posted fertilizer prices: one row each time a co-op's cash price or its date changes. "
-             "Columns: seen (UTC date), co-op id, product, raw name, cash $/ton, basis, date shown or null; "
-             "from 2026-10-17 an 8th column \"flagged\" marks a price the reader kept out of the summary, and a row "
-             "with cash null means the co-op stopped posting that price.")
+HIST_NOTE = ('Co-op posted fertilizer prices, one row each time a price or its date changes.')
 
 
 def run(root, now=None, fetcher=None, sheets_only=False):

@@ -262,10 +262,7 @@ def shape_fall(stocks, fall, cap, last_prod_by_crop, year):
         rec["ratio"] = round(held / (on + off), 3)
         out[st] = rec
     return {"year": int(year), "stocks_ref": STOCKS_REF, "states": out,
-            "method": ("September 1 stocks (on- and off-farm) of corn, soybeans, wheat, sorghum, barley and oats, "
-                       "plus this year's corn, soybean and sorghum crop (latest NASS state forecast, or the final), "
-                       "over on-farm plus off-farm capacity (latest December 1). Small grains are harvested by "
-                       "September 1 and already in the stocks.")}
+            "method": ('USDA NASS Quick Stats stocks, forecasts and capacity, latest figures.')}
 
 
 # ---------------------------------------------------------------- history
@@ -512,10 +509,7 @@ def main():
         print(f"  no {year} September 1 state stocks yet; the fall block is left out")
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
            "source": "USDA NASS Quick Stats — Grain Stocks (capacity, first of Dec) + Crop Production annual",
-           "note": ("Grain = corn+soybeans+wheat+sorghum+barley+oats, final YEAR figures only "
-                    "(forecast rows excluded). Capacity is on-farm + off-farm, first-of-December. "
-                    "'OT' combined-small-states rows are in the national total but never ranked. "
-                    "Ratio over 1.0 = the state grew more grain than it can store."),
+           "note": ('Final year figures only. OT combined-small-states rows are in the national total but never ranked.'),
            "latest_year": latest, "states": states, "national": national}
     # History and the US line. Any fault here leaves the history file as it
     # was and still writes this fall's table (the page says history is missing).
@@ -551,11 +545,7 @@ def main():
     json.dump(out, open(OUT, "w"), separators=(",", ":"))
     if hist:
         hist = {"generated": out["generated"], "fall_year": (crunch or {}).get("year"),
-                "method": ("pressure = (Sept 1 stocks of corn, soybeans, wheat, sorghum, barley and oats + that year's "
-                           "final corn, soybean and sorghum crop) / Dec 1 on-farm plus off-farm capacity; Dec 1 use = "
-                           "Dec 1 stocks of the same six grains / the same capacity. USDA NASS Quick Stats. A state-year "
-                           "counts only when every crop that was at least 2% of its grain has a stocks figure. Ranges "
-                           "are the 10th and 90th percentile, linear between ranks."), **hist}
+                "method": ('USDA NASS Quick Stats. A state-year is shown only when its figures are complete.'), **hist}
         json.dump(hist, open(HIST_OUT, "w"), separators=(",", ":"))
         s = hist["states"].get("IL", {}).get("stats", {})
         print(f"wrote {HIST_OUT}: {len(hist['states'])} states; IL pressure {s.get('p_avg')} Dec 1 {s.get('u_avg')} "

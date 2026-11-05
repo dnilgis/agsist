@@ -231,7 +231,7 @@ def build(rows, today, expected):
         "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "valid": latest.isoformat(), "prev": prev.isoformat(), "prev4": prev4.isoformat(),
         "cols": ["d0", "d1", "d2", "d3", "d4"],
-        "note": "Each county: [this week, last week, four weeks back], each [D0, D1, D2, D3, D4] as the percent of the county's area in that category OR WORSE (D1 includes D2-D4). null = no map that week. Counties in 'zero' had no D0-D4 in all three maps and no drought in the last 53 maps. k: [k1,k2,k3,k4,y2,y3,y4,lb] weekly maps in a row through the newest with any part of the county in D1/D2/D3/D4 or worse, weeks this calendar year with any part in D2/D3/D4 or worse, and lb bits (streak kn is a lower bound).",
+        "note": 'Percent of area in each drought category or worse, from the U.S. Drought Monitor.',
         "streak_maps": STREAK_MAPS,
         "counties": len(have), "dropped_rows": n_bad,
         "zero": zero, "c": c, "k": ks,
@@ -323,7 +323,7 @@ def build_summary(us_rows, st_rows, latest, states):
         "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "valid": latest.isoformat(),
         "dates": [(latest - timedelta(days=d)).isoformat() for d in (0, 7, 28, 364)],
-        "note": "Each entry: [newest, a week before, four weeks before, 52 weeks before], each [D0, D1, D2, D3, D4] as the percent of the area in that category OR WORSE. null = no figure that week. conus = the Lower 48.",
+        "note": 'Percent of area in each drought category or worse, from the U.S. Drought Monitor.',
         "conus": four(us, latest),
         "states": st_out,
     }, []

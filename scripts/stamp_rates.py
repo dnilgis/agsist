@@ -184,7 +184,7 @@ def main():
     dup = sorted({i for i in ids if ids.count(i) > 1})
     if dup:
         raise SystemExit("two ribbons share a slot id: %s" % ", ".join(dup))
-    want = json.dumps({"_": "Every open page slot, read off the ribbons by scripts/stamp_rates.py. Do not edit by hand.",
+    want = json.dumps({"_": 'Every open page slot. Do not edit by hand.',
                        "slots": slots}, indent=1, ensure_ascii=False) + "\n"
     if want != have:
         drift.append("data/sponsor-slots.json")

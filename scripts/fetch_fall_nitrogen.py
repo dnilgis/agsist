@@ -790,7 +790,7 @@ def build(results, today, now_utc, prev=None, points=None, log=print):
     if len(uniq) < MIN_STATIONS:
         raise Refuse("only %d stations passed (need %d)" % (len(uniq), MIN_STATIONS))
     doc = {
-        "about": "Measured soil temperature near 4 in for /fall-nitrogen. t is the last %d daily values in F, oldest first, ending on 'last'; null means the station sent nothing that day. counties: fips -> [name, state, lat, lon] (center of the county) plus [station index, miles] when a station is within max_miles." % DAYS,
+        "about": 'Measured soil temperature near 4 in by county.' % DAYS,
         "updated_utc": now_utc,
         "max_miles": MAX_MI,
         "max_age_days": MAX_AGE_DAYS,
