@@ -60,6 +60,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import html_slim as HS  # noqa: E402
 import share_host as SH  # noqa: E402
 import source_links as SL  # noqa: E402  no direct links to data sources
+import credits as CR  # noqa: E402  (NASS notice wording)
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
@@ -2816,6 +2817,7 @@ def county_page(W, f, d, stamp):
 <div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
 <details><summary>Sources, dates and arithmetic</summary>
 <p>"Figures as of" is the date this page's numbers last changed; it moves only when a figure on the page does. Source files and their retrieval dates are listed on the <a href="/farmland-atlas/data">data page</a>.</p>
+<p>{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
 <p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 {prev_next}
 </main>
@@ -2936,6 +2938,7 @@ def state_page(W, st):
 <div class="tw"><table id="t"><thead><tr><th class="s" scope="col">County</th><th class="s" scope="col">Dry rent</th><th class="s" scope="col">Irr. rent</th><th class="s" scope="col">Land value</th><th class="s" scope="col">Median corn yield</th><th class="s" scope="col">Claims per $100</th><th class="s" scope="col">Drought weeks</th></tr></thead><tbody>{rows}</tbody></table></div>
 <noscript><p class="note">The county table is built from the map above, which needs JavaScript. Every county on the map is a link, and the CSV download has every row.</p></noscript>
 <p class="note">Rent is dollars per acre, NASS county survey; an older year is shown beside the figure. Land value is the census of agriculture estimate; a star marks a value flagged to read with care. Corn yield is the median of published years. Claims per $100 of coverage are the last ten closed crop years. Drought weeks are the share of weeks since 2000 with half the county or more in D2 drought or worse. n/a means the source withheld the figure or the record does not carry it.</p>
+<p class="note">{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
 </main>
 <script>
 (function(){{
@@ -3064,6 +3067,7 @@ def data_page(W):
 <p class="note">AGSIST's compilation, the county pages and these files are licensed <a href="{LICENSE_URL}" rel="license">Creative Commons Attribution 4.0</a>: use them, including commercially, with credit to "{esc(CREDIT)}" and a link. The underlying figures are U.S. government data and stay in the public domain. The AGSIST name, logo and page design are not part of the licence. Data is provided as is.</p>
 <h2>Columns</h2>
 <div class="tw"><table class="dl"><thead><tr><th scope="col">Column</th><th scope="col">Unit</th><th scope="col">Source</th><th scope="col">What it is</th></tr></thead><tbody>{rows}</tbody></table></div>
+<p class="note">{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
 <p class="note">Years are printed beside every figure that is not the latest survey. Ratios are 0 to 1 unless the unit says percent. Ranks are not in the file: they depend on the comparison group and are shown on each page with the group named.</p>
 <h2>Source files and when they were pulled</h2>
 <div class="tw"><table class="dl"><thead><tr><th scope="col">Layer</th><th scope="col">Source</th><th scope="col">Retrieved</th><th scope="col">Latest year</th></tr></thead><tbody>{vint}</tbody></table></div>
