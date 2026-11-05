@@ -17,7 +17,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const rd = (p) => readFileSync(ROOT + p, "utf8");
 const cov = JSON.parse(rd("data/land-sales/coverage.json"));
 const COV = Object.fromEntries(cov.states.map((r) => [r.name, r]));
-const LIVE = { illinois: "IL", wisconsin: "WI", indiana: "IN", vermont: "VT", "new-jersey": "NJ" };
+const LIVE = { illinois: "IL", wisconsin: "WI", indiana: "IN", vermont: "VT", "new-jersey": "NJ", florida: "FL" };
 
 /* '/land-sales/x/y#z' -> true when the file exists and, with a #z, the page carries id="z" */
 const ids = {};

@@ -196,7 +196,7 @@ test("the coverage table: every state, honest statuses, the live count matches t
   const cov = JSON.parse(read("data/land-sales/coverage.json"));
   assert.equal(cov.states.length, 50, "50 states");
   const live = cov.states.filter((s) => s.status === "live").map((s) => s.st).sort();
-  assert.deepEqual(live, ["IL", "IN", "NJ", "VT", "WI"], "Indiana turned on (Sig, Oct 27), Vermont and New Jersey Oct 29");
+  assert.deepEqual(live, ["FL", "IL", "IN", "NJ", "VT", "WI"], "Indiana turned on (Sig, Oct 27), Vermont and New Jersey Oct 29, Florida Nov 5");
   for (const s of cov.states) {
     assert.ok(cov.labels[s.status], `${s.st}: a status with a label`);
     assert.ok(s.tile && s.tile.length === 2, `${s.st}: a map tile`);
