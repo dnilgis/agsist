@@ -235,3 +235,139 @@ test("a worker-started job reads its asks or orders from a sender that prints th
       `scripts/${script} must count ${key}= on its DELIVERY line`);
   }
 });
+
+test("the mail plan's daily cap: send-volume row, SEND-CAP marker and preflight (Nov 4 real case)", () => {
+  // Brevo free: 300 emails a day across every sender, reset 00:00 UTC. Nov 4: 211 used (the Daily's 209 + 2).
+  const out = py("scripts/send_cap.py", "--selftest");
+  assert.match(out, /send_cap selftest: 0 failed/);
+  assert.doesNotMatch(out, /^FAIL /m);
+  for (const name of [
+    "Nov 4: 209 + 2 against 300 is ok",
+    "245 of 300 is a warning",
+    "a quota refusal is red, whatever the count",
+    "with the cap at 10000, 285 is ok",
+    "with SEND_DAILY_CAP=10000 nothing warns",
+    "a report day (209 + 200 later) warns and prints the marker",
+    "the marker prints once per run",
+  ]) assert.match(out, new RegExp(`^ok   ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"), name);
+  const dc = py("scripts/delivery_check.py", "--selftest");
+  assert.match(dc, /^ok   send-volume: a SEND-CAP refusal in a log read is red$/m);
+  // the cap is a repository variable, so an upgrade changes no code
+  for (const wf of ["cron-health.yml", "daily.yml", "report-day.yml"])
+    assert.match(readWf(wf), /\n\s+SEND_DAILY_CAP: \$\{\{ vars\.SEND_DAILY_CAP \}\}/, `${wf} must pass vars.SEND_DAILY_CAP`);
+  // every sender arms the SMTP count through the start() of delivery_line.py, and the Daily runs its preflight
+  assert.match(fs.readFileSync(path.join(SCRIPTS, "delivery_line.py"), "utf8"), /send_cap\.install\(t\)/);
+  assert.match(fs.readFileSync(path.join(SCRIPTS, "send_daily.py"), "utf8"), /send_cap\.preflight\(tally/);
+});
+
+test("Sig's reminder to upgrade Brevo: once a day at 80%, again at 95% marked urgent, a weekly heads-up at 70%", () => {
+  // Sig, Nov 4: "remind me to upgrade Brevo as we get closer to the daily limit."
+  const out = py("scripts/send_cap.py", "--selftest");
+  for (const name of [
+    "Nov 4: 211 of 300 sends no reminder",
+    "245 of 300 (81%) mails one reminder",
+    "the reminder text names the count, the cap and the variable",
+    "the same day again: once a day, no second mail",
+    "95% the same day: one urgent reminder",
+    "95% again: no repeat that day",
+    "SEND_DAILY_CAP raised above the day's count: no reminder",
+    "a flag that cannot be read sends nothing",
+    "the Daily's 7-day average at 71% of 300: a gentle heads-up",
+    "the heads-up comes once a week",
+    "no address in a reminder",
+  ]) assert.match(out, new RegExp(`^ok   ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"), name);
+  // the path that already tells Sig things: the job's SMTP secrets to SIG_TO (log_safe.owner_mail)
+  const ch = readWf("cron-health.yml");
+  const step = steps(ch).find((s) => /name: Tell Sig when Brevo nears its daily limit/.test(s));
+  assert.ok(step, "cron-health.yml has the Brevo reminder step");
+  assert.match(step, /python3 scripts\/send_cap\.py --remind private\/data\/cron-health\.json/);
+  assert.match(step, /OWNER_TO: +\$\{\{ secrets\.SIG_TO \}\}/);
+  assert.match(step, /SEND_DAILY_CAP: +\$\{\{ vars\.SEND_DAILY_CAP \}\}/);
+  assert.match(step, /continue-on-error: true/);
+  assert.match(fs.readFileSync(path.join(SCRIPTS, "send_cap.py"), "utf8"), /mail = log_safe\.owner_mail/);
+});
+
+test("a sender run as the program really wraps smtplib: counts, the cap marker, no address (runtime, not a grep)", async () => {
+  // A tiny sender: delivery_line.start() as __main__, then real smtplib against a local server that takes
+  // two messages and answers the third and fourth with a daily-limit refusal.
+  const os = await import("node:os");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sendcap-"));
+  const script = path.join(dir, "tiny_sender.py");
+  fs.writeFileSync(script, `
+import socketserver, threading, smtplib, sys
+sys.path.insert(0, sys.argv[1])
+import delivery_line
+N = {"data": 0}
+class H(socketserver.StreamRequestHandler):
+    def handle(self):
+        w = lambda s: (self.wfile.write((s + "\\r\\n").encode()), self.wfile.flush())
+        w("220 fake")
+        data = False
+        while True:
+            l = self.rfile.readline()
+            if not l: return
+            l = l.decode().rstrip("\\r\\n")
+            if data:
+                if l == ".":
+                    data = False; N["data"] += 1
+                    w("250 ok" if N["data"] <= 2 else "550 5.7.1 You have exceeded your daily sending limit")
+                continue
+            u = l.upper()
+            if u.startswith(("EHLO", "HELO")): w("250 fake")
+            elif u.startswith("DATA"): data = True; w("354 go")
+            elif u.startswith("QUIT"): w("221 bye"); return
+            else: w("250 ok")
+srv = socketserver.ThreadingTCPServer(("127.0.0.1", 0), H); srv.daemon_threads = True
+threading.Thread(target=srv.serve_forever, daemon=True).start()
+t = delivery_line.start("daily")
+print("wrapped=%s" % bool(smtplib.SMTP.__dict__.get("_send_cap_wrapped")))
+t.waiting = 4
+c = smtplib.SMTP("127.0.0.1", srv.server_address[1], timeout=5)
+for i in range(4):
+    try:
+        c.sendmail("from@example.invalid", ["reader%d@example.invalid" % i], "Subject: x\\r\\n\\r\\nhi")
+        t.sent += 1
+    except smtplib.SMTPException as ex:
+        print("refused " + type(ex).__name__)
+c.quit()
+`);
+  const env = { ...process.env };
+  delete env.DELIVERY_LINE_OFF;
+  let out;
+  try {
+    out = execFileSync("python3", [script, SCRIPTS], { cwd: dir, encoding: "utf8", env, timeout: 60000 });
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  assert.match(out, /^wrapped=True$/m, "delivery_line.start() as __main__ wraps smtplib.SMTP");
+  assert.equal((out.match(/^SEND-CAP sender=daily kind=refused code=550 sent=2$/gm) || []).length, 1, out);
+  assert.match(out, /^DELIVERY sender=daily sent_readers=2 waiting=4 dry=0 cap_refused=2 smtp=2$/m, out);
+  assert.doesNotMatch(out, /@/, "no address in the output");
+});
+
+test("checker, PR 331: never slow a send, no false reds, never raise, stale markers clear, flag before mail", () => {
+  const out = py("scripts/send_cap.py", "--selftest");
+  for (const name of [
+    "a dead remote adds under 6 s, says unknown, and the send proceeds",
+    "no saved count: the marker says used=unknown, not 0",
+    "mailbox over quota is not the cap",
+    "a message size limit is not the cap",
+    "the cap text on DATA is the cap",
+    "every recipient refused, even for a limit, is a mailbox reply, never the cap",
+    "one 421 is a note, no marker",
+    "a second 421 in one run is the cap",
+    "a tally whose extra is None: the wrapper raises nothing of its own",
+    "note_refusal never raises",
+    "a raised cap clears a stale preflight marker",
+    "a refusal stays red for the window, even with a raised cap",
+    "the flag is set before the mail",
+    "a flag that does not take sends nothing (no mail every run)",
+    "the report-day projection adds the report-only list, each reader once",
+  ]) assert.match(out, new RegExp(`^ok   ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"), name);
+  // the preflight runs only in the Daily, before it connects; the wrapper reads nothing over the network
+  const daily = fs.readFileSync(path.join(SCRIPTS, "send_daily.py"), "utf8");
+  assert.ok(daily.indexOf("send_cap.preflight(tally") < daily.indexOf("conn = connect()"), "the Daily's preflight runs before connecting");
+  const cap = fs.readFileSync(path.join(SCRIPTS, "send_cap.py"), "utf8");
+  const wrapper = cap.slice(cap.indexOf("def install("), cap.indexOf("# ───────────────────────────── 2. preflight"));
+  assert.doesNotMatch(wrapper, /preflight\(|urlopen|list_source/, "the SMTP wrapper never runs the preflight or a network read");
+});
