@@ -1,17 +1,5 @@
 name: Planting date station normals
-
-# Writes data/planting/wi.json and data/planting/mn.json for planting-date.html:
-# NOAA NCEI 1991-2020 station normals (last spring and first fall 32 F and
-# 28 F dates at the 10/50/90% levels, and daily growing degree days base 50,
-# max 86). Read by scripts/fetch_planting_normals.py. The page shows its
-# "station numbers load after the first NOAA read" state until these exist.
-#
-# FIRST RUN: dispatch once with "probe" ticked. It saves the station list,
-# the normals listing and Madison's and Minneapolis's raw CSVs to
-# data/planting-normals-raw/ on the raw branch (never deployed), so the real
-# column names and date format can be checked against the parser. Then
-# dispatch again without probe. Normals change once a decade; the yearly
-# run only picks up NCEI corrections.
+# Planting date station normals.
 
 on:
   workflow_dispatch:
@@ -21,15 +9,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '23 9 2 2 *'   # yearly, Feb 2, before planting season
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: '23 9 2 2 *'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -38,7 +18,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

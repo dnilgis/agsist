@@ -1,21 +1,9 @@
 name: Ag stocks
+# Ag stocks.
 
-# /ag-stocks: ag company closes, SEC filings and the AGSIST Ag 20 (scripts/agstocks.py,
-# page scripts/build_agstocks_page.py). Approved by Sig Oct 29, 2026.
-# Weekdays after the U.S. close: 22:17 UTC is 5:17 p.m. New York in winter, 6:17 p.m. in
-# summer, so the day's bar is the close either way. Each step fails soft and keeps the
-# last good file; the page says how old its numbers are.
 on:
   schedule:
     - cron: '17 22 * * 1-5'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -25,7 +13,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

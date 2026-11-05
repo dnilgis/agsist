@@ -1,60 +1,9 @@
 name: farmland-atlas
+# farmland-atlas.
 
-# The Farmland Atlas (/farmland-atlas). Ten fetches, one build, one commit.
-#
-#   heat    NOAA NCEI nClimDiv county minimum temperature   (no key, ~40 MB)
-#   water   USDA Census 2022 via NASS Quick Stats + USGS 2015 (NASS_API_KEY)
-#   loss    USDA RMA cause of loss, 1989 onward              (no key; first run ~38 zips, later 2)
-#   sob     USDA RMA Summary of Business county premium      (no key; first run ~38 zips, later 2)
-#   value   USDA Census land value per acre, 2012/17/22      (NASS_API_KEY)
-#           + NASS Land Values state survey, newest year     (same key)
-#   crp     FSA CRP enrolment and contract expirations       (no key, two xlsx)
-#   drought U.S. Drought Monitor weeks in D2+/D3+ by year    (no key; first run ~1,450 calls)
-#   energy  EIA-860 solar, wind and battery by county        (no key, one zip)
-#   wells   Nebraska wells and Kansas water rights           (no key, two ArcGIS services)
-#   reads   one written read per county                      (ANTHROPIC_API_KEY; skipped when unset)
-#
-# THE SIX IN THE MIDDLE WERE WRITTEN AND NEVER WIRED -- 2026-09-17. Every one
-# of them had a fetcher in scripts/, a layer function in atlas_layers_p1.py and
-# a passing selftest, and not one had ever produced a byte: `git log` on each
-# data/atlas/raw/*.json was empty and atlas.json read sob_ok 0, value_ok 0,
-# crp_ok 0, drought_ok 0, energy_ok 0, wells_ok 0. There was no fault to find
-# because build_farmland_atlas.py handles a missing raw file by design -- "no
-# raw file, layer will read 'not yet measured'" -- so six dark layers looked
-# exactly like six working ones. Nothing was broken; nothing was called.
-#
-# sob and drought both skip to the last two years when their raw file already
-# exists, so only the FIRST run of each is long. refetch_all forces the whole
-# history back through them.
-#
-# THE RAW PULLS LIVE ON THE `raw` BRANCH, NOT MAIN -- 2026-10-16. Pages
-# publishes all of main, and data/atlas/raw/ was 74 MB no page ever fetches.
-# Each run unpacks them from raw (scripts/pull_raw.sh) before any fetch, so the
-# fetchers still find last month's files and the build reads every layer, and
-# saves them back to raw (scripts/push_raw.sh) after the build. The paths are
-# in .gitignore, so `git add -A data/atlas` never puts them back on main.
-# drought.json joined them on Oct 29 (fx/sizeinputs; the PR checks pull it for
-# test/drought-county-week.test.mjs), and so did the CRP workbooks in
-# data/atlas/src/. If raw cannot be read the run stops before fetching: a build
-# on missing raw files would mark those layers "not yet measured" and commit a
-# dark map.
-#
-# Monthly, because none of the sources moves faster: NCEI refreshes the county
-# file around the 8th, RMA reposts the current crop year through the season,
-# NASS census and cash rent are yearly. Off the hour and off the top of the
-# month (rule 27). The first run must be started by hand from the Actions tab;
-# nothing on the page appears until it has.
 on:
   schedule:
-    - cron: "17 9 12 * *"      # 12th of each month, 09:17 UTC
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: "17 9 12 * *"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -89,7 +38,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -125,15 +73,13 @@ jobs:
     concurrency:
       group: farmland-atlas
       cancel-in-progress: false
-    timeout-minutes: 300     # the first RMA pull is 38 zips; later runs are minutes
+    timeout-minutes: 300
     env:
       LAYERS: ${{ github.event.inputs.layers }}
       IN_LOSS_ALL: ${{ github.event.inputs.loss_all }}
       IN_REFETCH_ALL: ${{ github.event.inputs.refetch_all }}
       IN_DROUGHT_YEARS: ${{ github.event.inputs.drought_years }}
     steps:
-      # The job's own start time, for atlas_reads.py: its batch wait ends early
-      # enough that the Commit step still runs inside the 300-minute ceiling.
       - name: Note the start time
         run: echo "ATLAS_JOB_T0=$(date +%s)" >> "$GITHUB_ENV"
 
@@ -151,8 +97,6 @@ jobs:
       - name: Install
         run: pip install --quiet openpyxl==3.1.5 pyarrow==26.0.0
 
-      # Offline, no keys. If a parser is broken there is no point downloading
-      # a gigabyte of RMA files to find out.
       - name: Selftests (gate)
         working-directory: scripts
         run: |
@@ -179,10 +123,6 @@ jobs:
           python atlas_reads_cleanup.py --selftest
           python atlas_geometry.py --selftest
 
-      # Before any fetch: the fetchers append to last month's files (sob and
-      # drought refetch only the last two years when their file exists) and the
-      # build reads every layer. pull_raw.sh fails the run if the branch or the
-      # folder is missing; the check below fails it if the pulls came back thin.
       - name: Unpack the raw pulls (raw branch)
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -204,10 +144,6 @@ jobs:
           done
           echo "running: $L"
 
-      # Each fetch may fail on its own. A failed fetch leaves its raw file as it
-      # was (or absent), the builder marks that layer not yet measured or keeps
-      # last month's, and the run still builds and commits what did arrive. The
-      # step turns red so the failure is visible in the Actions list.
       - name: Fetch night heat (NCEI)
         if: steps.which.outputs.heat == '1'
         continue-on-error: true
@@ -220,14 +156,6 @@ jobs:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_atlas_water.py
 
-      # RMA_PROXY_BASE IS WHAT MAKES THE WORKER REAL. atlas_common.get() has
-      # read it since it was written and NO workflow ever set it, so
-      # workers/atlas-rma-proxy.js has been a contingency that could not fire:
-      # pubfs-rma refuses a runner some days (2026-09-13, first run) and the
-      # direct route is all the job had. It is a repository VARIABLE, not a
-      # secret -- the Worker's address is not sensitive -- and an unset one is
-      # an empty string, which atlas_common treats as "no proxy", exactly as
-      # today. Setting it changes nothing until RMA refuses.
       - name: Fetch loss record (RMA)
         if: steps.which.outputs.loss == '1'
         continue-on-error: true
@@ -240,29 +168,14 @@ jobs:
             python scripts/fetch_atlas_loss.py
           fi
 
-      # ── THE SIX THAT WERE NEVER CALLED ────────────────────────────────────
-      # Cheapest first, so a cancelled run still leaves the quick layers on the
-      # page. Every one is continue-on-error for the reason stated above: a
-      # layer that fails is marked "not yet measured" and the other nine still
-      # build and commit.
-
-      # FSA has never answered a runner; RMA_PROXY_BASE gives it a second route
-      # through the Worker's /fsa/ path (workers/atlas-rma-proxy.js).
       - name: Fetch CRP (FSA)
         if: steps.which.outputs.crp == '1'
         continue-on-error: true
-        # FSA refuses runners. When the two workbooks have been uploaded to
-        # data/atlas/src (downloaded in a browser from the CRP statistics page,
-        # names unchanged), they are read from there and nothing is fetched.
-        # Since Oct 29 that folder lives on the private raw branch, not main (no
-        # page reads it): upload a new workbook there, at data/atlas/src/. The
-        # unpack is soft: without the folder the fetch below is tried as before.
         env:
           RMA_PROXY_BASE: ${{ vars.RMA_PROXY_BASE }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           RAW_SOFT=1 bash scripts/pull_raw.sh data/atlas/src
-          # the newest workbook wins if an older one was left in the folder (86-24 vs 86-25)
           H=$(ls data/atlas/src/*[Hh][Ii][Ss][Tt]*.xlsx 2>/dev/null | sort -V | tail -1)
           E=$(ls data/atlas/src/*[Ee][Xx][Pp][Ii][Rr]*.xlsx 2>/dev/null | sort -V | tail -1)
           ls -l data/atlas/src/ 2>/dev/null || true
@@ -280,8 +193,6 @@ jobs:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_atlas_value.py
 
-      # The newest state land value (NASS Land Values, every summer), printed
-      # beside the 2022 census value on every county page. Rides with value.
       - name: Fetch state land values (NASS survey)
         if: steps.which.outputs.value == '1'
         continue-on-error: true
@@ -306,8 +217,6 @@ jobs:
         continue-on-error: true
         run: python scripts/fetch_atlas_wells.py
 
-      # Ten more state registers. A state whose pull fails keeps its last good
-      # pull; the step goes red only when none came back.
       - name: Fetch irrigation wells, other state registers
         if: steps.which.outputs.wells == '1'
         continue-on-error: true
@@ -330,13 +239,11 @@ jobs:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_atlas_livestock.py
 
-      # 270 monthly parquet files, about 220 MB, 1996 on
       - name: Fetch freeze dates and heat units (NOAA nClimGrid daily, AWS)
         if: steps.which.outputs.frost == '1'
         continue-on-error: true
         run: python scripts/fetch_atlas_frost.py
 
-      # continue-on-error hides a failed fetch behind a green run; say so out loud
       - name: Frost fetch check
         if: steps.which.outputs.frost == '1'
         run: |
@@ -344,8 +251,6 @@ jobs:
             echo "::warning title=Frost layer::data/atlas/raw/frost.json was not written. Open the step 'Fetch freeze dates and heat units' and read its last lines."
           fi
 
-      # First run pulls every year since 1989, the same shape as loss; after
-      # that the raw file exists and only the last two years are refetched.
       - name: Fetch premium book (RMA Summary of Business)
         if: steps.which.outputs.sob == '1'
         continue-on-error: true
@@ -358,16 +263,10 @@ jobs:
             python scripts/fetch_atlas_sob.py
           fi
 
-      # The long pole on a first run: one Drought Monitor call per county,
-      # ~1,450 of them, paced 0.2s apart by the fetcher. Later runs refetch the
-      # current and previous year only. Last of the fetches for that reason.
       - name: Fetch drought history (USDM)
         if: steps.which.outputs.drought == '1'
         continue-on-error: true
         run: |
-          # drought_years (e.g. 2024) refetches whole years for every county and
-          # keeps every other year; a year only comes back where it now has at
-          # least as many weekly maps (2026-10-16: 2024 had been cut to 1 map).
           if [ -n "$IN_DROUGHT_YEARS" ]; then
             python scripts/fetch_atlas_drought.py --years "$IN_DROUGHT_YEARS"
           elif [ "$IN_REFETCH_ALL" = "yes" ]; then
@@ -376,34 +275,15 @@ jobs:
             python scripts/fetch_atlas_drought.py
           fi
 
-      # --seed rewrites the static "Across the Atlas" block in farmland-atlas.html
-      # between its SEED markers, so a reader with no JavaScript (and a crawler)
-      # still gets the national numbers of this build.
-      # A fixed hash seed: a few sums run over sets, and a float summed in another
-      # order can round a dollar differently, move a county's fingerprint and hide
-      # its read (27111 and 27119 did on 9/19 with no data change).
       - name: Build the Atlas
         env:
           PYTHONHASHSEED: "0"
         run: python scripts/build_farmland_atlas.py --seed farmland-atlas.html
 
-      # A county whose numbers moved gets a new fingerprint, and the page hides a
-      # read whose fingerprint is old. Salvage keeps each such read, cut to the
-      # sentences that still pass against the new numbers; no API, no cost. A
-      # paid run of the reads step below rewrites them in full.
       - name: Keep the reads in step with the build
         continue-on-error: true
         run: python scripts/atlas_reads.py --salvage
 
-      # Skipped, not failed, when the key is not set: the page shows numbers
-      # without reads rather than nothing.
-      # A BATCH, AND AN ANNOTATION WHEN THE ACCOUNT SAYS NO.
-      # atlas_reads.py submits the counties as one Message Batch (half price)
-      # and waits for it, up to 180 minutes and never past 255 minutes into the
-      # job. Out of credit, a usage limit, a bad key or an unknown model stops it
-      # before any read is overwritten and exits 1. This step is
-      # continue-on-error, so the run stays green and the build's commit goes
-      # through; the stop shows as an error annotation on the run's summary.
       - name: County reads
         if: steps.which.outputs.reads == '1'
         continue-on-error: true
@@ -425,10 +305,6 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A data/atlas farmland-atlas.html
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          # NAMES ONLY THE LAYERS THAT LANDED. Ten hardcoded fields would print
-          # "sob 0, value 0, crp 0" for however long a layer stays dark and read
-          # as noise; a layer at zero is absent from the line instead, so the
-          # commit says what this run actually measured.
           C=$(python - <<'PY'
           import json
           c = json.load(open('data/atlas/atlas.json'))['counts']
@@ -441,8 +317,6 @@ jobs:
           PY
           )
           git commit -m "data: farmland atlas ($C)"
-          # other workflows commit to main all day; rebase and retry rather than
-          # lose a five-hour run to one rejected push
           for i in 1 2 3 4; do
             git rebase --abort 2>/dev/null || true
             if git pull --rebase --autostash origin main && git push; then exit 0; fi
@@ -450,14 +324,8 @@ jobs:
           done
           echo "push failed after 4 attempts"; exit 1
 
-      # After the main commit, and even when the build failed: a five-hour
-      # fetch is never thrown away. Copies over the same paths on raw and never
-      # deletes there. A failed push turns the run red; the next run still
-      # starts from the last pulls that did land.
       - name: Save the raw pulls to the raw branch
         if: ${{ !cancelled() }}
-        # *.json.gz too: climate_monthly.json.gz (every month of rain, highs and
-        # lows per county, for analysis; no page or build reads it).
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'

@@ -1,52 +1,8 @@
 name: COT Release Watch
-
-# WHY A WATCHER AND NOT MORE CRONS
-# --------------------------------
-# cot.yml fires at :45 and :15 past the release hours. On a good week that puts
-# the new report on the page fifteen to forty-five minutes after CFTC published
-# it, and that is on top of the platform's own delay: measured on this repo,
-# 2026-08-26, only 9 of 22 scheduled fires arrived at all, and one evening job
-# ran 82 minutes late. The readers who care about this page are the ones
-# sitting in front of it at 3:30 watching a countdown.
-#
-# So this file does not try to guess the minute. It PROBES, every five minutes
-# across both DST release windows, and does the work only when the answer has
-# actually changed:
-#
-#   * The probe is one HTTP call to CFTC's public reporting API for the single
-#     latest corn row -- a few hundred bytes, no zip, no yfinance. A run that
-#     finds nothing new is over in about twenty seconds.
-#   * Twenty-nine chances an afternoon means a dropped or delayed cron costs
-#     five minutes, not a week.
-#   * Monday through Friday, because six of 2026's releases are Mondays and
-#     holiday weeks can push one to a Tuesday or Wednesday. The probe is cheap
-#     enough that covering days which publish nothing is the right trade.
-#
-# It shares cot.yml's concurrency group, so the two can never write data/ at
-# the same time.
-
-#
-# THE CLOCK IS NOW THE BIDS AND PRICES RUNS, NOT GITHUB'S SCHEDULER (2026-10-09).
-# The */5 cron asked for 36 fires a weekday and got about one, hours late:
-# 22:54, 23:28 and 23:39 UTC on Oct 6, 7 and 8, and none by 21:33 on Friday
-# Oct 9, so that week's report waited for a hand dispatch. Until Oct 7 the old
-# five-hour price loop dispatched this watcher; when prices.yml became one
-# fetch per run that dispatch moved behind its market-hours gate, which shuts
-# at 14:00 Central, exactly when this window opens, and it never fired again.
-#
-# So this runs after every "Fetch Grain Bids" and every "Fetch Prices", both
-# started by cron-job.org every 15 minutes, which puts a probe roughly every
-# seven minutes. The gate job stops a run in seconds outside Mon-Fri
-# 19:00-23:59 UTC, and inside it once this week's report is in data/cot.json
-# (scripts/cron_gate.py cot). Neither parent reads anything this writes, and
-# this commits with [skip ci] on GITHUB_TOKEN, so nothing loops.
-# The cron stays as a thin fallback for a day cron-job.org is down, moved off
-# :00 and :30 and cut from 36 fires a weekday to 6.
+# COT Release Watch.
 
 on:
   schedule:
-    # 19:00-21:59 UTC covers 3:00-4:59pm ET in BOTH daylight and standard time,
-    # which is where the 3:30pm ET release lands either way.
     - cron: '13,43 19-21 * * 1-5'
   workflow_run:
     workflows: ["Fetch Grain Bids", "Fetch Prices"]
@@ -77,7 +33,6 @@ jobs:
     outputs:
       go: ${{ steps.report.outputs.go || steps.window.outputs.go }}
     steps:
-      # Cheapest first: no checkout at all outside the release window.
       - id: window
         run: |
           W=$(date -u +%u); H=$(( 10#$(date -u +%H) ))
@@ -116,11 +71,6 @@ jobs:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
 
-      # ── THE PROBE ────────────────────────────────────────────────────────
-      # Nothing below this step runs unless CFTC's latest report date is newer
-      # than the one already committed. Deliberately compares DATES, not
-      # strings: data/cot.json stores "September 01, 2026" and the API returns
-      # "2026-09-01T00:00:00.000".
       - name: Has the report moved?
         id: probe
         run: |
@@ -147,9 +97,6 @@ jobs:
                   rows = json.loads(r.read().decode())
               latest = datetime.fromisoformat(rows[0]["report_date_as_yyyy_mm_dd"].split("T")[0]).date()
           except Exception as e:
-              # A probe that cannot reach CFTC must not be read as "nothing new".
-              # It reports unknown, the run stops, and the next probe in five
-              # minutes tries again. cot.yml's own schedule is the backstop.
               print(f"# probe failed: {e}", file=sys.stderr)
               print("moved=false")
               print("reason=probe-failed")
@@ -178,18 +125,6 @@ jobs:
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         run: pip install --quiet yfinance==1.7.0 pandas==3.0.6
 
-      # ── THE HOT PATH ─────────────────────────────────────────────────────
-      # Everything here is O(one week). The twenty-year archive is NOT
-      # re-downloaded: cot_deep.py --append takes the new week from the same
-      # API the probe used and lays it on the committed file. A rebuild is
-      # twenty zips and several hundred megabytes; it belongs in the weekly
-      # reconciliation job, not between a reader and the report they are
-      # waiting for.
-      # Both parsers are proved against fixtures built from CFTC's real column
-      # names -- BOTH spellings, the archive zip's and the API's -- before
-      # anything reads live data. The failure this guards against is silent:
-      # a renamed column read as zero flattens a trader group's chart and
-      # nobody notices for a month.
       - name: Prove the readers
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         run: |
@@ -204,20 +139,6 @@ jobs:
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         run: python scripts/enrich_cot_prices.py
 
-      # CONTINUE-ON-ERROR ON ALL THREE, AND IT IS NOT SOFTENING A FAILING CHECK.
-      # The "Analysis result" step at the bottom still fails the run. What it
-      # buys is ordering: the COT numbers commit either way.
-      #
-      # The specific case this exists for is the FIRST release after this kit
-      # is uploaded. data/cot-deep.json does not exist until the deep rebuild
-      # has been run by hand, so --append exits 1, and without this the whole
-      # job dies before the commit step and the page never gets this week's
-      # report at all. A missing analysis panel is a hidden section. A missing
-      # COT update is the thing readers came for.
-      # data/cot-deep.json lives on the private raw branch (Nov 4: no page
-      # reads it). Unpacked before the append; a failed fetch fails this step,
-      # the append then finds no file and stops, and the COT numbers still
-      # publish (continue-on-error, as for the append). Never commits it to main.
       - name: Deep history from raw
         id: rawpull
         continue-on-error: true
@@ -232,9 +153,6 @@ jobs:
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         run: python scripts/cot_deep.py --append
 
-      # Saved back only after a clean append: a failed one never overwrites
-      # the good copy on raw. RAW_SOFT: a failed save is a warning, the COT
-      # data still publishes; Sunday's cot-deep-rebuild.yml rebuilds the file.
       - name: Save the deep history to raw
         if: (steps.probe.outputs.moved == 'true' || inputs.force == true) && steps.deep.outcome == 'success'
         env:
@@ -242,16 +160,12 @@ jobs:
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "cot deep history" data/cot-deep.json
 
-      # The statistics are checked against fixtures BEFORE they are computed on
-      # live data. A broken percentile is worse than a late one.
       - name: Prove the statistics
         id: selftest
         continue-on-error: true
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         run: python scripts/cot_analysis.py --selftest
 
-      # Only if the selftest passed. Computing statistics on live data with
-      # known-broken arithmetic is how a wrong number reaches a reader.
       - name: Run the analysis
         id: analysis
         continue-on-error: true
@@ -281,19 +195,6 @@ jobs:
           PY
           trap - ERR
 
-      # ── AND THE PAGE THAT QUOTES THIS NUMBER ─────────────────────────────
-      #
-      # THE POSITIONING LINE ON /whats-priced-in COMES FROM data/cot.json, AND
-      # NOTHING HERE REBUILT IT. This job updated the COT file and committed
-      # with [skip ci], so the next report card kept quoting the PREVIOUS
-      # Tuesday's positions until the 11:20 UTC daily cron the following
-      # morning. On 2026-09-11 that meant a WASDE card carrying Sep 1 numbers
-      # for sixteen hours after CFTC published Sep 8 — on the one day a month
-      # anybody reads the positioning line closely.
-      #
-      # It is one stdlib script over a file already on disk: about a second.
-      # continue-on-error for the same reason as the three steps above — the
-      # COT numbers are what readers came for and they commit either way.
       - name: Refresh the report card's positioning line
         id: wpi
         continue-on-error: true
@@ -319,8 +220,6 @@ jobs:
         run: |
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          # Same shape as cot.yml: our regenerated files are authoritative, so
-          # snapshot them, hard-sync to the remote, lay ours back on top.
           for f in data/cot.json data/cot-history.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
             mkdir -p "/tmp/keep/$(dirname "$f")"; cp "$f" "/tmp/keep/$f" 2>/dev/null || true
           done
@@ -331,13 +230,7 @@ jobs:
               [ -f "/tmp/keep/$f" ] && cp "/tmp/keep/$f" "$f"
             done
             git add data/cot.json data/cot-history.json cot.html
-            # The report card's positioning line, refreshed above. Guarded the
-            # same way: on a run where that step failed these are unchanged,
-            # and an unchanged path is not an error.
             git add data/whats-priced-in.json usda-calendar.html 2>/dev/null || true
-            # The analysis does not exist until the deep rebuild has run once.
-            # Unguarded, `git add` on a missing path exits 128 and the commit
-            # never happens. (data/cot-deep.json itself goes to raw above.)
             git add data/cot-analysis.json 2>/dev/null || true
             if git diff --staged --quiet; then
               echo "Probe said the report moved but nothing changed on disk — investigate."
@@ -357,17 +250,6 @@ jobs:
           echo "the previous report. Fix the baker and re-run."
           exit 1
 
-      # The analysis is allowed to fail without taking the COT numbers with it.
-      # It is not allowed to fail quietly: the sections that read
-      # data/cot-analysis.json hide themselves when it is stale, so a silent
-      # failure here is a page that loses half its content with nothing in the
-      # Actions list to say why.
-      # 2026-10-01: this used to fire on every ordinary "nothing moved" run --
-      # steps.selftest.outcome == 'skipped' is also true when the probe found
-      # no new report and the three steps above correctly never ran, which is
-      # 29 of every 30 five-minute checks. Added the moved/force guard so this
-      # only evaluates on the runs where the analysis pipeline was actually
-      # supposed to execute.
       - name: Analysis result
         if: (steps.probe.outputs.moved == 'true' || inputs.force == true) && (steps.rawpull.outcome == 'failure' || steps.deep.outcome == 'failure' || steps.selftest.outcome == 'failure' || steps.analysis.outcome == 'failure' || steps.selftest.outcome == 'skipped')
         run: |
@@ -383,29 +265,10 @@ jobs:
           echo "report or hiding themselves. Fix before next Friday."
           exit 1
 
-      # THE PAGE MUST SAY WHAT THE DATA SAYS. On 2026-10-09 this job committed
-      # the Oct 6 report while the bake above had died (seed_static.py used a
-      # Python 3.12 f-string and this job ran 3.11), so cot.html's title kept
-      # the Sept 29 net. "Bake result" catches a bake that fails; this, the last step, catches
-      # any way the committed cot.html and data/cot.json end up apart.
       - name: cot.html matches data/cot.json
         if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
         run: python scripts/check_cot_baked.py
 
-      # ── FUNDS THIS WEEK ──────────────────────────────────────────────────
-      # The weekly COT email (Sig, Oct 21 2026), sent from here, right after
-      # the new report is committed: no schedule of its own. Last on purpose,
-      # so a failed send never stops the data, the bake or the checks above.
-      # scripts/send_cot_weekly.py refuses a report more than 3 days past its
-      # release, and one /flag marker a report (cot:<as-of date>) keeps a
-      # rerun or a forced run from mailing anyone twice. A manual run is a dry
-      # run unless send_email is ticked. Readers: the worker's cot list (v5.44).
-      # Secrets: the report-day sender's. No new secret.
-      # Oct 23: the script is a dry run unless SEND=1. The run after a new
-      # report sends to the list only once the repo variable FUNDS_WEEKLY_LIVE
-      # is 1 (Sig's OK for a new scheduled email, STANDING-DECISIONS Oct 21);
-      # until then it renders and counts, and sends nothing. Preview to Sig
-      # only: funds-weekly.yml, mode preview.
       - name: Test the Funds this week sender and its loop
         id: cot_mail_test
         if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
@@ -413,8 +276,6 @@ jobs:
           python scripts/send_cot_weekly.py --selftest
           python3 scripts/test_send_loops.py
 
-      # Nov 4 (#325): never mail the list when data/cot-deep.json could not be unpacked
-      # from raw (the step is soft so the COT numbers still publish); "Analysis result" is red.
       - name: Email Funds this week
         if: ${{ !cancelled() && steps.commit.outcome == 'success' && steps.cot_mail_test.outcome == 'success' && steps.rawpull.outcome == 'success' }}
         env:
@@ -427,7 +288,7 @@ jobs:
           REPLY_TO:     ${{ secrets.REPLY_TO }}
           LIST_URL:     ${{ secrets.LIST_URL }}
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SEND:         ${{ ((github.event_name != 'workflow_dispatch' && vars.FUNDS_WEEKLY_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.send_email == true)) && '1' || '' }}
         run: python scripts/send_cot_weekly.py

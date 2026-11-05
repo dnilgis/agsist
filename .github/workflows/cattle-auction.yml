@@ -1,21 +1,5 @@
 name: Cattle auction prices
-
-# Writes data/cattle-auction.json for cattle-auction-prices.html (and, from it,
-# data/feeder-index.json: scripts/build_feeder_index.py): feeder steer
-# and heifer prices by weight class at sale barns, from public USDA AMS
-# auction report PDFs, read by scripts/fetch_cattle_auction.py. The barn list
-# and report numbers are in scripts/cattle_auction_sources.json. The page
-# shows a "prices load after the first USDA read" box until this file exists.
-#
-# FIRST RUN: dispatch this once with "probe" ticked. It saves the AMS auction
-# listing and every report it could get to data/cattle-auction-raw/ and
-# saves them on the raw branch (never deployed). The parser was written without a real report in hand: check
-# the saved text against it, add one as a selftest fixture, then run without
-# probe.
-#
-# NEW BARNS: the AMS listing page answers a script with 403, so the probe can
-# also scan report numbers ("scan" input, e.g. 1200-2300) and keep each
-# report's own title. A barn with slug null is then found by its title.
+# Cattle auction prices.
 
 on:
   workflow_dispatch:
@@ -29,16 +13,8 @@ on:
         type: string
         default: ""
   schedule:
-    - cron: '23 1 * * 2-6'    # evening after each sale day (Central), most barns sell Mon-Fri
-    - cron: '37 14 * * 1-5'   # morning pass for reports filed overnight
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: '23 1 * * 2-6'
+    - cron: '37 14 * * 1-5'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -47,7 +23,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -111,29 +86,15 @@ jobs:
           else
             python scripts/fetch_cattle_auction.py --probe
           fi
-      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
-      # Runs even when the probe step failed part way, so what it did capture is kept. The listing stays on main too: the normal run reads it.
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "cattle-auction probe" data/cattle-auction-raw
-      # The same run writes data/cull-cows.json (scripts/fetch_cull_cows.py): slaughter cow and bull
-      # prices from the slaughter part of these reports and the slaughter_reports numbers in the sources.
       - name: Fetch and write data/cattle-auction.json and data/cull-cows.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_cattle_auction.py
-      # AGSIST weekly feeder prices by region and weight, and RMA's feeder steer
-      # value beside the futures (data/feeder-index.json, read by
-      # components/feeder-index.js on the cattle, sale barn and LRP pages). It
-      # reads the LRP and futures files as committed; a failure here never
-      # holds back the barn prices.
-      # Since Nov 3 2026 (Sig: "Ship + use USDA live") the index's barn sales are read
-      # through USDA My Market News (MARS) first, with the reader the past weeks use
-      # (backfill_feeder_index.mars_fetch: one ask per report, 1.5 s apart, 12 minutes at
-      # most); a barn's PDF read above counts only for a barn and week MARS lacks. The key
-      # is an HTTP basic user name, never printed; no key or no answer and the PDF reads stand.
       - name: Build data/feeder-index.json
         if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         continue-on-error: true
@@ -165,10 +126,6 @@ jobs:
           done
           echo "Failed to push after 5 attempts."; exit 1
 
-      # Oct 21 (Sig, insight machine): per-barn receipts history. Every sale in the feed with the
-      # head the report says sold that day, one CSV per Central day, to the private raw branch at
-      # history/cattle-auction/receipts/ (scripts/history_append.py cattle). After the commit,
-      # and it can never fail the run.
       - name: Barn receipts history to the raw branch
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         continue-on-error: true

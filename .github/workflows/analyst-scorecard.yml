@@ -1,21 +1,14 @@
 name: Build Analyst Scorecard
+# Build Analyst Scorecard.
 
 on:
   push:
-    branches: [main]   # these jobs commit and rebase onto main; on a PR branch that rebase fails (2026-10-06)
+    branches: [main]
     paths:
       - "data/analyst-estimates.json"
       - "scripts/build_analyst_scorecard.py"
   schedule:
-    - cron: "25 11 * * *"   # 11:25 UTC daily — rolls the "next report" panel as dates pass
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: "25 11 * * *"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -25,7 +18,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -71,14 +63,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      # THE RULE BEFORE THE BUILD. Both builders now share one definition of
-      # "in line" (scripts/report_bands.py); before they had one each and
-      # disagreed on the page about one number. Two seconds, no network.
       - name: Test the shared scoring rule
         run: python scripts/report_bands.py --selftest
-      # THE LOCK RULE. The model's own yield calls are joined onto the board from
-      # data/nowcast-direction.json, and only a call locked BEFORE the report it
-      # forecasts is allowed on. Ten cases, no network, under a second.
       - name: Test the locked-call rule
         run: python scripts/build_analyst_scorecard.py --selftest
       - name: Build analyst-scorecard.json
@@ -87,7 +73,7 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          python scripts/prerender_wpi_scorecard.py || true   # bake leaderboard into WPI page; never block
+          python scripts/prerender_wpi_scorecard.py || true
           git add data/analyst-scorecard.json usda-calendar.html cot.html
           if git diff --staged --quiet; then
             echo "No change."

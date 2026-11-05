@@ -1,30 +1,9 @@
 name: List cleanup
-# Daily: drop addresses that bounced for good, fix obvious domain typos
-# (gmail.comb, gmial.com) on the Daily and hail lists, and email Sig what
-# changed. Mondays it emails a summary even when nothing changed.
-# The log shows counts only; addresses go only into the email.
-#
-# Removing an address by hand: workflow inputs show on the PUBLIC run page,
-# so there is no input for it. Put the addresses (comma separated) in the
-# repo secret LIST_REMOVE (Settings > Secrets and variables > Actions), run
-# this workflow by hand with dry_run off, then clear the secret. Scheduled
-# runs ignore LIST_REMOVE, so a reader who signs up again later stays on.
-#
-# Unsubscribe emails (Gmail's Unsubscribe button mails news@agsist.com): read
-# from the same inbox as the bounces. If news@ forwards to a different mailbox
-# than the sending login, set the secrets UNSUB_IMAP_USER and UNSUB_IMAP_PASS
-# (and UNSUB_IMAP_HOST if it is not Gmail); left empty, the SMTP login is used.
+# List cleanup.
+
 on:
   schedule:
     - cron: "23 13 * * *"
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -37,7 +16,6 @@ on:
 permissions:
   contents: read
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

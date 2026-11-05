@@ -1,20 +1,9 @@
 name: tenure
+# tenure.
 
-# Census of Agriculture land-ownership data (Farmland Atlas tenure layer and
-# its national picture; /land-tenure retired 2026-10 to a stub). The census
-# is 5-yearly (last 2022); this exists to seed the data and re-run when a
-# new census drops. Annual cron is just a cheap safety net.
 on:
   schedule:
-    - cron: "25 6 15 2 *"      # Feb 15 yearly
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: "25 6 15 2 *"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -24,7 +13,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

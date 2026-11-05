@@ -1,5 +1,6 @@
 name: agtalk-probe
-# One-off, dispatch-only: read AgTalk robots.txt and terms before any reader is built.
+# agtalk-probe.
+
 on:
   workflow_dispatch:
 permissions:

@@ -1,58 +1,6 @@
 name: Monthly land sale email
+# Monthly land sale email.
 
-# New farm sales recorded last month within 10, 25 or 50 miles of a reader's ZIP, one email
-# on the 3rd of each month to the readers who asked beside the recorded sales (subs worker
-# v5.55, topic landsales:<ZIP>:<miles>; scripts/send_land_alert.py, numbers from
-# scripts/land_alert.py). Sig approved the list, the sender and this schedule on Oct 23, 2026.
-# Illinois, Wisconsin, Indiana (on since Oct 27, 2026), Vermont and New Jersey (Oct 29); scripts/land_alert.py STATES.
-#
-# Signups on (Sig approved Oct 27, 2026: "Turn on land sale email alert signups"). The ask tells a
-# reader the first email is due the next 3rd.
-# THE LIST GETS NOTHING UNTIL THE SEND GATE IS ON: the scheduled run sends only when the repo
-# variable LANDSALES_MONTHLY_LIVE is 1, and so does a manual "send" (the script refuses a send
-# without it too). Until then a scheduled run is a dry run: counts and samples in the log.
-# The route is the Daily's SMTP_* and FROM_ADDR secrets (Sig, Oct 23: until Plan A sending is
-# migrated, new list emails go the way the Daily does; BUILD-RULES 12 stays the target).
-#
-#   mode dry      (default) counts the list and renders the samples. Sends nothing.
-#   mode preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per sample
-#                 (Chetek 54728 and Charleston, IL 61920, 25 miles, or the sample input), any
-#                 month. BUILD-RULES 13: the copy that goes through the spam and link checkers
-#                 before the list gets anything.
-#   mode send     the list, the month just ended, once per reader, topic and month (the
-#                 worker's mo mark). Needs LANDSALES_MONTHLY_LIVE=1.
-#
-# The 3rd, 15:47 UTC (the schedule Sig approved): after land-data.yml (the 3rd, 09:23 UTC,
-# gated the same way since Nov 3, 2026, up to 150 minutes) has fetched and committed the month's
-# transfers. A state whose files were not fetched since the month ended waits ("wait-data").
-# When the land run is late, the first chained run after it commits to data/land goes once more
-# inside the window below and mails the readers who waited (cron_gate.py RETRY_AFTER; one pass per
-# land commit). Past the window, catch up by dispatching mode send by hand. A reader already
-# mailed for the month is never mailed again, so a rerun is safe. It runs a day after the
-# 2nd-of-month rain email, never on the same day.
-#
-# GitHub's scheduler drops most scheduled fires (it never started the rain email on Nov 2,
-# 2026; scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain
-# Bids" (cron-job.org, every 15 minutes), and the gate job lets exactly one run per tick of the
-# cron below do the work: the first run after 15:47 on the 3rd, by either trigger, within 360
-# minutes (by 21:47 UTC, 15:47 Central, the same afternoon; long enough for a late chain,
-# short enough that the chain never mails the month a day late). Every other run skips in
-# seconds. A run started by hand does not use up the tick (cron_gate.py
-# MANUAL_DOES_NOT_SERVE), and send_land_alert.py marks each reader once per topic and month,
-# so a second send that month mails nobody. A chained run takes the scheduled path.
-#
-# A MONTH A STATE POSTS LATE (Sig, Nov 3, 2026, option 1). A reader whose state has not posted the
-# month just ended (Wisconsin posts about a month behind) gets the newest month the state has posted,
-# said plainly, and the later month when it lands. On a chained run that the tick does not send, the
-# gate's land step looks for a land data commit on main ("Update land data", the commit step of
-# land-data.yml) in the last 30 minutes; one there means a land run did its work, so catchup is set and
-# the email job mails the readers with a newer month due (send_land_alert.py --catch-up, which does
-# nothing before this month's send on the 3rd; a reader who signed up after the 3rd waits for the next
-# 3rd). A land run started by hand on main counts, on purpose; every real land run commits
-# data/land/checked.json, so one that read a state counts even when no sale changed. Two chained runs
-# can see one commit; the second mails nobody (each data month reaches a reader once, the worker's mo
-# mark). Not a follower of the land data run itself: a gated follower's skipped runs would use up the
-# 3rd's tick (cron_gate.py counts every run). Only with LANDSALES_MONTHLY_LIVE=1; otherwise a dry run.
 on:
   schedule:
     - cron: "47 15 3 * *"
@@ -79,7 +27,6 @@ permissions:
   contents: read
 
 jobs:
-  # One run per tick (see the top). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -108,8 +55,6 @@ jobs:
         run: >-
           python3 scripts/cron_gate.py tick --workflow land-alert.yml --max-lag 360
           --cron "47 15 3 * *"
-      # Catch-up (see the top): a chained run the tick does not send, and a land data commit on main in
-      # the last 30 minutes (a land run that did its work). An API failure is no catch-up.
       - id: land
         if: ${{ github.event_name == 'workflow_run' && steps.g.outputs.go != '1' }}
         env:
@@ -132,7 +77,6 @@ jobs:
       group: land-alert-email
       cancel-in-progress: false
     steps:
-      # main, not the commit that started the run: the transfers land-data.yml just pushed
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -150,8 +94,6 @@ jobs:
           python scripts/land_alert.py --selftest
           python scripts/send_land_alert.py --selftest
 
-      # Florida's county files are on agsist-data, not here (Nov 5, 2026): a copy for this run only, linked where
-      # scripts/land_alert.py reads them (data/land-hosted). Without it Florida readers wait; nobody else is held.
       - name: Florida county files (agsist-data)
         env:
           AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
@@ -166,7 +108,7 @@ jobs:
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -188,9 +130,7 @@ jobs:
             exit 1
           fi
           ARGS=""
-          # a catch-up after a land run: the readers with a newer month due, only when the list is live
           if [ "$CATCH_UP" = 1 ] && [ "$SEND" = 1 ]; then ARGS="--catch-up"; fi
           if [ -n "$MONTH" ]; then ARGS="$ARGS --month $MONTH"; fi
           if [ -n "$SAMPLE" ]; then ARGS="$ARGS --sample $SAMPLE"; fi
-          # shellcheck disable=SC2086
           python3 scripts/send_land_alert.py $ARGS

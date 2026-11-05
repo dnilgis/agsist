@@ -1,21 +1,9 @@
 name: Sponsor sign-ups
-# The job behind agsist.com/sponsor-apply (scripts/sponsor_apply.py). Every
-# 30 minutes: confirmation emails to new applicants, the approve/decline email
-# to Sig, putting approved ads live (writes data/page-sponsors.json or
-# data/supporters.json and the logo, then pushes), the free-month-ends note,
-# monthly "send the invoice" reminders to Sig, and taking ads down when he
-# ends one. Applications live in the subs worker (KV prefix sapp:).
-# Secrets: the same ones the watch jobs use -- LIST_URL, LIST_TOKEN,
-# UNSUB_SECRET, SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT,
-# FROM_ADDR, FROM_NAME, REPLY_TO, SPONSOR_TO (defaults to sig@agsist.com).
+# Sponsor sign-ups.
 
 on:
   schedule:
-    # Hourly fallback (was every 30 min); the bids chain below does the work.
     - cron: '38 * * * *'
-  # GitHub delivered none of this cron's fires on its first day, so applicants
-  # who were told "check your email" heard nothing. It also runs after every
-  # "Fetch Grain Bids", which cron-job.org starts every 15 minutes.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -56,7 +44,6 @@ jobs:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
-          # a new sponsor's portal token is saved to the private repo, never to main (Nov 4, 2026)
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}

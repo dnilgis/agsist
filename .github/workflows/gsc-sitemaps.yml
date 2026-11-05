@@ -1,12 +1,5 @@
 name: Search Console sitemaps
-
-# Google has no sitemap ping endpoint any more (retired 2023). This submits
-# every Sitemap: line in robots.txt through the Search Console API and prints
-# what Google reports for each one. Needs the repo secret
-# GSC_SERVICE_ACCOUNT_JSON (a service account added as an Owner of the
-# property); without it the job prints one notice line and stays green.
-# Optional repo variable GSC_SITE picks the property (default
-# sc-domain:agsist.com, then https://agsist.com/ if that one is refused).
+# Search Console sitemaps.
 
 on:
   push:
@@ -15,7 +8,7 @@ on:
       - 'sitemap*.xml'
       - 'robots.txt'
   schedule:
-    - cron: '41 13 * * 1'   # Mondays 13:41 UTC
+    - cron: '41 13 * * 1'
   workflow_dispatch:
 
 permissions:

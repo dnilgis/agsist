@@ -1,24 +1,5 @@
 name: Hay market reports (AMS)
-
-# Writes data/hay/ams-hay.json for /hay-prices: this week's hay trades by
-# state, grade and bale type, from public USDA AMS hay report PDFs, read by
-# scripts/fetch_hay_ams.py. The reports are in scripts/hay_ams_sources.json.
-# The page shows a "trades load after the first USDA read" box until this file
-# exists. A report that fails a check keeps its last good issue.
-#
-# FIRST RUN: dispatch once with "probe" ticked (and "scan" set, e.g.
-# 2800-3300, if the listing pages name few reports). It saves the AMS hay
-# listing and the text of every report it finds to data/hay-ams-raw/ and
-# saves them on the raw branch (never deployed). Check that text against the parser, add any new layout (hay
-# auctions especially) as a selftest fixture, then run without probe.
-#
-# USDA STATE CASH GRAIN AND DAILY SLAUGHTER (Sig, Nov 2 2026) ride this job: it already runs on
-# weekdays at 23:17 UTC (5:17 PM CST, 6:17 PM CDT), after USDA's state grain reports (posted
-# about 12:45 to 3:50 PM Central) and its estimated daily slaughter. No new schedule.
-# scripts/fetch_state_grain_mars.py -> data/state-grain-ams.json, scripts/fetch_slaughter_mars.py
-# -> data/slaughter.json, both through USDA My Market News (MARS_API_KEY). Soft: a MARS failure
-# keeps the last good files and never stops the hay run. Saturday's run finds no new report and
-# changes nothing.
+# Hay market reports (AMS).
 
 on:
   workflow_dispatch:
@@ -32,17 +13,8 @@ on:
         type: string
         default: ""
   schedule:
-    # State reports come out on their own days, most Thursday or Friday.
     - cron: '17 23 * * 1-5'
     - cron: '41 14 * * 6'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -51,7 +23,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -111,8 +82,6 @@ jobs:
           SCAN: ${{ inputs.scan }}
         run: |
           if [ -n "$SCAN" ]; then python scripts/fetch_hay_ams.py --probe --scan "$SCAN"; else python scripts/fetch_hay_ams.py --probe; fi
-      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
-      # Runs even when the probe step failed part way, so what it did capture is kept. The listing stays on main too: the normal run reads it.
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:

@@ -1,18 +1,10 @@
 name: Harvest price tracker
-# Maintains RMA projected/harvest discovery prices. Mon-Sat evenings after
-# CBOT settlement: during February (projected) and October (harvest) it
-# rebuilds the month's settlement series, updates running averages, and
-# seeds the static hero numbers into harvest-price-tracker.html. Finalizes
-# each window when its month closes; rolls the crop year each January.
-# Off-window runs exit in seconds with no commit.
+# Harvest price tracker.
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '47 21 * * 1-6'   # 21:47 UTC Mon-Sat — after CBOT settles; Saturday swaps in Friday's settle
-  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
-  # drops and delays the schedule above. The gate job below lets the first run
-  # after each tick of the schedule do the work; see scripts/cron_gate.py.
+    - cron: '47 21 * * 1-6'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -76,8 +68,6 @@ jobs:
       - name: Update discovery prices
         run: python3 scripts/fetch_harvest_prices.py
 
-      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
-      # Best effort: a share card must never block the data commit.
       - name: Share image
         continue-on-error: true
         run: |

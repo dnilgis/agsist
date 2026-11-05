@@ -1,30 +1,5 @@
 name: Engine sync
-
-# ENGINE SYNC IS PART OF EVERY MERGE THAT TOUCHES THE CODE (BUILD-RULES 63).
-# On Nov 3, 2026 the engine copy (dnilgis/feedbag, branch engine-agsist) was
-# missing the Daily's new safety checks for hours because the sync after the
-# merge was a step the lead had to remember. This copies main's engine paths
-# (.github/engine-paths) to the engine branch after every push to main that
-# changes them, with the same `engine.sh save` the lead ran by hand.
-#
-# SAFE BY CONSTRUCTION
-# - It refuses first when any file under the engine paths is on the engine
-#   branch and not on main (`engine.sh only-engine`): a save deletes such a file,
-#   so the lead looks by hand. A file main itself deleted or renamed since the
-#   engine's last sync (the "agsist main <sha>" its sync commits carry) is not a
-#   refusal: the save deletes it from the engine too, in the same commit. The
-#   refusal prints a count, never a name.
-# - It never force-pushes; a push race fetches the engine branch again and
-#   repeats the refusal check and the save on top of it.
-# - No Engine checkout step: this job must read main's own copy, not main with
-#   the engine laid over it (that would hide a file only in the engine).
-# - The key reaches only actions/checkout of the private repo. Nothing in the
-#   private repo is printed: the save prints file counts.
-# - A merge by the merge bot's job token starts no push run;
-#   scripts/dev/merge_when_green.py starts this by hand after such a merge, as
-#   it does every workflow a push to main would have started.
-# The cron-health row engine-drift (scripts/cron_health.py) goes red when the
-# engine has differed from main for more than 2 hours, whatever the cause.
+# Engine sync. Never force pushes.
 
 on:
   push:
@@ -49,8 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      # all of main's history, without file contents (trees and commits only): the refusal reads what main
-      # deleted or renamed since the engine's last sync
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -58,7 +31,7 @@ jobs:
           fetch-depth: 0
           filter: blob:none
       - name: The engine branch (private repo)
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: dnilgis/feedbag
           ref: engine-agsist

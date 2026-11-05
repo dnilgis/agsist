@@ -1,38 +1,17 @@
 name: Fetch Crop Progress
+# Fetch Crop Progress.
 
 on:
   schedule:
-    # USDA NASS publishes Crop Progress Monday at 4:00pm ET, and in season it is
-    # the headline number on the conditions page.
-    #
-    # Same fault as export sales: one cron a week and nothing behind it, so a
-    # dropped Monday run showed last week's condition ratings for a further
-    # seven days. And 21:30 UTC is ninety minutes after the release in EDT.
-    #
-    #   EDT (Mar-Nov)  release 20:00 UTC -> 20:17
-    #   EST (Nov-Mar)  release 21:00 UTC -> 21:17
-    # (2026-10-09: two or three minutes off the quarter hours, where GitHub's
-    # queue is most crowded.)
-    # 21:33 stays as the second attempt in both; Tuesday midday is the
-    # catch-all. Each is a no-op when the data has not moved.
-    # 2026-10-14: after a Monday federal holiday NASS releases on TUESDAY at
-    # 4pm ET (Columbus Day: Oct 13, 2026). Nothing ran Tuesday afternoon, so
-    # the site showed the week ending Oct 4 until the next Monday. The three
-    # afternoon fires now run Monday and Tuesday, and Wednesday midday is the
-    # catch-all for a holiday week.
     - cron: '17 20 * * 1,2'
     - cron: '17 21 * * 1,2'
     - cron: '33 21 * * 1,2'
     - cron: '33 12 * * 2,3'
-  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
-  # drops and delays the schedule above. The gate job below lets the first run
-  # after each tick of the schedule do the work; see scripts/cron_gate.py.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
   workflow_dispatch:
 
-# One run at a time, so a chained run and a late cron fire cannot both write.
 concurrency:
   group: crop-progress
   cancel-in-progress: false
@@ -98,20 +77,12 @@ jobs:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_crop_progress.py
 
-      # Re-bake /conditions from the file just written: the title, summary,
-      # first-screen week line, stats line, table caption and harvest table
-      # all come from data/crop-progress.json and data/conditions/conditions.json.
-      # Until 2026-10-15 only the freshness job did this, and the page showed
-      # "Corn 54%, week ending Oct 4" over a table for Oct 11.
-      # test/conditions-week.test.mjs holds every line to one week.
       - name: Re-bake conditions.html from the data
         run: |
           python scripts/bake_seo.py --selftest
           python scripts/seed_static.py --only conditions
           python scripts/bake_seo.py --page conditions.html
 
-      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
-      # Best effort: a share card must never block the data commit.
       - name: Share image
         continue-on-error: true
         run: |
@@ -127,11 +98,6 @@ jobs:
           git pull --rebase origin main
           git push
 
-      # Oct 21 (Sig, insight machine): every state's weekly progress and condition, all crops,
-      # for last year, this year and next (fall-seeded winter wheat), to the private raw branch
-      # at history/nass-progress/ (scripts/backfill_nass_progress.py --current; the full
-      # backfill is history-backfill.yml source=nass). After the commit, and it can never
-      # fail the run: the page data above has already shipped.
       - name: Crop progress history to the raw branch
         continue-on-error: true
         env:

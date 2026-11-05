@@ -1,112 +1,21 @@
 name: Generate Daily Briefing
-# The run's title carries a dispatch's inputs, because the API does not return
-# them: the late alert (scripts/daily_late.py) reads it to tell a manual dry run
-# (send_email=false) from the price loop's heartbeat, and the block alert's cap
-# counts today's blocked runs (scripts/daily_retry.py, 2026-10-28).
+# Generate Daily Briefing.
+
 run-name: ${{ github.event_name == 'workflow_dispatch' && format('Generate Daily Briefing (manual, send_email={0}, heartbeat={1}, test_to_sig={2})', inputs.send_email, inputs.heartbeat, inputs.test_to_sig) || 'Generate Daily Briefing' }}
 
-# One briefing at a time, ever: a scheduled run overlapping a manual dispatch
-# could double-generate and DOUBLE-EMAIL the list. Queue, never cancel — a
-# canceled half-published run is worse than a late one.
 concurrency:
   group: daily-briefing
   cancel-in-progress: false
 
-# THE BRIEFING IS A CENTRAL-TIME PRODUCT, SO IT RUNS ON CENTRAL TIME.
-# generate_daily.py asks datetime.now() what day it is and what the season is.
-# On a UTC runner, a job that starts at 02:38 UTC believes it is tomorrow — and
-# on 2026-08-28 one did, dating Saturday's briefing while it was still Friday
-# evening in Wisconsin. One environment variable makes every naive clock in
-# every script agree with the reader. `generated_at` is written timezone-aware
-# in UTC and is unaffected.
 env:
   TZ: America/Chicago
 
 on:
   schedule:
-    # ── REPLACED AGAIN 2026-08-31. THE NET WAS THE WRONG SHAPE. ────────────
-    #
-    # WHAT I BUILT ON 2026-08-29 AND WHY IT FAILED.
-    #
-    # Twelve fires every fifteen minutes across a two-and-a-half hour window,
-    # on the theory that twelve chances beat one. Measured over the two
-    # mornings that followed, in true UTC:
-    #
-    #     Sun 08-30   ONE run, committed 14:56Z — 86 minutes after 13:30,
-    #                 the LAST fire of the net. The eleven earlier fires
-    #                 produced nothing at all.
-    #     Mon 08-31   NOTHING by 13:02Z (08:02 Central), by which time ten of
-    #                 the twelve fires were already due.
-    #
-    # Meanwhile prices.yml delivered every one of its writes that same
-    # morning. The difference is not luck, and this repository had already
-    # written it down — at the top of .github/workflows/prices.yml:
-    #
-    #     "GitHub's scheduled-cron is best-effort and silently DROPS
-    #      high-frequency (every-30-min) runs ... Low-frequency, off-:00
-    #      minutes (GitHub honors these far more reliably than */30)."
-    #
-    # And in the standing decisions, measured on the sibling repo 2026-08-26:
-    # a ten-minute cron delivered one to three runs an hour against six asked,
-    # while an hourly cron outside the window delivered every one. The fix
-    # there was ONE fire whose job loops internally. **Do not "fix" the
-    # schedule by asking more often.**
-    #
-    # The net asked more often. Ten of its twelve fires sat on :00, :15, :30
-    # and :45 — the busiest minutes of the hour, which GitHub's own docs name
-    # as the ones to avoid. It was the exact pattern this repo had already
-    # measured and rejected, rebuilt by hand.
-    #
-    # WHAT REPLACES IT: three launches, and a job that waits.
-    #
-    # Each fire is off-:00, off-:15/:30/:45, and at least 80 minutes from its
-    # neighbour — the shape prices.yml uses and GitHub honours. Each one, on
-    # its own, covers the whole morning: the gate below no longer decides once
-    # and exit, it LOOPS until the publish window opens. So one delivered fire
-    # out of three is a briefing on time, and all three being delivered costs
-    # two cheap skips.
-    #
-    #   19 10  = 05:19 CDT / 04:19 CST — ahead of the 05:45 floor either season
-    #   41 11  = 06:41 CDT / 05:41 CST — recovery if the first was dropped
-    #   23 13  = 08:23 CDT / 07:23 CST — last resort, still a morning briefing
     - cron: '19 10 * * *'
     - cron: '41 11 * * *'
     - cron: '23 13 * * *'
-    # v4.6: Friday post-close regeneration. 20:00 UTC Fri = 3:00 PM Central
-    # (CDT) / 2:00 PM Central (CST). CBOT grain settles 1:20 PM CT, CME
-    # livestock 1:00 PM CT, NYMEX crude 1:30 PM CT, so this is safely past
-    # every settlement and locked_prices reflects actual Friday closes. It
-    # replaces the morning file on purpose and does NOT wait — see the gate.
     - cron: '0 20 * * 5'
-  # ── `on: push` WAS HERE AND IT COULD NEVER HAVE FIRED. REMOVED 2026-09-01.
-  #
-  # Added on 2026-08-31 as "the heartbeat that is not a cron", on the reasoning
-  # that pushes are not scheduled and so are not dropped. That much is true.
-  # What is also true, from GitHub's own documentation:
-  #
-  #   "When you use the repository's GITHUB_TOKEN to perform tasks, events
-  #    triggered by the GITHUB_TOKEN ... will not create a new workflow run.
-  #    ... this behavior prevents you from accidentally creating recursive
-  #    workflow runs."
-  #
-  # `prices.yml` checks out with `token: ${{ secrets.GITHUB_TOKEN }}` and
-  # pushes with those credentials. Every one of its commits — eight for eight
-  # on the morning of 08-31, and again every thirty minutes on 09-01 — was
-  # therefore invisible to this trigger. The briefing did not miss its morning
-  # because the heartbeat was unreliable. The heartbeat did not exist.
-  #
-  # It is REMOVED rather than left in place, because a dead trigger sitting in
-  # a file is how this survived a whole morning looking healthy.
-  #
-  # What replaces it is at the bottom of prices.yml's fetch loop: a
-  # `workflow_dispatch` with `heartbeat=true`, sent after every successful
-  # push. From the same documentation page:
-  #
-  #   "workflow_dispatch and repository_dispatch events always create workflow
-  #    runs."
-  #
-  # Always. Including from GITHUB_TOKEN. That is the only door in this
-  # repository that a bot can actually knock on.
 
   workflow_dispatch:
     inputs:
@@ -129,19 +38,6 @@ on:
         default: v2
 
 jobs:
-  # SIG'S TEST COPY OF THE BACKUP-MODE DAILY (2026-10-22). Run workflow with
-  # test_to_sig ticked: the newest issue already published goes to
-  # SIG_TEST_EMAILS (else SIG_TO) only, with the list read from the private
-  # copy (LIST_SOURCE=backup, the path every sender takes when the subs worker
-  # is blocked): mailto stop link, "Reply STOP" footer, no worker link. No day
-  # flag is read or set, so the morning run is untouched.
-  # PRINT OF THE DAY, for Sig's v2 test copy only (format v2, send_email
-  # ticked). Picks the place (scripts/print_of_day.py), draws its Rain Print
-  # with the county print engine in headless Chromium
-  # (scripts/render_print_of_day.mjs), puts the PNG on agsist.com
-  # (daily/img/print-<date>.png, about 20 KB) and waits until agsist.com serves
-  # those exact bytes. Any failure: no picture, and the email leaves the slot
-  # out. It never stops the email. Commits only that one file, onto main.
   print-of-day:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true && inputs.send_email == true && inputs.format != 'current' }}
     runs-on: ubuntu-latest
@@ -181,7 +77,7 @@ jobs:
         timeout-minutes: 15
         env:
           GH_TOKEN: ${{ github.token }}
-          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}
         run: |
           d="${{ steps.draw.outputs.date }}"; f="daily/img/print-$d.png"
           cp "$f" "$RUNNER_TEMP/print.png"
@@ -228,9 +124,6 @@ jobs:
         run: |
           python3 scripts/list_source.py --selftest
           python3 scripts/email_links.py --selftest
-      # v2 only: the print picked above, and the saved fact check of the issue
-      # being sent (the raw branch keeps every run's), which daily_v2.check()
-      # reads to block a wrong number in the subject, headline or lead.
       - name: The print of the day and the saved fact check (v2)
         if: ${{ inputs.format != 'current' }}
         continue-on-error: true
@@ -244,7 +137,6 @@ jobs:
           f=$(git ls-tree --name-only origin/raw daily-fact-check/ | grep "/$d-" | sort -t- -k4,4n | tail -1)
           if [ -n "$f" ]; then git show "origin/raw:$f" > "$RUNNER_TEMP/fact-check.json"; echo "saved fact check: $f"; else echo "no saved fact check for $d"; fi
       - name: Send the Daily to Sig only, from the private copy of the list
-        # the same send_email tick every mailer step needs (test_daily_schedule.py)
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
           TEST_TO_SIG:  '1'
@@ -268,12 +160,7 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: python scripts/send_daily.py
 
-  # If a manual run already generated today's briefing, the scheduled morning
-  # run skips regeneration entirely. The Friday 20:00 UTC post-close regen is
-  # exempt (hour >= 14) — it exists to overwrite the morning file on purpose.
-  # Manual dispatches always run.
   gate:
-    # test_to_sig runs only the test-to-sig job above: nothing is generated or published
     if: ${{ inputs.test_to_sig != true }}
     runs-on: ubuntu-latest
     permissions:
@@ -290,60 +177,24 @@ jobs:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
       - id: g
-        # Read only: the day flag (briefed:<day>), asked when today's issue is
-        # published but was never sent (scripts/daily_retry.py flag). The worker
-        # first, the private repo when the worker is blocked, as send_daily.py does.
         env:
           LIST_URL:           ${{ secrets.LIST_URL }}
           LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
-          # THE GATE WAITS NOW. IT USED TO DECIDE ONCE AND EXIT.
-          #
-          # That is the whole change. A fire that arrived at 05:19 Central used
-          # to look at the clock, see it was before the 05:45 floor, print
-          # "a later fire takes this one" and stop — which was true only while
-          # there WERE later fires. There are three a day now, hours apart, so
-          # the run that arrives early has to hold the window open itself.
-          #
-          # It loops for up to two and a half hours, asking the same three
-          # questions every twelve minutes, and exits the moment one of them
-          # answers. Twelve minutes because the whole point is to stop asking
-          # GitHub for things every fifteen.
           set -uo pipefail
 
           EVENT="${{ github.event_name }}"
           BRANCH="${{ github.event.repository.default_branch || 'main' }}"
 
-          # A DISPATCH FROM THE PRICE LOOP IS NOT A PERSON AT A KEYBOARD.
-          # It arrives every thirty minutes all morning, so it must obey the
-          # floor and the published check exactly as the push trigger was meant
-          # to. Only a human clicking Run workflow gets to override them.
-          HEARTBEAT="${{ github.event.inputs.heartbeat || 'false' }}"   # boolean input: only true/false can arrive
+          HEARTBEAT="${{ github.event.inputs.heartbeat || 'false' }}"
           [ "$EVENT" = "workflow_dispatch" ] && [ "$HEARTBEAT" = "true" ] && EVENT="heartbeat"
 
-          # THE WAIT IS CAPPED AT FORTY MINUTES, DOWN FROM 150. Not a tuning
-          # tweak — the old budget could hold `concurrency: daily-briefing` for
-          # two and a half hours, and GitHub keeps at most ONE pending run per
-          # group and CANCELS the rest. A gate that sleeps through the morning
-          # would have cancelled the very recovery launches it was there to
-          # back up. Forty minutes covers the 05:19 launch's wait to the 05:45
-          # floor with room to spare, and with a heartbeat every thirty minutes
-          # nothing needs to wait longer than that anyway.
           DEADLINE=$(( $(date +%s) + 40 * 60 ))
           FLOOR=0545
 
           say() { echo "$(date +%H:%M) Central — $*"; }
 
-          # ASK THE REMOTE, NOT THE CHECKOUT.
-          # A scheduled run checks out the SHA it was TRIGGERED at, so a run
-          # still in flight when this one starts would look at a tree from
-          # before that run pushed, decide today's briefing did not exist, and
-          # generate it a second time. (send_daily.py's day-flag would still
-          # stop the second EMAIL — but a regenerated briefing overwrites the
-          # published one, which is its own kind of wrong.) The remote is the
-          # only place that knows whether today is done, and it is re-asked on
-          # every pass of the loop, not once at the start.
           published() {
             git fetch --quiet --depth=1 origin "$BRANCH" 2>/dev/null || true
             git cat-file -e "FETCH_HEAD:data/daily-archive/$1.json" 2>/dev/null && return 0
@@ -351,7 +202,6 @@ jobs:
             return 1
           }
 
-          # The same remote answer, for any path (published() fetched it).
           on_remote() {
             git cat-file -e "FETCH_HEAD:$1" 2>/dev/null && return 0
             [ -f "$1" ] && return 0
@@ -360,101 +210,37 @@ jobs:
 
           decide() { echo "skip=$1" >> "$GITHUB_OUTPUT"; }
 
-          # EVERY CLOCK HERE IS CENTRAL. TZ is set on the workflow.
           while :; do
-            DAY=$(date +%F)          # the reader's day, not the runner's
+            DAY=$(date +%F)
             HHMM=$(date +%H%M)
             H=$(date +%H)
-            DOW=$(date +%u)          # 1=Mon ... 5=Fri
+            DOW=$(date +%u)
 
-            # A MANUAL RUN NEVER WAITS AND NEVER SKIPS. It is somebody standing
-            # at the keyboard wanting a briefing now.
             if [ "$EVENT" != "schedule" ] && [ "$EVENT" != "heartbeat" ]; then
               say "GENERATING: manual $EVENT, $DAY"
               decide 0; exit 0
             fi
 
-            # THE FRIDAY POST-CLOSE REGENERATION NEVER WAITS EITHER. It exists
-            # to overwrite the morning file with settled prices, so "already
-            # published" is its precondition, not its reason to stop.
-            #
-            # AND IT IS ONE FIRE, NOT A FOUR-HOUR OPEN DOOR.
-            #
-            # This branch used to ask only what TIME it was. Friday, after two,
-            # before six — regenerate and email. It never asked what had woken
-            # the run, and the thing that wakes this workflow most often is
-            # prices.yml's heartbeat, sent after EVERY successful price push,
-            # about every thirty minutes through the trading day.
-            #
-            # So on Friday 2026-09-04 issue #177 was generated and emailed to
-            # the live list SEVEN TIMES between 2:23 and 5:04 PM Central, each
-            # with a different headline as the prices moved under it:
-            #
-            #     2:23  WASDE ARRIVES 11 AM
-            #     2:54  WASDE SETUP ARRIVES FRIDAY
-            #     3:24  WHEAT DROPS 3.4%; WASDE SETUP TAKES SHAPE
-            #     3:54  WHEAT BREAKS 3%; WASDE CLOCK TICKING
-            #     4:25  WHEAT BREAKS 3.4%; SEPTEMBER WASDE LOOMS
-            #     4:55  WHEAT DROPS 3.4%; WASDE CLOCK TICKING
-            #     5:04  WHEAT BREAKS 3.4%; SEPTEMBER WASDE SETUP BEGINS
-            #
-            # Every one of those is a heartbeat that walked through a door held
-            # open for the 20:00 UTC Friday cron. There is exactly ONE
-            # scheduled fire inside this window — `0 20 * * 5`, 3:00 PM CDT —
-            # and the three morning crons are all before 14:00 Central, so
-            # requiring `schedule` gives one regeneration and no more.
-            #
-            # If that one cron is dropped, Friday keeps its morning briefing
-            # and gets no post-close refresh. That is the right trade: a
-            # missed refresh costs a reader nothing they can see, and seven
-            # emails costs the list its patience.
             if [ "$EVENT" = "schedule" ] && [ "$H" -ge 14 ] && [ "$DOW" = "5" ] && [ "$H" -lt 18 ]; then
               say "GENERATING: Friday post-close regeneration, $DAY"
               decide 0; exit 0
             fi
 
-            # A HEARTBEAT IN THAT WINDOW IS A PRICE COMMIT, NOT A REGENERATION.
-            # Named separately from the general late-arrival skip below so the
-            # log says which rule stopped it.
             if [ "$EVENT" = "heartbeat" ] && [ "$H" -ge 14 ]; then
               say "SKIPPING: heartbeat at $(date +%H:%M) Central — the post-close regeneration is the Friday cron's job, not every price push's"
               decide 1; exit 0
             fi
 
-            # A DELAYED MORNING FIRE IS NOT A REGENERATION. Before this guard,
-            # ANY scheduled fire arriving after 14:00 was allowed to regenerate
-            # and re-email; that is how a fire delivered ten hours late
-            # republished Thursday's briefing at 3:55 PM.
             if [ "$H" -ge 14 ]; then
               say "SKIPPING: $DAY, arrived at $(date +%H:%M) Central on day $DOW — a delayed fire, not a regeneration"
               decide 1; exit 0
             fi
 
-            # PUBLISHED MEANS PUBLISHED AND SENT (2026-10-28). That morning the
-            # 6:16 run published the issue, the send step's number check refused
-            # it, and every later run skipped on "already published": nobody got
-            # the Daily until a manual run. Now a day is done only when its sent
-            # copy (data/daily-sent/<day>.json) is on main. Otherwise, still
-            # inside the morning window (the 14:00 check above), the issue is
-            # written again and checked again, but ONLY when the day flag says
-            # no mail went out. A flag that is set (the sent copy just did not
-            # get committed) or cannot be read skips: a second copy to the list
-            # is the one thing worse than a late Daily. send_daily.py asks the
-            # same flag again before its first mail.
-            #
-            # A MANUAL RUN WITHOUT send_email NEVER MARKS THE DAY DONE (Sig,
-            # Nov 3 2026). Until then it left <day>.dry-run.json and this gate
-            # skipped on it. On Nov 3 the 7:32 CT dry run published the issue,
-            # the 7:46 heartbeat read the mark and skipped, and the Daily went
-            # out only with a second manual run. A dry-run mark (old ones are
-            # still in data/daily-sent/) and a dry run in today's runs are no
-            # reason to skip now: the day flag alone says whether it went out.
             if published "$DAY"; then
               if on_remote "data/daily-sent/$DAY.json"; then
                 say "SKIPPING: $DAY is already published and sent, a backup launch doing its job"
                 decide 1; exit 0
               fi
-              # retry: the day flag set = 1, unreadable = 2, clear = 0
               python3 scripts/daily_retry.py retry "$DAY"; rc=$?
               if [ "$rc" = "1" ]; then
                 say "SKIPPING: $DAY went to the list (the day flag is set); only its sent copy is missing"
@@ -467,16 +253,7 @@ jobs:
               say "RETRYING: $DAY is published but never went to the list; writing it again"
             fi
 
-            # TOO EARLY, NOT TOO LATE. Publishing before 05:45 Central locks
-            # prices against a feed the pre-dawn prices launch has not yet
-            # refreshed, and puts the briefing in front of a reader who is
-            # asleep. So we WAIT for the floor rather than hand the morning to
-            # a later fire that may never be delivered.
             if [ "$HHMM" -lt "$FLOOR" ]; then
-              # A HEARTBEAT NEVER WAITS. Holding a runner for an hour on every
-              # price commit would cost more than the whole briefing; there is
-              # another one along in thirty minutes and one of them will be
-              # past the floor.
               if [ "$EVENT" = "heartbeat" ]; then
                 say "SKIPPING: heartbeat before the ${FLOOR} floor — the next one takes it"
                 decide 1; exit 0
@@ -501,7 +278,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: read      # the block alert's cap counts today's blocked runs (scripts/daily_retry.py)
+      actions: read
 
     steps:
       - name: Checkout
@@ -522,13 +299,6 @@ jobs:
       - name: Install dependencies
         run: pip install feedparser==6.0.14 requests==2.34.2 pillow==12.3.0
 
-      # PRINT OF THE DAY (Daily v2, live Oct 22 2026). Drawn FIRST, while the
-      # briefing is still being written, so the picture is on agsist.com long
-      # before the send: pick the place (scripts/print_of_day.py), draw its
-      # Rain Print with the county print engine in headless Chromium
-      # (scripts/render_print_of_day.mjs), commit only daily/img/print-<date>.png
-      # to main. continue-on-error and a 7-minute cap: a failure here leaves
-      # the slot out of the email and never stops or delays anything else.
       - name: Print of the day, drawn and put on agsist.com
         id: podraw
         if: ${{ (github.event_name == 'schedule' || inputs.send_email == true) && (inputs.format || vars.DAILY_FORMAT || 'v2') == 'v2' }}
@@ -536,7 +306,7 @@ jobs:
         timeout-minutes: 7
         env:
           GH_TOKEN: ${{ github.token }}
-          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}
         run: |
           npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
           "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
@@ -553,29 +323,6 @@ jobs:
           bash .github/pages-kick.sh
           echo "file=$f" >> "$GITHUB_OUTPUT"
 
-      # CODE SELF-TESTS REPORT; THEY NEVER HOLD THE SEND (Sig, Nov 3 2026).
-      #
-      # GATE 0 to 0g used to sit here as hard steps. On Nov 3 GATE 0g's
-      # scripts/test_daily_numbers.py checked its fixture against live
-      # data/harvest-prices.json, the live file had moved on, and every
-      # morning run from 5:46 to 7:31 CT stopped here with a perfectly good
-      # issue unwritten. A test of the code is not a check of today's issue.
-      #
-      # Every one of them still runs, on every run, in one list
-      # (scripts/daily_selftests.py): GATE 0 feed gate, 0b word budget, 0c
-      # trading calendar, 0d session board, number binding, ARC/PLC link, 0e
-      # voice check, 0f report-day line, 0g USDA dates, daily trust, watch
-      # dates, streak words, daily numbers, daily claims, and the self-tests
-      # that used to run inside GATE 2f (fact check), GATE 2h (headline fix),
-      # GATE 2c (cause fix) and the edge facts. A failure
-      # turns this step red, lists every test in the job summary, and mails Sig
-      # once a day. The briefing goes on to the content gates below, which
-      # still hold it: GATE 1 (feed), 2f (fact check), 2h (headline), 2
-      # (briefing gate), the schema and 2v (number check). So does the send-loop
-      # guard before the send (it protects readers from a double send).
-      # The same list runs every evening under tomorrow's date
-      # (scripts/daily_rehearsal.py, in cron-health.yml), so a test that is
-      # about to break is found the night before.
       - name: Code self-tests (report only, never hold the send)
         id: selftests
         continue-on-error: true
@@ -587,54 +334,17 @@ jobs:
           SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
           SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR:    ${{ secrets.FROM_ADDR }}
-          GH_TOKEN:     ${{ github.token }}       # the once-a-day cap reads today's runs
+          GH_TOKEN:     ${{ github.token }}
         run: python scripts/daily_selftests.py
-
-      # The schedule is machinery too. This asserts the backup fires still
-      # exist and are spread, and that the gate asks the remote rather than its
-      # own checkout — the two things that keep a dropped fire from becoming a
-      # missed briefing without letting a backup republish a live one.
-      # ── GATE 0b IS GONE FROM HERE. MOVED 2026-09-01. ────────────────────
-      #
-      # `scripts/test_daily_schedule.py` checks the SHAPE OF THE SCHEDULE —
-      # cron spacing, the gate's branching, whether the email condition travels
-      # with the trigger. None of that can change between one morning and the
-      # next unless somebody edits a workflow file. It is a design check.
-      #
-      # It ran here, `bash -e`, in front of the generation. So on 2026-09-01
-      # it failed and took the briefing down with it — three manual runs, all
-      # red at 26-30 seconds, no briefing published, no email sent. It had
-      # passed the previous morning and passed for the wrong reason; see the
-      # note in the test itself.
-      #
-      # A GUARD ABOUT THE SCHEDULE MUST NOT BE ABLE TO STOP THE BRIEFING.
-      # This is not softening it (rule 2): it still runs, it still fails loudly,
-      # and it now runs at the only moment its answer can change — when a
-      # workflow file is edited — plus once a week. It lives in
-      # `.github/workflows/schedule-guard.yml`.
-      #
-      # GATE 0 followed it on Nov 3 2026: a self-test is a design check too,
-      # and it now reports from the step above instead of stopping the run.
-      # TODAY'S NUMBERS are GATE 1 and the content gates below, and a bad
-      # number still stops the briefing.
 
       - name: GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)
         id: g1
         run: python scripts/preflight_prices.py data/prices.json --repair
 
-      # 2026-10-17: "Only on AGSIST". Facts counted by code from the elevator
-      # boards AGSIST reads (data/bids-prev, the network index, basis-states),
-      # written to data/daily-edge.json for the generator to attach. The model
-      # never sees them. Any fact it cannot back (small sample, stale file,
-      # outliers) is withheld and logged. Never blocks the briefing.
       - name: Only on AGSIST facts
         continue-on-error: true
-        # its selftest runs in the self-test step above
         run: python scripts/daily_edge.py
 
-      # Sig's editorial notes are in the private repo (branch private-data,
-      # Oct 20). Without them the briefing still runs, as it did before the
-      # file existed; the warning says so.
       - name: Get the editorial notes (private repo)
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -649,36 +359,6 @@ jobs:
           BRIEFING_MODEL: ${{ vars.BRIEFING_MODEL }}
         run: python scripts/generate_daily.py
 
-      # "Grade yesterday's call" was removed 2026-10-03. The model no longer
-      # writes a call (todays_call) or a verdict on one (yesterdays_call): The
-      # Action is the prediction bot's call, copied by the generator from
-      # the bot's own output file, and the bot grades its own calls by code in
-      # predictions.yml. scripts/grade_calls.py stays in the repo, unrun, as
-      # part of the old scorecard's archive.
-
-      # v4.0: Critic pass — runs after generate, before schema validation.
-      # Sends the briefing back to Claude as the editor, scores 1-10 on each
-      # of 17 rules (8 IMPACT + voice, forward test, thread coherence + spread
-      # quality + YC honesty + level coherence + one-number coherence +
-      # markdown-not-HTML + macro anchoring). If 2+ rules score below 7 OR
-      # voice<5 OR forward test<5 OR level coherence<7 OR markdown<7, rewrites
-      # the weakest target and re-saves daily.json + archive HTML.
-      #
-      # continue-on-error: true means a critic API failure (network, bad response,
-      # rate limit) does NOT block the briefing from shipping. The original
-      # generator output is what gets validated and committed.
-      #
-      # v4.2 (Phase 2 C5): the critic itself now retries up to 3 times with
-      # exponential backoff before giving up. continue-on-error remains as
-      # belt-and-suspenders for catastrophic failures.
-      #
-      # v4.6 (2026-05-18): critic Rule 9 voice-failure list extended with
-      # CNBC drama verbs (explode, crater, surge, soar, plunge, slash, etc.)
-      # to match generator v4.6.0's editorial-hardening upgrade.
-      #
-      # First few days: consider adding `--dry-run` to the run command to see
-      # what the critic flags before letting it rewrite anything. Remove the
-      # flag once you trust the scoring calibration.
       - name: Run critic pass
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -686,40 +366,17 @@ jobs:
         continue-on-error: true
         run: python scripts/critique_briefing.py
 
-      # ── GATE 2f ── fact check (2026-10-17, Sig approved). A careful reviewer
-      # model reads the draft against the exact inputs the generator used
-      # (its saved message with the locked table and news digest, prices.json,
-      # daily-edge.json, wasde.json, the calendar) and returns structured
-      # findings. A high-severity finding whose quote is really in the draft
-      # stops the job here, before GATE 2, the commit and the send; the next
-      # morning cron regenerates. It never edits daily.json. Its own failure
-      # (no key, API error, refusal) is a warning and exit 0, so an outage at
-      # Anthropic never stops a briefing the code gates pass.
-      # Sig, Oct 17 2026: Opus 5.5, report mode for a calibration week; Oct 28:
-      # block. A repo variable FACT_CHECK_MODEL overrides the model.
       - name: GATE 2f, fact check against the source data
         id: g2f
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL || 'claude-opus-5-5' }}
-          # The selftest checks the defaults, so it runs with both overrides cleared (a set model broke it on Oct 18).
-          # Block (Sig, Oct 28, after the Oct 18-24 calibration week: 5 high flags, all real errors that
-          # went out, 4 of them an overnight or intraday price called a "close"). Only a high flag whose
-          # quote is really in the draft blocks; pinned here so a repo variable cannot change it.
           FACT_CHECK_MODE: block
-        # Its selftest runs in the self-test step at the top of this job
-        # and no longer holds the issue (Nov 3 2026); the fact check itself does.
         run: |
           echo "fact check: model=$FACT_CHECK_MODEL mode=$FACT_CHECK_MODE"
-          # the selftest's fixture findings land in the same file; the save step below must see only this run's
           rm -f "$RUNNER_TEMP/fact-check.json"
           python scripts/fact_check_briefing.py
 
-      # 2026-10-18: keep every run's fact check. fact_check_briefing.py writes
-      # $RUNNER_TEMP/fact-check.json and the runner threw it away, so the Oct 24
-      # review of report vs block had nothing to read. One file per run on the
-      # raw branch (never deployed): daily-fact-check/<CT date>-<run id>-<attempt>.json.
-      # Runs when the fact check failed too; never fails the job.
       - name: Save the fact check to the raw branch
         if: ${{ !cancelled() }}
         continue-on-error: true
@@ -735,23 +392,6 @@ jobs:
           rm -rf daily-fact-check
           exit 0
 
-      # v4.2 (Phase 2 C7): post-critic ops alert. Reads daily.json's
-      # critic_pass.final_scores; emails sig@agsist.com if any rule
-      # scored below 7, if rewrites were applied, or if the critic step
-      # failed silently. Quiet success = no email. Catches the silent-drift
-      # failure mode that continue-on-error: true otherwise hides.
-      #
-      # Uses the senders' SMTP_* and FROM_ADDR secrets (legacy GMAIL_* still
-      # work). If unset, the script logs the alert content to the workflow
-      # log instead of failing.
-      #
-      # always() runs this even if previous steps failed — that's the point.
-      # if: always() so the alert reports generator failures too.
-      # GATE 2h (Sig, Oct 27 2026): a headline that fails its check is fixed on the
-      # spot and checked again until it passes. The writer model rewrites it with the
-      # rule and the board's settles and trades (up to 3 tries, full gate each time);
-      # then a plain headline from the settles, built by code; if even that fails the
-      # job stops here (nothing committed or sent) and Sig gets one email.
       - name: GATE 2h, a failing headline is rewritten until it passes
         id: g2h
         env:
@@ -763,26 +403,15 @@ jobs:
           SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
           SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR:    ${{ secrets.FROM_ADDR }}
-          GH_TOKEN:     ${{ github.token }}       # its hold alert is under the block alert's cap
-        # its selftest runs in the self-test step (Nov 3 2026)
+          GH_TOKEN:     ${{ github.token }}
         run: python scripts/headline_fix.py data/daily.json --prices data/prices.json
 
-      # GATE 2c (Oct 29 2026): a cause sentence nobody is named as saying
-      # ("diesel follows it") is reworded by code, the fact kept, or cut when its
-      # field keeps other text, before the gate; else left and the gate WARNs.
-      # The archive and the sent copy then carry the fixed text, so a published
-      # issue can never fail the archive's cause test. Never blocks the send.
       - name: GATE 2c, unsourced cause lines reworded before the gate
         continue-on-error: true
         run: |
           [ -f scripts/cause_fix.py ] || { echo "cause_fix.py not in this checkout yet"; exit 0; }
-          # its selftest runs in the self-test step (Nov 3 2026)
           python scripts/cause_fix.py data/daily.json
 
-      # ── GATE 2 ── deterministic pre-publish gate. Prose vs locked_prices vs the
-      # clean feed: blocks locked-price drift, level contradictions, drama without a
-      # real move, calendar errors, fabricated sections. HARD block (no continue-on-error)
-      # so a failure stops the job before commit — nothing stale or wrong gets published.
       - name: GATE 2 — pre-publish briefing gate
         id: g2
         run: python scripts/briefing_gate.py data/daily.json --prices data/prices.json
@@ -800,26 +429,8 @@ jobs:
 
       - name: Validate schema
         id: schema
-        # Fails the workflow if daily.json drifts from canonical field
-        # names or contains filler content like "Unknown" attributions.
-        # On failure, yesterday's briefing stays live until the next
-        # successful run. GitHub emails the workflow owner on failure.
-        #
-        # v5.1 (the cut): this step also fails the run when the briefing is
-        # over 450 words or has more than 3 sections (briefing_cut, the same
-        # function the generator and critic enforce with). Retired fields
-        # (subheadline, the_takeaway, weekly_thread, the_more_you_know,
-        # catalyst, vs_yesterday, bottom_line) stay accepted for the archive.
         run: python scripts/daily_schema.py data/daily.json
 
-      # ── GATE 2v ── the email's number check, BEFORE publishing (2026-10-28).
-      # The send step runs daily_v2.check (send_daily.v2_gate) on the subject,
-      # headline and lead. On Oct 28 it refused the 6:16 issue AFTER the commit:
-      # the refused headline sat on agsist.com/daily for about two hours, and the
-      # published issue made every later run skip. This is the same function on
-      # the same issue, here, so a draft the send would refuse is never
-      # published. A block stops the job before the commit, like GATE 2f, and
-      # the next run writes the issue again. The send step keeps its own check.
       - name: GATE 2v, the email's number check before publishing
         id: g2v
         env:
@@ -827,56 +438,23 @@ jobs:
         run: python scripts/daily_retry.py prepublish
 
       - name: Generate RSS feed
-        continue-on-error: true        # RSS is an enhancement; a feed error must never block the publish
+        continue-on-error: true
         run: python scripts/generate_rss.py
 
-      # "Build call scorecard" was removed 2026-10-03: the old call scorecard
-      # is retired from the site. data/scorecard.json and build_scorecard.py
-      # stay in the repo as an archive and are no longer written or shown.
-      # /scorecard is now the prediction bot's page (predictions.yml).
-
-      # Bake the WPI numbers into their pages' static HTML (same crawler
-      # rationale as bake_homepage). Marker-based, idempotent. It no longer
-      # touches scorecard.html. continue-on-error: a bake failure must never
-      # block the briefing.
       - name: Prerender WPI pages
         continue-on-error: true
         run: python scripts/prerender_wpi_scorecard.py
 
-      # Static-bake today's briefing + The Read into index.html so AI crawlers
-      # (GPTBot, ClaudeBot, PerplexityBot — none execute JS) and Googlebot's
-      # first pass see the actual content. Client JS hydrates live data on top.
-      # continue-on-error: if index.html's markup ever drifts from the bake
-      # anchors, bake_homepage.py exits 3 — that must show as a red step, not
-      # stop the briefing publish. The homepage still works via JS hydration.
       - name: Bake briefing into homepage
         continue-on-error: true
         run: python scripts/bake_homepage.py
 
-      # Audit fix 2026-06-12: each new /daily/YYYY-MM-DD archive page gets a
-      # sitemap entry the moment it publishes (Google discovery for the
-      # briefing archive). Guarded: weekend/holiday runs that don't write an
-      # archive HTML page add nothing. Idempotent: the Friday post-close
-      # regeneration re-run is a no-op for an already-listed URL.
-      # Shareable daily card (card-<date>.jpg + card-latest.jpg, 1200x630), drawn into a folder
-      # outside the checkout: the cards are served from the public repo dnilgis/agsist-data at
-      # data/social/ (Nov 4, 2026; scripts/share_host.py) and are never committed here.
-      # Runs only after GATE 2 passed, so a card is never rendered from a blocked
-      # briefing. Best-effort by design: a promo image must never be the reason
-      # the briefing fails to publish (the script also self-traps to exit 0).
       - name: Build social card
         continue-on-error: true
         env:
           SOCIAL_CARD_DIR: ${{ runner.temp }}/social/data/social
         run: python scripts/build_social_card.py
 
-      # The new card goes to agsist-data (added, nothing removed there) before the commit, so the
-      # page and its image land together. Best-effort like the card: continue-on-error, 4 minutes
-      # at most, 2 tries so a bad token cannot eat the cap. If agsist-data cannot be reached the
-      # issue still publishes and sends; today's og:image 404s and scrapers fall back to text (the
-      # same degrade as a card that failed to draw), and cron-health's agsist-data-images row goes
-      # red. Then a best-effort wait (inside the same 4 minutes) until today's card answers there,
-      # so the issue does not go live before its image; if it never does, one warning and on.
       - name: Copy social card to agsist-data
         continue-on-error: true
         timeout-minutes: 4
@@ -888,11 +466,10 @@ jobs:
           python3 scripts/share_host.py wait index.html --wait 150
 
       - name: Add today's archive page to sitemap
-        continue-on-error: true        # sitemap update must never block the briefing publish
+        continue-on-error: true
         run: |
           d=$(date -u +%Y-%m-%d)
           if [ -f "daily/${d}.html" ]; then
-            # /archive too: its baked list of every issue changes with each publish.
             python scripts/update_sitemap.py --add "https://agsist.com/daily/${d}"
           else
             echo "no daily/${d}.html — skipping sitemap add"
@@ -902,32 +479,14 @@ jobs:
         id: commit
         env:
           GH_TOKEN: ${{ github.token }}
-          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          # data/prices.json is here because step 'preflight' runs
-          # preflight_prices.py --repair on it. Without it staged, the repair
-          # was computed and thrown away every run, and the browser-facing
-          # file kept shipping the contaminated continuous quotes.
-          # daily.html: the crawlable briefing link lists (Past briefings) that
-          # generate_daily.save_archive() rebakes between their SEED markers.
           git add data/daily.json data/daily-edge.json data/daily-archive/ daily/ daily.html feed.xml sitemap.xml sitemap-news.xml index.html usda-calendar.html cot.html data/prices.json
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
-          # AUDIT 2026-08-11: three attempts — this is the repo's highest-
-          # stakes push (a rejection here silently skips the daily email for
-          # a fully generated, gated briefing while 11:20/11:25 workflows
-          # race the same files).
-          # 2026-08-15 audit: without the abort, a rebase CONFLICT leaves
-          # .git/rebase-merge in place and attempts 2 and 3 die instantly on
-          # "Pulling is not possible because you have unmerged files" — so the
-          # retries were dead weight for the one failure they exist for. The
-          # step then fails, the send step is skipped by its implicit
-          # success(), and a fully generated, GATE-2-passed briefing is
-          # neither published nor emailed with nothing saying why. Every other
-          # pusher in this repo (cot, mesh, ncei, harvest-prices) aborts first.
           for i in 1 2 3; do
-            git rebase --abort 2>/dev/null || true   # clear any half-finished rebase
+            git rebase --abort 2>/dev/null || true
             if git pull --rebase --autostash origin main && git push; then
               echo "push ok on attempt $i"; break
             fi
@@ -936,15 +495,6 @@ jobs:
           done
           bash .github/pages-kick.sh
 
-      # A BLOCK TELLS SIG WHICH CHECK AND THAT THE NEXT RUN TRIES AGAIN
-      # (2026-10-28). Any check above that stops a run meant for the list
-      # leaves nothing published, so the next scheduled run (or price-loop
-      # heartbeat) before 2 p.m. CT writes the issue again from scratch. The
-      # email names the step. GATE 2h mails its own (with the
-      # rewrites it tried), so it is not mailed twice. The cap (both senders):
-      # the first block of the day, then only a different check at least 2 h
-      # after the last alert, 3 a day at most, counted from today's runs of
-      # this workflow (GitHub API, the job token). Never fails the run.
       - name: Tell Sig which check held the Daily
         if: ${{ failure() && steps.commit.outcome != 'success' && (github.event_name == 'schedule' || inputs.send_email == true) }}
         continue-on-error: true
@@ -967,59 +517,11 @@ jobs:
           GH_TOKEN:     ${{ github.token }}
         run: python scripts/daily_retry.py alert
 
-      # Email the finished briefing as a clean, reforwardable copy. Runs only after
-      # GATE 2 passed (hard block above stops the job on failure) and the commit
-      # succeeded — so a blocked or stale briefing is never emailed. send_daily.py
-      # re-checks generated_at==today and price_validation_clean as belt-and-suspenders.
-      # Default recipient is the subscriber list (RECIPIENTS secret, or live from the subs worker via LIST_URL).
-      #
-      # THE EMAIL TRAP, defused (2026-08-11): this step used to have no `if:`,
-      # so ANY successful run — including a manual workflow_dispatch fired to
-      # test something — emailed the real subscriber list. Now a manual run is
-      # a dry run unless the dispatcher explicitly ticks send_email. Scheduled
-      # runs are unaffected (event_name == 'schedule' short-circuits true).
-      #
-      # `github.event_name == 'push'` was removed from these two conditions on
-      # 2026-09-01 along with the push trigger itself. The heartbeat from the
-      # price loop arrives as a workflow_dispatch carrying `send_email=true`,
-      # so it still emails; a person clicking Run workflow still gets a dry run
-      # unless they tick the box. THE TWO HALVES MUST TRAVEL TOGETHER — a
-      # trigger that publishes but is missing from the email condition gives an
-      # up-to-date page and an empty inbox, which is the complaint that started
-      # all of this.
-      #
-      # `push` WAS ADDED HERE THE MOMENT THE PUSH TRIGGER WAS. Without it, a
-      # briefing generated by the push heartbeat would publish to the site and
-      # send nothing — a page that is up to date and an inbox that is empty,
-      # which is precisely the complaint that started all of this. The two
-      # changes belong together and neither is safe alone.
-      #
-      # It cannot double-send: send_daily.py sets a day flag through the subs
-      # worker and fails closed, and the gate above refuses any run on a day
-      # that is already published.
-      # THE SEND LOOP IS CHECKED IN THE SECOND BEFORE IT MAILS THE LIST.
-      #
-      # Both senders in this repository put each message inside
-      # `except smtplib.SMTPException`, and the day flag is set AFTER the loop.
-      # A socket timeout is not an SMTPException: it killed the step with the
-      # flag unset, and the rerun mailed everyone who had already received it.
-      # That is how issue #177 went out seven times in one afternoon.
-      #
-      # The guard lifts both loops out of their scripts and runs them against a
-      # fake server that drops mid-list. A second, no network, no dependencies.
-      # It stays a HARD step (Nov 3 2026), the one guard of code that still
-      # holds the send: it protects readers from a double or mass send, reads
-      # no date and no live data, so a failure here is a real defect.
       - name: Neither send loop can re-mail the whole list
         id: sendloops
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         run: python3 scripts/test_send_loops.py
 
-      # THE LOCAL TOP BID MUST BE THE HOMEPAGE'S. scripts/local_bid.py ports
-      # the hero's rule; this runs it against the real components/*.js on the
-      # live bids files. If they disagree the briefing still goes out, just
-      # without the local line (LOCAL_BIDS=0) -- a wrong price in an inbox is
-      # worse than none. Never blocks the send.
       - name: The email's local bid matches the homepage hero
         id: localbid
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
@@ -1028,9 +530,6 @@ jobs:
           python scripts/local_bid.py --selftest
           node scripts/daily-local-bid-checks.mjs
 
-      # The picture drawn at the top of this job is used only once agsist.com
-      # serves those exact bytes. Capped at 3 minutes: past that the email goes
-      # without the slot, at its normal time.
       - name: Print of the day, is it live
         if: ${{ steps.podraw.outcome == 'success' && steps.podraw.outputs.file != '' }}
         continue-on-error: true
@@ -1051,16 +550,10 @@ jobs:
       - name: Send daily email
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
-          # Daily v2 since Oct 22 2026. Roll back with format=current on a manual
-          # run, or the repo variable DAILY_FORMAT=current for the morning run.
           DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
           PRINT_OF_DAY: ${{ runner.temp }}/print-of-day.json
-          # a v2 issue held by the number check mails Sig one alert, here
           OWNER_TO:     ${{ secrets.SIG_TO }}
           LOCAL_BIDS:   ${{ steps.localbid.outcome == 'success' && '1' || '0' }}
-          # new sender env names; falls back to the legacy GMAIL_* secrets so
-          # either set works. RECIPIENTS is ignored when LIST_URL is set
-          # (list pulled live from the subs worker).
           SMTP_HOST:    ${{ secrets.SMTP_HOST }}
           SMTP_PORT:    ${{ secrets.SMTP_PORT }}
           SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
@@ -1069,19 +562,13 @@ jobs:
           RECIPIENTS:   ${{ secrets.RECIPIENTS }}
           LIST_URL:     ${{ secrets.LIST_URL }}
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           FROM_NAME:    ${{ secrets.FROM_NAME }}
           REPLY_TO:     ${{ secrets.REPLY_TO }}
-          SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}   # the mail plan's daily cap (the send_cap.py preflight)
+          SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}
         run: python scripts/send_daily.py
 
-      # 2026-10-27: the issue as it was emailed. A later run the same day redraws
-      # data/daily-archive/<day>.json and the page with afternoon prices, so the
-      # morning version was kept nowhere. send_daily.py writes
-      # data/daily-sent/<day>.json once, on the first send of the day; this
-      # commits it. The issue only: no address, ZIP, count or link. Never fails
-      # the run: the email has already gone.
       - name: Keep the sent copy
         if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.send_email == true) && inputs.test_to_sig != true }}
         continue-on-error: true
@@ -1100,33 +587,11 @@ jobs:
             echo "push attempt $i failed; retrying in 20s"; sleep 20
           done
 
-      # A MANUAL RUN WITHOUT send_email PUBLISHES AND SENDS NOTHING, AND IT
-      # NEVER MARKS THE DAY DONE (Sig, Nov 3 2026). From Oct 28 to Nov 3 this
-      # step committed data/daily-sent/<day>.dry-run.json and the gate skipped
-      # every later run on it: on Nov 3 the 7:32 CT dry run published the
-      # issue and the 7:46 heartbeat skipped, so nobody got the Daily until a
-      # second manual run. Now it commits nothing. The next scheduled run or
-      # heartbeat before 2 p.m. CT finds today published but not sent, asks
-      # the day flag, writes the issue again and sends it. The step says so in
-      # the run's summary, so the person who clicked Run workflow knows.
       - name: A dry run does not mark the day done
         if: ${{ !cancelled() && steps.commit.outcome == 'success' && github.event_name != 'schedule' && inputs.send_email != true && inputs.test_to_sig != true }}
         continue-on-error: true
         run: python scripts/daily_retry.py dry-run-note "$(date +%Y-%m-%d)"
 
-      # The forwarding brief (the old plain-text copy Sig used
-      # to forward by hand) is off since 2026-10-20 at Sig's word: the Daily list
-      # replaced it, and he got it as a second, older-looking copy.
-
-      # IndexNow (Bing, Yandex, Seznam, Naver and others share one ping).
-      # indexnow.yml runs on push, but this job pushes with GITHUB_TOKEN and
-      # GitHub starts no workflow from a GITHUB_TOKEN push, so before
-      # 2026-10-16 a new issue reached IndexNow only in Monday's full-sitemap
-      # run. Last step on purpose: it waits for Pages to serve today's page
-      # (a ping before the deploy invites a 404), and nothing it does may
-      # delay the email. !cancelled(): it still runs when a send step failed,
-      # because the page is live either way. It can never fail the run:
-      # continue-on-error, a 12-minute cap, 30-second request timeouts.
       - name: Ping IndexNow with today's issue
         if: ${{ !cancelled() }}
         continue-on-error: true

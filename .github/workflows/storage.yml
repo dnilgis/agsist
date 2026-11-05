@@ -1,23 +1,11 @@
 name: storage
+# storage.
 
-# Grain storage capacity vs production (the storage section of /basis).
-# Capacity and final production land each January. The fall measure
-# (Sept 1 stocks + this year's corn, soybean and sorghum forecast, over
-# capacity) moves with each Crop Production report: Sept 1 stocks are out
-# Sept 30, state forecasts around the 10th-12th of Oct and Nov.
 on:
   schedule:
-    - cron: "35 7 20 1 *"      # Jan 20 yearly, after Grain Stocks + Annual Production
-    - cron: "35 7 1,14 10 *"   # Oct 1 (Sept 1 stocks) and Oct 14 (October forecast)
-    - cron: "35 7 14 11 *"     # Nov 14 (November forecast)
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: "35 7 20 1 *"
+    - cron: "35 7 1,14 10 *"
+    - cron: "35 7 14 11 *"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -32,7 +20,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -93,8 +80,6 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_storage.py
-      # data/storage/history.json is written only when our 2000-2025 averages
-      # land near farmdoc daily's published ones; otherwise the old file stays.
       - name: Commit if changed (race-tolerant)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: |

@@ -1,21 +1,5 @@
 name: Dairy prices
-
-# Writes data/dairy-data.json and data/dairy-history.json for milk-prices.html,
-# then bakes the page's figures and title from them (see the bake step).
-# Source: USDA AMS "Announcement of Class and Component Prices" (posted about the
-# 5th) plus the NASS all-milk price, and the AMS mailbox price report (3357,
-# data/dairy-mailbox.json). No CME, no Barchart.
-#
-# AMS announces last month's class prices on or before the 5th (7 CFR 1000.53);
-# August 2026 posted Sep 2. The old window, days 3-9 once a day, missed an
-# announcement on the 1st or 2nd until the 3rd and depended on one scheduled run
-# that GitHub can delay or drop. Now: twice a day on days 1-9, once on 28-31,
-# plus the weekly catch-up. The script is idempotent: a re-run with
-# nothing new commits nothing.
-#
-# FIRST RUN: dispatch this once with "probe" ticked. It saves what the AMS and
-# NASS servers actually returned to data/dairy-raw/ and saves it on the raw branch (never deployed), so the real
-# PDF layout can be read. Then dispatch again without probe.
+# Dairy prices.
 
 on:
   workflow_dispatch:
@@ -30,19 +14,11 @@ on:
         options: [dry, preview, send]
         default: dry
   schedule:
-    - cron: '37 15 1-9 * *'     # announcement window, days 1-9, morning
-    - cron: '37 21 1-9 * *'     # and afternoon
-    - cron: '37 15 28-31 * *'   # an early announcement at month end
-    - cron: '11 14 * * 2'     # weekly catch-up, Tuesdays
-    - cron: '23 16 15-27 * *' # mailbox price (scripts/fetch_mailbox.py): AMS posts it late in the month, about three months on
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 76 minutes
-  # (closing before the next tick of the schedule).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: '37 15 1-9 * *'
+    - cron: '37 21 1-9 * *'
+    - cron: '37 15 28-31 * *'
+    - cron: '11 14 * * 2'
+    - cron: '23 16 15-27 * *'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -51,7 +27,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -103,8 +78,6 @@ jobs:
           python-version: "3.12"
       - name: Install pypdf (fallback if pdftotext is missing)
         run: pip install pypdf==6.20.1
-      # The Order 30 releases read only as -layout text (scripts/fetch_order30.py
-      # refuses pypdf's scrambled column order); the Oct 28 probe found none on the runner.
       - name: pdftotext
         timeout-minutes: 5
         continue-on-error: true
@@ -123,15 +96,12 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: |
-          # a probe that reached no AMS host exits 1; the others still run, then the step fails
           rc=0
           python scripts/fetch_dairy.py --probe || rc=1
           python scripts/fetch_mailbox.py --probe || rc=1
           python scripts/fetch_dmc.py --probe || echo "::warning::DMC probe failed"
           python scripts/fetch_order30.py --probe || echo "::warning::Order 30 probe failed"
           exit $rc
-      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
-      # Runs even when the probe step failed part way, so what it did capture is kept.
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
@@ -143,27 +113,14 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_dairy.py
-      # The newest federal-order mailbox price (USDA AMS report 3357), dated.
-      # Keep-last-good: a failed fetch or an unreadable sentence leaves
-      # data/dairy-mailbox.json alone and only records why.
       - name: Fetch the mailbox price into data/dairy-mailbox.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_mailbox.py
-      # FSA's own DMC monthly margins (prices and updates page; the Internet
-      # Archive copy, cited with its snapshot date, when FSA does not answer the
-      # runner) and the fact sheet's premium rates (scripts/fetch_dmc.py). Only
-      # months whose milk minus feed is FSA's margin and whose all-milk matches
-      # the NASS month just read are kept. Keep-last-good.
       - name: Fetch DMC margins into data/dairy-dmc.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         timeout-minutes: 15
         continue-on-error: true
         run: python scripts/fetch_dmc.py
-      # Licensed dairy herds (scripts/fetch_dairy_herds.py): NASS's yearly US and
-      # state counts (Quick Stats) and Wisconsin by month (NASS Wisconsin), for
-      # the chart on /milk-prices, which loads the file only when the reader gets
-      # to it. Keep-last-good; its own selftest first, and a failure here never
-      # stops the prices.
       - name: Licensed dairy herds into data/dairy-herds.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         timeout-minutes: 10
@@ -173,23 +130,12 @@ jobs:
         run: |
           python scripts/fetch_dairy_herds.py --selftest
           python scripts/fetch_dairy_herds.py
-      # Upper Midwest Federal Order 30 from the market administrator's own
-      # releases (scripts/fetch_order30.py): PPD, statistical uniform price,
-      # Class I, advanced prices, SCC rate. Keep-last-good.
       - name: Fetch Order 30 into data/dairy-order30.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_order30.py
-      # What Read my check said for each month as it began, and the miss once
-      # USDA announces it (scripts/milk_miss.py; only grows, never backfilled).
       - name: Record the futures miss log
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/milk_miss.py
-      # The page body, title and description carry the newest month from the
-      # file just written (scripts/seed_static.py seed_milk, scripts/bake_seo.py
-      # seo_milk). Until 2026-10-13 they were typed by hand and sat on August
-      # while the file held September. Selftest first: bake_seo refuses to
-      # write a title it cannot fit or source. Freshness runs both again daily,
-      # which is what dashes a class month once the next one is due.
       - name: Bake milk-prices from the new data
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: |
@@ -197,16 +143,11 @@ jobs:
           python scripts/test_milk_seed.py
           python scripts/seed_static.py --only milk
           python scripts/bake_seo.py --page milk-prices.html
-          # the FAQ's JSON-LD follows the visible FAQ the seed just rewrote (Nov 2, 2026: the July mailbox bake
-          # left them apart until freshness.yml ran, and bake_faq --check failed on main and every PR meanwhile)
           python scripts/bake_faq.py
       - name: Pillow, for the share image
         continue-on-error: true
         run: pip install --quiet pillow==12.3.0
 
-      # A probe run fetches nothing into data/, so it commits nothing: copying its
-      # checkout's files back over the branch tip only put older data back
-      # (Oct 28: a probe run reverted data/dairy-order30.json to a failed read).
       - name: Commit if changed (race-tolerant)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         env:
@@ -226,8 +167,6 @@ jobs:
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             mkdir -p data && cp -r /tmp/dairy/data/. data/
-            # re-bake the page on the fresh checkout rather than copy it over,
-            # so an edit to milk-prices.html pushed meanwhile is kept
             if [ "$PROBE" != "true" ]; then
               python scripts/seed_static.py --only milk
               python scripts/bake_seo.py --page milk-prices.html
@@ -244,13 +183,6 @@ jobs:
           done
           echo "Failed to push after 5 attempts."; exit 1
 
-      # Milk price day (subs worker v5.58, topic milk-month): one email to the
-      # readers who asked on /milk-prices, when this run read and checked the
-      # month's AMS Class prices. Sig, Oct 28: on. DAIRY_MONTHLY_LIVE is the repo
-      # variable and counts as 1 unless Sig sets it to 0. The script still refuses
-      # unless status.class is ok from this run, the Class III formula lands on
-      # the announced price, the month is the one due and the file is fresh; a
-      # reader already mailed for the month is never mailed again.
       - name: Milk price day email
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         env:

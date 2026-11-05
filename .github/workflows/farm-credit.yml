@@ -1,18 +1,6 @@
 name: Farm credit by Fed district
+# Farm credit by Fed district.
 
-# Rebuilds data/farm-credit/districts.json (loan repayment and renewals or
-# extensions by Federal Reserve district, from the district surveys of ag
-# bankers as the Kansas City Fed compiles them) from a dated folder of the
-# original files on the private raw branch. The Farmland Atlas pages rebuild
-# after this run (farmland-atlas-pages.yml listens for it).
-#
-# BY HAND ONLY. The surveys come out quarterly. A schedule needs Sig's OK first
-# (STANDING-DECISIONS, Oct 21); until then:
-#   1. save the new files byte for byte to the raw branch under
-#      history/fed-ag-credit/<YYYY-MM-DD>/ (kc-fed/ table, the Chicago .xls and
-#      the Dallas aglending.xlsx, as in 2026-10-28), with SHA256SUMS;
-#   2. run this workflow with that folder.
-# The run refuses to write anything when a check fails (scripts/build_farm_credit.py).
 on:
   workflow_dispatch:
     inputs:

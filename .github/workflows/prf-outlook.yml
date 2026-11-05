@@ -1,32 +1,10 @@
 name: prf outlook
+# prf outlook.
 
-# The long-range outlook panel on /prf (components/prf-outlook.js) reads
-# data/prf/outlook.json, written here by scripts/fetch_prf_outlook.py from:
-#   NOAA CPC seasonal and one-month precipitation outlooks (third Thursday of
-#   the month, the one-month also updated the last day of the month), CPC's
-#   ENSO discussion and probabilities (second Thursday) and the US Drought
-#   Monitor map (Thursdays, 8:30 ET).
-#
-# Thursday afternoon and Friday morning UTC, off the hour: each release is
-# picked up the day it comes out or the next.
-#
-# A separate workflow on purpose: it cannot touch prf.yml's fetch of USDA's
-# data, and prf.yml cannot hold it up. A source that fails keeps the section
-# already published (the script merges per section, never goes back to an
-# older issue, and refuses a thin answer); the page withholds any section past
-# its age limit, so a dead source shows as withheld, not as a current outlook.
 on:
   schedule:
-    - cron: "47 15 * * 4"      # Thursdays 15:47 UTC
-    - cron: "17 11 * * 5"      # Fridays 11:17 UTC
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: "47 15 * * 4"
+    - cron: "17 11 * * 5"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -36,7 +14,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -93,12 +70,6 @@ jobs:
           python scripts/fetch_prf_outlook.py --selftest
           node --test test/prf-outlook.test.mjs
 
-      # continue-on-error: a source that is down marks the run, and whatever
-      # did come back is still committed below. The script never writes a file
-      # that fails its own check.
-      # The script stops every source by itself within about 4 minutes (each
-      # request has a timeout, each source a budget). The step limit is only a
-      # backstop, set so the steps after it still run if it is ever reached.
       - name: Fetch
         id: fetch
         continue-on-error: true

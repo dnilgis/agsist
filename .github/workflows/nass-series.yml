@@ -1,19 +1,12 @@
 name: Build NASS Series
+# Build NASS Series.
 
 on:
   push:
     paths:
       - "scripts/build_nass_series.py"
   schedule:
-    - cron: "45 12 16 * *"   # monthly, 16th 12:45 UTC — annual yields/acres + monthly price-received revisions
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: "45 12 16 * *"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -23,7 +16,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -97,11 +89,6 @@ jobs:
           done
           echo "Failed to push after 5 attempts."; exit 1
 
-      # Oct 29 (god's-eye bet 5): final state yields, corn and soybeans, every year Quick Stats
-      # has, to the private raw branch at history/nass-yield/ for the re-test engine's
-      # ratings-to-yield specs (scripts/backfill_nass_yield.py: about four calls; the first
-      # pull is history-backfill.yml source=nass-yield). The 16th of each month catches
-      # January's final yields with no new schedule. After the commit, and it never fails the run.
       - name: State yield history to the raw branch
         continue-on-error: true
         env:

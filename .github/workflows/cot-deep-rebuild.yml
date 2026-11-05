@@ -1,28 +1,9 @@
 name: COT Deep History Rebuild
-
-# The release watcher APPENDS one week to data/cot-deep.json and never looks
-# back. CFTC revises. An append-only file that is never reconciled slowly stops
-# being CFTC's data and starts being ours, and nobody notices because every
-# individual week looked right on the day it landed.
-#
-# So once a week the whole twenty-year archive is re-read and the file is
-# rebuilt from scratch. The verify step runs FIRST and prints every cell that
-# had drifted, so a revision shows up in the Actions log as a line of text
-# rather than as a silently corrected number.
-#
-# Sunday, because the archive is quiet and nobody is waiting on the page.
+# COT Deep History Rebuild.
 
 on:
   schedule:
     - cron: '20 9 * * 0'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -32,7 +13,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -87,16 +67,12 @@ jobs:
           python scripts/cot_calendar.py
           python scripts/cot_deep.py --selftest
 
-      # Last week's file from the private raw branch (Nov 4: off main), for the
-      # revision check only; the rebuild below starts from the archive.
       - name: Last deep history from raw
         continue-on-error: true
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/pull_raw.sh data/cot-deep.json
 
-      # Loud, and allowed to find things: drift is the reason this job exists,
-      # so a non-zero exit here is information, not a failure.
       - name: What has CFTC revised since last week?
         continue-on-error: true
         run: python scripts/cot_deep.py --verify
@@ -108,9 +84,6 @@ jobs:
       - name: Prove the statistics
         run: python scripts/cot_analysis.py --selftest
 
-      # continue-on-error so a failure here does not discard a rebuild that
-      # took forty minutes and several hundred megabytes. The deep file is the
-      # expensive artifact; the analysis can be re-run in a minute.
       - name: Re-run the analysis on the rebuilt history
         id: analysis
         continue-on-error: true
@@ -132,8 +105,6 @@ jobs:
           done
           echo "ERROR: could not push"; exit 1
 
-      # The rebuilt history is this job's product: saved to the private raw
-      # branch (never main), and a failed save fails the run (no RAW_SOFT).
       - name: Save the rebuilt history to raw
         if: ${{ !cancelled() && steps.rebuild.outcome == 'success' }}
         env:

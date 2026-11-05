@@ -1,42 +1,6 @@
 name: Monthly county rain email
+# Monthly county rain email.
 
-# "My county's rain", one email on the 2nd of each month for the month just
-# ended, to the readers who asked on a county rain page (subs worker v5.54,
-# topic rain-month:<fips>; scripts/send_rain_month.py). Sig approved the list,
-# the sender and this schedule on Oct 23, 2026.
-#
-# THE LIST GETS NOTHING UNTIL SIG TURNS IT ON: the scheduled run sends only
-# when the repo variable RAIN_MONTHLY_LIVE is 1, and so does a manual "send"
-# (the script refuses a send without it too). Until then a scheduled run is a
-# dry run: counts and a sample in the log.
-#
-#   mode dry      (default) counts the list and renders a sample with a
-#                 made-up reader. Sends nothing.
-#   mode preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one
-#                 email per sample county (Barron 55005 and Story 19169, or
-#                 the fips input), any month. BUILD-RULES 13: the copy that
-#                 goes through the spam and link checkers first.
-#   mode send     the list, the month just ended, once per reader and month
-#                 (the worker's mo mark). Needs RAIN_MONTHLY_LIVE=1.
-#
-# The 2nd, 14:41 UTC (morning in Central), the one schedule Sig approved.
-# GitHub's scheduler never started this on Nov 2, 2026 (it delivers a small share
-# of scheduled fires; scripts/cron_gate.py). So it also runs after every "Fetch
-# Grain Bids" (cron-job.org, every 15 minutes), and the gate job lets exactly one
-# run per tick of the cron below do the work: the first run after 14:41 on the
-# 2nd, by either trigger, within 360 minutes (by 20:41 UTC, 14:41 Central, the
-# same afternoon; long enough for a morning when cron-job.org or the fetch runs
-# late, short enough that the month is never mailed a day late by the chain).
-# Every other run skips in seconds. A run started by hand does not use up the
-# tick (cron_gate.py MANUAL_DOES_NOT_SERVE), and send_rain_month.py marks each
-# reader once per month, so a second send that month mails nobody.
-# A chained run takes the scheduled path: fetch, pages, then the list.
-# If the 2nd's run is still missing or cut short, run this by hand with mode
-# send and fetch ticked; a reader already mailed for the month is never mailed
-# again. Each scheduled run first fetches
-# the county rain data and rebuilds the /rain pages exactly as county-rain.yml
-# does, in the same queue, so the email and the page carry the same numbers
-# from the same files. A manual run fetches only when "fetch" is ticked.
 on:
   schedule:
     - cron: "41 14 2 * *"
@@ -67,7 +31,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick (see the top). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -96,8 +59,6 @@ jobs:
           python3 scripts/cron_gate.py tick --workflow rain-monthly.yml --max-lag 360
           --cron "41 14 2 * *"
 
-  # The same steps as county-rain.yml (test/rain-monthly.test.mjs holds them
-  # to it), in its queue, so the two never write data/rain at once.
   fresh:
     needs: gate
     if: needs.gate.outputs.go == '1' && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.fetch == true)
@@ -145,16 +106,12 @@ jobs:
           python scripts/fetch_county_rain.py --check
           python scripts/build_county_rain.py
           python scripts/build_county_rain.py --check
-          # /here reads which page kinds each county has (data/atlas/pct k flags); a new rain page changes them
           python scripts/build_place_pct.py
           python scripts/cross_links.py --selftest
           python scripts/cross_links.py --stamp
           python scripts/check_seo.py
           python scripts/check_site_budget.py
 
-      # The newsletter block (/newsletter-block, Sig Nov 2, 2026): the month just
-      # ended from the rain files above, with the state basis middles. Fails soft:
-      # a miss keeps last month's block and never holds up the rain pages.
       - name: Newsletter block
         continue-on-error: true
         run: |
@@ -168,14 +125,12 @@ jobs:
           git add -A data/atlas/pct
           git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
           git add -A data/newsletter 2>/dev/null || true
-          # the summary files that read the rain pages (BUILD-RULES 61; fail soft, rule 53)
           python scripts/generated_sets.py dependents rain --stage || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           N=$(ls data/rain/*.json 2>/dev/null | wc -l)
           git commit -q -m "data: county rain ($N states)"
           for i in 1 2 3 4 5; do
             git rebase --abort 2>/dev/null || true
-            # a conflict only in the summary files is rebuilt on the rebased tree, never kept from one side (BUILD-RULES 61)
             if python3 scripts/generated_sets.py pull-rebase rain --autostash && git push -q; then exit 0; fi
             sleep $((20 * i))
           done
@@ -189,8 +144,6 @@ jobs:
 
   email:
     needs: [gate, fresh]
-    # only on a run the gate let through; then after a fresh fetch that went through,
-    # or with no fetch asked for. A failed fetch sends nothing: run it by hand (top).
     if: always() && needs.gate.outputs.go == '1' && (needs.fresh.result == 'success' || needs.fresh.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -198,7 +151,6 @@ jobs:
       group: rain-monthly-email
       cancel-in-progress: false
     steps:
-      # main, not the commit that started the run: the data the fresh job just pushed
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -220,7 +172,7 @@ jobs:
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -243,5 +195,4 @@ jobs:
           ARGS=""
           if [ -n "$MONTH" ]; then ARGS="$ARGS --month $MONTH"; fi
           if [ -n "$FIPS" ]; then ARGS="$ARGS --fips $FIPS"; fi
-          # shellcheck disable=SC2086
           python3 scripts/send_rain_month.py $ARGS

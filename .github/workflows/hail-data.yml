@@ -1,20 +1,9 @@
 name: Hail data refresh
-
-# Bakes the national hail heatmap data consumed by /hail-map.
-# Monthly is plenty — this is historical climatology, not live data.
-# Run it manually (workflow_dispatch) the first time to seed data/hail/.
+# Hail data refresh.
 
 on:
   schedule:
-    - cron: '41 6 1 * *'      # 1st of each month, 07:00 UTC
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: '41 6 1 * *'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -24,7 +13,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

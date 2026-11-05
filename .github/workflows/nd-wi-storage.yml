@@ -1,19 +1,6 @@
 name: North Dakota and Wisconsin licensed storage
+# North Dakota and Wisconsin licensed storage.
 
-# Reads one state's list of licensed grain warehouses into data/licensed-storage/<ST>.json and joins
-# each location to the AGSIST elevator ids (scripts/licensed_storage.py). The cash-bid town pages
-# show a matched elevator's line, and the state page the list's totals, on their next build
-# (cash-bid-pages.yml reads the files).
-#   ND: North Dakota Department of Agriculture, licensed grain entities (PDF; one total capacity per
-#       licensee), through the references copy (references/sources.json id nd-grain-entities-624),
-#       scripts/fetch_nd_storage.py.
-#   WI: Wisconsin DATCP, licensed grain dealers and warehouse keepers (XLS; no capacity column),
-#       downloaded here from datcp.wi.gov (refs.yml keeps PDF and HTML only),
-#       scripts/fetch_wi_storage.py.
-#
-# BY HAND ONLY. A schedule needs Sig's OK first (STANDING-DECISIONS, Oct 21). Run it when the state
-# posts a new list. The run refuses to write anything when the list does not hold together (each
-# reader's docstring says what it checks).
 on:
   workflow_dispatch:
     inputs:

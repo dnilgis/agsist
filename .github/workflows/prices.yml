@@ -1,18 +1,5 @@
 name: Fetch Prices
-
-# ONE FETCH PER RUN. THE CLOCK IS cron-job.org.
-#
-# Until 2026-10-07 this was one ~5h20m loop per launch, started by a handful
-# of GitHub crons. GitHub drops scheduled fires, and when it dropped both the
-# 08:17 CT launch and its 11:03 recovery the homepage sat on 8:55 prices
-# until 11:16. Bids never had that problem: cron-job.org starts
-# fetch_bids.yml every 15 minutes and does not drop fires.
-#
-# So prices work the same way now. cron-job.org POSTs a workflow_dispatch
-# every 15 minutes, all day, every day; each run fetches once and exits. The
-# "Market hours" step below skips the fetch when CME grains are shut, so the
-# weekend does not get 96 commits of an unchanged board. The GitHub cron
-# under it is only a fallback for when cron-job.org is down.
+# Fetch Prices.
 
 on:
   workflow_dispatch:
@@ -22,24 +9,13 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '11 * * * *'   # fallback only, off the :00/:30 pile-ups. Hourly since 2026-10-09: cron-job.org has started a run every 15 minutes since 10-07 (213 runs, one gap over 30 min)
+    - cron: '11 * * * *'
 
-# One fetch at a time, and never cut one off mid-push: a second start waits.
 concurrency:
   group: fetch-prices
   cancel-in-progress: false
 
 jobs:
-  # CME grains trade Sun 7:00 PM to Fri 1:20 PM CT, shut 1:20-7:00 PM daily.
-  # Fetch from 6:45 PM (lead for the reopen) to 2:00 PM, in Central time so
-  # daylight saving takes care of itself. Outside that the board does not
-  # move and a fetch would only re-stamp `fetched`.
-  # Friday 11:30 PM to Saturday 2:00 AM too (2026-10-17): Yahoo's bar holds
-  # the last trade until late evening and only then the exchange settle
-  # (fetch_prices RESTATED_BY). Monday to Thursday the evening runs pick that
-  # up; on Friday nothing ran after 2:00 PM, so all weekend the pages showed
-  # the 1:46 PM last trade (soybeans $12.60 1/2, -3 3/4c, against a CBOT
-  # settle of $12.61 1/4, -1 3/4c on Oct 16).
   hours:
     runs-on: ubuntu-latest
     permissions: {}
@@ -50,8 +26,8 @@ jobs:
         env:
           IN_FORCE: ${{ inputs.force }}
         run: |
-          DOW=$(TZ=America/Chicago date +%u)              # 1=Mon .. 7=Sun
-          HM=$(( 10#$(TZ=America/Chicago date +%H%M) ))   # e.g. 1845
+          DOW=$(TZ=America/Chicago date +%u)
+          HM=$(( 10#$(TZ=America/Chicago date +%H%M) ))
           OPEN=0
           case "$DOW" in
             7)       [ "$HM" -ge 1845 ] && OPEN=1 ;;
@@ -70,8 +46,6 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write
-      # `actions: write` is what lets the fetch step dispatch
-      # the briefing. Added 2026-09-01 with the heartbeat; see the note there.
       actions: write
     steps:
       - name: Checkout
@@ -92,8 +66,6 @@ jobs:
       - name: Install dependencies
         run: pip install yfinance==1.7.0
 
-      # Selftests gate the fetch: if the ONE expiry/roll rule or the roll marker
-      # is broken, fail RED here — before a bad feed gets committed 10x/session.
       - name: Selftest — contract calendar + roll marking + feed gate
         run: |
           python scripts/contract_calendar.py
@@ -107,11 +79,8 @@ jobs:
 
       - name: Fetch once
         env:
-          # `gh workflow run` authenticates from GH_TOKEN. The built-in token is
-          # enough: a workflow_dispatch is one of the two events GitHub creates
-          # runs for even when GITHUB_TOKEN sends it.
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}
         run: |
           set -uo pipefail
           git config user.name  "AGSIST Bot"
@@ -119,24 +88,13 @@ jobs:
 
           python scripts/fetch_prices.py || echo "fetch_prices.py exited non-zero (kept last values)"
 
-          # GATE — run the SAME feed gate daily.yml runs, on every cycle.
-          # Until 2026-08-08 preflight ran in daily.yml only: one of the four
-          # workflows that write this file. So the briefing got a repaired feed
-          # once a day and the homepage, markets.html and the futures pages read
-          # the raw one for the other 29 minutes of every half hour — and the
-          # daily repair was clobbered by the next fetch regardless. That is how
-          # "LEAN HOGS +13.82 (+16.9%)" — 2.9x the exchange daily limit — sat on
-          # the homepage. Repair mode: fix what a dated contract can verify,
-          # suppress what nothing can, never block the price loop.
           python scripts/preflight_prices.py data/prices.json --repair \
             || echo "::warning::preflight reported unrepairable quotes; they were suppressed, not published"
 
           if ! git diff --quiet -- data/prices.json; then
-            # re-bake /markets from this file so its baked source line matches it
             python scripts/seed_static.py --only markets || echo "::warning::markets re-bake skipped"
             git add data/prices.json markets.html
             git commit -m "💹 Prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
-            # rebase-safe push with retry: pull AFTER commit, take our fresh copy on conflict
             pushed=0
             for i in 1 2 3 4 5; do
               git pull --rebase --autostash origin main || {
@@ -150,39 +108,6 @@ jobs:
             [ "$pushed" = "0" ] && echo "::warning::could not push this cycle; will retry next cycle"
             [ "$pushed" = "1" ] && bash .github/pages-kick.sh
 
-            # ── THE BRIEFING HEARTBEAT ──────────────────────────────────
-            #
-            # These runs are what arrives on time (cron-job.org starts them). daily.yml's own scheduled fires are dropped
-            # for days at a time; this one committed at 09:06, 09:37, 10:07,
-            # 10:37, 11:08, 11:38, 12:08 and 12:39 UTC on 2026-08-31 — eight
-            # for eight — while not one briefing fire arrived.
-            #
-            # daily.yml was given `on: push` on 2026-08-31 to ride along with
-            # exactly these commits. IT CANNOT WORK, and the reason is
-            # GitHub's, written down in their own documentation:
-            #
-            #   "When you use the repository's GITHUB_TOKEN to perform tasks,
-            #    events triggered by the GITHUB_TOKEN ... will not create a
-            #    new workflow run. ... this behavior prevents you from
-            #    accidentally creating recursive workflow runs."
-            #
-            # The checkout above authenticates with secrets.GITHUB_TOKEN, so
-            # every push this loop makes is invisible to every `on: push`
-            # trigger in the repository. Not unreliable. Impossible.
-            #
-            # The SAME page names the two events that are exempt:
-            #
-            #   "workflow_dispatch and repository_dispatch events always
-            #    create workflow runs."
-            #
-            # So the heartbeat is a dispatch, not a push. It needs no new
-            # secret and creates no recursion: daily.yml answers a heartbeat
-            # exactly the way it answered a push — it never waits, it skips
-            # if today is published or if it is before the 05:45 Central
-            # floor, and there is another one along in thirty minutes.
-            #
-            # `|| true` because a briefing is not worth failing a price
-            # fetch over.
             if [ "$pushed" = "1" ]; then
               gh workflow run daily.yml \
                 -f heartbeat=true -f send_email=true \
@@ -193,8 +118,3 @@ jobs:
             echo "no price change this cycle"
           fi
 
-          # THE COT RELEASE CLOCK used to be dispatched from here. It sat behind
-          # the market-hours gate above, which shuts at 14:00 Central, the hour
-          # the 19:00 UTC window opens, so after 2026-10-07 it never fired.
-          # cot-release-watch.yml now runs on workflow_run after this workflow
-          # and after Fetch Grain Bids, whether or not the market is open.

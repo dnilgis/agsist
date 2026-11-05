@@ -1,25 +1,5 @@
 name: Feeder index history (dispatch only)
-
-# Past weeks of the AGSIST USDA feeder steer index (Sig said yes, Nov 2 2026):
-# data/feeder-index-history.json, read by components/feeder-index.js only when
-# a reader opens the index's record fold. DISPATCH ONLY: no schedule and no
-# push trigger, ever. The ongoing weeks ride cattle-auction.yml as before.
-#
-# What it does (scripts/backfill_feeder_index.py):
-#   1. reads every single-barn USDA AMS report in scripts/cattle_auction_sources.json
-#      through the MARS API of USDA My Market News (--mars-fetch; secret MARS_API_KEY,
-#      HTTP basic, never printed), one ask per report and year, 1.5 s apart, and maps
-#      its rows to fetch_cattle_auction's own records with the same row rules;
-#   2. only when "archive" is ticked: also lists and reads the Internet Archive's
-#      copies of the same reports (--fetch, 4 s apart, robots.txt obeyed); a copy is
-#      used only for a barn and week MARS does not hold;
-#   3. saves what was read to the private raw branch (history/feeder-mars/ and
-#      history/feeder-archive/), so a later run picks up where this one stopped;
-#   4. builds the past weeks with build_feeder_index.build_history (the live
-#      record's own rules; never a week the live record holds; each week says how
-#      its barns were read) and commits the file to the branch it ran on, unless
-#      dry run is ticked.
-# A re-run with nothing new changes nothing.
+# Feeder index history (dispatch only).
 
 on:
   workflow_dispatch:
@@ -62,7 +42,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      # The same PDF reader the barn job uses (cattle-auction.yml), so a report reads the same here.
       - name: Install pypdf
         run: pip install pypdf==6.20.1
       - name: Selftests (no network)

@@ -1,23 +1,5 @@
 name: Fertilizer USDA AMS series
-
-# Writes data/fertilizer-ams.json (and its history file) for fertilizer.html:
-# USDA AMS "Illinois Production Cost Report (Bi-weekly)", My Market News
-# report 3195, https://www.ams.usda.gov/mnreports/ams_3195.pdf. Anhydrous,
-# UAN 28 and 32, urea, DAP and potash, each with its own report date. The page
-# reads the file live; until a run writes it, the page shows nothing for USDA.
-#
-# The report comes out every other week, usually on a Friday. This checks
-# Friday afternoon and evening and again Monday, so a late post or a dropped
-# scheduled run is caught. The script is idempotent: nothing new, no commit.
-#
-# FIRST RUN: dispatch once with "probe" ticked. It saves what the AMS server
-# returned to data/fert-ams-raw/ and saves it on the raw branch (never deployed), so the real PDF layout can be
-# read and added to the selftest fixtures (the parser was written from search
-# snippets; the sandbox could not reach usda.gov). Then dispatch again
-# without probe. The probe run of 2026-10-15 (38692414508) did this; the real
-# text is now the main selftest fixture. The probe step reports what it got
-# (bytes, report date, each average, anything not read) as ::notice /
-# ::warning annotations, so the run page says what happened without the log.
+# Fertilizer USDA AMS series.
 
 on:
   workflow_dispatch:
@@ -27,17 +9,9 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '23 20 * * 5'    # Friday afternoon (Central)
-    - cron: '23 1 * * 6'     # Friday evening (Central)
-    - cron: '23 15 * * 1'    # Monday catch-up
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 290 minutes
-  # (closing before the next tick of the schedule).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: '23 20 * * 5'
+    - cron: '23 1 * * 6'
+    - cron: '23 15 * * 1'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -46,7 +20,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -101,8 +74,6 @@ jobs:
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: python scripts/fetch_fert_ams.py --probe
-      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
-      # Runs even when the probe step failed part way, so what it did capture is kept.
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
@@ -112,11 +83,6 @@ jobs:
       - name: Fetch and write data/fertilizer-ams.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_fert_ams.py
-      # The same Friday and Monday runs read the USDA production cost reports
-      # (Iowa, Illinois, Oklahoma, North Carolina, Inter-Mountain West, Pacific
-      # Northwest: fertilizer, farm diesel, propane) through USDA My Market News
-      # (MARS API) into data/production-costs.json. They all post on Friday, so no
-      # schedule of their own. Keep-last-good; without the key it asks nothing.
       - name: Selftest the production cost reader
         run: python scripts/fetch_prodcost_mars.py --selftest
       - name: Fetch and write data/production-costs.json (USDA MARS)

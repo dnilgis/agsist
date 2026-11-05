@@ -1,35 +1,15 @@
 name: Site usage (GA4 + Search Console, 90 days)
-
-# Per-page usage for the site audit: GA4 page views, users, engagement and
-# entrances, and Search Console clicks, impressions, CTR, position and top
-# queries, all for the last 90 days. Writes data/site-usage.json (aggregate
-# only) and saves it to the private raw branch (Nov 4, Sig: the queries are
-# private; never main, so Pages never serves it). Each source fails on its own:
-# a missing secret or an API error sets that block to null with a reason. If
-# both fail, the file is left as it was (the copy unpacked from raw first). Secrets are the same ones sponsor-report.yml and
-# gsc-sitemaps.yml already use.
-#
-# Monthly, 2nd of the month 14:37 UTC, off the hour. Run it by hand from the
-# Actions tab any time.
+# Site usage (GA4 + Search Console, 90 days).
 
 on:
   schedule:
     - cron: '37 14 2 * *'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
   workflow_dispatch:
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -86,8 +66,6 @@ jobs:
       - name: Selftest (offline, fake transports)
         run: python3 scripts/site_usage_report.py --selftest
 
-      # last month's file, so a month where both sources fail keeps it (and
-      # seo_opportunities.py below always has one to read)
       - name: Last usage file from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -101,12 +79,9 @@ jobs:
           GSC_SITE:                 ${{ vars.GSC_SITE }}
         run: python3 scripts/site_usage_report.py
 
-      # Fresh numbers, fresh to-do list (/seo-report). seo-weekly.yml rebuilds
-      # it every Monday as well, after titles have changed.
       - name: What to fix (search)
-        run: python3 scripts/seo_opportunities.py   # no --print: the Actions log is public
+        run: python3 scripts/seo_opportunities.py
 
-      # The only output, so a failed save fails the run (no RAW_SOFT).
       - name: Save usage to raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}

@@ -1,28 +1,9 @@
 name: PRF interval so far
+# PRF interval so far.
 
-# The "This interval so far" card on /prf and the PRF county pages reads
-# data/prf/now/<ST>.json, written by scripts/fetch_prf_season.py from NOAA
-# CPC's real-time daily gauge analysis (0.25 degree, CONUS), the same daily
-# rain RMA's Rainfall Index is built from.
-#
-# Daily at 14:23 UTC (Sig approved Oct 17, 2026), plus dispatch modes below.
-#   mode=probe     save directory listings, one daily file and the RMA source
-#                  notes to the raw branch (data/prf-season-raw/), nothing else
-#   mode=build     fetch the open intervals and commit data/prf/now/
-#   mode=backtest  rebuild past intervals from CPC and compare with RMA's final
-#                  index; the result goes to the raw branch and the job log
-#
 on:
   schedule:
-    - cron: '23 14 * * *'   # daily, after NCEI posts its daily grids (3 days behind); Sig approved Oct 17, 2026
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
-  # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
+    - cron: '23 14 * * *'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -37,7 +18,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -92,7 +72,7 @@ jobs:
       - name: pdftotext for the probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe' }}
         timeout-minutes: 5
-        continue-on-error: true  # the probe still saves the PDF without it
+        continue-on-error: true
         uses: ./.github/actions/pdftotext
       - name: Probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe' }}
@@ -119,7 +99,6 @@ jobs:
           get rma-source-news.html "https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source"
           get rma-processing-2027.pdf "https://www.rma.usda.gov/sites/default/files/2026-06/Rainfall%20Indexa%20Data%202027%20and%20Beyond%20Rainfall%20Index%20Processing.pdf"
           get rma-ri-page.html "https://www.rma.usda.gov/policy-procedure/insurance-plans/pasture-rangeland-forage"
-          # the index service also returns the interval rain in mm: one grid, one call, to compare later
           get rma-api-30025.json "https://public-rma.fpac.usda.gov/apps/PrfWebApi/PrfExternalIndexes/GetIndexValues?intervalType=BiMonthly&sampleYearMinimum=2024&sampleYearMaximum=2026&gridId=30025"
           [ -s "$D/rma-processing-2027.pdf" ] && pdftotext -layout "$D/rma-processing-2027.pdf" "$D/rma-processing-2027.txt" || true
           ls -la "$D"; cat "$D/status.txt"; cat "$D/errors.txt" || true
@@ -184,7 +163,6 @@ jobs:
               hrefs = [h for h in re.findall(r'href="([^"?]+)"', open(p, errors="replace").read()) if not h.startswith("/") and h != "../"]
               print("==", sub, len(hrefs), hrefs[:6], hrefs[-6:])
               picks[sub] = hrefs
-          # one level down where the listing is folders, then the newest file
           for sub, hrefs in picks.items():
               if not hrefs:
                   continue
@@ -229,8 +207,6 @@ jobs:
           python scripts/fetch_prf_season.py --prelim-collect data/prf-season-raw/backtest
           bash scripts/push_raw.sh "prf-season prelim" data/prf-season-raw/backtest
 
-      # A source that fails writes nothing: the script refuses a file it
-      # cannot check, and the card keeps showing the last good one with its date.
       - name: Build
         if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'build') }}
         timeout-minutes: 20
@@ -243,7 +219,6 @@ jobs:
           python scripts/fetch_prf_season.py
           python scripts/fetch_prf_season.py --check
           python scripts/check_site_budget.py
-          # NCEI keeps only last month's preliminary file; keep each one to check it against the final
           if [ -d data/prf-season-raw/initial ]; then bash scripts/push_raw.sh "prf-season initial month" data/prf-season-raw/initial || true; fi
 
       - name: Commit
