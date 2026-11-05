@@ -294,16 +294,13 @@ def recent(c, day, n):
     if not day or not day.get("p"):
         return None
     v = R.unpack_days(day["p"])
-    if len(v) != c["days"] or len(v) < n:
+    if len(v) != c["days"]:
         return None
-    tot = 0.0
-    for x in v[-n:]:
-        if x in ("M", "S") or x.endswith("A"):
-            return None
-        if x != "T":
-            tot += float(x)
+    r = R.last_days(v, n)          # the one copy (the home page's 30-day figure reads the same)
+    if r is None:
+        return None
     first = dt.date.fromisoformat(c["as_of"]) - dt.timedelta(days=n - 1)
-    return round(tot, 2), first.isoformat()
+    return r[0], first.isoformat()
 
 
 def span_words(a, b):
