@@ -47,3 +47,35 @@ test('a push that lost the race is redone on the fresh main, and a same-file cas
   assert.match(r.stdout, /already holds/);
   fs.rmSync(tmp, { recursive: true, force: true });
 });
+
+test('only this run\'s own changes are carried over: an untouched audience file and another run\'s sealed files stay as main has them', () => {
+  const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), 'sr-commit2-'));
+  const e = env(tmp);
+  const files = ['data/audience.json', 'data/audience-pages.json', 'sponsor.html', 'sponsor-kit.html'];
+  sh(`git init -q --bare -b main o.git && git clone -q o.git a 2>/dev/null && cd a && git checkout -q -B main && mkdir -p data/rp-sealed scripts
+    for f in ${files.join(' ')}; do echo 1 > $f; done; echo old > data/rp-sealed/old.bin; echo gone > data/rp-sealed/gone.bin; echo 'pass' > scripts/bake_audience.py
+    git add -A && git commit -qm base && git push -q origin main && cd .. && git clone -q o.git b 2>/dev/null && cd b && git checkout -q main`, tmp, e);
+  // another run lands first: fresher audience files, a new sealed file, and it removes nothing
+  sh('echo 2 > data/audience.json && echo 2 > data/audience-pages.json && echo fresh > data/rp-sealed/other.bin && git add -A && git commit -qm other && git push -q origin main', path.join(tmp, 'b'), e);
+  // this run (stale base) changes sponsor.html, adds one sealed file and deletes one
+  fs.writeFileSync(path.join(tmp, 'commit.sh'), script);
+  fs.writeFileSync(path.join(tmp, 'a/sponsor.html'), 'changed\n');
+  fs.writeFileSync(path.join(tmp, 'a/data/rp-sealed/mine.bin'), 'mine\n');
+  fs.rmSync(path.join(tmp, 'a/data/rp-sealed/gone.bin'));
+  const r = sh('bash ../commit.sh', path.join(tmp, 'a'), e);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const show = (f) => sh(`git show main:${f}`, path.join(tmp, 'o.git'), e);
+  assert.equal(show('data/audience.json').stdout.trim(), '2', 'an audience file this run did not change stays as main has it');
+  assert.equal(show('data/audience-pages.json').stdout.trim(), '2');
+  assert.equal(show('data/rp-sealed/other.bin').stdout.trim(), 'fresh', 'the other run\'s sealed file is kept');
+  assert.equal(show('data/rp-sealed/mine.bin').stdout.trim(), 'mine', 'this run\'s sealed file is added');
+  assert.notEqual(show('data/rp-sealed/gone.bin').status, 0, 'the file this run deleted is gone');
+  assert.equal(show('data/rp-sealed/old.bin').stdout.trim(), 'old');
+  assert.equal(show('sponsor.html').stdout.trim(), '1', 'the sponsor pages are written again from the fresh files (bake), not copied');
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('after 4 refused pushes the step warns and exits 0', () => {
+  assert.match(script, /::warning::the report files were not saved after 4 refused pushes/);
+  assert.match(script, /exit 0\n$/);
+});
