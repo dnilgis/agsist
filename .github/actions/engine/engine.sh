@@ -10,10 +10,16 @@
 #                               and a COMMIT-GUARD line in the message (cron_health.py commit-guard row),
 #                               unless .github/future-dated-data.txt lists it (Nov 4, 2026: a test's
 #                               made-up day, data/daily-sent/2099-01-01.json, reached main in a commit)
-#   engine.sh overlay <dir>     copy the engine paths from <dir> (the private checkout) into place
+#   engine.sh overlay <dir>     copy the engine paths from <dir> (the private checkout) into place;
+#                               a same-named engine branch checked out at .engine-pair wins over <dir>
 # In a local session (from anywhere inside the checkout):
 #   engine.sh pull              clone or update the engine next to this checkout
-#                               (ENGINE_DIR, default ../<repo>-engine) and copy it in
+#                               (ENGINE_DIR, default ../<repo>-engine) and copy it in; the engine
+#                               branch is ENGINE_BRANCH, else the one named like this checkout's
+#                               branch when the engine has it, else the default branch
+#   engine.sh pair [branch]     print the engine branch a run of <branch> uses (default: this
+#                               checkout's branch): the same-named engine branch when it exists
+#                               on ENGINE_REMOTE, else the default
 #   engine.sh save [message]    copy this checkout's engine paths back into ENGINE_DIR and
 #                               commit there (it does not push; it prints the push line)
 #   engine.sh only-engine [dir] refuse (exit 1) when a file under the engine paths is in the
@@ -46,6 +52,8 @@ BRANCH=$(awk '$1=="branch"{print $2}' "$CONF")
 FIXED_MODE=$(awk '$1=="mode"{print $2}' "$CONF")
 mapfile -t PATHS < <(awk '$1=="path"{print $2}' "$CONF")
 SCRATCH=.engine-src
+PAIR=.engine-pair
+MAIN_BRANCH=main
 
 say_fail() {
   # one loud line in the log and in the job summary, then stop
@@ -59,7 +67,7 @@ exclude_paths() {
   case "$ex" in /*) ;; *) ex="$ROOT/$ex" ;; esac
   mkdir -p "$(dirname "$ex")"; touch "$ex"
   local p line
-  for line in "/$SCRATCH/" $(for p in "${PATHS[@]}"; do echo "/$p"; done); do
+  for line in "/$SCRATCH/" "/$PAIR/" $(for p in "${PATHS[@]}"; do echo "/$p"; done); do
     grep -qxF -- "$line" "$ex" || echo "$line" >> "$ex"
   done
 }
@@ -212,6 +220,86 @@ overlay_from() {
   fi
 }
 
+# A branch name a run may pair with: plain characters only, never the default or main.
+pair_name() {
+  local b="${1:-}"
+  [ -n "$b" ] && [ "$b" != "$BRANCH" ] && [ "$b" != "$MAIN_BRANCH" ] || return 1
+  [[ "$b" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$b" != *..* ]] && git check-ref-format --branch "$b" >/dev/null 2>&1
+}
+
+# The engine wins (Nov 5, 2026, curtain step P1). In private mode a run on main, or a run whose
+# same-named engine branch was checked out (a pull request fx/x with fx/x on the engine), uses the
+# engine's copy of every engine path, even while this repository still tracks the code. The tracked
+# copy is set aside with a sparse checkout (patterns kept, the engine paths left out) and
+# sparse.expectFilesOutsideOfPatterns, so the engine's files sit where the code was, git sees them as
+# outside the checkout: `git status` stays clean, a bare `git add -A` never stages them, and a
+# `git pull --rebase` over a code change on main goes through (it updates the index only). A file this
+# commit tracks that the engine lacks (the engine a few minutes behind a merge) is taken from this
+# commit, with a notice counting them.
+set_aside() {
+  local sp was
+  sp="$(git -C "$ROOT" rev-parse --git-path info/sparse-checkout)"
+  case "$sp" in /*) ;; *) sp="$ROOT/$sp" ;; esac
+  was="$(git -C "$ROOT" config --bool core.sparseCheckout 2>/dev/null || echo false)"
+  {
+    if [ "$was" = "true" ] && [ -s "$sp" ]; then
+      grep -v '^[[:space:]]*$' "$sp"     # the patterns as written (cone mode writes them out in full too)
+    else
+      echo '/*'
+      git -C "$ROOT" config agsist.engineSparse full   # a full checkout: check_site_budget.py still walks it
+    fi
+    for p in "${PATHS[@]}"; do printf '!/%s/\n!/%s/**\n' "$p" "$p"; done
+  } > "$sp.engine" || return 1
+  git -C "$ROOT" config sparse.expectFilesOutsideOfPatterns true || return 1
+  git -C "$ROOT" sparse-checkout set --no-cone --stdin < "$sp.engine" 2>&1 | grep -v 'leading slash' >&2
+  local rc=${PIPESTATUS[0]}
+  rm -f "$sp.engine"
+  return "$rc"
+}
+
+engine_take() {
+  local src="$1" p n=0 diff=0 mode hash f tracked
+  for p in "${PATHS[@]}"; do
+    [ -e "$src/$p" ] || say_fail "the engine branch has no $p"
+  done
+  exclude_paths
+  tracked="$(git -C "$ROOT" ls-files -- "${PATHS[@]}" | head -1)"
+  if [ -n "$tracked" ]; then
+    set_aside || say_fail "could not set this repository's copy of the code aside"
+    diff=$(git -C "$ROOT" ls-files -s -- "${PATHS[@]}" | while read -r mode hash _ f; do
+             [ -f "$src/$f" ] && [ "$(git hash-object --no-filters -- "$src/$f")" != "$hash" ] && echo x; done | wc -l)
+  fi
+  for p in "${PATHS[@]}"; do
+    rm -rf "${ROOT:?}/$p"
+    cp -a "$src/$p" "$ROOT/$p" || say_fail "could not copy $p from the engine"
+  done
+  if [ -n "$tracked" ]; then
+    n=$(git -C "$ROOT" ls-files -s -z -- "${PATHS[@]}" | (cd "$ROOT" && while IFS= read -r -d '' rec; do
+          f="${rec#*$'\t'}"; read -r mode hash _ <<< "${rec%%$'\t'*}"
+          [ -e "$f" ] || [ -L "$f" ] && continue
+          mkdir -p "$(dirname "$f")" || exit 1
+          case "$mode" in
+            120000) ln -s "$(git cat-file blob "$hash")" "$f" ;;
+            100755) git cat-file blob "$hash" > "$f" && chmod +x "$f" ;;
+            100644) git cat-file blob "$hash" > "$f" ;;
+            *) continue ;;
+          esac || { echo FAIL; exit 1; }
+          echo x; done) | sort | uniq -c | awk '$2=="x"{n=$1} $2=="FAIL"{f=1} END{print f ? "fail" : n+0}')
+    [ "$n" = "fail" ] && say_fail "could not take a file the engine lacks from this commit"
+    # anything git still counts as a change under the engine paths would reach a job's commit
+    git -C "$ROOT" ls-files -t -z -- "${PATHS[@]}" | tr '\0' '\n' | awk '$1!="S"{sub(/^[^ ]+ /,""); print}' |
+      (cd "$ROOT" && xargs -r -d '\n' git update-index --skip-worktree --) || say_fail "could not set this repository's copy of the code aside"
+    [ -z "$(git -C "$ROOT" status --porcelain -- "${PATHS[@]}" | head -1)" ] ||
+      say_fail "the engine copy shows as a change to this repository; nothing was run"
+  fi
+  if [ "$n" -gt 0 ]; then
+    echo "::notice title=engine behind this commit::$n file(s) this commit has and the engine lacks were taken from this commit"
+  fi
+  if [ "$diff" -gt 0 ]; then
+    echo "::notice title=engine differs from this commit::$diff file(s) differ from this repository's copy; the engine copy was used"
+  fi
+}
+
 cmd="${1:-}"; shift || true
 case "$cmd" in
   hook)
@@ -224,8 +312,14 @@ case "$cmd" in
     if [ "$mode" = "private" ]; then
       [ "${HAVE_TOKEN:-false}" = "true" ] || say_fail "PRIVATE_REPO_TOKEN is not set in this repository's Actions secrets (needed to read $REPO $BRANCH)"
       exclude_paths
-      { echo "private=true"; echo "repo=$REPO"; echo "ref=$BRANCH"; } >> "$out"
-      echo "engine: private, $REPO $BRANCH"
+      # a run on fx/x (a pull request's head, a dispatch or push on that branch) tries the engine
+      # branch fx/x first, so it runs its own branch's code (BUILD-RULES 62, 66); main and the rest
+      # use the default engine branch
+      # never on pull_request_target: it runs with a write token, and a head branch name is the PR's to pick
+      paired=""
+      [ "${GITHUB_EVENT_NAME:-}" != "pull_request_target" ] && pair_name "${RUN_BRANCH:-}" && paired="$RUN_BRANCH"
+      { echo "private=true"; echo "repo=$REPO"; echo "ref=$BRANCH"; echo "paired=$paired"; } >> "$out"
+      echo "engine: private, $REPO $BRANCH${paired:+ (the same-named engine branch $paired first, when it exists)}"
     elif [ -z "$mode" ] || [ "$mode" = "in-repo" ]; then
       have=0; for p in "${PATHS[@]}"; do [ -e "$ROOT/$p" ] && have=1; done
       [ "$have" = 1 ] || say_fail "the code is not in this repository (${PATHS[*]}); set the repository variable ENGINE_MODE=private"
@@ -237,23 +331,54 @@ case "$cmd" in
   overlay)
     src="${1:?overlay needs the engine checkout directory}"
     case "$src" in /*) ;; *) src="$ROOT/$src" ;; esac
-    [ "${CHECKOUT_OUTCOME:-success}" = "success" ] && [ -d "$src/.git" -o -f "$src/.git" ] ||
-      say_fail "could not check out $REPO $BRANCH (key expired, revoked, not granted on $REPO, or the branch is gone)"
-    sha=$(git -C "$src" rev-parse HEAD)
-    overlay_from "$src"
-    rm -rf "$src"
-    echo "engine: $sha from $BRANCH ($REPO), paths ${PATHS[*]}"
+    pair="$ROOT/$PAIR"
+    pr=0; case "${GITHUB_EVENT_NAME:-}" in pull_request|pull_request_target) pr=1 ;; esac
+    if [ "${GITHUB_EVENT_NAME:-}" != "pull_request_target" ] && [ "${PAIRED_OUTCOME:-}" = "success" ] && [ -n "${PAIRED:-}" ] && [ -d "$pair/.git" -o -f "$pair/.git" ]; then
+      # the run's own engine branch: its code wins, tests included
+      from="$PAIRED"; sha=$(git -C "$pair" rev-parse HEAD)
+      engine_take "$pair"
+      how="the engine copy"
+    else
+      [ "${CHECKOUT_OUTCOME:-success}" = "success" ] && [ -d "$src/.git" -o -f "$src/.git" ] ||
+        say_fail "could not check out $REPO $BRANCH (key expired, revoked, not granted on $REPO, or the branch is gone)"
+      from="$BRANCH"; sha=$(git -C "$src" rev-parse HEAD)
+      if [ "$pr" = 0 ] && [ "${RUN_BRANCH:-}" = "$MAIN_BRANCH" ]; then
+        engine_take "$src"
+        how="the engine copy"
+      else
+        # a pull request or a branch run with no same-named engine branch: this commit's own code
+        # (while it still has it) is what is being tested
+        overlay_from "$src"
+        how="this commit's copy where it has one"
+      fi
+    fi
+    rm -rf "$src" "$pair"
+    echo "engine: $sha from $from ($REPO), paths ${PATHS[*]}, $how"
     [ -n "${GITHUB_OUTPUT:-}" ] && echo "sha=$sha" >> "$GITHUB_OUTPUT"
     true ;;
+  pair)
+    b="${1:-$(git -C "$ROOT" symbolic-ref --short -q HEAD || true)}"
+    remote="${ENGINE_REMOTE:-https://github.com/$REPO.git}"
+    if pair_name "$b" && git ls-remote --exit-code --heads "$remote" "refs/heads/$b" >/dev/null 2>&1; then
+      echo "$b"
+    else
+      echo "$BRANCH"
+    fi ;;
   pull)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
+    EB="${ENGINE_BRANCH:-$(bash "$0" pair)}"
     if [ -e "$ED/.git" ]; then
-      git -C "$ED" fetch -q origin "$BRANCH" && git -C "$ED" merge -q --ff-only "origin/$BRANCH" || { echo "engine: could not update $ED" >&2; exit 1; }
+      git -C "$ED" fetch -q origin "$EB" || { echo "engine: could not fetch $EB into $ED" >&2; exit 1; }
+      if [ "$(git -C "$ED" symbolic-ref --short -q HEAD)" != "$EB" ]; then
+        git -C "$ED" checkout -q "$EB" 2>/dev/null || git -C "$ED" checkout -q -b "$EB" FETCH_HEAD ||
+          { echo "engine: could not switch $ED to $EB" >&2; exit 1; }
+      fi
+      git -C "$ED" merge -q --ff-only FETCH_HEAD || { echo "engine: could not update $ED" >&2; exit 1; }
     else
-      git clone -q -b "$BRANCH" "${ENGINE_REMOTE:-https://github.com/$REPO.git}" "$ED" || { echo "engine: could not clone $REPO $BRANCH into $ED" >&2; exit 1; }
+      git clone -q -b "$EB" "${ENGINE_REMOTE:-https://github.com/$REPO.git}" "$ED" || { echo "engine: could not clone $REPO $EB into $ED" >&2; exit 1; }
     fi
     overlay_from "$ED" local
-    echo "engine: $(git -C "$ED" rev-parse --short HEAD) from $ED copied into $ROOT (${PATHS[*]})" ;;
+    echo "engine: $(git -C "$ED" rev-parse --short HEAD) ($EB) from $ED copied into $ROOT (${PATHS[*]})" ;;
   save)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
     [ -e "$ED/.git" ] || { echo "engine: no engine clone at $ED (run engine.sh pull first)" >&2; exit 1; }
@@ -300,5 +425,5 @@ case "$cmd" in
     fi
     echo "engine: $n file(s) only in the engine were deleted or renamed on main since $last; the save deletes them there too ($m files under ${PATHS[*]})" ;;
   *)
-    sed -n '2,31p' "$0"; exit 2 ;;
+    sed -n '2,32p' "$0"; exit 2 ;;
 esac

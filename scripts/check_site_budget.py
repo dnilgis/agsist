@@ -167,14 +167,20 @@ def _walked(d):
 
 
 def is_sparse(root):
-    """True when root is a git checkout that holds only part of its tree."""
+    """True when root is a git checkout that holds only part of its tree. A full checkout that the
+    Engine checkout step made sparse only to set the code aside (git config agsist.engineSparse full)
+    still holds every page, so it is walked as a full one."""
     import subprocess
+
+    def conf(*args):
+        out = subprocess.run(["git", "-C", root, "config", *args], capture_output=True, timeout=30)
+        return out.stdout.decode().strip()
     try:
-        out = subprocess.run(["git", "-C", root, "config", "--bool", "core.sparseCheckout"],
-                             capture_output=True, timeout=30)
+        if conf("--bool", "core.sparseCheckout") != "true":
+            return False
+        return conf("agsist.engineSparse") != "full"
     except (OSError, subprocess.SubprocessError):
         return False
-    return out.stdout.decode().strip() == "true"
 
 
 def walk_tree(root, rev):
@@ -396,6 +402,14 @@ def selftest():
                            f"a sparse checkout is measured from its tree: {sp['total_mb']} {sp['source']}")
                     else:
                         fails.append("sparse checkout could not be set up in the selftest")
+                    # the Engine checkout step sets the code aside in a full checkout with a sparse
+                    # pattern; every page is still there, so the working tree is what is measured
+                    subprocess.run(g + ["sparse-checkout", "set", "--no-cone", "/*", "!/scripts/", "!/scripts/**"],
+                                   capture_output=True)
+                    subprocess.run(g + ["config", "agsist.engineSparse", "full"], capture_output=True)
+                    ws = measure(d)
+                    ok(not is_sparse(d) and ws["source"] == "working tree" and ws["total_mb"] == 1.0,
+                       f"a full checkout with the code set aside is walked: {ws['total_mb']} {ws['source']}")
                     try:
                         measure(d, rev="no-such-rev")
                         fails.append("a bad --tree commit must raise, not read as 0 MB")
