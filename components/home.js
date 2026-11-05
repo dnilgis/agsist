@@ -92,10 +92,22 @@ try {
     more.querySelector('summary').title=extra.join(', ');
   }
   /* WAVE3-L: after a failed cot.json there are no rows to put back. */
-  window.AGSIST_COT={rows:COT_ROWS,render:function(){if(window.AGSIST_COT.failed)return;placeCOT(window.AGSIST_COT._d);}};
-  /* WAVE3-L: one badge per group. The old badge averaged three grains with
-     live cattle; a cattle feeder and a corn grower read different markets.
-     Same thresholds as before, applied to each group on its own. */
+  window.AGSIST_COT={rows:COT_ROWS,render:function(){if(window.AGSIST_COT.failed)return;placeCOT(window.AGSIST_COT._d);glance(window.AGSIST_COT._d);}};
+  /* AT A GLANCE (2026-11-04, Sig): the card's first lines are the top three
+     markets in the reader's order (the crop picker reorders COT_ROWS), one plain
+     line each (components/cot-glance.js, the words /cot prints). The ranges and
+     the other markets sit behind a tap. The percentile and the release day come
+     with cot-analysis.json for the same report; until then the line carries
+     neither rather than guess. */
+  var COT_GLANCE=3;
+  function glance(data){
+    var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data)return;
+    var keys=COT_ROWS.slice(0,COT_GLANCE).map(function(r){return r.k;});
+    var ls=G.lines(data,COT_CX,keys);if(!ls.length)return;
+    ul.innerHTML=ls.map(function(l){return '<li class="cot-gl-line">'+l.html+'</li>';}).join('');
+    ul.removeAttribute('aria-busy');
+    var a=document.getElementById('cot-gl-asof');if(a){var t=G.asOf(data,COT_CX);if(t)a.textContent=t;}
+  }
   /* 2026-10-10 ONE MEASURE OF CROWDED. The badge averaged each row's place in
      its 52-week range in contracts and said "near 52-wk high" while the COT
      page, on its own measure, called the same funds "high side but not
@@ -107,16 +119,18 @@ try {
   function rankTxt(c){var cr=c.crowd,p=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);if(p==null)return '';
     if(c.crowded&&cr&&cr.word)return cr.word+', crowded '+c.crowded;   /* "bottom 1%", never "0th" */
     var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct'+(c.crowded?', crowded '+c.crowded:'');}
-  function badge(el,rows,data,label){
-    if(!el)return;
-    var have=0,hot=[];rows.forEach(function(r){var c=cxFor(r.k,data);if(!c)return;have++;if(c.crowded)hot.push({n:r.n.replace(/^Wheat, /,'').replace(/^Live cattle$/,'live cattle'),s:c.crowded});});
-    if(!have){el.hidden=true;return;}
+  /* 2026-11-05 (checker on #334): the verdict reads every market in the analysis
+     file (AgCotGlance.crowdedLine, the same `crowded` field the glance lines use),
+     not the four rows the old grains and cattle badges read, so it can never say
+     "No market crowded" while meal, hogs or milk is crowded. */
+  function verdict(el,lv,data){
+    if(!el)return;if(lv)lv.hidden=true;
+    var G=window.AgCotGlance,v=G&&G.crowdedLine(data,COT_CX);
+    if(!v){el.hidden=true;return;}
     el.hidden=false;
-    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure).';
-    if(!hot.length){el.className='cot-verdict mixed';el.textContent=label+': none crowded';return;}
-    var lg=hot.filter(function(h){return h.s==='long';}),sh=hot.filter(function(h){return h.s==='short';});
-    el.className='cot-verdict '+(lg.length&&!sh.length?'long':sh.length&&!lg.length?'short':'mixed');
-    el.textContent=label+': crowded '+(lg.length?'long, '+lg.map(function(h){return h.n;}).join(', '):'')+(lg.length&&sh.length?'; crowded ':'')+(sh.length?'short, '+sh.map(function(h){return h.n;}).join(', '):'');
+    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure), across all '+v.markets+' markets.';
+    el.className='cot-verdict '+(v.state==='none'?'mixed':v.state);
+    el.textContent=v.text;
   }
   function rankRows(data){
     COT_ROWS.forEach(function(r){
@@ -131,12 +145,9 @@ try {
   /* The crowding badges and rank lines: drawn again once cot-analysis.json
      arrives (it loads when the COT card comes near the screen; see below). */
   function cxPaint(data){
-    badge(document.getElementById('cot-verdict'),COT_ROWS.filter(function(r){return r.v==='g';}),data,'Grains');
-    badge(document.getElementById('cot-verdict-lv'),COT_ROWS.filter(function(r){return r.v==='l';}),data,'Live cattle');
-    /* both quiet: one short line instead of two right-aligned badges */
-    (function(){var g=document.getElementById('cot-verdict'),l=document.getElementById('cot-verdict-lv');
-      if(g&&l&&!g.hidden&&!l.hidden&&/none crowded$/.test(g.textContent)&&/none crowded$/.test(l.textContent)){g.textContent='No market crowded';l.hidden=true;}})();
+    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'),data);
     rankRows(data);
+    glance(data);
   }
   function renderCOT(data){
     window.AGSIST_COT._d=data;placeCOT(data);
@@ -183,6 +194,8 @@ try {
     if(!d||typeof d!=='object'||!COT_ROWS.some(function(r){return d[r.k]&&d[r.k].net!=null;}))throw new Error('cot malformed');return d;
   }).then(function(d){renderCOT(d);lazyCX(d);},function(){
     window.AGSIST_COT.failed=true;
+    var gl=document.getElementById('cot-glance');if(gl)gl.hidden=true;var ga=document.getElementById('cot-gl-asof');if(ga)ga.hidden=true;
+    var dt=document.getElementById('cot-detail');if(dt)dt.open=true;
     var verdict=document.getElementById('cot-verdict');if(verdict)verdict.hidden=true;var _cw=document.getElementById('cot-widget');if(_cw)_cw.classList.add('cot-na');
     var rows=document.getElementById('cot-rows');if(rows)rows.innerHTML='<p class="cot-fail" role="status">CFTC positions did not load.</p>';
     var cap=_cw&&_cw.querySelector('.cot-caption');if(cap)cap.hidden=true;
@@ -1772,30 +1785,38 @@ try {
   var MINUS='−';
   window.__r7={pricesOnce:pricesOnce,contractOf:contractOf,ctStamp:ctStamp,cents:cents,tickMonth:tickMonth};
 
-  /* COT: what price did since the positions were taken. cot.json's `price` is
-     the Tuesday close of the front-month continuous series (ZC=F and so on,
-     scripts/enrich_cot_prices.py); the comparison is that same ticker's
-     latest close in data/prices.json, so both ends are one series. If the
-     tickers do not match, nothing is printed. */
-  var COTMAP=[['corn','corn','corn','ZC=F','c'],['beans','beans','beans','ZS=F','c'],['wheat','wheat','wheat','ZW=F','c'],['cattle','livecattle','cattle','LE=F','cwt'],
-    /* WAVE1-C: the added COT rows, same rule (cot.json price and prices.json
-       close must be the same ticker or nothing prints). */
-    ['kcwheat','kcwheat','kcwheat','KE=F','c'],['meal','soymeal','meal','ZM=F','ton'],['feeders','feedercattle','feeders','GF=F','cwt'],['hogs','leanhogs','hogs','HE=F','cwt'],['milk','milk','milk','DC=F','cwt']];
+  /* COT: what price did since the positions were taken, on THE HEADLINE
+     CONTRACT (2026-11-04, Sig). It used the continuous front month (ZS=F), so
+     after soybeans rolled to Jan '27 at first notice (#320) the card said
+     "front month (Nov '26)" under a page that headlines Jan '27; corn does the
+     same on Nov 30. Now: the headline contract (AgPxStamp.headline, the
+     <market>-nearby month in prices.json) today against that same contract's
+     close on the report Tuesday (cot.json px_by_contract, written by
+     scripts/enrich_cot_prices.py). One contract at both ends, named. When the
+     COT file has no close for that contract, nothing is printed.
+     m: [row id, cot.json key, prices.json market, unit]. */
+  var COTMAP=[['corn','corn','corn','c'],['beans','beans','beans','c'],['wheat','wheat','wheat','c'],['cattle','livecattle','cattle','cwt'],
+    ['kcwheat','kcwheat','kcwheat','c'],['meal','soymeal','meal','ton'],['feeders','feedercattle','feeders','cwt'],['hogs','leanhogs','hogs','cwt'],['milk','milk','milk','cwt']];
+  /* -> {d (today minus report day), mon (its label)} or null. Exported for the tests. */
+  function cotPxSince(c,pd,mkt){
+    var PS=window.AgPxStamp,h=PS&&PS.headline?PS.headline(pd,mkt):null;
+    var t=h&&h.q&&h.q.ticker,by=c&&c.px_by_contract,base=by&&t?by[t]:null;
+    if(base==null||!isFinite(base)||h.q.close==null||!isFinite(h.q.close))return null;
+    return {d:h.q.close-base,mon:h.label||tickMonth(t)};
+  }
+  window.__r7.cotPxSince=cotPxSince;
   Promise.all([get('/data/cot.json'),pricesOnce()]).then(function(R){
     var cot=R[0],pd=R[1];if(!cot||!pd||!pd.quotes)return;
-    var q=pd.quotes,rd=new Date(cot.report_date);if(isNaN(rd))return;
+    var rd=new Date(cot.report_date);if(isNaN(rd))return;
     var rds=MON[rd.getMonth()]+' '+rd.getDate();
     if(window.AGSIST_COT&&!document.getElementById('cot-more'))window.AGSIST_COT.render();
     COTMAP.forEach(function(m){
-      var row=document.querySelector('#cot-widget .cot-row-'+m[0]);var c=cot[m[1]],x=q[m[2]];
-      if(!row||!c||c.price==null||!x||x.close==null||x.ticker!==m[3])return;
-      var d=x.close-c.price,mon=contractOf(q,m[2]);
-      var txt=m[4]==='c'?(d===0?'unchanged':(d>0?'+':MINUS)+cents(d)+'¢ per bu'):(Math.abs(d)<0.005?'unchanged':(d>0?'+':MINUS)+'$'+Math.abs(d).toFixed(2)+' per '+m[4]);
-      var el=row.querySelector('.r7-cot-px');if(!el){el=document.createElement('div');el.className='r7-cot-px';row.appendChild(el);}
-      /* WAVE3-L: cot.json carries no dated contract, so both ends are the
-         continuous front month and the span can cross a roll. Every row says
-         so the same way. */
-      el.innerHTML='Since '+rds+': <span class="'+(d>0?'r7-up':d<0?'r7-dn':'')+'">'+txt+'</span><span class="r7-dim">, front month'+(mon?' ('+mon.replace(/ /g,'\u00a0')+')':'')+'</span>';
+      var row=document.querySelector('#cot-widget .cot-row-'+m[0]),r=row&&cotPxSince(cot[m[1]],pd,m[2]);
+      var el=row&&row.querySelector('.r7-cot-px');
+      if(!r||!r.mon){if(el)el.parentNode.removeChild(el);return;}
+      var d=r.d,txt=m[3]==='c'?(d===0?'unchanged':(d>0?'+':MINUS)+cents(d)+'¢ per bu'):(Math.abs(d)<0.005?'unchanged':(d>0?'+':MINUS)+'$'+Math.abs(d).toFixed(2)+' per '+m[3]);
+      if(!el){el=document.createElement('div');el.className='r7-cot-px';row.appendChild(el);}
+      el.innerHTML='Since '+rds+': <span class="'+(d>0?'r7-up':d<0?'r7-dn':'')+'">'+txt+'</span><span class="r7-dim">, '+r.mon.replace(/ /g,'\u00a0')+' futures</span>';
     });
   });
 

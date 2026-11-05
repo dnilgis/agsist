@@ -2518,3 +2518,20 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .wx-card.wx-tight .wstat{display:flex!important;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:0 6px;min-height:0!important}
 .wx-card.wx-tight .wstat-val{display:contents}
 .wx-card.wx-tight .wstat .s7-flag,.wx-card.wx-tight .wstat .s7-sub{flex-basis:100%;text-align:left}
+/* COT at a glance (2026-11-04): three plain lines, the email ask and the ranges behind a tap */
+.cot-gl-asof{font-size:.765rem;color:var(--text-muted);line-height:1.45;margin:0 0 .35rem}
+.cot-glance{list-style:none;margin:0 0 .45rem;padding:0;display:flex;flex-direction:column;gap:.35rem}
+.cot-gl-line{font-size:.88rem;line-height:1.45;color:var(--text);min-height:2.9em}
+.cot-gl-line b{font-weight:800}
+.cot-glance[aria-busy="true"] .cot-gl-line{background:linear-gradient(var(--border),var(--border)) 0 .35em/80% .7em no-repeat;opacity:.5}
+.cot-ask,.cot-detail{margin-top:.25rem}
+.cot-ask>summary,.cot-detail>summary{cursor:pointer;font-size:.8rem;color:var(--text-muted);padding:.45rem 0;min-height:24px;list-style:none}
+.cot-ask>summary{color:var(--gold);font-weight:700}
+.cot-ask>summary::-webkit-details-marker,.cot-detail>summary::-webkit-details-marker{display:none}
+.cot-ask>summary::before,.cot-detail>summary::before{content:"+ ";color:var(--gold)}
+.cot-ask[open]>summary::before,.cot-detail[open]>summary::before{content:"\2212  "}
+.cot-ask:has(>[data-signup-ask][hidden]){display:none}
+.cot-detail[open]>.cot-caption{margin-top:.2rem}
+/* held up front (cls-reserved): three lines of about three rows each, and the two-row date line */
+#cot-glance{min-height:11rem}
+#cot-gl-asof{min-height:2.3em}
