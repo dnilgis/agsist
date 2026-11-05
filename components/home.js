@@ -108,9 +108,6 @@ try {
     ul.removeAttribute('aria-busy');
     var a=document.getElementById('cot-gl-asof');if(a){var t=G.asOf(data,COT_CX);if(t)a.textContent=t;}
   }
-  /* WAVE3-L: one badge per group. The old badge averaged three grains with
-     live cattle; a cattle feeder and a corn grower read different markets.
-     Same thresholds as before, applied to each group on its own. */
   /* 2026-10-10 ONE MEASURE OF CROWDED. The badge averaged each row's place in
      its 52-week range in contracts and said "near 52-wk high" while the COT
      page, on its own measure, called the same funds "high side but not
@@ -122,16 +119,18 @@ try {
   function rankTxt(c){var cr=c.crowd,p=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);if(p==null)return '';
     if(c.crowded&&cr&&cr.word)return cr.word+', crowded '+c.crowded;   /* "bottom 1%", never "0th" */
     var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct'+(c.crowded?', crowded '+c.crowded:'');}
-  function badge(el,rows,data,label){
-    if(!el)return;
-    var have=0,hot=[];rows.forEach(function(r){var c=cxFor(r.k,data);if(!c)return;have++;if(c.crowded)hot.push({n:r.n.replace(/^Wheat, /,'').replace(/^Live cattle$/,'live cattle'),s:c.crowded});});
-    if(!have){el.hidden=true;return;}
+  /* 2026-11-05 (checker on #334): the verdict reads every market in the analysis
+     file (AgCotGlance.crowdedLine, the same `crowded` field the glance lines use),
+     not the four rows the old grains and cattle badges read, so it can never say
+     "No market crowded" while meal, hogs or milk is crowded. */
+  function verdict(el,lv,data){
+    if(!el)return;if(lv)lv.hidden=true;
+    var G=window.AgCotGlance,v=G&&G.crowdedLine(data,COT_CX);
+    if(!v){el.hidden=true;return;}
     el.hidden=false;
-    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure).';
-    if(!hot.length){el.className='cot-verdict mixed';el.textContent=label+': none crowded';return;}
-    var lg=hot.filter(function(h){return h.s==='long';}),sh=hot.filter(function(h){return h.s==='short';});
-    el.className='cot-verdict '+(lg.length&&!sh.length?'long':sh.length&&!lg.length?'short':'mixed');
-    el.textContent=label+': crowded '+(lg.length?'long, '+lg.map(function(h){return h.n;}).join(', '):'')+(lg.length&&sh.length?'; crowded ':'')+(sh.length?'short, '+sh.map(function(h){return h.n;}).join(', '):'');
+    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure), across all '+v.markets+' markets.';
+    el.className='cot-verdict '+(v.state==='none'?'mixed':v.state);
+    el.textContent=v.text;
   }
   function rankRows(data){
     COT_ROWS.forEach(function(r){
@@ -146,11 +145,7 @@ try {
   /* The crowding badges and rank lines: drawn again once cot-analysis.json
      arrives (it loads when the COT card comes near the screen; see below). */
   function cxPaint(data){
-    badge(document.getElementById('cot-verdict'),COT_ROWS.filter(function(r){return r.v==='g';}),data,'Grains');
-    badge(document.getElementById('cot-verdict-lv'),COT_ROWS.filter(function(r){return r.v==='l';}),data,'Live cattle');
-    /* both quiet: one short line instead of two right-aligned badges */
-    (function(){var g=document.getElementById('cot-verdict'),l=document.getElementById('cot-verdict-lv');
-      if(g&&l&&!g.hidden&&!l.hidden&&/none crowded$/.test(g.textContent)&&/none crowded$/.test(l.textContent)){g.textContent='No market crowded';l.hidden=true;}})();
+    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'),data);
     rankRows(data);
     glance(data);
   }

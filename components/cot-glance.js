@@ -1,13 +1,14 @@
 /* COT at a glance (2026-11-04, Sig: "concise and to the point at first glance").
    One plain line per market, the same words on /cot and the home card:
 
-     Funds are moderately long soybeans (75th percentile since 2010) and sold a
-     net 27,544 contracts this week.
+     Funds are fairly heavily long soybeans (75th percentile since 2010) and sold
+     a net 27,544 contracts this week.
 
    Long or short, how heavy, and the week's change. The percentile is
    cot_analysis.py `crowd` (managed-money net as a share of open interest,
    ranked against every week since the market's first week), so it always
-   names its period. How heavy, on the side the position is on:
+   names its period. How heavy, on the side the position is on, read from the
+   printed (rounded) percentile `shown`, so one printed number always gets one word:
      90th or more (10th or less when short)   heavily (the page's "crowded")
      75th to 89th (11th to 25th)              fairly heavily
      26th to 74th                             moderately
@@ -62,7 +63,7 @@
     var pct = p != null && since ? ord(p) + ' percentile since ' + since + (c.crowded ? ', crowded' : '') : '';
     var head, tail;
     if (side === 'flat') head = 'Funds are about even in ';
-    else { var dg = pct ? degree(side, cr.pctl != null ? cr.pctl : p, c.crowded) : ''; head = 'Funds are ' + (dg ? dg + ' ' : '') + side + ' '; }
+    else { var dg = pct ? degree(side, p, c.crowded) : ''; head = 'Funds are ' + (dg ? dg + ' ' : '') + side + ' '; }
     if (chg == null) tail = '';
     else if (chg === 0) tail = ' and held steady this week';
     else tail = ' and ' + (chg > 0 ? 'bought' : 'sold') + ' a net ' + num(chg) + ' contracts this week';
@@ -102,7 +103,32 @@
     return 'Positions as of ' + DAY[rd.getDay()] + ', ' + short(rd) + (rel ? ', released ' + DAY[rel.getDay()] + ', ' + short(rel) : '') + '.';
   }
 
-  var api = { NAMES: NAMES, ORDER: ORDER, degree: degree, line: line, lines: lines, asOf: asOf, cxFor: cxFor, ord: ord, MINUS: MINUS };
+  /* "a, b and c" */
+  function and(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+
+  /* The crowded verdict over every market in the analysis file for this week
+     (the same `crowded` field the lines use), never a subset:
+       {state: 'none', text: 'No market crowded'}
+       {state: 'long'|'short'|'mixed', text: 'Crowded: soybean meal (long), lean hogs and Class III milk (short)'}
+     null when no market has the analysis for this week (nothing is claimed). */
+  function crowdedLine(cot, cx) {
+    var have = 0, lg = [], sh = [];
+    ORDER.forEach(function (k) {
+      var c = cxFor(k, cot, cx);
+      if (!c) return;
+      have++;
+      if (c.crowded === 'long') lg.push(NAMES[k]);
+      else if (c.crowded === 'short') sh.push(NAMES[k]);
+    });
+    if (!have) return null;
+    if (!lg.length && !sh.length) return { state: 'none', text: 'No market crowded', markets: have };
+    var parts = [];
+    if (lg.length) parts.push(and(lg) + ' (long)');
+    if (sh.length) parts.push(and(sh) + ' (short)');
+    return { state: lg.length && sh.length ? 'mixed' : lg.length ? 'long' : 'short', text: 'Crowded: ' + parts.join(', '), markets: have };
+  }
+
+  var api = { NAMES: NAMES, ORDER: ORDER, degree: degree, line: line, lines: lines, asOf: asOf, cxFor: cxFor, ord: ord, crowdedLine: crowdedLine, MINUS: MINUS };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.AgCotGlance = api;
 })(typeof window !== 'undefined' ? window : this);

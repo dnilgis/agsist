@@ -717,7 +717,8 @@
                  by a reader not on the Daily (a Daily reader already gets it);
        cot       Funds this week (topic cot, scripts/send_cot_weekly.py), on
                  /cot, /markets and the futures and cattle pages; since
-                 2026-11-04 also after a Daily signup anywhere, last in line.
+                 2026-11-04 also after a Daily signup anywhere, last in line,
+                 and never pushed off: it takes the third row when needed.
      After a hail alert, the Daily row carries an optional ZIP box filled
      from the ZIP they searched, else the ZIP nearest the spot (agsist's
      data/zip-grid.json picks the ZIP files, the bids network's data/zips
@@ -886,6 +887,9 @@
       var order = (gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1))).filter(function (k, i, a) { return a.indexOf(k) === i; });
       /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, Sig 2026-10-23) */
       var ids = order.filter(function (k) { return O[k] && (!ctx.only || ctx.only.indexOf(k) >= 0); }).slice(0, 3);
+      /* 2026-11-05: after a Daily signup Funds this week always gets a row when the reader lacks it;
+         with ZIP, rain and rent all on offer it takes the third place, not a fourth */
+      if (gave === 'daily' && O.cot && ids.indexOf('cot') < 0 && (!ctx.only || ctx.only.indexOf('cot') >= 0)) ids = ids.slice(0, 2).concat('cot');
       if (!ids.length) { box.parentNode.removeChild(box); return; }
       var n = ++mseq;
       box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', 'sa-mh-' + n);

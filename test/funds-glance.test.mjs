@@ -80,6 +80,37 @@ test("without the analysis for the same report, no percentile and no 'how heavy'
   assert.equal(G.degree("long", 50), "moderately");
 });
 
+test("the weight word follows the printed percentile: 74.6 and 75.2 both print 75 and get one word", () => {
+  const base = CX.commodities.beans;
+  const mk = (pctl) => ({ ...base, crowded: null, crowd: { ...base.crowd, pctl, shown: Math.round(pctl), crowded: null } });
+  const a = G.line("beans", mk(74.6), true), b = G.line("beans", mk(75.2), true);
+  assert.ok(a.text.includes("(75th percentile since 2010)") && b.text.includes("(75th percentile since 2010)"), a.text + " / " + b.text);
+  assert.equal(a.text, b.text, "one printed number, one word");
+  assert.match(a.text, /^Funds are fairly heavily long soybeans/);
+  // the same on the short side: 25.4 and 24.6 both print 25
+  const sh = (pctl) => ({ ...CX.commodities.wheat, crowded: null, crowd: { ...CX.commodities.wheat.crowd, pctl, shown: Math.round(pctl), crowded: null } });
+  assert.equal(G.line("wheat", sh(25.4), true).text.replace(/\d+th/, "N"), G.line("wheat", sh(24.6), true).text.replace(/\d+th/, "N"));
+  assert.ok(read("components/cot-glance.js").includes("Funds are fairly heavily long soybeans (75th percentile since 2010)"), "the header example matches the words");
+});
+
+test("the crowded verdict reads every market: never 'No market crowded' while any market is crowded", () => {
+  // the Oct 27 report: meal crowded long, hogs and milk crowded short, none of them among corn, soybeans, wheat
+  const v = G.crowdedLine(COT, CX);
+  assert.deepEqual(v, { state: "mixed", text: "Crowded: soybean meal (long), lean hogs and Class III milk (short)", markets: 11 });
+  // each market crowded alone, either side: the verdict names it and never says none
+  for (const k of G.ORDER) for (const side of ["long", "short"]) {
+    const cx = { ...CX, commodities: Object.fromEntries(Object.entries(CX.commodities).map(([kk, c]) => [kk, { ...c, crowded: kk === k ? side : null }])) };
+    const w = G.crowdedLine(COT, cx);
+    assert.equal(w.state, side, k + " " + side);
+    assert.equal(w.text, `Crowded: ${G.NAMES[k]} (${side})`);
+  }
+  const calm = { ...CX, commodities: Object.fromEntries(Object.entries(CX.commodities).map(([k, c]) => [k, { ...c, crowded: null }])) };
+  assert.equal(G.crowdedLine(COT, calm).text, "No market crowded");
+  assert.equal(G.crowdedLine(COT, null), null, "no analysis for this report: nothing claimed");
+  const h = read("components/home.js");
+  assert.ok(h.includes("G.crowdedLine(data,COT_CX)") && !/label\+': none crowded'/.test(h), "the home card uses the shared verdict, not the four-row badges");
+});
+
 test("the counts file keeps the standing lists, Funds this week at zero included", () => {
   const r = spawnSync("python3", ["scripts/stats_ingest.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.equal(r.status, 0, r.stdout + r.stderr);
@@ -132,8 +163,9 @@ function serve() {
 async function open(browser, port, url, o = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: o.width || 390, height: o.width > 900 ? 900 : 844 } });
   const pg = await ctx.newPage();
+  if (o.init) await pg.addInitScript(o.init);
   const posts = [];
-  const own = { "/data/cot.json": o.cot || fs.readFileSync(FIX.cot), "/data/cot-analysis.json": fs.readFileSync(FIX.cx), "/data/prices.json": o.prices || fs.readFileSync(FIX.prices) };
+  const own = { "/data/cot.json": o.cot || fs.readFileSync(FIX.cot), "/data/cot-analysis.json": fs.readFileSync(FIX.cx), "/data/prices.json": o.prices || fs.readFileSync(FIX.prices), ...(o.own || {}) };
   await pg.route("**/*", (r) => {
     const u = new URL(r.request().url());
     if (u.origin === `http://127.0.0.1:${port}`) {
@@ -197,6 +229,8 @@ test("home card: the top three markets in plain lines, the ask and the ranges be
       const got = await pg.$$eval("#cot-glance li", (els) => els.map((e) => e.textContent));
       assert.deepEqual(got, G.lines(COT, CX, ["corn", "beans", "wheat"]).map((l) => l.text), "three lines, the reader's first three markets " + width);
       assert.equal((await pg.textContent("#cot-gl-asof")).trim(), "Positions as of Tuesday, Oct 27, released Friday, Oct 30.");
+      assert.equal((await pg.textContent("#cot-verdict")).trim(), "Crowded: soybean meal (long), lean hogs and Class III milk (short)", "the verdict over all markets " + width);
+      assert.equal(await pg.isVisible("#cot-verdict-lv"), false, "one verdict, not a grains and a cattle badge");
       assert.equal(await pg.$eval("#cot-detail", (d) => d.open), false);
       assert.equal(await pg.$eval("#cot-ask", (d) => d.open), false);
       await pg.click("#cot-ask > summary");
@@ -245,5 +279,37 @@ test("home card: price since the report is on the headline contract (Jan '27 soy
     const dMar = dec.quotes["corn-mar27"].close - COT.corn.px_by_contract["ZCH27.CBT"];
     assert.equal(await pxLine(pg, "corn"), `Since Oct 27: ${dMar < 0 ? "−" : "+"}${cents(dMar)}¢ per bu, Mar '27 futures`);
     await pg.context().close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("after a Daily signup One more? keeps a Funds this week row even with ZIP, rain and rent on offer", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  // Story County, Iowa: a ZIP alert, the county's rain year and Iowa rents are all on offer
+  const rain = JSON.stringify({ year: 2026, edate: "2026-11-03", counties: { "19169": { name: "Story County" } } });
+  const run = async (init) => {
+    const { pg, posts } = await open(browser, port, "/index.html", { width: 390, own: { "/data/rain/ia.json": rain }, init });
+    await pg.waitForFunction(() => !!document.body);
+    if (!(await pg.evaluate(() => !!(window.AgsistSignup && window.AgsistSignup.oneMore)))) await pg.addScriptTag({ url: "/components/signup-ask.js?v=21" });
+    await pg.waitForFunction(() => window.AgsistSignup && window.AgsistSignup.oneMore);
+    await pg.evaluate(() => { const h = document.createElement("div"); h.id = "t-host"; document.body.prepend(h);
+      window.AgsistSignup.oneMore(h, { gave: "daily", email: "reader@example.com", zip: "50010", fips: "19169" }); });
+    const more = pg.locator("#t-host [data-sa-more]");
+    await more.locator(".sa-mh").waitFor();
+    const keys = await more.locator("[data-k]").evaluateAll((a) => a.map((x) => x.getAttribute("data-k")));
+    return { pg, posts, more, keys };
+  };
+  try {
+    const a = await run();
+    assert.deepEqual(a.keys, ["zip", "rainyear", "cot"], "three rows, Funds this week among them");
+    await a.more.locator('[data-k="cot"] input').check();
+    await a.more.locator(".sa-b").click();
+    await a.more.locator(".sa-ok").waitFor();
+    assert.deepEqual(a.posts.filter((x) => x.path === "/notice").map((x) => [x.body.topic, x.body.daily]), [["cot", false]], "posts the cot list");
+    await a.pg.context().close();
+    // a reader who already has it is not asked again
+    const b = await run(() => { localStorage.setItem("agsist_notices", JSON.stringify({ cot: Date.parse("2026-10-30T12:00:00Z") })); });
+    assert.deepEqual(b.keys, ["zip", "rainyear", "rent"]);
+    await b.pg.context().close();
   } finally { await browser.close(); srv.close(); }
 });
