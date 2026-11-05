@@ -92,12 +92,14 @@ TICK_GRACE_HOURS = 2          # a gate tick with no run after it for this long: 
 # logs) for the 18 workflows read, 6 more jobs for the Daily (max_jobs) and 2 dispatch counts: 260 at
 # most, under CALL_BUDGET; most workflows stop well short (Nov 4, live: 143 calls). A pass runs every
 # DELIVERY_EVERY_HOURS, against GitHub's 1,000 calls an hour for the repository's Actions token.
+# Nov 5 2026: the sponsor link email (sponsor-send-link.yml, by hand only, max_jobs 3) adds 9 at most,
+# so the worst case is 283 and CALL_BUDGET went from 280 to 300 (still under a third of the hour's calls).
 LIST_PAGES = 3                # 300 runs in 24 h; the busiest sender (report-day) had 252 on Nov 4
 JOBS_PER_WF = 8               # runs whose jobs are read
 MORE_JOBS = 3                 # of those, runs read past the ones that were due (a catch-up, a run by hand)
 SAMPLE_SENDS = 3              # a sender that may send on any run: stop after this many runs reached a send step
 LOGS_PER_WF = 3               # run logs read per workflow, only of runs that reached a send step
-CALL_BUDGET = 280             # API calls per pass, all workflows together (the repo's token is shared)
+CALL_BUDGET = 300             # API calls per pass, all workflows together (the repo's token is shared)
 LOG_MAX_BYTES = 25 * 1024 * 1024
 
 # What each sender prints and where. `switch`: None = no switch, live on every scheduled or
@@ -179,6 +181,11 @@ SENDERS = [
     {"workflow": "sponsor-apply.yml", "senders": {"sponsor_apply.py": "sponsor-apply"}, "switch": None,
      "counts": "the step that runs sponsor_apply.py (its readers are the applicants)",
      "steps": {"Run": ["sponsor-apply"]}, "due": ("run",)},
+    # By hand only (Nov 5 2026): one sponsor's report link to that sponsor, Sig copied. A rerun after a
+    # send skips (waiting=0); a missing address is a reader waiting and not mailed, so it reads red.
+    {"workflow": "sponsor-send-link.yml", "senders": {"sponsor_send_link.py": "sponsor-link"}, "switch": None,
+     "counts": "by hand only; the step that runs sponsor_send_link.py (its reader is the sponsor)",
+     "steps": {"Send the link": ["sponsor-link"]}, "due": ("run",), "max_jobs": 3},
 ]
 
 # Workflows with mail secrets that mail only Sig (or the person who ran them), never readers.
