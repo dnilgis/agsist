@@ -50,6 +50,7 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
+from credits import NASS_NOTICE  # noqa: E402  the NASS API notice
 import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
 TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN               # noqa: E402  transport, render, unsubscribe link, mark
@@ -157,7 +158,7 @@ def make_parts(data, pub):
         page = "%s/rent/%s/?%s" % (SITE, BR.slug(name), UTM)
         paras.append([("Every county, with rent against trend yield: ", None), (page, page)])
         paras.append([("These are medians of the counties NASS published. Counties with too few leases in the survey "
-                       "are left out by NASS, never filled in.", None)])
+                       "are left out by NASS, never filled in. The median and the change are calculations by AGSIST. " + NASS_NOTICE, None)])
         paras.append([("You asked for this one email on agsist.com. There won't be another for this release.", None)])
         return "%s county cash rents for %d are out" % (name, yr), paras
     return parts
