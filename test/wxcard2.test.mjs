@@ -98,7 +98,7 @@ function serve() {
 const guard = (port) => (r) => {
   const u = r.request().url();
   if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
-  if (/^https:\/\/api\.weather\.gov\//.test(u)) { const a = nwsAnswer(u, {}); return r.fulfill({ status: a.status, contentType: "application/geo+json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(a.body) }); }
+  if (/^https:\/\/api\.weather\.gov\//.test(u)) { const a = nwsAnswer(u, { now: +new Date(CLOCK) }); return r.fulfill({ status: a.status, contentType: "application/geo+json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(a.body) }); }
   if (u.includes("/bids/data/zips/")) return r.fulfill({ headers: { "access-control-allow-origin": "*" }, contentType: "application/json", body: JSON.stringify({ 50010: [42.03, -93.62] }) });
   return r.abort();
 };
