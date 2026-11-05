@@ -283,7 +283,7 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.equal(a.href, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
       assert.match(a.text, /Sponsor/); assert.match(a.text, /Put Your Root Down/); assert.match(a.text, /Root Down Now/);
       assert.equal(await pg.$(".geo-spon .sa-phone, .geo-spon .sa-facts"), null, w + ": no phone, no facts row");
-      // Nov 5 (Sig, "make his ad pop"): its logo at the left at a fixed size, its own green look, a clear button
+      // Nov 5 (Sig, "make his ad pop"): its logo at the left at a fixed size, the site's ad orange on the button and the outline
       const look = await pg.evaluate(() => {
         const g = document.querySelector(".geo-spon"), img = g.querySelector(".sa-logo img"), cta = g.querySelector("a.sa-cta");
         const rgb = (c) => (c.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
@@ -291,7 +291,11 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
         const cs = getComputedStyle(cta), a = lum(cs.color), b = lum(cs.backgroundColor);
         const ir = img.getBoundingClientRect(), hr = g.querySelector(".sa-headline").getBoundingClientRect();
         const next = g.nextElementSibling;
+        const t = document.createElement("i"); t.style.color = "var(--ad-orange)"; document.body.appendChild(t);
+        const orange = getComputedStyle(t).color; t.remove();
+        const as = getComputedStyle(g.querySelector(".sa-ad"));
         return { css: !!document.querySelector('link[href^="/components/geo-sponsor.css?v="]'), loaded: img.complete && img.naturalWidth > 0,
+          orange, border: [as.borderTopColor, as.borderRightColor, as.borderBottomColor], button: cs.backgroundColor, panelImage: as.backgroundImage,
           w: Math.round(ir.width), h: Math.round(ir.height), attrW: img.getAttribute("width"), left: ir.right <= hr.left + 1,
           contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05), label: g.querySelector(".sa-label").textContent,
           next: next ? next.tagName + "." + next.className : "", answerAbove: !!document.querySelector("main .rc-answer") &&
@@ -303,6 +307,10 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.equal(look.w, look.h, w + ": a square logo"); assert.ok(look.w >= 48 && look.w <= 80, w + ": logo size " + look.w);
       assert.ok(look.left, w + ": the logo sits left of the headline");
       assert.ok(look.contrast >= 4.5, w + ": button contrast " + look.contrast.toFixed(2));
+      assert.match(look.orange, /^rgb\(/, "the --ad-orange token resolves");
+      assert.deepEqual(look.border, [look.orange, look.orange, look.orange], w + ": the outline is the ad orange");
+      assert.equal(look.button, look.orange, w + ": the button is the ad orange");
+      assert.equal(look.panelImage, "none", w + ": a quiet panel, no tint");
       assert.equal(look.label, "Sponsor");
       // higher than the old slot (the end of the page) and never above the page's answer
       assert.equal(look.next, "H2.", w + ": the box sits at a section break (" + look.next + ")");
@@ -344,6 +352,37 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       const caught = await pg.waitForFunction(() => window.__cls.filter((e) => e.byAd).reduce((s, e) => s + e.v, 0) > 0.05, null, { timeout: 4000 }).then(() => true, () => false);
       assert.ok(caught, w + ": a box above the fold would have counted " + JSON.stringify((await cls(pg)).late));
       assert.deepEqual(log.errs, []);
+      await ctx.close();
+    }
+  });
+});
+
+test("browser: every paid ad (not only the state sponsor) has the orange outline and button, readable in light and dark", { skip, timeout: 120000 }, async () => {
+  await browserRun(async (browser, port) => {
+    for (const theme of ["dark", "light"]) for (const w of [390, 1280]) {
+      const { ctx, pg } = await open(browser, port, "/rain/iowa/story-county.html", { w, data: { sponsors: [] } });
+      const r = await pg.evaluate(async (theme) => {
+        document.documentElement.setAttribute("data-theme", theme);
+        await new Promise((ok) => { if (window.AgsistAd) return ok(); const s = document.createElement("script"); s.src = "/components/sponsor-ad.js?v=2"; s.onload = ok; document.head.appendChild(s); });
+        await new Promise((ok) => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/components/sponsor-ad.css?v=3"; l.onload = ok; document.head.appendChild(l); });
+        const box = document.createElement("div");
+        box.innerHTML = window.AgsistAd.render({ advertiser: "Any Co", headline: "H", body: "B", cta_url: "https://example.com/", cta_text: "Go" }, "homepage", { slot: "daily-briefing" });
+        document.querySelector("main .rc").appendChild(box);
+        const ad = box.querySelector(".sa-ad"), cta = box.querySelector("a.sa-cta");
+        const t = document.createElement("i"); t.style.color = "var(--ad-orange)"; document.body.appendChild(t);
+        const orange = getComputedStyle(t).color; t.remove();
+        const rgb = (c) => (c.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+        const lum = (c) => { const v = rgb(c).map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+        const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+        const as = getComputedStyle(ad), cs = getComputedStyle(cta);
+        return { orange, border: as.borderTopColor, button: cs.backgroundColor, image: as.backgroundImage, ink: ratio(cs.color, cs.backgroundColor),
+          label: ad.querySelector(".sa-label").textContent };
+      }, theme);
+      const tag = theme + " " + w;
+      assert.equal(r.border, r.orange, tag + ": outline"); assert.equal(r.button, r.orange, tag + ": button");
+      assert.equal(r.image, "none", tag + ": quiet panel");
+      assert.ok(r.ink >= 4.5, tag + ": button text contrast " + r.ink.toFixed(2) + " (rain pages colour their links)");
+      assert.equal(r.label, "SPONSORED", tag + ": the label stays");
       await ctx.close();
     }
   });

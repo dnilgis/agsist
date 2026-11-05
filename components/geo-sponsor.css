@@ -1,37 +1,21 @@
 /* THE STATE-TARGETED SPONSOR CARD (Root Lot, Nov 5, 2026: "make his ad pop").
  *
  * components/geo-sponsor.js loads this beside components/sponsor-ad.css and wraps
- * the ad in .geo-spon. The markup is still AgsistAd.render's, so the slot, the
- * "Sponsor" label and the counted link are the same as every other ad; only the
- * look changes here:
- *   - its own soft green panel, so it stands apart from the site's cards and from
- *     the site's gold links, and the "Sponsor" label stays on top;
+ * the ad in .geo-spon. The markup is still AgsistAd.render's and the colours are
+ * the shared ad's (the site's ad orange on the button and the outline, a quiet
+ * panel), so the slot, the "Sponsor" label and the counted link are the same as
+ * every other paid ad. Only the layout changes here:
  *   - the sponsor's square icon at the left at every width, at a fixed size so the
  *     card never changes height when the picture arrives;
  *   - a larger headline, and one short line of facts under it;
- *   - a high-contrast button, and the whole card opens the same counted link (the
- *     button's own box is stretched over the card, so a tap anywhere is a click on
- *     that one link and is counted exactly as a button tap).
- * Colours: dark theme, ink #0d1117 on #8fd16a (10.4:1); light theme, white on
- * #2d6a35 (6.5:1). Headline and body text keep the page's own text colours.
+ *   - the whole card opens the same counted link (the button's own box is
+ *     stretched over the card, so a tap anywhere is a click on that one link and
+ *     is counted exactly as a button tap).
  */
-.geo-spon .sa-ad{
-  --gs-leaf:#8fd16a;--gs-leaf-hi:#a6de86;--gs-leaf-rgb:143,209,106;
-  --gs-ink:#0d1117;--gs-earth:#c89a68;
-  background:
-    radial-gradient(130% 150% at 100% 0%,rgba(var(--gs-leaf-rgb),.16) 0%,rgba(var(--gs-leaf-rgb),0) 60%),
-    linear-gradient(180deg,rgba(var(--gs-leaf-rgb),.07),rgba(var(--gs-leaf-rgb),.03)),
-    var(--sa-bg);
-  border:1px solid rgba(var(--gs-leaf-rgb),.42);
-  padding:1.1rem 1.25rem 1.15rem 1.45rem;
-  cursor:pointer;
-  transition:border-color .15s,box-shadow .15s;
-}
-.geo-spon .sa-ad::before{background:linear-gradient(180deg,var(--gs-leaf) 0%,var(--gs-earth) 100%)}
-.geo-spon .sa-ad:hover,.geo-spon .sa-ad:has(.sa-cta:focus-visible){border-color:rgba(var(--gs-leaf-rgb),.75)}
-.geo-spon .sa-ad:has(.sa-cta:focus-visible){outline:2px solid var(--gs-leaf);outline-offset:3px}
+.geo-spon .sa-ad{padding:1.1rem 1.25rem 1.15rem 1.45rem;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.geo-spon .sa-ad:hover{border-color:var(--sa-acc-hi);box-shadow:0 0 0 1px var(--sa-acc-hi),0 10px 28px -14px rgba(0,0,0,.55)}
+.geo-spon .sa-ad:has(.sa-cta:focus-visible){outline:2px solid var(--sa-text);outline-offset:3px}
 .geo-spon .sa-top{margin-bottom:.7rem}
-.geo-spon .sa-label{color:var(--gs-leaf);border-color:rgba(var(--gs-leaf-rgb),.55);background:rgba(var(--gs-leaf-rgb),.09)}
 .geo-spon .sa-ad .sa-by{display:inline;color:var(--sa-dim)}
 .geo-spon .sa-main{flex-direction:row;align-items:center;gap:1rem}
 .geo-spon .sa-logo{width:72px;height:72px;min-height:0;padding:0;align-self:center;
@@ -43,10 +27,9 @@
 .geo-spon .sa-headline{font-size:clamp(1.55rem,2.8vw,2.05rem);line-height:1.08;margin-bottom:.35rem}
 .geo-spon .sa-body{font-size:.92rem;line-height:1.45;color:var(--sa-dim)}
 .geo-spon .sa-actions{margin-top:1rem}
-.geo-spon .sa-ad a.sa-cta{position:static;background:var(--gs-leaf);color:var(--gs-ink);
-  box-shadow:0 8px 18px -10px rgba(var(--gs-leaf-rgb),.9);font-size:.84rem}
-.geo-spon .sa-ad a.sa-cta:hover,.geo-spon .sa-ad a.sa-cta:focus-visible{background:var(--gs-leaf-hi);color:var(--gs-ink);transform:none}
-.geo-spon .sa-ad:hover a.sa-cta{background:var(--gs-leaf-hi)}
+.geo-spon .sa-ad a.sa-cta{position:static;font-size:.84rem}
+.geo-spon .sa-ad a.sa-cta:hover,.geo-spon .sa-ad a.sa-cta:focus-visible{transform:none}
+.geo-spon .sa-ad:hover a.sa-cta{background:var(--sa-acc-hi)}
 .geo-spon .sa-ad:hover .sa-cta-arrow{transform:translateX(3px)}
 .geo-spon .sa-ad a.sa-cta:focus-visible{outline:none}
 /* the whole card is the link: the button's box stretched over the card */
@@ -60,5 +43,4 @@
   .geo-spon .sa-body{font-size:.86rem}
   .geo-spon .sa-ad:has(.sa-logo) .sa-by{display:inline}
 }
-[data-theme="light"] .geo-spon .sa-ad{--gs-leaf:#2d6a35;--gs-leaf-hi:#245a2c;--gs-leaf-rgb:45,106,53;--gs-ink:#ffffff;--gs-earth:#8a5a2e}
 @media (prefers-reduced-motion:reduce){.geo-spon .sa-ad,.geo-spon .sa-cta-arrow{transition:none}.geo-spon .sa-ad:hover .sa-cta-arrow{transform:none}}

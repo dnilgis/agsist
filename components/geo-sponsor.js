@@ -184,7 +184,7 @@
   }
   function draw(e, surface, rib, preview) {
     Promise.all([
-      need('link', 'href', '/components/sponsor-ad.css?v=2', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
+      need('link', 'href', '/components/sponsor-ad.css?v=3', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
       need('link', 'href', '/components/geo-sponsor.css?v=1', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
       need('script', 'src', '/components/sponsor-ad.js?v=2', function () { return !!root.AgsistAd; })
     ]).then(function () {
