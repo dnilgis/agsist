@@ -3,7 +3,7 @@
    SEASON below is the only place that decides what leads and what steps
    back. Every figure printed comes from a file in /data, /usda-calendar.ics
    or the National Weather Service forecast the page already loads (components/nws.js,
-   2026-10-29, was Open-Meteo), and soil from the nearest measuring station; each says when it was
+   2026-10-29, was Open-Meteo); each says when it was
    read. Anything that fails prints "Not loaded yet", never a 0. */
 (function(){
   'use strict';
@@ -20,12 +20,12 @@
        {lead:['report','rent','insurance'],planting:true,urea:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
     2: /* Feb: projected price discovery (Feb average sets the guarantee) */
        {lead:['insurance','report','rent'],planting:true,urea:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
-    3: /* Mar: projected price out, sales closing, first soil readings */
-       {lead:['insurance','soilPlant','report','rent'],planting:true,urea:true,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
-    4: /* Apr: planting soil temperature, frost, early planting */
-       {lead:['soilPlant','planting','frost','report'],planting:true,urea:true,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
+    3: /* Mar: projected price out, sales closing */
+       {lead:['insurance','report','rent'],planting:true,urea:true,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
+    4: /* Apr: frost, early planting */
+       {lead:['planting','frost','report'],planting:true,urea:true,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
     5: /* May: planting pace, late frost */
-       {lead:['planting','soilPlant','frost','report'],planting:true,urea:true,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
+       {lead:['planting','frost','report'],planting:true,urea:true,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
     6: /* Jun: final planting, first condition ratings */
        {lead:['planting','condition','report'],planting:true,urea:true,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
     7: /* Jul: condition and pollination weather */
@@ -45,7 +45,7 @@
   /* 2026-10-06 EARN, one fact one place: the strip does not repeat what the
      page already shows. Frost is in Local conditions and the next USDA report
      is the calendar's first card. 2026-11-05 (Sig): no spray read, fall
-     nitrogen or soil temperature in Local conditions or the hero band; they
+     nitrogen or soil temperature on the home page (card, strip, hero); they
      are seasonal, and /spray, /fall-nitrogen, /planting-date and Field Scout
      keep theirs. */
   var ELSEWHERE={frost:1,report:1};
@@ -83,10 +83,9 @@
   /* ---------- the "This month" strip ---------- */
   var grid=$('s7-grid'), cells={};
   var LABEL={insurance:'Insurance harvest price',harvest:'Harvest progress',frost:'Frost',
-    report:'Next USDA report',rent:'Cash rent',condition:'Crop condition',planting:'Planting progress',
-    soilPlant:'Planting soil temperature',prf:'PRF pasture insurance'};
+    report:'Next USDA report',rent:'Cash rent',condition:'Crop condition',planting:'Planting progress',prf:'PRF pasture insurance'};
   var HREF={insurance:'/harvest-price-tracker',harvest:'/conditions',frost:'/spray',report:'/usda-calendar',
-    rent:'/rent/',prf:'/prf',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date'};
+    rent:'/rent/',prf:'/prf',condition:'/conditions',planting:'/planting-date'};
   if(grid&&S){
     var h=$('s7-month-h');if(h)h.textContent=MONTH[M-1]+' on the farm';
     var k=$('s7-month-k');if(k){k.textContent='';k.hidden=true;}
@@ -564,7 +563,7 @@
     });
   }
 
-  /* ---------- weather: frost and spring soil ---------- */
+  /* ---------- weather: frost ---------- */
   var WX={state:'wait',f:null};
   function localNowKey(f){var off=+(f&&f.utc_offset_seconds)||0;return new Date(Date.now()+off*1000).toISOString().slice(0,13);}
   function hourIdx(times,key){for(var i=0;i<times.length;i++){if(String(times[i]).slice(0,13)>=key)return i;}return -1;}
@@ -584,15 +583,8 @@
     for(var i=1;i<t.length;i++){if(v[i]!=null&&v[i]<=36){var dd=dayStart(t[i]);return {day:dd?['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dd.getDay()]:t[i],lo:Math.round(v[i])};}}
     return false;
   }
-  /* Soil (2026-10-29): no free forecast gives soil temperature, so this is the measured 4 in reading at the
-     nearest station (components/soil-near.js, riding on the forecast as f._soil): the last day's mean and
-     the last 3 days. A station more than 50 miles off, or a reading over 3 days old, is no soil number. */
-  function soil(f){
-    var x=f&&f._soil;if(!x||x.now==null||!x.last3)return null;
-    return {now:Math.round(x.now),last3:x.last3,trend:x.trend||null,name:x.st&&x.st.name,mi:Math.round(x.mi),day:x.st&&x.st.last};
-  }
   function paintWx(){
-    var f=WX.f,lo=f?overnight(f):null,s=f?soil(f):null,ff=f?firstFrost(f):null;
+    var f=WX.f,lo=f?overnight(f):null,ff=f?firstFrost(f):null;
     var noLoc=(WX.state==='wait'&&!hasLoc());
     /* Local Conditions cells */
     var lw=$('s7-wx-low');
@@ -608,15 +600,6 @@
         put('frost','<span class="s7-line">'+lo+'°F <small>overnight low</small></span>'+(fl2?'<span class="s7-line s7-warn">'+fl2+'</span>':''),
           esc(ff?'First frost risk in the forecast: '+ff.day+' morning, '+ff.lo+'°F ('+frostFlag(ff.lo).toLowerCase()+').':(ff===false?'No frost in the 5-day forecast.':'')));
       } else if(WX.state!=='wait')put('frost',NL(),'Weather forecast');
-    }
-    /* 2026-11-05 (Sig): no soil temperature or fall nitrogen in Local conditions or the strip outside
-       planting season; /fall-nitrogen, /planting-date and Field Scout keep them. */
-    if(cells.soilPlant){
-      if(noLoc)needZip('soilPlant');
-      else if(s){
-        var at=s.name+', '+s.mi+' mi, '+s.day;
-        put('soilPlant','<span class="s7-line">'+s.now+'°F <small>at 4 in</small></span><span class="s7-line">'+(s.now>=50?'At or above 50°F':'Below 50°F')+'</span>',esc('Measured at 4 in at '+at+'. Corn is commonly planted once soil at 2 in holds near 50°F.'));
-      } else if(WX.state!=='wait')put('soilPlant',NL(),'No current soil station reading within 50 miles');
     }
   }
 
