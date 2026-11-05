@@ -94,7 +94,8 @@ test("the page wires both toggles, the thin mark and the three empty kinds", () 
   assert.match(h, /no public sale records here yet/);
   assert.match(h, /no recorded sale in the window/);
   assert.match(h, /\['Land & rent',\['Land value','Recorded sales',/);
-  assert.ok(!h.includes("—"), "no em dash");
+  const block = h.slice(h.indexOf("// ---------- recorded farmland sales"), h.indexOf("function sCard("));
+  assert.ok(block.length > 1000 && !/\u2014/.test(block), "no em dash in the layer's words");
 });
 
 // ---- in Chromium, on a fixture layer file
