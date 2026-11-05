@@ -1672,7 +1672,7 @@ var FAMILIES=[['Land & rent',['Land value','Recorded sales','Rent','Who farms it
   ['Farm & programs',['CRP','Tile and tillage','Livestock','Solar and wind']]];
 function famOf(g){ for(var i=0;i<FAMILIES.length;i++) if(FAMILIES[i][1].indexOf(g)>=0) return FAMILIES[i][0]; return FAMILIES[FAMILIES.length-1][0]; }
 // short labels for the group row under the four kinds
-var GLABEL={'Rain and heat':'Weather','Season':'Frost & GDD','Tile and tillage':'Tile & tillage','Loss ratio':'Insurance','Night heat':'Heat','Loss record':'Losses','Solar and wind':'Energy','Wells and rights':'Wells'};   // short enough for one row at desktop width
+var GLABEL={'Recorded sales':'Sales','Rain and heat':'Weather','Season':'Frost & GDD','Tile and tillage':'Tile & tillage','Loss ratio':'Insurance','Night heat':'Heat','Loss record':'Losses','Solar and wind':'Energy','Wells and rights':'Wells'};   // short enough for one row at desktop width
 function buildLayerButtons(){
   var gbox=$('fa-groups'), seen={};
   FAMILIES.forEach(function(F){ F[1].forEach(function(g){ if(!seen[g]&&LAYERS.some(function(l){return l.grp===g;})){ seen[g]=1; GROUPS.push(g); } }); });

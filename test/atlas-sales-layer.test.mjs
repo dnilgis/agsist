@@ -116,6 +116,12 @@ const FIX = {
   },
 };
 
+// the expected words are computed from the fixture's dates (test/no-live-date-pins.test.mjs)
+const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const mon = (iso) => `${MON[Number(iso.slice(5, 7)) - 1]} ${iso.slice(0, 4)}`;
+const day = (iso) => `${MON[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(8, 10))}, ${iso.slice(0, 4)}`;
+const win = (st) => `${mon(FIX.states[st].cur[0])} to ${mon(FIX.states[st].cur[1])}`;
+
 test("in Chromium: fills, the card, the thin mark, Florida months, links and the count toggle", { skip }, async () => {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
@@ -152,22 +158,22 @@ test("in Chromium: fills, the card, the thin mark, Florida months, links and the
     const leg = await pg.textContent("#fa-legend2");
     assert.match(leg, /no public sale records here yet/);
     assert.match(leg, /no recorded sale in the window/);
-    assert.match(leg, /Florida Nov 2025 to Oct 2026 \(sale months\)/);
+    assert.ok(leg.includes(`Florida ${win("FL")} (sale months)`), leg);
     assert.match(leg, /Sources: Florida Department of Revenue, Illinois Department of Revenue, Wisconsin Department of Revenue/);
     let rail = await pg.textContent("#fa-rail");
     assert.match(rail, /\$4,002 an acre/);
     assert.match(rail, /Median of 2 sales of bare farm land, 20 acres or more/);
-    assert.match(rail, /Sales from Mar 12, 2026 to Sep 24, 2026/);
+    assert.ok(rail.includes(`Sales from ${day(FIX.counties["17003"][3])} to ${day(FIX.counties["17003"][4])}`), rail);
     assert.match(rail, /Based on 2 sales: a thin read/);
-    assert.match(rail, /8 sales recorded in all, Nov 2025 to Oct 2026/);
+    assert.ok(rail.includes(`8 sales recorded in all, ${win("IL")}`), rail);
     const hrefs = await pg.$$eval("#fa-rail a.fa-cc-print", (as) => as.map((a) => a.getAttribute("href")));
     assert.ok(hrefs.includes("/land-sales/illinois/alexander-county"), hrefs.join(" "));
     assert.ok(hrefs.includes("/farmland-atlas/illinois/alexander-county"), hrefs.join(" "));
     // Florida: months, not days
     await open("12001&l=sales_med");
     rail = await pg.textContent("#fa-rail");
-    assert.match(rail, /Sales from Feb 2026 to Mar 2026/);
-    assert.match(rail, /89 sales recorded in all, Nov 2025 to Oct 2026 \(sale months\)/);
+    assert.ok(rail.includes(`Sales from ${mon(FIX.counties["12001"][3])} to ${mon(FIX.counties["12001"][4])}`), rail);
+    assert.ok(rail.includes(`89 sales recorded in all, ${win("FL")} (sale months)`), rail);
     // buildings or woods: said in the card
     await open("55001&l=sales_med");
     assert.match(await pg.textContent("#fa-rail"), /3 sales of 20 acres or more with buildings or woods/);
