@@ -141,7 +141,7 @@ test("the card's figures are the county rain page's own for the same county (fix
 import json, os, subprocess, sys
 sys.path.insert(0, "scripts")
 import build_county_rain as B
-t = sys.argv[1]; data = os.path.join(t, "data")
+t = sys.argv[1]; data = os.path.join(t, "files")  # a temp folder of fixture output, not the live data/
 r = subprocess.run([sys.executable, "scripts/fetch_county_rain.py", "--fixtures", "test/fixtures/rain", "--out", data, "--states", "IA", "--edate", "2026-10-12"], capture_output=True, text=True)
 assert r.returncode == 0, r.stdout[-400:]
 sx = json.load(open(os.path.join(data, "ia.json")))
@@ -218,7 +218,7 @@ test("on the page: Season so far fills from the files, no spray table, 30% short
     for (const width of [390, 1280]) {
       const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
       await ctx.addInitScript(() => {
-        try { localStorage.setItem("agsist-wx-loc", JSON.stringify({ zip: "50010", lat: 42.03, lon: -93.62, label: "Ames, IA", city: "Ames, IA", state: "IA", ts: Date.now() })); } catch (e) {}
+        try { localStorage.setItem("agsist-wx-loc", JSON.stringify({ zip: "50010", lat: 42.03, lon: -93.62, label: "Ames, IA", city: "Ames, IA", state: "IA" })); } catch (e) {}
         window.__shifts = [];
         try { new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__shifts.push({ v: e.value, s: (e.sources || []).map((x) => x.node && x.node.closest && x.node.closest(".wx-card") ? "card" : "page") }); }).observe({ type: "layout-shift", buffered: true }); } catch (e) {}
       });
@@ -249,8 +249,9 @@ test("on the page: Season so far fills from the files, no spray table, 30% short
         return { h: Math.round(c.getBoundingClientRect().height), text: s.innerText, small, taps, strip: !!document.getElementById("spray-days-strip"), season: Math.round(s.getBoundingClientRect().height), min: parseFloat(getComputedStyle(s).minHeight) };
       });
       assert.ok(!got.strip, "no spray table on the page");
-      assert.match(got.text, /Rain, Jan 1 to Nov 3\s+55\.03 in\s+\+20\.43 in \(159%\)/);
-      assert.match(got.text, /GDDs, Oct 5 to Nov 3\s+312 GDDs\s+\+22 \(108%\)/);
+      // the page reads today's year for its labels: after 2026 the fixture year is named, so the year is optional here
+      assert.match(got.text, /Rain, Jan 1 to Nov 3(?:, 2026)?\s+55\.03 in\s+\+20\.43 in \(159%\)/);
+      assert.match(got.text, /GDDs, Oct 5 to Nov 3(?:, 2026)?\s+312 GDDs\s+\+22 \(108%\)/);
       assert.ok(got.h <= Math.round(BEFORE[width] * 0.7), `card ${got.h}px at ${width}, before ${BEFORE[width]}px: at least 30% less wanted`);
       assert.deepEqual(got.small, [], "text 12px or more");
       assert.deepEqual(got.taps, [], "taps 44px or more");
