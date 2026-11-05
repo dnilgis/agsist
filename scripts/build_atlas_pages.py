@@ -1556,11 +1556,12 @@ def land_first(W, f, lab, st, rent_html):
         if g("bldg"):
             note.append("with buildings")
         ppa = (money(g("ppa")) + "/ac") if g("ppa") is not None else "$/ac not figured"
-        li.append('<li><span class="lf-d">%s%s</span> <b>%s</b> at %s (%s)%s%s '
-                  '<button type="button" class="ls-nm" data-ls-id="%s" data-ls-f="%s">Show buyer and seller</button></li>'
+        # a state whose file names no one (Florida, New Jersey: no names_dir) gets no names button
+        btn = (' <button type="button" class="ls-nm" data-ls-id="%s" data-ls-f="%s">Show buyer and seller</button>' % (esc(g("id")), esc(nd + f + ".json"))) if nd else ""
+        li.append('<li><span class="lf-d">%s%s</span> <b>%s</b> at %s (%s)%s%s%s</li>'
                   % (esc(_sday(g("when"), dm)), "" if g("recorded") or dm else " (deed date)", esc(_ac(g("acres"))), esc(ppa), esc(money(g("price")) if g("price") else "price not stated"),
                      (", " + esc(g("place"))) if g("place") else "", (' <span class="lf-n">%s</span>' % esc("; ".join(note))) if note else "",
-                     esc(g("id")), esc(nd + f + ".json")))
+                     btn))
     # freshness: the end of the middle's window, or the newest listed sale when a state file carries
     # sales recorded after it (Illinois deeds dated in the month being read)
     newest = max([thr] + [str(r[ix["when"]]) for r in (c.get("s") or [])[:3] if "when" in ix and r[ix["when"]]])

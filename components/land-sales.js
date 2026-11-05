@@ -107,7 +107,7 @@
       + ' (' + esc(money(s.price)) + ')' + (s.place || county ? ', ' : '') + esc((s.place || '') + (county ? (s.place ? ', ' : '') + county + ' County, ' + st : ''))
       + (far != null ? ', ' + (far < 1 ? 'under a mile' : Math.round(far) + ' mi') : '')
       + (note.length ? ' <span class="ls-note">' + note.join('; ') + '</span>' : '')
-      + ' <button type="button" class="ls-nm" data-ls-id="' + esc(s.id) + '" data-ls-f="' + esc(namesFile) + '">Show buyer and seller</button>'
+      + (namesFile ? ' <button type="button" class="ls-nm" data-ls-id="' + esc(s.id) + '" data-ls-f="' + esc(namesFile) + '">Show buyer and seller</button>' : '')
       + (det ? ' <button type="button" class="ls-dt ls-dtc" aria-expanded="false">Details<span class="ls-sr"> of this sale</span></button>' : '') + '</li>';
   }
   var RULE = 'Sales with a price, acres and a whole interest in a normal sale; township or town, not the parcel.';
@@ -129,7 +129,7 @@
       var rows = (c.s || []).slice(0, 3).map(function (a) { var o = row(a, f.cols); if (c.lx && c.lx[o.id]) o.lx = c.lx[o.id]; return o; });
       var href = '/land-sales/' + STATES[st] + '/' + c.slug;
       box.innerHTML = '<div class="ls-feat-l"><h2 id="ls-feat-h">Latest farm sales here</h2>'
-        + (rows.length ? '<ul class="ls-ul">' + rows.map(function (s) { return saleLi(s, null, st, f.names_dir + fips + '.json', null, c, fips); }).join('') + '</ul>'
+        + (rows.length ? '<ul class="ls-ul">' + rows.map(function (s) { return saleLi(s, null, st, f.names_dir ? f.names_dir + fips + '.json' : null, null, c, fips); }).join('') + '</ul>'
           : '<p>No sales of 10 acres or more recorded here in the last 12 months.</p>')
         + '<p><a href="' + href + '">Every recent sale in ' + esc(c.name) + ' County</a> &middot; <a href="/land-sales/">This month&rsquo;s biggest buyers and sales</a></p>'
         + '<p class="ls-fine">' + srcLine(f) + '</p></div><div class="ls-feat-r"></div>';
@@ -211,7 +211,7 @@
             if (c.lx && c.lx[s.id]) s.lx = c.lx[s.id];
             if (s.lat == null) return;
             var d = miles(lat, lng, s.lat, s.lng);
-            if (d <= NEAR_MI) list.push({ s: s, d: d, c: c, st: st, nf: f.names_dir + fips + '.json', fips: fips });
+            if (d <= NEAR_MI) list.push({ s: s, d: d, c: c, st: st, nf: f.names_dir ? f.names_dir + fips + '.json' : null, fips: fips });
           });
         });
       });
@@ -247,7 +247,8 @@
     return '<tr data-k="' + esc(o.kind) + '"' + dls + '><td>' + esc(when) + '</td><td>' + esc((o.place ? o.place + ', ' : '') + f.county + ' County, ' + f.st) + '</td>'
       + '<td class="n">' + esc(acresCell(o.acres)) + '</td><td class="n">' + esc(money(o.price)) + '</td><td class="n">' + esc(o.ppa != null ? money(o.ppa) : '') + '</td>'
       + '<td>' + esc((f.kinds && f.kinds[o.kind]) || '') + '</td><td>' + esc(flag) + '</td>'
-      + '<td><button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button></td></tr>';
+      /* a state whose file names no one (Florida, New Jersey: names null): no button that would load nothing */
+      + '<td>' + (f.names ? '<button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button>' : '') + '</td></tr>';
   }
   function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; if (f.lx && f.lx[o.id]) o.lx = f.lx[o.id]; return o; }); }
   function fullList(box) {
@@ -423,13 +424,13 @@
   }
   /* the legal description with the sale's own buyer and seller blanked: the builder found where they sit
      (build_land_sales.legal_mask, lx), so this never reads a name */
-  function scrub(legal, lx) {
-    var t = String(legal || '');
+  function scrub(legal, lx, nf) {
+    var t = String(legal || ''), w = nf ? '[name: tap Show buyer and seller]' : '[name left out]';
     (lx || []).slice().sort(function (a, b) { return b[0] - a[0]; }).forEach(function (m) {
-      t = t.slice(0, m[0]) + '[name: tap Show buyer and seller]' + t.slice(m[0] + m[1]);
+      t = t.slice(0, m[0]) + w + t.slice(m[0] + m[1]);
     });
     /* county files written since Nov 4, 2026 carry the mark already (scripts/land_names.py NAME_MARK) */
-    return t.split('[NAME]').join('[name: tap Show buyer and seller]');
+    return t.split('[NAME]').join(w);
   }
   function namesBtnHtml(id, nf) { return '<button type="button" class="ls-nm" data-ls-id="' + esc(id) + '" data-ls-f="' + esc(nf) + '">Show buyer and seller</button>'; }
 
@@ -492,7 +493,7 @@
     /* a legal that names its own seller or buyer is not in the county file (scripts/land_names.py LEGAL_MARK): it comes
        with the names, on the tap (onTap fills span.ls-lgh) */
     var named = s.lx === 'h' || (r && /^\[LEGAL WITH A NAME /.test(String(r.legal || '')));
-    var leg = r && rv('legal') && !named ? scrub(r.legal, s.lx) : '';
+    var leg = r && rv('legal') && !named ? scrub(r.legal, s.lx, nf) : '';
     var legHtml = wait || gone || (named ? '<span class="ls-lgh" data-ls-id="' + esc(s.id) + '">' + miss('names a buyer or seller: shown with Show buyer and seller') + '</span>'
       : !has('legal') || !leg ? miss(NOT_REC) : leg.length > 70
       ? '<span class="ls-lg">' + esc(leg.slice(0, 70).replace(/\s+\S*$/, '')) + '&hellip;</span> <button type="button" class="ls-lgb" aria-expanded="false" data-full="' + esc(leg) + '">Show the whole description</button>'

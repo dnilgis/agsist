@@ -222,6 +222,9 @@ def with_bldg(r):
 
 
 # ---------------------------------------------------------------- read the county files
+NAMELESS = ("FL",)     # files that never carry a buyer or seller (fetch_land_sales: Florida's sale files have no names)
+
+
 class Data:
     def __init__(self, repo=REPO, states=STATES):
         self.repo = Path(repo)
@@ -235,6 +238,12 @@ class Data:
         self.fetched = {st: str(self.land.index(st).get("fetched_utc") or "")[:10] for st in self.states}
         self.today = {st: self.fetched[st] for st in self.states}
         self.counties = {}      # st -> [(index row, rows)]
+        # NAMELESS states (Florida): their files name no one, so no names file, no names path and no "Show buyer and
+        # seller" button (checker, Nov 5, 2026: a dead button). New Jersey keeps its names files and button as before.
+        self.named = {}
+        for st in self.states:
+            c0 = (self.land.index(st).get("counties") or [None])[0]
+            self.named[st] = not (st in NAMELESS and c0 and (self.land.file(st, c0["fips"]) or {}).get("names") is False)
         for st in self.states:
             lst = []
             for c in self.land.index(st).get("counties") or []:
@@ -581,6 +590,8 @@ def crumbs(items):
 
 
 def names_btn(sid, file, what="buyer and seller"):
+    if not file:
+        return ""      # the state's file names no one: no button that would load nothing
     return ('<button type="button" class="ls-nm" data-ls-id="%s" data-ls-f="%s">Show %s</button>' % (e(sid), e(file), e(what)))
 
 
@@ -680,7 +691,7 @@ def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa",
             else:
                 v = "; ".join(x for x in (flag_words(p), "with buildings" if p.get("bldg") else "") if x)
             tds.append('<td%s>%s</td>' % (' class="n"' if c in num else "", e(v)))
-        tds.append("<td>%s</td>" % names_btn(p["id"], names_file))
+        tds.append("<td>%s</td>" % names_btn(p["id"], names_file if d is None or d.named.get(p["st"], True) else None))
         rid = ' id="s-%s"' % e(p["id"]) if anchors else ""
         dl = ' data-ls=%s' % sq(row_data(p))
         if not ctx:
@@ -700,6 +711,16 @@ def src_line(d, states):
 RULE = ("A sale is listed when it carries a price and acres and a whole interest changed hands in a normal sale: gifts, family and "
         "related-party sales, quit claims, foreclosures and the like are left out, the same rule as Field Scout and the Farmland Atlas. "
         "Township and town are where the state places the sale; no parcel is pinned. None of this is an appraisal.")
+def names_note(d, states):
+    """The names line: the tap and Remove my name where a state's file names its buyers and sellers, else that it names no one."""
+    named = [st for st in states if d.named.get(st, True)]
+    none = [NAME[st] for st in states if not d.named.get(st, True)]
+    out = NAMES_NOTE if named else ""
+    if none:
+        out += (" " if out else "") + "%s sales carry no buyer or seller names in the state's file; the deed at the county has them." % and_list(none)
+    return out
+
+
 NAMES_NOTE = ("Buyer and seller names are public record on the state's transfer return. They load only when you tap, and are not "
               "shown to search engines. If one is yours and you want it off this site, tap Remove my name beside it.")
 
@@ -806,7 +827,7 @@ def month_page(d, M, early, coverage, archive):
         b.append(sale_table(M["best"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"], d=d))
     else:
         b.append('<p class="ls-held">Not shown this month: %s.</p>' % e(M["best_why"]))
-    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(NAMES_NOTE), e(RULE), e(src_line(d, M["states"]))))
+    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(names_note(d, M["states"])), e(RULE), e(src_line(d, M["states"]))))
     b.append(coverage_html(coverage, d))
     if archive:
         b.append('<h2 id="earlier">Other months</h2><p>%s</p>' % " &middot; ".join('<a href="/land-sales/%s">%s</a>' % (k, e(v)) for k, v in archive if k != key))
@@ -920,7 +941,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     s = SLUG[st]
     slug = county_slug(c["name"])
     url = "%s/land-sales/%s/%s" % (ORIGIN, s, slug)
-    nf = "/data/land/names/%s/%s.json" % (st.lower(), c["fips"])
+    nf = "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]) if d.named.get(st, True) else ""
     lf = "/data/land-sales/%s/%s.json" % (st.lower(), c["fips"])
     cn = "%s County, %s" % (c["name"], NAME[st])
     title = "Farmland Sales in %s: Every Recorded Sale and Price per Acre | AGSIST" % cn
@@ -989,7 +1010,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
                      % (e(UP_WHY), e(DOWN_WHY)))
     else:
         b.append('<p class="ls-held">No recorded sales on file for this county yet.</p>')
-    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(NAMES_NOTE), e(RULE), e(src_line(d, [st]))))
+    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(names_note(d, [st])), e(RULE), e(src_line(d, [st]))))
     links = []
     if has_atlas:
         links.append('<a href="%s">%s in the Farmland Atlas</a>' % (atlas, e(c["name"] + " County")))
@@ -1157,7 +1178,7 @@ def build(repo=REPO):
         summ = d.summary(st)
         through = (summ or {}).get("through") or BLS.month_end_before(d.fetched[st]).isoformat()
         sfile = {"state": st, "name": NAME[st], "through": through, "fetched": d.fetched[st], "source": SOURCES[st],
-                 "names_dir": "/data/land/names/%s/" % st.lower(), "counties": {}}
+                 "names_dir": "/data/land/names/%s/" % st.lower() if d.named[st] else None, "counties": {}}
         dm = any((d.land.file(st, c["fips"]) or {}).get("dates") == "month" for c, rows in d.counties[st][:1])
         if dm:
             sfile["dates"] = "month"      # each "when" is the first of the sale month: readers show the month, never a day
@@ -1177,11 +1198,12 @@ def build(repo=REPO):
                                                   p["flag"] or 0, 1 if p["bldg"] else 0, KIND_CODE[p["kind"]], 1 if p["cu"] else 0,
                                                   p["ri"], p["g"], p["m"]] for p in feat]}
             names, legals = names
-            out["data/land/names/%s/%s.json" % (st.lower(), c["fips"])] = dump(dict({"fips": c["fips"], "sales": names}, **({"legals": legals} if legals else {})))
+            if d.named[st]:
+                out["data/land/names/%s/%s.json" % (st.lower(), c["fips"])] = dump(dict({"fips": c["fips"], "sales": names}, **({"legals": legals} if legals else {})))
             out["land-sales/%s/%s.html" % (SLUG[st], slug)] = county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all)
             cu = st == "VT"      # Vermont's list carries current use enrollment as a last column
             out["data/land-sales/%s/%s.json" % (st.lower(), c["fips"])] = dump(
-                dict({"st": st, "fips": c["fips"], "county": c["name"], "through": through, "names": "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]),
+                dict({"st": st, "fips": c["fips"], "county": c["name"], "through": through, "names": "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]) if d.named[st] else None,
                  "kinds": {v: KIND_WORDS[k] for k, v in KIND_CODE.items()}, "cols": LIST_COLS + (["cu"] if cu else []) + DETAIL_COLS,
                  "usual": usual_list(u), "w24": W["w24"], "lx": {p["id"]: p["lx"] for p in allp if p.get("lx")},
                  "rec": rec_ok(d, st, c["fips"]),

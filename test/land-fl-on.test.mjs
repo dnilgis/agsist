@@ -151,6 +151,20 @@ test("the land-sales pages and their files show every Florida sale as a month, w
   const mp = rd(info.month);
   assert.match(mp, /1 in Florida \(by sale month\)/);
   assert.match(mp, /<td>Aug 2025<\/td><td>Wauchula, <a href="\/land-sales\/florida\/hardee-county">Hardee County, FL<\/a><\/td>/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
+  // Florida's files name no one: no "Show buyer and seller" button, no names path, no names file (checker, Nov 5);
+  // Wisconsin's rows keep theirs
+  const rowsOf = (html) => [...html.matchAll(/<tr[^>]*data-ls=[\s\S]*?<\/tr>/g)].map((m) => m[0]);
+  const flRows = rowsOf(cp).concat(rowsOf(mp).filter((t) => /, FL</.test(t)));
+  assert.ok(flRows.length >= 5, "Florida rows on the county and monthly pages");
+  for (const t of flRows) assert.doesNotMatch(t, /ls-nm|Show buyer and seller/);
+  const wiRows = rowsOf(mp).filter((t) => /, WI</.test(t));
+  assert.ok(wiRows.length >= 3 && wiRows.every((t) => /<button type="button" class="ls-nm" data-ls-id="[0-9a-f]{10}" data-ls-f="\/data\/land\/names\/2025-08\.json">Show buyer and seller<\/button>/.test(t)), "Wisconsin keeps its names button");
+  assert.match(rd("land-sales/wisconsin/testc-county.html"), /class="ls-nm"/);
+  assert.doesNotMatch(cp, /data\/land\/names\/fl|Remove my name/);
+  assert.match(cp, /Florida sales carry no buyer or seller names in the state(&#x27;|')s file/);
+  assert.equal(lf.names, null);
+  assert.equal(sf.names_dir, null);
+  assert.ok(!info.files.some((p) => p.startsWith("data/land/names/fl/")), "no Florida names file");
   const latest = JSON.parse(rd("data/land-sales/latest.json"));
   assert.equal(latest.top_state.FL.basis, "sale month");
   assert.equal(JSON.parse(rd("data/land-sales/lead.json")).lead.FL, null, "no home lead from sale months");
@@ -201,6 +215,7 @@ test("the Atlas sales lines, Fast Facts and the change lines say Florida's dates
   assert.match(lf, /<span class="lf-d">Aug 2025<\/span>/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.match(lf, /Sales through Jan 2026/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.doesNotMatch(lf, /deed date/);
+  assert.doesNotMatch(lf, /ls-nm|Show buyer and seller/, "no names button on the Atlas land block for Florida");
   assert.doesNotMatch(lf, DAY);
   assert.match(st.sub, /sales dated through Jan 2026$/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
 });
