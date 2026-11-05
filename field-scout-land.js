@@ -747,6 +747,10 @@
     row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls, st)) + ' <span class="fl-note">(' + esc(FSLand.classNote(r.cls, st)) + ')</span>' : NOTIN);
     row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
     row(IL ? 'State transfer tax' : VT ? 'Property transfer tax' : NJ ? 'Realty transfer fee' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : NJ ? ' (the deed abstract marks the fee exempt)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
+    // Wisconsin return detail (fetch_land_sales EXTRA, Nov 5): rights the seller kept, Managed Forest Law acres
+    var RRW = { none: 'None', life: 'The seller keeps a life estate (use of the land for life).', ease: 'The seller keeps an easement.', other: 'The seller keeps other rights in the land.' };
+    if (has('rr')) row('Rights the seller kept', v(r.rr) != null ? esc(RRW[r.rr] || r.rr) : NOTIN);
+    if (has('mfl')) row('Managed forest acres', v(r.mfl) != null ? esc(String(+r.mfl)) + ' acres' : NOTIN, 'Acres in Wisconsin\u2019s Managed Forest Law program.');
     var why = FSLand.notMarketWhy(r);
     row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court, foreclosure, trade and partition deeds, shares of the land and fee-exempt transfers.');
     row('Verified', 'No', 'Taken from public transfer records, not confirmed with a party to the sale.');

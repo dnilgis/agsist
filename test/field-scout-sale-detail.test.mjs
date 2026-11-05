@@ -45,6 +45,8 @@ function expectFor(c, r, f) {
     case "grantor": case "grantee": return f.names ? (f.names_file ? ["Show buyer and seller"] : ["names come after the next update"]) : ["not in our copy"];
     case "si": case "bi": return f.names && f.names_file ? ["Show buyer and seller"] : [];
     case "ac1": return v != null ? [esc(v)] : (+r.np > 1 ? ["not in the record"] : []);
+    case "rr": return [v != null ? esc(({ none: "None", life: "The seller keeps a life estate (use of the land for life).", ease: "The seller keeps an easement.", other: "The seller keeps other rights in the land." })[v] || v) : "not in the record"];
+    case "mfl": return [v != null ? esc(String(+v)) + " acres" : "not in the record"];
     default: return null;
   }
 }
