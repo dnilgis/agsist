@@ -549,7 +549,7 @@ REDEEM_BASE = "agsist.com/rain-print?gift="
 DRY_CODE = "RP-XXXX-XXXX-XXXX"
 # what the receiver gets, in plain words (the card's own words, rp-gift.html COMING)
 GIFT_WHAT = {
-    "framed12x18": "A framed Rain Print: the whole year printed on 13 x 19 heavy, textured cotton paper, in a wood frame, oak or black, with an acid-free white mat and tempered glass. Shipping is included.",
+    "framed12x18": "A framed Rain Print: the whole year printed on 13 x 19 heavy, textured cotton paper, in a frame of oak wood or black, with an acid-free white mat and 2 mm tempered glass. Shipping is included.",
     "print12x18": "A Rain Print: the whole year printed on 13 x 19 heavy, textured cotton fine-art paper, shipped flat and ready to frame. Shipping is included.",
     "digital": "The Rain Print digital file: the whole year as a PDF, a PNG and a JPG at 12 x 18 in, 300 dpi, to print anywhere, with a page on how to read it.",
 }
@@ -1450,7 +1450,7 @@ def selftest():
     link = "https://agsist.com/rp-gift?c=RP-7K3M-Q9TW-H07F&k=0123456789abcdef"
     ck("the card link as the big button", ('href="%s"' % H.escape(link)) in gh and ">Print the gift card</a>" in gh and "Print the gift card: " + link in gt, gh[:1500])
     ck("what they get: the framed print, shipping included, in plain words",
-       "A framed Rain Print: the whole year printed on 13 x 19 heavy, textured cotton paper, in a wood frame, oak or black, with an acid-free white mat and tempered glass. Shipping is included." in gt
+       "A framed Rain Print: the whole year printed on 13 x 19 heavy, textured cotton paper, in a frame of oak wood or black, with an acid-free white mat and 2 mm tempered glass. Shipping is included." in gt
        and "every rain and snow of 2026 at the NOAA weather station nearest Chetek" in gt, gt)
     ck("how they use it: nothing to fill in, the square or the address, never expires",
        "There is nothing for Dad to fill in or pay. It is paid for, and it ships to the address you gave at checkout." in gt
