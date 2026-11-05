@@ -145,7 +145,7 @@ test("the unsubscribe link: front door, link id, UNSUB_SECRET hmac, topic=landsa
 
 test("Illinois, Wisconsin, Indiana (Sig, Oct 27: \"Yes turn on Indiana\") and Vermont (Oct 29); Indiana's records said plainly", () => {
   const la = read("scripts/land_alert.py");
-  assert.match(la, /^STATES = \("IL", "WI", "IN", "VT", "NJ"\)/m);
+  assert.match(la, /^STATES = \("IL", "WI", "IN", "VT", "NJ", "FL"\)/m);   // Florida since Nov 5 (fx/flon); its sign-up ask waits (build_land_sales.ASK_HELD)
   assert.match(la, /IN_NOTE = \("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "/);
   const js = read("components/land-alert.js");
   assert.match(js, /Illinois, Wisconsin, Indiana, Vermont and New Jersey\./, "the ask names the five states");

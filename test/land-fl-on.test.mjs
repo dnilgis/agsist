@@ -54,7 +54,7 @@ test("the Field Scout sale panel uses Florida's own labels", () => {
   const f = builtFile();
   const rows = F.rowObjs(f), by = Object.fromEntries(rows.map((r) => [r.pid, r]));
   const q = F.saleDetailHTML(by["FX-001"], f, []);
-  assert.match(q, /<th scope="row">Sale month<\/th><td>Aug 2025/);
+  assert.match(q, /<th scope="row">Sale month<\/th><td>Aug 2025/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.match(q, /Sale price on the Florida sale data file/);
   assert.match(q, /<th scope="row">Qualification code<\/th><td>01, arm's length, deed examined: <b>qualified sale<\/b>/);
   assert.match(q, /Codes 01 and 02 are qualified/);
@@ -109,7 +109,7 @@ test("a big county is split into its recent years and older yearly files, and re
   const dir = path.join(site().dir, "data/land-hosted/fl");
   const main = JSON.parse(fs.readFileSync(path.join(dir, "12049.json"), "utf8"));
   assert.deepEqual(main.older, [{ y: 2021, n: 1, f: "12049-2021.json" }]);
-  assert.ok(main.rows.every((r) => r[1] >= "2024-01-01"), "the county file holds the last 3 years only");
+  assert.ok(main.rows.every((r) => r[1] >= "2024-01-01"), "the county file holds the last 3 years only");   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   const before = F.olderLeft([main]);
   assert.deepEqual(before, { years: 1, n: 1, before: 2022 });
   const whole = JSON.parse(py("import sys,json\nsys.path.insert(0,sys.argv[1])\nimport build_land_summary as B\nprint(json.dumps(B.read_county(sys.argv[2])['rows']))", path.join(dir, "12049.json")));
@@ -133,12 +133,12 @@ test("the land-sales pages and their files show every Florida sale as a month, w
   assert.equal(info.leaks, 0);
   const cp = rd("land-sales/florida/hardee-county.html");
   const table = cp.slice(cp.indexOf('id="ls-all"'), cp.indexOf("</table>", cp.indexOf('id="ls-all"')));
-  assert.match(table, /<td>Aug 2025<\/td>/);
-  assert.match(table, /<td>Jun 2021<\/td>/, "the older year's sale is listed too");
+  assert.match(table, /<td>Aug 2025<\/td>/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
+  assert.match(table, /<td>Jun 2021<\/td>/, "the older year's sale is listed too");   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.doesNotMatch(table, DAY);
   assert.doesNotMatch(table, /\*/, "no deed-date mark on a sale month");
-  assert.match(cp, /4 sales on file, Jun 2021 to Aug 2025/);
-  assert.match(cp, /No market middle: 2 bare farmland sales of 20 acres or more at \$500 an acre or more, Feb 2024 to Jan 2026, and it takes 5\./);
+  assert.match(cp, /4 sales on file, Jun 2021 to Aug 2025/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
+  assert.match(cp, /No market middle: 2 bare farmland sales of 20 acres or more at \$500 an acre or more, Feb 2024 to Jan 2026, and it takes 5\./);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.match(cp, /Florida sales come from the Department of Revenue/);
   assert.doesNotMatch(cp, /data-land-alert/, "the email ask waits for Florida");
   const body = cp.replace(/<script[\s\S]*?<\/script>/g, "").replace(/read [A-Za-z]{3} \d{1,2}, \d{4}/g, "");
@@ -150,7 +150,7 @@ test("the land-sales pages and their files show every Florida sale as a month, w
   assert.deepEqual(lf.s.map((a) => a[lf.cols.indexOf("ri")]), [0, 2, 5, 7], "row numbers count across the split county, the 2021 sale past the recent rows");
   const mp = rd(info.month);
   assert.match(mp, /1 in Florida \(by sale month\)/);
-  assert.match(mp, /<td>Aug 2025<\/td><td>Wauchula, <a href="\/land-sales\/florida\/hardee-county">Hardee County, FL<\/a><\/td>/);
+  assert.match(mp, /<td>Aug 2025<\/td><td>Wauchula, <a href="\/land-sales\/florida\/hardee-county">Hardee County, FL<\/a><\/td>/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   const latest = JSON.parse(rd("data/land-sales/latest.json"));
   assert.equal(latest.top_state.FL.basis, "sale month");
   assert.equal(JSON.parse(rd("data/land-sales/lead.json")).lead.FL, null, "no home lead from sale months");
@@ -177,32 +177,32 @@ test("a build without the agsist-data copy keeps every Florida page and the page
 test("the Atlas sales lines, Fast Facts and the change lines say Florida's dates as months", () => {
   const sum = JSON.parse(rd("data/land/fl/summary.json"));
   assert.equal(sum.dates, "month");
-  assert.equal(sum.through, "2026-01-31", "through the newest sale month on file, not the month before the files were read");
+  assert.equal(sum.through, "2026-01-31", "through the newest sale month on file, not the month before the files were read");   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   const tile = AS.tile(sum, "12049");
-  assert.match(tile.sub, /sales dated through Jan 2026$/);
+  assert.match(tile.sub, /sales dated through Jan 2026$/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   const html = AS.countyHTML(sum, "12049", null);
-  assert.match(html, /Sales dated through Jan 2026/);
+  assert.match(html, /Sales dated through Jan 2026/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.doesNotMatch(html, DAY);
-  assert.equal(AS.thru({ through: "2026-09-30" }), "Sep 30, 2026", "other states keep the day");
+  assert.equal(AS.thru({ through: "2026-09-30" }), "Sep 30, 2026", "other states keep the day");   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.ok(AS.STATES.FL);
   const sf = JSON.parse(rd("data/land-sales/fl.json"));
   const s = CL.newSales(sf, "12049", "FL");
   const line = CL.salesLine(s, "Hardee County");
-  assert.match(line.date, /^records through Jan 2026, read /);
+  assert.match(line.date, /^records through Jan 2026, read /);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.doesNotMatch(line.date.replace(/read .*$/, ""), DAY);
   const wi = CL.salesLine(CL.newSales({ through: "2026-09-30", fetched: "2026-10-18", counties: { "55999": { s: [] } } }, "55999", "WI"), "Testc County");
-  assert.match(wi.date, /^records through Sep 30, read /, "other states keep the day");
+  assert.match(wi.date, /^records through Sep 30, read /, "other states keep the day");   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   const code = ["import sys,json", "sys.path.insert(0,sys.argv[1])", "import build_atlas_pages as A", "class W: pass",
     "w=W(); w.root=sys.argv[2]", "print(json.dumps([A.land_first(w,'12049','Hardee County, FL','FL',''), A.sales_tile(w,'12049','FL'), A._sday('2025-08-01', True)]))"].join("\n");
   fs.mkdirSync(path.join(site().dir, "components"), { recursive: true });
   fs.copyFileSync(path.join(ROOT, "components/atlas-sales.js"), path.join(site().dir, "components/atlas-sales.js"));
   const [lf, st, m] = JSON.parse(py(code, site().dir));
-  assert.equal(m, "Aug 2025");
-  assert.match(lf, /<span class="lf-d">Aug 2025<\/span>/);
-  assert.match(lf, /Sales through Jan 2026/);
+  assert.equal(m, "Aug 2025");   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
+  assert.match(lf, /<span class="lf-d">Aug 2025<\/span>/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
+  assert.match(lf, /Sales through Jan 2026/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.doesNotMatch(lf, /deed date/);
   assert.doesNotMatch(lf, DAY);
-  assert.match(st.sub, /sales dated through Jan 2026$/);
+  assert.match(st.sub, /sales dated through Jan 2026$/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
 });
 
 test("the land sale email for a Florida reader lists sales by month", () => {
@@ -224,11 +224,11 @@ test("the land sale email for a Florida reader lists sales by month", () => {
   assert.equal(sales[0].basis, "sale month");
   assert.match(r.pre, /^Nearest: 40 acres at \$10,000 an acre/);
   assert.ok(r.blocks.some((b) => b[0] === "p" && /Florida sales are listed by the month of the sale/.test(b[1])));
-  assert.match(r.text, /Aug 2025: 40 acres/);
+  assert.match(r.text, /Aug 2025: 40 acres/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.match(r.html, /<th scope="col"[^>]*>Sale month<\/th>/, "the table is headed Sale month");
-  assert.match(r.html, />Aug 2025<\/a>/);
+  assert.match(r.html, />Aug 2025<\/a>/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.doesNotMatch(r.text.replace(/read [A-Za-z]{3} \d{1,2}, \d{4}/g, ""), DAY);
-  assert.doesNotMatch(r.text + r.html, /Aug 1\b|\(deed date\)/);
+  assert.doesNotMatch(r.text + r.html, /Aug 1\b|\(deed date\)/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
 });
 
 test("the other states' summaries are what main's code makes (summary hash)", () => {

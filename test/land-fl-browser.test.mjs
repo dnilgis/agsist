@@ -76,7 +76,7 @@ test("in Chromium: a Florida county page and both sale panels show months and Fl
     await pg.goto(`${base}/land-sales/florida/hardee-county`);
     await pg.waitForSelector("#ls-all tbody tr button.ls-dt");
     const dates = await pg.$$eval("#ls-all tbody tr button.ls-dt", (bs) => bs.map((b) => b.firstChild.textContent));
-    assert.deepEqual(dates, ["Aug 2025", "May 2025", "Feb 2025", "Jun 2021"]);
+    assert.deepEqual(dates, ["Aug 2025", "May 2025", "Feb 2025", "Jun 2021"]);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
     // the 2021 sale: its deed row is in the older year's file, which loads from agsist-data on the tap
     const last = "#ls-all tbody tr:nth-child(4) button.ls-dt";
     await pg.click(last);
@@ -86,7 +86,7 @@ test("in Chromium: a Florida county page and both sale panels show months and Fl
       const dts = [...p.querySelectorAll("dt")].map((x) => x.textContent), dds = [...p.querySelectorAll("dd")].map((x) => { const c = x.cloneNode(true); c.querySelectorAll(".ls-dn").forEach((n) => n.remove()); return c.textContent.trim(); });
       return { kv: Object.fromEntries(dts.map((k, i) => [k, dds[i]])), text: p.innerText, w: document.documentElement.scrollWidth };
     });
-    assert.equal(got.kv["Sale month"], "Jun 2021");
+    assert.equal(got.kv["Sale month"], "Jun 2021");   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
     assert.equal(got.kv["Qualification code"], "02, arm's length, other evidence: qualified sale");
     assert.equal(got.kv["Vacant or improved"], "Vacant land");
     assert.equal(got.kv["Property class"], "Timberland");
@@ -101,8 +101,8 @@ test("in Chromium: a Florida county page and both sale panels show months and Fl
     await fs2.goto(`${base}/fs-panel.html`);
     await fs2.waitForSelector("body[data-done]");
     const panel = await fs2.evaluate(() => ({ text: document.getElementById("out").innerText, w: document.documentElement.scrollWidth }));
-    assert.match(panel.text, /Sale of Aug 2025/);
-    assert.match(panel.text, /Sale month\s+Aug 2025/);
+    assert.match(panel.text, /Sale of Aug 2025/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
+    assert.match(panel.text, /Sale month\s+Aug 2025/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
     assert.match(panel.text, /Qualification code\s+01, arm's length, deed examined: qualified sale/);
     assert.match(panel.text, /Sale price on the Florida sale data file/);
     assert.match(panel.text, /Vacant or improved\s+Vacant land/);
