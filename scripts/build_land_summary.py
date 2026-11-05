@@ -305,7 +305,8 @@ def sale_rows(rows, today):
         k1 = co + "|d|" + up(r.get("doc")) if r.get("doc") else None
         pk = parcel_strip(r.get("pid"))
         where = pk if pk else (up(r.get("legal"))[:GROUP_LEGAL] if len(up(r.get("legal"))) >= 10 else "")
-        k2 = ("%s|%s|%s|%s|%s|%s" % (co, str(r.get("date") or "")[:10], "" if p is None else js_round(p * 100), where, party(r, "s"), party(r, "b"))) if where else None
+        # month-date files (Florida): each deed once under its own record, never a refiled copy (FSLand.saleRows)
+        k2 = ("%s|%s|%s|%s|%s|%s" % (co, str(r.get("date") or "")[:10], "" if p is None else js_round(p * 100), where, party(r, "s"), party(r, "b"))) if where and not r.get("dm") else None
         if (k1 and k1 in seen) or (k2 and k2 in seen):
             continue
         if k1:

@@ -184,7 +184,10 @@
     // New Jersey: scripts/fetch_land_sales.py NJ_CLS, from the deed's class on the SR-1A and its lots' classes on the
     // 2026 assessment list (3B farmland-assessed 4; 3A farm regular, the farmhouse lot, 4 and 1; 1 vacant 5; 2 residential 1;
     // 4A commercial 2; 4B industrial 3; 15 exempt X).
-    NJ: { '1': 'House (farmhouse lot 3A, or residential 2)', '2': 'Commercial (4A)', '3': 'Industrial (4B)', '4': 'Farm (3A or 3B)', '5': 'Vacant land (1)', 'X': 'Exempt (15)' }
+    NJ: { '1': 'House (farmhouse lot 3A, or residential 2)', '2': 'Commercial (4A)', '3': 'Industrial (4B)', '4': 'Farm (3A or 3B)', '5': 'Vacant land (1)', 'X': 'Exempt (15)' },
+    // Florida: scripts/fetch_land_sales.py fl_class, from the Department of Revenue land use code (50 to 69 agricultural,
+    // 54 to 59 timberland) and the sale file's vacant or improved mark.
+    FL: { '4': 'Agricultural land', '6': 'Timberland', '7': 'Improved (buildings)' }
   };
   FSLand.classLabel = function (c, st) {
     var T = CLASS[String(st || '').toUpperCase()] || CLASS.WI;
@@ -198,12 +201,13 @@
     if (st === 'WI') return 'Wisconsin class ' + String(c || '');
     if (st === 'VT') return 'property use and buildings on the Vermont transfer tax return';
     if (st === 'NJ') return 'New Jersey property class on the deed abstract and on the 2026 assessment list of its lots';
+    if (st === 'FL') return 'Florida land use code on the assessment roll, agricultural codes 50 to 69' + (/(^|\s)6(\s|$)/.test(String(c || '')) ? ' (timberland, 54 to 59)' : '');
     return 'class ' + String(c || '');
   };
   // Document number in a state's own words.
   FSLand.docLabel = function (st) {
     st = String(st || '').toUpperCase();
-    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : st === 'VT' ? 'Vermont transfer tax return ID' : st === 'NJ' ? 'New Jersey SR-1A district and serial number' : 'doc';
+    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : st === 'VT' ? 'Vermont transfer tax return ID' : st === 'NJ' ? 'New Jersey SR-1A district and serial number' : st === 'FL' ? 'Florida clerk instrument or book and page' : 'doc';
   };
   FSLand.FARM_CLASSES = ['4', '5', '5M', '6', '7'];
   FSLand.hasBuildings = function (c) { return /(^|[\s,;/])(1|2|3|7)($|[\s,;/])/.test(String(c || '')); };
@@ -326,7 +330,9 @@
       var k1 = r.doc ? co + '|d|' + up(r.doc) : null;
       var pk = FSLand.parcelKeys(r.pid);
       var where = pk ? pk.strip : up(r.legal).length >= 10 ? up(r.legal).slice(0, FSLand.GROUP_LEGAL) : '';
-      var k2 = where ? co + '|' + String(r.date || '').slice(0, 10) + '|' + (p == null ? '' : Math.round(p * 100)) + '|' + where + '|' + FSLand.party(r, 's') + '|' + FSLand.party(r, 'b') : null;
+      // month-date files (Florida) list each deed once under its own record; two deeds of one parcel in one month at one
+      // price are two deeds, not one filed again (fetch_land_sales skips refiled_dedupe for them too)
+      var k2 = where && !r.dm ? co + '|' + String(r.date || '').slice(0, 10) + '|' + (p == null ? '' : Math.round(p * 100)) + '|' + where + '|' + FSLand.party(r, 's') + '|' + FSLand.party(r, 'b') : null;
       if ((k1 && seen[k1]) || (k2 && seen[k2])) return;
       if (k1) seen[k1] = 1;
       if (k2) seen[k2] = 1;
@@ -726,10 +732,17 @@
 
   // The panel's body. r: a row from rowObjs (with mi when the list figured it); file: its county
   // file; others: matchTransfers of the same parcel, this sale left out. Plain strings for node.
+  // Florida's qualification code, read back from the deed type text the builder writes (fetch_land_sales.fl_conv):
+  // {code, words, qualified, nominal}; null for any other state's text.
+  FSLand.flCode = function (conv) {
+    var t = String(conv || ''), m = /Florida code (\w+): ([^;]*)/.exec(t);
+    if (!m) return null;
+    return { code: m[1] === 'blank' ? '' : m[1], words: m[2], qualified: /^Qualified sale/.test(t), nominal: /minimum stamps/.test(t) };
+  };
   FSLand.saleDetailHTML = function (r, file, others) {
     file = file || {}; others = others || [];
-    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI', VT = st === 'VT', NJ = st === 'NJ';
-    var form = IL ? 'declaration' : IN ? 'sales disclosure form' : NJ ? 'deed' : 'return';
+    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI', VT = st === 'VT', NJ = st === 'NJ', FL = st === 'FL';
+    var form = IL ? 'declaration' : IN ? 'sales disclosure form' : NJ || FL ? 'deed' : 'return';
     var cols = file.cols || [];
     var has = function (c) { return cols.indexOf(c) >= 0; };
     var v = function (x) { return x == null || x === '' ? null : x; };
@@ -739,10 +752,16 @@
     var price = num(r.price), ac = num(r.acres), np = +r.np || 1;
 
     group('The sale');
-    row(IL ? 'Deed date (instrument date)' : 'Deed date (date of conveyance)', v(r.date) ? fd(r.date, r.dm) : NOTIN);
-    row('Recorded (filed)', has('rec') ? (v(r.rec) ? fd(r.rec) : NOTIN) : NOTKEPT, has('rec') ? null : 'The state file has the recording date; our copy keeps only the deed date for ' + esc(st || 'this state') + '.');
-    row('Price', price > 0 ? fm(price) : price === 0 ? '$0 on the ' + (IL ? 'declaration' : 'return') : NOTIN,
-      (IL ? 'Net consideration (Line 13 of Form PTAX-203: full consideration less personal property, Line 12a), or full consideration (Line 11) when Line 13 is blank. Covers the real estate that sold, buildings included.'
+    // Florida (Nov 5, 2026): the state's sale file gives the month of the sale and no recording date
+    var flc = FL ? FSLand.flCode(r.conv) : null;
+    if (FL) row('Sale month', v(r.date) ? fd(r.date, 1) : NOTIN, 'Florida\u2019s sale data file gives the month of each sale, not the day.');
+    else {
+      row(IL ? 'Deed date (instrument date)' : 'Deed date (date of conveyance)', v(r.date) ? fd(r.date, r.dm) : NOTIN);
+      row('Recorded (filed)', has('rec') ? (v(r.rec) ? fd(r.rec) : NOTIN) : NOTKEPT, has('rec') ? null : 'The state file has the recording date; our copy keeps only the deed date for ' + esc(st || 'this state') + '.');
+    }
+    row('Price', FL && flc && flc.nominal ? 'No sale price (' + fm(price) + ' on the file, minimum stamps)' : price > 0 ? fm(price) : price === 0 ? '$0 on the ' + (IL ? 'declaration' : FL ? 'file' : 'return') : NOTIN,
+      (FL ? 'Sale price on the Florida sale data file. Covers the real estate that sold, buildings included.'
+        : IL ? 'Net consideration (Line 13 of Form PTAX-203: full consideration less personal property, Line 12a), or full consideration (Line 11) when Line 13 is blank. Covers the real estate that sold, buildings included.'
         : IN ? 'Sales price (E1) less personal property (E2) on the Indiana sales disclosure form. Covers the real estate that sold, buildings included.'
         : VT ? 'Value paid or transferred on the Vermont property transfer tax return (Form PTT-172). Covers the real estate that sold, buildings included.'
         : NJ ? 'Sale price reported on the New Jersey deed abstract (SR-1A). Covers the real estate that sold, buildings included. Acres are the lots on the 2026 assessment list, today\u2019s lots, which may differ from the lots as sold.'
@@ -754,10 +773,14 @@
     if (has('tac') && v(r.tac) != null) row('Acres added over repeated rows', v(r.tac) != null ? esc(r.tac) : NOTIN);
     row('$/acre', r.ppa != null ? fm(r.ppa) + (FSLand.lowPpa(r) ? ' <span class="fl-warn">' + FSLand.LOW_TEXT + '</span>' : '') : '<span class="fl-miss">not figured</span>',
       r.ppa != null ? 'Price over acres.' + (FSLand.lowPpa(r) ? ' Under ' + fm(FSLand.PPA_FLOOR) + ' an acre: listed, but left out of every middle and low figure.' : '') : (price > 0 ? (r.grp ? 'Filed as ' + r.grp + ' deeds that do not resolve to one whole sale.' : 'Acres are not known for sure.') : 'There is no price to divide.'));
-    row('Deed or conveyance type', v(r.conv) ? esc(r.conv) : NOTIN);
+    if (FL) {
+      row('Qualification code', flc ? (flc.code ? esc(flc.code) + ', ' : 'None, ') + esc(flc.words) + (flc.qualified ? ': <b>qualified sale</b>' : ': <span class="fl-warn">not qualified</span>') : (v(r.conv) ? esc(r.conv) : NOTIN),
+        'The county property appraiser\u2019s code on the sale. Codes 01 and 02 are qualified (arm\u2019s length) sales; every other code is listed here and not counted.');
+      row('Vacant or improved', FSLand.hasBuildings(r.cls) ? 'Improved: buildings on the land' : v(r.cls) ? 'Vacant land' : NOTIN, 'As the Florida sale data file marks it, or an improved agricultural land use code.');
+    } else row('Deed or conveyance type', v(r.conv) ? esc(r.conv) : NOTIN);
     row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls, st)) + ' <span class="fl-note">(' + esc(FSLand.classNote(r.cls, st)) + ')</span>' : NOTIN);
-    row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
-    row(IL ? 'State transfer tax' : VT ? 'Property transfer tax' : NJ ? 'Realty transfer fee' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : NJ ? ' (the deed abstract marks the fee exempt)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
+    if (!FL) row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
+    if (!FL) row(IL ? 'State transfer tax' : VT ? 'Property transfer tax' : NJ ? 'Realty transfer fee' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : NJ ? ' (the deed abstract marks the fee exempt)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
     // Return detail (fetch_land_sales EXTRA, Nov 5), worded as the county sale pages word it
     var RRW = { none: 'None', life: 'The seller keeps a life estate (use of the land for life).', ease: 'The seller keeps an easement.', other: 'The seller keeps other rights in the land.' };
     if (has('rr')) row('Rights the seller keeps', v(r.rr) != null ? esc(RRW[r.rr] || r.rr) : NOTIN);
@@ -771,7 +794,9 @@
     if (has('yb')) row('Year built', v(r.yb) != null ? esc(r.yb) + ' (main lot)' : NOTIN, 'Blank on the deed abstract when the lot has no house or the assessor left it out.');
     if (has('avl')) row('Assessed value, main lot', v(r.avl) != null ? fm(+r.avl) + ' land' + (v(r.avb) != null ? ', ' + fm(+r.avb) + ' buildings' : '') + (v(r.avy) != null ? ' (' + esc(r.avy) + ' tax list)' : '') : NOTIN, 'Farmland-assessed lots (3B) are valued on their farm use, far under a sale price.');
     var why = FSLand.notMarketWhy(r);
-    row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court, foreclosure, trade and partition deeds, shares of the land and fee-exempt transfers.');
+    if (FL && flc && !flc.qualified) why = ['not a qualified sale on the Florida file' + (flc.nominal ? ', no sale price' : '')].concat(why.filter(function (w) { return w !== FSLand.WHY.deed; }));
+    row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', FL ? 'Only the sales the county property appraiser marked qualified (codes 01 and 02) count; shares of the land are left out too.'
+      : 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court, foreclosure, trade and partition deeds, shares of the land and fee-exempt transfers.');
     row('Verified', 'No', 'Taken from public transfer records, not confirmed with a party to the sale.');
 
     group('Who');
@@ -787,8 +812,9 @@
     group('Where');
     row(IL ? 'Township' : 'Town, village or city', v(r.muniName) ? esc(r.muniName) : NOTIN);
     row('County', v(r.county || file.county) ? esc((r.county || file.county) + ' County, ' + st) : NOTIN);
-    row(np > 1 ? 'Parcel number (first on the ' + (IL ? 'declaration' : 'return') + ')' : 'Parcel number', v(r.pid) ? esc(r.pid) : NOTIN,
-      np > 1 ? 'This sale covers ' + np + ' parcels. Our copy keeps the first parcel number only; the other ' + (np - 1) + ' are on the ' + (IL ? 'declaration' : 'return') + ' and the deed.' : null);
+    var paper = IL ? 'declaration' : FL ? 'sale file' : 'return';
+    row(np > 1 ? 'Parcel number (first on the ' + paper + ')' : 'Parcel number', v(r.pid) ? esc(r.pid) : NOTIN,
+      np > 1 ? 'This sale covers ' + np + ' parcels. Our copy keeps the first parcel number only; the other ' + (np - 1) + ' are on the ' + paper + ' and the deed.' : null);
     row('Parcels in this sale', String(np));
     var held = FSLand.legalHeld(r), leg = held ? '' : clean(r.legal);
     if (held) row('Legal description', '<span id="fl-sd-legal"><span class="fl-miss">names a buyer or seller: shown with Show buyer and seller</span></span>');
@@ -808,13 +834,13 @@
     }).join('') + '</ul>' : '<p class="fl-note">No other transfer of parcel ' + esc(r.pid || '(no number)') + ' is in our copy. ' + esc(FSLand.coverageText(file.coverage, st)) + '.</p>';
 
     var links = (file.links || []).map(function (l) { return '<a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>'; }).join(' &middot; ');
-    var office = IL ? 'Clerk and Recorder' : 'Register of Deeds';
+    var office = IL ? 'Clerk and Recorder' : FL ? 'Clerk of Court' : 'Register of Deeds';
     var src = '<p class="fl-note">' + esc(file.source || 'State transfer data') + (v(r.doc) ? ', ' + esc(FSLand.docLabel(st)) + ' ' + esc(r.doc) : '') + '. ' +
       (file.fetched_utc ? 'Our copy was read ' + fd(String(file.fetched_utc).slice(0, 10)) + '. ' : '') +
       'The deed itself is at the ' + esc((r.county || file.county || 'county') + ' County ' + office) + '.</p>' + (links ? '<p class="fl-note fl-links">' + links + '</p>' : '');
     var notIn = '<p class="fl-note"><b>Not in our copy:</b> the street address, ' + (np > 1 ? 'the other parcel numbers, ' : '') +
       'the parcel outline, financing, ' + (IL || IN ? 'what personal property the form took out of the price, ' : 'any personal property in the price (machinery, grain, buildings’ contents), ') + 'and why the land sold. The full ' +
-      (IL ? 'declaration' : IN ? 'sales disclosure form' : 'transfer return') + ' or the deed has more. This is a public record of one sale, not an appraisal.</p>';
+      (IL ? 'declaration' : IN ? 'sales disclosure form' : FL ? 'county property appraiser\u2019s sale record' : 'transfer return') + ' or the deed has more. This is a public record of one sale, not an appraisal.</p>';
 
     return '<table class="fl-kv fl-sd-kv">' + rows.join('') + '</table>' +
       '<h3>On the map</h3><div class="fl-sd-map"><button type="button" class="fl-btn" data-sd="map">Show on map</button><div id="fl-sd-where" class="fl-note">Looking for this parcel on the parcel map.</div></div>' +
