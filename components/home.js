@@ -93,19 +93,18 @@ try {
   }
   /* WAVE3-L: after a failed cot.json there are no rows to put back. */
   window.AGSIST_COT={rows:COT_ROWS,render:function(){if(window.AGSIST_COT.failed)return;placeCOT(window.AGSIST_COT._d);glance(window.AGSIST_COT._d);}};
-  /* AT A GLANCE (2026-11-04, Sig): the card's first lines are the top three
-     markets in the reader's order (the crop picker reorders COT_ROWS), one plain
-     line each (components/cot-glance.js, the words /cot prints). The ranges and
-     the other markets sit behind a tap. The percentile and the release day come
-     with cot-analysis.json for the same report; until then the line carries
-     neither rather than guess. */
+  /* AT A GLANCE (2026-11-04; short rows 2026-11-05, Sig: "KISS"): the top three
+     markets in the reader's order (the crop picker reorders COT_ROWS), one short
+     row each (components/cot-glance.js row(): market | long or short | change,
+     the cells /cot's table prints; the rank is on /cot), each opening /cot on that market's
+     52-week chart. The rank and the weight word come with cot-analysis.json for
+     the same report; until then the row carries neither rather than guess. */
   var COT_GLANCE=3;
   function glance(data){
-    var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data)return;
+    var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data||!G.rows)return;
     var keys=COT_ROWS.slice(0,COT_GLANCE).map(function(r){return r.k;});
-    var ls=G.lines(data,COT_CX,keys);if(!ls.length)return;
-    /* each line opens /cot on that market's 52-week chart (2026-11-05) */
-    ul.innerHTML=ls.map(function(l){return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+(G.href?G.href(l.key):'/cot')+'">'+l.html+'</a></li>';}).join('');
+    var rs=G.rows(data,COT_CX,keys);if(!rs.length)return;
+    ul.innerHTML=rs.map(function(r){return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'"><b>'+r.name+'</b><span>'+r.pos+'</span><span class="cot-gl-r">'+r.chg+'</span></a></li>';}).join('');
     ul.removeAttribute('aria-busy');
     var a=document.getElementById('cot-gl-asof');if(a){var t=G.asOf(data,COT_CX);if(t)a.textContent=t;}
   }

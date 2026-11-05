@@ -16,9 +16,14 @@
    A market inside the pipeline's flat band reads "about even".
    Without the analysis file (or for a different week) the line drops the
    percentile and the "how heavy" word rather than guess them.
-   headline() is the same line without the percentile in brackets (the 52-week
-   chart's title, Nov 5): "Funds are fairly heavily long soybeans and sold a net
-   27,544 contracts this week." SLUG names each market in a link (/cot?m=soybeans).
+   Nov 5, Sig ("extremely repetitive wording"; "KISS, the chart I want can tell a
+   lot of that story"): the pages no longer print one sentence per market. brief()
+   is the one line over the 52-week chart for the market picked:
+     Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week
+   row() is the same facts as table cells (market | long or short | rank | change),
+   and verdict() the crowded line, short enough for one line where it fits.
+   SLUG names each market in a link (/cot?m=soybeans). line() and lines() stay for
+   anything that still wants a sentence.
    Exports window.AgCotGlance (and module.exports for the tests). */
 (function (root) {
   'use strict';
@@ -37,6 +42,11 @@
     return null;
   }
   function href(k) { return '/cot?m=' + (SLUG[k] || k); }
+  /* short market names for chips, table rows and the brief line */
+  var SHORT = { corn: 'Corn', beans: 'Soybeans', wheat: 'Chicago wheat', kcwheat: 'KC wheat', mplswheat: 'MPLS wheat',
+    soymeal: 'Soybean meal', soyoil: 'Soybean oil', livecattle: 'Live cattle', feedercattle: 'Feeder cattle',
+    leanhogs: 'Lean hogs', milk: 'Class III milk' };
+  var WEIGHT = { 'heavily': 'heavy', 'fairly heavily': 'fairly heavy', 'moderately': 'moderate', 'lightly': 'light' };
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var MINUS = '−';
@@ -115,6 +125,67 @@
     return a ? line(key, a, true, true) : (b ? line(key, b, false) : null);
   }
 
+  /* The facts for one market, from the analysis when it is for the same week as
+     cot.json, else from cot.json alone (no rank, no weight word: nothing guessed).
+     -> {key, name, side, weight, rank, since, crowded, chg, flip} or null */
+  function facts(key, cot, cx) {
+    var a = cxFor(key, cot, cx), c = a || (cot && cot[key]);
+    if (!c || typeof c.net !== 'number') return null;
+    var net = c.net, chg = typeof c.chg === 'number' ? c.chg : (typeof c.prev === 'number' ? net - c.prev : null);
+    var side = c.side === 'flat' ? 'flat' : net > 0 ? 'long' : net < 0 ? 'short' : 'flat';
+    var cr = a && a.crowd, p = cr && typeof cr.shown === 'number' ? cr.shown : null, since = cr && cr.since ? String(cr.since) : '';
+    if (!since) p = null;
+    var prev = chg == null ? null : net - chg;
+    return { key: key, name: SHORT[key] || key, side: side, net: net,
+      weight: side === 'flat' || p == null ? '' : WEIGHT[degree(side, p, a.crowded)] || '',
+      rank: p == null ? '' : ord(p), since: since, crowded: a ? a.crowded || null : null, chg: chg,
+      flip: side !== 'flat' && prev != null && prev !== 0 && (prev > 0) !== (net > 0) };
+  }
+
+  /* "Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week"
+     -> {key, text, html} or null */
+  function brief(key, cot, cx) {
+    var f = facts(key, cot, cx);
+    if (!f) return null;
+    var pos = f.side === 'flat' ? 'funds about even' : 'funds ' + f.side + (f.weight ? ', ' + f.weight : '');
+    var rk = f.rank ? ' (' + f.rank + ' since ' + f.since + (f.crowded ? ', crowded' : '') + ')' : '';
+    var wk = f.chg == null ? '' : f.chg === 0 ? ', held steady this week' : ', ' + (f.chg > 0 ? 'bought ' : 'sold ') + num(f.chg) + ' this week';
+    var fl = f.flip ? ', flipped to ' + f.side : '';
+    var rest = pos + rk + wk + fl;
+    return { key: key, text: f.name + ': ' + rest, html: '<b>' + esc(f.name) + ':</b> ' + esc(rest) };
+  }
+
+  /* Table cells: market | long or short | rank | change (signed, contracts) */
+  function row(key, cot, cx) {
+    var f = facts(key, cot, cx);
+    if (!f) return null;
+    var pos = f.side === 'flat' ? 'About even' : (f.side === 'long' ? 'Long' : 'Short') + (f.flip ? ', flipped' : f.crowded ? ', crowded' : f.weight ? ', ' + f.weight : '');
+    var chg = f.chg == null ? '' : f.chg === 0 ? '0' : (f.chg > 0 ? '+' : MINUS) + num(f.chg);
+    return { key: key, name: f.name, pos: pos, rank: f.rank, chg: chg, side: f.side, since: f.since };
+  }
+  function rows(cot, cx, keys) { var out = []; (keys || ORDER).forEach(function (k) { var r = row(k, cot, cx); if (r) out.push(r); }); return out; }
+
+  /* The crowded verdict in its short form, for one line:
+     "Crowded: soybean meal long; lean hogs, Class III milk short" | "No market crowded" | null */
+  function verdict(cot, cx) {
+    var v = crowdedLine(cot, cx);
+    if (!v) return null;
+    if (v.state === 'none') return v.text;
+    var lg = [], sh = [];
+    ORDER.forEach(function (k) { var c = cxFor(k, cot, cx); if (c && c.crowded === 'long') lg.push(NAMES[k]); else if (c && c.crowded === 'short') sh.push(NAMES[k]); });
+    var parts = [];
+    if (lg.length) parts.push(lg.join(', ') + ' long');
+    if (sh.length) parts.push(sh.join(', ') + ' short');
+    return 'Crowded: ' + parts.join('; ');
+  }
+  /* "As of Tue, Oct 27, released Fri, Oct 30" (short, for one line) */
+  function asOfShort(cot, cx) {
+    var rd = day(cot && cot.report_date);
+    if (!rd) return '';
+    var rel = cx && iso(cx.report_date) === iso(cot.report_date) ? day(cx.release_date) : null;
+    return 'As of ' + DAY[rd.getDay()].slice(0, 3) + ', ' + short(rd) + (rel ? ', released ' + DAY[rel.getDay()].slice(0, 3) + ', ' + short(rel) : '');
+  }
+
   /* "Positions as of Tuesday, Oct 27, released Friday, Oct 30." The release day
      comes from the analysis file (cot_calendar.release_date) when it is the same
      week; without it the line names the Tuesday alone. */
@@ -150,7 +221,8 @@
     return { state: lg.length && sh.length ? 'mixed' : lg.length ? 'long' : 'short', text: 'Crowded: ' + parts.join(', '), markets: have };
   }
 
-  var api = { NAMES: NAMES, ORDER: ORDER, SLUG: SLUG, keyOf: keyOf, href: href, headline: headline, iso: iso, degree: degree, line: line, lines: lines, asOf: asOf, cxFor: cxFor, ord: ord, crowdedLine: crowdedLine, MINUS: MINUS };
+  var api = { NAMES: NAMES, ORDER: ORDER, SLUG: SLUG, SHORT: SHORT, keyOf: keyOf, href: href, headline: headline, iso: iso,
+    facts: facts, brief: brief, row: row, rows: rows, verdict: verdict, asOfShort: asOfShort, degree: degree, line: line, lines: lines, asOf: asOf, cxFor: cxFor, ord: ord, crowdedLine: crowdedLine, MINUS: MINUS };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.AgCotGlance = api;
 })(typeof window !== 'undefined' ? window : this);

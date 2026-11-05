@@ -173,33 +173,45 @@ function cotMarkCard(key, present) {
     (LABELS[key] || key) + ': no data in this report.');
 }
 
-/* AT A GLANCE (2026-11-04, Sig): the first screen is one plain line per market
-   (components/cot-glance.js, the same words as the home card). From cot.json
-   alone until the analysis for the same report arrives; then each line gains
-   its percentile and its period. */
+/* FUNDS THIS WEEK (2026-11-04, made plainer 2026-11-05, Sig: "KISS, the chart I
+   want can tell a lot of that story"): the crowded verdict on one line when it
+   fits (else the report's dates), the chart's own brief line per market
+   (components/cot-chart.js), and every market as a table row behind one tap
+   (components/cot-glance.js row(): market | long or short | rank | change). The
+   rank and the weight word come with cot-analysis.json for the same report;
+   until then the cells carry neither rather than guess. */
 function renderGlance() {
-  var ul = document.getElementById('cg-lines'), G = window.AgCotGlance;
-  if (!ul || !G || !COT_SUMMARY) return;
-  var cx = cxAligned() ? CX_A : null, ls = G.lines(COT_SUMMARY, cx);
-  if (!ls.length) return;
-  ul.innerHTML = ls.map(function (l) { return '<li class="cg-line cg-' + l.side + '">' + l.html + '</li>'; }).join('');
-  ul.removeAttribute('aria-busy');
-  /* On a phone the first three lines show and the rest wait behind one tap, so
-     the 52-week chart under them is on the first screen (2026-11-05). */
-  var more = document.getElementById('cg-more');
-  if (more) more.hidden = ls.length <= 3;
-  if (more && ls.length > 3) {
-    more.hidden = false;
-    more.textContent = ul.classList.contains('cg-open') ? 'Fewer markets' : 'All ' + ls.length + ' markets';
-    if (!more._on) { more._on = 1; more.addEventListener('click', function () {
-      var open = ul.classList.toggle('cg-open');
-      more.setAttribute('aria-expanded', open ? 'true' : 'false');
-      more.textContent = open ? 'Fewer markets' : 'All ' + ul.children.length + ' markets';
-    }); }
+  var G = window.AgCotGlance, tb = document.getElementById('cg-rows');
+  if (!G || !COT_SUMMARY) return;
+  var cx = cxAligned() ? CX_A : null;
+  var v = document.getElementById('cg-verdict');
+  if (v) {
+    var vt = G.verdict(COT_SUMMARY, cx), alt = G.asOfShort(COT_SUMMARY, cx);
+    v.textContent = vt || alt;
+    if (vt && v.scrollWidth > v.clientWidth + 1) v.textContent = alt;   /* one line only (Sig) */
   }
-  var a = document.getElementById('cg-date');
-  if (a) { a.textContent = G.asOf(COT_SUMMARY, cx); a.classList.remove('cg-hold'); }
+  if (!tb) return;
+  var rs = G.rows(COT_SUMMARY, cx);
+  tb.innerHTML = rs.map(function (r) {
+    return '<tr data-k="' + r.key + '"><td><button type="button" class="cg-pick" data-k="' + r.key + '">' + r.name + '</button></td><td>' + r.pos + '</td><td>' + (r.rank || '') + '</td><td>' + r.chg + '</td></tr>';
+  }).join('');
+  var since = rs.map(function (r) { return r.since; }).filter(Boolean);
+  var key = document.getElementById('cg-key');
+  if (key && since.length && since.every(function (x) { return x === since[0]; }))
+    key.textContent = 'Rank: the net as a share of open interest, against every week since ' + since[0] + '. Change: contracts bought (+) or sold this week.';
 }
+/* a market in the table picks it on the chart */
+(function () {
+  var tb = document.getElementById('cg-rows');
+  if (!tb) return;
+  tb.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('[data-k]') : null;
+    if (!b || !window.AgCotChart || !window.AgCotChart.select) return;
+    window.AgCotChart.select(b.getAttribute('data-k'), true);
+    var box = document.getElementById('cot-chart-box');
+    if (box) try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) { box.scrollIntoView(); }
+  });
+})();
 function cotRenderDerived() {
   var read = document.getElementById('cot-read');
   renderGlance();
@@ -483,9 +495,9 @@ function cotLoad(isPoll) {
          report yet" -- so a reader whose fetch had simply failed had no reason
          to reload, and sat in front of blank headline figures. */
       if (text) text.textContent = 'Couldn\u2019t load the latest COT data, retrying.';
-      /* the lines could not load: the summary baked into the page takes their place */
-      var bk = document.getElementById('cot-baked'), ul = document.getElementById('cg-lines');
-      if (bk && ul && ul.getAttribute('aria-busy') === 'true') { bk.style.display = 'block'; ul.style.display = 'none'; }
+      /* the report could not load: the summary baked into the page takes its place */
+      var bk = document.getElementById('cot-baked');
+      if (bk && !COT_SUMMARY) bk.style.display = 'block';
       if (banner) banner.className = 'cot-verdict-banner mixed';
     });
 }

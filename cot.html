@@ -492,8 +492,6 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
   text-transform: uppercase; color: var(--text-muted); margin: 0 0 .7rem;
 }
 .cg{margin:0 0 1rem}
-.cg-more{display:none}
-@media(max-width:700px){.cg-lines:not(.cg-open) .cg-line:nth-child(n+4){display:none}.cg-more:not([hidden]){display:flex;align-items:center;min-height:44px;margin:-.5rem 0 .6rem;padding:0 .2rem;background:none;border:0;color:var(--gold);font:inherit;font-size:.9rem;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}}
 .cc{margin:0 0 1rem;padding:.75rem .85rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
 .cc-chips{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:thin;margin:0 -.85rem .45rem;padding:0 .85rem .2rem;scroll-padding:0 .85rem}
 .cc-chip{flex:none;min-height:44px;padding:0 .85rem;border:1px solid var(--border-2);border-radius:999px;background:transparent;color:var(--text-dim);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
@@ -515,26 +513,29 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 @media(min-width:701px){.cc-chips{flex-wrap:wrap;overflow:visible;margin:0 0 .45rem;padding:0}.cc-plot{height:340px}.cc-head{min-height:2.8em;font-size:1.08rem}.cc-src{min-height:3em}}
 @media print{.cc-acts,.cc-chips{display:none}}
 .cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .25rem}
-.cg-asof{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:0 0 .55rem}
-.cg-asof #cg-date{color:var(--text-dim);font-weight:700;display:block;min-height:1.5em}
-@media(max-width:700px){.cg-asof #cg-date{min-height:3em}}
-.cg-lines{list-style:none;margin:0 0 .8rem;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
-/* While the lines load (2026-11-05): with scripts on (the early theme script sets data-theme) the list holds
-   its place with empty rows and the crawler summary stays out of view, so the chart under it does not move. */
-html:not([data-theme]) .cg-lines[aria-busy="true"]{display:none}
+/* with scripts on (the early theme script sets data-theme) the crawler summary stays out of view from the first paint */
 html[data-theme] .cg-baked{display:none}
+.cg-verdict{margin:0 0 .55rem;font-size:.85rem;line-height:1.5;min-height:1.5em;color:var(--text-dim);font-weight:700;white-space:nowrap;overflow:hidden}
+.cg-all{margin:0 0 1rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.cg-all>summary{display:flex;align-items:center;min-height:44px;padding:0 .85rem;cursor:pointer;font-weight:700;color:var(--gold)}
+.cg-key{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:0 .85rem .4rem}
+.cg-tw{overflow-x:auto}
+.cg-table{width:100%;border-collapse:collapse;font-size:.85rem;font-variant-numeric:tabular-nums}
+.cg-table th{text-align:left;font-size:.75rem;font-weight:700;color:var(--text-muted);padding:.3rem .5rem;border-bottom:1px solid var(--border-2);white-space:nowrap}
+.cg-table td{padding:0 .5rem;height:44px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--text)}
+.cg-table th:first-child,.cg-table td:first-child{padding-left:.85rem}
+.cg-table th:nth-child(n+3),.cg-table td:nth-child(n+3){text-align:right}
+.cg-table th:last-child,.cg-table td:last-child{padding-right:.85rem}
+.cg-table tr:last-child td{border-bottom:0}
+.cg-pick{background:none;border:0;padding:0;min-height:44px;font:inherit;font-weight:700;color:var(--text);text-decoration:underline;text-decoration-color:var(--border-g);text-underline-offset:3px;cursor:pointer}
+.cg-pick:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+@media(max-width:400px){.cg-table{font-size:.78rem}.cg-table th,.cg-table td{padding-left:.3rem;padding-right:.3rem}}
 .cg-hold{visibility:hidden}
-.cg-ph{min-height:calc(1.5em + 1.1rem)}
-.cg-line{padding:.55rem .85rem;font-size:.95rem;line-height:1.5;color:var(--text);border-top:1px solid var(--border)}
-.cg-line:first-child{border-top:0}
-.cg-line b{font-weight:800}
 .cg-baked{margin:0 0 .8rem!important}
 .cg-ask{margin:0 0 .5rem}
 details.fold.cot-all[open]{border:0;background:none}
 details.fold.cot-all>.fold-body{padding:1rem 0 0}
 .cot-all>summary .cg-more-h{font-family:var(--font-display);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
-@media(max-width:560px){.cg-line{font-size:.9rem;padding:.5rem .7rem}}
-@media(max-width:700px){.cg-line{min-height:calc(4.5em + 1rem)}}
 </style>
 </head>
 
@@ -609,14 +610,14 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     </details>
   </div>
 
-  <!-- At a glance (2026-11-04, Sig): one plain line per market, the details behind a tap -->
+  <!-- Funds this week (2026-11-05, Sig: "KISS, the chart I want can tell a lot of that story"): the crowded verdict
+       when it fits one line, the market chips, one brief line and the 52-week chart; every market in a table behind
+       one tap under it. No sentence per market. -->
   <section class="cg" id="cot-glance" aria-labelledby="cg-h">
     <h2 class="cg-h" id="cg-h">Funds this week</h2>
-    <p class="cg-asof"><span id="cg-date" class="cg-hold">Positions as of Tuesday, Mon 00, released Friday, Mon 00.</span> Managed money (hedge funds and commodity trading advisers), from the CFTC Commitments of Traders. The percentile ranks the net as a share of open interest against every week in the record.</p>
-    <ul class="cg-lines" id="cg-lines" aria-busy="true"><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li></ul>
+    <p class="cg-verdict" id="cg-verdict"><span class="cg-hold">Crowded</span></p>
   <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
-    <button type="button" class="cg-more" id="cg-more" aria-expanded="false" aria-controls="cg-lines">All 11 markets</button>
-    <!-- The 52-week chart (2026-11-05, Sig): one market at a time, right under the lines; components/cot-chart.js -->
+    <!-- The 52-week chart (2026-11-05, Sig): one market at a time, components/cot-chart.js -->
     <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"></div>
       <h3 class="cc-head" id="cc-head"><span>Managed money net position, last 52 weeks</span></h3>
@@ -635,6 +636,11 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       </div>
       <div class="sr-only"><table id="cc-table"></table></div>
     </figure>
+    <details class="cg-all" id="cg-all">
+      <summary>All markets</summary>
+      <p class="cg-key" id="cg-key">Rank: the net as a share of open interest, against every week in the record. Change: contracts bought (+) or sold this week.</p>
+      <div class="cg-tw"><table class="cg-table" id="cg-table"><thead><tr><th scope="col">Market</th><th scope="col">Long or short</th><th scope="col">Rank</th><th scope="col">Change</th></tr></thead><tbody id="cg-rows"></tbody></table></div>
+    </details>
     <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="These lines in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask"></div>
   </section>
 

@@ -10,7 +10,8 @@
    (cot_analysis.py price_withheld_reason: lean hogs' rolls are not repaired; Minneapolis wheat has no feed).
    Otherwise the strip says why and draws nothing: no half-drawn line.
 
-   The title is the market's at-a-glance line without the bracketed percentile (AgCotGlance.headline), shown only
+   The title is the market's one brief line (AgCotGlance.brief: "Soybeans: funds long, fairly heavy (75th since
+   2010), sold 27,544 this week"), shown only
    when the chart's last week is the report on the page and carries the same net; the source line names the
    CFTC report, the Tuesday and the release day (the release day only when the analysis is for the same week).
 
@@ -22,9 +23,7 @@
   'use strict';
   var G = root.AgCotGlance || (typeof require === 'function' ? require('./cot-glance.js') : null);
   var ORDER = G.ORDER;
-  var CHIP = { corn: 'Corn', beans: 'Soybeans', wheat: 'Chicago wheat', kcwheat: 'KC wheat', mplswheat: 'Mpls wheat',
-    soymeal: 'Soybean meal', soyoil: 'Soybean oil', livecattle: 'Live cattle', feedercattle: 'Feeder cattle',
-    leanhogs: 'Lean hogs', milk: 'Class III milk' };
+  var CHIP = G.SHORT;
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var MINUS = '−';
   var SITE = 'https://agsist.com';
@@ -95,7 +94,7 @@
     var rel = cxA && cxA.release_date ? cxA.release_date : null;
     var src = 'CFTC Commitments of Traders, managed money, futures only, as of ' + md(last.date) + (rel ? ', released ' + md(rel) : '') + '.'
       + (price ? ' Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.' : '');
-    var h = aligned && G.headline(key, cot, cx);
+    var h = aligned && G.brief(key, cot, cx);
     return { key: key, name: CHIP[key] || key, rows: rows, last: last, hi: hi, lo: lo, price: price, priceWhy: priceWhy,
       headline: h ? h.text : null, headlineHtml: h ? h.html : null, aligned: aligned,
       asOf: 'Positions as of ' + mdy(last.date) + (rel ? ', released ' + md(rel) : ''), src: src };
