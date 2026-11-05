@@ -40,8 +40,8 @@ NAME_MARK = "[NAME]"     # where a legal named the sale's own seller or buyer (c
 # LEGAL_MARK + a hash of the legal's first 40 letters (so the one rule still groups and dedupes deeds of one parcel the
 # same way) + any part-interest words the rule reads, and the names file keeps the legal under "lg", shown on the tap.
 LEGAL_MARK = "[LEGAL WITH A NAME "
-HELD_COL = "legal_named"
-HOLD_MIN = 10              # a held text this long or longer also holds any legal that contains it (shorter: equal only)   # attach() and the fetcher's held() carry a held legal under this column, in memory only
+HELD_COL = "legal_named"   # attach() and the fetcher's held() carry a held legal under this column, in memory only
+HOLD_MIN = 10              # a held text this long or longer also holds any legal that contains it (shorter: equal only)
 NAME_STOP = set("""LLC INC LTD LLP CORP CORPORATION COMPANY TRUST TRUSTS TRUSTEE TRUSTEES REVOCABLE IRREVOCABLE LIVING FAMILY
 FARM FARMS LAND LANDS ESTATE ESTATES PROPERTY PROPERTIES HOLDINGS INVESTMENTS INVESTMENT ENTERPRISES PARTNERSHIP PARTNERS
 LIMITED AGRICULTURAL AGRICULTURE DATED JOINT TENANTS TENANT HUSBAND WIFE BANK NATIONAL ASSOCIATION COUNTY STATE CITY

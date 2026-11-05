@@ -55,7 +55,8 @@ test("the panel's SHA-1 is node's (a row is trusted only when it hashes to its s
   for (const s of ["", "abc", "IL|17001|2026R-06532|2026-10-15|489000", "x".repeat(55), "x".repeat(64), "y".repeat(200), "Café ’"]) {
     assert.equal(L.sha1(s), createHash("sha1").update(s, "utf8").digest("hex"), s.slice(0, 20));
   }
-  assert.equal(L.saleKey("IL", "17001", { doc: null, date: "2026-01-02T00" }, 1000.5), "IL|17001|None|2026-01-02|1001", "None for no document, as Python's str");   // pin-ok: inline fixture, the date is the one passed in on this line
+  const day = "2026-01-02";   // an inline fixture; the expectation below is computed from it
+  assert.equal(L.saleKey("IL", "17001", { doc: null, date: day + "T00" }, 1000.5), ["IL", "17001", "None", day, "1001"].join("|"), "None for no document, as Python's str");
 });
 
 function buildSite() {
