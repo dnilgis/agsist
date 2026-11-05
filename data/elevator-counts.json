@@ -1,9 +1,9 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-11-05T19:08:20Z",
+ "generated": "2026-11-05T21:17:55Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in. coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 2062,
+  "elevators": 2061,
   "towns": 1627
  },
  "states": {
@@ -84,7 +84,7 @@
    "towns": 2
   },
   "OH": {
-   "elevators": 88,
+   "elevators": 87,
    "towns": 77
   },
   "OK": {
