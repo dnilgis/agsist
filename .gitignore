@@ -100,3 +100,5 @@ build/shots/
 /data/social/
 # Florida's prepared sale files: read from the private raw branch by land-data.yml, never committed (Nov 5, 2026)
 /data/land-src/
+# agsist-data's land folder (Florida's county files), linked here only while a job builds from it (scripts/build_land_summary.py HOSTED)
+/data/land-hosted

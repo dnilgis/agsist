@@ -288,7 +288,7 @@
     });
   }
   /* ── this week here: the Daily's Thursday block, from components/change-lines.js */
-  var CL_JS = '/components/change-lines.js?v=1';
+  var CL_JS = '/components/change-lines.js?v=5';
   function week() {
     var sec = document.getElementById('c-week'), net = window.AGSIST_BIDS_NET;
     if (!sec || cLat == null || cLng == null) return;

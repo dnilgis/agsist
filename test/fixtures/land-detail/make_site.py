@@ -85,7 +85,7 @@ def main(out):
         '<link rel="stylesheet" href="/components/styles.css?v=28"><title>Atlas test</title></head><body><main id="main" class="main">'
         '<h1>Testc County</h1><section class="keys"><p>Key figures</p></section>'
         '<section data-atlas-sales="county" data-st="WI" data-fips="55999"></section></main>'
-        '<script src="/components/land-sales.js?v=5" defer></script></body></html>')
+        '<script src="/components/land-sales.js?v=6" defer></script></body></html>')
     ids = {}
     for st, (fips, _, _) in CO.items():
         lf = json.loads(texts["data/land-sales/%s/%s.json" % (st.lower(), fips)])

@@ -787,15 +787,27 @@ def build(st, recs, gaz, now, prior=None, months=None):
             raise BadRows("%s %s: a name column is still in the county file; not written" % (st, fips))
         s = json.dumps(doc, separators=(",", ":"))
         total += len(s)
-        files.append((fips, s, doc, ndoc))
+        parts = []
+        if cfg.get("host") and len(s) > SPLIT_BYTES:
+            # a big hosted county: the last RECENT_YEARS years load first, each older year on "Show older sales"
+            doc, parts = split_county(doc, int(now[:4]))
+            s = json.dumps(doc, separators=(",", ":"))
+            parts = [(n, json.dumps(d, separators=(",", ":"))) for n, d in parts]
+        files.append((fips, s, doc, ndoc, parts))
         index.append({"fips": fips, "name": c["name"], "lat": c["lat"], "lng": c["lng"], "n": len(rs), "from": rs[-1]["date"], "to": rs[0]["date"]})
     cap = cfg["max_mb"] if cfg.get("host") else min(MAX_STATE_MB, cfg.get("max_mb") or MAX_STATE_MB)
     if total > cap * 1048576:
         raise OverCap("%s: %.1f MB of county files, over the %d MB cap; not written (raise it in this file on purpose)" % (st, total / 1048576, cap))
     os.makedirs(os.path.join(OUT, st.lower()), exist_ok=True)
-    for fips, s, doc, ndoc in files:
+    for n in os.listdir(os.path.join(OUT, st.lower())):
+        if re.fullmatch(r"\d{5}-\d{4}\.json", n):
+            os.remove(os.path.join(OUT, st.lower(), n))      # older years of the last run; written again below when still split
+    for fips, s, doc, ndoc, parts in files:
         with open(os.path.join(OUT, st.lower(), fips + ".json"), "w") as f:
             f.write(s)
+        for n, t in parts:
+            with open(os.path.join(OUT, st.lower(), n), "w") as f:
+                f.write(t)
         land_names.write(OUT, st, doc, ndoc)
     with open(os.path.join(OUT, st.lower(), "index.json"), "w") as f:
         ix = {"state": st, "source": cfg["source"], "fetched_utc": now, "names": names, "counties": index, "unplaced_rows": unplaced}
@@ -803,6 +815,35 @@ def build(st, recs, gaz, now, prior=None, months=None):
             ix["months"] = sorted(months)
         json.dump(ix, f, separators=(",", ":"))
     return {"counties": len(index), "rows": sum(i["n"] for i in index), "mb": round(total / 1048576, 2), "names": names, "unplaced": unplaced}
+
+
+# Big hosted county files (Florida, Nov 5, 2026): a county file over SPLIT_BYTES keeps its last RECENT_YEARS calendar
+# years in <fips>.json and each older year in <fips>-<year>.json, so a phone loads about 1 MB or less first.
+SPLIT_BYTES = 2000000
+RECENT_YEARS = 3
+
+
+def split_county(doc, year):
+    """(the county file with the rows dated in the last RECENT_YEARS years up to year, [(file name, older year's file)]).
+    The county file lists the older files in "older", newest first, with their row counts; their rows follow the
+    county file's rows in the same order (newest first), so a row number counts across the whole county
+    (build_land_summary.read_county, FSLand.loadOlder)."""
+    di = doc["cols"].index("date")
+    first = "%04d-01-01" % (year - RECENT_YEARS + 1)
+    recent = [r for r in doc["rows"] if str(r[di]) >= first]
+    by = {}
+    for r in doc["rows"]:
+        if str(r[di]) < first:
+            by.setdefault(str(r[di])[:4], []).append(r)
+    if not by:
+        return doc, []
+    fips = doc["fips"]
+    parts = []
+    for y in sorted(by, reverse=True):
+        parts.append(("%s-%s.json" % (fips, y), {"state": doc["state"], "fips": fips, "county": doc["county"], "year": int(y),
+                                                 "dates": doc.get("dates"), "cols": doc["cols"], "rows": by[y]}))
+    main = dict(doc, rows=recent, older=[{"y": int(y), "n": len(by[y]), "f": "%s-%s.json" % (fips, y)} for y in sorted(by, reverse=True)])
+    return main, parts
 
 
 def mark_checked(st, now, recs, months=None):
@@ -2853,6 +2894,24 @@ def fl_selftest(ck):
         mk = {r[f["cols"].index("pid")]: BLS.market_sale(o, today) for r, o in zip(f["rows"], BLS.row_objs(f))}
         ck("FL: only the qualified sales are market sales (the gift-priced and family sales are listed, kept apart)",
            mk == {"FX-001": True, "FX-002": False, "FX-003": True, "FX-004": True, "FX-005": False, "FX-006": False, "FX-007": True, "FX-008": True})
+        # a big county splits: the last 3 years first, each older year in its own file, read back whole in order
+        global SPLIT_BYTES
+        keep_split = SPLIT_BYTES
+        SPLIT_BYTES = 10
+        try:
+            whole = f["rows"]
+            build("FL", [dict(r, date="2021-03-01" if r["pid"] in ("FX-005", "FX-006") else r["date"]) for r in recs], {}, "2026-11-05T00:00:00Z")
+            g = json.load(open(os.path.join(OUT, "fl", "12049.json")))
+            names = sorted(os.listdir(os.path.join(OUT, "fl")))
+            back = BLS.read_county(os.path.join(OUT, "fl", "12049.json"))
+            ck("FL: a big county keeps its last 3 years first and each older year apart, read back whole in the same order",
+               [o["y"] for o in g.get("older") or []] == [2021] and "12049-2021.json" in names and len(g["rows"]) == len(whole) - 2
+               and len(back["rows"]) == len(whole) and "older" not in back and sorted(r[8] for r in back["rows"][-2:]) == ["FX-005", "FX-006"]
+               and back["rows"][:6] == g["rows"])
+            build("FL", [dict(r) for r in recs], {}, "2026-11-05T00:00:00Z")
+            ck("FL: an older year no longer split is removed on the next run", "12049-2021.json" not in os.listdir(os.path.join(OUT, "fl")))
+        finally:
+            SPLIT_BYTES = keep_split
         two = [r for r in f["rows"] if r[0] == f["rows"][0][0]]
         ck("FL: two farm parcels on one deed share the deed: two parcels, acres added", any(
             r[f["cols"].index("np")] == 2 and r[f["cols"].index("tac")] == 120.0 for r in f["rows"]) and len(two) >= 1)

@@ -1277,7 +1277,10 @@ def has_sales(W, st):
 _MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
-def _sday(iso):
+def _sday(iso, month=False):
+    """"Aug 5, 2025"; month (a state whose files give sale months, Florida): "Aug 2025", never a day."""
+    if month:
+        return "%s %s" % (_MON[int(iso[5:7]) - 1], iso[:4])
     return "%s %d, %s" % (_MON[int(iso[5:7]) - 1], int(iso[8:10]), iso[:4])
 
 
@@ -1311,7 +1314,7 @@ def sales_tile(W, f, st):
     c = (sm.get("counties") or {}).get(f)
     N, A = sm.get("min_n") or 5, sm.get("min_acres") or 20
     t = {"label": "Median sale price, bare land, %d+ acres" % A, "val": None, "unit": "/ac", "through": sm["through"]}
-    thru = "sales dated through " + _sday(sm["through"])
+    thru = "sales dated through " + _sday(sm["through"], sm.get("dates") == "month")
     if not c:
         t["sub"] = "no %s file on hand for this county yet" % sm["record"]
     elif c.get("med"):
@@ -1338,7 +1341,8 @@ def sales_facts(W, f, st):
     if not m:
         return None
     return {"n": m["n"], "med": m["med"], "q1": m.get("q1"), "q3": m.get("q3"), "span": _sspan(sm["windows"]["cur"]),
-            "through": sm["through"], "min_acres": sm.get("min_acres") or 20, "record": sm.get("record") or SALES_SOURCES[st]["record"]}
+            "through": sm["through"], "min_acres": sm.get("min_acres") or 20, "record": sm.get("record") or SALES_SOURCES[st]["record"],
+            "dm": sm.get("dates") == "month"}
 
 
 def sales_sentence(lab, sf):
@@ -1352,7 +1356,7 @@ def sales_faq(lab, sf):
     if sf.get("q1") and sf.get("q3"):
         a += "; the middle half of sales fell between %s and %s an acre" % (money(sf["q1"]), money(sf["q3"]))
     a += (". Sales are dated through %s. These are counted deed records from %s, not a model or an appraisal, and no buyer or seller is named."
-          % (_sday(sf["through"]), sf["record"]))
+          % (_sday(sf["through"], sf.get("dm")), sf["record"]))
     return "What has farmland sold for in %s?" % lab, a
 
 
@@ -1538,6 +1542,7 @@ def land_first(W, f, lab, st, rent_html):
     cols = F.get("cols") or []
     ix = {k: i for i, k in enumerate(cols)}
     nd = F.get("names_dir") or ""
+    dm = F.get("dates") == "month"      # Florida: sale months, never a day
     li = []
     for r in (c.get("s") or [])[:3]:
         g = lambda k: r[ix[k]] if k in ix and ix[k] < len(r) else None
@@ -1551,11 +1556,12 @@ def land_first(W, f, lab, st, rent_html):
         if g("bldg"):
             note.append("with buildings")
         ppa = (money(g("ppa")) + "/ac") if g("ppa") is not None else "$/ac not figured"
-        li.append('<li><span class="lf-d">%s%s</span> <b>%s</b> at %s (%s)%s%s '
-                  '<button type="button" class="ls-nm" data-ls-id="%s" data-ls-f="%s">Show buyer and seller</button></li>'
-                  % (esc(_sday(g("when"))), "" if g("recorded") else " (deed date)", esc(_ac(g("acres"))), esc(ppa), esc(money(g("price")) if g("price") else "price not stated"),
+        # a state whose file names no one (Florida, New Jersey: no names_dir) gets no names button
+        btn = (' <button type="button" class="ls-nm" data-ls-id="%s" data-ls-f="%s">Show buyer and seller</button>' % (esc(g("id")), esc(nd + f + ".json"))) if nd else ""
+        li.append('<li><span class="lf-d">%s%s</span> <b>%s</b> at %s (%s)%s%s%s</li>'
+                  % (esc(_sday(g("when"), dm)), "" if g("recorded") or dm else " (deed date)", esc(_ac(g("acres"))), esc(ppa), esc(money(g("price")) if g("price") else "price not stated"),
                      (", " + esc(g("place"))) if g("place") else "", (' <span class="lf-n">%s</span>' % esc("; ".join(note))) if note else "",
-                     esc(g("id")), esc(nd + f + ".json")))
+                     btn))
     # freshness: the end of the middle's window, or the newest listed sale when a state file carries
     # sales recorded after it (Illinois deeds dated in the month being read)
     newest = max([thr] + [str(r[ix["when"]]) for r in (c.get("s") or [])[:3] if "when" in ix and r[ix["when"]]])
@@ -1569,7 +1575,7 @@ def land_first(W, f, lab, st, rent_html):
             '<div class="lf-r lv" data-k="lf-rain"><span class="l">Rain</span><span class="r"></span></div>'
             '<div class="ch-btns lf-btns"><a class="pri" href="%s">Every sale here</a><a href="/field-scout?fips=%s">Pick my field</a></div>'
             '<p class="lf-dis">%s</p><p class="lf-fine">Sales: %s. Rent: USDA NASS.</p></section>'
-            % (esc(lab), esc(_sday(newest)), mid, sales, rent_html, esc(href), esc(f), LF_DISCLAIM, esc(src)))
+            % (esc(lab), esc(_sday(newest, dm)), mid, sales, rent_html, esc(href), esc(f), LF_DISCLAIM, esc(src)))
 
 
 def land_first_rent(rv, ri, rv_old, R):

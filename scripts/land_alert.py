@@ -81,9 +81,11 @@ sys.path.insert(0, str(HERE))
 import build_land_summary as BLS   # noqa: E402  the shared market-sale rule
 import land_names                  # noqa: E402  names apart from the county files (Nov 4, 2026)
 
-STATES = ("IL", "WI", "IN", "VT", "NJ")   # Indiana on since Oct 27, 2026, Vermont and New Jersey since Oct 29 (see above); MN not in the data
-STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana", "VT": "Vermont", "NJ": "New Jersey"}
-STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana", "VT": "vermont", "NJ": "new-jersey"}
+# Indiana on since Oct 27, 2026, Vermont and New Jersey since Oct 29, Florida since Nov 5 (month dates; its county files
+# come from agsist-data, build_land_summary.HOSTED); MN not in the data
+STATES = ("IL", "WI", "IN", "VT", "NJ", "FL")
+STATE_NAMES = {"IL": "Illinois", "WI": "Wisconsin", "IN": "Indiana", "VT": "Vermont", "NJ": "New Jersey", "FL": "Florida"}
+STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana", "VT": "vermont", "NJ": "new-jersey", "FL": "florida"}
 IN_NOTE = ("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "
            "the parcel's mailing town, placed at the middle of its ZIP code rather than a township, so distances to them are rougher.")
 # The New Jersey method note (build_land_sales.NJ_NOTE uses this one): how the state's codes map onto the market rule.
@@ -119,7 +121,14 @@ SOURCES = {
     "IN": "Indiana Department of Local Government Finance, sales disclosure forms (from STATS Indiana), farm parcels",
     "VT": "Vermont Department of Taxes, property transfer tax returns (published by VCGI), farm, forest and current use land",
     "NJ": "New Jersey Division of Taxation, SR-1A deed abstracts with acres from the MOD-IV 2026 assessment list, farm lots (classes 3A and 3B)",
+    "FL": "Florida Department of Revenue, sale data files joined to the assessment roll, agricultural land (sale months, not days)",
 }
+# Florida's method note (build_land_sales.FL_NOTE uses this one)
+FL_NOTE = ("Florida sales come from the Department of Revenue's sale data files, joined to the assessment roll of the same year: "
+           "land the roll codes agricultural (use codes 50 to 69, timberland 54 to 59 included). The files give the month of each "
+           "sale, not the day, so Florida sales show a month. Only the sales the county property appraiser marked qualified (codes 01 "
+           "and 02) count as market sales; every other deed is listed and kept out of the middles, and a deed with minimum stamps "
+           "has no sale price. The files carry no buyer or seller names.")
 
 
 def miles(a, b):
@@ -139,6 +148,16 @@ def month_bounds(year, m0):
 
 def short_day(iso):
     return "%s %d" % (MON[int(iso[5:7]) - 1], int(iso[8:10]))
+
+
+def month_text(iso):
+    """A month-only date (Florida): "Aug 2025", never a day."""
+    return "%s %s" % (MON[int(iso[5:7]) - 1], iso[:4])
+
+
+def when_short(r):
+    """A sale row's date in a list: "Aug 5" (its day), or "Aug 2025" for a sale-month row (basis "sale month")."""
+    return month_text(r["when"]) if r.get("basis") == "sale month" else short_day(r["when"])
 
 
 def long_day(iso):
@@ -164,7 +183,7 @@ class Land:
     def index(self, st):
         if st not in self._ix:
             try:
-                self._ix[st] = json.load(open(os.path.join(self.repo, "data", "land", st.lower(), "index.json"), encoding="utf-8"))
+                self._ix[st] = json.load(open(os.path.join(BLS.state_dir(st, self.repo), "index.json"), encoding="utf-8"))
             except (OSError, ValueError):
                 self._ix[st] = None
         return self._ix[st]
@@ -198,7 +217,7 @@ class Land:
         k = (st, fips)
         if k not in self._f:
             try:
-                f = json.load(open(os.path.join(self.repo, "data", "land", st.lower(), fips + ".json"), encoding="utf-8"))
+                f = BLS.read_county(os.path.join(BLS.state_dir(st, self.repo), fips + ".json"))
                 # names live in data/land/<st>/names/ since Nov 4, 2026 (scripts/land_names.py): back in memory here, for
                 # the names files and the monthly buyers only
                 self._f[k] = land_names.load(f, os.path.join(self.repo, "data", "land"))
@@ -274,6 +293,10 @@ def ready(land, st, f, year, m0, reach=""):
     seen = land.seen(st, f)
     if not seen > last:
         return False
+    if (f or {}).get("dates") == "month":
+        # a month-date state (Florida): a month is posted once the records hold a later month (the newest month on file
+        # may still be filling in), never by a day it does not have
+        return max(land.reach(st, seen), min(reach or "", seen)) > last
     week = (datetime.date.fromisoformat(last) - datetime.timedelta(days=REACH_DAYS - 1)).isoformat()
     return max(land.reach(st, seen), min(reach or "", seen)) >= week
 
@@ -283,7 +306,7 @@ def row(r, d):
     pt is the township's or town's public point (the gazetteer's), never a parcel's."""
     a = BLS.num(r.get("acres"))
     with_bldg = BLS.has_buildings(r.get("cls"))   # the property class, never the deed text (the one land rule)
-    return {"when": r["when"], "basis": "recorded" if r["has_rec"] else "sale date", "acres": a,
+    return {"when": r["when"], "basis": "recorded" if r["has_rec"] else "sale month" if r.get("dm") else "sale date", "acres": a,
             "price": BLS.js_round(BLS.num(r.get("price")) or 0), "ppa": r.get("ppa"),
             "place": r.get("muniName") or None, "county": r.get("county"), "fips": r.get("fips"), "st": r["st"], "mi": d,
             "pt": r["pt"], "bldg": with_bldg, "sid": sale_id(r["st"], r)}
@@ -529,7 +552,9 @@ def selftest():
        [r["when"] for r in r4["rows"]] == ["2026-09-02", "2026-09-07", "2026-09-20", "2026-09-11", "2026-09-12"] and all(r["basis"] == "sale date" for r in r4["rows"]), r4["rows"])
     ck("Indiana is a state this email reads (Sig, Oct 27)", "IN" in STATES and Land().states[:3] == ("IL", "WI", "IN"))
     ck("Vermont is a state this email reads (Sig, Oct 29)", Land().states[:4] == ("IL", "WI", "IN", "VT") and STATE_SLUGS["VT"] == "vermont")
-    ck("New Jersey is a state this email reads (Oct 29)", Land().states == ("IL", "WI", "IN", "VT", "NJ") and STATE_SLUGS["NJ"] == "new-jersey")
+    ck("New Jersey is a state this email reads (Oct 29)", Land().states[:5] == ("IL", "WI", "IN", "VT", "NJ") and STATE_SLUGS["NJ"] == "new-jersey")
+    ck("Florida is a state this email reads, by sale month (Nov 5)", Land().states == ("IL", "WI", "IN", "VT", "NJ", "FL") and STATE_SLUGS["FL"] == "florida"
+       and when_short({"when": "2025-08-01", "basis": "sale month"}) == "Aug 2025" and when_short({"when": "2025-08-01", "basis": "sale date"}) == "Aug 1")
     print("\n%s: %d failure(s)" % ("FAIL" if fails else "OK", len(fails)))
     return 1 if fails else 0
 

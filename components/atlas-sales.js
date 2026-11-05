@@ -14,7 +14,7 @@
 (function (G) {
   'use strict';
   var S = {};
-  S.STATES = { IL: 1, WI: 1 };
+  S.STATES = { IL: 1, WI: 1, FL: 1 };   // Florida since Nov 5, 2026: sale months, so its dates are months (S.thru)
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -24,6 +24,8 @@
   S.month = function (iso) { if (!iso) return ''; var m = +String(iso).slice(5, 7); return MON[m - 1] + ' ' + String(iso).slice(0, 4); };
   S.day = function (iso) { if (!iso) return ''; var m = +String(iso).slice(5, 7); return MON[m - 1] + ' ' + (+String(iso).slice(8, 10)) + ', ' + String(iso).slice(0, 4); };
   S.span = function (w) { return S.month(w[0]) + ' to ' + S.month(w[1]); };
+  // the through date: a day, or the month alone when the state's files give sale months (summary dates "month")
+  S.thru = function (sum) { return sum && sum.dates === 'month' ? S.month(sum.through) : S.day(sum && sum.through); };
   S.pct = function (x) { var t = (Math.round(Math.abs(x))).toString(); return (x > 0.5 ? '+' : x < -0.5 ? '-' : '') + t + '%'; };
   S.url = function (st) { return '/data/land/' + String(st).toLowerCase() + '/summary.json'; };
 
@@ -44,14 +46,14 @@
     return '<div class="fact' + (cls ? ' ' + cls : '') + (long ? ' st' : '') + '"><span class="l">' + esc(l) + '</span><span class="r">' + r + (small ? '<small>' + esc(small) + '</small>' : '') + '</span></div>';
   }
   var KIND = { bldg: 'with buildings', forest: 'forest' };
-  function saleTable(rows, withDir) {
+  function saleTable(rows, withDir, dm) {
     var h = '<div class="tw"><table class="as-t"><thead><tr><th scope="col">Date</th><th scope="col">Acres</th><th scope="col">Price</th><th scope="col">$/acre</th><th scope="col" class="as-wide">Township or town</th>'
       + (withDir ? '<th scope="col" class="as-wide">Against the middle range</th>' : '') + '</tr></thead><tbody>';
     rows.forEach(function (r) {
       // a largest-sales row carries its kind at [5] (build_land_summary.land_type, the one land rule)
       var dir = withDir ? (r[5] > 0 ? 'well above' : 'well below') : (KIND[r[5]] || '');
       // on a phone the place (and how far out) go under the date instead of in columns of their own
-      h += '<tr><td>' + esc(S.day(r[0])) + '<span class="as-tw">' + esc((r[4] || 'place not given') + (dir ? ', ' + dir : '')) + '</span></td><td>' + esc(S.acres(r[1])) + '</td><td>' + esc(S.money(r[2])) + '</td><td>' + esc(r[3] != null ? S.money(r[3]) : 'n/a') + '</td><td class="as-m as-wide">' + esc(r[4] || 'not given') + '</td>'
+      h += '<tr><td>' + esc(dm ? S.month(r[0]) : S.day(r[0])) + '<span class="as-tw">' + esc((r[4] || 'place not given') + (dir ? ', ' + dir : '')) + '</span></td><td>' + esc(S.acres(r[1])) + '</td><td>' + esc(S.money(r[2])) + '</td><td>' + esc(r[3] != null ? S.money(r[3]) : 'n/a') + '</td><td class="as-m as-wide">' + esc(r[4] || 'not given') + '</td>'
         + (withDir ? '<td class="as-m as-wide">' + dir + '</td>' : '') + '</tr>';
     });
     return h + '</tbody></table></div>';
@@ -66,7 +68,7 @@
     if (!sum || !sum.windows) return null;
     var c = sum.counties && sum.counties[f], N = sum.min_n || 5, A = sum.min_acres || 20;
     var t = { label: 'Median sale price, bare land, ' + A + '+ acres', val: null, unit: '/ac', through: sum.through };
-    var thru = 'sales dated through ' + S.day(sum.through);
+    var thru = 'sales dated through ' + S.thru(sum);
     if (!c) { t.sub = 'no ' + sum.record + ' file on hand for this county yet'; return t; }
     if (c.med) {
       t.val = S.money(c.med.med);
@@ -112,14 +114,14 @@
       h += fact('Change from the 12 months before', 'not shown', why, 'w');
     }
     h += fact('Records', 'Filed ' + esc(S.month(c.from)) + ' to ' + esc(S.month(c.to)), null);
-    h += '<p class="note">Source: ' + src + '. Sales dated through ' + esc(S.day(sum.through)) + '; the latest weeks can still be filling in as deeds are recorded. ' + esc(sum.since_note || '') + '</p>';
+    h += '<p class="note">Source: ' + src + '. Sales dated through ' + esc(S.thru(sum)) + '; the latest weeks can still be filling in as deeds are recorded. ' + esc(sum.since_note || '') + '</p>';
     var cmp = S.compareText(c, census);
     if (cmp && c.med) h += '<p class="warn as-cmp">' + esc(cmp) + '</p>';
 
     // large and unusual
     h += '<h3 class="as-h">Large and unusual sales, ' + esc(S.span(W.w24)) + '</h3>';
     if (c.large && c.large.length) {
-      h += '<p class="note">The largest market sales by acres, of ' + c.a24 + ' with known acres.</p>' + saleTable(c.large, false);
+      h += '<p class="note">The largest market sales by acres, of ' + c.a24 + ' with known acres.</p>' + saleTable(c.large, false, sum.dates === 'month');
     } else {
       h += '<p class="note">Not shown: ' + (c.a24 || 0) + ' market sale' + (c.a24 === 1 ? '' : 's') + ' with known acres in 24 months, under the ' + N + ' it takes to call any of them large for the county.</p>';
     }
@@ -130,7 +132,7 @@
           + esc(S.money(r.q1)) + ' to ' + esc(S.money(r.q3)) + ' an acre; "well outside" means ' + (r.lo > 0 ? 'under ' + esc(S.money(r.lo)) + ' or over ' : 'over ') + esc(S.money(r.hi))
           + (r.lo > 0 ? ' (one and a half times the width of the middle half past either end).' : ' (one and a half times the width of the middle half past the top; the low side reaches below $0, so no sale is low enough).')
           + (c.nout > c.out.length ? ' The ' + c.out.length + ' farthest out of ' + c.nout + ' are shown.' : '') + '</p>';
-        h += saleTable(c.out, true);
+        h += saleTable(c.out, true, sum.dates === 'month');
         h += '<p class="note">The record does not say why a price sits far from the rest. Buildings, a house, a building site, land bought for development, a neighbor who had to have it or a sale that was not quite what the deed type says can all do it.</p>';
       } else {
         h += '<p class="note">No sale was well outside the county\'s middle range (' + esc(S.money(r.q1)) + ' to ' + esc(S.money(r.q3)) + ' an acre, from ' + r.n + ' sales of ' + A + '+ acres).</p>';
@@ -173,7 +175,7 @@
       }
     }
     h += '<p class="note">Market sales only: related-party sales, quit claims, gifts, sheriff, judicial, court and partition deeds are left out. '
-      + esc(sum.record) + ' (' + esc(sum.who) + '), filed ' + esc(S.month(c.from)) + ' to ' + esc(S.month(c.to)) + '; sales dated through ' + esc(S.day(sum.through)) + '. '
+      + esc(sum.record) + ' (' + esc(sum.who) + '), filed ' + esc(S.month(c.from)) + ' to ' + esc(S.month(c.to)) + '; sales dated through ' + esc(S.thru(sum)) + '. '
       + 'Prices buyers paid, not the census estimate above. No names printed.</p>';
     return h;
   };

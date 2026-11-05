@@ -99,7 +99,7 @@ test("withheld lines never print a number; they go to off with their reason", ()
   const undated = clone(IL); delete undated.fetched;
   assert.match(L.newSales(undated, "17173", "IL", "2026-10-22").why, /does not say when it was read/);
   // a state with no sales record
-  assert.match(L.newSales(null, "09003", "CT", "2026-10-22").why, /Illinois, Indiana, Wisconsin, Vermont and New Jersey only/);
+  assert.match(L.newSales(null, "09003", "CT", "2026-10-22").why, /Illinois, Indiana, Wisconsin, Vermont, New Jersey and Florida only/);
 });
 
 test("new recorded land sales: counted only in the week the state record was read; counts, never names", () => {
@@ -230,9 +230,9 @@ test("the county home: one hidden mount on every county page, filled by county-h
   assert.match(pg, /<section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"><\/section>\n<div class="chg">/);
   assert.match(pg, /<div id="ch-live" hidden data-fips="17173" data-st="IL" data-name="Shelby County"/);
   const ch = read("components/county-home.js");
-  assert.match(ch, /var CL_JS = '\/components\/change-lines\.js\?v=1';/);
+  assert.match(ch, /var CL_JS = '\/components\/change-lines\.js\?v=5';/);
   assert.match(ch, /L\.weekBlock\(L\.weekLines\(/);
-  assert.match(read("components/here.js"), /var CL_JS = '\/components\/change-lines\.js\?v=4';/);   // v4: fx/wave1a (summary says what was not read); v3: fx/landnj (New Jersey sales); v2: fx/landvt (Vermont sales); county-home.js stays v1 (its hash is on every Atlas page)
+  assert.match(read("components/here.js"), /var CL_JS = '\/components\/change-lines\.js\?v=5';/);   // v5: fx/flon (Florida records through a month); v4: fx/wave1a (summary says what was not read); v3: fx/landnj (New Jersey sales); v2: fx/landvt (Vermont sales); county-home.js stays v1 (its hash is on every Atlas page)
   const urls = [...ch.matchAll(/getJSON\(([^,)]+)/g)].map((m) => m[1]);
   for (const u of urls) assert.doesNotMatch(u, /lat|lng|zip/i, u);
 });

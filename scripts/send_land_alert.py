@@ -170,7 +170,7 @@ def sale_url(r, repo):
 def sale_line(r, mark=True):
     """One sale in words: date, acres, $/acre, price, where, how far. Nothing else.
     mark: say "(deed date)" on a row listed by its deed date (an email that mixes the two)."""
-    when = LA.short_day(r["when"]) + (" (deed date)" if mark and r["basis"] == "sale date" else "")
+    when = LA.when_short(r) + (" (deed date)" if mark and r["basis"] == "sale date" else "")
     per = "%s an acre" % LA.money(r["ppa"]) if r.get("ppa") is not None else "price per acre not figured"
     where = (r["place"] + ", " if r.get("place") else "") + "%s County, %s" % (r["county"], r["st"])
     mi = int(LA.BLS.js_round(r["mi"]))
@@ -241,6 +241,10 @@ def compose(zip5, radius, year, m0, land, zips, today, repo, need_fresh="posted"
     if by_sale:
         blocks.append(("p", "%s sales are listed by the date on the deed for now: my copy of the state's file does not carry the recording date yet."
                        % " and ".join(LA.STATE_NAMES[s] for s in by_sale)))
+    by_month = sorted({r["st"] for r in rep["rows"] if r["basis"] == "sale month"})
+    if by_month:
+        blocks.append(("p", "%s sales are listed by the month of the sale: the state's file gives the month, not the day."
+                       % " and ".join(LA.STATE_NAMES[s] for s in by_month)))
     blocks.append(("sales", [dict(r, url=sale_url(r, repo)) for r in rep["rows"]]))
     extra = []
     if rep["more"]:
@@ -295,14 +299,14 @@ def render(email, base, secret, lid, parts, from_addr, preview=False):
             txt.append(t + u)
         elif k == "sales":
             mixed = len({r["basis"] for r in v}) > 1
-            head = "Recorded" if all(r["basis"] == "recorded" for r in v) else ("Date" if mixed else "Deed date")
+            head = "Recorded" if all(r["basis"] == "recorded" for r in v) else "Sale month" if all(r["basis"] == "sale month" for r in v) else ("Date" if mixed else "Deed date")
             TD = '<td style="padding:6px 8px 6px 0;border-top:1px solid #e6dfd0;vertical-align:top;font-size:14px%s">%s</td>'
             TH = '<th scope="col" style="text-align:%s;padding:0 8px 4px 0;font-size:12px;color:#6b6b6b;font-weight:normal">%s</th>'
             h = ['<table role="presentation" style="border-collapse:collapse;width:100%;margin:0 0 14px"><thead><tr>'
                  + "".join(TH % (al, x) for al, x in (("left", head), ("right", "Acres"), ("right", "$/acre"), ("right", "Price"),
                                                       ("left", "Where"), ("right", "Miles"))) + "</tr></thead><tbody>"]
             for r in v:
-                when = LA.short_day(r["when"]) + (" (deed date)" if mixed and r["basis"] == "sale date" else "")
+                when = LA.when_short(r) + (" (deed date)" if mixed and r["basis"] == "sale date" else "")
                 where = (r["place"] + ", " if r.get("place") else "") + "%s Co., %s" % (r["county"], r["st"]) + (", with buildings" if r.get("bldg") else "")
                 NW = ";white-space:nowrap"
                 h.append("<tr>" + TD % (NW, '<a href="%s" style="color:#8a5a00">%s</a>' % (e(r["url"]), e(when))) + TD % (NW + ";text-align:right", e(LA.acres_text(r["acres"])))
