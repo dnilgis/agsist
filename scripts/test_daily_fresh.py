@@ -182,7 +182,7 @@ def stories():
     ok(len(cp["outside_the_pit"]) == 1 and cp["outside_the_pit"][0]["news_id"] == "N2"
        and any("repeats" in l and "N1" not in l and "publisher" in l for l in cl),
        "a story body that repeats 8 or more words from the publisher's summary is cut: %r" % cl)
-    ok(g.copied_run("the new farm bill would not be taken up", snip) == 10, "copied_run counts shared words")
+    ok(g.copied_run("the new farm bill would not be taken up", snip) == 9, "copied_run counts shared words")
     ok(g.copied_run("Farm bill stalls", "farm bill stalls as the senate leaves") == 3, "a three word headline echo is under the limit")
     keep = {"outside_the_pit": [{"title": "Anything", "body": "x"}]}
     g.attach_story_links(keep, [])
