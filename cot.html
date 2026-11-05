@@ -507,7 +507,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-msg{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--text-muted)}
 .cc-msg[hidden]{display:none}
 .cc-tip{position:absolute;z-index:3;pointer-events:none;padding:.4rem .55rem;border:1px solid var(--border-2);border-radius:6px;background:var(--surface3);color:var(--text);font-size:.8rem;line-height:1.45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
-.cc-src{font-size:.78rem;line-height:1.5;color:var(--text-muted);margin:.45rem 0 .4rem;min-height:3em}
+.cc-src{font-size:.78rem;line-height:1.5;color:var(--text-muted);margin:.45rem 0 .4rem;min-height:6em}
 .cc-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
 .cc-btn{min-height:44px;padding:0 1rem;border:1px solid var(--border-2);border-radius:var(--btn-r,6px);background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
 .cc-btn:hover{border-color:var(--gold)}
@@ -516,9 +516,15 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 @media print{.cc-acts,.cc-chips{display:none}}
 .cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .25rem}
 .cg-asof{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:0 0 .55rem}
-.cg-asof #cg-date{color:var(--text-dim);font-weight:700}
+.cg-asof #cg-date{color:var(--text-dim);font-weight:700;display:block;min-height:1.5em}
+@media(max-width:700px){.cg-asof #cg-date{min-height:3em}}
 .cg-lines{list-style:none;margin:0 0 .8rem;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
-.cg-lines[aria-busy="true"]{display:none}
+/* While the lines load (2026-11-05): with scripts on (the early theme script sets data-theme) the list holds
+   its place with empty rows and the crawler summary stays out of view, so the chart under it does not move. */
+html:not([data-theme]) .cg-lines[aria-busy="true"]{display:none}
+html[data-theme] .cg-baked{display:none}
+.cg-hold{visibility:hidden}
+.cg-ph{min-height:calc(1.5em + 1.1rem)}
 .cg-line{padding:.55rem .85rem;font-size:.95rem;line-height:1.5;color:var(--text);border-top:1px solid var(--border)}
 .cg-line:first-child{border-top:0}
 .cg-line b{font-weight:800}
@@ -528,6 +534,7 @@ details.fold.cot-all[open]{border:0;background:none}
 details.fold.cot-all>.fold-body{padding:1rem 0 0}
 .cot-all>summary .cg-more-h{font-family:var(--font-display);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
 @media(max-width:560px){.cg-line{font-size:.9rem;padding:.5rem .7rem}}
+@media(max-width:700px){.cg-line{min-height:calc(4.5em + 1rem)}}
 </style>
 </head>
 
@@ -605,10 +612,10 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   <!-- At a glance (2026-11-04, Sig): one plain line per market, the details behind a tap -->
   <section class="cg" id="cot-glance" aria-labelledby="cg-h">
     <h2 class="cg-h" id="cg-h">Funds this week</h2>
-    <p class="cg-asof"><span id="cg-date"></span> Managed money (hedge funds and commodity trading advisers), from the CFTC Commitments of Traders. The percentile ranks the net as a share of open interest against every week in the record.</p>
-    <ul class="cg-lines" id="cg-lines" aria-busy="true"></ul>
+    <p class="cg-asof"><span id="cg-date" class="cg-hold">Positions as of Tuesday, Mon 00, released Friday, Mon 00.</span> Managed money (hedge funds and commodity trading advisers), from the CFTC Commitments of Traders. The percentile ranks the net as a share of open interest against every week in the record.</p>
+    <ul class="cg-lines" id="cg-lines" aria-busy="true"><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li><li class="cg-line cg-ph"></li></ul>
   <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
-    <button type="button" class="cg-more" id="cg-more" aria-expanded="false" aria-controls="cg-lines" hidden>All 11 markets</button>
+    <button type="button" class="cg-more" id="cg-more" aria-expanded="false" aria-controls="cg-lines">All 11 markets</button>
     <!-- The 52-week chart (2026-11-05, Sig): one market at a time, right under the lines; components/cot-chart.js -->
     <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"></div>

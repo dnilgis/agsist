@@ -32,6 +32,7 @@ const G = require(path.join(ROOT, "components/cot-glance.js"));
 const FIX = {
   cot: path.join(ROOT, "test/fixtures/funds/cot-2026-10-27.json"),
   cx: path.join(ROOT, "test/fixtures/funds/cot-analysis-2026-10-27.json"),
+  hist: path.join(ROOT, "test/fixtures/funds/cot-history-2026-10-27.json"),
   prices: path.join(ROOT, "test/fixtures/soyroll2/prices-2026-11-04.json"),
 };
 const COT = JSON.parse(fs.readFileSync(FIX.cot, "utf8"));
@@ -129,8 +130,8 @@ test("the COT file keeps each dated contract's report-day close (enrich_cot_pric
 
 test("the pages load the shared lines and the bumped scripts", () => {
   const cot = read("cot.html"), idx = read("index.html");
-  for (const h of [cot, idx]) assert.ok(h.includes('<script src="/components/cot-glance.js?v=1"></script>'));
-  assert.ok(cot.includes('<script src="/components/cot-page.js?v=5"></script>'));
+  for (const h of [cot, idx]) assert.ok(h.includes('<script src="/components/cot-glance.js?v=2"></script>'));
+  assert.ok(cot.includes('<script src="/components/cot-page.js?v=6"></script>'));
   assert.ok(cot.indexOf('<script src="/components/cot-glance.js') < cot.indexOf('<script src="/components/cot-page.js'));
   assert.ok(idx.indexOf('<script src="/components/cot-glance.js') < idx.indexOf('<script src="/components/home.js'));
   // one Funds this week ask on /cot, under the lines and above the details
@@ -165,7 +166,7 @@ async function open(browser, port, url, o = {}) {
   const pg = await ctx.newPage();
   if (o.init) await pg.addInitScript(o.init);
   const posts = [];
-  const own = { "/data/cot.json": o.cot || fs.readFileSync(FIX.cot), "/data/cot-analysis.json": fs.readFileSync(FIX.cx), "/data/prices.json": o.prices || fs.readFileSync(FIX.prices), ...(o.own || {}) };
+  const own = { "/data/cot.json": o.cot || fs.readFileSync(FIX.cot), "/data/cot-analysis.json": fs.readFileSync(FIX.cx), "/data/cot-history.json": fs.readFileSync(FIX.hist), "/data/prices.json": o.prices || fs.readFileSync(FIX.prices), ...(o.own || {}) };
   await pg.route("**/*", (r) => {
     const u = new URL(r.request().url());
     if (u.origin === `http://127.0.0.1:${port}`) {
@@ -207,12 +208,13 @@ test("/cot: the first screen is one line per market, the ask posts topic cot, th
       await ask.locator(".sa-ok").waitFor();
       assert.deepEqual(posts.filter((x) => x.path === "/notice").map((x) => x.body),
         [{ email: "reader@example.com", source: "cot-weekly:cot", topic: "cot", daily: false }], "posts the cot list " + width);
-      // one tap opens the details, and the chart draws at the width it now has
+      // the 52-week chart (2026-11-05) is out in the open under the lines, drawn before any tap
+      const cw = await pg.$eval("#cc-svg", (c) => c.getBoundingClientRect().width);
+      assert.ok(cw > 200 && (await pg.$$("#cc-svg path")).length > 2, "the chart drew without a tap: " + cw);
+      // one tap opens the details
       await pg.click("#cot-all > summary");
       await pg.waitForTimeout(300);
       assert.equal(await pg.isVisible("#cot-summary-grid"), true);
-      const cw = await pg.$eval("#cot-chart", (c) => c.width);
-      assert.ok(cw > 200, "the chart drew after the tap: " + cw);
       await pg.context().close();
     }
   } finally { await browser.close(); srv.close(); }

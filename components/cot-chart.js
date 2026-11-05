@@ -149,6 +149,7 @@
     }
     function hits(b) { return boxes.some(function (o) { return b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]; }); }
     function label(it) { items.push(it); boxes.push(box(it.x, it.y, it.s, it.size, it.align, it.base)); }
+    var off = o.big ? 16 : 10, mo = o.big ? 13 : 8;
     var li = n - 1, hiI = m.rows.indexOf(m.hi), loI = m.rows.indexOf(m.lo);
     /* this week: the dot and its number */
     var lx = X(li), ly = Y(m.last.net), lfs = Math.round(fs * 1.12);
@@ -157,19 +158,19 @@
     /* not over the high or low marker: try the other side first */
     var marks = [hiI, loI].filter(function (i) { return i !== li; }).map(function (i) { return [X(i), Y(m.rows[i].net)]; });
     function covers(b) { return marks.some(function (p) { return p[0] > b[0] - 6 && p[0] < b[2] + 6 && p[1] > b[1] - 6 && p[1] < b[3] + 6; }); }
-    if (covers(box(lx, below ? ly + 10 : ly - 10, lab, lfs, 'right', below ? 'top' : 'bottom'))) {
-      var alt = !below, ay = alt ? ly + 10 : ly - 10, ab = box(lx, ay, lab, lfs, 'right', alt ? 'top' : 'bottom');
+    if (covers(box(lx, below ? ly + off : ly - off, lab, lfs, 'right', below ? 'top' : 'bottom'))) {
+      var alt = !below, ay = alt ? ly + off : ly - off, ab = box(lx, ay, lab, lfs, 'right', alt ? 'top' : 'bottom');
       if (!covers(ab) && ab[1] >= T - 2 && ab[3] <= netB + 2) below = alt;
     }
     items.push({ t: 'dot', x: lx, y: ly, r: o.big ? 8 : 5.5, ink: 'net', ring: 'surface' });
-    label({ t: 'text', x: lx, y: below ? ly + 10 : ly - 10, s: lab, ink: 'text', size: lfs, weight: 800, align: 'right', base: below ? 'top' : 'bottom' });
+    label({ t: 'text', x: lx, y: below ? ly + off : ly - off, s: lab, ink: 'text', size: lfs, weight: 800, align: 'right', base: below ? 'top' : 'bottom' });
     /* the 52-week high and low (when this week is one of them, its own label says so) */
     function mark(i, word, up) {
       var x = X(i), y = Y(m.rows[i].net), s = word + ' ' + kTick(m.rows[i].net);
       items.push({ t: 'dot', x: x, y: y, r: o.big ? 6 : 4, ink: 'surface', ring: 'net' });
       var al = x < L + 70 ? 'left' : x > w - R - 70 ? 'right' : 'center';
-      var it = { t: 'text', x: x, y: up ? y - 8 : y + 8, s: s, ink: 'muted', size: fs, weight: 600, align: al, base: up ? 'bottom' : 'top' };
-      if (hits(box(it.x, it.y, s, fs, al, it.base))) { it.y = up ? y + 8 : y - 8; it.base = up ? 'top' : 'bottom'; }
+      var it = { t: 'text', x: x, y: up ? y - mo : y + mo, s: s, ink: 'muted', size: fs, weight: 600, align: al, base: up ? 'bottom' : 'top' };
+      if (hits(box(it.x, it.y, s, fs, al, it.base))) { it.y = up ? y + mo : y - mo; it.base = up ? 'top' : 'bottom'; }
       label(it);
     }
     if (hiI !== li) mark(hiI, '52-wk high', true);

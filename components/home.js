@@ -104,7 +104,8 @@ try {
     var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data)return;
     var keys=COT_ROWS.slice(0,COT_GLANCE).map(function(r){return r.k;});
     var ls=G.lines(data,COT_CX,keys);if(!ls.length)return;
-    ul.innerHTML=ls.map(function(l){return '<li class="cot-gl-line">'+l.html+'</li>';}).join('');
+    /* each line opens /cot on that market's 52-week chart (2026-11-05) */
+    ul.innerHTML=ls.map(function(l){return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+(G.href?G.href(l.key):'/cot')+'">'+l.html+'</a></li>';}).join('');
     ul.removeAttribute('aria-busy');
     var a=document.getElementById('cot-gl-asof');if(a){var t=G.asOf(data,COT_CX);if(t)a.textContent=t;}
   }

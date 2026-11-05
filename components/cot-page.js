@@ -187,6 +187,7 @@ function renderGlance() {
   /* On a phone the first three lines show and the rest wait behind one tap, so
      the 52-week chart under them is on the first screen (2026-11-05). */
   var more = document.getElementById('cg-more');
+  if (more) more.hidden = ls.length <= 3;
   if (more && ls.length > 3) {
     more.hidden = false;
     more.textContent = ul.classList.contains('cg-open') ? 'Fewer markets' : 'All ' + ls.length + ' markets';
@@ -197,7 +198,7 @@ function renderGlance() {
     }); }
   }
   var a = document.getElementById('cg-date');
-  if (a) a.textContent = G.asOf(COT_SUMMARY, cx);
+  if (a) { a.textContent = G.asOf(COT_SUMMARY, cx); a.classList.remove('cg-hold'); }
 }
 function cotRenderDerived() {
   var read = document.getElementById('cot-read');
@@ -482,6 +483,9 @@ function cotLoad(isPoll) {
          report yet" -- so a reader whose fetch had simply failed had no reason
          to reload, and sat in front of blank headline figures. */
       if (text) text.textContent = 'Couldn\u2019t load the latest COT data, retrying.';
+      /* the lines could not load: the summary baked into the page takes their place */
+      var bk = document.getElementById('cot-baked'), ul = document.getElementById('cg-lines');
+      if (bk && ul && ul.getAttribute('aria-busy') === 'true') { bk.style.display = 'block'; ul.style.display = 'none'; }
       if (banner) banner.className = 'cot-verdict-banner mixed';
     });
 }
