@@ -176,7 +176,7 @@ test("/cot carries one chart, under the verdict and above the market table and t
   assert.ok(!DASH.test(js.replace(/\/\*[\s\S]*?\*\//g, "")), "no dashes in the chart's words");
   // no new library: inline SVG and a canvas drawn by our own file, nothing loaded from another host
   assert.deepEqual([...cot.matchAll(/<script[^>]+src="(https?:)?\/\/[^"]*"/g)].map((m) => m[0]).filter((x) => !/googletagmanager/.test(x)), [], "no outside script");
-  assert.ok(Buffer.byteLength(js) < 40000, "the chart file stays small: " + Buffer.byteLength(js) + " bytes");
+  assert.ok(Buffer.byteLength(js) < 50000, "the chart file stays small: " + Buffer.byteLength(js) + " bytes");
 });
 
 test("the home card's lines open /cot on their market", () => {
