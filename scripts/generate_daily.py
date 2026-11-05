@@ -4524,7 +4524,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <meta name="twitter:image" content="{og_image_url}">
 <link rel="preload" href="/components/styles.css?v=28" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
+<link rel="stylesheet" href="/components/sponsor-ad.css?v=3">
 <!-- 2026-09-30: JetBrains Mono and Oswald are self-hosted in styles.css now
      (see components/styles.css) -- no more separate Google Fonts fetch here,
      and no preconnect to an origin nothing fetches from anymore. -->

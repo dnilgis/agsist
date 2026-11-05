@@ -14,13 +14,19 @@
  *     the state is one of its states, utm_content=reader-state.
  * No active entry, no lookup. A failed or slow answer draws nothing.
  *
- * Where: below the fold only (nothing on screen moves), in place of the
- * page's open "Sponsor this page" line, else above the byline, else at the
- * end of the page's main column. No space is reserved.
+ * Where: below the fold only, so nothing on screen moves when it lands. The
+ * first of these, in page order, that is still below the fold when the ad is
+ * ready: a section heading of the main column that comes after the page's main
+ * answer (rain pages, Nov 5: the ad used to sit at the very end of a long page),
+ * the page's open "Sponsor this page" line, the byline; else the end of the
+ * page's main column. Never above the main answer. The card's picture has a
+ * fixed size, so the card never grows after it lands.
  *
- * Looks and counts: components/sponsor-ad.js (AgsistAd.render) and
- * sponsor-ad.css; views and clicks through components/sponsor-metrics.js
- * under the slot "geo-<id>". The reader's state is in no event.
+ * Looks and counts: components/sponsor-ad.js (AgsistAd.render), sponsor-ad.css
+ * and geo-sponsor.css (the card's own green panel, its logo at the left, the
+ * whole card opening the one counted link); views and clicks through
+ * components/sponsor-metrics.js under the slot "geo-<id>", unchanged. The
+ * reader's state is in no event.
  *
  * Preview for Sig: ?geo-preview=CA on any page (not linked anywhere; pages
  * carry their canonical URL, so the flag is never indexed). It draws even an
@@ -89,7 +95,7 @@
 
   /* the object AgsistAd.render draws */
   function toAd(e, surface) {
-    var logo = /^(\/img\/sponsors\/[a-z0-9._-]+|https:\/\/[^\s"'<>\\`]+)\.(png|jpe?g|webp|svg)$/i.test(e.logo || '') ? e.logo : '';
+    var logo = /^(\/img\/sponsors\/(?:[a-z0-9_-]+\/)?[a-z0-9._-]+|https:\/\/[^\s"'<>\\`]+)\.(png|jpe?g|webp|svg)$/i.test(e.logo || '') ? e.logo : '';
     return {
       label: 'Sponsor', advertiser: e.name, headline: e.headline, body: e.body,
       facts: Array.isArray(e.facts) ? e.facts.filter(function (f) { return typeof f === 'string' && f; }).slice(0, 4) : [],
@@ -151,19 +157,35 @@
       doc.head.appendChild(el);
     });
   }
+  /* Section headings of the main column after the page's main answer (the
+     answer stays above the ad). Only pages that mark their answer take part. */
+  var ANSWER = '.rc-answer';
+  function breaks(main) {
+    var ans = main && main.querySelector(ANSWER), out = [];
+    if (!ans || !ans.parentNode) return out;
+    for (var n = ans.nextElementSibling; n; n = n.nextElementSibling)
+      if (n.tagName === 'H2' && shown(n)) out.push(n);
+    return out;
+  }
   function anchor(rib, force) {
     var main = doc.querySelector('main#main') || doc.querySelector('main');
     var open = rib && rib.isConnected && !/--sold/.test(rib.className) && rib.id !== 'idx1-sponsor' ? rib : null;
-    var spot = open || (main && main.querySelector('.rc-byline, .by-end, .prf-byline'));
-    var where = spot ? { el: spot, mode: 'before' } : (main ? { el: main, mode: 'append' } : null);
-    if (!where) return null;
-    var top = where.mode === 'before' ? where.el.getBoundingClientRect().top : where.el.getBoundingClientRect().bottom;
-    if (!force && top < (root.innerHeight || doc.documentElement.clientHeight)) return null;
-    return where;
+    var by = main && main.querySelector('.rc-byline, .by-end, .prf-byline');
+    var spots = breaks(main);
+    if (open) spots.push(open);
+    if (by) spots.push(by);
+    spots.sort(function (a, b) { return a === b ? 0 : (a.compareDocumentPosition(b) & 4 ? -1 : 1); });
+    var fold = root.innerHeight || doc.documentElement.clientHeight;
+    for (var i = 0; i < spots.length; i++) {
+      if (force || spots[i].getBoundingClientRect().top >= fold) return { el: spots[i], mode: 'before' };
+    }
+    if (!main || (!force && main.getBoundingClientRect().bottom < fold)) return null;
+    return { el: main, mode: 'append' };
   }
   function draw(e, surface, rib, preview) {
     Promise.all([
-      need('link', 'href', '/components/sponsor-ad.css?v=2', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
+      need('link', 'href', '/components/sponsor-ad.css?v=3', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
+      need('link', 'href', '/components/geo-sponsor.css?v=1', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
       need('script', 'src', '/components/sponsor-ad.js?v=2', function () { return !!root.AgsistAd; })
     ]).then(function () {
       if (!root.AgsistAd || (!preview && soldOnPage())) return;
