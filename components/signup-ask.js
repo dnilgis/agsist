@@ -716,7 +716,9 @@
                  on report and futures pages, after a notice or alert signup
                  by a reader not on the Daily (a Daily reader already gets it);
        cot       Funds this week (topic cot, scripts/send_cot_weekly.py), on
-                 /cot, /markets and the futures and cattle pages.
+                 /cot, /markets and the futures and cattle pages; since
+                 2026-11-04 also after a Daily signup anywhere, last in line,
+                 and never pushed off: it takes the third row when needed.
      After a hail alert, the Daily row carries an optional ZIP box filled
      from the ZIP they searched, else the ZIP nearest the spot (agsist's
      data/zip-grid.json picks the ZIP files, the bids network's data/zips
@@ -866,7 +868,8 @@
         /* the same list: no source, so the worker keeps where they signed up */
         send: function () { return post(EP, { email: email, reports: true }); },
         ok: 'Report-day emails are on.' };
-      if (kind.cot && topic !== 'cot' && had.indexOf('cot') < 0 && !noticeDone('cot')) O.cot = {
+      /* 2026-11-04 (Sig): Funds this week is also offered after a Daily signup on any page, last, when there is room */
+      if ((kind.cot || gave === 'daily') && topic !== 'cot' && had.indexOf('cot') < 0 && !noticeDone('cot')) O.cot = {
         label: esc('Funds this week: where the big funds sit in corn, soybeans, wheat and cattle, one short email after each COT report'),
         send: function () { return notice({ email: email, source: source, topic: 'cot', daily: false, askId: 'onemore' }); },
         ok: 'Funds this week comes after each COT report.' };
@@ -877,12 +880,16 @@
       if (ghook && topic !== 'rain-gauge') O.gauge = { label: esc(ghook),
         send: function () { return notice({ email: email, source: source, topic: 'rain-gauge', daily: false, askId: 'onemore' }); },
         ok: 'You are on the rain gauge waitlist. You will hear from me when the first batch is ready.' };
-      var base = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily'] : ['daily', 'gauge', 'rainyear', 'rent', 'zip'];
-      var lead = kind.hail ? ['hail'] : kind.futures ? ['price', 'cot', 'reports', 'wasde'] : kind.report ? ['reports', 'wasde', 'cot', 'price'] : [];
+      var base = gave === 'daily' ? ['zip', 'rainyear', 'rent', 'daily', 'cot'] : ['daily', 'gauge', 'rainyear', 'rent', 'zip'];
+      var lead = (kind.hail ? ['hail'] : kind.futures ? ['price', 'cot', 'reports', 'wasde'] : kind.report ? ['reports', 'wasde', 'cot', 'price'] : [])
+        .filter(function (k) { return k !== 'cot' || kind.cot; });   /* off a COT page, Funds this week waits at the end */
       /* a notice or alert: the Daily first, then what fits the page, then the gauge */
-      var order = gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1));
+      var order = (gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1))).filter(function (k, i, a) { return a.indexOf(k) === i; });
       /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, Sig 2026-10-23) */
       var ids = order.filter(function (k) { return O[k] && (!ctx.only || ctx.only.indexOf(k) >= 0); }).slice(0, 3);
+      /* 2026-11-05: after a Daily signup Funds this week always gets a row when the reader lacks it;
+         with ZIP, rain and rent all on offer it takes the third place, not a fourth */
+      if (gave === 'daily' && O.cot && ids.indexOf('cot') < 0 && (!ctx.only || ctx.only.indexOf('cot') >= 0)) ids = ids.slice(0, 2).concat('cot');
       if (!ids.length) { box.parentNode.removeChild(box); return; }
       var n = ++mseq;
       box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', 'sa-mh-' + n);

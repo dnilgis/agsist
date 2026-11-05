@@ -205,6 +205,36 @@ def counts_only(c):
     return out
 
 
+# The standing lists the worker counts under /count "lists" (v5.44: reports, cot). Each is a dict
+# {n, by_source, unsubs}, two levels down, so counts_only dropped them and the counts file never
+# said how many readers had Funds this week (Nov 4, 2026: "no cot topic at all"). notices{} only
+# names a topic once someone has it, so a list at zero was invisible. Kept here: n and the
+# unsubscribes in 7 days, ints only, and every list the worker names, zero included.
+STANDING_LISTS = ("reports", "cot")
+
+
+def standing_lists(c):
+    """{topic: {"n": int, "unsubs_d7": int}} for each standing list in the worker's /count answer.
+    Only numbers; a list the worker did not send is left out (not printed as zero)."""
+    got = (c or {}).get("lists")
+    if not isinstance(got, dict):
+        return {}
+    out = {}
+    for t in sorted(set(STANDING_LISTS) | set(got)):
+        v = got.get(t)
+        if not isinstance(v, dict):
+            continue
+        n = v.get("n")
+        if not isinstance(n, int) or isinstance(n, bool):
+            continue
+        row = {"n": n}
+        u = (v.get("unsubs") or {}).get("d7") if isinstance(v.get("unsubs"), dict) else None
+        if isinstance(u, int) and not isinstance(u, bool):
+            row["unsubs_d7"] = u
+        out[str(t)[:40]] = row
+    return out
+
+
 def lists(env, worker_get, log):
     base, tok = (env.get("LIST_URL") or "").strip().rstrip("/"), (env.get("LIST_TOKEN") or "").strip()
     if not (base and tok):
@@ -214,6 +244,9 @@ def lists(env, worker_get, log):
         raise SourceError("the worker /count did not answer ok")
     out = counts_only(c)
     out.pop("ok", None)
+    ls = standing_lists(c)
+    if ls:
+        out["lists"] = ls
     log(f"[stats] lists: {len(out)} counts read")     # how many, never the numbers (public log)
     return out
 
@@ -334,6 +367,18 @@ def selftest():
             logs2.append, fake_w)
         L = json.loads(gzip.open(out / "lists" / "2026-10-23.json.gz").read())["counts"]
         assert L == {"daily": 167, "alerts": 4, "notices": {"rent:ia": 2}}, L
+        # the standing lists come through, a list at zero included (Funds this week, Nov 4)
+        fake_w2 = lambda u, k: {"ok": True, "daily": 1, "notices": {"reports": 1},
+                                "lists": {"reports": {"n": 1, "by_source": {"report:wasde:x": 1},
+                                                      "unsubs": {"h24": 0, "d7": 0}},
+                                          "cot": {"n": 0, "by_source": {}, "unsubs": {"h24": 0, "d7": 2}},
+                                          "bad": {"n": "a@b.c"}}}
+        run(env2, out, 1, date(2026, 10, 24), fake_transport, lambda i, s: "tok",
+            lambda u: (200, json.dumps({"d": [1]})), logs2.append, fake_w2)
+        L = json.loads(gzip.open(out / "lists" / "2026-10-24.json.gz").read())["counts"]
+        assert L["lists"] == {"cot": {"n": 0, "unsubs_d7": 2}, "reports": {"n": 1, "unsubs_d7": 0}}, L
+        assert "@" not in json.dumps(L), L
+        assert standing_lists({"ok": True}) == {}, "no lists sent: nothing invented"
         assert seen == [("https://w.dev/count", "sek")], seen
         assert not any("167" in l or "sek" in l for l in logs2), "a count or the token reached the public log"
         # one source failing leaves the others
