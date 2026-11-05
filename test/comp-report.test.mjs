@@ -236,7 +236,15 @@ test("the map numbers are the table numbers, one marker per comp, shared towns r
 
 test("the comps table carries every field the brief lists", () => {
   const r = row({ doc: "923949", pid: "1-2-3", grantor: "SYNTHETIC SELLER", grantee: "SYNTHETIC BUYER", rec: "2026-09-30", legal: "The SW1/4-SW1/4, Section 8, Township 34 N, Range 11 W", conv: "Land Contract, Sale", cls: "4 1", np: 2, ppa: 6640, price: 464000, acres: 69.88, mi: 3.24, soil: { np: 0.61, cs: null }, no: 1 });
-  const h = CR.compsHTML([r], true);
+  // names only after the reader taps Show buyer and seller (Sig, Oct 27; lead, Nov 4, 2026): "shown"
+  const h0 = CR.compsHTML([r], true);
+  assert.ok(!h0.includes("SYNTHETIC") && h0.includes("Seller and buyer: tap Show buyer and seller"), "no name before the tap");
+  assert.ok(CR.compsHTML([r], "later").includes("Seller and buyer: names come after the next update") && !CR.compsHTML([r], "later").includes("SYNTHETIC"),
+    "a county file that still holds names: no button, the next-update wording");
+  const held = Object.assign({}, r, { legal: "[LEGAL WITH A NAME 0123456789]", legalNamed: "PT SW EXC TO SYNTHETIC SELLER" });
+  assert.ok(!CR.compsHTML([held], true).includes("EXC TO") && CR.compsHTML([held], true).includes("names a buyer or seller") && CR.compsHTML([held], "shown").includes("EXC TO"),
+    "a legal that names a party shows only after the tap");
+  const h = CR.compsHTML([r], "shown");
   for (const want of ["Sep 30, 2026", "$464,000", "69.9", "$6,640", "1-2-3", "first of 2", "Section 8, T34N, R11W", "Land Contract, Sale", "Arm’s-length screen: Passes", "SYNTHETIC SELLER", "SYNTHETIC BUYER", "3.2", "Town A", "Agricultural, Residential", "61/100 NCCPI", "doc 923949", "buildings"]) assert.ok(h.includes(want), want);
   assert.match(CR.compsHTML([Object.assign({}, r, { soil: null, soilWhy: "no parcel map here" })], false), /no parcel map here[\s\S]*Seller and buyer not in our copy/);
   assert.match(CR.compsHTML([], true), /No recorded sale matches/);
@@ -245,7 +253,8 @@ test("the comps table carries every field the brief lists", () => {
 // ---------------------------------------------------------------- CSV
 test("CSV: one row per comp, quoted where needed, names cannot run as formulas", () => {
   const r = row({ no: 1, pid: "1-2-3", grantor: '=HYPERLINK("x")', grantee: 'SMITH, JOHN "JACK"', ppa: 5000, mi: 2.04, price: 400000, acres: 80, src: "Wisconsin transfer return" });
-  const csv = CR.csv([r, Object.assign({}, r, { no: 2, grantor: "-cmd", grantee: "+1" })], true);
+  assert.ok(!CR.csv([r], true).includes("HYPERLINK") && CR.csv([r], true).includes("tap Show buyer and seller"), "no names in the file before the tap");
+  const csv = CR.csv([r, Object.assign({}, r, { no: 2, grantor: "-cmd", grantee: "+1" })], "shown");
   const lines = csv.trim().split("\r\n");
   assert.equal(lines.length, 3);
   assert.equal(lines[0].split(",").length, CR.CSV_COLS.length);
@@ -280,7 +289,7 @@ test("one shared noindex page, not in a sitemap, no per-parcel files, no em dash
   assert.match(h, /Recorded sales from public records\. Not an appraisal; no adjustments made\./);
   assert.match(h, /Made with AGSIST \(free\)/);
   assert.match(h, /@page\{size:letter/);
-  assert.match(h, /components\/comp-report\.js\?v=5/);
+  assert.match(h, /components\/comp-report\.js\?v=6/);
   for (const sm of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(sm), /comp-report/);
   assert.ok(!existsSync(join(ROOT, "comp-report")), "no folder of per-parcel report files");
   for (const f of ["comp-report.html", "components/comp-report.js"]) assert.ok(!read(f).includes("—"), f + " has an em dash");
