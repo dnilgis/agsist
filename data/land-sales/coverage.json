@@ -1,6 +1,6 @@
 {
  "about": "Per-state source table for farm sales (Sig, Oct 27, 2026: every state if possible). Kept by hand. status: live (sales on the land-sales pages), held (in Field Scout and the comp report only), request (a state file exists but on request or for a fee), county (public, county by county, not built), nondisclosure (sale prices not public record; auction results only), unchecked. scripts/build_land_sales.py draws it and counts the live states.",
- "checked": "2026-10-27",
+ "checked": "2026-11-05",
  "labels": {
   "live": "Sales on these pages",
   "request": "State file on request or for a fee",
@@ -8,7 +8,7 @@
   "nondisclosure": "Sale prices not public record",
   "unchecked": "Not checked yet"
  },
- "note": "Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig), Vermont and New Jersey Oct 29. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
+ "note": "Checked Oct 27, 2026. Indiana turned on Oct 27 (Sig), Vermont and New Jersey Oct 29, Florida Nov 5. A state marked not public record is from the common lists and our own search; where it says to check, we have not read the state law ourselves yet. Auction results are public where a state keeps prices private, and are next on the list for those states.",
  "states": [
   {
    "status": "unchecked",
@@ -115,11 +115,11 @@
    ]
   },
   {
-   "status": "unchecked",
-   "source": "Not checked yet. Usually the county recorder, assessor or a state transfer tax form; we look for a free statewide copy first.",
-   "names": "To check",
-   "cadence": "",
-   "terms": "To check",
+   "status": "live",
+   "source": "Florida Department of Revenue sale data files joined to the assessment roll, agricultural land (sale months, not days)",
+   "names": "No",
+   "cadence": "State posts sale files; the newest months arrive late",
+   "terms": "Public record, free state download",
    "st": "FL",
    "name": "Florida",
    "tile": [
