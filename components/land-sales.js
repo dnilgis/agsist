@@ -511,7 +511,7 @@
     if (!u) cmp = miss('no county middle: fewer than 5 bare farmland sales of 20 acres or more in 24 months');
     else if (s.ppa == null) cmp = 'Middle ' + esc(money(u[0])) + ' an acre on ' + u[3] + ' sales; this sale has no price per acre to set beside it.';
     else cmp = esc(money(s.ppa)) + ' an acre is ' + pct(s.ppa, u[0]) + ' the county middle of ' + esc(money(u[0])) + ' (' + u[3] + ' sales; middle half ' + esc(money(u[1])) + ' to ' + esc(money(u[2])) + ').';
-    var win = s.w24 ? day(s.w24[0]) + ' to ' + day(s.w24[1]) : '24 months';
+    var win = s.w24 ? (T.month ? mon(s.w24[0]) + ' to ' + mon(s.w24[1]) : day(s.w24[0]) + ' to ' + day(s.w24[1])) : '24 months';
     out.push(grp('How it compares', [
       ['County middle, 24 months', cmp, 'Bare farmland sales of 20 acres or more at $500 an acre or more, ' + win + '.'],
       ['Counts toward the middle', s.m === 'y' ? (u ? 'Yes' : 'It qualifies, but the county has too few such sales for a middle') : MIDW[s.m] ? 'No: ' + esc(MIDW[s.m]) : miss('not figured')],

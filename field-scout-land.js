@@ -952,6 +952,32 @@
       return ns.reduce(function (a, b) { return a + b; }, 0);
     });
   };
+  // A big hosted county (Florida) keeps its last 3 years in <fips>.json and each older year in <fips>-<year>.json
+  // ("older", newest first; fetch_land_sales.split_county). olderLeft: the older years not loaded yet in these files.
+  FSLand.olderLeft = function (files) {
+    var out = { years: 0, n: 0, before: null };
+    (files || []).forEach(function (f) {
+      if (!f || !f.older || f.olderDone) return;
+      f.older.forEach(function (o) { out.years++; out.n += +o.n || 0; });
+      var y = f.older.length ? f.older[0].y + 1 : null;
+      if (y && (out.before == null || y > out.before)) out.before = y;
+    });
+    return out;
+  };
+  // Loads every older year of these files and adds its rows after the county's own, in the file's order (newest
+  // first), so a row number counts across the whole county. Resolves to the files; a year that does not load
+  // leaves that county as it was, and says so (failed).
+  FSLand.loadOlder = function (st, files, get) {
+    get = get || getJSON;
+    var failed = 0;
+    return Promise.all((files || []).map(function (f) {
+      if (!f || !f.older || f.olderDone) return null;
+      return Promise.all(f.older.map(function (o) { return get(FSLand.landBase(st) + o.f, 20000); })).then(function (parts) {
+        parts.forEach(function (p) { f.rows = f.rows.concat((p && p.rows) || []); });
+        f.olderDone = true;
+      }, function () { failed++; });
+    })).then(function () { return { files: files, failed: failed }; });
+  };
   if (typeof module === 'object' && module.exports) { module.exports = FSLand; return; }
   G.FSLand = FSLand;
 
@@ -1042,32 +1068,6 @@
     if (!_co[k]) _co[k] = getJSON(FSLand.landBase(st) + fips + '.json', 20000).catch(function () { _co[k] = null; return null; });
     return _co[k];
   }
-  // A big hosted county (Florida) keeps its last 3 years in <fips>.json and each older year in <fips>-<year>.json
-  // ("older", newest first; fetch_land_sales.split_county). olderLeft: the older years not loaded yet in these files.
-  FSLand.olderLeft = function (files) {
-    var out = { years: 0, n: 0, before: null };
-    (files || []).forEach(function (f) {
-      if (!f || !f.older || f.olderDone) return;
-      f.older.forEach(function (o) { out.years++; out.n += +o.n || 0; });
-      var y = f.older.length ? f.older[0].y + 1 : null;
-      if (y && (out.before == null || y > out.before)) out.before = y;
-    });
-    return out;
-  };
-  // Loads every older year of these files and adds its rows after the county's own, in the file's order (newest
-  // first), so a row number counts across the whole county. Resolves to the files; a year that does not load
-  // leaves that county as it was, and says so (failed).
-  FSLand.loadOlder = function (st, files, get) {
-    get = get || getJSON;
-    var failed = 0;
-    return Promise.all((files || []).map(function (f) {
-      if (!f || !f.older || f.olderDone) return null;
-      return Promise.all(f.older.map(function (o) { return get(FSLand.landBase(st) + o.f, 20000); })).then(function (parts) {
-        parts.forEach(function (p) { f.rows = f.rows.concat((p && p.rows) || []); });
-        f.olderDone = true;
-      }, function () { failed++; });
-    })).then(function () { return { files: files, failed: failed }; });
-  };
   FSLand.loadSales = function (st, c, homeFips, reachMi) {
     return landIndex(st).then(function (ix) {
       if (!ix || !ix.counties) return { ix: ix, rows: [], files: [], searched: [], reach: reachMi };

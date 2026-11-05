@@ -880,7 +880,12 @@ def survey_html(d):
             % "".join(rows))
 
 
-def span_words(w):
+MONTH_STATES = ("FL",)     # files with sale months, not days (fetch_land_sales STATES[st]["dates"]): their pages say months only
+
+
+def span_words(w, month=False):
+    if month:
+        return "%s to %s" % (LA.month_text(w[0]), LA.month_text(w[1]))
     return "%s to %s" % (LA.short_day(w[0]) + ", " + w[0][:4], LA.short_day(w[1]) + ", " + w[1][:4])
 
 
@@ -889,10 +894,10 @@ def middle_words(st, u, k24, w24):
     if u:
         t = ("Market middle: %s an acre, the middle of %d bare farmland sales of %d acres or more at %s an acre or more, %s "
              "(middle half %s to %s). Sales with buildings, forest and small parcels are listed below but kept out of this middle."
-             % (money(u["med"]), u["n"], COMP_MIN_ACRES, money(BLS.PPA_FLOOR), span_words(w24), money(u["q1"]), money(u["q3"])))
+             % (money(u["med"]), u["n"], COMP_MIN_ACRES, money(BLS.PPA_FLOOR), span_words(w24, st in MONTH_STATES), money(u["q1"]), money(u["q3"])))
     else:
         t = ("No market middle: %s bare farmland sale%s of %d acres or more at %s an acre or more, %s, and it takes %d."
-             % (k24 or "no", "" if k24 == 1 else "s", COMP_MIN_ACRES, money(BLS.PPA_FLOOR), span_words(w24), MIN_COMPS))
+             % (k24 or "no", "" if k24 == 1 else "s", COMP_MIN_ACRES, money(BLS.PPA_FLOOR), span_words(w24, st in MONTH_STATES), MIN_COMPS))
     return t
 
 
@@ -939,7 +944,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     if m12 and w12 and has_atlas:
         b.append('<p class="ls-fine ls-two">Two windows: this middle covers 24 months (%d sales). The <a href="%s">Farmland Atlas page</a> '
                  'also shows the last 12 months, %s: %d sales, median %s an acre. Different windows, different numbers.</p>'
-                 % (u["n"], atlas, e(span_words(w12)), m12["n"], money(m12["med"])))
+                 % (u["n"], atlas, e(span_words(w12, st in MONTH_STATES)), m12["n"], money(m12["med"])))
     if st == "IN":
         b.append('<p class="ls-fine">%s</p>' % e(in_trend_words(u)))
     if latest and latest.get("month"):
@@ -1138,6 +1143,12 @@ def build(repo=REPO):
         out["land-sales/%s.html" % key] = month_page(d, M, early, coverage, archive)
         out["data/land/names/%s.json" % key] = dump(mnames)
         out["data/land-sales/latest.json"] = dump(latest)
+    if carried_states(repo, d):
+        # a hosted state's files are not in this copy (CARRY): the county pages name the committed update, not this one
+        try:
+            latest = json.load(open(Path(repo) / "data" / "land-sales" / "latest.json", encoding="utf-8"))
+        except (OSError, ValueError):
+            latest = None
     urls = []
     counties = {}
     lead = {"states": d.states, "published": pub, "fetched": d.fetched, "lead": {}, "farm_filter": {}}
@@ -1199,9 +1210,14 @@ def build(repo=REPO):
 CROSS = ("land-sales/index.html", "sitemap-land-sales.xml", "data/land-sales/lead.json", "data/land-sales/latest.json")
 
 
+def carried_states(repo, d):
+    """The hosted states with committed pages whose county files are not in this copy."""
+    return [st for st in STATES if st in BLS.HOSTED and st not in d.states and (Path(repo) / "data" / "land-sales" / ("%s.json" % st.lower())).is_file()]
+
+
 def carry(repo, d, out):
     repo = Path(repo)
-    gone = [st for st in STATES if st in BLS.HOSTED and st not in d.states and (repo / "data" / "land-sales" / ("%s.json" % st.lower())).is_file()]
+    gone = carried_states(repo, d)
     if not gone:
         return out
     for st in gone:

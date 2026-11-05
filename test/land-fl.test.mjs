@@ -84,25 +84,34 @@ test("no owner, address or name field in any Florida file the site carries", () 
   assert.ok(!/OWN_NAME|OWN_ADDR|FIDU_|PHY_ADDR|S_LEGAL/.test(fl), "the Florida reader never names an owner, address or legal column of the roll");
 });
 
-test("Florida is served from agsist-data and stays out of every reader until each shows month dates", () => {
-  assert.equal(F.salesLive("FL"), false);
+test("Florida is served from agsist-data and on in every reader now that each shows month dates (Nov 5)", () => {
+  assert.equal(F.salesLive("FL"), true);
   assert.equal(F.landBase("FL"), "https://dnilgis.github.io/agsist-data/land/fl/");
   assert.equal(F.landBase("IL"), "/data/land/il/");
-  for (const st of ["IL", "IN", "WI", "VT", "NJ"]) assert.ok(F.salesLive(st), st);
+  for (const st of ["IL", "IN", "WI", "VT", "NJ", "FL"]) assert.ok(F.salesLive(st), st);
   assert.match(read("components/comp-report.js"), /\.filter\(function \(st\) \{ return !F\.salesLive \|\| F\.salesLive\(st\); \}\)/);
   for (const [file, rx] of [["components/land-sales.js", /var STATES = \{[^}]*\}/], ["components/search.js", /var LAND_ST = \{[^}]*\}/],
     ["components/change-lines.js", /var SALES_STATES = \{[^}]*\}/], ["components/atlas-sales.js", /S\.STATES = \{[^}]*\}/],
-    ["scripts/build_land_sales.py", /^STATES = \([^)]*\)/m], ["scripts/build_land_index.py", /^STATES = \{[^\n]*/m]]) {
+    ["scripts/build_land_sales.py", /^STATES = \([^)]*\)/m]]) {
     const m = read(file).match(rx);
     assert.ok(m, file);
-    assert.doesNotMatch(m[0], /\bFL\b/, file + " keeps Florida out until it shows month dates");
+    assert.match(m[0], /\bFL\b/, file + " reads Florida");
   }
-  const code = "import sys\nsys.path.insert(0,sys.argv[1])\nimport land_alert as A, build_land_summary as B\nprint('FL' in A.STATES, 'FL' in B.SOURCES)";
+  // the farmland index is a quarterly index of named-buyer states with their own start years; Florida is not in it
+  assert.doesNotMatch(read("scripts/build_land_index.py").match(/^STATES = \{[^\n]*/m)[0], /\bFL\b/);
+  const code = "import sys\nsys.path.insert(0,sys.argv[1])\nimport land_alert as A, build_land_summary as B\nprint('FL' in A.STATES, 'FL' in B.SOURCES, B.HOSTED)";
   const r = spawnSync("python3", ["-c", code, path.join(ROOT, "scripts")], { encoding: "utf8" });
-  assert.equal(r.stdout.trim(), "False False", r.stderr);
-  assert.ok(!fs.existsSync(path.join(ROOT, "data/land/fl")), "Florida's county files are never in this repository");
+  assert.equal(r.stdout.trim(), "True True ('FL',)", r.stderr);
+  const fl = path.join(ROOT, "data/land/fl");
+  assert.ok(!fs.existsSync(fl) || !fs.readdirSync(fl).some((n) => /^12\d{3}(-\d{4})?\.json$/.test(n)), "Florida's county files are never in this repository (only its summary)");
+  assert.ok(!fs.existsSync(path.join(ROOT, "data/land-hosted")) || !spawnSync("git", ["ls-files", "data/land-hosted"], { cwd: ROOT, encoding: "utf8" }).stdout.trim(), "the linked agsist-data copy is never committed");
+  assert.match(read(".gitignore"), /^\/data\/land-hosted$/m);
   const wf = read(".github/workflows/land-data.yml");
   assert.match(wf, /fetch_land_sales\.py FL --from data\/land-src\/fl --to "\$RUNNER_TEMP\/agsist-data\/land"/);
   assert.match(wf, /agsist_data\.sh sync --soft --from "\$RUNNER_TEMP\/agsist-data" land\/fl/);
+  assert.match(wf, /ln -sfn "\$RUNNER_TEMP\/agsist-data\/land" data\/land-hosted/);
+  assert.match(wf, /rm -f data\/land-hosted/, "the link is gone before the site budget and the commit");
+  assert.ok(wf.indexOf("ln -sfn") < wf.indexOf("land-summaries") && wf.indexOf("ln -sfn") < wf.indexOf("land-pages"), "linked before the summaries and the pages");
   assert.doesNotMatch(wf, /fetch_land_sales\.py MN IL IN VT NJ FL/);
+  assert.match(read(".github/workflows/land-alert.yml"), /ln -sfn "\$RUNNER_TEMP\/agsist-data\/land" data\/land-hosted/);
 });
