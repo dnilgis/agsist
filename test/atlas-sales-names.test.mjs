@@ -83,9 +83,13 @@ test("summary files hold only counts, acres, prices, dates and place names: no f
       }
       // the Atlas map layer's median (Nov 5, 2026): numbers, a set word and two dates, nothing else
       if (c.m12) {
-        assert.deepEqual(Object.keys(c.m12).sort(), ["d", "med", "n", "set"], `${s} ${fips}: m12 fields`);
-        assert.ok(typeof c.m12.med === "number" && typeof c.m12.n === "number" && ["bare", "any"].includes(c.m12.set), `${s} ${fips}: m12 values`);
-        assert.ok(c.m12.d.length === 2 && c.m12.d.every((d) => ISO.test(d)), `${s} ${fips}: m12 dates`);
+        const ks = Object.keys(c.m12).sort().join(",");
+        assert.ok(ks === "c" || ks === "c,d,med,n,set", `${s} ${fips}: m12 fields ${ks}`);
+        assert.ok(typeof c.m12.c === "number", `${s} ${fips}: m12 count`);
+        if (c.m12.med != null) {
+          assert.ok(typeof c.m12.med === "number" && typeof c.m12.n === "number" && ["bare", "any"].includes(c.m12.set), `${s} ${fips}: m12 values`);
+          assert.ok(c.m12.d.length === 2 && c.m12.d.every((d) => ISO.test(d)), `${s} ${fips}: m12 dates`);
+        }
       }
       for (const k of ["why_chg", "why_p"]) if (c[k] != null) assert.match(c[k], /^(acres unknown on \d+ of \d+ market sales in the last 12 months and \d+ of \d+ in the 12 before|records start [\w ,-]+|\d+ and \d+ sales of \d+\+ acres with known acres; a change needs \d+ or more in each year|the middle half of prices in one year does not overlap the other's; the two sets of sales are too different to compare)$/, `${s} ${fips} ${k}`);
     }

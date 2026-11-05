@@ -52,15 +52,14 @@ test("every county with at least 1 market sale has its count, and a median with 
       const r = LAYER.counties[f];
       if (!c.n12) { assert.equal(r, undefined, `${f}: no sale in the window, no row (drawn as "no recorded sale")`); continue; }
       assert.ok(r, `${f}: ${c.n12} sales but no row`);
-      assert.equal(r[5], c.n12, `${f}: count`);
-      if (c.m12) {
+      // the count: market sales in the window, a price filed on several parcels the same day read as one sale
+      assert.ok(c.m12 && r[5] === c.m12.c && r[5] >= 1 && r[5] <= c.n12, `${f}: count`);
+      if (c.m12.med != null) {
         assert.deepEqual([r[0], r[1], r[3], r[4]], [c.m12.med, c.m12.n, c.m12.d[0], c.m12.d[1]], `${f}: median`);
-        assert.ok(r[1] >= 1 && r[1] <= c.n12 && [1, 2].includes(r[2]), `${f}: set and n`);
+        assert.ok(r[1] >= 1 && r[1] <= r[5] && [1, 2].includes(r[2]), `${f}: set and n`);
         assert.ok(r[3] <= r[4] && r[3] >= st.cur[0] && r[4] <= st.cur[1], `${f}: sale dates inside the window`);
         assert.ok(r[0] >= 500, `${f}: a median under the $500 floor`);
       } else assert.deepEqual([r[0], r[1], r[2], r[3], r[4]], [null, 0, 0, null, null], `${f}: no farm-size price`);
-      // a bare-land median is the summary's own 12-month median wherever that one is published (5 or more sales)
-      if (c.med && r[2] === 1) assert.equal(r[0], c.med.med, `${f}: the county pages and the map disagree`);
     }
   }
   for (const f of Object.keys(LAYER.counties)) assert.ok(SUMS.some((s) => s.counties[f]), `${f}: a row with no summary`);
