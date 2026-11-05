@@ -84,13 +84,20 @@ jobs:
         with:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
+      # The published copies of page scripts and style sheets are minified (no comments); the repository
+      # files stay as they are. No minifier means the scripts publish as they are, with a warning.
+      - name: Minifier (pinned)
+        if: steps.moved.outputs.go == '1'
+        continue-on-error: true
+        run: npm install --silent --no-save --no-audit --no-fund --ignore-scripts --prefix "$RUNNER_TEMP/minify" "terser@5.51.2"
       - name: Stage the site (fails if a page links to a left-out file)
         if: steps.moved.outputs.go == '1'
         run: |
           set -euo pipefail
           # measured before staging: the budget walks the checkout, and _site would count twice
           python3 scripts/check_site_budget.py || echo "::warning::over the size budget; deploying anyway (the site-budget workflow is the gate)"
-          python3 scripts/pages_publish.py --stage _site
+          python3 scripts/pages_publish.py --stage _site --minify --terser "$RUNNER_TEMP/minify/node_modules/terser"
+          if ls _site/components/*.map _site/css/*.map >/dev/null 2>&1; then echo "::error::a source map is in the artifact"; exit 1; fi
           test -f _site/index.html
           test -f _site/.well-known/security.txt
           test -f _site/CNAME

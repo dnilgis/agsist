@@ -9,7 +9,8 @@ that filter, and its dry run:
 
   python3 scripts/pages_publish.py                     # dry run on the working tree
   python3 scripts/pages_publish.py --tree origin/main  # dry run on a commit (sparse checkouts too)
-  python3 scripts/pages_publish.py --stage _site       # copy the publish set into _site (the workflow)
+  python3 scripts/pages_publish.py --stage _site       # copy the publish set into _site
+  python3 scripts/pages_publish.py --stage _site --minify --terser DIR   # and minify the copies (the workflow)
   python3 scripts/pages_publish.py --selftest
 
 The dry run prints the bytes kept and left out and fails (exit 1) when a
@@ -21,6 +22,7 @@ notes/panels/godseye-2026-10-26/size-trim-plan.md.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
+import json
 import os
 import re
 import shutil
@@ -144,6 +146,143 @@ def stage(root, dest, keep):
             shutil.copy2(src, dst)
 
 
+# The published copy only (Nov 5, 2026: the repository is public; Sig, "hide how the site works"): page
+# scripts and style sheets lose their comments and spacing in _site, the repository files stay as they are,
+# names and ?v= URLs do not change, and no source map is written. A file that cannot be minified safely is
+# published as it is.
+MINIFY = re.compile(r"(?:components/[^/]+\.(?:js|css)|css/[^/]+\.css)")
+TERSER_VERSION = "5.51.2"   # pinned; .github/workflows/pages.yml installs the same (test/pages-publish.test.mjs)
+TERSER_JS = r"""
+const fs = await import('node:fs'); const vm = await import('node:vm');
+const { minify } = await import(process.env.TERSER_MAIN);
+const files = JSON.parse(fs.readFileSync(0, 'utf8')); const out = {};
+for (const p of files) {
+  try {
+    const src = fs.readFileSync(p, 'utf8');
+    const r = await minify(src, { compress: false, mangle: true, sourceMap: false, format: { comments: 'some' } });
+    if (typeof r.code !== 'string') throw new Error('no output');
+    new vm.Script(r.code);
+    fs.writeFileSync(p + '.min-tmp', r.code); fs.renameSync(p + '.min-tmp', p);
+    out[p] = 'ok';
+  } catch (e) { try { fs.rmSync(p + '.min-tmp', { force: true }); } catch {} out[p] = String(e && e.message || e).slice(0, 160); }
+}
+process.stdout.write(JSON.stringify(out));
+"""
+
+
+def minify_targets(paths):
+    return [p for p in paths if MINIFY.fullmatch(p) and not p.endswith(".min.js")]
+
+
+def strip_css(src):
+    """CSS without comments (a /*! comment stays) and with runs of spacing cut to one space, none beside { } ; ,.
+    Strings, escapes and spacing beside every other character (a descendant ':hover', calc's + and -) are kept."""
+    out, i, n = [], 0, len(src)
+    while i < n:
+        c = src[i]
+        if c in "\"'":
+            j = i + 1
+            while j < n and src[j] != c:
+                j += 2 if src[j] == "\\" else 1
+            out.append(src[i:j + 1])
+            i = j + 1
+        elif c == "\\":
+            out.append(src[i:i + 2])
+            i += 2
+        elif src.startswith("/*", i):
+            j = src.find("*/", i + 2)
+            if j < 0:
+                out.append(src[i:])
+                break
+            out.append(src[i:j + 2] if src.startswith("/*!", i) else " ")
+            i = j + 2
+        elif c.isspace():
+            while i < n and src[i].isspace():
+                i += 1
+            out.append(" ")
+        else:
+            out.append(c)
+            i += 1
+    text = "".join(out)
+    # second pass: spacing runs again (a removed comment beside spacing) and none beside { } ; , outside strings
+    res, i, n = [], 0, len(text)
+    while i < n:
+        c = text[i]
+        if c in "\"'":
+            j = i + 1
+            while j < n and text[j] != c:
+                j += 2 if text[j] == "\\" else 1
+            res.append(text[i:j + 1])
+            i = j + 1
+            continue
+        if c == "\\":
+            res.append(text[i:i + 2])
+            i += 2
+            continue
+        if c == " ":
+            while i < n and text[i] == " ":
+                i += 1
+            prev = res[-1][-1:] if res else ""
+            nxt = text[i:i + 1]
+            if prev and nxt and prev not in "{};," and nxt not in "{};,":
+                res.append(" ")
+            continue
+        res.append(c)
+        i += 1
+    return "".join(res).strip()
+
+
+def _replace(path, data):
+    """Write data to path through a new file: a hard link from stage() keeps pointing at the repository copy."""
+    tmp = path + ".min-tmp"
+    with open(tmp, "w", encoding="utf-8", newline="") as f:
+        f.write(data)
+    os.replace(tmp, path)
+
+
+def minify_published(dest, paths, terser=None):
+    """Minify the staged copies of paths (relative to dest). terser: the terser package folder, or None to
+    leave scripts as they are. -> {"before", "after", "js", "css", "kept": [(path, why)], "terser": bool}"""
+    targets = minify_targets(paths)
+    st = {"before": 0, "after": 0, "js": 0, "css": 0, "kept": [], "terser": False}
+    sizes = {p: os.path.getsize(os.path.join(dest, p)) for p in targets}
+    st["before"] = sum(sizes.values())
+    for p in [t for t in targets if t.endswith(".css")]:
+        full = os.path.join(dest, p)
+        try:
+            with open(full, encoding="utf-8") as f:
+                src = f.read()
+            _replace(full, strip_css(src))
+            st["css"] += 1
+        except (OSError, UnicodeDecodeError) as e:
+            st["kept"].append((p, str(e)[:120]))
+    js = [t for t in targets if t.endswith(".js")]
+    main = None
+    if terser:
+        for cand in ("dist/bundle.min.js", "main.js"):
+            if os.path.isfile(os.path.join(terser, cand)):
+                main = os.path.join(os.path.abspath(terser), cand)
+                break
+    if js and main:
+        files = [os.path.join(dest, p) for p in js]
+        r = subprocess.run(["node", "--input-type=module", "-e", TERSER_JS], input=json.dumps(files), capture_output=True,
+                           text=True, timeout=900, env=dict(os.environ, TERSER_MAIN="file://" + main))
+        try:
+            res = json.loads(r.stdout or "{}")
+        except ValueError:
+            res = {}
+        st["terser"] = r.returncode == 0 and bool(res)
+        for p, full in zip(js, files):
+            if res.get(full) == "ok":
+                st["js"] += 1
+            else:
+                st["kept"].append((p, res.get(full) or ("terser did not run: " + (r.stderr or "").strip()[-120:])))
+    elif js:
+        st["kept"] += [(p, "no terser") for p in js]
+    st["after"] = sum(os.path.getsize(os.path.join(dest, p)) for p in targets)
+    return st
+
+
 def selftest():
     import tempfile
     fails = []
@@ -203,6 +342,30 @@ def selftest():
             subprocess.run(g + ["add", "-A"], capture_output=True)
             subprocess.run(g + ["commit", "-q", "-m", "t3"], capture_output=True)
             ok(any("workers/send.js" in h for h in plan(d)["broken"]), "a worker that fetches a left-out URL from the live site fails the dry run")
+    # the published copy's minify step: CSS cases, and the repository file behind a hard link stays as it was
+    for src, want in [("a :hover , b { color : red ; }", "a :hover,b{color : red;}"),
+                      ("/* how */ .x { width: calc(1px + 2%) }", ".x{width: calc(1px + 2%)}"),
+                      ('.q::before { content: "/* a */  ;  {" }', '.q::before{content: "/* a */  ;  {"}'),
+                      ("/*! kept */\n.a{}", "/*! kept */ .a{}"), (".e\\{ x }", ".e\\{x}"), ("/* open", "/* open")]:
+        ok(strip_css(src) == want, f"strip_css {src!r} -> {strip_css(src)!r}, want {want!r}")
+    with tempfile.TemporaryDirectory() as d:
+        repo, site = os.path.join(d, "repo"), os.path.join(d, "site")
+        for rel, text in [("components/a.js", "/* how it works */\nvar a = 1;\n"), ("css/s.css", "/* how */ .a { color: red }\n"),
+                          ("components/b.css", ".b { x: 1 }"), ("components/sub/c.css", "/* deep */"), ("index.html", "<!-- x -->")]:
+            os.makedirs(os.path.dirname(os.path.join(repo, rel)), exist_ok=True)
+            with open(os.path.join(repo, rel), "w") as f:
+                f.write(text)
+        keep = ["components/a.js", "css/s.css", "components/b.css", "components/sub/c.css", "index.html"]
+        stage(repo, site, keep)
+        m = minify_published(site, keep, None)
+        rd = lambda root, rel: open(os.path.join(root, rel)).read()
+        ok(rd(site, "css/s.css") == ".a{color: red}" and rd(site, "components/b.css") == ".b{x: 1}", "the staged style sheets are minified")
+        ok(rd(repo, "css/s.css") == "/* how */ .a { color: red }\n", "the repository's style sheet is unchanged (hard link broken first)")
+        ok(rd(site, "components/sub/c.css") == "/* deep */" and rd(site, "index.html") == "<!-- x -->", "only components/*.js|css and css/*.css")
+        ok(m["css"] == 2 and m["js"] == 0 and m["kept"] == [("components/a.js", "no terser")] and rd(site, "components/a.js") == rd(repo, "components/a.js"),
+           f"no terser: scripts publish as they are ({m})")
+        ok(minify_targets(["components/x.min.js", "components/y.js", "css/z.css", "css/a/b.css", "js/c.js"]) == ["components/y.js", "css/z.css"],
+           "targets: top-level components and css, no .min.js")
     for f in fails:
         print("FAIL", f)
     print("pages publish selftest:", "ok" if not fails else f"{len(fails)} failure(s)")
@@ -235,6 +398,13 @@ def main(argv):
     if dest:
         stage(ROOT, dest, r["keep"])
         print(f"staged into {dest}")
+        if "--minify" in argv:
+            terser = argv[argv.index("--terser") + 1] if "--terser" in argv and argv.index("--terser") + 1 < len(argv) else None
+            m = minify_published(dest, r["keep"], terser)
+            print(f"minified {m['js']} scripts and {m['css']} style sheets: {m['before']:,} bytes to {m['after']:,}"
+                  f" ({m['before'] - m['after']:,} saved)")
+            if m["kept"]:
+                print(f"::warning::{len(m['kept'])} file(s) published as they are (not minified), e.g. {m['kept'][0][0]}")
     return 0
 
 
