@@ -51,6 +51,13 @@
    "link": "/markets"
   },
   {
+   "id": "2026-11-04-sponsorfix",
+   "date": "2026-11-04",
+   "title": "Sponsor reports: private links, plainer numbers",
+   "line": "Each sponsor's report now opens only from its own private link, shows no click rate until an ad has 100 views, and prices the sponsor's own states.",
+   "link": "/sponsor"
+  },
+  {
    "id": "2026-11-03-feederlive",
    "date": "2026-11-03",
    "title": "Feeder steer index: more barns",
