@@ -146,12 +146,12 @@ def stage(root, dest, keep):
             shutil.copy2(src, dst)
 
 
-# The published copy only (Nov 5, 2026: the repository is public; Sig, "hide how the site works"): page
-# scripts and style sheets lose their comments and spacing in _site, the repository files stay as they are,
-# names and ?v= URLs do not change, and no source map is written. A file that cannot be minified safely is
-# published as it is.
-MINIFY = re.compile(r"(?:components/[^/]+\.(?:js|css)|css/[^/]+\.css)")
+# The published copy is compacted: page scripts, the service worker and style sheets lose their comments and
+# spacing in _site, the repository files stay as they are, names and ?v= URLs do not change, and no source map
+# is written. A file that cannot be minified safely is published as it is.
+MINIFY = re.compile(r"(?:components/[^/]+\.(?:js|css)|css/[^/]+\.css|sw\.js)")
 TERSER_VERSION = "5.51.2"   # pinned; .github/workflows/pages.yml installs the same (test/pages-publish.test.mjs)
+TERSER_TIMEOUT = 900
 TERSER_JS = r"""
 const fs = await import('node:fs'); const vm = await import('node:vm');
 const { minify } = await import(process.env.TERSER_MAIN);
@@ -159,7 +159,7 @@ const files = JSON.parse(fs.readFileSync(0, 'utf8')); const out = {};
 for (const p of files) {
   try {
     const src = fs.readFileSync(p, 'utf8');
-    const r = await minify(src, { compress: false, mangle: true, sourceMap: false, format: { comments: 'some' } });
+    const r = await minify(src, { compress: false, mangle: true, sourceMap: false, format: { comments: p.endsWith('sw.js') ? false : 'some' } });
     if (typeof r.code !== 'string') throw new Error('no output');
     new vm.Script(r.code);
     fs.writeFileSync(p + '.min-tmp', r.code); fs.renameSync(p + '.min-tmp', p);
@@ -265,18 +265,25 @@ def minify_published(dest, paths, terser=None):
                 break
     if js and main:
         files = [os.path.join(dest, p) for p in js]
-        r = subprocess.run(["node", "--input-type=module", "-e", TERSER_JS], input=json.dumps(files), capture_output=True,
-                           text=True, timeout=900, env=dict(os.environ, TERSER_MAIN="file://" + main))
         try:
-            res = json.loads(r.stdout or "{}")
-        except ValueError:
-            res = {}
-        st["terser"] = r.returncode == 0 and bool(res)
-        for p, full in zip(js, files):
-            if res.get(full) == "ok":
-                st["js"] += 1
-            else:
-                st["kept"].append((p, res.get(full) or ("terser did not run: " + (r.stderr or "").strip()[-120:])))
+            r = subprocess.run(["node", "--input-type=module", "-e", TERSER_JS], input=json.dumps(files), capture_output=True,
+                               text=True, timeout=TERSER_TIMEOUT, env=dict(os.environ, TERSER_MAIN="file://" + main))
+        except (OSError, subprocess.SubprocessError) as e:
+            # no node, or terser too slow: publish the scripts as they are, never fail the deploy
+            why = "node not found" if isinstance(e, FileNotFoundError) else "terser timed out" if isinstance(e, subprocess.TimeoutExpired) else "terser did not start"
+            st["kept"] += [(p, why) for p in js]
+            r = None
+        if r is not None:
+            try:
+                res = json.loads(r.stdout or "{}")
+            except ValueError:
+                res = {}
+            st["terser"] = r.returncode == 0 and bool(res)
+            for p, full in zip(js, files):
+                if res.get(full) == "ok":
+                    st["js"] += 1
+                else:
+                    st["kept"].append((p, res.get(full) or ("terser did not run: " + (r.stderr or "").strip()[-120:])))
     elif js:
         st["kept"] += [(p, "no terser") for p in js]
     st["after"] = sum(os.path.getsize(os.path.join(dest, p)) for p in targets)
@@ -366,6 +373,31 @@ def selftest():
            f"no terser: scripts publish as they are ({m})")
         ok(minify_targets(["components/x.min.js", "components/y.js", "css/z.css", "css/a/b.css", "js/c.js"]) == ["components/y.js", "css/z.css"],
            "targets: top-level components and css, no .min.js")
+    # no node, or a terser that times out: the scripts publish as they are, with a warning, and the run goes on
+    with tempfile.TemporaryDirectory() as d:
+        site, tdir = os.path.join(d, "site"), os.path.join(d, "terser")
+        os.makedirs(os.path.join(site, "components"))
+        os.makedirs(tdir)
+        for fp, text in [(os.path.join(site, "components", "a.js"), "/* c */ var a = 1;\n"), (os.path.join(tdir, "main.js"), "")]:
+            with open(fp, "w") as f:
+                f.write(text)
+        old_path, old_to = os.environ.get("PATH", ""), TERSER_TIMEOUT
+        try:
+            os.environ["PATH"] = os.path.join(d, "nowhere")
+            m = minify_published(site, ["components/a.js"], tdir)
+            ok(m["js"] == 0 and m["kept"] == [("components/a.js", "node not found")], f"no node: published as it is ({m['kept']})")
+        finally:
+            os.environ["PATH"] = old_path
+        node = shutil.which("node")
+        if node:
+            globals()["TERSER_TIMEOUT"] = 0.001
+            try:
+                m = minify_published(site, ["components/a.js"], tdir)
+                ok(m["js"] == 0 and m["kept"] and m["kept"][0][0] == "components/a.js", f"slow terser: published as it is ({m['kept']})")
+            finally:
+                globals()["TERSER_TIMEOUT"] = old_to
+        ok(open(os.path.join(site, "components", "a.js")).read() == "/* c */ var a = 1;\n", "the file is as it was after a fallback")
+    ok(minify_targets(["sw.js", "sw.js.map", "x/sw.js"]) == ["sw.js"], "the service worker is a minify target")
     for f in fails:
         print("FAIL", f)
     print("pages publish selftest:", "ok" if not fails else f"{len(fails)} failure(s)")
