@@ -218,8 +218,8 @@
   FSLand.MIN_N = 5;          // under this many sales, no middle (the Atlas, the land-sales pages, the comp report)
   FSLand.MIN_ACRES = 20;     // a sale this size or larger may set a county middle
   // The states whose sale files the readers load (an allow-list). Florida's files are served from agsist-data
-  // (FSLand.LAND_HOST) and stay out until every reader shows its month-only dates (Nov 5, 2026).
-  FSLand.SALES_LIVE = ['IL', 'IN', 'WI', 'VT', 'NJ'];
+  // (FSLand.LAND_HOST); on since every reader shows its month-only dates (Nov 5, 2026).
+  FSLand.SALES_LIVE = ['IL', 'IN', 'WI', 'VT', 'NJ', 'FL'];
   FSLand.LAND_HOST = { FL: 'https://dnilgis.github.io/agsist-data/land/fl/' };
   FSLand.landBase = function (st) { st = String(st || '').toUpperCase(); return FSLand.LAND_HOST[st] || '/data/land/' + st.toLowerCase() + '/'; };
   FSLand.salesLive = function (st) { return FSLand.SALES_LIVE.indexOf(String(st || '').toUpperCase()) >= 0; };

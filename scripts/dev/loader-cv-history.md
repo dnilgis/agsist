@@ -4,6 +4,7 @@ Moved out of the `var CV` comment in components/loader.js on 2026-10-27 (fx/shel
 downloading it on every page. CV is appended as ?v= to header.html, footer.html and analytics.html; bump it
 for any menu or footer change. Newest first. Add a line here with each bump.
 
+- v106 2026-11-05: fx/flon (no slot handed out; next above main's 105). search.js land links include Florida; loader loads land-sales.js?v=6 and on Florida Atlas county pages; no menu or footer change
 - v105 2026-10-29: fx/menutrim (105 assigned by the lead). Menu 63 lines to 58: PRF, LRP and Rain Print once, no Cash Bid Index or Illinois sale index line, one crop report line, drought and manure under Field, Ag stocks under Futures; footer the same removals; menu_click events
 - v104 2026-10-29: fx/ratecard (104 assigned by the lead; 103 goes to the land batch, main still showed 102 at merge). Retired page ribbons no longer show Sponsor this page; no menu or footer change
 - v103 2026-10-29: fx/landnav + fx/landnav-menu (ship31). Land sales in the menu after Farmland Atlas; search.js and place.js land links reach returning readers

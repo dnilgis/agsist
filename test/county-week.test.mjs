@@ -232,7 +232,7 @@ test("the county home: one hidden mount on every county page, filled by county-h
   const ch = read("components/county-home.js");
   assert.match(ch, /var CL_JS = '\/components\/change-lines\.js\?v=1';/);
   assert.match(ch, /L\.weekBlock\(L\.weekLines\(/);
-  assert.match(read("components/here.js"), /var CL_JS = '\/components\/change-lines\.js\?v=4';/);   // v4: fx/wave1a (summary says what was not read); v3: fx/landnj (New Jersey sales); v2: fx/landvt (Vermont sales); county-home.js stays v1 (its hash is on every Atlas page)
+  assert.match(read("components/here.js"), /var CL_JS = '\/components\/change-lines\.js\?v=5';/);   // v5: fx/flon (Florida records through a month); v4: fx/wave1a (summary says what was not read); v3: fx/landnj (New Jersey sales); v2: fx/landvt (Vermont sales); county-home.js stays v1 (its hash is on every Atlas page)
   const urls = [...ch.matchAll(/getJSON\(([^,)]+)/g)].map((m) => m[1]);
   for (const u of urls) assert.doesNotMatch(u, /lat|lng|zip/i, u);
 });

@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '105';
+  var CV = '106';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -971,9 +971,9 @@
     if (window.AgLandSales || document.querySelector('script[src^="/components/land-sales.js"]')) return;
     if (!document.querySelector('[data-land-sales],button.ls-nm,section[data-atlas-sales="county"]')
         && !/^\/rent\/(illinois|wisconsin|indiana|vermont|new-jersey)(\.html)?\/?$/.test(location.pathname)
-        && !/^\/farmland-atlas\/(indiana|vermont|new-jersey)\/[a-z0-9-]+/.test(location.pathname)) return;
+        && !/^\/farmland-atlas\/(indiana|vermont|new-jersey|florida)\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=5';
+    s.src = '/components/land-sales.js?v=6';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }

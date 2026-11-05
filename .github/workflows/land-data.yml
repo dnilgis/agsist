@@ -251,6 +251,12 @@ jobs:
           mkdir -p "$RUNNER_TEMP/agsist-data/land"
           python3 scripts/dev/quiet.py transfers-fl -- python scripts/fetch_land_sales.py FL --from data/land-src/fl --to "$RUNNER_TEMP/agsist-data/land" || { echo "::warning::Florida sales were not written"; exit 0; }
           python3 scripts/dev/quiet.py fl-sync -- bash scripts/agsist_data.sh sync --soft --from "$RUNNER_TEMP/agsist-data" land/fl
+      # The summaries, the sale pages and nothing else read Florida's county files from that checkout (data/land-hosted,
+      # never committed). Without it the sale pages keep their committed Florida pages as they are.
+      - name: Florida files for the builders
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -f "$RUNNER_TEMP/agsist-data/land/fl/index.json" ]; then ln -sfn "$RUNNER_TEMP/agsist-data/land" data/land-hosted; echo "Florida county files linked for the builders"; else echo "no Florida county files in this run"; fi
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
@@ -321,6 +327,7 @@ jobs:
           # the raw answers live on the raw branch now; out of the tree before the site budget counts it
           rm -rf data/land-raw
           rm -rf data/land-src
+          rm -f data/land-hosted
       - name: Site budget
         run: python scripts/check_site_budget.py
       - name: Commit if changed (race-tolerant)

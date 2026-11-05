@@ -150,6 +150,18 @@ jobs:
           python scripts/land_alert.py --selftest
           python scripts/send_land_alert.py --selftest
 
+      # Florida's county files are on agsist-data, not here (Nov 5, 2026): a copy for this run only, linked where
+      # scripts/land_alert.py reads them (data/land-hosted). Without it Florida readers wait; nobody else is held.
+      - name: Florida county files (agsist-data)
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: |
+          if bash scripts/agsist_data.sh checkout "$RUNNER_TEMP/agsist-data" >/dev/null && [ -f "$RUNNER_TEMP/agsist-data/land/fl/index.json" ]; then
+            ln -sfn "$RUNNER_TEMP/agsist-data/land" data/land-hosted; echo "Florida county files linked"
+          else
+            echo "::warning::Florida county files not reached; Florida readers wait for the next run"
+          fi
+
       - name: Monthly land sale email (${{ (github.event_name == 'schedule' || github.event_name == 'workflow_run') && 'scheduled' || inputs.mode }})
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
