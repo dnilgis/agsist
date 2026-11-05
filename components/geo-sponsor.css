@@ -1,0 +1,46 @@
+/* THE STATE-TARGETED SPONSOR CARD (Root Lot, Nov 5, 2026: "make his ad pop").
+ *
+ * components/geo-sponsor.js loads this beside components/sponsor-ad.css and wraps
+ * the ad in .geo-spon. The markup is still AgsistAd.render's and the colours are
+ * the shared ad's (the site's ad orange on the button and the outline, a quiet
+ * panel), so the slot, the "Sponsor" label and the counted link are the same as
+ * every other paid ad. Only the layout changes here:
+ *   - the sponsor's square icon at the left at every width, at a fixed size so the
+ *     card never changes height when the picture arrives;
+ *   - a larger headline, and one short line of facts under it;
+ *   - the whole card opens the same counted link (the button's own box is
+ *     stretched over the card, so a tap anywhere is a click on that one link and
+ *     is counted exactly as a button tap).
+ */
+.geo-spon .sa-ad{padding:1.1rem 1.25rem 1.15rem 1.45rem;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.geo-spon .sa-ad:hover{border-color:var(--sa-acc-hi);box-shadow:0 0 0 1px var(--sa-acc-hi),0 10px 28px -14px rgba(0,0,0,.55)}
+.geo-spon .sa-ad:has(.sa-cta:focus-visible){outline:2px solid var(--sa-text);outline-offset:3px}
+.geo-spon .sa-top{margin-bottom:.7rem}
+.geo-spon .sa-ad .sa-by{display:inline;color:var(--sa-dim)}
+.geo-spon .sa-main{flex-direction:row;align-items:center;gap:1rem}
+.geo-spon .sa-logo{width:72px;height:72px;min-height:0;padding:0;align-self:center;
+  background:none;box-shadow:none;border-radius:16px;overflow:hidden}
+.geo-spon .sa-logo img{width:72px;height:72px;max-width:none;max-height:none}
+.geo-spon .sa-logo .sa-wordmark{display:none}
+.geo-spon .sa-logo--text{background:#f5efe2}
+.geo-spon .sa-logo--text .sa-wordmark{display:block;color:#2d6a35;font-size:.8rem}
+.geo-spon .sa-headline{font-size:clamp(1.55rem,2.8vw,2.05rem);line-height:1.08;margin-bottom:.35rem}
+.geo-spon .sa-body{font-size:.92rem;line-height:1.45;color:var(--sa-dim)}
+.geo-spon .sa-actions{margin-top:1rem}
+.geo-spon .sa-ad a.sa-cta{position:static;font-size:.84rem}
+.geo-spon .sa-ad a.sa-cta:hover,.geo-spon .sa-ad a.sa-cta:focus-visible{transform:none}
+.geo-spon .sa-ad:hover a.sa-cta{background:var(--sa-acc-hi)}
+.geo-spon .sa-ad:hover .sa-cta-arrow{transform:translateX(3px)}
+.geo-spon .sa-ad a.sa-cta:focus-visible{outline:none}
+/* the whole card is the link: the button's box stretched over the card */
+.geo-spon .sa-ad a.sa-cta::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit}
+@media (max-width:560px){
+  .geo-spon .sa-ad{padding:.95rem .95rem 1rem 1.15rem}
+  .geo-spon .sa-main{flex-direction:row;align-items:flex-start;gap:.75rem}
+  .geo-spon .sa-logo,.geo-spon .sa-logo img{width:52px;height:52px}
+  .geo-spon .sa-logo{border-radius:12px;padding:0;align-self:flex-start;margin-top:.15rem}
+  .geo-spon .sa-headline{font-size:1.45rem}
+  .geo-spon .sa-body{font-size:.86rem}
+  .geo-spon .sa-ad:has(.sa-logo) .sa-by{display:inline}
+}
+@media (prefers-reduced-motion:reduce){.geo-spon .sa-ad,.geo-spon .sa-cta-arrow{transition:none}.geo-spon .sa-ad:hover .sa-cta-arrow{transform:none}}

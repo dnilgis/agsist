@@ -12,9 +12,15 @@
  * scripts/generate_daily.py renders the same markup for the archive pages.
  * scripts/sponsor-checks.mjs holds the two renderers byte-identical.
  *
- * Colour: the ad accent is the site's ad orange, #e8743a. Its ink is #0d1117,
- * 4.66:1 on the orange (bold, >= 14px). The advertiser's own colours arrive
- * through their logo, which sits on a white tile so it reads in both themes.
+ * Colour: the ad accent is the site's ad orange (--ad-orange). Its ink is
+ * #0d1117, 6.3:1 on the orange and 8.2:1 on the hover orange, in both themes.
+ * The advertiser's own colours arrive through their logo, which sits on a
+ * white tile so it reads in both themes.
+ *
+ * Nov 5, 2026 (Sig): every paid ad carries the orange on its button and its
+ * outline, and the panel itself stays quiet (the page's own surface, no tint),
+ * so the orange edge is what stands out. The button keeps its ink colour even
+ * inside a page whose links are coloured (rain pages drew gold on orange).
  */
 .sa-ad{
   --sa-acc:var(--ad-orange,#e8743a);
@@ -28,10 +34,8 @@
   --sa-mute:var(--text-muted,#7d8782);
   position:relative;overflow:hidden;
   margin:1.25rem 0 1.5rem;padding:1.25rem 1.35rem 1.1rem 1.55rem;
-  background:
-    radial-gradient(120% 140% at 100% 0%,rgba(var(--sa-acc-rgb),.13) 0%,rgba(var(--sa-acc-rgb),0) 55%),
-    var(--sa-bg);
-  border:1px solid rgba(var(--sa-acc-rgb),.38);
+  background:var(--sa-bg);
+  border:1px solid var(--sa-acc);
   border-radius:14px;
   color:var(--sa-text);
   font-family:var(--font-body,'Inter',system-ui,sans-serif);
@@ -75,6 +79,7 @@
   letter-spacing:.05em;text-transform:uppercase;
   box-shadow:0 8px 18px -10px rgba(var(--sa-acc-rgb),.9);transition:background .15s,transform .12s}
 .sa-cta:hover,.sa-cta:focus-visible{background:var(--sa-acc-hi);transform:translateY(-1px);color:var(--sa-ink)}
+aside.sa-ad a.sa-cta,aside.sa-ad a.sa-cta:visited,aside.sa-ad a.sa-cta:hover,aside.sa-ad a.sa-cta:focus-visible{color:var(--sa-ink)}
 .sa-cta:focus-visible,.sa-phone:focus-visible{outline:2px solid var(--sa-text);outline-offset:3px}
 .sa-cta-arrow{font-size:1rem;line-height:1;transition:transform .15s}
 .sa-cta:hover .sa-cta-arrow{transform:translateX(3px)}
@@ -121,8 +126,7 @@
   .sa-phone{justify-content:center}
 }
 @media (prefers-reduced-motion:reduce){.sa-cta,.sa-cta-arrow{transition:none}.sa-cta:hover{transform:none}}
-[data-theme="light"] .sa-ad{box-shadow:0 10px 26px -18px rgba(20,30,25,.45);
-  background:radial-gradient(120% 140% at 100% 0%,rgba(var(--sa-acc-rgb),.10) 0%,rgba(var(--sa-acc-rgb),0) 55%),var(--sa-bg)}
+[data-theme="light"] .sa-ad{box-shadow:0 10px 26px -18px rgba(20,30,25,.45);background:var(--sa-bg)}
 [data-theme="light"] .sa-logo{box-shadow:0 0 0 1px rgba(0,0,0,.09)}
 [data-theme="light"] .sa-label{color:#a8380a;border-color:rgba(168,56,10,.45);background:rgba(232,116,58,.08)}
 [data-theme="light"] .sa-phone:hover{color:#a8380a}
