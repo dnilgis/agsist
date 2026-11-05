@@ -50,8 +50,6 @@
 .wx-loc{font-size:.824rem}
 .wstat-lbl{font-size:.824rem}
 .wstat-val{font-size:1.294rem}
-.wx-today-icon{font-size:1.294rem}
-.wx-today-text{font-size:.824rem}
 .spray-badge{font-size:.824rem}
 .wx-summary-title{font-size:1rem}
 .wx-day-name{font-size:.765rem}
@@ -234,7 +232,6 @@
 .hero-sidebar > .s-card[hidden],
   #daily-tmyk-wrap[hidden] { display: none !important; }
 .main{overflow-x:clip;padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right));}
-#wx-today-summary{margin-top:1rem;}
 /* Watch list: stack description directly under the date/time, full width */
 #daily-watch-list .watch-item{flex-direction:column;gap:.25rem;align-items:stretch;}
 /* Historical chart expandable (GDU + Precip) */
@@ -919,8 +916,7 @@ body{--hair:rgba(132,160,168,.12);--sp-md:12px;--sp-lg:16px;--sp-xl:24px;--sp-2x
 /* Section labels in text colour; gold is kept for live and lead items. */
 #main .sec-title{color:var(--text)}
 /* Boxes that are not the lead item: weather sub-tiles, signup, teaser. */
-#f2 .wx-grid>*,#f2 .wx-data-extra>*,#f2 .wx-today,#signup-full,.tariff-row{background:none!important;border:0!important;border-top:1px solid var(--hair)!important;border-radius:0!important;box-shadow:none!important}
-#f2 .wx-today{border-left:0!important}
+#f2 .wx-grid>*,#f2 .wx-data-extra>*,#signup-full,.tariff-row{background:none!important;border:0!important;border-top:1px solid var(--hair)!important;border-radius:0!important;box-shadow:none!important}
 @media(max-width:900px){
 /* A fold's own summary is its heading on a phone; the h2 inside would
      read the same title twice. */
@@ -1233,7 +1229,7 @@ html[data-theme="light"] #cot-rows .r7-dn{color:#9a3620}
 .crop-ge-val.fair,.tariff-row-rate.mixed,.spray-day.caution .spray-day-status{color:var(--text)!important}
 .crop-full-link,.export-full-link,.cot-full-link,.ratio-link{color:var(--text-dim)!important;border:0!important;background:none!important;padding:0!important;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border-2)}
 .tariff-status-badge{color:var(--text-dim)!important;background:none!important;border:0!important;padding:0!important}
-.wx-today-text strong,#sig-cattle-read b{color:var(--text)!important}
+#sig-cattle-read b{color:var(--text)!important}
 .wx-chart-toggle{color:var(--text-dim)!important}
 .radar-card>div>span,#pdw>label,.signup-eyebrow,#cot-date,#cot-countdown{color:var(--text-muted)!important}
 .faq-a a,.idx1-content a[style*="color:var(--gold)"],.main a[style*="color:var(--gold)"]{color:var(--text)!important;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border-2)}
@@ -1382,7 +1378,6 @@ details.wr>summary{align-items:center!important}
 /* 4th insurance harvest price on the page; October grid links the tracker */
 #s7-hp-link{display:none!important}
 /* Quick Tools insurance row, same */
-/* 2026-10-06 EARN: #s7-falln-rec shows again; the fall-N line in Local conditions is now its one place. */
 #wsp-spray-detail{display:none!important}
 /* "87 calls graded": the headline is "41 of 87" */
 #f1>.bidnet-note,.bidnet-note{display:none!important}
@@ -1777,11 +1772,7 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 .hb-unk{color:var(--text-dim)}
 .hb-s .hb-old{font-size:.8125rem}
 .hb-none .hb-v{color:var(--text-dim)}
-.hb-spray{font-weight:700}
-.hb-spray.hb-go{color:var(--green)}
-.hb-spray.hb-caution{color:var(--gold)}
-.hb-spray.hb-stop{color:var(--red)}
-[data-theme="light"] :is(.hb-old,.hb-asof,.hb-spray.hb-caution){color:#86600f}
+[data-theme="light"] :is(.hb-old,.hb-asof){color:#86600f}
 .hb-skel{display:inline-block;width:5.5ch;height:.8em;border-radius:4px;background:var(--border-2);animation:hb-pulse 1.4s ease-in-out infinite}
 @keyframes hb-pulse{50%{opacity:.45}}
 @media(prefers-reduced-motion:reduce){
@@ -1974,15 +1965,8 @@ html[data-look] #main details.m-fold:not(.m-fold--calc):not([open])>summary.m-fo
 .idx1-shell{grid-template-rows:repeat(10,auto) 1fr!important}
 html[data-look] #market-intel{grid-row:2/12!important}
 }
-/* 2. One fact, one place (EARN). Fall nitrogen is one ruled line in Local
-   conditions; the 5-day spray read sits under the 5-day forecast; export
-   sales is the markets fold's one block; land is one row plus More tools. */
-.wx-falln{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:10px 0;border-top:1px solid var(--hair);text-decoration:none;color:inherit;min-height:44px}
-.wx-falln[hidden]{display:none}
-.wx-falln:hover .wx-falln-v{text-decoration:underline}
-.wx-falln-k{font-size:.824rem;font-weight:600;color:var(--text-dim)}
-.wx-falln-v{font-size:.875rem;font-weight:700;color:var(--text)}
-.wx-falln-s{flex-basis:100%;font-size:.8125rem;line-height:1.45;color:var(--text-muted)}
+/* 2. One fact, one place (EARN). Export sales is the markets fold's one
+   block; land is one row plus More tools. */
 .crop-export-grid--one{grid-template-columns:minmax(0,1fr)!important}
 #idx1-land .land-grid{grid-template-columns:minmax(0,1fr)}
 #idx1-land:not(:has(#land-hail:not([hidden]))) .land-grid,html.s7-no-hail #idx1-land .land-grid{grid-template-columns:minmax(0,1fr)!important}
@@ -2486,12 +2470,12 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .wx-card.wx-tight .card-body{padding:8px 12px!important}
 .wx-card.wx-tight .wx-hero{margin-bottom:6px!important;padding-bottom:6px!important;gap:.6rem!important}
 .wx-card.wx-tight .wx-grid{gap:0 14px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+/* 2026-11-05: five cells since the soil cell left; the odd last one (Overnight low) takes the row */
+.wx-card.wx-tight .wx-grid>.wstat:last-child:nth-child(odd){grid-column:1/-1}
 .wx-card.wx-tight .wstat{padding:5px 0!important}
 .wx-card.wx-tight .wstat-val{font-size:1.06rem!important;line-height:1.25}
 .wx-card.wx-tight .wstat-lbl{font-size:.75rem!important;margin-bottom:0!important}
 .wx-card.wx-tight .wstat .s7-flag,.wx-card.wx-tight .wstat .s7-sub{margin-top:1px;font-size:.75rem}
-.wx-card.wx-tight #wx-today-summary{margin:6px 0 0!important;padding:6px 0!important}
-.wx-card.wx-tight .wx-falln{padding:4px 0!important}
 .wx-card.wx-tight #wx-data .wx-summary-card{margin-top:6px!important;padding:6px 0 0!important}
 .wx-card.wx-tight .wx-summary-title{font-size:.8125rem!important;letter-spacing:0!important;text-transform:none!important;font-family:var(--font-body,Inter,system-ui,sans-serif)!important;font-weight:600!important;color:var(--text-dim)!important;margin-bottom:2px!important}
 .wx-card.wx-tight .wx-7day-strip{gap:4px!important;padding:0!important}
@@ -2504,7 +2488,6 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .wx-card.wx-tight .wx-foot .wx-hourly-toggle{width:auto!important;min-height:44px;margin:0!important;border:0!important}
 .wx-locrow{display:inline-flex;align-items:center;gap:4px;font-size:.8125rem;color:var(--text-muted)}
 .wx-locb{display:inline-flex;align-items:center;min-height:44px;margin-left:6px;padding:0;background:none;border:0;font:inherit;color:var(--text-dim);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.wx-card.wx-tight .wx-falln-s{font-size:.8125rem;line-height:1.35}
 .wx-card.wx-tight .wx-7day-temps{font-size:1rem!important}
 .wx-card.wx-tight .wx-7day-name{font-size:.75rem!important}
 .wx-card.wx-tight .wx-temp{font-size:2.25rem!important}
@@ -2512,7 +2495,6 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .wx-card.wx-tight .wx-loc{margin-top:0!important}
 .wx-card.wx-tight #wx-asof{margin-top:0!important}
 .wx-card.wx-tight .wx-icon{font-size:2.25rem!important}
-.wx-card.wx-tight .wx-today-text{line-height:1.4!important}
 .wx-card.wx-tight .wxs-grid{gap:4px 8px}
 .wx-card.wx-tight .wx-7day-meta{font-size:.75rem!important;line-height:1.3!important}
 .wx-card.wx-tight .wstat{display:flex!important;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:0 6px;min-height:0!important}

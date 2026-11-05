@@ -1104,7 +1104,6 @@
    "path": "data/fall-nitrogen.json",
    "pages": [
     "fall-nitrogen.html",
-    "index.html",
     "planting-date.html"
    ],
    "written_by": [
