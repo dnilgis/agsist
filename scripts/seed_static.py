@@ -37,6 +37,7 @@ import sys
 from datetime import datetime, timezone
 
 from moved_pages import repoint  # links to the pages merged Oct 22, 2026 go to their new home
+from credits import NASS_NOTICE as N_NOTICE  # NASS API notice
 import pricefmt  # grain price text, the twin of components/util.js AG.px
 from contract_calendar import is_expired, _parse as _contract_ym
 try:
@@ -1959,6 +1960,7 @@ def storage_html(d, today, hist=None, basis=None):
             f"September 1, so they count once, in the stocks. A state gets a ratio only when NASS publishes a state "
             f"figure for every crop that was at least 2% of its grain last year. Figures are rounded to the million "
             f"bushels, so they may not add exactly.</p>"
+            f"<p>{N_NOTICE} The ratios and past-fall averages are calculations by AGSIST.</p>"
             f"<p>Same measure as {FARMDOC}. Their article came out before NASS&rsquo;s October crop report and used "
             f"the September forecast; this table uses the newer figures, so the order of the states can differ a "
             f"little from theirs.</p>")

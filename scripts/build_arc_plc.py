@@ -144,6 +144,7 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import html_slim as HS  # noqa: E402  the generated set is written slim
 import source_links as SL  # noqa: E402  no direct links to data sources
+import credits as CR  # noqa: E402  NASS notice wording
 import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybeans and wheat
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
@@ -2081,7 +2082,7 @@ def method_html(D):
     irrigated answer is labeled as using it. Where it is above a practice&rsquo;s benchmark, no typical answer is given for that practice. The county page&rsquo;s Lower and Higher
     buttons use 85% and 115% of it.</li>
   </ul>
-  <div class="method-note"><b>Sources</b> &middot; FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE, USDA RMA price discovery. &middot; Reviewed by Sigurd Lindquist, CCA</div>
+  <div class="method-note"><b>Sources</b> &middot; FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE, USDA RMA price discovery. {CR.NASS_NOTICE} Estimates and probabilities are calculations by AGSIST. &middot; Reviewed by Sigurd Lindquist, CCA</div>
   <h3>Scenario prices ({len(yrs)} years)</h3>
   <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>{''.join(f'<th class="num">{y} {D["years"][y]["crops"][k]["label"].lower()}</th>' for y, k in cols)}</tr></thead><tbody>{rat}</tbody></table></div>
   <p class="ap-small">Season-average price used in each scenario year, $/bu.</p>
@@ -2262,7 +2263,7 @@ def build_main(D, ch):
   Read FSA&rsquo;s <a href="{FSA_PAGE}" rel="noopener">ARC/PLC page</a>, its <a href="{FSA_DATA}" rel="noopener">program data</a>,
   or <a href="{OFFICE}" rel="noopener">find your county FSA office</a>. Dollars are before the 5.7% sequestration cut.
   Run an extension office or co-op site? <a href="/developer#arc-plc">Embed the calculator</a>.</p>
-  <details class="ap-det"><summary>Sources</summary><ul class="ap-src">{srcs}<li><a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS Quick Stats</a> (season-average prices)</li></ul></details>
+  <details class="ap-det"><summary>Sources</summary><ul class="ap-src">{srcs}<li><a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS Quick Stats</a> (season-average prices). {CR.NASS_NOTICE} The estimates are calculations by AGSIST.</li></ul></details>
   <p class="ap-small">Related: <a href="/farm-bill">Farm bill tracker</a> &middot; <a href="/breakeven">Break-even calculator</a> &middot; <a href="/harvest-price-tracker">Harvest price and pre-sell</a></p>
   <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
 </main>
