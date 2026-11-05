@@ -133,6 +133,7 @@ const ALLOWED = {
   "components/raise-picker.js": [4, "which ticker items to show for a crop (data-sym wiring)"],
   "components/rent-calc.js": [1, "fallback only when no corn-nearby is on file"],
   "components/signup-ask.js": [5, "the price-watch sender's symbols, named December corn / November soybeans"],
+  "components/tar-spot.js": [1, "the tar spot break-even's default price: December futures for the next crop a reader would spray, an explicit contract named with its year on the page"],
   "components/storesell.js": [2, "comments about the keys it does not use"],
   "fertilizer.html": [2, "the labeled Dec new-crop corn price for the fertilizer-to-corn ratio"],
   "index.html": [8, "ticker and second-card data-sym wiring, the price-alert options (explicit contracts)"],

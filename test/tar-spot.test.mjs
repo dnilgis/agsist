@@ -133,7 +133,7 @@ test("copy rules: no em or en dashes, no mycotoxin claim, byline", () => {
   assert.ok(!/[–—]/.test(read("components/tar-spot.js")), "dash in the script");
   assert.match(page, /Do not assume tar spot makes a mycotoxin/);
   assert.match(page, /Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>/);
-  assert.match(page, /Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /"jobTitle": "Certified Crop Adviser \(CCA\)"/);
 });
 
 test("structured data is valid and the FAQ says only what the page says", () => {
