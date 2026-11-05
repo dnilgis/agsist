@@ -1532,7 +1532,7 @@ function markLegend(){
   var mt=$('fa-mk-t'); if(mt){ mt.hidden=false; mt.textContent='▲ '+cname(c)+': '+fmtv(LEG.L,v); }
 }
 function fmtv(L,v){ var t=fmtv0(L,v); return typeof t==='string'?t.replace(/^-/,'−'):t; }
-function fmtv0(L,v){ if(v==null) return '-'; if(L.doy) return doyLabel(v); if(L.cost) return '$'+rh(Number(v),2); if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
+function fmtv0(L,v){ if(v==null) return '-'; if(L.key==='sales_n') return scount(v); if(L.doy) return doyLabel(v); if(L.cost) return '$'+rh(Number(v),2); if(L.pct) return pct(v,L.k); if(L.money) return money(v); if(L.key==='we_prio') return String(Math.round(v)); if(L.fixed) return Number(v).toFixed(L.k)+(L.unit==='%'?'%':L.unit?' '+L.unit:''); return (L.div&&v>0?'+':'')+fmt(v,L.k)+(L.unit==='%'||L.unit==='%/yr'?L.unit:L.unit?' '+L.unit:''); }
 function paintSliderNote(){
   var line=Number($('fa-line').value), d=DECADES[DEC], n=0, at=0;
   for(var f in ATLAS.counties){ var dd=jdec(f); dd=dd&&dd[d]; if(dd&&dd.n>=5){ n++; if(dd.mean>=line) at++; } }
