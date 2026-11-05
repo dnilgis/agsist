@@ -104,11 +104,11 @@ jobs:
 
       - name: Offline first
         run: |
-          python scripts/fetch_county_rain.py --selftest
-          python scripts/fetch_rain_context.py --selftest
-          python scripts/fetch_rain_weather.py --selftest
-          python scripts/build_county_rain.py --selftest
-          python scripts/send_rain_year.py --selftest
+          python3 scripts/dev/quiet.py selftest-fetch-county-rain -- python scripts/fetch_county_rain.py --selftest
+          python3 scripts/dev/quiet.py selftest-fetch-rain-context -- python scripts/fetch_rain_context.py --selftest
+          python3 scripts/dev/quiet.py selftest-fetch-rain-weather -- python scripts/fetch_rain_weather.py --selftest
+          python3 scripts/dev/quiet.py selftest-build-county-rain -- python scripts/build_county_rain.py --selftest
+          python3 scripts/dev/quiet.py selftest-send-rain-year -- python scripts/send_rain_year.py --selftest
 
       # The script stops itself at 40 minutes (each state is one or two calls,
       # each call has a timeout and three retries). A state that fails keeps
@@ -127,7 +127,10 @@ jobs:
           if [ -n "$STATES" ]; then ARGS="$ARGS --states $STATES"; fi
           if [ -n "$YEAR" ]; then ARGS="$ARGS --year $YEAR"; fi
           # shellcheck disable=SC2086
-          python scripts/fetch_county_rain.py $ARGS 2>&1 | tee county-rain.log
+          rc=0
+          python3 scripts/dev/quiet.py rain-fetch -- python scripts/fetch_county_rain.py $ARGS || rc=$?
+          cp "$RUNNER_TEMP/quiet/rain-fetch.log" county-rain.log 2>/dev/null || true
+          exit $rc
 
       # Two more lines per county page (scripts/fetch_rain_context.py): the PRISM county
       # average against NOAA's gridded normal, and where this year sits in the station's own
@@ -140,7 +143,7 @@ jobs:
           PYTHONUNBUFFERED: "1"
           STATES: ${{ github.event.inputs.states }}
         run: |
-          if [ -n "$STATES" ]; then python scripts/fetch_rain_context.py --states "$STATES"; else python scripts/fetch_rain_context.py; fi
+          if [ -n "$STATES" ]; then python3 scripts/dev/quiet.py rain-context -- python scripts/fetch_rain_context.py --states "$STATES"; else python3 scripts/dev/quiet.py rain-context -- python scripts/fetch_rain_context.py; fi
 
       # The other measured weather at each page's station (scripts/fetch_rain_weather.py): corn GDDs
       # from May 1 against the station's own 1991-2020 average, the hottest and coldest day, freezes,
@@ -156,7 +159,7 @@ jobs:
           PYTHONUNBUFFERED: "1"
           STATES: ${{ github.event.inputs.states }}
         run: |
-          if [ -n "$STATES" ]; then python scripts/fetch_rain_weather.py --states "$STATES"; else python scripts/fetch_rain_weather.py; fi
+          if [ -n "$STATES" ]; then python3 scripts/dev/quiet.py rain-weather -- python scripts/fetch_rain_weather.py --states "$STATES"; else python3 scripts/dev/quiet.py rain-weather -- python scripts/fetch_rain_weather.py; fi
 
       # Share images (og:image): the US county map for /rain and one map per
       # state for its state and county pages (img/og/rain.jpg, img/og/rain-<st>.jpg),
@@ -171,20 +174,20 @@ jobs:
         continue-on-error: true
         run: |
           pip install --quiet pillow==12.3.0
-          python3 scripts/build_share_images.py --only rain
+          python3 scripts/dev/quiet.py share-image -- python3 scripts/build_share_images.py --only rain
 
       - name: Check the data, build the pages, check the budget
         run: |
-          python scripts/fetch_county_rain.py --check
-          python scripts/build_county_rain.py
-          python scripts/build_county_rain.py --check
+          python3 scripts/dev/quiet.py rain-check -- python scripts/fetch_county_rain.py --check
+          python3 scripts/dev/quiet.py rain-pages -- python scripts/build_county_rain.py
+          python3 scripts/dev/quiet.py rain-pages-check -- python scripts/build_county_rain.py --check
           # /here reads which page kinds each county has (data/atlas/pct k flags); a new rain page changes them
-          python scripts/build_place_pct.py
+          python3 scripts/dev/quiet.py place-pct -- python scripts/build_place_pct.py
           # the PRF, Atlas and ARC/PLC county pages link this county's rain page when it is live,
           # else the state rain page: re-stamp those links now that the rain set may have moved
-          python scripts/cross_links.py --selftest
-          python scripts/cross_links.py --stamp
-          python scripts/check_seo.py
+          python3 scripts/dev/quiet.py selftest-cross-links -- python scripts/cross_links.py --selftest
+          python3 scripts/dev/quiet.py cross-links -- python scripts/cross_links.py --stamp
+          python3 scripts/dev/quiet.py seo-check -- python scripts/check_seo.py
           python scripts/check_site_budget.py
 
       - name: Commit
@@ -204,10 +207,10 @@ jobs:
             git reset -q --hard origin/main
             rm -rf data/rain && cp -r "$SAVE/rain" data/rain
             cp "$SAVE"/og/* img/og/ 2>/dev/null || true
-            python scripts/build_county_rain.py
-            python scripts/build_county_rain.py --check
-            python scripts/build_place_pct.py
-            python scripts/cross_links.py --stamp
+            python3 scripts/dev/quiet.py rain-pages -- python scripts/build_county_rain.py
+            python3 scripts/dev/quiet.py rain-pages-check -- python scripts/build_county_rain.py --check
+            python3 scripts/dev/quiet.py place-pct -- python scripts/build_place_pct.py
+            python3 scripts/dev/quiet.py cross-links -- python scripts/cross_links.py --stamp
             git add -A data/atlas/pct
             git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
             # the summary files that read the rain pages, on this main (BUILD-RULES 61; fail soft, rule 53)
@@ -245,5 +248,7 @@ jobs:
       - name: Say which state failed
         if: steps.fetch.outcome == 'failure'
         run: |
-          grep -E "FAILED|refusing|time cap" county-rain.log || true
+          S=$(grep -oE "^[A-Z]{2}: (FAILED|refusing)" county-rain.log | cut -c1-2 | sort -u | tr "\n" " " || true)
+          echo "states that kept their published files: ${S:-none named}"
+          grep -q "time cap" county-rain.log && echo "the run hit its time cap" || true
           echo "::warning::A county rain state failed or the run hit its time cap; those states kept their published files. See the Fetch step."

@@ -135,14 +135,14 @@ jobs:
 
       - name: The portal cannot approve words nobody saw
         run: |
-          python3 scripts/sponsor_links.py --selftest
-          python3 scripts/sponsor_publish.py --selftest
-          python3 scripts/test_sponsor_portal.py
-          python3 scripts/test_rate_card.py
-          python3 scripts/audience_from_exports.py --selftest
-          python3 scripts/build_audience.py --selftest
-          python3 scripts/build_signups.py --selftest
-          node scripts/sponsor-checks.mjs
+          python3 scripts/dev/quiet.py selftest-sponsor-links -- python3 scripts/sponsor_links.py --selftest
+          python3 scripts/dev/quiet.py selftest-sponsor-publish -- python3 scripts/sponsor_publish.py --selftest
+          python3 scripts/dev/quiet.py test-sponsor-portal -- python3 scripts/test_sponsor_portal.py
+          python3 scripts/dev/quiet.py test-rate-card -- python3 scripts/test_rate_card.py
+          python3 scripts/dev/quiet.py selftest-audience-exports -- python3 scripts/audience_from_exports.py --selftest
+          python3 scripts/dev/quiet.py selftest-audience -- python3 scripts/build_audience.py --selftest
+          python3 scripts/dev/quiet.py selftest-signups -- python3 scripts/build_signups.py --selftest
+          python3 scripts/dev/quiet.py sponsor-checks -- node scripts/sponsor-checks.mjs
 
       # WHO READS AGSIST -- the dashboard on every sponsor's portal. Each source
       # is optional and fails on its own; a missing or broken one keeps its last
@@ -156,14 +156,14 @@ jobs:
           BING_API_KEY:        ${{ secrets.BING_API_KEY }}
           LIST_URL:            ${{ secrets.LIST_URL }}
           LIST_TOKEN:          ${{ secrets.LIST_TOKEN }}
-        run: python3 scripts/build_audience.py
+        run: python3 scripts/dev/quiet.py audience -- python3 scripts/build_audience.py
 
       # The audience figures on /sponsor and /sponsor-kit are written into the HTML
       # from the file just refreshed (Oct 29, 2026), so crawlers, link previews and
       # readers without JavaScript see the same dated numbers. Never stops the reports.
       - name: Write the audience figures into the sponsor pages
         continue-on-error: true
-        run: python3 scripts/bake_audience.py
+        run: python3 scripts/dev/quiet.py bake-audience -- python3 scripts/bake_audience.py
 
       # Email signups by page ask, ZIPs given, one-time notices: counts only, for
       # /seo-report. Same token, same rule: no address reaches the file or the log.
@@ -172,7 +172,7 @@ jobs:
         env:
           LIST_URL:            ${{ secrets.LIST_URL }}
           LIST_TOKEN:          ${{ secrets.LIST_TOKEN }}
-        run: python3 scripts/build_signups.py
+        run: python3 scripts/dev/quiet.py signups -- python3 scripts/build_signups.py
 
       # THE LINKS ARE PRIVATE (Nov 4, 2026). The tokens and the last reports come from
       # the private repo; a sponsor new in data/sponsors.json gets its token here and it
@@ -184,7 +184,7 @@ jobs:
           RAW_BRANCH: private-data
         run: |
           bash scripts/pull_raw.sh private/sponsors
-          python3 scripts/sponsor_publish.py mint
+          python3 scripts/dev/quiet.py sponsor-mint -- python3 scripts/sponsor_publish.py mint
           # The first token wins: RAW_KEEP never replaces a token file already saved (sponsor-apply.yml may
           # have minted the same sponsor a moment ago), and the pull after it adopts whichever landed.
           RAW_KEEP=1 bash scripts/push_raw.sh "sponsor tokens" private/sponsors/tokens
@@ -196,7 +196,7 @@ jobs:
         env:
           GA4_PROPERTY_ID:     ${{ secrets.GA4_PROPERTY_ID }}
           GA4_SERVICE_ACCOUNT: ${{ secrets.GA4_SERVICE_ACCOUNT }}
-        run: python3 scripts/build_sponsor_report.py
+        run: python3 scripts/dev/quiet.py sponsor-reports -- python3 scripts/build_sponsor_report.py
 
       # Each report goes to the subs worker with its token (Bearer LIST_TOKEN), and the
       # links to hand out (with the approval key k) go to private/sponsors/links.json.
@@ -206,7 +206,7 @@ jobs:
           LIST_URL:     ${{ secrets.LIST_URL }}
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
-        run: python3 scripts/sponsor_publish.py publish
+        run: python3 scripts/dev/quiet.py sponsor-publish -- python3 scripts/sponsor_publish.py publish
 
       - name: Save the reports and links to the private repo
         if: always() && needs.gate.outputs.go == '1'
