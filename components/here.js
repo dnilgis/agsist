@@ -329,10 +329,12 @@
   function fromWords(w) { return w.zip ? 'ZIP ' + w.zip : w.center ? 'the county center' : w.how === 'town' ? w.label : 'this spot'; }
 
   /* ── drawing ─────────────────────────────────────────────────────── */
-  function hasSales(st) { var A = window.AtlasSales; return /^(IL|WI)$/.test(st) || !!(A && A.STATES && A.STATES[st]); }
+  function hasSales(st) { var A = window.AtlasSales; return /^(IL|WI|FL)$/.test(st) || !!(A && A.STATES && A.STATES[st]); }
+  /* Florida's county files and their index are on agsist-data (FSLand.LAND_HOST, Nov 5, 2026) */
+  var LAND_HOST = { FL: 'https://dnilgis.github.io/agsist-data/land/fl/' };
   function salesIn(st) {
     if (!hasSales(st)) return Promise.resolve(false);
-    if (!(st in S.sales)) S.sales[st] = getJSON('/data/land/' + st.toLowerCase() + '/index.json', 10000).then(function (ix) { return !!(ix && ix.counties && ix.counties.length); });
+    if (!(st in S.sales)) S.sales[st] = getJSON((LAND_HOST[st] || '/data/land/' + st.toLowerCase() + '/') + 'index.json', 10000).then(function (ix) { return !!(ix && ix.counties && ix.counties.length); });
     return S.sales[st];
   }
   function drawDeeper(sales) {
@@ -453,7 +455,10 @@
       if (!ok) { fill('f-sales', { label: 'Recorded farm sales', value: null, why: 'the sales summary is not in right now' }); return; }
       getJSON(window.AtlasSales.url(st)).then(function (sum) {
         if (!mine()) return;
-        fill('f-sales', sum ? P.factSales(window.AtlasSales.tile(sum, fips), st, href) : { label: 'Recorded farm sales', value: null, why: 'the sales summary is not in right now' });
+        var fs = sum ? P.factSales(window.AtlasSales.tile(sum, fips), st, href) : { label: 'Recorded farm sales', value: null, why: 'the sales summary is not in right now' };
+        /* a state whose files give sale months (Florida): the through date is a month, never a day */
+        if (sum && sum.dates === 'month' && fs.date) fs.date = window.AtlasSales.month(sum.through);
+        fill('f-sales', fs);
       });
     });
   }

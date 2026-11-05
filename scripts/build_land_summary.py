@@ -549,13 +549,16 @@ def build_state(st, files, fetched=None):
         allcur += [r["ppa"] for r in county_rows(f, today) if inw(r, W["cur"]) and farm_comp(r)]
     src = SOURCES.get(st, {})
     one = files[0] if files else {}
-    return {
+    out = {
         "state": st, "record": src.get("record") or one.get("source"), "who": src.get("who"), "url": src.get("url"),
         "kinds": src.get("kinds"), "since_note": one.get("since_note"), "fetched": fetched[:10], "through": through.isoformat(),
         "windows": W, "min_acres": MIN_ACRES, "min_n": MIN_N,
         "state_med": stats(allcur),
         "counties": counties,
     }
+    if any(f.get("dates") == "month" for f in files):
+        out["dates"] = "month"      # sale months, not days (Florida): readers say "through Aug 2026", never a day
+    return out
 
 
 def load_state(st):
