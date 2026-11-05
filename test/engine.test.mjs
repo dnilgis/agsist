@@ -29,7 +29,8 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const WF = path.join(root, '.github/workflows');
 const workflows = fs.readdirSync(WF).filter((f) => f.endsWith('.yml'));
 const ENGINE = path.join(root, '.github/actions/engine/engine.sh');
-const NEEDS = /\b(scripts|test|build)\/|\bcd (scripts|test|build)\b|node --test/;
+// code from the engine paths: a path under them, a cd into them, a test runner, a module run (Nov 5, P1)
+const NEEDS = /\b(scripts|test|build)\/|\bcd (scripts|test|build)\b|node --test|\bnpm (test|run)\b|\bnpx playwright test\b|python3? -m (scripts|test|build)\b|\b(from|import) (scripts|test|build)\b/;
 const KEY = 'token: ${{ secrets.PRIVATE_REPO_TOKEN }}';
 const MODE = 'mode: ${{ vars.ENGINE_MODE }}';
 
@@ -49,7 +50,8 @@ function jobs(file) {
 }
 const isOwnCheckout = (s) => /uses: actions\/checkout@/.test(s.code) && !/^\s+(repository|path):/m.test(s.code);
 const isEngine = (s) => /uses: \.\/\.github\/actions\/engine\s*$/m.test(s.code);
-const runText = (s) => (s.code.match(/(?:^|\n)\s+(?:- )?run: [\s\S]*/) || [''])[0];
+// a run script, or an actions/github-script body (script:), from its key to the end of the step
+const runText = (s) => (s.code.match(/(?:^|\n)\s+(?:- )?(?:run|script): [\s\S]*/) || [''])[0];
 const needsCode = (job, s) => NEEDS.test(runText(s)) || /working-directory: (scripts|test)/.test(job.head);
 
 test('every job that runs engine code has the Engine checkout step, key and mode at step level, after its checkout and before the code', () => {
@@ -147,7 +149,16 @@ test('the action: pinned checkout, key not left on disk, a failed checkout reach
   assert.match(a, /continue-on-error: true/);
   assert.match(a, /CHECKOUT_OUTCOME: \$\{\{ steps\.checkout\.outcome \}\}/);
   assert.match(a, /HAVE_TOKEN: \$\{\{ inputs\.token != '' \}\}/);
-  assert.equal((a.match(/inputs\.token/g) || []).length, 2, 'the key goes to the checkout and the yes/no check, nowhere else');
+  // the key goes to the two checkouts (the run's same-named engine branch, then the default) and the
+  // yes/no check, nowhere else; each checkout that takes it leaves no credentials behind
+  assert.equal((a.match(/inputs\.token/g) || []).length, 3, 'the key goes to the checkouts and the yes/no check, nowhere else');
+  const steps = a.split(/\n(?=    - id: )/).slice(1);
+  for (const st of steps.filter((x) => /inputs\.token/.test(x) && !/HAVE_TOKEN/.test(x))) {
+    assert.match(st, /uses: actions\/checkout@[0-9a-f]{40}/, 'only a checkout step takes the key');
+    assert.match(st, /persist-credentials: false/, 'a checkout that takes the key leaves it off disk');
+    assert.equal((st.match(/inputs\.token/g) || []).length, 1);
+  }
+  assert.equal(steps.filter((x) => /inputs\.token/.test(x)).length, 3);
   const sh = read('.github/actions/engine/engine.sh');
   assert.doesNotMatch(sh, /\$\{?(PRIVATE_REPO_TOKEN|INPUT_TOKEN|TOKEN)\b/, 'engine.sh never reads the key');
   const conf = read('.github/engine-paths');
@@ -339,4 +350,205 @@ test('engine.sh pull and save: a local session gets the engine and saves its cha
   assert.match(r.stdout, /nothing to save/);
   assert.equal(g(d, 'status', '--porcelain'), '', 'the public checkout never sees the engine files');
   assert.doesNotMatch(fs.readFileSync(path.join(d, '.git/info/exclude'), 'utf8').replace(/^#.*$/mg, ''), /\S/, 'a local pull leaves info/exclude alone (shared by every worktree)');
+});
+
+// ---- curtain step P1 (Nov 5, 2026): the engine copy wins in private mode, and a run uses its own branch ----
+// A run on main in private mode uses the engine's copy of every engine path, even while this repository
+// still tracks the code; a run on fx/x uses the engine branch fx/x when the engine has one (a pull
+// request's head, or a dispatch on that branch: BUILD-RULES 62 and 66). With ENGINE_MODE unset nothing
+// changes. The tracked copy is set aside with a sparse checkout, so status stays clean, a bare
+// `git add -A` stages data only and a rebase over a code change on main still goes through.
+function engineAt(base, dir, files) {
+  const e = path.join(base, dir);
+  g(base, 'init', '-q', e);
+  for (const [p, s] of Object.entries(files)) write(e, p, s);
+  g(e, 'add', '-A'); g(e, 'commit', '-qm', 'engine');
+  return e;
+}
+const ENGINE_FILES = { 'scripts/a.py': 'ENGINE a\n', 'scripts/new.py': 'engine only\n', 'test/t.mjs': 'ENGINE t\n', 'build/b.sh': 'b\n' };
+const PAIR_FILES = { 'scripts/a.py': 'PAIRED a\n', 'test/t.mjs': 'paired t\n', 'test/newer.test.mjs': 'the branch test\n', 'build/b.sh': 'b\n' };
+
+test('plan: a run on fx/x tries the same-named engine branch first; main, the default branch and odd names do not', () => {
+  const d = publicRepo();
+  const out = path.join(tmp(), 'out');
+  const plan = (env) => { fs.writeFileSync(out, ''); const r = sh(d, `${E} plan`, { GITHUB_OUTPUT: out, MODE: 'private', HAVE_TOKEN: 'true', ...env }); assert.equal(r.status, 0, r.stdout + r.stderr); return fs.readFileSync(out, 'utf8'); };
+  assert.match(plan({ RUN_BRANCH: 'fx/curtainp1' }), /^paired=fx\/curtainp1$/m);
+  for (const b of ['main', 'engine-agsist', '', 'fx/a..b', 'fx/x;rm -rf /', 'fx/$(id)', '-x', 'fx/x.lock']) {
+    assert.match(plan({ RUN_BRANCH: b }), /^paired=$/m, `"${b}" must not pair`);
+  }
+  // dual mode, the variable unset: in-repo, no pairing, nothing set aside
+  fs.writeFileSync(out, '');
+  const r = sh(d, `${E} plan`, { GITHUB_OUTPUT: out, MODE: '', HAVE_TOKEN: 'true', RUN_BRANCH: 'fx/curtainp1' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.equal(fs.readFileSync(out, 'utf8'), 'private=false\n');
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'public a\n');
+  assert.equal(spawnSync('git', ['config', 'core.sparseCheckout'], { cwd: d, encoding: 'utf8' }).stdout.trim(), '');
+  assert.equal(g(d, 'status', '--porcelain'), '');
+});
+
+test('the action: with ENGINE_MODE unset every engine step is skipped; the default checkout runs only when no paired branch was checked out', () => {
+  const a = read('.github/actions/engine/action.yml');
+  const steps = Object.fromEntries(a.split(/\n(?=    - id: )/).slice(1).map((x) => [x.match(/- id: (\w+)/)[1], x]));
+  assert.deepEqual(Object.keys(steps), ['plan', 'paired', 'checkout', 'overlay']);
+  for (const k of ['paired', 'checkout', 'overlay']) assert.match(steps[k], /if: steps\.plan\.outputs\.private == 'true'/, `${k} runs only in private mode`);
+  assert.match(steps.paired, /if: .*steps\.plan\.outputs\.paired != ''/);
+  assert.match(steps.paired, /ref: \$\{\{ steps\.plan\.outputs\.paired \}\}/);
+  assert.match(steps.paired, /path: \.engine-pair/);
+  assert.match(steps.paired, /continue-on-error: true/, 'a missing paired branch falls back, never fails the job');
+  assert.match(steps.checkout, /if: .*steps\.paired\.outcome != 'success'/);
+  assert.match(steps.checkout, /ref: \$\{\{ steps\.plan\.outputs\.ref \}\}/);
+  // never paired on pull_request_target (merge-when-green.yml runs it with a write token)
+  for (const k of ['plan', 'overlay']) assert.match(steps[k], /RUN_BRANCH: \$\{\{ github\.event_name != 'pull_request_target' && \(github\.head_ref \|\| github\.ref_name\) \|\| '' \}\}/);
+  assert.match(steps.overlay, /PAIRED_OUTCOME: \$\{\{ steps\.paired\.outcome \}\}/);
+});
+
+test('overlay on main in private mode: the engine copy wins, status stays clean, add -A stages data only, a rebase over a code change works', () => {
+  const up = tmp();
+  g(up, 'init', '-q', '--bare', '-b', 'main');
+  const d = publicRepo();
+  write(d, 'scripts/only_here.py', 'merged a minute ago\n'); write(d, 'scripts/run.sh', '#!/bin/sh\necho hi\n');
+  fs.chmodSync(path.join(d, 'scripts/run.sh'), 0o755);
+  g(d, 'add', '-A'); g(d, 'commit', '-qm', 'newer code');
+  g(d, 'remote', 'add', 'origin', up); g(d, 'push', '-q', 'origin', 'main');
+  engineAt(d, '.engine-src', ENGINE_FILES);
+  const r = sh(d, `${E} overlay .engine-src`, { CHECKOUT_OUTCOME: 'success', GITHUB_EVENT_NAME: 'schedule', RUN_BRANCH: 'main', PAIRED_OUTCOME: 'skipped', PAIRED: '' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /engine: [0-9a-f]{40} from engine-agsist .*the engine copy$/m);
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'ENGINE a\n', 'the engine copy is the one that runs');
+  assert.equal(fs.readFileSync(path.join(d, 'test/t.mjs'), 'utf8'), 'ENGINE t\n');
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/new.py'), 'utf8'), 'engine only\n');
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/only_here.py'), 'utf8'), 'merged a minute ago\n', 'a file the engine lacks comes from this commit');
+  assert.ok(fs.statSync(path.join(d, 'scripts/run.sh')).mode & 0o100, 'kept executable');
+  assert.match(r.stdout, /::notice title=engine behind this commit::2 file\(s\)/);
+  assert.match(r.stdout, /::notice title=engine differs from this commit::2 file\(s\)/);
+  assert.ok(!fs.existsSync(path.join(d, '.engine-src')));
+  assert.equal(g(d, 'status', '--porcelain'), '', 'nothing to commit');
+  write(d, 'data/x.json', '2\n');
+  g(d, 'add', '-A');
+  assert.equal(g(d, 'diff', '--cached', '--name-only').trim(), 'data/x.json', 'a bare git add -A stages data only');
+  g(d, 'commit', '-qm', 'data');
+  const o = tmp(); g(o, 'clone', '-q', up, '.'); write(o, 'scripts/a.py', 'public a v2\n'); write(o, 'scripts/added.py', 'x\n');
+  g(o, 'add', '-A'); g(o, 'commit', '-qm', 'code'); g(o, 'push', '-q', 'origin', 'main');
+  g(d, 'pull', '-q', '--rebase', 'origin', 'main');
+  g(d, 'push', '-q', 'origin', 'main');
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'ENGINE a\n', 'the rebase left the engine copy alone');
+  assert.equal(g(d, 'status', '--porcelain'), '');
+  assert.equal(execFileSync('git', ['show', 'origin/main:scripts/a.py'], { cwd: d, encoding: 'utf8' }), 'public a v2\n', 'the public code was never touched');
+  assert.equal(execFileSync('git', ['show', '--name-only', '--format=', 'HEAD'], { cwd: d, encoding: 'utf8' }).trim(), 'data/x.json');
+  assert.equal(spawnSync('git', ['config', 'agsist.engineSparse'], { cwd: d, encoding: 'utf8' }).stdout.trim(), 'full', 'the site budget still walks it as a full checkout');
+});
+
+test('overlay on main in private mode keeps a job\'s own sparse checkout and still sets the code aside', () => {
+  const d = publicRepo();
+  write(d, 'other/page.html', 'p\n'); g(d, 'add', '-A'); g(d, 'commit', '-qm', 'page');
+  g(d, 'sparse-checkout', 'set', '--no-cone', '/scripts/a.py', '/data/x.json', '/.github/');
+  assert.ok(!fs.existsSync(path.join(d, 'other/page.html')));
+  engineAt(d, '.engine-src', ENGINE_FILES);
+  const r = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'workflow_run', RUN_BRANCH: 'main' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'ENGINE a\n');
+  assert.ok(!fs.existsSync(path.join(d, 'other/page.html')), 'the job\'s own pattern still leaves the page out');
+  assert.equal(fs.readFileSync(path.join(d, 'data/x.json'), 'utf8'), '1\n');
+  assert.equal(spawnSync('git', ['config', 'agsist.engineSparse'], { cwd: d, encoding: 'utf8' }).stdout.trim(), '', 'a partial checkout stays partial');
+  assert.equal(g(d, 'status', '--porcelain'), '');
+});
+
+test('overlay on a pull request: the same-named engine branch wins, tests included; with none, the commit\'s own code is tested', () => {
+  for (const ev of ['pull_request']) {
+    const d = publicRepo();
+    engineAt(d, '.engine-src', ENGINE_FILES);
+    engineAt(d, '.engine-pair', PAIR_FILES);
+    const r = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: ev, RUN_BRANCH: 'fx/x', PAIRED: 'fx/x', PAIRED_OUTCOME: 'success', CHECKOUT_OUTCOME: 'skipped' });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.match(r.stdout, /engine: [0-9a-f]{40} from fx\/x /);
+    assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'PAIRED a\n');
+    assert.equal(fs.readFileSync(path.join(d, 'test/newer.test.mjs'), 'utf8'), 'the branch test\n', 'the branch\'s own tests run');
+    assert.ok(!fs.existsSync(path.join(d, 'scripts/new.py')), 'nothing from the default engine branch');
+    assert.ok(!fs.existsSync(path.join(d, '.engine-pair')) && !fs.existsSync(path.join(d, '.engine-src')));
+    assert.equal(g(d, 'status', '--porcelain'), '');
+  }
+  // no paired branch (its checkout failed): the default engine adds what is missing, this commit's code is kept
+  const d = publicRepo();
+  engineAt(d, '.engine-src', ENGINE_FILES);
+  const r = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'pull_request', RUN_BRANCH: 'fx/x', PAIRED: 'fx/x', PAIRED_OUTCOME: 'failure', CHECKOUT_OUTCOME: 'success' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /from engine-agsist .*this commit's copy/);
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'public a\n');
+  assert.equal(spawnSync('git', ['config', 'core.sparseCheckout'], { cwd: d, encoding: 'utf8' }).stdout.trim(), '');
+  // both checkouts failed: loud failure, nothing run
+  const f = publicRepo({ tracked: false });
+  const rf = sh(f, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'pull_request', RUN_BRANCH: 'fx/x', PAIRED: 'fx/x', PAIRED_OUTCOME: 'failure', CHECKOUT_OUTCOME: 'failure' });
+  assert.equal(rf.status, 1);
+  assert.match(rf.stdout, /engine checkout failing/);
+});
+
+test('overlay on a branch run with no engine branch of its name (a dispatch on fx/x): this commit\'s code, as today', () => {
+  const d = publicRepo();
+  engineAt(d, '.engine-src', ENGINE_FILES);
+  const r = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'workflow_dispatch', RUN_BRANCH: 'fx/x', PAIRED: 'fx/x', PAIRED_OUTCOME: 'failure' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'public a\n');
+  // with one, the dispatch runs the branch's engine code even when the job checked out main (BUILD-RULES 62)
+  const p = publicRepo();
+  engineAt(p, '.engine-src', ENGINE_FILES); engineAt(p, '.engine-pair', PAIR_FILES);
+  const rp = sh(p, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'workflow_dispatch', RUN_BRANCH: 'fx/x', PAIRED: 'fx/x', PAIRED_OUTCOME: 'success' });
+  assert.equal(rp.status, 0, rp.stdout + rp.stderr);
+  assert.equal(fs.readFileSync(path.join(p, 'scripts/a.py'), 'utf8'), 'PAIRED a\n');
+});
+
+test('pair and pull with local bare repositories: fx/x uses the engine branch fx/x when it exists, else the default', () => {
+  const base = tmp();
+  const bare = path.join(base, 'engine.git');
+  const seed = path.join(base, 'seed');
+  g(base, 'init', '-q', '--bare', '-b', 'engine-agsist', bare);
+  fs.mkdirSync(seed); g(seed, 'init', '-q', '-b', 'engine-agsist');
+  for (const [p, s] of Object.entries(ENGINE_FILES)) write(seed, p, s);
+  g(seed, 'add', '-A'); g(seed, 'commit', '-qm', 'seed'); g(seed, 'push', '-q', bare, 'engine-agsist');
+  g(seed, 'checkout', '-q', '-b', 'fx/x'); write(seed, 'scripts/new.py', 'paired new\n');
+  g(seed, 'commit', '-qam', 'fx/x'); g(seed, 'push', '-q', bare, 'fx/x');
+  const d = path.join(base, 'agsist');
+  fs.mkdirSync(d);
+  publicRepo({ tracked: false, dir: d });
+  fs.appendFileSync(path.join(d, '.gitignore'), PATHS_IGNORE);
+  g(d, 'add', '.gitignore'); g(d, 'commit', '-qm', 'ignore the engine paths');
+  const env = { ENGINE_REMOTE: bare };
+  const pair = (b) => sh(d, `${E} pair ${b}`, env).stdout.trim();
+  assert.equal(pair('fx/x'), 'fx/x');
+  assert.equal(pair('fx/y'), 'engine-agsist');
+  assert.equal(pair('main'), 'engine-agsist');
+  assert.equal(pair("'fx/x;id'"), 'engine-agsist');
+  g(d, 'checkout', '-q', '-b', 'fx/x');
+  assert.equal(sh(d, `${E} pair`, env).stdout.trim(), 'fx/x', 'defaults to this checkout\'s branch');
+  let r = sh(d, `${E} pull`, env);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /\(fx\/x\)/);
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/new.py'), 'utf8'), 'paired new\n');
+  g(d, 'checkout', '-q', '-b', 'fx/y');
+  r = sh(d, `${E} pull`, env);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /\(engine-agsist\)/);
+  assert.equal(fs.readFileSync(path.join(d, 'scripts/new.py'), 'utf8'), 'engine only\n');
+  assert.equal(g(d, 'status', '--porcelain'), '');
+});
+
+test('pull_request_target never pairs: a head branch named like an engine branch cannot pick the code a write-token run uses', () => {
+  // merge-when-green.yml runs on pull_request_target with a write token; fx/flsales and fx/flgrab exist on the engine
+  const d = publicRepo();
+  const out = path.join(tmp(), 'out');
+  const r = sh(d, `${E} plan`, { GITHUB_OUTPUT: out, MODE: 'private', HAVE_TOKEN: 'true', GITHUB_EVENT_NAME: 'pull_request_target', RUN_BRANCH: 'fx/flsales' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(fs.readFileSync(out, 'utf8'), /^paired=$/m);
+  // even if a paired checkout were somehow present and reported success, the overlay ignores it
+  engineAt(d, '.engine-src', ENGINE_FILES);
+  engineAt(d, '.engine-pair', PAIR_FILES);
+  const o = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'pull_request_target', RUN_BRANCH: 'fx/flsales', PAIRED: 'fx/flsales', PAIRED_OUTCOME: 'success', CHECKOUT_OUTCOME: 'success' });
+  assert.equal(o.status, 0, o.stdout + o.stderr);
+  assert.match(o.stdout, /from engine-agsist /);
+  assert.notEqual(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'PAIRED a\n');
+  assert.ok(!fs.existsSync(path.join(d, 'test/newer.test.mjs')), 'nothing from the paired branch');
+  assert.ok(!fs.existsSync(path.join(d, '.engine-pair')), 'the paired checkout is removed');
+  // the same branch name on a plain pull_request still pairs
+  fs.writeFileSync(out, '');
+  sh(d, `${E} plan`, { GITHUB_OUTPUT: out, MODE: 'private', HAVE_TOKEN: 'true', GITHUB_EVENT_NAME: 'pull_request', RUN_BRANCH: 'fx/flsales' });
+  assert.match(fs.readFileSync(out, 'utf8'), /^paired=fx\/flsales$/m);
 });
