@@ -490,6 +490,9 @@ def county_summary(f, W, today):
     out["k12p"] = len(big(prev)) if out["n12p"] is not None else None
     if s:
         out["med"] = s
+    m = layer_median(cur)
+    if m:
+        out["m12"] = m
     if sp and out["n12p"] is not None:
         out["medp"] = sp
     out["u12"] = sum(1 for r in cur if r.get("acUnsure"))
@@ -525,6 +528,49 @@ def county_summary(f, W, today):
         # way the land-sales pages and Field Scout do
         out["large"] = [sale_row(r) + [land_type(r)] for r in known[:LARGEST]]
     return out
+
+
+def layer_median(cur):
+    """The Atlas map's recorded-sales layer (Sig, Nov 5, 2026): every county with a sale is shown, no minimum count;
+    the count goes beside the figure instead. Bare farm land of MIN_ACRES or more first; a county with none uses its
+    market sales of MIN_ACRES or more of any kind (buildings or forest included), and says so ("set": "any").
+    Smaller sales never price farmland here. d: the first and last sale date in the set."""
+    for name, rows in (("bare", [r for r in cur if farm_comp(r)]),
+                       ("any", [r for r in cur if stat_ok(r) and (num(r.get("acres")) or 0) >= MIN_ACRES])):
+        if rows:
+            v = sorted(r["ppa"] for r in rows)
+            ds = sorted(str(r["date"])[:10] for r in rows)
+            return {"med": js_round(quantile(v, 0.5)), "n": len(v), "set": name, "d": [ds[0], ds[-1]]}
+    return None
+
+
+LAYER_PATH = os.path.join(LAND, "atlas-layer.json")
+LAYER_SET = {"bare": 1, "any": 2}
+
+
+def build_layer(land=None):
+    """data/land/atlas-layer.json, the Atlas map's recorded-sales layer, from the state summaries on disk (one small
+    file, so the map reads one file, not one per state). Per county: [median $/acre or null, sales in that median,
+    1 bare land or 2 any 20+ acre sale (0: none priced), first sale date, last sale date, market sales in the window].
+    A state with a summary is covered; its counties missing here had no market sale in the window."""
+    land = land or LAND
+    states, counties = {}, {}
+    for p in sorted(glob.glob(os.path.join(land, "*", "summary.json"))):
+        with open(p, encoding="utf-8") as fh:
+            s = json.load(fh)
+        st = s.get("state")
+        if not st:
+            continue
+        states[st] = {"through": s.get("through"), "cur": (s.get("windows") or {}).get("cur"),
+                      "dates": s.get("dates") or "day", "who": s.get("who"), "record": s.get("record")}
+        for f, c in sorted((s.get("counties") or {}).items()):
+            if not c.get("n12"):
+                continue
+            m = c.get("m12") or {}
+            d = m.get("d") or [None, None]
+            counties[f] = [m.get("med"), m.get("n") or 0, LAYER_SET.get(m.get("set"), 0), d[0], d[1], c["n12"]]
+    return {"cols": ["med", "n", "set", "d0", "d1", "n12"], "min_acres": MIN_ACRES, "thin": MIN_N,
+            "states": states, "counties": counties}
 
 
 def build_state(st, files, fetched=None):
@@ -643,6 +689,19 @@ def main(argv):
             fh.write(text)
         withm = sum(1 for c in s["counties"].values() if c.get("med"))
         print("%s: %d counties, %d with a 12-month median, through %s, %.1f KB" % (st, len(s["counties"]), withm, s["through"], len(text.encode()) / 1024))
+    # the Atlas map layer, from every summary now on disk (a one-state run keeps the other states' rows)
+    lay = dump(build_layer())
+    old = open(LAYER_PATH, encoding="utf-8").read() if os.path.exists(LAYER_PATH) else None
+    if check:
+        if old != lay:
+            print("FAIL data/land/atlas-layer.json is not current; run python3 scripts/build_land_summary.py", file=sys.stderr)
+            bad += 1
+        else:
+            print("ok   Atlas sales layer current")
+    elif old != lay:
+        with open(LAYER_PATH, "w", encoding="utf-8") as fh:
+            fh.write(lay)
+        print("Atlas sales layer: %d counties, %.1f KB" % (len(json.loads(lay)["counties"]), len(lay.encode()) / 1024))
     return 1 if bad else 0
 
 
@@ -724,6 +783,25 @@ def selftest():
     ck("a middle counts bare farm land only", not farm_comp({"cls": "4 7", "acres": 80, "ppa": 9000}, "WI")
        and not farm_comp({"cls": "6", "acres": 80, "ppa": 9000}, "WI") and farm_comp({"cls": "4", "acres": 80, "ppa": 9000}, "WI")
        and not farm_comp({"cls": "4", "acres": 80, "ppa": 400}, "WI"))
+    # the Atlas map layer: every county with a sale, no minimum; bare land first, then any 20+ acre sale, never smaller
+    R = lambda d, ppa, ac, cls="4": {"date": d, "ppa": ppa, "acres": ac, "cls": cls}
+    ck("layer: one bare sale is a median of one", layer_median([R("2026-03-02", 9000, 40)]) ==
+       {"med": 9000, "n": 1, "set": "bare", "d": ["2026-03-02", "2026-03-02"]})
+    ck("layer: bare land wins over a sale with buildings", layer_median([R("2026-01-05", 9000, 40), R("2026-02-05", 20000, 40, "4 1")])["n"] == 1)
+    ck("layer: no bare land, a 20+ acre sale with buildings, said so", layer_median([R("2026-01-05", 20000, 40, "4 1"), R("2026-04-05", 10000, 30, "4 1")]) ==
+       {"med": 15000, "n": 2, "set": "any", "d": ["2026-01-05", "2026-04-05"]})
+    ck("layer: small lots never price farmland", layer_median([R("2026-01-05", 90000, 3)]) is None and layer_median([]) is None)
+    ck("layer: under $500 an acre is no price", layer_median([R("2026-01-05", 400, 80)]) is None)
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "il"))
+        with open(os.path.join(td, "il", "summary.json"), "w") as fh:
+            json.dump({"state": "IL", "through": "2026-10-31", "windows": {"cur": ["2025-11-01", "2026-10-31"]}, "counties": {
+                "17001": {"n12": 3, "m12": {"med": 9000, "n": 2, "set": "bare", "d": ["2026-01-05", "2026-04-05"]}},
+                "17003": {"n12": 2}, "17005": {"n12": 0}}}, fh)
+        lay = build_layer(td)
+        ck("layer file: priced, unpriced, zero-sale counties", lay["counties"] == {"17001": [9000, 2, 1, "2026-01-05", "2026-04-05", 3],
+           "17003": [None, 0, 0, None, None, 2]} and lay["states"]["IL"]["dates"] == "day" and lay["thin"] == MIN_N)
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 
