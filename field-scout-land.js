@@ -747,6 +747,18 @@
     row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls, st)) + ' <span class="fl-note">(' + esc(FSLand.classNote(r.cls, st)) + ')</span>' : NOTIN);
     row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
     row(IL ? 'State transfer tax' : VT ? 'Property transfer tax' : NJ ? 'Realty transfer fee' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : NJ ? ' (the deed abstract marks the fee exempt)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
+    // Return detail (fetch_land_sales EXTRA, Nov 5), worded as the county sale pages word it
+    var RRW = { none: 'None', life: 'The seller keeps a life estate (use of the land for life).', ease: 'The seller keeps an easement.', other: 'The seller keeps other rights in the land.' };
+    if (has('rr')) row('Rights the seller keeps', v(r.rr) != null ? esc(RRW[r.rr] || r.rr) : NOTIN);
+    if (has('mfl')) row('Managed forest acres', v(r.mfl) != null ? esc(String(+r.mfl)) + ' acres' : NOTIN, 'Acres in Wisconsin\u2019s Managed Forest Law program.');
+    var useW = function (x) { return String(x).replace(/^\d+\.\s*/, ''); };
+    if (has('pp')) row('Personal property in the price', v(r.pp) != null ? (+r.pp > 0 ? fm(+r.pp) + ' (taken out of the net price above)' : 'None') : NOTIN);
+    if (has('fin')) row('Financing', v(r.fin) != null ? esc(r.fin) : NOTIN);
+    if (has('use0')) row('Use before and after', v(r.use0) != null ? 'Before the sale: ' + esc(useW(r.use0)) + (v(r.use1) != null ? '; the buyer’s use: ' + esc(useW(r.use1)) : '') : NOTIN);
+    if (has('glv')) row('Town listed value', v(r.glv) != null ? fm(+r.glv) : NOTIN, 'The town grand list value on the return.');
+    if (has('lsf')) row('Living space', v(r.lsf) != null ? (+r.lsf > 0 ? esc((+r.lsf).toLocaleString('en-US')) + ' square feet (main lot)' : 'None on the main lot') : NOTIN);
+    if (has('yb')) row('Year built', v(r.yb) != null ? esc(r.yb) + ' (main lot)' : NOTIN, 'Blank on the deed abstract when the lot has no house or the assessor left it out.');
+    if (has('avl')) row('Assessed value, main lot', v(r.avl) != null ? fm(+r.avl) + ' land' + (v(r.avb) != null ? ', ' + fm(+r.avb) + ' buildings' : '') + (v(r.avy) != null ? ' (' + esc(r.avy) + ' tax list)' : '') : NOTIN, 'Farmland-assessed lots (3B) are valued on their farm use, far under a sale price.');
     var why = FSLand.notMarketWhy(r);
     row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court, foreclosure, trade and partition deeds, shares of the land and fee-exempt transfers.');
     row('Verified', 'No', 'Taken from public transfer records, not confirmed with a party to the sale.');
