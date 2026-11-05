@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
  "items": [
   {
+   "id": "2026-11-05-wxcard2",
+   "date": "2026-11-05",
+   "title": "Home weather: weather and season totals only",
+   "line": "Soil temperature, fall nitrogen and the spray read left the home page. Their own pages keep them.",
+   "link": "/spray"
+  },
+  {
    "id": "2026-11-04-rain-weather",
    "date": "2026-11-04",
    "title": "County rain pages add heat and frost",
