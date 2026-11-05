@@ -56,7 +56,6 @@
     .ts-src{font-size:.84rem!important;color:var(--text-muted)!important}
     .ts-note{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.75rem 1rem;margin:0 0 1rem}
     .ts-note p{margin:0;color:var(--text)}
-    .ts-leaf{display:block;width:100%;max-width:520px;height:auto;margin:.2rem 0 .6rem}
     .ts-gal{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;margin:.4rem 0 .4rem;align-items:start}
     .ts-gal figure{margin:0;min-width:0}
     .ts-gal a{display:block;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
@@ -101,6 +100,8 @@
     @media print{#site-header,#site-footer,.skip,.breadcrumb,.ts-jump,.ts-seg,.ts-btn,[data-signup-ask]{display:none!important}html,body,main{background:#fff!important;color:#000!important}.ts p,.ts li,.ts b,.ts-v{color:#000!important}}
   </style>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "@id": "https://agsist.com/tar-spot#article", "headline": "Tar spot of corn: what to look for, and when a spray pays", "url": "https://agsist.com/tar-spot", "description": "Tar spot of corn in plain words: where it is, how to tell it from rust, when to scout, when a fungicide pays, a spray break-even calculator, and myths.", "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-11-05", "dateModified": "2026-11-05", "inLanguage": "en-US", "about": {"@type": "Thing", "name": "Tar spot of corn"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"}, {"@type": "ListItem", "position": 3, "name": "Tar spot", "item": "https://agsist.com/tar-spot"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where is tar spot now?", "acceptedAnswer": {"@type": "Answer", "text": "Tar spot was first confirmed in the United States in 2015, in Indiana and Illinois. It has since spread through the Corn Belt and beyond: North Dakota State University found it in nine North Dakota counties in 2024, and NC State Extension confirmed North Carolina's first case, in Randolph County, in 2026. The Crop Protection Network keeps the county map of confirmed finds."}}, {"@type": "Question", "name": "What does tar spot look like?", "acceptedAnswer": {"@type": "Answer", "text": "Small, raised black spots that sit in the leaf tissue and feel bumpy, like flecks of tar. They do not rub off. A tan or yellow halo (a fisheye) may show around some spots, but it does not have to be there. Look at both sides of the lower, ear and upper leaves."}}, {"@type": "Question", "name": "How do I tell tar spot from rust or insect droppings?", "acceptedAnswer": {"@type": "Answer", "text": "Insect droppings wipe off with a wet thumb; tar spot does not. Rust pustules break open and shed orange or brown spores, but late in the season rust can form dark spots that also stay put, so the scrape test is not the final word. If you are not sure, or it is the first find in your county, send a sample to your state's plant diagnostic lab."}}, {"@type": "Question", "name": "When should I spray fungicide for tar spot?", "acceptedAnswer": {"@type": "Answer", "text": "University guidance puts the main decision from tassel (VT) through milk (R3), when tar spot is in the field or close by, the weather favors it and the hybrid is susceptible. A pass much earlier can wear off before the disease period. Later passes have less yield left to protect. Check the label for rates, crop stage limits and days to harvest."}}, {"@type": "Question", "name": "Does a second fungicide pass for tar spot pay?", "acceptedAnswer": {"@type": "Answer", "text": "Only if the extra bushels it adds over one pass cover its own cost. Better disease control is not the same as more grain: in recent Purdue (2024) and Wisconsin (2025) trials, fungicide held tar spot down while the yield gains were too small to call real. Compare a second pass with one pass, not with untreated corn. The calculator on this page does that arithmetic."}}, {"@type": "Question", "name": "How many bushels does a fungicide pass need to break even?", "acceptedAnswer": {"@type": "Answer", "text": "Divide the cost of the pass by your corn price. A $32 an acre pass (product plus application) at $4 corn needs 8 bushels an acre. Add any bushels the trip itself knocks down. That is arithmetic, not a promise the pass will save that much."}}, {"@type": "Question", "name": "Does tar spot make mycotoxins in corn silage?", "acceptedAnswer": {"@type": "Answer", "text": "Do not assume it does. The Crop Protection Network's tar spot overview warns about fast drydown, not a tar spot toxin. Dead leaves can make the plant dry down fast, so check whole-plant moisture before you chop. If a feed test finds a toxin such as DON, look for the ear rot that makes it."}}]}]}</script>
+<link rel="stylesheet" href="/components/src-fold.css?v=1">
+<script src="/components/src-fold.js?v=1" defer></script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -152,19 +153,6 @@
       <p>The Crop Protection Network keeps the county map of confirmed finds for the current year. A county with no find on that map is not a clean county: the map records where someone looked, found it and reported it. A find in your county does not mean your field needs a spray either.</p>
 
       <h2 id="identify">How to identify it</h2>
-      <svg class="ts-leaf" viewBox="0 0 520 120" role="img" aria-labelledby="ts-leaf-t">
-        <title id="ts-leaf-t">Drawing of a corn leaf with scattered small black raised spots, some with a pale halo</title>
-        <path d="M6 64 C120 18 380 14 514 58 C380 96 120 104 6 64 Z" fill="#5f8f3a" stroke="#3d6324" stroke-width="2"/>
-        <path d="M10 64 C160 54 360 52 510 58" stroke="#c9dca8" stroke-width="2" fill="none"/>
-        <g fill="#111">
-          <circle cx="92" cy="50" r="3"/><circle cx="128" cy="74" r="2.5"/><circle cx="160" cy="44" r="3.5"/><circle cx="196" cy="80" r="3"/>
-          <circle cx="224" cy="38" r="2.5"/><circle cx="250" cy="70" r="3"/><circle cx="286" cy="46" r="3.5"/><circle cx="318" cy="78" r="2.5"/>
-          <circle cx="350" cy="42" r="3"/><circle cx="384" cy="70" r="3"/><circle cx="420" cy="50" r="2.5"/><circle cx="452" cy="66" r="2"/>
-          <circle cx="170" cy="62" r="2"/><circle cx="300" cy="62" r="2"/>
-        </g>
-        <g fill="none" stroke="#e8d27a" stroke-width="2.5"><circle cx="160" cy="44" r="7.5"/><circle cx="286" cy="46" r="7.5"/></g>
-      </svg>
-      <p class="ts-src" style="margin-top:0">A drawing, not a photo. Two of the spots carry the pale "fisheye" halo; most do not.</p>
       <div class="ts-gal" role="list" aria-label="Photos of tar spot on corn leaves">
         <figure role="listitem"><a href="/img/tar-spot/tar-spot-closeup-1200.jpg" aria-label="Open the full-size photo: Close-up: black, raised spots, many with yellow-orange areas around them, and some tan dead tissue."><picture><source type="image/webp" srcset="/img/tar-spot/tar-spot-closeup-600.webp 600w, /img/tar-spot/tar-spot-closeup-1200.webp 1200w" sizes="(max-width:600px) 46vw, 180px"><img src="/img/tar-spot/tar-spot-closeup-600.jpg" srcset="/img/tar-spot/tar-spot-closeup-600.jpg 600w, /img/tar-spot/tar-spot-closeup-1200.jpg 1200w" sizes="(max-width:600px) 46vw, 180px" width="450" height="600" alt="Close-up of a corn leaf with black raised spots, yellow-orange areas around many of them and some tan dead tissue." decoding="async"></picture></a><figcaption>Close-up: black, raised spots, many with yellow-orange areas around them, and some tan dead tissue.</figcaption></figure>
         <figure role="listitem"><a href="/img/tar-spot/tar-spot-early-1200.jpg" aria-label="Open the full-size photo: Scattered black, raised spots on a leaf in the field. Some spots have tan halos, and other tan lesions are present."><picture><source type="image/webp" srcset="/img/tar-spot/tar-spot-early-600.webp 600w, /img/tar-spot/tar-spot-early-1200.webp 1200w" sizes="(max-width:600px) 46vw, 180px"><img src="/img/tar-spot/tar-spot-early-600.jpg" srcset="/img/tar-spot/tar-spot-early-600.jpg 600w, /img/tar-spot/tar-spot-early-1200.jpg 1200w" sizes="(max-width:600px) 46vw, 180px" width="450" height="600" alt="A corn leaf in the field with scattered black spots. Some spots have tan halos and there are other tan marks." loading="lazy" decoding="async"></picture></a><figcaption>Scattered black, raised spots on a leaf in the field. Some spots have tan halos, and other tan lesions are present.</figcaption></figure>
@@ -311,7 +299,7 @@
 
       <div data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:tar-spot"></div>
 
-      <h2 id="sources">Sources</h2>
+      <details class="src-fold"><summary><h2 id="sources">Sources</h2></summary>
       <p class="ts-src">Named here with their dates, not linked. Search the title to find each one.</p>
       <ul class="srcs">
         <li>Crop Protection Network (Telenko and others), An Overview of Tar Spot, July 9, 2026.</li>
@@ -338,6 +326,7 @@
         <li>Calculator prices: CBOT corn futures (delayed) and each state's median elevator basis from <a href="/basis">our basis page</a>; custom spraying rates from state custom rate surveys, as on <a href="/custom-rates">our custom rates page</a>.</li>
       </ul>
 
+</details>
       <h2>Related</h2>
       <ul class="rel">
         <li><a href="/spray">Spray advisory</a></li>
