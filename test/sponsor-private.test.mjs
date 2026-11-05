@@ -172,12 +172,18 @@ test("end to end: sponsor_publish.py posts through the worker route and the port
     writeFileSync(join(dir, "reports", slug + ".json"), JSON.stringify(report));
     const out = await new Promise((ok, no) => {
       const p = spawn("python3", ["scripts/sponsor_publish.py", "publish"], { cwd: ROOT,
-        env: Object.assign({}, process.env, { SPONSOR_PRIVATE_DIR: dir, LIST_URL: "http://127.0.0.1:" + srv.address().port, LIST_TOKEN: "tok-e2e", UNSUB_SECRET: "sec" }) });
+        env: Object.assign({}, process.env, { GITHUB_ACTIONS: "true", SPONSOR_PRIVATE_DIR: dir, LIST_URL: "http://127.0.0.1:" + srv.address().port, LIST_TOKEN: "tok-e2e", UNSUB_SECRET: "sec" }) });
       let o = ""; p.stdout.on("data", (d) => { o += d; }); p.stderr.on("data", (d) => { o += d; });
-      p.on("close", (code) => code === 0 ? ok(o) : no(new Error("exit " + code + ": " + o.replace(LIVE, "<live>"))));
+      p.on("close", (code) => code === 0 ? ok(o) : no(new Error("exit " + code + ": " + o.split(LIVE).join("<live>").split(OLD).join("<old>"))));
     });
     assert.match(out, new RegExp("sent 1 report\\(s\\): " + slug));
-    assert.ok(!out.includes(LIVE) && !out.includes(OLD), "the log names no token");
+    // Run as in Actions (GITHUB_ACTIONS=true, here and in CI alike): the first lines are ::add-mask:: for
+    // both tokens, which the runner consumes and blanks from the log; no other line may name a token.
+    const lines = out.split("\n"), masks = lines.filter((l) => l.startsWith("::add-mask::"));
+    assert.deepEqual(masks.map((l) => l.slice(12)).sort(), [LIVE, OLD].sort(), "both tokens masked, once each");
+    assert.deepEqual(lines.slice(0, masks.length), masks, "the masks come before any other line");
+    const rest = lines.slice(masks.length).join("\n");
+    assert.ok(!rest.includes(LIVE) && !rest.includes(OLD), "the log names no token outside its masks");
     const links = JSON.parse(readFileSync(join(dir, "links.json"), "utf8"));
     assert.equal(links.signed, true);
     assert.match(links.links[slug], new RegExp("^https://agsist\\.com/sponsor-report\\?r=" + slug + "-" + LIVE + "&k=[0-9a-f]{16}$"));
