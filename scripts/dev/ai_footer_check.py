@@ -43,6 +43,10 @@ MARKS = [
     ("claude.ai/code link", re.compile(r"(?i)^<?https?://claude\.ai/code\S*?>?$")),
 ]
 COMMIT_PAGES = 3   # 100 commits a page; GitHub lists at most 250 for a pull request
+# Nov 5, 2026 (Sig): the repository is public, so a body or commit message says what changed for readers.
+# A long one is a warning only, never a failure.
+LONG = 1200
+HINT = "say what changed for readers; method goes in private notes"
 
 
 def found(text):
@@ -85,6 +89,19 @@ def check(body, commits):
                    "job:" % len(bad)] + ["  " + b for b in bad], warnings
 
 
+def wording(body, commits):
+    """Warning lines for a body (footer lines left out) or commit message over about LONG characters."""
+    out = []
+    n = len(strip(body).strip())
+    if n > LONG:
+        out.append("the pull request body is %d characters (over about %d): %s" % (n, LONG, HINT))
+    for sha, msg in commits:
+        m = len(strip(msg).strip())
+        if m > LONG:
+            out.append("commit %s message is %d characters (over about %d): %s" % (sha[:10], m, LONG, HINT))
+    return out
+
+
 def gh_get(path, token):
     req = urllib.request.Request(API + path, headers={
         "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "agsist-pr-checks"})
@@ -125,10 +142,13 @@ def main():
         # commit lines only warn (the squash leaves them out), so unread commits are said, not failed
         print("the pull request's commits could not be read (%s); only the body was checked" % str(e)[:80])
     ok, lines, warnings = check(body, commits)
-    print("\n".join(lines + warnings))
+    long_lines = wording(body, commits)
+    print("\n".join(lines + warnings + long_lines))
     if os.environ.get("GITHUB_ACTIONS"):
         if warnings:
             print("::warning title=AI footer in commit messages::" + warnings[0])
+        for w in long_lines:
+            print("::warning title=Long wording::" + w)
         if not ok:
             print("::error title=AI footer in the pull request body::" + lines[0])
     return 0 if ok else 1
@@ -186,6 +206,16 @@ def selftest():
     ck(strip(REAL_316) == REAL_316.split("\n\n\U0001F916")[0], "strip: #316's body loses its footer and the blank lines before it")
     ck(strip(REAL_304) == REAL_304.split("\n\nCo-Authored-By")[0], "strip: #304's lines and the --- rule between them go")
     ck(strip("a\n\nb\n") == "a\n\nb" and strip("") == "" and strip(None) == "", "strip keeps a clean text")
+    # wording: a long body or commit message warns (never fails); the footer does not count toward the length
+    long_body = "Fixes the town page. " * 70
+    ck(len(long_body) > LONG and check(long_body, [])[0] and len(wording(long_body, [])) == 1
+       and HINT in wording(long_body, [])[0], "a body over about 1,200 characters warns and still passes")
+    ck(wording("Fixes the town page.", [("c" * 40, "Town page fix")]) == [], "a short body and commit message do not warn")
+    edge = "x" * LONG
+    ck(wording(edge + "\n\n\U0001F916 Generated with [Claude Code](https://claude.com/claude-code)\n", []) == [],
+       "the footer does not count toward the length")
+    w = wording("Short.", [("d" * 40, long_body)])
+    ck(len(w) == 1 and w[0].startswith("commit dddddddddd message is"), "a long commit message warns by its sha")
     print("\n%d failed" % len(fails) if fails else "\nall ai_footer_check checks passed")
     return 1 if fails else 0
 

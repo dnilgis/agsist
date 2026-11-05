@@ -330,8 +330,8 @@ test("monthly land run: the 3rd, Sig's approval noted, one run at a time", () =>
 test("land run: timestamp-only changes are put back before anything is built from the files", () => {
   const y = read(".github/workflows/land-data.yml");
   const at = (re) => { const m = re.exec(y); assert.ok(m, String(re)); return m.index; };
-  const restore = at(/\n {8}run: python3 scripts\/land_keep_stamp_only\.py data\/land\n/);
-  for (const b of [/run: python scripts\/build_land_summary\.py/, /run: OMP_NUM_THREADS=1 python scripts\/build_land_index\.py\n/, /run: python scripts\/build_land_sales\.py/])
+  const restore = at(/\n {8}run: (?:python3 scripts\/dev\/quiet\.py [a-z0-9-]+ -- )?python3 scripts\/land_keep_stamp_only\.py data\/land\n/);
+  for (const b of [/run: (?:python3 scripts\/dev\/quiet\.py [a-z0-9-]+ -- )?python scripts\/build_land_summary\.py/, /run: OMP_NUM_THREADS=1 (?:python3 scripts\/dev\/quiet\.py [a-z0-9-]+ -- )?python scripts\/build_land_index\.py\n/, /run: (?:python3 scripts\/dev\/quiet\.py [a-z0-9-]+ -- )?python scripts\/build_land_sales\.py/])
     assert.ok(restore < at(b), "the restore runs before " + b);
   assert.ok(restore > at(/fetch_land_sales\.py --from "\$RUNNER_TEMP\/wi\/build" WI/), "and after the last fetch");
 });
@@ -343,7 +343,7 @@ test("land run: a refused page build still commits data/land, never the pages, a
   const step = (name) => (y.split(/\n      - name: /).find((s) => s.startsWith(name)) || "");
   const pages = step("Build the farm sale pages");
   assert.match(pages, /\n        id: pages\n/); assert.match(pages, /\n        continue-on-error: true\n/);
-  assert.match(pages, /run: python scripts\/build_land_sales\.py$/, "the build itself is unchanged (its leak guard stays)");
+  assert.match(pages, /run: (?:python3 scripts\/dev\/quiet\.py [a-z0-9-]+ -- )?python scripts\/build_land_sales\.py$/, "the build itself is unchanged (its leak guard stays)");
   const commit = step("Commit if changed");
   assert.match(commit, /PAGES: \$\{\{ steps\.pages\.outcome \}\}/);
   assert.match(commit, /cp -r --parents data\/land \/tmp\/ld\//, "data/land is always taken");

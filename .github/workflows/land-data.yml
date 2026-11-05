@@ -109,18 +109,18 @@ jobs:
         run: pip install openpyxl==3.1.5 numpy==2.5.4 pyarrow==26.0.0
       - name: Selftests
         run: |
-          python scripts/probe_land_services.py --selftest
-          python scripts/fetch_land_sales.py --selftest
-          python scripts/land_keys.py --selftest
-          python scripts/land_names.py --selftest
-          python scripts/land_keep_stamp_only.py --selftest
-          python scripts/comp_report_live.py --selftest
-          python scripts/wi_retr_browser.py --selftest
-          python scripts/probe_field_layers.py --selftest
-          python scripts/build_land_summary.py --selftest
-          python scripts/land_soil.py --selftest
-          python scripts/land_soil_raster.py --selftest
-          OMP_NUM_THREADS=1 python scripts/build_land_index.py --selftest
+          python3 scripts/dev/quiet.py selftest-probe-land-services -- python scripts/probe_land_services.py --selftest
+          python3 scripts/dev/quiet.py selftest-fetch-land-sales -- python scripts/fetch_land_sales.py --selftest
+          python3 scripts/dev/quiet.py selftest-land-keys -- python scripts/land_keys.py --selftest
+          python3 scripts/dev/quiet.py selftest-land-names -- python scripts/land_names.py --selftest
+          python3 scripts/dev/quiet.py selftest-land-keep-stamp-only -- python scripts/land_keep_stamp_only.py --selftest
+          python3 scripts/dev/quiet.py selftest-comp-report-live -- python scripts/comp_report_live.py --selftest
+          python3 scripts/dev/quiet.py selftest-wi-retr-browser -- python scripts/wi_retr_browser.py --selftest
+          python3 scripts/dev/quiet.py selftest-probe-field-layers -- python scripts/probe_field_layers.py --selftest
+          python3 scripts/dev/quiet.py selftest-build-land-summary -- python scripts/build_land_summary.py --selftest
+          python3 scripts/dev/quiet.py selftest-land-soil -- python scripts/land_soil.py --selftest
+          python3 scripts/dev/quiet.py selftest-land-soil-raster -- python scripts/land_soil_raster.py --selftest
+          OMP_NUM_THREADS=1 python3 scripts/dev/quiet.py selftest-build-land-index -- python scripts/build_land_index.py --selftest
       - name: pdftotext for the probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         timeout-minutes: 5
@@ -157,9 +157,9 @@ jobs:
         run: |
           T="${{ inputs.task }}"
           case "$T" in
-            discover:*) python scripts/probe_land_services.py "--discover=$(echo "${T#discover:}" | tr -cd 'A-Za-z,')" ;;
-            discover|all) python scripts/probe_land_services.py --discover ;;
-            *) python scripts/probe_land_services.py ;;
+            discover:*) python3 scripts/dev/quiet.py parcel-services -- python scripts/probe_land_services.py "--discover=$(echo "${T#discover:}" | tr -cd 'A-Za-z,')" ;;
+            discover|all) python3 scripts/dev/quiet.py parcel-services -- python scripts/probe_land_services.py --discover ;;
+            *) python3 scripts/dev/quiet.py parcel-services -- python scripts/probe_land_services.py ;;
           esac
       # Dispatch only (never on the schedule): the public services behind Field Scout's
       # "on and around this field" card. Answers go to data/land-raw/layers (raw branch),
@@ -240,24 +240,24 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'
-        run: bash scripts/pull_raw.sh data/land-src/fl
+        run: python3 scripts/dev/quiet.py fl-files -- bash scripts/pull_raw.sh data/land-src/fl
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
         # VT: the statewide transfer return file (Parquet, about 85 MB); the dated copy goes to the raw branch below
         # NJ: the SR-1A yearly deed files (about 12 MB each, dated copies to the raw branch) and the MOD-IV 2026 list
         # (270 MB, read from a temporary file; its farm lots go to the raw branch)
-        run: python scripts/fetch_land_sales.py MN IL IN VT NJ FL || echo "::warning::no state's transfers were written"
+        run: python3 scripts/dev/quiet.py transfers -- python scripts/fetch_land_sales.py MN IL IN VT NJ FL || echo "::warning::no state's transfers were written"
       - name: Vermont transfers only
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.probe && inputs.task == 'vt' }}
-        run: python scripts/fetch_land_sales.py VT || echo "::warning::Vermont transfers were not written"
+        run: python3 scripts/dev/quiet.py transfers-vt -- python scripts/fetch_land_sales.py VT || echo "::warning::Vermont transfers were not written"
       - name: New Jersey deeds only
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.probe && inputs.task == 'nj' }}
         timeout-minutes: 45
-        run: python scripts/fetch_land_sales.py NJ || echo "::warning::New Jersey deeds were not written"
+        run: python3 scripts/dev/quiet.py transfers-nj -- python scripts/fetch_land_sales.py NJ || echo "::warning::New Jersey deeds were not written"
       - name: Florida sales only
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.probe && inputs.task == 'fl' }}
-        run: python scripts/fetch_land_sales.py FL || echo "::warning::Florida sales were not written"
+        run: python3 scripts/dev/quiet.py transfers-fl -- python scripts/fetch_land_sales.py FL || echo "::warning::Florida sales were not written"
       - name: Wisconsin transfer returns (browser)
         continue-on-error: true  # a Wisconsin browser failure must never drop the other states' commit (Nov 3)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-newest' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
@@ -271,9 +271,9 @@ jobs:
           T="${{ inputs.task }}"
           M=$(echo "$T" | sed -n 's/^wi-transfers:\([0-9][0-9]*\)$/\1/p')
           if [ "$T" = "wi-transfers" ] || [ -n "$M" ]; then NEW=""; MERGE=""; else NEW="--newest-only"; MERGE="--merge"; fi
-          "$RUNNER_TEMP/pw/bin/python" scripts/wi_retr_browser.py --fetch "$RUNNER_TEMP/wi" --months "${M:-120}" $NEW || echo "::warning::Wisconsin monthly reports were not read"
+          python3 scripts/dev/quiet.py wi-reports -- "$RUNNER_TEMP/pw/bin/python" scripts/wi_retr_browser.py --fetch "$RUNNER_TEMP/wi" --months "${M:-120}" $NEW || echo "::warning::Wisconsin monthly reports were not read"
           if [ -f "$RUNNER_TEMP/wi/build/wi-retr.csv" ]; then
-            python scripts/fetch_land_sales.py --from "$RUNNER_TEMP/wi/build" WI $MERGE || echo "::warning::Wisconsin transfers were not written"
+            python3 scripts/dev/quiet.py transfers-wi -- python scripts/fetch_land_sales.py --from "$RUNNER_TEMP/wi/build" WI $MERGE || echo "::warning::Wisconsin transfers were not written"
           fi
       # Put back every land file whose only change is a timestamp BEFORE anything is built from them.
       # The summaries, the index and the sale pages read fetched_utc (the through date, "read <day>");
@@ -281,18 +281,18 @@ jobs:
       # not, and --check failed on main (Nov 3: Wisconsin re-read September only, stamped Nov 3).
       - name: Keep timestamp-only changes out of the build
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
-        run: python3 scripts/land_keep_stamp_only.py data/land
+        run: python3 scripts/dev/quiet.py keep-stamp-only -- python3 scripts/land_keep_stamp_only.py data/land
       # The Farmland Atlas sale summaries (data/land/<st>/summary.json) from the county files just
       # written, or the committed ones when this run fetched nothing. Offline; refuses a summary
       # that carries a source name. Same command builds them locally.
       - name: Build Atlas sale summaries
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
-        run: python scripts/build_land_summary.py
+        run: python3 scripts/dev/quiet.py land-summaries -- python scripts/build_land_summary.py
       # The farmland sale index (data/land/index.json; a section of /land-sales/ since Oct 29, 2026) from the same county
       # files. Offline; refuses output that carries a source name.
       - name: Build the farmland sale index
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
-        run: OMP_NUM_THREADS=1 python scripts/build_land_index.py
+        run: OMP_NUM_THREADS=1 python3 scripts/dev/quiet.py land-index -- python scripts/build_land_index.py
       # The farm sale pages (/land-sales/: one per IL and WI county, the monthly update, the hub and its
       # sitemap) and their data (data/land-sales/, names only under data/land/names/, robots-blocked).
       # Offline; refuses to write a buyer or seller name outside data/land/, and then writes no page at all.
@@ -303,7 +303,7 @@ jobs:
         id: pages
         continue-on-error: true
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
-        run: python scripts/build_land_sales.py
+        run: python3 scripts/dev/quiet.py land-pages -- python scripts/build_land_sales.py
       - name: Save raw answers to the raw branch
         if: ${{ !cancelled() }}
         env:

@@ -19,6 +19,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import vm from 'node:vm';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -115,4 +116,48 @@ test('pages.yml is the only workflow that deploys Pages', () => {
   assert.ok(files.length > 100, `only ${files.length} workflows; the folder moved`);
   const deployers = files.filter((f) => /uses: actions\/(deploy-pages|upload-pages-artifact)@/.test(code(read(f))));
   assert.deepEqual(deployers, ['pages.yml']);
+});
+
+// Nov 5, 2026 (Sig: hide how the site works): the published copies of components/*.js|css and css/*.css are
+// minified in _site; the repository files, names and ?v= URLs stay; no source map; one pinned minifier.
+test('pages.yml minifies the published copy with the pinned minifier, and no source map ships', () => {
+  const pub = fs.readFileSync(path.join(root, 'scripts/pages_publish.py'), 'utf8');
+  const ver = (pub.match(/^TERSER_VERSION = "(\d+\.\d+\.\d+)"/m) || [])[1];
+  assert.ok(ver, 'pages_publish.py pins TERSER_VERSION to an exact version');
+  assert.match(pages, new RegExp(`--prefix "\\$RUNNER_TEMP/minify" "terser@${ver.replace(/\./g, '\\.')}"`));
+  assert.match(pages, /--ignore-scripts --prefix "\$RUNNER_TEMP\/minify"/);
+  assert.match(pages, /python3 scripts\/pages_publish\.py --stage _site --minify --terser "\$RUNNER_TEMP\/minify\/node_modules\/terser"/);
+  assert.match(pages, /_site\/components\/\*\.map/);
+  const prc = read('pr-checks.yml');
+  assert.match(prc, new RegExp(`TERSER_VERSION: '${ver.replace(/\./g, '\\.')}'`), 'pr-checks installs the same terser');
+  assert.doesNotMatch(pub, /sourceMap: true/);
+  const r = spawnSync('python3', ['scripts/pages_publish.py', '--selftest'], { cwd: root, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+
+test('every page script minifies, parses, and leaves the repository copy as it was', { skip: !process.env.TERSER_PATH && !process.env.CI && 'no TERSER_PATH (pr-checks installs it)' }, () => {
+  assert.ok(process.env.TERSER_PATH, 'TERSER_PATH is set in CI (pr-checks.yml installs terser)');
+  const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), 'minify-'));
+  const rels = fs.readdirSync(path.join(root, 'components')).filter((f) => /\.(js|css)$/.test(f)).map((f) => `components/${f}`)
+    .concat(fs.readdirSync(path.join(root, 'css')).filter((f) => f.endsWith('.css')).map((f) => `css/${f}`));
+  const code = [
+    'import sys, json; sys.path.insert(0, "scripts")',
+    'import pages_publish as P',
+    'keep = json.loads(sys.argv[1]); P.stage(P.ROOT, sys.argv[2], keep)',
+    'print(json.dumps(P.minify_published(sys.argv[2], keep, sys.argv[3])))',
+  ].join('\n');
+  const r = spawnSync('python3', ['-c', code, JSON.stringify(rels), tmp, process.env.TERSER_PATH], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 });
+  assert.equal(r.status, 0, r.stderr);
+  const m = JSON.parse(r.stdout);
+  assert.deepEqual(m.kept, [], 'every file minified');
+  assert.ok(m.after < m.before * 0.8, `minified ${m.before} -> ${m.after}`);
+  for (const rel of rels) {
+    const out = fs.readFileSync(path.join(tmp, rel), 'utf8');
+    if (rel.endsWith('.js')) assert.doesNotThrow(() => new vm.Script(out), rel);
+    assert.ok(out.length <= fs.statSync(path.join(root, rel)).size, `${rel} grew`);
+  }
+  // the repository files are untouched (stage hard-links them; the minify step writes new files)
+  const st = spawnSync('git', ['status', '--porcelain', '--', 'components', 'css'], { cwd: root, encoding: 'utf8' });
+  assert.equal(st.stdout.trim(), '', 'the repository copies changed');
+  fs.rmSync(tmp, { recursive: true, force: true });
 });

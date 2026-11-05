@@ -61,6 +61,7 @@ concurrency:
 env:
   PW_VERSION: '1.56.1'
   JSQR_VERSION: '1.4.0'
+  TERSER_VERSION: '5.51.2'   # the published copy's minifier (scripts/pages_publish.py, pages.yml)
   # the static ffmpeg for the node tests (BtbN/FFmpeg-Builds release asset and its sha256)
   FFMPEG_TAG: 'autobuild-2026-09-30-13-08'
   FFMPEG_BUILD: 'n8.1.3-9-g29e619e767-linux64-gpl-8.1'
@@ -239,12 +240,12 @@ jobs:
       - name: Browser fonts
         timeout-minutes: 5
         uses: ./.github/actions/browser-fonts
-      - name: Playwright, Chromium and jsqr
+      - name: Playwright, Chromium, jsqr and terser
         timeout-minutes: 10
         run: |
           PW="$RUNNER_TEMP/pw"
           mkdir -p "$PW"
-          npm install --no-save --no-audit --no-fund --prefix "$PW" "playwright@$PW_VERSION" "jsqr@$JSQR_VERSION"
+          npm install --no-save --no-audit --no-fund --prefix "$PW" "playwright@$PW_VERSION" "jsqr@$JSQR_VERSION" "terser@$TERSER_VERSION"
           "$PW/node_modules/.bin/playwright" install chromium
           CH=$(ls -d "$HOME"/.cache/ms-playwright/chromium-*/chrome-linux*/chrome | head -1)
           [ -x "$CH" ] || { echo "::error::no Chromium binary under ~/.cache/ms-playwright"; exit 1; }
@@ -254,6 +255,7 @@ jobs:
             echo "PLAYWRIGHT_PATH=$PW/node_modules/playwright/index.mjs"
             echo "CHROMIUM_PATH=$CH"
             echo "JSQR_PATH=$PW/node_modules/jsqr"
+            echo "TERSER_PATH=$PW/node_modules/terser"
           } >> "$GITHUB_ENV"
       - name: Chromium launches
         run: |
