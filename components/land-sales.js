@@ -44,7 +44,7 @@
   }
   function css() {
     if (document.querySelector('link[href^="/components/land-sales.css"]')) return;
-    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/land-sales.css?v=1';
+    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/land-sales.css?v=2';
     (document.head || document.documentElement).appendChild(l);
   }
 
@@ -71,26 +71,37 @@
       b.removeAttribute('aria-busy');
       if (!d) { b.textContent = 'Names did not load. Tap to try again'; return; }
       var v = (d.sales && id in d.sales) ? d.sales[id] : (d.buyers && id in d.buyers) ? d.buyers[id] : null;
-      var s = document.createElement('span');
-      s.innerHTML = namesHtml(id, v);
-      b.parentNode.replaceChild(s.firstChild, b);
+      /* this button and any other for the same sale and file (the row's and its detail panel's) */
+      /* a legal description held back because it names a party comes with the names */
+      var lg = d.legals && d.legals[id];
+      Array.prototype.forEach.call(document.querySelectorAll('span.ls-lgh[data-ls-id="' + id + '"]'), function (x) {
+        x.textContent = lg || 'not in our copy';
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('button.ls-nm'), function (x) {
+        if (x !== b && (x.getAttribute('data-ls-id') !== id || x.getAttribute('data-ls-f') !== f)) return;
+        var s = document.createElement('span');
+        s.innerHTML = namesHtml(id, v);
+        x.parentNode.replaceChild(s.firstChild, x);
+      });
     });
   }
 
   /* ── one sale, in words ──────────────────────────────────────── */
   var COLS = ['id', 'when', 'recorded', 'acres', 'price', 'ppa', 'place', 'lat', 'lng', 'flag', 'bldg'];
-  function row(a) { var o = {}; for (var i = 0; i < COLS.length; i++) o[COLS[i]] = a[i]; return o; }
-  function saleLi(s, county, st, namesFile, far) {
+  function row(a, cols) { var C = cols && cols.length ? cols : COLS, o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; return o; }
+  function saleLi(s, county, st, namesFile, far, c, fips) {
     var note = [];
     if (s.flag === 1) note.push('unusual price, above the county&rsquo;s usual');
     if (s.flag === -1) note.push('unusual price, below the county&rsquo;s usual');
     if (s.bldg) note.push('with buildings');
-    return '<li><span class="ls-d">' + esc(day(s.when)) + (s.recorded ? '' : ' (deed date)') + '</span> '
+    var det = c && fips && s.ri !== undefined ? attrs(s, st, fips, c.name, c.usual, c.w24, c.rec) : '';
+    return '<li' + det + '><span class="ls-d">' + esc(day(s.when)) + (s.recorded ? '' : ' (deed date)') + '</span> '
       + '<b>' + esc(acres(s.acres)) + '</b> at ' + esc(s.ppa != null ? money(s.ppa) + ' an acre' : 'a price per acre not figured')
       + ' (' + esc(money(s.price)) + ')' + (s.place || county ? ', ' : '') + esc((s.place || '') + (county ? (s.place ? ', ' : '') + county + ' County, ' + st : ''))
       + (far != null ? ', ' + (far < 1 ? 'under a mile' : Math.round(far) + ' mi') : '')
       + (note.length ? ' <span class="ls-note">' + note.join('; ') + '</span>' : '')
-      + ' <button type="button" class="ls-nm" data-ls-id="' + esc(s.id) + '" data-ls-f="' + esc(namesFile) + '">Show buyer and seller</button></li>';
+      + ' <button type="button" class="ls-nm" data-ls-id="' + esc(s.id) + '" data-ls-f="' + esc(namesFile) + '">Show buyer and seller</button>'
+      + (det ? ' <button type="button" class="ls-dt ls-dtc" aria-expanded="false">Details<span class="ls-sr"> of this sale</span></button>' : '') + '</li>';
   }
   var RULE = 'Sales with a price, acres and a whole interest in a normal sale; township or town, not the parcel.';
   function srcOnly(f) { return esc(f.source) + ', read ' + esc(day(f.fetched)); }
@@ -108,10 +119,10 @@
       var box = document.createElement('section');
       box.className = 'ls-feat no-print';
       box.setAttribute('aria-labelledby', 'ls-feat-h');
-      var rows = (c.s || []).slice(0, 3).map(row);
+      var rows = (c.s || []).slice(0, 3).map(function (a) { var o = row(a, f.cols); if (c.lx && c.lx[o.id]) o.lx = c.lx[o.id]; return o; });
       var href = '/land-sales/' + STATES[st] + '/' + c.slug;
       box.innerHTML = '<div class="ls-feat-l"><h2 id="ls-feat-h">Latest farm sales here</h2>'
-        + (rows.length ? '<ul class="ls-ul">' + rows.map(function (s) { return saleLi(s, null, st, f.names_dir + fips + '.json'); }).join('') + '</ul>'
+        + (rows.length ? '<ul class="ls-ul">' + rows.map(function (s) { return saleLi(s, null, st, f.names_dir + fips + '.json', null, c, fips); }).join('') + '</ul>'
           : '<p>No sales of 10 acres or more recorded here in the last 12 months.</p>')
         + '<p><a href="' + href + '">Every recent sale in ' + esc(c.name) + ' County</a> &middot; <a href="/land-sales/">This month&rsquo;s biggest buyers and sales</a></p>'
         + '<p class="ls-fine">' + srcLine(f) + '</p></div><div class="ls-feat-r"></div>';
@@ -189,10 +200,11 @@
           var c = f.counties[fips];
           if (!c.ll || miles(lat, lng, c.ll[0], c.ll[1]) > NEAR_MI + 45) return;
           (c.s || []).forEach(function (a) {
-            var s = row(a);
+            var s = row(a, f.cols);
+            if (c.lx && c.lx[s.id]) s.lx = c.lx[s.id];
             if (s.lat == null) return;
             var d = miles(lat, lng, s.lat, s.lng);
-            if (d <= NEAR_MI) list.push({ s: s, d: d, c: c, st: st, nf: f.names_dir + fips + '.json' });
+            if (d <= NEAR_MI) list.push({ s: s, d: d, c: c, st: st, nf: f.names_dir + fips + '.json', fips: fips });
           });
         });
       });
@@ -203,7 +215,7 @@
       var used = ok.filter(function (f) { return top.some(function (x) { return x.st === f.state; }); });
       el.hidden = false;
       el.innerHTML = '<h3>Farm sales within ' + NEAR_MI + ' miles</h3><ul class="ls-ul">'
-        + top.map(function (x) { return saleLi(x.s, x.c.name, x.st, x.nf, x.d); }).join('') + '</ul>'
+        + top.map(function (x) { return saleLi(x.s, x.c.name, x.st, x.nf, x.d, x.c, x.fips); }).join('') + '</ul>'
         + '<p class="ls-fine">The latest few recorded in each county nearby, newest first; miles to the middle of the township or town. '
         + 'Source: ' + used.map(srcOnly).join('; ') + '. ' + RULE + (used.some(function (f) { return f.state === 'IN'; }) ? ' ' + IN_RULE : '') + ' <a href="/land-sales/">Sales by county and this month&rsquo;s update</a></p>';
       /* a search link to "Land sales near <town>" lands here (#h-land-sales opens My place) */
@@ -223,12 +235,13 @@
     var flag = o.flag === 1 ? 'Unusual price: above the county’s usual' : o.flag === -1 ? 'Unusual price: below the county’s usual' : '';
     if (o.cu) flag = (flag ? flag + '; ' : '') + 'Enrolled in current use';   /* Vermont: current use enrollment, a fact per sale */
     var when = o.when ? MON[+o.when.slice(5, 7) - 1] + ' ' + (+o.when.slice(8, 10)) + ', ' + o.when.slice(0, 4) + (o.recorded ? '' : '*') : '';
-    return '<tr data-k="' + esc(o.kind) + '"><td>' + esc(when) + '</td><td>' + esc((o.place ? o.place + ', ' : '') + f.county + ' County, ' + f.st) + '</td>'
+    var dls = o.ri !== undefined ? ' data-ls="' + esc(JSON.stringify(DCOLS.map(function (k) { return k === 'cu' ? (o.cu ? 1 : 0) : o[k] == null ? null : o[k]; }))) + '"' : '';
+    return '<tr data-k="' + esc(o.kind) + '"' + dls + '><td>' + esc(when) + '</td><td>' + esc((o.place ? o.place + ', ' : '') + f.county + ' County, ' + f.st) + '</td>'
       + '<td class="n">' + esc(acresCell(o.acres)) + '</td><td class="n">' + esc(money(o.price)) + '</td><td class="n">' + esc(o.ppa != null ? money(o.ppa) : '') + '</td>'
       + '<td>' + esc((f.kinds && f.kinds[o.kind]) || '') + '</td><td>' + esc(flag) + '</td>'
       + '<td><button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button></td></tr>';
   }
-  function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; return o; }); }
+  function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; if (f.lx && f.lx[o.id]) o.lx = f.lx[o.id]; return o; }); }
   function fullList(box) {
     if (box.getAttribute('data-ls-done')) return;
     box.setAttribute('data-ls-done', '1');
@@ -242,6 +255,7 @@
     function draw(f) {
       var all = listRows(f).filter(function (o) { return !kind || o.kind === kind; });
       tb.innerHTML = all.slice(0, shown).map(function (o) { return listRow(o, f); }).join('');
+      rowButtons(tb);
       if (!more) return;
       var n = Math.min(shown, all.length);
       var t = more.firstChild;
@@ -261,8 +275,315 @@
     if (sel) sel.addEventListener('change', function () { kind = sel.value; load().then(function (f) { if (f) { shown = STEP; draw(f); } }); });
   }
 
+  /* ── one sale, every pertinent detail (Sig, Nov 4, 2026: "when you click I want it to open every detail
+     about the sale that is pertinent") ──────────────────────────────────────────────────────────
+     Every sale row (the county table, a month table) and every sale card (Atlas, Fast Facts) opens a panel.
+     What the page already has draws at once (data-ls on the row: DCOLS, scripts/build_land_sales.py ROW_COLS;
+     data-ls-c on the row or its table: state, county fips and name, the county's 24-month middle). The deed's
+     own record (document, deed type, parcel, legal, section, class, exemption and the rest) comes from the
+     county's transfer file, /data/land/<st>/<fips>.json, the robots-blocked file Field Scout already reads, row
+     ri, read once per county on the first tap; the row is used only when its hash matches the sale id. That
+     file carries buyer and seller too: this panel never reads them except to blank them out of a legal
+     description. Names show only on "Show buyer and seller", as everywhere. A field the state's record does
+     not have says "not in the state record"; one the state has and our copy does not yet keep says so. */
+  var DCOLS = ['id', 'when', 'recorded', 'acres', 'price', 'ppa', 'place', 'kind', 'flag', 'cu', 'ri', 'g', 'm', 'lx'];
+  /* the only columns of the county file this panel takes; every other column (the names among them) is never read */
+  var KEEP = ['doc', 'date', 'price', 'acres', 'tac', 'np', 'cls', 'conv', 'pid', 'muni', 'legal', 'str', 'exempt', 'ac1', 'rec', 'acx',
+    'pp', 'rr', 'mfl', 'fin', 'use0', 'use1', 'glv', 'avl', 'avb', 'avy', 'lsf', 'yb'];
+  var NOT_REC = 'not in the state record', NOT_YET = 'not in our copy yet';
+  var KINDW = { f: 'farmland', b: 'with buildings', w: 'forest', s: 'small parcel (under 20 acres)' };
+  var MIDW = { b: 'it has buildings', w: 'it is forest land', a: 'the record does not state the acres', s: 'it is under 20 acres',
+    p: 'it sold for under $500 an acre', o: 'it is outside the 24 months the middle covers' };
+  var STF = {   /* each state's record, in its own words; null: the state's record does not carry it */
+    IL: { form: 'declaration', doc: 'Document number', deed: 'Deed date (instrument date)', rec: 'Recorded (filed)', place: 'Township',
+      pid: 'Parcel number (PIN)', price: 'Net consideration (Line 13 of Form PTAX-203: full consideration less personal property), or full consideration (Line 11) when Line 13 is blank.',
+      cls: { '4': 'Farm (the declaration’s current use, Line 8)' }, bldg: null, tax: 'State transfer tax', extra: ['pp'] },
+    IN: { form: 'sales disclosure form', doc: 'Sales disclosure form', deed: 'Sale date on the form', rec: null, place: 'Mailing town (placed at its ZIP)',
+      pid: 'Parcel number', price: 'Sales price (E1) less personal property (E2) on the Indiana sales disclosure form.',
+      cls: { '1': 'Residential', '2': 'Commercial', '3': 'Industrial', '4': 'Farm land', '6': 'Timber (class 120)', '7': 'Farm buildings (an improved farm parcel)' }, bldg: 1, tax: null, extra: [] },
+    WI: { form: 'return', doc: 'Document number', deed: 'Conveyance date', rec: 'Recorded', place: 'Town, village or city',
+      pid: 'Parcel number', price: 'Sale price on the Wisconsin transfer return.',
+      cls: { '1': 'Residential', '2': 'Commercial', '3': 'Manufacturing', '4': 'Agricultural', '5': 'Undeveloped', '5M': 'Agricultural forest', '6': 'Productive forest', '7': 'Other (farm buildings)', 'X': 'Exempt' },
+      bldg: 1, tax: 'Transfer fee', extra: ['rr', 'mfl'] },
+    VT: { form: 'return', doc: 'Transfer tax return', deed: 'Closing date', rec: 'Recorded by the town', place: 'Town',
+      pid: 'SPAN (the state’s parcel number)', price: 'Value paid or transferred on the Vermont property transfer tax return (Form PTT-172).',
+      cls: { '1': 'House', '2': 'Commercial building', '3': 'Factory', '4': 'Operating farm', '5': 'Open land in current use', '6': 'Timberland', '7': 'Farm or other buildings' },
+      bldg: 1, tax: 'Property transfer tax', extra: ['fin', 'use0', 'use1', 'glv'] },
+    NJ: { form: 'deed abstract', doc: 'District and deed serial (SR-1A)', deed: 'Deed date', rec: 'Recorded', place: 'Municipality',
+      pid: 'Block and lot', price: 'Sale price on the New Jersey deed abstract (SR-1A).',
+      cls: { '1': 'House (farmhouse lot 3A, or residential 2)', '2': 'Commercial (4A)', '3': 'Industrial (4B)', '4': 'Farm (3A or 3B)', '5': 'Vacant land (1)', 'X': 'Exempt (15)' },
+      bldg: 1, tax: 'Realty transfer fee', extra: ['avl', 'avb', 'avy', 'lsf', 'yb'] }
+  };
+  /* the sale-kind words the fetcher writes after the deed type (scripts/fetch_land_sales.py il_flags, in_flags, wi_flags,
+     vt_table, nj_table), in plain sentences */
+  var FLAGW = {
+    'less than full interest': 'Less than the whole interest changed hands.',
+    'auction': 'Sold at auction.',
+    'adjacent owner': 'The buyer owns land next to it.',
+    'installment contract': 'An installment (land) contract.',
+    'advertised': 'The property was advertised for sale.',
+    'not advertised': 'The property was not advertised for sale.',
+    'split parcel': 'Part of a parcel (a split): the lot size on the record may be the whole parcel’s, so no acres are counted.',
+    'with buildings': 'The record shows buildings on it.',
+    'land only': 'Land only, no buildings on the record.',
+    'court ordered': 'The form marks a court order.',
+    'valid for trending': 'The county assessor marked it valid for trending (Indiana’s own call that it is a fair market sale).',
+    'not valid for trending': 'The county assessor marked it not valid for trending (Indiana’s own call; most Indiana farm sales carry it).',
+    'enrolled in current use': 'Enrolled in Vermont’s current use program (taxed on its farm or forest use).',
+    'not on the 2026 assessment list': 'A lot it names is not on the 2026 assessment list, so the acres are not known.',
+    'seller financed': 'The seller financed the sale.',
+    'relocation company': 'A relocation company is the buyer or seller.',
+    'financial institution or government agency': 'A bank, other lender or government agency is the buyer or seller.',
+    'real estate investment trust': 'The buyer is a real estate investment trust.',
+    'pension fund': 'The buyer is a pension fund.',
+    'buyer exercising an option': 'The buyer was exercising an option to buy.',
+    'new construction': 'New construction since January 1 of the year before the sale.',
+    'demolition or damage': 'Demolition or damage since January 1 of the year before the sale.',
+    'additions or remodeling': 'Additions or major remodeling since January 1 of the year before the sale.'
+  };
+  var RR = { none: 'None', life: 'The seller keeps a life estate (use of the land for life).', ease: 'The seller keeps an easement.', other: 'The seller keeps other rights in the land.' };
+  var pend = {}, seq = 0;
+
+  /* SHA-1, for the sale id check (land_alert.sale_id: sha1 of state|fips|document|deed date|price, first 10 hex) */
+  function sha1(s) {
+    var u = unescape(encodeURIComponent(s)), n = u.length, w = [], i, j;
+    for (i = 0; i < n; i++) w[i >> 2] |= u.charCodeAt(i) << (24 - (i % 4) * 8);
+    w[n >> 2] |= 0x80 << (24 - (n % 4) * 8);
+    w[(((n + 8) >> 6) + 1) * 16 - 1] = n * 8;
+    var h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0, W = new Array(80);
+    for (i = 0; i < w.length; i += 16) {
+      var a = h0, b = h1, c = h2, d = h3, e = h4;
+      for (j = 0; j < 80; j++) {
+        W[j] = j < 16 ? (w[i + j] | 0) : (function (x) { return (x << 1) | (x >>> 31); })(W[j - 3] ^ W[j - 8] ^ W[j - 14] ^ W[j - 16]);
+        var f = j < 20 ? (b & c) | (~b & d) : j < 40 ? b ^ c ^ d : j < 60 ? (b & c) | (b & d) | (c & d) : b ^ c ^ d;
+        var k = j < 20 ? 0x5A827999 : j < 40 ? 0x6ED9EBA1 : j < 60 ? 0x8F1BBCDC : 0xCA62C1D6;
+        var t = (((a << 5) | (a >>> 27)) + f + e + k + W[j]) | 0;
+        e = d; d = c; c = (b << 30) | (b >>> 2); b = a; a = t;
+      }
+      h0 = (h0 + a) | 0; h1 = (h1 + b) | 0; h2 = (h2 + c) | 0; h3 = (h3 + d) | 0; h4 = (h4 + e) | 0;
+    }
+    return [h0, h1, h2, h3, h4].map(function (x) { return ('00000000' + (x >>> 0).toString(16)).slice(-8); }).join('');
+  }
+  function pyStr(v) { return v == null ? 'None' : String(v); }
+  function saleKey(st, fips, o, price) { return [st, fips, pyStr(o.doc), String(o.date || '').slice(0, 10), Math.round(+price || 0)].join('|'); }
+  function recOf(f, s, st) {
+    /* the sale's first deed in the county file: row ri when its hash is the sale id, else any row that hashes to it */
+    if (!f || !f.cols || !f.rows) return null;
+    var C = f.cols, obj = function (a) { var o = {}; for (var i = 0; i < C.length; i++) if (KEEP.indexOf(C[i]) >= 0) o[C[i]] = a[i]; return o; };
+    var fips = f.fips;
+    if (s.ri != null && f.rows[s.ri]) { var o = obj(f.rows[s.ri]); if (sha1(saleKey(st, fips, o, s.price)).slice(0, 10) === s.id) return o; }
+    for (var i = 0; i < f.rows.length; i++) { var x = obj(f.rows[i]); if (sha1(saleKey(st, fips, x, s.price)).slice(0, 10) === s.id) return x; }
+    return null;
+  }
+  function parse(v) { try { return JSON.parse(v); } catch (e) { return null; } }
+  function saleOf(el) {
+    if (el._ls) return el._ls;
+    var a = parse(el.getAttribute('data-ls')), c = el.closest('[data-ls-c]'), x = c ? parse(c.getAttribute('data-ls-c')) : null;
+    if (!a || !x) return null;
+    var s = {};
+    for (var i = 0; i < DCOLS.length; i++) s[DCOLS[i]] = a[i];
+    s.st = x[0]; s.fips = x[1]; s.county = x[2]; s.u = x[3]; s.w24 = x[4]; s.rec = x[5] === 1;
+    el._ls = s;
+    return s;
+  }
+  function attrs(o, st, fips, county, u, w24, rec) {
+    /* data-ls and data-ls-c for a card drawn here, the same shape the builder writes on a row */
+    return ' data-ls="' + esc(JSON.stringify(DCOLS.map(function (k) { return o[k] == null ? null : o[k]; }))) + '" data-ls-c="'
+      + esc(JSON.stringify([st, fips, county, u ? [u.med, u.q1, u.q3, u.n] : null, w24 || null, rec ? 1 : 0])) + '"';
+  }
+  function miss(t) { return '<span class="ls-miss">' + esc(t) + '</span>'; }
+  function dl(rows) {
+    return '<dl class="ls-dl">' + rows.filter(Boolean).map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + r[1] + (r[2] ? '<span class="ls-dn">' + esc(r[2]) + '</span>' : '') + '</dd>'; }).join('') + '</dl>';
+  }
+  function grp(t, rows) { return '<h3 class="ls-dh">' + esc(t) + '</h3>' + dl(rows); }
+  function pct(a, b) { var p = Math.round((a / b - 1) * 100); return p === 0 ? 'right at' : Math.abs(p) + '% ' + (p > 0 ? 'above' : 'below'); }
+  function clsWords(c, T) { return String(c || '').split(/[\s,;/]+/).filter(Boolean).map(function (x) { return T[x.toUpperCase()] || ('class ' + x); }).join(', '); }
+  function flagsOf(conv) {
+    var parts = String(conv || '').split('; ').map(function (x) { return x.trim(); }).filter(Boolean);
+    var deed = parts.length && !FLAGW[parts[0].toLowerCase()] && !/^state ratio study code/i.test(parts[0]) ? parts.shift() : '';
+    return { deed: deed, flags: parts };
+  }
+  function flagSentence(w) {
+    var k = w.toLowerCase(), m = /^state ratio study code (\d+): (.*)$/i.exec(w);
+    if (FLAGW[k]) return FLAGW[k];
+    if (m) return 'New Jersey’s ratio study code ' + m[1] + ': ' + m[2] + '. The code keeps it out of the state’s assessment study only; it stays a market sale here.';
+    return w.charAt(0).toUpperCase() + w.slice(1) + '.';
+  }
+  /* the legal description with the sale's own buyer and seller blanked: the builder found where they sit
+     (build_land_sales.legal_mask, lx), so this never reads a name */
+  function scrub(legal, lx) {
+    var t = String(legal || '');
+    (lx || []).slice().sort(function (a, b) { return b[0] - a[0]; }).forEach(function (m) {
+      t = t.slice(0, m[0]) + '[name: tap Show buyer and seller]' + t.slice(m[0] + m[1]);
+    });
+    /* county files written since Nov 4, 2026 carry the mark already (scripts/land_names.py NAME_MARK) */
+    return t.split('[NAME]').join('[name: tap Show buyer and seller]');
+  }
+  function namesBtnHtml(id, nf) { return '<button type="button" class="ls-nm" data-ls-id="' + esc(id) + '" data-ls-f="' + esc(nf) + '">Show buyer and seller</button>'; }
+
+  function panelHtml(s, f, r, nf, state) {
+    var T = STF[s.st] || STF.WI, st = s.st;
+    var has = function (c) { return !!(f && f.cols && f.cols.indexOf(c) >= 0); };
+    var rv = function (c) { return r && r[c] != null && r[c] !== '' ? r[c] : null; };
+    var wait = state === 'wait' ? miss('loading the record') : null,
+      gone = state === 'gone' ? miss('the record did not load') : state === 'later' ? miss(NOT_YET) : null;
+    var fromRec = function (c, html) { return wait || gone || (!has(c) ? miss(NOT_YET) : rv(c) == null ? miss(NOT_REC) : html(rv(c))); };
+    var cf = r ? flagsOf(r.conv) : { deed: '', flags: [] };
+    var dd = s.when ? day(s.when) : '';
+    var g = +s.g || 1;
+    var out = [];
+    /* the sale */
+    var tillN = 'No state on this site records tillable acres; a soil and crop map of the parcel is the way to judge it.';
+    out.push(grp('Sale', [
+      [T.rec ? T.rec : 'Recorded', T.rec ? (s.recorded ? esc(dd) : fromRec('rec', function (v) { return esc(day(v)); })) : miss(NOT_REC),
+        T.rec ? null : 'Indiana’s form carries the sale date, not a recording date.'],
+      [T.deed, fromRec('date', function (v) { return esc(day(String(v).slice(0, 10))); })],
+      ['Price', s.price != null ? esc(money(s.price)) : miss(NOT_REC), T.price + (g > 1 ? ' ' + g + ' deeds of this parcel within 31 days, counted as one sale at their total price; the record below is the first deed.' : '')],
+      ['Price per acre', s.ppa != null ? esc(money(s.ppa)) : miss('not figured'), s.ppa != null ? 'Price over total acres, buildings and all.' : 'The acres are not stated for sure, so no price per acre.'],
+      ['Price per tillable acre', miss(NOT_REC), tillN],
+      ['Deed or conveyance type', wait || gone || (cf.deed ? esc(cf.deed) : miss(NOT_REC))],
+      ['What the ' + T.form + ' says', wait || gone || (cf.flags.length ? cf.flags.map(function (w) { return esc(flagSentence(w)); }).join('<br>') : 'Nothing marked beyond the deed type.')],
+      st === 'WI' ? ['Rights the seller keeps', fromRec('rr', function (v) { return esc(RR[v] || RR.other); })] : null,
+      st === 'VT' ? ['Financing', fromRec('fin', function (v) { return esc(v); })] : null,
+      st === 'IL' ? ['Personal property in the price', fromRec('pp', function (v) { return +v > 0 ? esc(money(+v)) + ' (taken out of the net price above)' : 'None'; })] : null,
+      [T.doc, fromRec('doc', function (v) { return esc(v); })],
+      [T.tax || 'Transfer tax', !T.tax ? miss(NOT_REC) : wait || gone || (rv('exempt') ? 'Exemption claimed' : 'No exemption claimed'), !T.tax ? 'Indiana’s form carries no transfer tax.' : null],
+      ['Market sale', 'Yes, by the rule this site uses', 'A price, acres stated or several parcels, the whole interest and a normal deed: no gift, family or related-party sale, quit claim, court, foreclosure, trade or partition deed, and no tax exemption. Taken from public transfer records, not confirmed with the buyer or seller.']
+    ]));
+    /* the land */
+    var cu = st === 'VT' ? (s.cu ? 'Yes' : 'No') : null;
+    var bld = !T.bldg ? miss(NOT_REC) : wait || gone || (FLAG_BLDG(r) ? 'Yes: ' + esc(clsWords(r.cls, T.cls)) : 'None on the record');
+    out.push(grp('Land', [
+      ['Total acres', s.acres != null ? esc((Math.round(s.acres * 100) / 100).toLocaleString('en-US')) : miss('not stated for sure'),
+        s.acres == null ? (rv('np') > 1 ? rv('np') + ' parcels on one ' + T.form + ' and the acres do not add up for sure.' : 'The record does not give the acres for sure.') : (st === 'NJ' ? 'Today’s lots on the 2026 assessment list, which may differ from the lots as sold.' : null)],
+      has('ac1') && rv('ac1') != null ? ['First parcel, as written', esc(rv('ac1')) + ' acres', 'As the filer wrote it: often the whole sale, sometimes one parcel.'] : null,
+      ['Tillable acres', miss(NOT_REC), tillN],
+      ['Percent tillable', miss(NOT_REC)],
+      ['Type', esc(KINDW[s.kind] || 'farmland')],
+      ['Property class', fromRec('cls', function (v) { return esc(clsWords(v, T.cls)); })],
+      ['Buildings', bld, !T.bldg ? 'An Illinois declaration does not say whether buildings were included.' : null],
+      st === 'NJ' ? ['Living space', fromRec('lsf', function (v) { return +v > 0 ? esc((+v).toLocaleString('en-US')) + ' square feet (main lot)' : 'None on the main lot'; })] : null,
+      st === 'NJ' ? ['Year built', fromRec('yb', function (v) { return esc(v) + ' (main lot)'; }), 'Blank on the deed abstract when the lot has no house or the assessor left it out.'] : null,
+      st === 'NJ' ? ['Assessed value, main lot', fromRec('avl', function (v) { return esc(money(+v)) + ' land' + (rv('avb') != null ? ', ' + esc(money(+rv('avb'))) + ' buildings' : '') + (rv('avy') ? ' (' + esc(rv('avy')) + ' tax list)' : ''); }), 'Farmland-assessed lots (3B) are valued on their farm use, far under a sale price.'] : null,
+      st === 'VT' ? ['Town listed value', fromRec('glv', function (v) { return esc(money(+v)); }), 'The town grand list value on the return.'] : null,
+      st === 'VT' ? ['Use before and after', fromRec('use0', function (v) { return 'Before the sale: ' + esc(useW(v)) + (rv('use1') ? '; the buyer\u2019s use: ' + esc(useW(rv('use1'))) : ''); })] : null,
+      cu ? ['Current use', cu, 'Vermont’s use value program for farm and forest land.'] : null,
+      st === 'WI' ? ['Managed forest acres', fromRec('mfl', function (v) { return esc(String(+v)) + ' acres'; }), 'Acres in Wisconsin’s Managed Forest Law program.'] : null,
+      ['Parcels in the sale', wait || gone || esc(rv('np') || 1)]
+    ]));
+    /* where */
+    /* a legal that names its own seller or buyer is not in the county file (scripts/land_names.py LEGAL_MARK): it comes
+       with the names, on the tap (onTap fills span.ls-lgh) */
+    var named = s.lx === 'h' || (r && /^\[LEGAL WITH A NAME /.test(String(r.legal || '')));
+    var leg = r && rv('legal') && !named ? scrub(r.legal, s.lx) : '';
+    var legHtml = wait || gone || (named ? '<span class="ls-lgh" data-ls-id="' + esc(s.id) + '">' + miss('names a buyer or seller: shown with Show buyer and seller') + '</span>'
+      : !has('legal') || !leg ? miss(NOT_REC) : leg.length > 70
+      ? '<span class="ls-lg">' + esc(leg.slice(0, 70).replace(/\s+\S*$/, '')) + '&hellip;</span> <button type="button" class="ls-lgb" aria-expanded="false" data-full="' + esc(leg) + '">Show the whole description</button>'
+      : esc(leg));
+    var stk = rv('str');
+    out.push(grp('Where', [
+      [T.place, s.place ? esc(s.place) : wait || gone || (r && f && f.munis && r.muni != null && f.munis[String(r.muni)] ? esc(f.munis[String(r.muni)][0]) : miss(NOT_REC))],
+      ['County', esc(s.county + ' County, ' + st)],
+      ['Section, township, range', wait || gone || (stk ? esc(strWords(stk)) : miss(leg ? 'not readable from the legal description' : NOT_REC))],
+      ['Legal description', legHtml, leg && leg.length >= 138 ? 'Our copy keeps the first 140 characters.' : null],
+      [T.pid, fromRec('pid', function (v) { return esc(v); }), rv('np') > 1 ? 'The first parcel; the ' + T.form + ' lists ' + rv('np') + '.' : null],
+      ['Street address', miss('left out'), 'An address can point at someone’s home, so it is not shown.']
+    ]));
+    /* how it compares */
+    var u = s.u, cmp;
+    if (!u) cmp = miss('no county middle: fewer than 5 bare farmland sales of 20 acres or more in 24 months');
+    else if (s.ppa == null) cmp = 'Middle ' + esc(money(u[0])) + ' an acre on ' + u[3] + ' sales; this sale has no price per acre to set beside it.';
+    else cmp = esc(money(s.ppa)) + ' an acre is ' + pct(s.ppa, u[0]) + ' the county middle of ' + esc(money(u[0])) + ' (' + u[3] + ' sales; middle half ' + esc(money(u[1])) + ' to ' + esc(money(u[2])) + ').';
+    var win = s.w24 ? day(s.w24[0]) + ' to ' + day(s.w24[1]) : '24 months';
+    out.push(grp('How it compares', [
+      ['County middle, 24 months', cmp, 'Bare farmland sales of 20 acres or more at $500 an acre or more, ' + win + '.'],
+      ['Counts toward the middle', s.m === 'y' ? (u ? 'Yes' : 'It qualifies, but the county has too few such sales for a middle') : MIDW[s.m] ? 'No: ' + esc(MIDW[s.m]) : miss('not figured')],
+      ['Unusual price', s.flag === 1 ? 'Yes, well above the county’s usual' : s.flag === -1 ? 'Yes, well below the county’s usual' : 'No', s.flag ? 'Possible reasons are plain ones: buildings, timber or a neighbor paying more above; a family sale, poorer ground or a part interest below. The record does not say which.' : null]
+    ]));
+    /* source and names */
+    var src = (f && f.source) || SRC[st] || 'The state transfer records';
+    out.push('<h3 class="ls-dh">Source</h3><p class="ls-fine">' + esc(src) + (f && f.fetched_utc ? ', read ' + esc(day(String(f.fetched_utc).slice(0, 10))) : '') + '. A public record of one sale, not an appraisal.</p>');
+    out.push('<h3 class="ls-dh">Buyer and seller</h3><p>' + (nf ? namesBtnHtml(s.id, nf) : miss(NOT_REC)) + '</p>');
+    return out.join('');
+  }
+  var SRC = { IL: 'Illinois Department of Revenue, MyDec transfer declarations', IN: 'Indiana sales disclosure forms', WI: 'Wisconsin Department of Revenue, transfer returns',
+    VT: 'Vermont property transfer tax returns', NJ: 'New Jersey deed abstracts (SR-1A) and the 2026 assessment list' };
+  function useW(v) { return String(v).replace(/^\d+\.\s*/, ''); }
+  function FLAG_BLDG(r) { return r && (/(^|[\s,;/])(1|2|3|7)($|[\s,;/])/.test(String(r.cls || '')) || /(^|; )with buildings(;|$)/.test(String(r.conv || ''))); }
+  function strWords(k) {
+    var m = /^(\d{1,2})-(\d{1,3})([NS?])-(\d{1,3})([EW?])(?:-(\d))?$/.exec(String(k || ''));
+    if (!m) return String(k);
+    return 'Section ' + m[1] + ', T' + m[2] + (m[3] === '?' ? '' : m[3]) + ', R' + m[4] + (m[5] === '?' ? '' : m[5])
+      + (m[6] ? ', ' + ['', '', 'Second', 'Third', 'Fourth', 'Fifth'][+m[6]] + ' Principal Meridian' : '')
+      + (m[3] === '?' || m[5] === '?' ? ' (the legal leaves out a direction)' : '');
+  }
+
+  function fill(p, s, nf) {
+    var url = '/data/land/' + String(s.st).toLowerCase() + '/' + s.fips + '.json';
+    var key = ++seq;
+    /* only a county file the builder found names-free (rec) is ever fetched: until a county's file is rewritten without
+       its names, the panel shows what the page has and says the rest is not in our copy yet */
+    if (!s.rec) { p.innerHTML = panelHtml(s, null, null, nf, 'later'); return; }
+    p.setAttribute('data-k', key);
+    p.innerHTML = panelHtml(s, null, null, nf, 'wait');
+    p.setAttribute('aria-busy', 'true');
+    get(url).then(function (f) {
+      if (+p.getAttribute('data-k') !== key) return;
+      var r = f ? recOf(f, s, s.st) : null;
+      var h = p.offsetHeight;
+      p.style.minHeight = h + 'px';   /* the panel never shrinks once open: nothing under it jumps up */
+      p.innerHTML = panelHtml(s, f, r, nf, f ? (r ? 'ok' : 'gone') : 'gone');
+      p.removeAttribute('aria-busy');
+      if (f && !r) p.insertAdjacentHTML('afterbegin', '<p class="ls-fine">The full record for this sale has moved in the newest county file; the rest is back after the next update.</p>');
+    });
+  }
+  function toggle(b) {
+    var host = b.closest('[data-ls]'), s = host ? saleOf(host) : null;
+    if (!s) return;
+    var open = b.getAttribute('aria-expanded') === 'true', id = b.getAttribute('aria-controls'), p = id ? document.getElementById(id) : null;
+    if (open) { b.setAttribute('aria-expanded', 'false'); if (p) (p.closest('tr.ls-dr') || p).hidden = true; return; }
+    b.setAttribute('aria-expanded', 'true');
+    if (p) { (p.closest('tr.ls-dr') || p).hidden = false; return; }
+    id = 'ls-dp-' + (++seq);
+    b.setAttribute('aria-controls', id);
+    var nb = host.querySelector('button.ls-nm'), nf = nb ? nb.getAttribute('data-ls-f') : null;
+    p = document.createElement('div');
+    p.className = 'ls-dp'; p.id = id; p.setAttribute('role', 'region'); p.tabIndex = -1; p.setAttribute('aria-label', 'Sale details, ' + day(s.when));
+    if (host.tagName === 'TR') {
+      var tr = document.createElement('tr'), td = document.createElement('td');
+      tr.className = 'ls-dr'; td.colSpan = host.cells.length; td.appendChild(p); tr.appendChild(td);
+      /* as wide as the scrolling table's window, not the table: no sideways scroll to read it on a phone */
+      var wrap = host.closest('.ls-tw');
+      if (wrap && wrap.clientWidth) p.style.maxWidth = Math.min(wrap.clientWidth, 736) + 'px';
+      host.parentNode.insertBefore(tr, host.nextSibling);
+    } else host.appendChild(p);
+    fill(p, s, nf && /^\/data\/land\/names\//.test(nf) ? nf : null);
+  }
+  /* a row's date becomes the button that opens it (only once this script runs: no dead button without it) */
+  function rowButtons(root) {
+    Array.prototype.forEach.call((root || document).querySelectorAll('tr[data-ls]'), function (tr) {
+      if (tr.querySelector('button.ls-dt') || !tr.cells.length) return;
+      var td = tr.cells[0], t = td.textContent;
+      td.innerHTML = '<button type="button" class="ls-dt" aria-expanded="false">' + esc(t) + '<span class="ls-sr"> sale details</span></button>';
+    });
+  }
+  function onDetail(ev) {
+    var t = ev.target && ev.target.closest ? ev.target : null;
+    var b = t ? t.closest('button.ls-dt') : null;
+    if (b) { toggle(b); return; }
+    var lb = t ? t.closest('button.ls-lgb') : null;
+    if (lb) {
+      var sp = lb.previousElementSibling, open = lb.getAttribute('aria-expanded') === 'true';
+      if (!lb._short) lb._short = sp.innerHTML;
+      sp.innerHTML = open ? lb._short : esc(lb.getAttribute('data-full'));
+      lb.setAttribute('aria-expanded', open ? 'false' : 'true');
+      lb.textContent = open ? 'Show the whole description' : 'Show less';
+    }
+  }
+
   function scan() {
     css();
+    rowButtons(document);
     Array.prototype.forEach.call(document.querySelectorAll('section[data-atlas-sales="county"]'), atlas);
     var am = /^\/farmland-atlas\/(indiana|vermont|new-jersey)\//.exec(location.pathname);
     if (am) { var cl = document.querySelector('#ch-live[data-st="' + ({ indiana: 'IN', vermont: 'VT', 'new-jersey': 'NJ' })[am[1]] + '"][data-fips]'); if (cl) atlas(cl); }
@@ -283,7 +604,20 @@
   }
 
   document.addEventListener('click', onTap);
-  window.AgLandSales = { scan: scan, namesHtml: namesHtml, removeHref: removeHref, miles: miles, latestLine: latestLine, listRow: listRow, listRows: listRows };
+  document.addEventListener('click', onDetail);
+  /* Escape closes the open panel the focus is in (or whose button has it) and puts the focus back on its button */
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Escape' && ev.key !== 'Esc') return;
+    var a = document.activeElement, p = a && a.closest ? a.closest('.ls-dp') : null, b = null;
+    if (p) b = document.querySelector('button.ls-dt[aria-controls="' + p.id + '"]');
+    else if (a && a.matches && a.matches('button.ls-dt[aria-expanded="true"]')) b = a;
+    if (!b || b.getAttribute('aria-expanded') !== 'true') return;
+    ev.preventDefault();
+    toggle(b);
+    try { b.focus(); } catch (e) {}
+  });
+  window.AgLandSales = { scan: scan, namesHtml: namesHtml, removeHref: removeHref, miles: miles, latestLine: latestLine, listRow: listRow, listRows: listRows,
+    sha1: sha1, saleKey: saleKey, panelHtml: panelHtml, DCOLS: DCOLS };
   function ready() { scan(); watchNear(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
 })();

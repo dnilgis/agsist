@@ -38,6 +38,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GEO = os.path.join(ROOT, "data", "atlas", "counties.geo.json")
 LEGAL_MAX = 140   # scripts/fetch_land_sales.py LEGAL_MAX (FSLand.LEGAL_MAX)
+LEGAL_MARK = "[LEGAL WITH A NAME "   # scripts/land_names.py LEGAL_MARK (a legal held for the tap)
+HELD_COL = "legal_named"            # scripts/land_names.py HELD_COL
 COL = "str"
 
 # JavaScript's \s, so this reads a legal exactly as the browser does.
@@ -152,15 +154,25 @@ def add_column(doc, geo=GEO):
     short = sum(1 for row in doc["rows"] if len(row) != len(cols))
     if short:
         raise ValueError("%s %s: %d row(s) do not match the %d columns" % (doc.get("state"), doc.get("fips"), short, len(cols)))
+    old = [None] * len(doc["rows"])
     if COL in cols:
         i = cols.index(COL)
         cols.pop(i)
-        for row in doc["rows"]:
-            row.pop(i)
+        for k, row in enumerate(doc["rows"]):
+            old[k] = row.pop(i)
     li = cols.index("legal")
+    # A legal held for the tap (scripts/land_names.py: the county file keeps a mark, the text sits in the names file)
+    # keys from its held text when a run carries it (legal_named), else keeps the key it had: never from the mark.
+    hi = cols.index(HELD_COL) if HELD_COL in cols else None
     cols.insert(li + 1, COL)
-    for row in doc["rows"]:
-        row.insert(li + 1, key_for(doc.get("state"), row[li], doc.get("fips"), geo))
+    for k, row in enumerate(doc["rows"]):
+        legal = row[li]
+        if str(legal or "").startswith(LEGAL_MARK):
+            held = row[hi] if hi is not None else None      # read before this row gets its key inserted
+            key = key_for(doc.get("state"), held, doc.get("fips"), geo) if held else old[k]
+        else:
+            key = key_for(doc.get("state"), legal, doc.get("fips"), geo)
+        row.insert(li + 1, key)
     return doc
 
 
@@ -268,6 +280,18 @@ def selftest():
     add_column(d2, g)
     ck("two files sharing one cols list both keep every value", shared == ["doc", "legal", "exempt", "grantor"]
        and [dict(zip(x["cols"], x["rows"][0])) for x in (d1, d2)] == [{"doc": k, "legal": "", "str": None, "exempt": 0, "grantor": "TEST SELLER " + k.upper()} for k in "ab"])
+    # a legal held for the tap (land_names): keyed from its held text, or keeps its key; never keyed from the mark
+    import land_names
+    ck("the mark and the held column match scripts/land_names.py", LEGAL_MARK == land_names.LEGAL_MARK and HELD_COL == land_names.HELD_COL)
+    mk = LEGAL_MARK + "0123456789]"
+    dh = {"state": "WI", "fips": "55005", "cols": ["doc", "legal", "str", HELD_COL],
+          "rows": [["1", mk, None, "NE NW SEC 12 T33N R10W"], ["2", mk, "29-15N-6E", None], ["3", "SE SW SEC 3 T33N R10W", None, None]]}
+    add_column(dh, g)
+    got = [dict(zip(dh["cols"], r))["str"] for r in dh["rows"]]
+    ck("a held legal keys from its held text; one with no text keeps its key; a plain legal keys as before",
+       got == [key_for("WI", "NE NW SEC 12 T33N R10W", "55005", g), "29-15N-6E", key_for("WI", "SE SW SEC 3 T33N R10W", "55005", g)] and got[0])
+    add_column(dh, g)
+    ck("and the same on a second run", [dict(zip(dh["cols"], r))["str"] for r in dh["rows"]] == got)
     try:
         add_column({"state": "VT", "fips": "50005", "cols": ["doc", "legal", "exempt"], "rows": [["c", ""]]}, g)
         ck("rows shorter than the columns are refused", False)

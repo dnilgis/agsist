@@ -228,11 +228,12 @@ test("data files: no names, only the published fields", () => {
   for (const t of L.top) assert.deepEqual(Object.keys(t).sort(), ["acres", "basis", "county", "id", "place", "ppa", "price", "st", "when"]);
   for (const st of ["il", "wi", "in", "vt"]) {
     const f = JSON.parse(read(`data/land-sales/${st}.json`));
-    assert.deepEqual(f.cols, ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg"]);
+    // kind, cu, ri, g, m since Nov 4, 2026: the sale detail panel on the Atlas and Fast Facts cards
+    assert.deepEqual(f.cols, ["id", "when", "recorded", "acres", "price", "ppa", "place", "lat", "lng", "flag", "bldg", "kind", "cu", "ri", "g", "m"]);
     assert.equal(f.names_dir, `/data/land/names/${st}/`);
     for (const [fips, c] of Object.entries(f.counties)) {
       for (const r of c.s) {
-        assert.equal(r.length, 11, `${st} ${fips}: a featured row has the eleven published fields`);
+        assert.equal(r.length, 16, `${st} ${fips}: a featured row has the sixteen published fields`);
         assert.ok(r[6] == null || typeof r[6] === "string", "place");
       }
       const nf = JSON.parse(read(`data/land/names/${st}/${fips}.json`));
@@ -265,7 +266,7 @@ test("the component: names load only from the blocked folder; the remove link ca
 
 test("where the sales show: Atlas county pages, IL and WI rent pages, homepage, Fast Facts, search, Daily", () => {
   const loader = read("components/loader.js");
-  assert.match(loader, /\/components\/land-sales\.js\?v=4/);
+  assert.match(loader, /\/components\/land-sales\.js\?v=5/);
   assert.match(loader, /section\[data-atlas-sales="county"\]/);
   assert.match(loader, /rent\\\/\(illinois\|wisconsin\|indiana\|vermont\|new-jersey\)/);
   assert.match(loader, /farmland-atlas\\\/\(indiana\|vermont\|new-jersey\)/, "Indiana's, Vermont's and New Jersey's Atlas county pages load it too");

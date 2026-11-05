@@ -52,4 +52,24 @@
 .ls-rent { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md, 8px); padding: .6rem .8rem; margin: .8rem 0; line-height: 1.55; }
 .ls-near { margin: .8rem 0; }
 .ls-near h3 { margin: 0 0 .3rem; font-size: 1rem; }
-@media print { .ls-nm, .ls-rm, .ls-feat .ls-feat-r { display: none !important; } }
+/* one sale's detail panel (components/land-sales.js: the row's date, or a card's Details, opens it) */
+.ls-dt { font: inherit; line-height: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer;
+  text-decoration: underline dotted; text-underline-offset: .2em; }
+.ls-dt:hover, .ls-dt[aria-expanded="true"] { color: var(--brand, var(--gold)); }
+.ls-dt:focus-visible, .ls-lgb:focus-visible { outline: 2px solid var(--brand, var(--gold)); outline-offset: 2px; }
+.ls-dtc { font-size: .82rem; color: var(--brand, var(--gold)); border: 1px solid var(--border-g, var(--border)); border-radius: var(--r-pill, 999px); padding: .12rem .55rem; text-decoration: none; white-space: nowrap; }
+.ls-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.ls-t tr.ls-dr > td { padding: 0 0 .6rem; border-top: 0; }
+.ls-dp { position: sticky; left: 0; box-sizing: border-box; width: 100%; max-width: min(46rem, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md, 8px); padding: .4rem .9rem .7rem; margin: .3rem 0 0; font-size: .9rem; line-height: 1.5; white-space: normal; }
+.ls-ul .ls-dp { margin-top: .5rem; }
+.ls-dh { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin: .7rem 0 .25rem; }
+.ls-dl { display: grid; grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr); gap: .2rem .9rem; margin: 0; }
+.ls-dl dt { color: var(--text-muted); }
+.ls-dl dd { margin: 0; overflow-wrap: anywhere; }
+.ls-dn { display: block; font-size: .8rem; color: var(--text-muted); }
+.ls-miss { color: var(--text-muted); font-style: italic; }
+.ls-lgb { font: inherit; font-size: .8rem; color: var(--brand, var(--gold)); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+.ls-dp p { margin: .2rem 0; }
+@media (max-width: 560px) { .ls-dl { grid-template-columns: 1fr; gap: 0; } .ls-dl dd { margin-bottom: .35rem; } }
+@media print { .ls-nm, .ls-rm, .ls-feat .ls-feat-r, .ls-dtc { display: none !important; } }

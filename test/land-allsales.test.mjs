@@ -88,7 +88,7 @@ test("small parcels, unknown acres, buildings and forest are listed; the page ho
   assert.ok(acresNull.length > 100, "sales with acres not stated are listed too: " + acresNull.length);
   const page = read("land-sales/wisconsin/barron-county.html"), all = listFile("wi", "55005");
   // each row carries its sale's id (Nov 3, 2026: the land sale email links to land-sales/<state>/<county>#s-<id>)
-  const rows = [...page.matchAll(/<tr id="s-[0-9a-f]{10}" data-k="([fbws])"><td>([A-Z][a-z]{2} \d+, \d{4}\*?)<\/td>/g)];
+  const rows = [...page.matchAll(/<tr id="s-[0-9a-f]{10}" data-k="([fbws])"(?: data-ls='[^']*')?><td>([A-Z][a-z]{2} \d+, \d{4}\*?)<\/td>/g)];
   assert.equal(rows.length, Math.min(50, all.length), "the newest 50 in the page");
   assert.match(page, new RegExp(`Showing the newest 50 of ${all.length} sales\\. <button type="button" class="ls-mo" hidden>Show 50 more</button>`));
   assert.match(page, /<div class="ls-flt" hidden data-ls-list="\/data\/land-sales\/wi\/55005\.json" data-ls-names="\/data\/land\/names\/wi\/55005\.json"/);
@@ -205,8 +205,9 @@ test("no names in the indexed pages or the list files; names only from the block
     const nf = json(`data/land/names/${st}/${fips}.json`), list = listFile(st, fips);
     for (const g of list) assert.ok(g.id in nf.sales, `${st} ${fips}: the tap finds every listed sale (${g.id})`);
     const L = read(`data/land-sales/${st}/${fips}.json`), P = read(`land-sales/${s}.html`);
-    assert.deepEqual(Object.keys(JSON.parse(L)).sort(), ["cols", "county", "fips", "kinds", "names", "s", "st", "through"]);
-    assert.deepEqual(JSON.parse(L).cols, ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"].concat(st === "vt" ? ["cu"] : []), `${st}: the list columns`);
+    // usual, w24, lx (where a legal names its own buyer or seller) and rec (the county file is names-free) and the ri, g, m columns: the sale detail panel (Nov 4, 2026)
+    assert.deepEqual(Object.keys(JSON.parse(L)).sort(), ["cols", "county", "fips", "kinds", "lx", "names", "rec", "s", "st", "through", "usual", "w24"]);
+    assert.deepEqual(JSON.parse(L).cols, ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"].concat(st === "vt" ? ["cu"] : [], ["ri", "g", "m"]), `${st}: the list columns`);
     for (const v of Object.values(nf.sales)) for (const n of (Array.isArray(v) ? v : [])) {
       if (!n || n.length < 8 || /^(?:COUNTY OF [A-Z .']+|[A-Z .']+ COUNTY)(?:,? (?:ILLINOIS|WISCONSIN|INDIANA|VERMONT|NEW JERSEY))?$/i.test(n)) continue;
       assert.ok(!L.includes(n) && !P.includes(n), `${st} ${fips}: a name in the list file or the page`);
