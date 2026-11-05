@@ -126,7 +126,7 @@
     var q = st.prices && st.prices.quotes, k = decKey(new Date()), row = q && q[k.key];
     if (row && num(row.close) && row.close > 0) {
       setPrice(row.close / 100, 'futures', 'December ' + k.year + ' corn futures, CBOT, ' +
-        (row.close_kind === 'settle' ? 'settle' : 'delayed') + (row.close_date ? ' ' + mdy(row.close_date) : '') +
+        (row.close_kind === 'settle' ? 'settle' : 'delayed,') + (row.close_date ? ' ' + mdy(row.close_date) : '') +
         '. That is a futures price, before your basis. Pick a state for a cash estimate, or type your own price.');
     } else {
       setPrice(null, '', 'No corn price loaded. Type your price.');
@@ -137,6 +137,9 @@
     function get(u) { return fetch(u, { cache: 'no-store' }).then(function (x) { return x.ok ? x.json() : null; }).catch(function () { return null; }); }
     return Promise.all([get('/data/prices.json'), get('/data/basis-states.json')]).then(function (a) {
       st.prices = a[0]; st.basis = a[1]; fillStates(); pickPrice();
+    }).catch(function (e) {
+      if (window.console) console.error('tar-spot price', e);
+      if (st.priceFrom !== 'typed') setPrice(null, '', 'Could not load a corn price just now. Type your price.');
     });
   }
   function fillStates() {
@@ -178,7 +181,7 @@
   }
 
   function init() {
-    if (!$('ts-calc')) return;
+    if (!$('ts-out')) return;
     restore();
     [].forEach.call(document.querySelectorAll('[data-mode]'), function (b) {
       b.addEventListener('click', function () { st.mode = b.getAttribute('data-mode'); render(); save(); });
