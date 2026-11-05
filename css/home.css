@@ -1772,11 +1772,7 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 .hb-unk{color:var(--text-dim)}
 .hb-s .hb-old{font-size:.8125rem}
 .hb-none .hb-v{color:var(--text-dim)}
-.hb-spray{font-weight:700}
-.hb-spray.hb-go{color:var(--green)}
-.hb-spray.hb-caution{color:var(--gold)}
-.hb-spray.hb-stop{color:var(--red)}
-[data-theme="light"] :is(.hb-old,.hb-asof,.hb-spray.hb-caution){color:#86600f}
+[data-theme="light"] :is(.hb-old,.hb-asof){color:#86600f}
 .hb-skel{display:inline-block;width:5.5ch;height:.8em;border-radius:4px;background:var(--border-2);animation:hb-pulse 1.4s ease-in-out infinite}
 @keyframes hb-pulse{50%{opacity:.45}}
 @media(prefers-reduced-motion:reduce){
@@ -2474,6 +2470,8 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .wx-card.wx-tight .card-body{padding:8px 12px!important}
 .wx-card.wx-tight .wx-hero{margin-bottom:6px!important;padding-bottom:6px!important;gap:.6rem!important}
 .wx-card.wx-tight .wx-grid{gap:0 14px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+/* 2026-11-05: five cells since the soil cell left; the odd last one (Overnight low) takes the row */
+.wx-card.wx-tight .wx-grid>.wstat:last-child:nth-child(odd){grid-column:1/-1}
 .wx-card.wx-tight .wstat{padding:5px 0!important}
 .wx-card.wx-tight .wstat-val{font-size:1.06rem!important;line-height:1.25}
 .wx-card.wx-tight .wstat-lbl{font-size:.75rem!important;margin-bottom:0!important}

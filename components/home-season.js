@@ -11,43 +11,45 @@
   var MONTH=['January','February','March','April','May','June','July','August','September','October','November','December'];
   /* lead: the cells of the "This month" strip, in order.
      planting: Quick Tools final planting dates (also hide once both pass).
-     urea: urea loss tile. fallN: fall nitrogen window tile.
+     urea: urea loss tile.
      gdu: GDU in Local Conditions. hail: land band hail cell.
      cropTour: crop tour link. band: harvest band shown / open.
      hailLead: hail leads the land band. hp: insurance harvest price link. */
   var SEASON={
     1: /* Jan: annual crop numbers, rent talks, insurance decisions ahead */
-       {lead:['report','rent','insurance'],planting:true,urea:false,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
+       {lead:['report','rent','insurance'],planting:true,urea:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
     2: /* Feb: projected price discovery (Feb average sets the guarantee) */
-       {lead:['insurance','report','rent'],planting:true,urea:false,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
+       {lead:['insurance','report','rent'],planting:true,urea:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
     3: /* Mar: projected price out, sales closing, first soil readings */
-       {lead:['insurance','soilPlant','report','rent'],planting:true,urea:true,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
+       {lead:['insurance','soilPlant','report','rent'],planting:true,urea:true,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:false},
     4: /* Apr: planting soil temperature, frost, early planting */
-       {lead:['soilPlant','planting','frost','spray','report'],planting:true,urea:true,fallN:false,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
-    5: /* May: planting pace, late frost, spray days */
-       {lead:['planting','soilPlant','frost','spray','report'],planting:true,urea:true,fallN:false,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
-    6: /* Jun: final planting, first condition ratings, spraying */
-       {lead:['planting','condition','spray','report'],planting:true,urea:true,fallN:false,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
-    7: /* Jul: condition and pollination weather, spraying */
-       {lead:['condition','spray','report'],planting:false,urea:true,fallN:false,gdu:true,hail:true,cropTour:true,band:'off',hailLead:true,hp:false},
+       {lead:['soilPlant','planting','frost','report'],planting:true,urea:true,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
+    5: /* May: planting pace, late frost */
+       {lead:['planting','soilPlant','frost','report'],planting:true,urea:true,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
+    6: /* Jun: final planting, first condition ratings */
+       {lead:['planting','condition','report'],planting:true,urea:true,gdu:true,hail:true,cropTour:false,band:'off',hailLead:true,hp:false},
+    7: /* Jul: condition and pollination weather */
+       {lead:['condition','report'],planting:false,urea:true,gdu:true,hail:true,cropTour:true,band:'off',hailLead:true,hp:false},
     8: /* Aug: crop tours, condition, harvest price window ahead */
-       {lead:['condition','spray','report','insurance'],planting:false,urea:true,fallN:false,gdu:true,hail:true,cropTour:true,band:'shown',hailLead:true,hp:false},
+       {lead:['condition','report','insurance'],planting:false,urea:true,gdu:true,hail:true,cropTour:true,band:'shown',hailLead:true,hp:false},
     9: /* Sep: early frost, condition, harvest price window ahead */
-       {lead:['condition','frost','insurance','report','harvest'],planting:false,urea:true,fallN:false,gdu:true,hail:true,cropTour:true,band:'shown',hailLead:true,hp:true},
-    10:/* Oct: harvest price discovery, harvest, frost, fall N, Oct WASDE */
-       {lead:['insurance','prf','harvest','frost','fallN','report'],planting:false,urea:false,fallN:true,gdu:true,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
-    11:/* Nov: harvest wraps, fall N, rent season opens */
-       {lead:['prf','harvest','fallN','frost','report','rent'],planting:false,urea:false,fallN:true,gdu:false,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
+       {lead:['condition','frost','insurance','report','harvest'],planting:false,urea:true,gdu:true,hail:true,cropTour:true,band:'shown',hailLead:true,hp:true},
+    10:/* Oct: harvest price discovery, harvest, frost, Oct WASDE */
+       {lead:['insurance','prf','harvest','frost','report'],planting:false,urea:false,gdu:true,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
+    11:/* Nov: harvest wraps, rent season opens */
+       {lead:['prf','harvest','frost','report','rent'],planting:false,urea:false,gdu:false,hail:false,cropTour:false,band:'open',hailLead:false,hp:true},
     12:/* Dec: rent and lease talks, harvest price settled, Dec WASDE */
-       {lead:['rent','insurance','report'],planting:false,urea:false,fallN:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:true}
+       {lead:['rent','insurance','report'],planting:false,urea:false,gdu:false,hail:false,cropTour:false,band:'off',hailLead:false,hp:true}
   };
   var NOW=new Date(), M=NOW.getMonth()+1, S=SEASON[M];
   /* 2026-10-06 EARN, one fact one place: the strip does not repeat what the
-     page already shows. Frost and the spray verdict are in Local conditions
-     and the hero, the fall nitrogen read is one line in Local conditions, and
-     the next USDA report is the calendar's first card. */
-  var ELSEWHERE={frost:1,fallN:1,report:1,spray:1};
-  if(S)S={lead:S.lead.filter(function(m){return !ELSEWHERE[m];}),planting:S.planting,urea:S.urea,fallN:S.fallN,gdu:S.gdu,hail:S.hail,cropTour:S.cropTour,band:S.band,hailLead:S.hailLead,hp:S.hp};
+     page already shows. Frost is in Local conditions and the next USDA report
+     is the calendar's first card. 2026-11-05 (Sig): no spray read, fall
+     nitrogen or soil temperature in Local conditions or the hero band; they
+     are seasonal, and /spray, /fall-nitrogen, /planting-date and Field Scout
+     keep theirs. */
+  var ELSEWHERE={frost:1,report:1};
+  if(S)S={lead:S.lead.filter(function(m){return !ELSEWHERE[m];}),planting:S.planting,urea:S.urea,gdu:S.gdu,hail:S.hail,cropTour:S.cropTour,band:S.band,hailLead:S.hailLead,hp:S.hp};
   var root=document.documentElement;
   function $(i){return document.getElementById(i);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -80,11 +82,11 @@
 
   /* ---------- the "This month" strip ---------- */
   var grid=$('s7-grid'), cells={};
-  var LABEL={insurance:'Insurance harvest price',harvest:'Harvest progress',frost:'Frost',fallN:'Fall nitrogen window',
+  var LABEL={insurance:'Insurance harvest price',harvest:'Harvest progress',frost:'Frost',
     report:'Next USDA report',rent:'Cash rent',condition:'Crop condition',planting:'Planting progress',
-    soilPlant:'Planting soil temperature',spray:'Spray today',prf:'PRF pasture insurance'};
-  var HREF={insurance:'/harvest-price-tracker',harvest:'/conditions',frost:'/spray',fallN:'/fall-nitrogen',report:'/usda-calendar',
-    rent:'/rent/',prf:'/prf',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date',spray:'/spray'};
+    soilPlant:'Planting soil temperature',prf:'PRF pasture insurance'};
+  var HREF={insurance:'/harvest-price-tracker',harvest:'/conditions',frost:'/spray',report:'/usda-calendar',
+    rent:'/rent/',prf:'/prf',condition:'/conditions',planting:'/planting-date',soilPlant:'/planting-date'};
   if(grid&&S){
     var h=$('s7-month-h');if(h)h.textContent=MONTH[M-1]+' on the farm';
     var k=$('s7-month-k');if(k){k.textContent='';k.hidden=true;}
@@ -562,8 +564,8 @@
     });
   }
 
-  /* ---------- weather: frost, soil, spray (one rule) ---------- */
-  var WX={state:'wait',f:null,spray:null};
+  /* ---------- weather: frost and spring soil ---------- */
+  var WX={state:'wait',f:null};
   function localNowKey(f){var off=+(f&&f.utc_offset_seconds)||0;return new Date(Date.now()+off*1000).toISOString().slice(0,13);}
   function hourIdx(times,key){for(var i=0;i<times.length;i++){if(String(times[i]).slice(0,13)>=key)return i;}return -1;}
   function overnight(f){
@@ -589,25 +591,14 @@
     var x=f&&f._soil;if(!x||x.now==null||!x.last3)return null;
     return {now:Math.round(x.now),last3:x.last3,trend:x.trend||null,name:x.st&&x.st.name,mi:Math.round(x.mi),day:x.st&&x.st.last};
   }
-  /* Fall anhydrous: wait until soil at 4 in stays below 50F and is trending cooler (Iowa State, Nebraska,
-     K-State; the rules on /fall-nitrogen). In range when each of the station's last 3 days is under 50F. */
-  function fallVerdict(s){
-    if(s.now>=50)return {t:'Not yet',c:''};
-    if(s.last3.every(function(v){return v<50;})&&s.trend!=='warming')return {t:'In range',c:'s7-ok'};
-    return {t:'Getting close',c:''};
-  }
   function paintWx(){
     var f=WX.f,lo=f?overnight(f):null,s=f?soil(f):null,ff=f?firstFrost(f):null;
     var noLoc=(WX.state==='wait'&&!hasLoc());
     /* Local Conditions cells */
-    var lw=$('s7-wx-low'),sw=$('s7-wx-soil');
+    var lw=$('s7-wx-low');
     if(lw){
       if(lo!=null){var fl=frostFlag(lo);lw.innerHTML=lo+'°F'+(fl?'<span class="s7-flag s7-warn">'+fl+'</span>':'<span class="s7-sub">No frost tonight</span>');}
       else if(WX.state!=='wait')lw.innerHTML=NL();
-    }
-    if(sw){
-      if(s)sw.innerHTML=s.now+'°F'+'<span class="s7-sub">4 in, measured at '+esc(s.name)+'</span>';
-      else if(WX.state!=='wait')sw.innerHTML=NL();
     }
     /* Strip cells */
     if(cells.frost){
@@ -618,103 +609,20 @@
           esc(ff?'First frost risk in the forecast: '+ff.day+' morning, '+ff.lo+'°F ('+frostFlag(ff.lo).toLowerCase()+').':(ff===false?'No frost in the 5-day forecast.':'')));
       } else if(WX.state!=='wait')put('frost',NL(),'Weather forecast');
     }
-    /* 2026-11-05 (Sig): fall nitrogen left the Local conditions card ("doesn't belong ... same as the spray
-       conditions"); the This month strip cell, /fall-nitrogen, /planting-date and Field Scout keep it. */
-    if(cells.fallN||cells.soilPlant){
-      if(noLoc){needZip('fallN');needZip('soilPlant');}
+    /* 2026-11-05 (Sig): no soil temperature or fall nitrogen in Local conditions or the strip outside
+       planting season; /fall-nitrogen, /planting-date and Field Scout keep them. */
+    if(cells.soilPlant){
+      if(noLoc)needZip('soilPlant');
       else if(s){
-        var v=fallVerdict(s);
         var at=s.name+', '+s.mi+' mi, '+s.day;
-        var sub=(v.t==='In range'?'Below 50°F each of the last 3 days at '+at+'.':'Last 3 days at '+at+': '+s.last3.map(function(x){return Math.round(x)+'°F';}).join(', ')+'.')+' Apply once 4 in soil stays below 50°F. Not on sandy or poorly drained soils.';
-        put('fallN','<span class="s7-line'+(v.c?' '+v.c:'')+'">'+v.t+'</span><span class="s7-line">'+s.now+'°F <small>at 4 in, measured</small></span>',esc(sub));
         put('soilPlant','<span class="s7-line">'+s.now+'°F <small>at 4 in</small></span><span class="s7-line">'+(s.now>=50?'At or above 50°F':'Below 50°F')+'</span>',esc('Measured at 4 in at '+at+'. Corn is commonly planted once soil at 2 in holds near 50°F.'));
-      } else if(WX.state!=='wait'){put('fallN',NL(),'No current soil station reading within 50 miles');put('soilPlant',NL(),'');}
-    }
-    if(cells.spray){
-      var d0=WX.spray&&WX.spray[0];
-      if(noLoc)needZip('spray');
-      else if(d0)put('spray',d0.long,esc(d0.why));
-      else if(WX.state!=='wait')put('spray',NL(),'');
+      } else if(WX.state!=='wait')put('soilPlant',NL(),'No current soil station reading within 50 miles');
     }
   }
-
-  /* F: ONE spray rule. Thresholds are the ones this page already used, now
-     in one place: the summary sentence, the per-day badges and the Spray
-     Advisory tile all call this with the same day's forecast. */
-  /* Inversion risk: the lowest hourly 10 m wind under 3 mph in the early
-     morning (5-9 AM) or evening (6-9 PM) of that day, from the hourly
-     forecast. No hourly data, no inversion line. */
-  function calmAt(k){
-    var f=WX.f,h=f&&f.hourly,t=h&&h.time,w=h&&h.wind_speed_10m,d=f&&f.daily&&f.daily.time;
-    if(!t||!w||!d||!d[k])return null;var lo=null;
-    for(var i=0;i<t.length;i++){var s=String(t[i]);if(s.slice(0,10)!==d[k])continue;var hr=+s.slice(11,13);
-      if(((hr>=5&&hr<=9)||(hr>=18&&hr<=21))&&w[i]!=null&&(lo==null||w[i]<lo))lo=w[i];}
-    return (lo!=null&&lo<3)?Math.round(lo*10)/10:null;
-  }
-  function sprayRule(x){
-    if(x.wind==null&&x.tmax==null)return null;
-    var stop=[],cau=[];
-    if(x.rain!=null&&x.rain>0.25)stop.push('rain '+(Math.round(x.rain*100)/100)+' in');
-    if(x.wind!=null&&x.wind>15)stop.push('wind '+Math.round(x.wind)+' mph');
-    if(x.tmax!=null&&x.tmax<40)stop.push('high '+Math.round(x.tmax)+'°F');
-    if(x.tmax!=null&&x.tmax>90)stop.push('high '+Math.round(x.tmax)+'°F');
-    /* 2026-10-06: the same day rule as /spray's day strip. A forecast weather
-       code of 51-95 (drizzle, rain, snow, showers, storms) is a stop there, and
-       a 40-49°F high is marginal; the homepage said "OK to spray" on both. */
-    if(x.code!=null&&x.code>=51&&x.code<=95)stop.push(x.code>=95?'thunderstorms forecast':(x.code>=71&&x.code<=77)||x.code===85||x.code===86?'snow forecast':'rain forecast');
-    if(x.wind!=null&&x.wind>10&&x.wind<=15)cau.push('wind '+Math.round(x.wind)+' mph');
-    if(x.calm!=null)cau.push('inversion risk, '+x.calm+' mph at dawn or dusk');
-    if(x.pop!=null&&x.pop>50)cau.push('rain chance '+Math.round(x.pop)+'%');
-    if(x.rh!=null&&x.rh>85)cau.push('humidity '+Math.round(x.rh)+'%');
-    if(x.rh!=null&&x.rh<40)cau.push('humidity '+Math.round(x.rh)+'%');
-    if(x.tmin!=null&&x.tmin<45)cau.push('low '+Math.round(x.tmin)+'°F');
-    if(x.tmax!=null&&x.tmax>85&&x.tmax<=90)cau.push('high '+Math.round(x.tmax)+'°F');
-    if(x.tmax!=null&&x.tmax>=40&&x.tmax<50)cau.push('high '+Math.round(x.tmax)+'°F');
-    var g=(x.gust!=null)?', gusts '+Math.round(x.gust)+' mph':'';
-    if(stop.length)return {s:'stop',t:'Hold off',long:'Hold off spraying',why:stop.join(', ')+g,short:stop[0].split(',')[0]};
-    if(cau.length)return {s:'caution',t:'Caution',long:'Use caution',why:cau.join(', ')+g,short:cau[0].split(',')[0]};
-    return {s:'go',t:'OK',long:'OK to spray',why:'wind up to '+Math.round(x.wind)+' mph'+g+(x.tmax!=null?', high '+Math.round(x.tmax)+'°F':''),short:'wind '+Math.round(x.wind)+' mph'};
-  }
-  var ICON={go:'#i-circle-check',caution:'#i-triangle-alert',stop:'#i-ban'};
-  var COLOR={go:'var(--green)',caution:'var(--gold)',stop:'var(--red)'};
-  function paintSprayTile(){
-    var r=WX.spray&&WX.spray[0];if(!r)return;
-    var ic=$('wsp-spray-icon'),st=$('wsp-spray-status'),dt=$('wsp-spray-detail');
-    if(ic){ic.innerHTML='<svg class="ic" aria-hidden="true"><use href="'+ICON[r.s]+'"/></svg>';ic.style.color=COLOR[r.s];}
-    if(st){st.textContent=r.long;st.style.color=COLOR[r.s];}
-    if(dt)dt.textContent='Today: '+r.why+'.';
-    var w=$('wsp-spray'),inner=w&&w.querySelector('div');if(inner){inner.style.background='';inner.style.borderColor='';}
-  }
-  /* geo.js paints the tile from the current reading; repaint it with the
-     one rule right after, so the page never shows two verdicts. */
-  var _uwp=window.updateWidgetPreviews;
-  if(typeof _uwp==='function'){window.updateWidgetPreviews=function(){var o=_uwp.apply(this,arguments);paintSprayTile();return o;};}
 
   window.S7={
     onWx:function(f){WX.f=(f&&f.hourly)?f:null;WX.state=WX.f?'ok':'fail';paintWx();
-      if(!WX.f){try{window.__agsistSprayToday=null;window.dispatchEvent(new CustomEvent('agsist:spray',{detail:null}));}catch(e){}}
       if(!WX.f){var sv=$('wx-forecast-7day');if(sv&&!$('s7-wx-off')){var p=document.createElement('div');p.className='s7-wx-off';p.id='s7-wx-off';p.textContent='Forecast: Not loaded yet';sv.parentNode.insertBefore(p,sv);sv.hidden=true;}}},
-    spray:function(a){
-      var out=[],names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],dow=new Date().getDay();
-      var len=(a.max||[]).length;
-      for(var k=0;k<Math.min(5,len);k++){
-        var r=sprayRule({rain:a.rain[k],wind:a.wind[k],gust:a.gust[k],pop:a.pop[k],rh:a.rh[k],tmax:a.max[k],tmin:a.min[k],code:(a.code&&a.code[k]!=null&&!isNaN(a.code[k]))?Number(a.code[k]):null,calm:calmAt(k)});
-        if(r){r.label=k===0?'Today':(k===1?'Tmrw':names[(dow+k)%7]);r.pop=(a.pop&&a.pop[k]!=null&&!isNaN(a.pop[k]))?Number(a.pop[k]):null;}
-        out.push(r);
-      }
-      WX.spray=out.length&&out[0]?out:null;
-      /* 2026-10-06: the hero band reads today's verdict from here, so the page
-         never shows two spray reads. */
-      try{window.__agsistSprayToday=WX.spray?WX.spray[0]:null;window.dispatchEvent(new CustomEvent('agsist:spray',{detail:window.__agsistSprayToday}));}catch(e){}
-      /* 2026-11-04 (Sig): the five-day spray table left Local conditions; 2026-11-05 (Sig) the one Today
-         spray line left too. /spray and Field Scout keep their own spray reads. */
-      if(!WX.spray){
-        var st0=$('wsp-spray-status'),dt0=$('wsp-spray-detail');
-        if(st0){st0.textContent='Not loaded yet';st0.style.color='var(--text-muted)';}
-        if(dt0)dt0.textContent='The spray read needs the forecast, which has not loaded.';
-      }
-      paintSprayTile();paintWx();
-    },
     teaser:teaser
   };
 

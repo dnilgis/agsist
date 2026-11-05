@@ -301,10 +301,7 @@ function loadWeatherEnhancements(state){
     }
     var forecastMaxArr=dailyF.temperature_2m_max||[],forecastMinArr=dailyF.temperature_2m_min||[];
     var forecastPrecipArr=dailyF.precipitation_sum||[],forecastWindArr=dailyF.windspeed_10m_max||[];
-    var forecastHumidArr=dailyF.relative_humidity_2m_mean||[];
-    /* r7-season: the per-day badges and the summary sentence come from
-       the one spray rule (S7.spray), the same one the tile uses. */
-    if(window.S7)window.S7.spray({max:forecastMaxArr,min:forecastMinArr,rain:forecastPrecipArr,wind:forecastWindArr,rh:forecastHumidArr,gust:dailyF.wind_gusts_10m_max||[],pop:dailyF.precipitation_probability_max||[],code:dailyF.weathercode||dailyF.weather_code||[]});
+    /* 2026-11-05 (Sig): the home page shows no spray read; /spray and Field Scout keep theirs. */
 
     // ========== 7-DAY FORECAST ==========
     var forecastWcodeArr=dailyF.weathercode||[];
