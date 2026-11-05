@@ -80,16 +80,18 @@
     var cxA = cx && G.iso(cx.report_date) === last.date ? cx : null;
     var cxc = cxA && cxA.commodities && cxA.commodities[key];
     /* the price strip: every week priced and repaired, and not withheld */
-    var why = cxc && cxc.price_withheld_reason ? 'withheld' : null;
+    var reason = (cxc && cxc.price_withheld_reason) || '';
     var every = rows.every(function (r) { return r.raw !== null && r.adj !== null; });
-    var price = !why && every && last.adj > 0;
+    var price = !reason && every && last.adj > 0;
     if (price) {
       var k = last.raw / last.adj;   /* the repaired index scaled so its last point is the last close */
       rows.forEach(function (r) { r.price = Math.round(r.adj * k * 100) / 100; });
     }
-    var priceWhy = price ? '' : (key === 'leanhogs' || why
+    var priceWhy = price ? '' : /roll/.test(reason) || key === 'leanhogs'
       ? 'No price line: the price series still jumps where one contract rolls to the next, so it is left out.'
-      : 'No price line: our futures feed does not carry this contract every week.');
+      : rows.some(function (r) { return r.raw !== null; })
+        ? 'No price line: some weeks have no futures close, so it is left out rather than half drawn.'
+        : 'No price line: our futures feed does not carry this contract.';
     var rel = cxA && cxA.release_date ? cxA.release_date : null;
     var src = 'CFTC Commitments of Traders, managed money, futures only, as of ' + md(last.date) + (rel ? ', released ' + md(rel) : '') + '.'
       + (price ? ' Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.' : '');
@@ -114,7 +116,7 @@
     o = o || {};
     var fs = o.fs || 12, items = [];
     var priceH = Math.round(h * 0.2), gap = Math.round(fs * 1.6), axisH = Math.round(fs * 1.9);
-    var L = Math.round(fs * 3.4), R = Math.round(fs * 1.2), T = Math.round(fs * 1.6);
+    var L = Math.round(fs * 3.9), R = Math.round(fs * 1.2), T = Math.round(fs * 1.6);
     var netB = h - axisH - priceH - gap;           /* bottom of the net panel */
     var nets = m.rows.map(function (r) { return r.net; });
     var lo = Math.min(0, Math.min.apply(null, nets)), hi = Math.max(0, Math.max.apply(null, nets));
@@ -133,14 +135,54 @@
     /* zero, plainly, with its two words */
     var y0 = Y(0), n0 = m.rows.length;
     items.push({ t: 'line', pts: [[L, y0], [w - R, y0]], ink: 'zero', width: 1.5 });
-    /* "Funds long" just above zero and "Funds short" just below, each where the line leaves room for it */
+    /* the net: a faint fill to zero, then the 2px line */
+    var pts = m.rows.map(function (r, i) { return [X(i), Y(r.net)]; });
+    items.push({ t: 'area', pts: pts, base: y0, ink: 'netFill' });
+    items.push({ t: 'line', pts: pts, ink: 'net', width: o.big ? 3.5 : 2.25 });
+    /* labels, most important first; each later one keeps clear of the boxes already placed */
+    var boxes = [];
+    function box(x, y, s, size, al, base) {
+      var bw = s.length * size * 0.58, bh = size * 1.25;
+      var x0 = al === 'right' ? x - bw : al === 'center' ? x - bw / 2 : x;
+      var y0b = base === 'top' ? y : base === 'middle' ? y - bh / 2 : y - bh;
+      return [x0, y0b, x0 + bw, y0b + bh];
+    }
+    function hits(b) { return boxes.some(function (o) { return b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]; }); }
+    function label(it) { items.push(it); boxes.push(box(it.x, it.y, it.s, it.size, it.align, it.base)); }
+    var li = n - 1, hiI = m.rows.indexOf(m.hi), loI = m.rows.indexOf(m.lo);
+    /* this week: the dot and its number */
+    var lx = X(li), ly = Y(m.last.net), lfs = Math.round(fs * 1.12);
+    var lab = netWords(m.last.net) + (li === hiI ? ', 52-wk high' : li === loI ? ', 52-wk low' : '');
+    var below = ly - T < fs * 2.6 || (li === loI && netB - ly > fs * 2.6);
+    /* not over the high or low marker: try the other side first */
+    var marks = [hiI, loI].filter(function (i) { return i !== li; }).map(function (i) { return [X(i), Y(m.rows[i].net)]; });
+    function covers(b) { return marks.some(function (p) { return p[0] > b[0] - 6 && p[0] < b[2] + 6 && p[1] > b[1] - 6 && p[1] < b[3] + 6; }); }
+    if (covers(box(lx, below ? ly + 10 : ly - 10, lab, lfs, 'right', below ? 'top' : 'bottom'))) {
+      var alt = !below, ay = alt ? ly + 10 : ly - 10, ab = box(lx, ay, lab, lfs, 'right', alt ? 'top' : 'bottom');
+      if (!covers(ab) && ab[1] >= T - 2 && ab[3] <= netB + 2) below = alt;
+    }
+    items.push({ t: 'dot', x: lx, y: ly, r: o.big ? 8 : 5.5, ink: 'net', ring: 'surface' });
+    label({ t: 'text', x: lx, y: below ? ly + 10 : ly - 10, s: lab, ink: 'text', size: lfs, weight: 800, align: 'right', base: below ? 'top' : 'bottom' });
+    /* the 52-week high and low (when this week is one of them, its own label says so) */
+    function mark(i, word, up) {
+      var x = X(i), y = Y(m.rows[i].net), s = word + ' ' + kTick(m.rows[i].net);
+      items.push({ t: 'dot', x: x, y: y, r: o.big ? 6 : 4, ink: 'surface', ring: 'net' });
+      var al = x < L + 70 ? 'left' : x > w - R - 70 ? 'right' : 'center';
+      var it = { t: 'text', x: x, y: up ? y - 8 : y + 8, s: s, ink: 'muted', size: fs, weight: 600, align: al, base: up ? 'bottom' : 'top' };
+      if (hits(box(it.x, it.y, s, fs, al, it.base))) { it.y = up ? y + 8 : y - 8; it.base = up ? 'top' : 'bottom'; }
+      label(it);
+    }
+    if (hiI !== li) mark(hiI, '52-wk high', true);
+    if (loI !== li && loI !== hiI) mark(loI, '52-wk low', false);
+    /* "Funds long" just above zero and "Funds short" just below, where the line and the labels leave room;
+       without room in the plot, short words in the gutter beside the zero */
     function room(up) {
-      var lw = fs * 7.5, band = fs * 1.9;
-      for (var x0 = L + 6; x0 + lw < w - R - fs * 8; x0 += fs) {
-        var clear = true;
+      var s = up ? 'Funds long ↑' : 'Funds short ↓', band = fs * 1.9;
+      for (var x0 = L + 6; x0 + s.length * fs * 0.58 < w - R; x0 += fs) {
+        var bx = box(x0, up ? y0 - 5 : y0 + 5, s, fs, 'left', up ? 'bottom' : 'top'), clear = !hits(bx);
         for (var i = 0; i < n0 && clear; i++) {
-          var x = L + (i / (n0 - 1)) * (w - L - R);
-          if (x < x0 - fs || x > x0 + lw + fs) continue;
+          var x = X(i);
+          if (x < bx[0] - fs || x > bx[2] + fs) continue;
           var y = Y(m.rows[i].net);
           if (up ? (y > y0 - band - 4 && y < y0 + 2) : (y < y0 + band + 4 && y > y0 - 2)) clear = false;
         }
@@ -148,29 +190,12 @@
       }
       return null;
     }
-    var xu = y0 - T > fs * 1.8 ? room(true) : null, xd = netB - y0 > fs * 1.8 ? room(false) : null;
-    if (xu !== null) items.push({ t: 'text', x: xu, y: y0 - 5, s: 'Funds long ↑', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'bottom' });
-    if (xd !== null) items.push({ t: 'text', x: xd, y: y0 + 5, s: 'Funds short ↓', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'top' });
-    /* the net: a faint fill to zero, then the 2px line */
-    var pts = m.rows.map(function (r, i) { return [X(i), Y(r.net)]; });
-    items.push({ t: 'area', pts: pts, base: y0, ink: 'netFill' });
-    items.push({ t: 'line', pts: pts, ink: 'net', width: o.big ? 3.5 : 2.25 });
-    /* high and low (when this week is one of them, it says so in its own label) */
-    var li = n - 1, hiI = m.rows.indexOf(m.hi), loI = m.rows.indexOf(m.lo);
-    function mark(i, word, up) {
-      var x = X(i), y = Y(m.rows[i].net);
-      items.push({ t: 'dot', x: x, y: y, r: o.big ? 6 : 4, ink: 'surface', ring: 'net' });
-      var al = x < L + 70 ? 'left' : x > w - R - 70 ? 'right' : 'center';
-      items.push({ t: 'text', x: x, y: up ? y - 8 : y + 8, s: word + ' ' + kTick(m.rows[i].net), ink: 'muted', size: fs, weight: 600, align: al, base: up ? 'bottom' : 'top' });
-    }
-    if (hiI !== li) mark(hiI, '52-wk high', true);
-    if (loI !== li && loI !== hiI) mark(loI, '52-wk low', false);
-    /* this week: the dot and its number */
-    var lx = X(li), ly = Y(m.last.net);
-    var lab = netWords(m.last.net) + (li === hiI ? ', 52-wk high' : li === loI ? ', 52-wk low' : '');
-    var below = ly - T < fs * 2.6 || (li === loI && netB - ly > fs * 2.6);
-    items.push({ t: 'dot', x: lx, y: ly, r: o.big ? 8 : 5.5, ink: 'net', ring: 'surface' });
-    items.push({ t: 'text', x: lx, y: below ? ly + 10 : ly - 10, s: lab, ink: 'text', size: Math.round(fs * 1.12), weight: 800, align: 'right', base: below ? 'top' : 'bottom' });
+    var xu = y0 - T > fs * 1.8 ? room(true) : null;
+    if (xu !== null) label({ t: 'text', x: xu, y: y0 - 5, s: 'Funds long ↑', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'bottom' });
+    var xd = netB - y0 > fs * 1.8 ? room(false) : null;
+    if (xd !== null) label({ t: 'text', x: xd, y: y0 + 5, s: 'Funds short ↓', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'top' });
+    if (xu === null && y0 - T > fs * 1.8) items.push({ t: 'text', x: L - 6, y: y0 - fs * 1.15, s: 'long ↑', ink: 'muted', size: fs, weight: 600, align: 'right', base: 'middle' });
+    if (xd === null && netB - y0 > fs * 1.8) items.push({ t: 'text', x: L - 6, y: y0 + fs * 1.15, s: 'short ↓', ink: 'muted', size: fs, weight: 600, align: 'right', base: 'middle' });
     /* the x axis: the first report of each quarter month, the first and last labelled with the year */
     var ax = h - axisH + fs * 0.3, prevM = -1, used = [], gapX = fs * 5.2;
     m.rows.forEach(function (r, i) {
@@ -247,8 +272,12 @@
         ctx.fillStyle = PNG_INK[it.ink]; ctx.font = (it.weight || 400) + ' ' + it.size + 'px ' + FONT;
         ctx.textAlign = it.align || 'left'; ctx.textBaseline = it.base === 'top' ? 'top' : it.base === 'middle' ? 'middle' : 'alphabetic';
         var ty = it.base === 'bottom' || !it.base ? it.y - 2 : it.y;
-        ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.strokeStyle = PNG_INK.surface; ctx.strokeText(it.s, it.x, ty, it.wrap || undefined);
-        ctx.fillText(it.s, it.x, ty, it.wrap || undefined);
+        var ls = it.wrap ? wrapLines(ctx, it.s, it.wrap) : [it.s];
+        ls.forEach(function (t, i) {
+          var yy = ty + (i - (ls.length - 1) / 2) * it.size * 1.3;
+          ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.strokeStyle = PNG_INK.surface; ctx.strokeText(t, it.x, yy);
+          ctx.fillText(t, it.x, yy);
+        });
       }
     });
     ctx.restore();
@@ -338,7 +367,7 @@
     var plot = $('cc-plot'), svg = $('cc-svg'), msg = $('cc-msg');
     if (!D.hist) return;
     M = model(cur, D.hist, D.cot, D.cx);
-    $('cc-head').innerHTML = M && M.headlineHtml ? M.headlineHtml : esc(CHIP[cur]) + ': managed money net position';
+    $('cc-head').innerHTML = '<span>' + (M && M.headlineHtml ? M.headlineHtml : esc(CHIP[cur]) + ': managed money net position, last 52 weeks') + '</span>';
     if (!M) {
       svg.innerHTML = ''; msg.hidden = false; msg.textContent = 'No 52-week record for ' + CHIP[cur] + ' in this report.';
       $('cc-src').textContent = ''; geo = null; box.removeAttribute('data-latest'); return;

@@ -500,7 +500,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-chip:hover{border-color:var(--gold);color:var(--text)}
 .cc-chip[aria-pressed="true"]{background:var(--gold-fill,var(--gold));border-color:var(--gold);color:#0a0c0d}
 .cc-chip:focus-visible,.cc-btn:focus-visible,.cc-plot:focus-visible{outline:2px solid var(--green);outline-offset:2px}
-.cc-head{font-family:var(--font-body);font-size:1rem;font-weight:500;line-height:1.4;color:var(--text);margin:.1rem 0 .4rem;min-height:2.8em;letter-spacing:0}
+.cc-head{display:flex;flex-direction:column;justify-content:flex-end;font-family:var(--font-body);font-size:1rem;font-weight:500;line-height:1.4;color:var(--text);margin:.1rem 0 .4rem;min-height:4.2em;letter-spacing:0}
 .cc-head b{font-weight:800}
 .cc-plot{position:relative;height:300px;touch-action:pan-y;cursor:crosshair;border-radius:6px}
 .cc-svg{display:block;width:100%;height:100%;overflow:visible;font-family:var(--font-body);font-variant-numeric:tabular-nums}
@@ -512,7 +512,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-btn{min-height:44px;padding:0 1rem;border:1px solid var(--border-2);border-radius:var(--btn-r,6px);background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
 .cc-btn:hover{border-color:var(--gold)}
 .cc-note{font-size:.85rem;color:var(--text-dim);min-width:6em}
-@media(min-width:701px){.cc-plot{height:340px}.cc-head{min-height:1.4em;font-size:1.08rem}.cc-src{min-height:1.5em}}
+@media(min-width:701px){.cc-chips{flex-wrap:wrap;overflow:visible;margin:0 0 .45rem;padding:0}.cc-plot{height:340px}.cc-head{min-height:2.8em;font-size:1.08rem}.cc-src{min-height:3em}}
 @media print{.cc-acts,.cc-chips{display:none}}
 .cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .25rem}
 .cg-asof{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:0 0 .55rem}
@@ -612,7 +612,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <!-- The 52-week chart (2026-11-05, Sig): one market at a time, right under the lines; components/cot-chart.js -->
     <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"></div>
-      <h3 class="cc-head" id="cc-head">Managed money net position, last 52 weeks</h3>
+      <h3 class="cc-head" id="cc-head"><span>Managed money net position, last 52 weeks</span></h3>
       <div class="cc-plot" id="cc-plot" tabindex="0" aria-describedby="cc-hint">
         <svg class="cc-svg" id="cc-svg" role="img" aria-label="52-week chart of managed money net position" preserveAspectRatio="none"></svg>
         <div class="cc-tip" id="cc-tip" hidden></div>
