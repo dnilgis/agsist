@@ -765,8 +765,10 @@ def build(st, recs, gaz, now, prior=None, months=None):
         land_keys.add_column(doc, GEO)
         check_rows(doc)
         # no name in a county file (lead decision on PR 324, Nov 4, 2026; Sig's Oct 27 names-on-tap rule): the names
-        # go to data/land/<st>/names/<fips>.json, si and bi stay (scripts/land_names.py)
-        doc, ndoc = land_names.split(doc)
+        # go to data/land/<st>/names/<fips>.json, si and bi stay (scripts/land_names.py). Holds only grow: the legals the
+        # county's names file held on the last run seed this split, so a window roll or a word that stops being rare
+        # never puts a held legal back in the county file (checker, Nov 5; every state, not only WI's held() path)
+        doc, ndoc = land_names.split(doc, land_names.prior_held(OUT, st, fips))
         if land_names.has_names(doc):
             raise BadRows("%s %s: a name column is still in the county file; not written" % (st, fips))
         s = json.dumps(doc, separators=(",", ":"))
@@ -3307,6 +3309,18 @@ def selftest():
         ck("held legals: the section key is read from the held text and kept on every cycle (never from the mark)",
            all(k_ == land_keys.key_for("WI", "PT SEC 12 T33N R10W", fp) and k_ for fp, _, ms in s0 for _, k_ in ms))
         ck("held legals: never in a county file", all("EXC TRACT DEEDED TO" not in open(os.path.join(OUT, "wi", n)).read()
+                                                     for n in os.listdir(os.path.join(OUT, "wi")) if n.endswith(".json")))
+        # holds only grow (checker, Nov 5): a full refetch, as IL, IN, VT and NJ do, brings the raw legals back with no mark
+        # and, here, parties that no longer name the legal (drift); build() seeds the split from the names files, so every
+        # legal held before stays held, and a rebuild from the same records then gives the same files again
+        fresh = [dict(r, grantor="OTHER SELLER", grantee="OTHER BUYER") for r in cyc]
+        build("WI", fresh, {}, "2026-11-02T00:00:00Z", None, {"202403", "202404"})
+        s1 = snap_held()
+        ck("held legals: a full refetch whose parties no longer name the legal keeps every held text held",
+           held_n > 0 and all({v for _, v in a[1]} <= {v for _, v in b[1]} for a, b in zip(s0, s1)) and sum(len(x[1]) for x in s1) >= held_n)
+        build("WI", fresh, {}, "2026-11-02T00:00:00Z", None, {"202403", "202404"})
+        ck("held legals: and a second refetch changes nothing", snap_held() == s1)
+        ck("held legals: still never in a county file after the refetch", all("EXC TRACT DEEDED TO" not in open(os.path.join(OUT, "wi", n)).read()
                                                      for n in os.listdir(os.path.join(OUT, "wi")) if n.endswith(".json")))
         # the checked stamp (Nov 3): a state read is stamped even when nothing in it changed
         mark_checked("WI", "2026-11-03T09:40:00Z", [], {"202409", "202410"})

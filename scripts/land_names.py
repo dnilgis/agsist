@@ -42,6 +42,7 @@ NAME_MARK = "[NAME]"     # where a legal named the sale's own seller or buyer (c
 LEGAL_MARK = "[LEGAL WITH A NAME "
 HELD_COL = "legal_named"   # attach() and the fetcher's held() carry a held legal under this column, in memory only
 HOLD_MIN = 10              # a held text this long or longer also holds any legal that contains it (shorter: equal only)
+OWN_MIN = 5                # a word this long of a row's own seller or buyer (not in NAME_STOP) in its own legal holds it, rare or not
 NAME_STOP = set("""LLC INC LTD LLP CORP CORPORATION COMPANY TRUST TRUSTS TRUSTEE TRUSTEES REVOCABLE IRREVOCABLE LIVING FAMILY
 FARM FARMS LAND LANDS ESTATE ESTATES PROPERTY PROPERTIES HOLDINGS INVESTMENTS INVESTMENT ENTERPRISES PARTNERSHIP PARTNERS
 LIMITED AGRICULTURAL AGRICULTURE DATED JOINT TENANTS TENANT HUSBAND WIFE BANK NATIONAL ASSOCIATION COUNTY STATE CITY
@@ -64,12 +65,13 @@ def rare_words(legals):
 
 
 def names_in_legal(legal, pair, rare):
-    """True when the legal holds a rare word (4 letters or more, not an entity or survey word) of the row's own seller or
-    buyer. Never prints or returns the word."""
+    """True when the legal holds a word of the row's own seller or buyer that is not an entity or survey word: a rare
+    one of 4 letters or more, or any one of OWN_MIN letters or more, rare or not (checker, Nov 5: a common surname of
+    the row's own party in its own legal still names the party). Never prints or returns the word."""
     lt = tokens(legal)
     for v in pair:
         for w in tokens(v):
-            if w not in NAME_STOP and w in rare and w in lt:
+            if w not in NAME_STOP and w in lt and (w in rare or len(w) >= OWN_MIN):
                 return True
     return False
 
@@ -106,20 +108,34 @@ def has_names(doc):
 
 
 def blank_names(legal, pair):
-    """The legal description with the row's own seller and buyer (5 letters or more, any case, any spacing) as NAME_MARK."""
+    """The legal description with the row's own seller and buyer (5 letters or more) as NAME_MARK, in any case, spacing
+    or punctuation: "SMITH, JOHN A." matches "Smith John A" and "SMITH,JOHN A" (checker, Nov 5)."""
     t = "" if legal is None else str(legal)
     for v in pair:
         for n in str(v or "").split(";"):
-            n = re.sub(r"\s+", " ", n).strip()
-            if len(n) >= 5:
-                rx = r"\s+".join(re.escape(w) for w in n.split(" "))
+            w = re.findall(r"[A-Za-z0-9]+", n)
+            if len("".join(w)) >= 5:
+                rx = r"[^A-Za-z0-9]*".join(re.escape(x) for x in w)
                 t = re.sub(rx, NAME_MARK, t, flags=re.I)
     return t
 
 
-def split(doc):
+def prior_held(land_dir, st, fips):
+    """The held legal texts of a county's names file on disk (its "lg"), [] when there is none. A rebuild seeds split()
+    with them, so a legal once held stays held after the deed that named a party rolls out of the window or its word
+    stops being rare: holds only grow (checker, Nov 5)."""
+    try:
+        with open(path_for(land_dir, st, fips), encoding="utf-8") as fh:
+            lg = json.load(fh).get("lg") or {}
+    except (OSError, ValueError, AttributeError):
+        return []
+    return [v for v in lg.values() if isinstance(v, str) and v.strip()] if isinstance(lg, dict) else []
+
+
+def split(doc, prior=None):
     """(county doc with no name column and si, bi added; names doc). Changes neither input; a doc with no
-    name column comes back as it is, with names None."""
+    name column comes back as it is, with names None. prior: legal texts held on an earlier run (prior_held); any
+    legal that equals or contains one of them is held again."""
     cols = list(doc.get("cols") or [])
     if not has_names(doc) and HELD_COL not in cols:
         return doc, None
@@ -141,6 +157,7 @@ def split(doc):
     # deed whose own parties the legal does not name: checker, Nov 4)
     hold = [bool(leg(r)) and (is_marked(leg(r)) or names_in_legal(leg(r), pairs[ri], rare)) for ri, r in enumerate(src)]
     texts = {up(held(r) if is_marked(leg(r)) else leg(r)) for ri, r in enumerate(src) if hold[ri] and (held(r) or not is_marked(leg(r)))}
+    texts |= {up(t) for t in prior or ()}
     texts.discard("")
     grew = True
     while grew:
@@ -239,7 +256,7 @@ def split_all(land_dir=LAND):
         if not has_names(doc):
             continue
         st = os.path.basename(os.path.dirname(p))
-        out, names = split(doc)
+        out, names = split(doc, prior_held(land_dir, st, doc.get("fips")))
         write(land_dir, st, out, names)
         with open(p, "w", encoding="utf-8") as fh:
             fh.write(json.dumps(out, separators=(",", ":")))
@@ -311,6 +328,45 @@ def selftest():
     ck("closure: the other legals stay", not any(is_marked(x) for x in l4[:20]))
     o5, n5 = split(attach(o4, n4))
     ck("closure is a fixed point: a second split changes nothing", o5["rows"] == o4["rows"] and n5["lg"] == n4["lg"])
+    # holds only grow (checker, Nov 5): an IL-style rebuild refetches the window, so no mark comes back; the names file's
+    # held texts seed the split instead
+    import tempfile
+    base = lambda rows: {"state": "IL", "fips": "17999", "fetched_utc": "t", "names": True,
+                         "cols": ["doc", "date", "price", "legal", "grantor", "grantee", "rec"], "rows": rows}
+    mk = lambda n: [["%d" % i, "2026-01-01", 1, "NE SEC %d T2N R2E" % i, "OWN %d" % i, "TAK %d" % i, None] for i in range(n)]
+    pl = "W 1/2 NW 1/4 SEC 9 EXC TRACT DEEDED TO QUILLFEATHER"
+    d1 = mk(30) + [["a", "2026-02-01", 1, pl, "QUILLFEATHER, ANN", "X Y", None], ["b", "2026-04-01", 1, pl, "OTHER", "SOME", None]]
+    with tempfile.TemporaryDirectory() as td:
+        o1, n1 = split(base(d1), prior_held(td, "IL", "17999"))
+        write(td, "IL", o1, n1)
+        ck("holds grow: no names file yet seeds nothing", prior_held(os.path.join(td, "none"), "IL", "17999") == [])
+        d2 = mk(30) + [d1[-1]]                                   # the deed that named its party rolled out of the window
+        o2, n2 = split(base(d2), prior_held(td, "IL", "17999"))
+        ck("holds grow: a window roll keeps the same parcel's other deed held", sorted(n1["lg"]) == ["30", "31"]
+           and sorted(n2["lg"]) == ["30"] and "QUILLFEATHER" not in json.dumps(o2).upper())
+        ck("holds grow: without the seed it would have come back (the case the seed closes)",
+           "QUILLFEATHER" in json.dumps(split(base(d2))[0]).upper())
+        write(td, "IL", o2, n2)
+        d3 = mk(30) + [["a", "2026-02-01", 1, "PT SEC 9 DEEDED TO QUILLFEATHER", "QUILLFEATHER, ANN", "X Y", None]]
+        o3, n3 = split(base(d3), prior_held(td, "IL", "17999"))
+        write(td, "IL", o3, n3)
+        d4 = d3 + [["c%d" % i, "2026-03-01", 1, "QUILLFEATHER ADDITION LOT %d" % i, "P%d" % i, "Q%d" % i, None] for i in range(4)]
+        o4b, n4b = split(base(d4), prior_held(td, "IL", "17999"))
+        ck("holds grow: a word that stops being rare keeps its legal held", sorted(n3["lg"]) == ["30"] and "30" in n4b["lg"]
+           and is_marked(o4b["rows"][30][3]))
+        write(td, "IL", o4b, n4b)
+        o4c, n4c = split(base(d4), prior_held(td, "IL", "17999"))
+        ck("holds grow: a second rebuild changes nothing", o4c["rows"] == o4b["rows"] and n4c["lg"] == n4b["lg"])
+    # own party in its own legal: punctuation and spacing never hide it, and a common word of 5+ letters still holds it
+    ck("blank_names reads past punctuation and spacing",
+       blank_names("PT NE EXC TO SMITH,JOHN  A. ROW", ["SMITH, JOHN A", None]) == "PT NE EXC TO [NAME]. ROW"
+       and blank_names("LOT 2 smith-john a", ["SMITH JOHN A.", None]) == "LOT 2 [NAME]")
+    rows6 = [["%d" % i, "2026-03-01", 100, "SMITHS ADDN LOT %d BAKER" % i, "BAKER, JO", "LANE %d" % i, None] for i in range(40)]
+    rows6.append(["x", "2026-03-02", 100, "NE SEC 4 T2N R2E", "BAKER, JO", "ZED", None])
+    o6, n6 = split(dict(doc, rows=rows6))
+    ck("a common own-party word of 5+ letters in its own legal holds it", sorted(n6["lg"], key=int) == [str(i) for i in range(40)])
+    ck("a stop word or a short word alone holds nothing",
+       not names_in_legal("PART OF THE FARM LOT JO", ["FARM TRUST", "JO X"], set()))
     print("land_names selftest: %s" % ("ok" if not bad else "%d failure(s)" % bad))
     return 1 if bad else 0
 
