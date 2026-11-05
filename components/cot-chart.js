@@ -18,6 +18,9 @@
    One layout feeds two painters: the inline SVG on the page and a 1200x675 canvas for "Save image", so the
    saved picture is the chart on screen. "Share this chart" uses the phone's share sheet, or copies the link.
    cot-page.js hands this file the data it already fetched (AgCotChart.update); nothing here fetches.
+   Compare mode (Nov 5, Sig: "Is there a way to select multiple commodities in the COT chart?"): up to three markets on
+   one 0 to 100 axis, each week's place among that market's own 52 weeks (the weekly file carries no open interest per
+   week, so a share of open interest cannot be drawn; the chart says what it shows). The link is /cot?m=corn,soybeans.
    Exports window.AgCotChart (and module.exports for the tests: model, layout, fmt helpers). */
 (function (root) {
   'use strict';
@@ -112,6 +115,7 @@
         {t:'dot', x, y, r, ink, ring}                    {t:'text', x, y, s, ink, size, weight, align, base}
      ink names: net, netFill, price, grid, zero, axis, text, muted, surface. Painters map them to colours. */
   function layout(m, w, h, o) {
+    if (m.cmp) return layoutCmp(m, w, h, o);
     o = o || {};
     var fs = o.fs || 12, items = [];
     var priceH = Math.round(h * 0.2), gap = Math.round(fs * 1.6), axisH = Math.round(fs * 1.9);
@@ -227,9 +231,91 @@
     return { w: w, h: h, items: items, X: X, Y: Y, L: L, R: R, T: T, netB: netB, pT: pT, pB: pB };
   }
 
+
+  /* ---------------------------------------------------------------- compare mode
+     keys: up to 3 history keys. -> null without one market with two weeks, else
+     {cmp:true, keys, series:[{key, name, vals:[0..100 or null per date], nets:[]}], dates, last, headline, asOf, src, rows(dates)} */
+  function lowerName(k) { var n = CHIP[k] || k; return /^(Chicago|KC|MPLS|Class)/.test(n) ? n : n.charAt(0).toLowerCase() + n.slice(1); }
+  function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+  /* where a net sits among the market's own weeks: 0 for the lowest, 100 for the highest, ties share the middle */
+  function rankPct(nets, v) {
+    var n = nets.length, below = 0, eq = 0;
+    nets.forEach(function (x) { if (x < v) below++; else if (x === v) eq++; });
+    return n < 2 ? 50 : (below + (eq - 1) / 2) / (n - 1) * 100;
+  }
+  function cmpModel(keys, hist, cot, cx) {
+    var ser = [], all = {};
+    keys.forEach(function (k) {
+      var arr = hist && hist.history && hist.history[k];
+      if (!arr) return;
+      var rows = arr.filter(function (r) { return r && typeof r.net === 'number' && /^\d{4}-\d{2}-\d{2}$/.test(r.date); })
+        .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }).slice(-52);
+      if (rows.length < 2) return;
+      var nets = rows.map(function (r) { return r.net; }), by = {};
+      rows.forEach(function (r) { by[r.date] = r.net; all[r.date] = 1; });
+      ser.push({ key: k, name: CHIP[k] || k, nets: nets, by: by, rows: rows });
+    });
+    if (!ser.length) return null;
+    var dates = Object.keys(all).sort().slice(-52);
+    ser.forEach(function (s2) {
+      s2.vals = dates.map(function (d) { return typeof s2.by[d] === 'number' ? rankPct(s2.nets, s2.by[d]) : null; });
+    });
+    var last = dates[dates.length - 1], cxA = cx && G.iso(cx.report_date) === last ? cx : null;
+    var rel = cxA && cxA.release_date ? cxA.release_date : null;
+    var names = ser.map(function (s2) { return lowerName(s2.key); });
+    return { cmp: true, keys: ser.map(function (s2) { return s2.key; }), series: ser, dates: dates, last: { date: last }, rows: dates,
+      name: listWords(ser.map(function (s2) { return s2.name; })),
+      headline: 'Funds in ' + listWords(names) + ', ranked against each market’s own 52 weeks',
+      axis: 'Each line places a week among that market\u2019s own 52 (0 lowest, 100 highest). The weekly file has no open interest.',
+      asOf: 'Positions as of ' + mdy(last) + (rel ? ', released ' + md(rel) : ''),
+      src: 'CFTC Commitments of Traders, managed money, as of ' + md(last) + (rel ? ', released ' + md(rel) : '') + '.' };
+  }
+  function layoutCmp(m, w, h, o) {
+    o = o || {};
+    var fs = o.fs || 12, items = [], axisH = Math.round(fs * 1.9);
+    var L = Math.round(fs * 2.9), R = Math.round(fs * 1.2), T = Math.round(fs * 1.6), B = h - axisH, n = m.dates.length;
+    function X(i) { return L + (i / Math.max(n - 1, 1)) * (w - L - R); }
+    function Y(v) { return T + (1 - v / 100) * (B - T); }
+    [0, 25, 50, 75, 100].forEach(function (v) {
+      items.push({ t: 'line', pts: [[L, Y(v)], [w - R, Y(v)]], ink: v === 50 ? 'zero' : 'grid', width: v === 50 ? 1.5 : 1 });
+      items.push({ t: 'text', x: L - 6, y: Y(v), s: String(v), ink: 'muted', size: fs, align: 'right', base: 'middle' });
+    });
+    items.push({ t: 'text', x: L + 6, y: Y(100) + 4, s: 'Highest of the 52 weeks', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'top', halo: true });
+    items.push({ t: 'text', x: L + 6, y: Y(50) - 4, s: 'Middle', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'bottom', halo: true });
+    items.push({ t: 'text', x: L + 6, y: Y(0) - 4, s: 'Lowest of the 52 weeks', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'bottom', halo: true });
+    var ends = [];
+    m.series.forEach(function (s2, si) {
+      var seg = [];
+      function flush() { if (seg.length > 1) items.push({ t: 'line', pts: seg, ink: 'c' + si, width: o.big ? 3.5 : 2.25 }); seg = []; }
+      var li = -1;
+      s2.vals.forEach(function (v, i) { if (v === null) flush(); else { seg.push([X(i), Y(v)]); li = i; } });
+      flush();
+      if (li >= 0) { items.push({ t: 'dot', x: X(li), y: Y(s2.vals[li]), r: o.big ? 7 : 5, ink: 'c' + si, ring: 'surface' }); ends.push({ si: si, x: X(li), y: Y(s2.vals[li]), s: s2.name + ' ' + Math.round(s2.vals[li]) }); }
+    });
+    /* direct labels at the line ends, above the dot, pushed apart so none covers another */
+    var gap = fs * 1.4, off = o.big ? 14 : 9;
+    ends.sort(function (a, b) { return a.y - b.y; });
+    ends.forEach(function (e, i) { e.ly = Math.max(T + fs, e.y - off); if (i && e.ly < ends[i - 1].ly + gap) e.ly = ends[i - 1].ly + gap; });
+    for (var j = ends.length - 1; j >= 0; j--) { var cap = j === ends.length - 1 ? B - 2 : ends[j + 1].ly - gap; if (ends[j].ly > cap) ends[j].ly = cap; }
+    ends.forEach(function (e) { items.push({ t: 'text', x: e.x, y: e.ly, s: e.s, ink: 'c' + e.si, size: Math.round(fs * 1.08), weight: 800, align: 'right', base: 'bottom', halo: true }); });
+    /* the x axis, as on the single chart */
+    var ax = h - axisH + fs * 0.3, prevM = -1, gapX = fs * 5.2;
+    m.dates.forEach(function (ds, i) {
+      var d = dt(ds), mo = d.getMonth();
+      if (mo !== prevM && mo % 3 === 0 && X(i) - X(0) > gapX && X(n - 1) - X(i) > gapX)
+        items.push({ t: 'text', x: X(i), y: ax, s: MON[mo] + (mo === 0 ? " '" + String(d.getFullYear()).slice(2) : ''), ink: 'muted', size: fs, align: 'center', base: 'top' });
+      prevM = mo;
+    });
+    var f = dt(m.dates[0]);
+    items.push({ t: 'text', x: X(0), y: ax, s: MON[f.getMonth()] + " '" + String(f.getFullYear()).slice(2), ink: 'muted', size: fs, align: 'left', base: 'top' });
+    items.push({ t: 'text', x: X(n - 1), y: ax, s: md(m.last.date), ink: 'muted', size: fs, align: 'right', base: 'top' });
+    return { w: w, h: h, items: items, X: X, Y: Y, L: L, R: R, T: T, netB: B, pB: B, cmp: true };
+  }
+
   /* ---------------------------------------------------------------- painters */
   var SVG_INK = { net: 'var(--chart-1)', netFill: 'var(--chart-1)', price: 'var(--chart-2)', grid: 'var(--chart-grid)',
-    zero: 'var(--text-muted)', axis: 'var(--chart-text)', text: 'var(--text)', muted: 'var(--text-muted)', surface: 'var(--surface)' };
+    zero: 'var(--text-muted)', axis: 'var(--chart-text)', text: 'var(--text)', muted: 'var(--text-muted)', surface: 'var(--surface)',
+    c0: 'var(--cmp-1)', c1: 'var(--cmp-2)', c2: 'var(--cmp-3)' };
   var ANCHOR = { left: 'start', center: 'middle', right: 'end' };
   var BASE = { top: 'hanging', middle: 'central', bottom: 'auto' };
   function path(pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(''); }
@@ -253,7 +339,8 @@
   }
   /* the saved picture is always the dark card (the site's default look), so every copy matches */
   var PNG_INK = { net: '#d4a23f', netFill: 'rgba(212,162,63,.16)', price: '#8fa6b2', grid: 'rgba(132,160,168,.18)', zero: 'rgba(233,237,235,.62)',
-    axis: 'rgba(233,237,235,.72)', text: '#e9edeb', muted: 'rgba(233,237,235,.74)', surface: '#101415' };
+    axis: 'rgba(233,237,235,.72)', text: '#e9edeb', muted: 'rgba(233,237,235,.74)', surface: '#101415',
+    c0: '#d4a23f', c1: '#62aee0', c2: '#e07a9a' };
   var FONT = "Inter, 'Inter Fallback', system-ui, sans-serif";
   function paint(ctx, g, ox, oy) {
     ctx.save(); ctx.translate(ox, oy);
@@ -300,12 +387,12 @@
     ctx.fillStyle = '#d4a23f'; ctx.fillRect(0, 0, W, 8);
     text('agsist.com/cot', P, 62, '800 26px ' + FONT, '#d4a23f');
     text(m.asOf, W - P, 62, '600 22px ' + FONT, 'rgba(233,237,235,.80)', 'right');
-    var head = m.headline || ('Managed money in ' + m.name.toLowerCase() + ': ' + netWords(m.last.net) + ' contracts.');
+    var head = m.cmp ? m.headline : m.headline || ('Managed money in ' + m.name.toLowerCase() + ': ' + netWords(m.last.net) + ' contracts.');
     ctx.font = '800 38px ' + FONT;
     var hl = wrapLines(ctx, head, W - 2 * P).slice(0, 2);
     hl.forEach(function (s, i) { text(s, P, 122 + i * 48, '800 38px ' + FONT, '#e9edeb'); });
     var top = 122 + (hl.length - 1) * 48 + 30;
-    text('Managed money net position, ' + m.name.toLowerCase() + ', last 52 weeks (contracts)', P, top + 4, '600 20px ' + FONT, 'rgba(233,237,235,.74)');
+    text(m.cmp ? 'Place of each week\u2019s net position in the market\u2019s own last 52 weeks (0 lowest, 100 highest)' : 'Managed money net position, ' + m.name.toLowerCase() + ', last 52 weeks (contracts)', P, top + 4, '600 20px ' + FONT, 'rgba(233,237,235,.74)');
     var gh = H - top - 96, g = layout(m, W - 2 * P, gh, { fs: 19, big: true });
     paint(ctx, g, P, top + 18);
     g.items.forEach(function (it) { if (it.t === 'text') texts.push(it.s); });
@@ -316,18 +403,21 @@
   }
 
   /* ---------------------------------------------------------------- the page */
-  var api = { model: model, layout: layout, toSvg: toSvg, image: image, netWords: netWords, kTick: kTick, px: px, CHIP: CHIP };
+  var api = { model: model, cmpModel: cmpModel, rankPct: rankPct, layout: layout, toSvg: toSvg, image: image, netWords: netWords, kTick: kTick, px: px, CHIP: CHIP };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgCotChart = api;
   var doc = root.document, box = doc && doc.getElementById('cot-chart-box');
   if (!box) return;
-  var D = { cot: null, hist: null, cx: null }, cur = null, geo = null, M = null;
+  var D = { cot: null, hist: null, cx: null }, cur = null, geo = null, M = null, cmp = false, sel = [], MAXSEL = 3;
   function $(id) { return doc.getElementById(id); }
   function gtag(name, p) { try { if (typeof root.gtag === 'function') root.gtag('event', name, p); } catch (e) {} }
 
   (function initKey() {
     var q = null; try { q = new URLSearchParams(root.location.search).get('m'); } catch (e) {}
-    cur = G.keyOf(q) || 'corn';
+    var ks = [];
+    String(q || '').split(',').forEach(function (p) { var k = G.keyOf(p.trim()); if (k && ks.indexOf(k) < 0 && ks.length < MAXSEL) ks.push(k); });
+    cur = ks[0] || 'corn';
+    if (ks.length > 1) { cmp = true; sel = ks; }
   })();
   /* the chips */
   var chips = $('cc-chips');
@@ -337,11 +427,56 @@
   }).join('');
   chips.addEventListener('click', function (e) {
     var b = e.target && e.target.closest ? e.target.closest('.cc-chip') : null;
-    if (b) { select(b.getAttribute('data-k'), true); gtag('cot_chart_market', { market: G.SLUG[cur] }); }
+    if (!b) return;
+    if (cmp) { toggleSel(b.getAttribute('data-k')); return; }
+    select(b.getAttribute('data-k'), true); gtag('cot_chart_market', { market: G.SLUG[cur] });
   });
+  var cmpBtn = $('cc-cmp');
+  if (cmpBtn) cmpBtn.addEventListener('click', function () {
+    setMode(!cmp); gtag('cot_chart_compare', { on: cmp ? 1 : 0 });
+  });
+  function setMode(on) {
+    cmp = !!on;
+    if (cmp) sel = [cur]; else cur = sel[0] || cur;
+    markChips(); url(); draw();
+  }
+  function toggleSel(k) {
+    if (!G.SLUG[k]) return;
+    var i = sel.indexOf(k);
+    if (i >= 0) {
+      if (sel.length < 2) { toast('Keep at least one market.'); return; }
+      sel.splice(i, 1);
+    } else {
+      if (sel.length >= MAXSEL) { toast('Pick up to 3 markets. Tap one to take it off first.'); return; }
+      sel.push(k);
+    }
+    cur = sel[0]; markChips(); url(); draw();
+    gtag('cot_chart_market', { market: sel.map(function (x) { return G.SLUG[x]; }).join(',') });
+  }
+  /* a short note over the top of the plot: it takes no room, so nothing below it moves */
+  function toast(msg) {
+    var t = $('cc-toast');
+    if (!t) { t = doc.createElement('p'); t.id = 'cc-toast'; t.className = 'cc-toast'; t.setAttribute('role', 'status'); $('cc-plot').appendChild(t); }
+    t.textContent = msg; t.hidden = false;
+    var l = $('cc-live'); if (l) l.textContent = msg;
+    clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true; }, 4000);
+  }
+  /* the link carries the picks: ?m=corn,soybeans (a comma, not %2C) */
+  function slugs() { return (cmp ? sel : [cur]).map(function (x) { return G.SLUG[x]; }).join(','); }
+  function url() {
+    try {
+      var u = new URL(root.location.href);
+      u.search = '?m=' + slugs();
+      root.history.replaceState(root.history.state, '', u.pathname + u.search + u.hash);
+    } catch (e) {}
+  }
   function markChips() {
+    box.classList.toggle('cmp', cmp);
+    if (cmpBtn) cmpBtn.setAttribute('aria-pressed', cmp ? 'true' : 'false');
     Array.prototype.forEach.call(chips.querySelectorAll('.cc-chip'), function (b) {
-      var on = b.getAttribute('data-k') === cur;
+      var si = cmp ? sel.indexOf(b.getAttribute('data-k')) : -1;
+      var on = cmp ? si >= 0 : b.getAttribute('data-k') === cur;
+      if (si >= 0) b.style.setProperty('--c', 'var(--cmp-' + (si + 1) + ')'); else b.style.removeProperty('--c');
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
       if (on && b.scrollIntoView && chips.scrollWidth > chips.clientWidth) {
         var l = b.offsetLeft - chips.offsetLeft, r = l + b.offsetWidth;
@@ -351,22 +486,20 @@
   }
   function select(k, push) {
     if (!G.SLUG[k]) return;
-    cur = k; markChips(); draw();
-    if (push) {
-      try {
-        var u = new URL(root.location.href);
-        u.searchParams.set('m', G.SLUG[k]);
-        root.history.replaceState(root.history.state, '', u.pathname + u.search + u.hash);
-      } catch (e) {}
-    }
+    cur = k; cmp = false; markChips(); draw();
+    if (push) url();
   }
   api.select = select;
   api.current = function () { return cur; };
-  api.shareUrl = function () { return SITE + G.href(cur); };
+  api.shareUrl = function () { return SITE + '/cot?m=' + slugs(); };
+  api.selected = function () { return cmp ? sel.slice() : [cur]; };
+  api.compare = function () { return cmp; };
 
   function draw() {
     var plot = $('cc-plot'), svg = $('cc-svg'), msg = $('cc-msg');
     if (!D.hist) return;
+    if (cmp) return drawCmp(plot, svg, msg);
+    box.removeAttribute('data-mode');
     M = model(cur, D.hist, D.cot, D.cx);
     $('cc-head').innerHTML = '<span>' + (M && M.headlineHtml ? M.headlineHtml : esc(CHIP[cur]) + ': managed money net position, last 52 weeks') + '</span>';
     if (!M) {
@@ -388,6 +521,33 @@
     table();
     hide();
   }
+  function drawCmp(plot, svg, msg) {
+    M = cmpModel(sel, D.hist, D.cot, D.cx);
+    if (!M) {
+      $('cc-head').innerHTML = '<span>Compare markets, last 52 weeks</span>';
+      svg.innerHTML = ''; msg.hidden = false; msg.textContent = 'No 52-week record for these markets in this report.';
+      $('cc-src').textContent = ''; geo = null; box.removeAttribute('data-latest'); return;
+    }
+    msg.hidden = true;
+    var w = Math.max(280, Math.round(plot.clientWidth || 340)), h = Math.round(plot.clientHeight || 300);
+    geo = layout(M, w, h, { fs: 12 });
+    $('cc-head').innerHTML = '<span>' + esc(M.headline) + '</span>';
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    svg.setAttribute('aria-label', M.headline + '. ' + M.series.map(function (s) { var v = s.vals[s.vals.length - 1]; return s.name + ' ' + (v === null ? 'no report' : Math.round(v)); }).join(', ') + ' on ' + mdy(M.last.date) + '.');
+    svg.innerHTML = toSvg(geo) + '<line id="cc-rule" x1="0" x2="0" y1="' + geo.T + '" y2="' + geo.pB + '" stroke="var(--text-muted)" stroke-width="1" visibility="hidden"/>'
+      + M.series.map(function (s, i) { return '<circle id="cc-hot' + i + '" class="cc-hotc" r="5" fill="var(--cmp-' + (i + 1) + ')" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>'; }).join('');
+    $('cc-src').textContent = M.axis + ' ' + M.src;
+    box.setAttribute('data-mode', 'compare');
+    box.setAttribute('data-market', sel.join(','));
+    box.setAttribute('data-latest', M.series.map(function (s) { return Math.round(s.vals[s.vals.length - 1]); }).join(','));
+    box.setAttribute('data-price', '0');
+    var t = $('cc-table');
+    if (t) t.innerHTML = '<caption>' + esc(M.name) + ': where each week\'s managed money net position sits among the market\'s own 52 weeks, 0 lowest, 100 highest</caption><thead><tr><th scope="col">Week of</th>'
+      + M.series.map(function (s) { return '<th scope="col">' + esc(s.name) + '</th>'; }).join('') + '</tr></thead><tbody>'
+      + M.dates.map(function (d, i) { return i; }).reverse().map(function (i) { return '<tr><td>' + mdy(M.dates[i]) + '</td>' + M.series.map(function (s) { return '<td>' + (s.vals[i] === null ? '' : Math.round(s.vals[i])) + ' (' + netWords(s.by[M.dates[i]]) + ')</td>'; }).join('') + '</tr>'; }).join('')
+      + '</tbody>';
+    hide();
+  }
   /* the numbers, for screen readers and anyone who wants them */
   function table() {
     var t = $('cc-table');
@@ -403,6 +563,7 @@
   function show(i) {
     if (!geo || !M) return;
     i = Math.max(0, Math.min(M.rows.length - 1, i)); at = i;
+    if (M.cmp) return showCmp(i);
     var r = M.rows[i], x = geo.X(i), y = geo.Y(r.net);
     var rule = $('cc-rule'), hot = $('cc-hot');
     rule.setAttribute('x1', x); rule.setAttribute('x2', x); rule.setAttribute('visibility', 'visible');
@@ -415,7 +576,29 @@
     tip.style.top = (y < geo.T + 70 ? geo.netB - 70 : geo.T) + 'px';
     $('cc-live').textContent = mdy(r.date) + ': net ' + netWords(r.net) + ' contracts.';
   }
-  function hide() { at = -1; if (tip) tip.hidden = true; var r = $('cc-rule'), h = $('cc-hot'); if (r) r.setAttribute('visibility', 'hidden'); if (h) h.setAttribute('visibility', 'hidden'); }
+  function showCmp(i) {
+    var x = geo.X(i), rule = $('cc-rule'), top = geo.T, d = M.dates[i];
+    rule.setAttribute('x1', x); rule.setAttribute('x2', x); rule.setAttribute('visibility', 'visible');
+    var ys = [];
+    M.series.forEach(function (s, k) {
+      var hot = $('cc-hot' + k), v = s.vals[i];
+      if (!hot) return;
+      if (v === null) { hot.setAttribute('visibility', 'hidden'); return; }
+      hot.setAttribute('cx', x); hot.setAttribute('cy', geo.Y(v)); hot.setAttribute('visibility', 'visible'); ys.push(geo.Y(v));
+    });
+    tip.innerHTML = '<b>' + esc(mdy(d)) + '</b>' + M.series.map(function (s, k) {
+      var v = s.vals[i];
+      return '<br><span class="cc-sw" style="background:var(--cmp-' + (k + 1) + ')"></span>' + esc(s.name) + ' ' + (v === null ? 'no report' : Math.round(v) + ' (' + esc(netWords(s.by[d])) + ')');
+    }).join('');
+    tip.hidden = false;
+    var tw = tip.offsetWidth || 190, left = x + 12;
+    if (left + tw > geo.w) left = x - tw - 12;
+    tip.style.left = Math.max(0, left) + 'px';
+    tip.style.top = (Math.min.apply(null, ys.concat([geo.netB])) < top + 90 ? geo.netB - 90 : top) + 'px';
+    $('cc-live').textContent = mdy(d) + ': ' + M.series.map(function (s) { return s.name + ' ' + (s.vals[i] === null ? 'no report' : Math.round(s.vals[i])); }).join(', ') + '.';
+  }
+  function hide() {
+    var hs = doc.querySelectorAll('.cc-hotc'); Array.prototype.forEach.call(hs, function (e) { e.setAttribute('visibility', 'hidden'); }); at = -1; if (tip) tip.hidden = true; var r = $('cc-rule'), h = $('cc-hot'); if (r) r.setAttribute('visibility', 'hidden'); if (h) h.setAttribute('visibility', 'hidden'); }
   function idx(clientX) {
     if (!geo) return -1;
     var b = plotEl.getBoundingClientRect(), x = (clientX - b.left) * (geo.w / (b.width || geo.w));
@@ -436,9 +619,9 @@
   function note(s) { var n = $('cc-note'); if (n) { n.textContent = s; clearTimeout(note.t); note.t = setTimeout(function () { n.textContent = ''; }, 4000); } }
   var coarse = function () { try { return root.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } };
   $('cc-share').addEventListener('click', function () {
-    var url = api.shareUrl(), title = 'Funds in ' + (CHIP[cur] || '').toLowerCase() + ', 52 weeks | AGSIST';
+    var url = api.shareUrl(), title = (M && M.cmp ? M.headline : 'Funds in ' + (CHIP[cur] || '').toLowerCase() + ', 52 weeks') + ' | AGSIST';
     var text = M && M.headline ? M.headline : title;
-    gtag('cot_chart_share', { market: G.SLUG[cur], how: root.navigator.share && coarse() ? 'sheet' : 'copy' });
+    gtag('cot_chart_share', { market: slugs(), how: root.navigator.share && coarse() ? 'sheet' : 'copy' });
     if (root.navigator.share && coarse()) {
       root.navigator.share({ title: title, text: text, url: url }).catch(function () {});
       return;
@@ -463,13 +646,13 @@
     ready.then(function () {
       var im = image(M, doc);
       api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts };
-      var name = 'agsist-cot-' + G.SLUG[cur] + '-' + M.last.date + '.png';
+      var name = 'agsist-cot-' + slugs().replace(/,/g, '-') + '-' + M.last.date + '.png';
       im.canvas.toBlob(function (blob) {
         if (!blob) { note('Could not draw the image here.'); return; }
         var file = null; try { file = new File([blob], name, { type: 'image/png' }); } catch (e) {}
-        gtag('cot_chart_image', { market: G.SLUG[cur] });
+        gtag('cot_chart_image', { market: slugs() });
         if (file && coarse() && root.navigator.canShare && root.navigator.canShare({ files: [file] })) {
-          root.navigator.share({ files: [file], title: 'Funds in ' + CHIP[cur].toLowerCase(), text: (M.headline || '') + ' ' + api.shareUrl() }).catch(function () {});
+          root.navigator.share({ files: [file], title: M.cmp ? M.headline : 'Funds in ' + CHIP[cur].toLowerCase(), text: (M.headline || '') + ' ' + api.shareUrl() }).catch(function () {});
           return;
         }
         var a = doc.createElement('a'), u = URL.createObjectURL(blob);

@@ -168,7 +168,7 @@ test("/cot carries one chart, under the verdict and above the market table and t
   assert.ok(!/<canvas id="cot-chart"|id="chart-tabs"|cot-chart-tab/.test(cot), "the old chart lower down is gone");
   assert.ok(!/drawChart|setActiveTab|cot-chart-tab/.test(read("components/cot-page.js")), "and its code");
   const i = (s) => cot.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-glance.js?v=2") > 0 && i("cot-glance.js?v=2") < i("cot-chart.js?v=1") && i("cot-chart.js?v=1") < i("cot-page.js?v=6"));
+  assert.ok(i("cot-glance.js?v=2") > 0 && i("cot-glance.js?v=2") < i("cot-chart.js?v=2") && i("cot-chart.js?v=2") < i("cot-page.js?v=6"));
   assert.match(cot, /\.cc-plot\{[^}]*height:300px/, "the plot's height is held before it draws");
   assert.match(cot, /\.cc-chip\{[^}]*min-height:44px/);
   assert.match(cot, /\.cc-btn\{[^}]*min-height:44px/);
@@ -176,7 +176,7 @@ test("/cot carries one chart, under the verdict and above the market table and t
   assert.ok(!DASH.test(js.replace(/\/\*[\s\S]*?\*\//g, "")), "no dashes in the chart's words");
   // no new library: inline SVG and a canvas drawn by our own file, nothing loaded from another host
   assert.deepEqual([...cot.matchAll(/<script[^>]+src="(https?:)?\/\/[^"]*"/g)].map((m) => m[0]).filter((x) => !/googletagmanager/.test(x)), [], "no outside script");
-  assert.ok(Buffer.byteLength(js) < 40000, "the chart file stays small: " + Buffer.byteLength(js) + " bytes");
+  assert.ok(Buffer.byteLength(js) < 50000, "the chart file stays small: " + Buffer.byteLength(js) + " bytes");
 });
 
 test("the home card's lines open /cot on their market", () => {

@@ -495,6 +495,17 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc{margin:0 0 1rem;padding:.75rem .85rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
 .cc-chips{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:thin;margin:0 -.85rem .45rem;padding:0 .85rem .2rem;scroll-padding:0 .85rem}
 .cc-chip{flex:none;min-height:44px;padding:0 .85rem;border:1px solid var(--border-2);border-radius:999px;background:transparent;color:var(--text-dim);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.cc{--cmp-1:#d4a23f;--cmp-2:#62aee0;--cmp-3:#e07a9a}
+[data-theme="light"] .cc{--cmp-1:#8a6514;--cmp-2:#1f5f9a;--cmp-3:#a8335c}
+.cc-cmp{flex:none;min-height:44px;padding:0 .95rem;margin-right:.35rem;border:1px dashed var(--border-2);border-radius:999px;background:transparent;color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.cc-cmp:hover{border-color:var(--gold)}
+.cc-cmp[aria-pressed="true"]{border-style:solid;border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.cc-cmp:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.cc.cmp .cc-chip[aria-pressed="true"]{background:transparent;color:var(--text);border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
+.cc.cmp .cc-chip[aria-pressed="true"]::before{content:"";display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--c);margin-right:.4rem}
+.cc-toast{position:absolute;z-index:4;left:0;right:0;top:0;margin:0;padding:.45rem .6rem;border:1px solid var(--gold);border-radius:6px;background:var(--surface3);color:var(--text);font-size:.85rem;line-height:1.4;pointer-events:none}
+.cc-toast[hidden]{display:none}
+.cc-sw{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;margin-right:.4rem}
 .cc-chip:hover{border-color:var(--gold);color:var(--text)}
 .cc-chip[aria-pressed="true"]{background:var(--gold-fill,var(--gold));border-color:var(--gold);color:#0a0c0d}
 .cc-chip:focus-visible,.cc-btn:focus-visible,.cc-plot:focus-visible{outline:2px solid var(--green);outline-offset:2px}
@@ -619,7 +630,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
     <!-- The 52-week chart (2026-11-05, Sig): one market at a time, components/cot-chart.js -->
     <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
-      <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"><button type="button" class="cc-chip" data-k="corn" aria-pressed="true">Corn</button><button type="button" class="cc-chip" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-chip" data-k="wheat" aria-pressed="false">Chicago wheat</button><button type="button" class="cc-chip" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-chip" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-chip" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-chip" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-chip" data-k="livecattle" aria-pressed="false">Live cattle</button><button type="button" class="cc-chip" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-chip" data-k="leanhogs" aria-pressed="false">Lean hogs</button><button type="button" class="cc-chip" data-k="milk" aria-pressed="false">Class III milk</button></div>
+      <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"><button type="button" class="cc-cmp" id="cc-cmp" aria-pressed="false">Compare</button><button type="button" class="cc-chip" data-k="corn" aria-pressed="true">Corn</button><button type="button" class="cc-chip" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-chip" data-k="wheat" aria-pressed="false">Chicago wheat</button><button type="button" class="cc-chip" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-chip" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-chip" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-chip" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-chip" data-k="livecattle" aria-pressed="false">Live cattle</button><button type="button" class="cc-chip" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-chip" data-k="leanhogs" aria-pressed="false">Lean hogs</button><button type="button" class="cc-chip" data-k="milk" aria-pressed="false">Class III milk</button></div>
       <h3 class="cc-head" id="cc-head"><span>Managed money net position, last 52 weeks</span></h3>
       <div class="cc-plot" id="cc-plot" tabindex="0" aria-describedby="cc-hint">
         <svg class="cc-svg" id="cc-svg" role="img" aria-label="52-week chart of managed money net position" preserveAspectRatio="none"></svg>
@@ -819,7 +830,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 <script src="/components/loader.js?v=19"></script>
 
 <script src="/components/cot-glance.js?v=2"></script>
-<script src="/components/cot-chart.js?v=1"></script>
+<script src="/components/cot-chart.js?v=2"></script>
 <script src="/components/cot-page.js?v=6"></script>
 
 
