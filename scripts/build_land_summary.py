@@ -86,7 +86,7 @@ MAX_UNSURE = 0.25       # the year-over-year change needs known acres on 3 in 4 
 LARGEST = 3             # rows in the largest-sales list
 OUTLIERS = 4            # rows in the outside-the-range list
 # Same text as FSLand.NON_MARKET and FSLand.PARTIAL in field-scout-land.js (the node tests compare them).
-NON_MARKET = r"QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE"
+NON_MARKET = r"QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE|NOT IN THE RATIO STUDY"
 NON_MARKET_RE = re.compile(NON_MARKET)
 PARTIAL = r"\bUNDIVIDED\b|LESS THAN (?:FULL|100 ?%|THE WHOLE|ENTIRE)|PARTIAL INTEREST|\b(?:ONE|TWO|THREE)[- ](?:HALF|THIRD|THIRDS|FOURTH|FOURTHS|QUARTER|FIFTH|SIXTH)\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}\s*\/\s*\d{1,2}(?:TH|RD|ND)?\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}(?:\.\d+)?\s*%\s+(?:UNDIVIDED\s+)?INTEREST\b"
 PARTIAL_RE = re.compile(PARTIAL)
@@ -236,7 +236,7 @@ def stat_ok(r):
 
 HAS_BLDG_RE = re.compile(r"(^|[\s,;/])(1|2|3|7)($|[\s,;/])")   # FSLand.hasBuildings, character for character
 FOREST_CLS = ("5M", "6")
-FOREST_STATES = ("WI", "VT")      # FSLand.FOREST_STATES: records that carry a forest class (Vermont: timberland)
+FOREST_STATES = ("WI", "VT", "FL")      # FSLand.FOREST_STATES: records that carry a forest class (Vermont and Florida: timberland)
 
 
 def has_buildings(cls):

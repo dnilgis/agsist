@@ -98,3 +98,5 @@ build/shots/
 # Share images live in dnilgis/agsist-data since Nov 4, 2026 (scripts/share_host.py); never commit them here
 /farmland-atlas/og/
 /data/social/
+# Florida's prepared sale files: read from the private raw branch by land-data.yml, never committed (Nov 5, 2026)
+/data/land-src/

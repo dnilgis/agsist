@@ -211,7 +211,7 @@
   // counts bare farm land only; with buildings and forest are listed, never in a middle.
   FSLand.MIN_N = 5;          // under this many sales, no middle (the Atlas, the land-sales pages, the comp report)
   FSLand.MIN_ACRES = 20;     // a sale this size or larger may set a county middle
-  FSLand.FOREST_STATES = ['WI', 'VT'];   // states whose records carry a forest class (Vermont: timberland)
+  FSLand.FOREST_STATES = ['WI', 'VT', 'FL'];   // states whose records carry a forest class (Vermont and Florida: timberland)
   FSLand.isForest = function (c, st) {
     if (FSLand.FOREST_STATES.indexOf(String(st || '').toUpperCase()) < 0 || FSLand.hasBuildings(c)) return false;
     var have = String(c || '').toUpperCase().split(/[\s,;/]+/).filter(Boolean);
@@ -245,7 +245,7 @@
   //     Auctions and sales to a neighbor stay in: those are open-market farm sales.
   //   - it is a whole interest: not "an undivided one-third interest", not "less than full interest"
   //   - it is not dated after today (a typo on a return)
-  FSLand.NON_MARKET = /QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE/;
+  FSLand.NON_MARKET = /QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED|NON-USABLE|NOT IN THE RATIO STUDY/;
   // A sale of a share of the land is not a price for the whole.
   FSLand.PARTIAL = /\bUNDIVIDED\b|LESS THAN (?:FULL|100 ?%|THE WHOLE|ENTIRE)|PARTIAL INTEREST|\b(?:ONE|TWO|THREE)[- ](?:HALF|THIRD|THIRDS|FOURTH|FOURTHS|QUARTER|FIFTH|SIXTH)\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}\s*\/\s*\d{1,2}(?:TH|RD|ND)?\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}(?:\.\d+)?\s*%\s+(?:UNDIVIDED\s+)?INTEREST\b/;
   FSLand.PPA_FLOOR = 500;     // under this $/acre: listed, marked, out of every middle and low figure
