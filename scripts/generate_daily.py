@@ -1827,7 +1827,7 @@ def fetch_ag_news():
             _n += 1
             it["id"] = f"N{_n}"
             it["bucket"] = _b
-            fetch_ag_news.items.append({k: it.get(k) for k in ("id", "title", "link", "source", "publisher", "bucket")})
+            fetch_ag_news.items.append({k: it.get(k) for k in ("id", "title", "link", "source", "publisher", "bucket", "summary")})
 
     # format
     out = []
@@ -1902,6 +1902,35 @@ def _story_sim(a, b):
         return len(A & B) / max(1, min(len(A), len(B)))
 
 
+COPY_RUN_WORDS = 8   # a story body that repeats this many words in a row from the publisher's text is cut
+
+
+def _words(text):
+    return re.findall(r"[a-z0-9']+", str(text or "").lower())
+
+
+def copied_run(text, *sources):
+    """Longest run of words `text` shares, in order and unbroken, with any of
+    the publisher texts in `sources` (their headline or feed summary).
+    Returns the run length in words (0 when nothing is shared)."""
+    a = _words(text)
+    best = 0
+    for src in sources:
+        b = _words(src)
+        if not a or not b:
+            continue
+        prev = [0] * (len(b) + 1)
+        for i in range(1, len(a) + 1):
+            cur = [0] * (len(b) + 1)
+            for j in range(1, len(b) + 1):
+                if a[i - 1] == b[j - 1]:
+                    cur[j] = prev[j - 1] + 1
+                    if cur[j] > best:
+                        best = cur[j]
+            prev = cur
+    return best
+
+
 def attach_story_links(briefing, items=None):
     """Every top story (outside_the_pit) gets the link and source name of the
     digest item it came from. The model names the item's id ("ref": "N3"); a
@@ -1930,6 +1959,10 @@ def attach_story_links(briefing, items=None):
                 log.append(f"cut story {title!r}: no digest item matches it, so it has no checkable source")
                 continue
             keep.append(it)
+            continue
+        run = copied_run(it.get("body"), hit.get("title"), hit.get("summary"))
+        if run >= COPY_RUN_WORDS:
+            log.append(f"cut story {title!r}: its text repeats {run} words in a row from the publisher's own text")
             continue
         if hit.get("link"):
             it["link"] = hit["link"]
@@ -2515,7 +2548,7 @@ GEOGRAPHIC SCOPE: National. NEVER narrow to "Wisconsin and Minnesota farmers" or
 
 HEADLINE NUMERALS: Always digit format. Write "9.2%" or "9%", not "NINE PERCENT". AI search engines query digits, not spelled-out numbers. The headline is the canonical anchor and must be queryable.
 
-NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by bucket (GRAINS, LIVESTOCK, ENERGY, POLICY, WEATHER, MACRO). Every section with medium or high conviction MUST identify the catalyst, the news / data / event / report that drove or contextualizes the price action. If the relevant news bucket has NO recent items, you may write "no clean catalyst, looks like fund liquidation" or similar, but only if the bucket was actually empty. Default behavior: thread a specific news item from the relevant bucket into each section's body. Do NOT recap the news; weave it into the price story as the why. Lead with the price + so-what; the news is the why behind it. There is no separate catalyst field; the why lives in the bullets or it does not exist.
+NEWS DISCIPLINE: News is INPUT, not flavor. The news block below is organized by bucket (GRAINS, LIVESTOCK, ENERGY, POLICY, WEATHER, MACRO). Every section with medium or high conviction MUST identify the catalyst, the news / data / event / report that drove or contextualizes the price action. If the relevant news bucket has NO recent items, you may write "no clean catalyst, looks like fund liquidation" or similar, but only if the bucket was actually empty. Default behavior: thread a specific news item from the relevant bucket into each section's body. Do NOT recap the news; weave it into the price story as the why. Write every news line in your own words: never repeat a sentence or a run of more than six words from a news item's title or summary; the item's headline may be named, nothing else is quoted. Lead with the price + so-what; the news is the why behind it. There is no separate catalyst field; the why lives in the bullets or it does not exist.
 {context_blocks}
 
 {CALENDAR_FACTS_2026_LOCAL}

@@ -42,6 +42,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_cash_rent import NO_SURVEY_YEARS, REASON_MIXED, pair_county  # noqa: E402  (stdlib-only module, main() guarded)
+import credits as CR  # noqa: E402
 
 DATA_DIR = "data/cash-rent"
 MIN_DRY = 3          # counties with a latest-year dryland rent before a state is headlined on it
@@ -1072,6 +1073,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   Rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the
   ground. Year-over-year stats above compare only counties published in both years, so a county dropping out
   of the survey can&rsquo;t fake a trend.</div>
+  <p class="sub">{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
   <div class="rs-note rs-links" style="border-left-color:#5fc28a">Open a county in the table for its Farmland Atlas page and the <b>rent share calculator</b> (rent as a share of
   what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{notice_note(st)} &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price{prf_rel}.</div>
