@@ -283,8 +283,9 @@ engine_take() {
             100755) git cat-file blob "$hash" > "$f" && chmod +x "$f" ;;
             100644) git cat-file blob "$hash" > "$f" ;;
             *) continue ;;
-          esac || exit 1
-          echo x; done) | wc -l)
+          esac || { echo FAIL; exit 1; }
+          echo x; done) | sort | uniq -c | awk '$2=="x"{n=$1} $2=="FAIL"{f=1} END{print f ? "fail" : n+0}')
+    [ "$n" = "fail" ] && say_fail "could not take a file the engine lacks from this commit"
     # anything git still counts as a change under the engine paths would reach a job's commit
     git -C "$ROOT" ls-files -t -z -- "${PATHS[@]}" | tr '\0' '\n' | awk '$1!="S"{sub(/^[^ ]+ /,""); print}' |
       (cd "$ROOT" && xargs -r -d '\n' git update-index --skip-worktree --) || say_fail "could not set this repository's copy of the code aside"
