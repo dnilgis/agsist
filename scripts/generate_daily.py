@@ -1252,7 +1252,7 @@ def _ct_weekday(iso_date):
 QUOTE_PAGE = {"corn": "/corn-futures-prices", "beans": "/soybean-futures-prices", "wheat": "/wheat-futures-prices"}
 
 
-def render_quote_strip_html(strip):
+def render_quote_strip_html(strip, extra_html=""):
     """One HTML for both surfaces: same classes as daily.html's renderer, so
     the baked archive page and the live page cannot drift apart visually."""
     if not strip or not strip.get("quotes"): return ""
@@ -1284,7 +1284,7 @@ def render_quote_strip_html(strip):
             f'<span class="dv3-quote-price">{price_str}</span>'
             f'<span class="dv3-quote-chg {cls}">{html_esc(chg_str)}</span>' + ('</a>' if page else '</div>'))
     asof_html = f'<div class="dv3-quote-asof">{html_esc(quote_strip_note(strip))}</div>'
-    return '<div class="dv3-quotes">' + "".join(cells) + "</div>" + asof_html
+    return '<div class="dv3-quotes">' + "".join(cells) + "</div>" + extra_html + asof_html
 
 
 def render_adds_html(briefing):
@@ -4352,8 +4352,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
         briefing.get("quote_strip")
         or build_quote_strip(briefing.get("locked_prices"),
                              briefing.get("locked_changes"),
-                             briefing.get("board")))
-    sparks_html += render_adds_html(briefing) if sparks_html else ""
+                             briefing.get("board")),
+        extra_html=render_adds_html(briefing))
 
     sections_html = ""
     for i, sec in enumerate(briefing.get("sections", [])):
@@ -4584,7 +4584,7 @@ a.dv3-quote{{color:inherit;text-decoration:none}}a.dv3-quote:hover .dv3-quote-na
 .dv3-quote-chg .cents{{font-weight:600}}
 .dv3-quote .pos{{color:var(--green,#5fc28a)}}.dv3-quote .neg{{color:var(--red,#e0685f)}}.dv3-quote .flat{{color:var(--text-muted)}}
 .dv3-quote-asof{{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.03em;color:var(--text-muted);margin:0 0 1.1rem}}
-.dv3-adds{{margin:-.6rem 0 1.1rem;font-size:.84rem;line-height:1.5;color:var(--text-muted)}}.dv3-adds strong{{color:var(--text)}}.dv3-adds-src{{font-size:.74rem}}
+.dv3-adds{{margin:.7rem 0 .7rem;font-size:.84rem;line-height:1.5;color:var(--text-muted)}}.dv3-adds strong{{color:var(--text)}}.dv3-adds-src{{font-size:.74rem}}
 .dv3-topbar{{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.25rem;margin-bottom:2rem}}
 .dv3-one-number{{background:var(--surface);border:2px solid var(--border-g);border-radius:8px;padding:1.2rem 1.4rem}}
 .dv3-one-number-label{{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}}
