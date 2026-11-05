@@ -248,7 +248,12 @@ def selftest():
         ck("no em dash", "—" not in body + html + m["Subject"])
         ck("counted: 1 waiting, 1 sent", (t.waiting, t.sent) == (1, 1), (t.waiting, t.sent))
         ck("marker written", marker_path(d, "barnco").is_file())
-        ck("nothing printed has an address or the link", not any("@" in x or tok in x for x in lines), lines)
+        # In Actions the token's own ::add-mask:: line is printed (sponsor_publish.mask); no other
+        # line may carry the token or an address.
+        rest = [x for x in lines if not x.startswith("::add-mask::")]
+        ck("nothing printed has an address or the link", not any("@" in x or tok in x for x in rest), lines)
+        ck("a mask line is printed in Actions only",
+           (os.environ.get("GITHUB_ACTIONS") == "true") == any(x.startswith("::add-mask::") for x in lines), lines)
         rc, sent, lines, t = go(d)
         ck("a second run skips", rc == 0 and not sent and (t.waiting, t.sent) == (0, 0) and "already sent" in lines[0], lines)
         rc, sent, lines, t = go(d, resend=True)

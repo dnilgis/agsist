@@ -203,3 +203,15 @@ test("the workflow: by hand only, sponsor and resend inputs, private pull before
   assert.match(saveStep, /::error::SENT, marker not saved: the email already went out\. Do not rerun without resend\.[^\n]*\n\s+exit 1/,
     "a failed save after a send says the email went out and fails the run");
 });
+
+// Nov 5: the first dispatch failed its own selftest because in Actions the token's ::add-mask:: line is printed
+// and the selftest read it as a leak. The selftest must pass both inside and outside Actions.
+test("the script's selftest passes inside and outside Actions", () => {
+  for (const gha of [undefined, "true"]) {
+    const env = { ...process.env };
+    if (gha) env.GITHUB_ACTIONS = gha; else delete env.GITHUB_ACTIONS;
+    const r = spawnSync("python3", ["scripts/sponsor_send_link.py", "--selftest"], { env, cwd: ROOT, encoding: "utf8" });
+    assert.equal(r.status, 0, `GITHUB_ACTIONS=${gha || "unset"}: ${(r.stdout || "").split("\n").filter(l => l.includes("FAIL")).join(" | ")}`);
+    assert.match(r.stdout, /selftest: 0 failed/);
+  }
+});
