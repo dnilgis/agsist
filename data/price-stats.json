@@ -1,14 +1,14 @@
 {
-  "updated": "2026-11-04T22:00:49Z",
+  "updated": "2026-11-05T21:59:56Z",
   "corn": {
-    "pct": 35,
-    "cur": 4.4575,
+    "pct": 31,
+    "cur": 4.4075,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.6475,
     "n": 262,
     "years": 5,
-    "read": "At the 35th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 31st percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       5.53,
       5.7725,
@@ -296,14 +296,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "soybean": {
-    "pct": 47,
-    "cur": 11.9375,
+    "pct": 43,
+    "cur": 11.8,
     "lo": 9.3875,
     "hi": 17.455,
     "median": 12.0538,
     "n": 262,
     "years": 5,
-    "read": "At the 47th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 43rd percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       11.9225,
       12.34,
@@ -886,14 +886,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "cattle": {
-    "pct": 74,
-    "cur": 218.025,
+    "pct": 72,
+    "cur": 214.475,
     "lo": 131.575,
     "hi": 257.45,
     "median": 183.9375,
     "n": 262,
     "years": 5,
-    "read": "At the 74th percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 72nd percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       131.8,
       132.125,
@@ -1181,14 +1181,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "feeders": {
-    "pct": 77,
-    "cur": 332.0,
+    "pct": 76,
+    "cur": 325.075,
     "lo": 153.125,
     "hi": 375.5,
     "median": 248.95,
     "n": 262,
     "years": 5,
-    "read": "At the 77th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 76th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
     "hist": [
       158.875,
       156.25,
