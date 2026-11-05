@@ -553,7 +553,7 @@ def layer_sales(cur, month_dates=False):
     parcels of one county sold the same day for the same price are one sale (Indiana files one disclosure per parcel,
     each with the whole price: Nov 5, 2026, Blackford County read 3 parcels of one $2.7M sale as 3 sales at up to
     $75,339 an acre). The merged sale has the parcels' total acres when every one is known, else no $/acre; its kind
-    is bare farm land only when every parcel is. Month-dated files (Florida) are left alone: two sales in one month at
+    is bare farm land only when no parcel has buildings or is forest. Month-dated files (Florida) are left alone: two sales in one month at
     one price can be two sales, and Florida's extract already joins the parcels of one deed."""
     if month_dates:
         return list(cur)
@@ -579,7 +579,7 @@ def layer_sales(cur, month_dates=False):
         o["acres"] = round(sum(acs), 2) if known else None
         o["ppa"] = per_acre(num(o["price"]), o["acres"]) if known else None
         o["merged"] = len(g)
-        o["bare"] = known and all(land_type(x) == "farm" for x in g)
+        o["bare"] = known and all(land_type(x) in ("farm", "small") for x in g)   # small is a size, not a kind: no buildings, no forest
         out.append(o)
     return out
 
@@ -863,6 +863,8 @@ def selftest():
        {"c": 1, "med": 16446, "n": 1, "set": "bare", "d": ["2026-08-28", "2026-08-28"]})
     ck("layer: a merged sale with a parcel of unknown acres has no price", layer_median(one[:2] + [P("2026-08-28", 2701640, None)]) == {"c": 1})
     ck("layer: a merged sale with buildings on one parcel is not bare land", layer_median(one[:2] + [P("2026-08-28", 2701640, 80.0, "4 1")])["set"] == "any")
+    ck("layer: a small bare parcel sold with a big one stays bare land", layer_median([P("2026-06-26", 800000, 5.0), P("2026-06-26", 800000, 179.78)])
+       == {"c": 1, "med": 4329, "n": 1, "set": "bare", "d": ["2026-06-26", "2026-06-26"]})
     ck("layer: month-dated files keep two sales at one price in one month", layer_median(one[:2], True)["c"] == 2)
     import tempfile
     with tempfile.TemporaryDirectory() as td:
