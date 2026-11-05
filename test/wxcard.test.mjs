@@ -37,14 +37,15 @@ function card() {
 }
 
 /* ---------- the spray table ---------- */
-test("the spray days table and its How it's rated are gone from the card; today's read stays one line", () => {
+test("the spray days table, its How it's rated and the Today spray line are gone from the card", () => {
   const c = card();
   for (const x of ["spray-days-strip", "spray-windows", "Spray days", "tip-s7-spray", "How it&rsquo;s rated"]) assert.ok(!c.includes(x), x);
-  assert.match(c, /id="wx-today-summary"/, "the one Today line stays");
+  // Nov 5 (Sig): the one Today spray line left the card too (test/wxcard2.test.mjs); the hero band keeps its read
+  assert.ok(!/id="wx-today-summary"/.test(c), "no Today spray line in the card");
   assert.ok(!/spray days/i.test(c), "no 'spray days' copy left in the card");
   const hs = read("components/home-season.js");
   assert.ok(!/spray-days-strip|spray-day-name/.test(hs), "home-season.js paints no spray table");
-  assert.ok(/agsist:spray/.test(hs) && /function sprayRule/.test(hs), "the one spray rule still feeds the Today line and the hero band");
+  assert.ok(/agsist:spray/.test(hs) && /function sprayRule/.test(hs), "the one spray rule still feeds the hero band");
   // the other pages keep their spray days (count the copies)
   assert.match(read("spray.html"), /spray/i);
   assert.ok(existsSync(ROOT + "components/spray-windows.js"), "/spray's spray windows stay");
