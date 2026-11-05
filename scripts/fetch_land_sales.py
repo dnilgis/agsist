@@ -177,7 +177,7 @@ STATES.update({
         "source": "Florida Department of Revenue, sale data file and assessment roll",
         "short": "Florida sale data file",
         "pages": [], "links": [],
-        "since_note": "Florida's sale data files give the month of each sale, not the day, and carry no buyer or seller names; older years are kept in our copy and trimmed here to fit.",
+        "since_note": "Florida's sale data files give the month of each sale, not the day, and carry no buyer or seller names; the newest years are listed here.",
         "terms": "public records published by the Florida Department of Revenue; confidential owners removed by the state",
         "dates": "month",
         "max_mb": 8,
@@ -2711,8 +2711,8 @@ def wi_dedupe(recs):
 # read here from the raw branch (scripts/pull_raw.sh data/land-src/fl). The files give the sale month, not the day.
 FL_SRC = os.path.join(ROOT, "data", "land-src", "fl")
 # The county appraiser's qualification code, in plain words. 01 and 02 are the qualified (arm's length) sales the
-# state's sales ratio study uses; every other code carries FL_OUT, which the market-sale rule reads as not a market sale.
-FL_OUT = "not in the ratio study"
+# state's sales ratio study uses; every other code, or none (the 2009 roll's file has none), carries FL_OUT, which the market-sale rule reads as not a market sale.
+FL_OUT = "not counted as a qualified sale"
 FL_QUAL = {
     "01": "arm's length, deed examined", "02": "arm's length, other evidence",
     "03": "arm's length, but the parcel changed after the sale", "04": "arm's length, but its legal makeup changed after the sale",
@@ -2733,7 +2733,7 @@ FL_DOR_HELD = ("UNINCORPORATED", "UNINCORPORATED COUNTY", "COUNTY", "UNINC")
 
 def fl_conv(code):
     c = str(code or "").strip().zfill(2) if str(code or "").strip() else ""
-    words = FL_QUAL.get(c, "code not given" if not c else "code not in the guide")
+    words = FL_QUAL.get(c, "no code in the file" if not c else "code not in the guide")
     if c in FL_QUALIFIED:
         return "Qualified sale, Florida code %s: %s" % (c, words)
     return "Florida code %s: %s; %s" % (c or "blank", words, FL_OUT)
@@ -2805,7 +2805,7 @@ def fl_selftest(ck):
     by = {r["pid"]: r for r in recs}
     ck("FL: every prepared row read, the month as the first of the month", rep.get("rows") == len(recs) == 9
        and by["FX-001"]["date"] == "2025-08-01")
-    ck("FL: qualified codes 01 and 02 read as qualified; every other code carries the not-in-ratio-study words",
+    ck("FL: qualified codes 01 and 02 read as qualified; every other code, and none, is not counted as qualified",
        all(fl_conv(c).startswith("Qualified sale") for c in FL_QUALIFIED)
        and all(FL_OUT in fl_conv(c) for c in FL_QUAL if c not in FL_QUALIFIED) and FL_OUT in fl_conv("") and FL_OUT in fl_conv("77"))
     ck("FL: classes from the use code and the improved mark: timber 6, farm 4, buildings 7",
