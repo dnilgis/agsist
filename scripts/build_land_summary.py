@@ -69,6 +69,8 @@ import math
 import os
 import re
 import sys
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LAND = os.path.join(ROOT, "data", "land")
