@@ -49,7 +49,7 @@ test("the live menu: PRF, LRP and Rain Print once, the dropped lines gone, Ag st
   assert.match(drawer, /Wheat<\/a>\s*<a href="\/ag-stocks" class="draw-item"><svg[^>]*><use href="#i-trending-up"\/><\/svg>Ag stocks<\/a>/);
   // the phone panel keeps its Rain Print card; the plain Field line is the copy that went
   assert.match(drawer, /<a href="\/rain-print" class="draw-rp">/);
-  assert.equal((drawer.match(/class="draw-item[^"]*"|class="draw-rp"/g) || []).length, 58, "63 lines to 57, plus Ag stocks");
+  assert.equal((drawer.match(/class="draw-item[^"]*"|class="draw-rp"/g) || []).length, 59, "63 lines to 57, plus Ag stocks, plus Tar spot (Sig, Nov 5)");
   assert.ok(existsSync(join(ROOT, "ag-stocks.html")));
 });
 

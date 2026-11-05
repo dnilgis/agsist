@@ -42,7 +42,7 @@ const MENU = {
   }],
   field: ["Field", {
     Weather: [["/rain-radar", "Rain on your field"], ["/rain", "Rain by county"], ["/hail-map", "Hail map"], ["/drought-monitor", "Drought monitor"], ["/spray", "Spray advisory"], ["/fall-nitrogen", "Soil temp (fall anhydrous)"], ["/rain-print", "Rain Print"], ["/rain-gauge", "Rain gauge waitlist"]],
-    Crop: [["/gdu-calculator", "GDU"], ["/planting-date", "Planting date"], ["/urea", "Urea loss"], ["/nutrient-removal", "Nutrient removal"], ["/manure-value", "Manure value"], ["/field-scout", "Field Scout"], ["/yield-estimator", "Yield estimator"]],
+    Crop: [["/gdu-calculator", "GDU"], ["/planting-date", "Planting date"], ["/urea", "Urea loss"], ["/nutrient-removal", "Nutrient removal"], ["/manure-value", "Manure value"], ["/field-scout", "Field Scout"], ["/yield-estimator", "Yield estimator"], ["/tar-spot", "Tar spot"]],
     "Harvest and bins": [["/harvest-or-wait", "Harvest now or wait"], ["/grain-emc", "Grain drying (EMC)"], ["/grain-shrink", "Grain shrink"], ["/grain-bin-calculator", "Bin calculator"], ["/combine-loss", "Combine loss"], ["/tools", "All tools →"]],
   }],
   money: ["Money & Land", {
@@ -108,9 +108,9 @@ test("phone panel: search, My place, the five groups open with subheads, a Rain 
   assert.match(drawer, /<a href="\/rain-print" class="draw-rp"><span class="draw-rp-k">Rain Print<\/span><span class="draw-rp-t">Your farm&rsquo;s year of rain, framed<\/span>/);
   assert.equal((drawer.match(/href="\/rain-print"/g) || []).length, 1, "Rain Print once in the phone panel");
   for (const u of ["/prf", "/lrp"]) assert.equal((drawer.match(new RegExp(`href="${u}"`, "g")) || []).length, 1, `${u} once in the phone panel`);
-  // Oct 29, 2026: 63 lines to 57, plus Ag stocks. Groups, the Rain Print card and About, Advertise, Contact.
+  // Oct 29, 2026: 63 lines to 57, plus Ag stocks; Nov 5 (Sig) plus Tar spot. Groups, the Rain Print card and About, Advertise, Contact.
   const lines = (drawer.match(/class="draw-item[^"]*"|class="draw-rp"/g) || []).length;
-  assert.equal(lines, 58, "phone panel lines");
+  assert.equal(lines, 59, "phone panel lines");
 });
 
 test("moved note: Harvest tools moved to Field, in Money & Land, dismissible, gated to two weeks", () => {
@@ -277,8 +277,8 @@ test("phone: one tap on the menu shows every group's links; desktop panels stay 
     const hidden = await pg.evaluate(() => [...document.querySelectorAll("#drawer .draw-grp a.draw-item")].filter((a) => !a.getClientRects().length).map((a) => a.getAttribute("href")));
     assert.deepEqual(hidden, [], "every group link is shown without another tap");
     const n = await pg.evaluate(() => document.querySelectorAll("#drawer .draw-grp a.draw-item").length);
-    assert.equal(n, 4 + 6 + 5 + 7 + 7 + 7 + 6 + 5 + 2 + 3 + 2,
-      "Oct 29, 2026 (consolidation round 2): Near you 4 (Cash Bid Index linked from /basis), Futures 6 with Ag stocks, Reports 5 (one crop report line), Livestock 7 (drought and manure to Field), Weather 7 (drought in, Rain Print in its card), Crop 7 (manure value), Harvest 6, Land 5 (the Illinois index is a section of Land sales), Programs 2 (PRF and LRP under Livestock), Selling 3, Daily 2");
+    assert.equal(n, 4 + 6 + 5 + 7 + 7 + 8 + 6 + 5 + 2 + 3 + 2,
+      "Oct 29, 2026 (consolidation round 2): Near you 4 (Cash Bid Index linked from /basis), Futures 6 with Ag stocks, Reports 5 (one crop report line), Livestock 7 (drought and manure to Field), Weather 7 (drought in, Rain Print in its card), Crop 8 (manure value; Tar spot added Nov 5, Sig), Harvest 6, Land 5 (the Illinois index is a section of Land sales), Programs 2 (PRF and LRP under Livestock), Selling 3, Daily 2");
     assert.ok(await pg.evaluate(() => document.getElementById("drawer").scrollWidth <= 390), "no sideways scroll in the panel");
     // the moved note shows before Nov 1 and stays closed once dismissed
     assert.ok(await pg.isVisible("#drawer .nav-moved"));
