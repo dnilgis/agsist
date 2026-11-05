@@ -425,7 +425,7 @@ test("prints ship flat between chipboard, never rolled; the framed one has a whi
     assert.ok(!/\btube\b|rolled in|ships rolled/i.test(t.replace(/rolled into a later/g, "")), n + " says nothing about a tube");
   }
   assert.match(HTML, /<li>Ships flat between chipboard<\/li>/);
-  assert.match(HTML, /<li>A 13 x 19 in wood frame, oak or black, your pick<\/li>/);
+  assert.match(HTML, /<li>A 13 x 19 in frame, oak wood or black, your pick<\/li>/);
   assert.doesNotMatch(HTML, /no mat|trim it to size|a little bigger than 12 x 18/);
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   // the box picture is a render of an older layout: it says so, and it keeps its shape
@@ -456,7 +456,7 @@ const visible = HTML.replace(/<script[\s\S]*?<\/script>/g, "");
 test("Sig's notes: no printer named anywhere, framed prints have real glass, packed well", () => {
   assert.ok(!/epson|artisan|acrylic/i.test(HTML + S2), "no printer model, no acrylic");
   // the frame specs as plain lines since Nov 4 (Sig): the glass, then the packing
-  assert.match(HTML, /<li>Tempered glass front<\/li><li>Hanging hardware included<\/li><li>Packed with corner guards and foam, double-boxed<\/li>/);
+  assert.match(HTML, /<li>2 mm tempered glass front<\/li><li>14\.3 x 20\.3 in outside, 0\.9 in frame, sturdy backboard, hanging hardware included<\/li><li>Packed with corner guards and foam, double-boxed<\/li>/);
   assert.match(HTML, /<li>I print it myself, and you see a proof first<\/li>/);
   assert.match(HTML, /I print it myself, frame it if you ordered the frame, and ship it from Chetek, Wisconsin\./);
 });

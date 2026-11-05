@@ -127,5 +127,6 @@ jobs:
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}   # the mail plan's daily cap (the send_cap.py preflight)
           DRY_RUN:      ${{ (github.event_name == 'workflow_dispatch' && inputs.send_email != true) && '1' || '' }}
         run: python scripts/send_report_day.py

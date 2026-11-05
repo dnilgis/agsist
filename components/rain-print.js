@@ -114,7 +114,7 @@
   /* THE SHEET (2026-10-17, Sig): prints and framed prints are printed on 13 x 19 in
      paper and ship untrimmed. The 3:2 art (1800 x 1200 units) is scaled to 16.5 x
      11 in and centred on the sheet; the margin is the print's own white. The
-     framed print sits in a 13 x 19 wood frame (oak or black, Sig's Nov 4 order: tempered glass) with an acid-free white mat (the stock "cut for 11 x 17" kind, window about 16.5 x 10.5 in), so everything the
+     framed print sits in a 13 x 19 frame (oak wood or black MDF, Sig's Nov 4 order: 2 mm tempered glass) with an acid-free white mat (the stock "cut for 11 x 17" kind; the maker's listing gives the opening as 10.5 x 16.5 in, Nov 4), so everything the
      art draws stays inside the centred safe window, which
      test/rain-print-sheet.test.mjs measures on the drawn sheet. When Sig
      measures the real mat, change mat and safe here (inches, landscape). The
@@ -3042,7 +3042,7 @@
      for a print or framed (a plain date from data/rain-print.json), the file
      by email. This year's gift and a year NOAA hasn't finished say so instead. */
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
-  var SUB_BASE = { framed12x18: '13 x 19 wood frame, oak or black, acid-free white mat, tempered glass.', print12x18: '13 x 19 paper, ships flat.' };
+  var SUB_BASE = { framed12x18: '13 x 19 frame in oak wood or black, acid-free white mat, 2 mm tempered glass.', print12x18: '13 x 19 paper, ships flat.' };
   function syncCutoffs() {
     var gift = giftYear(), settle = !gift && SETTLE && canOrder();
     PRODUCTS.forEach(function (id) {
@@ -4602,7 +4602,7 @@
     ['Crop', 'Temperatures', 'Every year behind'].forEach(function (k) { if (rows[k]) list.push([k, esc(rows[k])]); });
     // the logo, in words and as it prints
     if (rows['Logo']) { var la = logoArt(); list.push(['Logo', esc(rows['Logo']) + (la ? '<img class="rp-plogo" alt="" src="' + esc(la.href) + '">' : '')]); }
-    if (PICK === 'framed12x18') list.push(['Frame', esc(FRAME_WORD[FRAME] + ', 13 x 19 wood frame, acid-free white mat, tempered glass')]);
+    if (PICK === 'framed12x18') list.push(['Frame', esc((FRAME === 'oak' ? 'Oak wood' : 'Black') + ', 13 x 19 frame, acid-free white mat, 2 mm tempered glass')]);
     if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
     var can = canOrder(), gift = !!(GIFT && GIFT.usable), p = pickPrice(PICK);
     // what the picker above it doesn't say: when it comes (and that a gift card covers it)
