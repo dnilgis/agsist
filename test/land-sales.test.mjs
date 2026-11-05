@@ -275,7 +275,7 @@ test("where the sales show: Atlas county pages, IL and WI rent pages, homepage, 
   assert.match(read("fast-facts.html"), /<div class="ls-near" id="h-land-sales" data-land-sales="near" hidden><\/div>/, "Fast Facts host (an h- hash opens My place)");
   const s = read("components/search.js");
   assert.match(s, /'Land sales near here: '/);
-  assert.match(s, /LAND_ST = \{ IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont', NJ: 'new-jersey' \}/, "only where the sales are");
+  assert.match(s, /LAND_ST = \{ IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont', NJ: 'new-jersey', FL: 'florida' \}/, "only where the sales are");
   const oh = read("scripts/only_here.py");
   assert.match(oh, /import daily_land_line/, "the Daily line rides in Only here");
   const d = py(["scripts/daily_land_line.py", "--selftest"]);
