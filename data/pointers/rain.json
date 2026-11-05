@@ -157,10 +157,6 @@
    "to": "/rain/south-dakota",
    "since": "2026-10-14"
   },
-  "rain/south-dakota/brule-county.html": {
-   "to": "/rain/south-dakota",
-   "since": "2026-10-15"
-  },
   "rain/south-dakota/dewey-county.html": {
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
@@ -172,10 +168,6 @@
   "rain/texas/anderson-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
-  },
-  "rain/texas/brooks-county.html": {
-   "to": "/rain/texas",
-   "since": "2026-11-04"
   },
   "rain/texas/concho-county.html": {
    "to": "/rain/texas",
@@ -192,10 +184,6 @@
   "rain/texas/delta-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
-  },
-  "rain/texas/hartley-county.html": {
-   "to": "/rain/texas",
-   "since": "2026-11-04"
   },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
