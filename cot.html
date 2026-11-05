@@ -101,8 +101,6 @@
 /* ── Page layout ── */
 .cot-page { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-.cot-chart-tab { min-height:44px; }
-.cot-chart-tab:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 
 .cot-pctl { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.02em; color:var(--text-muted); margin:-.15rem 0 .35rem; }
 .cot-pctl.hot  { color:var(--gold); }
@@ -231,38 +229,6 @@
 }
 
 /* ── Chart section ── */
-.cot-chart-section {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-r);
-  padding: 1rem 1.1rem; margin-bottom: 1.25rem;
-}
-.cot-chart-head {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem;
-}
-.cot-chart-title {
-  font-size:0.78rem; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--text-muted); margin: 0;
-}
-.cot-section-title {
-  font-size:0.78rem; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--text-muted); margin: 0 0 .7rem;
-}
-.cot-chart-tabs { display: flex; gap: .3rem; }
-.cot-chart-tab {
-  padding: .2rem .6rem; border-radius: 4px; border: 1px solid var(--border);
-  background: var(--surface2); color: var(--text-dim);
-  font-family: 'JetBrains Mono', monospace; font-size:0.763rem; font-weight: 700;
-  cursor: pointer; text-transform: uppercase; letter-spacing: .04em; transition: all .15s;
-}
-.cot-chart-tab:hover { border-color: var(--gold); color: var(--text); }
-.cot-chart-tab.active { background: var(--gold-fill,var(--gold)); color: #0a1a0a; border-color: var(--gold); }
-
-.cot-legend { display: flex; gap: .9rem; flex-wrap: wrap; margin-bottom: .65rem; }
-.cot-legend-item { display: flex; align-items: center; gap: .3rem; font-size:0.77rem; color: var(--text-muted); }
-.cot-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-
-.cot-canvas-wrap { position: relative; width: 100%; }
-canvas#cot-chart { width: 100%; height: 260px; display: block; }
 
 /* ── Explainer ── */
 /* 2026-10-08 light mode: the bright red and blue fail on white (3.8:1 and
@@ -521,7 +487,33 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
 @media(max-width:640px){.cx-hz button,.cx-link{min-height:40px}}
 /* At a glance (2026-11-04): one line per market, then the details behind a tap */
+.cot-section-title {
+  font-size:0.78rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text-muted); margin: 0 0 .7rem;
+}
 .cg{margin:0 0 1rem}
+.cg-more{display:none}
+@media(max-width:700px){.cg-lines:not(.cg-open) .cg-line:nth-child(n+4){display:none}.cg-more:not([hidden]){display:flex;align-items:center;min-height:44px;margin:-.5rem 0 .6rem;padding:0 .2rem;background:none;border:0;color:var(--gold);font:inherit;font-size:.9rem;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}}
+.cc{margin:0 0 1rem;padding:.75rem .85rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.cc-chips{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:thin;margin:0 -.85rem .45rem;padding:0 .85rem .2rem;scroll-padding:0 .85rem}
+.cc-chip{flex:none;min-height:44px;padding:0 .85rem;border:1px solid var(--border-2);border-radius:999px;background:transparent;color:var(--text-dim);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.cc-chip:hover{border-color:var(--gold);color:var(--text)}
+.cc-chip[aria-pressed="true"]{background:var(--gold-fill,var(--gold));border-color:var(--gold);color:#0a0c0d}
+.cc-chip:focus-visible,.cc-btn:focus-visible,.cc-plot:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.cc-head{font-family:var(--font-body);font-size:1rem;font-weight:500;line-height:1.4;color:var(--text);margin:.1rem 0 .4rem;min-height:2.8em;letter-spacing:0}
+.cc-head b{font-weight:800}
+.cc-plot{position:relative;height:300px;touch-action:pan-y;cursor:crosshair;border-radius:6px}
+.cc-svg{display:block;width:100%;height:100%;overflow:visible;font-family:var(--font-body);font-variant-numeric:tabular-nums}
+.cc-msg{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--text-muted)}
+.cc-msg[hidden]{display:none}
+.cc-tip{position:absolute;z-index:3;pointer-events:none;padding:.4rem .55rem;border:1px solid var(--border-2);border-radius:6px;background:var(--surface3);color:var(--text);font-size:.8rem;line-height:1.45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
+.cc-src{font-size:.78rem;line-height:1.5;color:var(--text-muted);margin:.45rem 0 .4rem;min-height:3em}
+.cc-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
+.cc-btn{min-height:44px;padding:0 1rem;border:1px solid var(--border-2);border-radius:var(--btn-r,6px);background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
+.cc-btn:hover{border-color:var(--gold)}
+.cc-note{font-size:.85rem;color:var(--text-dim);min-width:6em}
+@media(min-width:701px){.cc-plot{height:340px}.cc-head{min-height:1.4em;font-size:1.08rem}.cc-src{min-height:1.5em}}
+@media print{.cc-acts,.cc-chips{display:none}}
 .cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .25rem}
 .cg-asof{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:0 0 .55rem}
 .cg-asof #cg-date{color:var(--text-dim);font-weight:700}
@@ -616,11 +608,31 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <p class="cg-asof"><span id="cg-date"></span> Managed money (hedge funds and commodity trading advisers), from the CFTC Commitments of Traders. The percentile ranks the net as a share of open interest against every week in the record.</p>
     <ul class="cg-lines" id="cg-lines" aria-busy="true"></ul>
   <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
+    <button type="button" class="cg-more" id="cg-more" aria-expanded="false" aria-controls="cg-lines" hidden>All 11 markets</button>
+    <!-- The 52-week chart (2026-11-05, Sig): one market at a time, right under the lines; components/cot-chart.js -->
+    <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
+      <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"></div>
+      <h3 class="cc-head" id="cc-head">Managed money net position, last 52 weeks</h3>
+      <div class="cc-plot" id="cc-plot" tabindex="0" aria-describedby="cc-hint">
+        <svg class="cc-svg" id="cc-svg" role="img" aria-label="52-week chart of managed money net position" preserveAspectRatio="none"></svg>
+        <div class="cc-tip" id="cc-tip" hidden></div>
+        <p class="cc-msg" id="cc-msg">Loading the 52-week chart&hellip;</p>
+      </div>
+      <p class="sr-only" id="cc-hint">Use the left and right arrow keys to step through the weeks.</p>
+      <div class="sr-only" id="cc-live" aria-live="polite"></div>
+      <figcaption class="cc-src" id="cc-src"></figcaption>
+      <div class="cc-acts">
+        <button type="button" class="cc-btn" id="cc-share">Share this chart</button>
+        <button type="button" class="cc-btn" id="cc-save">Save image</button>
+        <span class="cc-note" id="cc-note" role="status" aria-live="polite"></span>
+      </div>
+      <div class="sr-only"><table id="cc-table"></table></div>
+    </figure>
     <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="These lines in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask"></div>
   </section>
 
   <details class="fold cot-all" id="cot-all">
-    <summary><h2 class="fold-title cg-more-h">Ranges, history and charts</h2> <span class="fold-hint">Every market&rsquo;s card and 52-week range, where each stands against its record, the weekly chart, one market at a time, and how to read the report</span></summary>
+    <summary><h2 class="fold-title cg-more-h">Ranges, history and charts</h2> <span class="fold-hint">Every market&rsquo;s card and 52-week range, where each stands against its record, one market at a time, and how to read the report</span></summary>
     <div class="fold-body">
 
   <div class="cot-read" id="cot-read" style="display:none">
@@ -690,28 +702,6 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       </div>
     </details>
   </section>
-
-  <!-- Chart -->
-  <div class="cot-chart-section">
-    <div class="cot-chart-head">
-      <h2 class="cot-chart-title">Managed money net position: 52 weeks</h2>
-      <div class="cot-chart-tabs" id="chart-tabs" role="group" aria-label="Filter chart by commodity group">
-        <button type="button" class="cot-chart-tab active" data-key="grains" aria-pressed="true">Grains</button>
-        <button type="button" class="cot-chart-tab" data-key="crush" aria-pressed="false">Crush</button>
-        <button type="button" class="cot-chart-tab" data-key="livestock" aria-pressed="false">Livestock</button>
-        <button type="button" class="cot-chart-tab" data-key="dairy" aria-pressed="false">Dairy</button>
-      </div>
-    </div>
-    <div class="cot-legend" id="cot-legend"></div>
-    <div class="cot-canvas-wrap" style="position:relative">
-      <canvas id="cot-chart" role="img" aria-label="52-week chart of managed money net futures positioning across tracked commodities"></canvas>
-      <div id="cot-xhair" style="position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.35);pointer-events:none;display:none"></div>
-      <div id="cot-tip" style="position:absolute;pointer-events:none;display:none;background:var(--surface3,#26261f);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;line-height:1.5;color:var(--text);white-space:nowrap;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.4)"></div>
-      <div id="cot-chart-a11y" class="sr-only" aria-live="polite"></div>
-    </div>
-    <div id="cot-chart-msg" style="text-align:center;padding:2rem 0;font-size:.8rem;color:var(--text-muted)">Loading chart data…</div>
-  </div>
-
 
   <!-- ══ ONE MARKET AT A TIME ══ -->
   <section class="cx" id="cx-deep-sec" aria-labelledby="cx-deep-h">
@@ -815,16 +805,10 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 </div>
 <script src="/components/loader.js?v=19"></script>
 
-<script src="/components/cot-glance.js?v=1"></script>
-<script src="/components/cot-page.js?v=5"></script>
+<script src="/components/cot-glance.js?v=2"></script>
+<script src="/components/cot-chart.js?v=1"></script>
+<script src="/components/cot-page.js?v=6"></script>
 
-<script>
-/* COT chart-tab interaction event (2026-06-12) */
-(function(){document.addEventListener('click',function(e){
-  var t=e.target&&e.target.closest?e.target.closest('.cot-chart-tab'):null;
-  if(t){try{if(typeof window.gtag==='function')gtag('event','cot_tab',{tab:(t.textContent||'').trim().slice(0,40)});}catch(err){}}
-});})();
-</script>
 
 <script src="/components/cot-analysis.js?v=3"></script>
 
