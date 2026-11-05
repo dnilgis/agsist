@@ -1,9 +1,11 @@
 /* The 52-week funds chart on /cot (2026-11-05, Sig: "I want the 52-week COT chart enhanced and made near the top
  * of the page ... I can picture people sharing it if we make it easy"). components/cot-chart.js.
- *   - one chart, right under the at-a-glance lines and above the email ask; on a 390 px phone its top is on the
- *     first screen or one short scroll down (the lines past the third wait behind "All 11 markets" there);
- *   - one market at a time, corn by default, the pick in the link (?m=soybeans);
- *   - the last point is cot.json's net for that market; the title is the glance line without the percentile;
+ *   - one chart near the top (Nov 5, Sig: "KISS, the chart I want can tell a lot of that story"): the crowded
+ *     verdict when it fits one line, the chips, one brief line for the market picked, the chart; every market
+ *     in a table behind one "All markets" tap under it, then the email ask; on a 390 px phone the chart's
+ *     line is on the first screen; no sentence repeats per market (no phrase over 4 words repeats across rows);
+ *   - one market at a time, corn by default, the pick in the link (?m=soybeans); a table row picks it too;
+ *   - the last point is cot.json's net for that market; the title is cot-glance.js brief();
  *   - the price strip only when every week has a close (none for lean hogs or Minneapolis wheat, and none when a
  *     week is missing), never a second scale on the net;
  *   - Share this chart calls the phone's share sheet with the market's link, or copies it; Save image is a
@@ -39,15 +41,15 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 const clone = (o) => JSON.parse(JSON.stringify(o));
 
 // ------------------------------------------------------------------ the model
-test("the last point is cot.json's net, and the title is that market's glance line without the percentile", () => {
+test("the last point is cot.json's net, and the title is that market's brief line", () => {
   for (const k of G.ORDER) {
     const m = C.model(k, HIST, COT, CX);
     assert.ok(m, k);
     assert.equal(m.rows.length, 52, k + ": 52 weekly reports");
     assert.equal(m.last.net, COT[k].net, k + ": the latest point equals cot.json");
     assert.equal(m.last.date, "2026-10-27");
-    assert.equal(m.headline, G.headline(k, COT, CX).text, k);
-    assert.ok(!/percentile/.test(m.headline) && m.headline.startsWith("Funds are "), m.headline);
+    assert.equal(m.headline, G.brief(k, COT, CX).text, k);
+    assert.ok(m.headline.startsWith(G.SHORT[k] + ": funds "), m.headline);
     assert.equal(m.hi.net, Math.max(...m.rows.map((r) => r.net)), k + " high");
     assert.equal(m.lo.net, Math.min(...m.rows.map((r) => r.net)), k + " low");
     assert.equal(m.hi.net, COT[k].max52, k + ": the high agrees with the card's 52-wk range");
@@ -55,7 +57,10 @@ test("the last point is cot.json's net, and the title is that market's glance li
     assert.ok(m.src.startsWith("CFTC Commitments of Traders, managed money, futures only, as of Oct 27, released Oct 30."), m.src);
     assert.ok(!DASH.test(m.src + m.headline + m.priceWhy), "no dashes");
   }
-  assert.equal(C.model("beans", HIST, COT, CX).headline, "Funds are fairly heavily long soybeans and sold a net 27,544 contracts this week.");
+  assert.equal(C.model("beans", HIST, COT, CX).headline, "Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week");
+  assert.equal(C.model("mplswheat", HIST, COT, CX).headline, "MPLS wheat: funds short, moderate (34th since 2010), sold 7,906 this week, flipped to short");
+  assert.equal(C.model("soymeal", HIST, COT, CX).headline, "Soybean meal: funds long, heavy (94th since 2010, crowded), sold 32,164 this week");
+  assert.equal(C.model("kcwheat", HIST, COT, CX).headline, "KC wheat: funds about even (37th since 2010), sold 8,007 this week");
 });
 
 test("no title is claimed when the chart's last week is not the report on the page, or the nets differ", () => {
@@ -64,7 +69,7 @@ test("no title is claimed when the chart's last week is not the report on the pa
   const moved = clone(COT); moved.corn.net += 1;
   assert.equal(C.model("corn", HIST, moved, CX).headline, null, "a different net: no title");
   const m = C.model("corn", HIST, COT, null);
-  assert.equal(m.headline, "Funds are long corn and sold a net 83,310 contracts this week.", "without the analysis: no weight word");
+  assert.equal(m.headline, "Corn: funds long, sold 83,310 this week", "without the analysis: no weight word and no rank");
   assert.equal(m.src, "CFTC Commitments of Traders, managed money, futures only, as of Oct 27. Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.", "no release day without the analysis");
 });
 
@@ -113,10 +118,53 @@ test("the layout marks zero, this week's number and the 52-week high and low, te
   assert.equal(C.px("livecattle", 230), "$230.00/cwt");
 });
 
-test("/cot carries one chart, under the lines and above the ask, and loads the bumped scripts", () => {
+/* every run of 5 words (lower case, numbers kept) in a list of texts -> the runs found in more than one text */
+function repeats(texts) {
+  const seen = new Map();
+  texts.forEach((t, i) => {
+    const w = t.toLowerCase().replace(/[^a-z0-9,.'+\u2212 -]/g, " ").split(/\s+/).filter(Boolean);
+    for (let j = 0; j + 5 <= w.length; j++) {
+      const k = w.slice(j, j + 5).join(" ");
+      if (!seen.has(k)) seen.set(k, new Set());
+      seen.get(k).add(i);
+    }
+  });
+  return [...seen].filter(([, s]) => s.size > 1).map(([k]) => k);
+}
+
+test("no phrase over 4 words repeats across the market rows (Sig, Nov 5: 'extremely repetitive wording')", () => {
+  // the /cot table, the home rows and the brief lines every chip shows, for the frozen report and a few made-up weeks
+  const weeks = [COT];
+  for (const shift of [1, -1]) { const c = clone(COT); for (const k of G.ORDER) c[k].prev = c[k].net - shift * 1000; weeks.push(c); }
+  for (const c of weeks) for (const cx of [CX, null]) {
+    const rows = G.rows(c, cx).map((r) => [r.name, r.pos, r.rank, r.chg].join(" "));
+    assert.equal(rows.length, G.ORDER.length);
+    assert.deepEqual(repeats(rows), [], "table rows");
+    const home = G.rows(c, cx, ["corn", "beans", "wheat"]).map((r) => [r.name, r.pos, r.chg].join(" "));
+    assert.deepEqual(repeats(home), [], "home rows");
+    for (const r of G.rows(c, cx)) assert.ok(r.pos.split(" ").length <= 3, "a short cell: " + r.pos);
+  }
+  // the test itself catches the old sentence per market
+  assert.ok(repeats(G.lines(COT, CX).map((l) => l.text)).length > 0, "the old lines repeat (the check works)");
+  // one brief line shows at a time, and it is short
+  for (const k of G.ORDER) assert.ok(G.brief(k, COT, CX).text.length <= 100, G.brief(k, COT, CX).text);
+  // the verdict is the short form of the one crowded verdict
+  assert.equal(G.verdict(COT, CX), "Crowded: soybean meal long; lean hogs, Class III milk short");
+  assert.equal(G.verdict(COT, null), null);
+  assert.equal(G.asOfShort(COT, CX), "As of Tue, Oct 27, released Fri, Oct 30");
   const cot = read("cot.html");
-  const lines = cot.indexOf('id="cg-lines"'), box = cot.indexOf('id="cot-chart-box"'), ask = cot.indexOf('data-topic="cot"'), all = cot.indexOf('id="cot-all"');
-  assert.ok(lines > 0 && lines < box && box < ask && ask < all, "lines, chart, ask, details");
+  assert.ok(!/Funds are [a-z ]+ (long|short) /.test(cot.replace(/<!-- PRERENDER:cot-summary -->[\s\S]*?<!-- \/PRERENDER:cot-summary -->/, "")), "no sentence per market in the page");
+});
+
+test("/cot carries one chart, under the verdict and above the market table and the ask, and loads the bumped scripts", () => {
+  const cot = read("cot.html");
+  const v = cot.indexOf('id="cg-verdict"'), box = cot.indexOf('id="cot-chart-box"'), table = cot.indexOf('id="cg-all"'), ask = cot.indexOf('data-topic="cot"'), all = cot.indexOf('id="cot-all"');
+  assert.ok(v > 0 && v < box && box < table && table < ask && ask < all, "verdict, chart, table, ask, details");
+  assert.ok(!cot.includes('id="cg-lines"'), "no sentence per market");
+  // the chips are in the page from the first paint, one per market, named as cot-glance.js names them
+  const chips = [...cot.matchAll(/<button type="button" class="cc-chip" data-k="([a-z]+)" aria-pressed="(true|false)">([^<]+)<\/button>/g)];
+  assert.deepEqual(chips.map((m) => m[1]), G.ORDER);
+  assert.deepEqual(chips.map((m) => m[3]), G.ORDER.map((k) => G.SHORT[k]));
   assert.ok(!/<canvas id="cot-chart"|id="chart-tabs"|cot-chart-tab/.test(cot), "the old chart lower down is gone");
   assert.ok(!/drawChart|setActiveTab|cot-chart-tab/.test(read("components/cot-page.js")), "and its code");
   const i = (s) => cot.indexOf(`<script src="/components/${s}"></script>`);
@@ -132,7 +180,7 @@ test("/cot carries one chart, under the lines and above the ask, and loads the b
 });
 
 test("the home card's lines open /cot on their market", () => {
-  assert.match(read("components/home.js"), /<a class="cot-gl-a" href="'\+\(G\.href\?G\.href\(l\.key\):'\/cot'\)\+'">/);
+  assert.match(read("components/home.js"), /<a class="cot-gl-a" href="'\+G\.href\(r\.key\)\+'">/);
   assert.equal(G.href("beans"), "/cot?m=soybeans");
   for (const k of G.ORDER) assert.equal(G.keyOf(G.SLUG[k]), k);
   assert.equal(G.keyOf("nonsense"), null);
@@ -178,7 +226,7 @@ async function open(browser, port, url, o = {}) {
   });
   await pg.clock.setFixedTime(new Date("2026-11-04T15:46:20Z"));
   await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });
-  await pg.waitForFunction(() => { const b = document.getElementById("cot-chart-box"); return b && b.dataset.latest && /Funds are/.test(document.getElementById("cc-head").textContent); });
+  await pg.waitForFunction(() => { const b = document.getElementById("cot-chart-box"); return b && b.dataset.latest && /: funds /.test(document.getElementById("cc-head").textContent); });
   return pg;
 }
 /* records the chart box's height at first paint, and every layout shift */
@@ -188,34 +236,37 @@ const WATCH = () => {
   document.addEventListener("DOMContentLoaded", () => { const b = document.getElementById("cot-chart-box"); window.__h0 = b ? b.getBoundingClientRect().height : -1; });
 };
 
-test("/cot: the chart sits under the lines, near the first screen, corn by default, its box held from first paint", { skip, timeout: 120000 }, async () => {
+test("/cot: the chart sits on the first screen, corn by default, its box held from first paint, no layout shift", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     for (const width of [390, 1280]) {
       const pg = await open(browser, port, "/cot", { width, init: WATCH });
       const r = await pg.evaluate(() => {
-        const vis = [...document.querySelectorAll("#cg-lines li")].filter((e) => e.offsetParent);
         const box = document.getElementById("cot-chart-box").getBoundingClientRect();
-        return { lastLine: vis.at(-1).getBoundingClientRect().bottom + scrollY, box: box.top + scrollY, h: box.height, h0: window.__h0,
+        return { verdict: document.getElementById("cg-verdict").getBoundingClientRect().bottom + scrollY, box: box.top + scrollY, h: box.height, h0: window.__h0,
+          head: document.getElementById("cc-head").getBoundingClientRect().bottom + scrollY,
           ask: document.querySelector('#cot-glance [data-signup-ask]').getBoundingClientRect().top + scrollY,
           market: document.getElementById("cot-chart-box").dataset.market, latest: +document.getElementById("cot-chart-box").dataset.latest,
           pressed: document.querySelector('.cc-chip[aria-pressed="true"]').textContent, sw: document.documentElement.scrollWidth,
           cls: window.__cls.reduce((a, x) => a + x.v, 0) };
       });
-      assert.ok(r.box > r.lastLine && r.box < r.ask, `under the lines and above the ask at ${width}: ${JSON.stringify(r)}`);
-      if (width === 390) assert.ok(r.box < 844 + 120, `the chart's top is on the first screen or one short scroll down (${r.box}px)`);
+      assert.ok(r.box > r.verdict && r.box < r.ask, `under the verdict and above the ask at ${width}: ${JSON.stringify(r)}`);
+      assert.ok(r.head < 844, `the chips and the brief line are on the first screen (${r.head}px) at ${width}`);
       assert.equal(r.market, "corn");
       assert.equal(r.pressed, "Corn");
       assert.equal(r.latest, COT.corn.net, "the latest point is cot.json's corn net");
       assert.ok(Math.abs(r.h - r.h0) < 0.5, `the chart's box is held at first paint (${r.h0} then ${r.h}) at ${width}`);
-      assert.equal(r.cls, 0, "no layout shift on the page while the lines and the chart fill in at " + width);
+      assert.equal(r.cls, 0, "no layout shift on the page while the verdict and the chart fill in at " + width);
       assert.ok(r.sw <= width, "no sideways scroll at " + width);
-      if (width === 390) {
-        assert.equal(await pg.isVisible("#cg-more"), true, "the rest of the lines behind one tap on a phone");
-        await pg.click("#cg-more");
-        assert.equal(await pg.$$eval("#cg-lines li", (a) => a.filter((e) => e.offsetParent).length), G.ORDER.length);
-      }
+      // every market behind one tap; a row picks the chart's market
+      await pg.click("#cg-all > summary");
+      assert.equal(await pg.$$eval("#cg-rows tr", (a) => a.filter((e) => e.offsetParent).length), G.ORDER.length);
+      const fit = await pg.$eval(".cg-table", (t) => ({ sw: t.scrollWidth, cw: t.parentElement.clientWidth, fs: Math.min(...[...t.querySelectorAll("td,th")].map((c) => parseFloat(getComputedStyle(c).fontSize))), h: Math.max(...[...t.querySelectorAll("tbody td")].map((c) => c.getBoundingClientRect().height)) }));
+      assert.ok(fit.sw <= fit.cw && fit.fs >= 12, `four columns fit without a sideways scroll, text 12 px or more at ${width}: ${JSON.stringify(fit)}`);
+      await pg.click('#cg-rows .cg-pick[data-k="milk"]');
+      assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.market), "milk");
+      assert.equal(new URL(pg.url()).searchParams.get("m"), "milk");
       await pg.context().close();
     }
   } finally { await browser.close(); srv.close(); }
@@ -228,7 +279,7 @@ test("/cot?m=soybeans opens on soybeans; a chip changes the market and the link;
     const pg = await open(browser, port, "/cot?m=soybeans", { width: 1280 });
     assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.market), "beans");
     assert.equal(+(await pg.$eval("#cot-chart-box", (b) => b.dataset.latest)), COT.beans.net);
-    assert.equal((await pg.textContent("#cc-head")).trim(), "Funds are fairly heavily long soybeans and sold a net 27,544 contracts this week.");
+    assert.equal((await pg.textContent("#cc-head")).trim(), "Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week");
     assert.equal((await pg.textContent("#cc-src")).trim(), "CFTC Commitments of Traders, managed money, futures only, as of Oct 27, released Oct 30. Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.");
     assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.price), "1");
     // hover: the week's date and net
@@ -267,13 +318,13 @@ test("Share this chart: the phone's share sheet gets the market's link; a deskto
   };
   try {
     let pg = await open(browser, port, "/cot?m=soybeans", { init: () => { window.__coarse = true; }, touch: true });
-    await pg.addInitScript(stub); await pg.reload(); await pg.waitForFunction(() => document.getElementById("cot-chart-box").dataset.latest && /Funds are/.test(document.getElementById("cc-head").textContent));
+    await pg.addInitScript(stub); await pg.reload(); await pg.waitForFunction(() => document.getElementById("cot-chart-box").dataset.latest && /: funds /.test(document.getElementById("cc-head").textContent));
     await pg.evaluate(() => { window.__coarse = true; });
     await pg.click("#cc-share");
     const shared = await pg.evaluate(() => window.__shared);
     assert.equal(shared.length, 1);
     assert.equal(shared[0].url, "https://agsist.com/cot?m=soybeans");
-    assert.equal(shared[0].text, "Funds are fairly heavily long soybeans and sold a net 27,544 contracts this week.");
+    assert.equal(shared[0].text, "Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week");
     assert.match(shared[0].title, /soybeans/);
     await pg.context().close();
 
@@ -299,7 +350,7 @@ test("Save image: a 1200x675 PNG with the headline, agsist.com/cot and the repor
     const im = await pg.evaluate(() => window.AgCotChart.lastImage);
     assert.ok(im.texts.includes("agsist.com/cot"), "carries agsist.com/cot");
     assert.ok(im.texts.includes("Positions as of Oct 27, 2026, released Oct 30"), "carries the date: " + im.texts.join(" | "));
-    assert.ok(im.texts.some((t) => t.startsWith("Funds are fairly heavily long soybeans")), "carries the headline");
+    assert.ok(im.texts.some((t) => t.startsWith("Soybeans: funds long, fairly heavy")), "carries the headline");
     assert.ok(im.texts.includes("193,781 long"), "this week's number");
     assert.ok(im.texts.some((t) => /^Source: CFTC Commitments of Traders/.test(t)), "and its source");
     assert.ok(!im.texts.some((t) => DASH.test(t)), "no dashes");

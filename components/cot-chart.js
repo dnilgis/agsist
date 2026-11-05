@@ -331,7 +331,8 @@
   })();
   /* the chips */
   var chips = $('cc-chips');
-  chips.innerHTML = ORDER.map(function (k) {
+  /* the chips are in the page (so the row holds its place from the first paint); fill them only if missing */
+  if (!chips.querySelector('.cc-chip')) chips.innerHTML = ORDER.map(function (k) {
     return '<button type="button" class="cc-chip" data-k="' + k + '" aria-pressed="' + (k === cur) + '">' + esc(CHIP[k]) + '</button>';
   }).join('');
   chips.addEventListener('click', function (e) {
