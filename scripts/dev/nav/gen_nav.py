@@ -55,6 +55,7 @@ FIELD = [
               ("/manure-value", "Manure value", "i-sprout"),
               ("/field-scout", "Field Scout", "i-satellite"),
               ("/yield-estimator", "Yield estimator", "i-package"),
+              ("/tar-spot", "Tar spot", "i-spray-can"),
               ("/pod-counts", "Pod counts", "i-target")]),
     ("Harvest and bins", [("/harvest-or-wait", "Harvest now or wait", "i-tractor"),
                           ("/grain-emc", "Grain drying (EMC)", "i-thermometer"),
