@@ -31,7 +31,7 @@ const DATA = (o = {}) => ({ sponsors: [Object.assign({}, ENTRY, o)] });
 // the pages draw the shipped RootLot entry, switched on (what readers will see once Sig says start)
 const LIVE = (o = {}) => ({ sponsors: [Object.assign({}, JSON.parse(read("data/geo-sponsors.json")).sponsors.find((x) => x.id === "rootlot"), { active: true }, o)] });
 
-test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no dates, Sig's copy, no logo, phone or facts", () => {
+test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no dates, Sig's copy, its own logo, a facts line, no phone", () => {
   const d = JSON.parse(read("data/geo-sponsors.json"));
   const e = d.sponsors.find((x) => x.id === "rootlot");
   assert.ok(e, "RootLot entry present");
@@ -39,11 +39,14 @@ test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no date
   assert.equal(e.active, true, "Sig said start, Oct 28");
   assert.equal(e.start, null); assert.equal(e.end, null);
   assert.equal(e.headline, "Put Your Root Down");
-  assert.equal(e.body, "Trees and plants shipped direct from the grower.");
+  // Nov 5 (Sig, "make his ad pop"): the body is one line of facts from the private notes
+  assert.equal(e.body, "Trees and plants \u00b7 Shipped direct from California growers \u00b7 CA, NV and TX");
   assert.equal(e.cta_text, "Root Down Now");
   assert.equal(e.url, "https://rootlot.com/shop");
   assert.deepEqual(e.facts, []);
-  assert.equal(e.logo, null); assert.equal(e.phone, null);
+  assert.equal(e.logo, "/img/sponsors/rootlot/icon.svg"); assert.equal(e.phone, null);
+  for (const f of ["icon.svg", "logo.svg", "icon-512.png"]) assert.ok(existsSync(join(ROOT, "img/sponsors/rootlot", f)), f + " is committed");
+  for (const f of ["icon.svg", "logo.svg"]) assert.doesNotMatch(read("img/sponsors/rootlot/" + f), /<text|font-family|@import|https?:\/\/(?!www\.w3\.org\/2000\/svg)/, f + ": outlined, nothing loaded from outside");
   assert.equal(e.utm_campaign, "geo-test");
   assert.doesNotMatch(JSON.stringify(e), /@|\u2014/, "no email, no em dash");
   for (const st of ["CA", "NV", "TX"]) assert.equal(G.choose(d, st, "2026-10-28", false), e, st + ": live");
@@ -60,10 +63,17 @@ test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no date
   for (const day of ["2026-10-28", "2027-06-01", "2030-01-01"]) assert.equal(G.choose(on, "TX", day), on.sponsors[0]);
   const ad = G.toAd(on.sponsors[0], "state-page");
   assert.equal(ad.cta_url, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
-  assert.equal(ad.logo, ""); assert.equal(ad.phone, ""); assert.deepEqual(ad.facts, []);
+  assert.equal(ad.logo, "/img/sponsors/rootlot/icon.svg"); assert.equal(ad.phone, ""); assert.deepEqual(ad.facts, []);
   const A = createRequire(import.meta.url)(join(ROOT, "components/sponsor-ad.js"));
   const h = A.render(ad, "state-page", { slot: "geo-rootlot" });
-  assert.doesNotMatch(h, /<img|sa-logo|sa-facts|sa-phone|tel:|mailto:/, "text only: no logo, facts, phone or email");
+  assert.match(h, /<img src="\/img\/sponsors\/rootlot\/icon\.svg" alt="Root Lot logo"/, "its logo");
+  assert.doesNotMatch(h, /sa-facts|sa-phone|tel:|mailto:/, "no facts row, phone or email");
+  // the logo path: our own sponsor folder, one subfolder deep at most
+  for (const [logo, want] of [["/img/sponsors/a.webp", true], ["/img/sponsors/rootlot/icon.svg", true], ["/img/sponsors/a/b/c.svg", false],
+    ["/img/sponsors/../x.svg", false], ["/img/x.svg", false], ["javascript:alert(1).svg", false]])
+    assert.equal(G.toAd(Object.assign({}, e, { logo }), "state-page").logo, want ? logo : "", logo);
+  // one data file per shape: the text-only card still works with no logo
+  assert.doesNotMatch(A.render(G.toAd(Object.assign({}, e, { logo: null }), "state-page"), "state-page", { slot: "geo-rootlot" }), /<img|sa-logo/);
   assert.match(h, /Put Your Root Down/); assert.match(h, /Root Down Now/);
 });
 
@@ -272,7 +282,49 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.equal(a.slot, "geo-rootlot");
       assert.equal(a.href, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
       assert.match(a.text, /Sponsor/); assert.match(a.text, /Put Your Root Down/); assert.match(a.text, /Root Down Now/);
-      assert.equal(await pg.$(".geo-spon img, .geo-spon .sa-logo, .geo-spon .sa-phone"), null, w + ": text only");
+      assert.equal(await pg.$(".geo-spon .sa-phone, .geo-spon .sa-facts"), null, w + ": no phone, no facts row");
+      // Nov 5 (Sig, "make his ad pop"): its logo at the left at a fixed size, its own green look, a clear button
+      const look = await pg.evaluate(() => {
+        const g = document.querySelector(".geo-spon"), img = g.querySelector(".sa-logo img"), cta = g.querySelector("a.sa-cta");
+        const rgb = (c) => (c.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+        const lum = (c) => { const v = rgb(c).map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+        const cs = getComputedStyle(cta), a = lum(cs.color), b = lum(cs.backgroundColor);
+        const ir = img.getBoundingClientRect(), hr = g.querySelector(".sa-headline").getBoundingClientRect();
+        const next = g.nextElementSibling;
+        return { css: !!document.querySelector('link[href^="/components/geo-sponsor.css?v="]'), loaded: img.complete && img.naturalWidth > 0,
+          w: Math.round(ir.width), h: Math.round(ir.height), attrW: img.getAttribute("width"), left: ir.right <= hr.left + 1,
+          contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05), label: g.querySelector(".sa-label").textContent,
+          next: next ? next.tagName + "." + next.className : "", answerAbove: !!document.querySelector("main .rc-answer") &&
+            !!(document.querySelector("main .rc-answer").compareDocumentPosition(g) & Node.DOCUMENT_POSITION_FOLLOWING),
+          bylineBelow: !!(g.compareDocumentPosition(document.querySelector(".rc-byline")) & Node.DOCUMENT_POSITION_FOLLOWING) };
+      });
+      assert.ok(look.css, w + ": its stylesheet loads");
+      assert.ok(look.loaded, w + ": the logo loads");
+      assert.equal(look.w, look.h, w + ": a square logo"); assert.ok(look.w >= 48 && look.w <= 80, w + ": logo size " + look.w);
+      assert.ok(look.left, w + ": the logo sits left of the headline");
+      assert.ok(look.contrast >= 4.5, w + ": button contrast " + look.contrast.toFixed(2));
+      assert.equal(look.label, "Sponsor");
+      // higher than the old slot (the end of the page) and never above the page's answer
+      assert.equal(look.next, "H2.", w + ": the box sits at a section break (" + look.next + ")");
+      assert.ok(look.answerAbove && look.bylineBelow, w + ": after the answer, before the byline " + JSON.stringify(look));
+      // the whole card is one tap: a tap on the headline is a click on the one counted link
+      await pg.evaluate(() => {
+        window.__ev = []; window.gtag = function () { window.__ev.push([].slice.call(arguments)); };
+        document.addEventListener("click", (e) => { const a = e.target.closest("a"); window.__href = a ? a.href : ""; e.preventDefault(); }, true);
+        document.querySelector(".geo-spon").scrollIntoView({ block: "center" });
+      });
+      await pg.waitForTimeout(300);
+      const pt = await pg.evaluate(() => { const r = document.querySelector(".geo-spon .sa-headline").getBoundingClientRect(); const x = r.left + 20, y = r.top + r.height / 2;
+        const hit = document.elementFromPoint(x, y); return { x, y, hit: hit ? hit.className : "" }; });
+      assert.equal(pt.hit, "sa-cta", w + ": the headline is under the card's link");
+      await pg.mouse.click(pt.x, pt.y);
+      const tap = await pg.evaluate(() => ({ href: window.__href, ev: window.__ev.filter((e) => e[0] === "event").map((e) => [e[1], e[2] && e[2].slot]) }));
+      assert.equal(tap.href, a.href, w + ": the tap opens the tagged link");
+      assert.deepEqual(tap.ev.filter((e) => e[0] === "sponsor_click"), [["sponsor_click", "geo-rootlot"]], w + ": counted once as a sponsor click");
+      // and the view count is the same as before: one viewable after a second half in view, slot geo-rootlot
+      await pg.waitForFunction(() => window.__ev.some((e) => e[1] === "sponsor_viewable"), null, { timeout: 4000 }).catch(() => {});
+      const seen = await pg.evaluate(() => window.__ev.filter((e) => e[1] === "sponsor_viewable").map((e) => Object.keys(e[2]).sort().join(",") + ":" + e[2].slot));
+      assert.deepEqual(seen, ["dwell_ms,page,slot:geo-rootlot"], w + ": one viewable, slot and page only");
       assert.ok(a.belowFold, w + ": below the fold");
       assert.ok(a.sideScroll <= 0, w + ": no sideways scroll");
       assert.equal(log.where, 0, w + ": no lookup on a state page");
