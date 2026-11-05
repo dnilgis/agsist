@@ -86,6 +86,8 @@ test("the builder: real counties get the tiles Sig asked for, and KS gets no sal
 test("the published pages: every IL and WI county carries the tile, it matches the summary, and no headline rent is stale", () => {
   const dir = join(ROOT, "farmland-atlas"), tiles = { dry: [], irr: [] };
   const sum = { illinois: JSON.parse(read("data/land/il/summary.json")), wisconsin: JSON.parse(read("data/land/wi/summary.json")) };
+  // Florida joined Nov 5, 2026 (sale months); its Atlas pages carry the tile once its summary exists
+  if (existsSync(join(ROOT, "data/land/fl/summary.json"))) sum.florida = JSON.parse(read("data/land/fl/summary.json"));
   let n = 0;
   for (const st of readdirSync(dir, { withFileTypes: true })) {
     if (!st.isDirectory()) continue;
@@ -103,7 +105,7 @@ test("the published pages: every IL and WI county carries the tile, it matches t
         const t = S.tile(sum[st.name], fips);
         assert.equal(unesc(m[4]), t.sub, `${st.name}/${f}`);
         n++;
-      } else assert.equal(m, null, `${st.name}/${f}: a sales tile outside IL and WI`);
+      } else assert.equal(m, null, `${st.name}/${f}: a sales tile outside IL, WI and FL`);
       assert.doesNotMatch(m ? m[0] : "", /grantor|grantee|buyer|seller|parcel|document/i);
     }
   }
