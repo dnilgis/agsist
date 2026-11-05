@@ -60,7 +60,7 @@ test("transfer probe-only states are saved by the probe and never built", () => 
   for (const t of ["IN: money read with two implied decimals", "IN: a file whose fee in dollars is refused", "IN: a file whose acres in whole acres is refused", "IN: farm forms only"]) assert.match(out, new RegExp("^ok\\s+" + t, "m"), t);
   assert.match(out, /^FAILS=0$/m);
   const y = read(".github/workflows/land-data.yml");
-  assert.match(y, /discover:\*\) python scripts\/probe_land_services\.py "--discover=/);
+  assert.match(y, /discover:\*\) (?:python3 scripts\/dev\/quiet\.py [a-z0-9-]+ -- )?python scripts\/probe_land_services\.py "--discover=/);
   assert.match(y, /fetch_land_sales\.py MN IL IN\b/, "the build step builds only states with a checked parser");
   assert.equal((y.match(/cron:/g) || []).length, 1, "no new schedule");
 });

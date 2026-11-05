@@ -166,18 +166,18 @@ jobs:
       # Offline, no API key, under a second. Cheap insurance against a parsing
       # edit reaching the live feed.
       - name: Check fetch_bids
-        run: python scripts/fetch_bids.py --selftest
+        run: python3 scripts/dev/quiet.py selftest-fetch-bids -- python scripts/fetch_bids.py --selftest
 
       - name: Check the daily-change and contacts builders
         run: |
-          python scripts/build_bids_prev.py --selftest
-          python scripts/build_elevator_contacts.py --selftest
+          python3 scripts/dev/quiet.py selftest-bids-prev -- python scripts/build_bids_prev.py --selftest
+          python3 scripts/dev/quiet.py selftest-elevator-contacts -- python scripts/build_elevator_contacts.py --selftest
 
       # The feed is the AGSIST elevator network alone (the licensed second feed
       # ended 2026-10-11 and its code is removed).
       - name: Fetch grain bids
         id: fetch
-        run: python scripts/fetch_bids.py
+        run: python3 scripts/dev/quiet.py fetch-bids -- python scripts/fetch_bids.py
 
       # THE IDS, EVERY RUN (2026-10-27, god's-eye panel build 1). data/ids/elevators.json was
       # last built Oct 18, and by Oct 27 141 of its bids-repo ids had been folded away in the
@@ -195,18 +195,18 @@ jobs:
           GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -H "Accept: application/vnd.github.raw" \
             "repos/dnilgis/feedbag/contents/apijobs/schedules-2026-10/schedules/schedules.json?ref=raw" > "$s" \
             || { echo "::warning::ids: schedules not readable; the last ids stay"; exit 0; }
-          python scripts/build_ids.py --no-parcels --schedules "$s" \
+          python3 scripts/dev/quiet.py ids -- python scripts/build_ids.py --no-parcels --schedules "$s" \
             || { echo "::warning::ids not rebuilt this run; the last ids stay (the bids update is unaffected)"; exit 0; }
           # the id-to-basis-history join is a pure function of elevators.json: rebuilt with it
-          python scripts/build_basis_join.py || echo "::warning::basis join not rebuilt this run"
-          python scripts/join_report.py | tail -4 || true
+          python3 scripts/dev/quiet.py basis-join -- python scripts/build_basis_join.py || echo "::warning::basis join not rebuilt this run"
+          python3 scripts/dev/quiet.py join-report -- python scripts/join_report.py || true
 
       # WAVE1-A: phone and facility type per state, for the homepage card's
       # Call link and buyer tag, from the directory as it now stands. Only
       # rewrites a shard that changed. Must never cost the run its prices.
       - name: Elevator contacts for the homepage card
         continue-on-error: true
-        run: python scripts/build_elevator_contacts.py
+        run: python3 scripts/dev/quiet.py elevator-contacts -- python scripts/build_elevator_contacts.py
 
       # ALSO IN THIS JOB, AND FOR THE SAME REASON: the full set exists here and
       # nowhere else. Slimming data/bids.json on 2026-08-19 was right -- a
@@ -224,7 +224,7 @@ jobs:
       # in data/basis/index.json's generated date.
       - name: Keep the basis history
         continue-on-error: true
-        run: python scripts/build_basis_history.py
+        run: python3 scripts/dev/quiet.py basis-history -- python scripts/build_basis_history.py
 
       # Reads the change-log build_basis_history.py just wrote (and every day
       # before it) and re-derives one compact per-state sparkline file per
@@ -233,7 +233,7 @@ jobs:
       # failure here must not cost the bids.
       - name: Rebuild basis sparklines
         continue-on-error: true
-        run: python scripts/build_basis_sparklines.py
+        run: python3 scripts/dev/quiet.py basis-sparklines -- python scripts/build_basis_sparklines.py
 
       # WAVE1-A: THE NETWORK'S LAST PRICE ON EACH RECENT TRADING DAY, so the
       # homepage can print a day's change. The browser reads the network's
@@ -243,7 +243,7 @@ jobs:
       # basis history: a failure here costs a day's change, never the bids.
       - name: Keep the network's last price per trading day
         continue-on-error: true
-        run: python scripts/build_bids_prev.py
+        run: python3 scripts/dev/quiet.py bids-prev -- python scripts/build_bids_prev.py
 
       # 2026-10-17: the AGSIST Cash Bid Index keeps its month here. Each
       # COMPLETE trading day in data/bids-prev not yet folded goes into
@@ -253,7 +253,7 @@ jobs:
       # runs lose nothing. Never costs the bids their commit.
       - name: Fold the day into the Cash Bid Index month
         continue-on-error: true
-        run: python scripts/cash_bid_index.py --fold
+        run: python3 scripts/dev/quiet.py cash-index-fold -- python scripts/cash_bid_index.py --fold
 
       - name: Sizes
         run: |
@@ -336,7 +336,7 @@ jobs:
           if [ "$NOW" != "true" ] && GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -X GET "repos/dnilgis/feedbag/contents/$f?ref=raw" --silent >/dev/null 2>&1; then
             echo "bid snapshot: $f is already on raw"; exit 0
           fi
-          python3 scripts/bid_snapshots.py build --from bids-full.json --day "$day" \
+          python3 scripts/dev/quiet.py bid-snapshot -- python3 scripts/bid_snapshots.py build --from bids-full.json --day "$day" \
             || { echo "::warning::bid snapshot for $day not built (the bids update is unaffected)"; exit 0; }
           bash scripts/push_raw.sh "bid snapshot $day" "$f" \
             || echo "::warning::bid snapshot for $day not saved to raw; the next run today retries (the bids update is unaffected)"
@@ -364,7 +364,7 @@ jobs:
           have "$f" && { echo "bid flags: $f is already on raw"; exit 0; }
           have "$snap" || { echo "bid flags: no snapshot for $day on raw yet; the next run tries"; exit 0; }
           bash scripts/fetch_private.sh raw || { echo "::warning::bid flags: raw not readable, no flags for $day"; exit 0; }
-          python3 scripts/bid_flags.py build --ref origin/raw --out-dir . \
+          python3 scripts/dev/quiet.py bid-flags -- python3 scripts/bid_flags.py build --ref origin/raw --out-dir . \
             || { echo "::warning::bid flags for $day not built (the bids update is unaffected)"; exit 0; }
           [ -d bids-daily-flags ] || { echo "bid flags: nothing new"; exit 0; }
           bash scripts/push_raw.sh "bid flags $day" bids-daily-flags \
@@ -396,7 +396,7 @@ jobs:
           have "$f" && { echo "basis ledger: $f is already on raw"; exit 0; }
           have "$snap" || { echo "basis ledger: no snapshot for $day on raw yet; the next run tries"; exit 0; }
           bash scripts/fetch_private.sh raw || { echo "::warning::basis ledger: raw not readable, no calls for $day"; exit 0; }
-          python3 scripts/basis_ledger.py run --live-day "$day" --ref origin/raw --out-dir . --replay-max "$BASIS_REPLAY_MAX" \
+          python3 scripts/dev/quiet.py basis-ledger -- python3 scripts/basis_ledger.py run --live-day "$day" --ref origin/raw --out-dir . --replay-max "$BASIS_REPLAY_MAX" \
             || { echo "::warning::basis ledger for $day not built (the bids update is unaffected)"; exit 0; }
           [ -d basis-ledger ] || { echo "basis ledger: nothing new"; exit 0; }
           bash scripts/push_raw.sh "basis ledger $day" basis-ledger \
