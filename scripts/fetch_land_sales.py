@@ -2813,6 +2813,11 @@ def fl_selftest(ck):
     ck("FL: a deed that also sold non-farm parcels keeps its parcel count, no acres, acres marked unknown",
        by["FX-006"]["np"] == 2 and by["FX-006"]["acres"] is None and by["FX-006"]["acx"] == 1)
     ck("FL: no buyer or seller anywhere", not any(r["grantor"] or r["grantee"] for r in recs))
+    c1, w1 = trim(recs, [], "FL")
+    c2, w2 = trim(c1, [w1], "FL")
+    ck("FL over the cap: the deeds with no sale price go first, then the oldest year; small parcels stay",
+       w1 == "no sale price" and "FX-002" not in {r["pid"] for r in c1} and len(c1) == 8
+       and w2 == "dropped filing year 2025" and [r["pid"] for r in c2] == ["FX-009"])
     keep = OUT
     OUT = tempfile.mkdtemp(prefix="flself-")
     try:
@@ -2868,10 +2873,18 @@ def refiled_dedupe(recs):
     return out, len(recs) - len(out)
 
 
-def trim(recs, done):
+FL_NOMINAL = 1000      # a Florida deed under this price paid minimum stamps: a transfer with no sale price
+
+
+def trim(recs, done, st=None):
     """The next cut when a state's files are over the cap: first farm sales of 10 acres or more
     (any parcel's acres; a return with no acres at all is dropped), then the oldest filing year,
-    one year at a time. None when nothing is left to cut."""
+    one year at a time. None when nothing is left to cut. Florida keeps every acreage: first the deeds with no
+    sale price (under FL_NOMINAL), then the oldest year."""
+    if st == "FL" and "no sale price" not in done:
+        return [r for r in recs if (r.get("price") or 0) >= FL_NOMINAL], "no sale price"
+    if st == "FL":
+        done = list(done) + ["10+ acres"]
     if "10+ acres" not in done:
         return [r for r in recs if max(r.get("acres") or 0, r.get("ac1") or 0, r.get("acany") or 0) >= 10], "10+ acres"
     yrs = sorted({(r.get("rec") or r["date"])[:4] for r in recs})
@@ -3014,7 +3027,9 @@ def run(states, from_dir=None, merge=False):
             months = read_now | had
         if st == "WI":
             recs = wi_dedupe(recs)
-        recs, refiled = refiled_dedupe(recs)
+        # Florida's file lists each deed once with its own record number, and gives months, not days: two deeds of one
+        # parcel in one month at one price (minimum-stamp deeds, mostly) are two deeds, not one filed twice
+        recs, refiled = refiled_dedupe(recs) if st != "FL" else (recs, 0)
         if refiled:
             print("%s: %d rows were a sale filed again under a newer document; the newest kept" % (st, refiled))
         gaz = in_places(recs, fetch(IN_ZCTA, timeout=300)) if st == "IN" else gazetteer(STATES[st]["fips"], gzblob)
@@ -3030,7 +3045,7 @@ def run(states, from_dir=None, merge=False):
                 bad += 1
                 break
             except OverCap as e:
-                cut, why = trim(recs, trims) if st in ("WI", "IN", "FL") else (None, None)
+                cut, why = trim(recs, trims, st) if st in ("WI", "IN", "FL") else (None, None)
                 if cut is None:
                     raise SystemExit(str(e))
                 print("::warning::%s; trimmed: %s (%d rows left of %d)" % (e, why, len(cut), len(recs)))
