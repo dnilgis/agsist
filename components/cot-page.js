@@ -53,9 +53,8 @@ function buildCards(){
        lands somewhere that reflects what just happened. */
     function focus(){
       var key = card.getAttribute('data-key');
-      setActiveTab(key);
-      var chart = document.getElementById('cot-chart');
-      var target = (chart && (chart.closest('section') || chart.parentElement)) || chart;
+      if (window.AgCotChart && window.AgCotChart.select) window.AgCotChart.select(key, true);
+      var target = document.getElementById('cot-chart-box');
       if (!target) return;
       try {
         target.scrollIntoView({
@@ -69,15 +68,6 @@ function buildCards(){
     card.addEventListener('click',focus);
     card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); focus(); } });
   });
-}
-function buildLegend(keys,hasPrice){
-  var el=document.getElementById('cot-legend'); if(!el) return;
-  var h='';
-  keys.forEach(function(k){ h+='<span class="cot-legend-item"><span class="cot-legend-dot" style="background:'+COLORS[k]+'"></span>'+LABELS[k]+'</span>'; });
-  if(hasPrice){ h+='<span class="cot-legend-item" id="legend-price"><span class="cot-legend-dot" style="background:rgba(240,240,235,.9)"></span>'
-    +(hasPrice.adjusted?'Price, roll-adjusted to the current front month (right axis)':'Price, front-month continuous, not roll-adjusted: it jumps at contract changes (right axis)')+'</span>'; }
-  h+='<span class="cot-legend-item" style="margin-left:auto;font-size:0.755rem">Contracts (thousands) \u00b7 Source: CFTC</span>';
-  el.innerHTML=h;
 }
 buildCards();
 
@@ -161,7 +151,7 @@ window.cotSetAnalysis = function(cx){
     renderVerdict(COT_SUMMARY);
   }
   cotRenderDerived();
-  if (historyData) drawChart(activeKey);
+  if (window.AgCotChart && window.AgCotChart.update) window.AgCotChart.update({ cx: CX_A });
 };
 
 /* Blank a card the report did not carry, and say so on its face. */
@@ -183,20 +173,45 @@ function cotMarkCard(key, present) {
     (LABELS[key] || key) + ': no data in this report.');
 }
 
-/* AT A GLANCE (2026-11-04, Sig): the first screen is one plain line per market
-   (components/cot-glance.js, the same words as the home card). From cot.json
-   alone until the analysis for the same report arrives; then each line gains
-   its percentile and its period. */
+/* FUNDS THIS WEEK (2026-11-04, made plainer 2026-11-05, Sig: "KISS, the chart I
+   want can tell a lot of that story"): the crowded verdict on one line when it
+   fits (else the report's dates), the chart's own brief line per market
+   (components/cot-chart.js), and every market as a table row behind one tap
+   (components/cot-glance.js row(): market | long or short | rank | change). The
+   rank and the weight word come with cot-analysis.json for the same report;
+   until then the cells carry neither rather than guess. */
 function renderGlance() {
-  var ul = document.getElementById('cg-lines'), G = window.AgCotGlance;
-  if (!ul || !G || !COT_SUMMARY) return;
-  var cx = cxAligned() ? CX_A : null, ls = G.lines(COT_SUMMARY, cx);
-  if (!ls.length) return;
-  ul.innerHTML = ls.map(function (l) { return '<li class="cg-line cg-' + l.side + '">' + l.html + '</li>'; }).join('');
-  ul.removeAttribute('aria-busy');
-  var a = document.getElementById('cg-date');
-  if (a) a.textContent = G.asOf(COT_SUMMARY, cx);
+  var G = window.AgCotGlance, tb = document.getElementById('cg-rows');
+  if (!G || !COT_SUMMARY) return;
+  var cx = cxAligned() ? CX_A : null;
+  var v = document.getElementById('cg-verdict');
+  if (v) {
+    var vt = G.verdict(COT_SUMMARY, cx), alt = G.asOfShort(COT_SUMMARY, cx);
+    v.textContent = vt || alt;
+    if (vt && v.scrollWidth > v.clientWidth + 1) v.textContent = alt;   /* one line only (Sig) */
+  }
+  if (!tb) return;
+  var rs = G.rows(COT_SUMMARY, cx);
+  tb.innerHTML = rs.map(function (r) {
+    return '<tr data-k="' + r.key + '"><td><button type="button" class="cg-pick" data-k="' + r.key + '">' + r.name + '</button></td><td>' + r.pos + '</td><td>' + (r.rank || '') + '</td><td>' + r.chg + '</td></tr>';
+  }).join('');
+  var since = rs.map(function (r) { return r.since; }).filter(Boolean);
+  var key = document.getElementById('cg-key');
+  if (key && since.length && since.every(function (x) { return x === since[0]; }))
+    key.textContent = 'Rank: the net as a share of open interest, against every week since ' + since[0] + '. Change: contracts bought (+) or sold this week.';
 }
+/* a market in the table picks it on the chart */
+(function () {
+  var tb = document.getElementById('cg-rows');
+  if (!tb) return;
+  tb.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('[data-k]') : null;
+    if (!b || !window.AgCotChart || !window.AgCotChart.select) return;
+    window.AgCotChart.select(b.getAttribute('data-k'), true);
+    var box = document.getElementById('cot-chart-box');
+    if (box) try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) { box.scrollIntoView(); }
+  });
+})();
 function cotRenderDerived() {
   var read = document.getElementById('cot-read');
   renderGlance();
@@ -391,309 +406,6 @@ function cotReleased(){
 }
 
 var historyData = null;
-var activeKey   = 'grains';
-
-
-/* ── CHART INK FOLLOWS THE THEME ──────────────────────────────────────────
-   Every mark on this canvas was hardcoded rgba(255,255,255,...) - gridlines,
-   the zero line, both axes' labels, and the whole price overlay. The site has
-   a light theme and a toggle in the header (components/styles.css defines
-   [data-theme="light"]), and in light mode the body is #f6f7f5. Measured: the
-   canvas paints an identical 487 white-ink pixels in both themes, so in light
-   mode a reader gets a coloured shape floating with NO axis, NO gridlines, NO
-   zero line, and no price line at all - and on a positioning chart the zero
-   line is the difference between net long and net short, which is the whole
-   point of looking at it.
-
-   Canvas cannot inherit CSS colour, so it has to ask. */
-function chartInk(a) {
-  /* Dark ink on a light ground at the same alpha reads fainter than light ink
-     on a dark one, and the faintest mark here is a .05 gridline, which on
-     white is nothing at all. Light-theme alphas are scaled up. */
-  if (document.documentElement.getAttribute('data-theme') === 'light')
-    return 'rgba(18,22,20,' + Math.min(1, parseFloat(a) * 1.7).toFixed(3) + ')';
-  return 'rgba(255,255,255,' + a + ')';
-}
-function chartOverlayInk(a) {
-  return (document.documentElement.getAttribute('data-theme') === 'light'
-    ? 'rgba(52,58,54,' : 'rgba(240,240,235,') + a + ')';
-}
-
-function drawChart(key) {
-  var canvas = document.getElementById('cot-chart');
-  var msg    = document.getElementById('cot-chart-msg');
-  if (!canvas || !historyData) return;
-
-  var history = (historyData && historyData.history) || {};
-  var keys = GROUPS[key] ? GROUPS[key].slice() : [key];
-
-  var allDates = [];
-  keys.forEach(function(k) {
-    (history[k] || []).forEach(function(r) { if (!allDates.includes(r.date)) allDates.push(r.date); });
-  });
-  allDates.sort();
-
-  if (!allDates.length) {
-    canvas.style.display = 'none';
-    if (msg) { msg.style.display = 'block'; msg.textContent = 'No chart data yet, populates after the weekly CFTC release.'; }
-    return;
-  }
-
-  canvas.style.display = 'block';
-  if (msg) msg.style.display = 'none';
-  try{var a11y=document.getElementById('cot-chart-a11y');if(a11y){var parts=[];keys.forEach(function(k){var arr=history[k]||[];if(arr.length){var f=arr[0],l=arr[arr.length-1];parts.push(LABELS[k]+': net moved from '+f.net+' on '+f.date+' to '+l.net+' on '+l.date);}});a11y.textContent='52-week managed money net positioning. '+parts.join('. ')+'.';}}catch(e){}
-
-  var dpr = window.devicePixelRatio || 1;
-  /* ASK THE CONTAINER, NOT THE CANVAS. The line below used to set an inline
-     canvas.style.width in px, which shadows the stylesheet's width:100% -- so
-     every later call, including the resize handler and the theme redraw, read
-     back the FROZEN value instead of the real container. Measured: a canvas
-     first drawn at 1280px stayed 827px inline on a 390px phone, right edge at
-     864 in a 390px viewport, and the page sets overflow-x:clip so there is no
-     scrollbar to reach it. The clipped portion is the right-hand side of the
-     chart -- the most recent months, including this week's point. Rotation
-     never recovered either. */
-  var W = (canvas.parentElement ? canvas.parentElement.clientWidth : 0) || canvas.offsetWidth || 700;
-  var H = 260;
-  canvas.width  = W * dpr;
-  canvas.height = H * dpr;
-  canvas.style.height = H + 'px';
-
-  var ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, W, H);
-
-  var allNets = [];
-  keys.forEach(function(k) {
-    (history[k] || []).forEach(function(r) { allNets.push(r.net); });
-  });
-  if (!allNets.length) return;
-  var minNet = Math.min.apply(null, allNets);
-  var maxNet = Math.max.apply(null, allNets);
-  minNet = Math.min(minNet, 0);
-  maxNet = Math.max(maxNet, 0);
-  var pad = (maxNet - minNet) * 0.1 || 5000;
-  minNet -= pad; maxNet += pad;
-  var netRange = maxNet - minNet || 1;
-
-  /* THE PRICE AXIS WAS PRINTING 93 FOR 930. The right-hand price ticks are
-     drawn at PAD.left + cW + 4 with textAlign='left', and PAD.right was 16 --
-     so a label started 12px from the canvas edge with only 16px of room. At
-     9px JetBrains Mono a four-digit label measures 21.7px, ending ~9.7px PAST
-     the bitmap, where canvas silently drops it. Soybean prices in the history
-     file are all four digits (1196.75, 1207.25, 1219.5, 1155 ...), so the only
-     price scale on the page read 125 / 114 / 104 / 93 for ~1259 / ~1147 /
-     ~1043 / ~930 -- wrong by a factor of ten, with nothing to check it
-     against. Right-align the ticks and give the overlay a real gutter. */
-  var PAD = { top: 16, right: (keys.length === 1 ? 50 : 16), bottom: 32, left: 54 };
-  var cW = W - PAD.left - PAD.right;
-  var cH = H - PAD.top  - PAD.bottom;
-
-  function xOf(i) { return PAD.left + (i / Math.max(allDates.length - 1, 1)) * cW; }
-  function yOf(n) { return PAD.top + (1 - (n - minNet) / netRange) * cH; }
-
-  /* AXIS (2026-10-12): ticks at 1-2-5 steps (50k, 100k, 200k...), not at
-     quarter points of a padded range, which printed "-68k" and "-248k". Hairline
-     gridlines at each tick, a solid zero line (net long above, net short below),
-     11px text, signs with a true minus. Dates as "Oct 14". */
-  function niceStep(span, n) {
-    var raw = span / Math.max(1, n), p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
-    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p;
-  }
-  function fmtTick(v) {
-    if (v === 0) return '0';
-    var a = Math.abs(v), t = a >= 1000 ? (Math.round(a / 100) / 10).toString().replace(/\.0$/, '') + 'k' : String(Math.round(a));
-    return (v < 0 ? '−' : '+') + t;
-  }
-  var CH_FONT = '11px JetBrains Mono, monospace';
-  var tStep = niceStep(netRange, cH < 200 ? 4 : 5);
-  ctx.font = CH_FONT;
-  ctx.textAlign = 'right';
-  for (var tv = Math.ceil(minNet / tStep) * tStep; tv <= maxNet; tv += tStep) {
-    var yy = yOf(tv);
-    if (Math.abs(tv) < tStep / 2) continue;           // the zero line is drawn below
-    ctx.strokeStyle = chartInk('.08');
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(PAD.left, Math.round(yy) + .5); ctx.lineTo(PAD.left + cW, Math.round(yy) + .5); ctx.stroke();
-    ctx.fillStyle = chartInk('.62');
-    ctx.fillText(fmtTick(tv), PAD.left - 6, yy + 4);
-  }
-  var zeroY = yOf(0);
-  ctx.strokeStyle = chartInk('.4');
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(PAD.left, Math.round(zeroY) + .5); ctx.lineTo(PAD.left + cW, Math.round(zeroY) + .5); ctx.stroke();
-  ctx.fillStyle = chartInk('.62');
-  ctx.fillText('0', PAD.left - 6, zeroY + 4);
-
-  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  ctx.fillStyle = chartInk('.62');
-  ctx.font = CH_FONT;
-  ctx.textAlign = 'center';
-  var maxLabels = Math.max(2, Math.floor(cW / 64));
-  var step = Math.max(1, Math.ceil(allDates.length / maxLabels));
-  var lastI = allDates.length - 1;
-  function dLbl(i, yr) {
-    var parts = allDates[i].split('-');
-    return MON[(+parts[1] || 1) - 1] + ' ' + (+parts[2] || '') + (yr ? ' ’' + String(parts[0]).slice(2) : '');
-  }
-  /* The first and latest weeks carry the year (the window spans two); the
-     ones between are placed only where they clear their neighbours. */
-  var taken = [];
-  function place(i, lbl, align) {
-    var w = ctx.measureText(lbl).width, x = align === 'right' ? xOf(i) + 2 : xOf(i);
-    var x0 = align === 'left' ? x : align === 'right' ? x - w : x - w / 2, x1 = x0 + w;
-    for (var q = 0; q < taken.length; q++) if (x0 < taken[q][1] + 10 && x1 > taken[q][0] - 10) return;
-    taken.push([x0, x1]);
-    ctx.textAlign = align;
-    ctx.fillText(lbl, x, H - 8);
-  }
-  place(lastI, dLbl(lastI, true), 'right');
-  if (lastI > 0) place(0, dLbl(0, true), 'left');
-  for (var di = step; di < lastI; di += step) place(di, dLbl(di, false), 'center');
-  if (taken.length < 3 && lastI > 2) place(Math.round(lastI / 2), dLbl(Math.round(lastI / 2), false), 'center');
-  ctx.textAlign = 'right';
-
-  keys.forEach(function(k) {
-    var pts = history[k] || [];
-    if (!pts.length) return;
-    var color = COLORS[k];
-
-    ctx.beginPath();
-    pts.forEach(function(r, i) {
-      var xi = allDates.indexOf(r.date);
-      var x = xOf(xi), y = yOf(r.net);
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
-    var lastIdx = allDates.indexOf(pts[pts.length-1].date);
-    var firstIdx = allDates.indexOf(pts[0].date);
-    ctx.lineTo(xOf(lastIdx), zeroY);
-    ctx.lineTo(xOf(firstIdx), zeroY);
-    ctx.closePath();
-    ctx.globalAlpha = 0.18;
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.globalAlpha = 1;
-
-    ctx.beginPath();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = keys.length === 1 ? 2 : 1.5;
-    ctx.lineJoin = 'round';
-    pts.forEach(function(r, i) {
-      var xi = allDates.indexOf(r.date);
-      var x = xOf(xi), y = yOf(r.net);
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    if (pts.length) {
-      var lastR = pts[pts.length - 1];
-      var lxi = allDates.indexOf(lastR.date);
-      ctx.beginPath();
-      ctx.arc(xOf(lxi), yOf(lastR.net), 4, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-    }
-  });
-  // ---- price overlay (single-commodity view, only when price present) ----
-  var priceMeta=null;
-  if(keys.length===1){
-    var pk=keys[0], parr=history[pk]||[];
-    /* NOT THE RAW FRONT MONTH WHEN A REPAIRED SERIES EXISTS. `price` is
-       front-month continuous and steps by the whole spread at every contract
-       change; lean hogs drew -14.6% and -15.8% weekly "moves" that were rolls.
-       cot_analysis.py joins the roll-repaired index (px_adj) onto these rows.
-       When every priced row in view has it, the line is that index scaled so
-       its last point equals the last front-month close (a back-adjusted
-       series); otherwise it is the raw close and the legend says so. A market
-       whose price the pipeline withholds is not drawn at all. */
-    var wh=(cxCommodity(pk)&&cxCommodity(pk).price_withheld_reason)||null;
-    var pricedVis=[]; if(!wh) allDates.forEach(function(dt){ for(var z=0;z<parr.length;z++){ if(parr[z].date===dt&&typeof parr[z].price==='number'){pricedVis.push({date:dt,raw:parr[z].price,adj:(typeof parr[z].px_adj==='number'?parr[z].px_adj:null)}); break;} } });
-    var lastRaw=pricedVis.length?pricedVis[pricedVis.length-1]:null;
-    var useAdj=pricedVis.length>=2&&pricedVis.every(function(r){return r.adj!==null;})&&lastRaw&&lastRaw.adj;
-    var kAdj=useAdj?lastRaw.raw/lastRaw.adj:1;
-    pricedVis.forEach(function(r){ r.price=useAdj?Math.round(r.adj*kAdj*100)/100:r.raw; });
-    if(pricedVis.length>=2){
-      var pVals=pricedVis.map(function(r){return r.price;});
-      var pMin=Math.min.apply(null,pVals), pMax=Math.max.apply(null,pVals);
-      var pPad=(pMax-pMin)*0.12||1; pMin-=pPad; pMax+=pPad; var pRange=pMax-pMin||1;
-      function yOfP(p){ return PAD.top + (1-(p-pMin)/pRange)*cH; }
-      // price line (white, thin, over the net area)
-      ctx.beginPath(); ctx.strokeStyle=chartOverlayInk('.85'); ctx.lineWidth=1.5; ctx.lineJoin='round'; ctx.setLineDash([]);
-      var started=false;
-      pricedVis.forEach(function(r){ var xi=allDates.indexOf(r.date); var x=xOf(xi),y=yOfP(r.price); if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y); });
-      ctx.stroke();
-      // last price dot
-      var lastP=pricedVis[pricedVis.length-1]; var lpx=xOf(allDates.indexOf(lastP.date)), lpy=yOfP(lastP.price);
-      ctx.beginPath(); ctx.arc(lpx,lpy,3,0,Math.PI*2); ctx.fillStyle=chartOverlayInk('.95'); ctx.fill();
-      // right-axis price ticks
-      ctx.fillStyle=chartInk('.62'); ctx.font='11px JetBrains Mono, monospace'; ctx.textAlign='left';
-      ctx.textAlign='right';
-      for(var pt=0;pt<=3;pt++){ var pv=pMin+(pt/3)*pRange; var py=yOfP(pv); ctx.fillText(Math.round(pv).toString(), W-4, py+3); }
-      priceMeta={min:pMin,max:pMax,last:lastP.price,n:pricedVis.length,adjusted:!!useAdj,
-                 byDate:pricedVis.reduce(function(m,r){m[r.date]=r;return m;},{})};
-    }
-  }
-  CHART_GEO = { keys:keys, allDates:allDates, history:history, W:W, H:H,
-    PADleft:PAD.left, cW:cW, xOf:xOf, yOf:yOf, colors:COLORS, labels:LABELS, priceMeta:priceMeta };
-  buildLegend(keys, priceMeta);
-}
-
-function setActiveTab(key) {
-  activeKey = key;
-  document.querySelectorAll('.cot-chart-tab').forEach(function(btn) {
-    var on = btn.dataset.key === key;
-    btn.classList.toggle('active', on);
-    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  });
-  drawChart(key);
-}
-
-document.querySelectorAll('.cot-chart-tab').forEach(function(btn) {
-  btn.addEventListener('click', function() { setActiveTab(btn.dataset.key); });
-});
-
-var CHART_GEO = null;
-(function(){
-  var canvas = document.getElementById('cot-chart');
-  var xhair  = document.getElementById('cot-xhair');
-  var tip    = document.getElementById('cot-tip');
-  if (!canvas || !xhair || !tip) return;
-  function fmtTip(n){ var a=Math.abs(n); var s=n<0?'-':'+'; return s+(a>=1000?(a/1000).toFixed(1)+'k':a); }
-  function nearestIndex(px){
-    var g=CHART_GEO; if(!g||!g.allDates.length) return -1;
-    var best=0,bd=1e9;
-    for(var i=0;i<g.allDates.length;i++){ var dx=Math.abs(g.xOf(i)-px); if(dx<bd){bd=dx;best=i;} }
-    return best;
-  }
-  function show(clientX){
-    var g=CHART_GEO; if(!g) return;
-    var rect=canvas.getBoundingClientRect();
-    var px=clientX-rect.left;
-    if(px<g.PADleft||px>g.PADleft+g.cW){ hide(); return; }
-    var i=nearestIndex(px); if(i<0) return;
-    var date=g.allDates[i];
-    var x=g.xOf(i);
-    xhair.style.left=x+'px'; xhair.style.display='block';
-    var rows=['<b>'+date+'</b>'];
-    g.keys.forEach(function(k){
-      var arr=g.history[k]||[]; var rec=null;
-      for(var j=0;j<arr.length;j++){ if(arr[j].date===date){rec=arr[j];break;} }
-      if(rec){ var line='<span style="color:'+g.colors[k]+'">\u25CF</span> '+g.labels[k]+': '+fmtTip(rec.net); var pm=g.priceMeta&&g.priceMeta.byDate&&g.priceMeta.byDate[date]; if(g.keys.length===1&&pm){ line+='  \u00b7  px '+pm.raw+(g.priceMeta.adjusted?' (adj '+pm.price+')':''); } rows.push(line); }
-    });
-    tip.innerHTML=rows.join('<br>');
-    tip.style.display='block';
-    // position tip: flip to left side near right edge
-    var tw=tip.offsetWidth||120;
-    var left=x+12; if(left+tw>g.W) left=x-tw-12; if(left<0) left=4;
-    tip.style.left=left+'px'; tip.style.top='8px';
-  }
-  function hide(){ xhair.style.display='none'; tip.style.display='none'; }
-  canvas.addEventListener('mousemove',function(e){ show(e.clientX); });
-  canvas.addEventListener('mouseleave',hide);
-  canvas.addEventListener('touchstart',function(e){ if(e.touches[0]) show(e.touches[0].clientX); },{passive:true});
-  canvas.addEventListener('touchmove',function(e){ if(e.touches[0]) show(e.touches[0].clientX); },{passive:true});
-  canvas.addEventListener('touchend',hide);
-})();
 
 
 /* ── LOADING COT, AND LOADING IT AGAIN ────────────────────────────────────
@@ -766,6 +478,7 @@ function cotApply(data, isPoll) {
   /* The summary can move without the history file moving, so the agreement
      has to be re-tested from this side too, not only when history loads. */
   cotRenderDerived();
+  if (window.AgCotChart && window.AgCotChart.update) window.AgCotChart.update({ cot: data });
   cotTick();
 }
 
@@ -782,6 +495,9 @@ function cotLoad(isPoll) {
          report yet" -- so a reader whose fetch had simply failed had no reason
          to reload, and sat in front of blank headline figures. */
       if (text) text.textContent = 'Couldn\u2019t load the latest COT data, retrying.';
+      /* the report could not load: the summary baked into the page takes its place */
+      var bk = document.getElementById('cot-baked');
+      if (bk && !COT_SUMMARY) bk.style.display = 'block';
       if (banner) banner.className = 'cot-verdict-banner mixed';
     });
 }
@@ -801,8 +517,7 @@ function cotLoadHistory(isPoll) {
   .then(function(data) {
     historyData = data;
     cotHistStop();
-    var _canvas = document.getElementById('cot-chart'); if (_canvas) _canvas.style.display = '';
-    drawChart(activeKey);
+    if (window.AgCotChart && window.AgCotChart.update) window.AgCotChart.update({ hist: data });
     cotRenderDerived();
   })
   .catch(function() {
@@ -813,29 +528,11 @@ function cotLoadHistory(isPoll) {
        reader was looking at and replaced it with "Chart data refreshes after
        each Friday CFTC release", which is false: it had just refreshed. */
     if (isPoll) return;
-    var msg = document.getElementById('cot-chart-msg');
-    if (msg) { msg.style.display = 'block'; msg.textContent = 'Could not load the chart data, retrying.'; }
-    var canvas = document.getElementById('cot-chart');
-    if (canvas) canvas.style.display = 'none';
+    var msg = document.getElementById('cc-msg');
+    if (msg) { msg.hidden = false; msg.textContent = 'Could not load the chart data, retrying.'; }
   });
 }
 cotLoadHistory(false);
-
-window.addEventListener('resize', function() {
-  if (historyData) drawChart(activeKey);
-});
-/* The chart sits behind the details tap (2026-11-04): drawn while closed it
-   has no width, so draw it again when the reader opens it. */
-(function(){ var f = document.getElementById('cot-all');
-  if (f) f.addEventListener('toggle', function(){ if (f.open && historyData) drawChart(activeKey); }); })();
-
-/* The canvas is painted once and does not know the theme changed under it.
-   Without this, toggling to light left the previous theme's ink on screen
-   until something else forced a redraw. */
-if (window.MutationObserver) {
-  new MutationObserver(function(){ if (historyData) drawChart(activeKey); })
-    .observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
-}
 
 /* ── THE COUNTDOWN TELLS THE TRUTH ABOUT THE DATA, NOT THE CLOCK ──────────
    What this was: a timer to Friday 21:30 UTC. At zero it said "expected

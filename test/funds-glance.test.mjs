@@ -1,16 +1,18 @@
 /* COT at a glance and the Funds this week email (2026-11-04, Sig: "concise and to the point at
  * first glance, with an option to get the report by email"; the counts file showed no cot list).
- *   - /cot opens with one plain line per market (components/cot-glance.js), each percentile naming
- *     its period, the report and release days shown, then a "Get this every Friday by email" ask that
- *     posts topic cot, then the details behind one tap;
- *   - the home COT card shows the top three markets in the reader's order, the ask and the ranges
- *     behind taps;
+ *   - /cot opens with the crowded verdict when it fits one line (else the report's dates), then the
+ *     52-week chart with one brief line for the market picked (Nov 5, Sig: "KISS"; test/cot-chart.test.mjs),
+ *     every market as a table row behind one "All markets" tap, then a "Get this every Friday by email"
+ *     ask that posts topic cot, then the details behind one tap; no sentence per market;
+ *   - the home COT card shows the top three markets in the reader's order as short rows (market, long
+ *     or short, change), the ask and the ranges behind taps;
+ *   - the sentence form (line(), lines()) is kept in cot-glance.js and tested here;
  *   - the home card's "Since <report day>" price change compares the HEADLINE contract with itself
  *     (AgPxStamp.headline, #320): Jan '27 soybeans on Nov 4, Mar '27 corn after Nov 30, never the
  *     continuous front month;
  *   - the stats counts file keeps the standing lists, cot at zero included (scripts/stats_ingest.py),
  *     and the COT file keeps each dated contract's report-day close (scripts/enrich_cot_prices.py).
- * Frozen inputs: test/fixtures/funds (cot.json and cot-analysis.json for the Oct 27, 2026 report; the
+ * Frozen inputs: test/fixtures/funds (cot.json, cot-analysis.json and cot-history.json for the Oct 27, 2026 report; the
  * px_by_contract closes in it are made up for the test) and test/fixtures/soyroll2/prices-2026-11-04.json.
  * The browser parts route every outside host to a stub or abort and block service workers (BUILD-RULES 58).
  *
@@ -32,6 +34,7 @@ const G = require(path.join(ROOT, "components/cot-glance.js"));
 const FIX = {
   cot: path.join(ROOT, "test/fixtures/funds/cot-2026-10-27.json"),
   cx: path.join(ROOT, "test/fixtures/funds/cot-analysis-2026-10-27.json"),
+  hist: path.join(ROOT, "test/fixtures/funds/cot-history-2026-10-27.json"),
   prices: path.join(ROOT, "test/fixtures/soyroll2/prices-2026-11-04.json"),
 };
 const COT = JSON.parse(fs.readFileSync(FIX.cot, "utf8"));
@@ -129,14 +132,15 @@ test("the COT file keeps each dated contract's report-day close (enrich_cot_pric
 
 test("the pages load the shared lines and the bumped scripts", () => {
   const cot = read("cot.html"), idx = read("index.html");
-  for (const h of [cot, idx]) assert.ok(h.includes('<script src="/components/cot-glance.js?v=1"></script>'));
-  assert.ok(cot.includes('<script src="/components/cot-page.js?v=5"></script>'));
+  for (const h of [cot, idx]) assert.ok(h.includes('<script src="/components/cot-glance.js?v=2"></script>'));
+  assert.ok(cot.includes('<script src="/components/cot-page.js?v=6"></script>'));
   assert.ok(cot.indexOf('<script src="/components/cot-glance.js') < cot.indexOf('<script src="/components/cot-page.js'));
   assert.ok(idx.indexOf('<script src="/components/cot-glance.js') < idx.indexOf('<script src="/components/home.js'));
-  // one Funds this week ask on /cot, under the lines and above the details
+  // one Funds this week ask on /cot, under the chart and the market table, above the details
   assert.equal((cot.match(/data-topic="cot"/g) || []).length, 1);
-  const lines = cot.indexOf('id="cg-lines"'), ask = cot.indexOf('data-topic="cot"'), all = cot.indexOf('id="cot-all"');
-  assert.ok(lines > 0 && lines < ask && ask < all, "lines, then the ask, then the details");
+  const verdict = cot.indexOf('id="cg-verdict"'), chart = cot.indexOf('id="cot-chart-box"'), table = cot.indexOf('id="cg-all"'), ask = cot.indexOf('data-topic="cot"'), all = cot.indexOf('id="cot-all"');
+  assert.ok(verdict > 0 && verdict < chart && chart < table && table < ask && ask < all, "verdict, chart, table, the ask, then the details");
+  assert.ok(!cot.includes('id="cg-lines"'), "no sentence per market at the top");
   assert.match(cot, /data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot"/);
   assert.match(idx, /data-topic="cot" data-source="cot-weekly:home"/);
 });
@@ -165,7 +169,7 @@ async function open(browser, port, url, o = {}) {
   const pg = await ctx.newPage();
   if (o.init) await pg.addInitScript(o.init);
   const posts = [];
-  const own = { "/data/cot.json": o.cot || fs.readFileSync(FIX.cot), "/data/cot-analysis.json": fs.readFileSync(FIX.cx), "/data/prices.json": o.prices || fs.readFileSync(FIX.prices), ...(o.own || {}) };
+  const own = { "/data/cot.json": o.cot || fs.readFileSync(FIX.cot), "/data/cot-analysis.json": fs.readFileSync(FIX.cx), "/data/cot-history.json": fs.readFileSync(FIX.hist), "/data/prices.json": o.prices || fs.readFileSync(FIX.prices), ...(o.own || {}) };
   await pg.route("**/*", (r) => {
     const u = new URL(r.request().url());
     if (u.origin === `http://127.0.0.1:${port}`) {
@@ -183,22 +187,28 @@ async function open(browser, port, url, o = {}) {
   return { pg, posts };
 }
 
-test("/cot: the first screen is one line per market, the ask posts topic cot, the details wait behind a tap", { skip, timeout: 120000 }, async () => {
+test("/cot: the first screen is the verdict and the chart, every market in a table behind a tap, the ask posts topic cot", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     for (const width of [390, 1280]) {
       const { pg, posts } = await open(browser, port, "/cot.html", { width });
-      await pg.waitForFunction(() => document.querySelectorAll("#cg-lines li").length > 0 && /percentile/.test(document.getElementById("cg-lines").textContent));
-      const got = await pg.$$eval("#cg-lines li", (els) => els.map((e) => e.textContent));
-      assert.deepEqual(got, G.lines(COT, CX).map((l) => l.text), "the page prints cot-glance.js's lines, one per market " + width);
-      assert.equal((await pg.textContent("#cg-date")).trim(), "Positions as of Tuesday, Oct 27, released Friday, Oct 30.");
-      const top = await pg.$eval("#cg-lines li", (e) => e.getBoundingClientRect().top);
-      assert.ok(top < 844, `the first line is on the first screen (top ${top}px) at ${width}`);
+      await pg.waitForFunction(() => document.querySelectorAll("#cg-rows tr").length > 0 && /\d(st|nd|rd|th)/.test(document.getElementById("cg-rows").textContent));
+      // every market, one row each: market | long or short | rank | change
+      const got = await pg.$$eval("#cg-rows tr", (trs) => trs.map((tr) => [...tr.children].map((td) => td.textContent)));
+      assert.deepEqual(got, G.rows(COT, CX).map((r) => [r.name, r.pos, r.rank, r.chg]), "the table prints cot-glance.js's rows " + width);
+      assert.equal(await pg.$eval("#cg-all", (d) => d.open), false, "the table waits behind one tap");
+      // the verdict on one line when it fits, else the report's dates
+      const v = await pg.$eval("#cg-verdict", (e) => ({ t: e.textContent, h: e.getBoundingClientRect().height, fs: parseFloat(getComputedStyle(e).fontSize), sw: e.scrollWidth, cw: e.clientWidth }));
+      assert.ok([G.verdict(COT, CX), G.asOfShort(COT, CX)].includes(v.t), v.t);
+      assert.ok(v.h < v.fs * 2 && v.sw <= v.cw + 1, "one line: " + JSON.stringify(v));
+      if (width === 1280) assert.equal(v.t, "Crowded: soybean meal long; lean hogs, Class III milk short");
+      const top = await pg.$eval("#cc-head", (e) => e.getBoundingClientRect().bottom);
+      assert.ok(top < 844, `the chart's line is on the first screen (bottom ${top}px) at ${width}`);
       assert.equal(await pg.$eval("#cot-all", (d) => d.open), false, "details closed");
       assert.equal(await pg.isVisible("#cot-summary-grid"), false, "the cards wait behind the tap");
-      assert.equal(await pg.isVisible("#cot-baked"), false, "the crawler summary gives way to the lines");
-      // the email ask, right under the lines
+      assert.equal(await pg.isVisible("#cot-baked"), false, "the crawler summary stays out of view");
+      // the email ask, under the chart and the table
       const ask = pg.locator('#cot-glance [data-sa-topic="cot"]');
       await ask.locator(".sa-in").waitFor();
       assert.equal((await ask.locator(".sa-l").textContent()).trim(), "Get this every Friday by email");
@@ -207,12 +217,13 @@ test("/cot: the first screen is one line per market, the ask posts topic cot, th
       await ask.locator(".sa-ok").waitFor();
       assert.deepEqual(posts.filter((x) => x.path === "/notice").map((x) => x.body),
         [{ email: "reader@example.com", source: "cot-weekly:cot", topic: "cot", daily: false }], "posts the cot list " + width);
-      // one tap opens the details, and the chart draws at the width it now has
+      // the 52-week chart (2026-11-05) is out in the open under the lines, drawn before any tap
+      const cw = await pg.$eval("#cc-svg", (c) => c.getBoundingClientRect().width);
+      assert.ok(cw > 200 && (await pg.$$("#cc-svg path")).length > 2, "the chart drew without a tap: " + cw);
+      // one tap opens the details
       await pg.click("#cot-all > summary");
       await pg.waitForTimeout(300);
       assert.equal(await pg.isVisible("#cot-summary-grid"), true);
-      const cw = await pg.$eval("#cot-chart", (c) => c.width);
-      assert.ok(cw > 200, "the chart drew after the tap: " + cw);
       await pg.context().close();
     }
   } finally { await browser.close(); srv.close(); }
@@ -225,9 +236,9 @@ test("home card: the top three markets in plain lines, the ask and the ranges be
     for (const width of [390, 1280]) {
       const { pg, posts } = await open(browser, port, "/index.html", { width });
       await pg.evaluate(() => { let d = document.getElementById("cot-widget"); while (d) { if (d.tagName === "DETAILS") d.open = true; d = d.parentElement; } document.getElementById("cot-widget").scrollIntoView(); });
-      await pg.waitForFunction(() => /percentile/.test((document.getElementById("cot-glance") || {}).textContent || ""));
+      await pg.waitForFunction(() => /moderate|heavy|light/.test((document.getElementById("cot-glance") || {}).textContent || ""));
       const got = await pg.$$eval("#cot-glance li", (els) => els.map((e) => e.textContent));
-      assert.deepEqual(got, G.lines(COT, CX, ["corn", "beans", "wheat"]).map((l) => l.text), "three lines, the reader's first three markets " + width);
+      assert.deepEqual(got, G.rows(COT, CX, ["corn", "beans", "wheat"]).map((r) => r.name + r.pos + r.chg), "three short rows, the reader's first three markets " + width);
       assert.equal((await pg.textContent("#cot-gl-asof")).trim(), "Positions as of Tuesday, Oct 27, released Friday, Oct 30.");
       assert.equal((await pg.textContent("#cot-verdict")).trim(), "Crowded: soybean meal (long), lean hogs and Class III milk (short)", "the verdict over all markets " + width);
       assert.equal(await pg.locator("#cot-verdict-lv").count(), 0, "one verdict, not a grains and a cattle badge");
