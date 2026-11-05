@@ -2,7 +2,7 @@
  "id": "2026-11-05-atlassales",
  "date": "2026-11-05",
  "title": "Farmland Atlas map: what farms sold for, county by county",
- "line": "A map layer of median sale price per acre and sale counts for every county with a recorded sale, Illinois, Wisconsin and Florida. Under 5 sales is marked.",
+ "line": "A map layer of median sale price per acre and sale counts for every county with a recorded sale in six states. Under 5 sales is marked a thin read.",
  "link": "/farmland-atlas#l=sales_med",
  "rank": 2
 }
