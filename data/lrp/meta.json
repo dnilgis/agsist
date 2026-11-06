@@ -207,8 +207,8 @@
   "2026": {
    "0801": [
     "20250930",
-    "20261028",
-    282
+    "20261029",
+    283
    ],
    "0802": [
     "20250930",
@@ -217,15 +217,15 @@
    ],
    "0815": [
     "20250930",
-    "20261027",
-    281
+    "20261028",
+    282
    ]
   },
   "2027": {
    "0801": [
     "20260930",
-    "20261028",
-    20
+    "20261029",
+    21
    ],
    "0802": [
     "20260930",
@@ -234,8 +234,8 @@
    ],
    "0815": [
     "20260930",
-    "20261027",
-    19
+    "20261028",
+    20
    ]
   }
  },
@@ -262,26 +262,26 @@
  },
  "checks": {
   "aev_deleted": 0,
-  "aev_restated": 661,
-  "aev_rows": 732579,
+  "aev_restated": 792,
+  "aev_rows": 732930,
   "last_run": {
    "failed": 0,
    "left": 0,
-   "read": 1,
+   "read": 3,
    "seconds": 2,
    "stopped_for_time": false,
    "unreadable": 0
   },
-  "offer_days_written": 3324,
+  "offer_days_written": 3325,
   "offers_restated": 1,
   "rate_blank": 0,
   "rate_blank_examples": [],
   "rate_cost_off": 37,
   "rate_deleted": 0,
   "rate_price_off": 425998,
-  "rate_rows": 2344290
+  "rate_rows": 2345952
  },
- "files_read": 6956,
+ "files_read": 6958,
  "first_sales_date": "20130701",
  "last_sales_date": "20261105",
  "offer_days_by_reinsurance_year": {
