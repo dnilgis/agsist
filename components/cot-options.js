@@ -1,4 +1,5 @@
-/* Positioning map and options positions on /cot (2026-11-06, Sig: feature options open interest and single out
+/* Positioning map and options positions on /cot (2026-11-06; Nov 6 polish: one tab stop on the map with arrow keys,
+   the detail beside the map on a wide screen, the block's column says options, Sig: feature options open interest and single out
    unusual positions; "has to be epic", few words, no repeated wording).
    Reads /data/cot-options.json, which scripts/cot_options.py builds from CFTC data only. Every figure there is
    computed by the builder; this file only words and places it. Facts only: no arrows, no direction words, no calls.
@@ -77,7 +78,7 @@
           var c = cell(d, k, side, g), p = c ? c.r.pct : null, b = bin(p, d.edge);
           var lab = NAMES[k] + ', ' + GROUP_LOWER[g] + ', ' + SIDE[side] + ': ' + where(p, c ? c.m.weeks : 0);
           h += '<td class="cm-x ' + b + (side === 'opt' ? ' cm-o' : '') + '"><button type="button" class="cm-b" data-k="' + k + '" data-s="' + side + '" data-g="' + g +
-            '" aria-label="' + esc(lab) + '" aria-pressed="false">' + (p == null ? '<span aria-hidden="true">&middot;</span>' : p) + '</button></td>';
+            '" aria-label="' + esc(lab) + '" aria-pressed="false" tabindex="-1">' + (p == null ? '<span aria-hidden="true">&middot;</span>' : p) + '</button></td>';
         });
       });
       h += '</tr>';
@@ -177,7 +178,7 @@
     if (m.withheld === 'small') h += '<p class="co-note">Too few options here to rank the positions.</p>';
     else if (m.withheld === 'history') h += '<p class="co-note">Under ' + m.weeks + ' weeks of history: not ranked.</p>';
     h += '<div class="co-tw"><table class="co-t"><caption class="sr-only">Net options position by trader group, ' + esc(NAMES[k]) +
-      ', week of ' + esc(day(m.date)) + '</caption><thead><tr><th scope="col">Group</th><th scope="col">Net</th><th scope="col">Week</th><th scope="col">3-yr rank</th></tr></thead><tbody>';
+      ', week of ' + esc(day(m.date)) + '</caption><thead><tr><th scope="col">Group</th><th scope="col">Net options</th><th scope="col">Week</th><th scope="col">3-yr rank</th></tr></thead><tbody>';
     GROUPS.forEach(function (g) {
       var r = m.groups && m.groups[g];
       if (!r) return;
@@ -187,8 +188,7 @@
     h += '</tbody></table></div>';
     var c = m.conc || {};
     if (c.g4l != null) {
-      h += '<p class="co-conc">Largest 4 traders: ' + pc(c.g4l) + ' of longs, ' + pc(c.g4s) + ' of shorts (largest 8: ' + pc(c.g8l) + ', ' + pc(c.g8s) +
-        '). Net of each trader’s own offsets: ' + pc(c.n4l) + ', ' + pc(c.n4s) + ' (' + pc(c.n8l) + ', ' + pc(c.n8s) + ').</p>';
+      h += '<p class="co-conc">Largest 4 traders: ' + pc(c.g4l) + ' of longs, ' + pc(c.g4s) + ' of shorts. Largest 8: ' + pc(c.g8l) + ', ' + pc(c.g8s) + '.</p>';
     }
     return h;
   }
@@ -237,7 +237,9 @@
   function select(k, s, g, focus) {
     pick = { k: k, s: s, g: g };
     document.querySelectorAll('#cm-wrap .cm-b').forEach(function (b) {
-      b.setAttribute('aria-pressed', b.getAttribute('data-k') === k && b.getAttribute('data-s') === s && b.getAttribute('data-g') === g ? 'true' : 'false');
+      var on = b.getAttribute('data-k') === k && b.getAttribute('data-s') === s && b.getAttribute('data-g') === g;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.setAttribute('tabindex', on ? '0' : '-1');
     });
     $('cm-detail').innerHTML = detail(D, k, s, g);
     drawSpark();
@@ -275,6 +277,28 @@
     $('cm-wrap').addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('.cm-b') : null;
       if (b) select(b.getAttribute('data-k'), b.getAttribute('data-s'), b.getAttribute('data-g'));
+    });
+    /* one tab stop for the whole map; arrows move, Home/End jump in the row, Enter or Space opens (a button's own click) */
+    $('cm-wrap').addEventListener('keydown', function (e) {
+      var b = e.target.closest ? e.target.closest('.cm-b') : null;
+      if (!b) return;
+      var rows = [].slice.call(document.querySelectorAll('#cm-wrap tbody tr')).map(function (tr) { return [].slice.call(tr.querySelectorAll('.cm-b')); });
+      var r = -1, c = -1;
+      rows.forEach(function (row, i) { var j = row.indexOf(b); if (j >= 0) { r = i; c = j; } });
+      if (r < 0) return;
+      var k = e.key;
+      if (k === 'ArrowRight') c = Math.min(c + 1, rows[r].length - 1);
+      else if (k === 'ArrowLeft') c = Math.max(c - 1, 0);
+      else if (k === 'ArrowDown') r = Math.min(r + 1, rows.length - 1);
+      else if (k === 'ArrowUp') r = Math.max(r - 1, 0);
+      else if (k === 'Home') c = 0;
+      else if (k === 'End') c = rows[r].length - 1;
+      else return;
+      e.preventDefault();
+      var n = rows[r][Math.min(c, rows[r].length - 1)];
+      b.setAttribute('tabindex', '-1');
+      n.setAttribute('tabindex', '0');
+      n.focus();
     });
     ul.addEventListener('click', function (e) {
       var li = e.target.closest ? e.target.closest('.cu[data-k]') : null;

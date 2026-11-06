@@ -554,6 +554,10 @@ html[data-theme] .cg-baked{display:none}
 .cm-legend{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:0 0 .5rem;font-size:.78rem;line-height:1.45;color:var(--text-muted)}
 .cm-k{display:inline-flex;align-items:center;justify-content:center;width:30px;height:20px;border-radius:3px;font-size:.72rem;font-weight:700}
 .cm-lt{flex:1 1 14rem;margin-left:.5rem}
+.cm-li{flex:1 1 100%;display:flex;align-items:center;gap:.5rem;margin-top:.15rem}
+.cc-kind{margin:.1rem 0 0;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.cm-grid{display:block}
+@media(min-width:1000px){.cm-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:1rem;align-items:start}.cm-grid .cm-detail{margin-top:2.4rem}}
 .cm-wrap{margin:0 0 .6rem}
 .cm-t{width:100%;border-collapse:separate;border-spacing:2px;table-layout:fixed;font-variant-numeric:tabular-nums}
 .cm-c0{width:5.4rem}
@@ -572,6 +576,7 @@ html[data-theme] .cg-baked{display:none}
 .x0 ,.cm-k.x0{background:var(--cm-x0);color:var(--cm-i0)}.b1,.cm-k.b1{background:var(--cm-b1);color:var(--cm-i1)}.b2,.cm-k.b2{background:var(--cm-b2);color:var(--cm-i2)}.b3,.cm-k.b3{background:var(--cm-b3);color:var(--cm-i3)}.x4,.cm-k.x4{background:var(--cm-x4);color:var(--cm-i4)}
 .cm-x .cm-b{background:inherit;color:inherit}
 .cm-x.x0 .cm-b,.cm-x.x4 .cm-b{font-weight:800;box-shadow:inset 0 0 0 2px var(--cm-ring)}
+.cm-k.na{background:repeating-linear-gradient(45deg,transparent 0 4px,var(--border-2) 4px 5px);border:1px solid var(--border)}
 .cm-x.na{background:repeating-linear-gradient(45deg,transparent 0 4px,var(--border) 4px 5px);color:var(--text-muted)}
 .cm-b[aria-pressed="true"]{outline:3px solid var(--gold);outline-offset:-1px;position:relative;z-index:1}
 .cm-b:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
@@ -707,6 +712,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <!-- The 52-week chart (2026-11-05, Sig): one market at a time, components/cot-chart.js -->
     <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"><button type="button" class="cc-cmp" id="cc-cmp" aria-pressed="false">Compare</button><button type="button" class="cc-chip" data-k="corn" aria-pressed="true">Corn</button><button type="button" class="cc-chip" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-chip" data-k="wheat" aria-pressed="false">Chicago wheat</button><button type="button" class="cc-chip" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-chip" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-chip" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-chip" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-chip" data-k="livecattle" aria-pressed="false">Live cattle</button><button type="button" class="cc-chip" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-chip" data-k="leanhogs" aria-pressed="false">Lean hogs</button><button type="button" class="cc-chip" data-k="milk" aria-pressed="false">Class III milk</button></div>
+      <p class="cc-kind">Futures</p>
       <h3 class="cc-head" id="cc-head"><span>Managed money net position, last 52 weeks</span></h3>
       <div class="cc-plot" id="cc-plot" tabindex="0" aria-describedby="cc-hint">
         <svg class="cc-svg" id="cc-svg" role="img" aria-label="52-week chart of managed money net position" preserveAspectRatio="none"></svg>
@@ -738,9 +744,11 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   <section class="co" id="cot-opt" aria-labelledby="co-h">
     <h2 class="cg-h" id="co-h">Positioning map</h2>
     <p class="co-sub" id="co-sub">Loading the map&hellip;</p>
-    <div class="cm-legend" id="cm-legend" aria-hidden="true"><span class="cm-k x0">0</span><span class="cm-k b1"></span><span class="cm-k b2">50</span><span class="cm-k b3"></span><span class="cm-k x4">100</span><span class="cm-lt">Each number: where that net position sits in its own last 3 years, 0 lowest, 100 highest. Ringed: top or bottom 5%. Tap one.</span></div>
-    <div class="cm-wrap" id="cm-wrap"></div>
-    <div class="cm-detail" id="cm-detail" aria-live="polite"></div>
+    <div class="cm-legend" id="cm-legend" aria-hidden="true"><span class="cm-k x0">0</span><span class="cm-k b1"></span><span class="cm-k b2">50</span><span class="cm-k b3"></span><span class="cm-k x4">100</span><span class="cm-lt">Each number: where that net position sits in its own last 3 years, 0 lowest, 100 highest. Ringed: top or bottom 5%. Tap one.</span><span class="cm-li"><span class="cm-k na"></span><span>Hatched: not ranked (options under 5% of open interest).</span></span></div>
+    <div class="cm-grid">
+      <div class="cm-wrap" id="cm-wrap"></div>
+      <div class="cm-detail" id="cm-detail" aria-live="polite"></div>
+    </div>
     <div class="co-unusual" id="co-unusual">
       <h3 class="co-h3">Unusual this week</h3>
       <ul class="co-cards" id="co-cards" hidden></ul>
@@ -938,7 +946,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 
 
 <script src="/components/cot-analysis.js?v=3"></script>
-<script src="/components/cot-options.js?v=1"></script>
+<script src="/components/cot-options.js?v=2"></script>
 
 <script>
 /* Folds: a link to anything inside a closed fold opens it first; printing opens them all. */
