@@ -32,7 +32,6 @@
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function num(n) { return Math.abs(Math.round(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function signed(n) { return n == null ? 'not reported' : (n > 0 ? '+' : n < 0 ? MINUS : '') + num(n); }
-  function ord(n) { var v = n % 100, o = ['th', 'st', 'nd', 'rd']; return n + (o[(v - 20) % 10] || o[v] || o[0]); }
   function pc(v) { return v == null ? 'not reported' : (Math.round(v * 10) / 10).toFixed(1) + '%'; }
   /* "2026-10-27" -> "Oct 27, 2026" */
   function day(s) {
@@ -43,7 +42,8 @@
     if (p == null) return 'not ranked';
     if (p === 0) return 'lowest in ' + weeks + ' weeks';
     if (p === 100) return 'highest in ' + weeks + ' weeks';
-    return ord(p) + ' percentile of ' + weeks + ' weeks';
+    /* in words, never an ordinal (2026-11-06); the map's yardstick is contracts over the last 3 years */
+    return 'higher than ' + p + '% of the last ' + weeks + ' weeks, in contracts';
   }
   /* the five bins of the color scale, read from the printed percentile */
   function bin(p, edge) {
@@ -65,7 +65,7 @@
   /* ---------------------------------------------------------------- the map: a real table, one button per cell */
   function map(d) {
     var keys = ORDER.filter(function (k) { return d && d.markets && d.markets[k]; });
-    var h = '<table class="cm-t"><caption class="sr-only">Percentile of each net position in its own last 3 years, by market and trader group, futures and options. Week of ' +
+    var h = '<table class="cm-t"><caption class="sr-only">How each net position in contracts ranks against its own last 3 years, 0 lowest, 100 highest, by market and trader group, futures and options. Week of ' +
       esc(day(d.report_date)) + '.</caption><thead><tr><td class="cm-c0"></td>';
     GROUPS.forEach(function (g) { h += '<th scope="colgroup" colspan="2" class="cm-g">' + GROUP[g] + '</th>'; });
     h += '</tr><tr><td class="cm-c0"></td>';
@@ -178,11 +178,11 @@
     if (m.withheld === 'small') h += '<p class="co-note">Too few options here to rank the positions.</p>';
     else if (m.withheld === 'history') h += '<p class="co-note">Under ' + m.weeks + ' weeks of history: not ranked.</p>';
     h += '<div class="co-tw"><table class="co-t"><caption class="sr-only">Net options position by trader group, ' + esc(NAMES[k]) +
-      ', week of ' + esc(day(m.date)) + '</caption><thead><tr><th scope="col">Group</th><th scope="col">Net options</th><th scope="col">Week</th><th scope="col">3-yr rank</th></tr></thead><tbody>';
+      ', week of ' + esc(day(m.date)) + '</caption><thead><tr><th scope="col">Group</th><th scope="col">Net options</th><th scope="col">Week</th><th scope="col">Rank, last 3 years, contracts</th></tr></thead><tbody>';
     GROUPS.forEach(function (g) {
       var r = m.groups && m.groups[g];
       if (!r) return;
-      var rk = r.pct == null ? 'not ranked' : r.pct === 0 ? 'lowest' : r.pct === 100 ? 'highest' : ord(r.pct);
+      var rk = r.pct == null ? 'not ranked' : r.pct === 0 ? 'lowest' : r.pct === 100 ? 'highest' : 'higher than ' + r.pct + '%';
       h += '<tr><th scope="row">' + GROUP[g] + '</th><td>' + signed(r.net) + '</td><td>' + signed(r.chg) + '</td><td class="' + bin(r.pct, d.edge) + '">' + rk + '</td></tr>';
     });
     h += '</tbody></table></div>';

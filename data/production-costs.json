@@ -800,9 +800,9 @@
  },
  "status": {
   "ok": true,
-  "checked": "2026-11-03T02:16:18Z",
+  "checked": "2026-11-06T20:25:39Z",
   "notes": {
-   "3657": "Liquid Nitrogen (32-0-0): unit 'Dollars Per Gallon' not expected, left out; Calcium Nitrate: 31.0-31.0 outside the sane band (100, 3000), left out"
+   "3657": "Calcium Nitrate: 31.0-31.0 outside the sane band (100, 3000), left out; Liquid Nitrogen (32-0-0): unit 'Dollars Per Gallon' not expected, left out"
   },
   "reconcile": "Illinois 2026-10-30: PDF and MARS agree on 6 products"
  },
