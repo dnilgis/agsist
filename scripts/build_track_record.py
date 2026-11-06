@@ -81,16 +81,20 @@ def pct(x):
 
 def measures(pairs):
     """Numbers over a list of (lock, grade) pairs."""
-    d = [(g["dir_right"], g["maj_right"], g["flat_right"]) for _, g in pairs if g["dir_right"] is not None]
+    # a tie (the outcome equals the price at the lock) is neither right nor wrong and stays out of the direction count
+    d = [(g["dir_right"], g["maj_right"], g["base_miss"]) for _, g in pairs
+         if g["dir_right"] is not None and g["base_miss"] != 0]
     lv = [(abs(g["miss"]) / abs(g["actual"]), abs(g["base_miss"]) / abs(g["actual"]))
           for _, g in pairs if g["miss"] is not None and g["base_miss"] is not None and g["actual"]]
     rg = [g["in_range"] for _, g in pairs if g["in_range"] is not None]
     out = {"d_n": len(d), "d_k": sum(1 for x in d if x[0]), "m_n": len(lv), "r_n": len(rg),
            "r_k": sum(1 for x in rg if x)}
-    # each direction baseline over the cases where it is defined
-    for key, j in (("maj", 1), ("flat", 2)):
-        xs = [x[j] for x in d if x[j] is not None]
-        out[key] = (sum(1 for x in xs if x), len(xs)) if xs else None
+    # the more-common-direction baseline over the cases where it is defined
+    xs = [x[1] for x in d if x[1] is not None]
+    out["maj"] = (sum(1 for x in xs if x), len(xs)) if xs else None
+    # after the fact only: how many of the counted moves were up (for a forecast with no baseline fixed in advance)
+    ms = [x[2] for x in d if x[2] is not None]
+    out["rose"] = (sum(1 for x in ms if x > 0), len(ms)) if ms else None
     if lv:
         out["miss"] = sum(a for a, _ in lv) / len(lv)
         out["base"] = sum(b for _, b in lv) / len(lv)
@@ -98,13 +102,21 @@ def measures(pairs):
 
 
 def best_dir(m, cfg):
-    """(label, k, n) of the direction baseline with the higher hit rate, or None."""
-    opts = []
+    """(label, k, n) of the direction baseline fixed in advance (always the more common direction), or None.
+    "No change" stays in the record but is never shown or used for a direction call: it is almost never right."""
     if m.get("maj") and cfg.get("majority"):
-        opts.append(("Always %s" % cfg["majority"]["dir"], ) + m["maj"])
-    if m.get("flat") and cfg.get("flat"):
-        opts.append(("No change", ) + m["flat"])
-    return max(opts, key=lambda o: o[1] / o[2]) if opts else None
+        return ("Always %s" % cfg["majority"]["dir"], ) + m["maj"]
+    return None
+
+
+def after_fact(m):
+    """The plain comparison line for a direction call with no baseline fixed in advance, labelled after the fact."""
+    if not m.get("rose"):
+        return ""
+    k, n = m["rose"]
+    up = k * 2 >= n
+    return ("Prices %s in %d of %d; always saying %s would have been right %s."
+            % ("rose" if up else "fell", k if up else n - k, n, "up" if up else "down", pct((k if up else n - k) / n)))
 
 
 def status(cfg, pairs, locks, today):
@@ -118,7 +130,7 @@ def status(cfg, pairs, locks, today):
     why = []
     b = best_dir(m, cfg)
     if m["d_n"] and b and m["d_k"] / m["d_n"] <= b[1] / b[2]:
-        why.append("does not beat its best baseline")
+        why.append("does not beat its baseline")
     if m["m_n"] and m["miss"] >= m["base"]:
         why.append("does not beat its baseline")
     if m["r_n"] and not (0.70 <= m["r_k"] / m["r_n"] <= 0.90):
@@ -144,6 +156,7 @@ def rows_for(rows, base, today):
         hold = "Building: %d of %d graded" % (len(measured), cfg["min_n"])
         period = ("%s to %s" % (day(min(l["locked_at"] for l, _ in pairs)), day(max(g["graded_at"] for _, g in pairs)))
                   if pairs else "none graded yet")
+        after = ""
         if cfg["kind"] != "direction":
             dcell, bcell = "No direction call", ""
         elif not show:
@@ -152,7 +165,8 @@ def rows_for(rows, base, today):
             lo, hi = wilson(m["d_k"], m["d_n"])
             dcell = "%d of %d right, %s (95%%: %s to %s)" % (m["d_k"], m["d_n"], pct(m["d_k"] / m["d_n"]), pct(lo), pct(hi))
             b = best_dir(m, cfg)
-            bcell = "%s: %d of %d, %s" % (b[0], b[1], b[2], pct(b[1] / b[2])) if b else "none on record"
+            bcell = "%s: %d of %d, %s" % (b[0], b[1], b[2], pct(b[1] / b[2])) if b else "No baseline fixed in advance"
+            after = "" if b else after_fact(m)
         if not m["m_n"]:
             mcell = "No level forecast" if cfg["kind"] == "direction" and not cfg.get("level") else "None graded yet"
         elif not show:
@@ -166,7 +180,8 @@ def rows_for(rows, base, today):
         else:
             rcell = "%d of %d inside, %s" % (m["r_k"], m["r_n"], pct(m["r_k"] / m["r_n"]))
         out.append({"fc": fc, "label": cfg["label"], "every": cfg["every"], "period": period, "locked": len(ls),
-                    "graded": len(pairs), "dir": dcell, "base": bcell, "miss": mcell, "range": rcell,
+                    "graded": sum(1 for _, g in pairs if g["actual"] is not None), "dir": dcell, "base": bcell,
+                    "after": after, "miss": mcell, "range": rcell,
                     "status": st, "why": why})
     order = {"Live": 0, "Quiet": 1, "Building": 2, "Retired": 3}
     return sorted(out, key=lambda x: order[x["status"]])     # stable: the baselines file's order within a status
@@ -192,10 +207,12 @@ def block(rows, base, today):
     for r in rows_for(rows, base, today):
         cls = r["status"].lower()
         why = ' <span class="tr-why">(%s)</span>' % e(r["why"]) if r["why"] and r["status"] in ("Quiet",) else ""
-        items = [("Period", r["period"]), ("Locked / graded", "%d / %d" % (r["locked"], r["graded"])),
+        items = [("Period", r["period"]), ("Locked / graded with an outcome", "%d / %d" % (r["locked"], r["graded"])),
                  ("Direction right", r["dir"])]
         if r["base"]:
-            items.append(("Best simple baseline", r["base"]))
+            items.append(("Simple baseline", r["base"]))
+        if r["after"]:
+            items.append(("For comparison, after the fact", r["after"]))
         items += [("Average miss vs baseline", r["miss"]), ("80% range held the outcome", r["range"])]
         dl = "".join("<div><dt>%s</dt><dd>%s</dd></div>" % (e(k), e(v)) for k, v in items)
         cards.append('<li class="tr-c" data-fc="%s"><h3>%s<span class="tr-st %s">%s</span>%s</h3>'
@@ -208,16 +225,17 @@ def block(rows, base, today):
             '<div class="tr" id="forecast-record">\n<style>' + CSS + '</style>\n'
             '<h2 class="cal-big-h" id="tr-h">Every AGSIST forecast, graded</h2>\n'
             '<p class="tr-lede">Every forecast AGSIST publishes is locked before the outcome is known and graded by arithmetic '
-            'after it. Each one is scored beside simple baselines that need no model at all (always calling the more common '
-            'direction, or calling no change), never against a coin flip. A rate stays hidden until enough calls are graded '
+            'after it. Each one is scored beside simple baselines that need no model at all (for a direction call, always calling '
+            'the direction fixed in advance as the more common one; for a level, calling no change), never against a coin flip. A rate stays hidden until enough calls are graded '
             'to mean something.</p>\n'
             '<ul class="tr-list">' + "".join(cards) + '</ul>\n'
-            '<p class="tr-note"><b>Status.</b> Live: over its most recent graded calls it beats its best baseline, its 80% range '
+            '<p class="tr-note"><b>Status.</b> Live: over its most recent graded calls it beats its baseline, its 80% range '
             'holds the outcome 70% to 90% of the time, it is right on direction at least 60% of the time, and it is still being '
             'made. Quiet: it misses one of those; it keeps locking and grading in the open. Building: too few graded calls to '
             'say. Retired: no longer made; its record stays. Locked counts every forecast written down, including ones still waiting '
-            'for their outcome and ones replaced by a newer lock before the report, which are kept and never graded. The average miss is the gap to the outcome as a share of the '
-            'outcome. The baselines were fixed on ' + e(fixed) + ' and are never changed. Record as of ' + e(day(asof)) + '.</p>\n'
+            'for their outcome and ones replaced by a newer lock before the report, which are kept and never graded. A call whose outcome landed exactly on the price at the lock counts as neither right '
+            'nor wrong and is left out of the direction count. The average miss is the gap to the outcome as a share of the '
+            'outcome. The baselines were fixed ' + e(fixed) + ' and are never changed. Record as of ' + e(day(asof)) + '.</p>\n'
             '<details class="tr-src"><summary>Sources</summary><p class="tr-note">AGSIST&rsquo;s public forecast record: one '
             'line per locked forecast and one per grade, each line carrying a fingerprint of the line before it, so no past '
             'call can be changed or dropped without it showing. Outcomes: USDA WASDE and NASS Crop Production yields; futures '
