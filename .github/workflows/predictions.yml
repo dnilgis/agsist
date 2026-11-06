@@ -89,8 +89,6 @@ jobs:
       - name: Grade matured calls, make today's calls, rebuild the backtest
         run: python scripts/prediction_bot.py --live
 
-      # The forecast track record on /usda-calendar#scorecard, from the public forecast record in agsist-data
-      # (appended weekly by the private registry). A missing or broken record leaves the page's last table.
       - name: Track record
         run: |
           if git clone -q --depth 1 --filter=blob:none --sparse https://github.com/dnilgis/agsist-data.git "$RUNNER_TEMP/ad" \
