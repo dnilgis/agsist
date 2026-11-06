@@ -172,7 +172,9 @@ def rows_for(rows, base, today):
     return sorted(out, key=lambda x: order[x["status"]])     # stable: the baselines file's order within a status
 
 
-CSS = (".tr{margin:0 0 2rem}.tr-lede{max-width:46rem}.tr-list{list-style:none;margin:.8rem 0;padding:0;display:grid;gap:.7rem}"
+CSS = (".tr{margin:0 0 2rem}.tr>h2.cal-big-h{border:0;padding:0;font-family:var(--font-display);font-size:clamp(1.35rem,4vw,1.75rem);"
+       "font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .45rem;letter-spacing:-.01em}"
+       ".tr-lede{max-width:46rem}.tr-list{list-style:none;margin:.8rem 0;padding:0;display:grid;gap:.7rem}"
        ".tr-c{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;min-width:0}"
        ".tr-c h3{font-size:1rem;margin:0 0 .15rem;line-height:1.3}.tr-c .tr-sub{color:var(--text-muted);font-size:.82rem;margin:0 0 .5rem}"
        ".tr-c dl{display:grid;grid-template-columns:1fr;gap:.35rem;margin:0}.tr-c dl>div{min-width:0}"
@@ -203,8 +205,8 @@ def block(rows, base, today):
     asof = max(max(r.get("locked_at", ""), r.get("graded_at", "")) for r in rows)[:10] if rows else today
     fixed = day(base["declared_on"])
     return (START + "\n"
-            '<div class="tr" id="track-record">\n<style>' + CSS + '</style>\n'
-            '<h2 class="cal-big-h" id="tr-h">Track record: every forecast, graded</h2>\n'
+            '<div class="tr" id="forecast-record">\n<style>' + CSS + '</style>\n'
+            '<h2 class="cal-big-h" id="tr-h">Every AGSIST forecast, graded</h2>\n'
             '<p class="tr-lede">Every forecast AGSIST publishes is locked before the outcome is known and graded by arithmetic '
             'after it. Each one is scored beside simple baselines that need no model at all (always calling the more common '
             'direction, or calling no change), never against a coin flip. A rate stays hidden until enough calls are graded '
