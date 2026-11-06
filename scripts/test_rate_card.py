@@ -128,7 +128,9 @@ def main():
           "the founding rate on sponsor.html matches the card", f_)
     check("No reply means the ad comes down and nothing is owed" in pitch and "day 30" in pitch.lower(),
           "the day-30 yes or no is on sponsor.html")
-    for page in ("sponsor.html", "sponsor-kit.html", "about.html", "prf-sponsor.html", "prf-sponsor-kit.html"):
+    # about.html left this list Nov 6, 2026: Sig removed the other-businesses section there; the line stays on every
+    # page that sells a slot (and /terms), which is where a sponsor reads it.
+    for page in ("sponsor.html", "sponsor-kit.html", "prf-sponsor.html", "prf-sponsor-kit.html"):
         check(card.get("insurance", "x") in _text(ROOT / page), "the insurance line is on %s" % page)
 
     print("\nretired tiers are gone from every page that sells (Oct 29, 2026)")
