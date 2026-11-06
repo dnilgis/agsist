@@ -25,9 +25,6 @@
     var a = Math.abs(n), s = n < 0 ? '−' : '';
     return a >= 1000 ? s + (a/1000).toFixed(0) + 'k' : s + a; }
   function pct(n, d){ return (n === null || n === undefined || n !== n) ? '-' : Number(n).toFixed(d === undefined ? 1 : d) + '%'; }
-  function ord(n){ n = Math.round(n); var v = n % 100;
-    if (v >= 10 && v <= 20) return n + 'th';
-    return n + ({1:'st',2:'nd',3:'rd'}[n % 10] || 'th'); }
   function dt(iso){
     if (!iso) return '-';
     var p = String(iso).split('-'); if (p.length !== 3) return iso;
@@ -103,8 +100,9 @@
       var hot = b.stretched_long.filter(function(x){ return x.crowded === 'long'; });
       var cold = b.stretched_short.filter(function(x){ return x.crowded === 'short'; });
       var name = function(a){ return a.map(function(x){ return esc(x.label) + ' (' + crowdWord(x.pctl) + ')'; }).join(', '); };
-      var txt = 'Average positioning across ' + b.n + ' markets sits at the ' + ord(b.mean_pctl)
-        + ' percentile of its own record. ';
+      /* in words, never an ordinal (2026-11-06) */
+      var txt = 'Across ' + b.n + ' markets, positioning is on average higher than ' + Math.round(b.mean_pctl)
+        + '% of weeks in its own record, as a share of open interest. ';
       if (!hot.length && !cold.length) {
         txt += 'None of them is in the top or bottom tenth of its history this week.';
       } else {
@@ -274,7 +272,7 @@
       placed.push(box(ty));
       var lx = right ? px + 11 : px - 11;
       s.push('<g class="cx-dot" tabindex="0" role="button" data-key="'+esc(p.key)+'"'
-        + ' aria-label="'+esc(p.label)+', positioning at the '+ord(p.x)+' percentile of its record, price '
+        + ' aria-label="'+esc(p.label)+', positioning higher than '+Math.min(99,Math.max(1,Math.round(p.x)))+'% of weeks in its record, price '
         + (p.y>=0?'up ':'down ') + Math.abs(p.y).toFixed(1) + ' percent over 13 weeks. Opens this market below.">'
         + (Math.abs(ty - (py + 3.6)) > 7
             ? '<line x1="'+(right?px+4:px-4).toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lx.toFixed(1)+'" y2="'+(ty-3.4).toFixed(1)+'" stroke="var(--border)" stroke-width="1"/>' : '')
@@ -383,7 +381,7 @@
      scrolls there; a reader who never does never downloads it. */
   var MARKET = null, MARKET_STATE = 'idle', DEEP_WANTED = false, DEEP_IO = null;
   var MARKET_API = {
-    $: $, num: num, sgn: sgn, pct: pct, ord: ord, dt: dt, narrow: narrow, crowdWord: crowdWord,
+    $: $, num: num, sgn: sgn, pct: pct, dt: dt, narrow: narrow, crowdWord: crowdWord,
     HOT: HOT, GREY: GREY,
     cx: function(){ return CX; }, key: function(){ return CX_KEY; }, h: function(){ return CX_H; },
     setH: function(v){ CX_H = v; renderDeep(); }
@@ -396,7 +394,7 @@
     if (MARKET_STATE === 'loading') return;
     MARKET_STATE = 'loading';
     var s = document.createElement('script');
-    s.src = '/components/cot-market.js?v=4';
+    s.src = '/components/cot-market.js?v=5';
     s.onload = function(){
       MARKET = (window.cotMarket && window.cotMarket(MARKET_API)) || null;
       MARKET_STATE = MARKET ? 'ready' : 'idle';
@@ -515,7 +513,7 @@
     var f = CX.family, sx = CX.shutdown_excluded;
     if (f && $('cx-family')) {
       $('cx-family').innerHTML = 'This week: <b>' + f.tests + '</b> readings had enough history to test, out of '
-        + f.attempted + ' tried. <b>' + f.fdr_survivors + '</b> held up. '
+        + f.attempted + ' tried. <b>' + f.survivors + '</b> held up. '
         + (sx && sx.rows ? num(sx.rows) + ' report weeks across ' + sx.markets + ' markets are left out as '
           + 'starting points because they fell in a government shutdown, when the date each report became public is not known.' : '');
     }

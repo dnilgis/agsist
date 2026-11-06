@@ -1,6 +1,7 @@
 /* Compare mode on the /cot 52-week chart (2026-11-05, Sig: "Is there a way to select multiple commodities in the COT chart?").
  *   - a Compare toggle next to the chips; in it the chips pick up to three markets, a fourth is refused with a short note;
- *   - one 0 to 100 axis (the weekly file carries no open interest, so each week is placed among that market's own 52 weeks);
+ *   - one 0 to 100 axis: each line is the pipeline's rk (share of open interest, ranked since 2010 against that week
+ *     and the weeks before it only), so the latest point is the headline rank; nothing is ranked in the browser;
  *   - the link carries ?m=corn,soybeans,chicago-wheat and opens on those picks; single mode and its links are unchanged;
  *   - hover shows the date and every market's value; Share and Save image work; text 12 px or more, taps 44 px or more.
  * Browser parts route every outside host to a stub or abort and block service workers (BUILD-RULES 58).
@@ -29,7 +30,7 @@ const CX = JSON.parse(fs.readFileSync(FIX.cx, "utf8"));
 const HIST = JSON.parse(fs.readFileSync(FIX.hist, "utf8"));
 const DASH = /[–—]|&mdash;|&ndash;/;
 
-test("the model: two and three markets, one value per week, equal to the week's place among that market's 52 weeks", () => {
+test("the model: two and three markets, one value per week, each the row's rk from the pipeline; no browser ranking", () => {
   for (const keys of [["corn", "beans"], ["corn", "beans", "wheat"]]) {
     const m = C.cmpModel(keys, HIST, COT, CX);
     assert.equal(m.series.length, keys.length);
@@ -37,29 +38,33 @@ test("the model: two and three markets, one value per week, equal to the week's 
     for (const s of m.series) {
       const rows = HIST.history[s.key].slice(-52);
       assert.equal(s.vals.length, 52);
-      // recount from the file: share of the other weeks below this one (ties half), on a 0 to 100 scale
       for (const i of [0, 17, 51]) {
-        const v = rows[i].net;
-        const below = rows.filter((r) => r.net < v).length, eq = rows.filter((r) => r.net === v).length;
-        assert.ok(Math.abs(s.vals[i] - ((below + (eq - 1) / 2) / 51) * 100) < 1e-9, s.key + " week " + i);
-        assert.equal(s.by[rows[i].date], v);
+        assert.equal(s.vals[i], rows[i].rk, s.key + " week " + i + " is the file's rk");
+        assert.equal(s.by[rows[i].date], rows[i].net);
       }
-      assert.equal(Math.max(...s.vals), 100, s.key + " highest week is 100");
-      assert.equal(Math.min(...s.vals), 0, s.key + " lowest week is 0");
+      // the latest point is the headline rank exactly
+      assert.equal(s.vals[51], CX.commodities[s.key].pctl.net_oi_all, s.key + " latest rk = headline rank");
+      assert.ok(s.vals.every((v) => v === null || (v > 0 && v <= 100)), "at or below: never 0");
     }
   }
+  assert.equal(C.rankPct, undefined, "no ranking in the browser");
+  assert.doesNotMatch(fs.readFileSync(path.join(ROOT, "components/cot-chart.js"), "utf8"), /rankPct|below \+ \(eq/);
+  // a row without rk is a gap, not a guess
+  const h2 = JSON.parse(JSON.stringify(HIST));
+  delete h2.history.corn[51].rk;
+  assert.equal(C.cmpModel(["corn", "beans"], h2, COT, CX).series[0].vals[51], null);
 });
 
 test("the headline names the markets; no dash; labels at the line ends and 12 px text", () => {
   const m = C.cmpModel(["corn", "beans", "wheat"], HIST, COT, CX);
-  assert.equal(m.headline, "Funds in corn, soybeans and Chicago wheat, ranked against each market’s own 52 weeks");
-  assert.equal(C.cmpModel(["corn", "beans"], HIST, COT, CX).headline.split(",")[0], "Funds in corn and soybeans");
+  assert.equal(m.headline, "Funds in corn, soybeans and Chicago wheat: share of open interest, rank since 2010");
+  assert.equal(C.cmpModel(["corn", "beans"], HIST, COT, CX).headline.split(":")[0], "Funds in corn and soybeans");
   assert.ok(!DASH.test(m.headline + m.axis + m.src));
   const g = C.layout(m, 340, 300, { fs: 12 });
   const texts = g.items.filter((i) => i.t === "text");
   assert.ok(texts.every((t) => t.size >= 12), "text 12 px or more");
   for (const s of m.series) {
-    const end = Math.round(s.vals[51]);
+    const end = C.shown(s.vals[51]);
     assert.ok(texts.some((t) => t.s === s.name + " " + end), "a direct label at the end of " + s.name);
   }
   const ys = texts.filter((t) => /^(Corn|Soybeans|Chicago wheat) \d+$/.test(t.s)).map((t) => t.y).sort((a, b) => a - b);
@@ -69,7 +74,7 @@ test("the headline names the markets; no dash; labels at the line ends and 12 px
 
 test("single mode is unchanged: model, layout and the link still work as before", () => {
   const m = C.model("beans", HIST, COT, CX);
-  assert.equal(m.headline, "Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week");
+  assert.equal(m.headline, "Soybeans: funds long, fairly heavy, sold 27,544 this week");
   assert.ok(!m.cmp);
 });
 
@@ -132,10 +137,10 @@ test("compare on the page: 2 and 3 picks, a 4th refused, the link round-trips, n
       await pg.click('.cc-chip[data-k="beans"]');
       assert.equal(new URL(pg.url()).searchParams.get("m"), "corn,soybeans");
       assert.match(pg.url(), /\?m=corn,soybeans$/, "a plain comma in the link");
-      assert.equal((await pg.textContent("#cc-head")).trim(), "Funds in corn and soybeans, ranked against each market’s own 52 weeks");
+      assert.equal((await pg.textContent("#cc-head")).trim(), "Funds in corn and soybeans: share of open interest, rank since 2010");
       await pg.click('.cc-chip[data-k="wheat"]');
       assert.match(pg.url(), /\?m=corn,soybeans,chicago-wheat$/);
-      assert.equal((await pg.textContent("#cc-head")).trim(), "Funds in corn, soybeans and Chicago wheat, ranked against each market’s own 52 weeks");
+      assert.equal((await pg.textContent("#cc-head")).trim(), "Funds in corn, soybeans and Chicago wheat: share of open interest, rank since 2010");
       if (shot) await (await pg.$("#cot-chart-box")).screenshot({ path: shot });
       // the fourth is refused with a short note
       await pg.click('.cc-chip[data-k="kcwheat"]');
@@ -146,7 +151,7 @@ test("compare on the page: 2 and 3 picks, a 4th refused, the link round-trips, n
       const labels = await pg.$$eval("#cc-svg text", (a) => a.map((t) => t.textContent));
       for (const [k, name] of [["corn", "Corn"], ["beans", "Soybeans"], ["wheat", "Chicago wheat"]]) {
         const v = C.cmpModel(["corn", "beans", "wheat"], HIST, COT, CX).series.find((s) => s.key === k).vals[51];
-        assert.ok(labels.includes(name + " " + Math.round(v)), "label " + name + ": " + labels.join("|"));
+        assert.ok(labels.includes(name + " " + C.shown(v)), "label " + name + ": " + labels.join("|"));
       }
       const fs12 = await pg.$$eval("#cc-svg text", (a) => Math.min(...a.map((t) => +t.getAttribute("font-size"))));
       assert.ok(fs12 >= 12, "svg text " + fs12);
@@ -211,7 +216,7 @@ test("compare: Share copies the compare link; Save image carries the headline, t
     const buf = fs.readFileSync(await dl.path());
     assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [1200, 675], "1200x675");
     const im = await pg.evaluate(() => window.AgCotChart.lastImage);
-    assert.ok(im.texts.includes("Funds in corn, soybeans and Chicago wheat, ranked against each market’s own 52 weeks") || im.texts.some((t) => t.startsWith("Funds in corn, soybeans")), "headline: " + im.texts.join("|"));
+    assert.ok(im.texts.some((t) => t.startsWith("Funds in corn, soybeans")), "headline: " + im.texts.join("|"));
     assert.ok(im.texts.includes("agsist.com/cot"));
     assert.ok(im.texts.includes("Positions as of Oct 27, 2026, released Oct 30"));
     assert.ok(im.texts.some((t) => /^Corn \d+$/.test(t)) && im.texts.some((t) => /^Soybeans \d+$/.test(t)) && im.texts.some((t) => /^Chicago wheat \d+$/.test(t)));

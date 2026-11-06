@@ -19,8 +19,12 @@
    saved picture is the chart on screen. "Share this chart" uses the phone's share sheet, or copies the link.
    cot-page.js hands this file the data it already fetched (AgCotChart.update); nothing here fetches.
    Compare mode (Nov 5, Sig: "Is there a way to select multiple commodities in the COT chart?"): up to three markets on
-   one 0 to 100 axis, each week's place among that market's own 52 weeks (the weekly file carries no open interest per
-   week, so a share of open interest cannot be drawn; the chart says what it shows). The link is /cot?m=corn,soybeans.
+   one 0 to 100 axis. Since Nov 6 (one rank engine) each line is the pipeline's `rk` on every cot-history.json row:
+   that week's net as a share of open interest, ranked against every week since 2010 up to that week only (no
+   hindsight), at or below, the rule of the headline rank; the latest point is the headline rank exactly. Nothing is
+   ranked in the browser. The link is /cot?m=corn,soybeans.
+   Under the title, the answer line (AgCotGlance.answer): what managed money did, the rank in words, the Tuesday and
+   the next report. Save image draws 1080x1350 (4:5) on a phone, text 26 px or more, and 1200x675 on a desktop.
    Exports window.AgCotChart (and module.exports for the tests: model, layout, fmt helpers). */
 (function (root) {
   'use strict';
@@ -97,9 +101,9 @@
     var rel = cxA && cxA.release_date ? cxA.release_date : null;
     var src = 'CFTC Commitments of Traders, managed money, futures only, as of ' + md(last.date) + (rel ? ', released ' + md(rel) : '') + '.'
       + (price ? ' Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.' : '');
-    var h = aligned && G.brief(key, cot, cx);
+    var h = aligned && G.brief(key, cot, cx), an = aligned && G.answer(key, cot, cx);
     return { key: key, name: CHIP[key] || key, rows: rows, last: last, hi: hi, lo: lo, price: price, priceWhy: priceWhy,
-      headline: h ? h.text : null, headlineHtml: h ? h.html : null, aligned: aligned,
+      headline: h ? h.text : null, headlineHtml: h ? h.html : null, aligned: aligned, answer: an ? an.did : null,
       asOf: 'Positions as of ' + mdy(last.date) + (rel ? ', released ' + md(rel) : ''), src: src };
   }
 
@@ -237,12 +241,8 @@
      {cmp:true, keys, series:[{key, name, vals:[0..100 or null per date], nets:[]}], dates, last, headline, asOf, src, rows(dates)} */
   function lowerName(k) { var n = CHIP[k] || k; return /^(Chicago|KC|MPLS|Class)/.test(n) ? n : n.charAt(0).toLowerCase() + n.slice(1); }
   function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
-  /* where a net sits among the market's own weeks: 0 for the lowest, 100 for the highest, ties share the middle */
-  function rankPct(nets, v) {
-    var n = nets.length, below = 0, eq = 0;
-    nets.forEach(function (x) { if (x < v) below++; else if (x === v) eq++; });
-    return n < 2 ? 50 : (below + (eq - 1) / 2) / (n - 1) * 100;
-  }
+  /* the printed whole number of a rank: 1 to 99, so a record never reads 0 or 100 (as the pipeline's shown_pct) */
+  function shown(v) { return Math.min(99, Math.max(1, Math.round(v))); }
   function cmpModel(keys, hist, cot, cx) {
     var ser = [], all = {};
     keys.forEach(function (k) {
@@ -251,22 +251,25 @@
       var rows = arr.filter(function (r) { return r && typeof r.net === 'number' && /^\d{4}-\d{2}-\d{2}$/.test(r.date); })
         .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }).slice(-52);
       if (rows.length < 2) return;
-      var nets = rows.map(function (r) { return r.net; }), by = {};
-      rows.forEach(function (r) { by[r.date] = r.net; all[r.date] = 1; });
-      ser.push({ key: k, name: CHIP[k] || k, nets: nets, by: by, rows: rows });
+      var by = {}, rk = {};
+      rows.forEach(function (r) { by[r.date] = r.net; if (typeof r.rk === 'number') rk[r.date] = r.rk; all[r.date] = 1; });
+      ser.push({ key: k, name: CHIP[k] || k, by: by, rk: rk, rows: rows });
     });
     if (!ser.length) return null;
     var dates = Object.keys(all).sort().slice(-52);
     ser.forEach(function (s2) {
-      s2.vals = dates.map(function (d) { return typeof s2.by[d] === 'number' ? rankPct(s2.nets, s2.by[d]) : null; });
+      s2.vals = dates.map(function (d) { return typeof s2.rk[d] === 'number' ? s2.rk[d] : null; });
     });
     var last = dates[dates.length - 1], cxA = cx && G.iso(cx.report_date) === last ? cx : null;
     var rel = cxA && cxA.release_date ? cxA.release_date : null;
+    /* the year each market's record starts (the analysis file names it); one year for all, or say so */
+    var yrs = ser.map(function (s2) { var c = cx && cx.commodities && cx.commodities[s2.key]; return c && c.first_week ? String(c.first_week).slice(0, 4) : ''; });
+    var since = yrs.every(function (y) { return y && y === yrs[0]; }) ? 'since ' + yrs[0] : 'since each market\u2019s first week on record';
     var names = ser.map(function (s2) { return lowerName(s2.key); });
-    return { cmp: true, keys: ser.map(function (s2) { return s2.key; }), series: ser, dates: dates, last: { date: last }, rows: dates,
+    return { cmp: true, keys: ser.map(function (s2) { return s2.key; }), series: ser, dates: dates, last: { date: last }, rows: dates, since: since,
       name: listWords(ser.map(function (s2) { return s2.name; })),
-      headline: 'Funds in ' + listWords(names) + ', ranked against each market’s own 52 weeks',
-      axis: 'Each line places a week among that market\u2019s own 52 (0 lowest, 100 highest). The weekly file has no open interest.',
+      headline: 'Funds in ' + listWords(names) + ': share of open interest, rank ' + since,
+      axis: 'Each week\u2019s net as a share of open interest, ranked against all weeks ' + since + ' up to it (0 to 100).',
       asOf: 'Positions as of ' + mdy(last) + (rel ? ', released ' + md(rel) : ''),
       src: 'CFTC Commitments of Traders, managed money, as of ' + md(last) + (rel ? ', released ' + md(rel) : '') + '.' };
   }
@@ -280,9 +283,6 @@
       items.push({ t: 'line', pts: [[L, Y(v)], [w - R, Y(v)]], ink: v === 50 ? 'zero' : 'grid', width: v === 50 ? 1.5 : 1 });
       items.push({ t: 'text', x: L - 6, y: Y(v), s: String(v), ink: 'muted', size: fs, align: 'right', base: 'middle' });
     });
-    items.push({ t: 'text', x: L + 6, y: Y(100) + 4, s: 'Highest of the 52 weeks', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'top', halo: true });
-    items.push({ t: 'text', x: L + 6, y: Y(50) - 4, s: 'Middle', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'bottom', halo: true });
-    items.push({ t: 'text', x: L + 6, y: Y(0) - 4, s: 'Lowest of the 52 weeks', ink: 'muted', size: fs, weight: 600, align: 'left', base: 'bottom', halo: true });
     var ends = [];
     m.series.forEach(function (s2, si) {
       var seg = [];
@@ -290,7 +290,7 @@
       var li = -1;
       s2.vals.forEach(function (v, i) { if (v === null) flush(); else { seg.push([X(i), Y(v)]); li = i; } });
       flush();
-      if (li >= 0) { items.push({ t: 'dot', x: X(li), y: Y(s2.vals[li]), r: o.big ? 7 : 5, ink: 'c' + si, ring: 'surface' }); ends.push({ si: si, x: X(li), y: Y(s2.vals[li]), s: s2.name + ' ' + Math.round(s2.vals[li]) }); }
+      if (li >= 0) { items.push({ t: 'dot', x: X(li), y: Y(s2.vals[li]), r: o.big ? 7 : 5, ink: 'c' + si, ring: 'surface' }); ends.push({ si: si, x: X(li), y: Y(s2.vals[li]), s: s2.name + ' ' + shown(s2.vals[li]) }); }
     });
     /* direct labels at the line ends, above the dot, pushed apart so none covers another */
     var gap = fs * 1.4, off = o.big ? 14 : 9;
@@ -376,34 +376,52 @@
     if (cur) out.push(cur);
     return out;
   }
-  /* The 1200x675 picture: headline, chart, source and dates, agsist.com/cot.
-     -> {canvas, texts} (texts: every string drawn, for the tests) */
-  function image(m, doc) {
-    var W = 1200, H = 675, P = 56;
+  /* The saved picture. o.phone: 1080x1350 (4:5, the default on a phone): headline 60 px, every other word 26 px
+     or more, so it reads at 390 px wide; else 1200x675 (desktop). Both: agsist.com/cot, the headline, the answer
+     line, the chart (with the price strip when the market has one), the report date and the source.
+     -> {canvas, texts, sizes} (texts and their font sizes, every string drawn, for the tests) */
+  function image(m, doc, o) {
+    o = o || {};
+    var ph = !!o.phone, W = ph ? 1080 : 1200, H = ph ? 1350 : 675, P = ph ? 60 : 56;
     var c = (doc || document).createElement('canvas'); c.width = W; c.height = H;
-    var ctx = c.getContext('2d'), texts = [];
-    function text(s, x, y, font, ink, al) { ctx.font = font; ctx.fillStyle = ink; ctx.textAlign = al || 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, y); texts.push(s); }
+    var ctx = c.getContext('2d'), texts = [], sizes = [];
+    function text(s, x, y, size, weight, ink, al) { ctx.font = weight + ' ' + size + 'px ' + FONT; ctx.fillStyle = ink; ctx.textAlign = al || 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, y); texts.push(s); sizes.push(size); }
+    function wrapped(s, size, weight, max) { ctx.font = weight + ' ' + size + 'px ' + FONT; return wrapLines(ctx, s, W - 2 * P).slice(0, max); }
     ctx.fillStyle = '#0a0c0d'; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#d4a23f'; ctx.fillRect(0, 0, W, 8);
-    text('agsist.com/cot', P, 62, '800 26px ' + FONT, '#d4a23f');
-    text(m.asOf, W - P, 62, '600 22px ' + FONT, 'rgba(233,237,235,.80)', 'right');
+    ctx.fillStyle = '#d4a23f'; ctx.fillRect(0, 0, W, ph ? 12 : 8);
     var head = m.cmp ? m.headline : m.headline || ('Managed money in ' + m.name.toLowerCase() + ': ' + netWords(m.last.net) + ' contracts.');
-    ctx.font = '800 38px ' + FONT;
-    var hl = wrapLines(ctx, head, W - 2 * P).slice(0, 2);
-    hl.forEach(function (s, i) { text(s, P, 122 + i * 48, '800 38px ' + FONT, '#e9edeb'); });
-    var top = 122 + (hl.length - 1) * 48 + 30;
-    text(m.cmp ? 'Place of each week\u2019s net position in the market\u2019s own last 52 weeks (0 lowest, 100 highest)' : 'Managed money net position, ' + m.name.toLowerCase() + ', last 52 weeks (contracts)', P, top + 4, '600 20px ' + FONT, 'rgba(233,237,235,.74)');
-    var gh = H - top - 96, g = layout(m, W - 2 * P, gh, { fs: 19, big: true });
-    paint(ctx, g, P, top + 18);
-    g.items.forEach(function (it) { if (it.t === 'text') texts.push(it.s); });
-    ctx.font = '400 17px ' + FONT;
-    var src = wrapLines(ctx, 'Source: ' + m.src, W - 2 * P).slice(0, 2);
-    src.forEach(function (s, i) { text(s, P, H - 46 + i * 22, '400 17px ' + FONT, 'rgba(233,237,235,.70)'); });
-    return { canvas: c, texts: texts };
+    var sub = m.cmp ? m.axis : 'Managed money net position, ' + m.name.toLowerCase() + ', last 52 weeks (contracts)';
+    var src = 'Source: ' + m.src, y, g, gh;
+    if (ph) {
+      text('agsist.com/cot', P, 84, 40, 800, '#d4a23f');
+      text(m.asOf + '.', P, 132, 28, 600, 'rgba(233,237,235,.86)');
+      y = 210;
+      wrapped(head, 60, 800, 3).forEach(function (s) { text(s, P, y, 60, 800, '#e9edeb'); y += 72; });
+      y += 4;
+      if (m.answer) { wrapped(m.answer, 30, 500, 6).forEach(function (s) { text(s, P, y, 30, 500, '#e9edeb'); y += 41; }); y += 8; }
+      wrapped(sub, 26, 600, 3).forEach(function (s) { text(s, P, y, 26, 600, 'rgba(233,237,235,.80)'); y += 34; });
+      var srcL = wrapped(src, 26, 400, 4), foot = H - 40 - (srcL.length - 1) * 34;
+      gh = foot - 50 - y;
+      g = layout(m, W - 2 * P, gh, { fs: 26, big: true });
+      paint(ctx, g, P, y + 6);
+      srcL.forEach(function (s, i) { text(s, P, foot + i * 34, 26, 400, 'rgba(233,237,235,.80)'); });
+    } else {
+      text('agsist.com/cot', P, 62, 26, 800, '#d4a23f');
+      text(m.asOf, W - P, 62, 22, 600, 'rgba(233,237,235,.80)', 'right');
+      var hl = wrapped(head, 38, 800, 2);
+      hl.forEach(function (s, i) { text(s, P, 122 + i * 48, 38, 800, '#e9edeb'); });
+      var top = 122 + (hl.length - 1) * 48 + 30;
+      text(sub, P, top + 4, 20, 600, 'rgba(233,237,235,.74)');
+      gh = H - top - 96; g = layout(m, W - 2 * P, gh, { fs: 19, big: true });
+      paint(ctx, g, P, top + 18);
+      wrapped(src, 17, 400, 2).forEach(function (s, i) { text(s, P, H - 46 + i * 22, 17, 400, 'rgba(233,237,235,.70)'); });
+    }
+    g.items.forEach(function (it) { if (it.t === 'text') { texts.push(it.s); sizes.push(it.size); } });
+    return { canvas: c, texts: texts, sizes: sizes };
   }
 
   /* ---------------------------------------------------------------- the page */
-  var api = { model: model, cmpModel: cmpModel, rankPct: rankPct, layout: layout, toSvg: toSvg, image: image, netWords: netWords, kTick: kTick, px: px, CHIP: CHIP };
+  var api = { model: model, cmpModel: cmpModel, shown: shown, layout: layout, toSvg: toSvg, image: image, netWords: netWords, kTick: kTick, px: px, CHIP: CHIP };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgCotChart = api;
   var doc = root.document, box = doc && doc.getElementById('cot-chart-box');
@@ -502,6 +520,7 @@
     box.removeAttribute('data-mode');
     M = model(cur, D.hist, D.cot, D.cx);
     $('cc-head').innerHTML = '<span>' + (M && M.headlineHtml ? M.headlineHtml : esc(CHIP[cur]) + ': managed money net position, last 52 weeks') + '</span>';
+    answerLine(cur);
     if (!M) {
       svg.innerHTML = ''; msg.hidden = false; msg.textContent = 'No 52-week record for ' + CHIP[cur] + ' in this report.';
       $('cc-src').textContent = ''; geo = null; box.removeAttribute('data-latest'); return;
@@ -532,22 +551,34 @@
     var w = Math.max(280, Math.round(plot.clientWidth || 340)), h = Math.round(plot.clientHeight || 300);
     geo = layout(M, w, h, { fs: 12 });
     $('cc-head').innerHTML = '<span>' + esc(M.headline) + '</span>';
+    answerLine(sel[0]);
     svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-    svg.setAttribute('aria-label', M.headline + '. ' + M.series.map(function (s) { var v = s.vals[s.vals.length - 1]; return s.name + ' ' + (v === null ? 'no report' : Math.round(v)); }).join(', ') + ' on ' + mdy(M.last.date) + '.');
+    svg.setAttribute('aria-label', M.headline + '. ' + M.series.map(function (s) { var v = s.vals[s.vals.length - 1]; return s.name + ' ' + (v === null ? 'no report' : 'higher than ' + shown(v) + '% of weeks'); }).join(', ') + ' on ' + mdy(M.last.date) + '.');
     svg.innerHTML = toSvg(geo) + '<line id="cc-rule" x1="0" x2="0" y1="' + geo.T + '" y2="' + geo.pB + '" stroke="var(--text-muted)" stroke-width="1" visibility="hidden"/>'
       + M.series.map(function (s, i) { return '<circle id="cc-hot' + i + '" class="cc-hotc" r="5" fill="var(--cmp-' + (i + 1) + ')" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>'; }).join('');
     $('cc-src').textContent = M.axis + ' ' + M.src;
     box.setAttribute('data-mode', 'compare');
     box.setAttribute('data-market', sel.join(','));
-    box.setAttribute('data-latest', M.series.map(function (s) { return Math.round(s.vals[s.vals.length - 1]); }).join(','));
+    box.setAttribute('data-latest', M.series.map(function (s) { var v = s.vals[s.vals.length - 1]; return v === null ? '' : shown(v); }).join(','));
     box.setAttribute('data-price', '0');
     var t = $('cc-table');
-    if (t) t.innerHTML = '<caption>' + esc(M.name) + ': where each week\'s managed money net position sits among the market\'s own 52 weeks, 0 lowest, 100 highest</caption><thead><tr><th scope="col">Week of</th>'
+    if (t) t.innerHTML = '<caption>' + esc(M.name) + ': each week\'s managed money net as a share of open interest, ranked against every week ' + esc(M.since) + ' up to that week, 0 lowest, 100 highest</caption><thead><tr><th scope="col">Week of</th>'
       + M.series.map(function (s) { return '<th scope="col">' + esc(s.name) + '</th>'; }).join('') + '</tr></thead><tbody>'
-      + M.dates.map(function (d, i) { return i; }).reverse().map(function (i) { return '<tr><td>' + mdy(M.dates[i]) + '</td>' + M.series.map(function (s) { return '<td>' + (s.vals[i] === null ? '' : Math.round(s.vals[i])) + ' (' + netWords(s.by[M.dates[i]]) + ')</td>'; }).join('') + '</tr>'; }).join('')
+      + M.dates.map(function (d, i) { return i; }).reverse().map(function (i) { return '<tr><td>' + mdy(M.dates[i]) + '</td>' + M.series.map(function (s) { return '<td>' + (s.vals[i] === null ? '' : shown(s.vals[i])) + ' (' + netWords(s.by[M.dates[i]]) + ')</td>'; }).join('') + '</tr>'; }).join('')
       + '</tbody>';
     hide();
   }
+  /* The answer line under the title, for the market picked (the first pick in Compare): baked for corn in the
+     HTML, rewritten here only when the report and its analysis give one, so a missing file never blanks it. */
+  function answerLine(k) {
+    var el = $('cc-answer');
+    /* only with the analysis for the same report: the baked line carries the rank, and a line written before the
+       analysis lands would drop it and then grow back (a layout shift) */
+    if (!el || !D.cot || !D.cx || G.iso(D.cx.report_date) !== G.iso(D.cot.report_date)) return;
+    var a = G.answer(k, D.cot, D.cx, Date.now());
+    if (a && el.textContent !== a.text) el.textContent = a.text;
+  }
+  api.answerLine = function () { answerLine(cmp ? sel[0] : cur); };
   /* the numbers, for screen readers and anyone who wants them */
   function table() {
     var t = $('cc-table');
@@ -588,14 +619,14 @@
     });
     tip.innerHTML = '<b>' + esc(mdy(d)) + '</b>' + M.series.map(function (s, k) {
       var v = s.vals[i];
-      return '<br><span class="cc-sw" style="background:var(--cmp-' + (k + 1) + ')"></span>' + esc(s.name) + ' ' + (v === null ? 'no report' : Math.round(v) + ' (' + esc(netWords(s.by[d])) + ')');
+      return '<br><span class="cc-sw" style="background:var(--cmp-' + (k + 1) + ')"></span>' + esc(s.name) + ' ' + (v === null ? 'no report' : shown(v) + ' (' + esc(netWords(s.by[d])) + ')');
     }).join('');
     tip.hidden = false;
     var tw = tip.offsetWidth || 190, left = x + 12;
     if (left + tw > geo.w) left = x - tw - 12;
     tip.style.left = Math.max(0, left) + 'px';
     tip.style.top = (Math.min.apply(null, ys.concat([geo.netB])) < top + 90 ? geo.netB - 90 : top) + 'px';
-    $('cc-live').textContent = mdy(d) + ': ' + M.series.map(function (s) { return s.name + ' ' + (s.vals[i] === null ? 'no report' : Math.round(s.vals[i])); }).join(', ') + '.';
+    $('cc-live').textContent = mdy(d) + ': ' + M.series.map(function (s) { return s.name + ' ' + (s.vals[i] === null ? 'no report' : 'higher than ' + shown(s.vals[i]) + '% of weeks'); }).join(', ') + '.';
   }
   function hide() {
     var hs = doc.querySelectorAll('.cc-hotc'); Array.prototype.forEach.call(hs, function (e) { e.setAttribute('visibility', 'hidden'); }); at = -1; if (tip) tip.hidden = true; var r = $('cc-rule'), h = $('cc-hot'); if (r) r.setAttribute('visibility', 'hidden'); if (h) h.setAttribute('visibility', 'hidden'); }
@@ -618,6 +649,8 @@
   /* share the link: the phone's share sheet, else copy */
   function note(s) { var n = $('cc-note'); if (n) { n.textContent = s; clearTimeout(note.t); note.t = setTimeout(function () { n.textContent = ''; }, 4000); } }
   var coarse = function () { try { return root.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } };
+  /* the 4:5 phone picture on a phone (a touch screen or a narrow window), the wide one on a desktop */
+  var phone = function () { return coarse() || (root.innerWidth || 1200) < 700; };
   $('cc-share').addEventListener('click', function () {
     var url = api.shareUrl(), title = (M && M.cmp ? M.headline : 'Funds in ' + (CHIP[cur] || '').toLowerCase() + ', 52 weeks') + ' | AGSIST';
     var text = M && M.headline ? M.headline : title;
@@ -644,8 +677,8 @@
     if (!M) { note('The chart has not loaded, so there is no image to save yet.'); return; }
     var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
     ready.then(function () {
-      var im = image(M, doc);
-      api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts };
+      var im = image(M, doc, { phone: phone() });
+      api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes };
       var name = 'agsist-cot-' + slugs().replace(/,/g, '-') + '-' + M.last.date + '.png';
       im.canvas.toBlob(function (blob) {
         if (!blob) { note('Could not draw the image here.'); return; }

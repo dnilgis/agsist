@@ -49,7 +49,7 @@ def stale_parts(today=None):
                 bad.append("head tags (title should be %r)" % got[0])
         orig, new, _ = pre.bake_cot()
         if new != orig:
-            bad.append("crawler summary (cot-summary region)")
+            bad.append("baked regions (crawler summary, release bar or answer line)")
         return bad
     finally:
         os.chdir(cwd)
@@ -75,7 +75,7 @@ def main(argv):
     if bad:
         for b in bad:
             print("::error::cot.html is not baked from data/cot.json: %s" % b)
-        print("Run: python3 scripts/bake_seo.py --page cot.html, then bake_cot() from "
+        print("Run: python3 scripts/bake_seo.py --page cot.html, then bake_cot() (reads data/cot.json and data/cot-analysis.json) from "
               "scripts/prerender_wpi_scorecard.py, and commit cot.html.")
         return 1
     print("cot.html matches data/cot.json")

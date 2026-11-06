@@ -9,7 +9,7 @@
    owns the pixels and the words of the panel and nothing else. */
 window.cotMarket = function (api) {
   'use strict';
-  var $ = api.$, num = api.num, sgn = api.sgn, pct = api.pct, ord = api.ord, dt = api.dt,
+  var $ = api.$, num = api.num, sgn = api.sgn, pct = api.pct, dt = api.dt,
       narrow = api.narrow, crowdWord = api.crowdWord, HOT = api.HOT, GREY = api.GREY;
 
   /* ── distribution strip ────────────────────────────────────────────────── */
@@ -58,7 +58,7 @@ window.cotMarket = function (api) {
     for (var h in c.studies) {
       for (var nm in c.studies[h]) {
         var st = c.studies[h][nm];
-        if (st.verdict === 'measured' && st.fdr_pass) { best = { h: h, st: st }; break; }
+        if (st.verdict === 'measured' && st.passes) { best = { h: h, st: st }; break; }
       }
     }
     if (best) {
@@ -74,6 +74,12 @@ window.cotMarket = function (api) {
        bushels" line is gone (2026-11-06, Sig: no crowding advice anywhere; it
        was never tested). */
     var p = c.pctl.net_oi_all;
+    /* the rank in words, never an ordinal (2026-11-06): the pipeline's crowd.words, else the same rule */
+    function words(c, sh) {
+      if (c.crowd && c.crowd.words) return c.crowd.words;
+      var n = Math.min(99, Math.max(1, Math.round(sh(p, c.crowded)))), yr = c.first_week.slice(0, 4);
+      return c.net < 0 ? 'a bigger net short than ' + (100 - n) + '% of weeks since ' + yr : 'higher than ' + n + '% of weeks since ' + yr;
+    }
     /* scripts/cot_analysis.py shown_pct(): a not-crowded 89.8 prints the 89th, not the 90th (2026-10-18) */
     function pShown(x, cr) { var n = Math.round(x); if (!cr && n >= 90 && x < 90) return 89; if (!cr && n <= 10 && x > 10) return 11; return x; }
     var side = c.net > 0 ? 'long' : 'short';
@@ -86,8 +92,8 @@ window.cotMarket = function (api) {
          from crowdWord() and the pipeline's crowded flag, the same as The Read. */
       var where = crowdWord(p) + ', ' + (c.crowded ? 'crowded ' + c.crowded : 'not crowded');
       return '<p class="cx-verdict warn"><b>No timing signal, but a real exposure.</b> Funds hold '
-        + 'a net ' + side + ' in ' + esc(c.label) + ' at the ' + ord(pShown(p, c.crowded)) + ' percentile of their own record since '
-        + c.first_week.slice(0,4) + ' (' + where + '). Nothing we tested says which way price goes next. What it does '
+        + 'a net ' + side + ' in ' + esc(c.label) + ', ' + esc(words(c, pShown)) + ', as a share of open interest ('
+        + where + '). Nothing we tested says which way price goes next. What it does '
         + 'say is that ' + num(c.capacity.to_flat) + ' contracts of ' + dir + ' sit between here and '
         + 'flat, and ' + num(room) + ' between here and the far end of that record (as a share of open interest, at today\'s open interest).</p>';
     }
@@ -95,7 +101,7 @@ window.cotMarket = function (api) {
     // same panel showed a 4-week flow reading at 78% against 64% (p = 0.03). Say what is true: one may look
     // better than average on its own, and none survives the correction for testing many readings.
     var _sug = false, _hz = c.studies || {};
-    Object.keys(_hz).forEach(function(k){ var g = _hz[k] || {}; Object.keys(g).forEach(function(n){ var t = g[n]; if (t && t.verdict === 'measured' && !t.fdr_pass && t.p !== null && t.p < 0.05) _sug = true; }); });
+    Object.keys(_hz).forEach(function(k){ var g = _hz[k] || {}; Object.keys(g).forEach(function(n){ var t = g[n]; if (t && t.verdict === 'measured' && !t.passes && t.p !== null && t.p < 0.05) _sug = true; }); });
     return '<p class="cx-verdict"><b>No reading held up this week.</b> '
       + esc(c.read) + (_sug ? ' One reading looks better than an average week on its own, but it does not survive the correction for testing this many at once.'
                             : ' None of the readings we tested beat an average week.') + '</p>';
@@ -111,10 +117,10 @@ window.cotMarket = function (api) {
     // outcome against -0.1% (corn, 4-week flow, p = 0.21). Absence of evidence is not evidence of no edge: when
     // the gap is large and the evidence is thin, say that.
     var bigGap = Math.abs(upDiff) >= 10 || medDiff >= 1;
-    var word = st.fdr_pass ? 'This one held up.'
+    var word = st.passes ? 'This one held up.'
       : (st.p !== null && st.p < 0.05 ? 'Suggestive, but it does not survive the batch.'
       : (bigGap ? 'A big gap, but it could be chance.' : 'A small gap, and it could be chance.'));
-    var cls = st.fdr_pass ? 'pass' : 'weak';
+    var cls = st.passes ? 'pass' : 'weak';
     var pIn = st.p === null ? null : (st.p < 0.005 ? 'under 1' : String(Math.round(st.p*100)));
     return '<p class="cx-result ' + cls + '"><b>' + word + '</b> This was true in ' + st.n + ' weeks, in '
       + st.episodes + ' separate ' + (st.episodes === 1 ? 'spell' : 'spells') + ' (weeks in one spell overlap, '
@@ -143,30 +149,28 @@ window.cotMarket = function (api) {
     o.push('<p class="cx-body">' + esc(c.read) + '</p>');
 
     o.push('<dl class="cx-grid">');
-    var crowdHead = c.is_record_high && c.net > 0 ? 'record long'
-                  : c.is_record_low && c.net < 0 ? 'record short'
-                  : crowdWord(c.pctl.net_oi_all);
+    /* never "record" without its measure and start year (2026-11-06): the note under it names both */
+    var crowdHead = crowdWord(c.pctl.net_oi_all);
     /* ONE MEASURE IN THIS PANEL: net as a share of open interest, ranked over
        the whole record and counted toward the side the position is on. The
        rank used to be raw contracts ("Rank 1st of 874 by net position") beside
        a share-of-open-interest percentile, and "No week carries a bigger net
        long" fired on the second-highest week because 99.886 rounds to 99.9.
        It now fires only on rank 1, the record itself. */
-    var longSide = c.net > 0;
     var ro = c.rank_oi;
     var since = c.first_week.slice(0,4);
-    var rarer = c.pctl.net_oi_all === null ? null
-              : (longSide ? 100 - c.pctl.net_oi_all : c.pctl.net_oi_all);
     var crowdNote = '';
     if (ro && ro.rank === 1) {
       crowdNote = 'No week since ' + since + ' carries a bigger net ' + ro.side + ' than this one, measured as a share of open interest ('
         + num(ro.of) + ' weeks). ';
     } else if (ro) {
-      crowdNote = 'Rank ' + ord(ro.rank) + ' of ' + num(ro.of) + ' weeks since ' + since + ' by size of net ' + ro.side
-        + ', measured as a share of open interest'
-        + (rarer === null ? '' : ': funds have held a bigger net ' + ro.side + ' in ' + num(ro.rank - 1) + ' of them')
-        + '.' + (ro.last_beyond ? ' Last bigger ' + dt(ro.last_beyond) + '.' : '') + ' ';
+      /* a count, not an ordinal (2026-11-06) */
+      crowdNote = 'Funds have held a bigger net ' + ro.side + ', measured as a share of open interest, in ' + num(ro.rank - 1)
+        + ' of ' + num(ro.of) + ' weeks since ' + since + '.'
+        + (ro.last_beyond ? ' Last bigger ' + dt(ro.last_beyond) + '.' : '') + ' ';
     }
+    /* a record in contracts is named with its measure and start year (cot_analysis.py record_words) */
+    if (c.record_contracts) crowdNote = 'This is the largest net ' + c.record_contracts.side + ' in contracts since ' + since + '. ' + crowdNote;
     if (c.crowded) crowdNote += 'That is crowded: the ' + (c.crowded === 'long' ? 'top' : 'bottom')
       + ' tenth of the record on the side the position is on.';
     o.push(stat('How crowded', crowdHead, crowdNote));
@@ -221,10 +225,7 @@ window.cotMarket = function (api) {
            against type, that is the most interesting line on the panel. */
         var note = esc(c.commercial.who);
         if (c.commercial.against_type) {
-          note += ' <b>This week they are net long ' + num(c.commercial.net)
-            + (c.commercial.pctl_all === null ? '' : ', the ' + ord(c.commercial.pctl_all)
-               + ' percentile of their own record')
-            + ', which is against type.</b>';
+          note += ' <b>This week they are net long ' + num(c.commercial.net) + ', which is against type.</b>';
         }
         o.push('<p class="cx-foot">' + note + '</p>');
       }
@@ -240,10 +241,10 @@ window.cotMarket = function (api) {
           num(Math.round(c.crowding.per_trader)),
           'contracts each. ' + trCount(c.crowding.traders_long) + ' hold the long side, '
           + trCount(c.crowding.traders_short) + ' the short. Measured against this market\u2019s own '
-          + 'average book over the last three years, that is the ' + ord(c.crowding.pctl) + ' percentile'
-          /* 90/10, the page's one cut-off for "unusual" positioning. */
-          + (c.crowding.pctl >= 90 ? ': held by fewer, larger hands than usual.'
-             : c.crowding.pctl <= 10 ? ': unusually spread out.' : ', which is normal.')));
+          + 'average book over the last three years, '
+          /* 90/10, the page's one cut-off for "unusual" positioning; no third rank printed (2026-11-06, two ranks) */
+          + (c.crowding.pctl >= 90 ? 'that is held by fewer, larger hands than usual.'
+             : c.crowding.pctl <= 10 ? 'that is unusually spread out.' : 'that is normal.')));
       }
       if (c.seasonal) {
         o.push(stat('Vs this week of the year', sgn(c.seasonal.deviation, 1) + ' pts',
@@ -376,7 +377,6 @@ window.cotMarket = function (api) {
       + row('Net, long minus short', num(c.net))
       + row('Open interest', num(c.oi))
       + row('Net as a share of open interest', pct(c.net_oi, 2))
-      + row('Rank by raw contracts (not size-adjusted)', ord(c.rank.desc) + ' highest of ' + num(c.rank.of) + ' weeks')
       + row('Report weeks not used as entry points (shutdown, release date unknown)', num(c.shutdown_excluded))
       + row('One contract is', num(c.contract_size) + ' ' + esc(c.unit))
       + row('The net position in ' + esc(c.unit), num(Math.abs(c.net) * c.contract_size)
