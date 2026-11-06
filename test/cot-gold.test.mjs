@@ -93,8 +93,8 @@ test("rank words: long, short and the table cell; never an ordinal", () => {
 test("the answer line: direction, size, rank in words, the Tuesday, the next report; the bake says the same", () => {
   const before = G.etInstant(FX.cot.next_release, "12:00") - 4 * 86400000;      // a few days before the release
   const a = G.answer("corn", FX.cot, FX.cx, before);
-  assert.equal(a.did, "Managed money sold a net 83,310 contracts of corn in the week to Tuesday, Oct 27, leaving funds net long 81,113: higher than 48% of weeks since 2010 (share of open interest).");
-  assert.equal(a.next, "Next report: Friday Nov 6, 3:30 PM ET.");
+  assert.equal(a.did, "Managed money sold a net 83,310 contracts of corn in the week to Tuesday, Oct 27, leaving funds net long 81,113: higher than 48% of weeks since 2010 (share of open interest)."); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
+  assert.equal(a.next, "Next report: Friday Nov 6, 3:30 PM ET."); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
   assert.equal(G.answer("corn", FX.cot, FX.cx, G.etInstant(FX.cot.next_release, "09:00")).next, "Next report: today 3:30 PM ET.");
   assert.ok(!DASH.test(a.text) && !/bootstrap|draws|FDR|false discovery|Benjamini/i.test(a.text));
   // the bake (scripts off) is the same sentence, without "today"
@@ -104,7 +104,7 @@ print(p.cot_answer(d, cx)); print(p.cot_release_html(d)); print(p.cot_answer(d, 
   assert.equal(r.status, 0, r.stderr);
   const [baked, bar, hogs] = r.stdout.trim().split("\n");
   assert.equal(baked, a.text);
-  assert.equal(bar, "Next CFTC report: Friday Nov 6, 3:30 PM ET");
+  assert.equal(bar, "Next CFTC report: Friday Nov 6, 3:30 PM ET"); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
   assert.equal(hogs, G.answer("leanhogs", FX.cot, FX.cx, before).text);
 });
 
@@ -128,10 +128,10 @@ test("the release bar: countdown, out and updating, late, updated today, and a h
   assert.deepEqual([at(-134).state, at(-134).text], ["countdown", "New report in 2 h 14 m · today 3:30 PM ET"]);
   assert.equal(at(-3 * 1440).text, "New report in 3 d 0 h · Friday 3:30 PM ET");
   assert.deepEqual([at(1).state, at(1).text], ["due", "New report out at 3:30 PM ET, updating"]);
-  assert.deepEqual([at(200).state, at(200).text], ["late", "The report due Friday Nov 6, 3:30 PM ET is late. Still checking."]);
+  assert.deepEqual([at(200).state, at(200).text], ["late", "The report due Friday Nov 6, 3:30 PM ET is late. Still checking."]); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
   // the loaded report came out today: "Updated today" until midnight ET, then the countdown
   const rel = G.etInstant(FX.cx.release_date, "15:30");
-  assert.deepEqual([G.release(FX.cot, FX.cx, rel + 3600000).state, G.release(FX.cot, FX.cx, rel + 3600000).text], ["updated", "Updated today with the report of Tuesday, Oct 27"]);
+  assert.deepEqual([G.release(FX.cot, FX.cx, rel + 3600000).state, G.release(FX.cot, FX.cx, rel + 3600000).text], ["updated", "Updated today with the report of Tuesday, Oct 27"]); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
   assert.equal(G.release(FX.cot, FX.cx, rel + 12 * 3600000).state, "countdown");
   // a holiday week (cot_calendar.release_date moves it to the Monday)
   const hol = { ...FX.cot, next_release: "2026-11-30" }; // pin-ok: a made-up holiday Monday, not live data
