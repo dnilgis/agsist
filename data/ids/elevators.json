@@ -2,7 +2,7 @@
 "schema": "agsist-elevators/1",
 "generated": "2026-11-06",
 "note": "One record per physical facility.",
-"counts": {"facilities": 3749, "with_fips": 3311, "with_point": 3343, "maybe_records": 192, "matched_2plus_sources": 3194, "ambiguous_keys": 219, "with_schedules": 267, "agsist_ids": 443, "bids_repo_ids": 3306, "fips_differs_from_bids_repo": 3, "retired_ids": 147, "stale_ids": 0, "with_ownership_change": 18, "by_source": {"basis": 3143, "bids": 243, "bids_repo": 3306, "directory": 725}, "keys_by_rule": {"elevId": 1, "kept": 4564}},
+"counts": {"facilities": 3749, "with_fips": 3311, "with_point": 3343, "maybe_records": 192, "matched_2plus_sources": 3194, "ambiguous_keys": 219, "with_schedules": 267, "agsist_ids": 443, "bids_repo_ids": 3306, "fips_differs_from_bids_repo": 3, "retired_ids": 147, "stale_ids": 0, "with_ownership_change": 18, "by_source": {"basis": 3143, "bids": 243, "bids_repo": 3306, "directory": 725}, "keys_by_rule": {"kept": 4565}},
 "elevators": [
 {"id":"a00001","name":"Agrex Inc","company":"Agrex Inc","city":"Montgomery","st":"AL","fips":null,"aliases":["AGREX INC"],"sources":{"basis":["AL|AGREX INC|MONTGOMERY"]},"maybe":["ebwks7pd6k","en061m4d0g"]},
 {"id":"a00002","name":"Riceland Co-Op","company":"Riceland Co-Op","city":"Des Arc","st":"AR","fips":null,"aliases":["RICELAND CO-OP"],"sources":{"basis":["AR|RICELAND CO-OP|DES ARC"]}},
