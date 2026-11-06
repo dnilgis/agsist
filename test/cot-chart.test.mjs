@@ -23,6 +23,8 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
+import os from "node:os";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
@@ -38,6 +40,16 @@ const COT = JSON.parse(fs.readFileSync(FIX.cot, "utf8"));
 const CX = JSON.parse(fs.readFileSync(FIX.cx, "utf8"));
 const HIST = JSON.parse(fs.readFileSync(FIX.hist, "utf8"));
 const DASH = /[–—]|&mdash;|&ndash;/;
+/* the page the browser tests load is baked from the SAME frozen fixtures the routes serve (Nov 6: the live
+   cot.html is re-baked every Friday from the new week, so a baked answer from one week beside a live answer from
+   the fixture week differed by a line and the chart box moved; that mismatch never happens on the site) */
+const BAKED = (() => {
+  const out = path.join(fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "cotbake-")), "cot.html");
+  const py = `import sys; sys.path.insert(0, "scripts"); import prerender_wpi_scorecard as p
+p.COT_JSON, p.COT_CX_JSON = sys.argv[1], sys.argv[2]
+o, n, f = p.bake_cot(); open(sys.argv[3], "w", encoding="utf-8").write(n)`;
+  try { execFileSync("python3", ["-c", py, FIX.cot, FIX.cx, out], { cwd: ROOT, stdio: "pipe" }); return out; } catch (e) { return null; }
+})();
 const clone = (o) => JSON.parse(JSON.stringify(o));
 
 // ------------------------------------------------------------------ the model
@@ -168,7 +180,7 @@ test("/cot carries one chart, under the verdict and above the market table and t
   assert.ok(!/<canvas id="cot-chart"|id="chart-tabs"|cot-chart-tab/.test(cot), "the old chart lower down is gone");
   assert.ok(!/drawChart|setActiveTab|cot-chart-tab/.test(read("components/cot-page.js")), "and its code");
   const i = (s) => cot.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-glance.js?v=3") > 0 && i("cot-glance.js?v=3") < i("cot-chart.js?v=5") && i("cot-chart.js?v=5") < i("cot-page.js?v=8"));
+  assert.ok(i("cot-glance.js?v=4") > 0 && i("cot-glance.js?v=4") < i("cot-chart.js?v=5") && i("cot-chart.js?v=5") < i("cot-page.js?v=9"));
   assert.match(cot, /\.cc-plot\{[^}]*height:300px/, "the plot's height is held before it draws");
   assert.match(cot, /\.cc-chip\{[^}]*min-height:44px/);
   assert.match(cot, /\.cc-btn\{[^}]*min-height:44px/);
@@ -185,7 +197,7 @@ test("the home card's lines open /cot on their market", () => {
   for (const k of G.ORDER) assert.equal(G.keyOf(G.SLUG[k]), k);
   assert.equal(G.keyOf("nonsense"), null);
   const idx = read("index.html");
-  for (const s of ["components/cot-glance.js?v=3", "components/home.js?v=24", "css/home.css?v=38"]) assert.ok(idx.includes("/" + s + '"'), s);
+  for (const s of ["components/cot-glance.js?v=4", "components/home.js?v=24", "css/home.css?v=38"]) assert.ok(idx.includes("/" + s + '"'), s);
 });
 
 // ---------------------------------------------------------------- in a browser
@@ -201,8 +213,8 @@ function serve() {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     if (p === "/") p = "/index.html";
     if (!path.extname(p)) p += ".html";
-    const f = path.normalize(path.join(ROOT, p));
-    if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
+    const f = p === "/cot.html" && BAKED ? BAKED : path.normalize(path.join(ROOT, p));
+    if ((f !== BAKED && !f.startsWith(ROOT)) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" });
     res.end(fs.readFileSync(f));
   });
