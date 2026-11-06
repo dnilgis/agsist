@@ -315,25 +315,46 @@ case "$cmd" in
     case "$src" in /*) ;; *) src="$ROOT/$src" ;; esac
     out="${GITHUB_OUTPUT:-/dev/null}"; ev="${GITHUB_EVENT_PATH:-}"
     [ "${GITHUB_EVENT_NAME:-}" = "push" ] && [ -f "$ev" ] && [ -e "$src/.git" ] || { echo "retry=false" >> "$out"; exit 0; }
-    verdict=$(python3 - "$ev" "$(git -C "$src" log -1 --format=%cI)" "${WAIT_SECONDS:-120}" "${PATHS[@]}" <<'PY'
-import json, sys, time
+    # which files the push changed: the event's own lists, and git's view of the commit itself (Nov 6: the first live
+    # run, the push of #381, found no engine path in the event and did not wait though the engine was 5 minutes behind)
+    changed="$(mktemp)"
+    pushed_git=""
+    if [ "${ENGINE_BEHIND_GIT:-1}" = "1" ]; then
+      # a CI checkout is one commit deep: fetch the parent so the commit's own change list can be read (a full local
+      # clone is never made shallow)
+      [ "$(git -C "$ROOT" rev-parse --is-shallow-repository 2>/dev/null)" = "true" ] &&
+        timeout 60 git -C "$ROOT" fetch -q --depth=2 origin "${GITHUB_SHA:-HEAD}" 2>/dev/null
+      # the push's own commit, not HEAD: a job that checks out ref: main can be on a newer bot commit
+      c="${GITHUB_SHA:-HEAD}"
+      git -C "$ROOT" diff --no-renames --name-only "$c~1" "$c" >> "$changed" 2>/dev/null || true
+      pushed_git="$(git -C "$ROOT" log -1 --format=%cI "$c" 2>/dev/null || true)"
+    fi
+    verdict=$(python3 - "$ev" "$(git -C "$src" log -1 --format=%cI)" "${WAIT_SECONDS:-120}" "$changed" "$pushed_git" "${PATHS[@]}" <<'PY'
+import json, sys
 from datetime import datetime, timezone
-ev = json.load(open(sys.argv[1])); engine = sys.argv[2]; limit = int(sys.argv[3]); paths = sys.argv[4:]
+ev = json.load(open(sys.argv[1])); engine, limit, changed, pushed_git = sys.argv[2], int(sys.argv[3]), sys.argv[4], sys.argv[5]
+paths = sys.argv[6:]
 hc = ev.get("head_commit") or {}
 files = [f for c in (ev.get("commits") or [hc]) for k in ("added", "modified", "removed") for f in (c.get(k) or [])]
-if not any(f == p or f.startswith(p.rstrip("/") + "/") for f in files for p in paths) or not hc.get("timestamp"):
-    print("fresh 0"); sys.exit()
+files += [l.strip() for l in open(changed) if l.strip()]
+hit = [f for f in files if any(f == p or f.startswith(p.rstrip("/") + "/") for p in paths)]
+if not hit:
+    print("fresh this push changes no engine path (%d file(s) listed)" % len(files)); sys.exit()
+stamp = hc.get("timestamp") or pushed_git
+if not stamp:
+    print("fresh no time for this push"); sys.exit()
 t = lambda x: datetime.fromisoformat(x.replace("Z", "+00:00"))
-pushed = t(hc["timestamp"])
+pushed = t(stamp)
 if t(engine) >= pushed:
-    print("fresh 0"); sys.exit()
+    print("fresh the engine copy (%s) is not older than this push (%s)" % (engine, stamp)); sys.exit()
 print("behind %d" % max(0, int(limit - (datetime.now(timezone.utc) - pushed).total_seconds())))
 PY
 )
+    rm -f "$changed"
     case "$verdict" in
       behind*) s=${verdict#behind }; echo "engine: the engine copy predates this push; waiting ${s}s for engine-sync, then checking out again"
                [ "$s" -gt 0 ] && sleep "$s"; echo "retry=true" >> "$out" ;;
-      *) echo "retry=false" >> "$out" ;;
+      *) echo "engine: no second checkout (${verdict:-no verdict})"; echo "retry=false" >> "$out" ;;
     esac ;;
   plan)
     install_hook
