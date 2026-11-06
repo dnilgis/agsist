@@ -1,6 +1,27 @@
 {
- "note": "What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ (never edited by hand): the newest entry goes into the homepage line and every entry into /changelog (above the older hand-written log). Only things that are live on the site. Plain words, no em dashes.",
+ "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
+  {
+   "id": "2026-11-06-cotoptions",
+   "date": "2026-11-06",
+   "title": "Fund positions: a positioning map and options positions",
+   "line": "Every trader group in every market, futures and options, placed in its own last 3 years on one map, plus options open interest and this week's 3-year extremes.",
+   "link": "/cot"
+  },
+  {
+   "id": "2026-11-06-forecastrecord",
+   "date": "2026-11-06",
+   "title": "Every AGSIST forecast, graded in one place",
+   "line": "The scorecard now lists every AGSIST forecast, each graded beside simple baselines that need no model, with rates held back until enough calls are graded.",
+   "link": "/usda-calendar#scorecard"
+  },
+  {
+   "id": "2026-11-06-landdedupe",
+   "date": "2026-11-06",
+   "title": "Farm sale counts: one sale filed on several parcels counts once",
+   "line": "A farm sold as several parcels, each filed with the full price, now counts as one sale on its total acres, so medians and counts are no longer inflated.",
+   "link": "/land-sales/"
+  },
   {
    "id": "2026-11-05-sourcesfold",
    "date": "2026-11-05",
@@ -23,6 +44,13 @@
    "link": "/tar-spot"
   },
   {
+   "id": "2026-11-05-credits",
+   "date": "2026-11-05",
+   "title": "Source credits",
+   "line": "Pages and emails that show USDA NASS numbers now carry the NASS notice, and our own averages, trends and estimates are marked as AGSIST calculations.",
+   "link": "/data-sources"
+  },
+  {
    "id": "2026-11-05-dailyadds",
    "date": "2026-11-05",
    "title": "The Daily: price change since the week, month and year began",
@@ -37,11 +65,25 @@
    "link": "/spray"
   },
   {
+   "id": "2026-11-05-atlassales",
+   "date": "2026-11-05",
+   "title": "Farmland Atlas map: what farms sold for, county by county",
+   "line": "A map layer of median sale price per acre and sale counts for every county with a recorded sale in six states. Under 5 sales is marked a thin read.",
+   "link": "/farmland-atlas#l=sales_med"
+  },
+  {
    "id": "2026-11-05-cotchart",
    "date": "2026-11-05",
    "title": "The 52-week funds chart, up top",
    "line": "Pick a market to see a year of fund positions: long or short, this week's number, the high and low, and the price under it. Share it or save it as a picture.",
    "link": "/cot"
+  },
+  {
+   "id": "2026-11-05-flon",
+   "date": "2026-11-05",
+   "title": "Florida farm sales",
+   "line": "Florida farmland sales from the state's sale files, 2008 on. Florida gives the month of each sale, so its sales show a month, not a day.",
+   "link": "/land-sales/"
   },
   {
    "id": "2026-11-04-rain-weather",
