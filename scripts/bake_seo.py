@@ -588,7 +588,7 @@ def seo_cond_yield(c):
     rows = ((((d or {}).get("crops") or {}).get("corn") or {}).get("rows")) or []
     if not rows:
         return None
-    short = {"usda": "USDA", "profarmer": "Pro Farmer tour", "dtn": "DTN", "agsist": "our ratings model"}
+    short = {"usda": "USDA", "profarmer": "Pro Farmer tour", "dtn": "DTN", "agsist": "our nowcast"}
     bits = []
     for r in sorted(rows, key=lambda r: (r.get("id") != "usda", r.get("value") or 0)):
         if r.get("value") is None:

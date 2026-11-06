@@ -149,7 +149,7 @@
     },
     "agsist": {
       "label": "AGSIST nowcast",
-      "note": "Our ratings-only nowcast of the US final yield. The band is the 80th percentile of backtest errors at this week of the season, each year scored using only the years before it, recomputed every run.",
+      "note": "Our nowcast of the US final yield. The band is the 80th percentile of backtest errors at this week of the season, each year scored using only the years before it, recomputed every run.",
       "correction": "Corrected 2026-08-20. An earlier 183.6, locked Aug 11, was computed on a history file that carried in-season forecasts in place of final yields. Superseded; the source defect is fixed.",
       "source": "data/yield-nowcast.json"
     },

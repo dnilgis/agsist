@@ -458,7 +458,7 @@ def _yield_rows():
 
 def card_cond_yield():
     d, rows = _yield_rows()
-    short = {"usda": "USDA", "profarmer": "Pro Farmer tour", "dtn": "DTN", "agsist": "Our ratings model"}
+    short = {"usda": "USDA", "profarmer": "Pro Farmer tour", "dtn": "DTN", "agsist": "Our nowcast"}
     usda = next(r for r in rows if r["id"] == "usda")
     table = [(short.get(r["id"], r.get("name", "")), f"{float(r['value']):.1f}", md(r["as_of"]))
              for r in rows if r["id"] != "usda"]

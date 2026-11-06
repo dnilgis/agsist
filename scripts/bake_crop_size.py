@@ -4,7 +4,7 @@ bake_crop_size.py -- the crop size section of /conditions (#crop-size; was /cond
 forecast"), baked into the HTML from the three files it shows.
 
   data/yield-panel.json        every published forecast (build_yield_benchmarks.py)
-  data/yield-nowcast.json      our ratings model (build_yield_nowcast.py)
+  data/yield-nowcast.json      our nowcast (build_yield_nowcast.py)
   data/nowcast-direction.json  its locked calls and their grades (nowcast_direction.py)
 
 WHY BAKED. These blocks were drawn by the page's JavaScript after three fetches,

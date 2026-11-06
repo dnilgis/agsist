@@ -423,8 +423,7 @@ def main(force_stale=False):
 
     out = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "model": "ge-linear-v1",
-        "note": ("Ratings-only nowcast of US final yield with its past record. USDA's final yield is written beside it in January, misses included."),
+        "note": ("AGSIST's estimate of US final yield, with its past record. USDA's final yield is written beside it in January, misses included."),
         "crops": {},
         "history": prev.get("history", {"corn": [], "soybeans": []}),
     }

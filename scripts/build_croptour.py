@@ -1087,8 +1087,8 @@ def render_bench(data, ph="during"):
             # READ, NEVER RETYPED. See nowcast_now().
             corn = nc["corn"]
             band = f' \u00b7 80% band \u00b1{nc["band80"]:.1f}' if nc.get("band80") else ""
-            sub = (f'Ratings model, week ending {short(nc["week_ending"])}'
-                   if nc.get("week_ending") else "Ratings model") + band
+            sub = (f'AGSIST nowcast, week ending {short(nc["week_ending"])}'
+                   if nc.get("week_ending") else "AGSIST nowcast") + band
         if key == "combine":
             # ONE CARD, TWO STATES. pre and post are the same call before and
             # after Pro Farmer publishes, not two rival numbers. Shown as two
