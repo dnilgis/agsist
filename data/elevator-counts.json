@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-11-06T08:06:56Z",
+ "generated": "2026-11-06T10:16:34Z",
  "note": "Elevators with a current bid on a cash bids page, and boards read on the latest coverage pass.",
  "bids": {
-  "elevators": 2093,
-  "towns": 1646
+  "elevators": 2082,
+  "towns": 1635
  },
  "states": {
   "AL": {
@@ -36,16 +36,16 @@
    "towns": 1
   },
   "IL": {
-   "elevators": 255,
-   "towns": 188
+   "elevators": 243,
+   "towns": 177
   },
   "IN": {
    "elevators": 85,
-   "towns": 67
+   "towns": 66
   },
   "KS": {
-   "elevators": 259,
-   "towns": 185
+   "elevators": 260,
+   "towns": 186
   },
   "KY": {
    "elevators": 11,
@@ -64,8 +64,8 @@
    "towns": 139
   },
   "MO": {
-   "elevators": 41,
-   "towns": 36
+   "elevators": 40,
+   "towns": 35
   },
   "MT": {
    "elevators": 9,
@@ -76,16 +76,16 @@
    "towns": 62
   },
   "NE": {
-   "elevators": 260,
-   "towns": 199
+   "elevators": 259,
+   "towns": 198
   },
   "NY": {
    "elevators": 2,
    "towns": 2
   },
   "OH": {
-   "elevators": 88,
-   "towns": 76
+   "elevators": 89,
+   "towns": 77
   },
   "OK": {
    "elevators": 81,
@@ -100,7 +100,7 @@
    "towns": 3
   },
   "SD": {
-   "elevators": 113,
+   "elevators": 114,
    "towns": 99
   },
   "TN": {
@@ -117,7 +117,7 @@
   },
   "WI": {
    "elevators": 106,
-   "towns": 94
+   "towns": 95
   },
   "WY": {
    "elevators": 3,
