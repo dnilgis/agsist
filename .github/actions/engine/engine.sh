@@ -305,6 +305,36 @@ case "$cmd" in
   hook)
     install_hook
     echo "engine: commit guard installed" ;;
+  behind)
+    # A push to main that changes engine paths starts its jobs at once, while engine-sync is still copying that
+    # change to the engine branch (Nov 6: sponsor-report on #372 read its checks 2 s before the sync landed and
+    # failed on the old copy). With the engine checked out in <dir>, this says whether that copy predates such a
+    # push; if it does it waits until WAIT_SECONDS after the push and writes retry=true, and the action checks the
+    # engine out once more. It holds no key and never fails the job.
+    src="${1:?behind needs the engine checkout directory}"
+    case "$src" in /*) ;; *) src="$ROOT/$src" ;; esac
+    out="${GITHUB_OUTPUT:-/dev/null}"; ev="${GITHUB_EVENT_PATH:-}"
+    [ "${GITHUB_EVENT_NAME:-}" = "push" ] && [ -f "$ev" ] && [ -e "$src/.git" ] || { echo "retry=false" >> "$out"; exit 0; }
+    verdict=$(python3 - "$ev" "$(git -C "$src" log -1 --format=%cI)" "${WAIT_SECONDS:-120}" "${PATHS[@]}" <<'PY'
+import json, sys, time
+from datetime import datetime, timezone
+ev = json.load(open(sys.argv[1])); engine = sys.argv[2]; limit = int(sys.argv[3]); paths = sys.argv[4:]
+hc = ev.get("head_commit") or {}
+files = [f for c in (ev.get("commits") or [hc]) for k in ("added", "modified", "removed") for f in (c.get(k) or [])]
+if not any(f == p or f.startswith(p.rstrip("/") + "/") for f in files for p in paths) or not hc.get("timestamp"):
+    print("fresh 0"); sys.exit()
+t = lambda x: datetime.fromisoformat(x.replace("Z", "+00:00"))
+pushed = t(hc["timestamp"])
+if t(engine) >= pushed:
+    print("fresh 0"); sys.exit()
+print("behind %d" % max(0, int(limit - (datetime.now(timezone.utc) - pushed).total_seconds())))
+PY
+)
+    case "$verdict" in
+      behind*) s=${verdict#behind }; echo "engine: the engine copy predates this push; waiting ${s}s for engine-sync, then checking out again"
+               [ "$s" -gt 0 ] && sleep "$s"; echo "retry=true" >> "$out" ;;
+      *) echo "retry=false" >> "$out" ;;
+    esac ;;
   plan)
     install_hook
     mode="${FIXED_MODE:-${MODE:-}}"
