@@ -101,7 +101,7 @@ EL_NEXT = ("Call the elevator at its own number (not only the one typed here) an
 PRF_NEXT = ("Reply with your price for these states (Reply goes to them). Terms: one business per state, prepaid, "
             "placement through Dec 31, first say on renewing. Once paid, add one entry per state to data/prf-sponsors.json "
             "(name, url, line, phone, logo in img/sponsors/ under 50 KB, through YYYY-12-31) and commit. It shows on the state "
-            "page, every county page and the /prf result for that state on that commit. Farmers First never goes in a slot.")
+            "page, every county page and the /prf result for that state on that commit.")
 # What Sig does with a "make it for me" request (rain-print-help, 2026-10-30). How-to: feedbag notes/howto/rain-print-design-for-them.md.
 RPH_NEXT = ("Call or write them and ask a few things (the year, the name for the print, any dates to mark). Make two or three "
             "versions on agsist.com/rain-print, press Copy link on each, and email the links. They open one and order it the "

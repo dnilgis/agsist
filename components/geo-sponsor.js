@@ -186,7 +186,7 @@
     Promise.all([
       need('link', 'href', '/components/sponsor-ad.css?v=3', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
       need('link', 'href', '/components/geo-sponsor.css?v=1', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
-      need('script', 'src', '/components/sponsor-ad.js?v=2', function () { return !!root.AgsistAd; })
+      need('script', 'src', '/components/sponsor-ad.js?v=3', function () { return !!root.AgsistAd; })
     ]).then(function () {
       if (!root.AgsistAd || (!preview && soldOnPage())) return;
       var html = root.AgsistAd.render(toAd(e, surface), surface, preview ? {} : { slot: 'geo-' + e.id });

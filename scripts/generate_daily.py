@@ -3285,31 +3285,14 @@ def sponsor_cta_urls(sponsor):
         return {}
 
 
-# 2026-10-01 owner disclosure: an insurance sponsor may compete with the
-# owner's own agency, so every surface fed from here (homepage, archive,
-# RSS, the email) says so next to the sponsor's own disclosure.
-OWNER_SPONSOR_NOTE = "AGSIST's founder also owns Farmers First Agri Service LLC in Chetek, WI (crop insurance, agronomy and ag technology services; a licensed crop-insurance agency) and Loke Drone LC (agricultural drone spraying), which may compete with this sponsor. Sponsors never change data, rankings or bid order."
-
-
-OWNER_SPONSOR_RX = "insurance|spray|drone|aerial|agronom|fertili"
-
-
-def _owner_note_text(sp):
-    disc = sp.get("disclosure") or ""
-    if sp.get("is_house_ad"):
-        return disc
+def _house_note_text(sp):
     # 2026-10-07 (Sig): no disclaimer line on a paid ad, anywhere it runs. The
-    # SPONSORED label is the disclosure; the owner's other businesses are on
-    # /about, /terms and /sponsor.
-    return ""
-    hay = " ".join(str(sp.get(k) or "") for k in ("advertiser", "headline", "body", "disclosure"))
-    if re.search(OWNER_SPONSOR_RX, hay, re.I) and "Farmers First" not in disc:
-        return (disc + " " + OWNER_SPONSOR_NOTE) if disc else OWNER_SPONSOR_NOTE
-    return disc
+    # SPONSORED label is the disclosure. Only the house ad keeps its own line.
+    return (sp.get("disclosure") or "") if sp.get("is_house_ad") else ""
 
 
-def _owner_note(d):
-    d["disclosure"] = _owner_note_text(d)
+def _house_note(d):
+    d["disclosure"] = _house_note_text(d)
     return d
 
 
@@ -3319,7 +3302,7 @@ def build_sponsor_block():
         out.setdefault("label", "SPONSORED"); out.setdefault("active", True)
         out.setdefault("is_house_ad", False)
         out["cta_urls"] = sponsor_cta_urls(out)
-        return _owner_note(out)
+        return _house_note(out)
     sponsor_path = REPO_ROOT / "data" / "sponsor.json"
     if sponsor_path.exists():
         try:
@@ -3327,7 +3310,7 @@ def build_sponsor_block():
             if data.get("active"):
                 data.setdefault("label", "SPONSORED"); data.setdefault("is_house_ad", False)
                 data["cta_urls"] = sponsor_cta_urls(data)
-                return _owner_note(data)
+                return _house_note(data)
         except Exception as e:
             print(f"  [warn] sponsor.json unreadable: {e}", file=sys.stderr)
     return dict(SPONSOR_HOUSE_AD)
@@ -3506,8 +3489,8 @@ def render_sponsor_block_html(sponsor, surface="archive", slot=None):
         h.append(f'<a class="sa-phone" href="{t}" rel="sponsored"{click}>'
                  f'<span class="sa-phone-k">or call</span> {html_esc(sp.get("phone"))}</a>')
     h.append("</div>")
-    if _owner_note_text(sp):
-        h.append(f'<p class="sa-disc">{html_esc(_owner_note_text(sp))}</p>')
+    if _house_note_text(sp):
+        h.append(f'<p class="sa-disc">{html_esc(_house_note_text(sp))}</p>')
     h.append("</aside>")
     return "".join(h)
 
