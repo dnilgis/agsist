@@ -323,9 +323,11 @@ case "$cmd" in
       # a CI checkout is one commit deep: fetch the parent so the commit's own change list can be read (a full local
       # clone is never made shallow)
       [ "$(git -C "$ROOT" rev-parse --is-shallow-repository 2>/dev/null)" = "true" ] &&
-        git -C "$ROOT" fetch -q --depth=2 origin "${GITHUB_SHA:-HEAD}" 2>/dev/null
-      git -C "$ROOT" diff --name-only HEAD~1 HEAD >> "$changed" 2>/dev/null || true
-      pushed_git="$(git -C "$ROOT" log -1 --format=%cI HEAD 2>/dev/null || true)"
+        timeout 60 git -C "$ROOT" fetch -q --depth=2 origin "${GITHUB_SHA:-HEAD}" 2>/dev/null
+      # the push's own commit, not HEAD: a job that checks out ref: main can be on a newer bot commit
+      c="${GITHUB_SHA:-HEAD}"
+      git -C "$ROOT" diff --no-renames --name-only "$c~1" "$c" >> "$changed" 2>/dev/null || true
+      pushed_git="$(git -C "$ROOT" log -1 --format=%cI "$c" 2>/dev/null || true)"
     fi
     verdict=$(python3 - "$ev" "$(git -C "$src" log -1 --format=%cI)" "${WAIT_SECONDS:-120}" "$changed" "$pushed_git" "${PATHS[@]}" <<'PY'
 import json, sys
