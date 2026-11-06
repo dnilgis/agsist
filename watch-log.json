@@ -76,9 +76,9 @@
   "size": 74508
  },
  "2026_ADMLivestockLrp_Daily_20261106.zip": {
-  "first_seen": "2026-11-06T15:09:23Z",
-  "listed": "2026-11-06T08:35",
-  "size": 40340
+  "first_seen": "2026-11-06T19:09:15Z",
+  "listed": "2026-11-06T13:01",
+  "size": 115661
  },
  "2027_ADMLivestockLrp_Daily_20261015.zip": {
   "first_seen": "2026-10-15T20:07:59Z",
@@ -194,10 +194,10 @@
   "size": 1324789
  },
  "2027_ADMLivestockLrp_Daily_20261106.zip": {
-  "first_seen": "2026-11-06T15:09:23Z",
-  "listed": "2026-11-06T08:35",
-  "lm": "2026-11-06T14:35:41Z",
-  "size": 9506
+  "first_seen": "2026-11-06T19:09:15Z",
+  "listed": "2026-11-06T13:01",
+  "lm": "2026-11-06T19:01:40Z",
+  "size": 23129
  }
 },
 "checks":[
@@ -283,5 +283,6 @@
 {"head_size":12328,"listed":"2026-11-05T08:35","lm":"2026-11-05T14:35:35Z","new":0,"newest":"2027_ADMLivestockLrp_Daily_20261105.zip","size":12328,"t":"2026-11-05T20:54:40Z"},
 {"head_size":12328,"listed":"2026-11-05T08:35","lm":"2026-11-05T14:35:35Z","new":0,"newest":"2027_ADMLivestockLrp_Daily_20261105.zip","size":12328,"t":"2026-11-05T21:11:37Z"},
 {"head_size":1209427,"listed":"2026-11-05T15:24","lm":"2026-11-05T21:24:44Z","names":["2027_ADMLivestockLrp_Daily_20261105.zip"],"new":1,"newest":"2027_ADMLivestockLrp_Daily_20261105.zip","size":1209427,"t":"2026-11-05T21:24:51Z"},
-{"head_size":9506,"listed":"2026-11-06T08:35","lm":"2026-11-06T14:35:41Z","names":["2026_ADMLivestockLrp_Daily_20261106.zip","2027_ADMLivestockLrp_Daily_20261105.zip","2027_ADMLivestockLrp_Daily_20261106.zip"],"new":3,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":9506,"t":"2026-11-06T15:09:23Z"}
+{"head_size":9506,"listed":"2026-11-06T08:35","lm":"2026-11-06T14:35:41Z","names":["2026_ADMLivestockLrp_Daily_20261106.zip","2027_ADMLivestockLrp_Daily_20261105.zip","2027_ADMLivestockLrp_Daily_20261106.zip"],"new":3,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":9506,"t":"2026-11-06T15:09:23Z"},
+{"head_size":23129,"listed":"2026-11-06T13:01","lm":"2026-11-06T19:01:40Z","names":["2026_ADMLivestockLrp_Daily_20261106.zip","2027_ADMLivestockLrp_Daily_20261106.zip"],"new":2,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":23129,"t":"2026-11-06T19:09:15Z"}
 ]}
