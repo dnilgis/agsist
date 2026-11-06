@@ -310,11 +310,6 @@ html[data-theme="light"] .pc-chg-val.dn { color: #b42318 }
 .wstat { background: var(--surface2); border-radius: var(--r-sm); padding: .75rem .9rem; border: 1px solid var(--border) }
 .wstat-lbl { font-family: var(--font-mono); font-size:0.765rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: .2rem; }
 .wstat-val { font-family: var(--font-mono); font-size: 1.25rem; font-weight: 700; color: var(--text); line-height: 1.1 }
-.wx-today { display: none; gap: .6rem; align-items: flex-start; margin: 0 0 1rem; padding: .75rem .9rem; background: linear-gradient(135deg, rgba(var(--gold-rgb),.11), rgba(var(--gold-rgb),.03)); border: 1px solid rgba(var(--gold-rgb),.28); border-left: 3px solid var(--gold); border-radius: var(--r-sm); }
-.wx-today.loaded { display: flex; }
-.wx-today-icon { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
-.wx-today-text { font-size: .9rem; line-height: 1.55; color: var(--text); }
-.wx-today-text strong { color: var(--gold); font-weight: 700; }
 .spray-badge { display: inline-flex; align-items: center; gap: .4rem; padding: .38rem .75rem; border-radius: 3px; font-family: var(--font-mono); font-size:0.787rem; font-weight: 700; margin-top: .85rem; }
 .spray-badge.caution { background: rgba(var(--gold-rgb),.08); color: var(--gold); border: 1px solid rgba(var(--gold-rgb),.22) }
 .spray-badge.good { background: rgba(74,171,76,.08); color: var(--green); border: 1px solid rgba(74,171,76,.22) }
@@ -608,7 +603,7 @@ main.tool-main, main#main-content { max-width: 1100px; margin: 0 auto; padding: 
   .pc:has(.pc-chg-val.up), .pc:has(.pc-chg-val.dn) { animation: none; }
 }
 .daily-headline, .sec-title, .pc-name, .home-h1, .faq-item summary { text-wrap: balance; }
-p, .faq-a, .pc-prev, .wx-today-text, .daily-sec-bottomline { text-wrap: pretty; }
+p, .faq-a, .pc-prev, .daily-sec-bottomline { text-wrap: pretty; }
 .wx-7day-strip, .wx-hourly-strip { scroll-snap-type: x proximity; scroll-padding-left: .25rem; }
 .wx-7day-cell, .wx-hourly-cell { scroll-snap-align: start; }
 ::selection { background: var(--gold-fill,var(--gold)); color: #0a1a0a; }

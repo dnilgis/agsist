@@ -409,7 +409,7 @@ check("archive pages written before the change hide their baked house ad", () =>
   for (const f of days) {
     const src = R("daily/" + f);
     if (/sa-ad--house|dv3-spattr--house/.test(src))
-      assert.match(src, /\/components\/sponsor-ad\.css\?v=2"/, "daily/" + f + " carries a house ad but not the stylesheet that hides it");
+      assert.match(src, /\/components\/sponsor-ad\.css\?v=\d+"/, "daily/" + f + " carries a house ad but not the stylesheet that hides it");
   }
 });
 check("the page ribbon is hidden until loader.js marks it sold", () => {
