@@ -374,11 +374,11 @@
       if (m.answer) { wrapped(m.answer, 30, 500, 4).forEach(function (s) { text(s, P, y, 30, 500, '#e9edeb'); y += 41; }); y += 8; }
       wrapped(sub, 26, 600, 2).forEach(function (s) { text(s, P, y, 26, 600, 'rgba(233,237,235,.80)'); y += 34; });
       /* the ask on its own last line, a gap above it so the source line is not crowded (Sig, Nov 6) */
-      var srcL = wrapped(src, 26, 400, 4), foot = H - 40 - 50 - (srcL.length - 1) * 34;
+      var srcL = wrapped(src, 20, 400, 4), foot = H - 40 - 50 - (srcL.length - 1) * 26;
       gh = foot - 50 - y;
       g = layout(m, W - 2 * P, gh, { fs: 26, big: true });
       paint(ctx, g, P, y + 6);
-      srcL.forEach(function (s, i) { text(s, P, foot + i * 34, 26, 400, 'rgba(233,237,235,.80)'); });
+      srcL.forEach(function (s, i) { text(s, P, foot + i * 26, 20, 400, 'rgba(233,237,235,.72)'); });
       text(ASK, P, H - 40, 28, 700, '#d4a23f');
     } else {
       text('agsist.com/cot', P, 62, 26, 800, '#d4a23f');
@@ -390,7 +390,7 @@
       text(sub, P, top + 4, 20, 600, 'rgba(233,237,235,.74)');
       gh = H - top - 124; g = layout(m, W - 2 * P, gh, { fs: 19, big: true });
       paint(ctx, g, P, top + 18);
-      wrapped(src, 17, 400, 2).forEach(function (s, i) { text(s, P, H - 74 + i * 22, 17, 400, 'rgba(233,237,235,.70)'); });
+      wrapped(src, 14, 400, 2).forEach(function (s, i) { text(s, P, H - 70 + i * 18, 14, 400, 'rgba(233,237,235,.68)'); });
       text(ASK, P, H - 20, 19, 700, '#d4a23f');
     }
     g.items.forEach(function (it) { if (it.t === 'text') { texts.push(it.s); sizes.push(it.size); } });

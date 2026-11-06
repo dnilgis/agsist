@@ -284,7 +284,8 @@ test("phone save image: 1080x1350, headline 56 px or more, everything else 26 px
     const buf = fs.readFileSync(await dl.path());
     assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [1080, 1350], "4:5 on a phone-width screen");
     const im = await pg.evaluate(() => window.AgCotChart.lastImage);
-    assert.ok(Math.min(...im.sizes) >= 26, "every word 26 px or more: " + Math.min(...im.sizes));
+    // the source line is small print (Sig, Nov 6: "make the source print smaller"): 20 px; every other word 26 px or more
+    assert.ok(Math.min(...im.sizes.filter((z) => z !== 20)) >= 26 && Math.min(...im.sizes) >= 20, "every word 26 px or more, source 20 px: " + Math.min(...im.sizes));
     const head = im.texts.findIndex((t) => t.startsWith("Corn funds cut their net long by"));
     assert.ok(head >= 0 && im.sizes[head] >= 56, "headline 56 px or more");
     const stand = im.texts.indexOf("Still net long: 81,113.");

@@ -46,8 +46,8 @@
 /* under the QR code: "Every Friday by email:" then the address big, on its own line (Sig, Nov 6) */
 .cotp-free{font-size:11pt;font-weight:700;line-height:1.25}
 .cotp-big{display:block;font:800 13pt/1.2 "JetBrains Mono",ui-monospace,monospace}
-.cotp-note{font-size:11pt;line-height:1.25;margin-top:.06in!important;border-top:1pt solid #000;padding-top:.04in}
-.cotp-src{font-size:11pt;line-height:1.25;margin-top:.03in!important}
+.cotp-note{font-size:8.5pt;line-height:1.25;margin-top:.06in!important;border-top:1pt solid #000;padding-top:.04in}
+.cotp-src{font-size:8.5pt;line-height:1.25;margin-top:.03in!important}
 .cotp-tight .cotp-grid{row-gap:.03in}
 .cotp-tight .cotp-lead{margin:.04in 0 0!important}
 .cotp-tight .cotp-low{margin-top:.04in}

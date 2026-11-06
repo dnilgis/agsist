@@ -35,9 +35,9 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 test("cot.html: the Print this week button beside Save image (a 44 px .cc-btn), the stylesheet and scripts at their versions", () => {
   assert.match(HTML, /<button type="button" class="cc-btn" id="cc-save">Save image<\/button>\s*<button type="button" class="cc-btn" id="cc-print">Print this week<\/button>/);
   assert.match(HTML, /\.cc-btn\{[^}]*min-height:44px/);
-  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=3">'));
+  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=4">'));
   const i = (s) => HTML.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-kit.js?v=1") > 0 && i("cot-kit.js?v=1") < i("cot-chart.js?v=8") && i("cot-chart.js?v=8") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=3"), "kit, chart, QR encoder, then the sheet");
+  assert.ok(i("cot-kit.js?v=1") > 0 && i("cot-kit.js?v=1") < i("cot-chart.js?v=9") && i("cot-chart.js?v=9") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=3"), "kit, chart, QR encoder, then the sheet");
   assert.match(read("components/cot-chart.js"), /dispatchEvent\(new CustomEvent\('cot:chart-data'/, "the chart hands its files over");
   assert.doesNotMatch(JS, /fetch\(|XMLHttpRequest/, "the sheet fetches nothing");
 });
@@ -167,7 +167,7 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
         sheet: shown(document.getElementById("cotp")),
         lines: q("#cotp .cotp-m").map((p) => p.textContent.trim()),
         tiny: q("#cotp *").filter((e) => shown(e) && e.namespaceURI !== "http://www.w3.org/2000/svg" && [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))
-          .filter((e) => parseFloat(getComputedStyle(e).fontSize) < 14.6).map((e) => e.className + ": " + e.textContent.slice(0, 40)),
+          .filter((e) => parseFloat(getComputedStyle(e).fontSize) < (e.closest(".cotp-src, .cotp-note") ? 11.3 : 14.6)).map((e) => e.className + ": " + e.textContent.slice(0, 40)),
         figs: q("#cotp .cotp-fig b").map((e) => parseFloat(getComputedStyle(e).fontSize)),
         svgText: Math.min(...q("#cotp .cotp-chart svg text").map((t) => t.getBoundingClientRect().height)),
         zoom: document.getElementById("cotp").dataset.zoom || "",
@@ -179,7 +179,7 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
     assert.equal(vis.nav, 0, "no nav on paper"); assert.equal(vis.footer, 0, "no footer"); assert.equal(vis.sponsor, 0, "no sponsor slot"); assert.equal(vis.buttons, 0, "no buttons");
     assert.equal(vis.lines.length, 6, "six markets on the scoreboard");
     assert.ok(vis.lines.every((t) => t.length < 90), "one short block per market: " + vis.lines.join(" / "));
-    assert.deepEqual(vis.tiny, [], "every word on the sheet 11 pt or more");
+    assert.deepEqual(vis.tiny, [], "every word on the sheet 11 pt or more (source and note lines 8.5 pt, Sig Nov 6)");
     assert.ok(vis.figs.length === 6 && vis.figs.every((f) => f >= 42.6), "scoreboard figures 32 pt or more, readable from 6 feet: " + vis.figs);
     assert.ok(vis.svgText >= 14, "chart labels print at about 11 pt: " + vis.svgText);
     assert.equal(vis.zoom, "", "the fixture week fits without scaling");
