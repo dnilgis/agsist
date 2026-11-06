@@ -237,12 +237,12 @@
     <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-river-t">The river, right now: barge rates vs normal</span><span class="bs-fresh" id="bs-fresh2"></span></div>
     <div class="bs-panel-b">
       <div class="bs-bars" id="bs-barge" aria-busy="true"><span class="sr-only">Loading barge rates</span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span><span class="st-sk st-row" aria-hidden="true" style="--st-row-h:36px"></span></div>
-      <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0">Rates are percent of the 1976 benchmark tariff, the industry&rsquo;s odd but standard yardstick. The grey tick is each location&rsquo;s 5-year same-week average; the gold bar is now. <a href="/grain-transport">Rail, lock and ocean freight, and how basis has moved with it &rarr;</a></p>
+      <p style="font-size:13.4px;color:var(--bs-dim);margin:12px 0 0">Rates are percent of the 1976 benchmark tariff, the industry&rsquo;s odd but standard yardstick. The grey tick is each location&rsquo;s 5-year same-week average; the gold bar is now. <a href="/grain-transport">Rail, lock and ocean freight, and this week &rarr;</a></p>
     </div>
   </section>
 
   <section class="bs-panel" aria-labelledby="bs-walk-t">
-    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">Where the money goes between the farm and the Gulf</span></div>
+    <div class="bs-panel-hd"><span class="bs-panel-t" id="bs-walk-t">An interior bid against the Gulf bid</span></div>
     <div class="bs-panel-b">
       <div class="bs-walk" id="bs-walk" aria-busy="true"><span class="sr-only">Loading</span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:96px;flex:1 1 200px"></span></div>
       <p style="font-size:13.4px;color:var(--bs-txt);margin:12px 0 0" id="bs-walk-week"></p>
@@ -440,7 +440,8 @@
   }
 
   function renderWalk(){
-    // pick the Illinois -> Gulf corn spread as the canonical worked example
+    // Illinois vs Gulf corn as the worked example. The gap is shown as a gap, never labelled freight:
+    // the Nov 4 site panel found basis does not track freight week to week (Sig Oct: spread alone, no freight share)
     var key=Object.keys(journey.spreads).find(function(k){return k.indexOf('Corn|Illinois|Gulf')===0;})
          ||Object.keys(journey.spreads)[0];
     if(!key) return;
@@ -448,7 +449,7 @@
     $('bs-walk').innerHTML=
       '<div class="bs-walkstep"><div class="bs-walk-l">'+p[1]+' bid</div><div class="bs-walk-v">$'+s.origin_bid.toFixed(2)+'</div><div class="bs-walk-m">what the interior market pays per bushel of '+p[0].toLowerCase()+'</div></div>'
       +'<div class="bs-walkstep"><div class="bs-walk-l">'+p[2]+' bid</div><div class="bs-walk-v">$'+s.destination_bid.toFixed(2)+'</div><div class="bs-walk-m">what the export market pays for the same bushel</div></div>'
-      +'<div class="bs-walkstep"><div class="bs-walk-l">Freight and handling</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">freight + handling + margin between the two, the wedge your basis lives inside</div></div>';
+      +'<div class="bs-walkstep"><div class="bs-walk-l">'+p[2]+' minus '+p[1]+'</div><div class="bs-walk-v">$'+s.spread.toFixed(2)+'</div><div class="bs-walk-m">the gap between the two bids; freight, handling and margin all sit inside it, and USDA does not publish the split</div></div>';
     var ci=journey.cost_index||{};
     $('bs-walk-week').textContent=walkWeek(s,p,basis);
     $('bs-walk-note').textContent='Transport cost indicators (2000=100), week of '+String(ci.date||'').slice(0,10)+': truck '+(ci.truck||'-')+' · shuttle train '+(ci.shuttle_train||'-')+' · barge '+(ci.barge||'-')+' · Gulf vessel '+(ci.gulf_vessel||'-')+'. Spread data: '+s.date+'.';
