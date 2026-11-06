@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-06-landdedupe",
+ "date": "2026-11-06",
+ "title": "Farm sale counts: one sale filed on several parcels counts once",
+ "line": "A farm sold as several parcels, each filed with the full price, now counts as one sale on its total acres, so medians and counts are no longer inflated.",
+ "link": "/land-sales/",
+ "rank": 3
+}
