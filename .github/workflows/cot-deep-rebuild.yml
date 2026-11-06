@@ -95,10 +95,13 @@ jobs:
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
           cp data/cot-analysis.json /tmp/analysis.json
+          cp data/cot-questions.json /tmp/questions.json 2>/dev/null || true
           for i in 1 2 3; do
             git fetch origin main && git reset --hard origin/main
             cp /tmp/analysis.json data/cot-analysis.json
+            [ -f /tmp/questions.json ] && cp /tmp/questions.json data/cot-questions.json
             git add data/cot-analysis.json 2>/dev/null || true
+            git add data/cot-questions.json 2>/dev/null || true
             if git diff --staged --quiet; then echo "No change after rebuild."; exit 0; fi
             git commit -m "chore: rebuild COT deep history $(date +%F) [skip ci]"
             if git push; then echo "pushed"; exit 0; fi
