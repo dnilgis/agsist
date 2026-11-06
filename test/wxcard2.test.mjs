@@ -37,6 +37,7 @@ test("the card carries no fall nitrogen block and no Today spray line", () => {
   assert.ok(!/s7-falln|wx-today-summary|wx-today-text/.test(hs), "home-season.js paints neither block");
   const css = strip(read("css/home.css"));
   assert.ok(!/\.wx-falln|\.wx-today|#wx-today-summary/.test(css), "home.css has no rule for either block");
+  assert.ok(!/\.wx-today/.test(strip(read("components/styles.css"))), "styles.css has no rule for the old Today line");
   // Nov 5 (Sig): the card's soil reading left too, so home loads no soil reader (test/homeseasonal.test.mjs)
   assert.ok(!/id="s7-wx-soil"/.test(c), "no soil cell in the card");
   assert.equal((HTML.match(/components\/soil-near\.js\?v=\d+/g) || []).length, 0);
