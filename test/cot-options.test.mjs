@@ -73,7 +73,7 @@ function pct(others, x) {
 test("real CFTC week: options open interest and every group's options net, change and 3-year rank re-derive from the rows", () => {
   const latest = [...new Set(RAW.comb.map((r) => r.report_date_as_yyyy_mm_dd.slice(0, 10)))].sort().at(-1);
   assert.equal(D.report_date, latest);
-  assert.equal(D.released, "2026-10-30", "the Oct 27 report was released Friday Oct 30");
+  assert.equal(D.released, "2026-10-30", "the Oct 27 report was released Friday Oct 30"); // pin-ok: built from the frozen CFTC fixture rows, not live data
   for (const k of ["corn", "kcwheat"]) {
     const s = market(CODES[k]), last = s.at(-1), prev = s.at(-2), m = D.markets[k];
     assert.equal(m.date, latest);
@@ -171,7 +171,7 @@ test("unusual cards: every reading at an edge; each card says market, group, num
     assert.match(li, /<span class="cu-n">(Corn|KC wheat|MPLS wheat) <span>/, li);
     assert.match(li, /class="cu-big">[+\u2212]?[\d,.]+%?</, li);
     assert.match(li, /(percentile of \d+ weeks|(Highest|Lowest|most|least) in \d+ weeks|weekly changes)/, li);
-    assert.match(li, /<time class="cu-d" datetime="2026-10-27">Oct 27<\/time>/, li);
+    assert.match(li, /<time class="cu-d" datetime="2026-10-27">Oct 27<\/time>/, li); // pin-ok: built from the frozen CFTC fixture rows, not live data
   }
   const count = O.countLine(D);
   assert.match(count, new RegExp("^" + D.flagged + " of " + D.scanned + " readings scanned"));
@@ -187,8 +187,8 @@ test("wording of ranks and the stale note", () => {
   assert.equal(O.where(100, 157), "highest in 157 weeks");
   assert.equal(O.where(4, 157), "4th percentile of 157 weeks");
   assert.equal(O.where(null, 157), "not ranked");
-  assert.equal(O.sub(D, D.report_date), "Held Tuesday, Oct 27, 2026, released Oct 30, 2026.");
-  assert.match(O.sub(D, "2026-11-03"), /The week of Nov 3, 2026 is not in yet\./);
+  assert.equal(O.sub(D, D.report_date), "Held Tuesday, Oct 27, 2026, released Oct 30, 2026."); // pin-ok: built from the frozen CFTC fixture rows, not live data
+  assert.match(O.sub(D, "2026-11-03"), /The week of Nov 3, 2026 is not in yet\./); // pin-ok: built from the frozen CFTC fixture rows, not live data
   const none = { ...D, unusual: [], flagged: 0 };
   assert.match(O.countLine(none), /^None of \d+ readings scanned is at a 3-year extreme this week\./);
   assert.match(O.detail(D, "corn", "opt", "mm"), /futures equivalent/);

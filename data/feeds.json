@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 98,
- "with_known_cadence": 98,
+ "count": 99,
+ "with_known_cadence": 99,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -556,6 +556,40 @@
    "max_gap_hours": 24.0,
    "quiet": "weekly",
    "why_quiet": "Rebuilt from cot.json, so it moves when the COT report does."
+  },
+  {
+   "path": "data/cot-options.json",
+   "pages": [
+    "cot.html"
+   ],
+   "written_by": [
+    "COT Release Watch",
+    "Fetch COT Data"
+   ],
+   "touched_by": [
+    "COT Release Watch",
+    "Fetch COT Data"
+   ],
+   "cadence": "10 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "13,43 19-21 * * 1-5",
+    "47 19 * * 5",
+    "17 20 * * 5",
+    "47 20 * * 5",
+    "17 21 * * 5",
+    "47 19 * * 1",
+    "17 20 * * 1",
+    "47 20 * * 1",
+    "17 21 * * 1",
+    "33 21 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/cot.json",
