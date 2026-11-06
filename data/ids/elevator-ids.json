@@ -2248,7 +2248,8 @@
   },
   "a00538": {
    "first": "basis:SD|FARMERS COOP SOCIETY|BERESFORD",
-   "since": "2026-11-03"
+   "since": "2026-11-03",
+   "into": "edy2eazz93"
   }
  },
  "retired": {
@@ -2805,14 +2806,6 @@
    "rule": "phone",
    "keys": [
     "basis:IA|RIVER VALLEY COOPERATIVE|DYERSVILLE"
-   ]
-  },
-  "edy2eazz93": {
-   "into": "a00538",
-   "on": "2026-11-05",
-   "rule": "vanished",
-   "keys": [
-    "basis:SD|FARMERS COOP SOCIETY|BERESFORD"
    ]
   },
   "ee46y3574r": {
@@ -4924,6 +4917,12 @@
    "retire": "edy2eazz93",
    "into": "a00538",
    "why": "gone from the bids repo's directory again with no mergedFrom; its keys go back to a00538"
+  },
+  {
+   "on": "2026-11-06",
+   "back": "edy2eazz93",
+   "from": "a00538",
+   "why": "the bids-repo id is back in the bids repo's directory"
   }
  ],
  "keys": {
@@ -8220,7 +8219,7 @@
   "basis:SD|DELL RAPIDS CO-OP GRAIN|DELL RAPIDS": "evj9e4wg5z",
   "basis:SD|FARMERS COOP ELEVATOR ROSHOLT|FARMERS COOP ELEVATOR ROSHOLT": "evqch7za7y",
   "basis:SD|FARMERS COOP SOCIETY|ALCESTER": "en2dfgb1dw",
-  "basis:SD|FARMERS COOP SOCIETY|BERESFORD": "a00538",
+  "basis:SD|FARMERS COOP SOCIETY|BERESFORD": "edy2eazz93",
   "basis:SD|FARMERS COOP SOCIETY|WORTHING": "e7x1wsajbn",
   "basis:SD|FARMERS PRIDE COOP|AVON": "epenwfp24y",
   "basis:SD|FULL CIRCLE AG|ABERDEEN": "a00426",
