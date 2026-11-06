@@ -950,6 +950,7 @@ def seed_homepage(prices, today):
             seeds["hp:" + k] = "-"
             seeds["hp:" + k + "-when"] = "Quotes unavailable: " + why
         seeds.update(hero_futures_seeds({}, fetched))  # back to the loading bar
+        seeds["hp:hap"] = happening_seed()
         return _write_seeds("index.html", seeds)
     for k in ("corn", "beans"):
         # the headline contract geo.js swaps in (<crop>-nearby), not the
@@ -969,6 +970,7 @@ def seed_homepage(prices, today):
                                       (" (last good quote)" if d.get("stale") else "") +
                                       " &middot; Yahoo Finance, delayed")
     seeds.update(hero_futures_seeds(q, fetched))
+    seeds["hp:hap"] = happening_seed()
     return _write_seeds("index.html", seeds)
 
 
@@ -1017,6 +1019,139 @@ def hero_futures_seeds(q, fetched):
         when = quote_when(d, fetched) + (" (last good quote)" if d.get("stale") else "")
         seeds["hp:" + tile + "-s"] = chg + '<span class="hb-l hb-age">' + when + "</span>"
     return seeds
+
+
+# --- the hero's "Today and this week" (components/happening.js) ---------------
+# Sig, Nov 6, 2026: the next releases beside the futures. The page script draws
+# the countdown, the teaser and the "Out today" line from the same files; this
+# bakes the rows it will draw (each one's day and time, Eastern, as CFTC and USDA
+# publish them) so a reader without script, or a crawler, sees the schedule and
+# the page moves nothing when the script takes over. Same sources, same rules:
+# data/cot.json next_release, then cot_calendar.release_date for later weeks;
+# usda-calendar.ics; Crop Progress from usda_dates.crop_progress_date.
+HAP_USDA = [
+    (r"^WASDE$", "WASDE", "/usda-calendar"),
+    (r"^Crop Production", None, "/usda-calendar"),
+    (r"^Grain Stocks", "Grain Stocks", "/usda-calendar"),
+    (r"^Prospective Plantings$", None, "/usda-calendar"),
+    (r"^Acreage$", None, "/usda-calendar"),
+    (r"^Small Grains", None, "/usda-calendar"),
+    (r"^Cattle on Feed$", None, "/cattle-futures-prices"),
+    (r"^Quarterly Hogs and Pigs$", "Hogs and Pigs", "/cattle-futures-prices"),
+    (r"^Milk Production$", None, "/milk-prices"),
+]
+HAP_FILL = ('<li class="hap-i hap-all"><a class="hap-a" href="/usda-calendar" data-track="happening">'
+            '<span class="hap-w">Every report date</span><span class="hap-t">USDA report calendar</span></a></li>')
+_HAP_DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+
+def _hap_et():
+    from zoneinfo import ZoneInfo
+    return ZoneInfo("America/New_York")
+
+
+def happening_events(cot, ics_text, now):
+    """Every release the block can show, as dicts: name, href, rank, day (date),
+    at (aware UTC datetime), h, mi, moved (the normal date or None)."""
+    from datetime import date as _d, timedelta as _td
+    import cot_calendar as CC
+    import usda_dates as UD
+    et = _hap_et()
+    out = []
+
+    def at_et(day, h, mi):
+        return datetime(day.year, day.month, day.day, h, mi, tzinfo=et).astimezone(timezone.utc)
+    try:
+        a0 = datetime.strptime(str((cot or {}).get("report_date", "")).strip(), "%B %d, %Y").date()
+    except ValueError:
+        a0 = None
+    if a0:
+        nr = None
+        try:
+            nr = _d.fromisoformat(str(cot.get("next_release", "")))
+        except ValueError:
+            pass
+        m = re.match(r"^(\d{1,2}):(\d{2})$", str(cot.get("next_release_time_et") or "15:30"))
+        h, mi = (int(m.group(1)), int(m.group(2))) if m else (15, 30)
+        for k in range(4):
+            asof = a0 + _td(weeks=k)
+            day = nr if (k == 1 and nr) else CC.release_date(asof)
+            normal = asof - _td(days=asof.weekday()) + _td(days=4)
+            out.append({"name": "Funds report (COT)", "href": "/cot", "rank": -1, "day": day, "h": h, "mi": mi,
+                        "at": at_et(day, h, mi), "moved": normal if day > normal else None})
+    text = re.sub(r"\n[ \t]", "", (ics_text or "").replace("\r", ""))
+    for b in text.split("BEGIN:VEVENT")[1:]:
+        sm = re.search(r"\nSUMMARY:([^\n]*)", b)
+        dm = re.search(r"\nDTSTART:(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})\d{2}Z", b)
+        if not sm or not dm:
+            continue
+        name = sm.group(1).strip()
+        for i, (pat, label, href) in enumerate(HAP_USDA):
+            if re.search(pat, name):
+                at = datetime(*(int(x) for x in dm.groups()), tzinfo=timezone.utc)
+                loc = at.astimezone(et)
+                out.append({"name": label or name, "href": href, "rank": i, "day": loc.date(), "h": loc.hour,
+                            "mi": loc.minute, "at": at, "moved": None})
+                break
+    today = now.astimezone(et).date()
+    for k in range(-1, 3):
+        mon = today - _td(days=today.weekday()) + _td(weeks=k)
+        day = UD.crop_progress_date(mon)
+        if day:
+            out.append({"name": "Crop Progress", "href": "/conditions", "rank": 50, "day": day, "h": 16, "mi": 0,
+                        "at": at_et(day, 16, 0), "moved": mon if day != mon else None})
+    return out
+
+
+def happening_rows(events, now):
+    """The rows still to come at `now`: one per release minute (names joined
+    with "and"), the first whenever it is, the next two within seven days.
+    The twin of happening.js pick() for the rows that have not happened yet."""
+    from datetime import timedelta as _td
+    groups = {}
+    for e in events:
+        if e["at"] <= now:
+            continue
+        g = groups.setdefault(e["at"], [])
+        if not any(x["name"] == e["name"] for x in g):
+            g.append(e)
+    rows = []
+    for at in sorted(groups):
+        parts = sorted(groups[at], key=lambda x: x["rank"])
+        rows.append(dict(parts[0], name=" and ".join(x["name"] for x in parts)))
+    return rows[:1] + [r for r in rows[1:] if r["at"] - now <= _td(days=7)][:2]
+
+
+def happening_seed(now=None, cot=None, ics_text=None):
+    """The baked rows of #hap-list: day and time as text, no countdown."""
+    now = now or datetime.now(timezone.utc)
+    if cot is None:
+        cot = _load_json("data/cot.json") or {}
+    if ics_text is None:
+        try:
+            ics_text = open("usda-calendar.ics", encoding="utf-8").read()
+        except OSError:
+            ics_text = ""
+    rows = happening_rows(happening_events(cot, ics_text, now), now)
+    out = []
+    for i, r in enumerate(rows):
+        d = r["day"]
+        hh = (r["h"] % 12) or 12
+        w = (f"{_HAP_DOW[d.weekday()]} {_MON3[d.month - 1].capitalize()} {d.day}, {hh}:{r['mi']:02d} "
+             f"{'AM' if r['h'] < 12 else 'PM'} ET")
+        if r["moved"]:
+            w += ", holiday week"   # the day printed is the moved day
+        t, href = _e(r["name"]), _e(r["href"])
+        if i == 0:
+            out.append(f'<li class="hap-i hap-top" data-state="next"><a class="hap-a" href="{href}" data-track="happening">'
+                       f'<span class="hap-t">{t}</span><span class="hap-w"><span class="hap-wt">{w}</span>'
+                       f'<span class="hap-cd"></span></span><span class="hap-x"></span></a></li>')
+        else:
+            out.append(f'<li class="hap-i" data-state="next"><a class="hap-a" href="{href}" data-track="happening">'
+                       f'<span class="hap-w">{w}</span><span class="hap-t">{t}</span></a></li>')
+    for i in range(len(rows), 3):
+        out.append(HAP_FILL if i == len(rows) else '<li class="hap-i hap-none" aria-hidden="true"></li>')
+    return "".join(out)
 
 
 # --- /news -------------------------------------------------------------------
