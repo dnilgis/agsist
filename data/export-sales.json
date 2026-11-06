@@ -1,7 +1,7 @@
 {
-  "updated": "2026-11-05",
+  "updated": "2026-11-06",
   "marketing_year": "2026/27",
-  "note": "USDA FAS ESR API \u2014 api.fas.usda.gov/api/esr",
+  "note": "USDA FAS Export Sales Reporting.",
   "corn": {
     "weekly_net_mt": 1294589,
     "cumulative_mt": 24791199,
