@@ -59,7 +59,9 @@ def stage(root=None):
     root = root or ROOT
     files = [p for p in BUILT if os.path.isfile(os.path.join(root, p))]
     if files:
-        subprocess.run(["git", "-C", root, "add", "-f", "--"] + files, check=True)
+        # --sparse: in private engine mode the checkout is sparse and leaves scripts/ out, and git refuses to
+        # stage scripts/dev/test-map.json there without it (every push run of main-checks.yml, Nov 6)
+        subprocess.run(["git", "-C", root, "add", "--sparse", "-f", "--"] + files, check=True)
     if os.path.isdir(os.path.join(root, "data/whats-new")):
         subprocess.run(["git", "-C", root, "add", "--", "data/whats-new"], check=True)
     out = subprocess.run(["git", "-C", root, "diff", "--staged", "--name-only"], capture_output=True, text=True, check=True)
