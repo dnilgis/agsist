@@ -2522,3 +2522,47 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 /* held up front (cls-reserved): three lines of about three rows each, and the two-row date line */
 #cot-glance{min-height:132px}
 #cot-gl-asof{min-height:2.3em}
+
+/* ===== 2026-11-06 (Sig: "a happening today block ... important releases people should be made aware of"): "Today and
+   this week" (components/happening.js, baked by scripts/seed_static.py happening_seed). Phone and tablet: a full-width
+   row right after the two futures. 1000px and up: the third column of the futures row, the room right of the beans.
+   Every line holds its room (the teaser two lines, each later row its line), so the live rows replace the baked ones
+   without moving anything; empty slots keep theirs. ===== */
+.hap{grid-column:1/-1;min-width:0;padding:8px 0 8px;border-top:1px solid var(--border-2)}
+.hap-h{margin:0 0 2px;font-family:var(--font-body,Inter,system-ui,sans-serif);font-size:.824rem;font-weight:700;line-height:1.3;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+.hap-list{list-style:none;margin:0;padding:0;min-height:180px}
+.hap-i{min-width:0;border-top:1px solid var(--border-2)}
+.hap-i:first-child{border-top:0}
+#hero-band .hap-a{display:grid;grid-template-columns:minmax(0,1fr);align-content:center;min-height:44px;padding:4px 0;color:inherit;text-decoration:none}
+#hero-band .hap-a:hover .hap-t{color:var(--gold)}
+#hero-band .hap-a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.hap-t{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:700;font-size:.941rem;line-height:1.3;color:var(--text)}
+.hap-w{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:.824rem;line-height:1.35;color:var(--text-dim);font-variant-numeric:tabular-nums}
+.hap-x{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em;font-size:.824rem;line-height:1.35;color:var(--text-dim)}
+.hap-top .hap-t{min-height:1.3em}
+.hap-top .hap-w{min-height:1.35em}
+.hap-top[data-state="out"] .hap-wt{font-weight:700;color:var(--gold)}
+.hap-top[data-state="wait"] .hap-wt{font-weight:700;color:var(--orange)}
+[data-theme="light"] .hap-top[data-state="wait"] .hap-wt{color:#86600f}
+.hap-i:not(.hap-top) .hap-t{font-size:.882rem}
+.hap-none{min-height:45px}
+.hap-all .hap-t{font-weight:600;color:var(--gold)}
+@container hero (min-width:560px){
+  #hero-band .hb-grid--fut .hap{grid-column:1/-1}
+  /* a later row on one line: its day and time, then the report */
+  #hero-band .hap-i:not(.hap-top) .hap-a{grid-template-columns:auto minmax(0,1fr);column-gap:10px;align-items:baseline;align-content:center;min-height:34px;padding:2px 0}
+  .hap-i:not(.hap-top) .hap-w{min-width:11.5em}
+  .hap-none{min-height:35px}
+  .hap-list{min-height:156px}
+}
+@container hero (min-width:1000px){
+  #hero-band .hb-grid--fut{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.5fr);max-width:none}
+  #hero-band .hb-grid--fut .hap{grid-column:auto;padding:10px 0 4px 18px;border-left:1px solid var(--border-2)}
+  #hero-band .hap-top .hap-a{padding:2px 0 4px}
+  /* the column is about 500px wide: every teaser and "Out today" line the script writes fits one line here */
+  .hap-x{-webkit-line-clamp:1;min-height:1.35em}
+  #hero-band .hap-i:not(.hap-top) .hap-a{min-height:30px}
+  .hap-none{min-height:31px}
+  .hap-list{min-height:127px}
+  #hero-band.hb-nozip .hb-grid--fut{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.5fr)}
+}
