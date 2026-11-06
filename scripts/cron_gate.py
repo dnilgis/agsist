@@ -54,8 +54,8 @@ Writes go=0|1 and reason=... to $GITHUB_OUTPUT (stdout when unset).
     python3 scripts/cron_gate.py predict --predictions-file data/predictions.json
     python3 scripts/cron_gate.py --selftest
 
-  predict  For predictions.yml, next to its tick: on an entry day, from 2:00 to 6:50 PM Central,
-           every chained run goes until each crop has a call or a recorded reason.
+  predict  For predictions.yml, next to its tick: on an entry day, every chained run inside the
+           window goes until each crop has a call or a recorded reason.
 """
 
 import json
@@ -385,14 +385,11 @@ def decide_behind(event, now, have, want, upstream_done, refused=None):
 
 # ── output ───────────────────────────────────────────────────────────────────
 # ── the prediction bot's entry-day pass ─────────────────────────────────────
-# Nov 2, 2026 and Oct 13, 2026: the tick gate lets one run per tick through, and on both days
-# every run that went landed after the close window shut (the bot cannot make a call after
-# 6:55 PM CT, when the daily bar starts to hold evening trades), so four crops were recorded as
-# missed each time. On an entry day, until every crop has a call or a recorded reason, every
-# chained run from 2:00 PM to 6:50 PM CT goes. The bot is idempotent (a handled report is never
-# rewritten), so an extra pass costs a minute and nothing else.
-PREDICT_OPEN = (14, 0)      # Central, after the 1:20 PM grain close and its settlement
-PREDICT_SHUT = (18, 50)     # the bot's own cutoff is 6:55 PM
+# Nov 2 and Oct 13, 2026: one run per tick was not enough and the calls were missed. On an entry
+# day every chained run inside the window goes until each crop is handled; handled reports are
+# never rewritten, so an extra pass changes nothing.
+PREDICT_OPEN = (14, 0)      # Central
+PREDICT_SHUT = (18, 50)     # Central
 
 
 def predict_pending(preds, today):
@@ -400,14 +397,17 @@ def predict_pending(preds, today):
     `today` (a date); [] when nothing enters today or all is handled; None when unreadable."""
     if not isinstance(preds, dict):
         return None
-    nxt = preds.get("next_entry") or {}
-    if nxt.get("day") != today.isoformat() or not nxt.get("report"):
-        return []
-    rep = nxt["report"]
-    crops = [c.get("key") for c in preds.get("crops") or [] if c.get("key")]
-    done = {c.get("crop") for c in preds.get("calls") or [] if c.get("cot_report") == rep}
-    done |= {s.get("crop") for s in preds.get("skipped") or [] if s.get("report") == rep}
-    return [k for k in crops if k not in done]
+    try:
+        nxt = preds.get("next_entry") or {}
+        if nxt.get("day") != today.isoformat() or not nxt.get("report"):
+            return []
+        rep = nxt["report"]
+        crops = [c.get("key") for c in preds.get("crops") or [] if c.get("key")]
+        done = {c.get("crop") for c in preds.get("calls") or [] if c.get("cot_report") == rep}
+        done |= {s.get("crop") for s in preds.get("skipped") or [] if s.get("report") == rep}
+        return [k for k in crops if isinstance(k, str) and k not in done]
+    except (AttributeError, TypeError):
+        return None
 
 
 def decide_predict(event, now, preds):
@@ -421,7 +421,7 @@ def decide_predict(event, now, preds):
         return 0, "outside the entry-day window (%s CT)" % ct.strftime("%a %H:%M")
     left = predict_pending(preds, ct.date())
     if left is None:
-        return 1, "predictions file unreadable; running"
+        return 0, "predictions file unreadable; the tick gate decides"
     if not left:
         return 0, "no entry today, or every crop handled"
     return 1, "entry day, no call or reason yet for %s" % ", ".join(left)
@@ -721,7 +721,9 @@ def selftest():
           "predict: calls plus recorded reasons close the pass")
     check(decide_predict("workflow_run", T("2026-11-03 22:53"), nov2)[0] == 0, "predict: not an entry day")
     check(decide_predict("workflow_run", T("2026-11-07 20:53"), PR("2026-10-27", "2026-11-07"))[0] == 0, "predict: Saturday")
-    check(decide_predict("workflow_run", T("2026-11-02 22:53"), None)[0] == 1, "predict: unreadable file runs")
+    check(decide_predict("workflow_run", T("2026-11-02 22:53"), None)[0] == 0, "predict: unreadable file stays shut")
+    check(decide_predict("workflow_run", T("2026-11-02 22:53"), {"next_entry": "x", "crops": [1]})[0] == 0,
+          "predict: wrong-shaped file stays shut, no crash")
     check(decide_predict("workflow_dispatch", T("2026-11-02 03:00"), nov2)[0] == 1, "predict: manual always goes")
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_gate checks passed")
