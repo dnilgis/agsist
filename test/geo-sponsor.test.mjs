@@ -363,7 +363,7 @@ test("browser: every paid ad (not only the state sponsor) has the orange outline
       const { ctx, pg } = await open(browser, port, "/rain/iowa/story-county.html", { w, data: { sponsors: [] } });
       const r = await pg.evaluate(async (theme) => {
         document.documentElement.setAttribute("data-theme", theme);
-        await new Promise((ok) => { if (window.AgsistAd) return ok(); const s = document.createElement("script"); s.src = "/components/sponsor-ad.js?v=2"; s.onload = ok; document.head.appendChild(s); });
+        await new Promise((ok) => { if (window.AgsistAd) return ok(); const s = document.createElement("script"); s.src = "/components/sponsor-ad.js?v=3"; s.onload = ok; document.head.appendChild(s); });
         await new Promise((ok) => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/components/sponsor-ad.css?v=3"; l.onload = ok; document.head.appendChild(l); });
         const box = document.createElement("div");
         box.innerHTML = window.AgsistAd.render({ advertiser: "Any Co", headline: "H", body: "B", cta_url: "https://example.com/", cta_text: "Go" }, "homepage", { slot: "daily-briefing" });

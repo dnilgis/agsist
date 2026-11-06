@@ -117,7 +117,7 @@ def main():
         check(held <= set(soon), "every state an active geo test runs in is held on the card (opens_soon)", (sorted(held), soon))
 
     print("\nthe terms on the card are the terms on the page")
-    for k in ("trial", "day30", "terms", "prepay", "paperwork", "insurance"):
+    for k in ("trial", "day30", "terms", "prepay", "paperwork"):
         check(bool(card.get(k)), "the card states its %s" % k)
     check(card.get("paperwork", "x") in pitch, "W-9 line on sponsor.html", card.get("paperwork"))
     check(re.search(r"12 months for the price of 10|Pay 12 months up front and you pay for 10", pitch) is not None,
@@ -128,10 +128,12 @@ def main():
           "the founding rate on sponsor.html matches the card", f_)
     check("No reply means the ad comes down and nothing is owed" in pitch and "day 30" in pitch.lower(),
           "the day-30 yes or no is on sponsor.html")
-    # about.html left this list Nov 6, 2026: Sig removed the other-businesses section there; the line stays on every
-    # page that sells a slot (and /terms), which is where a sponsor reads it.
-    for page in ("sponsor.html", "sponsor-kit.html", "prf-sponsor.html", "prf-sponsor-kit.html"):
-        check(card.get("insurance", "x") in _text(ROOT / page), "the insurance line is on %s" % page)
+    # Nov 6, 2026 (Sig): no line about the owner's other businesses on any page that sells a slot.
+    check("insurance" not in card, "the card carries no insurance line")
+    for page in ("sponsor.html", "sponsor-kit.html", "sponsor-apply.html", "prf-sponsor.html", "prf-sponsor-kit.html", "terms.html"):
+        t_ = _text(ROOT / page)
+        check(not any(x in t_ for x in ("also owns", "may compete", "never takes a sponsor", "Loke Drone")),
+              "no owner disclosure on %s" % page)
 
     print("\nretired tiers are gone from every page that sells (Oct 29, 2026)")
     retired = [k for k in (card.get("retired") or {}) if not k.startswith("_")]
