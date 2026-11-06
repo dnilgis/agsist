@@ -157,7 +157,7 @@ test("compare on the page: 2 and 3 picks, a 4th refused, the link round-trips, n
       assert.ok(fs12 >= 12, "svg text " + fs12);
       assert.ok(Math.abs((await boxH(pg)) - h0) < 1, `no layout shift entering compare (${h0} then ${await boxH(pg)}) at ${width}`);
       assert.ok((await pg.evaluate(() => document.documentElement.scrollWidth)) <= Math.max(sw0, width), "no sideways scroll");
-      const small = await pg.$$eval(".cc-chip, .cc-cmp, .cc-btn", (a) => a.filter((b) => b.getBoundingClientRect().height < 44).length);
+      const small = await pg.$$eval(".cc-chip, .cc-cmp, .cc-btn", (a) => a.filter((b) => b.getClientRects().length && b.getBoundingClientRect().height < 44).length);   // the market picker's buttons sit in a closed dialog
       assert.equal(small, 0, "all taps 44 px or more");
       // hover: date and each market's value
       const plot = await pg.$("#cc-plot");
@@ -203,7 +203,7 @@ test("a shared link opens in compare; a single link still opens one market", { s
   } finally { await browser.close(); srv.close(); }
 });
 
-test("compare: Share copies the compare link; Save image carries the headline, the date and each end label", { skip, timeout: 120000 }, async () => {
+test("compare: Share copies the compare link; Save picture (no market question in compare) carries the headline, the date and each end label", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {

@@ -32,12 +32,12 @@ const SIX = ["corn", "beans", "wheat", "livecattle", "feedercattle", "leanhogs"]
 const DASH = /[–—]|&mdash;|&ndash;/;
 
 // ------------------------------------------------------------------ 1. the stylesheet and the page
-test("cot.html: the Print this week button beside Save image (a 44 px .cc-btn), the stylesheet and scripts at their versions", () => {
-  assert.match(HTML, /<button type="button" class="cc-btn" id="cc-save">Save image<\/button>\s*<button type="button" class="cc-btn" id="cc-print">Print this week<\/button>/);
+test("cot.html: the Print sheet button beside Save picture (a 44 px .cc-btn), the stylesheet and scripts at their versions", () => {
+  assert.match(HTML, /<button type="button" class="cc-btn" id="cc-save" aria-haspopup="dialog">Save picture<\/button>\s*<button type="button" class="cc-btn" id="cc-print" aria-haspopup="dialog">Print sheet<\/button>/);
   assert.match(HTML, /\.cc-btn\{[^}]*min-height:44px/);
-  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=4">'));
+  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=5">'));
   const i = (s) => HTML.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-kit.js?v=1") > 0 && i("cot-kit.js?v=1") < i("cot-chart.js?v=9") && i("cot-chart.js?v=9") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=3"), "kit, chart, QR encoder, then the sheet");
+  assert.ok(i("cot-kit.js?v=2") > 0 && i("cot-kit.js?v=2") < i("cot-chart.js?v=10") && i("cot-chart.js?v=10") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=4") && i("cot-print.js?v=4") < i("cot-share.js?v=1"), "kit, chart, QR encoder, then the sheet");
   assert.match(read("components/cot-chart.js"), /dispatchEvent\(new CustomEvent\('cot:chart-data'/, "the chart hands its files over");
   assert.doesNotMatch(JS, /fetch\(|XMLHttpRequest/, "the sheet fetches nothing");
 });
@@ -79,7 +79,9 @@ test("the sheet: one short line per market, the context line measured, the share
   assert.ok(h.includes('<p class="cotp-chg">\u25b2 Bought 5,471</p>'));
   assert.ok(h.includes("Rank: the net as a share of open interest, against every week since 2010."), "the rank explained once");
   assert.equal((h.replace(/<svg[\s\S]*?<\/svg>/g, "").match(/managed money/gi) || []).length, 2, "managed money named in the note and the source only");
-  assert.ok(h.includes("<b>Corn funds cut their net long by 83,310 contracts.</b> Still net long: 81,113."), "the chart under its headline");
+  assert.ok(h.includes('<p class="cotp-lead"><b>Corn funds cut their net long by 83,310 contracts. Still net long: 81,113.</b> <span class="cotp-wk">Funds sold corn,'), "the picked market leads (corn by default)");
+  assert.ok(h.includes('<p class="cotp-bu">About 410 million bushels net long</p>'), "the net in bushels: " + (h.match(/cotp-bu">[^<]*/) || [""])[0]);
+  assert.ok(s.src.includes("Contract sizes: exchange contract specifications."), "the unit's source on the source line");
   assert.doesNotMatch(h, /Crowded|crowded|moderate|heavy|\bthis week\b|\btoday\b/, "no badge words, no weight words, no 'this week'");
   assert.doesNotMatch(h, DASH);
   assert.doesNotMatch(h, /\b(should|buy now|sell now|consider|recommend|signal|z-score|percentile)\b/i, "no advice, no method words");
@@ -88,7 +90,9 @@ test("the sheet: one short line per market, the context line measured, the share
 
 test("the QR code lands on the Funds this week signup box, and the line under it asks plainly (Sig, Nov 6)", () => {
   assert.equal(P.URL_FULL, "https://agsist.com/cot#cot-signup");
-  assert.match(JS, /AgQR\.svg\(URL_FULL,/, "the QR encodes URL_FULL");
+  // kit v2 part 2: the QR address carries the print tags and the report week (AgCotKit.link)
+  assert.equal(P.sheet(FX.cot, FX.cx, FX.hist, NOW).qr, "https://agsist.com/cot?utm_source=print&utm_medium=qr&utm_campaign=cot-2026-10-27#cot-signup");
+  assert.match(JS, /var code = qr\(s\.qr\)/, "the sheet's QR encodes it");
   assert.match(HTML, /id="cot-signup"/, "the box it lands on");
   const h = P.html(P.sheet(FX.cot, FX.cx, FX.hist, NOW), "<svg></svg>");
   assert.ok(h.includes('<div class="cotp-qr"><svg></svg></div><p class="cotp-free">Every Friday by email: <span class="cotp-big">agsist.com/cot</span></p>'));
@@ -109,6 +113,37 @@ test("a run counts the weeks in a row from the history", () => {
     else assert.equal(m.run, null, m.key);
   }
   assert.equal(P.run("corn", FX.hist, { ...FX.cot, corn: { ...FX.cot.corn, net: FX.cot.corn.net + 1 } }), null, "no run when the history is not the report on the page");
+});
+
+test("pick your market: the sheet leads with the market picked and draws its chart; the scoreboard keeps the six", () => {
+  const s = P.sheet(FX.cot, FX.cx, FX.hist, NOW, "leanhogs");
+  assert.equal(s.key, "leanhogs");
+  assert.deepEqual(s.markets.map((m) => m.key), SIX);
+  assert.match(s.top, /^Lean hog funds /);
+  assert.equal(s.chart.model.key, "leanhogs");
+  const h = P.html(s, "");
+  assert.ok(h.includes('<span class="cotp-ch">Lean hogs</span>'), "the chart named");
+  assert.ok(h.includes('aria-label="Lean hogs, managed money net position'));
+  const k = P.sheet(FX.cot, FX.cx, FX.hist, NOW, "milk");
+  assert.equal(k.chart.model.key, "milk", "a market off the scoreboard still gets its chart");
+  assert.equal(P.sheet(FX.cot, FX.cx, FX.hist, NOW, "nope").key, "corn", "an unknown key falls back to corn");
+  assert.doesNotMatch(h, DASH);
+});
+
+test("pin it here: big type, the six-market scoreboard, the QR ask, a Posted by line and the repost permission", () => {
+  const s = P.sheet(FX.cot, FX.cx, FX.hist, NOW, "corn"), h = P.wall(s, "<svg></svg>");
+  assert.ok(h.includes('<h1 class="cotw-h1">Corn funds cut their net long by 83,310 contracts. Still net long: 81,113.</h1>'));
+  assert.equal((h.match(/class="cotw-m"/g) || []).length, 6);
+  assert.ok(h.includes('<p class="cotw-wk">Week to Tue, Oct 27, 2026. Released Fri, Oct 30, 2026.</p>'), "the dates with the year");
+  assert.ok(h.includes('<p class="cotw-ask">Latest report and free Friday email</p>'));
+  assert.ok(h.includes('Posted by <span class="cotw-blank"></span>'), "a blank to write in");
+  assert.ok(h.includes("Free to print and post. Keep the source line."));
+  assert.ok(h.includes("Source: CFTC Commitments of Traders"));
+  assert.match(CSS, /@page cotw\{size:letter landscape/, "Letter landscape");
+  assert.match(CSS, /\.cotw-h1\{font-size:40pt/, "the headline 40 pt");
+  assert.doesNotMatch(CSS.replace(/\/\*[\s\S]*?\*\//g, ""), /#d4a23f/i);
+  assert.doesNotMatch(h, DASH);
+  assert.doesNotMatch(h, /\b(should|consider|recommend|signal|percentile)\b/i);
 });
 
 // ------------------------------------------------------------------ 3. in a browser: one page
@@ -153,6 +188,8 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
     assert.ok((await pg.$eval("#cc-print", (b) => b.getBoundingClientRect().height)) >= 44);
     await pg.evaluate(() => { window.__printed = 0; window.print = () => { window.__printed++; }; });
     await pg.click("#cc-print");
+    assert.ok(await pg.$eval("#cc-pick", (d) => d.open), "Print sheet asks which market first");
+    await pg.click('#cc-pick .cc-pk[data-k="corn"]');
     assert.equal(await pg.evaluate(() => window.__printed), 1);
     assert.ok(await pg.evaluate(() => document.documentElement.classList.contains("cotp-on")));
     await pg.emulateMedia({ media: "print" });
@@ -178,7 +215,7 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
     assert.ok(vis.sheet, "the sheet shows in print");
     assert.equal(vis.nav, 0, "no nav on paper"); assert.equal(vis.footer, 0, "no footer"); assert.equal(vis.sponsor, 0, "no sponsor slot"); assert.equal(vis.buttons, 0, "no buttons");
     assert.equal(vis.lines.length, 6, "six markets on the scoreboard");
-    assert.ok(vis.lines.every((t) => t.length < 90), "one short block per market: " + vis.lines.join(" / "));
+    assert.ok(vis.lines.every((t) => t.length < 125), "one short block per market (with its bushels or pounds line): " + vis.lines.join(" / "));
     assert.deepEqual(vis.tiny, [], "every word on the sheet 11 pt or more (source and note lines 8.5 pt, Sig Nov 6)");
     assert.ok(vis.figs.length === 6 && vis.figs.every((f) => f >= 42.6), "scoreboard figures 32 pt or more, readable from 6 feet: " + vis.figs);
     assert.ok(vis.svgText >= 14, "chart labels print at about 11 pt: " + vis.svgText);
@@ -231,6 +268,37 @@ test("any browser print (Ctrl+P, the menu) gives the one-page sheet, also on rel
     const on = await pg.evaluate(() => document.documentElement.classList.contains("cotp-on"));
     const shown = await pg.evaluate(() => getComputedStyle(document.getElementById("cotp")).display);
     assert.ok(on && shown === "block", "print media alone shows the sheet: " + on + " " + shown);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("pin it here in a browser: Print sheet, then the wall edition, is one landscape Letter page with the QR code", { skip, timeout: 180000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1200, height: 900 } });
+    const pg = await ctx.newPage();
+    await pg.route("**/*", (r) => {
+      const u = new URL(r.request().url());
+      if (u.origin !== `http://127.0.0.1:${port}`) return r.abort();
+      if (OWN[u.pathname]) return r.fulfill({ status: 200, contentType: "application/json", body: OWN[u.pathname] });
+      return r.continue();
+    });
+    await pg.clock.setFixedTime(new Date(NOW));
+    await pg.goto(`http://127.0.0.1:${port}/cot`, { waitUntil: "load" });
+    await pg.waitForFunction(() => document.querySelector("#cotp .cotp-chart svg path"));
+    await pg.evaluate(() => { window.__printed = 0; window.print = () => { window.__printed++; }; });
+    await pg.click("#cc-print");
+    await pg.click("#cc-pick .cc-pk-wall");
+    assert.equal(await pg.evaluate(() => window.__printed), 1);
+    assert.ok(await pg.$eval("#cotp", (e) => e.classList.contains("cotp-wall") && !!e.querySelector(".cotw-qr svg")));
+    const buf = await pg.pdf({ preferCSSPageSize: true });
+    assert.equal(pages(buf), 1, "exactly 1 page");
+    const box = buf.toString("latin1").match(/\/MediaBox\s*\[\s*0 0 ([\d.]+) ([\d.]+)\s*\]/);
+    assert.ok(box && +box[1] > +box[2], "landscape: " + (box && box.slice(1)));
+    if (process.env.COT_PRINT_OUT) fs.writeFileSync(process.env.COT_PRINT_OUT.replace(/\.pdf$/, "-wall.pdf"), buf);
+    await pg.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+    assert.ok(!(await pg.$eval("#cotp", (e) => e.classList.contains("cotp-wall") && document.documentElement.classList.contains("cotp-on"))), "back to the page");
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

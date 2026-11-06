@@ -1545,6 +1545,20 @@ def main():
                      "weeks": max((c2["weeks_of_history"] for c2 in out.values()), default=0)},
         "commodities": out,
     }
+    # Last week's question, this week's answer (kit v2 part 2, Sig Nov 6): scripts/cot_questions.py, from the
+    # history this run reads, in this same step. Written to data/cot-questions.json and carried here too, so the
+    # files this workflow already commits hold it. A failure there never stops the analysis.
+    try:
+        import cot_questions
+        with open(HIST_PATH) as f:
+            qs = cot_questions.build(json.load(f))
+        if qs:
+            payload["questions"] = qs
+            with open(cot_questions.OUT_PATH, "w") as f:
+                json.dump(qs, f, indent=1)
+            print(f"questions: {qs['this_week'] and qs['this_week']['question']}")
+    except Exception as e:  # noqa: BLE001
+        print(f"questions skipped ({e})", file=sys.stderr)
     with open(OUT_PATH, "w") as f:
         json.dump(payload, f, separators=(",", ":"))
 
@@ -1793,6 +1807,12 @@ def selftest():
     ckt("the 2025-09-30 report's release is unknown", CAL.release_unknown(date(2025, 9, 30)))
 
     print()
+    try:
+        import cot_questions
+        if cot_questions.selftest():
+            fails.append("cot_questions")
+    except Exception as e:  # noqa: BLE001
+        fails.append(f"cot_questions ({e})")
     if fails:
         print(f"{len(fails)} check(s) failed: " + ", ".join(fails))
         return 1

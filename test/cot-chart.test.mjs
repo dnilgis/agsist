@@ -229,7 +229,7 @@ test("/cot carries one chart, under the verdict and above the market table and t
   assert.ok(!/<canvas id="cot-chart"|id="chart-tabs"|cot-chart-tab/.test(cot), "the old chart lower down is gone");
   assert.ok(!/drawChart|setActiveTab|cot-chart-tab/.test(read("components/cot-page.js")), "and its code");
   const i = (s) => cot.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-glance.js?v=5") > 0 && i("cot-glance.js?v=5") < i("cot-kit.js?v=1") && i("cot-kit.js?v=1") < i("cot-chart.js?v=9") && i("cot-chart.js?v=9") < i("cot-page.js?v=10"));
+  assert.ok(i("cot-glance.js?v=5") > 0 && i("cot-glance.js?v=5") < i("cot-kit.js?v=2") && i("cot-kit.js?v=2") < i("cot-chart.js?v=10") && i("cot-chart.js?v=10") < i("cot-page.js?v=10"));
   assert.match(cot, /\.cc-plot\{[^}]*height:300px/, "the plot's height is held before it draws");
   assert.match(cot, /\.cc-chip\{[^}]*min-height:44px/);
   assert.match(cot, /\.cc-btn\{[^}]*min-height:44px/);
@@ -384,7 +384,7 @@ test("Share this chart: the phone's share sheet gets the market's link; a deskto
     await pg.click("#cc-share");
     const shared = await pg.evaluate(() => window.__shared);
     assert.equal(shared.length, 1);
-    assert.equal(shared[0].url, "https://agsist.com/cot?m=soybeans");
+    assert.equal(shared[0].url, "https://agsist.com/cot?m=soybeans&w=2026-10-27&utm_source=share&utm_medium=link&utm_campaign=cot-2026-10-27#soybeans", "the market, the week and the kit's tags");
     assert.equal(shared[0].text, "Soybean funds cut their net long by 27,544 contracts. Still net long: 193,781.");
     assert.match(shared[0].title, /soybeans/);
     await pg.context().close();
@@ -393,17 +393,21 @@ test("Share this chart: the phone's share sheet gets the market's link; a deskto
     await pg.addInitScript(stub); await pg.reload(); await pg.waitForFunction(() => document.getElementById("cot-chart-box").dataset.latest);
     await pg.click("#cc-share");
     await pg.waitForFunction(() => document.getElementById("cc-note").textContent === "Link copied");
-    assert.deepEqual(await pg.evaluate(() => [window.__shared.length, window.__copied]), [0, ["https://agsist.com/cot?m=chicago-wheat"]]);
+    assert.deepEqual(await pg.evaluate(() => [window.__shared.length, window.__copied]), [0, ["https://agsist.com/cot?m=chicago-wheat&w=2026-10-27&utm_source=share&utm_medium=link&utm_campaign=cot-2026-10-27#chicago-wheat"]]);
     await pg.context().close();
   } finally { await browser.close(); srv.close(); }
 });
 
-test("Save image: a 1200x675 PNG with the headline, agsist.com/cot and the report date", { skip, timeout: 120000 }, async () => {
+test("Save picture: pick your market, then a 1200x675 PNG with that market's headline, agsist.com/cot and the report date", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const pg = await open(browser, port, "/cot?m=soybeans", { width: 1280 });
-    const [dl] = await Promise.all([pg.waitForEvent("download"), pg.click("#cc-save")]);
+    const pg = await open(browser, port, "/cot", { width: 1280 });
+    await pg.click("#cc-save");
+    assert.ok(await pg.$eval("#cc-pick", (d) => d.open), "Save picture asks which market first");
+    assert.deepEqual(await pg.$$eval("#cc-pick-mk > .cc-dlg-g .cc-pk", (b) => b.map((x) => x.textContent)), ["Corn", "Soybeans", "Wheat", "Cattle", "Hogs"]);
+    assert.equal(await pg.$$eval("#cc-pick .cc-dlg-more .cc-pk", (b) => b.length), 6, "the rest under More markets");
+    const [dl] = await Promise.all([pg.waitForEvent("download"), pg.click('#cc-pick .cc-pk[data-k="beans"]')]);
     assert.equal(dl.suggestedFilename(), "agsist-cot-soybeans-2026-10-27.png");
     const buf = fs.readFileSync(await dl.path());
     assert.equal(buf.subarray(1, 4).toString(), "PNG");
@@ -414,8 +418,54 @@ test("Save image: a 1200x675 PNG with the headline, agsist.com/cot and the repor
     assert.ok(im.texts.includes("Soybean funds cut their net long by 27,544 contracts.") && im.texts.includes("Still net long: 193,781."), "carries the headline: what changed, then where they stand");
     assert.ok(!im.texts.some((t) => /\bthis week\b|\btoday\b/i.test(t)), "no 'this week' or 'today' on a picture");
     assert.ok(im.texts.includes("193,781 long"), "this week's number");
+    assert.ok(im.texts.includes("In bushels: about 140 million sold, about 970 million net long."), "the contracts in bushels: " + im.texts.filter((t) => /bushels/.test(t)));
+    assert.ok(im.texts.some((t) => /exchange contract specifications/.test(t)), "and where the contract size comes from");
+    assert.equal(await pg.$eval("#cc-pv-note", (e) => e.textContent), "Picture saved.");
     assert.ok(im.texts.some((t) => /^Source: CFTC Commitments of Traders/.test(t)), "and its source");
     assert.ok(!im.texts.some((t) => DASH.test(t)), "no dashes");
+    await pg.context().close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("the share fallback: on a phone the picture is made at the pick and sent inside the tap; a refused share downloads it with a note", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const stub = () => {
+    window.__shared = []; window.__ev = [];
+    const mm = window.matchMedia.bind(window);
+    window.matchMedia = (q) => (/pointer:\s*coarse/.test(q) ? { matches: true, media: q, addEventListener() {}, removeEventListener() {} } : mm(q));
+    Object.defineProperty(navigator, "canShare", { configurable: true, value: () => true });
+    Object.defineProperty(navigator, "share", { configurable: true, value: (d) => { window.__shared.push(d); return window.__refuse ? Promise.reject(new DOMException("no activation", "NotAllowedError")) : Promise.resolve(); } });
+  };
+  try {
+    const pg = await open(browser, port, "/cot", { touch: true, init: stub });
+    await pg.click("#cc-save");
+    await pg.click('#cc-pick .cc-pk[data-k="leanhogs"]');
+    await pg.waitForFunction(() => !document.getElementById("cc-pv-send").hidden);
+    assert.equal(await pg.evaluate(() => window.__shared.length), 0, "nothing shared until the reader taps Send");
+    assert.deepEqual(await pg.evaluate(() => [window.AgCotChart.lastImage.w, window.AgCotChart.lastImage.h]), [1080, 1350], "the phone picture");
+    await pg.click("#cc-pv-send");
+    await pg.waitForFunction(() => document.getElementById("cc-pv-note").textContent === "Sent.");
+    const sh = await pg.evaluate(() => ({ n: window.__shared[0].files.length, name: window.__shared[0].files[0].name, text: window.__shared[0].text }));
+    assert.equal(sh.n, 1); assert.equal(sh.name, "agsist-cot-lean-hogs-2026-10-27.png");
+    assert.match(sh.text, /https:\/\/agsist\.com\/cot\?m=lean-hogs&w=2026-10-27&utm_source=share&utm_medium=picture&utm_campaign=cot-2026-10-27#lean-hogs$/);
+    const ev = () => pg.evaluate(() => (window.dataLayer || []).filter((a) => a[0] === "event").map((a) => a[1] + ":" + JSON.stringify(a[2] || {})));
+    assert.ok((await ev()).some((e) => /^share_done:.*"asset":"picture"/.test(e)), "share_done only after the share resolved");
+    await pg.evaluate(() => { window.__refuse = true; });
+    const [dl] = await Promise.all([pg.waitForEvent("download"), pg.click("#cc-pv-send")]);
+    assert.equal(dl.suggestedFilename(), "agsist-cot-lean-hogs-2026-10-27.png", "refused: downloaded instead");
+    assert.match(await pg.$eval("#cc-pv-note", (e) => e.textContent), /did not open sharing, so the picture was saved/);
+    await pg.context().close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("arrivals: a QR visit is counted once and the Funds this week box records where the reader came from", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const pg = await open(browser, port, "/cot?utm_source=print&utm_medium=qr&utm_campaign=cot-2026-10-27");
+    assert.equal(await pg.$eval("#cot-signup", (e) => e.getAttribute("data-source")), "cot-weekly:cot|print-qr");
+    assert.equal(await pg.evaluate(() => (window.dataLayer || []).filter((a) => a[0] === "event" && a[1] === "qr_visit").length), 1);
     await pg.context().close();
   } finally { await browser.close(); srv.close(); }
 });
