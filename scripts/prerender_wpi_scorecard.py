@@ -956,13 +956,88 @@ def cot_summary(d):
             + "; ".join(rows[:6]) + ". Full 52-week context, price overlay, and every market below.")
 
 
+COT_CX_JSON = "data/cot-analysis.json"
+# components/cot-glance.js NAMES: the market inside a sentence
+COT_NAMES = {"corn": "corn", "beans": "soybeans", "wheat": "Chicago wheat", "kcwheat": "KC wheat",
+             "mplswheat": "Minneapolis wheat", "soymeal": "soybean meal", "soyoil": "soybean oil",
+             "livecattle": "live cattle", "feedercattle": "feeder cattle", "leanhogs": "lean hogs",
+             "milk": "Class III milk"}
+_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+_MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def _clock_et(hhmm):
+    h, m = (int(x) for x in (hhmm or "15:30").split(":"))
+    return f"{h % 12 or 12}:{m:02d} {'AM' if h < 12 else 'PM'} ET"
+
+
+def cot_next_words(d):
+    """'Friday Nov 6, 3:30 PM ET' (and ' (moved from Friday)' on a holiday week), from
+    cot.json next_release (cot_calendar.release_date). The JS-off text of the release
+    bar and the answer line; the live page says 'today' and counts down
+    (components/cot-glance.js release()). Never depends on the clock, so
+    check_cot_baked.py gives the same answer every day."""
+    try:
+        nd = datetime.strptime(d.get("next_release") or "", "%Y-%m-%d").date()
+    except ValueError:
+        return ""
+    mv = " (moved from Friday)" if nd.weekday() != 4 else ""
+    return f"{_DAYS[nd.weekday()]} {_MON3[nd.month - 1]} {nd.day}, {_clock_et(d.get('next_release_time_et'))}{mv}"
+
+
+def cot_release_html(d):
+    w = cot_next_words(d)
+    return f"Next CFTC report: {esc(w)}" if w else "CFTC releases the report Fridays at 3:30 PM ET"
+
+
+def cot_answer(d, cx, key="corn"):
+    """The answer line under the chart title, the same sentence as
+    components/cot-glance.js answer() (without 'today', see cot_next_words)."""
+    c = d.get(key)
+    if not isinstance(c, dict) or c.get("net") is None:
+        return ""
+    try:
+        rd = datetime.strptime(d.get("report_date", ""), "%B %d, %Y").date()
+    except ValueError:
+        return ""
+    a = ((cx or {}).get("commodities") or {}).get(key)
+    if not (a and (a.get("date") or "") == rd.isoformat()):
+        a = None
+    cr = (a or {}).get("crowd") or {}
+    net, prev = c["net"], c.get("prev")
+    chg = (a or {}).get("chg") if a and isinstance(a.get("chg"), int) else (net - prev if prev is not None else None)
+    side = c.get("side") or ("long" if net > 0 else "short" if net < 0 else "flat")
+    name = COT_NAMES.get(key, key)
+    wk = f" in the week to {_DAYS[rd.weekday()]}, {_MON3[rd.month - 1]} {rd.day}"
+    if chg is None:
+        act = f"Managed money held {name}{wk}"
+    elif chg == 0:
+        act = f"Managed money held {name} steady{wk}"
+    else:
+        act = f"Managed money {'bought' if chg > 0 else 'sold'} a net {abs(chg):,} contracts of {name}{wk}"
+    pos = (f"funds about even (net {'short' if net < 0 else 'long'} {abs(net):,})" if side == "flat"
+           else f"funds net {side} {abs(net):,}")
+    words = cr.get("words") if isinstance(cr.get("shown"), (int, float)) and cr.get("since") else None
+    did = (act + ", leaving " + pos + (f", {cr['record']}" if cr.get("record") else "")
+           + (f": {words} (share of open interest)" if words else "") + ".")
+    w = cot_next_words(d)
+    return esc(did) + (f" Next report: {esc(w)}." if w else "")
+
+
 def bake_cot():
     with open(COT_JSON, encoding="utf-8") as f:
         d = json.load(f)
+    try:
+        with open(COT_CX_JSON, encoding="utf-8") as f:
+            cx = json.load(f)
+    except (OSError, ValueError):
+        cx = None
     with open(COT_HTML, encoding="utf-8") as f:
         src = f.read()
     orig = src
     src = replace_region(src, "cot-summary", cot_summary(d), COT_HTML)
+    src = replace_region(src, "cot-release", cot_release_html(d), COT_HTML)
+    src = replace_region(src, "cot-answer", cot_answer(d, cx), COT_HTML)
     return orig, src, COT_HTML
 
 

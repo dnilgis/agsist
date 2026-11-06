@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-11-06T14:51:31+00:00",
+ "built": "2026-11-06T19:35:32+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5714,8 +5714,8 @@
     "d": "2026-11-04",
     "users": 605,
     "engaged": 452,
-    "gClicks": null,
-    "gImpr": null,
+    "gClicks": 354,
+    "gImpr": 17896,
     "bClicks": null,
     "bImpr": null
    }
@@ -5728,75 +5728,75 @@
    "rows": [
     {
      "q": "agsist",
-     "clicks": 32,
-     "impr": 70,
+     "clicks": 35,
+     "impr": 76,
      "pos": 1
     },
     {
      "q": "grain prices at local elevators",
      "clicks": 29,
-     "impr": 812,
-     "pos": 4.2
+     "impr": 844,
+     "pos": 4.1
     },
     {
      "q": "cash rents by county per acre",
      "clicks": 13,
-     "impr": 248,
-     "pos": 4.0
+     "impr": 262,
+     "pos": 3.9
     },
     {
      "q": "soybean yield calculator",
      "clicks": 11,
-     "impr": 253,
+     "impr": 254,
      "pos": 3.6
     },
     {
      "q": "grain bin calculator",
      "clicks": 9,
-     "impr": 234,
-     "pos": 10.0
+     "impr": 239,
+     "pos": 10.1
     },
     {
      "q": "usda land rental rates by county",
-     "clicks": 7,
-     "impr": 26,
+     "clicks": 8,
+     "impr": 27,
      "pos": 4.3
+    },
+    {
+     "q": "usda cash rent by county",
+     "clicks": 7,
+     "impr": 86,
+     "pos": 3
     },
     {
      "q": "chs french cash bids",
      "clicks": 6,
-     "impr": 84,
+     "impr": 88,
      "pos": 5.1
     },
     {
-     "q": "usda cash rent by county",
-     "clicks": 6,
-     "impr": 82,
-     "pos": 3.0
+     "q": "adm winona cash bids",
+     "clicks": 5,
+     "impr": 112,
+     "pos": 7.7
     },
     {
      "q": "hail tracker",
      "clicks": 5,
-     "impr": 33,
-     "pos": 5.0
+     "impr": 34,
+     "pos": 4.9
     },
     {
      "q": "poet grain cash bids today",
      "clicks": 5,
-     "impr": 157,
-     "pos": 5.9
+     "impr": 167,
+     "pos": 5.8
     },
     {
      "q": "prf insurance calculator",
      "clicks": 5,
-     "impr": 60,
-     "pos": 12.5
-    },
-    {
-     "q": "adm winona cash bids",
-     "clicks": 4,
-     "impr": 105,
-     "pos": 7.9
+     "impr": 65,
+     "pos": 11.7
     },
     {
      "q": "arc plc payments 2026 calculator",
@@ -5807,44 +5807,44 @@
     {
      "q": "average corn yield per acre by state",
      "clicks": 4,
-     "impr": 174,
-     "pos": 6.9
+     "impr": 181,
+     "pos": 6.7
     },
     {
      "q": "cash rents by county",
      "clicks": 4,
-     "impr": 55,
+     "impr": 56,
      "pos": 6.4
     },
     {
      "q": "free grain bin calculator",
      "clicks": 4,
-     "impr": 57,
+     "impr": 58,
      "pos": 4.2
     },
     {
      "q": "usda custom farming rates",
      "clicks": 4,
-     "impr": 12,
-     "pos": 6
+     "impr": 13,
+     "pos": 6.4
     },
     {
      "q": "wolf river grain",
      "clicks": 4,
-     "impr": 534,
-     "pos": 5.9
+     "impr": 555,
+     "pos": 5.8
+    },
+    {
+     "q": "bin calculator",
+     "clicks": 3,
+     "impr": 63,
+     "pos": 9.1
     },
     {
      "q": "custom combine rates",
      "clicks": 3,
-     "impr": 99,
-     "pos": 5.9
-    },
-    {
-     "q": "farm rent per acre",
-     "clicks": 3,
-     "impr": 22,
-     "pos": 18.5
+     "impr": 110,
+     "pos": 6.0
     }
    ],
    "country": "US"
@@ -6469,26 +6469,26 @@
   "ga4": {
    "ok": true,
    "through": "2026-11-04",
-   "fetched": "2026-11-06T14:51:31+00:00"
+   "fetched": "2026-11-06T19:35:32+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-11-06T14:51:31+00:00"
+   "fetched": "2026-11-06T19:35:32+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-11-06T14:51:31+00:00"
+   "fetched": "2026-11-06T19:35:32+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-11-06T14:51:31+00:00"
+   "fetched": "2026-11-06T19:35:32+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-11-04",
-   "fetched": "2026-11-06T14:51:31+00:00"
+   "fetched": "2026-11-06T19:35:32+00:00"
   }
  }
 }

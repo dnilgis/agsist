@@ -213,6 +213,38 @@ def shown_pct(p, crowded):
     return n
 
 
+def rank_words(p, net, crowded, since):
+    """The headline rank in words, never an ordinal (2026-11-06, Sig: "48th" read
+    like a finishing place). p is the at-or-below percentile of net as a share of
+    open interest since `since`. A long (or a net of zero) is "higher than N% of
+    weeks since 2010"; a short is "a bigger net short than N% of weeks since 2010",
+    N counted from the other end. N is the printed whole number (shown_pct), so the
+    words and every other print of this rank agree. None without a percentile."""
+    if p is None:
+        return None
+    n = shown_pct(p, crowded)
+    if net is not None and net < 0:
+        return f"a bigger net short than {100 - n}% of weeks since {since}"
+    return f"higher than {n}% of weeks since {since}"
+
+
+def record_words(c):
+    """A record said with its measure and its start year, or None. Contracts and
+    share of open interest are different measures and each is named: lean hogs on
+    Oct 27, 2026 (-51,646) were the largest net short in contracts since 2010 while
+    the share of open interest was second to Sep 29. Never "record" without both."""
+    since = (c.get("first_week") or "")[:4]
+    rc = c.get("record_contracts")
+    if rc:
+        return f"the largest net {rc['side']} in contracts since {since}"
+    net = c.get("net") or 0
+    if c.get("is_record_high") and net > 0:
+        return f"the largest net long as a share of open interest since {since}"
+    if c.get("is_record_low") and net < 0:
+        return f"the largest net short as a share of open interest since {since}"
+    return None
+
+
 def crowded_side(net, p):
     """'long', 'short' or None. The sign has to agree with the percentile: a
     net-long market at the 6th percentile of its record is a small long, not a
@@ -260,12 +292,11 @@ def crowd_summary(c):
     """The one crowding read every page prints, from the one measure: the
     full-record percentile of managed-money net as a share of open interest,
     counted on the side the position is on. Called after the family's
-    false-discovery control has set fdr_pass on the studies."""
+    family's correction has set `passes` on the studies."""
     p = (c.get("pctl") or {}).get("net_oi_all")
-    held = any(st.get("verdict") == "measured" and st.get("fdr_pass")
+    held = any(st.get("verdict") == "measured" and st.get("passes")
                for g in (c.get("studies") or {}).values() for st in g.values())
     side = "long" if (c.get("net") or 0) > 0 else "short" if (c.get("net") or 0) < 0 else "flat"
-    card = c.get("card") or {}
     return {
         "pctl": p,
         # the whole number every page prints (shown_pct): one rounding and
@@ -282,9 +313,10 @@ def crowd_summary(c):
         "held": held,
         "tested": ("One positioning reading held up against the record after the correction "
                    "for testing many; the COT page names it.") if held else TESTED_NONE,
-        # the trailing-year figure in contracts, for "show the math" only
-        "pct52_contracts": card.get("pct"),
-        "weeks52": card.get("weeks"),
+        # the rank in words, the one form the pages print (no ordinals)
+        "words": rank_words(p, c.get("net"), c.get("crowded"),
+                            (c.get("first_week") or "")[:4] or "the start of the record"),
+        "record": record_words(c),
     }
 
 
@@ -742,9 +774,8 @@ def _rec_pct(c):
         return f"the lowest reading of its record since {c['first_week'][:4]} {n}"
     if c.get("is_record_high"):
         return f"the highest reading of its record since {c['first_week'][:4]} {n}"
-    # Not a record, so never "0th" or "100th".
-    return (f"the {ordinal(shown_pct(p, c.get('crowded')))} percentile of its record since "
-            f"{c['first_week'][:4]} {n}")
+    # Not a record, so never "0th" or "100th"; in words, not an ordinal.
+    return f"{rank_words(p, c.get('net'), c.get('crowded'), c['first_week'][:4])} {n}"
 
 
 def _divergence_read(c):
@@ -934,9 +965,8 @@ def build_grain_lines(out):
             rank = f" As a share of open interest, that is the biggest net short of every week since {since}."
         else:
             cr = c.get("crowded")
-            rank = (f" Against every week since {since}, as a share of open interest, that is the "
-                    f"{ordinal(shown_pct(p, cr))} percentile ({crowd_word(p)}, "
-                    f"{'crowded ' + cr if cr else 'not crowded'}).")
+            rank = (f" As a share of open interest, that is {rank_words(p, net, cr, since)} "
+                    f"({crowd_word(p)}, {'crowded ' + cr if cr else 'not crowded'}).")
         lines.append({"key": key, "label": c["label"], "text": pos + move + "." + rank})
     return lines
 
@@ -1035,6 +1065,12 @@ def analyse_commodity(key, block, family):
         "crowded": crowded_side(net[i], percentile_rank(net_oi, net_oi[i])),
         "shutdown_excluded": shutdown_excluded,
         "rank_oi": rank_oi,
+        # A record in CONTRACTS, named as such: this week's net is the largest
+        # net long (or short) of every week in the record. Share of open interest
+        # has its own flags above; the page names whichever measure it states.
+        "record_contracts": ({"side": "long", "since": d[0][:4], "weeks": n} if net[i] > 0 and net[i] >= max(net)
+                             else {"side": "short", "since": d[0][:4], "weeks": n} if net[i] < 0 and net[i] <= min(net)
+                             else None),
         # Raw contracts, kept for the arithmetic table only. NOT size-adjusted:
         # open interest has roughly doubled over the record.
         "rank": {"desc": rank_desc, "of": n, "measure": "raw contracts (not size-adjusted)",
@@ -1232,10 +1268,10 @@ def build_read(c):
         where = (f"a bigger net {side} than {100 - rarer:.0f}% of weeks since "
                  f"{c['first_week'][:4]}, measured as a share of open interest")
     elif p is not None and (p >= 75 or p <= 25):
-        where = (f"the {ordinal(p)} percentile since {c['first_week'][:4]} as a share of open "
+        where = (f"{rank_words(p, net, c.get('crowded'), c['first_week'][:4])} as a share of open "
                  f"interest, on the {'high' if p >= 75 else 'low'} side but not extreme")
     elif p is not None:
-        where = (f"the {ordinal(p)} percentile since {c['first_week'][:4]} as a share of open "
+        where = (f"{rank_words(p, net, c.get('crowded'), c['first_week'][:4])} as a share of open "
                  f"interest, which is normal")
     else:
         where = "with no history to rank it against"
@@ -1323,6 +1359,27 @@ def board_correlation(out):
 HIST_PATH = os.path.join(DATA, "cot-history.json")
 
 
+def rk_rows(rows, block):
+    """ONE RANK ENGINE (2026-11-06). Put open interest and `rk` on each
+    cot-history.json row: the share-of-open-interest percentile since the
+    record's first week, counted ONLY over that week and the weeks before it (no
+    hindsight), with the at-or-below rule of percentile_rank, the rule the
+    headline rank uses. So the latest row's rk is the headline rank exactly, and
+    the Compare chart draws the same rank the page prints instead of ranking in
+    the browser. Joined by date; a row the deep file does not have gets no rk."""
+    s = series_for(block)
+    at = {d: i for i, d in enumerate(block["dates"])}
+    net_oi = s["net_oi"]
+    for r in rows:
+        i = at.get(r.get("date"))
+        if i is None or net_oi[i] is None:
+            r.pop("rk", None)
+            continue
+        if s["oi"][i]:
+            r["oi"] = s["oi"][i]
+        r["rk"] = percentile_rank(net_oi[:i + 1], net_oi[i])
+
+
 def attach_adjusted_prices(deep):
     """Put the roll-repaired price index onto every row of cot-history.json.
 
@@ -1361,6 +1418,11 @@ def attach_adjusted_prices(deep):
     joined = missing = 0
     for key, rows in (hist.get("history") or {}).items():
         block = commodities.get(key) or {}
+        if block.get("dates") and len(block["dates"]) >= 120:
+            rk_rows(rows, block)
+        else:
+            for r in rows:
+                r.pop("rk", None)
         dates, px = block.get("dates"), block.get("px_adj")
         if not dates or not px:
             missing += len(rows)
@@ -1439,9 +1501,9 @@ def main():
     pvals = [t[3]["p"] for t in measured]
     survivors = benjamini_yekutieli(pvals)
     for idx, t in enumerate(measured):
-        t[3]["fdr_pass"] = idx in survivors
+        t[3]["passes"] = idx in survivors
     for t in family:
-        t[3].setdefault("fdr_pass", False)
+        t[3].setdefault("passes", False)
     for r in out.values():
         r["crowd"] = crowd_summary(r)
     raw_hits = sum(1 for p in pvals if p < ALPHA)
@@ -1476,7 +1538,7 @@ def main():
         "grain_lines": build_grain_lines(out),
         "family": {"tests": len(measured), "attempted": len(family),
                    "expected_by_chance": round(len(measured) * ALPHA, 1),
-                   "raw_hits": raw_hits, "fdr_survivors": len(survivors)},
+                   "raw_hits": raw_hits, "survivors": len(survivors)},
         "board": board_summary(out),
         "predictive": board_correlation(out),
         "coverage": {"first_week": min((c2["first_week"] for c2 in out.values()), default=None),
@@ -1677,8 +1739,8 @@ def selftest():
     gl = build_grain_lines({"leanhogs": hogs, "beans": beans, "corn": corn})
     ckt("grain lines: corn first, then soybeans, never hogs",
         [g["key"] for g in gl] == ["corn", "beans"], gl)
-    want_corn = ("funds are net long 329,839 contracts, 51,381 fewer than last week. Against every week "
-                 "since 2010, as a share of open interest, that is the 81st percentile (high side, not crowded).")
+    want_corn = ("funds are net long 329,839 contracts, 51,381 fewer than last week. As a share of open "
+                 "interest, that is higher than 81% of weeks since 2010 (high side, not crowded).")
     ckt("grain line: corn Oct 6 2026", gl[0]["text"] == want_corn, gl[0]["text"])
     ckt("grain line: a net short that fell has GROWN", "6,721 more than last week" in gl[1]["text"]
         and "crowded short" in gl[1]["text"], gl[1]["text"])
@@ -1694,19 +1756,36 @@ def selftest():
     cs = crowd_summary({"pctl": {"net_oi_all": 81.4}, "net": 329839, "crowded": None,
                         "first_week": "2010-01-05", "weeks_of_history": 875,
                         "card": {"pct": 88.5, "weeks": 52},
-                        "studies": {"13": {"share_of_oi": {"verdict": "measured", "fdr_pass": False}}}})
+                        "studies": {"13": {"share_of_oi": {"verdict": "measured", "passes": False}}}})
     ckt("crowd summary: corn Oct 6 2026, high side, not crowded, nothing held",
         cs["word"] == "high side" and cs["crowded"] is None and cs["held"] is False
-        and cs["since"] == "2010" and cs["pct52_contracts"] == 88.5 and cs["tested"] == TESTED_NONE, cs)
+        and cs["since"] == "2010" and "pct52_contracts" not in cs and cs["tested"] == TESTED_NONE
+        and cs["words"] == "higher than 81% of weeks since 2010", cs)
     cs2 = crowd_summary({"pctl": {"net_oi_all": 97.6}, "net": 1, "crowded": "long", "first_week": "2010-01-05",
-                         "studies": {"4": {"flow": {"verdict": "measured", "fdr_pass": True}}}})
+                         "studies": {"4": {"flow": {"verdict": "measured", "passes": True}}}})
     ckt("crowd summary: a passing study is named, not hidden", cs2["held"] and cs2["tested"] != TESTED_NONE)
     # one printed percentile: 89.8 not crowded is the 89th everywhere (soybeans, Oct 13 2026 report)
     cs3 = crowd_summary({"pctl": {"net_oi_all": 89.8}, "net": 249807, "crowded": None, "first_week": "2010-01-05"})
     ckt("crowd summary: soybeans 89.8 not crowded is shown as the 89th", cs3["shown"] == 89, cs3)
     ckt("record line uses the same clamp",
-        "the 89th percentile" in _rec_pct({"pctl": {"net_oi_all": 89.8}, "crowded": None,
-                                           "weeks_of_history": 876, "first_week": "2010-01-05"}))
+        "higher than 89% of weeks since 2010" in _rec_pct({"pctl": {"net_oi_all": 89.8}, "crowded": None, "net": 1,
+                                                           "weeks_of_history": 876, "first_week": "2010-01-05"}))
+    ckt("rank words: a short counts from the other end",
+        rank_words(1.9, -51646, "short", "2010") == "a bigger net short than 98% of weeks since 2010")
+    ckt("record words name the measure and the start year",
+        record_words({"first_week": "2010-01-05", "net": -51646,
+                      "record_contracts": {"side": "short"}}) == "the largest net short in contracts since 2010"
+        and record_words({"first_week": "2010-01-05", "net": 5, "is_record_high": True})
+        == "the largest net long as a share of open interest since 2010"
+        and record_words({"first_week": "2010-01-05", "net": 5}) is None)
+    hist_rows = [{"date": "2026-01-06", "net": 1}, {"date": "2026-01-13", "net": 3}, {"date": "2026-01-20", "net": 2},
+                 {"date": "2026-01-27", "net": 9}]
+    blk = {"dates": ["2026-01-06", "2026-01-13", "2026-01-20"], "oi": [10, 10, 10],
+           "mm_long": [1, 3, 2], "mm_short": [0, 0, 0]}
+    rk_rows(hist_rows, blk)
+    ckt("rk: each week ranked against itself and the weeks before it only, at or below",
+        [r.get("rk") for r in hist_rows] == [100.0, 100.0, 66.7, None]
+        and [r.get("oi") for r in hist_rows] == [10, 10, 10, None], hist_rows)
     ckt("shown_pct: crowded 90.2 is the 90th, not crowded 10.2 the 11th, 99.7 the 99th",
         shown_pct(90.2, "long") == 90 and shown_pct(10.2, None) == 11 and shown_pct(99.7, "long") == 99)
 

@@ -18,13 +18,15 @@ and lean hogs, from the site's own COT files, the same numbers /cot shows:
   * the change from the report before, data/cot.json `prev`, said as "from
     the week before" only when data/cot-history.json shows that report seven
     days earlier, else "since <its date>";
-  * where the net sits in its range over the last 52 weekly reports
-    (data/cot-history.json) and, when data/cot-deep.json reaches this report,
-    over the last three years of weekly reports: 0% the most short, 100% the
-    most long in that span. A range the files cannot show for this report is
-    left out, never filled in.
+  * the /cot page's one rank, in words: managed-money net as a share of open
+    interest against every week since 2010 (data/cot-analysis.json
+    crowd.words / crowd.record, the fields the page's answer line prints),
+    and the 52-week range (data/cot-history.json), labelled a range;
+  * a news subject, a hidden preview line and a "This week" lead, computed
+    from the same files: a record, a run of selling or buying counted from
+    data/cot-history.json, the biggest move as a share of open interest.
 Plus the date the positions are as of (a Tuesday), the day and time CFTC
-released them (scripts/cot_calendar.py, 3:30 PM ET) and a link to /cot.
+released them and the next report (scripts/cot_calendar.py, 3:30 PM ET) and a link to /cot.
 Nothing is forecast and nothing is advice.
 
 WHEN IT SENDS. cot-release-watch.yml runs it right after it commits a new
@@ -162,8 +164,8 @@ def long_day(d):
 
 # ── what the files say ────────────────────────────────────────────────────
 def rows_for(cot, hist, deep, as_of, ana=None, gaps=None):
-    """[{key, name, net, chg, chg_since, y1, y3, rank, rank_why}] for each
-    market the files carry for this report. y1 / y3 = {lo, hi, pct, n} or
+    """[{key, name, net, chg, chg_since, y1, side, oi, streak, rank, rank_why}] for each
+    market the files carry for this report. y1 = {lo, hi, pct, n} or
     None. rank is the /cot page's own percentile (rank_of) or None, with
     rank_why saying why. A market left out goes into `gaps` as (name, why),
     so the email says it is missing instead of hiding it."""
@@ -183,7 +185,9 @@ def rows_for(cot, hist, deep, as_of, ana=None, gaps=None):
             print("%s: data/cot-history.json does not end on this report (%s); left out" % (name, iso))
             gaps.append((name, "the weekly files do not agree on this report yet"))
             continue
-        row = {"key": key, "name": name, "net": c["net"], "chg": None, "chg_since": None, "y1": None, "y3": None}
+        row = {"key": key, "name": name, "net": c["net"], "chg": None, "chg_since": None, "y1": None,
+               "side": c.get("side") if c.get("side") in ("long", "short", "flat") else None,
+               "oi": h[-1].get("oi") if n0(h[-1].get("oi")) and h[-1]["oi"] > 0 else None}
         if n0(c.get("prev")) and len(h) >= 2 and h[-2]["net"] == c["prev"]:
             row["chg"] = c["net"] - c["prev"]
             try:
@@ -198,17 +202,18 @@ def rows_for(cot, hist, deep, as_of, ana=None, gaps=None):
             p = pct_in(c["net"], lo, hi)
             if p is not None:
                 row["y1"] = {"lo": lo, "hi": hi, "pct": p, "n": len(span)}
-        d = D.get(key) or {}
-        ds, L, S = d.get("dates") or [], d.get("mm_long") or [], d.get("mm_short") or []
-        if ds and ds[-1] == iso and len(ds) == len(L) == len(S):
-            start = (as_of - timedelta(days=3 * 365)).isoformat()
-            nets = [L[i] - S[i] for i in range(len(ds)) if ds[i] > start and n0(L[i]) and n0(S[i])]
-            # the files must agree on this week, and the span must really be three years of reports
-            if nets and nets[-1] == c["net"] and len(nets) >= 140 and ds[0] <= start:
-                lo, hi = min(nets), max(nets)
-                p = pct_in(c["net"], lo, hi)
-                if p is not None:
-                    row["y3"] = {"lo": lo, "hi": hi, "pct": p, "n": len(nets)}
+        # the run of same-way weekly changes ending this week, from consecutive weekly reports
+        run, j = 0, len(h) - 1
+        while j >= 1 and row["chg"]:
+            try:
+                gap = (date.fromisoformat(h[j]["date"]) - date.fromisoformat(h[j - 1]["date"])).days
+            except ValueError:
+                break
+            dj = h[j]["net"] - h[j - 1]["net"]
+            if gap != 7 or not dj or (dj > 0) != (row["chg"] > 0):
+                break
+            run, j = run + 1, j - 1
+        row["streak"], row["streak_open"] = run, (run > 0 and j == 0)
         row["rank"], row["rank_why"] = rank_of(key, c["net"], iso, ana, deep)
         out.append(row)
     return out
@@ -229,6 +234,16 @@ def recount(deep, key, iso):
         return None
     v = round(100.0 * (L[-1] - S[-1]) / OI[-1], 3)
     return round(100.0 * sum(1 for x in xs if x <= v) / len(xs), 1)
+
+
+def _rank_words(p, net, crowded, since):
+    import cot_analysis    # the function the page's crowd.words comes from
+    return cot_analysis.rank_words(p, net, crowded, since)
+
+
+def _record_words(a):
+    import cot_analysis
+    return cot_analysis.record_words(a)
 
 
 def rank_of(key, net, iso, ana, deep=None):
@@ -255,18 +270,16 @@ def rank_of(key, net, iso, ana, deep=None):
     return {"pctl": float(p), "shown": cr["shown"], "word": cr.get("word") or "", "crowded": cr.get("crowded"),
             "since": cr.get("since") or str(a.get("first_week") or "")[:4], "weeks": cr["weeks"],
             "record_high": bool(a.get("is_record_high")), "record_low": bool(a.get("is_record_low")),
-            "held": bool(cr.get("held")), "tested": cr.get("tested") or ""}, None
-
-
-def ordinal(n):
-    n = int(n)
-    return "%d%s" % (n, "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th"))
+            "held": bool(cr.get("held")), "tested": cr.get("tested") or "",
+            # the page's own words (cot_analysis.rank_words / record_words), the answer line's fields
+            "words": cr.get("words") or _rank_words(p, net, cr.get("crowded"), cr.get("since") or str(a.get("first_week") or "")[:4]),
+            "record": cr.get("record") if "record" in cr else _record_words(a)}, None
 
 
 def change(r):
-    """The week's move in the position on its own side, or None.
-    "down 3,725" under a net short that had just GROWN read as the opposite
-    (the COT card's rule, cot-page.js); more / fewer is the same on both sides."""
+    """The week's move in the position on its own side, or None. Kept for
+    daily_more.py (sentence() below), which writes the Saturday and Monday
+    Daily's fund lines; the email itself says what funds did (did_words)."""
     if r["chg"] is None:
         return None
     net, prev = r["net"], r["net"] - r["chg"]
@@ -279,52 +292,71 @@ def change(r):
 
 
 def sentence(r):
-    """What the funds hold and what they did, in one sentence."""
+    """What the funds hold and what they did, in one sentence (daily_more.py)."""
     ch = change(r)
     return "Managed money is %s %s contracts%s." % (side(r["net"]), NOUN[r["key"]], (", " + ch) if ch else "")
 
 
-def short_line(r):
-    """The phone line under a market's name (which already shows the net):
-    the change, then where it ranks with its sample."""
-    ch = change(r)
-    k = r.get("rank")
-    if not k:
-        rk = rank_line(r)
-    elif (k["record_high"] and r["net"] > 0) or (k["record_low"] and r["net"] < 0):
-        rk = "The biggest net %s, as a share of open interest, in %s weeks since %s." % (
-            "long" if r["net"] > 0 else "short", format(k["weeks"], ","), k["since"])
-    else:
-        rk = "%s percentile of %s weeks since %s (%s)." % (ordinal(k["shown"]), format(k["weeks"], ","), k["since"],
-                                                         k["word"] + (", crowded " + k["crowded"] if k["crowded"] else ""))
-    return ((ch[0].upper() + ch[1:] + ". ") if ch else "") + rk
+# ── the email's words (Nov 6, Sig: "make sure the COT email is very very good") ──
+# One rank, the /cot page's: managed-money net as a share of open interest, ranked
+# against every week since the record starts, in words (data/cot-analysis.json
+# crowd.words, the field the page's answer line prints). No ordinals, no second
+# span, no advice: what the funds did and where that leaves them.
+SHORT = {"corn": "corn", "beans": "soybeans", "wheat": "Chicago wheat", "livecattle": "live cattle",
+         "feedercattle": "feeder cattle", "leanhogs": "lean hogs"}
 
 
-def rank_line(r):
-    """Where that sits in its own record, with the sample, or why not."""
-    k = r.get("rank")
-    if not k:
-        return "No percentile this week: %s." % (r.get("rank_why") or "no long-run ranking")
-    span = "%s weekly reports since %s" % (format(k["weeks"], ","), k["since"])
-    if k["record_high"] and r["net"] > 0:
-        return "That is the biggest net long, as a share of open interest, in %s." % span
-    if k["record_low"] and r["net"] < 0:
-        return "That is the biggest net short, as a share of open interest, in %s." % span
-    tag = k["word"] + (", crowded " + k["crowded"] if k["crowded"] else "")
-    return "That is the %s percentile of %s (%s)." % (ordinal(k["shown"]), span, tag)
+def held_words(r):
+    """'net long 81,113', or 'about even (net short 517)' inside the flat band."""
+    if r.get("side") == "flat" and r["net"]:
+        return "about even (%s)" % side(r["net"])
+    return side(r["net"])
 
 
-def note(r):
-    """Only where /cot prints one (high or low side): how much fund business
-    sits between here and flat. A fact about the position, never advice: the
-    "worth a look at unpriced bushels" line was cut (2026-11-06, Sig) because
-    nothing tested it."""
-    k = r.get("rank")
-    if not k or (25 < k["pctl"] < 75) or r["net"] == 0:
+def did(r):
+    """'sold' / 'bought' / 'held' for the week, from the change."""
+    if r["chg"] is None:
         return None
-    flow = "selling" if r["net"] > 0 else "buying"
-    return ("If funds head for the exit, %s contracts of %s sit between here and flat. "
-            "Not a call on price." % (comma(r["net"]), flow))
+    return "held" if r["chg"] == 0 else ("bought" if r["chg"] > 0 else "sold")
+
+
+def rank_words(r):
+    """'higher than 48% of weeks since 2010 (share of open interest)', or None."""
+    k = r.get("rank")
+    return (k["words"] + " (share of open interest)") if k and k.get("words") else None
+
+
+def market_line(r):
+    """One plain sentence per market, the /cot answer line's shape: what funds did,
+    where that leaves them, a record with its measure, the rank in words."""
+    noun, held = NOUN[r["key"]], held_words(r)
+    since = "" if r["chg_since"] is None else " since the %s report" % md(r["chg_since"])
+    d = did(r)
+    if d is None:
+        s = "Funds are %s %s contracts" % (held, noun)
+    elif d == "held":
+        s = "Funds held steady%s at %s %s contracts" % (since, held, noun)
+    else:
+        prev = r["net"] - r["chg"]
+        flip = r["net"] and prev and (r["net"] > 0) != (prev > 0) and r.get("side") != "flat"
+        s = "Funds %s a net %s %s contracts%s, %s them %s" % (
+            d, comma(r["chg"]), noun, since, "flipping" if flip else "leaving", held)
+    k = r.get("rank")
+    if k and k.get("record"):
+        s += ", " + k["record"]
+    rw = rank_words(r)
+    if rw:
+        return s + ": " + rw + "."
+    return s + ". No rank this week: %s." % (r.get("rank_why") or "no long-run rank")
+
+
+def streak_line(r):
+    """'Funds have sold 6 weeks in a row.' from data/cot-history.json, 3 weeks or more."""
+    n = r.get("streak") or 0
+    if n < 3 or not r["chg"]:
+        return ""
+    return "Funds have %s %s%d weeks in a row." % ("bought" if r["chg"] > 0 else "sold",
+                                                 "at least " if r.get("streak_open") else "", n)
 
 
 def range_line(r):
@@ -333,95 +365,186 @@ def range_line(r):
     return "%d-week range: %s to %s." % (r["y1"]["n"], side(r["y1"]["lo"]), side(r["y1"]["hi"]))
 
 
-def verdict(rows):
-    """The one plain sentence on what positioning can mean, from the COT
-    page's own tests (cot_analysis.py crowd_summary `tested`): the line most
-    ranked markets carry, printed once at the top. A market whose own line
-    differs (a reading that held up) carries it under its numbers."""
-    t = [r["rank"]["tested"] for r in rows if r.get("rank") and r["rank"]["tested"]]
-    return max(sorted(set(t)), key=t.count) if t else None
+def _join(xs):
+    xs = list(xs)
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
 
-def own_tested(r, v):
-    k = r.get("rank")
-    return k["tested"] if (k and k["tested"] and k["tested"] != v) else None
+def moved(rows):
+    """The week's biggest move as a share of open interest, or None."""
+    m = [r for r in rows if r["chg"] and r.get("oi")]
+    return max(m, key=lambda r: abs(r["chg"]) / r["oi"]) if m else None
+
+
+def stories(rows):
+    """[(subject, sentence)] newest news first: a record (with its measure and
+    start year), then the longest run of selling or buying (3 weeks or more),
+    then the biggest move as a share of open interest. Computed, never typed in."""
+    out = []
+    for r in rows:
+        k = r.get("rank") or {}
+        if k.get("record"):
+            rec = k["record"][4:] if k["record"].startswith("the ") else k["record"]
+            out.append(("%s: %s" % (r["name"], rec), "%s: %s." % (r["name"], k["record"])))
+    runs = sorted((r for r in rows if streak_line(r)), key=lambda r: (-r["streak"], -abs(r["chg"]) / (r.get("oi") or 1)))
+    for r in runs[:2]:
+        v = "sold" if r["chg"] < 0 else "bought"
+        n = ("%d+" if r.get("streak_open") else "%d") % r["streak"]
+        out.append(("Funds %s %s %s weeks in a row" % (v, SHORT[r["key"]], n),
+                    "Funds %s %s %s weeks in a row, %s contracts this week." % (v, SHORT[r["key"]], n, comma(r["chg"]))))
+    b = moved(rows)
+    if b and b not in runs[:2]:
+        v = "sold" if b["chg"] < 0 else "bought"
+        out.append(("Funds %s %s %s contracts" % (v, comma(b["chg"]), NOUN[b["key"]]),
+                    "Funds %s %s %s contracts, the week's biggest move as a share of open interest."
+                    % (v, comma(b["chg"]), NOUN[b["key"]])))
+    return out
+
+
+def subject_of(as_of, rows, preview=False):
+    """The news in under 60 characters when it fits, else the first story alone."""
+    st = stories(rows)
+    if not st:
+        s = "Funds this week: positions as of %s" % md(as_of)
+    else:
+        s = st[0][0]
+        if len(st) > 1 and len(s) + 2 + len(st[1][0]) <= 60:
+            s += "; " + st[1][0][0].lower() + st[1][0][1:] if st[1][0].startswith("Funds") else "; " + st[1][0]
+    return ("[Preview] " if preview else "") + s
+
+
+def preheader(rows):
+    """The hidden preview line: the stories the subject did not carry."""
+    st = stories(rows)
+    return " ".join(x[1] for x in st[1:3]) if len(st) > 1 else ""
+
+
+def lead(as_of, rows):
+    """The one-sentence 'This week' line: what managed money did across the markets."""
+    sold = [SHORT[r["key"]] for r in rows if r["chg"] and r["chg"] < 0]
+    bought = [SHORT[r["key"]] for r in rows if r["chg"] and r["chg"] > 0]
+    held = [SHORT[r["key"]] for r in rows if r["chg"] == 0]
+    parts = (["sold " + _join(sold)] if sold else []) + (["bought " + _join(bought)] if bought else []) + \
+            (["held " + _join(held) + " steady"] if held else [])
+    if not parts:
+        return ""
+    s = "Funds %s in the week to %s, %s" % (" and ".join(parts), as_of.strftime("%A"), md(as_of))
+    b = moved(rows)
+    if b:
+        s += "; the biggest move, as a share of open interest, was %s %s contracts %s" % (
+            comma(b["chg"]), NOUN[b["key"]], "sold" if b["chg"] < 0 else "bought")
+    return s + "."
+
+
+def next_report(as_of):
+    """'Next report: Monday Nov 16, 3:30 PM ET (moved from Friday).' from
+    scripts/cot_calendar.py, holiday-aware; '' when a shutdown leaves it unknown."""
+    nxt = as_of + timedelta(days=7)
+    if cot_calendar.release_unknown(nxt):
+        return ""
+    d = cot_calendar.release_date(nxt)
+    return "Next report: %s %s %d, %s%s." % (d.strftime("%A"), d.strftime("%b"), d.day, RELEASE_TIME,
+                                              " (moved from Friday)" if d.weekday() != 4 else "")
 
 
 def compose(as_of, released, rows, gaps=(), preview=False):
     """(subject, text, html), the same for every reader but the footer."""
-    subject = ("[Preview] " if preview else "") + "Funds this week: positions as of %s" % md(as_of)
+    subject = subject_of(as_of, rows, preview)
+    pre = preheader(rows)
     when = "Positions as of Tuesday, %s %d. CFTC released them %s at %s." % (
         as_of.strftime("%B"), as_of.day, long_day(released), RELEASE_TIME) if released else \
         "Positions as of Tuesday, %s %d." % (as_of.strftime("%B"), as_of.day)
     if as_of.weekday() != 1:
         when = when.replace("as of Tuesday, ", "as of %s, " % as_of.strftime("%A"))
-    v = verdict(rows)
-    intro = ("\"Managed money\" is CFTC's name for hedge funds and commodity trading advisers. Percentiles rank their net, "
-             "as a share of open interest, against every weekly report on record, as the COT page does: 0 is the most "
-             "short, 100 the most long.")
-    src = ("Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of %s%s. Percentiles and "
+    since = sorted({r["rank"]["since"] for r in rows if r.get("rank")})
+    span = ("every week since " + since[0]) if len(since) == 1 else "every week on record"
+    intro = ("\"Funds\" here is managed money, CFTC's name for hedge funds and commodity trading advisers. Each rank "
+             "compares their net, as a share of open interest, with %s, as the COT page does." % span)
+    src = ("Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of %s%s. Ranks and "
            "ranges are figured by AGSIST from those weekly reports. This is where the funds stood, not where prices go next."
            % (md(as_of), (", released " + md(released)) if released else ""))
-    L = ["AGSIST · FUNDS THIS WEEK", when] + ([v] if v else []) + [intro]
+    nr = next_report(as_of)
+    ld = lead(as_of, rows)
+    L = ["AGSIST · FUNDS THIS WEEK", ""] + (["This week: " + ld, ""] if ld else []) + [when, intro]
     for r in rows:
-        L += ["", r["name"].upper(), sentence(r) + " " + rank_line(r)]
-        L += [x for x in (note(r), own_tested(r, v), range_line(r)) if x]
+        L += ["", r["name"].upper(), market_line(r)]
+        L += [x for x in (streak_line(r), range_line(r)) if x]
     for name, why in gaps:
         L += ["", name.upper(), "No reading this week: %s." % why]
-    L += ["", src, "Every market, the history and how it is figured: " + PAGE]
+    L += ["", src] + ([nr] if nr else []) + ["Every market, the history and how it is figured: " + PAGE]
     text = "\n".join(L)
 
     def esc(s):
         return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    INK, MUTED, LINE, GOLD, BG = "#161a18", "#55605b", "#e3e7e2", "#8a6b1f", "#f6f7f5"
+    SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
     P = '<p style="margin:%s;font:%s;color:%s">%s</p>'
-    parts = ['<p style="margin:0 0 2px;font:700 11px/1.4 monospace;letter-spacing:.12em;color:#6b6b6b">AGSIST · FUNDS THIS WEEK</p>',
-             P % ("0 0 6px", "700 20px/1.3 Georgia,serif", "#14100a", "Where the funds sit, as of " + esc(md(as_of))),
-             P % ("0 0 6px", "14px/1.5 sans-serif", "#14100a", esc(when))]
-    if v:
-        parts.append(P % ("0 0 6px", "700 14px/1.5 sans-serif", "#14100a", esc(v)))
-    parts.append(P % ("0 0 4px", "12px/1.5 sans-serif", "#6b6b6b", esc(intro)))
+    head = subject[len("[Preview] "):] if preview else subject
+    parts = []
+    if pre:
+        parts.append('<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;'
+                     'color:%s;opacity:0">%s%s</div>' % (BG, esc(pre), "&#8199;&#847;" * 40))
+    parts += [P % ("0 0 8px", "700 12px/1.4 ui-monospace,Menlo,Consolas,monospace", GOLD,
+                   '<span style="letter-spacing:.12em">AGSIST · FUNDS THIS WEEK</span>'),
+              P % ("0 0 10px", "700 24px/1.25 Georgia,'Times New Roman',serif", INK, esc(head))]
+    if ld:
+        parts.append(P % ("0 0 10px", "17px/1.5 " + SANS, INK, "<b>This week:</b> " + esc(ld)))
+    parts.append(P % ("0 0 4px", "14px/1.5 " + SANS, MUTED, esc(when)))
+    parts.append(P % ("0 0 6px", "13px/1.5 " + SANS, MUTED, esc(intro)))
     for r in rows:
-        k = r.get("rank")
-        parts.append('<div style="margin:8px 0 0;padding:8px 0 0;border-top:1px solid #e6e1d6">')
-        parts.append(P % ("0 0 1px", "700 12px/1.4 monospace", "#6b6b6b", esc(r["name"].upper()) + ' <span style="letter-spacing:0;font-weight:700;color:#14100a">'
-                          + esc(side(r["net"]).replace("net ", "").upper()) + "</span>"))
-        parts.append(P % ("0 0 3px", "15px/1.45 sans-serif", "#14100a", esc(short_line(r))))
-        if k:
-            parts.append(bar(k["shown"]))
-        n_ = note(r)
-        if n_:
-            parts.append(P % ("3px 0 0", "13px/1.4 sans-serif", "#14100a", esc(n_)))
-        if own_tested(r, v):
-            parts.append(P % ("4px 0 0", "13px/1.45 sans-serif", "#14100a", esc(own_tested(r, v))))
-        rl = range_line(r)
-        if rl:
-            parts.append(P % ("2px 0 0", "12px/1.4 sans-serif", "#6b6b6b", esc(rl)))
+        d = did(r)
+        color = {"sold": "#a63f28", "bought": "#276b43"}.get(d, MUTED)
+        chip = ""
+        if d in ("sold", "bought"):
+            chip = ('<span style="display:inline-block;margin-left:8px;padding:2px 8px;border-radius:10px;'
+                    'background:%s;color:#fff;font:700 13px/1.5 %s;vertical-align:middle">%s %s %s</span>'
+                    % (color, SANS, "&#9660;" if d == "sold" else "&#9650;", d, comma(r["chg"])))
+        parts.append('<div style="margin:16px 0 0;padding:14px 0 0;border-top:1px solid %s">' % LINE)
+        parts.append(P % ("0 0 2px", "700 12px/1.4 " + SANS, MUTED, '<span style="letter-spacing:.08em">'
+                          + esc(r["name"].upper()) + "</span>"))
+        parts.append(P % ("0 0 6px", "800 26px/1.2 " + SANS, INK, esc(held_words(r)) + chip))
+        parts.append(P % ("0 0 4px", "16px/1.5 " + SANS, INK, esc(market_line(r))))
+        sl = streak_line(r)
+        if sl:
+            parts.append(P % ("0 0 4px", "700 15px/1.45 " + SANS, color, esc(sl)))
+        if r["y1"]:
+            parts.append(range_bar(r))
         parts.append("</div>")
     for name, why in gaps:
-        parts.append('<div style="margin:10px 0 0;padding:10px 0 0;border-top:1px solid #e6e1d6">'
-                     + P % ("0", "13px/1.45 sans-serif", "#6b6b6b", "<b>" + esc(name.upper()) + "</b> No reading this week: " + esc(why) + ".")
-                     + "</div>")
-    parts.append(P % ("14px 0 0", "12px/1.5 sans-serif", "#6b6b6b", esc(src)))
-    parts.append('<p style="margin:10px 0 0;font:15px/1.5 sans-serif"><a href="%s" style="color:#8a6b1f;font-weight:700">'
-                 'Every market on the COT tool</a></p>' % PAGE.replace("&", "&amp;"))
+        parts.append('<div style="margin:16px 0 0;padding:14px 0 0;border-top:1px solid %s">' % LINE
+                     + P % ("0", "15px/1.5 " + SANS, MUTED, "<b>" + esc(name.upper()) + "</b><br>No reading this week: "
+                            + esc(why) + ".") + "</div>")
+    parts.append(P % ("20px 0 0", "13px/1.5 " + SANS, MUTED, esc(src)))
+    if nr:
+        parts.append(P % ("10px 0 0", "700 15px/1.5 " + SANS, INK, esc(nr)))
+    parts.append('<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0 0"><tr>'
+                 '<td style="background:#d4a23f;border-radius:6px"><a href="%s" style="display:inline-block;padding:12px 20px;'
+                 'font:700 16px/1.2 %s;color:#161a18;text-decoration:none">Every market on agsist.com/cot</a></td></tr></table>'
+                 % (PAGE.replace("&", "&amp;"), SANS))
     html = ('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<meta name="color-scheme" content="light dark"></head><body style="margin:0;padding:12px;background:#f6f3ec">'
-            '<div style="max-width:600px;margin:0 auto;background:#fff;padding:18px 16px">%s{{FOOT}}</div></body></html>' % "".join(parts))
+            '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>%s</title></head>'
+            '<body style="margin:0;padding:0;background:%s">'
+            '<div style="max-width:600px;margin:0 auto;padding:12px 8px">'
+            '<div style="background:#ffffff;border-radius:10px;padding:22px 18px">%s{{FOOT}}</div></div></body></html>'
+            % (esc(subject), BG, "".join(parts)))
     return subject, text, html
 
 
-def bar(p):
-    """A small bar for the percentile, most short at the left, most long at
-    the right: a table, so every mail app draws it the same."""
-    p = max(0, min(100, int(p)))
-    left = '<td style="width:%d%%;height:8px;background:#e6dcc6;font-size:0;line-height:0">&nbsp;</td>' % p if p > 0 else ""
-    right = '<td style="height:8px;background:#efe9dd;font-size:0;line-height:0">&nbsp;</td>' if p < 100 else ""
-    mark = '<td style="width:4px;height:12px;background:#14100a;font-size:0;line-height:0">&nbsp;</td>'
-    return ('<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="margin:2px 0;border-collapse:collapse">'
-            '<tr><td style="width:34px;font:11px/1 sans-serif;color:#6b6b6b;padding-right:6px">short</td><td>'
-            '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr>%s%s%s</tr></table>'
-            '</td><td style="width:28px;font:11px/1 sans-serif;color:#6b6b6b;text-align:right;padding-left:6px">long</td></tr></table>'
-            % (left, mark, right))
+def range_bar(r):
+    """The 52-week range drawn: where this week's net sits between the most short
+    and the most long of the span, the ends labelled. A range, not a rank."""
+    y = r["y1"]
+    p = max(0, min(100, y["pct"]))
+    SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
+    left = '<td style="width:%d%%;height:8px;background:#e9dfc6;font-size:0;line-height:0">&nbsp;</td>' % p if p > 0 else ""
+    right = '<td style="height:8px;background:#eef0ed;font-size:0;line-height:0">&nbsp;</td>' if p < 100 else ""
+    mark = '<td style="width:5px;height:14px;background:#161a18;font-size:0;line-height:0">&nbsp;</td>'
+    return ('<p style="margin:6px 0 3px;font:12px/1.4 %s;color:#55605b">%d-week range</p>'
+            '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">'
+            '<tr>%s%s%s</tr></table>'
+            '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-top:3px">'
+            '<tr><td style="font:12px/1.4 %s;color:#55605b">%s</td><td style="font:12px/1.4 %s;color:#55605b;text-align:right">%s</td></tr></table>'
+            % (SANS, y["n"], left, mark, right, SANS, side(y["lo"]), SANS, side(y["hi"])))
 
 
 # ── the message ───────────────────────────────────────────────────────────
@@ -760,8 +883,8 @@ def fixtures():
     # corn: 1-year low -100,000 (52 reports back is the oldest of the year), high 300,000; 3-year low -250,000
     corn = series(lambda i, back: 200000 if back == 0 else 260000 if back == 1 else -100000 if back == 51
                   else 300000 if back == 10 else -250000 if back == 120 else 50000)
-    beans = series(lambda i, back: -40000 if back == 0 else -45000 if back == 1 else 100000 if back == 20
-                   else -60000 if back == 30 else 0)
+    # beans: bought 3 weeks in a row (-55,000, -50,000, -45,000, -40,000)
+    beans = series(lambda i, back: {0: -40000, 1: -45000, 2: -50000, 3: -55000, 20: 100000, 30: -60000}.get(back, 0))
     hogs = series(lambda i, back: 10000 if back in (0, 1) else 30000 if back == 5 else 10000)
     # live cattle: 1,000 x (86 i mod 171), every value 0 to 170,000 once; this week (i = 170) 85,000, last week 170,000
     cattle = series(lambda i, back: 1000 * ((86 * i) % 171))
@@ -771,7 +894,7 @@ def fixtures():
     for key, s in (("corn", corn), ("beans", beans), ("livecattle", cattle), ("leanhogs", hogs)):
         deep["commodities"][key] = {"dates": dates, "mm_long": [max(v, 0) + 1000 for v in s],
                                     "mm_short": [max(-v, 0) + 1000 for v in s], "oi": [1000000] * len(dates)}
-        hist["history"][key] = [{"date": d, "net": v} for d, v in zip(dates[-52:], s[-52:])]
+        hist["history"][key] = [{"date": d, "net": v, "oi": 1000000} for d, v in zip(dates[-52:], s[-52:])]
         cot[key] = {"net": s[-1], "prev": s[-2]}
     # wheat: in cot.json, but its history ends a week early -> no reading, said so
     cot["wheat"] = {"net": -5, "prev": -4}
@@ -782,12 +905,13 @@ def fixtures():
         return {"date": as_of.isoformat(), "net": net, "first_week": dates[0], "weeks_of_history": 171,
                 "is_record_high": False, "is_record_low": False, "pctl": {"net_oi_all": pctl},
                 "crowd": {"pctl": pctl, "shown": shown, "word": word, "crowded": crowded, "since": dates[0][:4],
-                          "weeks": 171, "held": False, "tested": TESTED}}
+                          "weeks": 171, "held": False, "tested": TESTED,
+                          "words": _rank_words(pctl, net, crowded, dates[0][:4]), "record": None}}
     ana = {"commodities": {
         # corn 200,000: 169 of 171 weeks at or below (all but 260,000 and 300,000) = 98.83 -> 98.8; crowded long; shown 99
         "corn": a("corn", 200000, 98.8, 99, "top 1%", "long"),
-        # beans -40,000: 3 of 171 at or below (-40k, -45k, -60k) = 1.75 -> 1.8; crowded short; shown 2
-        "beans": a("beans", -40000, 1.8, 2, "bottom 2%", "short"),
+        # beans -40,000: 5 of 171 at or below (-40k, -45k, -50k, -55k, -60k) = 2.92 -> 2.9; crowded short; shown 3
+        "beans": a("beans", -40000, 2.9, 3, "bottom 3%", "short"),
         # cattle 85,000: 86 of 171 (0 to 85,000) = 50.29 -> 50.3; middling; shown 50
         "livecattle": a("livecattle", 85000, 50.3, 50, "middling", None),
         # hogs 10,000: 170 of 171 (all but 30,000) = 99.42 -> 99.4; crowded long; shown 99
@@ -885,7 +1009,7 @@ def _selftest():
     iso = as_of.isoformat()
     now = datetime(2026, 10, 16, 20, 5, tzinfo=timezone.utc)          # 4:05 PM ET Friday
     # the percentiles in the fixture are the ones the weekly record gives, recounted here
-    for key, want in (("corn", 98.8), ("beans", 1.8), ("livecattle", 50.3), ("leanhogs", 99.4)):
+    for key, want in (("corn", 98.8), ("beans", 2.9), ("livecattle", 50.3), ("leanhogs", 99.4)):
         ok(recount(deep, key, iso) == want == ana["commodities"][key]["pctl"]["net_oi_all"], "%s recount %r" % (key, recount(deep, key, iso)))
     buf = io.StringIO()
     gaps = []
@@ -900,42 +1024,48 @@ def _selftest():
     ok(c.get("net") == 200000 and c.get("chg") == -60000 and c.get("chg_since") is None, "corn: net and the week's change %r" % c)
     # 1 year: lo -100,000, hi 300,000 -> (200,000 + 100,000) / 400,000 = 75%
     ok(c.get("y1") == {"lo": -100000, "hi": 300000, "pct": 75, "n": 52}, "corn 1-year range %r" % c.get("y1"))
-    # 3 years: lo -250,000, hi 300,000 -> 450,000 / 550,000 = 81.8% -> 82%
-    ok((c.get("y3") or {}).get("pct") == 82 and c["y3"]["lo"] == -250000 and c["y3"]["hi"] == 300000, "corn 3-year range %r" % c.get("y3"))
-    ok(sentence(c) == "Managed money is net long 200,000 corn contracts, 60,000 fewer than the week before.", sentence(c))
-    ok(rank_line(c) == "That is the 99th percentile of 171 weekly reports since 2023 (top 1%, crowded long).", rank_line(c))
-    ok(note(c) == "If funds head for the exit, 200,000 contracts of selling sit between here and flat. Not a call on price.", note(c))
+    ok("y3" not in c, "no three-year span: one rank, the page's")
+    # the rank words are the page's own (data/cot-analysis.json crowd.words, cot_analysis.rank_words)
+    ok(c["rank"]["words"] == "higher than 99% of weeks since 2023", c.get("rank"))
+    ok(market_line(c) == "Funds sold a net 60,000 corn contracts, leaving them net long 200,000: "
+       "higher than 99% of weeks since 2023 (share of open interest).", market_line(c))
     ok(range_line(c) == "52-week range: net short 100,000 to net long 300,000.", range_line(c))
-    ok(short_line(c) == "60,000 fewer than the week before. 99th percentile of 171 weeks since 2023 (top 1%, crowded long).", short_line(c))
+    ok(c["streak"] == 1 and streak_line(c) == "", "corn: one week of selling is no run %r" % c.get("streak"))
+    ok(sentence(c) == "Managed money is net long 200,000 corn contracts, 60,000 fewer than the week before.", "daily_more's line kept")
     bn = R.get("beans") or {}
     # beans 1 yr: lo -60,000, hi 100,000 -> 20,000 / 160,000 = 12.5% -> 12% (round half to even)
     ok(bn.get("chg") == 5000 and (bn.get("y1") or {}).get("pct") == 12, "beans %r" % bn)
-    # beans: net short 45,000 -> 40,000, the short 5,000 smaller: "fewer", never "up" under a short
-    ok(sentence(bn) == "Managed money is net short 40,000 soybean contracts, 5,000 fewer than the week before.", sentence(bn))
-    ok(rank_line(bn) == "That is the 2nd percentile of 171 weekly reports since 2023 (bottom 2%, crowded short)." and
-       "40,000 contracts of buying" in (note(bn) or ""), (rank_line(bn), note(bn)))
+    # beans: -55,000 -> -50,000 -> -45,000 -> -40,000, three weekly rises, counted from cot-history
+    ok(bn.get("streak") == 3 and not bn.get("streak_open") and streak_line(bn) == "Funds have bought 3 weeks in a row.", bn.get("streak"))
+    # a short counts from the other end: 2.9 at or below -> shown 3 -> bigger than 97%
+    ok(market_line(bn) == "Funds bought a net 5,000 soybean contracts, leaving them net short 40,000: "
+       "a bigger net short than 97% of weeks since 2023 (share of open interest).", market_line(bn))
     lc = R.get("livecattle") or {}
-    ok(lc.get("net") == 85000 and lc.get("chg") == -85000, "cattle: 85,000, down 85,000 %r" % lc)
-    ok(rank_line(lc) == "That is the 50th percentile of 171 weekly reports since 2023 (middling)." and note(lc) is None,
-       "a middling market gets no marketing line: %r %r" % (rank_line(lc), note(lc)))
+    ok(lc.get("net") == 85000 and lc.get("chg") == -85000 and lc.get("oi") == 1000000, "cattle: 85,000, down 85,000 %r" % lc)
+    ok(market_line(lc).endswith("leaving them net long 85,000: higher than 50% of weeks since 2023 (share of open interest)."), market_line(lc))
     hg = R.get("leanhogs") or {}
-    ok(hg.get("chg") == 0 and (hg.get("y1") or {}).get("pct") == 0 and "unchanged from the week before" in sentence(hg), sentence(hg))
-    ok(sentence(hg).startswith("Managed money is net long 10,000 lean hog contracts"), sentence(hg))
-    ok(verdict(rows) == TESTED and own_tested(c, TESTED) is None, "one tested line for all")
-    # a market whose test held up carries its own line
-    a2 = json.loads(json.dumps(ana))
-    a2["commodities"]["beans"]["crowd"].update(held=True, tested="One positioning reading held up.")
-    with contextlib.redirect_stdout(io.StringIO()):
-        r5 = prepare(now, cot, hist, deep, a2)[2]
-    ok(verdict(r5) == TESTED and own_tested({r["key"]: r for r in r5}["beans"], TESTED) == "One positioning reading held up.", "held line")
-    # a record is said as a record, never "100th"
+    ok(hg.get("chg") == 0 and (hg.get("y1") or {}).get("pct") == 0 and streak_line(hg) == "", hg)
+    ok(market_line(hg) == "Funds held steady at net long 10,000 lean hog contracts: higher than 99% of weeks since 2023 "
+       "(share of open interest).", market_line(hg))
+    # the news: biggest move as a share of open interest (cattle 85,000 / 1,000,000), the run of buying first
+    ok(moved(rows) is lc, "biggest move: cattle")
+    ok(subject_of(as_of, rows) == "Funds bought soybeans 3 weeks in a row", subject_of(as_of, rows))
+    ok(preheader(rows) == "Funds sold 85,000 live cattle contracts, the week's biggest move as a share of open interest.", preheader(rows))
+    ok(lead(as_of, rows) == "Funds sold corn and live cattle and bought soybeans and held lean hogs steady in the week to "
+       "Tuesday, Oct 13; the biggest move, as a share of open interest, was 85,000 live cattle contracts sold.", lead(as_of, rows))
+    # a record is said with its measure and start year, never "100th", and leads the subject
     a3 = json.loads(json.dumps(ana))
     a3["commodities"]["corn"]["is_record_high"] = True
+    del a3["commodities"]["corn"]["crowd"]["record"]
     with contextlib.redirect_stdout(io.StringIO()):
-        r6 = {r["key"]: r for r in prepare(now, cot, hist, deep, a3)[2]}
-    ok(rank_line(r6["corn"]) == "That is the biggest net long, as a share of open interest, in 171 weekly reports since 2023.", rank_line(r6["corn"]))
-    ok(short_line(r6["corn"]).endswith("The biggest net long, as a share of open interest, in 171 weeks since 2023."), short_line(r6["corn"]))
-    # TWO FILES MUST NEVER DISAGREE IN FRONT OF A READER: the ranking is withheld, with the reason
+        r6l = prepare(now, cot, hist, deep, a3)[2]
+    r6 = {r["key"]: r for r in r6l}
+    ok(market_line(r6["corn"]) == "Funds sold a net 60,000 corn contracts, leaving them net long 200,000, the largest net long "
+       "as a share of open interest since 2023: higher than 99% of weeks since 2023 (share of open interest).", market_line(r6["corn"]))
+    sj = subject_of(as_of, r6l)
+    ok(sj == "Corn: largest net long as a share of open interest since 2023", sj)
+    ok(preheader(r6l).startswith("Funds bought soybeans 3 weeks in a row, 5,000 contracts this week."), preheader(r6l))
+    # TWO FILES MUST NEVER DISAGREE IN FRONT OF A READER: the rank is withheld, with the reason
     for label, mut, why in (("an older ranking file", lambda x: x.update(date="2026-10-06"), "the ranking is not up to this report yet"),
                             ("a different net", lambda x: x.update(net=199999), "the ranking file and this week's position do not match"),
                             ("a ranking the record does not give", lambda x: x["pctl"].update(net_oi_all=97.0),
@@ -944,48 +1074,59 @@ def _selftest():
         mut(a4["commodities"]["corn"])
         with contextlib.redirect_stdout(io.StringIO()):
             r4 = {r["key"]: r for r in prepare(now, cot, hist, deep, a4)[2]}
-        ok(r4["corn"]["rank"] is None and rank_line(r4["corn"]) == "No percentile this week: %s." % why and note(r4["corn"]) is None,
-           "%s: %r" % (label, rank_line(r4["corn"])))
-    # the change is "since <date>" when the report before is not a week back
+        ok(r4["corn"]["rank"] is None and market_line(r4["corn"]).endswith("net long 200,000. No rank this week: %s." % why),
+           "%s: %r" % (label, market_line(r4["corn"])))
+    # the change is "since the <date> report" when the report before is not a week back
     h2 = json.loads(json.dumps(hist))
     del h2["history"]["corn"][-2]
     c2 = json.loads(json.dumps(cot))
     c2["corn"]["prev"] = h2["history"]["corn"][-2]["net"]
     with contextlib.redirect_stdout(io.StringIO()):
         r2 = {r["key"]: r for r in prepare(now, c2, h2, deep, ana)[2]}
-    ok(r2["corn"]["chg_since"] == date(2026, 9, 29) and sentence(r2["corn"]).endswith("150,000 more than on Sep 29."), sentence(r2["corn"]))
-    # a short that grew, and a side that flipped
-    ok(sentence(dict(bn, net=-50000, chg=-10000, chg_since=None)).endswith("net short 50,000 soybean contracts, 10,000 more than the week before."), "short grew")
-    ok(sentence(dict(bn, net=-5000, chg=-15000, chg_since=None)).endswith("net short 5,000 soybean contracts, flipped from net long 10,000 the week before."), "flip")
-    # a deep file that does not reach this report: no 3-year range, the ranking still from the analysis file
+    ok(r2["corn"]["chg_since"] == date(2026, 9, 29) and market_line(r2["corn"]).startswith(
+        "Funds bought a net 150,000 corn contracts since the Sep 29 report, leaving them net long 200,000"), market_line(r2["corn"]))
+    ok(r2["corn"]["streak"] == 0, "a run never counts across a missing week")
+    # a side that flipped, and a position inside the flat band
+    ok(market_line(dict(bn, net=-5000, chg=-15000, chg_since=None)).startswith(
+        "Funds sold a net 15,000 soybean contracts, flipping them net short 5,000:"), "flip")
+    ok(market_line(dict(bn, net=-517, chg=-600, chg_since=None, side="flat")).startswith(
+        "Funds sold a net 600 soybean contracts, leaving them about even (net short 517):"), "flat band")
+    # a deep file that does not reach this report: the rank still from the analysis file, no recount to check
     d2 = json.loads(json.dumps(deep))
     for v in d2["commodities"].values():
         for f in ("dates", "mm_long", "mm_short", "oi"):
             v[f] = v[f][:-1]
     with contextlib.redirect_stdout(io.StringIO()):
         r3 = {r["key"]: r for r in prepare(now, cot, hist, d2, ana)[2]}
-    ok(r3["corn"]["y3"] is None and r3["corn"]["y1"] and r3["corn"]["rank"]["shown"] == 99, "no 3-year range without the deep file")
+    ok(r3["corn"]["y1"] and r3["corn"]["rank"]["shown"] == 99, "rank without the deep file")
     # stale, early, unreadable
     with contextlib.redirect_stdout(io.StringIO()):
         ok(prepare(datetime(2026, 10, 30, 20, 0, tzinfo=timezone.utc), cot, hist, deep, ana)[0] is None, "two weeks on: too old to send")
         ok(prepare(datetime(2026, 10, 30, 20, 0, tzinfo=timezone.utc), cot, hist, deep, ana, stale_ok=True)[0] == as_of, "a preview may show it")
         ok(prepare(datetime(2026, 10, 15, 20, 0, tzinfo=timezone.utc), cot, hist, deep, ana)[0] is None, "before Friday: not out yet")
         ok(prepare(now, {"report_date": "soon"}, hist, deep, ana)[0] is None, "no date: nothing")
+    # next report, holiday-aware (cot_calendar): Veterans Day (Wed Nov 11, 2026) moves Nov 10's report to Monday
+    ok(next_report(as_of) == "Next report: Friday Oct 23, 3:30 PM ET.", next_report(as_of))
+    ok(next_report(date(2026, 11, 3)) == "Next report: Monday Nov 16, 3:30 PM ET (moved from Friday).", next_report(date(2026, 11, 3)))
     # the email
     s, t, h = compose(as_of, rel, rows, gaps)
-    ok(s == "Funds this week: positions as of Oct 13", s)
-    ok(compose(as_of, rel, rows, gaps, preview=True)[0] == "[Preview] Funds this week: positions as of Oct 13", "preview subject")
+    ok(s == "Funds bought soybeans 3 weeks in a row" and len(s) <= 60, s)
+    ok(compose(as_of, rel, rows, gaps, preview=True)[0] == "[Preview] " + s, "preview subject")
+    ok(t.split("\n")[2] == "This week: " + lead(as_of, rows), "the lead comes first")
+    ok(preheader(rows) in h and 'display:none' in h, "the preview line is in the html, hidden")
     ok("Positions as of Tuesday, October 13. CFTC released them Friday, October 16 at 3:30 PM ET." in t, t[:300])
-    ok(t.index(TESTED) < t.index("CORN"), "the plain verdict comes before the numbers")
     ok("Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of Oct 13, released Oct 16." in t, "source and dates")
+    ok("Next report: Friday Oct 23, 3:30 PM ET." in t and "Next report: Friday Oct 23, 3:30 PM ET." in h, "next report in both")
     ok("CHICAGO WHEAT\nNo reading this week: the weekly files do not agree on this report yet." in t
        and "FEEDER CATTLE\nNo reading this week: no position in this week's file." in t, "a missing market is shown, with why")
     ok("—" not in t + h and "–" not in t + h and "&mdash;" not in h, "no em or en dash anywhere")
     ok(not re.search(r"\b(will|expect|likely|forecast|should|buy|sell)\b", t.lower().replace("not where prices go next", "")), "no prediction words")
-    ok(t.count("Managed money is ") == 4, "one sentence a market")
-    ok(t.count("Not a call on price.") == 3 and h.count("Not a call on price.") == 3, "a marketing line for the 3 off-middle markets only")
-    ok(h.count("percentile of 171 weeks since 2023") == 4 and t.count("percentile of 171 weekly reports since 2023") == 4,
-       "the sample beside every percentile, in both bodies")
+    ok(not re.search(r"percentile|\d(st|nd|rd|th)\b|head for the exit|could be forced|between here and flat|not a call on price",
+                     (t + h).lower()), "no ordinals, no percentile, no exposure lines")
+    ok(not re.search(r"bootstrap|draws|fdr|false discovery|benjamini|\bblock\b", (t + re.sub(r"<[^>]+>", " ", h)).lower()), "no method words")
+    ok(t.count("(share of open interest).") == 4 and h.count("(share of open interest).") == 4, "one rank a market, in both bodies")
+    ok(t.count("weeks since 2023") == 4 + 0 and "every week since 2023" in t, "the span named once, beside each rank")
+    ok(h.count("52-week range") == 4 and t.count("52-week range: ") == 4, "the range, labelled a range")
     m = build_email(as_of.isoformat(), (s, t, h), "a@farm.com", "AGSIST", "sender@example.com", None)
     os.environ.setdefault("LIST_URL", "")
     body, hb = m.get_body(("plain",)).get_content(), m.get_body(("html",)).get_content()
@@ -1052,7 +1193,7 @@ def _selftest():
         lid = {"jane.doe@farm.com": "abcdefghjkmnpqrs", "bob@ranch.net": "bcdefghjkmnpqrst"}[x["To"]]
         u = "https://agsist.com/e?a=notice-unsubscribe&k=" + lid + "&t=" + email_links.token("sec", lid) + "&topic=cot"
         ok(email_links.unsub_web(x) == u and u in x.get_body(("plain",)).get_content(), "own stop link, front door")
-        ok(x["Subject"] == "Funds this week: positions as of Oct 13", x["Subject"])
+        ok(x["Subject"] == "Funds bought soybeans 3 weeks in a row", x["Subject"])
     ok(private(log) and "sent 2/2" in log, "send log: counts only %r" % log[-300:])
     # 4. the week already sent: nothing
     rc, log, sent, calls = _run(files, dict(W, SEND="1", **SM), now, fetch, flags={"cot:2026-10-13": True})

@@ -57,10 +57,10 @@ test("the last point is cot.json's net, and the title is that market's brief lin
     assert.ok(m.src.startsWith("CFTC Commitments of Traders, managed money, futures only, as of Oct 27, released Oct 30."), m.src);
     assert.ok(!DASH.test(m.src + m.headline + m.priceWhy), "no dashes");
   }
-  assert.equal(C.model("beans", HIST, COT, CX).headline, "Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week");
-  assert.equal(C.model("mplswheat", HIST, COT, CX).headline, "MPLS wheat: funds short, moderate (34th since 2010), sold 7,906 this week, flipped to short");
-  assert.equal(C.model("soymeal", HIST, COT, CX).headline, "Soybean meal: funds long, heavy (94th since 2010, crowded), sold 32,164 this week");
-  assert.equal(C.model("kcwheat", HIST, COT, CX).headline, "KC wheat: funds about even (37th since 2010), sold 8,007 this week");
+  assert.equal(C.model("beans", HIST, COT, CX).headline, "Soybeans: funds long, fairly heavy, sold 27,544 this week");
+  assert.equal(C.model("mplswheat", HIST, COT, CX).headline, "MPLS wheat: funds short, moderate, sold 7,906 this week, flipped to short");
+  assert.equal(C.model("soymeal", HIST, COT, CX).headline, "Soybean meal: funds long, heavy, crowded, sold 32,164 this week");
+  assert.equal(C.model("kcwheat", HIST, COT, CX).headline, "KC wheat: funds about even, sold 8,007 this week");
 });
 
 test("no title is claimed when the chart's last week is not the report on the page, or the nets differ", () => {
@@ -168,7 +168,7 @@ test("/cot carries one chart, under the verdict and above the market table and t
   assert.ok(!/<canvas id="cot-chart"|id="chart-tabs"|cot-chart-tab/.test(cot), "the old chart lower down is gone");
   assert.ok(!/drawChart|setActiveTab|cot-chart-tab/.test(read("components/cot-page.js")), "and its code");
   const i = (s) => cot.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-glance.js?v=2") > 0 && i("cot-glance.js?v=2") < i("cot-chart.js?v=3") && i("cot-chart.js?v=3") < i("cot-page.js?v=7"));
+  assert.ok(i("cot-glance.js?v=3") > 0 && i("cot-glance.js?v=3") < i("cot-chart.js?v=4") && i("cot-chart.js?v=4") < i("cot-page.js?v=8"));
   assert.match(cot, /\.cc-plot\{[^}]*height:300px/, "the plot's height is held before it draws");
   assert.match(cot, /\.cc-chip\{[^}]*min-height:44px/);
   assert.match(cot, /\.cc-btn\{[^}]*min-height:44px/);
@@ -185,7 +185,7 @@ test("the home card's lines open /cot on their market", () => {
   for (const k of G.ORDER) assert.equal(G.keyOf(G.SLUG[k]), k);
   assert.equal(G.keyOf("nonsense"), null);
   const idx = read("index.html");
-  for (const s of ["components/cot-glance.js?v=2", "components/home.js?v=24", "css/home.css?v=38"]) assert.ok(idx.includes("/" + s + '"'), s);
+  for (const s of ["components/cot-glance.js?v=3", "components/home.js?v=24", "css/home.css?v=38"]) assert.ok(idx.includes("/" + s + '"'), s);
 });
 
 // ---------------------------------------------------------------- in a browser
@@ -279,7 +279,7 @@ test("/cot?m=soybeans opens on soybeans; a chip changes the market and the link;
     const pg = await open(browser, port, "/cot?m=soybeans", { width: 1280 });
     assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.market), "beans");
     assert.equal(+(await pg.$eval("#cot-chart-box", (b) => b.dataset.latest)), COT.beans.net);
-    assert.equal((await pg.textContent("#cc-head")).trim(), "Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week");
+    assert.equal((await pg.textContent("#cc-head")).trim(), "Soybeans: funds long, fairly heavy, sold 27,544 this week");
     assert.equal((await pg.textContent("#cc-src")).trim(), "CFTC Commitments of Traders, managed money, futures only, as of Oct 27, released Oct 30. Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.");
     assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.price), "1");
     // hover: the week's date and net
@@ -324,7 +324,7 @@ test("Share this chart: the phone's share sheet gets the market's link; a deskto
     const shared = await pg.evaluate(() => window.__shared);
     assert.equal(shared.length, 1);
     assert.equal(shared[0].url, "https://agsist.com/cot?m=soybeans");
-    assert.equal(shared[0].text, "Soybeans: funds long, fairly heavy (75th since 2010), sold 27,544 this week");
+    assert.equal(shared[0].text, "Soybeans: funds long, fairly heavy, sold 27,544 this week");
     assert.match(shared[0].title, /soybeans/);
     await pg.context().close();
 

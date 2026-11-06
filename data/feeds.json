@@ -496,9 +496,14 @@
     "Fetch COT Data"
    ],
    "touched_by": [
+    "Build Analyst Scorecard",
     "COT Deep History Rebuild",
     "COT Release Watch",
-    "Fetch COT Data"
+    "Fetch COT Data",
+    "Generate Daily Briefing",
+    "Rebuild Call Scorecard",
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In"
    ],
    "cadence": "11 launches on a fixed schedule at about 4am, 2pm, 3pm, 4pm Central",
    "curated": false,

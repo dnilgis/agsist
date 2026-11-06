@@ -120,7 +120,6 @@ function shownPct(p, crowded, hi, lo){
   if(!crowded&&n<=lo&&p>lo) n=Math.floor(lo)+1;
   return n;
 }
-function ordinal(n){n=Math.round(n);var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 function fmtMagK(n){var a=Math.abs(n);return a>=1000?(a/1000).toFixed(0)+'k':String(a);}
 function divLabel(d){return d==='bearish'?'net rose while price fell':d==='bullish'?'net fell while price rose':d==='confirmed-up'?'net and price both rose':d==='confirmed-down'?'net and price both fell':'';}
 /* The analysis is used only while it is on the report the cards show. A poll
@@ -198,7 +197,7 @@ function renderGlance() {
   var since = rs.map(function (r) { return r.since; }).filter(Boolean);
   var key = document.getElementById('cg-key');
   if (key && since.length && since.every(function (x) { return x === since[0]; }))
-    key.textContent = 'Rank: the net as a share of open interest, against every week since ' + since[0] + '. Change: contracts bought (+) or sold this week.';
+    key.textContent = 'Rank: the net as a share of open interest, against every week since ' + since[0] + '. \u201cAbove 48%\u201d means higher than 48% of those weeks; for a short, \u201cbelow 67%\u201d means a bigger net short than 67% of them. Change: contracts bought (+) or sold this week.';
 }
 /* a market in the table picks it on the chart */
 (function () {
@@ -246,8 +245,10 @@ function renderInsight(key){
   if(pill){
     var th=(CX_A&&CX_A.thresholds)||{};
     var sp=(cr&&typeof cr.shown==='number')?cr.shown:shownPct(cp,c.crowded,th.crowded_hi,th.crowded_lo);
-    pill.textContent=cp==null?'':((c.crowded&&cr&&cr.word)?cr.word+', crowded '+c.crowded:ordinal(sp)+' percentile')
-      +' of every week since '+String(c.first_week||'').slice(0,4)+', as a share of open interest';
+    /* in words, never an ordinal (2026-11-06): "higher than 48% of weeks since 2010" */
+    var yr=String(c.first_week||'').slice(0,4);
+    var words=(cr&&cr.words)||(sp==null?'':(c.net<0?'a bigger net short than '+(100-sp)+'% of weeks since '+yr:'higher than '+sp+'% of weeks since '+yr));
+    pill.textContent=cp==null?'':words+', as a share of open interest'+(c.crowded?', crowded '+c.crowded:'');
     pill.className='cot-pctl'+(c.crowded==='long'?' hot':c.crowded==='short'?' cold':'');
   }
   if(!el) return k;
@@ -419,8 +420,6 @@ var historyData = null;
    It now re-reads the file while a release is outstanding, and re-renders in
    place when the new report lands. See cotTick() below for the state. */
 var COT_LOADED = null;            // the report_date now on screen
-var COT_ANNOUNCE_UNTIL = 0;       // the arrival message owns the badge until this
-var COT_ANNOUNCE_TEXT  = '';
 
 function cotApply(data, isPoll) {
   /* A KEY THE PAYLOAD DID NOT CARRY USED TO KEEP ITS OLD CARD. The loop was
@@ -465,15 +464,8 @@ function cotApply(data, isPoll) {
        has moved too. Re-read it rather than leaving last week's line under
        this week's numbers. */
     cotLoadHistory(true);
-    /* AND HOLD THE ANNOUNCEMENT ON SCREEN. Written straight into the badge,
-       it survived about a millisecond: cotTick() runs on the next line, sees a
-       fresh report_date, and replaces it with "next update in 6d 21h". The one
-       sentence the whole fix exists to deliver -- to a reader who has been
-       sitting on this page waiting for it -- flashed and was gone. It now owns
-       the badge for a full minute, and cotTick() will not touch it until the
-       window closes. */
-    COT_ANNOUNCE_UNTIL = Date.now() + 60000;
-    COT_ANNOUNCE_TEXT  = 'updated, ' + fresh + ' report is in';
+    /* The release bar says so: cotTick() below sees the report came out today and shows "Updated today with the
+       report of Tuesday, ..." for the rest of the day (AgCotGlance.release), announced once as a state change. */
     /* Everything else on the page that reads a different file learns here,
        in the same tick, rather than on its own timer. */
     try { document.dispatchEvent(new CustomEvent('cot:new-report', { detail: fresh })); } catch (e) {}
@@ -538,67 +530,10 @@ function cotLoadHistory(isPoll) {
 cotLoadHistory(false);
 
 /* ── THE COUNTDOWN TELLS THE TRUTH ABOUT THE DATA, NOT THE CLOCK ──────────
-   What this was: a timer to Friday 21:30 UTC. At zero it said "expected
-   shortly" for under a minute, then cotNextTarget() rolled to the FOLLOWING
-   Friday and it went back to "next update in 6d 23h" -- over a page still
-   showing the previous week's report. Readers watched it hit zero and reset
-   with nothing new on the page. The counter never once looked at the data.
-
-   What it is now: the expected report is derived from the report on screen --
-   the Tuesday after it -- and the release moment is that week's Friday at
-   3:30 PM New York, computed against the real zone so it is right in EST and
-   EDT alike. Until the release, it counts down. After the release, it does NOT
-   reset: it says the report is due, keeps saying so, and polls for it. The
-   countdown can only start again once the new report is actually on screen. */
-function cotEtOffsetMin(ts){
-  /* Minutes New York is behind UTC at that instant: 240 in EDT, 300 in EST. */
-  var p = {};
-  new Intl.DateTimeFormat('en-US', { timeZone:'America/New_York', hour12:false,
-    year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' })
-    .formatToParts(new Date(ts)).forEach(function(x){ p[x.type] = x.value; });
-  var h = +p.hour === 24 ? 0 : +p.hour;
-  return (ts - Date.UTC(+p.year, +p.month - 1, +p.day, h, +p.minute)) / 60000;
-}
-function cotEtInstant(y, m, d, hh, mm){
-  var guess = Date.UTC(y, m, d, hh + 4, mm);           // assume EDT, then correct
-  return Date.UTC(y, m, d, hh, mm) + cotEtOffsetMin(guess) * 60000;
-}
-/* WHEN THE NEXT REPORT IS DUE -- AND DELIBERATELY NOT WHAT IT WILL BE CALLED.
-   This used to derive the next as-of date by adding ten days to the report on
-   screen and name it in the badge. On a holiday week that is a date CFTC never
-   published: the release shifts, the as-of can shift, and the page would tell a
-   reader the "November 17 report" was late when no such report exists. Naming a
-   report we have not got is inventing a date, which is the same sin as
-   inventing a number, so the badge now names only the report actually in hand.
-
-   The DUE MOMENT is still derived from the report on screen -- the Friday after
-   the following Tuesday, 3:30 PM New York -- because that is the schedule
-   CFTC publishes to, and being a little early on a holiday week costs a reader
-   nothing except a message that says we are still checking. */
-function cotNextRelease(loadedReportDate){
-  if (!loadedReportDate) return null;
-  /* fetch_cot.py writes next_release from cot_calendar.release_date(): usually
-     the Friday, the Monday when a federal holiday falls Wednesday to Friday
-     (six weeks in CFTC's 2026 schedule). Trusted only when it belongs to the
-     report on screen; otherwise fall back to the plain Friday. */
-  var nr = COT_SUMMARY && COT_SUMMARY.report_date === loadedReportDate && COT_SUMMARY.next_release;
-  if (nr && /^\d{4}-\d{2}-\d{2}$/.test(nr)) {
-    var q = nr.split('-');
-    return { due: cotEtInstant(+q[0], +q[1] - 1, +q[2], 15, 30) };
-  }
-  var t = Date.parse(loadedReportDate + ' 12:00:00 GMT');
-  if (!isFinite(t)) return null;
-  var nextTue = new Date(t + 7 * 86400000);
-  var fri = new Date(nextTue.getTime() + 3 * 86400000);
-  return { due: cotEtInstant(fri.getUTCFullYear(), fri.getUTCMonth(), fri.getUTCDate(), 15, 30) };
-}
-function cotFmtLeft(ms){
-  var s = Math.floor(ms / 1000), d = Math.floor(s / 86400),
-      h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
-  if (d > 0) return d + 'd ' + h + 'h';
-  if (h > 0) return h + 'h ' + m + 'm';
-  return m > 0 ? m + 'm' : '<1m';
-}
+   A timer to Friday 21:30 UTC once reset to "6d 23h" at zero over a page still showing the old report. The
+   due moment comes from cot.json next_release (cot_calendar.release_date, holiday-aware), and past it the bar
+   says the report is due, keeps saying so, and polls; it counts down again only once the new report is on
+   screen (AgCotGlance.release, cotTick below). */
 /* A first load that failed gets its own slower retry, separate from the
    release-day poll: the page has nothing to show, so it keeps asking until it
    does, whatever day of the week it is. */
@@ -642,64 +577,40 @@ function cotStartPolling(){
 }
 function cotStopPolling(){ if (COT_POLL) { clearInterval(COT_POLL); COT_POLL = null; } }
 
+/* THE RELEASE BAR (2026-11-06, Sig: "a clear indicator or countdown until the release that you can't miss").
+   One countdown on the page, at the very top (#cot-rel; the old one in the closed fold is gone). Its words come
+   from AgCotGlance.release(): "New report in 2 h 14 m · today 3:30 PM ET", then "New report out at 3:30 PM ET,
+   updating" while the page polls, "The report due ... is late" after three hours, and "Updated today with the
+   report of Tuesday, Nov 3" for the rest of the release day. The text is rewritten each minute only when it
+   changes and is NOT a live region; #cot-rel-live announces the state changes only (countdown to due, due to
+   updated, and so on), never the minutes. */
+var COT_REL_STATE = '';
 function cotTick(){
-  var el = document.getElementById('cot-countdown');
-  if (!el) return;
-  /* STATE FIRST, TEXT SECOND. Written the other way round, the arrival message
-     took an early return that skipped cotStopPolling() -- so the page went on
-     re-fetching cot.json for the whole minute the message was up, after the
-     thing it was polling for had already arrived. What is on the badge and
-     what the page is doing are two different questions and are now answered
-     separately. */
-  var nx  = cotNextRelease(COT_LOADED);
-  /* While the arrival window is open the badge shows the arrival message and
-     the computed text is discarded -- not merely suppressed. Written as "only
-     write when the window is closed", nothing ever put the announcement on
-     screen at all: cotApply set the text variable and cotTick declined to
-     write anything, so the badge kept the stale overdue line while the new
-     numbers rendered underneath it. */
-  var announcing = Date.now() < COT_ANNOUNCE_UNTIL;
-  /* WRITE ONLY ON CHANGE. cotTick runs every 60 seconds. The badge is plain
-     text now, not a live region (2026-11-06): a countdown in minutes was read
-     out every minute. Before that, while it was live: Rewriting the same sentence re-fires the
-     announcement, so a screen-reader user waiting through an outstanding
-     release heard "this week's report is due, checking every couple of
-     minutes" once a minute, indefinitely. Assigning identical text is not a
-     no-op to assistive tech even though it looks like one. */
-  var say = function (t) {
-    var next = announcing ? COT_ANNOUNCE_TEXT : t;
-    if (el.textContent !== next) el.textContent = next;
-  };
-
-  if (!nx) {
-    /* NO REPORT ON SCREEN IS NOT THE SAME AS NOTHING TO DO. COT_LOADED was the
-       only gate on polling, so a first fetch that failed -- a blip, a cold CDN,
-       a phone with one bar -- left this returning early forever: empty badge,
-       polling disarmed, and the page never asking for the file again for as
-       long as it stayed open. The retry is what makes that failure temporary. */
+  var G = window.AgCotGlance, bar = document.getElementById('cot-rel'), el = document.getElementById('cot-rel-t');
+  if (!COT_LOADED || !COT_SUMMARY) {
+    /* NO REPORT ON SCREEN IS NOT THE SAME AS NOTHING TO DO: keep asking for the file. The bar keeps its baked
+       date and time. */
     cotStopPolling();
     cotStartRetry();
-    say('');
     return;
   }
   cotStopRetry();
-
-  var left = nx.due - Date.now();
-  if (left > 0) {
-    cotStopPolling();
-    say('next update in ' + cotFmtLeft(left));
-    return;
+  var r = G && G.release ? G.release(COT_SUMMARY, cxAligned() ? CX_A : null, Date.now()) : null;
+  if (!r || r.state === 'none') { cotStopPolling(); return; }
+  /* past the release time and still on the old report: poll for it */
+  if (r.state === 'due' || r.state === 'late') cotStartPolling(); else cotStopPolling();
+  if (el && el.textContent !== r.text) el.textContent = r.text;
+  if (bar) bar.setAttribute('data-state', r.state);
+  var a = document.getElementById('cot-rel-a');
+  if (a && r.inbox && a.textContent !== r.inbox) a.textContent = r.inbox;
+  if (r.state !== COT_REL_STATE) {
+    var live = document.getElementById('cot-rel-live');
+    /* the first paint is not news; later changes of state are */
+    if (live && COT_REL_STATE) live.textContent = r.state === 'countdown' ? 'Next CFTC report: ' + r.next.replace(/^Next report: /, '') : r.text;
+    COT_REL_STATE = r.state;
+    /* the answer line's "Next report" follows the bar */
+    if (window.AgCotChart && window.AgCotChart.answerLine) window.AgCotChart.answerLine();
   }
-
-  /* Past the release and still on the old report. Say which one is missing and
-     roughly how late it is, rather than resetting the clock over stale data. */
-  cotStartPolling();
-  var lateH = Math.floor(-left / 3600000);
-  say(lateH < 3
-    ? 'this week\u2019s report is due, checking every couple of minutes'
-    : 'this week\u2019s report hasn\u2019t landed here yet (' +
-      (lateH < 24 ? lateH + 'h' : Math.floor(lateH / 24) + 'd') +
-      '), still checking. When a federal holiday falls Wednesday to Friday, CFTC releases on the Monday.');
 }
 cotTick(); setInterval(cotTick, 60000);
 

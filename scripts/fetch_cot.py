@@ -211,6 +211,8 @@ def main():
     summary: dict = {
         "updated":     datetime.now().strftime("%Y-%m-%d"),
         "report_date": latest_dt.strftime("%B %d, %Y"),
+        # the day this report came out, for the page's "Updated today" line
+        "release_date": CAL.release_date(latest_dt.date()).isoformat(),
         "next_release": CAL.release_date(nxt_asof).isoformat(),
         "next_release_time_et": "15:30",
         "flat_oi_pct": FLAT_OI_PCT,
@@ -254,8 +256,10 @@ def main():
         for r in comm:
             if r["date"] not in seen:
                 seen.add(r["date"])
+                # open interest per week (2026-11-06): cot_analysis.py adds `rk`,
+                # the share-of-open-interest rank the Compare chart draws
                 history[key].append({"date": r["date"], "net": r["net"],
-                                     "long": r["long"], "short": r["short"]})
+                                     "long": r["long"], "short": r["short"], "oi": r.get("oi")})
 
     with open(HISTORY_FILE, "w") as f:
         json.dump({"updated": datetime.now().strftime("%Y-%m-%d"), "history": history},

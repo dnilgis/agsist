@@ -32,7 +32,7 @@ function pillText(analysis, key) {
     document: { getElementById: (id) => (id === "pctl-" + key ? pill : null) },
   };
   vm.createContext(ctx);
-  vm.runInContext(["shownPct", "ordinal", "cxCommodity", "renderInsight"].map((n) => liftFn(JS, n)).join("\n")
+  vm.runInContext(["shownPct", "cxCommodity", "renderInsight"].map((n) => liftFn(JS, n)).join("\n")
     + `\nrenderInsight(${JSON.stringify(key)});`, ctx);
   return pill.textContent;
 }
@@ -57,23 +57,25 @@ test("every grain line in The Read and its card pill print the same percentile (
   const a = JSON.parse(read("data/cot-analysis.json"));
   assert.ok(a.grain_lines.length >= 2);
   for (const g of a.grain_lines) {
-    const m = /the (\d+)(?:st|nd|rd|th) percentile/.exec(g.text);
+    assert.doesNotMatch(g.text, /\d(st|nd|rd|th) percentile/, "no ordinals (2026-11-06)");
+    const m = /(higher than \d+%|a bigger net short than \d+%) of weeks since \d{4}/.exec(g.text);
     if (!m) continue;
     const pill = pillText(a, g.key);
     const c = a.commodities[g.key];
     if (c.crowded) continue;   // a crowded pill names the side, not the number
-    assert.match(pill, new RegExp("^" + m[1] + "(st|nd|rd|th) percentile"), `${g.key}: Read says ${m[0]}, pill says ${pill}`);
+    assert.ok(pill.startsWith(m[0]), `${g.key}: Read says ${m[0]}, pill says ${pill}`);
   }
 });
 
-test("soybeans at 89.8 not crowded: the pill says 89th, with or without crowd.shown", () => {
+test("soybeans at 89.8 not crowded: the pill says higher than 89%, with or without crowd.shown", () => {
   const a = JSON.parse(read("data/cot-analysis.json"));
   const b = JSON.parse(JSON.stringify(a));
   const c = b.commodities.beans;
   c.crowded = null;
   c.crowd = Object.assign({}, c.crowd, { pctl: 89.8, crowded: null });
   delete c.crowd.shown;
-  assert.match(pillText(b, "beans"), /^89th percentile/);
+  delete c.crowd.words;
+  assert.match(pillText(b, "beans"), /^higher than 89% of weeks since 2010/);
   c.crowd.shown = 89;
-  assert.match(pillText(b, "beans"), /^89th percentile/);
+  assert.match(pillText(b, "beans"), /^higher than 89% of weeks since 2010/);
 });
