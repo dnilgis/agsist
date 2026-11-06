@@ -641,7 +641,7 @@
   }
   /* save the picture: share it as a file on a phone that can, else download it */
   $('cc-save').addEventListener('click', function () {
-    if (!M) return;
+    if (!M) { note('The chart has not loaded, so there is no image to save yet.'); return; }
     var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
     ready.then(function () {
       var im = image(M, doc);

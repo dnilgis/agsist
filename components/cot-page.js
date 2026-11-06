@@ -270,13 +270,13 @@ function renderInsight(key){
     var dvCls=(k.divergence==='bearish'||k.divergence==='confirmed-down')?'dn':'up';
     /* Said once: "net and price both fell (price −5.0%)", not the rising/falling
        sentence and then the label repeating it. */
-    html+=' Over 4 weeks, <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b> (price '+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%).';
+    html+=' Over 4 weeks, <b class="'+dvCls+'">'+divLabel(k.divergence)+'</b> (price change, contract rolls removed, '+(k.price4>=0?'+':'−')+Math.abs(k.price4).toFixed(1)+'%).';
   }
   /* The withdrawn analog hit rate (2026-08-21) stays withdrawn: it selected
      weeks with a percentile computed over the whole array, after the fact, and
-     counted overlapping weeks of one episode as separate cases. */
-  html+='<details class="cot-math"><summary>Show the math</summary>Where the net ranks among the last '+k.weeks+' weeks, in contracts: the '
-    +ordinal(k.pct)+' percentile (a rank, not the place in the high-low range the futures pages show). Contracts are not adjusted for the size of the market, so the pill above, not this, is the ranking.</details>';
+     counted overlapping weeks of one episode as separate cases. The card's
+     52-week contract rank fold is gone too (2026-11-06, Sig): the pill's
+     share-of-open-interest rank is the one ranking on the card. */
   el.innerHTML=html;
   return k;
 }
@@ -423,8 +423,6 @@ var COT_ANNOUNCE_UNTIL = 0;       // the arrival message owns the badge until th
 var COT_ANNOUNCE_TEXT  = '';
 
 function cotApply(data, isPoll) {
-  var _bk = document.getElementById('cot-baked');
-  if (_bk) _bk.style.display = 'none';   // live render supersedes the crawler bake
   /* A KEY THE PAYLOAD DID NOT CARRY USED TO KEEP ITS OLD CARD. The loop was
      `if (data[k]) renderCard(...)` -- a missing commodity was skipped in
      silence, leaving the previous render in the DOM, while renderVerdict
@@ -449,6 +447,11 @@ function cotApply(data, isPoll) {
     else         { cotMarkCard(k, false); }
   });
   renderVerdict(data);
+  /* The live cards are on screen: they supersede the summary baked in for crawlers. cot.html hides
+     .cg-baked under html.cot-live, so that summary shows with scripts off and until this point. */
+  var _bk = document.getElementById('cot-baked');
+  if (_bk) _bk.style.display = 'none';
+  document.documentElement.classList.add('cot-live');
   try {
     document.documentElement.setAttribute('data-cot-report', fresh || '');
     /* The nets the cards are showing, so another block can check that a
@@ -656,8 +659,9 @@ function cotTick(){
      write anything, so the badge kept the stale overdue line while the new
      numbers rendered underneath it. */
   var announcing = Date.now() < COT_ANNOUNCE_UNTIL;
-  /* WRITE ONLY ON CHANGE. This badge is role="status" aria-live="polite", and
-     cotTick runs every 60 seconds. Rewriting the same sentence re-fires the
+  /* WRITE ONLY ON CHANGE. cotTick runs every 60 seconds. The badge is plain
+     text now, not a live region (2026-11-06): a countdown in minutes was read
+     out every minute. Before that, while it was live: Rewriting the same sentence re-fires the
      announcement, so a screen-reader user waiting through an outstanding
      release heard "this week's report is due, checking every couple of
      minutes" once a minute, indefinitely. Assigning identical text is not a

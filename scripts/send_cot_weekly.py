@@ -255,10 +255,7 @@ def rank_of(key, net, iso, ana, deep=None):
     return {"pctl": float(p), "shown": cr["shown"], "word": cr.get("word") or "", "crowded": cr.get("crowded"),
             "since": cr.get("since") or str(a.get("first_week") or "")[:4], "weeks": cr["weeks"],
             "record_high": bool(a.get("is_record_high")), "record_low": bool(a.get("is_record_low")),
-            "held": bool(cr.get("held")), "tested": cr.get("tested") or "",
-            # the page's livestock noun says "on the buy side"; the email keeps
-            # to plain words with no buy or sell in them (selftest)
-            "noun": (a.get("exposure_noun") or "unpriced production").replace("if you are on the buy side", "if you are a buyer")}, None
+            "held": bool(cr.get("held")), "tested": cr.get("tested") or ""}, None
 
 
 def ordinal(n):
@@ -318,15 +315,16 @@ def rank_line(r):
 
 
 def note(r):
-    """The marketing line, only where /cot prints one (high or low side), in
-    its words: how much fund business sits between here and flat, and what
-    that is a reason to look at. Never a call on price."""
+    """Only where /cot prints one (high or low side): how much fund business
+    sits between here and flat. A fact about the position, never advice: the
+    "worth a look at unpriced bushels" line was cut (2026-11-06, Sig) because
+    nothing tested it."""
     k = r.get("rank")
     if not k or (25 < k["pctl"] < 75) or r["net"] == 0:
         return None
     flow = "selling" if r["net"] > 0 else "buying"
     return ("If funds head for the exit, %s contracts of %s sit between here and flat. "
-            "Worth a look this week at %s. Not a call on price." % (comma(r["net"]), flow, k["noun"]))
+            "Not a call on price." % (comma(r["net"]), flow))
 
 
 def range_line(r):
@@ -747,8 +745,6 @@ def main(argv=(), now=None, fetch=None):
 # ── fixtures and the selftest ─────────────────────────────────────────────
 TESTED = ("Nothing the COT page tested says which way price goes next. Positioning shows how much selling (or buying) "
           "could be forced if the market turns, not when.")   # scripts/cot_analysis.py TESTED_NONE
-EXPOSURE_GRAIN = "unpriced bushels, or unbought needs if you are a buyer"
-EXPOSURE_STOCK = "unpriced production, or unbought feeders if you are on the buy side"
 
 
 def fixtures():
@@ -782,20 +778,20 @@ def fixtures():
     hist["history"]["wheat"] = [{"date": d, "net": -5} for d in dates[-53:-1]]
     # feeder cattle: not in cot.json at all -> no reading, said so
 
-    def a(key, net, pctl, shown, word, crowded, noun):
+    def a(key, net, pctl, shown, word, crowded):
         return {"date": as_of.isoformat(), "net": net, "first_week": dates[0], "weeks_of_history": 171,
-                "is_record_high": False, "is_record_low": False, "pctl": {"net_oi_all": pctl}, "exposure_noun": noun,
+                "is_record_high": False, "is_record_low": False, "pctl": {"net_oi_all": pctl},
                 "crowd": {"pctl": pctl, "shown": shown, "word": word, "crowded": crowded, "since": dates[0][:4],
                           "weeks": 171, "held": False, "tested": TESTED}}
     ana = {"commodities": {
         # corn 200,000: 169 of 171 weeks at or below (all but 260,000 and 300,000) = 98.83 -> 98.8; crowded long; shown 99
-        "corn": a("corn", 200000, 98.8, 99, "top 1%", "long", EXPOSURE_GRAIN),
+        "corn": a("corn", 200000, 98.8, 99, "top 1%", "long"),
         # beans -40,000: 3 of 171 at or below (-40k, -45k, -60k) = 1.75 -> 1.8; crowded short; shown 2
-        "beans": a("beans", -40000, 1.8, 2, "bottom 2%", "short", EXPOSURE_GRAIN),
+        "beans": a("beans", -40000, 1.8, 2, "bottom 2%", "short"),
         # cattle 85,000: 86 of 171 (0 to 85,000) = 50.29 -> 50.3; middling; shown 50
-        "livecattle": a("livecattle", 85000, 50.3, 50, "middling", None, EXPOSURE_STOCK),
+        "livecattle": a("livecattle", 85000, 50.3, 50, "middling", None),
         # hogs 10,000: 170 of 171 (all but 30,000) = 99.42 -> 99.4; crowded long; shown 99
-        "leanhogs": a("leanhogs", 10000, 99.4, 99, "top 1%", "long", EXPOSURE_STOCK),
+        "leanhogs": a("leanhogs", 10000, 99.4, 99, "top 1%", "long"),
     }}
     return as_of, cot, hist, deep, ana
 
@@ -908,8 +904,7 @@ def _selftest():
     ok((c.get("y3") or {}).get("pct") == 82 and c["y3"]["lo"] == -250000 and c["y3"]["hi"] == 300000, "corn 3-year range %r" % c.get("y3"))
     ok(sentence(c) == "Managed money is net long 200,000 corn contracts, 60,000 fewer than the week before.", sentence(c))
     ok(rank_line(c) == "That is the 99th percentile of 171 weekly reports since 2023 (top 1%, crowded long).", rank_line(c))
-    ok(note(c) == "If funds head for the exit, 200,000 contracts of selling sit between here and flat. Worth a look this week "
-       "at unpriced bushels, or unbought needs if you are a buyer. Not a call on price.", note(c))
+    ok(note(c) == "If funds head for the exit, 200,000 contracts of selling sit between here and flat. Not a call on price.", note(c))
     ok(range_line(c) == "52-week range: net short 100,000 to net long 300,000.", range_line(c))
     ok(short_line(c) == "60,000 fewer than the week before. 99th percentile of 171 weeks since 2023 (top 1%, crowded long).", short_line(c))
     bn = R.get("beans") or {}

@@ -410,20 +410,36 @@ def card_milk():
                   table=rows, table_title=month)
 
 
+def cot_card_parts(d):
+    """The COT card's context line and table, from data/cot.json. Pure, for the
+    selftest. The added/cut word is said toward the side the position is on,
+    the rule bake_seo.py uses: a net short that grows was ADDED to, never
+    "cut" because the number fell. Wheat on this card is Chicago (cot.json
+    "wheat"); live cattle is "livecattle" (it used to read "cattle", a key the
+    file does not have, so the row never printed)."""
+    c = d["corn"]
+
+    def side(n):
+        return "long" if n >= 0 else "short"
+    net, chg = c["net"], c["net"] - c["prev"]
+    ctx = (f"Funds {'added' if (chg > 0) == (net >= 0) else 'cut'} {abs(chg):,} on the week."
+           if chg else "No change on the week.")
+    rows = []
+    for k, lab in (("beans", "Soybeans"), ("wheat", "Chicago wheat"), ("livecattle", "Live cattle")):
+        if k in d and isinstance(d[k], dict) and d[k].get("net") is not None:
+            n = d[k]["net"]
+            rows.append((lab, f"{abs(n):,}", side(n)))
+    return ctx, rows
+
+
 def card_cot():
     d = js("data/cot.json")
     c = d["corn"]
 
     def side(n):
         return "long" if n >= 0 else "short"
-    chg = c["net"] - c["prev"]
     rep = datetime.strptime(d["report_date"], "%B %d, %Y").date()
-    ctx = f"Funds {'added' if chg > 0 else 'cut'} {abs(chg):,} on the week." if chg else "No change on the week."
-    rows = []
-    for k, lab in (("beans", "Soybeans"), ("wheat", "Wheat"), ("cattle", "Live cattle")):
-        if k in d and d[k].get("net") is not None:
-            n = d[k]["net"]
-            rows.append((lab, f"{abs(n):,}", side(n)))
+    ctx, rows = cot_card_parts(d)
     return a_card("cot", "Commitments of Traders", f"CFTC report of {mdy(rep)}",
                   f"Managed money held {abs(c['net']):,} corn contracts net {side(c['net'])} on {mdy(rep)}.",
                   big=f"{abs(c['net']):,}", unit=f"corn contracts net {side(c['net'])}, managed money",
@@ -1253,6 +1269,15 @@ def selftest():
         shutil.rmtree(t)
     assert central_today(datetime(2026, 10, 27, 4, 30, tzinfo=timezone.utc)) == date(2026, 10, 26), "the day is Central's"
     assert rain_card_names() >= {"rain", "rain-wi", "rain-ia"} and not any(n.startswith("rain-print") for n in rain_card_names())
+    # the COT card: live cattle under its real key, Chicago wheat by name, added/cut by side
+    cd = {"corn": {"net": -1000, "prev": 500}, "beans": {"net": 20}, "wheat": {"net": -74606},
+          "livecattle": {"net": 3000}}
+    ctx, rows = cot_card_parts(cd)
+    assert ctx == "Funds added 1,500 on the week.", ctx   # a net short that grew
+    assert [r[0] for r in rows] == ["Soybeans", "Chicago wheat", "Live cattle"], rows
+    assert cot_card_parts({"corn": {"net": -1000, "prev": -1500}})[0] == "Funds cut 500 on the week."
+    assert cot_card_parts({"corn": {"net": 1000, "prev": 400}})[0] == "Funds added 600 on the week."
+    assert cot_card_parts({"corn": {"net": 400, "prev": 1000}})[0] == "Funds cut 600 on the week."
     print("[share] selftest ok")
 
 
