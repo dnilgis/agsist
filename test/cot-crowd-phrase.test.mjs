@@ -22,7 +22,7 @@ const verdict = new Function("c", `
   var esc = function(s){ return String(s).replace(/[&<>"]/g, function(x){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]; }); };
   var num = function(n){ return Number(n).toLocaleString('en-US'); };
   var sgn = function(n){ return (n > 0 ? '+' : '') + n; };
-  ${lift(ANA, "ord")} ${lift(ANA, "crowdWord")} ${lift(MKT, "verdictLine")}
+  ${lift(ANA, "crowdWord")} ${lift(MKT, "verdictLine")}
   return verdictLine(c);`);
 
 test("no 'unusually large' in the panel; the words are the percentile's", () => {
@@ -32,7 +32,8 @@ test("no 'unusually large' in the panel; the words are the percentile's", () => 
   const p = corn.pctl.net_oi_all;
   if (p >= 75 || p <= 25) {
     const word = p >= 90 ? "top" : p >= 75 ? "high side" : p <= 10 ? "bottom" : "low side";
-    assert.match(out, new RegExp("at the " + Math.round(p) + "(st|nd|rd|th) percentile"));
+    assert.ok(out.includes(corn.crowd.words), out);
+    assert.doesNotMatch(out, /\d(st|nd|rd|th) percentile/);
     assert.ok(out.includes(word), out);
     assert.ok(out.includes(corn.crowded ? "crowded " + corn.crowded : "not crowded"), out);
   }
@@ -40,11 +41,11 @@ test("no 'unusually large' in the panel; the words are the percentile's", () => 
 
 test("hand case: net long at 81.4 reads 'high side, not crowded'; crowded long at 93 reads 'top 7%, crowded long'", () => {
   const base = { net: 329839, label: "Corn", first_week: "2010-01-05", capacity: { to_flat: 1, room_down: 2, room_up: 3 }, studies: {} };
-  assert.match(verdict({ ...base, pctl: { net_oi_all: 81.4 }, crowded: null }), /at the 81st percentile of their own record since 2010 \(high side, not crowded\)/);
+  assert.match(verdict({ ...base, pctl: { net_oi_all: 81.4 }, crowded: null }), /higher than 81% of weeks since 2010, as a share of open interest \(high side, not crowded\)/);
   assert.match(verdict({ ...base, pctl: { net_oi_all: 93 }, crowded: "long" }), /\(top 7%, crowded long\)/);
 });
 
 test("the panel script and its loader were re-versioned", () => {
-  assert.match(ANA, /cot-market\.js\?v=4/);
-  assert.match(readFileSync(new URL("../cot.html", import.meta.url), "utf8"), /cot-analysis\.js\?v=4/);
+  assert.match(ANA, /cot-market\.js\?v=5/);
+  assert.match(readFileSync(new URL("../cot.html", import.meta.url), "utf8"), /cot-analysis\.js\?v=5/);
 });

@@ -50,8 +50,9 @@ test("one line per market: long or short, how heavy, the percentile with its per
   for (const l of ls) {
     const c = CX.commodities[l.key];
     assert.ok(l.text.startsWith("Funds are "), l.text);
-    assert.ok(l.text.includes(`percentile since ${c.crowd.since}`), "the percentile names its period: " + l.text);
-    assert.ok(l.text.includes(`(${G.ord(c.crowd.shown)} percentile`), "the page's one printed percentile: " + l.text);
+    assert.ok(l.text.includes(`of weeks since ${c.crowd.since}`), "the rank names its period: " + l.text);
+    assert.ok(l.text.includes(`(${c.crowd.words}`), "the page's one printed rank, in words: " + l.text);
+    assert.doesNotMatch(l.text, /\d(st|nd|rd|th)\b/, "no ordinals: " + l.text);
     const n = Math.abs(c.chg).toLocaleString("en-US");
     assert.ok(c.chg === 0 ? l.text.includes("held steady") : l.text.includes(`${c.chg > 0 ? "bought" : "sold"} a net ${n} contracts this week`), l.text);
     assert.ok(!DASH.test(l.html), "no dashes: " + l.text);
@@ -59,10 +60,10 @@ test("one line per market: long or short, how heavy, the percentile with its per
   }
   const by = Object.fromEntries(ls.map((l) => [l.key, l.text]));
   // the Oct 27 report, frozen: the words follow the cut points in cot-glance.js
-  assert.equal(by.beans, "Funds are fairly heavily long soybeans (75th percentile since 2010) and sold a net 27,544 contracts this week.");
-  assert.equal(by.soymeal, "Funds are heavily long soybean meal (94th percentile since 2010, crowded) and sold a net 32,164 contracts this week.");
-  assert.equal(by.kcwheat, "Funds are about even in KC wheat (37th percentile since 2010) and sold a net 8,007 contracts this week.");
-  assert.equal(by.leanhogs, "Funds are heavily short lean hogs (1st percentile since 2010, crowded) and sold a net 4,833 contracts this week.");
+  assert.equal(by.beans, "Funds are fairly heavily long soybeans (higher than 75% of weeks since 2010) and sold a net 27,544 contracts this week.");
+  assert.equal(by.soymeal, "Funds are heavily long soybean meal (higher than 94% of weeks since 2010, crowded) and sold a net 32,164 contracts this week.");
+  assert.equal(by.kcwheat, "Funds are about even in KC wheat (a bigger net short than 63% of weeks since 2010) and sold a net 8,007 contracts this week.");
+  assert.equal(by.leanhogs, "Funds are heavily short lean hogs (a bigger net short than 99% of weeks since 2010, crowded) and sold a net 4,833 contracts this week.");
   assert.equal(G.asOf(COT, CX), "Positions as of Tuesday, Oct 27, released Friday, Oct 30.");
 });
 
@@ -85,15 +86,15 @@ test("without the analysis for the same report, no percentile and no 'how heavy'
 
 test("the weight word follows the printed percentile: 74.6 and 75.2 both print 75 and get one word", () => {
   const base = CX.commodities.beans;
-  const mk = (pctl) => ({ ...base, crowded: null, crowd: { ...base.crowd, pctl, shown: Math.round(pctl), crowded: null } });
+  const mk = (pctl) => ({ ...base, crowded: null, crowd: { ...base.crowd, pctl, shown: Math.round(pctl), crowded: null, words: undefined } });
   const a = G.line("beans", mk(74.6), true), b = G.line("beans", mk(75.2), true);
-  assert.ok(a.text.includes("(75th percentile since 2010)") && b.text.includes("(75th percentile since 2010)"), a.text + " / " + b.text);
+  assert.ok(a.text.includes("(higher than 75% of weeks since 2010)") && b.text.includes("(higher than 75% of weeks since 2010)"), a.text + " / " + b.text);
   assert.equal(a.text, b.text, "one printed number, one word");
   assert.match(a.text, /^Funds are fairly heavily long soybeans/);
   // the same on the short side: 25.4 and 24.6 both print 25
-  const sh = (pctl) => ({ ...CX.commodities.wheat, crowded: null, crowd: { ...CX.commodities.wheat.crowd, pctl, shown: Math.round(pctl), crowded: null } });
-  assert.equal(G.line("wheat", sh(25.4), true).text.replace(/\d+th/, "N"), G.line("wheat", sh(24.6), true).text.replace(/\d+th/, "N"));
-  assert.ok(read("components/cot-glance.js").includes("Funds are fairly heavily long soybeans (75th percentile since 2010)"), "the header example matches the words");
+  const sh = (pctl) => ({ ...CX.commodities.wheat, crowded: null, crowd: { ...CX.commodities.wheat.crowd, pctl, shown: Math.round(pctl), crowded: null, words: undefined } });
+  assert.equal(G.line("wheat", sh(25.4), true).text.replace(/\d+%/, "N"), G.line("wheat", sh(24.6), true).text.replace(/\d+%/, "N"));
+  assert.ok(read("components/cot-glance.js").includes("Funds are fairly heavily long soybeans (higher than 75% of weeks since 2010)"), "the header example matches the words");
 });
 
 test("the crowded verdict reads every market: never 'No market crowded' while any market is crowded", () => {
@@ -132,8 +133,8 @@ test("the COT file keeps each dated contract's report-day close (enrich_cot_pric
 
 test("the pages load the shared lines and the bumped scripts", () => {
   const cot = read("cot.html"), idx = read("index.html");
-  for (const h of [cot, idx]) assert.ok(h.includes('<script src="/components/cot-glance.js?v=2"></script>'));
-  assert.ok(cot.includes('<script src="/components/cot-page.js?v=7"></script>'));
+  for (const h of [cot, idx]) assert.ok(h.includes('<script src="/components/cot-glance.js?v=3"></script>'));
+  assert.ok(cot.includes('<script src="/components/cot-page.js?v=8"></script>'));
   assert.ok(cot.indexOf('<script src="/components/cot-glance.js') < cot.indexOf('<script src="/components/cot-page.js'));
   assert.ok(idx.indexOf('<script src="/components/cot-glance.js') < idx.indexOf('<script src="/components/home.js'));
   // one Funds this week ask on /cot, under the chart and the market table, above the details
@@ -193,7 +194,7 @@ test("/cot: the first screen is the verdict and the chart, every market in a tab
   try {
     for (const width of [390, 1280]) {
       const { pg, posts } = await open(browser, port, "/cot.html", { width });
-      await pg.waitForFunction(() => document.querySelectorAll("#cg-rows tr").length > 0 && /\d(st|nd|rd|th)/.test(document.getElementById("cg-rows").textContent));
+      await pg.waitForFunction(() => document.querySelectorAll("#cg-rows tr").length > 0 && /\d+%/.test(document.getElementById("cg-rows").textContent));
       // every market, one row each: market | long or short | rank | change
       const got = await pg.$$eval("#cg-rows tr", (trs) => trs.map((tr) => [...tr.children].map((td) => td.textContent)));
       assert.deepEqual(got, G.rows(COT, CX).map((r) => [r.name, r.pos, r.rank, r.chg]), "the table prints cot-glance.js's rows " + width);

@@ -142,6 +142,9 @@
   font-size: .84rem; color: var(--text-muted); line-height: 1.55; max-width: 620px;
 }
 .cot-more { margin-top: .35rem; max-width: 620px; }
+/* phones: the release bar and the answer line on the first screen (2026-11-06); the eyebrow and the data line repeat
+   what the bar, the answer line and the chart source already say */
+@media (max-width:700px){ .cot-hero{padding-top:.25rem;margin-bottom:1rem} .cot-hero .cot-eyebrow,.cot-hero .madeby{display:none} .cot-more summary{min-height:40px} }
 .cot-more summary { cursor: pointer; font-size: .84rem; font-weight: 600; color: var(--gold); min-height: 44px; display: flex; align-items: center; }
 .cot-more .cot-page-sub { margin: 0 0 .55rem; }
 
@@ -508,7 +511,20 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-chip:hover{border-color:var(--gold);color:var(--text)}
 .cc-chip[aria-pressed="true"]{background:var(--gold-fill,var(--gold));border-color:var(--gold);color:#0a0c0d}
 .cc-chip:focus-visible,.cc-btn:focus-visible,.cc-plot:focus-visible{outline:2px solid var(--green);outline-offset:2px}
-.cc-head{display:flex;flex-direction:column;justify-content:flex-end;font-family:var(--font-body);font-size:1rem;font-weight:500;line-height:1.4;color:var(--text);margin:.1rem 0 .4rem;min-height:4.2em;letter-spacing:0}
+.cc-head{display:flex;flex-direction:column;justify-content:flex-end;font-family:var(--font-body);font-size:1rem;font-weight:500;line-height:1.4;color:var(--text);margin:.1rem 0 .3rem;min-height:4.2em;letter-spacing:0}
+/* The answer line (2026-11-06): what managed money did, the rank in words, the Tuesday and the next report. Baked for JS-off. */
+.cc-answer{margin:0 0 .55rem;font-size:.92rem;line-height:1.5;color:var(--text);min-height:7.5em}
+@media(min-width:701px){.cc-answer{min-height:3em}}
+/* The release bar (2026-11-06, Sig: "a clear indicator or countdown until the release that you can't miss"). */
+.cot-rel{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .8rem;margin:0 0 .8rem;padding:.6rem .85rem;border-radius:10px;background:#d4a23f;color:#111;font-weight:800;font-size:1rem;line-height:1.35}
+.cot-rel-t{flex:1 1 14rem;font-variant-numeric:tabular-nums}
+.cot-rel-ic{flex:none;width:22px;height:22px}
+.cot-rel-a{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 .9rem;border-radius:8px;background:#111;color:#fff;font-size:.88rem;font-weight:800;text-decoration:none}
+.cot-rel-a:hover{background:#000;color:#fff;text-decoration:underline}
+.cot-rel-a:focus-visible{outline:3px solid #111;outline-offset:2px}
+[data-theme="light"] .cot-rel{background:#f2c35b;color:#111}
+.cot-rel[data-state="due"],.cot-rel[data-state="updated"]{background:#3fae6a;color:#06140b}
+.cot-rel[data-state="late"]{background:#e07b39;color:#140800}
 .cc-head b{font-weight:800}
 .cc-plot{position:relative;height:300px;touch-action:pan-y;cursor:crosshair;border-radius:6px}
 .cc-svg{display:block;width:100%;height:100%;overflow:visible;font-family:var(--font-body);font-variant-numeric:tabular-nums}
@@ -537,6 +553,7 @@ html.cot-live .cg-baked{display:none}
 .cg-table th:nth-child(n+3),.cg-table td:nth-child(n+3){text-align:right}
 .cg-table th:last-child,.cg-table td:last-child{padding-right:.85rem}
 .cg-table tr:last-child td{border-bottom:0}
+.cg-table td:nth-child(3){white-space:normal;line-height:1.25}
 .cg-pick{background:none;border:0;padding:0;min-height:44px;font:inherit;font-weight:700;color:var(--text);text-decoration:underline;text-decoration-color:var(--border-g);text-underline-offset:3px;cursor:pointer}
 .cg-pick:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 @media(max-width:400px){.cg-table{font-size:.76rem}.cg-table th,.cg-table td{padding-left:.25rem;padding-right:.25rem}.cg-table th:first-child,.cg-table td:first-child{padding-left:.6rem}.cg-table th:last-child,.cg-table td:last-child{padding-right:.6rem}}
@@ -663,7 +680,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   <path d="m8.5 16.5-1-1" /></symbol><symbol id="i-milk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8" />
   <path d="M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2" />
   <path d="M7 15a6.472 6.472 0 0 1 5 0 6.47 6.47 0 0 0 5 0" /></symbol></defs></svg><style></style>
-<noscript><div style="text-align:center;padding:1.5rem;margin:1rem;font-family:sans-serif;color:#ccc;background:#111;border-radius:8px">This page loads live CFTC Commitment of Traders data with JavaScript. Please enable JavaScript, or view the weekly report directly at cftc.gov.</div></noscript>
+
 <div id="site-header">
 <!-- static-nav:header -->
   <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
@@ -687,11 +704,20 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 
 <main id="main" class="main cot-page">
 
+  <!-- The release bar (2026-11-06): the next CFTC release, counted down live (components/cot-page.js, from
+       components/cot-glance.js release()); baked with the date and time for JS-off. One countdown on the page. -->
+  <div class="cot-rel" id="cot-rel" data-state="baked">
+    <svg class="cot-rel-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <span class="cot-rel-t" id="cot-rel-t"><!-- PRERENDER:cot-release -->Next CFTC report: Friday Nov 6, 3:30 PM ET<!-- /PRERENDER:cot-release --></span>
+    <a class="cot-rel-a" id="cot-rel-a" href="#cot-signup">Get it in your inbox Friday</a>
+    <span class="sr-only" id="cot-rel-live" aria-live="polite"></span>
+  </div>
+
   <!-- Hero -->
   <div class="cot-hero">
     <div class="cot-eyebrow page-kicker">CFTC data · Updated weekly</div>
     <h1 class="cot-page-title">CFTC Commitments of Traders</h1>
-    <p class="cot-page-sub page-lede">Where the big speculative funds sit in corn, soybeans, wheat, cattle, hogs and milk this week, and how crowded that is. Not a price forecast.</p>
+    <p class="cot-page-sub page-lede">Where the big speculative funds sit in grain, cattle, hogs and milk, and how crowded that is. Not a price forecast.</p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: CFTC Commitments of Traders, released Fridays for positions as of the Tuesday before.</p>
     <details class="cot-more">
       <summary>Who the funds are, and how old these numbers are</summary>
@@ -711,10 +737,11 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"><button type="button" class="cc-cmp" id="cc-cmp" aria-pressed="false">Compare</button><button type="button" class="cc-chip" data-k="corn" aria-pressed="true">Corn</button><button type="button" class="cc-chip" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-chip" data-k="wheat" aria-pressed="false">Chicago wheat</button><button type="button" class="cc-chip" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-chip" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-chip" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-chip" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-chip" data-k="livecattle" aria-pressed="false">Live cattle</button><button type="button" class="cc-chip" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-chip" data-k="leanhogs" aria-pressed="false">Lean hogs</button><button type="button" class="cc-chip" data-k="milk" aria-pressed="false">Class III milk</button></div>
       <p class="cc-kind">Futures</p>
       <h3 class="cc-head" id="cc-head"><span>Managed money net position, last 52 weeks</span></h3>
+      <p class="cc-answer" id="cc-answer"><!-- PRERENDER:cot-answer -->Managed money sold a net 83,310 contracts of corn in the week to Tuesday, Oct 27, leaving funds net long 81,113: higher than 48% of weeks since 2010 (share of open interest). Next report: Friday Nov 6, 3:30 PM ET.<!-- /PRERENDER:cot-answer --></p>
       <div class="cc-plot" id="cc-plot" tabindex="0" aria-describedby="cc-hint">
         <svg class="cc-svg" id="cc-svg" role="img" aria-label="52-week chart of managed money net position" preserveAspectRatio="none"></svg>
         <div class="cc-tip" id="cc-tip" hidden></div>
-        <p class="cc-msg" id="cc-msg">Loading the 52-week chart&hellip;</p>
+        <p class="cc-msg" id="cc-msg">Loading the 52-week chart&hellip;</p><noscript><p class="cc-msg" style="background:var(--surface)">The chart needs JavaScript. This week&rsquo;s figures are in the summary below it.</p></noscript>
       </div>
       <p class="sr-only" id="cc-hint">Use the left and right arrow keys to step through the weeks.</p>
       <div class="sr-only" id="cc-live" aria-live="polite"></div>
@@ -729,10 +756,10 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <div class="co-mkt" id="co-mkt" hidden></div>
     <details class="cg-all" id="cg-all">
       <summary>All markets</summary>
-      <p class="cg-key" id="cg-key">Rank: the net as a share of open interest, against every week in the record. Change: contracts bought (+) or sold this week.</p>
+      <p class="cg-key" id="cg-key">Rank: the net as a share of open interest, against every week in the record. &ldquo;Above 48%&rdquo; means higher than 48% of those weeks; for a short, &ldquo;below 67%&rdquo; means a bigger net short than 67% of them. Change: contracts bought (+) or sold this week.</p>
       <div class="cg-tw"><table class="cg-table" id="cg-table"><thead><tr><th scope="col">Market</th><th scope="col">Long or short</th><th scope="col">Rank</th><th scope="col">Change</th></tr></thead><tbody id="cg-rows"></tbody></table></div>
     </details>
-    <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="These lines in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask"></div>
+    <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Fund positions in every market, in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask" id="cot-signup"></div>
     <!-- the summary baked in for crawlers and no-script readers, under the chart so the live swap moves nothing above it -->
   <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
   </section>
@@ -743,7 +770,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   <section class="co" id="cot-opt" aria-labelledby="co-h">
     <h2 class="cg-h" id="co-h">Positioning map</h2>
     <p class="co-sub" id="co-sub">Loading the map&hellip;</p>
-    <div class="cm-legend" id="cm-legend" aria-hidden="true"><span class="cm-k x0">0</span><span class="cm-k b1"></span><span class="cm-k b2">50</span><span class="cm-k b3"></span><span class="cm-k x4">100</span><span class="cm-lt">Each number: where that net position sits in its own last 3 years, 0 lowest, 100 highest. Ringed: top or bottom 5%. Tap one.</span><span class="cm-li"><span class="cm-k na"></span><span>Hatched: not ranked (options under 5% of open interest).</span></span></div>
+    <div class="cm-legend" id="cm-legend" aria-hidden="true"><span class="cm-k x0">0</span><span class="cm-k b1"></span><span class="cm-k b2">50</span><span class="cm-k b3"></span><span class="cm-k x4">100</span><span class="cm-lt">Each number ranks that group's net position in contracts against its own last 3 years: 0 lowest, 100 highest. A different yardstick from the chart's rank, which is share of open interest since 2010. Ringed: top or bottom 5%. Tap one.</span><span class="cm-li"><span class="cm-k na"></span><span>Hatched: not ranked (options under 5% of open interest).</span></span></div>
     <div class="cm-grid">
       <div class="cm-wrap" id="cm-wrap"></div>
       <div class="cm-detail" id="cm-detail" aria-live="polite"></div>
@@ -780,7 +807,6 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <div class="cvb-text" id="cvb-text">Loading fund positioning data…</div>
     <div class="cvb-meta">
       <div class="cvb-date" id="cvb-date">CFTC · Updated weekly</div>
-      <span class="cvb-countdown" id="cot-countdown"></span>
     </div>
   </div>
 
@@ -797,7 +823,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <p class="cx-sub">Each market placed by how crowded fund positioning is against <b>its own
       record</b>, and by what price has done since. Position is measured as a share of all open
       contracts, so an old reading and a new one mean the same thing in a market that has since
-      changed size. The dashed lines are the 20th and 80th percentiles; a dot is coloured only when the
+      changed size. The dashed lines mark 20% and 80% of the record; a dot is coloured only when the
       market is crowded (top tenth of its record while net long, bottom tenth while net short). <span id="cx-window"></span></p>
     <p class="cx-stamp" id="cx-stamp"></p>
     <div class="cx-panel" style="margin-bottom:.9rem">
@@ -918,13 +944,13 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 </div>
 <script src="/components/loader.js?v=19"></script>
 
-<script src="/components/cot-glance.js?v=2"></script>
-<script src="/components/cot-chart.js?v=3"></script>
-<script src="/components/cot-page.js?v=7"></script>
+<script src="/components/cot-glance.js?v=3"></script>
+<script src="/components/cot-chart.js?v=4"></script>
+<script src="/components/cot-page.js?v=8"></script>
 
 
-<script src="/components/cot-analysis.js?v=4"></script>
-<script src="/components/cot-options.js?v=2"></script>
+<script src="/components/cot-analysis.js?v=5"></script>
+<script src="/components/cot-options.js?v=3"></script>
 
 <script>
 /* Folds: a link to anything inside a closed fold opens it first; printing opens them all. */
