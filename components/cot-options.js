@@ -1,19 +1,32 @@
-/* Options positions on /cot (2026-11-06, Sig: feature options open interest and single out unusual positions).
-   Reads /data/cot-options.json, which scripts/cot_options.py builds from CFTC data only; every figure there is
-   computed by the builder, this file only words and places it. Facts only: no arrows, no direction words, no calls.
+/* Positioning map and options positions on /cot (2026-11-06, Sig: feature options open interest and single out
+   unusual positions; "has to be epic", few words, no repeated wording).
+   Reads /data/cot-options.json, which scripts/cot_options.py builds from CFTC data only. Every figure there is
+   computed by the builder; this file only words and places it. Facts only: no arrows, no direction words, no calls.
+     map()     markets down the side, the four trader groups across (futures and options for each); each cell is
+               the position's percentile in its own last 3 years, colored low to high, the top and bottom 5% ringed
+     detail()  the tapped cell: the number, the week change, its rank and a 3-year line
+     cards()   "Unusual this week", one card per market and group
+     block()   the options figures for the market picked on the 52-week chart
    Exports window.AgCotOptions (and module.exports for the tests). */
 (function (root) {
   'use strict';
   var NAMES = { corn: 'Corn', beans: 'Soybeans', wheat: 'Chicago wheat', kcwheat: 'KC wheat', mplswheat: 'MPLS wheat',
     soymeal: 'Soybean meal', soyoil: 'Soybean oil', livecattle: 'Live cattle', feedercattle: 'Feeder cattle',
     leanhogs: 'Lean hogs', milk: 'Class III milk' };
+  /* row labels on the map: short enough for a 390 px phone */
+  var ROW = { corn: 'Corn', beans: 'Soybeans', wheat: 'Chi. wheat', kcwheat: 'KC wheat', mplswheat: 'MPLS wheat',
+    soymeal: 'Meal', soyoil: 'Soy oil', livecattle: 'Live cattle', feedercattle: 'Feeders', leanhogs: 'Hogs', milk: 'Milk' };
   var ORDER = ['corn', 'beans', 'wheat', 'kcwheat', 'mplswheat', 'soymeal', 'soyoil', 'livecattle', 'feedercattle', 'leanhogs', 'milk'];
-  var GROUP = { mm: 'managed money', pm: 'producers and merchants', swap: 'swap dealers', or: 'other reportables' };
-  var GROUP_SHORT = { mm: 'Managed money', pm: 'Producers', swap: 'Swap dealers', or: 'Other reportables' };
+  var IN = { corn: 'corn', beans: 'soybeans', wheat: 'Chicago wheat', kcwheat: 'KC wheat', mplswheat: 'MPLS wheat', soymeal: 'soybean meal',
+    soyoil: 'soybean oil', livecattle: 'live cattle', feedercattle: 'feeder cattle', leanhogs: 'lean hogs', milk: 'Class III milk' };
   var GROUPS = ['mm', 'pm', 'swap', 'or'];
+  var GROUP = { mm: 'Funds', pm: 'Producers', swap: 'Swap dealers', or: 'Other big traders' };
+  var GROUP_LOWER = { mm: 'funds', pm: 'producers', swap: 'swap dealers', or: 'other big traders' };
+  var SIDE = { fut: 'futures', opt: 'options' };
   var CONC = { g4l: ['4', 'longs'], g4s: ['4', 'shorts'], g8l: ['8', 'longs'], g8s: ['8', 'shorts'] };
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var MINUS = '−';
+  var SHOW = 6;   // cards shown before "Show all"
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function num(n) { return Math.abs(Math.round(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -25,123 +38,260 @@
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || ''));
     return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : '';
   }
-  /* where a position sits in its own last three years */
   function where(p, weeks) {
     if (p == null) return 'not ranked';
     if (p === 0) return 'lowest in ' + weeks + ' weeks';
     if (p === 100) return 'highest in ' + weeks + ' weeks';
     return ord(p) + ' percentile of ' + weeks + ' weeks';
   }
-  function moveText(p, weeks) {
-    if (p === 100) return 'the largest weekly change in ' + weeks + ' weeks';
-    return 'larger than ' + p + '% of weekly changes in ' + weeks + ' weeks';
+  /* the five bins of the color scale, read from the printed percentile */
+  function bin(p, edge) {
+    if (p == null) return 'na';
+    edge = edge == null ? 5 : edge;
+    if (p <= edge) return 'x0';
+    if (p < 25) return 'b1';
+    if (p <= 75) return 'b2';
+    if (p < 100 - edge) return 'b3';
+    return 'x4';
+  }
+  function cell(d, k, side, g) {
+    var m = d && d.markets && d.markets[k];
+    if (!m) return null;
+    var r = side === 'opt' ? m.groups && m.groups[g] : m.fut && m.fut[g];
+    return r ? { m: m, r: r } : null;
   }
 
-  /* The unusual lines, one per market and group (a level and a change for the same
-     group read as one line), in the file's order. */
-  function lines(d) {
+  /* ---------------------------------------------------------------- the map: a real table, one button per cell */
+  function map(d) {
+    var keys = ORDER.filter(function (k) { return d && d.markets && d.markets[k]; });
+    var h = '<table class="cm-t"><caption class="sr-only">Percentile of each net position in its own last 3 years, by market and trader group, futures and options. Week of ' +
+      esc(day(d.report_date)) + '.</caption><thead><tr><td class="cm-c0"></td>';
+    GROUPS.forEach(function (g) { h += '<th scope="colgroup" colspan="2" class="cm-g">' + GROUP[g] + '</th>'; });
+    h += '</tr><tr><td class="cm-c0"></td>';
+    GROUPS.forEach(function () { h += '<th scope="col" class="cm-s"><abbr title="futures">Fut</abbr></th><th scope="col" class="cm-s"><abbr title="options">Opt</abbr></th>'; });
+    h += '</tr></thead><tbody>';
+    keys.forEach(function (k) {
+      h += '<tr><th scope="row" class="cm-r">' + ROW[k] + '</th>';
+      GROUPS.forEach(function (g) {
+        ['fut', 'opt'].forEach(function (side) {
+          var c = cell(d, k, side, g), p = c ? c.r.pct : null, b = bin(p, d.edge);
+          var lab = NAMES[k] + ', ' + GROUP_LOWER[g] + ', ' + SIDE[side] + ': ' + where(p, c ? c.m.weeks : 0);
+          h += '<td class="cm-x ' + b + (side === 'opt' ? ' cm-o' : '') + '"><button type="button" class="cm-b" data-k="' + k + '" data-s="' + side + '" data-g="' + g +
+            '" aria-label="' + esc(lab) + '" aria-pressed="false">' + (p == null ? '<span aria-hidden="true">&middot;</span>' : p) + '</button></td>';
+        });
+      });
+      h += '</tr>';
+    });
+    return h + '</tbody></table>';
+  }
+
+  /* ---------------------------------------------------------------- the tapped cell */
+  function detail(d, k, side, g) {
+    var c = cell(d, k, side, g);
+    if (!c) return '';
+    var m = c.m, r = c.r;
+    var h = '<h3 class="cd-h">' + esc(NAMES[k]) + ': ' + GROUP_LOWER[g] + ', ' + SIDE[side] + '</h3>';
+    h += '<p class="cd-big"><b>' + signed(r.net) + '</b> <span>' + (side === 'opt' ? 'contracts net, futures equivalent' : 'contracts net') + '</span></p>';
+    var bits = [];
+    if (r.pct != null) bits.push(cap(where(r.pct, m.weeks)) + '.');
+    else if (side === 'opt' && m.withheld === 'small') bits.push('Options are ' + pc(m.opt_share) + ' of open interest here, too few to rank.');
+    else bits.push('Not ranked: under ' + m.weeks + ' weeks of history.');
+    if (r.chg != null) bits.push('Week change ' + signed(r.chg) + (r.chg_pct != null ? ', bigger than ' + Math.min(r.chg_pct, 99) + '% of weekly changes.' : '.'));
+    h += '<p class="cd-txt">' + esc(bits.join(' ')) + '</p>';
+    h += '<div class="cd-sp" data-k="' + k + '" data-s="' + side + '" data-g="' + g + '"></div>';
+    return h;
+  }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* the 3-year line as SVG, drawn at the real pixel width (no stretched text or dots) */
+  function spark(vals, dates, w, h) {
+    if (!vals || vals.length < 2) return '';
+    var lo = Math.min.apply(null, vals.concat([0])), hi = Math.max.apply(null, vals.concat([0]));
+    if (hi === lo) hi = lo + 1;
+    var T = 6, B = h - 6, L = 4, R = w - 8;
+    function X(i) { return L + (R - L) * i / (vals.length - 1); }
+    function Y(v) { return B - (B - T) * (v - lo) / (hi - lo); }
+    var pts = vals.map(function (v, i) { return X(i).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' ');
+    var n = vals.length - 1;
+    return '<svg class="cd-svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Net position every fourth week from ' +
+      esc(day(dates[0])) + ' to ' + esc(day(dates[n])) + '">' +
+      '<line class="cd-zero" x1="' + L + '" x2="' + R + '" y1="' + Y(0).toFixed(1) + '" y2="' + Y(0).toFixed(1) + '"/>' +
+      '<polyline class="cd-line" points="' + pts + '"/>' +
+      '<line class="cd-hair" x1="0" x2="0" y1="' + T + '" y2="' + B + '" hidden/>' +
+      '<circle class="cd-dot" cx="' + X(n).toFixed(1) + '" cy="' + Y(vals[n]).toFixed(1) + '" r="4"/></svg>';
+  }
+  function sparkFoot(vals, dates) {
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    return '<p class="cd-foot"><span>' + esc(day(dates[0])) + '</span><span>' + esc(day(dates[dates.length - 1])) + '</span></p>' +
+      '<p class="cd-rng">3-year high ' + signed(hi) + ', low ' + signed(lo) + '</p>';
+  }
+
+  /* ---------------------------------------------------------------- "Unusual this week" */
+  var KIND_ORDER = { level: 0, change: 1 };
+  function cardList(d) {
     var out = [], seen = {};
     (d && d.unusual || []).forEach(function (u) {
-      var name = NAMES[u.m] || u.m, txt;
       if (u.kind === 'level' || u.kind === 'change') {
-        var key = u.m + '|' + u.g, part;
-        if (u.kind === 'level') part = 'net options ' + signed(u.net) + ' contracts, ' + where(u.pct, u.weeks);
-        else part = 'week change ' + signed(u.chg) + ', ' + moveText(u.pct, u.weeks);
-        if (seen[key] != null) { out[seen[key]].parts.push(part); return; }
-        seen[key] = out.length;
-        out.push({ m: u.m, head: name + ', ' + (GROUP[u.g] || u.g), parts: [part], date: u.date });
+        var key = u.m + '|' + u.g;
+        if (seen[key] == null) { seen[key] = out.length; out.push({ m: u.m, g: u.g, net: u.net, chg: u.chg, weeks: u.weeks, date: u.date }); }
+        out[seen[key]][u.kind] = u.pct;
         return;
       }
-      var c = CONC[u.c];
-      if (!c) return;
-      txt = 'largest ' + c[0] + ' traders hold ' + pc(u.value) + ' of all ' + c[1] + ', ' +
-        (u.kind === 'conc_hi' ? 'at the highest' : 'at the lowest') + ' in ' + u.weeks + ' weeks';
-      out.push({ m: u.m, head: name, parts: [txt], date: u.date });
+      if (CONC[u.c]) out.push({ m: u.m, c: u.c, value: u.value, hi: u.kind === 'conc_hi', weeks: u.weeks, date: u.date });
     });
-    return out.map(function (l) {
-      return '<li><b>' + esc(l.head) + '</b>: ' + esc(l.parts.join('; ')) + '. <span class="co-d">Week of ' + esc(day(l.date)) + '</span></li>';
+    return out;
+  }
+  function sentence(c) {
+    if (c.c) return 'Largest ' + CONC[c.c][0] + ' traders hold this share of all ' + CONC[c.c][1] + ', the ' + (c.hi ? 'most' : 'least') + ' in ' + c.weeks + ' weeks.';
+    var s = c.level != null ? cap(where(c.level, c.weeks)) : '';
+    if (c.change != null) {
+      var ch = 'week change of ' + signed(c.chg) + ' bigger than ' + Math.min(c.change, 99) + '% of weekly changes';
+      s = s ? s + ', after a ' + ch : cap(ch);
+    }
+    return s + '.';
+  }
+  function cards(d) {
+    return cardList(d).map(function (c, i) {
+      var head = esc(NAMES[c.m]) + ' <span>' + (c.c ? 'big traders' : GROUP_LOWER[c.g] + ', options') + '</span>';
+      var big = c.c ? pc(c.value) : signed(c.net);
+      var tap = c.c ? '' : ' data-k="' + c.m + '" data-s="opt" data-g="' + c.g + '"';
+      return '<li class="cu' + (i >= SHOW ? ' cu-more' : '') + '"' + tap + '><p class="cu-h">' + head + '</p><p class="cu-big">' + big +
+        '</p><p class="cu-s">' + esc(sentence(c)) + '</p><p class="cu-d">Week of ' + esc(day(c.date)) + '</p></li>';
     }).join('');
   }
-
-  /* the count line: how many readings were scanned and how many an ordinary week turns up */
   function countLine(d) {
     if (!d || !d.scanned) return '';
-    var nm = Object.keys(d.markets || {}).length;
-    var s = d.flagged === 0 ? 'None of the ' + d.scanned + ' readings scanned across ' + nm + ' markets is at a 3-year extreme this week.'
-      : d.flagged + ' of ' + d.scanned + ' readings scanned across ' + nm + ' markets ' + (d.flagged === 1 ? 'is' : 'are') + ' at 3-year extremes this week.';
-    var t = d.typical;
-    if (t && t.weeks) {
-      s += ' In the ' + t.weeks + ' weeks before, a typical week had ' + t.median + ' (from ' + t.min + ' to ' + t.max +
-        '). With this many readings, some land at an extreme in any week.';
-    }
+    var t = d.typical, s;
+    if (!d.flagged) s = 'None of ' + d.scanned + ' readings scanned is at a 3-year extreme this week.';
+    else s = d.flagged + ' of ' + d.scanned + ' readings scanned ' + (d.flagged === 1 ? 'is' : 'are') + ' at 3-year extremes.';
+    if (t && t.weeks) s += ' A typical week in the past year had ' + t.median + ' (' + t.min + ' to ' + t.max + '), so some turn up by chance.';
     return s;
   }
 
-  function withheldText(m) {
-    if (m.withheld === 'small') return 'Options are ' + pc(m.opt_share) + ' of open interest in this market, too small a share to rank the positions.';
-    if (m.withheld === 'history') return 'Not enough history to rank these positions (' + m.weeks + ' weeks).';
-    return '';
-  }
-
-  /* one market's block */
+  /* ---------------------------------------------------------------- the market picked on the chart */
   function block(d, k) {
     var m = d && d.markets && d.markets[k];
-    if (!m) return '<p class="co-note">No options figures for ' + esc(NAMES[k] || k) + ' this week.</p>';
-    var h = '<p class="co-oi"><b>' + num(m.opt_oi) + '</b> contracts of options open interest, counted as futures equivalents, ' +
-      pc(m.opt_share) + ' of all ' + num(m.oi_all) + ' contracts open. Week of ' + esc(day(m.date)) + '.</p>';
-    var w = withheldText(m);
-    if (w) h += '<p class="co-note">' + esc(w) + '</p>';
-    h += '<div class="cg-tw"><table class="cg-table co-table"><caption class="sr-only">Net options position by trader group, ' +
-      esc(NAMES[k] || k) + '</caption><thead><tr><th scope="col">Group</th><th scope="col">Net options</th><th scope="col">Week change</th><th scope="col">3-year rank</th></tr></thead><tbody>';
+    if (!m) return '';
+    var h = '<h3 class="co-h3">Options in ' + esc(IN[k] || k) + '</h3>';
+    h += '<p class="co-oi"><b>' + num(m.opt_oi) + '</b> futures-equivalent contracts, ' + pc(m.opt_share) + ' of all open interest.</p>';
+    if (m.withheld === 'small') h += '<p class="co-note">Too few options here to rank the positions.</p>';
+    else if (m.withheld === 'history') h += '<p class="co-note">Under ' + m.weeks + ' weeks of history: not ranked.</p>';
+    h += '<div class="co-tw"><table class="co-t"><caption class="sr-only">Net options position by trader group, ' + esc(NAMES[k]) +
+      ', week of ' + esc(day(m.date)) + '</caption><thead><tr><th scope="col">Group</th><th scope="col">Net</th><th scope="col">Week</th><th scope="col">3-yr rank</th></tr></thead><tbody>';
     GROUPS.forEach(function (g) {
       var r = m.groups && m.groups[g];
       if (!r) return;
-      var rk = r.pct == null ? 'not ranked' : (r.pct === 0 ? 'lowest' : r.pct === 100 ? 'highest' : ord(r.pct)) + ' <span class="co-n">of ' + m.weeks + ' wks</span>';
-      h += '<tr><th scope="row">' + GROUP_SHORT[g] + '</th><td>' + signed(r.net) + '</td><td>' + signed(r.chg) + '</td><td>' + rk + '</td></tr>';
+      var rk = r.pct == null ? 'not ranked' : r.pct === 0 ? 'lowest' : r.pct === 100 ? 'highest' : ord(r.pct);
+      h += '<tr><th scope="row">' + GROUP[g] + '</th><td>' + signed(r.net) + '</td><td>' + signed(r.chg) + '</td><td class="' + bin(r.pct, d.edge) + '">' + rk + '</td></tr>';
     });
     h += '</tbody></table></div>';
     var c = m.conc || {};
     if (c.g4l != null) {
-      h += '<p class="co-conc">Largest 4 traders hold ' + pc(c.g4l) + ' of all longs and ' + pc(c.g4s) + ' of all shorts; the largest 8, ' +
-        pc(c.g8l) + ' and ' + pc(c.g8s) + '. Counting only what each trader holds net: ' + pc(c.n4l) + ' and ' + pc(c.n4s) +
-        ' for the largest 4, ' + pc(c.n8l) + ' and ' + pc(c.n8s) + ' for the largest 8.</p>';
+      h += '<p class="co-conc">Largest 4 traders: ' + pc(c.g4l) + ' of longs, ' + pc(c.g4s) + ' of shorts (largest 8: ' + pc(c.g8l) + ', ' + pc(c.g8s) +
+        '). Net of each trader’s own offsets: ' + pc(c.n4l) + ', ' + pc(c.n4s) + ' (' + pc(c.n8l) + ', ' + pc(c.n8s) + ').</p>';
     }
     return h;
   }
 
   function sub(d, cotDate) {
     if (!d) return '';
-    var s = 'Positions held on Tuesday, ' + day(d.report_date) + ', released ' + day(d.released) + '.';
-    if (cotDate && cotDate > d.report_date) s += ' The options figures for the week of ' + day(cotDate) + ' are not in yet; these are the week before.';
+    var s = 'Held Tuesday, ' + day(d.report_date) + ', released ' + day(d.released) + '.';
+    if (cotDate && cotDate > d.report_date) s += ' The week of ' + day(cotDate) + ' is not in yet.';
     return s;
   }
 
-  var api = { lines: lines, countLine: countLine, block: block, sub: sub, where: where, day: day, NAMES: NAMES, ORDER: ORDER };
+  var api = { map: map, detail: detail, spark: spark, cards: cards, cardList: cardList, sentence: sentence, countLine: countLine,
+    block: block, sub: sub, where: where, bin: bin, day: day, NAMES: NAMES, ORDER: ORDER, SHOW: SHOW };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.AgCotOptions = api;
 
   if (typeof document === 'undefined') return;
   function $(id) { return document.getElementById(id); }
   function isoOf(s) { var t = new Date(String(s || '') + ' 12:00'); return isNaN(t) ? '' : t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2); }
+  var D = null, pick = null;
+
   function fail() {
     var s = $('co-sub');
-    if (s) s.textContent = 'The options figures are not available right now. The weekly CFTC figures above are unaffected.';
-    var u = $('co-unusual'); if (u) u.hidden = true;
-    var b = $('co-markets'); if (b) b.hidden = true;
+    if (s) s.textContent = 'The positioning map is not available right now.';
+    ['cm-wrap', 'co-unusual', 'cm-legend', 'cm-detail'].forEach(function (id) { var e = $(id); if (e) e.hidden = true; });
+  }
+  function drawSpark() {
+    var box = document.querySelector('#cm-detail .cd-sp');
+    if (!box || !D) return;
+    var m = D.markets[box.getAttribute('data-k')], sp = m && m.spark;
+    var vals = sp && sp[box.getAttribute('data-s')] && sp[box.getAttribute('data-s')][box.getAttribute('data-g')];
+    if (!vals) { box.innerHTML = ''; return; }
+    var w = Math.max(200, Math.floor(box.clientWidth || 300));
+    box.innerHTML = spark(vals, sp.dates, w, 64) + '<p class="cd-tip" aria-hidden="true"></p>' + sparkFoot(vals, sp.dates);
+    var svg = box.querySelector('svg'), hair = box.querySelector('.cd-hair'), tip = box.querySelector('.cd-tip');
+    function at(ev) {
+      var r = svg.getBoundingClientRect(), x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+      var i = Math.max(0, Math.min(vals.length - 1, Math.round((x - 4) / (w - 12) * (vals.length - 1))));
+      var hx = (4 + (w - 12) * i / (vals.length - 1)).toFixed(1);
+      hair.setAttribute('x1', hx); hair.setAttribute('x2', hx); hair.removeAttribute('hidden');
+      tip.textContent = day(sp.dates[i]) + ': ' + signed(vals[i]);
+    }
+    svg.addEventListener('pointermove', at);
+    svg.addEventListener('pointerleave', function () { hair.setAttribute('hidden', ''); tip.textContent = ''; });
+  }
+  function select(k, s, g, focus) {
+    pick = { k: k, s: s, g: g };
+    document.querySelectorAll('#cm-wrap .cm-b').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-k') === k && b.getAttribute('data-s') === s && b.getAttribute('data-g') === g ? 'true' : 'false');
+    });
+    $('cm-detail').innerHTML = detail(D, k, s, g);
+    drawSpark();
+    if (focus) { var b = document.querySelector('#cm-wrap .cm-b[aria-pressed="true"]'); if (b) b.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
+  }
+  function chartMarket() {
+    var C = root.AgCotChart, ks = C && C.selected ? C.selected() : null;
+    if (ks && ks[0]) return ks[0];
+    var b = document.querySelector('#cc-chips .cc-chip[aria-pressed="true"]');
+    return b ? b.getAttribute('data-k') : 'corn';
+  }
+  function drawBlock() {
+    var box = $('co-mkt');
+    if (!box || !D) return;
+    var cmp = root.AgCotChart && root.AgCotChart.compare && root.AgCotChart.compare();
+    var html = cmp ? '' : block(D, chartMarket());
+    box.innerHTML = html;
+    box.hidden = !html;
   }
   function render(d, cot) {
+    D = d;
     var cotDate = cot && cot.report_date ? isoOf(cot.report_date) : '';
     $('co-sub').textContent = sub(d, cotDate);
+    $('cm-wrap').innerHTML = map(d);
     $('co-count').textContent = countLine(d);
-    var ul = $('co-lines');
-    ul.innerHTML = lines(d);
+    var ul = $('co-cards');
+    ul.innerHTML = cards(d);
     ul.hidden = !ul.innerHTML;
-    var sel = $('co-pick');
-    var keys = ORDER.filter(function (k) { return d.markets && d.markets[k]; });
-    sel.innerHTML = keys.map(function (k) { return '<option value="' + k + '">' + esc(NAMES[k]) + '</option>'; }).join('');
-    function show() { $('co-block').innerHTML = block(d, sel.value); }
-    sel.addEventListener('change', show);
-    show();
+    var n = ul.querySelectorAll('.cu').length, more = $('co-more');
+    if (more) {
+      more.hidden = n <= SHOW;
+      more.textContent = 'Show all ' + n;
+      more.onclick = function () { ul.classList.add('all'); more.hidden = true; };
+    }
+    $('cm-wrap').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.cm-b') : null;
+      if (b) select(b.getAttribute('data-k'), b.getAttribute('data-s'), b.getAttribute('data-g'));
+    });
+    ul.addEventListener('click', function (e) {
+      var li = e.target.closest ? e.target.closest('.cu[data-k]') : null;
+      if (!li) return;
+      select(li.getAttribute('data-k'), 'opt', li.getAttribute('data-g'), true);
+      var t = $('cot-opt'); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+    var first = cardList(d).filter(function (c) { return !c.c; })[0];
+    if (first) select(first.m, 'opt', first.g); else select('corn', 'opt', 'mm');
+    var chips = $('cc-chips');
+    if (chips) chips.addEventListener('click', function () { setTimeout(drawBlock, 0); });
+    var cmpBtn = $('cc-cmp');
+    if (cmpBtn) cmpBtn.addEventListener('click', function () { setTimeout(drawBlock, 0); });
+    root.addEventListener('popstate', function () { setTimeout(drawBlock, 0); });
+    drawBlock();
+    var rt = null;
+    root.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(drawSpark, 150); });
   }
   function start() {
     if (!$('cot-opt')) return;
