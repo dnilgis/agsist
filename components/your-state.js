@@ -69,7 +69,7 @@
     m.build(o, st, NAMES[st], out, src);
     return '<p class="ya-k">Your area: ' + esc(NAMES[st]) + '</p>' + out.map(function (s) { return '<p>' + s + '</p>'; }).join('') +
       (o.links.length ? '<p class="ya-l">' + o.links.join(' &middot; ') + '</p>' : '') +
-      (src.length ? '<p class="ya-s">' + src.join('. ') + '.</p>' : '');
+      (src.length ? '<p class="ya-s">' + src.join('. ') + '.' + (/NASS/.test(src.join(' ')) ? ' This product uses the NASS API but is not endorsed or certified by NASS.' : '') + '</p>' : '');
   }
   function none() { return '<p class="ya-none"><a href="/cash-bids">See this for your area</a></p>'; }
 
