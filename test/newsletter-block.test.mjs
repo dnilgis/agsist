@@ -90,7 +90,9 @@ test("every number equals its source file: Barbour County AL and Story County IA
         assert.ok(s.basis.some((l) => l.startsWith("Too few ") && l.includes(word)), `${st} ${key}: withheld, said so`);
         continue;
       }
-      const cents = Math.round(Math.abs(x.median) * 100);
+      // the builder writes quarter cents as glyphs (72.5 -> "72½"), like the rest of the site
+      const a = Math.round(Math.abs(x.median) * 100 * 100) / 100, q = a * 4;
+      const cents = Number.isInteger(q) ? ((Math.floor(q / 4) || !(q % 4) ? String(Math.floor(q / 4)) : "") + ["", "¼", "½", "¾"][q % 4]) : String(a);
       assert.ok(line && line.includes(`middle basis ${cents} cent`) && line.includes(x.median > 0 ? " over " : " under ")
         && line.includes(`${x.label} futures, ${x.n} elevator bids, ${x.companies} compan`), `${st} ${key}: ${line}`);
     }
