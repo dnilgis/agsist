@@ -6863,7 +6863,7 @@
   "2026_ADMLivestockLrp_Daily_20261103.zip": 22968,
   "2026_ADMLivestockLrp_Daily_20261104.zip": 31301,
   "2026_ADMLivestockLrp_Daily_20261105.zip": 74508,
-  "2026_ADMLivestockLrp_Daily_20261106.zip": 40340,
+  "2026_ADMLivestockLrp_Daily_20261106.zip": 115661,
   "2027_ADMLivestockLrp_Daily_20260701.zip": 1432416,
   "2027_ADMLivestockLrp_Daily_20260702.zip": 1430101,
   "2027_ADMLivestockLrp_Daily_20260706.zip": 1433495,
@@ -6958,7 +6958,7 @@
   "2027_ADMLivestockLrp_Daily_20261103.zip": 1445403,
   "2027_ADMLivestockLrp_Daily_20261104.zip": 1442692,
   "2027_ADMLivestockLrp_Daily_20261105.zip": 1324789,
-  "2027_ADMLivestockLrp_Daily_20261106.zip": 9506
+  "2027_ADMLivestockLrp_Daily_20261106.zip": 23129
  },
  "listed": {
   "2026_ADMLivestockLrp_Daily_20251021.zip": "2025-10-21T14:22",
@@ -7265,7 +7265,7 @@
   "2026_ADMLivestockLrp_Daily_20261103.zip": "2026-11-03T08:35",
   "2026_ADMLivestockLrp_Daily_20261104.zip": "2026-11-04T10:04",
   "2026_ADMLivestockLrp_Daily_20261105.zip": "2026-11-05T08:35",
-  "2026_ADMLivestockLrp_Daily_20261106.zip": "2026-11-06T08:35",
+  "2026_ADMLivestockLrp_Daily_20261106.zip": "2026-11-06T13:01",
   "2027_ADMLivestockLrp_Daily_20260701.zip": "2026-07-01T14:58",
   "2027_ADMLivestockLrp_Daily_20260702.zip": "2026-07-02T14:23",
   "2027_ADMLivestockLrp_Daily_20260706.zip": "2026-07-06T14:29",
@@ -7360,7 +7360,7 @@
   "2027_ADMLivestockLrp_Daily_20261103.zip": "2026-11-03T14:18",
   "2027_ADMLivestockLrp_Daily_20261104.zip": "2026-11-04T14:18",
   "2027_ADMLivestockLrp_Daily_20261105.zip": "2026-11-05T15:29",
-  "2027_ADMLivestockLrp_Daily_20261106.zip": "2026-11-06T08:35"
+  "2027_ADMLivestockLrp_Daily_20261106.zip": "2026-11-06T13:01"
  },
  "sob": {
   "lrp_2003.zip": {
@@ -7466,12 +7466,12 @@
  },
  "stats": {
   "aev_deleted": 0,
-  "aev_restated": 792,
-  "aev_rows": 732930,
+  "aev_restated": 923,
+  "aev_rows": 733353,
   "last_run": {
    "failed": 0,
    "left": 0,
-   "read": 3,
+   "read": 2,
    "seconds": 2,
    "stopped_for_time": false,
    "unreadable": 0
@@ -7495,5 +7495,5 @@
    "tries": 3
   }
  },
- "updated": "2026-11-06T15:10:08Z"
+ "updated": "2026-11-06T19:10:08Z"
 }
