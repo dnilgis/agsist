@@ -206,7 +206,7 @@ test("the committed data file has the shape the page reads, is small, and every 
   assert.match(d.source, /CFTC Commitments of Traders/);
 });
 
-test("cot.html: the section, its plain-text source line, no link to a data source, and the script at ?v=1", () => {
+test("cot.html: the section, its plain-text source line, no link to a data source, and the script at ?v=2", () => {
   const h = read("cot.html");
   const sec = h.slice(h.indexOf('id="cot-opt"'), h.indexOf("</section>", h.indexOf('id="cot-opt"')));
   assert.ok(sec.length > 100);
@@ -313,6 +313,32 @@ test("/cot in a browser at 390 and 1280 px: map, detail, cards and the options b
       const rows = await pg.evaluate(() => [...document.querySelectorAll("#co-mkt tbody tr")].map((r) => r.querySelector("th").textContent));
       assert.deepEqual(rows, ["Funds", "Producers", "Swap dealers", "Other big traders"]);
       assert.ok(await pg.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "still no sideways scroll");
+      // Nov 6 polish: the options block shows without opening any fold, the chart says futures and the block says options
+      const place = await pg.evaluate(() => {
+        const b = document.getElementById("co-mkt");
+        return { inFold: !!b.closest("details"), visible: !!b.offsetParent, kind: document.querySelector("#cot-chart-box .cc-kind").textContent,
+          col: document.querySelector("#co-mkt thead th:nth-child(2)").textContent, offsets: /offsets/.test(b.textContent),
+          hatched: document.getElementById("cm-legend").textContent.includes("Hatched: not ranked (options under 5% of open interest)."),
+          afterChart: !!(document.getElementById("cot-chart-box").compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) };
+      });
+      assert.deepEqual(place, { inFold: false, visible: true, kind: "Futures", col: "Net options", offsets: false, hatched: true, afterChart: true });
+      // one tab stop on the map; arrows move; Enter opens
+      const stops = await pg.evaluate(() => [...document.querySelectorAll("#cm-wrap .cm-b")].filter((b) => b.tabIndex >= 0).length);
+      assert.equal(stops, 1, "one tab stop");
+      await pg.focus('#cm-wrap .cm-b[tabindex="0"]');
+      await pg.keyboard.press("Home");
+      await pg.keyboard.press("ArrowDown");
+      await pg.keyboard.press("ArrowRight");
+      const foc = await pg.evaluate(() => { const a = document.activeElement; return [a.dataset.k, a.dataset.s, a.dataset.g, a.tabIndex, [...document.querySelectorAll("#cm-wrap .cm-b")].filter((b) => b.tabIndex >= 0).length]; });
+      assert.deepEqual(foc, ["mplswheat", "opt", "mm", 0, 1], "KC wheat row, Home, down, right: MPLS wheat funds options");
+      await pg.keyboard.press("Enter");
+      assert.equal(await pg.textContent("#cm-detail .cd-h"), "MPLS wheat: funds, options");
+      await pg.keyboard.press("ArrowLeft");
+      await pg.keyboard.press(" ");
+      assert.equal(await pg.textContent("#cm-detail .cd-h"), "MPLS wheat: funds, futures");
+      // the detail sits beside the map on a wide screen, under it on a phone
+      const lay = await pg.evaluate(() => { const m = document.getElementById("cm-wrap").getBoundingClientRect(), d = document.getElementById("cm-detail").getBoundingClientRect(); return { beside: d.left >= m.right - 1 && d.top < m.bottom, under: d.top >= m.bottom - 1 }; });
+      assert.equal(w >= 1000 ? lay.beside : lay.under, true, JSON.stringify(lay));
       if (SHOTS) {
         fs.mkdirSync(SHOTS, { recursive: true });
         await pg.locator("#cot-opt").screenshot({ path: path.join(SHOTS, `test-map-${w}-${theme}.png`) });
