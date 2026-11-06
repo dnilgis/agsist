@@ -35,7 +35,8 @@ const admin = (p, m = 'GET', b, auth = 'Bearer tok') => w.fetch(new Request('htt
   body: b ? JSON.stringify(b) : undefined }), env);
 let n = 0; const A = (c, m) => { if (!c) { console.log('FAIL', m); process.exit(1); } n++; };
 const recs = () => [...store.keys()].filter(k => k.startsWith('rpo:')).sort();
-const newest = () => JSON.parse(store.get(recs().pop()));
+// newest by insertion: keys are rpo:<ms>:<rand>, so two orders in the same millisecond sort by the random part
+const newest = () => JSON.parse(store.get([...store.keys()].filter(k => k.startsWith('rpo:')).pop()));
 
 // Sig's own test order, Oct 20: Chetek WI, Staircase, "Gustum Farm", Apr 1 "Moved in" (the year here is only for the test)
 const sig = { place: 'Chetek, WI', station: '471667 2', year: 2025, style: 'r1', name: 'Gustum Farm', markers: [{ date: '2025-04-01', label: 'Moved in' }] };
