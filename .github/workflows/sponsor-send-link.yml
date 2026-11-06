@@ -7,6 +7,8 @@ name: Sponsor report link email
 # The log names ids and counts only: never an address, a name or the link.
 # Secrets: PRIVATE_REPO_TOKEN, SMTP_*, FROM_ADDR, FROM_NAME, SPONSOR_TO (Sig's copy, as sponsor-apply.yml).
 
+run-name: ${{ inputs.dry_run && 'Sponsor report link email (dry run)' || 'Sponsor report link email' }}
+
 on:
   workflow_dispatch:
     inputs:

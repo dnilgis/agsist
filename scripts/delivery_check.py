@@ -80,6 +80,7 @@ from cron_gate import NOT_A_RUN  # noqa: E402
 UTC = timezone.utc
 DELIVERY_EVERY_HOURS = 6      # one pass per saved cron-health file (cron_health.RECOMMIT_HOURS)
 WINDOW_HOURS = 24             # (a) and (b) read the runs of the last 24 hours
+DRY_TITLE = "(dry run)"       # a by-hand workflow names a dry run so a stop before its send step is not a reader miss (run-name)
 DISPATCH_DAYS = 14            # (c) a worker-started job with no workflow_dispatch run in 14 days
 # The DELIVERY line merged Nov 3 2026 23:40 UTC (#293): a run started before then cannot print it,
 # so it is never judged (a send step with no line, or a send due, before the line existed).
@@ -510,7 +511,9 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
         if n_unread:
             notes.append("%d of %d tick run(s) not read this pass" % (n_unread, len(ticks)))
     elif kind == "run" and not may_skip:
-        stopped = sorted({r["id"] for r in jobs_read if any(v == "skipped" for v in r["steps"].values())})
+        # a dry run (named so by the workflow) mails no reader: stopping before the send step is not a miss
+        stopped = sorted({r["id"] for r in jobs_read if any(v == "skipped" for v in r["steps"].values())
+                          and not r.get("dry_title")})
         if stopped:
             findings.append("(e) %d run(s) ran the send job and stopped before a send step (run %s)"
                             % (len(stopped), ", ".join(str(i) for i in stopped[:3])))
@@ -639,6 +642,7 @@ def read_runs(api, entry, now, crons=None):
                          "jobs": "failed", "lines": None, "log": "not read"})
             continue
         item = {"id": rid, "event": r.get("event"), "created_at": r.get("created_at"),
+                "dry_title": DRY_TITLE in (r.get("display_title") or ""),
                 "steps": step_states(jobs, entry.get("steps") or {}), "lines": None, "log": "not read"}
         found += any(v == "ran" for v in item["steps"].values())
         read.append(item)
@@ -701,7 +705,9 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
             evidence = disp = None
             if e.get("worker_started"):
                 src, key = e["evidence"]
-                vals = [l.get(key, 0) for r in read(src)[0] for l in r.get("lines") or []]
+                # the newest run's count: asks already handled in an earlier run are not waiting now
+                newest = next((r["lines"] for r in read(src)[0] if r.get("lines")), [])
+                vals = [l.get(key, 0) for l in newest]
                 evidence = max(vals) if vals else None
                 disp = dispatch_count(api, wf, now)
             rows.append(classify(e, runs, total, sender_states(e, environ), disp, evidence, due=due))
@@ -781,6 +787,17 @@ def selftest():
     ck("Nov 3 rp-design: (b) waiting, none sent", "(b)" in row["why"], row["why"])
     ck("Nov 3 rp-design: (c) never started by the worker", "(c)" in row["why"] and "asks=3" in row["why"], row["why"])
     ck("the row is critical and named for the workflow", row["critical"] and row["workflow"] == "delivery:rp-design-email.yml")
+
+    # a dry run by hand that stopped before its send step is not a reader miss; a real one is
+    sl = E["sponsor-send-link.yml"]
+    stop = {"id": 31, "event": "workflow_dispatch", "lines": [], "steps": {"Send the link": "skipped"}}
+    row = classify(sl, [dict(stop, dry_title=True)], 1, ("on", "no switch"), due={"kind": "run"})
+    ck("sponsor link: a dry run stopped before the send is not red", row["status"] == "ok" and "(e)" not in row["why"], row)
+    row = classify(sl, [dict(stop)], 1, ("on", "no switch"), due={"kind": "run"})
+    ck("sponsor link: a real run stopped before the send is red", row["status"] == "late" and "(e)" in row["why"], row)
+    row = classify(sl, [dict(stop, dry_title=True), dict(stop, id=32)], 2, ("on", "no switch"), due={"kind": "run"})
+    ck("sponsor link: a real stop beside a dry one stays red", row["status"] == "late" and "run 32" in row["why"] and "31" not in row["why"].split("run 32")[0], row)
+    ck("sponsor link: the workflow names a dry run", DRY_TITLE in open(".github/workflows/sponsor-send-link.yml").read())
 
     # a healthy hourly run
     runs = [R(21, "workflow_run", L("rp-design", 2, 2, 0, asks=2)), R(20, "workflow_dispatch", L("rp-design", 1, 1, 0, asks=1))]
