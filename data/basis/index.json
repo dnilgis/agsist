@@ -1,7 +1,7 @@
 {
  "generated":"2026-11-06",
  "units":"integer cents per bushel",
- "note":"Per elevator, per commodity, per contract, per delivery month: the basis now, the basis before it, and the day it changed. Rebuildable in full from the changes-*.json files beside this.",
+ "note":"Basis history by elevator, commodity and delivery month.",
  "states":{
   "??":{
    "rows":11,
@@ -81,7 +81,7 @@
   "MN":{
    "rows":10095,
    "facilities":334,
-   "kb":445.3
+   "kb":445.2
   },
   "MO":{
    "rows":1320,
@@ -104,9 +104,9 @@
    "kb":448.9
   },
   "NE":{
-   "rows":13752,
+   "rows":13740,
    "facilities":345,
-   "kb":613.6
+   "kb":613.1
   },
   "NY":{
    "rows":10,

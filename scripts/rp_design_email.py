@@ -276,7 +276,7 @@ def run(src, dry, send, sig_to, now_ms=None, today=None, tally=None):
         orders = None
     if tally:
         # what the worker should have started jobs for (cron_health: a worker-started job never started)
-        tally.extra["asks"] = len(rows)
+        tally.extra["asks"] = len([r for r in rows if not r.get("done") and not r.get("reminded")])
         tally.extra["orders"] = sum(1 for o in orders or [] if o.get("status") == "paid")
     cache = {}
 
@@ -285,6 +285,7 @@ def run(src, dry, send, sig_to, now_ms=None, today=None, tally=None):
             cache[key] = src.buyer(key)
         return cache[key]
 
+    handled = set()                                        # asks this run finished (live only): no longer waiting
     c = {"link sent": 0, "reminder sent": 0, "to Sig": 0, "paid, no reminder": 0, "too late, closed": 0,
          "waiting": 0, "reminder waits on orders": 0, "marked, send failed": 0}
     for row in rows:
@@ -296,6 +297,7 @@ def run(src, dry, send, sig_to, now_ms=None, today=None, tally=None):
             if age_h > NOW_MAX_H:
                 if not dry:
                     src.worker("rp-remind/mark", body={"key": row["key"], "stage": "done", "why": "late"})
+                    handled.add(row["key"])
                 c["too late, closed"] += 1
                 continue
             stage = "now"
@@ -309,11 +311,13 @@ def run(src, dry, send, sig_to, now_ms=None, today=None, tally=None):
             if paid_match(row, orders, buyer_of):
                 if not dry:
                     src.worker("rp-remind/mark", body={"key": row["key"], "stage": "done", "why": "paid"})
+                    handled.add(row["key"])
                 c["paid, no reminder"] += 1
                 continue
             if age_h > GIVE_UP_H:
                 if not dry:
                     src.worker("rp-remind/mark", body={"key": row["key"], "stage": "done", "why": "late"})
+                    handled.add(row["key"])
                 c["too late, closed"] += 1
                 continue
             stage = "reminder"
@@ -338,6 +342,10 @@ def run(src, dry, send, sig_to, now_ms=None, today=None, tally=None):
         c["to Sig" if dry else ("link sent" if stage == "now" else "reminder sent")] += 1
         if tally and not dry:
             tally.sent += 1
+            if stage == "reminder":
+                handled.add(row["key"])
+    if tally and "asks" in tally.extra:
+        tally.extra["asks"] = max(0, tally.extra["asks"] - len(handled))
     log = ["Design asks: %d." % len(rows), "; ".join("%s: %d" % (k, v) for k, v in c.items()) + "."]
     return (1 if c["marked, send failed"] else 0), log
 
@@ -527,6 +535,18 @@ def selftest():
     f = Fake([row(14)], [])
     code_, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@agsist.com", now_ms=NOW + 60e3, today="2026-10-20")
     ck("send failed: counted, exit 1", code_ == 1 and "marked, send failed: 1" in log[-1], str(log))
+    # the asks count is the asks still waiting (cron_health rule c reads it): handled ones are not
+    def asks_of(rows, dry=False, now=NOW + 22 * H_):
+        t = delivery_line.Tally("rp-design", dry=dry)
+        run(Fake(rows, []), dry, send, "sig@agsist.com", now_ms=now, today="2026-10-21", tally=t)
+        return t.extra["asks"]
+    ck("asks: the one ask already handled counts 0", asks_of([row(20, sent={"at": "x"}, reminded={"at": "x"})]) == 0
+       and asks_of([row(21, sent={"at": "x"}, done={"why": "paid"})]) == 0)
+    ck("asks: an ask closed too late this run counts 0", asks_of([row(22, sent={"at": "x"})], now=NOW + 80 * H_) == 0)
+    ck("asks: the reminder just sent counts 0", asks_of([row(23, sent={"at": "x"})]) == 0)
+    ck("asks: an ask still waiting counts 1", asks_of([row(24, sent={"at": "x"})], now=NOW + 2 * H_) == 1
+       and asks_of([row(25)], now=NOW + 60e3) == 1)
+    ck("asks: a dry run closes nothing, so still 1", asks_of([row(26, sent={"at": "x"})], dry=True, now=NOW + 80 * H_) == 1)
     # words: no em dash anywhere
     for st in ("now", "reminder"):
         s, paras, _ = words(row(15), st, Fake([], []).prices(), "2026-10-21")
