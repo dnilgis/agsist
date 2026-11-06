@@ -702,7 +702,10 @@
     if (o.hist !== undefined) D.hist = o.hist;
     if (o.cx !== undefined) D.cx = o.cx;
     draw();
+    /* the printed sheet (components/cot-print.js) builds from the same files, never its own fetch */
+    try { doc.dispatchEvent(new CustomEvent('cot:chart-data', { detail: { cot: D.cot, hist: D.hist, cx: D.cx } })); } catch (e) {}
   };
+  api.data = function () { return { cot: D.cot, hist: D.hist, cx: D.cx }; };
   var rz = 0;
   root.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(draw, 120); });
   markChips();
