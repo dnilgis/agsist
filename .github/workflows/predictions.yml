@@ -89,11 +89,22 @@ jobs:
       - name: Grade matured calls, make today's calls, rebuild the backtest
         run: python scripts/prediction_bot.py --live
 
+      # The forecast track record on /usda-calendar#scorecard, from the public forecast record in agsist-data
+      # (appended weekly by the private registry). A missing or broken record leaves the page's last table.
+      - name: Track record
+        run: |
+          if git clone -q --depth 1 --filter=blob:none --sparse https://github.com/dnilgis/agsist-data.git "$RUNNER_TEMP/ad" \
+             && git -C "$RUNNER_TEMP/ad" sparse-checkout set forecasts; then
+            python scripts/build_track_record.py --data "$RUNNER_TEMP/ad" || echo "::warning title=Track record::not updated"
+          else
+            echo "::warning title=Track record::public record not reachable; not updated"
+          fi
+
       - name: Commit and push
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/predictions.json data/predictions-backtest.json
+          git add data/predictions.json data/predictions-backtest.json usda-calendar.html
           if git diff --staged --quiet; then
             echo "No change."
             exit 0
