@@ -80,6 +80,12 @@ jobs:
         continue-on-error: true
         run: python scripts/cot_analysis.py
 
+      - name: Options positions
+        continue-on-error: true
+        run: |
+          python scripts/cot_options.py --selftest
+          python scripts/cot_options.py
+
       - name: Re-bake the COT head tags and crawler summary
         id: bake
         continue-on-error: true
@@ -119,6 +125,7 @@ jobs:
           cp cot.html               /tmp/cot.html
           cp img/og/cot.jpg         /tmp/cot-og.jpg        2>/dev/null || true
           cp data/cot-analysis.json /tmp/cot-analysis.json 2>/dev/null || true
+          cp data/cot-options.json  /tmp/cot-options.json  2>/dev/null || true
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
@@ -127,8 +134,10 @@ jobs:
             cp /tmp/cot.html         cot.html
             [ -f /tmp/cot-og.jpg ]        && cp /tmp/cot-og.jpg        img/og/cot.jpg
             [ -f /tmp/cot-analysis.json ] && cp /tmp/cot-analysis.json data/cot-analysis.json
+            [ -f /tmp/cot-options.json ]  && cp /tmp/cot-options.json  data/cot-options.json
             git add data/cot.json data/cot-history.json cot.html img/og/cot.jpg
             git add data/cot-analysis.json 2>/dev/null || true
+            git add data/cot-options.json 2>/dev/null || true
             if git diff --staged --quiet; then
               echo "No COT changes today — nothing to commit (expected ~6 days/week)."
               exit 0

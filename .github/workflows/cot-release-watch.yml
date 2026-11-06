@@ -172,6 +172,13 @@ jobs:
         if: (steps.probe.outputs.moved == 'true' || inputs.force == true) && steps.selftest.outcome == 'success'
         run: python scripts/cot_analysis.py
 
+      - name: Options positions
+        continue-on-error: true
+        if: steps.probe.outputs.moved == 'true' || inputs.force == true
+        run: |
+          python scripts/cot_options.py --selftest
+          python scripts/cot_options.py
+
       - name: Re-bake the head tags and crawler summary
         if: steps.probe.outputs.moved == 'true' || inputs.force == true
         id: bake
@@ -220,18 +227,19 @@ jobs:
         run: |
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          for f in data/cot.json data/cot-history.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
+          for f in data/cot.json data/cot-history.json data/cot-analysis.json data/cot-options.json cot.html data/whats-priced-in.json usda-calendar.html; do
             mkdir -p "/tmp/keep/$(dirname "$f")"; cp "$f" "/tmp/keep/$f" 2>/dev/null || true
           done
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in data/cot.json data/cot-history.json data/cot-analysis.json cot.html data/whats-priced-in.json usda-calendar.html; do
+            for f in data/cot.json data/cot-history.json data/cot-analysis.json data/cot-options.json cot.html data/whats-priced-in.json usda-calendar.html; do
               [ -f "/tmp/keep/$f" ] && cp "/tmp/keep/$f" "$f"
             done
             git add data/cot.json data/cot-history.json cot.html
             git add data/whats-priced-in.json usda-calendar.html 2>/dev/null || true
             git add data/cot-analysis.json 2>/dev/null || true
+            git add data/cot-options.json 2>/dev/null || true
             if git diff --staged --quiet; then
               echo "Probe said the report moved but nothing changed on disk — investigate."
               exit 0
