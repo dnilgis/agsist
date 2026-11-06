@@ -214,7 +214,7 @@ test("cot.html: the section, its plain-text source line, no link to a data sourc
   assert.match(sec, /futures equivalents/);
   assert.ok(!/href=/.test(sec), "no links in the section");
   assert.ok(!DASH.test(sec), "no dashes");
-  assert.ok(h.includes('<script src="/components/cot-options.js?v=1"></script>'));
+  assert.ok(h.includes('<script src="/components/cot-options.js?v=2"></script>'));
   assert.ok(h.indexOf('id="cot-opt"') > h.indexOf('id="cot-glance"') && h.indexOf('id="cot-opt"') < h.indexOf('id="cot-all"'), "right under Funds this week");
 });
 
