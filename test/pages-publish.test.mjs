@@ -183,3 +183,50 @@ test('the staged service worker has no comment history, keeps its version and pa
   assert.ok(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes('assigned by the lead'), 'the repository copy keeps its history');
   fs.rmSync(tmp, { recursive: true, force: true });
 });
+
+test('a published page leaves out its comments and keeps everything else (strip_html, Nov 6)', () => {
+  const page = [
+    '<!doctype html><!-- how the page is built --><html><!--[if IE]>old<![endif]--><head>',
+    '<style>/* why */ .a { b: 1 }</style>',
+    '<script type="application/ld+json">{"u":"https://x.y/a//b","c":"/* not a comment */"}</script>',
+    '<script>// the rule\nvar u = "https://x.y/z"; f(u);</script><script src="/c.js"></script></head>',
+    '<body><pre><!-- shown --></pre><textarea><!-- typed --></textarea><p>a <!-- note --> b</p></body></html>',
+  ].join('\n');
+  const code = 'import sys, json; sys.path.insert(0, "scripts"); import pages_publish as P; print(json.dumps(P.strip_html(sys.argv[1])))';
+  const r = spawnSync('python3', ['-c', code, page], { cwd: root, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const out = JSON.parse(r.stdout);
+  for (const gone of ['how the page is built', '<!-- note -->', '/* why */']) assert.ok(!out.includes(gone), gone);
+  for (const kept of ['<!--[if IE]>old<![endif]-->', '<pre><!-- shown --></pre>', '<textarea><!-- typed --></textarea>',
+    '{"u":"https://x.y/a//b","c":"/* not a comment */"}', '<script src="/c.js"></script>', '// the rule']) assert.ok(out.includes(kept), kept);
+  assert.match(out, /\.a\{b: ?1\}/, 'inline styles go through strip_css');
+});
+
+test('every top-level page compacts: no inline script left as written, each still parses, the repository copy unchanged', { skip: !process.env.TERSER_PATH && !process.env.CI && 'no TERSER_PATH (pr-checks installs it)' }, () => {
+  assert.ok(process.env.TERSER_PATH, 'TERSER_PATH is set in CI (pr-checks.yml installs terser)');
+  const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), 'compact-'));
+  const rels = fs.readdirSync(root).filter((f) => f.endsWith('.html'));
+  const code = [
+    'import sys, json; sys.path.insert(0, "scripts")',
+    'import pages_publish as P',
+    'keep = json.loads(sys.argv[1]); P.stage(P.ROOT, sys.argv[2], keep)',
+    'print(json.dumps(P.compact_pages(sys.argv[2], keep, sys.argv[3])))',
+  ].join('\n');
+  const r = spawnSync('python3', ['-c', code, JSON.stringify(rels), tmp, process.env.TERSER_PATH], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 });
+  assert.equal(r.status, 0, r.stderr);
+  const m = JSON.parse(r.stdout);
+  assert.equal(m.kept, 0, 'every inline script with a comment was rebuilt');
+  assert.ok(m.scripts > 50 && m.after < m.before, JSON.stringify(m));
+  for (const rel of rels) {
+    const out = fs.readFileSync(path.join(tmp, rel), 'utf8');
+    const outside = out.replace(/<(script|style|pre|textarea)\b[\s\S]*?<\/\1\s*>/gi, '');
+    assert.doesNotMatch(outside.replace(/<!--\[if[\s\S]*?<!\[endif\]-->/g, ''), /<!--[\s\S]*?-->/, `${rel}: an HTML comment is published`);
+    for (const [, attrs, body] of out.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
+      if (/\bsrc\s*=/i.test(attrs) || /type\s*=\s*["']?(?!text\/javascript|application\/javascript)[^"'\s>]+/i.test(attrs)) continue;
+      assert.doesNotThrow(() => new vm.Script(body), `${rel}: an inline script no longer parses`);
+    }
+  }
+  const st = spawnSync('git', ['status', '--porcelain', '--', ...rels], { cwd: root, encoding: 'utf8' });
+  assert.equal(st.stdout.trim(), '', 'the repository pages changed');
+  fs.rmSync(tmp, { recursive: true, force: true });
+});

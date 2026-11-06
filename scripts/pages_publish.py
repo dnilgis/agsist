@@ -290,6 +290,106 @@ def minify_published(dest, paths, terser=None):
     return st
 
 
+# Pages are compacted too (Nov 6): the published copy of every page leaves out HTML comments and the comments in its
+# inline styles and scripts. Conditional comments stay; <pre> and <textarea> are left as they are; a script that
+# cannot be rebuilt safely is published as it is. The repository files do not change.
+RAW = re.compile(r"(<(script|style|pre|textarea)\b([^>]*)>)(.*?)(</\2\s*>)", re.S | re.I)
+HTML_COMMENT = re.compile(r"<!--(?!\[if|>|->)(?:(?!-->).)*-->", re.S)
+JS_TYPES = ("text/javascript", "application/javascript", "module")
+INLINE_JS = r"""
+const fs = await import('node:fs'); const vm = await import('node:vm');
+const { minify } = await import(process.env.TERSER_MAIN);
+const items = JSON.parse(fs.readFileSync(0, 'utf8')); const out = {};
+for (const [id, code, mod] of items) {
+  try {
+    const r = await minify(code, { compress: false, mangle: false, module: !!mod, sourceMap: false, format: { comments: false } });
+    if (typeof r.code !== 'string') throw new Error('no output');
+    if (!mod) new vm.Script(r.code);
+    out[id] = r.code;
+  } catch (e) { out[id] = null; }
+}
+process.stdout.write(JSON.stringify(out));
+"""
+
+
+def _inline_js(attrs):
+    """the script's own code is in the page (no src) and it is JavaScript; -> None, "script" or "module" """
+    if re.search(r"\bsrc\s*=", attrs, re.I):
+        return None
+    m = re.search(r"\btype\s*=\s*[\"']?([^\"'\s>]+)", attrs, re.I)
+    t = (m.group(1).lower() if m else "")
+    if t and t not in JS_TYPES:
+        return None
+    return "module" if t == "module" else "script"
+
+
+def strip_html(src, js=None):
+    """A page without HTML comments (outside scripts, styles, pre and textarea), its inline styles through strip_css,
+    and each inline script replaced by js[body] when js has one."""
+    js = js or {}
+    out, pos = [], 0
+    for m in RAW.finditer(src):
+        out.append(HTML_COMMENT.sub("", src[pos:m.start()]))
+        tag, name, attrs, body, end = m.group(1), m.group(2).lower(), m.group(3), m.group(4), m.group(5)
+        if name == "style":
+            body = strip_css(body)
+        elif name == "script" and js.get(body) is not None and _inline_js(attrs):
+            body = js[body]
+        out.append(tag + body + end)
+        pos = m.end()
+    out.append(HTML_COMMENT.sub("", src[pos:]))
+    return "".join(out)
+
+
+def compact_pages(dest, paths, terser=None):
+    """strip_html over the staged copy of every .html in paths; inline scripts that carry a comment go through
+    terser once each (no renaming, no rewriting, comments dropped). -> {"pages", "before", "after", "scripts", "kept"}"""
+    pages = [p for p in paths if p.endswith(".html")]
+    st = {"pages": 0, "before": 0, "after": 0, "scripts": 0, "kept": 0}
+    texts = {}
+    want = {}
+    for p in pages:
+        try:
+            with open(os.path.join(dest, p), encoding="utf-8") as f:
+                t = f.read()
+        except (OSError, UnicodeDecodeError):
+            continue
+        texts[p] = t
+        for m in RAW.finditer(t):
+            kind = m.group(2).lower() == "script" and _inline_js(m.group(3))
+            if kind and ("//" in m.group(4) or "/*" in m.group(4) or "<!--" in m.group(4)):
+                want.setdefault(m.group(4), kind == "module")
+    js = {}
+    main = None
+    if terser:
+        for cand in ("dist/bundle.min.js", "main.js"):
+            if os.path.isfile(os.path.join(terser, cand)):
+                main = os.path.join(os.path.abspath(terser), cand)
+                break
+    if want and main:
+        items = [[str(i), code, mod] for i, (code, mod) in enumerate(want.items())]
+        try:
+            r = subprocess.run(["node", "--input-type=module", "-e", INLINE_JS], input=json.dumps(items), capture_output=True,
+                               text=True, timeout=TERSER_TIMEOUT, env=dict(os.environ, TERSER_MAIN="file://" + main))
+            res = json.loads(r.stdout or "{}") if r.returncode == 0 else {}
+        except (OSError, subprocess.SubprocessError, ValueError):
+            res = {}
+        for i, (code, _) in enumerate(want.items()):
+            if res.get(str(i)) is not None:
+                js[code] = res[str(i)]
+        st["scripts"], st["kept"] = len(js), len(want) - len(js)
+    else:
+        st["kept"] = len(want)
+    for p, t in texts.items():
+        new = strip_html(t, js)
+        st["before"] += len(t.encode("utf-8"))
+        st["after"] += len(new.encode("utf-8"))
+        if new != t:
+            _replace(os.path.join(dest, p), new)
+            st["pages"] += 1
+    return st
+
+
 def selftest():
     import tempfile
     fails = []
@@ -437,6 +537,9 @@ def main(argv):
                   f" ({m['before'] - m['after']:,} saved)")
             if m["kept"]:
                 print(f"::warning::{len(m['kept'])} file(s) published as they are (not minified), e.g. {m['kept'][0][0]}")
+            c = compact_pages(dest, r["keep"], terser)
+            print(f"compacted {c['pages']} pages ({c['scripts']} inline scripts): {c['before']:,} bytes to {c['after']:,}"
+                  + (f"; {c['kept']} inline script(s) published as they are" if c["kept"] else ""))
     return 0
 
 
