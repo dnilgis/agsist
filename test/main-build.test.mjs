@@ -301,7 +301,22 @@ test("every built file can be staged on main, even under the engine's info/exclu
   assert.deepEqual([...staged].sort(), [...built, "data/whats-new/2026-11-01-a.json"].sort(), "every built file and the entry files, and nothing else");
   // each built path is either not ignored at all, or staged on purpose with -f (main_build.py stage)
   const src = read("scripts/dev/main_build.py");
-  assert.match(src, /"add", "-f", "--"\] \+ files/, "-f only with the exact built file list");
+  assert.match(src, /"add", "--sparse", "-f", "--"\] \+ files/, "-f only with the exact built file list");
+});
+
+test("the built files stage in a sparse checkout that leaves scripts/ out (private engine mode; every push run red, Nov 6)", () => {
+  const dir = tmp("sparse-");
+  const git = (...a) => execFileSync("git", ["-C", dir, ...a], { encoding: "utf8", env: { ...process.env, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@t", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@t" } });
+  git("init", "-q", "-b", "main");
+  const built = JSON.parse(py("import sys, json; sys.path.insert(0, 'scripts/dev'); import main_build as m; print(json.dumps(list(m.BUILT)))"));
+  const put = (v) => { for (const f of built) { fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true }); fs.writeFileSync(path.join(dir, f), v); } };
+  put("old\n");
+  git("add", "-A"); git("commit", "-q", "-m", "c");
+  git("sparse-checkout", "set", "--no-cone", "/*", "!/scripts/");
+  put("new\n");     // the engine checkout writes scripts/ back; the build rewrites every built file
+  const staged = JSON.parse(py("import sys, json; sys.path.insert(0, 'scripts/dev'); import main_build as m; print(json.dumps(m.stage(sys.argv[1])))", [dir]));
+  assert.ok(staged.includes("scripts/dev/test-map.json"), "the map is staged although it sits outside the sparse checkout: " + staged.join(" "));
+  assert.deepEqual([...staged].sort(), [...built].sort());
 });
 
 test("a full run on main is never cancelled by the next merge (main-checks.yml concurrency, Oct 29)", () => {
