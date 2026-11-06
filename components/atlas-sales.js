@@ -14,7 +14,7 @@
 (function (G) {
   'use strict';
   var S = {};
-  S.STATES = { IL: 1, WI: 1, FL: 1 };   // Florida since Nov 5, 2026: sale months, so its dates are months (S.thru)
+  S.STATES = { IL: 1, WI: 1, FL: 1, IN: 1, NJ: 1, VT: 1 };   // Florida since Nov 5, 2026: sale months, so its dates are months (S.thru); Indiana, New Jersey and Vermont Nov 6
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }

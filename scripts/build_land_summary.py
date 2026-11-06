@@ -138,11 +138,9 @@ SOURCES = {
            "kinds": "agricultural land use codes 50 to 69, timberland included"},
 }
 
-# States whose land-sales pages already apply this same market-sale rule (build_land_sales.py reads them through
-# build_state) and whose summaries feed the Atlas map layer (Nov 5, 2026: "present all the data we have"). They are
-# kept out of SOURCES above until their Atlas county-page blocks are turned on (build_atlas_pages.has_sales and
-# components/atlas-sales.js read SOURCES); the summary and the map row use the one rule either way.
-MAP_SOURCES = dict(SOURCES, **{
+# Indiana, New Jersey and Vermont (Nov 6, 2026): the same market-sale rule the land-sales pages use for them; their
+# Atlas county pages carry the sales block (build_atlas_pages.has_sales, components/atlas-sales.js S.STATES).
+SOURCES.update({
     "IN": {"record": "Indiana sales disclosure forms",
            "who": "Indiana Department of Local Government Finance",
            "url": None,
@@ -156,6 +154,7 @@ MAP_SOURCES = dict(SOURCES, **{
            "url": None,
            "kinds": "operating farm, timberland and open land in current use"},
 })
+MAP_SOURCES = SOURCES
 
 
 def num(v):

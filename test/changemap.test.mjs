@@ -178,7 +178,7 @@ test("the page: one mount, the map code loads only once a place is open, files b
   const page = read("fast-facts.html"), here = read("components/here.js"), cm = read("components/changemap.js");
   assert.match(page, /<p id="h-where" class="h-where"><\/p>\n<div id="h-cm" class="cm" hidden><\/div>/);
   assert.doesNotMatch(page, /changemap\.js/, "not a page script: loaded by here.js");
-  assert.match(page, /\/components\/here\.js\?v=44"/);   // v44: fx/flon (Florida sales: month dates, files on agsist-data); v43: the frame specs, round 2 (fx/framespec2); v42: the frame specs (fx/framespec); v41: the bids failure path (fx/wave1b; v40 is fx/rpcolor); v39: change-lines.js v4, nothing changed only when every line was read (fx/wave1a); v38: production cost rows (fx/marsfert); v37: change-lines.js v3 (fx/landnj, New Jersey sales)
+  assert.match(page, /\/components\/here\.js\?v=45"/);   // v45: fx/landsales-dedupe (Indiana, New Jersey and Vermont sales blocks); v44: fx/flon (Florida sales: month dates, files on agsist-data); v43: the frame specs, round 2 (fx/framespec2); v42: the frame specs (fx/framespec); v41: the bids failure path (fx/wave1b; v40 is fx/rpcolor); v39: change-lines.js v4, nothing changed only when every line was read (fx/wave1a); v38: production cost rows (fx/marsfert); v37: change-lines.js v3 (fx/landnj, New Jersey sales)
   assert.match(here, /var CM_JS = '\/components\/changemap\.js\?v=\d+';/);
   assert.match(here, /loadCards\(fips\);\n\s+changeMap\(fips\);/);
   for (const f of [cm]) assert.doesNotMatch(f, /—/);
