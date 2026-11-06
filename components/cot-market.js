@@ -63,20 +63,19 @@ window.cotMarket = function (api) {
     }
     if (best) {
       return '<p class="cx-verdict pass"><b>One reading held up.</b> ' + esc(best.st.question)
-        + ' Over ' + best.h + ' weeks the middle outcome was ' + sgn(best.st.median) + '%, against '
+        + ' Over ' + best.h + ' weeks the middle price change, contract rolls removed, was ' + sgn(best.st.median) + '%, against '
         + sgn(best.st.base_median) + '% for an average week, and it survived the correction for every '
         + 'test we ran. Details below.</p>';
     }
     /* No hard 90/10 cliff. A market at the 89th percentile is not "close to
        normal", and a tenth of a point should not flip a reader between
        "protect what you have unpriced" and "nothing to do". The wording now
-       tracks the percentile continuously, and the exposure noun comes from the
-       group, because "unpriced bushels" was about to render under Feeder
-       Cattle and Class III Milk. */
+       tracks the percentile continuously. The "look this week at unpriced
+       bushels" line is gone (2026-11-06, Sig: no crowding advice anywhere; it
+       was never tested). */
     var p = c.pctl.net_oi_all;
     /* scripts/cot_analysis.py shown_pct(): a not-crowded 89.8 prints the 89th, not the 90th (2026-10-18) */
     function pShown(x, cr) { var n = Math.round(x); if (!cr && n >= 90 && x < 90) return 89; if (!cr && n <= 10 && x > 10) return 11; return x; }
-    var noun = c.exposure_noun || 'unpriced production';
     var side = c.net > 0 ? 'long' : 'short';
     var room = c.net > 0 ? c.capacity.room_down : c.capacity.room_up;
     var dir = c.net > 0 ? 'selling' : 'buying';
@@ -90,15 +89,14 @@ window.cotMarket = function (api) {
         + 'a net ' + side + ' in ' + esc(c.label) + ' at the ' + ord(pShown(p, c.crowded)) + ' percentile of their own record since '
         + c.first_week.slice(0,4) + ' (' + where + '). Nothing we tested says which way price goes next. What it does '
         + 'say is that ' + num(c.capacity.to_flat) + ' contracts of ' + dir + ' sit between here and '
-        + 'flat, and ' + num(room) + ' between here and the far end of that record (as a share of open interest, at today\'s open interest). That is a reason '
-        + 'to look this week at ' + esc(noun) + ', not a reason to predict a move.</p>';
+        + 'flat, and ' + num(room) + ' between here and the far end of that record (as a share of open interest, at today\'s open interest).</p>';
     }
     // 2026-09-25 audit: this said "None of the readings we tested beat an average week" for Live Cattle while the
     // same panel showed a 4-week flow reading at 78% against 64% (p = 0.03). Say what is true: one may look
     // better than average on its own, and none survives the correction for testing many readings.
     var _sug = false, _hz = c.studies || {};
     Object.keys(_hz).forEach(function(k){ var g = _hz[k] || {}; Object.keys(g).forEach(function(n){ var t = g[n]; if (t && t.verdict === 'measured' && !t.fdr_pass && t.p !== null && t.p < 0.05) _sug = true; }); });
-    return '<p class="cx-verdict"><b>Nothing here should change your marketing plan this week.</b> '
+    return '<p class="cx-verdict"><b>No reading held up this week.</b> '
       + esc(c.read) + (_sug ? ' One reading looks better than an average week on its own, but it does not survive the correction for testing this many at once.'
                             : ' None of the readings we tested beat an average week.') + '</p>';
   }
@@ -115,7 +113,7 @@ window.cotMarket = function (api) {
     var bigGap = Math.abs(upDiff) >= 10 || medDiff >= 1;
     var word = st.fdr_pass ? 'This one held up.'
       : (st.p !== null && st.p < 0.05 ? 'Suggestive, but it does not survive the batch.'
-      : (bigGap ? 'A big gap, but too few separate spells to trust it.' : 'Coin flip.'));
+      : (bigGap ? 'A big gap, but it could be chance.' : 'A small gap, and it could be chance.'));
     var cls = st.fdr_pass ? 'pass' : 'weak';
     var pIn = st.p === null ? null : (st.p < 0.005 ? 'under 1' : String(Math.round(st.p*100)));
     return '<p class="cx-result ' + cls + '"><b>' + word + '</b> This was true in ' + st.n + ' weeks, in '
@@ -124,7 +122,7 @@ window.cotMarket = function (api) {
       + Math.round(st.hit_up*100) + '% of those weeks ' + h + ' weeks later, '
       + 'against ' + Math.round(st.base_hit_up*100) + '% in an average week'
       + (Math.abs(upDiff) >= 1 ? ' (' + (upDiff > 0 ? '+' : '\u2212') + Math.abs(upDiff) + ' points)' : '')
-      + '. Middle outcome ' + sgn(st.median) + '%, against ' + sgn(st.base_median) + '% for an average '
+      + '. Middle price change, contract rolls removed, ' + sgn(st.median) + '%, against ' + sgn(st.base_median) + '% for an average '
       + 'week. Half of them landed between ' + sgn(st.q25) + '% and ' + sgn(st.q75) + '%, the worst '
       + sgn(st.worst) + '%, the best ' + sgn(st.best) + '%.'
       + (pIn !== null ? ' How often chance alone would land this far from an average week: about ' + pIn + ' in 100.' : '')

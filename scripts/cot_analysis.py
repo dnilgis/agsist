@@ -116,18 +116,6 @@ COMMERCIAL_IS = {
     "dairy": ("Processors and cooperatives hedging milk they will buy or sell "
               "forward. Both sides are used."),
 }
-# What the reader of this market actually has unpriced. "Unpriced bushels" was
-# hardcoded into the verdict line and would have printed under Feeder Cattle,
-# Lean Hogs and Class III Milk. It also assumed a short hedger; a backgrounder
-# buying feeders, or an ethanol plant buying corn, has the exposure the other
-# way round.
-EXPOSURE = {
-    "grain": "unpriced bushels, or unbought needs if you are a buyer",
-    "crush": "unpriced product, or unbought beans if you are crushing",
-    "livestock": "unpriced production, or unbought feeders if you are on the buy side",
-    "dairy": "unpriced milk, or unbought feed if you are on the buy side",
-}
-
 UNITS = {
     "corn": ("bushels", 5000), "beans": ("bushels", 5000),
     "wheat": ("bushels", 5000), "kcwheat": ("bushels", 5000),
@@ -690,12 +678,21 @@ def card_stats(s, d, px_adj, i):
     else:
         driver = "no net change"
 
-    # Sign changes inside the window, newest first.
-    flips = []
-    for j in range(i, lo, -1):
-        if net[j] and net[j - 1] and (net[j] > 0) != (net[j - 1] > 0):
-            flips.append({"date": d[j], "to": "long" if net[j] > 0 else "short",
-                          "weeks_ago": i - j})
+    # Side changes inside the window, newest first. A side is long, short or
+    # flat (side_of: |net| under FLAT_OI_PCT of open interest), and a flip is
+    # the week the net leaves the flat band on the other side from where it
+    # last stood. A sign change inside the band is not one: KC wheat on
+    # 2026-10-27 went from long to net short 517 against a 6,501-contract
+    # band, read FLAT on its card, and was still called "flipped net short".
+    flips, last = [], None
+    for j in range(lo, i + 1):
+        sd = side_of(net[j], oi[j])
+        if sd == "flat":
+            continue
+        if last is not None and sd != last:
+            flips.append({"date": d[j], "to": sd, "weeks_ago": i - j})
+        last = sd
+    flips.reverse()
     move_floor = median([abs(c) for c in chgs])
 
     out = {
@@ -1063,7 +1060,6 @@ def analyse_commodity(key, block, family):
             "record_high_share": round(max(x for x in net_oi if x is not None), 1),
             "record_low_share": round(min(x for x in net_oi if x is not None), 1),
         },
-        "exposure_noun": EXPOSURE.get(GROUPS.get(key, ""), "unpriced production"),
         # Every category, netted, summing to zero. This is the only question
         # the report is structured to answer: managed money bought, and
         # somebody sold. Swap dealers carry the index length in grains and
@@ -1468,34 +1464,8 @@ def main():
         "report_date": latest,
         "release_date": next((c2.get("release_date") for c2 in out.values() if c2.get("release_date")), None),
         "entry_date": next((c2.get("entry_date") for c2 in out.values() if c2.get("entry_date")), None),
-        "method": {
-            "source": "CFTC Disaggregated Commitments of Traders, futures only, all contract months.",
-            "entry": ("Forward returns start at the first session close after CFTC published, "
-                      "using each week's real publication date. A federal holiday on the Wednesday, Thursday or Friday of the report week delays the "
-                      "release to the Monday, about six weeks a year. "
-                      f"{shut:,} report weeks across {shut_markets} markets are excluded as "
-                      "starting points because they fell in a government shutdown (2013, "
-                      "2018-19, 2025), when CFTC published weeks late on a catch-up schedule "
-                      "and the real publication date of each report is not known."),
-            "price": ("Front-month continuous futures with the roll steps removed. The return "
-                      "across each front-month change is dropped rather than counted, so an "
-                      "old-crop-to-new-crop roll is not read as a rally."),
-            "overlap": ("Weekly sampling of multi-week returns overlaps. Each read shows spells "
-                        "as well as weeks: matches closer together than the horizon count once."),
-            "significance": ("Circular block bootstrap, block length twice the horizon, "
-                             f"{BOOT:,} draws."),
-            "multiplicity": (f"{len(measured)} tests produced a p-value this week out of "
-                             f"{len(family)} attempted. At p<{ALPHA} you would expect "
-                             f"{len(measured) * ALPHA:.1f} to look significant by chance. "
-                             f"{raw_hits} did. {len(survivors)} survive a Benjamini-Yekutieli "
-                             f"false-discovery control across the family."),
-            "conditions": ("Each condition is anchored on this week's reading, so the question "
-                           "is always 'weeks that looked like this one'. That means the threshold "
-                           "moves every week; the correction below covers one week's family, not "
-                           "the sequence of weeks a regular reader sees."),
-            "gates": (f"A read is withheld below {MIN_N} comparable weeks, below the horizon's "
-                      f"spell count, or above {int(MAX_BAND_SHARE*100)}% of the record."),
-        },
+        # No "method" block (2026-11-06): how the tests run is not published,
+        # only the source on the page and the sample sizes below.
         "shutdown_excluded": {"rows": shut, "markets": shut_markets,
                               "windows": [[a.isoformat(), b.isoformat()] for a, b in CAL.SHUTDOWN_SKIP]},
         "thresholds": {"crowded_hi": CROWDED_HI, "crowded_lo": CROWDED_LO,
@@ -1569,6 +1539,23 @@ def selftest():
     ck("episodes: same list, shorter horizon, more spells",
        float(episodes_in([1, 2, 9, 10, 30], 4)), 3.0)
     ck("episodes: empty", float(episodes_in([], 4)), 0.0)
+
+    # A sign change inside the flat band is not a flip (KC wheat, 2026-10-27).
+    def _fs(nets):
+        n = len(nets)
+        ser = {"net": nets, "oi": [100000] * n, "mm_long": [50000] * n, "mm_short": [50000] * n}
+        dd = [(date(2026, 1, 6) + timedelta(weeks=k)).isoformat() for k in range(n)]
+        return card_stats(ser, dd, [None] * n, n - 1)
+    k_in = _fs([9000, 8000, 7000, 6000, 5000, 4000, 3000, -500])
+    ckt("a sign change into the flat band is not a flip", k_in["flips"] == [] and k_in["n_flips"] == 0, k_in["flips"])
+    k_via = _fs([9000, 8000, 7000, 6000, 5000, 4000, -500, -2500])
+    ckt("long, then flat, then short is one flip, dated the week it left the band",
+        k_via["n_flips"] == 1 and k_via["flips"][0]["weeks_ago"] == 0, k_via["flips"])
+    k_back = _fs([9000, 8000, 7000, 6000, 5000, 4000, -500, 2500])
+    ckt("long, flat, long again is no flip", k_back["n_flips"] == 0, k_back["flips"])
+    k_out = _fs([9000, 8000, 7000, 6000, 5000, 4000, 3000, -2500])
+    ckt("a sign change past the flat band is a flip",
+        k_out["n_flips"] == 1 and k_out["flips"][0]["to"] == "short" and k_out["flips"][0]["weeks_ago"] == 0, k_out["flips"])
 
     dates = [(date(2026, 1, 6) + timedelta(weeks=i)).isoformat() for i in range(5)]
     px = [100.0, 110.0, 121.0, None, 133.0]

@@ -78,7 +78,7 @@
       wrap.style.display = 'none';
       list.style.display = 'block';
       var byX = pts.slice().sort(function(a,b){ return b.x - a.x; });
-      list.innerHTML = byX.map(function(p){
+      list.innerHTML = (pts.length ? '<li class="cx-dim">Price figures: change over 13 weeks, contract rolls removed.</li>' : '') + byX.map(function(p){
         return '<li><button type="button" class="cx-rank" data-key="' + esc(p.key) + '">'
           + '<span class="cx-rank-dot" style="background:' + tone(p.crowded) + '"></span>'
           + '<span class="cx-rank-name">' + esc(p.label) + '</span>'
@@ -184,7 +184,7 @@
        the long/short count the cards wrote; the stretched count belongs in the
        sentence, where zero is a normal answer. */
 
-    var rows = ['<thead><tr><th>Market</th><th>Net</th><th>% of open</th><th>Crowding</th><th>Price 13wk</th></tr></thead><tbody>'];
+    var rows = ['<thead><tr><th>Market</th><th>Net</th><th>% of open</th><th>Crowding</th><th>Price change 13wk, contract rolls removed</th></tr></thead><tbody>'];
     Object.keys(CX.commodities).forEach(function(key){
       var c = CX.commodities[key];
       rows.push('<tr><td>' + esc(c.label) + '</td><td>' + num(c.net) + '</td><td>' + pct(c.net_oi)
@@ -225,7 +225,7 @@
       s.push('<text class="cx-axlab" x="'+(L-8)+'" y="'+(Y(v)+3.5)+'" text-anchor="end">'+(v>0?'+':'')+v+'%</text>');
     }
     s.push('<text class="cx-axlab" x="'+(L+cw/2)+'" y="'+(H-14)+'" text-anchor="middle">Fund positioning, percentile of its own record since '+String(CX.coverage.first_week).slice(0,4)+' (share of open contracts)</text>');
-    s.push('<text class="cx-axlab" transform="translate(11,'+(T+ch/2)+') rotate(-90)" text-anchor="middle">Price, 13 weeks</text>');
+    s.push('<text class="cx-axlab" transform="translate(11,'+(T+ch/2)+') rotate(-90)" text-anchor="middle">Price change, 13 weeks, contract rolls removed</text>');
 
     s.push('<text class="cx-quad" x="'+(L+cw-6)+'" y="'+(T+13)+'" text-anchor="end">High side, price rising</text>');
     s.push('<text class="cx-quad" x="'+(L+cw-6)+'" y="'+(T+ch-6)+'" text-anchor="end">High side, price falling</text>');
@@ -332,9 +332,7 @@
     o.push('<p class="cx-body">The third number is the claim people actually make: funds are crowded '
       + 'long, so watch out below. Measured against the next thirteen weeks it comes out at '
       + (lv === null ? '-' : lv.toFixed(2)) + ', negative in ' + p.level_negative + ' of '
-      + p.n_markets + ' markets and small everywhere. The intervals under each number are block '
-      + 'bootstraps that keep the week-to-week overlap, so they are several times wider than a '
-      + 'textbook standard error would suggest. Read them, not the point estimate.</p>');
+      + p.n_markets + ' markets and small everywhere. Read the range under each number, not the number alone.</p>');
     o.push('<p class="cx-body">So this report tells you who is exposed, not which way the market goes. '
       + 'A crowded position is a list of people who may have to trade '
       + 'whether they want to or not. Everything below is built on that, and where a reading does beat '
@@ -398,7 +396,7 @@
     if (MARKET_STATE === 'loading') return;
     MARKET_STATE = 'loading';
     var s = document.createElement('script');
-    s.src = '/components/cot-market.js?v=3';
+    s.src = '/components/cot-market.js?v=4';
     s.onload = function(){
       MARKET = (window.cotMarket && window.cotMarket(MARKET_API)) || null;
       MARKET_STATE = MARKET ? 'ready' : 'idle';
@@ -512,29 +510,14 @@
     }
     selectKey(CX_KEY || remembered || (CX.commodities.corn ? 'corn' : Object.keys(CX.commodities)[0]), false, true);
 
-    var f = CX.family;
-    if (f && $('cx-family-count')) {
-      /* From the data: the old static line said "around a hundred tests" and
-         "five look real by chance" beside a live count of 46 and 2.3. */
-      $('cx-family-count').textContent = ' This week ' + f.tests + ' tests produced a result out of '
-        + f.attempted + ' attempted, so about ' + f.expected_by_chance + ' would look real by chance.';
-    }
-    var sx = CX.shutdown_excluded;
-    if (sx && $('cx-shutdown')) {
-      $('cx-shutdown').textContent = sx.rows
-        ? ' That rule removes ' + num(sx.rows) + ' report weeks across ' + sx.markets + ' markets as starting '
-          + 'points: weeks inside a government shutdown (2013, 2018\u201319, 2025), when CFTC published late on '
-          + 'a catch-up schedule and the date each report became public is not known.'
-        : '';
-    }
+    /* Source and sample only (2026-11-06, Sig): how many readings were tested and how many held up, and
+       how many weeks were left out, never how the test is run. */
+    var f = CX.family, sx = CX.shutdown_excluded;
     if (f && $('cx-family')) {
-      $('cx-family').innerHTML = 'This week: <b>' + f.tests + '</b> tests produced a result, out of '
-        + f.attempted + ' attempted. Chance alone would make about <b>' + f.expected_by_chance
-        + '</b> of them look real. <b>' + f.raw_hits + '</b> cleared the usual threshold. <b>'
-        + f.fdr_survivors + '</b> survived the correction for the whole batch. '
-        + (f.fdr_survivors === 0
-            ? 'Nothing clears that bar this week, which is the usual answer.'
-            : 'Those are marked above.');
+      $('cx-family').innerHTML = 'This week: <b>' + f.tests + '</b> readings had enough history to test, out of '
+        + f.attempted + ' tried. <b>' + f.fdr_survivors + '</b> held up. '
+        + (sx && sx.rows ? num(sx.rows) + ' report weeks across ' + sx.markets + ' markets are left out as '
+          + 'starting points because they fell in a government shutdown, when the date each report became public is not known.' : '');
     }
     if ($('cx-limits')) {
       $('cx-limits').innerHTML = 'What this cannot do: it does not know your basis, your storage cost '
@@ -550,8 +533,7 @@
            is short. Understate it or state it exactly -- never round it up. */
         + ((CX.coverage && CX.coverage.weeks) ? Math.floor(CX.coverage.weeks / 52) : 16)
         + ' years is not long enough to be sure about a market that has '
-        + 'changed as much as this one has. CFTC revises earlier weeks, and we rebuild the whole '
-        + 'history every Sunday rather than trust our own copy. This page is information, not advice, '
+        + 'changed as much as this one has. This page is information, not advice, '
         + 'and nothing on it is a recommendation to buy or sell anything.';
     }
   }

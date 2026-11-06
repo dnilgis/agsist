@@ -90,6 +90,7 @@ test('the cattle COT sentence follows its own number', () => {
 test('the COT range line and the /cot percentile say which measure they are', () => {
   const fj = read('components/futures.js'), cj = read('components/cot-page.js');
   assert.match(fj, /Where the net sits in its 52-week range, in contracts: '\+p52\+'% of the way from the low/);
-  assert.match(cj, /Where the net ranks among the last '\+k\.weeks\+' weeks, in contracts: the '\s*\+ordinal\(k\.pct\)\+' percentile/);
+  // the /cot card's "Show the math" 52-week contract rank is gone (2026-11-06, Sig): one ranking on the card
+  assert.doesNotMatch(cj, /Show the math|cot-math|ordinal\(k\.pct\)/);
   assert.doesNotMatch(fj + cj, /A shorter yardstick/);
 });

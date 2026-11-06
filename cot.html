@@ -69,7 +69,7 @@
       "@type": "Dataset",
       "@id": "https://agsist.com/cot#dataset",
       "name": "Managed Money COT Positioning: 11 Ag Commodities",
-      "description": "Weekly CFTC Commitment of Traders managed-money net positioning, 52-week percentile, and week-over-week change for corn, soybeans, SRW/HRW/HRS wheat, soybean meal and oil, live cattle, feeder cattle, lean hogs, and Class III milk.",
+      "description": "Weekly CFTC Commitment of Traders managed-money net positioning, percentile since 2010, share of open interest, and week-over-week change for corn, soybeans, SRW/HRW/HRS wheat, soybean meal and oil, live cattle, feeder cattle, lean hogs, and Class III milk.",
       "url": "https://agsist.com/cot",
       "creator": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
       "isAccessibleForFree": true,
@@ -88,7 +88,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "What is the COT Report?", "acceptedAnswer": { "@type": "Answer", "text": "The CFTC publishes Commitments of Traders usually on Friday at 3:30 pm Eastern (on the Monday after when a federal holiday falls on the Wednesday, Thursday or Friday of the report week; a Monday holiday does not move it), counting positions held as of the previous Tuesday. It splits the market into four reportable categories: managed money, producers and merchants, swap dealers and other reportables, plus a small-trader remainder. This page leads with managed money, which is the speculative money, and breaks out all five further down. Every contract has two sides, so the categories net to zero: when funds buy, somebody sold." } },
-    { "@type": "Question", "name": "How to use it", "acceptedAnswer": { "@type": "Answer", "text": "As a measure of who is exposed. It does not call direction: on the whole record (the test is above), positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction." } },
+    { "@type": "Question", "name": "How to use it", "acceptedAnswer": { "@type": "Answer", "text": "As a measure of who is exposed. It does not call direction: on the whole record (the test is above), positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns." } },
     { "@type": "Question", "name": "What \"Managed Money\" Means", "acceptedAnswer": { "@type": "Answer", "text": "CTAs, commodity pools and hedge funds. They do not own grain, they trade paper, and their buying and selling moves the futures leg. It does not follow that it moves your basis. Basis is your local cash price minus futures, and it is set by what is happening at your elevator: bushels arriving, space, freight and demand. Fund flow and basis frequently move in opposite directions." } },
     { "@type": "Question", "name": "Where The Position Sits", "acceptedAnswer": { "@type": "Answer", "text": "The bar on each card covers the last year. The sections above rank the same position against the whole record we hold, measured as a share of all open contracts, which is the comparison that survives a market doubling in size. When the card and the section disagree they are answering different questions: one about this year, one about the whole record." } }
   ]
@@ -144,7 +144,6 @@
 .cot-more { margin-top: .35rem; max-width: 620px; }
 .cot-more summary { cursor: pointer; font-size: .84rem; font-weight: 600; color: var(--gold); min-height: 44px; display: flex; align-items: center; }
 .cot-more .cot-page-sub { margin: 0 0 .55rem; }
-.cot-math summary { cursor: pointer; padding: .35rem 0; min-height: 32px; }
 
 /* ── Verdict banner ── */
 .cot-verdict-banner {
@@ -524,8 +523,8 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 @media(min-width:701px){.cc-chips{flex-wrap:wrap;overflow:visible;margin:0 0 .45rem;padding:0}.cc-plot{height:340px}.cc-head{min-height:2.8em;font-size:1.08rem}.cc-src{min-height:3em}}
 @media print{.cc-acts,.cc-chips{display:none}}
 .cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .25rem}
-/* with scripts on (the early theme script sets data-theme) the crawler summary stays out of view from the first paint */
-html[data-theme] .cg-baked{display:none}
+/* the baked summary shows with scripts off and until the live report renders; cot-page.js adds cot-live to <html> then */
+html.cot-live .cg-baked{display:none}
 .cg-verdict{margin:0 0 .55rem;font-size:.85rem;line-height:1.5;min-height:1.5em;color:var(--text-dim);font-weight:700;white-space:nowrap;overflow:hidden}
 .cg-all{margin:0 0 1rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
 .cg-all>summary{display:flex;align-items:center;min-height:44px;padding:0 .85rem;cursor:pointer;font-weight:700;color:var(--gold)}
@@ -541,7 +540,6 @@ html[data-theme] .cg-baked{display:none}
 .cg-pick{background:none;border:0;padding:0;min-height:44px;font:inherit;font-weight:700;color:var(--text);text-decoration:underline;text-decoration-color:var(--border-g);text-underline-offset:3px;cursor:pointer}
 .cg-pick:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 @media(max-width:400px){.cg-table{font-size:.76rem}.cg-table th,.cg-table td{padding-left:.25rem;padding-right:.25rem}.cg-table th:first-child,.cg-table td:first-child{padding-left:.6rem}.cg-table th:last-child,.cg-table td:last-child{padding-right:.6rem}}
-.cg-hold{visibility:hidden}
 .cg-baked{margin:0 0 .8rem!important}
 .cg-ask{margin:0 0 .5rem}
 .co{margin:0 0 1.4rem;--cm-x0:#3987e5;--cm-b1:#184f95;--cm-b2:#2b2f2e;--cm-b3:#7a3232;--cm-x4:#e66767;--cm-i0:#0b0b0b;--cm-i1:#fff;--cm-i2:var(--text);--cm-i3:#fff;--cm-i4:#0b0b0b;--cm-ring:#f0efec;--cm-line:#86b6ef}
@@ -707,8 +705,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
        one tap under it. No sentence per market. -->
   <section class="cg" id="cot-glance" aria-labelledby="cg-h">
     <h2 class="cg-h" id="cg-h">Funds this week</h2>
-    <p class="cg-verdict" id="cg-verdict"><span class="cg-hold">Crowded</span></p>
-  <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
+    <p class="cg-verdict" id="cg-verdict"></p>
     <!-- The 52-week chart (2026-11-05, Sig): one market at a time, components/cot-chart.js -->
     <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"><button type="button" class="cc-cmp" id="cc-cmp" aria-pressed="false">Compare</button><button type="button" class="cc-chip" data-k="corn" aria-pressed="true">Corn</button><button type="button" class="cc-chip" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-chip" data-k="wheat" aria-pressed="false">Chicago wheat</button><button type="button" class="cc-chip" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-chip" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-chip" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-chip" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-chip" data-k="livecattle" aria-pressed="false">Live cattle</button><button type="button" class="cc-chip" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-chip" data-k="leanhogs" aria-pressed="false">Lean hogs</button><button type="button" class="cc-chip" data-k="milk" aria-pressed="false">Class III milk</button></div>
@@ -736,6 +733,8 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       <div class="cg-tw"><table class="cg-table" id="cg-table"><thead><tr><th scope="col">Market</th><th scope="col">Long or short</th><th scope="col">Rank</th><th scope="col">Change</th></tr></thead><tbody id="cg-rows"></tbody></table></div>
     </details>
     <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="These lines in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask"></div>
+    <!-- the summary baked in for crawlers and no-script readers, under the chart so the live swap moves nothing above it -->
+  <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, October 27, 2026</b>, released Friday, October 30: <b>Corn</b> funds net long 81,113 contracts, −83,310 on the week; <b>Soybeans</b> funds net long 193,781 contracts, −27,544 on the week; <b>Chicago wheat</b> funds net short 74,606 contracts, −22,601 on the week; <b>KC wheat</b> funds near flat (net short 517 contracts, under 2.0% of open interest), −8,007 on the week; <b>Minneapolis wheat</b> funds net short 3,713 contracts, −7,906 on the week; <b>Soymeal</b> funds net long 168,714 contracts, −32,164 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
   </section>
 
   <!-- Positioning map and options (2026-11-06, Sig: "has to be epic"; few words). Every trader group in every market,
@@ -781,7 +780,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <div class="cvb-text" id="cvb-text">Loading fund positioning data…</div>
     <div class="cvb-meta">
       <div class="cvb-date" id="cvb-date">CFTC · Updated weekly</div>
-      <span class="cvb-countdown" id="cot-countdown" role="status" aria-live="polite" aria-atomic="true"></span>
+      <span class="cvb-countdown" id="cot-countdown"></span>
     </div>
   </div>
 
@@ -790,7 +789,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   <!-- Summary cards -->
   <h2 class="cot-section-title">Fund positioning by commodity</h2>
   <div class="cot-summary-grid" id="cot-summary-grid"></div>
-  <div class="method-note" id="cot-method"><b>Method</b> · The percentile on each card ranks this week's managed-money net, as a share of open interest, against every week in that market's record (the card names the start year). It is the share of weeks at or below this one. Crowded means the 90th percentile or higher while funds are net long, or the 10th or lower while they are net short. "Show the math" ranks raw contracts over the last 52 reports instead, this week included. · <b>Sources</b> · CFTC Disaggregated Commitments of Traders, futures only, all contract months. · Reviewed by Sigurd Lindquist, CCA</div>
+  <div class="method-note" id="cot-method"><b>Sources</b> · CFTC Disaggregated Commitments of Traders, futures only, all contract months. Each card names the year its market's record starts. · Reviewed by Sigurd Lindquist, CCA</div>
 
 
   <section class="cx" id="cx-board-sec" aria-labelledby="cx-board-h">
@@ -799,8 +798,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       record</b>, and by what price has done since. Position is measured as a share of all open
       contracts, so an old reading and a new one mean the same thing in a market that has since
       changed size. The dashed lines are the 20th and 80th percentiles; a dot is coloured only when the
-      market is crowded (top tenth of its record while net long, bottom tenth while net short). Bottom
-      right is the corner to watch: funds on the high side while price has already turned down. <span id="cx-window"></span></p>
+      market is crowded (top tenth of its record while net long, bottom tenth while net short). <span id="cx-window"></span></p>
     <p class="cx-stamp" id="cx-stamp"></p>
     <div class="cx-panel" style="margin-bottom:.9rem">
       <h3 class="cx-h4" style="margin-top:0">What moved this week</h3>
@@ -829,8 +827,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <details class="fold">
       <summary><h2 class="cx-h" id="cx-pred-h">Does this predict prices?</h2> <span class="fold-hint">The test on the full record: does fund positioning line up with later price moves?</span></summary>
       <div class="fold-body">
-    <p class="cx-sub">Measured on the full CFTC record.
-      Correlation runs from &minus;1 to +1; zero means no relationship.</p>
+    <p class="cx-sub">Measured on the full CFTC record.</p>
     <div class="cx-panel">
       <div id="cx-pred"></div>
     </div>
@@ -851,32 +848,13 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     </div>
   </section>
 
-  <!-- ══ METHOD ══ -->
+  <!-- ══ SOURCE AND SAMPLE ══ (2026-11-06, Sig: plain source and sample-size lines only) -->
   <section class="cx" id="cx-method-sec" aria-labelledby="cx-method-h">
     <details class="fold">
-      <summary><h2 class="cx-h" id="cx-method-h">Why our numbers are lower than the ones you'll see elsewhere</h2> <span class="fold-hint">Four mistakes that make a positioning study look better than the trade it describes, and how this page avoids them.</span></summary>
+      <summary><h2 class="cx-h" id="cx-method-h">Source and sample</h2> <span class="fold-hint">Where the figures come from and how much history sits behind them.</span></summary>
       <div class="fold-body">
-    <p class="cx-sub">Four mistakes make a positioning study look better than the trade it describes.
-      They all push the same way, and they are all easy to make by accident.</p>
     <div class="cx-panel cx-method">
-      <ol>
-        <li><b>Measuring from a price that had not printed yet.</b> Positions are held as of Tuesday.
-          The report usually comes out Friday at 3:30 pm Eastern, after the grains have settled for
-          the week; a federal holiday from Wednesday to Friday of that week moves it to the Monday. A study that measures
-          from the Tuesday close gives itself three days of the move it claims to have predicted. Every
-          return here starts at the first close after the report existed.<span id="cx-shutdown"></span></li>
-        <li><b>Reading a contract roll as a price move.</b> A continuous front-month chart steps by the
-          whole spread when the front month changes. Corn's July to September roll often spans old crop
-          and new crop, and the step can be a few cents one year and far more in a tight one. Those steps are removed here before anything is
-          measured. Lean hogs are the exception: the calendar that finds their roll is not yet correct,
-          so no price read is shown for hogs until it is.</li>
-        <li><b>Counting overlapping weeks as separate evidence.</b> Thirteen-week returns sampled every
-          week share twelve weeks of the same price path. Eighty matches can be six actual spells. Each
-          read below prints both numbers.</li>
-        <li><b>Searching until something is significant.</b> Many tests run every week, and at the
-          usual threshold one in twenty looks real by chance alone. The whole batch is counted and
-          corrected before anything is called a finding.<span id="cx-family-count"></span></li>
-      </ol>
+      <p class="cx-sub">Positions: CFTC Disaggregated Commitments of Traders, futures only, all contract months. Prices: front-month futures closes.</p>
       <p class="cx-family" id="cx-family"></p>
       <p class="cx-limits" id="cx-limits"></p>
     </div>
@@ -896,7 +874,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       </div>
       <div class="cot-explainer-item">
         <h3>How to use it</h3>
-        <p>As a measure of who is exposed. It does not call direction: on the whole record (the test is above), positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns, which is a reason to protect unpriced bushels rather than a reason to predict a direction.</p>
+        <p>As a measure of who is exposed. It does not call direction: on the whole record (the test is above), positioning and price move together in the week they are measured; the relationship with the next four to thirteen weeks is close to zero. What a crowded position does tell you is how much buying or selling could be forced if the market turns.</p>
       </div>
       <div class="cot-explainer-item">
         <h3>What "managed money" means</h3>
@@ -941,11 +919,11 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 <script src="/components/loader.js?v=19"></script>
 
 <script src="/components/cot-glance.js?v=2"></script>
-<script src="/components/cot-chart.js?v=2"></script>
-<script src="/components/cot-page.js?v=6"></script>
+<script src="/components/cot-chart.js?v=3"></script>
+<script src="/components/cot-page.js?v=7"></script>
 
 
-<script src="/components/cot-analysis.js?v=3"></script>
+<script src="/components/cot-analysis.js?v=4"></script>
 <script src="/components/cot-options.js?v=2"></script>
 
 <script>
