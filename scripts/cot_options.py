@@ -72,6 +72,7 @@ WINDOW_DAYS = 3 * 365 + 1     # "last 3 years": reports dated within this many d
 MIN_WEEKS = 130               # fewer weeks than this in the window: withhold the ranking
 MIN_OPT_SHARE = 5.0           # options under this share of all open interest: positions not ranked
 EDGE = 5                      # printed percentile at or under EDGE, or at or over 100 - EDGE
+SPARK_STEP = 4                # the sparkline keeps every 4th week
 TYPICAL_WEEKS = 52            # how many earlier report weeks the "typical week" count looks at
 FETCH_DAYS = WINDOW_DAYS + 7 * (TYPICAL_WEEKS + 6)
 SOURCE = ("CFTC Commitments of Traders: Disaggregated Futures-and-Options Combined, "
@@ -138,15 +139,17 @@ def series(fo_rows, comb_rows, legacy_rows):
     for k in ORDER:
         dates = sorted(set(fo.get(k, {})) & set(cb.get(k, {})) & set(lg.get(k, {})))
         s = {"dates": [], "oi_all": [], "oi_fut": [], "opt_oi": [],
-             "net": {g: [] for g in GROUP_ORDER}, "conc": {c: [] for c in CONC}}
+             "net": {g: [] for g in GROUP_ORDER}, "fnet": {g: [] for g in GROUP_ORDER},
+             "conc": {c: [] for c in CONC}}
         for d in dates:
             f, c, l = fo[k][d], cb[k][d], lg[k][d]
             try:
                 oi_all, oi_fut = _int(c, "open_interest_all"), _int(f, "open_interest_all")
-                nets = {}
+                nets, fnets = {}, {}
                 for g in GROUP_ORDER:
                     lf, sf = GROUPS[g]
-                    nets[g] = (_int(c, lf) - _int(c, sf)) - (_int(f, lf) - _int(f, sf))
+                    fnets[g] = _int(f, lf) - _int(f, sf)
+                    nets[g] = (_int(c, lf) - _int(c, sf)) - fnets[g]
             except ValueError:
                 continue
             s["dates"].append(d)
@@ -155,6 +158,7 @@ def series(fo_rows, comb_rows, legacy_rows):
             s["opt_oi"].append(oi_all - oi_fut)
             for g in GROUP_ORDER:
                 s["net"][g].append(nets[g])
+                s["fnet"][g].append(fnets[g])
             for ck, fld in CONC.items():
                 s["conc"][ck].append(_float(l, fld))
         if s["dates"]:
@@ -178,13 +182,13 @@ def shown(p):
     return None if p is None else int(p + 0.5)
 
 
-def _chg(s, g, i):
+def _chg(s, g, i, col="net"):
     if i < 1:
         return None
     gap = (s["dates"][i] - s["dates"][i - 1]).days
     if not 4 <= gap <= 10:
         return None
-    return s["net"][g][i] - s["net"][g][i - 1]
+    return s[col][g][i] - s[col][g][i - 1]
 
 
 def read_at(s, i):
@@ -199,7 +203,7 @@ def read_at(s, i):
     share = 100.0 * opt / oi_all if oi_all else None
     m = {"date": d.isoformat(), "oi_all": oi_all, "oi_fut": s["oi_fut"][i], "opt_oi": opt,
          "opt_share": None if share is None else round(share, 1), "weeks": weeks,
-         "withheld": None, "groups": {}, "conc": {}, "checks": []}
+         "withheld": None, "groups": {}, "fut": {}, "conc": {}, "checks": []}
     enough = len(others) >= MIN_WEEKS - 1
     if not enough:
         m["withheld"] = "history"
@@ -217,6 +221,15 @@ def read_at(s, i):
                 row["chg_pct"] = shown(rank(past, abs(chg)))
                 m["checks"].append(("change", g, row["chg_pct"] >= 100 - EDGE))
         m["groups"][g] = row
+        # the futures side of the same group, for the map only (it is not in the unusual scan)
+        fnet = s["fnet"][g][i]
+        frow = {"net": fnet, "chg": _chg(s, g, i, "fnet"), "pct": None, "chg_pct": None}
+        if enough:
+            frow["pct"] = shown(rank([s["fnet"][g][j] for j in others], fnet))
+            fpast = [abs(c) for c in (_chg(s, g, j, "fnet") for j in others) if c is not None]
+            if frow["chg"] is not None and len(fpast) >= MIN_WEEKS - 1:
+                frow["chg_pct"] = shown(rank(fpast, abs(frow["chg"])))
+        m["fut"][g] = frow
     for ck in CONC:
         v = s["conc"][ck][i]
         m["conc"][ck] = v
@@ -226,6 +239,17 @@ def read_at(s, i):
                 hi, low = v >= max(past), v <= min(past)
                 m["checks"].append(("conc_hi" if hi else "conc_lo" if low else "conc", ck, hi or low))
     return m
+
+
+def spark(s, i):
+    """Every SPARK_STEP-th week of the 3-year window, ending on this week, for the
+    small line beside a tapped cell: {"dates": [...], "opt": {g: [...]}, "fut": {g: [...]}}."""
+    d = s["dates"][i]
+    lo = d - timedelta(days=WINDOW_DAYS - 1)
+    idx = [j for j in range(i + 1) if s["dates"][j] >= lo][::-1][::SPARK_STEP][::-1]
+    return {"dates": [s["dates"][j].isoformat() for j in idx],
+            "opt": {g: [s["net"][g][j] for j in idx] for g in GROUP_ORDER},
+            "fut": {g: [s["fnet"][g][j] for j in idx] for g in GROUP_ORDER}}
 
 
 def unusual_lines(k, m):
@@ -258,6 +282,7 @@ def build(fo_rows, comb_rows, legacy_rows, built=None):
         scanned += len(m["checks"])
         unusual.extend(unusual_lines(k, m))
         m.pop("checks")
+        m["spark"] = spark(s, len(s["dates"]) - 1)
         markets[k] = m
     # The whole search, counted: how many lines an ordinary earlier week produced,
     # each week read with only the reports it had at the time.
@@ -348,6 +373,8 @@ def selftest():
     check("weeks in the window", m["weeks"], win)
     check("highest week ranks 100", m["groups"]["mm"]["pct"], 100)
     check("flat groups rank 50", m["groups"]["pm"]["pct"], 50)
+    check("futures side: mm futures net is 100 every week, so it ranks 50", (m["fut"]["mm"]["net"], m["fut"]["mm"]["pct"]), (100, 50))
+    check("sparkline ends on this week, every 4th week back", (m["spark"]["dates"][-1], m["spark"]["opt"]["mm"][-1], m["spark"]["opt"]["mm"][-2]), (last.isoformat(), 59, 55))
     kinds = sorted((u["kind"], u.get("g") or u.get("c")) for u in out["unusual"])
     # mm level is an extreme; every flat group's change and level are mid; flat
     # concentration series tie their own max and min, so each is "at" a 3-year high.
