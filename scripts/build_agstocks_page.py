@@ -63,7 +63,10 @@ def day(d, year=False):
 
 
 def money(v):
-    return f"${v:,.2f}"
+    """Cents rounded half up, the way the page's own script (toLocaleString) prints the same close: Python's
+    format rounds a binary half to even, so a $9.125 close printed $9.12 here and $9.13 in the browser (Nov 6)."""
+    from decimal import Decimal, ROUND_HALF_UP
+    return "${:,.2f}".format(Decimal(repr(v)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
 
 
 def pct(p, digits=1):
@@ -477,6 +480,8 @@ def selftest():
     def check(c, m):
         if not c:
             fails.append(m)
+    check(money(9.125) == "$9.13" and money(1234.565) == "$1,234.57" and money(180.2) == "$180.20",
+          "cents round half up, as the page script prints them (a $9.125 close is $9.13)")
     check(pct(1.234) == "+1.2%" and pct(-0.05, 2) == "−0.05%" and pct(0) == "0.0%", "pct")
     check(big(3.998e9) == "$4.00 billion" and big(-527e6) == "−$527.0 million", "big")
     check(day("2026-11-02", True) == "Nov 2, 2026", "day")
