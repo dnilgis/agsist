@@ -1,5 +1,5 @@
 {
- "_note": "From the market administrator's own PPD and class releases; every month checked (Class I identity, skim = mover + differential, uniform = Class III + PPD). Never typed by hand.",
+ "_note": "From the market administrator's own releases. Never typed by hand.",
  "latest": {
   "adv_butterfat": 1.5164,
   "adv_class3_skim": 11.76,
@@ -241,11 +241,11 @@
    "uniform": 16.62
   }
  ],
- "read": "2026-11-05",
+ "read": "2026-11-06",
  "source": "Upper Midwest Market Administrator (Federal Order 30)",
  "source_url": "https://www.fmma30.com/",
  "status": {
-  "at": "2026-11-05T21:41:11Z",
+  "at": "2026-11-06T15:40:53Z",
   "ok": true
  },
  "year_ago": {
