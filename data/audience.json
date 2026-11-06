@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-11-06T22:01:24+00:00",
+ "built": "2026-11-06T23:53:40+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -6090,6 +6090,60 @@
    "These are estimates for watching a trend, not exact counts."
   ]
  },
+ "cotKit": {
+  "through": "2026-11-04",
+  "page": "/cot",
+  "weeks": [
+   {
+    "events": {
+     "share_open": 0,
+     "share_done": 0,
+     "picture_download": 0,
+     "sheet_print": 0,
+     "qr_visit": 0
+    },
+    "arrivals": {},
+    "signups": {},
+    "week": "2026-10-12"
+   },
+   {
+    "events": {
+     "share_open": 0,
+     "share_done": 0,
+     "picture_download": 0,
+     "sheet_print": 0,
+     "qr_visit": 0
+    },
+    "arrivals": {},
+    "signups": {},
+    "week": "2026-10-19"
+   },
+   {
+    "events": {
+     "share_open": 0,
+     "share_done": 0,
+     "picture_download": 0,
+     "sheet_print": 0,
+     "qr_visit": 0
+    },
+    "arrivals": {},
+    "signups": {},
+    "week": "2026-10-26"
+   },
+   {
+    "events": {
+     "share_open": 0,
+     "share_done": 0,
+     "picture_download": 0,
+     "sheet_print": 0,
+     "qr_visit": 0
+    },
+    "arrivals": {},
+    "signups": {},
+    "week": "2026-11-02"
+   }
+  ]
+ },
  "ai": {
   "source": "Bing Webmaster \u00b7 AI Performance (Copilot and Bing answers)",
   "start": "2026-08-19",
@@ -6469,26 +6523,31 @@
   "ga4": {
    "ok": true,
    "through": "2026-11-04",
-   "fetched": "2026-11-06T22:01:24+00:00"
+   "fetched": "2026-11-06T23:53:40+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-11-06T22:01:24+00:00"
+   "fetched": "2026-11-06T23:53:40+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-11-06T22:01:24+00:00"
+   "fetched": "2026-11-06T23:53:40+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-11-06T22:01:24+00:00"
+   "fetched": "2026-11-06T23:53:40+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-11-04",
-   "fetched": "2026-11-06T22:01:24+00:00"
+   "fetched": "2026-11-06T23:53:40+00:00"
+  },
+  "cotKit": {
+   "ok": true,
+   "through": "2026-11-04",
+   "fetched": "2026-11-06T23:53:40+00:00"
   }
  }
 }
