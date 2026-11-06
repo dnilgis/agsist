@@ -1,17 +1,5 @@
 name: preship
-
-# Runs after files land on main and says, within a couple of minutes, whether
-# the upload did anything the previous commit did not: a new page error under a
-# missing data file, a countdown that changes with the clock, a page that
-# renders half of what it used to, or the word NaN appearing where it did not.
-#
-# It compares HEAD against HEAD~1. It does not know what "correct" is -- only
-# what changed for the worse. That is enough: every regression this repo
-# shipped in September was a page doing something new and bad under a condition
-# nobody had rendered.
-#
-# Red here means: open the run, read the FAIL lines, and revert the file named
-# in them. It is never a reason to guess.
+# preship.
 
 on:
   push:
@@ -35,16 +23,14 @@ permissions:
 
 jobs:
   preship:
-    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      # A hand start from merge-when-green.yml names the merge commit (head) and main before it (base):
-      # a collection job may have pushed to main in between, and that is not this merge's doing.
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.head || '' }}
-          fetch-depth: 2          # HEAD and HEAD~1; the baseline is fetched on its own below
+          fetch-depth: 2
       - name: Engine checkout
         uses: ./.github/actions/engine
         with:
@@ -60,11 +46,6 @@ jobs:
           npm i -D playwright@1.47.0
           npx playwright install --with-deps chromium
 
-      # The baseline is what main pointed at BEFORE this push, not HEAD~1.
-      # HEAD~1 is the first parent, and a merge made on a branch ("merge main
-      # into the branch", then push to main) has the branch as its first
-      # parent: on 2026-10-07 that made preship compare the push against itself
-      # plus a few bot commits, render nothing, and pass in 2 seconds.
       - name: Pick the baseline
         id: base
         env:
@@ -83,8 +64,6 @@ jobs:
           echo "baseline: $B"
           echo "ref=$B" >> "$GITHUB_OUTPUT"
 
-      # Warning only: lists words and shapes that read as machine-written
-      # (scripts/site_voice_lint.py). It never blocks a push.
       - name: Voice lint (warning only)
         continue-on-error: true
         run: |

@@ -1,22 +1,10 @@
 name: MESH radar hail swaths — daily
-
-# Pulls NOAA MRMS daily-max MESH from the Iowa State archive, vectorizes the
-# >=0.75/1/1.5/2 inch bands to GeoJSON, and publishes to data/hail/mesh/.
-# Run it by hand first with days=30 to backfill the season, then the daily
-# cron keeps it current. The map's Storm Swaths control appears automatically
-# once index.json has dates — nothing to flip on.
+# MESH radar hail swaths: daily.
 
 on:
   schedule:
     - cron: '25 8 * * *'   # 08:25 UTC — previous UTC day complete and archived
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -34,7 +22,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -104,12 +91,6 @@ jobs:
           [ -z "$END" ] && END=$(date -u -d 'yesterday' +%F)
           printf '%s' "$END" | grep -Eq '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' || { echo "::error::date must be YYYY-MM-DD"; exit 1; }
           printf '%s' "$N" | grep -Eq '^[0-9]{1,3}$' || { echo "::error::days must be a number"; exit 1; }
-          # 2026-08-15 audit: this loop swallowed day failures entirely, so
-          # 2026-08-11 is simply MISSING from data/hail/mesh/ and the run was
-          # green. process_day writes a file even for a zero-hail day, so a
-          # missing file is an acquisition failure, not an absence of hail —
-          # and nothing ever retries it. Keep processing every day (one bad
-          # day must not cost the others), but END LOUD so the gap is seen.
           FAILED=""
           for i in $(seq 0 $((N-1))); do
             D=$(date -u -d "$END - $i day" +%F)
@@ -132,13 +113,9 @@ jobs:
       - name: Generate storm-day pages
         run: python scripts/generate_hail_events.py || echo "storm pages failed - data unaffected"
 
-      # Each /hail-map/<state> page lists that state's storm days from
-      # data/hail/storm-days.json, which the step above just wrote.
       - name: Refresh state pages' storm-day lists
         run: python scripts/generate_hail_states.py || echo "state pages failed - data unaffected"
 
-      # The summary files that read the storm and state pages (BUILD-RULES 61):
-      # data/feeds.json, the search index and llms.txt, in the same commit.
       - name: Rebuild the summary files
         run: python scripts/generated_sets.py dependents hail hail-map --stage || true
 
@@ -152,11 +129,7 @@ jobs:
           fi
           git add -A
           git commit -m "mesh: radar hail swaths update"
-          # manifest.json is the one file several bots write; if another workflow
-          # pushed while we ran, rebase conflicts there. Recovery: take main's
-          # manifest, re-apply our recent/storm layers on top, retry. Three tries.
           for i in 1 2 3; do
-            # a conflict only in the summary files is rebuilt (BUILD-RULES 61); any other conflict takes the recovery below
             if python3 scripts/generated_sets.py pull-rebase hail hail-map; then
               git push && exit 0
             fi
@@ -182,8 +155,6 @@ jobs:
             -d '{"host":"agsist.com","key":"f4a81c26db974e0f92c35b7a6e10d8c4","keyLocation":"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt","urlList":["https://agsist.com/hail-map","https://agsist.com/hail/","https://agsist.com/hail/'"$Y"'","https://agsist.com/sitemap.xml"]}' \
             || echo "IndexNow ping failed - harmless"
 
-      # Runs after the commit so any days that DID work are still saved, then
-      # turns the run red so a gap can never sit unnoticed the way 2026-08-11 did.
       - name: Fail if any day was lost
         if: env.MESH_FAILED_DAYS != ''
         run: |

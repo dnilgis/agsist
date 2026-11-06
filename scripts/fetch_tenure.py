@@ -218,12 +218,7 @@ def main():
         raise SystemExit(f"FATAL: only {len(counties)} usable counties, refusing to write")
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
            "source": "USDA NASS Census of Agriculture, land in farms by ownership, domain TOTAL",
-           "note": ("pct rented = rented-from-others / (owned + rented-from-others) acres, "
-                    "as reported by farms themselves each census. Counties with (D) "
-                    "suppression simply lack that year, never estimated. A county year "
-                    "is kept only from a TOTAL row, and only where the state's counties "
-                    "add up to the state total (pre-2022 county rows are a tenure-class "
-                    "subset and are withheld)."),
+           "note": ('Percent rented as reported by farms in each USDA census. Counties with (D) suppression lack that year, never estimated.'),
            "years": YEARS, "counties": counties, "states": states, "national": national}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(out, open(OUT, "w"), separators=(",", ":"))

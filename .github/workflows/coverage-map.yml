@@ -1,24 +1,10 @@
 name: Coverage map — the elevator directory, drawn
-
-# /list-your-elevator#coverage (was /elevators) shows every grain elevator AGSIST tracks: green where we read the
-# elevator's own board, grey where it is still in the queue. The source of
-# truth is dnilgis/bids, which publishes its directory to GitHub Pages, so this
-# repository holds no copy of the elevator list — it renders one.
-#
-# Daily, at 7:38 Central, off the hour. GitHub's scheduler is most congested at
-# :00 and this repository has measured what that costs.
+# Coverage map: the elevator directory, drawn.
 
 on:
   schedule:
     - cron: '38 12 * * *'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -33,7 +19,6 @@ env:
   TZ: America/Chicago
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -83,20 +68,9 @@ jobs:
         with:
           node-version: 22
 
-      # Hand-worked answers first. If the bucketing is wrong, the map is
-      # wrong quietly, so this runs before anything talks to the network.
       - name: Selftest the builder
         run: node scripts/build_coverage_map.mjs --selftest
 
-      # The builder refuses to write an empty map rather than committing one:
-      # a directory that comes back with no elevators is a fetch that failed,
-      # and an empty coverage map is worse than yesterday's. It also refuses a
-      # partial pass. bids' directory records ONE fetch pass, and a source that
-      # pass did not reach comes back indistinguishable from an elevator with
-      # no reader; publishing that undercounts the green. The builder samples a
-      # few passes, keeps the best, and fails this step rather than write a
-      # number it cannot stand behind. A red X here means yesterday's map is
-      # still up, which is the intended outcome.
       - name: Build the coverage data from the bids directory
         run: node scripts/build_coverage_map.mjs
 

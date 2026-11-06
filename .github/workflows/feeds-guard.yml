@@ -1,19 +1,13 @@
 name: Feed manifest — every published number is accounted for
+# Feed manifest: every published number is accounted for.
 
-# data/feeds.json is derived from this repository, so it can go stale the moment
-# a page starts reading a new file or a workflow stops writing one. This
-# regenerates it and fails if the committed copy differs.
-#
-# It runs when something it describes changes, and once a week in case something
-# drifts under it. Off-:00 and low frequency — the shape this repository has
-# measured as the one GitHub actually delivers.
 on:
   push:
     branches: [main]
     paths:
-      - '**.html'          # cash-bids.html is what network-checks.mjs lifts from
+      - '**.html'
       - 'components/bids-*.js'
-      - 'components/cash-bids.js'   # the /cash-bids page script those checks lift from
+      - 'components/cash-bids.js'
       - '.github/workflows/**'
       - 'scripts/**'
       - 'data/feeds.json'
@@ -53,49 +47,23 @@ jobs:
       - name: The feed manifest is current and every claim in it has a source
         run: python3 scripts/test_feeds.py
 
-      # THE BID NETWORK, AND WHY IT IS CHECKED HERE.
-      #
-      # cash-bids.html draws the boards this project reads itself at
-      # dnilgis.github.io/bids, and nothing else.
-      #
-      # network-checks.mjs LIFTS the functions out of cash-bids.html rather
-      # than keeping a copy, so it cannot pass against code the page no longer
-      # runs. It needs no network: the live-feed checks skip with a note when
-      # dnilgis.github.io is unreachable, and never fail for that reason.
       - name: The bid network merges correctly and cannot break the page
         run: node scripts/network-checks.mjs
 
-      # THE DELIVERY FILTER, WHICH HAS NOW BROKEN TWICE AND WAS UNGUARDED BOTH
-      # TIMES. scripts/delivery-checks.mjs existed on 2026-09-05 and nothing
-      # ran it, so a filter that hid every board we read ourselves — Flash
-      # Grain of Thorp, four miles from the man who reported it, posts "Fall
-      # 26" and no month at all — shipped and stayed shipped. It lifts the
-      # functions out of cash-bids.html, so it needs no network and cannot
-      # pass against code the page no longer runs.
       - name: The delivery filter hides nothing it cannot place
         run: node scripts/delivery-checks.mjs
 
-      # CBOT hours come from CME, not from memory, and the countdown must
-      # survive both clock changes.
       - name: The market clock matches CME's published grain hours
         run: node scripts/market-clock-checks.mjs
 
-      # THE QUESTION A NERVOUS DEPLOY ASKS. Drive the page's own network fetch with a
-      # network read against every way the feed can fail — offline, 404, 500,
-      # malformed, empty, hung — and require an empty set that never throws,
-      # and no request at all when the off switch is set.
       - name: A broken bid network leaves the page exactly as it is today
         run: node scripts/network-safety-checks.mjs
 
-      # The homepage card's old-crop window and the town it prints, lifted
-      # from components/bids-homepage.js and bids-network.js (2026-10-06).
       - name: Homepage bids card -- old crop and display town
         run: node scripts/homepage-bids-checks.mjs
 
-      # Also run at the commit, not only at the next hail event.
       - name: Neither send loop can re-mail the whole list
         run: python3 scripts/test_send_loops.py
 
-      # Nothing is written to a shard the page cannot fetch.
       - name: Basis history lands in a state a reader can ask for
         run: python3 scripts/test_basis_states.py

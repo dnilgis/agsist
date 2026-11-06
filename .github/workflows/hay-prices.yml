@@ -1,14 +1,5 @@
 name: Hay prices
-
-# Writes data/hay/hay-prices.json for /hay-prices and stamps the newest month
-# into hay-prices.html: USDA NASS prices received for alfalfa, other and all
-# hay, $ per ton, monthly by state (Agricultural Prices, through Quick Stats).
-# Read by scripts/fetch_hay_prices.py. The page shows an empty state until the
-# file exists. A failed check writes nothing and fails the job.
-#
-# FIRST RUN: dispatch this once with "probe" ticked. It saves a trimmed copy of
-# what NASS returned and a summary to data/hay-raw/ and saves them on the raw branch (never deployed), so the
-# series names, units and counts can be checked before trusting a number.
+# Hay prices.
 
 on:
   workflow_dispatch:
@@ -18,19 +9,9 @@ on:
         type: boolean
         default: false
   schedule:
-    # Agricultural Prices comes out near the end of each month, 3 pm Eastern.
-    # Read the last days of the month and the first of the next; a run with
-    # nothing new changes nothing.
     - cron: '23 20 27-31 * *'
     - cron: '23 14 1,2 * *'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -39,7 +20,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -93,8 +73,6 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_hay_prices.py --probe
-      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
-      # Runs even when the probe step failed part way, so what it did capture is kept.
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
@@ -122,8 +100,6 @@ jobs:
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             cp -r /tmp/hp/. ./
-            # re-stamp the page on the fresh checkout rather than copying an
-            # older copy of it over whatever main has now
             [ -e data/hay/hay-prices.json ] && python scripts/fetch_hay_prices.py --stamp
             for f in $FILES hay-prices.html; do [ -e "$f" ] && git add "$f" || true; done
             if git diff --staged --quiet; then echo "No change."; exit 0; fi

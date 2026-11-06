@@ -106,6 +106,6 @@ test('the cattle-cash workflow runs the selftest before the fetch, passes the ke
   // the key env line sits in exactly two steps: this one and the hog probe (fx/hogprobe), never the cattle or hog fetch
   const keySteps = wf.split('\n      - name: ').slice(1).filter((st) => st.includes('MARS_API_KEY')).map((st) => st.split('\n')[0]);
   assert.deepEqual(keySteps, ['Hog probe (LM_HG201, LM_HG203, LM_PK602 by every route)', 'Fetch and write data/ethanol-bids.json (USDA MARS 3617, 3618)']);
-  assert.equal((wf.match(/MARS_API_KEY/g) || []).length, 5, 'the header comment and the two env lines only');
+  assert.equal((wf.match(/MARS_API_KEY/g) || []).length, 4, 'the env lines and the key reference only');
   assert.match(wf, /FILES="\$FILES data\/ethanol-bids\.json"/);
 });

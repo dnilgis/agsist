@@ -1,33 +1,8 @@
 name: Funds This Week (by hand)
+# Funds This Week (by hand).
 
-# "Funds this week": the short COT email to the readers on the worker's cot
-# list (scripts/send_cot_weekly.py). This file runs it BY HAND ONLY:
-#
-#   mode dry      (default) renders this week's email into the log with a
-#                 made-up reader and counts the list. Sends nothing.
-#   mode preview  one copy to Sig only (SIG_TEST_EMAILS, else SIG_TO), even
-#                 for an older report. No list mail, no flag read or set.
-#   mode send     the list, once per report: the cot:<as-of> flag is read
-#                 before and set after, and a report more than 3 days past
-#                 its release is refused.
-#
-# The weekly send rides on cot-release-watch.yml, right after it commits a
-# new report, and goes to the list only once the repo variable
-# FUNDS_WEEKLY_LIVE is 1. That covers the Monday releases after a federal
-# holiday without a cron of its own.
-#
-# NO SCHEDULE HERE: a new scheduled workflow needs Sig's OK first
-# (STANDING-DECISIONS, Oct 21). If he would rather have a fixed time than
-# the variable above, the proposed trigger is:
-#
 #   schedule:
 #     - cron: '13 21 * * 1,5'   # Mon and Fri 21:13 UTC: 5:13 PM EDT / 4:13 PM EST,
-#                               # after CFTC's 3:30 PM ET release and the data commit;
-#                               # Monday catches a holiday-delayed report, and the
-#                               # flag and the 3-day rule make a spare run a no-op
-#
-# with SEND set for the scheduled run. Secrets: the same as the
-# cot-release-watch send step, plus SIG_TO / SIG_TEST_EMAILS for a preview.
 
 on:
   workflow_dispatch:
@@ -41,8 +16,6 @@ on:
 permissions:
   contents: read
 
-# one queue with the COT data jobs, so a send never runs beside the run
-# that is committing the report (or beside the send that run makes)
 concurrency:
   group: fetch-cot
   cancel-in-progress: false
@@ -70,9 +43,6 @@ jobs:
           python scripts/send_cot_weekly.py --selftest
           python3 scripts/test_send_loops.py
 
-      # data/cot-deep.json is on the private raw branch (Nov 4). The sender
-      # reads it for the twenty-year lines and quietly drops them without it,
-      # so the unpack is a hard stop, not a warning.
       - name: Deep history from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -89,7 +59,7 @@ jobs:
           REPLY_TO:     ${{ secrets.REPLY_TO }}
           LIST_URL:     ${{ secrets.LIST_URL }}
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SIG_TO:       ${{ secrets.SIG_TO }}
           SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}

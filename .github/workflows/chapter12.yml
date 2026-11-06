@@ -1,20 +1,6 @@
 name: Chapter 12 filings
+# Chapter 12 filings.
 
-# Adds one new U.S. Courts Table F-2 period (Chapter 12 family farmer and
-# fisherman bankruptcy filings by district) to data/farm-stress/chapter12.json
-# and refreshes the Daily's dated Chapter 12 fact (data/daily-facts.json,
-# id ch12-latest). The Farmland Atlas state pages rebuild after this run
-# (farmland-atlas-pages.yml listens for it).
-#
-# BY HAND ONLY. U.S. Courts posts F-2 each quarter (12 months to Mar 31,
-# Jun 30, Sep 30, Dec 31). A schedule needs Sig's OK first (STANDING-DECISIONS,
-# Oct 21); until then:
-#   1. add the new PDF to references/sources.json as uscourts-f2-<year>-<mar|jun|sep|dec>
-#      (kind pdf, the uscourts.gov URL), merged to main;
-#   2. run this workflow with that id.
-# The run refuses to write anything when the table does not add up: every
-# district must sum to the table's own Total row, and each newer-layout row's
-# Total must equal chapters 9 + 12 + 15 + Other (scripts/build_chapter12.py).
 on:
   workflow_dispatch:
     inputs:

@@ -1,22 +1,5 @@
 name: Cattle cash prices
-
-# Writes data/cattle-cash.json for the cash block on cattle-futures-prices.html:
-# the boxed beef cutout (USDA AMS LM_XB403, each trading day) and the 5-area
-# weekly fed steer price (USDA AMS LM_CT150, weekly). Public AMS PDFs, read by
-# scripts/fetch_cattle_cash.py. The page shows nothing until this file exists.
-#
-# FIRST RUN: dispatch this once with "probe" ticked. It saves what AMS returned
-# to data/cattle-cash-raw/ and saves it on the raw branch (never deployed), so the real PDF layout can be checked
-# against the parser before trusting a number.
-#
-# Also (Nov 3, 2026, fx/marseth; no new schedule): data/ethanol-bids.json for the
-# "Ethanol plants paying" fold on /cash-bids, from USDA My Market News (MARS API)
-# reports 3617 (daily ethanol plant corn bids) and 3618 (weekly co-products), read
-# by scripts/fetch_ethanol_mars.py with the MARS_API_KEY secret. It rides this
-# job because the 21:43 UTC weekday run is after noon Central, when the daily
-# report (usually out 6:30 to 7:15 AM CT, a few days near noon) is in, and the
-# Monday runs pick up the weekly co-products report. Its step cannot fail the
-# cattle steps, and a failed MARS call leaves the last good file in place.
+# Cattle cash prices.
 
 on:
   workflow_dispatch:
@@ -34,16 +17,9 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '43 21 * * 1-5'   # after the PM cutout
-    - cron: '17 15 * * 1,2'   # the weekly 5-area report, early in the week
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: '43 21 * * 1-5'
+    - cron: '17 15 * * 1,2'
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -52,7 +28,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -119,8 +94,6 @@ jobs:
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: python scripts/fetch_cattle_cash.py --probe
-      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
-      # Runs even when the probe step failed part way, so what it did capture is kept.
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
@@ -130,13 +103,10 @@ jobs:
       - name: Fetch and write data/cattle-cash.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || inputs.hog_probe || inputs.ethanol_only)) }}
         run: python scripts/fetch_cattle_cash.py
-      # Cash hogs (LM_HG201, morning) and the pork cutout (LM_PK602, ~2:55 PM CT) are both out
-      # before the 21:43 UTC run; data/hog-cash.json carries a daily_line for the Daily.
       - name: Fetch and write data/hog-cash.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || inputs.hog_probe || inputs.ethanol_only)) }}
-        continue-on-error: true   # a hog failure never holds back the cattle file
+        continue-on-error: true
         run: python scripts/fetch_hog_cash.py
-      # selftest first: a failing selftest writes nothing; neither can stop the cattle commit
       - name: Fetch and write data/ethanol-bids.json (USDA MARS 3617, 3618)
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || inputs.hog_probe)) }}
         continue-on-error: true

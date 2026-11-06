@@ -2831,11 +2831,7 @@ def counts_doc(counts, ctx, root="."):
     except (OSError, ValueError):
         pass
     return {"schema": "agsist-elevator-counts/1", "generated": ctx["snap_iso"],
-            "note": ("bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they "
-                     "are in. coverage: boards read on the latest "
-                     "full coverage pass out of every elevator tracked (copied from "
-                     "data/elevator-coverage-counts.json). Different questions: a board can be read and have no "
-                     "current bid."),
+            "note": ('Elevators with a current bid on a cash bids page, and boards read on the latest coverage pass.'),
             "bids": {"elevators": sum(v["elevators"] for v in counts.values()),
                      "towns": sum(v["towns"] for v in counts.values())},
             "states": counts, "coverage": cov}
@@ -2857,16 +2853,7 @@ def basis_states_doc(summaries, ctx, elevators):
     pg = ctx.get("prev_generated")
     return {"schema": "agsist-basis-states/1", "generated": ctx["snap_iso"],
             "prev": pg.strftime("%Y-%m-%dT%H:%M:%SZ") if pg else None,
-            "method": ("Median basis (cash minus futures, $/bu) of AGSIST network elevators with a fresh bid, one "
-                       "bid per elevator at its nearest open delivery, against the futures month most of the "
-                       "state's elevators name. Unnamed months, misread boards and outliers (more than 5 robust "
-                       "standard deviations, and never less than 75 cents, from the median) are left out. "
-                       "n = locations behind the median; companies = how many companies run them (boards that "
-                       "share a name or a website count once, every CHS business counts as CHS). "
-                       "wow = median change of bids posted in both snapshots, in cents. scripts/basis_method.py. "
-                       "usda = USDA AMS's state daily cash grain average basis (data/state-grain-ams.json) on the "
-                       "same futures month, from a report not stale and dated this snapshot's day or up to 3 days "
-                       "before; line is the sentence the pages print."),
+            "method": ('Network basis by state, with the USDA AMS state average beside it where available. Counts and dates are in each entry.'),
             "min_n": BM.MIN_STAT, "states": states}
 
 

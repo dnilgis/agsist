@@ -1,21 +1,5 @@
 name: SEO weekly (index check + what to fix)
-
-# Two jobs in one run, both shown on /seo-report (noindex, in no sitemap):
-#
-#   scripts/gsc_index_check.py    asks the Search Console URL Inspection API
-#                                 about ~100 URLs (hub pages plus a rotating
-#                                 slice of each sitemap) and writes
-#                                 data/seo-index.json. Same secret and
-#                                 property as gsc-sitemaps.yml; without the
-#                                 secret it prints one notice and moves on.
-#   scripts/seo_opportunities.py  reads data/site-usage.json (site-usage.yml,
-#                                 monthly; on the private raw branch since
-#                                 Nov 4) and each page's current title and
-#                                 description, and writes
-#                                 data/seo-opportunities.json.
-#
-# Mondays 15:23 UTC, off the hour and after gsc-sitemaps.yml. Run it by hand
-# from the Actions tab any time.
+# SEO weekly (index check + what to fix).
 
 on:
   schedule:
@@ -53,8 +37,6 @@ jobs:
           python3 scripts/seo_opportunities.py --selftest
 
       - name: Index check (URL Inspection sample)
-        # A failed index check (bad key, no property) must not stop the
-        # to-do list below from being rebuilt. The step still shows red.
         continue-on-error: true
         env:
           GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
@@ -67,14 +49,12 @@ jobs:
         run: bash scripts/pull_raw.sh data/site-usage.json
 
       - name: What to fix
-        run: python3 scripts/seo_opportunities.py   # no --print: the Actions log is public
+        run: python3 scripts/seo_opportunities.py
 
       - name: Commit
         run: |
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
-          # one path per add: a missing seo-index.json (no secret yet) must
-          # not stop the other file from being staged
           for f in; do
             git add "$f" 2>/dev/null || true
           done

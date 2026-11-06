@@ -1,27 +1,5 @@
 name: Rebuild Call Scorecard
-
-# ── DISABLED 2026-10-03 ──────────────────────────────────────────────────
-# The old call scorecard is retired from the site. Its record
-# (data/scorecard.json) and scripts stay in the repo as an archive and are
-# no longer graded, rebuilt or shown. /scorecard is now the prediction
-# bot's page (predictions.yml). The job below is switched off with
-# `if: false` so a stray button press cannot rewrite the archive.
-# ─────────────────────────────────────────────────────────────────────────
-
-
-# Recompiles data/scorecard.json from the archive and re-bakes the numbers into
-# scorecard.html. Run it from the Actions tab after deploying the 2026-09-13
-# grading fix; after that the daily briefing keeps it current on its own and
-# this only needs running if the archive is ever backfilled.
-#
-# WHY A BUTTON. build_scorecard.py runs inside daily.yml, so before this the
-# only ways to rebuild the public record were to wait for the 6 AM run or to
-# regenerate the whole briefing. The record changed the moment the grading rule
-# was corrected, and it should not take a briefing regeneration to publish it.
-#
-# Reads only data/daily-archive/*.json, which the briefing owns and this never
-# writes. Idempotent: two runs in a row produce the same file and the second
-# commits nothing. No API keys.
+# Rebuild Call Scorecard.
 
 on:
   workflow_dispatch:
@@ -35,7 +13,7 @@ concurrency:
 
 jobs:
   rebuild:
-    if: false   # disabled 2026-10-03, see the note at the top
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -52,9 +30,6 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        # build_scorecard imports grade_calls, which imports contract_calendar.
-        # None of them need the network; requests/feedparser are here only
-        # because prerender_wpi_scorecard imports the generator module.
         run: pip install feedparser==6.0.14 requests==2.34.2
 
       - name: Prove the grading rule before rebuilding on it

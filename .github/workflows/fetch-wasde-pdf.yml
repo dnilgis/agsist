@@ -1,6 +1,6 @@
-# Download a WASDE report PDF from USDA and print its season-average price lines,
-# so the October projection can be read without waiting for search engines.
 name: fetch-wasde-pdf
+# fetch-wasde-pdf.
+
 on:
   workflow_dispatch:
     inputs:
@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # pinned and checksummed, without apt (the old apt line had no update and failed quietly)
       - name: pdftotext
         timeout-minutes: 5
         uses: ./.github/actions/pdftotext

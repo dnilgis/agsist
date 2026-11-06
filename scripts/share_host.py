@@ -222,8 +222,7 @@ def mark(folders, root=None, now=None):
     except Exception:
         doc = {}
     doc.setdefault("host", HOST)
-    doc.setdefault("note", "Written by .github/workflows/agsist-data-seed.yml (scripts/share_host.py mark) after "
-                   "the folder's copies answered. A listed folder's share images are served from the host.")
+    doc.setdefault("note", "A listed folder's share images are served from the host.")
     fs = doc.setdefault("folders", {})
     stamp = (now or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")
     for f in folders:

@@ -445,9 +445,7 @@ def main():
     }, separators=(",", ":")) + "\n", encoding="utf-8")
 
     OUT_NOW.write_text(json.dumps({
-        "_note": "Derived from data/rma-prices.json. 'open' = a discovery "
-                 "window containing today; 'next' = one opening within "
-                 f"{UPCOMING_DAYS} days. Price range is Conventional practice.",
+        "_note": 'Open and upcoming price discovery windows from the RMA prices file.',
         "updated": stamp, "as_of": today.isoformat(), "crop_year": year,
         "open": summarize(open_w), "next": summarize(next_w),
     }, indent=1) + "\n", encoding="utf-8")

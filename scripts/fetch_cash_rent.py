@@ -659,12 +659,7 @@ def emit_national():
         "n_pct_withheld": n_withheld,
         "pct_basis": basis_n,
         "pair_rule": PAIR_RULE,
-        "note": ("Ratio year varies by county: each county uses its own latest year in which rent, a county corn yield "
-                 "of the SAME practice, and state price received all exist. Rent (r) is the latest published "
-                 "non-irrigated cropland rent; irrigated (ri) and pasture (rp) are separate fields and never stand in "
-                 "for it. Non-irrigated rent is divided by the non-irrigated yield, irrigated "
-                 "rent by the irrigated yield; the all-practice yield only where NASS shows no irrigation in the "
-                 "county. Counties where the only yield mixes irrigated and dryland acres are withheld (pw = reason)."),
+        "note": ('Rent and yield from USDA NASS. A county is withheld where the source cannot support a ratio.'),
     }
     with open(os.path.join(OUTDIR, "national.json"), "w") as fh:
         json.dump(doc, fh, separators=(",", ":"))

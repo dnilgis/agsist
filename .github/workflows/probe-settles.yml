@@ -1,8 +1,6 @@
 name: probe-settles
+# probe-settles.
 
-# Diagnostic (2026-10-17). Asks CME's daily settlements endpoints from the
-# runner and prints what came back, as annotations. Reads only. Writes
-# nothing, commits nothing. See scripts/probe_settles.py.
 on:
   workflow_dispatch:
     inputs:

@@ -1,13 +1,5 @@
 name: Rebuild Archive HTML (one-time)
-
-# One-shot utility workflow. Re-renders every /daily/YYYY-MM-DD.html from its
-# archive JSON using the CURRENT generate_archive_html() template in
-# scripts/generate_daily.py. Run it manually (Actions tab -> this workflow ->
-# Run workflow) after deploying the v4.6.2 markdown-render fix. One run:
-#   - converts the raw **markdown** in every historical briefing to <strong>
-#   - backfills the GA4 tag on the 42 pre-tag archive pages (Mar 4 - Apr 23)
-# Idempotent and safe to re-run. After a successful run this workflow can be
-# deleted, or kept for future template upgrades.
+# Rebuild Archive HTML (one-time).
 
 on:
   workflow_dispatch:
@@ -37,9 +29,6 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        # rebuild_archive_html.py imports generate_daily.py at module level,
-        # which imports requests + feedparser. No API keys needed — the
-        # rebuild only calls the HTML template function, never the generator.
         run: pip install feedparser==6.0.14 requests==2.34.2
 
       - name: Rebuild all archive pages

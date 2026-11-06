@@ -1,21 +1,11 @@
 name: cond-yield
+# cond-yield.
 
-# Conditions-vs-final-yield honesty fits (/conditions#crop-size; was /conditions-yield). Weekly
-# Tuesdays in season, after Monday's Crop Progress lands (conditions.yml
-# runs 01:12 Tue; this at 03:18 so both see the same fresh week).
 on:
-  # 2026-10-16 audit: the nowcast stayed on the week ending Oct 4 after the
-  # Columbus Day report. The Tuesday fire ran before NASS released (Tuesday
-  # after a holiday), GitHub dropped the Wednesday catch-up fire, and a manual
-  # run raced conditions.yml and read last week's ratings file. Now it runs
-  # whenever its input (data/conditions/conditions.json) is on a newer week
-  # than data/yield-nowcast.json: right after conditions.yml finishes, and
-  # otherwise every two hours for five days (scripts/cron_gate.py behind),
-  # off the 15-minute "Fetch Grain Bids" runs. The crons stay as a fallback.
   schedule:
-    - cron: "18 3 * * 2"       # Tuesdays 03:18 UTC
-    - cron: "18 3 * * 3"       # Wednesdays 03:18 UTC (holiday week)
-    - cron: "18 15 * * 3,4"    # Wed-Thu 15:18 UTC (late Quick Stats)
+    - cron: "18 3 * * 2"
+    - cron: "18 3 * * 3"
+    - cron: "18 15 * * 3,4"
   workflow_run:
     workflows: ["conditions", "Fetch Grain Bids"]
     types: [completed]
@@ -25,9 +15,6 @@ permissions:
   contents: write
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -114,15 +101,7 @@ jobs:
         run: python scripts/build_yield_nowcast.py
       - name: Directional record (grade past WASDE, lock next)
         if: steps.window.outputs.go == '1'
-        # Grades any printed WASDE once benchmarks.usda carries the new number
-        # (entered on release day per the playbook), then locks the call for
-        # the next report from the nowcast it just built. Both idempotent.
         run: python scripts/nowcast_direction.py --grade --lock
-      # This job bakes live numbers into visible FAQ answers, so the FAQ's
-      # structured data has to be regenerated after it or Google is served the
-      # previous week's wording. Runs here as well as in freshness.yml so the
-      # markup is never stale in between. Idempotent; refuses rather than
-      # publishes a malformed question.
       - name: Bake FAQ structured data
         if: steps.window.outputs.go == '1'
         run: |
@@ -133,13 +112,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Rebuild the page from the fit it just wrote. Without this the
-          # ranked table, hero tiles, seed line, meta description and FAQ stay
-          # frozen at whatever week they were hand-written for, while the
-          # verdict module at the top reads the fresh JSON live — which is how
-          # the page ended up contradicting itself by three weeks.
           python3 scripts/build_condyield.py || true
-          # the model and record blocks at the top of the page are baked
           python3 scripts/bake_crop_size.py || true
           git add -A data/cond-yield data/yield-nowcast.json data/nowcast-direction.json 2>/dev/null || true
           git add conditions.html 2>/dev/null || true

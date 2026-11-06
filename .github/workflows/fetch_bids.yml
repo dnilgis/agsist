@@ -1,57 +1,8 @@
 name: Fetch Grain Bids
-
-# ONE JOB, TWO OUTPUTS, AND THE BIG FILE NEVER LANDS IN GIT.
-#
-# fetch_bids.py now writes two things:
-#   data/bids.json   SLIM  - what /corn-futures-prices and its two siblings
-#                            fetch in the browser. ~116 KB against 6.3 MB, and
-#                            the script proves on every run that the page picks
-#                            the same bid from it as from the full set.
-#   bids-full.json   FULL  - every row, gitignored, for the basis history and
-#                            the elevator directory steps below.
-#
-# Those steps therefore run HERE, in the same job, while the full file still
-# exists on the runner. (The national basis map that used to be built here was
-# retired 2026-10-10: every state basis now comes from scripts/basis_method.py
-# on the network data, in cash-bid-pages.yml.)
+# Fetch Grain Bids.
 
 on:
   schedule:
-    # OFF THE TOP OF THE HOUR. This asked for 22 fires a weekday and did not
-    # get them. data/bids.json carries a `fetched` timestamp that changes every
-    # run, so a commit is an exact run count, and measured 2026-08-19 to 08-26:
-    #
-    #   Wed 08-19  19 of 22   86%      Mon 08-24  15 of 22   68%
-    #   Thu 08-20  19 of 22   86%      Tue 08-25  16 of 22   73%
-    #   Fri 08-21  18 of 22   82%      Wed 08-26   9 of 22   41%
-    #
-    # On the 26th that left holes of 1h36m, 2h00m and 2h12m inside the trading
-    # session, under a page that says it refreshes every thirty minutes.
-    #
-    # `*/30` fires at :00 and :30, and :00 is the single most congested minute
-    # on this platform -- every cron on GitHub asks for it at once. The sibling
-    # repository learned the same lesson on `*/10` and wrote it down: "offsetting
-    # to :03 costs nothing and lands in a quieter queue".
-    #
-    # THIS IS THE CHEAP HALF OF THE FIX AND IT IS NOT THE WHOLE ONE. The real
-    # answer is the one poll.yml took on 2026-08-26: stop asking for a high
-    # frequency, take the hourly fire that reliably arrives, and read repeatedly
-    # inside it. That change has not yet been CONFIRMED working -- nobody has
-    # read a run log for it -- and applying an unverified pattern to the feed
-    # behind the customer-facing page would be building on it twice. Same
-    # spacing, quieter minutes, until poll.yml's loop is proven.
-    # 2026-09-26: EVERY FIFTEEN MINUTES, ROUND THE CLOCK, EVERY DAY. Sig: the
-    # Barchart pull is "nice to have in addition to our bids repo", and it is
-    # not to limit how often the site updates. The network moves overnight
-    # (Big River's board most of all) and weekends, and this file was 14 hours
-    # old by morning. The primary clock is cron-job.org on the same minutes;
-    # this GitHub cron is the fallback underneath it. :07 :22 :37 :52 stay off
-    # the :00 and :30 pile-ups.
-    # 2026-10-09: HOURLY FALLBACK. Over Oct 2-9 cron-job.org started 671 runs
-    # with no gap over 30 minutes; this cron asked for 672 and got 32. Its 96
-    # fires a day were a fifth of everything this repository asks GitHub's
-    # scheduler for, and they bought nothing the dispatch did not. One an hour
-    # keeps a floor under the page if cron-job.org goes down.
     - cron: '7 * * * *'
   workflow_dispatch:
     inputs:
@@ -79,34 +30,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # ONE FETCH PER HALF HOUR, HOWEVER MANY THINGS ASK FOR ONE.
-  #
-  # Since 2026-09-19 two schedulers start this workflow AT THE SAME MINUTES:
-  # its own cron above (:07 and :37, 11-21 UTC weekdays), which GitHub
-  # delivered 4 times of 22 on 2026-09-18, and cron-job.org on the same
-  # minutes. When both arrive, the
-  # concurrency group runs one and queues the other, and the queued one starts
-  # the moment the first has committed. This job reads when the last fetch
-  # landed and stops the run if it is under 10 minutes old -- which is only
-  # ever that second, duplicate run. The two schedulers together make one
-  # fetch per half hour, never two.
-  #
-  # 2026-09-26: THE RULE IS NOW 5 MINUTES, because the cadence is fifteen. With
-  # a fetch that takes several minutes, `fetched` (stamped when it FINISHES)
-  # leaves less than ten minutes before the next fire, and a 10-minute rule
-  # would have skipped every second legitimate run. A duplicate from the second
-  # scheduler arrives seconds to a minute or two after the first, well under 5.
-  #
-  # WHY 10 AND NOT 20, AND WHY THE SAME MINUTES (the reasoning at 30 minutes). `fetched` is stamped when the
-  # fetch FINISHES. With the schedulers 18 minutes apart and a 20-minute rule,
-  # a fetch taking 10 minutes would have made the NEXT legitimate half-hour
-  # run look fresh and skip it (found by the final reviewer, 2026-09-19). On the
-  # same minutes a duplicate is seconds-to-minutes old, and a real half-hour
-  # gap stays over 10 unless one fetch took 20 minutes.
-  #
-  # It checks out the branch tip, not the queued SHA: a run that waited in the
-  # concurrency group behind the previous fetch must see that fetch's commit.
-  # A missing or unreadable file means "fetch", never "skip".
   freshness:
     runs-on: ubuntu-latest
     timeout-minutes: 3
@@ -141,13 +64,8 @@ jobs:
 
   fetch-bids:
     needs: freshness
-    # !cancelled(): if the freshness job itself fails, fetch anyway -- a
-    # missing answer means "fetch", never "skip".
     if: ${{ !cancelled() && needs.freshness.outputs.skip != '1' }}
     runs-on: ubuntu-latest
-    # Was 10. Two hundred locations per ZIP is a lot more payload across 50
-    # ZIPs, and a run that dies on the clock looks exactly like one that died
-    # on an error. Headroom is cheaper than that ambiguity.
     timeout-minutes: 25
     steps:
       - name: Checkout
@@ -163,8 +81,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      # Offline, no API key, under a second. Cheap insurance against a parsing
-      # edit reaching the live feed.
       - name: Check fetch_bids
         run: python3 scripts/dev/quiet.py selftest-fetch-bids -- python scripts/fetch_bids.py --selftest
 
@@ -173,19 +89,10 @@ jobs:
           python3 scripts/dev/quiet.py selftest-bids-prev -- python scripts/build_bids_prev.py --selftest
           python3 scripts/dev/quiet.py selftest-elevator-contacts -- python scripts/build_elevator_contacts.py --selftest
 
-      # The feed is the AGSIST elevator network alone (the licensed second feed
-      # ended 2026-10-11 and its code is removed).
       - name: Fetch grain bids
         id: fetch
         run: python3 scripts/dev/quiet.py fetch-bids -- python scripts/fetch_bids.py
 
-      # THE IDS, EVERY RUN (2026-10-27, god's-eye panel build 1). data/ids/elevators.json was
-      # last built Oct 18, and by Oct 27 141 of its bids-repo ids had been folded away in the
-      # bids repo and 52 of 251 bids.json places had no id. Rebuilt here on every run, from
-      # the bids.json just written and the bids repo's directory: folded ids are retired into
-      # their survivor (recorded in elevator-ids.json, never reused). Parcels are left alone
-      # (they change with the land files, not the bids). A failure keeps the last ids and
-      # never costs the bids.
       - name: Rebuild the elevator ids
         continue-on-error: true
         env:
@@ -197,60 +104,25 @@ jobs:
             || { echo "::warning::ids: schedules not readable; the last ids stay"; exit 0; }
           python3 scripts/dev/quiet.py ids -- python scripts/build_ids.py --no-parcels --schedules "$s" \
             || { echo "::warning::ids not rebuilt this run; the last ids stay (the bids update is unaffected)"; exit 0; }
-          # the id-to-basis-history join is a pure function of elevators.json: rebuilt with it
           python3 scripts/dev/quiet.py basis-join -- python scripts/build_basis_join.py || echo "::warning::basis join not rebuilt this run"
           python3 scripts/dev/quiet.py join-report -- python scripts/join_report.py || true
 
-      # WAVE1-A: phone and facility type per state, for the homepage card's
-      # Call link and buyer tag, from the directory as it now stands. Only
-      # rewrites a shard that changed. Must never cost the run its prices.
       - name: Elevator contacts for the homepage card
         continue-on-error: true
         run: python3 scripts/dev/quiet.py elevator-contacts -- python scripts/build_elevator_contacts.py
 
-      # ALSO IN THIS JOB, AND FOR THE SAME REASON: the full set exists here and
-      # nowhere else. Slimming data/bids.json on 2026-08-19 was right -- a
-      # browser must not be sent 18,000 bids -- but it ended the per-elevator
-      # basis history that the old committed file had been keeping by accident.
-      # This keeps it deliberately and cheaply: the current basis, the one
-      # before it, and the day it moved. Roughly a hundred rows move on an
-      # ordinary day, so the daily record is small and the state shards delta
-      # to nearly nothing.
-      #
-      # A FAILURE HERE MUST NOT COST THE BIDS. The bids are
-      # already written by the time this runs, and a history that skips a day
-      # is a history with a gap; a run that aborts here would throw away a good
-      # bids.json as well. So it warns and carries on, and the gap is visible
-      # in data/basis/index.json's generated date.
       - name: Keep the basis history
         continue-on-error: true
         run: python3 scripts/dev/quiet.py basis-history -- python scripts/build_basis_history.py
 
-      # Reads the change-log build_basis_history.py just wrote (and every day
-      # before it) and re-derives one compact per-state sparkline file per
-      # facility/commodity/contract -- real change-points only, nothing
-      # interpolated. Same continue-on-error reasoning as the step above: a
-      # failure here must not cost the bids.
       - name: Rebuild basis sparklines
         continue-on-error: true
         run: python3 scripts/dev/quiet.py basis-sparklines -- python scripts/build_basis_sparklines.py
 
-      # WAVE1-A: THE NETWORK'S LAST PRICE ON EACH RECENT TRADING DAY, so the
-      # homepage can print a day's change. The browser reads the network's
-      # live index, which carries only "now"; this keeps a few days of it,
-      # per place, crop and delivery period, in data/bids-prev/<ST>.json.
-      # Weekends are not recorded. Same continue-on-error reasoning as the
-      # basis history: a failure here costs a day's change, never the bids.
       - name: Keep the network's last price per trading day
         continue-on-error: true
         run: python3 scripts/dev/quiet.py bids-prev -- python scripts/build_bids_prev.py
 
-      # 2026-10-17: the AGSIST Cash Bid Index keeps its month here. Each
-      # COMPLETE trading day in data/bids-prev not yet folded goes into
-      # data/cash-index/acc-YYYY-MM.json (per elevator: first and last day,
-      # count, sums). Usually a no-op; it reads the network index only when
-      # there is a new day. bids-prev keeps 4 trading days, so a few failed
-      # runs lose nothing. Never costs the bids their commit.
       - name: Fold the day into the Cash Bid Index month
         continue-on-error: true
         run: python3 scripts/dev/quiet.py cash-index-fold -- python scripts/cash_bid_index.py --fold
@@ -266,15 +138,10 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          # bids-full.json is gitignored. Adding it explicitly here would put
-          # 6 MB into every commit, which is the whole thing this avoids.
           git add data/bids.json data/basis data/basis-sparklines data/elevator-directory.json
-          # the ids rebuilt above (no parcel files: those are built with the land data)
           git add data/ids/elevators.json data/ids/elevator-ids.json data/ids/ambiguous.json data/ids/board-parents.json 2>/dev/null || true
           [ -d data/ids/basis-join ] && git add -A data/ids/basis-join || true
-          # The homepage counts line (scripts/fetch_bids.py STATS_PATH), same run as bids.json.
           [ -f data/bids-stats.json ] && git add data/bids-stats.json || true
-          # WAVE1-A: the day-change record and the contacts shards.
           [ -d data/bids-prev ] && git add -A data/bids-prev || true
           [ -d data/cash-index ] && git add -A data/cash-index || true
           [ -d data/elevator-contacts ] && git add -A data/elevator-contacts || true
@@ -283,23 +150,14 @@ jobs:
           git pull --rebase origin main
           git push
 
-      # THE SITE DEPLOY CLOCK (pages.yml, publish only the site). Every run,
-      # changed or not: this workflow is started every 15 minutes all week, and
-      # a push made with GITHUB_TOKEN by any other job starts no deploy, so this
-      # start is what carries every other bot commit to readers. pages.yml skips
-      # a commit that is deployed already. Off until PAGES_FROM_ACTIONS is 1.
       - name: Start the site deploy
         if: ${{ !cancelled() && github.event.inputs.dry_run != 'true' }}
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}   # the site deploy (.github/pages-kick.sh)
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}
         run: bash .github/pages-kick.sh
 
-      # The withheld-rows report (which rows were held back and why) is read by
-      # no page, so since Oct 20 it goes to the private repo (branch
-      # private-data), not main. fetch_bids.py writes it inside a try/except,
-      # so it can be missing; AFTER the commit, and never costs the bids.
       - name: Withheld rows to the private repo
         if: github.event.inputs.dry_run != 'true'
         continue-on-error: true
@@ -309,16 +167,6 @@ jobs:
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "bids withheld" private/data/bids-withheld.json
 
-      # 2026-10-19 (Sig, Bet 7): ONE FULL CASH BID SNAPSHOT A TRADING DAY, ON RAW.
-      # Cash prices leave main within days (only basis changes are kept), so
-      # the first run at or after 15:00 Central on a weekday (CBOT grains
-      # close 13:20 CT; boards post their after-close bids by then) saves
-      # every row of bids-full.json, compacted, to the raw branch:
-      # bids-daily/YYYY/YYYY-MM-DD.json.gz (never deployed). Later runs that
-      # day see the file on raw and skip; a failed push is retried by the next
-      # run. bid_snapshot=true takes it now and replaces the day's file.
-      # AFTER the commit, and every failure is a warning: this never costs
-      # the bids their update. Reader: scripts/bid_snapshots.py.
       - name: Daily bid snapshot to the raw branch
         if: github.event.inputs.dry_run != 'true'
         continue-on-error: true
@@ -332,7 +180,6 @@ jobs:
           [ "$NOW" = "true" ] && day=$(TZ=America/Chicago date +%F)
           [ -n "$day" ] || { echo "bid snapshot: not in the window (weekdays from 15:00 CT)"; exit 0; }
           f="bids-daily/${day:0:4}/${day}.json.gz"
-          # The raw branch is in the private repo (Oct 20); its key reads it.
           if [ "$NOW" != "true" ] && GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -X GET "repos/dnilgis/feedbag/contents/$f?ref=raw" --silent >/dev/null 2>&1; then
             echo "bid snapshot: $f is already on raw"; exit 0
           fi
@@ -341,13 +188,6 @@ jobs:
           bash scripts/push_raw.sh "bid snapshot $day" "$f" \
             || echo "::warning::bid snapshot for $day not saved to raw; the next run today retries (the bids update is unaffected)"
 
-      # 2026-10-29: FLAGS FOR BAD SNAPSHOT ROWS, ON RAW. The snapshots are never
-      # rewritten; scripts/bid_flags.py writes bids-daily-flags/YYYY/YYYY-MM-DD.csv
-      # beside each day (which rows fail the bidflags rules and why; header only
-      # when none do) for every snapshot day whose file is missing or differs, so
-      # the first run fills the history and later runs add the day. Readers skip
-      # a flagged row. Once a day (skips when the day's file is on raw), AFTER the
-      # snapshot, and every failure is a warning: never costs the bids.
       - name: Bid flags to the raw branch
         if: github.event.inputs.dry_run != 'true'
         continue-on-error: true
@@ -370,15 +210,6 @@ jobs:
           bash scripts/push_raw.sh "bid flags $day" bids-daily-flags \
             || echo "::warning::bid flags for $day not saved to raw; the next run today retries (the bids update is unaffected)"
 
-      # 2026-10-28: PRIVATE BASIS FORECAST LEDGER, ON RAW (never main, never the site;
-      # Sig decides when the record is shown). Once the day's snapshot is on raw,
-      # scripts/basis_ledger.py freezes that day's forecasts for every series (no
-      # change, state median + premium, P(move within 1/5/20 trading days), peer
-      # direction), replays the snapshots taken before the ledger existed (kept
-      # apart as "replay", at most BASIS_REPLAY_MAX days a run so the job stays
-      # short), regrades open calls and rewrites the private summary. One run a
-      # day: it skips once the day's live calls are on raw. AFTER the commit and
-      # the snapshot, and every failure is a warning: never costs the bids.
       - name: Basis forecast ledger to the raw branch
         if: github.event.inputs.dry_run != 'true'
         continue-on-error: true

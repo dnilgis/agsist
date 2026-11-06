@@ -52,8 +52,7 @@ def build(sources, cov):
             continue
         coops[cid] = {"town": town.strip(), "state": st, "lat": p[0], "lng": p[1]}
     return {
-        "note": "Town from the co-op's own site and the town points in data/elevator-coverage.json (a town centroid, not the co-op's street address). "
-                "Co-ops under unplaced have no town on file or no town point, so no distance is shown for them.",
+        "note": "Town from the co-op's own site. Co-ops under unplaced have no town on file, so no distance is shown for them.",
         "coops": coops,
         "unplaced": sorted(unplaced),
     }

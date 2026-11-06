@@ -1,16 +1,12 @@
 name: Build State Stats (USDA NASS)
+# Build State Stats (USDA NASS).
 
 on:
   push:
     paths:
       - "scripts/build_state_stats.py"
   schedule:
-    - cron: "33 12 15 * *"   # monthly, 15th 12:33 UTC (off :30) — picks up the Jan annual summary + NASS revisions
-  # CROP PRODUCTION DAYS. The October forecast printed Oct 9 and this file
-  # waited for the 15th. It chains off the WASDE watch (every 15 minutes) and
-  # the gate job lets a run through on a Crop Production release day, after
-  # the print, until the file carries that month's forecast, at most every two
-  # hours (scripts/build_state_stats.py --gate).
+    - cron: "33 12 15 * *"
   workflow_run:
     workflows: ["WASDE watch — grade the report as it lands"]
     types: [completed]
@@ -20,9 +16,6 @@ permissions:
   contents: write
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -110,9 +103,7 @@ jobs:
             git reset --hard "origin/$BR"
             cp /tmp/state-stats.json "$FILE"
             git add "$FILE"
-            # title, snippet, state line and JSON-LD dateModified from this file
             if python scripts/bake_seo.py --page usda-quick-stats.html; then git add usda-quick-stats.html; fi
-            # the yield-by-state share image reads this file (best effort)
             if python scripts/build_share_images.py --only usda-quick-stats; then git add usda-quick-stats.html img/og/usda-quick-stats.jpg; fi
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update state stats $(date -u +%Y-%m-%dT%H:%M:%SZ)"

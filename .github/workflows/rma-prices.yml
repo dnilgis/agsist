@@ -1,12 +1,5 @@
 name: RMA price discovery
-# Mirrors USDA RMA's own Price Discovery data service — the authoritative
-# record of projected and harvest price discovery for every insured crop,
-# type, practice and state, including the running average while a window is
-# open. Runs after the exchanges settle, seven days a week (RMA posts on the
-# business day, but a weekend run is cheap and self-corrects a missed day).
-#
-# The pull either succeeds with records or fails the run. It will not write a
-# partial file: if the service starts ignoring $skip, the script raises.
+# RMA price discovery.
 
 on:
   workflow_dispatch:
@@ -20,14 +13,7 @@ on:
         required: false
   schedule:
     - cron: '10 22 * * *'   # 22:10 UTC — after CBOT settlement, before midnight CT
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -36,7 +22,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -102,31 +87,11 @@ jobs:
           fi
           python3 scripts/fetch_rma_prices.py "${ARGS[@]}"
 
-      # WHAT IS IN DISCOVERY TODAY, ONTO THE TRACKER PAGE.
-      #
-      # This job already owns data/rma-prices.json and already runs every day,
-      # which is what the block needs: the number of days left in a window
-      # changes daily. On 2026-08-27 sixteen windows were open, three of them
-      # wheat, and the tracker's default view said "Corn and soybean harvest
-      # prices are set in October" because nothing baked anything else.
-      #
-      # IT WRITES ONE FILE AND IT IS NOT ONE THIS WORKFLOW SHARES BY ACCIDENT.
-      # harvest-prices.yml also commits harvest-price-tracker.html, so the two
-      # are scoped to disjoint marker pairs -- SEED:hpcards there, SEED:discovery
-      # here -- and each substitutes once. Proved locally with git status: the
-      # baker touches harvest-price-tracker.html and nothing else.
-      #
-      # continue-on-error for the same reason the COT bake is: the price data
-      # is the job, the page is the garnish, and a bake that cannot run must
-      # not stop RMA's figures from committing.
       - name: Bake "in discovery right now" onto the tracker
         if: ${{ inputs.probe != true }}
         continue-on-error: true
         run: python3 scripts/bake_discovery_now.py
 
-      # The tracker loads a 30 KB index first and one state's rows when the
-      # reader picks a state (data/rma-prices/, 2026-10-16), not the whole
-      # 430 KB mirror. Cut from the file just written, rows verbatim.
       - name: Split the mirror per state for the tracker
         if: ${{ inputs.probe != true }}
         run: |
