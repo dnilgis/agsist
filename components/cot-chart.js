@@ -88,11 +88,16 @@
     var cxc = cxA && cxA.commodities && cxA.commodities[key];
     /* the price strip: every week priced and repaired, and not withheld */
     var reason = (cxc && cxc.price_withheld_reason) || '';
-    var every = rows.every(function (r) { return r.raw !== null && r.adj !== null; });
-    var price = !reason && every && last.adj > 0;
+    /* release day: the newest 1-2 weeks can lack the repaired index; the line stops at the last repaired week */
+    var tail = 0;
+    while (tail < 2 && tail < rows.length - 1 && rows[rows.length - 1 - tail].adj === null && rows[rows.length - 1 - tail].raw !== null) tail++;
+    var head = rows.slice(0, rows.length - tail);
+    var every = head.every(function (r) { return r.raw !== null && r.adj !== null; });
+    var pLast = head[head.length - 1];
+    var price = !reason && every && pLast && pLast.adj > 0;
     if (price) {
-      var k = last.raw / last.adj;   /* the repaired index scaled so its last point is the last close */
-      rows.forEach(function (r) { r.price = Math.round(r.adj * k * 100) / 100; });
+      var k = pLast.raw / pLast.adj;   /* the repaired index scaled so its last point is that week's close */
+      rows.forEach(function (r, i) { r.price = i < head.length ? Math.round(r.adj * k * 100) / 100 : null; });
     }
     var priceWhy = price ? '' : /roll/.test(reason) || key === 'leanhogs'
       ? 'No price line: the price series still jumps where one contract rolls to the next, so it is left out.'
@@ -104,7 +109,7 @@
       + (price ? ' Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.' : '');
     var h = aligned && G.brief(key, cot, cx), an = aligned && G.answer(key, cot, cx);
     return { key: key, name: CHIP[key] || key, rows: rows, last: last, hi: hi, lo: lo, price: price, priceWhy: priceWhy,
-      headline: h ? h.text : null, headlineHtml: h ? h.html : null, aligned: aligned, answer: an ? an.did : null,
+      pLast: price ? pLast : null, headline: h ? h.text : null, headlineHtml: h ? h.html : null, aligned: aligned, answer: an ? an.did : null,
       asOf: 'Positions as of ' + mdy(last.date) + (rel ? ', released ' + md(rel) : ''), src: src };
   }
 
@@ -222,14 +227,16 @@
     var pT = netB + gap, pB = pT + priceH - 4;
     items.push({ t: 'line', pts: [[L, pT - gap / 2], [w - R, pT - gap / 2]], ink: 'grid', width: 1 });
     if (m.price) {
-      var ps = m.rows.map(function (r) { return r.price; });
+      var ps = m.rows.map(function (r) { return r.price; }).filter(function (v) { return v !== null; });
       var pl = Math.min.apply(null, ps), ph = Math.max.apply(null, ps), pp = (ph - pl) * 0.08 || 1;
       pl -= pp; ph += pp;
-      var ppts = m.rows.map(function (r, i) { return [X(i), pB - ((r.price - pl) / (ph - pl)) * (pB - pT - fs)]; });
+      var ppts = [];
+      m.rows.forEach(function (r, i) { if (r.price !== null) ppts.push([X(i), pB - ((r.price - pl) / (ph - pl)) * (pB - pT - fs)]); });
+      var pli = ppts.length - 1, short = pli < li;
       items.push({ t: 'line', pts: ppts, ink: 'price', width: o.big ? 2.5 : 1.5 });
-      items.push({ t: 'dot', x: ppts[li][0], y: ppts[li][1], r: o.big ? 5 : 3.5, ink: 'price', ring: 'surface' });
+      items.push({ t: 'dot', x: ppts[pli][0], y: ppts[pli][1], r: o.big ? 5 : 3.5, ink: 'price', ring: 'surface' });
       items.push({ t: 'text', x: L - 6, y: pT + (pB - pT) / 2, s: 'Price', ink: 'muted', size: fs, weight: 600, align: 'right', base: 'middle' });
-      items.push({ t: 'text', x: w - R, y: pT - 2, s: px(m.key, m.last.raw), ink: 'muted', size: fs, weight: 600, align: 'right', base: 'top' });
+      items.push({ t: 'text', x: w - R, y: pT - 2, s: px(m.key, (m.pLast || m.last).raw) + (short && m.pLast ? ' (' + md(m.pLast.date) + ')' : ''), ink: 'muted', size: fs, weight: 600, align: 'right', base: 'top' });
     } else {
       items.push({ t: 'text', x: L, y: pT + (pB - pT) / 2, s: m.priceWhy, ink: 'muted', size: fs, align: 'left', base: 'middle', wrap: w - L - R });
     }
