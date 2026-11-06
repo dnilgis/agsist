@@ -1203,6 +1203,10 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
                   **{k: v for k, v in (vint.get(name) or {}).items() if k not in ("absent_means_none", "stats", "files", "parse_stats")}}
            for name in P2_LAYERS},
         "wells_states": {"status": "ok" if raw.get("wells_states") else "not yet measured", **(vint.get("wells_states") or {})},
+        # recorded farmland sales (Nov 5, 2026): the map reads the land data's own file, rebuilt with every land
+        # data run (build_land_summary.py), so this entry only names it; the states and windows are in that file
+        "sales": {"status": "ok" if os.path.exists(SALES_LAYER) else "not yet measured", "side": "/data/land/atlas-layer.json",
+                  "source": "State farmland transfer records (recorded market sales), last 12 months of each state's records"},
         "wells": {"status": "ok" if raw["wells"] else "not yet measured",
                   "source": "Nebraska DNR registered wells; Kansas DWR WIMAS points of diversion (other states: no open register read yet)",
                   **(vint.get("wells") or {})},
@@ -1487,6 +1491,9 @@ def load_neighbors(path="data/atlas/neighbors.json"):
 
 
 RTV_MIN_CROPLAND = 0.5     # cropland share of land in farms before rent / value is printed
+
+
+SALES_LAYER = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "land", "atlas-layer.json")
 
 
 def load_land_in_farms(path="data/tenure/tenure.json"):
