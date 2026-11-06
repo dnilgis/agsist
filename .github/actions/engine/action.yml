@@ -55,12 +55,29 @@ runs:
         path: .engine-src
         persist-credentials: false
 
+    - id: behind
+      if: steps.plan.outputs.private == 'true' && steps.checkout.outcome == 'success' && github.event_name == 'push' && github.ref_name == 'main'
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: bash "$GITHUB_ACTION_PATH/engine.sh" behind .engine-src
+
+    - id: recheckout
+      if: steps.behind.outputs.retry == 'true'
+      continue-on-error: true
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      with:
+        repository: ${{ steps.plan.outputs.repo }}
+        ref: ${{ steps.plan.outputs.ref }}
+        token: ${{ inputs.token }}
+        path: .engine-src
+        persist-credentials: false
+
     - id: overlay
       if: steps.plan.outputs.private == 'true'
       shell: bash
       working-directory: ${{ github.workspace }}
       env:
-        CHECKOUT_OUTCOME: ${{ steps.checkout.outcome }}
+        CHECKOUT_OUTCOME: ${{ steps.recheckout.outcome == 'failure' && 'failure' || steps.checkout.outcome }}
         PAIRED_OUTCOME: ${{ steps.paired.outcome }}
         PAIRED: ${{ steps.plan.outputs.paired }}
         RUN_BRANCH: ${{ github.event_name != 'pull_request_target' && (github.head_ref || github.ref_name) || '' }}

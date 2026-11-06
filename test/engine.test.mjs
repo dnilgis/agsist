@@ -147,18 +147,18 @@ test('the action: pinned checkout, key not left on disk, a failed checkout reach
   assert.match(a, /uses: actions\/checkout@[0-9a-f]{40}/);
   assert.match(a, /persist-credentials: false/);
   assert.match(a, /continue-on-error: true/);
-  assert.match(a, /CHECKOUT_OUTCOME: \$\{\{ steps\.checkout\.outcome \}\}/);
+  assert.match(a, /CHECKOUT_OUTCOME: \$\{\{ steps\.recheckout\.outcome == 'failure' && 'failure' \|\| steps\.checkout\.outcome \}\}/);
   assert.match(a, /HAVE_TOKEN: \$\{\{ inputs\.token != '' \}\}/);
   // the key goes to the two checkouts (the run's same-named engine branch, then the default) and the
   // yes/no check, nowhere else; each checkout that takes it leaves no credentials behind
-  assert.equal((a.match(/inputs\.token/g) || []).length, 3, 'the key goes to the checkouts and the yes/no check, nowhere else');
+  assert.equal((a.match(/inputs\.token/g) || []).length, 4, 'the key goes to the three checkouts and the yes/no check, nowhere else');
   const steps = a.split(/\n(?=    - id: )/).slice(1);
   for (const st of steps.filter((x) => /inputs\.token/.test(x) && !/HAVE_TOKEN/.test(x))) {
     assert.match(st, /uses: actions\/checkout@[0-9a-f]{40}/, 'only a checkout step takes the key');
     assert.match(st, /persist-credentials: false/, 'a checkout that takes the key leaves it off disk');
     assert.equal((st.match(/inputs\.token/g) || []).length, 1);
   }
-  assert.equal(steps.filter((x) => /inputs\.token/.test(x)).length, 3);
+  assert.equal(steps.filter((x) => /inputs\.token/.test(x)).length, 4);
   const sh = read('.github/actions/engine/engine.sh');
   assert.doesNotMatch(sh, /\$\{?(PRIVATE_REPO_TOKEN|INPUT_TOKEN|TOKEN)\b/, 'engine.sh never reads the key');
   const conf = read('.github/engine-paths');
@@ -389,7 +389,9 @@ test('plan: a run on fx/x tries the same-named engine branch first; main, the de
 test('the action: with ENGINE_MODE unset every engine step is skipped; the default checkout runs only when no paired branch was checked out', () => {
   const a = read('.github/actions/engine/action.yml');
   const steps = Object.fromEntries(a.split(/\n(?=    - id: )/).slice(1).map((x) => [x.match(/- id: (\w+)/)[1], x]));
-  assert.deepEqual(Object.keys(steps), ['plan', 'paired', 'checkout', 'overlay']);
+  assert.deepEqual(Object.keys(steps), ['plan', 'paired', 'checkout', 'behind', 'recheckout', 'overlay']);
+  assert.match(steps.behind, /if: steps\.plan\.outputs\.private == 'true'/, 'behind runs only in private mode');
+  assert.match(steps.recheckout, /if: steps\.behind\.outputs\.retry == 'true'/, 'the second checkout runs only after behind asked for it');
   for (const k of ['paired', 'checkout', 'overlay']) assert.match(steps[k], /if: steps\.plan\.outputs\.private == 'true'/, `${k} runs only in private mode`);
   assert.match(steps.paired, /if: .*steps\.plan\.outputs\.paired != ''/);
   assert.match(steps.paired, /ref: \$\{\{ steps\.plan\.outputs\.paired \}\}/);
