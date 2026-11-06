@@ -130,7 +130,9 @@ test("spray, urea, conditions, cot, scout, pod counts: corrected wording", () =>
   const all = JSON.stringify(cot);
   assert.ok(!/that is the 90th percentile \([^)]*not crowded\)/.test(all), "a not-crowded 89.8 is not printed as the 90th");
   assert.ok(!read("cot.html").includes("routinely 20 to 50 cents"));
-  assert.match(read("components/cot-market.js"), /ord\(pShown\(p, c\.crowded\)\)/);
+  // the panel's rank is in words since Nov 6, through the same clamp (cot_analysis.shown_pct)
+  assert.match(read("components/cot-market.js"), /words\(c, pShown\)/);
+  assert.ok(!/higher than 90% of weeks since \d{4}[^.]*not crowded/.test(all), "a not-crowded 89.8 is not printed as 90%");
   assert.match(read("field-scout.html"), /often 10 to 30 bushels an acre versus rotated corn/);
   assert.match(read("crop-tour.html"), /pooled it is a little over &plusmn;8/);
   assert.ok(2.056 * 3.95 > 8, "pooled band 8.12");

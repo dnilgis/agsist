@@ -151,7 +151,7 @@ test("cot.html: the bar is the first thing in main, above the chart, with the ne
   assert.ok(HTML.includes("Next report: " + words), "the baked answer line names it too");
   assert.doesNotMatch(HTML, /id="cot-countdown"/, "the old countdown in the fold is gone");
   assert.match(HTML, /<a class="cot-rel-a" id="cot-rel-a" href="#cot-signup">Get it in your inbox/);
-  assert.match(HTML, /<div id="cot-signup" data-signup-ask=/);
+  assert.match(HTML, /<div data-signup-ask="[^"]*" data-topic="cot"[^>]* id="cot-signup"><\/div>/);
   assert.match(HTML, /\.cot-rel-a\{[^}]*min-height:44px/);
   assert.match(HTML, /<span class="sr-only" id="cot-rel-live" aria-live="polite"><\/span>/);
   assert.doesNotMatch(HTML.match(/<span class="cot-rel-t"[^>]*>/)[0], /aria-live|role=/);
