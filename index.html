@@ -16,7 +16,7 @@
   <script src="/components/price-local.js?v=10"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=3">
-<link rel="stylesheet" href="/css/home.css?v=37">
+<link rel="stylesheet" href="/css/home.css?v=38">
 <script src="/components/sponsor-ad.js?v=2" defer></script>
   <script src="/components/util.js?v=20"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
@@ -340,6 +340,18 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 --><!--SEED:hp:fs-s--><span class="hb-l"><span class="hb-n hb-chg up"><span aria-hidden="true">▲ </span><span class="visually-hidden">up </span>+2 1/2¢</span></span><span class="hb-l hb-age">Overnight trade Nov 6, 7:31 a.m. CT</span><!--/SEED--><!--
 --></span>
       </a>
+      <!-- 2026-11-06 (Sig: "a happening today block, for example a link to the COT and some kind of teaser to get people
+           interested, important releases people should be made aware of"): the next release with a countdown and one
+           line from our own last numbers, then up to two more this week (components/happening.js). The rows are baked
+           by scripts/seed_static.py happening_seed (day and time as text without script); css/home.css holds their room.
+           #hap-say speaks only when a row changes state, never the minute. -->
+      <div class="hap" id="hap" role="group" aria-labelledby="hap-h">
+        <h3 class="hap-h" id="hap-h">Today and this week</h3>
+        <ol class="hap-list" id="hap-list"><!--
+--><!--SEED:hp:hap--><li class="hap-i hap-top" data-state="next"><a class="hap-a" href="/cot" data-track="happening"><span class="hap-t">Funds report (COT)</span><span class="hap-w"><span class="hap-wt">Fri Nov 6, 3:30 PM ET</span><span class="hap-cd"></span></span><span class="hap-x"></span></a></li><li class="hap-i" data-state="next"><a class="hap-a" href="/conditions" data-track="happening"><span class="hap-w">Mon Nov 9, 4:00 PM ET</span><span class="hap-t">Crop Progress</span></a></li><li class="hap-i" data-state="next"><a class="hap-a" href="/usda-calendar" data-track="happening"><span class="hap-w">Tue Nov 10, 12:00 PM ET</span><span class="hap-t">WASDE and Crop Production</span></a></li><!--/SEED--><!--
+--></ol>
+        <span class="visually-hidden" id="hap-say" role="status" aria-live="polite"></span>
+      </div>
     </div>
     <p class="pl-line" data-state-bid="corn soybeans" hidden></p>
     <div id="hb-ask" data-signup-ask="Get your top local bid by email every morning" data-source="hero" data-variant="hero"></div>
@@ -1725,6 +1737,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/cot-glance.js?v=2"></script>
 <script src="/components/home.js?v=24"></script>
 <script src="/components/home-land.js?v=1" defer></script>
+<script src="/components/happening.js?v=1" defer></script>
 <script src="/components/home-planting.js?v=6" defer></script>
 <script src="/components/home-season.js?v=10" defer></script>
 <script src="/components/season-wx.js?v=1" defer></script>
