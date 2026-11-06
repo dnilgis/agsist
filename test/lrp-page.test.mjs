@@ -307,7 +307,8 @@ test("fed cattle 95 to 100% reads as a clear no, and the closest call says why i
   assert.equal(L.verdict(t), `No: lost money in ${t.years_tested - t.years_positive} of ${t.years_tested} years`);
   assert.match(RECORD, /lost less on average because it covered less/);
   assert.match(RECORD, /came in above RMA&rsquo;s expected ending value in \d+ of \d+ insurance years/);
-  assert.match(RECORD, /Even counting only the 12 tests/);
+  // the count grows as RMA years are added (12 on Nov 5, 13 after the Nov 6 data run): read it, never pin it
+  assert.match(RECORD, /Even counting only the \d+ tests that ask whether a lower level beat 95 to 100% since 2013/);
 });
 
 test("the offers are dated with weekdays, a static summary is baked for crawlers, and closed is re-checked", () => {
