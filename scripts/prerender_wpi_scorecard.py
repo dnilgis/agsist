@@ -972,7 +972,7 @@ def _clock_et(hhmm):
 
 
 def cot_next_words(d):
-    """'Friday Nov 6, 3:30 PM ET' (and ' (moved from Friday)' on a holiday week), from
+    """'Friday Nov 6, 3:30 PM ET' (and ' (holiday week)' when moved off Friday), from
     cot.json next_release (cot_calendar.release_date). The JS-off text of the release
     bar and the answer line; the live page says 'today' and counts down
     (components/cot-glance.js release()). Never depends on the clock, so
@@ -981,13 +981,13 @@ def cot_next_words(d):
         nd = datetime.strptime(d.get("next_release") or "", "%Y-%m-%d").date()
     except ValueError:
         return ""
-    mv = " (moved from Friday)" if nd.weekday() != 4 else ""
+    mv = " (holiday week)" if nd.weekday() != 4 else ""
     return f"{_DAYS[nd.weekday()]} {_MON3[nd.month - 1]} {nd.day}, {_clock_et(d.get('next_release_time_et'))}{mv}"
 
 
 def cot_release_html(d):
     w = cot_next_words(d)
-    return f"Next CFTC report: {esc(w)}" if w else "CFTC releases the report Fridays at 3:30 PM ET"
+    return f"Next report: {esc(w)}" if w else "CFTC releases the report Fridays at 3:30 PM ET"
 
 
 def cot_answer(d, cx, key="corn"):

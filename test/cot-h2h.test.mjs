@@ -82,7 +82,9 @@ test("The Read: corn, then soybeans, then the week's newsworthy market", () => {
   assert.equal(c.long - c.short, c.net, "corn net is long minus short");
   const f = (n) => n.toLocaleString("en-US"), d = c.net - c.prev;
   const side = c.net >= 0 ? "long" : "short";
-  if (d !== 0) assert.ok(h.includes(`funds are net ${side} ${f(Math.abs(c.net))} contracts, ${f(Math.abs(d))} ${d < 0 ? "fewer" : "more"} than last week`),
+  // inside the flat band the line says so first ("funds are close to flat, net long 8,795 contracts, ...", Nov 3 2026)
+  if (d !== 0) assert.ok([`funds are net ${side} `, `funds are close to flat, net ${side} `].some((lead) =>
+      h.includes(`${lead}${f(Math.abs(c.net))} contracts, ${f(Math.abs(d))} ${d < 0 ? "fewer" : "more"} than last week`)),
     `corn line: net ${c.net}, prev ${c.prev}`);
 });
 

@@ -274,7 +274,7 @@
     var nr = cot && cot.next_release, hm = (cot && cot.next_release_time_et) || '15:30';
     if (!/^\d{4}-\d{2}-\d{2}$/.test(nr || '')) return { state: 'none', text: '', next: '' };
     var due = etInstant(nr, hm), nd = day(nr), moved = nd.getDay() !== 5;
-    var w = when(nr, hm, now), mv = moved ? ' (moved from Friday)' : '';
+    var w = when(nr, hm, now), mv = moved ? ' (holiday week)' : '';
     var inbox = 'Get it in your inbox ' + DAY[nd.getDay()];
     var rel = loadedRelease(cot, cx), rd = day(cot.report_date);
     if (now >= due) {

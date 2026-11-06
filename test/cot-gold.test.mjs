@@ -104,7 +104,7 @@ print(p.cot_answer(d, cx)); print(p.cot_release_html(d)); print(p.cot_answer(d, 
   assert.equal(r.status, 0, r.stderr);
   const [baked, bar, hogs] = r.stdout.trim().split("\n");
   assert.equal(baked, a.text);
-  assert.equal(bar, "Next CFTC report: Friday Nov 6, 3:30 PM ET"); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
+  assert.equal(bar, "Next report: Friday Nov 6, 3:30 PM ET"); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
   assert.equal(hogs, G.answer("leanhogs", FX.cot, FX.cx, before).text);
 });
 
@@ -136,7 +136,7 @@ test("the release bar: countdown, out and updating, late, updated today, and a h
   // a holiday week (cot_calendar.release_date moves it to the Monday)
   const hol = { ...FX.cot, next_release: "2026-11-30" }; // pin-ok: a made-up holiday Monday, not live data
   const h = G.release(hol, FX.cx, G.etInstant("2026-11-25", "12:00")); // pin-ok
-  assert.equal(h.text, "New report in 5 d 3 h · Monday 3:30 PM ET (moved from Friday)");
+  assert.equal(h.text, "New report in 5 d 3 h · Monday 3:30 PM ET (holiday week)");
   assert.equal(h.inbox, "Get it in your inbox Monday");
   assert.equal(G.release({ ...FX.cot, next_release: "" }, null, Date.now()).state, "none");
 });
@@ -147,7 +147,7 @@ test("cot.html: the bar is the first thing in main, above the chart, with the ne
   const nr = LIVE.cot.next_release, d = new Date(nr + "T12:00:00");
   const words = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][d.getDay()] + " "
     + ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()] + " " + d.getDate() + ", 3:30 PM ET";
-  assert.ok(HTML.includes("<!-- PRERENDER:cot-release -->Next CFTC report: " + words), "the baked bar names " + words);
+  assert.ok(HTML.includes("<!-- PRERENDER:cot-release -->Next report: " + words), "the baked bar names " + words);
   assert.ok(HTML.includes("Next report: " + words), "the baked answer line names it too");
   assert.doesNotMatch(HTML, /id="cot-countdown"/, "the old countdown in the fold is gone");
   assert.match(HTML, /<a class="cot-rel-a" id="cot-rel-a" href="#cot-signup">Get it in your inbox/);
@@ -235,7 +235,7 @@ test("390 px: the bar and the answer line are on the first screen, scripts on an
     // scripts off: the baked bar and answer line, both on the first screen
     const off = await open(browser, port, "/cot", { js: false });
     const b2 = await box(off, "cot-rel"), a2 = await box(off, "cc-answer");
-    assert.match(b2.text, /^Next CFTC report: \w+day \w{3} \d{1,2}, 3:30 PM ET/);
+    assert.match(b2.text, /^Next report: \w+day \w{3} \d{1,2}, 3:30 PM ET/);
     assert.match(a2.text, /^Managed money .* Next report: \w+day \w{3} \d{1,2}, 3:30 PM ET/);
     assert.ok(a2.bottom <= 844, "scripts off, the answer line ends on the first screen: " + a2.bottom);
     await off.context().close();
