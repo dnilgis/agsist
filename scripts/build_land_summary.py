@@ -69,6 +69,8 @@ import math
 import os
 import re
 import sys
+try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
+except ImportError: pass
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LAND = os.path.join(ROOT, "data", "land")
@@ -135,6 +137,25 @@ SOURCES = {
            "url": None,
            "kinds": "agricultural land use codes 50 to 69, timberland included"},
 }
+
+# States whose land-sales pages already apply this same market-sale rule (build_land_sales.py reads them through
+# build_state) and whose summaries feed the Atlas map layer (Nov 5, 2026: "present all the data we have"). They are
+# kept out of SOURCES above until their Atlas county-page blocks are turned on (build_atlas_pages.has_sales and
+# components/atlas-sales.js read SOURCES); the summary and the map row use the one rule either way.
+MAP_SOURCES = dict(SOURCES, **{
+    "IN": {"record": "Indiana sales disclosure forms",
+           "who": "Indiana Department of Local Government Finance",
+           "url": None,
+           "kinds": "farm parcels (agricultural property classes)"},
+    "NJ": {"record": "New Jersey SR-1A deed abstracts with the MOD-IV assessment list",
+           "who": "New Jersey Division of Taxation",
+           "url": None,
+           "kinds": "farm lots (classes 3A and 3B)"},
+    "VT": {"record": "Vermont property transfer tax returns (Form PTT-172)",
+           "who": "Vermont Department of Taxes",
+           "url": None,
+           "kinds": "operating farm, timberland and open land in current use"},
+})
 
 
 def num(v):
@@ -490,6 +511,8 @@ def county_summary(f, W, today):
     out["k12p"] = len(big(prev)) if out["n12p"] is not None else None
     if s:
         out["med"] = s
+    if cur:
+        out["m12"] = layer_median(cur, f.get("dates") == "month")
     if sp and out["n12p"] is not None:
         out["medp"] = sp
     out["u12"] = sum(1 for r in cur if r.get("acUnsure"))
@@ -527,6 +550,95 @@ def county_summary(f, W, today):
     return out
 
 
+def layer_sales(cur, month_dates=False):
+    """The window's market sales for the Atlas map layer, with one more merge than the shared rule makes: several
+    parcels of one county sold the same day for the same price are one sale (Indiana files one disclosure per parcel,
+    each with the whole price: Nov 5, 2026, Blackford County read 3 parcels of one $2.7M sale as 3 sales at up to
+    $75,339 an acre). The merged sale has the parcels' total acres when every one is known, else no $/acre; its kind
+    is bare farm land only when no parcel has buildings or is forest. Month-dated files (Florida) are left alone: two sales in one month at
+    one price can be two sales, and Florida's extract already joins the parcels of one deed."""
+    if month_dates:
+        return list(cur)
+    groups, order = {}, []
+    for r in cur:
+        p = num(r.get("price"))
+        k = (str(r.get("date") or "")[:10], js_round(p * 100)) if p else None
+        if k is None:
+            order.append([r])
+            continue
+        if k not in groups:
+            groups[k] = []
+            order.append(groups[k])
+        groups[k].append(r)
+    out = []
+    for g in order:
+        if len(g) == 1:
+            out.append(g[0])
+            continue
+        acs = [num(x.get("acres")) for x in g]
+        known = all(a is not None and a > 0 and not x.get("acUnsure") for a, x in zip(acs, g))
+        o = dict(g[0])
+        o["acres"] = round(sum(acs), 2) if known else None
+        o["ppa"] = per_acre(num(o["price"]), o["acres"]) if known else None
+        o["merged"] = len(g)
+        o["bare"] = known and all(land_type(x) in ("farm", "small") for x in g)   # small is a size, not a kind: no buildings, no forest
+        out.append(o)
+    return out
+
+
+def layer_median(cur, month_dates=False):
+    """The Atlas map's recorded-sales layer (Sig, Nov 5, 2026): every county with a sale is shown, no minimum count;
+    the count goes beside the figure instead. c: market sales in the window (layer_sales). Bare farm land of
+    MIN_ACRES or more first; a county with none uses its market sales of MIN_ACRES or more of any kind (buildings or
+    forest included), and says so ("set": "any"). Smaller sales never price farmland here. d: the first and last sale
+    date in the set."""
+    rows = layer_sales(cur, month_dates)
+    out = {"c": len(rows)}
+    big = lambda r: stat_ok(r) and (num(r.get("acres")) or 0) >= MIN_ACRES
+    bare = lambda r: big(r) and (r["bare"] if r.get("merged") else land_type(r) == "farm")
+    for name, pick in (("bare", [r for r in rows if bare(r)]), ("any", [r for r in rows if big(r)])):
+        if pick:
+            v = sorted(r["ppa"] for r in pick)
+            ds = sorted(str(r["date"])[:10] for r in pick)
+            out.update({"med": js_round(quantile(v, 0.5)), "n": len(v), "set": name, "d": [ds[0], ds[-1]]})
+            break
+    return out
+
+
+LAYER_PATH = os.path.join(LAND, "atlas-layer.json")
+LAYER_SET = {"bare": 1, "any": 2}
+
+
+def build_layer(land=None):
+    """data/land/atlas-layer.json, the Atlas map's recorded-sales layer, from the state summaries on disk (one small
+    file, so the map reads one file, not one per state). Per county: [median $/acre or null, sales in that median,
+    1 bare land or 2 any 20+ acre sale (0: none priced), first sale date, last sale date, market sales in the window].
+    A state with a summary is covered; its counties missing here had no market sale in the window."""
+    land = land or LAND
+    import land_alert as LA
+    states, counties = {}, {}
+    for p in sorted(glob.glob(os.path.join(land, "*", "summary.json"))):
+        with open(p, encoding="utf-8") as fh:
+            s = json.load(fh)
+        st = s.get("state")
+        if not st:
+            continue
+        states[st] = {"through": s.get("through"), "cur": (s.get("windows") or {}).get("cur"),
+                      "dates": s.get("dates") or "day", "who": s.get("who"), "record": s.get("record"),
+                      "slug": LA.STATE_SLUGS.get(st)}
+        for f, c in sorted((s.get("counties") or {}).items()):
+            if not c.get("n12"):
+                continue
+            m = c.get("m12") or {}
+            d = m.get("d") or [None, None]
+            counties[f] = [m.get("med"), m.get("n") or 0, LAYER_SET.get(m.get("set"), 0), d[0], d[1], m.get("c") or c["n12"],
+                           LA.county_slug(c.get("name")) if c.get("name") else None]
+    # states whose sales are on the land-sales pages but not yet in a summary (the market-sale rule not checked there)
+    listed = {st: sl for st, sl in sorted(LA.STATE_SLUGS.items()) if st not in states}
+    return {"cols": ["med", "n", "set", "d0", "d1", "n12", "page"], "min_acres": MIN_ACRES, "thin": MIN_N,
+            "states": states, "listed": listed, "counties": counties}
+
+
 def build_state(st, files, fetched=None):
     """files: list of county file dicts. Returns the summary dict."""
     st = st.upper()
@@ -547,7 +659,7 @@ def build_state(st, files, fetched=None):
     for f in sorted(files, key=lambda x: x.get("fips") or ""):
         counties[f["fips"]] = county_summary(f, W, today)
         allcur += [r["ppa"] for r in county_rows(f, today) if inw(r, W["cur"]) and farm_comp(r)]
-    src = SOURCES.get(st, {})
+    src = MAP_SOURCES.get(st, {})
     one = files[0] if files else {}
     out = {
         "state": st, "record": src.get("record") or one.get("source"), "who": src.get("who"), "url": src.get("url"),
@@ -601,7 +713,7 @@ def states_on_disk():
     """States with transfer files AND a checked source entry above. A new state's files (Indiana,
     Oct 18) get no Atlas summary until its deed types and acres are checked against the market-sale
     rule and it is added to SOURCES."""
-    return sorted(st for st in SOURCES if glob.glob(os.path.join(state_dir(st), "[0-9]*.json")))
+    return sorted(st for st in MAP_SOURCES if glob.glob(os.path.join(state_dir(st), "[0-9]*.json")))
 
 
 def main(argv):
@@ -643,6 +755,19 @@ def main(argv):
             fh.write(text)
         withm = sum(1 for c in s["counties"].values() if c.get("med"))
         print("%s: %d counties, %d with a 12-month median, through %s, %.1f KB" % (st, len(s["counties"]), withm, s["through"], len(text.encode()) / 1024))
+    # the Atlas map layer, from every summary now on disk (a one-state run keeps the other states' rows)
+    lay = dump(build_layer())
+    old = open(LAYER_PATH, encoding="utf-8").read() if os.path.exists(LAYER_PATH) else None
+    if check:
+        if old != lay:
+            print("FAIL data/land/atlas-layer.json is not current; run python3 scripts/build_land_summary.py", file=sys.stderr)
+            bad += 1
+        else:
+            print("ok   Atlas sales layer current")
+    elif old != lay:
+        with open(LAYER_PATH, "w", encoding="utf-8") as fh:
+            fh.write(lay)
+        print("Atlas sales layer: %d counties, %.1f KB" % (len(json.loads(lay)["counties"]), len(lay.encode()) / 1024))
     return 1 if bad else 0
 
 
@@ -724,6 +849,36 @@ def selftest():
     ck("a middle counts bare farm land only", not farm_comp({"cls": "4 7", "acres": 80, "ppa": 9000}, "WI")
        and not farm_comp({"cls": "6", "acres": 80, "ppa": 9000}, "WI") and farm_comp({"cls": "4", "acres": 80, "ppa": 9000}, "WI")
        and not farm_comp({"cls": "4", "acres": 80, "ppa": 400}, "WI"))
+    # the Atlas map layer: every county with a sale, no minimum; bare land first, then any 20+ acre sale, never smaller
+    R = lambda d, ppa, ac, cls="4": {"date": d, "ppa": ppa, "acres": ac, "cls": cls}
+    ck("layer: one bare sale is a median of one", layer_median([R("2026-03-02", 9000, 40)]) ==
+       {"c": 1, "med": 9000, "n": 1, "set": "bare", "d": ["2026-03-02", "2026-03-02"]})
+    ck("layer: bare land wins over a sale with buildings", layer_median([R("2026-01-05", 9000, 40), R("2026-02-05", 20000, 40, "4 1")])["n"] == 1)
+    ck("layer: no bare land, a 20+ acre sale with buildings, said so", layer_median([R("2026-01-05", 20000, 40, "4 1"), R("2026-04-05", 10000, 30, "4 1")]) ==
+       {"c": 2, "med": 15000, "n": 2, "set": "any", "d": ["2026-01-05", "2026-04-05"]})
+    ck("layer: small lots never price farmland", layer_median([R("2026-01-05", 90000, 3)]) == {"c": 1} and layer_median([]) == {"c": 0})
+    ck("layer: under $500 an acre is no price", layer_median([R("2026-01-05", 400, 80)]) == {"c": 1})
+    # one $2,701,640 sale filed on three parcels (35.86 + 48.41 + 80 acres): one sale of 164.27 acres, $16,446 an acre
+    P = lambda d, price, ac, cls="4": {"date": d, "price": price, "acres": ac, "cls": cls, "ppa": per_acre(price, ac)}
+    one = [P("2026-08-28", 2701640, 35.86), P("2026-08-28", 2701640, 48.41), P("2026-08-28", 2701640, 80.0)]
+    ck("layer: one price on several parcels the same day is one sale of their acres", layer_median(one) ==
+       {"c": 1, "med": 16446, "n": 1, "set": "bare", "d": ["2026-08-28", "2026-08-28"]})
+    ck("layer: a merged sale with a parcel of unknown acres has no price", layer_median(one[:2] + [P("2026-08-28", 2701640, None)]) == {"c": 1})
+    ck("layer: a merged sale with buildings on one parcel is not bare land", layer_median(one[:2] + [P("2026-08-28", 2701640, 80.0, "4 1")])["set"] == "any")
+    ck("layer: a small bare parcel sold with a big one stays bare land", layer_median([P("2026-06-26", 800000, 5.0), P("2026-06-26", 800000, 179.78)])
+       == {"c": 1, "med": 4329, "n": 1, "set": "bare", "d": ["2026-06-26", "2026-06-26"]})
+    ck("layer: month-dated files keep two sales at one price in one month", layer_median(one[:2], True)["c"] == 2)
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "il"))
+        with open(os.path.join(td, "il", "summary.json"), "w") as fh:
+            json.dump({"state": "IL", "through": "2026-10-31", "windows": {"cur": ["2025-11-01", "2026-10-31"]}, "counties": {
+                "17001": {"n12": 3, "m12": {"c": 3, "med": 9000, "n": 2, "set": "bare", "d": ["2026-01-05", "2026-04-05"]}},
+                "17003": {"n12": 2}, "17005": {"n12": 0}}}, fh)
+        lay = build_layer(td)
+        ck("layer file: priced, unpriced, zero-sale counties", lay["counties"] == {"17001": [9000, 2, 1, "2026-01-05", "2026-04-05", 3, None],
+           "17003": [None, 0, 0, None, None, 2, None]} and lay["states"]["IL"]["dates"] == "day" and lay["thin"] == MIN_N
+           and "IL" not in lay["listed"] and lay["states"]["IL"]["slug"] == "illinois")
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 
