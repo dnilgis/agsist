@@ -130,8 +130,13 @@ test("no New Jersey buyer or seller name anywhere: the state's public file leave
     const f = json(`${NJ}/${nm}`);
     assert.equal(f.names, false, nm + ": the SR-1A file carries no names");
     assert.ok(!f.cols.includes("grantor") && !f.cols.includes("grantee"), nm + ": no name columns");
-    const nf = json(`data/land/names/nj/${nm}`);
-    for (const v of Object.values(nf.sales)) { assert.ok(v === 0 || (Array.isArray(v) && !v[0] && !v[1]), nm + ": a name in the names file"); n++; }
+    // Nov 6: a state that names no one gets no names file and no button (build_land_sales.py); until main rebuilds,
+    // the old files may still be there, and they must hold no name
+    const nfp = `data/land/names/nj/${nm}`, L = json(`data/land-sales/nj/${nm}`);
+    if (fs.existsSync(path.join(ROOT, nfp))) {
+      for (const v of Object.values(json(nfp).sales)) assert.ok(v === 0 || (Array.isArray(v) && !v[0] && !v[1]), nm + ": a name in the names file");
+    } else assert.equal(L.names, null, nm + ": no names file, so no names path for the button");
+    n += f.rows.length;
   }
   assert.ok(n > 1000, "sales checked: " + n);
   assert.match(read("land-sales/new-jersey/salem-county.html"), /The state&#x27;s public deed file leaves the buyer and seller blank, so no names show here; the deed at the county clerk has them\./);
@@ -182,7 +187,7 @@ let chromium = null;
 try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
-test("in Chromium at 390 and 1280: Salem and Hunterdon list their sales, the names tap works, no sideways scroll", { skip }, async () => {
+test("in Chromium at 390 and 1280: Salem and Hunterdon list their sales, no dead names tap, no sideways scroll", { skip }, async () => {
   const { createServer } = await import("node:http");
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
@@ -212,8 +217,11 @@ test("in Chromium at 390 and 1280: Salem and Hunterdon list their sales, the nam
         assert.equal(await pg.locator("#ls-all tbody tr").count(), Math.min(50, n), `${slug} @${w}: the newest rows`);
         assert.doesNotMatch(await pg.textContent("body"), /SYNTHETIC|undefined|NaN/);
         if (shots) await pg.screenshot({ path: path.join(shots, `nj-${slug}-${w}.png`), fullPage: false });
-        await pg.click("#ls-all tbody tr button.ls-nm");
-        await pg.waitForSelector("#ls-all tbody tr .ls-nv", { timeout: 20000 });
+        // the names tap: only while New Jersey still has its (empty) names files; after the Nov 6 build there is no button
+        if (json(`data/land-sales/nj/${fips}.json`).names) {
+          await pg.click("#ls-all tbody tr button.ls-nm");
+          await pg.waitForSelector("#ls-all tbody tr .ls-nv", { timeout: 20000 });
+        } else assert.equal(await pg.locator("button.ls-nm").count(), 0, `${slug} @${w}: no names button when the state names no one`);
         const [sw, iw] = await pg.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
         assert.ok(sw <= iw, `${slug} at ${w}: ${sw}px in ${iw}px`);
         assert.deepEqual(errors, []);
