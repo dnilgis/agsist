@@ -62,7 +62,7 @@ Each figure below is read from the same file the site's pages read and carries t
 ## How big is this crop?
 
 - [Pro Farmer Crop Tour](https://agsist.com/crop-tour): the tour's state results and national estimate, set against USDA's, with the tour's record since 2015, and what 28 state-years of its soybean pod counts actually predict
-- [Crop Conditions and Crop Size](https://agsist.com/conditions): each state's good-to-excellent share and harvest pace ranked against the same week of every year USDA rated it, and every 2026 corn and soybean yield forecast side by side: USDA, the Pro Farmer tour, private estimates and AGSIST's ratings model
+- [Crop Conditions and Crop Size](https://agsist.com/conditions): each state's good-to-excellent share and harvest pace ranked against the same week of every year USDA rated it, and every 2026 corn and soybean yield forecast side by side: USDA, the Pro Farmer tour, private estimates and AGSIST's nowcast
 - [Yield Estimator](https://agsist.com/yield-estimator): corn ear counts and soybean pod counts turned into bushels per acre
 
 ## What's happening in my fields?

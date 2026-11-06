@@ -413,7 +413,7 @@
               "id": "agsist",
               "value": 183.6,
               "source": "https://agsist.com/conditions#crop-size",
-              "source_note": "Current conditions-yield model nowcast (ratings week ending 2026-08-09), locked 2026-08-11 pre-report in the direction ledger (data/nowcast-direction.json). Supersedes the retired ge-linear-v1 call (corn 189.4 / beans 56.2, locked 2026-07-25) \u2014 the supersession is on the record in git history."
+              "source_note": "AGSIST yield estimate (ratings week ending 2026-08-09), locked 2026-08-11 before the report. It replaced an earlier AGSIST call (corn 189.4, beans 56.2, locked 2026-07-25)."
             },
             {
               "id": "stonex",
@@ -452,7 +452,7 @@
               "id": "agsist",
               "value": 53.8,
               "source": "https://agsist.com/conditions#crop-size",
-              "source_note": "Current conditions-yield model nowcast (ratings week ending 2026-08-09), locked 2026-08-11 pre-report in the direction ledger (data/nowcast-direction.json). Supersedes the retired ge-linear-v1 call (corn 189.4 / beans 56.2, locked 2026-07-25) \u2014 the supersession is on the record in git history."
+              "source_note": "AGSIST yield estimate (ratings week ending 2026-08-09), locked 2026-08-11 before the report. It replaced an earlier AGSIST call (corn 189.4, beans 56.2, locked 2026-07-25)."
             },
             {
               "id": "stonex",
