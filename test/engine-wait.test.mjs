@@ -54,8 +54,11 @@ test("the commit's own change list counts when the event lists no files (the Nov
   writeFileSync(join(r, ".github/engine-paths"), readFileSync(join(ROOT, ".github/engine-paths")));
   writeFileSync(join(r, "a.txt"), "a"); g("add", "-A"); g("commit", "-q", "-m", "one");
   writeFileSync(join(r, "scripts/x.py"), "x"); g("add", "-A"); g("commit", "-q", "-m", "two");
+  // GITHUB_SHA is this repository's own last commit: in Actions the runner's real GITHUB_SHA is set, and that commit
+  // is not in the throwaway repository (the test passed locally and failed in CI until Nov 6)
+  const sha = execFileSync("git", ["-C", r, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
   const log = execFileSync("bash", [SH, "behind", eng], { cwd: r, encoding: "utf8",
-    env: { ...process.env, GITHUB_EVENT_NAME: "push", GITHUB_EVENT_PATH: ev, GITHUB_OUTPUT: out, WAIT_SECONDS: "0" } });
+    env: { ...process.env, GITHUB_EVENT_NAME: "push", GITHUB_EVENT_PATH: ev, GITHUB_OUTPUT: out, WAIT_SECONDS: "0", GITHUB_SHA: sha } });
   assert.match(readFileSync(out, "utf8"), /retry=true/, log);
 });
 
