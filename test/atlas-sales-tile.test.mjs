@@ -88,6 +88,8 @@ test("the published pages: every IL and WI county carries the tile, it matches t
   const sum = { illinois: JSON.parse(read("data/land/il/summary.json")), wisconsin: JSON.parse(read("data/land/wi/summary.json")) };
   // Florida joined Nov 5, 2026 (sale months); its Atlas pages carry the tile once its summary exists
   if (existsSync(join(ROOT, "data/land/fl/summary.json"))) sum.florida = JSON.parse(read("data/land/fl/summary.json"));
+  // Indiana, New Jersey and Vermont joined Nov 6, 2026, the same way
+  for (const [st, dirn] of [["in", "indiana"], ["nj", "new-jersey"], ["vt", "vermont"]]) if (existsSync(join(ROOT, `data/land/${st}/summary.json`))) sum[dirn] = JSON.parse(read(`data/land/${st}/summary.json`));
   let n = 0;
   for (const st of readdirSync(dir, { withFileTypes: true })) {
     if (!st.isDirectory()) continue;
@@ -105,7 +107,7 @@ test("the published pages: every IL and WI county carries the tile, it matches t
         const t = S.tile(sum[st.name], fips);
         assert.equal(unesc(m[4]), t.sub, `${st.name}/${f}`);
         n++;
-      } else assert.equal(m, null, `${st.name}/${f}: a sales tile outside IL, WI and FL`);
+      } else assert.equal(m, null, `${st.name}/${f}: a sales tile in a state with no summary`);
       assert.doesNotMatch(m ? m[0] : "", /grantor|grantee|buyer|seller|parcel|document/i);
     }
   }

@@ -115,13 +115,17 @@ test("indexed Atlas pages for IL and WI carry no private value, before and after
   assert.ok(ON.length >= 2);
   for (const [s, dir] of ON) {
     const sum = JSON.parse(read(`data/land/${s}/summary.json`));
-    const pages = new Map();
+    const pages = new Map(), onPage = new Set();
     for (const n of readdirSync(join(ROOT, "farmland-atlas", dir))) {
       const h = read(`farmland-atlas/${dir}/${n}`);
+      const any = /FIPS (\d{5})/.exec(h);
+      if (any && n !== "index.html") onPage.add(any[1]);
       const m = /data-atlas-sales="county" data-st="[A-Z]{2}" data-fips="(\d{5})"/.exec(h);
       if (m) pages.set(m[1], h);
     }
-    assert.ok(pages.size > 50, `${s}: county pages with the sales block`);
+    // every county with a transfer file and an Atlas page carries the block (New Jersey has 21 counties, Vermont 14)
+    const want = countyFiles(s).filter((f) => onPage.has(f.fips));
+    assert.ok(pages.size >= 10 && pages.size >= want.length, `${s}: county pages with the sales block (${pages.size} of ${want.length})`);
     for (const f of countyFiles(s)) {
       const h = pages.get(f.fips);
       if (!h) continue;
