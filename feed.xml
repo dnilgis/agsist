@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Nov 2026 11:49:12 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 06 Nov 2026 11:49:04 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Hog futures fall 4.3% to $55.10; cattle slip 1.7% Thursday</title>
+      <link>https://agsist.com/daily/2026-11-06</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-06</guid>
+      <pubDate>Fri, 06 Nov 2026 11:48:06 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>December hogs settled Thursday at $55.10, down 4.3%, the biggest drop on the board. Live cattle slipped 1.7% to $214.40 and feeders lost 2.1%. With feeding losses at $328 a head, a falling board squeezes feeders and packers both.
+• Hogs and cattle fall
+• Grains hold steady, wheat lower
+Read more: https://agsist.com/daily/2026-11-06</description>
+    </item>
     <item>
       <title>Midterms hand Democrats Congress; Dec corn is at $4.47¼ overnight</title>
       <link>https://agsist.com/daily/2026-11-05</link>
@@ -351,17 +362,6 @@ Read more: https://agsist.com/daily/2026-10-09</description>
 • Soy Oil Breaks, Meal Takes Over
 • Corn Grinds At The Round Number
 Read more: https://agsist.com/daily/2026-10-08</description>
-    </item>
-    <item>
-      <title>Cattle jump on feeder strength as corn slips back</title>
-      <link>https://agsist.com/daily/2026-10-07</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-07</guid>
-      <pubDate>Wed, 07 Oct 2026 11:08:35 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Live cattle are trading at $221.23 overnight, up 1.8%, with feeders up 2.0% to $340.50, both printing well above Tuesday's settle with no fresh Cattle on Feed data behind it. Corn slipped back to $5.04, giving up the round number it just reclaimed Monday as rain-stalled harvest meets heavy Grain Stocks.
-• Cattle And Feeders Both Jump
-• Corn Slips Back Under $5.08
-Read more: https://agsist.com/daily/2026-10-07</description>
     </item>
   </channel>
 </rss>
