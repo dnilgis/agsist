@@ -138,6 +138,31 @@ NOT_READER_FACING = (
     "data/elevator-directory.json",
     "data/ids/geo-crosswalk.json",   # read by scripts/join_report.py and builds only (Oct 27)
     "data/ids/board-parents.json",   # read by scripts/build_cash_bid_pages.py only (Oct 27, fx/bidkeys)
+    # Nov 6: data files that builders and jobs read but no page, script, worker or other repo loads; not published
+    "data/ai-answers.json",
+    "data/arc-plc-prices.json",
+    "data/audience-pages.json",
+    "data/cca-note.json",
+    "data/daily-facts.json",
+    "data/dairy-dmc.json",
+    "data/dairy-miss.json",
+    "data/elevator-coverage-counts.json",
+    "data/feeder-index-store.json",
+    "data/fertilizer-ams-history.json",
+    "data/fertilizer-ams.json",
+    "data/hog-cash.json",
+    "data/nowcast-direction.json",
+    "data/ongoing-situations.json",
+    "data/phone-corrections.json",
+    "data/poll-queue.json",
+    "data/rma-discovery-now.json",
+    "data/rma-discovery.json",
+    "data/share-host.json",
+    "data/state-grain-ams.json",
+    "data/weather-alerts.json",
+    "data/wpi-estimates.json",
+    "data/yield-benchmarks.json",
+    "data/yield-panel.json",
 )
 
 
