@@ -97,8 +97,7 @@
         var w = wowWords(b.wow);
         s += (w ? ', ' + w : '') + ' (' + medOf(b.n, b.companies) + ').';
         var q = quoteFor(o.prices, b.contract);
-        /* Only an exchange settle is called settled (Oct 17: a 1:46 p.m. trade
-           was called the close); a quote with no settle is worded as a trade. */
+        /* Only an exchange settle is called settled; a quote without one is a trade. */
         var sx = q && typeof q.settle === 'number' && q.settle_date ? { px: q.settle, d: q.settle_date, w: ' settled ' }
           : q && q.close_date ? { px: q.close, d: q.close_date, w: ' last traded ' } : null;
         if (sx && Math.abs(age(sx.d + 'T12:00:00Z', Date.parse(bs.generated))) <= 5)
@@ -138,7 +137,7 @@
     return '<p class="ya-k">Your area' + (name ? ': ' + esc(name) : '') + (src.length && basisOk ? ' &middot; ' + ct(bs.generated) : '') + '</p>' +
       out.map(function (s) { return '<p>' + s + '</p>'; }).join('') +
       (links.length ? '<p class="ya-l">' + links.join(' &middot; ') + '</p>' : '') +
-      (src.length ? '<p class="ya-s">' + src.join('. ') + '.</p>' : '');
+      (src.length ? '<p class="ya-s">' + src.join('. ') + '.' + (/NASS/.test(src.join(' ')) ? ' This product uses the NASS API but is not endorsed or certified by NASS.' : '') + '</p>' : '');
   }
   function none() { return '<p class="ya-none"><a href="/cash-bids">See this for your area</a></p>'; }
 

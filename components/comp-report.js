@@ -737,7 +737,7 @@
         '<li>Seller and buyer are as recorded, cut at 80 characters in our copy. Street addresses and financing are not in our copy. ' + pp + '</li>' +
         '<li>' + esc(F.UNVERIFIED) + '</li>' +
         '<li>Soil productivity: USDA NRCS SSURGO through the Field Scout reader, weighted by acres of the outline; a comp’s outline is the parcel as mapped today, which may differ from what sold.</li></ul>' +
-        '<p class="fl-note">Parcel map: ' + esc(S.parcelSvc ? S.parcelSvc.name : (S.svcs && S.svcs[0] ? S.svcs[0].name : 'none we have checked covers this county')) + '. County context: USDA Census of Agriculture and NASS cash rents through the Farmland Atlas. Crop history: USDA NASS Cropland Data Layer.</p>');
+        '<p class="fl-note">Parcel map: ' + esc(S.parcelSvc ? S.parcelSvc.name : (S.svcs && S.svcs[0] ? S.svcs[0].name : 'none we have checked covers this county')) + '. County context: USDA Census of Agriculture and NASS cash rents through the Farmland Atlas. Crop history: USDA NASS Cropland Data Layer. This product uses the NASS API but is not endorsed or certified by NASS.</p>');
     }
     function noData(s) {
       hideAll(true);
