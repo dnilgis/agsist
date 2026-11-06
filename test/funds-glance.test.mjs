@@ -133,8 +133,8 @@ test("the COT file keeps each dated contract's report-day close (enrich_cot_pric
 
 test("the pages load the shared lines and the bumped scripts", () => {
   const cot = read("cot.html"), idx = read("index.html");
-  for (const h of [cot, idx]) assert.ok(h.includes('<script src="/components/cot-glance.js?v=3"></script>'));
-  assert.ok(cot.includes('<script src="/components/cot-page.js?v=8"></script>'));
+  for (const h of [cot, idx]) assert.ok(h.includes('<script src="/components/cot-glance.js?v=4"></script>'));
+  assert.ok(cot.includes('<script src="/components/cot-page.js?v=9"></script>'));
   assert.ok(cot.indexOf('<script src="/components/cot-glance.js') < cot.indexOf('<script src="/components/cot-page.js'));
   assert.ok(idx.indexOf('<script src="/components/cot-glance.js') < idx.indexOf('<script src="/components/home.js'));
   // one Funds this week ask on /cot, under the chart and the market table, above the details

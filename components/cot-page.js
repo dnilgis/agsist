@@ -606,7 +606,7 @@ function cotTick(){
   if (r.state !== COT_REL_STATE) {
     var live = document.getElementById('cot-rel-live');
     /* the first paint is not news; later changes of state are */
-    if (live && COT_REL_STATE) live.textContent = r.state === 'countdown' ? 'Next CFTC report: ' + r.next.replace(/^Next report: /, '') : r.text;
+    if (live && COT_REL_STATE) live.textContent = r.state === 'countdown' ? 'Next report: ' + r.next.replace(/^Next report: /, '') : r.text;
     COT_REL_STATE = r.state;
     /* the answer line's "Next report" follows the bar */
     if (window.AgCotChart && window.AgCotChart.answerLine) window.AgCotChart.answerLine();
