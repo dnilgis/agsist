@@ -410,9 +410,7 @@ def run(root=ROOT, now=None, get_page=None, get_pdf=None):
     else:
         rec = dict(new, source="Upper Midwest Market Administrator (Federal Order 30)", source_url=SITE,
                    status={"ok": True, "at": now.strftime("%Y-%m-%dT%H:%M:%SZ")},
-                   _note="From the market administrator's own PPD and class "
-                         "releases; every month checked (Class I identity, skim = mover + differential, uniform = "
-                         "Class III + PPD). Never typed by hand.")
+                   _note="From the market administrator's own releases. Never typed by hand.")
         print("[order30] %s: PPD %+.2f, uniform %.2f; year ago %s" % (
             new["latest"]["month_key"], new["latest"]["ppd"], new["latest"]["uniform"],
             new.get("year_ago", {}).get("month_key") or new.get("year_ago_why")))

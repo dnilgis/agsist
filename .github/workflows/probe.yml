@@ -1,7 +1,6 @@
 name: probe-sources
+# probe-sources.
 
-# Diagnostic only. Reads USDA sources and prints their schemas to the log.
-# Writes nothing, commits nothing, sends nothing. Manual dispatch only.
 on:
   workflow_dispatch:
     inputs:

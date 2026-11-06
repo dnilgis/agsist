@@ -1,9 +1,6 @@
 name: Add the signups kept during the worker block (one-time)
+# Add the signups kept during the worker block (one-time).
 
-# Run by hand (first Oct 22, 2026; again for any later backup-form signups). Adds the signups that came in by the backup
-# form while agsist-subs was blocked straight to their lists, as Sig asked: no
-# confirm email. Reads private/pending-signups.jsonl (feedbag, private-data).
-# Prints counts only. Safe to run again: each route keeps one record per address.
 on:
   workflow_dispatch:
     inputs:

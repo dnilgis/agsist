@@ -1,28 +1,9 @@
 name: Site forms digest
-# Emails Sig what came in through the elevator claim form, elevator listing
-# requests (list-your-elevator, worker v5.21), PRF state sponsor inquiries
-# (prf-sponsor, worker v5.22), the sponsor proof
-# approval and requests box, the Parcel Report waitlist and Rain Print order
-# requests (scripts/form_digest.py; rain-print-order needs worker v5.9). The posts live in the subs worker (KV prefix
-# form:, workers/subs-worker.js v5.8); nothing is written to this repo and the
-# log prints counts only. Until v5.8 is deployed the worker has no
-# /form-list and the job says so and exits cleanly (the pages send to
-# Formspree meanwhile).
-# Hay board posts (haymow.html, worker v5.30) go in one more email from the
-# same run: public text only, then /hay/admin/mark.
-# Each digest opens with one counts line: what came in over the last 24 hours
-# by kind, mailed or not (2026-10-14). It reads /form-list and the rain gauge
-# list on /notice-list; counts only, in the email and in the log.
-# Secrets: the same ones the sponsor job uses -- LIST_URL, LIST_TOKEN,
-# SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME,
-# FORMS_TO (else SPONSOR_TO, else sig@agsist.com).
+# Site forms digest.
 
 on:
   schedule:
-    # Hourly fallback; the bids chain below does most of the work.
     - cron: '41 * * * *'
-  # Runs after every "Fetch Grain Bids" (started every 15 minutes by
-  # cron-job.org), the same chain the sponsor sign-up job rides.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

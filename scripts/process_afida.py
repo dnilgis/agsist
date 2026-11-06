@@ -206,10 +206,7 @@ def main():
         "counties_with_holdings": sum(1 for c in county.values() if c["y"].get(latest)),
         "no_fips_acres_by_year": {y: round(v) for y, v in sorted(no_fips.items())},
         "by_interest": interest_split(latest_rows),
-        "method": ("Row-sum of Number of Acres. It runs above USDA's published "
-                   "headline (2024: 47,241,820 vs 46.3M in the AFIDA report). AFIDA is "
-                   "self-reported disclosure data; leaseholds of 10+ years are "
-                   "included, and a large share of the acreage is forest."),
+        "method": ("Total of Number of Acres in the AFIDA data. It runs above USDA's published headline (2024: 47,241,820 vs 46.3M in the AFIDA report). AFIDA is self-reported disclosure data; leaseholds of 10+ years are included, and a large share of the acreage is forest."),
         "source": "USDA FSA AFIDA detailed holdings files, downloaded by hand",
     }
     json.dump(national, open(os.path.join(OUT, "national.json"), "w"),

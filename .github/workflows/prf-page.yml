@@ -1,12 +1,6 @@
 name: prf page
+# prf page.
 
-# The /prf page's own checks, on every push that touches it. Seconds, no
-# network: the arithmetic against RMA's saved answers, the page's wiring
-# (every element the script reaches for exists), and that prf.html is exactly
-# what scripts/stamp_prf.py writes from data/prf/meta.json.
-#
-# The data itself is checked against RMA's live tool by the `prf` workflow.
-# preship renders the page; this is what a render cannot see.
 on:
   push:
     branches: [main]

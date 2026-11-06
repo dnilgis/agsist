@@ -1,43 +1,5 @@
 name: Cron health
-
-# DID THE JOBS READERS DEPEND ON ACTUALLY RUN?
-#
-# GitHub's scheduler delivered 13.7% of this repository's scheduled fires over
-# 2026-10-02 to 10-09, and a dropped fire leaves nothing behind: no red run,
-# just a page that stops moving. The COT watcher missed its whole window three
-# days running before anyone saw it. scripts/cron_health.py checks each
-# time-critical workflow against its own clock and writes cron-health.json.
-# This run goes red when a critical one is late.
-#
-# It runs after every "Fetch Grain Bids" (cron-job.org, every 15 minutes) and
-# its gate keeps that to one check every half hour. The cron is the fallback.
-# If cron-job.org itself stops, this goes quiet with it; that is what the
-# fallback cron is for, and why Fetch Grain Bids is the first row it checks.
-#
-# It also measures what GitHub Pages publishes (scripts/check_site_budget.py):
-# a warn row past 850 MB and a red one past 900 MB, before the 1 GB limit where
-# Pages stops deploying and the site freezes. A folder-budgets row warns at 90%
-# of any folder's budget there (red past it).
-#
-# Watching the watchers (2026-10-20): daily-site-check.yml and this workflow
-# are rows, and a stale cron-health.json (older than 8 h) is a red row
-# that daily-site-check.yml, on GitHub's cron rather than cron-job.org, reports.
-#
-# THE PRIVATE REPO (2026-10-20, Sig). No page reads the file, so it is saved to
-# the private repo dnilgis/feedbag (branch private-data,
-# private/data/cron-health.json), not main. The PRIVATE_REPO_TOKEN secret also
-# feeds two rows: private-repo-key (red when the key fails; warns when it
-# expires within 14 days, from the github-authentication-token-expiration
-# header) and private-raw-saves (warns when no save has reached the private raw
-# branch for 80 h). The morning email shows both. Saved only when a status
-# changes or every six hours.
-#
-# READER EMAIL DELIVERED (Nov 3 2026, BUILD-RULES 55 and 56): a green run is
-# not a delivered email. One delivery:<workflow> row per workflow that mails
-# readers (scripts/delivery_check.py), from the DELIVERY line each sender
-# prints, read from the run logs every six hours with this run's token (it
-# needs actions: read). The live switches are the repository variables below;
-# never a worker secret.
+# Cron health.
 
 on:
   workflow_run:
@@ -85,19 +47,12 @@ jobs:
         run: >-
           python3 scripts/cron_gate.py tick --workflow cron-health.yml --max-lag 30
           --cron "26,56 * * * *"
-      # THE DAILY'S 7:15 CHECK (Sig, Nov 3 2026). One tick at 12:15 and one at
-      # 13:15 UTC: 7:15 AM Central is one of them in summer time and the other
-      # in standard time. The first run after each tick does the check;
-      # scripts/daily_late.py acts only between 7:15 and 8:15 Central, so the
-      # other tick does nothing and Sig gets one email at most.
       - id: late
         env:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python3 scripts/cron_gate.py tick --workflow cron-health.yml --max-lag 45
           --cron "15 12,13 * * *"
-      # THE DAILY REHEARSAL, every evening at 00:41 UTC (6:41 PM CST, 7:41 PM
-      # CDT): tomorrow's Daily checks under tomorrow's clock (Sig, Nov 3 2026).
       - id: rehearse
         env:
           GH_TOKEN: ${{ github.token }}
@@ -105,10 +60,6 @@ jobs:
           python3 scripts/cron_gate.py tick --workflow cron-health.yml --max-lag 45
           --cron "41 0 * * *"
 
-  # NOT SENT BY 7:15 AM CT, SIG HEARS ABOUT IT (Nov 3 2026: the Daily went
-  # out two hours late and nothing said so). Reads, never writes: the sent
-  # copy on main, the day flag, today's daily.yml runs and their logs. One
-  # email naming the failing step and its log line; no address.
   daily-late:
     needs: gate
     if: needs.gate.outputs.late == '1'
@@ -149,15 +100,6 @@ jobs:
           TZ: America/Chicago
         run: python3 scripts/daily_late.py check
 
-  # TOMORROW'S DAILY, REHEARSED TONIGHT (Sig, Nov 3 2026: "before a calendar
-  # boundary run the suite with a future date"). Every evening, because the
-  # Daily goes out every morning and any night can sit before a boundary:
-  # every code self-test, the morning gate, the generator's date-bound inputs
-  # and GATE 1 under tomorrow's 5:50 AM clock, and the content gates replayed
-  # on the last issue. Send off, nothing published or committed, no model
-  # call. A failure mails Sig and turns this run red (scripts/daily_rehearsal.py).
-  # On Nov 2 at 6:41 PM it would have failed GATE 0g's daily-numbers fixture,
-  # the test that held the Nov 3 Daily for two hours.
   daily-rehearsal:
     needs: gate
     if: needs.gate.outputs.rehearse == '1'
@@ -180,7 +122,6 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        # daily.yml's own set, plus PyYAML for the gate simulator
         run: pip install feedparser==6.0.14 requests==2.34.2 pillow==12.3.0 pyyaml==6.0.2
       - name: Rehearse tomorrow's Daily
         env:
@@ -197,7 +138,6 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
-    # 10: every six hours the delivery rows read about 100 run logs
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -217,9 +157,6 @@ jobs:
           python3 scripts/delivery_check.py --selftest
           python3 scripts/send_cap.py --selftest
 
-      # The last saved file: its age is the cron-health.json row, and the new
-      # one is saved only when a status changed. Missing, the check still runs
-      # (that row reads unknown, the save goes ahead).
       - name: Get the last health file (private repo)
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -233,7 +170,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           ENGINE_MODE: ${{ vars.ENGINE_MODE }}
-          # the live switches of the reader emails (scripts/delivery_check.py SENDERS)
           CUSTOMRATES_NOTICE_LIVE: ${{ vars.CUSTOMRATES_NOTICE_LIVE }}
           DAIRY_MONTHLY_LIVE: ${{ vars.DAIRY_MONTHLY_LIVE }}
           FUNDS_WEEKLY_LIVE: ${{ vars.FUNDS_WEEKLY_LIVE }}
@@ -241,7 +177,6 @@ jobs:
           RAIN_MONTHLY_LIVE: ${{ vars.RAIN_MONTHLY_LIVE }}
           RP_BUYER_EMAIL_LIVE: ${{ vars.RP_BUYER_EMAIL_LIVE }}
           RP_DESIGN_EMAIL_LIVE: ${{ vars.RP_DESIGN_EMAIL_LIVE }}
-          # the mail plan's emails a day (send_cap.py; unset = 300, Brevo free); raise it after an upgrade
           SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}
         run: python3 scripts/cron_health.py --out private/data/cron-health.json
 
@@ -253,10 +188,6 @@ jobs:
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "cron health" private/data/cron-health.json
 
-      # Sig, Nov 4: "remind me to upgrade Brevo as we get closer to the daily limit." From the
-      # send-volume row: 80% of SEND_DAILY_CAP on a UTC day mails Sig once that day, 95% once more
-      # marked urgent, and the Daily's 7-day average at 70% a gentle heads-up once a week. Through
-      # log_safe.owner_mail, the path the daily-late job uses; deduped by the send flags. Counts only.
       - name: Tell Sig when Brevo nears its daily limit
         if: ${{ !cancelled() && steps.h.outcome == 'success' }}
         continue-on-error: true

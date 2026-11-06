@@ -1,53 +1,16 @@
 name: Fetch COT Data
+# Fetch COT Data.
 
 on:
   schedule:
-    # CFTC COT releases Friday 3:30pm ET; positions are as-of the prior Tuesday.
-    #
-    # THE DAILY 21:30 UTC RUN WAS THE ONLY ONE, AND IT IS TWO HOURS LATE.
-    # 3:30pm ET is 19:30 UTC in EDT, so a single 21:30 UTC run left the page
-    # showing last week's report for two hours after CFTC had published — with
-    # readers sitting on the page watching a countdown reach zero. Measured on
-    # 2026-08-21: CFTC listed the Aug 18 report while data/cot.json still said
-    # Aug 11. The page has been fixed to say so and to poll, but the right
-    # answer is also to stop being two hours late.
-    #
-    # Both DST cases, because 3:30pm ET moves against UTC:
-    #   EDT (Mar-Nov)  release 19:30 UTC -> 19:47, 20:17
-    #   EST (Nov-Mar)  release 20:30 UTC -> 20:47, 21:17
-    # (2026-10-09: two or three minutes off the quarter hours, where GitHub's
-    # queue is most crowded. cot-release-watch.yml is the fast path now; it
-    # runs after every bids and prices run. These are the backstop.)
-    # Two attempts each, because a scheduled run can be delayed or dropped, and
-    # the commit step is a no-op when the data has not moved — so a wasted run
-    # costs a minute of CI and nothing else.
     - cron: '47 19 * * 5'
     - cron: '17 20 * * 5'
     - cron: '47 20 * * 5'
     - cron: '17 21 * * 5'
-    # AND THE SAME FOUR ON MONDAY, because six of 2026's releases are not on a
-    # Friday at all. From CFTC's own release schedule: "Federal holidays may
-    # delay release by one or two days", and the 2026 calendar marks
-    #   Jan 5 · Jun 22 · Jul 6 · Nov 16 · Nov 30 · Dec 28
-    # every one of them a MONDAY, still at 3:30pm ET.
-    #
-    # Until now the only thing covering those six was the daily catch-all at
-    # 21:30 UTC -- which is the exact two-hours-late failure this file was
-    # rewritten to stop, just moved to the days nobody checked. Nov 16, Nov 30
-    # and Dec 28 are all still ahead of us and all fall in EST, so the catch-all
-    # would have been an hour late on each, in the middle of post-harvest
-    # marketing.
-    #
-    # A Monday run costs a minute of CI on the forty-six Mondays a year that
-    # publish nothing, because the commit step is a no-op when the data has not
-    # moved. Six correct release days are worth forty-six wasted minutes.
     - cron: '47 19 * * 1'
     - cron: '17 20 * * 1'
     - cron: '47 20 * * 1'
     - cron: '17 21 * * 1'
-    # The daily catch-all stays: a release shifted somewhere neither Friday nor
-    # Monday covers, or a dropped cron, self-heals the next day instead of
-    # leaving the page stale a week.
     - cron: '33 21 * * *'
   workflow_dispatch:
 
@@ -75,47 +38,21 @@ jobs:
         with:
           python-version: '3.12'
 
-      # yfinance + pandas are needed by the price-enrichment step below.
       - name: Install dependencies
         run: pip install --quiet yfinance==1.7.0 pandas==3.0.6
 
       - name: Fetch CFTC COT data
         run: python scripts/fetch_cot.py
 
-      # Enrichment MUST run AFTER fetch_cot.py, in the same job: fetch_cot.py
-      # rewrites cot.json / cot-history.json fresh with no price field, so the
-      # COT-date-aligned prices have to be re-attached here. (Replaces the old
-      # standalone cot-prices.yml — DELETE that file; running both races this job
-      # over the same data files, which is what caused the rebase conflict.)
       - name: Enrich COT data with prices
         run: python scripts/enrich_cot_prices.py
 
-      # ── THE TWENTY-YEAR FILE AND THE ANALYSIS ─────────────────────────
-      # cot-release-watch.yml is now the fast path -- it probes CFTC every
-      # five minutes across the release window and publishes within minutes
-      # of the report existing. These steps run here too, on the old
-      # schedule, so that this workflow remains a COMPLETE backstop: if the
-      # watcher is disabled, throttled or dropped, a reader still gets the
-      # analysis, just later.
-      #
-      # --append is O(one week) and takes the new row from the same API the
-      # watcher probes. The twenty-year archive rebuild lives in
-      # cot-deep-rebuild.yml and never runs on a release day.
-      #
-      # continue-on-error on the append is deliberate: data/cot-deep.json may
-      # not exist yet on the first run after deploy, and the page is built to
-      # show nothing rather than something wrong when the analysis file is
-      # missing. The COT numbers themselves must still publish.
       - name: Prove the readers and the calendar
         continue-on-error: true
         run: |
           python scripts/cot_calendar.py
           python scripts/cot_deep.py --selftest
 
-      # data/cot-deep.json lives on the private raw branch (Nov 4: no page
-      # reads it). Unpacked before the append; a failed fetch fails this step,
-      # the append then finds no file and stops, and the COT numbers still
-      # publish (continue-on-error, as for the append). Never commits it to main.
       - name: Deep history from raw
         id: rawpull
         continue-on-error: true
@@ -128,9 +65,6 @@ jobs:
         continue-on-error: true
         run: python scripts/cot_deep.py --append
 
-      # Saved back only after a clean append: a failed one never overwrites
-      # the good copy on raw. RAW_SOFT: a failed save is a warning, the COT
-      # data still publishes; Sunday's cot-deep-rebuild.yml rebuilds the file.
       - name: Save the deep history to raw
         if: steps.deep.outcome == 'success'
         env:
@@ -146,56 +80,10 @@ jobs:
         continue-on-error: true
         run: python scripts/cot_analysis.py
 
-      # ── RE-BAKE THE PAGE, NOT ONLY THE DATA ────────────────────────────
-      # This workflow had three work steps and committed two JSON files. It
-      # never re-baked cot.html -- and cot.html carries hard numbers that no
-      # JavaScript ever touches: <title>, the meta/og/twitter descriptions,
-      # and the prerendered paragraph a crawler or a no-JS reader sees.
-      #
-      # Those are owned by scripts/bake_seo.py (seo_cot) and
-      # scripts/prerender_wpi_scorecard.py (bake_cot), which ran on their own
-      # clock crons in freshness.yml and daily.yml. Neither has a push
-      # trigger, and this job commits with [skip ci], so nothing could ever
-      # connect a data update to a re-bake. It was a race with no ordering.
-      #
-      # In EST it is not even a race: CFTC publishes 20:30 UTC, the earliest
-      # commit here is 20:45, and the freshness bake runs at 20:35 -- ten
-      # minutes too early. freshness.yml has no weekend run, so the next bake
-      # is Monday 13:35 UTC. Sixty-five hours of Google results, Slack
-      # unfurls and no-JS readers on last week's figures.
-      #
-      # And not merely stale -- WRONG-SIGNED. Measured with the Aug 18 data
-      # live: the crawler paragraph read "Soybeans funds net long 109,109
-      # contracts" while the actual position was net SHORT 8,891.
-      #
-      # Baking here, in the job that owns the data, is the fix. One writer.
-      # ONLY THE COT BAKE, AND ONLY AFTER THE DATA IS SAFE.
-      #
-      # Run bare, prerender_wpi_scorecard.py bakes several pages -- whats-priced-in,
-      # scorecard, cot and the homepage -- and the others belong to other
-      # workflows (analyst-scorecard.yml, daily.yml, whats-priced-in.yml). This
-      # job has no business writing them: it would leave files dirty that
-      # the reset loop below then throws away, and worse, a failure baking a
-      # page this workflow does not own would take the price update down with
-      # it. bake_cot() is called directly instead.
-      #
-      # continue-on-error is deliberate and is NOT softening a failing check --
-      # the "Bake result" step below still fails the run. What it buys is
-      # ordering: the data commits either way. The live page reads cot.json
-      # from JavaScript, so readers get this week's numbers even on a morning
-      # when the head tags cannot be rebuilt. Withholding the price data
-      # because a meta description could not be regenerated would be the wrong
-      # trade for the person refreshing the page at 3:30.
       - name: Re-bake the COT head tags and crawler summary
         id: bake
         continue-on-error: true
         run: |
-          # ALL OR NOTHING. bake_seo writes the head tags and prerender writes
-          # the crawler paragraph; if the second fails after the first wrote,
-          # the committed page carries this week's <title> above last week's
-          # paragraph -- internally contradictory, and committed, because the
-          # data commit runs regardless. Snapshot first and roll back on any
-          # failure so the page is either fully rebaked or untouched.
           cp cot.html /tmp/cot.prebake.html
           trap 'cp /tmp/cot.prebake.html cot.html; echo "bake failed - cot.html rolled back"' ERR
           set -e
@@ -215,8 +103,6 @@ jobs:
           PY
           trap - ERR
 
-      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
-      # Best effort: a share card must never block the data commit.
       - name: Share image
         continue-on-error: true
         run: |
@@ -228,11 +114,6 @@ jobs:
         run: |
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          # cot.json / cot-history.json are FULLY regenerated each run, so our
-          # copies are always authoritative. Rather than rebase (which conflicts
-          # when another run committed the same files mid-job), snapshot our
-          # files, hard-sync to the latest remote, lay ours back on top, and
-          # commit a clean delta. Retry the push if the remote moves again.
           cp data/cot.json          /tmp/cot.json
           cp data/cot-history.json  /tmp/cot-history.json
           cp cot.html               /tmp/cot.html
@@ -263,10 +144,6 @@ jobs:
           echo "ERROR: could not push after 5 attempts"
           exit 1
 
-      # The bake is allowed to fail without taking the data with it, but it is
-      # not allowed to fail QUIETLY. If the head tags could not be rebuilt, the
-      # page is publishing last week's numbers to crawlers and that has to be
-      # visible in the Actions list, not buried in a green run.
       - name: Bake result
         if: steps.bake.outcome == 'failure'
         run: |
@@ -275,17 +152,10 @@ jobs:
           echo "still on the previous report. Fix the baker and re-run."
           exit 1
 
-      # THE PAGE MUST SAY WHAT THE DATA SAYS. On 2026-10-09 the watcher committed
-      # the Oct 6 report while the bake above had died (seed_static.py used a
-      # Python 3.12 f-string and both COT jobs ran 3.11), so cot.html's title kept
-      # the Sept 29 net. "Bake result" catches a bake that fails; this, the last step, catches
-      # any way the committed cot.html and data/cot.json end up apart.
       - name: cot.html matches data/cot.json
         if: ${{ !cancelled() && steps.commit.outcome == 'success' }}
         run: python scripts/check_cot_baked.py
 
-      # The deep history could not be read from raw: the COT numbers published,
-      # the analysis did not move. Loud, not quiet.
       - name: Deep history result
         if: ${{ !cancelled() && steps.rawpull.outcome == 'failure' }}
         run: |

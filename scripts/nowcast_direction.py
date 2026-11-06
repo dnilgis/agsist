@@ -80,12 +80,7 @@ def _ledger():
     if LEDGER.exists():
         return json.loads(LEDGER.read_text())
     return {
-        "note": ("Directional record of the AGSIST yield nowcast against USDA's next "
-                 "WASDE print. Locked from the live model before each report, graded by "
-                 "arithmetic after it, never edited. 'agree' means the model saw no "
-                 "revision coming (gap inside call_eps). Misses stay. When USDA later "
-                 "corrects a figure a row used, the correction and the grade against it "
-                 "go beside the row (nass_correction), never over it."),
+        "note": ("Record of the AGSIST yield nowcast against USDA's next WASDE print, kept before each report and never edited. Misses stay."),
         "call_eps": CALL_EPS, "rev_eps": REV_EPS,
         "calls": [],
     }

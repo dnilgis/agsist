@@ -35,21 +35,30 @@ def hmac16(msg, secret):
     return hmac.new(secret.encode(), msg.lower().encode(), hashlib.sha256).hexdigest()[:16]
 
 
-def main():
-    base = urllib.parse.urlsplit(os.environ["LIST_URL"].strip())
-    base = "%s://%s" % (base.scheme, base.netloc)
-    secret = os.environ["UNSUB_SECRET"]
-    req = urllib.request.Request(
-        "https://api.github.com/repos/dnilgis/feedbag/contents/private/%s?ref=private-data"
-        % os.environ.get("PENDING_FILE", "pending-signups.jsonl"),
-        headers=dict(UA, Authorization="Bearer " + os.environ["PRIVATE_REPO_TOKEN"], Accept="application/vnd.github.raw"))
-    rows = [json.loads(l) for l in urllib.request.urlopen(req, timeout=30).read().decode().splitlines() if l.strip()]
+def refused(code, txt):
+    """True when the worker gave a definite answer that adding again will never change: HTTP 200 whose
+    JSON says ok false (an address already present, or one it will not take), or, on the confirm step,
+    a 200 page that is not the 'watching' page. A non-200 or a dropped call may pass on a rerun, so it
+    is not this. Reads the body only to decide; nothing of it is returned or printed."""
+    if code != 200:
+        return False
+    try:
+        d = json.loads(txt)
+    except ValueError:
+        return True
+    return isinstance(d, dict) and d.get("ok") is False
+
+
+def restore(rows, base, secret, post=post):
+    """Post each record. -> (added counts, failed, settled, log lines). Counts and the record number
+    only: never an address. failed = may pass on a rerun; settled = refused for good (see refused())."""
     done = {"daily": 0, "notice": 0, "elevator alert": 0}
-    bad = 0
-    for r in rows:
+    bad, settled, out = 0, 0, []
+    for n, r in enumerate(rows, 1):
         e = str(r.get("email", "")).strip().lower()
         d = r.get("details") or {}
         lst = r.get("list", "")
+        gone = False
         if lst == "AGSIST Daily":
             body = {"email": e, "source": r.get("source") or "signup-fallback", "reports": bool(d.get("reports"))}
             if r.get("zip"):
@@ -58,10 +67,12 @@ def main():
                 body["cw"] = True      # "Your county this week" ticked (subs worker v5.56)
             code, txt = post(base + "/subscribe", body)
             ok = code == 200 and '"ok":true' in txt
+            gone = refused(code, txt)
             kind = "daily"
         elif lst.startswith("notice"):
             code, txt = post(base + "/notice", {"email": e, "topic": r["topic"], "source": "signup-fallback", "daily": False})
             ok = code == 200 and '"ok":true' in txt
+            gone = refused(code, txt)
             kind = "notice"
         elif lst == "elevator alert":
             wid = d["wid"].lower()
@@ -71,19 +82,40 @@ def main():
             body.update(email=e, wid=wid)
             code, txt = post(base + "/elevator-watch-subscribe", body)
             ok = code == 200 and '"ok":true' in txt
+            gone = refused(code, txt)
             if ok:
                 q = urllib.parse.urlencode({"e": e, "w": wid, "t": hmac16(e + "|ec|" + wid, secret)})
                 code, txt = post(base + "/elevator-watch-confirm?" + q)
                 ok = code == 200 and "You are watching" in txt
+                gone = not ok and code == 200
             kind = "elevator alert"
         else:
             ok, kind = False, None
         if ok:
             done[kind] += 1
+        elif gone:
+            # answered 200 and refused: it will never add, so a rerun cannot fix it. Done, by count.
+            settled += 1
+            out.append("settled: record %d (%s) refused by the worker, HTTP 200; it will not add" % (n, lst))
         else:
             bad += 1
-            print("not added: one %s record (HTTP %s)" % (lst or "unknown", code if kind else "-"))
-    print("added: %s; not added: %d" % (", ".join("%s %d" % kv for kv in done.items()), bad))
+            out.append("not added: record %d (%s) (HTTP %s)" % (n, lst or "unknown", code if kind else "-"))
+    return done, bad, settled, out
+
+
+def main():
+    base = urllib.parse.urlsplit(os.environ["LIST_URL"].strip())
+    base = "%s://%s" % (base.scheme, base.netloc)
+    secret = os.environ["UNSUB_SECRET"]
+    req = urllib.request.Request(
+        "https://api.github.com/repos/dnilgis/feedbag/contents/private/%s?ref=private-data"
+        % os.environ.get("PENDING_FILE", "pending-signups.jsonl"),
+        headers=dict(UA, Authorization="Bearer " + os.environ["PRIVATE_REPO_TOKEN"], Accept="application/vnd.github.raw"))
+    rows = [json.loads(l) for l in urllib.request.urlopen(req, timeout=30).read().decode().splitlines() if l.strip()]
+    done, bad, settled, out = restore(rows, base, secret)
+    for line in out:
+        print(line)
+    print("added: %s; refused for good: %d; not added: %d" % (", ".join("%s %d" % kv for kv in done.items()), settled, bad))
     return 1 if bad else 0
 
 

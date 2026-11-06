@@ -1,22 +1,7 @@
 name: yield-panel
-
-# "What everyone else says" on /conditions-yield — the panel of independent 2026
-# yield forecasts beside our own nowcast.
-#
-# SEPARATE FROM cond-yield.yml ON PURPOSE. That workflow is gated on an
-# in-season window and skips itself outside it, which is right for a ratings
-# model and wrong for this: the benchmark file is edited by hand, and an edit
-# made in December has to reach the page in December. This job carries no
-# seasonal gate.
-#
-# It reads two files and owns neither number. data/yield-benchmarks.json is the
-# hand-maintained roster of other people's forecasts; data/yield-nowcast.json is
-# ours, read rather than copied so the panel cannot disagree with the tiles
-# above it.
+# yield-panel.
 
 on:
-  # The point of a hand-maintained file is that editing it does something. A
-  # push to either of these rebuilds the panel within the minute.
   push:
     branches: [main]
     paths:
@@ -24,17 +9,8 @@ on:
       - 'scripts/build_yield_benchmarks.py'
       - 'conditions.html'
       - 'scripts/bake_crop_size.py'
-  # Daily, off the hour. The nowcast lands Tuesdays 03:18 UTC, so this picks up
-  # a fresh model number the same morning and every other day is a no-op that
-  # commits nothing.
   schedule:
     - cron: '24 4 * * *'
-  # USDA'S NUMBER MOVES ON REPORT DAY, so this runs when the WASDE watcher
-  # finishes. It finishes every 15 minutes; the gate job below lets a run
-  # through only when data/wasde.json carries a USDA yield the panel has not
-  # picked up yet (scripts/usda_current.py --gate panel). A bot commit to
-  # data/wasde.json does not fire the push trigger above, which is why the
-  # panel kept September's 178.5 a day after the 181.2 print.
   workflow_run:
     workflows: ["WASDE watch — grade the report as it lands"]
     types: [completed]
@@ -44,9 +20,6 @@ permissions:
   contents: write
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -112,9 +85,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Hand-worked answers before anything is written. The failure this
-      # guards against is silent: a sort that stops sorting or a rank off by
-      # one produces a panel that looks fine and ranks people wrongly.
       - name: Selftest the builder
         run: |
           python scripts/usda_current.py --selftest
@@ -122,19 +92,12 @@ jobs:
           python scripts/bake_seo.py --selftest
           python scripts/bake_crop_size.py --selftest
 
-      # Refuses to write on an unsourced forecast, and refuses if it disagrees
-      # with data/crop-tour.json about a figure both pages print. A red X here
-      # means the panel did not update and the old one is still correct.
       - name: Build the panel
         run: |
           python scripts/build_yield_benchmarks.py
-          # the page's title and description name the forecasts in this file
           python scripts/bake_seo.py --page conditions.html
-          # and the forecast table, model and record are baked into the page
           python scripts/bake_crop_size.py
 
-      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
-      # Best effort: a share card must never block the data commit.
       - name: Share image
         continue-on-error: true
         run: |

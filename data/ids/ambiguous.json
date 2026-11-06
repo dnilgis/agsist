@@ -1,5 +1,5 @@
 {
- "note": "Keys that matched more than one facility at the strongest step that matched at all. Each has its own record; fix by hand with a ledger line, never by guessing.",
+ "note": "Facilities that could not be matched to a single record. Each has its own record.",
  "keys": [
   {
    "key": "basis:AL|AGREX INC|MONTGOMERY",

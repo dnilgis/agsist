@@ -1,25 +1,11 @@
 name: Rain Print Canada stations
-
-# Rebuilds data/rain-print-ca/stations.json for Rain Print in Canada
-# (components/rp-canada.js): the Canadian stations in NOAA's GHCN-Daily (ECCC
-# climate stations and CoCoRaHS Canada gauges), how whole each year's record
-# is, and each station's 1991-2020 monthly averages. Read from NOAA's public
-# S3 copy (noaa-ghcn-pds). Monthly: a new year's letter appears after Jan 31.
-# The page reads each year's days live from S3, so this list only ranks and
-# names the stations; a stale list never changes a total.
+# Rain Print Canada stations.
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '23 9 3 * *'   # the 3rd of each month
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: '23 9 3 * *'
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -28,7 +14,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

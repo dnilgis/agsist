@@ -1,13 +1,5 @@
 name: Site size budget
-
-# GitHub Pages will not deploy a site over 1 GB. Past that the site does not
-# break, it freezes: every data commit stops reaching readers and nothing on
-# the page says so. scripts/check_site_budget.py measures what Pages publishes
-# (the filtered artifact pages_publish.py stages: the tree minus .git, dot
-# folders and NOT_READER_FACING; Nov 4, Sig: count only published bytes) and fails
-# on the published total, a top-level folder over its budget, or a page in a
-# generated set over its size cap. Raising a budget is a decision made in that
-# file, in the same commit, with the reason in the message.
+# Site size budget.
 
 on:
   push:

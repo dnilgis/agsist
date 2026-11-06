@@ -1,38 +1,8 @@
 name: Render audit — what a farmer's browser actually gets
-
-# ══════════════════════════════════════════════════════════════════════════════
-#  WHY THIS EXISTS
-# ══════════════════════════════════════════════════════════════════════════════
-#  On 2026-09-05 four defects shipped. Every one passed every check in this
-#  repository. Every one was obvious the moment a person opened the page:
-#
-#    /elevators       the CARTO style was `dark_matter`, which is a 404. The map
-#                     drew 4,581 dots on a black void for a day.
-#    /sponsor-report  the card used two CSS variables that do not exist, so a
-#                     near-white panel carried the dark theme's light text.
-#    /                the bid network shipped and the homepage never said so.
-#    the sponsor ad   the homepage card and the email block read different key
-#                     names, so a paid ad would have shown zero impressions.
-#
-#  The checks in this repository read CODE. A farmer gets a RENDERED PAGE. A
-#  grep cannot see a 404 tile, a contrast ratio, or a number that never arrived.
-#
-#  IT RUNS HERE AND NOT IN A CHAT SESSION for a specific reason: the sandbox
-#  those checks were written in cannot reach agsist.com, cdnjs or the tile host.
-#  Leaflet was `undefined` in every "render check" of the map, so the map never
-#  initialised and the checks were measuring an empty page while reporting
-#  success. A GitHub runner has open egress. The audit belongs where the network
-#  is real, on a schedule, not depending on anybody being in a conversation.
-#
-#  The script says so itself: if several third-party hosts fail to connect, it
-#  reports ONE finding saying the run proves nothing, rather than a confident
-#  list of things that are not actually wrong.
-# ══════════════════════════════════════════════════════════════════════════════
+# Render audit: what a farmer's browser actually gets.
 
 on:
   schedule:
-    # 06:40 Central, after the morning briefing has published and the data
-    # workflows have run — so it audits the site as it will be read today.
     - cron: '40 11 * * *'
   workflow_dispatch:
     inputs:
@@ -54,7 +24,7 @@ env:
 
 jobs:
   audit:
-    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: read
@@ -70,8 +40,6 @@ jobs:
         with:
           node-version: 22
 
-      # The browser is the whole point. --with-deps pulls the system libraries
-      # a headless Chromium needs on a bare runner.
       - name: Install a real browser
         run: |
           npm install --no-save playwright@1.49.1
@@ -80,8 +48,6 @@ jobs:
       - name: Audit
         id: audit
         continue-on-error: true
-        # Inputs reach the shell only through env and are checked first: a
-        # dispatch token must not be able to run commands in a write job.
         env:
           IN_PAGES: ${{ inputs.pages }}
           IN_BASE: ${{ inputs.base || 'https://agsist.com' }}
@@ -100,10 +66,6 @@ jobs:
           fi
           node scripts/audit-site.mjs --base "$IN_BASE" "${ARGS[@]}"
 
-      # Kept so the TREND exists. One audit says what is broken today; a
-      # file in git says whether the site is getting better or worse. No page
-      # reads it, so since Oct 20 it goes to the private repo (branch
-      # private-data, private/data/audit.json), not main.
       - name: Keep the record
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -113,13 +75,6 @@ jobs:
           HIGH=$(python3 -c "import json;print(json.load(open('private/data/audit.json'))['high'])" 2>/dev/null || echo "?")
           bash scripts/push_raw.sh "audit: $HIGH high finding(s)" private/data/audit.json
 
-      # ══════════════════════════════════════════════════════════════════
-      #  AN ALERT HAS TO REACH A PERSON
-      # ══════════════════════════════════════════════════════════════════
-      #  A red tick on a page nobody has open is not an alert. This is the
-      #  same reasoning as the bids reader's own failure mail: the email goes
-      #  first, and it cannot fail the job, because a mail problem must never
-      #  be the reason a site problem goes unreported.
       - name: Email, if the site is broken
         if: steps.audit.outcome == 'failure'
         continue-on-error: true
@@ -152,7 +107,6 @@ jobs:
           body.append("\nFull report: the run summary in Actions, and private/data/audit.json in the private repo.")
           m = EmailMessage()
           m["Subject"] = "agsist: render audit found %d problem(s)" % len(high)
-          # FROM_ADDR first: an SES login is a key id, not an address
           sender = (os.environ.get("FROM_ADDR") or "").strip() or (os.environ.get("SMTP_USER") or "").strip() or to
           if "@" not in sender:
               print("::warning::FROM_ADDR is required when SMTP_USER is not an address; audit findings not emailed")
@@ -162,7 +116,7 @@ jobs:
           text = "\n".join(body)
           try:
               import sys; sys.path.insert(0, "scripts")
-              import email_links   # no worker host in any email: named as "the subs worker", and the send guard
+              import email_links
               text = email_links.scrub_text(text)
           except ImportError:
               text = text.replace(".workers.dev", " worker")

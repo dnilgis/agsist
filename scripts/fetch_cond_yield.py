@@ -209,10 +209,7 @@ def main():
         raise SystemExit("FATAL: NASS_API_KEY not set")
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
            "source": "USDA NASS weekly crop condition + annual state yield (YEAR only), 2000-present",
-           "note": ("R² is against yield DEVIATION FROM TREND (raw R² kept for transparency). "
-                    "Week pairs are exact ISO weeks; states/weeks with under 15 paired years "
-                    "are omitted rather than thinly fitted. Slope is bu/acre-deviation per "
-                    "G+E point."),
+           "note": ('Fit by state and week from USDA NASS conditions and yields. States and weeks without enough history are left out.'),
            "min_n": MIN_N, "crops": {}}
     total = 0
     cached = {}
@@ -231,7 +228,7 @@ def main():
     json.dump(out, open(OUT, "w"), separators=(",", ":"))
     print(f"wrote {OUT} ({total} state-crop fits)")
     pairs_out = {"generated": out["generated"],
-                 "note": "Full-history (2000+) same-week G+E vs final-yield pairs for the Yield Nowcast. Rebuilt weekly; current year excluded from pairs (it has no final yield yet).",
+                 "note": 'Condition and final yield history from USDA NASS, rebuilt weekly.',
                  "crops": {slug: emit_pairs(*cached[slug]) for slug in cached}}
     json.dump(pairs_out, open(PAIRS_OUT, "w"), separators=(",", ":"))
     print(f"wrote {PAIRS_OUT} ({sum(len(c['states']) for c in pairs_out['crops'].values())} state panels)")

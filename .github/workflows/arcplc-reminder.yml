@@ -1,28 +1,6 @@
 name: ARC/PLC signup reminder
-# Mails the readers who asked an ARC/PLC page to "Remind me a week before the
-# Dec 11 signup deadline" (subs worker v5.11, topic arcplc:<deadline>).
-# Runs three times a day in Nov, Dec, Feb and Mar. scripts/send_notice.py
-# decides: it mails only when today (America/Chicago) is a deadline from
-# build_arc_plc.py minus 7 days (Dec 4 2026 for Dec 11, Mar 8 2027 for Mar 15),
-# with three days of catch-up if GitHub drops every fire that day. Every
-# other run prints "no notice due" and stops. Each address is marked in the
-# worker after its send, so the later fires that day mail nobody twice.
-# Manual run: dry_run (default true) prints counts and a preview with a
-# made-up address; a topic sends that topic on any day before its deadline.
-# Secrets (the same as the other senders): LIST_URL, LIST_TOKEN, UNSUB_SECRET,
-# SMTP_USER/SMTP_PASS (or GMAIL_USER/GMAIL_APP_PASS). Optional: SMTP_HOST,
-# SMTP_PORT, FROM_ADDR, REPLY_TO.
-#
-# GitHub's scheduler drops most scheduled fires (Nov 2, 2026 it started neither monthly
-# email; scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain
-# Bids" (cron-job.org, every 15 minutes), and the gate job lets exactly one run per tick of
-# the cron below do the work: the first run after 14:10, 17:10 or 20:10 UTC, by either
-# trigger, within 170 minutes, so each tick's window closes before the next tick and the
-# last one (20:10) by 23:00 UTC, 17:00 Central, the same Central day send_notice.py decides
-# on. Every other run, and every run outside Nov, Dec, Feb and Mar, skips in seconds. A run
-# started by hand does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE); each address
-# is marked after its send, so no reader is mailed twice. A chained run takes the scheduled
-# path (--send).
+# ARC/PLC signup reminder.
+
 on:
   schedule:
     - cron: '10 14,17,20 * 11,12,2,3 *'
@@ -44,7 +22,6 @@ permissions:
   contents: read
 
 jobs:
-  # One run per tick (see the top). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -78,7 +55,6 @@ jobs:
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # the queue is on the sending job only, so the chained skips never wait in it
     concurrency:
       group: arcplc-reminder
       cancel-in-progress: false
@@ -106,7 +82,7 @@ jobs:
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}

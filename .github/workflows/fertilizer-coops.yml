@@ -1,21 +1,5 @@
 name: Fertilizer co-op posted prices
-
-# Writes data/fertilizer-coops.json (and appends price changes to
-# data/fertilizer-coops-history.json) for the "What co-ops are posting" section
-# of fertilizer.html: the retail prices farm co-ops post on their own websites.
-# The co-ops are listed in scripts/coop_fert_sources.json; the reader is
-# scripts/fetch_coop_fert.py (one parser per page layout). The sandbox cannot
-# reach co-op sites; a runner can.
-#
-# It then rebuilds data/fertilizer-prices.json, the one fertilizer price list
-# every page reads, and rebakes the pages that carry a price
-# (scripts/fert_after_prices.sh).
-#
-# Weekdays, morning Central. One request at a time with a pause between, a
-# handful of pages a day. Nothing new, no commit.
-#
-# The co-ops are the ones Sig sent (Oct 15). Nothing searches for more: a new
-# co-op is a line Sig adds to scripts/coop_fert_sources.json by hand.
+# Fertilizer co-op posted prices.
 
 on:
   workflow_dispatch:
@@ -25,15 +9,8 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '41 13 * * 1-5'    # weekdays, morning Central
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: '41 13 * * 1-5'
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -42,7 +19,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -89,9 +65,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      # The price sheet parser reads pdftotext -layout columns; pypdf is the
-      # fallback only.
-      # pdftotext without apt (pinned and checksummed; apt hung 30 min on Oct 22)
       - name: pdftotext
         timeout-minutes: 5
         uses: ./.github/actions/pdftotext
@@ -103,9 +76,6 @@ jobs:
           python scripts/build_fert_prices.py --selftest
           python scripts/bake_fert_defaults.py --selftest
           python scripts/build_coop_places.py --selftest
-      # Probe (Oct 28): robots.txt and a parse of every co-op and the "pending"
-      # candidates in scripts/coop_fert_sources.json. Writes no prices; the
-      # saved pages go to the raw branch (never deployed) for fixtures.
       - name: Probe (robots and parse, no prices written)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: python scripts/fetch_coop_fert.py --probe
@@ -119,16 +89,11 @@ jobs:
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_coop_fert.py
 
-      # Share cards for /fertilizer and /manure-value (scripts/fert_after_prices.sh).
       - name: Install pillow for the share cards
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         continue-on-error: true
         run: pip install --quiet pillow==12.3.0
 
-      # The commit loop re-runs scripts/fert_after_prices.sh after every reset,
-      # so data/fertilizer-prices.json and the baked pages (fertilizer,
-      # breakeven, manure-value, fast-facts) always match both source files on
-      # the branch being pushed, whichever fertilizer workflow pushed last.
       - name: Commit if changed (race-tolerant)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: |
@@ -149,7 +114,7 @@ jobs:
             mkdir -p data && cp -r /tmp/fcoop/data/. data/
             bash scripts/fert_after_prices.sh
             for f in $FILES $BAKED; do [ -e "$f" ] && git add "$f" || true; done
-            [ -e data/fert-coop-places.json ] && git add data/fert-coop-places.json || true   # co-op town points (scripts/build_coop_places.py)
+            [ -e data/fert-coop-places.json ] && git add data/fert-coop-places.json || true
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Fertilizer co-op posted prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

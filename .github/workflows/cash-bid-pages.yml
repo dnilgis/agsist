@@ -1,40 +1,12 @@
 name: cash-bid-pages
+# cash-bid-pages.
 
-# Rebuilds /cash-bids/<state>/<town> and /cash-bids/<state>/ -- crawlable,
-# script-free pages of today's AGSIST network bids -- plus
-# sitemap-cash-bids.xml. Network data ONLY (dnilgis/bids merged-all.json,
-# index.json and geocodes/zip-towns.json, read from the same Pages URL
-# scripts/fetch_bids.py reads). No key is passed to this job, the
-# script never opens data/bids.json, and no futures price is printed.
-#
-# Since 2026-10-10 the state index is also the state's basis page (/basis/<state>
-# forwards to it): the basis comes from scripts/basis_method.py, the full
-# elevator table is data/state-basis/<ST>.json, every state's headline is
-# data/basis-states.json, and /basis gets the state answer and ranking baked in.
-#
-# MACHINE-OWNED: edit scripts/build_cash_bid_pages.py, never cash-bids/*/*.html.
-# It also rewrites the og:/twitter: description of cash-bids.html (the link
-# preview) with the network's counts and time; nothing else in that file.
-# There is deliberately no cash-bids/index.html: /cash-bids is cash-bids.html.
-#
-# WHEN. After every "Fetch Grain Bids" run (a bot push cannot trigger another
-# workflow, so workflow_run is how this one hears the clock), plus a backstop
-# and a button. That run fires every 15 minutes; rebuilding ~1,200 pages that
-# often would put a commit of a few hundred changed pages into git four times an
-# hour. Measured 2026-10-07 on the bids repo's own history: a rebuild 1 h after
-# the last changes ~120 pages, 3 h after ~270, 6 h after ~1,570, and the full
-# set packs to ~0.85 MB with ~0.15 MB per 3-hour update. So the gate below
-# rebuilds at most once every MIN_GAP_MIN minutes (about 10 a day), unless run
-# by hand with force. A run whose pages did not change commits nothing.
-#
-# The Fetch Grain Bids conclusion is NOT required to be success: these pages
-# read the network directly, not that run's files.
 on:
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
   schedule:
-    - cron: "19 */6 * * *"     # backstop, off the :00/:30 pile-up
+    - cron: "19 */6 * * *"
   workflow_dispatch:
     inputs:
       force:
@@ -60,9 +32,6 @@ jobs:
     outputs:
       go: ${{ steps.age.outputs.go }}
     steps:
-      # When did the pages last change on main? From the API, not a checkout:
-      # the bids bot commits every 15 minutes, so a shallow clone rarely reaches
-      # the last pages commit. No answer means "build", never "skip".
       - id: age
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -102,43 +71,24 @@ jobs:
       - name: Selftest (gate)
         run: python scripts/build_cash_bid_pages.py --selftest
 
-      # The state pages carry the state's basis with its change in a week, from
-      # the bids repo's merged-all.json about 7 days back (one GitHub API call).
       - name: Build pages from the network feed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/build_cash_bid_pages.py --print-new /tmp/new-urls.txt
 
-      # Each state page carries its sponsor slot (cash-bids-<state>); the list the
-      # sponsor sign-up form offers is read off the pages, so it follows a state
-      # that gains or loses its page.
       - name: Sponsor slot list
         run: python scripts/stamp_rates.py
 
-      # The county rain and Farmland Atlas pages link the nearest town pages
-      # (scripts/nearest_towns.py: only towns whose page exists and is indexable).
-      # A rebuild here can add a town or mark one noindex, so both county page
-      # sets are rebuilt in the same commit; otherwise their links go stale and
-      # every PR's --check fails (Oct 23, 2026: Rockwell IA added, Hawkeye IA noindex).
-      # Both generators are offline and read only committed files.
       - name: Rebuild county rain and Atlas town links
         run: |
           python scripts/build_county_rain.py
           python scripts/build_atlas_pages.py
-          # /here reads which page kinds each county has (data/atlas/pct k flags)
           python scripts/build_place_pct.py
 
-      # The summary files that read these pages (BUILD-RULES 61): the site
-      # search index (towns and elevators in search follow every rebuild),
-      # data/feeds.json and llms.txt, rebuilt and staged for the commit below
-      # (scripts/generated_sets.py SUMMARIES). A summary that fails to build is
-      # a warning and the old copy stays; the town pages still ship.
       - name: Rebuild the summary files
         continue-on-error: true
         run: python scripts/generated_sets.py dependents cash-bids rain farmland-atlas --stage
 
-      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
-      # Best effort: a share card must never block the data commit.
       - name: Share image
         continue-on-error: true
         run: |
@@ -150,17 +100,13 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          # cash-bids.html: only its og:/twitter: description (network counts and time) is rewritten
-          # basis.html: only its SEED:statepick and SEED:staterank blocks (the state basis) are rewritten
           git add -A data/atlas/pct
           git add -A cash-bids data/pointers data/sponsor-slots.json sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg rain sitemap-rain.xml farmland-atlas sitemap-atlas.xml
           if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
           git diff --staged --shortstat
           git commit -q -m "pages: rebuild /cash-bids town pages from the elevator network"
-          # the bids bot commits to main every 15 minutes; rebase and retry
           for i in 1 2 3 4; do
             git rebase --abort 2>/dev/null || true
-            # a conflict only in the summary files is rebuilt on the rebased tree, never kept from one side (BUILD-RULES 61)
             if python3 scripts/generated_sets.py pull-rebase cash-bids rain farmland-atlas --autostash && git push -q; then
               echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0
             fi
@@ -168,13 +114,9 @@ jobs:
           done
           echo "push failed after 4 attempts"; exit 1
 
-      # Pages first written this run, and every state index (their town lists
-      # move with the boards). Not every town page whose prices moved: that is
-      # most of them, every rebuild. The sitemap carries their lastmod.
       - name: IndexNow ping (best-effort)
         if: steps.commit.outputs.changed == '1'
         continue-on-error: true
         run: |
           urls=$(cat /tmp/new-urls.txt; ls -d cash-bids/*/ | sed 's#^#https://agsist.com/#')
-          # shellcheck disable=SC2086
           python scripts/indexnow_submit.py --urls $(echo "$urls" | sort -u) || echo "IndexNow ping failed - harmless"

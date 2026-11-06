@@ -1,29 +1,4 @@
-# Rebake the crop tour page.
-#
-# WHY THIS FILE EXISTS. build_croptour.py has always been able to set the right
-# hero, and bake_seo.py has always been able to set the right title. Nothing
-# ever called either of them on a schedule. build_croptour.py's own comment
-# says so: "NOTHING rebakes crop-tour.html on a schedule (2026-08-15 audit:
-# grep the workflows -- no job runs this baker), so a hero baked 'before'
-# stayed 'before' once scouts rolled." This is the missing job.
-#
-# THREE TRIGGERS, THREE DIFFERENT REASONS:
-#
-#   push on data/crop-tour.json   You edit the file in the browser to add a
-#                                 night's numbers. The page rebuilds from that
-#                                 commit, so editing the data IS publishing.
-#
-#   schedule, pre-dawn daily      Nothing in the data changes overnight, but
-#                                 the DATE does, and both the hero and the
-#                                 title are computed from it. Without this the
-#                                 page is only ever as current as your last
-#                                 edit.
-#
-#   workflow_dispatch             Run it by hand from the Actions tab.
-#
-# ONE PAGE, ON PURPOSE. bake_seo.py stamps nine pages when run bare. This job
-# passes --page crop-tour.html so a crop tour commit cannot quietly restamp the
-# futures titles off whatever prices.json happened to be sitting in the repo.
+# bake crop tour.
 
 name: bake crop tour
 
@@ -34,28 +9,11 @@ on:
       - "data/crop-tour.json"
       - "scripts/build_croptour.py"
       - "scripts/bake_seo.py"
-      # THE NOWCAST TILE IS READ FROM THE MODEL'S OWN FILE, so when the model
-      # reruns, this page is out of date until something rebakes it. Without
-      # this path the tile lagged the model by nine days. Found 2026-08-20.
       - "data/yield-nowcast.json"
-      # crop-tour.html is a HAND-MAINTAINED TEMPLATE. Editing it in the browser
-      # -- which is how the template gets edited -- used not to trigger this
-      # job, so a pasted template sat unbaked until the 09:20 UTC cron the next
-      # morning. During tour week that is the whole evening spike.
       - "crop-tour.html"
   schedule:
-    # 09:20 UTC is 4:20am Central in CDT and 3:20am in CST. Before dawn in
-    # both, so the clocks changing cannot walk this into daylight.
     - cron: "20 9 * * *"
-    # TOUR WEEK ONLY, and it is the whole point of the job during that week:
-    # 01:30 UTC is 8:30pm Central, half an hour after the nightly meetings
-    # start reporting. It costs one run a night and it means a night's numbers
-    # cannot sit unpublished because nobody happened to push.
     - cron: "30 1 17-22 8 *"
-  # AFTER THE TOUR THE BANNER NAMES USDA'S CURRENT NUMBER, read from
-  # data/wasde.json. The watcher's bot commit does not fire the push trigger,
-  # so this chains off it; the gate lets a run through only when the baked
-  # banner does not already carry that print (scripts/usda_current.py).
   workflow_run:
     workflows: ["WASDE watch — grade the report as it lands"]
     types: [completed]
@@ -65,9 +23,6 @@ permissions:
   contents: write
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -120,12 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: bake-crop-tour
-      cancel-in-progress: false     # never interrupt a run mid-write
-    # BELT. build_croptour.py resolves America/Chicago itself and refuses to
-    # bake if it cannot, so this is not load-bearing -- but it also makes
-    # date.today(), the shell one-liner at the bottom of this file, and
-    # bake_seo.py agree with the baker instead of running a day ahead after
-    # 7pm Central.
+      cancel-in-progress: false
     env:
       TZ: America/Chicago
     steps:
@@ -140,40 +90,21 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Gate the run on bake_seo's own suite. It is offline and takes under a
-      # second, and it is the thing that catches a title branch that no longer
-      # fits TITLE_MAX -- the failure that silently froze this page's title
-      # through the whole run-up to the 2026 tour.
-      # BRACES. ubuntu-latest ships /usr/share/zoneinfo today, but nothing in
-      # this file guarantees it will tomorrow, and the baker treats a missing
-      # zone as a hard failure rather than a silent fall back to UTC. Installing
-      # the wheel makes zoneinfo work with or without the system database.
       - name: Timezone database
         run: python3 -m pip install --quiet tzdata==2026.5
 
       - name: Check bake_seo
         run: python3 scripts/dev/quiet.py selftest-bake-seo -- python3 scripts/bake_seo.py --selftest
 
-      # THE BAKER'S OWN SUITE HAS NEVER GATED A PUBLISH. This job ran
-      # bake_seo's tests -- a different script's -- and then baked. Every check
-      # in build_croptour.py, including the ones written to stop a withdrawn
-      # forecast being quietly reinstated, ran only when somebody remembered to
-      # type --selftest on their own machine. Found by audit 2026-08-20.
-      # Offline, about a second, same as the gate above it.
       - name: Check the baker
         run: python3 scripts/dev/quiet.py selftest-croptour -- python3 scripts/build_croptour.py --selftest
 
-      # Order matters. The baker writes crop-tour.html between its CT: markers,
-      # and the SEO pass stamps the head of the page it just wrote.
       - name: Bake the page
         run: python3 scripts/dev/quiet.py croptour -- python3 scripts/build_croptour.py
 
       - name: Bake the head
         run: python3 scripts/dev/quiet.py bake-seo -- python3 scripts/bake_seo.py --page crop-tour.html
 
-      # And prove it landed. build_croptour.py --check exits 1 if the HTML no
-      # longer matches the data, so a half-applied bake fails the run instead
-      # of being committed.
       - name: Verify the page matches the data
         run: python3 scripts/dev/quiet.py croptour-check -- python3 scripts/build_croptour.py --check
 

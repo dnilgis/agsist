@@ -115,10 +115,7 @@ def build(sheet_name, cells, elevators, read="2026-10-28", sha=None, url=URL):
     totals = dict(totals, locations=len(rows), in_state=sum(1 for r in rows if r["st"] == ST))
     return {
         "schema": SCHEMA,
-        "note": ("Grain warehouse keepers licensed by Wisconsin DATCP, one row per warehouse keeper license, at the "
-                 "city of the license's mailing address. The list gives no storage capacity. id: the AGSIST "
-                 "elevator id when exactly one of our facilities matches; unjoined "
-                 "and ambiguous rows are listed, never guessed."),
+        "note": ('Licensed grain warehouse and processor locations from the state agriculture department. The list gives no capacity per location.'),
         "source": {"name": SOURCE_LONG, "short": SOURCE_NAME, "url": url, "as_of": as_of, "read": read,
                    "sha256": sha},
         "totals": totals,

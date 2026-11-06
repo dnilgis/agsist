@@ -1,16 +1,6 @@
 name: Farmland Atlas watch emails
-# Watch a county. Every 30 minutes: mail confirmation links to new watchers, and mail a short note to
-# anyone whose watched county's published figures changed since the last note. The list lives in the
-# subs worker (KV). Also runs when the pages workflow finishes, because that is when figures change.
-# Secrets (already used by the hail alert and briefing jobs): LIST_URL, LIST_TOKEN, UNSUB_SECRET,
-# SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME, REPLY_TO.
+# Farmland Atlas watch emails.
 
-#
-# 2026-10-09: the 30-minute cron delivered 32 of 336 fires over Oct 2-9, so a
-# new watcher could wait hours for the confirmation link. It now also runs
-# after every "Fetch Grain Bids" (cron-job.org, every 15 minutes), the same
-# chain elevator-watch.yml uses, and the cron is an hourly fallback. Nothing
-# here writes to the repository, so the chain cannot loop.
 on:
   schedule:
     - cron: '41 * * * *'
@@ -28,9 +18,6 @@ permissions:
   contents: read
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -77,7 +64,7 @@ jobs:
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}

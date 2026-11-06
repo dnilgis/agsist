@@ -856,9 +856,7 @@ def pages_file(ga, rg, now):
                    key=lambda p: (-(pu.get("90d", {}).get(p) or [0])[0], -(pu.get("28d", {}).get(p) or [0])[0], p))
     rows = [[p] + (pu.get("28d", {}).get(p) or [0, 0]) + (pu.get("90d", {}).get(p) or [0, 0]) for p in paths]
     return {"schema": "agsist-audience-pages/1", "built": now, "windows": win,
-            "rule": ("GA4 readers (activeUsers) and views per page path, US only, server towns removed: the same filter as "
-                     "data/audience.json. Paths as GA4 records them (query string dropped by GA4). A page's readers are counted "
-                     "once for that page, so they never add across pages or windows. A page missing here had no reader."),
+            "rule": "GA4 readers and views per page path, US only. A page missing here had no reader.",
             "cols": ["path", "users28", "views28", "users90", "views90"], "rows": rows}
 
 

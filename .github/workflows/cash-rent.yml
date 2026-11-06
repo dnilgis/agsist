@@ -1,19 +1,10 @@
 name: cash-rent
+# cash-rent.
 
-# NASS releases county cash rent estimates each August. Nothing changes the
-# rest of the year, so this runs weekly through Aug/Sep to catch the drop
-# whenever it lands, then sits idle. Manual dispatch for a forced rebuild.
 on:
   schedule:
-    - cron: "20 14 * * 3"     # Wednesdays 14:20 UTC
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: "20 14 * * 3"
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -32,7 +23,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -80,8 +70,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Runs offline, needs no key. If the parsing rules are broken there is no
-      # point spending an hour hammering a public API to find out.
       - name: Selftest (gate)
         run: python scripts/county_yield.py --selftest && python scripts/fetch_cash_rent.py --selftest && python scripts/send_rent_notice.py --selftest
 
@@ -90,7 +78,6 @@ jobs:
         run: |
           M=$(date -u +%m); D="${{ github.event_name }}"
           if [ "$D" = "workflow_dispatch" ]; then echo "go=1" >> $GITHUB_OUTPUT; exit 0; fi
-          # August + September only; the survey publishes in August.
           if [ "$M" = "08" ] || [ "$M" = "09" ]; then echo "go=1" >> $GITHUB_OUTPUT; else
             echo "go=0" >> $GITHUB_OUTPUT; echo "month $M is outside the Aug/Sep release window — skipping"; fi
 
@@ -110,27 +97,19 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # the break-even calculator's small per-state county files read the rent file
           python scripts/build_breakeven_data.py
           git add -A data/cash-rent data/breakeven 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: NASS county cash rent + trend yield"
-          # Rebase onto the branch this run started from (main on schedule; the
-          # branch when dispatched on one). "origin main" made a branch run rebase
-          # against main and then fail its push (2026-10-06).
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
-      # The rent release email (subs worker topic rent:<st>, asked on /rent/<state>):
-      # each notice made before the newest release is mailed once and marked.
-      # Rides this job's schedule (no new cron). The history fetch lets the
-      # sender find a year's first commit when the page has no release date.
       - name: Rent release emails
         if: steps.window.outputs.go == '1'
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -142,21 +121,13 @@ jobs:
           git fetch -q --shallow-since="$(date -u +%Y)-07-01" origin "${GITHUB_REF_NAME}" || true
           python3 scripts/send_rent_notice.py --send
 
-      # The custom rates new-survey email (subs worker topic customrates:<st>, asked on
-      # /custom-rates; Sig, Nov 3): each notice made before its state's newest survey edition
-      # reached the page is mailed once and marked. Rides this job's weekly schedule all year
-      # (no new cron; not gated by the rent window). The history fetch lets the sender find the
-      # commit that brought each survey file's edition.
-      # LIVE GATE: nothing goes out until Sig sets the repo variable CUSTOMRATES_NOTICE_LIVE to 1
-      # (the script refuses --send without it too). A scheduled or chained run sends under the
-      # job's own gate; a run by hand sends only with customrates_send = yes.
       - name: Custom rates new-survey emails
         if: vars.CUSTOMRATES_NOTICE_LIVE == '1' && (github.event_name != 'workflow_dispatch' || inputs.customrates_send == 'yes')
         env:
           CUSTOMRATES_NOTICE_LIVE: ${{ vars.CUSTOMRATES_NOTICE_LIVE }}
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}

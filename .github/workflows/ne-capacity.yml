@@ -1,19 +1,6 @@
 name: Nebraska licensed storage
+# Nebraska licensed storage.
 
-# Reads one Nebraska Public Service Commission "Location Capacity Report" (every grain warehouse
-# location the PSC licenses and the bushels each may store) into data/licensed-storage/NE.json and
-# joins each location to the AGSIST elevator ids (scripts/fetch_ne_capacity.py). The Nebraska
-# cash-bid town pages show a matched elevator's licensed bushels, and the state page the report's
-# totals, on their next build (cash-bid-pages.yml reads the file).
-#
-# BY HAND ONLY. The PSC posts a new report now and then under a dated file name. A schedule needs
-# Sig's OK first (STANDING-DECISIONS, Oct 21); until then:
-#   1. add the new PDF to references/sources.json as ne-psc-capacity-<yyyy-mm-dd>
-#      (kind pdf, the psc.nebraska.gov URL), merged to main;
-#   2. run this workflow with that id.
-# The run refuses to write anything when the report does not add up: every location line must
-# parse, the count must equal the report's "N LOCATIONS", the bushels its "TOTAL CAPACITY", and
-# each licence's rows the subtotal printed on its last row.
 on:
   workflow_dispatch:
     inputs:

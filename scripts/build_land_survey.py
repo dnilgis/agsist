@@ -135,10 +135,7 @@ def nd_file(text):
             raise ValueError("North Dakota county not in the Atlas: %s" % name)
         counties[f] = {"name": name, **{k: kinds[k] for k, _ in ND_KINDS if k in kinds}}
     return {
-        "about": ("County land values from a state survey of farmers. Not recorded sales: the price of rented land is "
-                  "what farmers and ranchers reported as the average for their locality. Read from the PDF by "
-                  "scripts/build_land_survey.py; each value keeps its PDF row. A value is null where the survey "
-                  "withheld it (D)."),
+        "about": ('County land values from a state survey of farmers. Not recorded sales. A value is null where the survey withheld it (D).'),
         "state": "ND",
         "evidence": "state survey of farmers",
         "year": 2026,
@@ -242,10 +239,7 @@ def ks_file(text):
         rec.update(P["prices"].get(name) or {})
         counties[f] = rec
     return {
-        "about": ("County land values from an average of reported sales. Not our recorded-sale middle: K-State averages "
-                  "open-market sales reported to the Kansas Property Valuation Department, Oct 2024 to Sep 2025, by land "
-                  "type (a parcel at least 75% one type), and shows a county only with more than three such parcels. "
-                  "Read from the PDF by scripts/build_land_survey.py; each value keeps its PDF page."),
+        "about": ('County land values from an average of reported sales. Not our recorded-sale middle: K-State averages open-market sales reported to the Kansas Property Valuation Department, Oct 2024 to Sep 2025.'),
         "state": "KS",
         "evidence": "average of reported sales, K-State",
         "year": 2025,

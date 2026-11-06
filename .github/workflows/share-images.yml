@@ -1,16 +1,5 @@
 name: Share images
-
-# Every page's share image (og:image) is drawn from its own data by
-# scripts/build_share_images.py. The data workflows redraw the cards their data
-# feeds (fertilizer-coops, farm-bill, cash-bid-pages, cot, crop_progress,
-# yield-panel, dairy, harvest-prices, arc-plc-refresh, county-rain,
-# price-stats, state-stats; daily.yml draws the daily card). This workflow is
-# the catch-all and the guard:
-#   * on a push to main that changes a root page or the card code (a person's
-#     edit: bot commits do not start workflows), redraw and commit;
-#   * once a day, redraw everything (dates roll: the next WASDE, for one);
-#   * every run checks that every indexable page has a share image that
-#     exists, is 1200x630, is under 120 KB and has an alt.
+# Share images.
 
 on:
   push:
@@ -24,14 +13,7 @@ on:
       - '.github/workflows/share-images.yml'
   schedule:
     - cron: '23 12 * * *'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -41,7 +23,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

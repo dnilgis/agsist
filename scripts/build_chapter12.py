@@ -212,10 +212,7 @@ def assemble(periods, by_district, built=None):
         states[st] = {"name": name, "districts": latest, "n": n}
     return {
         "schema": "agsist-chapter12/1",
-        "about": ("Chapter 12 (family farmer and fisherman) bankruptcy cases commenced in each 12-month period, "
-                  "by federal court district, from U.S. Courts Table F-2. A state with more than one district is "
-                  "the sum of its districts. Filings, not farms. 12-month totals only. Built by scripts/build_chapter12.py; "
-                  "every period's districts add up to the table's own Total row."),
+        "about": ('Chapter 12 (family farmer and fisherman) bankruptcy cases commenced in each 12-month period, by federal court district, from U.S. Courts Table F-2. Filings, not farms.'),
         "source": SOURCE_NAME,
         "built": built or dt.date.today().isoformat(),
         "periods": periods,

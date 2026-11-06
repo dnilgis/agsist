@@ -1,25 +1,10 @@
 name: climate indices
+# climate indices.
 
-# NOAA's PDO (NCEI) and AMO (PSL) monthly series, written to
-# data/prf/climate-indices.json by scripts/fetch_climate_indices.py, then the
-# PRF optimizer's walk-forward test (scripts/prf_opt_backtest.mjs) is re-run so
-# data/prf/opt.json tests the "PDO with ENSO" and "AMO" tilts on the new data.
-# Until this has run once, opt.json lists both as "not tested yet".
-#
-# Monthly on the 9th (NCEI posts the PDO early in the month), off the hour,
-# and by hand. A source that fails keeps the series already published; the
-# step is marked failed and nothing older replaces anything newer.
 on:
   schedule:
-    - cron: "37 14 9 * *"     # the 9th, 14:37 UTC
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: "37 14 9 * *"
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -28,7 +13,6 @@ on:
 permissions: {}
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -66,11 +50,11 @@ jobs:
       cancel-in-progress: false
     timeout-minutes: 30
     permissions:
-      contents: write          # commits the two data files below
+      contents: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:
-          persist-credentials: true   # this job pushes
+          persist-credentials: true
       - name: Engine checkout
         uses: ./.github/actions/engine
         with:

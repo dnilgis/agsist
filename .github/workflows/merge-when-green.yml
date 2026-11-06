@@ -1,17 +1,5 @@
 name: merge-when-green
-
-# Merges an open pull request labeled "merge-when-green" once every PR check is green on its head
-# and GitHub calls the merge clean (Sig, Oct 29, 2026: auto-merge on green). GitHub's own auto-merge
-# needs required checks on main, which would stop the data jobs that commit straight to main, so
-# this does it: scripts/dev/merge_when_green.py decides (never a fork, a draft, a red, pending or
-# conflicted head), merges with a merge commit through the API, and comments once.
-#
-# A merge by the job token starts no push run on main, so the script then starts main-checks.yml
-# (the full suite) and every workflow that the push would have started (push to main, its paths
-# matching the merged files) by hand.
-#
-# Runs when pr-checks finishes and when a pull request gets the label. pull_request_target runs
-# main's copy of this file and checks out main, never the pull request's code.
+# merge-when-green.
 
 on:
   workflow_run:
@@ -36,7 +24,7 @@ jobs:
     name: merge when green
     if: github.event_name != 'pull_request_target' || github.event.label.name == 'merge-when-green'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20     # an update from main waits up to 5 minutes for the new head
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:

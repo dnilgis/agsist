@@ -499,7 +499,7 @@ def build(index, prev, prev_generated, basis_states, now):
         "schema": SCHEMA,
         "generated": now.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "label": "Only on AGSIST",
-        "note": "Computed by code from the elevator boards AGSIST reads. Not written by the drafting model.",
+        "note": 'From the elevator boards AGSIST reads.',
         "facts": facts,
         "withheld": withheld,
     }

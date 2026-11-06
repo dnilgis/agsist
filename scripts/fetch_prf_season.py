@@ -483,9 +483,7 @@ def build(today=None, get=None, prf=PRF, out_dir=OUT, backtest_path=BACKTEST):
             g_out[str(g)] = row
         doc = {"v": 1, "st": st, "built": built, "through": through.isoformat(), "src": SOURCE,
                "iv": meta, "g": g_out, "acc": acc,
-               "note": "Preliminary. Rain so far from NOAA NCEI's USDA grids (nClimGrid), mm x 10; average for the "
-                       "whole interval from RMA's record, mm x 10. 'how' says which NCEI file each month came from. "
-                       "Not RMA's final index."}
+               "note": "Preliminary. Rain so far from NOAA NCEI and the average from RMA's record. Not RMA's final index."}
         text = json.dumps(doc, separators=(",", ":"), sort_keys=True)
         check_doc(json.loads(text))
         open(os.path.join(out_dir, f"{st}.json"), "w").write(text)
