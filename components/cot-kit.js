@@ -114,8 +114,55 @@
     return items;
   }
 
+  /* Contracts in the crop's own units (kit v2 part 2, Sig Nov 6: "contracts shown in bushels too"). The size of one
+     futures contract, from the exchange contract specifications (CBOT corn, soybeans, Chicago SRW wheat, KC HRW wheat
+     and Minneapolis HRS wheat 5,000 bushels; soybean meal 100 short tons; soybean oil 60,000 pounds; CME live cattle
+     40,000 pounds, feeder cattle 50,000 pounds, lean hogs 40,000 pounds, Class III milk 200,000 pounds). A public fact
+     about the contract, not price data. Said as "about", rounded to 2 significant figures. */
+  var SPEC = { corn: [5000, 'bushels'], beans: [5000, 'bushels'], wheat: [5000, 'bushels'], kcwheat: [5000, 'bushels'],
+    mplswheat: [5000, 'bushels'], soymeal: [100, 'short tons'], soyoil: [60000, 'pounds'], livecattle: [40000, 'pounds'],
+    feedercattle: [50000, 'pounds'], leanhogs: [40000, 'pounds'], milk: [200000, 'pounds'] };
+  var SPEC_SRC = 'Contract sizes: exchange contract specifications.';
+  /* 43975000 -> "44 million"; 361590000 -> "360 million"; 2500000000 -> "2.5 billion"; 250000 -> "250,000" */
+  function about(v) {
+    v = Math.abs(v);
+    if (!v) return '0';
+    var e = Math.floor(Math.log(v) / Math.LN10), r = Math.round(v / Math.pow(10, e - 1)) * Math.pow(10, e - 1);
+    var u = r >= 1e9 ? [1e9, ' billion'] : r >= 1e6 ? [1e6, ' million'] : null;
+    if (!u) return commas(r);
+    var x = r / u[0];
+    return String(Math.round(x * 100) / 100) + u[1];
+  }
+  /* (key, 72318) -> "about 360 million bushels"; '' for a market without a size */
+  function qty(key, n) { var s = SPEC[key]; return s && typeof n === 'number' ? 'about ' + about(n * s[0]) + ' ' + s[1] : ''; }
+  /* One line for a picture or a sheet: "In bushels: about 360 million sold, about 44 million net long."
+     The unit named first; the week's change, then where funds stand. '' without a size or a net. */
+  function qtyLine(key, net, chg) {
+    var s = SPEC[key];
+    if (!s || typeof net !== 'number') return '';
+    var parts = [];
+    if (typeof chg === 'number' && chg) parts.push('about ' + about(chg * s[0]) + (chg > 0 ? ' bought' : ' sold'));
+    parts.push(net ? 'about ' + about(net * s[0]) + ' net ' + (net > 0 ? 'long' : 'short') : 'no net position');
+    return 'In ' + s[1] + ': ' + parts.join(', ') + '.';
+  }
+
+  /* One link convention for every kit asset (kit v2 part 2, the growth seat): the market and the report week in the
+     address (Facebook keeps one preview per address), and utm_source share|print|email, utm_medium
+     picture|sheet|qr|forward|link, utm_campaign cot-<report date>; the hash opens the chart on that market.
+     (key, '2026-11-03', 'share', 'picture') -> https://agsist.com/cot?m=soybeans&w=2026-11-03&utm_source=share&... */
+  function link(keys, week, src, med, hash) {
+    var SL = (root.AgCotGlance || (typeof require === 'function' ? require('./cot-glance.js') : {})).SLUG || {};
+    var ks = [].concat(keys || []).map(function (k) { return SL[k] || k; }).join(',');
+    var q = [];
+    if (ks) q.push('m=' + ks);
+    if (ks && /^\d{4}-\d{2}-\d{2}$/.test(week || '')) q.push('w=' + week);   /* a market's preview, per week */
+    if (src) q.push('utm_source=' + src, 'utm_medium=' + med, 'utm_campaign=cot' + (week ? '-' + week : ''));
+    return 'https://agsist.com/cot' + (q.length ? '?' + q.join('&') : '') + (hash === undefined ? (ks && ks.indexOf(',') < 0 ? '#' + ks : '') : hash);
+  }
+
   var api = { MON: MON, MINUS: MINUS, esc: esc, commas: commas, netWords: netWords, kTick: kTick, kWords: kWords, dt: dt, mdy: mdy, md: md,
-    tw: tw, px: px, pxShort: pxShort, ticks: ticks, run: run, axis: axis };
+    tw: tw, px: px, pxShort: pxShort, ticks: ticks, run: run, axis: axis,
+    SPEC: SPEC, SPEC_SRC: SPEC_SRC, about: about, qty: qty, qtyLine: qtyLine, link: link };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.AgCotKit = api;
 })(typeof window !== 'undefined' ? window : this);

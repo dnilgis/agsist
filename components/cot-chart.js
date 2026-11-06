@@ -127,7 +127,26 @@
     var hiI = rows.indexOf(m.hi), loI = rows.indexOf(m.lo), off = big ? 16 : 10, mo = big ? 13 : 8;
     var marks = [hiI, loI].filter(function (i) { return i !== li; }).map(function (i) { return [xs[i], Y(nets[i])]; });
     function covers(b) { return marks.some(function (p) { return p[0] > b[0] - 6 && p[0] < b[2] + 6 && p[1] > b[1] - 6 && p[1] < b[3] + 6; }); }
-    /* the latest point: its number (and "52-wk high" when it is one), its date, and a measured record */
+    /* the 52-week high and low: a ring, then "52-wk high 414.5k long" over its date */
+    function mark(i, word, up) {
+      var x = xs[i], y = Y(nets[i]), mk = [{ s: word + ' ' + K.kWords(nets[i]), size: fs, weight: 700, ink: 'text' }, { s: md(rows[i].date), size: fs, weight: 400, ink: 'muted' }];
+      items.push({ t: 'dot', x: x, y: y, r: big ? 6 : 4, ink: 'surface', ring: 'net' });
+      var bw = Math.max(tw(mk[0].s, fs), tw(mk[1].s, fs)), bh = fs * 2.4;
+      var al = x - bw / 2 < L ? 'left' : x + bw / 2 > w - R ? 'right' : 'center', ax = al === 'left' ? x - fs * 0.3 : al === 'right' ? x + fs * 0.3 : x;
+      var b = null;
+      /* above or below, centred; then hung to either side of the ring (kit v2 part 2: a label never lands on another) */
+      var qs = [[up, al], [!up, al], [up, 'right'], [up, 'left'], [!up, 'right'], [!up, 'left']];
+      qs.concat(qs.slice(0, 2)).some(function (q, k) {
+        var qx = q[1] === al ? ax : q[1] === 'left' ? x - fs * 0.3 : x + fs * 0.3, c = bsize(mk, qx, q[0] ? y - mo - bh : y + mo, q[1]);
+        if (c[0] >= 0 && c[2] <= w && c[1] >= 0 && c[3] <= netB + fs * 0.2 && (k > 5 || !hits(c))) { b = c; al = q[1]; ax = qx; return true; }
+        return false;
+      });
+      if (!b) b = bsize(mk, ax, up ? y - mo - bh : y + mo, al);
+      block(mk, ax, b[1], al); boxes.push(b);
+    }
+    if (hiI !== li) mark(hiI, '52-wk high', true);
+    if (loI !== li && loI !== hiI) mark(loI, '52-wk low', false);
+    /* the latest point (placed after the marks, clear of their labels): its number (and "52-wk high" when it is one), its date, and a measured record */
     var lx = xs[li], ly = Y(m.last.net), lfs = Math.round(fs * 1.12), dr = big ? 8 : 5.5;
     var ls = [{ s: netWords(m.last.net) + (li === hiI ? ' (52-wk high)' : li === loI ? ' (52-wk low)' : ''), size: lfs, weight: 800, ink: 'text' },
       { s: md(m.last.date), size: fs, weight: 600, ink: 'muted' }];
@@ -140,30 +159,13 @@
     var tries = li === loI || ly - T < lh + off ? [false, true] : [true, false], lb = null;
     tries.some(function (up) {
       var b = bsize(ls, lxr, up ? ly - off - lh : ly + off, 'right');
-      if (b[1] >= T - fs * 0.6 && b[3] <= netB + (evH ? 0 : fs * 0.3) && !covers(b)) { lb = b; return true; }
+      if (b[1] >= T - fs * 0.6 && b[3] <= netB + (evH ? 0 : fs * 0.3) && !covers(b) && !hits(b)) { lb = b; return true; }
       return false;
     });
     if (!lb) lb = bsize(ls, lxr, tries[0] ? ly - off - lh : ly + off, 'right');
     items.push({ t: 'dot', x: lx, y: ly, r: dr, ink: 'net', ring: 'surface' });
     if (m.record) items.push({ t: 'dot', x: lx, y: ly, r: dr + (big ? 6 : 4), ink: 'none', ring: 'text', rw: 2 });
     block(ls, lxr, lb[1], 'right'); boxes.push(lb);
-    /* the 52-week high and low: a ring, then "52-wk high 414.5k long" over its date */
-    function mark(i, word, up) {
-      var x = xs[i], y = Y(nets[i]), mk = [{ s: word + ' ' + K.kWords(nets[i]), size: fs, weight: 700, ink: 'text' }, { s: md(rows[i].date), size: fs, weight: 400, ink: 'muted' }];
-      items.push({ t: 'dot', x: x, y: y, r: big ? 6 : 4, ink: 'surface', ring: 'net' });
-      var bw = Math.max(tw(mk[0].s, fs), tw(mk[1].s, fs)), bh = fs * 2.4;
-      var al = x - bw / 2 < L ? 'left' : x + bw / 2 > w - R ? 'right' : 'center', ax = al === 'left' ? x - fs * 0.3 : al === 'right' ? x + fs * 0.3 : x;
-      var b = null;
-      [up, !up, up, !up].some(function (u, k) {
-        var c = bsize(mk, ax, u ? y - mo - bh : y + mo, al);
-        if (c[1] >= 0 && c[3] <= netB + fs * 0.2 && (k > 1 || !hits(c))) { b = c; return true; }
-        return false;
-      });
-      if (!b) b = bsize(mk, ax, up ? y - mo - bh : y + mo, al);
-      block(mk, ax, b[1], al); boxes.push(b);
-    }
-    if (hiI !== li) mark(hiI, '52-wk high', true);
-    if (loI !== li && loI !== hiI) mark(loI, '52-wk low', false);
     /* one event at most: the run of buying or selling that ends on this report, bracketed on its own row under
        the run's weeks, its label to the left ("Sold 7 weeks: 405,665") */
     if (evH) {
@@ -363,13 +365,15 @@
     var head = m.cmp ? m.headline : m.head || ('Managed money in ' + m.name.toLowerCase() + ': ' + netWords(m.last.net) + ' contracts.');
     var stand = m.cmp ? '' : m.stand || '';
     var sub = m.cmp ? m.axis : 'Managed money net position, ' + m.name.toLowerCase() + ', each week since ' + mdy(m.rows[0].date);
-    var src = 'Source: ' + m.src, y, g, gh;
+    var rs = m.rows, ql = m.cmp ? '' : K.qtyLine(m.key, m.last.net, rs.length > 1 ? m.last.net - rs[rs.length - 2].net : null);
+    var src = 'Source: ' + m.src + (ql ? ' ' + K.SPEC_SRC : ''), y, g, gh;
     if (ph) {
       text('agsist.com/cot', P, 84, 40, 800, '#d4a23f');
       text(m.asOf, P, 132, 28, 600, 'rgba(233,237,235,.86)');
       y = 210;
       wrapped(head, 60, 800, 3).forEach(function (s) { text(s, P, y, 60, 800, '#e9edeb'); y += 72; });
       if (stand) { text(stand, P, y + 2, 44, 700, '#d4a23f'); y += 58; }
+      if (ql) { wrapped(ql, 28, 600, 2).forEach(function (s) { text(s, P, y, 28, 600, '#e9edeb'); y += 38; }); }
       y += 4;
       if (m.answer) { wrapped(m.answer, 30, 500, 4).forEach(function (s) { text(s, P, y, 30, 500, '#e9edeb'); y += 41; }); y += 8; }
       wrapped(sub, 26, 600, 2).forEach(function (s) { text(s, P, y, 26, 600, 'rgba(233,237,235,.80)'); y += 34; });
@@ -387,6 +391,7 @@
       hl.forEach(function (s, i) { text(s, P, 122 + i * 48, 38, 800, '#e9edeb'); });
       var top = 122 + (hl.length - 1) * 48 + 30;
       if (stand) { text(stand, P, top + 6, 26, 700, '#d4a23f'); top += 36; }
+      if (ql) { text(ql, P, top + 2, 20, 600, '#e9edeb'); top += 30; }
       text(sub, P, top + 4, 20, 600, 'rgba(233,237,235,.74)');
       gh = H - top - 124; g = layout(m, W - 2 * P, gh, { fs: 19, big: true });
       paint(ctx, g, P, top + 18);
@@ -487,6 +492,7 @@
   api.select = select;
   api.current = function () { return cur; };
   api.shareUrl = function () { return SITE + '/cot?m=' + slugs(); };
+  api.slugs = slugs;
   api.selected = function () { return cmp ? sel.slice() : [cur]; };
   api.compare = function () { return cmp; };
 
@@ -625,55 +631,7 @@
   });
   plotEl.addEventListener('blur', hide);
 
-  /* share the link: the phone's share sheet, else copy */
-  function note(s) { var n = $('cc-note'); if (n) { n.textContent = s; clearTimeout(note.t); note.t = setTimeout(function () { n.textContent = ''; }, 4000); } }
-  var coarse = function () { try { return root.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } };
-  /* the 4:5 phone picture on a phone (a touch screen or a narrow window), the wide one on a desktop */
-  var phone = function () { return coarse() || (root.innerWidth || 1200) < 700; };
-  $('cc-share').addEventListener('click', function () {
-    var url = api.shareUrl(), title = (M && M.cmp ? M.headline : 'Funds in ' + (CHIP[cur] || '').toLowerCase() + ', 52 weeks') + ' | AGSIST';
-    var text = M && M.headline ? M.headline : title;
-    gtag('cot_chart_share', { market: slugs(), how: root.navigator.share && coarse() ? 'sheet' : 'copy' });
-    if (root.navigator.share && coarse()) {
-      root.navigator.share({ title: title, text: text, url: url }).catch(function () {});
-      return;
-    }
-    copy(url);
-  });
-  function copy(url) {
-    function fallback() {
-      var i = doc.createElement('input'); i.value = url; i.setAttribute('readonly', ''); i.style.position = 'fixed'; i.style.opacity = '0';
-      doc.body.appendChild(i); i.select();
-      var ok = false; try { ok = doc.execCommand('copy'); } catch (e) {}
-      doc.body.removeChild(i);
-      note(ok ? 'Link copied' : 'Copy this link: ' + url);
-    }
-    if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(url).then(function () { note('Link copied'); }, fallback);
-    else fallback();
-  }
-  /* save the picture: share it as a file on a phone that can, else download it */
-  $('cc-save').addEventListener('click', function () {
-    if (!M) { note('The chart has not loaded, so there is no image to save yet.'); return; }
-    var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
-    ready.then(function () {
-      var im = image(M, doc, { phone: phone() });
-      api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes, ys: im.ys };
-      var name = 'agsist-cot-' + slugs().replace(/,/g, '-') + '-' + M.last.date + '.png';
-      im.canvas.toBlob(function (blob) {
-        if (!blob) { note('Could not draw the image here.'); return; }
-        var file = null; try { file = new File([blob], name, { type: 'image/png' }); } catch (e) {}
-        gtag('cot_chart_image', { market: slugs() });
-        if (file && coarse() && root.navigator.canShare && root.navigator.canShare({ files: [file] })) {
-          root.navigator.share({ files: [file], title: M.cmp ? M.headline : 'Funds in ' + CHIP[cur].toLowerCase(), text: (M.headline || '') + ' ' + api.shareUrl() }).catch(function () {});
-          return;
-        }
-        var a = doc.createElement('a'), u = URL.createObjectURL(blob);
-        a.href = u; a.download = name; doc.body.appendChild(a); a.click(); doc.body.removeChild(a);
-        setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
-        note('Image saved');
-      }, 'image/png');
-    });
-  });
+  /* Share, Save picture and Print sheet: components/cot-share.js (pick your market, the share fallback, the tags) */
 
   /* cot-page.js hands over what it fetched: {cot, hist, cx}; any may be missing */
   api.update = function (o) {

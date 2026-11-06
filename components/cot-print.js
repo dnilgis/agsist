@@ -22,6 +22,8 @@
   var KEYS = ['corn', 'beans', 'wheat', 'livecattle', 'feedercattle', 'leanhogs'];
   /* the QR code lands on the Funds this week signup box (Sig, Nov 6: grow the list); the printed URL stays short */
   var URL_SHOWN = 'agsist.com/cot', URL_FULL = 'https://agsist.com/cot#cot-signup', ASK = 'Every Friday by email:';
+  /* the QR code's address carries the kit's tags (AgCotKit.link: utm_source=print, utm_medium=qr, the report week) */
+  function qrUrl(week) { return K.link(null, week, 'print', 'qr', '#cot-signup'); }
   var DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var esc = K.esc, num = K.commas, dt = K.dt;
   function and(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
@@ -68,15 +70,17 @@
     return 'Next report: ' + w + mv + '.';
   }
 
-  /* The corn chart by the page chart's own layout and SVG painter in print inks, h tall in a 560-wide box (fs 15). */
+  /* The chosen market's chart by the page chart's own layout and SVG painter in print inks, h tall in a 560-wide box (fs 15). */
   function chartSvg(m, h) {
     var g = C.layout(m, 560, h, { fs: 15, print: true });
-    return '<svg viewBox="0 0 560 ' + h + '" role="img" aria-label="Corn, managed money net position, each week since ' + esc(K.mdy(m.rows[0].date)) + '" xmlns="http://www.w3.org/2000/svg">' + C.toSvg(g) + '</svg>';
+    return '<svg viewBox="0 0 560 ' + h + '" role="img" aria-label="' + esc(m.name) + ', managed money net position, each week since ' + esc(K.mdy(m.rows[0].date)) + '" xmlns="http://www.w3.org/2000/svg">' + C.toSvg(g) + '</svg>';
   }
 
-  /* Everything on the sheet, as data. cot, cx, hist: the files the page loaded. now: ms. */
-  function sheet(cot, cx, hist, now) {
+  /* Everything on the sheet, as data. cot, cx, hist: the files the page loaded. now: ms. key: the market the reader
+     picked (kit v2 part 2, pick your market): its headline leads and its chart is drawn; corn by default. */
+  function sheet(cot, cx, hist, now, key) {
     if (!cot || !G.iso(cot.report_date)) return null;
+    key = key && G.SHORT[key] ? key : 'corn';
     var cxA = cx && G.iso(cx.report_date) === G.iso(cot.report_date) ? cx : null;
     var markets = [];
     KEYS.forEach(function (k) {
@@ -86,19 +90,22 @@
       /* one context line: a measured record, else the run, else the rank (explained once in the note) */
       var ctx = b.record ? '' : rn ? (rn.dir === 'bought' ? 'Bought ' : 'Sold ') + rn.weeks + ' weeks in a row: ' + num(rn.total)
         : f.words ? 'Rank: ' + f.words.replace(/ since \d{4}$/, '') : '';
-      markets.push({ key: k, name: G.SHORT[k], net: f.net, side: f.side, chg: f.chg, record: b.record, run: rn, context: ctx });
+      markets.push({ key: k, name: G.SHORT[k], net: f.net, side: f.side, chg: f.chg, record: b.record, run: rn, context: ctx,
+        qty: K.qty(k, f.net) });
     });
-    var chart = null, m = C && hist ? C.model('corn', hist, cot, cxA) : null;
+    var chart = null, m = C && hist ? C.model(key, hist, cot, cxA) : null;
     if (m && !m.cmp) chart = { model: m, price: m.price, aligned: m.aligned, head: m.headlineHtml, svg: chartSvg(m, 300) };
     var since = (cxA && cxA.commodities && cxA.commodities.corn && cxA.commodities.corn.crowd && cxA.commodities.corn.crowd.since) || '2010';
     var rd = G.iso(cot.report_date);
     var note = 'Funds: managed money, CFTC’s name for hedge funds and commodity trading advisers. Net: their long contracts minus short. '
       + 'Rank: the net as a share of open interest, against every week since ' + since + '.';
     var src = 'Source: CFTC Commitments of Traders, managed money, futures only. '
-      + (chart && chart.price ? 'Corn price: front-month close each report Tuesday (Yahoo Finance), adjusted for contract rolls. ' : '')
-      + 'Not a price forecast.';
-    return { title: 'Funds, week to ' + K.mdy(rd), asOf: G.weekLine(cot, cxA), lead: lead(cot, cxA), markets: markets,
-      chart: chart, next: nextLine(cot, cxA, now), note: note, src: src, url: URL_SHOWN, ask: ASK };
+      + (chart && chart.price ? G.SHORT[key] + ' price: front-month close each report Tuesday (Yahoo Finance), adjusted for contract rolls. ' : '')
+      + K.SPEC_SRC + ' Not a price forecast.';
+    var top = G.brief(key, cot, cxA);
+    return { key: key, name: G.SHORT[key], title: 'Funds, week to ' + K.mdy(rd), asOf: G.weekLine(cot, cxA), top: top ? top.text : '',
+      lead: lead(cot, cxA), markets: markets, chart: chart, next: nextLine(cot, cxA, now), note: note, src: src, url: URL_SHOWN, ask: ASK,
+      qr: qrUrl(rd), week: rd };
   }
 
   function sideWords(mk) { return mk.side === 'flat' ? 'net ' + (mk.net < 0 ? 'short' : 'long') + ', about even' : 'net ' + mk.side; }
@@ -109,41 +116,69 @@
       return '<section class="cotp-m"><h2 class="cotp-n">' + esc(m.name) + '</h2>'
         + '<p class="cotp-fig"><b>' + esc(num(m.net)) + '</b> <span class="cotp-side">' + esc(sideWords(m)) + '</span></p>'
         + (chgWords(m) ? '<p class="cotp-chg">' + esc(chgWords(m)) + '</p>' : '')
+        + (m.qty ? '<p class="cotp-bu">' + esc(m.qty.charAt(0).toUpperCase() + m.qty.slice(1)) + ' ' + esc(sideWords(m).replace(', about even', '')) + '</p>' : '')
         + (m.record ? '<p class="cotp-tag">' + esc(m.record) + '</p>' : m.context ? '<p class="cotp-s">' + esc(m.context) + '</p>' : '')
         + '</section>';
     }).join('');
-    var chart = s.chart ? '<figure class="cotp-chart"><figcaption><span class="cotp-ch">' + (s.chart.head || 'Corn') + '</span> '
-      + 'Net contracts each week since ' + esc(K.mdy(s.chart.model.rows[0].date)) + ' (solid line)' + (s.chart.price ? '; corn futures price below (dashed)' : '') + '.</figcaption>'
+    var chart = s.chart ? '<figure class="cotp-chart"><figcaption><span class="cotp-ch">' + esc(s.name) + '</span> '
+      + 'Net contracts each week since ' + esc(K.mdy(s.chart.model.rows[0].date)) + ' (solid line)' + (s.chart.price ? '; ' + esc(s.name.toLowerCase()) + ' futures price below (dashed)' : '') + '.</figcaption>'
       + (chartH && chartH !== 300 ? chartSvg(s.chart.model, chartH) : s.chart.svg) + '</figure>' : '';
     var code = qr ? '<div class="cotp-qr">' + qr + '</div>' : '';
     return '<header class="cotp-top"><div><h1 class="cotp-h1">' + esc(s.title) + '</h1><p class="cotp-asof">' + esc(s.asOf) + '</p></div>'
       + '<div class="cotp-brand"><img class="cotp-logo" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="86" height="40"><p class="cotp-url">' + esc(s.url) + '</p></div></header>'
-      + (s.lead ? '<p class="cotp-lead">' + esc(s.lead) + '</p>' : '')
+      + (s.top ? '<p class="cotp-lead"><b>' + esc(s.top) + '</b>' + (s.lead ? ' <span class="cotp-wk">' + esc(s.lead) + '</span>' : '') + '</p>'
+        : s.lead ? '<p class="cotp-lead">' + esc(s.lead) + '</p>' : '')
       + '<div class="cotp-grid">' + mk + '</div>'
       + '<div class="cotp-low">' + chart + '<aside class="cotp-side-box"><p class="cotp-next">' + esc(s.next) + '</p>' + code
       + '<p class="cotp-free">' + esc(s.ask) + ' <span class="cotp-big">' + esc(s.url) + '</span></p></aside></div>'
       + '<p class="cotp-note">' + esc(s.note) + '</p><p class="cotp-src">' + esc(s.src) + '</p>';
   }
 
-  var api = { KEYS: KEYS, URL_FULL: URL_FULL, sheet: sheet, html: html, run: run, lead: lead, nextLine: nextLine };
+  /* PIN IT HERE (kit v2 part 2, Sig Nov 6): the wall edition. US Letter landscape, black and white, big type: the
+     picked market's headline readable across a room, the six-market scoreboard (net, change and the week with its
+     year), a QR code "Latest report and free Friday email" to the signup box, a blank "Posted by" line for a co-op or
+     an elevator to write in, and the repost permission. Same data as the sheet (sheet()). */
+  function wall(s, qr) {
+    if (!s) return '';
+    var mk = s.markets.map(function (m) {
+      return '<section class="cotw-m"><h2 class="cotw-n">' + esc(m.name) + '</h2><p class="cotw-fig"><b>' + esc(num(m.net)) + '</b> '
+        + esc(sideWords(m)) + '</p>' + (chgWords(m) ? '<p class="cotw-chg">' + esc(chgWords(m)) + '</p>' : '')
+        + (m.qty ? '<p class="cotw-bu">' + esc(m.qty.charAt(0).toUpperCase() + m.qty.slice(1)) + ' net</p>' : '') + '</section>';
+    }).join('');
+    return '<header class="cotw-top"><p class="cotw-wk">' + esc(s.asOf) + '</p><p class="cotw-url">' + esc(s.url) + '</p></header>'
+      + '<h1 class="cotw-h1">' + esc(s.top || s.title) + '</h1>'
+      + '<div class="cotw-grid">' + mk + '</div>'
+      + '<div class="cotw-low"><div class="cotw-txt"><p class="cotw-next">' + esc(s.next) + '</p>'
+      + '<p class="cotw-post">Posted by <span class="cotw-blank"></span></p>'
+      + '<p class="cotw-free">Free to print and post. Keep the source line.</p>'
+      + '<p class="cotw-src">' + esc(s.src.replace(/ [A-Z][a-z]+(?: [a-z]+)? price: [^.]*\./, '')) + ' Funds: managed money (hedge funds and commodity trading advisers). Net: long contracts minus short.</p></div>'
+      + '<div class="cotw-qrbox">' + (qr ? '<div class="cotw-qr">' + qr + '</div>' : '') + '<p class="cotw-ask">Latest report and free Friday email</p><p class="cotw-big">' + esc(s.url) + '</p></div></div>';
+  }
+
+  var api = { KEYS: KEYS, URL_FULL: URL_FULL, sheet: sheet, html: html, wall: wall, run: run, lead: lead, nextLine: nextLine, qrUrl: qrUrl };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgCotPrint = api;
 
   /* ---------------------------------------------------------------- the page */
-  var doc = root.document, D = null, MAX_PX = 10.2 * 96 - 8;
+  var doc = root.document, D = null, MAX_PX = 10.2 * 96 - 8, PICK = { key: null, wall: false };
   if (!doc) return;
-  function qr() { try { return root.AgQR ? root.AgQR.svg(URL_FULL, 'QR code to the Funds this week signup at agsist.com/cot') : ''; } catch (e) { return ''; } }
+  function qr(u) { try { return root.AgQR ? root.AgQR.svg(u || URL_FULL, 'QR code to the Funds this week signup at agsist.com/cot') : ''; } catch (e) { return ''; } }
+  function chartKey() { try { return root.AgCotChart && root.AgCotChart.current ? root.AgCotChart.current() : null; } catch (e) { return null; } }
   function measure(el) { el.classList.add('cotp-measure'); var h = el.offsetHeight; el.classList.remove('cotp-measure'); return h; }
   function build() {
     if (!D && root.AgCotChart && root.AgCotChart.data) D = root.AgCotChart.data();
-    var s = D && sheet(D.cot, D.cx, D.hist, Date.now());
+    var s = D && sheet(D.cot, D.cx, D.hist, Date.now(), PICK.key || chartKey());
     if (!s) return null;
     var el = doc.getElementById('cotp');
     if (!el) { el = doc.createElement('div'); el.id = 'cotp'; el.className = 'cotp'; el.setAttribute('aria-hidden', 'true'); doc.body.appendChild(el); }
+    el.setAttribute('data-market', s.key);
+    el.classList.toggle('cotp-wall', !!PICK.wall);
+    el.style.zoom = '';
+    if (PICK.wall) { el.innerHTML = wall(s, qr(s.qr)); el.setAttribute('data-fit', '1'); el.removeAttribute('data-zoom'); return el; }
     /* One page whatever the week says: measured off screen at A4's printed width (7.47 in, narrower than Letter)
        against Letter's printed height (10.2 in, shorter than A4); a long week gets a shorter chart, then tighter
        spacing and a smaller QR code; only past that is the whole sheet scaled down to fit. */
-    var code = qr(), fits = false;
+    var code = qr(s.qr), fits = false;
     el.style.zoom = '';
     [300, 260, 230].some(function (h, i) {
       el.innerHTML = html(s, code, h);
@@ -158,9 +193,15 @@
   }
   api.build = build;
   doc.addEventListener('cot:chart-data', function (e) { D = e.detail || D; build(); });
-  /* any browser print (Ctrl+P, the menu, a phone's Print) gives the one-page sheet, the same state the button sets */
-  function on() { if (!doc.documentElement.classList.contains('cotp-on') && build()) doc.documentElement.classList.add('cotp-on'); }
-  function off() { doc.documentElement.classList.remove('cotp-on'); }
+  function ga(name, p) { try { if (typeof root.gtag === 'function') root.gtag('event', name, p); } catch (e) {} }
+  /* any browser print (Ctrl+P, the menu, a phone's Print) gives the one-page sheet, the same state the button sets;
+     GA4 sheet_print counts the print itself (beforeprint), whatever started it */
+  function on() {
+    var el = doc.getElementById('cotp');
+    if (!doc.documentElement.classList.contains('cotp-on') && (el = build())) doc.documentElement.classList.add('cotp-on');
+    if (el) ga('sheet_print', { kind: PICK.wall ? 'wall' : 'sheet', market: el.getAttribute('data-market') || '' });
+  }
+  function off() { doc.documentElement.classList.remove('cotp-on'); PICK.key = null; PICK.wall = false; }
   root.addEventListener('beforeprint', on);
   root.addEventListener('afterprint', off);
   try {
@@ -168,11 +209,13 @@
     var ch = function (e) { if (e.matches) on(); else off(); };
     if (mq && mq.addEventListener) mq.addEventListener('change', ch); else if (mq && mq.addListener) mq.addListener(ch);
   } catch (e) {}
-  var btn = doc.getElementById('cc-print');
-  if (btn) btn.addEventListener('click', function () {
-    if (!build()) { var n = doc.getElementById('cc-note'); if (n) n.textContent = 'Still loading, try again in a moment'; return; }
+  /* Print sheet, after the reader picks a market (components/cot-share.js): key, or wall for the pin-up edition.
+     -> false while the data is still loading */
+  api.print = function (key, isWall) {
+    PICK.key = key || null; PICK.wall = !!isWall;
+    if (!build()) { PICK.key = null; PICK.wall = false; return false; }
     doc.documentElement.classList.add('cotp-on');
-    try { if (typeof root.gtag === 'function') root.gtag('event', 'cot_print', {}); } catch (e) {}
-    try { root.print(); } catch (e) { doc.documentElement.classList.remove('cotp-on'); }
-  });
+    try { root.print(); } catch (e) { off(); }
+    return true;
+  };
 })(typeof window !== 'undefined' ? window : this);

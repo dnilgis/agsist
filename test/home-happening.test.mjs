@@ -182,13 +182,34 @@ test("after the release: updating until cot.json has the new week, then Out toda
   assert.deepEqual([wait[0].t, wait[0].w, wait[0].state], ["Funds report (COT)", "Out at 3:30 PM ET, updating", "wait"]);
   assert.equal(wait[1].t, "Crop Progress");
   const out = rows(fresh, EST("2026-11-06T16:05:00"));
-  assert.deepEqual([out[0].w, out[0].state], ["Out today at 3:30 PM ET", "out"]);
-  assert.equal(out[0].x, "Funds sold 12,345 corn contracts net in the week to Nov 3.");  // pin-ok: inline fixture
+  assert.deepEqual([out[0].t, out[0].w, out[0].state], ["Read this week\u2019s funds report", "Out today at 3:30 PM ET", "out"], "after release the row answers (kit v2 part 2)");
+  assert.equal(out[0].x, "Funds sold corn for 7 weeks in a row.", "the answer: the corn run, counted from the history");
+  // no run to tell: the week's change, as before
+  const D1 = { ...DATA(fresh), hist: hist([100, 200, 81113], "2026-10-27") };  // pin-ok: inline fixture
+  assert.equal(plain(H.words(events(fresh, EST("2026-11-06T16:05:00")), D1, EST("2026-11-06T16:05:00")))[0].x, "Funds sold 12,345 corn contracts net in the week to Nov 3.");  // pin-ok: inline fixture
   assert.equal(rows(fresh, EST("2026-11-06T23:59:00"))[0].state, "out", "still there at 11:59 PM ET");
   assert.equal(rows(fresh, EST("2026-11-07T00:01:00"))[0].t, "Crop Progress", "gone the next day");
   // a release this site reads no number from just says it is out
   const coF = plain(H.words(events(fresh, EST("2026-11-20T15:30:00")), DATA(fresh), EST("2026-11-20T15:30:00")));
   assert.ok(coF.some((o) => o.t === "Cattle on Feed and Milk Production" && o.w === "Out today at 3:00 PM ET" && o.state === "out"));
+});
+
+/* kit v2 part 2: last week's question, this week's answer, from data/cot-questions.json (scripts/cot_questions.py) */
+const Q = (o) => Object.assign({ report_date: "2026-11-03",  // pin-ok: inline fixture
+  this_week: { asked: "2026-11-03", market: "wheat", question: "Will Chicago wheat's selling run reach 10 weeks?" },  // pin-ok: inline fixture
+  last_week: { asked: "2026-10-27", answered: "2026-11-03", market: "wheat", question: "Will Chicago wheat's selling run reach 9 weeks?",  // pin-ok: inline fixture
+    result: "yes", answer: "Yes. Funds sold 12,520 Chicago wheat contracts in the week to Tue, Nov 3, 2026: 9 weeks in a row." } }, o || {});  // pin-ok: inline fixture
+test("the question before the release, the answer after it, only from a question file for the report on the page", () => {
+  const old = COT({ report_date: "October 27, 2026", next_release: "2026-11-06", corn: { net: 81113, prev: 164423 } });  // pin-ok: inline fixture
+  const fresh = COT({ report_date: "November 03, 2026", next_release: "2026-11-16", corn: { net: 68768, prev: 81113 } });  // pin-ok: inline fixture
+  const w = (cot, q, at) => plain(H.words(events(cot, at), { ...DATA(cot), q }, at))[0];
+  const qOld = Q({ report_date: "2026-10-27", this_week: { asked: "2026-10-27", question: "Will Chicago wheat's selling run reach 9 weeks?" } });  // pin-ok: inline fixture
+  assert.equal(w(old, qOld, EST("2026-11-06T14:18:00")).x, "This week\u2019s question: Will Chicago wheat's selling run reach 9 weeks?", "the question before the release");
+  assert.equal(w(old, Q(), EST("2026-11-06T14:18:00")).x, "Funds sold corn 6 weeks straight. Did they keep selling?", "a file for another week is not shown");
+  const a = w(fresh, Q(), EST("2026-11-06T16:05:00"));
+  assert.deepEqual([a.t, a.x], ["Read this week\u2019s funds report", "Funds sold 12,520 Chicago wheat contracts in the week to Tue, Nov 3, 2026: 9 weeks in a row."], "the answer after it");  // pin-ok: inline fixture
+  assert.equal(w(fresh, Q({ last_week: null }), EST("2026-11-06T16:05:00")).x, "Funds sold corn for 7 weeks in a row.", "no answer for this report: the corn run");
+  assert.match(read("components/happening.js"), /get\('\/data\/cot-questions\.json'\)/);
 });
 
 test("the home page: the block sits in the futures row, baked, with its script and one quiet live region", () => {
@@ -203,7 +224,7 @@ test("the home page: the block sits in the futures row, baked, with its script a
   // the only aria-live in the block is #hap-say; nothing on the list or the countdown
   assert.deepEqual([...row.matchAll(/<[^>]*aria-live[^>]*>/g)].map((m) => m[0]), ['<span class="visually-hidden" id="hap-say" role="status" aria-live="polite">']);
   assert.doesNotMatch(read("components/happening.js"), /aria-live|setAttribute\(['"]role/);
-  assert.match(home, /<script src="\/components\/happening\.js\?v=2" defer><\/script>/);
+  assert.match(home, /<script src="\/components\/happening\.js\?v=3" defer><\/script>/);
   assert.ok(!/—/.test(read("components/happening.js")), "no em dash in the script");
   const css = read("css/home.css");
   assert.ok(!/—/.test(css.slice(css.indexOf(".hap{"))), "no em dash in its CSS");
@@ -258,7 +279,7 @@ function serve(files) {
   });
 }
 const FILES = (cot) => ({ "/data/cot.json": cot, "/data/cot-history.json": hist([414460, 404097, 381220, 329839, 246425, 164423, 81113], "2026-10-27"),  // pin-ok: inline fixture
-  "/data/wasde.json": DATA(cot).wasde, "/data/crop-progress.json": DATA(cot).cp, "/usda-calendar.ics": ICS });
+  "/data/wasde.json": DATA(cot).wasde, "/data/crop-progress.json": DATA(cot).cp, "/usda-calendar.ics": ICS, "/data/cot-questions.json": {} });
 
 async function open(browser, port, width, opts) {
   const c = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: "block", javaScriptEnabled: !opts.nojs });
@@ -341,6 +362,22 @@ test("in Chromium: beside the beans at 1280, right after the futures at 390; cou
   } finally { await browser.close(); srvOld.close(); }
 });
 
+test("in Chromium: after the release the row answers last week's question and links this week's report", { skip, timeout: 120000 }, async () => {
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const srv = await serve({ ...FILES(COT()), "/data/cot-questions.json": Q() });
+  try {
+    const { c, p } = await open(browser, srv.address().port, 1280, { at: EST("2026-11-06T16:10:00") });
+    await p.clock.runFor(2000);
+    await p.waitForFunction(() => /Out today/.test((document.querySelector("#hap .hap-wt") || {}).textContent || ""), null, { timeout: 15000 });
+    const s = await state(p);
+    assert.equal(s.x, "Funds sold 12,520 Chicago wheat contracts in the week to Tue, Nov 3, 2026: 9 weeks in a row.");  // pin-ok: inline fixture
+    assert.equal(await p.$eval("#hap .hap-top .hap-t", (e) => e.textContent), "Read this week\u2019s funds report");
+    assert.equal(s.shift, 0, "nothing moves");
+    if (process.env.HAP_SHOTS) await p.locator("#hap").screenshot({ path: path.join(process.env.HAP_SHOTS, "home-hap-after-release.png") });
+    await c.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
 test("in Chromium: once cot.json has the new week, the row says Out today with the weekly change", { skip, timeout: 120000 }, async () => {
   const browser = await chromium.launch({ executablePath: CHROME });
   const srv = await serve(FILES(COT()));
@@ -350,7 +387,7 @@ test("in Chromium: once cot.json has the new week, the row says Out today with t
     await p.waitForFunction(() => /Out today/.test((document.querySelector("#hap .hap-wt") || {}).textContent || ""), null, { timeout: 15000 });
     const s = await state(p);
     assert.equal(s.wt, "Out today at 3:30 PM ET");
-    assert.equal(s.x, "Funds sold 12,345 corn contracts net in the week to Nov 3.");  // pin-ok: inline fixture
+    assert.equal(s.x, "Funds sold corn for 7 weeks in a row.");
     await c.close();
   } finally { await browser.close(); srv.close(); }
 });

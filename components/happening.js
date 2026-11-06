@@ -24,7 +24,13 @@
    THE FUNDS THIS WEEK ASK (Sig, Nov 6: grow the Friday COT email list): when the first row is the COT report (its
    countdown, "updating" or "Out today"), a small "Email me Fridays" link sits at the right of its title line and opens
    the one Funds this week box on /cot (#cot-signup; no second signup path). It is placed over the row's own room
-   (absolute, a 44 px target), so it moves nothing; the bake writes it too. GA4: funds_ask {where: home_happening}. */
+   (absolute, a 44 px target), so it moves nothing; the bake writes it too. GA4: funds_ask {where: home_happening}.
+
+   LAST WEEK'S QUESTION, THIS WEEK'S ANSWER (kit v2 part 2, Sig Nov 6): before the release the COT row's line is the
+   week's question from data/cot-questions.json (scripts/cot_questions.py: fund positions only, never prices); once the
+   new report is in cot.json the row is titled "Read this week's funds report" and its line answers ("Funds sold corn
+   for 7 weeks in a row."): the question file's answer when it is for that report, else the corn run from cot-history.
+   A question file for another week is never shown. */
 (function (root) {
   'use strict';
   var DAY = 864e5;
@@ -200,9 +206,13 @@
     }
     return { n: n, sign: sign, last: rows.length > 1 ? rows[rows.length - 1].net - rows[rows.length - 2].net : null, date: rows.length ? rows[rows.length - 1].date : null };
   }
+  /* the question file, only when it is for the report cot.json carries */
+  function qs(D) { var q = D.q, a0 = D.cot && reportIso(D.cot.report_date); return q && a0 && q.report_date === a0 ? q : null; }
   function teaser(r, D) {
     var cot = D.cot, w = D.wasde, cp = D.cp;
     if (r.key === 'cot') {
+      var q = qs(D);
+      if (q && q.this_week && q.this_week.question) return 'This week\u2019s question: ' + q.this_week.question;
       var s = streak(cotRows(D.hist, cot));
       if (s.n >= 2) return 'Funds ' + (s.sign < 0 ? 'sold' : 'bought') + ' corn ' + s.n + ' weeks straight. Did they keep ' + (s.sign < 0 ? 'selling' : 'buying') + '?';
       if (s.last) return 'Funds ' + (s.last < 0 ? 'sold ' : 'bought ') + commas(s.last) + ' corn contracts net in the week to ' + md(s.date) + '.';
@@ -230,8 +240,11 @@
     if (r.key === 'cot') {
       var a0 = D.cot && reportIso(D.cot.report_date), c = D.cot && D.cot.corn;
       if (a0 && a0 >= add(r.day, -7) && c && typeof c.net === 'number' && typeof c.prev === 'number') {
-        var ch = c.net - c.prev;
-        return { state: 'out', x: ch === 0 ? 'Funds left their corn net unchanged in the week to ' + md(a0) + '.'
+        var ch = c.net - c.prev, q = qs(D), lw = q && q.last_week, t = 'Read this week\u2019s funds report';
+        if (lw && lw.answered === a0 && lw.answer) return { state: 'out', t: t, x: lw.answer.replace(/^(Yes|No)\. /, '') };
+        var s = streak(cotRows(D.hist, D.cot));
+        if (s.n >= 2 && s.date === a0) return { state: 'out', t: t, x: 'Funds ' + (s.sign < 0 ? 'sold' : 'bought') + ' corn for ' + s.n + ' weeks in a row.' };
+        return { state: 'out', t: t, x: ch === 0 ? 'Funds left their corn net unchanged in the week to ' + md(a0) + '.'
           : 'Funds ' + (ch < 0 ? 'sold ' : 'bought ') + commas(ch) + ' corn contracts net in the week to ' + md(a0) + '.' };
       }
       return { state: 'wait' };
@@ -254,6 +267,7 @@
       if (r.out) {
         var ol = outLine(r, D || {});
         o.state = ol.state;
+        if (ol.t) o.t = ol.t;
         o.w = ol.state === 'wait' ? 'Out at ' + clock(r.h, r.mi) + ', updating' : 'Out today at ' + clock(r.h, r.mi);
         o.x = ol.state === 'wait' ? (i === 0 ? teaser(r, D || {}) : '') : ol.x;
       } else {
@@ -293,8 +307,8 @@
   }
   var D = {}, ev = [], sig = '', timer = 0, polled = 0;
   function load() {
-    return Promise.all([get('/data/cot.json'), get('/data/cot-history.json'), get('/data/wasde.json'), get('/data/crop-progress.json')])
-      .then(function (a) { D.cot = a[0]; D.hist = a[1]; D.wasde = a[2]; D.cp = a[3]; polled = Date.now(); });
+    return Promise.all([get('/data/cot.json'), get('/data/cot-history.json'), get('/data/wasde.json'), get('/data/crop-progress.json'), get('/data/cot-questions.json')])
+      .then(function (a) { D.cot = a[0]; D.hist = a[1]; D.wasde = a[2]; D.cp = a[3]; D.q = a[4]; polled = Date.now(); });
   }
   function draw() {
     var list = document.getElementById('hap-list'), now = Date.now();

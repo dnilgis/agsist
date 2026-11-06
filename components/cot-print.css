@@ -52,3 +52,32 @@
 .cotp-tight .cotp-lead{margin:.04in 0 0!important}
 .cotp-tight .cotp-low{margin-top:.04in}
 .cotp-tight .cotp-qr svg{width:.85in;height:.85in}
+.cotp-bu{font-size:11pt;line-height:1.2;margin-top:.01in!important}
+.cotp-lead b{display:block;font-weight:800}
+.cotp-wk{display:block;font-size:11pt}
+/* PIN IT HERE (kit v2 part 2): the wall edition, US Letter landscape, black and white. The headline is 40 pt (caps
+   about 0.4 in, readable across a room), the scoreboard figures 38 pt, nothing under 11 pt but the source line. */
+@page cotw{size:letter landscape;margin:.4in}
+.cotp.cotp-wall{page:cotw}
+.cotp.cotp-wall.cotp-measure{width:10.2in}
+.cotw-top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:4pt solid #000;padding-bottom:.04in}
+.cotw-wk{font-size:16pt;font-weight:800}
+.cotw-url{font:800 20pt/1 "JetBrains Mono",ui-monospace,monospace}
+.cotw-h1{font-size:40pt;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:.08in 0 .06in!important}
+.cotw-grid{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:.3in;row-gap:.1in}
+.cotw-m{border-top:3pt solid #000;padding-top:.04in;break-inside:avoid}
+.cotw-n{font-size:16pt;font-weight:800;text-transform:uppercase;letter-spacing:.05em;line-height:1.15}
+.cotw-fig{font-size:14pt;font-weight:700;line-height:1.1}
+.cotw-fig b{display:block;font-size:38pt;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.cotw-chg{font-size:18pt;font-weight:800;font-variant-numeric:tabular-nums}
+.cotw-low{display:grid;grid-template-columns:1fr 2.1in;gap:.3in;align-items:end;margin-top:.08in;border-top:2pt solid #000;padding-top:.08in}
+.cotw-next{font-size:16pt;font-weight:800;line-height:1.2}
+.cotw-post{font-size:16pt;font-weight:700;margin-top:.08in!important;display:flex;align-items:flex-end;gap:.1in}
+.cotw-blank{flex:1;border-bottom:1.5pt solid #000;height:.3in}
+.cotw-free{font-size:13pt;font-weight:800;margin-top:.12in!important}
+.cotw-src{font-size:9pt;line-height:1.25;margin-top:.05in!important}
+.cotw-qrbox{text-align:center}
+.cotw-qr svg{width:1.35in;height:1.35in;display:block;margin:0 auto}
+.cotw-ask{font-size:12pt;font-weight:800;line-height:1.2;margin-top:.04in!important}
+.cotw-big{font:800 15pt/1.2 "JetBrains Mono",ui-monospace,monospace}
+.cotw-bu{font-size:12pt;font-weight:600;line-height:1.2}

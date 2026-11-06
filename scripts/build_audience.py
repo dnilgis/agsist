@@ -545,6 +545,47 @@ def promo_section(ga, F, rg):
     return out
 
 
+# ── the COT share kit, weekly (kit v2 part 2, Nov 6 2026) ─────────────────
+# Counts only, public: how often the kit was used (GA4 events from components/cot-share.js and cot-print.js),
+# how many visits its tagged links brought (utm_campaign cot-<report date>, utm_source share|print|email), and
+# the signups on /cot by the visit's source and medium. No event parameter, no URL, nothing about a reader.
+KIT_EVENTS = ["share_open", "share_done", "picture_download", "sheet_print", "qr_visit"]
+KIT_SOURCES = ("share", "print", "email")
+KIT_WEEKS = 4
+
+
+def kit_section(ga, F, rg):
+    """{"through", "weeks": [{"week" (Monday), "events": {name: n}, "arrivals": {"source-medium": sessions},
+    "signups": {"source-medium" or "other": n}}]} for the last KIT_WEEKS weeks to the last finished day."""
+    end = date.fromisoformat(rg[0]["end"])
+    first = mondays(end) - timedelta(weeks=KIT_WEEKS - 1)
+    win = [{"id": "w", "start": first.isoformat(), "end": end.isoformat()}]
+    wk = {first + timedelta(weeks=i): {"events": {e: 0 for e in KIT_EVENTS}, "arrivals": {}, "signups": {}} for i in range(KIT_WEEKS)}
+
+    def mon(r):
+        d = r["date"]
+        return mondays(date(int(d[:4]), int(d[4:6]), int(d[6:])))
+    for r in ga.run(["date", "eventName"], ["eventCount"], win, filt=f_and(F, f_in("eventName", KIT_EVENTS))):
+        w = wk.get(mon(r))
+        if w is not None and r.get("eventName") in w["events"]:
+            w["events"][r["eventName"]] += r.get("eventCount", 0)
+    for r in ga.run(["date", "sessionSource", "sessionMedium"], ["sessions"], win,
+                    filt=f_and(F, f_begins("sessionCampaignName", "cot"), f_in("sessionSource", list(KIT_SOURCES)))):
+        w = wk.get(mon(r))
+        if w is not None:
+            k = "%s-%s" % (r.get("sessionSource"), r.get("sessionMedium"))
+            w["arrivals"][k] = w["arrivals"].get(k, 0) + r.get("sessions", 0)
+    for r in ga.run(["date", "sessionSource", "sessionMedium"], ["eventCount"], win,
+                    filt=f_and(F, f_in("eventName", ["email_signup"]), f_begins("pagePath", "/cot"))):
+        w = wk.get(mon(r))
+        if w is not None:
+            so = r.get("sessionSource")
+            k = "%s-%s" % (so, r.get("sessionMedium")) if so in KIT_SOURCES else "other"
+            w["signups"][k] = w["signups"].get(k, 0) + r.get("eventCount", 0)
+    return {"through": end.isoformat(), "page": "/cot",
+            "weeks": [dict(v, week=m.isoformat()) for m, v in sorted(wk.items())]}
+
+
 # ── Your county this week: the holdout's two arms (Oct 27 2026) ─────────
 # scripts/send_daily.py tags every agsist.com link in a ticked reader's Daily with utm_term=cw-block
 # or cw-hold (the arm, never the reader) from the first holdout Thursday. Private like
@@ -666,7 +707,7 @@ def merge_series(ga_days, g_days, b_days, start, end):
     return out
 
 
-def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, returns=None):
+def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, returns=None, kit=None):
     """prev: the previous file (or {}). ga/gsc/bing/returns: section dicts
     or None when that source was not available this run. Anything None is
     carried from prev, with its own "through" date on it."""
@@ -739,6 +780,14 @@ def build(today, prev, ga=None, gsc=None, bing=None, email=None, errors=None, re
         if "returns" in prev:
             out["returns"] = prev["returns"]
         src["returns"] = dict(src.get("returns") or {}, ok=False, error=(errors or {}).get("returns", "not configured"))
+    if kit is not None:
+        out["cotKit"] = kit
+        src["cotKit"] = {"ok": True, "through": kit["through"], "fetched": now}
+    else:
+        if "cotKit" in prev:
+            out["cotKit"] = prev["cotKit"]
+        if "cotKit" in src or "cotKit" in prev:
+            src["cotKit"] = dict(src.get("cotKit") or {}, ok=False, error=(errors or {}).get("cotKit", "not pulled"))
     src.pop("rain_print_funnel", None)      # never in this public file
     src.pop("promos", None)                 # nor the promo and email-session counts
 
@@ -798,6 +847,12 @@ def main():
             except Exception as e:  # noqa: BLE001
                 errors["returns"] = "%s: %s" % (type(e).__name__, str(e)[:300])
                 log("::warning::returns failed, keeping the previous figures: " + errors["returns"])
+            try:
+                extra["kit"] = kit_section(GA4(prop, BetaAnalyticsDataClient(credentials=c)), f_readers(ga["servers"]["towns"]), rg)
+                log("COT kit: %s" % extra["kit"]["weeks"][-1])
+            except Exception as e:  # noqa: BLE001
+                errors["cotKit"] = "%s: %s" % (type(e).__name__, str(e)[:300])
+                log("::warning::COT kit counts failed, keeping the previous figures: " + errors["cotKit"])
         else:
             errors.setdefault("returns", "not pulled: the main GA4 pull failed")
     if info:
@@ -836,7 +891,7 @@ def main():
     if not any((ga, gsc, bing, email is not None)):
         log("::warning::no source was reachable or configured -- data/audience.json left exactly as it was")
         return 0
-    out = build(today, prev, ga, gsc, bing, email, errors, returns=extra.get("returns"))
+    out = build(today, prev, ga, gsc, bing, email, errors, returns=extra.get("returns"), kit=extra.get("kit"))
     OUT.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
     log("wrote data/audience.json")
     if ga and ga.get("pageUsers"):
@@ -1202,6 +1257,40 @@ def selftest():
     o8 = build(date(2026, 10, 19), {"promos": pc, "sources": {"promos": {"ok": True}}}, g, None, None, None, returns=ret)
     t("promo" not in json.dumps(o8) and "gaugeSignups" not in json.dumps(o8) and "report_email" not in json.dumps(o8),
       "no promo or email-session number reaches the public file")
+    # the COT share kit's weekly counts (kit v2 part 2): events, tagged arrivals and /cot signups by source
+    class KitGA:
+        def __init__(self):
+            self.calls = []
+
+        def run(self, dims, mets, wins, filt=None, order=None, limit=0):
+            self.calls.append(dims)
+            if dims == ["date", "eventName"]:
+                return [{"date": "20261102", "eventName": "share_open", "eventCount": 5},
+                        {"date": "20261103", "eventName": "share_done", "eventCount": 2},
+                        {"date": "20261020", "eventName": "sheet_print", "eventCount": 1},
+                        {"date": "20260101", "eventName": "share_open", "eventCount": 99}]
+            if mets == ["sessions"]:
+                return [{"date": "20261102", "sessionSource": "share", "sessionMedium": "picture", "sessions": 4},
+                        {"date": "20261104", "sessionSource": "print", "sessionMedium": "qr", "sessions": 1}]
+            return [{"date": "20261102", "sessionSource": "print", "sessionMedium": "qr", "eventCount": 1},
+                    {"date": "20261103", "sessionSource": "google", "sessionMedium": "organic", "eventCount": 2}]
+    kg = KitGA()
+    try:
+        kit = kit_section(kg, F2, [{"id": "7d", "start": "2026-10-30", "end": "2026-11-05"}])
+    except Exception as e:  # noqa: BLE001  (f_and needs the GA4 library; the stub filters are not checked here)
+        kit = None
+        log("kit selftest skipped: %s" % e)
+    if kit:
+        last = kit["weeks"][-1]
+        t(len(kit["weeks"]) == KIT_WEEKS and last["week"] == "2026-11-02", "kit: four weeks, the last from Monday Nov 2")
+        t(last["events"]["share_open"] == 5 and last["events"]["share_done"] == 2 and kit["weeks"][1]["events"]["sheet_print"] == 1,
+          "kit: events by week, a day outside the weeks ignored")
+        t(last["arrivals"] == {"share-picture": 4, "print-qr": 1}, "kit: tagged arrivals by source and medium")
+        t(last["signups"] == {"print-qr": 1, "other": 2}, "kit: /cot signups by the visit's source, untagged as other")
+        o9 = build(date(2026, 11, 6), {}, g, None, None, None, kit=kit)
+        t(o9["cotKit"] == kit and o9["sources"]["cotKit"]["ok"], "kit: written to the public file, counts only")
+        o10 = build(date(2026, 11, 7), o9, g, None, None, None)
+        t(o10["cotKit"] == kit and not o10["sources"]["cotKit"]["ok"], "kit: carried with its date when not pulled")
     print("selftest " + ("passed" if ok else "FAILED"))
     return 0 if ok else 1
 

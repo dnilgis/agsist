@@ -10,7 +10,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=28" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/cot-print.css?v=4">
+<link rel="stylesheet" href="/components/cot-print.css?v=5">
   <script src="/components/util.js?v=17"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -539,6 +539,25 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-note{font-size:.85rem;color:var(--text-dim);min-width:6em}
 @media(min-width:701px){.cc-chips{flex-wrap:wrap;overflow:visible;margin:0 0 .45rem;padding:0}.cc-plot{height:340px}.cc-head{min-height:2.8em;font-size:1.08rem}.cc-src{min-height:3em}}
 @media print{.cc-acts,.cc-chips{display:none}}
+.cc-dlg{width:min(30rem,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:0;border:1px solid var(--border-2);border-radius:12px;background:var(--surface);color:var(--text);overflow:auto}
+.cc-dlg::backdrop{background:rgba(0,0,0,.6)}
+.cc-dlg-in{padding:1rem}
+.cc-dlg-h{margin:0 0 .25rem;font-size:1.1rem;font-weight:800;line-height:1.3}
+.cc-dlg-p{margin:0 0 .7rem;font-size:.88rem;line-height:1.45;color:var(--text-dim)}
+.cc-dlg-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:.45rem}
+.cc-pk{min-height:48px;padding:0 .8rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:.95rem;font-weight:700;cursor:pointer;text-align:left}
+.cc-pk:hover,.cc-pk[aria-pressed="true"]{border-color:var(--gold)}
+.cc-pk[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--gold)}
+.cc-pk:focus-visible,.cc-dlg-more>summary:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.cc-dlg-more{margin:.5rem 0 0}
+.cc-dlg-more>summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-weight:700;color:var(--gold)}
+.cc-dlg-wall{margin:.7rem 0 0;padding:.7rem 0 0;border-top:1px solid var(--border)}
+.cc-pk-wall{width:100%}
+.cc-pv{margin:.7rem 0 0;text-align:center}
+.cc-pv img{display:block;width:auto;max-width:100%;height:auto;max-height:46vh;margin:0 auto;border-radius:6px;border:1px solid var(--border)}
+.cc-dlg-note{margin:.5rem 0 0;font-size:.85rem;line-height:1.45;color:var(--text-dim);min-height:1.45em}
+.cc-dlg-acts{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end;margin-top:.6rem}
+.cc-send{border-color:var(--gold);background:var(--gold-fill,var(--gold));color:#0a0c0d}
 .cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .25rem}
 /* the baked summary shows with scripts off and until the live report renders; cot-page.js adds cot-live to <html> then */
 html.cot-live .cg-baked{display:none}
@@ -560,6 +579,20 @@ html.cot-live .cg-baked{display:none}
 @media(max-width:400px){.cg-table{font-size:.76rem}.cg-table th,.cg-table td{padding-left:.25rem;padding-right:.25rem}.cg-table th:first-child,.cg-table td:first-child{padding-left:.6rem}.cg-table th:last-child,.cg-table td:last-child{padding-right:.6rem}}
 .cg-baked{margin:0 0 .8rem!important}
 .cg-ask{margin:0 0 .5rem;scroll-margin-top:16px}
+.cq{margin:0 0 1.4rem}
+.cq:not(:has(.cq-i)){display:none}
+.cq-body{display:grid;gap:.6rem}
+@media(min-width:701px){.cq-body{grid-template-columns:1fr 1fr}.cq-arch{grid-column:1/-1}}
+.cq-i{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.7rem .9rem;background:var(--surface)}
+.cq-k{margin:0 0 .3rem;font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
+.cq-q{margin:0 0 .3rem;font-size:1rem;font-weight:800;line-height:1.35;color:var(--text)}
+.cq-a,.cq-f{margin:0;font-size:.9rem;line-height:1.5;color:var(--text-dim)}
+.cq-a b{color:var(--gold)}
+.cq-arch{border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.cq-arch>summary{display:flex;align-items:center;min-height:44px;padding:0 .9rem;cursor:pointer;font-weight:700;color:var(--gold)}
+.cq-ol{margin:0;padding:0 .9rem .7rem 2.1rem;font-size:.85rem;line-height:1.5;color:var(--text-dim)}
+.cq-ol li{margin:0 0 .35rem}
+.cq-ol .cq-q{display:inline;font-size:.85rem}
 .co{margin:0 0 1.4rem;--cm-x0:#3987e5;--cm-b1:#184f95;--cm-b2:#2b2f2e;--cm-b3:#7a3232;--cm-x4:#e66767;--cm-i0:#0b0b0b;--cm-i1:#fff;--cm-i2:var(--text);--cm-i3:#fff;--cm-i4:#0b0b0b;--cm-ring:#f0efec;--cm-line:#86b6ef}
 .co-mkt{--cm-x0:#3987e5;--cm-b1:#184f95;--cm-b2:transparent;--cm-b3:#7a3232;--cm-x4:#e66767;--cm-i0:#0b0b0b;--cm-i1:#fff;--cm-i2:var(--text);--cm-i3:#fff;--cm-i4:#0b0b0b}
 [data-theme="light"] .co,[data-theme="light"] .co-mkt{--cm-x0:#1c5cab;--cm-b1:#9ec5f4;--cm-b2:#f0efec;--cm-b3:#f4c1bf;--cm-x4:#e34948;--cm-i0:#fff;--cm-i1:#0b0b0b;--cm-i2:#0b0b0b;--cm-i3:#0b0b0b;--cm-i4:#0b0b0b;--cm-ring:#0b0b0b;--cm-line:#256abf}
@@ -749,11 +782,26 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       <figcaption class="cc-src" id="cc-src"></figcaption>
       <div class="cc-acts">
         <button type="button" class="cc-btn" id="cc-share">Share this chart</button>
-        <button type="button" class="cc-btn" id="cc-save">Save image</button>
-        <button type="button" class="cc-btn" id="cc-print">Print this week</button>
+        <button type="button" class="cc-btn" id="cc-save" aria-haspopup="dialog">Save picture</button>
+        <button type="button" class="cc-btn" id="cc-print" aria-haspopup="dialog">Print sheet</button>
         <span class="cc-note" id="cc-note" role="status" aria-live="polite"></span>
       </div>
       <div class="sr-only"><table id="cc-table"></table></div>
+      <!-- Pick your market (kit v2 part 2): Save picture and Print sheet ask first; components/cot-share.js. A dialog, so nothing moves. -->
+      <dialog class="cc-dlg" id="cc-pick" aria-labelledby="cc-pick-h">
+        <div class="cc-dlg-in">
+          <h2 class="cc-dlg-h" id="cc-pick-h">Make a picture of which market?</h2>
+          <p class="cc-dlg-p" id="cc-pick-p">The picture leads with that market&rsquo;s numbers.</p>
+          <div id="cc-pick-mk">
+            <div class="cc-dlg-g"><button type="button" class="cc-pk" data-k="corn" aria-pressed="false">Corn</button><button type="button" class="cc-pk" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-pk" data-k="wheat" aria-pressed="false">Wheat</button><button type="button" class="cc-pk" data-k="livecattle" aria-pressed="false">Cattle</button><button type="button" class="cc-pk" data-k="leanhogs" aria-pressed="false">Hogs</button></div>
+            <details class="cc-dlg-more"><summary>More markets</summary><div class="cc-dlg-g"><button type="button" class="cc-pk" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-pk" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-pk" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-pk" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-pk" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-pk" data-k="milk" aria-pressed="false">Class III milk</button></div></details>
+          </div>
+          <div class="cc-dlg-wall" id="cc-pick-wall" hidden><button type="button" class="cc-pk cc-pk-wall" data-wall="1">Pin-up sheet: big type for a wall, all six markets</button></div>
+          <figure class="cc-pv" id="cc-pv" hidden><img id="cc-pv-img" alt="" width="1080" height="1350"></figure>
+          <p class="cc-dlg-note" id="cc-pv-note" role="status" aria-live="polite"></p>
+          <div class="cc-dlg-acts"><button type="button" class="cc-btn cc-send" id="cc-pv-send" hidden>Send picture</button><button type="button" class="cc-btn" id="cc-pick-x">Close</button></div>
+        </div>
+      </dialog>
     </figure>
     <div class="co-mkt" id="co-mkt" hidden></div>
     <details class="cg-all" id="cg-all">
@@ -764,6 +812,13 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Fund positions in every market, in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask" id="cot-signup"></div>
     <!-- the summary baked in for crawlers and no-script readers, under the chart so the live swap moves nothing above it -->
   <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, November 03, 2026</b>, released Friday, November 6: <b>Corn</b> funds near flat (net long 8,795 contracts, under 2.0% of open interest), −72,318 on the week; <b>Soybeans</b> funds net long 142,727 contracts, −51,054 on the week; <b>Chicago wheat</b> funds net short 87,126 contracts, −12,520 on the week; <b>KC wheat</b> funds near flat (net short 5,109 contracts, under 2.0% of open interest), −4,592 on the week; <b>Minneapolis wheat</b> funds net short 9,735 contracts, −6,022 on the week; <b>Soymeal</b> funds net long 108,367 contracts, −60,347 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
+  </section>
+
+  <!-- Last week's question, this week's answer (kit v2 part 2, Sig Nov 6): about fund positions only, picked and
+       answered from the data by scripts/cot_questions.py; baked in full by prerender_wpi_scorecard.py, no script. -->
+  <section class="cq" id="cot-qa" aria-labelledby="cq-h">
+    <h2 class="cg-h" id="cq-h">Last week&rsquo;s question, this week&rsquo;s answer</h2>
+    <div class="cq-body"><!-- PRERENDER:cot-qa --><div class="cq-i"><p class="cq-k">Last week&rsquo;s question, from the report of Tue, Oct 27, 2026</p><p class="cq-q">Will Chicago wheat&#x27;s selling run reach 9 weeks?</p><p class="cq-a"><b>Yes.</b> Funds sold 12,520 Chicago wheat contracts in the week to Tue, Nov 3, 2026: 9 weeks in a row.</p></div><div class="cq-i"><p class="cq-k">This week&rsquo;s question, answered by the next report, Monday Nov 16, 3:30 PM ET (holiday week)</p><p class="cq-q">Will Chicago wheat&#x27;s selling run reach 10 weeks?</p><p class="cq-f">Funds sold Chicago wheat in each of the 9 weeks to Tue, Nov 3, 2026, 102,030 contracts in all.</p></div><details class="cq-arch"><summary>Earlier questions</summary><ol class="cq-ol"><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 8 weeks?</span> Yes. Funds sold 22,601 Chicago wheat contracts in the week to Tue, Oct 27, 2026: 8 weeks in a row.</li><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 7 weeks?</span> Yes. Funds sold 19,450 Chicago wheat contracts in the week to Tue, Oct 20, 2026: 7 weeks in a row.</li><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 6 weeks?</span> Yes. Funds sold 3,725 Chicago wheat contracts in the week to Tue, Oct 13, 2026: 6 weeks in a row.</li><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 5 weeks?</span> Yes. Funds sold 6,721 Chicago wheat contracts in the week to Tue, Oct 6, 2026: 5 weeks in a row.</li><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 4 weeks?</span> Yes. Funds sold 10,093 Chicago wheat contracts in the week to Tue, Sep 29, 2026: 4 weeks in a row.</li><li><span class="cq-q">Will corn&#x27;s buying run reach 6 weeks?</span> No. Funds sold 10,363 corn contracts in the week to Tue, Sep 22, 2026, ending the run at 5 weeks.</li><li><span class="cq-q">Will corn&#x27;s buying run reach 5 weeks?</span> Yes. Funds bought 1 corn contracts in the week to Tue, Sep 15, 2026: 5 weeks in a row.</li></ol></details><!-- /PRERENDER:cot-qa --></div>
   </section>
 
   <!-- Positioning map and options (2026-11-06, Sig: "has to be epic"; few words). Every trader group in every market,
@@ -947,11 +1002,12 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 <script src="/components/loader.js?v=19"></script>
 
 <script src="/components/cot-glance.js?v=5"></script>
-<script src="/components/cot-kit.js?v=1"></script>
-<script src="/components/cot-chart.js?v=9"></script>
+<script src="/components/cot-kit.js?v=2"></script>
+<script src="/components/cot-chart.js?v=10"></script>
 <script src="/components/cot-page.js?v=10"></script>
 <script src="/components/qr.js?v=11"></script>
-<script src="/components/cot-print.js?v=3"></script>
+<script src="/components/cot-print.js?v=4"></script>
+<script src="/components/cot-share.js?v=1"></script>
 
 
 <script src="/components/cot-analysis.js?v=5"></script>

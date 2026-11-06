@@ -85,9 +85,13 @@ DEEP = REPO / "data" / "cot-deep.json"
 ANA = REPO / "data" / "cot-analysis.json"
 # Sig, Oct 22: every list email replies to news@ (sig@ is his own mail).
 REPLY_DEFAULT = "news@agsist.com"
-TAG = "utm_source=cot_email&utm_medium=email"
+# One tag convention for every COT kit asset (kit v2 part 2): utm_source share|print|email, utm_medium
+# picture|sheet|qr|forward|email, utm_campaign cot. The forward line says forward, so a neighbor's visit is told
+# apart from the reader's own.
+SRC_TAG = "utm_source=email&utm_medium="
+TAG = SRC_TAG + "email&utm_campaign=cot"
 PAGE = "https://agsist.com/cot?" + TAG
-FORWARD_URL = "https://agsist.com/cot?ref=email-forward&" + TAG + "#cot-signup"   # lands on the signup box (Sig, Nov 6)
+FORWARD_URL = "https://agsist.com/cot?ref=email-forward&" + SRC_TAG + "forward&utm_campaign=cot#cot-signup"   # lands on the signup box (Sig, Nov 6)
 UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 TOPIC = "cot"
 # (key in the COT files, the name in the email)
@@ -1173,10 +1177,11 @@ def _selftest():
                 os.environ[k] = v
     allt = body + hb.replace("&amp;", "&")
     us = re.findall(r'https://agsist\.com/[^\s"<>]*', allt)
-    ok(us and all(TAG in u for u in us), "every agsist.com link tagged cot_email: %r" % [u for u in us if TAG not in u])
+    ok(us and all(SRC_TAG in u and "utm_campaign=cot" in u for u in us), "every agsist.com link tagged email: %r" % [u for u in us if SRC_TAG not in u])
     ok("https://agsist.com/cot?" in allt, "links to the COT tool")
     # the forward line lands a neighbor on the signup box, tagged like every other link (Sig, Nov 6)
-    fw = "https://agsist.com/cot?ref=email-forward&" + TAG + "#cot-signup"
+    fw = FORWARD_URL
+    ok("utm_medium=forward" in fw, "the forward link says forward")
     ok(body.count(fw) == 1 and hb.replace("&amp;", "&").count('href="' + fw + '"') == 1, "forward link goes to /cot#cot-signup in text and HTML")
     ok("Share with a farmer or your grain buyer. They can sign up free at" in body and "Share with a farmer or your grain buyer." in hb, "forward line in both parts")
 

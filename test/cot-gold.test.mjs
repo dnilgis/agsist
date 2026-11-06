@@ -280,7 +280,8 @@ test("phone save image: 1080x1350, headline 56 px or more, everything else 26 px
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const pg = await open(browser, port, "/cot");
-    const [dl] = await Promise.all([pg.waitForEvent("download"), pg.click("#cc-save")]);
+    await pg.click("#cc-save");
+    const [dl] = await Promise.all([pg.waitForEvent("download"), pg.click('#cc-pick .cc-pk[data-k="corn"]')]);
     const buf = fs.readFileSync(await dl.path());
     assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [1080, 1350], "4:5 on a phone-width screen");
     const im = await pg.evaluate(() => window.AgCotChart.lastImage);
@@ -305,7 +306,8 @@ test("phone save image: 1080x1350, headline 56 px or more, everything else 26 px
     await pg.context().close();
     // desktop keeps 1200x675
     const d = await open(browser, port, "/cot", { width: 1280 });
-    const [dl2] = await Promise.all([d.waitForEvent("download"), d.click("#cc-save")]);
+    await d.click("#cc-save");
+    const [dl2] = await Promise.all([d.waitForEvent("download"), d.click('#cc-pick .cc-pk[data-k="corn"]')]);
     const b2 = fs.readFileSync(await dl2.path());
     assert.deepEqual([b2.readUInt32BE(16), b2.readUInt32BE(20)], [1200, 675]);
     const di = await d.evaluate(() => window.AgCotChart.lastImage), da = di.texts.indexOf("Free every Friday: agsist.com/cot");

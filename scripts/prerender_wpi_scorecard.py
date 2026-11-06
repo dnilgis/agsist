@@ -1078,6 +1078,56 @@ def cot_answer(d, cx, key="corn"):
     return esc(did) + (f" Next report: {esc(w)}." if w else "")
 
 
+COT_Q_JSON = "data/cot-questions.json"
+
+
+def _qa_day(iso):
+    try:
+        x = datetime.strptime(iso or "", "%Y-%m-%d").date()
+    except ValueError:
+        return ""
+    return f"{_DAYS[x.weekday()][:3]}, {_MON3[x.month - 1]} {x.day}, {x.year}"
+
+
+def cot_qa(d, cx):
+    """Last week's question, this week's answer (kit v2 part 2): the block on /cot, baked in full from the
+    questions the analysis wrote (cot-analysis.json "questions", else data/cot-questions.json,
+    scripts/cot_questions.py) when they are for the report on the page; nothing script-drawn, so it moves
+    nothing. Empty (the heading's section hidden by its own :empty rule) when they are for another week."""
+    q = (cx or {}).get("questions")
+    if not q:
+        try:
+            with open(COT_Q_JSON, encoding="utf-8") as f:
+                q = json.load(f)
+        except (OSError, ValueError):
+            q = None
+    try:
+        rd = datetime.strptime(d.get("report_date", ""), "%B %d, %Y").date().isoformat()
+    except ValueError:
+        rd = ""
+    if not q or not rd or q.get("report_date") != rd:
+        return ""
+    out = []
+    lw, tw = q.get("last_week"), q.get("this_week")
+    if lw:
+        a = lw.get("answer", "")
+        yn, rest = (a.split(" ", 1) + [""])[:2] if a.startswith(("Yes.", "No.")) else ("", a)
+        out.append('<div class="cq-i"><p class="cq-k">Last week&rsquo;s question, from the report of '
+                   f'{esc(_qa_day(lw.get("asked")))}</p><p class="cq-q">{esc(lw.get("question", ""))}</p>'
+                   f'<p class="cq-a">{"<b>" + esc(yn) + "</b> " if yn else ""}{esc(rest)}</p></div>')
+    if tw:
+        nw = cot_next_words(d)
+        out.append('<div class="cq-i"><p class="cq-k">This week&rsquo;s question, answered by the next report'
+                   f'{", " + esc(nw) if nw else ""}</p><p class="cq-q">{esc(tw.get("question", ""))}</p>'
+                   f'<p class="cq-f">{esc(tw.get("fact", ""))}</p></div>')
+    arch = [x for x in (q.get("archive") or [])[1 if lw else 0:] if x.get("answer")]
+    if arch:
+        out.append('<details class="cq-arch"><summary>Earlier questions</summary><ol class="cq-ol">' + "".join(
+            f'<li><span class="cq-q">{esc(x.get("question", ""))}</span> {esc(x.get("answer", ""))}</li>' for x in arch)
+            + "</ol></details>")
+    return "".join(out)
+
+
 def bake_cot():
     with open(COT_JSON, encoding="utf-8") as f:
         d = json.load(f)
@@ -1093,6 +1143,7 @@ def bake_cot():
     src = replace_region(src, "cot-release", cot_release_html(d), COT_HTML)
     src = replace_region(src, "cot-head", cot_head(d, cx), COT_HTML)
     src = replace_region(src, "cot-answer", cot_answer(d, cx), COT_HTML)
+    src = replace_region(src, "cot-qa", cot_qa(d, cx), COT_HTML)
     return orig, src, COT_HTML
 
 
