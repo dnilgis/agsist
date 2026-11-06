@@ -1,7 +1,8 @@
 /* The printed "Funds this week" sheet on /cot (Nov 6 2026, Sig: shareable by default, "nicely printed PDFs",
  * "I have always loved a really well done infographic").
  *   1. The print stylesheet shows the sheet alone: no nav, footer, sponsor slots or buttons on paper; hidden on screen.
- *   2. Each market's sentence on the sheet is the page's answer line (AgCotGlance.answer), never its own wording.
+ *   2. Kit v2 (Nov 6): one short line per market (the big net, what funds bought or sold, one context line), the
+ *      managed money and rank explained once, the year prominent, no "this week" or "today", no "Crowded" badge.
  *   3. A Playwright PDF of it is exactly 1 page on US Letter (and on A4), every word 11 pt or more, figures 20 pt+.
  * Wording checks use the frozen Oct 27 fixtures.
  *
@@ -34,9 +35,9 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 test("cot.html: the Print this week button beside Save image (a 44 px .cc-btn), the stylesheet and scripts at their versions", () => {
   assert.match(HTML, /<button type="button" class="cc-btn" id="cc-save">Save image<\/button>\s*<button type="button" class="cc-btn" id="cc-print">Print this week<\/button>/);
   assert.match(HTML, /\.cc-btn\{[^}]*min-height:44px/);
-  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=2">'));
+  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=3">'));
   const i = (s) => HTML.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-chart.js?v=7") > 0 && i("cot-chart.js?v=7") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=2"), "chart, QR encoder, then the sheet");
+  assert.ok(i("cot-kit.js?v=1") > 0 && i("cot-kit.js?v=1") < i("cot-chart.js?v=8") && i("cot-chart.js?v=8") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=3"), "kit, chart, QR encoder, then the sheet");
   assert.match(read("components/cot-chart.js"), /dispatchEvent\(new CustomEvent\('cot:chart-data'/, "the chart hands its files over");
   assert.doesNotMatch(JS, /fetch\(|XMLHttpRequest/, "the sheet fetches nothing");
 });
@@ -48,22 +49,41 @@ test("print stylesheet: hidden on screen; with html.cotp-on, everything but the 
   assert.match(pr, /html\.cotp-on body>\*:not\(#cotp\)\{display:none!important\}/);
   assert.match(pr, /html\.cotp-on #cotp\{display:block!important\}/);
   assert.match(CSS, /\.cotp-m\{break-inside:avoid;page-break-inside:avoid/, "no page break inside a market");
+  // a true black-and-white palette: the screen gold (2.3:1 on white) never on paper; the dark gold (5.3:1) as the accent
+  assert.doesNotMatch(CSS.replace(/\/\*[\s\S]*?\*\//g, ""), /#d4a23f/i, "no #d4a23f on white");
+  assert.match(CSS, /\.cotp\{--chart-1:#8a6514;/, "the net line in dark gold on paper");
+  // any browser print gives the one-page sheet: beforeprint and matchMedia('print') set what the button sets
+  assert.match(JS, /addEventListener\('beforeprint', on\)/);
+  assert.match(JS, /matchMedia\('print'\)/);
   assert.doesNotMatch(CSS + JS, DASH);
 });
 
 // ------------------------------------------------------------------ 2. the words are the page's words
-test("the sheet's market sentences are the page's answer line for the fixture, word for word", () => {
+test("the sheet: one short line per market, the context line measured, the shared note, the year, no 'this week'", () => {
   const s = P.sheet(FX.cot, FX.cx, FX.hist, NOW);
   assert.deepEqual(s.markets.map((m) => m.key), SIX);
-  for (const m of s.markets) assert.equal(m.sentence, G.answer(m.key, FX.cot, FX.cx, NOW).did, m.key);
-  const h = P.html(s, "");
-  for (const m of s.markets) assert.ok(h.includes(G.answer(m.key, FX.cot, FX.cx).did.replace(/'/g, "&#39;")), m.key + " printed");
-  assert.equal(s.asOf, G.asOf(FX.cot, FX.cx));
-  assert.equal(s.lead, "Funds sold corn, soybeans, Chicago wheat and lean hogs and bought live cattle and feeder cattle in the week to Tuesday, Oct 27.");
+  assert.equal(s.title, "Funds, week to Oct 27, 2026");
+  assert.equal(s.asOf, "Week to Tue, Oct 27, 2026. Released Fri, Oct 30, 2026.");
+  assert.equal(s.lead, "Funds sold corn, soybeans, Chicago wheat and lean hogs and bought live cattle and feeder cattle in the week to Tuesday, Oct 27, 2026.");
   assert.equal(s.next, "Next report: Friday Nov 6, 3:30 PM ET.", "a date on paper, never today");
   assert.equal(P.nextLine(FX.cot, FX.cx, G.etInstant(FX.cot.next_release, "15:30") + 3600000), "A newer report was due Friday Nov 6, 3:30 PM ET. This sheet shows the one before it.");
+  const by = Object.fromEntries(s.markets.map((m) => [m.key, m]));
+  assert.equal(by.corn.context, "Sold 6 weeks in a row: 333,347", "a run, from the history");
+  assert.equal(by.livecattle.context, "Rank: higher than 42% of weeks", "else the rank, its period in the shared note");
+  assert.equal(by.leanhogs.record, "Largest net short in contracts since 2010", "a measured record instead of a Crowded badge");
+  assert.equal(by.leanhogs.context, "", "one context line: the record");
+  assert.equal(by.corn.record, "");
+  const h = P.html(s, "");
+  assert.ok(h.includes('<p class="cotp-tag">Largest net short in contracts since 2010</p>'));
+  assert.ok(h.includes('<p class="cotp-fig"><b>81,113</b> <span class="cotp-side">net long</span></p><p class="cotp-chg">\u25bc Sold 83,310</p>'));
+  assert.ok(h.includes('<p class="cotp-chg">\u25b2 Bought 5,471</p>'));
+  assert.ok(h.includes("Rank: the net as a share of open interest, against every week since 2010."), "the rank explained once");
+  assert.equal((h.replace(/<svg[\s\S]*?<\/svg>/g, "").match(/managed money/gi) || []).length, 2, "managed money named in the note and the source only");
+  assert.ok(h.includes("<b>Corn funds cut their net long by 83,310 contracts.</b> Still net long: 81,113."), "the chart under its headline");
+  assert.doesNotMatch(h, /Crowded|crowded|moderate|heavy|\bthis week\b|\btoday\b/, "no badge words, no weight words, no 'this week'");
   assert.doesNotMatch(h, DASH);
   assert.doesNotMatch(h, /\b(should|buy now|sell now|consider|recommend|signal|z-score|percentile)\b/i, "no advice, no method words");
+  assert.ok(s.chart.svg.includes('stroke-dasharray="4 3"'), "the price line dashed on paper");
 });
 
 test("the QR code lands on the Funds this week signup box, and the line under it asks plainly (Sig, Nov 6)", () => {
@@ -74,12 +94,9 @@ test("the QR code lands on the Funds this week signup box, and the line under it
   assert.ok(h.includes('<div class="cotp-qr"><svg></svg></div><p class="cotp-free">Every Friday by email: <span class="cotp-big">agsist.com/cot</span></p>'));
 });
 
-test("the 52-week range is cot.json's min52 and max52, and a run counts the weeks in a row from the history", () => {
+test("a run counts the weeks in a row from the history", () => {
   const s = P.sheet(FX.cot, FX.cx, FX.hist, NOW);
   for (const m of s.markets) {
-    const c = FX.cot[m.key];
-    assert.equal(m.range.lo, Math.min(c.min52, c.net)); assert.equal(m.range.hi, Math.max(c.max52, c.net));
-    assert.ok(m.range.at >= 0 && m.range.at <= 1);
     // the run, counted here the long way
     const rows = FX.hist.history[m.key];
     let n = 0, tot = 0, sg = 0;
@@ -148,7 +165,7 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
         sponsor: q('[data-sponsor-link], #footer-adspace, [class*="sponsor"], [id*="sponsor"], a[href^="/sponsor"], [class*="ad-slot"]').filter(shown).length,
         buttons: q("button, .cc-btn, input, select").filter(shown).length,
         sheet: shown(document.getElementById("cotp")),
-        sentences: q("#cotp .cotp-s").map((p) => p.firstChild.textContent.trim()),
+        lines: q("#cotp .cotp-m").map((p) => p.textContent.trim()),
         tiny: q("#cotp *").filter((e) => shown(e) && e.namespaceURI !== "http://www.w3.org/2000/svg" && [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))
           .filter((e) => parseFloat(getComputedStyle(e).fontSize) < 14.6).map((e) => e.className + ": " + e.textContent.slice(0, 40)),
         figs: q("#cotp .cotp-fig b").map((e) => parseFloat(getComputedStyle(e).fontSize)),
@@ -160,9 +177,10 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
     });
     assert.ok(vis.sheet, "the sheet shows in print");
     assert.equal(vis.nav, 0, "no nav on paper"); assert.equal(vis.footer, 0, "no footer"); assert.equal(vis.sponsor, 0, "no sponsor slot"); assert.equal(vis.buttons, 0, "no buttons");
-    assert.deepEqual(vis.sentences, SIX.map((k) => G.answer(k, FX.cot, FX.cx).did), "the page's answer line, word for word");
+    assert.equal(vis.lines.length, 6, "six markets on the scoreboard");
+    assert.ok(vis.lines.every((t) => t.length < 90), "one short block per market: " + vis.lines.join(" / "));
     assert.deepEqual(vis.tiny, [], "every word on the sheet 11 pt or more");
-    assert.ok(vis.figs.length === 6 && vis.figs.every((f) => f >= 26.6), "figures 20 pt or more: " + vis.figs);
+    assert.ok(vis.figs.length === 6 && vis.figs.every((f) => f >= 42.6), "scoreboard figures 32 pt or more, readable from 6 feet: " + vis.figs);
     assert.ok(vis.svgText >= 14, "chart labels print at about 11 pt: " + vis.svgText);
     assert.equal(vis.zoom, "", "the fixture week fits without scaling");
     assert.ok(vis.qr, "QR code from components/qr.js");
@@ -174,6 +192,45 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
       assert.equal(pages(buf), 1, format + ": exactly 1 page");
       if (process.env.COT_PRINT_OUT && format === "Letter") fs.writeFileSync(process.env.COT_PRINT_OUT, buf);
     }
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("any browser print (Ctrl+P, the menu) gives the one-page sheet, also on release day with the newest price not yet repaired", { skip, timeout: 180000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  // release day: the newest week has its close but no roll-repaired index yet (px_adj null), as on Nov 6, 2026
+  const hist = JSON.parse(OWN["/data/cot-history.json"]);
+  for (const k of Object.keys(hist.history)) { const r = hist.history[k].at(-1); if (r) r.px_adj = null; }
+  const own = { ...OWN, "/data/cot-history.json": JSON.stringify(hist) };
+  try {
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1200, height: 900 } });
+    const pg = await ctx.newPage();
+    await pg.route("**/*", (r) => {
+      const u = new URL(r.request().url());
+      if (u.origin !== `http://127.0.0.1:${port}`) return r.abort();
+      if (own[u.pathname]) return r.fulfill({ status: 200, contentType: "application/json", body: own[u.pathname] });
+      return r.continue();
+    });
+    await pg.clock.setFixedTime(new Date(NOW));
+    await pg.goto(`http://127.0.0.1:${port}/cot`, { waitUntil: "load" });
+    await pg.waitForFunction(() => document.querySelector("#cotp .cotp-chart svg path"));
+    assert.ok(!(await pg.evaluate(() => document.documentElement.classList.contains("cotp-on"))), "off until a print starts");
+    // the browser's own print: beforeprint sets the sheet state, afterprint clears it
+    await pg.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
+    assert.ok(await pg.evaluate(() => document.documentElement.classList.contains("cotp-on")), "beforeprint switches to the sheet");
+    const svg = await pg.$eval("#cotp .cotp-chart svg", (e) => e.textContent);
+    assert.match(svg, /\$4\.\d\d[¼½¾]?\/bu on Oct 20/, "the price label sits at the last repaired week, dated: " + svg);
+    assert.doesNotMatch(await pg.$eval("#cotp", (e) => e.textContent), /No price line|some weeks have no futures close/, "no apology on paper");
+    for (const format of ["Letter", "A4"]) assert.equal(pages(await pg.pdf({ format })), 1, format + ": exactly 1 page on release day");
+    await pg.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+    assert.ok(!(await pg.evaluate(() => document.documentElement.classList.contains("cotp-on"))), "afterprint puts the page back");
+    // print media without the button or the event (matchMedia('print') changes): the sheet again
+    await pg.emulateMedia({ media: "print" });
+    await pg.waitForFunction(() => document.documentElement.classList.contains("cotp-on"), null, { timeout: 3000 }).catch(() => {});
+    const on = await pg.evaluate(() => document.documentElement.classList.contains("cotp-on"));
+    const shown = await pg.evaluate(() => getComputedStyle(document.getElementById("cotp")).display);
+    assert.ok(on && shown === "block", "print media alone shows the sheet: " + on + " " + shown);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

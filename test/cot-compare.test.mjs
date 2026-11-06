@@ -74,7 +74,7 @@ test("the headline names the markets; no dash; labels at the line ends and 12 px
 
 test("single mode is unchanged: model, layout and the link still work as before", () => {
   const m = C.model("beans", HIST, COT, CX);
-  assert.equal(m.headline, "Soybeans: funds long, fairly heavy, sold 27,544 this week");
+  assert.equal(m.headline, "Soybean funds cut their net long by 27,544 contracts. Still net long: 193,781.");
   assert.ok(!m.cmp);
 });
 
@@ -175,7 +175,7 @@ test("compare on the page: 2 and 3 picks, a 4th refused, the link round-trips, n
       assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.mode || ""), "");
       assert.equal(new URL(pg.url()).searchParams.get("m"), "corn");
       assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.market), "corn");
-      assert.match((await pg.textContent("#cc-head")).trim(), /^Corn: funds /);
+      assert.match((await pg.textContent("#cc-head")).trim(), /^Corn funds /);
       await pg.context().close();
     }
   } finally { await browser.close(); srv.close(); }
@@ -218,7 +218,7 @@ test("compare: Share copies the compare link; Save image carries the headline, t
     const im = await pg.evaluate(() => window.AgCotChart.lastImage);
     assert.ok(im.texts.some((t) => t.startsWith("Funds in corn, soybeans")), "headline: " + im.texts.join("|"));
     assert.ok(im.texts.includes("agsist.com/cot"));
-    assert.ok(im.texts.includes("Positions as of Oct 27, 2026, released Oct 30"));
+    assert.ok(im.texts.includes("Week to Tue, Oct 27, 2026. Released Fri, Oct 30, 2026."));
     assert.ok(im.texts.some((t) => /^Corn \d+$/.test(t)) && im.texts.some((t) => /^Soybeans \d+$/.test(t)) && im.texts.some((t) => /^Chicago wheat \d+$/.test(t)));
     assert.ok(!im.texts.some((t) => DASH.test(t)), "no dashes");
     await pg.context().close();

@@ -10,7 +10,7 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=28" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/cot-print.css?v=2">
+<link rel="stylesheet" href="/components/cot-print.css?v=3">
   <script src="/components/util.js?v=17"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -532,7 +532,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-msg{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--text-muted)}
 .cc-msg[hidden]{display:none}
 .cc-tip{position:absolute;z-index:3;pointer-events:none;padding:.4rem .55rem;border:1px solid var(--border-2);border-radius:6px;background:var(--surface3);color:var(--text);font-size:.8rem;line-height:1.45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
-.cc-src{font-size:.78rem;line-height:1.5;color:var(--text-muted);margin:.45rem 0 .4rem;min-height:6em}
+.cc-src{font-size:.78rem;line-height:1.5;color:var(--text-muted);margin:.45rem 0 .4rem;min-height:7.5em}
 .cc-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
 .cc-btn{min-height:44px;padding:0 1rem;border:1px solid var(--border-2);border-radius:var(--btn-r,6px);background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
 .cc-btn:hover{border-color:var(--gold)}
@@ -737,8 +737,8 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"><button type="button" class="cc-cmp" id="cc-cmp" aria-pressed="false">Compare</button><button type="button" class="cc-chip" data-k="corn" aria-pressed="true">Corn</button><button type="button" class="cc-chip" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-chip" data-k="wheat" aria-pressed="false">Chicago wheat</button><button type="button" class="cc-chip" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-chip" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-chip" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-chip" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-chip" data-k="livecattle" aria-pressed="false">Live cattle</button><button type="button" class="cc-chip" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-chip" data-k="leanhogs" aria-pressed="false">Lean hogs</button><button type="button" class="cc-chip" data-k="milk" aria-pressed="false">Class III milk</button></div>
       <p class="cc-kind">Futures</p>
-      <h3 class="cc-head" id="cc-head"><span>Managed money net position, last 52 weeks</span></h3>
-      <p class="cc-answer" id="cc-answer"><!-- PRERENDER:cot-answer -->Managed money sold a net 72,318 contracts of corn in the week to Tuesday, Nov 3, leaving funds about even (net long 8,795): higher than 41% of weeks since 2010 (share of open interest). Next report: Monday Nov 16, 3:30 PM ET (holiday week).<!-- /PRERENDER:cot-answer --></p>
+      <h3 class="cc-head" id="cc-head"><span><!-- PRERENDER:cot-head --><b>Corn funds cut their net long by 72,318 contracts.</b> About even: net long 8,795.<!-- /PRERENDER:cot-head --></span></h3>
+      <p class="cc-answer" id="cc-answer"><!-- PRERENDER:cot-answer -->Week to Tue, Nov 3, 2026. Released Fri, Nov 6, 2026. Rank: higher than 41% of weeks since 2010 (share of open interest). Next report: Monday Nov 16, 3:30 PM ET (holiday week).<!-- /PRERENDER:cot-answer --></p>
       <div class="cc-plot" id="cc-plot" tabindex="0" aria-describedby="cc-hint">
         <svg class="cc-svg" id="cc-svg" role="img" aria-label="52-week chart of managed money net position" preserveAspectRatio="none"></svg>
         <div class="cc-tip" id="cc-tip" hidden></div>
@@ -946,11 +946,12 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 </div>
 <script src="/components/loader.js?v=19"></script>
 
-<script src="/components/cot-glance.js?v=4"></script>
-<script src="/components/cot-chart.js?v=7"></script>
+<script src="/components/cot-glance.js?v=5"></script>
+<script src="/components/cot-kit.js?v=1"></script>
+<script src="/components/cot-chart.js?v=8"></script>
 <script src="/components/cot-page.js?v=10"></script>
 <script src="/components/qr.js?v=11"></script>
-<script src="/components/cot-print.js?v=2"></script>
+<script src="/components/cot-print.js?v=3"></script>
 
 
 <script src="/components/cot-analysis.js?v=5"></script>

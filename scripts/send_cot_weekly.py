@@ -178,7 +178,7 @@ def rows_for(cot, hist, deep, as_of, ana=None, gaps=None):
         c = (cot or {}).get(key) or {}
         if not n0(c.get("net")):
             print("%s: no net position in data/cot.json; left out" % name)
-            gaps.append((name, "no position in this week's file"))
+            gaps.append((name, "no position in this report's file"))
             continue
         h = [r for r in (H.get(key) or []) if isinstance(r, dict) and n0(r.get("net")) and r.get("date")]
         if not h or h[-1]["date"] != iso or h[-1]["net"] != c["net"]:
@@ -260,7 +260,7 @@ def rank_of(key, net, iso, ana, deep=None):
     if a.get("date") != iso:
         return None, "the ranking is not up to this report yet"
     if a.get("net") != net:
-        return None, "the ranking file and this week's position do not match"
+        return None, "the ranking file and this report's position do not match"
     if not isinstance(p, (int, float)) or not isinstance(cr.get("shown"), int) or not n0(cr.get("weeks")):
         return None, "no long-run ranking for this market"
     rc = recount(deep, key, iso)
@@ -329,6 +329,19 @@ def rank_words(r):
 def market_line(r):
     """One plain sentence per market, the /cot answer line's shape: what funds did,
     where that leaves them, a record with its measure, the rank in words."""
+    s = did_line(r)
+    k = r.get("rank")
+    if k and k.get("record"):
+        s += ", " + k["record"]
+    rw = rank_words(r)
+    if rw:
+        return s + ": " + rw + "."
+    return s + ". No rank for this report: %s." % (r.get("rank_why") or "no long-run rank")
+
+
+def did_line(r):
+    """What funds did and where that leaves them, no period (market_line's start; the
+    lead story's evidence under the headline)."""
     noun, held = NOUN[r["key"]], held_words(r)
     since = "" if r["chg_since"] is None else " since the %s report" % md(r["chg_since"])
     d = did(r)
@@ -341,13 +354,7 @@ def market_line(r):
         flip = r["net"] and prev and (r["net"] > 0) != (prev > 0) and r.get("side") != "flat"
         s = "Funds %s a net %s %s contracts%s, %s them %s" % (
             d, comma(r["chg"]), noun, since, "flipping" if flip else "leaving", held)
-    k = r.get("rank")
-    if k and k.get("record"):
-        s += ", " + k["record"]
-    rw = rank_words(r)
-    if rw:
-        return s + ": " + rw + "."
-    return s + ". No rank this week: %s." % (r.get("rank_why") or "no long-run rank")
+    return s
 
 
 def streak_line(r):
@@ -377,27 +384,28 @@ def moved(rows):
 
 
 def stories(rows):
-    """[(subject, sentence)] newest news first: a record (with its measure and
+    """[(subject, sentence, row)] newest news first: a record (with its measure and
     start year), then the longest run of selling or buying (3 weeks or more),
-    then the biggest move as a share of open interest. Computed, never typed in."""
+    then the biggest move as a share of open interest, with that share shown
+    (kit v2: the measure is never named without its number). Computed, never typed in."""
     out = []
     for r in rows:
         k = r.get("rank") or {}
         if k.get("record"):
             rec = k["record"][4:] if k["record"].startswith("the ") else k["record"]
-            out.append(("%s: %s" % (r["name"], rec), "%s: %s." % (r["name"], k["record"])))
+            out.append(("%s: %s" % (r["name"], rec), "%s: %s." % (r["name"], k["record"]), r))
     runs = sorted((r for r in rows if streak_line(r)), key=lambda r: (-r["streak"], -abs(r["chg"]) / (r.get("oi") or 1)))
     for r in runs[:2]:
         v = "sold" if r["chg"] < 0 else "bought"
         n = ("%d+" if r.get("streak_open") else "%d") % r["streak"]
         out.append(("Funds %s %s %s weeks in a row" % (v, SHORT[r["key"]], n),
-                    "Funds %s %s %s weeks in a row, %s contracts this week." % (v, SHORT[r["key"]], n, comma(r["chg"]))))
+                    "Funds %s %s %s weeks in a row, %s contracts in the latest report." % (v, SHORT[r["key"]], n, comma(r["chg"])), r))
     b = moved(rows)
     if b and b not in runs[:2]:
         v = "sold" if b["chg"] < 0 else "bought"
         out.append(("Funds %s %s %s contracts" % (v, comma(b["chg"]), NOUN[b["key"]]),
-                    "Funds %s %s %s contracts, the week's biggest move as a share of open interest."
-                    % (v, comma(b["chg"]), NOUN[b["key"]])))
+                    "Funds %s %s %s contracts, %s%% of open interest, the biggest move by that measure."
+                    % (v, comma(b["chg"]), NOUN[b["key"]], ("%.1f" % (abs(b["chg"]) * 100.0 / b["oi"]))), b))
     return out
 
 
@@ -405,7 +413,7 @@ def subject_of(as_of, rows, preview=False):
     """The news in under 60 characters when it fits, else the first story alone."""
     st = stories(rows)
     if not st:
-        s = "Funds this week: positions as of %s" % md(as_of)
+        s = "Funds: week to %s, %d" % (md(as_of), as_of.year)
     else:
         s = st[0][0]
         if len(st) > 1 and len(s) + 2 + len(st[1][0]) <= 60:
@@ -420,7 +428,7 @@ def preheader(rows):
 
 
 def lead(as_of, rows):
-    """The one-sentence 'This week' line: what managed money did across the markets."""
+    """The one-sentence lead: what managed money did across the markets, in the week with its year."""
     sold = [SHORT[r["key"]] for r in rows if r["chg"] and r["chg"] < 0]
     bought = [SHORT[r["key"]] for r in rows if r["chg"] and r["chg"] > 0]
     held = [SHORT[r["key"]] for r in rows if r["chg"] == 0]
@@ -428,12 +436,7 @@ def lead(as_of, rows):
             (["held " + _join(held) + " steady"] if held else [])
     if not parts:
         return ""
-    s = "Funds %s in the week to %s, %s" % (" and ".join(parts), as_of.strftime("%A"), md(as_of))
-    b = moved(rows)
-    if b:
-        s += "; the biggest move, as a share of open interest, was %s %s contracts %s" % (
-            comma(b["chg"]), NOUN[b["key"]], "sold" if b["chg"] < 0 else "bought")
-    return s + "."
+    return "Funds %s in the week to %s, %s, %d." % (" and ".join(parts), as_of.strftime("%A"), md(as_of), as_of.year)
 
 
 def next_report(as_of):
@@ -451,26 +454,27 @@ def compose(as_of, released, rows, gaps=(), preview=False):
     """(subject, text, html), the same for every reader but the footer."""
     subject = subject_of(as_of, rows, preview)
     pre = preheader(rows)
-    when = "Positions as of Tuesday, %s %d. CFTC released them %s at %s." % (
-        as_of.strftime("%B"), as_of.day, long_day(released), RELEASE_TIME) if released else \
-        "Positions as of Tuesday, %s %d." % (as_of.strftime("%B"), as_of.day)
-    if as_of.weekday() != 1:
-        when = when.replace("as of Tuesday, ", "as of %s, " % as_of.strftime("%A"))
+    full = lambda d: "%s, %s %d, %d" % (d.strftime("%a"), d.strftime("%b"), d.day, d.year)
+    when = "Week to %s." % full(as_of) + (" Released %s, %s." % (full(released), RELEASE_TIME) if released else "")
     since = sorted({r["rank"]["since"] for r in rows if r.get("rank")})
     span = ("every week since " + since[0]) if len(since) == 1 else "every week on record"
     intro = ("\"Funds\" here is managed money, CFTC's name for hedge funds and commodity trading advisers. Each rank "
              "compares their net, as a share of open interest, with %s, as the COT page does." % span)
     src = ("Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of %s%s. Ranks and "
            "ranges are figured by AGSIST from those weekly reports. This is where the funds stood, not where prices go next."
-           % (md(as_of), (", released " + md(released)) if released else ""))
+           % (full(as_of), (", released " + full(released)) if released else ""))
     nr = next_report(as_of)
     ld = lead(as_of, rows)
-    L = ["AGSIST · FUNDS THIS WEEK", ""] + (["This week: " + ld, ""] if ld else []) + [when, intro]
+    kick = "AGSIST · FUNDS · WEEK TO %s %d, %d" % (as_of.strftime("%b").upper(), as_of.day, as_of.year)
+    st = stories(rows)
+    top = st[0][2] if st else None
+    ev = [did_line(top) + "."] + [x for x in (streak_line(top),) if x] if top else []
+    L = [kick, ""] + ev + ([""] if ev else []) + ([ld, ""] if ld else []) + [when, intro]
     for r in rows:
         L += ["", r["name"].upper(), market_line(r)]
         L += [x for x in (streak_line(r), range_line(r)) if x]
     for name, why in gaps:
-        L += ["", name.upper(), "No reading this week: %s." % why]
+        L += ["", name.upper(), "No reading for this report: %s." % why]
     L += ["", src] + ([nr] if nr else []) + ["Every market, the history and how it is figured: " + PAGE]
     text = "\n".join(L)
 
@@ -485,10 +489,14 @@ def compose(as_of, released, rows, gaps=(), preview=False):
         parts.append('<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;'
                      'color:%s;opacity:0">%s%s</div>' % (BG, esc(pre), "&#8199;&#847;" * 40))
     parts += [P % ("0 0 8px", "700 12px/1.4 ui-monospace,Menlo,Consolas,monospace", GOLD,
-                   '<span style="letter-spacing:.12em">AGSIST · FUNDS THIS WEEK</span>'),
+                   '<span style="letter-spacing:.12em">' + esc(kick) + '</span>'),
               P % ("0 0 10px", "700 24px/1.25 Georgia,'Times New Roman',serif", INK, esc(head))]
+    # the lead story's evidence right under its headline (kit v2)
+    for i, x in enumerate(ev):
+        parts.append(P % ("0 0 %s" % ("10px" if i == len(ev) - 1 else "4px"), ("700 " if i else "") + "16px/1.5 " + SANS, INK,
+                          ("<b>%s:</b> " % esc(top["name"]) if i == 0 else "") + esc(x)))
     if ld:
-        parts.append(P % ("0 0 10px", "17px/1.5 " + SANS, INK, "<b>This week:</b> " + esc(ld)))
+        parts.append(P % ("0 0 10px", "16px/1.5 " + SANS, INK, esc(ld)))
     parts.append(P % ("0 0 4px", "14px/1.5 " + SANS, MUTED, esc(when)))
     parts.append(P % ("0 0 6px", "13px/1.5 " + SANS, MUTED, esc(intro)))
     for r in rows:
@@ -512,7 +520,7 @@ def compose(as_of, released, rows, gaps=(), preview=False):
         parts.append("</div>")
     for name, why in gaps:
         parts.append('<div style="margin:16px 0 0;padding:14px 0 0;border-top:1px solid %s">' % LINE
-                     + P % ("0", "15px/1.5 " + SANS, MUTED, "<b>" + esc(name.upper()) + "</b><br>No reading this week: "
+                     + P % ("0", "15px/1.5 " + SANS, MUTED, "<b>" + esc(name.upper()) + "</b><br>No reading for this report: "
                             + esc(why) + ".") + "</div>")
     parts.append(P % ("20px 0 0", "13px/1.5 " + SANS, MUTED, esc(src)))
     if nr:
@@ -579,12 +587,12 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
         msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     else:
         msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
-    foot_t = ["", "Forward this to a neighbor; they can sign up free at " + FORWARD_URL, "",
+    foot_t = ["", "Share with a farmer or your grain buyer. They can sign up free at " + FORWARD_URL, "",
               "You get this because you asked for Funds this week on agsist.com.",
               ("Stop Funds this week (nothing else changes): " + uurl) if uurl else "To stop it, reply with subject line: unsubscribe",
               "PO Box 243, Chetek, WI 54728"]
     msg.set_content(text + "\n" + "\n".join(foot_t) + "\n")
-    foot_h = ('<p style="margin:16px 0 0;font:14px/1.5 sans-serif;color:#6b6b6b">Forward this to a neighbor; they can sign up free at '
+    foot_h = ('<p style="margin:16px 0 0;font:14px/1.5 sans-serif;color:#6b6b6b">Share with a farmer or your grain buyer. They can sign up free at '
               '<a href="%s" style="color:#8a6b1f">agsist.com/cot</a></p>'
               '<p style="margin:12px 0 0;font:13px/1.6 sans-serif;color:#6b6b6b">You get this because you asked for Funds this week '
               'on agsist.com.<br>%s<br>PO Box 243, Chetek, WI 54728</p>'
@@ -998,6 +1006,8 @@ def _run(files, envs, now, fetch, argv=(), flags=None):
 
 
 def _selftest():
+    def esc_h(x):
+        return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     fails = []
 
     def ok(c, m):
@@ -1018,7 +1028,7 @@ def _selftest():
     ok(a == as_of and rel == date(2026, 10, 16), "as of Tue Oct 13, released Fri Oct 16: %r %r" % (a, rel))
     ok([r["key"] for r in rows] == ["corn", "beans", "livecattle", "leanhogs"], [r["key"] for r in rows] if isinstance(rows, list) else rows)
     ok("Chicago wheat: data/cot-history.json does not end on this report" in buf.getvalue(), "a market whose files disagree is named and left out")
-    ok(gaps == [("Chicago wheat", "the weekly files do not agree on this report yet"), ("Feeder cattle", "no position in this week's file")], gaps)
+    ok(gaps == [("Chicago wheat", "the weekly files do not agree on this report yet"), ("Feeder cattle", "no position in this report's file")], gaps)
     R = {r["key"]: r for r in rows} if isinstance(rows, list) else {}
     c = R.get("corn") or {}
     ok(c.get("net") == 200000 and c.get("chg") == -60000 and c.get("chg_since") is None, "corn: net and the week's change %r" % c)
@@ -1050,9 +1060,10 @@ def _selftest():
     # the news: biggest move as a share of open interest (cattle 85,000 / 1,000,000), the run of buying first
     ok(moved(rows) is lc, "biggest move: cattle")
     ok(subject_of(as_of, rows) == "Funds bought soybeans 3 weeks in a row", subject_of(as_of, rows))
-    ok(preheader(rows) == "Funds sold 85,000 live cattle contracts, the week's biggest move as a share of open interest.", preheader(rows))
+    ok(preheader(rows) == "Funds sold 85,000 live cattle contracts, 8.5% of open interest, the biggest move by that measure.", preheader(rows))
     ok(lead(as_of, rows) == "Funds sold corn and live cattle and bought soybeans and held lean hogs steady in the week to "
-       "Tuesday, Oct 13; the biggest move, as a share of open interest, was 85,000 live cattle contracts sold.", lead(as_of, rows))
+       "Tuesday, Oct 13, 2026.", lead(as_of, rows))
+    ok("biggest move" not in lead(as_of, rows), "the lead names no measure it does not show")
     # a record is said with its measure and start year, never "100th", and leads the subject
     a3 = json.loads(json.dumps(ana))
     a3["commodities"]["corn"]["is_record_high"] = True
@@ -1064,17 +1075,17 @@ def _selftest():
        "as a share of open interest since 2023: higher than 99% of weeks since 2023 (share of open interest).", market_line(r6["corn"]))
     sj = subject_of(as_of, r6l)
     ok(sj == "Corn: largest net long as a share of open interest since 2023", sj)
-    ok(preheader(r6l).startswith("Funds bought soybeans 3 weeks in a row, 5,000 contracts this week."), preheader(r6l))
+    ok(preheader(r6l).startswith("Funds bought soybeans 3 weeks in a row, 5,000 contracts in the latest report."), preheader(r6l))
     # TWO FILES MUST NEVER DISAGREE IN FRONT OF A READER: the rank is withheld, with the reason
     for label, mut, why in (("an older ranking file", lambda x: x.update(date="2026-10-06"), "the ranking is not up to this report yet"),
-                            ("a different net", lambda x: x.update(net=199999), "the ranking file and this week's position do not match"),
+                            ("a different net", lambda x: x.update(net=199999), "the ranking file and this report's position do not match"),
                             ("a ranking the record does not give", lambda x: x["pctl"].update(net_oi_all=97.0),
                              "the ranking did not check out against the weekly record")):
         a4 = json.loads(json.dumps(ana))
         mut(a4["commodities"]["corn"])
         with contextlib.redirect_stdout(io.StringIO()):
             r4 = {r["key"]: r for r in prepare(now, cot, hist, deep, a4)[2]}
-        ok(r4["corn"]["rank"] is None and market_line(r4["corn"]).endswith("net long 200,000. No rank this week: %s." % why),
+        ok(r4["corn"]["rank"] is None and market_line(r4["corn"]).endswith("net long 200,000. No rank for this report: %s." % why),
            "%s: %r" % (label, market_line(r4["corn"])))
     # the change is "since the <date> report" when the report before is not a week back
     h2 = json.loads(json.dumps(hist))
@@ -1112,13 +1123,19 @@ def _selftest():
     s, t, h = compose(as_of, rel, rows, gaps)
     ok(s == "Funds bought soybeans 3 weeks in a row" and len(s) <= 60, s)
     ok(compose(as_of, rel, rows, gaps, preview=True)[0] == "[Preview] " + s, "preview subject")
-    ok(t.split("\n")[2] == "This week: " + lead(as_of, rows), "the lead comes first")
+    tl = t.split("\n")
+    ok(tl[0] == "AGSIST · FUNDS · WEEK TO OCT 13, 2026", tl[0])
+    # the lead story (soybeans' run) has its evidence right under the headline, then the week's lead
+    ok(tl[2] == "Funds bought a net 5,000 soybean contracts, leaving them net short 40,000." and tl[3] == "Funds have bought 3 weeks in a row."
+       and tl[5] == lead(as_of, rows), tl[:7])
+    ok(h.index(esc_h(s)) < h.index("<b>Soybeans:</b> Funds bought a net 5,000 soybean contracts") < h.index(esc_h(lead(as_of, rows))), "evidence under the headline in the html")
+    ok(not re.search(r"\bthis week\b|\btoday\b", (t + h).lower().replace("funds this week", "")), "no 'this week' or 'today' on the email")
     ok(preheader(rows) in h and 'display:none' in h, "the preview line is in the html, hidden")
-    ok("Positions as of Tuesday, October 13. CFTC released them Friday, October 16 at 3:30 PM ET." in t, t[:300])
-    ok("Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of Oct 13, released Oct 16." in t, "source and dates")
+    ok("Week to Tue, Oct 13, 2026. Released Fri, Oct 16, 2026, 3:30 PM ET." in t, t[:300])
+    ok("Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of Tue, Oct 13, 2026, released Fri, Oct 16, 2026." in t, "source and dates")
     ok("Next report: Friday Oct 23, 3:30 PM ET." in t and "Next report: Friday Oct 23, 3:30 PM ET." in h, "next report in both")
-    ok("CHICAGO WHEAT\nNo reading this week: the weekly files do not agree on this report yet." in t
-       and "FEEDER CATTLE\nNo reading this week: no position in this week's file." in t, "a missing market is shown, with why")
+    ok("CHICAGO WHEAT\nNo reading for this report: the weekly files do not agree on this report yet." in t
+       and "FEEDER CATTLE\nNo reading for this report: no position in this report's file." in t, "a missing market is shown, with why")
     ok("—" not in t + h and "–" not in t + h and "&mdash;" not in h, "no em or en dash anywhere")
     ok(not re.search(r"\b(will|expect|likely|forecast|should|buy|sell)\b", t.lower().replace("not where prices go next", "")), "no prediction words")
     ok(not re.search(r"percentile|\d(st|nd|rd|th)\b|head for the exit|could be forced|between here and flat|not a call on price",
@@ -1161,7 +1178,7 @@ def _selftest():
     # the forward line lands a neighbor on the signup box, tagged like every other link (Sig, Nov 6)
     fw = "https://agsist.com/cot?ref=email-forward&" + TAG + "#cot-signup"
     ok(body.count(fw) == 1 and hb.replace("&amp;", "&").count('href="' + fw + '"') == 1, "forward link goes to /cot#cot-signup in text and HTML")
-    ok("Forward this to a neighbor; they can sign up free at" in body, "forward line in the text part")
+    ok("Share with a farmer or your grain buyer. They can sign up free at" in body and "Share with a farmer or your grain buyer." in hb, "forward line in both parts")
 
     # ── the modes, with the list, the flag and the mail server mocked ──
     files = {"COT": cot, "HIST": hist, "DEEP": deep, "ANA": ana}
