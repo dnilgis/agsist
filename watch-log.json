@@ -194,10 +194,10 @@
   "size": 1324789
  },
  "2027_ADMLivestockLrp_Daily_20261106.zip": {
-  "first_seen": "2026-11-06T19:09:15Z",
-  "listed": "2026-11-06T13:01",
-  "lm": "2026-11-06T19:01:40Z",
-  "size": 23129
+  "first_seen": "2026-11-06T20:25:20Z",
+  "listed": "2026-11-06T14:18",
+  "lm": "2026-11-06T20:18:41Z",
+  "size": 1476990
  }
 },
 "checks":[
@@ -288,5 +288,6 @@
 {"head_size":23129,"listed":"2026-11-06T13:01","lm":"2026-11-06T19:01:40Z","new":0,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":23129,"t":"2026-11-06T19:25:07Z"},
 {"head_size":23129,"listed":"2026-11-06T13:01","lm":"2026-11-06T19:01:40Z","new":0,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":23129,"t":"2026-11-06T19:40:05Z"},
 {"head_size":23129,"listed":"2026-11-06T13:01","lm":"2026-11-06T19:01:40Z","new":0,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":23129,"t":"2026-11-06T19:55:12Z"},
-{"head_size":23129,"listed":"2026-11-06T13:01","lm":"2026-11-06T19:01:40Z","new":0,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":23129,"t":"2026-11-06T20:08:55Z"}
+{"head_size":23129,"listed":"2026-11-06T13:01","lm":"2026-11-06T19:01:40Z","new":0,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":23129,"t":"2026-11-06T20:08:55Z"},
+{"head_size":1476990,"listed":"2026-11-06T14:18","lm":"2026-11-06T20:18:41Z","names":["2027_ADMLivestockLrp_Daily_20261106.zip"],"new":1,"newest":"2027_ADMLivestockLrp_Daily_20261106.zip","size":1476990,"t":"2026-11-06T20:25:20Z"}
 ]}
