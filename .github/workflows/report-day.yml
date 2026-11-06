@@ -1,26 +1,5 @@
 name: Report day — USDA vs the trade email
-
-# After WASDE, Crop Production and Grain Stocks publish (noon ET), email AGSIST
-# Daily readers who did not opt out of report-day mail, and the readers on the
-# report-day list alone (subs worker v5.44, notice topic reports: the "WASDE
-# summary" ask), each address once. scripts/send_report_day.py
-# decides everything: it sends only when the What's Priced In data (or the
-# WASDE read) carries a USDA figure dated today, never before noon ET,
-# and never twice (one /flag day-marker per report in the subs worker).
-#
-# TWO DOORS, ONE SEND.
-#   * workflow_run: right after the jobs that write that data finish --
-#     wasde-watch.yml grades the WASDE as it lands (16-17 UTC, days 9-12),
-#     whats-priced-in.yml rebuilds the page data when a hand-typed print
-#     (Grain Stocks) is committed. A finished run with no new row is a
-#     cheap "nothing to send".
-#   * schedule: a backstop on weekdays in case a workflow_run is dropped.
-#     16:47 UTC is 12:47 EDT; 18:13 UTC is 1:13 PM EST / 2:13 PM EDT. Off :00,
-#     :15, :30, :45 on purpose (GitHub drops busy-minute crons; see prices.yml).
-#
-# Secrets: the briefing sender's (SMTP_USER/SMTP_PASS or GMAIL_*, LIST_URL,
-# LIST_TOKEN, UNSUB_SECRET; optional SMTP_HOST, SMTP_PORT, FROM_ADDR,
-# FROM_NAME, REPLY_TO). No new secret.
+# Report day: USDA vs the trade email.
 
 on:
   workflow_run:
@@ -46,9 +25,6 @@ permissions:
   contents: read
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -66,9 +42,6 @@ jobs:
       - id: u
         uses: ./.github/actions/upstream-did-work
 
-  # GitHub drops scheduled fires (this job's own cron delivered almost none),
-  # so it also runs after every "Fetch Grain Bids", which cron-job.org starts
-  # every 15 minutes. This gate makes those extra runs cost seconds outside weekdays 16:00-19:59 UTC.
   gate:
     needs: upstream
     if: needs.upstream.outputs.go == '1'
@@ -92,8 +65,6 @@ jobs:
       cancel-in-progress: false
     timeout-minutes: 20
     steps:
-      # History, without the blobs: the price move reads the last price
-      # file committed before the release out of git.
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -125,8 +96,8 @@ jobs:
           REPLY_TO:     ${{ secrets.REPLY_TO }}
           LIST_URL:     ${{ secrets.LIST_URL }}
           LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
-          SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}   # the mail plan's daily cap (the send_cap.py preflight)
+          SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}
           DRY_RUN:      ${{ (github.event_name == 'workflow_dispatch' && inputs.send_email != true) && '1' || '' }}
         run: python scripts/send_report_day.py

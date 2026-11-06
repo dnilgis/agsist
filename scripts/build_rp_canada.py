@@ -247,12 +247,7 @@ def build():
         sys.exit(f"Too many stations failed to download ({len(fails)}); not writing.")
     out.sort(key=lambda r: r["id"])
     doc = {
-        "_about": "Rain Print for Canada (components/rp-canada.js). Canadian GHCN-Daily stations with rain reports since "
-                  f"{LAST_FROM}: ECCC climate stations (src C) and CoCoRaHS Canada gauges (src N). q: one letter a year from y0 "
-                  "(a: rain and snowfall whole, at most 10 days missing; b: rain whole, no snowfall record; c: 11 to 31 days "
-                  "missing; -: more than 31 or none). nm: 1991-2020 monthly normals in mm computed from the station's own whole "
-                  "months (ny years at least in every month), not ECCC's published normals. Built by scripts/build_rp_canada.py "
-                  "from NOAA GHCN-Daily on S3 (noaa-ghcn-pds).",
+        "_about": 'Canadian rain stations from NOAA GHCN-Daily, with monthly normals in mm for 1991-2020.',
         "built": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "y0": Y0, "fields": FIELDS,
         "s": [[r[k] for k in FIELDS] for r in out],

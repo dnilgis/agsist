@@ -389,11 +389,10 @@ def build(root=REPO):
             counties[f] = row
         doc = {
             "schema": SCHEMA,
-            "note": "Farmland Atlas county figures for this state, as each county file dates and credits them. v: one value per metric (null: not ranked, reason in w; a figure from another year in o). u: [metric, neighbor median, neighbors with the figure, distance in national middle-half widths]. Ranks are among this state's counties with the figure.",
+            "note": 'Farmland Atlas county figures for this state, as each county file dates and credits them.',
             "state": st,
             "name": STATE_NAMES[st],
             "atlas_generated": generated,
-            "unusual_rule": "u lists the 3 biggest gaps; the page calls one unusual when it is at least %s national middle-half widths (IQR) from the median of %d or more neighboring counties" % (MIN_SCORE, MIN_NEIGHBORS),
             "unusual_min": MIN_SCORE,
             "metrics": metrics,
             "counties": counties,

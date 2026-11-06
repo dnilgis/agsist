@@ -1,13 +1,5 @@
 name: CCC loan rates
-
-# Writes data/ccc-loan.json (the monthly CCC commodity loan interest rate) and
-# data/ccc-loan/<ST>.json (2026 county loan rates for corn and soybeans) for
-# /commodity-loan. Public FSA pages, read by scripts/fetch_ccc_loan.py. The
-# page shows an empty state and asks for the rate until this file exists.
-#
-# FIRST RUN: dispatch this once with "probe" ticked. It saves what FSA returned
-# to data/ccc-loan-raw/ and saves it on the raw branch (never deployed), so the real page and file layouts can be
-# checked against the parsers before trusting a number.
+# CCC loan rates.
 
 on:
   workflow_dispatch:
@@ -17,16 +9,9 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '23 14 1-5 * *'   # FSA posts the month's rates in the first business days
-    - cron: '23 14 15 * *'    # mid-month check for county file changes
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: '23 14 1-5 * *'
+    - cron: '23 14 15 * *'
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -35,7 +20,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -89,8 +73,6 @@ jobs:
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: python scripts/fetch_ccc_loan.py --probe
-      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
-      # Runs even when the probe step failed part way, so what it did capture is kept.
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:

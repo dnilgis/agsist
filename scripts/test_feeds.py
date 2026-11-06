@@ -64,8 +64,7 @@ def main():
     thin = [f["path"] for f in feeds if f["why_quiet"] and len(f["why_quiet"]) < 40]
     check(not thin, "and the reason is a sentence, not a shrug", ", ".join(thin))
     # Derived fields must not be hand-edited into the file.
-    check(d.get("generated_by") == "scripts/build_feeds.py",
-          "the manifest names the script that writes it")
+    check("generated_by" not in d, "the manifest does not name the script that writes it")
 
     print("\na day-of-month cron reads as monthly (Nov 4, 2026: land-data.yml's '23 9 3 * *' read \"every day\")")
     sys.path.insert(0, os.path.join(ROOT, "scripts"))

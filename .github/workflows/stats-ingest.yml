@@ -1,28 +1,10 @@
 name: Stats ingest (GA4 + Search Console + Bing, private)
-
-# Daily raw numbers for later joining on date + page (Sig, Oct 23 2026: "all
-# available tracking reporting, full ingestion and correlation"). Pulls GA4
-# pages, sources, landing pages with query strings (the ?from= pitch links),
-# events, devices and geo; Search Console query x page and device x country;
-# and the Bing Webmaster snapshot. Writes private/stats/ and saves it to the
-# private repo's private-data branch with scripts/push_raw.sh. Nothing is
-# committed here and the log prints counts only, because this repo and its
-# Actions logs are public. Same secrets as site-usage.yml and bing-reports.yml.
-#
-# Daily 12:47 UTC, off the hour, refreshing the last 4 days (GA4 and Search
-# Console fill in late). Run by hand with days up to 500 to backfill.
+# Stats ingest (GA4 + Search Console + Bing, private).
 
 on:
   schedule:
     - cron: '47 12 * * *'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -37,7 +19,6 @@ permissions:
   contents: read
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

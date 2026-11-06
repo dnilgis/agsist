@@ -1,7 +1,6 @@
 name: Subscriber report
-# One button: emails Sig every subscriber, one CSV per list (daily briefing,
-# hail alerts, elevator watch, ZIP-wide price alerts, futures price targets,
-# county watch). The log shows counts only; addresses go only into the email.
+# Subscriber report.
+
 on:
   workflow_dispatch:
 permissions:

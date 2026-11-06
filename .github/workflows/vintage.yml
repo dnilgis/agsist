@@ -1,35 +1,11 @@
 name: Vintage archive (daily)
-
-# A daily point-in-time copy of outside data, saved exactly as published with
-# the time we fetched it (Sig, Oct 28 2026, STANDING-DECISIONS: "YES to a daily
-# point-in-time archive ... New schedule approved for this"). Later forecast
-# tests then use only what was knowable on each date; nobody can rebuild a past
-# day's numbers once USDA, USGS or EIA revise them.
-#
-#   sources  USDA AgTransport (8 datasets, last 60 days with Socrata's own
-#            created/updated stamps), USGS daily river stage and flow (8 grain
-#            river gauges, last 30 days), EIA weekly ethanol and diesel tables
-#   where    vintage/<source>/<YYYY-MM-DD>.json.gz and vintage/manifest/<day>.json
-#            on the PRIVATE raw branch (dnilgis/feedbag), never main, never a page
-#   script   scripts/vintage.py (python3 scripts/vintage.py --selftest)
-#
-# Written once. If today's manifest is already on raw, nothing is fetched; the
-# save runs with RAW_KEEP=1, so a file already on the branch is never replaced.
-# A failed source is recorded in the manifest and the day's file; it is not
-# tried again later. Logs are counts only.
+# Vintage archive (daily).
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '37 17 * * 1-5'   # weekdays 17:37 UTC (Sig, Oct 28 2026: new schedule approved)
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: '37 17 * * 1-5'
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -38,7 +14,6 @@ permissions:
   contents: read
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -89,8 +64,6 @@ jobs:
           python-version: "3.12"
       - name: Selftest (no network)
         run: python3 scripts/vintage.py --selftest
-      # Today already saved (a second run the same day): fetch nothing. A branch that
-      # cannot be read does not stop the run; RAW_KEEP at the save still protects it.
       - name: Already saved today?
         id: have
         env:

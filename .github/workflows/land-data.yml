@@ -1,27 +1,5 @@
 name: Land data (parcel services + transfers)
-
-# Field Scout's land card. Two jobs in one workflow:
-#  - parcel services: scripts/probe_land_services.py rechecks every free public parcel
-#    service in data/land/parcel-services.json (fields, a test query, and that a web page
-#    may read it) and, with "discover", searches for county services in MN, IA, IL.
-#    Only this marks a service verified. Coverage counts print as annotations.
-#  - transfers: scripts/fetch_land_sales.py builds data/land/<st>/<county fips>.json from
-#    the state's own public transfer data (IL MyDec open data; WI eRETR monthly reports; VT property
-#    transfer tax returns, the statewide file VCGI publishes, since Oct 29, 2026; NJ SR-1A deed files joined
-#    to the MOD-IV assessment list for acres and class, since Oct 29, 2026; MN eCRV
-#    once a free file is reachable). Probe also saves sources not built yet (Oct 18: Indiana sales
-#    disclosure files, Scott County IA ag sales, South Dakota and Ohio county sales lists, Nebraska's
-#    sales file rules); each gets a parser only after its saved columns are read. It refuses a state whose columns it cannot find by name.
-#    Wisconsin's files come from DOR's public My Tax Account screen, which needs a browser:
-#    scripts/wi_retr_browser.py opens it in headless Chromium (one session, one file at a time,
-#    a pause between files) and reads each month's XML report as it arrives.
-#    task=wi-transfers rebuilds Wisconsin from every offered month; wi-newest (and the monthly
-#    run, transfers, sales, all) reads only the months not on file plus the newest again and
-#    merges them in. The commit step skips files whose only change is a timestamp.
-#
-# FIRST RUN: dispatch with probe ticked. It saves the state data pages, their file links
-# and the head of the first files to data/land-raw/ on the raw branch (never deployed), so
-# the columns can be read before trusting a number. Then dispatch with task=all.
+# Land data (parcel services + transfers).
 
 on:
   workflow_dispatch:
@@ -39,17 +17,9 @@ on:
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
-  # (parcel services probe, Illinois transfers from the weekly MyDec data, Wisconsin newest-only)
   schedule:
     - cron: '23 9 3 * *'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -58,9 +28,8 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
-    runs-on: ubuntu-24.04  # pinned with the working job (test/runner-pin.test.mjs)
+    runs-on: ubuntu-24.04
     permissions:
       actions: read
       contents: read
@@ -90,7 +59,7 @@ jobs:
   build:
     needs: gate
     if: needs.gate.outputs.go == '1'
-    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
+    runs-on: ubuntu-24.04
     concurrency:
       group: land-data
       cancel-in-progress: false
@@ -124,13 +93,12 @@ jobs:
       - name: pdftotext for the probe
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         timeout-minutes: 5
-        continue-on-error: true  # without it the layouts are saved as PDF only
+        continue-on-error: true
         uses: ./.github/actions/pdftotext
       - name: Probe transfer sources (raw capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: |
           command -v pdftotext >/dev/null || echo "no pdftotext; layouts saved as PDF only"
-          # state codes only (letters), never passed to a shell as anything else
           S="$(echo "${{ inputs.probe_states }}" | tr -cd 'A-Za-z ')"
           python scripts/fetch_land_sales.py --probe $S
       - name: Wisconsin RETR screens in a browser (explore only)
@@ -140,8 +108,6 @@ jobs:
           "$RUNNER_TEMP/pw/bin/pip" install -q playwright==1.56.0
           "$RUNNER_TEMP/pw/bin/python" -m playwright install --with-deps chromium >/dev/null
           "$RUNNER_TEMP/pw/bin/python" scripts/wi_retr_browser.py --explore "$RUNNER_TEMP/wi-explore"
-      # The screens go to a side branch (<branch>-explore, never deployed) so they can be read
-      # where Actions artifacts and logs cannot be downloaded.
       - name: Keep the explore screens
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.task == 'wi-explore' }}
         run: |
@@ -161,15 +127,10 @@ jobs:
             discover|all) python3 scripts/dev/quiet.py parcel-services -- python scripts/probe_land_services.py --discover ;;
             *) python3 scripts/dev/quiet.py parcel-services -- python scripts/probe_land_services.py ;;
           esac
-      # Dispatch only (never on the schedule): the public services behind Field Scout's
-      # "on and around this field" card. Answers go to data/land-raw/layers (raw branch),
-      # the summary to data/land/field-layers-check.json.
       - name: Check Field Scout layer services
         if: ${{ github.event_name == 'workflow_dispatch' && (inputs.task == 'layers' || inputs.task == 'layers-discover') }}
         run: |
           if [ "${{ inputs.task }}" = "layers-discover" ]; then python scripts/probe_field_layers.py --discover; else python scripts/probe_field_layers.py; fi
-      # Dispatch only: the live comp report's owner, soil and crop history (the sandbox cannot reach them).
-      # Notices only; nothing is written.
       - name: Check the live comp report
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'comp-live' }}
         run: |
@@ -177,9 +138,6 @@ jobs:
           "$RUNNER_TEMP/pwc/bin/pip" install -q playwright==1.56.0
           "$RUNNER_TEMP/pwc/bin/python" -m playwright install --with-deps chromium >/dev/null
           "$RUNNER_TEMP/pwc/bin/python" scripts/comp_report_live.py
-      # Dispatch only (never on the schedule): soil for each keyed farm sale's section (property panel
-      # step 6, a test before any page shows it). BLM PLSS sections, USDA SSURGO through Soil Data Access.
-      # The answers go to data/land-raw/soil (raw branch, below); nothing is committed, no page changes.
       - name: Section soil for the keyed farm sales
         if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soil') && !startsWith(inputs.task, 'soilr') && inputs.task != 'soil-attrs' }}
         timeout-minutes: 140
@@ -191,8 +149,6 @@ jobs:
             S=$(echo "${T#soil:}" | tr -cd 'A-Za-z' | tr a-z A-Z)
             python scripts/land_soil.py --fetch "$S" --minutes 125 || echo "::warning::$S soil fetch failed"
           fi
-      # soil-attrs: the corn and soybean NCCPI for every map unit already saved (reads the saved
-      # section answers back from the raw branch, only that folder).
       - name: Map unit NCCPI for the saved section answers
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'soil-attrs' }}
         env:
@@ -204,9 +160,6 @@ jobs:
           git -C "$D" sparse-checkout set data/land-raw/soil 2>&1 | hide || true
           mkdir -p data/land-raw/soil && cp "$D"/data/land-raw/soil/*-soil.json.gz data/land-raw/soil/ || { echo "::warning::no saved section answers"; exit 0; }
           python scripts/land_soil.py --attrs || echo "::warning::map unit attributes failed"
-      # soilr-probe or soilr:<ST>: the same sections from the gridded soil map (gNATSGO valu1 corn and
-      # soybean NCCPI, 10 m) and the Cropland Data Layer, read by window from the Planetary Computer
-      # copies (no statewide download). The saved polygon answers are read back for the raster check.
       - name: Section soil from the gridded soil map
         if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.task, 'soilr') }}
         timeout-minutes: 140
@@ -234,11 +187,9 @@ jobs:
             "$RUNNER_TEMP/soilr/bin/python" scripts/land_soil_raster.py --fetch "$S" --minutes 125 || echo "::warning::$S raster soil failed"
           fi
           rm -f data/land-raw/soil/*-soil.json.gz
-      # FL: built from the prepared files on the private raw branch and served from agsist-data (land/fl), never
-      # from this site. Soft: a miss anywhere leaves agsist-data's Florida files as they were.
       - name: Florida sales (agsist-data)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'fl') }}
-        continue-on-error: true  # Florida never holds up the other states' commit (BUILD-RULES 53)
+        continue-on-error: true
         timeout-minutes: 30
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -251,18 +202,12 @@ jobs:
           mkdir -p "$RUNNER_TEMP/agsist-data/land"
           python3 scripts/dev/quiet.py transfers-fl -- python scripts/fetch_land_sales.py FL --from data/land-src/fl --to "$RUNNER_TEMP/agsist-data/land" || { echo "::warning::Florida sales were not written"; exit 0; }
           python3 scripts/dev/quiet.py fl-sync -- bash scripts/agsist_data.sh sync --soft --from "$RUNNER_TEMP/agsist-data" land/fl
-      # The summaries, the sale pages and nothing else read Florida's county files from that checkout (data/land-hosted,
-      # never committed). Without it the sale pages keep their committed Florida pages as they are.
       - name: Florida files for the builders
         if: ${{ !cancelled() }}
         run: |
           if [ -f "$RUNNER_TEMP/agsist-data/land/fl/index.json" ]; then ln -sfn "$RUNNER_TEMP/agsist-data/land" data/land-hosted; echo "Florida county files linked for the builders"; else echo "no Florida county files in this run"; fi
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
-        # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
-        # VT: the statewide transfer return file (Parquet, about 85 MB); the dated copy goes to the raw branch below
-        # NJ: the SR-1A yearly deed files (about 12 MB each, dated copies to the raw branch) and the MOD-IV 2026 list
-        # (270 MB, read from a temporary file; its farm lots go to the raw branch)
         run: python3 scripts/dev/quiet.py transfers -- python scripts/fetch_land_sales.py MN IL IN VT NJ || echo "::warning::no state's transfers were written"
       - name: Vermont transfers only
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.probe && inputs.task == 'vt' }}
@@ -272,15 +217,12 @@ jobs:
         timeout-minutes: 45
         run: python3 scripts/dev/quiet.py transfers-nj -- python scripts/fetch_land_sales.py NJ || echo "::warning::New Jersey deeds were not written"
       - name: Wisconsin transfer returns (browser)
-        continue-on-error: true  # a Wisconsin browser failure must never drop the other states' commit (Nov 3)
+        continue-on-error: true
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-newest' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
         run: |
           python3 -m venv "$RUNNER_TEMP/pw"
           "$RUNNER_TEMP/pw/bin/pip" install -q playwright==1.56.0
           "$RUNNER_TEMP/pw/bin/python" -m playwright install --with-deps chromium >/dev/null
-          # wi-transfers rebuilds every offered month (wi-transfers:N only the newest N, a quick check);
-          # the monthly run and the other tasks read only the months not on file, plus the newest again,
-          # and merge them into data/land/wi.
           T="${{ inputs.task }}"
           M=$(echo "$T" | sed -n 's/^wi-transfers:\([0-9][0-9]*\)$/\1/p')
           if [ "$T" = "wi-transfers" ] || [ -n "$M" ]; then NEW=""; MERGE=""; else NEW="--newest-only"; MERGE="--merge"; fi
@@ -288,30 +230,15 @@ jobs:
           if [ -f "$RUNNER_TEMP/wi/build/wi-retr.csv" ]; then
             python3 scripts/dev/quiet.py transfers-wi -- python scripts/fetch_land_sales.py --from "$RUNNER_TEMP/wi/build" WI $MERGE || echo "::warning::Wisconsin transfers were not written"
           fi
-      # Put back every land file whose only change is a timestamp BEFORE anything is built from them.
-      # The summaries, the index and the sale pages read fetched_utc (the through date, "read <day>");
-      # restored only at commit time, the pages said a state was read on a day the committed files did
-      # not, and --check failed on main (Nov 3: Wisconsin re-read September only, stamped Nov 3).
       - name: Keep timestamp-only changes out of the build
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: python3 scripts/dev/quiet.py keep-stamp-only -- python3 scripts/land_keep_stamp_only.py data/land
-      # The Farmland Atlas sale summaries (data/land/<st>/summary.json) from the county files just
-      # written, or the committed ones when this run fetched nothing. Offline; refuses a summary
-      # that carries a source name. Same command builds them locally.
       - name: Build Atlas sale summaries
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: python3 scripts/dev/quiet.py land-summaries -- python scripts/build_land_summary.py
-      # The farmland sale index (data/land/index.json; a section of /land-sales/ since Oct 29, 2026) from the same county
-      # files. Offline; refuses output that carries a source name.
       - name: Build the farmland sale index
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: OMP_NUM_THREADS=1 python3 scripts/dev/quiet.py land-index -- python scripts/build_land_index.py
-      # The farm sale pages (/land-sales/: one per IL and WI county, the monthly update, the hub and its
-      # sitemap) and their data (data/land-sales/, names only under data/land/names/, robots-blocked).
-      # Offline; refuses to write a buyer or seller name outside data/land/, and then writes no page at all.
-      # A refusal must not drop the transfers the land sale email reads (Nov 3: Vermont's rows shifted a
-      # column, the pages refused, and the whole commit was skipped): the commit below still takes
-      # data/land, the pages keep their last good copy, and the last step fails the run so it is seen.
       - name: Build the farm sale pages
         id: pages
         continue-on-error: true
@@ -324,7 +251,6 @@ jobs:
           RAW_SOFT: '1'
         run: |
           [ -d data/land-raw ] && bash scripts/push_raw.sh "land-data raw answers" data/land-raw || echo "nothing raw"
-          # the raw answers live on the raw branch now; out of the tree before the site budget counts it
           rm -rf data/land-raw
           rm -rf data/land-src
           rm -f data/land-hosted
@@ -340,7 +266,6 @@ jobs:
           git config user.email "bot@agsist.com"
           rm -rf /tmp/ld && mkdir -p /tmp/ld
           [ -d data/land ] && cp -r --parents data/land /tmp/ld/ || true
-          # the pages only when they built (a refused build writes none; never commit a half set)
           if [ "$PAGES" = "success" ]; then [ -d land-sales ] && cp -r --parents land-sales data/land-sales sitemap-land-sales.xml /tmp/ld/ || true; fi
           [ -n "$(ls -A /tmp/ld)" ] || { echo "No output; nothing to commit."; exit 0; }
           BR="${GITHUB_REF_NAME:-main}"
@@ -349,10 +274,9 @@ jobs:
             git reset --hard "origin/$BR"
             mkdir -p data && cp -r /tmp/ld/data/. data/
             [ -d /tmp/ld/land-sales ] && cp -r /tmp/ld/land-sales . && cp /tmp/ld/sitemap-land-sales.xml . || true
-            python3 scripts/land_keep_stamp_only.py data/land   # a file whose only change is a timestamp is not data
+            python3 scripts/land_keep_stamp_only.py data/land
             git add data/land
             [ -d land-sales ] && git add land-sales data/land-sales sitemap-land-sales.xml || true
-            # the summary files that read the pages, on this main (BUILD-RULES 61; fail soft, rule 53)
             python3 scripts/generated_sets.py dependents land-sales --stage || true
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update land data $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"

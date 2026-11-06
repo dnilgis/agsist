@@ -40,10 +40,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENTRIES = os.path.join(REPO, "data", "whats-new")
 DATA = os.path.join(REPO, "data", "whats-new.json")
 FIELDS = ("id", "date", "title", "line", "link")
-NOTE = ("What's new on AGSIST, newest first. Built from one file per entry in data/whats-new/ "
-        "(never edited by hand): the newest entry goes into the "
-        "homepage line and every entry into /changelog (above the older hand-written log). Only things "
-        "that are live on the site. Plain words, no em dashes.")
+NOTE = "What's new on AGSIST, newest first. Only things that are live on the site."
 INDEX = os.path.join(REPO, "index.html")
 CHANGELOG = os.path.join(REPO, "changelog.html")
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",

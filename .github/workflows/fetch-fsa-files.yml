@@ -1,7 +1,6 @@
-# Download the exact FSA ARC/PLC files listed in data/fsa/urls.txt (one URL per
-# line), politely: one at a time with a pause. Files land in data/fsa/ and go
-# to the raw branch; main keeps the manifest.
 name: fetch-fsa-files
+# fetch-fsa-files.
+
 on:
   workflow_dispatch:
   push:
@@ -37,8 +36,6 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           git config user.name "agsist-bot"; git config user.email "bot@agsist.com"
-          # the files go to the raw branch (never deployed); main keeps only the
-          # manifest and the URL list (.gitignore). push_raw.sh never deletes on raw.
           bash scripts/push_raw.sh "FSA ARC/PLC files" data/fsa
           git add data/fsa/manifest.tsv
           if git diff --cached --quiet; then echo "no change on main"; exit 0; fi

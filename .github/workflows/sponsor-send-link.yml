@@ -1,11 +1,5 @@
 name: Sponsor report link email
-# One sponsor's report link, emailed to that sponsor with a copy to Sig (Sig, Nov 5, 2026).
-# By hand only: no schedule. scripts/sponsor_send_link.py reads the signed link from
-# private/sponsors/links.json (written by sponsor-report.yml) and the address from
-# private/sponsors/contacts.json (<id>.to), both on private-data. A sent marker is saved to
-# private/sponsors/sent/<id>.json, so a second run skips unless resend is true.
-# The log names ids and counts only: never an address, a name or the link.
-# Secrets: PRIVATE_REPO_TOKEN, SMTP_*, FROM_ADDR, FROM_NAME, SPONSOR_TO (Sig's copy, as sponsor-apply.yml).
+# Sponsor report link email.
 
 on:
   workflow_dispatch:
@@ -71,8 +65,6 @@ jobs:
           SPONSOR_TO: ${{ secrets.SPONSOR_TO }}
         run: python3 scripts/sponsor_send_link.py
 
-      # Hard on purpose: if the marker does not land after a send, the run is red, so nobody reruns
-      # it and mails the sponsor twice without resend. Runs only after a send (the step output sent=1).
       - name: Save the sent marker
         if: steps.send.outputs.sent == '1'
         env:

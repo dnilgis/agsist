@@ -1,29 +1,5 @@
 name: Morning report
-
-# One email to Sig at about 6:40 am Central (scripts/morning_report.py): what
-# needs him first, then site health for agsist and dnilgis/bids, signups,
-# orders and requests, traffic and his open to-dos from TODO-SIG.md. Counts
-# only: no reader or customer address goes into the email body or this log.
-#
-# THE CLOCK. GitHub's own schedule drops and delays fires here (see
-# scripts/cron_gate.py), so this also runs after every "Fetch Grain Bids"
-# (cron-job.org, every 15 minutes) and the gate lets the first run after a
-# tick do the work. There are two ticks, 11:40 and 12:40 UTC, because Central
-# time moves: 11:40 UTC is 6:40 am in CDT and 12:40 UTC is 6:40 am in CST.
-# The second gate step (morning_report.py --gate) lets only the tick that is
-# 6:40 am in Chicago through, so it sends once a day either way.
-#
-# Secrets: the ones the forms digest uses -- LIST_URL, LIST_TOKEN, SMTP_USER,
-# SMTP_PASS (or GMAIL_USER, GMAIL_APP_PASS). Optional: SMTP_HOST, SMTP_PORT,
-# FROM_ADDR, FROM_NAME, FORMS_TO / SPONSOR_TO (who gets it), BIDS_READ_TOKEN
-# (only if the bids run list ever needs a token), STRIPE_READ_KEY (a
-# restricted, read-only Stripe key; without it the email points to the
-# dashboard), PRIVATE_REPO_TOKEN (reads the job health file from the private
-# repo and checks the key's expiry date).
-#
-# Signups change vs yesterday and vs 7 days ago come from the counts this job
-# kept on earlier mornings, in the Actions cache (counts only, never an
-# address). The job goes red only when the email cannot be sent.
+# Morning report.
 
 on:
   schedule:
@@ -93,9 +69,6 @@ jobs:
         with:
           persist-credentials: false
           ref: main
-          # The top-level data files (about 7 MB), not the whole site. A
-          # pattern, not file names: build_feeds.py reads a workflow that
-          # names a feed as that feed's writer, and this job only reads.
           sparse-checkout: |
             /scripts/
             /data/*.json
@@ -122,20 +95,14 @@ jobs:
           path: .morning-report
           key: morning-report-counts-${{ github.run_id }}
           restore-keys: morning-report-counts-
-      # The Rain Print funnel is read from GA4 here and goes only into the
-      # email: it is never written to a file (data/audience.json is public).
       - name: Install the GA4 client
         run: pip install --quiet google-analytics-data==0.23.3 google-auth==2.62.0
-      # The job health file is in the private repo since Oct 20 (branch
-      # private-data). Missing, the email says so and still goes out; the
-      # key itself is checked in the email step, so a dead key is said too.
       - name: Get the job health file (private repo)
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_BRANCH: private-data
           RAW_SOFT: '1'
         run: bash scripts/pull_raw.sh private/data/cron-health.json
-      # The re-test engine's last run (counts and test ids only), for the Monday lines.
       - name: Get the re-test engine summary (private repo)
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -163,11 +130,6 @@ jobs:
           SNAPSHOT: .morning-report/counts.json
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
         run: python3 scripts/morning_report.py
-      # Oct 21 (Sig, insight machine): reader counts by area, counts only, once a day, to the
-      # private-data branch at private/data/reader-area/<year>/<day>.json: sign-ups by ZIP3 and
-      # page, alerts, watches, notices, Rain Print designs and orders by state, every cell under 3
-      # withheld (scripts/reader_area_counts.py, worker v5.45 /count-area). Never an address or a
-      # full ZIP. After the email, and it can never fail the run.
       - name: Reader counts by area to the private-data branch
         if: ${{ !cancelled() && inputs.dry_run != true }}
         continue-on-error: true
@@ -182,8 +144,6 @@ jobs:
           if ls private/data/reader-area/*/*.json >/dev/null 2>&1; then
             bash scripts/push_raw.sh "reader counts by area" private/data/reader-area
           fi
-      # A dry run reads the counts but does not keep them, so tomorrow's
-      # "since yesterday" still compares against a real morning.
       - name: Keep today's counts
         if: always() && inputs.dry_run != true
         uses: actions/cache/save@v4
@@ -191,11 +151,6 @@ jobs:
           path: .morning-report
           key: morning-report-counts-${{ github.run_id }}
 
-  # Oct 27 (Sig, god's-eye panel "yes to all"): yesterday's bid changes, rebuilt from the
-  # dnilgis/bids git history, to the private-data branch (scripts/bid_change_ledger.sh;
-  # private/ledger/bid-changes/<year>/<day>.json.gz). Rides this job's once-a-morning gate:
-  # no schedule of its own. Its own job, beside the email and not after it, so it can never
-  # hold up or fail the report. Does nothing until bid-change-ledger.yml has run the backfill.
   change-ledger:
     needs: gate
     if: needs.gate.outputs.go == '1' && inputs.dry_run != true
@@ -236,12 +191,6 @@ jobs:
           python3 scripts/bid_change_ledger.py --selftest > /dev/null || { echo "::warning::bid change ledger selftest failed; not run"; exit 0; }
           bash scripts/bid_change_ledger.sh || echo "::warning::bid change ledger did not finish; the next morning carries on from the saved state"
 
-  # Oct 27 (Sig, god's-eye panel "yes to all"; task 25): the weekly re-test engine. Re-runs every
-  # spec in scripts/insight_registry.json and appends one result row per spec to the private-data
-  # branch (private/ledger/tests/). Rides this job's once-a-morning gate: no schedule of its own;
-  # the script works only on Sundays (Central), or as a catch-up when the last run is 9 days old,
-  # and the next morning's email lists the result in counts and test ids. Publishes nothing. Its
-  # own job, beside the email, so it can never hold up or fail the report.
   insight-retest:
     needs: gate
     if: needs.gate.outputs.go == '1' && inputs.dry_run != true
@@ -258,8 +207,6 @@ jobs:
         with:
           persist-credentials: false
           ref: main
-          # Patterns, not file or folder names, for what it only reads (the NASS yields, the
-          # basis logs): build_feeds.py takes a workflow that names a feed as its writer.
           sparse-checkout: |
             /scripts/
             /data/ids/

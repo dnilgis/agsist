@@ -1,14 +1,6 @@
 name: rain print examples
+# rain print examples.
 
-# The real NOAA answers behind the two example links on /rain-print (2012 Ames,
-# 1993 Des Moines), saved to data/rain-print-examples/<slug>.json so the page's
-# own engine can draw them offline, exactly as it would live.
-#   scripts/fetch_rain_print_examples.mjs  runs components/rain-print.js's own
-#                                          request chain and keeps every answer
-# Past years don't change, so this runs by hand only: once to fill the files,
-# and again if the example links or the engine's requests change. It commits to
-# the branch it was run on (main, or a branch being tested before it merges).
-# RCC-ACIS cannot be reached from the sandbox this was built in.
 on:
   workflow_dispatch:
 

@@ -1,10 +1,6 @@
 name: Tariff data check
-# data/tariffs.json is hand-refreshed, and every way it can be wrong is a way the
-# page renders confidently instead of failing: the timeline is drawn in file order
-# so an out-of-sequence entry just looks like history, an unknown `impact` draws an
-# invisible dot, an unknown `status` falls through to a "Mixed" badge, and a missing
-# key prints "undefined" into copy a farmer reads. So the file is checked on every
-# push that touches it, and by hand before a refresh goes up.
+# Tariff data check.
+
 on:
   push:
     paths:

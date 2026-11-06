@@ -1,21 +1,8 @@
 name: Price alert emails
-# Watch a price target, from the homepage's "Price Alert" widget in the
-# intel rail. Every 30 minutes: mail confirmation links to new alerts, and a
-# one-time hit email to anyone whose target has been crossed -- then that
-# alert clears itself (one-shot, like a resting limit order; it never mails
-# twice for the same alert). Also runs when Fetch Prices finishes, because
-# that is the moment a target could actually have been crossed.
-# Same KV worker as the elevator watch and county watch (a separate prefix,
-# pwatch:, not the same keys -- see workers/subs-worker.js's WATCH A PRICE
-# TARGET block for why these three stay parallel rather than merged).
-# Secrets (already used by the other watch jobs): LIST_URL, LIST_TOKEN,
-# UNSUB_SECRET, SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT,
-# FROM_ADDR, FROM_NAME, REPLY_TO.
+# Price alert emails.
 
 on:
   schedule:
-    # Hourly fallback (was every 30 min). Runs after every Fetch Prices;
-    # that chain started a run for every one of 234 over Oct 2-9, this cron 32 of 336.
     - cron: '51 * * * *'
   workflow_dispatch:
     inputs:
@@ -60,7 +47,7 @@ jobs:
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}

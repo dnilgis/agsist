@@ -1,14 +1,7 @@
 name: Daily site check
+# Daily site check.
 
 # Sig approved 2026-10-17. Once a day after the morning data runs: the number
-# consistency check in --strict mode (with its staleness rule), the cron clocks
-# (scripts/cron_health.py, to the runner's temp dir) and the Daily's date.
-# Findings become annotations, a run summary, and ONE issue titled
-# "Daily site check", opened or replaced while there are findings and closed
-# on the first clean run (scripts/daily_site_check.py).
-#
-# Read-only on the repository: no commit, no push, no email, no model call.
-# The token can write issues and nothing else that matters.
 
 on:
   schedule:
@@ -23,7 +16,7 @@ on:
 permissions:
   contents: read
   issues: write
-  actions: read          # cron_health.py reads the workflow run list
+  actions: read
 
 concurrency:
   group: daily-site-check
@@ -54,9 +47,6 @@ jobs:
           python3 scripts/cron_health.py --selftest
           python3 scripts/daily_site_check.py --selftest
 
-      # cron_health.py judges the age of the last saved job health file, which
-      # is in the private repo since Oct 20 (branch private-data). Missing, that
-      # row reads unknown and the rest of the check runs.
       - name: Get the last job health file (private repo)
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}

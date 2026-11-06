@@ -1,30 +1,6 @@
 name: Accuracy pass
+# Accuracy pass.
 
-# Accuracy passes over site pages through the Message Batches API
-# (scripts/accuracy_pass.py). Dispatch only, from the fx/accpass branch; no
-# schedule. Each pass is a run with its own record on the raw branch (never
-# deployed): accuracy-pass/<run>/ (the first pass, run left empty, used
-# accuracy-pass/ itself). Input: <record>/input/bundle.json.
-#
-#   mode=estimate  count tokens and print the worst-case cost, spend nothing
-#   mode=submit    estimate, refuse over the cap (counting the spend of the
-#                  runs in budget_with), refuse if <record>/batch.json is
-#                  already on raw, submit one batch, then wait and collect
-#   mode=collect   wait for the batch and write <record>/results.json
-#   (submit and collect then rank the leads: <record>/findings.json and
-#   findings.md, severity first, for a person to check before any fix)
-#
-# build=sets (estimate or submit): the input is built here instead of read from
-# raw: about 3% (input share) of every generated page set, stratified by state,
-# each page with the data slice it was built from and the set's excerpts from
-# the references branch (scripts/accuracy_sets.py). The cash bid town, state and
-# company pages are a fresh build from the bids network, read right after, so
-# page and data match. The built input is saved to raw as <record>/input/bundle.json;
-# collect then reads it from there. Use cap 40 and a run name such as sets-2026-10.
-
-# The push trigger exists only so GitHub registers this workflow from a branch
-# that is not main (dispatch needs that); a push runs the selftest and nothing
-# else, no API call and no spend.
 on:
   push:
     branches: [fx/accpass, fx/accpass3, fx/accsets]
@@ -70,7 +46,6 @@ jobs:
     timeout-minutes: 350
     env:
       REC: accuracy-pass${{ inputs.run && format('/{0}', inputs.run) || '' }}
-      # read by scripts/accuracy_pass.py (same as --run, --cap, --budget-with, --calibrate-from)
       ACC_RUN: ${{ inputs.run }}
       ACC_CAP: ${{ inputs.cap }}
       ACC_BUDGET_WITH: ${{ inputs.budget_with }}
@@ -98,14 +73,13 @@ jobs:
             if [ -f "$REC/batch.json" ]; then echo "::error::$REC/batch.json is on raw (this run was submitted); use a new run name"; exit 1; fi
             bash scripts/fetch_private.sh references
             python scripts/build_cash_bid_pages.py --out /tmp/cb-pages --sitemap /tmp/cb-sitemap.xml
-            git checkout -- . 2>/dev/null || true     # the cash bid build also stamps pages in the checkout; keep main's
+            git checkout -- . 2>/dev/null || true
             mkdir -p "$REC/input"
             python scripts/accuracy_pass.py sets "$REC/input/bundle.json" --cb-pages /tmp/cb-pages --net --share "${{ inputs.share }}"
             cp "$REC/input/bundle.json" /tmp/bundle.json
           else
             git show "FETCH_HEAD:$REC/input/bundle.json" > /tmp/bundle.json
           fi
-          # records of the runs that share the cap or calibrate this one
           for r in $(echo "${{ inputs.budget_with }},${{ inputs.calibrate_from }}" | tr ',' ' '); do
             mkdir -p "accuracy-pass/$r"
             for f in batch.json results.json estimate.json; do

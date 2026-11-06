@@ -1,16 +1,9 @@
 name: Bake farm-bill page
-
-# Edit farm-bill.json in the GitHub browser editor and commit.
-# This Action re-bakes the static farm-bill.html and commits it back,
-# so the values AI crawlers read are always current — no local tooling.
-#
-# Robust to file location: it finds build_farmbill.py, farm-bill.json, and
-# farm-bill.html wherever they live in the repo (root or a subfolder), so it
-# won't fail just because the script isn't at the repository root.
+# Bake farm-bill page.
 
 on:
   push:
-    branches: [main]   # these jobs commit and rebase onto main; on a PR branch that rebase fails (2026-10-06)
+    branches: [main]
     paths:
       - "**/farm-bill.json"
       - "**/build_farmbill.py"
@@ -65,8 +58,6 @@ jobs:
             --html "${{ steps.find.outputs.html }}" \
             --json "${{ steps.find.outputs.json }}"
 
-      # Share image (og:image) for the pages this data feeds: scripts/build_share_images.py.
-      # Best effort: a share card must never block the data commit.
       - name: Share image
         continue-on-error: true
         run: |

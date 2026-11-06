@@ -1,35 +1,17 @@
 name: Fetch Export Sales
+# Fetch Export Sales.
 
 on:
   schedule:
-    # USDA FAS publishes Weekly Export Sales Thursday at 8:30am ET.
-    #
-    # THIS WAS ONE CRON A WEEK WITH NOTHING BEHIND IT. A scheduled run on this
-    # platform is best effort -- measured on this repository over 2026-08-19 to
-    # 08-26, data/bids.json delivered between 41% and 86% of the fires it asked
-    # for -- so a single weekly attempt means a dropped run leaves the page a
-    # week stale with nothing to notice it.
-    #
-    # Both DST cases, because 8:30am ET moves against UTC:
-    #   EDT (Mar-Nov)  release 12:30 UTC -> 12:47
-    #   EST (Nov-Mar)  release 13:30 UTC -> 13:47
-    # (2026-10-09: two or three minutes off the quarter hours, where GitHub's
-    # queue is most crowded.)
-    # The original 14:30 (now 14:33) stays as the second attempt in both, and Friday
-    # morning is the catch-all. Each is a no-op when the data has not moved.
     - cron: '47 12 * * 4'
     - cron: '47 13 * * 4'
     - cron: '33 14 * * 4'
     - cron: '20 13 * * 5'
-  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
-  # drops and delays the schedule above. The gate job below lets the first run
-  # after each tick of the schedule do the work; see scripts/cron_gate.py.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
   workflow_dispatch:
 
-# One run at a time, so a chained run and a late cron fire cannot both write.
 concurrency:
   group: export-sales
   cancel-in-progress: false
@@ -88,21 +70,12 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        # fetch_export_sales.py now uses the FAS Open Data ESR API (JSON) and
-        # only needs requests. beautifulsoup4 was for the old HTML-scraping
-        # strategies, which USDA decommissioned on June 2, 2026.
         run: pip install requests==2.34.2
 
-      # THE WITHHOLDING RULE, BEFORE THE FETCH. A corn figure from a finished
-      # marketing year rendered on the homepage under this week's date for
-      # months; the retirement that stops it is pure arithmetic and is checked
-      # here in under a second.
       - name: Test the staleness rule this run depends on
         run: python scripts/fetch_export_sales.py --selftest
 
       - name: Fetch USDA FAS Export Sales
-        # FAS_API_KEY is a free api.data.gov key (https://api.data.gov/signup),
-        # stored as a repo secret. Without it the script preserves existing data.
         env:
           FAS_API_KEY: ${{ secrets.FAS_API_KEY }}
         run: python scripts/fetch_export_sales.py

@@ -1,34 +1,5 @@
 name: History backfill (dispatch only)
-
-# One-time history pulls for the insight machine (Sig, Oct 21): raw history to
-# the PRIVATE raw branch (dnilgis/feedbag, history/<source>/), never to main and
-# never to the site. DISPATCH ONLY: this workflow has no schedule and must never
-# get one (test/history-collect.test.mjs). The ongoing weeks ride the existing
-# jobs (drought-county-week.yml, crop_progress.yml, cattle-auction.yml).
-#
-#   source       agtransport  USDA AgTransport datasets the transport pages read, 2016 on
-#                usdm         Drought Monitor county weekly categories, 2000 on
-#                nass         NASS crop progress and condition, every state, as far back as Quick Stats goes
-#                ams-fert     AMS Illinois Production Cost Report (fertilizer), 2010 on
-#                nass-yield   NASS final state yields, corn and soybeans, every year (about 4 calls)
-#                feeder-archive  past USDA AMS barn auction reports for the feeder steer index history:
-#                             archived copies read by the barn reader (scripts/backfill_feeder_index.py
-#                             --fetch; years from/to). probe: which archives answer
-#                             (scripts/probe_feeder_archive.py); probe + only=coverage: the Internet
-#                             Archive's copy list for every barn. The page file is built by feeder-history.yml.
-#                feeder-mars  the same barn reports through the MARS API (USDA My Market News, MARS_API_KEY):
-#                             probe: the report dates MARS holds per barn report (from = first year)
-#                             and the MARS catalog to history/mars/; otherwise the detail rows per
-#                             barn and week (scripts/backfill_feeder_index.py --mars-fetch).
-#   from, to     years (blank = the script's own start, this year)
-#   only         agtransport: dataset names (grain_basis,barge_rates); usdm: states (IA,MN)
-#   probe        ams-fert only: save what the archive and MARS answer, fetch nothing else
-#   max_minutes  stop starting new chunks after this; what is done is saved
-#
-# Resumable: each run reads the saved manifest first and skips every chunk it
-# marks complete, and saves to raw every 30 minutes as it goes. Dispatch the
-# same source again until the job summary says nothing is left.
-#   gh workflow run history-backfill.yml -R dnilgis/agsist --ref main -f source=usdm
+# History backfill (dispatch only).
 
 on:
   workflow_dispatch:
@@ -97,7 +68,6 @@ jobs:
             feeder-mars) echo "dir=history/feeder-mars" >> "$GITHUB_OUTPUT"; echo "script=scripts/backfill_feeder_index.py" >> "$GITHUB_OUTPUT";;
             *) echo "::error::unknown source $SOURCE"; exit 1;;
           esac
-      # the barn job's PDF reader (cattle-auction.yml), so an archived report reads the same here
       - name: Install pypdf (feeder-archive)
         if: ${{ inputs.source == 'feeder-archive' }}
         run: pip install pypdf==6.20.1
@@ -108,9 +78,6 @@ jobs:
           python3 scripts/history_lib.py --selftest
           python3 "$SCRIPT" --selftest
           case "$SOURCE" in feeder-archive|feeder-mars) python3 scripts/probe_feeder_archive.py --selftest;; esac
-      # The saved manifest says which chunks are done. A path that is not on raw yet is a
-      # first run; a branch that cannot be read stops the run, because a fresh manifest
-      # pushed over the saved one would forget what is done.
       - name: The saved manifest (private raw branch)
         env:
           DIR: ${{ steps.w.outputs.dir }}
@@ -126,7 +93,6 @@ jobs:
               echo "::error::could not read the raw branch; not starting"; exit 1
             fi
           fi
-      # feeder-archive keeps each report's sales beside the manifest; a resumed run merges into them
       - name: The saved sales (feeder-archive)
         if: ${{ inputs.source == 'feeder-archive' }}
         env:
@@ -134,7 +100,6 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_SOFT: '1'
         run: bash scripts/pull_raw.sh "$DIR/sales"
-      # feeder-mars keeps each report's feeder rows; a resumed run asks only what it lacks
       - name: The saved rows (feeder-mars)
         if: ${{ inputs.source == 'feeder-mars' && !inputs.probe }}
         env:
@@ -197,7 +162,6 @@ jobs:
           DIR: ${{ steps.w.outputs.dir }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
-          # the MARS catalog (feeder-mars probe) is saved beside the feeder files
           if [ -d history/mars ]; then bash scripts/push_raw.sh "history backfill $SOURCE catalog" history/mars; fi
           [ -d "$DIR" ] || { echo "nothing written"; exit 0; }
           bash scripts/push_raw.sh "history backfill $SOURCE" "$DIR"

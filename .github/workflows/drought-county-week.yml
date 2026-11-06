@@ -1,15 +1,5 @@
 name: Drought county week
-
-# Writes data/drought/county-week.json for the county box on drought-monitor.html:
-# this week's Drought Monitor percent of each county in D0-D4, last week, and
-# four weeks back, with drought streaks; and data/drought/summary.json, NDMC's own
-# share of the Lower 48 and each state (the page headline). USDM statistics API (NDMC), read by
-# scripts/fetch_drought_county_week.py. The page shows a plain "not loaded yet"
-# line until this file exists, and the script writes nothing it cannot check.
-#
-# FIRST RUN: dispatch this once with "probe" ticked. It saves what the API
-# returned for Iowa, Story County and Oklahoma to data/drought/probe/ and
-# saves it on the raw branch (never deployed), so the answer's shape can be checked before a number is trusted.
+# Drought county week.
 
 on:
   workflow_dispatch:
@@ -19,16 +9,9 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '52 13 * * 4'   # Thursday, after the 8:30 AM ET release
-    - cron: '37 14 * * 5'   # Friday backstop
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: '52 13 * * 4'
+    - cron: '37 14 * * 5'
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -37,7 +20,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -90,8 +72,6 @@ jobs:
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: python scripts/fetch_drought_county_week.py --probe
-      # Raw captures go to the raw branch (never deployed), not main: scripts/push_raw.sh.
-      # Runs even when the probe step failed part way, so what it did capture is kept.
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         env:
@@ -101,10 +81,6 @@ jobs:
       - name: Fetch and write data/drought/county-week.json and summary.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_drought_county_week.py
-      # Oct 21 (Sig, insight machine): this year's county maps, as NDMC sent them, to the
-      # private raw branch at history/usdm-county/<year>/<ST>.csv.gz (scripts/backfill_usdm.py
-      # ongoing(); the 2000-on backfill is history-backfill.yml source=usdm). A failed save
-      # is a warning: the page files below are unaffected.
       - name: Save this year's county maps to the raw history
         if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.probe) && hashFiles('history/usdm-county/weekly/*.json') != '' }}
         env:

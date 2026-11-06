@@ -1,9 +1,5 @@
 name: Bing reports (on request)
-
-# Pulls Bing Webmaster Tools reports for agsist.com with the BING_API_KEY1
-# secret (Sig added it Oct 17, 2026). Run by hand only; no schedule. The
-# results go to a workflow artifact kept for 1 day, never into the repo, so
-# search query data does not sit in this public repository.
+# Bing reports (on request).
 
 on:
   workflow_dispatch:

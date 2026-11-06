@@ -1,14 +1,5 @@
 name: Radar rain (MRMS)
-
-# Writes data/radar-rain/<st>.bin (one per state, every window) and
-# index.json for /rain-radar: NOAA MRMS multi-sensor rain totals, Pass 2
-# (radar corrected with rain gauges), from NOAA's open data bucket on AWS.
-# scripts/radar_rain.py has the details. The hail map's MESH workflow runs
-# once a day, too slow for "the last 24 hours", so this has its own schedule.
-#
-# Validate against the county gauges: dispatch with validate_from/validate_to
-# (dates the county rain files cover). The summary prints to the log and is
-# kept as a run artifact; nothing is committed.
+# Radar rain (MRMS).
 
 on:
   workflow_dispatch:
@@ -24,18 +15,8 @@ on:
         required: false
   schedule:
     # Sig approved Oct 17, 2026: four runs a day. NOAA posts each hour's Pass 2
-    # 24H and 72H totals about 58 minutes after the hour (checked on the bucket,
-    # Oct 16, 2026), so these read the 00, 06, 12 and 18 UTC totals. The 12 UTC
-    # one lines up with the 7 am gauge day.
     - cron: '17 1,7,13,19 * * *'
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 350 minutes
-  # (closing before the next tick of the schedule).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -44,7 +25,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:

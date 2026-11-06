@@ -1,20 +1,10 @@
 name: conditions
+# conditions.
 
-# Weekly NASS crop-condition percentile build for /conditions. NASS publishes
-# Crop Progress Mondays 4 PM ET; Tuesday 01:12 UTC (~8 PM ET Monday) catches it.
-# Selftest gates; in-season zero-data fails loud; NASS throttle gets backoff.
 on:
   schedule:
-    - cron: '12 1 * * 2'    # Tuesdays 01:12 UTC = Monday evening CT
-    # After a Monday federal holiday (Columbus Day, Labor Day) NASS releases on
-    # Tuesday, and the Monday-night run finds nothing new. This catch-up run
-    # picks it up; on a normal week it finds no change and commits nothing.
-    - cron: '12 1 * * 3'    # Wednesdays 01:12 UTC = Tuesday evening CT
-  # 2026-10-16: GitHub dropped the Wednesday fire after Columbus Day. Now this
-  # also runs whenever data/crop-progress.json is on a newer week than
-  # data/conditions/conditions.json: right after "Fetch Crop Progress", and
-  # every two hours for five days off "Fetch Grain Bids" (scripts/cron_gate.py
-  # behind). A run with nothing to chase stops at the gate in seconds.
+    - cron: '12 1 * * 2'
+    - cron: '12 1 * * 3'
   workflow_run:
     workflows: ["Fetch Crop Progress", "Fetch Grain Bids"]
     types: [completed]
@@ -24,9 +14,6 @@ permissions:
   contents: write
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -97,12 +84,6 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_conditions.py
-      # Re-bake /conditions from the file just written: the title, summary,
-      # first-screen week line, stats line, table caption and harvest table
-      # all come from data/crop-progress.json and data/conditions/conditions.json.
-      # Until 2026-10-15 only the freshness job did this, and the page showed
-      # "Corn 54%, week ending Oct 4" over a table for Oct 11.
-      # test/conditions-week.test.mjs holds every line to one week.
       - name: Re-bake conditions.html from the data
         run: |
           python scripts/bake_seo.py --selftest
