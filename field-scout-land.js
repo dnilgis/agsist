@@ -379,7 +379,7 @@
     });
     return FSLand.onePrice(merged, today);
   };
-  // Several parcels of one county sold the same day for the same price, to one buyer (or no buyer on file), are one
+  // Several parcels of one county sold the same day for the same price, to the same buyer on every one, are one
   // sale (Nov 5, 2026: Indiana files one disclosure per parcel, each with the whole price). One price, the parcels'
   // total acres when every one is known, every class on them, the parcel count. Month-dated rows and sales grouped
   // above are left alone; a row that is not a market sale is never merged. build_land_summary.one_price, line for line.
@@ -396,7 +396,7 @@
     var out = [];
     order.forEach(function (m) {
       var buyers = m.map(function (x) { return FSLand.party(x, 'b'); }).filter(function (x, i, s) { return x && s.indexOf(x) === i; });
-      if (m.length === 1 || buyers.length > 1) { m.forEach(function (x) { out.push(x); }); return; }   // different buyers: separate sales
+      if (m.length === 1 || buyers.length !== 1 || m.some(function (x) { return !FSLand.party(x, 'b'); })) { m.forEach(function (x) { out.push(x); }); return; }   // different buyers, or a buyer not on file: separate sales
       var o = {}, f = m[0];
       for (var key in f) o[key] = f[key];
       var known = m.every(function (x) { return num(x.acres) > 0 && !x.acUnsure; });

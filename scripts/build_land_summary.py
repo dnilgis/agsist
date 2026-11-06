@@ -425,8 +425,8 @@ def sale_rows(rows, today):
 
 
 def one_price(sales, today):
-    """FSLand.onePrice: several parcels of one county sold the same day for the same price, to one buyer (or no buyer
-    on file), are one sale (Nov 5, 2026: Indiana files one disclosure per parcel, each with the whole price, so
+    """FSLand.onePrice: several parcels of one county sold the same day for the same price, to one buyer (the same buyer on
+    every one), are one sale (Nov 5, 2026: Indiana files one disclosure per parcel, each with the whole price, so
     Blackford County read one $2,701,640 sale of 3 parcels as 3 sales at up to $75,339 an acre). The sale keeps that
     one price, takes the parcels' total acres when every one is known (else acres uncertain, no $/acre), every class
     on them (so buildings or forest on any parcel mark the sale) and the parcel count. Month-dated rows (Florida) and
@@ -451,8 +451,8 @@ def one_price(sales, today):
             b = party(x, "b")
             if b and b not in buyers:
                 buyers.append(b)
-        if len(m) == 1 or len(buyers) > 1:
-            out.extend(m)          # different buyers at one price on one day: separate sales
+        if len(m) == 1 or len(buyers) != 1 or any(not party(x, "b") for x in m):
+            out.extend(m)          # different buyers, or a buyer not on file: separate sales
             continue
         o = dict(m[0])
         acs = [num(x.get("acres")) for x in m]
@@ -878,7 +878,7 @@ def selftest():
     # one $2,701,640 sale filed on three parcels (35.86 + 48.41 + 80 acres), Blackford County IN, Aug 28, 2026:
     # one sale of 164.27 acres, $16,446 an acre (FSLand.onePrice, the same rows in test/fixtures/land-one-price.json)
     T = "2026-11-01"
-    P = lambda d, price, ac, cls="4", **k: dict({"date": d, "price": price, "acres": ac, "cls": cls, "ppa": per_acre(price, ac), "fips": "18009", "conv": "Warranty Deed"}, **k)
+    P = lambda d, price, ac, cls="4", **k: dict({"date": d, "price": price, "acres": ac, "cls": cls, "ppa": per_acre(price, ac), "fips": "18009", "conv": "Warranty Deed", "bi": 1}, **k)
     one = [P("2026-08-28", 2701640, 35.86), P("2026-08-28", 2701640, 48.41), P("2026-08-28", 2701640, 80.0)]
     m1 = one_price(one, T)
     ck("one price on several parcels the same day is one sale of their acres", len(m1) == 1 and m1[0]["acres"] == 164.27
@@ -890,6 +890,7 @@ def selftest():
     ck("buildings on any parcel mark the sale", len(m3) == 1 and land_type(m3[0], "IN") == "bldg")
     m4 = one_price([P("2026-06-26", 800000, 5.0, "5"), P("2026-06-26", 800000, 179.78, "5")], T)
     ck("a small bare parcel sold with a big one is bare land of their acres", land_type(m4[0], "VT") == "farm" and m4[0]["acres"] == 184.78)
+    ck("no buyer on file: separate sales", len(one_price([P("2026-08-28", 500000, 40, bi=None), P("2026-08-28", 500000, 40, bi=None)], T)) == 2)
     ck("different buyers at one price are separate sales", len(one_price([P("2026-08-28", 500000, 40, bi=1), P("2026-08-28", 500000, 40, bi=2)], T)) == 2)
     ck("month-dated rows are left alone", len(one_price([P("2026-08-01", 500000, 40, dm=1), P("2026-08-01", 500000, 40, dm=1)], T)) == 2)
     ck("other days or other counties are separate sales", len(one_price([P("2026-08-28", 500000, 40), P("2026-08-29", 500000, 40), P("2026-08-28", 500000, 40, fips="18001")], T)) == 3)

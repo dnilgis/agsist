@@ -1,5 +1,5 @@
 {
- "about": "Real sale rows as the shared rule hands them to the one-price step (no names, parcel or document numbers; the buyer id is replaced by 1): Blackford County IN, Aug 28 2026 (3 parcels, $2,701,640 each) and Aug 21 2026 (3 parcels, $2,371,245 each, one with buildings), Hunterdon County NJ, Dec 1 2025 (2 parcels, $650,000 each). test/land-one-price.test.mjs runs FSLand.onePrice and build_land_summary.one_price on them.",
+ "about": "Real sale rows as the shared rule hands them to the one-price step (no names, parcel or document numbers). Blackford County IN, Aug 28 2026 (3 parcels, $2,701,640 each) and Aug 21 2026 (3 parcels, $2,371,245 each, one with buildings): the county file carries a buyer id on each, the same on all three; it is written here as 1. Hunterdon County NJ, Dec 1 2025 (2 parcels, $650,000 each): New Jersey's deed abstracts carry no buyer, so the rule cannot tell one sale of two parcels from two sales and keeps them apart. test/land-one-price.test.mjs runs FSLand.onePrice and build_land_summary.one_price on them.",
  "cases": [
   {
    "state": "IN",
@@ -123,8 +123,7 @@
      "conv": "Deed; state ratio study code 33: farmland-assessed, exempt or abated property; land only",
      "exempt": 0,
      "ppa": 8249,
-     "fips": "34019",
-     "bi": 1
+     "fips": "34019"
     },
     {
      "date": "2025-12-01",
@@ -135,15 +134,14 @@
      "conv": "Deed; state ratio study code 33: farmland-assessed, exempt or abated property; land only",
      "exempt": 0,
      "ppa": 44582,
-     "fips": "34019",
-     "bi": 1
+     "fips": "34019"
     }
    ],
    "expect": {
-    "n": 1,
-    "acres": 93.38,
-    "ppa": 6961,
-    "np": 2,
+    "n": 2,
+    "acres": 78.8,
+    "ppa": 8249,
+    "np": 1,
     "cls": "4",
     "kind": "farm"
    }

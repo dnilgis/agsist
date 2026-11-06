@@ -539,7 +539,8 @@ def selftest():
     ck("records that start inside the year before: this year's median prints, the comparison is withheld with why",
        m3["cur"]["n"] == 16 and "prev" not in m3 and "chg" not in m3 and "records for part of the area start Jun 1, 2025" in m3["why_cmp"], m3)
     # many returns without acres: the comparison is withheld, the median stays
-    f5 = dict(f, rows=R + [["U%03d" % k, "2025-03-15", 900000, None, None, 3, "4", "Warranty Deed", "Q%03d" % k, "0", "L", 0, "S", "B", None, "2025-03-20"] for k in range(8)])
+    # eight separate returns, so eight prices (one price on several parcels the same day to one buyer is one sale)
+    f5 = dict(f, rows=R + [["U%03d" % k, "2025-03-15", 900000 + 1000 * k, None, None, 3, "4", "Warranty Deed", "Q%03d" % k, "0", "L", 0, "S", "B", None, "2025-03-20"] for k in range(8)])
     json.dump(f5, open(os.path.join(tmp, "data", "land", "wi", "55999.json"), "w"))
     m5 = month_report(Land(tmp), zipll, 25, 2026, 8, today)["median"]
     ck("acres left off too many returns the year before: no comparison, the reason with its counts",
