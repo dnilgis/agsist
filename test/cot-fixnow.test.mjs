@@ -70,9 +70,11 @@ test("4, C. no crowding advice on the page, in its FAQ data, in the panel words 
     ["cot-analysis.js", code(ANA_JS)], ["data/cot-analysis.json", JSON.stringify(CX)]]) {
     for (const re of ADVICE) assert.doesNotMatch(text, re, `${name}: ${re}`);
   }
-  const note = EMAIL.slice(EMAIL.indexOf("def note(r):"), EMAIL.indexOf("def range_line("));
-  const body = note.replace(/"""[\s\S]*?"""/, "");
-  for (const re of ADVICE) assert.doesNotMatch(body, re, "email note(): " + re);
+  // Nov 6: the email's exit line ("N contracts of selling sit between here and flat") and the
+  // "could be forced" line are gone too; only the copy code is checked, docstrings may name them
+  const copy = EMAIL.slice(EMAIL.indexOf("def held_words("), EMAIL.indexOf("# ── the message")).replace(/"""[\s\S]*?"""/g, "");
+  assert.ok(copy.length > 1000, "the email copy functions are where this test looks");
+  for (const re of [...ADVICE, /head for the exit/i, /between here and flat/i, /could be forced/i]) assert.doesNotMatch(copy, re, "email copy: " + re);
   assert.doesNotMatch(EMAIL, /EXPOSURE_GRAIN|EXPOSURE_STOCK|"noun":/);
   assert.doesNotMatch(BUILDER, /^EXPOSURE = \{/m);
   const r = py(["scripts/send_cot_weekly.py", "--selftest"]);
