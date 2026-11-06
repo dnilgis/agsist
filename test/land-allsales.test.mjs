@@ -202,8 +202,11 @@ test("no names in the indexed pages or the list files; names only from the block
   const robots = read("robots.txt");
   assert.match(robots, /^Disallow: \/data\/land\/$/m);
   for (const [st, fips, s] of [["wi", "55005", "wisconsin/barron-county"], ["il", "17001", "illinois/adams-county"], ["in", "18001", "indiana/adams-county"], ["vt", "50001", "vermont/addison-county"], ["vt", "50023", "vermont/washington-county"], ["nj", "34033", "new-jersey/salem-county"], ["nj", "34019", "new-jersey/hunterdon-county"]]) {
-    const nf = json(`data/land/names/${st}/${fips}.json`), list = listFile(st, fips);
-    for (const g of list) assert.ok(g.id in nf.sales, `${st} ${fips}: the tap finds every listed sale (${g.id})`);
+    const list = listFile(st, fips), lf = JSON.parse(read(`data/land-sales/${st}/${fips}.json`));
+    // a state that names no one (New Jersey since Nov 6) has names null and no names file: no button to find
+    const nf = lf.names ? json(`data/land/names/${st}/${fips}.json`) : { sales: {} };
+    if (lf.names) for (const g of list) assert.ok(g.id in nf.sales, `${st} ${fips}: the tap finds every listed sale (${g.id})`);
+    else assert.equal(st, "nj", `${st} ${fips}: only New Jersey names no one`);
     const L = read(`data/land-sales/${st}/${fips}.json`), P = read(`land-sales/${s}.html`);
     // usual, w24, lx (where a legal names its own buyer or seller) and rec (the county file is names-free) and the ri, g, m columns: the sale detail panel (Nov 4, 2026)
     assert.deepEqual(Object.keys(JSON.parse(L)).sort(), ["cols", "county", "fips", "kinds", "lx", "names", "rec", "s", "st", "through", "usual", "w24"]);

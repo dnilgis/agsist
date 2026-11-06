@@ -222,7 +222,6 @@ def with_bldg(r):
 
 
 # ---------------------------------------------------------------- read the county files
-NAMELESS = ("FL",)     # files that never carry a buyer or seller (fetch_land_sales: Florida's sale files have no names)
 
 
 class Data:
@@ -238,12 +237,12 @@ class Data:
         self.fetched = {st: str(self.land.index(st).get("fetched_utc") or "")[:10] for st in self.states}
         self.today = {st: self.fetched[st] for st in self.states}
         self.counties = {}      # st -> [(index row, rows)]
-        # NAMELESS states (Florida): their files name no one, so no names file, no names path and no "Show buyer and
-        # seller" button (checker, Nov 5, 2026: a dead button). New Jersey keeps its names files and button as before.
+        # a state whose files name no one ("names": false: Florida, New Jersey) gets no names file, no names path and no
+        # "Show buyer and seller" button (checker, Nov 5, 2026: a dead button; New Jersey's 6,975 taps all read "no names", Nov 6)
         self.named = {}
         for st in self.states:
             c0 = (self.land.index(st).get("counties") or [None])[0]
-            self.named[st] = not (st in NAMELESS and c0 and (self.land.file(st, c0["fips"]) or {}).get("names") is False)
+            self.named[st] = not (c0 and (self.land.file(st, c0["fips"]) or {}).get("names") is False)
         for st in self.states:
             lst = []
             for c in self.land.index(st).get("counties") or []:
@@ -1303,16 +1302,27 @@ def leaks(texts, counties=None):
     return bad
 
 
+def orphans(texts, repo=REPO):
+    """names files left from a state that now names no one (its state file has names_dir null): removed on a build"""
+    out = []
+    for p, t in texts.items():
+        m = re.fullmatch(r"data/land-sales/([a-z]{2})\.json", p)
+        if m and json.loads(t).get("names_dir") is None:
+            out += sorted(str(f.relative_to(repo)) for f in (Path(repo) / "data" / "land" / "names" / m.group(1)).glob("*.json"))
+    return out
+
+
 def main(argv):
     if "--selftest" in argv:
         return selftest()
     texts = build()
+    gone = orphans(texts)
     bad = leaks(texts)
     if bad:
         print("REFUSED: a buyer or seller name would be written outside data/land/: %d (first in %s)" % (len(bad), bad[0][0]))
         return 1
     if "--check" in argv:
-        stale = [p for p, t in texts.items() if not (REPO / p).exists() or (REPO / p).read_text(encoding="utf-8") != t]
+        stale = [p for p, t in texts.items() if not (REPO / p).exists() or (REPO / p).read_text(encoding="utf-8") != t] + gone
         if stale:
             print("land sales: %d file(s) differ from a fresh build (first: %s); run python3 scripts/build_land_sales.py" % (len(stale), stale[0]))
             return 1
@@ -1325,7 +1335,9 @@ def main(argv):
         if not fp.exists() or fp.read_text(encoding="utf-8") != t:
             fp.write_text(t, encoding="utf-8")
             n += 1
-    print("land sales: wrote %d of %d file(s)" % (n, len(texts)))
+    for p in gone:
+        (REPO / p).unlink()
+    print("land sales: wrote %d of %d file(s)" % (n, len(texts)) + (", removed %d names file(s) of a state that names no one" % len(gone) if gone else ""))
     return 0
 
 
@@ -1377,6 +1389,12 @@ def selftest():
         allnames = names_in(texts)
         ck("names files hold the buyer and seller", "BIGBUYER LLC" in allnames and "HIGHSELLER ONE" in allnames)
         ck("a quit claim is never listed", "QUIT BUYERX" not in allnames)
+        ck("a state whose file carries names keeps its names path", json.loads(texts["data/land-sales/wi.json"])["names_dir"] == "/data/land/names/wi/")
+        (t / "data" / "land" / "names" / "nj").mkdir(parents=True)
+        (t / "data" / "land" / "names" / "nj" / "34001.json").write_text("{}")
+        ck("a names file left from a state that names no one is removed; a named state's are kept",
+           orphans({"data/land-sales/nj.json": '{"names_dir": null}', "data/land-sales/wi.json": texts["data/land-sales/wi.json"]}, t)
+           == ["data/land/names/nj/34001.json"])
         page = texts["land-sales/2026-09.html"]
         ck("no accusing words", not re.search(r"questionable|suspicious|fraud|shady|sham", page, re.I))
         ck("unusual price wording", "Unusual price" in page)

@@ -144,7 +144,8 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
           const b = document.querySelector("#ls-all tbody tr:first-child button.ls-dt"), p = document.getElementById(b.getAttribute("aria-controls"));
           const dts = [...p.querySelectorAll("dt")].map((x) => x.textContent), dds = [...p.querySelectorAll("dd")].map((x) => { const c = x.cloneNode(true); c.querySelectorAll(".ls-dn").forEach((n) => n.remove()); return c.textContent.trim(); });
           return { exp: b.getAttribute("aria-expanded"), role: p.getAttribute("role"), groups: [...p.querySelectorAll("h3")].map((x) => x.textContent),
-            dts, dds, kv: Object.fromEntries(dts.map((k, i) => [k, dds[i]])), body: document.body.innerText, nm: p.querySelectorAll("button.ls-nm").length };
+            dts, dds, kv: Object.fromEntries(dts.map((k, i) => [k, dds[i]])), body: document.body.innerText, nm: p.querySelectorAll("button.ls-nm").length,
+            bs: ([...p.querySelectorAll("h3")].find((x) => x.textContent === "Buyer and seller") || {}).nextElementSibling?.textContent };
         });
         assert.equal(got.exp, "true", st + ": aria-expanded");
         assert.equal(got.role, "region", st + ": the panel is a labelled region");
@@ -154,7 +155,9 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
         assert.equal(got.kv["Tillable acres"], "not in the state record", st + ": no state records tillable acres, and it says so");
         assert.equal(got.kv["Street address"], "left out", st + ": an address is left out");
         assert.doesNotMatch(got.body, nameRx, st + ": no name before the tap");
-        assert.equal(got.nm, 1, st + ": the names button is in the panel");
+        // New Jersey's file names no one (Nov 6): no names button that would load nothing, and the panel says the record lacks them
+        assert.equal(got.nm, st === "NJ" ? 0 : 1, st + (st === "NJ" ? ": no names button" : ": the names button is in the panel"));
+        if (st === "NJ") assert.equal(got.bs, "not in the state record", "NJ: the panel says the state's record has no names");
         if (st === "IL") {
           assert.equal(got.kv["Personal property in the price"], "not in our copy yet", "IL: a field the state has and our copy does not yet keep says so");
           assert.equal(got.kv["Buildings"], "not in the state record", "IL: the declaration does not say");
@@ -182,11 +185,13 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
         assert.equal(county.length, 1, st + ": the panel read its county file once: " + reqs.join(" "));
         assert.doesNotMatch(county[0], /grantor|grantee|SYNTH/, st + ": the county file it read carries no name and no name column");
         // names: on the tap, from the robots-blocked file, in the panel and on the row
-        await pg.click(".ls-dp button.ls-nm");
-        await pg.waitForFunction(() => !document.querySelector("#ls-all tbody tr:first-child button.ls-nm") && !document.querySelector(".ls-dp button.ls-nm"));
-        if (st !== "NJ") assert.match(await pg.evaluate(() => document.querySelector(".ls-dp").innerText), /Seller: SELLER .*SYNTH/, st + ": names after the tap");
-        if (st === "IL") assert.match(await pg.evaluate(() => document.querySelector(".ls-dp .ls-lgh").textContent), /EXCEPT TRACT TO SYNTH IL0 SELLER/, "IL: the legal comes with the names");
-        assert.ok(reqs.some((u) => /^\/data\/land\/names\/[a-z]{2}\/\d{5}\.json$/.test(u)), st + ": the tap loads the names file");
+        if (st !== "NJ") {
+          await pg.click(".ls-dp button.ls-nm");
+          await pg.waitForFunction(() => !document.querySelector("#ls-all tbody tr:first-child button.ls-nm") && !document.querySelector(".ls-dp button.ls-nm"));
+          assert.match(await pg.evaluate(() => document.querySelector(".ls-dp").innerText), /Seller: SELLER .*SYNTH/, st + ": names after the tap");
+          if (st === "IL") assert.match(await pg.evaluate(() => document.querySelector(".ls-dp .ls-lgh").textContent), /EXCEPT TRACT TO SYNTH IL0 SELLER/, "IL: the legal comes with the names");
+          assert.ok(reqs.some((u) => /^\/data\/land\/names\/[a-z]{2}\/\d{5}\.json$/.test(u)), st + ": the tap loads the names file");
+        } else assert.ok(!fs.existsSync(path.join(tmp, "data/land/names/nj")), "NJ: no names file is written for a state that names no one");
         // Enter again closes it; Escape from inside the panel closes it too and puts the focus back on its button
         await pg.focus("#ls-all tbody tr:first-child button.ls-dt");
         await pg.keyboard.press("Enter");
