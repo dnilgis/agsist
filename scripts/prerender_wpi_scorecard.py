@@ -990,36 +990,90 @@ def cot_release_html(d):
     return f"Next report: {esc(w)}" if w else "CFTC releases the report Fridays at 3:30 PM ET"
 
 
-def cot_answer(d, cx, key="corn"):
-    """The answer line under the chart title, the same sentence as
-    components/cot-glance.js answer() (without 'today', see cot_next_words)."""
+# components/cot-glance.js WHO: the market before "funds" in a headline
+COT_WHO = {"corn": "Corn", "beans": "Soybean", "wheat": "Chicago wheat", "kcwheat": "KC wheat",
+           "mplswheat": "Minneapolis wheat", "soymeal": "Soybean meal", "soyoil": "Soybean oil",
+           "livecattle": "Live cattle", "feedercattle": "Feeder cattle", "leanhogs": "Lean hog",
+           "milk": "Class III milk"}
+
+
+def _cot_facts(d, cx, key):
+    """(report day, net, chg, side, crowd) as components/cot-glance.js facts() reads them, or None."""
     c = d.get(key)
     if not isinstance(c, dict) or c.get("net") is None:
-        return ""
+        return None
     try:
         rd = datetime.strptime(d.get("report_date", ""), "%B %d, %Y").date()
     except ValueError:
-        return ""
+        return None
     a = ((cx or {}).get("commodities") or {}).get(key)
-    if not (a and (a.get("date") or "") == rd.isoformat()):
+    if not (a and (a.get("date") or "") == rd.isoformat() and isinstance(a.get("net"), (int, float))):
         a = None
-    cr = (a or {}).get("crowd") or {}
-    net, prev = c["net"], c.get("prev")
-    chg = (a or {}).get("chg") if a and isinstance(a.get("chg"), int) else (net - prev if prev is not None else None)
-    side = c.get("side") or ("long" if net > 0 else "short" if net < 0 else "flat")
-    name = COT_NAMES.get(key, key)
-    wk = f" in the week to {_DAYS[rd.weekday()]}, {_MON3[rd.month - 1]} {rd.day}"
+    src = a or c
+    net = src["net"]
+    chg = src.get("chg") if isinstance(src.get("chg"), int) else (net - src["prev"] if isinstance(src.get("prev"), int) else None)
+    sd = "flat" if src.get("side") == "flat" else ("long" if net > 0 else "short" if net < 0 else "flat")
+    return rd, net, chg, sd, (a or {}).get("crowd") or {}
+
+
+def cot_head(d, cx, key="corn"):
+    """The chart's headline, the same as components/cot-glance.js brief(): what changed, then where funds stand."""
+    f = _cot_facts(d, cx, key)
+    if not f:
+        return "Managed money net position, last 52 weeks"
+    _, net, chg, sd, _ = f
+    who, n = COT_WHO.get(key, key) + " funds", (lambda v: f"{abs(v):,}")
+    prev = None if chg is None else net - chg
+    still = False
     if chg is None:
-        act = f"Managed money held {name}{wk}"
+        head = f"{who}: net {'short' if net < 0 else 'long'} {n(net)} contracts."
     elif chg == 0:
-        act = f"Managed money held {name} steady{wk}"
+        head, still = f"{who} held their position.", True
+    elif prev > 0 and net > 0:
+        head, still = (f"{who} cut their net long by {n(chg)} contracts." if chg < 0 else f"{who} added {n(chg)} contracts to their net long."), True
+    elif prev < 0 and net < 0:
+        head, still = (f"{who} cut their net short by {n(chg)} contracts." if chg > 0 else f"{who} added {n(chg)} contracts to their net short."), True
+    elif prev > 0 > net:
+        head = f"{who} sold {n(chg)} contracts and flipped to net short."
+    elif prev < 0 < net:
+        head = f"{who} bought {n(chg)} contracts and flipped to net long."
     else:
-        act = f"Managed money {'bought' if chg > 0 else 'sold'} a net {abs(chg):,} contracts of {name}{wk}"
-    pos = (f"funds about even (net {'short' if net < 0 else 'long'} {abs(net):,})" if side == "flat"
-           else f"funds net {side} {abs(net):,}")
+        head = f"{who} {'bought' if chg > 0 else 'sold'} {n(chg)} contracts."
+    if chg is None:
+        stand = ""
+    elif net == 0:
+        stand = "Now even: no net position."
+    elif sd == "flat":
+        stand = f"About even: net {'short' if net < 0 else 'long'} {n(net)}."
+    else:
+        stand = f"{'Still' if still else 'Now'} net {sd}: {n(net)}."
+    return f"<b>{esc(head)}</b>" + (f" {esc(stand)}" if stand else "")
+
+
+def _cot_full(dd):
+    return f"{_DAYS[dd.weekday()][:3]}, {_MON3[dd.month - 1]} {dd.day}, {dd.year}"
+
+
+def cot_answer(d, cx, key="corn"):
+    """The answer line under the headline, the same sentence as components/cot-glance.js answer() (without
+    'today', see cot_next_words): the week and the release day with the year, a measured record, the rank."""
+    f = _cot_facts(d, cx, key)
+    if not f:
+        return ""
+    rd, net, chg, sd, cr = f
+    rel = None
+    for r in (((cx or {}).get("release_date") if (cx or {}).get("report_date") == rd.isoformat() else None), d.get("release_date")):
+        try:
+            rel = datetime.strptime(r or "", "%Y-%m-%d").date()
+            break
+        except ValueError:
+            continue
+    when = f"Week to {_cot_full(rd)}." + (f" Released {_cot_full(rel)}." if rel else "")
+    rec = re.sub(r"^the ", "", cr.get("record") or "")
+    rec = (rec[0].upper() + rec[1:] + ".") if rec else ""
     words = cr.get("words") if isinstance(cr.get("shown"), (int, float)) and cr.get("since") else None
-    did = (act + ", leaving " + pos + (f", {cr['record']}" if cr.get("record") else "")
-           + (f": {words} (share of open interest)" if words else "") + ".")
+    rank = f"Rank: {words} (share of open interest)." if words else ""
+    did = " ".join(x for x in (when, rec, rank) if x)
     w = cot_next_words(d)
     return esc(did) + (f" Next report: {esc(w)}." if w else "")
 
@@ -1037,6 +1091,7 @@ def bake_cot():
     orig = src
     src = replace_region(src, "cot-summary", cot_summary(d), COT_HTML)
     src = replace_region(src, "cot-release", cot_release_html(d), COT_HTML)
+    src = replace_region(src, "cot-head", cot_head(d, cx), COT_HTML)
     src = replace_region(src, "cot-answer", cot_answer(d, cx), COT_HTML)
     return orig, src, COT_HTML
 

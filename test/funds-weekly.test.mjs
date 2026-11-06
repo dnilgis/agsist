@@ -46,8 +46,12 @@ test("the email from the real COT files: every number recomputed from the raw fi
     const asOf = new Date(cot.report_date + " 12:00 UTC");
     const iso = asOf.toISOString().slice(0, 10);
     const month = asOf.toLocaleString("en-US", { month: "long", timeZone: "UTC" });
-    assert.ok(text.includes(`Positions as of Tuesday, ${month} ${asOf.getUTCDate()}.`), "the as-of date is data/cot.json's");
-    assert.match(text, /Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of /);
+    const mon3 = month.slice(0, 3), yr = asOf.getUTCFullYear();
+    assert.ok(text.includes(`Week to Tue, ${mon3} ${asOf.getUTCDate()}, ${yr}.`), "the as-of date is data/cot.json's, with its year");
+    assert.match(text, /Source: CFTC Commitments of Traders, Disaggregated, futures only, report as of \w{3}, \w{3} \d{1,2}, \d{4}/);
+    assert.ok(!/\bthis week\b|\btoday\b/i.test(text.replace(/Funds this week/g, "")), "no 'this week' or 'today' (the list's name aside)");
+    assert.ok(!/biggest move/.test(text) || /% of open interest, the biggest move by that measure/.test(text), "the biggest move only with its share shown");
+    assert.match(text, /Share with a farmer or your grain buyer\. They can sign up free at https:\/\/agsist\.com\/cot\?ref=email-forward&/);
     assert.ok(!/[–—]/.test(text + html), "no em or en dash");
     assert.ok(!/workers\.dev/.test(text + html), "no shared host");
     const lines = text.split("\n");
@@ -55,13 +59,15 @@ test("the email from the real COT files: every number recomputed from the raw fi
       "one rank, in words: no ordinals, no percentile, no exposure lines");
     const subject = lines[0].replace(/^Subject: /, "");
     assert.ok(subject && subject.length <= 80 && !/[–—]/.test(subject), `a short subject: ${subject}`);
-    assert.ok(lines[4].startsWith("This week: Funds "), `the lead right under the masthead: ${lines[4]}`);
+    // the lead story's evidence right under the masthead, then the week's lead
+    const li = lines.findIndex((l) => /^Funds (sold|bought|held) .* in the week to \w+day, \w{3} \d{1,2}, \d{4}\.$/.test(l));
+    assert.ok(/^Funds /.test(lines[4]) && li > 4 && li <= 7, `evidence then the lead under the masthead: ${lines.slice(2, 9).join(" / ")}`);
     let shown = 0;
     for (const [key, NAME, noun] of MARKETS) {
       const i = lines.indexOf(NAME);
       assert.ok(i > 0, `${NAME} is in the email, with numbers or with the reason it has none`);
       const body = lines[i + 1];
-      if (body.startsWith("No reading this week: ")) continue;
+      if (body.startsWith("No reading for this report: ")) continue;
       const c = cot[key];
       const held = c.side === "flat" && c.net ? "about even (net " + (c.net > 0 ? "long " : "short ") + comma(c.net) + ")"
         : c.net > 0 ? "net long " + comma(c.net) : c.net < 0 ? "net short " + comma(c.net) : "flat";
@@ -72,7 +78,7 @@ test("the email from the real COT files: every number recomputed from the raw fi
       assert.ok(body.includes(` ${held}`), `${NAME} net from data/cot.json (${held}): ${body}`);
       const m = body.match(/: (higher than (\d+)% of weeks since (\d{4})|a bigger net short than (\d+)% of weeks since (\d{4})) \(share of open interest\)\.$/);
       if (!m) {
-        assert.match(body, /No rank this week: /, `${NAME}: a rank in words or a reason: ${body}`);
+        assert.match(body, /No rank for this report: /, `${NAME}: a rank in words or a reason: ${body}`);
         continue;
       }
       const a = ana.commodities[key];

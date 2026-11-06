@@ -93,16 +93,20 @@ test("rank words: long, short and the table cell; never an ordinal", () => {
 test("the answer line: direction, size, rank in words, the Tuesday, the next report; the bake says the same", () => {
   const before = G.etInstant(FX.cot.next_release, "12:00") - 4 * 86400000;      // a few days before the release
   const a = G.answer("corn", FX.cot, FX.cx, before);
-  assert.equal(a.did, "Managed money sold a net 83,310 contracts of corn in the week to Tuesday, Oct 27, leaving funds net long 81,113: higher than 48% of weeks since 2010 (share of open interest)."); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
+  // kit v2: the headline (brief) says what changed and where funds stand; the answer line says when, with the year, and the rank
+  assert.equal(a.did, "Week to Tue, Oct 27, 2026. Released Fri, Oct 30, 2026. Rank: higher than 48% of weeks since 2010 (share of open interest)."); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
+  assert.equal(G.brief("corn", FX.cot, FX.cx).text, "Corn funds cut their net long by 83,310 contracts. Still net long: 81,113."); // pin-ok: the Oct 27 fixture
   assert.equal(a.next, "Next report: Friday Nov 6, 3:30 PM ET."); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
   assert.equal(G.answer("corn", FX.cot, FX.cx, G.etInstant(FX.cot.next_release, "09:00")).next, "Next report: today 3:30 PM ET.");
   assert.ok(!DASH.test(a.text) && !/bootstrap|draws|FDR|false discovery|Benjamini/i.test(a.text));
   // the bake (scripts off) is the same sentence, without "today"
   const r = py(`import sys, json; sys.path.insert(0, "scripts"); import prerender_wpi_scorecard as p
 d = json.load(open("test/fixtures/funds/cot-2026-10-27.json")); cx = json.load(open("test/fixtures/funds/cot-analysis-2026-10-27.json"))
-print(p.cot_answer(d, cx)); print(p.cot_release_html(d)); print(p.cot_answer(d, cx, "leanhogs"))`);
+print(p.cot_answer(d, cx)); print(p.cot_release_html(d)); print(p.cot_answer(d, cx, "leanhogs")); print(p.cot_head(d, cx)); print(p.cot_head(d, cx, "wheat"))`);
   assert.equal(r.status, 0, r.stderr);
-  const [baked, bar, hogs] = r.stdout.trim().split("\n");
+  const [baked, bar, hogs, head, wheat] = r.stdout.trim().split("\n");
+  assert.equal(head, G.brief("corn", FX.cot, FX.cx).html, "the baked headline is the live one");
+  assert.equal(wheat, G.brief("wheat", FX.cot, FX.cx).html);
   assert.equal(baked, a.text);
   assert.equal(bar, "Next report: Friday Nov 6, 3:30 PM ET"); // pin-ok: the Oct 27 fixture (test/fixtures/funds), not live data
   assert.equal(hogs, G.answer("leanhogs", FX.cot, FX.cx, before).text);
@@ -111,7 +115,9 @@ print(p.cot_answer(d, cx)); print(p.cot_release_html(d)); print(p.cot_answer(d, 
 test("record wording names the measure and the start year (lean hogs, Oct 27: largest net short in contracts since 2010)", () => {
   const hogs = FX.cx.commodities.leanhogs;
   assert.deepEqual(hogs.record_contracts, { side: "short", since: "2010", weeks: hogs.weeks_of_history });
-  assert.match(G.answer("leanhogs", FX.cot, FX.cx).did, /leaving funds net short 51,646, the largest net short in contracts since 2010: a bigger net short than 99% of weeks since 2010 \(share of open interest\)\.$/);
+  assert.match(G.answer("leanhogs", FX.cot, FX.cx).did, /Largest net short in contracts since 2010\. Rank: a bigger net short than 99% of weeks since 2010 \(share of open interest\)\.$/);
+  assert.equal(G.brief("leanhogs", FX.cot, FX.cx).record, "Largest net short in contracts since 2010");
+  assert.equal(G.brief("corn", FX.cot, FX.cx).record, "", "no record, no badge");
   // the rule on live data: a contracts record is claimed exactly when this week's net is the record's extreme
   for (const [k, c] of Object.entries(LIVE.cx.commodities)) {
     if (c.record_contracts) assert.equal(c.net, c.record_contracts.side === "short" ? c.rank.record_low.net : c.rank.record_high.net, k);
@@ -236,7 +242,8 @@ test("390 px: the bar and the answer line are on the first screen, scripts on an
     const off = await open(browser, port, "/cot", { js: false });
     const b2 = await box(off, "cot-rel"), a2 = await box(off, "cc-answer");
     assert.match(b2.text, /^Next report: \w+day \w{3} \d{1,2}, 3:30 PM ET/);
-    assert.match(a2.text, /^Managed money .* Next report: \w+day \w{3} \d{1,2}, 3:30 PM ET/);
+    assert.match(a2.text, /^Week to \w{3}, \w{3} \d{1,2}, \d{4}\. .* Next report: \w+day \w{3} \d{1,2}, 3:30 PM ET/);
+    assert.match((await box(off, "cc-head")).text, /^Corn funds .+ contracts\. (Still|Now|About even)/, "scripts off, the headline is baked too");
     assert.ok(a2.bottom <= 844, "scripts off, the answer line ends on the first screen: " + a2.bottom);
     await off.context().close();
   } finally { await browser.close(); srv.close(); }
@@ -277,11 +284,15 @@ test("phone save image: 1080x1350, headline 56 px or more, everything else 26 px
     const buf = fs.readFileSync(await dl.path());
     assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [1080, 1350], "4:5 on a phone-width screen");
     const im = await pg.evaluate(() => window.AgCotChart.lastImage);
-    assert.ok(Math.min(...im.sizes) >= 26, "every word 26 px or more: " + Math.min(...im.sizes));
-    const head = im.texts.findIndex((t) => t.startsWith("Corn: funds long"));
+    // the source line is small print (Sig, Nov 6: "make the source print smaller"): 20 px; every other word 26 px or more
+    assert.ok(Math.min(...im.sizes.filter((z) => z !== 20)) >= 26 && Math.min(...im.sizes) >= 20, "every word 26 px or more, source 20 px: " + Math.min(...im.sizes));
+    const head = im.texts.findIndex((t) => t.startsWith("Corn funds cut their net long by"));
     assert.ok(head >= 0 && im.sizes[head] >= 56, "headline 56 px or more");
-    for (const t of ["agsist.com/cot", "Positions as of Oct 27, 2026, released Oct 30.", "Price"]) assert.ok(im.texts.includes(t), t + " in " + im.texts.join(" | "));
-    assert.ok(im.texts.some((t) => t.startsWith("Managed money sold a net 83,310")), "the answer line");
+    const stand = im.texts.indexOf("Still net long: 81,113.");
+    assert.ok(stand > head && im.sizes[stand] >= 40, "where funds stand, right under what changed");
+    for (const t of ["agsist.com/cot", "Week to Tue, Oct 27, 2026. Released Fri, Oct 30, 2026.", "$4.48\u00be/bu", "Net contracts", "Oct 27, 2026"]) assert.ok(im.texts.includes(t), t + " in " + im.texts.join(" | "));
+    assert.ok(im.texts.some((t) => t.startsWith("Rank: higher than 48%")), "the rank line");
+    assert.ok(!im.texts.some((t) => /\bthis week\b|\btoday\b|moderate|crowded/i.test(t)), "no 'this week', 'today' or weight words on the picture");
     assert.ok(im.texts.some((t) => t.startsWith("Source: CFTC Commitments of Traders")), "the source");
     assert.ok(!im.texts.some((t) => DASH.test(t)));
     // the Funds this week ask (Sig, Nov 6): its own last line, 26 px or more, clear of the source and of the bottom edge

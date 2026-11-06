@@ -26,9 +26,10 @@
    anything that still wants a sentence.
    Nov 6, Sig ("get the cot page done now"): no ordinals. The rank is said in words,
    "higher than 48% of weeks since 2010" (a short: "a bigger net short than 67% of
-   weeks since 2010"), from the pipeline's crowd.words. brief() keeps the weight word
-   and leaves the rank to answer(), the one sentence under the chart title, which
-   also names the Tuesday and the next report. release() is the state of the release
+   weeks since 2010"), from the pipeline's crowd.words. Kit v2 (Nov 6): brief() is the
+   headline, what changed then where funds stand, with no weight word; answer() under it
+   names the week and the release day with the year, a measured record, the rank and the
+   next report. release() is the state of the release
    bar at the top of /cot (countdown, out and updating, late, updated today), from
    cot.json's next_release (scripts/cot_calendar.py dates, holiday-aware).
    Exports window.AgCotGlance (and module.exports for the tests). */
@@ -162,17 +163,31 @@
       flip: side !== 'flat' && prev != null && prev !== 0 && (prev > 0) !== (net > 0) };
   }
 
-  /* "Soybeans: funds long, fairly heavy, sold 27,544 this week" (the rank in words is
-     in answer(), right under it) -> {key, text, html} or null */
+  /* Kit v2 (Nov 6, the share kit panel): every headline says what changed first, then where funds stand:
+       "Corn funds cut their net long by 83,310 contracts." then "Still net long: 81,113."
+     Buys, sells, flips across zero and shorts each get their own words; no weight word, no "crowded".
+     -> {key, head, stand, record, text, html} or null. record: the pipeline's measured record ("Largest net short in
+     contracts since 2010"), else ''. */
+  var WHO = { corn: 'Corn', beans: 'Soybean', wheat: 'Chicago wheat', kcwheat: 'KC wheat', mplswheat: 'Minneapolis wheat',
+    soymeal: 'Soybean meal', soyoil: 'Soybean oil', livecattle: 'Live cattle', feedercattle: 'Feeder cattle', leanhogs: 'Lean hog', milk: 'Class III milk' };
   function brief(key, cot, cx) {
     var f = facts(key, cot, cx);
     if (!f) return null;
-    var pos = f.side === 'flat' ? 'funds about even' : 'funds ' + f.side + (f.weight ? ', ' + f.weight : '');
-    var rk = f.crowded ? ', crowded' : '';
-    var wk = f.chg == null ? '' : f.chg === 0 ? ', held steady this week' : ', ' + (f.chg > 0 ? 'bought ' : 'sold ') + num(f.chg) + ' this week';
-    var fl = f.flip ? ', flipped to ' + f.side : '';
-    var rest = pos + rk + wk + fl;
-    return { key: key, text: f.name + ': ' + rest, html: '<b>' + esc(f.name) + ':</b> ' + esc(rest) };
+    var who = (WHO[key] || key) + ' funds', net = f.net, chg = f.chg, prev = chg == null ? null : net - chg, head, still = false;
+    if (chg == null) head = who + ': net ' + (net < 0 ? 'short ' : 'long ') + num(net) + ' contracts.';
+    else if (chg === 0) { head = who + ' held their position.'; still = true; }
+    else if (prev > 0 && net > 0) { head = chg < 0 ? who + ' cut their net long by ' + num(chg) + ' contracts.' : who + ' added ' + num(chg) + ' contracts to their net long.'; still = true; }
+    else if (prev < 0 && net < 0) { head = chg > 0 ? who + ' cut their net short by ' + num(chg) + ' contracts.' : who + ' added ' + num(chg) + ' contracts to their net short.'; still = true; }
+    else if (prev > 0 && net < 0) head = who + ' sold ' + num(chg) + ' contracts and flipped to net short.';
+    else if (prev < 0 && net > 0) head = who + ' bought ' + num(chg) + ' contracts and flipped to net long.';
+    else head = who + (chg > 0 ? ' bought ' : ' sold ') + num(chg) + ' contracts.';
+    var stand = chg == null ? '' : net === 0 ? 'Now even: no net position.'
+      : f.side === 'flat' ? 'About even: net ' + (net < 0 ? 'short ' : 'long ') + num(net) + '.'
+      : (still ? 'Still' : 'Now') + ' net ' + f.side + ': ' + num(net) + '.';
+    var rec = f.record ? f.record.replace(/^the /, '') : '';
+    rec = rec ? rec.charAt(0).toUpperCase() + rec.slice(1) : '';
+    return { key: key, head: head, stand: stand, record: rec, text: head + (stand ? ' ' + stand : ''),
+      html: '<b>' + esc(head) + '</b>' + (stand ? ' ' + esc(stand) : '') };
   }
 
   /* Table cells: market | long or short | rank | change (signed, contracts) */
@@ -293,22 +308,29 @@
       text: 'New report in ' + left(due - now) + ' \u00b7 ' + (etDay(now) === nr ? 'today ' + clock(hm) : DAY[nd.getDay()] + (due - now > 6 * 86400000 ? ' ' + short(nd) : '') + ' ' + clock(hm)) + mv };
   }
 
-  /* The answer line under the chart title: what managed money did in the report week,
-     in one sentence, with the rank in words, then the next report.
-     "Managed money sold a net 83,310 contracts of corn in the week to Tuesday, Oct 27,
-      leaving funds net long 81,113: higher than 48% of weeks since 2010 (share of open
-      interest)." -> {did, next, text} or null. now (ms) is optional; without it no next. */
+  /* "Week to Tue, Nov 3, 2026. Released Fri, Nov 6, 2026." Absolute dates with the year on every asset (kit v2);
+     the release day from the analysis for the same week, else cot.json's release_date, else left out. */
+  function weekLine(cot, cx) {
+    var rd = day(cot && cot.report_date);
+    if (!rd) return '';
+    var r = cx && iso(cx.report_date) === iso(cot.report_date) && cx.release_date ? cx.release_date : cot.release_date;
+    var rl = /^\d{4}-\d{2}-\d{2}$/.test(r || '') ? day(r) : null;
+    function full(d) { return DAY[d.getDay()].slice(0, 3) + ', ' + short(d) + ', ' + d.getFullYear(); }
+    return 'Week to ' + full(rd) + '.' + (rl ? ' Released ' + full(rl) + '.' : '');
+  }
+
+  /* The answer line under the headline (kit v2): when, then the measured record and the one rank in words. The
+     change and the position are the headline's (brief()), so they are not said twice.
+     "Week to Tue, Oct 27, 2026. Released Fri, Oct 30, 2026. Rank: higher than 48% of weeks since 2010 (share of
+      open interest)." -> {did, when, rank, next, text} or null. now (ms) is optional; without it no next. */
   function answer(key, cot, cx, now) {
-    var f = facts(key, cot, cx), rd = day(cot && cot.report_date);
-    if (!f || !rd) return null;
-    var name = NAMES[key] || key, wk = ' in the week to ' + DAY[rd.getDay()] + ', ' + short(rd);
-    var act = f.chg == null ? 'Managed money held ' + name + wk : f.chg === 0 ? 'Managed money held ' + name + ' steady' + wk
-      : 'Managed money ' + (f.chg > 0 ? 'bought' : 'sold') + ' a net ' + num(f.chg) + ' contracts of ' + name + wk;
-    var pos = f.side === 'flat' ? 'funds about even (net ' + (f.net < 0 ? 'short ' : 'long ') + num(f.net) + ')'
-      : 'funds net ' + f.side + ' ' + num(f.net);
-    var did = act + ', leaving ' + pos + (f.record ? ', ' + f.record : '') + (f.words ? ': ' + f.words + ' (share of open interest)' : '') + '.';
+    var f = facts(key, cot, cx), when = weekLine(cot, cx);
+    if (!f || !when) return null;
+    var b = brief(key, cot, cx), rec = b.record ? b.record + '.' : '';
+    var rank = f.words ? 'Rank: ' + f.words + ' (share of open interest).' : '';
+    var did = [when, rec, rank].filter(Boolean).join(' ');
     var r = now != null ? release(cot, cx, now) : null, next = r && r.next ? r.next + '.' : '';
-    return { did: did, next: next, text: did + (next ? ' ' + next : '') };
+    return { did: did, when: when, rank: [rec, rank].filter(Boolean).join(' '), next: next, text: did + (next ? ' ' + next : '') };
   }
 
   /* "a, b and c" */
@@ -337,7 +359,7 @@
   }
 
   var api = { NAMES: NAMES, ORDER: ORDER, SLUG: SLUG, SHORT: SHORT, keyOf: keyOf, href: href, headline: headline, iso: iso,
-    facts: facts, brief: brief, answer: answer, release: release, rankWords: rankWords, etInstant: etInstant, etDay: etDay, when: when, left: left, row: row, rows: rows, verdict: verdict, asOfShort: asOfShort, degree: degree, line: line, lines: lines, asOf: asOf, cxFor: cxFor, ord: ord, crowdedLine: crowdedLine, MINUS: MINUS };
+    facts: facts, brief: brief, answer: answer, weekLine: weekLine, release: release, rankWords: rankWords, etInstant: etInstant, etDay: etDay, when: when, left: left, row: row, rows: rows, verdict: verdict, asOfShort: asOfShort, degree: degree, line: line, lines: lines, asOf: asOf, cxFor: cxFor, ord: ord, crowdedLine: crowdedLine, MINUS: MINUS };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.AgCotGlance = api;
 })(typeof window !== 'undefined' ? window : this);
