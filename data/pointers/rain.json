@@ -1,5 +1,5 @@
 {
- "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
+ "about": "Pointer pages for retired pages: path, where it sends readers, and the date retired.",
  "pointers": {
   "rain/alabama/barbour-county.html": {
    "to": "/rain/alabama",
@@ -56,6 +56,10 @@
   "rain/idaho/lewis-county.html": {
    "to": "/rain/idaho",
    "since": "2026-10-19"
+  },
+  "rain/iowa/buena-vista-county.html": {
+   "to": "/rain/iowa",
+   "since": "2026-11-06"
   },
   "rain/kentucky/carter-county.html": {
    "to": "/rain/kentucky",
@@ -136,10 +140,6 @@
   "rain/new-york/schoharie-county.html": {
    "to": "/rain/new-york",
    "since": "2026-10-15"
-  },
-  "rain/north-dakota/sheridan-county.html": {
-   "to": "/rain/north-dakota",
-   "since": "2026-10-19"
   },
   "rain/oklahoma/love-county.html": {
    "to": "/rain/oklahoma",
