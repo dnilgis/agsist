@@ -155,8 +155,8 @@
       var head = esc(NAMES[c.m]) + ' <span>' + (c.c ? 'big traders' : GROUP_LOWER[c.g] + ', options') + '</span>';
       var big = c.c ? pc(c.value) : signed(c.net);
       var tap = c.c ? '' : ' data-k="' + c.m + '" data-s="opt" data-g="' + c.g + '"';
-      return '<li class="cu' + (i >= SHOW ? ' cu-more' : '') + '"' + tap + '><p class="cu-h">' + head + '</p><p class="cu-big">' + big +
-        '</p><p class="cu-s">' + esc(sentence(c)) + '</p><p class="cu-d">Week of ' + esc(day(c.date)) + '</p></li>';
+      return '<li class="cu' + (i >= SHOW ? ' cu-more' : '') + '"' + tap + '><p class="cu-h"><span class="cu-n">' + head + '</span><time class="cu-d" datetime="' + esc(c.date) + '">' +
+        esc(day(c.date).replace(/, \d{4}$/, '')) + '</time></p><p class="cu-big">' + big + '</p><p class="cu-s">' + esc(sentence(c)) + '</p></li>';
     }).join('');
   }
   function countLine(d) {

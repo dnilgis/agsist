@@ -109,11 +109,49 @@ test("Minneapolis wheat: options are a sliver of open interest, so its positions
   assert.ok(m.opt_share < D.min_opt_share, String(m.opt_share));
   assert.equal(m.withheld, "small");
   for (const g in G) assert.equal(m.groups[g].pct, null);
+  for (const g in G) assert.equal(typeof m.fut[g].pct, "number", "its futures side is still ranked");
   assert.ok(!D.unusual.some((u) => u.m === "mplswheat" && u.g), "no position line");
-  assert.match(O.block(D, "mplswheat"), /too small a share to rank/);
+  assert.match(O.block(D, "mplswheat"), /Too few options here to rank/);
+  assert.match(O.detail(D, "mplswheat", "opt", "mm"), /too few to rank/);
 });
 
-test("the unusual list: every line at an edge, with market, group, number, rank and report date; the search is counted", () => {
+test("the futures side re-derives from the futures-only rows (and corn funds equal the page's own cot.json net)", () => {
+  const cot = JSON.parse(read("test/fixtures/funds/cot-2026-10-27.json"));
+  for (const k of ["corn", "kcwheat"]) {
+    const s = market(CODES[k]);
+    const fo = Object.fromEntries(RAW.fo.filter((r) => r.cftc_contract_market_code === CODES[k]).map((r) => [r.report_date_as_yyyy_mm_dd.slice(0, 10), r]));
+    const net = (d, g) => +fo[d][G[g][0]] - +fo[d][G[g][1]];
+    const win = s.filter((r) => days(r.d, s.at(-1).d) < D.window_days), others = win.slice(0, -1);
+    for (const g in G) {
+      assert.equal(D.markets[k].fut[g].net, net(s.at(-1).d, g), k + " " + g);
+      assert.equal(D.markets[k].fut[g].chg, net(s.at(-1).d, g) - net(s.at(-2).d, g));
+      assert.equal(D.markets[k].fut[g].pct, pct(others.map((r) => net(r.d, g)), net(s.at(-1).d, g)), k + " " + g + " rank");
+    }
+    assert.equal(D.markets[k].fut.mm.net, cot[k].net, k + ": the map's funds futures cell is the chart's number");
+  }
+  const sp = D.markets.corn.spark;
+  assert.equal(sp.dates.at(-1), D.report_date, "the 3-year line ends on this week");
+  assert.equal(sp.opt.mm.at(-1), D.markets.corn.groups.mm.net);
+  assert.equal(sp.fut.mm.at(-1), D.markets.corn.fut.mm.net);
+  assert.ok(sp.dates.length >= 38 && sp.dates.length <= 40, String(sp.dates.length));
+});
+
+test("the map: every market a row, four groups by futures and options, each cell its printed rank, extremes ringed by bin", () => {
+  const html = O.map(D);
+  assert.equal((html.match(/class="cm-b"/g) || []).length, 3 * 8);
+  for (const k of ["corn", "kcwheat"]) for (const g in G) for (const side of ["fut", "opt"]) {
+    const r = side === "opt" ? D.markets[k].groups[g] : D.markets[k].fut[g];
+    const re = new RegExp('<td class="cm-x (\\w+)[^"]*"><button type="button" class="cm-b" data-k="' + k + '" data-s="' + side + '" data-g="' + g + '"[^>]*>([^<]*)</button>');
+    const m = re.exec(html);
+    assert.ok(m, k + g + side);
+    assert.equal(m[2], String(r.pct));
+    assert.equal(m[1], r.pct <= 5 ? "x0" : r.pct >= 95 ? "x4" : r.pct < 25 ? "b1" : r.pct <= 75 ? "b2" : "b3", k + g + side);
+  }
+  assert.match(html, /aria-label="MPLS wheat, funds, options: not ranked"/);
+  assert.ok(!DASH.test(html) && !CALLS.test(html));
+});
+
+test("unusual cards: every reading at an edge; each card says market, group, number, rank and report date; the search is counted", () => {
   const edge = D.edge;
   for (const u of D.unusual) {
     assert.equal(u.date, D.report_date);
@@ -125,19 +163,20 @@ test("the unusual list: every line at an edge, with market, group, number, rank 
   // 2 ranked markets x 4 groups x (level + change) + 3 markets x 4 concentration readings
   assert.equal(D.scanned, 2 * 4 * 2 + 3 * 4);
   assert.ok(D.typical && D.typical.weeks === 52, "a typical earlier week is counted");
-  const html = O.lines(D);
-  const items = html.match(/<li>/g) || [];
+  const html = O.cards(D);
+  const items = html.split("</li>").filter(Boolean);
+  assert.equal(items.length, O.cardList(D).length);
   assert.ok(items.length >= 1 && items.length <= D.unusual.length);
-  for (const li of html.split("</li>").filter(Boolean)) {
-    assert.match(li, /<b>(Corn|KC wheat|MPLS wheat)/, li);
-    assert.match(li, /\d/, li);
-    assert.match(li, /(percentile of \d+ weeks|(highest|lowest) in \d+ weeks|weekly change)/, li);
-    assert.match(li, /Week of Oct 27, 2026/, li);
+  for (const li of items) {
+    assert.match(li, /<span class="cu-n">(Corn|KC wheat|MPLS wheat) <span>/, li);
+    assert.match(li, /class="cu-big">[+\u2212]?[\d,.]+%?</, li);
+    assert.match(li, /(percentile of \d+ weeks|(Highest|Lowest|most|least) in \d+ weeks|weekly changes)/, li);
+    assert.match(li, /<time class="cu-d" datetime="2026-10-27">Oct 27<\/time>/, li);
   }
   const count = O.countLine(D);
-  assert.match(count, new RegExp("^" + (D.flagged || "None") + " of " + (D.flagged ? "" : "the ") + D.scanned + " readings scanned across 3 markets"));
-  assert.match(count, /a typical week had/);
-  for (const s of [html, count, O.block(D, "corn"), O.block(D, "kcwheat"), O.sub(D, "")]) {
+  assert.match(count, new RegExp("^" + D.flagged + " of " + D.scanned + " readings scanned"));
+  assert.match(count, /A typical week in the past year had/);
+  for (const s of [html, count, O.block(D, "corn"), O.block(D, "kcwheat"), O.sub(D, ""), O.detail(D, "corn", "opt", "mm"), O.detail(D, "kcwheat", "fut", "pm")]) {
     assert.ok(!DASH.test(s), "no dashes: " + s);
     assert.ok(!CALLS.test(s), "facts only: " + s);
   }
@@ -148,10 +187,12 @@ test("wording of ranks and the stale note", () => {
   assert.equal(O.where(100, 157), "highest in 157 weeks");
   assert.equal(O.where(4, 157), "4th percentile of 157 weeks");
   assert.equal(O.where(null, 157), "not ranked");
-  assert.equal(O.sub(D, D.report_date), "Positions held on Tuesday, Oct 27, 2026, released Oct 30, 2026.");
-  assert.match(O.sub(D, "2026-11-03"), /for the week of Nov 3, 2026 are not in yet/);
+  assert.equal(O.sub(D, D.report_date), "Held Tuesday, Oct 27, 2026, released Oct 30, 2026.");
+  assert.match(O.sub(D, "2026-11-03"), /The week of Nov 3, 2026 is not in yet\./);
   const none = { ...D, unusual: [], flagged: 0 };
-  assert.match(O.countLine(none), /^None of the \d+ readings scanned across 3 markets is at a 3-year extreme this week\./);
+  assert.match(O.countLine(none), /^None of \d+ readings scanned is at a 3-year extreme this week\./);
+  assert.match(O.detail(D, "corn", "opt", "mm"), /futures equivalent/);
+  assert.ok(!/futures equivalent/.test(O.detail(D, "corn", "fut", "mm")));
 });
 
 test("the committed data file has the shape the page reads, is small, and every line matches its own week", () => {
@@ -206,9 +247,10 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-async function open(browser, port, width, own) {
+async function open(browser, port, width, own, theme = "dark") {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: width > 900 ? 900 : 844 } });
   const pg = await ctx.newPage();
+  await pg.addInitScript((t) => { try { localStorage.setItem("agsist-theme", t); } catch (e) {} }, theme);
   await pg.route("**/*", (r) => {
     const u = new URL(r.request().url());
     if (u.origin === `http://127.0.0.1:${port}`) {
@@ -223,39 +265,57 @@ async function open(browser, port, width, own) {
   return pg;
 }
 
-test("/cot in a browser at 390 and 1280 px: the options section renders from the file, fits, and a market can be picked", { skip, timeout: 120000 }, async () => {
+test("/cot in a browser at 390 and 1280 px: map, detail, cards and the options block follow the chart's market; nothing scrolls sideways", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const own = { "/data/cot-options.json": JSON.stringify(D), "/data/cot.json": read("test/fixtures/funds/cot-2026-10-27.json") };
-    for (const w of [390, 1280]) {
-      const pg = await open(browser, port, w, own);
-      await pg.waitForFunction(() => /Positions held on Tuesday/.test(document.getElementById("co-sub").textContent));
+    const own = { "/data/cot-options.json": JSON.stringify(D), "/data/cot.json": read("test/fixtures/funds/cot-2026-10-27.json"),
+      "/data/cot-analysis.json": read("test/fixtures/funds/cot-analysis-2026-10-27.json"), "/data/cot-history.json": read("test/fixtures/funds/cot-history-2026-10-27.json") };
+    for (const theme of ["dark", "light"]) for (const w of [390, 1280]) {
+      const pg = await open(browser, port, w, own, theme);
+      await pg.waitForFunction(() => document.querySelector("#cm-wrap table") && document.querySelector("#co-mkt h3"));
       const got = await pg.evaluate(() => ({
         sub: document.getElementById("co-sub").textContent,
         count: document.getElementById("co-count").textContent,
-        items: document.querySelectorAll("#co-lines li").length,
-        hidden: document.getElementById("co-lines").hidden,
-        opts: [...document.querySelectorAll("#co-pick option")].map((o) => o.value),
+        cells: document.querySelectorAll("#cm-wrap .cm-b").length,
+        cards: document.querySelectorAll("#co-cards .cu").length,
+        shown: [...document.querySelectorAll("#co-cards .cu")].filter((e) => e.offsetParent).length,
+        picked: document.querySelector("#cm-detail .cd-h").textContent,
+        line: document.querySelectorAll("#cm-detail polyline").length,
+        mkt: document.querySelector("#co-mkt h3").textContent,
+        minFont: Math.min(...[...document.querySelectorAll("#cot-opt .cm-b, #cot-opt .cm-r, #cot-opt .cm-g, #cot-opt .cm-s, #co-mkt td")].map((e) => parseFloat(getComputedStyle(e).fontSize))),
+        cellW: document.querySelector("#cm-wrap .cm-b").getBoundingClientRect().width,
+        cellH: document.querySelector("#cm-wrap .cm-b").getBoundingClientRect().height,
         sw: document.documentElement.scrollWidth, iw: window.innerWidth,
+        theme: document.documentElement.getAttribute("data-theme"),
       }));
-      assert.equal(got.sub, "Positions held on Tuesday, Oct 27, 2026, released Oct 30, 2026.");
+      assert.equal(got.theme, theme);
+      assert.equal(got.sub, O.sub(D, D.report_date));
       assert.equal(got.count, O.countLine(D));
-      assert.equal(got.items, (O.lines(D).match(/<li>/g) || []).length);
-      assert.equal(got.hidden, got.items === 0);
-      assert.deepEqual(got.opts, ["corn", "kcwheat", "mplswheat"]);
-      assert.ok(got.sw <= got.iw, `no sideways scroll at ${w}: ${got.sw} > ${got.iw}`);
-      await pg.click("#co-markets > summary");
-      await pg.selectOption("#co-pick", "kcwheat");
-      const t = await pg.evaluate(() => ({ rows: [...document.querySelectorAll("#co-block tbody tr")].map((r) => r.textContent), oi: document.querySelector("#co-block .co-oi").textContent, sw: document.documentElement.scrollWidth, iw: window.innerWidth }));
-      assert.equal(t.rows.length, 4);
-      assert.match(t.oi, new RegExp(O.block(D, "kcwheat").match(/<b>([\d,]+)<\/b>/)[1]));
-      assert.ok(t.sw <= t.iw, `no sideways scroll with the table open at ${w}`);
-      const box = await pg.evaluate(() => { const r = document.querySelector("#co-block table").getBoundingClientRect(); const p = document.getElementById("cot-opt").getBoundingClientRect(); return { r: r.right, p: p.right + 1 }; });
-      assert.ok(box.r <= Math.max(box.p, w), "table inside the page at " + w);
+      assert.equal(got.cells, 24);
+      assert.equal(got.cards, O.cardList(D).length);
+      assert.equal(got.shown, Math.min(got.cards, O.SHOW));
+      const first = O.cardList(D).find((c) => !c.c);
+      assert.equal(got.picked, O.NAMES[first.m] + ": " + { mm: "funds", pm: "producers", swap: "swap dealers", or: "other big traders" }[first.g] + ", options", "opens on the first unusual card");
+      assert.equal(got.line, 1, "the 3-year line is drawn");
+      assert.equal(got.mkt, "Options in corn", "the chart opens on corn");
+      assert.ok(got.minFont >= 11.5, "no tiny text: " + got.minFont);
+      // WCAG 2.5.8 target size: at least 24 px; the cells are 40 px tall
+      assert.ok(got.cellW >= 24 && got.cellH >= 40, "cells big enough to tap: " + got.cellW + " x " + got.cellH);
+      assert.ok(got.sw <= got.iw, `no sideways scroll at ${w} ${theme}: ${got.sw} > ${got.iw}`);
+      // tap a cell: the detail follows
+      await pg.click('#cm-wrap .cm-b[data-k="kcwheat"][data-s="fut"][data-g="pm"]');
+      assert.equal(await pg.textContent("#cm-detail .cd-h"), "KC wheat: producers, futures");
+      assert.equal(await pg.getAttribute('#cm-wrap .cm-b[data-k="kcwheat"][data-s="fut"][data-g="pm"]', "aria-pressed"), "true");
+      // pick KC wheat on the chart: the options block follows
+      await pg.click('#cc-chips .cc-chip[data-k="kcwheat"]');
+      await pg.waitForFunction(() => document.querySelector("#co-mkt h3").textContent === "Options in KC wheat");
+      const rows = await pg.evaluate(() => [...document.querySelectorAll("#co-mkt tbody tr")].map((r) => r.querySelector("th").textContent));
+      assert.deepEqual(rows, ["Funds", "Producers", "Swap dealers", "Other big traders"]);
+      assert.ok(await pg.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "still no sideways scroll");
       if (SHOTS) {
         fs.mkdirSync(SHOTS, { recursive: true });
-        await pg.locator("#cot-opt").screenshot({ path: path.join(SHOTS, `cot-options-${w}.png`) });
+        await pg.locator("#cot-opt").screenshot({ path: path.join(SHOTS, `test-map-${w}-${theme}.png`) });
       }
       await pg.context().close();
     }
@@ -268,6 +328,6 @@ test("/cot in a browser: a missing options file says so and hides the empty part
   try {
     const pg = await open(browser, port, 390, { "/data/cot-options.json": null, "/data/cot.json": read("test/fixtures/funds/cot-2026-10-27.json") });
     await pg.waitForFunction(() => /not available right now/.test(document.getElementById("co-sub").textContent));
-    assert.equal(await pg.evaluate(() => document.getElementById("co-unusual").hidden && document.getElementById("co-markets").hidden), true);
+    assert.equal(await pg.evaluate(() => ["cm-wrap", "co-unusual", "cm-legend", "cm-detail"].every((id) => document.getElementById(id).hidden) && document.getElementById("co-mkt").hidden), true);
   } finally { await browser.close(); srv.close(); }
 });
