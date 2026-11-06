@@ -1,38 +1,20 @@
 name: farmland-atlas-pages
+# farmland-atlas-pages.
 
-# Rebuilds the static Farmland Atlas pages: one page per county (3,148), one per
-# state (50), /farmland-atlas/states/, /farmland-atlas/data, the CSV and JSON
-# downloads, the share images (in dnilgis/agsist-data at farmland-atlas/og/, not here) and sitemap-atlas.xml. OFFLINE: reads data/atlas/ and data/tenure/,
-# calls no API, needs no key. MACHINE-OWNED: never hand-edit the emitted files,
-# edit scripts/build_atlas_pages.py.
-#
-# Runs after the "farmland-atlas" data workflow finishes (a bot push cannot
-# trigger another workflow, so workflow_run is how this one hears about new
-# data), plus a weekly backstop, plus a button. It commits only when output
-# actually changed. Each page carries a content-hash stamp, so a county whose
-# figures did not change keeps its "Figures as of" date and its sitemap lastmod.
-# The land-data run (new deeds, data/land/<st>/summary.json) triggers it too: the IL and WI
-# county pages bake a recorded-sales tile from that file (Oct 19, 2026), and atlas-sales.js
-# redraws the tile from the live file in between. The "Chapter 12 filings" run (a new U.S. Courts
-# F-2 period) triggers it too: each state page carries a Chapter 12 line (Oct 28, 2026). So does
-# "Farm credit by Fed district" (data/farm-credit/districts.json: the state pages and the hub show it).
 on:
   workflow_run:
     workflows: ["farmland-atlas", "Land data (parcel services + transfers)", "Chapter 12 filings", "Farm credit by Fed district"]
     types: [completed]
   schedule:
-    - cron: "41 11 * * 3"      # Wednesdays 11:41 UTC, backstop
+    - cron: "41 11 * * 3"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
-    runs-on: ubuntu-24.04  # pinned with the working job (test/runner-pin.test.mjs)
+    runs-on: ubuntu-24.04
     permissions:
       actions: read
       contents: read
@@ -50,9 +32,8 @@ jobs:
 
   build:
     needs: upstream
-    # a failed data run must not rebuild the pages from half a refresh
     if: needs.upstream.outputs.go == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
-    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
+    runs-on: ubuntu-24.04
     concurrency:
       group: farmland-atlas-pages
       cancel-in-progress: false
@@ -84,13 +65,6 @@ jobs:
       - name: Build pages
         run: python scripts/build_atlas_pages.py
 
-      # One share image per county, state, the hub and the data page, drawn from
-      # data/cards.json. The cards live in the public repo dnilgis/agsist-data at
-      # farmland-atlas/og/ (served from dnilgis.github.io/agsist-data; scripts/share_host.py),
-      # not here: check it out, draw into it, push it. Only cards whose figures changed are
-      # redrawn (stamps.json there). All before the commit below, so a page never names a card
-      # that is not there yet: any failure here stops the run before the commit.
-      # Uses the Chromium that Playwright installed above.
       - name: Check out the share images
         env:
           AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
@@ -110,17 +84,12 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add -A farmland-atlas data/pointers sitemap-atlas.xml
-          # the two hand-owned files in that folder are never staged by this job
           git reset -q -- farmland-atlas/compare.html farmland-atlas/sheet.html || true
-          # the summary files that read these pages (BUILD-RULES 61): the search index and llms.txt
           python scripts/generated_sets.py dependents farmland-atlas --stage || true
           if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
           git commit -m "pages: rebuild Farmland Atlas county and state pages"
-          # other workflows commit to main all day; rebase and retry rather than
-          # lose the build to one rejected push
           for i in 1 2 3 4; do
             git rebase --abort 2>/dev/null || true
-            # a conflict only in the summary files is rebuilt on the rebased tree, never kept from one side (BUILD-RULES 61)
             if python3 scripts/generated_sets.py pull-rebase farmland-atlas --autostash && git push; then
               echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0
             fi

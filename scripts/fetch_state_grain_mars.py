@@ -113,14 +113,7 @@ WHEAT = {"hard red winter": "wheat_hrw", "soft red winter": "wheat_srw", "hard r
 CROP_LABEL = {"corn": "corn", "soybeans": "soybeans", "wheat_hrw": "hard red winter wheat",
               "wheat_srw": "soft red winter wheat", "wheat_hrs": "spring wheat", "wheat_sw": "soft white wheat",
               "wheat_cw": "club white wheat", "wheat_hw": "hard white wheat"}
-METHOD = ("USDA AMS state daily grain reports through My Market News. Country elevator bids only, plain "
-          "bids (yellow corn, conventional). price_lo/price_hi: lowest and highest price USDA reports across "
-          "its regions. avg_price: simple average of USDA's regional average prices. basis[month] lo/hi: USDA's "
-          "reported basis range on that futures month, cents, and how many regions name it; month: the one "
-          "most regions name. avg_basis[month]: avg_price minus the futures price USDA's own rows imply for "
-          "that contract (price minus basis, all rows agreeing within a cent), cents; "
-          "withheld when they do not agree or fewer than 2 regions report. current = USDA's current rows; "
-          "new_crop = next marketing year delivery, kept apart.")
+METHOD = ("USDA AMS state daily grain reports through My Market News. Country elevator bids only. Basis is USDA's reported figure, withheld where USDA's rows disagree or too few regions report.")
 
 
 # ---------- MARS ----------

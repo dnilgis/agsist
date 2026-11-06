@@ -290,13 +290,7 @@ export function build(dir, opts = {}) {
     generated: new Date().toISOString(),
     source: SRC,
     directoryGenerated: dir.generated || null,
-    note: "Every grain elevator dnilgis/bids knows about. `read` is a board we fetched " +
-          "and parsed in the pass this file was built from; `quiet` is a source we have " +
-          "that did not answer that pass or is refusing; `known` is a real elevator " +
-          "nobody has built a reader for yet. A row carrying a platform has a reader " +
-          "whatever a single pass says about it, so `known` never contains one. " +
-          "Precision is carried per place and shown in the panel — a town centroid is " +
-          "not a street address.",
+    note: "Every grain elevator we track, by place. read: a board we read; quiet: a source that did not answer; known: no reader yet. Precision is per place: a town centroid is not a street address.",
     counts: {
       ...counts,
       elevators: els.length,
@@ -409,7 +403,7 @@ writeFileSync(OUT_COUNTS, JSON.stringify({
   schema: "agsist-elevator-coverage-counts/1",
   generated: payload.generated,
   directoryGenerated: payload.directoryGenerated,
-  note: "The counts block of data/elevator-coverage.json, written by the same run. Read that file for the map.",
+  note: "Counts for the elevator coverage map.",
   counts: payload.counts,
 }) + "\n");
 

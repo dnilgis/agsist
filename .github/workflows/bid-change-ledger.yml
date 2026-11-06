@@ -1,17 +1,5 @@
 name: Bid change ledger (dispatch only)
-
-# The bid change-time ledger (god's-eye panel build 1; Sig, Oct 27 2026: "yes to all"):
-# when each elevator bid changed, at poll resolution, rebuilt from the git history of
-# dnilgis/bids. Output to the PRIVATE repo only (dnilgis/feedbag): the ledger and its
-# state on private-data (private/ledger/bid-changes/), the rebuilt Aug 20 to Oct 16
-# daily bid snapshots on raw (bids-daily/). Zero bytes on main or Pages.
-# scripts/bid_change_ledger.py has the why; scripts/bid_change_ledger.sh the steps.
-#
-# DISPATCH ONLY: no schedule, ever (test/bid-change-ledger.test.mjs). This run is the
-# backfill: from the first bids commit (or where the saved state stopped) up to last
-# midnight Central. Dispatch again until the job summary says "caught up". After that
-# the nightly days ride the morning report job (morning-report.yml, job change-ledger).
-#   gh workflow run bid-change-ledger.yml -R dnilgis/agsist --ref main -f snapshots=true -f max_minutes=300
+# Bid change ledger (dispatch only).
 
 on:
   workflow_dispatch:

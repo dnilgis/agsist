@@ -1,35 +1,10 @@
 name: county rain
+# county rain.
 
-# /rain, /rain/<state> and /rain/<state>/<county>: rain so far this year in
-# every US county with a NOAA station that reported enough days.
-#   scripts/fetch_county_rain.py  RCC-ACIS, one MultiStnData call per state
-#                                 (plus one for last year) -> data/rain/<st>.json
-#   scripts/build_county_rain.py  the pages and sitemap-rain.xml
-# Both happen here, in one commit: a push made with this workflow's token does
-# not start other workflows, so nothing else would build the pages.
-#
-# Every day 13:23 UTC (morning in Central; Sig, Oct 23 2026: before that, once a week).
-# NOAA's daily reports come in a few days late, so each run re-reads the whole
-# year and the pages say the last day each station reported.
-# January: every run fetches the finished year (through Dec 31), so late
-# reports still land all month; the new year's pages start Feb 1. Jan 2 14:41
-# stays as its own run, a day after the year ends, in case the 13:23 run is
-# dropped. RCC-ACIS cannot be reached from the sandbox this was built in; the
-# first real fetch is a workflow_dispatch on main.
-#
-# GitHub's scheduler never started this on Nov 2, 2026 (it delivers a small share of
-# scheduled fires; scripts/cron_gate.py has the numbers). So it also runs after every
-# "Fetch Grain Bids" (cron-job.org, every 15 minutes), and the gate job lets exactly one run
-# per tick of the two crons below do the work: the first run after the tick, by either
-# trigger, within 720 minutes (by 01:23 UTC, 19:23 Central, still the same Central day; a
-# chain that comes back in the afternoon still rebuilds the day's pages, and yesterday's tick
-# is never served just before today's). Every other run skips in seconds. A run started by
-# hand (one state, a past year) does not use up the tick (cron_gate.py
-# MANUAL_DOES_NOT_SERVE). The January rain year email below marks each address once.
 on:
   schedule:
-    - cron: "23 13 * * *"      # every day 13:23 UTC
-    - cron: "41 14 2 1 *"      # Jan 2 14:41 UTC, the finished year
+    - cron: "23 13 * * *"
+    - cron: "41 14 2 1 *"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -48,7 +23,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick (see the top). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -82,14 +56,9 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
-    # The queue (shared with rain-monthly.yml's fresh job) is on this job only: a chained run
-    # that skips never waits in it, and never replaces a pending run of the other workflow.
     concurrency:
       group: county-rain
       cancel-in-progress: false
-    # 90, not 60 (Nov 1, 2026): Fetch took 33 min and Context 20 on Oct 31 and Nov 1
-    # (9 and 9 on Oct 29), which left the push about 5 minutes before the job was cancelled.
-    # 105, not 90 (Nov 4, 2026, fx/rainwx): the weather step adds up to 15 minutes.
     timeout-minutes: 105
     steps:
       - uses: actions/checkout@v4
@@ -110,9 +79,6 @@ jobs:
           python3 scripts/dev/quiet.py selftest-build-county-rain -- python scripts/build_county_rain.py --selftest
           python3 scripts/dev/quiet.py selftest-send-rain-year -- python scripts/send_rain_year.py --selftest
 
-      # The script stops itself at 40 minutes (each state is one or two calls,
-      # each call has a timeout and three retries). A state that fails keeps
-      # its published file; whatever did come back is still built below.
       - name: Fetch
         id: fetch
         continue-on-error: true
@@ -126,16 +92,11 @@ jobs:
           ARGS=""
           if [ -n "$STATES" ]; then ARGS="$ARGS --states $STATES"; fi
           if [ -n "$YEAR" ]; then ARGS="$ARGS --year $YEAR"; fi
-          # shellcheck disable=SC2086
           rc=0
           python3 scripts/dev/quiet.py rain-fetch -- python scripts/fetch_county_rain.py $ARGS || rc=$?
           cp "$RUNNER_TEMP/quiet/rain-fetch.log" county-rain.log 2>/dev/null || true
           exit $rc
 
-      # Two more lines per county page (scripts/fetch_rain_context.py): the PRISM county
-      # average against NOAA's gridded normal, and where this year sits in the station's own
-      # record. Best effort, 20-minute cap: a state that fails keeps its last context file,
-      # and the pages print the lines only when the context is from this same fetch.
       - name: Context (county average, on record)
         continue-on-error: true
         timeout-minutes: 25
@@ -145,13 +106,6 @@ jobs:
         run: |
           if [ -n "$STATES" ]; then python3 scripts/dev/quiet.py rain-context -- python scripts/fetch_rain_context.py --states "$STATES"; else python3 scripts/dev/quiet.py rain-context -- python scripts/fetch_rain_context.py; fi
 
-      # The other measured weather at each page's station (scripts/fetch_rain_weather.py): corn GDDs
-      # from May 1 against the station's own 1991-2020 average, the hottest and coldest day, freezes,
-      # and the month's warmest or coldest day of note, into data/rain/wx/<st>.json (one small file a
-      # state, read by the page's weather fold). Best effort, 12-minute cap: about 3 calls a state, plus
-      # a one-time read of each station's 1991-2020 days into data/rain/wxnorm (7 minutes a run at most;
-      # the rest waits for the next day). A state that fails keeps its last file, and the pages use a
-      # file only when it is from this same fetch.
       - name: Weather (GDDs, extremes, freezes)
         continue-on-error: true
         timeout-minutes: 15
@@ -161,15 +115,6 @@ jobs:
         run: |
           if [ -n "$STATES" ]; then python3 scripts/dev/quiet.py rain-weather -- python scripts/fetch_rain_weather.py --states "$STATES"; else python3 scripts/dev/quiet.py rain-weather -- python scripts/fetch_rain_weather.py; fi
 
-      # Share images (og:image): the US county map for /rain and one map per
-      # state for its state and county pages (img/og/rain.jpg, img/og/rain-<st>.jpg),
-      # drawn by scripts/build_share_images.py from data/rain. Before the pages,
-      # because build_county_rain.py puts each image's hash in its URL.
-      # Best effort: a share card must never block the data commit.
-      # The cards are redrawn on Mondays only (Sig, Oct 23 2026); any other day they stay byte for
-      # byte as drawn (the script decides, America/Chicago), so the pages' og:image
-      # hash does not move; each card's own "Jan 1 to <day>" keeps it true, and the
-      # alt saved with it in img/og/rain-cards.json is the one the pages print.
       - name: Share image
         continue-on-error: true
         run: |
@@ -181,10 +126,7 @@ jobs:
           python3 scripts/dev/quiet.py rain-check -- python scripts/fetch_county_rain.py --check
           python3 scripts/dev/quiet.py rain-pages -- python scripts/build_county_rain.py
           python3 scripts/dev/quiet.py rain-pages-check -- python scripts/build_county_rain.py --check
-          # /here reads which page kinds each county has (data/atlas/pct k flags); a new rain page changes them
           python3 scripts/dev/quiet.py place-pct -- python scripts/build_place_pct.py
-          # the PRF, Atlas and ARC/PLC county pages link this county's rain page when it is live,
-          # else the state rain page: re-stamp those links now that the rain set may have moved
           python3 scripts/dev/quiet.py selftest-cross-links -- python scripts/cross_links.py --selftest
           python3 scripts/dev/quiet.py cross-links -- python scripts/cross_links.py --stamp
           python3 scripts/dev/quiet.py seo-check -- python scripts/check_seo.py
@@ -194,11 +136,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Keep only what this run fetched (the rain data and its share images); build every page again on a
-          # fresh main each try, so the pages always match main's other inputs (Nov 2, 2026: the -X theirs
-          # rebase kept this run's ~55-minute-old "Cash bids by town near" lines, and build_county_rain.py
-          # --check failed on main, 31 pages, until the next town rebuild). Nothing is rebased, so nothing
-          # conflicts. Same shape as dairy.yml's commit loop.
           SAVE=$RUNNER_TEMP/rain-save; rm -rf "$SAVE"; mkdir -p "$SAVE/og"
           cp -r data/rain "$SAVE/rain"
           cp img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json "$SAVE/og/" 2>/dev/null || true
@@ -213,7 +150,6 @@ jobs:
             python3 scripts/dev/quiet.py cross-links -- python scripts/cross_links.py --stamp
             git add -A data/atlas/pct
             git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
-            # the summary files that read the rain pages, on this main (BUILD-RULES 61; fail soft, rule 53)
             python scripts/generated_sets.py dependents rain --stage || true
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
             N=$(ls data/rain/*.json 2>/dev/null | wc -l)
@@ -223,17 +159,11 @@ jobs:
           done
           echo "push failed after 5 attempts"; exit 1
 
-      # The January full-year rain email (subs worker v5.28, topic
-      # rainyear:<year>:<fips>, asked on the county rain pages). January only,
-      # after the finished year is committed, so the email and the page match.
-      # Each address is mailed once (marked after the send); the later daily
-      # runs in January catch late stations. Not on Jan 1 (send_rain_year.py
-      # FIRST_DAY): the first send is Jan 2. No new schedule: it rides this one.
       - name: Rain year emails (January only)
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}   # the private copy of the list when the worker is blocked (scripts/list_source.py)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}

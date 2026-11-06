@@ -384,7 +384,7 @@ def run(root, today=None, getter=get):
     root = Path(root)
     old = read_json(root / OUT) or {}
     out = {
-        "note": "Written by scripts/fetch_ccc_loan.py from public FSA pages. /commodity-loan reads it.",
+        "note": 'From public FSA pages.',
         "generated": now_utc().isoformat().replace("+00:00", "Z"),
         "interest": old.get("interest"), "counties": old.get("counties"),
         "status": {},

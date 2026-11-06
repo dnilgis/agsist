@@ -1,32 +1,12 @@
 name: Freshness — seed static prices, dateModified, sitemap lastmod
-
-# Bakes the latest closes into the static HTML of the futures pages (so
-# JS-blind AI crawlers see real numbers), stamps dateModified on the daily
-# pages, and bumps sitemap <lastmod> — Google's recrawl signal.
-#
-# Runs after the market close and once pre-open on weekdays (fetch_prices.py
-# has already written data/prices.json by then), plus on demand. Commits only
-# when file contents actually changed.
+# Freshness: seed static prices, dateModified, sitemap lastmod.
 
 on:
   schedule:
     - cron: '35 13 * * 1-5'   # 13:35 UTC — pre-open refresh (overnight session closes)
     - cron: '35 20 * * 1-5'   # 20:35 UTC — post-close (CBOT day session ends 19:20 UTC)
-    # 04:50 UTC Tue-Sat: the night after each trading day. The day's settle
-    # reaches data/prices.json around 04:15 UTC (Oct 20: Dec corn 467.00 for
-    # Oct 19 first in the 04:16 file; the 04:01 file still had Oct 16's).
-    # The old 23:35 UTC run came before it, so titles carried the day before's
-    # settle until morning (Sig, Oct 20). This run lands in the grain
-    # overnight; the price file names its settle (close_kind), so titles get
-    # that settle, and the overnight trade stays on the cards, never a title.
     - cron: '50 4 * * 2-6'
-    # 06:50 UTC Tue-Sat: a second look for a late settle. Oct 30 the Oct 29 settle reached
-    # data/prices.json at 06:16 UTC, after the 04:50 run, so futures titles said Oct 28 until
-    # 13:35 (Sig, Oct 30: add it). A run with nothing new commits nothing.
     - cron: '50 6 * * 2-6'
-  # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
-  # drops and delays the schedule above. The gate job below lets the first run
-  # after each tick of the schedule do the work; see scripts/cron_gate.py.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -79,7 +59,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # pull whatever the 30-min prices workflow committed most recently
           ref: main
       - name: Engine checkout
         uses: ./.github/actions/engine
@@ -95,50 +74,22 @@ jobs:
       - name: Seed static content
         run: python scripts/seed_static.py
 
-      # Titles and meta descriptions that carry a live answer instead of a
-      # description of the tool. Selftest first: bake_seo refuses to write a
-      # title it cannot fit, cannot source, or that carries a date already in
-      # the past, and a page whose data is missing keeps what it has.
       - name: Bake answer-first titles
         run: |
           python scripts/bake_seo.py --selftest
           python scripts/bake_seo.py
 
-      # FAQ structured data, regenerated from the visible FAQ. Six pages had
-      # told Google they answered questions that appear nowhere on them --
-      # /basis advertised "Is basis set by my local elevator?" while the page
-      # asks "Is my elevator ripping me off?" -- because the markup was written
-      # by hand once and the copy was edited afterwards.
-      #
-      # Must run AFTER anything that bakes live numbers into visible answers
-      # (build_condyield, build_croptour), or it publishes one bake behind.
-      # Here it is last, and cond-yield.yml runs it again at the end of its own
-      # job so the markup is never stale between freshness runs.
-      #
-      # Selftest first: it refuses to write rather than publish an empty
-      # question, template syntax, or an answer under 25 characters, and a page
-      # with no visible FAQ is left alone rather than blanked.
       - name: Bake FAQ structured data
         run: |
           python scripts/bake_faq.py --selftest
           python scripts/bake_faq.py
 
-      # Same number, same everywhere (2026-10-17 cross-page audit): reads the
-      # data files and the pages just baked and annotates what disagrees.
-      # REPORT ONLY for now: warnings, never a failed job, and it runs after
-      # the bakes so it sees what this run will commit. Make it --strict once
-      # it has run clean for a few days.
       - name: Number consistency (report only)
         continue-on-error: true
         run: |
           python scripts/check_number_consistency.py --selftest
           python scripts/check_number_consistency.py
 
-      # Push with retries. 2026-10-14 20:38 UTC: the post-close run's push was
-      # rejected ("cannot lock ref") by another workflow's push in the same
-      # second; the gate then counted the tick as served, and the 8:31 a.m.
-      # quotes stood in the titles until the next morning. A conflict on retry
-      # throws the rebase away and bakes again on top of the new main.
       - name: Commit if changed
         id: commit
         run: |
@@ -171,16 +122,10 @@ jobs:
           done
           exit 1
 
-      # This job pushes with the default token, so indexnow.yml's on: push never
-      # fires for it (GitHub does not start workflows from GITHUB_TOKEN pushes),
-      # and the re-baked futures, markets and homepage numbers reached IndexNow
-      # only in Monday's full run (night audit, Oct 19, 2026). Send just the pages
-      # this push changed; --changed sends only pages a sitemap lists.
       - name: IndexNow ping for the pages this run changed (best-effort)
         if: steps.commit.outputs.pushed == '1'
         continue-on-error: true
         run: |
           files=$(grep -E '\.html$' /tmp/fresh-changed.txt || true)
           if [ -z "$files" ]; then echo "no page changed"; exit 0; fi
-          # shellcheck disable=SC2086
           python scripts/indexnow_submit.py --changed $files || echo "IndexNow ping failed - harmless"

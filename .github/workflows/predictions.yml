@@ -1,42 +1,13 @@
 name: Prediction bot — call and grade
-
-# The statistical prediction bot (scripts/prediction_bot.py, rule set bot-v1.1).
-# Once per weekly CFTC report, at the first close a reader could trade on it,
-# it makes one direction call per crop (corn, soybeans, Chicago wheat, KC
-# wheat), graded at the entry close of the report four weeks later. Each run
-# also grades matured calls and recomputes the walk-forward backtest. Writes:
-#   data/predictions.json           calls, graded record, backtest summary
-#   data/predictions-backtest.json  every backtest call, for re-deriving it
-#
-# The briefing (daily.yml, 6 AM Central) prints the latest call from
-# predictions.json as "BOT CALL"; /scorecard and the homepage card read it.
-#
-# Two fires, both off :00/:15/:30/:45 (the shape this repo has measured as the
-# one GitHub delivers), both before the 7 PM CT evening reopen: after it,
-# Yahoo's daily bar holds overnight trades and the bot refuses to call or grade.
-# Calls are keyed by crop and report, so a second run makes no new call.
-#   19:41 UTC Mon-Fri = 2:41 PM CDT / 1:41 PM CST (after the 1:20 PM close and the 2:30 PM COT release)
-#   20:41 UTC Mon-Fri = 3:41 PM CDT / 2:41 PM CST
-#   22:41 UTC Mon-Fri = 5:41 PM CDT / 4:41 PM CST
-#   23:41 UTC Mon-Fri = 6:41 PM CDT / 5:41 PM CST (last chance)
-# Four fires since 2026-10-15: on Oct 13 GitHub started both evening fires
-# 2.5 hours late (8:21 and 9:08 PM CDT), past the 6:55 PM cutoff, and the bot
-# made no call that week. The early fires leave room for that kind of delay.
+# Prediction bot: call and grade.
 
 on:
   schedule:
     - cron: '41 19 * * 1-5'
     - cron: '41 20 * * 1-5'
     - cron: '41 22 * * 1-5'
-    - cron: '41 23 * * 1-5'   # last chance, before the 7 PM CT reopen in both seasons
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: '41 23 * * 1-5'
   # cron above, by either trigger, do the work within 50 minutes
-  # (closing before the next tick of the schedule).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -49,7 +20,6 @@ env:
   TZ: America/Chicago
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -101,16 +71,12 @@ jobs:
       - name: Install dependencies
         run: pip install --quiet yfinance==1.7.0 pandas==3.0.6
 
-      # The rule before the run: grading, the refusal of a target at or behind
-      # its entry, the session count, the contract choice, the binomial and
-      # the no-look-ahead mutation test. No network, about a second.
       - name: Prove the rule and the calendars
         run: |
           python scripts/contract_calendar.py
           python scripts/cot_calendar.py
           python scripts/prediction_bot.py --selftest
 
-      # the backtest reads data/cot-deep.json, on the private raw branch since Nov 4
       - name: Deep history from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -136,11 +102,6 @@ jobs:
           echo "::error title=Prediction bot::push failed three times"
           exit 1
 
-      # Holiday weeks move the entry close (Columbus Day 2026 moved the Oct 6
-      # report's to Tue Oct 13) and that week GitHub started both evening runs
-      # past the cutoff: four calls missed, noticed two days later. From 5:30 PM
-      # CT on an entry day, a crop with no call and no recorded reason fails
-      # this step, so the run goes red while there is still time to dispatch.
       - name: Entry-day watch
         if: always()
         run: python scripts/prediction_bot.py --watch

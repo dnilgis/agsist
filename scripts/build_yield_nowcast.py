@@ -424,17 +424,7 @@ def main(force_stale=False):
     out = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "model": "ge-linear-v1",
-        "note": ("Ratings-only nowcast of US final yield. band80 is the 80th percentile "
-                 "(nearest rank) of absolute EXPANDING-WINDOW backtest errors AT THIS WEEK: "
-                 "each held-out year is estimated from earlier years only (backtest_years "
-                 "says how many, backtest_window which). loyo_* are the leave-one-year-out "
-                 "figures, which use later years, kept for transparency and not used for the "
-                 "band. trend_mae is the no-ratings baseline on the same years by the same "
-                 "rule; skill_pct is computed from the rounded MAEs as printed. trend is "
-                 "fitted on every US final in trend_window. History rows are append-only: a "
-                 "rerun that changes a recorded week adds a row with its generation time "
-                 "beside the old one. Final USDA yield is written beside them in January, "
-                 "misses included."),
+        "note": ("Ratings-only nowcast of US final yield with its past record. USDA's final yield is written beside it in January, misses included."),
         "crops": {},
         "history": prev.get("history", {"corn": [], "soybeans": []}),
     }

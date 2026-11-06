@@ -657,7 +657,7 @@ def blend_doc(docs, idx):
         keep = {k: v for k, v in rows.items() if k in ops and ops[k]["u"] == v[1]}
         diy.append({"name": meta["name"], "what": meta["what"], "publisher": meta["publisher"], "published": meta["published"],
                     "basis": meta["basis"], "ops": keep})
-    return {"note": "The going rate for custom farm work: for each job, the middle of the state surveys' own averages, with the lowest and highest of them and the number of surveys. From the same survey rows as each state file (data/custom-rates/<st>.json). Each state counts once; nothing is inflated or adjusted.",
+    return {"note": 'The going rate for custom farm work across the state surveys, with the lowest and highest. Nothing is adjusted.',
             "built": STAMP,
             "rule": {"middle": "median of the state survey averages", "min_surveys": MIN_BLEND, "age_max": AGE_MAX,
                      "newest": newest, "oldest_in_middle": cutoff,

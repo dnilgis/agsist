@@ -151,9 +151,7 @@ def build(stats=None):
         out[state] = {
             "generated": None,  # filled by caller at write time
             "units": "integer cents per bushel",
-            "note": "Real basis change-points only, replayed from the daily cash-bid basis change logs. A gap in the line is a gap in what changed, not missing data. "
-                    "Points the cash-bid pages would call a misread (far from the other elevators, same crop and contract, "
-                    "latest basis in the 14 days before) are left out; screened counts them.",
+            "note": 'Basis change points from the network cash bids, by elevator and crop.',
             "screened": len(dropped),
             "series": state_out,
         }

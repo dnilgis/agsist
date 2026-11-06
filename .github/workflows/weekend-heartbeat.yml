@@ -1,56 +1,6 @@
 name: Weekend daily-briefing heartbeat
+# Weekend daily-briefing heartbeat.
 
-# THE MYSTERY: 2026-09-27, a Sunday, shipped no daily briefing and sent no
-# alert. No "AGSIST Daily — 2026-09-27" commit exists at all -- not late, not
-# malformed, just absent. Root-caused 2026-09-29 by reading the actual commit
-# history, not guessing: daily.yml's three own crons (10:19, 11:41, 13:23
-# UTC) are its ONLY chance on a Saturday or Sunday morning. On a weekday,
-# prices.yml's heartbeat dispatch adds a chance every 15 minutes -- but
-# prices.yml only fetches while CME grains trade (its "hours" job), and they
-# are shut from Friday afternoon until Sunday evening. Checked: zero "💹 Prices" commits landed on 2026-09-26 or
-# 2026-09-27, confirming the heartbeat genuinely never fires on a weekend
-# morning. So a weekend's entire briefing depends on GitHub's cron firing at
-# least one of three specific minutes -- and this repo already measured, in
-# daily.yml's own header, that GitHub's schedule silently drops fires often
-# enough to have broken the briefing twice before by itself.
-#
-# THE FIX adds the exact same insurance weekdays already have, scoped to just
-# Saturday and Sunday: two more workflow_dispatch fires, off-:00 minutes, each
-# a heartbeat=true dispatch -- IDENTICAL to what the price loop already sends
-# every weekday morning -- so it obeys daily.yml's existing floor,
-# published-check, and late-arrival rules exactly. This file adds no new
-# logic to daily.yml or its gate; it only knocks on the same door twice more,
-# on the two days nothing else knocks at all.
-#
-# BOTH TIMES SIT AFTER daily.yml's OWN LAST CRON (13:23 UTC), on purpose.
-# That cron is already daily.yml's "last resort, still a morning briefing" --
-# by its own header, 08:23 CDT / 07:23 CST, comfortably past the 05:45 floor
-# in either season. Anything placed after 13:23 UTC inherits that: zero wait
-# needed, in either season, no dual-season floor arithmetic to get right here.
-# Landing a fire BEFORE 10:19 UTC (daily.yml's first cron) was considered and
-# rejected -- close enough to the 05:45 CST floor (11:45 UTC) that the gate's
-# 40-minute wait budget could run out before the floor does, wasting the fire
-# entirely, exactly the kind of subtly-wrong schedule this repo has already
-# shipped once. Same reasoning kept both new times off :00/:15/:30/:45 and at
-# least 45 minutes apart, matching scripts/test_daily_schedule.py's existing
-# rule for daily.yml's own crons.
-#
-# NOT COVERED: a weekday that is also a market holiday (Thanksgiving, July 4,
-# Christmas, ...) has the same gap -- prices.yml still fires on 'schedule',
-# but futures don't trade so it likely pushes nothing and sends no
-# heartbeat -- and this file doesn't reach that case. Flagged, not solved
-# here; would need an actual trading-calendar check, which contract_calendar.py
-# already has and could be extended to cover.
-#
-# 2026-10-09: THE KNOCK NOW COMES FROM THE BIDS RUN TOO. These two crons, like
-# daily.yml's own, arrived hours late: the weekend briefings of Oct 3 and 4
-# published at 09:46 and 10:27 Central against a 05:45 floor. So this also
-# runs after every "Fetch Grain Bids" (cron-job.org, every 15 minutes, weekends
-# included). On that path it knocks only on Saturday and Sunday, from 05:45 to
-# 11:59 Central, and only while today's briefing is not yet published, which
-# makes it the weekend twin of prices.yml's weekday heartbeat. daily.yml's own
-# gate still makes every decision. Nothing daily.yml does starts Fetch Grain
-# Bids, so this cannot loop.
 on:
   schedule:
     - cron: '11 14 * * 0,6'   # 14:11 UTC Sat/Sun -- 48min after daily.yml's last cron
@@ -72,7 +22,6 @@ jobs:
   knock:
     runs-on: ubuntu-latest
     steps:
-      # Only the chained path is gated; a scheduled or manual knock always goes.
       - name: Is a knock due?
         id: due
         env:
@@ -99,12 +48,6 @@ jobs:
         run: |
           set -uo pipefail
           echo "Dispatching daily.yml (heartbeat=true) — $(date -u +%FT%TZ)"
-          # send_email=true matches prices.yml's own heartbeat exactly (see its
-          # fetch-loop step): the gate is what decides whether anything actually
-          # publishes and mails today, same as every weekday heartbeat. `|| true`
-          # for the same reason prices.yml gives its own dispatch: a missed
-          # heartbeat here is not worth failing the run over -- there is a second
-          # one along in about 90 minutes, same shape as the price loop's excuse.
           gh workflow run daily.yml \
             --repo "${{ github.repository }}" \
             --ref main \

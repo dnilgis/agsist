@@ -1,25 +1,10 @@
 name: state-rent-pages
+# state-rent-pages.
 
-# Rebuilds the 47 /rent/<state> pages + /rent/ hub from data/cash-rent/*.json.
-# OFFLINE — no API, no key. The pages are MACHINE-OWNED like sitemap.xml:
-# never hand-edit rent/*.html, edit scripts/build_state_rent_pages.py.
-#
-# Weekly cron (offset from cash-rent's Wed 14:20 fetch) because bot pushes
-# from cash-rent.yml can't trigger other workflows — this catches new August
-# data within the hour. Commits only when output actually changes, so the
-# other ~51 weeks it's a no-op. Also adds/bumps all /rent URLs in the
-# sitemap via update_sitemap.py --add (idempotent).
 on:
   schedule:
-    - cron: "55 15 * * 3"     # Wednesdays 15:55 UTC, after cash-rent's fetch
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
+    - cron: "55 15 * * 3"
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -29,7 +14,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -63,7 +47,7 @@ jobs:
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     concurrency:
-      group: sitemap-write        # writes sitemap.xml — never race the other writers
+      group: sitemap-write
       cancel-in-progress: false
     timeout-minutes: 15
     steps:
@@ -94,13 +78,9 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add rent sitemap.xml
-          # the summary files that read these pages (BUILD-RULES 61): the search index and llms.txt
           python scripts/generated_sets.py dependents rent --stage || true
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "pages: rebuild /rent state cash-rent pages"
-          # Push loop (BUILD-RULES 61): rebase onto main (a conflict only in the summary files is rebuilt, never kept
-          # from one side); any other conflict resets to main, builds this job's pages and the summary files
-          # again, recommits and retries. Up to 4 tries; a push that fails is never ignored.
           for i in 1 2 3 4; do
             if python3 scripts/generated_sets.py pull-rebase rent && git push origin HEAD:main; then echo "pushed on attempt $i"; exit 0; fi
             git rebase --abort 2>/dev/null || true

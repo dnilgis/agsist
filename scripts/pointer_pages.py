@@ -123,8 +123,7 @@ def load_all(root):
 
 
 def _dump(m):
-    return json.dumps({"about": "Pointer pages left where a generated page dropped out of its set "
-                                "(scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
+    return json.dumps({"about": 'Pointer pages for retired pages: path, where it sends readers, and the date retired.',
                        "pointers": {k: m[k] for k in sorted(m)}}, indent=1) + "\n"
 
 

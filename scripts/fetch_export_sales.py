@@ -662,7 +662,7 @@ def main():
         # ahead of them, so the file states each commodity's own alongside the
         # headline one rather than labelling all three with a single string.
         'marketing_year': marketing_year('corn', today)[0],
-        'note':           'USDA FAS ESR API — api.fas.usda.gov/api/esr',
+        'note':           'USDA FAS Export Sales Reporting.',
     }
     report_dates = []
     any_live = False

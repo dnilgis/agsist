@@ -1,18 +1,7 @@
 name: SEC Reg CF (private ag raises)
+# SEC Reg CF (private ag raises).
 
 # The "Private ag raises" section of /ag-stocks (Sig approved Oct 29, 2026).
-# BY HAND ONLY (no schedule). One run:
-#   1. downloads the 42 quarterly SEC Crowdfunding Offerings zips (2016q2 to 2026q3) byte for
-#      byte to the private raw branch, history/sec-reg-cf/<YYYY-MM-DD>/, with SHA256SUMS
-#      (files already there are never replaced);
-#   2. reads each issuer's EDGAR submissions record once (SIC code and description, recent
-#      Form C filings) and saves it beside the zips (resumable: a second run with the same
-#      folder reads only what is missing);
-#   3. screens ag issuers and scores every past raise, saving derived/ (every ag offering, every
-#      borderline case left out, the counts) to the same raw folder;
-#   4. only with publish = true: writes data/agstocks/raises.json and rebuilds ag-stocks.html.
-# Read derived/borderline_excluded.csv before the first publish; hand calls go in
-# scripts/agraises_overrides.json.
 on:
   workflow_dispatch:
     inputs:

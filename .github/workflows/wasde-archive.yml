@@ -1,36 +1,5 @@
 name: WASDE archive (dispatch only)
-
-# Every past WASDE and each figure's month-to-month revisions (brief 04, Oct 26;
-# Sig: go). DISPATCH ONLY: no schedule (a new schedule is Sig's decision;
-# test/wasde-archive.test.mjs and test/history-collect.test.mjs).
-#
-#   mode csv    USDA's historical WASDE report data, April 2010 on: every source
-#               file as published goes to the PRIVATE raw branch (history/wasde/),
-#               then the small per-crop revision files the /whats-priced-in
-#               section loads on demand are rebuilt and committed
-#               (data/wasde-history/, about 0.2 MB in all).
-#   mode esmis  the NAL ESMIS listing, every release from Sep 17, 1973: release
-#               dates and file links to history/wasde/esmis/index.json on raw.
-#               Rebuilt whole each time (listing reader 2: files placed by their
-#               own name and folder; reader 1's index was one release off).
-#   mode files  each release's own report file from ESMIS (the TXT, else the
-#               PDF's text), its U.S. corn, soybean and wheat tables read and
-#               balance-checked into history/wasde/us-grains/esmis-*.csv.gz on
-#               raw. Brief 09 (Oct 27): usda.gov's data page answers these
-#               runners with HTTP 403, so csv mode cannot run; this is the route.
-#               publish=false (the default) builds the site files into the run's
-#               temp folder and prints their counts only, so the first real build
-#               is checked before the section shows; publish=true commits them.
-#
-# After that, wasde-watch.yml keeps the archive current after each report (a step
-# in that job, no new schedule; Sig, Oct 27: "Wasde should auto update").
-#
-# Resumable: the saved manifest says which files are done; dispatch again until
-# the summary says every file is complete. usda.gov is not reachable from the
-# build sandbox, so this runs here.
-#   gh workflow run wasde-archive.yml -R dnilgis/agsist --ref main -f mode=esmis
-#   gh workflow run wasde-archive.yml -R dnilgis/agsist --ref main -f mode=files
-#   gh workflow run wasde-archive.yml -R dnilgis/agsist --ref main -f mode=files -f publish=true
+# WASDE archive (dispatch only).
 
 on:
   workflow_dispatch:
@@ -82,7 +51,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      # The PDF-only reports (1973 to 1994, 2011 to 2016) are read through their text.
       - name: Install pdftotext
         if: ${{ inputs.mode == 'files' }}
         timeout-minutes: 5
@@ -93,9 +61,6 @@ jobs:
           python3 scripts/read_wasde_text.py --selftest
           python3 scripts/backfill_wasde.py --selftest
           python3 scripts/build_wasde_history.py --selftest
-      # What is already saved. A path that is not on raw yet is a first run; a branch
-      # that cannot be read stops the run, because a fresh manifest pushed over the
-      # saved one would forget what is done.
       - name: The saved archive (private raw branch)
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -135,8 +100,6 @@ jobs:
             if [ -n "$TO" ]; then args+=(--to "$TO"); fi
             python3 scripts/backfill_wasde.py "${args[@]}"
           fi
-      # Soft, as every job that publishes site data saves (test/private-repo.test.mjs): a
-      # failed save is a warning, and the next dispatch fetches what the manifest lacks.
       - name: Save to the raw branch
         if: ${{ !cancelled() }}
         env:
@@ -145,8 +108,6 @@ jobs:
         run: |
           [ -d history/wasde ] || { echo "nothing written"; exit 0; }
           bash scripts/push_raw.sh "wasde archive $MODE" history/wasde
-      # Unpublished, the build goes to the run's temp folder: the counts are read in the
-      # summary below and nothing reaches main or the page.
       - name: Build the site files
         if: ${{ inputs.mode != 'esmis' }}
         run: |

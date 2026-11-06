@@ -264,9 +264,7 @@ def assemble(desc, data, own, built, files):
         }
     return {
         "schema": SCHEMA,
-        "about": ("Federal Reserve district surveys of agricultural bankers, as compiled by the Federal Reserve Bank of "
-                  "Kansas City. Diffusion indexes, quarterly. Built by scripts/build_farm_credit.py; Chicago and Dallas "
-                  "quarters are checked against those banks' own files and any that disagree are withheld."),
+        "about": ('Federal Reserve district surveys of agricultural bankers, as compiled by the Federal Reserve Bank of Kansas City. Diffusion indexes, quarterly.'),
         "source": "Federal Reserve district agricultural credit surveys, compiled by the Federal Reserve Bank of Kansas City",
         "source_url": KC_PAGE,
         "built": built,

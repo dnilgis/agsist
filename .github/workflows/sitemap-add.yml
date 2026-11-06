@@ -1,14 +1,6 @@
 name: sitemap-add
+# sitemap-add.
 
-# Add a page to sitemap.xml from the browser. Sig deploys via the GitHub UI and
-# cannot run scripts locally, so this wraps scripts/update_sitemap.py --add.
-#
-# Use this INSTEAD of hand-editing sitemap.xml. The file is rewritten daily by
-# the freshness/daily automation, so any hand-edited copy goes stale within
-# hours and re-uploading it silently DELETES whatever the automation added since
-# — which is exactly what nearly happened with /daily/2026-07-16.
-#
-# Idempotent: re-running for an existing URL just bumps lastmod.
 on:
   workflow_dispatch:
     inputs:
@@ -30,7 +22,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: sitemap-write        # never race the daily/freshness sitemap writers
+  group: sitemap-write
   cancel-in-progress: false
 
 jobs:

@@ -313,9 +313,7 @@ def write_shards(state, out_dir, generated):
               "would be collected and unreachable. Give these a state at the "
               "source: %s" % (len(stateless), "; ".join(uniq[:10])))
     index = {"generated": generated, "units": "integer cents per bushel",
-             "note": ("Per elevator, per commodity, per contract, per delivery month: "
-                      "the basis now, the basis before it, and the day it changed. "
-                      "Rebuildable in full from the changes-*.json files beside this."),
+             "note": ('Basis history by elevator, commodity and delivery month.'),
              "states": {}}
     for st in sorted(by_state):
         # Sorted on the five identity fields ONLY. `sorted(...)` on the whole

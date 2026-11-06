@@ -1,28 +1,5 @@
 name: Pages (site only)
-
-# Publishes agsist.com from a filtered artifact: the repository minus what no
-# reader loads (check_site_budget.NOT_READER_FACING: scripts/, test/, build/,
-# references/, workers/, .github/, the workflow-only data). Plan and dry run:
-# feedbag notes/panels/godseye-2026-10-26/size-trim-plan.md; the filter is
-# scripts/pages_publish.py.
-#
-# OFF UNTIL THE SWITCH. The job runs only when the repository variable
-# PAGES_FROM_ACTIONS is 1. While Settings > Pages > Source is still "Deploy from
-# a branch", the variable stays unset and every run here is skipped, so this
-# file can sit on main without touching the site. The switch is two settings
-# in the same minute (Source = GitHub Actions, PAGES_FROM_ACTIONS = 1); the
-# rollback is the same two settings back. Steps: the pull request that added
-# this file.
-#
-# How it starts: data jobs push with GITHUB_TOKEN, and a push made with
-# GITHUB_TOKEN starts no other workflow, so `on: push` alone would only deploy
-# human merges. Right after a push, the fast jobs (prices, markets, fetch_bids,
-# daily) run .github/pages-kick.sh, which sends a repository_dispatch (exempt
-# from that rule, and it needs only the contents: write those jobs hold).
-# NO SCHEDULE OF ITS OWN: a new cron is Sig's call (STANDING-DECISIONS, Oct 21).
-# fetch_bids is started every 15 minutes, all day, every day, and kicks on
-# every run, so every other bot commit reaches readers within about 15 minutes
-# plus the deploy. A started run skips when its commit is deployed already.
+# Pages (site only).
 
 on:
   push:
@@ -42,7 +19,6 @@ permissions:
   id-token: write
   deployments: read
 
-# One deploy at a time; a newer start replaces a waiting one, never a running one.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -56,7 +32,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      # A failed lookup means "deploy", never "skip".
       - name: Skip when this commit is deployed already
         id: moved
         env:
@@ -84,8 +59,6 @@ jobs:
         with:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
-      # The published copies of page scripts and style sheets are minified (no comments); the repository
-      # files stay as they are. No minifier means the scripts publish as they are, with a warning.
       - name: Minifier (pinned)
         if: steps.moved.outputs.go == '1'
         continue-on-error: true
@@ -94,7 +67,6 @@ jobs:
         if: steps.moved.outputs.go == '1'
         run: |
           set -euo pipefail
-          # measured before staging: the budget walks the checkout, and _site would count twice
           python3 scripts/check_site_budget.py || echo "::warning::over the size budget; deploying anyway (the site-budget workflow is the gate)"
           python3 scripts/pages_publish.py --stage _site --minify --terser "$RUNNER_TEMP/minify/node_modules/terser"
           if ls _site/components/*.map _site/css/*.map >/dev/null 2>&1; then echo "::error::a source map is in the artifact"; exit 1; fi
@@ -105,13 +77,11 @@ jobs:
           du -sh _site
       - uses: actions/configure-pages@v5
         if: steps.moved.outputs.go == '1'
-      # v3, not v4: v4 leaves dot files out of the tarball and .well-known must ship.
       - uses: actions/upload-pages-artifact@v3
         if: steps.moved.outputs.go == '1'
         with:
           path: _site
           retention-days: 1
-      # The dot-file check: read the tarball that was uploaded, not the folder.
       - name: The artifact carries .well-known and no tooling
         if: steps.moved.outputs.go == '1'
         run: |

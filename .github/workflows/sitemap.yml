@@ -1,20 +1,14 @@
 name: Sitemap lastmod
+# Sitemap lastmod.
 
 on:
   push:
-    branches: [main]   # these jobs commit and rebase onto main; on a PR branch that rebase fails (2026-10-06)
+    branches: [main]
     paths:
       - "**.html"
   schedule:
     - cron: "17 9 * * *"   # 09:17 UTC daily — refreshes data-driven pages on their cadence
-  # GitHub's scheduler drops scheduled fires (it never started land-data.yml on Nov 3, 2026;
-  # scripts/cron_gate.py has the numbers). So this also runs after every "Fetch Grain Bids"
-  # (cron-job.org, every 15 minutes), and the gate job lets the first run after each tick of the
   # cron above, by either trigger, do the work within 360 minutes
-  # (six hours, the same day and well before the next tick).
-  # Every other run skips in seconds. A chained run takes the scheduled path. A run by hand or
-  # a push does not use up the tick (cron_gate.py MANUAL_DOES_NOT_SERVE): it may take narrower
-  # inputs, and the chained run that follows is the same idempotent job.
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
@@ -33,7 +27,6 @@ permissions:
   contents: write
 
 jobs:
-  # One run per tick of the schedule (see on: above). Sparse: the skip costs seconds.
   gate:
     runs-on: ubuntu-latest
     permissions:
@@ -72,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2   # need the previous commit to diff changed HTML on push
+          fetch-depth: 2
       - name: Engine checkout
         uses: ./.github/actions/engine
         with:
@@ -89,8 +82,6 @@ jobs:
           IN_HEAD: ${{ github.event.inputs.head }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "$IN_BASE" ]; then
-            # a hand start after a merge by the job token: the merge's own range, not HEAD~1 (a
-            # collection job may have pushed since)
             for r in "$IN_BASE" "$IN_HEAD"; do
               printf '%s' "$r" | grep -Eq '^[0-9a-f]{40}$' || { echo "::error::base and head must be commit shas"; exit 1; }
               git cat-file -e "$r^{commit}" 2>/dev/null || git fetch -q --no-tags --depth=1 origin "$r"
@@ -116,10 +107,6 @@ jobs:
             python scripts/update_sitemap.py --daily --out /tmp/bumped.txt
           fi
 
-      # llms.txt is built from the same published pages: one list in
-      # scripts/build_llms_txt.py, every URL checked live against the files and
-      # the sitemaps. The --check step at the end of this job goes red when a
-      # sitemap page is in neither its list nor its OMIT set.
       - name: Rebuild llms.txt
         run: python scripts/build_llms_txt.py
 
@@ -136,8 +123,6 @@ jobs:
             git push
           fi
 
-      # Bing/Yandex via IndexNow for exactly the URLs we just bumped. Best-effort:
-      # never fails the job. If you run IndexNow from a separate workflow, delete this step.
       - name: Ping IndexNow for bumped URLs
         continue-on-error: true
         run: |
@@ -149,7 +134,5 @@ jobs:
             echo "nothing bumped; skipping IndexNow"
           fi
 
-      # After the commit, so a page nobody has placed yet never holds up the
-      # lastmod bump; it still turns the run red until someone decides.
       - name: llms.txt lists every page
         run: python scripts/build_llms_txt.py --check

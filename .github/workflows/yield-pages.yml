@@ -1,8 +1,6 @@
 name: State yield pages
+# State yield pages.
 
-# /yield/<state> is built from data/nass/*.json and data/state-stats.json.
-# Those are refreshed by nass-series.yml (16th) and state-stats.yml (15th);
-# a bot push does not trigger other workflows, so this runs on the 17th.
 on:
   push:
     branches: [main]
@@ -11,8 +9,6 @@ on:
       - "scripts/county_yield.py"
   schedule:
     - cron: "23 13 17 * *"
-  # The pages print the state file's own label ("2026 crop · USDA NASS
-  # October forecast"), so they rebuild when that file does.
   workflow_run:
     workflows: ["Build State Stats (USDA NASS)"]
     types: [completed]
@@ -22,9 +18,6 @@ permissions:
   contents: write
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -69,13 +62,9 @@ jobs:
           git config user.email "bot@agsist.com"
           python scripts/update_sitemap.py --add $(cat yield/_indexable.txt) --priority 0.6 --changefreq monthly
           git add yield sitemap.xml
-          # the summary files that read these pages (BUILD-RULES 61): the search index and llms.txt
           python scripts/generated_sets.py dependents yield --stage || true
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "pages: rebuild /yield state yield pages"
-          # Push loop (BUILD-RULES 61): rebase onto main (a conflict only in the summary files is rebuilt, never kept
-          # from one side); any other conflict resets to main, builds this job's pages and the summary files
-          # again, recommits and retries. Up to 4 tries; a push that fails is never ignored.
           for i in 1 2 3 4; do
             if python3 scripts/generated_sets.py pull-rebase yield && git push origin HEAD:main; then echo "pushed on attempt $i"; exit 0; fi
             git rebase --abort 2>/dev/null || true

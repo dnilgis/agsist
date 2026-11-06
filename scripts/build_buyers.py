@@ -274,8 +274,7 @@ def build(rows, find, eia=None):
         out_plants[i] = p
     srcs = {k: {"name": n, "url": u} for k, (n, u) in SOURCES.items()}
     doc = {"v": 1, "read": READ, "radius_mi": RADIUS_MI,
-           "method": ("Each buyer is placed at its town point (the middle of its town), not at its gate. Capacity is as "
-                      "each list publishes it; none is estimated. Built by scripts/build_buyers.py."),
+           "method": ('Each buyer is placed at its town point (the middle of its town), not at its gate. Capacity is as each list publishes it; none is estimated.'),
            "kinds": {k: [v[0], v[1]] for k, v in KINDS.items()}, "sources": srcs,
            "plants": out_plants, "unplaced": sorted(unplaced)}
     return doc, log

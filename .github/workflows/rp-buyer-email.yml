@@ -1,38 +1,5 @@
 name: Rain Print buyer email
-# The "here's your print, get ready for it" email to each Rain Print buyer
-# (scripts/rp_buyer_email.py, Sig 2026-10-20): what they bought, a picture of
-# their exact design and, for a print or framed print, the letter that goes in
-# the box, made by the real page (scripts/rp_buyer_render.mjs). One email per
-# paid Checkout Session; the subs worker (v5.36) confirms the payment and
-# reads the buyer's address from Stripe at send time with its STRIPE_READ_KEY
-# secret (the one place that key lives). The log prints counts only.
-#
-# A DIGITAL file the buyer approves (Approve this print starts this job,
-# worker v5.37) gets its files email in the same run (Sig 2026-10-20): the
-# PDF, PNG and JPG at 12 x 18 in, 300 dpi, and the one-page reading guide,
-# attached, made by the maker view; marked delivered first (worker v5.38),
-# once per order; Sig gets a one-line note. Buyer emails go out as "Sig at
-# AGSIST" (variable RP_FROM_NAME to change it; the shared FROM_NAME secret is
-# for Sig's alerts and the other jobs and does not decide it).
-#
-# A paid this-year GIFT (ref GIFT-...) gets its gift card email in the same run
-# (Sig 2026-10-20: no more card links sent by hand): the card is issued through
-# the worker's POST /rp-gift/issue {order_key} (worker v5.40, once per order,
-# the code kept on the order), then the buyer gets the Print the gift card
-# link, the print so far (its only email: no separate preview), what the
-# receiver gets, how they use it, when it comes and print tips;
-# marked gift-mailed first, once per order; Sig gets a one-line note.
-#
-# It also sends Sig an alert for each new paid order first (always to Sig).
-# NO SCHEDULE: it runs when the subs worker's Stripe webhook (v5.36) starts it
-# through the GitHub API (worker secret GH_DISPATCH_TOKEN), or by hand. The
-# worker asks for a dry run unless its variable RP_BUYER_EMAIL_LIVE is "1"; a
-# dry run sends every buyer email to Sig and marks nothing (alerts still go
-# to Sig, once). A backup run on a schedule is Sig's call; if he wants one:
-#   workflow_run: {workflows: ["Site forms digest"], types: [completed]}
-# Secrets: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS (or GMAIL_USER,
-# GMAIL_APP_PASS), as the forms digest. Optional: SMTP_HOST, SMTP_PORT,
-# FROM_ADDR, FROM_NAME, SIG_TO, SIG_TEST_EMAILS.
+# Rain Print buyer email.
 
 on:
   workflow_dispatch:
@@ -51,7 +18,7 @@ permissions:
 
 jobs:
   run:
-    runs-on: ubuntu-24.04  # pinned Nov 3: playwright install --with-deps fails on ubuntu-latest (26.04)
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -90,7 +57,5 @@ jobs:
           RP_FROM_NAME: ${{ vars.RP_FROM_NAME }}
           SIG_TO: ${{ secrets.SIG_TO }}
           SIG_TEST_EMAILS: ${{ secrets.SIG_TEST_EMAILS }}
-          # Nov 3, 2026: was `inputs.dry_run == false && '' || '1'`, always '1' ('' is falsy), so no buyer was
-          # ever mailed. Dry unless the worker asked with dry_run false.
           DRY_RUN: ${{ inputs.dry_run != false && '1' || '' }}
         run: python3 scripts/rp_buyer_email.py

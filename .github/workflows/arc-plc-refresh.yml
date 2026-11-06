@@ -1,33 +1,12 @@
-# Rebuild the ARC/PLC pages (scripts/build_arc_plc.py) on their own.
-#
-# Three things move them:
-#   - a new WASDE: the 2026 price center is USDA's projected season-average
-#     price from the newest data/wasde-pdf/wasdeMMYY.pdf (picked by report
-#     month, so wasde0127 beats wasde1026). wasde-watch.yml commits the PDF;
-#     this rebuilds after it. No new futures snapshot on that path, so a
-#     WASDE day does not churn the pages on every intraday price.
-#   - the weekly futures refresh: Monday after the close, --snapshot-prices
-#     freezes Dec 2027 corn and Nov 2027 soybean closes from data/prices.json
-#     into data/arc-plc-prices.json (the 2027 price center), then rebuilds.
-#   - every run that builds (not --check) also copies the current October
-#     average of Dec 2026 corn / Nov 2026 soybeans from data/harvest-prices.json
-#     (the file /harvest-price-tracker reads) into the snapshot, and the pages
-#     print the date it runs through. Weekly is the schedule; no new cron.
-#   - the calendar: the signup copy is written for the build date, so the
-#     day after each deadline (Dec 12, 2026 and Mar 16, 2027) gets a run.
-#
-# FAILS LOUDLY. --snapshot-prices refuses quotes older than 4 days and a
-# build refuses to write when the snapshot is older than 10 days or missing
-# a contract. A red run here means the pages kept their last good numbers.
-# Nothing is committed unless an output changed.
+# ARC/PLC refresh.
 
 name: ARC/PLC refresh
 
 on:
   schedule:
-    - cron: "23 22 * * 1"    # Monday 22:23 UTC, after the CBOT close and the price fetch
-    - cron: "23 6 12 12 *"   # Dec 12: the 2026 signup closed the day before
-    - cron: "23 6 16 3 *"    # Mar 16: the 2027 signup closed the day before
+    - cron: "23 22 * * 1"
+    - cron: "23 6 12 12 *"
+    - cron: "23 6 16 3 *"
   workflow_run:
     workflows: ["WASDE watch — grade the report as it lands"]
     types: [completed]
@@ -42,9 +21,6 @@ permissions:
   contents: write
 
 jobs:
-  # Did the run that started this one do its work, or did its gate skip it? Since Nov 3, 2026 the
-  # upstream also runs after every "Fetch Grain Bids" and most of those runs skip in its gate
-  # and still end "success" (.github/actions/upstream-did-work; fails closed).
   upstream:
     runs-on: ubuntu-latest
     permissions:
@@ -62,8 +38,6 @@ jobs:
       - id: u
         uses: ./.github/actions/upstream-did-work
 
-  # WASDE watch completes every 15 minutes (it runs after each Fetch Grain
-  # Bids). Only its runs on release days, 16:00-19:59 UTC, can carry a new PDF.
   gate:
     needs: upstream
     if: needs.upstream.outputs.go == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
@@ -106,12 +80,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      # Pinned: the WASDE price lines are read with pypdf, and a new version
-      # can change the extracted text. The selftest checks the Oct 2026 PDF.
       - name: Install
         run: pip install openpyxl==3.1.5 pypdf==6.17.0
-      # FSA's program files live on the raw branch, not main (Oct 20: 34 MB no
-      # page reads). The build refuses to run without them.
       - name: FSA files from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -119,9 +89,6 @@ jobs:
       - name: Selftest
         run: python scripts/build_arc_plc.py --selftest
 
-      # The build rewrites thousands of files. On a push race it does not
-      # rebase them; it resets to the new main and builds again, so a
-      # conflict on a shared file (llms.txt) cannot wedge the run.
       - name: Pillow, for the share image
         continue-on-error: true
         run: pip install --quiet pillow==12.3.0
@@ -136,10 +103,7 @@ jobs:
           git config user.email "bot@agsist.com"
           for i in 1 2 3 4 5; do
             if [ "$SNAP" = "1" ]; then python scripts/build_arc_plc.py --snapshot-prices; else python scripts/build_arc_plc.py; fi
-            # the set's one share image, from the numbers just built (best effort)
             python scripts/build_share_images.py --only arc-plc || true
-            # the summary files that read these (BUILD-RULES 61): the break-even calculator's per-state
-            # county files (they carry the expected payments), the search index, data/feeds.json and llms.txt
             python scripts/generated_sets.py dependents arc-plc --stage || true
             git add -A -- arc-plc.html arc-plc data/pointers data/arc-plc.json data/arc-plc data/arc-plc-prices.json data/breakeven \
                           embed/arc-plc.html sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg
@@ -158,15 +122,10 @@ jobs:
           done
           echo "Failed to push after 5 attempts."; exit 1
 
-      # This job pushes with the default token, so indexnow.yml's on: push never
-      # fires for it, and ARC/PLC changes reached Bing only in the next Monday's
-      # full submission, 6 days later (panel B4, Oct 20). Send just the pages this
-      # push changed, as freshness.yml does; --changed sends only sitemap pages.
       - name: IndexNow ping for the pages this run changed (best-effort)
         if: steps.commit.outputs.pushed == '1'
         continue-on-error: true
         run: |
           files=$(grep -E '\.html$' /tmp/arc-changed.txt || true)
           if [ -z "$files" ]; then echo "no page changed"; exit 0; fi
-          # shellcheck disable=SC2086
           python scripts/indexnow_submit.py --changed $files || echo "IndexNow ping failed - harmless"
