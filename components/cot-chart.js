@@ -34,6 +34,7 @@
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var MINUS = '−';
   var SITE = 'https://agsist.com';
+  var ASK = 'Free every Friday: agsist.com/cot';
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function commas(n) { return Math.abs(Math.round(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -87,11 +88,16 @@
     var cxc = cxA && cxA.commodities && cxA.commodities[key];
     /* the price strip: every week priced and repaired, and not withheld */
     var reason = (cxc && cxc.price_withheld_reason) || '';
-    var every = rows.every(function (r) { return r.raw !== null && r.adj !== null; });
-    var price = !reason && every && last.adj > 0;
+    /* release day: the newest 1-2 weeks can lack the repaired index; the line stops at the last repaired week */
+    var tail = 0;
+    while (tail < 2 && tail < rows.length - 1 && rows[rows.length - 1 - tail].adj === null && rows[rows.length - 1 - tail].raw !== null) tail++;
+    var head = rows.slice(0, rows.length - tail);
+    var every = head.every(function (r) { return r.raw !== null && r.adj !== null; });
+    var pLast = head[head.length - 1];
+    var price = !reason && every && pLast && pLast.adj > 0;
     if (price) {
-      var k = last.raw / last.adj;   /* the repaired index scaled so its last point is the last close */
-      rows.forEach(function (r) { r.price = Math.round(r.adj * k * 100) / 100; });
+      var k = pLast.raw / pLast.adj;   /* the repaired index scaled so its last point is that week's close */
+      rows.forEach(function (r, i) { r.price = i < head.length ? Math.round(r.adj * k * 100) / 100 : null; });
     }
     var priceWhy = price ? '' : /roll/.test(reason) || key === 'leanhogs'
       ? 'No price line: the price series still jumps where one contract rolls to the next, so it is left out.'
@@ -103,7 +109,7 @@
       + (price ? ' Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.' : '');
     var h = aligned && G.brief(key, cot, cx), an = aligned && G.answer(key, cot, cx);
     return { key: key, name: CHIP[key] || key, rows: rows, last: last, hi: hi, lo: lo, price: price, priceWhy: priceWhy,
-      headline: h ? h.text : null, headlineHtml: h ? h.html : null, aligned: aligned, answer: an ? an.did : null,
+      pLast: price ? pLast : null, headline: h ? h.text : null, headlineHtml: h ? h.html : null, aligned: aligned, answer: an ? an.did : null,
       asOf: 'Positions as of ' + mdy(last.date) + (rel ? ', released ' + md(rel) : ''), src: src };
   }
 
@@ -221,14 +227,16 @@
     var pT = netB + gap, pB = pT + priceH - 4;
     items.push({ t: 'line', pts: [[L, pT - gap / 2], [w - R, pT - gap / 2]], ink: 'grid', width: 1 });
     if (m.price) {
-      var ps = m.rows.map(function (r) { return r.price; });
+      var ps = m.rows.map(function (r) { return r.price; }).filter(function (v) { return v !== null; });
       var pl = Math.min.apply(null, ps), ph = Math.max.apply(null, ps), pp = (ph - pl) * 0.08 || 1;
       pl -= pp; ph += pp;
-      var ppts = m.rows.map(function (r, i) { return [X(i), pB - ((r.price - pl) / (ph - pl)) * (pB - pT - fs)]; });
+      var ppts = [];
+      m.rows.forEach(function (r, i) { if (r.price !== null) ppts.push([X(i), pB - ((r.price - pl) / (ph - pl)) * (pB - pT - fs)]); });
+      var pli = ppts.length - 1, short = pli < li;
       items.push({ t: 'line', pts: ppts, ink: 'price', width: o.big ? 2.5 : 1.5 });
-      items.push({ t: 'dot', x: ppts[li][0], y: ppts[li][1], r: o.big ? 5 : 3.5, ink: 'price', ring: 'surface' });
+      items.push({ t: 'dot', x: ppts[pli][0], y: ppts[pli][1], r: o.big ? 5 : 3.5, ink: 'price', ring: 'surface' });
       items.push({ t: 'text', x: L - 6, y: pT + (pB - pT) / 2, s: 'Price', ink: 'muted', size: fs, weight: 600, align: 'right', base: 'middle' });
-      items.push({ t: 'text', x: w - R, y: pT - 2, s: px(m.key, m.last.raw), ink: 'muted', size: fs, weight: 600, align: 'right', base: 'top' });
+      items.push({ t: 'text', x: w - R, y: pT - 2, s: px(m.key, (m.pLast || m.last).raw) + (short && m.pLast ? ' (' + md(m.pLast.date) + ')' : ''), ink: 'muted', size: fs, weight: 600, align: 'right', base: 'top' });
     } else {
       items.push({ t: 'text', x: L, y: pT + (pB - pT) / 2, s: m.priceWhy, ink: 'muted', size: fs, align: 'left', base: 'middle', wrap: w - L - R });
     }
@@ -378,14 +386,16 @@
   }
   /* The saved picture. o.phone: 1080x1350 (4:5, the default on a phone): headline 60 px, every other word 26 px
      or more, so it reads at 390 px wide; else 1200x675 (desktop). Both: agsist.com/cot, the headline, the answer
-     line, the chart (with the price strip when the market has one), the report date and the source.
-     -> {canvas, texts, sizes} (texts and their font sizes, every string drawn, for the tests) */
+     line, the chart (with the price strip when the market has one), the report date and the source, then the
+     Funds this week ask on its own last line ("Free every Friday: agsist.com/cot", Sig, Nov 6).
+     -> {canvas, texts, sizes, ys} (texts and their font sizes, every string drawn, and the baselines of the ones
+     drawn outside the chart, for the tests) */
   function image(m, doc, o) {
     o = o || {};
     var ph = !!o.phone, W = ph ? 1080 : 1200, H = ph ? 1350 : 675, P = ph ? 60 : 56;
     var c = (doc || document).createElement('canvas'); c.width = W; c.height = H;
-    var ctx = c.getContext('2d'), texts = [], sizes = [];
-    function text(s, x, y, size, weight, ink, al) { ctx.font = weight + ' ' + size + 'px ' + FONT; ctx.fillStyle = ink; ctx.textAlign = al || 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, y); texts.push(s); sizes.push(size); }
+    var ctx = c.getContext('2d'), texts = [], sizes = [], ys = [];
+    function text(s, x, y, size, weight, ink, al) { ctx.font = weight + ' ' + size + 'px ' + FONT; ctx.fillStyle = ink; ctx.textAlign = al || 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, y); texts.push(s); sizes.push(size); ys.push(y); }
     function wrapped(s, size, weight, max) { ctx.font = weight + ' ' + size + 'px ' + FONT; return wrapLines(ctx, s, W - 2 * P).slice(0, max); }
     ctx.fillStyle = '#0a0c0d'; ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = '#d4a23f'; ctx.fillRect(0, 0, W, ph ? 12 : 8);
@@ -400,11 +410,13 @@
       y += 4;
       if (m.answer) { wrapped(m.answer, 30, 500, 6).forEach(function (s) { text(s, P, y, 30, 500, '#e9edeb'); y += 41; }); y += 8; }
       wrapped(sub, 26, 600, 3).forEach(function (s) { text(s, P, y, 26, 600, 'rgba(233,237,235,.80)'); y += 34; });
-      var srcL = wrapped(src, 26, 400, 4), foot = H - 40 - (srcL.length - 1) * 34;
+      /* the ask on its own last line, a gap above it so the source line is not crowded (Sig, Nov 6) */
+      var srcL = wrapped(src, 26, 400, 4), foot = H - 40 - 50 - (srcL.length - 1) * 34;
       gh = foot - 50 - y;
       g = layout(m, W - 2 * P, gh, { fs: 26, big: true });
       paint(ctx, g, P, y + 6);
       srcL.forEach(function (s, i) { text(s, P, foot + i * 34, 26, 400, 'rgba(233,237,235,.80)'); });
+      text(ASK, P, H - 40, 28, 700, '#d4a23f');
     } else {
       text('agsist.com/cot', P, 62, 26, 800, '#d4a23f');
       text(m.asOf, W - P, 62, 22, 600, 'rgba(233,237,235,.80)', 'right');
@@ -412,12 +424,13 @@
       hl.forEach(function (s, i) { text(s, P, 122 + i * 48, 38, 800, '#e9edeb'); });
       var top = 122 + (hl.length - 1) * 48 + 30;
       text(sub, P, top + 4, 20, 600, 'rgba(233,237,235,.74)');
-      gh = H - top - 96; g = layout(m, W - 2 * P, gh, { fs: 19, big: true });
+      gh = H - top - 124; g = layout(m, W - 2 * P, gh, { fs: 19, big: true });
       paint(ctx, g, P, top + 18);
-      wrapped(src, 17, 400, 2).forEach(function (s, i) { text(s, P, H - 46 + i * 22, 17, 400, 'rgba(233,237,235,.70)'); });
+      wrapped(src, 17, 400, 2).forEach(function (s, i) { text(s, P, H - 74 + i * 22, 17, 400, 'rgba(233,237,235,.70)'); });
+      text(ASK, P, H - 20, 19, 700, '#d4a23f');
     }
     g.items.forEach(function (it) { if (it.t === 'text') { texts.push(it.s); sizes.push(it.size); } });
-    return { canvas: c, texts: texts, sizes: sizes };
+    return { canvas: c, texts: texts, sizes: sizes, ys: ys };
   }
 
   /* ---------------------------------------------------------------- the page */
@@ -678,7 +691,7 @@
     var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
     ready.then(function () {
       var im = image(M, doc, { phone: phone() });
-      api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes };
+      api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes, ys: im.ys };
       var name = 'agsist-cot-' + slugs().replace(/,/g, '-') + '-' + M.last.date + '.png';
       im.canvas.toBlob(function (blob) {
         if (!blob) { note('Could not draw the image here.'); return; }

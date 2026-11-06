@@ -284,6 +284,12 @@ test("phone save image: 1080x1350, headline 56 px or more, everything else 26 px
     assert.ok(im.texts.some((t) => t.startsWith("Managed money sold a net 83,310")), "the answer line");
     assert.ok(im.texts.some((t) => t.startsWith("Source: CFTC Commitments of Traders")), "the source");
     assert.ok(!im.texts.some((t) => DASH.test(t)));
+    // the Funds this week ask (Sig, Nov 6): its own last line, 26 px or more, clear of the source and of the bottom edge
+    const ask = im.texts.indexOf("Free every Friday: agsist.com/cot");
+    assert.ok(ask >= 0 && im.sizes[ask] >= 26, "the ask line, 26 px or more");
+    const below = im.ys.slice(0, ask);   // every line drawn before it: the site, date, headline, answer, axis words, source
+    assert.ok(im.ys[ask] === Math.max(...im.ys) && im.ys[ask] <= 1350 - im.sizes[ask] * 0.3, "the ask is the last line and not clipped: " + im.ys[ask]);
+    assert.ok(im.ys[ask] - Math.max(...below) >= im.sizes[ask] * 1.6, "a clear gap above the ask: " + (im.ys[ask] - Math.max(...below)));
     if (process.env.COT_SHOTS) fs.writeFileSync(path.join(process.env.COT_SHOTS, "save-phone.png"), buf);
     await pg.context().close();
     // desktop keeps 1200x675
@@ -291,6 +297,10 @@ test("phone save image: 1080x1350, headline 56 px or more, everything else 26 px
     const [dl2] = await Promise.all([d.waitForEvent("download"), d.click("#cc-save")]);
     const b2 = fs.readFileSync(await dl2.path());
     assert.deepEqual([b2.readUInt32BE(16), b2.readUInt32BE(20)], [1200, 675]);
+    const di = await d.evaluate(() => window.AgCotChart.lastImage), da = di.texts.indexOf("Free every Friday: agsist.com/cot");
+    assert.ok(da >= 0 && di.ys[da] === Math.max(...di.ys) && di.ys[da] <= 675 - 5, "desktop: the ask on its own last line, not clipped");
+    assert.ok(di.ys[da] - Math.max(...di.ys.slice(0, da)) >= di.sizes[da] * 1.6, "desktop: a clear gap above the ask");
+    if (process.env.COT_SHOTS) fs.writeFileSync(path.join(process.env.COT_SHOTS, "save-desktop.png"), b2);
     await d.context().close();
   } finally { await browser.close(); srv.close(); }
 });

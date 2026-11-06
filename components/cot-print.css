@@ -38,19 +38,19 @@
 .cotp-rt{position:relative;flex:1;height:5pt;background:#e3e3e3;border-radius:3pt;margin:0 5pt}
 .cotp-r0{position:absolute;top:-3pt;bottom:-3pt;width:1pt;margin-left:-.5pt;background:#000}
 .cotp-rm{position:absolute;top:50%;width:10pt;height:10pt;margin:-5pt 0 0 -5pt;border-radius:50%;background:#d4a23f;border:1.5pt solid #000;box-sizing:border-box}
-.cotp-low{display:grid;grid-template-columns:1fr 1.55in;gap:.22in;align-items:start;margin-top:.08in;border-top:1.5pt solid #000;padding-top:.05in;break-inside:avoid}
+.cotp-low{display:grid;grid-template-columns:1fr 1.8in;gap:.22in;align-items:start;margin-top:.08in;border-top:1.5pt solid #000;padding-top:.05in;break-inside:avoid}
 .cotp-chart figcaption{font-size:11pt;line-height:1.25;margin-bottom:.02in}
 .cotp-chart svg{display:block;width:100%;height:auto}
 .cotp-side-box{text-align:center}
 .cotp-next{font-size:12pt;font-weight:800;line-height:1.25;text-align:left;border-left:4pt solid #d4a23f;padding-left:.08in}
 .cotp-qr{margin:.08in auto .02in}
 .cotp-qr svg{width:1.15in;height:1.15in;display:block;margin:0 auto}
-.cotp-big{font:800 13pt/1.2 "JetBrains Mono",ui-monospace,monospace}
-.cotp-free{font-size:11pt}
+/* under the QR code: "Every Friday by email:" then the address big, on its own line (Sig, Nov 6) */
+.cotp-free{font-size:11pt;font-weight:700;line-height:1.25}
+.cotp-big{display:block;font:800 13pt/1.2 "JetBrains Mono",ui-monospace,monospace}
 .cotp-src{font-size:11pt;line-height:1.25;margin-top:.06in!important;border-top:1pt solid #000;padding-top:.04in}
 .cotp-tight .cotp-s{line-height:1.15}
 .cotp-tight .cotp-grid{row-gap:.02in}
 .cotp-tight .cotp-lead{margin:.04in 0 0!important}
 .cotp-tight .cotp-low{margin-top:.04in}
 .cotp-tight .cotp-qr svg{width:.85in;height:.85in}
-.cotp-tight .cotp-free{display:none}

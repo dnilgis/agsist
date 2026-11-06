@@ -37,7 +37,7 @@ test("COT: the live banner says the same, with the release day only from the sam
   assert.equal(run({ report_date: "2026-10-20", release_date: "2026-10-23" }, "October 20, 2026"), " · released Fri Oct 23");
   assert.equal(run({ report_date: "2026-10-13", release_date: "2026-10-16" }, "October 20, 2026"), "", "last week's analysis file says nothing");
   assert.match(js, /date\.textContent = 'Positions held Tuesday, ' \+ summary\.report_date \+ cotReleased\(\) \+ ' · CFTC Disaggregated, futures only';/);
-  assert.match(read("cot.html"), /cot-page\.js\?v=9/);
+  assert.match(read("cot.html"), /cot-page\.js\?v=10/);
 });
 
 test("Crop conditions: the top line names the week ending and the release day", () => {

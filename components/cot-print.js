@@ -7,7 +7,8 @@
    title), any buying or selling run of 3 weeks or more, and the 52-week range from cot.json (min52, max52, the
    card bar's numbers). Then the corn chart drawn by the chart's own layout as SVG (AgCotChart.layout and toSvg,
    so it prints sharp), the next report from cot.json's next_release (the release bar's date, holiday-aware),
-   the source, and a QR code to agsist.com/cot (components/qr.js).
+   the source, and a QR code to the signup box on agsist.com/cot (#cot-signup, components/qr.js) with the line
+   "Every Friday by email: agsist.com/cot" under it.
 
    Nothing here fetches: the chart hands over the files cot-page.js loaded ('cot:chart-data'). The sheet sits at
    the end of <body>, hidden on screen (no layout shift); "Print this week" switches print to it
@@ -18,7 +19,8 @@
   var G = root.AgCotGlance || (typeof require === 'function' ? require('./cot-glance.js') : null);
   var C = root.AgCotChart || (typeof require === 'function' ? require('./cot-chart.js') : null);
   var KEYS = ['corn', 'beans', 'wheat', 'livecattle', 'feedercattle', 'leanhogs'];
-  var URL_SHOWN = 'agsist.com/cot', URL_FULL = 'https://agsist.com/cot';
+  /* the QR code lands on the Funds this week signup box (Sig, Nov 6: grow the list); the printed URL stays short */
+  var URL_SHOWN = 'agsist.com/cot', URL_FULL = 'https://agsist.com/cot#cot-signup', ASK = 'Every Friday by email:';
   var DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -113,7 +115,7 @@
       + '.' + (chart && chart.price ? ' Corn price: front-month close each report Tuesday (Yahoo Finance), adjusted for contract rolls.' : '')
       + ' Not a price forecast.';
     return { asOf: G.asOf(cot, cxA), lead: lead(cot, cxA), markets: markets,
-      chart: chart, next: nextLine(cot, cxA, now), src: src, url: URL_SHOWN };
+      chart: chart, next: nextLine(cot, cxA, now), src: src, url: URL_SHOWN, ask: ASK };
   }
 
   function sideWords(mk) { return mk.side === 'flat' ? 'about even' : 'net ' + mk.side; }
@@ -145,18 +147,18 @@
       + (s.lead ? '<p class="cotp-lead"><b>This week:</b> ' + esc(s.lead) + '</p>' : '')
       + '<div class="cotp-grid">' + mk + '</div>'
       + '<div class="cotp-low">' + chart + '<aside class="cotp-side-box"><p class="cotp-next">' + esc(s.next) + '</p>' + code
-      + '<p class="cotp-big">' + esc(s.url) + '</p><p class="cotp-free">Every week, free.</p></aside></div>'
+      + '<p class="cotp-free">' + esc(s.ask) + ' <span class="cotp-big">' + esc(s.url) + '</span></p></aside></div>'
       + '<p class="cotp-src">' + esc(s.src) + '</p>';
   }
 
-  var api = { KEYS: KEYS, sheet: sheet, html: html, run: run, lead: lead, nextLine: nextLine };
+  var api = { KEYS: KEYS, URL_FULL: URL_FULL, sheet: sheet, html: html, run: run, lead: lead, nextLine: nextLine };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgCotPrint = api;
 
   /* ---------------------------------------------------------------- the page */
   var doc = root.document, D = null, MAX_PX = 10.2 * 96 - 8;
   if (!doc) return;
-  function qr() { try { return root.AgQR ? root.AgQR.svg(URL_FULL, 'QR code to agsist.com/cot') : ''; } catch (e) { return ''; } }
+  function qr() { try { return root.AgQR ? root.AgQR.svg(URL_FULL, 'QR code to the Funds this week signup at agsist.com/cot') : ''; } catch (e) { return ''; } }
   function measure(el) { el.classList.add('cotp-measure'); var h = el.offsetHeight; el.classList.remove('cotp-measure'); return h; }
   function build() {
     if (!D && root.AgCotChart && root.AgCotChart.data) D = root.AgCotChart.data();

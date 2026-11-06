@@ -19,7 +19,12 @@
 
    NO LAYOUT SHIFT: scripts/seed_static.py (happening_seed) bakes the same rows server-side (the JS-off text), and
    css/home.css holds each line's room. The live region (#hap-say) speaks only when a row changes state.
-   window.AgHappening (test/home-happening.test.mjs runs it in node on fixtures and a fixed clock). */
+   window.AgHappening (test/home-happening.test.mjs runs it in node on fixtures and a fixed clock).
+
+   THE FUNDS THIS WEEK ASK (Sig, Nov 6: grow the Friday COT email list): when the first row is the COT report (its
+   countdown, "updating" or "Out today"), a small "Email me Fridays" link sits at the right of its title line and opens
+   the one Funds this week box on /cot (#cot-signup; no second signup path). It is placed over the row's own room
+   (absolute, a 44 px target), so it moves nothing; the bake writes it too. GA4: funds_ask {where: home_happening}. */
 (function (root) {
   'use strict';
   var DAY = 864e5;
@@ -245,7 +250,7 @@
   /* {rows:[{t, w, cd, x, href, state}], say}: what each row prints at nowMs */
   function words(events, D, nowMs) {
     return pick(events, nowMs).map(function (r, i) {
-      var o = { t: r.name, href: r.href, state: 'next', cd: '', x: '' };
+      var o = { t: r.name, href: r.href, state: 'next', cd: '', x: '', ask: i === 0 && r.key === 'cot' };
       if (r.out) {
         var ol = outLine(r, D || {});
         o.state = ol.state;
@@ -260,12 +265,15 @@
   }
   function rowHtml(o, i) {
     var e = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
-    if (i === 0) return '<li class="hap-i hap-top" data-state="' + o.state + '"><a class="hap-a" href="' + e(o.href) + '" data-track="happening">' +
+    if (i === 0) return '<li class="hap-i hap-top' + (o.ask ? ' hap-asks' : '') + '" data-state="' + o.state + '"><a class="hap-a" href="' + e(o.href) + '" data-track="happening">' +
       '<span class="hap-t">' + e(o.t) + '</span><span class="hap-w"><span class="hap-wt">' + e(o.w) + '</span>' +
-      '<span class="hap-cd">' + (o.cd ? ' &middot; ' + e(o.cd) : '') + '</span></span><span class="hap-x"' + (o.x ? ' title="' + e(o.x) + '"' : '') + '>' + e(o.x) + '</span></a></li>';
+      '<span class="hap-cd">' + (o.cd ? ' &middot; ' + e(o.cd) : '') + '</span></span><span class="hap-x"' + (o.x ? ' title="' + e(o.x) + '"' : '') + '>' + e(o.x) + '</span></a>' +
+      (o.ask ? ASK : '') + '</li>';
     return '<li class="hap-i" data-state="' + o.state + '"><a class="hap-a" href="' + e(o.href) + '" data-track="happening">' +
       '<span class="hap-w">' + e(o.w) + '</span><span class="hap-t">' + e(o.t) + (o.x ? ': ' + e(o.x) : '') + '</span></a></li>';
   }
+  /* the same markup as scripts/seed_static.py HAP_ASK */
+  var ASK = '<a class="hap-ask" href="/cot#cot-signup" data-track="funds-ask">Email me Fridays</a>';
   var FILL = '<li class="hap-i hap-all"><a class="hap-a" href="/usda-calendar" data-track="happening"><span class="hap-w">Every report date</span><span class="hap-t">USDA report calendar</span></a></li>';
   function listHtml(rows) {
     var h = rows.map(rowHtml).join('');
@@ -295,7 +303,7 @@
     var rows = words(ev, D, now);
     if (!rows.length) return;                              /* nothing read: the baked rows stay */
     /* a change of state (a new row, out, updating) redraws and is spoken once; the minute only changes the countdown */
-    var s = rows.map(function (o) { return o.t + '|' + o.w.replace(/^(today|tomorrow)/, '') + '|' + o.state + '|' + o.x; }).join('/');
+    var s = rows.map(function (o) { return o.t + '|' + o.w.replace(/^(today|tomorrow)/, '') + '|' + o.state + '|' + o.x + '|' + o.ask; }).join('/');
     if (s !== sig) {
       var first = !sig; sig = s;
       list.innerHTML = listHtml(rows);
@@ -311,7 +319,12 @@
   }
   function tick() { draw(); clearTimeout(timer); timer = setTimeout(tick, 60000 - (Date.now() % 60000) + 50); }
   function go() {
-    if (!document.getElementById('hap-list')) return;
+    var list = document.getElementById('hap-list');
+    if (!list) return;
+    list.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('.hap-ask') : null;
+      if (a) try { if (typeof root.gaEvent === 'function') root.gaEvent('funds_ask', { where: 'home_happening' }); } catch (x) {}
+    });
     Promise.all([load(), get('/usda-calendar.ics', 'text').then(function (t) { D.ics = t; })]).then(function () { tick(); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();

@@ -87,7 +87,7 @@ ANA = REPO / "data" / "cot-analysis.json"
 REPLY_DEFAULT = "news@agsist.com"
 TAG = "utm_source=cot_email&utm_medium=email"
 PAGE = "https://agsist.com/cot?" + TAG
-FORWARD_URL = "https://agsist.com/cot?ref=email-forward&" + TAG
+FORWARD_URL = "https://agsist.com/cot?ref=email-forward&" + TAG + "#cot-signup"   # lands on the signup box (Sig, Nov 6)
 UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 TOPIC = "cot"
 # (key in the COT files, the name in the email)
@@ -579,12 +579,12 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
         msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     else:
         msg["List-Unsubscribe"] = "<mailto:" + unsub + "?subject=unsubscribe>"
-    foot_t = ["", "Forward to a neighbor who trades: " + FORWARD_URL, "",
+    foot_t = ["", "Forward this to a neighbor; they can sign up free at " + FORWARD_URL, "",
               "You get this because you asked for Funds this week on agsist.com.",
               ("Stop Funds this week (nothing else changes): " + uurl) if uurl else "To stop it, reply with subject line: unsubscribe",
               "PO Box 243, Chetek, WI 54728"]
     msg.set_content(text + "\n" + "\n".join(foot_t) + "\n")
-    foot_h = ('<p style="margin:16px 0 0;font:14px/1.5 sans-serif;color:#6b6b6b">Forward to a neighbor who trades: '
+    foot_h = ('<p style="margin:16px 0 0;font:14px/1.5 sans-serif;color:#6b6b6b">Forward this to a neighbor; they can sign up free at '
               '<a href="%s" style="color:#8a6b1f">agsist.com/cot</a></p>'
               '<p style="margin:12px 0 0;font:13px/1.6 sans-serif;color:#6b6b6b">You get this because you asked for Funds this week '
               'on agsist.com.<br>%s<br>PO Box 243, Chetek, WI 54728</p>'
@@ -1158,6 +1158,10 @@ def _selftest():
     us = re.findall(r'https://agsist\.com/[^\s"<>]*', allt)
     ok(us and all(TAG in u for u in us), "every agsist.com link tagged cot_email: %r" % [u for u in us if TAG not in u])
     ok("https://agsist.com/cot?" in allt, "links to the COT tool")
+    # the forward line lands a neighbor on the signup box, tagged like every other link (Sig, Nov 6)
+    fw = "https://agsist.com/cot?ref=email-forward&" + TAG + "#cot-signup"
+    ok(body.count(fw) == 1 and hb.replace("&amp;", "&").count('href="' + fw + '"') == 1, "forward link goes to /cot#cot-signup in text and HTML")
+    ok("Forward this to a neighbor; they can sign up free at" in body, "forward line in the text part")
 
     # ── the modes, with the list, the flag and the mail server mocked ──
     files = {"COT": cot, "HIST": hist, "DEEP": deep, "ANA": ana}

@@ -34,9 +34,9 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 test("cot.html: the Print this week button beside Save image (a 44 px .cc-btn), the stylesheet and scripts at their versions", () => {
   assert.match(HTML, /<button type="button" class="cc-btn" id="cc-save">Save image<\/button>\s*<button type="button" class="cc-btn" id="cc-print">Print this week<\/button>/);
   assert.match(HTML, /\.cc-btn\{[^}]*min-height:44px/);
-  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=1">'));
+  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=2">'));
   const i = (s) => HTML.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-chart.js?v=5") > 0 && i("cot-chart.js?v=5") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=1"), "chart, QR encoder, then the sheet");
+  assert.ok(i("cot-chart.js?v=7") > 0 && i("cot-chart.js?v=7") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=2"), "chart, QR encoder, then the sheet");
   assert.match(read("components/cot-chart.js"), /dispatchEvent\(new CustomEvent\('cot:chart-data'/, "the chart hands its files over");
   assert.doesNotMatch(JS, /fetch\(|XMLHttpRequest/, "the sheet fetches nothing");
 });
@@ -64,6 +64,14 @@ test("the sheet's market sentences are the page's answer line for the fixture, w
   assert.equal(P.nextLine(FX.cot, FX.cx, G.etInstant(FX.cot.next_release, "15:30") + 3600000), "A newer report was due Friday Nov 6, 3:30 PM ET. This sheet shows the one before it.");
   assert.doesNotMatch(h, DASH);
   assert.doesNotMatch(h, /\b(should|buy now|sell now|consider|recommend|signal|z-score|percentile)\b/i, "no advice, no method words");
+});
+
+test("the QR code lands on the Funds this week signup box, and the line under it asks plainly (Sig, Nov 6)", () => {
+  assert.equal(P.URL_FULL, "https://agsist.com/cot#cot-signup");
+  assert.match(JS, /AgQR\.svg\(URL_FULL,/, "the QR encodes URL_FULL");
+  assert.match(HTML, /id="cot-signup"/, "the box it lands on");
+  const h = P.html(P.sheet(FX.cot, FX.cx, FX.hist, NOW), "<svg></svg>");
+  assert.ok(h.includes('<div class="cotp-qr"><svg></svg></div><p class="cotp-free">Every Friday by email: <span class="cotp-big">agsist.com/cot</span></p>'));
 });
 
 test("the 52-week range is cot.json's min52 and max52, and a run counts the weeks in a row from the history", () => {
@@ -147,6 +155,7 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
         svgText: Math.min(...q("#cotp .cotp-chart svg text").map((t) => t.getBoundingClientRect().height)),
         zoom: document.getElementById("cotp").dataset.zoom || "",
         qr: !!document.querySelector("#cotp .cotp-qr svg"),
+        ask: (document.querySelector("#cotp .cotp-qr + .cotp-free") || {}).textContent || "",
       };
     });
     assert.ok(vis.sheet, "the sheet shows in print");
@@ -157,6 +166,7 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
     assert.ok(vis.svgText >= 14, "chart labels print at about 11 pt: " + vis.svgText);
     assert.equal(vis.zoom, "", "the fixture week fits without scaling");
     assert.ok(vis.qr, "QR code from components/qr.js");
+    assert.equal(vis.ask, "Every Friday by email: agsist.com/cot", "the Funds this week ask, right under the QR code");
     await pg.emulateMedia({ media: null });   // page.pdf prints with print media unless screen is emulated
     for (const format of ["Letter", "A4"]) {
       await pg.evaluate(() => document.documentElement.classList.add("cotp-on"));
