@@ -22,7 +22,7 @@ function run(name, event, wait = "0") {
   const ev = join(dir, "event.json"); writeFileSync(ev, JSON.stringify(event));
   const out = join(dir, "out"); writeFileSync(out, "");
   const log = execFileSync("bash", [SH, "behind", eng], { cwd: ROOT, encoding: "utf8",
-    env: { ...process.env, GITHUB_EVENT_NAME: name, GITHUB_EVENT_PATH: ev, GITHUB_OUTPUT: out, WAIT_SECONDS: wait } });
+    env: { ...process.env, GITHUB_EVENT_NAME: name, GITHUB_EVENT_PATH: ev, GITHUB_OUTPUT: out, WAIT_SECONDS: wait, ENGINE_BEHIND_GIT: "0" } });
   return { log, retry: /retry=true/.test(readFileSync(out, "utf8")) };
 }
 const pushed = "2026-11-06T14:41:20Z";
@@ -41,6 +41,30 @@ test("no second checkout when the engine is newer, the push changed no engine pa
   engineAt("2026-11-06T14:00:00Z");
   assert.equal(run("push", data).retry, false);
   assert.equal(run("pull_request", code).retry, false);
+});
+
+test("the commit's own change list counts when the event lists no files (the Nov 6 first live run)", () => {
+  engineAt("2026-11-06T14:00:00Z");
+  const ev = join(dir, "event.json"); writeFileSync(ev, JSON.stringify({ head_commit: { timestamp: pushed } }));
+  const out = join(dir, "out"); writeFileSync(out, "");
+  // a throwaway repository whose last commit changes scripts/: git's view finds the engine path
+  const r = join(dir, "repo"); execFileSync("rm", ["-rf", r]); execFileSync("git", ["init", "-q", r]);
+  const g = (...a) => execFileSync("git", ["-C", r, ...a], { env: { ...process.env, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@t", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@t" } });
+  execFileSync("mkdir", ["-p", join(r, ".github/actions/engine"), join(r, "scripts")]);
+  writeFileSync(join(r, ".github/engine-paths"), readFileSync(join(ROOT, ".github/engine-paths")));
+  writeFileSync(join(r, "a.txt"), "a"); g("add", "-A"); g("commit", "-q", "-m", "one");
+  writeFileSync(join(r, "scripts/x.py"), "x"); g("add", "-A"); g("commit", "-q", "-m", "two");
+  // GITHUB_SHA is this repository's own last commit: in Actions the runner's real GITHUB_SHA is set, and that commit
+  // is not in the throwaway repository (the test passed locally and failed in CI until Nov 6)
+  const sha = execFileSync("git", ["-C", r, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+  const log = execFileSync("bash", [SH, "behind", eng], { cwd: r, encoding: "utf8",
+    env: { ...process.env, GITHUB_EVENT_NAME: "push", GITHUB_EVENT_PATH: ev, GITHUB_OUTPUT: out, WAIT_SECONDS: "0", GITHUB_SHA: sha } });
+  assert.match(readFileSync(out, "utf8"), /retry=true/, log);
+});
+
+test("a decision not to wait says why", () => {
+  engineAt("2026-11-06T14:00:00Z");
+  assert.match(run("push", data).log, /no second checkout \(fresh this push changes no engine path/);
 });
 
 test("the action: behind holds no key and runs after the checkout; the second checkout is pinned and leaves no key", () => {
