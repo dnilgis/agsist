@@ -26,13 +26,14 @@ jobs:
       actions: read
       contents: read
     outputs:
-      go: ${{ steps.g.outputs.go }}
+      go: ${{ steps.g.outputs.go == '1' && '1' || steps.p.outputs.go }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
           sparse-checkout: |
             scripts/cron_gate.py
+            data/predictions.json
             /.github/actions/engine/
             /.github/engine-paths
           sparse-checkout-cone-mode: false
@@ -50,6 +51,11 @@ jobs:
           --cron "41 20 * * 1-5"
           --cron "41 22 * * 1-5"
           --cron "41 23 * * 1-5"
+      # Entry-day pass: until every crop has a call or a recorded reason, every chained run between
+      # 2:00 and 6:50 PM CT goes, not only the first after each tick.
+      - id: p
+        if: steps.g.outputs.go != '1'
+        run: python3 scripts/cron_gate.py predict
 
   call:
     needs: gate
