@@ -1,5 +1,5 @@
 {
- "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
+ "about": "Pointer pages for retired pages: path, where it sends readers, and the date retired.",
  "pointers": {
   "cash-bids/company/farmers-cooperative-elevator-company.html": {
    "to": "/cash-bids/company/",
@@ -12,6 +12,18 @@
   "cash-bids/company/new-cooperative.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-29"
+  },
+  "cash-bids/illinois/evansville.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-06"
+  },
+  "cash-bids/illinois/fults.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-06"
+  },
+  "cash-bids/illinois/nashville.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-06"
   },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
