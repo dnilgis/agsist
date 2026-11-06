@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-05T23:40:28Z",
+ "updated": "2026-11-06T23:27:52Z",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, state hay reports",
  "note": "Confirmed trades as AMS reports them, $ per ton, by grade and bale type. Each report has its own date. Not blended with the NASS monthly prices in hay-prices.json.",
  "reports": [
@@ -151,7 +151,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -332,7 +332,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -342,7 +342,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -598,7 +598,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -1544,7 +1544,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -1554,7 +1554,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    },
    "title": "Iowa Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 11/6/2026",
@@ -1645,7 +1645,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -1655,7 +1655,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -1756,7 +1756,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -1766,7 +1766,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -1912,7 +1912,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -2018,7 +2018,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -2028,7 +2028,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    },
    "title": "Montana Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 10/30/2026",
@@ -2270,7 +2270,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -2791,7 +2791,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3037,7 +3037,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3045,23 +3045,28 @@
    "state": "CA",
    "state_name": "California",
    "title": "California Direct Hay Report",
-   "heading": "Direct Hay Weighted Average Report for week ending 10/23/2026",
-   "date": "2026-10-23",
-   "week_ending": "2026-10-23",
-   "last_reported": "2026-10-05",
+   "heading": "Direct Hay Weighted Average Report for week ending 11/6/2026",
+   "date": "2026-11-06",
+   "week_ending": "2026-11-06",
+   "last_reported": "2026-10-19",
    "tons": {
     "hay": {
-     "week": 7230.0,
-     "last": 7300.0,
-     "year": 6015.0
+     "week": 3030.0,
+     "last": 7230.0,
+     "year": 6786.0
+    },
+    "straw": {
+     "week": 0.0,
+     "last": 0.0,
+     "year": 200.0
     },
     "total": {
-     "week": 7230.0,
-     "last": 7300.0,
-     "year": 6015.0
+     "week": 3030.0,
+     "last": 7230.0,
+     "year": 6986.0
     }
    },
-   "comment": "Compared to last report: Trade activity and demand were good on retail and dairy hay. In the North San Juaquin Valley and southeast regions, Retail alfalfa 3-tie bales sold $25/ton higher than two weeks ago. Dry cow and stock hay traded $5/ton higher. The next available hay report will be Friday, November 06, 2026.",
+   "comment": "Compared to last report: Trade activity and demand were good on retail and dairy hay. Southern California received heavy rainfall delaying all fieldwork. The next available hay report will be Friday, November 20, 2026.",
    "rows": [
     {
      "kind": "hay",
@@ -3071,11 +3076,11 @@
      "basis": "trade",
      "region": "Central San Joaquin Valley",
      "bale": "Large Square 3x4",
-     "qty": 1500.0,
-     "lo": 353.0,
-     "hi": 353.0,
-     "avg": 353.0,
-     "freight": "Delivered-Dairy",
+     "qty": 150.0,
+     "lo": 290.0,
+     "hi": 290.0,
+     "avg": 290.0,
+     "freight": "F.O.B.-Dairy",
      "desc": "New Crop"
     },
     {
@@ -3084,43 +3089,13 @@
      "commodity": "Alfalfa",
      "grade": "Supreme",
      "basis": "trade",
-     "region": "North Inter-Mountains",
+     "region": "Central San Joaquin Valley",
      "bale": "Large Square 3x4",
-     "qty": 1000.0,
-     "lo": 240.0,
-     "hi": 240.0,
-     "avg": 240.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Corn Stalk",
-     "grade": "",
-     "basis": "trade",
-     "region": "North Inter-Mountains",
-     "bale": "Large Square 3x4",
-     "qty": 70.0,
-     "lo": 70.0,
-     "hi": 70.0,
-     "avg": 70.0,
-     "freight": "F.O.B.-Feedlot",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Wheat",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "North Inter-Mountains",
-     "bale": "Large Square 3x4",
-     "qty": 300.0,
-     "lo": 155.0,
-     "hi": 155.0,
-     "avg": 155.0,
-     "freight": "F.O.B.",
+     "qty": 800.0,
+     "lo": 350.0,
+     "hi": 350.0,
+     "avg": 350.0,
+     "freight": "Delivered-Dairy",
      "desc": "New Crop"
     },
     {
@@ -3131,147 +3106,87 @@
      "basis": "trade",
      "region": "North San Joaquin Valley",
      "bale": "Large Square 3x4",
-     "qty": 985.0,
-     "lo": 270.0,
-     "hi": 270.0,
-     "avg": 270.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Premium",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 150.0,
-     "lo": 300.0,
-     "hi": 300.0,
-     "avg": 300.0,
-     "freight": "F.O.B.-Retail",
-     "desc": "> 5th Cut"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Premium",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 1000.0,
-     "lo": 270.0,
-     "hi": 325.0,
-     "avg": 298.13,
-     "freight": "F.O.B.-Retail",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 225.0,
-     "lo": 205.0,
-     "hi": 205.0,
-     "avg": 205.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 350.0,
-     "lo": 200.0,
-     "hi": 200.0,
-     "avg": 200.0,
-     "freight": "F.O.B.",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 500.0,
-     "lo": 210.0,
-     "hi": 210.0,
-     "avg": 210.0,
-     "freight": "F.O.B.-Dairy",
-     "desc": "Grassy / New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Small Square 3 Tie",
-     "qty": 150.0,
-     "lo": 220.0,
-     "hi": 260.0,
-     "avg": 241.67,
-     "freight": "F.O.B.-Retail",
-     "desc": "New Crop"
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Alfalfa",
-     "grade": "Utility/Fair",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Square 3x4",
-     "qty": 250.0,
-     "lo": 185.0,
-     "hi": 195.0,
-     "avg": 191.0,
-     "freight": "F.O.B.-Dairy",
+     "qty": 400.0,
+     "lo": 340.0,
+     "hi": 360.0,
+     "avg": 347.5,
+     "freight": "Delivered-Dairy",
      "desc": ""
     },
     {
      "kind": "hay",
      "organic": false,
-     "commodity": "Bermuda Grass",
-     "grade": "Good",
+     "commodity": "Alfalfa",
+     "grade": "Premium",
      "basis": "trade",
-     "region": "Southeast",
+     "region": "North San Joaquin Valley",
      "bale": "Large Square 3x4",
-     "qty": 100.0,
-     "lo": 150.0,
-     "hi": 150.0,
-     "avg": 150.0,
-     "freight": "F.O.B.",
-     "desc": "Bleached / New Crop"
+     "qty": 280.0,
+     "lo": 250.0,
+     "hi": 250.0,
+     "avg": 250.0,
+     "freight": "F.O.B.-Dairy",
+     "desc": "New Crop"
     },
     {
      "kind": "hay",
      "organic": false,
-     "commodity": "Bermuda Grass",
+     "commodity": "Alfalfa",
+     "grade": "Premium",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Small Square 3 Tie",
+     "qty": 200.0,
+     "lo": 330.0,
+     "hi": 330.0,
+     "avg": 330.0,
+     "freight": "F.O.B.-Retail",
+     "desc": ""
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Premium",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Small Square 3 Tie",
+     "qty": 550.0,
+     "lo": 295.0,
+     "hi": 320.0,
+     "avg": 308.64,
+     "freight": "F.O.B.-Retail",
+     "desc": "New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
      "grade": "Good",
      "basis": "trade",
      "region": "Southeast",
      "bale": "Large Square 3x4",
-     "qty": 300.0,
-     "lo": 150.0,
-     "hi": 150.0,
-     "avg": 150.0,
-     "freight": "F.O.B.",
-     "desc": "Excessive Moisture / New Crop"
+     "qty": 250.0,
+     "lo": 220.0,
+     "hi": 220.0,
+     "avg": 220.0,
+     "freight": "F.O.B.-Dairy",
+     "desc": "New Crop"
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Good",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Small Square 3 Tie",
+     "qty": 150.0,
+     "lo": 270.0,
+     "hi": 270.0,
+     "avg": 270.0,
+     "freight": "F.O.B.-Retail",
+     "desc": "New Crop"
     },
     {
      "kind": "hay",
@@ -3281,19 +3196,19 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Small Square 3 Tie",
-     "qty": 350.0,
-     "lo": 250.0,
-     "hi": 270.0,
-     "avg": 257.14,
+     "qty": 250.0,
+     "lo": 280.0,
+     "hi": 300.0,
+     "avg": 290.0,
      "freight": "F.O.B.-Retail",
      "desc": "New Crop"
     }
    ],
-   "per_bale_tables": 12,
+   "per_bale_tables": 8,
    "skipped": {
     "ask": 0,
     "contract": 0,
-    "other_unit": 12
+    "other_unit": 8
    },
    "kind": "direct",
    "biweekly": false,
@@ -3303,7 +3218,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3313,7 +3228,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    },
    "title": "Utah Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 11/6/2026",
@@ -3459,7 +3374,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    },
    "title": "Nevada Direct Hay Report (Bi-Weekly)",
    "heading": "Direct Hay Weighted Average Report for week ending 10/30/2026",
@@ -3530,7 +3445,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3540,7 +3455,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3550,7 +3465,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3560,7 +3475,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3570,7 +3485,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3580,7 +3495,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3590,7 +3505,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3600,7 +3515,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3610,7 +3525,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3746,7 +3661,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -3756,7 +3671,7 @@
    "status": {
     "ok": false,
     "note": "held: sells every lot by the bale (Oct 10 2026 report); bale prices are never converted to tons",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -4177,7 +4092,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -4493,7 +4408,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -4644,7 +4559,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   },
   {
@@ -4654,7 +4569,7 @@
    "status": {
     "ok": false,
     "note": "held: sells every lot by the bale (Oct 5 2026 report); bale prices are never converted to tons",
-    "checked": "2026-11-05T23:40:28Z"
+    "checked": "2026-11-06T23:27:52Z"
    }
   }
  ]
