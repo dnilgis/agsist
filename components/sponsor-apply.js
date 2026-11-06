@@ -166,7 +166,6 @@
     var p = price(t, code) || 'the monthly price above';
     $('spa-terms-text').textContent = 'I understand: the first month is free. On day 30 I get a report and a yes or no email; no reply means the ad comes down and nothing is owed. If I say yes, an invoice each month for ' + p +
       ', month to month. Sig reviews every ad and can decline one.';
-    $('spa-insurance').hidden = !/insur/i.test(val('spa-company') + ' ' + val('spa-headline') + ' ' + val('spa-body'));
     ['spa-headline', 'spa-body'].forEach(function (id) {
       var el = $(id), n = form.querySelector('[data-for="' + id + '"]');
       if (n) { n.textContent = el.value.length + ' / ' + el.maxLength; n.classList.toggle('over', el.value.length > el.maxLength - 10); }

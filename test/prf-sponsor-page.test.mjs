@@ -92,7 +92,9 @@ test("the page: indexable, FAQ in JSON-LD, the terms, no price, no founding, no 
   assert.ok(faq && faq.mainEntity.length >= 5);
   for (const q of faq.mainEntity) assert.ok(HTML.includes(q.name.replace(/'/g, "&#x27;")) || HTML.includes(q.name), "FAQ shown on the page: " + q.name);
   for (const t of ["One business per state.", "Price on request.", "Prepaid.", "through Dec 31", "first say on renewing",
-      "A sponsor has no say over any figure.", "USDA RMA", "Farmers First never takes a sponsor slot"]) assert.ok(HTML.includes(t), t);
+      "A sponsor has no say over any figure.", "USDA RMA"]) assert.ok(HTML.includes(t), t);
+  // Sig, Nov 6: nothing about his other businesses on a page that sells a slot.
+  for (const t of ["also owns", "may compete", "never takes a sponsor", "Loke Drone"]) assert.ok(!HTML.includes(t), "absent: " + t);
   for (const who of ["Crop insurance agencies", "Ag lenders", "Ranch supply", "Cattle buyers", "Seed dealers", "Fencing dealers"]) assert.ok(HTML.includes(who), who);
   const text = HTML.replace(/<style>[\s\S]*?<\/style>/, "").replace(/<!--[\s\S]*?-->/g, "");
   assert.ok(!PRICE.test(text), "no price on the page");
