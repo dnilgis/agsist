@@ -156,8 +156,14 @@ for (const [file, sched, lag] of GATED) {
     assert.ok(lag <= 360, "the window closes inside six hours");
     if (gaps[file] !== null) assert.ok(lag < gaps[file], `the window (${lag} min) closes before the next tick (${gaps[file]} min on)`);
     assert.match(gate, /permissions:\n\s+actions: read\n\s+contents: read\n/, "the gate may list runs and nothing more");
-    assert.match(gate, /outputs:\n\s+go: \$\{\{ steps\.g\.outputs\.go \}\}/);
-    assert.match(gate, /sparse-checkout: \|\n\s+scripts\/cron_gate\.py\n\s+\/\.github\/actions\/engine\/\n\s+\/\.github\/engine-paths\n\s+sparse-checkout-cone-mode: false/,
+    // predictions.yml (Nov 6): a second step, the entry-day pass, may also say go when the tick did not
+    const predict = file === "predictions.yml";
+    if (predict) {
+      assert.match(gate, /outputs:\n\s+go: \$\{\{ steps\.g\.outputs\.go == '1' && '1' \|\| steps\.p\.outputs\.go \}\}/);
+      assert.match(gate, /- id: p\n\s+if: steps\.g\.outputs\.go != '1'\n\s+run: python3 scripts\/cron_gate\.py predict\n/);
+    } else assert.match(gate, /outputs:\n\s+go: \$\{\{ steps\.g\.outputs\.go \}\}/);
+    assert.match(gate, new RegExp("sparse-checkout: \\|\\n\\s+scripts/cron_gate\\.py\\n" + (predict ? "\\s+data/predictions\\.json\\n" : "") +
+      "\\s+/\\.github/actions/engine/\\n\\s+/\\.github/engine-paths\\n\\s+sparse-checkout-cone-mode: false"),
       "the skip is cheap: only the gate script and the engine step are checked out");
     assert.match(gate, /persist-credentials: false/);
     assert.ok(gate.indexOf("name: Engine checkout") > gate.indexOf("actions/checkout@v4") && gate.indexOf("name: Engine checkout") < gate.indexOf("python3 scripts/cron_gate.py"),
