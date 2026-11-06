@@ -614,4 +614,47 @@ function cotTick(){
 }
 cotTick(); setInterval(cotTick, 60000);
 
+/* THE SIGNUP BOX ON ARRIVAL (Sig, Nov 6: grow the Funds this week list). The release bar's "Get it in your inbox
+   Friday", the print sheet's QR code, the email's forward line and the homepage's "Email me Fridays" all land on
+   #cot-signup, the one Funds this week ask (components/signup-ask.js draws it; no second signup path). The browser
+   may jump to the box (late, and smoothly, with the site's scroll-behavior); once the ask has drawn, a box not yet
+   in view is brought to the top at once, without animation (and kept in view for a moment while the report above
+   draws, until the reader scrolls), and its email field takes focus without a second scroll.
+   A box already answered in this browser is hidden by signup-ask.js and nothing is focused. GA4 gets funds_ask
+   {where} on the bar's link. */
+(function(){
+  var box = document.getElementById('cot-signup'), link = document.getElementById('cot-rel-a');
+  if (!box) return;
+  var waiting = 0;
+  function arrive(){
+    if (location.hash !== '#cot-signup') return;
+    clearTimeout(waiting);
+    var n = 0;
+    (function wait(){
+      var input = box.querySelector('.sa-in');
+      if (box.hidden) return;
+      if (!input) { if (++n <= 80) waiting = setTimeout(wait, 100); return; }
+      bring();
+      try { input.focus({ preventScroll: true }); } catch (_) { input.focus(); }
+      /* the report above may still be drawing: keep the box in view for a moment, until the reader scrolls */
+      var k = 0, stop = function(){ k = 99; };
+      ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function(ev){ window.addEventListener(ev, stop, { once: true, passive: true }); });
+      (function hold(){ if (k++ < 15 && location.hash === '#cot-signup') { bring(); waiting = setTimeout(hold, 100); } })();
+    })();
+  }
+  /* one jump, not the page's smooth scroll across the whole report; nothing when the box is already in view */
+  function bring(){
+    var r = box.getBoundingClientRect(), vh = window.innerHeight || document.documentElement.clientHeight;
+    if (box.hidden || (r.top >= 0 && r.bottom <= vh)) return;
+    try { box.scrollIntoView({ block: 'start', behavior: 'instant' }); } catch (_) { box.scrollIntoView(true); }
+  }
+  if (link) link.addEventListener('click', function(){
+    try { if (typeof window.gaEvent === 'function') window.gaEvent('funds_ask', { where: 'cot_release_bar' }); } catch (_) {}
+    /* the same hash twice fires no hashchange: look after the browser's own jump */
+    setTimeout(arrive, 0);
+  });
+  window.addEventListener('hashchange', arrive);
+  arrive();
+})();
+
 })();

@@ -1042,6 +1042,9 @@ HAP_USDA = [
 ]
 HAP_FILL = ('<li class="hap-i hap-all"><a class="hap-a" href="/usda-calendar" data-track="happening">'
             '<span class="hap-w">Every report date</span><span class="hap-t">USDA report calendar</span></a></li>')
+# The Funds this week ask on the first row when it is the COT report (Sig, Nov 6): the same markup as happening.js ASK,
+# absolutely placed over the row's room in css/home.css, so the live swap moves nothing either way.
+HAP_ASK = '<a class="hap-ask" href="/cot#cot-signup" data-track="funds-ask">Email me Fridays</a>'
 _HAP_DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
@@ -1143,9 +1146,10 @@ def happening_seed(now=None, cot=None, ics_text=None):
             w += ", holiday week"   # the day printed is the moved day
         t, href = _e(r["name"]), _e(r["href"])
         if i == 0:
-            out.append(f'<li class="hap-i hap-top" data-state="next"><a class="hap-a" href="{href}" data-track="happening">'
+            ask = r["href"] == "/cot"
+            out.append(f'<li class="hap-i hap-top{" hap-asks" if ask else ""}" data-state="next"><a class="hap-a" href="{href}" data-track="happening">'
                        f'<span class="hap-t">{t}</span><span class="hap-w"><span class="hap-wt">{w}</span>'
-                       f'<span class="hap-cd"></span></span><span class="hap-x"></span></a></li>')
+                       f'<span class="hap-cd"></span></span><span class="hap-x"></span></a>{HAP_ASK if ask else ""}</li>')
         else:
             out.append(f'<li class="hap-i" data-state="next"><a class="hap-a" href="{href}" data-track="happening">'
                        f'<span class="hap-w">{w}</span><span class="hap-t">{t}</span></a></li>')

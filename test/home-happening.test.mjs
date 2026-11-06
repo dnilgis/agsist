@@ -101,6 +101,23 @@ test("a holiday-moved COT release shows the moved day (Veterans Day week: Monday
   assert.equal(oct[0].w, "Tue Oct 13, 4:00 PM ET, holiday week");  // pin-ok: inline fixture on a fixed clock
 });
 
+test("the Funds this week ask: on the first row while it is the COT report (countdown, updating, Out today), to the one signup box", () => {
+  const ask = (cot, now) => rows(cot, now).map((o) => !!o.ask);
+  assert.deepEqual(ask(COT(), EST("2026-11-12T10:00:00")), [true, false], "countdown to the COT report");
+  assert.deepEqual(ask(COT(), EST("2026-11-07T12:00:00")), [false, false], "Crop Progress first: no ask");
+  const old = COT({ report_date: "October 27, 2026", next_release: "2026-11-06" });  // pin-ok: inline fixture
+  assert.equal(rows(old, EST("2026-11-06T15:40:00"))[0].state, "wait");
+  assert.equal(ask(old, EST("2026-11-06T15:40:00"))[0], true, "updating");
+  assert.equal(rows(COT(), EST("2026-11-06T16:10:00"))[0].state, "out");
+  assert.equal(ask(COT(), EST("2026-11-06T16:10:00"))[0], true, "Out today");
+  const h = H.listHtml(rows(COT(), EST("2026-11-12T10:00:00")));
+  assert.match(h, /^<li class="hap-i hap-top hap-asks" data-state="next"><a class="hap-a" href="\/cot"[^]*?<\/a><a class="hap-ask" href="\/cot#cot-signup" data-track="funds-ask">Email me Fridays<\/a><\/li>/);
+  assert.equal((h.match(/hap-ask"/g) || []).length, 1, "one ask");
+  const src = read("components/happening.js");
+  assert.match(src, /gaEvent\('funds_ask', \{ where: 'home_happening' \}\)/);
+  assert.doesNotMatch(src, /fetch\([^)]*(subscribe|notice)/, "no signup path of its own");
+});
+
 test("the bake picks the same rows as the script, for each clock", () => {
   for (const [now, cot] of [[EST("2026-11-07T12:00:00"), COT()], [EST("2026-11-12T10:00:00"), COT()], [EST("2026-11-06T14:18:00"), COT({ report_date: "October 27, 2026", next_release: "2026-11-06" })],  // pin-ok: inline fixture
     [EDT("2026-10-10T09:00:00"), COT({ report_date: "October 06, 2026", next_release: "2026-10-09" })]]) {  // pin-ok: inline fixture
@@ -110,10 +127,16 @@ from datetime import datetime, timezone
 import seed_static as S
 a = json.loads(sys.argv[1])
 print(S.happening_seed(datetime.fromtimestamp(a['now'] / 1000, timezone.utc), a['cot'], a['ics']))`, JSON.stringify({ now, cot, ics: ICS })], { cwd: ROOT, encoding: "utf8" });
-    const baked = [...html.matchAll(/<li class="hap-i[^"]*" data-state="next">.*?<\/li>/g)].map((m) => {
-      const s = m[0].replace(/<[^>]+>/g, "|"); return s.split("|").filter(Boolean);
+    const ASK = '<a class="hap-ask" href="/cot#cot-signup" data-track="funds-ask">Email me Fridays</a>';
+    const lis = [...html.matchAll(/<li class="hap-i[^"]*" data-state="next">.*?<\/li>/g)].map((m) => m[0]);
+    const baked = lis.map((li) => {
+      const s = li.replace(ASK, "").replace(/<[^>]+>/g, "|"); return s.split("|").filter(Boolean);
     });
     const live = rows(cot, now).filter((o) => o.state === "next");
+    // the Funds this week ask: on the first row when it is the COT report, the same markup as the script draws
+    assert.deepEqual(lis.map((li) => li.includes(ASK)), live.map((o) => !!o.ask), "the ask where the script puts it");
+    assert.deepEqual(lis.map((li) => li.includes(ASK)), lis.map((li, i) => i === 0 && li.includes('href="/cot"')));
+    assert.equal(H.listHtml(rows(cot, now)).includes(ASK), live.length > 0 && live[0].t.startsWith("Funds report (COT)"));
     const fmt = (o, i) => (i === 0 ? [o.t, o.w] : [o.w, o.t]);
     // the script says "today"/"tomorrow" where the bake prints the date
     assert.deepEqual(baked.map((b) => b.map((x) => x.replace(/^\w{3} \w{3} \d+, /, ""))), live.map((o, i) => fmt(o, i).map((x) => x.replace(/^(today|tomorrow|\w{3} \w{3} \d+,) /, ""))), new Date(now).toISOString());
@@ -174,13 +197,13 @@ test("the home page: the block sits in the futures row, baked, with its script a
   assert.ok(row.indexOf('id="hb-fs"') < row.indexOf('<div class="hap" id="hap" role="group" aria-labelledby="hap-h">'), "after the beans, inside the futures row");
   assert.match(row, /<ol class="hap-list" id="hap-list"><!--\n--><!--SEED:hp:hap-->/);
   // JS off: the baked first row says a release's day and time as text
-  const top = /<li class="hap-i hap-top" data-state="next"><a class="hap-a" href="([^"]+)"[^>]*><span class="hap-t">([^<]+)<\/span><span class="hap-w"><span class="hap-wt">([^<]+)<\/span>/.exec(row);
+  const top = /<li class="hap-i hap-top(?: hap-asks)?" data-state="next"><a class="hap-a" href="([^"]+)"[^>]*><span class="hap-t">([^<]+)<\/span><span class="hap-w"><span class="hap-wt">([^<]+)<\/span>/.exec(row);
   assert.ok(top, "a baked first row");
   assert.match(top[3], /^(Mon|Tue|Wed|Thu|Fri) [A-Z][a-z]{2} \d{1,2}, \d{1,2}:\d{2} (AM|PM) ET(, holiday week)?$/);
   // the only aria-live in the block is #hap-say; nothing on the list or the countdown
   assert.deepEqual([...row.matchAll(/<[^>]*aria-live[^>]*>/g)].map((m) => m[0]), ['<span class="visually-hidden" id="hap-say" role="status" aria-live="polite">']);
   assert.doesNotMatch(read("components/happening.js"), /aria-live|setAttribute\(['"]role/);
-  assert.match(home, /<script src="\/components\/happening\.js\?v=1" defer><\/script>/);
+  assert.match(home, /<script src="\/components\/happening\.js\?v=2" defer><\/script>/);
   assert.ok(!/—/.test(read("components/happening.js")), "no em dash in the script");
   const css = read("css/home.css");
   assert.ok(!/—/.test(css.slice(css.indexOf(".hap{"))), "no em dash in its CSS");
@@ -278,6 +301,20 @@ test("in Chromium: beside the beans at 1280, right after the futures at 390; cou
       assert.equal(a.wt, "today 3:30 PM ET");
       assert.equal(a.cd, " · in 1 h 12 m");
       assert.equal(a.x, "Funds sold corn 6 weeks straight. Did they keep selling?");
+      // the ask: a 44 px target at the right of the title line, inside the block, clear of the title's text
+      const k = await p.evaluate(() => {
+        const a = document.querySelector("#hap .hap-ask"), t = document.querySelector("#hap .hap-top .hap-t"), hap = document.getElementById("hap");
+        if (!a) return null;
+        const r = a.getBoundingClientRect(), h = hap.getBoundingClientRect(), rg = document.createRange(); rg.selectNodeContents(t);
+        const tr = rg.getBoundingClientRect();
+        return { h: r.height, w: r.width, l: r.left, r: r.right, hr: h.right, ht: h.top, t: r.top, textR: tr.right, href: a.getAttribute("href"), text: a.textContent };
+      });
+      assert.ok(k, `${width}: the ask on the COT row`);
+      assert.deepEqual([k.href, k.text], ["/cot#cot-signup", "Email me Fridays"]);
+      assert.ok(k.h >= 44 && k.w >= 44, `${width}: 44 px target (${k.w}x${k.h})`);
+      assert.ok(k.r <= k.hr + 0.5 && k.t >= k.ht - 0.5, `${width}: inside the block`);
+      assert.ok(k.textR <= k.l, `${width}: the title stops short of it`);
+      if (process.env.HAP_SHOTS) await p.locator("#hap").screenshot({ path: path.join(process.env.HAP_SHOTS, `home-hap-${width}.png`) });
       assert.deepEqual(a.live, [], "no aria-live on the countdown or anything holding it");
       assert.equal(a.say, "", "nothing spoken on first draw");
       // three minutes: the countdown moves, nothing is spoken, nothing moves

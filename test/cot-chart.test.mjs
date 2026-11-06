@@ -180,7 +180,7 @@ test("/cot carries one chart, under the verdict and above the market table and t
   assert.ok(!/<canvas id="cot-chart"|id="chart-tabs"|cot-chart-tab/.test(cot), "the old chart lower down is gone");
   assert.ok(!/drawChart|setActiveTab|cot-chart-tab/.test(read("components/cot-page.js")), "and its code");
   const i = (s) => cot.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-glance.js?v=4") > 0 && i("cot-glance.js?v=4") < i("cot-chart.js?v=5") && i("cot-chart.js?v=5") < i("cot-page.js?v=9"));
+  assert.ok(i("cot-glance.js?v=4") > 0 && i("cot-glance.js?v=4") < i("cot-chart.js?v=6") && i("cot-chart.js?v=6") < i("cot-page.js?v=10"));
   assert.match(cot, /\.cc-plot\{[^}]*height:300px/, "the plot's height is held before it draws");
   assert.match(cot, /\.cc-chip\{[^}]*min-height:44px/);
   assert.match(cot, /\.cc-btn\{[^}]*min-height:44px/);
@@ -197,7 +197,7 @@ test("the home card's lines open /cot on their market", () => {
   for (const k of G.ORDER) assert.equal(G.keyOf(G.SLUG[k]), k);
   assert.equal(G.keyOf("nonsense"), null);
   const idx = read("index.html");
-  for (const s of ["components/cot-glance.js?v=4", "components/home.js?v=24", "css/home.css?v=38"]) assert.ok(idx.includes("/" + s + '"'), s);
+  for (const s of ["components/cot-glance.js?v=4", "components/home.js?v=24", "css/home.css?v=39"]) assert.ok(idx.includes("/" + s + '"'), s);
 });
 
 // ---------------------------------------------------------------- in a browser
@@ -390,5 +390,39 @@ test("home card: each line opens /cot on its market", { skip, timeout: 120000 },
     const h = await pg.$$eval("#cot-glance a.cot-gl-a", (a) => a.map((x) => x.getBoundingClientRect().height));
     assert.ok(h.every((x) => x >= 44), "taps 44 px or more: " + h);
     await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* The Funds this week ask (Sig, Nov 6: grow the list). The release bar's link, the print sheet's QR code, the email's
+   forward line and the homepage all land on #cot-signup, the one ask: arriving there puts the email field in focus with
+   the box in view, and the bar's link does the same and tells GA4 funds_ask {where}. */
+test("arriving on /cot#cot-signup, or tapping the release bar's link, focuses the email field of the one Funds this week box", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const init = () => { window.__ga = []; window.gaEvent = function (n, p) { window.__ga.push([n, p]); }; };
+  const focused = () => { const a = document.activeElement, b = document.getElementById("cot-signup"), r = b.getBoundingClientRect();
+    return { inBox: !!(a && b.contains(a)), type: a && a.type, top: r.top, bottom: r.bottom, vh: innerHeight }; };
+  try {
+    for (const width of [390, 1280]) {
+      let pg = await open(browser, port, "/cot#cot-signup", { width, init });
+      await pg.waitForFunction(() => document.querySelector("#cot-signup .sa-in") && document.activeElement === document.querySelector("#cot-signup .sa-in"), null, { timeout: 15000 });
+      await pg.waitForTimeout(1200);   // past any late jump by the browser itself
+      const a = await pg.evaluate(focused);
+      assert.ok(a.inBox && a.type === "email", `${width}: the email field has focus`);
+      assert.ok(a.top >= 0 && a.bottom <= a.vh, `${width}: the box is in view (${a.top}..${a.bottom} of ${a.vh})`);
+      assert.equal(await pg.$$eval("[data-topic='cot'][data-signup-ask]", (e) => e.length), 1, "one Funds this week ask on the page");
+      await pg.context().close();
+      pg = await open(browser, port, "/cot", { width, init });
+      await pg.waitForSelector("#cot-signup .sa-in");
+      assert.equal(await pg.getAttribute("#cot-rel-a", "href"), "#cot-signup");
+      await pg.click("#cot-rel-a");
+      await pg.waitForFunction(() => document.activeElement === document.querySelector("#cot-signup .sa-in"), null, { timeout: 5000 });
+      await pg.waitForTimeout(1200);
+      const b = await pg.evaluate(focused);
+      assert.ok(b.inBox, `${width}: still in the box`);
+      assert.ok(b.top >= 0 && b.bottom <= b.vh, `${width}: in view after the tap`);
+      assert.deepEqual(await pg.evaluate(() => window.__ga.filter((x) => x[0] === "funds_ask")), [["funds_ask", { where: "cot_release_bar" }]]);
+      await pg.context().close();
+    }
   } finally { await browser.close(); srv.close(); }
 });
