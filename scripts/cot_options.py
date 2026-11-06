@@ -380,7 +380,16 @@ def main(argv):
     out_path = argv[argv.index("--out") + 1] if "--out" in argv else OUT_FILE
     if "--from" in argv:
         src = argv[argv.index("--from") + 1]
-        rows = {n: json.load(open(os.path.join(src, n + ".json"))) for n in ("fo", "comb", "legacy")}
+        rows = {}
+        for n in ("fo", "comb", "legacy"):
+            fp = os.path.join(src, n + ".json")
+            if os.path.exists(fp + ".gz"):
+                import gzip
+                with gzip.open(fp + ".gz", "rt") as fh:
+                    rows[n] = json.load(fh)
+            else:
+                with open(fp) as fh:
+                    rows[n] = json.load(fh)
     else:
         since = (date.today() - timedelta(days=FETCH_DAYS)).isoformat()
         rows = {"fo": fetch(DATASETS["fo"], DISAGG_FIELDS, since),

@@ -544,6 +544,23 @@ html[data-theme] .cg-baked{display:none}
 .cg-hold{visibility:hidden}
 .cg-baked{margin:0 0 .8rem!important}
 .cg-ask{margin:0 0 .5rem}
+.co{margin:0 0 1.2rem}
+.co-sub,.co-count{font-size:.85rem;line-height:1.55;color:var(--text-dim);margin:0 0 .55rem}
+.co-h3{font-size:.95rem;font-weight:800;color:var(--text);margin:.2rem 0 .3rem}
+.co-lines{margin:0 0 .9rem;padding:0 0 0 1.1rem;font-size:.88rem;line-height:1.55;color:var(--text)}
+.co-lines li{margin:0 0 .35rem}
+.co-d,.co-n{color:var(--text-muted);font-size:.8em;white-space:nowrap}
+.co-body{padding:0 .85rem .75rem;font-size:.85rem;line-height:1.55;color:var(--text-dim)}
+.co-body p{margin:0 0 .55rem}
+.co-lab{display:block;font-size:.78rem;font-weight:700;color:var(--text-muted);margin:0 0 .2rem}
+.co-pick{min-height:44px;width:100%;max-width:20rem;margin:0 0 .6rem;padding:0 .6rem;border:1px solid var(--border-2);border-radius:6px;background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem}
+.co-oi,.co-conc,.co-note{font-size:.85rem;line-height:1.55;color:var(--text-dim)}
+.co-note{color:var(--text-muted)}
+.co .cg-tw{margin:0 -.85rem .6rem}
+.co-table th[scope=row]{text-align:left;font-weight:600;white-space:normal;color:var(--text);padding:0 .5rem 0 .85rem;border-bottom:1px solid var(--border);height:44px;font-size:.85rem}
+.co-table th:nth-child(n+2),.co-table td{text-align:right}
+.co-table tr:last-child th{border-bottom:0}
+.co-src{font-size:.78rem;line-height:1.5;color:var(--text-muted);margin:.2rem 0 0}
 details.fold.cot-all[open]{border:0;background:none}
 details.fold.cot-all>.fold-body{padding:1rem 0 0}
 .cot-all>summary .cg-more-h{font-family:var(--font-display);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
@@ -653,6 +670,35 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       <div class="cg-tw"><table class="cg-table" id="cg-table"><thead><tr><th scope="col">Market</th><th scope="col">Long or short</th><th scope="col">Rank</th><th scope="col">Change</th></tr></thead><tbody id="cg-rows"></tbody></table></div>
     </details>
     <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="These lines in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask"></div>
+  </section>
+
+  <!-- Options positions (2026-11-06, Sig): options open interest and the positions at 3-year extremes, from CFTC
+       data only. components/cot-options.js renders data/cot-options.json (scripts/cot_options.py). -->
+  <section class="co" id="cot-opt" aria-labelledby="co-h">
+    <h2 class="cg-h" id="co-h">Options positions</h2>
+    <p class="co-sub" id="co-sub">Loading the options figures&hellip;</p>
+    <div class="co-unusual" id="co-unusual">
+      <h3 class="co-h3">Unusual this week</h3>
+      <p class="co-count" id="co-count"></p>
+      <ul class="co-lines" id="co-lines" hidden></ul>
+    </div>
+    <details class="cg-all" id="co-markets">
+      <summary>Options by market</summary>
+      <div class="co-body">
+        <label class="co-lab" for="co-pick">Market</label>
+        <select class="co-pick" id="co-pick"></select>
+        <div id="co-block"></div>
+      </div>
+    </details>
+    <details class="cg-all co-how">
+      <summary>How these are counted</summary>
+      <div class="co-body">
+        <p>Each group's options position is its net position in the futures-and-options combined report minus its net position in the futures-only report. CFTC counts options in the combined report as futures equivalents (adjusted by each option's delta), so these are futures-equivalent contracts, not a count of option contracts. Options open interest is the combined report's open interest minus the futures-only open interest.</p>
+        <p>A position's rank is the share of the other weeks in the last 3 years (the number of weeks is printed beside it) when that group's options position was lower, ties counted half. A week change is ranked by its size against every weekly change in the same 3 years. Concentration is the share of all open interest held by the largest 4 and largest 8 traders, from the Legacy futures-and-options combined report; "net" counts only each trader's net position.</p>
+        <p>"Unusual this week" lists a position at the top or bottom 5% of its own 3 years, a week change in the top 5%, and big-trader concentration at its 3-year high or low. Every week is ranked only against the weeks before it. A market where options are under 5% of open interest is not ranked.</p>
+      </div>
+    </details>
+    <p class="co-src">Source: CFTC Commitments of Traders: Disaggregated Futures-and-Options Combined, Disaggregated Futures-Only and Legacy Futures-and-Options Combined reports.</p>
   </section>
 
   <details class="fold cot-all" id="cot-all">
@@ -835,6 +881,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 
 
 <script src="/components/cot-analysis.js?v=3"></script>
+<script src="/components/cot-options.js?v=1"></script>
 
 <script>
 /* Folds: a link to anything inside a closed fold opens it first; printing opens them all. */
