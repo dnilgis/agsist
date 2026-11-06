@@ -355,7 +355,7 @@
       });
     });
     order.sort(function (a, b) { return a.i - b.i; });
-    return order.map(function (g) {
+    var merged = order.map(function (g) {
       if (g.r) return g.r;
       if (g.m.length === 1) return g.m[0];
       var m = g.m, f = m[0], o = {};
@@ -377,6 +377,44 @@
       o.np = Math.max.apply(null, m.map(function (x) { return +x.np || 1; }));
       return o;
     });
+    return FSLand.onePrice(merged, today);
+  };
+  // Several parcels of one county sold the same day for the same price, to one buyer (or no buyer on file), are one
+  // sale (Nov 5, 2026: Indiana files one disclosure per parcel, each with the whole price). One price, the parcels'
+  // total acres when every one is known, every class on them, the parcel count. Month-dated rows and sales grouped
+  // above are left alone; a row that is not a market sale is never merged. build_land_summary.one_price, line for line.
+  FSLand.onePrice = function (sales, today) {
+    var by = {}, order = [];
+    (sales || []).forEach(function (r) {
+      var p = num(r.price), d = String(r.date || '').slice(0, 10);
+      var ok = p > 0 && !r.dm && !r.grp && dayNo(d) != null && !FSLand.screen(r, today).filter(function (w) { return w !== 'partial'; }).length;
+      if (!ok) { order.push([r]); return; }
+      var k = String(r.fips || r.county || '') + '|' + d + '|' + Math.round(p * 100);
+      if (!by[k]) { by[k] = []; order.push(by[k]); }
+      by[k].push(r);
+    });
+    var out = [];
+    order.forEach(function (m) {
+      var buyers = m.map(function (x) { return FSLand.party(x, 'b'); }).filter(function (x, i, s) { return x && s.indexOf(x) === i; });
+      if (m.length === 1 || buyers.length > 1) { m.forEach(function (x) { out.push(x); }); return; }   // different buyers: separate sales
+      var o = {}, f = m[0];
+      for (var key in f) o[key] = f[key];
+      var known = m.every(function (x) { return num(x.acres) > 0 && !x.acUnsure; });
+      var tot = 0;
+      m.forEach(function (x) { tot += num(x.acres) || 0; });
+      o.acres = known ? Math.round(tot * 100) / 100 : null;
+      o.acUnsure = !known;
+      o.ppa = known ? FSLand.perAcre(o.price, o.acres) : null;
+      var cl = [];
+      m.forEach(function (x) { String(x.cls || '').toUpperCase().split(/[\s,;/]+/).forEach(function (c) { if (c && cl.indexOf(c) < 0) cl.push(c); }); });
+      o.cls = cl.join(' ');
+      o.np = m.reduce(function (s, x) { return s + (parseInt(num(x.np), 10) || 1); }, 0);
+      o.pgrp = m.length;
+      o.pgrpRows = m;
+      o.conv = m.map(function (x) { return clean(x.conv); }).filter(function (x, i, s) { return x && s.indexOf(x) === i; }).join('; ');
+      out.push(o);
+    });
+    return out;
   };
   // A sale filed as several deeds, in words.
   FSLand.groupText = function (r) {

@@ -422,6 +422,63 @@ def sale_rows(rows, today):
         o["conv"] = "; ".join(convs)
         o["np"] = max(int(num(x.get("np")) or 1) for x in m)
         out.append(o)
+    return one_price(out, today)
+
+
+def one_price(sales, today):
+    """FSLand.onePrice: several parcels of one county sold the same day for the same price, to one buyer (or no buyer
+    on file), are one sale (Nov 5, 2026: Indiana files one disclosure per parcel, each with the whole price, so
+    Blackford County read one $2,701,640 sale of 3 parcels as 3 sales at up to $75,339 an acre). The sale keeps that
+    one price, takes the parcels' total acres when every one is known (else acres uncertain, no $/acre), every class
+    on them (so buildings or forest on any parcel mark the sale) and the parcel count. Month-dated rows (Florida) and
+    sales already grouped above are left alone; a row that is not a market sale is never merged."""
+    by, order = {}, []
+    for r in sales:
+        p, d = num(r.get("price")), str(r.get("date") or "")[:10]
+        ok = (p or 0) > 0 and not r.get("dm") and not r.get("grp") and day_no(d) is not None \
+            and not [w for w in screen(r, today) if w != "partial"]
+        if not ok:
+            order.append([r])
+            continue
+        k = "%s|%s|%s" % (r.get("fips") or r.get("county") or "", d, js_round(p * 100))
+        if k not in by:
+            by[k] = []
+            order.append(by[k])
+        by[k].append(r)
+    out = []
+    for m in order:
+        buyers = []
+        for x in m:
+            b = party(x, "b")
+            if b and b not in buyers:
+                buyers.append(b)
+        if len(m) == 1 or len(buyers) > 1:
+            out.extend(m)          # different buyers at one price on one day: separate sales
+            continue
+        o = dict(m[0])
+        acs = [num(x.get("acres")) for x in m]
+        known = all(a is not None and a > 0 and not x.get("acUnsure") for a, x in zip(acs, m))
+        tot = 0
+        for a in acs:
+            tot += a or 0
+        o["acres"] = js_round(tot * 100) / 100 if known else None
+        o["acUnsure"] = not known
+        o["ppa"] = per_acre(num(o["price"]), o["acres"]) if known else None
+        cl = []
+        for x in m:
+            for c in cls_list(x.get("cls")):
+                if c not in cl:
+                    cl.append(c)
+        o["cls"] = " ".join(cl)
+        o["np"] = sum(int(num(x.get("np")) or 1) for x in m)
+        o["pgrp"] = len(m)
+        convs = []
+        for x in m:
+            c = clean(x.get("conv"))
+            if c and c not in convs:
+                convs.append(c)
+        o["conv"] = "; ".join(convs)
+        out.append(o)
     return out
 
 
@@ -512,7 +569,7 @@ def county_summary(f, W, today):
     if s:
         out["med"] = s
     if cur:
-        out["m12"] = layer_median(cur, f.get("dates") == "month")
+        out["m12"] = layer_median(cur)
     if sp and out["n12p"] is not None:
         out["medp"] = sp
     out["u12"] = sum(1 for r in cur if r.get("acUnsure"))
@@ -550,53 +607,14 @@ def county_summary(f, W, today):
     return out
 
 
-def layer_sales(cur, month_dates=False):
-    """The window's market sales for the Atlas map layer, with one more merge than the shared rule makes: several
-    parcels of one county sold the same day for the same price are one sale (Indiana files one disclosure per parcel,
-    each with the whole price: Nov 5, 2026, Blackford County read 3 parcels of one $2.7M sale as 3 sales at up to
-    $75,339 an acre). The merged sale has the parcels' total acres when every one is known, else no $/acre; its kind
-    is bare farm land only when no parcel has buildings or is forest. Month-dated files (Florida) are left alone: two sales in one month at
-    one price can be two sales, and Florida's extract already joins the parcels of one deed."""
-    if month_dates:
-        return list(cur)
-    groups, order = {}, []
-    for r in cur:
-        p = num(r.get("price"))
-        k = (str(r.get("date") or "")[:10], js_round(p * 100)) if p else None
-        if k is None:
-            order.append([r])
-            continue
-        if k not in groups:
-            groups[k] = []
-            order.append(groups[k])
-        groups[k].append(r)
-    out = []
-    for g in order:
-        if len(g) == 1:
-            out.append(g[0])
-            continue
-        acs = [num(x.get("acres")) for x in g]
-        known = all(a is not None and a > 0 and not x.get("acUnsure") for a, x in zip(acs, g))
-        o = dict(g[0])
-        o["acres"] = round(sum(acs), 2) if known else None
-        o["ppa"] = per_acre(num(o["price"]), o["acres"]) if known else None
-        o["merged"] = len(g)
-        o["bare"] = known and all(land_type(x) in ("farm", "small") for x in g)   # small is a size, not a kind: no buildings, no forest
-        out.append(o)
-    return out
-
-
-def layer_median(cur, month_dates=False):
+def layer_median(cur):
     """The Atlas map's recorded-sales layer (Sig, Nov 5, 2026): every county with a sale is shown, no minimum count;
-    the count goes beside the figure instead. c: market sales in the window (layer_sales). Bare farm land of
-    MIN_ACRES or more first; a county with none uses its market sales of MIN_ACRES or more of any kind (buildings or
-    forest included), and says so ("set": "any"). Smaller sales never price farmland here. d: the first and last sale
-    date in the set."""
-    rows = layer_sales(cur, month_dates)
-    out = {"c": len(rows)}
+    the count goes beside the figure instead. c: market sales in the window. Bare farm land of MIN_ACRES or more
+    first; a county with none uses its market sales of MIN_ACRES or more of any kind (buildings or forest included),
+    and says so ("set": "any"). Smaller sales never price farmland here. d: the first and last sale date in the set."""
+    out = {"c": len(cur)}
     big = lambda r: stat_ok(r) and (num(r.get("acres")) or 0) >= MIN_ACRES
-    bare = lambda r: big(r) and (r["bare"] if r.get("merged") else land_type(r) == "farm")
-    for name, pick in (("bare", [r for r in rows if bare(r)]), ("any", [r for r in rows if big(r)])):
+    for name, pick in (("bare", [r for r in cur if big(r) and land_type(r) == "farm"]), ("any", [r for r in cur if big(r)])):
         if pick:
             v = sorted(r["ppa"] for r in pick)
             ds = sorted(str(r["date"])[:10] for r in pick)
@@ -858,16 +876,25 @@ def selftest():
        {"c": 2, "med": 15000, "n": 2, "set": "any", "d": ["2026-01-05", "2026-04-05"]})
     ck("layer: small lots never price farmland", layer_median([R("2026-01-05", 90000, 3)]) == {"c": 1} and layer_median([]) == {"c": 0})
     ck("layer: under $500 an acre is no price", layer_median([R("2026-01-05", 400, 80)]) == {"c": 1})
-    # one $2,701,640 sale filed on three parcels (35.86 + 48.41 + 80 acres): one sale of 164.27 acres, $16,446 an acre
-    P = lambda d, price, ac, cls="4": {"date": d, "price": price, "acres": ac, "cls": cls, "ppa": per_acre(price, ac)}
+    # one $2,701,640 sale filed on three parcels (35.86 + 48.41 + 80 acres), Blackford County IN, Aug 28, 2026:
+    # one sale of 164.27 acres, $16,446 an acre (FSLand.onePrice, the same rows in test/fixtures/land-one-price.json)
+    T = "2026-11-01"
+    P = lambda d, price, ac, cls="4", **k: dict({"date": d, "price": price, "acres": ac, "cls": cls, "ppa": per_acre(price, ac), "fips": "18009", "conv": "Warranty Deed"}, **k)
     one = [P("2026-08-28", 2701640, 35.86), P("2026-08-28", 2701640, 48.41), P("2026-08-28", 2701640, 80.0)]
-    ck("layer: one price on several parcels the same day is one sale of their acres", layer_median(one) ==
-       {"c": 1, "med": 16446, "n": 1, "set": "bare", "d": ["2026-08-28", "2026-08-28"]})
-    ck("layer: a merged sale with a parcel of unknown acres has no price", layer_median(one[:2] + [P("2026-08-28", 2701640, None)]) == {"c": 1})
-    ck("layer: a merged sale with buildings on one parcel is not bare land", layer_median(one[:2] + [P("2026-08-28", 2701640, 80.0, "4 1")])["set"] == "any")
-    ck("layer: a small bare parcel sold with a big one stays bare land", layer_median([P("2026-06-26", 800000, 5.0), P("2026-06-26", 800000, 179.78)])
-       == {"c": 1, "med": 4329, "n": 1, "set": "bare", "d": ["2026-06-26", "2026-06-26"]})
-    ck("layer: month-dated files keep two sales at one price in one month", layer_median(one[:2], True)["c"] == 2)
+    m1 = one_price(one, T)
+    ck("one price on several parcels the same day is one sale of their acres", len(m1) == 1 and m1[0]["acres"] == 164.27
+       and m1[0]["ppa"] == 16446 and m1[0]["price"] == 2701640 and m1[0]["np"] == 3 and m1[0]["pgrp"] == 3)
+    ck("the map reads it as one bare sale", layer_median(m1) == {"c": 1, "med": 16446, "n": 1, "set": "bare", "d": ["2026-08-28", "2026-08-28"]})
+    m2 = one_price(one[:2] + [P("2026-08-28", 2701640, None, np=2, acUnsure=True)], T)
+    ck("a parcel of unknown acres: one sale, acres uncertain, no $/acre", len(m2) == 1 and m2[0]["acUnsure"] and m2[0]["ppa"] is None)
+    m3 = one_price(one[:2] + [P("2026-08-28", 2701640, 80.0, "4 7")], T)
+    ck("buildings on any parcel mark the sale", len(m3) == 1 and land_type(m3[0], "IN") == "bldg")
+    m4 = one_price([P("2026-06-26", 800000, 5.0, "5"), P("2026-06-26", 800000, 179.78, "5")], T)
+    ck("a small bare parcel sold with a big one is bare land of their acres", land_type(m4[0], "VT") == "farm" and m4[0]["acres"] == 184.78)
+    ck("different buyers at one price are separate sales", len(one_price([P("2026-08-28", 500000, 40, bi=1), P("2026-08-28", 500000, 40, bi=2)], T)) == 2)
+    ck("month-dated rows are left alone", len(one_price([P("2026-08-01", 500000, 40, dm=1), P("2026-08-01", 500000, 40, dm=1)], T)) == 2)
+    ck("other days or other counties are separate sales", len(one_price([P("2026-08-28", 500000, 40), P("2026-08-29", 500000, 40), P("2026-08-28", 500000, 40, fips="18001")], T)) == 3)
+    ck("a non-market deed is never merged", len(one_price([P("2026-08-28", 500000, 40), P("2026-08-28", 500000, 40, conv="Quit Claim Deed")], T)) == 2)
     import tempfile
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "il"))
