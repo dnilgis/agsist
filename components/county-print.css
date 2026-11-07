@@ -1,0 +1,48 @@
+/* components/county-print.css: the County Print sheet (components/county-print.js, Nov 7, 2026). Hidden on screen;
+   in print, when html.cprs-on is set (the Print button, or any browser print through beforeprint), it is the only
+   thing on paper. One page, US Letter portrait, fits A4. Black and white: black ink does the work; the one accent
+   is the dark gold #8a6514 (5.3:1 on white), never the screen gold. Body 10 pt or more, the source line 8.5 pt. */
+.cprs{display:none}
+/* measured off screen by county-print.js at A4's printed width, never seen */
+.cprs.cprs-measure{display:block;position:absolute;left:0;top:0;width:7.47in;visibility:hidden;pointer-events:none;contain:layout}
+@media print{
+  @page{margin:.4in}
+  html.cprs-on,html.cprs-on body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important}
+  html.cprs-on body>*:not(#cprs){display:none!important}
+  html.cprs-on #cprs{display:block!important}
+}
+.cprs{color:#000;background:#fff;font:10pt/1.28 Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.cprs *{box-shadow:none;text-shadow:none}
+.cprs p,.cprs h1,.cprs h2,.cprs figure{margin:0}
+.cprs-bar{height:6pt;background:#8a6514}
+.cprs-top{display:flex;justify-content:space-between;align-items:flex-end;gap:.2in;border-bottom:3pt solid #000;padding:.06in 0 .05in}
+.cprs-h1{font-size:22pt;font-weight:800;line-height:1.08;letter-spacing:-.015em}
+.cprs-sub{font-size:11pt;font-weight:600;margin-top:.03in!important}
+.cprs-brand{text-align:right;flex:none}
+.cprs-logo{height:.34in;display:block;margin:0 0 .04in auto;width:auto;filter:brightness(0)}
+.cprs-url{font:800 13pt/1 "JetBrains Mono",ui-monospace,monospace}
+/* six blocks, three across: the first figure of each big */
+.cprs-grid{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:.2in;row-gap:.08in;margin-top:.08in}
+.cprs-b{break-inside:avoid;page-break-inside:avoid;border-top:2pt solid #000;padding-top:.04in}
+.cprs-h{font-size:11pt;font-weight:800;text-transform:uppercase;letter-spacing:.06em;line-height:1.2;margin-bottom:.02in!important}
+.cprs-r{margin-top:.05in}
+.cprs-r b{display:block;font-size:16pt;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.cprs-r b small{font-size:10pt;font-weight:700;letter-spacing:0}
+.cprs-lead b{font-size:24pt}
+.cprs-lead b small{font-size:11pt}
+.cprs-r span{display:block;font-size:10pt;line-height:1.25}
+.cprs-t span{font-size:10pt}
+/* the chart and the QR code */
+.cprs-low{display:grid;grid-template-columns:1fr 1.7in;gap:.22in;align-items:start;margin-top:.1in;border-top:1.5pt solid #000;padding-top:.06in;break-inside:avoid}
+.cprs-chart svg{display:block;width:100%;height:auto}
+.cprs-chart figcaption{font-size:10pt;line-height:1.25;margin-top:.03in}
+.cprs-side{text-align:center;border-left:4pt solid #8a6514;padding-left:.1in}
+.cprs-qr svg{width:1.25in;height:1.25in;display:block;margin:0 auto}
+.cprs-scan{font-size:11pt;font-weight:800;line-height:1.2;margin-top:.04in!important}
+.cprs-addr{font:700 9pt/1.25 "JetBrains Mono",ui-monospace,monospace;word-break:break-all;margin-top:.03in!important}
+.cprs-src{font-size:8.5pt;line-height:1.25;margin-top:.08in!important;border-top:1pt solid #000;padding-top:.04in}
+.cprs-na{font-size:8.5pt;line-height:1.25;margin-top:.03in!important;font-weight:600}
+.cprs-tight .cprs-grid{row-gap:.04in}
+.cprs-tight .cprs-r{margin-top:.03in}
+.cprs-tight .cprs-lead b{font-size:21pt}
+.cprs-tight .cprs-qr svg{width:1in;height:1in}

@@ -2133,7 +2133,7 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
     a few hundred bytes a page; a figure the page withholds is left out (the sheet drops its row, never a guess).
     The daily rows (bids, basis, rain, drought, hail) come from county-home.js in the browser, not from here.
       v  [census land and buildings $/ac, year, read-with-care words or omitted]
-      ss [state farm real estate $/ac, survey year]          sl [sales n, median $/ac, span]
+      ss [state farm real estate $/ac, survey year]          sl [sales n, median $/ac, span, record]
       r  [cash rent $/ac, year, "irr" for an irrigated-only rent]   rb rent per bushel of the corn trend
       yt [corn trend bu/ac, its label, practice]   yl [last county yield year, bu/ac]
       lr [loss ratio, years, dollars paid]   ov [years claims exceeded premium, of years]   lc [top causes, years]
@@ -2149,7 +2149,7 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
     if ss and ss.get("real_estate"):
         o["ss"] = [money(ss["real_estate"]), ss["year"]]
     if sfacts:
-        o["sl"] = [sfacts["n"], money(sfacts["med"]), sfacts["span"]]
+        o["sl"] = [sfacts["n"], money(sfacts["med"]), sfacts["span"], sfacts["record"]]
     if rv and not rv_old:
         o["r"] = [money(rv["value"]), rv["year"]]
     elif ri and not (RL and ri.get("year") and ri["year"] < RL - 3):
