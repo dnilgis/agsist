@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 384;  // v384 2026-11-07: share kit bids. "Bids near <town>" picture (phone and wide) and a one-page town bid sheet on /cash-bids and every cash bid town page (new components/bids-kit.js?v=1, bids-kit.css?v=1; cash-bids.js?v=19, cash-bid-town.css?v=3).
+var CACHE_VERSION = 385;  // v385 2026-11-07: infographic. Infographic of the Week pages and their pictures and print sheet (new components/infographic.js?v=1, infographic/infographic.css?v=1).
+// var CACHE_VERSION = 384;  // v384 2026-11-07: share kit bids. "Bids near <town>" picture (phone and wide) and a one-page town bid sheet on /cash-bids and every cash bid town page (new components/bids-kit.js?v=1, bids-kit.css?v=1; cash-bids.js?v=19, cash-bid-town.css?v=3).
 // var CACHE_VERSION = 383;  // v383 2026-11-07: share kit core. One shared module for pictures and print sheets (new components/share-kit.js?v=1, share-kit.css?v=1); COT, Bin Print and County Print moved onto it with the same output (cot-kit.js?v=3, cot-chart.js?v=12, cot-print.js?v=5, cot-share.js?v=2, cot-print.css?v=6, bin-yard.js?v=2, bin-yard.css?v=2, county-print.css?v=2; county-print.js at its hash).
 // var CACHE_VERSION = 382;  // v382 2026-11-07: fx/cot-how (382, next after main's 381). /cot says how the funds' net changed, longs and shorts, under the chart headline and on each market card (cot-glance.js?v=6, cot-chart.js?v=11, cot-page.js?v=11; index.html cot-glance.js?v=6).
 // var CACHE_VERSION = 381;  // v381 2026-11-07: fx/county-print (381 set by the lead; was 380). County Print on Farmland Atlas county pages: county-print.js?v=1, county-print.css?v=1, county-home.js bumped.
