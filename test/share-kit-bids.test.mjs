@@ -33,6 +33,7 @@ const fx = JSON.parse(readFileSync(FIX, "utf8"));
 const NOW = Date.parse(fx.now);
 /* the fixture's own day, in the Central time the site's day runs on: "2026-11-04" and "November 4, 2026" */
 const DAY = new Date(NOW).toLocaleDateString("en-CA", { timeZone: "America/Chicago" });
+const cents = (c) => Math.round(parseFloat(String(c).replace(/[^\d.]/g, "")) * 100);
 const LONG = new Date(NOW).toLocaleDateString("en-US", { timeZone: "America/Chicago", month: "long", day: "numeric", year: "numeric" });
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
@@ -113,8 +114,8 @@ test("the rows are the page's own top bids: each elevator once, at its printed p
       assert.ok(src.length, `${r.n}: posted ${r.p} is a fixture row's own time`);
       assert.ok(Date.parse(r.u) > Date.parse(r.p), "it counts for a while after it was posted");
     }
-    // highest first (by the posted price)
-    for (let i = 1; i < rows.length; i++) assert.ok(rows[i - 1].v >= rows[i].v, `${crop}: highest first at ${i}`);
+    // highest first, by the price the page prints (to the cent)
+    for (let i = 1; i < rows.length; i++) assert.ok(cents(rows[i - 1].c) >= cents(rows[i].c), `${crop}: highest printed price first at ${i}`);
   }
 });
 
@@ -336,10 +337,25 @@ test("in a browser: /cash-bids builds the kit from its own Best price ranking fo
     assert.equal(r.title, "Bids near ZIP 50010");
     assert.ok(r.visible);
     assert.ok(r.m[0].length >= 1 && r.m[0].length <= 5 && r.m[1].length <= 5, JSON.stringify(r.m));
-    // the first corn row is the Best corn card's elevator at the price it posted (a card re-marking a day-old price
-    // on today's futures shows "posted <day> $x" under its estimate; the kit prints only the posted price)
-    assert.equal(r.m[0][0][0], r.bestName, "the first corn row is the Best corn card's elevator");
-    assert.ok(r.best === r.m[0][0][1] || r.bestText.includes(" " + r.m[0][0][1]), `the card prints ${r.m[0][0][1]}: ${r.bestText}`);
+    // the rows are the Best price pool (the Best corn card's elevator is in it), ordered by the price the kit
+    // prints, highest first, so "highest first" on the sheet is true; each price to the cent, half up, as the
+    // town page prints it (VERBIO posts 4.1425: $4.14 on both pages)
+    assert.ok(r.d.rows.corn.some((x) => x.n === r.bestName), "the Best corn card's elevator is a candidate");
+    for (const c of r.m) for (let i = 1; i < c.length; i++) assert.ok(cents(c[i - 1][1]) >= cents(c[i][1]), `highest printed price first: ${JSON.stringify(c)}`);
+    for (const c of ["corn", "soybeans"]) {
+      const top = r.d.rows[c].map((x) => cents(x.c)).sort((a, b) => b - a)[0];
+      if (top != null) assert.equal(cents(r.m[c === "corn" ? 0 : 1][0][1]), top, c + ": the first row is the highest printed price");
+      for (const x of r.d.rows[c]) {
+        assert.match(x.c, /^\$\d+\.\d\d$/, "to the cent: " + x.c);
+        assert.equal(cents(x.c), Math.round(x.v * 100 + 1e-7), "half up from the posted price");
+      }
+    }
+    const verbio = r.d.rows.corn.find((x) => /VERBIO/.test(x.n)), townV = DATA.rows.corn.find((x) => /VERBIO/.test(x.n));
+    assert.ok(verbio && townV && verbio.c === townV.c && verbio.c === "$" + (Math.round(townV.v * 100 + 1e-7) / 100).toFixed(2), `one formatter: ${verbio && verbio.c} vs ${townV && townV.c}`);
+    // every row knows when it stops counting: kept now (+16 h), withheld three days on
+    for (const c of ["corn", "soybeans"]) for (const x of r.d.rows[c]) assert.ok(Date.parse(x.u) > gen + 16 * 36e5 && Date.parse(x.u) <= Date.parse(x.p) + 72 * 36e5, `${x.n}: until ${x.u}`);
+    const later = await pg.evaluate(() => { const m = window.AgBidsKit.model(window.cbKitData(), Date.now() + 64 * 36e5); return { any: m.any, held: m.held }; });
+    assert.equal(later.any, false, "at +80 h no row prints");
     for (const c of r.m) for (const [, , posted] of c) assert.match(posted, /^[A-Z][a-z]{2} \d{1,2}, \d{1,2}:\d\d [AP]M$/, "a posted time on every row");
     for (const c of ["corn", "soybeans"]) for (const x of r.d.rows[c]) assert.ok(x.p && !Number.isNaN(Date.parse(x.p)));
     assert.match(r.qr, /^https:\/\/agsist\.com\/cash-bids\?zip=50010&r=50&utm_source=print&utm_medium=qr&utm_campaign=cash-bids-\d{4}-\d\d-\d\d$/);
@@ -352,4 +368,44 @@ test("in a browser: /cash-bids builds the kit from its own Best price ranking fo
     assert.deepEqual(errs.filter((e) => !/Failed to fetch|NetworkError|net::/.test(e)), []);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
+});
+
+test("in a browser: /cash-bids at +80 h prints no row from the Nov 4 boards under a later date", { skip, timeout: 180000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const gen = Date.parse(JSON.parse(readFileSync(BIDS + "data/merged-index.json", "utf8")).generated);
+  try {
+    const { ctx, pg } = await open(browser, port, "/cash-bids?zip=50010", 1280, gen + 80 * 36e5);
+    await pg.waitForFunction(() => document.getElementById("best-bids-grid").children.length > 0 && window.cbKitData && window.AgShareKit, null, { timeout: 40000 });
+    await pg.waitForTimeout(1000);
+    const r = await pg.evaluate(() => {
+      const d = window.cbKitData(), m = window.AgBidsKit.model(d, Date.now());
+      return { n: d ? d.rows.corn.length + d.rows.soybeans.length : 0, any: m.any, rows: m.crops.map((c) => c.rows.length), text: window.AgBidsKit.html(m, "") };
+    });
+    assert.ok(r.n > 0, "the page still hands the kit its old boards");
+    assert.equal(r.any, false, "none prints");
+    assert.deepEqual(r.rows, [0, 0]);
+    assert.match(r.text, /No current corn bid near ZIP 50010/);
+    await pg.click("#skb-print");
+    assert.match(await pg.textContent(".skb-st"), /No bids to print yet/);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("kitUntil in cash-bids.js is the town builder's share_until: 72 h, the month's end, the 15th for a first half, a named day", () => {
+  const cb = read("components/cash-bids.js");
+  const a = cb.indexOf("var KIT_MON="), b = cb.indexOf("window.cbKitData=function");
+  const c = {};
+  vm.runInNewContext(cb.slice(a, b) + "; this.f = kitUntil;", c);
+  const f = c.f, P = "2026-11-04T19:30:00Z", T = Date.parse(P);
+  assert.equal(f({ asOf: P, deliveryPeriod: "2026-11", deliveryMonth: "Nov 2026" }), new Date(T + 72 * 36e5).toISOString(), "72 h from posted");
+  assert.equal(f({ asOf: P, deliveryPeriod: "2026-11", deliveryMonth: "Nov 2026", pasted: "x" }), "2026-11-11T19:30:00.000Z", "a pasted board: 168 h");
+  assert.equal(f({ asOf: "2026-11-29T19:30:00Z", deliveryPeriod: "2026-11", deliveryMonth: "Nov 2026" }), "2026-12-01T05:00:00.000Z", "the end of November, Central");
+  assert.equal(f({ asOf: "2026-11-14T19:30:00Z", deliveryPeriod: "2026-11", deliveryMonth: "FH Nov 2026" }), "2026-11-16T05:00:00.000Z", "a first half ends on the 15th");
+  assert.equal(f({ asOf: P, deliveryPeriod: "2026-11", deliveryMonth: "By Nov 5" }), "2026-11-06T05:00:00.000Z", "a day the label names");
+  assert.equal(f({ asOf: "" }), "", "no posted time, no window");
+  // and the kit withholds a row with no stop-counting time
+  const d = JSON.parse(JSON.stringify(DATA));
+  delete d.rows.corn[0].u;
+  assert.ok(!KIT.model(d, NOW).crops[0].rows.some((r) => r.at === DATA.rows.corn[0].p && r.name === DATA.rows.corn[0].n && r.town === DATA.rows.corn[0].t));
 });

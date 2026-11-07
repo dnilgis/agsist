@@ -1490,7 +1490,7 @@ def _skb_row(r, name, town, st, d, path, snap_ct):
 
 def skb_rows(t, live_b, center, near_pick, snap_ct):
     """{crop: [row]} for the Bids near kit: this page's own elevators and its nearby list, one row each, the price
-    the page prints for it, highest first (ties: newer posting, nearer, name). Every candidate is kept (a few dozen
+    the page prints for it, highest printed price first (ties: newer posting, nearer, name). Every candidate is kept (a few dozen
     at most): the kit drops the ones past their window and takes the first SKB_N."""
     path = f"/cash-bids/{url_slug(STATE_NAMES[t['state']])}/{t['slug']}"
     out = {}
@@ -1508,7 +1508,9 @@ def skb_rows(t, live_b, center, near_pick, snap_ct):
             if r:
                 cand.append(_skb_row(r, b["name"], b["town"], b["state"], d, b["path"], snap_ct))
         cand = [x for x in cand if x]
-        cand.sort(key=lambda x: (-x["v"], -parse_ts(x["p"]).timestamp(), x["mi"] or 0, x["n"], x["t"]))
+        # highest PRINTED price first (cash_c, to the cent), as the kit orders them (components/bids-kit.js)
+        cand.sort(key=lambda x: (-pricefmt._js_round(x["v"] * 100 + 1e-7), -parse_ts(x["p"]).timestamp(), x["mi"] or 0,
+                                 x["n"], x["t"]))
         if cand:
             out[c] = cand
     return out
@@ -4746,7 +4748,8 @@ def _selftest_skb():
     for c in SKB_CROPS:
         rows = d["rows"][c]
         assert len(rows) >= SKB_N and all(r["p"] and r["c"].startswith("$") for r in rows), c
-        assert [r["v"] for r in rows] == sorted((r["v"] for r in rows), reverse=True), c
+        cents = [pricefmt._js_round(r["v"] * 100 + 1e-7) for r in rows]
+        assert cents == sorted(cents, reverse=True), c
         assert len({(r["n"], r["t"]) for r in rows}) == len(rows), "each elevator once"
     assert pg.index("bids-kit.js") < pg.index("cb-signup.js")
     assert skb_html({}, "X, IA", "X", "/cash-bids/iowa/x") == ("", "")

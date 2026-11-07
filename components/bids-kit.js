@@ -8,9 +8,11 @@
    written by scripts/build_cash_bid_pages.py skb_rows(): each elevator on the page once, at the price the page
    prints for it, highest first). On /cash-bids they come from the page's own best-price ranking
    (window.cbKitData in components/cash-bids.js, the same ranking as the Best price cards), for the search on
-   screen. A row with no posted time is withheld; a row past the moment it stops counting (its posted window or
-   its delivery period, the builder's share_until()) is withheld too, so an old price never prints as today's.
-   No row is invented to fill five. Basis is the board's own against the futures month named; no elevator-level
+   screen. A row with no posted time, or no stop-counting time, is withheld; a row past the moment it stops
+   counting (its posted window or its delivery period: the builder's share_until(), cash-bids.js kitUntil()) is
+   withheld too, so an old price never prints as today's. The rows that remain go highest printed price first
+   (ties: the newer posting, then the nearer), every price to the cent as the town pages print it. No row is
+   invented to fill five. Basis is the board's own against the futures month named; no elevator-level
    normal basis is in the page's data, so none is shown.
 
    Links: the page with utm_source print|share, utm_medium qr|picture, utm_campaign <page>-<date> (share-kit.js
@@ -42,6 +44,9 @@
       return p.month + ' ' + p.day + ', ' + p.hour + ':' + p.minute + ' ' + String(p.dayPeriod || '').toUpperCase();
     } catch (e) { return SK().mdy(d.toISOString()); }
   }
+  /* the price a row prints, as a number: "$4.14" -> 4.14 */
+  function cmp(a, b) { a = String(a || ''); b = String(b || ''); return a < b ? -1 : a > b ? 1 : 0; }
+  function priceOf(r) { var v = parseFloat(String(r.c || '').replace(/[^\d.\-]/g, '')); return isFinite(v) ? v : -1e9; }
   /* the page with the kit's tags: (url, 'print', 'qr', 'cash-bids-iowa-nevada-2026-11-07') */
   function link(url, src, med, campaign) { return url + (String(url).indexOf('?') < 0 ? '?' : '&') + SK().tags(src, med, campaign); }
 
@@ -54,11 +59,18 @@
     now = now == null ? Date.now() : now;
     var K = SK(), n = d.n || 5, held = 0, asof = K.isoDay(now), camp = (d.page || 'cash-bids') + '-' + asof;
     var crops = CROPS.map(function (c) {
-      var rows = [];
+      var rows = [], ok = [];
+      /* every row that still counts: a posted time, a stop-counting time not passed (a row without one is withheld) */
       ((d.rows || {})[c[0]] || []).forEach(function (r) {
-        if (rows.length >= n) return;
         var p = Date.parse(r && r.p || ''), u = r && r.u ? Date.parse(r.u) : NaN;
-        if (!r || !r.c || !r.n || !isFinite(p) || p > now + 36e5 || (isFinite(u) && now > u)) { held++; return; }
+        if (!r || !r.c || !r.n || !isFinite(p) || p > now + 36e5 || !isFinite(u) || now > u) { held++; return; }
+        ok.push(r);
+      });
+      /* highest printed price first; on a tie the newer posting, then the nearer, then the name */
+      ok.sort(function (a, b) {
+        return priceOf(b) - priceOf(a) || Date.parse(b.p) - Date.parse(a.p) || (a.mi || 0) - (b.mi || 0) || cmp(a.n, b.n) || cmp(a.t, b.t);
+      });
+      ok.slice(0, n).forEach(function (r) {
         rows.push({ name: r.n, town: tidy(r.t), st: r.s || '', mi: r.mi, cash: r.c, mon: shortMon(r.d), del: r.dl || r.d || '',
           basis: r.b || '', fut: r.b ? (r.k || '') : '', posted: posted(r.p), at: r.p });
       });
