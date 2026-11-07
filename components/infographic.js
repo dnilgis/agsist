@@ -209,7 +209,7 @@
   };
   var LAYOUTS = {
     phone: { W: 1080, H: 2400, pad: 44, gap: 14, hgap: 16, title: 92, tile: 55 },
-    print: { W: 1320, H: 0, pad: 44, gap: 16, hgap: 18, title: 78, tile: 58 }
+    print: { W: 1320, H: 0, minH: 2040, pad: 44, gap: 16, hgap: 18, title: 78, tile: 58 }
   };
   var GRID = { VT: [1, 9], NH: [1, 10], ME: [1, 11], WA: [2, 0], ID: [2, 1], MT: [2, 2], ND: [2, 3], MN: [2, 4], WI: [2, 5], MI: [2, 6],
     NY: [2, 8], MA: [2, 9], RI: [2, 10], OR: [3, 0], NV: [3, 1], WY: [3, 2], SD: [3, 3], IA: [3, 4], IL: [3, 5], IN: [3, 6], OH: [3, 7],
@@ -625,16 +625,17 @@
     ey = g.lines('Scan the code or visit ' + shown(spec) + ' for the live page.', mx, ey + 2, 14, 600, T.dim, 19, mw);
     var fb = Math.max(fy + qs, ey - 10, fy + 56);
     g.boxes[g.box].h = fb - y;
-    var H = L.H || Math.ceil(fb + L.pad);
+    var H = L.H || Math.max(L.minH || 0, Math.ceil(fb + L.pad));
     return { W: W, H: H, bottom: fb, ops: g.ops, texts: g.texts, boxes: g.boxes, theme: theme, layout: layout, bg: T.bg };
   }
 
   /* lay out, then on the phone spread what is left of the height over the gaps (a little each) */
   function poster(spec, ctx, theme, layout, o) {
     o = o || {};
-    var L = LAYOUTS[layout] || LAYOUTS.phone, r = posterLayout(spec, ctx, theme, layout, o);
-    if (L.H && r.bottom < L.H - L.pad) {
-      var gaps = posterRows(spec, layout).length + 1, extra = Math.min(30, Math.floor((L.H - L.pad - r.bottom) / gaps));
+    var L = LAYOUTS[layout] || LAYOUTS.phone, r = posterLayout(spec, ctx, theme, layout, o), tall = L.H || L.minH;
+    if (tall && r.bottom < tall - L.pad) {
+      /* the phone height, or the 11 x 17 shape on paper: spread what is left over the gaps (up to 40 px each) */
+      var gaps = posterRows(spec, layout).length + 1, extra = Math.min(L.H ? 30 : 40, Math.floor((tall - L.pad - r.bottom) / gaps));
       if (extra > 0) r = posterLayout(spec, ctx, theme, layout, { qr: o.qr, extra: extra });
     } else if (L.H && r.bottom > L.H - 28) {
       /* a little over: tighten the gaps (not under 6 px) before giving up */
