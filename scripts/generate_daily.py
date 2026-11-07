@@ -2282,9 +2282,9 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
                 "reference to ongoing geopolitical or macro threads (Iran tensions, Hormuz, Fed "
                 "pivot, trade negotiations, etc.) needs a one-clause anchor establishing what "
                 "the event is and roughly when it began.\n"
-                "WEEK IN REVIEW TABLE: the issue prints a code-built Friday vs last Friday table (corn, soybeans, "
-                "Chicago wheat, live cattle, feeder cattle, lean hogs) from the data. Its numbers are in the price "
-                "table below; never restate them differently and do not repeat the table.\n"
+                "WEEK IN REVIEW TABLE: when the price table below carries a CODE-BUILT WEEK IN REVIEW TABLE, the "
+                "issue prints it (Friday vs last Friday: corn, soybeans, Chicago wheat, live cattle, feeder cattle, "
+                "lean hogs). Never restate its numbers differently and do not repeat the table.\n"
             )
         elif reason == "weekend" and "Sunday" in day:
             weekend_instructions = (
@@ -2299,8 +2299,8 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
                 "RULE 18 ON SUNDAYS: macro-event anchoring is critical. The Sunday Preview "
                 "frames the week's macro context. First references to ongoing geopolitical or "
                 "macro threads need a one-clause anchor (what + roughly when).\n"
-                "WEEK AHEAD CALENDAR: the issue prints a code-built Reports this week list (USDA reports, federal "
-                "holidays, the COT release) from the calendars. It is in the price table below; never give a report "
+                "WEEK AHEAD CALENDAR: when the price table below carries a CODE-BUILT WEEK AHEAD CALENDAR, the issue "
+                "prints it (Reports this week: USDA reports, federal holidays, the COT release). Never give a report "
                 "a different day or time and do not repeat the list.\n"
             )
         else:
