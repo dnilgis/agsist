@@ -3,7 +3,8 @@
  *
  * scripts/read_schrader.py reads one capture folder (the sold feed and the result pages) into
  * data/land/auctions/schrader.json. This file holds:
- *   - the reader's own selftest passes on the scrubbed fixtures
+ *   - the reader's own selftest passes on the scrubbed fixtures, including --merge never rewriting a saved
+ *     record's values and bool never counting as a sold price or per-acre figure
  *   - auction 9630 gives Schrader's three printed rows and the $2,905,000 total
  *   - the fixtures are scrubbed: no phone number, no email, no "sold to" or "buyer" followed by a name
  *   - the data file carries facts only: no buyer, owner or name field, the credit and a link on every record,
@@ -37,6 +38,15 @@ test('the reader selftest passes on the scrubbed fixtures', () => {
   const out = execFileSync('python3', ['scripts/read_schrader.py', '--selftest'], { cwd: root, encoding: 'utf8' });
   assert.match(out, /read_schrader selftest: 0 failure\(s\)/);
   assert.doesNotMatch(out, /^FAIL /m);
+  // checker items from PR #412: --merge never rewrites a saved record's values, and a bool is not a number
+  for (const name of ['--merge refuses a sold price that is a bool', '--merge refuses a per acre that is a bool',
+    '--merge refuses a total that is a bool', '--merge keeps the saved record over a changed sold price',
+    '--merge keeps the saved record over a changed per acre', '--merge keeps the saved record over rows that differ plus a new row',
+    '--merge keeps the saved record over fewer rows', '--merge keeps the saved record over a changed total',
+    'a refused overwrite is counted',
+    'identical rows plus a new row replace the saved record; a new auction_id is added']) {
+    assert.ok(out.includes('ok   ' + name), 'selftest ran: ' + name);
+  }
 });
 
 test('9630: the three rows as Schrader printed them, total $2,905,000', () => {
