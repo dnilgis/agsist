@@ -3521,6 +3521,13 @@ def selftest():
         # the button's script is farmland-atlas/county.js since Oct 29, 2026 (one cached file, not 3,148 inline copies)
         check("story calculator button", 'id="rc-open"' in st_ and ('/farmland-atlas/county.js?v=' + COUNTY_JS_V) in st_
               and "/components/rent-calc.js" in COUNTY_JS and "AgRentCalc" not in st_.split("<script>")[0])
+        # County Print (Nov 7, 2026): the button group, the page's own figures and the script at its hash
+        cpm = re.search(r'<script type="application/json" id="cp-data">([^<]*)</script>', st_)
+        cpj = json.loads(cpm.group(1)) if cpm else {}
+        check("story County Print group", 'id="cpr-print" href="/farmland-atlas/sheet#' in st_ and 'id="cpr-pic"' in st_ and 'id="cpr-link"' in st_
+              and st_.count(">Copy link<") == 1 and ("/%s?v=%s" % (CP_JS, cp_v(W.root))) in st_)
+        check("story County Print figures are the page's", bool(cpj) and len(cpm.group(1).encode()) <= 700 and "n/a" not in cpm.group(1)
+              and all((v[0] if isinstance(v, list) else v) in st_.split('id="cp-data"')[0] for k, v in cpj.items() if k in ("v", "ss", "r", "rb", "yt", "lr")))
         seen_ = 0
         for f in list(W.C)[:600]:
             p_ = os.path.join(tmp, W.path(f))
